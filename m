@@ -1,17 +1,22 @@
-Received: from vmmrnat.verisignmail.com ([216.168.230.187] helo=vmmr9.verisignmail.com)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18eIh7-0001mw-00
-	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 17:41:45 +0000
-Message-Id: <5.1.0.14.2.20030130100614.038d9778@mail.ebshome.net>
-Date: Thu, 30 Jan 2003 10:12:39 -0800
-To: joakim.tjernlund@lumentis.se
-From: Eugene Surovegin <ebs@ebshome.net>
-Subject: RE: PATCH: support for Arctic/Beech/Ebony
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <IGEFJKJNHJDCBKALBJLLKEMCFJAA.joakim.tjernlund@lumentis.se>
-References: <5.1.0.14.2.20030130021112.020b0628@mail.ebshome.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+	id 18eJiX-0001v3-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Jan 2003 18:47:17 +0000
+Received: from maria.bhp.t-online.de (maria.ada.t-online.de [172.30.8.41])
+ by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with SMTP id <0H9J008UFK9N6X@smtp-out.bhp.t-online.de> for
+ linux-mtd@lists.infradead.org; Thu, 30 Jan 2003 20:17:48 +0100 (MET)
+Date: Thu, 30 Jan 2003 20:16:00 +0100
+From: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: Bad Block Handling in jffs2
+In-reply-to: <03E2B9D1.52EE4DE7.0265FBE9@netscape.net>
+To: Kschoo70C@netscape.net, linux-mtd@lists.infradead.org
+Reply-to: tglx@linutronix.de
+Message-id: <200301302016.00528.tglx@linutronix.de>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+References: <03E2B9D1.52EE4DE7.0265FBE9@netscape.net>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,32 +28,31 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-At 03:23 AM 1/30/2003, you wrote:
-> > Joakim,
-> >
-> > At 01:46 PM 1/29/2003, you wrote:
-> > >   - You don't need mb() since ioremap will add the
-> > >      GUARDED attribute to the mapping.
-> >
-> > Well, this is not quite correct.
-> >
-> > GUARDED attribute does _NOT_ prevent reordering of loads and stores on PPC
-> > (on 4xx at least).
-> >
-> > See comments in asm-ppc/system.h and also IBM app note "Software
-> > consideration when migrating to the PowerPC 440GP from 405GP"
-> >
+On Thursday 30 January 2003 17:17, Kschoo70C@netscape.net wrote:
+>    In http://www.linux-mtd.infradead.org/tech/nand.html, it is stated that
 >
->hmm, maybe it's specific to the 8xx family. 860 and 862 does not do
->speculative accesses on GUARDED memory.
+>    "if you have a bad block on your chip, just skip this block and copy
+>    the data to the next block. JFFS2 is able to handle this gap.".
+That's correct.
 
-It does! But speculative accesses and access reordering are not the same 
-thing :)
+>    So, I write a program to skip the bad block, and copy the data to the
+> next block. The missing file seems to appear on the file system now, the
+> size looks correct. But when I diff the binary of the file to that of
+> original, they are different and the binary failed to execute.
+Strange.
+Have you built your fs-image with the correct block size ?
 
-There is a subtle difference.
+>    I don't know much about jffs2 bad block handling, the only information I
+> have is as mentioned above. Am I missing any other information ?
+No
 
->Me wounders what GUARDED is good for if it doesn't prevent reordering.
+>    Is anyone manage to transfer an image to the nand device that has bad
+> blocks without losing any files ?
+Yes, I do
 
-I think it's a FAQ for PPC devel list :)
-
-Eugene.
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
