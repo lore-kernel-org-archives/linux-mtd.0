@@ -1,19 +1,22 @@
-Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cei3k-0005OD-Od
-	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 17:55:55 -0500
-From: Dave Dillow <dave@thedillows.org>
-To: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-In-Reply-To: <1103149330.5809.1.camel@dillow.idleaire.com>
-References: <EFF9A3506F74924AB5CC77BDC66E7935181391@atcml01.atc.army.mil>
-	<1103149330.5809.1.camel@dillow.idleaire.com>
+Received: from ptb-relay01.plus.net ([212.159.14.212])
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1CeiPg-0005aT-5u
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 18:18:33 -0500
+Received: from [80.229.56.123] (helo=central.bult.co.uk)
+	by ptb-relay01.plus.net with esmtp (Exim) id 1CeiPd-000Ape-E2
+	for linux-mtd@lists.infradead.org; Wed, 15 Dec 2004 23:18:29 +0000
+Received: from squizzey.bult.co.uk (squizzey.bult.co.uk [10.1.0.4])
+	by central.bult.co.uk (Postfix) with ESMTP id B62AE1F3123
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Dec 2004 00:28:44 +0000 (GMT)
+From: "Gareth Bult (Encryptec)" <Gareth@Encryptec.net>
+To: Linux MTD <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Message-Id: <1103151351.5814.12.camel@dillow.idleaire.com>
+Date: Wed, 15 Dec 2004 23:19:03 +0000
+Message-Id: <1103152743.15913.33.camel@squizzey.bult.co.uk>
 Mime-Version: 1.0
-Date: Wed, 15 Dec 2004 17:55:51 -0500
 Content-Transfer-Encoding: 7bit
-Cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: Big Problem with DOC 128Mbyte Help! ADDED Note
+Subject: JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2004-12-15 at 17:22, Dave Dillow wrote:
-> On Wed, 2004-12-15 at 09:49, Carlos, John J USAATC wrote:
-> > The docfdisk utility shows that there are two partitions.  The BDL and the
-> > BDTL partition.  Could this be giving me problems?  Should I get rid of the
-> > two partitions and have one large one?  Is that even possible?
-> 
-> IIRC, the BDL partition is the DOC BIOS extension, which you'll need for
-> using a standard BIOS.
-> 
-> The BDTL is the actual data partition.
-> 
-> Your setup is normal.
+Hi,
 
-Argh. I should add that is normal for using M-System's BIOS extensions
-to boot like you would from any other BIOS device, like a hard drive.
+I've been working on the MTD block driver for JFFS2 and now seem to have
+a relatively stable environment with a JFFS2 root filesystem on a USB
+flash key device. 
+(mtd block device speed now approximates actual device speed on both
+read and write)
 
-Have you tried an alternate means of booting? Perhaps using a modified
-grub in place of M-System's BIOS driver? I've not tried it, but it could
-help you avoid having their code trample your filesystem
--- 
-Dave Dillow <dave@thedillows.org>
+It seems to be much quicker (generally) than the previous ext2
+incarnation.
+
+However, I'm looking at 30secs to mount the root filesystem.
+
+I would be very grateful of some advice on the following before I start
+digging through the JFFS2 code itself;
+
+a. Is it possible (conceptually) to background the mount scan so the
+system can boot while the scan happens ?
+b. Is there an easy way to bypass the scan and does JFFS3 do this ? 
+
+Any help/advice would be much appreciated.
+
+Many thanks,
+Gareth.
