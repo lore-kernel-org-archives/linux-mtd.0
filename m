@@ -1,19 +1,16 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=executor.cambridge.redhat.com)
+Received: from dmzraw2.extranet.tce.com ([157.254.234.138])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19p6oj-0000cN-Si
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 14:46:33 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Tim Drury <tdrury@siliconmotorsports.com>
-In-Reply-To: <000501c36656$c9a96b90$f546a8c0@SIMOTORSPORTS>
-References: <000501c36656$c9a96b90$f546a8c0@SIMOTORSPORTS>
-Message-Id: <1061300761.3630.11.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Tue, 19 Aug 2003 14:46:02 +0100
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: RE: INFTL
+	id 19p8YT-00014x-Q5
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Aug 2003 16:37:53 +0100
+Message-ID: <2C1BAF8F8E1DD611862B0002A5D4C3FC01BC05E2@renexch3.rennes.thmulti.com>
+From: Fillod Stephane <stephane.fillod@thomson.net>
+To: "'jon.hoekwater@spansion.com'" <jon.hoekwater@spansion.com>
+Date: Tue, 19 Aug 2003 17:37:28 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+cc: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Subject: FW: cfi_cmdset_0002.c support for erase suspend and resume
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-08-19 at 09:35 -0400, Tim Drury wrote:
-> > /me wanders off to see if the coffee's brewed yet...
-> 
-> Is there an IRC server/channel that you guys generally hang out in?
-> I've been searching for a good embedded systems discussion channel
-> without much luck.
+Hi Jon,
 
-irc.freenode.net #mtd
+> I noticed that support for erase suspend and resume
+> is present in cfi_cmdset_0001.c but not in cfi_cmdset_0002.c.
+> After reviewing the files, it seems like the same type
+> solution could be applied to cfi_cmdset_0002.c for AMD/"AMD 
+> like" devices.  Is this a correct assessment, or are there 
+> some pitfalls that I have failed to see ?
 
--- 
-dwmw2
+> I am adding support for the Am29LV640M.
+
+I'm working on the Amd's and Fujitsu too.
+
+> I will add support for the three byte device ID and buffered
+> writes.  Testing will be done on an Alchemy DbAU1500 using
+> MontaVista Linux.
+
+FYI, I have buffered writes implemented here and working already.
+This gives a write boost of about 14x to 16x!
+Testing was done on a PPC405 board equipped with Am29LV128MH,
+using patched Denx Linux.
+
+Let me know if this is of any interest for you.
+
+I'm waiting for the 2 following patches to be commited before I submit 
+what I've done.
+
+Pre-requisite patchs:
+Stefano's patch on "erase/write on the same AMD chip with not aligned words"
+ http://lists.infradead.org/pipermail/linux-mtd/2003-August/008385.html
+My patch on oops fixup
+ http://lists.infradead.org/pipermail/linux-mtd/2003-August/008399.html
+
+
+Regards,
+Stephane
+
+PS: sorry, my mailer suck and it's missing the Ref header.
