@@ -1,37 +1,40 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13JKC4-0003Px-00
-	for mtd-list@infradead.org; Mon, 31 Jul 2000 19:21:40 +0100
-Received: from cerberus.colubris.com ([207.35.116.195] helo=mail.colubris.com)
+	id 13JKjR-0003X7-00
+	for mtd-list@infradead.org; Mon, 31 Jul 2000 19:56:09 +0100
+Received: from mb04.swip.net ([193.12.122.208])
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 13JKC3-0003Pr-00
-	for mtd@infradead.org; Mon, 31 Jul 2000 19:21:39 +0100
-Received: from colubris.com (ws1-58.colubris.com [192.168.1.58])
-	by mail.colubris.com (8.10.2/8.10.2) with ESMTP id e6VILZ917171
-	for <mtd@infradead.org>; Mon, 31 Jul 2000 14:21:35 -0400
-Message-ID: <3985C29C.8F37EBC3@colubris.com>
-Date: Mon, 31 Jul 2000 14:17:00 -0400
-From: Stephane Laroche <stephane.laroche@colubris.com>
+	id 13JKjQ-0003X1-00
+	for mtd@infradead.org; Mon, 31 Jul 2000 19:56:08 +0100
+Received: from win95 (dialup212-1-138.interloop.se [130.244.212.138])
+          by mb04.swip.net (8.8.8/8.8.8) with SMTP
+          id UAA12625 for <mtd@infradead.org>;
+          Mon, 31 Jul 2000 20:55:08 +0200 (MET DST)
+From: "Bjorn Eriksson" <mdeans@algonet.se>
+To: <mtd@infradead.org>
+Subject: Re: Booting from flash 
+Date: Mon, 31 Jul 2000 20:56:13 +0200
+Message-ID: <000601bffb20$ff8fc280$0800a8c0@win95.inteloop.se>
 MIME-Version: 1.0
-To: mtd@infradead.org
-Subject: Erasing more than one sector at a time?
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+In-Reply-To: <Pine.LNX.4.21.0007311641500.2881-100000@carrot.linuxgrrls.org>
+Content-Transfer-Encoding: quoted-printable
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-The erase functions in cfi_cmd_*.c seem to support erasing more than 1
-sector per call.
+> > > The board I'm using is a standard PC architecture.
+> >
+> > Wimp.
+>
+> Does the SC4x0 count as a non-standard PC architecture?
 
-I'm wondering why the parameter validation at the start of those
-function specifically prohibits erasing more than one sector.  Is this
-because the interface is defined this way or is it an oversight?
+ Sure, if you're booting it using your own boot loader w/o BIOS. <ignore =
+me>
 
-I'm thinking of removing the validation so my user programs don't have
-to loop when erasing more than one sector.
 
--Stephane
+//Bj=F6rnen
 
 
 
