@@ -1,17 +1,19 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from bs1.dnx.de ([213.252.143.130] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1764kv-0000Lv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 08:23:57 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <20020510064306.462BF2756@sitemail.everyone.net> 
-References: <20020510064306.462BF2756@sitemail.everyone.net> 
-To: zeusj@firstlinux.net
-Cc: all in MTD mailinglist <linux-mtd@lists.infradead.org>
-Subject: Re: misc question about MTD 
+	id 1765Qx-0000Pp-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 May 2002 09:07:24 +0100
+Received: from p50861b37.dip.t-dialin.net ([80.134.27.55] helo=callisto.pengutronix.de)
+	by bs1.dnx.de with asmtp (Exim 3.34 #1)
+	id 1765Qv-0007MY-00
+	for linux-mtd@lists.infradead.org; Fri, 10 May 2002 10:07:21 +0200
+Date: Fri, 10 May 2002 10:06:55 +0200
+From: Robert Schwebel <robert@schwebel.de>
+To: linux-mtd@lists.infradead.org
+Subject: mtdblock and devfs
+Message-ID: <20020510100655.T15258@schwebel.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 10 May 2002 08:23:41 +0100
-Message-ID: <6578.1021015421@redhat.com>
+Content-Disposition: inline
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,25 +25,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-zeusj@firstlinux.net said:
-> 1.in cfi_probe_chip(cfi_probe.c), what is an 'alias ' of a flash chip?
-> is that the same flash chip mapping in different address? 
+Hi, 
 
-Yes. Often, people will connect flash chips without all the address lines 
-being used, so they can swap in larger chips later. Then you get these 
-'aliases'.
+using devfs and mtd from CVS I see only the char device nodes in /dev/mtd,
+although I've enabled CONFIG_MTD_BLOCK=y: 
 
-> 2.if I send Query command (98h, I mean) twice, would the 'QRY' disappear?
+# ls -l /dev/mtd/
+crw-rw-rw-    1 0        0         90,   0 Jan  1  1970 0
+crw-rw-rw-    1 0        0         90,   1 Jan  1  1970 0ro
+crw-rw-rw-    1 0        0         90,   2 Jan  1  1970 1
+crw-rw-rw-    1 0        0         90,   3 Jan  1  1970 1ro
+crw-rw-rw-    1 0        0         90,   4 Jan  1  1970 2
+crw-rw-rw-    1 0        0         90,   5 Jan  1  1970 2ro
 
-Er, I don't know. I don't think so, but if this _is_ required then it could 
-be useful -- currently we have to use a chip-specific command to put chips 
-back in read mode when we do the alias detection.
+Any idea? 
 
-> and if I send it once, can I read the 'QRY' for several times?
-
-Yes, you can.
-
-
-
---
-dwmw2
+Robert
+-- 
+ +--------------------------------------------------------+
+ | Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de |
+ | Pengutronix - Linux Solutions for Science and Industry |
+ |   Braunschweiger Str. 79,  31134 Hildesheim, Germany   |
+ |    Phone: +49-5121-28619-0 |  Fax: +49-5121-28619-4    |
+ +--------------------------------------------------------+
