@@ -1,16 +1,23 @@
-Received: from [152.101.51.1] (helo=janus.hk.panelx.com)
-	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
-	id 197rqr-0005Ik-Nt
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 08:06:02 +0100
-Message-ID: <013401c3089d$9a930580$9000010a@paulwong>
-From: "Paul Wong" <paul.wong@digitalview.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 22 Apr 2003 15:05:48 +0800
+Received: from port61.vestas.dk ([195.41.59.61] helo=cotas2.cotas.vestas.dom)
+	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
+	id 197spD-0005VS-In
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Apr 2003 09:08:23 +0100
+From: Esben Nielsen <esn@cotas.dk>
+To: <tglx@linutronix.de>,
+ =?iso-8859-1?q?J=F6rn=20Engel?= <joern@wohnheim.fh-wedel.de>,
+ "Jasmine Strong" <jasmine@regolith.co.uk>
+Date: Tue, 22 Apr 2003 10:07:59 +0200
+References: <200304161335.50367.tglx@linutronix.de>
+In-Reply-To: <200304161335.50367.tglx@linutronix.de>
 MIME-Version: 1.0
+Message-Id: <200304221007.59780.esn@cotas.dk>
 Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: 7bit
-Subject: Fw: corrupt my NAND flash device
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+cc: Holger Schurig <h.schurig@mn-logistik.de>
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Database on JFFS2?
+Reply-To: esn@cotas.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,17 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- Hi all!
-     i installed the YAFFS file system in the NAND flash (samsung 16MB). And
- test the reliability. I tried to copy a 5 MB file to the mounted yaffs
- (spare 8MB) directory ( i separated the device to 3 partition - 4MB 4MB and
- 8MB) . and then check the disk space, it is shown that it has 3 MB spare.
- Next step, I erased the file and copied another 5 MB file to it. The device
- said " no enough spare. Then I use the "mkyaffs" to format it, it is shown
- many bad block in the device. I checked the OOB[5] ( bad block flag) it is
- set to 0x00. Why? Why the yaffs set the health block to the bad block after
- erase file? Is the YAFFS not support big file ?  any ideal?
+On Wednesday 16 April 2003 13:35, Thomas Gleixner wrote:
+> [...]
+> On Wednesday 16 April 2003 12:04, Esben Nielsen wrote:
+> > I am not much into flash technology itself (NOR contra NAND), but I know
+> > that on our device one write erases and rewrites one block of 128k. Each
+> > block can only be erased between 1E5 and 1E6 times. We thus have to be
+> > carefull as our device have to live for 20 years (yes, that is what a
+> > promise our customers!).
+>
+> Erase is always a full block (e.g. 128K), but writes happen in small
+> chunks.
+>
 
- Thanks
+Ah! Now I get it: You have erase a block as a whole and then you can write 
+parts of it until it is full? I always believed you had to write a full block 
+just to write a single byte, but this does make much more sense to me. We 
+have been through similar discussions with TFFS under vxWorks where we 
+couldn't find out how many times we were actually allowed to write.
 
-Paul
+> [...]
+>
+> JFSS2 does no write on fsync, as data are already written.
+
+Doesn't Linux per default for any filesystem hold a write cache which needs to 
+be flushed with fsync()?
+
+Esben
