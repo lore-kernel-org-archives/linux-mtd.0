@@ -1,19 +1,17 @@
-Received: from ash.lnxi.com ([207.88.130.242] helo=DLT.linuxnetworx.com)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15qqnI-0007og-00
-	for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2001 07:55:12 +0100
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Q: Probing for devices > buswidth???
-References: <m3wv25gvdq.fsf@DLT.linuxnetworx.com>
-	<m3y9mljsin.fsf@DLT.linuxnetworx.com> <29886.1002609959@redhat.com>
-	<30115.1002610420@redhat.com>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 09 Oct 2001 01:04:17 -0600
-In-Reply-To: <30115.1002610420@redhat.com>
-Message-ID: <m3wv25fg5q.fsf@DLT.linuxnetworx.com>
-MIME-Version: 1.0
+	id 15qqxY-0007ri-00
+	for <linux-mtd@lists.infradead.org>; Tue, 09 Oct 2001 08:05:48 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <3BC2A094.2020006@bigpond.com> 
+References: <3BC2A094.2020006@bigpond.com>  <NEBBJKADBKFNCJOMHOAKAEFBCNAA.hamishl@dplanet.ch> <29826.1002609767@redhat.com> 
+To: brendan.simon@bigpond.com
+Cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: mtd: looking for serial flash storage 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Date: Tue, 09 Oct 2001 08:14:54 +0100
+Message-ID: <30579.1002611694@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,40 +23,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-David Woodhouse <dwmw2@infradead.org> writes:
+brendan.simon@bigpond.com said:
+> This is fantastic news.  I assumed that if the DOC had those address
+> lines then it would need all of them.
 
-> ebiederman@lnxi.com said:
-> >  Just so I understand.  There are chips with a 16-bit interface that
-> > you can put in a crippled mode such that they pretend use only an 8
-> > bit bus.  But the id logic is the same as when the are on a 16-bit
-> > bus?
-> 
-> Basically, yes. They are 16-bit devices, with the A0 line selecting which 
-> 16-bit word you should look at - and all the 'magic' addresses must be 
-> placed on the address bus starting at A0. But they decided they wanted to 
-> be able to use them with an 8-bit bus, so they added an 'A-1' address line 
-> too.
-> 
-> > I'm just trying to comprehend this weird situation.
-> 
-> Do yourself a favour - don't. Just accept it. Or do me a favour and take 
-> responsibility for it from now on :)
+They're there for compatibility. M-Systems make sure that you can drop the 
+newer devices into the same hole on your board as the older devices. If you 
+skimp on the address lines because you happen to know one of their devices 
+doesn't need them, don't sulk if the next one doesn't work :)
 
-I'll probably take responsiblity for the legacy jedec side of things.
-Or at the very least I'll be a very active tester/user.  So I want
-enough understanding so that I don't look at someone else's code and
-say that is broken, and be wrong.  I have fixed a whole bunch of small
-bugs already.  Currently I have 4 map drivers completed and a 5th one
-to write, and none of them use these nice new chips.  The worst case
-is the driver for the boot rom on the eepro100 it doesn't even
-implement block erase, just chip erase.  
+> Is this information true for the 16MB TSOP-I DOC2000 and also the 32MB
+>  TSOP-I DOC Millenium Plus ???  Aparently they are pin compatible and
+> can  be used as a drop in replacement for each other. 
 
-Anyway my smorgase board currently looks like:
-eepro100 boot rom.
-BIOS on AMD766 southbrige.
-BIOS on the l440gx motherboard.
-BIOS on Compaq DS10
-BIOS connected to the ICH2 (Intel firmware hub.) 
-   [This one I should be getting started on in a couple of hours].
+It should be true for the DOC2000. The Millennium Plus is a different beast 
+entirely, and isn't supported - we only support the Millennium. In this 
+context, 'pin-compatible and can be used as a drop in replacement' means 
+solely that it doesn't need more than the 13 address lines and 8 data lines 
+which were specified for all the DiskOnChip family. 
 
-Eric
+I doubt the Millennium Plus actually needs the A10 line either, but it's all
+academic because we can't drive it anyway - we don't have any specs for it.
+
+--
+dwmw2
