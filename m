@@ -1,23 +1,23 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.101])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CET4I-0007Fr-LF
-	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 09:40:02 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
-In-Reply-To: <41614F6B.6050802@yandex.ru>
-References: <416122A1.4060302@oktetlabs.ru>
-	<1096885344.30942.559.camel@hades.cambridge.redhat.com>
-	<4161379C.3070109@oktetlabs.ru>
-	<1096893405.22034.9.camel@weaponx.rchland.ibm.com>
-	<41614F6B.6050802@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1096897195.22034.23.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Date: Mon, 04 Oct 2004 08:39:55 -0500
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CETAw-0007Sp-K1
+	for linux-mtd@lists.infradead.org; Mon, 04 Oct 2004 09:46:56 -0400
+Message-ID: <41615422.8060909@yandex.ru>
+Date: Mon, 04 Oct 2004 17:46:10 +0400
+From: "Artem B. Bityuckiy" <abityuckiy@yandex.ru>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <416122A1.4060302@oktetlabs.ru>	
+	<1096885344.30942.559.camel@hades.cambridge.redhat.com>	
+	<416127B7.3070505@yandex.ru>	
+	<1096893242.22034.5.camel@weaponx.rchland.ibm.com>	
+	<41614B2F.8060901@yandex.ru>
+	<1096895892.30942.614.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1096895892.30942.614.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Artem Bityuckiy <dedekind@oktetlabs.ru>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [OBORONA-SPAM]  Re: inode checkpoints
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,55 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2004-10-04 at 08:26, Artem B. Bityuckiy wrote:
-> > 
-> > Yes and no.  It makes sense for any flash device that you can't write to
-> > the same page multiple times without an erase in between.  NAND is
-> > certainly the largest group of such devices.  There are others that have
-> > this behavior as well.  See cfi_cmdset_0020.c.
+>>I think the checkpoints shouldn't be created by GC (when it is actually 
+>>garbage collecting) because of it will decrease the JFFS2 performance. 
+>>GC is called on some write request when there is no space (excluding the 
+>>situation when it is called in background by the GC thread). This, it is 
+>>bad to load GC by additional work of creating checkpoints since it is 
+>>long enough process....
+>>
+>>What do you think?
 > 
-> The original idea of ICPs (inode checkpoint) is to improve JFFS2 
-> performance on NAND not because the page can't be written lots of times.
-> The NAND flash specific is that there is constant delay when accessing 
-> any page.
 > 
-> For example consider TOSHIBA TC5DxM82A1xxxx 8-bit 256 Mbit NAND flash.
-> Page access delay is 25 microsecs.
-> Read cycle is 50 nanosecs.
+> Hmmm. Maybe. But we can write a checkpoint node when we GC a previous
+> checkpoint node perhaps? And we can still write checkpoint nodes when
+> appropriate from the actual JFFS2 write routines.
 > 
-> When you read 3 bytes from this NAND flash and these bytes are situated 
-> in one page (consequently), you will spent about 25 microsecs + 50 * 3 
-> nanosecs.
-> But when you read those 3 bytes from the same NAND flash and these bytes 
-> are situated in three different pages, you will spent about 25*3 
-> microsecs + 50 * 3 nanosecs.
+I have the following reasons why it is bad to include checkpoint 
+writings when garbage collecting:
 
-Yep.
+1. If there is no (or few) space and the GC is called, it is better to 
+*obsolete* checkpoints, not to create new ones. :-) So, if there are no 
+threads, I don't know how to create checkpoints from GC... In this case 
+it is better to create them while writing... But this is additional 
+delay for write operations...
 
-> 
-> So, when the inode cache is built, we read node headers from *different 
-> pages*. But if there is checkpoint, we read from few pages. This is the 
-> main idea.
-> 
-> But in case of regular file inodes we also save *additional* time since 
-> we don't check the *data* CRC for those nodes, which are in 
-> checkpoint(s). In case of the directory inode there is no such 
-> additional time savings.
+So, I propose either:
+1. Introduce the option which enables the checkpoint support and 
+automatically enables the GC thread.
+2. Just use distinct thread for checkpoints.
 
-I agree that these changes will benefit NAND the most, but they are also
-valuable for all flashes.  
+Do you have other ideas?
 
-Say I have a 16 MiB file on my NOR flash.  When a stat or open is done,
-iget is called, which calls readinode, which then goes and reads all the
-nodes off of the flash to build up the inode information.  I've seen
-that take upwards of 2 seconds, just because of the number of data nodes
-that have to be read.
-
-Now, same situation, but I have a checkpoint node out there.  I don't
-have to read _all_ the data nodes because the checkpoint gives me a
-snapshot of at least some of them, right?
-
-Or maybe I am extending your idea a bit further than what you
-intended...
-
-josh
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
