@@ -1,16 +1,17 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
+Received: from albatros.havelsan.com.tr ([195.142.233.60])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 189kqa-0005JV-00
-	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 11:29:16 +0000
-Date: Thu, 7 Nov 2002 13:58:45 +0100 (CET)
-From: Marius Groeger <mag@sysgo.de>
-To: Taeil Um <tium@mail.palmpalm.com>
-cc: linux-mtd list <linux-mtd@lists.infradead.org>
-Subject: Re: NAND flash of EDB7312
-In-Reply-To: <BDEDIOGGNJEEPBHLJLFGOEGJCDAA.tium@palmpalm.com>
-Message-ID: <Pine.LNX.4.40.0211071355090.1961-100000@mag.devdep.sysgo.de>
+	id 189l58-0005L4-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Nov 2002 11:44:21 +0000
+Message-ID: <000901c28657$25f25370$3064000a@NUR>
+From: "nur" <nurpinar@havelsan.com.tr>
+To: <linux-mtd@lists.infradead.org>
+References: <D99C1FB421989A40818B6370E3187094040A3A91@tayexc19.americas.cpqcorp.net> <20021030185507.GA31547@wohnheim.fh-wedel.de> <20021030193834.GE27880@pc.ilinx> <20021030201608.GA28523@wohnheim.fh-wedel.de> <20021030204937.GG27880@pc.ilinx> <20021104142950.GO16306@pc.ilinx> <20021104171339.GB13152@wohnheim.fh-wedel.de>
+Subject: Unable to handle kernel NULL pointer dereference at virtual address 0000000c
+Date: Thu, 7 Nov 2002 14:13:57 +0200
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,24 +23,19 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 5 Nov 2002, Taeil Um wrote:
+1. During boot, I faced this problem right after DiskOnChip Millennium is
+recognized
 
-> So,  Did anybody succeed to use NAND flash on EDB7312 board ?
-> if somebody succeed, Could you inform me the value of MEMCFG1?
+Is this a kernel bug or mtd drivers cause it?
+I searched through google to find something and there were several messages
+without any solution.
+One of them was, David Woodhouse's mtdblock.c correction. As I have newer
+version of it, there is no use to test.
 
-It worked ok for me using ARMboot (armboot.sf.net) and Elinos, which
-uses the driver checked in on Infradead. As for MEMCFG1, see
-armboot/board/ep7312/memsetup.S:
 
-...
-memcfg1_val:    .long   0x1f101710
-...
+2. Is it ok if I compile kernel with DiskOnChip Millennium support for a
+system having DiskOnChip Millennium Module?
 
-Regards,
-Marius
+Thanks, regards
 
------------------------------------------------------------------------------
-Marius Groeger           SYSGO Real-Time Solutions AG       mgroeger@sysgo.de
-Software Engineering     Embedded and Real-Time Software    www.sysgo.de
-Voice: +49-6136-9948-0   Am Pfaffenstein 14                 www.osek.de
-FAX:   +49-6136-9948-10  55270 Klein-Winternheim, Germany   www.elinos.com
+Nur.
