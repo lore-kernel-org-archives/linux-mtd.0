@@ -1,14 +1,17 @@
-Received: from serverd.sea.theriver.com ([216.39.128.34])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 173nzf-00065B-00
-	for <linux-mtd@lists.infradead.org>; Sat, 04 May 2002 02:05:47 +0100
-Date: Fri, 3 May 2002 18:05:11 -0700 (PDT)
-From: Paul <paul@oz.net>
-To: linux-mtd@lists.infradead.org
-Subject: Advice sought: new SmartMedia driver
-Message-ID: <Pine.LNX.4.44.0205031647020.8561-100000@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 173oBg-00066H-00
+	for <linux-mtd@lists.infradead.org>; Sat, 04 May 2002 02:18:12 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.44.0205031647020.8561-100000@localhost.localdomain> 
+References: <Pine.LNX.4.44.0205031647020.8561-100000@localhost.localdomain> 
+To: Paul <paul@oz.net>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Advice sought: new SmartMedia driver 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Sat, 04 May 2002 02:18:05 +0100
+Message-ID: <10553.1020475085@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,75 +23,57 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I'm currently writing a driver for a PCI SmartMedia controller chip,
-which I would like to have merged with the MTD CVS when it becomes
-usable.  Unfortunatley I don't have full chip specs, so I'm somewhat
-fumbling in the dark.  I used autcpu12.c and spia.c as a starting point,
-added some PCI initialization, supplied my own nand_cmd() (more on this 
-later), etc.  When I install the kernel module, I get:
+paul@oz.net said:
+> [1] The NAND routine nand_scan(), called during module initialization,
+>     seems to assume that a Flash memory device is always present.  If
+>     not, nand_scan() quits and unloads the kernel module. 
 
-May  2 23:44:54 coho kernel: SM controller found, base address 0xfcee6fe0
-May  2 23:44:54 coho kernel: PCI: Found IRQ 11 for device 02:09.0
-May  2 23:44:54 coho kernel: PCI: Sharing IRQ 11 with 00:1f.6
-May  2 23:44:54 coho kernel: PCI: Sharing IRQ 11 with 02:07.0
-May  2 23:44:54 coho kernel: PCI: Sharing IRQ 11 with 02:0d.1
-May  2 23:44:54 coho kernel: NAND device: Manufacture ID: 0xec, Chip ID: 0xe6 (Samsung KM29U64000)
-May  2 23:44:54 coho kernel: Creating 1 MTD partitions on "Samsung KM29U64000":
-May  2 23:44:55 coho kernel: 0x00000000-0x00800000 : "flash partition 1"
-May  2 23:44:55 coho kernel: mtd: Giving out device 0 to flash partition 1
+nand_scan() will only return -1 if it finds a device is not present. If 
+nand_scan is referenced by your driver module, then the nand.o module will 
+not be unloaded unless your driver module has allowed itself to be unloaded.
 
-Now I can read the contents of the SmartMedia card using
-"dd if=/dev/mtd0 of=foo", or by using the nanddump utility.
-So far so good.  But I have run into some problems and would
-like some advice.
+>     I have a SmartMedia slot where the SmartMedia memory card may or 
+>     may not be present at a given time, and may be yanked in/out at 
+>     any time.  How can I best handle this "hot plug" situation without
+>     disrupting much of the existing MTD code?
 
-[1] The NAND routine nand_scan(), called during module initialization,
-    seems to assume that a Flash memory device is always present.  If not,
-    nand_scan() quits and unloads the kernel module.  I have a SmartMedia
-    slot where the SmartMedia memory card may or may not be present at a
-    given time, and may be yanked in/out at any time.  How can I best 
-    handle this "hot plug" situation without disrupting much of the
-    existing MTD code?
+When you detect that a new card has been inserted, you call nand_scan to
+probe the chip and register an MTD device. When you detect that a card has
+been _removed_, you deregister it and, er, complain at me that there's no
+reference count on it so you can't know if you can just free the structures
+associated with it. Let's deal with that one a little later :)
 
-[2] I had to supply my own nand_cmd() via "this->cmdfunc" because I don't 
-    have direct control of the ALE/CLE/NCE lines, and I don't know
-    precisely how to control those lines through the controller chip.
-    Also, I found that I needed to insert a 1ms delay (udelay(1000))
-    after resetting the Flash memory chip; otherwise subsequent operations
-    (e.g. reading the Flash chip ID) didn't seem to work.  Could this be
-    because the other NAND drivers are for embedded systems with 
-    presumably slower processors than my 850MHz PIII laptop?  Is a 
-    1ms delay out of spec for NAND Flash?  I'd like to avoid large
-    delays and I'd like to use the existing nand_cmd() in nand.c as much
-    as possible (to prevent maintenance headaches down the road).
 
-[3] One of the things I'd like to do is to be able to read photos
-    taken on my digital camera, which uses SmartMedia and a FAT12-like
-    filesystem like many other cameras & MP3 players.  However, I'd
-    like to avoid writing a FAT12 Translation Layer for MTD, if possible.
-    Currently, the SmartMedia image isn't recognized as any FAT filesystem:
+> [2] I had to supply my own nand_cmd() via "this->cmdfunc" because I don't 
+>     have direct control of the ALE/CLE/NCE lines, and I don't know
+>     precisely how to control those lines through the controller chip.
+>     Also, I found that I needed to insert a 1ms delay (udelay(1000))
+>     after resetting the Flash memory chip; otherwise subsequent operations
+>     (e.g. reading the Flash chip ID) didn't seem to work. 
 
-    # dd if=/dev/mtd0 of=8MB
-    # mount -o loop -t msdos 8MB /mnt/tmp
-    mount: wrong fs type, bad option, bad superblock on /dev/loop0,
-       or too many mounted file systems
+Thomas?
 
-    # fdisk /dev/mtdblock0
-    Device contains neither a valid DOS partition table, ...
 
-    Indeed the SmartMedia image (the "8MB" file) looks very different
-    from a FAT12 filesystem created by "mkdosfs -F 12".
+paul@oz.net said:
+> [3] One of the things I'd like to do is to be able to read photos
+>     taken on my digital camera, which uses SmartMedia and a FAT12-like
+>     filesystem like many other cameras & MP3 players.  However, I'd
+>     like to avoid writing a FAT12 Translation Layer for MTD, if possible.
+>     Currently, the SmartMedia image isn't recognized as any FAT filesystem:
 
-    _BUT_ people have reported success automatically mounting SmartMedia
-    cards using USB SmartMedia readers.  For example, they use the
-    sddr09 USB storage module plus the SCSI emulation layer, and are
-    able to automagically mount SmartMedia cards.  I would like to
-    leverage this existing functionality if possible, but the sddr09.c
-    driver doesn't seem to grok FAT12, so I don't understand where the 
-    "magic" (i.e. translating the strange FAT12 to a FAT or VFAT) is
-    taking place ... the SCSI emulation layer?
+Ignore FAT. SmartMedia implements a block device by having a kind of 
+pseudo-filesystem on the flash, similar in concept to FTL and NFTL. That 
+pseudo-filesystem or translation layer is what needs to be implemented, and 
+I think there's some support for this in the sddr-09 driver, but it needs 
+extracting and persuading to work on a generic NAND-based MTD device.
 
-Any advice and pointers would be greatly appreciated.
-Cheers,
+On top of that block device, you'll find a FAT file system, but I believe 
+you could use any normal file system on top of the emulated block device. 
+Not that your camera would like it much.
 
--- Paul
+More information at 
+	http://www.ssfdc.or.jp/spec/english/index.htm
+	http://samsungelectronics.com/semiconductors/Flash/technical_data/application_notes/application_notes.htm
+
+--
+dwmw2
