@@ -1,19 +1,20 @@
-Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
+Received: from hotwww5.hotwww.com ([161.58.242.233])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6AEw-0004kX-Dl
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 11:28:55 -0500
-Received: from dedekind (helo=localhost)
-	by phoenix.infradead.org with local-esmtp (Exim 4.43 #1 (Red Hat
-	Linux)) id 1D6AEe-0005id-Hg
-	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 16:28:51 +0000
-Date: Tue, 1 Mar 2005 16:28:36 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: MTD List <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.58.0503011627270.19992@phoenix.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Subject: JFFS3 and RAM consumprion reincarnated
+	id 1D6Bql-0005Fx-7a
+	for linux-mtd@lists.infradead.org; Tue, 01 Mar 2005 13:12:04 -0500
+From: Peter Grayson <pgrayson@realmsys.com>
+To: tglx@linutronix.de
+In-Reply-To: <1109645229.3805.11.camel@tglx.tec.linutronix.de>
+References: <1109643247.5043.26.camel@pgrayson1.realmsys.com>
+	<1109645229.3805.11.camel@tglx.tec.linutronix.de>
+Content-Type: text/plain
+Date: Tue, 01 Mar 2005 11:11:51 -0700
+Message-Id: <1109700711.5043.53.camel@pgrayson1.realmsys.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Can you really write a jffs2 image with nandwrite?
+Reply-To: pgrayson@realmsys.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +24,106 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Tue, 2005-03-01 at 03:47 +0100, Thomas Gleixner wrote:
+> On Mon, 2005-02-28 at 19:14 -0700, Peter Grayson wrote:
+> > From reading the mkfs.jffs2 code, it seems that mkfs.jffs2 has no
+> > concept of out-of-bounds data. Consequently, it appears that the
+> > nandwrite expects to find out-of-bounds data immediately after the in-
+> > bounds data for every page. I have looked at the bits of the jffs2 image
+> > produced by mkfs.jffs2 and I can see that it does not really produce out
+> > of bounds data.
+> 
+> nandwrite does not expect oob data for jffs2 images.
 
-I'd like to continue the JFFS3 RAM consumption discussion.
-Please, take a glimpse at 
-http://lists.infradead.org/pipermail/linux-mtd/2005-January/011671.html 
-and follow the conversation 
-athttp://lists.infradead.org/pipermail/linux-mtd/2005-January/011716.html 
-to refresh your memory.
+But it appears nandwrite can accept oob data. It does have the --oob
+option and when this option is set nandwrite reads the oob data from the
+image and does an ioctl() to the mtd character device to write it.
 
-Well, I suppose the reader knows what are Summary and ICP. If no, follow 
-the links above.
+> 
+> > Below is the mkfs.jffs2 command line I am using. I have tried many other
+> > combinations of options, but they do not yield appreciably different
+> > results.
+> > 
+> > mkfs.jffs2
+> >  	--pagesize=2048 \
+> > 	--eraseblock=128 \
+> 			
+> This one if definitely wrong. You meant 128kiB or 131072. 
 
-We've stopped on the design like this: each inode has ICP which is stored 
-on flash. The ICP is being outdated by GC and users. Since it is 
-inefficient to rewrite new inode every time, we won't rewrite it but add 
-node_ref instead. Sometimes we'll flush ICP and free node_refs.
+mkfs.jffs2 interprets "128" as "128KiB", but I should be more explicit.
 
-Example:
-1. We have inode X with 10 nodes (node 1, node 2, ... node 10) and ICP 
-node which describes them. So far so good. On iget() call we read ICP and 
-have the inode built.
+> 	
+> > 	--pad \
+> > 	--output=image.jffs2 \
+> > 	--compression-mode none \
+> 
+> Why do you switch off compression ?
 
-2. Suppose GC has moved node 1 of our inode. Its position has been 
-changed, so the relating ICP entry is obsolete now. In this case JFFS3 
-does not rewrite new ICP. Instesd, it allocates node_ref for node 1 and 
-keeps it in-core.
-Now, on iget() call, we read ICP and the node 1's node_ref and this is 
-sufficient to build our inode.
+I have made images both ways -- in this case I was looking at hex dumps
+of images and sans compression the dumps were a little more human-
+readable. In the end, I do want to use compression.
 
-Anologeously, if another nodes are moved, we just allocate more node_refs.
+> 
+> > 	--no-cleanmarkers \
+> > 	--big-endian \
+> > 	--squash \
+> > 	--verbose \
+> > 	--root=$ROOT_DIR
+> > 
+> > When I try using this image with "nandwrite -j", the image appears to be
+> > written successfully, but when I try to mount the new filesystem, mount
+> > fails with the following error message:
+> > 
+> >   mount: Mounting /dev/mtdblock0 on /mnt failed: Invalid argument
+> 
+> Did you ?
+> mount -t jffs2 /dev/mtdblock0 /mnt
 
-Sometimes, I don't specify when, we might rewrite old obsolete ICP and 
-free node_refs. And so on.
+Yes.
 
-I think it makes sence to introduce JFFS3 parameter that limits the abount 
-of in-core RAM that JFFS3 might consume. Jets call this parameter 
-JFFS3_MAXRAM.
+> 
+> > If I try to use "nandwrite -j -o", nandwrite complains about the image
+> > not being aligned:
+> 
+> JFFS2 has no oob data. nandwrite -j is correct.
+> 
+> > Is there something obvious I am missing? I have read the FAQ at:
+> > 
+> >   http://www.linux-mtd.infradead.org/tech/faq.html
+> 
+> I'm happy that somebody actually read it :)
+> 
+> > so I know that the working theory is that this should work, but it is
+> > not working for me. Has anyone else had a similar experience?
+> 
+> Before using nandwrite please erase the flash with 
+> flash_eraseall -j /dev/mtd0 .
+> 
 
-If JFFS3_MAXRAM = 0, we rewrite new ICP every time when any of its entry 
-is obsoleted.
+This was definitely useful. I am now able to write images with
+nandwrite. Here are the magic steps I am taking:
 
-If JFFS3_MAXRAM is very large, we have JFFS3 = JFFS2 in the memory 
-consumption's respect.
 
-Comments?
+1) mkfs.jffs2 \
+	--eraseblock=128KiB \
+	--pad \
+	--output=image.jffs2 \
+	--compression-mode=priority \
+	--no-cleanmarkers \
+	--big-endian \
+	--squash \
+	--verbose \
+	--root=$ROOT_DIR
+2) flash_eraseall -j /dev/mtd0
+3) nandwrite /dev/mtd0 image.jffs2
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+With mkfs.jffs2, I had some confusion about the pagesize option. I was
+thinking that it corresponded to the NAND pagesize, but that is not
+correct, it sets the jffs2 filesystem page size.
+
+With nandwrite, the -j option causes things to not work. This was a
+great stumbling block for me. It proved to be critical to _not_ use the
+-j (or -o) option with nandwrite. This is in direct conflict with
+instructions in the FAQ.
+
+Thanks for the help, this definitely got me jumpstarted.
