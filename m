@@ -1,29 +1,18 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+Received: from [210.17.210.210] (helo=mail.avantwave.com)
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1Chb9B-0003zB-UZ
-	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 17:09:29 -0500
-Received: from dsl-082-083-229-215.arcor-ip.net
-	([82.83.229.215]:39557 helo=zappa ident=mail)
-	by mail.ku-gbr.de with asmtp (Exim 4.24 #1 (Debian))
-	id 1Chb96-0001mp-Vr
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Dec 2004 23:09:21 +0100
-Received: from [10.10.0.17] (helo=sexmachine.doom)
-	by zappa with esmtp (Exim 3.36 #1 (Debian)) id 1Chb95-00054H-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Dec 2004 23:09:19 +0100
-Received: from konsti by sexmachine.doom with local (Exim 4.43)
-	id 1Chb94-0002LC-2X
-	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 23:09:18 +0100
-Date: Thu, 23 Dec 2004 23:09:18 +0100
-From: Konstantin Kletschke <lists@ku-gbr.de>
+	id 1Cher6-00051V-Su
+	for linux-mtd@lists.infradead.org; Thu, 23 Dec 2004 21:07:02 -0500
+Received: from [172.16.10.215] (chung.avantwave.com [172.16.10.215])
+	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id iBO1xCPU016035
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Dec 2004 09:59:13 +0800
+Message-ID: <41CB7C03.5050003@avantwave.com>
+Date: Fri, 24 Dec 2004 10:16:35 +0800
+From: mike <mikelee@avantwave.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Message-ID: <20041223220917.GC8918@ku-gbr.de>
-References: <20041223145115.GA14940@synertronixx3>
-	<Pine.LNX.4.58.0412231717520.4006@phoenix.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0412231717520.4006@phoenix.infradead.org>
-Subject: Re: actual mtd snapshot and jffs3 questions
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Cramfs crash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,27 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2004-12-23 17:20 +0000 schrieb Artem B. Bityuckiy:
+Dear all
+    I don't know whether i put the right question on the right mailing 
+list. If it is not, please tell me.
 
-> > Indeed I have no CONFIG_JFFS3_FS_NAND nor CONFIG_JFFS3_FS_NOR_ECC but
-> > the code required the members of the struct and compiled fine then.
-> That are bugs introduced by newly added summary patch. Hope Ferenc will 
-> fix (may be after holydays).
+    I have a strange problem on loading a video driver on my ARM9 
+development board. when i finish loading the driver, no error comes out 
+, and i run most of my apps fail, e.g. madplay. The error msg stated 
+that apps can not load e.g. /lib/libm.so and i have checked the kernel 
+msg by dmesg. The result like this
+Error -3 while decompressing!
+c01b59f4(2001)->c0680000(4096)
+Error -3 while decompressing!
+c01b61c5(1910)->c0c03000(4096)
+Error -3 while decompressing!
+c01b693b(2125)->c0fb3000(4096)
+Error -3 while decompressing!
+c01b7188(2126)->c0fb2000(4096)
+Error -3 while decompressing!
+c01b79d6(2052)->c0a63000(4096)
+Error -3 while decompressing!
+c01b81da(1793)->c0a62000(4096)
+Error -3 while decompressing!
+c01b88db(831)->c0f73000(4096)
 
-Ok, he should take the time he needs, I will do other work meanwhile :)
+    My root filesystem is cramfs. I have checked the driver is run on 
+similar development board but with different flash start address. The 
+only cause for that i can imagine is the dma allocation when driver 
+loading. My question is Could DMA allocation cause this type of problem?
 
-> > which is right, no such file :) Forgot cvs add?
-> Seems yes...
+    I am getting into a trouble. Please help! Thanks a lot
 
-I forget this (I use svn) always and realize it when compiler breaks
-with every new created file :)
-
-> Strange. Will see. JFFS3 should mount JFFS2 images perfectly.
-
-eheee! should :) But nice to have this cleared up...
-
-Regards, Konsti
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+Mike,Lee
