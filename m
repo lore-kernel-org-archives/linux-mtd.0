@@ -1,18 +1,20 @@
-Received: from anchor-post-32.mail.demon.net ([194.217.242.90])
+Received: from host-212-158-219-180.bulldogdsl.com ([212.158.219.180]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1Bp6nP-00056X-DY
-	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 10:49:44 -0400
-From: Andy Hawkins <a.hawkins@cabletime.com>
-To: D.A.Fedorov@inp.nsk.su
-In-Reply-To: <Pine.SGI.4.10.10407262126150.569820-100000@Sky.inp.nsk.su>
-References: <Pine.SGI.4.10.10407262126150.569820-100000@Sky.inp.nsk.su>
-Content-Type: text/plain
-Message-Id: <1090853366.2220.11.camel@adh>
+	id 1Bp6u8-0005HE-2h
+	for linux-mtd@lists.infradead.org; Mon, 26 Jul 2004 10:56:41 -0400
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1Bp6u7-0002L6-00
+	for <linux-mtd@lists.infradead.org>; Mon, 26 Jul 2004 15:56:39 +0100
+Date: Mon, 26 Jul 2004 15:56:39 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20040726145639.GE7414@home.fluff.org>
 Mime-Version: 1.0
-Date: 26 Jul 2004 15:49:26 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem writing to NOR flash
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org>
+Subject: Suspend on 2.6.7-rc1 with mtd-snapshot-20040718
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I have a 2.6.7-rc2 kernel (PXA255) with a newish mtd
+snapshot applied, and I have a problem with suspend-to-ram
+with the mtdblockd and ntfld not going to sleep, and causing
+the suspend to fail.
 
-On Mon, 2004-07-26 at 15:35, Dmitry A. Fedorov wrote:
-> > Can I have a copy of these patches then?
-> 
-> Some time later (a few days).
+The kernel outputs the following:
 
-Thanks for that.
+stopping tasks failed (1 tasks remaining)
+Restarting tasks...<6> Strange, mtdblockd not stopped
 
-> 
-> > Have you had any problems writing to NOR?
-> 
-> No, after upgrade from the MTD snapshot.
-> There were problems with erase (ioctl call did not wait of
-> completion of erase operation) and jffs2 did not allowed to
-> write. Now it works properly.
+I guess mtdblockd isn't going to sleep when
+requested, and is therefore causing the power
+management to abort. Is there a fix in the newer
+releases, or do I need to investiage this problem
+further?
 
-Ah, should have been more clear. This is a 'raw' write to the NOR
-device. It appears that it's crashing inside do_xxlock_oneblock in
-cfi_cmdset_0002.c (where it does the 'cfi_write').
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-There's a comment at the top of the code saying that it's very chip
-specific, and hasn't been tested on an interleaved device (which I think
-mine is).
-
-Anyone help?
-
-Thanks.
-
-Andy
+  'a smiley only costs 4 bytes'
