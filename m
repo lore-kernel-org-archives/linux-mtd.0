@@ -1,21 +1,15 @@
-Received: from mail22.messagelabs.com ([62.231.131.211])
+Received: from [208.177.141.226] (helo=ash.lnxi.com)
 	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A4HpV-0006Sn-8M
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 11:34:05 +0100
-Received: from stevejunior (unknown [192.168.200.17])
-	by netstar.stirling-dynamics.com (Postfix) with SMTP id 3D8789803
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 30 Sep 2003 11:30:59 +0100 (BST)
-Message-ID: <003b01c3873e$03131450$11c8a8c0@stevejunior>
-From: "Stephen Brown" <sbrown@stirling-dynamics.com>
-To: <linux-mtd@lists.infradead.org>
-References: <1064826976.29857.116.camel@host35>
-Date: Tue, 30 Sep 2003 11:31:29 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: Re: raw nand on x86 - reference boards
+	id 1A4Lur-00076U-0E
+	for <linux-mtd@lists.infradead.org>; Tue, 30 Sep 2003 15:55:53 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <1064933671.8896.183.camel@tubarao.lnxi.com>
+Mime-Version: 1.0
+Date: 30 Sep 2003 08:54:31 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-RssytKoiA37RXEEAfY94"
+Subject: Updates for cfi_cmdset_0002 and jedec_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,60 +19,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I use the p5e core module by AMPro , it is pc104 SBC and has an 8MB DOC,
-only problem I would say is that they copy EEPROM bios into the boot sector,
-so if your thinking about creating a boot loader might be difficult, the way
-I make it work is by loading from DOS using Loadlin then after talking to
-David managed to get the DOC mounted as a DOS partition , this was fine for
-what I needed it to do, any specs or other information you need let me know,
-if thats what your after of course.
+--=-RssytKoiA37RXEEAfY94
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-nice to see David Woodhouse got a mention in a new book I have recently
-purchased :D,
+I've been dormant for a while.  I'm now making some long needed updates
+to jedet_probe and cfi_cmdset_0002.  I have a list of patches that were
+sent in that I'm going through:
 
-'Building Embedded Linux Systems' by Karim Yaghmour
+Stefano Babic:
+erase/write patch
+http://lists.infradead.org/pipermail/linux-mtd/2003-August/008385.html
 
-kind regards
+Fillod Stephane:
+oops fixup
+http://lists.infradead.org/pipermail/linux-mtd/2003-August/008399.html
+buffered-mode write
+http://lists.infradead.org/pipermail/linux-mtd/2003-August/008426.html
 
-stephen
------ Original Message -----
-From: "Daniel Toussaint" <daniel@dmhome.net>
-To: <linux-mtd@lists.infradead.org>
-Sent: Monday, September 29, 2003 10:16 AM
-Subject: raw nand on x86 - reference boards
+Carolyn Smith:
+sbc8240
 
+I haven't been ignoring anyone - I'm just a bit backlogged.  If anyone
+else has patches then speak up now.
 
-> Hi,
->
-> Does anyone know where I can find an x86 based sbc with nand chips on
-> board(NOT implemented as ide flash disk) OR maybe an ISA/pci add-on card
-> of some sort ? I need it to do a proof of concept , write some drivers
-> and a bootloader (x86 legacy bios extension)  ....
->
-> Thanks,
->
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
-> ________________________________________________________________________
-> This e-mail has been scanned for all viruses by Star Internet. The
-> service is powered by MessageLabs. For more information on a proactive
-> anti-virus service working around the clock, around the globe, visit:
-> http://www.star.net.uk
-> ________________________________________________________________________
->
+Thanks for everyone's patience.
 
+--=20
+Thayne Harbaugh
+Linux Networx
 
-________________________________________________________________________
-This e-mail has been scanned for all viruses by Star Internet. The
-service is powered by MessageLabs. For more information on a proactive
-anti-virus service working around the clock, around the globe, visit:
-http://www.star.net.uk
-________________________________________________________________________
+--=-RssytKoiA37RXEEAfY94
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA/eZknfsBPTKE6HMkRApZGAJ9qeE7tCg4vbEgCovhGIporbTdQ0ACeKQUv
+1gRdhQM2ocUpcUQXRojo/UU=
+=cxT7
+-----END PGP SIGNATURE-----
+
+--=-RssytKoiA37RXEEAfY94--
