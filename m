@@ -1,15 +1,15 @@
 Received: from [61.136.62.74] (helo=eyou.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KV9c-0005bF-00
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 03:25:04 +0100
-Date: 19 Jun 2002 10:24:58 +0800
-Message-ID: <20020619102458.63366.qmail@eyou.com>
+	id 17KVA4-0005bK-00
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Jun 2002 03:25:32 +0100
+Date: 19 Jun 2002 10:25:27 +0800
+Message-ID: <20020619102527.64195.qmail@eyou.com>
 From: "Áº²¨" <nielsen@eyou.com>
 To: david@forcedpotato.com
 CC: linux-mtd@lists.infradead.org
 Reply-To: "Áº²¨" <nielsen@eyou.com>
+Subject: boot from jffs
 Content-Type: text/plain
-Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
