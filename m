@@ -1,20 +1,19 @@
-Received: from outbound-mail.lax.untd.com ([64.136.28.164])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1CwQWd-00043L-DM
-	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2005 14:50:56 -0500
-Received: from outbound29-sr.lax.untd.com (webmail03.lax.untd.com
-	[10.131.27.143])
-	by smtpout06.lax.untd.com with SMTP id AABBACM2PAKLX5UA
-	for <linux-mtd@lists.infradead.org> (sender <pevnev@juno.com>);
-	Wed,  2 Feb 2005 11:50:37 -0800 (PST)
-Mime-Version: 1.0
-From: "Alex" <pevnev@juno.com>
-Date: Wed, 2 Feb 2005 19:49:54 GMT
-To: tglx@linutronix.de
-Content-Type: text/plain
-Message-Id: <20050202.115006.19684.4589@webmail03.lax.untd.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: CONFIG_MTD_PHYSMAP_START
+Received: from mxfep02.bredband.com ([195.54.107.73])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CwSI1-0004oB-EU
+	for linux-mtd@lists.infradead.org; Wed, 02 Feb 2005 16:43:58 -0500
+Message-ID: <01c401c50970$3ed65c30$4c7370d5@Glamdring>
+From: "Ulf Samuelsson" <ulf@atmel.com>
+To: "Creech, Matthew" <MattCreech@eaton.com>, <linux-mtd@lists.infradead.org>,
+	<jffs-dev@axis.com>, <linux-arm-kernel@lists.arm.linux.org.uk>
+References: <F0A064EBC8C91C449244D108367426DC01E4AFEF@ra1ncsmb01.nasa.ad.etn.com>
+Date: Wed, 2 Feb 2005 22:32:27 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: Re: JFFS2 on dataflash problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> I have an embedded device based on Atmel's AT91RM9200DK board, which is
+> using serial dataflash (AT45DB642).  I've allocated a JFFS2 partition to
+> store non-volatile data.  In testing I stumbled across a particular
+> problem that only occurs after heavy hammering on our device, but is
+> fairly consistent in how and when it occurs.  The pattern has been
+> narrowed down so that a script doing something like this:
 
-Also (in addition to my previous post, where I am questioning the correctness of the output, stating that address belongs to RAM while it clearly does not !), Thomas wrote:
+> while [ 1 ]; do
+>   cp /mnt/jffs2/$RANDOM_FILE /mnt/jffs2/$BLAH
+>   # File size has been tested between 8K and 64K
+> done
 
->> The initial boot provides the following:
->> Memory map:
->> /* Chip Select FLASH Normal */
->> #define BR0_VAL 0x04000801 /* Offset=0x04000000 PS=16 GPCM Valid=1 */
->> #define OR0_VAL     0xFFC00160  /* OK */
+If I wrote this script I would call it:
 
->The value you are using is the value, which is programmed into the BR0
->register of the CPU. 
->BRx = Bank Register for chipselect x
->ORx = Option Register for chipselect x
->The values in those registers define the start address, buswitdh, size,
->timings for the chipselects. So using those values is definitely not a
->good idea. Of course you can decode the values in the registers to get
->your real address values. 
+wear_out_dataflash_quickly.sh
 
-- it looks that I am in the "chicken" and the "egg" problem ...
-According to Thomas (see above), I can not rely on the flash phys start address, given to me "verbotum" - so I can not set the value in .config 
-for CONFIG_MTD_PHYSMAP_START ... 
-Thomas - in what software you advise me to "decode the values in the registers to get real address values" ? 
+There are some limitations to the number of erase cycles in the dataflash.
+(IN any flash to be correct)
+You can expect to reprogram it 50,000-100.000 times before the first errors
+occur.
+The second thing is that you need to do a block erase after the sum
+of erases inside an 8 page block exceeds 10,000.
 
-Thanks,
+I am not at all sure that the MTD drivers/JFFS2 handle this (did not look at
+the code).
+I assume that JFFS may be able to detect a bad write and map
+the block out from time to time, so this could explain why you can do the
+recover.
+
+If you really want to test the dataflash, write a CRC in the extra bytes
+available.
+(The page is 1024 + 32 bytes) and read back, checking CRC.
+
 Best Regards,
-Alex
-
-
-___________________________________________________________________
-Speed up your surfing with Juno SpeedBand.
-Now includes pop-up blocker!
-Only $14.95/month -visit http://www.juno.com/surf to sign up today!
+Ulf Samuelsson
+ulf@a-t-m-e-l.com
