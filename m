@@ -1,58 +1,37 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12poSu-0007im-00
-	for mtd-list@infradead.org; Thu, 11 May 2000 09:37:04 +0100
-Received: from gate.mvhi.com
-	([194.205.184.34] helo=server.axiom.internal ident=mail)
-	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12poSt-0007ig-00
-	for mtd@infradead.org; Thu, 11 May 2000 09:37:03 +0100
+	id 12pp7F-0007nD-00
+	for mtd-list@infradead.org; Thu, 11 May 2000 10:18:45 +0100
+Received: from dwmw2 by infradead.org with local (Exim 3.03 #1)
+	id 12pp7E-0007n7-00
+	for cvs-notify@infradead.org; Thu, 11 May 2000 10:18:44 +0100
+To: cvs-notify@infradead.org
+Subject: MTD CVS update: 'mtd/patches grub-diskonchip.patch'
+Message-Id: <E12pp7E-0007n7-00@infradead.org>
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <Pine.LNX.4.21.0005101335290.1556-100000@phiggins.transzap.com> 
-References: <Pine.LNX.4.21.0005101335290.1556-100000@phiggins.transzap.com> 
-To: Patrick Higgins <phiggins@transzap.com>
-Cc: mtd@infradead.org
-Subject: Re: Initrd? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 11 May 2000 09:42:36 +0100
-Message-ID: <28657.958034556@devel2.axiom.internal>
+Date: Thu, 11 May 2000 10:18:44 +0100
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+Update of /home/cvs/mtd/patches
+In directory infradead.org:/tmp/cvs-serv29922
 
-phiggins@transzap.com said:
-> Has anyone tried to get the M-Systems driver to work with initrd,
-> enabling a Disk on Chip to be the root device without (illegally)
-> statically linking the driver? 
+Added Files:
+	grub-diskonchip.patch 
+Log Message:
+Add a first version of a patch against CVS grub which teaches it about the
+DiskOnChip. So far, this only drives the hardware, and scans it for an
+NFTL Media Header. It should be fairly simple to add real NFTL translation
+to it, so that it can find and boot a kernel off the filesystem on the
+device. It shouldn't even require access to the NFTL documentation - the
+code already in kernel/nftl.c ought to be enough.
 
-A reasonable short term solution, but in smaller embedded devices, the 
-extra code & data required for the ramdisk and initrd support are quite a 
-significant overhead which it would be nice to render unnecessary.
+I'll schedule myself to do that between about 3am and 6am tomorrow
+morning; or maybe I'll wait and see if anyone else cares enough to have a
+go.
 
-phiggins@transzap.com said:
->  Would the bootloader require special knowledge of Disk on Chip to do
-> this?
-
-Not if you still have the M-Systems' firmware in the DiskOnChip, which 
-emulates the BIOS disk calls. Which you probably do.
-
-phiggins@transzap.com said:
->  I would like to use the free drivers that you are developing, but I'm
-> afraid they won't be completed in time for my needs.  Any suggestions?
-
-Help with the code and/or testing? :) I'm doing my best to arrange matters
-so that I get to spend 100% of my time on MTD, but it's taking me a while to
-manage that - for some reason, the CEO wants me to spend time on things 
-which are immediately relevant to company business :)
-
-
-
-
-
---
-dwmw2
-
+This is sort of orthogonal to the MTD drivers - you could boot a system
+with M-Systems' drivers using a DiskOnChip-capable grub too.
 
 
 
