@@ -1,39 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13nlSp-0002rm-00
-	for mtd-list@infradead.org; Mon, 23 Oct 2000 18:32:47 +0100
-Received: from cvsftp.cotw.com ([208.242.241.39] ident=root)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13nlSo-0002rg-00
-	for mtd@infradead.org; Mon, 23 Oct 2000 18:32:46 +0100
-Message-ID: <39F478A4.FB6EE843@cotw.com>
-Date: Mon, 23 Oct 2000 12:43:00 -0500
-From: "Steven J. Hill" <sjhill@cotw.com>
+	id 13nx0r-0006KA-00
+	for mtd-list@infradead.org; Tue, 24 Oct 2000 06:52:41 +0100
+Received: from pop3.web.de ([212.227.116.81] helo=smtp.web.de)
+	by infradead.org with smtp (Exim 3.16 #2)
+	id 13nx0p-0006K4-00
+	for mtd@infradead.org; Tue, 24 Oct 2000 06:52:39 +0100
+Message-ID: <000201c03d7d$8ca36a20$877eadc2@telos.de>
+From: "Markus Thiesmeyer" <markus_thiesmeyer@web.de>
+To: <mtd@infradead.org>
+Subject: Problems with concurrent access
+Date: Mon, 23 Oct 2000 17:51:29 +0200
 MIME-Version: 1.0
-To: MTD List <mtd@infradead.org>, JFFS List <jffs-dev@axis.com>
-Subject: JFFS now working on NAND flash...
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Greetings.
+Hello,
 
-I though I would let everyone know that JFFS is working on NAND
-flash devices in read-only mode. All changes have been checked
-into the main MTD CVS repository. Use the 'nandwrite' utility
-in the 'util' directory to raw write your JFFS image to the
-flash and then just do a:
+I'm using the mtd driver to access cfi-compliant intel flash devices on an
+embedded system with an amd sc400 processor.
 
-     mount -tjffs -oro /dev/mtdblock0 /mnt
+I've provided a mapping that is similar to the octagon-5066.c
+implementation. Now I'm facing problems when two processes concurently try
+to access the devices.
 
--Steve
+Do the cfi-implementations support concurrent accesses?
 
--- 
- Steven J. Hill - Embedded SW Engineer
- Public Key: 'finger sjhill@mail.cotw.com'
- FPR1: E124 6E1C AF8E 7802 A815
- FPR2: 7D72 829C 3386 4C4A E17D
+
+Best Regards
+
+Markus Thiesmeyer
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
