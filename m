@@ -1,21 +1,27 @@
-Received: from smartmx-02.inode.at ([213.229.60.34])
+Received: from tim.rpsys.net ([194.106.48.114])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CSeSJ-0002tc-Mm
-	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 11:39:25 -0500
-From: Erwin Authried <eauth@softsys.co.at>
-To: Alexander Hoffmann <ahoffmann@sysgo.de>
-In-Reply-To: <4194E233.70902@sysgo.de>
-References: <418F5E68.3010200@sysgo.de>
-	<20041108120624.GE13105@home.fluff.org>  <418F6CA7.6000808@sysgo.de>
-	<1099943453.10812.16.camel@tubarao>  <4194D39A.9000700@sysgo.de>
-	<1100274921.3549.13.camel@justakiss>  <4194E233.70902@sysgo.de>
-Content-Type: text/plain
-Message-Id: <1100277677.3549.22.camel@justakiss>
-Mime-Version: 1.0
-Date: Fri, 12 Nov 2004 17:41:17 +0100
+	id 1CSfO6-0003F2-6P
+	for linux-mtd@lists.infradead.org; Fri, 12 Nov 2004 12:39:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by tim.rpsys.net (8.12.10/8.12.10) with ESMTP id iACHd2eg009581
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2004 17:39:02 GMT
+Received: from tim.rpsys.net ([127.0.0.1])
+	by localhost (tim [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+	id 09545-01 for <linux-mtd@lists.infradead.org>;
+	Fri, 12 Nov 2004 17:39:01 +0000 (GMT)
+Received: from max (max.rpnet.com [192.168.1.15]) (authenticated bits=0)
+	by tim.rpsys.net (8.12.10/8.12.10) with ESMTP id iACHd0lY009569
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Nov 2004 17:39:01 GMT
+Message-ID: <010b01c4c8de$82cc2b90$0f01a8c0@max>
+From: "Richard Purdie" <rpurdie@rpsys.net>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 12 Nov 2004 17:38:54 -0000
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, tharbaugh@lnxi.com
-Subject: Re: Usage of MTD_UADDR_UNNECESSARY broken?
+Subject: Sharp SL Series NAND Driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,121 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Fre, den 12.11.2004 schrieb Alexander Hoffmann um 17:17:
-> Erwin Authried wrote:
-> 
-> >Am Fre, den 12.11.2004 schrieb Alexander Hoffmann um 16:15:
-> >  
-> >
-> >>Hi Thayne,
-> >>
-> >>sorry for the delayed response.
-> >>
-> >>Thayne Harbaugh wrote:
-> >>
-> >>    
-> >>
-> >>>On Mon, 2004-11-08 at 13:55 +0100, Alexander Hoffmann wrote:
-> >>> 
-> >>>
-> >>>      
-> >>>
-> >>>>Ben Dooks wrote:
-> >>>>
-> >>>>   
-> >>>>
-> >>>>        
-> >>>>
-> >>>>>On Mon, Nov 08, 2004 at 12:54:16PM +0100, Alexander Hoffmann wrote:
-> >>>>>     
-> >>>>>
-> >>>>>          
-> >>>>>
-> >>>>>>Hi everyone,
-> >>>>>>
-> >>>>>>can anybody please explain me the exact difference between 
-> >>>>>>MTD_UADDR_DONT_CARE and MTD_UADDR_UNNECESSARY .
-> >>>>>>Because if I use MTD_UADDR_UNNECESSARY an not existing field in the 
-> >>>>>>unlock_addrs array is beeing referenced
-> >>>>>>(/drivers/mtd/chips/jedec_probe.c, function cfi_jedec_setup, line 1740):
-> >>>>>>
-> >>>>>>/* Mask out address bits which are smaller than the device type */
-> >>>>>>mask = ~(p_cfi->device_type-1);
-> >>>>>>p_cfi->addr_unlock1 = unlock_addrs[uaddr].addr1 & mask;
-> >>>>>>p_cfi->addr_unlock2 = unlock_addrs[uaddr].addr2 & mask;
-> >>>>>>       
-> >>>>>>
-> >>>>>>            
-> >>>>>>
-> >>>>>hmm, thought this masking had been eliminated in later copies of
-> >>>>>the mtd code?
-> >>>>>     
-> >>>>>
-> >>>>>          
-> >>>>>
-> >>>Yes, the masking has been eliminated, but someone left the comment in
-> >>>(doh!).
-> >>>
-> >>> 
-> >>>
-> >>>      
-> >>>
-> >>>>Ok, you are right. But this doesn't change the fact that
-> >>>>
-> >>>>unlock_addrs[uaddr].addr1
-> >>>>
-> >>>>refers to an nonexisting field in the unlock_addrs array.
-> >>>>   
-> >>>>
-> >>>>        
-> >>>>
-> >>>I don't see how the code you that you described is being reached.  It
-> >>>looks like the start of jedec_probe_chip() checks for UNNECESSARY and
-> >>>returns 0 (although I would expect 1) and so cfi_jedec_setup() should
-> >>>never be called with UNNECESSARY (even for subsequent chips).
-> >>>
-> >>>      
-> >>>
-> >>I am working with the cdb89712 development board from cirrus. This board 
-> >>has an "Intel 28F320B3B" chip
-> >>(device_id  =  0x8897). Apparently, jedec_probe() finds 
-> >>MTD_UADDR_0x0555_0x02AA.
-> >>for this chip, while the jedec_table[] specifies it as 
-> >>MTD_UADDR_UNNECESSARY.
-> >>Since the probed unlock type is overidden by the static one, the code 
-> >>_does_ reach
-> >>jedec_setup().
-> >>
-> >>What I haven't really understood is this: if the code refuses chips of  
-> >>type UNNECESSARY
-> >>(the return code 0 from jedec_probe() is an error), then why are so many 
-> >>chips declared
-> >>as UNECESSARY in jedec_table[]?
-> >>    
-> >>
-> >
-> >MTD_UADDR_UNNECESSARY is used to specify that the chip does not need any
-> >unlock sequence at all. The "return 0" statement near the  top of
-> >jedec_probe_chip is executed if all possible unlock sequences have been
-> >tried without finding a match in jedec table, thus it indicates an
-> >error. It's correct that your chip finds a match with
-> >MTD_UADDR_0x0555_0x02aa, because that's the first try and the chip
-> >doesn't care at all about the unlock sequence. 
-> >  
-> >
-> Does this mean, that the "return 0" statement at the beginning of 
-> jedec_probe_chip() is only reached
-> when my chip isn't lsited in jedec_table[] ?
-> If it is listed , there will always be a match and therefore the 
-> functions cfi_jedec_setup() and finfo_uaddr()
-> will be called !?
-> 
-> Alex.
-> 
+As mentioned on IRC, I've ported the nand driver for the Sharp SL series to
+the current kernel. This first patch adds the driver which supports all the
+Zaurus models that use nand flash. (thanks for the pointers in trimming it
+down! :)
 
-Yes, I think it should work that way. For flash with Intel cmdset,
-MTD_UADDR_UNNECESSARY is always used, because they do not use unlocking
-at all. In contrast, all AMD cmdset flashchips use unlocking.
+http://www.rpsys.net/openzaurus/mtd/rp-mtd-sharpsl.patch
 
-Regards,
-Erwin
+I also have some other patches I'd appreciate your views on. Two of these
+should be straightforward. The third is more for comments.
+
+http://www.rpsys.net/openzaurus/mtd/rp-mtd-sharpsl-map.patch - maps a ROM on
+the device (I think its used to access configuration information?).
+
+http://www.rpsys.net/openzaurus/mtd/rp-jffs2-longfilename.patch - if you try
+and create filenames longer than 255 characters, the fs gets corrupted. This
+adds a couple of checks to prevent it.
+
+http://www.rpsys.net/openzaurus/mtd/rp-mtd-sharpsl-extra.patch - This is for
+comments. The sharp driver uses a smaller eraseblock than the current mtd
+code supports so I have to disable a check to get the code to work properly.
+I think this is due to a limitation on kmalloc? The code gets around this by
+using dma_alloc_coherent. Is there a way I can do this in an acceptable
+manner? (I'm assuming the above patch isn't acceptable?)
+
+(NB: The filesystem is written out by an older driver we can't change so we
+have to remain compatible with it - changing eraseblock size therefore isn't
+an option).
+
+Thanks,
+
+Richard
