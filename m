@@ -1,42 +1,37 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14cjBb-0008HR-00
-	for mtd-list@infradead.org; Tue, 13 Mar 2001 07:25:39 +0000
-Received: from roma.axis.se ([193.13.178.2])
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14cjBZ-0008HL-00
-	for mtd@infradead.org; Tue, 13 Mar 2001 07:25:37 +0000
-Message-ID: <E6FE4E054F02D511818E00025558B61D429E89@cluster01.axis.se>
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: "'Kevin Jacobs'" <jacobs@penguin.theopalgroup.com>
-Cc: mtd@infradead.org
-Subject: RE: Oh, the many joys of MTD...
-Date: Tue, 13 Mar 2001 08:24:52 +0100
+	id 14cjmN-0008KV-00
+	for mtd-list@infradead.org; Tue, 13 Mar 2001 08:03:39 +0000
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=root)
+	by infradead.org with esmtp (TLSv1:DES-CBC3-SHA:168)
+	(Exim 3.20 #2)
+	id 14cjmM-0008KP-00
+	for mtd@infradead.org; Tue, 13 Mar 2001 08:03:39 +0000
+Date: Tue, 13 Mar 2001 08:03:33 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?iso-8859-1?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
+cc: <mtd@infradead.org>
+Subject: Re: erase.c
+In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E3108AFC2@kolkrabbi.flaga.is>
+Message-ID: <Pine.LNX.4.30.0103130802440.6091-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: TEXT/PLAIN; charset=UTF8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> On Thu, 8 Mar 2001, Nicolas Pitre wrote:
-> > > My first questions is likely something fairly basic.  
-> I've read over much of
-> > > the MTD source and it seems that many of the erase and 
-> write functions do
-> > > not deal with concurrent access and CPU cache issues.  
-> What happens when a
-> > > {read,write,erase} request comes in for a sector that is being
-> > > {written,erased}?
-> > 
-> > Those are exclusively protected by state machines and 
-> locks.  For example,
-> > see the usage of chip->state in cfi_cmdset_0001.c.
-> 
-> Only cfi_cmdset_* does this.  jedec, amd_flash, etc. do not.
+On Mon, 12 Mar 2001, [iso-8859-1] K=E1ri Dav=ED=F0sson wrote:
 
-amd_flash: I think it does (or have you found a bug?).
+> Maybe it is ambigous to do force unlocking of sectors like this.
+> Should we maybe have a separate utility to lock/unlock sectors?
 
-/Jonas
+Use a separate utility. Locking isn't very useful if the code
+automatically unlocks the chip for you if you try to overwrite it :)
+
+--=20
+dwmw2
+
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
