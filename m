@@ -1,19 +1,23 @@
 Received: from 208.177.141.226.ptr.us.xo.net ([208.177.141.226]
 	helo=ash.lnxi.com)
 	by canuck.infradead.org with smtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1C7eJw-0004Yp-FR
-	for linux-mtd@lists.infradead.org; Wed, 15 Sep 2004 14:15:57 -0400
-To: Pantelis Antoniou <panto@intracom.gr>
-References: <41457E01.6060507@intracom.gr>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: 15 Sep 2004 12:15:51 -0600
-In-Reply-To: <41457E01.6060507@intracom.gr>
-Message-ID: <m3pt4n8kko.fsf@maxwell.lnxi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: "Eric W. Biederman" <eric@lnxi.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: MTD lock support for AMD_STD flash.
+	id 1C7jaN-0005CT-BP
+	for linux-mtd@lists.infradead.org; Wed, 15 Sep 2004 19:53:16 -0400
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1095194840.9144.273.camel@imladris.demon.co.uk>
+References: <MKELJOLMMOHJCMIPKLJKCEMOCAAA.j.karrer@lightmaze.com>
+	<1095190893.5442.35.camel@tubarao>
+	<1095194840.9144.273.camel@imladris.demon.co.uk>
+Content-Type: text/plain
+Date: Wed, 15 Sep 2004 17:34:19 -0600
+Message-Id: <1095291259.19900.44.camel@tubarao>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: steven.scholz@imc-berlin.de, Jochen Karrer <j.karrer@lightmaze.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: Bug in cfi_cmdset_0002.c in linux-2.6.8.1
+Reply-To: tharbaugh@lnxi.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pantelis Antoniou <panto@intracom.gr> writes:
+On Tue, 2004-09-14 at 21:47 +0100, David Woodhouse wrote:
+> On Tue, 2004-09-14 at 13:41 -0600, Thayne Harbaugh wrote:
+> > Anyone else that cares should comment now or I'll commit it so that it
+> > doesn't get forgotten.
+> 
+> Looks good -- best to commit it. Are there other places where we need
+> the same fix?
 
-> Hi there
-> 
-> While trying to get MTD in 2.6 working in my board I stubbled on
-> this.
-> 
-> The lock/unlock logic does not seem to work for AMD STD jedec flashes.
+I looked and didn't see any other places (other than right before in the
+same function - I changed that for consistency).
 
-Right.  We got away with this for a while because the on devices
-without lock/unlock methods people usually don't call them.
- 
-> This happens when trying to lock a block for MX29LV040C, and I think
-> will happen with all AMD STD flashes.
-> 
-> The thing is that these chips don't have support for locking, but I can't
-> find a way to declare it in the command set.
-> 
-> So the way to avoid this I set the lock & unlock methods in my map file.
-> 
-> This is a gross hack however and I'm wondering if there's an easier way...
+Anyone that cares, please test what's in CVS!
 
-Yes.  It should already be committed into MTD cvs.  Please check it out.
-With a little luck I will start pushing these changes to 2.6 in the next
-day or so.
-
-Eric
+BTW, Eric Biederman is going to push this and other patches to the
+kernel.  Better check everything before it's too late!
