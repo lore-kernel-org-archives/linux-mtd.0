@@ -1,41 +1,47 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143ECl-0007fG-00
-	for mtd-list@infradead.org; Tue, 05 Dec 2000 09:16:07 +0000
-Received: from cerebus-ext.cygnus.co.uk ([194.130.39.252] helo=passion.cygnus)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 143ECk-0007fA-00
-	for mtd@infradead.org; Tue, 05 Dec 2000 09:16:06 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <200012050154.LAA16910@singularity.tronunltd.com> 
-References: <200012050154.LAA16910@singularity.tronunltd.com> 
-To: "Ian" <Relativity@HumanHeuristic.com>
-Cc: ollie@sis.com.tw, mtd@infradead.org, linuxbios@lanl.gov
-Subject: Re: Problems with r/w on mtdblock0 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Tue, 05 Dec 2000 09:15:44 +0000
-Message-ID: <7809.976007744@redhat.com>
+	id 143JJR-00006R-00
+	for mtd-list@infradead.org; Tue, 05 Dec 2000 14:43:21 +0000
+Date: Tue, 5 Dec 2000 09:43:13 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: <mark.langsdorf@amd.com>, <mtd@infradead.org>
+Subject: Re: Odd behavior of JFFS with AMD chips - kernel panic! 
+In-Reply-To: <5734.976006984@redhat.com>
+Message-ID: <Pine.LNX.4.30.0012050937380.2601-100000@xanadu.gn.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-Relativity@HumanHeuristic.com said:
-> I am a scumbag.  I have just re-run it up as modules and redone my
-> test, and the data *is*  sticking .. and *is* surviving reboots.  I
-> have no idea how it failed my previous test  (considering I'm using
-> the same test scripts and configs).
 
-The way I normally program stuff into the DiskOnChip is with the 
-'doc_loadbios' program - which uses the character device, does MEMERASE 
-ioctls to make room for the image you tell it to load, then writes the 
-image.
+On Tue, 5 Dec 2000, David Woodhouse wrote:
+
+>
+> nico@cam.org said:
+> >  David --> This is really really misleading and non-intuitive.  Is
+> > there a good reason to have a separate device node only for read-only
+> > access?
+>
+> No good reason. I inherited the device nodes from a previous driver - as
+> they're already been registered, it made sense at the time to use them as
+> they were.
+
+Well... At the time of my original inquiry my device nodes were as follows:
+crw-rw-r--   1 root     root      90,   0 Dec  1 17:21 /dev/mtd0
+crw-rw-r--   1 root     root      90,   1 Dec  1 17:21 /dev/mtd1
+crw-rw-r--   1 root     root      90,   2 Dec  1 17:21 /dev/mtd2
+crw-rw-r--   1 root     root      90,   3 Dec  1 17:21 /dev/mtd3
+crw-rw-r--   1 root     root      90,   4 Dec  1 17:21 /dev/mtd4
+crw-rw-r--   1 root     root      90,   5 Dec  1 17:21 /dev/mtd5
+
+Now having discovered mtd/util/MAKEDEV things aren't as bad as before.
+
+;-)
 
 
-
---
-dwmw2
-
+Nicolas
 
 
 
