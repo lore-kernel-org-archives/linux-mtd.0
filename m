@@ -1,16 +1,19 @@
-Received: from outbound0.sv.meer.net ([205.217.152.13])
+Received: from mx1.mail.ru ([194.67.23.121])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CG0ts-00028W-Ef
-	for linux-mtd@lists.infradead.org; Fri, 08 Oct 2004 15:59:38 -0400
-Message-ID: <019301c4ad6e$33e3c730$0400a8c0@mark>
-From: "Mark Hamilton" <mhamilton@alliantnetworks.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 8 Oct 2004 12:37:07 -0700
+	id 1CGHBO-0004dZ-GN
+	for linux-mtd@lists.infradead.org; Sat, 09 Oct 2004 09:23:18 -0400
+Message-ID: <4167E618.6030503@mail.ru>
+Date: Sat, 09 Oct 2004 17:22:32 +0400
+From: "Artem B. Bityuckiy" <dedekind@mail.ru>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0190_01C4AD33.862BA0C0"
-Cc: 
-Subject: GC patch for eCos port
+To: David Woodhouse <dwmw2@infradead.org>
+References: <416122A1.4060302@oktetlabs.ru>		<1096885344.30942.559.camel@hades.cambridge.redhat.com>		<416127B7.3070505@yandex.ru>		<1096893242.22034.5.camel@weaponx.rchland.ibm.com>		<41614B2F.8060901@yandex.ru>		<1096895892.30942.614.camel@hades.cambridge.redhat.com>		<41615BA7.60801@yandex.ru>		<1096899817.30942.618.camel@hades.cambridge.redhat.com>		<4162AABC.9060809@yandex.ru>		<1096994744.30942.905.camel@hades.cambridge.redhat.com>	<1096996838.24013.3.camel@weaponx.rchland.ibm.com>
+	<4167CF42.3030506@yandex.ru>
+In-Reply-To: <4167CF42.3030506@yandex.ru>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: inode checkpoints
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,98 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Artem B. Bityuckiy wrote:
+> Hello Guys.
+> 
+> Unfortunately, I hit on very painful trouble while trying to 
+> design/implement checkpoints (ICP) ...
+> 
+> Obviously, ICP must contain all information, which is required to build 
+> the inode cache. These are: offset, size and *version*. The problem is 
+> in version.
+> 
+> At first I thought that in order to create ICP for some regfile inode, 
+> we just need to be sure that the inode cache for this regfile exists. 
+> But! I've overseen the fact that *there is no versions in the inode 
+> cache* :-(
+> 
+> The inode cache (struct jffs2_inode_info) contains fragtree which has 
+> struct jffs2_full_dnode objects. But these objects have no version field...
+> 
+> So, I see two ways out:
+> 
+> 1. Add the version field to the struct jffs2_full_dnode objects.
+> This also means that the struct jffs2_tmp_dnode_info structure won't be 
+> needed anymore.
+> 
+> The advantage of such approach is that the JFFS2 will be more simple 
+> since one data structure will be removed. I like the KISS principle.
+Ok, guys, sorry, I've hurried saying that the struct 
+jffs2_tmp_dnode_info won't be needed... It is needed to construct lists 
+of struct jffs2_full_dnode objects...
 
-------=_NextPart_000_0190_01C4AD33.862BA0C0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Anyway, my problem is still actual.
 
-There looks to be a bug with the eCos port on how garbage collection is
-done. I sent a notice about this bug before but I didn't get a resolution.
-Another fellow came across the same bug and verified my fix. The bug seems
-specific to eCos because of how jffs2_gc_fetch_page was ported but the
-proposed fix is applied to gc.c. Since the gc.c is a JFFS2 core file, I
-guess this is the appropriate mailing list for posting the patch. The patch
-is attached.
+> 
+> The drawback is that the inode cache will eat more memory. But this 
+> isn't in-core object, just cache, so I don't think this is a big 
+> disadvantage.
+> 
+> 2. Don't use the inode cache at all. This is bad because in order to 
+> build the inode cache we'll need to read *all* the node headers, even if 
+> there is existing inode cache.
+> 
+> I believe this approach is bad and too heavyweight. Moreover, just 
+> imagine the situation when the GC has fount an ICP ant wants to 
+> determine if it valid or obsolete. Obsolete means that (1) there is 
+> newer ICP with higher version (simple case) or (2) all (or most) the 
+> nodes which are described by the ICP aren't valid anymore (complicated 
+> case). The second case means that we must read the ICPs lowest_version 
+> and highest_version and count how many valid nodes with versions within 
+> this interval exist. But we have NO versions even if the inode cache is 
+> present. I don't think it is a good idea if the GC will head all the 
+> node's headers...
+> 
+> What do you guys think? Any advices/ideas?
+> 
+> Thanks.
+> 
 
-Here is the problem.
-ffs2_gc_fetch_page reads 4K of data into a static buffer. The static buffer
-is hidden in the jffs2_gc_fetch_page function. The problem is when the
-writebuf pointer is calculated. The offset is used again to reference into
-the pg_ptr. You can image when start is equal to 4K that writebuf will
-extend beyond the end of the pg_ptr valid memory. Offset is set to start
-just before the while loop.
-
-I made a comment below with what I think the fix should be.
-Am I missing something?
-
-            pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
-            if (IS_ERR(pg_ptr)) {
-                printk(KERN_WARNING "read_cache_page() returned error:
-%ld\n",
-                PTR_ERR(pg_ptr));
-                return PTR_ERR(pg_ptr);
-            }
-            offset = start;
-            while(offset < orig_end) {
-                        uint32_t datalen;
-                        uint32_t cdatalen;
-                        char comprtype = JFFS2_COMPR_NONE;
-                        ret = jffs2_reserve_space_gc(c, sizeof(ri) +
-JFFS2_MIN_DATA_LEN, &phys_ofs, &alloclen);
-                        if (ret) {
-                            printk(KERN_WARNING "jffs2_reserve_space_gc of
-%zd bytes for
-                                       garbage_collect_dnode failed: %d\n",
-                                         sizeof(ri)+ JFFS2_MIN_DATA_LEN,
-ret);
-                                    break;
-                        }
-                        cdatalen = min_t(uint32_t, alloclen - sizeof(ri),
-end - offset);
-                        datalen = end - offset;
-                        // This looks to be wrong.
-                        writebuf = pg_ptr + (offset & PAGE_CACHE_SIZE -1));
-                        // I think it should be.
-                        writebuf = pg_ptr + ((offset -start) &
-(PAGE_CACHE_SIZE -1));
-
-The patch uses a define(__ECOS) to fix this problem.
-
-------=_NextPart_000_0190_01C4AD33.862BA0C0
-Content-Type: application/octet-stream;
-	name="gc.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="gc.patch"
-
-Index: gc.c=0A=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A=
-RCS file: /home/cvs/ecos_artisan/packages/fs/jffs2/current/src/gc.c,v=0A=
-retrieving revision 1.5=0A=
-diff -u -F^f -r1.5 gc.c=0A=
---- gc.c	22 Jul 2004 21:35:32 -0000	1.5=0A=
-+++ gc.c	6 Oct 2004 15:09:18 -0000=0A=
-@@ -1188,7 +1188,15 @@=0A=
- 		cdatalen =3D min_t(uint32_t, alloclen - sizeof(ri), end - offset);=0A=
- 		datalen =3D end - offset;=0A=
- =0A=
-+#if defined(__ECOS)=0A=
-+    /* =0A=
-+       For the eCos port, jffs2_gc_fetch_page above reads 4K into a =
-static =0A=
-+       buffer. =0A=
-+    */=0A=
-+		writebuf =3D pg_ptr + ((offset-start) & (PAGE_CACHE_SIZE -1));=0A=
-+#else=0A=
- 		writebuf =3D pg_ptr + (offset & (PAGE_CACHE_SIZE -1));=0A=
-+#endif=0A=
- =0A=
- 		comprtype =3D jffs2_compress(c, f, writebuf, &comprbuf, &datalen, =
-&cdatalen);=0A=
- =0A=
-
-------=_NextPart_000_0190_01C4AD33.862BA0C0--
+-- 
+Best Regards
+Artem B. Bityckiy
