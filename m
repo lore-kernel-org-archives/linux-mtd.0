@@ -1,18 +1,18 @@
-Received: from mail.auriga.ru ([80.240.102.102])
-	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BaBPT-0002jm-1Z
-	for linux-mtd@lists.infradead.org; Tue, 15 Jun 2004 06:43:20 -0400
-Message-ID: <40CED3EB.6090204@auriga.ru>
-Date: Tue, 15 Jun 2004 14:48:11 +0400
-From: Dmitry Konyshev <dmitry.konyshev@auriga.ru>
+Received: from wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BaCwR-00035Z-7S
+	for linux-mtd@lists.infradead.org; Tue, 15 Jun 2004 08:21:28 -0400
+Received: from atc-smtp1.atc.army.mil ([134.194.25.160])
+	by wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2004061508315806837
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Jun 2004 08:31:58 -0400
+Message-ID: <EFF9A3506F74924AB5CC77BDC66E79351812B8@atcml01.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 15 Jun 2004 08:23:09 -0400
 MIME-Version: 1.0
-To: Andriy Korud <a.korud@vector.com.pl>
-References: <80908CC5B2C9DB47AAF8C77892FCB44315F7B2@lion.vector.com.pl>
-In-Reply-To: <80908CC5B2C9DB47AAF8C77892FCB44315F7B2@lion.vector.com.pl>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CLEANMARKER node found at has totlen 0xc != normal 0x0  ?
+Content-Type: text/plain
+Subject: DOC Mil Plus
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andriy Korud wrote:
+I know others have started working on getting drivers for the DOC Mil Plus
+chip integrated into the nand/inftl subsystem.  I was going to try to look
+at the task and see if I could get a understanding on what must be done and
+start some of it.  I have been looking at the doc2001plus code in the
+devices dir.  Should I be moving those functions or creating similar in the
+nand dir?  Should I use diskonchip to init the mtd_info struct so as to use
+the disk on chip calls?  I was wanting to try to get started on this so I
+can put a file system on my development board.  Can the code in the devices
+dir be used directly or does that violated any licensing rules?   
 
->Hi, 
->I'm playing with jffs2 on NAND chips (Samsung 128Mbyte), MTD CVS is week old and kernel is 2.6.5.
->
->I'm making image with 
->./mkfs.jffs2 -b --eraseblock=131072 --pagesize=2048 -p -r /test_root -v -o test_root.img
->
->and then copy it with cp (nandwrite seems to have problems wiht endianess). Everything work fine except on mounting filesystem I have messages:
->
->CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
->CLEANMARKER node found at 0x00020000 has totlen 0xc != normal 0x0
->CLEANMARKER node found at 0x00040000 has totlen 0xc != normal 0x0
->....
->and so on for every block.
->
->  
->
-Cleanmarkers are not needed in jffs2 images that get written on nand, so 
-create such images with --no-cleanmarkers option.
+  One more question, is if the code in doc2001plus complete or is there
+functionality that still needs to be completed?  
 
-wbr, Dmitry
+Thanks
+John
