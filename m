@@ -1,24 +1,30 @@
-Received: from lon-del-03.spheriq.net ([195.46.50.99])
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1D28mQ-000778-Cr
-	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2005 09:06:51 -0500
-Received: from lon-out-03.spheriq.net ([195.46.50.131])
-	by lon-del-03.spheriq.net with ESMTP id j1IE6hmh026840
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2005 14:06:43 GMT
-Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
-	by lon-out-03.spheriq.net with ESMTP id j1IE6gJG024457
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2005 14:06:43 GMT
-Sender: Estelle HAMMACHE <estelle.hammache@st.com>
-Message-ID: <4215F668.F570E28B@st.com>
-Date: Fri, 18 Feb 2005 15:06:32 +0100
-From: Estelle HAMMACHE <estelle.hammache@st.com>
-MIME-Version: 1.0
-To: Joe Barnett <joseph.barnett@gmail.com>
-References: <52249cdc0502171225706e3cf8@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
+	id 1D28nx-0007IF-Jl
+	for linux-mtd@lists.infradead.org; Fri, 18 Feb 2005 09:08:26 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j1IE8OWb000824
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2005 09:08:24 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j1IE8NPn260678
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2005 09:08:23 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j1IE8NkB001881
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Feb 2005 09:08:23 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: Ara Avanesyan <araav@hylink.am>
+In-Reply-To: <005401c515a3$166ef470$1000000a@araavanesyan>
+References: <200502171502.j1HF2OtT044879@forof.hylink.am>
+	<1108657458.19262.671.camel@hades.cambridge.redhat.com>
+	<005401c515a3$166ef470$1000000a@araavanesyan>
+Content-Type: text/plain
+Date: Fri, 18 Feb 2005 08:07:50 -0600
+Message-Id: <1108735670.7821.3.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: symlink corruption in jffs2
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Software Requirement && DiskOnChip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +34,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Notice how even-length names are ok and odd-length names are KO.
-There was a thread about a similar problem, with a suggested
-approach for finding the bug.
-http://lists.infradead.org/pipermail/linux-mtd/2004-May/009735.html
+On Fri, 2005-02-18 at 14:17 +0400, Ara Avanesyan wrote:
+> David,
+> 
+> Thanks. I'll contact M-System for the document.
+> Bah! This somewhat violates my [very basic]
+> understanding of open source community. It's 
+> something like "open source and close source of 
+> source". Couldn't the driver writer (you:)) put the
+> document to the source tree documentation part?
 
-> lrwxrwxrwx  1 root root      11 Feb 17  2005 ld.so.1 -> ld-2.3.2.so?10
-> lrwxrwxrwx  1 root root      24 Feb 17  2005 libBrokenLocale.so.1 ->
-> libBrokenLocale-2.3.2.so
-> lrwxrwxrwx  1 root root      15 Feb 17  2005 libacl.so.1 -> libacl.so.1.1.0?.3
-> lrwxrwxrwx  1 root root      15 Feb 17  2005 libanl.so.1 ->
-> libanl-2.3.2.so?.so?so
-> lrwxrwxrwx  1 root root      16 Feb 17  2005 libattr.so.1 -> libattr.so.1.1.0
-> lrwxrwxrwx  1 root root      15 Feb 17  2005 libblkid.so.1 -> libblkid.so.1.0?3?
+I don't think so.  The source code is definitely open source.  The
+hardware documentation is whatever the vendor decides it should be.  In
+this case, M-Systems decided that it should not be public, IIRC.
 
-bye
-Estelle
+josh
