@@ -1,16 +1,18 @@
-Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
+Received: from ns.sysgo.de ([213.68.67.98] helo=mailgate.sysgo.de)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BgOeO-0001Ap-1J
-	for linux-mtd@lists.infradead.org; Fri, 02 Jul 2004 10:04:24 -0400
-Received: from [10.1.1.107] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
-	1.3.167) for linux-mtd@lists.infradead.org; 2 Jul 2004 10:04:21 -0400
-Date: Fri, 2 Jul 2004 10:00:07 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.60.0407020944070.5576@localhost.localdomain>
+	id 1BgOfW-0001K3-Tf
+	for linux-mtd@lists.infradead.org; Fri, 02 Jul 2004 10:05:35 -0400
+Date: Fri, 2 Jul 2004 16:05:28 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+In-Reply-To: <Pine.LNX.4.60.0407020819380.5155@localhost.localdomain>
+Message-ID: <Pine.LNX.4.56.0407021600350.8455@mag.sysgo.com>
+References: <Pine.LNX.4.60.0407020819380.5155@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: more confusion: how to define a map_info for multi-chip board?
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: adding cmd-line partitioning to rpxlite.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2 Jul 2004, Robert P. J. Day wrote:
 
-   another (annoyingly, i'm sure) picky question about rewriting my 
-rpxlite.c file to add command line parsing.
+>          lubbock_maps[flashboot^1].name = "Lubbock Application Flash";
+>          lubbock_maps[flashboot].name = "Lubbock Boot ROM";
+>
+> these name values have embedded spaces.  how exactly does that work in
+> trying to use command-line partitioning here?  or did i misread how to
 
-   what's the proper protocol for defining a map_info structure for a 
-board that has multiple flash chips to support a single address space? 
-in the case of an rpxlite board, the default rpxlite.c reads as 
-follows:
-==============================
-#define WINDOW_ADDR 0xfe000000 
-#define WINDOW_SIZE 0x800000      (8M chip, but there are four of them)
+Embedded spaces are not supported: the parser sits on top of the
+kernel command line parser which uses spaces to tokenise the command
+line. This sounds bad but keeps things simple. (Ok -- cmdlinepart.c
+partitioning is an example who to undermine simplicity :-)
 
-static struct mtd_info *mymtd;
+Regards,
+Marius
 
-static struct map_info rpxlite_map = {
-         .name = "RPX",
-         .size = WINDOW_SIZE,     (so map_info defines size of 8M ...)
-         .buswidth = 4,
-         .phys = WINDOW_ADDR,
-};
-
-int __init init_rpxlite(void)
-{
-   printk(KERN_NOTICE "...", WINDOW_SIZE*4, WINDOW_ADDR);
-         rpxlite_map.virt = (unsigned long)ioremap(WINDOW_ADDR, WINDOW_SIZE * 4);
-================================
-
-but obviously, the actual mapping has to take into account that there 
-are 4 of those chips: "WINDOW_SIZE * 4".  so i'm concluding that, in 
-cases like this, the map_info size should represent a single chip, 
-while the remapping should obviously refer to the entire address 
-space, is this correct?
-
-almost there ...
-
-rday
+-- 
+Marius Groeger <mgroeger@sysgo.com>           Project Manager
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.imerva.com
