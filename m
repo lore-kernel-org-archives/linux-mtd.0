@@ -1,20 +1,18 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from nssinet2.co-nss.co.jp ([150.96.0.5])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19pJHj-0003FF-0W
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 04:05:19 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "J.D. Bakker" <bakker@thorgal.et.tudelft.nl>,
-	linux-mtd@lists.infradead.org
-Date: Wed, 20 Aug 2003 15:08:40 +1200
-References: <a05200f03bb6877b9d497@[130.161.115.44]>
-In-Reply-To: <a05200f03bb6877b9d497@[130.161.115.44]>
-MIME-Version: 1.0
-Message-Id: <20030820030456.07C504709@blood.actrix.co.nz>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: 2k page NANDs ?
-Reply-To: manningc2@actrix.gen.nz
+	id 19pMO5-0003h2-RT
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Aug 2003 07:24:06 +0100
+Received: from nssnet.co-nss.co.jp (localhost [127.0.0.1])
+	by nssinet2.co-nss.co.jp (8.9.3/3.7W) with ESMTP id PAA19212
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Aug 2003 15:09:36 +0900 (JST)
+Message-Id: <200308200615.PAA22917@nssnet.co-nss.co.jp>
+Date: Wed, 20 Aug 2003 15:24:03 +0900
+From: Hiroaki KAMON <kamon@co-nss.co.jp>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Subject: wrong mutex handler in amd_flash.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 20 August 2003 13:02, J.D. Bakker wrote:
-> Hi all,
->
-> Is there any way to use either JFFS2 or YAFFS (or MTD-NAND, for that
-> matter) on the newer NAND devices with 2112-byte pages ? Looks like
-> all higher density (>1Gb) NANDs are using this page size nowadays.
->
-> Thanks,
->
-> JDB
-> [who has developed an insatiable appetite for shock-proof non-volatile
-> storage]
+Hello,
 
-JDB
+I found a problem in "amd_flash.c".  The kernel (TimeSys Linux) oops 
+due to access of bad area.
 
-There are still 512byte devices and will always be (always in a very relative 
-sort of way). These devices are used in SmartMedia and will thus be in 
-production for some while. However, SmartMedia is limited to 128MB so the 
-motivation for 512byte devices greater than 128MB (== 1Gb) is non-existant.
+The pointer "chips->mute" for spin_lock_bh() is not pointing the area 
+in private structure, but local variable of amd_flash_probe().
 
-2k page devices have potential price advantages (less control circuitry per 
-storage) and speed advantages.
+Here's a patch to fix it.
 
-I'm unsure as to the mtd and JFFS2 status of 2k page devices at present, but 
-last time I discussed this with Thomas (mtd NAND), the consensus seemd that a 
-good slap is all athat is required to get the mtd nand code working.
+Regards,
+Hiroaki
 
-YAFFS is at present limited to 512-byte devices. There is a concept doc for 
-YAFFS2 which includes support for 2k devices, amongst other features. Read 
-all about it at http://www.aleph1.co.uk/armlinux/projects/yaffs/yaffs2.html
 
-At present this is concept, but all major YAFFS re-gutsing over the last year 
-or so has been done with an eye to YAFFS2. Thus, many of the trickier bits 
-(eg. "soft delete" and the background garbage collection) are already done 
-and tested.
+Index: mtd/drivers/mtd/chips/amd_flash.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/amd_flash.c,v
+retrieving revision 1.23
+diff -u -r1.23 amd_flash.c
+--- mtd/drivers/mtd/chips/amd_flash.c   12 Jun 2003 09:24:13 -0000      1.23
++++ mtd/drivers/mtd/chips/amd_flash.c   20 Aug 2003 05:37:58 -0000
+@@ -688,7 +688,6 @@
 
-YAFFS2 is really waiting on someone to be motivated enough to 
-pay for the development. Considering the number of people asking for YAFFS2 
-recently I expect to see YAFFS2 up and running before the end of the year.
+        chips[0].start = 0;
+        chips[0].state = FL_READY;
+-       chips[0].mutex = &chips[0]._spinlock;
+        temp.numchips = 1;
+        for (size = mtd->size; size > 1; size >>= 1) {
+                temp.chipshift++;
+@@ -775,6 +774,7 @@
+        for (i = 0; i < private->numchips; i++) {
+                init_waitqueue_head(&private->chips[i].wq);
+                spin_lock_init(&private->chips[i]._spinlock);
++               private->chips[i].mutex = &private->chips[i]._spinlock;
+        }
 
--- Charles
+        map->fldrv_priv = private;
+
+
+---
+Hiroaki KAMON   <kamon@co-nss.co.jp>
+
+  Nissin Systems co.,ltd.
+      Realtime Component Dept.  Engineer
+        (Phone) +81-75-344-7950  (FAX) +81-75-344-7888
+        Horikawa-douri Shijou-sagaru Higashigawa, Shimogyo-ku,
+        Kyoto, 600-8482, JAPAN
