@@ -1,20 +1,20 @@
-Received: from mail.newlogic.at ([194.208.88.201])
+Received: from ithilien.qualcomm.com ([129.46.51.59])
 	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 19zdSm-0003nn-9G
-	for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2003 15:39:24 +0100
-Message-Id: <200309171438.h8HEc9ZS007084@enterprise2.newlogic.at>
-MIME-Version: 1.0
-In-Reply-To: <AF34F8F089D16B4FABE02B5F375228E0022F@serveur21.SYNCHRO2>
-Date: Wed, 17 Sep 2003 16:38:09 +0200 (MEST)
-Sender: nwaibel@newlogic.com
-From: Niki Waibel <niki.waibel@newlogic.com>
-To: Yves CLOUSIER <yves.clousier@synchronic.fr>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: linux-mtd@lists.infradead.org
-cc: uclinux-dev@uclinux.org
-Subject: RE: Problem using DOC with mtd
-Reply-To: Niki Waibel <niki.waibel@newlogic.com>
+	id 19zipR-0004WI-6G
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Sep 2003 21:23:09 +0100
+Received: from crowley.qualcomm.com (crowley.qualcomm.com [129.46.61.151])
+	h8HKMQuI027817	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Sep 2003 13:22:26 -0700 (PDT)
+Received: from HKING.qualcomm.com (hking.qualcomm.com [129.46.71.236])
+	h8HKMOix019959	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Sep 2003 13:22:24 -0700 (PDT)
+Message-Id: <5.2.0.9.2.20030917131152.054a7210@e2k.qualcomm.com>
+Date: Wed, 17 Sep 2003 13:22:08 -0700
+To: linux-mtd@lists.infradead.org
+From: Howard King <hking@qualcomm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: kernel crashed at genprobe_
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,196 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Also, I forgot to mention to you that the 1st block of the flash memory are
+ > write-protected since the reset words are there.  Don't know if that cause
+ > the crash?
+ >
+ > =============
+ > I follow this document (from the link you gave to us) and use "make
+ > xconfig" to enable the mtd from the kernel:
+I followed your link to get this document:
+ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/mtd-jffs-HOWTO.txt
 
-On 17-Sep-2003 Yves CLOUSIER wrote:
-> Ok Niki, 
-> 
-> I made a mistake in the adressage of DOC. I think I have now a good dump of
-> DOC, see attach file, but I have always 00 at 0xE0001000.
+I did the following things:
+- down load the patch
+- re-configure the linux kernel to enable the mtd and jffs options by 
+following the HOWTO doc;
+- we have 64-bit bus width, I specified 8 (octets) for bus width;
+- we have 4 flash chips (8M * 4 = 32MB), I specified 4 interleave for cfi probe
+- our flash chip is: AM29LV641DL12EI/T.
+- it is our custom 8260 board;
+- the first block is write-protected due to the existence of reset word
+- the flash address starts 0xfe000000 and length is 0x2000000 (32MB);
+- the boot rom is located at 0xfff00100
 
-DoC seems to be in reset mode...
-try this:
-===
-#define doc_read(base,reg) \
-        (*(volatile unsigned char *)(base + MSYSTEMS_DOC_R_##reg))
-#define doc_write(data,base,reg) \
-        (*(volatile unsigned char *)(base + MSYSTEMS_DOC_W_##reg)) = data
-#define doc_read_nop(base) \
-        doc_read(base, NOP)
-#define doc_read_2nop(base) \
-        { doc_read_nop(base); doc_read_nop(base); }
-#define doc_read_4nop(base) \
-        { doc_read_2nop(base); doc_read_2nop(base); }
-#define MSYSTEMS_DOC_W__DOCControl                0x1002
-#define MSYSTEMS_DOC_R_NOP                        0x1020
-#define MSYSTEMS_DOC_W_NOP                        0x1020
-#define DOC_MODE_RESET  0
-#define DOC_MODE_NORMAL 1
-#define DOC_MODE_WREN   0x04
-#define DOC_CLR_ERR     0x80
-{
-        /* sets reset mode (has to be done twice) */
-        doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
-        doc_write(DOC_MODE_RESET|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
-        /* wait */
-        doc_read_4nop(bios);
-        /* sets normal mode (has to be done twic) */
-        doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
-        doc_write(DOC_MODE_NORMAL|DOC_MODE_WREN|DOC_CLR_ERR, bios, _DOCControl);
-        /* wait */
-        doc_read_4nop(bios);
-        if(doc_wait(bios, 5000))
-                return(-1);
-}
-static int
-doc_wait(volatile char *bios, int timeout)
-{
-        int i = 20;
-        unsigned char busy;
-        doc_read_4nop(bios);
-        while((busy=_doc_busy(bios)) && (i != 0))
-        {
-                usleep(timeout*1000/20);
-                i--;
-        }
-        doc_read_2nop(bios);
-        if(busy)
-        {
-                return(-1);
-        }
-        return(0);
-} /* static int doc_wait(volatile char *bios, int timeout) */
-===
+The kernel crashed after displaying "physmap flash device: 2000000 at
+fe000000".
+Based on the description at page 7, this output is just reporting what
+parameters I have compiled into the system.  It also said we need to check
+physmap.c which uses ioremap() to map the physical memory into an area of
+logical memory.
+I did change it to ioremap_noncache() but it still crashed at
+genprobe_new_chips().
 
-> Any idea ? 
+We use BDI2000 debugger to burn the U-BOOT code to the flash for our board 
+and boot
+correctly.  We need the file system so we can boot up the linux from flash.
 
-the above code snippies should give you an idea how to
-go out of the reset mode...
-
-niki
-
-> -----Message d'origine-----
-> De : Niki Waibel [mailto:niki.waibel@newlogic.com]
-> Envoyé : mercredi 17 septembre 2003 11:31
-> À : Yves CLOUSIER
-> Cc : uclinux-dev@uclinux.org; uclinux-dev@uclinux.org;
-> linux-mtd@lists.infradead.org
-> Objet : RE: Problem using DOC with mtd
-> 
-> 
-> Doc dump at e0000000 : 55 55 aa aa 10 10 eb eb
-> Doc dump at e0000008 : 3c 3c 00 00 00 00 28 28
-> Doc dump at e0000010 : 43 43 29 29 4d 4d 2d 2d
-> Doc dump at e0000018 : 53 53 79 79 73 73 74 74
-> Doc dump at e0000020 : 65 65 6d 6d 73 73 31 31
-> 
-> is somehow good, but you should have:
-> Doc dump at e0000000 : 55 aa 10 eb 3c 00 00 28
->  ...
-> as well on 
-> Doc dump at e0001000 : 00 00 00 00 00 00 00 00
-> there should be
-> Doc dump at e0001000 : 30 ...
-> 
-> maybe this is at e0002000 in your case and you have mixed up
-> some address wires...
-> 
-> niki
-> 
-> 
-> 
-> On 17-Sep-2003 Yves CLOUSIER wrote:
->> Hi all, 
->> 
->> I have 5272 plateform with the 20030305-uclinux-dist. 
->> In this plateform I have a disk-on-chip millenium module MD2802-D08. The
-> DOC
->> is map at 0xE0000000.
->> 
->> But during booting, I have the message :
->> Possible DiskOnChip with unknown ChipID 00 found at 0xe0000000
->> No recognised DiskOnChip devices found
->> 
->> In the Doc_Check() fonction in probe.c I make a memory dump of the DOC
-> (from
->> 0xE0000000 to 0xE0002000), see the attach file.
->> I think that the acces of the DOC is correct because I see the DOC bios
->> singature at 0xE0000000. But I don't understand why the mtd doesn't
->> recognised the DOC. So if you have an idea ......
->> 
->> 
->> Thanks.
->> 
->> 
->> 
->> 
->> 
->> I configure the mtd like this :
->> 
->>#
->># Memory Technology Devices (MTD)
->>#
->> CONFIG_MTD=y
->> CONFIG_MTD_DEBUG=y
->> CONFIG_MTD_DEBUG_VERBOSE=3
->># CONFIG_MTD_PARTITIONS is not set
->># CONFIG_MTD_CONCAT is not set
->> 
->>#
->># User Modules And Translation Layers
->>#
->> CONFIG_MTD_CHAR=y
->> CONFIG_MTD_BLOCK=y
->># CONFIG_FTL is not set
->># CONFIG_NFTL is not set
->> 
->>#
->># RAM/ROM/Flash chip drivers
->>#
->># CONFIG_MTD_CFI is not set
->># CONFIG_MTD_JEDECPROBE is not set
->># CONFIG_MTD_GEN_PROBE is not set
->># CONFIG_MTD_RAM is not set
->># CONFIG_MTD_ROM is not set
->># CONFIG_MTD_ABSENT is not set
->># CONFIG_MTD_OBSOLETE_CHIPS is not set
->> 
->>#
->># Mapping drivers for chip access
->>#
->> 
->>#
->># Self-contained MTD device drivers
->>#
->># CONFIG_MTD_SLRAM is not set
->># CONFIG_MTD_MTDRAM is not set
->># CONFIG_MTD_BLKMTD is not set
->> 
->>#
->># Disk-On-Chip Device Drivers
->>#
->># CONFIG_MTD_DOC1000 is not set
->> CONFIG_MTD_DOC2000=y
->># CONFIG_MTD_DOC2001 is not set
->> CONFIG_MTD_DOCPROBE=y
->> CONFIG_MTD_DOCPROBE_ADVANCED=y
->> CONFIG_MTD_DOCPROBE_ADDRESS=e0000000
->># CONFIG_MTD_DOCPROBE_HIGH is not set
->># CONFIG_MTD_DOCPROBE_55AA is not set
->> 
->>#
->># NAND Flash Device Drivers
->>#
->># CONFIG_MTD_NAND is not set
->> 
->> 
->> 
->>  <<dump.txt>> 
-> 
-> -- 
-> niki w. waibel - system administrator @ newlogic technologies ag
-> 
-> 
-
--- 
-niki w. waibel - system administrator @ newlogic technologies ag
+Howard King
