@@ -1,19 +1,14 @@
-Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
+Received: from bay19-f15.bay19.hotmail.com ([64.4.53.65] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BlCCo-0005yd-Bq
-	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 15:47:46 -0400
-From: David Woodhouse <dwmw2@infradead.org>
-To: tharbaugh@lnxi.com
-In-Reply-To: <1089918851.8696.191.camel@tubarao>
-References: <77A9CE908F115440B48104747E2534220D0943@email1.acopianet.com>
-	<1089918851.8696.191.camel@tubarao>
-Content-Type: text/plain
-Message-Id: <1089920860.14567.1348.camel@hades.cambridge.redhat.com>
+	id 1BlHNp-0006UR-Ls
+	for linux-mtd@lists.infradead.org; Thu, 15 Jul 2004 21:19:30 -0400
+From: "w h" <wh3cq@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 16 Jul 2004 01:19:26 +0000
 Mime-Version: 1.0
-Date: Thu, 15 Jul 2004 20:47:41 +0100
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Brad Goodman <bgoodman@acopia.com>
-Subject: RE: 2.4.26 MTD Patch
+Content-Type: text/plain; charset=gb2312; format=flowed
+Message-ID: <BAY19-F15ZElV5tTPEi000352a9@hotmail.com>
+Subject: incorrect percent of MTD partition when using "df"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +18,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-07-15 at 13:14 -0600, Thayne Harbaugh wrote:
-> On Thu, 2004-07-15 at 14:32 -0400, Brad Goodman wrote:
-> > You are correct.
-> > 
-> > The patch I made was for the code that appears in 2.4.26 of the kernel.
-> > 
-> > The stuff in the newere (2.6.7) kernels is totally different.
-> > 
-> > I thought this would be a good patch for the 2.4.27 kernel,
-> 
-> That's a question that gets raised a lot - why is 2.4.x so far behind
-> the mtd CVS tree.
+Hi,
 
-Because 2.4.x is obsolete. It's getting important bug fixes only.
+In using MX1ADS,I have 4 MTD partitions: 1M bootloader,2M kernel,7M root 
+fs, 6M fdisk. Jffs2 is taken as root fs and mounted to the last partition 
+fdisk. 
 
-The 2.6 kernel, on the other hand, should be almost entirely up to date
-as soon as Linus honours my request to pull from
-bk://linux-mtd/bkbits.net/mtd-2.6
+In "df" command,100% is given to the usage percent of root fs whatever its 
+actual size is.
+83% is shown for fdisk usage percent.If I change partition to 
+1M,2M,6M,7M,it gives 71%. It seems that 5M of fdisk partition has already 
+been to used.  
 
-> I think that reasonable maintenance should be done on 2.4, however.
+What reason leads this? I wonder if some modification has been done in 
+kernel and where.
 
-That makes sense. I'm not sure whether it makes sense to take a branch
-in CVS from the files which are in 2.4, as I've done for JFFS2 on the
-jffs2-2_4-branch, or whether we should just let people submit fixes
-directly to Marcelo and not bother to keep track of them in CVS. 
-
-I suspect the latter -- so if you can forward me the patch _without_ a
-disclaimer that says I'm not allowed to read it, I'll see if it's sane
-and either give you my blessing to send it to Marcelo, or ask you to fix
-whatever it is that offends me about it.
-
--- 
-dwmw2
+_________________________________________________________________
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
