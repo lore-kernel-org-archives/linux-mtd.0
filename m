@@ -1,41 +1,38 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 143MbD-000188-00
-	for mtd-list@infradead.org; Tue, 05 Dec 2000 18:13:55 +0000
-Received: from d8fa50aa.ptr.dia.nextlink.net ([216.250.80.170] helo=tetsuo.applianceware.com)
-	by infradead.org with esmtp (Exim 3.16 #2)
-	id 143MbB-000181-00
-	for mtd@infradead.org; Tue, 05 Dec 2000 18:13:53 +0000
-Received: (from mike@localhost)
-	by tetsuo.applianceware.com (8.9.3/8.9.3) id MAA11220
-	for mtd@infradead.org; Tue, 5 Dec 2000 12:26:57 -0500
-Message-ID: <20001205122657.A11201@tetsuo.applianceware.com>
-Date: Tue, 5 Dec 2000 12:26:57 -0500
-From: Mike Panetta <mpanetta@applianceware.com>
-To: mtd@infradead.org
-Subject: CVS MTD drivers -> latest devel kernel.
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 143N3B-0001Fr-00
+	for mtd-list@infradead.org; Tue, 05 Dec 2000 18:42:49 +0000
+Date: Tue, 5 Dec 2000 13:42:42 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: David Woodhouse <dwmw2@infradead.org>
+cc: <ian.nelson@echostar.com>, "mtd@infradead.org" <mtd@infradead.org>
+Subject: Re: Possibly a FAQ or stupid question 
+In-Reply-To: <8883.976037403@redhat.com>
+Message-ID: <Pine.LNX.4.30.0012051340230.2601-100000@xanadu.gn.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-If I want to use the latest CVS MTD drivers in the
-latest (or not so latest 2.4.0-test10) kernel can
-I just copy the kernel dir in cvs to linux/drivers/mtd?
-I would of course move the old dir out of the way first
-to save it...  The reason I ask is because if I
-currently try to compile CVS MTD it complains
-about the index field not being in struct mtd_info.
-It is not in that struct, in the old kernel driver
-but it obviously is in the new one (I checked).  
-So it looks like the search path finds mtd.h from
-my kernel instead of the include dir in the cvs
-tree. 
 
 
-TIA
-Mike
--- 
+On Tue, 5 Dec 2000, David Woodhouse wrote:
+
+>
+> ian.nelson@echostar.com said:
+> > Can I just dd to the flash?  Assuming that my AMD flash works with CFI...
+>
+> No. you have to use the MEMERASE ioctl first.
+
+Well...  not if using /dev/mtdblock.
+
+To update my kernel in flash I simply use
+
+	cp zImage /dev/mtdblock1
+
+
+Nicolas
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
