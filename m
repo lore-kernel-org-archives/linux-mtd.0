@@ -1,20 +1,18 @@
-Received: from zorglub.ssji.net ([2001:7a8:3030::face])
-	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CDONL-0003uV-1Y
-	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2004 10:27:12 -0400
-Date: Fri, 1 Oct 2004 16:27:05 +0200
-From: Nicolas Pouillon <nipo@ssji.net>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-Id: <20041001162705.5873dc7c.nipo@ssji.net>
-In-Reply-To: <1096639064.30942.477.camel@hades.cambridge.redhat.com>
-References: <20041001154617.163cc484.nipo@ssji.net>
-	<1096639064.30942.477.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="pgp-sha1";
-	boundary="Signature=_Fri__1_Oct_2004_16_27_05_+0200_M9ZGbnH/ecwtuX0+"
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
+	id 1CDSAS-0004iw-2i
+	for linux-mtd@lists.infradead.org; Fri, 01 Oct 2004 14:30:11 -0400
+Message-ID: <415DA224.4020408@mvista.com>
+Date: Fri, 01 Oct 2004 11:29:56 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Ben Dooks <ben-mtd@fluff.org>
+References: <20041001112332.GN22627@home.fluff.org>
+In-Reply-To: <20041001112332.GN22627@home.fluff.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Issues with a Doc Milplus
+Subject: Re: Suspend problem on 2.6.x
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,64 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Fri__1_Oct_2004_16_27_05_+0200_M9ZGbnH/ecwtuX0+
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Ben Dooks wrote:
+> mtdblockd when running on 2.6 is either ignorning or
+> not dealing with the suspend-to-memory request, and therefore
+> the system is not shutting down when asked to.
+> 
+> bash-2.05a# echo mem > /sys/power/state
+> Stopping tasks: ==
+>  stopping tasks failed (1 tasks remaining)
+> Restarting tasks...<6> Strange, mtdblockd not stopped
+>  done
+> bash-2.05a#
+> 
+> I have worked round this for the moment by
+> adding PF_NOFREEZE to the current->flags at the start of 
+> mtd_bldevs.c:mtd_blktrans_thread()
 
-[Fri, 01 Oct 2004 14:57:45 +0100]
-David Woodhouse <dwmw2@infradead.org> eut le bonheur d'=E9crire:
+Right, this same fix was committed to infradead cvs a few weeks ago.  It 
+is the freeze execution signal that is being ignored (the thread does 
+not enable or poll for such signals).  Since mtdblockd/ftld might need 
+to perform I/O to save state during a suspend, and since these probably 
+doesn't need to access resources that are impaired during the state save 
+phase, exempting these from execution freeze via PF_NOFREEZE seems the 
+right solution.
 
-> Hmmm. We should probably use -1 for 'unconfigured' instead of zero.
-> Want to provide a patch accordingly?
-
-I could do so, but it could break current configs where 0 meant "probing
-at prelisted addresses"... (but users should read docs anyway ;))
-
-> > 2/ It was not known by nan_ids, I had to add the following line:
-> > {"NAND 64MiB 3,3V", 0xa5, 26, 0x4000, 0},
->=20
-> Are you sure that's a 64MiB chip?
-
-In CE, there are 32Mib for system rom, and 32Mib for user, and chip is
-alone on the board, so yes it is 64. I have chip ref somewhere if it can
-help...
-
-> > Could one chip be virtually two 32MiB chips ?
->=20
-> I think that might actually be the case for the 64MiB DiskOnChip M+,
-> yes.
-
-Right then, it explains both points. I'll declare it as a 32Mib chip in
-list.
-
-[mmio - readb/writeb]
-> If provide that in 'diff -u' form we can change that too.
-
-Hm, there is already #ifdef-ing using
--32bit mmio for __arm__
--16bit mmio for __ppc__
--readb/writeb else.
-I read other PDA's config based on the same arch (Xscale), where it
-seems to work. This issue seems quite "local" to my works, could this be
-a side effect of something else ?
-
-I'll submit a patch for these.
-
---=20
-Nipo <nipo@ssji.net>
-Gnu-PGP: 1024D/1DBF658F
-http://nipo.ssji.net/nipo.asc
-
---Signature=_Fri__1_Oct_2004_16_27_05_+0200_M9ZGbnH/ecwtuX0+
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-
-iD8DBQFBXWk5Lh2qAR2/ZY8RAlKTAJ4tm6F+3Vc2C1N8BetcYn1AbmAfMACfeloG
-8g9TVaXbOs4ZU9BOT1f24fQ=
-=oJSv
------END PGP SIGNATURE-----
-
---Signature=_Fri__1_Oct_2004_16_27_05_+0200_M9ZGbnH/ecwtuX0+--
+-- 
+Todd
