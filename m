@@ -1,14 +1,18 @@
-Received: from nwcst336.netaddress.usa.net ([204.68.23.81])
-	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15eQQp-0001nA-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 01:20:39 +0100
-Message-ID: <20010905002640.18111.qmail@nwcst336.netaddress.usa.net>
-Date: 4 Sep 2001 17:26:40 PDT
-From: Eric <ebrower@usa.net>
+Received: from demai05.mw.mediaone.net ([24.131.1.56])
+	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
+	id 15eTWx-00023b-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Sep 2001 04:39:11 +0100
+Received: from amdk62300 (nic-131-c228-152.mw.mediaone.net [24.131.228.152])
+	by demai05.mw.mediaone.net (8.11.1/8.11.1) with SMTP id f853jEY00682
+	for <linux-mtd@lists.infradead.org>; Tue, 4 Sep 2001 23:45:14 -0400 (EDT)
+From: Robert Warner <rwarner@mediaone.net>
 To: linux-mtd@lists.infradead.org
-Subject: MTD with Roswell or Rawhide
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: list-newbie ... Have an Intel Flash E28F128 and want to ...
+Date: Tue, 4 Sep 2001 23:50:37 -0400
+Content-Type: text/plain;
+  charset="iso-8859-1"
+MIME-Version: 1.0
+Message-Id: <01090423503703.03804@amdk62300>
 Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -21,15 +25,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-If you are using a RedHat Roswell kernel with included (not CVS)
-MTD subsystem, could you please contact me offline with your
-success and/or failure?  Even better if you have a cfi_cmdset_0001
-flash chip such as the StrataFlash...
+Hi=20
 
-If you have a working StrataFlash setup on x86 and can attempt =
+This may or may not be off topic ... just let me know.
 
-the Roswell kernel and included MTD, I'd really be happy to hear
-from you.
+I purchased a 3Com Audrey in the hopes to get Linux on it.  I'm currently=
+=20
+looking at LinuxBIOS (and other possibilities).  It has a CFI Flash on it=
+ and=20
+am curious how to program the flash in-circuit.
 
-Thanks in advance,
-E
+In reading your How-To i noted the JFFS2 for embedded systems.  I curious=
+=20
+about the following:
+1. In-circuit programming of CFI flashes .. is this feasible? does a util=
+ity=20
+already exist?
+2. How do I get the JFFS2 and Linux on this device? ... maybe I need to r=
+ead=20
+the How-TO a little more ...
+
+Thanks in advance for your input
+Robert Warner
