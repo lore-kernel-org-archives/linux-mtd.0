@@ -1,14 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Armin <armin@melware.de>
-In-Reply-To: <Pine.LNX.4.31.0401271230320.5586-100000@phoenix.one.melware.de>
-References: <Pine.LNX.4.31.0401271230320.5586-100000@phoenix.one.melware.de>
+To: rhea@matrix-vision.de
+In-Reply-To: <200401271247.41281.rhea@matrix-vision.de>
+References: <200401271247.41281.rhea@matrix-vision.de>
 Content-Type: text/plain
-Message-Id: <1075209322.1633.50.camel@hades.cambridge.redhat.com>
+Message-Id: <1075209755.1633.52.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
-Date: Tue, 27 Jan 2004 13:15:23 +0000
+Date: Tue, 27 Jan 2004 13:22:36 +0000
 Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-Subject: Re: fix jffs2 data errors ?
+Subject: Re: Problem deleting files with NAND/JFFS2 and a possible solution
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,19 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2004-01-27 at 12:42 +0100, Armin wrote:
-> Now I tried to remove the "broken" file2, which worked, but
-> after umount/mount, the file2 was here again. So I was not
-> able to remove this file.
+On Tue, 2004-01-27 at 12:47 +0100, Howard Gray wrote:
+> I'm not sufficiently knowledgeable about the internals of JFFS2 to supply a 
+> proper patch, but it would seem to me that the call to "jffs2_flash_writev" 
+> in write.c at line 282 should be like this:
 
-If this is reproduceable, please do so with CONFIG_JFFS2_FS_DEBUG=1,
-logging all messages over a serial console. Show the output (you may
-need to boot with 'debug' on the command line) while the file system is
-mounted, the offending file unlinked, and then capture the output while
-the file system is mounted a second time. If possible, take snapshots of
-the flash before each mount attempt.
-
-Thanks.
+Correct diagnosis, correct fix. I've applied it to CVS -- thanks.
 
 -- 
 dwmw2
