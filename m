@@ -1,15 +1,23 @@
-Received: from f143.law9.hotmail.com ([64.4.9.143] helo=hotmail.com)
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16VVbn-0001tH-00
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 10:35:23 +0000
-From: "=?gb2312?B?1twgyPE=?=" <san_blabla@hotmail.com>
-To: dwmw2@infradead.org
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Why no kernel message on my DOC system?
-Date: Tue, 29 Jan 2002 10:45:57 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Message-ID: <F143OYspJXTrtApTai500012772@hotmail.com>
+	id 16VXeA-0002Kz-00
+	for <linux-mtd@lists.infradead.org>; Tue, 29 Jan 2002 12:45:59 +0000
+Received: from albatross-ext.wise.edt.ericsson.se ([194.237.142.116] helo=albatross.wise.edt.ericsson.se)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 16VXou-0000kX-00
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2002 12:57:04 +0000
+Message-ID: <3C569C1A.38BBF76F@etx.ericsson.se>
+Date: Tue, 29 Jan 2002 13:56:58 +0100
+From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
+MIME-Version: 1.0
+To: Alex Zeffertt <ajz@cambridgebroadband.com>
+CC: linuxppc-embedded <linuxppc-embedded@lists.linuxppc.org>,
+   "mtd@infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2: strange output
+References: <3C5673A4.662CC3E6@cambridgebroadband.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,56 +29,51 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Because I want to use an initrd as my root device so that I can put more 
-things in the fiel system. Below is my lilo.conf:
+I think you used up all free blocks and now you basically is in a state where
+you have to wait for one to get free before anything can happen. If you just
+wait a while when things start to get slow then repeat the test do you get a
+few runs that are fast again?
 
-boot=/dev/nftla 
-map=/boot/map 
-install=/boot/boot.b-mtd 
-default=doc-full 
-serial=0,9600n8 
-image=/boot/bzImage-2.4.17 
-       label=doc 
-       root=/dev/ram0 
-       read-write 
-       initrd=/boot/initrd.img.gz 
-       append="console=ttyS0,9600n8" 
-image=/boot/bzImage-2.4.17-full 
-       label=doc-full 
-       root=/dev/ram0 
-       read-write 
-       initrd=/boot/initrd.img.gz 
-       append="console=ttyS0,9600n8"
+Alex Zeffertt wrote:
+> 
+> Hi all,
+> 
+> I'm using a linux-2.4.4-2001-11-24 kernel on an MPC862 based board.
+> 
+> I've been playing with JFFS2 and getting some strange results.
+> 
+> First I erase /dev/mtd2 (a 6 MB FLASH partition).  Then I mount the same partition
+> 
+> > mount -t jffs2 /dev/mtdblock2 /mnt
+> 
+> Then I copy file1 (a 500K file) to /mnt and repeat the following over and over:
+> 
+> > cp /mnt/file1 /mnt/file2; rm /mnt/file1; mv /mnt/file2 /mnt/file1
+> 
+> After 10 of the above I get the following message in /var/log/messages:
+> 
+> Dec 24 00:04:58 gonzo kernel: Waiting for chip to read, status = 4
+> Dec 24 00:05:40 gonzo last message repeated 2 times
+> 
+> After 11 of the above I get the following message in /var/log/messages:
+> 
+> Dec 24 00:05:55 gonzo kernel: Waiting for chip to read, status = 4
+> Dec 24 00:05:55 gonzo kernel: Waiting for chip to read, status = 7
+> Dec 24 00:06:26 gonzo last message repeated 2841 times
+> 
+> By this point the copies are progressing painfully slowly.
+> 
+> I repeated the same test with JFFS1 and had no problems.  I repeated the above command 100 times,
+> with no strange output in /var/log/messages, and with no slowing down.
+> 
+> Has anybody had similar problems with JFFS2?
+> 
+> Alex
+> 
+> ** Sent via the linuxppc-embedded mail list. See http://lists.linuxppc.org/
 
-So I think I am installing LILO on /dev/nftla, only use /dev/ram0 to mount 
-my root file system.
-
-
->From: David Woodhouse <dwmw2@infradead.org>
->To: "周 锐" <san_blabla@hotmail.com>
->CC: linux-mtd@lists.infradead.org
->Subject: Re: Why no kernel message on my DOC system?
->Date: Mon, 28 Jan 2002 23:46:14 +0000
->
->
->san_blabla@hotmail.com said:
-> >  Because in /dev/nftla1 there is only kernel image and initrd on it,
-> > so I  have not tested to use 'root=/dev/nftla1' on my harddisk. But I
-> > do test to  use lilo-mtd on my harddisk and boot from it, the kernel
-> > messages came out  and the /proc/cmdline is:  auto
-> > BOOT_IMAGE=blabla-doc rw root=100 console=tty0 console=ttyS0,9600n8 On
-> > the contrary, if boot from DiskOnChip, the /proc/cmdline is
-> > unrecognizable strings.
->
->It's a LILO problem. Why are you installing LILO to /dev/ram0 instead of
->/dev/nftla? Won't that make it look in the wrong place for stuff?
->
->--
->dwmw2
->
->
-
-
-_________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger：
-http://messenger.microsoft.com/cn
+-- 
+Kenneth Johansson	
+Ericsson Telecom                  Tel: +46 8 404 71 83
+Vider鰃atan 3                     Fax: +46 8 404 72 72
+164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
