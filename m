@@ -1,20 +1,17 @@
-Received: from dsl-64-130-201-237.telocity.com ([64.130.201.237] helo=Dual166.localdomain)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16GLQn-0004Us-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 14:41:21 +0000
-Received: from nt40server ([192.168.1.101])
-	by Dual166.localdomain (8.9.3/8.9.3) with SMTP id GAA29023
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 06:51:16 -0800
-Reply-To: <acurtis@onz.com>
-From: "Allen Curtis" <acurtis@onz.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Millennium Plus support?
-Date: Tue, 18 Dec 2001 06:45:25 -0800
-Message-ID: <NCBBIINEHIPFGJPLBEIFOEOHDCAA.acurtis@onz.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	id 16GMYF-0004aS-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Dec 2001 15:53:07 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <NCBBIINEHIPFGJPLBEIFOEOHDCAA.acurtis@onz.com> 
+References: <NCBBIINEHIPFGJPLBEIFOEOHDCAA.acurtis@onz.com> 
+To: acurtis@onz.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Millennium Plus support? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 18 Dec 2001 16:03:00 +0000
+Message-ID: <6885.1008691380@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,4 +23,10 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Has anyone tested or developed libraries for the Millennium Plus DOC?
+acurtis@onz.com said:
+> Has anyone tested or developed libraries for the Millennium Plus DOC?
+
+The Millennium Plus is not supported. We don't have docs.
+
+--
+dwmw2
