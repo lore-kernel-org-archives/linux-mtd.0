@@ -1,27 +1,24 @@
 Received: from mail.imc-berlin.de ([217.110.46.186]
 	helo=mail.berlin.imc-berlin.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BBTmI-0002AC-Tu
-	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 08:16:47 +0100
+	id 1BBYoj-0002v3-2H
+	for linux-mtd@lists.infradead.org; Thu, 08 Apr 2004 13:39:37 +0100
 Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
-	[10.0.0.13])i386SXj9017579
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Apr 2004 08:28:33 +0200
+	[10.0.0.13])i38BpFj9019632
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Apr 2004 13:51:15 +0200
 Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id JAA24600
+	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id OAA29159
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 8 Apr 2004 09:16:38 +0200 (CEST)
+	Thu, 8 Apr 2004 14:39:19 +0200 (CEST)
 	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <4074FC3D.1030708@imc-berlin.de>
-Date: Thu, 08 Apr 2004 09:16:13 +0200
+Message-ID: <407547DF.1020404@imc-berlin.de>
+Date: Thu, 08 Apr 2004 14:38:55 +0200
 From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-CC: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-References: <40742192.5030901@imc-berlin.de>
-	<1081354787.4799.191.camel@tubarao>
-In-Reply-To: <1081354787.4799.191.camel@tubarao>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Subject: Re: kernel oops in cfi_cmdset_0002.c:do_write_one()...
+To: MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Changing the number of JFFS2 erasblocks?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thayne Harbaugh wrote:
-> On Wed, 2004-04-07 at 09:43, Steven Scholz wrote:
-> 
->>Hi there,
->>
->>on my embedded PPC system with linux-2.425 I have two flash devices.
-> 
-> 
->>Warning: DQ5 raised while program operation was in progress, however operation completed OK
->>Warning: DQ5 raised while program operation was in progress, however operation completed OK
->>Warning: DQ5 raised while program operation was in progress, however operation completed OK
->>Waiting for write to complete timed out in do_write_oneword.
-> 
-> 
-> These error messages are from an ancient version of cfi_cmdset_0002.c.
-> They come from over-efficient software design that didn't consider the
-> quirks of how a flash chip works. Have you tried a recent version?
+Hi there,
 
-Ehm. I am using a 2.4.25 kernel. I thought the MTD code in there should be 
-quiet recent...
+I have 320KB of unused flash in our embedded systems. Now I want to make use 
+of them using an read/write filesystem by updating the kernel.
 
-How can I check the version of the MTD code in my kernel tree?
+Since it's flash I need some fs that's aware of the flash wearing problem. 
+So I guess that leaves only JFFS2.
 
--- 
-Steven Scholz
+My problem is that the 5 erase blocks set by default will eat up the whole 
+320KB and leaves no free space. And IIRC there's no way to pass the number 
+of eraseblocks during mount.
 
-imc Measurement & Control               imc Meﬂsysteme GmbH
-Voltastr. 5                             Voltastr. 5
-13355 Berlin                            13355 Berlin
-Germany                                 Deutschland
+Could I hardcode the number of eraseblocks to 1 in my new (but still old 
+2.4.20) kernel? Where is it defined?
+And what happens to my root fs which is JFFS2 when I change that?
+
+Thanks a million,
+
+Steven
