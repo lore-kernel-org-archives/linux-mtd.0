@@ -1,48 +1,55 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11rGgX-0008KC-00
-	for mtd@imladris.mvhi.com; Fri, 26 Nov 1999 08:24:53 +0000
-In-Reply-To: <E11r6qH-000895-00@imladris.mvhi.com> 
-References: <E11r6qH-000895-00@imladris.mvhi.com> 
-To: "Dvir Oren" <dviro@hotpop.com>
+	id 11rGzV-0008L6-00
+	for mtd@imladris.mvhi.com; Fri, 26 Nov 1999 08:44:29 +0000
+In-Reply-To: <3839651A.4D22A6F3@danielind.com> 
+References: <3839651A.4D22A6F3@danielind.com> 
+To: Vipin Malik <vmalik@danielind.com>
 Cc: MTD <mtd@imladris.mvhi.com>
-Subject: Re: (Fwd) DoC2000 Kernel problems 
+Subject: Re: Reliability of FLASH data storage 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 26 Nov 1999 08:24:52 +0000
+Date: Fri, 26 Nov 1999 08:44:29 +0000
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11rGgW-0005gB-00@devel2.axiom.internal>
+Message-Id: <E11rGzV-0005hk-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-dviro@hotpop.com said:
-> 1.  I'm not able to compile the files into the kernel.  For some
-> reason, when I compile the drivers into the kernel, I can't reach  /
-> dev/nftla with fdisk, and I can't mount /dev/nftla1.  I applied the
-> patch from this mailing list, and still the same thing.  Anybody got
-> any ideas?
+vmalik@danielind.com said:
+> Hi all, going through the list archive at the web site I did not find
+> any discussion on the reliability of data storage during writes to
+> FLASH.
 
+You haven't thought about bit errors in read/write.
 
-Which patch? I've been sent a patch to get it to work when it's compiled into 
-the 2.2 kernel, but I didn't think that was sent to the list.
+NFTL stores 6 bytes of error correction data for each 256-byte block stored on 
+the flash. This can be used to correct bit errors upon reading it back.
 
-> 2.  I'm trying to create a diskless system using DoC2000 flash.   My
-> problem is initializing the flash with the root file system, and
-> stuff that I need there, without connecting a disk to it.  I thought
-> about using Etherboot, however it has the same problem that lilo  has
-> with M-Systems' firmware, that does not allow it to boot.   Anybody
-> has any ideas? 
+> By reliability I mean, when data is being stored onto a flash sector,
+> what happens when power is suddenly and without warning removed? 
 
-I have mine in an ISA evaluation board, and can't get Linux to boot while it's 
-enabled - I just pull the jumper out and then put it back in when Linux has 
-booted. Guess why I only got it to work with modules :)
+That flash sector is invalid - it contains unknown data. The same problem 
+exists with data storage on magnetic media. That's what journalling 
+filesystems were invented for.
 
-Can you do something similar? Overwriting the DoC built-in BIOS with 0xff 
-would do the trick. That's what M-Systems recommend in their latest 
-documentation, I believe - and they even give you a 'Linux firmware' file 
-which is just 48Kb of 0xff :)
+Actually, NFTL handles this situation OK - it always keeps a consistent state 
+on the flash media, and only after the new block is written will it be marked 
+as valid, then the old one overwritten.
+
+But that's not enough - if you have a bog standard ext2 filesystem on your 
+NFTL, then you have just reduced the problem to the same level as you'd have 
+on a real disk.
+
+You also need a filesystem which does the same - like ext3.
+
+What I really want to do is a filesystem directly on the flash - none of this 
+'pretend it's a block device' stuff.
+
+Jason, how's FFS2 coming along? Is it possible to make it POSIX-compliant 
+without a hack as evil as UMSDOS?
+
 
 
 
