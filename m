@@ -1,23 +1,21 @@
-Received: from [213.39.233.138] (helo=wohnheim.fh-wedel.de)
+Received: from imf23aec.mail.bellsouth.net ([205.152.59.71])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19idCc-0008TZ-Ag
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 17:56:26 +0100
-Date: Fri, 1 Aug 2003 18:55:38 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: andrzej.mialkowski@inetia.pl
-Message-ID: <20030801165538.GC8920@wohnheim.fh-wedel.de>
-References: <1058792691.3f1be4f31ca98@imail.internetia.pl>
-	<20030721160453.GA3677@wohnheim.fh-wedel.de>
-	<1058823245.3f1c5c4da93b0@imail.internetia.pl>
-	<20030722102148.GD29430@wohnheim.fh-wedel.de>
-	<1059064111.3f20092f90a2e@imail.internetia.pl>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <1059064111.3f20092f90a2e@imail.internetia.pl>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: hardcoded maximum number of CFI chips - continued
+	id 19ii5C-0000kN-7E
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Aug 2003 23:09:06 +0100
+Received: from luna.siliconmotorsports.com ([68.154.56.59])
+	by imf23aec.mail.bellsouth.netSMTP
+	<20030801220831.CKLF8750.imf23aec.mail.bellsouth.net@luna.siliconmotorsports.com>
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 1 Aug 2003 18:08:31 -0400
+From: "Tim Drury" <tdrury@siliconmotorsports.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 1 Aug 2003 18:08:19 -0400
+Message-ID: <000601c35879$6af19450$f546a8c0@SIMOTORSPORTS>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: compiling latest CVS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 24 July 2003 18:28:31 +0200, andrzej.mialkowski@inetia.pl wrote:
-> 
-> [a lot of code and explanations]
 
-Sorry for the long lag.  Exam period has come up again, the most
-irrational timeof the year for me.  But I'm finally reading your code.
+I got the latest CVS to build, but with a few issues.
 
-Thanks! :)
+patches/patchin.sh ran successfully.  Upon building my kernel
+modules I got an error in nand.c that 'i' was undeclared.  So in
+mtd/drivers/nand/nand.c, line 936 add 'i' to the int declaration.
 
-Jörn
+Now cross-compiling the kernel and modules worked fine.
 
--- 
-Premature optimization is the root of all evil.
--- Donald Knuth
+I sym-linked mtd/util into the kernel source base as instructed
+in the README.  Building failed complaining about something in
+crc32.h and I realized that it wasn't finding linux/types.h.
+I needed to include the linux kernel include directory to get
+past this.  Then it failed trying to find zlib.h.  Added that
+then it failed to find libz.so.  
+
+The above can all be done without modifying files:
+
+make CROSS=i386-linux- CFLAGS='-I/path/to/kernel/linux-2.4.21/include
+-I/path/to/zlib-1.4.1' \
+LDFLAGS=-L/path/to/zlib/lib
+
+and everything cross-compiled to my target system.  Was pointing to
+the kernel/include directory bad?
+
+-tim
