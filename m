@@ -1,19 +1,21 @@
-Received: from chfdns01.ch.intel.com ([143.182.246.24] helo=pan.ch.intel.com)
+Received: from tds-102399.k.se.telia.net ([213.64.187.90] helo=bjorndell)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15vwNv-00012K-00
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 08:54:03 +0100
-Received: from hasmsxvs01.iil.intel.com (hasmsxvs01.iil.intel.com [143.185.63.58])
-	by pan.ch.intel.com (8.9.1a+p1/8.9.1/d: relay.m4,v 1.44 2001/10/01 19:10:43 root Exp $) with SMTP id IAA11769
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 08:03:15 GMT
-Message-ID: <7C0E66E1B97BD5119B120002A50A63D22E41C9@hasmsx101.iil.intel.com>
-From: "Kremer, Alex" <alex.kremer@intel.com>
-To: "'Larry Doolittle'" <ldoolitt@recycle.lbl.gov>,
-        linux-mtd@lists.infradead.org
-Subject: RE: MTD support for Intel E28F016S3 ?
-Date: Tue, 23 Oct 2001 10:03:06 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+	id 15vxr2-0001AE-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 10:28:12 +0100
+Received: from bjorn by bjorndell with local (Exim 3.32 #1 (Debian))
+	id 15vxYR-0003Xt-00
+	for <linux-mtd@lists.infradead.org>; Tue, 23 Oct 2001 11:08:59 +0200
+Date: Tue, 23 Oct 2001 11:08:59 +0200
+From: =?iso-8859-1?Q?Bj=F6rn?= Eriksson <mdeans@algonet.se>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: filesystem for battery-buffered SRAM
+Message-ID: <20011023110859.A13613@algonet.se>
+References: <3BD43008.3A7C27D7@esd-electronics.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3BD43008.3A7C27D7@esd-electronics.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,22 +27,20 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+On Mon, Oct 22, 2001 at 04:41:12PM +0200, Matthias Fuchs wrote:
+> I have to setup an embedded Linux box that uses 1MB of battery buffered
+> SRAM to store nonvolatile data.
+> This memory is directly mapped into ma addressspace and needs no magic
+> things to read or write to it.
+> 
+> What might be the best choice for a filesystem for this memory and is it
+> possible to setup file access with MTD.
+> With other words: Is MTD able to access normal RAM devices (no FLASH,
+> but SRAM) ?
 
-| -----Original Message-----
-| From: Larry Doolittle [mailto:ldoolitt@recycle.lbl.gov]
-| Sent: Mon, October 22, 2001 6:45 PM
-| To: linux-mtd@lists.infradead.org
-| Subject: MTD support for Intel E28F016S3 ?
-| 
-| One weird effect showed up using the 28F320B3B on a nanoEngine, where
-| the CFI detect code "found" the chip, although it is truly not CFI
-| compliant.  This is apparently a chip bug, and the workaround is to
-| use the JEDEC probe first, followed by the CFI detect code.  This
-| order is backwards from the official Intel policy on detection logic.
-| 
+ Use mtdram with CONFIG_MTDRAM_ABS_POS. It's (the config option) there
+for exactly this purpose.
 
-This is strange, I have TE28F320B3B mapped over dc21285 and the cfi_probe
-first,
-jedec_probe after works fine...
 
-Kreso
+-- 
+//Björnen.
