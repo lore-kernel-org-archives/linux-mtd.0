@@ -1,18 +1,16 @@
-Received: from dsl-dt-207-34-112-i157-cgy.nucleus.com ([207.34.112.157] helo=mail.com)
+Received: from dsl-64-129-133-253.telocity.com ([64.129.133.253] helo=skylab.outpostsentinel.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16hTH1-0007NW-00
-	for <linux-mtd@lists.infradead.org>; Sun, 03 Mar 2002 10:31:23 +0000
-Date: Sun, 3 Mar 2002 03:42:38 -0700
-From: Ray Lehtiniemi <rayl@otii.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mkfs.jffs2 question
-Message-ID: <20020303034238.G14453@otii.com>
-References: <20020302175237.C14453@otii.com> <11116.1015150073@redhat.com>
+	id 16hvgI-0000Yz-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Mar 2002 16:51:22 +0000
+Message-Id: <200203041752.g24Hqk815453@skylab.outpostsentinel.com>
+Date: Mon, 04 Mar 2002 12:01:22 -0500
+To: americas-techsupport@m-sys.com
+CC: linux-mtd@lists.infradead.org
+From: Chris Fowler <cfowler@outpostsentinel.com>
+Subject: msys process
+Reply-To: cfowler@outpostsentinel.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11116.1015150073@redhat.com>; from dwmw2@infradead.org on Sun, Mar 03, 2002 at 10:07:53AM +0000
+Content-Type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,29 +22,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Sun, Mar 03, 2002 at 10:07:53AM +0000, David Woodhouse wrote:
+Under Linux I have a process running.   msys/fla.
 
-> Presumably this is without the -p option? :)
+This process seems to keep my load averages around 1.    When I do not have the driver loaded my laod averages are 0.06.  Since I mount my flash as ro to load software and only read  a raw partition
+for configuration informatin, I have to wonder my my load averages are *so* high with this process.
 
-yah :-)
+1) What is it doing?
 
+2) How can I stop it?
 
-
-> > so maybe it's just a problem with the reader?
-> 
-> Mount the image on your host and verify this. I'm more inclined to believe
-> it's the jffs2reader at fault than mkfs.jffs2. 
-> 
-> 	insmod mtdram total_size=8192 erase_size=64
-> 	dd if=/dev/mtd0 of=/dev/mtd0
-> 	mount -t jffs2 /dev/mtdblock0 /mnt/spare
-
-ok, i ended up copying the jffs2 image into the actual flash on the board,
-and it was indeed fine.  it definitely looks like a reader problem.
+3) Why is is consuming so many resources for a little task?
 
 
-thanks
-
--- 
----------------------------------------------------------------------------
-    Ray Lehtiniemi <rayl@mail.com> <rayl@otii.com>
+Thanks,
+Chris
