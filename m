@@ -1,41 +1,41 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZVZ0-0006Ge-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 10:11:58 +0100
+	id 12ZWK2-0006La-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 11:00:34 +0100
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZVYz-0006GY-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 10:11:57 +0100
+	id 12ZWK1-0006LU-00
+	for mtd@infradead.org; Mon, 27 Mar 2000 11:00:33 +0100
 From: David Woodhouse <dwmw2@infradead.org>
 To: mtd@infradead.org
-Cc: trevw@zentropix.com
-Subject: New release of MTD code pending.
+Cc: dhinds@pcmcia.sourceforge.org
+Subject: FTL endianness
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Mon, 27 Mar 2000 10:12:49 +0100
-Message-ID: <6013.954148369@devel2.axiom.internal>
+Date: Mon, 27 Mar 2000 11:01:37 +0100
+Message-ID: <6457.954151297@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
+I'm porting the latest FTL code to the MTD system. I see code like this:
 
-I'm intending to make a new release some time this week.
+  if ((header.NumEraseUnits > 65536) || (header.BlockSize != 9) ||
+	(header.EraseUnitSize < 10) || (header.EraseUnitSize > 31) ||
+	(header.NumTransferUnits >= header.NumEraseUnits)) {
+	printk(KERN_NOTICE "ftl_cs: FTL header corrupt!\n");
+	return -1;
+    }
 
-I'd like to ship a tarball which holds drivers/mtd, along with two patches 
-which add that directory to the kernel infrastructure.
+This is odd - unless I'm missing something, it means that FTL on bigendian
+machines has to be bigendian, and FTL on littleendian machines has to be
+littleendian. And that you can't swap flash cards between the two.
 
-I can't run 2.2 easily on my current testbed, so I would appreciate it if 
-someone could give me a patch which adds _only_ the Makefile, arch/*/config.in 
-and init code to the 2.2 kernel.
+The NFTL spec certainly says that the format on the media should be 
+little-endian, so I byteswap it all. Isn't this the case for FTL?
 
-I'm going to update the FTL code so it compiles with 2.3 kernels - probably by 
-taking David Hinds' latest version from the PCMCIA code and porting it to MTD 
-again, so I get the last 3 years' worth of bug fixes while I'm at it.
-
-The mtdblock driver needs fixing too - volunteers?
-
-We're now in the interesting position of having two flash filesystems present 
-in the tree - one of which (FFS2) compiles only on 2.2 kernels, and the other 
-of which (JFFS) only compiles on 2.3. It'd be nice to fix that at some point.
+If so - how many people are actually using FTL on BE machines? If there aren't 
+{m,}any, we can just fix it and forget about it. Otherwise we could make it 
+conditional and/or provide two modules - ftl_be and ftl_le.
 
 
 --
