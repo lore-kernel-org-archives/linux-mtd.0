@@ -1,16 +1,17 @@
-Received: from imladris.infradead.org
-	([194.205.184.45] helo=infradead.org ident=root)
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Bdkc-0002J9-00
-	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 15:14:22 +0000
-Date: Wed, 5 Dec 2001 15:25:00 +0000 (GMT)
-From: <ilatypov@infradead.org>
-To: Mike Ruthven <mike@creonova.com>
-cc: <linux-mtd@lists.infradead.org>
-Subject: Re: nftl
-Message-ID: <Pine.LNX.4.33.0112051523540.27871-100000@infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16Be18-0002KW-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Dec 2001 15:31:26 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <Pine.LNX.4.33.0112051523540.27871-100000@infradead.org> 
+References: <Pine.LNX.4.33.0112051523540.27871-100000@infradead.org> 
+To: ilatypov@infradead.org
+Cc: Mike Ruthven <mike@creonova.com>, linux-mtd@lists.infradead.org
+Subject: Re: nftl 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Wed, 05 Dec 2001 15:41:32 +0000
+Message-ID: <15764.1007566892@redhat.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,24 +23,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Mike,
+ilatypov@infradead.org said:
+>  I encountered the same with an M-Sys-pre-formatted DOC chip.  It
+> seems that the existing MTD code will work only after re-formatting
+> the chip with the nftl_format.  Correct me if I am wrong.
 
-On Tue, 4 Dec 2001, Mike Ruthven wrote:
+Shouldn't take much to make that format work with our NFTL code. Again, 
+it's disabled mostly because it's not tested.
 
-> nftl_format gives error
-> Erase size not 8Kb - I'm confused
-
-Comment out the conditional statement.  David Woodhouse explained that
-the only reason for this check is that NFTL formatting with the other
-erase block sizes is not tested.
-
-> loading nftl module gives error
-> Sorry, we don't support UnitSizeFactor of != 1 yet.
-> Could not find valid boot record
-> Could not mount NFTL device
-
-I encountered the same with an M-Sys-pre-formatted DOC chip.  It seems
-that the existing MTD code will work only after re-formatting the chip
-with the nftl_format.  Correct me if I am wrong.
-
-Ilguiz
+--
+dwmw2
