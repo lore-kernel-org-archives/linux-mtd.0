@@ -1,20 +1,19 @@
-Received: from blood.actrix.co.nz ([203.96.16.160])
+Received: from ns1.idleaire.net ([65.220.16.2] helo=iasrv1.idleaire.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19jmHq-0000QT-Bu
-	for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2003 21:50:34 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: llandre <r&d@wawnet.biz>, linux-mtd@lists.infradead.org
-Date: Tue, 5 Aug 2003 08:54:30 +1200
-References: <5.2.1.1.0.20030804110326.00c65950@dns.struinfo.it>
-In-Reply-To: <5.2.1.1.0.20030804110326.00c65950@dns.struinfo.it>
-MIME-Version: 1.0
-Message-Id: <20030804205021.A547E4AF4@blood.actrix.co.nz>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-cc: yaffs@toby-churchill.org
-Subject: Re: Can't load yaffs.o (unresolved symbol __get_mtd_device)
-Reply-To: manningc2@actrix.gen.nz
+	id 19jmUF-0000Yw-KX
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Aug 2003 22:03:23 +0100
+From: Dave Dillow <dave@thedillows.org>
+To: Zachi Friedman <zachi.friedman@m-sys.com>
+In-Reply-To: <97303ED3C472254E8888E5F74A783471045BD2@msu-ex01.corp.m-sys.com>
+References: <97303ED3C472254E8888E5F74A783471045BD2@msu-ex01.corp.m-sys.com>
+Message-Id: <1060030962.14549.8.camel@dillow.idleaire.com>
+Mime-Version: 1.0
+Date: 04 Aug 2003 17:02:42 -0400
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+cc: dwmw2@infradead.org
+cc: linux-mtd@lists.infradead.org
+Subject: RE: Problems with 128MB DoC 2000
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 04 August 2003 21:18, llandre wrote:
-> Hi all,
->
-> I'm using recent YAFFS sources downloaded via CVS on Aug, 1st with the
-> kernel linuxppc_devel_2.4.21-pre5.
-> I succesfully built the yaffs module but I can't load it with the insmod
-> command.
->
-> Here what I get when trying to load:
->
-> bash-2.05# /sbin/insmod -v yaffs.o
-> Using yaffs.o
-> Symbol version prefix ''
-> yaffs.o: unresolved symbol __get_mtd_device
-> bash-2.05#
->
-> In the kernel's symbol list (System.map) I see the get_mtd_device symbol.
-> Why does the dynamic linker add two underscores '__'?
-> How to solve the problem?
+On Mon, 2003-08-04 at 14:17, Zachi Friedman wrote:
+> Dave,
+> 
+> I have just grabbed one of those MD2202-D128, and ran some tests on it.
+> It is built out of 2 flash devices, 64MB each. They seem to be Samsung
+> KM29V512000, and their flash chip ID is EC 76.
+> 
+> It seems you have a problem if you get C6 C6... It is definitely not the
+> correct flash ID.
 
-I think you are using an inconsistent version of mtd.
+Care to venture a guess as to the problem? It's working just fine under
+DOS/Windows on the same hardware...
 
-The mtd I have here (definitely not the latest!) exports the symbol 
-__get_mtd_device from mtdcore.c
+Is there any chance of my obtaining programming information for this
+part? I'd like to help get it working.
 
->
-> Thanx in advance and best regards.
->
-> PS: I posted the message to the YAFFS's ml too, but unfortunately I got no
-> answers :-(
+Any further tests I should run? So far, I've been trying 2.4.21 + MTD
+CVS.
 
-Sorry I have been very ill the last two weeks.
+Thanks for any light you can shed.
 
--- CHarles
+-- 
+Dave Dillow <dave@thedillows.org>
