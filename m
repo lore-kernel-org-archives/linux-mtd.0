@@ -1,25 +1,15 @@
-Received: from penguin-ext.wise.edt.ericsson.se ([193.180.251.47] helo=penguin.wise.edt.ericsson.se)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17zftO-0003gj-00
-	for <linux-mtd@lists.infradead.org>; Thu, 10 Oct 2002 17:10:30 +0100
-Subject: Re: help! compile error
-From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-To: paul@maypaul.com
-Cc: David Woodhouse <dwmw2@infradead.org>, acurtis@onz.com,
-   Tino Keitel
-	 <tino.keitel@innominate.com>,
-   Mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <003d01c27075$5fac3100$b200a8c0@your.myip.org>
-References: <1034261705.14869.14.camel@spawn>
-	<NCBBIINEHIPFGJPLBEIFCECEDNAA.acurtis@onz.com>
-	<4322.1034261921@passion.cambridge.redhat.com>
-	<1034262826.15944.25.camel@spawn>
-	<003d01c27075$5fac3100$b200a8c0@your.myip.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 10 Oct 2002 18:10:18 +0200
-Message-Id: <1034266218.14869.28.camel@spawn>
-Mime-Version: 1.0
+Received: from web21504.mail.yahoo.com ([66.163.169.15])
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 17zkAt-0004AY-00
+	for <linux-mtd@lists.infradead.org>; Thu, 10 Oct 2002 21:44:51 +0100
+Message-ID: <20021010204449.84623.qmail@web21504.mail.yahoo.com>
+Date: Thu, 10 Oct 2002 22:44:49 +0200 (CEST)
+From: =?iso-8859-1?q?juanba=20romance=20gallego?= <juanbaromance@yahoo.es>
+Subject: Newbie question
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -31,59 +21,28 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-less include/linux/init.h 
- 
-On Thu, 2002-10-10 at 17:54, paul@maypaul.com wrote:
-> Dear all,
-> could u give me more hint? that is very different to find the solution in
-> search engine........
-> 
-> Paul
-> ----- Original Message -----
-> From: "Kenneth Johansson" <kenneth.johansson@etx.ericsson.se>
-> To: "David Woodhouse" <dwmw2@infradead.org>
-> Cc: <acurtis@onz.com>; <paul@maypaul.com>; "Tino Keitel"
-> <tino.keitel@innominate.com>; "Mtd" <linux-mtd@lists.infradead.org>
-> Sent: Thursday, October 10, 2002 11:13 PM
-> Subject: Re: help! compile error
-> 
-> 
-> > On Thu, 2002-10-10 at 16:58, David Woodhouse wrote:
-> > >
-> > > kenneth.johansson@etx.ericsson.se said:
-> > > >  How do you search the archive?
-> > > > The only way I found when I started with this was to download the mbox
-> > > > files and search them.
-> > >
-> > > http://www.google.com/search?q=site:lists.infradead.org+devexit_p
-> > >
-> > > But there's no matches there -- I said 'elsewhere' for a reason. Drop
-> the
-> > > site restriction and see what google gives you for devexit_p.
-> > >
-> > > --
-> > > dwmw2
-> > >
-> >
-> > How often do google update?
-> >
-> > --
-> >
-> > --
-> > Kenneth Johansson
-> > Ericsson AB                       Tel: +46 8 404 71 83
-> > Borgafjordsgatan 9                Fax: +46 8 404 72 72
-> > 164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
-> >
-> >
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
-> >
--- 
-Kenneth Johansson	
-Ericsson AB                       Tel: +46 8 404 71 83
-Borgafjordsgatan 9                Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
+Hello, i have a SBC called wafer5820 which already has
+a DOC2000 from M-system. I am trying to detect the
+chip following the howto-mtd procedure but the device
+seems to be missed. I also have other DOS software
+provided by M-system called dinfo.exe and all seems to
+be right. it says that i have a Milenium device
+plugged into the socket 0 mapped at address d6000. I
+also can format the device and all the stuff. I
+undertsand that the device should be detected by the
+docprobe code. but /var/log/messages only says
+
+No recognised DiskOnChip devices found
+Uhmm i am using the modules provided by Mandrake-9.0
+which holds a 2.4.19-9 linux kernel.
+
+Any Hint?
+Thanks in advanced
+
+=====
+Juanba Romance
+
+_______________________________________________________________
+Yahoo! Messenger
+Nueva versión: Webcam, voz, y mucho más ¡Gratis! 
+Descárgalo ya desde http://messenger.yahoo.es
