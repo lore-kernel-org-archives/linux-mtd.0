@@ -1,20 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1Cf2NT-0004vL-TG
-	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 15:37:37 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Joakim.Tjernlund@lumentis.se
-In-Reply-To: <BCEFJBPJCGFCNMMMIDBHAEMECJAA.Joakim.Tjernlund@lumentis.se>
-References: <BCEFJBPJCGFCNMMMIDBHAEMECJAA.Joakim.Tjernlund@lumentis.se>
-Content-Type: text/plain
-Date: Thu, 16 Dec 2004 21:37:32 +0100
-Message-Id: <1103229452.27708.6.camel@tglx.tec.linutronix.de>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
+	id 1Cf2W3-00056b-AP
+	for linux-mtd@lists.infradead.org; Thu, 16 Dec 2004 15:46:28 -0500
+Date: Thu, 16 Dec 2004 21:46:26 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+Message-ID: <20041216204626.GB10285@wohnheim.fh-wedel.de>
+References: <20041216194931.GA10285@wohnheim.fh-wedel.de>
+	<BCEFJBPJCGFCNMMMIDBHKEMDCJAA.Joakim.Tjernlund@lumentis.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BCEFJBPJCGFCNMMMIDBHKEMDCJAA.Joakim.Tjernlund@lumentis.se>
 Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: RE: JFFS3 & performance
-Reply-To: tglx@linutronix.de
+Subject: Re: JFFS3 & performance
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,55 +24,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2004-12-16 at 21:02 +0100, Joakim Tjernlund wrote:
-> hmm, crc32 is much faster than crc16/crc24. That means that there is plenty of room
-> for optimization. One probably needs for find a table driven algoritm and do
-> a little unrolling.
+On Thu, 16 December 2004 20:58:55 +0100, Joakim Tjernlund wrote:
+> > crc24:
+> > real    0m0.969s
+> > user    0m0.882s
+> > sys     0m0.073s
+> >
+> >
+> > Looks like those cold hard numbers beat the crap out of my previous
+> > argument.  So unless someone can seriously optimize below functions,
+> > just pick adler32.
 > 
+> A table driven crc24/crc16 is faster, I think.
 
-static unsigned short crc16tab[] = {
-        0x0000, 0xc0c1, 0xc181, 0x0140, 0xc301, 0x03c0, 0x0280, 0xc241,
-        0xc601, 0x06c0, 0x0780, 0xc741, 0x0500, 0xc5c1, 0xc481, 0x0440,
-        0xcc01, 0x0cc0, 0x0d80, 0xcd41, 0x0f00, 0xcfc1, 0xce81, 0x0e40,
-        0x0a00, 0xcac1, 0xcb81, 0x0b40, 0xc901, 0x09c0, 0x0880, 0xc841,
-        0xd801, 0x18c0, 0x1980, 0xd941, 0x1b00, 0xdbc1, 0xda81, 0x1a40,
-        0x1e00, 0xdec1, 0xdf81, 0x1f40, 0xdd01, 0x1dc0, 0x1c80, 0xdc41,
-        0x1400, 0xd4c1, 0xd581, 0x1540, 0xd701, 0x17c0, 0x1680, 0xd641,
-        0xd201, 0x12c0, 0x1380, 0xd341, 0x1100, 0xd1c1, 0xd081, 0x1040,
-        0xf001, 0x30c0, 0x3180, 0xf141, 0x3300, 0xf3c1, 0xf281, 0x3240,
-        0x3600, 0xf6c1, 0xf781, 0x3740, 0xf501, 0x35c0, 0x3480, 0xf441,
-        0x3c00, 0xfcc1, 0xfd81, 0x3d40, 0xff01, 0x3fc0, 0x3e80, 0xfe41,
-        0xfa01, 0x3ac0, 0x3b80, 0xfb41, 0x3900, 0xf9c1, 0xf881, 0x3840,
-        0x2800, 0xe8c1, 0xe981, 0x2940, 0xeb01, 0x2bc0, 0x2a80, 0xea41,
-        0xee01, 0x2ec0, 0x2f80, 0xef41, 0x2d00, 0xedc1, 0xec81, 0x2c40,
-        0xe401, 0x24c0, 0x2580, 0xe541, 0x2700, 0xe7c1, 0xe681, 0x2640,
-        0x2200, 0xe2c1, 0xe381, 0x2340, 0xe101, 0x21c0, 0x2080, 0xe041,
-        0xa001, 0x60c0, 0x6180, 0xa141, 0x6300, 0xa3c1, 0xa281, 0x6240,
-        0x6600, 0xa6c1, 0xa781, 0x6740, 0xa501, 0x65c0, 0x6480, 0xa441,
-        0x6c00, 0xacc1, 0xad81, 0x6d40, 0xaf01, 0x6fc0, 0x6e80, 0xae41,
-        0xaa01, 0x6ac0, 0x6b80, 0xab41, 0x6900, 0xa9c1, 0xa881, 0x6840,
-        0x7800, 0xb8c1, 0xb981, 0x7940, 0xbb01, 0x7bc0, 0x7a80, 0xba41,
-        0xbe01, 0x7ec0, 0x7f80, 0xbf41, 0x7d00, 0xbdc1, 0xbc81, 0x7c40,
-        0xb401, 0x74c0, 0x7580, 0xb541, 0x7700, 0xb7c1, 0xb681, 0x7640,
-        0x7200, 0xb2c1, 0xb381, 0x7340, 0xb101, 0x71c0, 0x7080, 0xb041,
-        0x5000, 0x90c1, 0x9181, 0x5140, 0x9301, 0x53c0, 0x5280, 0x9241,
-        0x9601, 0x56c0, 0x5780, 0x9741, 0x5500, 0x95c1, 0x9481, 0x5440,
-        0x9c01, 0x5cc0, 0x5d80, 0x9d41, 0x5f00, 0x9fc1, 0x9e81, 0x5e40,
-        0x5a00, 0x9ac1, 0x9b81, 0x5b40, 0x9901, 0x59c0, 0x5880, 0x9841,
-        0x8801, 0x48c0, 0x4980, 0x8941, 0x4b00, 0x8bc1, 0x8a81, 0x4a40,
-        0x4e00, 0x8ec1, 0x8f81, 0x4f40, 0x8d01, 0x4dc0, 0x4c80, 0x8c41,
-        0x4400, 0x84c1, 0x8581, 0x4540, 0x8701, 0x47c0, 0x4680, 0x8641,
-        0x8201, 0x42c0, 0x4380, 0x8341, 0x4100, 0x81c1, 0x8081, 0x4040,
-};
+Sure.  I'm just too lazy to create one.  (hint, hint)
 
-/*
-* Calculate crc16
-*/
-unsigned short crc16 (unsigned char *buf, size_t len)
-{
-        unsigned short crc = 0xffff;
-        while (len--)
-                crc = (unsigned short) (crc >> 8) ^ 
-		     crc16tab[(crc ^ (unsigned short)(*buf++)) & 0xff];
-        return crc;
-}
+> > uint32_t crc24(uint32_t crc, const void *_s, size_t len)
+> > {
+> > 	const char *s = _s;
+> > 	uint32_t ret = crc;
+> > 	strlen(s);
+> 
+> Why strlen()?
+
+Leftover from my quick'n'dirty hacking.  Numbers without the strlen:
+real    0m0.952s
+user    0m0.878s
+sys     0m0.068s
+
+Not a big difference.
+
+> 
+> > 	for (; len; len--,s++) {
+> > 		ret <<= 8;
+> > 		ret += *s;
+> > 		ret %= 0xfffffd;
+> > 	}
+> > 	return ret;
+> > }
+> 
+> This is probably faster(on PPC).
+> Depens on gcc version as well.
+>
+> uint32_t crc24(uint32_t crc, const void *_s, size_t len)
+> {
+> 	const char *s = _s-1;
+> 	uint32_t ret = crc;
+> 	if (len)
+> 		do {
+> 			ret <<= 8;
+> 			ret += *++s;
+> 			ret %= 0xfffffd;
+> 		} while (--len);
+> 	return ret;
+> }
+
+Not in i386, though.  So unless the tables really make a difference,
+just don't bother.
+real    0m0.954s
+user    0m0.880s
+sys     0m0.064s
+
+Jörn
+
+-- 
+People will accept your ideas much more readily if you tell them
+that Benjamin Franklin said it first.
+-- unknown
