@@ -1,31 +1,32 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14pVhc-0000UW-00
-	for mtd-list@infradead.org; Tue, 17 Apr 2001 14:39:32 +0100
+	id 14pVte-0000Y3-00
+	for mtd-list@infradead.org; Tue, 17 Apr 2001 14:51:58 +0100
 Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14pVhb-0000UQ-00
-	for mtd@infradead.org; Tue, 17 Apr 2001 14:39:31 +0100
+	id 14pVtc-0000Xw-00
+	for mtd@infradead.org; Tue, 17 Apr 2001 14:51:57 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <002901c0c310$aa21aa80$4d02010a@lrpeople.com> 
-References: <002901c0c310$aa21aa80$4d02010a@lrpeople.com>  <00ae01c0c24e$5b566480$4d02010a@lrpeople.com> <01041114460500.00396@rob> 
-To: "Alexander Melichenko" <AlexanderM@lrpeople.com>
-Cc: rob@sysgo.de, mtd@infradead.org
-Subject: Re: Elan SC520 - problem with MTD 
+In-Reply-To: <3AD4AF88.81A815DE@mvista.com> 
+References: <3AD4AF88.81A815DE@mvista.com> 
+To: Alice Hennessy <ahennessy@mvista.com>
+Cc: mtd@infradead.org, bmoyle@mvista.com
+Subject: Re: Arcom SBC-MediaGX name change 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 17 Apr 2001 14:38:47 +0100
-Message-ID: <19294.987514727@redhat.com>
+Date: Tue, 17 Apr 2001 14:51:46 +0100
+Message-ID: <20535.987515506@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-AlexanderM@lrpeople.com said:
-> I used e520.c (from AMD site), but after your letter I found that
-> sc520cdp.c there is on CVS. I plan probing it today. Thank You very much.
+ahennessy@mvista.com said:
+>  The latest we heard from them was that we should use the new name.
+> So, the question is should we update the MTD driver to reflect the new
+> name? 
 
-What's the difference between the one in CVS and the one from AMD, other 
-than the 'interesting' licence on the latter?
+OK, as it's not yet in the official kernel, I'll change it when I shuffle
+the directories around. Which ought to be quite soon.
 
 --
 dwmw2
