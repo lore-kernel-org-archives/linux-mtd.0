@@ -1,19 +1,27 @@
-Date: Wed, 12 Jan 2005 17:14:38 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce050112084111ef438c@mail.gmail.com>
-Message-ID: <Pine.LNX.4.58.0501121708100.10617@phoenix.infradead.org>
+Received: from wproxy.gmail.com ([64.233.184.196])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1ComCU-0004DO-T4
+	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 12:22:31 -0500
+Received: by wproxy.gmail.com with SMTP id 36so605791wra
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Jan 2005 09:22:30 -0800 (PST)
+Message-ID: <6934efce050112092246ae9277@mail.gmail.com>
+Date: Wed, 12 Jan 2005 09:22:29 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050112170256.GF25638@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
 	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
 	<6934efce050112084111ef438c@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=X-UNKNOWN
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	MTD List <linux-mtd@lists.infradead.org>
+	<20050112170256.GF25638@wohnheim.fh-wedel.de>
+Cc: MTD List <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS3 & performance
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,145 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 Jan 2005, Jared Hulbert wrote:
+> Correct.  That requirement comes mostly from having to program the
+> memory controller before being able to use DRAM.  After the early
+> boot, it's just nice to have.
 
-Hi Jared,
+Requirement in the marketplace I mean.  Most NOR chips are expected to
+have 0 errors by those who buy them.
 
-> Clarification on NOR technology.  Remember that the ability to run
-> code XIP is effectively a requirement for a NOR chip.  This means no
-> read errors can leave the chip.  I don't see this changing in the
-> foreseeable future.  Any read errors that do occur would probably be
-> caused by a failed/incomplete program
->=20
-> We probably do want to be able to easily retire, reprogram, and/or
-> test those blocks/pages that get read errors.  That would have to be
-> done in the filesystem and the chip driver needs to be able report a
-> read error occured.
+> Would this actually be an advantage?  Last time I looked, it was
+> cheaper to use more DRAM.  Most DSL routers I see advertised have a
+> 1:4 or 1:8 ratio of NOR:DRAM, so it looks as if the prices haven't
+> changed much.
 
-What would you conclude from this (in the context of disscussion)? That=20
-CRC *must* be *always* checked in case of NOR?
-
->=20
-> Any chance of being able store special files XIP in JFFS3?=20
-> Uncompressed aligned page sized chunks, etc.
->=20
->=20
-> ,Jared
->=20
->=20
->=20
-> On Wed, 12 Jan 2005 09:15:42 +0000 (GMT), Artem B. Bityuckiy
-> <dedekind@infradead.org> wrote:
-> > Hi Joern,
-> >=20
-> > please, read the paper
-> > http://www.semicon.toshiba.co.jp/eng/prd/memory/doc/pdf/nand_applicatio=
-nguide_e.pdf
-> > I like this paper. I've just reread it and now I have no doubts that CR=
-Cs
-> > are required on NAND. :-)
-> >=20
-> > Shortly: errors are normal phenomena on NAND devices. Errors are mostly
-> > handled by NAND ECCs, but
-> > JFFS[23] MUST take care about failures and handle them properly. There
-> > are permanent and occasional
-> > errors exist. Blocks with permanent errors must be marked bad and it is
-> > good to recover data...
-> >=20
-> > On Tue, 11 Jan 2005, [iso-8859-1] J=F6rn Engel wrote:
-> > > On Tue, 11 January 2005 12:29:33 +0000, Artem B. Bityuckiy wrote:
-> > > > Ferenc Havasi:
-> > > > >If I am right CRCs are not only against the effect of unclean rebo=
-ots
-> > > > >but also to handle flash errors. On NAND flashes the ECC handles t=
-his
-> > > > >problem but NOR doesn't have any error detection system.
-> > > >
-> > > > Joern Engel wrote:
-> > > > >So either we can make sure this case never happens, or we can't.  =
-It
-> > > > >depends on the type of flash, for sure, and it may be pretty hard =
-with
-> > > > >some types.  But if it doesn't work at all, the flash is broken,
-> > > > >period.
-> > > >
-> > > > Hi, that is really interesting, *why* do we need CRCs in JFFS2?
-> > > >
-> > > > Do we need CRC *only* to handle unclean reboots? If so, we may poss=
-ibly
-> > > > handle it another way, just putting some magic word at the end of n=
-ode.
-> > > > Possibly, no need for CRC at all.
-> > > >
-> > > > Joern stands that if Flash got rotten, we *do not need* to do somet=
-hing
-> > > > special trying to recover data. Am I right?
-> > >
-> > > Pretty much.  Detecting the breakage is still a good thing, so we can
-> > > report an error.  There are non-embedded devices with flash and users
-> > > want to see the problem and replace their flash.  But apart from that=
-,
-> > > don't try too hard to fix something that cannot be fixed.
-> > >
-> > > > I still think we need to do recovery in case of NAND, mark the rott=
-en
-> > > > block bad and keep working, so we still need CRC. In case of NOR, w=
-e
-> > > > possibly should just report error and do nothing (we can't mark blo=
-ck bad
-> > > > there). Do not know about ECC NOR.
-> > > >
-> > > > Comments?
-> > >
-> > > Ok, here is my approach.
-> > >
-> > > Claim: No mtd has problems with lost data due to bad blocks.  This is
-> > > a complete non-issue and jffs[23] doesn't care.
-> > >
-> > > "No" means that less than .001% (add or remove some digits, depending
-> > > on your needs) of all devices have this problem.  In those cases, the
-> > > system just won't work and will be replaced.  Business as usual.
-> > >
-> > > Now, if any particular flash doesn't match this requirement, the mtd
-> > > driver is supposed to mirror all blocks.  If either copy rots away,
-> > > the data can still be read back from the other block.  After GC, the
-> > > block can be marked as bad and everyone lives on happily ever after.
-> > >
-> > > Capacity is half the original, but that's better than losing
-> > > /sbin/init now and then, right?  And maybe the flash is cheap enough
-> > > that noone cares.
-> > >
-> > > Sane?
-> > >
-> > > > P.S. By the way, we could put CRCs at the end of blocks (*after* da=
-ta) -
-> > > > in this case CRC well be extremely strong detecting unclean reboots=
-, isn't
-> > > > it?
-> > >
-> > > Interesting idea.  Will make the code slightly messy, but it should b=
-e
-> > > worth it.
-> > >
-> > > J=F6rn
-> > >
-> > > --
-> > > Do not stop an army on its way home.
-> > > -- Sun Tzu
-> > >
-> >=20
-> > --
-> > Best Regards,
-> > Artem B. Bityuckiy,
-> > St.-Petersburg, Russia.
-> >=20
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
->=20
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+So you save more RAM that you use up flash when doing XIP.  We've seen
+1.5MiB of RAM saved at a cost of 1MiB of NOR.  This reduces the total
+memory footprint of the system.  It can also make the difference
+between 16MiB and a 32MiB DRAM.  The end result is that the XIP can
+lower the BOM cost for a device.  It also can reduce the power
+consumption such that your phone or PDA has a much longer standby
+time.  The performance advantage of XIP to boot up and application
+launch can be quite noticable.  Think of the flow of data to start
+executing an application from JFFS2.  We copy the data 3 times in RAM?
+decompress it, CRC it.  Compare that to mmap() in XIP cramfs.  It just
+points to the flash address.
