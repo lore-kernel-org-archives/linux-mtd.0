@@ -1,34 +1,43 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14t6Is-0000k2-00
-	for mtd-list@infradead.org; Fri, 27 Apr 2001 12:20:50 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	id 14t6Th-0000lW-00
+	for mtd-list@infradead.org; Fri, 27 Apr 2001 12:32:01 +0100
+Received: from humbolt.nl.linux.org ([131.211.28.48] ident=root)
 	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14t6Ir-0000jw-00
-	for mtd@infradead.org; Fri, 27 Apr 2001 12:20:49 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <EADB10BAC266A14A85ECBF8686A73E3145911F@kolkrabbi.flaga.is> 
-References: <EADB10BAC266A14A85ECBF8686A73E3145911F@kolkrabbi.flaga.is> 
-To: =?iso-8859-15?B?S+FyaSBEYXbt8HNzb24=?= <kd@flaga.is>
-Cc: mtd@infradead.org
-Subject: Re: partitions and erase regions 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Fri, 27 Apr 2001 12:20:37 +0100
-Message-ID: <2043.988370437@redhat.com>
+	id 14t6Tg-0000lP-00
+	for mtd@infradead.org; Fri, 27 Apr 2001 12:32:00 +0100
+Received: from activesilicon.demon.co.uk ([212.228.31.28] helo=activesilicon.co.uk)
+	by anchor-post-32.mail.demon.net with esmtp (Exim 2.12 #1)
+	id 14t6Rs-000NJE-0W
+	for mtd@infradead.org; Fri, 27 Apr 2001 12:30:08 +0100
+Received: from p90nt4 (p90nt4.activesilicon.co.uk [192.168.1.64])
+	by activesilicon.co.uk (8.11.3/8.11.3) with SMTP id f3RBTrm29673
+	for <mtd@infradead.org>; Fri, 27 Apr 2001 12:29:53 +0100
+Message-ID: <01C0CF15.C21A24D0.chris.read@activesilicon.co.uk>
+From: Chris Read <chris.read@activesilicon.co.uk>
+Reply-To: "chris.read@activesilicon.co.uk" <chris.read@activesilicon.co.uk>
+To: "'mtd@infradead.org'" <mtd@infradead.org>
+Subject: Brownouts
+Date: Fri, 27 Apr 2001 12:29:51 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+As a follow up to my earlier message:
 
-kd@flaga.is said:
-> If you call erase at offset 0x0 for 8*8K + 15*64K only the first
-> sector i.e. first 8K is erased not all 8 sectors.
+I am currently working with Intel B3 parts. The datasheet makes no specific 
+mention of any built in brownout detection. However, there are a set of 
+timings for the reset line. Specifically, it states that it may take up to 
+22us to reset the internal state machine during an erase or write cycle 
+after the reset pin is asserted. My interpretation of this, in the absence 
+of any explicit information, is that whilst erasing or programming, the 
+reset line must be asserted a minimum of 22us before the power supply falls 
+below the chip's minVcc specification, otherwise the results are 
+undefined.....and we all know what that can mean.
 
-Erase requests have a length in them.
-
-
---
-dwmw2
+Any thoughts/experiences?
 
 
 
