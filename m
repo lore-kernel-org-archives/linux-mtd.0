@@ -1,22 +1,15 @@
-Received: from tomts19.bellnexxia.net ([209.226.175.73] helo=tomts19-srv.bellnexxia.net)
+Received: from [210.8.246.199] (helo=singularity.tronunltd.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16dIw8-0000uu-00
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 22:40:36 +0000
-Received: from superbt.com ([65.93.122.2]) by tomts19-srv.bellnexxia.net
-          (InterMail vM.4.01.03.23 201-229-121-123-20010418) with ESMTP
-          id <20020219225151.BEZH22905.tomts19-srv.bellnexxia.net@superbt.com>
-          for <linux-mtd@lists.infradead.org>;
-          Tue, 19 Feb 2002 17:51:51 -0500
-Received: from localhost (ilatypov@localhost)
-	by superbt.com (8.11.4/8.11.4) with ESMTP id g1JMpl409998
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 17:51:47 -0500
-Date: Tue, 19 Feb 2002 17:51:46 -0500 (EST)
-From: Ilguiz Latypov <ilatypov@superbt.com>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: DiskOnChip 2000 and Millenium support in GRUB bootloader
-Message-ID: <Pine.LNX.4.44.0202191736490.9975-100000@server.superbt.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 16dJbK-0000yd-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2002 23:23:11 +0000
+Date: Wed, 20 Feb 2002 09:33:45 +1000
+Message-Id: <200202192333.JAA25230@singularity.tronunltd.com>
+To: "Chris Fowler" <cfowler@outpostsentinel.com>
+Subject: RE: Kerlen 2.4.13 and ramdisks
+From: "Ian" <Relativity@HumanHeuristic.com>
+Cc: <linux-mtd@lists.infradead.org>
+Reply-To: "Ian" <Relativity@HumanHeuristic.com>
+Content-type: text/plain; charset="us-ascii"
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,31 +21,153 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hello,
+The only thing I can think to suggest is that you verify the max size of the ramdisks
+in either your kernel config, or your kernel boot params.  This will also cause you
+problems if its not set correctly.
 
-I copied the Millenium-specific operations from the existing MTD driver to
-the GRUB bootloader.  Thanks a lot to David for his original
-implementation of the GRUB-compatible booloader.
 
-Can anybody with DOC Millenium try the patch?  It's
-    patches/grub-2002-02-19-doc.patch
-in the Linux MTD repository described at
-    http://linux-mtd.infradead.org/
 
-The patch can be applied against the 2002-02-19 version of GRUB CVS at 
-    http://savannah.gnu.org/cvs/?group_id=68
-
-I tested the patch with a 64M DiskOnChip 2000.  The GRUB configure command 
-was as follows:
-    ./configure --enable-diskonchip --disable-ffs --disable-xfs 
-                --disable-jfs --disable-vstafs --disable-reiserfs 
-                --disable-minix --disable-fat
-
-This left only ext2 read access in GRUB to load the kernel, as my 
-DiskOnChip was split into ext2 and ext3 partitions.
-
-The firmware file will be generated in the GRUB's stage1 directory.  I 
-copied the stage1 source code to generate a stand-alone patch against 
-GRUB repository.
-
-Ilguiz
+  ----- Original Message -----
+>From: "Chris Fowler" <cfowler@outpostsentinel.com>
+>To: "Ian" <Relativity@humanheuristic.com>
+>Subject:  RE: Kerlen 2.4.13 and ramdisks
+>Date: Tue, 19 Feb 2002 17:50:58 -0500
+>
+> 
+> the image bein dd'ed is an ext2 file system image.  I eliminated most my
+> problems with
+> using 1 ram disk and no more.  2.2.X I used 3 ram disks.  In 2.4.X Im
+> linmited to 1.
+> 
+> The mount comand was an example.  If I used loopback, I would need to mount
+> it rw.  That would cause
+> problems during power failure.  That is whay I take a software image, dd it
+> to memory and mount as the rootfs.
+> If you lost power than you would only loose contents of memory.  If you
+> failed to issue "save" for the config, you would loose
+> working config too.
+> 
+> My unit requires no shutdown nor supports.  "restart" simply tells the
+> kernel to toggle the reset line
+> on the machine no processes is killed in the restart.  They just don't exist
+> anymore.  I want a rootfs that
+> is writable and not volatile.  If I loose it I do not care.  It is setting
+> on flash as an encrytped file.
+> 
+> 
+> ]-----Original Message-----
+> From: Ian [mailto:Relativity@HumanHeuristic.com]
+> Sent: Tuesday, February 19, 2002 5:41 PM
+> To: Chris Fowler
+> Cc: linux-mtd@lists.infradead.org
+> Subject: RE: Kerlen 2.4.13 and ramdisks
+> 
+> 
+> > loopback would not allow me to write to the image while running it.
+> Making
+> loopback allows you to make modifications without dd'ing it in and out of
+> ramdisks (I used to use both methods for my initrd creation).
+> 
+> > the flash (upgrade) process more difficult.  The FS is ext2 and I do not
+> use
+> > mount.
+> I don't understand - you originally said;
+>                   "mount /dev/ram6  fails."
+> 
+> . but that said, I was mistaken too .. I meant the "-t" option ...
+> Ie; mount -t ext2 /dev/ram6 /tmp/flash
+> 
+> 
+> > The only way the kernel can mount this is by me putting it in memory
+> first.
+> > The only way to do that is with initrd.  It owkrs when initrd only places
+> > that data there.  When I try to download the *same* data from the network
+> > and put there it craps out.  I have to download the data first before I
+> can
+> If this is the case, where you download it and try to treat it like an
+> initrd, then
+> I'd be quicker to blame that process, than the ramdisk driver in 2.4.x --
+> particularly
+> when you say that it works as a straight initrd process (which is only
+> running
+> in ram anyway, as you know).
+> 
+> > place it in /dev/ram7.  TO do that I mount a ram fs at a upper limit of
+> > 32mb.  Download the file there then place it in /dev/ram7.  Just by using
+> > that memory as temporary storeage I'm haing problems.  I've read posts
+> that
+> > state that certain 2.4.X kernels have problems repecting the boundaries of
+> a
+> > ramdisk.  They tend to overwrite those areas when needing memory.
+> In all the work we did with ramdisks, I don't think we ever dd'd the img
+> directly
+> to the ramx device ... we always dd'd /dev/zero out to the size we wanted,
+> mke2fs'd it, then untar'd our package ... and we never had any problems with
+> that (in high 2.2.x's and low 2.4.x's too).
+> 
+> 
+> >
+> >
+> > lilo.conf:
+> > ....
+> >    root=/dev/ram7
+> >
+> > -----Original Message-----
+> > From: linux-mtd-admin@lists.infradead.org
+> > [mailto:linux-mtd-admin@lists.infradead.org]On Behalf Of Ian
+> > Sent: Tuesday, February 19, 2002 4:51 PM
+> > To: Chris Fowler
+> > Cc: linux-mtd@lists.infradead.org
+> > Subject: Re:Kerlen 2.4.13 and ramdisks
+> >
+> >
+> >
+> > If you have loopback support compiled in you can mount it directly through
+> > the loopback driver, without creating a ramdisk ...
+> >
+> > What was the error that mount gave?  You probably only need to specify
+> > the "-o" parameter ... mount doesn't usually detect fancy filesystems ...
+> >
+> >
+> >   ----- Original Message -----
+> > >From: "Chris Fowler" <cfowler@outpostsentinel.com>
+> > >To: <linux-mtd@lists.infradead.org>
+> > >Subject:  Kerlen 2.4.13 and ramdisks
+> > >Date: Tue, 19 Feb 2002 10:33:33 -0500
+> > >
+> > > You guys might have ran across a ramdisk problem.  I have a feeling that
+> > kernel 2.4.13 is
+> > not respecting my ramdisks.
+> > >
+> > >
+> > > dd if=/etc/user.img of=/dev/ram6
+> > >
+> > > mount /dev/ram6  fails.
+> > >
+> > >
+> > > Is this a problem?
+> > >
+> > >
+> > >
+> > >
+> > >
+> > > ______________________________________________________
+> > > Linux MTD discussion mailing list
+> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > >
+> >
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >
+> >
+> >
+> 
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
