@@ -1,52 +1,39 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13lYfm-0003rT-00
-	for mtd-list@infradead.org; Tue, 17 Oct 2000 16:29:02 +0100
-Subject: Re: typo in sbc_mediagx.c
-In-Reply-To: <31016.971770537@redhat.com> from David Woodhouse at "Oct 17, 2000
- 09:15:37 am"
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Tue, 17 Oct 2000 11:28:58 -0400 (EDT)
-CC: mtd@infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Message-Id: <E13lYfi-0006hw-00@mokona.furryterror.org>
-From: Amy Fong <afong@furryterror.org>
+	id 13lYjn-0003ru-00
+	for mtd-list@infradead.org; Tue, 17 Oct 2000 16:33:11 +0100
+Received: from [194.130.39.252] (helo=passion.cygnus)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13lYjm-0003rl-00
+	for mtd@infradead.org; Tue, 17 Oct 2000 16:33:10 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <E13lYfi-0006hw-00@mokona.furryterror.org> 
+References: <E13lYfi-0006hw-00@mokona.furryterror.org> 
+To: Amy Fong <afong@furryterror.org>
+Cc: mtd@infradead.org
+Subject: Re: typo in sbc_mediagx.c 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 17 Oct 2000 16:31:49 +0100
+Message-ID: <21339.971796709@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> 
-> nico@cam.org said:
-> > Fixed. 
-> 
-> Thanks. 
-> 
-> Note that if you're using mtdblock.c you'll need to use v1.23 - 1.24 is my 
-> first attempt at using a kernel thread and it doesn't actually appear to 
-> work. It'll probably be a few days before I get a chance to look at it 
-> again - volunteers are welcome if you feel so inclined :)
-> 
-> --
-> dwmw2
 
-Uh yeah. You're using the QUEUE_EMPTY macro which doesn't really exist
-in 2.2 or at least exists as 
+afong@furryterror.org said:
+>  Uh yeah. You're using the QUEUE_EMPTY macro which doesn't really
+> exist in 2.2 or at least exists as 
 
-include/lists.h:
+Hmmm. It doesn't work in 2.4 either. But I've illustrated how I think it 
+can be done with a kernel thread. If anyone disagrees with me sufficiently, 
+I'm quite happy to be proved wrong, as long as the proof is under GPL.
 
-#define QUEUE_EMPTY(head, listnam) \
-        ((QUEUE_FIRST(head, listnam) == QUEUE_LAST(head, listnam)) && \
-	((u_long)QUEUE_FIRST(head, listnam) == (u_long)head))
+Of course, if you agree with my method in spite of my implementation, 
+you're welcome to fix that too :)
 
-as opposed to 
 
-2.4's include/blk.h
-#define QUEUE_EMPTY list_empty(&blk_dev[MAJOR_NR].request_queue.queue_head)
-
-<twitch> 
-
-;)
+--
+dwmw2
 
 
 
