@@ -1,55 +1,44 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 12ZZ8Y-0000PV-00
-	for mtd-list@infradead.org; Mon, 27 Mar 2000 14:00:54 +0100
-Received: from colo.asti-usa.com ([205.252.89.99] ident=root)
+	id 12ZZGL-0000R2-00
+	for mtd-list@infradead.org; Mon, 27 Mar 2000 14:08:57 +0100
+Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by infradead.org with esmtp (Exim 3.03 #1)
-	id 12ZZ8X-0000PP-00
-	for mtd@infradead.org; Mon, 27 Mar 2000 14:00:53 +0100
-Received: from zentropix.com ([195.166.67.91])
-	by colo.asti-usa.com (8.9.3/8.9.3) with ESMTP id IAA06131
-	for <mtd@infradead.org>; Mon, 27 Mar 2000 08:06:30 -0500
-Message-ID: <38DF5BE8.1700BEE8@zentropix.com>
-Date: Mon, 27 Mar 2000 14:02:32 +0100
-From: Trevor Woolven <trevw@zentropix.com>
-MIME-Version: 1.0
-To: MTD <mtd@infradead.org>
-Subject: GRUB vs LILO
+	id 12ZZGK-0000Qw-00
+	for mtd@infradead.org; Mon, 27 Mar 2000 14:08:56 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <38DF5BE8.1700BEE8@zentropix.com> 
+References: <38DF5BE8.1700BEE8@zentropix.com> 
+To: Trevor Woolven <trevw@zentropix.com>
+Cc: MTD <mtd@infradead.org>
+Subject: Re: GRUB vs LILO 
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Date: Mon, 27 Mar 2000 14:08:55 +0100
+Message-ID: <1389.954162535@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
-Does anyone know if GRUB has an in-built limit to the size of DOC you
-can use it with?
 
-I've got a 4MB DOC2000 and a 24MB DOC2000, both with very similar
-filesystems & kernels on. I can boot my system (from hard-disk or DOC)
-using LILO (with Dvir Oren's patch applied) with either device installed
-but GRUB will only allow me to use the smaller one.
+trevw@zentropix.com said:
+> 
+>   [Linux-bzImage, setup=0x800, size=0x88440]
+> Selected item cannot fit into memory 
 
-My command line is:
-grub> kernel (hd0,0)/mtd/bzImage root=/dev/hda5
+This is because the M-Systems firmware takes up a large chunk of your system 
+RAM for caching block attributes - this is proportional to the size of the 
+DiskOnChip, naturally.
 
-and I get:
+The code I'm currently hacking into Grub will drive the DiskOnChip directly, so
+you can remove the M-Systems firmware. My Grub code doesn't do any caching - so
+it'll be a tad slower, but it'll work on bigger devices. 
 
-  [Linux-bzImage, setup=0x800, size=0x88440]
 
-Selected item cannot fit into memory
 
-Any help much appreciated.
+--
+dwmw2
 
-Thanks
 
-Trevor.
--- 
-Trevor Woolven - Director of Customer Applications Engineering
-Zentropix Inc - a Lineo company
-
-Tel: +44 (0)1273 234 647	 Fax: +44 (0)1273 704 482
-
-Visit http://www.zentropix.com/ for Real Time Linux Tools
-Visit http://www.realtimelinux.org/ for Real Time Linux Information
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
