@@ -1,17 +1,21 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from mail.utfors.se ([195.58.103.125] helo=blooper.utfors.se)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17JsQM-0002Hl-00
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 10:03:46 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <3D0DA13D.70803@emsoftltd.com> 
-References: <3D0DA13D.70803@emsoftltd.com>  <3D0D9DA9.6090404@emsoftltd.com> <3D0D981D.8040602@emsoftltd.com> <18852.1024302161@redhat.com> <19294.1024303310@redhat.com> 
-To: Jason Chan <jason@emsoftltd.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Bad Block management routine for MTD NandFlash driver? 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Mon, 17 Jun 2002 10:03:42 +0100
-Message-ID: <19702.1024304622@redhat.com>
+	id 17Jsky-0002JZ-00
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 10:25:04 +0100
+Received: from there ([212.105.56.242])
+	by blooper.utfors.se (Utfors AB) with SMTP id g5H9OXJJ003077
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jun 2002 11:24:33 +0200 (MEST)
+Message-Id: <200206170924.g5H9OXJJ003077@blooper.utfors.se>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>
+To: linux-mtd@lists.infradead.org
+Subject: point()/unpoint() questions + small cfi_cmdset_0001.c patch
+Date: Mon, 17 Jun 2002 11:24:33 +0200
+References: <0111121314140A.28381@jocke.lumentis.se> <02012911331100.15969@jocke.lumentis.se> <02022614424803.15969@jocke.lumentis.se>
+In-Reply-To: <02022614424803.15969@jocke.lumentis.se>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,38 +27,58 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-jason@emsoftltd.com said:
->     Sorry, I don't fully understand your 2nd suggestion, 'translation
-> layer' like the SmartMedia one. Is that means the smartmedia mtd
-> driver already has bad block management? 
+Hi all
 
-You need more than just bad block management. You need a complete file 
-system, to give you wear levelling and reliable operation.
+I am looking into using point()/unpoint() in scan.c instead of mtd->read(). A few questions:
 
-The 'mtdblock' driver is not meant for read/write use in normal
-circumstances. When you write a sector to the 'mtdblock' device, it reads
-the whole erase block from the flash, modifies the sector you wanted to
-change, erases the flash erase block and writes back the modified data.
+1)  There is no point()/unpoint() function pointers in struct map_info, so I wounder where one should
+     add the point()/unpoint() functions?
 
-If you lose power or crash between the erase and the writeback, you lose a 
-whole erase block of data, not just the sector you were overwriting. And 
-there's no wear levelling -- so some blocks will be worn to the point of 
-destruction while others still have plenty of life.
+2)  It is not clear to me how the semantics for point()/unpoint() works, is the following sequence legal:
+     point()
+     ...
+     read()
+     ...
+     point()
+     ....
+     point()
+     ....
+     unpoint()
+     ...
+     write()
 
-You must have some kind of file system on the flash, whether that's a real 
-file system such as JFFS2 or a pseudo-filesystem like SmartMedia or NFTL 
-which emulates a block device, on top of which you put a 'normal' file 
-system.
 
-We don't yet have an implementation of the SmartMedia translation layer in 
-CVS, although I think someone _has_ implemented it. NFTL has patent issues 
-so I wouldn't advise using that. In fact, emulating a block device is 
-the wrong approach entirely -- it's no longer justifiable now that we're 
-not using DOS, and you should probably be using JFFS2. 
 
-JFFS2 recognises bad blocks during the medium scan at mount time, and 
-does not keep a separate table of bad blocks. If this approach is 
-insufficient, patches are welcome. 
+Also here is a small patch which fixes 2 bugs:
+ 1) Flash always reports these in litte endian. This corrects things on a BE CPU.
+ 2) Was doing if ( (!*p) & 2), should be if (! (*p &2))
 
---
-dwmw2
+Index: cfi_cmdset_0001.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0001.c,v
+retrieving revision 1.98
+diff -u -r1.98 cfi_cmdset_0001.c
+--- cfi_cmdset_0001.c   16 Jun 2002 17:14:06 -0000      1.98
++++ cfi_cmdset_0001.c   17 Jun 2002 09:17:05 -0000
+@@ -156,9 +156,9 @@
+                }
+
+                /* Do some byteswapping if necessary */
+-               extp->FeatureSupport = cfi32_to_cpu(extp->FeatureSupport);
+-               extp->BlkStatusRegMask = cfi32_to_cpu(extp->BlkStatusRegMask);
+-               extp->ProtRegAddr = cfi32_to_cpu(extp->ProtRegAddr);
++               extp->FeatureSupport = le32_to_cpu(extp->FeatureSupport);
++               extp->BlkStatusRegMask = le16_to_cpu(extp->BlkStatusRegMask);
++               extp->ProtRegAddr = le16_to_cpu(extp->ProtRegAddr);
+
+ #ifdef DEBUG_CFI_FEATURES
+                /* Tell the user about it in lots of lovely detail */
+@@ -300,7 +300,7 @@
+         */
+        switch (chip->state) {
+        case FL_ERASING:
+-               if (!((struct cfi_pri_intelext *)cfi->cmdset_priv)->FeatureSupport & 2)
++               if (!(((struct cfi_pri_intelext *)cfi->cmdset_priv)->FeatureSupport & 2))
+                        goto sleep; /* We don't support erase suspend */
+
+                cfi_write (map, CMD(0xb0), cmd_addr);
