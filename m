@@ -1,18 +1,21 @@
-Received: from [66.220.10.164] (helo=mail.rinconhosting.com)
+Received: from smtp-out.bhp.t-online.de ([195.145.119.39])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 190kfu-0005ya-N9
-	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 17:01:18 +0100
-Received: from dirt ([66.68.146.73])
-        by mail.rinconhosting.com (Merak 5.5.7) with SMTP id HUB73912
-        for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 08:03:25 -0800
-Date: Wed, 2 Apr 2003 09:55:00 -0600
-From: Earl Manning <EManning@PRISMIQ.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <20030402095500.2672a730.EManning@PRISMIQ.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: issue with eraseall
+	id 190ku6-00065B-BR
+	for <linux-mtd@lists.infradead.org>; Wed, 02 Apr 2003 17:15:58 +0100
+Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
+	21 2002)) with SMTP id <0HCQ0038L55RB4@smtp-out.bhp.t-online.de> for
+	linux-mtd@lists.infradead.org; Wed, 02 Apr 2003 18:15:28 +0200 (MEST)
+Date: Wed, 02 Apr 2003 19:15:56 +0200
+From: Thomas Gleixner <tglx@linutronix.de>
+In-reply-to: <20030402095500.2672a730.EManning@PRISMIQ.com>
+To: Earl Manning <EManning@PRISMIQ.com>, linux-mtd@lists.infradead.org
+Message-id: <200304021915.56265.tglx@linutronix.de>
+MIME-version: 1.0
+References: <20030402095500.2672a730.EManning@PRISMIQ.com>
+Content-type: text/plain; charset=iso-8859-1
+Content-transfer-encoding: 7BIT
+Subject: Re: issue with eraseall
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using the MTD stuff with a Samsung NAND chip and all is going well, except that I had to change a line in the eraseall program.  As it turns out the clean marker written by the eraseall program puts sizeof( struct jffs2_unknown_node ) [12 bytes] into the totlen element.  When jffs2 tries to mount the now blank partition, the cleanmarker check fails because the value is not 8.
+On Wednesday 02 April 2003 17:55, Earl Manning wrote:
+> In my implementation I just changed the value written by eraseall to be 8.
+> The offending pieces of code are:
+>
+> 	util/eraseall.c:84
+> 	fs/jffs2/wbuf.c:671-675
+I don't see a piece of offending code there
 
-In my implementation I just changed the value written by eraseall to be 8.  
+util/eraseall.c: 106 ...
+		// format for JFFS2
+		if (!jffs2) 
+			continue;
+				
+		// write cleanmarker	
+--->		if (isNAND) {
+			struct mtd_oob_buf oob;
+			oob.ptr = (unsigned char *) &cleanmarker;
+			oob.start = erase.start;
+--->			oob.start += meminfo.oobsize == 16 ? 8 : 6;
+--->			oob.length = meminfo.oobsize == 16 ? 8 : 2;
+			if (ioctl (fd, MEMWRITEOOB, &oob) != 0) {
+				fprintf(stderr, "\n%s: %s: MTD writeoob failure: %s\n", exe_name, 
+mtd_device, strerror(errno));
+				continue;
+			}
+		} else {
+This is for NOR !
+		}
 
-The offending pieces of code are:
 
-	util/eraseall.c:84
-	fs/jffs2/wbuf.c:671-675
-
-Is there a better place to post this information?
-
-Thanks,
-Earl Manning
- 
+-- 
+Thomas
+________________________________________________________________________
+linutronix - competence in embedded & realtime linux
+http://www.linutronix.de
+mail: tglx@linutronix.de
