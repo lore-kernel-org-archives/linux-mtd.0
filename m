@@ -1,19 +1,16 @@
-Received: from orion.cirsa.com ([195.77.234.21])
-	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
-	id 1A0N2j-0000Y8-I7
-	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 16:19:33 +0100
-Received: from ntdes.cirsa.com (unverified [172.16.32.11]) by orion.cirsa.com
-	<T64c74635abac12030e340@orion.cirsa.com> for
-	<linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 17:19:56 +0200
-From: "Joan Bertran" <jbertran@cirsa.com>
+Received: from mail.fst.it ([213.255.39.254] helo=fst.it)
+	by pentafluge.infradead.org with smtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1A0NHq-0000gU-QC
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Sep 2003 16:35:10 +0100
+Message-ID: <00a601c37ec3$46b95760$b670a8c0@laptoplukkino>
+From: "Luca Contini" <luca.contini@mediaenabling.com>
 To: <linux-mtd@lists.infradead.org>
-Date: Fri, 19 Sep 2003 17:18:11 +0200
-Message-ID: <NBBBLDNNJKMLEPACANBFMEHBDIAA.jbertran@cirsa.com>
+Date: Fri, 19 Sep 2003 17:32:46 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
-Subject: Command line parameters for physmap.c
+Content-Transfer-Encoding: 7bit
+Subject: mounting mtd device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQogIEhpLA0KDQogIEknbSBwcm9ncmFtbWluZyBhbiBlbWJlZGRlZCBsaW51eCB1bmRlciBhbiB4
-ODYsIGJvb3RpbmcgZnJvbQ0KICBhIFBDSSByb20gYW5kIGkgZm91bmQgaW50ZXJlc3RpbmcgdG8g
-Z2l2ZSB0aGUgcm9tIGFkZHJlc3MNCiAgdGhyb3VnaCBrZXJuZWwgY29tbWFuZCBsaW5lIGNvbXBv
-c2VkIGJ5IHRoZSBiaW9zIGluc3RlYWQNCiAgb2Ygd3JpdGluZyBhIHBjaSBtYXBwaW5nIGRyaXZl
-ciBiZWNhdXNlIHRoZSBpbnRlcm5hbCByb20gbWFwDQogIGNvdWxkIGJlIGtub3duIG9ubHkgYnkg
-dGhlIGJpb3MuDQoNCiAgSSBoYXZlIHNldmVyYWwgcXVlc3Rpb25zDQogLSBXaHkgcGh5c21hcC5j
-IGRlcGVuZHMgb24gY2ZpX3Byb2JlIGlmIGl0IGNhbiB3b3JrIHdpdGggbWFwX3JvbT8NCg0KIC0g
-V291bGQgeW91IGZpbmQgaW50ZXJlc3RpbmcgdG8gYmUgYWJsZSB0byBwYXNzIHBoeXNtYXAgYWRk
-cmVzc2VzDQogICBhcyBwYXJhbWV0ZXJzIChtb2R1bGUgb3Iga2VybmVsIGNtZCBsaW5lIHBhcmFt
-ZXRlcnMpDQoNCiAgIFRvIHRlc3QgaWYgaXQgaXMgcG9zaWJsZSBpIGhhdmUgbW9kaWZpZWQgcGh5
-c21hcC5jDQogICBhbmQgZHJpdmVycy9tdGQvbWFwcy9Db25maWcuaW4NCg0KICBSZWdhcmRzLg0K
-DQogIEhlcmUgYXJlIHRoZSBkaWZmcy4NCg0KDQokIGRpZmYgcGh5c21hcC5jIHBoeXNtYXAuYy5P
-UklHSU5BTA0KMTksMjBjMTksMjANCjwgI2RlZmluZSBXSU5ET1dfQUREUiByb21fYWRkcmVzcw0K
-PCAjZGVmaW5lIFdJTkRPV19TSVpFIHJvbV9zaXplDQotLS0NCj4gI2RlZmluZSBXSU5ET1dfQURE
-UiBDT05GSUdfTVREX1BIWVNNQVBfU1RBUlQNCj4gI2RlZmluZSBXSU5ET1dfU0laRSBDT05GSUdf
-TVREX1BIWVNNQVBfTEVODQoyMyw0OWQyMg0KPCBNT0RVTEVfUEFSTShyb21fYWRkcmVzcywgImki
-KTsNCjwgTU9EVUxFX1BBUk1fREVTQyhyb21fYWRkcmVzcywgIlJvbSBBZGRyZXNzIG9mIHRoZSBm
-bGFzaCIpOw0KPCBNT0RVTEVfUEFSTShyb21fc2l6ZSwgImkiKTsNCjwgTU9EVUxFX1BBUk1fREVT
-Qyhyb21fc2l6ZSwgIlNpemUgb2YgdGhlIGZsYXNoIG1hcHBpbmciKTsNCjwNCjwgc3RhdGljIHNp
-emVfdCByb21fYWRkcmVzcyA9IENPTkZJR19NVERfUEhZU01BUF9TVEFSVDsNCjwgc3RhdGljIHVu
-c2lnbmVkIHJvbV9zaXplICA9IENPTkZJR19NVERfUEhZU01BUF9MRU47DQo8DQo8DQo8IC8qIG9w
-dGlvbnMgLSBub25tb2R1bGFyICovDQo8ICNpZm5kZWYgTU9EVUxFDQo8IHN0YXRpYyBpbnQgX19p
-bml0IHNldF9yb21fc2l6ZShjaGFyICpzdHIpDQo8IHsNCjwgICAgICAgcm9tX3NpemUgPSBzaW1w
-bGVfc3RydG91bChzdHIsTlVMTCwwKTsNCjwgICAgICAgcmV0dXJuIDE7DQo8IH0NCjwNCjwgc3Rh
-dGljIGludCBfX2luaXQgc2V0X3JvbV9hZGRyZXNzKGNoYXIgKnN0cikNCjwgew0KPCAgICAgICBy
-b21fYWRkcmVzcyA9IHNpbXBsZV9zdHJ0b3VsKHN0cixOVUxMLDApOw0KPCAgICAgICByZXR1cm4g
-MTsNCjwgfQ0KPA0KPCBfX3NldHVwKCJyb21fc2l6ZT0iLCBzZXRfcm9tX3NpemUpOw0KPCBfX3Nl
-dHVwKCJyb21fYWRkcmVzcz0iLCBzZXRfcm9tX2FkZHJlc3MpOw0KPCAjZW5kaWYNCjwNCjk3Yzcw
-DQo8ICAgICAgIHNpemU6IENPTkZJR19NVERfUEhZU01BUF9MRU4sICAgLy9XSU5ET1dfU0laRSwN
-Ci0tLQ0KPiAgICAgICBzaXplOiBXSU5ET1dfU0laRSwNCjE1MGQxMjINCjwgICAgIHBoeXNtYXBf
-bWFwLnNpemUgPSBXSU5ET1dfU0laRTsNCg0KDQokIGRpZmYgQ29uZmlnLmluIENvbmZpZy5pbi5P
-UklHSU5BTA0KOWM5DQo8IGRlcF90cmlzdGF0ZSAnICBDRkkgRmxhc2ggZGV2aWNlIGluIHBoeXNp
-Y2FsIG1lbW9yeSBtYXAnIENPTkZJR19NVERfUEhZU01BUA0KJENPTkZJR19NVEQNCi0tLQ0KPiBk
-ZXBfdHJpc3RhdGUgJyAgQ0ZJIEZsYXNoIGRldmljZSBpbiBwaHlzaWNhbCBtZW1vcnkgbWFwJyBD
-T05GSUdfTVREX1BIWVNNQVANCiRDT05GSUdfTVREX0dFTl9QUk9CRQ0KDQpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXw0KX19fXw0KRXN0ZSBtZW5zYWplIHNlIGRpcmlnZSBleGNsdXNpdmFtZW50ZSBh
-IHN1IGRlc3RpbmF0YXJpbyB5IHB1ZWRlIGNvbnRlbmVyDQppbmZvcm1hY2nzbiBDT05GSURFTkNJ
-QUwgc29tZXRpZGEgYSBzZWNyZXRvIHByb2Zlc2lvbmFsIG8gY3V5YSBkaXZ1bGdhY2nzbg0KZXN0
-6SBwcm9oaWJpZGEgZW4gdmlydHVkIGRlIGxhIGxlZ2lzbGFjafNuIHZpZ2VudGUuIFNpIGhhIHJl
-Y2liaWRvIGVzdGUNCm1lbnNhamUgcG9yIGVycm9yLCBsZSByb2dhbW9zIHF1ZSBub3MgbG8gY29t
-dW5pcXVlIGlubWVkaWF0YW1lbnRlIHBvciBlc3RhDQptaXNtYSB27WEgbyBwb3IgdGVs6WZvbm8g
-KDM0IDkzIDczOSA2NyAwMCkgeSBwcm9jZWRhIGEgc3UgZGVzdHJ1Y2Np824uDQpO83Rlc2UgcXVl
-IGVsIGNvcnJlbyBlbGVjdHLzbmljbyB27WEgSW50ZXJuZXQgbm8gcGVybWl0ZSBhc2VndXJhciBu
-aSBsYQ0KY29uZmlkZW5jaWFsaWRhZCBkZSBsb3MgbWVuc2FqZXMgcXVlIHNlIHRyYW5zbWl0ZW4g
-bmkgbGEgY29ycmVjdGEgcmVjZXBjafNuDQpkZSBsb3MgbWlzbW9zLiAgRW4gZWwgY2FzbyBkZSBx
-dWUgZWwgZGVzdGluYXRhcmlvIGRlIGVzdGUgbWVuc2FqZSBubw0KY29uc2ludGllcmEgbGEgdXRp
-bGl6YWNp824gZGVsIGNvcnJlbyBlbGVjdHLzbmljbyB27WEgSW50ZXJuZXQsIHJvZ2Ftb3MgbG8N
-CnBvbmdhIGVuIG51ZXN0cm8gY29ub2NpbWllbnRvIGRlIG1hbmVyYSBpbm1lZGlhdGEuDQoNClRo
-aXMgbWVzc2FnZSBpcyBpbnRlbmRlZCBleGNsdXNpdmVseSBmb3IgaXRzIGFkZHJlc3NlZSBhbmQg
-bWF5IGNvbnRhaW4NCmluZm9ybWF0aW9uIHRoYXQgaXMgQ09ORklERU5USUFMIGFuZCBwcm90ZWN0
-ZWQgYnkgYSBwcm9mZXNzaW9uYWwgcHJpdmlsZWdlDQpvciB3aGljaCBkaXNjbG9zdXJlIGlzIHBy
-b2hpYml0ZWQgYnkgbGF3LiBJZiB0aGlzIG1lc3NhZ2UgaGFzIGJlZW4gcmVjZWl2ZWQNCmluIGVy
-cm9yLCBwbGVhc2UgaW1tZWRpYXRlbHkgbm90aWZ5IHVzIHZpYSBlLW1haWwgb3IgYnkgdGVsZXBo
-b25lICgzNCA5Mw0KNzM5IDY3IDAwKSBhbmQgZGVsZXRlIGl0Lg0KUGxlYXNlIG5vdGUgdGhhdCBJ
-bnRlcm5ldCBlLW1haWwgZG9lcyBub3QgZ3VhcmFudGVlIHRoZSBjb25maWRlbnRpYWxpdHkgb3IN
-CnRoZSBwcm9wZXIgcmVjZWlwdCBvZiB0aGUgbWVzc2FnZXMgc2VudC4gIElmIHRoZSBhZGRyZXNz
-ZWUgb2YgdGhpcyBtZXNzYWdlDQpkb2VzIG5vdCBjb25zZW50IHRvIHRoZSB1c2Ugb2YgSW50ZXJu
-ZXQgZS1tYWlsLCBwbGVhc2UgY29tbXVuaWNhdGUgaXQgdG8gdXMNCmltbWVkaWF0ZWx5Lg0KX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18NCl9fX18NCg0KDQo=
+Hi all,
+I've successfully compiled the mtd subsystem as a module (mtdblock.o and
+mtd_blkdevs.o).
+I've also successfully inserted those modules using insmod utility, so that
+now I can see the mtdblock block device (major number 31) in the
+/proc/devices list.
+But when I try to mount the corresponding /dev/mtdblock0 device to /mnt/mtd
+I got the following error:
+** mount: /dev/mtdblock0: unknown device **
+
+The /dev/mtdblock0 device relies on major number 31, minor number 0 and is a
+block device.
+Also, I've placed a
+printk("<1>open\n")
+in the 'blktrans_open' function to see whether the mount is at least trying
+to open the device but with no result.
+Does anyone know why?
+
+Regards
+
+Luca
