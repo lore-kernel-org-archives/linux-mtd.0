@@ -1,21 +1,19 @@
-Received: from linares.terra.com.br ([200.154.55.228])
+Received: from [2002:d592:9a28::1] (helo=pentafluge.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BajMQ-0002Id-50
-	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 18:58:27 -0400
-From: Lucas Correia Villa Real <lucasvr@gobolinux.org>
-To: David Vrabel <dvrabel@arcom.com>
-Date: Wed, 16 Jun 2004 19:58:56 -0300
-References: <200406161259.24278.lucasvr@gobolinux.org>
-	<40D07229.8030906@arcom.com>
-In-Reply-To: <40D07229.8030906@arcom.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+	id 1Bakk6-0002kW-Ek
+	for linux-mtd@lists.infradead.org; Wed, 16 Jun 2004 20:26:58 -0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+In-Reply-To: <34463.160.114.55.5.1087282322.squirrel@webmail.inf.u-szeged.hu>
+References: <40CD76C2.1080007@inf.u-szeged.hu> <40CDACF2.5040502@yandex.ru>
+	<34463.160.114.55.5.1087282322.squirrel@webmail.inf.u-szeged.hu>
+Content-Type: text/plain
+Date: Thu, 17 Jun 2004 01:25:40 +0100
+Message-Id: <1087431940.4530.14.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Message-Id: <200406161958.56915.lucasvr@gobolinux.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Am29LV128 support
+Subject: Re: (NAND) JFFS2 mount time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 16 June 2004 13:15, David Vrabel wrote:
-> > Does anyone know if is there any patch lying around that implements
-> > access to Am29LV128 flash memory? I've googled a bit and searched on the
-> > archives, and it appears that some people were using Am29LV128 on Linux,
-> > but I got no references to links from where I could fetch their patches.
->
-> Shouldn't need patches.  Does it not work?  I'm using an AMD AM29LV128
-> with no problems here with MTD CVS from 2004/04/14.
+On Tue, 2004-06-15 at 08:52 +0200, Ferenc Havasi wrote:
+> About our idea/plan: we would like to modify the mkfs and umount porcess
+> to store some extra information (inode_cache). 
 
-I couldn't test it yet, because I'll have the board with AM29LV128 available 
-only at the next week. But thanks, I'll fetch the CVS code then.
+I wasn't going to do it on umount. I was going to do it at the end of
+each eraseblock. When we've almost filled an eraseblock we write a
+summary to the end of it, containing all the information which we would
+otherwise have to read from it during mount.
 
-Cheers,
-Lucas
+That's basically a list of the { inode#, physical_offset, length } for
+each node in the eraseblock, and something about nlink. Note that
+there's a lot of redundancy in the offsets and lengths so we can
+contrive a storage method which is fairly efficient. 
+
+Then at mount we look first at the _end_ of each eraseblock for such a
+summary. If it exists, we read in the state from it. If not, we scan
+that particular eraseblock the old way.
+
+-- 
+dwmw2
