@@ -1,21 +1,18 @@
-Received: from anchor-post-36.mail.demon.net ([194.217.242.94])
+Received: from [61.135.145.13] (helo=websmtp03.sohu.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16yDkk-0005y4-00
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Apr 2002 16:23:18 +0100
-Received: from optex.demon.co.uk ([158.152.119.220] helo=optex1.optex.local)
-	by anchor-post-36.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 16yDkg-000DaT-0a
-	for linux-mtd@lists.infradead.org; Thu, 18 Apr 2002 16:23:15 +0100
-content-class: urn:content-classes:message
-Subject: JFFS2 on both Nand and StrataFlash
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 18 Apr 2002 16:23:36 +0100
-Message-ID: <541025071C7AC24C84E9F82296BB9B952CFF@OPTEX1.optex.local>
-From: "John Hall" <John.Hall@optionexist.co.uk>
-To: "Linux MTD list (E-mail)" <linux-mtd@lists.infradead.org>
+	id 16yP2Y-0006cW-00
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2002 04:26:29 +0100
+Received: from mail.sohu.com (unknown [192.168.41.208])
+	by websmtp03.sohu.com (Postfix) with ESMTP id 0E904685B0
+	for <linux-mtd@lists.infradead.org>; Fri, 19 Apr 2002 11:23:14 +0800 (CST)
+Message-ID: <367575.1019186593883.JavaMail.postfix@srv23.mail.sohu.com>
+Date: Fri, 19 Apr 2002 11:23:13 +0800 (CST)
+From: <swimming_fisher@sohu.com>
+To: <linux-mtd@lists.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Subject: (no subject)
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -28,23 +25,8 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
 Hi,
+I make a image using mkfs.jffs2 v1.17 for i386,and burn it into my Assabet under redboot.But I fail to mount it using  "mount -t jffs2 /dev/mtdblock3 /mnt".It suggests:
+ "jffs2_scan_empty():Empty block at 0xxxxxxx"
+ "jffs2_scan_eraseblock():Magic bitmask not found at 0xxxxxxx"
 
-I have a board that has Intel StrataFlash as well as a Smartmedia card
-slot. I have JFFS2 happily up and running on the Smartmedia card, but
-would also like to put JFFS2 on a section of the StrataFlash.
-
-If JFFS2 is configured for Nand flash (CONFIG_JFFS2_FS_NAND), will it
-run on the StrataFlash or is it currently one or the other?
-
-On a related note, how do I go about using just a portion of the flash.
-Do I need the partitioning support? The amount used will remain static.
-
-Thanks in advance,
-John Hall
-
-
---=20
-OptionExist Limited.
-The Irwin Centre, Scotland Road, Dry Drayton, Cambridge.
-Tel: +44 (0)1954 211244, Fax: +44 (0)1954 211565
-http://www.optionexist.co.uk/
+Why?Please give me some advice!
