@@ -1,34 +1,26 @@
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cs8bm-0004Ie-FH
-	for linux-mtd@lists.infradead.org; Fri, 21 Jan 2005 18:54:32 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.12.10/8.12.10) with ESMTP id j0LNsRJX007278
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 18:54:28 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j0LNsRql289914
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 18:54:27 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j0LNsR4d014304
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jan 2005 18:54:27 -0500
-From: Josh Boyer <jdub@us.ibm.com>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce050121144619d2899d@mail.gmail.com>
-References: <JPEALJAFNGDDLOPNDIEEAEDFDAAA.joakim.tjernlund@lumentis.se>
-	<Pine.LNX.4.58.0501191305530.8174@phoenix.infradead.org>
-	<20050119152427.GB26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191526140.8174@phoenix.infradead.org>
-	<20050119153233.GD26711@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.58.0501191957090.8174@phoenix.infradead.org>
-	<6934efce050121144619d2899d@mail.gmail.com>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=debian.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CsHCk-0007Eb-58
+	for linux-mtd@lists.infradead.org; Sat, 22 Jan 2005 04:05:20 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "David A. Marlin" <dmarlin@redhat.com>
+In-Reply-To: <41F119F8.2050500@redhat.com>
+References: <41ED2EB3.1070203@redhat.com>
+	<1106068748.16877.109.camel@tglx.tec.linutronix.de>
+	<41ED50B7.9000107@redhat.com>
+	<1106082905.16877.141.camel@tglx.tec.linutronix.de>
+	<41F03217.3070300@redhat.com>
+	<1106299658.5483.16.camel@tglx.tec.linutronix.de>
+	<41F119F8.2050500@redhat.com>
 Content-Type: text/plain
-Date: Fri, 21 Jan 2005 17:54:24 -0600
-Message-Id: <1106351665.10417.8.camel@windu.rchland.ibm.com>
+Date: Sat, 22 Jan 2005 10:05:00 +0100
+Message-Id: <1106384700.9818.3.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS3 & performance
+Subject: Re: additional error checks for AG-AND erase/write
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,36 +30,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-01-21 at 14:46 -0800, Jared Hulbert wrote:
-> New idea.
+On Fri, 2005-01-21 at 09:04 -0600, David A. Marlin wrote:
+> Thomas Gleixner wrote:
+> > On Thu, 2005-01-20 at 16:35 -0600, David A. Marlin wrote:
+> 	:
+> >>Note:  I changed a few literals to defined symbols in 'nand_base.c'. 
+> >>Please let me know if you would prefer this in a separate patch (or not 
+> >>at all).
+> > 
+> > If it's not too much work it would be nice when you can do this change
+> > first.
 > 
-> Why should we waste time compressing the uncompressable?  JFFS2
-> actually spent alot of time compressing.
+> Sure.  Would you like it as a patch, or should I just commit it?
+
+Commit. That's why you have CVS write access :)
+
+> >>@@ -1052,6 +1062,30 @@
+> >> static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
+> >> 			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo *oobsel)
+> >> {
+> >>+	return do_nand_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel, 0xff);
+> >>+}
+> > 
+> > Can you please change the call in nand_read too, so it calls
+> > do_nand_read_ecc directly instead of doing the double call ?
 > 
-> I can think of a few possible mechanisms:
-> a) extension based
->         -Don't compress files with .mpg, .jpg, .avi, .gz, etc.  User
-> defined list?
-> b) test first data
->          Compress the first X sized chunk of data to determine if the
-> file is compressable.  Make  determination and write data.
-> c) test node by node
->           If the last node didn't compress, stop compressing file.
+> Will do.
+> 
+> As I was looking over this, it occurred to me that the new name 
+> (do_nand_read_ecc) will be visible external to 'nand_base.c', but the 
+> function does not begin with 'nand'.  Would it be more appropriate to 
+> call it 'nand_do_read_ecc'?  Just trying to be consistent.
+> 
 
-Both b) and c) don't work.  Binary files with large sections of zeros
-between seemingly random data compress quite well.  With those schemes
-you loose the compression benefit of all those zeros (or any other
-repeating pattern).
+Makes sense. If you want to load your driver as a module, you also have
+to export the symbol.
 
-Option a) could work, maybe.  You can argue that file extensions are
-more of a Winders mechanism though.  None of those files have to end in
-a specific extension on Linux.  E.g. someone can make a foo.gz, copy it
-to foo.notgz, and gzip will still grok it.
-
-But if the list was user definable as you suggested, then users can tune
-to their specific usage.
-
-Or, as has been suggested before, you could use xattrs to do per-file
-compression.  This is probably the most generic option.
-
-josh
+tglx
