@@ -1,19 +1,23 @@
-Received: from fish.redhat.com ([213.86.99.237]
-	helo=passion.cambridge.redhat.com)
+Received: from amdext2.amd.com ([163.181.251.1])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19nb1R-0006G3-48
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 10:37:25 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Eugeny Mints <eugeny.mints@auriga.ru>
-In-Reply-To: <5B439D84E6653F4AA2E14A5D8898A7E165648D@auriga.auriga.ru>
-References: <5B439D84E6653F4AA2E14A5D8898A7E165648D@auriga.auriga.ru>
-Message-Id: <1060940229.5306.8.camel@passion.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 15 Aug 2003 10:37:10 +0100
-Content-Type: text/plain
+	id 19nm4r-0007aO-0u
+	for <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 22:25:41 +0100
+Received: from SAUSGW01.amd.com (sausgw01.amd.com [163.181.250.21])
+	by amdext2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7FLOZOI002927
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Aug 2003 16:24:47 -0500 (CDT)
+Received: from txexmtab.amd.com (txexmtab.amd.com [163.181.3.203]) by
+ amdint2.amd.com (8.12.8/8.12.8/AMD) with ESMTP id h7FLOVGV006557 for
+ <linux-mtd@lists.infradead.org>; Fri, 15 Aug 2003 16:24:31 -0500 (CDT)
+Message-ID: <BCBC9D21763E5C42BEF10DC3BF958C9E05924FC8@txexmtab.amd.com>
+From: jon.hoekwater@spansion.com
+To: linux-mtd@lists.infradead.org
+Date: Fri, 15 Aug 2003 16:24:30 -0500
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: Re: eraseall in mtd snapshot at 04 of August 2003
+Subject: cfi_cmdset_0002.c support for erase suspend and resume
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2003-08-15 at 10:34, Eugeny Mints wrote:
-> Hello David, all!
-> 
-> I use mtd snapshot at 04 of August 2003.  While 'eraseall /dev/mtdX'
-> works fine for my TOSHIBA TC58256AFT NAND flash, 'eraseall -j /dev/mtdX'
-> hangs. Earlier I used mtd snapshot at ealy of June and 'eraseall -j'
-> worked. I checked eraseall implementation - it is the same in both
-> snapshots. So, it seems the problem is somewhere in nand implementation
-> (possible with cleanmarker of writeoob). Any suggestions would be very
-> helpful!
+I noticed that support for erase suspend and resume
+is present in cfi_cmdset_0001.c but not in cfi_cmdset_0002.c.
+After reviewing the files, it seems like the same type
+solution could be applied to cfi_cmdset_0002.c for AMD/"AMD 
+like" devices.  Is this a correct assessment, or are there 
+some pitfalls that I have failed to see ?
 
-Precisely where does it hang? In what system call (strace), and what
-kernel function (ps l or SysRq-T)?
+I am adding support for the Am29LV640M.
 
--- 
-dwmw2
+I will add support for the three byte device ID and buffered
+writes.  Testing will be done on an Alchemy DbAU1500 using
+MontaVista Linux.
+
+What do I need to do to become a contributing developer?
+
+Thanks,
+Jon Hoekwater
+jon.hoekwater@spansion.com
+(512) 602-4252
+ 
