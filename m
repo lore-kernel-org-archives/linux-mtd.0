@@ -1,18 +1,17 @@
-Received: from mail1.danielvalve.com ([12.19.96.6] helo=mail1.danielind.com)
+Received: from modemcable084.137-200-24.mtl.mc.videotron.ca ([24.200.137.84] helo=xanadu.home)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15AHb0-0003kV-00
-	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 21:50:34 +0100
-Message-ID: <3B27D3EE.34F3C984@daniel.com>
-Date: Wed, 13 Jun 2001 15:58:22 -0500
-From: Vipin Malik <vipin.malik@daniel.com>
-MIME-Version: 1.0
-To: Nicolas Pitre <nico@cam.org>
-CC: David Woodhouse <dwmw2@infradead.org>,
- 	Xavier DEBREUIL <xde@inventel.fr>, linux-mtd@lists.infradead.org
+	id 15AHsG-0003mI-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Jun 2001 22:08:24 +0100
+Date: Wed, 13 Jun 2001 17:12:41 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+To: Vipin Malik <vipin.malik@daniel.com>
+cc: David Woodhouse <dwmw2@infradead.org>, Xavier DEBREUIL <xde@inventel.fr>,
+        <linux-mtd@lists.infradead.org>
 Subject: Re: root jffs2
-References: <Pine.LNX.4.33.0106131645450.23397-100000@xanadu.home>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <3B27D3EE.34F3C984@daniel.com>
+Message-ID: <Pine.LNX.4.33.0106131703070.23397-100000@xanadu.home>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,25 +23,39 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-> Just committed a patch to allow mounting JFFS2 on entirely empty (erased)
-> flash.  It should speed up the mount of partially erased partitions as well
-> since the empty blocks aren't erased unnecessarily anymore.
+
+On Wed, 13 Jun 2001, Vipin Malik wrote:
+
+> > Just committed a patch to allow mounting JFFS2 on entirely empty (erased)
+> > flash.  It should speed up the mount of partially erased partitions as well
+> > since the empty blocks aren't erased unnecessarily anymore.
+> >
 >
+> I hope you have accounted for "flipping bits" (TM Vipin Malik) sectors.
+> That's why the start of erase-sector signature was introduced in the first
+> place.
 
-I hope you have accounted for "flipping bits" (TM Vipin Malik) sectors.
-That's why the start of erase-sector signature was introduced in the first
-place.
+If a sector is empty, it is simply put in the queue for signature stamping.
 
-If a sector does not have the signature it *must be erased* even if you read
-0xff from
-all locations in the sector. Just writing the signature is not enough.
+> If a sector does not have the signature it *must be erased* even if you read
+> 0xff from
+> all locations in the sector. Just writing the signature is not enough.
 
-And of course, this signature must be invalidated before going in to erase the
-sector so that
-if power fails in the middle of the erase, the sector ends up being erased on
-the next mount.
+What do you mean by that?
 
-If you don't do this, "flipping bits" will come up behind you and nip you in
-the bud :)
+> And of course, this signature must be invalidated before going in to erase the
+> sector so that
+> if power fails in the middle of the erase, the sector ends up being erased on
+> the next mount.
 
-Vipin
+If that's really necessary to re-erase them even if they are already erased
+then it's just a matter of replacing "erase_complete_list" by
+"erase_pending_list"  on line 97 of fs/jffs2/scan.c.
+
+> If you don't do this, "flipping bits" will come up behind you and nip you in
+> the bud :)
+
+Please could you enlighten me on the matter?
+
+
+Nicolas
