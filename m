@@ -1,24 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=debian.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1ConDu-00066x-ED
-	for linux-mtd@lists.infradead.org; Wed, 12 Jan 2005 13:28:05 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Date: Wed, 12 Jan 2005 18:33:33 +0000 (GMT)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 In-Reply-To: <20050112181006.GI25638@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.58.0501121833250.10617@phoenix.infradead.org>
 References: <Pine.LNX.4.58.0501111221260.19297@phoenix.infradead.org>
 	<20050111215102.GA6289@wohnheim.fh-wedel.de>
 	<Pine.LNX.4.58.0501120913180.10617@phoenix.infradead.org>
 	<20050112181006.GI25638@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 12 Jan 2005 19:27:59 +0100
-Message-Id: <1105554479.17853.287.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD List <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Artem Bityuckiy <dedekind@infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS3 & performance
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-01-12 at 19:10 +0100, Jörn Engel wrote:
+Joern,
 
-> Ok, let me distinguish between the different problems:
->   Soft errors
+> Your ability to come up with excellent papers is astounding!
+Thanks :-)
+
+>   Blocks that fail during use
+> Quote: "Therefore, blocks should be marked as bad and no longer
+> accessed if there is either a block erase failure or a page program
+> failure."
 >
-> In other words, one out of 1000 flashes will have a non-recoverable
-> error sometime during it's life cycle.  Doesn't exactly make me happy,
-> but it's not horrible either.  In cases where little data is written
-> to flash or other components (cpu, power regulators) die before the
-> flash does, this is even less of an issue.
+> During erase, by definition those blocks don't hold crucial data.  Not
+> a problem.  Page program is slightly worse, but it only means that we
+> have to program a different block instead.  Make sure you don't use
+> the partial programming thing they hinted at and no crucial data is
+> lost.  Again, harmless.
 >
-> What does that mean for this discussion?  On Toshiba's NAND flashes,
-> according to their claims, jffs2 checksums won't catch any errors that
-> wouldn't already be caught either by ECC or during write/erase.
-> 
-> Am I wrong?
+>
+>   Permanent Failure
+> Those can be noticed during either erase or program, so the above
+> applies.  Harmless.
+Hmm. I think about the intermediate stage. I mean that block is good at 
+one moment, and it is bad at another moment. But *when* it become bad? Is 
+this only during erase? If so, you're probably right. But I'm not sure. Is 
+there some stage when block still contain crucial data, but is already 
+bad? If it is, CRC will cach this.
 
-No, using Reed-Solomon codes with an hardware decoder/encoder can
-improve this significantly (3 - 12 bits depending on the
-implementation), so your error propabilty is going near 0.
-Hardware encoders/decoders are easy to build into FPGA/CPLD. There are
-public VHDL sources available. The speed advantage over sofwtare ECC is
-significant.
-
-Missing error
-
-There is another type of error, which came up lately with AND FLASH. If
-you leave a block untouched in a range of blocks and erase/program the
-surrounding blocks, then the untouched block is likely to have bitflips.
-GC likeliness to GC clean blocks from time to time will cover this, but
-if you have a big number of clean blocks you might get into trouble.
-
-A strong argument for using seperate partitions for static and dynamic
-data.
-
-tglx
+--
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
