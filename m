@@ -1,19 +1,17 @@
-Received: from mxfep02.bredband.com ([195.54.107.73])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D6cro-00030m-PT
-	for linux-mtd@lists.infradead.org; Wed, 02 Mar 2005 18:02:58 -0500
-Received: from mxfep02 ([195.54.107.73] [195.54.107.73])
-	by mxfep02.bredband.com with SMTP
-	id <20050302230248.ZTMQ27886.mxfep02.bredband.com@mxfep02>
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Mar 2005 00:02:48 +0100
-From: <extabe@bredband.net>
-To: <linux-mtd@lists.infradead.org>
-Date: Wed, 2 Mar 2005 23:02:48 +0000
+Received: from 220-130-17-250.hinet-ip.hinet.net ([220.130.17.250]
+	helo=wellsyn.com)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1D6iRT-00045w-0e
+	for linux-mtd@lists.infradead.org; Thu, 03 Mar 2005 00:00:10 -0500
+Message-ID: <018701c51fac$bef413b0$1b0a060a@WellSyn.org>
+From: "Kevin Liao" <kevinliao@wellsyn.com>
+To: "MTD List" <linux-mtd@lists.infradead.org>
+Date: Thu, 3 Mar 2005 12:52:02 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Message-Id: <20050302230248.ZTMQ27886.mxfep02.bredband.com@mxfep02>
-Subject: Driver howto? =?iso-8859-1?q?Can=B4t?= write to nandflash.
+Content-Type: text/plain; format=flowed; charset="big5"; reply-type=original
+Content-Transfer-Encoding: 7bit
+Subject: compile error (undefined reference to jffs2_getlink) for kernel
+	2.4.26
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have made a nand flash driver whitch find my nandchip and i can use flash_rase whitout errors. I can allso mount /dev/mtdblock0 and put jffs on it, but when I try to write data on I always get:
+I use the snapshop 20050302 to patch kernel 2.4.26 for ARM. I get the 
+following
+error messages when I try to "make zImage":
 
-"nand_write_ecc: Attempt to write not page aligned data
-JFFS: jffs_write_node: Failed to write, requested 64, wrote -22"
+fs/fs.o(.text+0x37944): In function `jffs2_readlink':
+: undefined reference to `jffs2_getlink'
+fs/fs.o(.text+0x3799c): In function `jffs2_follow_link':
+: undefined reference to `jffs2_getlink'
+drivers/mtd/mtdlink.o(.text+0x5f28): In function 
+`cfi_intelext_partition_fixup':
+: undefined reference to `__ffs'
 
-Do I need to make my own nand_write_ecc function?
+I find this function "jffs2_getlink" should be in jffs2/read.c but it's does 
+not
+exist. Should I wait for later snapshop or I can fix it manuly? Thank a lot!
 
-I´m kind of new to this flashin thing and don´t know where to start my debugging. 
-
-/Andre
+Regards,
+Kevin 
