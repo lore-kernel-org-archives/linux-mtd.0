@@ -1,9 +1,9 @@
 Received: from [202.54.124.152] (helo=mailFA7.rediffmail.com)
 	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16Zol9-0006q5-00
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Feb 2002 07:50:52 +0000
-Date: 10 Feb 2002 08:02:19 -0000
-Message-ID: <20020210080219.17898.qmail@mailFA7.rediffmail.com>
+	id 16ZolH-0006qA-00
+	for <linux-mtd@lists.infradead.org>; Sun, 10 Feb 2002 07:50:59 +0000
+Date: 10 Feb 2002 08:02:30 -0000
+Message-ID: <20020210080230.18122.qmail@mailFA7.rediffmail.com>
 MIME-Version: 1.0
 From: "raja" <mahadoc@rediffmail.com>
 Reply-To: "raja" <mahadoc@rediffmail.com>
