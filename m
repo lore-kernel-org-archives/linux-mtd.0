@@ -1,14 +1,18 @@
-Received: from [81.80.30.218] (helo=uosfcqr.ch)
-	by canuck.infradead.org with smtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1BcJRN-0007Ns-RU
-	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 03:42:08 -0400
-From: mail@new-vision.ch
-Date: Mon, 21 Jun 2004 07:03:48 GMT
-MIME-Version: 1.0
-Message-ID: <6666cab926d027.22880.qmail@new-vision.ch>
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="us-ascii"
-Subject: Auf Kosten der deutschen Beitragszahler und Rentner!
+Received: from [210.72.21.206] (helo=mail.china.com.cn)
+	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
+	id 1BcFhc-00075A-QD
+	for linux-mtd@lists.infradead.org; Sun, 20 Jun 2004 23:42:44 -0400
+Received: from 210.72.21.207 (HELO china.com.cn) (envelope-from
+	zh_chaohao@china.com.cn)
+	by mx.china.com.cn (quarkmail-1.2.1) with SMTP id S918570AbUFUDsU
+	for linux-mtd@lists.infradead.org; Mon, 21 Jun 2004 11:48:20 +0800
+Message-ID: <4uhOs2uU98Jc$rY3KI1rl$lbao4NAZ@zh_chaohao>
+From: zh_chaohao@china.com.cn
+To: linux-mtd@lists.infradead.org
+Date: Mon, 21 Jun 2004 11:41:54 +0800
+Content-type: text/plain
+Content-Transfer-Encoding: base64
+Subject: Please recommend a mtd snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,9 +22,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>Das Milliardending<<
-
-Unter dieser Ueberschrift berichtete 'DER SPIEGEL' Nr. 38/99 schon am 20.9.1999 ueber die Geldschieberei in Milliardenhoehe auf Kosten der deutschen Beitragszahler und Rentner, die durch die unverantwortliche Gesetzgebung des Deutschen Bundestages moeglich wurde (UN-Archiv 1044, 8 Seiten). Hier eine der Anzeigen, die in der israelischen Presse erschienen!
-
-Link:
-http://www.fkun.de/UN-Nachrichten/UN-Archive/Dokumente/2004/01/rentenwerbung.htm
+SGksDQoNCkNhbiBzb21lYm9keSByZWNvbW1lbmQgbWUgYSBtdGQgc25hcHNo
+b3QgPw0KDQpJIHdhbnQgaXQ6DQoNClN0YWJsZQ0KRHVhbCBmbGFzaCBzdXBw
+b3J0DQpOT1IgYW5kIE5BTkQgRmxhc2ggc3VwcG9ydChJcyBuYW5kIHN1cHBv
+cnQgY29tcGxldGUgbm93PykNCkVyYXNlIHN1c3BlbmQgKG9wdGlvbmFsKQ0K
+DQpidHcsIHdoeSB0aGVyZSBpcyBubyAyMDAzIGFuZCAxLTUgbW9udGhzIG9m
+IDIwMDQgZGFpbHkgc25hcHNob3RzIG9uIGZ0cCA/DQp3aGVyZSBjYW4gSSBk
+b3dubG9hZCB0aGVtPw0KDQpUaGFuayB5b3UgdmVyeSBtdWNoIQ0K
