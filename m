@@ -1,25 +1,21 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from ihmc.us ([65.212.118.136])
 	by canuck.infradead.org with esmtp (Exim 4.42 #1 (Red Hat Linux))
-	id 1CRf80-00018C-Ck
-	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2004 18:10:21 -0500
-Received: from slurryseal.ddns.mvista.com (av [127.0.0.1])
-	by av.mvista.com (8.9.3/8.9.3) with ESMTP id PAA16863
-	for <linux-mtd@lists.infradead.org>; Tue, 9 Nov 2004 15:10:16 -0800
-Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
-	by slurryseal.ddns.mvista.com (8.12.8/8.12.8) with ESMTP id
-	iA9NAGLV016231
-	for <linux-mtd@lists.infradead.org>; Tue, 9 Nov 2004 15:10:16 -0800
-Received: (from tpoynor@localhost)
-	by slurryseal.ddns.mvista.com (8.12.8/8.12.8/Submit) id iA9NAGb7016229
-	for linux-mtd@lists.infradead.org; Tue, 9 Nov 2004 15:10:16 -0800
-Date: Tue, 9 Nov 2004 15:10:16 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1CRgJs-0001MK-Rn
+	for linux-mtd@lists.infradead.org; Tue, 09 Nov 2004 19:26:44 -0500
+Received: from [65.212.118.129] (account mtortonesi HELO [10.100.0.119])
+	by ihmc.us (CommuniGate Pro SMTP 4.2.5)
+	with ESMTP-TLS id 4155960 for linux-mtd@lists.infradead.org;
+	Tue, 09 Nov 2004 18:27:57 -0600
+From: Mauro Tortonesi <mtortonesi@ing.unife.it>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20041109231016.GA16039@slurryseal.ddns.mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Wed, 10 Nov 2004 01:28:10 +0100
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: Fix mkfs.jffs endian macros
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200411100128.10447.mtortonesi@ing.unife.it>
+Subject: problems installing linux on a diskonchip device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,97 +25,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Any objection to committing a patch for mkfs.jffs to get rid of the use of
-no-longer-userspace-safe kernel macros for endian conversions? -- Todd
 
-Index: mkfs.jffs.c
-===================================================================
-RCS file: /home/cvs/mtd/util/mkfs.jffs.c,v
-retrieving revision 1.12
-diff -u -r1.12 mkfs.jffs.c
---- mkfs.jffs.c	5 May 2004 18:33:33 -0000	1.12
-+++ mkfs.jffs.c	9 Nov 2004 22:56:02 -0000
-@@ -20,6 +20,31 @@
- #include <asm/byteorder.h>
- #include <ctype.h>
- 
-+#define swab16(x) \
-+        ((__u16)( \
-+                (((__u16)(x) & (__u16)0x00ffU) << 8) | \
-+                (((__u16)(x) & (__u16)0xff00U) >> 8) ))
-+#define swab32(x) \
-+        ((__u32)( \
-+                (((__u32)(x) & (__u32)0x000000ffUL) << 24) | \
-+                (((__u32)(x) & (__u32)0x0000ff00UL) <<  8) | \
-+                (((__u32)(x) & (__u32)0x00ff0000UL) >>  8) | \
-+                (((__u32)(x) & (__u32)0xff000000UL) >> 24) ))
-+
-+#if __BYTE_ORDER == __BIG_ENDIAN
-+#define cpu_to_le16(x) ({ __u16 _x = x; swab16(_x); })
-+#define cpu_to_le32(x) ({ __u32 _x = x; swab32(_x); })
-+#define cpu_to_be16(x) (x)
-+#define cpu_to_be32(x) (x)
-+#else
-+#define cpu_to_le16(x) (x)
-+#define cpu_to_le32(x) (x)
-+#define cpu_to_be16(x) ({ __u16 _x = x; swab16(_x); })
-+#define cpu_to_be32(x) ({ __u32 _x = x; swab32(_x); })
-+#endif
-+#define le32_to_cpu(x) cpu_to_le32(x)
-+#define be32_to_cpu(x) cpu_to_be32(x)
-+
- #define BLOCK_SIZE 1024
- #define JFFS_MAGIC 0x34383931 /* "1984" */
- #define JFFS_MAX_NAME_LEN 256
-@@ -184,10 +209,10 @@
-     *adr = val;
-     break;
-   case ENDIAN_LITTLE:
--    *adr = __cpu_to_le32(val);
-+    *adr = cpu_to_le32(val);
-     break;
-   case ENDIAN_BIG:
--    *adr = __cpu_to_be32(val);
-+    *adr = cpu_to_be32(val);
-     break;
-   }
- }
-@@ -199,10 +224,10 @@
-     *adr = val;
-     break;
-   case ENDIAN_LITTLE:
--    *adr = __cpu_to_le16(val);
-+    *adr = cpu_to_le16(val);
-     break;
-   case ENDIAN_BIG:
--    *adr = __cpu_to_be16(val);
-+    *adr = cpu_to_be16(val);
-     break;
-   }
- }
-@@ -216,10 +241,10 @@
-     val = *adr;
-     break;
-   case ENDIAN_LITTLE:
--    val = __le32_to_cpu(*adr);
-+    val = le32_to_cpu(*adr);
-     break;
-   case ENDIAN_BIG:
--    val = __be32_to_cpu(*adr);
-+    val = be32_to_cpu(*adr);
-     break;
-   }
-   return val;
-@@ -322,10 +347,10 @@
-           tmp = st.st_rdev;
-           break;
-         case ENDIAN_LITTLE:
--          tmp = __cpu_to_le16(st.st_rdev);
-+          tmp = cpu_to_le16(st.st_rdev);
-           break;
-         case ENDIAN_BIG:
--          tmp = __cpu_to_be16(st.st_rdev);
-+          tmp = cpu_to_be16(st.st_rdev);
-           break;
-       }
-       fwrite((char *)&tmp, sizeof(st.st_rdev) / 4, 1, fs);
+hi to everybody,
+
+i am trying to install linux on the diskonchip 2000 device mounted on a pc104. 
+i have read the mtd-jffs-HOWTO and the thread:
+
+http://lists.infradead.org/pipermail/linux-mtd/2004-October/010543.html
+
+so i have compiled the 2.6.9 kernel using this configuration:
+
+
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=m
+# CONFIG_MTD_DEBUG is not set
+# CONFIG_MTD_PARTITIONS is not set
+# CONFIG_MTD_CONCAT is not set
+
+#
+# User Modules And Translation Layers
+#
+CONFIG_MTD_CHAR=m
+# CONFIG_MTD_BLOCK is not set
+# CONFIG_MTD_BLOCK_RO is not set
+# CONFIG_FTL is not set
+CONFIG_NFTL=m
+CONFIG_NFTL_RW=y
+# CONFIG_INFTL is not set
+
+#
+# RAM/ROM/Flash chip drivers
+#
+# CONFIG_MTD_CFI is not set
+# CONFIG_MTD_JEDECPROBE is not set
+CONFIG_MTD_MAP_BANK_WIDTH_1=y
+CONFIG_MTD_MAP_BANK_WIDTH_2=y
+CONFIG_MTD_MAP_BANK_WIDTH_4=y
+# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
+# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
+# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
+CONFIG_MTD_CFI_I1=y
+CONFIG_MTD_CFI_I2=y
+# CONFIG_MTD_CFI_I4 is not set
+# CONFIG_MTD_CFI_I8 is not set
+# CONFIG_MTD_RAM is not set
+# CONFIG_MTD_ROM is not set
+# CONFIG_MTD_ABSENT is not set
+
+#
+# Mapping drivers for chip access
+#
+# CONFIG_MTD_COMPLEX_MAPPINGS is not set
+
+#
+# Self-contained MTD device drivers
+#
+# CONFIG_MTD_PMC551 is not set
+# CONFIG_MTD_SLRAM is not set
+# CONFIG_MTD_PHRAM is not set
+# CONFIG_MTD_MTDRAM is not set
+# CONFIG_MTD_BLKMTD is not set
+
+#
+# Disk-On-Chip Device Drivers
+#
+# CONFIG_MTD_DOC2000 is not set
+# CONFIG_MTD_DOC2001 is not set
+# CONFIG_MTD_DOC2001PLUS is not set
+CONFIG_MTD_DOCECC=m
+
+#
+# NAND Flash Device Drivers
+#
+CONFIG_MTD_NAND=m
+# CONFIG_MTD_NAND_VERIFY_WRITE is not set
+CONFIG_MTD_NAND_IDS=m
+CONFIG_MTD_NAND_DISKONCHIP=m
+# CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED is not set
+CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0
+# CONFIG_MTD_NAND_DISKONCHIP_BBTWRITE is not set
+
+
+and installed it in a slackware 10.0 distro on a hard drive connected to the 
+pc104. then i booted from the harddrive and started loading the MTD modules. 
+unfortunately, it seems that the kernel finds a diskonchip device but is not 
+able to use it. the "modprobe diskonchip" command returns:
+
+FATAL: Error inserting diskonchip 
+(/lib/modules/2.6.9/kernel/drivers/mtd/nand/diskonchip.ko): No such device
+
+and the logs are:
+
+
+Jan  8 23:05:15 darkstar kernel: DiskOnChip found at 0xc8000
+Jan  8 23:05:15 darkstar kernel: DiskOnChip 2000 responds to DWORD access
+Jan  8 23:05:15 darkstar kernel: NAND device: Manufacturer ID: 0x98, Chip ID: 
+0x75 (Toshiba NAND 32MiB 3,3V 8-bit)
+Jan  8 23:05:15 darkstar kernel: 9 NAND chips detected
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x10000
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x18000
+Jan  8 23:05:15 darkstar kernel:     DataOrgID        = ANAND
+Jan  8 23:05:15 darkstar kernel: DiskOnChip found at 0xca000
+Jan  8 23:05:15 darkstar kernel: DiskOnChip 2000 responds to DWORD access
+Jan  8 23:05:15 darkstar kernel: NAND device: Manufacturer ID: 0x98, Chip ID: 
+0x75 (Toshiba NAND 32MiB 3,3V 8-bit)
+Jan  8 23:05:15 darkstar kernel: 9 NAND chips detected
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x10000
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x18000
+Jan  8 23:05:15 darkstar kernel:     DataOrgID        = ANAND
+Jan  8 23:05:15 darkstar kernel: DiskOnChip found at 0xcc000
+Jan  8 23:05:15 darkstar kernel: DiskOnChip 2000 responds to DWORD access
+Jan  8 23:05:15 darkstar kernel: NAND device: Manufacturer ID: 0x98, Chip ID: 
+0x75 (Toshiba NAND 32MiB 3,3V 8-bit)
+Jan  8 23:05:15 darkstar kernel: 9 NAND chips detected
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x10000
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x18000
+Jan  8 23:05:15 darkstar kernel:     DataOrgID        = ANAND
+Jan  8 23:05:15 darkstar kernel: DiskOnChip found at 0xce000
+Jan  8 23:05:15 darkstar kernel: DiskOnChip 2000 responds to DWORD access
+Jan  8 23:05:15 darkstar kernel: NAND device: Manufacturer ID: 0x98, Chip ID: 
+0x75 (Toshiba NAND 32MiB 3,3V 8-bit)
+Jan  8 23:05:15 darkstar kernel: 9 NAND chips detected
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x10000
+Jan  8 23:05:15 darkstar kernel: Found DiskOnChip ANAND Media Header at 
+0x18000
+Jan  8 23:05:15 darkstar kernel:     DataOrgID        = ANAND
+Jan  8 23:05:15 darkstar kernel: No valid DiskOnChip devices found
+
+
+i have no clue on how to fix this problem. perhaps i am just following the 
+wrong procedure. could you please give me some hints on how to make the 
+diskonchip 2000 working? thank you very much in advance.
+
+please, keep my address in cc, as i am not subscribed to this list.
+
+
+-- 
+Aequam memento rebus in arduis servare mentem...
+
+Mauro Tortonesi
+
+University of Ferrara - Dept. of Eng.    http://www.ing.unife.it
+Institute of Human & Machine Cognition   http://www.ihmc.us
+Deep Space 6 - IPv6 for Linux            http://www.deepspace6.net
+Ferrara Linux User Group                 http://www.ferrara.linux.it
