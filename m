@@ -1,20 +1,16 @@
-Received: from [61.100.14.249] (helo=mail.palmpalm.com)
+Received: from imladris.demon.co.uk ([193.237.130.41] ident=exim)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18UiYh-0005sK-00
-	for <linux-mtd@lists.infradead.org>; Sat, 04 Jan 2003 07:17:27 +0000
-Received: from tium ([61.73.108.17])
-	(authenticated)
-	by mail.palmpalm.com (8.11.6/8.11.6) with ESMTP id h046bOk30454
-	for <linux-mtd@lists.infradead.org>; Sat, 4 Jan 2003 15:37:25 +0900
-From: "Taeil Um" <tium@mail.palmpalm.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2-MTD-NAND
-Date: Sat, 4 Jan 2003 16:50:34 +0900
-Message-ID: <BDEDIOGGNJEEPBHLJLFGCEANCFAA.tium@palmpalm.com>
+	id 18UkQq-00064P-00
+	for <linux-mtd@lists.infradead.org>; Sat, 04 Jan 2003 09:17:28 +0000
+Date: Sat, 4 Jan 2003 09:48:12 +0000 (GMT)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Taeil Um <tium@mail.palmpalm.com>
+cc: linux-mtd@lists.infradead.org
+In-Reply-To: <BDEDIOGGNJEEPBHLJLFGCEANCFAA.tium@palmpalm.com>
+Message-ID: <Pine.LNX.4.44.0301040946350.16481-100000@imladris.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
+Subject: Re: JFFS2-MTD-NAND
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -26,44 +22,25 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-SGkgYWxsICEgSGFwcHkgTmV3IFllYXIhDQoNCkkgdXNlZCBqZmZzMiBmb3IgTXkgQm9hcmQgd2hp
-Y2ggaGFzIDE2TSBTQU1TVU5HIG5hbmQgZmxhc2ggY2hpcC4NCkkgc3VjY2VlZGVkIHRvIHBvcnQg
-SkZGUzItTVRELU5BTkQgbGF5ZXIgaW4gb3JkZXIgdG8gdXNlIE5BTkQgZmxhc2guDQoNCkJ1dCBz
-b21ldGltZXMgKG5vdCBhbHdheXMpIGlmIGkgbW91bnQgTkFORCBjaGlwLCB0aGUga2VybmVsIGRp
-ZSB3aXRoIGZvbGxvd2luZyAiS0VSTkVMIE9PUFMhIg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLQ0KQ2hlY2tlZCBhbGwgaW5vZGVzIGJ1dCBzdGlsbCAweDFkYyBi
-eXRlcyBvZiB1bmNoZWNrZWQgc3BhY2U/DQpVbmFibGUgdG8gaGFuZGxlIGtlcm5lbCBOVUxMIHBv
-aW50ZXIgZGVyZWZlcmVuY2UgYXQgdmlydHVhbCBhZGRyZXNzIDAwMDAwMDAwDQpwZ2QgPSBjMDAy
-NDAwMA0KKnBnZCA9IDAwMDAwMDAwLCAqcG1kID0gMDAwMDAwMDANCkludGVybmFsIGVycm9yOiBP
-b3BzOiBmZmZmZmZmZg0KQ1BVOiAwDQpwYyA6IFs8YzAwOTk3Mzg+XSAgICBsciA6IFs8YzAwNDY0
-ZTA+XSAgICBOb3QgdGFpbnRlZA0Kc3AgOiBjMDdjNWYwYyAgaXAgOiBjMDdjNWViOCAgZnAgOiBj
-MDdjNWY1NA0KcjEwOiBjMDdjNDM0NCAgcjkgOiBjMDJiZTkwNCAgcjggOiBjMDE2NmVlOA0Kcjcg
-OiBjMDJiZThjYyAgcjYgOiBjMDJiZThjYyAgcjUgOiBjMDdjNDAwMCAgcjQgOiBjMDdjNDAwMA0K
-cjMgOiAwMDAwMDAwMCAgcjIgOiAwMDAwMDAwMSAgcjEgOiAwMDAwMDAwMSAgcjAgOiAwMDAwMDA0
-MA0KRmxhZ3M6IG5aQ3YgIElSUXMgb24gIEZJUXMgb24gIE1vZGUgU1ZDXzMyICBTZWdtZW50IHVz
-ZXINCkNvbnRyb2w6IDIxN0YgIFRhYmxlOiBDMUNDQzAxNSAgREFDOiAwMDAwMDAxNQ0KUHJvY2Vz
-cyBqZmZzMl9nY2RfbXRkMiAocGlkOiAxNiwgc3RhY2twYWdlPWMwN2M1MDAwKQ0KU3RhY2s6ICgw
-eGMwN2M1ZWZjIHRvIDB4YzA3YzYwMDApDQo1ZWUwOiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjMDA0NjRlMCANCjVmMDA6IGMw
-MDk5NzM4IDYwMDAwMDEzIGZmZmZmZmZmIGMwN2M0MDAwIGMxYzUwMDAwIDAwMDAwMDAwIGMwMTUy
-MDQwIDAwMDAwMDAwIA0KNWYyMDogMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzA3YzQwMDAg
-YzA3YzQwMDAgMDAwMDAwMDAgYzAyYmU4Y2MgYzA3YzQzMzQgDQo1ZjQwOiAwMDAwMDAwMCBjMDdj
-NDM0NCBjMDdjNWZmYyBjMDdjNWY1OCBjMDA5ZDExNCBjMDA5OTY5YyA3ZmI0ZmZlZiBmZmZmZGZm
-ZCANCjVmNjA6IGVmZmJmZjM3IGVkZmRmZmMzIGZmNGJmZmJkIGZmYmZmYmZmIDdmZWZmZmZkIGZl
-ZWQ1YmZmIGVjZjdmZGY4IDdmN2Y1ZmJmIA0KNWY4MDogZmZmZTVmZjcgOWVlYmY2YmQgZmVmYjdm
-ZmYgZmZmZmVmZjkgMDAwMDAwMTMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgDQo1ZmEwOiAw
-MDAwMDAwMCAwMDAwMDAwMCAwMDAwMDAwMCBjMDdjNWZiOCBjMDAzYjkzNCBjMDA0MmQ2OCAwMDAw
-MDAwMCAwMDAwMDAwMCANCjVmYzA6IDAwMDAwNjAwIGMwMDljZjI4IGMwMmJlOGNjIGMxYzQxNTYw
-IDAwMDAwMDAwIGMwMmJlOGUwIGMwMmJlOGNjIGMxYzQxNTYwIA0KNWZlMDogMDAwMDAwMDAgYzAy
-YmU4ZTAgMDAwMDAwMDAgZmZmZmZmZWEgMDAwMDAwMDAgYzA3YzYwMDAgYzAwM2NjYzAgYzAwOWNm
-MzggDQpCYWNrdHJhY2U6IA0KRnVuY3Rpb24gZW50ZXJlZCBhdCBbPGMwMDk5NjhjPl0gZnJvbSBb
-PGMwMDlkMTE0Pl0NCkZ1bmN0aW9uIGVudGVyZWQgYXQgWzxjMDA5Y2YyOD5dIGZyb20gWzxjMDAz
-Y2NjMD5dDQpDb2RlOiBlNTlmMDMzYyBlNTk2MTA3MCBlYmZlYjJjNSBlM2EwMzAwMCAoZTU4MzMw
-MDApIA0KS2VybmVsIHBhbmljOiBBaWVlLCBraWxsaW5nIGludGVycnVwdCBoYW5kbGVyIQ0KSW4g
-aW50ZXJydXB0IGhhbmRsZXIgLSBub3Qgc3luY2luZw0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpIZXJlIGlzIG15IHN5c3RlbSBlbnZpcm9ubWVu
-dA0KDQpDUFUgOiBFUDczMTINCktFUk5FTCA6IDIuNC4xOC1ybWs2DQpOQU5EIDogU0FNU1VORyAx
-NmJpdCAxNk0gDQpDcm9zcyBDb21waWxlciA6IGFybS1saW51eC1nY2MgKHZlcnNpb24gOiAyLjk1
-LjMpDQpNVEQgOiBmcm9tIENWUyBhdCBEZWNlbWJlciAgMXN0IDIwMDINCg0K
+On Sat, 4 Jan 2003, Taeil Um wrote:
+
+> Hi all ! Happy New Year!
+> 
+> I used jffs2 for My Board which has 16M SAMSUNG nand flash chip.
+> I succeeded to port JFFS2-MTD-NAND layer in order to use NAND flash.
+> 
+> But sometimes (not always) if i mount NAND chip, the kernel die with following "KERNEL OOPS!"
+> 
+> --------------------------------------------------------------------------------------------------
+> Checked all inodes but still 0x1dc bytes of unchecked space?
+
+Please compile with CONFIG_JFFS2_FS_DEBUG=2 and log all the messages 
+during the mount. There'll be lots -- use a serial console and log them 
+directly to a file. They'll be at KERN_DEBUG loglevel too, so if it's your 
+root file system then edit kernel/printk.c to make sure they actually get 
+printed (change DEFAULT_CONSOLE_LOGLEVEL to 9).
+
+Then compress them and send them to me directly.
+
+-- 
+dwmw2
