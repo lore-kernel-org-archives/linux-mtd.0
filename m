@@ -1,15 +1,19 @@
-Received: from h1462.serverkompetenz.net ([81.169.155.122])
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
 	by canuck.infradead.org with esmtps (Exim 4.42 #1 (Red Hat Linux))
-	id 1CGyE7-0002Gx-H2
-	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 07:20:28 -0400
-Date: Mon, 11 Oct 2004 13:20:17 +0200
-From: cdlinux@koala.de
-To: Linux-mtd ML <linux-mtd@lists.infradead.org>
-Message-ID: <20041011112017.GA22376@koala.de>
-Mime-Version: 1.0
+	id 1CGz8I-0002cj-QY
+	for linux-mtd@lists.infradead.org; Mon, 11 Oct 2004 08:18:32 -0400
+Sender: Estelle HAMMACHE <estelle.hammache@st.com>
+Message-ID: <416A7A0A.591B4A03@st.com>
+Date: Mon, 11 Oct 2004 14:18:18 +0200
+From: Estelle HAMMACHE <estelle.hammache@st.com>
+MIME-Version: 1.0
+To: Mark Hamilton <mhamilton@alliantnetworks.com>,
+	linux-mtd@lists.infradead.org
+References: <019301c4ad6e$33e3c730$0400a8c0@mark> <416A4930.6AF5C472@st.com>
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Loosing grub mbr after mounting jffs2 image with loop0 and mtdblock0
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: Re: [JFFS2] GC patch for eCos port
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello list!
+Estelle Hammache wrote:
+> 
+> Hi Mark,
+> 
+> isn't it cleaner (for compatibility with Linux) to modify
+> jffs2_gc_fetch_page so that it reads a
+> PAGE_CACHE_SIZE-aligned buffer ?
 
-I'm relatively new to linux-mtd and have the following problem:
+Ok so this was discussed in the eCos mailing list, but I meant that
+jffs2_gc_fetch_page should call jffs2_read_inode with the reading
+offset set to the page boundary: (offset & ~(PAGE_CACHE_SIZE-1)).
+I believe this is the expected behavior for jffs2_gc_fetch_page.
 
-I'm using 128MB-Cf-Cards with an ext2 and a jffs2 partition.
-
-The image i write to the cf-card has a grub-loader on it that will boot the
-jffs2-image on (eg) /dev/hde2...
-
-Now, when I want to change the image-partition, i mount it with
-
-  modprobe loop
-  losetup /dev/loop0 imagefile.img
-  modprobe mtdcore
-  modprobe blkmtd device=/dev/loop0 erasesz=64
-  mount -t jffs2 /dev/mtdblock0 /mnt/cfdisk
-
-I then work on the filesystem and unmount everything after the changes are
-done.
-
-However, when I write the new image to a cfdisk (dd), I loose the grub info
-and booting reports "no valid filesystem" / bootimage...
-
-I suppose, it has to do with the way I mount the jffs2 partition (as I'm
-actually mounting the entire image as loopdev/jffs2)...?
-I'm unsure about what would be the right way to do this.
-
-Any ideas, on how to proceed working on the 2nd partition of hde as jffs2
-w/o loosing the grub mbr?
-
-Thanks for any answers or pointers in the right direction, 
-and sorry if this has been asked before, i couldn't find an appropriate 
-answer yet..
-
-Greetings
-chris
+Estelle
