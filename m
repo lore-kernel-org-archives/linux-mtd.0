@@ -1,25 +1,35 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14qEsF-0000Hm-00
-	for mtd-list@infradead.org; Thu, 19 Apr 2001 14:53:31 +0100
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
-	by infradead.org with esmtp (Exim 3.20 #2)
-	id 14qEsD-0000Hc-00
-	for mtd@infradead.org; Thu, 19 Apr 2001 14:53:30 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <000e01c0c8d6$dfb791c0$0a01a8c0@Win1> 
-References: <000e01c0c8d6$dfb791c0$0a01a8c0@Win1> 
-To: joakim.tjernlund@lumentis.se
-Cc: mtd@infradead.org
-Subject: Re: mkfs.jffs2 again 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Thu, 19 Apr 2001 14:52:33 +0100
-Message-ID: <19069.987688353@redhat.com>
+	id 14qEvE-0000IF-00
+	for mtd-list@infradead.org; Thu, 19 Apr 2001 14:56:36 +0100
+Reply-To: <joakim.tjernlund@lumentis.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@lumentis.se>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Cc: <mtd@infradead.org>
+Subject: RE: mkfs.jffs2 again 
+Date: Thu, 19 Apr 2001 15:56:01 +0200
+Message-ID: <000f01c0c8d8$7844cd80$0a01a8c0@Win1>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <19069.987688353@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+That figures :-)
 
+I will give it a try (hopefully) next week. Any hints?
+
+    Jocke
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@redhat.com]On Behalf Of David
+Woodhouse
+Sent: Thursday, April 19, 2001 15:53
+To: joakim.tjernlund@lumentis.se
+Cc: mtd@infradead.org
+Subject: Re: mkfs.jffs2 again 
 
 joakim.tjernlund@lumentis.se said:
 > Magic bitmask 0x1985 not found at 0x00000000: 0x8519 instead
