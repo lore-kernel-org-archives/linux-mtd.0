@@ -1,21 +1,19 @@
-Received: from 212.68.198.130.brutele.be ([212.68.198.130] helo=mail.boat.be)
+Received: from msr59.hinet.net ([168.95.4.159] helo=msr.hinet.net)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1801SO-00061g-00
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Oct 2002 16:12:04 +0100
-Subject: Re: DoC trouble on wafer PC
-From: Robert Sprockeels <robert.sprockeels@boat.be>
-To: Mark Meade <mark@lakeshoremicro.com>
-Cc: linux-mtd@lists.infradead.org
-In-Reply-To: <20021011132807.XZFA28253.sccrmhc01.attbi.com@there>
-References: <1034333338.2619.81.camel@roadie.boat.be>
-	<20021011121330.SMCL11063.rwcrmhc52.attbi.com@there>
-	<1034339639.2401.99.camel@roadie.boat.be>
-	<20021011132807.XZFA28253.sccrmhc01.attbi.com@there>
-Content-Type: text/plain
+	id 1810MY-0004p7-00
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 09:14:07 +0100
+Received: from stevexp (61-219-230-90.HINET-IP.hinet.net [61.219.230.90])
+	by msr.hinet.net (8.9.3/8.9.3) with ESMTP id QAA15925
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Oct 2002 16:13:53 +0800 (CST)
+From: "Steve Tsai" <startec@ms11.hinet.net>
+To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: Memory usage?
+Date: Mon, 14 Oct 2002 16:13:41 +0800
+Message-ID: <000101c27359$9ec6d6b0$80d1a8c0@synso.com.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date: 11 Oct 2002 17:12:03 +0200
-Message-Id: <1034349123.2401.104.camel@roadie.boat.be>
-Mime-Version: 1.0
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -27,17 +25,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 2002-10-11 at 15:25, Mark Meade wrote:
-> > What would you recommed as filesystem on a DoC? LEAF uses msdos FAT...
-> 
-> I would guess that FAT would work OK, and would probably be easier because 
-> the LEAF guys are using syslinux as the bootloader.
+Does JFFS2 will allocate large memory to read big file? I have  a 128M
+bytes nand flash on my board and there is a large file about 12M bytes.
+After I use the  testing program to read the file, the free memory
+reduce to 312Kbytes (from 10660Kbytes). How can I reduce the memory
+usage of JFFS2? Thanks.
 
-OK. Tried this, it works, and now I'm at the next stage...
-But since this has become a LEAF-related topic, I propose I mail you
-off-list for this.
+Steve Tsai
 
-Thanks again to all who helped, especially Mark, who provided me with
-the most useful information.
 
-Robert
+ 
