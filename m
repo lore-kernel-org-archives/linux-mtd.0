@@ -1,38 +1,36 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13lyPE-000315-00
-	for mtd-list@infradead.org; Wed, 18 Oct 2000 19:57:40 +0100
-Received: from brutus.conectiva.com.br ([200.250.58.146] helo=burns.conectiva)
-	by infradead.org with smtp (Exim 3.16 #2)
-	id 13lyP9-00030z-00
-	for mtd@infradead.org; Wed, 18 Oct 2000 19:57:37 +0100
-Date: Wed, 18 Oct 2000 15:57:52 -0200 (BRST)
-From: Fernando Fuganti <fuganti@conectiva.com.br>
-To: Kevin Moore <kevin@moore-and-moore.com>
-cc: mtd@infradead.org, Volker Sonn <mlist@sonn-online.de>,
-    Alessandro GARDICH <gremlin@gremlin.it>
-Subject: Re: Kernel change for booting off DOC 2000 and Millenium
-In-Reply-To: <20001018094821.A29254@flapjack>
-Message-ID: <Pine.LNX.4.21.0010181552450.10242-100000@ze.distro.conectiva>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 13mChn-0005z7-00
+	for mtd-list@infradead.org; Thu, 19 Oct 2000 11:13:47 +0100
+Received: from [194.130.39.252] (helo=passion.cygnus)
+	by infradead.org with esmtp (Exim 3.16 #2)
+	id 13mChm-0005z1-00
+	for mtd@infradead.org; Thu, 19 Oct 2000 11:13:46 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <14716.971931289@ocs3.ocs-net> 
+References: <14716.971931289@ocs3.ocs-net> 
+To: mtd@infradead.org
+Cc: Keith Owens <kaos@ocs.com.au>
+Subject: Re: Removal of get/put_module_symbol, 2.4 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Thu, 19 Oct 2000 11:13:42 +0100
+Message-ID: <27104.971950422@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
 
+kaos@ocs.com.au said:
+>  Sources that issue request_module() then use get_module_symbol() to
+> look inside the module will be changed to use a registration system,
+> as almost every module already does. 
 
-On Wed, 18 Oct 2000, Kevin Moore wrote:
+That makes sense - dunno why I didn't see that in the first place. 
+It's now on my TODO list for the DiskOnChip and CFI drivers. I'll see if I 
+can find a volunteer to make it happen slightly faster.
 
-> be specified as a root device on the command line.  Without this,
-> the kernel is unable to parse "root=/dev/nftla1" and can't find
-> it's root filesystem (for any DOC).  Booting using an rdev'ed
-> kernel should work without any kernel change, since it doesn't rely
-> on parsing the kernel command line options.
-
-passing  "root=5d01" should work, without any kernel modifications
-
-Fernando Fuganti 
-
+--
+dwmw2
 
 
 
