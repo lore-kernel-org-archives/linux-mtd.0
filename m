@@ -1,16 +1,20 @@
-Received: from ns.sysgo.de ([213.68.67.98] helo=dagobert.svc.sysgo.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 182QjS-0004rm-00
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2002 07:35:38 +0100
-Date: Fri, 18 Oct 2002 08:35:30 +0200 (MEST)
-From: Robert Kaiser <rob@sysgo.de>
-To: Frank Neuber <neuber@convergence.de>
-cc: linux-mtd@lists.infradead.org
-Subject: Re: Virtual MTD-Device
-In-Reply-To: <20021017160635.GA8927@jupiter>
-Message-ID: <Pine.LNX.4.21.0210180830430.25843-100000@dagobert.svc.sysgo.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gateway.innominate.fta-berlin.de ([141.16.74.40] helo=gateway.bln.gelonet.local)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 182SRA-00052U-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2002 09:24:52 +0100
+Received: from tkeitel by tkeitel001.bln.gelonet.local with local (Exim 3.35 #1 (Debian))
+	id 182SRW-00015O-00
+	for <linux-mtd@lists.infradead.org>; Fri, 18 Oct 2002 10:25:14 +0200
+Date: Fri, 18 Oct 2002 10:25:14 +0200
+From: Tino Keitel <tino.keitel@innominate.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: check disk usage
+Message-ID: <20021018082514.GA3934@tkeitel001.bln.gelonet.local>
+References: <3DAF2486.8000006@redswitch.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3DAF2486.8000006@redswitch.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -22,27 +26,34 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
+On Thu, Oct 17, 2002 at 13:58:46 -0700, Xiaogeng (Shawn) Jin wrote:
+> Hi,
+> 
+> My root filesystem is jffs2, which is mounted by kernel getting booting 
+> parameters "root=/dev/mtdblock3 rw" from the command line. I noticed 
+> that running 'df -k' only shows the usage of those devices that are 
+> mounted explicitly by 'mount' command but not the root filesystem. The 
+> following is the result of 'df -k' running on busybox-0.60.2.
+> 
+> # df -k
+> Filesystem           1k-blocks      Used Available Use% Mounted on
+> /dev/mtdblock0           16384       688     15696   4% /usr
+> /dev/mtdblock1           16384      5836     10548  36% /home
+> /dev/mtdblock2           16384       652     15732   4% /var
+> 
+> On a regular linux system, e.g. RedHat, we do get information about the 
+> usage of the root filesytem, right?
+> 
+> Is this a problem? If it's is, is it related to jffs2 or busybox?
 
-On Thu, 17 Oct 2002, Frank Neuber wrote:
+Have you checked the strace output of df -k? As far as I can see, it
+looks in /proc/mounts. Maybe this is of some help to you.
 
-> On Mon, Oct 14, 2002 at 05:28:19PM +0200, Frank Neuber wrote:
-> And it works well, thanks ... great work!
-> I did a mix between dilnetpc.c and sc520cdp.c because I have two chips
-> with partitioning information.
-> It was easy to collect the free space to one mtd into the kernel.
+Regards,
+Tino
 
-Glad to hear it works for you :-)
-
-<hint>
-If your hardware is something off the shelf (i.e. if your mapping driver 
-could be useful to other people), it would be nice if you could contribute
-it to the MTD project when you're done.
-</hint>
-
-Rob
-
-----------------------------------------------------------------
-Robert Kaiser                         email: rkaiser@sysgo.de
-SYSGO AG
-Am Pfaffenstein 14                    phone: (49) 6136 9948-762
-D-55270 Klein-Winternheim / Germany   fax:   (49) 6136 9948-10
+-- 
+tino.keitel@innominate.com
+dipl.-inf.                        Innominate Security Technologies AG
+software engineer                                   networking people
+tel: +49.30.6392-3308                      http://www.innominate.com/
