@@ -1,47 +1,51 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.16 #2)
-	id 13qfcv-0000mT-00
-	for mtd-list@infradead.org; Tue, 31 Oct 2000 17:55:13 +0000
-Received: from [194.130.39.252] (helo=passion.cygnus)
+	id 13r2C3-0006nM-00
+	for mtd-list@infradead.org; Wed, 01 Nov 2000 18:00:59 +0000
+Received: from dawnmail.dawning.com ([24.93.23.251])
 	by infradead.org with esmtp (Exim 3.16 #2)
-	id 13qfcu-0000mN-00
-	for mtd@infradead.org; Tue, 31 Oct 2000 17:55:12 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <0FA1031B65A9D111960900805F9FA8E103B9F191@txexmta8.amd.com> 
-References: <0FA1031B65A9D111960900805F9FA8E103B9F191@txexmta8.amd.com> 
-To: mark.langsdorf@amd.com
-Cc: mtd@infradead.org
-Subject: Re: Problems with AMD CFI chips 
-Mime-Version: 1.0
+	id 13r2C0-0006nG-00
+	for mtd@infradead.org; Wed, 01 Nov 2000 18:00:58 +0000
+Received: from [192.168.0.142] by dawnmail.dawning.com (NTMail 4.30.0013/NY3896.00.832c5e1f) with ESMTP id umrfaaaa for <mtd@infradead.org>; Wed, 1 Nov 2000 13:01:33 -0500
+Message-ID: <3A005A52.E95F536@dawning.com>
+Date: Wed, 01 Nov 2000 13:00:51 -0500
+From: Gregory Schallert <gschallert@dawning.com>
+MIME-Version: 1.0
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: mtdblock module & I'm Back again 
 Content-Type: text/plain; charset=us-ascii
-Date: Tue, 31 Oct 2000 17:55:08 +0000
-Message-ID: <1552.973014908@redhat.com>
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
+I'm back again with a couple of more generic questions...  As a reminder
+this is my project.
 
-mark.langsdorf@amd.com said:
->  The Flash bank is found correctly, and loads, and I can write to it.
-> However, when I boot from it, I can't seem to get it to commit writes
-> - either creating new files  or altering old ones.  Once I reboot the
-> device, my changes are gone.
+I am currently working on a project that (will) store the linux
+kernel/os on
+flash.  We are using the ElanSC400 chip and a board that has 3 pairs of
+AM29F016EC Flash Chips arranged such that the high byte of the data goes
+to
+one chip and the low byte goes to the other. I've been able to configure
+the windows on the SC400 to allow me to see what is on the chips by
+using the mmap() function.  I would like for the flash to emulate a
+block device so I've started playing around with the mtdblock.c file.
+My questions are these:
 
-Please check using the /dev/mtd0 device directly to see whether your writes 
-are 'taking'. 
+1)  when I compile the mtdblock.c file I get a referenced symbol
+"invalidate_buffers"  Any Ideas why?
 
-What 'map' driver are you using? I found that it didn't work for me on the 
-iPAQ because I wasn't enabling the Vpp voltage during write cycles. Is this 
-necessary on your targer?
+I have currently have a MTD release that is about a month old.  I'm
+going to download the new one and see if I still get the same problem.
 
-Other than that, poke the author and/or look at the code yourself to see 
-what's happening. What interleave/buswidth are you using?
+2)  What does mtdblock.c actually do? If I load mtd.o, mapped.o, and
+mtdblock.o  what additional functionality do I need to program to get a
+minix file system on the flash chips?
 
-Note to self: Must produce a proper bug report for Nico for the current
-cfi_cmdset_0001 code, does doesn't work for me on 1x16 devices.
+Thanx
 
---
-dwmw2
-
+Gregory Schallert
+Dawning Technologies, Inc.
 
 
 
