@@ -1,20 +1,19 @@
-Received: from mail155.pune-168.pacific.net.in ([203.123.168.155]
-	helo=kr.aftek.com)
+Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cwbd2-0000Yy-K6
-	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 02:42:20 -0500
-Received: from [10.0.0.155] ([10.0.0.155])
-	by kr.aftek.com (8.11.6/8.11.6) with ESMTP id j137fuV15308
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Feb 2005 13:11:56 +0530
-Message-ID: <42012D92.90007@aftek.com>
-Date: Thu, 03 Feb 2005 01:14:18 +0530
-From: Ashwin Chaugule <ashwinc@aftek.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: ST flashes
-Reply-To: ashwinc@aftek.com
+	id 1CwcyG-0001ER-K4
+	for linux-mtd@lists.infradead.org; Thu, 03 Feb 2005 04:08:22 -0500
+From: Andrew Victor <andrew@sanpeople.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050202124043.GB23156@wohnheim.fh-wedel.de>
+References: <1107248402.22631.53.camel@fuzzie.sanpeople.com>
+	<20050202124043.GB23156@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Message-Id: <1107421396.32163.53.camel@fuzzie.sanpeople.com>
+Mime-Version: 1.0
+Date: 03 Feb 2005 11:03:16 +0200
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2-on-DataFlash : 2 - DataFlash support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-         Im using 2.4.19-rmk7-pxa1 ... i know its really old and all 
-that ... but i have no options right now...
-but anyway..
-Here's my problem.
-I have two pxa 255 boards , one with ST flash and one with AMD.
-I configured them to use the lubbock flash driver , and made one 
-partition for jffs2.
-sorry i dont have the board with me, i shall post the dumps soon..
+hi Jörn,
 
-On both the boards,
-it boots up properly , performs all file operations smooth ...mount , 
-read write etc..
-on the AMD , this performance is consistent even after powering the 
-board down.
-But on the ST , the moment you power down the board ! , the next time , 
-it only mounts , but doesnt
-let me perform any fops. I keep getting I/O errors..for only write 
-operations... read works , coz i could ls in the partition.
-It also doesnt let me format the partition.
+> > +	/* and Dataflash */
+> > +	if (jffs2_dataflash(c)) {
+> > +		ret = jffs2_dataflash_setup(c);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> 
+> This can be a bit simpler:
+> 	ret = jffs2_dataflash_setup()
+> 	if (ret)
+> 		return ret;
 
-So I upgraded , the mtd subsys , along with jffs2 , but still the same 
-behaviour...
-Also , after upgrading mtd , i found that , the lubbock driver uses 
-ioremap_cached and DMA , which is not available
-in 2.4.19 , so i disabled all of it , but then the cfi probe fails , and 
-only rom_mapping works...
-due to which im guessing , mtdblock0 gets write protected and mounts 
-jffs2 as read-only.
+I just copied the way it was done for the the NOR ECC flash.
 
-So I used the physmap driver , created one partition just like the 
-lubbock driver .. , but then again , it mounts it as ro !!
-here again , only ROM mapping works , it doesnt detect the flash type 
-anymore. I have enabled Intel/Sharp , ST and AMD flash driver options in 
-the CFI submenu.
 
-Before upgrading the mtd , these options used to work.
+> > -	return BLK_STATE_ALLFF;	/* OK to erase if all blocks are like this */
+> > +	if (c->cleanmarker_size == 0)
+> > +		return BLK_STATE_CLEANMARKER;	/* don't bother with re-erase */
 
-Can anyone , give me a lead here ?
-Thanks,
+If a cleanmarker is not detected (within the first EMPTY_SCAN_SIZE bytes
+of a block), the block is added to the 'erase_pending_list' to be
+re-erased (and have a new cleanmarker written).
 
--- 
--------------------------
-Ashwin Chaugule
-Embedded Systems Engineer
-Aftek Infosys Ltd.
-[Embedded Division] 
+Since we don't need cleanmarkers on DataFlash, we return
+BLK_STATE_CLEANMARKER from jffs2_scan_eraseblock() so that the block
+rather gets added directly to the 'free_list'.
+
+
+Regards,
+  Andrew Victor
