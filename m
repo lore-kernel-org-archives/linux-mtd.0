@@ -1,52 +1,42 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.20 #2)
-	id 14ScJR-0004lx-00
-	for mtd-list@infradead.org; Tue, 13 Feb 2001 10:03:57 +0000
-Message-ID: <151F3D2AE9F0D3119E480004ACB8EA3701DEC945@cluster01.axis.se>
-From: Jonas Holmberg <jonas.holmberg@axis.com>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
-Cc: mtd@infradead.org
-Subject: RE: Problems with cfi_cmdset_0002.c 
-Date: Tue, 13 Feb 2001 11:04:16 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+	id 14ScLj-0004oT-00
+	for mtd-list@infradead.org; Tue, 13 Feb 2001 10:06:19 +0000
+Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+	by infradead.org with esmtp (Exim 3.20 #2)
+	id 14ScLi-0004oL-00
+	for mtd@infradead.org; Tue, 13 Feb 2001 10:06:18 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <003f01c095a0$08f12020$0a070d0a@axis.se> 
+References: <003f01c095a0$08f12020$0a070d0a@axis.se>  <3A886BED.9339AC4F@danielind.com> <10792.982055747@redhat.com> 
+To: "Johan Adolfsson" <johan.adolfsson@axis.com>
+Cc: "mtd" <mtd@infradead.org>
+Subject: Re: MTD device minor numbers, documentation wrong? 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Date: Tue, 13 Feb 2001 10:05:45 +0000
+Message-ID: <17771.982058745@redhat.com>
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-> Is there _any_ difference between these chips which is 
-> detectable without 
-> actually trying to erase the damn things and observing how 
-> much data gets 
-> removed?
-> 
 
-I may have found something. Take a look at the following table. It includes some AMD, Toshiba and ST flash chips.
+johan.adolfsson@axis.com said:
+> The 2.4.0 Documentation/devices.txt says that even MTD minor numbers
+> are readonly, but that doesn't seem to be correct when trying things
+> in real life. Is the documentation wrong, or do I have the wrong
+> version of it? Or are we doing something wrong when registering
+> partitions? 
 
-Name            dev_id  last_byte_of_dev_id
----------------------------------
-AM29F800BT      0x22D6  1101 0110
-AM29LV800BT     0x22DA  1101 1010
-AM29LV160DT     0x22C4  1100 0100
-MBM29LV160TE    0x22C4  1100 0100
-M29W800T        0x00D7  1101 0111
-M29W160DT       0x22C4  1100 0100
-TC58FVT160      0x00C2  1100 0010
-                        ^
-                        All 1s
+It's correct for the character device, because that's what I inherited from 
+the original allocation in devices.txt. Not for the block devices. See 
+util/MAKEDEV in my CVS tree. That tends to agree with the code, regardless 
+of the state of the documentation - unless some helpful person has 'fixed' 
+it to match the docs :)
 
-M29W160DB       0x2249  0100 1001
-MBM29LV160BE    0x2249  0100 1001
-AM29LV160DB     0x2249  0100 1001
-AM29LV800BB     0x225B  0101 1011
-AM29F800BB      0x2258  0101 1000
-TC58FVB160      0x0043  0100 0011
-                        ^
-                        All 0s
-				
-It looks like the eigth bit in the last byte of the device ID. It is 1 for top boot chips and 0 for bottom boot chips! Does anyone have the device IDs for any other chips? In that case, please confirm this theory.
+--
+dwmw2
 
-/Jonas
+
 
 
 To unsubscribe, send "unsubscribe mtd" to majordomo@infradead.org
