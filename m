@@ -1,15 +1,16 @@
 Received: from 235-216.205.122.dellhost.com ([216.205.122.235] helo=imagequestdesign.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17KM6J-0004v0-00
-	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 17:45:03 +0100
+	id 17KMGs-0004vp-00
+	for <linux-mtd@lists.infradead.org>; Tue, 18 Jun 2002 17:55:58 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
 From: Mark Meade <mark@lakeshoremicro.com>
 To: linux-mtd@lists.infradead.org
-Subject: GRUB on DoC Millennium/2000 - Instructions
-Date: Tue, 18 Jun 2002 12:43:27 -0400
+Subject: Re: GRUB on DoC Millennium/2000 - Instructions
+Date: Tue, 18 Jun 2002 12:55:17 -0400
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_FGUW3Z0YOOATPNBH5130"
-Message-Id: <200206181242203.SM02488@there>
+Content-Transfer-Encoding: 8bit
+Message-Id: <200206181253609.SM02488@there>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -21,195 +22,257 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
---------------Boundary-00=_FGUW3Z0YOOATPNBH5130
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: 
+My apologies for screwing up the attachment.  Here it is in text:
 
-watsup@linuxmail.org wrote:
+Booting GRUB on the DiskOnChip Millennium
 
->  i have learnt from the list that we need to make room for GRUB on DOC
-> ,how do i do that,david suggested to use DFORMAT,can any1 give me the
-> exact cmd to do that? i dont want to use ntfl_format due to poor block
-> handling
+1.  Preliminaries
 
-Dzuy Nguyen wrote:
+The following procedure was done on a desktop PC, using an 8MB DoC Millennium 
+and the M-Sys ISA Evaluation card.  A DOS partition was used to run the M-Sys 
+utilities, prior to installing GRUB.   This procedure *might* work with a DoC 
+2000 -- but it has not been verified.
 
-> What is the status on GRUB and DoC Millenium?  I've read the posts in
-> the archive but it seems that people
-> have had mixed results with using GRUB to boot DoC Millenium.
+The Linux kernel must have the following MTD options either built-in or 
+compiled as modules:
 
-In response to these questions, as well as others, I wrote up some 
-instructions on how to get GRUB booting on a DoC Millennium.  The procedure 
-for the DoC 2000 should be similar.
+        MTD Support: MTD, Debugging, Direct char device access, NFTL, NTFL 
+        write support:
 
-I hope this helps -- anyone who has already been successful in getting GRUB 
-to boot, please let me know of any errors or omissions.
+                CONFIG_MTD=y
+                CONFIG_MTD_DEBUG=y
+                CONFIG_MTD_CHAR=y
+                CONFIG_NFTL=y
+                CONFIG_NFTL_RW=y
 
-Mark
+        Self-contained MTD Device Drivers: M-Systems DiskOnChip 2000 and 
+        Millennium:
 
+                CONFIG_MTD_DOC2000=y  
+                CONFIG_MTD_DOCPROBE=y
 
+In the following examples, a 2.4.18 kernel called "vmlinuz-doc" with the 
+above MTD options built-in was used.
 
+2.  Save DoC contents, and the Bad Block Table
 
---------------Boundary-00=_FGUW3Z0YOOATPNBH5130
-Content-Type: text/x-c;
-  charset="iso-8859-1";
-  name="doc-grub.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="doc-grub.txt"
+Get the latest version of the DOS based M-Systems DiskOnChip Software 
+Utilities from www.m-sys.com.  If desired, the GETIMAGE utility can be used 
+to save the current contents of the DoC:
 
-Qm9vdGluZyBHUlVCIG9uIHRoZSBEaXNrT25DaGlwIE1pbGxlbm5pdW0KCjEuICBQcmVsaW1pbmFy
-aWVzCgpUaGUgZm9sbG93aW5nIHByb2NlZHVyZSB3YXMgZG9uZSBvbiBhIGRlc2t0b3AgUEMsIHVz
-aW5nIGFuIDhNQiBEb0MgTWlsbGVubml1bSBhbmQgdGhlIE0tU3lzIElTQSBFdmFsdWF0aW9uIGNh
-cmQuICBBIERPUyBwYXJ0aXRpb24gd2FzIHVzZWQgdG8gcnVuIHRoZSBNLVN5cyB1dGlsaXRpZXMs
-IHByaW9yIHRvIGluc3RhbGxpbmcgR1JVQi4gICBUaGlzIHByb2NlZHVyZSAqbWlnaHQqIHdvcmsg
-d2l0aCBhIERvQyAyMDAwIC0tIGJ1dCBpdCBoYXMgbm90IGJlZW4gdmVyaWZpZWQuCgpUaGUgTGlu
-dXgga2VybmVsIG11c3QgaGF2ZSB0aGUgZm9sbG93aW5nIE1URCBvcHRpb25zIGVpdGhlciBidWls
-dC1pbiBvciBjb21waWxlZCBhcyBtb2R1bGVzOgoKCU1URCBTdXBwb3J0OiBNVEQsIERlYnVnZ2lu
-ZywgRGlyZWN0IGNoYXIgZGV2aWNlIGFjY2VzcywgTkZUTCwgTlRGTCB3cml0ZSBzdXBwb3J0CgoJ
-CUNPTkZJR19NVEQ9eQoJCUNPTkZJR19NVERfREVCVUc9eQoJCUNPTkZJR19NVERfQ0hBUj15CgkJ
-Q09ORklHX05GVEw9eQogCQlDT05GSUdfTkZUTF9SVz15CgoJU2VsZi1jb250YWluZWQgTVREIERl
-dmljZSBEcml2ZXJzOiBNLVN5c3RlbXMgRGlza09uQ2hpcCAyMDAwIGFuZCBNaWxsZW5uaXVtCgoJ
-CUNPTkZJR19NVERfRE9DMjAwMD15ICAKIAkJQ09ORklHX01URF9ET0NQUk9CRT15CgpJbiB0aGUg
-Zm9sbG93aW5nIGV4YW1wbGVzLCBhIDIuNC4xOCBrZXJuZWwgY2FsbGVkICJ2bWxpbnV6LWRvYyIg
-d2l0aCB0aGUgYWJvdmUgTVREIG9wdGlvbnMgYnVpbHQtaW4gd2FzIHVzZWQuCgoyLiAgU2F2ZSBE
-b0MgY29udGVudHMsIGFuZCB0aGUgQmFkIEJsb2NrIFRhYmxlCgpHZXQgdGhlIGxhdGVzdCB2ZXJz
-aW9uIG9mIHRoZSBET1MgYmFzZWQgTS1TeXN0ZW1zIERpc2tPbkNoaXAgU29mdHdhcmUgVXRpbGl0
-aWVzIGZyb20gd3d3Lm0tc3lzLmNvbS4gIElmIGRlc2lyZWQsIHRoZSBHRVRJTUFHRSB1dGlsaXR5
-IGNhbiBiZSB1c2VkIHRvIHNhdmUgdGhlIGN1cnJlbnQgY29udGVudHMgb2YgdGhlIERvQzoKCgln
-ZXRpbWFnZSAvd2luOnh4eHggPGZpbGVuYW1lPgoKKHdoZXJlIHh4eHggaXMgdGhlIERvQyBiYXNl
-IG1lbW9yeSBhZGRyZXNzIGluIGhleCAod2luZG93KSwgZm9yIGV4YW1wbGU6IC93aW46ZDAwMCkK
-CioqSU1QT1JUQU5UKio6IFNhdmUgdGhlIEJhZCBCbG9jayBUYWJsZSEgIEJlZm9yZSBhdHRlbXB0
-aW5nIHRvIGJvb3Qgd2l0aCBHUlVCLCBtYWtlIHN1cmUgdGhhdCB0aGUgYmFkIGJsb2NrIHRhYmxl
-IGhhcyBiZWVuIHNhdmVkLiAgRG9pbmcgdGhpcyBpbnN1cmVzIHlvdSBjYW4gYWx3YXlzIHJlc3Rv
-cmUgdGhlIEJCVCBpbiB0aGUgZXZlbnQgb2YgdGhlIERvQyBiZWluZyBjb3JydXB0ZWQgb3IgY29t
-cGxldGVseSBlcmFzZWQ6CgoJZGZvcm1hdCAvd2luOnh4eHggL25vZm9ybWF0IC9sb2c6PGZpbGVu
-YW1lLnR4dD4KClRoaXMgY3JlYXRlcyBhIHRleHQgZmlsZSBjb250YWluaW5nIGEgbGlzdCBvZiBh
-bGwgdGhlIGJhZCBibG9ja3Mgb24gdGhlIERvQy4gICBUaGUgZGZvcm1hdCAidXNlbG9nIiBvcHRp
-b24gbWF5IGJlIHVzZWQgdG8gcmVzdG9yZSB0aGUgQkJUIGlmIG5lZWRlZC4KCglkaW5mbyAvQkJU
-Cgp3aWxsIGFsc28gZGlzcGxheSBzb21lIGRldGFpbGVkIGluZm9ybWF0aW9uIGFib3V0IHRoZSBE
-b0MgYW5kIHRoZSBiYWQgYmxvY2sgdGFibGUuICAKCjMuICBWZXJpZnkgVHJ1ZUZGUyBEcml2ZXIg
-VmVyc2lvbgoKVGhlIG5ld2VyIHZlcnNpb25zICg1LjAgb3IgbGF0ZXIpIG9mIHRoZSBNLVN5c3Rl
-bXMgRE9DIGZpcm13YXJlIG1heSBub3Qgd29yayBjb3JyZWN0bHkgd2l0aCB0aGUgbGF0ZXN0IHZl
-cnNpb24gb2YgdGhlIE1URCBkcml2ZXJzLiBUaGlzIGhhcyBzb21ldGhpbmcgdG8gZG8gd2l0aCB0
-aGUgIlVuaXRTaXplRmFjdG9yICE9IDEiIHByb2JsZW0gZG9jdW1lbnRlZCBlbHNld2hlcmUuICBB
-biBlYXJsaWVyIHZlcnNpb24gKDQuMikgc2VlbXMgdG8gd29yayBmaW5lLgoKVXNpbmcgdmVyc2lv
-biA0LjIgb2YgdGhlIERPUyBUcnVlRkZTIHV0aWxpdGllcyBhdmFpbGFibGUgZnJvbSBNLVN5c3Rl
-bXMgKHd3dy5tLXN5cy5jb20pLCB2ZXJpZnkgdGhhdCB0aGUgRE9DIGlzIHJlY29nbml6ZWQsIGFu
-ZCB0aGF0IHRoZSBmaXJtd2FyZSB2ZXJzaW9uIGlzIDQuMjoKCglkaW5mbwoKSWYgdGhlIGZpcm13
-YXJlIHZlcnNpb24gaXMgNS4wIG9yIGxhdGVyLCBydW4gdGhlIERGT1JNQVQgdXRpbGl0eToKCglk
-Zm9ybWF0IC93aW46eHh4eCAvczpkb2M0Mi5leGIKCjQuICBQYXRjaCBhbmQgY29tcGlsZSBHUlVC
-CgpHZXQgdGhlIGxhdGVzdCBncnViIHNvdXJjZXM6CgoJbWtkaXIgZ3J1Yi1kb2MKCWNkIGdydWIt
-ZG9jCglmdHAgYWxwaGEuZ251Lm9yZwoJY2QgZ251L2dydWIKCWdldCBncnViLTAuOTIudGFyLmd6
-Cgl0YXIgeHp2ZiBncnViLTAuOTIudGFyLmd6CgpHZXQgdGhlIGxhdGVzdCBNVEQgc291cmNlczoK
-CgljdnMgLWQgOnBzZXJ2ZXI6YW5vbmN2c0BjdnMuaW5mcmFkZWFkLm9yZzovaG9tZS9jdnMgbG9n
-aW4gCgkocGFzc3dvcmQgPSBhbm9uY3ZzKQoJY3ZzIC16MyAtZCA6cHNlcnZlcjphbm9uY3ZzQGN2
-cy5pbmZyYWRlYWQub3JnOi9ob21lL2N2cyBjbyBtdGQKClBhdGNoIEdSVUIgd2l0aCBEaXNrT25D
-aGlwIHVwZGF0ZXM6CgoJY2QgZ3J1Yi0wLjkyCglwYXRjaCAtcDAgLWkgLi4vbXRkL3BhdGNoZXMv
-Z3J1Yi0yMDAyLTAyLTE5LWRvYy5wYXRjaAoKVGhpcyBwYXRjaCBtYXkgZmFpbCBvbiB0aGUgIkNo
-YW5nZUxvZyIgZmlsZSwgYnV0IGFsbCBvdGhlciBmaWxlcyBzaG91bGQgcGF0Y2ggY29ycmVjdGx5
-LiAgVGhlIDIwMDItMDItMTktZG9jIHBhdGNoIHdhcyBvcmlnaW5hbGx5IGEgcGF0Y2ggYWdhaW5z
-dCBncnViIHZlcnNpb24gMC45MC4KCjUuICBCdWlsZCBHUlVCOgoKCWFjbG9jYWwgJiYgYXV0b21h
-a2UgJiYgYXV0b2NvbmYKCklmIHRoZXJlIGFyZSBhbnkgZXJyb3IgbWVzc2FnZXMgaGVyZSwgeW91
-J2xsIHByb2JhYmx5IG5lZWQgdXAgdXBkYXRlIGF1dG9tYWtlIGFuZCBhdXRvY29uZiB0byB0aGUg
-bGF0ZXN0IHZlcnNpb25zLgoKCS4vY29uZmlndXJlIC0tZW5hYmxlLWRpc2tvbmNoaXAtbWlsNTEy
-IC0tZW5hYmxlLWV4dDJmcyAtLWVuYWJsZS1kaXNrb25jaGlwLWJpb3NuZXRib290IFwKCQktLWRp
-c2FibGUtZmZzIC0tZGlzYWJsZS14ZnMgLS1kaXNhYmxlLWpmcyAtLWRpc2FibGUtdnN0YWZzIC0t
-ZGlzYWJsZS1yZWlzZXJmcyAtLWRpc2FibGUtbWluaXggLS1kaXNhYmxlLWZhdAoJbWFrZQoKU2Vl
-ICJSRUFETUVfRGlza09uQ2hpcCIgZm9yIG1vcmUgaW5mb3JtYXRpb24gcmVnYXJkaW5nIHRoZSAu
-L2NvbmZpZ3VyZSBvcHRpb25zLCBzcGVjaWZpY2FsbHkgdGhlIGRpZmZlcmVuY2UgYmV0d2VlbiAi
-LW1pbDI1NiIgYW5kICItbWlsNTEyIi4KCjYuICBDb3B5IEdSVUIgdG8gRE9DCgoJY2QgLi4vbXRk
-L3V0aWwKCW1ha2UgZG9jX2xvYWRiaW9zCgkuL2RvY19sb2FkYmlvcyAvZGV2L210ZDAgLi4vLi4v
-Z3J1Yi0wLjkyL3N0YWdlMS9ncnViX2Zpcm13YXJlCgpJZiBhbiBlcnJvciBpcyByZXBvcnRlZCBy
-ZWdhcmRpbmcgL2Rldi9tdGQwLCB5b3UgbWlnaHQgbmVlZCB0byBydW4gdGhlIC4vTUFLRURFViBz
-Y3JpcHQgdG8gY3JlYXRlIHRoZSBwcm9wZXIgZGV2aWNlIE1URCBkZXZpY2UgZW50cmllcyBpbiB0
-aGUgL2RldiBkaXJlY3RvcnkuCgo3LiAgVFVSTiBPRkYgUEMhCgoqKklNUE9SVEFOVCoqIC0gVGhl
-IFBDIHNob3VsZCBiZSB0dXJuZWQgb2ZmIChub3QganVzdCByZWJvb3RlZCkgYWZ0ZXIgcnVubmlu
-ZyBkb2NfbG9hZGJpb3MuICBUaGlzIG1heSBub3QgYmUgbmVjZXNzYXJ5IG9uIGFsbCB0eXBlcyBv
-ZiBoYXJkd2FyZSwgYnV0IGl0IHdhcyByZXF1aXJlZCBvbiBteSBQQy4gIEZyb20gTS1TeXN0ZW1z
-IGFwcGxpY2F0aW9uIG5vdGUgRE9DLTA0NDoKClRoZSBib290IGJsb2NrIGlzIGltcGxlbWVudGVk
-IGFzIGEgWElQIGJsb2NrIGxvY2F0ZWQgYmV0d2VlbiB0aGUgZmxhc2ggbWVkaWEgYW5kIHRoZSBz
-eXN0ZW0gYnVzLiAgQWZ0ZXIgdGhlIERpc2tPbkNoaXAgTWlsbGVubml1bSBwb3dlcnMtb24sIG9y
-IHdoZW4gaXRzIHJlc2V0IHNpZ25hbCBpcyBuZWdhdGVkLCB0aGUgY29udGVudHMgb2YgdGhlIGZp
-cnN0IHBhZ2Ugb2YgZmxhc2ggbWVtb3J5IGFyZSBjb3BpZWQgaW50byB0aGUgQm9vdCBCbG9jay4K
-ClRoZSAiZG9jX2xvYWRiaW9zIiB1dGlsaXR5IGNvcGllcyBkYXRhIHRvIHRoaXMgZmlyc3QgcGFn
-ZSBvZiBmbGFzaCBtZW1vcnkuICBNeSBQQyBtdXN0IG5vdCBiZSAibmVnYXRpbmcgdGhlIHJlc2V0
-IHNpZ25hbCIgdG8gdGhlIERvQyBvbiBhIG5vcm1hbCByZWJvb3QgLS0gYSBmdWxsIHBvd2VyIGN5
-Y2xlIGlzIHJlcXVpcmVkIHRvIGNvcHkgdGhlIGZsYXNoIG1lbW9yeSB0byB0aGUgYm9vdCBibG9j
-ay4KCjguICBDaGFuZ2UgQm9vdCBTZXF1ZW5jZQoKSW4gdGhlIEJJT1Mgc2V0dXAsIHNlbGVjdCBO
-RVRXT1JLIChvciBOSUMsIG9yIGl0cyBlcXVpdmFsZW50KSBhcyB0aGUgZmlyc3QgYm9vdCBkZXZp
-Y2UuCgpTZWxlY3RpbmcgIi0tZW5hYmxlLWRpc2tvbmNoaXAtYmlvc25ldGJvb3QiIGNhdXNlcyB0
-aGUgR1JVQi9Eb0MgY29kZSB0byBob29rIElOVCAxOEgsIHdoaWNoIGlzIGhpc3RvcmljYWxseSBr
-bm93biBhcyB0aGUgIkJBU0lDIGludGVycnVwdCIgb3IgIkRpc2tsZXNzIEJvb3QgSW50ZXJydXB0
-Ii4gIFVzaW5nIHRoaXMgb3B0aW9uIHdpdGggdGhlIERvQyBvbiBhIFBDIGlzIHVzZWZ1bCBiZWNh
-dXNlIHlvdSBjaGFuZ2UgZWFzaWx5IGNoYW5nZSB0aGUgYm9vdCBzZXF1ZW5jZSBiYWNrIHRvIHRo
-ZSBoYXJkIGRyaXZlIHdoZW4gbmVlZGVkLgoKSWYgdGhlIEJJT1MgZG9lcyBub3QgaGF2ZSBhIE5F
-VFdPUksgYm9vdCBvcHRpb24sIGl0IG1heSBiZSBwb3NzaWJsZSB0byBkaXNhYmxlIHRoZSAiYmlv
-c25ldGJvb3QiIG9wdGlvbiwgcmVidWlsZCBHUlVCLCBhbmQgY29weSBncnViX2Zpcm13YXJlIHRv
-IHRoZSBEb0MgYWdhaW4uICBJbiB0aGlzIGNhc2UsIHRoZSBHUlVCL0RvQyBjb2RlIHdpbGwgaG9v
-ayB0aGUgSU5UIDE5SCAoYm9vdHN0cmFwKSBoYW5kbGVyLiAgVGhpcyBkb2Vzbid0IHdvcmsgYXQg
-YWxsIG9uIG15IFBDLCBidXQgdGhlb3JldGljYWxseSBpdCBzaG91bGQgb3ZlcnJpZGUgYW55IGJv
-b3Qgc2VxdWVuY2Ugb3B0aW9ucyBpbiB0aGUgQklPUyBzZXR1cC4gIAoKVGhlIGRvd25zaWRlIG9m
-IHRoaXMgb3B0aW9uIChpbiBhIFBDIGVudmlyb25tZW50LCBhbnl3YXkpIGlzIHRoYXQgeW91IG1h
-eSBuZWVkIHRvIHBoeXNpY2FsbHkgcmVtb3ZlIHRoZSBEb0MgKG9yIGV2YWwtYm9hcmQpIHRvIGdl
-dCB0aGUgUEMgdG8gYm9vdCBmcm9tIHRoZSBoYXJkIGRyaXZlIGFnYWluLiAgSWYgdGhhdCBoYXBw
-ZW5zLCBpdCBtYXkgYmUgbmVjZXNzYXJ5IHRvIHJlaW5zdGFsbCB0aGUgRG9DICphZnRlciogdGhl
-IFBDIGhhcyBib290ZWQsIGludG8gYSBwb3dlcmVkIHVwIGV2YWwgYm9hcmQuICBPZiBjb3Vyc2Us
-IHRoaXMgaXMgKm5vdCogcmVjb21tZW5kZWQsIGJ1dCBpdCBoYXMgYmVlbiBkb25lLi4uCgo5LiAg
-VmVyaWZ5IEdSVUIgYm9vdAoKVGhlIFBDIHNob3VsZCBub3cgYm9vdCBmcm9tIHRoZSBEaXNrT25D
-aGlwLiAgVGhlIEJJT1MgbWF5IHNheSBzb21ldGhpbmcgbGlrZSAiU2VhcmNoaW5nIGZvciBib290
-IHJlY29yZCBmcm9tIE5ldHdvcmsuLi4iLiAgVGhlIGZpcnN0IERvQyBtZXNzYWdlcyBkaXNwbGF5
-ZWQgc2hvdWxkIGJlOgoKCURvQyBNaWwgRDAwMAoJSnVtcGluZyB0byBHcnViCglEaXNrT25DaGlw
-IE1pbGxlbm5pdW0gZm91bmQgYXQgZDAwMDAKCldoZXJlIEQwMDAgaXMgdGhlICJ3aW5kb3ciIGRl
-c2NyaWJlZCBlYXJsaWVyLgoKV2hlbiB0aGUgYm9vdCBwcm9jZXNzIGNvbXBsZXRlcywgdGhlcmUg
-c2hvdWxkIGJlIGEgImdydWI+IiBjb21tYW5kIGxpbmUuICBXZSBoYXZlbid0IGluc3RhbGxlZCBh
-IGtlcm5lbCBvciBhICJtZW51LmxzdCIgZmlsZSBvbiB0aGUgRGlza09uQ2hpcCB5ZXQsIHNvIHRo
-aXMgc3RlcCBpcyBqdXN0IHRvIHZlcmlmeSB0aGF0IHRoZSAiZ3J1Yl9maXJtd2FyZSIgd2FzIGlu
-c3RhbGxlZCBjb3JyZWN0bHksIGFuZCB0aGF0IHRoZSBEb0Mgd2lsbCBib290LgoKQXQgdGhpcyBw
-b2ludCwgeW91IGNhbiBlaXRoZXIgcmVib290IGFnYWluLCBjaGFuZ2UgdGhlIGJvb3Qgc2VxdWVu
-Y2UgYmFjayB0byBJREUgKG9yIHdoYXRldmVyKSwgYW5kIGJvb3QgYmFjayBpbnRvIExpbnV4LiAg
-QWx0ZXJuYXRpdmVseSwgaWYgeW91IGtub3cgd2hlcmUgeW91ciBrZXJuZWwgYW5kIHJvb3QgZmls
-ZXN5c3RlbSBpcyBvbiB0aGUgaGFyZCBkcml2ZSwgc2ltcGx5IHR5cGUgc29tZXRoaW5nIGxpa2U6
-CgoJa2VybmVsIChoZDAsMCkvdm1saW51ei1kb2Mgcm9vdD0vZGV2L2hkYTIKCWJvb3QKCjEwLiAg
-UGFydGl0aW9uIHRoZSBEaXNrT25DaGlwCgoJZmRpc2sgL2Rldi9uZnRsYQoKSWYgL2Rldi9uZnRs
-YSBpcyByZWNvZ25pemVkLCB0aGVyZSB3aWxsIHByb2JhYmx5IGJlIG9uZSBGQVQxMiBwYXJ0aXRp
-b24gb24gdGhlIERpc2tPbkNoaXAuICBJbiB0aGlzIGNhc2UsIGl0IHdvbid0IGJlIG5lY2Vzc2Fy
-eSB0byBydW4gdGhlIExpbnV4ICJuZnRsX2Zvcm1hdCIgb3IgImVyYXNlYWxsIiB1dGlsaXRpZXMu
-ICBVc2UgZmRpc2sgdG8gZGVsZXRlIHRoaXMgcGFydGl0aW9uLCBhbmQgY29udGludWUgd2l0aCBz
-dGVwICMxMS4KCk5PVEU6ICBUaGUgImVyYXNlYWxsIiB1dGlsaXR5IGNhbiBiZSBkYW5nZXJvdXMg
-YXMgaXQgd2lsbCBjb21wbGV0ZSBlcmFzZSB0aGUgRG9DLCBpbmNsdWRpbmcgdGhlIGJhZCBibG9j
-ayB0YWJsZSAtLSBzYXZpbmcgdGhlIEJCVCBhcyBkZXNjcmliZWQgaW4gc3RlcCAjMiBpcyBoaWdo
-bHkgcmVjb21tZW5kZWQuCgpJZiAvZGV2L250ZmxhIGlzIE5PVCByZWNvZ25pemVkLCB1c2UgdGhl
-IG5mdGxfZm9ybWF0IHByb2dyYW06CgoJLi9uZnRsX2Zvcm1hdCAvZGV2L210ZDAgOTgzMDQKClRo
-ZSAic3RhcnQgb2Zmc2V0IiBvZiA5ODMwNCBpbnN1cmVzIHRoYXQgdGhlIGdydWJfZmlybXdhcmUg
-aXMgbm90IG92ZXJ3cml0dGVuLiAgQXMgbmZ0bF9mb3JtYXQgcnVucywgdGhlcmUgc2hvdWxkIGJl
-IG5vdGljZXMgYWJvdXQgInNraXBwaW5nIGJhZCB6b25lIChmYWN0b3J5IG1hcmtlZCkiLiAgVGhl
-IGJhZCB6b25lIHZhbHVlcyBzaG91bGQgYmUgaWRlbnRpY2FsIHRvIHRoZSB2YWx1ZXMgaW4gdGhl
-IGZpbGUgY3JlYXRlZCBpbiBzdGVwICMyLgoKQWZ0ZXIgbmZ0bF9mb3JtYXQgaXMgY29tcGxldGUs
-IHJlYm9vdCB0aGUgUEMuCgoxMS4gIENyZWF0ZSBleHQyIHBhcnRpdGlvbgoKVG8gYm9vdCBkaXJl
-Y3RseSBmcm9tIHRoZSBEb0MsIHdlJ2xsIG5lZWQgdG8gY3JlYXRlIGFuIGV4dDIgcGFydGl0aW9u
-LCBhbmQgaW5zdGFsbCB0aGUga2VybmVsIGFuZCBHUlVCIG1lbnUubHN0IGZpbGU6CgoJZmRpc2sg
-L2Rldi9uZnRsYQkJCgluIHAgMSA8ZW50ZXI+IDxlbnRlcj4JKGNyZWF0ZSBuZXcgcHJpbWFyeSBw
-YXJ0aXRpb24sIHVzaW5nIGRlZmF1bHRzKQoJdwkJCShzYXZlIG5ldyBwYXJ0aXRpb24gaW5mbykK
-Cglta2UyZnMgL2Rldi9uZnRsYTEJCglta2RpciAvbW50L2RvYwoJbW91bnQgLXQgZXh0MiAvZGV2
-L25mdGxhMSAvbW50L2RvYwoJbWtkaXIgLXAgL21udC9kb2MvYm9vdC9ncnViCgljcCAvYm9vdC92
-bWxpbnV6LWRvYyAvbW50L2RvYy9ib290CgpOb3cgY3JlYXRlIGEgIm1lbnUubHN0IiBmaWxlIGlu
-IC9tbnQvZG9jL2Jvb3QvZ3J1Yi4gIFRoaXMgZmlsZSBzaG91bGQgY29udGFpbiB0aGUgZm9sbG93
-aW5nOgoKCXRpbWVvdXQgMTAKCWRlZmF1bHQgMAoKCXRpdGxlIERvQyBNaWxsZW5uaXVtIEJvb3QK
-CWtlcm5lbCAoZGMwLDApL2Jvb3Qvdm1saW51ei1kb2Mgcm9vdD0vZGV2L2hkYVgKCldoZXJlIGhk
-YVggaXMgdGhlIGhhcmQgZHJpdmUgdGhhdCBjb250YWlucyB5b3VyIHJvb3QgTGludXggZmlsZXN5
-c3RlbS4gIFlvdSBjb3VsZCBhbHNvIGFkZCBhbm90aGVyIGVudHJ5IHRvIHRoZSBmaWxlIHRvIGJv
-b3QgZGlyZWN0bHkgZnJvbSB0aGUgaGFyZCBkcml2ZSwgaWYgZGVzaXJlZC4KClVtb3VudCB0aGUg
-L21udC9kb2MgZGlyZWN0b3J5LCBhbmQgcmVib290IHRoZSBQQy4KCkF0IHRoaXMgcG9pbnQsIHRo
-ZSBQQyBzaG91bGQgYm9vdCBlbnRpcmVseSBmcm9tIHRoZSBEb0MsIGFuZCBhdHRlbXB0IHRvIG1v
-dW50IHRoZSByb290IGZpbGVzeXN0ZW0gb24geW91ciBoYXJkIGRyaXZlLiAgSWYgdGhpcyB3b3Jr
-cywgdGhlIG5leHQgc3RlcCB0byBhIGZ1bGx5IHNlbGYtY29udGFpbmVkIGJvb3QgaXMgdG8gY3Jl
-YXRlIGEgZnVsbCByb290IGZpbGVzeXN0ZW0gb3IgcmFtZGlzayBvbiB0aGUgRG9DLiAgT25jZSB0
-aGF0IGhhcyBiZWVuIGRvbmUsIGNoYW5nZSB0aGUgInJvb3Q9L2Rldi9oZGFYIiBvcHRpb24gdG8g
-InJvb3Q9L2Rldi9udGZsYTEiLgoKQ3JlZGl0czoKClRoYW5rcyB0byBJbGd1aXogTGF0eXBvdiA8
-aWxhdHlwb3ZAc3VwZXJidC5jb20+IGZvciByZXZpZXdpbmcgdGhlc2UgaW5zdHJ1Y3Rpb25zLCBh
-bmQgZm9yIGFuc3dlcmluZyBtYW55IHF1ZXN0aW9ucyByZWxhdGVkIHRvIEdSVUIgb24gdGhlIERp
-c2tPbkNoaXAuCgoKCgoKCgoKCgoKCgoKCgoK
+        getimage /win:xxxx <filename>
 
---------------Boundary-00=_FGUW3Z0YOOATPNBH5130--
+(where xxxx is the DoC base memory address in hex (window), for example: 
+/win:d000)
+
+**IMPORTANT**: Save the Bad Block Table!  Before attempting to boot with 
+GRUB, make sure that the bad block table has been saved.  Doing this insures 
+you can always restore the BBT in the event of the DoC being corrupted or 
+completely erased:
+
+        dformat /win:xxxx /noformat /log:<filename.txt>
+
+This creates a text file containing a list of all the bad blocks on the DoC.  
+ The dformat "uselog" option may be used to restore the BBT if needed.
+
+        dinfo /BBT
+
+will also display some detailed information about the DoC and the bad block 
+table.  
+
+3.  Verify TrueFFS Driver Version
+
+The newer versions (5.0 or later) of the M-Systems DOC firmware may not work 
+correctly with the latest version of the MTD drivers. This has something to 
+do with the "UnitSizeFactor != 1" problem documented elsewhere.  An earlier 
+version (4.2) seems to work fine.
+
+Using version 4.2 of the DOS TrueFFS utilities available from M-Systems 
+(www.m-sys.com), verify that the DOC is recognized, and that the firmware 
+version is 4.2:
+
+        dinfo
+
+If the firmware version is 5.0 or later, run the DFORMAT utility:
+
+        dformat /win:xxxx /s:doc42.exb
+
+4.  Patch and compile GRUB
+
+Get the latest grub sources:
+
+        mkdir grub-doc
+        cd grub-doc
+        ftp alpha.gnu.org
+        cd gnu/grub
+        get grub-0.92.tar.gz
+        tar xzvf grub-0.92.tar.gz
+
+Get the latest MTD sources:
+
+        cvs -d :pserver:anoncvs@cvs.infradead.org:/home/cvs login 
+        (password = anoncvs)
+        cvs -z3 -d :pserver:anoncvs@cvs.infradead.org:/home/cvs co mtd
+
+Patch GRUB with DiskOnChip updates:
+
+        cd grub-0.92
+        patch -p0 -i ../mtd/patches/grub-2002-02-19-doc.patch
+
+This patch may fail on the "ChangeLog" file, but all other files should patch 
+correctly.  The 2002-02-19-doc patch was originally a patch against grub 
+version 0.90.
+
+5.  Build GRUB:
+
+        aclocal && automake && autoconf
+
+If there are any error messages here, you'll probably need up update automake 
+and autoconf to the latest versions.
+
+        ./configure --enable-diskonchip-mil512 --enable-ext2fs 
+--enable-diskonchip-biosnetboot \
+                --disable-ffs --disable-xfs --disable-jfs --disable-vstafs 
+--disable-reiserfs --disable-minix --disable-fat
+        make
+
+See "README_DiskOnChip" for more information regarding the ./configure 
+options, specifically the difference between "-mil256" and "-mil512".
+
+6.  Copy GRUB to DOC
+
+        cd ../mtd/util
+        make doc_loadbios
+        ./doc_loadbios /dev/mtd0 ../../grub-0.92/stage1/grub_firmware
+
+If an error is reported regarding /dev/mtd0, you might need to run the 
+./MAKEDEV script to create the proper device MTD device entries in the /dev 
+directory.
+
+7.  TURN OFF PC!
+
+**IMPORTANT** - The PC should be turned off (not just rebooted) after running 
+doc_loadbios.  This may not be necessary on all types of hardware, but it was 
+required on my PC.  From M-Systems application note DOC-044:
+
+The boot block is implemented as a XIP block located between the flash media 
+and the system bus.  After the DiskOnChip Millennium powers-on, or when its 
+reset signal is negated, the contents of the first page of flash memory are 
+copied into the Boot Block.
+
+The "doc_loadbios" utility copies data to this first page of flash memory.  
+My PC must not be "negating the reset signal" to the DoC on a normal reboot 
+-- a full power cycle is required to copy the flash memory to the boot block.
+
+8.  Change Boot Sequence
+
+In the BIOS setup, select NETWORK (or NIC, or its equivalent) as the first 
+boot device.
+
+Selecting "--enable-diskonchip-biosnetboot" causes the GRUB/DoC code to hook 
+INT 18H, which is historically known as the "BASIC interrupt" or "Diskless 
+Boot Interrupt".  Using this option with the DoC on a PC is useful because 
+you change easily change the boot sequence back to the hard drive when needed.
+
+If the BIOS does not have a NETWORK boot option, it may be possible to 
+disable the "biosnetboot" option, rebuild GRUB, and copy grub_firmware to the 
+DoC again.  In this case, the GRUB/DoC code will hook the INT 19H (bootstrap) 
+handler.  This doesn't work at all on my PC, but theoretically it should 
+override any boot sequence options in the BIOS setup.  
+
+The downside of this option (in a PC environment, anyway) is that you may 
+need to physically remove the DoC (or eval-board) to get the PC to boot from 
+the hard drive again.  If that happens, it may be necessary to reinstall the 
+DoC *after* the PC has booted, into a powered up eval board.  Of course, this 
+is *not* recommended, but it has been done...
+
+9.  Verify GRUB boot
+
+The PC should now boot from the DiskOnChip.  The BIOS may say something like 
+"Searching for boot record from Network...".  The first DoC messages 
+displayed should be:
+
+        DoC Mil D000
+        Jumping to Grub
+        DiskOnChip Millennium found at d0000
+
+Where D000 is the "window" described earlier.
+
+When the boot process completes, there should be a "grub>" command line.  We 
+haven't installed a kernel or a "menu.lst" file on the DiskOnChip yet, so 
+this step is just to verify that the "grub_firmware" was installed correctly, 
+and that the DoC will boot.
+
+At this point, you can either reboot again, change the boot sequence back to 
+IDE (or whatever), and boot back into Linux.  Alternatively, if you know 
+where your kernel and root filesystem is on the hard drive, simply type 
+something like:
+
+        kernel (hd0,0)/vmlinuz-doc root=/dev/hda2
+        boot
+
+10.  Partition the DiskOnChip
+
+        fdisk /dev/nftla
+
+If /dev/nftla is recognized, there will probably be one FAT12 partition on 
+the DiskOnChip.  In this case, it won't be necessary to run the Linux 
+"nftl_format" or "eraseall" utilities.  Use fdisk to delete this partition, 
+and continue with step #11.
+
+NOTE:  The "eraseall" utility can be dangerous as it will complete erase the 
+DoC, including the bad block table -- saving the BBT as described in step #2 
+is highly recommended.
+
+If /dev/ntfla is NOT recognized, use the nftl_format program:
+
+        ./nftl_format /dev/mtd0 98304
+
+The "start offset" of 98304 insures that the grub_firmware is not 
+overwritten.  As nftl_format runs, there should be notices about "skipping 
+bad zone (factory marked)".  The bad zone values should be identical to the 
+values in the file created in step #2.
+
+After nftl_format is complete, reboot the PC.
+
+11.  Create ext2 partition
+
+To boot directly from the DoC, we'll need to create an ext2 partition, and 
+install the kernel and GRUB menu.lst file:
+
+        fdisk /dev/nftla                
+        n p 1 <enter> <enter>   (create new primary partition, using defaults)
+        w                       	     (save new partition info)
+
+        mke2fs /dev/nftla1      
+        mkdir /mnt/doc
+        mount -t ext2 /dev/nftla1 /mnt/doc
+        mkdir -p /mnt/doc/boot/grub
+        cp /boot/vmlinuz-doc /mnt/doc/boot
+
+Now create a "menu.lst" file in /mnt/doc/boot/grub.  This file should contain 
+the following:
+
+        timeout 10
+        default 0
+
+        title DoC Millennium Boot
+        kernel (dc0,0)/boot/vmlinuz-doc root=/dev/hdaX
+
+Where hdaX is the hard drive that contains your root Linux filesystem.  You 
+could also add another entry to the file to boot directly from the hard 
+drive, if desired.
+
+Umount the /mnt/doc directory, and reboot the PC.
+
+At this point, the PC should boot entirely from the DoC, and attempt to mount 
+the root filesystem on your hard drive.  If this works, the next step to a 
+fully self-contained boot is to create a full root filesystem or ramdisk on 
+the DoC.  Once that has been done, change the "root=/dev/hdaX" option to 
+"root=/dev/ntfla1".
+
+Credits:
+
+Thanks to Ilguiz Latypov <ilatypov@superbt.com> for reviewing these 
+instructions, and for answering many questions related to GRUB on the 
+DiskOnChip.
