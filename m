@@ -1,24 +1,18 @@
-Received: from smtp-out.bhp.t-online.de ([195.145.119.39] helo=orvill.bhp.t-online.de)
-	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18IGsq-0005dr-00
-	for <linux-mtd@lists.infradead.org>; Sat, 30 Nov 2002 23:18:49 +0000
-Received: from ylva.bhp.t-online.de (ylva.ada.t-online.de [172.30.8.40])
- by smtp-out.bhp.t-online.de (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with SMTP id <0H6E00B0OY5E68@smtp-out.bhp.t-online.de> for
- linux-mtd@lists.infradead.org; Sun, 01 Dec 2002 00:48:51 +0100 (MET)
-Date: Sun, 01 Dec 2002 00:46:59 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: undefined reference to 'crc32' ?
-In-reply-to: <002301c298c1$e6f10360$0300a8c0@jockeXP>
-To: Joakim Tjernlund <Joakim.Tjernlund@lumentis.se>,
- Steven Scholz <steven.scholz@imc-berlin.de>, linux-mtd@lists.infradead.org
-Reply-to: tglx@linutronix.de
-Message-id: <200212010046.59435.tglx@linutronix.de>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-transfer-encoding: 7BIT
-References: <3DE7CB23.5535F5E6@imc-berlin.de>
- <002301c298c1$e6f10360$0300a8c0@jockeXP>
+Received: from [66.239.226.123] (helo=hermes.wildseed.com)
+	by pentafluge.infradead.org with smtp (Exim 3.22 #1 (Red Hat Linux))
+	id 18ImV7-0002R4-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 Dec 2002 09:04:26 +0000
+Message-ID: <43CB1396676FD4119F03001083FD299401A1C6CD@neptune.kirkland.local>
+From: Paul Nash <paulnash@wildseed.com>
+To: 'David Woodhouse' <dwmw2@infradead.org>
+Cc: =?iso-8859-1?Q?=27J=F6rn_Engel=27?= <joern@wohnheim.fh-wedel.de>,
+	linux-mtd@lists.infradead.org
+Subject: RE: Restart problems after writing to mtdblock? 
+Date: Mon, 2 Dec 2002 01:34:52 -0800 
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -30,20 +24,40 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Saturday 30 November 2002 23:43, Joakim Tjernlund wrote:
-> CVS JFFS2 assumes that  crc32()  is avialable as a generic function. You
-> need my crc32 backport from 2.5 to 2.4. It's somewhere in the MTD
-> archives(I think). I don't have it handy ATM.
-I had no 2.4.20 kernel available, when I overhauled patchin.sh. I did not 
-realize that 2.4.19 had include/linux/crc32.h also available.
+A very good point, well taken.  In the particular case of our board, a =
+power
+supply drop out supervisor will cause a hold-off period and the entire =
+reset
+system will likely chain off that, but that's pretty specific to our =
+design.
 
-I changed patchin.sh so it supports those kernels too.
+Anyway, we're pursuing the obvious "right solution" and looking at =
+other
+mechanisms for interim fixes.  Thanks all...
 
-cvs up
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]=20
+Sent: Saturday, November 30, 2002 8:23 AM
+To: Paul Nash
+Cc: 'J=F6rn Engel'; linux-mtd@lists.infradead.org
+Subject: Re: Restart problems after writing to mtdblock?=20
 
--- 
-Thomas
-____________________________________________________
-linutronix - competence in embedded & realtime linux
-http://www.linutronix.de
-mail: tglx@linutronix.de
+
+
+paulnash@wildseed.com said:
+>  Power fail is not a concern -- this only occurs in the case of a=20
+> software reboot of the chip without power loss.  An external reset is =
+
+> not an issue. Flash chips don't store state as to their last read =
+mode=20
+> across power failure anyway.
+
+I wouldn't swear to that. You could feasibly have a power outage long=20
+enough to reset most of the board, but the flash chips don't draw much=20
+power and could perhaps retain their state.
+
+Unlikely perhaps, but I wouldn't declare it impossible.
+
+
+--
+dwmw2
