@@ -1,14 +1,15 @@
-Date: Wed, 19 Jan 2005 13:15:41 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-In-Reply-To: <20050119032133.28108.qmail@web51006.mail.yahoo.com>
-Message-ID: <Pine.LNX.4.58.0501191313020.8174@phoenix.infradead.org>
-References: <20050119032133.28108.qmail@web51006.mail.yahoo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: some questions regarding the write operation on JFFS2
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
+References: <MKELJOLMMOHJCMIPKLJKAEBJCBAA.j.karrer@lightmaze.com>
+	<Pine.LNX.4.58.0501191302470.8174@phoenix.infradead.org>
+Content-Type: text/plain
+Date: Wed, 19 Jan 2005 13:38:41 +0000
+Message-Id: <1106141921.26551.516.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Jochen Karrer <j.karrer@lightmaze.com>, linux-mtd@lists.infradead.org
+Subject: Re: mysqld on jffs2: MyISAM Index write is slow
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +19,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 Jan 2005, Vahid Fereydunkolahi wrote:
+On Wed, 2005-01-19 at 13:03 +0000, Artem B. Bityuckiy wrote:
+> Not expert in this issue, but I was told by David that JFFS2 is 
+> synchronous, and you need redesigning it if you want asynchronous 
+> behaviour.
 
-> Hi All,
->  I traced the write operation from the Linux kernel to
-> the JFFS2. I have some questions:
->     1) Is there any chance that there could be some
-> partial writes on the NAND flash (if power failure
-> happens during write operation).
-Yes, there is chance.
+It's often been suggested that the best way to do databice on JFFS2
+would just to be to start supporting extended attributes, then design a
+database which uses those for its storage. 
 
-> 
->     2) Does SYNC has any meaning when using the JFFS2.
-> As fas as I noticed the write operations are
-> formwarded to the MTD device, and they are not cached.
-For NAND JFFS2 has per-NAND page buffer, so sync flushes it. see 
-jffs2/wbuf.c.
-
-> 
-> Thank you so much in advance,
-> --vahid
-You're welcome :-)
-
-> 
-> 
-> 		
-> __________________________________ 
-> Do you Yahoo!? 
-> Read only the mail you want - Yahoo! Mail SpamGuard. 
-> http://promotions.yahoo.com/new_mail 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+dwmw2
