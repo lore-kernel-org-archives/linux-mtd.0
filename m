@@ -1,19 +1,20 @@
-Received: from wohnheim.fh-wedel.de ([195.37.86.122])
+Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 1959Pm-0006Lg-4t
-	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 20:14:50 +0100
-Date: Mon, 14 Apr 2003 21:14:54 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-ID: <20030414191453.GC12740@wohnheim.fh-wedel.de>
-References: <3E9AF4CA.9040807@imc-berlin.de>
-Mime-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <3E9AF4CA.9040807@imc-berlin.de>
-Content-Type: text/plain; charset=iso-8859-1
+	id 195Cqj-00078J-8J
+	for <linux-mtd@lists.infradead.org>; Mon, 14 Apr 2003 23:54:53 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: "Thomas Cameron" <tom@ceisystems.com>,
+	<linux-mtd@lists.infradead.org>
+Date: Tue, 15 Apr 2003 10:55:34 +1200
+References: <6D31D5429FA6884CBE9ECAB6C9B5E6A9444D@intel-srvr.patcameron.ne.mediaone.net>
+In-Reply-To: <6D31D5429FA6884CBE9ECAB6C9B5E6A9444D@intel-srvr.patcameron.ne.mediaone.net>
+MIME-Version: 1.0
+Message-Id: <20030414225454.A45C54340@blood.actrix.co.nz>
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-cc: MTD <linux-mtd@lists.infradead.org>
-Subject: Re: mkfs.jffs2 and hard links
+Subject: Re: Which is simpler...
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 14 April 2003 19:50:02 +0200, Steven Scholz wrote:
-> 
-> are you guys working on full hard link support for mkfs.jffs2?
+On Tue, 15 Apr 2003 01:05, Thomas Cameron wrote:
+> Hello all,
+>
+> 	I have been working on a project recently, which uses a
+> DiskOnChip for storage.  However, I have had a number of problems
+> getting the DOC to work as I would like.  My question is this.  Would it
+> be easier to simply use a CompactFlash?
 
-Not that I had heard about it.
+If your board supports IDE, then you can hook up a CF in IDE mode. Even 
+without an IDE bus, you can do this quite simply. The CF then looks like an 
+IDE hard disk and needs no special drivers etc. There are application notes 
+on the Sandisk www on how to do this.
 
-> The man page states
-> 
-> "mkfs.jffs2 does not properly  handle  hard  links  in  the input 
-> directory  structure.  Currently, hard linked files will be expanded 
-> to multiple identical files in the output image."
-> 
-> Is that going to change?
+However... this is not a particularly robust solution for a shipping product. 
+For those I would suggest a journaling FS that is flash aware (ie. JFFS2 or 
+YAFFS).
 
-I hope so. Do you volunteer? :)
+>
+> 	My end goal is to use some sort of flash-based storage, and a
+> jffs2 or yaffs root filesystem.  Is it possible to use these filesystems
+> on a DiskOnChip at this point, or is support for this still forthcoming?
+> Additionally, what would be the easiest way to implement one of these
+> filesystems on a DiskOnChip.
 
-Jörn
+You could use DOC for this, but straight NAND (Toshiba, Samsung) would be 
+cheaper and likely get you going faster.
 
--- 
-With a PC, I always felt limited by the software available. On Unix, 
-I am limited only by my knowledge.
--- Peter J. Schoenster
+IMHO,
+
+-- Charles
