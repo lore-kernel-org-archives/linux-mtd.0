@@ -1,26 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [2001:838:3de:1000::2] (helo=fserver.unsec.nl)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Cvxgx-0005PS-GM
-	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 08:03:41 -0500
-Date: Tue, 1 Feb 2005 14:03:15 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20050201130315.GA11055@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0501311010180.3552@localhost.localdomain>
-	<1107184897.7567.20.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.61.0501311038140.3730@localhost.localdomain>
-	<Pine.LNX.4.58.0501311553590.17207@phoenix.infradead.org>
-	<Pine.LNX.4.61.0501311109050.13936@localhost.localdomain>
-	<20050131163919.GH6694@wohnheim.fh-wedel.de>
-	<1107217171.783.332.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1107217171.783.332.camel@baythorne.infradead.org>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	"Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: running out of space dd'ing JFFS2 image to /dev/mtdblock/0
+	id 1Cw013-0006ak-5P
+	for linux-mtd@lists.infradead.org; Tue, 01 Feb 2005 10:32:34 -0500
+From: "Rudi Engelbertink" <rudi@unsec.nl>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 1 Feb 2005 16:32:23 +0100
+Message-Id: <20050201150810.M93647@unsec.nl>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+Subject: jffs2_get_inode_nodes() very very slow
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,21 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 1 February 2005 00:19:31 +0000, David Woodhouse wrote:
-> On Mon, 2005-01-31 at 17:39 +0100, Jörn Engel wrote:
-> > This allows different people with different taste to specify numbers
-> > in various simple formats.  If you think you can improve on this,
-> > please send me a patch.
-> 
-> It is wrong to interpret 'k' 'M' and 'G' as anything other than 10^3,
-> 10^6 or 10^9 respectively. If you have to do it to support a legacy
-> interface like slram, that's vaguely acceptable. No more, though.
+Hello,
 
-Misunderstanding.  Nowhere do I accept 'k' without 'i' and nowhere do
-I use 10^[369].  Everything is good. :)
+On a 64 MiB NAND Flash I created a jffs2 file system. After several tests
+especially power fail tests resulting in a lot off CRC and Data CRC errors.
+This appears not to be a problem except it takes a very long time to check
+the file system.
+The initial check (scanning for erased blocks) is done in aproximatly 10
+seconds, but after that the jffs2_get_inode_nodes check is running. 
+This process takes up to 8 minutes.
+During this time the file-system is inaccessible which in oure case a
+watchdog decides to reboot the system, making it even worse.
+It appears that the check is done with a stepsize of 16 bytes. On an 64MiB
+NAND flash it does this check +/- 4 million times.
 
-Jörn
+Is there a way to reduce the time to check the file-system and/or how 
+can I recover from these errors.
 
+Kind Regards,
+Rudi.
 -- 
-Victory in war is not repetitious.
--- Sun Tzu
+They that can give up essential liberty to obtain a little temporary
+safety deserve neither liberty nor safety.
+   Benjamin Franklin (1706-1790), Letter to Josiah Quincy, Sept. 11, 1773.
+GnuPG Key fingerprint = 706C E2AC 7AE2 BCEE 04EB  A962 0A75 7F9B 07A1 83E8
