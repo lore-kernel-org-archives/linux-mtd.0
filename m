@@ -1,18 +1,20 @@
-Received: from 228-216.205.122.dellhost.com ([216.205.122.228] helo=lakeshoremicro.com)
+Received: from imladris.infradead.org
+	([194.205.184.45] helo=infradead.org ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16eMCE-0006WW-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 20:21:34 +0000
-Message-ID: <000b01c1bbe0$0e801cf0$0101a8c0@dellc800>
-From: "Mark Meade" <mark@lakeshoremicro.com>
-To: "Ilguiz Latypov" <ilatypov@superbt.com>
-Cc: <linux-mtd@lists.infradead.org>
-References: <Pine.LNX.4.44.0202221157280.8089-100000@server.superbt.com>
+	id 16eP4P-0006gV-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Feb 2002 23:25:41 +0000
+Received: from ilatypov by infradead.org with local (Exim 3.20 #2)
+	id 16ePFK-0007MF-00
+	for linux-mtd@lists.infradead.org; Fri, 22 Feb 2002 23:36:58 +0000
+Date: Fri, 22 Feb 2002 17:38:56 -0500 (EST)
+From: Ilguiz Latypov <ilatypov@superbt.com>
+To: Mark Meade <mark@lakeshoremicro.com>
+cc: linux-mtd@lists.infradead.org
 Subject: Re: DiskOnChip 2000 and Millenium support in GRUB bootloader 
-Date: Fri, 22 Feb 2002 15:32:20 -0500
+In-Reply-To: <000b01c1bbe0$0e801cf0$0101a8c0@dellc800>
+Message-ID: <Pine.LNX.4.44.0202221714050.8996-100000@server.superbt.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,44 +26,24 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Fri, 22 Feb 2002, Ilguiz Latypov wrote:
+Mark,
 
-> The source code for doc_loadbios is in the util/ directory of the Linux
-> MTD CVS repository.
->
- > Mind upgrading autoconf and automake?
+On Fri, 22 Feb 2002, Mark Meade wrote:
 
-Thanks, Ilguiz.  I now have the latest from the CVS archive, and I also upgraded autoconf
-and automake.  Everything went flawlessly.
+> The doc_loadbios output to /dev/mtd0 is off by 512 bytes (when I use an
+> offset of 1024):
 
-The doc_loadbios output to /dev/mtd0 is off by 512 bytes (when I use an offset of 1024):
+Thanks for the correction.   I adjusted your patch to take into account 
+the almost impossible case when IPL is bigger than erase sector.
 
-*** doc_loadbios.c Fri Feb 22 15:22:17 2002
---- doc_loadbios.c.orig Fri Feb 22 15:16:30 2002
-***************
-*** 89,98 ****
-       perror("read");
-       goto error;
-      }
--     if (lseek(ofd, 0L, SEEK_SET) < 0) {
--      perror("lseek");
--      goto error;
--     }
-     }
+> My system now recognizes that something is there, but refuses to boot:
+>     Searching for boot record from SCSI: Not Found.
 
-     erase.length = meminfo.erasesize;
---- 89,94 ----
+Perhaps, IPL refuses to execute SPL (GRUB's doc_stage1) because the
+doc_stage1's check sum didn't include IPL itself.  
 
-After making that change, the grub_firmware appears to be in the correct place (0x400),
-and the IPL is still at 0x0 and 0x200.
+Vadim, should the Millennium SPL check sum include IPL?
 
-I created an ext2 partition and copied the necessary files to /boot and /boot/grub.
+The other thought is if the stage1 code can be placed instead of IPL.
 
-My system now recognizes that something is there, but refuses to boot:
-    Searching for boot record from SCSI: Not Found.
-
-I'll keep trying; if you have any ideas, let me know.
-
-Regards,
-
-Mark
+Ilguiz
