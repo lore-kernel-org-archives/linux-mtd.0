@@ -1,17 +1,18 @@
-Received: from dell-paw-3.cambridge.redhat.com ([195.224.55.237] helo=passion.cambridge.redhat.com)
+Received: from [208.190.191.184] (helo=sekhmet.ad.newisys.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 16W0XW-0004LV-00
-	for <linux-mtd@lists.infradead.org>; Wed, 30 Jan 2002 19:37:02 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <EA23924D8B48774F889C7733226B28E80E7D99@exalane.intransa.com> 
-References: <EA23924D8B48774F889C7733226B28E80E7D99@exalane.intransa.com> 
-To: "Paul Lai" <paul.lai@intransa.com>
-Cc: "Mtd-Linux (E-mail)" <linux-mtd@lists.infradead.org>
-Subject: Re: looking for pushpull.c [newbie question] 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Date: Wed, 30 Jan 2002 19:48:03 +0000
-Message-ID: <5899.1012420083@redhat.com>
+	id 16W6Rf-0004iQ-00
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2002 01:55:23 +0000
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Problems with mounting a JFFS2 file system image 
+Date: Wed, 30 Jan 2002 20:05:52 -0600
+Message-ID: <D3A72C5007329A4F991C0DD87202259F096A45@sekhmet.ad.newisys.com>
+From: "Navin Boppuri" <navin.boppuri@newisys.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: <linux-mtd@lists.infradead.org>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -23,12 +24,27 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-paul.lai@intransa.com said:
->  So, where's pushpull.c?  Where am I not looking?
+That solved it. Thanks a lot.
 
-It doesn't need it any more. Remove it from the Makefile. It might still 
-not build though - the source is in flux at the moment. There's an i386 
-binary at http://sources.redhat.com/jffs2/
+Navin.
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Tuesday, January 29, 2002 6:57 PM
+To: Navin Boppuri
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Problems with mounting a JFFS2 file system image=20
+
+
+
+navin.boppuri@newisys.com said:
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: =
+0x8519 instead
+
+Your host and target have different endianness. Use the '-b' or '-l' =
+option
+to mkfs.jffs2.
+
 
 --
 dwmw2
