@@ -1,27 +1,34 @@
-From: jasmine@hex.linuxgrrls.org (Jasmine Strong)
-Date: Fri, 21 Mar 2003 17:42:58 +0000 (GMT)
-Subject: help: network cannot startup from FLASH
-In-Reply-To: <1048245508.1717.21.camel@tweedy.ksc.nasa.gov>
-Message-ID: <Pine.LNX.4.33.0303211739400.23519-100000@hex.linuxgrrls.org>
+From: tharbaugh@lnxi.com (Thayne Harbaugh)
+Date: 21 Mar 2003 14:48:01 -0700
+Subject: AMD_STD and AMD_EXT
+Message-ID: <1048283281.1224.51.camel@tubarao>
 To: linux-mtd@lists.infradead.org
 List-Id: linux-mtd.lists.infradead.org
 
+--=-vr+dbbDK07r5c3X/7LET
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-On 21 Mar 2003, Bob Chiodini wrote:
+What is the difference between AMD_STD and AMD_EXT command sets?  I
+imagine this mean AMD standard and AMD extended.  Does anyone have
+pointers to data sheets or documentation that describes the command
+sets?
 
-> One other thing:  Is your bootpd/dhcpd configured fro the correct MAC?
+--=20
+Thayne Harbaugh
+Linux Networx
 
-I think the important question is why is the MAC address changing?  Since
-the ethernet interface on a PowerQUICC design is actually provided by one
-of the four integrated interfaces that give the chip its name, it's hard
-to see how an ancillary part could be causing this.
+--=-vr+dbbDK07r5c3X/7LET
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
 
-My suspicion is that the QUICC registers are getting corrupted by the MTD
-code driving the NAND device in some way.  That's making the MAC address
-come out wrong and also stopping the device producing any real ethernet
-packets.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
 
-I've seen similar problems with IDE interfaces on PowerQUICC devices in
-the past.
+iD8DBQA+e4iRfsBPTKE6HMkRAlk5AJ0eY0GE9iXUK6w54VyZYbaRDcEhvwCbBmO4
+2US2sShNnNdTyYC/AZrxKBk=
+=VZex
+-----END PGP SIGNATURE-----
 
--Jas.
+--=-vr+dbbDK07r5c3X/7LET--
