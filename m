@@ -1,15 +1,18 @@
-Received: from [207.164.182.16] (helo=cbnsitar.cbnco.com)
+Received: from stress.telefonica.net ([213.4.129.135] helo=tnetsmtp1.mail.isp)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18ACeI-0000N8-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Nov 2002 17:10:27 +0000
-Message-ID: <3DCBF73B.9070904@cbnco.com>
-Date: Fri, 08 Nov 2002 12:41:15 -0500
-From: Vladimir Doukhanine <vdoukhan@cbnco.com>
+	id 18ADgm-0000VA-00
+	for <linux-mtd@lists.infradead.org>; Fri, 08 Nov 2002 18:17:04 +0000
+Received: from ordenadorcasa ([193.153.239.173]) by
+          tnetsmtp1.mail.isp (terra.es) with ESMTP id H59TIY01.J7U for
+          <linux-mtd@lists.infradead.org>; Fri, 8 Nov 2002 19:47:22 +0100
+Message-ID: <001901c28757$46ffd0f0$adef99c1@ordenadorcasa>
+From: "Asier Santamaria" <asier_s@telefonica.net>
+To: <linux-mtd@lists.infradead.org>
+Subject: Compact Flash Reliability Embeded System
+Date: Fri, 8 Nov 2002 19:47:21 +0100
 MIME-Version: 1.0
-To: dwmw2@infradead.org
-CC: linux-mtd@lists.infradead.org
-Subject: cfi_cmdset_0002.c (HZ/1000) question
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
@@ -22,12 +25,13 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Hi David,
-
-I'm just wondering if this line makes any sence:
-
-./drivers/mtd/chips/cfi_cmdset_0002.c:511:      timeo = jiffies + 
-(HZ/1000); /* setting timeout to 1ms for now */
-
+Hi,
+I've read something about the Compact Flash reliability problems on an
+embedded system. I'm developing an embedded system running Linux and I was
+thinking to use a Compact Flash as storage drive. But I read that Compact
+Flash is not the most reliable storage system, that you can have problems
+during the power failure or bad shutting down of the system (usual on an
+embedded system), that the CF can death.
+Anyone has more information about that?
 Thanks,
-Vlad
+Asier
