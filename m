@@ -1,15 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
-In-Reply-To: <01139FC052A0D411900B00508B9535FC102796E8@ZCH07EXM04.corp.mot.com>
-References: 
-	 <01139FC052A0D411900B00508B9535FC102796E8@ZCH07EXM04.corp.mot.com>
-Content-Type: text/plain
-Message-Id: <1079689847.16952.260.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Fri, 19 Mar 2004 09:50:48 +0000
+Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
+	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B4H7a-0002zm-0I
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2004 10:20:58 +0000
+Message-ID: <405AC989.7020100@arcom.com>
+Date: Fri, 19 Mar 2004 10:20:57 +0000
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+References: <E1B3wBv-0005HA-9d@pentafluge.infradead.org>
+	<200403182302.45350.dk.dbox2@gmx.net>
+In-Reply-To: <200403182302.45350.dk.dbox2@gmx.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-cc: linux-mtd@lists.infradead.org
-Subject: RE: JFFS2 Errors
+Subject: Re: Erasebug on AMD flashes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,14 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2004-03-19 at 17:13 +0800, Shen Aaron-r62966 wrote:
->  I have been aware of it after some research. The block size of my Flash 
-> seems to be 256KiB, which need the erasesize to be set to 0x40000.
-> But after I re-build the JFFS2 rootdisk, the following messege are still shown
-> althought it will not influence mounting operation.
+>> Part numbers of the flash chips and their configuration (interleaved etc.).
+> [AM29DL322D]
 
-Is this on a completely clean file system image created by mkfs.jffs2?
-Or are the CRC errors on nodes which were written by the kernel itself?
+Okay.  Are there two chips in parallel forming a 32 bit data bus (i.e. 
+interleaved); or two chips in series forming a 16 bit data bus (i.e. 
+non-interleaved); or some other weird scheme?
 
+David Vrabel
 -- 
-dwmw2
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
