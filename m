@@ -1,18 +1,20 @@
-Received: from albatross-ext.wise.edt.ericsson.se ([193.180.251.49] helo=albatross.wise.edt.ericsson.se)
+Received: from marasystems.com ([213.15.252.90] helo=filer.marasystems.com)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17nHvP-0006cd-00
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:09:23 +0100
-Subject: Re: writing to jffs2 is so slow?
-From: Kenneth Johansson <kenneth.johansson@etx.ericsson.se>
-To: "Xiaogeng (Shawn) Jin" <xjin@redswitch.com>
-Cc: Mtd <linux-mtd@lists.infradead.org>
-In-Reply-To: <3D77C812.3080108@redswitch.com>
-References: <3D77C812.3080108@redswitch.com>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: 06 Sep 2002 14:08:58 +0200
-Message-Id: <1031314138.28700.167.camel@spawn>
-Mime-Version: 1.0
+	id 17nI8R-0006h9-00
+	for <linux-mtd@lists.infradead.org>; Fri, 06 Sep 2002 13:22:51 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Henrik Nordstrom <hno@marasystems.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: DOC 2000 and GRUB
+Date: Fri, 6 Sep 2002 14:22:43 +0200
+Cc: Russ Dill <Russ.Dill@asu.edu>, mateo@posta.star.si,
+   linux-mtd@lists.infradead.org
+References: <200209061149.02058.hno@marasystems.com> <1031302476.763.2.camel@russ> <32342.1031307879@redhat.com>
+In-Reply-To: <32342.1031307879@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <200209061422.43965.hno@marasystems.com>
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -24,28 +26,17 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Thu, 2002-09-05 at 23:09, Xiaogeng (Shawn) Jin wrote:
-> Hi,
-> 
-> I have an empty mtd partition (capacity is 16 MB) where a jffs2 fs is 
-> mounted. The strange observation is that making a first directory on 
-> that partition takes almost 2 minutes. So far I observed this behaviour 
-> just when making the first directory and just on that particular 
-> partition. Can anyone help me to explain this? Is there anything wrong 
-> with flash memory (hardware) or MTD device driver or JFFS2? Thanks.
-> 
+David Woodhouse wrote:
+> hno@marasystems.com said:
+> >  Or wait until the new NFTL format is understood, and use the M-Sys
+> > DFORMAT 5.x  program format the flash and install GRUB (plus reserve
+> > additional binary  boot partition space if needed for future upgrades
+> > of GRUB)
+>
+> Doesn't the current CVS code work with the new format?
 
-The thing is that jffs2 seems to mark the whole disk dirty and has to re
-erase the whole disk before you can store anything on it. This happens
-only the first time. If you wait a few minutes after you do the mount
-you should see no delay in creating directories and files.
+Not the GRUB patch, not unless it has been updated in the last few days at 
+least.
 
-Maybe it's possible to do a format command that creates a disk that is
-empty and prevents the jffs2 code to reformat every block.
-
-
--- 
-Kenneth Johansson	
-Ericsson AB                       Tel: +46 8 404 71 83
-Borgafjordsgatan 9                Fax: +46 8 404 72 72
-164 80 Stockholm                  kenneth.johansson@etx.ericsson.se
+Regards
+Henrik
