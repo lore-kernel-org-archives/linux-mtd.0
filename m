@@ -1,81 +1,52 @@
 Return-path: <owner-mtd@imladris.demon.co.uk>
 Received: from gate.mvhi.com ([194.205.184.34] helo=server.axiom.internal)
 	by imladris.mvhi.com with esmtp (Exim 2.12 #1)
-	id 11FHSb-0004sa-00
-	for mtd@infradead.org; Fri, 13 Aug 1999 14:33:29 +0100
-To: Jason Gunthorpe <jgg@deltatee.com>
+	id 11FHey-0004t7-00
+	for mtd@infradead.org; Fri, 13 Aug 1999 14:46:16 +0100
+To: David Hinds <dhinds@zen.stanford.edu>
 Cc: mtd@infradead.org
 Subject: Re: mtd-19990809 including readonly DiskOnChip driver. 
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Date: Fri, 13 Aug 1999 14:33:28 +0100
+Date: Fri, 13 Aug 1999 14:46:15 +0100
 From: David Woodhouse <David.Woodhouse@mvhi.com>
-Message-Id: <E11FHSa-0001NU-00@devel2.axiom.internal>
+Message-Id: <E11FHex-0001OL-00@devel2.axiom.internal>
 Sender: owner-mtd@imladris.demon.co.uk
 List-ID: <linux-mtd.lists.infradead.org>
 
 
-jgg@deltatee.com said:
-> On Tue, 10 Aug 1999, David Woodhouse wrote:
-> > Some extra complexity is required for the erases, though, to allow
-> > timer-based operation and retries. I didn't really pay much attention to
-> > erases as I pulled this lot together though - just used what I had last
-> > time. So feel free to point out anything that's not right. 
+dhinds@zen.stanford.edu said:
+>  That's certainly true: PCMCIA currently treats cards with no CIS as
+> static RAM cards.  Mostly because the issue has never really come up
+> for me.  I think that's a bit different from an unqualified "they do
+> not work very well at all". 
 
->  That should all go into the highest layer, the device stuff doesn't
-> need to know it is being called asynchrounously. 
+OK then - would you accept a patch which performs CFI or JEDEC identification 
+in the case that there's no CIS, rather than just assuming SRAM? Jason, would 
+you be willing to write this and submit it to him?
 
-That's what I originally thought. However, erases take a long time, and we 
-often don't need them to be done synchronously - mostly we'll keep a spare 
-erase block already clean, and the newly-erased ones won't be used immediately.
+Also, how would you like us to go about making PCMCIA devices use the MTD 
+system? 
 
-Also, in multi-chip devices, an erase can be in progress on one chip while 
-other things are happening to the other chips. Erases can even be interrupted, 
-I believe, to allow reads to be performed. That kind of optimisation isn't 
-possible unless we allow asynchronous erases.
+>From what I understand of Jason's "mapped" helper, it provides simple way for 
+MTD devices with memory windows to SRAM or NOR flash to provide a single 
+'change window mapping' routine, and then to be handled automatically. Am I 
+right in thinking that most (all?) PCMCIA memory devices work this way? 
 
+If so, I think the best way to get PCMCIA devices to use this system with 
+minimal code duplication is to write a new driver for PCMCIA MTDs, which links 
+to Jason's helper code. That way, the original drivers aren't littered with 
+ifdefs which make them difficult to maintain.
 
->  If the DoC is just an array of normal flash chips with some paging
-> mechanism then you could probably [use the mapped driver] quite easially.
+We can provide those drivers separately, as part of our tarball, until such 
+time as we get Linus to include the MTD subsystem into his kernel, hopefully 
+near the start of the 2.5 series. At that point, they can be imported into 
+your PCMCIA tree for conditional compilation when the MTD system is detected 
+in the kernel.
 
-The DiskOnChip 1000 is. So it should be quite simple, yes. But I have no access 
-to DiskOnChip 1000 hardware at the moment - they're out of production. 
-M-Systems are trying to see if they can lay their hands on some for me.
-If we can't get them, then I'll probably just pull the DoC1000 driver 
-completely.
-
->  Hum, that's kinda a bummer - Being able to prepare a flash image on
-> my desktop and then just bang the whole thing onto device is very
-> usefull - that is our primary means of deploying remote upgrades.
-
->  You still need to format the flash with the FTL information, it is
-> convient to just have that pre-available in an image. 
-
-Convenience is just a matter of having the tools readily available. If we 
-provide a tool which can take a block device image and dump that to flash, 
-formatting an NFTL partition as it does so, then it's just as convenient, 
-surely? And we can use a standard loopback mount to create and maintain the 
-filesystem for the device.
-
-I agree that formatting and then populating the NFTL partition isn't 
-quite as convenient (two command lines instead of one), but even that's 
-scriptable.
-
-It's fairly easy to make a dump/restore utility dumps the whole of the flash
-intact, but that's of limited usefulness. Blindly duplicating the flash will
-copy block erase counts and other such information that then becomes invalid on
-the new media. For duplicating onto production systems, you'd do just as well
-to use the format-as-you-go approach above.
+How does that sound?
 
 
-jgg@deltatee.com said (re FFS2 on block devices):
->  The plan is to make it ask the MTD drive if the device it was mounted
-> against is a MTD device and get a pointer to the MTD device block.
-> Then it will not speak block or character, it will just directly
-> manipulate the device. That solves the problem of having to ensure
-> buffer cache consistency during erasures and so on.. 
-
-Good - that's exactly what I was thinking of.
 
 ----                                 ----                                 ----
 David Woodhouse        David.Woodhouse@mvhi.com       Office: (+44) 1223 810302
