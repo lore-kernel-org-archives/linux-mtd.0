@@ -1,19 +1,17 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from tolkor.sgi.com ([192.48.180.13])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 17eMOf-00054u-00
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 22:06:41 +0100
-Date: Mon, 12 Aug 2002 23:06:38 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: adr <mtd@mcmen.demon.co.uk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Help with Dreamcast flash devices
-Message-ID: <20020812210638.GA23744@wohnheim.fh-wedel.de>
-References: <200208111908.06874.mtd@mcmen.demon.co.uk> <20020811195238.GA1638@wohnheim.fh-wedel.de> <200208122154.19331.mtd@mcmen.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200208122154.19331.mtd@mcmen.demon.co.uk>
+	id 17eN44-00059Q-00
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Aug 2002 22:49:28 +0100
+Message-ID: <3D582D5B.A18054F@sgi.com>
+Date: Mon, 12 Aug 2002 16:49:15 -0500
+From: Steven Hein <ssh@sgi.com>
+MIME-Version: 1.0
+To: tglx@linutronix.de
+CC: linux-mtd@lists.infradead.org
+Subject: Re: Aw: Re: Hardware ECC in NAND flash driver
+References: <34a9835a72.35a7234a98@t-online.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,20 +23,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Mon, 12 August 2002 21:54:19 +0100, adr wrote:
-> On Sunday 11 Aug 2002 8:52 pm, Jörn Engel wrote:
-> > My best guess would be to create something similar to the slram
-> > driver, but with different guts. 
+tglx@linutronix.de wrote:
+> >
+> > Dumb question--is ECC calculation "generic" enough to be
+> > applicable from
+> > one hardware ECC generator to the next, even if they do the same
+> > numberof ECC bytes for the same block size?  Is it very likely
+> > that the
+> > algorithm
+> > is actually going to be the same between platforms?
+> I think so, because  Samsung and others will bring up similar chips,
+> which
+> incorporate the same ECC generator, but with maybe different registers
+> or
+> opcodes. But the algorithm will be the same for interdevice compability.
+> So
+> IMHO it's correct to put it in the generic nand_ecc code.
 > 
-> I've looked at slram.c - but don't really understand what it is for.
-> What sort of device is it?
 
-Physical RAM, plain and simple. Usually system memory, after passing a
-"mem=a_little_less_than_availlable" command line option. Sometimes
-NVRAM that is mapped into the physical memory address range.
+Sounds fine with me!
 
-Jörn
+Any preference on how the correct_data function should be named
+(the one I should add to nand_ecc.c)?  Let me know what you'd prefer
+and I'll use that name from the start.
+
+> > THANKS for adding this!!  I'll try it today/tomorrow.
+> I'm curious, how many bugs you will detect. :)
+> 
+
+The final tally is.......ZERO!!  I tried it and it worked great.
+Thanks again!
+
+
+> > Another question--how do you typically handle adding new HW drivers
+> > to the NAND flash code?  I know that in my case, the HW implementation
+> > uses access to specific S3C2410 processor registers, and those
+> > register definitions live in include/asm-arm/arch-s3c2410 directory
+> > in the Linux kernel tree.  I would expect that these arch-specific
+> > files would not live in the MTD tree.  Let me know--I'd like to get
+> > this HW driver incorporated into the standard tree as soon as I
+> > get it working!
+> 
+> That's easy, you include <asm/hardware.h> and you should be done. When
+> your
+> driver is ready, let me know. I will take care for incorporation.
+> 
+I'll let you know when I have it done  (I'm working with a Samsung
+employee on the 2410 port; when we get it cleaned up I'll
+send it to you).
+
+
+Steve
+
+
 
 -- 
-"Security vulnerabilities are here to stay."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Steve Hein (ssh@sgi.com)              Engineering Diagnostics/Software
+Silicon Graphics, Inc.                          
+1168 Industrial Blvd.                 Phone: (715) 726-8410
+Chippewa Falls, WI 54729              Fax:   (715) 726-6715
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
