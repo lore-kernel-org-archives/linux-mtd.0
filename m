@@ -1,14 +1,20 @@
-Received: from web11608.mail.yahoo.com ([216.136.172.60])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1D1OS1-0002e7-9r
-	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2005 07:38:42 -0500
-Message-ID: <20050216123840.3449.qmail@web11608.mail.yahoo.com>
-Date: Wed, 16 Feb 2005 04:38:40 -0800 (PST)
-From: prasadam kumar <prasadamkumar@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1D1OXK-0002or-RS
+	for linux-mtd@lists.infradead.org; Wed, 16 Feb 2005 07:44:11 -0500
+Date: Wed, 16 Feb 2005 13:44:09 +0100
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: mtd liste <linux-mtd@lists.infradead.org>
+Message-ID: <20050216124409.GC16239@synertronixx3>
+References: <20050216114741.GA16239@synertronixx3>
+	<1108555269.24721.83.camel@tglx.tec.linutronix.de>
+	<20050216122015.GB16239@synertronixx3>
+	<1108556645.24721.86.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Subject: How to make my IQ80321 flash Read/Write
+Content-Disposition: inline
+In-Reply-To: <1108556645.24721.86.camel@tglx.tec.linutronix.de>
+Subject: Re: Oops vanilla 2.6.10
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Am 2005-02-16 13:24 +0100 schrieb Thomas Gleixner:
 
-Hai to all,
+> Can you verify, that this happens with MTD CVS code too ?
 
-I am working on intel IQ80321 flash, it is configured
-as a ROM flash(map_rom.c) it supports only Read
-functionality  here i am using as a char device
-(/dev/mtd ) if i want to get Read/Write functionality
-i am planning to move cfi_probe, so how should i
-configure the cfi, if i am trying to do this it is
-giving a kernel pannic like
+I linked drivers/mtd and fs/jffs2 into 2.6.10:
 
-  Cannot open root device "mtdblock2" on 1f:02
+  LD      fs/built-in.o
+  drivers/mtd/Makefile:11: /Makefile.inc: No such file or directory
 
-plz  suggest me to come out of this problem.
+Konsti
 
-
-prashanth
-
-
-
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - Easier than ever with enhanced search. Learn more.
-http://info.mail.yahoo.com/mail_250
+-- 
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
