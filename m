@@ -1,27 +1,22 @@
-Received: from mail.imc-berlin.de ([217.110.46.186]
-	helo=mail.berlin.imc-berlin.de)
+Received: from motgate8.mot.com ([129.188.136.8])
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BCdLB-0007bE-Qo
-	for linux-mtd@lists.infradead.org; Sun, 11 Apr 2004 12:41:33 +0100
-Received: from mailgate.berlin.imc-berlin.de (mailgate.berlin.imc-berlin.de
-	[10.0.0.13])i3BArJj9009206
-	for <linux-mtd@lists.infradead.org>; Sun, 11 Apr 2004 12:53:19 +0200
-Received: from imc-berlin.de (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailgate.berlin.imc-berlin.de (8.8.8/8.8.8) with ESMTP id NAA19731
+	id 1BDIm8-00041j-JQ
+	for linux-mtd@lists.infradead.org; Tue, 13 Apr 2004 08:56:08 +0100
+Received: from il06exr03.mot.com (il06exr03.mot.com [129.188.137.133])
+	by motgate8.mot.com (Motorola/Motgate3) with ESMTP id i3D7uJs6020701
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Apr 2004 13:41:11 +0200 (CEST)
-	(envelope-from steven.scholz@imc-berlin.de)
-Message-ID: <40792ECB.4030309@imc-berlin.de>
-Date: Sun, 11 Apr 2004 13:40:59 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	Tue, 13 Apr 2004 00:56:19 -0700 (MST)
+Received: from zch07exm04.corp.mot.com (ZCH07EXM04.corp.mot.com [200.3.1.210])
+	by il06exr03.mot.com (Motorola/il06exr03) with ESMTP id i3D7u2jF029041
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Apr 2004 02:56:03 -0500
+Message-ID: <01139FC052A0D411900B00508B9535FC13AC402D@ZCH07EXM04.corp.mot.com>
+From: Shen Aaron-r62966 <Aaron.Shen@motorola.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 13 Apr 2004 15:56:00 +0800
 MIME-Version: 1.0
-CC: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-References: <40742192.5030901@imc-berlin.de>
-	<1081354787.4799.191.camel@tubarao> <407430AD.2020705@arcom.com>
-In-Reply-To: <407430AD.2020705@arcom.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: kernel oops in cfi_cmdset_0002.c:do_write_one()...
+Content-Type: text/plain;
+	charset="iso-8859-15"
+Subject: Bad block check and ECC for NAND flash bootloader
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Vrabel wrote:
->> These error messages are from an ancient version of cfi_cmdset_0002.c.
->> They come from over-efficient software design that didn't consider the
->> quirks of how a flash chip works. Have you tried a recent version?
-> 
-> 
-> Be aware that the more recent version from MTD CVS are broken for 
-> interleaved chips.
+Hi friends,
 
-What does "are broken" mean?
-Just that autodetect of the flash type might not work? Or will read and 
-write operations fail once the flash is detected correctly?
+  Can anyone give me some advice on 8 bit NAND flash bootloader?
 
-IOW: Could I use the MTD CVS with "interleaved chips" when I make sure my 
-chips is correctly detected?
+  I'm going to add "bad block checking" and "ECC" for my current NAND flash bootloader. The current bootloader is divided into two parts: ipl is placed in the first 2k of NAND flash and spl is placed from 0x4000 to 0x100000. And there's no function to check bad block and do ECC now.
 
-Thanks,
+  For ipl, my idea is to read OOB to check bad block per block before copying spl from NAND flash to SDRAM.
 
-Steven
+  For spl, I'd like to add the same function to check bad block before erasing a block and also before copying kernel from NAND flash to SDRAM. And add ECC code after program data into the flash.
+
+  Is that enough? Is there anything missed or wrong? I'm eager to get such an existing solution for reference. Looking forward to your advice, and any information about bad block checking and ECC for NAND flash is welcome!
+
+Thanks.
+//Aaron.
+
+  
