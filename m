@@ -1,18 +1,20 @@
-Received: from nat1.arcom.co.uk ([194.200.159.172] helo=arcom.com)
-	by pentafluge.infradead.org with asmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B4H7a-0002zm-0I
-	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2004 10:20:58 +0000
-Message-ID: <405AC989.7020100@arcom.com>
-Date: Fri, 19 Mar 2004 10:20:57 +0000
-From: David Vrabel <dvrabel@arcom.com>
+Received: from anchor-post-30.mail.demon.net ([194.217.242.88])
+	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
+	id 1B4HqC-0003Dz-JI
+	for linux-mtd@lists.infradead.org; Fri, 19 Mar 2004 11:07:04 +0000
+From: "Simon Haynes" <simon@baydel.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+              linux-mtd@lists.infradead.org
+Date: Fri, 19 Mar 2004 10:37:04 -0000
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <E1B3wBv-0005HA-9d@pentafluge.infradead.org>
-	<200403182302.45350.dk.dbox2@gmx.net>
-In-Reply-To: <200403182302.45350.dk.dbox2@gmx.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: Erasebug on AMD flashes
+Message-ID: <405ACD50.8515.211AB9@localhost>
+In-reply-to: <1079453688.16952.40.camel@hades.cambridge.redhat.com>
+References: <B1CA6BCA5B0C@baydel.com>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 Corruption.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,16 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Part numbers of the flash chips and their configuration (interleaved etc.).
-> [AM29DL322D]
+On 16 Mar 2004 at 16:14, David Woodhouse wrote:
 
-Okay.  Are there two chips in parallel forming a 32 bit data bus (i.e. 
-interleaved); or two chips in series forming a 16 bit data bus (i.e. 
-non-interleaved); or some other weird scheme?
+> On Tue, 2004-03-09 at 15:33 +0000, Simon Haynes wrote:
+> > -bash-2.05b# mount -t jffs2 /dev/ram1 /smc
+> > Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+> 
+> This I believe we put down to user error?
 
-David Vrabel
--- 
-David Vrabel, Design Engineer
+Yes, this was a problem I introduced when trying to track down why I got the Magic 
+bitmask messages.
 
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+
+> 
+> > After 5 reboots the new SMC gave this magic bitmask failure.
+> > 
+> > jffs2: Erase block size too small (16KiB). Using virtual blocks size
+> > (32KiB) instead ofs 0x000a8400 has already been seen. Skipping, jeb
+> 
+> That was a bug in the scanning code. Should be fixed in v1.58 of
+> scan.c in CVS. Please could you try that and let me know if it works?
+> 
+I have not had chance a yet to download scan from CVS. However I did make the 
+simple change you suggested and everything worked fine.
+
+Thankyou, Thankyou, Thankyou
+
+Simom.
+
+
+
+
+
+__________________________
+
+Simon Haynes - Baydel 
+Phone : 44 (0) 1372 378811
+Email : simon@baydel.com
+__________________________
