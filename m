@@ -1,20 +1,20 @@
-Received: from [203.199.60.6] (helo=Mailout.ltindia.com)
+Received: from outmail1.freedom2surf.net ([194.106.33.237]
+	helo=outmail.freedom2surf.net)
 	by canuck.infradead.org with esmtp (Exim 4.33 #1 (Red Hat Linux))
-	id 1By8QQ-0006Jj-3D
-	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 08:23:19 -0400
-Received: (from EMAIL [192.168.172.1])
-	by LNTMAIL.LNTMAIL.LTINDIA.COM (SAVSMTP 3.1.2.35) with SMTP id
-	M2004082017375120168
-	for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2004 17:37:51 +0530
-Message-Id: <s126375d.036@EMAIL>
-Date: Fri, 20 Aug 2004 17:39:08 +0530
-From: "Raghav K" <raghavk@myw.ltindia.com>
-To: <linux-mtd@lists.infradead.org>
+	id 1By8Qj-0006LT-Jk
+	for linux-mtd@lists.infradead.org; Fri, 20 Aug 2004 08:23:43 -0400
+Received: from wirenth (i-195-137-81-187.freedom2surf.net [195.137.81.187])
+	by outmail.freedom2surf.net (8.12.10/8.12.10) with SMTP id
+	i7KCNWnF009590
+	for <linux-mtd@lists.infradead.org>; Fri, 20 Aug 2004 13:23:32 +0100
+Date: Fri, 20 Aug 2004 13:23:32 +0100
+From: Ian Molton <spyro@f2s.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <20040820132332.42c78dcc.spyro@f2s.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Subject: Raw Flash Writes
+Content-Transfer-Encoding: 7bit
+Subject: supporting stupid chips
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings all,
+Hi.
 
-My system has the flash interleaved to give me an  effective sector=20
-size of 256kB;
+I've come to the conclusion that my controller only supports word reads from its data register.
 
-A write to an entire erased sector of flash causes  my  kernel to =
-crash,=20
-however the writes to the same in smaller chunks with a small delay=20
-seems to work fine.
+the question is, what to do?
 
-Is there some sort of limit in "write-chuck" size or any timeout placed=20
-on a write operation considering that it is  "synced". If so how can =20
-this be modified ?
+My choice would be to provide a read_id function and facility to indicate that read_byte is not available (NULL ptr?). IIRC we can already provide bulk transfer functions anyhow.
 
-I've also tried to  "cat 256k_file > /dev/mtd4", this too drives my=20
-kernel crazy.
+If this is OK I can make these changes and submit a patch.
 
-Any and all help appreciated.
-
-Thanks and Regards,
--raghav-
---------------------------------------------
-Purpose is everything, purpose is all.
-
-
-
-
-
-
-
-
- =20
+if not, suggestions ?
