@@ -1,55 +1,27 @@
 Return-path: <owner-mtd@infradead.org>
 Received: from majordomo by infradead.org with local (Exim 3.03 #1)
-	id 13HqPq-0008B5-00
-	for mtd-list@infradead.org; Thu, 27 Jul 2000 17:21:46 +0100
-Received: from [195.88.125.154] (helo=smtp.zls.de)
-	by infradead.org with smtp (Exim 3.03 #1)
-	id 13HqPo-0008Az-00
-	for mtd@infradead.org; Thu, 27 Jul 2000 17:21:44 +0100
-Received: from zls.de(ws-cal.zls.de[172.16.0.35]) (1514 bytes) by smtp.zls.de
-	via sendmail with P:smtp/R:remote_hosts/T:smtp
-	(sender: <cal@zls.de>)
-	id <m13HqQP-000MPUC@smtp.zls.de>
-	for <mtd@infradead.org>; Thu, 27 Jul 2000 18:22:21 +0200 (MEST)
-	(Smail-3.2.0.109 1999-Oct-27 #3 built 1999-Nov-16)
-Message-ID: <398061A4.192DE8A2@zls.de>
-Date: Thu, 27 Jul 2000 18:21:56 +0200
-From: Christian Lademann <cal@zls.de>
+	id 13J9MB-0001fF-00
+	for mtd-list@infradead.org; Mon, 31 Jul 2000 07:47:23 +0100
+Received: from athena.evoserve.com ([210.16.10.134])
+	by infradead.org with esmtp (Exim 3.03 #1)
+	id 13J9M9-0001f9-00
+	for mtd@infradead.org; Mon, 31 Jul 2000 07:47:21 +0100
+Received: from evoserve.com (gateway.evoserve.com [210.16.10.120])
+	by athena.evoserve.com (8.9.3/8.9.3) with ESMTP id OAA10970
+	for <mtd@infradead.org>; Mon, 31 Jul 2000 14:47:39 +0800
+Message-ID: <398525B6.F94388B7@evoserve.com>
+Date: Mon, 31 Jul 2000 15:07:34 +0800
+From: "Rogelio M. Serrano Jr." <rogelio@evoserve.com>
 MIME-Version: 1.0
-To: Karl Pitrich <pit@linuxaustria.at>
-CC: mtd@infradead.org
-Subject: Re: Request: examples of using LILO or GRUB to boot from DOC
-References: <397F3B15.D420B9AF@zls.de> <397F46EF.417AD6CE@linuxaustria.at>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: "mtd@infradead.org" <mtd@infradead.org>
+Subject: nftl and multi page read write support
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: owner-mtd@infradead.org
 List-ID: <linux-mtd.lists.infradead.org>
 
-Thank you for your helping hand. It worked with the "DOC123.EXB"-firmware
-
-installed and the /dev/nftla1 being the FAT12-fs created by dformat.
-
-Repartitioning the nftla worked as well but no success booting anymore.
-
-Using the M-Systems-driver, /dev/fla* and plilo repartitioning and
-
-booting works well.
-
-cu, Christian.
-
-PS: where do I find a 'as86' that is able to compile lilo? The current
-
-bin86-release found on metalab.unc.edu does not do the job.
-
---
-*  Christian A. Lademann, ZLS Software GmbH               mailto:cal@zls.de
-*  ZLS Software GmbH
-*  Frankfurter Strasse 59       Postfach 1628             mailto:zls@zls.de
-*  D-65779 Kelkheim             D-65766 Kelkheim          http://www.zls.de
-*  Telefon +49-6195-9902-0      Telefax +49-6195-900600
-*  Geschäftsführer John A. Shuter     -     Amtsgericht Königstein HRB 3105
-
-
+David - NFTL support is safe with the multipage read-write support. I
+have a system running on ext2 on nftl and it is stable.
 
 
 
