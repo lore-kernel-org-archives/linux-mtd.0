@@ -1,14 +1,25 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: karim@opersys.com
-In-Reply-To: <3FB17F30.7090006@opersys.com>
-References: <3FB17F30.7090006@opersys.com>
-Content-Type: text/plain
-Message-Id: <1068631075.10450.3.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Date: Wed, 12 Nov 2003 09:57:56 +0000
-Content-Transfer-Encoding: 7bit
-cc: Linux-MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Problems with NFTL in 2.4.22
+Received: from numenor.qualcomm.com ([129.46.51.58])
+	by pentafluge.infradead.org with esmtp (Exim 4.22 #5 (Red Hat Linux))
+	id 1AJzn9-0002iI-Oe
+	for <linux-mtd@lists.infradead.org>; Wed, 12 Nov 2003 18:32:35 +0000
+Received: from neophyte.qualcomm.com (neophyte.qualcomm.com [129.46.61.149])
+	hACIVAVY003260
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Nov 2003 10:31:11 -0800 (PST)
+Received: from NAEXFE01.na.qualcomm.com (naexfe01.qualcomm.com [172.30.32.17])
+	hACIV8Tx023723	for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Nov 2003 10:31:09 -0800 (PST)
+From: hking <hking@qualcomm.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 12 Nov 2003 10:31:08 -0800
+MIME-Version: 1.0
+Message-Id: <200311121031.08597.hking@qualcomm.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Problem: erase mtd device
+Reply-To: hking@qualcomm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,21 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2003-11-11 at 19:30 -0500, Karim Yaghmour wrote:
-> I haven't seen anything in the archives about this, so here goes:
-> 
-> I've had quite a few problems trying to interface with an 8MB DOC with
-> 2.4.22. The system would simply freeze when I tried doing things like
-> mount, unmount, mke2fs, cat fs image to device, etc. No oops no nothing,
-> just the tools would not return to the command line and I'd have to
-> hard-reset the system.
+This is what I got after I added three custom partitions in the physmap.c=
+:
+After the kernel (2.4.20) boots up, I logged in as root and type:
+#cat /proc/mtd
+=3D=3D and I got:
+dev:    size   erasesize  name
+mtd0: 00040000 00040000 "ResetWord"
+mtd1: 01ec0000 00040000 "User FS"
+mtd2: 00100000 00040000 "UBOOT"
 
-Did you get a backtrace of the offending process(es) with SysRq-T?
 
-I suspected it might be because we're calling cond_resched() when one of
-our callers has already set current->state to TASK_UNINTERRUPTIBLE. But
-I've had a report that it still happens in the current CVS code, in
-which that definitely shouldn't be the case. Can you confirm that?
+The size, erasesize and name look correct.  It does not say the starting =
+point=20
+of each partitions.  Since our first and third partition are write-protec=
+ted,=20
+so I tried to erase the mtd1.
 
--- 
-dwmw2
+
+And I typed:
+#erase /dev/mtd1
+=3D=3D and I got:
+File open error
+
+
+And I typed:
+#eraseall /dev/mtd1
+=3D=3D and I got:
+eraseall: /dev/mtd1: No such device
+
+
+Did I do anything wrong?=20
