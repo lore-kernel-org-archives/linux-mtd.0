@@ -1,21 +1,14 @@
-Received: from host90-57.pool212171.interbusiness.it ([212.171.57.90]
-	helo=server2.texin.it)
-	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1B0IC6-0002KW-Gg
-	for linux-mtd@lists.infradead.org; Mon, 08 Mar 2004 10:41:10 +0000
-Received: from laboratorio1 (laboratorio1.texin.it [192.168.100.11])
-	by server2.texin.it (Postfix) with SMTP id BAD0E44C0B1
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  8 Mar 2004 05:41:04 -0500 (EST)
-Message-ID: <000f01c404f9$cc1da840$0b64a8c0@laboratorio1>
-From: "Minkiux" <minkiux@texin.it>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 8 Mar 2004 11:40:38 +0100
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+In-Reply-To: <404C433C.7060604@inf.u-szeged.hu>
+References: <404C433C.7060604@inf.u-szeged.hu>
+Content-Type: text/plain
+Message-Id: <1078744502.13916.75.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Date: Mon, 08 Mar 2004 11:15:03 +0000
 Content-Transfer-Encoding: 7bit
-Subject: lilo-mtd discard kernel options
+cc: linux-mtd@lists.infradead.org
+Subject: Re: A JFFS2 extension - compression performance improvement
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +18,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Mon, 2004-03-08 at 10:56 +0100, Ferenc Havasi wrote:
+> Dear All,
+> 
+> With some of my colleagues at the University of Szeged (Hungary) we have 
+> been working on improving the compression performance of JFFS2 - keeping 
+> on mind the compatibility and the flexibility.
 
-I know that lilo-mtd (patched lilo version to work with DoC/mtd) discard the
-kernel command line or append= option in lilo.conf, so I ask: there is a
-patch against lilo-mts or some other way to turn around this?
+This looks very interesting, thanks.
 
-Any answer is very appreciate. Sorry for my english.
+Out of interest, what would be the disadvantages if I were to throw out
+the existing compression and merge BBS in its place?
 
--------
-Davide Matarese - Minkiux
+It looks like the format you use for zlib is precisely compatible; we'd
+also need an implementation of rtime.
+
+For the benefit of those who want to keep code size down, we might want
+to make the model-based compressors a configuration option.
+
+I'm quite dubious about adding to /proc too -- perhaps this could be
+made optional too?
+
+I object very strongly to the use of jffs2_bbc_model_set_act_sb(); how
+about I just change the interface to jffs2_{de,}compress() to take extra
+c and f arguments instead?
+
+Am I right in thinking that you just let JFFS2 store JFFS2_COMPR_ZLIB in
+the 'compr' field of each page compressed with BBC? I think we need to
+give you official compression numbers to use.
+
+For the model-based compressors, we may need to allocate more than one
+number -- you'll need as many numbers as you may have active model files
+in a single fs (which shouldn't be more than two or three, I'd assume?)
+
+I'm a little unhappy with looking up model files by filename. I'd be
+slightly happier if they were identified by inode number instead, and
+hidden from the user so they can't be removed or modified. If we can
+only ever add model files in mkfs.jffs2, perhaps we can just use special
+inode numbers for them?
+
+-- 
+dwmw2
