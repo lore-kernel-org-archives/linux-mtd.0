@@ -1,18 +1,26 @@
-Received: from mail2.megatrends.com ([155.229.80.16]
-	helo=atl-ms1.megatrends.com)
+Received: from heimdall.doit.wisc.edu ([144.92.197.159]
+	helo=smtp5.wiscmail.wisc.edu)
 	by pentafluge.infradead.org with esmtp (Exim 4.30 #5 (Red Hat Linux))
-	id 1BG9Il-0006JK-9A
-	for linux-mtd@lists.infradead.org; Wed, 21 Apr 2004 05:25:35 +0100
-Message-ID: <8CCBDD5583C50E4196F012E79439B45C04C9A3B8@atl-ms1.megatrends.com>
-From: Vinesh Christopher <vineshc@ami.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Wed, 21 Apr 2004 00:25:53 -0400
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_000_01C42758.BBEB6CB0"
-cc: "'dave.jiang@intel.com'" <dave.jiang@intel.com>
-cc: "'dsaxena@mvista.com'" <dsaxena@mvista.com>
-Subject: MTD - Reboot parser Fix
+	id 1BGTQI-0001CM-4v
+	for linux-mtd@lists.infradead.org; Thu, 22 Apr 2004 02:54:42 +0100
+Received: from conversion-daemon.smtp5.wiscmail.wisc.edu by
+ smtp5.wiscmail.wisc.edu
+ (iPlanet Messaging Server 5.2 HotFix 1.24 (built Dec 19 2003))
+ id <0HWJ00G01ULJOI@smtp5.wiscmail.wisc.edu>
+ (original mail from jelenz@students.wisc.edu)
+ for linux-mtd@lists.infradead.org; Wed, 21 Apr 2004 20:54:38 -0500 (CDT)
+Received: from hydra (wuzzeb.resnet.wisc.edu [146.151.47.253])
+ by smtp5.wiscmail.wisc.edu
+ (iPlanet Messaging Server 5.2 HotFix 1.24 (built Dec 19 2003))
+ with ESMTP id <0HWJ008VTUN2YY@smtp5.wiscmail.wisc.edu> for
+ linux-mtd@lists.infradead.org; Wed, 21 Apr 2004 20:54:38 -0500 (CDT)
+Date: Wed, 21 Apr 2004 20:54:33 -0500
+From: John Lenz <jelenz@students.wisc.edu>
+To: linux-mtd@lists.infradead.org
+Message-id: <20040422015433.GC27217@hydra>
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_6UxphsTJTHRYvbghsvEvvw)"
+Subject: pre-CFI sharp driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,257 +30,465 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This message is in MIME format. Since your mail reader does not understand
-this format, some or all of this message may not be legible.
 
-------_=_NextPart_000_01C42758.BBEB6CB0
-Content-Type: text/plain
+--Boundary_(ID_6UxphsTJTHRYvbghsvEvvw)
+Content-type: text/plain; Format=Flowed; DelSp=Yes; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+Content-disposition: inline
 
-Reboot FIS parser in mtd in kernel 2.6.5 has a bug. 
-The parsing routine assumes that all the used Fis entries are 
-contiguous and a Fis entry with 0xFF at first byte terminates 
-the parsing.
+The device I am developing for is the Sharp Zaurus SL5500 (which is  
+codenamed collie).  I am currently working on porting the kernel used  
+for www.openzaurus.org from 2.4 to 2.6.  In 2.4, we used the pre-CFI  
+sharp driver.  NOTE: the root filesystem is located on the flash  
+device.  I am using the maps/sa1100-flash.c map.
 
-Attached is a fixed source file from 2.6.5. Line 87 "break" 
-changed to "continue"
+I have tried using the Intel/Sharp flash chips (cfi_cmdset_0001.c) and  
+cfi_probe and have had some success.
 
------------------------------------------------------------------
- Here is the actual scenario where the problem happens
+1) On a stock 2.6.5, doesn't work
+2) On a 2.6.5 with the mtd cvs code using the Intel CFI driver and  
+using cfi_probe, I am able to mount the root filesystem (jffs2) and am  
+able to log in and busybox works and such.  When booting tho, there are  
+a bunch of errors like
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00a00000:  
+0x8080 instead.
+I get around 50-60 of these messages at different addresses.
+Note, the address given there is near the end of the flash.
+
+But ignoring those, the root fs is still mounted.
+
+But when I try and write a file, jffs2_flash_writev returns -15.  i.e.  
+I get a "Write of x bytes at x failed.  returned -15, retlen 0" error.
+
+The sharp device also starts up completly locked, and I have to add the  
+following code to the maps/sa1100-collie.c after cfi_probe has been  
+called.
+{ int k;
+for (k = 0; k < sa[i].mtd->numeraseregions; k++) {
+	int retval;
+	retval = sa[i].mtd->unlock(sa[i].mtd, sa[i].mtd->eraseregions 
+[k].offset,
+			sa[i].mtd->eraseregions[k].erasesize);
+	if (retval)
+		printk(KERN_WARNING "SA1100 flash: Error while  
+unlocking region 0x%08x\n",
+				sa[i].mtd->eraseregions[k].offset);
+} }
+
+It could be possible that since the 0x00a0000 is past the end of the  
+last erase block (we create the jffs2 filesystem with the --pad  
+option), they are still locked?  but why would that impact the  
+scanning?
+
+I am able to mount the root filesystem and write files and everything  
+works with the attached patch  I don't even need the mtd cvs code, it  
+works with just the stock 2.6.5 kernel.  This is just a forward port of  
+the changes we had to sharp.c  note that we have defined AUTOUNLOCK.
+
+This is difficult to debug, because I do not have any specs for the  
+device.  The only reference we have is the code that sharp has  
+released, which uses the pre-CFI device with the same changes I have  
+attached.
+
+John
+
+
+--Boundary_(ID_6UxphsTJTHRYvbghsvEvvw)
+Content-type: text/x-patch; charset=unknown-8bit; NAME=sharp.diff
+Content-transfer-encoding: 7BIT
+Content-disposition: attachment; filename=sharp.diff
+
+--- linux-2.6.5/drivers/mtd/chips/sharp.c	2004-04-03 21:37:23.000000000 -0600
++++ linux-2.6.5-zaurus/drivers/mtd/chips/sharp.c	2004-04-21 16:47:49.000000000 -0500
+@@ -25,6 +25,7 @@
+ #include <linux/types.h>
+ #include <linux/sched.h>
+ #include <linux/errno.h>
++#include <linux/init.h>
+ #include <linux/interrupt.h>
+ #include <linux/mtd/map.h>
+ #include <linux/mtd/mtd.h>
+@@ -58,9 +59,12 @@
  
- a) Initial FIS directory has 
- 	Redboot
- 	Redboot Config
- 	FIS Directory
- 	
- 	Reboot and Linux MTD shows 3
+ #define SR_ERRORS (SR_ERROR_ERASE|SR_ERROR_WRITE|SR_VPP|SR_PROTECT)
  
- b) I added a new FIS entry called Install
- 	Reboot and Linux MTD shows 4
++#define BLOCK_MASK		0xfffe0000
++
+ /* Configuration options */
  
- c) I added two more entry called zImage and initrd
- 	Redboot and Linux MTD shows 6
+-#undef AUTOUNLOCK  /* automatically unlocks blocks before erasing */
++//#undef AUTOUNLOCK  /* automatically unlocks blocks before erasing */
++#define AUTOUNLOCK
  
- d) Deleted Install entry
- 	Redboot shows 5, but Linux MTD shows 3 (Redboot, Config and FIS)
+ struct mtd_info *sharp_probe(struct map_info *);
  
- What happened is in the fis directory, the 4th entry is now 
- "0xFF"nstall - 'I' of Install is replaced by 0xFF to denote it is not 
- used. Redboot MTD parser sees this and thinks it is end of FIS entries 
- and breaks out of the parse loop.
+@@ -81,7 +85,7 @@
+ static int sharp_erase_oneblock(struct map_info *map, struct flchip *chip,
+ 	unsigned long adr);
+ #ifdef AUTOUNLOCK
+-static void sharp_unlock_oneblock(struct map_info *map, struct flchip *chip,
++static inline void sharp_unlock_oneblock(struct map_info *map, struct flchip *chip,
+ 	unsigned long adr);
+ #endif
  
+@@ -104,6 +108,13 @@
+ 	.module		= THIS_MODULE
+ };
+ 
++static void sharp_udelay(unsigned long i) {
++	if (in_interrupt()) {
++		udelay(i);
++	} else {
++		schedule();
++	}
++}
+ 
+ struct mtd_info *sharp_probe(struct map_info *map)
+ {
+@@ -129,6 +140,7 @@
+ 		kfree(sharp);
+ 		return NULL;
+ 	}
++	//MSC0 = 0xfff8fff8;
+ 
+ 	mtd->priv = map;
+ 	mtd->type = MTD_NORFLASH;
+@@ -142,7 +154,8 @@
+ 	mtd->name = map->name;
+ 
+ 	memset(sharp, 0, sizeof(*sharp));
+-	sharp->chipshift = 23;
++	//sharp->chipshift = 23;
++	sharp->chipshift = 24;
+ 	sharp->numchips = 1;
+ 	sharp->chips[0].start = 0;
+ 	sharp->chips[0].state = FL_READY;
+@@ -171,8 +184,9 @@
+ 
+ 	read0=map_read32(map, base+0);
+ 	read4=map_read32(map, base+4);
+-	if(read0 == 0x89898989){
+-		printk("Looks like sharp flash\n");
++	//if(read0 == 0x89898989){
++	if (read0 == 0x00b000b0) {
++		//printk("Looks like sharp flash\n");
+ 		switch(read4){
+ 		case 0xaaaaaaaa:
+ 		case 0xa0a0a0a0:
+@@ -187,6 +201,11 @@
+ 			mtd->erasesize = 0x10000 * width;
+ 			mtd->size = 0x100000 * width;
+ 			return width;
++		case 0x00b000b0:
++			/* a6 - LH28F640BFHE 8 64k * 2 chip blocks*/
++			mtd->erasesize = 0x10000 * width / 2;
++			mtd->size = 0x800000 * width / 2;
++			return width;
+ #if 0
+ 		case 0x00000000: /* unknown */
+ 			/* XX - LH28F004SCT 512kx8, 8 64k blocks*/
+@@ -213,7 +232,7 @@
+ /* This function returns with the chip->mutex lock held. */
+ static int sharp_wait(struct map_info *map, struct flchip *chip)
+ {
+-	__u16 status;
++	__u32 status;
+ 	unsigned long timeo = jiffies + HZ;
+ 	DECLARE_WAITQUEUE(wait, current);
+ 	int adr = 0;
+@@ -227,23 +246,35 @@
+ 		chip->state = FL_STATUS;
+ 	case FL_STATUS:
+ 		status = map_read32(map,adr);
++		if ((status & SR_READY) == SR_READY)
++			break;
++		spin_unlock_bh(chip->mutex);
++		if (time_after(jiffies, timeo)) {
++			printk("Waiting for chip to be ready timed out in erase\n");
++			return -EIO;
++		}
++		sharp_udelay(1);
++		goto retry;
+ //printk("status=%08x\n",status);
+ 
+-		udelay(100);
+-		if((status & SR_READY)!=SR_READY){
++		//udelay(100);
++		//if((status & SR_READY)!=SR_READY){
+ //printk(".status=%08x\n",status);
+-			udelay(100);
+-		}
+-		break;
++		//	udelay(100);
++		//}
++		//break;
+ 	default:
+-		printk("Waiting for chip\n");
++		//printk("Waiting for chip\n");
+ 
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		add_wait_queue(&chip->wq, &wait);
+ 
+ 		spin_unlock_bh(chip->mutex);
+ 
+-		schedule();
++		//schedule();
++		sharp_udelay(1);
++
++		set_current_state(TASK_RUNNING);
+ 		remove_wait_queue(&chip->wq, &wait);
+ 
+ 		if(signal_pending(current))
+@@ -348,12 +379,13 @@
+ 	unsigned long adr, __u32 datum)
+ {
+ 	int ret;
+-	int timeo;
+ 	int try;
+ 	int i;
+-	int status = 0;
++	u32 status = 0;
+ 
+ 	ret = sharp_wait(map,chip);
++	if (ret < 0)
++		return ret;
+ 
+ 	for(try=0;try<10;try++){
+ 		map_write32(map,CMD_BYTE_WRITE,adr);
+@@ -362,14 +394,21 @@
+ 
+ 		chip->state = FL_WRITING;
+ 
+-		timeo = jiffies + (HZ/2);
+-
+ 		map_write32(map,CMD_READ_STATUS,adr);
+ 		for(i=0;i<100;i++){
+ 			status = map_read32(map,adr);
+ 			if((status & SR_READY)==SR_READY)
+ 				break;
+ 		}
++#ifdef AUTOUNLOCK
++		if (status & SR_PROTECT) { /* lock block */
++			map_write32(map, CMD_CLEAR_STATUS, adr);
++			sharp_unlock_oneblock(map,chip,adr);
++			map_write32(map, CMD_CLEAR_STATUS, adr);
++			map_write32(map, CMD_RESET, adr);
++			continue;
++		}
++#endif
+ 		if(i==100){
+ 			printk("sharp: timed out writing\n");
+ 		}
+@@ -384,8 +423,7 @@
+ 	map_write32(map,CMD_RESET,adr);
+ 	chip->state = FL_READY;
+ 
+-	wake_up(&chip->wq);
+-	spin_unlock_bh(chip->mutex);
++	sharp_release(chip);
+ 
+ 	return 0;
+ }
+@@ -413,8 +451,13 @@
+ 		ret = sharp_erase_oneblock(map, &sharp->chips[chipnum], adr);
+ 		if(ret)return ret;
+ 
+-		adr += mtd->erasesize;
+-		len -= mtd->erasesize;
++		if (adr >= 0xfe0000) {
++			adr += mtd->erasesize / 8;
++			len -= mtd->erasesize / 8;
++		} else {
++			adr += mtd->erasesize;
++			len -= mtd->erasesize;
++		}
+ 		if(adr >> sharp->chipshift){
+ 			adr = 0;
+ 			chipnum++;
+@@ -430,7 +473,7 @@
+ 	return 0;
+ }
+ 
+-static int sharp_do_wait_for_ready(struct map_info *map, struct flchip *chip,
++static inline int sharp_do_wait_for_ready(struct map_info *map, struct flchip *chip,
+ 	unsigned long adr)
+ {
+ 	int ret;
+@@ -441,7 +484,7 @@
+ 	map_write32(map,CMD_READ_STATUS,adr);
+ 	status = map_read32(map,adr);
+ 
+-	timeo = jiffies + HZ;
++	timeo = jiffies + HZ * 10;
+ 
+ 	while(time_before(jiffies, timeo)){
+ 		map_write32(map,CMD_READ_STATUS,adr);
+@@ -453,18 +496,22 @@
+ 		set_current_state(TASK_INTERRUPTIBLE);
+ 		add_wait_queue(&chip->wq, &wait);
+ 
+-		//spin_unlock_bh(chip->mutex);
++		spin_unlock_bh(chip->mutex);
+ 
+ 		schedule_timeout(1);
+ 		schedule();
+-		remove_wait_queue(&chip->wq, &wait);
+ 
+-		//spin_lock_bh(chip->mutex);
++		spin_lock_bh(chip->mutex);
++
++		remove_wait_queue(&chip->wq, &wait);
++		set_current_state(TASK_RUNNING);
+ 		
++#if 0
+ 		if (signal_pending(current)){
+ 			ret = -EINTR;
+ 			goto out;
+ 		}
++#endif
+ 		
+ 	}
+ 	ret = -ETIME;
+@@ -477,11 +524,15 @@
+ {
+ 	int ret;
+ 	//int timeo;
+-	int status;
++	u32 status;
+ 	//int i;
+ 
+ //printk("sharp_erase_oneblock()\n");
+ 
++	ret = sharp_wait(map,chip);
++	if (ret < 0)
++		return ret;
++
+ #ifdef AUTOUNLOCK
+ 	/* This seems like a good place to do an unlock */
+ 	sharp_unlock_oneblock(map,chip,adr);
+@@ -493,7 +544,10 @@
+ 	chip->state = FL_ERASING;
+ 
+ 	ret = sharp_do_wait_for_ready(map,chip,adr);
+-	if(ret<0)return ret;
++	if(ret<0) {
++		spin_unlock_bh(chip->mutex);
++		return ret;
++	}
+ 
+ 	map_write32(map,CMD_READ_STATUS,adr);
+ 	status = map_read32(map,adr);
+@@ -501,43 +555,30 @@
+ 	if(!(status&SR_ERRORS)){
+ 		map_write32(map,CMD_RESET,adr);
+ 		chip->state = FL_READY;
+-		//spin_unlock_bh(chip->mutex);
++		spin_unlock_bh(chip->mutex);
+ 		return 0;
+ 	}
+ 
+ 	printk("sharp: error erasing block at addr=%08lx status=%08x\n",adr,status);
+ 	map_write32(map,CMD_CLEAR_STATUS,adr);
+ 
+-	//spin_unlock_bh(chip->mutex);
++	sharp_release(chip);
+ 
+ 	return -EIO;
+ }
+ 
+ #ifdef AUTOUNLOCK
+-static void sharp_unlock_oneblock(struct map_info *map, struct flchip *chip,
++static inline void sharp_unlock_oneblock(struct map_info *map, struct flchip *chip,
+ 	unsigned long adr)
+ {
+-	int i;
+-	int status;
++	u32 status;
+ 
+-	map_write32(map,CMD_CLEAR_BLOCK_LOCKS_1,adr);
+-	map_write32(map,CMD_CLEAR_BLOCK_LOCKS_2,adr);
++	map_write32(map,CMD_CLEAR_BLOCK_LOCKS_1,adr & BLOCK_MASK);
++	map_write32(map,CMD_CLEAR_BLOCK_LOCKS_2,adr & BLOCK_MASK);
+ 
+-	udelay(100);
++	sharp_do_wait_for_ready(map,chip,adr);
+ 
+ 	status = map_read32(map,adr);
+-	printk("status=%08x\n",status);
+-
+-	for(i=0;i<1000;i++){
+-		//map_write32(map,CMD_READ_STATUS,adr);
+-		status = map_read32(map,adr);
+-		if((status & SR_READY)==SR_READY)
+-			break;
+-		udelay(100);
+-	}
+-	if(i==1000){
+-		printk("sharp: timed out unlocking block\n");
+-	}
+ 
+ 	if(!(status&SR_ERRORS)){
+ 		map_write32(map,CMD_RESET,adr);
+@@ -557,20 +598,55 @@
+ 
+ static int sharp_suspend(struct mtd_info *mtd)
+ {
+-	printk("sharp_suspend()\n");
+-	return -EINVAL;
++	struct map_info *map = mtd->priv;
++	struct sharp_info *sharp = map->fldrv_priv;
++	int i;
++	struct flchip *chip;
++	int ret = 0;
++
++	for (i = 0; !ret && i < sharp->numchips; i++) {
++		chip = &sharp->chips[i];
++		ret = sharp_wait(map,chip);
++
++		if (ret) {
++			ret = -EAGAIN;
++		} else {
++			chip->state = FL_PM_SUSPENDED;
++			spin_unlock_bh(chip->mutex);
++		}
++	}
++	return ret;
+ }
+ 
+ static void sharp_resume(struct mtd_info *mtd)
+ {
+-	printk("sharp_resume()\n");
+-	
++	struct map_info *map = mtd->priv;
++	struct sharp_info *sharp = map->fldrv_priv;
++	int i;
++	struct flchip *chip;
++
++	for (i = 0; i < sharp->numchips; i++) {
++		chip = &sharp->chips[i];
++
++		spin_lock_bh(chip->mutex);
++
++		if (chip->state == FL_PM_SUSPENDED) {
++			/* We need to force it back to a known state */
++			map_write32(map, CMD_RESET, chip->start);
++			chip->state = FL_READY;
++			wake_up(&chip->wq);
++		}
++
++		spin_unlock_bh(chip->mutex);
++	}
+ }
+ 
+ static void sharp_destroy(struct mtd_info *mtd)
+ {
+-	printk("sharp_destroy()\n");
++	struct map_info *map = mtd->priv;
++	struct sharp_info *sharp = map->fldrv_priv;
+ 
++	kfree(sharp);
+ }
+ 
+ int __init sharp_probe_init(void)
 
- Vinesh	
-
-
-
-------_=_NextPart_000_01C42758.BBEB6CB0
-Content-Type: application/octet-stream;
-	name="redboot.c"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="redboot.c"
-
-/*=0A=
- * $Id: redboot.c,v 1.11 2003/05/21 10:39:26 dwmw2 Exp $=0A=
- *=0A=
- * Parse RedBoot-style Flash Image System (FIS) tables and=0A=
- * produce a Linux partition array to match.=0A=
- */=0A=
-=0A=
-#include <linux/kernel.h>=0A=
-#include <linux/slab.h>=0A=
-#include <linux/init.h>=0A=
-=0A=
-#include <linux/mtd/mtd.h>=0A=
-#include <linux/mtd/partitions.h>=0A=
-=0A=
-struct fis_image_desc {=0A=
-    unsigned char name[16];      // Null terminated name=0A=
-    unsigned long flash_base;    // Address within FLASH of image=0A=
-    unsigned long mem_base;      // Address in memory where it =
-executes=0A=
-    unsigned long size;          // Length of image=0A=
-    unsigned long entry_point;   // Execution entry point=0A=
-    unsigned long data_length;   // Length of actual data=0A=
-    unsigned char _pad[256-(16+7*sizeof(unsigned long))];=0A=
-    unsigned long desc_cksum;    // Checksum over image descriptor=0A=
-    unsigned long file_cksum;    // Checksum over image data=0A=
-};=0A=
-=0A=
-struct fis_list {=0A=
-	struct fis_image_desc *img;=0A=
-	struct fis_list *next;=0A=
-};=0A=
-=0A=
-static inline int redboot_checksum(struct fis_image_desc *img)=0A=
-{=0A=
-	/* RedBoot doesn't actually write the desc_cksum field yet AFAICT =
-*/=0A=
-	return 1;=0A=
-}=0A=
-=0A=
-static int parse_redboot_partitions(struct mtd_info *master, =0A=
-                             struct mtd_partition **pparts,=0A=
-                             unsigned long fis_origin)=0A=
-{=0A=
-	int nrparts =3D 0;=0A=
-	struct fis_image_desc *buf;=0A=
-	struct mtd_partition *parts;=0A=
-	struct fis_list *fl =3D NULL, *tmp_fl;=0A=
-	int ret, i;=0A=
-	size_t retlen;=0A=
-	char *names;=0A=
-	char *nullname;=0A=
-	int namelen =3D 0;=0A=
-	static char nullstring[] =3D "unallocated";=0A=
-=0A=
-	buf =3D kmalloc(PAGE_SIZE, GFP_KERNEL);=0A=
-=0A=
-	if (!buf)=0A=
-		return -ENOMEM;=0A=
-=0A=
-	/* Read the start of the last erase block */=0A=
-	ret =3D master->read(master, master->size - master->erasesize,=0A=
-			   PAGE_SIZE, &retlen, (void *)buf);=0A=
-=0A=
-	if (ret)=0A=
-		goto out;=0A=
-=0A=
-	if (retlen !=3D PAGE_SIZE) {=0A=
-		ret =3D -EIO;=0A=
-		goto out;=0A=
-	}=0A=
-=0A=
-	/* RedBoot image could appear in any of the first three slots */=0A=
-	for (i =3D 0; i < 3; i++) {=0A=
-		if (!memcmp(buf[i].name, "RedBoot", 8))=0A=
-			break;=0A=
-	}=0A=
-	if (i =3D=3D 3) {=0A=
-		/* Didn't find it */=0A=
-		printk(KERN_NOTICE "No RedBoot partition table detected in %s\n",=0A=
-		       master->name);=0A=
-		ret =3D 0;=0A=
-		goto out;=0A=
-	}=0A=
-=0A=
-	for (i =3D 0; i < PAGE_SIZE / sizeof(struct fis_image_desc); i++) {=0A=
-		struct fis_list *new_fl, **prev;=0A=
-=0A=
-		if (buf[i].name[0] =3D=3D 0xff)=0A=
-//			break;	=0A=
-			continue;	/* Skip this unused fis entry */				if =
-(!redboot_checksum(&buf[i]))=0A=
-			break;=0A=
-=0A=
-		new_fl =3D kmalloc(sizeof(struct fis_list), GFP_KERNEL);=0A=
-		namelen +=3D strlen(buf[i].name)+1;=0A=
-		if (!new_fl) {=0A=
-			ret =3D -ENOMEM;=0A=
-			goto out;=0A=
-		}=0A=
-		new_fl->img =3D &buf[i];=0A=
-                if (fis_origin) {=0A=
-                        buf[i].flash_base -=3D fis_origin;=0A=
-                } else {=0A=
-                        buf[i].flash_base &=3D master->size-1;=0A=
-                }=0A=
-=0A=
-		/* I'm sure the JFFS2 code has done me permanent damage.=0A=
-		 * I now think the following is _normal_=0A=
-		 */=0A=
-		prev =3D &fl;=0A=
-		while(*prev && (*prev)->img->flash_base < new_fl->img->flash_base)=0A=
-			prev =3D &(*prev)->next;=0A=
-		new_fl->next =3D *prev;=0A=
-		*prev =3D new_fl;=0A=
-=0A=
-		nrparts++;=0A=
-	}=0A=
-	if (fl->img->flash_base)=0A=
-		nrparts++;=0A=
-=0A=
-	for (tmp_fl =3D fl; tmp_fl->next; tmp_fl =3D tmp_fl->next) {=0A=
-		if (tmp_fl->img->flash_base + tmp_fl->img->size + master->erasesize < =
-tmp_fl->next->img->flash_base)=0A=
-			nrparts++;=0A=
-	}=0A=
-	parts =3D kmalloc(sizeof(*parts)*nrparts + sizeof(nullstring) + =
-namelen, GFP_KERNEL);=0A=
-=0A=
-	if (!parts) {=0A=
-		ret =3D -ENOMEM;=0A=
-		goto out;=0A=
-	}=0A=
-=0A=
-	memset(parts, 0, sizeof(*parts)*nrparts + namelen);=0A=
-=0A=
-	/* FIXME: Include nullname only if it's used */=0A=
-	nullname =3D (char *)&parts[nrparts];=0A=
-	sprintf(nullname, nullstring);=0A=
-	names =3D nullname + sizeof(nullstring);=0A=
-=0A=
-	i=3D0;=0A=
-=0A=
-	if (fl->img->flash_base) {=0A=
-	       parts[0].name =3D nullname;=0A=
-	       parts[0].size =3D fl->img->flash_base;=0A=
-	       parts[0].offset =3D 0;=0A=
-	}=0A=
-	for ( ; i<nrparts; i++) {=0A=
-		parts[i].size =3D fl->img->size;=0A=
-		parts[i].offset =3D fl->img->flash_base;=0A=
-		parts[i].name =3D names;=0A=
-=0A=
-		strcpy(names, fl->img->name);=0A=
-		names +=3D strlen(names)+1;=0A=
-=0A=
-		if(fl->next && fl->img->flash_base + fl->img->size + =
-master->erasesize < fl->next->img->flash_base) {=0A=
-			i++;=0A=
-			parts[i].offset =3D parts[i-1].size + parts[i-1].offset;=0A=
-			parts[i].size =3D fl->next->img->flash_base - parts[i].offset;=0A=
-			parts[i].name =3D nullname;=0A=
-		}=0A=
-		tmp_fl =3D fl;=0A=
-		fl =3D fl->next;=0A=
-		kfree(tmp_fl);=0A=
-	}=0A=
-	ret =3D nrparts;=0A=
-	*pparts =3D parts;=0A=
- out:=0A=
-	while (fl) {=0A=
-		struct fis_list *old =3D fl;=0A=
-		fl =3D fl->next;=0A=
-		kfree(old);=0A=
-	}=0A=
-	kfree(buf);=0A=
-	return ret;=0A=
-}=0A=
-=0A=
-static struct mtd_part_parser redboot_parser =3D {=0A=
-	.owner =3D THIS_MODULE,=0A=
-	.parse_fn =3D parse_redboot_partitions,=0A=
-	.name =3D "RedBoot",=0A=
-};=0A=
-=0A=
-static int __init redboot_parser_init(void)=0A=
-{=0A=
-	return register_mtd_parser(&redboot_parser);=0A=
-}=0A=
-=0A=
-static void __exit redboot_parser_exit(void)=0A=
-{=0A=
-	deregister_mtd_parser(&redboot_parser);=0A=
-}=0A=
-=0A=
-module_init(redboot_parser_init);=0A=
-module_exit(redboot_parser_exit);=0A=
-=0A=
-MODULE_LICENSE("GPL");=0A=
-MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse =
-<dwmw2@cambridge.redhat.com>");=0A=
-MODULE_DESCRIPTION("Parsing code for RedBoot Flash Image System (FIS) =
-tables");=0A=
-
-------_=_NextPart_000_01C42758.BBEB6CB0--
+--Boundary_(ID_6UxphsTJTHRYvbghsvEvvw)--
