@@ -1,19 +1,17 @@
-Received: from ca-ol-bordeaux-26-216.abo.wanadoo.fr ([80.8.74.216] helo=localhost.localdomain)
+Received: from sparta.scl.co.uk ([212.38.81.5] ident=root)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 1725v3-0006g2-00
-	for <linux-mtd@lists.infradead.org>; Mon, 29 Apr 2002 08:49:57 +0100
-Received: from openwide.fr (IDENT:pierre@localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.9.3/8.9.3) with ESMTP id JAA05579
-	for <linux-mtd@lists.infradead.org>; Mon, 29 Apr 2002 09:49:27 +0200
-Message-ID: <3CCCFB07.6F3494BE@openwide.fr>
-Date: Mon, 29 Apr 2002 09:49:27 +0200
-From: Pierre Ficheux <pierre.ficheux@openwide.fr>
+	id 17264M-0006h8-00
+	for <linux-mtd@lists.infradead.org>; Mon, 29 Apr 2002 08:59:34 +0100
+From: John Sutton <john@scl.co.uk>
+To: Ilguiz Latypov <ilatypov@superbt.com>
+Subject: Re: GRUB patch won't stick ;-(
+Date: Sun, 28 Apr 2002 23:14:53 +0100
+In-Reply-To: <02042720331400.31949@diva.localdomain>
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: compile error - kernel 2.4.17 +
-References: <1019247180.1363.17.camel@zeus>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-Id: <02042823204800.03654@diva.localdomain>
+Content-Transfer-Encoding: quoted-printable
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,26 +23,26 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-Frederick Lefebvre wrote:
-> 
-> The patchin.sh utility replaces compatmac.h which is included from mtd.h
-> and then from fs/jffs2/background.c . The problem is that compatmac.h
-> redefines recalc_sigpending(struct task_struct *t) with
-> ecalc_sigpending(void) which is used by fs/jffs2/background.c .  The
-> consequence is that the jffs2 driver does not compile anymore.  Am I
-> missing something or is that a bug?
+Hi Ilguiz
 
-	I got the same error as I got the last CVS yesterday. Of course I have
-changed the 2 calls in background.c and it works fine. Is it an
-'official' bug? Are we missing anything?
+Thanks, that was all that was needed ;-(  I'd not tried changing the -p
+option because I figured that if *most* of the patch worked, surely it
+must be right!  I'll have to revisit man patch...
 
-	regards
+> John,
+>=20
+> There is probably something wrong with the patch.  Meanwhile, have you
+> tried to supply the the "-p0" option to the patch utility?
+>=20
+> Ilguiz
+>=20
+> On Sat, 27 Apr 2002, John Sutton wrote:
+>=20
+> > Perhaps you should have used the -p or --strip option?
 
-> Frederick Lefebvre
-> flefebvre@irg.ca
-
--- 
-Pierre FICHEUX -/- CTO OpenWide, France -\- pierre.ficheux@openwide.fr
-				         http://www.ficheux.com
-					 http://www.emulateur-xtel.org
-More fun, more freedom, less Micro$oft
+***************************************************
+John Sutton
+SCL Internet
+URL http://www.scl.co.uk/
+Tel. +44 (0) 1239 711 888
+***************************************************
