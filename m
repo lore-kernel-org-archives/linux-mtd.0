@@ -1,27 +1,20 @@
-Received: from node-d-1ea6.a2000.nl ([62.195.30.166] helo=laptop.fenrus.com)
+Received: from imladris.demon.co.uk ([193.237.130.41])
 	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19M2Md-0002gh-HE
-	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 10:09:23 +0100
-From: Arjan van de Ven <arjanv@redhat.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20030531075615.GA25089@wohnheim.fh-wedel.de>
-References: <20030530174319.GA16687@wohnheim.fh-wedel.de>
-	 <20030530.171410.104043496.davem@redhat.com>
-	 <20030531064851.GA20822@wohnheim.fh-wedel.de>
-	 <20030530.235505.23020750.davem@redhat.com>
-	 <20030531075615.GA25089@wohnheim.fh-wedel.de>
-Message-Id: <1054372158.5259.0.camel@laptop.fenrus.com>
+	id 19M64x-0003Xb-Gv
+	for <linux-mtd@lists.infradead.org>; Sat, 31 May 2003 14:07:23 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Matthew Dharm <mdharm@momenco.com>
+In-Reply-To: <1052490920.23135.215.camel@passion.cambridge.redhat.com>
+References: <NEBBLJGMNKKEEMNLHGAIKEFKDAAA.mdharm@momenco.com>
+	 <1052490354.23135.208.camel@passion.cambridge.redhat.com>
+	 <1052490920.23135.215.camel@passion.cambridge.redhat.com>
+Message-Id: <1054386483.8432.5.camel@imladris.demon.co.uk>
 Mime-Version: 1.0
-Date: 31 May 2003 11:09:19 +0200
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="=-WGyCU2SqoXTxuFsnq5WU"
-cc: "David S. Miller" <davem@redhat.com>
+Date: Sat, 31 May 2003 14:08:03 +0100
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 cc: linux-mtd@lists.infradead.org
-cc: linux-kernel@vger.kernel.org
-cc: jmorris@intercode.com.au
-cc: Con Kolivas <kernel@kolivas.org>
-Subject: Re: [PATCH RFC] 1/2 central workspace for zlib
-Reply-To: arjanv@redhat.com
+Subject: RE: DiskOnChip 2000 128Mb problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Normally I just bounce broken mail to the list but I'll make an
+exception and forward this one...
 
---=-WGyCU2SqoXTxuFsnq5WU
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+-- 
+dwmw2
 
-On Sat, 2003-05-31 at 09:56, J=C3=B6rn Engel wrote:
-> CC List pruned a little.
->=20
-> On Fri, 30 May 2003 23:55:05 -0700, David S. Miller wrote:
-> >    From: J=C3=B6rn Engel <joern@wohnheim.fh-wedel.de>
-> >   =20
-> >    How about preemption?  zlib operations take their time, so at least =
-on
-> >    up, it makes sense to preempt them, when not in softirq context.  Ca=
-n
-> >    this still be done lockless?
-> >=20
-> > You'll need to disable preemption.
->=20
-> My gut feeling claims that this would hurt interactivity.=20
+-----Forwarded Message-----
 
-the code is decompressing data that was 4096 bytes originally. I doubt
-that will be anything close to some real wallclock time nowadays....
 
---=-WGyCU2SqoXTxuFsnq5WU
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+From: Zachi Friedman <zachi.friedman@m-sys.com>
+To: linux-mtd@lists.infradead.org
+Subject: RE: DiskOnChip 2000 128Mb problem
+Date: Fri, 30 May 2003 10:53:06 -0700
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Here is the deal:
+Newer (and higher capacity) DiskOnChip 2000 devices have a new ASIC
+controller. This ASIC controller has the chip ID of 0x30 (instead of 0x20).
+I guess that is the reason the MTD driver identifies the 128MB as a
+Millennium... 
+Also, to solve the confusion here once and for all: Millennium comes _ONLY_
+8MB. There never was, and never will be a Millennium is different capacity!
+There is the Millennium Plus (comes in 16MB, 32MB and 64MB), but its chip
+IDs are 0x40 and 0x41.
 
-iD8DBQA+2HE+xULwo51rQBIRAti2AJ9+42PNjQlhlXi7ID0200udIuYulgCbBDV+
-vDobyg5RSQ2gy7x9qtzmKdo=
-=fStp
------END PGP SIGNATURE-----
+So, once you have chip ID of 0x30, how can you tell whether it's a
+Millennium or the newer DiskOnChip 2000?  You have to read chip ID 4 times.
+If the 4th read is NOT 0x30 - it's a new DiskOnChip 2000 !
 
---=-WGyCU2SqoXTxuFsnq5WU--
+Also, these new DiskOnChip 2000 SHOULD be used with INFTL. The reason being
+these newer devices use newer NAND flash that have a lower PPP (of 3). NFTL
+needs PPP=5 (at least the original M-systems' implementation does). If MTD
+group's implementation of NFTL needs PPP>3 or if low-level format
+compatibility with M-Systems is important enough, then INFTL is the way to
+go with those devices!
+Regarding the INFTL - since SnapGear has released the 1st implementation a
+week ago, I guess it can be used as the basis for the supporting these
+devices as well :)
+
+Good luck,
+Zachi. 
