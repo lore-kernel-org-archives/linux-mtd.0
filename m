@@ -1,13 +1,17 @@
-Date: Tue, 11 Jan 2005 12:34:11 +0000 (GMT)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1105380565.17584.4.camel@weaponx.rchland.ibm.com>
-Message-ID: <Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
-References: <Pine.LNX.4.61.0501101246150.20261@localhost.localdomain>
-	<1105380565.17584.4.camel@weaponx.rchland.ibm.com>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1CoM1O-0000Wq-0i
+	for linux-mtd@lists.infradead.org; Tue, 11 Jan 2005 08:25:19 -0500
+Message-ID: <41E3D3E2.3090806@inf.u-szeged.hu>
+Date: Tue, 11 Jan 2005 14:25:54 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+References: <Pine.LNX.4.61.0501101246150.20261@localhost.localdomain>	<1105380565.17584.4.camel@weaponx.rchland.ibm.com>
+	<Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
+In-Reply-To: <Pine.LNX.4.58.0501111231430.19297@phoenix.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
 	"Robert P. J. Day" <rpjday@mindspring.com>
 Subject: Re: how to loopback mount a JFFS2 filesystem on my linux box?
@@ -20,54 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 Jan 2005, Josh Boyer wrote:
+Artem B. Bityuckiy wrote:
+>>You can't do that AFAIK because JFFS2 needs an MTD device.  Instead, use
+>>mtdram to create a fake MTD device, dd the image to it, and do:
+>>
+>># mount -t jffs2 /dev/mtdblock0 <mnt/point>
+> 
+> mtdblock is hardcoded to 4BM. So if you need larger, use nand/nandsim.c. 
+> This is NAND flash simulation driver and it is configurable, so you may 
+> configure it to have larger size. 
 
-> On Mon, 2005-01-10 at 11:49, Robert P. J. Day wrote:
-> >   i swear i once knew how to do this, but it's lost in the mists of
-> > time.  i used "mkfs.jffs2" to create a simple JFFS2 image, and now i
-> > just want to mount it on my fedora core 3 system using a loopback
-> > mount.
-> > 
-> >   i have the jffs2 and mtdcore modules currently loaded, and normally,
-> > what i would try is:
-> > 
-> >   # mkdir m
-> >   # mount -o loop -t jffs2 <jffs2.img file> m
-> > 
-> > but what i get is:
-> > 
-> > # mount -o loop -t jffs2 hello.img m
-> > mount: wrong fs type, bad option, bad superblock on /dev/loop0,
-> >        or too many mounted file systems
-> >        (could this be the IDE device where you in fact use
-> >        ide-scsi so that sr0 or sda or so is needed?)
-> > 
-> >   i *vaguely* recall needing to do a bit more work, like loading
-> > another module or two.  any pointers to a URL for this?  thanks.
-> 
-> You can't do that AFAIK because JFFS2 needs an MTD device.  Instead, use
-> mtdram to create a fake MTD device, dd the image to it, and do:
-> 
-> # mount -t jffs2 /dev/mtdblock0 <mnt/point>
-mtdblock is hardcoded to 4BM. So if you need larger, use nand/nandsim.c. 
-This is NAND flash simulation driver and it is configurable, so you may 
-configure it to have larger size. 
- 
-> Really though, we should look at making JFFS2 and/or the loopback driver
-> grok each other.  Would be useful.  Maybe a JFFS3 candidate?
-AFAIK, JFFS3 is candidate for all improvements :-)
+The size of this device is depends on the size of the mtdram (not 
+related to mtdblock, I think). It can be configured easily by kconfig: 
+you can specify the size of it and its erase block size.
 
-> 
-> josh
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Nandsim is also configurable but unfortunatelly not from kconfig. If I 
+am right you have to edit sources by hand. Firstly in the source of 
+nandsim you have to specify a chip ID. You have to look up this ID from 
+  nand_ids.c (if you found an appropriate NAND chip) or you have to 
+define an own one.
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Bye,
+Ferenc
