@@ -1,23 +1,14 @@
-Received: from [213.86.99.234] (helo=phoenix.infradead.org)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19gZlB-0007a2-KT
-	for <linux-mtd@lists.infradead.org>; Sun, 27 Jul 2003 01:51:37 +0100
-Received: from cedant2.abac.com ([66.175.0.3])
-	by phoenix.infradead.org with esmtp (Exim 4.10)
-	id 19gZlA-0000tO-00
-	for linux-mtd@lists.infradead.org; Sun, 27 Jul 2003 01:51:37 +0100
-Received: from smileatyou.com (localhost [127.0.0.1])
-	by cedant2.abac.com (8.12.9/8.12.9) with SMTP id h6R0pala014897
-	for <mtd@infradead.org>; Sat, 26 Jul 2003 17:51:36 -0700 (PDT)
-Message-ID: <3230.65.103.118.82.1059267096.squirrel@mail.smileatyou.com>
-Date: Sat, 26 Jul 2003 18:51:36 -0600 (MDT)
-From: "Derek Olson" <Tristan@SmileAtYou.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from web21101.mail.yahoo.com ([216.136.227.103])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19gbOt-0007lt-Cb
+	for <linux-mtd@lists.infradead.org>; Sun, 27 Jul 2003 03:36:43 +0100
+Message-ID: <20030727023642.91956.qmail@web21101.mail.yahoo.com>
+Date: Sat, 26 Jul 2003 19:36:42 -0700 (PDT)
+From: Kien Phung Chi <pckien2001@yahoo.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: settled
-Reply-To: Tristan@SmileAtYou.com
+Content-Type: text/plain; charset=us-ascii
+Subject: Compile error on kernel 2.5
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most of you likely think I've dropped off the face of the earth.  Actually
-we have settled into our new home and my workshop is now in order.  I
-haven't been connected to the internet for many weeks so if you're
-expecting a reply from me please be patient.
+Hi all,
 
-While I don't have any new pieces to show today I would like to explain
-the next piece I'll be working on.
+Did anyone compile MTD code successfully with
+kernel2.5.x. I download the latest MTD code and
+compile with kernel2.4.20 without any problem. But
+when I compile it with kernel2.5.45, it report error
+about O_TARGET	:= mtdlink.o line in
+driver/mtd/Makefile file. It say that the O_TARGET is
+obsolote in kernel 2.5 and user must fix it.
 
-The title is 'Rock Bottom', and the focus will be when you're mad enough
-to scream but sad enough to tear ... you've hit rock bottom.
+Did anyone fix it ?
 
-Derek Olson
-Tristan Woodworks
-http://www.SmileAtYou.com
-Highlands Ranch, Colorado
+Phung Chi Kien
+Automation Institute
+Hanoi
+Vietnam
 
-You are subscribed as mtd@infradead.org
-If you know someone who might like this, or you'd like off, please let me
-know.
+
+
+
+__________________________________
+Do you Yahoo!?
+Yahoo! SiteBuilder - Free, easy-to-use web site design software
+http://sitebuilder.yahoo.com
