@@ -1,19 +1,18 @@
-Received: from tiger.actrix.co.nz ([203.96.16.160] helo=blood.actrix.co.nz)
-	by pentafluge.infradead.org with esmtp (Exim 4.14 #3 (Red Hat Linux))
-	id 19CmxX-0003z7-5P
-	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 21:53:15 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: <tom@ceisystems.com>, <linux-mtd@lists.infradead.org>
-Date: Tue, 6 May 2003 08:54:52 +1200
-References: <6D31D5429FA6884CBE9ECAB6C9B5E6A907E05F@intel-srvr.patcameron.ne.mediaone.net>
-In-Reply-To: <6D31D5429FA6884CBE9ECAB6C9B5E6A907E05F@intel-srvr.patcameron.ne.mediaone.net>
-MIME-Version: 1.0
-Message-Id: <20030505205326.63E2D4789@blood.actrix.co.nz>
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Subject: Re: CompactFlash...
-Reply-To: manningc2@actrix.gen.nz
+Received: from ash.lnxi.com ([207.88.130.242])
+	by pentafluge.infradead.org with smtp (Exim 4.14 #3 (Red Hat Linux))
+	id 19Cn4s-0004BN-VA
+	for <linux-mtd@lists.infradead.org>; Mon, 05 May 2003 22:00:51 +0100
+From: Thayne Harbaugh <tharbaugh@lnxi.com>
+To: Michael Moedt <xemc@yahoo.com>
+In-Reply-To: <20030505205152.72756.qmail@web13904.mail.yahoo.com>
+References: <20030505205152.72756.qmail@web13904.mail.yahoo.com>
+Message-Id: <1052168461.1171.11504.camel@tubarao>
+Mime-Version: 1.0
+Date: 05 May 2003 15:01:01 -0600
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="=-F1H/PLvyfSOj0X3Wc9Z8"
+cc: linux-mtd@lists.infradead.org
+Subject: Re: Error: Wacky! Unable to decode failure status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 06 May 2003 08:08, tom@ceisystems.com wrote:
-> Hello all,
->
-> 	I have recently come to own a motherboard that supports the ATA
-> interface to a CompactFlash card, which has been purchased from my local
-> BestBuy.  I am wondering what the best implimentation would be for this
-> flash, as it is seen at /dev/hdd.  Is there a way to still see it as a
-> MTD device, and use jffs2 or yaffs on it?  Thanks in advance for any
-> information.
 
-This has been raised many times and is explained in an mtd doc.
+--=-F1H/PLvyfSOj0X3Wc9Z8
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-The flash in Compact Fash is not visible as raw flash, only as ATA (which is 
-basically functionally the same as IDE hard-disk). This means that you can't 
-really use it as flash for YAFFS or JFFSx (except by bodging up a mtd 
-emulation on a block device which would not really buy you anything).
+On Mon, 2003-05-05 at 14:51, Michael Moedt wrote:
+> Thanks!  I guess that was the problem.  However, I
+> think that it should compare CFIDEV_BUSWIDTH_ 1,2,4
+> and 8 instead of 1,2,3,4.  Here's the corrected patch.
 
--- Charles
+I have no explanation as to how that happened - the patch worked just
+fine when I didn't try to compile it 8-)
+
+Once I get around to doing some local testing and _really_compiling_it_,
+I'll commit it to CVS.
+
+--=20
+Thayne Harbaugh
+Linux Networx
+
+--=-F1H/PLvyfSOj0X3Wc9Z8
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD8DBQA+ttENfsBPTKE6HMkRAuTQAJwKLkLDXUCOom4p+LeeUN5NlPVtyQCfYal8
+8EeIAtqtE6zg8BtMjaCJjXU=
+=xtrp
+-----END PGP SIGNATURE-----
+
+--=-F1H/PLvyfSOj0X3Wc9Z8--
