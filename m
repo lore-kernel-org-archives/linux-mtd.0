@@ -1,19 +1,19 @@
-Received: from mail.fh-wedel.de ([195.37.86.23])
+Received: from aboulogne-111-1-1-87.abo.wanadoo.fr ([80.11.223.87] helo=ns.nexgen-private)
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 18LkkM-0006CW-00
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 13:48:26 +0000
-Date: Tue, 10 Dec 2002 15:18:58 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: fred <fred@sc23.sc.mcel.mot.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Which filesystem can live on one flash sector?
-Message-ID: <20021210141858.GC23134@wohnheim.fh-wedel.de>
-References: <20021210071208.F30D7154A1@dragon.actrix.co.nz> <000101c2a053$f2732f80$940879c8@sc.mcel.mot.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <000101c2a053$f2732f80$940879c8@sc.mcel.mot.com>
+	id 18LktN-0006DU-00
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 13:57:46 +0000
+Received: from david (david.nexgen-private [10.1.17.1])
+	by ns.nexgen-private (8.10.2/8.10.2) with SMTP id gBAFVCu04466
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Dec 2002 16:31:12 +0100
+Message-ID: <001201c2a059$27471aa0$0111010a@nexgenprivate>
+From: "David Girault" <david@nexgen-software.fr>
+To: "Liste Linux Mtd" <linux-mtd@lists.infradead.org>
+Subject: [DOC2000] invalid size detected
+Date: Tue, 10 Dec 2002 15:33:48 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -25,24 +25,64 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-On Tue, 10 December 2002 21:56:31 +0800, fred wrote:
-> 
-> Ok, I understand I can't run JFFS at only one sector.
-> 
-> In fact, I have 64k space left for saving configuration data.
-> The size of a sector is 64k normally except the bottom sectors that are 8k,
-> 4k, 4k, 16k, 32k.
-> So you see, I have five sectors to run JFFS rather than one 64k sector.
-> Then, is it possible to run JFFS on these sectors?
+Hi all,
 
-Yes, jffs (not jffs2) would be working on those sectors. But I fear
-that the partition code doesn't treat them seperately, so jffs will
-only see one sector and won't work.
-You should tweak the partition code or provide your own mapping driver
-to get it working. Something like that
+I am trying to access a 8MB DOC2000 using kernel 2.4.20 and MTD lasted CVS
+version (using patchin.sh).
 
-Jörn
+The current CVS version detect a bad size for my DOC device when I load
+modules using :
+  /sbin/modprobe -a doc2000 nftl mtdchar
+  /sbin/modprobe -a docprobe
 
--- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+The previous version I build (2.4.18) detect the correct size but lack for
+UnitSizeFactor!=1 support.
+
+I think the problem is in the NAND_IDS.C chip identification but I am not
+sure.
+As I can see, there is a name conflict beetween nand_ids.h and nand_ids.c.
+
+What de you think of this problems/bug?
+
+Thank.
+David.
+
+
+-------------------------
+
+LOG for 2.4.20+MTD CVS:
+
+  NFTL driver: nftlcore.c $Revision: 1.87 $, nftlmount.c $Revision: 1.31 $
+  Using configured DiskOnChip probe address 0xdc000
+  DiskOnChip 2000 found at address 0xDC000
+  Flash chip found: Manufacturer ID: EC, Chip ID: E6 (NAND 2MB 5V)
+  1 flash chips found. Total DiskOnChip size: 2 MiB
+  NFTL: UnitSizeFactor 0x00 detected. This violates the spec but we think we
+know
+  what it means...
+  NFTL Media Header sanity check failed:
+  numvunits (1984) > nb_blocks (512) - nb_boot_blocks(8) - 2
+  Could not find valid boot record
+  Could not mount NFTL device
+
+cat /proc/mtd:
+
+  dev:    size   erasesize  name
+  mtd0: 00200000 00001000 "DiskOnChip 2000"
+
+-------------------------
+
+LOG for 2.4.18:
+
+  NFTL driver: nftlcore.c $Revision: 1.82 $, nftlmount.c $Revision: 1.25 $
+  Using configured DiskOnChip probe address 0xdc000
+  DiskOnChip 2000 found at address 0xDC000
+  Flash chip found: Manufacturer ID: EC, Chip ID: E6 (Samsung KM29U64000)
+  1 flash chips found. Total DiskOnChip size: 8 MiB
+  Sorry, we don't support UnitSizeFactor of != 1 yet.
+  Could not find valid boot record
+  Could not mount NFTL device
+
+cat /proc/mtd:
+  dev:    size   erasesize  name
+  mtd0: 00800000 00002000 "DiskOnChip 2000"
