@@ -1,14 +1,17 @@
-Received: from f3.law15.hotmail.com ([64.4.23.3] helo=hotmail.com)
+Received: from mercury.sun.com ([192.9.25.1])
 	by pentafluge.infradead.org with esmtp (Exim 3.22 #1 (Red Hat Linux))
-	id 15L1U3-0002EN-00
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2001 12:51:48 +0100
-From: "Tapio Lindh" <talindh@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Can't write to non-CFI 64Mbit Amd chip
-Date: Fri, 13 Jul 2001 11:56:47 -0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Message-ID: <F3FsTmIClmpcQABZTW500009bb3@hotmail.com>
+	id 15L7Gu-0002Y5-00
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2001 19:02:36 +0100
+Message-ID: <3B4F3ABA.2EFCAB42@sun.com>
+Date: Fri, 13 Jul 2001 11:15:22 -0700
+From: Tim Hockin <thockin@sun.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+CC: linux-mtd@lists.infradead.org
+Subject: Re: module names in request_module()
+References: <3B4E5085.62422401@sun.com> <24251.995007133@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: linux-mtd-admin@lists.infradead.org
 Errors-To: linux-mtd-admin@lists.infradead.org
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
@@ -20,11 +23,38 @@ List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
 List-Archive: <http://lists.infradead.org/pipermail/linux-mtd/>
 
-I found out the reason why writes failed: Sectors were locked even
-thou the VPP was enabled. Sectors had to be explicitly opened using unlock 
-command. Writing and erasing was possible after implementing
-an unlock function for amd_flash and using then unlock utility.
+David Woodhouse wrote:
+> 
+> thockin@sun.com said:
+> >  if I depmod a module that needs cfi and cfi_probe is not loaded,
+> > request_module fails, because it is looking for the module named "cfi"
+> > not "cfi_probe".
+> 
+> Does v1.9 of chipreg.c fix it correctly?
 
-Tapio Lindh
-_________________________________________________________________________
-Get Your Private, Free E-mail from MSN Hotmail at http://www.hotmail.com.
+only for cfi
+
+the problem is that the module name is not predictable from the "probe"
+name.
+
+cfi -> cfi_probe.o
+jedec -> jedec.o
+ram -> map_ram.o
+rom -> map_rom.o
+amd_flash -> amd_flash.o
+
+there is no way to have that knowledge a priori with modules.
+
+
+So we have three options:
+	1) rename files to match their probe names
+	2) rename probe names to match module names
+	3) use modules.conf to give external fixes for internal flaws
+
+I'm leaning towards #2.  Comments?  
+
+-- 
+Tim Hockin
+Systems Software Engineer
+Sun Microsystems, Cobalt Server Appliances
+thockin@sun.com
