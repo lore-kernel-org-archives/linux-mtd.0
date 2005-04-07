@@ -1,18 +1,20 @@
-Received: from phoenix.infradead.org ([2001:8b0:10b:1:2c0:f0ff:fe31:e18])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DJU33-0008Bn-VK
-	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2005 06:15:42 -0400
-Date: Thu, 7 Apr 2005 11:15:31 +0100 (BST)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20050406T200915-152@post.gmane.org>
-Message-ID: <Pine.LNX.4.58.0504071055520.20339@phoenix.infradead.org>
-References: <loom.20050406T200915-152@post.gmane.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Artem Bityuckiy <dedekind@infradead.org>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DJUT9-0008Pa-5P
+	for linux-mtd@lists.infradead.org; Thu, 07 Apr 2005 06:42:39 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: zheng wei <jeanwelly@gmail.com>
+In-Reply-To: <c2bc1f405040702476af04972@mail.gmail.com>
+References: <c2bc1f405040702476af04972@mail.gmail.com>
+Content-Type: text/plain
+Date: Thu, 07 Apr 2005 13:42:38 +0200
+Message-Id: <1112874158.4228.130.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: long umount time
+Subject: Re: Error found when mounting a NANDFlash block as yaffs
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 6 Apr 2005, Sergei Sharonov wrote:
+On Thu, 2005-04-07 at 17:47 +0800, zheng wei wrote:
+> do.Linux version 2.4.18-rmk7-pxa1 (root@localhost.localdomain) (gcc
 
-> Hi,
-> I sometimes see excessively long umount times (40-60 s) with jffs2/nand. 
-> The platform is a custom at91rm9200 board running linux 2.6.10 with 
-> mtd snapshot from 3/28/2005. Umount is from busybox. The umount time varies
-> but the system is mostly idle during it unlike during mount. After a few
-> operations with filesystem it goes away until sometime later. Has anybody 
-> seen that?
->
-I see 2 reasons why umounts can be slow:
-1. The GC thread receives several SIGHUP signals and JFFS2 waits for 
-the GC thread has processed them all and has reached the SIGKILL signal.
+1. The NAND driver in 2.4.18 is broken and not usable.
 
-2. The final wbuf synchronization founds that there is no space and 
-performs GC to free some room. We may imagine scenarios when this may take 
-considerable time.
+2. Please read:
+http://www.linux-mtd.infradead.org/source.html#kernelversions
 
-Please, look at jffs2_gcd_mtd thread - does it eat a lot of CPU cycles 
-during these long unmounts ?
+> VFS: Mounted root (cramfs filesystem).
 
---
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+CRAMFS on NAND is not a really good idea. CRAMFS is not bad block aware.
+
+> Unable to handle kernel NULL pointer dereference at virtual address 00000004
+> pgd = c3eb4000
+> ....
+>  r4 = 0204FE88
+
+Please read: linux/Documentation/oops-tracing.txt
+
+tglx
