@@ -1,20 +1,17 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DJvcC-0007E8-MC
-	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2005 11:41:49 -0400
-Message-ID: <4256A634.4000005@ieee.org>
-Date: Fri, 08 Apr 2005 11:41:40 -0400
-From: Dan Brown <dan_brown@ieee.org>
-MIME-Version: 1.0
-To: Zeri Virgo <zerivirgo@infocell-its.com>
-References: <4249C357.2040600@ieee.org>	<424C1C58.3000905@infocell-its.com>	<424C5F16.8010809@ieee.org>	<424CA4EA.8090904@infocell-its.com>	<424CAE31.8040302@ieee.org>	<425157C5.4040007@infocell-its.com>	<425181A7.2010809@ieee.org>	<42527DD5.4080009@infocell-its.com>	<4252EC5D.4090806@ieee.org>	<4253D280.6090308@infocell-its.com>	<4253D61C.6010109@infocell-its.com>	<4253E056.5050603@ieee.org>	<4253F6C2.1080105@infocell-its.com>
-	<42540E53.8080109@ieee.org> <42542926.9040209@nrl.navy.mil>
-	<4255433A.4080008@ieee.org> <4255AA14.80701@infocell-its.com>
-In-Reply-To: <4255AA14.80701@infocell-its.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DJwsX-0007gw-H4
+	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2005 13:02:48 -0400
+Date: Fri, 8 Apr 2005 19:01:59 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20050408170159.GD2292@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [UPDATE] DOCBoot support for NFTL-based DOC2000
+Subject: [PATCH] simplify list rotation code
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +21,149 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zeri Virgo wrote:
+After the other parts of my patch were vetoed against, how about this
+one?
 
-> Yes! With the diskonchip driver, flash_eraseall and nandwrite and 
-> DOCBoot from CVS, my DiskOnChip now boots the Linux kernel.
->
-> Thanks for everything!
->
-Very glad to hear it!
+Instead of counting the list length, it simply rotates by up to 64
+elements.  This is O(1) instead of O(n) and makes the code nicer to
+read.
 
-    -Dan
+Jörn
+
+-- 
+When I am working on a problem I never think about beauty.  I think
+only how to solve the problem.  But when I have finished, if the
+solution is not beautiful, I know it is wrong.
+-- R. Buckminster Fuller
+
+
+Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+---
+
+ fs/jffs2/scan.c |  104 +++++++-------------------------------------------------
+ 1 files changed, 13 insertions(+), 91 deletions(-)
+
+--- linux-2.6.11cow/fs/jffs2/scan.c~jffs2_rotate	2005-03-22 23:29:29.000000000 +0100
++++ linux-2.6.11cow/fs/jffs2/scan.c	2005-03-25 16:23:30.000000000 +0100
+@@ -809,108 +809,30 @@ static int jffs2_scan_dirent_node(struct
+ 	return 0;
+ }
+ 
+-static int count_list(struct list_head *l)
+-{
+-	uint32_t count = 0;
+-	struct list_head *tmp;
+ 
+-	list_for_each(tmp, l) {
+-		count++;
+-	}
+-	return count;
+-}
+-
+-/* Note: This breaks if list_empty(head). I don't care. You
+-   might, if you copy this code and use it elsewhere :) */
+ static void rotate_list(struct list_head *head, uint32_t count)
+ {
+ 	struct list_head *n = head->next;
+ 
++	if (list_empty(head))
++		return;
++
+ 	list_del(head);
+-	while(count--) {
++	while (count--)
+ 		n = n->next;
+-	}
++
+ 	list_add(head, n);
+ }
+ 
++
+ void jffs2_rotate_lists(struct jffs2_sb_info *c)
+ {
+-	uint32_t x;
+-	uint32_t rotateby;
+-
+-	x = count_list(&c->clean_list);
+-	if (x) {
+-		rotateby = pseudo_random % x;
+-		D1(printk(KERN_DEBUG "Rotating clean_list by %d\n", rotateby));
+-
+-		rotate_list((&c->clean_list), rotateby);
+-
+-		D1(printk(KERN_DEBUG "Erase block at front of clean_list is at %08x\n",
+-			  list_entry(c->clean_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty clean_list\n"));
+-	}
+-
+-	x = count_list(&c->very_dirty_list);
+-	if (x) {
+-		rotateby = pseudo_random % x;
+-		D1(printk(KERN_DEBUG "Rotating very_dirty_list by %d\n", rotateby));
+-
+-		rotate_list((&c->very_dirty_list), rotateby);
+-
+-		D1(printk(KERN_DEBUG "Erase block at front of very_dirty_list is at %08x\n",
+-			  list_entry(c->very_dirty_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty very_dirty_list\n"));
+-	}
+-
+-	x = count_list(&c->dirty_list);
+-	if (x) {
+-		rotateby = pseudo_random % x;
+-		D1(printk(KERN_DEBUG "Rotating dirty_list by %d\n", rotateby));
+-
+-		rotate_list((&c->dirty_list), rotateby);
+-
+-		D1(printk(KERN_DEBUG "Erase block at front of dirty_list is at %08x\n",
+-			  list_entry(c->dirty_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty dirty_list\n"));
+-	}
+-
+-	x = count_list(&c->erasable_list);
+-	if (x) {
+-		rotateby = pseudo_random % x;
+-		D1(printk(KERN_DEBUG "Rotating erasable_list by %d\n", rotateby));
+-
+-		rotate_list((&c->erasable_list), rotateby);
+-
+-		D1(printk(KERN_DEBUG "Erase block at front of erasable_list is at %08x\n",
+-			  list_entry(c->erasable_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty erasable_list\n"));
+-	}
+-
+-	if (c->nr_erasing_blocks) {
+-		rotateby = pseudo_random % c->nr_erasing_blocks;
+-		D1(printk(KERN_DEBUG "Rotating erase_pending_list by %d\n", rotateby));
+-
+-		rotate_list((&c->erase_pending_list), rotateby);
+-
+-		D1(printk(KERN_DEBUG "Erase block at front of erase_pending_list is at %08x\n",
+-			  list_entry(c->erase_pending_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty erase_pending_list\n"));
+-	}
+-
+-	if (c->nr_free_blocks) {
+-		rotateby = pseudo_random % c->nr_free_blocks;
+-		D1(printk(KERN_DEBUG "Rotating free_list by %d\n", rotateby));
+-
+-		rotate_list((&c->free_list), rotateby);
++	uint32_t rotateby = pseudo_random % 64;
+ 
+-		D1(printk(KERN_DEBUG "Erase block at front of free_list is at %08x\n",
+-			  list_entry(c->free_list.next, struct jffs2_eraseblock, list)->offset));
+-	} else {
+-		D1(printk(KERN_DEBUG "Not rotating empty free_list\n"));
+-	}
++	rotate_list((&c->clean_list), rotateby);
++	rotate_list((&c->very_dirty_list), rotateby);
++	rotate_list((&c->dirty_list), rotateby);
++	rotate_list((&c->erasable_list), rotateby);
++	rotate_list((&c->erase_pending_list), rotateby);
++	rotate_list((&c->free_list), rotateby);
+ }
