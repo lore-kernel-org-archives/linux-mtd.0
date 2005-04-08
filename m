@@ -1,14 +1,17 @@
-From: Arjan van de Ven <arjan@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from fire.osdl.org ([65.172.181.4] helo=smtp.osdl.org)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DJxb4-0008M1-BR
+	for linux-mtd@lists.infradead.org; Fri, 08 Apr 2005 13:48:49 -0400
+Date: Fri, 8 Apr 2005 10:48:26 -0700
+From: Andrew Morton <akpm@osdl.org>
+To: =?ISO-8859-1?B?SvZybg==?= Engel <joern@wohnheim.fh-wedel.de>
+Message-Id: <20050408104826.3ca70fb4.akpm@osdl.org>
 In-Reply-To: <20050408170805.GE2292@wohnheim.fh-wedel.de>
 References: <20050408170805.GE2292@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 08 Apr 2005 19:24:51 +0200
-Message-Id: <1112981091.6278.75.camel@laptopd505.fenrus.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] restrict inter_module_* to its last users
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,8 +22,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-04-08 at 19:08 +0200, Jörn Engel wrote:
-> Derived from a patch Arjan sent around.
-> 
+J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+>
+> Next step for inter_module removal.  This patch makes the code
+>  conditional on its last users and shrinks the kernel binary for the
+>  huge majority of people.
 
-Signed-off-by: Arjan van de Ven <arjan@infradead.org>
+If we do this, nobody will get around to fixing up the remaining users.
