@@ -1,20 +1,21 @@
-Received: from localhost.localdomain ([127.0.0.1] helo=localhost)
-	by baythorne.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DKB3b-0007Gx-Lv
-	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2005 09:11:07 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jesse Keating <jkeating@j2solutions.net>
-In-Reply-To: <1113013385.11363.2.camel@jkeating2.hq.pogolinux.com>
-References: <33462c0e0504081849492288f4@mail.gmail.com>
-	<1113013385.11363.2.camel@jkeating2.hq.pogolinux.com>
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DKCWQ-00040Q-CT
+	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2005 05:44:59 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: William J Beksi <wjbeksi@setabox.com>
+In-Reply-To: <42534BCC.3080106@setabox.com>
+References: <424BFC76.8020101@setabox.com> <4252BB42.6010907@yandex.ru>
+	<42534BCC.3080106@setabox.com>
 Content-Type: text/plain
-Message-Id: <1113033760.12012.30.camel@baythorne.infradead.org>
+Date: Sat, 09 Apr 2005 13:44:28 +0400
+Message-Id: <1113039868.18825.2.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Date: Sat, 09 Apr 2005 09:08:21 +0100
 Content-Transfer-Encoding: 7bit
-ReSent-Message-ID: <Pine.LNX.4.58.0504090910580.27926@baythorne.infradead.org>
-Cc: fedora-ppc@lists.infradead.org
-Subject: Re: FC3 hangs on ibook G4
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]  NAND I/O instruction support
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-04-08 at 19:23 -0700, Jesse Keating wrote:
-> Make sure that it isn't trying to run rhgb.  Try forcing it to run level
-> 3 w/out rhgb so that you can configure X by hand.  Take out 'quiet' too
-> so that you can see whats going on.
-
-And make sure you're using the initrd.
+On Wed, 2005-04-06 at 10:39 +0800, William J Beksi wrote:
+> Because I want to use the *same* I/O port range as that used by the IDE 
+> interface on a PC. I think a look at my driver below will make things 
+> clearer ;)
+Then this is rather hack then a standard thing. Hacks should stay in
+drivers IMO.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
