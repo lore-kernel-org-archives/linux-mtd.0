@@ -1,21 +1,17 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DKCWQ-00040Q-CT
-	for linux-mtd@lists.infradead.org; Sat, 09 Apr 2005 05:44:59 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: William J Beksi <wjbeksi@setabox.com>
-In-Reply-To: <42534BCC.3080106@setabox.com>
-References: <424BFC76.8020101@setabox.com> <4252BB42.6010907@yandex.ru>
-	<42534BCC.3080106@setabox.com>
-Content-Type: text/plain
-Date: Sat, 09 Apr 2005 13:44:28 +0400
-Message-Id: <1113039868.18825.2.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]  NAND I/O instruction support
-Reply-To: dedekind@infradead.org
+Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DKkDI-0000Md-UW
+	for linux-mtd@lists.infradead.org; Sun, 10 Apr 2005 17:43:29 -0400
+Received: from [10.1.1.138] (10.1.2.1) by mailhost.rdmcorp.com (Worldmail
+	1.3.167) for linux-mtd@lists.infradead.org;
+	10 Apr 2005 17:43:30 -0400
+Date: Sun, 10 Apr 2005 17:41:22 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Message-ID: <Pine.LNX.4.61.0504101735390.8617@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: how little do i have to do to define flash layout on my system?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-06 at 10:39 +0800, William J Beksi wrote:
-> Because I want to use the *same* I/O port range as that used by the IDE 
-> interface on a PC. I think a look at my driver below will make things 
-> clearer ;)
-Then this is rather hack then a standard thing. Hacks should stay in
-drivers IMO.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+  currently, my 8xx 2.4 kernel-based system defines its flash layout
+with a proprietary driver file we installed into the "maps" directory,
+but i'd like to simplify that approach.
+
+  certainly, i can use command-line partitioning to define all of the
+partitions, making the driver file *way* simpler.  can i somehow avoid
+even the creation of that driver file (so i don't have to mess with
+the kernel source tree at all)?
+
+  i just read that there is a generic driver for accessing CFI flash
+chips on systems that have no specific mapping driver.  does this mean
+what i think it means?  that i can somehow take advantage of that
+generic driver to avoid having to write my own?
+
+  i need to be able to concatenate 2 16M chips into a single 32M
+address space, then partition into 5 or 6 partitions.  am i being too
+optimistic about not needing my own driver map program if i can use
+the "generic" one?
+
+rday
