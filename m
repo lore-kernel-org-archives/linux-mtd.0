@@ -1,20 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DRdpY-0002o4-EO
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 18:19:29 -0400
-Message-ID: <4272B2F0.3090803@mvista.com>
-Date: Fri, 29 Apr 2005 15:19:28 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
-References: <426F40A3.8010308@ipi.ac.ru>	<1114592403.879.175.camel@tglx.tec.linutronix.de>
-	<426F56C1.6020204@ipi.ac.ru> <426FD97D.9000105@mvista.com>
-	<427089FF.4020704@ipi.ac.ru>
-In-Reply-To: <427089FF.4020704@ipi.ac.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand locking
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DL67i-0006Jx-3p
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2005 17:07:11 -0400
+From: Adrian Bunk <bunk@stusta.de>
+To: Andrew Morton <akpm@osdl.org>,
+	Rusty Russell <rusty@rustcorp.com.au>
+Message-ID: <20050411210507.GC5863@stusta.de>
+References: <20050411012532.58593bc1.akpm@osdl.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050411012532.58593bc1.akpm@osdl.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: 2.6.12-rc2-mm3: CONFIG_MODULES=n MTD compile error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +23,48 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Mon, 11 Apr 2005 21:07:11 -0000
 
-Timofei V. Bondarenko wrote:
-> Todd Poynor wrote:
+On Mon, Apr 11, 2005 at 01:25:32AM -0700, Andrew Morton wrote:
+>...
+> Changes since 2.6.12-rc2-mm2:
+>...
+> +remove-inter-module-mtd.patch
+> 
+>  Remove intermodule_foo() usage from mtd.
+>...
+
+This breaks the compilation with CONFIG_MODULES=n:
+
+<--  snip  -->
+
 ...
->> I tried adding a callback to the chip driver at each device/partition 
->> add...
-> 
-> 
-> Do you mean 'mtd_info::notify_add' ?
+  CC      drivers/mtd/devices/docprobe.o
+drivers/mtd/devices/docprobe.c: In function `DoC_Probe':
+drivers/mtd/devices/docprobe.c:311: warning: implicit declaration of 
+function `__symbol_get'
+drivers/mtd/devices/docprobe.c:311: warning: assignment makes pointer 
+from integer without a cast
+drivers/mtd/devices/docprobe.c:315: warning: implicit declaration of function `__symbol_put'
+...
+  LD      .tmp_vmlinux1
+drivers/built-in.o(.init.text+0x60f20): In function `DoC_Probe':
+: undefined reference to `__symbol_get'
+drivers/built-in.o(.init.text+0x60f3b): In function `DoC_Probe':
+: undefined reference to `__symbol_put'
+drivers/built-in.o(.init.text+0x610a4): In function `DoC_Probe':
+: undefined reference to `__symbol_get'
+make: *** [.tmp_vmlinux1] Error 1
 
-Yes.
+<--  snip  -->
 
-> I've mentioned the 'mtd_partition::mtdp' - it could be an alternative
-> (a bit complicated though). The register_mtd_user() also may help...
 
-I originally tried the register_mtd_user() route, but in the case of 
-partitions it is passed the "slave" struct mtd_info, while only the 
-"master" whole-device struct has been filled in with chip-driver-private 
-info (and only mtdpart.c knows how to map the slave back to the master), 
-so that would need some ugly tweaks as well...
+cu
+Adrian
 
 -- 
-Todd
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
