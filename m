@@ -1,15 +1,22 @@
-Message-ID: <425AAEF2.3040903@netwinder.org>
-Date: Mon, 11 Apr 2005 13:08:02 -0400
-From: Ralph Siemsen <ralphs@netwinder.org>
+Received: from motgate.mot.com ([129.188.136.100])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DL3WD-0004IF-49
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2005 14:20:17 -0400
+Received: from az33exr02.mot.com (az33exr02.mot.com [10.64.251.232])
+	by motgate.mot.com (Motorola/Motgate) with ESMTP id j3BBp5Q0021807
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Apr 2005 04:51:15 -0700 (MST)
+Received: from zch07exm05.corp.mot.com (ZCH07EXM05.corp.mot.com [200.3.1.211])
+	by az33exr02.mot.com (8.13.1/8.13.0) with ESMTP id j3BBq4Vb019160
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Apr 2005 06:52:05 -0500 (CDT)
+Message-ID: <3BCB5FB76AFFF646BCFBC02A889B64F302286D1C@ZCH07EXM05.corp.mot.com>
+From: Jiang Jun-A21079 <A21079@motorola.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Date: Mon, 11 Apr 2005 19:51:02 +0800
 MIME-Version: 1.0
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-References: <Pine.LNX.4.61.0504101735390.8617@localhost.localdomain>	<f96d234e050411035522064e02@mail.gmail.com>
-	<Pine.LNX.4.61.0504110725540.6265@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.61.0504110725540.6265@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: how little do i have to do to define flash layout on my system?
+Content-Type: text/plain
+Subject: about summary patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,19 +26,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Robert P. J. Day wrote:
-
-> i did a bit more reading last night and concluded that the PHYSMAP
-> stuff would let me define a single flash chip but no more.  so if i
-> want multiple chips, it *appears* that i have to write a maps file.
-
-If the chips are of the same type, physmap.c will do what you want - 
-just give it the total size of flash space.  Eg. if you have two 32M 
-chips then give the size as 64M.  The MTD code is will probe and 
-discover the two chips automatically.  Be sure you specify the 
-interleave correctly too.
-
-If the chips are of different types, then the more recent mphysmap.c is 
-probably what you need.  (I haven't tried this one).
-
--R
+I found two issues about summary patch. But I can't send to Ferenc Havasi.
+Can I post in list?
