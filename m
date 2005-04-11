@@ -1,16 +1,16 @@
 Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DL4KZ-0004j0-5X
-	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2005 15:12:20 -0400
-Date: Mon, 11 Apr 2005 15:09:59 -0400 (EDT)
+	id 1DL4Mc-0004s3-6m
+	for linux-mtd@lists.infradead.org; Mon, 11 Apr 2005 15:14:32 -0400
+Date: Mon, 11 Apr 2005 15:11:42 -0400 (EDT)
 From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1113238871.7520.3.camel@windu.rchland.ibm.com>
-Message-ID: <Pine.LNX.4.61.0504111509070.26633@localhost.localdomain>
+To: Ralph Siemsen <ralphs@netwinder.org>
+In-Reply-To: <425AAEF2.3040903@netwinder.org>
+Message-ID: <Pine.LNX.4.61.0504111510410.26633@localhost.localdomain>
 References: <Pine.LNX.4.61.0504101735390.8617@localhost.localdomain>
 	<f96d234e050411035522064e02@mail.gmail.com>
 	<Pine.LNX.4.61.0504110725540.6265@localhost.localdomain>
-	<1113238871.7520.3.camel@windu.rchland.ibm.com>
+	<425AAEF2.3040903@netwinder.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>
@@ -24,11 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 11 Apr 2005, Josh Boyer wrote:
+On Mon, 11 Apr 2005, Ralph Siemsen wrote:
 
-> See drivers/mtd/maps/mphysmap.c
+> Robert P. J. Day wrote:
+>
+> > i did a bit more reading last night and concluded that the PHYSMAP
+> > stuff would let me define a single flash chip but no more.  so if i
+> > want multiple chips, it *appears* that i have to write a maps file.
+>
+> If the chips are of the same type, physmap.c will do what you want - just give
+> it the total size of flash space.  Eg. if you have two 32M chips then give the
+> size as 64M.  The MTD code is will probe and discover the two chips
+> automatically.  Be sure you specify the interleave correctly too.
 
-ah, there is no such map file in my kernel source tree 2.6.11.7, so
-that's obviously new.  CVS?
+and this would work regardless of the addresses of the two chips?
+i'll have to look at the code more carefully.
+
+> If the chips are of different types, then the more recent mphysmap.c
+> is probably what you need.  (I haven't tried this one).
+
+just got josh's post, i'll be looking into that shortly once i figure
+out the best place to get it.
 
 rday
