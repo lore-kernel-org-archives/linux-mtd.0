@@ -1,30 +1,18 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DLNOY-00015q-U6
-	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2005 11:33:43 -0400
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id 43C882F016
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2005 17:33:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 38C00118CE
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2005 17:33:43 +0200 (CEST)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 81B3DA125
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Apr 2005 17:33:42 +0200 (CEST)
-Message-ID: <425BEA54.3020907@imc-berlin.de>
-Date: Tue, 12 Apr 2005 17:33:40 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 1DLUAa-0002G4-0i
+	for linux-mtd@lists.infradead.org; Tue, 12 Apr 2005 18:47:44 -0400
+Message-ID: <425C5028.30303@inf.u-szeged.hu>
+Date: Wed, 13 Apr 2005 00:48:08 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: MTD List <linux-mtd@lists.infradead.org>
-References: <3BCB5FB76AFFF646BCFBC02A889B64F3022870CA@ZCH07EXM05.corp.mot.com>
-	<425B8DDF.60807@inf.u-szeged.hu>
-In-Reply-To: <425B8DDF.60807@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+References: <3BCB5FB76AFFF646BCFBC02A889B64F3022870CA@ZCH07EXM05.corp.mot.com>	<425B8DDF.60807@inf.u-szeged.hu>
+	<425BEA54.3020907@imc-berlin.de>
+In-Reply-To: <425BEA54.3020907@imc-berlin.de>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: MTD List <linux-mtd@lists.infradead.org>
 Subject: Re: two issues about summary patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -35,13 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ferenc,
+Hi Steven,
 
-> Thank you very much for your feedback. We will fix these problems very 
-> soon and update the summary patch and JFFS3, too.
+> Will you announce a new summary patch (for JFFS2) here?
+> Or do we have to poll your web site?
 
-Will you announce a new summary patch (for JFFS2) here?
-Or do we have to poll your web site?
+OK, we will announce new versions here.
 
---
-Steven
+Bye,
+Ferenc
