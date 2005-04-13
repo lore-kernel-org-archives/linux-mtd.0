@@ -1,21 +1,27 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DLjdj-0006sN-0L
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 11:18:51 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20050413T160136-559@post.gmane.org>
-References: <loom.20050413T142519-107@post.gmane.org>
-	<1113400225.23175.9.camel@sauron.oktetlabs.ru>
-	<loom.20050413T160136-559@post.gmane.org>
-Content-Type: text/plain
-Date: Wed, 13 Apr 2005 19:18:21 +0400
-Message-Id: <1113405501.23175.27.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from 87.202.leased.lanck.net ([62.152.87.202] helo=mail.protei.ru)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DLjsV-00074s-Mq
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 11:34:11 -0400
+Received: from gw (localhost [127.0.0.1])
+	by mail.protei.ru (Postfix) with SMTP id 8CA945004A4
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Apr 2005 19:34:05 +0400 (MSD)
+Received: from lab111.protei (lab111 [192.168.101.2])
+	by mail.protei.ru (Postfix) with ESMTP id 6C6D250051E
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Apr 2005 19:34:05 +0400 (MSD)
+Received: from [192.168.100.182] (nickolay.protei [192.168.100.182])
+	by lab111.protei (Postfix) with ESMTP id 411DD24093C5
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 13 Apr 2005 19:34:04 +0400 (MSD)
+Message-ID: <425D3BDF.9030505@protei.ru>
+Date: Wed, 13 Apr 2005 19:33:51 +0400
+From: Nickolay <nickolay@protei.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mounting jffs2
-Reply-To: dedekind@infradead.org
+Subject: K9F1G08U0M NAND support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-13 at 14:22 +0000, Sergei Sharonov wrote:
-> # time umount /mnt/flash/
-> 
-> real    11m25.534s
-> user    0m0.000s
-> sys     0m0.250s
-Try to change 
+Hallo Guys!
 
-D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): SIGKILL
-received.\n"));
+I has IXDP425 board with K9F1G08U0M NAND flash as secondary flash(first 
+flash - NOR for booting).
+Kernel version: 2.4.20_mvl31
 
-to
+I get mtd from CVS and just replace originally 
+linux-2.4.20_mvl31/drivers/mtd with mtd/drivers/mtd.
+But when does make menuconfig, i can't select CONFIG_PPCHAMELEONEVB, 
+because in drivers/mtd/nand/Config.in this code:
 
-printk(KERN_DEBUG "jffs2_garbage_collect_thread(): SIGKILL
-received.\n");
+if [ "$CONFIG_PPCHAMELEONEVB" = "y" ]; then
+    dep_tristate '  NAND Flash device on PPChameleonEVB board' 
+CONFIG_MTD_NAND_PPCHAMELEONEVB $CONFIG_MTD_NAND
+fi
 
-at background.c:116 and see whether GC thread receives SIGKILL on
-unmount and when it receives it (just after or on 11 min).
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+But i build kernel for IXDP425, not for PPCHAMELEONEVB.
+What i should does, for configure support for K9F1G08U0M NAND flash?
