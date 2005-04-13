@@ -1,19 +1,30 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DLk9A-0007IF-Do
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 11:51:21 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Nickolay <nickolay@protei.ru>
-In-Reply-To: <425D3BDF.9030505@protei.ru>
-References: <425D3BDF.9030505@protei.ru>
-Content-Type: text/plain
-Date: Wed, 13 Apr 2005 19:50:50 +0400
-Message-Id: <1113407451.23175.32.camel@sauron.oktetlabs.ru>
+	id 1DLm6S-0007vW-6a
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 13:56:41 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1DLm1z-0006hv-6A
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 19:52:09 +0200
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2005 19:52:03 +0200
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 13 Apr 2005 19:52:03 +0200
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Date: Wed, 13 Apr 2005 17:51:01 +0000 (UTC)
+Message-ID: <loom.20050413T193912-984@post.gmane.org>
+References: <loom.20050413T142519-107@post.gmane.org>
+	<1113400225.23175.9.camel@sauron.oktetlabs.ru>
+	<loom.20050413T160136-559@post.gmane.org>
+	<1113404557.23175.23.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: K9F1G08U0M NAND support
-Reply-To: dedekind@infradead.org
+Sender: news <news@sea.gmane.org>
+Subject: Re: mounting jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +34,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-13 at 19:33 +0400, Nickolay wrote:
-> Hallo Guys!
-> 
-> I has IXDP425 board with K9F1G08U0M NAND flash as secondary flash(first 
-> flash - NOR for booting).
-> Kernel version: 2.4.20_mvl31
-> 
-> I get mtd from CVS and just replace originally 
-> linux-2.4.20_mvl31/drivers/mtd with mtd/drivers/mtd.
-That's wrong. Please, read http://www.linux-
-mtd.infradead.org/source.html 
+Hi,
+> > Hmm.. ls is not a writer but it is blocked as well.
+> It may be blocked but for shorter time (checking one ore few inodes, not
+> all). Do you have very big files or directories with a lot of L1
+> children ?
 
-And please, pay your attention at the "Kernel versions" section there.
+Nope. Just three files: one is 200 MBytes, two others are small. 
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+# time mount /mnt/flash/
+
+real    1m33.528s
+user    0m0.010s
+sys     1m33.421s
+# time ls /mnt/flash/
+blockno1  junk      test1
+
+real    20m54.573s
+user    0m0.010s
+sys     9m32.519s
+#
+
+This is not usable for embedded application. Have I run into a bug or that
+is just how things are with jffs2 on big NANDs? Is that a problem with
+a 200 MByte file? 
+
+Sergei Sharonov
