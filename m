@@ -1,12 +1,21 @@
-Date: Wed, 13 Apr 2005 08:32:06 +0200
-Mime-Version: 1.0
-Message-ID: <9940bfdb3548f3dbb93e8342ad673068d6d165ad@mails.de>
-From: de lotto netherlands <infolottonl@mails.de>
-To: infolottonl@mails.de
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: 
-Subject: Email Lottery Draw 2005 results
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DLhG9-0005QN-Lx
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 08:46:22 -0400
+Message-ID: <425D14D4.6080408@inf.u-szeged.hu>
+Date: Wed, 13 Apr 2005 14:47:16 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: Jiang Jun-A21079 <A21079@motorola.com>
+References: <3BCB5FB76AFFF646BCFBC02A889B64F3022870CA@ZCH07EXM05.corp.mot.com>
+In-Reply-To: <3BCB5FB76AFFF646BCFBC02A889B64F3022870CA@ZCH07EXM05.corp.mot.com>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: =?ISO-8859-2?Q?Gyim=F3thy_Tibor?= <gyimothy@inf.u-szeged.hu>,
+	Gu Susan-w15879 <w15879@motorola.com>,
+	MTD List <linux-mtd@lists.infradead.org>,
+	=?ISO-8859-2?Q?S=F3gor_Zolt=E1n?= <weth@shogy.ohsh.u-szeged.hu>
+Subject: Re: two issues about summary patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,66 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Email Lottery Draw 2005 results
+Hi Kevin,
 
-FROM: GOVERNMENT ACCREDITED LICENSED LOTTERY
-PROMOTERS. WINNING NOTICE FOR CATEGORY \"B\" WINNER
+We've investigated you issues about summary patch.
 
-Dear Lucky Winner,
+The second one (wrong padding) is OK, you was right, we've fixed it, the 
+new patch will be released soon.
 
-RE:BONUS LOTTERY PROMOTION PRIZE AWARDS WINNING NOTIFICATION
+But we have some questions according the first issue:
 
-We are pleased to inform you of the result of the just concluded annual final=
-draws of De Lotto Netherlands International Lottery programs.
+>         Function jffs2_sum_add_kvec() will be called by function jffs2_flash_direct_writev() in writev.c. It will add summary information into jeb->sum_collected before writing data into flash, But if we write data with function jffs2_flash_write(). It will bypass summary information. In our NOR flash case. Jffs2_flash_write() be defined with c->mtd->write().jffs2_flash_write() be called in gc.c and nodemgmt.c. in gc.c when we garbage collected pristine node, jffs2_flash_write() will be call without summary information handled. We will lose summary information of that pristine node at next power on. I think function jffs2_flash_write() in wbuf.c is better than c->mtd->write(). It will handle summary information through jffs2_flash_writev().
+>With jffs2_flash_write() in nodemgmt.c, if node has been obsolete, should we remove its summary information too?
+>  
+>
+Are you sure that you used the latest version of summary patch? It was a 
+problem before 20050117, but now it should work.
 
-The online cyber lotto draws was conducted from an exclusive list of 100,000 =
-e-mail addresses of individual and corporate bodies picked by an advanced aut=
-omated random computer search from the internet from various continents of th=
-e world.No tickets were sold.
+If summary is enabled jffs2_can_mark_obsolete(c) is set to false (in 
+os-linux.h). Becauseof it the node will not be obsolated by setting the 
+node accurate bit, so we don't need to delete its summary information.
 
-After this automated computer ballot,your e-mail address emerged as one of tw=
-o winners in the category \"B\" with the following:
+If summary support is enabled jffs2_flash_write() will be not called by 
+anyone. In jffs2_mark_node_obsolate() it will return before calling 
+jffs2_flash_write() because jffs2_can_mark_obsolete(c) is set to false:
 
-Ref Number: 35149/337-5247/LNI
-Batch Number: 26371545-LNI/2005
-Ticket Number: 54866235
+        if (!jffs2_can_mark_obsolete(c) || jffs2_is_readonly(c) ||
+                (c->flags & JFFS2_SB_FLAG_BUILDING)) {
+                /* We didn't lock the erase_free_sem */
+                return;
+        }
 
-You as well as the other winners are therefore to receive a cash prize of ?:5=
-00,000.00.(FIVE HUNDRED THOUSAND EUROS) each from the total payout of ?1,500,=
-000.00 Euro in category "B".
+In gc.c the patches after 20050117 replace jffs2_flash_write() to 
+jffs2_flash_writev().
 
-Your prize award has been insured with your e-mail address and will be transf=
-erred to you upon meeting our requirements, statutory obligations, verificati=
-ons, validations and satisfactory report.
-
-To begin the claims processing of your prize winnings you are advised to cont=
-act our licensed and accredited claims agent for category \"B\" winners with =
-theinformation below:
-
-Mr. Hans Gutman
-Financial Director,
-Netherlands Development Finance Company,
-1104 kE Poort Bijlmerplein
-Amsterdam,Netherlands.
-E-mail:hansgutman2@yahoo.co.uk
-Tel: 31-617-582-414
-Fax: 31-205-248-664
-
-NOTE: All winnings must be claimed not later than 30 days.After this date all=
-unclaimed funds would be included in the next stake. Remember to quote your =
-reference information in all correspondence.
-You are to keep all lotto information away from the general public especially=
-your reference and ticket numbers.(This is important as a case of double cla=
-ims will not be entertained).
-
-Anybody under the age of 18 and members of the affiliate agencies are automat=
-ically not allowed to participate in this program.
-
-Thank you and congratulations!!!
-
-Yours faithfully,
-
-Mrs. Mildred Hugo
-
-Games/Lottery Coordinator.
-De Lotto Netherlands International
+Regards,
+Ferenc
