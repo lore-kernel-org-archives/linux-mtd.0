@@ -1,15 +1,19 @@
-Received: from kecgate03.infosys.com ([220.227.179.21])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DLZD0-0003MQ-RS
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 00:10:37 -0400
-From: Bharat Joshi <bharat_joshi@infosys.com>
-To: linux-mtd@lists.infradead.org
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DLcvl-0004Di-Eb
+	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 04:09:09 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Bharat Joshi <bharat_joshi@infosys.com>
+In-Reply-To: <1113365346.25515.11.camel@localhost.localdomain>
+References: <1113365346.25515.11.camel@localhost.localdomain>
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Wed, 13 Apr 2005 09:39:06 +0530
-Message-Id: <1113365346.25515.11.camel@localhost.localdomain>
+Date: Wed, 13 Apr 2005 12:08:27 +0400
+Message-Id: <1113379707.5889.1.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Subject: Triggering Garbage Collection
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Triggering Garbage Collection
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,22 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Wed, 2005-04-13 at 09:39 +0530, Bharat Joshi wrote:
+>    Just wanted to know if there is any algorithm which can
+> be used to trigger Garbage Collection and do it with only
+> one erase block kept for garbage collection.
+I have no Idea.
 
-   With JFFS2, to avoid a deadlock, we must have at least
-2 or more erase blocks available when garbage collection
-thread is triggered.
+>    This was mentioned as one of the improvements in JFFS2
+> pdf document. So are we looking at it in JFFS3?
+I'd be happy to see some analysis of this. Please, share it if you have
+one.
 
-   Just wanted to know if there is any algorithm which can
-be used to trigger Garbage Collection and do it with only
-one erase block kept for garbage collection.
-
-   This was mentioned as one of the improvements in JFFS2
-pdf document. So are we looking at it in JFFS3?
-
-Thanks & Regards,
-Bharat
 -- 
-Bharat Joshi <bharat_joshi@infosys.com>
-Infosys Technologies Ltd
-www.infosys.com
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
