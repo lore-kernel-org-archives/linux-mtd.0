@@ -1,20 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.205])
+Received: from rproxy.gmail.com ([64.233.170.201])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DLvTQ-0001F4-K2
-	for linux-mtd@lists.infradead.org; Wed, 13 Apr 2005 23:57:01 -0400
-Received: by wproxy.gmail.com with SMTP id 57so310721wri
+	id 1DLxsI-0001lE-6M
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2005 02:30:51 -0400
+Received: by rproxy.gmail.com with SMTP id y7so367468rne
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 13 Apr 2005 20:57:02 -0700 (PDT)
-Message-ID: <c2bc1f405041320572082b9c8@mail.gmail.com>
-Date: Thu, 14 Apr 2005 11:57:01 +0800
-From: zheng wei <jeanwelly@gmail.com>
+	Wed, 13 Apr 2005 23:30:44 -0700 (PDT)
+Message-ID: <d59cd780050413233072eafaef@mail.gmail.com>
+Date: Thu, 14 Apr 2005 14:30:43 +0800
+From: Franz de Rama <pranss@gmail.com>
 To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Subject: How can I use NAND Flash AMDk9f1208
-Reply-To: zheng wei <jeanwelly@gmail.com>
+Subject: flash_eraseall error
+Reply-To: Franz de Rama <pranss@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I want to use K9F1208 in kernel 2.6.11 for s3c2410,=20
-What should I do? Thanks.
+Hi all,
 
---=20
----------
-jeanwelly
-Email:  jeanwelly@gmail.com
-China
+I am trying to move my DoC Millennium Plus 32mb file system from ext2
+to jffs2. but when I issued the command '# flash_eraseall -j
+/dev/mtd0', i get the following error message:
+
+./flash_eraseall: /dev/mtd0: unable to get NAND oobinfo
+
+=3D=3D=3D=3D
+
+This is my 'cat /proc/mtd' result:
+
+dev:    size   erasesize  name
+mtd0: 02000000 00008000 "DiskOnChip Millennium Plus"
+
+Any ideas where i went wrong?=20
+
+Thanks in advance
+
+-franz-
