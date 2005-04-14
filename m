@@ -1,19 +1,19 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from mail2.racnet.net ([213.144.11.11])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DM0Wn-00038Y-RP
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2005 05:20:50 -0400
-Message-ID: <425E362F.3050907@inf.u-szeged.hu>
-Date: Thu, 14 Apr 2005 11:21:51 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1DM0fS-0003KR-MV
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2005 05:29:48 -0400
+Received: from mikobook.office.rac.de ([10.0.0.84])
+	by mail2.racnet.net with asmtp (Exim (Debian)) id 1DM0fI-0002FO-00
+	for <linux-mtd@lists.infradead.org>; Thu, 14 Apr 2005 11:29:36 +0200
+Message-ID: <425E37FF.5040703@rac.de>
+Date: Thu, 14 Apr 2005 11:29:35 +0200
+From: Marcus Mikolaiczyk <m.mikolaiczyk@rac.de>
 MIME-Version: 1.0
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-References: <3BCB5FB76AFFF646BCFBC02A889B64F3022870CA@ZCH07EXM05.corp.mot.com>	<425B8DDF.60807@inf.u-szeged.hu>
-	<425BEA54.3020907@imc-berlin.de>
-In-Reply-To: <425BEA54.3020907@imc-berlin.de>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: MTD List <linux-mtd@lists.infradead.org>
-Subject: Re: two issues about summary patch
+Subject: Nand Flash not found.
+Reply-To: m.mikolaiczyk@rac.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Dear list users,
 
-> Will you announce a new summary patch (for JFFS2) here?
-> Or do we have to poll your web site?
+I've adapted a hardware driver for our board, and compiled the new
+kernel successfully. But it doesn't find the NAND Flash. When loading
+the module I get:
+insmod ./btutc1130.o
+./btutc1130.o: init_module: No such device or address
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters
 
-The new summary patch version is released. JFFS3 is also updated. There 
-is only a small fix related to Kevin's second issue (PAD-ing).
+in /var/log/messages:
+Jan  1 19:25:15 10 daemon.warn klogd: No NAND device found!!!
 
-Bye,
-Ferenc
+Is there any possibility to test the 'connection' to the NAND or how can
+I check/debug the problem. I think that the HW functions are not
+properly configured, any idea how this can be checked.
+
+Thanks in advance
+
+Marcus
