@@ -1,18 +1,30 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DM0DR-0002ZO-BF
-	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2005 05:00:50 -0400
-Message-ID: <425E3174.4030308@inf.u-szeged.hu>
-Date: Thu, 14 Apr 2005 11:01:40 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1DM0RU-0002o5-PG
+	for linux-mtd@lists.infradead.org; Thu, 14 Apr 2005 05:15:21 -0400
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id 4E2B82F016
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Apr 2005 11:15:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 414ED118D6
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Apr 2005 11:15:22 +0200 (CEST)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 741D7A125
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Apr 2005 11:15:21 +0200 (CEST)
+Message-ID: <425E34A9.1090103@imc-berlin.de>
+Date: Thu, 14 Apr 2005 11:15:21 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-References: <loom.20050413T142519-107@post.gmane.org>
-In-Reply-To: <loom.20050413T142519-107@post.gmane.org>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+To: linux-mtd@lists.infradead.org
+References: <42232855.3020408@imc-berlin.de> <4226FBCB.5020007@inf.u-szeged.hu>
+In-Reply-To: <4226FBCB.5020007@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mounting jffs2
+Subject: Re: SUMMARY for JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +34,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
+Ferenc Havasi wrote:
 
->It looks like there is a long delay before filesystem becomes available 
->after mount returns. Test setup: jffs2 on 256 MByte NAND chip, 2.6.10 linux
->  
->
-Just an idea: you may try out our summary patch. ( 
-http://www.inf.u-szeged.hu/jffs2/mount.php )
+> Steven Scholz wrote:
+> 
+>> IIUC then the SUMMARY stuff goes into JFFS3.
+>> But are there any plans to officially include it into the JFFS2 code?
+>>
+>> It's quite cumbersome to update MTD CVS and then merge the patch 
+>> http://www.inf.u-szeged.hu/jffs2/jffs2-summary-20050211.patch by hand.
+>>
+>> Since its a compile time option is there anything speaking against 
+>> such inclusion?
+> 
+> 
+> If David (dwmw2) says yes, we are ready to commit. Due to Steven's and 
+> some other people testing I think now it is stable.
 
-It makes the mount time faster and there is an experimental option, 
-where you can disable the check the CRC of nodes which have good 
-summary. (most of the nodes will have it, if you use it correctly)
+David?
+Are you going to say yes?
+Or will summary for JFFS2 stay a seperate patch forever?
 
-Regards,
-Ferenc
+-- 
+Steven
