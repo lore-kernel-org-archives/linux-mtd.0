@@ -1,18 +1,15 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050415053544.GB32689@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0504111600540.28647@localhost.localdomain>
-	<1113251997.7500.5.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.61.0504111645360.28836@localhost.localdomain>
-	<20050415053544.GB32689@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 15 Apr 2005 09:15:51 +0100
-Message-Id: <1113552951.12012.260.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	"Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: why can i select both PHYSMAP and MULTI_PHYSMAP?
+Received: from web51302.mail.yahoo.com ([206.190.38.168])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DMMqF-0001tV-N0
+	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2005 05:10:24 -0400
+Message-ID: <20050415091026.33613.qmail@web51302.mail.yahoo.com>
+Date: Fri, 15 Apr 2005 02:10:25 -0700 (PDT)
+From: Pawel Studencki <pstudencki@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: 
+Subject: Can not mount root on mtd block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +19,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-04-15 at 07:35 +0200, Jörn Engel wrote:
-> Once I receive some success reports, things can get merged to Linus
-> and further functionality could be added.
+hello Mike, 
 
-I think we need to finish writing a source control system before
-anything can be merged to Linus :)
+I read your e-mails about problems with mounting ramfs
+as root filesystem
+and I wonder if you found a solution.
+I'm trying the same thing with kernel 2.6.11 on ppc
+processor. I've already
+checked following:
+- boot options: root=/dev/mtdblock1 ro
+- debugging to/from do_mount_root function...
+and slowly I'm loosing ideas...In my case function
+path_lookup (in do_mount)
+returns with error  -ENOENT, because there were no
+inode found for "root".
+It looks similar to your problem...
 
--- 
-dwmw2
+So if you have any hints, I will enjoy to check them
+and perhaps together we
+can solve this annoying problem  :) 
+
+best regards
+Pawel
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Yahoo! Small Business - Try our new resources site!
+http://smallbusiness.yahoo.com/resources/ 
