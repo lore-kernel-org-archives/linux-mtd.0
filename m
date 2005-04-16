@@ -1,15 +1,20 @@
-Received: from web51302.mail.yahoo.com ([206.190.38.168])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DMMqF-0001tV-N0
-	for linux-mtd@lists.infradead.org; Fri, 15 Apr 2005 05:10:24 -0400
-Message-ID: <20050415091026.33613.qmail@web51302.mail.yahoo.com>
-Date: Fri, 15 Apr 2005 02:10:25 -0700 (PDT)
-From: Pawel Studencki <pstudencki@yahoo.com>
+Received: from wproxy.gmail.com ([64.233.184.207])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DMgxt-0006Bu-CW
+	for linux-mtd@lists.infradead.org; Sat, 16 Apr 2005 02:39:38 -0400
+Received: by wproxy.gmail.com with SMTP id 57so1203657wri
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Apr 2005 23:39:39 -0700 (PDT)
+Message-ID: <c2bc1f405041523397b9354c5@mail.gmail.com>
+Date: Sat, 16 Apr 2005 14:39:39 +0800
+From: zheng wei <jeanwelly@gmail.com>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: 
-Subject: Can not mount root on mtd block
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: How to revise MTD in 2.6.11 for yaffs
+Reply-To: zheng wei <jeanwelly@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,32 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello Mike, 
+Hi, all
+    I want to use yaffs on 2.6.11. The cpu is s3c2410 and the nand
+flash k9f1208.
+I am not sure about what work should be done to revise the mtd for yaffs.
+Additionally, I want to use yaffs as a root filesystem.
 
-I read your e-mails about problems with mounting ramfs
-as root filesystem
-and I wonder if you found a solution.
-I'm trying the same thing with kernel 2.6.11 on ppc
-processor. I've already
-checked following:
-- boot options: root=/dev/mtdblock1 ro
-- debugging to/from do_mount_root function...
-and slowly I'm loosing ideas...In my case function
-path_lookup (in do_mount)
-returns with error  -ENOENT, because there were no
-inode found for "root".
-It looks similar to your problem...
+Any suggestion is welcome.
 
-So if you have any hints, I will enjoy to check them
-and perhaps together we
-can solve this annoying problem  :) 
-
-best regards
-Pawel
+Thanks!
 
 
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Small Business - Try our new resources site!
-http://smallbusiness.yahoo.com/resources/ 
+--=20
+---------
+jeanwelly
+Email:  jeanwelly@gmail.com
+China
