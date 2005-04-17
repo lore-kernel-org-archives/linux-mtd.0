@@ -1,20 +1,16 @@
-Received: from dsl017-055-116.sfo1.dsl.speakeasy.net ([69.17.55.116]
-	helo=mail.murgatroid.com)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DN1bf-0001WV-J7
-	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2005 00:42:04 -0400
-From: "Christopher Hoover" <ch@murgatroid.com>
-To: "'Nicolas Pitre'" <nico@cam.org>,
-	"'Todd Poynor'" <tpoynor@mvista.com>
-Date: Sat, 16 Apr 2005 21:41:58 -0700
-MIME-Version: 1.0
+Received: from send.forptr.21cn.com ([202.105.45.49] helo=21cn.com)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DN6YQ-000293-9g
+	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2005 05:59:30 -0400
+Date: Sun, 17 Apr 2005 17:58:10 +0800
+From: "carl liao" <carlliao@21cn.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+	charset="gb2312"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.62.0504122118560.14514@localhost.localdomain>
-Message-Id: <20050417044201.51DE1A001C7@mail.murgatroid.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: Fixup Intel flash that powers up locked
+Message-ID: <pe949582819896.12950@send5.inner-21cn.com>
+Subject: How to back port linux-mtd to 2.4.26
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi, ALL! 
 
->> Any comments on whether this is or is not the way to go appreciated.
+linux-mtd website says that ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd-snapshot-20050304.tar.bz2 will apparently works with 2.4.27 or above kernel. But the tar ball is not available on the ftp site now. It has mtd-snapshot-20020731.tar.bz2 and mtd-snapshot-20050401.tar.bz2 and so on. 
 
->Properly dealing with this "feature" appears to be so messy that I'm
-starting
->to wonder if we should not just unconditionally unlock the flash at boot
-time
->and be done with it.
+Where could I get something like mtd-snapshot-2004xxxx.tar.bz2?
 
-I put forward such code over two years ago.  I can dig it up again.
+I found 2.6.11 kernel use a linux-mtd version might as "$Id: mtdcore.c,v 1.44 2004/11/16 18:28:59 dwmw2 Exp $". Could someone tell me how to get a suitable linux-mtd version for 2.4.26 kernel then?
 
--ch
+Thanks a lot!!
+
+Carl Liao
