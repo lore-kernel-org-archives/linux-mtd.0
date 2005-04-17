@@ -1,15 +1,16 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DN6hr-0002LF-N9
-	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2005 06:08:49 -0400
-Message-ID: <42623590.1020202@yandex.ru>
-Date: Sun, 17 Apr 2005 14:08:16 +0400
+	id 1DN6ux-0002Vd-0q
+	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2005 06:22:19 -0400
+Message-ID: <426238BE.1060906@yandex.ru>
+Date: Sun, 17 Apr 2005 14:21:50 +0400
 From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: carl liao <carlliao@21cn.com>
 References: <pe949582819896.12950@send5.inner-21cn.com>
-In-Reply-To: <pe949582819896.12950@send5.inner-21cn.com>
-Content-Type: text/plain; charset=us-ascii
+	<42623590.1020202@yandex.ru>
+In-Reply-To: <42623590.1020202@yandex.ru>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
 Subject: Re: How to back port linux-mtd to 2.4.26
@@ -22,11 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Where could I get something like mtd-snapshot-2004xxxx.tar.bz2?
-Just download any version from CVS.
->
-> I found 2.6.11 kernel use a linux-mtd version might
-Try the lates. People say still works with, but I'm not sure.
+
+
+Artem B. Bityuckiy wrote:
+  > Try the lates. People say still works with, but I'm not sure.
+Well, writing 3 letters simultaneously results in such a strange
+phrases. I'll make another attempt:
+Try the latest. People say it still works with 2.4.x, x > 20, but I'm 
+not sure.
+
 
 -- 
 Best Regards,
