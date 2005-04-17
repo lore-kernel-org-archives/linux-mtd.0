@@ -1,20 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.207])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DMgxt-0006Bu-CW
-	for linux-mtd@lists.infradead.org; Sat, 16 Apr 2005 02:39:38 -0400
-Received: by wproxy.gmail.com with SMTP id 57so1203657wri
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 15 Apr 2005 23:39:39 -0700 (PDT)
-Message-ID: <c2bc1f405041523397b9354c5@mail.gmail.com>
-Date: Sat, 16 Apr 2005 14:39:39 +0800
-From: zheng wei <jeanwelly@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: How to revise MTD in 2.6.11 for yaffs
-Reply-To: zheng wei <jeanwelly@gmail.com>
+Received: from dsl017-055-116.sfo1.dsl.speakeasy.net ([69.17.55.116]
+	helo=mail.murgatroid.com)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DN1bf-0001WV-J7
+	for linux-mtd@lists.infradead.org; Sun, 17 Apr 2005 00:42:04 -0400
+From: "Christopher Hoover" <ch@murgatroid.com>
+To: "'Nicolas Pitre'" <nico@cam.org>,
+	"'Todd Poynor'" <tpoynor@mvista.com>
+Date: Sat, 16 Apr 2005 21:41:58 -0700
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.62.0504122118560.14514@localhost.localdomain>
+Message-Id: <20050417044201.51DE1A001C7@mail.murgatroid.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: Fixup Intel flash that powers up locked
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, all
-    I want to use yaffs on 2.6.11. The cpu is s3c2410 and the nand
-flash k9f1208.
-I am not sure about what work should be done to revise the mtd for yaffs.
-Additionally, I want to use yaffs as a root filesystem.
 
-Any suggestion is welcome.
+>> Any comments on whether this is or is not the way to go appreciated.
 
-Thanks!
+>Properly dealing with this "feature" appears to be so messy that I'm
+starting
+>to wonder if we should not just unconditionally unlock the flash at boot
+time
+>and be done with it.
 
+I put forward such code over two years ago.  I can dig it up again.
 
---=20
----------
-jeanwelly
-Email:  jeanwelly@gmail.com
-China
+-ch
