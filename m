@@ -1,7 +1,6 @@
-Date: Mon, 18 Apr 2005 13:46:56 +0100
-From: Christoph Hellwig <hch@infradead.org>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050418124656.GA23387@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind@infradead.org
+In-Reply-To: <1113827466.2125.47.camel@sauron.oktetlabs.ru>
 References: <1113814031.31595.3.camel@sauron.oktetlabs.ru>
 	<20050418085121.GA19091@infradead.org>
 	<1113814730.31595.6.camel@sauron.oktetlabs.ru>
@@ -9,12 +8,13 @@ References: <1113814031.31595.3.camel@sauron.oktetlabs.ru>
 	<1113824781.2125.12.camel@sauron.oktetlabs.ru>
 	<20050418115220.GA22750@infradead.org>
 	<1113827466.2125.47.camel@sauron.oktetlabs.ru>
+Content-Type: text/plain
+Date: Mon, 18 Apr 2005 22:46:44 +1000
+Message-Id: <1113828405.5286.19.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1113827466.2125.47.camel@sauron.oktetlabs.ru>
-Cc: Christoph Hellwig <hch@infradead.org>, dwmw2@lists.infradead.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATC] small VFS change for JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,56 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 18, 2005 at 04:31:06PM +0400, Artem B. Bityuckiy wrote:
-> On Mon, 2005-04-18 at 12:52 +0100, Christoph Hellwig wrote:
-> > Oh, I thought the problem is that JFFS2 thought an inode was freed when
-> > it still was in use.  So you're problem is actually that it's no in the
-> > hash anymore but you don't know yet?
+On Mon, 2005-04-18 at 16:31 +0400, Artem B. Bityuckiy wrote:
 > Yes, exactly. VFS developers may always say "it is your problem -
 > redesign JFFS2", but I think it is too late to redesign it.
 
-I don't think it's too late ever ;-)
+Bear in mind that the reason I added the state tracking to the internal
+jffs2_inode_cache state was specifically to deal with the fact that the
+VFS can call read_inode() for an inode which was previously in core and
+for which it hasn't yet called clear_inode().
 
-> > Anyway, please explain in detail why you need all this information, what
-> > errors you see, etc so we can find a way to fix it properly.
-> Well, I suspect I explained why I need the mutex. If people will find
-> the explanation vague, I'll make another attempt.
-> 
-> The error I see is:
-> 
-> Eep. Trying to read_inode #15601 when it's already in state 2!
-> 
-> I debugged this a lot before I've realized the reason. And I believe I
-> know JFFS2 very well to claim that redesigning it is very painful. 
-> 
-> The erroneous  code flow is like this:
-> 
-> kswapd: removes the inode 15601 from the inode hash (inode.c:478).
-> kswapd: is preempted at inode.c:485
-> JFFS2 writer: awakes, runs GC to reclaim some space.
-> JFFS2 writer: picks a JFFS2 node belonging to the inode 15601
+I suspect that there's a way we could work around this problem in JFFS2,
+and if not hch is probably right -- exporting the lock isn't good
+enough; if we're going to change the VFS we should fix the actual
+problem.
+
+I'm confused by this though -- I thought we'd already _fixed_ this in
+the VFS. What you describe shouldn't happen because I believe you're
+missing a step:
+
 > JFFS2 writer: looks at the inode state, realizes it is in state PRESENT,
 > i.e. it is in the inode cache (which is wrong).
 > JFFS2 writer: runs iget() to acquire a pointer to the struct inode of
 > the inode 15601.
+
+wait_for_freeing_inode() waits for the existing inode in state I_FREEING
+to finish being cleared...
+
 > JFFS2 writer: iget() calls ->read_inode(), i.e., jffs2_read_inode().
-
-Why doesn't __wait_on_freeing_inode get called? prune_icache sets I_FREEING
-before it's dropping the inode lock.
-
-Any, this sounds like you'd want to use ilookup because you don't want to
-read the inode in the cache anyway, right?
-
 > JFFS2 writed: JFFS2 is surprised why read_inode() is called for the
 > already built inode 15601.
-> 
-> Or may be VFS is buggy, I'm not sure. May be it shouldn't remove inode
-> from the inode hash in that point (inode.c:487). It sets the I_FREENG
-> state to the inode being freed, and iget() may wait in find_inode_fast()
-> while the inode is actually destroyed (inode.c:562). The inode may be
-> removed from the inode hash later, in dispose_list() (inode.c:292).
-> 
-> Or may be this isn't a bug but a feature to make the inode_lock less
-> contended. Not sure, I'm not a VFS guru.
 
-Yes, it's a feature.
+... and this shouldn't happen.
+
+-- 
+dwmw2
