@@ -1,19 +1,21 @@
-Date: Mon, 18 Apr 2005 12:52:20 +0100
-From: Christoph Hellwig <hch@infradead.org>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050418115220.GA22750@infradead.org>
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Christoph Hellwig <hch@infradead.org>
+In-Reply-To: <20050418115220.GA22750@infradead.org>
 References: <1113814031.31595.3.camel@sauron.oktetlabs.ru>
 	<20050418085121.GA19091@infradead.org>
 	<1113814730.31595.6.camel@sauron.oktetlabs.ru>
 	<20050418105301.GA21878@infradead.org>
 	<1113824781.2125.12.camel@sauron.oktetlabs.ru>
+	<20050418115220.GA22750@infradead.org>
+Content-Type: text/plain
+Date: Mon, 18 Apr 2005 16:31:06 +0400
+Message-Id: <1113827466.2125.47.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1113824781.2125.12.camel@sauron.oktetlabs.ru>
-Cc: Christoph Hellwig <hch@infradead.org>, dwmw2@lists.infradead.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@lists.infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 Subject: Re: [PATC] small VFS change for JFFS2
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +25,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 18, 2005 at 03:46:21PM +0400, Artem B. Bityuckiy wrote:
-> On Mon, 2005-04-18 at 11:53 +0100, Christoph Hellwig wrote: 
-> > The VFS already has a method for freeing an struct inode pointer, and that
-> > is ->destroy_inode.  You're probably better off updating your GC state from
-> > that place.
-> destroy_inode() does not help. JFFS2 already makes use of clear_inode()
-> which is in fact called even earlier (inode.c from 2.6.11.5, line 298):
+On Mon, 2005-04-18 at 12:52 +0100, Christoph Hellwig wrote:
+> Oh, I thought the problem is that JFFS2 thought an inode was freed when
+> it still was in use.  So you're problem is actually that it's no in the
+> hash anymore but you don't know yet?
+Yes, exactly. VFS developers may always say "it is your problem -
+redesign JFFS2", but I think it is too late to redesign it.
 
-Oh, I thought the problem is that JFFS2 thought an inode was freed when
-it still was in use.  So you're problem is actually that it's no in the
-hash anymore but you don't know yet?
+> Anyway, please explain in detail why you need all this information, what
+> errors you see, etc so we can find a way to fix it properly.
+Well, I suspect I explained why I need the mutex. If people will find
+the explanation vague, I'll make another attempt.
 
-Anyway, please explain in detail why you need all this information, what
-errors you see, etc so we can find a way to fix it properly.
+The error I see is:
+
+Eep. Trying to read_inode #15601 when it's already in state 2!
+
+I debugged this a lot before I've realized the reason. And I believe I
+know JFFS2 very well to claim that redesigning it is very painful. 
+
+The erroneous  code flow is like this:
+
+kswapd: removes the inode 15601 from the inode hash (inode.c:478).
+kswapd: is preempted at inode.c:485
+JFFS2 writer: awakes, runs GC to reclaim some space.
+JFFS2 writer: picks a JFFS2 node belonging to the inode 15601
+JFFS2 writer: looks at the inode state, realizes it is in state PRESENT,
+i.e. it is in the inode cache (which is wrong).
+JFFS2 writer: runs iget() to acquire a pointer to the struct inode of
+the inode 15601.
+JFFS2 writer: iget() calls ->read_inode(), i.e., jffs2_read_inode().
+JFFS2 writed: JFFS2 is surprised why read_inode() is called for the
+already built inode 15601.
+
+Or may be VFS is buggy, I'm not sure. May be it shouldn't remove inode
+from the inode hash in that point (inode.c:487). It sets the I_FREENG
+state to the inode being freed, and iget() may wait in find_inode_fast()
+while the inode is actually destroyed (inode.c:562). The inode may be
+removed from the inode hash later, in dispose_list() (inode.c:292).
+
+Or may be this isn't a bug but a feature to make the inode_lock less
+contended. Not sure, I'm not a VFS guru.
+
+In that above described case the code flow would be:
+
+kswapd: remove inode 15601 from the inode hash (inode.c:478).
+kswapd: preempted at inode.s:485
+JFFS2 writer: awakes, runs GC to reclaim some space.
+JFFS2 writer: picks a JFFS2 node belonging to inode 15601
+JFFS2 writer: looks at the inode state, realizes it is in state PRESENT,
+i.e. it is in the inode cache (which is wrong).
+JFFS2 writer: runs iget() to get the pointer to the struct inode of the
+inode 15601.
+JFFS2 writer goes sleep in find_inode_fast(), waiting for freeing
+completion.
+kswapd: calls dispose_list(), calls clear_inode() for 15601.
+JFFS2 writed: read_inode() is called and all is OK since clear_inode()
+was called before.
+
+The latter scenario looks very logical for me.
+
+Cheers, Artem.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
