@@ -10,8 +10,8 @@ References: <1113814031.31595.3.camel@sauron.oktetlabs.ru>
 	<1113827466.2125.47.camel@sauron.oktetlabs.ru>
 	<20050418124656.GA23387@infradead.org>
 Content-Type: text/plain
-Date: Mon, 18 Apr 2005 23:08:26 +1000
-Message-Id: <1113829708.5286.30.camel@localhost.localdomain>
+Date: Mon, 18 Apr 2005 23:16:51 +1000
+Message-Id: <1113830212.5286.33.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
@@ -26,22 +26,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, 2005-04-18 at 13:46 +0100, Christoph Hellwig wrote:
-> Any, this sounds like you'd want to use ilookup because you don't want
-> to read the inode in the cache anyway, right?
+> Why doesn't __wait_on_freeing_inode get called? prune_icache sets
+> I_FREEING before it's dropping the inode lock.
 
-We use ilookup() in some circumstances -- if the inode has zero nlink
-and hence we definitely don't want to pull it back again if it's gone.
+Because prune_icache() _also_ removes the inode from the hash before
+dropping the inode lock. It shouldn't -- the inode should only get
+removed from the hash when it's actually been cleared. That's the real
+bug -- and I agree that the fix isn't to expose internal locks to let
+JFFS2 work around it.
 
-But sometimes we really do mean to use iget() to bring it into core. And
-it's in that case that I believe Artem has found the problem, because if
-I understand correctly he's still seeing two consecutive calls to
-read_inode() for the same inode, without a clear_inode() in between.
-
-prune_icache() is removing the inode from i_hash at line 457 of inode.c,
-then being preempted when it drops the inode_lock at line 464, which is
-_before_ it calls dispose_list() to actually get rid of the inode(s) in
-question. So when iget() is called, the VFS ends up calling read_inode()
-again instead of waiting for the original inode to finish going away.
+prune_icache() (and probably invalidate_inodes() too) needs to leave the
+inode on the hash list while it's being freed.
 
 -- 
 dwmw2
