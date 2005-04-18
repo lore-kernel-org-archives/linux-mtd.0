@@ -1,27 +1,16 @@
-Received: from ppsw-2.csi.cam.ac.uk ([131.111.8.132])
-	by pentafluge.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DNWSH-0006NC-L9
-	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2005 14:38:26 +0100
-From: Anton Altaparmakov <aia21@cam.ac.uk>
-To: Christoph Hellwig <hch@infradead.org>
-In-Reply-To: <1113829708.5286.30.camel@localhost.localdomain>
-References: <1113814031.31595.3.camel@sauron.oktetlabs.ru>
-	<20050418085121.GA19091@infradead.org>
-	<1113814730.31595.6.camel@sauron.oktetlabs.ru>
-	<20050418105301.GA21878@infradead.org>
-	<1113824781.2125.12.camel@sauron.oktetlabs.ru>
-	<20050418115220.GA22750@infradead.org>
-	<1113827466.2125.47.camel@sauron.oktetlabs.ru>
-	<20050418124656.GA23387@infradead.org>
-	<1113829708.5286.30.camel@localhost.localdomain>
-Content-Type: text/plain
-Message-Id: <1113831474.13640.2.camel@imp.csi.cam.ac.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Sender: aia21@hermes.cam.ac.uk
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
-Subject: ntfs ->iput use - was: Re: [PATC] small VFS change for JFFS2
+Received: from netserv.ipi.ac.ru ([83.149.245.1] helo=ipi.ac.ru)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DNYCs-0001c9-TX
+	for linux-mtd@lists.infradead.org; Mon, 18 Apr 2005 11:30:41 -0400
+Received: from [83.149.245.1] (netserv.ipi.ac.ru [83.149.245.1])
+	by ipi.ac.ru (8.12.8p1/8.12.2) with ESMTP id j3IFUZr1013482
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Apr 2005 19:30:36 +0400
+Message-ID: <4263D29B.704@ipi.ac.ru>
+From: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------080100000507020106050904"
+Subject: Bug: misaligned memory access in cmdlinepart.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,42 +19,64 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Mon, 18 Apr 2005 13:38:24 -0000
+Date: Mon, 18 Apr 2005 15:30:42 -0000
 
-Hi Christoph,
+This is a multi-part message in MIME format.
+--------------080100000507020106050904
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-If you remember you complained about ntfs' "fishy use of iput"?
+Hi,
 
-I think that David's explanation below is exactly the reason why I had
-to do it IIRC...  So if the vfs is fixed so the below can _never_ happen
-anymore then I believe it would be safe to do as you and Al suggest and
-stop using iput in a "fishy" way in ntfs...
+in mtdpart_setup_real()/newpart() command line parser
+'this_mtd' structure can be misaligned,
+it may cause exception on some kind of CPU.
 
-Best regards,
+That happened because the structure got mixed with partition names 
+allocated in a variable length area.
 
-	Anton
+I've attached a simle patch, not very elegant though.
 
-On Mon, 2005-04-18 at 23:08 +1000, David Woodhouse wrote:
-> On Mon, 2005-04-18 at 13:46 +0100, Christoph Hellwig wrote:
-> > Any, this sounds like you'd want to use ilookup because you don't want
-> > to read the inode in the cache anyway, right?
-> 
-> We use ilookup() in some circumstances -- if the inode has zero nlink
-> and hence we definitely don't want to pull it back again if it's gone.
-> 
-> But sometimes we really do mean to use iget() to bring it into core. And
-> it's in that case that I believe Artem has found the problem, because if
-> I understand correctly he's still seeing two consecutive calls to
-> read_inode() for the same inode, without a clear_inode() in between.
-> 
-> prune_icache() is removing the inode from i_hash at line 457 of inode.c,
-> then being preempted when it drops the inode_lock at line 464, which is
-> _before_ it calls dispose_list() to actually get rid of the inode(s) in
-> question. So when iget() is called, the VFS ends up calling read_inode()
-> again instead of waiting for the original inode to finish going away.
+Regards.
+	Timofei.
 
--- 
-Anton Altaparmakov <aia21 at cam.ac.uk> (replace at with @)
-Unix Support, Computing Service, University of Cambridge, CB2 3QH, UK
-Linux NTFS maintainer / IRC: #ntfs on irc.freenode.net
-WWW: http://linux-ntfs.sf.net/ & http://www-stu.christs.cam.ac.uk/~aia21/
+--------------080100000507020106050904
+Content-Type: text/plain;
+ name="alignnewpart.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alignnewpart.diff"
+
+--- cmdlinepart.c	2005-04-18 18:06:43.000000000 +0400
++++ bfin/uClinux-dist/linux-2.6.x/drivers/mtd/cmdlinepart.c	2005-04-18 18:40:02.971778640 +0400
+@@ -234,12 +234,14 @@ static int mtdpart_setup_real(char *s)
+ 		 * parse one mtd. have it reserve memory for the
+ 		 * struct cmdline_mtd_partition and the mtd-id string.
+ 		 */
++#define THIS_MTD_ALIGN_CONST (sizeof(void*)-1)
+ 		parts = newpart(p + 1,		/* cmdline */
+ 				&s,		/* out: updated cmdline ptr */
+ 				&num_parts,	/* out: number of parts */
+ 				0,		/* first partition */
+ 				(unsigned char**)&this_mtd, /* out: extra mem */
+-				mtd_id_len + 1 + sizeof(*this_mtd));
++				mtd_id_len + 1 + sizeof(*this_mtd) + 
++                                THIS_MTD_ALIGN_CONST);
+ 		if(!parts)
+ 		{
+ 			/*
+@@ -252,7 +254,11 @@ static int mtdpart_setup_real(char *s)
+ 			 return 0;
+ 		 }
+ 
+-		/* enter results */	    
++		/* align this_mtd */
++                this_mtd = (struct cmdline_mtd_partition *) 
++                  (~THIS_MTD_ALIGN_CONST & 
++                    THIS_MTD_ALIGN_CONST + (unsigned long)(char*)this_mtd);
++		/* enter results */
+ 		this_mtd->parts = parts;
+ 		this_mtd->num_parts = num_parts;
+ 		this_mtd->mtd_id = (char*)(this_mtd + 1);
+
+--------------080100000507020106050904--
