@@ -1,28 +1,19 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOFjc-0008Nu-1X
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 09:59:20 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j3KDxJC1002217
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j3KDxJ3a099266
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j3KDxJtC031160
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
-From: Josh Boyer <jdub@us.ibm.com>
+	id 1DOG7B-0000AJ-0H
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 10:23:42 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
 To: Ian McDonnell <ian@brightstareng.com>
 In-Reply-To: <200504200940.30757.ian@brightstareng.com>
 References: <200504200940.30757.ian@brightstareng.com>
 Content-Type: text/plain
-Date: Wed, 20 Apr 2005 08:59:16 -0500
-Message-Id: <1114005556.7517.0.camel@windu.rchland.ibm.com>
+Date: Wed, 20 Apr 2005 18:23:11 +0400
+Message-Id: <1114006991.32582.11.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Suggestion: Give JFFS its own mail list.
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,7 +25,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Wed, 2005-04-20 at 09:40 -0400, Ian McDonnell wrote:
 > Is it time to give JFFS/JFFS2 a mail list of its own?
-
-It already has one.  jffs-dev@axis.com
-
-josh
+> 
+> I am a user intested in MTD and below but not jffs, and
+> it seams like there's a lot of jffs adn jffs/mtd discussion on 
+> the MTD list.
+> 
+> Decoupling the two mail lists may indirectly help improve the 
+> MTD/mtd-clent (JFFS2,YAFFS,Char-IO/Block-IO) API by focusing
+> more on the abstract interface and less on application specifics.
+> 
+<stress>IMO<\stress>, the list is very low-volume to split it.
+Personally I have no problems seeing discussions of things to which I am
+not involved.
