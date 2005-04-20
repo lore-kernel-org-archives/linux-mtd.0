@@ -1,29 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOGle-0000uE-IM
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 11:05:31 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DOGhB-0003ts-Cg
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 17:00:53 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 17:00:53 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 17:00:53 +0200
-To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Wed, 20 Apr 2005 14:59:50 +0000 (UTC)
-Message-ID: <loom.20050420T165531-253@post.gmane.org>
-References: <loom.20050413T142519-107@post.gmane.org>
-	<425E3174.4030308@inf.u-szeged.hu>
-	<Pine.LNX.4.58.0504141014400.3328@phoenix.infradead.org>
+	id 1DOGvP-00015v-FH
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 11:15:36 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: carl liao <carlliao@21cn.com>
+In-Reply-To: <VF949579774981.21346@send6.inner-21cn.com>
+References: <VF949579774981.21346@send6.inner-21cn.com>
+Content-Type: text/plain
+Date: Wed, 20 Apr 2005 19:15:01 +0400
+Message-Id: <1114010101.32582.24.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: mounting jffs2
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: NAND Flash Device and JFFS2 support
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> > Just an idea: you may try out our summary patch. (
-> > http://www.inf.u-szeged.hu/jffs2/mount.php )
-> Yes, summary will help greatly with mount time, but unfortunately it 
-> doesn't help with memory consumption and iget() (in Sergey's case the time 
-> of the background checking is the same).
+On Wed, 2005-04-20 at 22:47 +0800, carl liao wrote:
+Hi All,
+> 
+> I back ported mtd snapshot 20050416 codes to 2.4.26 for AMD Au1200.
+> The NAND device could be identified and accessed via /dev/mtd/0
+interface.
+> I even could mount /dev/mtdblock/0, copy file to it and umount it. But
+there is
+> so many warnings or ecc error messages!
+> This is not normal that you see "so many warnings or ecc error
+messages". Presumably you have problems with your driver.
 
-Hmm.. then what improvement does summary patch provide? In my case mount
-returns in 1.5 minutes but then I cannot do anything to flash for
-another 20+ minutes.
+So in order to properly use NAND Flash, how could I format and
+read/write
+> data to it?
+> flash_eraseall -j to format.
 
-Sergei Sharonov
+Please, investigate carefully web site at
+http://www.linux-mtd.infradead.org/index.html
+
+> I want to put Linux root file system on the NAND. Is it a right
+choice?
+Depends on your requirements.
+
+JFFS2 is a generally good choice if:
+* you need on-flight compression
+* you need unclean-reboot tolerance
+* your flash isn't large, say, not larger then 64 MiB
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
