@@ -1,18 +1,21 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOGvP-00015v-FH
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 11:15:36 -0400
+	id 1DOH0Q-0001Fx-Jw
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 11:20:47 -0400
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: carl liao <carlliao@21cn.com>
-In-Reply-To: <VF949579774981.21346@send6.inner-21cn.com>
-References: <VF949579774981.21346@send6.inner-21cn.com>
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+In-Reply-To: <loom.20050420T165531-253@post.gmane.org>
+References: <loom.20050413T142519-107@post.gmane.org>
+	<425E3174.4030308@inf.u-szeged.hu>
+	<Pine.LNX.4.58.0504141014400.3328@phoenix.infradead.org>
+	<loom.20050420T165531-253@post.gmane.org>
 Content-Type: text/plain
-Date: Wed, 20 Apr 2005 19:15:01 +0400
-Message-Id: <1114010101.32582.24.camel@sauron.oktetlabs.ru>
+Date: Wed, 20 Apr 2005 19:20:17 +0400
+Message-Id: <1114010417.32582.30.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: NAND Flash Device and JFFS2 support
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mounting jffs2
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,34 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-20 at 22:47 +0800, carl liao wrote:
-Hi All,
-> 
-> I back ported mtd snapshot 20050416 codes to 2.4.26 for AMD Au1200.
-> The NAND device could be identified and accessed via /dev/mtd/0
-interface.
-> I even could mount /dev/mtdblock/0, copy file to it and umount it. But
-there is
-> so many warnings or ecc error messages!
-> This is not normal that you see "so many warnings or ecc error
-messages". Presumably you have problems with your driver.
+On Wed, 2005-04-20 at 14:59 +0000, Sergei Sharonov wrote:
+> Hmm.. then what improvement does summary patch provide? In my case mount
+> returns in 1.5 minutes but then I cannot do anything to flash for
+> another 20+ minutes.
+Poor poor you :-)
 
-So in order to properly use NAND Flash, how could I format and
-read/write
-> data to it?
-> flash_eraseall -j to format.
+Summary should accelerate mounting but leave the other characteristics 
+inact in theory.
 
-Please, investigate carefully web site at
-http://www.linux-mtd.infradead.org/index.html
+If you see that mount time only grows, that's a bug.
 
-> I want to put Linux root file system on the NAND. Is it a right
-choice?
-Depends on your requirements.
-
-JFFS2 is a generally good choice if:
-* you need on-flight compression
-* you need unclean-reboot tolerance
-* your flash isn't large, say, not larger then 64 MiB
+Read the chapter I referred you to - it will help you to understand the
+nature of JFFS2 limitations.
 
 -- 
 Best Regards,
