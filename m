@@ -1,30 +1,28 @@
-Received: from 206.173.66.57.ptr.us.xo.net ([206.173.66.57]
-	helo=zebra.brightstareng.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOFRP-0008By-Od
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 09:40:32 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by zebra.brightstareng.com (Postfix) with ESMTP id 8BC2528C2A0
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Apr 2005 09:40:32 -0400 (EDT)
-Received: from zebra.brightstareng.com ([127.0.0.1])
-	by localhost (zebra [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 09731-02 for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Apr 2005 09:40:30 -0400 (EDT)
-Received: from pippin (unknown [192.168.1.25])
-	by zebra.brightstareng.com (Postfix) with ESMTP id E576C28C1E2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Apr 2005 09:40:30 -0400 (EDT)
-From: Ian McDonnell <ian@brightstareng.com>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 20 Apr 2005 09:40:30 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DOFjc-0008Nu-1X
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 09:59:20 -0400
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j3KDxJC1002217
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
+	j3KDxJ3a099266
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j3KDxJtC031160
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 09:59:19 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: Ian McDonnell <ian@brightstareng.com>
+In-Reply-To: <200504200940.30757.ian@brightstareng.com>
+References: <200504200940.30757.ian@brightstareng.com>
+Content-Type: text/plain
+Date: Wed, 20 Apr 2005 08:59:16 -0500
+Message-Id: <1114005556.7517.0.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200504200940.30757.ian@brightstareng.com>
-Subject: Suggestion: Give JFFS its own mail list.
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Suggestion: Give JFFS its own mail list.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,14 +32,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is it time to give JFFS/JFFS2 a mail list of its own?
+On Wed, 2005-04-20 at 09:40 -0400, Ian McDonnell wrote:
+> Is it time to give JFFS/JFFS2 a mail list of its own?
 
-I am a user intested in MTD and below but not jffs, and
-it seams like there's a lot of jffs adn jffs/mtd discussion on 
-the MTD list.
+It already has one.  jffs-dev@axis.com
 
-Decoupling the two mail lists may indirectly help improve the 
-MTD/mtd-clent (JFFS2,YAFFS,Char-IO/Block-IO) API by focusing
-more on the abstract interface and less on application specifics.
-
--ian
+josh
