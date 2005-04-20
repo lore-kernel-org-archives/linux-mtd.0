@@ -1,19 +1,16 @@
-Received: from eppat.qlogic.com ([63.170.40.2] helo=EPEXCH01.qlogic.org)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOGNK-0000Nc-Dl
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 10:40:23 -0400
-Date: Wed, 20 Apr 2005 09:39:58 -0500
-From: Steve Wahl <steve.wahl@qlogic.com>
-To: "Artem B. Bityuckiy" <dedekind@infradead.org>
-Message-ID: <20050420143958.GI1915@qlogic.com>
-References: <200504200940.30757.ian@brightstareng.com>
-	<1114006991.32582.11.camel@sauron.oktetlabs.ru>
+Received: from send.forptr.21cn.com ([202.105.45.52] helo=21cn.com)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DOGVO-0000Xn-3T
+	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 10:48:44 -0400
+Date: Wed, 20 Apr 2005 22:47:24 +0800
+From: "carl liao" <carlliao@21cn.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1114006991.32582.11.camel@sauron.oktetlabs.ru>
-Cc: linux-mtd@lists.infradead.org, Ian McDonnell <ian@brightstareng.com>
-Subject: Re: Suggestion: Give JFFS its own mail list.
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: 7bit
+Message-ID: <VF949579774981.21346@send6.inner-21cn.com>
+Subject: NAND Flash Device and JFFS2 support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Apr 20, 2005 at 06:23:11PM +0400, Artem B. Bityuckiy wrote:
-> On Wed, 2005-04-20 at 09:40 -0400, Ian McDonnell wrote:
-> > Is it time to give JFFS/JFFS2 a mail list of its own?
-> > 
-> > I am a user intested in MTD and below but not jffs, and
-> > it seams like there's a lot of jffs adn jffs/mtd discussion on 
-> > the MTD list.
-> > 
-> > Decoupling the two mail lists may indirectly help improve the 
-> > MTD/mtd-clent (JFFS2,YAFFS,Char-IO/Block-IO) API by focusing
-> > more on the abstract interface and less on application specifics.
-> > 
-> <stress>IMO<\stress>, the list is very low-volume to split it.
-> Personally I have no problems seeing discussions of things to which I am
-> not involved.
+Hi All,
 
-But actual MTD issues seem to get ignored, perhaps because the list is
-so swampped with JFFS issues.
+I back ported mtd snapshot 20050416 codes to 2.4.26 for AMD Au1200.
+The NAND device could be identified and accessed via /dev/mtd/0 interface.
+I even could mount /dev/mtdblock/0, copy file to it and umount it. But there is
+so many warnings or ecc error messages!
 
-At least I think that's the reason I was completely ignored when I
-posted (twice) about a bug with AMD 29LV800 parts (and thus gave
-up)...
+So in order to properly use NAND Flash, how could I format and read/write
+data to it? I want to put Linux root file system on the NAND. Is it a right choice?
 
---> Steve
+Thanks in advance for you suggestions and help!
+
+Carl Liao
