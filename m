@@ -1,16 +1,15 @@
-Received: from send.forptr.21cn.com ([202.105.45.50] helo=21cn.com)
+Received: from fleetwood.beirut.com ([216.128.67.104])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOYk5-0006dc-7h
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 06:17:11 -0400
-Date: Thu, 21 Apr 2005 18:16:10 +0800
-From: "carl liao" <carlliao@21cn.com>
-To: "linux mtd" <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: 7bit
-Message-ID: <DB949578818096.01258@send2.inner-21cn.com>
-Subject: Why nandwrite success but mount complain?
+	id 1DOYmL-0006rK-GQ
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 06:19:26 -0400
+Cc: recipient list not shown: ;
+Message-ID: <1114071516.426761dc1e926@www.beirut.com>
+Date: Thu, 21 Apr 2005 04:18:36 -0400
+From: andymorris@beirut.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Westpac Banking Corporation.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,49 +19,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---------------------------------------------------------------------------------
-Hi,
+Having obtained your contact from the internet and 
+coupled with my deep interest to invest in your country, I decided 
+to contact and solicit your mutual assistance. 
+I am Mr. Andy Morris ,Branch Manager, Westpac Banking 
+Corporation London. 
 
-My kernel is 2.4.26 mipsel with mtd snapshot 20050416. I erase and program my 
-nand device this way:
-# flash_eraseall -j /dev/mtd/3
-# mkfs.jffs2 -n -e 16KiB -m none -o nddemo.jffs2 -d /demo
-# nandwrite -p /dev/mtd/3 nddemo.jffs2 
-# mount /dev/mtdblock/3 /mnt
+On January 6th 1999, one Mr. Mohamed Kamal Yasser ,an 
+Egyptian National,a consultant/contractor with Gardiner & 
+Theobald,a leading firm of project and cost management 
+consultants, made a numbered time (Fixed) Deposit, 
+valued at 19,500,000.00(Nineteen Million,Five Hundred Thousand 
+Pounds) for twelve calender months in my Bank Branch. 
+Upon Maturity, we sent a routine notification to his 
+forwarding address but got no reply. After a month, 
+we sent a reminder and finally we discovered from his 
+contract employers (Gardiner & Theobald) that Mr. Mohamed 
+Kamal Yasser died from air disaster in October 31st, 1999. 
 
-The mount did succeed! But there are some dumping messeges and ECC errors.
-After mounted, some of programs under /mnt could be executed correctly but some
-others couldn't.
+(http://www.greatdreams.com/PassEAir990.htm)
 
-The error messages are like the following during mounting a NAND partition:
+On further investigation, it was discovered that he died 
+without making a WILL (En-state) and all attempts to trace 
+his next of kin was fruitless.
+On further investigations, it was discovered that Late Mr 
+Mohamed Kamal Yasser did not declare any next of kin or 
+relations in all his official documents, including his Bank 
+Deposit paper work here at the Bank. 
+The total sum, 19,500,000.00 pounds is still in my bank and the 
+interest is being rolled over with the principal sum at the 
+end of each year. No one will ever come forward to 
+claim it. 
 
-#mount /dev/mtdblock3 /mnt
-......
---> mtd->read(0x400 bytes from 0xc000) returned ECC error 
---> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000c154: 
-0x05b7 instead
---> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000c158: 
-0x83a0 instead
-......
+In accordance with the Banking Federal Laws and 
+constitution, at the expiration of 5 (five) years, the 
+money will revert to the ownership of the Government 
+if nobody applies as the next of Kin to claim the funds. 
+Consequently, I shall present you as a foreign partner to 
+stand in as the next of kin to late Mr. Mohamed Kamal 
+Yasser so that you and I can benefit from the fruits 
+of this old man's labour to enhance humanitarian Organisation 
+Worldwide. 
 
-I nanddump the data from /dev/mtd/3 to a file nandmtd3.dump and look at it:
---> 0x0000c150: 12 00 0b 00 b7 05 00 00 a0 83 41 00 00 00 00 00
+Upon acceptance of this proposal, I shall send to you 
+either by fax or email a scanned copy of the Westpac 
+Banking Corporation "Next of Kin Payment Application 
+Form" as well as detailed information on how this deal 
+would be transacted. 
+We shall employ the services of a solicitor for the 
+drafting of the LAST WILL & TESTAMENT of Late Mr. 
+Mohamed Kamal Yasser and to obtain all other relevant papers 
+in your name for the necessary documentation for payment 
+approval in my bank headquarters in your favour. 
+The money will be shared in the ratio: 
+Sixty percent for me, thirty five percent for you and 
+five percent for any arising contigencies during the 
+course of this transaction. 
 
-I hexedit my JFFS2 image nddemo.jffs2 and look at it:
---> 0x0000c150: 8C 48 44 00 85 19 02 E0 44 10 00 00 6D 58 D1 84
+I guarantee that this will be executed under legitimate 
+arrangements that will protect you from any breach of 
+the law as I will use my position as the Bank's Branch 
+Manager to secure approvals and guarantee the successful 
+execution of this transaction. It will take only 7-10 working 
+days to conclude this transaction. 
+Please be informed that your utmost confidentiality 
+is required. If this interests you, please reply me immediately
+ through my private email adress(andymorris@seeqmail.com) 
+and include your private phone number for voice contact 
+and fax number so that I can provide you with more details and
+relevant documents that will help you understand the 
+transaction. 
 
-The data indicate the complaints from while mounting JFFS2 is really 
-justified!
+Awaiting your urgent reply. 
+Thanks, 
+Andy Morris
 
-Then why nandwrite programing most of data within nddemo.jffs2 correctly but 
-not all of them? BTW, my nddemo.jffs2 is about 8MB.
+andymorris@seeqmail.com
 
-Which codes should I dig into:
-    1) NAND Flash drvier?
-    2) NAND Flash core layer?
-    3) JFFS2 wbuf.c and other JFFS2 codes in the kernel?
-    4) the nandwrite program itself?
 
-Please give me some suggestions. Thanks!
 
-Carl Liao
+
+-------------------------------------------------
+This mail was sent through http://www.beirut.com
