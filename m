@@ -1,35 +1,15 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
+Received: from mail.dgt.com.pl ([195.117.141.2] helo=dgt.com.pl)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOMLy-0003eG-Py
-	for linux-mtd@lists.infradead.org; Wed, 20 Apr 2005 17:03:23 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e3.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j3KL3PPg001031
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 17:03:25 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j3KL3PtB034904
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 17:03:25 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j3KL3Osd020615
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Apr 2005 17:03:25 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.62.0504201648010.26129@localhost.localdomain>
-References: <200504200940.30757.ian@brightstareng.com>
-	<1114005556.7517.0.camel@windu.rchland.ibm.com>
-	<20050420193029.BD330419C@blood.actrix.co.nz>
-	<1114027682.7517.24.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.62.0504201625440.26129@localhost.localdomain>
-	<1114029672.7517.31.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.62.0504201648010.26129@localhost.localdomain>
-Content-Type: text/plain
-Date: Wed, 20 Apr 2005 16:03:17 -0500
-Message-Id: <1114030997.7517.36.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
+	id 1DOW1G-0005To-Jo
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 03:22:40 -0400
+Message-ID: <42675482.1010908@dgt.com.pl>
+Date: Thu, 21 Apr 2005 09:21:38 +0200
+From: Wojciech Kromer <wojciech.kromer@dgt.com.pl>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Ian McDonnell <ian@brightstareng.com>, manningc2@actrix.gen.nz,
-	linux-mtd@lists.infradead.org
-Subject: Re: Suggestion: Give JFFS its own mail list.
+Subject: jffs2 boot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,33 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-20 at 16:49 -0400, Nicolas Pitre wrote:
-> On Wed, 20 Apr 2005, Josh Boyer wrote:
-> 
-> > On Wed, 2005-04-20 at 16:27 -0400, Nicolas Pitre wrote:
-> > > On Wed, 20 Apr 2005, Josh Boyer wrote:
-> > > 
-> > > > Maybe another reason that the existing JFFSx list isn't used is because
-> > > > it's off on some non-infradead server.  People probably see that
-> > > > everything else is on *.infradead.org somewhere and just use the MTD
-> > > > list for that reason.
-> > > > 
-> > > > If we could figure out a way to preserve all the archives, perhaps we
-> > > > could move the JFFSx list onto lists.infradead.org.  David, thoughts?
-> > > 
-> > > Is it worth the trouble?
-> > > 
-> > > It's not like if this very list was high traffic.
-> > 
-> > If it's not a lot of trouble, I don't see why we wouldn't preserve the
-> > archives.
-> 
-> I meant moving/splitting the lists around.
+Hi there.
 
-Oh :).
+I have problem booting jffs2 device.
+I can mount, read, write an test all files on my jffs2 mtd device,
+but when i'm booting from it it says:
 
-Personally, the JFFSx stuff in the MTD list doesn't bother me.  I was
-just offering up an idea that might help those who are bothered.  I
-don't really have any convictions about it one way or another.
 
-josh
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: 
+0x2705 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004: 
+0x4154 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000000c: 
+0x322e instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000010: 
+0x3720 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000014: 
+0x6570 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018: 
+0x3220 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c: 
+0x3033 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020: 
+0x2031 instead
+......
+Further such events for this erase block will not be printed
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+empty_blocks 2, bad_blocks 0, c->nr_blocks 6
+
+
+What's wrong? I've tried several mtd versions on linux-2.4.25 from denx.de
