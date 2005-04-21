@@ -1,23 +1,29 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOdes-0000PG-7L
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 11:32:03 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <4267B8EF.6000803@inf.u-szeged.hu>
-References: <loom.20050413T142519-107@post.gmane.org>
-	<425E3174.4030308@inf.u-szeged.hu>
-	<Pine.LNX.4.58.0504141014400.3328@phoenix.infradead.org>
+	id 1DOdnW-0000bb-Ry
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 11:40:59 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1DOdiD-0004vy-15
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 17:35:31 +0200
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2005 17:35:29 +0200
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2005 17:35:29 +0200
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Date: Thu, 21 Apr 2005 15:34:12 +0000 (UTC)
+Message-ID: <loom.20050421T171656-701@post.gmane.org>
+References: <loom.20050413T142519-107@post.gmane.org>	<425E3174.4030308@inf.u-szeged.hu>	<Pine.LNX.4.58.0504141014400.3328@phoenix.infradead.org>
 	<loom.20050420T165531-253@post.gmane.org>
 	<4267B8EF.6000803@inf.u-szeged.hu>
-Content-Type: text/plain
-Date: Thu, 21 Apr 2005 19:31:30 +0400
-Message-Id: <1114097490.21485.1.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Sender: news <news@sea.gmane.org>
 Subject: Re: mounting jffs2
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,35 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ferenc,
+Hi,
+> Anyway, we are now working on a new boot time speed up technique. We 
+> call it centralized summary. The "old" summary is erase block summary.
+..................
+> If you would like to test it I can send a patch. I would be also useful 
+> for us, because we don't have real NAND device, so we cannot make real 
+> measurements. (Forutnatelly we can use Artem's NAND simulator.)
 
-> Yes, that is the CRC checking time.
+Ferenc, I appreciate your help. Unfortunately I don't think the patch will
+improve my situation since I need to handle un-clean umounts. e.g. power 
+failures and still preserve reasonable mount time.
 
-I doubt that actual CRC checking takes so much time. It is mainly *read*
-operation.
+I did a few tests with yaffs1 and yaffs2. With yaffs1, 128 MByte NAND and 100
+MBytes worth of files I am getting 18 s mount time. And after 18 s filesystem
+seems to be fully operational (touch, ls -l, etc.) Treat data as 
+preliminary since I just built yaffs1 yesterday ;-)
+I also did write/read/verify/erase of total of 6.8 GBytes of data without any 
+errors. Have not done any power fail testing yet.
 
-> P.s.: Artem: you wrote that you don't think that swithing off the CRC 
-> checking of summarized node is safe. Can you explain why? (I don't
-know 
-> the behavior of NAND deeply) Becuse it may help for Sergei...
+Now, the bad news yaffs2 did not work for me - files would disapear or get
+corrupted. I would need yaffs2 to handle devices with 2 kB page size.
 
-Because what your option does is
-
-+#ifdef CONFIG_JFFS2_SUMMARY_NOCRCCHECK	
-+	ic->state = INO_STATE_CHECKEDABSENT;
-+#endif
-
-which is incorrect. You should not skip the checking process for inodes.
-When I proposed not to check CRCs I meant another thing. And now I'm
-uncertain that what I proposed is absolutely correct.
-
-Please, bear in mind that the primary goal of the checking process is
-not to check CRCs but rather to detect which nodes are valid, which are
-obsolete. This is done by building fake fragtrees.
-
-Correct me if I'm wrong.
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Sergei Sharonov
