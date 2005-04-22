@@ -1,19 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from wproxy.gmail.com ([64.233.184.194])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOoTR-0003K3-7L
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 23:04:58 -0400
-Message-ID: <426869D7.3050202@mvista.com>
-Date: Thu, 21 Apr 2005 20:04:55 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Nicolas Pitre <nico@cam.org>
-References: <20050413010315.GA31632@slurryseal.ddns.mvista.com>
-	<Pine.LNX.4.62.0504122118560.14514@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.62.0504122118560.14514@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Fixup Intel flash that powers up locked
+	id 1DOtEJ-0004Yt-8v
+	for linux-mtd@lists.infradead.org; Fri, 22 Apr 2005 04:09:44 -0400
+Received: by wproxy.gmail.com with SMTP id 57so842525wri
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Apr 2005 01:09:42 -0700 (PDT)
+Message-ID: <9b7ca6570504220109161b2afc@mail.gmail.com>
+Date: Fri, 22 Apr 2005 17:09:42 +0900
+From: Daniel Ann <ktdann@gmail.com>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: Question regarding to 2.4 kernel and MTD
+Reply-To: Daniel Ann <ktdann@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
+Hey folks,
 
-> Properly dealing with this "feature" appears to be so messy that I'm 
-> starting to wonder if we should not just unconditionally unlock the 
-> flash at boot time and be done with it.
+I know I've read enuf times that 2.4 series are considered ancient and
+everything, but I really need to give it a try on 2.4.21. My question
+is, how come I cant seem to locate any snapshots between 2002 and 2005
+?
 
-Or leave all blocks locked to err on the side of safety and require 
-userspace init scripts to unlock writeable partitions.
+Did people of MTD went on long holiday ? :)
 
-> It's only the flash used for the root filesystem which is problematic 
-> anyway, right?  If so then I think there should be a mount option for 
-> JFFS* such that it directly unlocks the whole of the MTD device it's 
-> about to be mounted on when it's mounted read-write.  That's it.
+Closest one I've found was snapshot made on the 2005.3.4, but even
+that file is missing from the FTP server.
 
-Read-only root with writeable partitions mounted afterwards is what I 
-suggest, I imagine there's reasons not to do it that way, though.
+If anyone carries anything that is remotely similar to what Im doing,
+I'd love to give it a go.
 
-> As for the suspend case then you should probably just preserve the flash 
-> lock state before suspending and restore that state upon resume.
+Many thanks in advance.
 
-I'm guessing the code for that would trigger the messy alarms as well...
-
-Am finding the frob DEBUG_LOCK_BITS logic doesn't read lock status 
-properly on this board's chip (blocks that appear to be writeable still 
-read status non-zero).  This makes it difficult to setup the bitmap at 
-suspend time.  Now, I could maintain the bitmap at each block 
-lock/unlock time, but the frob code doesn't pass the eraseregion info 
-(useful to understand region size and maintain per-region bitmap) to the 
-chip driver (which knows whether the chip has this powers-up-locked 
-property).  Alas.  I will play with this some more.
-
-> Why are you doing this block by block? You could as well just do:
-> 
-> 	cfi_intelext_unlock(mtd, 0, mtd->size);
-> 
-> since the block walking is already performed by cfi_varsize_frob().
-
-Aargh, that code predated the frob on multi-partition flash fix, sorry. 
-  Thanks,
-
-
--- 
-Todd
+--=20
+Daniel
