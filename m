@@ -1,29 +1,23 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DOdnW-0000bb-Ry
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 11:40:59 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DOdiD-0004vy-15
-	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 17:35:31 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2005 17:35:29 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Apr 2005 17:35:29 +0200
-To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Thu, 21 Apr 2005 15:34:12 +0000 (UTC)
-Message-ID: <loom.20050421T171656-701@post.gmane.org>
-References: <loom.20050413T142519-107@post.gmane.org>	<425E3174.4030308@inf.u-szeged.hu>	<Pine.LNX.4.58.0504141014400.3328@phoenix.infradead.org>
-	<loom.20050420T165531-253@post.gmane.org>
-	<4267B8EF.6000803@inf.u-szeged.hu>
+Received: from wproxy.gmail.com ([64.233.184.207])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DOoCj-00037F-B4
+	for linux-mtd@lists.infradead.org; Thu, 21 Apr 2005 22:47:42 -0400
+Received: by wproxy.gmail.com with SMTP id 37so513099wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Apr 2005 19:47:42 -0700 (PDT)
+Message-ID: <29f91651050421194778a08471@mail.gmail.com>
+Date: Thu, 21 Apr 2005 22:47:42 -0400
+From: alfred hitch <alfred.hitch@gmail.com>
+To: Murali Sampath <msampath@ai-logix.com>
+In-Reply-To: <B2627A2E13B6DE4BADE1746A7DFBFA7E07B7A9@aimsg.corp.audiocodes.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: mounting jffs2
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <B2627A2E13B6DE4BADE1746A7DFBFA7E07B7A9@aimsg.corp.audiocodes.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 File System Problem for ST MICRO ELECTRONICS FLASH
+Reply-To: alfred hitch <alfred.hitch@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,26 +27,169 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> Anyway, we are now working on a new boot time speed up technique. We 
-> call it centralized summary. The "old" summary is erase block summary.
-..................
-> If you would like to test it I can send a patch. I would be also useful 
-> for us, because we don't have real NAND device, so we cannot make real 
-> measurements. (Forutnatelly we can use Artem's NAND simulator.)
+hey did u guys  try correct block size while making jffs2 images ?
 
-Ferenc, I appreciate your help. Unfortunately I don't think the patch will
-improve my situation since I need to handle un-clean umounts. e.g. power 
-failures and still preserve reasonable mount time.
+Cheers,
+Alfred
 
-I did a few tests with yaffs1 and yaffs2. With yaffs1, 128 MByte NAND and 100
-MBytes worth of files I am getting 18 s mount time. And after 18 s filesystem
-seems to be fully operational (touch, ls -l, etc.) Treat data as 
-preliminary since I just built yaffs1 yesterday ;-)
-I also did write/read/verify/erase of total of 6.8 GBytes of data without any 
-errors. Have not done any power fail testing yet.
-
-Now, the bad news yaffs2 did not work for me - files would disapear or get
-corrupted. I would need yaffs2 to handle devices with 2 kB page size.
-
-Sergei Sharonov
+On 4/21/05, Murali Sampath <msampath@ai-logix.com> wrote:
+> HI
+>=20
+> I am using the Uboot and also I have AMD29LV640 flash device. I still get=
+ the jffs2_scan_erase_block errors.
+> I am stuck not able to get JFFS2 to work right. Any suggestions will  be =
+greatly appreciated. I have no problem in using NFS.
+> Thanks
+> When I dump the memory I see the file system flashed in correctly. Iam st=
+ill missing something.
+>=20
+> *************************************************************************
+> Trace on my board looks like the following.
+>=20
+> PPP generic driver version 2.4.2
+> PPP Deflate Compression module registered
+> PowerPC/UBoot 8xx/8xxx flash device: 0x800000 bytes at 0xff800000 (16 bit=
+s wide)
+> PowerPC/Uboot 8xx/8xxx boards: Found 1 x16 devices at 0x0 in 16-bit mode
+>  Amd/Fujitsu Extended Query Table at 0x0040
+> PowerPC/Uboot 8xx/8xxx boards: CFI does not contain boot bank location. A=
+ssuming top.
+> number of CFI chips: 1
+>=20
+> cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+>=20
+> Creating 4 MTD partitions on "PowerPC/Uboot 8xx/8xxx boards":
+> 0x00000000-0x00040000 : "UbootConfig"
+> mtd: Giving out device 0 to UbootConfig
+> 0x00040000-0x00700000 : "JFFS2"
+> mtd: Giving out device 1 to JFFS2
+> 0x00700000-0x00780000 : "U-Boot"
+> mtd: Giving out device 2 to U-Boot
+> 0x00780000-0x00800000 : "Linux"
+> mtd: Giving out device 3 to Linux
+>=20
+> ******
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030000: 0x=
+0808 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030004: 0x=
+0808 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030008: 0x=
+6666 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0003000c: 0x=
+6666 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030010: 0x=
+0606 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030014: 0x=
+0606 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030018: 0x=
+4646 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0003001c: 0x=
+4646 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030100: 0x=
+3aa0 instead
+> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00030104: 0x=
+6000
+> *******
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org
+> [mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of alfred hitch
+> Sent: Thursday, April 21, 2005 10:01 AM
+> To: Vikrant_Basotra
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: JFFS2 File System Problem for ST MICRO ELECTRONICS FLASH
+>=20
+> I am not too sure, but cna u try eraseall on the mtd partition
+> and then write ur image using netflash or whatever u use ..
+> also make sure ur jffs2 image was padded correctly.
+>=20
+> Cheers,
+> Alfred
+>=20
+> On 4/21/05, Vikrant_Basotra <Vikrant_Basotra@satyam.com> wrote:
+> > Hello All,
+> > My board has one 16-bit flash: ST M29W640DB.
+> >
+> > M29W640DB (16 bit bus):
+> >
+> > 0x00000000-0x00700000 : "Root"
+> > 0x00700000-0x00720000 : "U-Boot Bootloader"
+> > 0x00720000-0x01000000 : "Linux Kernel"
+> >
+> > When power on, Linux kernel boots from flash and print out info such as=
+:
+> > "
+> > ..............................................
+> > PPP generic driver version 2.4.2
+> > ..............................................
+> > EP8248 flash map (size->0x800000 mem->0xFF800000)
+> > Amd/Fujitsu Extended Query Table v1.3 at 0x0040
+> > number of CFI chips: 1
+> > cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+> > Creating 3 MTD partitions on "EP8248 flash memory":
+> > 0x00000000-0x00700000 : "Root"
+> > 0x00700000-0x00720000 : "U-Boot Bootloader"
+> > 0x00720000-0x01000000 : "Linux Kernel"
+> >
+> > ......................................
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00060000: =
+0x0020 instead
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00060004: =
+0x22df instead
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0006000c: =
+0x0008 instead
+> > Further such events for this erase block will not be printed
+> > ................................................................
+> > Further such events for this erase block will not be printed
+> > JFFS2: Erase block at 0x003a0000 is not formatted. It will be erased
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003c0000: =
+0x0020 instead
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003c0004: =
+0x22df instead
+> > jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x003c000c: =
+0x0008 instead
+> >
+> > Further such events for this erase block will not be printed
+> > JFFS2: Erase block at 0x003c0000 is not formatted. It will be erased
+> > ....................................................................
+> > ....................................................................
+> > "
+> > In u-boot, I entered commands to display memory:
+> > u-boot=3D> md 0xff000000
+> > The magic number 0x1985 IS here!No 0x0020 exists at all!!
+> >
+> > It's quite strange!! Why Linux detects 0x0020 instead?
+> >
+> > Why U-boot can read the data on flash correctly while linux can't?
+> >
+> > Why linux always read all data as 0x0020?
+> >
+> > When I simply replace ST M29W640DB with AMD AM29DL640D (the two chips a=
+re
+> > pin-to-pin compatible,) JFFS2 works very fine!
+> >
+> > What's the problem?
+> >
+> > I don't want to use AMD FLASH, can u suggest me what necessary changes =
+are to be made in the code so that the ST M29W640DB Flash work,
+> >
+> > Regards,
+> > VB
+> >
+> > DISCLAIMER:
+> > This email (including any attachments) is intended for the sole use of =
+the intended recipient/s and may contain material that is CONFIDENTIAL AND =
+PRIVATE COMPANY INFORMATION. Any review or reliance by others or copying or=
+ distribution or forwarding of any or all of the contents in this message i=
+s STRICTLY PROHIBITED. If you are not the intended recipient, please contac=
+t the sender by email and delete all copies; your cooperation in this regar=
+d is appreciated.
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> >
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
