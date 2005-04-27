@@ -1,18 +1,19 @@
 Received: from netserv.ipi.ac.ru ([83.149.245.1] helo=ipi.ac.ru)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DQkKg-0001NU-Nq
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2005 07:03:56 -0400
-Received: from [83.149.245.1] (netserv.ipi.ac.ru [83.149.245.1])
-	by ipi.ac.ru (8.12.8p1/8.12.2) with ESMTP id j3RB3sr1031124
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2005 15:03:55 +0400
-Message-ID: <426F719A.2000903@ipi.ac.ru>
-Date: Wed, 27 Apr 2005 15:03:54 +0400
+	id 1DQkaC-0001ZZ-0P
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2005 07:19:57 -0400
+Message-ID: <426F755A.5030304@ipi.ac.ru>
+Date: Wed, 27 Apr 2005 15:19:54 +0400
 From: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: tglx@linutronix.de
+References: <426F40A3.8010308@ipi.ac.ru>	<1114592403.879.175.camel@tglx.tec.linutronix.de>	<426F56C1.6020204@ipi.ac.ru>	<1114598706.879.185.camel@tglx.tec.linutronix.de>	<426F691D.50905@ipi.ac.ru>
+	<1114601747.879.199.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1114601747.879.199.camel@tglx.tec.linutronix.de>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: misaligned memory access in cmdlinepart.c
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: nand locking
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Thomas Gleixner wrote:
+> 
+> There is no workaround. Its missing and must be added. I'm happy if you
+> can provide a patch.
 
-in mtdpart_setup_real()/newpart() command line parser
-'this_mtd' structure can be misaligned,
-it may cause exception on some kind of CPU.
+Unfortunately, I have no sufficient expirience with nand devices to make
+such patch generic enough.
 
-That happened because the structure allocated in a variable length area 
-and got mixed with partition names.
 
-The patch follows.
-
-Regards.
 	Timofei.
-
---- cmdlinepart.c	2005-04-18 18:06:43.000000000 +0400
-+++ linux-2.6.x/drivers/mtd/cmdlinepart.c	2005-04-18 18:40:02.971778640 
-+0400
-@@ -234,12 +234,14 @@ static int mtdpart_setup_real(char *s)
-  		 * parse one mtd. have it reserve memory for the
-  		 * struct cmdline_mtd_partition and the mtd-id string.
-  		 */
-+#define THIS_MTD_ALIGN_CONST (sizeof(void*)-1)
-  		parts = newpart(p + 1,		/* cmdline */
-  				&s,		/* out: updated cmdline ptr */
-  				&num_parts,	/* out: number of parts */
-  				0,		/* first partition */
-  				(unsigned char**)&this_mtd, /* out: extra mem */
--				mtd_id_len + 1 + sizeof(*this_mtd));
-+				mtd_id_len + 1 + sizeof(*this_mtd) +
-+                                THIS_MTD_ALIGN_CONST);
-  		if(!parts)
-  		{
-  			/*
-@@ -252,7 +254,11 @@ static int mtdpart_setup_real(char *s)
-  			 return 0;
-  		 }
-
--		/* enter results */	
-+		/* align this_mtd */
-+                this_mtd = (struct cmdline_mtd_partition *)
-+                  (~THIS_MTD_ALIGN_CONST &
-+                    THIS_MTD_ALIGN_CONST + (unsigned long)(char*)this_mtd);
-+		/* enter results */
-  		this_mtd->parts = parts;
-  		this_mtd->num_parts = num_parts;
-  		this_mtd->mtd_id = (char*)(this_mtd + 1);
