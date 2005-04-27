@@ -1,24 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from netserv.ipi.ac.ru ([83.149.245.1] helo=ipi.ac.ru)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DQjtW-00018c-JV
-	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2005 06:35:51 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
-In-Reply-To: <426F691D.50905@ipi.ac.ru>
-References: <426F40A3.8010308@ipi.ac.ru>
-	<1114592403.879.175.camel@tglx.tec.linutronix.de>
-	<426F56C1.6020204@ipi.ac.ru>
-	<1114598706.879.185.camel@tglx.tec.linutronix.de>
-	<426F691D.50905@ipi.ac.ru>
-Content-Type: text/plain
-Date: Wed, 27 Apr 2005 13:35:47 +0200
-Message-Id: <1114601747.879.199.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1DQkKg-0001NU-Nq
+	for linux-mtd@lists.infradead.org; Wed, 27 Apr 2005 07:03:56 -0400
+Received: from [83.149.245.1] (netserv.ipi.ac.ru [83.149.245.1])
+	by ipi.ac.ru (8.12.8p1/8.12.2) with ESMTP id j3RB3sr1031124
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Apr 2005 15:03:55 +0400
+Message-ID: <426F719A.2000903@ipi.ac.ru>
+Date: Wed, 27 Apr 2005 15:03:54 +0400
+From: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand locking
-Reply-To: tglx@linutronix.de
+Subject: misaligned memory access in cmdlinepart.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,33 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-04-27 at 14:27 +0400, Timofei V. Bondarenko wrote:
-> > Lock/unlock are general features and should be added to nand_base.c.
-> > I guess the chips which have those functions can be identified and an
-> > appropriate option flag set in the ID list, which then lets nand_scan
-> > decide whether to fill in the lock/unlock function pointers or not.
-> 
-> An easy problem: I'm looking for the simplest way to protect
-> read-only mtd partitions by hardware lock.
-> The current nand_base seems lack of this feature.
-> Should i hack the nand_base? Or is there a correct workaround?
+Hi,
 
-As I said above, it is functionality which should be integrated cleanly
-into nand_base.c. It should be automatically available for those chips
-which support it.
+in mtdpart_setup_real()/newpart() command line parser
+'this_mtd' structure can be misaligned,
+it may cause exception on some kind of CPU.
 
-There is no workaround. Its missing and must be added. I'm happy if you
-can provide a patch.
+That happened because the structure allocated in a variable length area 
+and got mixed with partition names.
 
-> It awaits since 18 Apr - longer than a week... is it ok?
+The patch follows.
 
-David Woodhouse was travelling last week
+Regards.
+	Timofei.
 
-> Are there other ways to submit a patch? (a small bugfix to cmdlinepart).
-> AFAIK, placing diffs into message text is not welcomed too.
+--- cmdlinepart.c	2005-04-18 18:06:43.000000000 +0400
++++ linux-2.6.x/drivers/mtd/cmdlinepart.c	2005-04-18 18:40:02.971778640 
++0400
+@@ -234,12 +234,14 @@ static int mtdpart_setup_real(char *s)
+  		 * parse one mtd. have it reserve memory for the
+  		 * struct cmdline_mtd_partition and the mtd-id string.
+  		 */
++#define THIS_MTD_ALIGN_CONST (sizeof(void*)-1)
+  		parts = newpart(p + 1,		/* cmdline */
+  				&s,		/* out: updated cmdline ptr */
+  				&num_parts,	/* out: number of parts */
+  				0,		/* first partition */
+  				(unsigned char**)&this_mtd, /* out: extra mem */
+-				mtd_id_len + 1 + sizeof(*this_mtd));
++				mtd_id_len + 1 + sizeof(*this_mtd) +
++                                THIS_MTD_ALIGN_CONST);
+  		if(!parts)
+  		{
+  			/*
+@@ -252,7 +254,11 @@ static int mtdpart_setup_real(char *s)
+  			 return 0;
+  		 }
 
-It's a correct way to do it, when your mail client can handle the
-whitespace (tabs) correct and does no line truncating at 80, which is
-requested for the mail text itself.
-
-tglx
+-		/* enter results */	
++		/* align this_mtd */
++                this_mtd = (struct cmdline_mtd_partition *)
++                  (~THIS_MTD_ALIGN_CONST &
++                    THIS_MTD_ALIGN_CONST + (unsigned long)(char*)this_mtd);
++		/* enter results */
+  		this_mtd->parts = parts;
+  		this_mtd->num_parts = num_parts;
+  		this_mtd->mtd_id = (char*)(this_mtd + 1);
