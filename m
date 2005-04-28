@@ -1,13 +1,12 @@
-Date: Thu, 28 Apr 2005 20:22:33 +0900
-From: olsombergs <olsombergs@elvismen.com>
-To: olsombergs@sify.com
-Message-ID: <38e96947772f13bed72879ad81f788aa@elvismen.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Date: Thu, 28 Apr 2005 22:53:33 +0700
+Message-Id: <200504281553.j3SFrX001314@w3s1.websitethailand.com>
+To: 
+From: davidelis <davidelis@walla.com>
+CC: 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: YUKOS OIL
-Reply-To: olsom_bergs_111@yahoo.com
+Subject: God Mercy!!!!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,58 +16,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Friend,
 
+Hello, 
 
-I am Mr Olsom Berghart a personal treasurer to Mikhail Khodorkovsky the
-richest man in Russia and owner of the following companies:Chairman 
-CEO:
-YUKOS OIL (Russian Most Largest Oil Company)Chairman CEO: Menatep SBP 
-Bank
-(A well reputable financial institution with its 
-branches
-all over the world)
-SOURCE OF FUNDS:
-I have a profiling amount in an excess of US$100.5M, which I seek your
-partnership in accommodating for me. You will be rewarded with 4% of 
-the
-total sum for your partnership. Can you be my partner on this?  
-INTRODUCTION OF MY SELF
-As a personal consultant to him, authority was handed over to me in 
-transfer
-of money of an American oil merchant for his last oil deal with my boss
-Mikhail Khodorkovsky. Already the funds have left the shore of Russia 
-to an
-European private bank where the final
-crediting is expected to be carried out. While I was on the process, My 
-Boss
-got arrested for his involvement in politics by financing the leading 
-and
-opposing political parties (the Union of Right Forces,
-led by Boris Nemtsov, and Yabloko, a liberal/social democratic party 
-led by
-Gregor Yavlinsky) which poses treat to President Vladimir Putin second
-tenure as Russian president. You can catch more of the story on this
-website: http://www.opendemocracy.net/debates/article-3-56-1409.jspor
-http://newsfromrussia.com/main/2003/11/13/51215.html  
-YOUR ROLE:
-All I need from you is to stand as the beneficiary of the above quoted 
-sum
-and I will re-profile the funds with your name, which will enable the
-European bank transfer the sum to you. I have decided to use this sum 
-to
-relocate to American continent and never to be connected to any 
-of
-Mikhail Khodorkovsky conglomerates. The transaction has to be concluded 
-in 2
-weeks before Mikhail Khodorkovsky is out on bail. As
-soon as I confirm your readiness to conclude the transaction with me, I 
-will
-provide you with the details.
-Thank you very much
+My name is DAVID ELLIS, a nationality of United Kingdom,I
+have been diagnosed with Esophageal cancer .It has defiled all
+forms of medical treatment, andright now I have only about a few months to live, according to medical experts.I have not particularly lived my life so well, as I never really cared for anyone(not even myself)but my business. Though I am very rich, I was never generous, I was always hostile to people and onlyfocused  on my business as that was the only thing I cared for. But now I regret all this as I now know that there is more to life than just wanting to have or make all the money in the world.I believe when God gives me a second chance to come to this world I would live my life a different way from how I have lived it. 
+
+Now that God has called me, I have willed and given most of my property and assets to my immediate and extended family members as well as a few close friends.I want God to be merciful to me and accept my soul so, I have decided to give alms to charity organizations, as I want this to be one of the last good deeds I do on earth. So far, I have
+distributed money to some charity organizations in the U.A.E, Somalia and Malaysia.Now that my health has deteriorated so badly, I cannot do this myself anymore. I once asked members of my family to close one of my accounts and distribute the money which I have there to charity organization in Bulgaria and Pakistan, they refused and kept the money to themselves. Hence, I do not trust them anymore, as they seem not to be contended with what I have left for them. The last of my money which no one knows of is the huge cash deposit of Twenty Eight Million
+dollars($28,000,000,00) that I have with a finance/Security Company
+abroad. I will want you to help me collect this deposit and despatch it
+to charity organizations.
  
-Regards
+ 
+ I have set aside 20% for you and for your time.
+ 
+ God be with you.
 
-Olsom Berghart(Mr)
 
-NB: Do contact me through this secure email olsom_bergs_111@yahoo.fr
+DAVID ELLIS
+
+
+
+___________________________________________________________________________
+Mail sent from WebMail service at PHP-Nuke Powered Site
+- http://yoursite.com
