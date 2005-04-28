@@ -1,12 +1,20 @@
-Date: Thu, 28 Apr 2005 22:53:33 +0700
-Message-Id: <200504281553.j3SFrX001314@w3s1.websitethailand.com>
-To: 
-From: davidelis <davidelis@walla.com>
-CC: 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: God Mercy!!!!
+Received: from megamail.megared.com.mx ([200.52.207.52]
+	helo=unix.megared.net.mx)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DREqf-0006JK-J8
+	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2005 15:38:59 -0400
+Received: from [10.40.241.247] ([10.40.241.247])
+	by unix.megared.net.mx (8.11.7/8.11.7) with ESMTP id j3SJcpR49938
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Apr 2005 14:38:53 -0500 (CDT)
+Message-ID: <42713BCB.8080107@didtec.com.mx>
+Date: Thu, 28 Apr 2005 14:38:51 -0500
+From: Cuauhtemoc Covarrubias Carranza <temoc@didtec.com.mx>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: pxa263 flash memory (Strataflash K3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,29 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+We are developing a PDA using Intel's PXA263 which contains K3 flash 
+memory. I'm using kernel 2.4.19-rmk7-pxa2
 
-Hello, 
+The problem is the following:
+After powerup, any operation on the flash partitions (unlock, erase, 
+mount) finishes with a timeout, but only if the partition already has 
+data (i.e. if the partition is blank, all operations are completed ok).
 
-My name is DAVID ELLIS, a nationality of United Kingdom,I
-have been diagnosed with Esophageal cancer .It has defiled all
-forms of medical treatment, andright now I have only about a few months to live, according to medical experts.I have not particularly lived my life so well, as I never really cared for anyone(not even myself)but my business. Though I am very rich, I was never generous, I was always hostile to people and onlyfocused  on my business as that was the only thing I cared for. But now I regret all this as I now know that there is more to life than just wanting to have or make all the money in the world.I believe when God gives me a second chance to come to this world I would live my life a different way from how I have lived it. 
+I believe there is because I have a buggy K3.
+Is there a patch for this kernel version who resolves this issue? or 
+what kernel version must be used?
 
-Now that God has called me, I have willed and given most of my property and assets to my immediate and extended family members as well as a few close friends.I want God to be merciful to me and accept my soul so, I have decided to give alms to charity organizations, as I want this to be one of the last good deeds I do on earth. So far, I have
-distributed money to some charity organizations in the U.A.E, Somalia and Malaysia.Now that my health has deteriorated so badly, I cannot do this myself anymore. I once asked members of my family to close one of my accounts and distribute the money which I have there to charity organization in Bulgaria and Pakistan, they refused and kept the money to themselves. Hence, I do not trust them anymore, as they seem not to be contended with what I have left for them. The last of my money which no one knows of is the huge cash deposit of Twenty Eight Million
-dollars($28,000,000,00) that I have with a finance/Security Company
-abroad. I will want you to help me collect this deposit and despatch it
-to charity organizations.
- 
- 
- I have set aside 20% for you and for your time.
- 
- God be with you.
+Thanks
 
+-- 
+--
+Cuauhtemoc Covarrubias
+Hardware Design Engineer
+Diseño y Desarrollo Tecnologico, S.C.
+Tel./Fax +52 33 3126 0861
+temoc@didtec.com.mx
 
-DAVID ELLIS
+--
+Esta comunicación es confidencial y dirigida solamente para el
+destinatario. Se prohíbe cualquier revisión, uso, acceso o distribución
+no autorizada. Si usted cree que este mensaje se le ha enviado por error,
+notificar por favor el remitente contestando a esta transmisión y borrar
+este mensaje sin divulgarlo. Gracias.
 
-
-
-___________________________________________________________________________
-Mail sent from WebMail service at PHP-Nuke Powered Site
-- http://yoursite.com
+Los correos electrónicos que incluyen archivos adjuntos, son susceptibles
+a la corrupción de información, interrupción o enmiendas no autorizadas,
+falsificación y virus, por lo tanto nosotros solamente enviamos y recibimos
+correos electrónicos bajo la base de que no somos responsables por ningún
+tipo de corrupción, enmienda, intercepción, falsificación o virus o por
+cualquier consecuencia derivada de lo anterior.
+----------------------------------------------------------------------------
+This message contains confidential information and is intended only for
+the individual named. If you are not the named addressee you should not
+disseminate, distribute or copy this e-mail. Please notify the sender
+immediately by e-mail if you have received this e-mail by mistake and
+delete this e-mail from your system. E-mail transmission cannot be
+guaranteed to be secure or error-free as information could be
+intercepted, corrupted, lost, destroyed, arrive late or incomplete, or
+contain viruses. The sender therefore does not accept liability for any
+errors or omissions in the contents of this message, which arise as a
+result of e-mail transmission. If verification is required please
+request a hard-copy version.
