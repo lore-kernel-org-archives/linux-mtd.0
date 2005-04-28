@@ -1,19 +1,13 @@
-Received: from netserv.ipi.ac.ru ([83.149.245.1] helo=ipi.ac.ru)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DR30Q-0003sW-Cy
-	for linux-mtd@lists.infradead.org; Thu, 28 Apr 2005 03:00:15 -0400
-Message-ID: <427089FF.4020704@ipi.ac.ru>
-Date: Thu, 28 Apr 2005 11:00:15 +0400
-From: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
+Date: Thu, 28 Apr 2005 20:22:33 +0900
+From: olsombergs <olsombergs@elvismen.com>
+To: olsombergs@sify.com
+Message-ID: <38e96947772f13bed72879ad81f788aa@elvismen.com>
 MIME-Version: 1.0
-To: Todd Poynor <tpoynor@mvista.com>
-References: <426F40A3.8010308@ipi.ac.ru>	<1114592403.879.175.camel@tglx.tec.linutronix.de>
-	<426F56C1.6020204@ipi.ac.ru> <426FD97D.9000105@mvista.com>
-In-Reply-To: <426FD97D.9000105@mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand locking
+Cc: 
+Subject: YUKOS OIL
+Reply-To: olsom_bergs_111@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +17,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Todd Poynor wrote:
-> Timofei V. Bondarenko wrote:
-> 
->> It would be nice to unlock the rw partitions only.
->> After add_mtd_partitions() my startap code has no handle to actual 
->> partition info.
->> The mtd_partition.mtdp seems only choice, though it prevents 
->> partitions from registering...
->> So, could couple of lines in add_mtd_partitions() do that work?
-> 
-> If I understand correctly, it may be the same issue I ran into on Intel 
-> NOR flash: the chip driver (which may have the knowledge of whether the 
-> particular chips are locked or lockable) gets to see the "whole device" 
-> struct mtd_info at probe time, but doesn't see the "partition" structs 
-> registered later via add_mtd_partitions(), which have the per-partition 
-> r/w flags.
+Dear Friend,
 
-Yes, exactly.
 
-> I tried adding a callback to the chip driver at each device/partition 
-> add (see first patch attempt in recent "Fixup Intel flash that powers up 
-> locked" thread).  But I believe that was part of what was (justifiably) 
-> deemed messy about the patch.
+I am Mr Olsom Berghart a personal treasurer to Mikhail Khodorkovsky the
+richest man in Russia and owner of the following companies:Chairman 
+CEO:
+YUKOS OIL (Russian Most Largest Oil Company)Chairman CEO: Menatep SBP 
+Bank
+(A well reputable financial institution with its 
+branches
+all over the world)
+SOURCE OF FUNDS:
+I have a profiling amount in an excess of US$100.5M, which I seek your
+partnership in accommodating for me. You will be rewarded with 4% of 
+the
+total sum for your partnership. Can you be my partner on this?  
+INTRODUCTION OF MY SELF
+As a personal consultant to him, authority was handed over to me in 
+transfer
+of money of an American oil merchant for his last oil deal with my boss
+Mikhail Khodorkovsky. Already the funds have left the shore of Russia 
+to an
+European private bank where the final
+crediting is expected to be carried out. While I was on the process, My 
+Boss
+got arrested for his involvement in politics by financing the leading 
+and
+opposing political parties (the Union of Right Forces,
+led by Boris Nemtsov, and Yabloko, a liberal/social democratic party 
+led by
+Gregor Yavlinsky) which poses treat to President Vladimir Putin second
+tenure as Russian president. You can catch more of the story on this
+website: http://www.opendemocracy.net/debates/article-3-56-1409.jspor
+http://newsfromrussia.com/main/2003/11/13/51215.html  
+YOUR ROLE:
+All I need from you is to stand as the beneficiary of the above quoted 
+sum
+and I will re-profile the funds with your name, which will enable the
+European bank transfer the sum to you. I have decided to use this sum 
+to
+relocate to American continent and never to be connected to any 
+of
+Mikhail Khodorkovsky conglomerates. The transaction has to be concluded 
+in 2
+weeks before Mikhail Khodorkovsky is out on bail. As
+soon as I confirm your readiness to conclude the transaction with me, I 
+will
+provide you with the details.
+Thank you very much
+ 
+Regards
 
-Do you mean 'mtd_info::notify_add' ?
-I've mentioned the 'mtd_partition::mtdp' - it could be an alternative
-(a bit complicated though). The register_mtd_user() also may help...
+Olsom Berghart(Mr)
 
-> So far the general verdict on these flashes that power up locked seems 
-> to be either leave all blocks locked or unlock all blocks (either in the 
-> bootloader or at flash probe time), and let custom code in userspace 
-> lock/unlock what is needed.  I do like the idea of the kernel rectifying 
-> lock status with the map flags myself, though...
-
-I'm not complaining about.
-
---
-	Timofei
+NB: Do contact me through this secure email olsom_bergs_111@yahoo.fr
