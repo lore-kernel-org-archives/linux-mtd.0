@@ -1,22 +1,14 @@
-Received: from megamail.megared.com.mx ([200.52.207.52]
-	helo=unix.megared.net.mx)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DRXcS-0001O7-W9
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 11:41:33 -0400
-Received: from [10.40.241.247] ([10.40.241.247])
-	by unix.megared.net.mx (8.11.7/8.11.7) with ESMTP id j3TFf8O37936
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Apr 2005 10:41:11 -0500 (CDT)
-Message-ID: <42725591.8010405@didtec.com.mx>
-Date: Fri, 29 Apr 2005 10:41:05 -0500
-From: Cuauhtemoc Covarrubias Carranza <temoc@didtec.com.mx>
-MIME-Version: 1.0
+Received: from web54109.mail.yahoo.com ([206.190.37.244])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DRcxy-0002By-Sw
+	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 17:24:07 -0400
+Message-ID: <20050429212410.49709.qmail@web54109.mail.yahoo.com>
+Date: Fri, 29 Apr 2005 14:24:10 -0700 (PDT)
+From: Sam Pham <anhmn@yahoo.com>
 To: linux-mtd@lists.infradead.org
-References: <42713BCB.8080107@didtec.com.mx> <4271D7D7.1070801@yandex.ru>
-In-Reply-To: <4271D7D7.1070801@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Subject: Re: pxa263 flash memory (Strataflash K3)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: mtd emulation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
+I'd like to evaluate JFFS2.  Has anyone done this
+before?  Does linux have the capability of emulating
+mtd block device and mtd memory so that I can run
+JFFS2 on top of it without using the actual flash?
 
-> >This message contains confidential information and is intended only for
-> >the individual named. If you are not the named addressee you should not
-> >disseminate, distribute or copy this e-mail.
->
-> Probably it is illegal to answer to such mails.
->
-Please accept my apologies, the disclaimer was included on a mistake, 
-please ignore it.
+Thanks.
 
--- 
---
-Cuauhtemoc Covarrubias Carranza
-Hardware Design Engineer
-Diseño y Desarrollo Tecnologico, S.C.
-Tel./Fax +52 33 3126 0861
-temoc@didtec.com.mx
+Sam
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
