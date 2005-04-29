@@ -1,18 +1,20 @@
 Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DRdXg-0002c9-5x
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 18:01:01 -0400
-Message-ID: <4272AE99.6090008@mvista.com>
-Date: Fri, 29 Apr 2005 15:00:57 -0700
+	id 1DRdpY-0002o4-EO
+	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 18:19:29 -0400
+Message-ID: <4272B2F0.3090803@mvista.com>
+Date: Fri, 29 Apr 2005 15:19:28 -0700
 From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-To: Talat Ozyagcilar <tozyagcilar@gmail.com>
-References: <57258408050429071549faab15@mail.gmail.com>
-In-Reply-To: <57258408050429071549faab15@mail.gmail.com>
+To: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
+References: <426F40A3.8010308@ipi.ac.ru>	<1114592403.879.175.camel@tglx.tec.linutronix.de>
+	<426F56C1.6020204@ipi.ac.ru> <426FD97D.9000105@mvista.com>
+	<427089FF.4020704@ipi.ac.ru>
+In-Reply-To: <427089FF.4020704@ipi.ac.ru>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd erase error
+Subject: Re: nand locking
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Talat Ozyagcilar wrote:
+Timofei V. Bondarenko wrote:
+> Todd Poynor wrote:
 ...
-> mtdblock: writing cached data for "RootFS" at 0x0, size 0x20000
-> Chip reports voltage low on erase: status 0xa8
-...
-> Is this really a hardware problem, or has anybody come across this? 
+>> I tried adding a callback to the chip driver at each device/partition 
+>> add...
+> 
+> 
+> Do you mean 'mtd_info::notify_add' ?
 
-It means the driver for the chip's connection to your board (probably) 
-isn't raising the voltage to the proper level (called VPP in the mtd 
-code) required by the chip for an erase operation.  Various code paths 
-can nest VPP enables/disables in unbalanced ways, often causing 
-problems.  If this is the case in your situation, info in
-http://lists.infradead.org/pipermail/linux-mtd/2005-January/011517.html
-may help.
+Yes.
+
+> I've mentioned the 'mtd_partition::mtdp' - it could be an alternative
+> (a bit complicated though). The register_mtd_user() also may help...
+
+I originally tried the register_mtd_user() route, but in the case of 
+partitions it is passed the "slave" struct mtd_info, while only the 
+"master" whole-device struct has been filled in with chip-driver-private 
+info (and only mtdpart.c knows how to map the slave back to the master), 
+so that would need some ugly tweaks as well...
 
 -- 
 Todd
