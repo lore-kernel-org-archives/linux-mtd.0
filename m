@@ -1,26 +1,22 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DRWhP-00016M-14
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 10:42:35 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DRWZG-0001tM-Cm
-	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 16:34:17 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Apr 2005 16:34:10 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Apr 2005 16:34:10 +0200
+Received: from megamail.megared.com.mx ([200.52.207.52]
+	helo=unix.megared.net.mx)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DRXcS-0001O7-W9
+	for linux-mtd@lists.infradead.org; Fri, 29 Apr 2005 11:41:33 -0400
+Received: from [10.40.241.247] ([10.40.241.247])
+	by unix.megared.net.mx (8.11.7/8.11.7) with ESMTP id j3TFf8O37936
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 Apr 2005 10:41:11 -0500 (CDT)
+Message-ID: <42725591.8010405@didtec.com.mx>
+Date: Fri, 29 Apr 2005 10:41:05 -0500
+From: Cuauhtemoc Covarrubias Carranza <temoc@didtec.com.mx>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Fri, 29 Apr 2005 14:30:27 +0000 (UTC)
-Message-ID: <loom.20050429T162520-770@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: summary patch
+References: <42713BCB.8080107@didtec.com.mx> <4271D7D7.1070801@yandex.ru>
+In-Reply-To: <4271D7D7.1070801@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: Re: pxa263 flash memory (Strataflash K3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Artem B. Bityuckiy wrote:
 
-after applying summary patch I start getting messages like:
+> >This message contains confidential information and is intended only for
+> >the individual named. If you are not the named addressee you should not
+> >disseminate, distribute or copy this e-mail.
+>
+> Probably it is illegal to answer to such mails.
+>
+Please accept my apologies, the disclaimer was included on a mistake, 
+please ignore it.
 
-JFFS2: not enough space for summary, padsize = -530
-JFFS2: not enough space for summary, padsize = -199
-JFFS2: not enough space for summary, padsize = -992
-JFFS2: not enough space for summary, padsize = -127
-
-Is that a note, a warning or an error?
-kernel 2.6.10 with March 28th 2005 mtd snapshot.
-
-Sergei Sharonov
+-- 
+--
+Cuauhtemoc Covarrubias Carranza
+Hardware Design Engineer
+Diseño y Desarrollo Tecnologico, S.C.
+Tel./Fax +52 33 3126 0861
+temoc@didtec.com.mx
