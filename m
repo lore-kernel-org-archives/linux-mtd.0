@@ -1,28 +1,23 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DSdcH-0002Mr-9T
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 12:17:54 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DSdVu-0005Xa-F5
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 18:11:22 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 May 2005 18:11:18 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 May 2005 18:11:18 +0200
-To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Mon, 2 May 2005 16:10:17 +0000 (UTC)
-Message-ID: <loom.20050502T180712-856@post.gmane.org>
-References: <loom.20050429T162520-770@post.gmane.org>
-	<42760103.4010202@inf.u-szeged.hu>
+Received: from zproxy.gmail.com ([64.233.162.198])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DShPn-0002qZ-7f
+	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 16:21:15 -0400
+Received: by zproxy.gmail.com with SMTP id 8so1337913nzo
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 02 May 2005 13:20:58 -0700 (PDT)
+Message-ID: <6934efce050502132048ba8dd6@mail.gmail.com>
+Date: Mon, 2 May 2005 13:20:58 -0700
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Cuauhtemoc Covarrubias Carranza <temoc@didtec.com.mx>
+In-Reply-To: <42713BCB.8080107@didtec.com.mx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: summary patch
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <42713BCB.8080107@didtec.com.mx>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: pxa263 flash memory (Strataflash K3)
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,12 +27,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-> I think you you did not used sumtool2, did you? (it is a user-space tool 
-> for generating summary for an image)
-
-I do not use an image, just mount jffs2 on a freshly erased chip. Do I still
-need to do something special after I erase NAND?
-
-Sergei
+What is the actual error message in the flash status register when the
+timeout occurs?
