@@ -1,19 +1,18 @@
-Received: from metis.extern.pengutronix.de ([83.236.181.26])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DSWpY-0001GR-Sf
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 05:03:11 -0400
-Received: from sha by metis.extern.pengutronix.de with local (Exim 3.36 #1
-	(Debian)) id 1DSWpY-0004Yz-00
-	for <linux-mtd@lists.infradead.org>; Mon, 02 May 2005 11:03:08 +0200
-Date: Mon, 2 May 2005 11:03:08 +0200
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050502090308.GA16890@metis.pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Sender: Sascha Hauer <sha@pengutronix.de>
-Subject: enable_vpp / disable_vpp
+	id 1DSXDC-0001T4-UF
+	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 05:27:35 -0400
+Message-ID: <42760103.4010202@inf.u-szeged.hu>
+Date: Mon, 02 May 2005 11:29:23 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+References: <loom.20050429T162520-770@post.gmane.org>
+In-Reply-To: <loom.20050429T162520-770@post.gmane.org>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: summary patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Sergei,
 
-I'm using cfi_cmdset_0001.c (intel strata) on a custom pxa board. Our
-mapping driver implements enable_vpp and disable_vpp. We often receive
-"Chip reports voltage low on erase" errors. The driver seems to disable
-vpp during erase operations. If I short-ciruit the disable_vpp function
-everything works fine. A comment gives a hint on how to do this correct:
+> JFFS2: not enough space for summary, padsize = -530
+> JFFS2: not enough space for summary, padsize = -199
+> JFFS2: not enough space for summary, padsize = -992
+> JFFS2: not enough space for summary, padsize = -127
+> 
+> Is that a note, a warning or an error?
 
-/* We should really make set_vpp() count, rather than doing this */
+It is a warning.
 
-Is this feature planned for the future? 
+I think you you did not used sumtool2, did you? (it is a user-space tool 
+for generating summary for an image)
 
-Sascha
+Regards,
+Ferenc
