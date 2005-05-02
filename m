@@ -1,23 +1,20 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DSKTK-000891-O6
-	for linux-mtd@lists.infradead.org; Sun, 01 May 2005 15:51:23 -0400
-Received: from there (unknown [203.96.30.19])
-	by desire.actrix.co.nz (Postfix) with SMTP id 2F61115607
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  2 May 2005 07:51:19 +1200 (NZST)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 2 May 2005 07:51:43 +1200
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DSWiX-00016A-Pm
+	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 04:55:54 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: manningc2@actrix.gen.nz
+In-Reply-To: <20050501195119.2F61115607@desire.actrix.co.nz>
 References: <20050429212410.49709.qmail@web54109.mail.yahoo.com>
-In-Reply-To: <20050429212410.49709.qmail@web54109.mail.yahoo.com>
-MIME-Version: 1.0
+	<20050501195119.2F61115607@desire.actrix.co.nz>
+Content-Type: text/plain; charset=KOI8-R
+Date: Mon, 02 May 2005 12:55:24 +0400
+Message-Id: <1115024124.3483.19.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Message-Id: <20050501195119.2F61115607@desire.actrix.co.nz>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: mtd emulation --> NAND?
-Reply-To: manningc2@actrix.gen.nz
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 30 April 2005 09:24, Sam Pham wrote:
-> I'd like to evaluate JFFS2.  Has anyone done this
-> before?  Does linux have the capability of emulating
-> mtd block device and mtd memory so that I can run
-> JFFS2 on top of it without using the actual flash?
->
+В Пнд, 02/05/2005 в 07:51 +1200, Charles Manning пишет:
+> I use a "high level"  mtd NAND emulation that I wrote for YAFFS testing. This 
+> just provides the NAND mtd functions and uses none of the mtd.
+> 
+> I'm hoping there's a NAND emulation that emulates NAND at a very low level by 
+> accepting ALE/CLE and byte read/writes. This would provide, say, emulation of 
+> a 256Mbyte NAND part while exercising the whole of nand.c etc. This allows 
+> complete testing of file system + mtd code without having any hardware on 
+> hand.
+> 
+You might take a look at drivers/mtd/nand/nandsim.c
 
-Further to this question, is there an emulation of NAND?
+It emulates NAND in RAM but I think it will be problematic to allocate
+256 MiB of memory. But you may think of some trick... Nonetheless, I
+used it to emulate 64MiB flashes and it works fine and even may emulate
+some delays. I also may perform logging of NAND operations.
 
-I use a "high level"  mtd NAND emulation that I wrote for YAFFS testing. This 
-just provides the NAND mtd functions and uses none of the mtd.
+Cheers,
+Artem.
 
-I'm hoping there's a NAND emulation that emulates NAND at a very low level by 
-accepting ALE/CLE and byte read/writes. This would provide, say, emulation of 
-a 256Mbyte NAND part while exercising the whole of nand.c etc. This allows 
-complete testing of file system + mtd code without having any hardware on 
-hand.
-
--- Charles
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
