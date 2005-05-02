@@ -1,20 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DSWiX-00016A-Pm
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 04:55:54 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: manningc2@actrix.gen.nz
-In-Reply-To: <20050501195119.2F61115607@desire.actrix.co.nz>
-References: <20050429212410.49709.qmail@web54109.mail.yahoo.com>
-	<20050501195119.2F61115607@desire.actrix.co.nz>
-Content-Type: text/plain; charset=KOI8-R
-Date: Mon, 02 May 2005 12:55:24 +0400
-Message-Id: <1115024124.3483.19.camel@sauron.oktetlabs.ru>
+Received: from metis.extern.pengutronix.de ([83.236.181.26])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DSWpY-0001GR-Sf
+	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 05:03:11 -0400
+Received: from sha by metis.extern.pengutronix.de with local (Exim 3.36 #1
+	(Debian)) id 1DSWpY-0004Yz-00
+	for <linux-mtd@lists.infradead.org>; Mon, 02 May 2005 11:03:08 +0200
+Date: Mon, 2 May 2005 11:03:08 +0200
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050502090308.GA16890@metis.pengutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd emulation --> NAND?
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Sascha Hauer <sha@pengutronix.de>
+Subject: enable_vpp / disable_vpp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-В Пнд, 02/05/2005 в 07:51 +1200, Charles Manning пишет:
-> I use a "high level"  mtd NAND emulation that I wrote for YAFFS testing. This 
-> just provides the NAND mtd functions and uses none of the mtd.
-> 
-> I'm hoping there's a NAND emulation that emulates NAND at a very low level by 
-> accepting ALE/CLE and byte read/writes. This would provide, say, emulation of 
-> a 256Mbyte NAND part while exercising the whole of nand.c etc. This allows 
-> complete testing of file system + mtd code without having any hardware on 
-> hand.
-> 
-You might take a look at drivers/mtd/nand/nandsim.c
+Hi all,
 
-It emulates NAND in RAM but I think it will be problematic to allocate
-256 MiB of memory. But you may think of some trick... Nonetheless, I
-used it to emulate 64MiB flashes and it works fine and even may emulate
-some delays. I also may perform logging of NAND operations.
+I'm using cfi_cmdset_0001.c (intel strata) on a custom pxa board. Our
+mapping driver implements enable_vpp and disable_vpp. We often receive
+"Chip reports voltage low on erase" errors. The driver seems to disable
+vpp during erase operations. If I short-ciruit the disable_vpp function
+everything works fine. A comment gives a hint on how to do this correct:
 
-Cheers,
-Artem.
+/* We should really make set_vpp() count, rather than doing this */
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Is this feature planned for the future? 
+
+Sascha
