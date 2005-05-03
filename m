@@ -1,23 +1,15 @@
-Received: from zproxy.gmail.com ([64.233.162.198])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DShPn-0002qZ-7f
-	for linux-mtd@lists.infradead.org; Mon, 02 May 2005 16:21:15 -0400
-Received: by zproxy.gmail.com with SMTP id 8so1337913nzo
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 May 2005 13:20:58 -0700 (PDT)
-Message-ID: <6934efce050502132048ba8dd6@mail.gmail.com>
-Date: Mon, 2 May 2005 13:20:58 -0700
-From: Jared Hulbert <jaredeh@gmail.com>
-To: Cuauhtemoc Covarrubias Carranza <temoc@didtec.com.mx>
-In-Reply-To: <42713BCB.8080107@didtec.com.mx>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <42713BCB.8080107@didtec.com.mx>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: pxa263 flash memory (Strataflash K3)
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Received: from xena.bway.net ([216.220.96.26] helo=mail.bway.net)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DT7AB-0007IQ-N6
+	for linux-mtd@lists.infradead.org; Tue, 03 May 2005 19:50:52 -0400
+Message-ID: <42780E0E.9090005@bway.net>
+Date: Tue, 03 May 2005 23:49:34 +0000
+From: "Ryan B. Lynch" <rlynch@bway.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Speed of JFFS2 on compact flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,5 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What is the actual error message in the flash status register when the
-timeout occurs?
+I'm testing a JFFS2 filesystem on a compact flash card.  The filesystem 
+is almost 1GB in size, nearly the entire flash card.
+
+'mount' works normally, but it takes a while to finish mounting the 
+device.  Some write operations, especially right after mounting, also 
+take a long time.
+
+Is this behavior normal?  I've read in the archives that larger JFFS2 
+filesystems can be slow.  Has anyone else played around with a JFFS2 
+filesystem this big, and if so, could you give me your impressions of 
+using it?
+
+-Ryan
