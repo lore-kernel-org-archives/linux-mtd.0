@@ -1,11 +1,11 @@
-Received: from web51009.mail.yahoo.com ([206.190.39.128])
+Received: from web52702.mail.yahoo.com ([206.190.39.153])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTNjp-0003U5-S8
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 13:32:46 -0400
-Message-ID: <20050504173249.28908.qmail@web51009.mail.yahoo.com>
-Date: Wed, 4 May 2005 10:32:49 -0700 (PDT)
-From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-To: dedekind@infradead.org
+	id 1DTPDH-0003uz-Vh
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 15:07:16 -0400
+Message-ID: <20050504190718.99199.qmail@web52702.mail.yahoo.com>
+Date: Wed, 4 May 2005 12:07:17 -0700 (PDT)
+From: Michael <xemc@yahoo.com>
+To: Vahid Fereydunkolahi <fereydunk@yahoo.com>, dedekind@infradead.org
 In-Reply-To: 6667
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -20,13 +20,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The comment "JFFS2 handles bad blocks just fine." is
-an strange comment. As far as I know the handling of
-the bad blocks must be managed by the file system and
-mtd device will only check for bad blocks for erase operation.
 
+--- Vahid Fereydunkolahi <fereydunk@yahoo.com> wrote:
+> The comment "JFFS2 handles bad blocks just fine." is
+> an strange comment. As far as I know the handling of
+> the bad blocks must be managed by the file system and
+> mtd device will only check for bad blocks for erase operation.
+> 
 
-		
-Discover Yahoo! 
-Get on-the-go sports scores, stock quotes, news and more. Check it out! 
-http://discover.yahoo.com/mobile.html
+I think you just embarrased yourself.  JFFS2 is Journalling Flash
+File System 2, which works overtop of MTD, the Memory Technology
+Devices [driver layer].
+
+And I think it handles them just fine, too.  Did you look at
+linux-mtd.infradead.org?  There's lots of good info there, and it's
+a lot easier than searching the mailing list. (which is useful as
+well)
+
+Mike
