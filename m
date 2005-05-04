@@ -1,19 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTFRS-0000ze-FP
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 04:41:16 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: "Ryan B. Lynch" <rlynch@bway.net>
-In-Reply-To: <42780E0E.9090005@bway.net>
-References: <42780E0E.9090005@bway.net>
-Content-Type: text/plain
-Date: Wed, 04 May 2005 12:37:35 +0400
-Message-Id: <1115195855.8559.3.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Speed of JFFS2 on compact flash
-Reply-To: dedekind@infradead.org
+Received: from v-mail.vsnl.com ([202.54.117.17] helo=vmail.vsnl.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DTGUm-0001WU-G5
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 05:48:45 -0400
+Received: from [10.50.41.164] ([127.0.0.1])
+	by vmail.vsnl.com (iPlanet Messaging Server 5.2 HotFix 1.16 (built May
+	14 2003)) with ESMTP id <0IFY000UZLX36T@vmail.vsnl.com> for
+	linux-mtd@lists.infradead.org; Wed, 04 May 2005 15:18:40 +0530 (IST)
+Date: Wed, 04 May 2005 15:17:14 +0530
+From: "amareesh@tataelxsi.co.in" <amareesh@tataelxsi.co.in>
+To: linux-mtd@lists.infradead.org
+Message-id: <1115200034.3851.11.camel@localhost.localdomain>
+MIME-version: 1.0
+Content-type: text/plain
+Content-transfer-encoding: 7BIT
+Subject: Booting from onboard flash
+Reply-To: amareesh@tataelxsi.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-05-03 at 23:49 +0000, Ryan B. Lynch wrote:
-> I'm testing a JFFS2 filesystem on a compact flash card.  The filesystem 
-> is almost 1GB in size, nearly the entire flash card.
-> 
-> 'mount' works normally, but it takes a while to finish mounting the 
-> device.  Some write operations, especially right after mounting, also 
-> take a long time.
+Hi 
 
-The answer is - JFFS2 is very bad solution in such a large flashes. And
-it is normal it is slow on them. Please, read http://www.linux-
-mtd.infradead.org/tech/JFFS3design/node3.html for more info.
+Plzz help me on this. .
+I want to boot Linux image straight from my onboard flash.
+
+WHat i have ::
+
+1. Motorola coldfire 5272C3 based board.
+2. Complied uClinux for the same.
+3. have the image for LINUX +FILESYSTEM(romfs)
+4. Have copied this image to flash.
+
+What i wanna do :
+
+I want to use the dBug option go <start address> to boot straight from
+flash.
+As of now, It is not doing so after i replug the power cable. 
+I have to copy the entire image block from the flash to RAm and then
+give the command 'go <RAMaddress>'. 
+
+Can anyone plzz help me on this.
+
+Amareesh
