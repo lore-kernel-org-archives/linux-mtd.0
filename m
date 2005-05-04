@@ -1,18 +1,18 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTFRS-0000zd-FN
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 04:41:15 -0400
+	id 1DTFRS-0000ze-FP
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 04:41:16 -0400
 From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-In-Reply-To: <20050504001538.77696.qmail@web51001.mail.yahoo.com>
-References: <20050504001538.77696.qmail@web51001.mail.yahoo.com>
+To: "Ryan B. Lynch" <rlynch@bway.net>
+In-Reply-To: <42780E0E.9090005@bway.net>
+References: <42780E0E.9090005@bway.net>
 Content-Type: text/plain
-Date: Wed, 04 May 2005 12:39:54 +0400
-Message-Id: <1115195994.8559.6.camel@sauron.oktetlabs.ru>
+Date: Wed, 04 May 2005 12:37:35 +0400
+Message-Id: <1115195855.8559.3.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: two questions about jffs2
+Subject: Re: Speed of JFFS2 on compact flash
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,21 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-05-03 at 17:15 -0700, Vahid Fereydunkolahi wrote:
-> Hi,
->  How does jffs2 handle the bad blocks on the NAND
-> flash? ( I noticed that at initialization jffs2 scans
-> the devivce and creates a bad block list, but it never
-> uses the bad block list. It seems that if the block is
-> bad it is not put into the block list).
-JFFS2 handles bad blocks just fine. Some info may be found at the MTD
-web site. Visit it please.
+On Tue, 2005-05-03 at 23:49 +0000, Ryan B. Lynch wrote:
+> I'm testing a JFFS2 filesystem on a compact flash card.  The filesystem 
+> is almost 1GB in size, nearly the entire flash card.
+> 
+> 'mount' works normally, but it takes a while to finish mounting the 
+> device.  Some write operations, especially right after mounting, also 
+> take a long time.
 
-> Does current jffs2 and mtd support the NAND devices
-> with Page size more than 528 bytes?
-Yes, it does.
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+The answer is - JFFS2 is very bad solution in such a large flashes. And
+it is normal it is slow on them. Please, read http://www.linux-
+mtd.infradead.org/tech/JFFS3design/node3.html for more info.
