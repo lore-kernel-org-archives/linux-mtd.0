@@ -1,18 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from rproxy.gmail.com ([64.233.170.197])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTSqu-0005cN-6r
-	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 19:00:24 -0400
-Message-ID: <42795404.3010601@mvista.com>
-Date: Wed, 04 May 2005 16:00:20 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Sascha Hauer <s.hauer@pengutronix.de>
-References: <20050502090308.GA16890@metis.pengutronix.de>
-In-Reply-To: <20050502090308.GA16890@metis.pengutronix.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: enable_vpp / disable_vpp
+	id 1DTVK3-0006HU-Ft
+	for linux-mtd@lists.infradead.org; Wed, 04 May 2005 21:38:40 -0400
+Received: by rproxy.gmail.com with SMTP id c16so327738rne
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 04 May 2005 18:38:43 -0700 (PDT)
+Message-ID: <61cc712d050504183852868c04@mail.gmail.com>
+Date: Wed, 4 May 2005 18:38:43 -0700
+From: Kylo Ginsberg <kylo.ginsberg@gmail.com>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: smallest jffs2 file system possible
+Reply-To: kylo@kylo.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sascha Hauer wrote:
-> Hi all,
-> 
-> I'm using cfi_cmdset_0001.c (intel strata) on a custom pxa board. Our
-> mapping driver implements enable_vpp and disable_vpp. We often receive
-> "Chip reports voltage low on erase" errors. The driver seems to disable
-> vpp during erase operations. If I short-ciruit the disable_vpp function
-> everything works fine. A comment gives a hint on how to do this correct:
-> 
-> /* We should really make set_vpp() count, rather than doing this */
-> 
-> Is this feature planned for the future? 
+I would like to create the smallest jffs2 file system possible.  We
+want to have a small separate mount point to store a small number=20
+(<5) of small text files (<1k each).
 
-One stab at this was
-http://lists.infradead.org/pipermail/linux-mtd/2005-January/011517.html
+Empirically I've determined that this minimum size is effectively 5 *
+N, where N is the physical erase block size of the underlying flash
+part.  Is this correct?  Are there any workaround or patches to enable
+building a smaller file system?  Is a different f/s recommended for
+such an application (must be r/w, don't care about compression
+particularly).
 
-comments or alternate suggestions would be welcome.  You can also modify 
-your map driver to do this instead.
-
--- 
-Todd
+Thanks,
+Kylo
