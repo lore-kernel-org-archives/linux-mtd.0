@@ -1,30 +1,19 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTcWK-0000DU-8I
-	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 05:19:49 -0400
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.34) id 1DTcWO-0004GI-GN
-	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 11:19:52 +0200
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SAVSMTP 3.1.0.29) with SMTP id
-	M2005050511195223043
-	for <linux-mtd@lists.infradead.org>; Thu, 05 May 2005 11:19:52 +0200
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.34) id 1DTcWO-0004Jt-Db
-	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 11:19:52 +0200
-Received: from [160.114.36.214] (kpax.inf.u-szeged.hu [160.114.36.214])
-	by mail.inf.u-szeged.hu (Postfix) with ESMTP id 5413A2396C
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  5 May 2005 11:19:52 +0200 (CEST)
-Message-ID: <4279E5A9.5050306@inf.u-szeged.hu>
-Date: Thu, 05 May 2005 11:21:45 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DTeBL-0000nG-Go
+	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 07:06:16 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: kylo@kylo.net
+In-Reply-To: <61cc712d050504183852868c04@mail.gmail.com>
+References: <61cc712d050504183852868c04@mail.gmail.com>
+Content-Type: text/plain
+Date: Thu, 05 May 2005 15:05:43 +0400
+Message-Id: <1115291143.8559.16.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: summary
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: smallest jffs2 file system possible
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+On Wed, 2005-05-04 at 18:38 -0700, Kylo Ginsberg wrote:
+> Empirically I've determined that this minimum size is effectively 5 *
+> N, where N is the physical erase block size of the underlying flash
+> part.  Is this correct?  Are there any workaround or patches to enable
+> building a smaller file system?  Is a different f/s recommended for
+> such an application (must be r/w, don't care about compression
+> particularly).
+> 
+JFFS2 always reserves several blocks for GC. So I doubt you can create
+smaller FS without hacking.
 
-Some news about our summary (mount time speed up) works:
-
-A new version of erase block summary has been released. 
-JFFS3 will be updated soon, too. Changes:
-- there is a fixed "may sleep" bug (thanks for Artem and Jarkko)
-- NO_CRC option removed (it may caused incorrect behavoiur)
-
-A new kind of summary has been introduced. It is called centralized 
-summary (CS). It stores every important memory data structures (relevant 
-patrs of inode cache, raw node references, jeb info ans lists) onto the 
-flash at umount time. If there was clean umount at the next mount this 
-stored information will be read directly into the memory and additional 
-scanning will not be neccesarry which makes the mounting process so 
-fast. There is no user space tool for CS. The first mount will use the 
-original scanning process, and from the second mount will be fast (if 
-there was clean umount before). It is very new, should be tested. It 
-works on NAND chips only, yet. You can download it from our web-site 
-(http://www.inf.u-szeged.hu/jffs2/) Any feedbacks are welcome.
-
-Bye,
-Ferenc
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
