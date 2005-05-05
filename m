@@ -1,15 +1,19 @@
-Received: from xena.bway.net ([216.220.96.26] helo=mail.bway.net)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DTZme-0007RE-Cm
-	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 02:24:29 -0400
-Message-ID: <4279BBD2.7090408@bway.net>
-Date: Thu, 05 May 2005 06:23:14 +0000
-From: "Ryan B. Lynch" <rlynch@bway.net>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DTc7D-0008Ie-CT
+	for linux-mtd@lists.infradead.org; Thu, 05 May 2005 04:53:52 -0400
+Message-ID: <4279DF8F.3020409@inf.u-szeged.hu>
+Date: Thu, 05 May 2005 10:55:43 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+References: <loom.20050429T162520-770@post.gmane.org>	<42760103.4010202@inf.u-szeged.hu>
+	<loom.20050502T180712-856@post.gmane.org>
+In-Reply-To: <loom.20050502T180712-856@post.gmane.org>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Setting up multiple 'blkmtd' devices
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: summary patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've been using the 'blkmtd' driver as a module, and I understand that 
-the only way to set up the device association and create a 
-'dev/mtdblock/*' device is to load the module with the option 
-'device=/dev/xxx'.
+Hi Sergei,
 
-Couple of questions:
+Unfortunatelly we don't have a real NAND device, just Artem's NAND 
+simulator.
 
-    - Is it possible to load more than one device during the 'modprobe' 
-command, with something like multiple "device=xxx" options?  I tried 
-that exactly, and it doesn't seem to work--it only loads the first 
-device listed.
+The emulated flash is: size:64M, erase block: 128KiB, page size: 2K page.
 
-    - Is it possible to set up additional blkmtd devices after the 
-module has loaded?  If I issue the command 'modprobe blkmtd 
-device=/dev/hdc1', is it possible to add another device later without 
-unloading the module?
+We tried the following:
 
-    - When I've compiled the 'blkmtd' driver into the kernel, I 
-understand that I can associate the block device at boot time with the 
-boot parameter "blkmtd_device=/dev/xxx".  If I don't pass a 
-"blkmtd_device=" parameter at boot-time, is there any way to associate a 
-device later on?
+modprobe nandsim
+flash_eraseall -j /dev/mtd0c
+mount /mnt/flash
+cp linux-2.6.11.7.tar.bz2 /mnt/flash               (35 MB)
+umount /mnt/flash
+mount /mnt/flash
 
-    - Given the compiled-in scenario for the 'blkmtd' driver, is it 
-possible to bring in multiple devices, regardless of whether the 
-boot-time parameter is passed?
+There was no error/warning messages, and using
 
-    - Is there a userspace tool, along the lines of 'losetup' or 
-'brctl', that allows you to manipulate/query blkmtd devices without 
-using the module options?
+jffs2dump -cv /dev/mtd0c |less
 
-I hope these are straightforward enough.  Thanks for the time.
+there was summary nodes on the flash at right places.
 
--Ryan
+How did you used it? Which flash device do you use?
+
+Bye,
+Ferenc
