@@ -1,20 +1,18 @@
-Received: from ihemail2.lucent.com ([192.11.222.163])
+Received: from 207.88.121.43.ptr.us.xo.net ([207.88.121.43]
+	helo=mail.realmsys.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DU3id-0001eQ-Qu
-	for linux-mtd@lists.infradead.org; Fri, 06 May 2005 10:22:20 -0400
-Received: from il0015exch001h.wins.lucent.com (h135-1-23-83.lucent.com
-	[135.1.23.83])
-	by ihemail2.lucent.com (8.12.11/8.12.11) with ESMTP id j46EMNYK001050
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 6 May 2005 09:22:23 -0500 (CDT)
-Message-ID: <B8D764EEF0FACB4B887EBDB3565CAAB31082F424@il0015exch003u.ih.lucent.com>
-From: "Miller, Gary W (Gary)" <gwmiller1@lucent.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Fri, 6 May 2005 09:22:21 -0500 
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: jffs2 root filesystem w/Intel Srataflash problem
+	id 1DU6ao-0002dB-TF
+	for linux-mtd@lists.infradead.org; Fri, 06 May 2005 13:26:29 -0400
+From: Peter Grayson <pgrayson@realmsys.com>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>,
+	linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Fri, 06 May 2005 11:25:58 -0600
+Message-Id: <1115400358.4422.92.camel@pgrayson1.realmsys.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: Centralized Summary
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,95 +22,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Hi,
 
-I'm trying get a jffs2 root filesystem to boot and am having problems. Sorry for the lengthy
-post, but the detail may be helpful.
+I have been evaluating the centralized summary patch (jffs2-summary-
+centsum-20050504.patch) and have discovered some problems. I am running
+a 2.6.10 kernel on a PowerPC 405 platform. I am using a 256MB Samsung
+NAND flash device.
 
-I'm using a 32Mb Intel StrataFlash part (28F256J3), 16 bit bus width, 
-on a board running kernel 2.4.20 on a Mips 5Kc processor. I've got the flash
-partitioned and am trying to use one of the partitions as the jffs2 root filesystem. 
-I created the jffs2 filesystem using mkfs.jffs2 rev. 1.26 (and later tried v1.39). With 
-the kernel booted from an nfs mounted filesystem, I'm able to mount the flash partition 
-and see the root directory structure. When I try to boot using that partition, though, 
-I get the following:
+The first problem occurs when mounting empty flash. In the test I am
+doing, I erase an MTD partition, mount the partition, and then unmount
+the partition.
 
-======
-mtdblock_open
-ok
-mtdblock: read on "LPA636 Linux Flash" at 0x400, size 0x200
-mtdblock: read on "LPA636 Linux Flash" at 0x600, size 0x200
-mtdblock_release
-ok
-mtdblock_open
-ok
-Old JFFS2 bitmask found at 0x00e7ce4c
-You cannot use older JFFS2 filesystems with newer kernels
-VFS: Mounted root (jffs2 filesystem) readonly.
-Mounted devfs on /dev
-Freeing prom memory: 1020kb freed
-Freeing unused kernel memory: 76k freed
-execve of /sbin/ltt_boot_trace failed
-Kernel panic: No init found.  Try passing init= option to kernel.
-======
+  # flash_eraseall /dev/mtd4
+  # mount -t jffs2 /dev/mtdblock4 /mnt
+  # umount /dev/mtdblock4
 
-Starting with an erased partition, if I mount it and copy in the root filesystem by hand, I get the following:
+When I do this, umount never returns. No kernel panic occurs. It appears
+that some sort of deadlock is happening (the umount process is stuck in
+uninterruptible sleep).
 
-====
+The second problem is a kernel panic when I try to create a file. In
+this case, I pre-populate an MTD partition with a filesystem generated
+by mkfs.jffs2 and sumtool2. If I mount, unmount, remount, and then try
+to touch a new file, a kernel panic occurs. This problem is
+reproducible.
 
-mtdblock_open
-ok
-mtdblock: read on "LPA636 Linux Flash" at 0x400, size 0x200
-mtdblock: read on "LPA636 Linux Flash" at 0x600, size 0x200
-mtdblock_release
-ok
-mtdblock_open
-ok
-Old JFFS2 bitmask found at 0x00e7ce4c
-You cannot use older JFFS2 filesystems with newer kernels
-Child dir "usr" (ino #2) of dir ino #1 appears to be a hard link
- -- -cut - more hard link messages--
-Child dir "cron.weekly" (ino #278) of dir ino #197 appears to be a hard link
-VFS: Mounted root (jffs2 filesystem) readonly.
-Mounted devfs on /dev
-Freeing prom memory: 1020kb freed
-Freeing unused kernel memory: 76k freed
-execve of /sbin/ltt_boot_trace failed
-Kernel panic: No init found.  Try passing init= option to kernel.
-======
-
-I then tried a newer version of mkfs.jffs2 v1.39 and get:
-
-=====
-
-mtdblock_open
-ok
-mtdblock: read on "LPA636 Linux Flash" at 0x400, size 0x200
-mtdblock: read on "LPA636 Linux Flash" at 0x600, size 0x200
-mtdblock_release
-ok
-mtdblock_open
-ok
-Old JFFS2 bitmask found at 0x00e7ce4c
-You cannot use older JFFS2 filesystems with newer kernels
-Child dir "boot" (ino #3) of dir ino #1 appears to be a hard link
- -- -cut - more hard link messages--
-VFS: Mounted root (jffs2 filesystem) readonly.
-mount_devfs_fs(): unable to mount devfs, err: -2
-Freeing prom memory: 1020kb freed
-Freeing unused kernel memory: 76k freed
-Warning: unable to open an initial console.
-execve of /sbin/ltt_boot_trace failed
-Argh. Special inode #114 with mode 0xa1ff had more than one node
-Algorithmics/MIPS FPU Emulator v1.5
-jffs2_get_inode_nodes(): Data CRC failed on node at 0x01fffa68: Read 0xf235e621, calculated 0xc32e9a24
- -- -cut - more CRC messages--
+# mount -t jffs2 /dev/mtdblock4 /mnt/mtdb4
+# umount /dev/mtdblock4
+# mount -t jffs2 /dev/mtdblock4 /mnt/mtdb4
+# touch /mnt/mtdb4/foo
+Eeep. Space accounting superblock info is screwed
+free 0x03efffbc + dirty 0x0000b634 + used 000f4a10 + erasing 00000000 +
+bad 00020000 + wasted 00000000 + unchecked 00000000 != total 04000000
+kernel BUG in jffs2_add_physical_node_ref at fs/jffs2/nodemgmt.c:418!
+Oops: Exception in kernel mode, sig: 5 [#1]
+PREEMPT
+NIP: C009BD1C LR: C009BD1C SP: C0233D60 REGS: c0233cb0 TRAP: 0700    Not
+tainted
+MSR: 00029030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+TASK = c3e9e3d0[71] 'touch' THREAD: c0232000
+Last syscall: 5
+GPR00: C009BD1C C0233D60 C3E9E3D0 00000091 00000A98 FFFFFFFF 00000A07
+C0180000
+GPR08: C018E847 C01A0000 00000008 C0233C90 32080093 00005E5C 00108000
+00090000
+GPR16: 00000040 00000020 00000000 7FFFFB30 00000001 00000000 00000000
+C3EDD434
+GPR24: C3E9A6C8 00000000 C022C068 C3EDC4F4 00000000 C023FD64 C3EA9200
+C0245A98
+NIP [c009bd1c] jffs2_add_physical_node_ref+0x28c/0x2c8
+LR [c009bd1c] jffs2_add_physical_node_ref+0x28c/0x2c8
+Call trace:
+ [c009e040] jffs2_write_dnode+0x51c/0x604
+ [c009eab8] jffs2_do_create+0xa0/0x2bc
+ [c0098a70] jffs2_create+0xbc/0x12c
+ [c0057210] vfs_create+0x8c/0xa8
+ [c00575c0] open_namei+0x1a0/0x6f0
+ [c0045734] filp_open+0x38/0x64
+ [c0045a7c] sys_open+0x4c/0x9c
+ [c0002a20] ret_from_syscall+0x0/0x48
+note: touch[71] exited with preempt_count 1
+scheduling while atomic: touch/0x00000001/71
+Call trace:
+ [c015eca8] schedule+0x5c/0x6d8
+ [c003c484] unmap_vmas+0x4b8/0x52c
+ [c0040c50] exit_mmap+0x74/0x170
+ [c0011524] mmput+0x40/0xf0
+ [c0015c0c] do_exit+0x2bc/0xcd4
+ [c00035f0] _exception+0x0/0x70
+ [c0003628] _exception+0x38/0x70
+ [c0003098] ret_from_except_full+0x0/0x4c
+ [c009bd1c] jffs2_add_physical_node_ref+0x28c/0x2c8
+ [c009e040] jffs2_write_dnode+0x51c/0x604
+ [c009eab8] jffs2_do_create+0xa0/0x2bc
+ [c0098a70] jffs2_create+0xbc/0x12c
+ [c0057210] vfs_create+0x8c/0xa8
+ [c00575c0] open_namei+0x1a0/0x6f0
+ [c0045734] filp_open+0x38/0x64
+Trace/breakpoint trap
 
 
-===================
+I am seeing significant mount-time performance improvements with the
+centralized summary patch. Keep up the good work.
 
-Any suggestions?
-
-Thanks,
-
-Gary Miller
+Pete
