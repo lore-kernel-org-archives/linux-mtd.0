@@ -1,24 +1,20 @@
-Received: from rproxy.gmail.com ([64.233.170.200])
+Received: from mail2.racnet.net ([213.144.11.11])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DVk1t-0000MC-Ls
-	for linux-mtd@lists.infradead.org; Wed, 11 May 2005 01:45:10 -0400
-Received: by rproxy.gmail.com with SMTP id y7so57284rne
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 May 2005 22:45:13 -0700 (PDT)
-Message-ID: <f6d0cd0605051022453616327@mail.gmail.com>
-Date: Wed, 11 May 2005 11:15:13 +0530
-From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <4280D2B6.20501@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <f6d0cd0605051004524bab895b@mail.gmail.com>
-	<4280D2B6.20501@inf.u-szeged.hu>
+	id 1DVlrM-0000gN-Pn
+	for linux-mtd@lists.infradead.org; Wed, 11 May 2005 03:42:26 -0400
+Message-ID: <4281B762.8070608@rac.de>
+Date: Wed, 11 May 2005 09:42:26 +0200
+From: Marcus Mikolaiczyk <m.mikolaiczyk@rac.de>
+MIME-Version: 1.0
+To: m.mikolaiczyk@rac.de
+References: <428097CB.3010801@rac.de>
+In-Reply-To: <428097CB.3010801@rac.de>
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: SUMMARY patch for JFFS2
-Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+Subject: Re: partition doesn't end on an erase block -> eraseall - permission
+ denied
+Reply-To: m.mikolaiczyk@rac.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +24,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/10/05, Ferenc Havasi <havasi@inf.u-szeged.hu> wrote:
-> Hi Niraj,
->=20
-> > It gets mounted..and then i completely full this partition ( 5.5 MB)
-> > with data... then i  remove few of the files from this partition..then
-> > i do a sync.
-> > In the next reboot, i get to see lot of error while mounting this parit=
-ion.
->=20
-> Can you send some more information about your flash chip? (erase block
-> size, ...)
+Greetings,
 
+I'm not 100% sure but I think I found the problem. The nand drivers used
+doesn't recognise the 2k pagesize. I've got a linux where the chip is
+not supported an I change the necessary values to the apropriate ones in
+nand_ids.c. The chip is recognised but the programs probably interprete
+this as a 512k pagesize.
 
-Flash chip is Intel W18 NOR Flash and erase block size is 0x10000,
-Flash Size=3D16MB.
+A small test Programm brought some more clarity in the whole situation.
+At first we wrote some bytes with a ICD in the NAND.
+A Linux Test application - I used a standard read command (see below)-
+could read out the appropriate code but nanddump could not.
 
-=20
-> If you also can send us JFFS2 image before it goes wrong and after that
-> also would be very big help for us to investigate what the problem is.
+Testprogramm reading the first page:
+Code (READ1_1 = 0x0 ; READ1_2 = 0x30):
+...
+ // Read first Page
+ printf("Trying to read the first Page\n\n");
+ nand_mem_write(CLE,READ1_1);
+ nand_mem_write(ALE,0); //Collumn address bit 0-7
+ nand_mem_write(ALE,0); //Collumn address bit 8-11
+ nand_mem_write(ALE,0); //Row address bit 0-7
+ nand_mem_write(ALE,0); //Row address bit 8-15
+ nand_mem_write(ALE,0); //Row address bit 16
+ nand_mem_write(CLE,READ1_2);
+ for (i=0 ; i<264; i++) {
+        Address=i*8;
+        printf(" Addr %x:  %x %x %x %x %x %x %x %x
+\n",Address,nand_mem_read(),n
+and_mem_read(),nand_mem_read(),nand_mem_read(),nand_mem_read(),nand_mem_read(),n
+and_mem_read(),nand_mem_read());
 
-I didn't understand..what do you mean by JFFS2 image. As i told in the
-earlier mail that we are not flashing the JFFS2 image in the Flash.
+Output:
+Standard Test - Reading NAND Flash device ID
+Maker Code ec
+Device Code da
+Don't Care 80
+Multi Plane Code 15
+ Trying to read the first Page
 
-Process is explained below.
+ Addr 0:  2 2 2 2 0 0 0 0
+ Addr 8:  1 ff ff ff 2 ff ff ff
+ Addr 10:  4 ff ff ff 8 ff ff ff
+ Addr 18:  10 ff ff ff 20 ff ff ff
+ Addr 20:  40 ff ff ff 80 ff ff ff
+ Addr 28:  ff ff ff ff ff ff ff ff
+ Addr 30:  ff ff ff ff ff ff ff ff
+ Addr 38:  ff ff ff ff ff ff ff ff
+ Addr 40:  ff ff ff ff ff ff ff ff
+ Addr 48:  ff ff ff ff ff ff ff ff
+ Addr 50:  ff ff ff ff ff ff ff ff
+ ....
 
-1. Erase the JFFS2 partition ( 5.5 MB ) of the Flash by using some tool.=20
-2. Now boot the kernel in which JFFS2 Summary support is enabled.
-3. After booting mount the JFFS2 parition from the flash in SDRAM.
-    mount -t jffs2 /dev/mtdblock0 tmp/
-4. Try to copy 6 MB of data in the tmp/ directory. As space available is 5.=
-5MB,
-    it will give Disk  Space Full error..and comes out.
-5. "df" command shows 100% full on the mounted parition.
-6. Remove few files to make it 80% in the mounted partition.
-7. Run "sync" command.
-8. Unmount the partition.
-9. Reboot the system, then again mount it. You will get lot of errors.
-   "Magic bitmask 0x1985 not found at 0x4f0018: 0x00b0 instead"
-10. It does mount the partition but files/directories which i removed
-in step-6, are
-    still there.
+The values 1,2,4,8,10,20,40,80 have been written by the in cirquit
+debugger test programm.
 
-Pl. note if i just disable the Summary Option in the Kernel,
-everything work smoothly. I have thoroughly tested without Summary
-Option.
+nanddump - whatever this is I've got no clue
+0x00000000: 0c ff ff ff ff ff ff ff ff ab ab ab ab ab ab ab
+0x00000010: ab ab ab ab ab ab ab ab ab ff ff ff ff ff ff ff
+0x00000020: ff ff ff ff ff ff ff ff ff 00 00 00 00 00 00 00
+0x00000030: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x00000040: 00 00 00 00 00 00 00 00 00 41 41 41 41 41 41 41
+0x00000050: 41 41 41 41 41 41 41 41 41 46 46 46 46 46 46 46
+0x00000060: 46 46 46 46 46 46 46 46 46 41 41 41 41 41 41 41
+0x00000070: 41 41 41 41 41 41 41 41 41 4a 4a 4a 4a 4a 4a 4a
+0x00000080: 4a 4a 4a 4a 4a 4a 4a 4a 4a 00 00 00 00 00 00 00
+0x00000090: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+0x000000c0: 00 00 00 00 00 00 00 00 00 01 01 01 01 01 01 01
+....
 
-Let me know if you need further information on this. I just want to
-repeat again that the same behaviour is seen in latest MTD code as
-well for JFFS3 with Summary Option. Without Summary options, JFFS3
-also works fine on the same flash.
+So this thread is closed with this information.
 
-Thanks
-Niraj
- =20
-
-=20
-> Thanks,
-> Ferenc
->
+Regards Marcus.
