@@ -1,17 +1,20 @@
-Received: from web52705.mail.yahoo.com ([206.190.39.156])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DVtmI-0002Ac-7I
-	for linux-mtd@lists.infradead.org; Wed, 11 May 2005 12:09:42 -0400
-Message-ID: <20050511160946.90606.qmail@web52705.mail.yahoo.com>
-Date: Wed, 11 May 2005 09:09:46 -0700 (PDT)
-From: Michael <xemc@yahoo.com>
-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>,
-	linux-mtd@lists.infradead.org
-In-Reply-To: 6667
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: 
-Subject: Re: Stable JFFS3 code
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DVz1q-0002lc-5K
+	for linux-mtd@lists.infradead.org; Wed, 11 May 2005 17:46:06 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: m.mikolaiczyk@rac.de
+In-Reply-To: <4281C196.2010806@rac.de>
+References: <4281C196.2010806@rac.de>
+Content-Type: text/plain
+Date: Wed, 11 May 2005 21:46:57 +0000
+Message-Id: <1115848017.22180.112.camel@tglx>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Patching only NAND specific stuff possible?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> 
-> Can anyone let me know which date's snapshot for JFFS3 is stable
-> ?
-> 
+On Wed, 2005-05-11 at 10:25 +0200, Marcus Mikolaiczyk wrote:
+> Considering the four Layers (jffs2,mtd,nand,hardware-drivers) it should
+> be possible onloy to 'update' the nand and hardware-drivers stuff.
+> Any objections to this?
 
-Hi.  I don't think _any_ date's snapshot of JFFS3 is stable.
-There's still lots of redesigning and other work to be done.
+No, as long as you do not ask questions, why it doesnt work. :)
+The current nand driver needs the current mtd layer and JFFS2 from the
+last century will not work with those.
 
-I would use JFFS2, and if you want the summary patch, take a look
-at Ferenc's website.
+> A secondary short question, if you don't mind.
+> Where takes the 'addressing' of the NAND takes place (write Col,Row to ALE)?
 
-Mike
+nand_command(_lp) depending on the device type.
+
+> On the Samsung K9F2G08... there are 5 Cycles for the address resolution
+> I saw some NAND chips which only have 4 Address Cycles.
+
+Thats handled by the nand driver depending on the chip size.
+
+tglx
