@@ -1,18 +1,24 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from rproxy.gmail.com ([64.233.170.205])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DWVfq-00009D-1C
-	for linux-mtd@lists.infradead.org; Fri, 13 May 2005 04:37:34 -0400
-Message-ID: <428467CD.5000902@inf.u-szeged.hu>
-Date: Fri, 13 May 2005 10:39:41 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
-References: <f6d0cd0605051004524bab895b@mail.gmail.com>
-In-Reply-To: <f6d0cd0605051004524bab895b@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: SUMMARY patch for JFFS2
+	id 1DWY61-0000cl-6S
+	for linux-mtd@lists.infradead.org; Fri, 13 May 2005 07:12:45 -0400
+Received: by rproxy.gmail.com with SMTP id y7so218359rne
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 May 2005 04:12:48 -0700 (PDT)
+Message-ID: <f6d0cd06050513041258fb418f@mail.gmail.com>
+Date: Fri, 13 May 2005 16:42:48 +0530
+From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+To: dedekind@infradead.org
+In-Reply-To: <1115913155.27158.48.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <81772B4336DEC14EBB8C519C4EC21051F80D90@pe2650.everest-co.com>
+	<1115913155.27158.48.camel@sauron.oktetlabs.ru>
+Cc: Ralph Walden <ralphw@everest-co.com>, linux-mtd@lists.infradead.org
+Subject: Re: Oops at jffs2_build_remove_unlinked_inode
+Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Niraj,
+I am also facing the same problem. Is it updated on the MTD Snapshot
+on the website as i don't have an access to CVS ?
 
-We've tried to reproducate your problem but we was not succesfull yet.
+Thanks
+Niraj
 
-Can you send us:
-- a JFFS2 image before the things go wrong
-- a JFFS2 image after went wrong (which cannot be mounted)
-- the steps between these (commands you executed)
+Can i download this latest fix=20
 
-To make an image do "cat /dev/mtdblock0 >dump.jffs2" or similar.
-
-Maybe it can be too big for mail, if you can put somewhere where we can
-download from.
-
-Thanks,
-Ferenc
+On 5/12/05, Artem B. Bityuckiy <dedekind@infradead.org> wrote:
+> > [<c01244b8>] (jffs2_build_remove_unlinked_inode+0x0/0xec) from
+> > [<c01249bc>] (jff
+> Your oops looks like the one that we've fixed recently. Please, try MTD
+> from CVS.
+>=20
+> --
+> Best Regards,
+> Artem B. Bityuckiy,
+> St.-Petersburg, Russia.
+>=20
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
