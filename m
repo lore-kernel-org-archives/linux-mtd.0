@@ -1,5 +1,5 @@
-Date: Tue, 17 May 2005 03:57:22 +0700
-Message-Id: <200505162057.j4GKvMIw025886@stu.agri.ubu.ac.th>
+Date: Tue, 17 May 2005 04:19:27 +0700
+Message-Id: <200505162119.j4GLJRsF026475@stu.agri.ubu.ac.th>
 To: 
 From: olsomberg <olsomberghartt@hotmail.com>
 CC: 
