@@ -1,16 +1,15 @@
-Received: from [211.199.110.133] (helo=impresstek.co.kr)
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DXUUw-000631-Fe
-	for linux-mtd@lists.infradead.org; Sun, 15 May 2005 21:34:25 -0400
-From: "Kim Moung-Soo" <mskim@impresstek.co.kr>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 16 May 2005 10:27:41 +0900
-Message-ID: <04e801c559b6$742e79d0$180aa8c0@mskim>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Received: from mailbox.radixs.com ([203.81.41.217])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DXVcq-0006Ig-44
+	for linux-mtd@lists.infradead.org; Sun, 15 May 2005 22:46:37 -0400
+From: Munira Ahmed <munira.ahmed@radixs.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Mon, 16 May 2005 10:46:36 +0800
+Message-Id: <1116211596.31694.17.camel@server11>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: The romfs corruption problem after writing mtdblock!
+Subject: do_map_probe and driver name
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +19,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm using uClinux 2.4.22 on ARM board and have a problem with the romfs.
-My machine has 4 partitions on the NOR flash memory like below.
-mtdblock 1: boot loader
-mtdblock 2: 2nd boot loader
-mtdblock 3: kernel and root file system(romfs)
-mtdblock 4: user data
+do_map_probe requires name of a driver to probe.
 
-Everything works fine until I write area of user data, mtdblock 4.
-After I write something on mtdblock4, romfs on mtdblock 3 corrupts
-sometimes.
-The symptom is that some files have gone in the directory or content of
-file is wrong.
-Even it happens I think the data in flash memory is okay because after
-it reboot every thing is in there.
-I use open("/dev/mtdblock/4") and write() to access it directly.
-Can I use open(), write() function to access mtdblock 4?
+Now how do I know the names of mtd drivers to see if I have them or not
+
+How do I find out which driver is currently active
+
+is there any list of all or some driver names. 
+
+Regards
+
+-- 
+Munira Ahmed
+Senior Embedded Specialist
+
+Radixs Pte Ltd
+Email:munira.ahmed@radixs.com
+
+
+Main: +65 6335 8600
+Fax: +65 6335 8601
+URL: www.radixs.com 
+
+1 Temasek Avenue, #21-01, Millenia Tower, Singapore 039192
+
+Disclaimer Notice: This email, its content and any files transmitted
+with it are intended solely for the addressee(s) and may be confidential
+and privileged. Any unauthorised disclosure or use or dissemination of
+the information contained herein, either whole or partial, is
+prohibited. Radixs Pte Ltd (Radixs) cannot accept liability for any
+statements made which are clearly the sender's own and not expressly
+made on behalf of Radixs or one of its agents. If you have received this
+message in error, please notify the sender immediately, and delete this
+email from your computer system. Radixs has taken reasonable precaution
+to ensure no viruses are present in this email, however Radixs does not
+accept responsibility for any loss or damage arising from the use of
+this email or attachments.
+
+Co. Reg. 200104892Z
