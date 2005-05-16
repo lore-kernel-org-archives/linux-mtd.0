@@ -1,23 +1,12 @@
-Received: from canuck.infradead.org ([2001:8b0:10b:4::1])
-	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DZ7cM-0001Rv-MP
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 14:32:47 +0100
-Received: from smtpout15.mailhost.ntl.com ([212.250.162.15]
-	helo=mta05-winn.mailhost.ntl.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DZ7cJ-0000fY-Fy
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 09:32:45 -0400
-From: Ian Campbell <ijc@hellion.org.uk>
-To: Munira Ahmed <munira.ahmed@radixs.com>
-In-Reply-To: <1116580638.18096.133.camel@server11>
-References: <1116580638.18096.133.camel@server11>
-Content-Type: text/plain
-Date: Fri, 20 May 2005 10:35:04 +0100
-Message-Id: <1116581705.5777.43.camel@icampbell-debian>
+Date: Tue, 17 May 2005 03:57:22 +0700
+Message-Id: <200505162057.j4GKvMIw025886@stu.agri.ubu.ac.th>
+To: 
+From: olsomberg <olsomberghartt@hotmail.com>
+CC: 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: map and chip drivers
+Subject: Yukos  oil!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,40 +16,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-05-20 at 17:17 +0800, Munira Ahmed wrote:
-> > Breaking things down a little more, in the mtd stack there are 3 kinds of drivers.
-> > map drivers that describe how to talk to a given flash chip.
-> > probe drivers that identify what kind of chip you have.
-> > chip drivers that know how to speak a command set and let you flash your chip.
-> 
-> 
-> I really don't understand the difference between the map and the chip
-> driver? 
-> 
-> talk to a given flash !
-> speak a command set!
-> 
-> ain't they the same?
 
-The map driver takes care of physically accessing the flash, while the
-chip driver knows what to do with each type of flash. So the map driver
-provides the method for the chip driver to actually access the flash.
+Dear Partner, 
+ 
+I am Mr Olsom Berghart a personal treasurer to Mikhail Khodorkovsky   the richest man in Russia and owner of the following companies:Chairman CEO:YUKOS OIL (Russian Most Largest Oil Company)Chairman CEO:Menatep SBP Bank (A well reputable financial institution with its branches all over the world)
+ 
+SOURCE OF FUNDS: 
+I have a profiling amount in an excess of US$100.5M, which I seek your
+partnership in accommodating for me. You will be rewarded with 4% of  the total sum for your partnership. Can you be my partner on this?  
+ 
+INTRODUCTION OF MY SELF: 
+As a personal consultant to him, authority was handed over to me in transfer of money of an American oil merchant for his last oil deal with my boss Mikhail Khodorkovsky. Already the funds have left the shore of Russia to an European private bank where the final crediting is expected to be carried out. While I was on the process, My Boss got arrested for his involvement in politics by financing the leading and opposing political parties (the Union of Right Forces,led by Boris Nemtsov, and Yabloko, a liberal/social democratic party led by Gregor Yavlinsky) which poses treat to President Vladimir Putin second tenure as Russian president. 
+   
+YOUR ROLE:
+All I need from you is to stand as the beneficiary of the above quoted sum and I will re-profile the funds with your name, which will enable the
+European bank transfer the sum to you. I have decided to use this sum to relocate to American continent and never to be connected to any of Mikhail Khodorkovsky conglomerates. The transaction has to be concluded in 2 weeks before Mikhail Khodorkovsky is out on bail. As soon as I confirm your readiness to conclude the transaction with me, I will provide you with the details.For better understanding about Yukos Company tax evasion,please visit the following sites.
+  
+http://www.yukos.com
+http://news.ft.com/cms/4bb9612a-d254-11d8-b661-00000e2511c8.html
+http://www.hoovers.com/yukos/--ID__53700--/free-co-factsheet.xhtml
+http://www.npr.org/templates/story/story.php?storyId=4105663 
+Thank you very much.
+  
+Regards
+Olsom Berghart(Mr)
+NB: Do contact me through this secure email
+address:olsomberghart1000@hotmail.com 
+ 
 
-For example we have boards at work which have flash chips mapped at
-various physical addresses (differing between boards), some devices have
-paged flash, with an i/o register to select the page and a physical
-address where the current page is mapped. I'm sure there are other ways
-of arranging things.
 
-The board-specific map drivers takes care of all these differences,
-while the chip driver is shared between multiple boards because the
-underlying chips are the same in each case.
 
-Ian.
--- 
-Ian Campbell
-Current Noise: Slayer - Fictional Reality
-
-BOFH excuse #13:
-
-we're waiting for [the phone company] to fix that line
+___________________________________________________________________________
+Kongoon.com ‡«Á∫‰´µÏ ”À√—∫«—¬∑’π- http://stu.agri.ubu.ac.th
