@@ -1,14 +1,14 @@
-Message-ID: <42889844.60007@netwinder.org>
-Date: Mon, 16 May 2005 08:55:32 -0400
+Message-ID: <428899DA.3040507@netwinder.org>
+Date: Mon, 16 May 2005 09:02:18 -0400
 From: Ralph Siemsen <ralphs@netwinder.org>
 MIME-Version: 1.0
 To: Munira Ahmed <munira.ahmed@radixs.com>
-References: <1116211596.31694.17.camel@server11>
-In-Reply-To: <1116211596.31694.17.camel@server11>
+References: <1116226208.31694.26.camel@server11>
+In-Reply-To: <1116226208.31694.26.camel@server11>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: do_map_probe and driver name
+Subject: Re: stdio.h and kernel space
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,28 +18,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please don't post the same message to multiple mailing lists.
-
 Munira Ahmed wrote:
-> do_map_probe requires name of a driver to probe.
-> Now how do I know the names of mtd drivers to see if I have them or not
-> How do I find out which driver is currently active
-> is there any list of all or some driver names. 
+> I believe that stdio.h is used only in user space. If I am correct that
+> can anybody please tell me why lld.c, low level driver for AMD CFI
+> flash, contains stdio.h as header file?
 
-The answer can be found easily by searching for calls to do_map_probe in 
-the kernel/drivers/mtd subdirectories.  For example in physmap.c:
-
-	static const char *rom_probe_types[] = {
-		"cfi_probe", "jedec_probe", "map_rom", NULL
-	};
-	const char **type = rom_probe_types;
-
-	for(; !mymtd && *type; type++) {
-                 mymtd = do_map_probe(*type, &physmap_map);
-         }
-
-So you can ee it is called with names like "cfi_probe" etc.  These 
-functions are defined drivers/mtd/chips directory.  So take a look at 
-the files in that directory to discover the names you seek.
+You are correct, stdio.h is for userspace.  However I do not see the 
+file lld.c in any standard kernel tree, either version 2.4 or 2.6. 
+Where did you get your kernel source from, which version is it, and what 
+patches have been applied to it?
 
 -R
