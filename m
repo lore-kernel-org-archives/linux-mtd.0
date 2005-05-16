@@ -1,15 +1,20 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DXZQX-0006nZ-W1
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2005 02:50:10 -0400
-From: Munira Ahmed <munira.ahmed@radixs.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Mon, 16 May 2005 14:50:07 +0800
-Message-Id: <1116226208.31694.26.camel@server11>
+Received: from rproxy.gmail.com ([64.233.170.201])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DXdE7-0007iR-2r
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2005 06:53:36 -0400
+Received: by rproxy.gmail.com with SMTP id y7so616595rne
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 May 2005 03:53:40 -0700 (PDT)
+Message-ID: <f6d0cd0605051603533fa9fbd1@mail.gmail.com>
+Date: Mon, 16 May 2005 16:23:40 +0530
+From: Niraj Maheshwari <niraj.maheshwari@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: stdio.h and kernel space
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: JFFS2 error while Copying
+Reply-To: Niraj Maheshwari <niraj.maheshwari@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,10 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I believe that stdio.h is used only in user space. If I am correct that
-can anybody please tell me why lld.c, low level driver for AMD CFI
-flash, contains stdio.h as header file?
+Hi,
 
+I am using Linux Kernel 2.6.10 and applied the latest MTD patch from
+website. We are using Intel Strata L18 flash.
 
--- 
-Munira Ahmed
+After booting the kernel, we mount the JFFS2 partition by using below comma=
+nd.
+
+mount -t jffs2 /dev/mtdblock0 /disc
+
+Then we try to copy a directory frm Ramdisk by using following command.
+
+cp -a bin/ disc/
+
+Then it gives below error/warning just once and then copies the data.
+
+Node totlen on flash (0x00800080) !=3D totlen from node ref (0x0000000c).
+
+This problem doesn't come on Intel W18 flash.=20
+
+Is this really a problem ? If yes, then how can we overcome this ?
+
+Let me know if you need further information in this regard.
+
+Thanks
+Niraj
