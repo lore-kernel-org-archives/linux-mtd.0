@@ -1,12 +1,16 @@
-Date: Fri, 13 May 2005 02:12:37 +0200
-Message-Id: <200505130012.CAA18207@kp5.kpsnet.net>
-To: 
-From: barristergabarryunisah <barristergabarry@excite.it>
-CC: 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from [211.199.110.133] (helo=impresstek.co.kr)
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DXUUw-000631-Fe
+	for linux-mtd@lists.infradead.org; Sun, 15 May 2005 21:34:25 -0400
+From: "Kim Moung-Soo" <mskim@impresstek.co.kr>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 16 May 2005 10:27:41 +0900
+Message-ID: <04e801c559b6$742e79d0$180aa8c0@mskim>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: Greetings from sudan.
+Subject: The romfs corruption problem after writing mtdblock!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,52 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I'm using uClinux 2.4.22 on ARM board and have a problem with the romfs.
+My machine has 4 partitions on the NOR flash memory like below.
+mtdblock 1: boot loader
+mtdblock 2: 2nd boot loader
+mtdblock 3: kernel and root file system(romfs)
+mtdblock 4: user data
 
-Dearest,
- 
- SEEKING YOUR IMMEDIATE ASSISTANCE.
- 
- Please permit me to make your acquaintance in an informal manner. 
-This is necessitated by my urgent need to reach a dependable and  
-trustworthy foreign partner.This request may seem strange and 
-unsolicited but I will crave your indulgence and pray that you view it 
-seriously.
-
- I am barrister Gabarry Unisah from Sudan. I am the family attorney to 
-late Dr.sabir Mohamed Hassan who is the governor of central bank of 
-Sudan. He died of the terrible Attack of TSUNAMI on 26th day of 
-December 2004 in Thailand may his soul rest in perfect peace.
-  
- My client Dr. sabir Mohamed Hassan, have some consignment with one of 
-the leading bank in Europe that contains raw cash, because of the anti-terrorist law this funds was moved to the bank through a diplomatic means so as to avoid international money laundering law.Because of the position of my late client as the governor of central bank of Sudan, he is been forced by the law of Sudan to declare all his assets, this includes all his bank account, both home and abroad. 
- 
- As you will Agree with me that Sudan has been in civil War for the  
-past 3 decades. This has drawn the attention of the western  world 
-including the united nation to impose serious economic sanction
- in our great country Sudan.      
- 
- 
- My client Dr sabir Mohamed Hassan, have a concrete plan seeking for a 
-foreign partner  to invest the funds, as he can not deposit the funds 
-into his account because  of the anti-terrorist law, before he died of this terrible attack of tsunami of 26th day  of December 2004 in Thailand. 
- 
- As a matter of fact, my client died together  with the Wife and his three children, and this funds will remain unclaimed  in the bank in Europe ,as non of Dr. sabir Mohamed Hassan's family knew nothing about this project  as myself is afraid to tell any of them as I do not know who is  loyal to the present government of the rebels, which I believe some  of the family members belongs to. and there is no way I will be able  to put claims to this funds, as I am a well known as a reputable attorney to the late dr Sabir Mohammed Hassan  ,and I will need a help of a trustworthy foreign partner to enable us put claims to this funds  hence I decided to contact  you as a foreign partner to present to the bank in Europe as a next of kin to the late Dr. Sabir Mohamed Hassan to enable us secure the  funds from the custody of the bank in Europe for the mutual benefit for both of us.
- 
-All the amount that involves in this great project is us$250m. (Two 
-hundred and fifty million united state dollars) for your assistance in 
-helping me putting claims to the  funds in the bank in Europe into your 
-nominated bank account for safe keeping, I will offer you 20%, while  
-12% has been set aside for any expenses both parties might incurred 
-during the completion of this project,23% will be used  for charity 
-organization, while the remaining 45% which is my share  will be used 
-for any lucrative investment you will introduce me into in your country.
- 
- yours sincerely,
- 
- Barrister Gabarry Unisah.
- (Principal partner)
-
-
-___________________________________________________________________________
-Mail sent from WebMail service at PHP-Nuke Powered Site
-- http://yoursite.com
+Everything works fine until I write area of user data, mtdblock 4.
+After I write something on mtdblock4, romfs on mtdblock 3 corrupts
+sometimes.
+The symptom is that some files have gone in the directory or content of
+file is wrong.
+Even it happens I think the data in flash memory is okay because after
+it reboot every thing is in there.
+I use open("/dev/mtdblock/4") and write() to access it directly.
+Can I use open(), write() function to access mtdblock 4?
