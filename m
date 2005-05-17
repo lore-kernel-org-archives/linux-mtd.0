@@ -1,18 +1,18 @@
 Received: from mailbox.radixs.com ([203.81.41.217])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DXqqi-0002c1-HN
-	for linux-mtd@lists.infradead.org; Mon, 16 May 2005 21:26:21 -0400
+	id 1DXqxj-0002me-2R
+	for linux-mtd@lists.infradead.org; Mon, 16 May 2005 21:33:36 -0400
 From: Munira Ahmed <munira.ahmed@radixs.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <428899DA.3040507@netwinder.org>
-References: <1116226208.31694.26.camel@server11>
-	<428899DA.3040507@netwinder.org>
+To: Ralph Siemsen <ralphs@netwinder.org>
+In-Reply-To: <42889844.60007@netwinder.org>
+References: <1116211596.31694.17.camel@server11> <42889844.60007@netwinder.org>
 Content-Type: text/plain
-Date: Tue, 17 May 2005 09:26:22 +0800
-Message-Id: <1116293182.31694.47.camel@server11>
+Date: Tue, 17 May 2005 09:33:37 +0800
+Message-Id: <1116293617.31694.54.camel@server11>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: stdio.h and kernel space
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: do_map_probe and driver name
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-They are not part of the kernel. I downloaded then from AMD's website
-and would like to know how to use them
+
+what's wrong in posting the same question to two different lists?
+
+I just wanted to be able to reach more people.
+
+Thanks for your guidance. I will keep that in mind now on.
 
 
-
-On Mon, 2005-05-16 at 09:02 -0400, Ralph Siemsen wrote:
-> Munira Ahmed wrote:
-> > I believe that stdio.h is used only in user space. If I am correct that
-> > can anybody please tell me why lld.c, low level driver for AMD CFI
-> > flash, contains stdio.h as header file?
+On Mon, 2005-05-16 at 08:55 -0400, Ralph Siemsen wrote:
+> Please don't post the same message to multiple mailing lists.
 > 
-> You are correct, stdio.h is for userspace.  However I do not see the 
-> file lld.c in any standard kernel tree, either version 2.4 or 2.6. 
-> Where did you get your kernel source from, which version is it, and what 
-> patches have been applied to it?
+> Munira Ahmed wrote:
+> > do_map_probe requires name of a driver to probe.
+> > Now how do I know the names of mtd drivers to see if I have them or not
+> > How do I find out which driver is currently active
+> > is there any list of all or some driver names. 
+> 
+> The answer can be found easily by searching for calls to do_map_probe in 
+> the kernel/drivers/mtd subdirectories.  For example in physmap.c:
+> 
+> 	static const char *rom_probe_types[] = {
+> 		"cfi_probe", "jedec_probe", "map_rom", NULL
+> 	};
+> 	const char **type = rom_probe_types;
+> 
+> 	for(; !mymtd && *type; type++) {
+>                  mymtd = do_map_probe(*type, &physmap_map);
+>          }
+> 
+> So you can ee it is called with names like "cfi_probe" etc.  These 
+> functions are defined drivers/mtd/chips directory.  So take a look at 
+> the files in that directory to discover the names you seek.
 > 
 > -R
 > 
@@ -46,29 +63,3 @@ On Mon, 2005-05-16 at 09:02 -0400, Ralph Siemsen wrote:
 > 
 -- 
 Munira Ahmed
-Senior Embedded Specialist
-
-Radixs Pte Ltd
-Email:munira.ahmed@radixs.com
-
-
-Main: +65 6335 8600
-Fax: +65 6335 8601
-URL: www.radixs.com 
-
-1 Temasek Avenue, #21-01, Millenia Tower, Singapore 039192
-
-Disclaimer Notice: This email, its content and any files transmitted
-with it are intended solely for the addressee(s) and may be confidential
-and privileged. Any unauthorised disclosure or use or dissemination of
-the information contained herein, either whole or partial, is
-prohibited. Radixs Pte Ltd (Radixs) cannot accept liability for any
-statements made which are clearly the sender's own and not expressly
-made on behalf of Radixs or one of its agents. If you have received this
-message in error, please notify the sender immediately, and delete this
-email from your computer system. Radixs has taken reasonable precaution
-to ensure no viruses are present in this email, however Radixs does not
-accept responsibility for any loss or damage arising from the use of
-this email or attachments.
-
-Co. Reg. 200104892Z
