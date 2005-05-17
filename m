@@ -1,18 +1,14 @@
-Received: from rdrz.de ([217.160.107.209])
+Received: from web52704.mail.yahoo.com ([206.190.39.155])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DXwEe-0003px-6c
-	for linux-mtd@lists.infradead.org; Tue, 17 May 2005 03:11:25 -0400
-Date: Tue, 17 May 2005 09:11:27 +0200
-From: Raphael Zimmerer <killekulla@rdrz.de>
-To: Peter Bergmann <bergmann.peter@gmx.net>
-Message-ID: <20050517071127.GB22901@rdrz.de>
-References: <4285DFCA.8050703@gmx.net>
-Mime-Version: 1.0
+	id 1DXxmF-0004Iw-2o
+	for linux-mtd@lists.infradead.org; Tue, 17 May 2005 04:50:11 -0400
+Message-ID: <20050517085013.52899.qmail@web52704.mail.yahoo.com>
+Date: Tue, 17 May 2005 01:50:13 -0700 (PDT)
+From: Gianluca Moro <giangiammy@yahoo.com>
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4285DFCA.8050703@gmx.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip Millennium Plus 32MB
+Subject: Buffer circolari
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +18,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, May 14, 2005 at 01:23:54PM +0200, Peter Bergmann wrote:
-> the devices/doc2001plus.c recognizes the device but the
-> inftl.ko says:
-> "INFTL no longer supports the old DiskOnChip drivers
-> loaded via docprobe. Please use the new diskonchip
-> driver under the NAND subsystem"
+Hi all,
 
-Up to now that diskonchip driver supports everything except the
-"DiskOnChip Millenium PLus 32/64MB", and the old driver doesn't work
-with the mtd subsystem.
+I'm testing a MTD device (I'm using Am29LV640MU AMD flash)
+to store information in a circular buffer structure.
 
-> what do i have to do in order to get a
-> trueffs formatted DiskOnChip Millennium Plus 32MB
-> running under linux ?
+My problems are the following:
 
-A new driver for the DiskOnChip Millenium Plus 32/64MB is nearly
-finished. I can send you some patches for testing.
+1 - I tested the writing time with the following command:
+    # time  dd if=rnd100k of=/dev/mtd3
+    real    0m 5.61s
+    user    0m 0.01s
+    sys     0m 3.46s
 
-- killekulla
+   I get 3.46s: that is a least 5 time slower of expected:
+   if I write directly to MTD device, which overhead are
+   present: is it possible to lower that write time?
+
+2 - I need to implement a circular buffer writing: 
+    any experience about the better structure to use?
+    I have installed a JFFS2 on that mtd, but is a good
+    idea to use files to implement circular buffer structure?
+    Or is there some better choice?
+
+Thanks
+giammy
+
+ 
+
+
+
+		
+___________________________________ 
+Nuovo Yahoo! Messenger: E' molto più divertente: Audibles, Avatar, Webcam, Giochi, Rubrica… Scaricalo ora! 
+http://it.messenger.yahoo.it
