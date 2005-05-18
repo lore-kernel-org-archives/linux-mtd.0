@@ -1,19 +1,21 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DYP1r-0001UC-UE
-	for linux-mtd@lists.infradead.org; Wed, 18 May 2005 09:56:09 -0400
-Message-ID: <428B4995.9010103@inf.u-szeged.hu>
-Date: Wed, 18 May 2005 15:56:37 +0200
-From: Zoltan Sogor <weth@inf.u-szeged.hu>
+Received: from q7.q7.com ([207.173.201.42])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DYVRg-0002Lv-6Z
+	for linux-mtd@lists.infradead.org; Wed, 18 May 2005 16:47:13 -0400
+Received: from q7.q7.com (localhost [127.0.0.1])
+	by q7.q7.com (8.12.8/8.12.8) with ESMTP id j4IKlDBn001771
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
+	for <linux-mtd@lists.infradead.org>; Wed, 18 May 2005 13:47:13 -0700
+Received: from localhost (joey@localhost)
+	by q7.q7.com (8.12.8/8.12.8/Submit) with ESMTP id j4IKlDgZ001767
+	for <linux-mtd@lists.infradead.org>; Wed, 18 May 2005 13:47:13 -0700
+Date: Wed, 18 May 2005 13:47:13 -0700 (PDT)
+From: Joe Pruett <joey@clean.q7.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.44.0505181336090.25317-100000@q7.q7.com>
 MIME-Version: 1.0
-To: pgrayson@realmsys.com
-References: <1115400358.4422.92.camel@pgrayson1.realmsys.com>	<42846606.8070108@inf.u-szeged.hu>
-	<1116038903.4857.30.camel@pgrayson1.realmsys.com>
-In-Reply-To: <1116038903.4857.30.camel@pgrayson1.realmsys.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Centralized Summary
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: questions about at91rm9200, intel 28f, and non-linear access
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,147 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter!
+we're building a board around the atmel at91rm9200 chip.  we also are
+using an intel 256 mbit flash.  we have just discovered that the atmel
+chip has a lovely bug such that address line 24 isn't correctly wired to
+the outside world, so you can't address things above 16mb in each chip
+select area.  but, we can manually control a24 via the pio controller on
+the chip.
 
-We've tried to reproducate your problem but we was not succesfull yet.
+so, i'm thinking we can use the non-linear hooks to drive a24 high/low as 
+needed based on the address being accessed.  we add some overhead by 
+needing not being able to just access the flash directly, but we also 
+have 
+64mb of dram, so i think we're ok there.
 
-Can you send us:
-- a JFFS2 image before the things go wrong
-- a JFFS2 image after went wrong
-- erase block size
-- kernel config
+has anyone else tried to solve this kind of problem?  am i just looking 
+for trouble?
 
-Thanks for bug reports.
+if that all seems reasonable, then the next step is bootstrapping brand 
+new boards.  we are using umon as the first level boot and without major 
+work it can't see beyond the 16mb boundary.  so i'm thinking of doing the 
+following:
 
-Zoltan
+allocate 4 or 8mb to umon and its tfs filesystem area.  upload the initial
+image via jtag magic.  put a linux kernel and a small cramfs file system
+in there.  boot into that in single user mode and use the modified mtd
+drivers talked about above to erase and write a jffs2 image (retrieved via
+ethernet) into the remaining 24/28 meg of flash.  the cramfs area would
+have code to pivot to the jffs2 image for normal operations.
 
-
-Peter Grayson wrote:
-
->I have applied the new patch. By the way, the patch does not apply
->cleanly to the latest mtd from cvs, but it doesn't take to much to fix
->it up (this was true for the previous patch also).
->
->This version of the patch seems to take care of the previous problems I
->reported. I can now mount and unmount a previously empty partition just
->fine.
->
->There are some new problems that I am running into though. The first
->seems benign, but it ruins the CS mount performance. When mounting, I
->will occasionally see this message:
->
->jffs2_cs_process_inocache_node: Crc failure on cent_sum inocache:
->cache_crc!
->
->It looks like when this happens, the CS is abandoned and the mount time
->goes from super-fast to regular-slow. I have found that this error can
->be readily reproduced by running the following command-line once or
->twice. Seems more likely to happen if there is some data in the
->filesystem.
->
->  # mount /mnt/mtdb3 && touch /mnt/mtdb3/foo && umount /mnt/mtdb3
->
->The other problems I am seeing are more severe. A kernel panic
->occasionally happens at mount time. There is also a kernel panic that
->happens at unmount time. I have included stack traces below. The failure
->modes seem consistent. The test I am running to make these problems
->happen is to write a summarized jffs2 image to a partition and then
->repeatedly mount and unmount the partition (like above, but without the
->touch).
->
-># mount /mnt/mtdb3
->Oops: kernel access of bad area, sig: 11 [#1]
->PREEMPT
->NIP: C00B0884 LR: C00B10D8 SP: C3F21C30 REGS: c3f21b80 TRAP: 0300    Not
->tainted
->MSR: 00029030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
->DAR: C423FFCC, DSISR: 00800000
->TASK = c3eb2ab0[97] 'mount' THREAD: c3f20000
->Last syscall: 21
->GPR00: 000005B7 C3F21C30 C3EB2AB0 C3EBD600 C3F21C50 C3EBD6C8 00000000
->C033A810
->GPR08: C3F00000 0033FFCC C3F00000 C423FFCC 39008039 000066A4 00000000
->00000000
->GPR16: 10079130 10070000 00020000 00000001 0B440000 00000003 C3EEEDE0
->C3EEEE0B
->GPR24: C01C0000 000003B5 C036964C 00000012 C01C0000 C01DFC4C C01C0010
->C3EBD600
->NIP [c00b0884] jffs2_cs_process_list+0x38/0x5c
->LR [c00b10d8] jffs2_cs_build_filesystem+0x830/0xcd0
->Call trace:
-> [c00a8238] jffs2_do_mount_fs+0x220/0x8a4
-> [c00aaa24] jffs2_do_fill_super+0x1ac/0x2b8
-> [c00aae68] jffs2_get_sb_mtd+0xb4/0x13c
-> [c00ab0fc] jffs2_get_sb+0x19c/0x1dc
-> [c004edbc] do_kern_mount+0x5c/0x124
-> [c0067458] do_mount+0x6c0/0x71c
-> [c0067938] sys_mount+0x9c/0xf0
-> [c0002a20] ret_from_syscall+0x0/0x48
->
-># mount /mnt/mtdb3 && umount /mnt/mtdb3
->dumping centsum data
->jffs2_flash_writev(): Non-contiguous write to 00000000
->kernel BUG in jffs2_flash_writev
->at /home/pgrayson/project/realmlinux1/linux-2.6/fs/jffs2/wbuf.c:690!
->Oops: Exception in kernel mode, sig: 5 [#1]
->PREEMPT
->NIP: C00AC5AC LR: C00AC58C SP: C0369CE0 REGS: c0369c30 TRAP: 0700    Not
->tainted
->MSR: 00029030 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
->TASK = c3eb3190[854] 'umount' THREAD: c0368000
->Last syscall: 22
->GPR00: 00000000 C0369CE0 C3EB3190 0000003A 00002F4C FFFFFFFF 00002F12
->C0190000
->GPR08: C0195C43 C01B0000 00000008 C0369C10 52000095 000066A4 00000000
->00000000
->GPR16: 10000140 C0369DB0 C3EBD114 00000000 00000000 100743A8 FFFFFFFF
->00000002
->GPR24: C0369D80 00000000 C3FC0000 00000000 00000000 C3880000 00000CB4
->C3EBD000
->NIP [c00ac5ac] jffs2_flash_writev+0x1cc/0x61c
->LR [c00ac58c] jffs2_flash_writev+0x1ac/0x61c
->Call trace:
-> [c00b024c] jffs2_cs_write_inocache+0xcc/0x174
-> [c00b04e4] jffs2_cs_dump_ic+0x1f0/0x284
-> [c00ab198] jffs2_put_super+0x5c/0x184
-> [c004d828] generic_shutdown_super+0xc8/0x1bc
-> [c00ab2d8] jffs2_kill_sb+0x18/0x3c
-> [c004d72c] deactivate_super+0xa0/0xd4
-> [c0065abc] __mntput+0x30/0x44
-> [c0055560] path_release_on_umount+0x4c/0x60
-> [c0066390] sys_umount+0x2bc/0x2d4
-> [c0002a20] ret_from_syscall+0x0/0x48
->
->Thanks for your efforts.
->
->Pete
->
->On Fri, 2005-05-13 at 10:32 +0200, Ferenc Havasi wrote:
->  
->
->>Hi Pete,
->>
->>We updated the summary patches.
->>
->>Erase block summary:
->>- fix a small bug, may cause problem only in debug mode
->>
->>Centralized summary:
->>- fix a small bug, may cause problem only in debug mode
->>- fix locking problem on empty fs
->>- fix bad block size accounting (and counting free space)
->>
->>You can download the patches from our site.
->>
->>Bye,
->>Ferenc
->>
->>    
->>
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->  
->
+it looks like the mtdblock interface handles erasing for me, so i should 
+just be able to dd a jffs2 image directly to /dev/mtd....  am i missing 
+anything horribly obvious?  any feedback on any part of this scheme would 
+be greatly appreciated.  if anyone from atmel is listening, fix your chip!
