@@ -1,14 +1,16 @@
-Received: from web52709.mail.yahoo.com ([206.190.39.160])
-	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DYiJd-0004b0-6o
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 06:31:45 -0400
-Message-ID: <20050519103148.2859.qmail@web52709.mail.yahoo.com>
-Date: Thu, 19 May 2005 03:31:48 -0700 (PDT)
-From: Gianluca Moro <giangiammy@yahoo.com>
-To: linux-mtd@lists.infradead.org
+Message-ID: <428C7CCF.50606@netwinder.org>
+Date: Thu, 19 May 2005 07:47:27 -0400
+From: Ralph Siemsen <ralphs@netwinder.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Subject: Compute flash life time
+To: Munira Ahmed <munira.ahmed@radixs.com>
+References: <1116226208.31694.26.camel@server11>	<428899DA.3040507@netwinder.org>
+	<1116293182.31694.47.camel@server11>	<428BC09E.7070307@netwinder.org>
+	<1116467146.18096.45.camel@server11>
+In-Reply-To: <1116467146.18096.45.camel@server11>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: stdio.h and kernel space
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Munira Ahmed wrote:
+> S29WSxxxN. Does not seem to be supported
 
-and sorry for the obvious question, but I'm trying to
-estimate my flash life, depending on write operation.
+According to datasheet the programming sequence looks rather like the 
+JEDEC standard method found in drivers/mtd/chips/jedec_probe.c, 
+particularly the jedec_reset() function matches the code shown on page 
+28 of the datasheet.
 
-I'm using JFFS2:
-If I have 1 M flash, and write 128byte/s in a circular 
-buffer style: I compute, with 100000 write cycles to
-have a 9000 day flash life (100000 * 1024*1024/128 seconds).
+Datasheet i'm looking at is 
+http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/s29ws-n_00_g0_e.pdf 
+hopefully this is the right one ;)
 
-But in this way I suppose that each 128 blob of data
-I write, effectively write 128 bytes of flash: but
-I'm trying to understand:
+So the standard driver might just need an extra entry for vendor/device 
+codes.  Maybe ;)
 
-- what is the filesystem overhead?
-- when I write 128 bytes, the filesystem writes effectively
-  128 bytes, or writes an entire sector?
-- to do my computation, is it correct the formula I used,
-  or do I need to substitute the 128 value with the flash
-  sector size?
-
-Sorry if the questions are obvious, but I'm almost new to JFFS2
-
-thanks
-giammy
-
-
-
-
-		
-___________________________________ 
-Nuovo Yahoo! Messenger: E' molto più divertente: Audibles, Avatar, Webcam, Giochi, Rubrica… Scaricalo ora! 
-http://it.messenger.yahoo.it
+-R
