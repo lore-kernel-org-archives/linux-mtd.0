@@ -1,19 +1,29 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from go4.ext.ti.com ([192.91.75.132])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DYm9U-0005zo-3L
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 10:37:33 -0400
-Date: Thu, 19 May 2005 16:37:10 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Gianluca Moro <giangiammy@yahoo.com>
-Message-ID: <20050519143710.GB22174@wohnheim.fh-wedel.de>
-References: <20050519103148.2859.qmail@web52709.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050519103148.2859.qmail@web52709.mail.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Compute flash life time
+	id 1DYmUs-0006Co-Nm
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 10:59:40 -0400
+Received: from dlep91.itg.ti.com ([157.170.152.55])
+	by go4.ext.ti.com (8.13.1/8.13.1) with ESMTP id j4JExisC022541
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 May 2005 09:59:44 -0500 (CDT)
+Received: from dlep90.itg.ti.com (localhost [127.0.0.1])
+	by dlep91.itg.ti.com (8.12.11/8.12.11) with ESMTP id j4JExhaZ008481
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 May 2005 09:59:43 -0500 (CDT)
+Received: from dlee70.ent.ti.com (localhost [127.0.0.1])
+	by dlep90.itg.ti.com (8.12.11/8.12.11) with ESMTP id j4JExhDg029841
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 May 2005 09:59:43 -0500 (CDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 19 May 2005 09:58:46 -0500
+Message-ID: <520AB2AD990DC04082102F77CA17263813A8E2@dlee03.ent.ti.com>
+From: "Menon, Nishanth" <x0nishan@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Question on first time umount delay
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +33,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 19 May 2005 03:31:48 -0700, Gianluca Moro wrote:
-> 
-> and sorry for the obvious question, but I'm trying to
-> estimate my flash life, depending on write operation.
-> 
-> I'm using JFFS2:
-> If I have 1 M flash, and write 128byte/s in a circular 
-> buffer style: I compute, with 100000 write cycles to
-> have a 9000 day flash life (100000 * 1024*1024/128 seconds).
+Greetings,
 
-Yes, about 25 years.
+I am working with a nor flash (intel strata flash) on an OMAP 1710 2.6.9
+platform (and a newbie to flash and jjfs2), and I saw an interesting
+behavior that I am unable to explain so far to my satisfaction.
+The issue is that umount following a mount seems to be taking time to
+complete. Following the thread here:
+http://lists.infradead.org/pipermail/linux-mtd/2005-April/012404.html
+which, I don't think applies to me as I just have a 32 MB flash.
 
-> But in this way I suppose that each 128 blob of data
-> I write, effectively write 128 bytes of flash: but
-> I'm trying to understand:
-> 
-> - what is the filesystem overhead?
-> - when I write 128 bytes, the filesystem writes effectively
->   128 bytes, or writes an entire sector?
+The hypothesis I have is that a mount followed by an umount, done
+immediately after boot, causes sync to be called, which maps to
+fs/jffs2.c:jffs2_fsync()->jffs2_flush_wbuf_gc() the garbage collector
+thread then completes the verification which it had started during
+mount, but completes it pretty late.
 
-If data can be compressed, the 128 byte number goes down a bit.  For
-each write, jffs2 adds a struct jffs2_raw_inode.  A little extra for
-garbage collection and some wasted bytes at the end of each erase
-block, which should leave you between 10 and 20 years, very roughly.
+Unfortunately, my understanding from the mentioned thread was that the
+gc thread ought to die once the umount is called. This does confuse me.
+Is something wrong here or if it is an expected behavior, why?
 
-> - to do my computation, is it correct the formula I used,
->   or do I need to substitute the 128 value with the flash
->   sector size?
+The log is as follows:
+<snip>
+OMAP NOR FLASH: MTD Self-Contained Driver ver. 1.0 size=3D0x33554432lx
+OMAP NOR FLASH: Intel 28F256L18T found at 0xc2880000
+Creating 4 MTD partitions on "OMAP NOR FLASH":
+0x00000000-0x00020000 : "bootloader"
+0x00020000-0x00040000 : "params"
+0x00040000-0x00240000 : "kernel"
+0x00240000-0x02000000 : "file system"
+<snip - immediately after boot prompt>
+# ls -l ../../Flash/Flash-jffs2/rootfs.bin.nor
+-rw-r--r--    1 25041    200       1703936 Feb 11  2005
+../../Flash/Flash-jffs2/rootfs.bin.nor
+# time ./flash_eraseall /dev/mtd/3
+Erasing 128 Kibyte @ 1da0000 -- 99 % complete.[[B
 
-On NOR flash, you can usually write byte-exact, so above calculation
-is correct.
+real    5m1.270s
+user    0m0.030s
+sys     5m1.150s
+# time cat ../../Flash/Flash-jffs2/rootfs.bin.nor>/dev/mtd/3
 
-NAND is written in pages of 512 bytes of 2048 bytes.  You'd better
-check and test the write buffer functionality, since unbuffered writes
-would kill you with above numbers.  But it looks as if you have NOR
-anyway, so don't worry.
+real    1m26.771s
+user    0m0.010s
+sys     1m26.600s
+# time mount -t jffs2 /dev/mtdblock/3 /mnt
 
-Jörn
+real    0m0.177s
+user    0m0.000s
+sys     0m0.170s
+# time ls /mnt
+bin  dev  etc  lib  mnt  mtdutil  proc  sbin  tmp  usr  var
 
--- 
-I've never met a human being who would want to read 17,000 pages of
-documentation, and if there was, I'd kill him to get him out of the
-gene pool.
--- Joseph Costello
+real    0m0.055s
+user    0m0.030s
+sys     0m0.010s
+# time umount /mnt
+
+real    4m46.783s
+user    0m0.000s
+sys     4m46.580s
+# time mount -t jffs2 /dev/mtdblock/3 /mnt
+
+real    0m0.158s
+user    0m0.010s
+sys     0m0.140s
+# ls /mnt/
+bin  dev  etc  lib  mnt  mtdutil  proc  sbin  tmp  usr  var
+# time umount /mnt
+
+real    0m0.038s
+user    0m0.000s
+sys     0m0.000s
+
+<reboot>
+# time mount -t jffs2 /dev/mtdblock/3 /mnt
+
+real    0m0.165s
+user    0m0.010s
+sys     0m0.140s
+# ls /mnt
+bin  dev  etc  lib  mnt  mtdutil  proc  sbin  tmp  usr  var
+# time umount /mnt
+
+real    0m0.039s
+user    0m0.000s
+sys     0m0.010s
+
+Why does it take so long to unmount the filesystem the first time? If
+Garbage collector is involved, why? Kinda been thinking about this for a
+couple of days now, and never got a satisfactory answer so far.
+
+Regards,
+Nishanth Menon
