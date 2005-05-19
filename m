@@ -1,12 +1,19 @@
-Date: Thu, 19 May 2005 06:42:43 -0400
-Message-Id: <200505191042.j4JAghlD012786@ns.mundohostservers.com>
-To: 
-From: ellis <david101elis@walla.com>
-CC: 
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DYm9U-0005zo-3L
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 10:37:33 -0400
+Date: Thu, 19 May 2005 16:37:10 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Gianluca Moro <giangiammy@yahoo.com>
+Message-ID: <20050519143710.GB22174@wohnheim.fh-wedel.de>
+References: <20050519103148.2859.qmail@web52709.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Subject: God be with you.
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20050519103148.2859.qmail@web52709.mail.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Compute flash life time
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,50 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 19 May 2005 03:31:48 -0700, Gianluca Moro wrote:
+> 
+> and sorry for the obvious question, but I'm trying to
+> estimate my flash life, depending on write operation.
+> 
+> I'm using JFFS2:
+> If I have 1 M flash, and write 128byte/s in a circular 
+> buffer style: I compute, with 100000 write cycles to
+> have a 9000 day flash life (100000 * 1024*1024/128 seconds).
 
-Hello, 
+Yes, about 25 years.
 
-My name is DAVID ELLIS, a nationality of United Kingdom,I
-have been diagnosed with Esophageal cancer .It has defiled all
-forms of medical treatment, andright now I have only about a few months
-to live, according to medical experts.I have not particularly lived my
-life so well, as I never really cared for anyone(not even myself)but my
-business. Though I am very rich, I was never generous, I was always
-hostile to people and onlyfocused  on my business as that was the only
-thing I cared for. But now I regret all this as I now know that there is
-more to life than just wanting to have or make all the money in the
-world.I believe when God gives me a second chance to come to this world
-I would live my life a different way from how I have lived it. 
+> But in this way I suppose that each 128 blob of data
+> I write, effectively write 128 bytes of flash: but
+> I'm trying to understand:
+> 
+> - what is the filesystem overhead?
+> - when I write 128 bytes, the filesystem writes effectively
+>   128 bytes, or writes an entire sector?
 
-Now that God has called me, I have willed and given most of my property
- and assets to my immediate and extended family members as well as a few
-close friends.I want God to be merciful to me and accept my soul
- so, I have decided to give alms to charity organizations, as I want
-this to be one of the last good deeds I do on earth. So far, I have
-distributed
- money to some charity organizations in the U.A.E, Somalia and Malaysia.
-Now that my health has deteriorated so badly, I cannot do this myself
- anymore. I once asked members of my family to close one of my accounts
-and distribute the money which I have there to charity organization in
-Bulgaria and Pakistan, they refused and kept the money to
- themselves. Hence, I do not trust them anymore, as they seem not to be
-ontended with what I have left for them. The last of my money which no
-one knows of is the huge cash deposit of Twenty Eight Million
-dollars($28,000,000,00) that I have with a finance/Security Company
-abroad. I will want you to help me collect this deposit and despatch it
-to
-charity organizations.
- 
- 
- I have set aside 20% for you and for your time.
- 
- 
+If data can be compressed, the 128 byte number goes down a bit.  For
+each write, jffs2 adds a struct jffs2_raw_inode.  A little extra for
+garbage collection and some wasted bytes at the end of each erase
+block, which should leave you between 10 and 20 years, very roughly.
 
+> - to do my computation, is it correct the formula I used,
+>   or do I need to substitute the 128 value with the flash
+>   sector size?
 
-DAVID ELLIS
+On NOR flash, you can usually write byte-exact, so above calculation
+is correct.
 
+NAND is written in pages of 512 bytes of 2048 bytes.  You'd better
+check and test the write buffer functionality, since unbuffered writes
+would kill you with above numbers.  But it looks as if you have NOR
+anyway, so don't worry.
 
+Jörn
 
-___________________________________________________________________________
-Mail enviado desde el servicio de  WebMail de Rinos Club
-- http://www.rinosclub.com
+-- 
+I've never met a human being who would want to read 17,000 pages of
+documentation, and if there was, I'd kill him to get him out of the
+gene pool.
+-- Joseph Costello
