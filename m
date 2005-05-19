@@ -1,14 +1,12 @@
-Message-ID: <428C7E60.3090908@netwinder.org>
-Date: Thu, 19 May 2005 07:54:08 -0400
-From: Ralph Siemsen <ralphs@netwinder.org>
-MIME-Version: 1.0
-To: Thorsten Haas <haas@deutaeit.de>
-References: <1116403535.2682.7.camel@shrek> <1116489972.2647.4.camel@shrek>
-In-Reply-To: <1116489972.2647.4.camel@shrek>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Date: Thu, 19 May 2005 06:42:43 -0400
+Message-Id: <200505191042.j4JAghlD012786@ns.mundohostservers.com>
+To: 
+From: ellis <david101elis@walla.com>
+CC: 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI physmap - how to create partitions
+Subject: God be with you.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,26 +16,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thorsten Haas wrote:
 
-> Solved. I used mphysmap.c, because there are two banks of flash on my
-> board, but mphysmap.c does not support partitioning yet. Though,
-> physmap.c does provide commandline partition parsing.
-> Sadly, mtd-id's seem not to be well-documented. I looked the one for
-> mappings to the physical memory area up in the source. It's
-> "phys_mapped_flash". Huzaa.
+Hello, 
 
-Hmm, are the two banks the same (eg. two chips of same type), and are 
-they consecutive in memory or parallel on the bus?  Then you can 
-actually use physmap.  Just pass it the combined size of both chips, the 
-MTD code will handle the rest.  There is no need to call probe function 
-for each bank, or to partition each bank separately.  This seems to be 
-another one of the MTD undocumented "features".
+My name is DAVID ELLIS, a nationality of United Kingdom,I
+have been diagnosed with Esophageal cancer .It has defiled all
+forms of medical treatment, andright now I have only about a few months
+to live, according to medical experts.I have not particularly lived my
+life so well, as I never really cared for anyone(not even myself)but my
+business. Though I am very rich, I was never generous, I was always
+hostile to people and onlyfocused  on my business as that was the only
+thing I cared for. But now I regret all this as I now know that there is
+more to life than just wanting to have or make all the money in the
+world.I believe when God gives me a second chance to come to this world
+I would live my life a different way from how I have lived it. 
 
-> Thus, I wrote some additional text into chapter "Making partitions with
-> CFI flash and working with multiple banks of FLASH" of
-> mtd-jffs-HOWTO.txt. ( retreived it from
-> ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/mtd/mtd-jffs-HOWTO.txt )
+Now that God has called me, I have willed and given most of my property
+ and assets to my immediate and extended family members as well as a few
+close friends.I want God to be merciful to me and accept my soul
+ so, I have decided to give alms to charity organizations, as I want
+this to be one of the last good deeds I do on earth. So far, I have
+distributed
+ money to some charity organizations in the U.A.E, Somalia and Malaysia.
+Now that my health has deteriorated so badly, I cannot do this myself
+ anymore. I once asked members of my family to close one of my accounts
+and distribute the money which I have there to charity organization in
+Bulgaria and Pakistan, they refused and kept the money to
+ themselves. Hence, I do not trust them anymore, as they seem not to be
+ontended with what I have left for them. The last of my money which no
+one knows of is the huge cash deposit of Twenty Eight Million
+dollars($28,000,000,00) that I have with a finance/Security Company
+abroad. I will want you to help me collect this deposit and despatch it
+to
+charity organizations.
+ 
+ 
+ I have set aside 20% for you and for your time.
+ 
+ 
 
-Nice!
--R
+
+DAVID ELLIS
+
+
+
+___________________________________________________________________________
+Mail enviado desde el servicio de  WebMail de Rinos Club
+- http://www.rinosclub.com
