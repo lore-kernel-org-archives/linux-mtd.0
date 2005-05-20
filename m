@@ -1,19 +1,19 @@
 Received: from canuck.infradead.org ([2001:8b0:10b:4::1])
 	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DZ3dE-0000TF-91
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 10:17:24 +0100
+	id 1DZ3qW-0000Wd-Bn
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 10:31:10 +0100
 Received: from mailbox.radixs.com ([203.81.41.217])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DZ3dB-0005zc-JU
-	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 05:17:22 -0400
+	id 1DZ3qS-0006Lp-OG
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 05:31:06 -0400
 From: Munira Ahmed <munira.ahmed@radixs.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Fri, 20 May 2005 17:17:18 +0800
-Message-Id: <1116580638.18096.133.camel@server11>
+Date: Fri, 20 May 2005 17:31:00 +0800
+Message-Id: <1116581460.18096.142.camel@server11>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: map and chip drivers
+Subject: mtd drivers
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Can anybody give me a good reference on how exactly kernel implements
+mtd drivers?
 
-> Breaking things down a little more, in the mtd stack there are 3 kinds of drivers.
-> map drivers that describe how to talk to a given flash chip.
-> probe drivers that identify what kind of chip you have.
-> chip drivers that know how to speak a command set and let you flash your chip.
+I want to know more practical issues rather than theoretical ones. I
+can't really find answers to my questions easily on the net. All I find
+is some basics on the mtd
 
+What I would like to know is
 
-I really don't understand the difference between the map and the chip
-driver? 
+1) Which module in the kernel decides whether to call jedec_probe or
+cfi_probe
 
-talk to a given flash !
-speak a command set!
+2)which module exactly calls cfi probe 
 
-ain't they the same?
+3) how exactly is control transferred to an appropraite driver?
 
--- 
-Munira Ahmed
+4) What if a driver supports a particular chip only partially?
+
+5) Is there a flowchart that will help me understand where and when
+kernel makes all this decisions.
+
+6) how do I get a list of all the chips supported in a  given version of
+the kernel?
+
+Munira
