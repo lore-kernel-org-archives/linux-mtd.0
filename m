@@ -1,27 +1,25 @@
-Received: from [2002:cde9:da46::1] (helo=canuck.infradead.org)
+Received: from canuck.infradead.org ([2001:8b0:10b:4::1])
 	by pentafluge.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DYsbp-00062y-UA
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 22:31:15 +0100
-Received: from 207.88.121.43.ptr.us.xo.net ([207.88.121.43]
-	helo=mail.realmsys.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DYsbQ-00082P-0U
-	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 17:30:56 -0400
-From: Peter Grayson <pgrayson@realmsys.com>
-To: Zoltan Sogor <weth@inf.u-szeged.hu>
-In-Reply-To: <1116521440.4427.199.camel@pgrayson1.realmsys.com>
-References: <1115400358.4422.92.camel@pgrayson1.realmsys.com>
-	<42846606.8070108@inf.u-szeged.hu>
-	<1116038903.4857.30.camel@pgrayson1.realmsys.com>
-	<428B4995.9010103@inf.u-szeged.hu>
-	<1116521440.4427.199.camel@pgrayson1.realmsys.com>
+	id 1DYxR7-0007Nh-HE
+	for linux-mtd@lists.infradead.org; Fri, 20 May 2005 03:40:29 +0100
+Received: from mailbox.radixs.com ([203.81.41.217])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DYxR3-0001qk-NM
+	for linux-mtd@lists.infradead.org; Thu, 19 May 2005 22:40:28 -0400
+From: Munira Ahmed <munira.ahmed@radixs.com>
+To: Ralph Siemsen <ralphs@netwinder.org>
+In-Reply-To: <428C7CCF.50606@netwinder.org>
+References: <1116226208.31694.26.camel@server11>
+	<428899DA.3040507@netwinder.org> <1116293182.31694.47.camel@server11>
+	<428BC09E.7070307@netwinder.org> <1116467146.18096.45.camel@server11>
+	<428C7CCF.50606@netwinder.org>
 Content-Type: text/plain
-Date: Thu, 19 May 2005 15:30:21 -0600
-Message-Id: <1116538221.4427.206.camel@pgrayson1.realmsys.com>
+Date: Fri, 20 May 2005 10:40:11 +0800
+Message-Id: <1116556811.18096.90.camel@server11>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Centralized Summary
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: stdio.h and kernel space
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +29,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have found the real issue behind the problems I was attributing to the
-centralized summary. There was a problem in the nand driver for the
-custom nand controller that I am using. Once that problem was fixed,
-neither of the two new centralized summary problems I had reported
-happen anymore. So, I no longer know of any problems with the CS patch.
-Sorry for the noise.
 
-Pete
+Hi Ralph
 
-On Thu, 2005-05-19 at 10:50 -0600, Peter Grayson wrote:
-> I did some further testing. It looks like the kernel panics may have a
-> relationship to partition size. I have tried these tests with two
-> partitions: a 184MB partition and a 64MB partition. I was unable to
-> reproduce the kernel panics on the 64MB partition, but they were easily
-> reproducible on the 184MB partition (which is where I found the original
-> results). The other problem (Crc failure on cent_sum inocache) happens
-> on both partitions.
+The datasheet you are referring to is the right one and S29WSxxxN is
+using JEDEC 42.4 command set standard.
+
+I am not sure which JEDEC standard is impelmented by jedec_prob.c.
+
+Further if a separate driver is provided on AMD's website it must
+significantly be different otherwise they could simply have mentioned
+about the one in jedec_probe.c
+
+I believe that S29WSxxxN's MirrirBit technology provides many more
+security features as yet not available in other flash technologies.
+
+
+Recently they have sent me even a new version so now I have to study
+that one and see how could that one be used.
+
+Thanks for taking the trouble of going through the specs and the kernel
+as well.
+
+It really amazes me how keen people are to help each other.
+I have got many problems solved by the wonderful community help.
+
+Regards and thanks to all
+
+
+
+On Thu, 2005-05-19 at 07:47 -0400, Ralph Siemsen wrote:
+> Munira Ahmed wrote:
+> > S29WSxxxN. Does not seem to be supported
+> 
+> According to datasheet the programming sequence looks rather like the 
+> JEDEC standard method found in drivers/mtd/chips/jedec_probe.c, 
+> particularly the jedec_reset() function matches the code shown on page 
+> 28 of the datasheet.
+> 
+> Datasheet i'm looking at is 
+> http://www.amd.com/us-en/assets/content_type/white_papers_and_tech_docs/s29ws-n_00_g0_e.pdf 
+> hopefully this is the right one ;)
+> 
+> So the standard driver might just need an extra entry for vendor/device 
+> codes.  Maybe ;)
+> 
+> -R
+> 
+-- 
+Munira Ahmed
