@@ -1,23 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from zproxy.gmail.com ([64.233.162.206])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaDwQ-0001AP-5R
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2005 10:30:03 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Kluba Patrik <pajko@kukac.halom.u-szeged.hu>
-In-Reply-To: <Pine.LNX.4.61.0505231612510.1137@kukac.halom.u-szeged.hu>
-References: <Pine.LNX.4.61.0505230940590.25999@kukac.halom.u-szeged.hu>
-	<1116846559.16577.18.camel@sauron.oktetlabs.ru>
-	<4291D7D0.7010305@yandex.ru>
-	<Pine.LNX.4.61.0505231612510.1137@kukac.halom.u-szeged.hu>
-Content-Type: text/plain
-Date: Mon, 23 May 2005 16:29:56 +0200
-Message-Id: <1116858596.6736.45.camel@tglx.tec.linutronix.de>
+	id 1DaHrs-0003Jd-RH
+	for linux-mtd@lists.infradead.org; Mon, 23 May 2005 14:41:37 -0400
+Received: by zproxy.gmail.com with SMTP id 8so1636083nzo
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 May 2005 11:41:35 -0700 (PDT)
+Message-ID: <999d19fd050523114173e3ceca@mail.gmail.com>
+Date: Mon, 23 May 2005 15:41:35 -0300
+From: Michel Fidelis <michel.fidelis@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH][03/03] nandsim own geometry
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: mtd + jffs2 error "No space left on device"
+Reply-To: Michel Fidelis <michel.fidelis@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-05-23 at 16:17 +0200, Kluba Patrik wrote:
+Hello,
 
-> OK, but what if somebody wants to add support for an unsupported chip? He has to 
-> modify nand_ids.c, too. AFAIK there is no other way to specify a chip's size. 
+I'm trying to mount a jffs2 file system on a MTD partition.
+My partition (/dev/mtd1) has 768 KB (0xc0000) (3 flash continuous
+sectors of 256 KB (0x40000) each one).
+I'm thinking the problem is with the -p option in the mkfs.jffs2 command.
 
+The steps I have done are:
 
-That's intentional. nand_ids holds all _supported_ chips. And its not a
-big problem to add a chip ID. If you add a new chip, you have to check,
-if the nand driver can handle it. 
+1)eraseall /dev/mtd1 (if I use the erase command it just erases the
+first sector).
+2)mkfs.jffs2 -p 0xc0000 -e 0x40000 -d jffs2dir -o jffs2.img (the image
+is created without erros)
+3)cp jffs2.img /dev/mtd1 (it executes without erros)
+4)mount -t jffs2 /dev/mtdblock1 /mnt (it executes without erros)
 
-> It's a litte trouble that all the data is stored statically in a table. It 
-> should be expandable somehow dinamically, from modules. I see what can I do.
+However, when I try to create some file on the /mnt file system I
+receive the following error: No space left on device.
 
-I do not like this idea at all. Thats just another error source. I'm not
-interested in "I added the chip-id XYZ, because the chip was not
-detected, but it does not work" discussions on the mailing list. We have
-already enough dumb questions to answer.
+The df /mnt output  is:
 
-tglx
+Total 768 KB
+free 0 KB
+total nodes 0 KB
+free nodes 0 KB
+
+I'm working with a Motorola m5272c3 board which has an AMD Am29PL160C
+flash memory (2 MB). I'm using Kernel 2.4.x.
+
+Can anybody help me?
