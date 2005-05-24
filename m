@@ -1,22 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaarC-0002kw-G1
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 10:58:13 -0400
-Date: Tue, 24 May 2005 16:58:04 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Kluba Patrik <pajko@kukac.halom.u-szeged.hu>
-Message-ID: <20050524145804.GB24361@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.61.0505230933320.25999@kukac.halom.u-szeged.hu>
-	<1116942160.6736.201.camel@tglx.tec.linutronix.de>
-	<Pine.LNX.4.61.0505241621400.9119@kukac.halom.u-szeged.hu>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Daauc-0002vU-2x
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 11:01:44 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Vitaly Wool <vwool@ru.mvista.com>
+In-Reply-To: <42933C35.3040305@ru.mvista.com>
+References: <42933C35.3040305@ru.mvista.com>
+Content-Type: text/plain
+Date: Tue, 24 May 2005 17:01:44 +0200
+Message-Id: <1116946904.6736.212.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.61.0505241621400.9119@kukac.halom.u-szeged.hu>
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
-	Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH][02/03] nandsim default values in Kconfig
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: last commit breaks the AMD NOR flash functionality?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 24 May 2005 16:25:54 +0200, Kluba Patrik wrote:
-> 
-> >I'd prefer to have them available as module parameters, so I can change
-> >the settings without recompiling on module load.
-> 
-> What if I rewrite nandsim's module parameters for easier setting of the 
-> values, like erase block size, page size, OOB size, etc. instead of to have 
-> the developer enter ID bytes, and change a table entry based on the given 
-> values? In this case, which entry should be changed?
+On Tue, 2005-05-24 at 18:37 +0400, Vitaly Wool wrote:
+> > 	/* Did we succeed? */
+> >-	if (chip_good(map, adr, map_word_ff(map))) {
+> >+	if (!chip_good(map, adr, map_word_ff(map))) {
+> > 		/* reset on all failures. */
+> > 		map_write( map, CMD(0xF0), chip->start );
+> > 		/* FIXME - should have reset delay before continuing */
+> >
+> If I roll it back, it starts working.
+> I also suspected something strange with 'if(chip_good(...)) ...' instead 
+> of 'if(!chip_good(...)) ...' but it worked before and it doesn't work 
+> now. Can anyone elaborate this a bit?
 
-How about you #include "nandsim_config.h" ?
+I had the same problem you see before the fix. It took a bit to figure
+out what was going wrong. 
 
-Then you can edit nandsim_config.h with your favorite editor and have
-all the options visible in a couple of lines.
+I'm quite sure, that my fix is correct, because the previous revision
+exited via the error path in case of no error.
 
-Jörn
+I suspect, that something goes really wrong with your erase. You have to
+check the results in chip_good.
 
--- 
-The wise man seeks everything in himself; the ignorant man tries to get
-everything from somebody else.
--- unknown
+The chip_good function reads the same address twice and compares whether
+the results are equal. The chip good result also requires that the reads
+are all 0xff.
+
+I suggest to add a check into chip_good, where you can identify which of
+the requirements is not fulfilled to further narrow down the source of
+trouble
+
+tglx
