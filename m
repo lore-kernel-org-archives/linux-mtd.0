@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaZgM-0001RR-GV
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 09:42:57 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Kluba Patrik <pajko@kukac.halom.u-szeged.hu>
-In-Reply-To: <Pine.LNX.4.61.0505230933320.25999@kukac.halom.u-szeged.hu>
-References: <Pine.LNX.4.61.0505230933320.25999@kukac.halom.u-szeged.hu>
-Content-Type: text/plain
-Date: Tue, 24 May 2005 15:42:40 +0200
-Message-Id: <1116942160.6736.201.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+Received: from cipe.mpl.ch ([195.134.130.77] helo=mail.mpl.ch)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DaZne-0001fq-Gg
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 09:50:28 -0400
+Received: from [192.168.11.10] (IDENT:1000@pcdm.elsoft.loc [192.168.11.10])
+	by mail.mpl.ch (8.13.2/8.13.2/Debian-1) with ESMTP id j4OCeeJo012778
+	for <linux-mtd@lists.infradead.org>; Tue, 24 May 2005 14:40:40 +0200
+Message-ID: <429320D1.2060003@elsoft.ch>
+Date: Tue, 24 May 2005 14:40:49 +0200
+From: =?ISO-8859-15?Q?=22David_M=FCller_=28ELSOFT_AG=29=22?=
+	<d.mueller@elsoft.ch>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH][02/03] nandsim default values in Kconfig
-Reply-To: tglx@linutronix.de
+Subject: JFFS2 access delay
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Patrik,
+Hello
 
-On Mon, 2005-05-23 at 09:40 +0200, Kluba Patrik wrote:
-> Nandsim uses several module parameters for specifying what chip to simulate. 
-> Some default values are in the source itself. It's much convenient to have them 
-> in Kconfig so you don't need to specify module parameters every time you load 
-> it.
+While playing around with JFFS2 on a NAND flash on an ARM based board,
+i'm facing a strange problem:
 
-I'm not too happy to add two dozen config options for a driver which is
-used for development and research only. 
 
-If you want to experiment with various chip types, parameters... it
-makes not much sense to me to compile the settings into the module. 
+First i create a tar file (using BusyBox's builtin tar command) on a
+fresh formatted JFFS2 filesytems from a directory containing about 500
+1kB files like this:
 
-I'd prefer to have them available as module parameters, so I can change
-the settings without recompiling on module load.
+~ # flash_eraseall -j /dev/mtd/1
+Erasing 16 Kibyte @ 1ea8000 -- 24 % complete. Cleanmarker written at
+1ea8000.
+Skipping bad block at 0x01eac000
+Erasing 16 Kibyte @ 7dfc000 -- 99 % complete. Cleanmarker written at
+7dfc000.
+~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
+~ # tar -cf /mnt/hd/t.tar /tmp/test
+tar: Removing leading '/' from member names
+~ # time ls -l /mnt/hd/
+-rw-r--r--    1 root     root       769536 Jan  1 00:23 t.tar
+real    0m 0.05s
+user    0m 0.00s
+sys     0m 0.04s
 
-> With this patch you can easily construct a NAND geometry for nandsim from within 
-> Kconfig. The main purpose is to make testing on large page chips possible on 
-> low-memory systems like mine (eg. test on a 256Mbit chip with large pages) or 
 
-Can be solved by module parameters too. You even can use the id of e.g.
-a 16GiB chip. Simply limit the max. memory allocation for that chip and
-declare all blocks which exceed the available memory as bad blocks so
-nothing will ever access them. You can also use partitions for that
-purpose.
+Everything seems to be fine. But if i unmount and remount the JFFS2
+partition, the first "ls" to the JFFS2 takes quite some time:
 
-> test on a chip you do not have and don't know the ID values for it 
+~ # umount /mnt/hd/
+~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
+~ # time ls -l /mnt/hd/
+-rw-r--r--    1 root     root       769536 Jan  1 00:23 t.tar
+real    1m 32.68s
+user    0m 0.01s
+sys     0m 7.13s
 
-If you do not have chip ID's handy, then simply supply the device size,
-page size, buswidth and let nandsim scan the id table for a matching
-chip. 
 
-To create a new chip id with handcrafted parameters you can even change
-a table entry from nandsim.
+During this delay, "jffs2_gcd_mtd1" is consuming a large amount of CPU
+time but the rest of the system seems to be well.
 
-As I said yesterday I prefer to have such things nicely hidden in the
-nandsim module which should have sane default values for the module so
-the average Joe User does not run into trouble.
 
-Having those config switches around provokes wrong assumptions about the
-real world usage of the nand driver subsystem. It's scary enough to
-imagine them, I dont want to read them :)
+If i don't build the tar file directly on the JFFS2 partition, but just
+copy the final file over from another partition, there isn't such a delay:
 
-tglx
+~ # umount /mnt/hd/
+~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
+~ # time ls -l /mnt/hd/
+-rw-r--r--    1 root     root       769536 Jan  1 00:53 t.tar
+real    0m 0.07s
+user    0m 0.01s
+sys     0m 0.04s
+
+
+I'm using linux 2.6.11. I also gave the latest MTD CVS code a try, but
+with the same result.
+
+Does this ring a bell? Any idea how to cure this behaviour?
+
+
+Dave
