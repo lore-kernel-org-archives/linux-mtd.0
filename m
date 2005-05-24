@@ -1,19 +1,19 @@
-Received: from cipe.mpl.ch ([195.134.130.77] helo=mail.mpl.ch)
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaZne-0001fq-Gg
-	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 09:50:28 -0400
-Received: from [192.168.11.10] (IDENT:1000@pcdm.elsoft.loc [192.168.11.10])
-	by mail.mpl.ch (8.13.2/8.13.2/Debian-1) with ESMTP id j4OCeeJo012778
-	for <linux-mtd@lists.infradead.org>; Tue, 24 May 2005 14:40:40 +0200
-Message-ID: <429320D1.2060003@elsoft.ch>
-Date: Tue, 24 May 2005 14:40:49 +0200
-From: =?ISO-8859-15?Q?=22David_M=FCller_=28ELSOFT_AG=29=22?=
-	<d.mueller@elsoft.ch>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-15
+	id 1DaaAR-0001x9-B1
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 10:14:00 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: "\"David" =?ISO-8859-1?Q?M=FCller?= "(ELSOFT AG)\"" <d.mueller@elsoft.ch>
+In-Reply-To: <429320D1.2060003@elsoft.ch>
+References: <429320D1.2060003@elsoft.ch>
+Content-Type: text/plain
+Date: Tue, 24 May 2005 18:13:25 +0400
+Message-Id: <1116944005.16577.23.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 access delay
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 access delay
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,64 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello
+> Hello
+> Everything seems to be fine. But if i unmount and remount the JFFS2
+> partition, the first "ls" to the JFFS2 takes quite some time:
+...
+> 
+> During this delay, "jffs2_gcd_mtd1" is consuming a large amount of CPU
+> time but the rest of the system seems to be well.
+This is normal JFFS2 behaviour (unfortunately). Just after mount JFFS2
+starts checking process which consumes resources.
 
-While playing around with JFFS2 on a NAND flash on an ARM based board,
-i'm facing a strange problem:
+> Does this ring a bell? Any idea how to cure this behaviour?
+No. This isn't a bug, this is feature
+(http://www.cbttape.org/funny/bug3.jpg).
 
+What is the size of your flash?
 
-First i create a tar file (using BusyBox's builtin tar command) on a
-fresh formatted JFFS2 filesytems from a directory containing about 500
-1kB files like this:
-
-~ # flash_eraseall -j /dev/mtd/1
-Erasing 16 Kibyte @ 1ea8000 -- 24 % complete. Cleanmarker written at
-1ea8000.
-Skipping bad block at 0x01eac000
-Erasing 16 Kibyte @ 7dfc000 -- 99 % complete. Cleanmarker written at
-7dfc000.
-~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
-~ # tar -cf /mnt/hd/t.tar /tmp/test
-tar: Removing leading '/' from member names
-~ # time ls -l /mnt/hd/
--rw-r--r--    1 root     root       769536 Jan  1 00:23 t.tar
-real    0m 0.05s
-user    0m 0.00s
-sys     0m 0.04s
-
-
-Everything seems to be fine. But if i unmount and remount the JFFS2
-partition, the first "ls" to the JFFS2 takes quite some time:
-
-~ # umount /mnt/hd/
-~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
-~ # time ls -l /mnt/hd/
--rw-r--r--    1 root     root       769536 Jan  1 00:23 t.tar
-real    1m 32.68s
-user    0m 0.01s
-sys     0m 7.13s
-
-
-During this delay, "jffs2_gcd_mtd1" is consuming a large amount of CPU
-time but the rest of the system seems to be well.
-
-
-If i don't build the tar file directly on the JFFS2 partition, but just
-copy the final file over from another partition, there isn't such a delay:
-
-~ # umount /mnt/hd/
-~ # mount -t jffs2 /dev/mtdblock/1 /mnt/hd/
-~ # time ls -l /mnt/hd/
--rw-r--r--    1 root     root       769536 Jan  1 00:53 t.tar
-real    0m 0.07s
-user    0m 0.01s
-sys     0m 0.04s
-
-
-I'm using linux 2.6.11. I also gave the latest MTD CVS code a try, but
-with the same result.
-
-Does this ring a bell? Any idea how to cure this behaviour?
-
-
-Dave
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
