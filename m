@@ -1,19 +1,15 @@
 Received: from rt-soft-2.moscow.itn.ru ([80.240.96.70] helo=mail.dev.rtsoft.ru)
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaJfM-0004K4-4g
-	for linux-mtd@lists.infradead.org; Mon, 23 May 2005 16:36:54 -0400
-Date: Tue, 24 May 2005 00:36:19 +0400
+	id 1DaUGg-0008W9-Uk
+	for linux-mtd@lists.infradead.org; Tue, 24 May 2005 03:56:08 -0400
+Date: Tue, 24 May 2005 11:56:01 +0400
 From: Vitaly Wool <vwool@ru.mvista.com>
 To: linux-mtd@lists.infradead.org
-Message-Id: <20050524003619.00004949.vwool@ru.mvista.com>
-In-Reply-To: <20050522003617.00002eeb.vwool@ru.mvista.com>
-References: <20050520143422.65d40157.vwool@ru.mvista.com>
-	<Pine.LNX.4.62.0505201342430.4397@localhost.localdomain>
-	<20050522003617.00002eeb.vwool@ru.mvista.com>
+Message-Id: <20050524115601.4c1f12f7.vwool@ru.mvista.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: Re: XIP support hooks for the AMD flash: updated
+Subject: MTD/XIP support for AMD flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +19,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tny correction: len -> map->size in do_erase_chip
-This patch has been verified on the other ARM platform w/ AMD flash.
+Hi all,
+below is the patch against the latest CVS version for the MTD/XIP support on AMD flash.
+Known to work on 2 ARM targets.
 
+Comments/additions are welcome.
 
-Index: linux-2.6.10/drivers/mtd/chips/Kconfig
+Vital
+
+Index: drivers/mtd/chips/Kconfig
 ===================================================================
---- linux-2.6.10.orig/drivers/mtd/chips/Kconfig
-+++ linux-2.6.10/drivers/mtd/chips/Kconfig
+RCS file: /home/cvs/mtd/drivers/mtd/chips/Kconfig,v
+retrieving revision 1.14
+diff -u -r1.14 Kconfig
+--- drivers/mtd/chips/Kconfig	8 Feb 2005 17:11:15 -0000	1.14
++++ drivers/mtd/chips/Kconfig	24 May 2005 07:52:15 -0000
 @@ -300,7 +300,7 @@
  
  config MTD_XIP
@@ -40,10 +43,13 @@ Index: linux-2.6.10/drivers/mtd/chips/Kconfig
  	default y if XIP_KERNEL
  	help
  	  This allows MTD support to work with flash memory which is also
-Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
+Index: drivers/mtd/chips/cfi_cmdset_0002.c
 ===================================================================
---- linux-2.6.10.orig/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
+RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0002.c,v
+retrieving revision 1.115
+diff -u -r1.115 cfi_cmdset_0002.c
+--- drivers/mtd/chips/cfi_cmdset_0002.c	20 May 2005 03:28:23 -0000	1.115
++++ drivers/mtd/chips/cfi_cmdset_0002.c	24 May 2005 07:52:17 -0000
 @@ -4,11 +4,15 @@
   *
   * Copyright (C) 2000 Crossnet Co. <info@crossnet.co.jp>
@@ -68,15 +74,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  #define AMD_BOOTLOC_BUG
  #define FORCE_WORD_WRITE 0
-@@ -73,7 +78,6 @@
- 
- /* #define DEBUG_CFI_FEATURES */
- 
--
- #ifdef DEBUG_CFI_FEATURES
- static void cfi_tell_features(struct cfi_pri_amdstd *extp)
- {
-@@ -391,7 +395,7 @@
+@@ -393,7 +398,7 @@
   * correctly and is therefore not done	(particulary with interleaved chips
   * as each chip must be checked independantly of the others).
   */
@@ -85,7 +83,16 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  {
  	map_word d, t;
  
-@@ -420,12 +424,12 @@
+@@ -418,7 +423,7 @@
+  * as each chip must be checked independantly of the others).
+  *
+  */
+-static int chip_good(struct map_info *map, unsigned long addr, map_word expected)
++static int __xipram chip_good(struct map_info *map, unsigned long addr, map_word expected)
+ {
+ 	map_word oldd, curd;
+ 
+@@ -448,12 +453,12 @@
  
  			if (time_after(jiffies, timeo)) {
  				printk(KERN_ERR "Waiting for chip to be ready timed out.\n");
@@ -101,7 +108,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  			/* Someone else might have been playing with it. */
  			goto retry;
  		}
-@@ -473,15 +477,23 @@
+@@ -501,15 +506,23 @@
  				return -EIO;
  			}
  			
@@ -127,7 +134,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	case FL_POINT:
  		/* Only if there's no operation suspended... */
  		if (mode == FL_READY && chip->oldstate == FL_READY)
-@@ -491,10 +503,10 @@
+@@ -519,10 +532,10 @@
  	sleep:
  		set_current_state(TASK_UNINTERRUPTIBLE);
  		add_wait_queue(&chip->wq, &wait);
@@ -140,7 +147,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		goto resettime;
  	}
  }
-@@ -512,6 +524,11 @@
+@@ -540,6 +553,11 @@
  		chip->state = FL_ERASING;
  		break;
  
@@ -152,7 +159,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	case FL_READY:
  	case FL_STATUS:
  		/* We should really make set_vpp() count, rather than doing this */
-@@ -523,6 +540,203 @@
+@@ -551,6 +569,198 @@
  	wake_up(&chip->wq);
  }
  
@@ -211,7 +218,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 +	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
 +	map_word status, OK = CMD(0x80);
 +	unsigned long suspended, start = xip_currtime();
-+	flstate_t oldstate, newstate;
++	flstate_t oldstate;
 +
 +	do {
 +		cpu_relax();
@@ -227,8 +234,6 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 +			 * operation while another chip suspended it, then
 +			 * we resume the whole thing at once).  Yes, it
 +			 * can happen!
-+			 * Write-suspend seems to be broken, so no write-
-+			 * suspend support here.
 +			 */
 +			map_write(map, CMD(0xb0), adr);
 +			usec -= xip_elapsed_since(start);
@@ -248,13 +253,10 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 +
 +			/* Suspend succeeded */
 +			oldstate = chip->state;
-+			if (oldstate == FL_ERASING) {
-+				if (!map_word_bitsset(map, status, CMD(0x40)))
-+					break;
-+				newstate = FL_XIP_WHILE_ERASING;
-+				chip->erase_suspended = 1;
-+			}
-+			chip->state = newstate;
++			if (!map_word_bitsset(map, status, CMD(0x40)))
++				break;
++			chip->state = FL_XIP_WHILE_ERASING;
++			chip->erase_suspended = 1;
 +			map_write(map, CMD(0xf0), adr);
 +			(void) map_read(map, adr);
 +			asm volatile (".rep 8; nop; .endr");
@@ -270,7 +272,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 +			 * until it's done.
 +			 */
 +			spin_lock(chip->mutex);
-+			while (chip->state != newstate) {
++			while (chip->state != FL_XIP_WHILE_ERASING) {
 +				DECLARE_WAITQUEUE(wait, current);
 +				set_current_state(TASK_UNINTERRUPTIBLE);
 +				add_wait_queue(&chip->wq, &wait);
@@ -356,7 +358,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  static inline int do_read_onechip(struct map_info *map, struct flchip *chip, loff_t adr, size_t len, u_char *buf)
  {
-@@ -535,10 +749,10 @@
+@@ -563,10 +773,10 @@
  	/* Ensure cmd read/writes are aligned. */ 
  	cmd_addr = adr & ~(map_bankwidth(map)-1); 
  
@@ -369,7 +371,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		return ret;
  	}
  
-@@ -551,7 +765,7 @@
+@@ -579,7 +789,7 @@
  
  	put_chip(map, chip, cmd_addr);
  
@@ -378,7 +380,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	return 0;
  }
  
-@@ -605,7 +819,7 @@
+@@ -633,7 +843,7 @@
  	struct cfi_private *cfi = map->fldrv_priv;
  
   retry:
@@ -387,7 +389,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	if (chip->state != FL_READY){
  #if 0
-@@ -614,7 +828,7 @@
+@@ -642,7 +852,7 @@
  		set_current_state(TASK_UNINTERRUPTIBLE);
  		add_wait_queue(&chip->wq, &wait);
  		
@@ -396,7 +398,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		schedule();
  		remove_wait_queue(&chip->wq, &wait);
-@@ -643,7 +857,7 @@
+@@ -671,7 +881,7 @@
  	cfi_send_gen_cmd(0x00, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	
  	wake_up(&chip->wq);
@@ -405,7 +407,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	return 0;
  }
-@@ -692,7 +906,7 @@
+@@ -720,7 +930,7 @@
  }
  
  
@@ -414,7 +416,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  {
  	struct cfi_private *cfi = map->fldrv_priv;
  	unsigned long timeo = jiffies + HZ;
-@@ -712,10 +926,10 @@
+@@ -740,10 +950,10 @@
  
  	adr += chip->start;
  
@@ -427,7 +429,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		return ret;
  	}
  
-@@ -735,7 +949,9 @@
+@@ -763,7 +973,9 @@
  		goto op_done;
  	}
  
@@ -437,7 +439,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
   retry:
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -743,9 +959,9 @@
+@@ -771,9 +983,9 @@
  	map_write(map, datum, adr);
  	chip->state = FL_WRITING;
  
@@ -450,7 +452,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	/* See comment above for timeout value. */
  	timeo = jiffies + uWriteTimeout; 
-@@ -756,11 +972,11 @@
+@@ -784,11 +996,11 @@
  
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&chip->wq, &wait);
@@ -464,8 +466,15 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  			continue;
  		}
  
-@@ -771,9 +987,7 @@
+@@ -796,14 +1008,14 @@
+ 			break;
+ 
+ 		if (time_after(jiffies, timeo)) {
++			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
++			xip_disable(map, chip, adr);
                          break;
+ 		}
  
  		/* Latency issues. Drop the lock, wait a while and retry */
 -		cfi_spin_unlock(chip->mutex);
@@ -473,20 +482,22 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 -		cfi_spin_lock(chip->mutex);
 +		UDELAY(map, chip, adr, 1);
  	}
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, datum)) {
+@@ -816,10 +1028,11 @@
  
- 	printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
-@@ -787,8 +1001,9 @@
- 	ret = -EIO;
+ 		ret = -EIO;
+ 	}
++	xip_enable(map, chip, adr);
   op_done:
  	chip->state = FL_READY;
-+	xip_enable(map, chip, adr);
  	put_chip(map, chip, adr);
 -	cfi_spin_unlock(chip->mutex);
 +	spin_unlock(chip->mutex);
  
  	return ret;
  }
-@@ -820,7 +1035,7 @@
+@@ -851,7 +1064,7 @@
  		map_word tmp_buf;
  
   retry:
@@ -495,7 +506,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		if (cfi->chips[chipnum].state != FL_READY) {
  #if 0
-@@ -829,7 +1044,7 @@
+@@ -860,7 +1073,7 @@
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&cfi->chips[chipnum].wq, &wait);
  
@@ -504,7 +515,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  			schedule();
  			remove_wait_queue(&cfi->chips[chipnum].wq, &wait);
-@@ -843,7 +1058,7 @@
+@@ -874,7 +1087,7 @@
  		/* Load 'tmp_buf' with old contents of flash */
  		tmp_buf = map_read(map, bus_ofs+chipstart);
  
@@ -513,7 +524,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		/* Number of bytes to copy from buffer */
  		n = min_t(int, len, map_bankwidth(map)-i);
-@@ -898,7 +1113,7 @@
+@@ -929,7 +1142,7 @@
  		map_word tmp_buf;
  
   retry1:
@@ -522,7 +533,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		if (cfi->chips[chipnum].state != FL_READY) {
  #if 0
-@@ -907,7 +1122,7 @@
+@@ -938,7 +1151,7 @@
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&cfi->chips[chipnum].wq, &wait);
  
@@ -531,7 +542,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  			schedule();
  			remove_wait_queue(&cfi->chips[chipnum].wq, &wait);
-@@ -920,7 +1135,7 @@
+@@ -951,7 +1164,7 @@
  
  		tmp_buf = map_read(map, ofs + chipstart);
  
@@ -540,16 +551,19 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		tmp_buf = map_word_load_partial(map, tmp_buf, buf, 0, len);
  	
-@@ -939,7 +1154,7 @@
+@@ -970,8 +1183,9 @@
  /*
   * FIXME: interleaved mode not tested, and probably not supported!
   */
 -static inline int do_write_buffer(struct map_info *map, struct flchip *chip, 
-+static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip, 
- 				  unsigned long adr, const u_char *buf, int len)
+-				  unsigned long adr, const u_char *buf, int len)
++static int __xipram do_write_buffer(struct map_info *map, struct flchip *chip,
++				    unsigned long adr, const u_char *buf, 
++				    int len)
  {
  	struct cfi_private *cfi = map->fldrv_priv;
-@@ -954,10 +1169,10 @@
+ 	unsigned long timeo = jiffies + HZ;
+@@ -985,10 +1199,10 @@
  	adr += chip->start;
  	cmd_adr = adr;
  
@@ -562,18 +576,18 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		return ret;
  	}
  
-@@ -966,7 +1181,10 @@
+@@ -997,7 +1211,10 @@
  	DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): WRITE 0x%.8lx(0x%.8lx)\n",
  	       __func__, adr, datum.x[0] );
  
 +	XIP_INVAL_CACHED_RANGE(map, adr, len);
  	ENABLE_VPP(map);
 +	xip_disable(map, chip, cmd_adr);
-+
++	
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
  	//cfi_send_gen_cmd(0xA0, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -996,9 +1214,9 @@
+@@ -1027,9 +1244,9 @@
  	map_write(map, CMD(0x29), cmd_adr);
  	chip->state = FL_WRITING;
  
@@ -586,7 +600,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	timeo = jiffies + uWriteTimeout; 
  		
-@@ -1009,11 +1227,11 @@
+@@ -1040,38 +1257,39 @@
  
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&chip->wq, &wait);
@@ -600,29 +614,43 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  			continue;
  		}
  
-@@ -1024,9 +1242,7 @@
+-		if (chip_ready(map, adr))
++		if (chip_ready(map, adr)) {
++			xip_enable(map, chip, adr);
+ 			goto op_done;
++		}
+ 		    
+ 		if( time_after(jiffies, timeo))
  			break;
  
  		/* Latency issues. Drop the lock, wait a while and retry */
 -		cfi_spin_unlock(chip->mutex);
 -		cfi_udelay(1);
 -		cfi_spin_lock(chip->mutex);
-+		UDELAY(map, chip, cmd_adr, 1);
++		UDELAY(map, chip, adr, 1);
  	}
  
- 	printk(KERN_WARNING "MTD %s(): software timeout\n",
-@@ -1039,8 +1255,9 @@
+-	printk(KERN_WARNING "MTD %s(): software timeout\n",
+-	       __func__ );
+-
+ 	/* reset on all failures. */
+ 	map_write( map, CMD(0xF0), chip->start );
++	xip_enable(map, chip, adr);
+ 	/* FIXME - should have reset delay before continuing */
+ 
++	printk(KERN_WARNING "MTD %s(): software timeout\n",
++	       __func__ );
++
  	ret = -EIO;
   op_done:
  	chip->state = FL_READY;
-+	xip_enable(map, chip, cmd_adr);
  	put_chip(map, chip, adr);
 -	cfi_spin_unlock(chip->mutex);
 +	spin_unlock(chip->mutex);
  
  	return ret;
  }
-@@ -1130,7 +1347,7 @@
+@@ -1161,7 +1379,7 @@
   * Handle devices with one erase region, that only implement
   * the chip erase command.
   */
@@ -631,7 +659,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  {
  	struct cfi_private *cfi = map->fldrv_priv;
  	unsigned long timeo = jiffies + HZ;
-@@ -1140,17 +1357,20 @@
+@@ -1171,17 +1389,20 @@
  
  	adr = cfi->addr_unlock1;
  
@@ -654,7 +682,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -1162,9 +1382,9 @@
+@@ -1193,9 +1414,9 @@
  	chip->erase_suspended = 0;
  	chip->in_progress_block_addr = adr;
  
@@ -667,7 +695,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	timeo = jiffies + (HZ*20);
  
-@@ -1173,10 +1393,10 @@
+@@ -1204,10 +1425,10 @@
  			/* Someone's suspended the erase. Sleep */
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&chip->wq, &wait);
@@ -680,29 +708,21 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  			continue;
  		}
  		if (chip->erase_suspended) {
-@@ -1193,30 +1413,28 @@
- 			break;
+@@ -1227,10 +1448,7 @@
+ 		}
  
  		/* Latency issues. Drop the lock, wait a while and retry */
 -		cfi_spin_unlock(chip->mutex);
 -		set_current_state(TASK_UNINTERRUPTIBLE);
 -		schedule_timeout(1);
 -		cfi_spin_lock(chip->mutex);
-+		UDELAY(map, chip, adr, 1000);
++		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, map_word_ff(map))) {
+@@ -1242,14 +1460,15 @@
  	}
  
--	printk(KERN_WARNING "MTD %s(): software timeout\n",
--	       __func__ );
--
- 	/* reset on all failures. */
- 	map_write( map, CMD(0xF0), chip->start );
- 	/* FIXME - should have reset delay before continuing */
- 
-+	printk(KERN_WARNING "MTD %s(): software timeout\n",
-+	       __func__ );
-+
- 	ret = -EIO;
-  op_done:
  	chip->state = FL_READY;
 +	xip_enable(map, chip, adr);
  	put_chip(map, chip, adr);
@@ -718,7 +738,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  {
  	struct cfi_private *cfi = map->fldrv_priv;
  	unsigned long timeo = jiffies + HZ;
-@@ -1225,17 +1443,20 @@
+@@ -1258,17 +1477,20 @@
  
  	adr += chip->start;
  
@@ -741,7 +761,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, cfi->device_type, NULL);
  	cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, cfi->device_type, NULL);
-@@ -1246,10 +1467,10 @@
+@@ -1279,10 +1501,10 @@
  	chip->state = FL_ERASING;
  	chip->erase_suspended = 0;
  	chip->in_progress_block_addr = adr;
@@ -756,7 +776,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  	timeo = jiffies + (HZ*20);
  
-@@ -1258,10 +1479,10 @@
+@@ -1291,10 +1513,10 @@
  			/* Someone's suspended the erase. Sleep */
  			set_current_state(TASK_UNINTERRUPTIBLE);
  			add_wait_queue(&chip->wq, &wait);
@@ -769,8 +789,22 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  			continue;
  		}
  		if (chip->erase_suspended) {
-@@ -1278,24 +1499,22 @@
+@@ -1304,20 +1526,20 @@
+ 			chip->erase_suspended = 0;
+ 		}
+ 
+-		if (chip_ready(map, adr))
++		if (chip_ready(map, adr)) {
++			xip_enable(map, chip, adr);
  			break;
++		}
+ 
+ 		if (time_after(jiffies, timeo)) {
++			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n",
+ 				__func__ );
+ 			break;
+ 		}
  
  		/* Latency issues. Drop the lock, wait a while and retry */
 -		cfi_spin_unlock(chip->mutex);
@@ -779,29 +813,18 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
 -		cfi_spin_lock(chip->mutex);
 +		UDELAY(map, chip, adr, 1000000/HZ);
  	}
--	
--	printk(KERN_WARNING "MTD %s(): software timeout\n",
--	       __func__ );
--	
-+
- 	/* reset on all failures. */
- 	map_write( map, CMD(0xF0), chip->start );
- 	/* FIXME - should have reset delay before continuing */
+ 	/* Did we succeed? */
+ 	if (chip_good(map, adr, map_word_ff(map))) {
+@@ -1330,7 +1552,7 @@
  
-+	printk(KERN_WARNING "MTD %s(): software timeout\n",
-+	       __func__ );
-+	
- 	ret = -EIO;
-  op_done:
  	chip->state = FL_READY;
-+	xip_enable(map, chip, adr);
  	put_chip(map, chip, adr);
 -	cfi_spin_unlock(chip->mutex);
 +	spin_unlock(chip->mutex);
  	return ret;
  }
  
-@@ -1355,7 +1574,7 @@
+@@ -1390,7 +1612,7 @@
  		chip = &cfi->chips[i];
  
  	retry:
@@ -810,7 +833,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		switch(chip->state) {
  		case FL_READY:
-@@ -1369,14 +1588,14 @@
+@@ -1404,14 +1626,14 @@
  			 * with the chip now anyway.
  			 */
  		case FL_SYNCING:
@@ -827,7 +850,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  			schedule();
  
-@@ -1391,13 +1610,13 @@
+@@ -1426,13 +1648,13 @@
  	for (i--; i >=0; i--) {
  		chip = &cfi->chips[i];
  
@@ -843,7 +866,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	}
  }
  
-@@ -1413,7 +1632,7 @@
+@@ -1448,7 +1670,7 @@
  	for (i=0; !ret && i<cfi->numchips; i++) {
  		chip = &cfi->chips[i];
  
@@ -852,7 +875,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  
  		switch(chip->state) {
  		case FL_READY:
-@@ -1433,7 +1652,7 @@
+@@ -1468,7 +1690,7 @@
  			ret = -EAGAIN;
  			break;
  		}
@@ -861,7 +884,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	}
  
  	/* Unlock the chips again */
-@@ -1442,13 +1661,13 @@
+@@ -1477,13 +1699,13 @@
  		for (i--; i >=0; i--) {
  			chip = &cfi->chips[i];
  
@@ -877,7 +900,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		}
  	}
  	
-@@ -1467,7 +1686,7 @@
+@@ -1502,7 +1724,7 @@
  	
  		chip = &cfi->chips[i];
  
@@ -886,7 +909,7 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  		
  		if (chip->state == FL_PM_SUSPENDED) {
  			chip->state = FL_READY;
-@@ -1477,7 +1696,7 @@
+@@ -1512,7 +1734,7 @@
  		else
  			printk(KERN_ERR "Argh. Chip not in PM_SUSPENDED state upon resume()\n");
  
@@ -895,10 +918,13 @@ Index: linux-2.6.10/drivers/mtd/chips/cfi_cmdset_0002.c
  	}
  }
  
-Index: linux-2.6.10/drivers/mtd/chips/fwh_lock.h
+Index: drivers/mtd/chips/fwh_lock.h
 ===================================================================
---- linux-2.6.10.orig/drivers/mtd/chips/fwh_lock.h
-+++ linux-2.6.10/drivers/mtd/chips/fwh_lock.h
+RCS file: /home/cvs/mtd/drivers/mtd/chips/fwh_lock.h,v
+retrieving revision 1.2
+diff -u -r1.2 fwh_lock.h
+--- drivers/mtd/chips/fwh_lock.h	17 Sep 2004 11:45:05 -0000	1.2
++++ drivers/mtd/chips/fwh_lock.h	24 May 2005 07:52:17 -0000
 @@ -58,10 +58,10 @@
  	 * to flash memory - that means that we don't have to check status
  	 * and timeout.
@@ -921,10 +947,13 @@ Index: linux-2.6.10/drivers/mtd/chips/fwh_lock.h
  	return 0;
  }
  
-Index: linux-2.6.10/drivers/mtd/maps/map_funcs.c
+Index: drivers/mtd/maps/map_funcs.c
 ===================================================================
---- linux-2.6.10.orig/drivers/mtd/maps/map_funcs.c
-+++ linux-2.6.10/drivers/mtd/maps/map_funcs.c
+RCS file: /home/cvs/mtd/drivers/mtd/maps/map_funcs.c,v
+retrieving revision 1.9
+diff -u -r1.9 map_funcs.c
+--- drivers/mtd/maps/map_funcs.c	13 Jul 2004 22:33:15 -0000	1.9
++++ drivers/mtd/maps/map_funcs.c	24 May 2005 07:52:17 -0000
 @@ -9,23 +9,24 @@
  #include <linux/module.h>
  
@@ -954,11 +983,14 @@ Index: linux-2.6.10/drivers/mtd/maps/map_funcs.c
  {
  	inline_map_copy_to(map, to, from, len);
  }
-Index: linux-2.6.10/include/linux/mtd/cfi.h
+Index: include/linux/mtd/cfi.h
 ===================================================================
---- linux-2.6.10.orig/include/linux/mtd/cfi.h
-+++ linux-2.6.10/include/linux/mtd/cfi.h
-@@ -365,16 +365,6 @@
+RCS file: /home/cvs/mtd/include/linux/mtd/cfi.h,v
+retrieving revision 1.53
+diff -u -r1.53 cfi.h
+--- include/linux/mtd/cfi.h	15 Mar 2005 19:03:13 -0000	1.53
++++ include/linux/mtd/cfi.h	24 May 2005 07:52:19 -0000
+@@ -428,16 +428,6 @@
  	}
  }
  
