@@ -1,24 +1,20 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=mail.magtech.com.au)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Daqck-0006Rf-9m
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 03:48:21 -0400
-Received: from mail.magtech.com.au (localhost [127.0.0.1])
-	by localhost.magtech.com.au (Postfix) with ESMTP id 0AE9162D7E9
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 May 2005 17:48:02 +1000 (EST)
-Received: from [192.168.65.196] (unknown [192.168.65.196])
-	by mail.magtech.com.au (Postfix) with ESMTP id 420CD62D7E9
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 May 2005 17:48:01 +1000 (EST)
-Message-ID: <42942DB0.2010801@magellan-technology.com>
-Date: Wed, 25 May 2005 17:48:00 +1000
-From: Aras Vaichas <arasv@magellan-technology.com>
+Received: from cipe.mpl.ch ([195.134.130.77] helo=mail.mpl.ch)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Daqpo-0006fa-4m
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 04:01:51 -0400
+Message-ID: <429430F1.2080208@elsoft.ch>
+Date: Wed, 25 May 2005 10:01:53 +0200
+From: =?ISO-8859-15?Q?=22David_M=FCller_=28ELSOFT_AG=29=22?=
+	<d.mueller@elsoft.ch>
 MIME-Version: 1.0
-To: MTD-LIST <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=UTF-8
+To: dedekind@infradead.org
+References: <429320D1.2060003@elsoft.ch>
+	<1116944005.16577.23.camel@sauron.oktetlabs.ru>
+In-Reply-To: <1116944005.16577.23.camel@sauron.oktetlabs.ru>
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
-Subject: how to write to an entire NOR Flash at once
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 access delay
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello
 
-I need to remotely upgrade some old systems:
+Artem B. Bityuckiy wrote:
+>> During this delay, "jffs2_gcd_mtd1" is consuming a large amount of
+>> CPU time but the rest of the system seems to be well.
 
-from:
-* Kernel 2.2, NOR Flash, kernel and applications spread over several MTD
-parititions using JFFS1, custom bootloader
+"ls" delay time goes up to over 6 minutes for a tar file containing 1000
+files.
 
-to:
-* Kernel 2.6, adding u-boot and using JFFS2 instead of JFFS1. I have the new
-system up and running with no problems. The MTD partition map will change
-radically from the old one.
+> This is normal JFFS2 behaviour (unfortunately). Just after mount
+> JFFS2 starts checking process which consumes resources.
 
-The old systems have an upgrade mechanism in place where by TFTP'ing a file
-into a directory and then rebooting will cause that file to be unpacked and
-placed into the application directory and then executed. Therefore I can run
-any script or file that I wish to on these systems and it will be run as root.
+This is a little bit of a problem if your system's root file system is
+on this partition, blocking the whole boot process :-(
 
-What I am thinking of doing is to take a copy of the entire NOR flash from the
-new system and copy it into the NOR Flash on the old system and reboot. Since
-the MTD parititions won't be aligned between the old and new system, I will
-need to write the entire NOR Flash in one go - at which point the system will
-lose its brains and will need to be reset and hopefully start a new life as a
-2.6 system.
+What puzzles me is the fact that the tar file building process
+triggers this "weak" point in JFFS2. Tar simply concatenates its input
+files together and writes them to the output file (at least this is my
+idea of how tar works). So on the file system level, i don't see much
+of a difference between a functionality used by "tar" or by "cp". What
+is so special about tar?
 
-What is the best way to do this? Do I need to write a 2.2 kernel module that
-will allow me raw access to the NOR Flash or can I do this from userspace?
+> What is the size of your flash?
 
-regards,
+The JFFS2 partition has 126MiB, the whole NAND flash has a size of 128MiB.
 
-Aras Vaichas
+
+Dave
