@@ -1,20 +1,29 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DaxIK-0000rh-RD
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 10:55:41 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Jonas <jdietsche@fsforth.de>
-In-Reply-To: <42948BE6.1010400@fsforth.de>
-References: <42948BE6.1010400@fsforth.de>
-Content-Type: text/plain
-Date: Wed, 25 May 2005 16:55:23 +0200
-Message-Id: <1117032923.6736.316.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1Db1lK-0001sN-OY
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 15:41:57 -0400
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 4DBD2BAA0
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 21:41:53 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 42460-09 for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 21:41:43 +0200 (CEST)
+Received: from [192.168.0.77] (clj22-23.dial-up.arnes.si [153.5.34.23])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by n1.cetrtapot.si (Postfix) with ESMTP id B13D7BAAE
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 21:41:43 +0200 (CEST)
+Message-ID: <4294D4F2.6010105@cetrtapot.si>
+Date: Wed, 25 May 2005 21:41:38 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand write problem
-Reply-To: tglx@linutronix.de
+Subject: Serial flash memory support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +33,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-05-25 at 16:29 +0200, Jonas wrote:
-> I try to write some files within linux to my flash. But I always get the 
-> message
-> nand_write_ecc: Attempt to write not page aligned data
-> cp: Write Error: Invalid argument
+Hi everybody,
 
-You can not use cp to write to a raw nand flash. NAND must be written
-with page aligned data. 
+I'm starting to code kernel driver for SPI serial flash memory (we are using 
+M25Pxx chips from ST). In the end I would like to see this chip to hold jffs2 
+fs and be mtd-compatible. After quick inspection of current CVS code I didn't 
+find any code in there for SPI flash. So my questions are:
 
-Please read the FAQ and the tech docs on http://linux-mtd.infradead.org
+Has anybody done something on the SPI flash memory devices already?
 
-tglx
+If I start to implement mtd driver for this chip what functions do I need?
+
+I've glimpsed over the mtd_info struct which contains lots of function pointers 
+- are they all necessary?
+
+regards,
+hinko k
+
+-- 
+..because under Linux "if something is possible in principle,
+then it is already implemented or somebody is working on it".
+
+					--LKI
