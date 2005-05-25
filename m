@@ -1,23 +1,27 @@
-Received: from www2.levante.de ([212.101.151.130] helo=www.levante.de)
+Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dawt8-0000TF-TT
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 10:29:42 -0400
-Received: from pd95b6420.dip0.t-ipconnect.de ([217.91.100.32]
-	helo=mail.fsforth.de)
-	by www.levante.de with asmtp (Exim 3.36 #1 (Debian))
-	id 1Dawt5-00030O-00
-	for <linux-mtd@lists.infradead.org>; Wed, 25 May 2005 16:29:35 +0200
-Received: from onyx.fsforth.de ([192.168.40.175] ident=jdietsch)
-	by mail.fsforth.de with esmtp (Exim 4.50) id 1Dawt1-0005xA-Mt
-	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 16:29:31 +0200
-Message-ID: <42948BE6.1010400@fsforth.de>
-Date: Wed, 25 May 2005 16:29:58 +0200
-From: Jonas <jdietsche@fsforth.de>
+	id 1DaxDN-0000h2-D6
+	for linux-mtd@lists.infradead.org; Wed, 25 May 2005 10:50:39 -0400
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 8B01BBA6A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 16:50:06 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 40418-01 for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 16:50:02 +0200 (CEST)
+Received: from [192.1.1.61] (unknown [192.1.1.61])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 181EDB9A6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 25 May 2005 16:50:02 +0200 (CEST)
+Message-ID: <4294909C.8070307@cetrtapot.si>
+Date: Wed, 25 May 2005 16:50:04 +0200
+From: Simon Posnjak <simon.posnjak@cetrtapot.si>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: nand write problem
+Subject: IO_ADDR_R and IO_ADDR_W
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi list,
+Hi,
 
-I try to write some files within linux to my flash. But I always get the 
-message
-nand_write_ecc: Attempt to write not page aligned data
-cp: Write Error: Invalid argument
+I am writing a board specific driver. We have Toshiba TC58DVM 32 MB chip 
+connected over gpio (g) port.
 
-This is my environment:
-linux kernel 2.6.11
-mtd-snapshot-20050524.tar.bz2
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB 
-3,3V 8-bit)
+Pins are:
 
-What I'm doing wrong?
+_Data:
+_
+ 
+g8  <-> I/O1
+g9  <-> I/O2
+g10 <-> I/O3
+g11 <-> I/O4
+g12 <-> I/O5
+g13 <-> I/O6
+g14 <-> I/O7
+g15 <-> I/O8
+ 
+_Control:
+_
+ 
+g16 <-- RY/BY
+g17 --> /RE
+g18 --> /CE
+g19 --> CLE
+g20 --> ALE
+g21 --> /WE
+g22 --> /WP
 
-Thanks for your help.
-Jonas
+The g port address is 0xB0000028  (32-bit).
+
+My questions are:
+
+1. What address do I have to supply to IO_ADDR_R and IO_ADDR_W fields? 
+The address of the g port? The g port + 1 (0xB0000029) [so that we start 
+reading at g8]? Or should I provide a function that reads and writes the 
+I/O pins?
+
+2. We are using the rest of the pins for some other devices. Will my 
+driver interfere with there drivers?
+
+Thank you.
+
+          Regards Simon
