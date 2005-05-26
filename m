@@ -1,23 +1,31 @@
-Received: from zproxy.gmail.com ([64.233.162.206])
+Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DbMnS-0007Y2-3X
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 14:09:31 -0400
-Received: by zproxy.gmail.com with SMTP id 34so525012nzf
+	id 1DbObh-00083U-2x
+	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 16:05:31 -0400
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id ACDBCBAA6
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 May 2005 11:09:29 -0700 (PDT)
-Message-ID: <6934efce05052611026685ab6f@mail.gmail.com>
-Date: Thu, 26 May 2005 11:02:49 -0700
-From: Jared Hulbert <jaredeh@gmail.com>
-To: "JobHunts02@aol.com" <JobHunts02@aol.com>
-In-Reply-To: <197.3f3af727.2fbed9f0@aol.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	Thu, 26 May 2005 22:05:10 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 64251-01 for <linux-mtd@lists.infradead.org>;
+	Thu, 26 May 2005 22:05:03 +0200 (CEST)
+Received: from [192.168.1.101] (BSN-210-238-154.dsl.siol.net [195.210.238.154])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by n1.cetrtapot.si (Postfix) with ESMTP id 47312B99D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 May 2005 22:05:03 +0200 (CEST)
+From: Simon Posnjak <simon.posnjak@cetrtapot.si>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 26 May 2005 22:05:01 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <197.3f3af727.2fbed9f0@aol.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Flash with boot blocks in kernel 2.4
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Message-Id: <200505262205.01979.simon.posnjak@cetrtapot.si>
+Subject: Toshiba NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +35,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/19/05, JobHunts02@aol.com <JobHunts02@aol.com> wrote:
-> I am working with kernel 2.4 on a board with two flash chips that have bo=
-ot
-> blocks, Intel Advanced Boot Block Flash Memory (28F320C3).  I just read t=
-hat
-> "the 2.4 CFI code handles only devices with uniform eraseblock size -- no=
-t the
-> devices with 'boot blocks'. Current CVS fixes that for AMD chips, and it'=
-s
-> trivial to do the same for Intel chips, now it's been done once," accordi=
-ng to the
-> MTD project leader.
->=20
-> Does anyone know where on the web I can find these "trivial" changes for
-> Intel chips?
->=20
-> Thank you.
->=20
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
+Hi all,
 
-Newer MTD rev's fix this.  Back porting a new MTD should help you.
+I am working on board specific driver for our board. While writing hwcontrol 
+function I discoverd that I can set it up to drive CLE, ALE, nCE, WP (not 
+used according to nand.h) signals, but when I checked the timing diagrams in 
+the FLASHes data sheet 
+(http://www.toshiba.com/taec/components/Datasheet/TC58DVM92A1FT_030110.pdf)
+I found that I shoud also drive the RE and WE signals. So am I missing 
+something or is our FLASH chip (TC58DVM92) not yet supported in NAND MTD?
 
-FYI - I don't think JFFS2 can span boot blocks and regular block,
-though now that I think of it I've never tried.  Anybody know if
-that's true or not?
+	Regards Simon
