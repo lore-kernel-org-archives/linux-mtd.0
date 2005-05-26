@@ -1,16 +1,15 @@
 Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DbJjI-0005BT-Cf
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 10:53:01 -0400
-Message-ID: <4295E2BE.3070501@cetrtapot.si>
-Date: Thu, 26 May 2005 16:52:46 +0200
+	id 1DbJyU-0005OR-8w
+	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 11:08:45 -0400
+Message-ID: <4295E673.3050704@cetrtapot.si>
+Date: Thu, 26 May 2005 17:08:35 +0200
 From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-To: Andrew Victor <andrew@sanpeople.com>
-References: <4294D4F2.6010105@cetrtapot.si>
-	<1117089331.6175.19.camel@fuzzie.sanpeople.com>
-In-Reply-To: <1117089331.6175.19.camel@fuzzie.sanpeople.com>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+To: Damian Slee <Damian@commtech.com.au>
+References: <B967C997C2BE2D48A6BBE14078F79BD601CE3A@ntserver.commtech.com.au>
+In-Reply-To: <B967C997C2BE2D48A6BBE14078F79BD601CE3A@ntserver.commtech.com.au>
+Content-Type: text/plain; charset=windows-1250; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Serial flash memory support
@@ -23,36 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew Victor wrote:
-> hi Hinko,
+Damian Slee wrote:
+> Jffs2 does support atmel serial dataflash, as far as the driver for spi,
+> that is more hardware dependent.   They recently changed the conditional 
+> compiles to be CONFIG_JFFS2_FS_WRITEBUFFER for nand and dataflash.
 > 
-> 
->>Has anybody done something on the SPI flash memory devices already?
-> 
-> 
-> Yes, there is a driver for Atmel's DataFlash.
-> 
+> BTW JFFS2 takes ages to do the startup scan of the flash with the 528 or
+> 1056 block size of the dataflash.
 
-ST serial flash seems pretty close according to the specs.
+Our serial flash uses 256 byte pages and is forming sectors with them, 
+depending on the whole flash size. But I guess that is no case for accessing it 
+quicker.
 
-> The driver is included in the 2.4 ARM-Linux kernels
-> (www.arm.linux.org.uk) and the 2.6 patches for the AT91RM9200 processor
-> (http://maxim.org.za/AT91RM9200/2.6/).
-> 
+>  I was evalutating the latest cvs JFFS2 last week upon eCos.  I think it
+> was about 7 seconds for 64kbytes, with the SPI clocked at 15MHz.
 
-Great, 2.6 patch looks promising. Thank you. Can you provide information about 
-timings for accessing SPI serial flash. As I could see from kernel boot dump on 
-the maxim.org.za page you seem to be using SPI serial flash for code and data.
-
-Our application has user data on the SPI serial flash and at boot time its 
-contents is read - it has to be done as fast as possible. Is there some fs you 
-could recomend for this purpose?
-
-
+That is too slow for our application.
+My conclusion would be that JFFS2 is too much for 'slow' SPI serial flash. I 
+guess will just use raw access to the data stored there and achieve maximum 
+speed. Can mtd raw access driver/module be used for this purpose or is that 
+driver meant for a another stuff?
 
 regards,
 hinko k
-
 -- 
 ..because under Linux "if something is possible in principle,
 then it is already implemented or somebody is working on it".
