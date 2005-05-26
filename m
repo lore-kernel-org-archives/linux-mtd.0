@@ -1,33 +1,23 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
+Received: from zproxy.gmail.com ([64.233.162.206])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DbM8A-0007EH-PL
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 13:26:51 -0400
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id EAC232F016
+	id 1DbMnS-0007Y2-3X
+	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 14:09:31 -0400
+Received: by zproxy.gmail.com with SMTP id 34so525012nzf
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 May 2005 17:34:40 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 521C211C51
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 May 2005 19:26:49 +0200 (CEST)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 9B3A29BD9
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 May 2005 19:26:48 +0200 (CEST)
-Message-ID: <429606D3.3050704@imc-berlin.de>
-Date: Thu, 26 May 2005 19:26:43 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <20050526152256.GS6681@pengutronix.de>	<4295ED9E.6000508@arcom.com>
-	<4295EE70.8000608@imc-berlin.de>	<4295F3A4.70303@arcom.com>
-	<20050526164635.GT6681@pengutronix.de>	<4295FF42.9090300@imc-berlin.de>
-	<20050526171750.GW6681@pengutronix.de>
-In-Reply-To: <20050526171750.GW6681@pengutronix.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: Fast rollout process on jffs2?
+	Thu, 26 May 2005 11:09:29 -0700 (PDT)
+Message-ID: <6934efce05052611026685ab6f@mail.gmail.com>
+Date: Thu, 26 May 2005 11:02:49 -0700
+From: Jared Hulbert <jaredeh@gmail.com>
+To: "JobHunts02@aol.com" <JobHunts02@aol.com>
+In-Reply-To: <197.3f3af727.2fbed9f0@aol.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <197.3f3af727.2fbed9f0@aol.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Flash with boot blocks in kernel 2.4
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,18 +27,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Robert Schwebel wrote:
+On 5/19/05, JobHunts02@aol.com <JobHunts02@aol.com> wrote:
+> I am working with kernel 2.4 on a board with two flash chips that have bo=
+ot
+> blocks, Intel Advanced Boot Block Flash Memory (28F320C3).  I just read t=
+hat
+> "the 2.4 CFI code handles only devices with uniform eraseblock size -- no=
+t the
+> devices with 'boot blocks'. Current CVS fixes that for AMD chips, and it'=
+s
+> trivial to do the same for Intel chips, now it's been done once," accordi=
+ng to the
+> MTD project leader.
+>=20
+> Does anyone know where on the web I can find these "trivial" changes for
+> Intel chips?
+>=20
+> Thank you.
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>=20
 
-> On Thu, May 26, 2005 at 06:54:26PM +0200, Steven Scholz wrote:
-> 
->>You could {g,b}zip it. The many 0xFF should compress quite nice... ;-)
-> 
-> 
-> Yes, but is there a way to decompress gzip/bzip in u-boot? 
+Newer MTD rev's fix this.  Back porting a new MTD should help you.
 
-Sure.
-But maybe not yet as a user command. But the code is there. I use it to 
-unzip boot logos at start up.
-
---
-Steven
+FYI - I don't think JFFS2 can span boot blocks and regular block,
+though now that I think of it I've never tried.  Anybody know if
+that's true or not?
