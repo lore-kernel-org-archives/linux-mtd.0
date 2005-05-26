@@ -1,18 +1,19 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
+Received: from metis.extern.pengutronix.de ([83.236.181.26])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DbJyU-0005OR-8w
-	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 11:08:45 -0400
-Message-ID: <4295E673.3050704@cetrtapot.si>
-Date: Thu, 26 May 2005 17:08:35 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
-To: Damian Slee <Damian@commtech.com.au>
-References: <B967C997C2BE2D48A6BBE14078F79BD601CE3A@ntserver.commtech.com.au>
-In-Reply-To: <B967C997C2BE2D48A6BBE14078F79BD601CE3A@ntserver.commtech.com.au>
-Content-Type: text/plain; charset=windows-1250; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Serial flash memory support
+	id 1DbKCK-0005a2-V8
+	for linux-mtd@lists.infradead.org; Thu, 26 May 2005 11:23:02 -0400
+Received: from rsc by metis.extern.pengutronix.de with local (Exim 3.36 #1
+	(Debian)) id 1DbKCG-0001Ob-00
+	for <linux-mtd@lists.infradead.org>; Thu, 26 May 2005 17:22:56 +0200
+Date: Thu, 26 May 2005 17:22:56 +0200
+From: Robert Schwebel <robert@schwebel.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050526152256.GS6681@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Sender: Robert Schwebel <rsc@pengutronix.de>
+Subject: Fast rollout process on jffs2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Damian Slee wrote:
-> Jffs2 does support atmel serial dataflash, as far as the driver for spi,
-> that is more hardware dependent.   They recently changed the conditional 
-> compiles to be CONFIG_JFFS2_FS_WRITEBUFFER for nand and dataflash.
-> 
-> BTW JFFS2 takes ages to do the startup scan of the flash with the 528 or
-> 1056 block size of the dataflash.
+Hi, 
 
-Our serial flash uses 256 byte pages and is forming sectors with them, 
-depending on the whole flash size. But I guess that is no case for accessing it 
-quicker.
+Is there a method for faster rollout of an embedded root filesystem on
+jffs2? I'm currently first erase the chip from u-boot, then copy the
+image created with mkfs.jffs2 into the empty flash. On first startup it
+seems to detect that the partition is larger than the actual image and
+it takes quite some time before the / mount is finished. 
 
->  I was evalutating the latest cvs JFFS2 last week upon eCos.  I think it
-> was about 7 seconds for 64kbytes, with the SPI clocked at 15MHz.
+Does anybody know a faster variant? 
 
-That is too slow for our application.
-My conclusion would be that JFFS2 is too much for 'slow' SPI serial flash. I 
-guess will just use raw access to the data stored there and achieve maximum 
-speed. Can mtd raw access driver/module be used for this purpose or is that 
-driver meant for a another stuff?
-
-regards,
-hinko k
+Robert
 -- 
-..because under Linux "if something is possible in principle,
-then it is already implemented or somebody is working on it".
-
-					--LKI
+ Dipl.-Ing. Robert Schwebel | http://www.pengutronix.de
+ Pengutronix - Linux Solutions for Science and Industry
+   Handelsregister:  Amtsgericht Hildesheim, HRA 2686
+     Hannoversche Str. 2, 31134 Hildesheim, Germany
+   Phone: +49-5121-206917-0 |  Fax: +49-5121-206917-9
