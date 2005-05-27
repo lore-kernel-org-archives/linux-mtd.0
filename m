@@ -1,18 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ian Campbell <icampbell@arcom.com>
-In-Reply-To: <1117198382.384.10.camel@icampbell-debian>
-References: <20050526152256.GS6681@pengutronix.de>
-	<4295ED9E.6000508@arcom.com> <4295EE70.8000608@imc-berlin.de>
-	<4295F3A4.70303@arcom.com>  <20050526164635.GT6681@pengutronix.de>
-	<1117197443.12591.216.camel@hades.cambridge.redhat.com>
-	<1117198382.384.10.camel@icampbell-debian>
-Content-Type: text/plain
-Date: Fri, 27 May 2005 14:07:17 +0100
-Message-Id: <1117199237.12591.226.camel@hades.cambridge.redhat.com>
+Received: from dns1.gruporoca.es ([217.76.154.219]
+	helo=llwb190.servidoresdns.net)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DbipK-0004OF-Qa
+	for linux-mtd@lists.infradead.org; Fri, 27 May 2005 13:40:56 -0400
+To: 
+From: toni <adede_toni@yahoo.it>
+Cc: 
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: Robert Schwebel <r.schwebel@pengutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: Fast rollout process on jffs2?
+Message-Id: <20050527144417.1DC291B038E@llwb190.servidoresdns.net>
+Date: Fri, 27 May 2005 16:44:17 +0200 (CEST)
+Subject: Reply
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +21,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-05-27 at 13:53 +0100, Ian Campbell wrote:
-> That doesn't seem to be in upstream CVS, is it very new or unmerged?
 
-Er, it's certainly not new. It must be unmerged. I'm trying to remember
-where I was using it now -- perhaps on the Symbol2800 port? That's the
-project which funded JFFS2 in the first place.
+Sir/madam
 
--- 
-dwmw2
+
+
+I have a premonition that you could be trusted to assist me in
+
+effecting a fund transfer into your nominated account. As such I
+
+strongly believe it that
+
+you will not sit on our fund when it finally gets into your nominated
+
+account.
+
+
+
+You see, we are top officials of the Federal Government Contract
+
+Review Panel who are interested in importation of goods into our
+
+country with funds which are presently trapped in Nigeria in order to
+
+commence this business we solicit your assistance to enable us
+
+transfer into your account the said trapped funds.
+
+
+
+The source of this fund is as follows:- During the last regime here,
+
+some Government officials set up companies and awarded themselves
+
+contracts which were grossly over-invoiced in various Ministries.
+
+The present Government set up a Contract Review Panel and we have
+
+identified a lot of inflated Contract Funds which are presently
+
+floating in the Central Bank of Nigeria ready for Payment.
+
+However, by virtue of our position as civil servants and members of
+
+the Panel, we cannot acquire this money in our names. I have therefore,
+
+
+
+been delegated as a matter of trust by my colleagues of the Panel to
+
+look
+
+for an Oversea partner into whose account we would transfer the sum
+
+of US$20,500,000.00 (Twenty Million, Five Hundred Thousand UnitedStates
+
+
+
+Dollars) only.
+
+
+
+Hence we are writing you this letter, we have agreed to share the
+
+money thus:
+
+1) 25% for the account owner (you)
+
+2) 70% for the Officials (us)
+
+3) 5% will be for settling of taxation and all local and foreign
+
+expenses. It is from the 70% that we wish to commence the said
+
+business.
+
+
+
+We would want you to furnish us with your full particulars such as your
+
+
+
+Name, Telephone Numbers, Fax Numbers,Please
+
+
+
+
+
+Best regards,
+
+Mr Adede Anthony
+
+___________________________________________________________________________
+Mail automatico enviado desde www.espana2000.org/castellon
