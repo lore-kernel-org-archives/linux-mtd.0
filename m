@@ -1,15 +1,18 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dch6A-0002TO-1w
-	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 06:02:20 -0400
-From: Munira Ahmed <munira.ahmed@radixs.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Mon, 30 May 2005 18:02:10 +0800
-Message-Id: <1117447331.23635.20.camel@server21>
-Mime-Version: 1.0
+Received: from www2.levante.de ([212.101.151.130] helo=www.levante.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dcham-0002fa-RR
+	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 06:33:58 -0400
+Message-ID: <429AEC25.4000309@fsforth.de>
+Date: Mon, 30 May 2005 12:34:13 +0200
+From: Jonas <jdietsche@fsforth.de>
+MIME-Version: 1.0
+To: Blair Barnett <blair@circumnavnetworks.com>
+References: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>
+In-Reply-To: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: where do I get information about mtd partition?
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: nand write problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,20 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any tutorial available on mtd's support of jffs2?
+Hi blair,
+> I believe you need to use the -p (pad) option to nandwrite.
+> Please let us see your nandwrite command line.
+This is what I tried:
 
-I would like to know how mtd supports jffs2 and where to debug if I am
-unable to mount jffs2 correctly.
+# ./nandwrite --jffs2 /dev/mtd/2 jffs2.img
+Use -f option to enforce legacy placement on autoplacement enabled mtd 
+device
 
-Further I would like to know if there is any document which would
-describe the function of files in mtd folder of linux kernel.
+# ./nandwrite -f /dev/mtd/2 jffs2.img
+./nandwrite: illegal option -- f
 
-when I did pattern search for mtd_partition I got a long list of files
-so I am not sure how do I find out the details of mtd partitions
+# ./nandwrite -f --jffs2 /dev/mtd/2 jffs2.img
+./nandwrite: illegal option -- f
 
-Regards
+# ./nandwrite -p /dev/mtd/2 jffs2.img
+this takes a long time until it is finished.
 
+then I mount it with
+# mount -t jffs2 /dev/mtdblock/2 /mnt/
+and get a lot of
+CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
 
+Copy the image with nandwrite is the correct and only way? Or is there 
+another possibility?
 
--- 
-Munira Ahmed
+Jonas
