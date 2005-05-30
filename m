@@ -1,18 +1,30 @@
-Received: from www2.levante.de ([212.101.151.130] helo=www.levante.de)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dcham-0002fa-RR
-	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 06:33:58 -0400
-Message-ID: <429AEC25.4000309@fsforth.de>
-Date: Mon, 30 May 2005 12:34:13 +0200
-From: Jonas <jdietsche@fsforth.de>
+	id 1Dcl0t-00035e-PZ
+	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 10:13:13 -0400
+Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
+	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1Dcl0o-00046E-Bv
+	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 16:13:02 +0200
+Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
+	by eos.fwall.u-szeged.hu (SMSSMTP 4.0.0.59) with SMTP id
+	M2005053016130105484
+	for <linux-mtd@lists.infradead.org>; Mon, 30 May 2005 16:13:01 +0200
+Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
+	helo=mail.inf.u-szeged.hu)
+	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1Dcl0o-00046B-8H
+	for linux-mtd@lists.infradead.org; Mon, 30 May 2005 16:13:02 +0200
+Received: from [160.114.36.214] (kpax.inf.u-szeged.hu [160.114.36.214])
+	by mail.inf.u-szeged.hu (Postfix) with ESMTP id 2FFCE2396C
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 30 May 2005 16:13:02 +0200 (CEST)
+Message-ID: <429B1FFF.1010201@inf.u-szeged.hu>
+Date: Mon, 30 May 2005 16:15:27 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: Blair Barnett <blair@circumnavnetworks.com>
-References: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>
-In-Reply-To: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nand write problem
+Subject: summary news
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +34,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi blair,
-> I believe you need to use the -p (pad) option to nandwrite.
-> Please let us see your nandwrite command line.
-This is what I tried:
+Dear All,
 
-# ./nandwrite --jffs2 /dev/mtd/2 jffs2.img
-Use -f option to enforce legacy placement on autoplacement enabled mtd 
-device
+We've released new version of Centralized Summary (downloadable from
+http://www.inf.u-szeged.hu/jffs2 ). Remount support has been added which
+is needed for using as a root filesystem.
 
-# ./nandwrite -f /dev/mtd/2 jffs2.img
-./nandwrite: illegal option -- f
-
-# ./nandwrite -f --jffs2 /dev/mtd/2 jffs2.img
-./nandwrite: illegal option -- f
-
-# ./nandwrite -p /dev/mtd/2 jffs2.img
-this takes a long time until it is finished.
-
-then I mount it with
-# mount -t jffs2 /dev/mtdblock/2 /mnt/
-and get a lot of
-CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
-
-Copy the image with nandwrite is the correct and only way? Or is there 
-another possibility?
-
-Jonas
+Regards,
+Ferenc
