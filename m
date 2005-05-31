@@ -1,20 +1,18 @@
-Received: from 207.88.121.43.ptr.us.xo.net ([207.88.121.43]
-	helo=mail.realmsys.com)
+Received: from www2.levante.de ([212.101.151.130] helo=www.levante.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dd8cE-0006RG-VO
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2005 11:25:20 -0400
-From: Peter Grayson <pgrayson@realmsys.com>
+	id 1Dd8lQ-0006cL-UL
+	for linux-mtd@lists.infradead.org; Tue, 31 May 2005 11:34:46 -0400
+Message-ID: <429C8427.4020802@fsforth.de>
+Date: Tue, 31 May 2005 17:35:03 +0200
+From: Jonas <jdietsche@fsforth.de>
+MIME-Version: 1.0
 To: blair@circumnavnetworks.com
-In-Reply-To: <1117478995.24559.12.camel@blairs-desktop>
-References: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>
-	<429AEC25.4000309@fsforth.de>
-	<1117478995.24559.12.camel@blairs-desktop>
-Content-Type: text/plain
-Date: Tue, 31 May 2005 09:24:59 -0600
-Message-Id: <1117553099.4149.82.camel@pgrayson1.realmsys.com>
-Mime-Version: 1.0
+References: <B1091462CF5479489B1D8FE818330D2C80F27E@exchange2003.ad.skymv.com>		<429AEC25.4000309@fsforth.de>	<1117478995.24559.12.camel@blairs-desktop>
+	<429C8192.30004@fsforth.de>
+In-Reply-To: <429C8192.30004@fsforth.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Jonas <jdietsche@fsforth.de>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: nand write problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,20 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> # ./nandwrite -f /dev/mtd/2 jffs2.img
-> ./nandwrite: illegal option -- f
+Uuups, wrong shortcut ;-)
 
-The short option (-f) for the --forcelegacy option is broken in the
-latest nandwrite. Check out the patch below.
+>> What version of nandwrite (nandwrite -V) do you have? Version 1.30
+>> supports -f.
+I used version 1.30. Peter Grayson just sent a patch.
 
---- nandwrite.c.orig    2005-05-31 09:22:00.000000000 -0600
-+++ nandwrite.c 2005-05-31 09:22:08.000000000 -0600
-@@ -124,7 +124,7 @@
+>>> then I mount it with
+>>> # mount -t jffs2 /dev/mtdblock/2 /mnt/
+>>> and get a lot of
+>>> CLEANMARKER node found at 0x00000000 has totlen 0xc != normal 0x0
+>>>
+>>> Copy the image with nandwrite is the correct and only way? Or is 
+>>> there another possibility?
+>>
+>>
+>> I've seen the CLEANMARKER errors before. How did you create the JFFS2
+>> partition?
+I used flash_eraseall -j /dev/mtd/2 and then I copied it with the 
+command above.
 
-        for (;;) {
-                int option_index = 0;
--               static const char *short_options = "os:ajynqp";
-+               static const char *short_options = "os:ajyfnqp";
-                static const struct option long_options[] = {
-                        {"help", no_argument, 0, 0},
-                        {"version", no_argument, 0, 0},
+>> Check out this thread for a little more detail:
+>> http://lists.infradead.org/pipermail/linux-mtd/2005-March/012045.html
+Thanks.
+
+Regards,
+Jonas
