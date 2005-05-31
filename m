@@ -1,22 +1,15 @@
-Received: from fra-del-03.spheriq.net ([195.46.51.99])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DcyWc-0004SZ-Jl
-	for linux-mtd@lists.infradead.org; Tue, 31 May 2005 00:38:48 -0400
-Received: from fra-out-01.spheriq.net (fra-out-01.spheriq.net [195.46.51.129])
-	by fra-del-03.spheriq.net with ESMTP id j4V4cfwY020287
-	for <linux-mtd@lists.infradead.org>; Tue, 31 May 2005 04:38:41 GMT
-Received: from fra-cus-02.spheriq.net (fra-cus-02.spheriq.net [195.46.51.38])
-	by fra-out-01.spheriq.net with ESMTP id j4V4c97A021648
-	for <linux-mtd@lists.infradead.org>; Tue, 31 May 2005 04:38:10 GMT
-From: Pankaj GOYAL <pankaj.goyal@st.com>
-To: <linux-mtd@lists.infradead.org>, <linux-mtd-bounces@lists.infradead.org>
-Date: Tue, 31 May 2005 10:08:30 +0530
-Message-ID: <000501c5659a$9916bba0$0f10b40a@dlh.st.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Subject: Significance of Sector size while using the mkfs.jffs2 utility
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Pankaj GOYAL <pankaj.goyal@st.com>
+In-Reply-To: <000501c5659a$9916bba0$0f10b40a@dlh.st.com>
+References: <000501c5659a$9916bba0$0f10b40a@dlh.st.com>
+Content-Type: text/plain
+Date: Tue, 31 May 2005 09:16:32 +0200
+Message-Id: <1117523793.14566.35.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd-bounces@lists.infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: Significance of Sector size while using the mkfs.jffs2 utility
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-	I m using the 16MB nand flash which has a block size of 16KB and the =
-page size of 512byte with 16byte oob.I have created three partition on =
-my NAND of 1MB(bootloader) 5MB(root filesystem) and 10MB(user =
-filesystem).I m making the root filesystem image using the cross =
-compiled (for ARM) mkfs.jffs2 utility (with the erasesize as 16KB and =
-sector size 512 byte)to make a jffs2 filesystem image.But the jffs2 =
-image exceeds the size of 5MB.Then I try to with different sector sizes =
-and obeserve that with the sector size of 4KB ,I m able to make the =
-jffs2 image of less then 5MB.
-	I want to ask that is it safe to specify the sector size of 4KB while =
-my nand has the page size of 512 byte only.Also I want to know that what =
-is the use of the option -p during the use of mkfs.jffs2 utility.Is is =
-necessary to use this option.What if I do not specify this flag.
+Hi, 
+
+please configure your mail client according to
+http://www.infradead.org/~dwmw2/email.html Paragraph 8
 
 
-Thanks and regards
-Pankaj
+On Tue, 2005-05-31 at 10:08 +0530, Pankaj GOYAL wrote:
+>  I want to ask that is it safe to specify the sector size of 
+>  4KB while my nand has the page size of 512 byte only.Also I
+> 
+>From the help text:
+Use page size (max data node size) SIZE (default: 4KiB)
+
+Thats the default page size and usually not necessary to change. It is
+not related to the page size of the FLASH chip. It is the memory
+PAGE_SIZE in the kernel which happens to be 4KiB.
+ 
+>  want to know that what is the use of the option -p during 
+>  the use of mkfs.jffs2 utility.Is is necessary to use this
+>  option.What if I do not specify this flag.
+
+Please read the following mail thread
+
+http://lists.infradead.org/pipermail/linux-mtd/2005-March/012045.html
+
+
+tglx
