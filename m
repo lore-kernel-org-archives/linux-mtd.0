@@ -1,15 +1,23 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DdTTW-0001zY-P2
-	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2005 09:41:40 -0400
-Date: Wed, 1 Jun 2005 15:41:30 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050601134130.GA19482@synertronixx3>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: Intel flash that powers up locked
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DddNU-0003Pm-9W
+	for linux-mtd@lists.infradead.org; Wed, 01 Jun 2005 20:16:05 -0400
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Ludovic Guilhamat <lguilhamat@perax.fr>
+Date: Thu, 2 Jun 2005 11:49:26 +1200
+References: <429C4D96.7000302@perax.fr>
+	<20050601044012.1392D47AF@blood.actrix.co.nz>
+	<429D558E.5040706@perax.fr>
+In-Reply-To: <429D558E.5040706@perax.fr>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Message-Id: <20050601234746.6F8134A98@blood.actrix.co.nz>
+Cc: linux-mtd@lists.infradead.org,
+	uClinux development list <uclinux-dev@uclinux.org>
+Subject: Re: Samsung RFS Filesystem
+Reply-To: manningc2@actrix.gen.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,79 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there!
 
-I have intel K3 devices on my Board and the linux Kernel needs to unlock
-them.
-I found
-http://lists.infradead.org/pipermail/linux-mtd/2005-April/012431.html
-and incorporated the provided diff into a daily-mtd-cvs snapshot from
-20050530 in 2.6.11.
-However, this code Oopses in cfi_intelext_unlockall():
+> Actually, the system I work on uses Jffs2 (Coldfire with uClinux). But,
+> mount times are very long (the memory is a Flash Nand 16Mb). So, I
+> planned to test Jffs2 patches (from the Jffs2 Improvement Project), then
+> Yaffs. And as RFS is not freely distributed, and I don't know yet its
+> cost, I wanted to know if someone had tested it.
 
-static void cfi_intelext_unlockall(struct mtd_info *mtd)
-{
-#if 1
-        int i;
-        for (i = 0; i <= mtd->numeraseregions; i++) {
-                printk("mtd->numeraseregions %x\n", mtd->numeraseregions);
-                int j;
-                printk("rumms\n");
-                printk("mtd->eraseregions[0].numblocks %x\n", 
-                                mtd->eraseregions[i].numblocks);
-                printk("bumms\n");
-...
+Pick up a more recent JFFS2, I believe that there have been some speedups.
 
-The printk("mtd->eraseregions[0].numblocks %x\n", 
-				mtd->eraseregions[i].numblocks);
+I get a lot of feedback that YAFFS is typically a few times faster than JFFS2
 
-causes The Oops. How is that possible?
-Also weird is that mtd->numeraseregions is 0.
+FAT is indeed "instant mounting" and uses less RAM because it is not log 
+structured. FAT however does have a bad record as far as reliability and 
+write speed on raw NAND devices.
 
+In the end you need to look at pros and cons and fit them to your system 
+needs.
 
-Probing scb9328_flash at physical address 0x10000000 (16-bit buswidth)
-scb9328_flash: Found 1 x16 devices at 0x0 in 16-bit bank              
- Intel/Sharp Extended Query Table at 0x0031             
-Using buffer write method                  
-  Feature/Command Support:      01E6
-     - Chip Erase:              unsupported
-     - Suspend Erase:           supported  
-     - Suspend Program:         supported
-     - Legacy Lock/Unlock:      unsupported
-     - Queued Erase:            unsupported
-     - Instant block lock:      supported  
-     - Protection Bits:         supported
-     - Page-mode read:          supported
-     - Synchronous read:        supported
-     - Simultaneous operations: unsupported
-  Supported functions after Suspend: 01    
-     - Program after Erase Suspend: supported
-  Block Status Register Mask: 0007           
-     - Lock Bit Active:      yes  
-     - Valid Bit Active:     yes
-     - Unknown Bit 2 Active: yes
-  Vcc Logic Supply Optimum Program/Erase Voltage: 3.3 V
-cfi_cmdset_0001: Erase suspend on write enabled        
-number of CFI chips: 1                         
-devsize              16777216
-5 cmdlinepart partitions found on MTD device scb9328_flash
-Creating 5 MTD partitions on "scb9328_flash":             
-0x00000000-0x00020000 : "U-boot"             
-0x00020000-0x00040000 : "U-boot_env"
-mtd->numeraseregions 0              
-rumms                 
-Unable to handle kernel NULL pointer dereference at virtual address 00000008
-
-After that I tried another approach like that in message
-http://lists.infradead.org/pipermail/linux-mtd/2005-April/012396.html 
-so the for loop went away in a replacement for the oneliner which calls
-cfi_intelext_unlock(). This function is called and Oopses at
-cfi_varsize_frob(mtd, do_printlockstatus_oneblock,
-                ofs, len, 0);
-imediately.
-
-What can be the cause of that?
-Has anybody Intel K3 unlocking working and if yes, how is his or her map
-driver looking?
-
-Regards, konsti
+-- Charles
