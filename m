@@ -1,16 +1,20 @@
-Received: from ns.execnet.net ([65.163.146.8] helo=ns1.execnet.net)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1De2KA-0007yJ-8d
-	for linux-mtd@lists.infradead.org; Thu, 02 Jun 2005 22:54:19 -0400
-Message-ID: <429FC658.7030206@sdgsystems.com>
-Date: Thu, 02 Jun 2005 22:54:16 -0400
-From: Todd Blumer <todd@sdgsystems.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1De7I2-0000MO-OZ
+	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2005 04:12:33 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Derek Jones <DJones@Interalia.ca>
+In-Reply-To: <083AB380E3924D4795740AAE9A27DCAB6BDE06@cgy2000.interalia.ca>
+References: <083AB380E3924D4795740AAE9A27DCAB6BDE06@cgy2000.interalia.ca>
+Content-Type: text/plain
+Date: Fri, 03 Jun 2005 10:12:36 +0200
+Message-Id: <1117786356.20785.95.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Aric Blumer <aric@sdgsystems.com>
-Subject: MTD PM Resume
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD support for Samsung K9K4G08U0M 4G 8bit NAND
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I found some information pertinent to this question in doing searching,
-but not a definite resolution.
+On Thu, 2005-06-02 at 17:05 -0600, Derek Jones wrote:
+> The device is detected correctly (ID is EC, DC, C1, 15). However, code
+> in nand_bbt.c is calling read_oob that issues a read OOB (0x50) command
+> that is not supported by the Samsung device.
 
-We're doing a Linux port (kernel 2.6.11) to the iPAQ hx4700, which uses
-a stacked StrataFlash. The hx4700 has flash that lock all blocks on
-reset or power down. We worked around this problem by unlocking all the
-pertinent blocks in the boot loader, but for reasons I won't go into,
-this doesn't work on resume.
+static void nand_command_lp (struct mtd_info *mtd, unsigned command, int
+column, int page_addr)
+{
+	register struct nand_chip *this = mtd->priv;
 
-So, we added some code to drivers/mtd/chips/cfi_cmdset_0001.c in
-cfi_intelext_resume() to unlock the blocks of the flash chips on resume.
-However, cfi_intelext_resume() is not be run on resume. In fact, as far
-as I can tell, pm_send() is not being called in kernel/power/pm.c on
-suspend or resume.
+	/* Emulate NAND_CMD_READOOB */
+	if (command == NAND_CMD_READOOB) {
+		column += mtd->oobblock;
+		command = NAND_CMD_READ0;
+	}
 
-mtdcore.c uses pm_register() to register its callback function
-(mtd_pm_callback()), and this API is apparently deprecated. If it's
-marked deprecated, though, it should still work, so I'm wondering if
-anyone knows why the suspend/resume functions for MTD devices are not
-being called. Any other suggestions also appreciated.
 
-In the mean while, we'll continue to investigate.
-Thanks.
+> I have poked around in nand_bbt.c, but don't see anything obvious. Any
+> suggestions?
+
+There's nothing to poke there :)
+
+Can you provide more detailed information what is not working and which
+problems you have ? 
+
+
+tglx
