@@ -1,18 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DeNOw-0003WK-Ci
-	for linux-mtd@lists.infradead.org; Fri, 03 Jun 2005 21:24:39 -0400
-Message-ID: <42A102D2.5090108@mvista.com>
-Date: Fri, 03 Jun 2005 18:24:34 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Todd Blumer <todd@sdgsystems.com>
-References: <429FC658.7030206@sdgsystems.com>
-In-Reply-To: <429FC658.7030206@sdgsystems.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DfHCh-00081X-1D
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2005 08:59:44 -0400
+Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 461A5229A6
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  6 Jun 2005 16:59:08 +0400 (MSD)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 06 Jun 2005 16:59:07 +0400
+Message-Id: <1118062747.5629.9.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Aric Blumer <aric@sdgsystems.com>, linux-mtd@lists.infradead.org
-Subject: Re: MTD PM Resume
+Subject: JFFS3 superblock search
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,36 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Todd Blumer wrote:
-...
-> So, we added some code to drivers/mtd/chips/cfi_cmdset_0001.c in
-> cfi_intelext_resume() to unlock the blocks of the flash chips on resume.
-> However, cfi_intelext_resume() is not be run on resume. In fact, as far
-> as I can tell, pm_send() is not being called in kernel/power/pm.c on
-> suspend or resume.
+Hello,
 
-Hi, I'm not sure what calls the APM-style deprecated interfaces anymore...
+in order not to lose your attention I decided to announce that the JFFS3
+design document (v0.1) now has a description of the Superblock
+management scheme. It allows to solve the slow mount problem and admits
+of locating the position of the Superblock for < 2ms (you'll find some
+digits in the document). Any suggestions, criticism etc are appreciated.
 
-If you initiated the suspend via a call to pm_suspend() or 
-/sys/power/state then LDM suspend/resume driver methods will be called, 
-and it looks like nothing in the mtd core will automatically register 
-drivers or devices in LDM.  There are existing examples of registering 
-with LDM in some map drivers, registering a driver with the platform 
-bus.  Looks like boards that power cycle flash chips for certain sleep 
-states need to also register a device, and add suspend/resume callbacks 
-in the struct_driver that end up calling the chip driver suspend/resume 
-methods (even if they don't use flash that powers up locked, since the 
-mtd state machine needs to be reset to assume the flash chips are in 
-ready state).  Documentation/power/devices.txt has some more info on 
-those interfaces.
 
-Or if anybody has a better way to handle this I'm all ears.  A class 
-device for generic mtd might do it, not sure.
-
-You just reminded me I need to figure out how to do this for a couple of 
-boards, thanks.  If there's no disagreement on the above being the 
-correct approach I'll float a patch soon.
-
+P.S. Since the document has no description of the general approach of
+storing data in JFFS3, I'll note that I'm thinking about a Reiser4-like
+approach, i.e., storing all the FS data in one 4-level B+ tree. There
+will be a superblock containing the FS description and admitting of very
+fast JFFS3 mount.
 
 -- 
-Todd
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
