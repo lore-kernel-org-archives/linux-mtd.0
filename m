@@ -1,22 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DfHJc-0008Cb-Lp
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2005 09:06:53 -0400
-Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id D4CF4229A6
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  6 Jun 2005 17:06:18 +0400 (MSD)
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1118062747.5629.9.camel@sauron.oktetlabs.ru>
+	id 1DfHSb-0008NL-1u
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2005 09:16:10 -0400
+Date: Mon, 6 Jun 2005 15:15:34 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@infradead.org>
+Message-ID: <20050606131534.GC31739@wohnheim.fh-wedel.de>
 References: <1118062747.5629.9.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Mon, 06 Jun 2005 17:06:18 +0400
-Message-Id: <1118063178.5629.12.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1118062747.5629.9.camel@sauron.oktetlabs.ru>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS3 superblock search
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> in order not to lose your attention I decided to announce that the JFFS3
-> design document (v0.1) now has a description of the Superblock
-> management scheme. It allows to solve the slow mount problem and admits
-> of locating the position of the Superblock for < 2ms (you'll find some
-> digits in the document). Any suggestions, criticism etc are appreciated.
+On Mon, 6 June 2005 16:59:07 +0400, Artem B. Bityuckiy wrote:
+> 
+> P.S. Since the document has no description of the general approach of
+> storing data in JFFS3, I'll note that I'm thinking about a Reiser4-like
+> approach, i.e., storing all the FS data in one 4-level B+ tree. There
+> will be a superblock containing the FS description and admitting of very
+> fast JFFS3 mount.
 
-The document is here:
-http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf
+You already know that I'm skeptical about the B+ tree.  But I'm even
+more skeptical about a 4-level tree.  That could turn into a
+bottleneck rather quickly.
+
+Apart from that, I'd like to see some further details of the tree
+design.
+
+Jörn
+
+-- 
+Do not stop an army on its way home.
+-- Sun Tzu
