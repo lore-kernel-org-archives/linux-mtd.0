@@ -1,17 +1,19 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DfHvi-0000TT-0m
-	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2005 09:46:15 -0400
-Message-ID: <42A45382.5080301@yandex.ru>
-Date: Mon, 06 Jun 2005 17:45:38 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+	id 1DfI9g-0000fc-Mp
+	for linux-mtd@lists.infradead.org; Mon, 06 Jun 2005 10:00:41 -0400
+Date: Mon, 6 Jun 2005 16:00:10 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050606140010.GE31739@wohnheim.fh-wedel.de>
 References: <1118062747.5629.9.camel@sauron.oktetlabs.ru>
 	<20050606131534.GC31739@wohnheim.fh-wedel.de>
-In-Reply-To: <20050606131534.GC31739@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+	<42A45382.5080301@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <42A45382.5080301@yandex.ru>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS3 superblock search
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,19 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=F6rn Engel wrote:
-> You already know that I'm skeptical about the B+ tree.  But I'm even
-> more skeptical about a 4-level tree.  That could turn into a
-> bottleneck rather quickly.
->=20
-Joern,
+On Mon, 6 June 2005 17:45:38 +0400, Artem B. Bityuckiy wrote:
+> 
+> providing the key is 16 bytes and the pointer is 8 bytes, the 4-level 
+> B-tree is enough for (4096/24)^4 = 170^4 ~1E8. If this isn't enough we 
+> may use more levels as well.
 
-providing the key is 16 bytes and the pointer is 8 bytes, the 4-level=20
-B-tree is enough for (4096/24)^4 =3D 170^4 ~1E8. If this isn't enough we =
+There are valid reasons to use 512 byte blocks instead.  Most likely I
+will do just that for logfs, just as a hint.  Therefore, even with 8
+byte keys, you'd be down to 32^4 or about a million.  Prepare for more
+levels.
 
-may use more levels as well.
+Jörn
 
---=20
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+I don't understand it. Nobody does.
+-- Richard P. Feynman
