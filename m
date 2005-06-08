@@ -1,26 +1,18 @@
 Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dfudb-0007ph-7a
-	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2005 03:06:08 -0400
-Message-ID: <42A698B3.8000704@yandex.ru>
-Date: Wed, 08 Jun 2005 11:05:23 +0400
+	id 1Dg1BR-0000Gb-6b
+	for linux-mtd@lists.infradead.org; Wed, 08 Jun 2005 10:05:30 -0400
+Message-ID: <42A6FB04.5000000@yandex.ru>
+Date: Wed, 08 Jun 2005 18:04:52 +0400
 From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: Jared Hulbert <jaredeh@gmail.com>
-References: <1118062747.5629.9.camel@sauron.oktetlabs.ru>	
-	<20050606131534.GC31739@wohnheim.fh-wedel.de>	
-	<42A45382.5080301@yandex.ru>	
-	<20050606140010.GE31739@wohnheim.fh-wedel.de>	
-	<1118067037.5629.15.camel@sauron.oktetlabs.ru>	
-	<20050606141650.GG31739@wohnheim.fh-wedel.de>	
-	<1118067722.5629.21.camel@sauron.oktetlabs.ru>	
-	<20050606143915.GI31739@wohnheim.fh-wedel.de>
-	<6934efce05060715266c21e9c1@mail.gmail.com>
-In-Reply-To: <6934efce05060715266c21e9c1@mail.gmail.com>
+To: Ludovic Guilhamat <lguilhamat@perax.fr>
+References: <42A5B30B.5000808@perax.fr>
+In-Reply-To: <42A5B30B.5000808@perax.fr>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS3 superblock search
+Subject: Re: MTD Snapshot for kernel linux-2.4.x
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +22,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
->>Maybe.  Whatever, I'll continue under my codename of logfs (which is
->>just as wrong as jffs - a natural successor) until I have something
->>usable.  At that point, a naming contest is scheduled anyway and
->>"JFFS3" could well be the name people decide upon.
+Ludovic Guilhamat wrote:
+> Hi,
 > 
+> Could you tell me where I can find the latest MTD Snapshot which works 
+> with the uClinux kernel 2.4.x please ?
 > 
-> So I'm missing out here.  What's logfs?
-This is an Flash FS which Joern is developing and didn't yet share.
+> The link which is submited on the MTD Homepage isn't valid anymore...
+> 
+Hello,
+
+try to fetch the snapshot of that date from CVS (cvs -D '2005-03-04' I 
+suppose). Nevertheless, the broken link should be fixed.
 
 -- 
 Best Regards,
