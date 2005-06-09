@@ -1,20 +1,16 @@
-Received: from karma.reboot.ca ([67.15.48.17])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Do3A4-0000aw-1G
-	for linux-mtd@lists.infradead.org; Thu, 30 Jun 2005 13:49:17 -0400
-Message-ID: <001b01c57d9c$761e6200$6702a8c0@niro>
-From: "Andre" <andre@rocklandocean.com>
-To: "Greg Ungerer" <gerg@snapgear.com>
-References: <006301c576ad$70547490$6702a8c0@niro>
-	<42C391A2.5020502@snapgear.com>
-Date: Thu, 30 Jun 2005 10:52:18 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	fabrice.bellard@netgem.com
-Subject: Re: kernel messages from INFTL
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DgNpZ-0002ZA-SS
+	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2005 10:16:27 -0400
+Received: from playin.mvista.com (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id HAA03239
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2005 07:16:20 -0700
+From: Paolo Galtieri <pgaltieri@mvista.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="=-rrjqQpLHQEtVpj4ZACyo"
+Message-Id: <1118327333.2401.42.camel@playin.mvista.com>
+Mime-Version: 1.0
+Subject: patch to create sysfs char device nodes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,100 +19,117 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Thu, 09 Jun 2005 14:16:27 -0000
 
-Hi Greg,
 
-Greg Ungerer wrote:
-> Hi Andre,
->
-> Andre wrote:
->> First of all, thank you Thomas for your help on trying to get my
->> diskonchip2000 to be recognized by linuxmtd.
->>
->> After enabling the right config flags in the kernel, I can now mount
->> my diskonchip2000.
->>
->> There were some messages during the initial loading of the inftl
->> module that frightened me a bit. Here is the entire output from
->> dmesg: ==================
->> DiskOnChip found at 0xd0000
->> Detected 3 chips per floor.
->> NAND device: Manufacturer ID: 0xec, Chip ID: 0x79 (Samsung NAND
->> 128MiB 3,3V 8-bit)
->> 3 NAND chips detected
->> Bad block table not found for chip 0
->> Bad block table not found for chip 0
->> Found DiskOnChip BNAND Media Header at 0x4000
->>     bootRecordID          = BNAND
->>     NoOfBootImageBlocks   = 0
->>     NoOfBinaryPartitions  = 1
->>     NoOfBDTLPartitions    = 1
->>     BlockMultiplerBits    = 0
->>     FormatFlgs            = 1
->>     OsakVersion           = 5.1.4.0
->>     PercentUsed           = 98
->>     PARTITION[0] ->
->>         virtualUnits    = 4
->>         firstUnit       = 2
->>         lastUnit        = 5
->>         flags           = 0x20000000
->>         spareUnits      = 0
->>     PARTITION[1] ->
->>         virtualUnits    = 24072
->>         firstUnit       = 11
->>         lastUnit        = 24575
->>         flags           = 0xc0000000
->>         spareUnits      = 2
->> Creating 2 MTD partitions on "DiskOnChip 2000 (INFTL Model)":
->> 0x00008000-0x00018000 : " DiskOnChip BDK partition"
->> 0x0002c000-0x18000000 : " DiskOnChip BDTL partition"
->>
->> <Andre> looks ok up until here
->>
->> INFTL: inftlcore.c $Revision: 1.18 $, inftlmount.c $Revision: 1.16 $
->> INFTL: corrupt block 10588 in chain 10588, chain length 0, erase
->> mark 0x0? INFTL: formatting chain at block 10588
->> INFTL: formatting block 10588
->> INFTL: error while formatting block 10588
->> INFTL: corrupt block 15274 in chain 15274, chain length 0, erase
->> mark 0x0? INFTL: formatting chain at block 15274
->> INFTL: formatting block 15274
->> INFTL: error while formatting block 15274
->> INFTL: corrupt block 21286 in chain 21286, chain length 0, erase
->> mark 0x0? INFTL: formatting chain at block 21286
->> INFTL: formatting block 21286
->> INFTL: error while formatting block 21286
->> INFTL: corrupt block 24574 in chain 24574, chain length 0, erase mark
->> 0xffff?
->> INFTL: formatting chain at block 24574
->> INFTL: formatting block 24574
->> INFTL: corrupt block 24575 in chain 24575, chain length 0, erase mark
->> 0xffff?
->> INFTL: formatting chain at block 24575
->> INFTL: formatting block 24575
->>  inftla: inftla1
->> ==================
->> The INFTL messages do not appear on subsequent loads of the inftl
->> module. Can somebody please explain what happened, i.e. should I be
->> concerned?
->
-> The INFTL code is telling you that it didn't think the chains
-> where logically correct. So it went ahead and tried to fix them up.
-> Once fixed you should not see any messages on the next boot (as
-> you didn't). Certainly not normal (or good).
 
-The device really started to act up on subsequent boot and I couldn't even
-format it anymore with m-sys tools. The dformat utility complained about not
-being able to find the bad block table.
+--=-rrjqQpLHQEtVpj4ZACyo
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-> I take it you are running this on a device that was formatted
-> using the M-systems tools?
+Hi,
+  with DEVFS going away I discovered that no character device nodes are
+created if a flash device is present which contains filesystems. The
+mtd-utils package requires the existence of character device nodes for
+performing erase, lock and unlock functions.  The problem is that the
+flash device driver has not been modified to use sysfs instead of devfs.
 
-correct
+I have attached a patch to mtdchar.c which uses the sysfs interface to
+create the appropriate nodes.  Please let me know if you have comments.
 
-> What kernel version are you using here?
+The changes are for linux-2.6.12-rc5
 
-stock 2.6.11 with mtd 20050612 snapshot.
+Thanks
+Paolo
 
-Thanks for your reply,
-Andre
+--=-rrjqQpLHQEtVpj4ZACyo
+Content-Disposition: attachment; filename=MTDCnew
+Content-Type: text/plain; name=MTDCnew; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+--- drivers/mtd/OLDmtdchar.c	2005-06-06 16:10:39.000000000 -0700
++++ drivers/mtd/mtdchar.c	2005-06-06 16:18:39.000000000 -0700
+@@ -15,27 +15,29 @@
+ #include <linux/fs.h>
+ #include <asm/uaccess.h>
+ 
+-#ifdef CONFIG_DEVFS_FS
+-#include <linux/devfs_fs_kernel.h>
++#include <linux/device.h>
++
++static struct class_simple *mtd_class;
+ 
+ static void mtd_notify_add(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+ 		return;
+ 
+-	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
+-		      S_IFCHR | S_IRUGO | S_IWUGO, "mtd/%d", mtd->index);
+-		
+-	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
+-		      S_IFCHR | S_IRUGO, "mtd/%dro", mtd->index);
++	class_simple_device_add(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
++		NULL, "mtd%d", mtd->index);
++
++	class_simple_device_add(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
++		NULL, "mtd%dro", mtd->index);
++
+ }
+ 
+ static void mtd_notify_remove(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+ 		return;
+-	devfs_remove("mtd/%d", mtd->index);
+-	devfs_remove("mtd/%dro", mtd->index);
++	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2));
++	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1));
+ }
+ 
+ static struct mtd_notifier notifier = {
+@@ -45,19 +47,13 @@
+ 
+ static inline void mtdchar_devfs_init(void)
+ {
+-	devfs_mk_dir("mtd");
+ 	register_mtd_user(&notifier);
+ }
+ 
+ static inline void mtdchar_devfs_exit(void)
+ {
+ 	unregister_mtd_user(&notifier);
+-	devfs_remove("mtd");
+ }
+-#else /* !DEVFS */
+-#define mtdchar_devfs_init() do { } while(0)
+-#define mtdchar_devfs_exit() do { } while(0)
+-#endif
+ 
+ static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
+ {
+@@ -543,6 +539,14 @@
+ 		return -EAGAIN;
+ 	}
+ 
++	mtd_class = class_simple_create(THIS_MODULE, "mtd");
++
++	if (IS_ERR(mtd_class)) {
++		printk(KERN_ERR "Error creating mtd class.\n");
++		unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
++		return 1;
++	}
++
+ 	mtdchar_devfs_init();
+ 	return 0;
+ }
+@@ -550,6 +554,7 @@
+ static void __exit cleanup_mtdchar(void)
+ {
+ 	mtdchar_devfs_exit();
++	class_simple_destroy(mtd_class);
+ 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
+ 
+
+--=-rrjqQpLHQEtVpj4ZACyo--
