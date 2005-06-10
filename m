@@ -1,14 +1,20 @@
-Received: from bay2-f11.bay2.hotmail.com ([65.54.247.11] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DgZB2-0006at-Pb
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2005 03:23:24 +0100
-Message-ID: <BAY2-F11432519227105B42F84CDDAFF0@phx.gbl>
-From: "tong changda" <tongcd@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 10 Jun 2005 10:23:09 +0800
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DgeCf-0004ci-Na
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2005 03:45:23 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Phillip Kamp <pkamp@equator.com>
+In-Reply-To: <42A8DC02.90708@equator.com>
+References: <42A8DC02.90708@equator.com>
+Content-Type: text/plain
+Date: Fri, 10 Jun 2005 09:46:17 +0200
+Message-Id: <1118389577.13312.41.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Subject: jffs2 corrupt rarely, how to fix it?
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mkfs.jffs2 --cleanmarker=?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello
-     I am new to jffs2, Now we apply it on linux phone with Intel Xscale 
-and arm-linux 2.4.20, Very rarely , We can't access one or more file on 
-jffs2, ls the file shows:
-Eep. Child "pointcal" (ino #766) of dir ino #6 doesn't exist
-a few days , I even found jffs2 can't mount, how could I repair it without 
-resorting to eraseall?
-     BTW jffs2 keeps sms and phonenumber, so we can't allow this filesystem 
-corrupt.
-     Thanks
+On Thu, 2005-06-09 at 17:17 -0700, Phillip Kamp wrote:
+> I'm developing a proprietary nand flash driver based on the
+> drivers/mtd/nand/nand_base.c code.  I can successfully read
 
-_________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
+What for ? The nand_base.c code can deal with your chip and just needs a
+small and simple board support driver.
+
+tglx
