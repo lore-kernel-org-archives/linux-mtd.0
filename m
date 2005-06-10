@@ -1,19 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dghtj-0006X7-U0
-	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2005 07:42:05 -0400
-Date: Fri, 10 Jun 2005 13:41:26 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Caj Nordstrom <caj.nordstrom@beamex.com>
-Message-ID: <20050610114126.GB29546@wohnheim.fh-wedel.de>
-References: <1118391398.12760.3.camel@cen_linux.beamex.com>
+Received: from rproxy.gmail.com ([64.233.170.202])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dgiti-0006mp-Hs
+	for linux-mtd@lists.infradead.org; Fri, 10 Jun 2005 08:46:07 -0400
+Received: by rproxy.gmail.com with SMTP id c16so175782rne
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 10 Jun 2005 05:46:04 -0700 (PDT)
+Message-ID: <5585a0780506100546654b6c60@mail.gmail.com>
+Date: Fri, 10 Jun 2005 18:16:04 +0530
+From: Ramesh Chaurasiya <rameshc@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1118391398.12760.3.camel@cen_linux.beamex.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 space behavior when adding data to a file
+Subject: mounting jffs2 on NAND Flash ... Magic bitmask error
+Reply-To: Ramesh Chaurasiya <rameshc@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,56 +24,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 June 2005 11:16:37 +0300, Caj Nordstrom wrote:
-> 
-> I have found a strange behavior for space usage when adding small data
-> to an existing file. In my test I have used Intel/STM Nor flash with
-> several mtd versions and currently mtd-snapshot-20050516.tar.bz2. The
-> processor environment is arm7.
-> 
-> The problem is that far too much space is used when adding data a little
-> at a time to a file. In my tests done with the included test program the
-> results are the following when df shows around 1.4M free space at start.
-> 
-> 115k in each file for WITH_FLUSH or WITH_OPEN_CLOSE enabled
-> 350k in each file without the options.
-> 
-> When coping directly the 115k file there are space for 162 files!!!!
-> Totally around 18M data compared to 575k WITH_FLUSH.
-> 
-> Is this a known feature or bug?
+Hi,
+I am trying to get NAND Flash work on PXA 255 Board.
 
-Hmm.  This is pretty much expected behaviour.  Not wanted, but at
-least expected.
+It worked perfectly fine with the kernel 2.6.11.3 and=20
+mtd-snapshot19-03-2005, means there are no hardware issues.
+But for some reasons I have to get it with kernel 2.4.19-rmk7-pxa2
 
-Basically, jffs2 much more efficient when writing data in large
-chunks.
+I used a patch shared-zliblinux-2.4.19-pre10-shared-zlib.bz2=20
+and mtd-snapshot25-07-2002
+It mounts jffs2 successfully, I can copy files on to the flash partition
+But if I umount and mount it again, it mounts with the following error:
 
-Case 1: 4096 writes appending a single byte to a file.
-Jffs2 will write a struct jffs2_raw_inode for each individual write,
-containing the full header plus a single byte.  That should be
-4096 * (68+1) = 282624 bytes in total.
+---------------------------------------------------------------------------=
+--------
+mtdblock_open
+ok
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0011099c:
+0xa2f2 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109a0:
+0x6434 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109a4:
+0x36d8 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109a8:
+0x8966 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109ac:
+0x9117 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109b0:
+0x9e7a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109b4:
+0x531c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109b8:
+0x536c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109bc:
+0x41a3 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001109c0:
+0x8143 instead
+Further such events for this erase block will not be printed
+jffs2_scan_inode_node(): Data CRC failed on node at 0x001120f0: Read
+0xf4eae54e, calculated 0xa3dc1245
+jffs2_scan_inode_node(): CRC failed on node at 0x001121f0: Read
+0x00000000, calculated 0xb32256db
+jffs2_scan_dirent_node(): Name CRC failed on node at 0x001130ec: Read
+0xc3e14ab0, calculated 0xbd4377ab
+Name for which CRC failed is (now) '...."...=EF=BF=BF', ino #6
+jffs2_scan_dirent_node(): Node CRC failed on node at 0x001131ec: Read
+0x5c2d6006, calculated 0xd679b892
+JFFS2: Erase block at 0x00b00000 is not formatted. It will be erased
+Unknown INCOMPAT nodetype FFFF at 001121C4
+---------------------------------------------------------------------------=
+--------
 
-Case 2: A single aligned write of 4096 bytes.
-Jffs2 will compress the data, gaining maybe 50% by that.  It will
-write a struct jffs2_raw_inode plus the compressed data.  That should
-be 68 + (4096 * 50%) = 2116 bytes.
+And then if I see the contents in that nand partition ...
+I found that few files that were copied earlier are missing!
 
-So, depending on compression ratio, case 2 will be about 100 times
-more efficient than case 1.
+I know that support for kernel 2.4 has been dropped but if anyone got
+NAND flash working on 2.4 or if just point out to fix up the above
+errors it'll be great help for me.
 
-For completeness, you write in chunks of about 20 bytes.  So here goes
-Case 3: 204 writes of 20 bytes each.
-Jffs2 will compress the data.  Short amount of data usually don't
-compress well, but let's still assume we save 50%.  Adding the
-headers, we get 204 * (68+10) = 15912 bytes.
+Or if anyone can give me some hint from where/which patch/snapshot to
+apply to get it working on kernel 2.4.19
 
-So your testcase will be 8 times less efficient than aligned writes of
-4096 bytes.
 
-Jörn
-
--- 
-Unless something dramatically changes, by 2015 we'll be largely
-wondering what all the fuss surrounding Linux was really about.
--- Rob Enderle
+Thanks,
+Ramesh
