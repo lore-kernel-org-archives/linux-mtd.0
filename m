@@ -1,20 +1,29 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DhjM0-0004nA-7c
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 03:27:29 -0400
-Date: Mon, 13 Jun 2005 09:27:09 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: tong changda <tongcd@hotmail.com>
-Message-ID: <20050613072709.GB26966@wohnheim.fh-wedel.de>
-References: <20050610112127.GA29546@wohnheim.fh-wedel.de>
-	<BAY7-F7DE7464BD17A2C4E930DEDAF00@phx.gbl>
+Received: from smtpoutuk02.marconi.com ([128.87.251.113])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dhl3M-0005I5-Gv
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 05:16:21 -0400
+Received: from cvsumailhost.marconicomms.com ([89.1.21.77])
+	by smtpoutuk02.marconi.com (8.12.11/8.12.11) with ESMTP id
+	j5D9GBXw007653
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Jun 2005 10:16:13 +0100
+	(envelope-from Andreas.Engel@marconi.com)
+Received: from oxia.de.marconicomms.com (oxia.de.marconicomms.com
+	[172.28.41.234])
+	by gw1000.de.marconicomms.com (Postfix) with ESMTP id E870C6D0D
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Jun 2005 11:16:09 +0200 (CEST)
+Received: from idefix (idefix [172.28.34.108])
+	by oxia.de.marconicomms.com (8.9.3/8.9.3) with ESMTP id LAA11925
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Jun 2005 11:16:09 +0200 (MEST)
+Date: Mon, 13 Jun 2005 11:16:07 +0200
+From: Andreas Engel <Andreas.Engel@marconi.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050613111607.00002d00@idefix>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY7-F7DE7464BD17A2C4E930DEDAF00@phx.gbl>
-Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org, munira.ahmed@radixs.com
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: concat_unlock
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +33,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 June 2005 10:23:28 +0800, tong changda wrote:
-> 
-> Seem a little hard for me
-> I guess all changeset for jffs2 is limited in fs/jffs2/. the interface with 
-> mtd should keep unchanged, If so, is it easier to start from linux-2.4.31 
-> instead of 2.6.11.11?
+Hi,
 
-Most likely.  It should still be quite a bit of work.  An mtd update
-once caused people to claim that I effectively updated our kernel.  It
-pulled in quite a bit from header files that didn't exist in the old
-kernel, etc.
+has anyone successfully used locking/unlocking on a concatenated mtd
+device? The function concat_unlock() calls subdev->unlock() without
+checking the pointers validity first and I couldn't find out where the
+pointer has been set. Do I have to provide the necessary initialization
+myself?
 
-Jörn
-
--- 
-And spam is a useful source of entropy for /dev/random too!
--- Jasmine Strong
+Regards,
+  Andreas
