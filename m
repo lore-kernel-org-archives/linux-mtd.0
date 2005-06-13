@@ -1,29 +1,23 @@
-Received: from smtpoutuk02.marconi.com ([128.87.251.113])
+Received: from atlantis.8hz.com ([212.129.237.78])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dhl3M-0005I5-Gv
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 05:16:21 -0400
-Received: from cvsumailhost.marconicomms.com ([89.1.21.77])
-	by smtpoutuk02.marconi.com (8.12.11/8.12.11) with ESMTP id
-	j5D9GBXw007653
-	for <linux-mtd@lists.infradead.org>; Mon, 13 Jun 2005 10:16:13 +0100
-	(envelope-from Andreas.Engel@marconi.com)
-Received: from oxia.de.marconicomms.com (oxia.de.marconicomms.com
-	[172.28.41.234])
-	by gw1000.de.marconicomms.com (Postfix) with ESMTP id E870C6D0D
+	id 1DhmUN-0005da-Sw
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 06:48:21 -0400
+Received: from atlantis.8hz.com (localhost [127.0.0.1])
+	by atlantis.8hz.com (Postfix) with ESMTP id 89555BB94
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Jun 2005 11:16:09 +0200 (CEST)
-Received: from idefix (idefix [172.28.34.108])
-	by oxia.de.marconicomms.com (8.9.3/8.9.3) with ESMTP id LAA11925
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Jun 2005 11:16:09 +0200 (MEST)
-Date: Mon, 13 Jun 2005 11:16:07 +0200
-From: Andreas Engel <Andreas.Engel@marconi.com>
+	Mon, 13 Jun 2005 12:48:18 +0200 (CEST)
+Received: (from sean@localhost)
+	by atlantis.8hz.com (8.13.1/8.13.1/Submit) id j5DAmIlB024626
+	for linux-mtd@lists.infradead.org;
+	Mon, 13 Jun 2005 12:48:18 +0200 (CEST) (envelope-from sean)
+Date: Mon, 13 Jun 2005 12:48:18 +0200
+From: Sean Young <sean@mess.org>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050613111607.00002d00@idefix>
+Message-ID: <20050613104818.GB24387@atlantis.8hz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Subject: concat_unlock
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: inftl major number
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,13 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+According to Documentation/devices.txt and 
+http://www.lanana.org/docs/device-list/devices-2.6+.txt the major number 
+of the inftl is 96; however the driver uses 94. 94 is already in use by 
+another driver (IBM S/390 DASD block storage). Can this by applied?
 
-has anyone successfully used locking/unlocking on a concatenated mtd
-device? The function concat_unlock() calls subdev->unlock() without
-checking the pointers validity first and I couldn't find out where the
-pointer has been set. Do I have to provide the necessary initialization
-myself?
 
-Regards,
-  Andreas
+Sean
+
+diff -u -r1.6 inftl.h
+--- include/linux/mtd/inftl.h   30 Jun 2004 14:49:00 -0000      1.6
++++ include/linux/mtd/inftl.h   13 Jun 2005 10:47:19 -0000
+@@ -20,7 +20,7 @@
+ #include <mtd/inftl-user.h>
+
+ #ifndef INFTL_MAJOR
+-#define INFTL_MAJOR 94
++#define INFTL_MAJOR 96
+ #endif
+ #define INFTL_PARTN_BITS 4
