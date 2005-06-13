@@ -1,21 +1,20 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DhpG9-00079a-TN
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 09:45:51 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Sean Young <sean@mess.org>
-In-Reply-To: <20050613120721.GA26279@atlantis.8hz.com>
-References: <20050613104818.GB24387@atlantis.8hz.com>
-	<20050613120204.GA30868@wohnheim.fh-wedel.de>
-	<20050613120721.GA26279@atlantis.8hz.com>
-Content-Type: text/plain
-Date: Mon, 13 Jun 2005 17:45:13 +0400
-Message-Id: <1118670313.12772.1.camel@sauron.oktetlabs.ru>
+Received: from rproxy.gmail.com ([64.233.170.194])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dhqj4-0007YN-2H
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 11:19:49 -0400
+Received: by rproxy.gmail.com with SMTP id c16so448472rne
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Jun 2005 08:19:40 -0700 (PDT)
+Message-ID: <5585a07805061308194605d839@mail.gmail.com>
+Date: Mon, 13 Jun 2005 20:49:40 +0530
+From: Ramesh Chaurasiya <rameshc@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: inftl major number
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: mtd-snapshot for 2.4 kernel ?
+Reply-To: Ramesh Chaurasiya <rameshc@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I do. I'll go ahead and commit unless someone tells me not to.
+Hi,
+I am trying to get NAND flash work on 2.4 kernel
 
-Sean,
+http://www.linux-mtd.infradead.org/source.html#kernelversions
+clearly says that support for 2.4 has been dropped and=20
+The latest snapshot which apparently works with 2.4 kernels >=3D 2.4.27
+is the CVS snapshot of date 2005-03-04.
 
-I suppose you should also change the utils/MKDEV script then.
+The snapshots for the month of march are not there at=20
+ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/=20
+It seems they have been moved somewhere else could anyone please give
+me the URL from where above can be downloaded?
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+
+Thanks,
+Ramesh
+
+--=20
+Regards,
+Ramesh
