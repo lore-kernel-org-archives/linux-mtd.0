@@ -1,18 +1,20 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dhj9k-0004bS-LQ
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 03:14:51 -0400
-From: Munira Ahmed <munira.ahmed@radixs.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <2cd57c9005061004274020cc29@mail.gmail.com>
-References: <1118395501.11408.115.camel@server11>
-	<2cd57c9005061004274020cc29@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 13 Jun 2005 15:14:38 +0800
-Message-Id: <1118646878.20555.6.camel@server21>
+	id 1DhjM0-0004nA-7c
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 03:27:29 -0400
+Date: Mon, 13 Jun 2005 09:27:09 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: tong changda <tongcd@hotmail.com>
+Message-ID: <20050613072709.GB26966@wohnheim.fh-wedel.de>
+References: <20050610112127.GA29546@wohnheim.fh-wedel.de>
+	<BAY7-F7DE7464BD17A2C4E930DEDAF00@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: BSP and mkfs.jffs2
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BAY7-F7DE7464BD17A2C4E930DEDAF00@phx.gbl>
+Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org, munira.ahmed@radixs.com
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Board Support Package
+On Mon, 13 June 2005 10:23:28 +0800, tong changda wrote:
+> 
+> Seem a little hard for me
+> I guess all changeset for jffs2 is limited in fs/jffs2/. the interface with 
+> mtd should keep unchanged, If so, is it easier to start from linux-2.4.31 
+> instead of 2.6.11.11?
 
+Most likely.  It should still be quite a bit of work.  An mtd update
+once caused people to claim that I effectively updated our kernel.  It
+pulled in quite a bit from header files that didn't exist in the old
+kernel, etc.
 
-On Fri, 2005-06-10 at 19:27 +0800, Coywolf Qi Hunt wrote:
-> On 6/10/05, Munira Ahmed <munira.ahmed@radixs.com> wrote:
-> > 3) In the current BSP, the filesystem is defined statically, and the
-> > mkfs.jffs2 filesystem builder utility is not applicable.
-> > 
-> > 
-> > above is the response I got from freescale support to one of my queries.
-> > Could anybody please explain what exactly does it mean?
-> 
-> Is BSP bootstrap processor? What does it mean?
-> 
-> 
+Jörn
+
 -- 
-Munira Ahmed
-Senior Embedded Specialist
-
-Radixs Pte Ltd
-Email:munira.ahmed@radixs.com
-
-
-Main: +65 6335 8600
-Fax: +65 6335 8601
-URL: www.radixs.com 
-
-1 Temasek Avenue, #21-01, Millenia Tower, Singapore 039192
-
-Disclaimer Notice: This email, its content and any files transmitted
-with it are intended solely for the addressee(s) and may be confidential
-and privileged. Any unauthorised disclosure or use or dissemination of
-the information contained herein, either whole or partial, is
-prohibited. Radixs Pte Ltd (Radixs) cannot accept liability for any
-statements made which are clearly the sender's own and not expressly
-made on behalf of Radixs or one of its agents. If you have received this
-message in error, please notify the sender immediately, and delete this
-email from your computer system. Radixs has taken reasonable precaution
-to ensure no viruses are present in this email, however Radixs does not
-accept responsibility for any loss or damage arising from the use of
-this email or attachments.
-
-Co. Reg. 200104892Z
+And spam is a useful source of entropy for /dev/random too!
+-- Jasmine Strong
