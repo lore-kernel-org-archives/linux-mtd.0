@@ -1,16 +1,18 @@
-Received: from bay7-f7.bay7.hotmail.com ([64.4.11.7] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dhewd-0003xU-El
-	for linux-mtd@lists.infradead.org; Sun, 12 Jun 2005 22:45:01 -0400
-Message-ID: <BAY7-F7DE7464BD17A2C4E930DEDAF00@phx.gbl>
-In-Reply-To: <20050610112127.GA29546@wohnheim.fh-wedel.de>
-From: "tong changda" <tongcd@hotmail.com>
-To: joern@wohnheim.fh-wedel.de, munira.ahmed@radixs.com
-Date: Mon, 13 Jun 2005 10:23:28 +0800
+Received: from mailbox.radixs.com ([203.81.41.217])
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dhj9k-0004bS-LQ
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 03:14:51 -0400
+From: Munira Ahmed <munira.ahmed@radixs.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <2cd57c9005061004274020cc29@mail.gmail.com>
+References: <1118395501.11408.115.camel@server11>
+	<2cd57c9005061004274020cc29@mail.gmail.com>
+Content-Type: text/plain
+Date: Mon, 13 Jun 2005 15:14:38 +0800
+Message-Id: <1118646878.20555.6.camel@server21>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+Content-Transfer-Encoding: 7bit
+Subject: Re: BSP and mkfs.jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +22,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Seem a little hard for me
-I guess all changeset for jffs2 is limited in fs/jffs2/. the interface with 
-mtd should keep unchanged, If so, is it easier to start from linux-2.4.31 
-instead of 2.6.11.11?
-Thanks.
+Board Support Package
 
->From: J鰎n Engel <joern@wohnheim.fh-wedel.de>
->To: Munira Ahmed <munira.ahmed@radixs.com>
->CC: "Artem B. Bityuckiy" <dedekind@yandex.ru>,tong changda 
-<tongcd@hotmail.com>,"linux-mtd@lists.infradead.org" 
-<linux-mtd@lists.infradead.org>
->Subject: Re: jffs2 corrupt rarely, how to fix it?
->Date: Fri, 10 Jun 2005 13:21:28 +0200
->
->On Fri, 10 June 2005 16:14:21 +0800, Munira Ahmed wrote:
-> > On Fri, 2005-06-10 at 12:03 +0400, Artem B. Bityuckiy wrote:
-> > >
-> > > Many fixes were made since the time of 2.4.20. So, use newer MTD.
-> > >
-> > I am also working on jffs2 and have been advised to update mtd. but I 
-am
-> > afraid that keeping the kernel same and updating the mtd may result in
-> > some incomapatibility.
->
->Correct.  You're basically left with three options:
->1. Update to a current 2.6 kernel (2.6.11.11 or so).
->2. Merge current mtd/jffs2 with your kernel and make sure it works.
->3. Convince someone to do 2. for you.  This usually involves money.
->
->J鰎n
->
->--
->When you close your hand, you own nothing. When you open it up, you
->own the whole world.
->-- Li Mu Bai in Tiger & Dragon
 
-_________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
+On Fri, 2005-06-10 at 19:27 +0800, Coywolf Qi Hunt wrote:
+> On 6/10/05, Munira Ahmed <munira.ahmed@radixs.com> wrote:
+> > 3) In the current BSP, the filesystem is defined statically, and the
+> > mkfs.jffs2 filesystem builder utility is not applicable.
+> > 
+> > 
+> > above is the response I got from freescale support to one of my queries.
+> > Could anybody please explain what exactly does it mean?
+> 
+> Is BSP bootstrap processor? What does it mean?
+> 
+> 
+-- 
+Munira Ahmed
+Senior Embedded Specialist
+
+Radixs Pte Ltd
+Email:munira.ahmed@radixs.com
+
+
+Main: +65 6335 8600
+Fax: +65 6335 8601
+URL: www.radixs.com 
+
+1 Temasek Avenue, #21-01, Millenia Tower, Singapore 039192
+
+Disclaimer Notice: This email, its content and any files transmitted
+with it are intended solely for the addressee(s) and may be confidential
+and privileged. Any unauthorised disclosure or use or dissemination of
+the information contained herein, either whole or partial, is
+prohibited. Radixs Pte Ltd (Radixs) cannot accept liability for any
+statements made which are clearly the sender's own and not expressly
+made on behalf of Radixs or one of its agents. If you have received this
+message in error, please notify the sender immediately, and delete this
+email from your computer system. Radixs has taken reasonable precaution
+to ensure no viruses are present in this email, however Radixs does not
+accept responsibility for any loss or damage arising from the use of
+this email or attachments.
+
+Co. Reg. 200104892Z
