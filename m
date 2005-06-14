@@ -1,17 +1,28 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Munira Ahmed <munira.ahmed@radixs.com>
-In-Reply-To: <1118743292.20555.18.camel@server21>
-References: <20050613072709.GB26966@wohnheim.fh-wedel.de>
-	<BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
-	<20050614092933.GA2354@wohnheim.fh-wedel.de>
-	<1118743292.20555.18.camel@server21>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 14 Jun 2005 14:19:20 +0100
-Message-Id: <1118755161.25956.230.camel@hades.cambridge.redhat.com>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DiF1p-0005t9-Lx
+	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 13:16:48 -0400
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1DiEvM-0006xa-Jr
+	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 19:10:04 +0200
+Received: from S01060004e28f4900.du.shawcable.net ([70.67.196.121])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Jun 2005 19:10:04 +0200
+Received: from andre by S01060004e28f4900.du.shawcable.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 14 Jun 2005 19:10:04 +0200
+To: linux-mtd@lists.infradead.org
+From: Andre <andre@rocklandocean.com>
+Date: Tue, 14 Jun 2005 17:01:25 +0000 (UTC)
+Message-ID: <loom.20050614T185630-101@post.gmane.org>
+References: <004d01c57074$ad3758d0$6702a8c0@niro>
+	<loom.20050614T135901-706@post.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
+Subject: Re: suggestion on use of linux-mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-06-14 at 18:01 +0800, Munira Ahmed wrote:
-> I wish people could be polite if they are unable to help
+Sergei Sharonov <sergei.sharonov <at> halliburton.com> writes:
 
-Jörn's response was perfectly polite, and he even took the time to
-explicitly say that he was unable to help, rather than just going
-silent.
+> You may forget about jffs2 on such large flashes. Depending on the size of the
+> writes that filled the disk it will take anywhere from ten minutes to hours
+> to mount jffs2. The only other alternative that uses mtd is yaffs. It does
+> mount significantly faster, but the user base is small and there is no active
+> development going on (as far as I can tell).
 
-Personally, I would have just ignored the message to which Jörn replied,
-because I consider _that_ message to have been extremely impolite -- it
-was top-posting.
+ok, I will not pursue jffs2.
 
-Jörn really wasn't impolite; if you want impolite I'll do it...
+> > What exactly does one get with *just* NFTL, i.e. does it makes sense to run
+> > ext3 on top of NFTL? Is NFTL production ready?
+> 
+> Are you going to power cycle your nftl+ext3 setup? I would be
+> interested in results.
 
-	1. Use a non-obsolete kernel or go away.
-	2. Read and obey http://david.woodhou.se/email.html or go away.
+Yes, as soon as I find out the state of NFTL. I got a little scared by the 
+following comment in the howto:
 
-Sorry, this is a list for developers and users of _current_ MTD code. If
-you insist on using ancient and known-broken code, you'll need to find
-an alternative forum for discussion. I'm sure there are many S&M sites
-on the Internet which will be able to assist you in your shameless
-autoflagellation.
+quote: "DO NOT EVER USE THE nftl_format UTILITY WITHOUT FIRST SEEKING ADVICE
+ON THE MAILING LIST. It will erase all blocks on the device,
+potentially losing the factory-programmed information about bad
+blocks. (Someone really ought to fix it one of these days - ed)"
 
-If you can demonstrate problems with the 2.4.31 kernel, which has a
-bugfixes-only branch of JFFS2 code, then that we would be interested in.
-
--- 
-dwmw2
+Does NFTL include wear leveling and/or bad block remapping?
