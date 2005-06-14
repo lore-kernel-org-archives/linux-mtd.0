@@ -1,19 +1,19 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from mailbox.radixs.com ([203.81.41.217])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Di86i-0003dT-3R
-	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 05:53:21 -0400
-Date: Tue, 14 Jun 2005 11:52:49 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Todd Poynor <tpoynor@mvista.com>
-Message-ID: <20050614095249.GB2354@wohnheim.fh-wedel.de>
-References: <20050614012330.GA9112@slurryseal.ddns.mvista.com>
+	id 1Di8Em-0003og-GA
+	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 06:01:43 -0400
+From: Munira Ahmed <munira.ahmed@radixs.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <20050614092933.GA2354@wohnheim.fh-wedel.de>
+References: <20050613072709.GB26966@wohnheim.fh-wedel.de>
+	<BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
+	<20050614092933.GA2354@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 14 Jun 2005 18:01:32 +0800
+Message-Id: <1118743292.20555.18.camel@server21>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050614012330.GA9112@slurryseal.ddns.mvista.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtdchar device nodes via udev
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 13 June 2005 18:23:30 -0700, Todd Poynor wrote:
+I wish people could be polite if they are unable to help
+
+On Tue, 2005-06-14 at 11:29 +0200, Jörn Engel wrote:
+> On Tue, 14 June 2005 08:44:03 +0800, tong changda wrote:
+> > 
+> > After I had porting the mtd/jffs2 code, how to confirm that the problem is 
+> > fixed? That is, Is there some ways to make these bugs to be more easily 
+> > appeared on arm-linux-2.4.19/20?
 > 
-> >From Paolo Galtieri, a patch to convert the soon-to-be-history DEVFS
-> dynamic device nodes for mtdchar to the udev method (mtdblock is already
-> handled by the disk subsystem).  Any comments?  Thanks -- Todd
-
-Code seems sane.
-
-J�rn
-
+> That is your job to figure out.  I'm not responsible for the quality
+> of your products.  Sorry.
+> 
+> Jörn
+> 
 -- 
-Data expands to fill the space available for storage.
--- Parkinson's Law
+Munira Ahmed
