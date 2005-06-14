@@ -1,19 +1,17 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiAqW-0004gr-Is
-	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 08:48:49 -0400
-Message-ID: <42AED208.70002@yandex.ru>
-Date: Tue, 14 Jun 2005 16:48:08 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-References: <004d01c57074$ad3758d0$6702a8c0@niro>
-	<loom.20050614T135901-706@post.gmane.org>
-In-Reply-To: <loom.20050614T135901-706@post.gmane.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+From: David Woodhouse <dwmw2@infradead.org>
+To: Munira Ahmed <munira.ahmed@radixs.com>
+In-Reply-To: <1118743292.20555.18.camel@server21>
+References: <20050613072709.GB26966@wohnheim.fh-wedel.de>
+	<BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
+	<20050614092933.GA2354@wohnheim.fh-wedel.de>
+	<1118743292.20555.18.camel@server21>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 14 Jun 2005 14:19:20 +0100
+Message-Id: <1118755161.25956.230.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: suggestion on use of linux-mtd
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2005-06-14 at 18:01 +0800, Munira Ahmed wrote:
+> I wish people could be polite if they are unable to help
 
-Sergei Sharonov wrote:
-> I am also interested in power fail tolerance of ext3 but could not find
-> any test data. People mentioned that it should be better then other 
-> journaling filesystem (such as reserfs, jfs, xfs) because of different
-> journaling scheme. 
-> 
-Hi Sergey,
+Jörn's response was perfectly polite, and he even took the time to
+explicitly say that he was unable to help, rather than just going
+silent.
 
-BTW,
+Personally, I would have just ignored the message to which Jörn replied,
+because I consider _that_ message to have been extremely impolite -- it
+was top-posting.
 
-I remember you were needing atomicity. Reiser4 supports that.
-It supports start transaction/commit semantic, although there is no
-such syscall in Linux (yet). Nevertheless, Reiser4 is not stable yet.
+Jörn really wasn't impolite; if you want impolite I'll do it...
+
+	1. Use a non-obsolete kernel or go away.
+	2. Read and obey http://david.woodhou.se/email.html or go away.
+
+Sorry, this is a list for developers and users of _current_ MTD code. If
+you insist on using ancient and known-broken code, you'll need to find
+an alternative forum for discussion. I'm sure there are many S&M sites
+on the Internet which will be able to assist you in your shameless
+autoflagellation.
+
+If you can demonstrate problems with the 2.4.31 kernel, which has a
+bugfixes-only branch of JFFS2 code, then that we would be interested in.
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+dwmw2
