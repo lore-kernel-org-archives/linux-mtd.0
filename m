@@ -1,16 +1,25 @@
-Received: from bay7-f32.bay7.hotmail.com ([64.4.11.57] helo=hotmail.com)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dhzo7-0001U3-4p
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 21:01:41 -0400
-Message-ID: <BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
-In-Reply-To: <20050613072709.GB26966@wohnheim.fh-wedel.de>
-From: "tong changda" <tongcd@hotmail.com>
-To: joern@wohnheim.fh-wedel.de
-Date: Tue, 14 Jun 2005 08:44:03 +0800
+	id 1Di09O-0001i7-N7
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 21:23:38 -0400
+Received: from slurryseal.ddns.mvista.com (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id SAA09994
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Jun 2005 18:23:31 -0700
+Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8) with ESMTP id
+	j5E1NV1n009121
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Jun 2005 18:23:31 -0700
+Received: (from tpoynor@localhost)
+	by slurryseal.ddns.mvista.com (8.12.8/8.12.8/Submit) id j5E1NV23009119
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 18:23:31 -0700
+Date: Mon, 13 Jun 2005 18:23:30 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050614012330.GA9112@slurryseal.ddns.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org, munira.ahmed@radixs.com
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: mtdchar device nodes via udev
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +29,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks, one last question
-After I had porting the mtd/jffs2 code, how to confirm that the problem is 
-fixed? That is, Is there some ways to make these bugs to be more easily 
-appeared on arm-linux-2.4.19/20?
+>From Paolo Galtieri, a patch to convert the soon-to-be-history DEVFS
+dynamic device nodes for mtdchar to the udev method (mtdblock is already
+handled by the disk subsystem).  Any comments?  Thanks -- Todd
 
->From: J鰎n Engel <joern@wohnheim.fh-wedel.de>
->To: tong changda <tongcd@hotmail.com>
->CC: munira.ahmed@radixs.com, 
-dedekind@yandex.ru,linux-mtd@lists.infradead.org
->Subject: Re: jffs2 corrupt rarely, how to fix it?
->Date: Mon, 13 Jun 2005 09:27:09 +0200
->
->On Mon, 13 June 2005 10:23:28 +0800, tong changda wrote:
-> >
-> > Seem a little hard for me
-> > I guess all changeset for jffs2 is limited in fs/jffs2/. the interface 
-with
-> > mtd should keep unchanged, If so, is it easier to start from 
-linux-2.4.31
-> > instead of 2.6.11.11?
->
->Most likely.  It should still be quite a bit of work.  An mtd update
->once caused people to claim that I effectively updated our kernel.  It
->pulled in quite a bit from header files that didn't exist in the old
->kernel, etc.
->
->J鰎n
->
->--
->And spam is a useful source of entropy for /dev/random too!
->-- Jasmine Strong
-
-_________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
+Index: linux-mtd/drivers/mtd/mtdchar.c
+===================================================================
+--- linux-mtd.orig/drivers/mtd/mtdchar.c	2005-06-14 00:21:40.000000000 +0000
++++ linux-mtd/drivers/mtd/mtdchar.c	2005-06-14 00:45:16.000000000 +0000
+@@ -15,27 +15,30 @@
+ #include <linux/fs.h>
+ #include <asm/uaccess.h>
+ 
+-#ifdef CONFIG_DEVFS_FS
+-#include <linux/devfs_fs_kernel.h>
++#include <linux/device.h>
++
++static struct class_simple *mtd_class;
+ 
+ static void mtd_notify_add(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+ 		return;
+ 
+-	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
+-		      S_IFCHR | S_IRUGO | S_IWUGO, "mtd/%d", mtd->index);
+-		
+-	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
+-		      S_IFCHR | S_IRUGO, "mtd/%dro", mtd->index);
++	class_simple_device_add(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
++				NULL, "mtd%d", mtd->index);
++
++	class_simple_device_add(mtd_class, 
++				MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
++				NULL, "mtd%dro", mtd->index);
+ }
+ 
+ static void mtd_notify_remove(struct mtd_info* mtd)
+ {
+ 	if (!mtd)
+ 		return;
+-	devfs_remove("mtd/%d", mtd->index);
+-	devfs_remove("mtd/%dro", mtd->index);
++
++	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2));
++	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1));
+ }
+ 
+ static struct mtd_notifier notifier = {
+@@ -43,22 +46,6 @@
+ 	.remove	= mtd_notify_remove,
+ };
+ 
+-static inline void mtdchar_devfs_init(void)
+-{
+-	devfs_mk_dir("mtd");
+-	register_mtd_user(&notifier);
+-}
+-
+-static inline void mtdchar_devfs_exit(void)
+-{
+-	unregister_mtd_user(&notifier);
+-	devfs_remove("mtd");
+-}
+-#else /* !DEVFS */
+-#define mtdchar_devfs_init() do { } while(0)
+-#define mtdchar_devfs_exit() do { } while(0)
+-#endif
+-
+ /*
+  * We use file->private_data to store a pointer to the MTDdevice.
+  * Since alighment is at least 32 bits, we have 2 bits free for OTP
+@@ -657,13 +644,22 @@
+ 		return -EAGAIN;
+ 	}
+ 
+-	mtdchar_devfs_init();
++	mtd_class = class_simple_create(THIS_MODULE, "mtd");
++
++	if (IS_ERR(mtd_class)) {
++		printk(KERN_ERR "Error creating mtd class.\n");
++		unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
++		return 1;
++	}
++
++	register_mtd_user(&notifier);
+ 	return 0;
+ }
+ 
+ static void __exit cleanup_mtdchar(void)
+ {
+-	mtdchar_devfs_exit();
++	unregister_mtd_user(&notifier);
++	class_simple_destroy(mtd_class);
+ 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
+ }
+ 
