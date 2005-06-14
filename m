@@ -1,23 +1,16 @@
-Received: from nproxy.gmail.com ([64.233.182.197])
+Received: from bay7-f32.bay7.hotmail.com ([64.4.11.57] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dhzlf-0001Jt-1c
-	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 20:59:06 -0400
-Received: by nproxy.gmail.com with SMTP id l37so72441nfc
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Jun 2005 17:59:01 -0700 (PDT)
-Message-ID: <2cd57c90050613175226477eb0@mail.gmail.com>
-Date: Tue, 14 Jun 2005 08:52:21 +0800
-From: Coywolf Qi Hunt <coywolf@gmail.com>
-To: Andre <andre@rocklandocean.com>
-In-Reply-To: <007401c57049$9fbd6440$6702a8c0@niro>
+	id 1Dhzo7-0001U3-4p
+	for linux-mtd@lists.infradead.org; Mon, 13 Jun 2005 21:01:41 -0400
+Message-ID: <BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
+In-Reply-To: <20050613072709.GB26966@wohnheim.fh-wedel.de>
+From: "tong changda" <tongcd@hotmail.com>
+To: joern@wohnheim.fh-wedel.de
+Date: Tue, 14 Jun 2005 08:44:03 +0800
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <007401c57049$9fbd6440$6702a8c0@niro>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: diskonchip2000 how to
-Reply-To: Coywolf Qi Hunt <coywolf@gmail.com>
+Content-Type: text/plain; charset=gb2312; format=flowed
+Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org, munira.ahmed@radixs.com
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +20,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/14/05, Andre <andre@rocklandocean.com> wrote:
-> I have a msys doc2000 384MB device and are running 2.6.11. I used to run =
-in
-> 2.4.27 with msys' trueffs doc driver, however I would like to give the
-> linux-mtd driver a try.
->=20
-> Is it better to use NFTL or JFFS2?
->=20
-> The documentation lists the following kernel options for getting JFFS2 on
-> NAND support in the kernel:
-> CONFIG_MTD=3Dy
-> CONFIG_MTD_PARTITIONS=3Dy
-> CONFIG_MTD_CHAR=3Dy
-> CONFIG_MTD_BLOCK=3Dy
-> CONFIG_MTD_NAND=3Dy
-> CONFIG_MTD_NAND_YOURBOARD=3Dy
-> CONFIG_JFFS2_FS=3Dy
-> CONFIG_JFFS2_FS_DEBUG=3D0
-> CONFIG_JFFS2_FS_NAND=3Dy
->=20
-> What are the options that are needed to get NFTL to work on diskonchip
-> devices?
+Thanks, one last question
+After I had porting the mtd/jffs2 code, how to confirm that the problem is 
+fixed? That is, Is there some ways to make these bugs to be more easily 
+appeared on arm-linux-2.4.19/20?
 
-Don't you use make menuconfig? You could figure out yourself. It's CONFIG_N=
-FTL.
---=20
-Coywolf Qi Hunt
-http://ahbl.org/~coywolf/
+>From: J鰎n Engel <joern@wohnheim.fh-wedel.de>
+>To: tong changda <tongcd@hotmail.com>
+>CC: munira.ahmed@radixs.com, 
+dedekind@yandex.ru,linux-mtd@lists.infradead.org
+>Subject: Re: jffs2 corrupt rarely, how to fix it?
+>Date: Mon, 13 Jun 2005 09:27:09 +0200
+>
+>On Mon, 13 June 2005 10:23:28 +0800, tong changda wrote:
+> >
+> > Seem a little hard for me
+> > I guess all changeset for jffs2 is limited in fs/jffs2/. the interface 
+with
+> > mtd should keep unchanged, If so, is it easier to start from 
+linux-2.4.31
+> > instead of 2.6.11.11?
+>
+>Most likely.  It should still be quite a bit of work.  An mtd update
+>once caused people to claim that I effectively updated our kernel.  It
+>pulled in quite a bit from header files that didn't exist in the old
+>kernel, etc.
+>
+>J鰎n
+>
+>--
+>And spam is a useful source of entropy for /dev/random too!
+>-- Jasmine Strong
+
+_________________________________________________________________
+与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
