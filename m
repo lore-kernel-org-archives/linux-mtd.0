@@ -1,18 +1,14 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiUnF-0001zf-AT
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 06:06:46 -0400
-From: Munira Ahmed <munira.ahmed@radixs.com>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-In-Reply-To: <42AFFA33.5020705@yandex.ru>
-References: <1118828423.20555.32.camel@server21> <42AFFA33.5020705@yandex.ru>
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Zhao, Forrest" <forrest.zhao@intel.com>
+In-Reply-To: <8126E4F969BA254AB43EA03C59F44E840263CED0@pdsmsx404>
+References: <8126E4F969BA254AB43EA03C59F44E840263CED0@pdsmsx404>
 Content-Type: text/plain
-Date: Wed, 15 Jun 2005 18:06:38 +0800
-Message-Id: <1118829998.20555.35.camel@server21>
+Date: Wed, 15 Jun 2005 11:18:20 +0100
+Message-Id: <1118830701.22181.54.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: jffs2 tutorial
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +18,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-06-15 at 13:51 +0400, Artem B. Bityuckiy wrote:
-
-> David Woodhouse's paper and slides give very good conceptual overview of 
-> JFFS2.
+On Wed, 2005-06-15 at 17:40 +0800, Zhao, Forrest wrote:
+> Hi, David
 > 
-> I did not come across it.
+> Would you please give me some information about the difference
+> between the JFFS2 in 2.4 kernel and the one in 2.6 kernel?
+> 
+> Will the enhancement and new features of JFFS2 in 2.6 kernel be
+> back-ported to 2.4 kernel?
+> 
+> Hope I comply with the netiquette this time :)
+
+No, your mail still landed in my spam folder because it lacks a
+References: header. Please use a non-broken mail program.
+
 -- 
-Munira Ahmed
+dwmw2
