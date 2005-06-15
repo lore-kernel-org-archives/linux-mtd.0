@@ -1,15 +1,15 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from mailbox.radixs.com ([203.81.41.217])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiUZS-0001mE-Hy
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 05:52:31 -0400
-Message-ID: <42AFFA33.5020705@yandex.ru>
-Date: Wed, 15 Jun 2005 13:51:47 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Munira Ahmed <munira.ahmed@radixs.com>
-References: <1118828423.20555.32.camel@server21>
-In-Reply-To: <1118828423.20555.32.camel@server21>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	id 1DiUnF-0001zf-AT
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 06:06:46 -0400
+From: Munira Ahmed <munira.ahmed@radixs.com>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+In-Reply-To: <42AFFA33.5020705@yandex.ru>
+References: <1118828423.20555.32.camel@server21> <42AFFA33.5020705@yandex.ru>
+Content-Type: text/plain
+Date: Wed, 15 Jun 2005 18:06:38 +0800
+Message-Id: <1118829998.20555.35.camel@server21>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: jffs2 tutorial
@@ -22,15 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Munira Ahmed wrote:
-> http://etd.lib.nsysu.edu.tw/ETD-db/ETD-search-c/view_etd?
-> URN=etd-0602104-164645
+On Wed, 2005-06-15 at 13:51 +0400, Artem B. Bityuckiy wrote:
 
-David Woodhouse's paper and slides give very good conceptual overview of 
-JFFS2.
-
-
+> David Woodhouse's paper and slides give very good conceptual overview of 
+> JFFS2.
+> 
+> I did not come across it.
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Munira Ahmed
