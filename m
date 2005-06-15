@@ -1,25 +1,25 @@
-Received: from nproxy.gmail.com ([64.233.182.196])
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiOdJ-0007lR-Kl
-	for linux-mtd@lists.infradead.org; Tue, 14 Jun 2005 23:32:08 -0400
-Received: by nproxy.gmail.com with SMTP id l37so93351nfc
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 14 Jun 2005 20:32:01 -0700 (PDT)
-Message-ID: <2cd57c90050614203212eae0fb@mail.gmail.com>
-Date: Wed, 15 Jun 2005 11:32:01 +0800
-From: Coywolf Qi Hunt <coywolf@gmail.com>
+	id 1DiQxt-00088k-6d
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 02:01:30 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
 To: Munira Ahmed <munira.ahmed@radixs.com>
-In-Reply-To: <1118646878.20555.6.camel@server21>
+In-Reply-To: <1118802327.20555.21.camel@server21>
+References: <20050613072709.GB26966@wohnheim.fh-wedel.de>
+	<BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
+	<20050614092933.GA2354@wohnheim.fh-wedel.de>
+	<1118743045.20555.16.camel@server21>
+	<20050614101107.GC2354@wohnheim.fh-wedel.de>
+	<1118802327.20555.21.camel@server21>
+Content-Type: text/plain
+Date: Wed, 15 Jun 2005 08:01:45 +0200
+Message-Id: <1118815305.2989.16.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <1118395501.11408.115.camel@server11>
-	<2cd57c9005061004274020cc29@mail.gmail.com>
-	<1118646878.20555.6.camel@server21>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: BSP and mkfs.jffs2
-Reply-To: coywolf@lovecn.org
+Content-Transfer-Encoding: 7bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2 corrupt rarely, how to fix it?
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +29,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/13/05, Munira Ahmed <munira.ahmed@radixs.com> wrote:
-> Board Support Package
->=20
->=20
-> On Fri, 2005-06-10 at 19:27 +0800, Coywolf Qi Hunt wrote:
-> > On 6/10/05, Munira Ahmed <munira.ahmed@radixs.com> wrote:
-> > > 3) In the current BSP, the filesystem is defined statically, and the
-> > > mkfs.jffs2 filesystem builder utility is not applicable.
-> > >
-> > >
-> > > above is the response I got from freescale support to one of my queri=
-es.
+On Wed, 2005-06-15 at 10:25 +0800, Munira Ahmed wrote:
+> Nobody asks anybody to do their work. It is just people ask for help to
+> find a clue, a starting point
+> 
 
-You'd better show us your queries too.
+And you ignore obstinately _any_ given advise and the rules of this
+community and mailinglist.
 
-> > > Could anybody please explain what exactly does it mean?
-> >
-> > Is BSP bootstrap processor? What does it mean?
-> >
-> >
---=20
-Coywolf Qi Hunt
-http://ahbl.org/~coywolf/
+Read and understand http://david.woodhou.se/email.html before you post
+again.
+
+tglx
