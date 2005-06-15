@@ -1,25 +1,24 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiQxt-00088k-6d
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 02:01:30 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DiTLP-0000S4-W6
+	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 04:33:57 -0400
+Date: Wed, 15 Jun 2005 10:33:55 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: Munira Ahmed <munira.ahmed@radixs.com>
-In-Reply-To: <1118802327.20555.21.camel@server21>
+Message-ID: <20050615083355.GA12637@wohnheim.fh-wedel.de>
 References: <20050613072709.GB26966@wohnheim.fh-wedel.de>
 	<BAY7-F32F576C95CF56BEF0F5611DAF30@phx.gbl>
 	<20050614092933.GA2354@wohnheim.fh-wedel.de>
 	<1118743045.20555.16.camel@server21>
 	<20050614101107.GC2354@wohnheim.fh-wedel.de>
 	<1118802327.20555.21.camel@server21>
-Content-Type: text/plain
-Date: Wed, 15 Jun 2005 08:01:45 +0200
-Message-Id: <1118815305.2989.16.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1118802327.20555.21.camel@server21>
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Subject: Re: jffs2 corrupt rarely, how to fix it?
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-06-15 at 10:25 +0800, Munira Ahmed wrote:
+On Wed, 15 June 2005 10:25:27 +0800, Munira Ahmed wrote:
+> 
 > Nobody asks anybody to do their work. It is just people ask for help to
 > find a clue, a starting point
-> 
 
-And you ignore obstinately _any_ given advise and the rules of this
-community and mailinglist.
+And you don't see the contradiction in above two sentences?  How much
+time did it take you to find the starting point?  Oh, you haven't even
+found it yet?  Then, how much time did it take you _not_ to find the
+starting point?  Did you charge your employer for that time?  Right.
 
-Read and understand http://david.woodhou.se/email.html before you post
-again.
+Posting private mail in public doesn't make me much happier.  So I can
+repeat myself once more, this time in public:
 
-tglx
+Bugger off!
+
+Jörn
+
+-- 
+Simplicity is prerequisite for reliability.
+-- Edsger W. Dijkstra
