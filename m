@@ -1,20 +1,19 @@
-Received: from mailbox.radixs.com ([203.81.41.217])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dijh4-0005GE-3M
-	for linux-mtd@lists.infradead.org; Wed, 15 Jun 2005 22:01:24 -0400
-From: Munira Ahmed <munira.ahmed@radixs.com>
-To: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-In-Reply-To: <42B06CB1.6020905@cetrtapot.si>
-References: <1118828423.20555.32.camel@server21>
-	<42AFFA33.5020705@yandex.ru> <1118829998.20555.35.camel@server21>
-	<42B06CB1.6020905@cetrtapot.si>
-Content-Type: text/plain
-Date: Thu, 16 Jun 2005 10:01:17 +0800
-Message-Id: <1118887277.20555.47.camel@server21>
-Mime-Version: 1.0
+Received: from fmr14.intel.com ([192.55.52.68] helo=fmsfmr002.fm.intel.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Din4h-0005iu-Mf
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 01:38:00 -0400
+Message-ID: <42B11054.4020509@intel.com>
+Date: Thu, 16 Jun 2005 13:38:28 +0800
+From: zhao <forrest.zhao@intel.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <8126E4F969BA254AB43EA03C59F44E840263CEAE@pdsmsx404>
+	<1118827313.22181.52.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1118827313.22181.52.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=gb18030; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: jffs2 tutorial
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-06-15 at 20:00 +0200, Hinko Kocevar wrote:
-> ..because under Linux "if something is possible in principle,
-> then it is already implemented or somebody is working on it".
-> 
- I don't believe so as there are still a number of unsupported devices
-and platforms. 
+David Woodhouse wrote:
 
-If everything has already been done than there is nothing to do and we
-should all go home.
--- 
-Munira Ahmed
+> On Wed, 2005-06-15 at 17:19 +0800, Zhao, Forrest wrote:
+>
+>> Would you please give me some information about the difference
+>> between the JFFS2 in 2.4 kernel and the one in 2.6 kernel?
+>
+>
+> Not until you read http://david.woodhou.se/email.html
+> Ask your question again without violating common netiquette and I'll
+> answer it.
+>
+Hi, David
+
+ Would you please give me some information about the difference
+ between the JFFS2 in 2.4 kernel and the one in 2.6 kernel?
+ 
+ Will the enhancement and new features of JFFS2 in 2.6 kernel be
+ back-ported to 2.4 kernel?
+ 
+ Hope I comply with the netiquette this time :)
+
+Thanks,
+Forrest
