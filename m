@@ -1,19 +1,22 @@
-Received: from fmr15.intel.com ([192.55.52.69] helo=fmsfmr005.fm.intel.com)
+Received: from atlantis.8hz.com ([212.129.237.78])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiqOu-0006oD-9z
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 05:11:05 -0400
-Message-ID: <42B14245.7070500@intel.com>
-Date: Thu, 16 Jun 2005 17:11:33 +0800
-From: zhao <forrest.zhao@intel.com>
-MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-References: <8126E4F969BA254AB43EA03C59F44E840263CEAE@pdsmsx404>	<1118827313.22181.52.camel@hades.cambridge.redhat.com>
-	<42B11054.4020509@intel.com> <42B12463.4060106@yandex.ru>
-In-Reply-To: <42B12463.4060106@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+	id 1DiqTX-0006yi-Mh
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 05:15:52 -0400
+Date: Thu, 16 Jun 2005 11:15:46 +0200
+From: Sean Young <sean@mess.org>
+To: Joern Engel <joern@wohnheim.fh-wedel.de>
+Message-ID: <20050616091546.GA68824@atlantis.8hz.com>
+References: <20050613123626.GB30868@wohnheim.fh-wedel.de>
+	<20050614192809.GA46302@atlantis.8hz.com>
+	<20050614221844.GB17547@wohnheim.fh-wedel.de>
+	<20050615192754.GA60103@atlantis.8hz.com>
+	<20050615210155.GA32750@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050615210155.GA32750@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Embedded bios FTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
+On Wed, Jun 15, 2005 at 11:01:55PM +0200, Joern Engel wrote:
+> On Wed, 15 June 2005 21:27:54 +0200, Sean Young wrote:
+> > I'm assuming we're near to a state where it can be committed.
+> 
+> Yep.  No objections from my side.  Nice job!
 
-> zhao wrote:
->
->> Would you please give me some information about the difference
->> between the JFFS2 in 2.4 kernel and the one in 2.6 kernel?
->
->
-> One substantial difference is the absence of the lookup() inode operation
-> in <= 2.4.19 kernels.
->
-> AFAIK, there are no major problems porting recent MTD trees to "not 
-> very ancient" 2.4 kernels, where "not very ancient" is, I presume, > 
-> 2.4.20. But I didn't try (thank goodness) :-) People just don't want 
-> to deal with old stuff anymore.
->
-In fact, we were using JFFS2 on kernel 2.4.10.......
-And we encountered some problems(e.g. jffs2 corrupt rarely), it seems 
-that I need to
-back-port JFFS2 in latest 2.4 kernel(2.4.31, right?) to 2.4.10 :( if 
-they are not willing
-to upgrade to latest 2.4 kernel in the product.
+Thanks, committed.
 
-Thanks,
-Forrest
+> > According to General Software documentation their implementation "snoops" 
+> > the fat table in order to see which sectors can be chucked. Hmm...
+> 
+> That's a smart thing to do if you can be certain the user is running
+> fat on top.  Being certain ain't so easy, though.
+
+Indeed so. Besides, it would be more elegant if the file system driver 
+passed this on to the block device, via an ioctl. Would such a thing
+stand up to scrutiny? As far as I can see, only the ftl block devices 
+would benefit.
+
+
+Sean
