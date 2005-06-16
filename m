@@ -1,19 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sean Young <sean@mess.org>
-In-Reply-To: <20050616091546.GA68824@atlantis.8hz.com>
-References: <20050613123626.GB30868@wohnheim.fh-wedel.de>
-	<20050614192809.GA46302@atlantis.8hz.com>
-	<20050614221844.GB17547@wohnheim.fh-wedel.de>
-	<20050615192754.GA60103@atlantis.8hz.com>
-	<20050615210155.GA32750@wohnheim.fh-wedel.de>
-	<20050616091546.GA68824@atlantis.8hz.com>
-Content-Type: text/plain
-Date: Thu, 16 Jun 2005 11:28:37 +0100
-Message-Id: <1118917717.5497.46.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Embedded bios FTL
+Received: from nwd2mail3.analog.com ([137.71.25.52])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Disie-0008EQ-7R
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 07:39:39 -0400
+Received: from nwd2mhb2.analog.com (nwd2mhb2.analog.com [137.71.6.12])
+	by nwd2mail3.analog.com (8.12.10/8.12.10) with ESMTP id j5GBdWiL009571
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2005 07:39:33 -0400
+Received: from nwd2exm3.ad.analog.com (nwd2exm3.ad.analog.com [10.64.51.19])
+	by nwd2mhb2.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with ESMTP
+	id HAA22941 for <linux-mtd@lists.infradead.org>;
+	Thu, 16 Jun 2005 07:39:26 -0400 (EDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 16 Jun 2005 07:38:27 -0400
+Message-ID: <E21A9A52FF03B249B20F0DC563DEBB311B6320B4@nwd2exm3.ad.analog.com>
+From: "Li, Aubrey" <Aubrey.Li@analog.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Serail FLASH to JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-06-16 at 11:15 +0200, Sean Young wrote:
-> Indeed so. Besides, it would be more elegant if the file system driver
-> passed this on to the block device, via an ioctl. Would such a thing
-> stand up to scrutiny? As far as I can see, only the ftl block devices 
-> would benefit.
+Hi all,
 
-I believe there's a command which can be given to CompactFlash devices
-which does basically the same thing. I'd like to see it added to the
-block device interface. Probably not an ioctl -- probably a bio command
-like barriers instead.
-> 
--- 
-dwmw2
+I'm trying to make serial flash to support JFFS2,
+It would be great if someone lets me know it is possible.
+
+Thanks
+-Aubrey.
