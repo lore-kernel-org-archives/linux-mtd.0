@@ -1,15 +1,26 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Gross, Mark" <mark.gross@intel.com>
-In-Reply-To: <F760B14C9561B941B89469F59BA3A8470A558D56@orsmsx401.amr.corp.intel.com>
-References: <F760B14C9561B941B89469F59BA3A8470A558D56@orsmsx401.amr.corp.intel.com>
-Content-Type: text/plain
-Date: Thu, 16 Jun 2005 19:06:15 +0100
-Message-Id: <1118945175.5497.63.camel@baythorne.infradead.org>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dj0L6-0001Xe-6R
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 15:47:49 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Dj0Ed-0000LO-6P
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 21:41:13 +0200
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2005 21:41:07 +0200
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 16 Jun 2005 21:41:07 +0200
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Date: Thu, 16 Jun 2005 19:39:58 +0000 (UTC)
+Message-ID: <loom.20050616T213451-152@post.gmane.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org,
-	"Zhao, Forrest" <forrest.zhao@intel.com>
-Subject: RE: jffs2 corrupt rarely, how to fix it?
+Sender: news <news@sea.gmane.org>
+Subject: I2C FRAM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,16 +30,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-06-16 at 07:38 -0700, Gross, Mark wrote:
-> This is just the jam many businesses get into when they ship a product
-> that needs to be supported under strict change control.  It's part of
-> the cost of doing business.
+Hi,
 
-That's fine -- but it is _your_ cost. 
+sory if this is FAQ, but I got a 64 kBit FRAM on I2C bus (FM24CL64) and I was
+wandering what is the best way to make it usable? Is there an mtd driver to turn
+it into a char and/or block device?
 
-One approach you might find useful is to _reproduce_ any problems you
-have on 2.4.31 in order to get people interested, while still actually
-using whatever you like in the privacy of your own lab :)
-
--- 
-dwmw2
+Sergei Sharonov
