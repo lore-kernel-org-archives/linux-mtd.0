@@ -1,16 +1,15 @@
-Received: from web52605.mail.yahoo.com ([206.190.39.143])
+Received: from web52602.mail.yahoo.com ([206.190.39.140])
 	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DiuM6-0000Qz-MF
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 09:24:29 -0400
-Message-ID: <20050616132425.53348.qmail@web52605.mail.yahoo.com>
-Date: Thu, 16 Jun 2005 06:24:24 -0700 (PDT)
+	id 1DiujD-0000dh-8E
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 09:48:21 -0400
+Message-ID: <20050616134813.59400.qmail@web52602.mail.yahoo.com>
+Date: Thu, 16 Jun 2005 06:48:13 -0700 (PDT)
 From: Vincent Lim <e2vincent@yahoo.com>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: Vincent Lim <e2vincent@yahoo.com>
-Subject: NAND JFFS2 error on Samsung
+Subject: Mounting Problem on MTD NAND (Samsung) device on 2.6.11
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,10 +19,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-linux-mtd@lists.infradead.org
 Hi Gurus:
 
-I experience mounting the MTD NAND (Samsung
+I experienced problem mounting the MTD NAND (Samsung
 K9f1208UOA) device on 2.6.11 kernel. 
 These are the steps that I made using the utility
 built-in:
@@ -186,9 +184,7 @@ no valid JFFS2 nodes
 empty_blocks 0, bad_blocks 0, c->nr_blocks 512
 mount: /dev/mtdblock3: can't read superblock
 
-
-		
-__________________________________ 
-Discover Yahoo! 
-Use Yahoo! to plan a weekend, have fun online and more. Check it out! 
-http://discover.yahoo.com/
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
