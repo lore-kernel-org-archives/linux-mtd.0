@@ -1,26 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Ditjp-0000C1-9u
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 08:44:54 -0400
-Date: Thu, 16 Jun 2005 14:44:52 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Sean Young <sean@mess.org>
-Message-ID: <20050616124452.GA4224@wohnheim.fh-wedel.de>
-References: <20050613123626.GB30868@wohnheim.fh-wedel.de>
-	<20050614192809.GA46302@atlantis.8hz.com>
-	<20050614221844.GB17547@wohnheim.fh-wedel.de>
-	<20050615192754.GA60103@atlantis.8hz.com>
-	<20050615210155.GA32750@wohnheim.fh-wedel.de>
-	<20050616091546.GA68824@atlantis.8hz.com>
-	<20050616102905.GA2166@wohnheim.fh-wedel.de>
-	<20050616115459.GA70753@atlantis.8hz.com>
-Mime-Version: 1.0
+Received: from web52605.mail.yahoo.com ([206.190.39.143])
+	by canuck.infradead.org with smtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DiuM6-0000Qz-MF
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 09:24:29 -0400
+Message-ID: <20050616132425.53348.qmail@web52605.mail.yahoo.com>
+Date: Thu, 16 Jun 2005 06:24:24 -0700 (PDT)
+From: Vincent Lim <e2vincent@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050616115459.GA70753@atlantis.8hz.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Embedded bios FTL
+Cc: Vincent Lim <e2vincent@yahoo.com>
+Subject: NAND JFFS2 error on Samsung
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +20,175 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 June 2005 13:54:59 +0200, Sean Young wrote:
-> On Thu, Jun 16, 2005 at 12:29:05PM +0200, Joern Engel wrote:
-> > 
-> > An ioctl() would have a *really* hard time to make it into the kernel.
-> 
-> I agree that ioctl()s are ugly, but it does have the advantage that it 
-> is accessible from user-space. Excuse my ignorance, but what is the 
-> motivation for this?
+linux-mtd@lists.infradead.org
+Hi Gurus:
 
-Past experience, mostly.  95% of all ioctl() uses are for Crap(tm).
-Mostly because people having some stupid idea can easily add an
-ioctl() and have a hard time adding a new syscall or similar.
+I experience mounting the MTD NAND (Samsung
+K9f1208UOA) device on 2.6.11 kernel. 
+These are the steps that I made using the utility
+built-in:
 
-After a while, people caught up to this and by today, a new ioctl()
-raises the red flag that someone stupid is trying to do something
-stupid and should not be allowed to do so.
+ mkfs.jffs2 -d ~/PM/ -e 0x4000 -p 0x4000 -o 
+ NANDjffs2.image
+ eraseall /dev/mtd3 
+ nandwrite /dev/mtd3 NANDjffs2.image
+ mount -t jffs2 /dev/mtdblock3 /mnt/mtd3
+ dir /mnt/mtd3/ 
 
-For the remaining 5% of good ideas, an ioctl number has no advantage
-over a new function with a self-explaining name.
+I have error messages as below while executing the
+commands. See below.
+I have no clue yet what I need to do, can someone show
+me the pointers where I should narrow down the problem
+?
+Is it because of an error during the creation of the
+JFFS2 filesystem while mounting ?
+I hope it is just a bad part. :-)
+ 
 
-> > What you could do, however, might be something similar to this:
-> > 
-> > o Add an erase() function to stuct block_device_operations
-> > o Have fat call that function whenever a block is know unused.
-> > o Make sure only to call the function, if it's non-NULL.  Maybe a
-> >   wrapper, maybe just
-> > 	if (bd_ops->erase)
-> > 		bd_ops->erase(block);
-> >   inside fs/fat/.
-> > o Implement erase() for your ftl driver to do something smart.
-> > 
-> > Be careful, though.  I haven't worked on block devices for a very long
-> > time and could be talking out of my arse.  If you send such a patch to
-> > akpm and get flamed into a pile of ashes - don't blame me. ;)
-> 
-> I'll have to spend more time looking at the block devices/bio code 
-> before I can start. :)
-> 
-> erase() sounds rather mtd-specific. Wouldn't stale() be better?
+BR,
 
-You're right.  Even for mtd, erase would be the wrong name.  The
-semantic is not to erase the full erase block (and to do it now,
-imperatively) but to return control over a partial erase block to the
-ftl.  Hmm.
+V.
+------------------------------------------------------
+root@(none):~# eraseall /dev/mtd3
+Erasing 16 Kibyte @ 0 --  0 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 4000 --  0 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 8000 --  0 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ c000 --  0 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 10000 --  0 % complete.
+...
+Erasing 16 Kibyte @ 7e0000 -- 98 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7e4000 -- 98 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7e8000 -- 98 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7ec000 -- 99 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7f0000 -- 99 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7f4000 -- 99 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7f8000 -- 99 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erasing 16 Kibyte @ 7fc000 -- 99 % complete.
+eraseall: /dev/mtd3: MTD Erase failure: Input/output
+error
+Erased 8192 Kibyte @ 0 -- 100% complete.
 
-For block devices, the semantic is that no read() to this block will
-happen before the next write() to it.  forget() might be a decent name
-as well.  Then the block device has the option to change the data
-within this block as it pleases.  If the next read() happens before
-the next write(), random data will be returned.
+root@(none):~# nandwrite /dev/mtd3 NANDjffs2.image
+Writing data to block 0
+Bad block at 0, will be skipped
+Writing data to block 4000
+Bad block at 4000, will be skipped
+Writing data to block 8000
+Bad block at 8000, will be skipped
+Writing data to block c000
+Bad block at c000, will be skipped
+Writing data to block 10000
+Bad block at 10000, will be skipped
+Writing data to block 14000
+Bad block at 14000, will be skipped
+Writing data to block 18000
+Bad block at 18000, will be skipped
+Writing data to block 1c000
+Bad block at 1c000, will be skipped
+Writing data to block 20000
+Bad block at 20000, will be skipped
+...
+Writing data to block 7e8000
+Bad block at 7e8000, will be skipped
+Writing data to block 7ec000
+Bad block at 7ec000, will be skipped
+Writing data to block 7f0000
+Bad block at 7f0000, will be skipped
+Writing data to block 7f4000
+Bad block at 7f4000, will be skipped
+Writing data to block 7f8000
+Bad block at 7f8000, will be skipped
+Writing data to block 7fc000
+Bad block at 7fc000, will be skipped
+Data did not fit into device, due to bad blocks
+: Success
 
-PS: Yeah, I know, block devices have request(), instead of read() and
-write().  Same thing.
 
-Jörn
+root@(none):~# mount -t jffs2 /dev/mtdblock3 /mnt/mtd3
+mtd->read(0x400 bytes from 0x0) returned ECC error
+mtd->read(0x3c08 bytes from 0x3f8) returned ECC error
+mtd->read(0x400 bytes from 0x4000) returned ECC error
+mtd->read(0x3c08 bytes from 0x43f8) returned ECC error
+mtd->read(0x400 bytes from 0x8000) returned ECC error
+mtd->read(0x3c08 bytes from 0x83f8) returned ECC error
+mtd->read(0x400 bytes from 0xc000) returned ECC error
+mtd->read(0x3c08 bytes from 0xc3f8) returned ECC error
+...
+mtd->read(0x400 bytes from 0x734000) returned ECC
+error
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734168: 0xd700 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x0073416c: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734170: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734174: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734178: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x0073417c: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734180: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734184: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x00734188: 0xd7d7 insd
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not
+found at 0x0073418c: 0xd7d7 insd
+Further such events for this erase block will not be
+printed
+mtd->read(0x3c08 bytes from 0x7343f8) returned ECC
+error
+...
+mtd->read(0x3c08 bytes from 0x7ec3f8) returned ECC
+error
+mtd->read(0x400 bytes from 0x7f0000) returned ECC
+error
+mtd->read(0x3c08 bytes from 0x7f03f8) returned ECC
+error
+mtd->read(0x400 bytes from 0x7f4000) returned ECC
+error
+mtd->read(0x3c08 bytes from 0x7f43f8) returned ECC
+error
+mtd->read(0x400 bytes from 0x7f8000) returned ECC
+error
+mtd->read(0x3c08 bytes from 0x7f83f8) returned ECC
+error
+mtd->read(0x400 bytes from 0x7fc000) returned ECC
+error
+mtd->read(0x3c08 bytes from 0x7fc3f8) returned ECC
+error
+Cowardly refusing to erase blocks on filesystem with
+no valid JFFS2 nodes
+empty_blocks 0, bad_blocks 0, c->nr_blocks 512
+mount: /dev/mtdblock3: can't read superblock
 
--- 
-The only real mistake is the one from which we learn nothing.
--- John Powell
+
+		
+__________________________________ 
+Discover Yahoo! 
+Use Yahoo! to plan a weekend, have fun online and more. Check it out! 
+http://discover.yahoo.com/
