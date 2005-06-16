@@ -1,16 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: zhao <forrest.zhao@intel.com>
-In-Reply-To: <42B11054.4020509@intel.com>
-References: <8126E4F969BA254AB43EA03C59F44E840263CEAE@pdsmsx404>
-	<1118827313.22181.52.camel@hades.cambridge.redhat.com>
-	<42B11054.4020509@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 16 Jun 2005 11:12:56 +0100
-Message-Id: <1118916776.5497.33.camel@baythorne.infradead.org>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DircR-0007df-AF
+	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 06:29:08 -0400
+Date: Thu, 16 Jun 2005 12:29:05 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Sean Young <sean@mess.org>
+Message-ID: <20050616102905.GA2166@wohnheim.fh-wedel.de>
+References: <20050613123626.GB30868@wohnheim.fh-wedel.de>
+	<20050614192809.GA46302@atlantis.8hz.com>
+	<20050614221844.GB17547@wohnheim.fh-wedel.de>
+	<20050615192754.GA60103@atlantis.8hz.com>
+	<20050615210155.GA32750@wohnheim.fh-wedel.de>
+	<20050616091546.GA68824@atlantis.8hz.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20050616091546.GA68824@atlantis.8hz.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 corrupt rarely, how to fix it?
+Subject: Re: [PATCH] Embedded bios FTL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,94 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-06-16 at 13:38 +0800, zhao wrote:
->  Would you please give me some information about the difference
->  between the JFFS2 in 2.4 kernel and the one in 2.6 kernel?
+On Thu, 16 June 2005 11:15:46 +0200, Sean Young wrote:
+> On Wed, Jun 15, 2005 at 11:01:55PM +0200, Joern Engel wrote:
+> > On Wed, 15 June 2005 21:27:54 +0200, Sean Young wrote:
+> 
+> > > According to General Software documentation their implementation "snoops" 
+> > > the fat table in order to see which sectors can be chucked. Hmm...
+> > 
+> > That's a smart thing to do if you can be certain the user is running
+> > fat on top.  Being certain ain't so easy, though.
+> 
+> Indeed so. Besides, it would be more elegant if the file system driver 
+> passed this on to the block device, via an ioctl. Would such a thing
+> stand up to scrutiny? As far as I can see, only the ftl block devices 
+> would benefit.
 
-JFFS2 in the 2.4 kernel, as with everything else in the 2.4 kernel, is
-old but stable code. It lacks the new features -- NAND flash support,
-the mount time improvements due to delayed scanning, etc. 
+An ioctl() would have a *really* hard time to make it into the kernel.
+What you could do, however, might be something similar to this:
 
-The whole point of 2.4 is that ought to be _stable_, and undergoes very
-little change. Some changes were made in 2.4.20-2.4.22 timescale to the
-VFS which fixed some problems with garbage collection by adding
-ilookup(), etc. Since then I don't recall having to touch it.
+o Add an erase() function to stuct block_device_operations
+o Have fat call that function whenever a block is know unused.
+o Make sure only to call the function, if it's non-NULL.  Maybe a
+  wrapper, maybe just
+	if (bd_ops->erase)
+		bd_ops->erase(block);
+  inside fs/fat/.
+o Implement erase() for your ftl driver to do something smart.
 
->  Will the enhancement and new features of JFFS2 in 2.6 kernel be
->  back-ported to 2.4 kernel?
+Be careful, though.  I haven't worked on block devices for a very long
+time and could be talking out of my arse.  If you send such a patch to
+akpm and get flamed into a pile of ashes - don't blame me. ;)
 
-Absolutely not. The whole point of the 2.4 kernel is that it's ancient
-and _stable_. To start backporting new features and 'improvements' from
-the 2.6 kernel would be entirely bizarre -- it would defeat the object
-of having a stable, frozen kernel in the first place.
+Seriously, the erase() function should be considered an optimization
+only, at least for now.  If it doesn't exist - fine.  If it exists but
+doesn't do anything - fine.  If it does something - great.
 
-2.4 is not for development. If you're willing to change MTD and JFFS2 in
-an ancient 2.4 kernel, you might as well just update wholesale to 2.6
-and have done with it -- you're just making pointless work for yourself
-if you do extensive _development_ on a 2.4 kernel.
-
-It used to be technically possible to use the latest JFFS2 code in a 2.4
-kernel -- it probably still is without too much work. But that doesn't
-make it any less of an insane proposition, which is presumably why
-nobody's really interested in doing it. The latest code isn't tested at
-all with the 2.4 VFS, and the details of the 2.4 kernel are not taken
-into consideration when designing it. That's basically been the case for
-a long time, but we only drew a line under it and said "no more 2.4"
-when it finally became _obvious_. 
-
-Why do you ask the question? Let's back up a step and look at what
-you're trying to do. 
-
-When choosing a kernel you basically have three options -- you could use
-2.4 as-is, you could use 2.6, or you could backport certain features
-from 2.6 to 2.4. 
-
-Using 2.4 could make some sense, if it does what you need -- it is very
-well tested and stable code. If you're doing _minor_ updates to a
-product which already uses 2.4 successfully, it's the best answer.
-
-Using 2.6 makes a lot of sense too -- it's also stable now, and has many
-shiny new features and improvements. It's what you should be using for
-any new projects.
-
-Using some 2.6 stuff backported to 2.4 will result in a mix-and-match
-code base of your own devising which has had _less_ testing and can be
-expected to be _less_ stable than the 2.6 kernel. In addition to which,
-you'll have fewer features and improvements than the 2.6 kernel. You
-lose out on _both_ stability and features by taking that approach -- in
-the general case it makes _no_ sense whatsoever. Just say no.
-
-The 2.4 kernel isn't stable because '2' and '4' are magic numbers. It's
-stable because it's old and tested code. To make extensive modifications
-to it and still keep using it "because it's the stable kernel" is
-utterly insane.
-
-Don't get me wrong -- I don't think people should immediately stop
-_using_ 2.4. It's just that people certainly shouldn't be _developing_
-on 2.4. If it works for you, that's great. But it ain't broke. Don't fix
-it.
-
->  Hope I comply with the netiquette this time :)
-
-You do -- thanks for making the effort to fix whatever was causing the
-problem.
-
-I'm sorry to be so harsh about it, but it is important for people to
-co-operate and to make sure their mail is easy to deal with. It's
-actually quite important to make sure that mail is grouped correctly
-into threads, and your mail is associated with the mail to which you're
-replying. Likewise, trying to decipher a top-post or HTML mail is
-suboptimal -- it may only take a few seconds more than a normal mail,
-but those few seconds are multiplied by _every_ reader who finds it
-harder to deal with the mail in question.
-
-In my case, 'a few seconds' is actually quite a large proportion of the
-amount of time I have each week to glance at the linux-mtd mailing list.
-Hopefully that situation will improve in the fairly near future as the
-project I'm working on draws nearer to completion, and I'll be able to
-spend a little more time on MTD again. Thomas, JÃ¶rn, Artem and others
-are doing such a fine job in my 'absence' that I'm worried they'll
-realise they can just do without me entirely ;)
+Jörn
 
 -- 
-dwmw2
+Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it.
+-- Brian W. Kernighan
