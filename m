@@ -1,24 +1,17 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DircR-0007df-AF
-	for linux-mtd@lists.infradead.org; Thu, 16 Jun 2005 06:29:08 -0400
-Date: Thu, 16 Jun 2005 12:29:05 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Sean Young <sean@mess.org>
-Message-ID: <20050616102905.GA2166@wohnheim.fh-wedel.de>
-References: <20050613123626.GB30868@wohnheim.fh-wedel.de>
-	<20050614192809.GA46302@atlantis.8hz.com>
-	<20050614221844.GB17547@wohnheim.fh-wedel.de>
-	<20050615192754.GA60103@atlantis.8hz.com>
-	<20050615210155.GA32750@wohnheim.fh-wedel.de>
-	<20050616091546.GA68824@atlantis.8hz.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: zhao <forrest.zhao@intel.com>
+In-Reply-To: <42B14245.7070500@intel.com>
+References: <8126E4F969BA254AB43EA03C59F44E840263CEAE@pdsmsx404>
+	<1118827313.22181.52.camel@hades.cambridge.redhat.com>
+	<42B11054.4020509@intel.com> <42B12463.4060106@yandex.ru>
+	<42B14245.7070500@intel.com>
+Content-Type: text/plain
+Date: Thu, 16 Jun 2005 11:24:26 +0100
+Message-Id: <1118917466.5497.43.camel@baythorne.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20050616091546.GA68824@atlantis.8hz.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Embedded bios FTL
+Content-Transfer-Encoding: 7bit
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
+Subject: Re: jffs2 corrupt rarely, how to fix it?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 16 June 2005 11:15:46 +0200, Sean Young wrote:
-> On Wed, Jun 15, 2005 at 11:01:55PM +0200, Joern Engel wrote:
-> > On Wed, 15 June 2005 21:27:54 +0200, Sean Young wrote:
+On Thu, 2005-06-16 at 17:11 +0800, zhao wrote:
+> In fact, we were using JFFS2 on kernel 2.4.10.......
+> And we encountered some problems(e.g. jffs2 corrupt rarely), it seems 
+> that I need to
+> back-port JFFS2 in latest 2.4 kernel(2.4.31, right?) to 2.4.10 :( if 
+> they are not willing
+> to upgrade to latest 2.4 kernel in the product.
+
+If you're using 2.4 and it's mostly fine except for the occasional JFFS2
+problem then staying with 2.4 makes some sense. 
+
+I wouldn't backport the current JFFS2 code though -- you want the 2.4
+branch which is actually designed and maintained for 2.4. 
+
+That does mean that you need all the inter-related changes to fs/inode.c
+which happened from 2.4.20-odd onwards. We added ilookup() and then
+there was a couple of rounds of fixes to locking problems with it, I
+believe.
+
+Personally, I'd be inclined just to update to 2.4.31 and change the
+numbers back to appease whatever idiot in management wants you to
+mix-and-match your own new code instead of taking what's been tested by
+others and developed as a coherent whole.
+
+If you can reproduce problems in JFFS2 in 2.4.31 (other than that it
+takes an age to mount and doesn't work on NAND), then we'd be interested
+in fixing those.
+
+Nobody but yourself is ever going to be interested in your own personal
+merge of new JFFS2 code and old kernels. Do that if you really want --
+it's GPL'd code after all. But don't bother to ask anyone for help with
+it.
 > 
-> > > According to General Software documentation their implementation "snoops" 
-> > > the fat table in order to see which sectors can be chucked. Hmm...
-> > 
-> > That's a smart thing to do if you can be certain the user is running
-> > fat on top.  Being certain ain't so easy, though.
-> 
-> Indeed so. Besides, it would be more elegant if the file system driver 
-> passed this on to the block device, via an ioctl. Would such a thing
-> stand up to scrutiny? As far as I can see, only the ftl block devices 
-> would benefit.
-
-An ioctl() would have a *really* hard time to make it into the kernel.
-What you could do, however, might be something similar to this:
-
-o Add an erase() function to stuct block_device_operations
-o Have fat call that function whenever a block is know unused.
-o Make sure only to call the function, if it's non-NULL.  Maybe a
-  wrapper, maybe just
-	if (bd_ops->erase)
-		bd_ops->erase(block);
-  inside fs/fat/.
-o Implement erase() for your ftl driver to do something smart.
-
-Be careful, though.  I haven't worked on block devices for a very long
-time and could be talking out of my arse.  If you send such a patch to
-akpm and get flamed into a pile of ashes - don't blame me. ;)
-
-Seriously, the erase() function should be considered an optimization
-only, at least for now.  If it doesn't exist - fine.  If it exists but
-doesn't do anything - fine.  If it does something - great.
-
-Jörn
-
 -- 
-Debugging is twice as hard as writing the code in the first place.
-Therefore, if you write the code as cleverly as possible, you are,
-by definition, not smart enough to debug it.
--- Brian W. Kernighan
+dwmw2
