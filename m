@@ -1,28 +1,24 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DjH0Y-0003N8-Uc
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2005 09:35:44 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DjGuZ-0000Dk-7G
-	for linux-mtd@lists.infradead.org; Fri, 17 Jun 2005 15:29:37 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2005 15:29:31 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 17 Jun 2005 15:29:31 +0200
-To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Fri, 17 Jun 2005 13:28:46 +0000 (UTC)
-Message-ID: <loom.20050617T144811-785@post.gmane.org>
-References: <loom.20050616T213451-152@post.gmane.org>
-	<42B2BAE3.7040709@anagramm.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: I2C FRAM
+Received: from nwd2mail3.analog.com ([137.71.25.52])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1Djfs4-0005fe-8H
+	for linux-mtd@lists.infradead.org; Sat, 18 Jun 2005 12:08:38 -0400
+Received: from nwd2mhb2.analog.com (nwd2mhb2.analog.com [137.71.6.12])
+	by nwd2mail3.analog.com (8.12.10/8.12.10) with ESMTP id j5IG8PiL015464
+	for <linux-mtd@lists.infradead.org>; Sat, 18 Jun 2005 12:08:29 -0400
+Received: from nwd2exm3.ad.analog.com (nwd2exm3.ad.analog.com [10.64.51.19])
+	by nwd2mhb2.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with ESMTP
+	id MAA06315 for <linux-mtd@lists.infradead.org>;
+	Sat, 18 Jun 2005 12:08:23 -0400 (EDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 18 Jun 2005 12:07:58 -0400
+Message-ID: <E21A9A52FF03B249B20F0DC563DEBB311B814609@nwd2exm3.ad.analog.com>
+From: "Li, Aubrey" <Aubrey.Li@analog.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Soft link of JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,18 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> For I2C related stuff please have a look at the lm_sensors project at
-> http://secure.netroedge.com/~lm78/
+Hi all,
 
-Thanks, man. Yea, I've see that page.
+I have constructed a root file system consisting of some soft link
+files, like:
+ ls --> busybox
+ init --> busybox
+ ... ... ... ...=20
+ and so forth and so on.
+I used mkfs.jffs2 to make a image of the root file system.
+But when I startup kernel using the image as the root file system under
+MTD,
+It crashed.
+After I digged into the kernel code, I found the soft link file of the
+JFFS2 image could not be read properly.
 
-> There are generic drivers for the widely used I2C eeproms which you
-> can use/modify/... for several platforms.
-> Please check the documentation there.
+Doesn't JFFS2 support soft link?
 
-It looks like it is geared more towards sensors and really small eeproms.
-I thought that FRAM would be more on line with MTD. I was/am hoping to use
-FRAM for a transaction log and possibly do a bit of buffering for NAND.
+What should I do to over this hurdle?
 
-Sergei
+Thanks.
+-Aubrey
