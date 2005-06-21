@@ -1,16 +1,14 @@
-Received: from [217.110.67.40] (helo=srv-gateway.pilz.de)
+Received: from bay104-f7.bay104.hotmail.com ([65.54.175.17] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DkKb6-0000zD-MU
-	for linux-mtd@lists.infradead.org; Mon, 20 Jun 2005 07:37:52 -0400
+	id 1DkkJl-0002sX-Ue
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2005 11:05:39 -0400
+Message-ID: <BAY104-F742A4B60C7CA2E0EDFE8B84E80@phx.gbl>
+From: "David L" <idht4n@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <OF52603195.4EAEE2B4-ONC1257026.003D06DE-C1257026.003ECCE0@pilz.de>
-From: Heinz Haeberle <H.Haeberle@pilz.de>
-Date: Mon, 20 Jun 2005 13:26:00 +0200
-MIME-Version: 1.0
-Content-type: text/plain;
-	charset=US-ASCII
-Cc: uclinux-dev@uclinux.org
-Subject: Deadlock: JFFS2 with uClinux kernel 2.6.6-uc0
+Date: Tue, 21 Jun 2005 07:48:17 -0700
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Subject: (no subject)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have found a deadlock situation with jffs2 on linux 2.6.6-uc0 (do not
-know what
-version jffs2 that is, there aren't any version infos in the jffs2 dir)
-The situation happens while continuously creating, writing and deleting a
-couple#
-(= 20 in my case)  files. It happens about once per day.
+Hi,
 
-I have tracked down the problem to the following level:
+I'm using a Nand flash driver on a Compulab board with a proprietary driver 
+provided by Compulab.  I'd like to switch to a non-proprietary driver like 
+MTD for a few reasons.  But having read through the MTD documentation, I'm 
+not sure we can maintain our current boot strategy if we migrate to MTD.  
+Right now, we boot to DOS that comes with the board and then use loadlin to 
+boot a kernel/initial ramdisk that reside on a partition of the Nand flash 
+that has a DOS filesystem on it.  On the rare event that we need to change 
+the kernel or initial ramdisk, we mount the DOS filesystem from Linux and 
+change the file.
 
-The jffs2 garbage collectors stack trace shows the following calls:
-========================================================
-....(don't find anything usefull)
-schedule
-__wait_on_freeing_inode                     (aparently waits for the inode
-gets unlocked)
-find_inode_fast
-iget_locked
-jffs2_garbage_collect_live
-jffs2_garbage_collect_pass                    (does a: down(&c->alloc-sem))
-....
+Is there a way to maintain this strategy if we use MTD?  I saw in the NAND 
+API document that only jffs2 and YAFFS filesystems can be used with MTD.  Is 
+there any way around this? (I don't care how efficient it is).  And even if 
+there is a workaround that would allow us to modify files in a DOS 
+filesystem from Linux, will MTD partitions be visible from DOS so that we 
+can boot in the first place?
 
+Thanks...
 
-The application kernel stack trace (application is doing the unlink):
-========================================================
-....(don't find anything usefull)
-__down
-__down_failed (should not be a fail according to source comments)
-jffs2_do_clear_inode                                 (does a:
-down(&c->alloc_sem))
-jffs2_clear_inode
-clear_inode
-generic_delete_inode
-generic_drop_inode
-iput
-sys_unlink                                                      (does a:
-lock inode sema)
+                    David
 
-
-So the situation happens that the GC happens to what for the unlike to
-unlock the inode sema
-while the unlike is waiting for the alloc-sema to be availabe. Which never
-happens since the
-GC is still owning it.
-
-I can solve the issue with by disabling the garbage collector. Is there any
-other known solution
-or is it fixed in newer versions anyhow?
-
-Heinz
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today - it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
