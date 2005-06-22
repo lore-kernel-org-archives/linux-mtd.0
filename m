@@ -1,18 +1,16 @@
-Received: from karma.reboot.ca ([67.15.48.17])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dkqq8-0004JG-1A
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2005 18:03:29 -0400
-Message-ID: <006301c576ad$70547490$6702a8c0@niro>
-From: "Andre" <andre@rocklandocean.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 21 Jun 2005 15:06:09 -0700
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: fabrice.bellard@netgem.com, tglx@linutronix.de, dwmw2@infradead.org,
-	gerg@snapgear.com
-Subject: kernel messages from INFTL
+Received: from bay104-f41.bay104.hotmail.com ([65.54.175.51] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DktpH-0004rv-L5
+	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2005 21:14:49 -0400
+Message-ID: <BAY104-F41416280989D8D5AF92BB484EB0@phx.gbl>
+In-Reply-To: <cc9bf44d05062117103674bcc@mail.gmail.com>
+From: "David L" <idht4n@hotmail.com>
+To: paul@mawsonlakes.org
+Date: Tue, 21 Jun 2005 17:57:27 -0700
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: loadlin boot from MTD-partitioned NAND?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,79 +20,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-First of all, thank you Thomas for your help on trying to get my
-diskonchip2000 to be recognized by linuxmtd.
+>Hi David,
+>Is this an Intel board rather than ARM? I'm currently working through this
+>process for the ARMCore board...
+Hi Paul,
 
-After enabling the right config flags in the kernel, I can now mount my
-diskonchip2000.
+It's an x86 (Geode) board from Compulab.  Their proprietary driver is able 
+to mount DOS partitions and write to them and we can also read/write to/from 
+the DOS partitions from DOS.  I'd like to maintain this functionality but 
+I'd like to use non-proprietary drivers.  I think this means I have to add 
+support for our board to MTD, but I don't know if it'll work for me when I'm 
+done.
 
-There were some messages during the initial loading of the inftl module that
-frightened me a bit. Here is the entire output from dmesg:
-==================
-DiskOnChip found at 0xd0000
-Detected 3 chips per floor.
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x79 (Samsung NAND 128MiB 3,3V
-8-bit)
-3 NAND chips detected
-Bad block table not found for chip 0
-Bad block table not found for chip 0
-Found DiskOnChip BNAND Media Header at 0x4000
-    bootRecordID          = BNAND
-    NoOfBootImageBlocks   = 0
-    NoOfBinaryPartitions  = 1
-    NoOfBDTLPartitions    = 1
-    BlockMultiplerBits    = 0
-    FormatFlgs            = 1
-    OsakVersion           = 5.1.4.0
-    PercentUsed           = 98
-    PARTITION[0] ->
-        virtualUnits    = 4
-        firstUnit       = 2
-        lastUnit        = 5
-        flags           = 0x20000000
-        spareUnits      = 0
-    PARTITION[1] ->
-        virtualUnits    = 24072
-        firstUnit       = 11
-        lastUnit        = 24575
-        flags           = 0xc0000000
-        spareUnits      = 2
-Creating 2 MTD partitions on "DiskOnChip 2000 (INFTL Model)":
-0x00008000-0x00018000 : " DiskOnChip BDK partition"
-0x0002c000-0x18000000 : " DiskOnChip BDTL partition"
+>
+>What are the NAND chip details?
+Compulab's driver prints out this info:
+Maker code = EC, device code = 75, ID_data = BD
 
-<Andre> looks ok up until here
+Their tech support gave me this info:
 
-INFTL: inftlcore.c $Revision: 1.18 $, inftlmount.c $Revision: 1.16 $
-INFTL: corrupt block 10588 in chain 10588, chain length 0, erase mark 0x0?
-INFTL: formatting chain at block 10588
-INFTL: formatting block 10588
-INFTL: error while formatting block 10588
-INFTL: corrupt block 15274 in chain 15274, chain length 0, erase mark 0x0?
-INFTL: formatting chain at block 15274
-INFTL: formatting block 15274
-INFTL: error while formatting block 15274
-INFTL: corrupt block 21286 in chain 21286, chain length 0, erase mark 0x0?
-INFTL: formatting chain at block 21286
-INFTL: formatting block 21286
-INFTL: error while formatting block 21286
-INFTL: corrupt block 24574 in chain 24574, chain length 0, erase mark
-0xffff?
-INFTL: formatting chain at block 24574
-INFTL: formatting block 24574
-INFTL: corrupt block 24575 in chain 24575, chain length 0, erase mark
-0xffff?
-INFTL: formatting chain at block 24575
-INFTL: formatting block 24575
- inftla: inftla1
-==================
-The INFTL messages do not appear on subsequent loads of the inftl module.
-Can somebody please explain what happened, i.e. should I be concerned?
+"Here is the info you need for the MTD:
 
-/proc/mtd:
-mtd0: 18000000 00004000 "DiskOnChip 2000 (INFTL Model)"
-mtd1: 00010000 00004000 " DiskOnChip BDK partition"
-mtd2: 17fd4000 00004000 " DiskOnChip BDTL partition"
+NAND flash is memory mapped at 0x000C9000.
+NAND flash ALE connected to Geode's GPWIO1
+NAND flash CLE connected to Geode's GPWIO2
 
-cheers,
-Andre
+GPWIO are controlled via IO port 0x9C16. Bit 1 - GPWIO1,
+bit 2 - GPWIO2.
+** Accessing this port is relatively slow, so caching current value in
+memory will improve performance.
+
+Chipselect is GPIO20_DOCCS.
+
+Sometimes (during read operation) chipselect must be forced active
+even after the access cycle finished. It is achieved by changing the
+chipselect to GPIO mode and forcing it low. See FlashChipSelect() in
+NandSys.c for implementation details.
+
+There is some preliminary hardware setup that must be performed before
+accessing the NAND. See function FlashInitial() in NandSys.c
+
+Ready/busy signal of the NAND flash chip is not connected. Therefore
+each read operation must include forced delay of ~15-20uSec between
+issuing read command and reading the data. In all other situation
+(write/erase) status register of the NAND flash can be read.
+
+** I wrote some speed-optimized read/write functions, see NandSys.c, see
+FlashBlockRead, FlashBlockWrite. They work twice faster than regular
+byte-by-byte reads/writes.
+
+This information + NandSys.c should be enough to bring up the MTD +
+JFFS2."
+
+Cheers...
+
+         David
+
+>
+>Paul Schulz
+>
+>On 6/22/05, David L <idht4n@hotmail.com> wrote:
+> > Hi,
+> >
+> > I'm using a Nand flash driver on a Compulab board with a proprietary 
+>driver
+> > provided by Compulab.  I'd like to switch to a non-proprietary driver 
+>like
+> > MTD for a few reasons.  But having read through the MTD documentation, 
+>I'm
+> > not sure we can maintain our current boot strategy if we migrate to MTD.
+> > Right now, we boot to DOS that comes with the board and then use loadlin 
+>to
+> > boot a kernel/initial ramdisk that reside on a partition of the Nand 
+>flash
+> > that has a DOS filesystem on it.  On the rare event that we need to 
+>change
+> > the kernel or initial ramdisk, we mount the DOS filesystem from Linux 
+>and
+> > change the file.
+> >
+> > Is there a way to maintain this strategy if we use MTD?  I saw in the 
+>NAND
+> > API document that only jffs2 and YAFFS filesystems can be used with MTD. 
+>  Is
+> > there any way around this? (I don't care how efficient it is).  And even 
+>if
+> > there is a workaround that would allow us to modify files in a DOS
+> > filesystem from Linux, will MTD partitions be visible from DOS so that 
+>we
+> > can boot in the first place?
+
+_________________________________________________________________
+Don’t just search. Find. Check out the new MSN Search! 
+http://search.msn.click-url.com/go/onm00200636ave/direct/01/
