@@ -1,18 +1,19 @@
-Received: from f24.mail.ru ([194.67.57.160])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dkz3V-0005xw-VB
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 02:49:53 -0400
-Received: from mail by f24.mail.ru with local id 1Dkz3Q-0008Px-00
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 10:49:44 +0400
-From: Timofey Kutergin <tkutergin@mail.ru>
-To: linux-mtd@lists.infradead.org
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dl1eb-0006hm-KR
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 05:36:18 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Timofey Kutergin <tkutergin@mail.ru>
+In-Reply-To: <E1Dkz3Q-0008Px-00.tkutergin-mail-ru@f24.mail.ru>
+References: <E1Dkz3Q-0008Px-00.tkutergin-mail-ru@f24.mail.ru>
+Content-Type: text/plain
+Date: Wed, 22 Jun 2005 13:35:44 +0400
+Message-Id: <1119432945.7618.3.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Date: Wed, 22 Jun 2005 10:49:44 +0400
-Content-Type: text/plain; charset=koi8-r
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1Dkz3Q-0008Px-00.tkutergin-mail-ru@f24.mail.ru>
-Subject: clean marker size for NOR w/ECC
-Reply-To: Timofey Kutergin <tkutergin@mail.ru>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: clean marker size for NOR w/ECC
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all !
-Currently, JFFS2 WBUF implicitly assumes that cleanmarker size is multiple number of eccsize and sets it to 16 in jffs2_nor_ecc_flash_setup(). Which in fact mean 1,2,4,8 and 16 valid values for eccsize. Newer flashes may have ECC window more than that, 1024 bytes, for example. So at least it is suggested to change
+On Wed, 2005-06-22 at 10:49 +0400, Timofey Kutergin wrote:
+> Hi all !
+> Currently, JFFS2 WBUF implicitly assumes that cleanmarker size is multiple number of eccsize and sets it to 16 in jffs2_nor_ecc_flash_setup(). Which in fact mean 1,2,4,8 and 16 valid values for eccsize. Newer flashes may have ECC window more than that, 1024 bytes, for example. So at least it is suggested to change
+Hello,
 
- c->cleanmarker_size = 16;
-to
- c->cleanmarker_size = c->mtd->eccsize>=16 ? c->mtd->eccsize:16;
+2 questions:
 
-in
-jffs2_nor_ecc_flash_setup()
+1. Where did you find NOR-ECC? An URL to the data-sheet, or that's your
+private stuff?
+2. For what clean marker should be larger then 16 bytes? Surely 16 bytes
+is enough to do the job the clean marker needs to do ?
 
-also, when using flash_eraseall utility with -j option, it also assumes cleanmarker size of 16 (sizeof(struct jffs2_unknown_inode)).
-It is suggested to put similar check there:
-
- isNAND = meminfo.type == MTD_NANDFLASH ? 1 : 0;
- isNORECC = ((meminfo.type == MTD_NORFLASH) && ((meminfo.flags & MTD_ECC != 0))) ? 1 : 0;
-
-....
-
-if (!isNAND && !isNORECC)
-   cleanmarker.totlen = cpu_to_je32 (sizeof (struct ffs2_unknown_node));
-else if (isNORECC)
-   cleanmarker.totlen = cpu_to_je32 (meminfo.eccsize >= sizeof (struct ffs2_unknown_node) ? meminfo.eccsize:sizeof (struct ffs2_unknown_node));
-else {
-...
-
-
-Regards
-Timofey
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
