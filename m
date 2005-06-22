@@ -1,28 +1,20 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DlBiR-0001v7-UQ
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 16:20:58 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DlBaq-0004Lt-4o
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 22:13:10 +0200
-Received: from halhoupro3.halliburton.com ([64.154.26.251])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jun 2005 22:13:04 +0200
-Received: from sergei.sharonov by halhoupro3.halliburton.com with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jun 2005 22:13:04 +0200
+Received: from rproxy.gmail.com ([64.233.170.206])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlC09-00028p-RV
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 16:39:14 -0400
+Received: by rproxy.gmail.com with SMTP id c16so180725rne
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Jun 2005 13:39:09 -0700 (PDT)
+Message-ID: <61cc712d05062213393c397c6d@mail.gmail.com>
+Date: Wed, 22 Jun 2005 13:39:09 -0700
+From: Kylo Ginsberg <kylo.ginsberg@gmail.com>
 To: linux-mtd@lists.infradead.org
-From: Sergei Sharonov <sergei.sharonov@halliburton.com>
-Date: Wed, 22 Jun 2005 20:12:16 +0000 (UTC)
-Message-ID: <loom.20050622T220015-23@post.gmane.org>
-References: <BAY104-F36C99B1FBD33D805371E6784E80@phx.gbl>
-	<200506222051.32784.vestby@alfanett.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: boot to MTD-partitioned NAND from DOS w/loadlin?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: jffs2 root fs: how to overwrite it?
+Reply-To: Kylo Ginsberg <kylo.ginsberg@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,20 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> It is technically possible to use pretty much any file system, 
+I have a jffs2 root file system.  As part of the user upgrade process,
+running from linux, I need to blow the root fs away and replace it
+with a new version.  One solution is to reserve a second piece of
+flash for this purpose, copy it there on user request and instruct
+u-boot to handle the copy, but I'd like not to waste the flash space.=20
+Ideally, I'd have an inittab shutdown script umount root (if this is
+possible) and copy an image from mem -> flash before rebooting.  Or
+something of that sort.
 
-Could you please explain how can "any" file system be used on top of mtd/nand?
-As far as I understand at the very minimum the bad blocks would prevent that.
-I believe there are no translation layers available for bare nand, only for
-DOC.
+How else do people accomplish this?  Thanks for your comments.
 
-> but for 
-> writable filesystems you will quickly get into trouble without the wear 
-> levelling  of jffs2/yaffs.
-
-What about all these digital cameras running FAT on memory cards? Is any 
-wear leveling happening in this case? (And yes, I know, it is better to 
-have it).
-
-Sergei
+Kylo
