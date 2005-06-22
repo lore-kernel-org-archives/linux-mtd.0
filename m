@@ -1,16 +1,18 @@
-Received: from bay104-f41.bay104.hotmail.com ([65.54.175.51] helo=hotmail.com)
+Received: from f24.mail.ru ([194.67.57.160])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DktpH-0004rv-L5
-	for linux-mtd@lists.infradead.org; Tue, 21 Jun 2005 21:14:49 -0400
-Message-ID: <BAY104-F41416280989D8D5AF92BB484EB0@phx.gbl>
-In-Reply-To: <cc9bf44d05062117103674bcc@mail.gmail.com>
-From: "David L" <idht4n@hotmail.com>
-To: paul@mawsonlakes.org
-Date: Tue, 21 Jun 2005 17:57:27 -0700
+	id 1Dkz3V-0005xw-VB
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 02:49:53 -0400
+Received: from mail by f24.mail.ru with local id 1Dkz3Q-0008Px-00
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 10:49:44 +0400
+From: Timofey Kutergin <tkutergin@mail.ru>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: loadlin boot from MTD-partitioned NAND?
+Date: Wed, 22 Jun 2005 10:49:44 +0400
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1Dkz3Q-0008Px-00.tkutergin-mail-ru@f24.mail.ru>
+Subject: clean marker size for NOR w/ECC
+Reply-To: Timofey Kutergin <tkutergin@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,96 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->Hi David,
->Is this an Intel board rather than ARM? I'm currently working through this
->process for the ARMCore board...
-Hi Paul,
+Hi all !
+Currently, JFFS2 WBUF implicitly assumes that cleanmarker size is multiple number of eccsize and sets it to 16 in jffs2_nor_ecc_flash_setup(). Which in fact mean 1,2,4,8 and 16 valid values for eccsize. Newer flashes may have ECC window more than that, 1024 bytes, for example. So at least it is suggested to change
 
-It's an x86 (Geode) board from Compulab.  Their proprietary driver is able 
-to mount DOS partitions and write to them and we can also read/write to/from 
-the DOS partitions from DOS.  I'd like to maintain this functionality but 
-I'd like to use non-proprietary drivers.  I think this means I have to add 
-support for our board to MTD, but I don't know if it'll work for me when I'm 
-done.
+ c->cleanmarker_size = 16;
+to
+ c->cleanmarker_size = c->mtd->eccsize>=16 ? c->mtd->eccsize:16;
 
->
->What are the NAND chip details?
-Compulab's driver prints out this info:
-Maker code = EC, device code = 75, ID_data = BD
+in
+jffs2_nor_ecc_flash_setup()
 
-Their tech support gave me this info:
+also, when using flash_eraseall utility with -j option, it also assumes cleanmarker size of 16 (sizeof(struct jffs2_unknown_inode)).
+It is suggested to put similar check there:
 
-"Here is the info you need for the MTD:
+ isNAND = meminfo.type == MTD_NANDFLASH ? 1 : 0;
+ isNORECC = ((meminfo.type == MTD_NORFLASH) && ((meminfo.flags & MTD_ECC != 0))) ? 1 : 0;
 
-NAND flash is memory mapped at 0x000C9000.
-NAND flash ALE connected to Geode's GPWIO1
-NAND flash CLE connected to Geode's GPWIO2
+....
 
-GPWIO are controlled via IO port 0x9C16. Bit 1 - GPWIO1,
-bit 2 - GPWIO2.
-** Accessing this port is relatively slow, so caching current value in
-memory will improve performance.
+if (!isNAND && !isNORECC)
+   cleanmarker.totlen = cpu_to_je32 (sizeof (struct ffs2_unknown_node));
+else if (isNORECC)
+   cleanmarker.totlen = cpu_to_je32 (meminfo.eccsize >= sizeof (struct ffs2_unknown_node) ? meminfo.eccsize:sizeof (struct ffs2_unknown_node));
+else {
+...
 
-Chipselect is GPIO20_DOCCS.
 
-Sometimes (during read operation) chipselect must be forced active
-even after the access cycle finished. It is achieved by changing the
-chipselect to GPIO mode and forcing it low. See FlashChipSelect() in
-NandSys.c for implementation details.
-
-There is some preliminary hardware setup that must be performed before
-accessing the NAND. See function FlashInitial() in NandSys.c
-
-Ready/busy signal of the NAND flash chip is not connected. Therefore
-each read operation must include forced delay of ~15-20uSec between
-issuing read command and reading the data. In all other situation
-(write/erase) status register of the NAND flash can be read.
-
-** I wrote some speed-optimized read/write functions, see NandSys.c, see
-FlashBlockRead, FlashBlockWrite. They work twice faster than regular
-byte-by-byte reads/writes.
-
-This information + NandSys.c should be enough to bring up the MTD +
-JFFS2."
-
-Cheers...
-
-         David
-
->
->Paul Schulz
->
->On 6/22/05, David L <idht4n@hotmail.com> wrote:
-> > Hi,
-> >
-> > I'm using a Nand flash driver on a Compulab board with a proprietary 
->driver
-> > provided by Compulab.  I'd like to switch to a non-proprietary driver 
->like
-> > MTD for a few reasons.  But having read through the MTD documentation, 
->I'm
-> > not sure we can maintain our current boot strategy if we migrate to MTD.
-> > Right now, we boot to DOS that comes with the board and then use loadlin 
->to
-> > boot a kernel/initial ramdisk that reside on a partition of the Nand 
->flash
-> > that has a DOS filesystem on it.  On the rare event that we need to 
->change
-> > the kernel or initial ramdisk, we mount the DOS filesystem from Linux 
->and
-> > change the file.
-> >
-> > Is there a way to maintain this strategy if we use MTD?  I saw in the 
->NAND
-> > API document that only jffs2 and YAFFS filesystems can be used with MTD. 
->  Is
-> > there any way around this? (I don't care how efficient it is).  And even 
->if
-> > there is a workaround that would allow us to modify files in a DOS
-> > filesystem from Linux, will MTD partitions be visible from DOS so that 
->we
-> > can boot in the first place?
-
-_________________________________________________________________
-Don’t just search. Find. Check out the new MSN Search! 
-http://search.msn.click-url.com/go/onm00200636ave/direct/01/
+Regards
+Timofey
