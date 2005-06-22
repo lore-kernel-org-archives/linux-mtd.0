@@ -1,28 +1,23 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dl9q2-0000pg-Jc
-	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 14:20:41 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j5MIKWMX010415
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jun 2005 14:20:32 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j5MIKWZJ256194
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jun 2005 14:20:32 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j5MIKLBO026705
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Jun 2005 14:20:21 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: Timofey Kutergin <tkutergin@mail.ru>
-In-Reply-To: <E1Dl4hM-00094e-00.tkutergin-mail-ru@f21.mail.ru>
-References: <E1Dl4hM-00094e-00.tkutergin-mail-ru@f21.mail.ru>
-Content-Type: text/plain
-Date: Wed, 22 Jun 2005 13:20:15 -0500
-Message-Id: <1119464415.16063.22.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
+Received: from mail46.e.nsc.no ([193.213.115.46])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlAK4-000186-LY
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 14:51:42 -0400
+Received: from hjemme (062016183109.customer.alfanett.no [62.16.183.109])
+	by mail46.nsc.no (8.12.11/8.12.11) with ESMTP id j5MIpVJL029440
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Jun 2005 20:51:32 +0200 (CEST)
+From: Jan Vestby <vestby@alfanett.no>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 22 Jun 2005 20:51:32 +0200
+References: <BAY104-F36C99B1FBD33D805371E6784E80@phx.gbl>
+In-Reply-To: <BAY104-F36C99B1FBD33D805371E6784E80@phx.gbl>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Re[2]: clean marker size for NOR w/ECC
+Content-Disposition: inline
+Message-Id: <200506222051.32784.vestby@alfanett.no>
+Subject: Re: boot to MTD-partitioned NAND from DOS w/loadlin?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,21 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-06-22 at 16:51 +0400, Timofey Kutergin wrote:
-> yes, I agree - eccsize is smallest write size. Or size of region which
-> can be written only once after block erase. What I meant was that if
-> eccsize is greater than cleanmarker size, JFFS2 does not skip rest of
-> first ECC region in block and tries to write data to it. This causes
-> write failure. Therefore patch sets clean marker size to eccsize if
-> eccsize is greater than 16.
+On Tuesday 21 June 2005 17:11, David L wrote:
+> Sorry about the no subject in my last post.  :(
+>
+> >Hi,
+> >
+> >
+> >Is there a way to maintain this strategy if we use MTD?  I saw in the NAND
 
-IIRC, JFFS2 will pad the node to the correct size so write failure
-shouldn't be an issue.  I could be mistaken, it's been a while.
+Yes. Have you considered using syslinux ?
 
-Is this a problem you are currently seeing, or is this all just
-theoretical?  To my knowledge, there are no other NOR ECC flash chips
-out there.  Even if there were, support would need to be added to MTD
-before they could be used.  We could adapt JFFS2 at that time if needs
-be.
+> >API document that only jffs2 and YAFFS filesystems can be used with MTD.
+> >Is there any way around this? (I don't care how efficient it is).  And
 
-josh
+It is technically possible to use pretty much any file system, but for 
+writable filesystems you will quickly get into trouble without the wear 
+levelling  of jffs2/yaffs.
+ 
+> > even if there is a workaround that would allow us to modify files in a
+> > DOS filesystem from Linux, will MTD partitions be visible from DOS so
+> > that we can boot in the first place?
+> >
+> >Thanks...
+> >
+> >                    David
+
+regards 
+jan vestby
+
+> >
+> >_________________________________________________________________
+> >Express yourself instantly with MSN Messenger! Download today - it's FREE!
+> >http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+> >
+> >
+> >______________________________________________________
+> >Linux MTD discussion mailing list
+> >http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+> _________________________________________________________________
+> Express yourself instantly with MSN Messenger! Download today - it's FREE!
+> http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
