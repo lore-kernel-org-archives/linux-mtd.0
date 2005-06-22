@@ -1,16 +1,18 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from f23.mail.ru ([194.67.57.149])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DgNpZ-0002ZA-SS
-	for linux-mtd@lists.infradead.org; Thu, 09 Jun 2005 10:16:27 -0400
-Received: from playin.mvista.com (av [127.0.0.1])
-	by av.mvista.com (8.9.3/8.9.3) with ESMTP id HAA03239
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Jun 2005 07:16:20 -0700
-From: Paolo Galtieri <pgaltieri@mvista.com>
+	id 1DkzLC-0006B5-8B
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 03:08:08 -0400
+Received: from mail by f23.mail.ru with local id 1DkzLA-000NfS-00
+	for linux-mtd@lists.infradead.org; Wed, 22 Jun 2005 11:08:04 +0400
+From: Timofey Kutergin <tkutergin@mail.ru>
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-rrjqQpLHQEtVpj4ZACyo"
-Message-Id: <1118327333.2401.42.camel@playin.mvista.com>
 Mime-Version: 1.0
-Subject: patch to create sysfs char device nodes
+Date: Wed, 22 Jun 2005 11:08:04 +0400
+Content-Type: multipart/mixed;
+	boundary="----rKeiwVqD-91jILBCwISW3Vkdt:1119424084"
+Message-Id: <E1DkzLA-000NfS-00.tkutergin-mail-ru@f23.mail.ru>
+Subject: working mphysmap.c
+Reply-To: Timofey Kutergin <tkutergin@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,117 +21,97 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Thu, 09 Jun 2005 14:16:27 -0000
 
 
+------rKeiwVqD-91jILBCwISW3Vkdt:1119424084
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
 
---=-rrjqQpLHQEtVpj4ZACyo
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Hi all !
+Attached is working mphysmap.c which can be configured via menuconfig (no commandline support). It uses existing Multiple CFI flash devices window.
+In our system it successfully configured two independent flash devices
 
-Hi,
-  with DEVFS going away I discovered that no character device nodes are
-created if a flash device is present which contains filesystems. The
-mtd-utils package requires the existence of character device nodes for
-performing erase, lock and unlock functions.  The problem is that the
-flash device driver has not been modified to use sysfs instead of devfs.
+Regards
+Timofey
 
-I have attached a patch to mtdchar.c which uses the sysfs interface to
-create the appropriate nodes.  Please let me know if you have comments.
 
-The changes are for linux-2.6.12-rc5
+------rKeiwVqD-91jILBCwISW3Vkdt:1119424084
+Content-Type: application/octet-stream; name="mphysmap.c"
+Content-Disposition: attachment; filename="mphysmap.c"
+Content-Transfer-Encoding: base64
 
-Thanks
-Paolo
+LyoKICogJElkOiBtcGh5c21hcC5jLHYgMS4yIDIwMDUvMDMvMDcgMjM6MTU6NDggam9lcm4gRXhw
+ICQKICoKICogU2V2ZXJhbCBtYXBwaW5ncyBvZiBOT1IgY2hpcHMKICoKICogQ29weXJpZ2h0IChj
+KSAyMDAxLTIwMDUJSvZybiBFbmdlbCA8am9lcm5Ad2guZmgtd2VkZWxkZT4KICovCiNpbmNsdWRl
+IDxsaW51eC9rZXJuZWwuaD4KI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgojaW5jbHVkZSA8bGlu
+dXgvbXRkL21hcC5oPgojaW5jbHVkZSA8bGludXgvbXRkL210ZC5oPgojaWZkZWYgQ09ORklHX01U
+RF9QQVJUSVRJT05TCiNpbmNsdWRlIDxsaW51eC9tdGQvcGFydGl0aW9ucy5oPgojZW5kaWYKCnN0
+YXRpYyBzdHJ1Y3QgbWFwX2luZm8gbXBoeXNtYXBfc3RhdGljX21hcHNbXSA9IHsKI2lmIENPTkZJ
+R19NVERfTVVMVElfUEhZU01BUF8xX1dJRFRICgl7CgkJLm5hbWUJCT0gQ09ORklHX01URF9NVUxU
+SV9QSFlTTUFQXzFfTkFNRSwKCQkucGh5cwkJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMV9T
+VEFSVCwKCQkuc2l6ZQkJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMV9MRU4sCgkJLmJhbmt3
+aWR0aAk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF8xX1dJRFRILAoJfSwKI2VuZGlmCiNpZiBD
+T05GSUdfTVREX01VTFRJX1BIWVNNQVBfMl9XSURUSAoJewoJCS5uYW1lCQk9IENPTkZJR19NVERf
+TVVMVElfUEhZU01BUF8yX05BTUUsCgkJLnBoeXMJCT0gQ09ORklHX01URF9NVUxUSV9QSFlTTUFQ
+XzJfU1RBUlQsCgkJLnNpemUJCT0gQ09ORklHX01URF9NVUxUSV9QSFlTTUFQXzJfTEVOLAoJCS5i
+YW5rd2lkdGgJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMl9XSURUSCwKCX0sCiNlbmRpZgoj
+aWYgQ09ORklHX01URF9NVUxUSV9QSFlTTUFQXzNfV0lEVEgKCXsKCQkubmFtZQkJPSBDT05GSUdf
+TVREX01VTFRJX1BIWVNNQVBfM19OQU1FLAoJCS5waHlzCQk9IENPTkZJR19NVERfTVVMVElfUEhZ
+U01BUF8zX1NUQVJULAoJCS5zaXplCQk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF8zX0xFTiwK
+CQkuYmFua3dpZHRoCT0gQ09ORklHX01URF9NVUxUSV9QSFlTTUFQXzNfV0lEVEgsCgl9LAojZW5k
+aWYKI2lmIENPTkZJR19NVERfTVVMVElfUEhZU01BUF80X1dJRFRICgl7CgkJLm5hbWUJCT0gQ09O
+RklHX01URF9NVUxUSV9QSFlTTUFQXzRfTkFNRSwKCQkucGh5cwkJPSBDT05GSUdfTVREX01VTFRJ
+X1BIWVNNQVBfNF9TVEFSVCwKCQkuc2l6ZQkJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfNF9M
+RU4sCgkJLmJhbmt3aWR0aAk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF80X1dJRFRILAoJfSwK
+I2VuZGlmCn07CgpERUNMQVJFX01VVEVYKG1hcF9tdXRleCk7CgoKc3RhdGljIGludCBtcGh5c21h
+cF9tYXBfZGV2aWNlKHN0cnVjdCBtYXBfaW5mbyAqbWFwKQp7CglzdGF0aWMgY29uc3QgY2hhciAq
+cm9tX3Byb2JlX3R5cGVzW10gPSB7ICJjZmlfcHJvYmUiLCAiamVkZWNfcHJvYmUiLCAibWFwX3Jv
+bSIsIE5VTEwgfTsKCWNvbnN0IGNoYXIgKip0eXBlOwoJc3RydWN0IG10ZF9pbmZvKiBtdGQ7CiNp
+ZmRlZiBDT05GSUdfTVREX1BBUlRJVElPTlMKICAgICAgIHN0cnVjdCBtdGRfcGFydGl0aW9uKiBt
+dGRfcGFydHM7CiAgICAgICBpbnQgbXRkX3BhcnRzX25iOwogICAgICAgc3RhdGljIGNvbnN0IGNo
+YXIgKnBhcnRfcHJvYmVzW10gX19pbml0ZGF0YSA9IHsKI2lmZGVmIENPTkZJR19NVERfQ01ETElO
+RV9QQVJUUyAgICAgICAKICAgICAgICJjbWRsaW5lcGFydCIsIAojZW5kaWYKI2lmZGVmIENPTkZJ
+R19NVERfUkVEQk9PVF9QQVJUUyAgICAgICAKICAgICAgICJSZWRCb290IiwgCiNlbmRpZiAgICAg
+ICAKICAgICAgIE5VTEx9OwojZW5kaWYKCW1hcC0+dmlydCA9IGlvcmVtYXAobWFwLT5waHlzLCBt
+YXAtPnNpemUpOwoJaWYgKCFtYXAtPnZpcnQpCgkJcmV0dXJuIC1FSU87CgoJc2ltcGxlX21hcF9p
+bml0KG1hcCk7CgltdGQgPSBOVUxMOwoJdHlwZSA9IHJvbV9wcm9iZV90eXBlczsKCWZvcig7ICFt
+dGQgJiYgKnR5cGU7IHR5cGUrKykgewoJCW10ZCA9IGRvX21hcF9wcm9iZSgqdHlwZSwgbWFwKTsK
+CX0KCQoJaWYgKCFtdGQpIHsKCQlpb3VubWFwKG1hcC0+dmlydCk7CgkJcmV0dXJuIC1FTlhJTzsK
+CX0KCgltYXAtPm1hcF9wcml2XzEgPSAodW5zaWduZWQgbG9uZyltdGQ7CgltdGQtPm93bmVyID0g
+VEhJU19NT0RVTEU7CgojaWZkZWYgQ09ORklHX01URF9QQVJUSVRJT05TCgltdGRfcGFydHNfbmIg
+PSBwYXJzZV9tdGRfcGFydGl0aW9ucyhtdGQsIHBhcnRfcHJvYmVzLCAKCQkJCQkgICAgJm10ZF9w
+YXJ0cywgMCk7CglpZiAobXRkX3BhcnRzX25iID4gMCkKCXsKCQlhZGRfbXRkX3BhcnRpdGlvbnMg
+KG10ZCwgbXRkX3BhcnRzLCBtdGRfcGFydHNfbmIpOwoJCW1hcC0+bWFwX3ByaXZfMj0odW5zaWdu
+ZWQgbG9uZyltdGRfcGFydHM7Cgl9CgllbHNlCgl7CgkJYWRkX210ZF9kZXZpY2UobXRkKTsKCQlt
+YXAtPm1hcF9wcml2XzI9KHVuc2lnbmVkIGxvbmcpTlVMTDsKICAgICAgICB9OwojZWxzZQoJYWRk
+X210ZF9kZXZpY2UobXRkKTsKI2VuZGlmCQoJcmV0dXJuIDA7Cn0KCgpzdGF0aWMgdm9pZCBtcGh5
+c21hcF91bm1hcF9kZXZpY2Uoc3RydWN0IG1hcF9pbmZvICptYXApCnsKCXN0cnVjdCBtdGRfaW5m
+byogbXRkID0gKHN0cnVjdCBtdGRfaW5mbyopbWFwLT5tYXBfcHJpdl8xOwojaWZkZWYgQ09ORklH
+X01URF9QQVJUSVRJT05TCiAgICAgICBzdHJ1Y3QgbXRkX3BhcnRpdGlvbiogbXRkX3BhcnRzPShz
+dHJ1Y3QgbXRkX3BhcnRpdGlvbiopbWFwLT5tYXBfcHJpdl8yOwojZW5kaWYKCUJVR19PTighbXRk
+KTsKCWlmICghbWFwLT52aXJ0KQoJCXJldHVybjsKCiNpZmRlZiBDT05GSUdfTVREX1BBUlRJVElP
+TlMKCWlmIChtdGRfcGFydHMpCgl7CgkJZGVsX210ZF9wYXJ0aXRpb25zKG10ZCk7CgkJa2ZyZWUo
+bXRkX3BhcnRzKTsKCX0KCWVsc2UKCSAgICBkZWxfbXRkX2RldmljZShtdGQpOwojZWxzZQoJZGVs
+X210ZF9kZXZpY2UobXRkKTsKI2VuZGlmCQoJbWFwX2Rlc3Ryb3kobXRkKTsKCWlvdW5tYXAobWFw
+LT52aXJ0KTsKCgltYXAtPm1hcF9wcml2XzEgPSAwOwoJbWFwLT5tYXBfcHJpdl8yID0gMDsKCW1h
+cC0+dmlydCA9IE5VTEw7Cn0KCgoKCnN0YXRpYyBpbnQgX19pbml0IG1waHlzbWFwX2luaXQodm9p
+ZCkKewoJaW50IGk7Cglkb3duKCZtYXBfbXV0ZXgpOwoJZm9yIChpPTA7IAoJICAgICBpPHNpemVv
+ZihtcGh5c21hcF9zdGF0aWNfbWFwcykvc2l6ZW9mKG1waHlzbWFwX3N0YXRpY19tYXBzWzBdKTsK
+CSAgICAgaSsrKQoJewoJICAgICAgICBpZiAoc3RyY21wKG1waHlzbWFwX3N0YXRpY19tYXBzW2ld
+Lm5hbWUsIiIpIT0wICYmCgkJICAgIG1waHlzbWFwX3N0YXRpY19tYXBzW2ldLnNpemUhPTAgJiYK
+CQkgICAgbXBoeXNtYXBfc3RhdGljX21hcHNbaV0uYmFua3dpZHRoIT0wKQoJCXsJCSAgICAKCQkg
+ICAgbXBoeXNtYXBfbWFwX2RldmljZSgmbXBoeXNtYXBfc3RhdGljX21hcHNbaV0pOwoJCX07ICAg
+Cgl9OwkKCXVwKCZtYXBfbXV0ZXgpOwoJcmV0dXJuIDA7Cn0KCgpzdGF0aWMgdm9pZCBfX2V4aXQg
+bXBoeXNtYXBfZXhpdCh2b2lkKQp7CglpbnQgaTsKCWRvd24oJm1hcF9tdXRleCk7Cglmb3IgKGk9
+MDsgCgkgICAgIGk8c2l6ZW9mKG1waHlzbWFwX3N0YXRpY19tYXBzKS9zaXplb2YobXBoeXNtYXBf
+c3RhdGljX21hcHNbMF0pOwoJICAgICBpKyspCgl7CgkgICAgICAgIGlmIChzdHJjbXAobXBoeXNt
+YXBfc3RhdGljX21hcHNbaV0ubmFtZSwiIikhPTAgJiYKCQkgICAgbXBoeXNtYXBfc3RhdGljX21h
+cHNbaV0uc2l6ZSE9MCAmJgoJCSAgICBtcGh5c21hcF9zdGF0aWNfbWFwc1tpXS5iYW5rd2lkdGgh
+PTApCgkJewkJICAgIAoJCSAgICBtcGh5c21hcF91bm1hcF9kZXZpY2UoJm1waHlzbWFwX3N0YXRp
+Y19tYXBzW2ldKTsKCQl9OyAgIAoJfTsJCgl1cCgmbWFwX211dGV4KTsKfQoKCm1vZHVsZV9pbml0
+KG1waHlzbWFwX2luaXQpOwptb2R1bGVfZXhpdChtcGh5c21hcF9leGl0KTsKCk1PRFVMRV9MSUNF
+TlNFKCJHUEwiKTsKTU9EVUxFX0FVVEhPUigiSvZybiBFbmdlbCA8am9lcm5Ad2guZmgtd2VkZWxk
+ZT4iKTsKTU9EVUxFX0RFU0NSSVBUSU9OKCJHZW5lcmljIGNvbmZpZ3VyYWJsZSBleHRlbnNpYmxl
+IE1URCBtYXAgZHJpdmVyIik7Cg==
 
---=-rrjqQpLHQEtVpj4ZACyo
-Content-Disposition: attachment; filename=MTDCnew
-Content-Type: text/plain; name=MTDCnew; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
---- drivers/mtd/OLDmtdchar.c	2005-06-06 16:10:39.000000000 -0700
-+++ drivers/mtd/mtdchar.c	2005-06-06 16:18:39.000000000 -0700
-@@ -15,27 +15,29 @@
- #include <linux/fs.h>
- #include <asm/uaccess.h>
- 
--#ifdef CONFIG_DEVFS_FS
--#include <linux/devfs_fs_kernel.h>
-+#include <linux/device.h>
-+
-+static struct class_simple *mtd_class;
- 
- static void mtd_notify_add(struct mtd_info* mtd)
- {
- 	if (!mtd)
- 		return;
- 
--	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
--		      S_IFCHR | S_IRUGO | S_IWUGO, "mtd/%d", mtd->index);
--		
--	devfs_mk_cdev(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
--		      S_IFCHR | S_IRUGO, "mtd/%dro", mtd->index);
-+	class_simple_device_add(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
-+		NULL, "mtd%d", mtd->index);
-+
-+	class_simple_device_add(mtd_class, MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
-+		NULL, "mtd%dro", mtd->index);
-+
- }
- 
- static void mtd_notify_remove(struct mtd_info* mtd)
- {
- 	if (!mtd)
- 		return;
--	devfs_remove("mtd/%d", mtd->index);
--	devfs_remove("mtd/%dro", mtd->index);
-+	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2));
-+	class_simple_device_remove(MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1));
- }
- 
- static struct mtd_notifier notifier = {
-@@ -45,19 +47,13 @@
- 
- static inline void mtdchar_devfs_init(void)
- {
--	devfs_mk_dir("mtd");
- 	register_mtd_user(&notifier);
- }
- 
- static inline void mtdchar_devfs_exit(void)
- {
- 	unregister_mtd_user(&notifier);
--	devfs_remove("mtd");
- }
--#else /* !DEVFS */
--#define mtdchar_devfs_init() do { } while(0)
--#define mtdchar_devfs_exit() do { } while(0)
--#endif
- 
- static loff_t mtd_lseek (struct file *file, loff_t offset, int orig)
- {
-@@ -543,6 +539,14 @@
- 		return -EAGAIN;
- 	}
- 
-+	mtd_class = class_simple_create(THIS_MODULE, "mtd");
-+
-+	if (IS_ERR(mtd_class)) {
-+		printk(KERN_ERR "Error creating mtd class.\n");
-+		unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
-+		return 1;
-+	}
-+
- 	mtdchar_devfs_init();
- 	return 0;
- }
-@@ -550,6 +554,7 @@
- static void __exit cleanup_mtdchar(void)
- {
- 	mtdchar_devfs_exit();
-+	class_simple_destroy(mtd_class);
- 	unregister_chrdev(MTD_CHAR_MAJOR, "mtd");
- }
- 
-
---=-rrjqQpLHQEtVpj4ZACyo--
+------rKeiwVqD-91jILBCwISW3Vkdt:1119424084--
