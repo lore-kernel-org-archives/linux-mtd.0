@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DlPIF-0005xL-W6
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2005 06:50:51 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Sean Young <sean@mess.org>
-In-Reply-To: <20050622160333.GA79989@atlantis.8hz.com>
-References: <20050622160333.GA79989@atlantis.8hz.com>
-Content-Type: text/plain
-Date: Thu, 23 Jun 2005 12:52:42 +0200
-Message-Id: <1119523962.304.109.camel@tglx.tec.linutronix.de>
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlTjk-0006xe-Fg
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2005 11:35:29 -0400
+Date: Thu, 23 Jun 2005 17:35:13 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050623153512.GA14072@zappa>
+References: <20050601134130.GA19482@synertronixx3>
+	<429F96C0.3080508@mvista.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: cvs?
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <429F96C0.3080508@mvista.com>
+Cc: 
+Subject: Re: Intel flash that powers up locked
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-06-22 at 18:03 +0200, Sean Young wrote:
-> cvs.infradead.org is unreachable. Is it okay via ipv6?
-> 
-> How are the ``Signed-off-by: '' lines handled? I have not included them 
-> in cvs commit comments. 
-> 
+* Todd Poynor <tpoynor@mvista.com> [Thu, Jun 02, 2005 at 04:31:12PM -0700]:
 
-It makes the work to push to Linus/Andrew easier if they are in the
-comment already, but I have a script to create them from the
-infradead.org username, so its not that important.
+> If that's a bad guess then sorry for the misdirection. ;)  Let us know 
+> how you are calling the unlock function to take some of the guesswork 
+> out of it.
 
-tglx
+Sorry for late Reply, I had to do other nasty stuff last weeks :/
+
+cfi_intelext_unlockall() calls cfi_intelext_unlock(mtd, 0, mtd->size);
+
+These I got out of your patches initially handling this issue.
+
+cfi_intelext_unlock() calls cfi_varsize_frob() where the Oops happenes
+then. I had to remove all while loops and inserted some printk and the
+Oops does not happen. So the system runs as before when I unlock whole
+Flash in the bootloader. For example it Oopses here in cfi_varsize_frob:
+
+//      while (i < mtd->numeraseregions && ofs >=
+//      regions[i].offset)
+//             i++;
+
+I will take a closer look tomorrow to start again fix this issue.
+
+Regards, Konsti
