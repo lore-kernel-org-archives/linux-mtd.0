@@ -1,19 +1,16 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DlTjk-0006xe-Fg
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2005 11:35:29 -0400
-Date: Thu, 23 Jun 2005 17:35:13 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050623153512.GA14072@zappa>
-References: <20050601134130.GA19482@synertronixx3>
-	<429F96C0.3080508@mvista.com>
+Received: from alephnull.demon.nl ([212.238.201.82] helo=xi.wantstofly.org)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlXWc-0007y3-Rg
+	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2005 15:38:14 -0400
+Date: Thu, 23 Jun 2005 21:33:01 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: dsaxena@plexity.net, linux-mtd@lists.infradead.org
+Message-ID: <20050623193301.GA5889@xi.wantstofly.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <429F96C0.3080508@mvista.com>
 Cc: 
-Subject: Re: Intel flash that powers up locked
+Subject: [PATCH] fix compile warnings in ixp2000 map driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Todd Poynor <tpoynor@mvista.com> [Thu, Jun 02, 2005 at 04:31:12PM -0700]:
+(please CC on replies, not on the list)
 
-> If that's a bad guess then sorry for the misdirection. ;)  Let us know 
-> how you are calling the unlock function to take some of the guesswork 
-> out of it.
+Fix two compile warnings that occur because of treating two
+'unsigned long's as 'void *'s.
 
-Sorry for late Reply, I had to do other nasty stuff last weeks :/
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-cfi_intelext_unlockall() calls cfi_intelext_unlock(mtd, 0, mtd->size);
-
-These I got out of your patches initially handling this issue.
-
-cfi_intelext_unlock() calls cfi_varsize_frob() where the Oops happenes
-then. I had to remove all while loops and inserted some printk and the
-Oops does not happen. So the system runs as before when I unlock whole
-Flash in the bootloader. For example it Oopses here in cfi_varsize_frob:
-
-//      while (i < mtd->numeraseregions && ofs >=
-//      regions[i].offset)
-//             i++;
-
-I will take a closer look tomorrow to start again fix this issue.
-
-Regards, Konsti
+diff -urN linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c
+--- linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c	2005-03-20 18:33:46.000000000 +0100
++++ linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c	2005-03-25 22:42:54.000000000 +0100
+@@ -191,7 +191,7 @@
+ 	/*
+  	 * map_priv_2 is used to store a ptr to to the bank_setup routine
+  	 */
+-	info->map.map_priv_2 = (void __iomem *) ixp_data->bank_setup;
++	info->map.map_priv_2 = (unsigned long) ixp_data->bank_setup;
+ 
+ 	info->map.name = dev->dev.bus_id;
+ 	info->map.read = ixp2000_flash_read8;
+@@ -208,7 +208,7 @@
+ 		goto Error;
+ 	}
+ 
+-	info->map.map_priv_1 = ioremap(dev->resource->start, 
++	info->map.map_priv_1 = (unsigned long) ioremap(dev->resource->start, 
+ 			    	dev->resource->end - dev->resource->start + 1);
+ 	if (!info->map.map_priv_1) {
+ 		dev_err(_dev, "Failed to ioremap flash region\n");
