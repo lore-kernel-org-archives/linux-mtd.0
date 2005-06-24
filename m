@@ -1,20 +1,14 @@
-Received: from kvant-efir.client.kv.chereda.net ([195.43.43.142]
-	helo=kvant-efir.com.ua)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1Dlk8a-0001vR-Im
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 05:06:14 -0400
-Received: from kokachev.kvant-efir.com.ua [192.168.1.19] by kvant-efir.com.ua
-	[127.0.0.1] with SMTP (MDaemon.v3.5.7.R)
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2005 11:54:56 +0300
-Date: Fri, 24 Jun 2005 12:00:04 +0300
-From: Kokachev <kokachev@kvant-efir.com.ua>
-Message-ID: <438892871.20050624120004@kvant-efir.com.ua>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sean Young <sean@mess.org>
+In-Reply-To: <20050622160333.GA79989@atlantis.8hz.com>
+References: <20050622160333.GA79989@atlantis.8hz.com>
+Content-Type: text/plain
+Date: Fri, 24 Jun 2005 10:21:50 +0100
+Message-Id: <1119604910.5580.104.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: PXA255 with Samsung K9K1G08UOM flash problem
-Reply-To: Kokachev <kokachev@kvant-efir.com.ua>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: cvs?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +18,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have Xscale PXA255 SBC with Samsung K9K1G08UOM flash on-board. I
-wrote NAND driver for this flash. I use kernel 2.6.7 and MTD snapshot
-from 20 of June 2005. And when I make insmod of my driver I see a lot
-of messages: "Bad eraseblock 0 from 00000000","Bad eraseblock 1 from
-00004000",etc. I began to read the source and I see that from OOB
-blocks of my flash I read non-FF values. When I inserted some printk
-functions to see what I read from OOB blocks the count of bad
-eraseblocks decreased. My flash is connected at address 0x04000000 of
-Xscale memory map. ALE and CLE are connected to GPIOs. I think, that
-this could be cache problem. I wrote my own nand_write_byte function
-with Drain (&Fill) cache command after writing the byte. Situation
-changed. function nand_read_oob function reads right values, but
-bbt_scan takes about 30 minutes!!! Even without "bad eraseblock" messages when
-I try to make nandwrite I receive the message "File cannot fit in to
-media due to bad blocks". What should I do? Is it possible to saw to
-Xscale, that memory at address 0x04000000 should not be cacheable?
+On Wed, 2005-06-22 at 18:03 +0200, Sean Young wrote:
+> cvs.infradead.org is unreachable. Is it okay via ipv6?
+
+No, it was actually dead. A fuse in the power supply had gone, and there
+was a big flash and bang when I replaced it. It's now running again with
+a new power supply unit. It's an ancient dual-P200 machine though, and
+one of these days it _really_ is going to die for real.
+
+I'll probably replace it with a Mac Mini some time soon.
+
+I've taken this opportunity to switch the legacy IP address to my new
+network; its canonical IPv4 address is now 81.187.2.162. It should
+remain on 81.187.226.98 for at least as long as that address is cached
+in DNS though. The IPv6 address remains the same.
+
+-- 
+dwmw2
