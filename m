@@ -1,19 +1,19 @@
-Received: from mx1.sonologic.nl ([82.94.245.21])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DlpeQ-00036y-CX
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 10:59:27 -0400
-Received: from [127.0.0.1] (mx1.sonologic.nl [82.94.245.21])
-	(authenticated bits=0)
-	by mx1.sonologic.nl (8.13.3/8.13.3) with ESMTP id j5OExLnK099485
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2005 14:59:21 GMT
-Message-ID: <42BC1FCB.8050003@sonologic.nl>
-Date: Fri, 24 Jun 2005 16:59:23 +0200
-From: Koen Martens <kmartens@sonologic.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: JEDEC / CFI questions & remarks
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlrQ6-0003UX-U4
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 12:52:48 -0400
+Date: Fri, 24 Jun 2005 18:52:43 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: sean@infradead.org
+Message-ID: <20050624165243.GA18312@wohnheim.fh-wedel.de>
+References: <E1DlT1z-0001Si-DN@phoenix.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E1DlT1z-0001Si-DN@phoenix.infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd/drivers/mtd rfd_ftl.c,1.1,1.2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +23,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Thu, 23 June 2005 15:50:15 +0100, sean@infradead.org wrote:
+> +
+> +	for (i=0; i<SECTOR_SIZE; i++) {
+> +		if (buf[i])
+> +			break;
+> +	}
+> +
+> +	if (i < SECTOR_SIZE) {
+> +		rc = do_writesect(dev, sector, buf, &old_addr);
+> +		if (rc)
+> +			goto err;
+> +	}
+> +	else 
+> +		part->sector_map[sector] = -1;
 
-We had some troubles with the MTD driver lately, when our taiwanese
-hardware factory decided to use another flash chip in our devices. We
-had a EN29LV400BB, now it has become the EN29LV400A. It should be
-functionally compatible, but with the new chip we suddenly detect an
-extra CFI device.
+I don't like this part too much.  Effectively, you're using "i" as a
+state variable.  In this specific case, it's not too bad, but my
+experience with state variable is that they always hurt.
 
-Now, I want to do some more debugging on this, but the new hardware is
-in Taiwan and being shipped to us atm, perhaps this sounds familiar to some.
+Maybe something like this:
 
-Second point: the EON clones of the original AMD chipsets have small
-incompatibility in the method for reading out the manufacturer id. First
-of all, a small fragment of jedec_probe.c:
++	for (i=0; i<SECTOR_SIZE; i++) {
++		if (!buf[i])
++			continue;
++		rc = do_writesect(dev, sector, buf, &old_addr);
++		if (rc)
++			goto err;
++	}
++
++	if (i == SECTOR_SIZE)
++		part->sector_map[sector] = -1;
 
-static inline u32 jedec_read_mfr(struct map_info *map, __u32 base,
-  struct cfi_private *cfi)
-{
-        map_word result;
-        unsigned long mask;
-        u32 ofs = cfi_build_cmd_addr(0, cfi_interleave(cfi),
-cfi->device_type);
-        mask = (1 << (cfi->device_type * 8)) -1;
-        result = map_read(map, base + ofs);
-        return result.x[0] & mask;
-}
+Or even:
 
++	for (i=0; i<SECTOR_SIZE; i++) {
++		if (!buf[i])
++			continue;
++		rc = do_writesect(dev, sector, buf, &old_addr);
++		if (rc)
++			goto err;
++		goto hit;
++	}
++
++	/* no hit */
++	part->sector_map[sector] = -1;
++hit:
 
-Basically, it reads some info from offset 0 relative to the start of the
-flash memory. This is fine for AMD chips, which specify x00 as the (hex)
-address to read out the manufacturer ID. The EON chips we use, however,
-specify 100 (hex) as the offset of the manufacturer id. So what we did
-here is change that first argument to cfi_build_cmd_addr from 0 to 0x100
-, which should thus work on both AMD and EON chips. But who knows what
-this breaks on other chip types.... So, I wonder if this should be
-submitted as a patch (along with the EON chip definitions),
+Now we have one additional goto and your cs professor would fail you
+in class, but code flow and data is nicely seperated.
 
-More general questions that come up when spending more than casual time
-in the mtd driver source, is how well mantained is the jedec bit of the
-mtd driver? Is anyone using this?? I do get the impression we are alone
-in using this bit of the MTD driver, but i can't really believe that..
+Jörn
 
-We now have several quick hacks to make it all work for our specific
-case (eg. return 0; as body for cfi_probe, forcing the chip type in
-jedec_probe effectivelly skipping detection), but i am one of those
-idealist types that wants to fix it the right way and submit back to the
-community, but a bit unsure about what course to follow.
-
-Koen
+-- 
+Mac is for working, 
+Linux is for Networking, 
+Windows is for Solitaire! 
+-- stolen from dc
