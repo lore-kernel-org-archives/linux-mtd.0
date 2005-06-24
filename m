@@ -1,16 +1,20 @@
-Received: from alephnull.demon.nl ([212.238.201.82] helo=xi.wantstofly.org)
+Received: from kvant-efir.client.kv.chereda.net ([195.43.43.142]
+	helo=kvant-efir.com.ua)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DlXWc-0007y3-Rg
-	for linux-mtd@lists.infradead.org; Thu, 23 Jun 2005 15:38:14 -0400
-Date: Thu, 23 Jun 2005 21:33:01 +0200
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: dsaxena@plexity.net, linux-mtd@lists.infradead.org
-Message-ID: <20050623193301.GA5889@xi.wantstofly.org>
-Mime-Version: 1.0
+	id 1Dlk8a-0001vR-Im
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 05:06:14 -0400
+Received: from kokachev.kvant-efir.com.ua [192.168.1.19] by kvant-efir.com.ua
+	[127.0.0.1] with SMTP (MDaemon.v3.5.7.R)
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2005 11:54:56 +0300
+Date: Fri, 24 Jun 2005 12:00:04 +0300
+From: Kokachev <kokachev@kvant-efir.com.ua>
+Message-ID: <438892871.20050624120004@kvant-efir.com.ua>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: 
-Subject: [PATCH] fix compile warnings in ixp2000 map driver
+Content-Transfer-Encoding: 7bit
+Subject: PXA255 with Samsung K9K1G08UOM flash problem
+Reply-To: Kokachev <kokachev@kvant-efir.com.ua>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(please CC on replies, not on the list)
-
-Fix two compile warnings that occur because of treating two
-'unsigned long's as 'void *'s.
-
-Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
-
-diff -urN linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c
---- linux-2.6.12-rc1.orig/drivers/mtd/maps/ixp2000.c	2005-03-20 18:33:46.000000000 +0100
-+++ linux-2.6.12-rc1/drivers/mtd/maps/ixp2000.c	2005-03-25 22:42:54.000000000 +0100
-@@ -191,7 +191,7 @@
- 	/*
-  	 * map_priv_2 is used to store a ptr to to the bank_setup routine
-  	 */
--	info->map.map_priv_2 = (void __iomem *) ixp_data->bank_setup;
-+	info->map.map_priv_2 = (unsigned long) ixp_data->bank_setup;
- 
- 	info->map.name = dev->dev.bus_id;
- 	info->map.read = ixp2000_flash_read8;
-@@ -208,7 +208,7 @@
- 		goto Error;
- 	}
- 
--	info->map.map_priv_1 = ioremap(dev->resource->start, 
-+	info->map.map_priv_1 = (unsigned long) ioremap(dev->resource->start, 
- 			    	dev->resource->end - dev->resource->start + 1);
- 	if (!info->map.map_priv_1) {
- 		dev_err(_dev, "Failed to ioremap flash region\n");
+I have Xscale PXA255 SBC with Samsung K9K1G08UOM flash on-board. I
+wrote NAND driver for this flash. I use kernel 2.6.7 and MTD snapshot
+from 20 of June 2005. And when I make insmod of my driver I see a lot
+of messages: "Bad eraseblock 0 from 00000000","Bad eraseblock 1 from
+00004000",etc. I began to read the source and I see that from OOB
+blocks of my flash I read non-FF values. When I inserted some printk
+functions to see what I read from OOB blocks the count of bad
+eraseblocks decreased. My flash is connected at address 0x04000000 of
+Xscale memory map. ALE and CLE are connected to GPIOs. I think, that
+this could be cache problem. I wrote my own nand_write_byte function
+with Drain (&Fill) cache command after writing the byte. Situation
+changed. function nand_read_oob function reads right values, but
+bbt_scan takes about 30 minutes!!! Even without "bad eraseblock" messages when
+I try to make nandwrite I receive the message "File cannot fit in to
+media due to bad blocks". What should I do? Is it possible to saw to
+Xscale, that memory at address 0x04000000 should not be cacheable?
