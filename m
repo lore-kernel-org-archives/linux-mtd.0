@@ -1,24 +1,23 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DltfL-0000t8-3z
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 15:16:42 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DltXw-0005LC-Qe
-	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 21:09:00 +0200
-Received: from s01060004e28f4900.du.shawcable.net ([70.67.196.121])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2005 21:09:00 +0200
-Received: from andre by s01060004e28f4900.du.shawcable.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 24 Jun 2005 21:09:00 +0200
+Received: from 216-229-91-229-empty.fidnet.com ([216.229.91.229]
+	helo=mail.icequake.net)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DlzsN-0001nr-Pt
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 21:54:33 -0400
+Received: from dbz.icequake.net (dbz.icequake.net [216.229.91.244])
+	by mail.icequake.net (Postfix) with ESMTP id 0A82B27B67
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 24 Jun 2005 20:54:30 -0500 (CDT)
+Received: from nemesis by dbz.icequake.net with local (Exim 4.50)
+	id 1DlzsM-00041e-Jt
+	for linux-mtd@lists.infradead.org; Fri, 24 Jun 2005 20:54:30 -0500
+Date: Fri, 24 Jun 2005 20:54:30 -0500
+From: Ryan Underwood <nemesis-lists@icequake.net>
 To: linux-mtd@lists.infradead.org
-From: "Andre" <andre@rocklandocean.com>
-Date: Fri, 24 Jun 2005 12:18:41 -0700
-Message-ID: <d9hlnq$1v7$1@sea.gmane.org>
-References: <53F44AF77A9F9B458DCE1910C2E6263811F4A1FE@il02exm15.corp.mot.com>
-Sender: news <news@sea.gmane.org>
-Subject: Re: MD2202-D384 DoC with MTD
+Message-ID: <20050625015430.GK8920@dbz.icequake.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Subject: slram reserve its memory region?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,108 +27,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Lindstrom James-A19027 wrote:
-> I'm trying to get my MD2202-D384 up and running with the diskonchip.c
-> driver.  I'm starting with kernel linux-2.4.18-rmk7-pxa3-cerf3 then
-> patching in mtd-snapshot-2005-03-04.  I did quite a bit of work
-> hacking things to make them happy.  The kernel boots, however, the
-> DoC is not detecting properly.  When I look in nandids.c, though, I
-> don't even see an option for the 384 mb variety of DoC.  Am I missing
-> something?
 
-I have the exact same device, although my kernel is 2.6.11 with snapshot
-20050612. No special hacks were needed in my case since I am not booting
-from the diskonchip yet.
+I am having a problem where slram fails to reserve the memory it is
+using, allowing a later-loaded PCI driver (yenta_socket) to have PCI
+resources mapped in the same area, which results in a non-functional
+hardware.  This effect is only possible because mem= kernel parameter is
+required to prevent the kernel from using memory that slram will be
+using later, but unfortunately device resources can still be mapped
+there since the kernel thinks slram's area is not physical RAM and is
+thus safe to use.
 
-Here are the kernel config flags I used related to MTD:
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=m
-# CONFIG_MTD_DEBUG is not set
-# CONFIG_MTD_CONCAT is not set
-CONFIG_MTD_PARTITIONS=y
-# CONFIG_MTD_REDBOOT_PARTS is not set
-# CONFIG_MTD_CMDLINE_PARTS is not set
+Is it an easy change to cause slram to reserve the memory area it uses
+so that nothing else attempts to use it?
 
-#
-# User Modules And Translation Layers
-#
-CONFIG_MTD_CHAR=m
-# CONFIG_MTD_BLOCK is not set
-# CONFIG_MTD_BLOCK_RO is not set
-CONFIG_FTL=m
-# CONFIG_NFTL is not set
-CONFIG_INFTL=m
+Ryan
 
-#
-# RAM/ROM/Flash chip drivers
-#
-# CONFIG_MTD_CFI is not set
-# CONFIG_MTD_JEDECPROBE is not set
-CONFIG_MTD_MAP_BANK_WIDTH_1=y
-CONFIG_MTD_MAP_BANK_WIDTH_2=y
-CONFIG_MTD_MAP_BANK_WIDTH_4=y
-# CONFIG_MTD_MAP_BANK_WIDTH_8 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_16 is not set
-# CONFIG_MTD_MAP_BANK_WIDTH_32 is not set
-CONFIG_MTD_CFI_I1=y
-CONFIG_MTD_CFI_I2=y
-# CONFIG_MTD_CFI_I4 is not set
-# CONFIG_MTD_CFI_I8 is not set
-# CONFIG_MTD_RAM is not set
-# CONFIG_MTD_ROM is not set
-# CONFIG_MTD_ABSENT is not set
+----- Forwarded message from Russell King <rmk+pcmcia@arm.linux.org.uk> -----
 
-#
-# Mapping drivers for chip access
-#
-# CONFIG_MTD_COMPLEX_MAPPINGS is not set
-# CONFIG_MTD_PLATRAM is not set
+On Tue, Jun 21, 2005 at 08:58:15PM -0500, Ryan Underwood wrote:
+> Ok, this now appears to allow Cardbus cards to work.  Unfortunately the
+> 16-bit card doesn't work unless the BIOS is set to PCIC Compatible mode,
+> which means I can't use a Cardbus and 16-bit card at the same time as
+> with 2.4 and pcmcia-cs.  I also need mem=64M so that I can use uncached
+> RAM as slram device.
 
-#
-# Self-contained MTD device drivers
-#
-# CONFIG_MTD_PMC551 is not set
-# CONFIG_MTD_SLRAM is not set
-# CONFIG_MTD_PHRAM is not set
-# CONFIG_MTD_MTDRAM is not set
-# CONFIG_RAMTD is not set
-# CONFIG_MTD_BLKMTD is not set
-# CONFIG_MTD_BLOCK2MTD is not set
+Unfortunately, the kernel needs to know how much RAM you really have so
+it can properly allocate memory resources.  Lying to it (by passing mem=)
+is generally a recipe for disaster.
 
-#
-# Disk-On-Chip Device Drivers
-#
-# CONFIG_MTD_DOC2000 is not set
-# CONFIG_MTD_DOC2001 is not set
-# CONFIG_MTD_DOC2001PLUS is not set
+However, if slram is making use of some area of memory, it really should
+reserve it.  That's a slram bug - please report it to the mtd mailing
+list.
 
-#
-# NAND Flash Device Drivers
-#
-CONFIG_MTD_NAND=m
-# CONFIG_MTD_NAND_VERIFY_WRITE is not set
-CONFIG_MTD_NAND_IDS=m
-CONFIG_MTD_NAND_DISKONCHIP=m
-# CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADVANCED is not set
-CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0
-# CONFIG_MTD_NAND_DISKONCHIP_BBTWRITE is not set
-# CONFIG_MTD_NAND_NANDSIM is not set
+Even with slram fixed, there remains the danger of something trying to
+allocate a resource _before_ slram claims its resource...  I just hate
+the entire mem= mess entirely for this very reason.  It's completely
+unsafe.
 
-you then load the driver with:
-modprobe -a diskonchip
-modprobe -a inftl
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 Serial core
 
-After this I received some kernel messages from INFTL but I was able to
-mount it ok. However, upon subsequent boot, my diskonchip stopped working. I
-doubt that it had anything to do with mtd because when I ran the diskonchip
-utilities from m-sys, it reported that it couldn't find the bad block table
-anymore. According to the diskonchip data sheet, this table is supposedly in
-a protected area.
-Please see my posting titled 'kernel messages from INFTL'. I am still
-waiting to hear from mtd folks what could have happened since the mount
-operation should not actually do anything to the media in my opinion.
 
-cheers,
-Andre
+----- End forwarded message -----
+
+-- 
+Ryan Underwood, <nemesis@icequake.net>
