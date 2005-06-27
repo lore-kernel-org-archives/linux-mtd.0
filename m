@@ -1,14 +1,21 @@
-Date: Fri, 24 Jun 2005 22:35:59 -0300
-From: "=?iso-8859-1?Q?S=FCddeutsche?= Klassenlotterie"
-	<sklnotification@patan.org>
-To: records-winners@skl.de
+Received: from mx1.sonologic.nl ([82.94.245.21])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DmpCO-0001Ex-68
+	for linux-mtd@lists.infradead.org; Mon, 27 Jun 2005 04:42:37 -0400
+Received: from [127.0.0.1] (mx1.sonologic.nl [82.94.245.21])
+	(authenticated bits=0)
+	by mx1.sonologic.nl (8.13.3/8.13.3) with ESMTP id j5R8gVcM091756
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Jun 2005 08:42:32 GMT
+Message-ID: <42BFBBFA.5040005@sonologic.nl>
+Date: Mon, 27 Jun 2005 10:42:34 +0200
+From: Koen Martens <gmc@sonologic.nl>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Message-ID: <WorldClient-F200506242235.AA35590882@patan.org>
-Cc: 
-Subject: LOTTERY WIN NOTIFICATION-Contact your claims agent
-Reply-To: sklnotification@patan.org
+To: linux-mtd@lists.infradead.org
+References: <42BC1FCB.8050003@sonologic.nl>
+In-Reply-To: <42BC1FCB.8050003@sonologic.nl>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Subject: Re: JEDEC / CFI questions & remarks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,71 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Süddeutsche Klassenlotterie                              
-SKL-Meierebert, Textorstrasse,6059               
-Frankfurt am Main, Fon
-Germany.
- 
-Ref: EAASL/941OYI/02/STXN
-Batch: 12/25/0034
- 
-We are pleased to inform you of the result of the Süddeutsche 
-Klassenlotterie program. Your Email address attached to ticket number 025-
-11464992-750 with serial number 2113-05 drew the lucky numbers 4-18-24-30-
-31-35 which consequently won the lottery in the 1st category.
- 
-You have therefore been approved for a lump sum payout of €1,000,000.00 
-(One  Million Euro) in cash credited to file EAASL/941OYI/02/STXN. This 
-is from a total cash prize of €50 Million Euros shared amongst the first 
-fifty (50) lucky winners in this category. All participants were selected 
-through a computer ballot system drawn from 25,000 names and email 
-addresses from all continent of the world as part of our international 
-promotions program which we conduct twice every year. 
- 
-This year Lottery Program Jackpot is the largest ever for Süddeutsche 
-Klassenlotterie . The estimated €50 million jackpot would be the sixth-
-biggest in Europe history. The biggest was the €363 million jackpot that 
-went to two winners in a Febuary 2000 drawing of The Big Game Mega 
-Millions' predecessor. 
- 
-Your fund is now deposited in an offshore bank insured in your name. Due 
-to the mix up of some numbers and names, we advice that you keep this 
-award from public notice until your claim has been processed and your 
-money remitted to your nominated bank account as this is part of our 
-security protocol to avoid double claiming or unwarranted taking 
-advantage of this program by the general public.
- 
-Please note that your lucky winning number falls within our European 
-booklet representative office in Europe as indicated. In view of this, 
-your €1,000,000.00 (One Million Euro) would be released to you by our 
-affiliate bank in Europe. Our agent will immediately commence the process 
-to facilitate the release of your funds to you as soon as you make 
-contact with him.
- 
-To begin your claim please contact your claims agent:
- 
-Mr.Walters Richardson
-Foreign Services Manager,Payment and Release Order Dept. 
-De la rue Sistemas Informáticos GMBH Co.
-Phone: +44-703-184-4104
-Fax:    +44-870-478-4369
-Email: waltersrichardson01@web-mail.com.ar 
+Koen Martens wrote:
+> Second point: the EON clones of the original AMD chipsets have small
+> incompatibility in the method for reading out the manufacturer id. First
+> of all, a small fragment of jedec_probe.c:
+> 
+> static inline u32 jedec_read_mfr(struct map_info *map, __u32 base,
+>   struct cfi_private *cfi)
+> {
+>         map_word result;
+>         unsigned long mask;
+>         u32 ofs = cfi_build_cmd_addr(0, cfi_interleave(cfi),
+> cfi->device_type);
+>         mask = (1 << (cfi->device_type * 8)) -1;
+>         result = map_read(map, base + ofs);
+>         return result.x[0] & mask;
+> }
+> 
+> 
+> Basically, it reads some info from offset 0 relative to the start of the
+> flash memory. This is fine for AMD chips, which specify x00 as the (hex)
+> address to read out the manufacturer ID. The EON chips we use, however,
+> specify 100 (hex) as the offset of the manufacturer id. So what we did
+> here is change that first argument to cfi_build_cmd_addr from 0 to 0x100
+> , which should thus work on both AMD and EON chips. But who knows what
+> this breaks on other chip types.... So, I wonder if this should be
+> submitted as a patch (along with the EON chip definitions),
 
-Your claims agent will assist you in the processing and remittance of 
-your prize funds into your designated bank account.
- 
-Note that all prize funds must be claimed not later than One month. After 
-this date all funds will be returned to the LOTTERY TREASURY as 
-unclaimed. In order to avoid unnecessary delays and complications, please 
-endeavor to quote your Reference (EAASL/941OYI/02/STXN) and Batch numbers 
-(12/25/0034) in every correspondence with your agent. Furthermore, should 
-there be any change in your address, do inform your claims agent as soon 
-as possible.
- 
-Congratulations once again from all members of our staff and thanks for 
-being part of our promotions program.
+Actually, wouldn't it be better to put this address in the struct that
+defines the chip, just as the unlock addresses are..??
 
-Yours faithfully,
-Mrs.Violleta Kclose.
-Promotions Manager
-SÜDDEUTSCHE KLASSENLOTTERIE.
+koen
+
+-- 
+K.F.J. Martens, Sonologic, http://www.sonologic.nl/
+Networking, hosting, embedded systems, unix, artificial intelligence.
+Public PGP key: http://www.metro.cx/pubkey-gmc.asc
+Wondering about the funny attachment your mail program
+can't read? Visit http://www.openpgp.org/
