@@ -1,19 +1,23 @@
-Received: from ms-smtp-03-smtplb.ohiordc.rr.com ([65.24.5.137]
-	helo=ms-smtp-03-eri0.ohiordc.rr.com)
+Received: from rwcrmhc13.comcast.net ([204.127.198.39])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DnJ40-0008Ba-I6
-	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2005 12:35:57 -0400
-Message-ID: <42C180D4.1010607@clarionsensing.com>
-Date: Tue, 28 Jun 2005 11:54:44 -0500
-From: "Brian O'Dell" <brian@clarionsensing.com>
+	id 1DnJ9B-0008MX-Fb
+	for linux-mtd@lists.infradead.org; Tue, 28 Jun 2005 12:41:19 -0400
+From: Charles Tilbury <charles.tilbury@comcast.net>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Date: Tue, 28 Jun 2005 09:41:14 -0700
+References: <200506271409.42449.charles.tilbury@comcast.net>
+	<200506280858.14732.charles.tilbury@comcast.net>
+	<42C17594.4000403@yandex.ru>
+In-Reply-To: <42C17594.4000403@yandex.ru>
 MIME-Version: 1.0
-To: Dan Brown <dan_brown@ieee.org>
-References: <42C03FFB.3080208@clarionsensing.com> <42C04A65.5040804@ieee.org>
-In-Reply-To: <42C04A65.5040804@ieee.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200506280941.14702.charles.tilbury@comcast.net>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: DOCBoot doesn't compile
+Subject: Re: NAND flash question
+Reply-To: charles.tilbury@comcast.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dan Brown wrote:
-
-> Ack! My fault.  I somehow forgot to check in doc_bootstub.h
+On Tuesday 28 June 2005 9:06 am, Artem B. Bityuckiy wrote:
+> Charles Tilbury wrote:
+> > Yes. Thanks.  Now, I am looking for a way to get the file systems
+> > unmounted upon loss of power.
 >
-> Checked in now.  Please let me know if that fixes the problem.  Or if 
-> it doesn't.
->
->     -Dan
+> I assume you don't look for this in order to get rid of these messages ?
 
+(sorry about the prev. top-post)
 
-Thank you for the quick response Dan.  DOCBoot does compile now, but it 
-freezes prior to any indication that it is trying to load the kernel.  
-Here is what I get with DEBUG_BUILD defined: 
+In part, I want to get rid of the messages.  They make the marketing guys 
+nervous.  <<grin>>  I may just supress them using comments.  What I really 
+need is to make sure that the user land data gets flushed to NAND before 
+power loss.   That seems like a JFFS2 issue, do you agree?
 
-Installing DOCBoot.
-doc_seg = 0xE000           setup_seg = 0x2400
-int15/e801 returns 0x0F00    initrd_start = 0x0FFF0000
-top of low mem = 0x0279k    handler seg = 0x9E00
- -- Press any key --
-
-Prior to pressing any key, numlock and capslock respond normally.  I can 
-also reboot via ctrl-alt-del.  I press enter, then the system freezes 
-hard.  No numlock or capslock response, ctrl-alt-del does not work.  Any 
-thoughts or ideas are much appreciated.
-
-Thanks,
-Brian  
+-=CharlesT=-
