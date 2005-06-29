@@ -1,23 +1,22 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+Received: from gateway0.eecs.berkeley.edu ([169.229.60.93])
 	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DnWEW-00039e-0T
-	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2005 02:39:41 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20050628T205336-2@post.gmane.org>
-References: <200506271409.42449.charles.tilbury@comcast.net>
-	<200506280941.14702.charles.tilbury@comcast.net>
-	<1119983460.12240.22.camel@hades.cambridge.redhat.com>
-	<200506281157.39708.charles.tilbury@comcast.net>
-	<loom.20050628T205336-2@post.gmane.org>
-Content-Type: text/plain
-Date: Wed, 29 Jun 2005 10:39:07 +0400
-Message-Id: <1120027147.16978.27.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	id 1Dngw5-0004gl-HN
+	for linux-mtd@lists.infradead.org; Wed, 29 Jun 2005 14:05:23 -0400
+Received: from [192.168.1.121] (adsl-69-109-178-37.dsl.pltn13.pacbell.net
+	[69.109.178.37]) (authenticated bits=0)
+	by gateway0.EECS.Berkeley.EDU (8.13.4/8.13.3) with ESMTP id
+	j5TI4xsY000144
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NOT)
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Jun 2005 11:05:00 -0700 (PDT)
+Message-ID: <42C2E2CB.9030404@eecs.berkeley.edu>
+Date: Wed, 29 Jun 2005 11:04:59 -0700
+From: Andrew Schultz <alschult@eecs.berkeley.edu>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND flash question
-Reply-To: dedekind@infradead.org
+Subject: Booting Linux 2.6 with DiskOnChip 2000 TSOP (INFTL)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-06-28 at 19:20 +0000, Sergei Sharonov wrote:
-> Charles,
-> > How could one change the flush interval to around 100mS?  Or does that sound 
-> > like a stupid idea?
-> 
-> Just call sync/fsync as needed. Your application should know when to do it.
-> Secondly, I believe JFFS2 will flush write buffer no latter then 5 s after 
-> write (?). Can anybody comment on that?
-> 
-The write buffer flushing mechanism works as follows.
+Hello,
 
-Every time something is written to the WB, the in-RAM superblock
-structure object is marked as dirty (sb->s_dirt = 1). pdflush daemon is
-the standard daemon which periodically wakes up and flushes dirty pages
-and superblocks. So, the jffs2_write_super() will be called by pdflush
-when the dirty interval is expired, and the WB will be flushed (and of
-course, the s_dirty flag is cleaned). This flushing delay take a chance
-that the next writes will be merged with the previous writes before the
-WB is flushed.
+I've spent a few days attempting to get a new 256MB DiskOnChip 2000 
+TSOP working properly with Linux 2.6.11.  I have been using the MTD 
+drivers that come with the vanilla version of the kernel and so far 
+I can properly dformat, fdisk, format, and copy the file system so 
+everything is cool with the kernel driver.
 
-The dirty expire interval is adjusted by means
-of /proc/sys/vm/dirty_expire_centisecs
-(seeDocumentation/filesystems/proc.txt) for details.
+However, all my attempts to get grub/lilo/docboot to work in booting 
+of the DOC have been in vain.  My first question is does the current 
+grub patch actually have support for the TSOP (and INFTL devices in 
+general)?  I found two previous posts in 2002 and 2003 
+(http://lists.infradead.org/pipermail/linux-mtd/2003-November/008922.html 
+and 
+http://lists.infradead.org/pipermail/linux-mtd/2003-April/007487.html)
+which seem to be inconclusive about the current support of INFTL 
+devices and grub.
 
-HTH.
+Secondly, if grub isn't known to work on these devices, does anyone 
+have a procedure for getting lilo/docboot to work?  I followed the 
+instructions from M-Systems about getting lilo to work, and while 
+lilo installs the boot sector to the disk, it simply hangs with no 
+output at boot.  I tried docboot, but that hangs with "Opening 
+Docboot..." and now I can't boot anything off that chip.  Any 
+experience (or even any success stories) would be greatly appreciated.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Andrew
+
+For reference, here is what I have been doing with grub in case 
+anyone can point out a problem:
+
+1) In linux booted off a hard drive, dformat the chip (I've also 
+tried using DOS dformat from a boot CD):
+
+./dformat -winl:0000 -winh:d8000 -s:DOC514.EXB -empty -nodos -y
+(the winl/winh stuff is a hack I have to do cause just -win:d8000 
+causes a segfault)
+
+2) Fdisk drive and dd a copy of my partition
+
+fdisk (create one single linux partition which I have marked as 
+bootable)
+dd if=/dev/hda1 of=/dev/inftla1 bs=512
+
+3) Grab the latest mtd source from CVS, build grub 0.97, copy 
+stage2/pre_stage2 into mtd/grub, run make
+
+4) Install the "grub_firmware" to the disk on chip (I've also tried 
+this step first in lieu of step 1)
+
+./dformat -winl:0000 -winh:d8000 -bdkf0:grub_firmware
