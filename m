@@ -1,21 +1,18 @@
-Received: from samwise.efn.org ([12.33.21.33])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DoWC2-0005jj-Ci
-	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2005 20:49:16 -0400
-Received: from amazonia.client.comcast.net (c-24-20-117-59.hsd1.or.comcast.net
-	[24.20.117.59])
-	by samwise.efn.org (Postfix) with ESMTP id 42F06170476
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  1 Jul 2005 17:31:46 -0700 (PDT)
-Received: from rick by amazonia.client.comcast.net with local (Exim 3.36 #1
-	(Debian)) id 1DoVv7-0004wL-00
-	for <linux-mtd@lists.infradead.org>; Fri, 01 Jul 2005 17:31:45 -0700
-To: linux-mtd@lists.infradead.org
-Message-Id: <E1DoVv7-0004wL-00@amazonia.client.comcast.net>
-From: Rick Bronson <rick@efn.org>
-Date: Fri, 01 Jul 2005 17:31:45 -0700
-Subject: endless loop in wbuf.c?
-Reply-To: rick@efn.org
+	id 1DoWES-0005vr-UI
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2005 20:51:46 -0400
+Date: Fri, 1 Jul 2005 17:51:38 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+To: Todd Blumer <todd@sdgsystems.com>, Aric Blumer <aric@sdgsystems.com>
+Message-ID: <20050702005138.GA7696@slurryseal.ddns.mvista.com>
+References: <429FC658.7030206@sdgsystems.com> <42A102D2.5090108@mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42A102D2.5090108@mvista.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: MTD PM Resume
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +22,148 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, Jun 03, 2005 at 06:24:34PM -0700, Todd Poynor wrote:
+...
+> If you initiated the suspend via a call to pm_suspend() or 
+> /sys/power/state then LDM suspend/resume driver methods will be called, 
+> and it looks like nothing in the mtd core will automatically register 
+> drivers or devices in LDM.  There are existing examples of registering 
+> with LDM in some map drivers, registering a driver with the platform 
+> bus.  Looks like boards that power cycle flash chips for certain sleep 
+> states need to also register a device, and add suspend/resume callbacks 
+> in the struct_driver that end up calling the chip driver suspend/resume 
+> methods (even if they don't use flash that powers up locked, since the 
+> mtd state machine needs to be reset to assume the flash chips are in 
+> ready state).  Documentation/power/devices.txt has some more info on 
+> those interfaces.
+> 
+> Or if anybody has a better way to handle this I'm all ears.  A class 
+> device for generic mtd might do it, not sure.
+> 
+> You just reminded me I need to figure out how to do this for a couple of 
+> boards, thanks.  If there's no disagreement on the above being the 
+> correct approach I'll float a patch soon.
 
-  I seem to encounter an endless loop in wbuf.c starting at:
+Here's an example of how it might be done via a board mapping driver,
+for the PXA27x Mainstone board.  I'm not sure if this is the ultimate in
+mtd + ldm + pm integration, but it's something.  Any comments appreciated.
 
-	} else while (old_wbuf_len &&
-		      old_wbuf_ofs == c->wbuf_ofs) {
-
-  I get hung in this loop if I do this:
-
-umount /reserved
-/usr/src/mtd/util/flash_eraseall --jffs2 /dev/mtd1
-mount /reserved
-cd /reserved
-# < using a C program, make 5000 files of 170 bytes each in current dir,
-#   copying from /dev/urandom and naming "test00000.bin" thru "test04999.bin" >
-cd
-umount /reserved
-mount /reserved
-ls -Rl /reserved > ~/xx
-rm -rf /reserved/* # locks up after command prompt returns + 2 seconds
-
-  My fstab looks like:
-
-/dev/mtdblock1          /reserved       jffs2    noauto,defaults        0 0     
-
-  My cpu is a AT91RM9200, the mtd part is a NAND:
-NAND device: Manufacturer ID: 0x98, Chip ID: 0x75 (Toshiba NAND 32MiB 3,3V 8-bit
-
-  My .config has these set:
-
-CONFIG_MTD_NAND=y
-CONFIG_MTD_NAND_AT91=y
-CONFIG_MTD_NAND_IDS=y
-CONFIG_JFFS2_FS=y
-CONFIG_JFFS2_FS_DEBUG=0
-CONFIG_JFFS2_FS_WRITEBUFFER=y
-CONFIG_JFFS2_CMODE_PRIORITY=y
-
-  When I set breakpoints I find it goes thru this loop:
-
-#0  jffs2_mark_node_obsolete (c=0xc03d5ccc, ref=0xc03d5ccc) at nodemgmt.c:390
-#1  0xc00aeff8 in jffs2_garbage_collect_deletion_dirent (c=0xc03d5ccc, 
-    jeb=0xc3614f50, f=0xc361d3a0, fd=0xc3619660) at gc.c:881
-#2  0xc00add3c in jffs2_garbage_collect_live (c=0xc03d5ccc, jeb=0xc3614f50, 
-    raw=0xc35add10, f=0xc361d3a0) at gc.c:473
-#3  0xc00ad9a4 in jffs2_garbage_collect_pass (c=0xc03d5ccc) at gc.c:371
-#4  0xc00b461c in jffs2_flush_wbuf_gc (c=0xc03d5ccc, ino=3277511952)
-    at wbuf.c:567
-#5  0xc00b2a1c in jffs2_write_super (sb=0xc03d5ccc) at fs.c:381
-#6  0xc00527b0 in sync_supers (dev=23756) at super.c:439
-#7  0xc00516c4 in sync_old_buffers () at buffer.c:2888
-#8  0xc0051b14 in kupdate (startup=0xc00164b8) at buffer.c:3060
-#9  0xc001c008 in kernel_thread (fn=0xc35ce3a0, arg=0xc02e1ff8, 
-    flags=3277644640) at process.c:389
-
-  continuously with "raw" iterating and fd->name iterating over each
-  file in order ie. "test00000.bin", "test00001.bin", etc
-
-raw iterates from this line in gc.c:
-
-		raw = raw->next_phys;
-
-  Anyone else seen anything like this?
-
-  Thanks so much for any help.
-
-  Rick Bronson
-
-                                                                   _
-                                                                  | |
-                                                                  / /__
-.----------------------------------------------------------._____/ (___)
-| Rick Bronson rick@efn.org     Tel 541-485-7264           |       (___)
-| Amazonia Computing http://www.efn.org/~rick      __ o    |_____  (___)
-| 5050 Donald Street     "Onde esta dinheiro?"    _`\<,    |     \_(___)
-| Eugene, OR  97405       -- Gal Costa         __( )/( )__ |
-`----------------------------------------------------------'
+Index: linux-2.6.12/arch/arm/mach-pxa/mainstone.c
+===================================================================
+--- linux-2.6.12.orig/arch/arm/mach-pxa/mainstone.c	2005-06-17 19:48:29.000000000 +0000
++++ linux-2.6.12/arch/arm/mach-pxa/mainstone.c	2005-07-02 00:33:23.000000000 +0000
+@@ -189,6 +189,11 @@
+ 	.dev		= { .platform_data = &mst_audio_ops },
+ };
+ 
++static struct platform_device mainstone_flash_device = {
++	.name		= "mainstone-flash",
++	.id		= -1,
++};
++
+ static void mainstone_backlight_power(int on)
+ {
+ 	if (on) {
+@@ -304,6 +309,7 @@
+ 
+ 	platform_device_register(&smc91x_device);
+ 	platform_device_register(&mst_audio_device);
++	platform_device_register(&mainstone_flash_device);
+ 
+ 	/* reading Mainstone's "Virtual Configuration Register"
+ 	   might be handy to select LCD type here */
+Index: linux-2.6.12/drivers/mtd/maps/mainstone-flash.c
+===================================================================
+--- linux-2.6.12.orig/drivers/mtd/maps/mainstone-flash.c	2005-07-01 22:22:30.000000000 +0000
++++ linux-2.6.12/drivers/mtd/maps/mainstone-flash.c	2005-07-02 00:35:56.000000000 +0000
+@@ -15,6 +15,7 @@
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+ #include <linux/init.h>
++#include <linux/device.h>
+ #include <linux/dma-mapping.h>
+ #include <linux/mtd/mtd.h>
+ #include <linux/mtd/map.h>
+@@ -69,7 +70,8 @@
+ 
+ static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+ 
+-static int __init init_mainstone(void)
++
++static int __init mainstone_flash_probe(struct device *_dev)
+ {
+ 	int SW7 = 0;  /* FIXME: get from SCR (Mst doc section 3.2.1.1) */
+ 	int ret = 0, i;
+@@ -147,10 +149,11 @@
+ 			add_mtd_device(mymtds[i]);
+ 		}
+ 	}
++
+ 	return 0;
+ }
+ 
+-static void __exit cleanup_mainstone(void)
++static int mainstone_flash_remove(struct device *_dev)
+ {
+ 	int i;
+ 	for (i = 0; i < 2; i++) {
+@@ -168,6 +171,59 @@
+ 			iounmap(mainstone_maps[i].cached);
+ 		kfree(parsed_parts[i]);
+ 	}
++
++	return 0;
++}
++
++#ifdef CONFIG_PM
++
++static int mainstone_flash_suspend(struct device *dev, u32 state, u32 level)
++{
++	int i;
++
++	if (level == SUSPEND_DISABLE) {
++		for (i = 0; i < 2; i++)
++			if (mymtds[i] && mymtds[i]->suspend)
++				mymtds[i]->suspend(mymtds[i]);
++	}
++
++	return 0;
++}
++
++static int mainstone_flash_resume(struct device *dev, u32 level)
++{
++	int i;
++
++	if (level == RESUME_ENABLE) {
++		for (i = 0; i < 2; i++)
++			if (mymtds[i] && mymtds[i]->resume)
++				mymtds[i]->resume(mymtds[i]);
++
++	}
++	return 0;
++}
++
++#endif
++
++static struct device_driver mainstone_flash_driver = {
++	.name		= "mainstone-flash",
++	.bus		= &platform_bus_type,
++	.probe		= &mainstone_flash_probe,
++	.remove		= &mainstone_flash_remove,
++#ifdef CONFIG_PM
++	.suspend	= &mainstone_flash_suspend,
++	.resume		= &mainstone_flash_resume,
++#endif
++};
++
++static int __init init_mainstone(void)
++{
++	return driver_register(&mainstone_flash_driver);
++}
++
++static void __exit cleanup_mainstone(void)
++{
++	driver_unregister(&mainstone_flash_driver);
+ }
+ 
+ module_init(init_mainstone);
