@@ -1,22 +1,21 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DoUnT-0005OC-Mx
-	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2005 19:19:49 -0400
-Date: Sat, 2 Jul 2005 01:19:48 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Todd Poynor <tpoynor@mvista.com>
-Message-ID: <20050701231948.GB13311@wohnheim.fh-wedel.de>
-References: <E1Do7j2-0004SA-7P@phoenix.infradead.org>
-	<20050701084901.GA20056@wohnheim.fh-wedel.de>
-	<42C5C638.4050303@mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42C5C638.4050303@mvista.com>
-Cc: tpoynor@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: mtd/drivers/mtd/maps mainstone-flash.c, NONE, 1.1 Kconfig, 1.53,
-	1.54 Makefile.common, 1.28, 1.29
+Received: from samwise.efn.org ([12.33.21.33])
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DoWC2-0005jj-Ci
+	for linux-mtd@lists.infradead.org; Fri, 01 Jul 2005 20:49:16 -0400
+Received: from amazonia.client.comcast.net (c-24-20-117-59.hsd1.or.comcast.net
+	[24.20.117.59])
+	by samwise.efn.org (Postfix) with ESMTP id 42F06170476
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  1 Jul 2005 17:31:46 -0700 (PDT)
+Received: from rick by amazonia.client.comcast.net with local (Exim 3.36 #1
+	(Debian)) id 1DoVv7-0004wL-00
+	for <linux-mtd@lists.infradead.org>; Fri, 01 Jul 2005 17:31:45 -0700
+To: linux-mtd@lists.infradead.org
+Message-Id: <E1DoVv7-0004wL-00@amazonia.client.comcast.net>
+From: Rick Bronson <rick@efn.org>
+Date: Fri, 01 Jul 2005 17:31:45 -0700
+Subject: endless loop in wbuf.c?
+Reply-To: rick@efn.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,59 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 1 July 2005 15:39:52 -0700, Todd Poynor wrote:
-> Jörn Engel wrote:
-> >On Thu, 30 June 2005 23:41:40 +0100, tpoynor@infradead.org wrote:
-> 
-> Will fix the 80 columns and trailing whitespace.
+Hi,
 
-Thanks.  The same could be done to lubbock-flash.c, if you're getting
-bored.  Both maps are practically identical, except for the renames.
+  I seem to encounter an endless loop in wbuf.c starting at:
 
-> >Shouldn't we error out instead of printing a message and continuing
-> >on?
-> 
-> The code still tries to handle the other flash bank, leaving the 
-> un-ioremapped bank unconfigured, and only errors out if neither bank can 
-> be probed+mapped.  In my limited experience with the mainstone board, 
-> the above will not fail if the flash is not present but instead the CFI 
-> probe will fail, but it does seem useful to still try to handle the 
-> other bank.
+	} else while (old_wbuf_len &&
+		      old_wbuf_ofs == c->wbuf_ofs) {
 
-I didn't really understand the chaching code last time.  Looks sane,
-sorry for the noise.
+  I get hung in this loop if I do this:
 
-> >This is broken.  After above code, mainstone_maps[i].virt can be NULL.
-> >So either you need a NULL check for both or for none.
-> 
-> Not sure I understand... if ioremap returns NULL for 
-> mainstone_maps[i].virt then we already skip to the next loop iteration. 
->  Unless do_map_probe can modify the value which I didn't think it did. 
->  mainstone_maps[i].cached on the other hand can be NULL here per the 
-> code above.
+umount /reserved
+/usr/src/mtd/util/flash_eraseall --jffs2 /dev/mtd1
+mount /reserved
+cd /reserved
+# < using a C program, make 5000 files of 170 bytes each in current dir,
+#   copying from /dev/urandom and naming "test00000.bin" thru "test04999.bin" >
+cd
+umount /reserved
+mount /reserved
+ls -Rl /reserved > ~/xx
+rm -rf /reserved/* # locks up after command prompt returns + 2 seconds
 
-Dito.
+  My fstab looks like:
 
-> >>		if (parsed_parts[i])
-> >>			kfree(parsed_parts[i]);
-> >
-> >
-> >kfree() can be called unconditionally.
-> 
-> OK.  Something about passing a NULL pointer to anything gives me the 
-> heebie-jeebies ;)
+/dev/mtdblock1          /reserved       jffs2    noauto,defaults        0 0     
 
-Then you should stay away from running Linux.  This trick is used all
-over the place - and it's a great trick.  Saves a bit of binary size
-and execution speed for free.
+  My cpu is a AT91RM9200, the mtd part is a NAND:
+NAND device: Manufacturer ID: 0x98, Chip ID: 0x75 (Toshiba NAND 32MiB 3,3V 8-bit
 
-Some sparse annotations, which function parameters actually accept
-NULL as a valid parameter and which don't, would be a nice addition,
-just as a remedy for your heebie-jeebies.  But I haven't found the
-time for sparse hacking yet.
+  My .config has these set:
 
-Jörn
+CONFIG_MTD_NAND=y
+CONFIG_MTD_NAND_AT91=y
+CONFIG_MTD_NAND_IDS=y
+CONFIG_JFFS2_FS=y
+CONFIG_JFFS2_FS_DEBUG=0
+CONFIG_JFFS2_FS_WRITEBUFFER=y
+CONFIG_JFFS2_CMODE_PRIORITY=y
 
--- 
-"Security vulnerabilities are here to stay."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+  When I set breakpoints I find it goes thru this loop:
+
+#0  jffs2_mark_node_obsolete (c=0xc03d5ccc, ref=0xc03d5ccc) at nodemgmt.c:390
+#1  0xc00aeff8 in jffs2_garbage_collect_deletion_dirent (c=0xc03d5ccc, 
+    jeb=0xc3614f50, f=0xc361d3a0, fd=0xc3619660) at gc.c:881
+#2  0xc00add3c in jffs2_garbage_collect_live (c=0xc03d5ccc, jeb=0xc3614f50, 
+    raw=0xc35add10, f=0xc361d3a0) at gc.c:473
+#3  0xc00ad9a4 in jffs2_garbage_collect_pass (c=0xc03d5ccc) at gc.c:371
+#4  0xc00b461c in jffs2_flush_wbuf_gc (c=0xc03d5ccc, ino=3277511952)
+    at wbuf.c:567
+#5  0xc00b2a1c in jffs2_write_super (sb=0xc03d5ccc) at fs.c:381
+#6  0xc00527b0 in sync_supers (dev=23756) at super.c:439
+#7  0xc00516c4 in sync_old_buffers () at buffer.c:2888
+#8  0xc0051b14 in kupdate (startup=0xc00164b8) at buffer.c:3060
+#9  0xc001c008 in kernel_thread (fn=0xc35ce3a0, arg=0xc02e1ff8, 
+    flags=3277644640) at process.c:389
+
+  continuously with "raw" iterating and fd->name iterating over each
+  file in order ie. "test00000.bin", "test00001.bin", etc
+
+raw iterates from this line in gc.c:
+
+		raw = raw->next_phys;
+
+  Anyone else seen anything like this?
+
+  Thanks so much for any help.
+
+  Rick Bronson
+
+                                                                   _
+                                                                  | |
+                                                                  / /__
+.----------------------------------------------------------._____/ (___)
+| Rick Bronson rick@efn.org     Tel 541-485-7264           |       (___)
+| Amazonia Computing http://www.efn.org/~rick      __ o    |_____  (___)
+| 5050 Donald Street     "Onde esta dinheiro?"    _`\<,    |     \_(___)
+| Eugene, OR  97405       -- Gal Costa         __( )/( )__ |
+`----------------------------------------------------------'
