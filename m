@@ -1,20 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.193])
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DouWH-00015k-7D
-	for linux-mtd@lists.infradead.org; Sat, 02 Jul 2005 22:47:46 -0400
-Received: by wproxy.gmail.com with SMTP id i21so509952wra
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 02 Jul 2005 19:47:25 -0700 (PDT)
-Message-ID: <9185a3fa0507021947cdf3081@mail.gmail.com>
-Date: Sun, 3 Jul 2005 11:47:25 +0900
-From: Amit Sharma <amitsharma91@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1Dp3Dm-0002QB-AU
+	for linux-mtd@lists.infradead.org; Sun, 03 Jul 2005 08:05:15 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Amit Sharma <amitsharma91@gmail.com>
+In-Reply-To: <9185a3fa0507021947cdf3081@mail.gmail.com>
+References: <9185a3fa0507021947cdf3081@mail.gmail.com>
+Content-Type: text/plain
+Date: Sun, 03 Jul 2005 16:04:40 +0400
+Message-Id: <1120392280.16978.30.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: (no subject)
-Reply-To: Amit Sharma <amitsharma91@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: (no subject)
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi=20
-I have problem in MTD driver with jFFS2 mounting on NAND device.During=20
-Cp -f /tmp/jffs2.image /dev/mtd/o
-I get error
-"page not aligned "
+On Sun, 2005-07-03 at 11:47 +0900, Amit Sharma wrote:
+> Hi 
+> I have problem in MTD driver with jFFS2 mounting on NAND device.During 
+> Cp -f /tmp/jffs2.image /dev/mtd/o
+> I get error
+> "page not aligned "
+> 
+Don't use cp with NAND flash. Read the FAQ for more details.
 
-can any one help me in this problem
-
-Thanks
-Amit
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
