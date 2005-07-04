@@ -1,20 +1,20 @@
-Received: from 220-135-196-131.hinet-ip.hinet.net ([220.135.196.131]
-	helo=tiger.auttw.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DpP4M-0000eL-TY
-	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2005 07:25:00 -0400
-Received: from notebook (unknown [192.168.10.10])
-	by tiger.auttw.com (Postfix) with SMTP id 10E2F6F58F
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  4 Jul 2005 18:50:03 +0800 (CST)
-Message-ID: <001501c58085$df316850$6fd4e43d@notebook>
-From: "A.U.T Information" <louis@auttw.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 4 Jul 2005 18:48:10 +0800
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0012_01C580C8.EC9A5900"
-Subject: How to mount flash disk to /dev/mtd*
+	id 1DpPFc-0000wn-4z
+	for linux-mtd@lists.infradead.org; Mon, 04 Jul 2005 07:36:37 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "A.U.T Information" <louis@auttw.com>
+In-Reply-To: <001501c58085$df316850$6fd4e43d@notebook>
+References: <001501c58085$df316850$6fd4e43d@notebook>
+Content-Type: text/plain
+Date: Mon, 04 Jul 2005 13:39:22 +0200
+Message-Id: <1120477162.18862.74.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: How to mount flash disk to /dev/mtd*
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+On Mon, 2005-07-04 at 18:48 +0800, A.U.T Information wrote:
+>              I have a usb flash disk.I want to read/write/erase  the
+> USB flash disk.But the linux(Fedora 4 kernel2.6.12)automount it
+> to /dev/sda.So,can i mount it to /dev/mtd*  and use MTD util to
+> read/write/erase the flash disk(nand flash)?How do i it?
 
-------=_NextPart_000_0012_01C580C8.EC9A5900
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+The usb sticks have an own controller chip, which handles the FLASH and
+provides a block device interface. I'm not aware of a stick, which lets
+you access the FLASH transparently.
 
-Dear all:
-             I have a usb flash disk.I want to read/write/erase  the USB =
-flash disk.But the linux(Fedora 4 kernel2.6.12)automount it to =
-/dev/sda.So,can i mount it to /dev/mtd*  and use MTD util to =
-read/write/erase the flash disk(nand flash)?How do i it?
-
-thx,
-louis
-
-
-------=_NextPart_000_0012_01C580C8.EC9A5900
-Content-Type: text/html;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dbig5">
-<META content=3D"MSHTML 6.00.2800.1505" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT size=3D2>Dear all:</FONT></DIV>
-<DIV><FONT=20
-size=3D2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbs=
-p;&nbsp;=20
-I have a usb flash disk.I want to read/write/erase&nbsp; the USB flash =
-disk.But=20
-the linux(Fedora 4 kernel2.6.12)automount it to =
-/dev/sda.So,c</FONT><FONT=20
-size=3D2>an i mount it to /dev/mtd*&nbsp; and use MTD util to =
-read/write/erase the=20
-flash disk(nand flash)?How do i it?</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2>thx,</FONT></DIV>
-<DIV><FONT size=3D2>louis</FONT></DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
-
-------=_NextPart_000_0012_01C580C8.EC9A5900--
+tglx
