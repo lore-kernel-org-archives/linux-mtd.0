@@ -1,14 +1,18 @@
-Received: from bay20-f25.bay20.hotmail.com ([64.4.54.114] helo=hotmail.com)
+Received: from mx1.sonologic.nl ([82.94.245.21])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DpiQA-0005hV-Ky
-	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2005 04:04:49 -0400
-Message-ID: <BAY20-F25624945C6C1BACAC0203BBFE60@phx.gbl>
-From: "asdfg dfgh" <culinux@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 05 Jul 2005 15:57:32 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Subject: When I try to mount up the JFFS2 using uClinux, fail "-22"
+	id 1DpjML-0005zE-Os
+	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2005 05:04:57 -0400
+Message-ID: <42CA4D32.9090404@sonologic.nl>
+Date: Tue, 05 Jul 2005 11:04:50 +0200
+From: Koen Martens <gmc@sonologic.nl>
+MIME-Version: 1.0
+To: red dot <vvlook@gmail.com>
+References: <639438900507010003499e2512@mail.gmail.com>
+In-Reply-To: <639438900507010003499e2512@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Cfi can't probe the flash(am29lv320db)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,140 +22,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using the uClinux 2.4.24 and FS44B0X (arm7)
-When I try to mount up the JFFS2, there are some error message shown as 
-below.
+Hi,
 
-I have already erase the mtd block before mounting, but the problem still 
-cannot be solved.
-----------------------------------------------------------
+I had something similar happening, with some broken chip. The problem
+was that the chip reported (through CFI) that it was 2mbyte, whereas in
+reality it was only 512kbytes (which was also the size of the mapping of
+the chip's address space in the linux address space). If this happens,
+the cfi probe routine skips certain initialisations, most notably the
+base offset and the wakeup queue are not initialized properly. The chip
+is registered nonetheles..
 
-#  mount -t jffs2 /dev/mtdblock0 /mnt
-mtdblock_open
-ok
-nand_read_ecc: from = 0x00000000, len = 1024
-Reading data from NAND FLASH without ECC is not recommended
-nand_read_ecc: from = 0x00004000, len = 1024
-nand_read_ecc: from = 0x00008000, len = 1024
-nand_read_ecc: from = 0x0000c000, len = 1024
-nand_read_ecc: from = 0x00010000, len = 1024
-nand_read_ecc: from = 0x00014000, len = 1024
-nand_read_ecc: from = 0x00018000, len = 1024
-nand_read_ecc: from = 0x0001c000, len = 1024
-nand_read_ecc: from = 0x00020000, len = 1024
-nand_read_ecc: from = 0x00024000, len = 1024
-nand_read_ecc: from = 0x00028000, len = 1024
-nand_read_ecc: from = 0x0002c000, len = 1024
-# nand_erase: start = 0x00028000, len = 16384
-nand_read_ecc: from = 0x00028000, len = 4096
-Reading data from NAND FLASH without ECC is not recommended
-nand_read_ecc: from = 0x00029000, len = 4096
-nand_read_ecc: from = 0x0002a000, len = 4096
-nand_read_ecc: from = 0x0002b000, len = 4096
-nand_write_ecc: to = 0x00028000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00028000 failed: -22
-nand_erase: start = 0x00024000, len = 16384
-nand_read_ecc: from = 0x00024000, len = 4096
-nand_read_ecc: from = 0x00025000, len = 4096
-nand_read_ecc: from = 0x00026000, len = 4096
-nand_read_ecc: from = 0x00027000, len = 4096
-nand_write_ecc: to = 0x00024000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00024000 failed: -22
-nand_erase: start = 0x00020000, len = 16384
-nand_read_ecc: from = 0x00020000, len = 4096
-nand_read_ecc: from = 0x00021000, len = 4096
-nand_read_ecc: from = 0x00022000, len = 4096
-nand_read_ecc: from = 0x00023000, len = 4096
-nand_write_ecc: to = 0x00020000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00020000 failed: -22
-nand_erase: start = 0x0001c000, len = 16384
-nand_read_ecc: from = 0x0001c000, len = 4096
-nand_read_ecc: from = 0x0001d000, len = 4096
-nand_read_ecc: from = 0x0001e000, len = 4096
-nand_read_ecc: from = 0x0001f000, len = 4096
-nand_write_ecc: to = 0x0001c000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x0001c000 failed: -22
-nand_erase: start = 0x00018000, len = 16384
-nand_read_ecc: from = 0x00018000, len = 4096
-nand_read_ecc: from = 0x00019000, len = 4096
-nand_read_ecc: from = 0x0001a000, len = 4096
-nand_read_ecc: from = 0x0001b000, len = 4096
-nand_write_ecc: to = 0x00018000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00018000 failed: -22
-nand_erase: start = 0x00014000, len = 16384
-nand_read_ecc: from = 0x00014000, len = 4096
-nand_read_ecc: from = 0x00015000, len = 4096
-nand_read_ecc: from = 0x00016000, len = 4096
-nand_read_ecc: from = 0x00017000, len = 4096
-nand_write_ecc: to = 0x00014000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00014000 failed: -22
-nand_erase: start = 0x00010000, len = 16384
-nand_read_ecc: from = 0x00010000, len = 4096
-nand_read_ecc: from = 0x00011000, len = 4096
-nand_read_ecc: from = 0x00012000, len = 4096
-nand_read_ecc: from = 0x00013000, len = 4096
-nand_write_ecc: to = 0x00010000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00010000 failed: -22
-nand_erase: start = 0x0000c000, len = 16384
-nand_read_ecc: from = 0x0000c000, len = 4096
-nand_read_ecc: from = 0x0000d000, len = 4096
-nand_read_ecc: from = 0x0000e000, len = 4096
-nand_read_ecc: from = 0x0000f000, len = 4096
-nand_write_ecc: to = 0x0000c000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x0000c000 failed: -22
-nand_erase: start = 0x00008000, len = 16384
-nand_read_ecc: from = 0x00008000, len = 4096
-nand_read_ecc: from = 0x00009000, len = 4096
-nand_read_ecc: from = 0x0000a000, len = 4096
-nand_read_ecc: from = 0x0000b000, len = 4096
-nand_write_ecc: to = 0x00008000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00008000 failed: -22
-nand_erase: start = 0x00004000, len = 16384
-nand_read_ecc: from = 0x00004000, len = 4096
-nand_read_ecc: from = 0x00005000, len = 4096
-nand_read_ecc: from = 0x00006000, len = 4096
-nand_read_ecc: from = 0x00007000, len = 4096
-nand_write_ecc: to = 0x00004000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00004000 failed: -22
-nand_erase: start = 0x00000000, len = 16384
-nand_read_ecc: from = 0x00000000, len = 4096
-nand_read_ecc: from = 0x00001000, len = 4096
-nand_read_ecc: from = 0x00002000, len = 4096
-nand_read_ecc: from = 0x00003000, len = 4096
-nand_write_ecc: to = 0x00000000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x00000000 failed: -22
-nand_erase: start = 0x0002c000, len = 16384
-nand_read_ecc: from = 0x0002c000, len = 4096
-nand_read_ecc: from = 0x0002d000, len = 4096
-nand_read_ecc: from = 0x0002e000, len = 4096
-nand_read_ecc: from = 0x0002f000, len = 4096
-nand_write_ecc: to = 0x0002c000, len = 12
-nand_write_ecc: Attempt to write not page aligned data
-Write clean marker to block at 0x0002c000 failed: -22
+Result: as soon as I accessed the flash -> kernel panic.
 
-#
+Just my 2 cents..
+
+Koen
+
+red dot wrote:
+> If i use "map_rom" to probe the flash, the kernel can run normally.
+> When i probe it with "cfi_probe", it can be found.
+> 
+> Following the messages:
+> 
+> CPU: ARM720T [41807202] revision 2 (ARMv4T)
+> Machine: Hynix HMS30C7202
+> Warning: bad configuration page, trying to continue
+> Memory policy: ECC disabled, Data cache writeback
+> Built 1 zonelists
+> Kernel command line: console=ttyS2,57600 mem=8M rootfstype=romfs
+> root=/dev/mtdblock2 ro
+> Trying to install chained handler for IRQ16
+> PID hash table entries: 64 (order: 6, 1024 bytes)
+> Console: colour dummy device 80x30
+> Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
+> Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
+> Memory: 8MB = 8MB total
+> Memory: 6784KB available (991K code, 237K data, 52K init)
+> Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+> CPU: Testing write buffer coherency: ok
+> Linux NoNET1.0 for Linux 2.6
+> NetWinder Floating Point Emulator V0.97 (double precision)
+> JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+> Initializing Cryptographic API
+> h720x Framebuffer driver
+> h720xfb_init_fbinfo
+> h720xfb_set_par
+> var: xres=320 hslen=4 lm=0 rm=0
+> var: yres=240 vslen=0 um=0 bm=0
+> h720xfb_check_var
+> var->bits_per_pixel=4
+> RGBT length = 8:8:8:0
+> RGBT offset = 0:0:0:0
+> h7202 PS/2 port driver
+> Serial: 8250/16550 driver $Revision: 1.90 $ 8 ports, IRQ sharing disabled
+> ttyS0 at MMIO 0x0 (irq = 8) is a 16550A
+> ttyS1 at MMIO 0x0 (irq = 9) is a 16550A
+> ttyS2 at MMIO 0x0 (irq = 10) is a 16550A
+> ttyS3 at MMIO 0x0 (irq = 11) is a 16550A
+> Using anticipatory io scheduler
+> H720x remap virt=c1080000
+> H720x-MTD probing 16bit FLASH
+> file:drivers/mtd/chips/cfi_probe.c line:70 base=0
+> file:drivers/mtd/chips/cfi_probe.c line:86 
+> file:drivers/mtd/chips/cfi_probe.c line:88 
+> Unable to handle kernel paging request at virtual address c1080055
+> pgd = c0004000
+> [c1080055] *pgd=4019f031, *pte=000000a3, *ppte=00000552
+> Internal error: Oops: 1a00081f [#1]
+> Modules linked in:
+> CPU: 0
+> PC is at cfi_probe_chip+0x2c8/0x10d8
+> LR is at cfi_probe_chip+0x248/0x10d8
+> pc : [<c00ead84>]    lr : [<c00ead04>]    Not tainted
+> sp : c01a3eb0  ip : 00000000  fp : c01a3f34
+> r10: 00000000  r9 : 00000055  r8 : c01a3f3c
+> r7 : 00000002  r6 : c0122d38  r5 : 00000001  r4 : 00000002
+> r3 : c1080000  r2 : 00000098  r1 : 00000002  r0 : 00000001
+> Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
+> Control: 217F  Table: 4000401D  DAC: 0000001D
+> Process swapper (pid: 1, stack limit = 0xc01a2190)
+> Stack: (0xc01a3eb0 to 0xc01a4000)
+> 3ea0:                                     0000001e c01a3f34 c01a3ec4 c0016ac0 
+> 3ec0: c0017c38 00000000 0000000d 00000000 00000020 c0147920 00002702 00000020 
+> 3ee0: c013c930 00000003 00000000 0000001e c01a3f34 00000002 c01a3f0c c01a3f34 
+> 3f00: 00000098 000000ff 000000f0 00000001 00000002 00000000 c0014d38 c0122d38 
+> 3f20: c01a3f3c c0122c9c c01a3f9c c01a3f38 c00f06c8 c00eaacc 00000763 00000000 
+> 3f40: 00000000 00000001 00000001 00000000 00000000 00000000 00000000 00000000 
+> 3f60: 00000000 00000000 00000000 00000000 00000000 c0122c84 c010b284 c0122d38 
+> 3f80: c0014d38 00000000 00000000 00000000 c01a3fb8 c01a3fa0 c00ea6f8 c00f0658 
+> 3fa0: c0122d38 c01a2000 00000000 c01a3fd4 c01a3fbc c00135dc c00ea6b0 c0014d1c 
+> 3fc0: c01a2000 00000000 c01a3ff4 c01a3fd8 c00150e0 c001355c 00000000 00000000 
+> 3fe0: 00000000 00000000 00000000 c01a3ff8 c002b030 c0015064 00000000 00000000 
+> Backtrace: 
+> [<c00eaabc>] (cfi_probe_chip+0x0/0x10d8) from [<c00f06c8>]
+> (mtd_do_chip_probe+0x80/0x304)
+> [<c00f0648>] (mtd_do_chip_probe+0x0/0x304) from [<c00ea6f8>]
+> (do_map_probe+0x58/0xa0)
+> [<c00ea6a0>] (do_map_probe+0x0/0xa0) from [<c00135dc>]
+> (h720x_mtd_init+0x90/0x164)
+>  r6 = 00000000  r5 = C01A2000  r4 = C0122D38 
+> [<c001354c>] (h720x_mtd_init+0x0/0x164) from [<c00150e0>] (init+0x8c/0x1c8)
+>  r6 = 00000000  r5 = C01A2000  r4 = C0014D1C 
+> [<c0015054>] (init+0x0/0x1c8) from [<c002b030>] (do_exit+0x0/0xae4)
+>  r7 = 00000000  r6 = 00000000  r5 = 00000000  r4 = 00000000
+> Code: 07c32009 0a000006 e3530002 0596300c (018320b9) 
+>  <0>Kernel panic - not syncing: Attempted to kill init!
+>  
+> The kernel is broken at cfi_send_gen_cmd(0x98, 0x55, base, map, cfi,
+> cfi->device_type, NULL).
 
 
-I doubt if the error is caused by the incorrect value of "len", but I would 
-like to ask how could I set the "len" to be a correct value.
-(I have not set the block size yet and do not know if I need to do so.)
-
-Thank you.
-
-Regards,
-Kuen
-
-_________________________________________________________________
-46 FREE English Classes, ACT Now! 
-http://www.linguaphonegroup.com/BannerTrack.asp?EMSCode=MSN03-08ETFJ-0211E
+-- 
+K.F.J. Martens, Sonologic, http://www.sonologic.nl/
+Networking, hosting, embedded systems, unix, artificial intelligence.
+Public PGP key: http://www.metro.cx/pubkey-gmc.asc
+Wondering about the funny attachment your mail program
+can't read? Visit http://www.openpgp.org/
