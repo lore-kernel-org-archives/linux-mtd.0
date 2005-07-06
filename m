@@ -1,18 +1,25 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DqFh7-0004N0-1x
-	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 15:36:30 -0400
-Message-ID: <42CC32B0.4020101@ieee.org>
-Date: Wed, 06 Jul 2005 15:36:16 -0400
-From: Dan Brown <dan_brown@ieee.org>
-MIME-Version: 1.0
-To: Andrew Schultz <alschult@eecs.berkeley.edu>
-References: <42CC2CCA.2050409@eecs.berkeley.edu>
-In-Reply-To: <42CC2CCA.2050409@eecs.berkeley.edu>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DqHmi-0004vy-Od
+	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 17:50:26 -0400
+Received: from mail.tec.linutronix.de (unknown [192.168.0.1])
+	by mail.tglx.de (Postfix) with ESMTP id 6876F65C003
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  6 Jul 2005 23:47:35 +0200 (CEST)
+Received: from tglx.tec.linutronix.de (tglx.tec.linutronix.de [192.168.0.68])
+	by mail.tec.linutronix.de (Postfix) with ESMTP id 6B709283A2
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  6 Jul 2005 23:50:21 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Wed, 06 Jul 2005 23:53:18 +0200
+Message-Id: <1120686798.26713.81.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem booting DOCboot and Linux 2.6
+Subject: [RFO] CVS commit and patch comments
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +29,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew Schultz wrote:
-> I am currently having a problem getting DOCboot to work with a 256MB 
-> DoC2000 TSOP and a Linux 2.6.11 kernel image.
+RFO = Request For Obedience :)
 
-> Just for completeness, here are the steps I performed to get to this point:
-> 
-> 1) Setup the chip with dformat:
->    dformat /winl:0000 /winh:d8000 /bdkl0:2M (the /winl, /winh stuff is 
-> needed to work for some reason)
-> 
-> 2) Reboot into linux off hard drive and put doc_spl image on chip:
->    ./flash_eraseall /dev/mtd1
->    ./nandwrite -o /dev/mtd1 doc_spl
-> 
-> 3) Fdisk/format the /dev/inftla device to create the filesystem
-> 
-> 4) Reboot and get the "CANNOT FIND IMAGE ON DEVICE" message
+Please follow the few simple rules for patch submissions and CVS commit
+comments to make the life of patchmonkeys / maintainers easier.
 
-I be interested in seeing the results of "cat /proc/mtd" on your system. 
-  Also, it would be interesting to see what happens if you omit step 3). 
-  Obviously, if you do that your kernel will be unable to load your root 
-filesystem.  But at the moment you aren't even getting the kernel loaded.
 
-You might also want to examine the output from "./nanddump -p 
-/dev/mtd1", to see if the 0xdbb1 tag shows up.  Omit the -p flag if you 
-prefer binary (rather than pretty-printed ascii) output.
+1. Provide a short summary line of the patch in the format:
 
-BTW I do everything with the 2.6 kernel; that certainly is not the 
-problem.  In fact the MTD developers don't generally test against the 
-2.4 kernel :)
+[MTD] DETAILEDTARGET: short summary
+[JFFS2] short summary
 
-	-Dan
+DETAILEDTARGET should be one of the MTD subcomponents e.g. NAND, CHIPS,
+MAPS, CORE and/or a filename if it simplifies the review/recognition of
+patch relevance
+
+2. Empty newline
+
+No futher explanation for this one :)
+
+
+3. Add a long comment to explain the patch.
+
+Please use understandable wording. We are not experts in witchcraft.
+Please omit comments which just resemble the short summary line for
+simple patches.
+
+
+4. Add the appropriate origin information
+
+[From: Realname <realmail>]
+[Acked-by: Realname <realmail>]
+Signed-off-by: Realname <realmail>
+
+Convenience rule for MTD-CVS writers:
+Committing patches to MTD-CVS is an implicit "Signed-off-by: CVS
+committer". Therefor MTD-CVS writers may omit their own (the bottom)
+Signed-off-by line, if they keep their infradead.org username vs.
+Realname/RealMail correlation in scripts/mtdusers.txt up to date. The
+Signed-off-by can be created automatically by the CVS->git commit
+selection / review script, when this information is available and
+correct.
+
+
+Thanks for your help and understanding.
+
+tglx
+
+
+PS: Refusing obedience will be tracked down and punished
+ - either by tickling to death 
+ - or by penalty not less than a keg (25 ltr ~= 6 gal) of beer due for
+the next MTD developer meeting scheduled for September/05 at my place.
