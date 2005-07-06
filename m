@@ -1,19 +1,24 @@
-Received: from mx1.sonologic.nl ([82.94.245.21])
+Received: from wproxy.gmail.com ([64.233.184.205])
 	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DpoTx-0006vJ-Ae
-	for linux-mtd@lists.infradead.org; Tue, 05 Jul 2005 10:33:06 -0400
-Received: from [127.0.0.1] (mx1.sonologic.nl [82.94.245.21])
-	(authenticated bits=0)
-	by mx1.sonologic.nl (8.13.3/8.13.3) with ESMTP id j65EG49K066332
-	for <linux-mtd@lists.infradead.org>; Tue, 5 Jul 2005 14:16:05 GMT
-Message-ID: <42CA962D.8060605@sonologic.nl>
-Date: Tue, 05 Jul 2005 16:16:13 +0200
-From: Koen Martens <gmc@sonologic.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+	id 1Dq2uO-0000Fm-CQ
+	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 01:57:24 -0400
+Received: by wproxy.gmail.com with SMTP id i20so1093525wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 05 Jul 2005 22:57:15 -0700 (PDT)
+Message-ID: <6394389005070522576415f7da@mail.gmail.com>
+Date: Wed, 6 Jul 2005 13:57:15 +0800
+From: red dot <vvlook@gmail.com>
+To: Koen Martens <gmc@sonologic.nl>
+In-Reply-To: <42CA4D32.9090404@sonologic.nl>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH] support for broken EON chips
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <639438900507010003499e2512@mail.gmail.com>
+	<42CA4D32.9090404@sonologic.nl>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Cfi can't probe the flash(am29lv320db)
+Reply-To: red dot <vvlook@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,111 +28,140 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ok, here goes nothing. Go ahead, kill me :)
+hi,
+I have found the point which was caused by the 'cfi->device_type'. I
+am using the 16bit flash, but the 8bit  device type is default. I
+changed the 'cfi->device_type' value and it has work well.
 
-Comments very welcome, since i don't have a clue atm about how to do this nicely. If all goes well i might have some time to add more EON chips to jedec_probe soon. The patch below is against cvs..
+Thank again.
 
-
-
-diff -Naur mtd-orig/drivers/mtd/chips/cfi_probe.c mtd/drivers/mtd/chips/cfi_probe.c
---- mtd-orig/drivers/mtd/chips/cfi_probe.c	2004-11-16 19:19:02.000000000 +0100
-+++ mtd/drivers/mtd/chips/cfi_probe.c	2005-07-05 15:35:19.000000000 +0200
-@@ -231,7 +231,19 @@
- 	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
- 	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
- 	cfi->mfr = cfi_read_query(map, base);
-+#ifdef CONFIG_MTD_EON
-+        if(cfi->mfr==0x7f) {
-+          cfi->mfr = cfi_read_query(map, base + (0x100*ofs_factor));
-+        }
-+#endif  
- 	cfi->id = cfi_read_query(map, base + ofs_factor);    
-+#ifdef CONFIG_MTD_EON
-+        if(cfi->mfr==0x1c && (cfi->id==0xb9 || cfi->id==0xba)) {
-+          kfree(cfi->cfiq);
-+          return 0;
-+        }
-+#endif  
-+
- 
- 	/* Put it back into Read Mode */
- 	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
-diff -Naur mtd-orig/drivers/mtd/chips/jedec_probe.c mtd/drivers/mtd/chips/jedec_probe.c
---- mtd-orig/drivers/mtd/chips/jedec_probe.c	2005-03-17 21:09:51.000000000 +0100
-+++ mtd/drivers/mtd/chips/jedec_probe.c	2005-07-05 15:32:33.000000000 +0200
-@@ -38,6 +38,7 @@
- #define MANUFACTURER_ST		0x0020
- #define MANUFACTURER_TOSHIBA	0x0098
- #define MANUFACTURER_WINBOND	0x00da
-+#define MANUFACTURER_EON        0x001c
- 
- 
- /* AMD */
-@@ -166,6 +167,8 @@
- /* Winbond */
- #define W49V002A	0x00b0
- 
-+/* EON */
-+#define EON29LV400BB    0x22BA
- 
- /*
-  * Unlock address sets for AMD command sets.
-@@ -1710,6 +1713,23 @@
- 			ERASEINFO(0x02000, 2),
- 			ERASEINFO(0x04000, 1),
- 		}
-+        },{
-+                .mfr_id         = MANUFACTURER_EON,     /* TomTom GO */
-+                .dev_id         = EON29LV400BB,
-+                .name           = "EON AM29LV400BB",
-+                .uaddr          = {
-+                        [1] = MTD_UADDR_0x0AAA_0x0555,  /* x16 */
-+                        [0] = MTD_UADDR_0x0555_0x02AA,  /* x8 */
-+                },
-+                .DevSize        = SIZE_512KiB,
-+                .CmdSet         = P_ID_AMD_STD,
-+                .NumEraseRegions= 4,
-+                .regions        = {
-+                        ERASEINFO(0x04000,1),
-+                        ERASEINFO(0x02000,2),
-+                        ERASEINFO(0x08000,1),
-+                        ERASEINFO(0x10000,7),
-+                }
- 	}
- };
- 
-@@ -1729,6 +1749,14 @@
- 	u32 ofs = cfi_build_cmd_addr(0, cfi_interleave(cfi), cfi->device_type);
- 	mask = (1 << (cfi->device_type * 8)) -1;
- 	result = map_read(map, base + ofs);
-+#ifdef CONFIG_MTD_EON
-+        if( (result.x[0] & mask) == 0x7f ) {
-+         ofs = cfi_build_cmd_addr(0x100, cfi_interleave(cfi), cfi->device_type);
-+         mask = (1 << (cfi->device_type * 8)) -1;
-+         result = map_read(map, base + ofs);
-+        }       
-+#endif          
-+
- 	return result.x[0] & mask;
- }
- 
-diff -Naur mtd-orig/drivers/mtd/chips/Kconfig mtd/drivers/mtd/chips/Kconfig
---- mtd-orig/drivers/mtd/chips/Kconfig	2005-06-07 01:04:35.000000000 +0200
-+++ mtd/drivers/mtd/chips/Kconfig	2005-07-05 15:38:25.000000000 +0200
-@@ -221,6 +221,16 @@
- 	  be set to at least 1.  This can also be adjusted at driver load
- 	  time with the retry_cmd_max module parameter.
- 
-+config MTD_EON
-+        depends on MTD_CFI_AMDSTD
-+        bool "Work-arounds for broken EON chips"
-+        help
-+          This option enables workarounds for the broken chips produced
-+          by EON. Chips for which this workaround is necessary include
-+          EN29LV400AB/T and EN29LV800BB/T. If you have such a chip, and
-+          are experiencing problems (eg. incorrect CFI detection), say
-+          'Y' here. Otherwise you should probably say 'N' here.
-+
- config MTD_CFI_STAA
- 	tristate "Support for ST (Advanced Architecture) flash chips"
- 	depends on MTD_GEN_PROBE
+2005/7/5, Koen Martens <gmc@sonologic.nl>:
+> Hi,
+>=20
+> I had something similar happening, with some broken chip. The problem
+> was that the chip reported (through CFI) that it was 2mbyte, whereas in
+> reality it was only 512kbytes (which was also the size of the mapping of
+> the chip's address space in the linux address space). If this happens,
+> the cfi probe routine skips certain initialisations, most notably the
+> base offset and the wakeup queue are not initialized properly. The chip
+> is registered nonetheles..
+>=20
+> Result: as soon as I accessed the flash -> kernel panic.
+>=20
+> Just my 2 cents..
+>=20
+> Koen
+>=20
+> red dot wrote:
+> > If i use "map_rom" to probe the flash, the kernel can run normally.
+> > When i probe it with "cfi_probe", it can be found.
+> >
+> > Following the messages:
+> >
+> > CPU: ARM720T [41807202] revision 2 (ARMv4T)
+> > Machine: Hynix HMS30C7202
+> > Warning: bad configuration page, trying to continue
+> > Memory policy: ECC disabled, Data cache writeback
+> > Built 1 zonelists
+> > Kernel command line: console=3DttyS2,57600 mem=3D8M rootfstype=3Dromfs
+> > root=3D/dev/mtdblock2 ro
+> > Trying to install chained handler for IRQ16
+> > PID hash table entries: 64 (order: 6, 1024 bytes)
+> > Console: colour dummy device 80x30
+> > Dentry cache hash table entries: 2048 (order: 1, 8192 bytes)
+> > Inode-cache hash table entries: 1024 (order: 0, 4096 bytes)
+> > Memory: 8MB =3D 8MB total
+> > Memory: 6784KB available (991K code, 237K data, 52K init)
+> > Mount-cache hash table entries: 512 (order: 0, 4096 bytes)
+> > CPU: Testing write buffer coherency: ok
+> > Linux NoNET1.0 for Linux 2.6
+> > NetWinder Floating Point Emulator V0.97 (double precision)
+> > JFFS2 version 2.2. (C) 2001-2003 Red Hat, Inc.
+> > Initializing Cryptographic API
+> > h720x Framebuffer driver
+> > h720xfb_init_fbinfo
+> > h720xfb_set_par
+> > var: xres=3D320 hslen=3D4 lm=3D0 rm=3D0
+> > var: yres=3D240 vslen=3D0 um=3D0 bm=3D0
+> > h720xfb_check_var
+> > var->bits_per_pixel=3D4
+> > RGBT length =3D 8:8:8:0
+> > RGBT offset =3D 0:0:0:0
+> > h7202 PS/2 port driver
+> > Serial: 8250/16550 driver $Revision: 1.90 $ 8 ports, IRQ sharing disabl=
+ed
+> > ttyS0 at MMIO 0x0 (irq =3D 8) is a 16550A
+> > ttyS1 at MMIO 0x0 (irq =3D 9) is a 16550A
+> > ttyS2 at MMIO 0x0 (irq =3D 10) is a 16550A
+> > ttyS3 at MMIO 0x0 (irq =3D 11) is a 16550A
+> > Using anticipatory io scheduler
+> > H720x remap virt=3Dc1080000
+> > H720x-MTD probing 16bit FLASH
+> > file:drivers/mtd/chips/cfi_probe.c line:70 base=3D0
+> > file:drivers/mtd/chips/cfi_probe.c line:86
+> > file:drivers/mtd/chips/cfi_probe.c line:88
+> > Unable to handle kernel paging request at virtual address c1080055
+> > pgd =3D c0004000
+> > [c1080055] *pgd=3D4019f031, *pte=3D000000a3, *ppte=3D00000552
+> > Internal error: Oops: 1a00081f [#1]
+> > Modules linked in:
+> > CPU: 0
+> > PC is at cfi_probe_chip+0x2c8/0x10d8
+> > LR is at cfi_probe_chip+0x248/0x10d8
+> > pc : [<c00ead84>]    lr : [<c00ead04>]    Not tainted
+> > sp : c01a3eb0  ip : 00000000  fp : c01a3f34
+> > r10: 00000000  r9 : 00000055  r8 : c01a3f3c
+> > r7 : 00000002  r6 : c0122d38  r5 : 00000001  r4 : 00000002
+> > r3 : c1080000  r2 : 00000098  r1 : 00000002  r0 : 00000001
+> > Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
+> > Control: 217F  Table: 4000401D  DAC: 0000001D
+> > Process swapper (pid: 1, stack limit =3D 0xc01a2190)
+> > Stack: (0xc01a3eb0 to 0xc01a4000)
+> > 3ea0:                                     0000001e c01a3f34 c01a3ec4 c0=
+016ac0
+> > 3ec0: c0017c38 00000000 0000000d 00000000 00000020 c0147920 00002702 00=
+000020
+> > 3ee0: c013c930 00000003 00000000 0000001e c01a3f34 00000002 c01a3f0c c0=
+1a3f34
+> > 3f00: 00000098 000000ff 000000f0 00000001 00000002 00000000 c0014d38 c0=
+122d38
+> > 3f20: c01a3f3c c0122c9c c01a3f9c c01a3f38 c00f06c8 c00eaacc 00000763 00=
+000000
+> > 3f40: 00000000 00000001 00000001 00000000 00000000 00000000 00000000 00=
+000000
+> > 3f60: 00000000 00000000 00000000 00000000 00000000 c0122c84 c010b284 c0=
+122d38
+> > 3f80: c0014d38 00000000 00000000 00000000 c01a3fb8 c01a3fa0 c00ea6f8 c0=
+0f0658
+> > 3fa0: c0122d38 c01a2000 00000000 c01a3fd4 c01a3fbc c00135dc c00ea6b0 c0=
+014d1c
+> > 3fc0: c01a2000 00000000 c01a3ff4 c01a3fd8 c00150e0 c001355c 00000000 00=
+000000
+> > 3fe0: 00000000 00000000 00000000 c01a3ff8 c002b030 c0015064 00000000 00=
+000000
+> > Backtrace:
+> > [<c00eaabc>] (cfi_probe_chip+0x0/0x10d8) from [<c00f06c8>]
+> > (mtd_do_chip_probe+0x80/0x304)
+> > [<c00f0648>] (mtd_do_chip_probe+0x0/0x304) from [<c00ea6f8>]
+> > (do_map_probe+0x58/0xa0)
+> > [<c00ea6a0>] (do_map_probe+0x0/0xa0) from [<c00135dc>]
+> > (h720x_mtd_init+0x90/0x164)
+> >  r6 =3D 00000000  r5 =3D C01A2000  r4 =3D C0122D38
+> > [<c001354c>] (h720x_mtd_init+0x0/0x164) from [<c00150e0>] (init+0x8c/0x=
+1c8)
+> >  r6 =3D 00000000  r5 =3D C01A2000  r4 =3D C0014D1C
+> > [<c0015054>] (init+0x0/0x1c8) from [<c002b030>] (do_exit+0x0/0xae4)
+> >  r7 =3D 00000000  r6 =3D 00000000  r5 =3D 00000000  r4 =3D 00000000
+> > Code: 07c32009 0a000006 e3530002 0596300c (018320b9)
+> >  <0>Kernel panic - not syncing: Attempted to kill init!
+> >
+> > The kernel is broken at cfi_send_gen_cmd(0x98, 0x55, base, map, cfi,
+> > cfi->device_type, NULL).
+>=20
+> --
+> K.F.J. Martens, Sonologic, http://www.sonologic.nl/
+> Networking, hosting, embedded systems, unix, artificial intelligence.
+> Public PGP key: http://www.metro.cx/pubkey-gmc.asc
+> Wondering about the funny attachment your mail program
+> can't read? Visit http://www.openpgp.org/
+>
