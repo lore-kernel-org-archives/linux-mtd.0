@@ -1,15 +1,22 @@
-From: David Woodhouse <postmaster@infradead.org>
-To: Vikrant_Basotra <Vikrant_Basotra@Satyam.com>
-In-Reply-To: <D8595042F3765A4285B848A78A2C2ED10162C4@bsdmsg002.corp.satyam.ad>
-References: <D8595042F3765A4285B848A78A2C2ED10162C4@bsdmsg002.corp.satyam.ad>
-Content-Type: text/plain
-Date: Wed, 06 Jul 2005 09:28:33 +0100
-Message-Id: <1120638514.3890.272.camel@localhost.localdomain>
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DqB9x-0002eu-Pj
+	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 10:46:01 -0400
+Received: from dsl-082-082-157-117.arcor-ip.net ([82.82.157.117]:2480
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1DqBDK-0001OC-OM
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jul 2005 16:49:27 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1DqB9l-0003JY-00
+	for <linux-mtd@lists.infradead.org>; Wed, 06 Jul 2005 16:45:45 +0200
+Date: Wed, 6 Jul 2005 16:45:45 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050706144545.GA11447@zappa>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Apoorv_Sangal <Apoorv_Sangal@Satyam.com>,
-	Nishant_Galange <Nishant_Galange@Satyam.com>, linux-mtd@lists.infradead.org
-Subject: Re: Porting Linux on MPC8266 custom board
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-07-06 at 12:00 +0530, Vikrant_Basotra wrote:
-> DISCLAIMER:
-> This email (including any attachments) is intended for the sole use of
-> the intended recipient/s and may contain material that is CONFIDENTIAL
-> AND PRIVATE COMPANY INFORMATION. Any review or reliance by others or
-> copying or distribution or forwarding of any or all of the contents in
-> this message is STRICTLY PROHIBITED. If you are not the intended
-> recipient, please contact the sender by email and delete all copies;
-> your cooperation in this regard is appreciated.
+Hello to the list members!
 
-Do not _EVER_ post mail with disclaimers like this to my mailing lists.
-You are not permitted to use my list for your 'confidential and private
-company information', or to make such requirements of my users or
-myself. Your mail is publicly archived, and will remain so.
+I had XIP in linux-2.6.11 running very well.
+Then I patched a mtd snapshot from 20050530 in in order to get code into
+there which properly unlock intel K3 flash devices properly (which is
+not solved yet).
+Now the xipuImage freezes at booting when it comes to
 
-Any further instances of this behaviour will be reported as abuse to
-your upstream network provider.
+Probing scb9328_flash at physical address 0x10000000 (16-bit buswidth)
 
--- 
-dwmw2
+Are there any changes between the both versions which I should be aware
+of? The xip.h looks still reasonable though, I don't get it.
+
+What I doscovered is the NO_XIP define which was introduced into some
+mapping drivers, should I take care of that and put it into mine also?
+I did not found out yet, what it does really...
+
+regards, Konsti
