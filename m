@@ -1,22 +1,26 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
-	id 1DqB9x-0002eu-Pj
-	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 10:46:01 -0400
-Received: from dsl-082-082-157-117.arcor-ip.net ([82.82.157.117]:2480
-	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
-	id 1DqBDK-0001OC-OM
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jul 2005 16:49:27 +0200
-Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
-	id 1DqB9l-0003JY-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jul 2005 16:45:45 +0200
-Date: Wed, 6 Jul 2005 16:45:45 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
+Received: from mail.professional-internet.de ([213.69.77.2]
+	helo=hermes.professional-internet.de)
+	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
+	id 1DqC5Q-000318-4E
+	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 11:45:22 -0400
+Received: from mailer.port.de ([195.4.0.127])
+	by hermes.professional-internet.de (8.12.10/8.12.10) with ESMTP id
+	j66FjGVk001114
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Jul 2005 17:45:17 +0200
+Received: from ulrich.port.de (ulrich.port.de [194.173.33.14])
+	by mailer.port.de (8.12.10/8.12.7/SuSE Linux 0.6) with ESMTP id
+	j66FjIJA002993
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Jul 2005 17:45:18 +0200
+From: Ruediger Haertel <hae@port.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050706144545.GA11447@zappa>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Wed, 6 Jul 2005 17:45:18 +0200
+MIME-Version: 1.0
 Content-Disposition: inline
-Subject: xip changes between 2.6.11 and 20050530?
+Message-Id: <200507061745.18226.hae@port.de>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Subject: MTD/ DoC Millenium Plus - Failure in flash detection
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +30,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello to the list members!
+Hello all,
 
-I had XIP in linux-2.6.11 running very well.
-Then I patched a mtd snapshot from 20050530 in in order to get code into
-there which properly unlock intel K3 flash devices properly (which is
-not solved yet).
-Now the xipuImage freezes at booting when it comes to
+I am trying to get the DOC Millenium Plus chip (16 MB, ChipID = 0x41) on 
+my board (Coldfire 5272, uClinux) running. The chip as such is detected. 
+If the DoC is accessed correctly then the flash chip has id 0xA5. This 
+id is not in the table of NAND IDs in the file nand_ids.c.
 
-Probing scb9328_flash at physical address 0x10000000 (16-bit buswidth)
+The cvs MTD drivers has 0xA5 assigned to a SAMSUNG 2 GiB chip. But as 
+far as I know the Doc MilPlus 16MB uses a Toshiba flash.
 
-Are there any changes between the both versions which I should be aware
-of? The xip.h looks still reasonable though, I don't get it.
+Any suggestions what's wrong here.
 
-What I doscovered is the NO_XIP define which was introduced into some
-mapping drivers, should I take care of that and put it into mine also?
-I did not found out yet, what it does really...
+How would I verify that access to the DoC is correct?
+At which address would I read? and what to expect?
 
-regards, Konsti
+If this would work, how do I proceed? I read something about 
+nftl_format?
+
+
+The documents/books I found so far (Building embedded linux; Linux MTD, 
+JFFS Howto ..) mostly concentrate on using some kind of pluggable DOC 
+chips that can be inserted in a computer that has Windows or Linux 
+running. Then everything can be done with some tools. But how really to 
+do it on an embedded linux with a soldered DoC ?
+
+
+
+-- 
+
+Ruediger Haertel
