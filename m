@@ -1,25 +1,24 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.43 #1 (Red Hat Linux))
-	id 1DqHmi-0004vy-Od
-	for linux-mtd@lists.infradead.org; Wed, 06 Jul 2005 17:50:26 -0400
-Received: from mail.tec.linutronix.de (unknown [192.168.0.1])
-	by mail.tglx.de (Postfix) with ESMTP id 6876F65C003
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  6 Jul 2005 23:47:35 +0200 (CEST)
-Received: from tglx.tec.linutronix.de (tglx.tec.linutronix.de [192.168.0.68])
-	by mail.tec.linutronix.de (Postfix) with ESMTP id 6B709283A2
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  6 Jul 2005 23:50:21 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.43 #1 (Red Hat Linux))
+	id 1DqReC-0006Xr-0V
+	for linux-mtd@lists.infradead.org; Thu, 07 Jul 2005 04:22:22 -0400
+Received: from dsl-082-082-155-079.arcor-ip.net ([82.82.155.79]:3097
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1DqRhi-0006sO-KD
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Jul 2005 10:25:54 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1DqRe4-0003hK-00
+	for <linux-mtd@lists.infradead.org>; Thu, 07 Jul 2005 10:22:08 +0200
+Date: Thu, 7 Jul 2005 10:22:08 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Wed, 06 Jul 2005 23:53:18 +0200
-Message-Id: <1120686798.26713.81.camel@tglx.tec.linutronix.de>
+Message-ID: <20050707082208.GA13211@zappa>
+References: <20050706144545.GA11447@zappa> <42CC0A6E.9090704@mvista.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: [RFO] CVS commit and patch comments
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <42CC0A6E.9090704@mvista.com>
+Subject: Re: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +28,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-RFO = Request For Obedience :)
+* Todd Poynor <tpoynor@mvista.com> [Wed, Jul 06, 2005 at 09:44:30AM -0700]:
 
-Please follow the few simple rules for patch submissions and CVS commit
-comments to make the life of patchmonkeys / maintainers easier.
+> Do you have a diff of drivers/mtd/chips/cfi_cmdset_0001.c between the 
+> two versions?  I'll guess a change was made that didn't wrap something 
+> in the xip disable/check for pending interrupts stuff.
 
+Stupid stupid me! In order to integrate the intel K3 unlocking I
+inserted a dozen of printk commands which of couse broke XIP!
 
-1. Provide a short summary line of the patch in the format:
+*ARGH* How stupid, I simply forgot.
 
-[MTD] DETAILEDTARGET: short summary
-[JFFS2] short summary
+Now I removed them and XIP seems to be fine again.
+Now I have to fix sync burst again and then the intel K3 unlocking is
+scheduled :)
 
-DETAILEDTARGET should be one of the MTD subcomponents e.g. NAND, CHIPS,
-MAPS, CORE and/or a filename if it simplifies the review/recognition of
-patch relevance
-
-2. Empty newline
-
-No futher explanation for this one :)
-
-
-3. Add a long comment to explain the patch.
-
-Please use understandable wording. We are not experts in witchcraft.
-Please omit comments which just resemble the short summary line for
-simple patches.
-
-
-4. Add the appropriate origin information
-
-[From: Realname <realmail>]
-[Acked-by: Realname <realmail>]
-Signed-off-by: Realname <realmail>
-
-Convenience rule for MTD-CVS writers:
-Committing patches to MTD-CVS is an implicit "Signed-off-by: CVS
-committer". Therefor MTD-CVS writers may omit their own (the bottom)
-Signed-off-by line, if they keep their infradead.org username vs.
-Realname/RealMail correlation in scripts/mtdusers.txt up to date. The
-Signed-off-by can be created automatically by the CVS->git commit
-selection / review script, when this information is available and
-correct.
-
-
-Thanks for your help and understanding.
-
-tglx
-
-
-PS: Refusing obedience will be tracked down and punished
- - either by tickling to death 
- - or by penalty not less than a keg (25 ltr ~= 6 gal) of beer due for
-the next MTD developer meeting scheduled for September/05 at my place.
+Regards, Konsti
