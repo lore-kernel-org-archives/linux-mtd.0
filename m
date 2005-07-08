@@ -1,19 +1,25 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from fall-curlleaf.atl.sa.earthlink.net ([207.69.195.105])
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DqyiR-0003TC-7D
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 15:40:55 -0400
-Date: Fri, 8 Jul 2005 21:40:47 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Koen Martens <gmc@sonologic.nl>
-Message-ID: <20050708194047.GB30728@wohnheim.fh-wedel.de>
-References: <42CA962D.8060605@sonologic.nl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42CA962D.8060605@sonologic.nl>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] support for broken EON chips
+	id 1Dr0jm-0004nj-Vu
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 17:50:25 -0400
+Received: from pop-canoe.atl.sa.earthlink.net ([207.69.195.66])
+	by fall-curlleaf.atl.sa.earthlink.net with esmtp (Exim 3.36 #4)
+	id 1Dqzso-00075s-00
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 16:55:38 -0400
+Received: from ar56.lsanca1-4.16.254.159.lsanca1.elnk.dsl.genuity.net
+	([4.16.254.159] helo=gregs875)
+	by pop-canoe.atl.sa.earthlink.net with smtp (Exim 3.36 #10)
+	id 1DqzsZ-0000Dg-00
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 16:55:24 -0400
+From: "Greg Lindberg" <gl4jalopi@earthlink.net>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 8 Jul 2005 13:59:49 -0700
+Message-ID: <MPEAJFOFNNOAIMOHBACICEIOEBAA.gl4jalopi@earthlink.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: Configure in Linux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,142 +29,126 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 5 July 2005 16:16:13 +0200, Koen Martens wrote:
-> 
-> Ok, here goes nothing. Go ahead, kill me :)
+I'm trying to move an embedded system based on an Intel PXA255 from the 2.4
+kernel to the 2.6 kernel.  I've gotten to the point that the MTD system is
+recognizing the partition and adding it to the system.  When I try to mount
+it using the Linux command line option 'root=/dev/mtd0' I get an error.
+Here is the output from the Linux start up:
 
-Boom, you're dead. :)
+Linux version 2.6.11.9 (greg@rh9dev) (gcc version 3.3.4) #45 Fri Jul 8
+12:50:05 PDT 2005
+CPU: XScale-PXA255 [69052d06] revision 6 (ARMv5TE)
+CPU0: D VIVT undefined 5 cache
+CPU0: I cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
+CPU0: D cache: 32768 bytes, associativity 32, 32 byte lines, 32 sets
+Machine: InHand Electronics Fingertip3
+Memory policy: ECC disabled, Data cache writeback
+Memory clock: 99.53MHz (*27)
+Run Mode clock: 199.07MHz (*2)
+Turbo Mode clock: 199.07MHz (*1.0, inactive)
+Built 1 zonelists
+Kernel command line: console=ttyS0,38400 noinitrd root=/dev/mtd0 rw
+init=/bin/bash
+PID hash table entries: 128 (order: 7, 2048 bytes)
+Console: colour dummy device 80x30
+Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
+Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
+Memory: 16MB = 16MB total
+Memory: 14776KB available (1091K code, 239K data, 56K init)
+Mount-cache hash table entries: 512
+CPU: Testing write buffer coherency: ok
+Linux NoNET1.0 for Linux 2.6
+JFFS2 version 2.2. (NAND) (C) 2001-2003 Red Hat, Inc.
+JFFS2: default compression mode: priority
+ttyS0 at MMIO 0x40100000 (irq = 15) is a FFUART
+ttyS1 at MMIO 0x40200000 (irq = 14) is a BTUART
+ttyS2 at MMIO 0x40700000 (irq = 13) is a STUART
+io scheduler noop registered
+io scheduler anticipatory registered
+io scheduler deadline registered
+io scheduler cfq registered
+Probing InHand Fingertip3 flash at physical address 0x00000000
+InHand Linux Flash: Found 1 x16 devices at 0x0 in 16-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+cfi_cmdset_0001: Erase suspend on write enabled
+Using static partition definition
+Creating 1 MTD partitions on "InHand Linux Flash":
+0x00160000-0x02000000 : "ihfs"
+mtd: Giving out device 0 to ihfs
+mice: PS/2 mouse device common for all mice
+i2c /dev entries driver
+VFS: Cannot open root device "mtd0" or unknown-block(0,0)
+Please append a correct "root=" boot option
+Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(0,0)
 
-> Comments very welcome, since i don't have a clue atm about how to do this nicely. If all goes well i might have some time to add more EON chips to jedec_probe soon. The patch below is against cvs..
+Here are the relevant portions of the .config file: (I've removed all of not
+set variables)
 
-Patch is quite small, that's good.
+#
+# Memory Technology Devices (MTD)
+#
+CONFIG_MTD=y
+CONFIG_MTD_DEBUG=y
+CONFIG_MTD_DEBUG_VERBOSE=3
+CONFIG_MTD_PARTITIONS=y
 
-> diff -Naur mtd-orig/drivers/mtd/chips/cfi_probe.c mtd/drivers/mtd/chips/cfi_probe.c
-> --- mtd-orig/drivers/mtd/chips/cfi_probe.c	2004-11-16 19:19:02.000000000 +0100
-> +++ mtd/drivers/mtd/chips/cfi_probe.c	2005-07-05 15:35:19.000000000 +0200
-> @@ -231,7 +231,19 @@
->  	cfi_send_gen_cmd(0x55, 0x2aa, base, map, cfi, cfi->device_type, NULL);
->  	cfi_send_gen_cmd(0x90, 0x555, base, map, cfi, cfi->device_type, NULL);
->  	cfi->mfr = cfi_read_query(map, base);
-> +#ifdef CONFIG_MTD_EON
-> +        if(cfi->mfr==0x7f) {
-> +          cfi->mfr = cfi_read_query(map, base + (0x100*ofs_factor));
-> +        }
-> +#endif  
->  	cfi->id = cfi_read_query(map, base + ofs_factor);    
-> +#ifdef CONFIG_MTD_EON
-> +        if(cfi->mfr==0x1c && (cfi->id==0xb9 || cfi->id==0xba)) {
-> +          kfree(cfi->cfiq);
-> +          return 0;
-> +        }
-> +#endif  
-> +
->  
->  	/* Put it back into Read Mode */
->  	cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type, NULL);
+#
+# User Modules And Translation Layers
+#
+# nothing is set
 
-This is an ugly ugly hack.  But also a nice starting point.  As you
-already know from irc, I'd prefer something like:
+#
+# RAM/ROM/Flash chip drivers
+#
+CONFIG_MTD_CFI=y
+CONFIG_MTD_GEN_PROBE=y
+CONFIG_MTD_CFI_ADV_OPTIONS=y
+CONFIG_MTD_CFI_NOSWAP=y
+CONFIG_MTD_CFI_GEOMETRY=y
+CONFIG_MTD_MAP_BANK_WIDTH_2=y
+CONFIG_MTD_CFI_I1=y
+CONFIG_MTD_CFI_INTELEXT=y
+CONFIG_MTD_CFI_UTIL=y
 
-cfi_probe   \
-             >---> register_chip
-jedec_probe /
+#
+# Mapping drivers for chip access
+#
+CONFIG_MTD_INHANDFTIP3=y
+# nothing else is set
 
-But that is clearly more work and a much larger patch.  For the
-moment, I'm fine with the hack.
+#
+# Self-contained MTD device drivers
+#
+# nothing is set
 
-> diff -Naur mtd-orig/drivers/mtd/chips/jedec_probe.c mtd/drivers/mtd/chips/jedec_probe.c
-> --- mtd-orig/drivers/mtd/chips/jedec_probe.c	2005-03-17 21:09:51.000000000 +0100
-> +++ mtd/drivers/mtd/chips/jedec_probe.c	2005-07-05 15:32:33.000000000 +0200
-> @@ -38,6 +38,7 @@
->  #define MANUFACTURER_ST		0x0020
->  #define MANUFACTURER_TOSHIBA	0x0098
->  #define MANUFACTURER_WINBOND	0x00da
-> +#define MANUFACTURER_EON        0x001c
->  
->  
->  /* AMD */
-> @@ -166,6 +167,8 @@
->  /* Winbond */
->  #define W49V002A	0x00b0
->  
-> +/* EON */
-> +#define EON29LV400BB    0x22BA
->  
->  /*
->   * Unlock address sets for AMD command sets.
-> @@ -1710,6 +1713,23 @@
->  			ERASEINFO(0x02000, 2),
->  			ERASEINFO(0x04000, 1),
->  		}
-> +        },{
-> +                .mfr_id         = MANUFACTURER_EON,     /* TomTom GO */
-> +                .dev_id         = EON29LV400BB,
-> +                .name           = "EON AM29LV400BB",
-> +                .uaddr          = {
-> +                        [1] = MTD_UADDR_0x0AAA_0x0555,  /* x16 */
-> +                        [0] = MTD_UADDR_0x0555_0x02AA,  /* x8 */
-> +                },
-> +                .DevSize        = SIZE_512KiB,
-> +                .CmdSet         = P_ID_AMD_STD,
-> +                .NumEraseRegions= 4,
-> +                .regions        = {
-> +                        ERASEINFO(0x04000,1),
-> +                        ERASEINFO(0x02000,2),
-> +                        ERASEINFO(0x08000,1),
-> +                        ERASEINFO(0x10000,7),
-> +                }
->  	}
->  };
->  
+#
+# Disk-On-Chip Device Drivers
+#
+# nothing is set
 
-Sane.
+#
+# NAND Flash Device Drivers
+#
+# CONFIG_MTD_NAND is not set
 
-> @@ -1729,6 +1749,14 @@
->  	u32 ofs = cfi_build_cmd_addr(0, cfi_interleave(cfi), cfi->device_type);
->  	mask = (1 << (cfi->device_type * 8)) -1;
->  	result = map_read(map, base + ofs);
-> +#ifdef CONFIG_MTD_EON
-> +        if( (result.x[0] & mask) == 0x7f ) {
-> +         ofs = cfi_build_cmd_addr(0x100, cfi_interleave(cfi), cfi->device_type);
-> +         mask = (1 << (cfi->device_type * 8)) -1;
-> +         result = map_read(map, base + ofs);
-> +        }       
-> +#endif          
-> +
->  	return result.x[0] & mask;
->  }
->  
+#
+# Miscellaneous filesystems
+#
+# CONFIG_JFFS_FS is not set
+CONFIG_JFFS2_FS=y
+CONFIG_JFFS2_FS_DEBUG=2
+CONFIG_JFFS2_FS_WRITEBUFFER=y
+# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
+CONFIG_JFFS2_ZLIB=y
+CONFIG_JFFS2_RTIME=y
+# CONFIG_JFFS2_RUBIN is not set
 
-Second part of the hack.
+I'm obviously missing something in the configuration for mtd and jffs2.
+Any help that anyone could give would be greatly appreciated.
 
-> diff -Naur mtd-orig/drivers/mtd/chips/Kconfig mtd/drivers/mtd/chips/Kconfig
-> --- mtd-orig/drivers/mtd/chips/Kconfig	2005-06-07 01:04:35.000000000 +0200
-> +++ mtd/drivers/mtd/chips/Kconfig	2005-07-05 15:38:25.000000000 +0200
-> @@ -221,6 +221,16 @@
->  	  be set to at least 1.  This can also be adjusted at driver load
->  	  time with the retry_cmd_max module parameter.
->  
-> +config MTD_EON
-> +        depends on MTD_CFI_AMDSTD
-> +        bool "Work-arounds for broken EON chips"
-> +        help
-> +          This option enables workarounds for the broken chips produced
-> +          by EON. Chips for which this workaround is necessary include
-> +          EN29LV400AB/T and EN29LV800BB/T. If you have such a chip, and
-> +          are experiencing problems (eg. incorrect CFI detection), say
-> +          'Y' here. Otherwise you should probably say 'N' here.
-> +
->  config MTD_CFI_STAA
->  	tristate "Support for ST (Advanced Architecture) flash chips"
->  	depends on MTD_GEN_PROBE
+Greg Wilson-Lindberg
 
-"default n" please.
-
-Jörn
-
--- 
-To recognize individual spam features you have to try to get into the
-mind of the spammer, and frankly I want to spend as little time inside
-the minds of spammers as possible.
--- Paul Graham
+;Secrecy, being an instrument of conspiracy, ought never to be the system of
+;a regular government. -Jeremy Bentham, jurist and philosopher (1748-1832)
