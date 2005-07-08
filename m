@@ -1,21 +1,18 @@
-Received: from samwise.efn.org ([12.33.21.33])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dqvgd-0001Je-UR
-	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 12:26:51 -0400
-Received: from amazonia.client.comcast.net (c-24-20-117-59.hsd1.or.comcast.net
-	[24.20.117.59])
-	by samwise.efn.org (Postfix) with ESMTP id B8B211701E3
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  8 Jul 2005 09:26:40 -0700 (PDT)
-Received: from rick by amazonia.client.comcast.net with local (Exim 3.36 #1
-	(Debian)) id 1DqvgV-000275-00
-	for <linux-mtd@lists.infradead.org>; Fri, 08 Jul 2005 09:26:39 -0700
-To: linux-mtd@lists.infradead.org
-Message-Id: <E1DqvgV-000275-00@amazonia.client.comcast.net>
-From: Rick Bronson <rick@efn.org>
-Date: Fri, 08 Jul 2005 09:26:39 -0700
-Subject: infinite loop in jffs2_flush_wbuf_gc()?
-Reply-To: rick@efn.org
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dqw5X-0001Zj-8h
+	for linux-mtd@lists.infradead.org; Fri, 08 Jul 2005 12:52:35 -0400
+Message-ID: <42CEAA83.20908@yandex.ru>
+Date: Fri, 08 Jul 2005 20:32:03 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: rick@efn.org
+References: <E1DqvgV-000275-00@amazonia.client.comcast.net>
+In-Reply-To: <E1DqvgV-000275-00@amazonia.client.comcast.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: infinite loop in jffs2_flush_wbuf_gc()?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Rick Bronson wrote:
+> Hi,
+> 
+>   I seem to encounter an infinite loop in in jffs2_flush_wbuf_gc() in
+> wbuf.c starting at: 
+> 
+Rick,
 
-  I seem to encounter an infinite loop in in jffs2_flush_wbuf_gc() in
-wbuf.c starting at: 
+this is the second time you're reporting this and this is the second 
+time I inquire the version of your MTD :-) Is it the last MTD?
 
-	} else while (old_wbuf_len &&
-		      old_wbuf_ofs == c->wbuf_ofs) {
+http://lists.infradead.org/pipermail/linux-mtd/2005-July/012948.html
 
-  Once it gets in this loop, I don't see how it ever gets out if
-c->wbuf_ofs doesn't change.
-
-  Thanks so much for any help.
-
-  Rick Bronson
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
