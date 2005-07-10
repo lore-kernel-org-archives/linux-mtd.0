@@ -1,30 +1,17 @@
-Received: from e31.co.us.ibm.com ([32.97.110.129])
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DrdZp-0003x0-IK
-	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2005 11:18:48 -0400
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e31.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j6AFIaeL094478
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Jul 2005 11:18:36 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id
-	j6AFIa2D409878
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Jul 2005 09:18:36 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	j6AFIari020559
-	for <linux-mtd@lists.infradead.org>; Sun, 10 Jul 2005 09:18:36 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-To: HS8JCV <hs8jcv@gmail.com>
-In-Reply-To: <7febb0a105070915119abbc0c@mail.gmail.com>
-References: <7febb0a105070915119abbc0c@mail.gmail.com>
-Content-Type: text/plain
-Date: Sun, 10 Jul 2005 10:18:30 -0500
-Message-Id: <1121008710.23030.5.camel@windu.rchland.ibm.com>
+Received: from ns.suse.de ([195.135.220.2] helo=mx1.suse.de)
+	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Drhax-0007ma-GU
+	for linux-mtd@lists.infradead.org; Sun, 10 Jul 2005 20:36:08 +0100
+Date: Sun, 10 Jul 2005 19:35:33 +0000
+From: Olaf Hering <olh@suse.de>
+To: Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org
+Message-ID: <20050710193533.25.MftboC2946.2247.olh@nectarine.suse.de> 
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20050710193508.0.PmFpst2252.2247.olh@nectarine.suse.de>  
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: How to config file for jffs2.?
+Subject: [PATCH 25/82] remove linux/version.h from drivers/mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,24 +21,144 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2005-07-10 at 05:11 +0700, HS8JCV wrote:
-> Hi all
-> Now.
-> I have at91rm9200dk board.
-> This board have SDRAM 32 MByte and Nor Flash 4 Mbyte(SST39VF32010).
-> I port kernel 2.4.27-vrs1.
-> I will save data to nor flash on board.
-> I know. I should be use jffs2.
-> But.I never use it.
-> Please suggest me for use it.
-> 
-> How many files in kernel source code(linux-2.4.27-vrs1) for config it.?
-> Which files for config it?
 
-Do you have MTD configured in your kernel?  If not you'll need enable
-that first.  Then an option for JFFS2 will be present (CONFIG_JFFS2_FS).
+changing CONFIG_LOCALVERSION rebuilds too much, for no appearent reason.
+remove code from obsolete kernels
 
-But you'll need either a board map driver or to use the physmap device
-driver so that the flash is mapped to an MTD device.
+Signed-off-by: Olaf Hering <olh@suse.de>
 
-josh
+drivers/mtd/chips/cfi_cmdset_0020.c |    1 -
+drivers/mtd/devices/pmc551.c        |    1 -
+drivers/mtd/maps/ebony.c            |    1 -
+drivers/mtd/maps/ocotea.c           |    1 -
+drivers/mtd/maps/walnut.c           |    1 -
+drivers/mtd/nand/au1550nd.c         |   10 ----------
+drivers/mtd/nand/autcpu12.c         |    1 -
+include/linux/mtd/cfi.h             |    1 -
+include/linux/mtd/mtd.h             |    1 -
+9 files changed, 18 deletions(-)
+
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/chips/cfi_cmdset_0020.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/chips/cfi_cmdset_0020.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/chips/cfi_cmdset_0020.c
+@@ -18,7 +18,6 @@
+*	- added a writev function
+*/
+
+-#include <linux/version.h>
+#include <linux/module.h>
+#include <linux/types.h>
+#include <linux/kernel.h>
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/devices/pmc551.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/devices/pmc551.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/devices/pmc551.c
+@@ -82,7 +82,6 @@
+*       * Comb the init routine.  It's still a bit cludgy on a few things.
+*/
+
+-#include <linux/version.h>
+#include <linux/config.h>
+#include <linux/kernel.h>
+#include <linux/module.h>
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/maps/ebony.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/maps/ebony.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/maps/ebony.c
+@@ -21,7 +21,6 @@
+#include <linux/mtd/map.h>
+#include <linux/mtd/partitions.h>
+#include <linux/config.h>
+-#include <linux/version.h>
+#include <asm/io.h>
+#include <asm/ibm44x.h>
+#include <platforms/4xx/ebony.h>
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/maps/ocotea.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/maps/ocotea.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/maps/ocotea.c
+@@ -19,7 +19,6 @@
+#include <linux/mtd/map.h>
+#include <linux/mtd/partitions.h>
+#include <linux/config.h>
+-#include <linux/version.h>
+#include <asm/io.h>
+#include <asm/ibm44x.h>
+#include <platforms/4xx/ocotea.h>
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/maps/walnut.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/maps/walnut.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/maps/walnut.c
+@@ -21,7 +21,6 @@
+#include <linux/mtd/map.h>
+#include <linux/mtd/partitions.h>
+#include <linux/config.h>
+-#include <linux/version.h>
+#include <asm/io.h>
+#include <asm/ibm4xx.h>
+#include <platforms/4xx/walnut.h>
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/nand/au1550nd.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/nand/au1550nd.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/nand/au1550nd.c
+@@ -20,7 +20,6 @@
+#include <asm/io.h>
+
+/* fixme: this is ugly */
+-#if LINUX_VERSION_CODE > KERNEL_VERSION(2, 6, 0)
+#include <asm/mach-au1x00/au1000.h>
+#ifdef CONFIG_MIPS_PB1550
+#include <asm/mach-pb1x00/pb1550.h>
+@@ -28,15 +27,6 @@
+#ifdef CONFIG_MIPS_DB1550
+#include <asm/mach-db1x00/db1x00.h>
+#endif
+-#else
+-#include <asm/au1000.h>
+-#ifdef CONFIG_MIPS_PB1550
+-#include <asm/pb1550.h>
+-#endif
+-#ifdef CONFIG_MIPS_DB1550
+-#include <asm/db1x00.h>
+-#endif
+-#endif
+
+/*
+* MTD structure for NAND controller
+Index: linux-2.6.13-rc2-mm1/drivers/mtd/nand/autcpu12.c
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/drivers/mtd/nand/autcpu12.c
++++ linux-2.6.13-rc2-mm1/drivers/mtd/nand/autcpu12.c
+@@ -27,7 +27,6 @@
+*	10-06-2002 TG	128K card support added
+*/
+
+-#include <linux/version.h>
+#include <linux/slab.h>
+#include <linux/init.h>
+#include <linux/module.h>
+Index: linux-2.6.13-rc2-mm1/include/linux/mtd/cfi.h
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/include/linux/mtd/cfi.h
++++ linux-2.6.13-rc2-mm1/include/linux/mtd/cfi.h
+@@ -8,7 +8,6 @@
+#define __MTD_CFI_H__
+
+#include <linux/config.h>
+-#include <linux/version.h>
+#include <linux/delay.h>
+#include <linux/types.h>
+#include <linux/interrupt.h>
+Index: linux-2.6.13-rc2-mm1/include/linux/mtd/mtd.h
+===================================================================
+--- linux-2.6.13-rc2-mm1.orig/include/linux/mtd/mtd.h
++++ linux-2.6.13-rc2-mm1/include/linux/mtd/mtd.h
+@@ -14,7 +14,6 @@
+#endif
+
+#include <linux/config.h>
+-#include <linux/version.h>
+#include <linux/types.h>
+#include <linux/module.h>
+#include <linux/uio.h>
