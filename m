@@ -1,22 +1,27 @@
-Received: from mail.professional-internet.de ([213.69.77.2]
-	helo=hermes.professional-internet.de)
+Received: from mailout3.samsung.com ([203.254.224.33])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DrtHg-0004ke-3r
-	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2005 04:05:08 -0400
-From: Ruediger Haertel <hae@port.de>
+	id 1Drtgo-0005LM-Ob
+	for linux-mtd@lists.infradead.org; Mon, 11 Jul 2005 04:31:02 -0400
+Received: from ep_mmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0IJG0091QFM30N@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 11 Jul 2005 17:30:03 +0900 (KST)
+Received: from july7 ([168.219.213.193])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0IJG00C0LFM33V@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 11 Jul 2005 17:30:03 +0900 (KST)
+Date: Mon, 11 Jul 2005 17:30:05 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+In-reply-to: <1121068041.26713.309.camel@tglx.tec.linutronix.de>
 To: tglx@linutronix.de
-Date: Mon, 11 Jul 2005 10:04:53 +0200
-References: <200507061745.18226.hae@port.de> <200507071704.19393.hae@port.de>
-	<200507081048.18115.hae@port.de>
-In-Reply-To: <200507081048.18115.hae@port.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200507111004.54060.hae@port.de>
+Message-id: <0IJG00C0MFM33V@mmp1.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: MTD/ DoC Millenium Plus - Failure in flash detection
+Subject: RE: [PATCH] OneNAND MTD support
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +31,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Freitag, 8. Juli 2005 10:48 schrieb Ruediger Haertel:
->
-> Now I get output from nanddump. But I cannot see the file contents
-> that I wrote to the DoC.
->
-> testfile: "0123456789ABCDEF"
->
-> /> nandwrite -p /dev/mtd5 /mnt/testfile
-> MTD_open
-> MTD_ioctl
-> MTD_ioctl
-> Writing data to block 0
-> MTD_ioctl
-> Bad block at 0, 1 block(s) from 0 willM be skipped
-> Writing dataT to block 4000
-> D_ioctl
-> MTD_write
-> MTD_close
->
-> Seems to have worked. However nanddump (I dumped the complete 16 MB)
-> does not show the file contents on the DoC.
-> Do I have to format the DoC or do any other preparation? I thought
-> that was only necessary with the "old" driver.
->
-> This is also my next step. Preparing for a filesystem. I think I have
-> to format it with the ntfl_format tool and then mkfs.jff2. Right?
+> 
+> > > 
+> > > +EXPORT_SYMBOL(onenand_scan);
+> > > +EXPORT_SYMBOL(onenand_release);
+> > > 
+> > > Would you mind to change those exports to EXPORT_SYMBOL_GPL ?
+> > 
+> > In fact I not sure and also don't know license issue. 
+> > If we develop the some commercial mtd user software then 
+> can we use mtd
+> > device code exported with GPL? Is there no problem?
+> 
+> User space software is not concerned of kernel licences.
+> 
+> If you talk about a proprietary closed source kernel module 
+> which needs
+> those exports, you are stepping into a legal grey area 
+> regardless of the
+> exports style. I don't see a point where it makes sense to 
+> have a closed
+> source board driver, as it just initializes a data structure and calls
+> generic handling code. 
+> 
 
-Using "nftl_format /dev/mtd5" erases the DoC like "eraseall /dev/mtd5" 
-completely so that no flash chips are detected :(.
+OK
+ 
+> 
+> Some nitpicks though
+> 
+> +	/* The 10 msec is enough */
+> +	timeout = jiffies + msecs_to_jiffies(10);
+> +	while (time_before(jiffies, timeout)) {
+> 
+> On CPU's which have HZ=100 (1 jiffy == 10ms) this might be 
+> critical, as
+> you might set the timeout immidiately before the timer interrupt
+> happens. Using a 20ms timeout will keep you on the safe side 
+> in any case
 
-Any suggestions how to restore the original state of the DoC.
+No problem.
 
--- 
+> 
+> 
+> Please clean up your includes to avoid redundant includes of header
+> files.
 
-Ruediger Haertel
+which one do you mean?
+Are there not required header file?
+
+
+Regards
+
+Kyungmin Park.
