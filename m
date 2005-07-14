@@ -1,9 +1,9 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dt7Ik-0000rh-Bk
-	for linux-mtd@lists.infradead.org; Thu, 14 Jul 2005 13:15:13 -0400
-Message-ID: <42D69D78.80406@yandex.ru>
-Date: Thu, 14 Jul 2005 21:14:32 +0400
+	id 1Dt7ML-00014y-4N
+	for linux-mtd@lists.infradead.org; Thu, 14 Jul 2005 13:19:00 -0400
+Message-ID: <42D69E59.7000901@yandex.ru>
+Date: Thu, 14 Jul 2005 21:18:17 +0400
 From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: rick@efn.org
@@ -23,25 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rick,
+Oh, there was something nasty with indentation, here it is again.
 
-sorry for long delay in my reply, I've forgotten about you :-(
-
-'cvs log gc.c' has the following entry:
-----------------------------
-revision 1.146
-date: 2005/03/20 17:45:25;  author: dedekind;  state: Exp;  lines: +7 -1
-Make sure the erase_pending_wbuf_list's blocks are taken into account
-when picking the block to GC.
-----------------------------
-
-This was the fix of the endless GC bug. Probably this is what you faced. 
-May be there was one more modified file, don't remember, probably 
-wbuf.c. You may find this out if you may use cvs. Try to make the same 
-changes.
-
-AFAIR, the bug was easily reproduced if you unlink a file then fsync it. 
-I've even found the test for you (don't mind - it isn't nice):
+/*
+  * JFFS2 file expansion test.
+  */
 
 #include <sys/vfs.h>
 #include <stdlib.h>
@@ -130,6 +116,7 @@ flash\n");
 
      close(fd);
 }
+
 
 -- 
 Best Regards,
