@@ -1,18 +1,18 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from mx2.palmsource.com ([12.7.175.14])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DtVNV-0000M5-Fc
-	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2005 14:57:42 -0400
-Message-ID: <42D80720.6030207@mvista.com>
-Date: Fri, 15 Jul 2005 11:57:36 -0700
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1DtTP0-0007RK-1O
+	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2005 12:51:14 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <DE88BDF02F4319469812588C7950A97E931034@ussunex1.palmsource.com>
-In-Reply-To: <DE88BDF02F4319469812588C7950A97E931034@ussunex1.palmsource.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Martin Fouts <Martin.Fouts@palmsource.com>
-Subject: Re: NAND bbt build reads wrong oob data
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 15 Jul 2005 09:51:04 -0700
+Message-ID: <DE88BDF02F4319469812588C7950A97E931034@ussunex1.palmsource.com>
+From: "Martin Fouts" <Martin.Fouts@palmsource.com>
+To: "Todd Poynor" <tpoynor@mvista.com>, <tglx@linutronix.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: NAND bbt build reads wrong oob data
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Verified this fixes my board, many thanks, Thomas!
+=20
 
-From: gleixner@infradead.org
-Date: Fri, 15 Jul 2005 14:53:51 +0100
-Subject: mtd/drivers/mtd/nand nand_bbt.c,1.34,1.35
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Todd Poynor
+Sent: Friday, July 15, 2005 12:59 AM
+To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND bbt build reads wrong oob data
 
-Modified Files:
-	nand_bbt.c
-Log Message:
-[MTD] NAND: Fix broken bad block scan for 16 bit devices
 
-The previous change to read a single byte from oob breaks the
-bad block scan on 16 bit devices, when the byte is on an odd
-address. Read the complete oob for now
+> OK, this is pretty unexpected, so I'll try harder to figure out where
+it goes wrong or whether=20
+> I've got another board that it affects (a colleague reported some new
+bad blocks messages after=20
+> upgrading to the same software on a different board, will see if
+there's a similar situation).
 
--- 
-Todd
+I can confirm that it happens on other boards. I have the same problem
+with the same NAND chip on a P2 board.  I haven't had time to
+investigate yet.
+
+Marty
