@@ -1,23 +1,14 @@
-Received: from xrelay.neomagic.com ([209.172.119.197] helo=scha24.neomagic.com)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DtPna-0004dI-CB
-	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2005 09:00:19 -0400
-Received: from mail.neomagic.com
-	(IDENT:U2FsdGVkX19EQmECIKljzzEnG/mL0r8tPSwk1XiU2Bs@scha25.neomagic.com
-	[192.168.51.45])
-	by scha24.neomagic.com (8.12.5/8.12.5) with ESMTP id j6FCxxOa014564
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Jul 2005 05:59:59 -0700
-Received: from neomagic.com ([192.168.31.186])
-	by mail.neomagic.com (8.12.11/8.12.5) with ESMTP id j6FChoIK012059
-	for <linux-mtd@lists.infradead.org>; Fri, 15 Jul 2005 05:43:51 -0700
-Message-ID: <42D7B387.1010706@neomagic.com>
-Date: Fri, 15 Jul 2005 18:30:55 +0530
-From: Ajay Jain <ajain@neomagic.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: Ajay Jain <ajain@neomagic.com>
+In-Reply-To: <42D7B387.1010706@neomagic.com>
+References: <42D7B387.1010706@neomagic.com>
+Content-Type: text/plain
+Date: Fri, 15 Jul 2005 14:53:28 +0100
+Message-Id: <1121435609.32384.8.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: [Fwd: Re: Nand Flash driver for dedicated conroller]
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [Fwd: Re: Nand Flash driver for dedicated conroller]
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,33 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Why is it that even after being referred to
+http://david.woodhou.se/email.html you persist in posting this kind of
+crap?
 
- 
+Look at your message -- http://david.woodhou.se/badmail1.jpeg
 
->>On Thu, 2005-07-14 at 05:28 -0700, Sunil Khandelwal
->>wrote:
->>    
->>
->>>I have an ARM based board, which has a flash
->>>controller on chip.
->>>
->>>There is no way I can control the signals like
->>>      
->>>
->>ALE, CE
->>    
->>
->>>etc to flash directly. 
->>>      
->>>
+You leave blank lines at the top, you have an utterly unreadable mess
+where you wrongly word-wrap the message to which you're replying, and
+you have _more_ lines containing just '>>>' than actual text.
 
-Hi, 
+And then you add more lines of your own, which are far more than the
+accepted norm of 76 characters each.
 
-Even I have a similar problem, our flash controller does not allow us to control ALE, CLE etc, and the nand layer in mtd assumes that such a control is available. 
-Our sandisk controller has exposed certain commands like Read, Write, Block Erase etc and it is does not allow any access to ALE. How can I use the current code to 
-incorporate the controller.
+To top it all, you forward a message which had already been rejected
+once, so it isn't even part of the correct thread.
 
-Ajay
+Compare with what your mail _should_ have looked like, at
+http://david.woodhou.se/badmail-fixed.jpeg 
 
->  
->
+I have asked you nicely once to conform to common netiquette, yet you
+are still being lazy and rude. Keep it up and you will be barred from
+the list.
+
+-- 
+dwmw2
