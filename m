@@ -1,19 +1,19 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DtJ5i-0008ND-S8
-	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2005 01:50:34 -0400
+	id 1DtKTY-0000xN-7P
+	for linux-mtd@lists.infradead.org; Fri, 15 Jul 2005 03:19:49 -0400
 From: Thomas Gleixner <tglx@linutronix.de>
-To: Sunil Khandelwal <sunil_khandelwal@yahoo.com>
-In-Reply-To: <20050715042650.24467.qmail@web31707.mail.mud.yahoo.com>
-References: <20050715042650.24467.qmail@web31707.mail.mud.yahoo.com>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <20050715031948.GA22659@slurryseal.ddns.mvista.com>
+References: <20050715031948.GA22659@slurryseal.ddns.mvista.com>
 Content-Type: text/plain
-Date: Fri, 15 Jul 2005 07:54:02 +0200
-Message-Id: <1121406842.24449.79.camel@tglx.tec.linutronix.de>
+Date: Fri, 15 Jul 2005 09:22:48 +0200
+Message-Id: <1121412168.24449.98.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Nand Flash driver for dedicated conroller
+Subject: Re: NAND bbt build reads wrong oob data
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,21 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-07-14 at 21:26 -0700, Sunil Khandelwal wrote:
-> Thanks for the reply, I am referring to file nand.c
-> which is at location /drivers/mtd/nand/nand.c
+On Thu, 2005-07-14 at 20:19 -0700, Todd Poynor wrote:
+> The value read seems to be a different byte, perhaps offset 14 instead
+> of offset 5 as specified by the placement scheme.  The hack that seems
+> to fix it for me, namely to read the whole OOB area instead of the
+> individual byte, is below. 
 
-You are referring to ancient, obsolete and broken code. Please read 
-http://www.linux-mtd.infradead.org/source.html#kernelversions
+That's pretty strange. Which chip type are you using ? 
 
+>(I also got rid of some refs to scanlen
+> which is forced to zero for the ! NAND_BBT_SCANEMPTY case, 
 
-> We have flash controller, which controls the signal
-> going to flash Memory. There is no way I can control
-> individual signals like ALE etc. 
-> The architecture currently for nand expects me to
-> control signal lines, which is not possible.
+The check_short stuff carries some needless arguments anyway. I
+committed a cleanup, no functional change. I like to know more about
+that before changing it.
 
-It does not. Read the API documentation. Read the drivers which are
-dealing with controller/address line based designs.
+> and
+> NAND_BBT_SCAN2NDPAGE is triggering a BUG I haven't investigated yet.)
+
+You introduced it by setting readlen = mtd->ooblock. I know that the
+name of this is confusing. oobblock is the page size. So readlen is >
+buffersize.
 
 tglx
