@@ -1,19 +1,21 @@
 Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
 	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DtjC7-0001Q0-06
-	for linux-mtd@lists.infradead.org; Sat, 16 Jul 2005 05:43:05 -0400
+	id 1DtjSC-0001je-Ol
+	for linux-mtd@lists.infradead.org; Sat, 16 Jul 2005 05:59:37 -0400
 From: Thomas Gleixner <tglx@linutronix.de>
-To: Martin Fouts <Martin.Fouts@palmsource.com>
-In-Reply-To: <DE88BDF02F4319469812588C7950A97E931035@ussunex1.palmsource.com>
-References: <DE88BDF02F4319469812588C7950A97E931035@ussunex1.palmsource.com>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <42D76CB8.4050606@mvista.com>
+References: <20050715031948.GA22659@slurryseal.ddns.mvista.com>
+	<1121412168.24449.98.camel@tglx.tec.linutronix.de>
+	<42D76CB8.4050606@mvista.com>
 Content-Type: text/plain
-Date: Fri, 15 Jul 2005 22:32:33 +0200
-Message-Id: <1121459554.24449.135.camel@tglx.tec.linutronix.de>
+Date: Fri, 15 Jul 2005 15:57:48 +0200
+Message-Id: <1121435869.24449.105.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: NAND bbt build reads wrong oob data
+Subject: Re: NAND bbt build reads wrong oob data
 Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,30 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-07-15 at 09:55 -0700, Martin Fouts wrote:
-> Sorry for the repeat, but mailman doesn't like my headers, but won't
-> tell me why, so I figured I send this direct. 
+On Fri, 2005-07-15 at 00:58 -0700, Todd Poynor wrote:
+> Thomas Gleixner wrote:
+> > On Thu, 2005-07-14 at 20:19 -0700, Todd Poynor wrote:
+> > 
+> > That's pretty strange. Which chip type are you using ? 
+> 
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0x45 (Samsung NAND 32MiB
+> 1,8V 16-bit)
 
-It got caught by the inclusion of the original raw message headers. 
+I know whats the source of the problem.
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Todd Poynor
-Sent: Friday, July 15, 2005 12:59 AM
-To: tglx@linutronix.de
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND bbt build reads wrong oob data
+The read_oob code is not handling 16 bit correctly. The nand_bbt code
+wants to read 1 byte at an odd address which does not work for 16 bit
+access.
 
-Please don't do that. It's not only caught by the spam barriers, it's
-also irrelevant and makes mail hard to read.
-
-Read http://www.infradead.org/~dwmw2/email.html
-
-This is volunteer work and we have therefor to insist on acceptance of
-the rules for simple and efficient mail communication. 
-
-We are really interested to improve the code and help users to fix their
-problems, but we can only provide this _free of charge_ service when
-those who take up the service cooperate on our simple and basic demands.
+I committed a similar workaround as you suggested, jst without the
+builtin long read OOPS :)
 
 tglx
