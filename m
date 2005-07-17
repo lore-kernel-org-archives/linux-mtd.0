@@ -1,21 +1,22 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1Du6cN-0000uD-3p
-	for linux-mtd@lists.infradead.org; Sun, 17 Jul 2005 06:43:38 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-In-Reply-To: <42DA3346.5010408@yandex.ru>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Du6kW-00018F-QX
+	for linux-mtd@lists.infradead.org; Sun, 17 Jul 2005 06:52:04 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: tglx@linutronix.de
+In-Reply-To: <1121597237.24449.231.camel@tglx.tec.linutronix.de>
 References: <1121595014.24449.220.camel@tglx.tec.linutronix.de>
 	<42DA3346.5010408@yandex.ru>
+	<1121597237.24449.231.camel@tglx.tec.linutronix.de>
 Content-Type: text/plain
-Date: Sun, 17 Jul 2005 12:47:16 +0200
-Message-Id: <1121597237.24449.231.camel@tglx.tec.linutronix.de>
+Date: Sun, 17 Jul 2005 14:51:24 +0400
+Message-Id: <1121597484.17840.2.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: MTD <linux-mtd@lists.infradead.org>
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
+	MTD <linux-mtd@lists.infradead.org>
 Subject: Re: [JFFS2] Cleanup the debugging stuff
-Reply-To: tglx@linutronix.de
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2005-07-17 at 14:30 +0400, Artem B. Bityuckiy wrote:
-> > All those D1 messages should have KERN_DEBUG syslog level, so its simple
-> > to wrap them nicely.
-> ... and sometimes one may need to print current->pid at the debugging 
-> messages prefix...
+On Sun, 2005-07-17 at 12:47 +0200, Thomas Gleixner wrote: 
+> ? jffs2_dgb1_msg("Bla: %d. Message\n", current->pid);
+What I wanted to say that it is easier to re-define jffs2_dgb1_msg then
+to change all jffs2_dgb1_msg() invocations. With current Dx() it is not
+very easy to do thins cleanly. So, I vote for changing Dx() on
+jffs2_dgb1_msg().
 
-? jffs2_dgb1_msg("Bla: %d. Message\n", current->pid);
+> Remove all the Dx() crap or none. This is more mess than before. You can
+> achieve all this by defining the macros correct
+ok.
 
-> In turn, "paranoia" functions use "dump" functions, for example:
-> 
-> jffs2_dbg_fragtree_paranoia_check() uses jffs2_dbg_dump_fragtree();
-> jffs2_dbg_prewrite_paranoia_check() uses jffs2_dbg_dump_buffer();
-> etc.
-> 
-> So, as "paranoia" functions do not depend on the debug level, "dump" 
-> functions should not depend on it as well. jffs2_dbg_dump_block_lists() 
-> is also a "dump" function and I did not make "a quick association" for 
-> it. It allows me to have debug level 0 and at the same "paranoia" checks 
-> enabled.
-> 
-> But for "paranoia" functions I made the "quick association", so no Dx() 
-> is needed when you call, say, jffs2_dbg_fragtree_paranoia_check().
-
-Remove all the Dx() crap or none. This is more mess than before. You can
-achieve all this by defining the macros correct
-
-#if DBGLEVEL > 1
-#define jffs2_dbg2_dump_whatever jff2_dbg_dmp_whatever
-#else
-#define jffs2_dbg2_dump_whatever do {} while(0)
-#endif
-
-#if DBGLEVEL > 1 || PARANOIA > 0
-extern void jffs2_dbg_dump_whatever(arg);
-#else
-#define jffs2_dbg_dump_whatever do {} while(0)
-#endif
-
-tglx
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
