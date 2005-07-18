@@ -1,22 +1,20 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Du6kW-00018F-QX
-	for linux-mtd@lists.infradead.org; Sun, 17 Jul 2005 06:52:04 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: tglx@linutronix.de
-In-Reply-To: <1121597237.24449.231.camel@tglx.tec.linutronix.de>
-References: <1121595014.24449.220.camel@tglx.tec.linutronix.de>
-	<42DA3346.5010408@yandex.ru>
-	<1121597237.24449.231.camel@tglx.tec.linutronix.de>
+Received: from webmail-outgoing.us4.outblaze.com ([205.158.62.67])
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DuUP3-000127-Jf
+	for linux-mtd@lists.infradead.org; Mon, 18 Jul 2005 13:07:38 +0100
+Received: from unknown (unknown [192.168.9.180])
+	by webmail-outgoing.us4.outblaze.com (Postfix) with QMQP id
+	451AD1800D7F for <linux-mtd@lists.infradead.org>;
+	Mon, 18 Jul 2005 12:06:32 +0000 (GMT)
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain
-Date: Sun, 17 Jul 2005 14:51:24 +0400
-Message-Id: <1121597484.17840.2.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
-	MTD <linux-mtd@lists.infradead.org>
-Subject: Re: [JFFS2] Cleanup the debugging stuff
-Reply-To: dedekind@infradead.org
+MIME-Version: 1.0
+From: "murasfdg sjhfsd" <murugesan_cse@india.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 18 Jul 2005 20:06:32 +0800
+Message-Id: <20050718120632.3BC8F203FC@ws5-1.us4.outblaze.com>
+Subject: (no subject)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2005-07-17 at 12:47 +0200, Thomas Gleixner wrote: 
-> ? jffs2_dgb1_msg("Bla: %d. Message\n", current->pid);
-What I wanted to say that it is easier to re-define jffs2_dgb1_msg then
-to change all jffs2_dgb1_msg() invocations. With current Dx() it is not
-very easy to do thins cleanly. So, I vote for changing Dx() on
-jffs2_dgb1_msg().
+ dear my friend
+    i want details about ultrix file system and how optimizing unix file op=
+erations
 
-> Remove all the Dx() crap or none. This is more mess than before. You can
-> achieve all this by defining the macros correct
-ok.
+thanks my friend bye-bye
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+
+--=20
+India.com free e-mail - www.india.com.=20
+Check out our value-added Premium features, such as an extra 20MB for mail =
+storage, POP3, e-mail forwarding, and ads-free mailboxes!
