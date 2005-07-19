@@ -1,26 +1,29 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mailx.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DuouI-0004VJ-TD
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 06:01:08 -0400
-Received: from mailhub.cdac.in ([196.1.109.254])
-	by mailx.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005071915305031375
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 15:30:50 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j6J9Wct0029350
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 15:02:38 +0530
-Received: from nisg60b51cbee8 (nisg-wireless.cdac.ernet.in [196.1.109.162])
-	by mailhub.cdac.in (8.13.4/8.13.4) with SMTP id j6J9WcFc029347
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 15:02:38 +0530
-Message-ID: <025701c58c45$1c6f3790$a26d01c4@nisg60b51cbee8>
-From: "Nupur" <nupurj@cdac.in>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 19 Jul 2005 15:04:50 +0530
+Received: from n1.cetrtapot.si ([212.30.80.17])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dup4g-0004mH-Iw
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 06:11:56 -0400
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id BBEFAB904
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2005 12:11:38 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 80897-06 for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2005 12:11:32 +0200 (CEST)
+Received: from [192.168.0.77] (mail.iskramedical.si [193.77.157.20])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by n1.cetrtapot.si (Postfix) with ESMTP id 862D8B8B1
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 19 Jul 2005 12:11:32 +0200 (CEST)
+Message-ID: <42DCD1D3.8070303@cetrtapot.si>
+Date: Tue, 19 Jul 2005 12:11:31 +0200
+From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: there is a change in previous post
+Subject: jffs2 problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +33,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+I'm trying to use latest MTD CVS snapshot to create jffs2 image and boot my ARM 
+target using that image as rootfs. Booting halts at:
+...
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000018: 0xfe48 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0000001c: 0xa2f9 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000020: 0x8db7 
+instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000024: 0x9549 
+instead
+Further such events for this erase block will not be printed
+Old JFFS2 bitmask found at 0x000073a0
+You cannot use older JFFS2 filesystems with newer kernels
+JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
+SR.4 or SR.5 bits set in buffer write (status b0). Clearing.
 
- Hello,
-There are some changes in the previous mail.So, I am re-writing the whole
-mail. I appologize for this.
-I am trying to make Linux 2.6.10 work with MTD support. I am compiling the
-kernel on the host platform (Desktop computer) and then will be porting
-it on target platform. I have also included the patch for the kernel called
-mtd-snapshot-20050705. Though, whenever I include the support for mtdchar
-device, I get errors and the kernel wont compile.
+This is on 2.6.12.2. On 2.6.9 image is correctly mounted and booted. I belive 
+that mkfs.jffs2 is one of the latest -
+$ mkfs.jffs2 --version
+mkfs.jffs2: revision 1.45
 
- The error being:
-in function 'mtd_notify_add': undefined reference to 'class_device_create'
-in function 'mtd_notify_remove': undefined reference to
-'class_device_destroy'
-in function 'init_mtdchar': undefined reference to 'class_create'
-in function 'cleanup_mtdchar': undefined reference to 'class_destroy'
+- and image is created with:
+mkfs.jffs2 -e 131072 -r <dir> -o rootfs.jffs2
 
- I checked in mtdchar.c, there is a call to the above functions but I could
-not
-find the definition of these functions in my kernel.
+Am I missing something here?
 
-I understand that I am missing something, but what I am missing is not clear
-to me.
-Please help me.
+regards,
+hk
+-- 
+..because under Linux "if something is possible in principle,
+then it is already implemented or somebody is working on it".
 
- Thanks and regards,
-Nupur
+					--LKI
