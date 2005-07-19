@@ -1,18 +1,18 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DupoF-0005gg-MM
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 06:58:50 -0400
-Message-ID: <42DCDCDA.2090909@cetrtapot.si>
-Date: Tue, 19 Jul 2005 12:58:34 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dupuc-0005ua-SX
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 07:05:23 -0400
+Message-ID: <42DCDE52.9010403@yandex.ru>
+Date: Tue, 19 Jul 2005 15:04:50 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-References: <42DCD1D3.8070303@cetrtapot.si> <42DCD6C1.6010509@yandex.ru>
-In-Reply-To: <42DCD6C1.6010509@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: "Abu M. Muttalib" <abum@aftek.com>
+References: <KAEKICGAIEMACLOJNFKGKEJNCAAA.abum@aftek.com>
+In-Reply-To: <KAEKICGAIEMACLOJNFKGKEJNCAAA.abum@aftek.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 problem
+Subject: Re: Kernel Oops: not able to handle jffs2 file system
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
-> Hinko Kocevar wrote:
+Abu M. Muttalib wrote:
+> Hi,
 > 
->> Hi,
->>
->> I'm trying to use latest MTD CVS snapshot to create jffs2 image and 
->> boot my ARM target using that image as rootfs. Booting halts at:
-> 
-> 
-> How did you check that your (probably correct) image was correctly 
-> written to the flash? May be there are some driver-level problems ? What 
-> kind of flash is that ?
-> 
+> While booting the 2.6.12.2 kernel, I am getting the following oops message.
+> I have given the option to support jffs2 file system.
+Could you please enable JFFS2 debugging and post its output?
 
-Flash is NOR Intel E28F128J3A150.
-
-I'm booting with NFS enabled kernel and rootfs over NFS, then erasing mtd 
-partition that holds rootfs and then copying rootfs.jffs2 to mtd partition like 
-this:
-
-$ flash_eraseall /dev/mtd2
-$ cp /tmp/rootfs.jffs2 /dev/mtd2
-
-I can mount jffs2 partition afterwards with:
-$ mount -t jffs2 /dev/mtdblock2 /mnt/jffs2
-$ ls /mnt/jffs2/
-bin      etc      linuxrc  proc     staging  usr
-dev      lib      mnt      sbin     tmp      var
-
-regards,
-hk
 -- 
-..because under Linux "if something is possible in principle,
-then it is already implemented or somebody is working on it".
-
-					--LKI
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
