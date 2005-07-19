@@ -1,32 +1,26 @@
-Received: from over.ny.us.ibm.com ([32.97.182.150])
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Duebx-0006PS-2x
-	for linux-mtd@lists.infradead.org; Mon, 18 Jul 2005 19:01:34 -0400
-Received: from e1.ny.us.ibm.com ([192.168.1.101])
-	by pokfb.esmtp.ibm.com (8.12.11/8.12.11) with ESMTP id j6ILf9MJ011744
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2005 17:41:09 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j6ILeie8018681
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2005 17:40:44 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j6ILehod245832
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2005 17:40:43 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j6ILehKl015984
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Jul 2005 17:40:43 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: rolf liu <rolfliu@gmail.com>
-In-Reply-To: <2db32b72050718135560ae235c@mail.gmail.com>
-References: <2db32b72050718135560ae235c@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 18 Jul 2005 16:40:34 -0500
-Message-Id: <1121722834.20907.0.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
+Received: from mx1.cdacindia.com ([203.199.132.35] helo=mailx.cdac.ernet.in)
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DukL0-0001MV-5b
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 01:08:24 -0400
+Received: from mailhub.cdac.in ([196.1.109.254])
+	by mailx.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
+	M2005071910373125830
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 10:37:31 +0530
+Received: from mailhub.cdac.in (mailhub [196.1.109.254])
+	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j6J56eXE023269
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 10:36:40 +0530
+Received: from nisg60b51cbee8 (nisg-wireless.cdac.ernet.in [196.1.109.162])
+	by mailhub.cdac.in (8.13.4/8.13.4) with SMTP id j6J56djw023258
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 10:36:39 +0530
+Message-ID: <011501c58c1f$f481a8a0$a26d01c4@nisg60b51cbee8>
+From: "Nupur" <nupurj@cdac.in>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 19 Jul 2005 10:38:52 +0530
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: boot error using /dev/mtdblock0
+Subject: error while including support for mtdchar devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,18 +30,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-07-18 at 13:55 -0700, rolf liu wrote:
-> I am using /dev/mtdblock0 as the root, and put a jffs2 image on it.
-> but when the kernel boots up, it panic:
-> 
-> Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(31,0)
-> 
-> Any suggestion?
+Hello,
+I am trying to make Linux 2.6.10 work with MTD support. I am compiling the
 
-Put this on your kernel command line:
+kernel on the host platform (Desktop computer) and then will be porting
 
-rootfstype=jffs2
+it on target platform. Though, whenever I include the support for mtdchar
 
-We really need to update the FAQ with that.  *sigh*
+device, I get errors and the kernel wont compile.
 
-josh
+
+
+The error being:
+in function 'mtd_notify_add': undefined reference to 'class_device_create'
+
+in function 'mtd_notify_remove': undefined reference to
+'class_device_destroy'
+
+in function 'init_mtdchar': undefined reference to 'class_create'
+
+in function 'cleanup_mtdchar': undefined reference to 'class_destroy'
+
+
+
+I checked in mtdchar.c, there is a call to the above functions but I could
+not
+
+find the definition of these functions in my kernel.  One thing more I would
+
+like to mention is that when I include mtdchar as module the kernel compiles
+
+with similar warnings of course, but then to erase an mtd device I don't
+
+have the utility eraseall. It says the command is not recognized.
+
+
+
+I understand that I am missing something, but what I am missing is not clear
+to me.
+
+Can you please help?
+
+
+
+Thanks and regards,
+
+Nupur
