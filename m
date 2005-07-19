@@ -1,23 +1,25 @@
-Received: from smtp14.wanadoo.fr ([193.252.23.69])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DurxN-0000jD-Ss
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 09:16:28 -0400
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf1404.wanadoo.fr (SMTP Server) with ESMTP id C12C57000048
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 15:16:19 +0200 (CEST)
-From: Jean-Philippe Francois <jp.francois@cynove.com>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-In-Reply-To: <42DCFABE.7040002@yandex.ru>
-References: <1121776529.2565.34.camel@fedorabox> <42DCFABE.7040002@yandex.ru>
-Content-Type: text/plain
-Message-Id: <1121778978.2565.43.camel@fedorabox>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Duu3n-0002LE-IK
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 11:31:12 -0400
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1Duu35-0002yR-MI
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 17:30:23 +0200
+Received: from s0106000024c002e0.ss.shawcable.net ([70.64.46.12])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 17:30:23 +0200
+Received: from jbi130 by s0106000024c002e0.ss.shawcable.net with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 19 Jul 2005 17:30:23 +0200
+To: linux-mtd@lists.infradead.org
+From: jbi130@yahoo.com
+Date: 19 Jul 2005 09:26:23 -0600
+Message-ID: <87u0iq7r6o.fsf@nimrod.unx.ca>
 Mime-Version: 1.0
-Date: Tue, 19 Jul 2005 15:16:18 +0200
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Understanding jffs2 warning message
-Reply-To: jp.francois@cynove.com
+Content-Type: text/plain; charset=us-ascii
+Sender: news <news@sea.gmane.org>
+Subject: Support for Intel strataflash.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-07-19 at 15:06, Artem B. Bityuckiy wrote:
-> Jean-Philippe Francois wrote:
-> > I am doing some test on a JFFS2 file system.
-> > It is installed on a Macronix Flash 29LV320, with top boot block.
-> > The part are cfi probed, and it works (almost) fine.
-> > 
-> > I am doing some tar/untar loop [1]. Every six or seven loop, I have a
-> > serie of 8 warning messages :
-> > 
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001040)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> You don't do unclean reboots? If not, this is wierd. This means that the 
-> node on flash is somehow got corrupted.
-Well, things happen, so may be there was not so clean reboot :)
-What happens to corrupted nodes ? Are they somehow garbage collected ?
-If I use a partition without the top block, these warning messages do
-not appear.
+I recently receive a PPC8555 evaluation board with 8 MB Intel
+strataflash ROM.  I'm using 2.6.12 and am trying to get this setup as
+an MTD device for use with JFFS2.
 
-JP Francois
+On boot all I see is:
+physmap flash device: 800000 at ff800000
+
+(the flash is at physical address 0xff800000).
+
+I also had to enable 'Support for ROM chips in bus mapping' for this
+physmap to take place.
+
+I'm assuming that the CFI probe isn't properly detecting this chip.
+Does that mean that it isn't fully supported?  I use similar options
+on a similar board that uses AMD flash and it works fine.
+
+Thanks for any input.
