@@ -1,32 +1,25 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
+Received: from smtp9.wanadoo.fr ([193.252.22.22])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DurFJ-00083U-Es
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 08:31:01 -0400
-Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
-	by n1.cetrtapot.si (Postfix) with ESMTP id F2C3BB951
+	id 1DurJx-0008Fm-I9
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 08:35:49 -0400
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf0907.wanadoo.fr (SMTP Server) with ESMTP id 5CF561C00179
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 14:30:47 +0200 (CEST)
-Received: from n1.cetrtapot.si ([127.0.0.1])
-	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 83123-10 for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 14:30:28 +0200 (CEST)
-Received: from [192.168.0.77] (mail.iskramedical.si [193.77.157.20])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by n1.cetrtapot.si (Postfix) with ESMTP id BF393B917
+	Tue, 19 Jul 2005 14:35:31 +0200 (CEST)
+Received: from [192.168.123.151] (ATuileries-111-1-1-141.w80-11.abo.wanadoo.fr
+	[80.11.62.141])
+	by mwinf0907.wanadoo.fr (SMTP Server) with ESMTP id 227931C00163
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 14:30:27 +0200 (CEST)
-Message-ID: <42DCF262.4040304@cetrtapot.si>
-Date: Tue, 19 Jul 2005 14:30:26 +0200
-From: Hinko Kocevar <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
+	Tue, 19 Jul 2005 14:35:31 +0200 (CEST)
+From: Jean-Philippe Francois <jp.francois@cynove.com>
 To: linux-mtd@lists.infradead.org
-References: <42DCD1D3.8070303@cetrtapot.si>	<42DCD6C1.6010509@yandex.ru>	<42DCDCDA.2090909@cetrtapot.si>	<42DCDE8C.702@yandex.ru>	<42DCE7E4.2050303@cetrtapot.si>	<42DCEC94.8050505@yandex.ru>
-	<42DCEFD6.8010006@cetrtapot.si>
-In-Reply-To: <42DCEFD6.8010006@cetrtapot.si>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
+Message-Id: <1121776529.2565.34.camel@fedorabox>
+Mime-Version: 1.0
+Date: Tue, 19 Jul 2005 14:35:29 +0200
 Content-Transfer-Encoding: 7bit
-Subject: Re: jffs2 problem
+Subject: Understanding jffs2 warning message
+Reply-To: jp.francois@cynove.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,24 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hinko Kocevar wrote:
+Hi,
 
-> 
-> I've spotted possible problem here - it seems that kernel overwrites 
-> part of the rootfs at the begining - I have reserved 0xe0000 for kernel 
-> partition, but I noticed that my newer kernels are larger than this. 
-> Need to check this out...
-> 
+I am doing some test on a JFFS2 file system.
+It is installed on a Macronix Flash 29LV320, with top boot block.
+The part are cfi probed, and it works (almost) fine.
 
-Yep, that was it. If my memory serves me well, I already had similar problems a 
-while ago when I had to raise the kernel mtd partition from ~600k to 900k.
+I am doing some tar/untar loop [1]. Every six or seven loop, I have a
+serie of 8 warning messages :
 
-Where is this re-sizing gonna stop? ;)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001040)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+Node totlen on flash (0xffffffff) != totlen in node ref (0x00000768)
 
-Sorry for the noise.
+I looked at the code, but I don't understand what is the meaning of
+these messages.
+Do you think it can be related to the Top Boot Block layout of this
+flash (ie last 64 k sector is replaced by 8 8k sector) ?
+I might be wrong, but I think the sector layout and erase size is taken
+into account by CFI probing ?
 
--- 
-..because under Linux "if something is possible in principle,
-then it is already implemented or somebody is working on it".
+Regards,
 
-					--LKI
+JP Francois
+
+[1] : tar/untar loop
+
+#!/bin/sh
+i=0
+while [ true ]
+do
+        tar -xzf /test.tar.gz
+        rm /test.tar.gz
+        sync
+	echo "pass $i"
+        md5sum /usr/test/etc/rc3
+        tar -czf /test.tar.gz /usr/test/
+        rm -r /usr/test/
+        sync
+        let i=i+1
+done
