@@ -1,23 +1,18 @@
-Received: from smtp7.wanadoo.fr ([193.252.22.24])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1Duuyu-0003AZ-MB
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 12:30:14 -0400
-Received: from me-wanadoo.net (unknown [127.0.0.1])
-	by mwinf0709.wanadoo.fr (SMTP Server) with ESMTP id 754FA1C000B4
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 18:30:06 +0200 (CEST)
-From: Jean-Philippe Francois <jp.francois@cynove.com>
-To: jbi130@yahoo.com
-In-Reply-To: <87u0iq7r6o.fsf@nimrod.unx.ca>
-References: <87u0iq7r6o.fsf@nimrod.unx.ca>
-Content-Type: text/plain
-Message-Id: <1121790604.2565.61.camel@fedorabox>
-Mime-Version: 1.0
-Date: Tue, 19 Jul 2005 18:30:05 +0200
+	id 1Duv2B-0003MT-PQ
+	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 12:33:42 -0400
+Message-ID: <42DD2B50.1010601@mvista.com>
+Date: Tue, 19 Jul 2005 09:33:20 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Nupur <nupurj@cdac.in>
+References: <025701c58c45$1c6f3790$a26d01c4@nisg60b51cbee8>
+In-Reply-To: <025701c58c45$1c6f3790$a26d01c4@nisg60b51cbee8>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Support for Intel strataflash.
-Reply-To: jp.francois@cynove.com
+Subject: Re: there is a change in previous post
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-07-19 at 17:26, jbi130@yahoo.com wrote:
-> I recently receive a PPC8555 evaluation board with 8 MB Intel
-> strataflash ROM.  I'm using 2.6.12 and am trying to get this setup as
-> an MTD device for use with JFFS2.
-> 
-> On boot all I see is:
-> physmap flash device: 800000 at ff800000
-> 
-> (the flash is at physical address 0xff800000).
-> 
-> I also had to enable 'Support for ROM chips in bus mapping' for this
-> physmap to take place.
-> 
-> I'm assuming that the CFI probe isn't properly detecting this chip.
-> Does that mean that it isn't fully supported?  I use similar options
-> on a similar board that uses AMD flash and it works fine.
-> 
-In the RAM/ROM/FLash chip driver section, did you select
-Detect flash chips by CFI probe
-and
-Support for Intel/Sharp flash chip ?
+Nupur wrote:
+>
+> I am trying to make Linux 2.6.10 work with MTD support. ...
+> in function 'mtd_notify_add': undefined reference to 'class_device_create'
+> in function 'mtd_notify_remove': undefined reference to
+> 'class_device_destroy'
+> in function 'init_mtdchar': undefined reference to 'class_create'
+> in function 'cleanup_mtdchar': undefined reference to 'class_destroy'
 
-JP Francois
+The latest linux-mtd code matches the latest linux code, which obsoleted 
+the previous "class_simple" interface in favor of the above interfaces 
+recently.  Check the CVS logs and cvs diff the appropriate revision of 
+mtdchar.c to find a reverse patch to put back the class_simple version. 
+  Or googling Greg K-H's changes to convert class_simple will also show 
+examples that can be reversed.
+
+
+-- 
+Todd
