@@ -1,18 +1,30 @@
-Received: from exchange.autotap.com ([12.32.143.36]
-	helo=exchange1.exchange.bb-elec.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvKPG-0004HA-1S
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2005 15:39:12 -0400
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 20 Jul 2005 14:23:07 -0500
-Message-ID: <2813685E09A8A54FA42CB32F8EBB4973077BB165@exchange1.exchange.bb-elec.com>
-From: "Jeremy Severson" <jseverson@bb-elec.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Support for ST M29W320DB
+Received: from e35.co.us.ibm.com ([32.97.110.133])
+	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DvMBk-0006AJ-OM
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2005 22:33:14 +0100
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e35.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j6KLWseR571628
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2005 17:32:57 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by westrelay02.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j6KLWrvk432426
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2005 15:32:53 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
+	j6KLWrE2014687
+	for <linux-mtd@lists.infradead.org>; Wed, 20 Jul 2005 15:32:53 -0600
+From: Josh Boyer <jdub@us.ibm.com>
+To: rolf liu <rolfliu@gmail.com>
+In-Reply-To: <2db32b72050720114074d1badb@mail.gmail.com>
+References: <2db32b72050720114074d1badb@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 20 Jul 2005 16:32:47 -0500
+Message-Id: <1121895167.12397.0.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: suddently, can't use "cp jffs2.img /dev/mtd0" anymore
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +34,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Does anyone know if there is MTD support for the ST M29W320DB? I am
-trying to use MTD to address two separate ST M29W320DB flash parts from
-a 2.4.18 kernel. Ideally I would like to partition the second flash part
-into two parts one of which I could set to writable for my configuration
-information. I am hoping that there is already a driver out there for
-it. Has anyone had trouble detecting these parts using the CFI? Right
-now the CFI is telling me that it has located only a single flash part.
-AFU (ARM Flash Utility) detects two so that tells me that electrically
-everything should be fine.
+On Wed, 2005-07-20 at 11:40 -0700, rolf liu wrote:
+> Yesterday, I can use "cp jffs2.img  /dev/mtd0" to copy the jffs2 image
+> to mtd. Today, I applied the cvs snapshot of mtd to kernel and
+> compiled it. Suddenly, the "cp" command stops working.
+> 
+> it tells me:
+> MTD do_write_buffer(): software timeout
+> cp: writing '/dev/mtd0' : Input/output error
+> 
+> any idea?
+
+Did you erase the chip before writing to it like that again?  If not,
+you'll need to do:
+
+flash_eraseall /dev/mtd0
+
+Then try your copy again.
+
+josh
