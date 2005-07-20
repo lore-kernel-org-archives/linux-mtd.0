@@ -1,19 +1,14 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvCmy-0006y5-Cx
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2005 07:31:11 -0400
-Date: Wed, 20 Jul 2005 13:30:49 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: ?? ???? <zhao_fusheng@hotmail.com>
-Message-ID: <20050720113049.GD3890@wohnheim.fh-wedel.de>
-References: <BAY17-F167D2FBC2A9CD84727C551E8D70@phx.gbl>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+In-Reply-To: <dbl42b$hcn$1@sea.gmane.org>
+References: <dbl42b$hcn$1@sea.gmane.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 20 Jul 2005 09:45:30 -0400
+Message-Id: <1121867130.12903.15.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY17-F167D2FBC2A9CD84727C551E8D70@phx.gbl>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: A problem in JFFS2 code about ECC'd NOR flash
+Subject: Re: JFFS2 garbage collector blocking for minutes after mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 20 July 2005 16:28:09 +0800, ?? ???? wrote:
+On Wed, 2005-07-20 at 11:03 +0200, Martin Egholm Nielsen wrote:
+> I have a "small" NAND device (32MByte) with JFFS2 on top used as the 
+> root-fs on my system. It's been working like a charm - until just now. 
+> After (over)writing a relative large file (11 megs uncomp. - 
+> ~3-5compr.), the garbage collector (jffs2_gcd_mtd0) uses 8:45 minutes of 
+> CPU time (~99%) after booting - blocking any write operations.
+> Ok, I accept that some GC'ing should be performed when going "beyond the 
+> edge" - but shouldn't this be a one-time process, so the next time I 
+> boot this is done with?
+> I see it everytime I reboot - without touching any files on the system...
 > 
-> For ECC'd NOR flash, the clean marker is written by
-> jffs2_flash_direct_writev() in jffs2_mark_erased_block().
-> Then the first 16 bytes of first page is filled with
-> clean marker. But wbuf know nothing about this 16 bytes.
-> So subsequent jffs2_flash_writev() will have problem. In
-> particular jffs2_flash_writev() will write the first page
-> for the second time.
-> Am I right? Or can this be confirmed by the JFFS2 developer?
+> I use the mtd source from 2005-03-04...
 
-This has been answered in irc already, but for the record...
+The garbage collection thread is also responsible for building up the
+node tree for every inode after mounting, so that we know for sure which
+nodes are valid and which are obsolete. On NAND flash we can't actually
+mark nodes as obsolete.
 
-ECC NOR requires writes in aligned multiples of 8 bytes.  The wbuf
-size is 8 bytes only.  16 bytes, if written through the wbuf, would be
-written directly to flash and leave the wbuf empty.  Writing them
-directly, without wbuf, yields the same result, so current code is
-safe.
+We've made some significant improvements to that process since March,
+especially where inodes with large numbers of nodes are concerned. We
+used to sort all the nodes into a linked list before building the tree,
+but now we use a tree data structure for that instead -- so it's
+O(n log n) instead of O(nÂ²) in the number of nodes.
 
-Jörn
+Artem has patches which should improve it still further -- I'm not sure
+if they are committed yet.
 
 -- 
-Audacity augments courage; hesitation, fear.
--- Publilius Syrus 
+dwmw2
