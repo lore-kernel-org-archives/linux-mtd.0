@@ -1,21 +1,27 @@
-Received: from wproxy.gmail.com ([64.233.184.203])
+Received: from smtp14.wanadoo.fr ([193.252.23.69])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DuwaP-0004aV-Of
-	for linux-mtd@lists.infradead.org; Tue, 19 Jul 2005 14:13:01 -0400
-Received: by wproxy.gmail.com with SMTP id 70so401384wra
+	id 1Dv91n-00042R-QO
+	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2005 03:30:12 -0400
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf1401.wanadoo.fr (SMTP Server) with ESMTP id DFB1470000A4
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 19 Jul 2005 11:12:53 -0700 (PDT)
-Message-ID: <2db32b72050719111262109ae@mail.gmail.com>
-Date: Tue, 19 Jul 2005 11:12:08 -0700
-From: rolf liu <rolfliu@gmail.com>
+	Wed, 20 Jul 2005 09:30:01 +0200 (CEST)
+Received: from [192.168.123.151] (ATuileries-111-1-1-141.w80-11.abo.wanadoo.fr
+	[80.11.62.141])
+	by mwinf1401.wanadoo.fr (SMTP Server) with ESMTP id A7E4770000BD
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 20 Jul 2005 09:30:01 +0200 (CEST)
+From: Jean-Philippe Francois <jp.francois@cynove.com>
 To: linux-mtd@lists.infradead.org
+In-Reply-To: <1121776529.2565.34.camel@fedorabox>
+References: <1121776529.2565.34.camel@fedorabox>
+Content-Type: text/plain
+Message-Id: <1121844600.2619.8.camel@fedorabox>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Cc: rolf liu <rolfliu@gmail.com>
-Subject: kernel oops during "reboot" due to jffs2/mtd write
-Reply-To: rolf liu <rolfliu@gmail.com>
+Date: Wed, 20 Jul 2005 09:30:00 +0200
+Content-Transfer-Encoding: 7bit
+Subject: Re: Understanding jffs2 warning message
+Reply-To: jp.francois@cynove.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am using mtdblock0 as the root with jffs2 f/s. It boots up. But when
-I type "reboot",
-the kernel gives me the oops information.
+On Tue, 2005-07-19 at 14:35, Jean-Philippe Francois wrote:
+> Hi,
+> 
+> I am doing some test on a JFFS2 file system.
+> It is installed on a Macronix Flash 29LV320, with top boot block.
+> The part are cfi probed, and it works (almost) fine.
+> 
+> I am doing some tar/untar loop [1]. Every six or seven loop, I have a
+> serie of 8 warning messages :
+> 
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001040)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
+> Node totlen on flash (0xffffffff) != totlen in node ref (0x00000768)
+> 
+> I looked at the code, but I don't understand what is the meaning of
+> these messages.
+> Do you think it can be related to the Top Boot Block layout of this
+> flash (ie last 64 k sector is replaced by 8 8k sector) ?
+> I might be wrong, but I think the sector layout and erase size is taken
+> into account by CFI probing ?
 
-bash-2.05b# reboot
+Looking into the archive, I think I am in the case described by [1].
+The driver know about the various erase regions, but doesn't transmit
+this info to partition level. What is the status of the patch in [1] ?
+It is not part of the mtd code in 2.6.12 kernel.
 
-Broadcast message from root (ttyS0) (Fri Dec 31 19:01:54 1999):
+Regards,
 
-The system is going down for reboot NOW!CPU 0 Unable to handle kernel
-paging request at virtual address 00000000, epc =3D=3D 803b6a94, ra =3D=3D
-80231014
+JP Francois
 
-Oops in arch/mips/mm/fault.c::do_page_fault, line 167[#1]:
-Cpu 0
-$ 0   : 00000000 1000fc00 8b781e78 00000000
-$ 4   : 00000002 813a0714 804bfe80 ffff00fe
-$ 8   : 8b781fe0 0000fc00 00000000 812e4000
-$12   : 80706924 00000002 80706820 00000006
-$16   : 8be4abf0 813a0710 813a062c 00000001
-$20   : 80490000 00000001 00000000 00000000
-$24   : 00000000 00000000                 =20
-$28   : 8b780000 8b781e68 00000000 80231014
-Hi    : 00000000
-Lo    : 00000000
-epc   : 803b6a94 __down_write+0xcc/0x164     Not tainted
-ra    : 80231014 jffs2_flush_wbuf_pad+0x20/0x50
-Status: 1000fc02    KERNEL EXL=20
-Cause : 0080000c
-BadVA : 00000000
-PrId  : 03030200
-Modules linked in:
-Process shutdown (pid: 947, threadinfo=3D8b780000, task=3D8be4abf0)
-Stack : 00000000 804bfe00 00000000 00000003 813a0714 00000001 8be4abf0 0000=
-0002
-        813a0600 813a0710 80231014 00000000 00000000 00000003 00000000 0000=
-0002
-        813a0600 80490000 8022f3a0 80400000 8018b2ac 00000000 8018b2ac 0000=
-0000
-        813a0400 80400000 80400000 8018b60c 801b51dc 801b51d4 d1c454da 0000=
-0007
-        00000001 00404554 00000000 00000003 7f8e4d94 801811f4 811c0520 0000=
-0003
-        ...
-Call Trace:
- [<80231014>] jffs2_flush_wbuf_pad+0x20/0x50
- [<8022f3a0>] jffs2_sync_fs+0x60/0x180
- [<8018b2ac>] drop_super+0x18/0x2c
- [<8018b2ac>] drop_super+0x18/0x2c
- [<8018b60c>] sync_filesystems+0x148/0x288
- [<801b51dc>] sync_inodes+0x44/0xc0
- [<801b51d4>] sync_inodes+0x3c/0xc0
- [<801811f4>] do_sync+0x38/0x84
- [<80181250>] sys_sync+0x10/0x20
- [<8010d6e0>] stack_done+0x20/0x3c
- [<8010d6e0>] stack_done+0x20/0x3c
-
-
-Code: 27a20010  afa50010  aca20004 <ac620000> afa30014  40016000=20
-3421001f  3821001e  40816000
-Segmentation fault
-
-What could be wrong with the system?
-
-thanks
+[1]
+http://lists.infradead.org/pipermail/linux-mtd/2004-December/011320.html
