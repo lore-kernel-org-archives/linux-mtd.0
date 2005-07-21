@@ -1,28 +1,15 @@
-Received: from smtp4.wanadoo.fr ([193.252.22.27])
+Received: from bay17-f12.bay17.hotmail.com ([64.4.43.62] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvbyS-0006of-EF
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 10:24:40 -0400
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0401.wanadoo.fr (SMTP Server) with ESMTP id 5A7021C00317
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Jul 2005 16:24:30 +0200 (CEST)
-Received: from [192.168.123.151] (ATuileries-111-1-6-126.w80-14.abo.wanadoo.fr
-	[80.14.101.126])
-	by mwinf0401.wanadoo.fr (SMTP Server) with ESMTP id 1EC7C1C00315
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Jul 2005 16:24:30 +0200 (CEST)
-From: Jean-Philippe Francois <jp.francois@cynove.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1121844600.2619.8.camel@fedorabox>
-References: <1121776529.2565.34.camel@fedorabox>
-	<1121844600.2619.8.camel@fedorabox>
-Content-Type: text/plain; charset=utf-8
-Message-Id: <1121955868.2917.29.camel@fedorabox>
+	id 1DvVff-0002lZ-6u
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 03:40:52 -0400
+Message-ID: <BAY17-F12FDF887F077CD69ABB397E8D60@phx.gbl>
+From: =?gb2312?B?1dQgtrm2uQ==?= <zhao_fusheng@hotmail.com>
+To: tglx@linutronix.de
+Date: Thu, 21 Jul 2005 15:22:24 +0800
 Mime-Version: 1.0
-Date: Thu, 21 Jul 2005 16:24:28 +0200
-Content-Transfer-Encoding: 8bit
-Subject: Re: Understanding jffs2 warning message
-Reply-To: jp.francois@cynove.com
+Content-Type: multipart/mixed; boundary="----=_NextPart_000_5a9c_6f99_1d87"
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,47 +19,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-07-20 at 09:30, Jean-Philippe Francois wrote:
-> On Tue, 2005-07-19 at 14:35, Jean-Philippe Francois wrote:
-> > Hi,
-> > 
-> > I am doing some test on a JFFS2 file system.
-> > It is installed on a Macronix Flash 29LV320, with top boot block.
-> > The part are cfi probed, and it works (almost) fine.
-> > 
-> > I am doing some tar/untar loop [1]. Every six or seven loop, I have a
-> > serie of 8 warning messages :
-> > 
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001040)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00001044)
-> > Node totlen on flash (0xffffffff) != totlen in node ref (0x00000768)
-> > 
-> > I looked at the code, but I don't understand what is the meaning of
-> > these messages.
-> > Do you think it can be related to the Top Boot Block layout of this
-> > flash (ie last 64 k sector is replaced by 8 8k sector) ?
-> > I might be wrong, but I think the sector layout and erase size is taken
-> > into account by CFI probing ?
-> 
-> Looking into the archive, I think I am in the case described by [1].
-> The driver know about the various erase regions, but doesn't transmit
-> this info to partition level. What is the status of the patch in [1] ?
-> It is not part of the mtd code in 2.6.12 kernel.
-> 
-> Regards,
-> 
-> JP Francois
-> 
-> [1]
-> http://lists.infradead.org/pipermail/linux-mtd/2004-December/011320.html
-> 
-> 
-I tested this patch, and it solved my problem, in case anyone is
-interested.
+This is a multi-part message in MIME format.
 
-JP Fran莽ois
+------=_NextPart_000_5a9c_6f99_1d87
+Content-Type: text/plain; charset=gb2312; format=flowed
+
+Hi, 
+
+Current jffs2_check_oob_empty() assumes that only OOB of first
+page has data content -- the clean marker. OOB of other pages should
+be all 0xFF.
+But if we decide to store other kind of meta-data in OOB of the
+second,third or forth page, this will cause compatibility issue.
+For example, if we store some data in OOB of second page in the
+future, the "old" JFFS2 will recognize all the erase blocks in
+the "new" JFFS2 image as ALL_DIRTY.
+So this patch solve this compatibility problem by extending existent
+node type compat_bits to OOB area. In particular, I think
+JFFS2_FEATURE_RWCOMPAT_COPY has no meaning for OOB, so it's
+handled the same way as JFFS2_FEATURE_RWCOMPAT_DELETE.
+
+Your comments are welcome!
+
+Thanks,
+Forrest
+
+_________________________________________________________________
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
+
+------=_NextPart_000_5a9c_6f99_1d87
+Content-Type: application/octet-stream; name="oob_compat.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="oob_compat.patch"
+
+LS0tIHdidWYuYy5iYWsJMjAwNS0wNy0yMSAyMDo1MDo0Mi4wMDAwMDAwMDAg
+KzA4MDAKKysrIHdidWYuYwkyMDA1LTA3LTIxIDIyOjAzOjUzLjU4OTg4Mzcy
+MCArMDgwMApAQCAtOTMzLDkgKzkzMywxMCBAQAogewogCXVuc2lnbmVkIGNo
+YXIgKmJ1ZjsKIAlpbnQgCXJldCA9IDA7Ci0JaW50CWksbGVuLHBhZ2U7CisJ
+aW50CWksbGVuLHBhZ2UsY3VycmVudF9vb2I7CiAJc2l6ZV90ICByZXRsZW47
+CiAJaW50CW9vYl9zaXplOworCXN0cnVjdCBqZmZzMl91bmtub3duX25vZGUg
+Km5vZGU7CiAKIAkvKiBhbGxvY2F0ZSBhIGJ1ZmZlciBmb3IgYWxsIG9vYiBk
+YXRhIGluIHRoaXMgc2VjdG9yICovCiAJb29iX3NpemUgPSBjLT5tdGQtPm9v
+YnNpemU7CkBAIC05NDcsNyArOTQ4LDcgQEAKIAl9CiAJLyogCiAJICogaWYg
+bW9kZSA9IDAsIHdlIHNjYW4gZm9yIGEgdG90YWwgZW1wdHkgb29iIGFyZWEs
+IGVsc2Ugd2UgaGF2ZQotCSAqIHRvIHRha2UgY2FyZSBvZiB0aGUgY2xlYW5t
+YXJrZXIgaW4gdGhlIGZpcnN0IHBhZ2Ugb2YgdGhlIGJsb2NrCisJICogdG8g
+dGFrZSBjYXJlIG9mIHRoZSBkYXRhIGNvbnRlbnQgaW4gdGhlIHN1YnNlcXVl
+bnQgcGFnZXMgb2YgdGhlIGJsb2NrCiAJKi8KIAlyZXQgPSBqZmZzMl9mbGFz
+aF9yZWFkX29vYihjLCBqZWItPm9mZnNldCwgbGVuICwgJnJldGxlbiwgYnVm
+KTsKIAlpZiAocmV0KSB7CkBAIC05NjEsMjggKzk2Miw1MSBAQAogCQlyZXQg
+PSAtRUlPOwogCQlnb3RvIG91dDsKIAl9Ci0JCi0JLyogU3BlY2lhbCBjaGVj
+ayBmb3IgZmlyc3QgcGFnZSAqLwotCWZvcihpID0gMDsgaSA8IG9vYl9zaXpl
+IDsgaSsrKSB7Ci0JCS8qIFllYWgsIHdlIGtub3cgYWJvdXQgdGhlIGNsZWFu
+bWFya2VyLiAqLwotCQlpZiAobW9kZSAmJiBpID49IGMtPmZzZGF0YV9wb3Mg
+JiYgCi0JCSAgICBpIDwgYy0+ZnNkYXRhX3BvcyArIGMtPmZzZGF0YV9sZW4p
+Ci0JCQljb250aW51ZTsKLQotCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKLQkJ
+CUQyKHByaW50ayhLRVJOX0RFQlVHICJGb3VuZCAlMDJ4IGF0ICV4IGluIE9P
+QiBmb3IgJTA4eFxuIiwKLQkJCQkgIGJ1ZltpXSwgaSwgamViLT5vZmZzZXQp
+KTsKLQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisKKworCWlmICghbW9k
+ZSkgeworCQlmb3IgKHBhZ2UgPSAwOyBwYWdlIDwgbGVuOyBwYWdlICs9IHNp
+emVvZihsb25nKSkgeworCQkJdW5zaWduZWQgbG9uZyBkYXQgPSAqKHVuc2ln
+bmVkIGxvbmcgKikoJmJ1ZltwYWdlXSk7CisJCQlpZiAoZGF0ICE9IC0xKSB7
+CisJCQkJcmV0ID0gMTsKKwkJCQlnb3RvIG91dDsKKwkJCX0KIAkJfQotCX0K
+Kwl9IGVsc2UgeworCQlmb3IgKGN1cnJlbnRfb29iID0gMDsgY3VycmVudF9v
+b2IgPCBsZW47IGN1cnJlbnRfb29iICs9IG9vYl9zaXplKSB7CisJCQlub2Rl
+ID0gKHN0cnVjdCBqZmZzMl91bmtub3duX25vZGUgKikmYnVmW2N1cnJlbnRf
+b29iICsgYy0+ZnNkYXRhX3Bvc107CisJCQlpZiAoamUxNl90b19jcHUobm9k
+ZS0+bWFnaWMpID09IEpGRlMyX01BR0lDX0JJVE1BU0spIHsKKwkJCQlzd2l0
+Y2ggKGplMTZfdG9fY3B1KG5vZGUtPm5vZGV0eXBlKSAmIEpGRlMyX0NPTVBB
+VF9NQVNLKSB7CisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JPQ09NUEFUOgor
+CQkJCQljLT5mbGFncyB8PSBKRkZTMl9TQl9GTEFHX1JPOworCQkJCQlpZiAo
+IShqZmZzMl9pc19yZWFkb25seShjKSkpCisJCQkJCQlyZXR1cm4gLUVST0ZT
+OworCisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0RFTEVURToK
+KwkJCQljYXNlIEpGRlMyX0ZFQVRVUkVfUldDT01QQVRfQ09QWToKKwkJCQkJ
+Zm9yIChpID0gY3VycmVudF9vb2I7IGkgPCBjdXJyZW50X29vYiArIG9vYl9z
+aXplOyBpKyspIHsKKwkJCQkJCWlmIChpID49IGN1cnJlbnRfb29iICsgYy0+
+ZnNkYXRhX3BvcyAmJgorCQkJCQkJICAgIGkgPCBjdXJyZW50X29vYiArIGMt
+PmZzZGF0YV9wb3MgKyBjLT5mc2RhdGFfbGVuKQorCQkJCQkJCWNvbnRpbnVl
+OworCisJCQkJCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKKwkJCQkJCQlyZXQg
+PSAxOworCQkJCQkJCWdvdG8gb3V0OworCQkJCQkJfQorCQkJCQl9CisJCQkJ
+CWJyZWFrOwogCi0JLyogd2Uga25vdywgd2UgYXJlIGFsaWduZWQgOikgKi8J
+Ci0JZm9yIChwYWdlID0gb29iX3NpemU7IHBhZ2UgPCBsZW47IHBhZ2UgKz0g
+c2l6ZW9mKGxvbmcpKSB7Ci0JCXVuc2lnbmVkIGxvbmcgZGF0ID0gKih1bnNp
+Z25lZCBsb25nICopKCZidWZbcGFnZV0pOwotCQlpZihkYXQgIT0gLTEpIHsK
+LQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisJCQkJY2FzZSBKRkZTMl9G
+RUFUVVJFX0lOQ09NUEFUOgorCQkJCQlyZXR1cm4gLUVJTlZBTDsKKwkJCQl9
+CisJCQl9IGVsc2UgeworCQkJCWZvciAoaSA9IGN1cnJlbnRfb29iOyBpIDwg
+Y3VycmVudF9vb2IgKyBvb2Jfc2l6ZTsgaSsrKSB7CisJCQkJCWlmIChidWZb
+aV0gIT0gMHhGRikgeworCQkJCQkJcmV0ID0gMTsKKwkJCQkJCWdvdG8gb3V0
+OworCQkJCQl9CisJCQkJfQorCQkJfQogCQl9CiAJfQogCg==
+
+
+------=_NextPart_000_5a9c_6f99_1d87--
