@@ -1,24 +1,23 @@
-Received: from wproxy.gmail.com ([64.233.184.200])
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvMQA-0005kI-QK
-	for linux-mtd@lists.infradead.org; Wed, 20 Jul 2005 17:48:14 -0400
-Received: by wproxy.gmail.com with SMTP id i20so1578995wra
+	id 1DvV9x-0002Gv-6D
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 03:08:00 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.91.23])
+	(envelope-sender <bernhard.priewasser@in2soft.de>)
+	by smtprelay03.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 21 Jul 2005 07:07:51 -0000
+Received: from [192.168.0.141] (linux-og [192.168.0.141])
+	by deepspace9.in2soft.meep (Postfix) with ESMTP id 9B1655AFC
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jul 2005 14:48:05 -0700 (PDT)
-Message-ID: <2db32b7205072014471289193b@mail.gmail.com>
-Date: Wed, 20 Jul 2005 14:47:21 -0700
-From: rolf liu <rolfliu@gmail.com>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1121895167.12397.0.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <2db32b72050720114074d1badb@mail.gmail.com>
-	<1121895167.12397.0.camel@windu.rchland.ibm.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: suddently, can't use "cp jffs2.img /dev/mtd0" anymore
-Reply-To: rolf liu <rolfliu@gmail.com>
+	Thu, 21 Jul 2005 09:07:22 +0200 (CEST)
+Message-ID: <42DF4A22.4060705@in2soft.de>
+Date: Thu, 21 Jul 2005 09:09:22 +0200
+From: Bernhard Priewasser <bernhard.priewasser@in2soft.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: JFFS2: Releases? Versions?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,31 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I did it every time before I want to write to it :)
-It just works yesterday. Today I applied the patch and recompiled the
-kernel 2.6.12.
-It stops working :(
+Hi all,
 
+i have just a simple question about JFFS2 & versioning. Too simple 
+perhaps... please be patient with me...
 
-On 7/20/05, Josh Boyer <jdub@us.ibm.com> wrote:
-> On Wed, 2005-07-20 at 11:40 -0700, rolf liu wrote:
-> > Yesterday, I can use "cp jffs2.img  /dev/mtd0" to copy the jffs2 image
-> > to mtd. Today, I applied the cvs snapshot of mtd to kernel and
-> > compiled it. Suddenly, the "cp" command stops working.
-> >
-> > it tells me:
-> > MTD do_write_buffer(): software timeout
-> > cp: writing '/dev/mtd0' : Input/output error
-> >
-> > any idea?
->=20
-> Did you erase the chip before writing to it like that again?  If not,
-> you'll need to do:
->=20
-> flash_eraseall /dev/mtd0
->=20
-> Then try your copy again.
->=20
-> josh
->=20
->
+I'm confused about the version numbers of JFFS2, "JFFS2 version 2.2. 
+(NAND)" (out of a dmesg / boot) for example.
+
+If source code + CVS available: How can i determine the release version?
+If source code available: How can i determine the release version?
+How can i determine the release of JFFS2 currently running in a kernel?
+Is there some changelog "overview" (not only for single files)?
+
+I have to start evaluating (or rather analyzing...) JFFS2 on different 
+platforms and flash chips, and it's hard to distinguish between the 
+releases already running on some devices here.
+
+Best Thanks & Regards,
+Bernhard
