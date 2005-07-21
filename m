@@ -1,32 +1,14 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvXOt-0003sb-Rw
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 05:31:36 -0400
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1DvXOC-000122-JH
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 11:30:50 +0200
-Received: from 81.255.233.236 ([81.255.233.236])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2005 11:30:48 +0200
-Received: from stephane.fillod by 81.255.233.236 with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2005 11:30:48 +0200
-To: linux-mtd@lists.infradead.org
-From: Stephane Fillod <stephane.fillod@thomson.net>
-Date: Thu, 21 Jul 2005 09:23:33 +0000 (UTC)
-Message-ID: <loom.20050721T111743-505@post.gmane.org>
-References: <dbl42b$hcn$1@sea.gmane.org>
-	<1121867130.12903.15.camel@localhost.localdomain>
-	<dblm4l$802$1@sea.gmane.org>
-	<1121869156.12903.19.camel@localhost.localdomain>
-	<dblne1$cgd$1@sea.gmane.org>
-	<1121887042.20077.1.camel@localhost.localdomain>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Bernhard Priewasser <bernhard.priewasser@in2soft.de>
+In-Reply-To: <42DF4A22.4060705@in2soft.de>
+References: <42DF4A22.4060705@in2soft.de>
+Content-Type: text/plain
+Date: Thu, 21 Jul 2005 10:13:10 -0400
+Message-Id: <1121955191.20077.22.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Re: JFFS2 garbage collector blocking for minutes after mount
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2: Releases? Versions?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,11 +18,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-07-20 at 16:34 +0200, Martin Egholm Nielsen wrote:
-> I'm not comfortable with profiling the kernel... It could be arranged, 
-> but I rather see if the a recent CVS snapshot does it for me... 
+On Thu, 2005-07-21 at 09:09 +0200, Bernhard Priewasser wrote:
+> i have just a simple question about JFFS2 & versioning. Too simple 
+> perhaps... please be patient with me...
+> 
+> I'm confused about the version numbers of JFFS2, "JFFS2 version 2.2. 
+> (NAND)" (out of a dmesg / boot) for example.
 
-Profiling the kernel? what about using OProfile?
+Those version numbers are very infrequently updated. We started at 2.0,
+then updated to 2.1 in the very early days when we had to change the
+format. Then the version number remained unchanged for a long time until
+the NAND support was added and it was increased to 2.2.
+
+The 2.4 kernel has JFFS2 2.1, and the 2.6 kernel has JFFS2 2.2. These
+are the jffs2-2_4-branch and the HEAD of the CVS tree, respectively.
+
+> If source code + CVS available: How can i determine the release version?
+> If source code available: How can i determine the release version?
+> How can i determine the release of JFFS2 currently running in a kernel?
+> Is there some changelog "overview" (not only for single files)?
+
+There isn't really an overall 'version' other than the one described
+above, which isn't particularly useful. You can look at the $Id$ tags in
+the files though, which will indicate the date on which the snapshot was
+taken, if they're using a snapshot from CVS instead of whatever was
+present in the kernel they started with.
 
 -- 
-Stephane
+dwmw2
