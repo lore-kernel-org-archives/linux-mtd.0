@@ -1,14 +1,14 @@
-Received: from bay17-f6.bay17.hotmail.com ([64.4.43.56] helo=hotmail.com)
+Received: from bay17-f41.bay17.hotmail.com ([64.4.43.91] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvXYV-00047e-LJ
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 05:41:37 -0400
-Message-ID: <BAY17-F686BFC9A870BA327E73B7E8D60@phx.gbl>
+	id 1DvXpe-0004IN-Lx
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 05:59:23 -0400
+Message-ID: <BAY17-F418B9797EBDE0CDB704726E8D60@phx.gbl>
 From: =?gb2312?B?1dQgtrm2uQ==?= <zhao_fusheng@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 21 Jul 2005 17:23:26 +0800
+Date: Thu, 21 Jul 2005 17:41:22 +0800
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_60ab_4c3c_2bf8"
-Subject: [PATCH]fix the RWCOMPAT_COPY handling in mount scan of JFFS2
+Content-Type: multipart/mixed; boundary="----=_NextPart_000_5991_59f5_592b"
+Subject: [PATCH] Add compatibility support for OOB in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,83 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_60ab_4c3c_2bf8
+------=_NextPart_000_5991_59f5_592b
 Content-Type: text/plain; charset=gb2312; format=flowed
 
 Hi,
 
-This patch fix the current wrong handling of RWCOMPAT_COPY
-node in mount scan of JFFS2.
+This patch extend the compat_bits for normal node to OOB in order
+to achieve flexible compatibility for OOB.
+I think JFFS2_FEATURE_RWCOMPAT_COPY has no meaning for OOB, so this
+type of node is handled by the same way as JFFS2_FEATURE_RWCOMPAT_DELETE.
 
 Thanks,
 Forrest
 
 _________________________________________________________________
-享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
+与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
 
-------=_NextPart_000_60ab_4c3c_2bf8
-Content-Type: application/octet-stream; name="rwcomat_copy.patch"
+------=_NextPart_000_5991_59f5_592b
+Content-Type: application/octet-stream; name="oob_compat.patch"
 Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="rwcomat_copy.patch"
+Content-Disposition: attachment; filename="oob_compat.patch"
 
-LS0tIHNjYW4uYy5iYWsJMjAwNS0wNy0yMiAwMTowMToxOC40NzE2MTU3MjAg
-KzA4MDAKKysrIHNjYW4uYwkyMDA1LTA3LTIyIDAwOjU5OjA1LjM0Mzg1NDIx
-NiArMDgwMApAQCAtNjA4LDEwICs2MDgsMjkgQEAgc2Nhbl9tb3JlOgkKIAkJ
-CQlicmVhazsKIAogCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0NP
-UFk6CisJCQl7CisJCQkJc3RydWN0IGpmZnMyX3Jhd19ub2RlX3JlZiAqcmVm
-OwogCQkJCUQxKHByaW50ayhLRVJOX05PVElDRSAiVW5rbm93biBidXQgY29t
-cGF0aWJsZSBmZWF0dXJlIG5vZGUgKDB4JTA0eCkgZm91bmQgYXQgb2Zmc2V0
-IDB4JTA4eFxuIiwgamUxNl90b19jcHUobm9kZS0+bm9kZXR5cGUpLCBvZnMp
-KTsKKworCQkJCXJlZiA9IGpmZnMyX2FsbG9jX3Jhd19ub2RlX3JlZigpOwor
-CQkJCWlmICghcmVmKSB7CisJCQkJCXByaW50ayhLRVJOX05PVElDRSAiRmFp
-bGVkIHRvIGFsbG9jYXRlIG5vZGUgcmVmIGZvciBSV0NPTVBBVF9DT1BZIG5v
-ZGVcbiIpOworCQkJCQlyZXR1cm4gLUVOT01FTTsKKwkJCQl9CisJCQkJcmVm
-LT5uZXh0X2luX2lubyA9IE5VTEw7CisJCQkJcmVmLT5uZXh0X3BoeXMgPSBO
-VUxMOworCQkJCXJlZi0+Zmxhc2hfb2Zmc2V0ID0gb2ZzIHwgUkVGX1BSSVNU
-SU5FOworCQkJCXJlZi0+X190b3RsZW4gPSBQQUQoamUzMl90b19jcHUobm9k
-ZS0+dG90bGVuKSk7CisJCQkJaWYgKCFqZWItPmZpcnN0X25vZGUpCisJCQkJ
-CWplYi0+Zmlyc3Rfbm9kZSA9IHJlZjsKKwkJCQlpZiAoamViLT5sYXN0X25v
-ZGUpCisJCQkJCWplYi0+bGFzdF9ub2RlLT5uZXh0X3BoeXMgPSByZWY7CisJ
-CQkJamViLT5sYXN0X25vZGUgPSByZWY7CiAJCQkJVVNFRF9TUEFDRShQQUQo
-amUzMl90b19jcHUobm9kZS0+dG90bGVuKSkpOwogCQkJCW9mcyArPSBQQUQo
-amUzMl90b19jcHUobm9kZS0+dG90bGVuKSk7CiAJCQkJYnJlYWs7CisKKwkJ
-CX0KIAkJCX0KIAkJfQogCX0K
+LS0tIHdidWYuYy5iYWsJMjAwNS0wNy0yMSAyMDo1MDo0Mi4wMDAwMDAwMDAg
+KzA4MDAKKysrIHdidWYuYwkyMDA1LTA3LTIxIDIyOjAzOjUzLjU4OTg4Mzcy
+MCArMDgwMApAQCAtOTMzLDkgKzkzMywxMCBAQAogewogCXVuc2lnbmVkIGNo
+YXIgKmJ1ZjsKIAlpbnQgCXJldCA9IDA7Ci0JaW50CWksbGVuLHBhZ2U7CisJ
+aW50CWksbGVuLHBhZ2UsY3VycmVudF9vb2I7CiAJc2l6ZV90ICByZXRsZW47
+CiAJaW50CW9vYl9zaXplOworCXN0cnVjdCBqZmZzMl91bmtub3duX25vZGUg
+Km5vZGU7CiAKIAkvKiBhbGxvY2F0ZSBhIGJ1ZmZlciBmb3IgYWxsIG9vYiBk
+YXRhIGluIHRoaXMgc2VjdG9yICovCiAJb29iX3NpemUgPSBjLT5tdGQtPm9v
+YnNpemU7CkBAIC05NDcsNyArOTQ4LDcgQEAKIAl9CiAJLyogCiAJICogaWYg
+bW9kZSA9IDAsIHdlIHNjYW4gZm9yIGEgdG90YWwgZW1wdHkgb29iIGFyZWEs
+IGVsc2Ugd2UgaGF2ZQotCSAqIHRvIHRha2UgY2FyZSBvZiB0aGUgY2xlYW5t
+YXJrZXIgaW4gdGhlIGZpcnN0IHBhZ2Ugb2YgdGhlIGJsb2NrCisJICogdG8g
+dGFrZSBjYXJlIG9mIHRoZSBkYXRhIGNvbnRlbnQgaW4gdGhlIHN1YnNlcXVl
+bnQgcGFnZXMgb2YgdGhlIGJsb2NrCiAJKi8KIAlyZXQgPSBqZmZzMl9mbGFz
+aF9yZWFkX29vYihjLCBqZWItPm9mZnNldCwgbGVuICwgJnJldGxlbiwgYnVm
+KTsKIAlpZiAocmV0KSB7CkBAIC05NjEsMjggKzk2Miw1MSBAQAogCQlyZXQg
+PSAtRUlPOwogCQlnb3RvIG91dDsKIAl9Ci0JCi0JLyogU3BlY2lhbCBjaGVj
+ayBmb3IgZmlyc3QgcGFnZSAqLwotCWZvcihpID0gMDsgaSA8IG9vYl9zaXpl
+IDsgaSsrKSB7Ci0JCS8qIFllYWgsIHdlIGtub3cgYWJvdXQgdGhlIGNsZWFu
+bWFya2VyLiAqLwotCQlpZiAobW9kZSAmJiBpID49IGMtPmZzZGF0YV9wb3Mg
+JiYgCi0JCSAgICBpIDwgYy0+ZnNkYXRhX3BvcyArIGMtPmZzZGF0YV9sZW4p
+Ci0JCQljb250aW51ZTsKLQotCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKLQkJ
+CUQyKHByaW50ayhLRVJOX0RFQlVHICJGb3VuZCAlMDJ4IGF0ICV4IGluIE9P
+QiBmb3IgJTA4eFxuIiwKLQkJCQkgIGJ1ZltpXSwgaSwgamViLT5vZmZzZXQp
+KTsKLQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisKKworCWlmICghbW9k
+ZSkgeworCQlmb3IgKHBhZ2UgPSAwOyBwYWdlIDwgbGVuOyBwYWdlICs9IHNp
+emVvZihsb25nKSkgeworCQkJdW5zaWduZWQgbG9uZyBkYXQgPSAqKHVuc2ln
+bmVkIGxvbmcgKikoJmJ1ZltwYWdlXSk7CisJCQlpZiAoZGF0ICE9IC0xKSB7
+CisJCQkJcmV0ID0gMTsKKwkJCQlnb3RvIG91dDsKKwkJCX0KIAkJfQotCX0K
+Kwl9IGVsc2UgeworCQlmb3IgKGN1cnJlbnRfb29iID0gMDsgY3VycmVudF9v
+b2IgPCBsZW47IGN1cnJlbnRfb29iICs9IG9vYl9zaXplKSB7CisJCQlub2Rl
+ID0gKHN0cnVjdCBqZmZzMl91bmtub3duX25vZGUgKikmYnVmW2N1cnJlbnRf
+b29iICsgYy0+ZnNkYXRhX3Bvc107CisJCQlpZiAoamUxNl90b19jcHUobm9k
+ZS0+bWFnaWMpID09IEpGRlMyX01BR0lDX0JJVE1BU0spIHsKKwkJCQlzd2l0
+Y2ggKGplMTZfdG9fY3B1KG5vZGUtPm5vZGV0eXBlKSAmIEpGRlMyX0NPTVBB
+VF9NQVNLKSB7CisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JPQ09NUEFUOgor
+CQkJCQljLT5mbGFncyB8PSBKRkZTMl9TQl9GTEFHX1JPOworCQkJCQlpZiAo
+IShqZmZzMl9pc19yZWFkb25seShjKSkpCisJCQkJCQlyZXR1cm4gLUVST0ZT
+OworCisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0RFTEVURToK
+KwkJCQljYXNlIEpGRlMyX0ZFQVRVUkVfUldDT01QQVRfQ09QWToKKwkJCQkJ
+Zm9yIChpID0gY3VycmVudF9vb2I7IGkgPCBjdXJyZW50X29vYiArIG9vYl9z
+aXplOyBpKyspIHsKKwkJCQkJCWlmIChpID49IGN1cnJlbnRfb29iICsgYy0+
+ZnNkYXRhX3BvcyAmJgorCQkJCQkJICAgIGkgPCBjdXJyZW50X29vYiArIGMt
+PmZzZGF0YV9wb3MgKyBjLT5mc2RhdGFfbGVuKQorCQkJCQkJCWNvbnRpbnVl
+OworCisJCQkJCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKKwkJCQkJCQlyZXQg
+PSAxOworCQkJCQkJCWdvdG8gb3V0OworCQkJCQkJfQorCQkJCQl9CisJCQkJ
+CWJyZWFrOwogCi0JLyogd2Uga25vdywgd2UgYXJlIGFsaWduZWQgOikgKi8J
+Ci0JZm9yIChwYWdlID0gb29iX3NpemU7IHBhZ2UgPCBsZW47IHBhZ2UgKz0g
+c2l6ZW9mKGxvbmcpKSB7Ci0JCXVuc2lnbmVkIGxvbmcgZGF0ID0gKih1bnNp
+Z25lZCBsb25nICopKCZidWZbcGFnZV0pOwotCQlpZihkYXQgIT0gLTEpIHsK
+LQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisJCQkJY2FzZSBKRkZTMl9G
+RUFUVVJFX0lOQ09NUEFUOgorCQkJCQlyZXR1cm4gLUVJTlZBTDsKKwkJCQl9
+CisJCQl9IGVsc2UgeworCQkJCWZvciAoaSA9IGN1cnJlbnRfb29iOyBpIDwg
+Y3VycmVudF9vb2IgKyBvb2Jfc2l6ZTsgaSsrKSB7CisJCQkJCWlmIChidWZb
+aV0gIT0gMHhGRikgeworCQkJCQkJcmV0ID0gMTsKKwkJCQkJCWdvdG8gb3V0
+OworCQkJCQl9CisJCQkJfQorCQkJfQogCQl9CiAJfQogCg==
 
 
-------=_NextPart_000_60ab_4c3c_2bf8--
+------=_NextPart_000_5991_59f5_592b--
