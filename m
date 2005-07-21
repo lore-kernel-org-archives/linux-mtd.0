@@ -1,23 +1,32 @@
-Received: from smtprelay03.ispgateway.de ([80.67.18.15])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvV9x-0002Gv-6D
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 03:08:00 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.91.23])
-	(envelope-sender <bernhard.priewasser@in2soft.de>)
-	by smtprelay03.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 21 Jul 2005 07:07:51 -0000
-Received: from [192.168.0.141] (linux-og [192.168.0.141])
-	by deepspace9.in2soft.meep (Postfix) with ESMTP id 9B1655AFC
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Jul 2005 09:07:22 +0200 (CEST)
-Message-ID: <42DF4A22.4060705@in2soft.de>
-Date: Thu, 21 Jul 2005 09:09:22 +0200
-From: Bernhard Priewasser <bernhard.priewasser@in2soft.de>
-MIME-Version: 1.0
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DvXOt-0003sb-Rw
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 05:31:36 -0400
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1DvXOC-000122-JH
+	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 11:30:50 +0200
+Received: from 81.255.233.236 ([81.255.233.236])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2005 11:30:48 +0200
+Received: from stephane.fillod by 81.255.233.236 with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 21 Jul 2005 11:30:48 +0200
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: Stephane Fillod <stephane.fillod@thomson.net>
+Date: Thu, 21 Jul 2005 09:23:33 +0000 (UTC)
+Message-ID: <loom.20050721T111743-505@post.gmane.org>
+References: <dbl42b$hcn$1@sea.gmane.org>
+	<1121867130.12903.15.camel@localhost.localdomain>
+	<dblm4l$802$1@sea.gmane.org>
+	<1121869156.12903.19.camel@localhost.localdomain>
+	<dblne1$cgd$1@sea.gmane.org>
+	<1121887042.20077.1.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2: Releases? Versions?
+Sender: news <news@sea.gmane.org>
+Subject: Re: JFFS2 garbage collector blocking for minutes after mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +36,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Wed, 2005-07-20 at 16:34 +0200, Martin Egholm Nielsen wrote:
+> I'm not comfortable with profiling the kernel... It could be arranged, 
+> but I rather see if the a recent CVS snapshot does it for me... 
 
-i have just a simple question about JFFS2 & versioning. Too simple 
-perhaps... please be patient with me...
+Profiling the kernel? what about using OProfile?
 
-I'm confused about the version numbers of JFFS2, "JFFS2 version 2.2. 
-(NAND)" (out of a dmesg / boot) for example.
-
-If source code + CVS available: How can i determine the release version?
-If source code available: How can i determine the release version?
-How can i determine the release of JFFS2 currently running in a kernel?
-Is there some changelog "overview" (not only for single files)?
-
-I have to start evaluating (or rather analyzing...) JFFS2 on different 
-platforms and flash chips, and it's hard to distinguish between the 
-releases already running on some devices here.
-
-Best Thanks & Regards,
-Bernhard
+-- 
+Stephane
