@@ -1,14 +1,26 @@
-Received: from bay17-f41.bay17.hotmail.com ([64.4.43.91] helo=hotmail.com)
+Received: from smtprelay01.ispgateway.de ([80.67.18.13])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvXpe-0004IN-Lx
-	for linux-mtd@lists.infradead.org; Thu, 21 Jul 2005 05:59:23 -0400
-Message-ID: <BAY17-F418B9797EBDE0CDB704726E8D60@phx.gbl>
-From: =?gb2312?B?1dQgtrm2uQ==?= <zhao_fusheng@hotmail.com>
+	id 1Dvs9K-0000Mu-4i
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 03:40:53 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.104.136])
+	(envelope-sender <bernhard.priewasser@in2soft.de>)
+	by smtprelay01.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 22 Jul 2005 07:33:28 -0000
+Received: from [192.168.0.141] (linux-og [192.168.0.141])
+	by deepspace9.in2soft.meep (Postfix) with ESMTP id C5C195B15
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 22 Jul 2005 09:32:59 +0200 (CEST)
+Message-ID: <42E0A1A5.7000501@in2soft.de>
+Date: Fri, 22 Jul 2005 09:35:01 +0200
+From: Bernhard Priewasser <bernhard.priewasser@in2soft.de>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Date: Thu, 21 Jul 2005 17:41:22 +0800
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_5991_59f5_592b"
-Subject: [PATCH] Add compatibility support for OOB in JFFS2
+References: <42DF4A22.4060705@in2soft.de>
+	<1121955191.20077.22.camel@localhost.localdomain>
+In-Reply-To: <1121955191.20077.22.camel@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2: Releases? Versions?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,85 +30,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Thank God JFFS2 itself does work better than its versioning :)
 
-------=_NextPart_000_5991_59f5_592b
-Content-Type: text/plain; charset=gb2312; format=flowed
-
-Hi,
-
-This patch extend the compat_bits for normal node to OOB in order
-to achieve flexible compatibility for OOB.
-I think JFFS2_FEATURE_RWCOMPAT_COPY has no meaning for OOB, so this
-type of node is handled by the same way as JFFS2_FEATURE_RWCOMPAT_DELETE.
-
-Thanks,
-Forrest
-
-_________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
-
-------=_NextPart_000_5991_59f5_592b
-Content-Type: application/octet-stream; name="oob_compat.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="oob_compat.patch"
-
-LS0tIHdidWYuYy5iYWsJMjAwNS0wNy0yMSAyMDo1MDo0Mi4wMDAwMDAwMDAg
-KzA4MDAKKysrIHdidWYuYwkyMDA1LTA3LTIxIDIyOjAzOjUzLjU4OTg4Mzcy
-MCArMDgwMApAQCAtOTMzLDkgKzkzMywxMCBAQAogewogCXVuc2lnbmVkIGNo
-YXIgKmJ1ZjsKIAlpbnQgCXJldCA9IDA7Ci0JaW50CWksbGVuLHBhZ2U7CisJ
-aW50CWksbGVuLHBhZ2UsY3VycmVudF9vb2I7CiAJc2l6ZV90ICByZXRsZW47
-CiAJaW50CW9vYl9zaXplOworCXN0cnVjdCBqZmZzMl91bmtub3duX25vZGUg
-Km5vZGU7CiAKIAkvKiBhbGxvY2F0ZSBhIGJ1ZmZlciBmb3IgYWxsIG9vYiBk
-YXRhIGluIHRoaXMgc2VjdG9yICovCiAJb29iX3NpemUgPSBjLT5tdGQtPm9v
-YnNpemU7CkBAIC05NDcsNyArOTQ4LDcgQEAKIAl9CiAJLyogCiAJICogaWYg
-bW9kZSA9IDAsIHdlIHNjYW4gZm9yIGEgdG90YWwgZW1wdHkgb29iIGFyZWEs
-IGVsc2Ugd2UgaGF2ZQotCSAqIHRvIHRha2UgY2FyZSBvZiB0aGUgY2xlYW5t
-YXJrZXIgaW4gdGhlIGZpcnN0IHBhZ2Ugb2YgdGhlIGJsb2NrCisJICogdG8g
-dGFrZSBjYXJlIG9mIHRoZSBkYXRhIGNvbnRlbnQgaW4gdGhlIHN1YnNlcXVl
-bnQgcGFnZXMgb2YgdGhlIGJsb2NrCiAJKi8KIAlyZXQgPSBqZmZzMl9mbGFz
-aF9yZWFkX29vYihjLCBqZWItPm9mZnNldCwgbGVuICwgJnJldGxlbiwgYnVm
-KTsKIAlpZiAocmV0KSB7CkBAIC05NjEsMjggKzk2Miw1MSBAQAogCQlyZXQg
-PSAtRUlPOwogCQlnb3RvIG91dDsKIAl9Ci0JCi0JLyogU3BlY2lhbCBjaGVj
-ayBmb3IgZmlyc3QgcGFnZSAqLwotCWZvcihpID0gMDsgaSA8IG9vYl9zaXpl
-IDsgaSsrKSB7Ci0JCS8qIFllYWgsIHdlIGtub3cgYWJvdXQgdGhlIGNsZWFu
-bWFya2VyLiAqLwotCQlpZiAobW9kZSAmJiBpID49IGMtPmZzZGF0YV9wb3Mg
-JiYgCi0JCSAgICBpIDwgYy0+ZnNkYXRhX3BvcyArIGMtPmZzZGF0YV9sZW4p
-Ci0JCQljb250aW51ZTsKLQotCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKLQkJ
-CUQyKHByaW50ayhLRVJOX0RFQlVHICJGb3VuZCAlMDJ4IGF0ICV4IGluIE9P
-QiBmb3IgJTA4eFxuIiwKLQkJCQkgIGJ1ZltpXSwgaSwgamViLT5vZmZzZXQp
-KTsKLQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisKKworCWlmICghbW9k
-ZSkgeworCQlmb3IgKHBhZ2UgPSAwOyBwYWdlIDwgbGVuOyBwYWdlICs9IHNp
-emVvZihsb25nKSkgeworCQkJdW5zaWduZWQgbG9uZyBkYXQgPSAqKHVuc2ln
-bmVkIGxvbmcgKikoJmJ1ZltwYWdlXSk7CisJCQlpZiAoZGF0ICE9IC0xKSB7
-CisJCQkJcmV0ID0gMTsKKwkJCQlnb3RvIG91dDsKKwkJCX0KIAkJfQotCX0K
-Kwl9IGVsc2UgeworCQlmb3IgKGN1cnJlbnRfb29iID0gMDsgY3VycmVudF9v
-b2IgPCBsZW47IGN1cnJlbnRfb29iICs9IG9vYl9zaXplKSB7CisJCQlub2Rl
-ID0gKHN0cnVjdCBqZmZzMl91bmtub3duX25vZGUgKikmYnVmW2N1cnJlbnRf
-b29iICsgYy0+ZnNkYXRhX3Bvc107CisJCQlpZiAoamUxNl90b19jcHUobm9k
-ZS0+bWFnaWMpID09IEpGRlMyX01BR0lDX0JJVE1BU0spIHsKKwkJCQlzd2l0
-Y2ggKGplMTZfdG9fY3B1KG5vZGUtPm5vZGV0eXBlKSAmIEpGRlMyX0NPTVBB
-VF9NQVNLKSB7CisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JPQ09NUEFUOgor
-CQkJCQljLT5mbGFncyB8PSBKRkZTMl9TQl9GTEFHX1JPOworCQkJCQlpZiAo
-IShqZmZzMl9pc19yZWFkb25seShjKSkpCisJCQkJCQlyZXR1cm4gLUVST0ZT
-OworCisJCQkJY2FzZSBKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0RFTEVURToK
-KwkJCQljYXNlIEpGRlMyX0ZFQVRVUkVfUldDT01QQVRfQ09QWToKKwkJCQkJ
-Zm9yIChpID0gY3VycmVudF9vb2I7IGkgPCBjdXJyZW50X29vYiArIG9vYl9z
-aXplOyBpKyspIHsKKwkJCQkJCWlmIChpID49IGN1cnJlbnRfb29iICsgYy0+
-ZnNkYXRhX3BvcyAmJgorCQkJCQkJICAgIGkgPCBjdXJyZW50X29vYiArIGMt
-PmZzZGF0YV9wb3MgKyBjLT5mc2RhdGFfbGVuKQorCQkJCQkJCWNvbnRpbnVl
-OworCisJCQkJCQlpZiAoYnVmW2ldICE9IDB4RkYpIHsKKwkJCQkJCQlyZXQg
-PSAxOworCQkJCQkJCWdvdG8gb3V0OworCQkJCQkJfQorCQkJCQl9CisJCQkJ
-CWJyZWFrOwogCi0JLyogd2Uga25vdywgd2UgYXJlIGFsaWduZWQgOikgKi8J
-Ci0JZm9yIChwYWdlID0gb29iX3NpemU7IHBhZ2UgPCBsZW47IHBhZ2UgKz0g
-c2l6ZW9mKGxvbmcpKSB7Ci0JCXVuc2lnbmVkIGxvbmcgZGF0ID0gKih1bnNp
-Z25lZCBsb25nICopKCZidWZbcGFnZV0pOwotCQlpZihkYXQgIT0gLTEpIHsK
-LQkJCXJldCA9IDE7IAotCQkJZ290byBvdXQ7CisJCQkJY2FzZSBKRkZTMl9G
-RUFUVVJFX0lOQ09NUEFUOgorCQkJCQlyZXR1cm4gLUVJTlZBTDsKKwkJCQl9
-CisJCQl9IGVsc2UgeworCQkJCWZvciAoaSA9IGN1cnJlbnRfb29iOyBpIDwg
-Y3VycmVudF9vb2IgKyBvb2Jfc2l6ZTsgaSsrKSB7CisJCQkJCWlmIChidWZb
-aV0gIT0gMHhGRikgeworCQkJCQkJcmV0ID0gMTsKKwkJCQkJCWdvdG8gb3V0
-OworCQkJCQl9CisJCQkJfQorCQkJfQogCQl9CiAJfQogCg==
-
-
-------=_NextPart_000_5991_59f5_592b--
+Bernhard
