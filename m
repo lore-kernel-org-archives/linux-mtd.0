@@ -1,26 +1,14 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dvz1G-00067j-9B
-	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 11:01:04 -0400
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1Dvz0k-0004W7-Fx
-	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 17:00:26 +0200
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jul 2005 17:00:26 +0200
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 22 Jul 2005 17:00:26 +0200
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Fri, 22 Jul 2005 16:51:37 +0200
-Message-ID: <dbr15p$90f$1@sea.gmane.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: krishna <krishna.c@globaledgesoft.com>
+In-Reply-To: <42E079B8.9070703@globaledgesoft.com>
+References: <42E079B8.9070703@globaledgesoft.com>
+Content-Type: text/plain
+Date: Fri, 22 Jul 2005 11:55:42 -0400
+Message-Id: <1122047742.12630.10.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
-Subject: Howto provoke the long mount times?
+Cc: linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Subject: Re: why is jiffies 128 in jffs2_find_gc_block() in gc.c of jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,14 +18,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi there,
+On Fri, 2005-07-22 at 10:14 +0530, krishna wrote:
+> I am not clear why the hardcoded values are 50, 110 and 126
+> and why is jiffies moded with 128, why not any other value.
 
-In extension of my previous thread regarding the GC blocking writes to 
-the NAND, I have a small additional question:
+It's just a way to achieve 'randomness' which doesn't actually consume
+entropy and which is quick to obtain. It only needs to be relatively
+evenly distributed.
 
-How can I provoke this situation?
-It suddenly occur "out of nowhere" - having mount times of nearly 
-nothing, to having mount times of minutes (now reduced, though)...
+We use it for selecting the next eraseblock to be garbage-collected.
+50/128 of the time we pick a block from the eraseable_list, 60/128 of
+the time we pick a block from the very_dirty_list, 16/128 of the time we
+pick a block from the dirty_list, and the remaining 2/128 of the time we
+pick a block from the clean_list for garbage collection.
 
-BR,
-  Martin Egholm
+The precise numbers don't have a huge amount of science behind them;
+they are mostly guesses about what would achieve evenly-distributed wear
+levelling over time without garbage-collecting clean blocks more often
+than is necessary.
+
+If you want to conduct tests with various workloads in order to refine
+the fairly primitive algorithm described above, that could be useful.
+
+-- 
+dwmw2
