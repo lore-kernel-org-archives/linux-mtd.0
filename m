@@ -1,14 +1,15 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: krishna <krishna.c@globaledgesoft.com>
-In-Reply-To: <42E079B8.9070703@globaledgesoft.com>
-References: <42E079B8.9070703@globaledgesoft.com>
-Content-Type: text/plain
-Date: Fri, 22 Jul 2005 11:55:42 -0400
-Message-Id: <1122047742.12630.10.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>
-Subject: Re: why is jiffies 128 in jffs2_find_gc_block() in gc.c of jffs2
+Received: from web51007.mail.yahoo.com ([206.190.38.138])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dw1EJ-0007wV-8g
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 13:22:40 -0400
+Message-ID: <20050722171510.55261.qmail@web51007.mail.yahoo.com>
+Date: Fri, 22 Jul 2005 10:15:10 -0700 (PDT)
+From: Shankari <shankari82@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Flash memory PCI Add in card
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,27 +19,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-07-22 at 10:14 +0530, krishna wrote:
-> I am not clear why the hardcoded values are 50, 110 and 126
-> and why is jiffies moded with 128, why not any other value.
+Hello,
+ 
+I am looking for some guidance :  
+ 
+I wanted to know if there are any boards that
+interfaces flash through PCI? I found this 
+http://www.intel.com/design/intarch/applnots/27312101.PDF
+ 
+on the intel site, but this is not available in
+market.
+ 
+My end objective is to simulate a flash file system.
+For this, I want to know if there are easy ways to
+interface the flash (via the PCI)
+ 
+I did find PCI I/O controller cards (600 $) that may
+have memory storage capabilities. These are typically
+600 $ + and are controller cards rather thn dedicated
+memory cards.
+ 
+Also, are there any open source PCI drivers that I
+might look into for a better idea.
+ 
+ 
+Thanks in advance for your time,
+Shankari
 
-It's just a way to achieve 'randomness' which doesn't actually consume
-entropy and which is quick to obtain. It only needs to be relatively
-evenly distributed.
 
-We use it for selecting the next eraseblock to be garbage-collected.
-50/128 of the time we pick a block from the eraseable_list, 60/128 of
-the time we pick a block from the very_dirty_list, 16/128 of the time we
-pick a block from the dirty_list, and the remaining 2/128 of the time we
-pick a block from the clean_list for garbage collection.
-
-The precise numbers don't have a huge amount of science behind them;
-they are mostly guesses about what would achieve evenly-distributed wear
-levelling over time without garbage-collecting clean blocks more often
-than is necessary.
-
-If you want to conduct tests with various workloads in order to refine
-the fairly primitive algorithm described above, that could be useful.
-
--- 
-dwmw2
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
