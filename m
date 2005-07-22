@@ -1,22 +1,29 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DvwcG-0004F9-44
-	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 08:27:36 -0400
-Date: Fri, 22 Jul 2005 14:27:04 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-Message-ID: <20050722122704.GB941@wohnheim.fh-wedel.de>
-References: <BAY17-F12FDF887F077CD69ABB397E8D60@phx.gbl>
-	<20050722115939.GA941@wohnheim.fh-wedel.de>
-	<42E0E2C8.7090304@yandex.ru>
+	id 1Dvyp9-0005p8-Tx
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 10:48:33 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Dvyoi-0002oi-S8
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 16:48:00 +0200
+Received: from 212.130.19.66 ([212.130.19.66])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jul 2005 16:48:00 +0200
+Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 22 Jul 2005 16:48:00 +0200
+To: linux-mtd@lists.infradead.org
+From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+Date: Fri, 22 Jul 2005 16:47:21 +0200
+Message-ID: <dbr0tp$87s$1@sea.gmane.org>
+References: <dbl42b$hcn$1@sea.gmane.org>	<1121867130.12903.15.camel@localhost.localdomain>	<dblm4l$802$1@sea.gmane.org>	<1121869156.12903.19.camel@localhost.localdomain>	<dblne1$cgd$1@sea.gmane.org>
+	<1121887042.20077.1.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42E0E2C8.7090304@yandex.ru>
-Cc: zhao_fusheng@hotmail.com, tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
-	block
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1121887042.20077.1.camel@localhost.localdomain>
+Sender: news <news@sea.gmane.org>
+Subject: Re: JFFS2 garbage collector blocking for minutes after mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +33,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 22 July 2005 16:12:56 +0400, Artem B. Bityuckiy wrote:
-> Jörn Engel wrote:
-> >
-> >Sevenfold indentation is not what I call good coding style.  Try to
-> >make this stuff simpler.  Use "if (!...) continue" and similar
-> >constructs.
-> >
-> Agree, although it is how JFFS2 is written. Let's not worsen it, but 
-> instead, make it tidier. Please, if you don't mind, reformat the whole 
-> function, you may split it on shorter sub-functions, etc.
+Hi there,
 
-Yep.  You should send two (or more) seperate patches then.  First for
-cleanup of existing function, second for actual changes.
+>>I'm not comfortable with profiling the kernel... It could be arranged, 
+>>but I rather see if the a recent CVS snapshot does it for me... ;-)
 
-> BTW, IMO the Summary patch of Ferenc Havasi is not yet in CVS (even 
-> though it greatly helps with mount time) because he didn't bothered 
-> making it cute. He just took messy JFFS2 code, and made it even messier. 
-> I'd be glad to see Ferenc's patch nice and in CVS.
+> Profiling isn't hard or intrusive -- all you need to do is boot with
+> something like 'profile=1' on the kernel command line, then
+> read /proc/profile after the GC thread has finished doing its thing.
+> 
+> Then the readprofile tool will be able to tell you where the time was
+> spent.
 
-Same here.
+First of all, I patched my 2.4.20 kernel with CVS head from today 
+(2005-07-22) - it took some time, but it surely seems to work...
 
-Jörn
+That reduced the mount time of my "spoiled" flash from 8m45s 
+(jffs2_gcd_mtd0) to some 45seconds! So that was a factor of ~10 in 
+speed! That's more or less acceptable... (I really hope my patchin 
+didn't spoil some other parts!)
 
--- 
-If System.PrivateProfileString("",
-"HKEY_CURRENT_USER\Software\Microsoft\Office\9.0\Word\Security", "Level") <>
-"" Then  CommandBars("Macro").Controls("Security...").Enabled = False
--- from the Melissa-source
+Second, I tried running the profiling - *with* the new kernel/mtd 
+source. The time consumers are - sorted by clock ticks:
+
+47695	idled			384,63710
+2997	nand_read_buf		62,43750
+1122	nand_calculate_ecc	5,84380
+677	__delay			33,85000
+502	nand_do_read_ecc	0,26370
+
+Right?!
+
+BR,
+  Martin
