@@ -1,13 +1,23 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Shankari <shankari82@yahoo.com>
-In-Reply-To: <20050722171510.55261.qmail@web51007.mail.yahoo.com>
+Received: from blood.actrix.co.nz ([203.96.16.160])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dw7sy-0003vn-Iq
+	for linux-mtd@lists.infradead.org; Fri, 22 Jul 2005 20:29:09 -0400
+Received: from 203-96-62-34-tollfree.actrix.co.nz
+	(203-96-62-34-tollfree.actrix.co.nz [203.96.62.34])
+	by blood.actrix.co.nz (Postfix) with ESMTP id 8E3DD4AF3
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 23 Jul 2005 12:28:49 +1200 (NZST)
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Date: Sat, 23 Jul 2005 12:31:03 +1200
 References: <20050722171510.55261.qmail@web51007.mail.yahoo.com>
-Content-Type: text/plain
-Date: Fri, 22 Jul 2005 15:48:00 -0400
-Message-Id: <1122061681.12630.29.camel@localhost.localdomain>
-Mime-Version: 1.0
+In-Reply-To: <20050722171510.55261.qmail@web51007.mail.yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200507231231.03610.manningc2@actrix.gen.nz>
 Subject: Re: Flash memory PCI Add in card
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,24 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-07-22 at 10:15 -0700, Shankari wrote:
-> I wanted to know if there are any boards that
-> interfaces flash through PCI? 
+On Saturday 23 July 2005 05:15, Shankari wrote:
 
-It's not a particularly difficult thing to make. You just need to stick
-a bunch of NOR flash in a BAR. 
+>
+> My end objective is to simulate a flash file system.
+> For this, I want to know if there are easy ways to
+> interface the flash (via the PCI)
 
-M-Systems have a PCI eval board which is based on a simple PCI device
-ASIC, but I don't think it supports NOR flash -- it's designed for their
-DiskOnChip devices.
+Sometimes I really miss the old days of ISA cards :-(.
 
-Some of the ARM eval boards can plug into a PCI slot too and have their
-flash accessed directly from the host.
+Building an adequate environment for simulation/development is something I 
+have struggled with too for the development of YAFFS.
 
-> Also, are there any open source PCI drivers that I
-> might look into for a better idea.
+Why not just use nandsim. Just create a 128MB or whatever lump of "NAND" in 
+RAM. Adding an extra SIM of RAM to your system will be a lot cheaper and 
+easier.
 
-linux/drivers/mtd/maps/pci.c
+Someone on mtd list also built a simple board that attaches NAND to the IDE 
+disk interface. Seems a lot simpler than messing about with PCI.
 
--- 
-dwmw2
+Another alternative is to use a parallel card interface. This will be a bit 
+slower though.
+
+If you really want to do a PCI card, then you might find something like a 
+Xilinx or similar PCI evaluation board makes the job simpler.
+
+-- Charles
