@@ -1,20 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-In-Reply-To: <dbr0tp$87s$1@sea.gmane.org>
-References: <dbl42b$hcn$1@sea.gmane.org>
-	<1121867130.12903.15.camel@localhost.localdomain>
-	<dblm4l$802$1@sea.gmane.org>
-	<1121869156.12903.19.camel@localhost.localdomain>
-	<dblne1$cgd$1@sea.gmane.org>
-	<1121887042.20077.1.camel@localhost.localdomain>
-	<dbr0tp$87s$1@sea.gmane.org>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dwicc-0002w8-GV
+	for linux-mtd@lists.infradead.org; Sun, 24 Jul 2005 11:42:40 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+In-Reply-To: <1121166766.16978.71.camel@sauron.oktetlabs.ru>
+References: <1121166766.16978.71.camel@sauron.oktetlabs.ru>
 Content-Type: text/plain
-Date: Sat, 23 Jul 2005 11:07:18 -0400
-Message-Id: <1122131239.12630.34.camel@localhost.localdomain>
+Date: Sun, 24 Jul 2005 19:42:00 +0400
+Message-Id: <1122219720.16052.4.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 garbage collector blocking for minutes after mount
+Cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] (preliminary) new fragtree build method
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-07-22 at 16:47 +0200, Martin Egholm Nielsen wrote:
-> 47695   idled                   384,63710
-> 2997    nand_read_buf           62,43750
-> 1122    nand_calculate_ecc      5,84380
-> 677     __delay                 33,85000
-> 502     nand_do_read_ecc        0,26370
+Here is a newer version of the patch:
+http://www.infradead.org/~dedekind/reverse-version-prelim-03.diff
 
-Right, so we're spending most of that time actually reading the flash.
-If you just read the entire flash device, how long does that take?
- (time dd if=/dev/mtd0 of=/dev/null) 
+The original mail: http://lists.infradead.org/pipermail/linux-mtd/2005-
+July/013015.html
 
-Artem's patch will improve things further by building up the fragtree
-from newest to oldest node instead of from oldest to newest as we
-currently do -- which actually means we don't need to check the CRC on
-the oldest nodes before they never get added to the tree; we don't
-actually need to read their data payload at all.
-
-In the longer term, Ferenc's summary patch would decrease the amount of
-reading from the flash even further. I keep meaning to go through that
-in detail and make it mergeable.
+Except of the functional changes, I made a lot of the source code
+cleaning. It is very difficult to post that in separate patches, so it
+is in one patch.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
