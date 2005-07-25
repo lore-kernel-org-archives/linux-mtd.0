@@ -1,29 +1,28 @@
 Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dwmo1-0005hY-Lx
-	for linux-mtd@lists.infradead.org; Sun, 24 Jul 2005 16:10:46 -0400
+	id 1DwxHN-0001nZ-7B
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 03:21:40 -0400
 Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DwmnX-0001fJ-VR
-	for linux-mtd@lists.infradead.org; Sun, 24 Jul 2005 22:10:08 +0200
-Received: from 212.242.189.63 ([212.242.189.63])
+	id 1DwxGu-0000O9-VL
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 09:21:08 +0200
+Received: from 212.130.19.66 ([212.130.19.66])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Jul 2005 22:10:07 +0200
-Received: from martin by 212.242.189.63 with local (Gmexim 0.1 (Debian))
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Jul 2005 09:21:08 +0200
+Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Sun, 24 Jul 2005 22:10:07 +0200
+	for <linux-mtd@lists.infradead.org>; Mon, 25 Jul 2005 09:21:08 +0200
 To: linux-mtd@lists.infradead.org
 From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Sun, 24 Jul 2005 22:09:58 +0200
-Message-ID: <dc0sin$spr$1@sea.gmane.org>
-References: <dbl42b$hcn$1@sea.gmane.org>	<1121867130.12903.15.camel@localhost.localdomain>	<dblm4l$802$1@sea.gmane.org>	<1121869156.12903.19.camel@localhost.localdomain>	<dblne1$cgd$1@sea.gmane.org>	<1121887042.20077.1.camel@localhost.localdomain>	<dbr0tp$87s$1@sea.gmane.org>
-	<1122131239.12630.34.camel@localhost.localdomain>
+Date: Mon, 25 Jul 2005 09:20:43 +0200
+Message-ID: <dc23sc$s8p$1@sea.gmane.org>
+References: <dbr15p$90f$1@sea.gmane.org> <42E1DA4C.1000605@elsoft.ch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1122131239.12630.34.camel@localhost.localdomain>
+In-Reply-To: <42E1DA4C.1000605@elsoft.ch>
 Sender: news <news@sea.gmane.org>
-Subject: Re: JFFS2 garbage collector blocking for minutes after mount
+Subject: Re: Howto provoke the long mount times?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,23 +32,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>47695   idled                   384,63710
->>2997    nand_read_buf           62,43750
->>1122    nand_calculate_ecc      5,84380
->>677     __delay                 33,85000
->>502     nand_do_read_ecc        0,26370
-> Right, so we're spending most of that time actually reading the flash.
-> If you just read the entire flash device, how long does that take?
->  (time dd if=/dev/mtd0 of=/dev/null) 
-This takes some 22 secs - so that explains the half of the time (~45s), 
-yes... I guess some of the time has to do with the fact that I used the 
-NAND for my root fs - unfortunately also when I did the profiling...
+>>In extension of my previous thread regarding the GC blocking writes to
+>>the NAND, I have a small additional question:
+>>How can I provoke this situation?
+>>It suddenly occur "out of nowhere" - having mount times of nearly
+>>nothing, to having mount times of minutes (now reduced, though)...
+> Most probably you are facing the same problem as i have reported in
+> http://lists.infradead.org/pipermail/linux-mtd/2005-May/012675.html
+> while creating tar files.
+Most likely, yes! :-)
+Did you stay with jffs2 or did you turn to yaffs?
 
-> Artem's patch will improve things further by building up the fragtree
-> from newest to oldest node instead of from oldest to newest as we
-> currently do -- which actually means we don't need to check the CRC on
-> the oldest nodes before they never get added to the tree; we don't
-> actually need to read their data payload at all.
-Looking forward to the patch leaving the preliminary state...
+> In the meantime i can provoke the same effect also be "copying" serveral
+> hundred small files (~ 700 bytes) to the NAND flash using the following
+> "poor mans" copy routine:
 
-// Martin
+> static void
+> Copy(FILE *fi, FILE *fo, size_t bsize)
+> {
+> 	size_t rlen, wlen;
+> 	char buf[BUFFERSIZE];
+> 
+> 	while (!feof(fi)) {
+> 		rlen = fread(&buf, 1, bsize, fi);
+> 		wlen = fwrite(&buf, 1, rlen, fo);
+> 		fflush(fo);
+> 
+> 		if (rlen != wlen)
+> 			return;
+> 	}
+> }
+> 
+> 
+> Please note the "fflush()" after the "fwrite()". By varying the "bsize"
+> parameter and the numbers of files to copy, you should be able to select
+> the "desired" delay during mount time.
+
+Super! Nice to have in case I "repair" (flash_eraseall) the flashes I 
+have, but need to test the behaviour for future versions...
+
+BR,
+  Martin
