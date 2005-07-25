@@ -1,29 +1,13 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dwzl4-0003KZ-HW
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 06:00:34 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Dwzk6-0008EI-DF
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 11:59:26 +0200
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Jul 2005 11:59:26 +0200
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 25 Jul 2005 11:59:26 +0200
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Mon, 25 Jul 2005 11:58:55 +0200
-Message-ID: <dc2d4v$k8k$1@sea.gmane.org>
-References: <dbl42b$hcn$1@sea.gmane.org>	<1121867130.12903.15.camel@localhost.localdomain>	<dblm4l$802$1@sea.gmane.org>	<1121869156.12903.19.camel@localhost.localdomain>	<dblne1$cgd$1@sea.gmane.org>	<1121887042.20077.1.camel@localhost.localdomain>	<dbr0tp$87s$1@sea.gmane.org>	<1122131239.12630.34.camel@localhost.localdomain>	<dc0sin$spr$1@sea.gmane.org>
-	<42E4B5C1.1040804@yandex.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+From: =?iso-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
+To: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
+Date: Mon, 25 Jul 2005 14:42:25 +0200
+Message-ID: <000001c59116$4f4e80a0$050213ac@MCaloMobile>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42E4B5C1.1040804@yandex.ru>
-Sender: news <news@sea.gmane.org>
-Subject: Re: JFFS2 garbage collector blocking for minutes after mount
+Cc: 
+Subject: Jffs2 space problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,9 +17,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Looking forward to the patch leaving the preliminary state...
-> Would be nice if you try it before we can commit it...
-I will see if I can succesfully patch it in my already patched 
-version... :-)
+Hi all,
 
-// Martin
+	I have a problem with my jffs2 partition.
+I'm using mtd5 (size = 64 x 8 = 512kb).
+I eraseall the partition but if I do the df command I see that it is 100%
+used ...?!?!?
+
+/>
+/> cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00010000 00008000 "boot loader (64K)"
+mtd1: 00010000 00010000 "boot data (64K)"
+mtd2: 000c0000 00010000 "kernel (768K)"
+mtd3: 00020000 00010000 "user data 00 (128K)"
+mtd4: 00080000 00010000 "root fs (512K)"
+mtd5: 00080000 00010000 "user Jffs2 (512K)"
+/> eraseall /dev/mtd5
+MTD_open
+MTD_ioctl
+Erasing 64 Kibyte @ 0 --  0 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 10000 -- 12 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 20000 -- 25 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 30000 -- 37 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 40000 -- 50 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 50000 -- 62 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 60000 -- 75 % complete.MTD_ioctl
+Erasing 64 Kibyte @ 70000 -- 87 % complete.MTD_ioctl
+Erased 512 Kibyte @ 0 -- 100% complete.
+MTD_close
+/> df
+Filesystem           1k-blocks      Used Available Use% Mounted on
+/dev/rom4                  512       512         0 100% /
+/dev/ram0                  987         7       980   1% /var
+/dev/mtdblock5             512       512         0 100% /mnt
+/>
+
+
+
+Any Help?
+
+	Thanks!
+
+Massimo.
