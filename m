@@ -1,11 +1,11 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dwz2c-0002cP-HE
-	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 05:14:33 -0400
-Date: Mon, 25 Jul 2005 11:14:25 +0200
+	id 1Dwz86-0002nv-SL
+	for linux-mtd@lists.infradead.org; Mon, 25 Jul 2005 05:20:16 -0400
+Date: Mon, 25 Jul 2005 11:20:12 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: zhao forrest <zhao_fusheng@hotmail.com>
-Message-ID: <20050725091425.GB10616@wohnheim.fh-wedel.de>
+Message-ID: <20050725092012.GC10616@wohnheim.fh-wedel.de>
 References: <BAY17-F15C6182BFC9EEA8E5AD337E8CA0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -25,15 +25,20 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Mon, 25 July 2005 17:10:22 +0800, zhao forrest wrote:
-> 
-> I refined the patch and reduced the indentation from 7-level to
-> 4-level. Will 4-level indentation be acceptable?
+> +		node = (struct jffs2_unknown_node *)&buf[current_oob + c->fsdata_pos];
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Compared to the rest of JFFS2, that's fine.  Still, the technical
-parts of the patch should be reviewed by someone else.
+This part of the patch bugs me a little, even though it's not your
+fault.  buf should be of type void*, not char* or unsigned char*.
+After that conversion, most casts in this function should go away.
+
+Forrest, if you get bored easily, this would be a nice change.
+
+Rest of the patch looks fine, as far as I'm concerned.  Thanks.
 
 Jörn
 
 -- 
-The strong give up and move away, while the weak give up and stay.
--- unknown
+When you close your hand, you own nothing. When you open it up, you
+own the whole world.
+-- Li Mu Bai in Tiger & Dragon
