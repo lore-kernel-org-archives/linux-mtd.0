@@ -1,17 +1,19 @@
-Received: from ns.ustc.edu.cn ([202.38.64.1] helo=mx1.ustc.edu.cn)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxQ9h-0001cP-I4
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 15:11:50 +0100
-Received: from ustc.edu.cn (email.ustc.edu.cn [202.38.64.8])
-	by mx1.ustc.edu.cn (8.11.6/8.11.6) with SMTP id j6QDv8f16394
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2005 21:57:08 +0800
-Message-ID: <322386406.20252@ustc.edu.cn>
-From: "Ye Zhang" <yzhang37@mail.ustc.edu.cn>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 26 Jul 2005 22:00:06 +0800
-Content-Type: text/plain
-Subject: some question about nftl. 
-Reply-To: Ye Zhang <yzhang37@mail.ustc.edu.cn>
+	id 1DxQHi-0001ei-GJ
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 15:19:56 +0100
+Message-ID: <42E646E5.2040802@inf.u-szeged.hu>
+Date: Tue, 26 Jul 2005 16:21:25 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: =?ISO-8859-2?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <E1DxPLP-0004rN-Ld@phoenix.infradead.org>
+	<20050726140847.GD30656@wohnheim.fh-wedel.de>
+In-Reply-To: <20050726140847.GD30656@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, havasi@infradead.org
+Subject: Re: mtd/include/linux jffs2.h,1.35,1.36
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello: 
-i am a graduate student from china, i hope you can help me, 
-it is very urgent for me. 3x very much!
-i am working on a sumsung's nand flash, its page size is 2KB, and 
-erase size is 128KB, it seems the nftl_format program cannot support it.
-i am adding support for it now, but the algorithm seems diffcult, 
-can you give me some hints? 3x very!
-Best Wishs!
+J=F6rn Engel wrote:
 
-                                              zhangye  USTC
+>>-#define JFFS2_COMPR_LZO         0x07
+>>-#define JFFS2_COMPR_LZARI       0x08
+>> /* Compatibility flags. */
+>> #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown node=
+type is found */
+>> #define JFFS2_NODE_ACCURATE 0x2000
+>>   =20
+>>
+>
+>This patch could cause problems.  We have to make sure 0x07 and 0x08
+>are never handed out for new compressors, one way or another.
+>
+>Ferenc, can you add a comment that those numbers are reserved or
+>obsoleted?
+> =20
+>
+Compressor lzo and lzari were never used really, I think nobody has
+JFFS2 image with blocks compressed by them.
+
+But if you think I can add a comment to make absolutely sure.
+
+Ferenc
