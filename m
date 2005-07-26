@@ -1,19 +1,14 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxNrZ-00058z-Gq
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 07:44:55 -0400
-Date: Tue, 26 Jul 2005 13:44:51 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050726114451.GC30656@wohnheim.fh-wedel.de>
-References: <42E62254.9040806@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42E62254.9040806@inf.u-szeged.hu>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: compressors
+Message-ID: <42E62275.2030804@yandex.ru>
+Date: Tue, 26 Jul 2005 15:45:57 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
+References: <001a01c591d5$6d2eeaa0$050213ac@MCaloMobile>
+In-Reply-To: <001a01c591d5$6d2eeaa0$050213ac@MCaloMobile>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
+Subject: Re: I: Jffs2 space problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +18,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 26 July 2005 13:45:24 +0200, Ferenc Havasi wrote:
-> 
-> Artem's warned me about the compressors lzari and lzo, and he's right.
-> 
-> We adopted them for JFFS2 some years ago, but now they are unused
-> because have no good performance, have messy code and licence problems.
-> I think it's time to delete it from CVS. If nobody cares I remove it. I
-> think we should consider to remove compressor rubin, also.
+Cal=F2 Massimo wrote:
+> 	Newly-erased block contained wod xxxx at offset xxxx
+> 	Newly-erased block contained wod xxxx at offset xxxx
 
-Makes sense.
+The messages mean that JFFS2 issued an flash_erase command,
+then read the newly erased eraseblock and found out it does
+not have all 0xFFs.
 
-Jörn
+Check that you are able to erase your flash corre3ctly. Try to dump the=20
+flash and see if it has all FFs just after you've erased it but before=20
+you've mounted JFFS2.
 
--- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface. 
--- Doug MacIlroy
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
