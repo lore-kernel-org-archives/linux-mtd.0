@@ -1,16 +1,16 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxQ03-00081L-AE
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 10:01:59 -0400
-Message-ID: <42E6432A.7030207@inf.u-szeged.hu>
-Date: Tue, 26 Jul 2005 16:05:30 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Received: from mail.imc-berlin.de ([217.110.46.186])
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DxQ4w-0001a4-4o
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 15:06:49 +0100
+Message-ID: <42E64350.6060100@imc-berlin.de>
+Date: Tue, 26 Jul 2005 16:06:08 +0200
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-To: Steven Scholz <steven.scholz@imc-berlin.de>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
 References: <dbl42b$hcn$1@sea.gmane.org>	<1121867130.12903.15.camel@localhost.localdomain>	<42E634D0.6090300@inf.u-szeged.hu>
-	<42E63731.8010209@imc-berlin.de>
-In-Reply-To: <42E63731.8010209@imc-berlin.de>
-Content-Type: text/plain; charset=ISO-8859-2
+	<42E63731.8010209@imc-berlin.de> <42E6432A.7030207@inf.u-szeged.hu>
+In-Reply-To: <42E6432A.7030207@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS2 garbage collector blocking for minutes after mount
@@ -23,12 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Steven Scholz wrote:
+Ferenc Havasi wrote:
+> Steven Scholz wrote:
+> 
+> 
+>>Does writing "every relevant memory representation" significantly
+>>increase umount time?
+> 
+> 
+> It depends on many-many things. Just an example: with a 6M image (where
+> there is a lot of small file) it costs 75K to write out.
 
-> Does writing "every relevant memory representation" significantly
-> increase umount time?
+So erasing and writing 2 64kB sectors on a normal NOR flash. Not much though. 
+Compared with several seconds mount time ...
 
-It depends on many-many things. Just an example: with a 6M image (where
-there is a lot of small file) it costs 75K to write out.
-
-Ferenc
+--
+Steven
