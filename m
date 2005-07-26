@@ -1,20 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.193])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxRFz-0000uA-QH
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 11:22:28 -0400
-Received: by wproxy.gmail.com with SMTP id i20so1079416wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2005 08:22:09 -0700 (PDT)
-Message-ID: <764af18905072608227da7bce8@mail.gmail.com>
-Date: Tue, 26 Jul 2005 20:52:09 +0530
-From: Naveen Atmakuri <naveen.maillist@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: JFFS2 on OSK board
-Reply-To: Naveen Atmakuri <naveen.maillist@gmail.com>
+	id 1DxS86-0001mb-09
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 12:18:29 -0400
+Message-ID: <42E66234.6080809@mvista.com>
+Date: Tue, 26 Jul 2005 09:17:56 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Soma sundaram Veerappan <soma_edu@yahoo.co.in>
+References: <20050726084013.17153.qmail@web8503.mail.in.yahoo.com>
+In-Reply-To: <20050726084013.17153.qmail@web8503.mail.in.yahoo.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Jffs2 problem with Versatile PB926EJ-S
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everybody,
+Soma sundaram Veerappan wrote:
+> Hi,
+> 
+> I am working with Versatile PB926EJ-S.I am trying
+> porting  jffs2 with Linux-2.6.12.
+> 
+> I am getting 'No space left on device' message when i
+>  try to remove to create files.
+> 
+> I got reply from another mailing list to use below
+> command like below.
+...
+> 
+> When i passed this image size to linux from u-boot
+> bootargs, i got following messages
+> 
+> Erase at 0x00240000 failed immediately: -EROFS. Is the
+> sector locked?
 
-I am using linux-2.6.12-rc2-omap2 and u-boot-1.1.2 for my OSK board.
-I created a minimal jffs2 image for my board.
+I also replied on that mailing list regarding the above.
 
-If i boot with this image for the first time it is taking too much
-time to get booted. Is there any way to reduce this boot time.
-If i add some files to the filesystem and boot the board using this
-new filesystem its not getting booted and it is corrupting my mtd.
-
-I encountered the same problem when i created ext2 filesystem.
-
-Is there any patch that has to be applied to avoid these errors.
-
-In help in this regard would be of great help.
-
-Thanks in Advance,
-Naveen A.
+-- 
+Todd
