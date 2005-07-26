@@ -1,28 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxPBs-0007Ag-TM
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 09:09:55 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1DxPB1-00067t-5r
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 15:08:55 +0200
-Received: from 212.130.19.66 ([212.130.19.66])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2005 15:08:55 +0200
-Received: from martin by 212.130.19.66 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 26 Jul 2005 15:08:55 +0200
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Date: Tue, 26 Jul 2005 15:08:35 +0200
-Message-ID: <dc5ckj$ldm$1@sea.gmane.org>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DxPEa-0007OU-NN
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 09:12:44 -0400
+Message-ID: <42E637B5.9070204@inf.u-szeged.hu>
+Date: Tue, 26 Jul 2005 15:16:37 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 References: <dbl42b$hcn$1@sea.gmane.org>	<1121867130.12903.15.camel@localhost.localdomain>
-	<42E634D0.6090300@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<42E634D0.6090300@inf.u-szeged.hu> <42E6355C.4010700@yandex.ru>
+In-Reply-To: <42E6355C.4010700@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42E634D0.6090300@inf.u-szeged.hu>
-Sender: news <news@sea.gmane.org>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	Martin Egholm Nielsen <martin@egholm-nielsen.dk>
 Subject: Re: JFFS2 garbage collector blocking for minutes after mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,20 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ferenc Havasi wrote:
->>The garbage collection thread is also responsible for building up the
->>node tree for every inode after mounting, so that we know for sure which
->>nodes are valid and which are obsolete. On NAND flash we can't actually
->>mark nodes as obsolete.
+Artem B. Bityuckiy wrote:
 
-> Martin, you may should try our Centralizes Summary (CS) patch. It stores
-> every relevant memory representation at umount time, so at mount (if the
-> previous unmount was a clean one) you need only to read it without any
-> scanning and rebuilding.
+> Ferenc Havasi wrote:
+>
+>> Martin, you may should try our Centralizes Summary (CS) patch. It stores
+>> every relevant memory representation at umount time, so at mount (if the
+>> previous unmount was a clean one) you need only to read it without any
+>> scanning and rebuilding.
+>>
+>> It is downloadable from our web site
+>> (http://www.inf.u-szeged.hu/jffs2/mount.php). I recommend the variant
+>> which stores reference information on the first erase block.
+>>
+> Err, isn't your patch about speeding up scanning, not checking?
+>
+Erase Block Summary just speeds up scanning - every other processes work
+as before.
 
-Unfortunately, I have no (or almost no) clean umount's - the device will 
-reboot due to power-failure...
+Centralizes Summary work very differently. It stores all the relevant
+memory representation (inode caches, list, ...) onto flash (so the
+obscolated information is also stored) at umount time, so at mount time
+it only have to restore no other scanning and building is necessery. It
+is some kind of "hibernating".
 
-But I'm still considering - just for the clean ones :-)
-
-// Martin
+Ferenc
