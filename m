@@ -1,31 +1,20 @@
-Received: from server.pyrenet.fr ([194.116.145.1])
-	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DxMP9-0000nl-0l
-	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 11:11:57 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by localhost.pyrenet.fr (Postfix) with ESMTP id 90E4C3756
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2005 11:44:40 +0200 (MET DST)
-Received: from server.pyrenet.fr ([127.0.0.1])
-	by localhost (server [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 03084-07 for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2005 11:44:37 +0200 (MET DST)
-Received: from debian.perax.net (perax.net1.nerim.net [62.212.115.56])
-	by server.pyrenet.fr (Postfix) with ESMTP id 6BB113492
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2005 11:44:37 +0200 (MET DST)
-Received: from [192.168.0.86] (unknown [192.168.0.86])
-	by debian.perax.net (Postfix) with ESMTP id E0D10160078
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jul 2005 11:44:36 +0200 (CEST)
-Message-ID: <42E60604.2030601@perax.fr>
-Date: Tue, 26 Jul 2005 11:44:36 +0200
-From: Ludovic Guilhamat <lguilhamat@perax.fr>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DxMQs-0003De-IL
+	for linux-mtd@lists.infradead.org; Tue, 26 Jul 2005 06:14:43 -0400
+Message-ID: <42E60C90.5030602@yandex.ru>
+Date: Tue, 26 Jul 2005 14:12:32 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+References: <BAY17-F12FDF887F077CD69ABB397E8D60@phx.gbl>	<20050722115939.GA941@wohnheim.fh-wedel.de>	<42E0E2C8.7090304@yandex.ru>	<42E5E816.5090500@inf.u-szeged.hu>	<20050726074440.GB15903@wohnheim.fh-wedel.de>	<42E5ECE5.4010901@inf.u-szeged.hu>	<42E5F474.7020003@imc-berlin.de>	<20050726093624.GE15903@wohnheim.fh-wedel.de>
+	<42E60A81.7070508@inf.u-szeged.hu>
+In-Reply-To: <42E60A81.7070508@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Does MTD could be the origin of my problem ?
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
+ block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,23 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all !
+Ferenc Havasi wrote:
+> 
+> I agree. It would be technically difficult to implement and would make 
+> the first mount time very-very long.
+> 
 
-I'm working with a Coldfire platform (5272) with a Nand flash of 32MB. 
-I'm trying to use the last MTD snapshot which works with the 2.4.27 
-kernel (/2005-03-04 snapshot) /on my Nand, with Jffs2 (I plan to 
-implement Yaffs).
+Hi Ferenc,
 
-When my system is up, I have a kernel bug panic which appears, for 
-example, when I do a 'ls -al /home' (/home is an mtdblock with jffs2) at 
-the root directory (/). If I'm in the /home directory, the problem 
-doesn't seem to appear...
+I have no time to look at your patch right now, but I recall there was 
+many things like this:
 
-The kernel bug is : kernel BUG at page_alloc.c:254!
-                                 Kernel panic: BUG!
+#ifdef SUMMARY
+Large block of code. Code is not tidier then the original JFFS2's code. 
+If you are in scan.c, you wrote the code using scan.c's style...
+#endif
 
-So, do you think that the MTD could be in cause, since a past MTD with 
-2.4.19 kernel worked well...?
+In scan.c for example.
 
-Thanks.
-Ludovic.
+Also I saw large blocks of copy-pasted messy JFFS2 code which is 
+slightly changed, and is embraced by #ifdefs. That's not neat.
+
+I'll review your patch later and will be more specific.
+
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
