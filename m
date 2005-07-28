@@ -1,15 +1,22 @@
-Received: from web52702.mail.yahoo.com ([206.190.48.225])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dy94u-0000UG-98
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 10:09:47 -0400
-Message-ID: <20050728140935.12755.qmail@web52702.mail.yahoo.com>
-Date: Thu, 28 Jul 2005 07:09:34 -0700 (PDT)
-From: Gianluca Moro <giangiammy@yahoo.com>
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: stats about flash usage
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dy9tP-00014B-Gs
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 11:01:59 -0400
+Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR001.ip.videotron.ca
+	(iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+	with ESMTP id <0IKC00FQDF2C64@VL-MO-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 11:01:24 -0400 (EDT)
+Date: Thu, 28 Jul 2005 11:01:24 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <20050728121746.GA28368@zappa>
+To: Konstantin Kletschke <lists@ku-gbr.de>
+Message-id: <Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <20050706144545.GA11447@zappa> <20050728121746.GA28368@zappa>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,21 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm starting to test my flash response to frequent write
-operation using JFFS.
+On Thu, 28 Jul 2005, Konstantin Kletschke wrote:
 
-Is is there a report tool/some debugging options or so,
-that show how many time each block is written? (from boot time)
+> * Konstantin Kletschke <lists@ku-gbr.de> [Wed, Jul 06, 2005 at 04:45:45PM +0200]:
+> 
+> > I had XIP in linux-2.6.11 running very well.
+> 
+> Meanwhile I found out a solution.
+> I switched off CONFIG_FPE_NWFPE=y which the XIP System seems to depend
+> on!
 
-It could be useful to see how block writing is cycled
-between free and occupied blocks.
+It sure doesn't.
 
-thanx
-giammy
+Something else must be going on.
 
 
-		
-____________________________________________________
-Start your day with Yahoo! - make it your home page 
-http://www.yahoo.com/r/hs 
- 
+Nicolas
