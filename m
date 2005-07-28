@@ -1,18 +1,25 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DyBIH-0001lx-AW
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 12:31:43 -0400
-Message-ID: <42E90864.1080100@mvista.com>
-Date: Thu, 28 Jul 2005 09:31:32 -0700
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Mirco Fuchs <mircofuchs@web.de>
-References: <7686279@web.de>
-In-Reply-To: <7686279@web.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Problem with AT91RM9200 and intel cfi flash
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DyCnP-0002RZ-HN
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 14:07:55 -0400
+Received: from dsl-082-082-158-021.arcor-ip.net ([82.82.158.21]:48043
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1DyCqL-0001iy-9V
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2005 20:10:54 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1DyCn6-00022g-00
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2005 20:07:32 +0200
+Date: Thu, 28 Jul 2005 20:07:32 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050728180732.GA7840@zappa>
+References: <20050706144545.GA11447@zappa> <20050728121746.GA28368@zappa>
+	<Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
+Subject: Re: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mirco Fuchs wrote:
+* Nicolas Pitre <nico@cam.org> [Thu, Jul 28, 2005 at 11:01:24AM -0400]:
 
-> #> umount /mnt/jffs2
+> > I switched off CONFIG_FPE_NWFPE=y which the XIP System seems to depend
+> > on!
 > 
-> The instruction aborts with the following error:
-...
-> Unable to handle kernel NULL pointer dereference at virtual address 00000000
-...
-> Backtrace:
-> [<c01b22c0>] (__down_write+0x0/0xd4) from [<c00d8140>] (jffs2_flush_wbuf_pad+0x1c/0x3c)
+> It sure doesn't.
+> 
+> Something else must be going on.
 
-Looks like there were multiple fixes for similar problems, in addition 
-to the patch I pointed you at on linux-arm-kernel.  Patch in the latest 
-linux-mtd code from CVS and see if it's fixed?  Or if you don't need 
-NAND flash support (you mention Intel CFI flash) then 
-CONFIG_JFFS2_FS_NAND=n might get rid of it.
 
--- 
-Todd
+Hm.. funny. Beside the trouble with my toolchains the working one
+creates definately only a bootable xipuImage if CONFIG_FPE_NWFPE is
+enabled.  I wonder myself, why...
+
+I rechecked again now.
+
+Konsti
