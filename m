@@ -1,24 +1,21 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DyCnP-0002RZ-HN
-	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 14:07:55 -0400
-Received: from dsl-082-082-158-021.arcor-ip.net ([82.82.158.21]:48043
-	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
-	id 1DyCqL-0001iy-9V
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2005 20:10:54 +0200
-Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
-	id 1DyCn6-00022g-00
-	for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2005 20:07:32 +0200
-Date: Thu, 28 Jul 2005 20:07:32 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DyCv2-0002fG-Hi
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 14:15:53 -0400
+Received: from [10.0.10.193] (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id LAA16560
+	for <linux-mtd@lists.infradead.org>; Thu, 28 Jul 2005 11:15:40 -0700
+Message-ID: <42E920CC.2020105@mvista.com>
+Date: Thu, 28 Jul 2005 11:15:40 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Message-ID: <20050728180732.GA7840@zappa>
-References: <20050706144545.GA11447@zappa> <20050728121746.GA28368@zappa>
-	<Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
+References: <20050706144545.GA11447@zappa>
+	<20050728121746.GA28368@zappa>	<Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>
+	<20050728180732.GA7840@zappa>
+In-Reply-To: <20050728180732.GA7840@zappa>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Subject: Re: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,20 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Nicolas Pitre <nico@cam.org> [Thu, Jul 28, 2005 at 11:01:24AM -0400]:
-
-> > I switched off CONFIG_FPE_NWFPE=y which the XIP System seems to depend
-> > on!
+Konstantin Kletschke wrote:
+> * Nicolas Pitre <nico@cam.org> [Thu, Jul 28, 2005 at 11:01:24AM -0400]:
 > 
-> It sure doesn't.
 > 
-> Something else must be going on.
+>>>I switched off CONFIG_FPE_NWFPE=y which the XIP System seems to depend
+>>>on!
+>>
+>>It sure doesn't.
+>>
+>>Something else must be going on.
+> 
+> 
+> 
+> Hm.. funny. Beside the trouble with my toolchains the working one
+> creates definately only a bootable xipuImage if CONFIG_FPE_NWFPE is
+> enabled.  I wonder myself, why...
 
+Dunno about that option, but check the assembly code generated for the 
+xip_* routines to see if any functions are called that are not marked 
+__xipram?  If so, linux may be attempting to execute from flash memory 
+while the flash is not in the proper (read array or whatever) state.
 
-Hm.. funny. Beside the trouble with my toolchains the working one
-creates definately only a bootable xipuImage if CONFIG_FPE_NWFPE is
-enabled.  I wonder myself, why...
-
-I rechecked again now.
-
-Konsti
+-- 
+Todd
