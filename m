@@ -1,22 +1,20 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from wproxy.gmail.com ([64.233.184.196])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1Dxub7-0002rj-Lx
-	for linux-mtd@lists.infradead.org; Wed, 27 Jul 2005 18:42:00 -0400
-Received: from 203-96-62-30-tollfree.actrix.co.nz
-	(203-96-62-30-tollfree.actrix.co.nz [203.96.62.30])
-	by desire.actrix.co.nz (Postfix) with ESMTP id 4E867151FA
+	id 1Dy3Gf-0005f1-JX
+	for linux-mtd@lists.infradead.org; Thu, 28 Jul 2005 03:57:34 -0400
+Received: by wproxy.gmail.com with SMTP id i20so347234wra
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 28 Jul 2005 10:41:49 +1200 (NZST)
-From: Charles Manning <manningc2@actrix.gen.nz>
+	Thu, 28 Jul 2005 00:57:24 -0700 (PDT)
+Message-ID: <9185a3fa0507280057dcd057f@mail.gmail.com>
+Date: Thu, 28 Jul 2005 16:57:23 +0900
+From: Amit Sharma <amitsharma91@gmail.com>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 28 Jul 2005 10:44:19 +1200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200507281044.19525.manningc2@actrix.gen.nz>
-Subject: nandsim on PC howto?
+Subject: JFFS2 mounting problem
+Reply-To: Amit Sharma <amitsharma91@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,8 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there a howto covering getting nandsim going on a PC?
+Hi  all
 
-Thanx
+I am working on JFFS2 MTD driver on NAND device
 
--- Charles
+I try to copy file to JFFs2 partition before mounting my device to mnt
+partition but after mounting i do not find any file in my mount
+directory.
+
+Can any one help me why i donot find any file in mount directory after
+mounting when device have file.
+
+mkfs.jffs2 -d /home/jffs2stuff -o /tmp/jffs2.image
+cat /tmp/jffs2.image >/dev/mtdblock/0
+mount -t jffs2 /dev/mtdblock/0 /mnt/
+ls
+--------No file available--------
+
+but i am able to create file after mounting in jffs2 partition.
+
+Regards
+AK
