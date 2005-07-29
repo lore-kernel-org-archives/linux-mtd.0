@@ -1,13 +1,22 @@
-From: =?iso-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
-To: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Date: Thu, 28 Jul 2005 18:20:26 +0200
-Message-ID: <000501c59390$435ae050$050213ac@MCaloMobile>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dyb3a-0003yB-Mv
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2005 16:02:21 -0400
+Received: from [10.0.10.193] (av [127.0.0.1])
+	by av.mvista.com (8.9.3/8.9.3) with ESMTP id NAA26301
+	for <linux-mtd@lists.infradead.org>; Fri, 29 Jul 2005 13:02:07 -0700
+Message-ID: <42EA8B3F.3040403@mvista.com>
+Date: Fri, 29 Jul 2005 13:02:07 -0700
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Cc: 
-Subject: Newly-erased Block...
+To: linux-mtd@lists.infradead.org
+References: <20050706144545.GA11447@zappa>
+	<20050728121746.GA28368@zappa>	<Pine.LNX.4.63.0507281100060.21762@localhost.localdomain>	<20050728180732.GA7840@zappa>
+	<42E920CC.2020105@mvista.com> <20050729065012.GA8186@ku-gbr.de>
+In-Reply-To: <20050729065012.GA8186@ku-gbr.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Re: xip changes between 2.6.11 and 20050530?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,43 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+Konstantin Kletschke wrote:
 
-I have an AM29LV160DB flash cip :
-	snds100map flash device: 200000 at 1000000
-	Search for id:(01 2249) interleave(1) type(2)
-	Found: AMD AM29LV160DB
-	Physically mapped flash of SNDS100: Found 1 x16 devices at 0x0 in
-16-bit mode
-	number of JEDEC chips: 1
-	Creating 6 MTD partitions on "Physically mapped flash of SNDS100":
-	0x00000000-0x00010000 : "boot loader (64K)"
-	0x00010000-0x00020000 : "boot data (64K)"
-	0x00020000-0x000e0000 : "kernel (768K)"
-	0x000e0000-0x00100000 : "user data 00 (128K)"
-	0x00100000-0x001a0000 : "root fs (512K)"
-	0x001a0000-0x00200000 : "user Jffs2 (512K)"
+> To be sure:
+> Any xip_* function only calls functions marked __xipram (which are
+> located in RAM then hopefully also) and only __xipram marked functions
+> call functions located still in flash?
 
+Nico's comments in cfi_cmdset_0001.c describe it better than I did:
 
-After the mount command :  />mount -t jffs2 /dev/mtdblock5 /mnt
+* No interrupt what so ever can be serviced while the flash isn't in array
+  * mode.  This is ensured by the xip_disable() and xip_enable() functions
+  * enclosing any code path where the flash is known not to be in array 
+mode.
+  * And within a XIP disabled code path, only functions marked with __xipram
+  * may be called and nothing else (it's a good thing to inspect generated
+  * assembly to make sure inline functions were actually inlined and 
+that gcc
+  * didn't emit calls to its own support functions). Also configuring 
+MTD CFI
+  * support to a single buswidth and a single interleave is also 
+recommended.
 
-I receive the following msg:
+The reason for "single buswidth and a single interleave" is to avoid 
+division operations to compute various things driven by those two 
+parameters, which will probably call a library function placed by 
+default in flash to do the divide; if a single buswidth and interleave 
+is configured then the derived values are compiled as constants and need 
+not be computed at runtime.
 
-	Newly-erased block contained wod xxxx at offset xxxx
-	Newly-erased block contained wod xxxx at offset xxxx
+Yes, it's all a little delicate. ;)
 
-And the command />df tell me that all the blocks of the partition are =
-used :
-0 available.
-
-I tryed to compile "flash_eraseall" under my uClinux-2.4.29, but I did't
-have success.
-
-I cleared the flash using my Flash programmer, but the situation is the
-same.
-
-Can someone help me on finding the cause of this messages?
-
-Thanks!
-
-	Massimo.
+-- 
+Todd
