@@ -1,16 +1,20 @@
-Received: from jive.softhome.net ([66.54.152.27])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DyRRn-0008DP-Um
-	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2005 05:46:44 -0400
-Date: Fri, 29 Jul 2005 17:40:31 +0800
-From: "JianZhang" <JianZhang@SoftHome.net>
-To: "linux mtd" <linux-mtd@lists.infradead.org>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DyRx8-00006I-0w
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2005 06:19:01 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: JianZhang <JianZhang@SoftHome.net>
+In-Reply-To: <courier.42E9F963.00002B1B@softhome.net>
+References: <courier.42E9F963.00002B1B@softhome.net>
+Content-Type: text/plain
+Date: Fri, 29 Jul 2005 12:23:14 +0200
+Message-Id: <1122632594.26146.78.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-Message-ID: <courier.42E9F963.00002B1B@softhome.net>
-Subject: [linux_mtd]bad eraseblock in nandflash when booting linux-2.6.12
+Content-Transfer-Encoding: 7bit
+Cc: linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [linux_mtd]bad eraseblock in nandflash when booting linux-2.6.12
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,61 +24,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkhDQogICAgIAlJIGFtIHJ1bm5pbmcgMi42LjEyIG9uIEVEQjkzMTIgcGxhdGZvcm0sIHVzaW5n
-IFNhbXN1bmcgbmFuZCBmbGFzaCBLOUYxMjA4VU9NLiBhbmQgdGhlIEdQSU8gcGlucyBjb25uZWN0
-IHRvIG5hbmQgDQpmbGFzaCdzIEFMRSxDTEUsTkNFLGJ1dCB0aGUgQlVTWSBwaW4gaXMgZmxvYXQu
-c28gaSBkZWNsYXJlZCIgdGhpcy0+ZGV2X3JlYWR5ID0gTlVMTDsiIGluIGZ1bmN0aW9uImludCBf
-X2luaXQgZXA5MzEyX2luaXQgKHZvaWQpIi4NCglOb3csaXQgYm9vdCB3aXRoIE5GUyx0aGUga2Vy
-bmVsIGNhbiBkZXRlY3QgdGhlIG5hbmQgZmxhc2gsYnV0IGl0IHJlcG9ydCB0aGVyZSBhcmUgbWFu
-eSAiQmFkIGVyYXNlYmxvY2siLFRoZSANCmZvbGxvd2luZyBpcyBwYXJ0IG9mIG15IGJvb3Rpbmcg
-aW5mbzoNCiAJDQogCQ0KCU5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4ZWMsIENoaXAg
-SUQ6IDB4NzYgKFNhbXN1bmcgTkFORCA2NE1pQiAzLDNWIDgtYml0KQ0KCQ0KCU5BTkRfRUNDX05P
-TkUgc2VsZWN0ZWQgYnkgYm9hcmQgZHJpdmVyLiBUaGlzIGlzIG5vdCByZWNvbW1lbmRlZCAhIQ0K
-DQoJU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzDQoNCglCYWQgZXJhc2VibG9jayA2IGF0
-IDB4MDAwMTgwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQzIGF0IDB4MDAwYWMwMDANCg0KCUJhZCBl
-cmFzZWJsb2NrIDY4IGF0IDB4MDAxMTAwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDEwMSBhdCAweDAw
-MTk0MDAwDQoNCglCYWQgZXJhc2VibG9jayAxNTkgYXQgMHgwMDI3YzAwMA0KDQoJQmFkIGVyYXNl
-YmxvY2sgMTcxIGF0IDB4MDAyYWMwMDANCgkuLi4NCgkobWF5YmUgdGhlIHRvdGFsImJhZCBibG9j
-ayIgaXMgMTYwKQ0KDQoJDQoJQmFkIGVyYXNlYmxvY2sgMzk1MSBhdCAweDAzZGJjMDAwDQoNCglC
-YWQgZXJhc2VibG9jayA0MDExIGF0IDB4MDNlYWMwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQwMjEg
-YXQgMHgwM2VkNDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgNDA0OCBhdCAweDAzZjQwMDAwDQoNCglC
-YWQgZXJhc2VibG9jayA0MDc0IGF0IDB4MDNmYTgwMDANCg0KCWNtZGxpbmVwYXJ0IHBhcnRpdGlv
-biBwYXJzaW5nIG5vdCBhdmFpbGFibGUNCg0KCXNpbmcgc3RhdGljIHBhcnRpdGlvbiBkZWZpbml0
-aW9uDQoNCglyZWF0aW5nIDEgTVREIHBhcnRpdGlvbnMgb24gImVkYjkzMTItbmFuZCI6DQoNCgkw
-eDAwMDAwMDAwLTB4MDQwMDAwMDAgOiAiRVA5MzEyIE5hbmQgRmxhc2giDQoJLi4uDQoJLyoqKioq
-KioqKioqKioqKioqKioqKioqKioqKioqKi8NCglCdXQgd2hlbiBpIHJlYm9vdCBzeXN0ZW0gaXQg
-cmVwb3J0Og0KCS8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovDQoJCQ0KCQ0KCU5BTkQg
-ZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4ZWMsIENoaXAgSUQ6IDB4NzYgKFNhbXN1bmcgTkFO
-RCA2NE1pQiAzLDNWIDgtYml0KQ0KDQoJTkFORF9FQ0NfTk9ORSBzZWxlY3RlZCBieSBib2FyZCBk
-cml2ZXIuIFRoaXMgaXMgbm90IHJlY29tbWVuZGVkICEhDQoNCglTY2FubmluZyBkZXZpY2UgZm9y
-IGJhZCBibG9ja3MNCg0KCUJhZCBlcmFzZWJsb2NrIDEgYXQgMHgwMDAwNDAwMA0KDQoJQmFkIGVy
-YXNlYmxvY2sgMTIgYXQgMHgwMDAzMDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgNDggYXQgMHgwMDBj
-MDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgODMgYXQgMHgwMDE0YzAwMA0KDQoJQmFkIGVyYXNibG9j
-ayA4OSBhdCAweDAwMTY0MDAwDQoNCglCYWQgZXJhc2VibG9jayAxMTAgYXQgMHgwMDFiODAwMA0K
-CS4uLg0KCQ0KCUJhZCBlcmFzZWJsb2NrIDQwNDYgYXQgMHgwM2YzODAwMA0KDQoJQmFkIGVyYXNl
-YmxvY2sgNDA1MSBhdCAweDAzZjRjMDAwDQoNCglCYWQgZXJhc2VibG9jayA0MDc5IGF0IDB4MDNm
-YmMwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQwOTAgYXQgMHgwM2ZlODAwMA0KDQoJLyoqKioqKioq
-KioqKioqKioqKioqKioqKioqKioqKi8NCglJdCBzZWVtIHRoYXQgdGhlIGxvY2F0aW9uIG9mIGJh
-ZCBlcmFzZWJsb2NrcyBpcyByYW5kb20gaW4gZXZlcnkgYm9vdGluZyB0aW1lLg0KCUkgd2FudCB0
-byB1c2UgZmxhc2hfZXJhc2VhbGwgdG8gZXJhc2UgYWxsIGJsb2NrLGJ1dCBpdCAgc2tpcGVkIHRo
-ZSBiYWQgYmxvY2suc28gaSBoYWNrZWQgLi4vdXRpbC9mbGFzaF9lcmFzZWFsbC5jDQoJYnkgY29t
-bWVudCBvdXQgdGhlIGJidHRlc3Q6DQoJLi4vdXRpbC9mbGFzaF9lcmFzZWFsbC5jDQoJbWFpbigp
-DQoJew0KCQkuLi4NCgkJLyoqKmNvbW1lbnQgb3V0IG5vdCB0byBjaGVjayBiYnQqKi8NCgkJLyoN
-CiAgICAgICAgICAgICAgICBpZiAoYmJ0ZXN0KSB7DQogICAgICAgICAgICAgICAgLi4uDQogICAg
-ICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgICovDQogICAgICAgICAgICAgICAgaWYgKCFx
-dWlldCkgew0KICAgICAgICAgICAgICAgIC4uLg0KCX0NCgkNCgljb21waWxlIGl0IGFuZCBtYWtl
-IG91dCBmbGFzaF9lcmFzZWFsbF9oYWNrDQoJLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqKioqKioqKi8NCgl+I2ZsYXNoX2VyYXNlYWxsX2hhY2sgIC1qIC9kZXYvbXRkNSANCglNVERf
-b3Blbg0KDQoJTVREX2lvY3RsDQoNCglNVERfaW9jdGwNCg0KDQoJcmFzaW5nIDE2IEtpYnlNVERf
-aW9jdGwNCg0KCWUgQCAwIC0tICAwICUgY29tcGxldGUuTVREX2lvY3RsDQoNCiAJbGVhbm1hcmtl
-ciB3cmlNVERfaW9jdGwNCg0KCXRlbiBhdCAwLg0KCS4uLg0KCUVyYXNpbmcgMTYgTVREX2lvY3Rs
-DQoNCglpYnl0ZSBAIDgwMDAwIC1uYW5kX2VyYXNlOiBGYWlsZWQgZXJhc2UsIHBhZ2UgMHgwMDAw
-MDY4MA0KDQoJICAwICUgY29tcGxldGUuIENsZWFubWFya2VyIHdyaU1URF9pb2N0bA0KDQoJdGVu
-IGF0IDgwMDAwLg0KCS4uLi4NCgkNCgkvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
-KioqLw0KCXRoZXJlIGlzIGEgbGl0dGxlICJGYWlsZWQgZXJhc2UiIGluIHRoaXMgb3BlcmF0aW9u
-LiBidXQgYWxzbyBpdCBpcyByYW5kb20gaW4gZXZlcnkgdGltZSBpIGRvIGZsYXNoX2VyYXNlYWxs
-X2hhY2suDQoJDQoJTm93IGkgZG9uJ3Qga25vdyB0aGUgcHJvYmxlbSBpcyBjYXVzZWQgYnkgbXkg
-bmFuZCBmbGFzaCBkZXZpY2UgZHJpdmVyIG9yIE1URCBkcml2ZXIuY2FuIGFueWJvZHkgaGVscCBt
-ZSENCglUaGFua3MgYWR2YW5jZWQhDQoJDQoNCgkJCUJlc3QgUmVnYXJkcywgCQkJCQ0KoaGhoaGh
-oaGhoaGhoaGhoUppYW5aaGFuZw0KoaGhoaGhoaGhoaGhoaGhoUppYW5aaGFuZ0BTb2Z0SG9tZS5u
-ZXQNCqGhoaGhoaGhoaGhoaGhoaGhoaGhMjAwNS0wNy0yOQ0K
+Please fix your mail client and wrap lines at 76.
+Also we really don't need all the empty lines between the information
+you want to send us. Reduce the information to the necessary amount to
+describe your problem and do not flood us with redundant crap.
+
+On Fri, 2005-07-29 at 17:40 +0800, JianZhang wrote:
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB 3,3V 8-bit)
+> NAND_ECC_NONE selected by board driver. This is not recommended !!
+
+Use software ECC !
+
+> Scanning device for bad blocks
+> Bad eraseblock 6 at 0x00018000
+<SNIP>
+> Scanning device for bad blocks
+> Bad eraseblock 1 at 0x00004000
+
+> It seem that the location of bad eraseblocks is random in every
+> booting time.
+
+Yes, it's probably related to timing. Did you set this->chip_delay
+correct ? Is the timing of your CPU setup to match the NAND timing
+specs ?
+
+> I want to use flash_eraseall to erase all block,but it  skiped the bad
+> block.so i hacked ....
+
+What are you trying to solve ? Erase random bad blocks ? Fix the random
+read problem first before messing with your FLASH chip. 
+
+I really start to question the quality of engineering schools. Did
+nobody ever tell you to solve basic problems first instead of trying to
+work around them without even having a clue whats going on ?
+
+> there is a little "Failed erase" in this operation. but also it is
+> random in every time i do flash_eraseall_hack.
+
+The kernel refuses to erase bad blocks, even if you remove the check in
+flash_erase_all. And I recommend you not to touch that check in the
+kernel, unless you exactly know what you are doing.
+
+tglx
