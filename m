@@ -1,22 +1,16 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DyPL3-0007Fg-4C
-	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2005 03:31:33 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: DataCom - =?ISO-8859-1?Q?Virg=EDlio?= <virgilio@datacom-telematica.com.br>
-In-Reply-To: <200507281840.03577.virgilio@datacom-telematica.com.br>
-References: <200507281640.54771.virgilio@datacom-telematica.com.br>
-	<1122584803.26146.55.camel@tglx.tec.linutronix.de>
-	<200507281840.03577.virgilio@datacom-telematica.com.br>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Fri, 29 Jul 2005 09:35:44 +0200
-Message-Id: <1122622544.26146.59.camel@tglx.tec.linutronix.de>
+Received: from jive.softhome.net ([66.54.152.27])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1DyRRn-0008DP-Um
+	for linux-mtd@lists.infradead.org; Fri, 29 Jul 2005 05:46:44 -0400
+Date: Fri, 29 Jul 2005 17:40:31 +0800
+From: "JianZhang" <JianZhang@SoftHome.net>
+To: "linux mtd" <linux-mtd@lists.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Single bit error correction on NAND.
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
+Message-ID: <courier.42E9F963.00002B1B@softhome.net>
+Subject: [linux_mtd]bad eraseblock in nandflash when booting linux-2.6.12
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +20,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-07-28 at 18:40 -0300, DataCom - Virgílio wrote:
-> > It is not and can not be the responsibility of the NAND driver to handle
-> > this. Where to should it write the data ? The existing data _cannot_ be
-> > overwritten, without erasing the whole eraseblock and the implied risk
-> > of loosing _ALL_ the data on the block due to a powerfail.
-> >
-> > The NAND driver returns the corrected data and an appropriate error code
-> 
-> Maybe I'm missing something, but the function nand_do_read_ecc returns 
-> -EBADMSG only if an uncorrectable error is detected by nand_correct_data. If 
-> just one bit is flipped, nand_correct_data corrects it, and nand_do_read_ecc 
-> returns 0.
-
-Damn, you're right. I check into this.
-
-tglx
+SGkhDQogICAgIAlJIGFtIHJ1bm5pbmcgMi42LjEyIG9uIEVEQjkzMTIgcGxhdGZvcm0sIHVzaW5n
+IFNhbXN1bmcgbmFuZCBmbGFzaCBLOUYxMjA4VU9NLiBhbmQgdGhlIEdQSU8gcGlucyBjb25uZWN0
+IHRvIG5hbmQgDQpmbGFzaCdzIEFMRSxDTEUsTkNFLGJ1dCB0aGUgQlVTWSBwaW4gaXMgZmxvYXQu
+c28gaSBkZWNsYXJlZCIgdGhpcy0+ZGV2X3JlYWR5ID0gTlVMTDsiIGluIGZ1bmN0aW9uImludCBf
+X2luaXQgZXA5MzEyX2luaXQgKHZvaWQpIi4NCglOb3csaXQgYm9vdCB3aXRoIE5GUyx0aGUga2Vy
+bmVsIGNhbiBkZXRlY3QgdGhlIG5hbmQgZmxhc2gsYnV0IGl0IHJlcG9ydCB0aGVyZSBhcmUgbWFu
+eSAiQmFkIGVyYXNlYmxvY2siLFRoZSANCmZvbGxvd2luZyBpcyBwYXJ0IG9mIG15IGJvb3Rpbmcg
+aW5mbzoNCiAJDQogCQ0KCU5BTkQgZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4ZWMsIENoaXAg
+SUQ6IDB4NzYgKFNhbXN1bmcgTkFORCA2NE1pQiAzLDNWIDgtYml0KQ0KCQ0KCU5BTkRfRUNDX05P
+TkUgc2VsZWN0ZWQgYnkgYm9hcmQgZHJpdmVyLiBUaGlzIGlzIG5vdCByZWNvbW1lbmRlZCAhIQ0K
+DQoJU2Nhbm5pbmcgZGV2aWNlIGZvciBiYWQgYmxvY2tzDQoNCglCYWQgZXJhc2VibG9jayA2IGF0
+IDB4MDAwMTgwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQzIGF0IDB4MDAwYWMwMDANCg0KCUJhZCBl
+cmFzZWJsb2NrIDY4IGF0IDB4MDAxMTAwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDEwMSBhdCAweDAw
+MTk0MDAwDQoNCglCYWQgZXJhc2VibG9jayAxNTkgYXQgMHgwMDI3YzAwMA0KDQoJQmFkIGVyYXNl
+YmxvY2sgMTcxIGF0IDB4MDAyYWMwMDANCgkuLi4NCgkobWF5YmUgdGhlIHRvdGFsImJhZCBibG9j
+ayIgaXMgMTYwKQ0KDQoJDQoJQmFkIGVyYXNlYmxvY2sgMzk1MSBhdCAweDAzZGJjMDAwDQoNCglC
+YWQgZXJhc2VibG9jayA0MDExIGF0IDB4MDNlYWMwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQwMjEg
+YXQgMHgwM2VkNDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgNDA0OCBhdCAweDAzZjQwMDAwDQoNCglC
+YWQgZXJhc2VibG9jayA0MDc0IGF0IDB4MDNmYTgwMDANCg0KCWNtZGxpbmVwYXJ0IHBhcnRpdGlv
+biBwYXJzaW5nIG5vdCBhdmFpbGFibGUNCg0KCXNpbmcgc3RhdGljIHBhcnRpdGlvbiBkZWZpbml0
+aW9uDQoNCglyZWF0aW5nIDEgTVREIHBhcnRpdGlvbnMgb24gImVkYjkzMTItbmFuZCI6DQoNCgkw
+eDAwMDAwMDAwLTB4MDQwMDAwMDAgOiAiRVA5MzEyIE5hbmQgRmxhc2giDQoJLi4uDQoJLyoqKioq
+KioqKioqKioqKioqKioqKioqKioqKioqKi8NCglCdXQgd2hlbiBpIHJlYm9vdCBzeXN0ZW0gaXQg
+cmVwb3J0Og0KCS8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKiovDQoJCQ0KCQ0KCU5BTkQg
+ZGV2aWNlOiBNYW51ZmFjdHVyZXIgSUQ6IDB4ZWMsIENoaXAgSUQ6IDB4NzYgKFNhbXN1bmcgTkFO
+RCA2NE1pQiAzLDNWIDgtYml0KQ0KDQoJTkFORF9FQ0NfTk9ORSBzZWxlY3RlZCBieSBib2FyZCBk
+cml2ZXIuIFRoaXMgaXMgbm90IHJlY29tbWVuZGVkICEhDQoNCglTY2FubmluZyBkZXZpY2UgZm9y
+IGJhZCBibG9ja3MNCg0KCUJhZCBlcmFzZWJsb2NrIDEgYXQgMHgwMDAwNDAwMA0KDQoJQmFkIGVy
+YXNlYmxvY2sgMTIgYXQgMHgwMDAzMDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgNDggYXQgMHgwMDBj
+MDAwMA0KDQoJQmFkIGVyYXNlYmxvY2sgODMgYXQgMHgwMDE0YzAwMA0KDQoJQmFkIGVyYXNibG9j
+ayA4OSBhdCAweDAwMTY0MDAwDQoNCglCYWQgZXJhc2VibG9jayAxMTAgYXQgMHgwMDFiODAwMA0K
+CS4uLg0KCQ0KCUJhZCBlcmFzZWJsb2NrIDQwNDYgYXQgMHgwM2YzODAwMA0KDQoJQmFkIGVyYXNl
+YmxvY2sgNDA1MSBhdCAweDAzZjRjMDAwDQoNCglCYWQgZXJhc2VibG9jayA0MDc5IGF0IDB4MDNm
+YmMwMDANCg0KCUJhZCBlcmFzZWJsb2NrIDQwOTAgYXQgMHgwM2ZlODAwMA0KDQoJLyoqKioqKioq
+KioqKioqKioqKioqKioqKioqKioqKi8NCglJdCBzZWVtIHRoYXQgdGhlIGxvY2F0aW9uIG9mIGJh
+ZCBlcmFzZWJsb2NrcyBpcyByYW5kb20gaW4gZXZlcnkgYm9vdGluZyB0aW1lLg0KCUkgd2FudCB0
+byB1c2UgZmxhc2hfZXJhc2VhbGwgdG8gZXJhc2UgYWxsIGJsb2NrLGJ1dCBpdCAgc2tpcGVkIHRo
+ZSBiYWQgYmxvY2suc28gaSBoYWNrZWQgLi4vdXRpbC9mbGFzaF9lcmFzZWFsbC5jDQoJYnkgY29t
+bWVudCBvdXQgdGhlIGJidHRlc3Q6DQoJLi4vdXRpbC9mbGFzaF9lcmFzZWFsbC5jDQoJbWFpbigp
+DQoJew0KCQkuLi4NCgkJLyoqKmNvbW1lbnQgb3V0IG5vdCB0byBjaGVjayBiYnQqKi8NCgkJLyoN
+CiAgICAgICAgICAgICAgICBpZiAoYmJ0ZXN0KSB7DQogICAgICAgICAgICAgICAgLi4uDQogICAg
+ICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgICovDQogICAgICAgICAgICAgICAgaWYgKCFx
+dWlldCkgew0KICAgICAgICAgICAgICAgIC4uLg0KCX0NCgkNCgljb21waWxlIGl0IGFuZCBtYWtl
+IG91dCBmbGFzaF9lcmFzZWFsbF9oYWNrDQoJLyoqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqKioqKioqKi8NCgl+I2ZsYXNoX2VyYXNlYWxsX2hhY2sgIC1qIC9kZXYvbXRkNSANCglNVERf
+b3Blbg0KDQoJTVREX2lvY3RsDQoNCglNVERfaW9jdGwNCg0KDQoJcmFzaW5nIDE2IEtpYnlNVERf
+aW9jdGwNCg0KCWUgQCAwIC0tICAwICUgY29tcGxldGUuTVREX2lvY3RsDQoNCiAJbGVhbm1hcmtl
+ciB3cmlNVERfaW9jdGwNCg0KCXRlbiBhdCAwLg0KCS4uLg0KCUVyYXNpbmcgMTYgTVREX2lvY3Rs
+DQoNCglpYnl0ZSBAIDgwMDAwIC1uYW5kX2VyYXNlOiBGYWlsZWQgZXJhc2UsIHBhZ2UgMHgwMDAw
+MDY4MA0KDQoJICAwICUgY29tcGxldGUuIENsZWFubWFya2VyIHdyaU1URF9pb2N0bA0KDQoJdGVu
+IGF0IDgwMDAwLg0KCS4uLi4NCgkNCgkvKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioq
+KioqLw0KCXRoZXJlIGlzIGEgbGl0dGxlICJGYWlsZWQgZXJhc2UiIGluIHRoaXMgb3BlcmF0aW9u
+LiBidXQgYWxzbyBpdCBpcyByYW5kb20gaW4gZXZlcnkgdGltZSBpIGRvIGZsYXNoX2VyYXNlYWxs
+X2hhY2suDQoJDQoJTm93IGkgZG9uJ3Qga25vdyB0aGUgcHJvYmxlbSBpcyBjYXVzZWQgYnkgbXkg
+bmFuZCBmbGFzaCBkZXZpY2UgZHJpdmVyIG9yIE1URCBkcml2ZXIuY2FuIGFueWJvZHkgaGVscCBt
+ZSENCglUaGFua3MgYWR2YW5jZWQhDQoJDQoNCgkJCUJlc3QgUmVnYXJkcywgCQkJCQ0KoaGhoaGh
+oaGhoaGhoaGhoUppYW5aaGFuZw0KoaGhoaGhoaGhoaGhoaGhoUppYW5aaGFuZ0BTb2Z0SG9tZS5u
+ZXQNCqGhoaGhoaGhoaGhoaGhoaGhoaGhMjAwNS0wNy0yOQ0K
