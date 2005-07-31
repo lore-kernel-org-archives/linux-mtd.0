@@ -1,14 +1,20 @@
-Message-ID: <42EC6AE7.6070507@yandex.ru>
-Date: Sun, 31 Jul 2005 10:08:39 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
-References: <000501c59390$435ae050$050213ac@MCaloMobile>
-In-Reply-To: <000501c59390$435ae050$050213ac@MCaloMobile>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Subject: Re: Newly-erased Block...
+Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DzAuD-0006JO-AP
+	for linux-mtd@lists.infradead.org; Sun, 31 Jul 2005 06:19:09 -0400
+Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id 2D1D5228CB
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 31 Jul 2005 14:18:18 +0400 (MSD)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Sun, 31 Jul 2005 14:18:17 +0400
+Message-Id: <1122805098.16052.10.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: [PATCH] check from the oldest versions to the newest
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,21 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cal=F2 Massimo wrote:
-> I receive the following msg:
->=20
-> 	Newly-erased block contained wod xxxx at offset xxxx
-> 	Newly-erased block contained wod xxxx at offset xxxx
->=20
+Hello, here is the release candidate of the patch referred at
+http://lists.infradead.org/pipermail/linux-mtd/2005
 
-There is an extra check in JFFS2 which makes shure that the newly=20
-earased flash eraseblock contains only 0xFF bytes. In fact, this is=20
-overkill and I'd like to move that check into the JFFS2 debugging stuff.
+The patch is here: http://www.infradead.org/~dedekind/reverse-
+version-01.diff
 
-JFFS2 issued the erase command then found that the block contains some=20
-trash. That's not JFFS2's fault. Dig your flash driver/hardware.
+Please, comment, review, try.
 
---=20
+Thanks.
+
+-- 
 Best Regards,
 Artem B. Bityuckiy,
 St.-Petersburg, Russia.
