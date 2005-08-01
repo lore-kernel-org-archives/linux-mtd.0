@@ -1,19 +1,25 @@
-Received: from mailout01.sul.t-online.com ([194.25.134.80])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1DzPUo-0002ab-2m
-	for linux-mtd@lists.infradead.org; Sun, 31 Jul 2005 21:53:47 -0400
-To: David Woodhouse <dwmw2@infradead.org>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Mon, 01 Aug 2005 01:38:16 BST."
-	<1122856696.8317.57.camel@baythorne.infradead.org>
-Date: Mon, 01 Aug 2005 03:53:17 +0200
-Sender: wd@denx.de
-Message-Id: <20050801015317.5A05F35261B@atlas.denx.de>
-Cc: Amit Sharma <amitsharma91@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: mkfs issue 
+	id 1DzWw5-0007KN-Kq
+	for linux-mtd@lists.infradead.org; Mon, 01 Aug 2005 05:50:28 -0400
+Message-ID: <42EDF04C.1010108@inf.u-szeged.hu>
+Date: Mon, 01 Aug 2005 11:50:04 +0200
+From: Havasi Ferenc <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <BAY17-F12FDF887F077CD69ABB397E8D60@phx.gbl>
+	<20050722115939.GA941@wohnheim.fh-wedel.de>
+	<42E0E2C8.7090304@yandex.ru> <42E5E816.5090500@inf.u-szeged.hu>
+	<20050726074440.GB15903@wohnheim.fh-wedel.de>
+	<42E5ECE5.4010901@inf.u-szeged.hu>
+	<20050726093215.GD15903@wohnheim.fh-wedel.de>
+	<20050726100330.GF15903@wohnheim.fh-wedel.de>
+In-Reply-To: <20050726100330.GF15903@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
+ block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <1122856696.8317.57.camel@baythorne.infradead.org> you wrote:
+Hi J=F6rn,
+
+>Review is focused on the simple stuff.  Most of the comments can be
+>repeated over and over, so just go through it yourself.  You should
+>focus on:
+>o Documentation/CodingStyle
+>o empty whitespace at the end of lines
+>o 80 columns (see CodingStyle)
 >
-> The 2.4 kernel is ancient and slow. You should find the code in 2.6 is a
-> _lot_ faster.
+>When most of that stuff is done, resend the patch for the next round
+>of review.
+> =20
+>
+Thanks for the review, the modified patch is at
+http://www.inf.u-szeged.hu/jffs2/jffs2-summary-20050729.patch.
 
-Maybe the MTD code in some 2.4 kernels is slow. The kernel itself  is
-usually  faster than 2.6; even a LOT faster than 2.6. See for example
-http://www.denx.de/twiki/bin/view/Know/Linux24vs26
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-Commitment, n.:      Commitment can be illustrated by a breakfast
-of ham and eggs. The chicken was involved, the pig was committed.
+Ferenc
