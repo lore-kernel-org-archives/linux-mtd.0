@@ -1,14 +1,15 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?Cal=F2?= Massimo <m.calo@ctsgroup.it>
-In-Reply-To: <000501c59390$435ae050$050213ac@MCaloMobile>
-References: <000501c59390$435ae050$050213ac@MCaloMobile>
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 01 Aug 2005 13:36:42 +0100
-Message-Id: <1122899802.8317.106.camel@baythorne.infradead.org>
-Mime-Version: 1.0
+Received: from web8508.mail.in.yahoo.com ([202.43.219.170])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1Dza5s-000210-K9
+	for linux-mtd@lists.infradead.org; Mon, 01 Aug 2005 09:12:49 -0400
+Message-ID: <20050801130553.31554.qmail@web8508.mail.in.yahoo.com>
+Date: Mon, 1 Aug 2005 14:05:53 +0100 (BST)
+From: Soma sundaram Veerappan <soma_edu@yahoo.co.in>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Subject: Re: Newly-erased Block...
+Subject: mtd-20040610
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +19,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-07-28 at 18:20 +0200, Calò Massimo wrote:
-> I receive the following msg:
->         Newly-erased block contained wod xxxx at offset xxxx
->         Newly-erased block contained wod xxxx at offset xxxx
+Hi,
 
-You lie -- it didn't say that. It would never say 'xxxx', and the
-numbers it _did_ print will often give some clue as to what went wrong.
-Why do you ask for help but not actually give us all the available
-information?
+I am working with linux-2.4.18-rmk7 for arm and i need
+mtd-20040610.I am not finding this patch on net and
+infrared.org ftp site.can someone please give some
+pointers where can i find this patch.
 
--- 
-dwmw2
+Regards,
+Soma sundaram.V
+
+
+		
+_______________________________________________________
+Too much spam in your inbox? Yahoo! Mail gives you the best spam protection for FREE! http://in.mail.yahoo.com
