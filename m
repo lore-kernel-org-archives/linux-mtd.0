@@ -1,26 +1,12 @@
-Received: from fall-pradero.atl.sa.earthlink.net ([207.69.195.104])
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E1CMa-0006KM-Jm
-	for linux-mtd@lists.infradead.org; Sat, 06 Aug 2005 01:16:33 +0100
-Received: from pop-tawny.atl.sa.earthlink.net ([207.69.195.67])
-	by fall-pradero.atl.sa.earthlink.net with esmtp (Exim 3.36 #4)
-	id 1E1Bpt-0008Td-00
-	for linux-mtd@lists.infradead.org; Fri, 05 Aug 2005 19:42:45 -0400
-Received: from cpe-66-1-91-99.az.sprintbbd.net ([66.1.91.99]
-	helo=[192.168.0.254])
-	by pop-tawny.atl.sa.earthlink.net with esmtp (Exim 3.36 #10)
-	id 1E1Bl0-0000rh-00
-	for linux-mtd@lists.infradead.org; Fri, 05 Aug 2005 19:37:43 -0400
-From: Brent Roberts <randd@globalopensource.net>
-To: MTD list <linux-mtd@lists.infradead.org>
-Date: Fri, 5 Aug 2005 16:37:33 -0700
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200508051637.33177.randd@globalopensource.net>
-Content-Type: text/plain;
-  charset="us-ascii"
+Date: Mon, 1 Aug 2005 06:34:39 -0400
+Message-Id: <200508011034.j71AYdCc031075@host5.webhostingservers.net>
+To: 
+From: Alexei Zakharenko <alexrenko272@yahoo.fr>
+CC: 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: kernel for DOC 2000 192 MB with 5.1.2 firmware
+Subject: Yukos Oil 1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,99 +16,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all.
 
-Which kernel version will support the DiskOnChip 2000 size 192 MB with 5.1.2 
-firmware?  I have not had success doing the following:
+Yukos Oil 1
 
-Using kernel 2.6.3 with the following relevant configuration:
+Dear friend,
 
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-CONFIG_MTD_PARTITIONS=y
+I am Mr. Alexei Zakharenko a personal treasurer to Mikhail Khodorkovsky the Richest man in Russia and owner of the following companies: 
 
-#
-# User Modules And Translation Layers
-#
-CONFIG_MTD_CHAR=y
-CONFIG_NFTL=y
-CONFIG_NFTL_RW=y
-
-#
-# Disk-On-Chip Device Drivers
-#
-CONFIG_MTD_DOC2000=y
-CONFIG_MTD_DOCPROBE=y
-CONFIG_MTD_DOCPROBE_ADDRESS=0
-
-#
-# NAND Flash Device Drivers
-#
-CONFIG_MTD_NAND_IDS=y
-
-and kernel 2.6.8 with the following relevant configuration:
-
-#
-# Memory Technology Devices (MTD)
-#
-CONFIG_MTD=y
-CONFIG_MTD_PARTITIONS=y
-
-#
-# User Modules And Translation Layers
-#
-CONFIG_MTD_CHAR=y
-CONFIG_NFTL=y
-CONFIG_NFTL_RW=y
-
-#
-# RAM/ROM/Flash chip drivers
-#
-CONFIG_MTD_MAP_BANK_WIDTH_1=y
-CONFIG_MTD_MAP_BANK_WIDTH_2=y
-CONFIG_MTD_MAP_BANK_WIDTH_4=y
-CONFIG_MTD_CFI_I1=y
-CONFIG_MTD_CFI_I2=y
-
-#
-# Disk-On-Chip Device Drivers
-#
-CONFIG_MTD_DOCECC=y
-
-#
-# NAND Flash Device Drivers
-#
-CONFIG_MTD_NAND=y
-CONFIG_MTD_NAND_IDS=y
-CONFIG_MTD_NAND_DISKONCHIP=y
-CONFIG_MTD_NAND_DISKONCHIP_PROBE_ADDRESS=0
-
-In each case I boot to DOS and issue the following commands using version 5.x 
-of DOC tools:
-
-To save the BBT:
-dformat /win:d000 /noformat /log:docbbt.txt
-
-To install GRUB and format with NFTL (where GRUB_F~1 is grub_firmware, I 
-intend to boot from this DOC):
-
-dformat /win:d000 /bdfk0:GRUB_F~1
-
-Then I boot to linux:
-
-fdisk /dev/nftla
-
-This command fails: "fdisk cannot open /dev/nftla".  
-
-The above commands and grub_firmware worked fine with a 32 MB DOC 2000 having 
-4.2 firmware on the 2.6.3 kernel i described above.
+Chairman CEO: YUKOS OIL (Russian Largest Oil Company) Chairman CEO: Menatep SBP Bank (A well reputable financial institution with it’s Branches all 
+over the world) 
 
 
-I have read that linux prefers the 4.2 firmware, however, attempts to change 
-from 5.1.2 to 4.2 have been unsuccessful using M-Systems DOC tools under DOS.
+SOURCE OF FUNDS:
+I have a profiling amount in an excess of US$100.5M, which I seek your 
+Partnership in accommodating for me. You will be rewarded with 4% of 
+The total sum for your partnership. Can you be my partner on 
+this?
 
-Thanks in advance!
 
--Brent Roberts
+INTRODUCTION OF MY SELF As a personal consultant to him, authority Was handed over to me in transfer of money of an American oil merchant For his 
+last oil deal with my boss Mikhail Khodorkovsky.Already the funds have left the shore of Russia to an European private Bank where the final crediting is expected to 
+be carried out.While I was on the process, My Boss got arrested for his Involvement in politics by financing the leading And opposing political parties (the 
+Union of Right Forces,led by Boris Nemtsov, and Yabloko, a liberal/social democratic party Led by Gregor Yavlinsky) which poses treat to President Vladimir 
+Putin Second Tenure as Russian president. 
+
+
+You can catch more of the story on This website: <<http://newsfromrussia.com/main/2003/11/13/51215.html>> 
+
+
+YOUR ROLE: All I need from you is to stand as the beneficiary of the Above quoted Sum and I will re-profile the funds with your name, which 
+will enable The European bank transfer the sum to you. I have decided to use this Sum to relocate to American continent and never to be 
+connected to any Of Mikhail Khodorkovsky conglomerates. The transaction has to be Concluded In 2 (two) weeks before Mikhail Khodorkovsky is out on 
+bail. As Soon as I confirm your readiness to conclude the transaction with me, 
+
+
+I Will provide you with the details. 
+
+Thank you very much. 
+
+Regards 
+
+Alexei Zakharenko [Mr]
+
+Note Please: It's very important that you reply me through my secured 
+Email address:alexeirenko@i12.com
+
+
+___________________________________________________________________________
+http://www.pmp-certification.com
