@@ -1,17 +1,14 @@
-Received: from web8503.mail.in.yahoo.com ([202.43.219.165])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E0An3-0001Sg-Hh
-	for linux-mtd@lists.infradead.org; Wed, 03 Aug 2005 00:23:50 -0400
-Message-ID: <20050803042331.59780.qmail@web8503.mail.in.yahoo.com>
-Date: Wed, 3 Aug 2005 05:23:31 +0100 (BST)
-From: Soma sundaram Veerappan <soma_edu@yahoo.co.in>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1122902406.22995.6.camel@weaponx.rchland.ibm.com>
+From: =?iso-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
+To: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
+Date: Mon, 1 Aug 2005 15:03:50 +0200
+Message-ID: <000001c59699$76528790$050213ac@MCaloMobile>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd-20040610
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1122899802.8317.106.camel@baythorne.infradead.org>
+Cc: 
+Subject: Re: Newly-erased Block...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +18,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> You lie -- it didn't say that. It would never say 'xxxx', and 
+> the numbers it _did_ print will often give some clue as to 
+> what went wrong. Why do you ask for help but not actually 
+> give us all the available information?
 
-Thanks.I got the patch, but in compilation i am
-getting some error while linking mtdlink.o to create
-vmlinux.
+David,
 
-drivers/mtd/mtdlink.o(.text+0x714c): In function
-`do_read_onechip':
-: undefined reference to `memcpy_fromio'
+	the complete messages after "/>mount -t jffs2 /dev/mtdblock5 /mnt"
+are :
 
-definition for "memcpy_fromio" is not there in
-include/asm-arm/io.h
-
-Thanks in advance.
-
-Regards,
-Soma sundaram.V
+/>Newly-erased block contained word 0x4c004c at offest 0x00040000
+Newly-erased block contained word 0x4c004c at offest 0x00030000
 
 
-> > I am working with linux-2.4.18-rmk7 for arm and i
-> need
-> > mtd-20040610.I am not finding this patch on net
-> and
-> > infrared.org ftp site.can someone please give some
-> > pointers where can i find this patch.
-> 
-> Please read:
-> 
->
-http://linux-mtd.infradead.org/source.html#kernelversions
-> 
-> It tells you in there how to extract a certain
-> snapshot from CVS.
-> 
+And this is my flash configuration:
 
+  snds100map flash device: 200000 at 1000000
+  Search for id:(01 2249) interleave(1) type(2) 
+  Found: AMD AM29LV160DB
+  Physically mapped flash of SNDS100: Found 1 x16 devices at 0x0 in 16-bit
+mode
+  number of JEDEC chips: 1
+  Creating 6 MTD partitions on "Physically mapped flash of SNDS100":
+  0x00000000-0x00010000 : "boot loader (64K)"
+  0x00010000-0x00020000 : "boot data (64K)"
+  0x00020000-0x000e0000 : "kernel (768K)"
+  0x000e0000-0x00100000 : "user data 00 (128K)"
+  0x00100000-0x001a0000 : "root fs (512K)"
+  0x001a0000-0x00200000 : "user Jffs2 (512K)"
 
+Thanks,
 
-		
-_______________________________________________________
-Too much spam in your inbox? Yahoo! Mail gives you the best spam protection for FREE! http://in.mail.yahoo.com
+	Massimo.
