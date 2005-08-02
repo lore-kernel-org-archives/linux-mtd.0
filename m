@@ -1,19 +1,24 @@
-Received: from xrelay.neomagic.com ([209.172.119.197] helo=relay.neomagic.com)
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1DzsSx-0006CN-AO
-	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2005 04:49:52 -0400
-Received: from mail.neomagic.com
-	(IDENT:U2FsdGVkX1/uHV2q12SSccTtrixn95/BpLzRJJlQ5IE@scha25.neomagic.com
-	[192.168.51.45])
-	by relay.neomagic.com (8.13.1/8.12.5) with ESMTP id j728lpAb017127
-	for <linux-mtd@lists.infradead.org>; Tue, 2 Aug 2005 01:47:52 -0700
-Message-Id: <6.0.1.1.0.20050802141851.03486180@mail.neomagic.com>
-Date: Tue, 02 Aug 2005 14:22:55 +0530
+	id 1DzuCS-0007Tg-H2
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2005 06:40:54 -0400
+Received: from dsl-213-023-246-153.arcor-ip.net ([213.23.246.153]:60318
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1DzuG2-0007ZN-70
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Aug 2005 12:44:26 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1DzuCX-0001Zc-00
+	for <linux-mtd@lists.infradead.org>; Tue, 02 Aug 2005 12:40:49 +0200
+Date: Tue, 2 Aug 2005 12:40:49 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-From: Sunil Khandelwal <skhandelwal@neomagic.com>
+Message-ID: <20050802104049.GA6028@zappa>
+References: <20050802074422.GA3988@synertronixx3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Subject: 10 bytes Reed Solomon code
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20050802074422.GA3988@synertronixx3>
+Subject: Re: HowTo read product and vendor id from CFI?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +28,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Oops sorry guys! This mail was of course attempted to go to the u-boot
+list! 
 
-Our flash controller has a mode where in writes 10 bytes of RS code on last 
-10 Bytes of OOB. On read it can do error correction in the data read before 
-transferring them to buffers.
-
-Is it okay for us to use this mode or the upper layers need at 16 Bytes of 
-OOB data for it's use.
-
-How will as fs like YAFFS will work in such case which uses OOB data for 
-metadata
-
-Regards,
-Sunil
+Konsti
