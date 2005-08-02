@@ -1,15 +1,19 @@
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: =?ISO-8859-1?Q?Cal=F2?= Massimo <m.calo@ctsgroup.it>
-In-Reply-To: <000901c59674$72cdf480$050213ac@MCaloMobile>
-References: <000901c59674$72cdf480$050213ac@MCaloMobile>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Tue, 02 Aug 2005 12:12:04 +0400
-Message-Id: <1122970324.16052.29.camel@sauron.oktetlabs.ru>
+Received: from xrelay.neomagic.com ([209.172.119.197] helo=relay.neomagic.com)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1DzsSx-0006CN-AO
+	for linux-mtd@lists.infradead.org; Tue, 02 Aug 2005 04:49:52 -0400
+Received: from mail.neomagic.com
+	(IDENT:U2FsdGVkX1/uHV2q12SSccTtrixn95/BpLzRJJlQ5IE@scha25.neomagic.com
+	[192.168.51.45])
+	by relay.neomagic.com (8.13.1/8.12.5) with ESMTP id j728lpAb017127
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Aug 2005 01:47:52 -0700
+Message-Id: <6.0.1.1.0.20050802141851.03486180@mail.neomagic.com>
+Date: Tue, 02 Aug 2005 14:22:55 +0530
+To: linux-mtd@lists.infradead.org
+From: Sunil Khandelwal <skhandelwal@neomagic.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Subject: Re: Newly-erased Block...
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Subject: 10 bytes Reed Solomon code
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,28 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-08-01 at 10:38 +0200, Calò Massimo wrote:
-> Artem,
-> 
-> 	where is the flash driver? Under
-> uClinux-dist/linux-2.4.x/drivers/mtd/chips?
-> 
-> Is this the low-level driver : cfi_cmdset_0002?
-> 
-> Under /include/linux/mtd/cfi.h I saw that "cfi_write" calls "map->write16()"
-> : where is write16 defined ? 
-> 
-> ...Or do I have to check blkmem.c : flash_amd16_erase, flash_amd16_write,
-> flash_amd16_writeall?
+Hi
 
-All that you can find in <linux>/drivers/mtd/ may be regarded as driver-
-related.
+Our flash controller has a mode where in writes 10 bytes of RS code on last 
+10 Bytes of OOB. On read it can do error correction in the data read before 
+transferring them to buffers.
 
-> I'm sorry for these questions but I don't have the possibility to debug the
-> kernel.
-Well, you're in trouble. I cannot help here, sorry :-)
+Is it okay for us to use this mode or the upper layers need at 16 Bytes of 
+OOB data for it's use.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+How will as fs like YAFFS will work in such case which uses OOB data for 
+metadata
+
+Regards,
+Sunil
