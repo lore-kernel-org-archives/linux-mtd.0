@@ -1,27 +1,16 @@
-Received: from mail.sysgo.com ([62.8.134.5])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E0eu7-00043I-AR
-	for linux-mtd@lists.infradead.org; Thu, 04 Aug 2005 08:33:07 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by mail.sysgo.com (Postfix) with ESMTP id 4CA7EFB8D5
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  4 Aug 2005 14:32:49 +0200 (CEST)
-Received: from donald.sysgo.com (unknown [172.20.1.30])
-	by mail.sysgo.com (Postfix) with ESMTP id 39FF1FB8D5
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  4 Aug 2005 14:32:49 +0200 (CEST)
-Received: from acs.sysgo.com (acs.sysgo.com [172.22.11.10])
-	by donald.sysgo.com (Postfix) with ESMTP id D3FA917DBDF
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  4 Aug 2005 15:11:47 +0200 (CEST)
-Date: Thu, 4 Aug 2005 14:32:47 +0200 (CEST)
-From: Armin Schindler <armin.schindler@sysgo.com>
-Sender: acs@sysgo.com
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Message-ID: <Pine.LNX.4.61.0508041422470.23179@acs.sysgo.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: Fujitsu MBM29LV800BA not recognized because of unlock_addrs mismatch
+Received: from bay106-f7.bay106.hotmail.com ([65.54.161.17] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E0iCD-00061R-Gk
+	for linux-mtd@lists.infradead.org; Thu, 04 Aug 2005 17:05:00 +0100
+Message-ID: <BAY106-F70B209A055ACC675323AA98C40@phx.gbl>
+In-Reply-To: <1123155351.26146.112.camel@tglx.tec.linutronix.de>
+From: "Nathan H." <n_8_10@hotmail.com>
+To: tglx@linutronix.de
+Date: Thu, 04 Aug 2005 09:54:41 -0600
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Mask error in nandbase.c: nand_scan(): oob_size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,41 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+>Please look into
+>
+>http://www.samsung.com/Products/Semiconductor/Flash/NAND/16Gbit/K9WAG08U1M/ds_k9wag08u1m_rev02.pdf
+>
+>to see why the bits are reserved are why they are guaranteed to be zero.
 
-current MTD jedec_probe/jedec_match does not find a match for 
-MBM29LV800BA, because the unlock_addrs does not match.
+I understand that currently the extra bit is going to be zero, but that bit 
+is part of a completely different field. Someday one of those reserved 
+values may be used at which point things will break. The fact is that the 
+field is 1-bit wide and thus the mask should be 0x1 not 0x3.
 
-The jedec_table[] holds the correct values, but the function 
-finfo_uaddr() returns the wrong values -> no match.
+>No error to see here :)
 
-In finfo_uaddr() the code is
+See no evil, hear no evil, eh? ;)
 
-...
-         uaddr = finfo->uaddr[uaddr_idx];
-
-         if (finfo->uaddr[0] == MTD_UADDR_NOT_SUPPORTED ) {
-                 /* ASSERT("The unlock addresses for non-8-bit mode
-                    are bollocks. We don't really need an array."); */
-                 uaddr = finfo->uaddr[0];
-         }
-...
-
-when I remove the 'if', it works perfectly for MBM29LV800BA !
-
-I do not know in which case this if really does make sense, but
-at least for MBM29LV800BA the function finfo_uaddr() returns always
-finfo->uaddr[0] which is the wrong in 16bit mode.
-
-Removing this 'if' is probably wrong, because someone must have had a 
-reason for it, but it is definatly not correct in each case.
-
-What do you think?
-
-regards,
-Armin
-
--- 
-Armin Schindler <armin.schindler AT sysgo.com>
-SYSGO AG                      Embedded and Real-Time Software
-www.sysgo.com | www.elinos.com | www.pikeos.com | www.osek.de
+-Nathan
