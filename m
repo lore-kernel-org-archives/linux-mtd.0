@@ -1,14 +1,12 @@
-Message-ID: <42F8ADDF.2030904@yandex.ru>
-Date: Tue, 09 Aug 2005 17:21:35 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050809135531.31610.qmail@web8508.mail.in.yahoo.com>
+Date: Tue, 9 Aug 2005 14:55:30 +0100 (BST)
+From: Soma sundaram Veerappan <soma_edu@yahoo.co.in>
+To: Linux-Mtd@Lists.Infradead.Org
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
-References: <004201c59cc9$7d35bb00$050213ac@MCaloMobile>
-In-Reply-To: <004201c59cc9$7d35bb00$050213ac@MCaloMobile>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Subject: Re: Re : Newly-erased Block...
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: 
+Subject: Patch for flash unlock
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,14 +16,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cal=F2 Massimo wrote:
-> Any suggestion is appreciated.
+Hi,
 
-Your systems cannot erase flash blocks. Why - who knows. You are trying=20
-to solve the problem without having any sources and without debugging -=20
-that's very difficult.
+can some one give pointer where i can find patch for
+unlocking flash for linux-2.6.12.
 
---=20
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Thanks in advance.
+
+Regards,
+Soma sundaram.V
+
+
+	
+
+	
+		
+____________________________________________________
+Send a rakhi to your brother, buy gifts and win attractive prizes. Log on to http://in.promos.yahoo.com/rakhi/index.html
