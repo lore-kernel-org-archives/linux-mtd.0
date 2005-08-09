@@ -1,5 +1,5 @@
-Message-ID: <42F8AA6F.1040508@yandex.ru>
-Date: Tue, 09 Aug 2005 17:06:55 +0400
+Message-ID: <42F8ADDF.2030904@yandex.ru>
+Date: Tue, 09 Aug 2005 17:21:35 +0400
 From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: =?ISO-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
@@ -20,8 +20,10 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Cal=F2 Massimo wrote:
 > Any suggestion is appreciated.
-I have only one suggestion - find your sources and debug. This is how=20
-problems are usually solved. Don't try to find an easier way.
+
+Your systems cannot erase flash blocks. Why - who knows. You are trying=20
+to solve the problem without having any sources and without debugging -=20
+that's very difficult.
 
 --=20
 Best Regards,
