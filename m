@@ -1,26 +1,20 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E2o8L-0004bZ-CX
-	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2005 06:48:32 -0400
-Date: Wed, 10 Aug 2005 12:48:39 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steven Scholz <steven.scholz@imc-berlin.de>
-Message-ID: <20050810104839.GB19167@wohnheim.fh-wedel.de>
-References: <42F9C28D.4070206@yandex.ru> <42F9C4AF.6030505@prie.de>
-	<42F9C612.2050301@yandex.ru> <42F9C980.7030301@prie.de>
-	<20050810100557.GA18149@wohnheim.fh-wedel.de>
-	<42F9D377.8090700@imc-berlin.de>
-	<20050810102854.GB18149@wohnheim.fh-wedel.de>
-	<42F9D758.9070104@imc-berlin.de> <42F9D82A.8060302@yandex.ru>
-	<42F9D8F8.8030702@imc-berlin.de>
+	id 1E2obt-00054C-Q3
+	for linux-mtd@lists.infradead.org; Wed, 10 Aug 2005 07:19:04 -0400
+Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id B8443228D1
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Aug 2005 15:18:24 +0400 (MSD)
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Wed, 10 Aug 2005 15:18:24 +0400
+Message-Id: <1123672704.16052.46.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <42F9D8F8.8030702@imc-berlin.de>
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>,
-	Bernhard Priewasser <bernhard@prie.de>, linux-mtd@lists.infradead.org
-Subject: Re: Compiling JFFS3
+Content-Transfer-Encoding: 7bit
+Subject: recent JFFS2
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 August 2005 12:37:44 +0200, Steven Scholz wrote:
-> 
-> Shell we start looking for a new name before doing any design ... ;-)
+Hello,
 
-Too late, design has already started in April. :-P
+I recently changed some core JFFS2 stuff (fragtree is being formed from
+the highest version to the lowest). This reduces the time of the JFFS2
+file system checking (on 40% in my tests).
 
-But some people have suggested a different name for logfs.  My current
-list includes:
+So, if you are going to try the recent JFFS2, please try it earlier. If
+there are some bugs - I'll try to fix them. I gonna have my vacation
+soon, so won't be able to fix bugs which may have been introduced by
+me...
 
-logfs
-jffs3
-jefs
-engelfs
-poofs
-crapfs
-sweetfs
-cutefs
-
-Feel free to add more.  I don't have a strong preference, although
-some may be crappy advertisement. ;)
-
-Jörn
+Thanks.
 
 -- 
-A quarrel is quickly settled when deserted by one party; there is
-no battle unless there be two.
--- Seneca
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
