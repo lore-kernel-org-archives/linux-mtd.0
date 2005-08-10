@@ -1,20 +1,13 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E2dVk-0002WB-GE
-	for linux-mtd@lists.infradead.org; Tue, 09 Aug 2005 19:27:58 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Steven Hein <ssh@sgi.com>
-In-Reply-To: <42F8DCBD.2020407@sgi.com>
-References: <42F8DCBD.2020407@sgi.com>
-Content-Type: text/plain
-Date: Wed, 10 Aug 2005 01:33:15 +0200
-Message-Id: <1123630395.21933.135.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Erasing NAND bad blocks?
-Reply-To: tglx@linutronix.de
+Message-ID: <20050810035630.65991.qmail@web8507.mail.in.yahoo.com>
+Date: Wed, 10 Aug 2005 04:56:30 +0100 (BST)
+From: Soma sundaram Veerappan <soma_edu@yahoo.co.in>
+To: Todd Poynor <tpoynor@mvista.com>, x0nishan@ti.com
+In-Reply-To: <42E51974.4050401@mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: Linux-Mtd@lists.infradead.org
+Subject: RE: Patch for flash unlock
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,59 +17,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-08-09 at 11:41 -0500, Steven Hein wrote:
-> (Yes, I do know that erasing NAND flash blocks that are marked bad
-> is a VERY BAD IDEA.....I'm asking the question regarding a
-> specific HW/SW debug situation.......)
+
+Hi,
+
+> If your flash is CFI compliant, the code is already
+> in place. Depends on
+> the kind of flash that you are speaking of.
+
+I am using Intel Strata Flash.
+
+I have attached the  mail response from another
+mailing list for the Flash Erase problem.
+ 
+> > Erase at 0x00240000 failed immediately: -EROFS. Is
+> the
+> > sector locked?
 > 
-> In the course of bringing up new hardware with NAND flash attached
-> I have had occasions where a software bug will cause a NAND-based
-> filesystem (such as YAFFS) to mark *all* of the blocks in a filesystem
-> as bad.  In the past, I have hacked the nand_erase() function to
-> allow erasing of bad blocks, then wrote a custom app to scan the OOB
-> data, doing a MEM_ERASE for blocks that had been marked bad by the FS.
-> Just wondering.....has anyone else
-> run into this situation, and is there a more graceful way of doing
-> this (i.e. without hacking the MTD NAND driver)?
+> You're probably using a flash chip that powers up
+> with all blocks 
+> locked, such as Intel K/L/P StrataFlash.  What to do
+> about these has 
+> been discussed periodically on linux-mtd with no
+> real conclusion.  I'd 
+> suggest booting from a cramfs partition (this is a
+> good idea for other 
+> reasons, avoiding jffs2 write/erase/gc activity from
+> interfering with 
+> access to executables) and have startup scripts do a
+> flash_unlock 
+> /dev/mtd<x> prior to mounting your jffs2 partition. 
+> There are also 
+> various patches that unlock all blocks at flash chip
+> probe time, etc. 
+> that can be searched on that list.
 
-This topic comes around on a regular base. 
-
-I was more than once tempted to provide a user space interface to do
-that. There are pro and cons. 
-
-The con which holds me off is the experince that >90% of the bad block
-complaints are related to buggy hardware and board drivers. Most of the
-people trapping into this spend plenty of time to tinker around the real
-problem.
-
-Adding this functionality (it's simple) would just add some more
-confusing reports like "Hey, I erased all the bad blocks with the
---force-erase-bad-block option, but it still shows me those annoying
-messages".
-
-OTH, we do enough witchcraft based help already, as obviously a lot of
-those people 
-- ignore documentation 
-- are to a high grade advisory resistant
-- ...
-
-So it might just adding another shade of nerve racking, but helpful for
-those who know what they are doing.
-
-I'm not going to implement it myself, but patches are welcome. :)
-
-Hint: 
-
-	case MEMERASEFORCED:
-		check_root_priviledges()
-		force = 1;
-	case MEMERASE:
-		......
-		erase->state = force ? ...FORCE... : 0;
-
-erase.state seems to be a nice transport mechanism and it will uncover
-all un/half initialized instances of struct erase_info by a simple check
-for ...FORCE... || 0
+I tried mtd utility flash_unlock,but it didn't
+help.got error "Could not get MTD device  info from
+/dev/mtd1".
+But i could see the entry in /proc/mtd.
+ 
+Regards,
+Soma sundaram.V
 
 
-tglx
+	
+
+	
+		
+____________________________________________________
+Send a rakhi to your brother, buy gifts and win attractive prizes. Log on to http://in.promos.yahoo.com/rakhi/index.html
