@@ -1,32 +1,22 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E3FaK-0000Bg-2U
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2005 12:07:13 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <42FB8402.5000705@inf.u-szeged.hu>
-References: <42E5E816.5090500@inf.u-szeged.hu>
-	<20050726074440.GB15903@wohnheim.fh-wedel.de>
-	<42E5ECE5.4010901@inf.u-szeged.hu>
-	<20050726093215.GD15903@wohnheim.fh-wedel.de>
-	<20050726100330.GF15903@wohnheim.fh-wedel.de>
-	<42EDF04C.1010108@inf.u-szeged.hu>
-	<20050801095645.GA32464@wohnheim.fh-wedel.de>
-	<42EDF470.4060208@inf.u-szeged.hu>
-	<20050801104343.GB32464@wohnheim.fh-wedel.de>
-	<42EE2B78.70500@inf.u-szeged.hu>
-	<20050801141841.GD32464@wohnheim.fh-wedel.de>
-	<42FB68AE.6070805@inf.u-szeged.hu> <42FB732B.5040405@yandex.ru>
-	<42FB8402.5000705@inf.u-szeged.hu>
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E3Fs2-0000Xh-1W
+	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2005 12:25:32 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Vitaly Wool <vwool@ru.mvista.com>
+In-Reply-To: <42FB6DCE.7050307@ru.mvista.com>
+References: <42FB5E72.2010402@ru.mvista.com>
+	<1123772959.23647.24.camel@tglx.tec.linutronix.de>
+	<42FB6DCE.7050307@ru.mvista.com>
 Content-Type: text/plain
-Date: Thu, 11 Aug 2005 20:06:39 +0400
-Message-Id: <1123776399.16052.70.camel@sauron.oktetlabs.ru>
+Date: Thu, 11 Aug 2005 16:25:18 +0000
+Message-Id: <1123777518.23647.42.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
-	block
-Reply-To: dedekind@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: power management routines for NAND driver
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,20 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-08-11 at 17:59 +0100, Ferenc Havasi wrote:
-> Hi Artem,
-> 
-> > I wonder, did you try your summaries with my last fragtree changes? 
-> > Does they work well ?
-> 
-> We tried the latest snapshot with summary and without summary and it 
-> reported CRC errors. We tried it with older JFFS2 snapshot and it worked 
-> well.
-Which CRC errors?
-Ferenc, please, if you've met some problems, don't keeps silence. You
-know the procedure - logs, debug enable, etc. Thanks.
+On Thu, 2005-08-11 at 19:25 +0400, Vitaly Wool wrote:
+> >I have no idea whats the state of those PM functions and why ARM is not
+> >using them.
+> Well, they are not at all widely used, only one MIPS board and x86 APM 
+> code use them.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Well, those functions are marked deprecated. The device model is the
+right way to do it. the SA1100 driver got it right apparently.
+
+> >It's discussable, whether suspend is supposed to fail, when a flash
+> >operation is in progress or just waits until the operation is finished,
+> >which is usually only a matter of a couple of ms.
+> >
+> What if introduce an additional parameter ('nowait')?
+
+If its necessary and worth the work :)
+
+> I'd prefer probably to use platform_device and device_driver structures 
+> and put suspend/resume functions into device_driver. Those functions 
+> will first call mtd->suspend/mtd->resume and then shut down/re-enable 
+> the clocks.
+> (that's more or less how it's done in drivers/mtd/maps/sa1100-flash.c)
+> mtd->suspend and mtd->resume need to be implemented in nand_base then.
+> Does that sound reasonable?
+
+Sounds like a plan.
+
+tglx
