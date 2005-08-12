@@ -1,30 +1,18 @@
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E3K64-0002Ze-A4
-	for linux-mtd@lists.infradead.org; Thu, 11 Aug 2005 21:56:17 +0100
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e5.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j7BKu4R8025236
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Aug 2005 16:56:04 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j7BKu4rR224604
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Aug 2005 16:56:04 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j7BKu4iu021658
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Aug 2005 16:56:04 -0400
-From: Josh Boyer <jdub@us.ibm.com>
+Received: from rt-soft-2.moscow.itn.ru ([80.240.96.70] helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E3bCB-0006Q2-1E
+	for linux-mtd@lists.infradead.org; Fri, 12 Aug 2005 11:11:45 -0400
+Date: Fri, 12 Aug 2005 19:11:46 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
 To: tglx@linutronix.de
-In-Reply-To: <1123793610.23647.73.camel@tglx.tec.linutronix.de>
-References: <42FB5E72.2010402@ru.mvista.com> <42FBB3B1.2080609@mvista.com>
-	<1123792307.23647.71.camel@tglx.tec.linutronix.de>
-	<42FBB9DD.2020907@ru.mvista.com>
-	<1123793610.23647.73.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain
-Date: Thu, 11 Aug 2005 15:55:44 -0500
-Message-Id: <1123793744.4289.0.camel@weaponx.rchland.ibm.com>
+Message-Id: <20050812191146.2e38ed1c.vwool@ru.mvista.com>
+In-Reply-To: <1123772959.23647.24.camel@tglx.tec.linutronix.de>
+References: <42FB5E72.2010402@ru.mvista.com>
+	<1123772959.23647.24.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Vitaly Wool <vwool@ru.mvista.com>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: power management routines for NAND driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -35,13 +23,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-08-11 at 20:53 +0000, Thomas Gleixner wrote:
-> On Fri, 2005-08-12 at 00:49 +0400, Vitaly Wool wrote:
-> > That will require some extensions to nand_base.c. I'm planning to 
-> > provide the corresponding patch shortly, if you don't mind.
-> 
-> I never have a problem with work which I dont have to do :)
+Hi Thomas,
+please find the patch below.
 
-Unless it's broken and you wind up having to support it ;)
+Best regards,
+   Vitaly
 
-josh
+P. S. Is it reasonable to send the use case (i. e. the NAND driver I'm working at that uses the simple framework introduced)?
+
+File: nand-pm.patch
+Type: Enhancement
+Signed-off-by: Vitaly Wool <vwool@ru.mvista.com>
+Description:
+
+	Add LDM-compliant power management support for NAND flashes.
+
+Index: linux-2.6.10/include/linux/mtd/nand.h
+===================================================================
+--- linux-2.6.10.orig/include/linux/mtd/nand.h
++++ linux-2.6.10/include/linux/mtd/nand.h
+@@ -244,6 +244,7 @@
+ 	FL_ERASING,
+ 	FL_SYNCING,
+ 	FL_CACHEDPRG,
++	FL_PM_SUSPENDED,
+ } nand_state_t;
+ 
+ /* Keep gcc happy */
+Index: linux-2.6.10/drivers/mtd/nand/nand_base.c
+===================================================================
+--- linux-2.6.10.orig/drivers/mtd/nand/nand_base.c
++++ linux-2.6.10/drivers/mtd/nand/nand_base.c
+@@ -46,6 +46,8 @@
+  *		perform extra error status checks on erase and write failures.  This required
+  *		adding a wrapper function for nand_read_ecc.
+  *
++ * 08-20-2005	vwool: suspend/resume added
++ *
+  * Credits:
+  *	David Woodhouse for adding multichip support  
+  *	
+@@ -2284,6 +2286,45 @@
+ }
+ 
+ /**
++ * nand_suspend - [MTD Interface] Suspend the NAND flash
++ * @mtd:	MTD device structure
++ */
++static int nand_suspend(struct mtd_info *mtd)
++{
++	struct nand_chip *this = mtd->priv;
++	int ret = 0;
++
++	switch(this->state) {
++		case FL_READY:
++			nand_get_device (this, mtd, FL_PM_SUSPENDED);
++		case FL_PM_SUSPENDED:
++			break;
++
++		default:
++			ret = -EAGAIN;
++			break;
++	}
++	return ret;
++}
++
++/**
++ * nand_resume - [MTD Interface] Resume the NAND flash
++ * @mtd:	MTD device structure
++ */
++static void nand_resume(struct mtd_info *mtd)
++{
++	struct nand_chip *this = mtd->priv;
++
++	if (this->state == FL_PM_SUSPENDED)
++		nand_release_device(mtd);
++	else
++		printk(KERN_ERR "resume() called for the chip which is not "
++				"in suspended state\n");
++
++}
++
++
++/**
+  * nand_scan - [NAND Interface] Scan for the NAND device
+  * @mtd:	MTD device structure
+  * @maxchips:	Number of chips to scan for
+@@ -2642,8 +2683,8 @@
+ 	mtd->sync = nand_sync;
+ 	mtd->lock = NULL;
+ 	mtd->unlock = NULL;
+-	mtd->suspend = NULL;
+-	mtd->resume = NULL;
++	mtd->suspend = nand_suspend;
++	mtd->resume = nand_resume;
+ 	mtd->block_isbad = nand_block_isbad;
+ 	mtd->block_markbad = nand_block_markbad;
+ 
