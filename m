@@ -1,15 +1,14 @@
-Received: from xena.bway.net ([216.220.96.26] helo=mail.bway.net)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4imV-0001Qq-Rb
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2005 13:29:59 -0400
-Message-ID: <4300D117.5080606@bway.net>
-Date: Mon, 15 Aug 2005 17:29:59 +0000
-From: "Ryan B. Lynch" <rlynch@bway.net>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E4mTD-00048Q-Qn
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2005 17:26:16 -0400
+Message-ID: <43010875.4050708@inf.u-szeged.hu>
+Date: Mon, 15 Aug 2005 23:26:13 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-References: <4300BEE2.4020104@bway.net> <4300C922.402@bway.net>
-	<4300CA41.60706@yandex.ru>
-In-Reply-To: <4300CA41.60706@yandex.ru>
+To: "Ryan B. Lynch" <rlynch@bway.net>
+References: <4300BEE2.4020104@bway.net>
+In-Reply-To: <4300BEE2.4020104@bway.net>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,23 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hey,
+Hi Ryan,
 
-Artem B. Bityuckiy wrote:
-
-> Ryan B. Lynch wrote:
+>I run 'mkfs.jffs2' with the following command line:
 >
-> Dunno, never used this option (what for?). Glance at
-> utils/mkfs.jffs2.c. :-) \
+> $ /usr/sbin/mkfs.jffs2 \
+> >    -r /tmp/root \
+> >    -o /tmp/image-20050815.160044.jffs2 \
+> >    -e 0x10000 \
+> >    -p 214171648
+>
+>The image size is NOT padded to 214,171,648 bytes, though--the size
+>  
+>
 
+Do not use space between -p and its parameter. It will work.
 
-The "--pad" option?  From the manpage:
+It is getopt bug (or feature) which happens using optional parameter.
 
-"-p, --pad[=SIZE]
-    Pad output to SIZE bytes with 0xFF.  If SIZE is not specified, the
-output is padded to the end of the final erase block."
+If we whould change it to required parameter, than both "-p X" and "-pX"
+would be OK, but in this case "-p X" means "-p" without parameter and X
+- if I'm right.
 
-I'm looking at the C source right now, too... gonna see if I can figure
-out WTF is going on.
-
--Ryan
+Ferenc
