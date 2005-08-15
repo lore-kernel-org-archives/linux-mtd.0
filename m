@@ -1,9 +1,9 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4c5z-0006yf-Do
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2005 06:21:36 -0400
-Message-ID: <43006C87.3090806@yandex.ru>
-Date: Mon, 15 Aug 2005 14:20:55 +0400
+	id 1E4cp2-0007b4-O7
+	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2005 07:08:08 -0400
+Message-ID: <43007773.2070602@yandex.ru>
+Date: Mon, 15 Aug 2005 15:07:31 +0400
 From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Ferenc Havasi <havasi@inf.u-szeged.hu>
@@ -24,19 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- >diff -Narup Mtd-orig/fs/jffs2/build.c mtd/fs/jffs2/build.c
- >--- Mtd-orig/fs/jffs2/build.c	2005-07-30 17:29:27.000000000 +0200
- >+++ mtd/fs/jffs2/build.c	2005-08-11 15:17:41.000000000 +0200
- >@@ -336,6 +336,7 @@ int jffs2_do_mount_fs(struct jffs2_sb_in
- > 		c->blocks[i].first_node = NULL;
- > 		c->blocks[i].last_node = NULL;
- > 		c->blocks[i].bad_count = 0;
- >+		c->blocks[i].sum_collected = NULL;
- > 	}
+Ok, to keep you busy with some technical stuff also, here is a remark.
 
-And my question. Why 'sum_collected; is per-eraseblock? JFFS2 always 
-writes to c->nextblock, so 'sum_collected' ought to be per-superblock, 
-isn't it? Why do you inflate the c->blocks[] array ?
+ >+		if (je32_to_cpu(sm->magic) == JFFS2_SUM_MAGIC ) {
+ >+
+ >+			if(je32_to_cpu(sm->erase_size) == c->sector_size) {
+ >+				err = 
+ >jffs2_sum_scan_sumnode(c,jeb,je32_to_cpu(sm->offset),&pseudo_random);
+ >+
+ >+				if (err) {
+ >+					kfree(sm);
+ >+					return err;
+ >+				}
+ >+			}
+ >+			printk(KERN_WARNING "FS erase_block_size != JFFS2 erase_block_size 
+=> skipping summary information\n");
+ >+		}
+
+if(je32_to_cpu(sm->erase_size) == c->sector_size) { ...
+
+AFAIU, you're protecting against the situation when the size of the 
+JFFS2 virtual eraseblock is changed.
+
+But why is the eraseblock size may change? If it becomes less, this is a 
+problem since some nodes that cross the boundary will be ignored. If the 
+size of the JFFS2 virtual eraseblock becomes larger, it is also a 
+problem - due to present bad blocks, some eraseblocks with valid data 
+will be ignored (remember, if there is a bad eraseblock in the JFFS2 
+virtual eraseblock, the whole virtual eraseblock is regarded as bad).
+
+Thus, please, don't solve this problem this way. You're trying to solve 
+it privately for your summaries, while you have to solve it for *JFFS2 
+in general* (if it exists at all). I suppose it exists in your case 
+since you add one more field to struct eraseblock...
 
 -- 
 Best Regards,
