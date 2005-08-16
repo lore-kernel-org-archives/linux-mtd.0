@@ -1,21 +1,28 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4xht-0004Ja-Vi
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:26:10 -0400
-Message-ID: <4301B100.4050702@yandex.ru>
-Date: Tue, 16 Aug 2005 13:25:20 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <42E5ECE5.4010901@inf.u-szeged.hu>	<20050726093215.GD15903@wohnheim.fh-wedel.de>	<20050726100330.GF15903@wohnheim.fh-wedel.de>	<42EDF04C.1010108@inf.u-szeged.hu>	<20050801095645.GA32464@wohnheim.fh-wedel.de>	<42EDF470.4060208@inf.u-szeged.hu>	<20050801104343.GB32464@wohnheim.fh-wedel.de>	<42EE2B78.70500@inf.u-szeged.hu>	<20050801141841.GD32464@wohnheim.fh-wedel.de>	<42FB68AE.6070805@inf.u-szeged.hu>	<20050815094816.GA27229@wohnheim.fh-wedel.de>	<43007773.2070602@yandex.ru>	<43008129.2060303@inf.u-szeged.hu>	<43008BFB.502@yandex.ru>
-	<4300970E.2090803@inf.u-szeged.hu> <43009AE1.6010907@yandex.ru>
-	<4301A259.3090304@yandex.ru> <4301AE32.1040701@inf.u-szeged.hu>
-In-Reply-To: <4301AE32.1040701@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: zhao_fusheng@hotmail.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 eraseblock header
+	id 1E4y3M-0004mV-R5
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:48:21 -0400
+Date: Tue, 16 Aug 2005 11:47:46 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050816094746.GB14405@wohnheim.fh-wedel.de>
+References: <430099D1.8000801@inf.u-szeged.hu> <43009BDB.1040108@yandex.ru>
+	<20050815134813.GC3829@wohnheim.fh-wedel.de>
+	<43009FFC.3090200@yandex.ru>
+	<20050815140530.GE3829@wohnheim.fh-wedel.de>
+	<1124115547.6148.17.camel@sauron.oktetlabs.ru>
+	<20050815143241.GA7045@wohnheim.fh-wedel.de>
+	<4300B335.6050006@yandex.ru>
+	<1124176573.6148.27.camel@sauron.oktetlabs.ru>
+	<430194F4.60802@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <430194F4.60802@yandex.ru>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
+	block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ferenc Havasi wrote:
-> I think if we do this change it would be better to forget old JFFS2 
-> binaries. If not that makes things even more complicated.
-Ugh, this is very much undesirable. And I hope it is not very difficult 
-to support this. Just assume the version of old JFFS2 images = 1, and 
-depending on the version, choose the algorithms... Let's at least try.
+On Tue, 16 August 2005 11:25:40 +0400, Artem B. Bityuckiy wrote:
+> Artem B. Bityuckiy wrote:
+> >Wait, but how will you then find the needed struct jffs2_eraseblock
+> >object by its physical offset on flash ? Use Hash / lists ? Bad idea
+> >(slow). Use array of pointers to each object ? It will be rather large,
+> >and I cannot take easy the fact that we will use distinct pointers for
+> >objects which are mostly physically contiguous in RAM (they are laying
+> >contiguously in slabs). This probably will neglect the pluses of
+> >colouring, which, BTW, we may also organize using my way...
+> >
+> >Comments?
+> 
+> This assumed to be a question for Joern, not to myself :-)
 
-I would also like to hear David's coments...
+Yes, I'd go for a pointer array.  That would cost us one pointer
+dereference per access.
+
+Your approach, imo, is fundamentally borked because it requires
+high-order allocations.  Your array of physical pages has to be a
+contiguous virtual memory area, which won't always work.  And if you
+want to maintain a list of pages instead, you end up with the same
+design as with an array of slab objects, just one level higher and
+with another indirection.  Whatever the performance is, the code will
+be ugly.
+
+You could - if you really want to play tricks - allocate objects that
+contain 2, 4, 8, 16, etc. struct jffs2_eraseblocks instead of just
+one.  But that wouldn't make the code any better, either.
+
+Oh well.  If you volunteer to write the code and fix the bugs, you get
+to decide.  I just have an opinion, nothing more.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
