@@ -1,21 +1,22 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4xW5-0005aw-9Z
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 10:13:54 +0100
-Message-ID: <4301AE32.1040701@inf.u-szeged.hu>
-Date: Tue, 16 Aug 2005 11:13:22 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-References: <42E5ECE5.4010901@inf.u-szeged.hu>	<20050726093215.GD15903@wohnheim.fh-wedel.de>	<20050726100330.GF15903@wohnheim.fh-wedel.de>	<42EDF04C.1010108@inf.u-szeged.hu>	<20050801095645.GA32464@wohnheim.fh-wedel.de>	<42EDF470.4060208@inf.u-szeged.hu>	<20050801104343.GB32464@wohnheim.fh-wedel.de>	<42EE2B78.70500@inf.u-szeged.hu>	<20050801141841.GD32464@wohnheim.fh-wedel.de>	<42FB68AE.6070805@inf.u-szeged.hu>	<20050815094816.GA27229@wohnheim.fh-wedel.de>	<43007773.2070602@yandex.ru>	<43008129.2060303@inf.u-szeged.hu>	<43008BFB.502@yandex.ru>
-	<4300970E.2090803@inf.u-szeged.hu> <43009AE1.6010907@yandex.ru>
-	<4301A259.3090304@yandex.ru>
-In-Reply-To: <4301A259.3090304@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: zhao_fusheng@hotmail.com, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 eraseblock header
+Received: from fallback.mail.ru ([194.67.57.14] helo=mx4.mail.ru)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E4xY1-000432-3e
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:16:03 -0400
+Received: from f29.mail.ru (f29.mail.ru [194.67.57.22])
+	by mx4.mail.ru (mPOP.Fallback_MX) with ESMTP id A11503DDC20
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 Aug 2005 11:16:59 +0400 (MSD)
+From: Timofey Kutergin <tkutergin@mail.ru>
+To: J=?koi8-r?Q?=F6?=rn Engel <joern@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Date: Tue, 16 Aug 2005 11:16:47 +0400
+In-Reply-To: <20050802121453.GA24417@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1E4vgl-000HN8-00.tkutergin-mail-ru@f29.mail.ru>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re[4]: working mphysmap.c
+Reply-To: Timofey Kutergin <tkutergin@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
+Hi !
+I guess removed code is related to command line processing which was incomplete. My code uses just static configuration from Kconfig. We also have newer mphysmap.c code which includes D-cache enabling for selected flash regions. How do you think, is it interesting for inclusion ?
 
-> 2. New JFFS2, when mounting an old JFFS2 binary, will use old 
-> algorithms (1:M mappings, clean markers).
+Regards
+Timofey
 
 
-I think if we do this change it would be better to forget old JFFS2 
-binaries. If not that makes things even more complicated.
+-----Original Message-----
+From: Jörn Engel <joern@wohnheim.fh-wedel.de>
+To: Timofey Kutergin <tkutergin@mail.ru>
+Date: Tue, 2 Aug 2005 14:14:53 +0200
+Subject: Re: Re[2]: working mphysmap.c
 
-To make old images usable we can write a small user space converter tool.
-
-Ferenc
+> 
+> On Tue, 2 August 2005 16:12:25 +0400, Timofey Kutergin wrote:
+> > 
+> > No big deal. I think it may be useful for many people
+> 
+> It should.  You ripped out quite a bit of code that should stay in,
+> but there is relatively little feedback for it.  In fact, you are the
+> only person so far.  Guess I should just take your changes and check
+> them in.
+> 
+> Jörn
+> 
+> -- 
+> "Security vulnerabilities are here to stay."
+> -- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+> 
