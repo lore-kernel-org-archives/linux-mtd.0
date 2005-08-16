@@ -1,28 +1,20 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4yC8-00051Z-G6
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:57:21 -0400
-Message-ID: <4301B85F.9010305@yandex.ru>
-Date: Tue, 16 Aug 2005 13:56:47 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <430099D1.8000801@inf.u-szeged.hu> <43009BDB.1040108@yandex.ru>
-	<20050815134813.GC3829@wohnheim.fh-wedel.de>
-	<43009FFC.3090200@yandex.ru>
-	<20050815140530.GE3829@wohnheim.fh-wedel.de>
-	<1124115547.6148.17.camel@sauron.oktetlabs.ru>
-	<20050815143241.GA7045@wohnheim.fh-wedel.de>
-	<4300B335.6050006@yandex.ru>
-	<1124176573.6148.27.camel@sauron.oktetlabs.ru>
-	<430194F4.60802@yandex.ru>
-	<20050816094746.GB14405@wohnheim.fh-wedel.de>
-In-Reply-To: <20050816094746.GB14405@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+	id 1E4yD6-0005BM-Jg
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:58:29 -0400
+Date: Tue, 16 Aug 2005 11:58:23 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Timofey Kutergin <tkutergin@mail.ru>
+Message-ID: <20050816095823.GC14405@wohnheim.fh-wedel.de>
+References: <20050802121453.GA24417@wohnheim.fh-wedel.de>
+	<E1E4vgl-000HN8-00.tkutergin-mail-ru@f29.mail.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E1E4vgl-000HN8-00.tkutergin-mail-ru@f29.mail.ru>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
- block
+Subject: Re: Re[4]: working mphysmap.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,29 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=F6rn Engel wrote:
-> Your approach, imo, is fundamentally borked because it requires
-> high-order allocations.  Your array of physical pages has to be a
-> contiguous virtual memory area, which won't always work.  And if you
-> want to maintain a list of pages instead, you end up with the same
-> design as with an array of slab objects, just one level higher and
-> with another indirection.  Whatever the performance is, the code will
-> be ugly.
+On Tue, 16 August 2005 11:16:47 +0400, Timofey Kutergin wrote:
+> 
+> Hi !
+> I guess removed code is related to command line processing which was incomplete. My code uses just static configuration from Kconfig. We also have newer mphysmap.c code which includes D-cache enabling for selected flash regions. How do you think, is it interesting for inclusion ?
 
-I meant something like:
+[ Your lines are rather wide. ]
 
-objs_per_page =3D PAGE_SIZE / sizeof(struct jffs2_eraseblock);
-pages_num =3D c->blocks_nr / objs_per_page;
+Yes, definitely.  Since you're the only user I've ever heard back
+from, your changes can just go in.  Which reminds me to commit your
+last patch.  Would you mind sending it again, preferrably with the
+D-cache enabling as well?
 
-for (i =3D 0; i < pages_num; i++) {
-     page =3D alloc_pages(flags, 0);
-     c->blocks[i] =3D page_address(page);
-}
 
-So c->blocks[] is an array of pages. Nonetheless, I have never done=20
-things like this before, may be there is some cleverer method exists...
+Jörn
 
---=20
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+-- 
+There are two ways of constructing a software design: one way is to make
+it so simple that there are obviously no deficiencies, and the other is
+to make it so complicated that there are no obvious deficiencies.
+-- C. A. R. Hoare
