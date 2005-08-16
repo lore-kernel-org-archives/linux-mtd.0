@@ -1,20 +1,29 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4yD6-0005BM-Jg
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 05:58:29 -0400
-Date: Tue, 16 Aug 2005 11:58:23 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Timofey Kutergin <tkutergin@mail.ru>
-Message-ID: <20050816095823.GC14405@wohnheim.fh-wedel.de>
-References: <20050802121453.GA24417@wohnheim.fh-wedel.de>
-	<E1E4vgl-000HN8-00.tkutergin-mail-ru@f29.mail.ru>
+	id 1E4zio-0006jE-Qe
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 07:35:25 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+In-Reply-To: <430099D1.8000801@inf.u-szeged.hu>
+References: <20050801104343.GB32464@wohnheim.fh-wedel.de>
+	<42EE2B78.70500@inf.u-szeged.hu>
+	<20050801141841.GD32464@wohnheim.fh-wedel.de>
+	<42FB68AE.6070805@inf.u-szeged.hu>
+	<20050815094816.GA27229@wohnheim.fh-wedel.de>
+	<43007773.2070602@yandex.ru> <43008129.2060303@inf.u-szeged.hu>
+	<20050815115943.GD27229@wohnheim.fh-wedel.de>
+	<43008A7D.2060302@inf.u-szeged.hu> <43008CD5.1000006@yandex.ru>
+	<20050815125254.GA32209@wohnheim.fh-wedel.de>
+	<430099D1.8000801@inf.u-szeged.hu>
+Content-Type: text/plain
+Date: Tue, 16 Aug 2005 15:34:35 +0400
+Message-Id: <1124192075.6148.31.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E1E4vgl-000HN8-00.tkutergin-mail-ru@f29.mail.ru>
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Re[4]: working mphysmap.c
+Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
+	block
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +33,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 August 2005 11:16:47 +0400, Timofey Kutergin wrote:
-> 
-> Hi !
-> I guess removed code is related to command line processing which was incomplete. My code uses just static configuration from Kconfig. We also have newer mphysmap.c code which includes D-cache enabling for selected flash regions. How do you think, is it interesting for inclusion ?
+And one more question:
 
-[ Your lines are rather wide. ]
+> +    if (je32_to_cpu(summary->hdr_crc) != crc) {
+> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node 
+> header is corrupt (bad CRC or no summary at all)\n"));
+> +        bad_sum = 1;
+> +    }
+Ok, we have bad CRC, why do we continue checking the other CRCs?
 
-Yes, definitely.  Since you're the only user I've ever heard back
-from, your changes can just go in.  Which reminds me to commit your
-last patch.  Would you mind sending it again, preferrably with the
-D-cache enabling as well?
+> +
+> +    if ((!bad_sum) && (je32_to_cpu(summary->totlen) != sumsize)) {
+> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node
+is 
+> corrupt (wrong erasesize?)\n"));
+> +        bad_sum = 1;
+> +    }
+The same, why do not use goto here?
+
+> +
+> +    crc = crc32(0, summary, sizeof(struct jffs2_summary_node)-8);
+> +
+> +    if ((!bad_sum) && (je32_to_cpu(summary->node_crc) != crc)) {
+> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node
+is 
+> corrupt (bad CRC)\n"));
+> +        bad_sum = 1;
+> +    }
+Here.
+
+> +
+> +    crc = crc32(0, summary->sum, sumsize - sizeof(struct 
+> jffs2_summary_node));
+> +
+> +    if ((!bad_sum) && (je32_to_cpu(summary->sum_crc) != crc)) {
+> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node 
+> data is corrupt (bad CRC)\n"));
+> +        bad_sum = 1;
+> +    }
+Here.
+
+> +
+> +    if (!bad_sum) {
+> +
+> +        struct jffs2_sum_unknown_flash *sp;
+> +        sp = (struct jffs2_sum_unknown_flash *) summary->sum;
+Now we have:
+
+if (!bad_sum) {
+    Huge block where we waste one indent! What for ?
+}
+
+return 0;
 
 
-Jörn
+Why not to do like this:
+
+if (1st crc check fails ())
+    goto fail;
+
+if (2nd crc check fails ())
+    goto fail;
+
+if (3rd crc check fails ())
+    goto fail;
+
+process summary with good CRC ();
+
+fail:
+
+return 0;
+
+And we save one indent which is rather expensive in Linux :-)
+
 
 -- 
-There are two ways of constructing a software design: one way is to make
-it so simple that there are obviously no deficiencies, and the other is
-to make it so complicated that there are no obvious deficiencies.
--- C. A. R. Hoare
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
