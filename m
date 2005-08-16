@@ -1,18 +1,29 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4mTD-00048Q-Qn
-	for linux-mtd@lists.infradead.org; Mon, 15 Aug 2005 17:26:16 -0400
-Message-ID: <43010875.4050708@inf.u-szeged.hu>
-Date: Mon, 15 Aug 2005 23:26:13 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: "Ryan B. Lynch" <rlynch@bway.net>
-References: <4300BEE2.4020104@bway.net>
-In-Reply-To: <4300BEE2.4020104@bway.net>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E4vgo-0001le-Rs
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 03:16:55 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+In-Reply-To: <4300B335.6050006@yandex.ru>
+References: <20050815115943.GD27229@wohnheim.fh-wedel.de>
+	<43008A7D.2060302@inf.u-szeged.hu> <43008CD5.1000006@yandex.ru>
+	<20050815125254.GA32209@wohnheim.fh-wedel.de>
+	<430099D1.8000801@inf.u-szeged.hu> <43009BDB.1040108@yandex.ru>
+	<20050815134813.GC3829@wohnheim.fh-wedel.de>
+	<43009FFC.3090200@yandex.ru>
+	<20050815140530.GE3829@wohnheim.fh-wedel.de>
+	<1124115547.6148.17.camel@sauron.oktetlabs.ru>
+	<20050815143241.GA7045@wohnheim.fh-wedel.de>
+	<4300B335.6050006@yandex.ru>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Date: Tue, 16 Aug 2005 11:16:13 +0400
+Message-Id: <1124176573.6148.27.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: possible bug in "--pad" option for mkfs.jffs2?
+Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
+	block
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +33,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ryan,
+On Mon, 2005-08-15 at 19:22 +0400, Artem B. Bityuckiy wrote:
+> Jörn Engel wrote:
+> > How about encapsulating all the page handling code in - say -
+> > mm/slab.c and just handling single objects? ;)
+> >
+> Well, after thinking for the second time - yes, slab does the same, and 
+> even better If we remember about the colouring. Forget about my offer.
+> :-)
+> 
+Wait, but how will you then find the needed struct jffs2_eraseblock
+object by its physical offset on flash ? Use Hash / lists ? Bad idea
+(slow). Use array of pointers to each object ? It will be rather large,
+and I cannot take easy the fact that we will use distinct pointers for
+objects which are mostly physically contiguous in RAM (they are laying
+contiguously in slabs). This probably will neglect the pluses of
+colouring, which, BTW, we may also organize using my way...
 
->I run 'mkfs.jffs2' with the following command line:
->
-> $ /usr/sbin/mkfs.jffs2 \
-> >    -r /tmp/root \
-> >    -o /tmp/image-20050815.160044.jffs2 \
-> >    -e 0x10000 \
-> >    -p 214171648
->
->The image size is NOT padded to 214,171,648 bytes, though--the size
->  
->
+Comments?
 
-Do not use space between -p and its parameter. It will work.
-
-It is getopt bug (or feature) which happens using optional parameter.
-
-If we whould change it to required parameter, than both "-p X" and "-pX"
-would be OK, but in this case "-p X" means "-p" without parameter and X
-- if I'm right.
-
-Ferenc
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
