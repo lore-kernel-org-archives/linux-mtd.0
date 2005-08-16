@@ -1,29 +1,35 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E4zio-0006jE-Qe
-	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 07:35:25 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <430099D1.8000801@inf.u-szeged.hu>
-References: <20050801104343.GB32464@wohnheim.fh-wedel.de>
-	<42EE2B78.70500@inf.u-szeged.hu>
-	<20050801141841.GD32464@wohnheim.fh-wedel.de>
-	<42FB68AE.6070805@inf.u-szeged.hu>
-	<20050815094816.GA27229@wohnheim.fh-wedel.de>
-	<43007773.2070602@yandex.ru> <43008129.2060303@inf.u-szeged.hu>
-	<20050815115943.GD27229@wohnheim.fh-wedel.de>
-	<43008A7D.2060302@inf.u-szeged.hu> <43008CD5.1000006@yandex.ru>
-	<20050815125254.GA32209@wohnheim.fh-wedel.de>
-	<430099D1.8000801@inf.u-szeged.hu>
-Content-Type: text/plain
-Date: Tue, 16 Aug 2005 15:34:35 +0400
-Message-Id: <1124192075.6148.31.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	id 1E51MX-0008Vp-PN
+	for linux-mtd@lists.infradead.org; Tue, 16 Aug 2005 09:20:21 -0400
+Message-ID: <4301E7EC.70906@yandex.ru>
+Date: Tue, 16 Aug 2005 17:19:40 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>,
+	Thomas Gleixner <tglx@linutronix.de>
+References: <42E5E816.5090500@inf.u-szeged.hu>	
+	<20050726074440.GB15903@wohnheim.fh-wedel.de>	
+	<42E5ECE5.4010901@inf.u-szeged.hu>	
+	<20050726093215.GD15903@wohnheim.fh-wedel.de>	
+	<20050726100330.GF15903@wohnheim.fh-wedel.de>	
+	<42EDF04C.1010108@inf.u-szeged.hu>	
+	<20050801095645.GA32464@wohnheim.fh-wedel.de>	
+	<42EDF470.4060208@inf.u-szeged.hu>	
+	<20050801104343.GB32464@wohnheim.fh-wedel.de>	
+	<42EE2B78.70500@inf.u-szeged.hu>	
+	<20050801141841.GD32464@wohnheim.fh-wedel.de>	
+	<42FB68AE.6070805@inf.u-szeged.hu> <42FB732B.5040405@yandex.ru>	
+	<42FB8402.5000705@inf.u-szeged.hu>
+	<1123776399.16052.70.camel@sauron.oktetlabs.ru>
+	<43007B6A.3040402@inf.u-szeged.hu> <43008930.5050405@yandex.ru>
+	<4300CC8C.9090206@inf.u-szeged.hu>
+In-Reply-To: <4300CC8C.9090206@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH]fs/jffs2/wbuf.c: add compatibility support for OOB data
-	block
-Reply-To: dedekind@infradead.org
+ block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,79 +39,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-And one more question:
+Ferenc Havasi wrote:
+> It writes
+> 
+> [nandsim] errorr: write_byte: chip is disabled, ignore write
+> 
+> with its default configuration. It worked well earlier. Maybe there were 
+> changes in mtd...
+> 
+Hmm, I also see this message. But nandsim still works just fine..
 
-> +    if (je32_to_cpu(summary->hdr_crc) != crc) {
-> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node 
-> header is corrupt (bad CRC or no summary at all)\n"));
-> +        bad_sum = 1;
-> +    }
-Ok, we have bad CRC, why do we continue checking the other CRCs?
+Thomas, nandsim issues a warning that one sends command to nand while it 
+is disabled. Not sure, but isn't this patch should be applied to 
+nand_base.c:
 
-> +
-> +    if ((!bad_sum) && (je32_to_cpu(summary->totlen) != sumsize)) {
-> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node
-is 
-> corrupt (wrong erasesize?)\n"));
-> +        bad_sum = 1;
-> +    }
-The same, why do not use goto here?
+--- nand_base.c 2005-08-05 14:44:30.000000000 +0400
++++ nand_base_fixed.c   2005-08-16 17:13:41.620785252 +0400
+@@ -2652,6 +2652,9 @@ int nand_scan (struct mtd_info *mtd, int
 
-> +
-> +    crc = crc32(0, summary, sizeof(struct jffs2_summary_node)-8);
-> +
-> +    if ((!bad_sum) && (je32_to_cpu(summary->node_crc) != crc)) {
-> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node
-is 
-> corrupt (bad CRC)\n"));
-> +        bad_sum = 1;
-> +    }
-Here.
+         mtd->owner = THIS_MODULE;
 
-> +
-> +    crc = crc32(0, summary->sum, sumsize - sizeof(struct 
-> jffs2_summary_node));
-> +
-> +    if ((!bad_sum) && (je32_to_cpu(summary->sum_crc) != crc)) {
-> +        D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Summary node 
-> data is corrupt (bad CRC)\n"));
-> +        bad_sum = 1;
-> +    }
-Here.
++       /* Select the device */
++       this->select_chip(mtd, 0);
++
+         /* Reset the chip */
+         this->cmdfunc (mtd, NAND_CMD_RESET, -1, -1);
 
-> +
-> +    if (!bad_sum) {
-> +
-> +        struct jffs2_sum_unknown_flash *sp;
-> +        sp = (struct jffs2_sum_unknown_flash *) summary->sum;
-Now we have:
+At line 2621 we did:
 
-if (!bad_sum) {
-    Huge block where we waste one indent! What for ?
-}
+         /* De-select the device */
+         this->select_chip(mtd, -1);
 
-return 0;
-
-
-Why not to do like this:
-
-if (1st crc check fails ())
-    goto fail;
-
-if (2nd crc check fails ())
-    goto fail;
-
-if (3rd crc check fails ())
-    goto fail;
-
-process summary with good CRC ();
-
-fail:
-
-return 0;
-
-And we save one indent which is rather expensive in Linux :-)
-
+so it seems logical to enable it before sending the reset command, isn't 
+it ?
 
 -- 
 Best Regards,
