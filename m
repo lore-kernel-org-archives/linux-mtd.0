@@ -1,19 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E5JfK-0005nC-PI
-	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2005 04:52:59 -0400
-Date: Wed, 17 Aug 2005 10:52:54 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Ryan B. Lynch" <rlynch@bway.net>
-Message-ID: <20050817085254.GB675@wohnheim.fh-wedel.de>
-References: <43029CAF.5000509@bway.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <43029CAF.5000509@bway.net>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E5MCs-0007cf-FK
+	for linux-mtd@lists.infradead.org; Wed, 17 Aug 2005 07:35:45 -0400
+Message-ID: <43032196.3030501@inf.u-szeged.hu>
+Date: Wed, 17 Aug 2005 13:37:58 +0200
+From: Zoltan Sogor <weth@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: dedekind@infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: removing block2mtd devices
+Subject: problem with latest mtd-cvs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +20,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 17 August 2005 02:10:55 +0000, Ryan B. Lynch wrote:
-> 
-> A while back, Jorn was kind enough to help me out with using the
-> "block2mtd" driver.  He explained that once the driver has been loaded
-> (either as a built-in driver or a module), it's possible to setup new
-> devices with:
-> 
->     echo "/dev/sda1" > /sys/module/block2mtd/parameters/block2mtd
-> 
-> Which gives you new mtdblock* and new mtd* devices.
-> 
-> So my question is:  Is it possible to stop "block2mtd" devices after
-> they've been loaded?  Is there a mechanism like the sysfs one shown
-> above, or do you have to remove the module, or reboot, or something like
-> that?  I'm using the entire MTD subsystem, including the block2mtd
-> driver, as built-in, to avoid having to screw around with initrds, so
-> I'd be interested in knowing what the deal is.
+Hi Artem!
 
-Right now you have to unload the module or reboot.  This sucks, I
-know.
+We try to use the latest mtd and nandsim. We are using 2.6.12.3 kernel
+and the latest cvs version of mtd. Nandsim is enabled with default
+parameters (0x98,0x39,0xff,0xff).
 
-Please keep bugging me about this.  The code should be relatively
-simple, maybe a day of work.  All I need is a constant reminder to
-keep the item high enough on my personal todo list.
+We build a small image which contains some data (/bin, /sbin and mtd
+source).
+mkfs.jffs2 -n -p -e8KiB -r image_src -o testimg.jffs2
 
-Jörn
+I load the nandsim module, erase it and write the image.
 
--- 
-The competent programmer is fully aware of the strictly limited size of
-his own skull; therefore he approaches the programming task in full
-humility, and among other things he avoids clever tricks like the plague. 
--- Edsger W. Dijkstra
+modprobe nandsim
+flash_eraseall -j  /dev/mtd0c
+nandwrite -p /dev/mtd0c testimg.jffs2
+
+I get the following messages on my console during the mount process:
+
+JFFS2 version 2.2. (NAND) (C) 2001-2003 Red Hat, Inc.
+JFFS2: default compression mode: priority
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00006a00: read 0x2fbdbe31, calculated 0x368458d8.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x000e1a00: read 0x415d9de6, calculated 0xcf2a48a1.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00135c00: read 0x6cf0c59a, calculated 0x1628ca38.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00195e00: read 0x7e798a8e, calculated 0xd16b0a11.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x001f1000: read 0x143a2b51, calculated 0x2e19d442.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x001f3c00: read 0x89d9ae82, calculated 0x62720698.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00251e00: read 0x329306e9, calculated 0x13ac17ca.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x002b6600: read 0xdb992886, calculated 0x8df5d88f.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x002d6a00: read 0x2bed4edb, calculated 0xcb15ac08.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x002dbc00: read 0x536d09d9, calculated 0x15a059a0.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00345800: read 0x1579fd2b, calculated 0x55c80477.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00353400: read 0x38303238, calculated 0xefc54214.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00385e00: read 0x1ca8e53a, calculated 0xfec10e47.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00556800: read 0xf0732889, calculated 0x37a1567d.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00521600: read 0xbf319a5b, calculated 0x40a106fa.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00564800: read 0xa3f49e69, calculated 0x4aaaae13.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00582600: read 0xe19fedb, calculated 0xeef00524.
+JFFS2 notice: 4261,check_node_data: wrong data CRC in data node at
+0x00598600: read 0x32bc8c46, calculated 0x6dd5afa5.
+
+It workes fine with mtd from July 26. Mtd snapshot from Aug 1 is wrong.
+
+I send the log to you in private.
+
+Thanks:
+     Zoltan
