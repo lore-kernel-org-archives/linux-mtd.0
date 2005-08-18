@@ -1,22 +1,34 @@
-Received: from motgate8.mot.com ([129.188.136.8])
-	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E5mCA-00030z-Rr
-	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2005 16:20:43 +0100
-Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
-	by motgate8.mot.com (8.12.11/Motgate7) with ESMTP id j7IFUPV0017142
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Aug 2005 08:30:26 -0700 (MST)
-Received: from il02exm15.corp.mot.com (il02exm15.corp.mot.com [10.0.111.27])
-	by il06exr04.mot.com (8.13.1/8.13.0) with ESMTP id j7IFQ7tu004294
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 18 Aug 2005 10:26:07 -0500 (CDT)
-Message-ID: <53F44AF77A9F9B458DCE1910C2E6263813BAE170@il02exm15.corp.mot.com>
-From: Lindstrom James-A19027 <A19027@motorola.com>
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Date: Thu, 18 Aug 2005 10:20:15 -0500
-MIME-Version: 1.0
+Received: from e32.co.us.ibm.com ([32.97.110.130])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E5t74-0007EI-ET
+	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2005 18:43:56 -0400
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e32.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j7IMhcwh542206
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 18:43:38 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by westrelay02.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j7IMhEJ7493218
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 16:43:14 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
+	j7IMhc37018129
+	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 16:43:38 -0600
+From: Josh Boyer <jdub@us.ibm.com>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <4302572E.1070202@mvista.com>
+References: <200508161441.KAA07341@www21.ureach.com>
+	<43020232.60908@ru.mvista.com>
+	<20050816155703.GA21462@wohnheim.fh-wedel.de>
+	<4302173F.10303@mvista.com>
+	<430236BF.1050004@netwinder.org>  <4302572E.1070202@mvista.com>
 Content-Type: text/plain
-Subject: strange doc issues
+Date: Thu, 18 Aug 2005 17:43:21 -0500
+Message-Id: <1124405001.17578.1.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Intel NOR flash(P30) query
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +38,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, I wrote this list about two months ago.  I was trying to get my embedded
-Arm platform to support the diskonchip using the open source drivers, rather
-than the mystery drivers left to me by a previous engineer (presumably
-relying upon msys's binary-only drivers).  I wrote several emails (see the
-archives) detailing how I had to change my erasesize from 0x4000 to 0x2000 
-in order for the drivers to find the BNAND header.  I eventually paused 
-and decided to order the pci eval board from msys so I could get at the
-device from dos (under a known working configuration). 
+On Tue, 2005-08-16 at 14:14 -0700, Todd Poynor wrote:
+> Ralph Siemsen wrote:
+> > Todd Poynor wrote:
+> > 
+> >> By the way, if anybody has mtd working on the new P30 chips it would 
+> >> be good to know; I haven't seen a system with these chips yet.  They 
+> >> are CFI 1.4, and some changes for 1.4 were added by Nicolas recently 
+> >> to support M18 "Sibley" chips, but not sure if those changes are 
+> >> required for P-series chips.  Thankis,
+> > 
+> > 
+> > Are these changes merged into mainline kernel, or only in MTD CVS?  I 
+> > may be in a position to test this soon-ish, as we are looking for a 
+> > replacement for the now obsoleted J/K strataflash parts and seem to be 
+> > headed towards the P30's...
+> 
+> Pretty sure linux-mtd-only, these came in during the settle down period 
+> for 2.6.13 rc's.  The CFI 1.3-based code probably works after a quick 
+> adjustment of a revision level check (to ignore new fields at end of 
+> vendor-specific extended query table), if you want to try kernel.org, 
+> but testing linux-mtd is always better for us here.  Thanks,
 
-I got the card and am now back at it.  What I found is that if I set the
-Erasesize back to the normal setting, but set the MultiplierBits to 1 (which
-is effectively the same as incrementing the phys_erase_shift.  When I did
-that, I get a bit further.  Now I get to a point where the bad block table
-is not found, but the partition table (there's just one partition , I made
-it using dformat under dos) is correctly parsed.  But then inftl_format goes
-nuts giving me corrupt block messages, trying to erase/format the suspect
-blocks, but then deciding that the disk is write protected.
+For what it's worth, I just changed the checks for version 3 of the
+query table to allow a version 4 in the cfi_cmdset_0001.c driver and it
+seemed to be working.  I haven't had a chance to test out Nicolas'
+changes, but it should work just fine.
 
-Does anyone have a feel for what might be going on?  First of all, it seems
-fishy that I've had to arbitrarily add one to MultiplierBits to get the
-BNAND header to be found.  But given that I did, perhaps I also need to muck
-With the other shift values to get things working?  I tried adding deltas 
->From -3 to +3 to the bbt_erase_shift, but had no luck getting the bbt found.
-And I still don't have a good feel for why I'm getting these corrupt block
-messages (on a doc coming straight from dformat).
-
-Can anyone offer advice?  I appreciate all the help you guys have had.
-Thanks,
-
-jbl
+josh
