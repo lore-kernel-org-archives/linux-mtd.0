@@ -1,34 +1,15 @@
-Received: from e32.co.us.ibm.com ([32.97.110.130])
+Received: from [67.15.60.3] (helo=mail.aftek.com)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E5t74-0007EI-ET
-	for linux-mtd@lists.infradead.org; Thu, 18 Aug 2005 18:43:56 -0400
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e32.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j7IMhcwh542206
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 18:43:38 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j7IMhEJ7493218
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 16:43:14 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	j7IMhc37018129
-	for <linux-mtd@lists.infradead.org>; Thu, 18 Aug 2005 16:43:38 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-To: Todd Poynor <tpoynor@mvista.com>
-In-Reply-To: <4302572E.1070202@mvista.com>
-References: <200508161441.KAA07341@www21.ureach.com>
-	<43020232.60908@ru.mvista.com>
-	<20050816155703.GA21462@wohnheim.fh-wedel.de>
-	<4302173F.10303@mvista.com>
-	<430236BF.1050004@netwinder.org>  <4302572E.1070202@mvista.com>
-Content-Type: text/plain
-Date: Thu, 18 Aug 2005 17:43:21 -0500
-Message-Id: <1124405001.17578.1.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
+	id 1E65nR-0006z8-JM
+	for linux-mtd@lists.infradead.org; Fri, 19 Aug 2005 08:16:38 -0400
+Message-ID: <430675EB.9030905@aftek.com>
+Date: Sat, 20 Aug 2005 05:44:35 +0530
+From: Ashwin Chaugule <ashwinc@aftek.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Intel NOR flash(P30) query
+Subject: is this a bug ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,31 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-08-16 at 14:14 -0700, Todd Poynor wrote:
-> Ralph Siemsen wrote:
-> > Todd Poynor wrote:
-> > 
-> >> By the way, if anybody has mtd working on the new P30 chips it would 
-> >> be good to know; I haven't seen a system with these chips yet.  They 
-> >> are CFI 1.4, and some changes for 1.4 were added by Nicolas recently 
-> >> to support M18 "Sibley" chips, but not sure if those changes are 
-> >> required for P-series chips.  Thankis,
-> > 
-> > 
-> > Are these changes merged into mainline kernel, or only in MTD CVS?  I 
-> > may be in a position to test this soon-ish, as we are looking for a 
-> > replacement for the now obsoleted J/K strataflash parts and seem to be 
-> > headed towards the P30's...
-> 
-> Pretty sure linux-mtd-only, these came in during the settle down period 
-> for 2.6.13 rc's.  The CFI 1.3-based code probably works after a quick 
-> adjustment of a revision level check (to ignore new fields at end of 
-> vendor-specific extended query table), if you want to try kernel.org, 
-> but testing linux-mtd is always better for us here.  Thanks,
+ Hi,
+      Im using 2.4.19-rmk7-pxa1, on a pxa255. Recently I mounted jffs2 
+as rootfs. While doing this the conventional way, I found that
+it was being mounted readonly. Since I'm using M28W640 (ST flash) which 
+needs to be unlocked upon every reboot, I thought the readonly
+was because of this locking thing. So, I integrated the flash_unlock 
+code into the mtd subsystem, but I still got the readonly mount.
+After digging into init/do_mounts.c , I found  root_mountflags was by 
+default readonly, and is sent to mount_block_root("/dev/root", 
+root_mountflags);  only to be later reassigned somewhere in fs/super.c ! 
+(s->s_flags = flags;)
 
-For what it's worth, I just changed the checks for version 3 of the
-query table to allow a version 4 in the cfi_cmdset_0001.c driver and it
-seemed to be working.  I haven't had a chance to test out Nicolas'
-changes, but it should work just fine.
+The following addition to do_mounts.c , did the trick.
 
-josh
++ root_mountflags &= ~MS_RDONLY;
+   mount_block_root("/dev/root", root_mountflags);
+
+Now jffs2 mounts nice and clean, with readwrite !
+
+I know you guys have dropped support for 2.4.x, but just for 
+clarification, might even help several others struggling to get jffs2 
+working as rootfs :)
+
+Cheers,
+Ashwin Chaugule
+Embedded Systems Engineer
+Aftek Infosys Ltd.
+[Embedded Division]
