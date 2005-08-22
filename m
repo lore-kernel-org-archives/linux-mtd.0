@@ -1,27 +1,17 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E78t8-00067K-W6
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 05:46:49 -0400
-Received: from ep_mmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0ILM00HWAB5PTA@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 18:46:37 +0900 (KST)
-Received: from july7 ([168.219.213.193])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0ILM002RXB5POR@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 18:46:37 +0900 (KST)
-Date: Mon, 22 Aug 2005 18:46:38 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-In-reply-to: <1124613404.3407.31.camel@localhost.localdomain>
-To: 'David Woodhouse' <dwmw2@infradead.org>
-Message-id: <0ILM002RYB5POR@mmp1.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
+Received: from web53605.mail.yahoo.com ([206.190.37.38])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E79bQ-0006lN-Vw
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 06:32:35 -0400
+Message-ID: <20050822102547.60245.qmail@web53605.mail.yahoo.com>
+Date: Mon, 22 Aug 2005 03:25:47 -0700 (PDT)
+From: Komal Shah <komal_shah802003@yahoo.com>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+In-Reply-To: <43098E60.7020502@yandex.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: LTP fs test results on OneNAND
-Reply-To: kyungmin.park@samsung.com
+Subject: Re: [omap2420 NOR] mounting jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,55 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+-- "Artem B. Bityuckiy" <dedekind@yandex.ru> wrote:
 
 > 
-> On Sat, 2005-08-20 at 09:06 +0900, Kyungmin Park wrote:
-> > rwtest01                       FAIL       2
-> > rwtest02                       FAIL       2
-> > rwtest03                       FAIL       2
-> > rwtest04                       FAIL       2
-> > rwtest05                       FAIL       2
-> 
-> > Total Failures: 5
-> 
-> These are solely due to the lack of shared writable mappings, yes?
+> Which MTD snapshot do you use? Please, try the latest. If you still
+> see 
+> JFFS2 bugs, enable JFFS2 debugging, gather its output, and send it.
 
-<<<test_output>>>
+Thanx for the reply. Right I don't have access to the board, but I can
+give some details.
 
-doio(rwtest01) (  918) 14:07:18
----------------------
-mmap() failed - 0xffffffff 22
+I use kernel from linux.omap tree : 2.6.13-rc6-omap1. But I can try to
+apply latest cvs mtd snapshot.
 
-doio(rwtest01) (  918) 14:07:18
----------------------
-mmap-write() request failed:  No such file or directory (2)
-Request number 1
-          fd 4 is file /tmp/ltp-710/rw-sync-905 - open flags are 010002
-O_RDWR,,
-          write done at file offset 0 - pattern is I (0111)
-          number of requests is 1, strides per request is 1
-          i/o byte count = 107087
-          memory alignment is unaligned
-
-syscall:  mmap-write(NULL, 779264, PROT_WRITE, MAP_SHARED, 4, 0)
-        file is mmaped to: 0x0
-        file-mem=0x0, length=107087, buffer=0x3d369
-
-
-doio(rwtest01) (  918) 14:07:18
----------------------
-doio(): operation 121 returned != 0
-rwtest(rwtest01) : iogen reported errors (r=141)
-rwtest01    1  FAIL  :  Test failed
-
-The remains are almost same. 
-
-I don't know why this tests are fail?
 
 > 
-> LTP tests correctness -- I like to do JFFS2 runs with some stress
-> testing, like fsx-linux (and another tool called 'holey' 
-> which stresses
-> the extent mapping stuff -- http://david.woodhou.se/holey.c).
+> And write about how did you create your JFFS2 image, how did you
+> flash 
+> it? Try to mount empty flash, create files, remount and see if it is
+> OK.
+> 
 
-The holey is working well.
+
+---Komal Shah
+http://www.livejournal.com/users/komal_shah/
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
