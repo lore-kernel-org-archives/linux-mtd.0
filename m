@@ -1,18 +1,18 @@
-Received: from [213.170.72.194] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E77nC-0004aK-Ae
-	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 04:36:35 -0400
-Message-ID: <43098E60.7020502@yandex.ru>
-Date: Mon, 22 Aug 2005 12:35:44 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E77xX-0004qY-U8
+	for linux-mtd@lists.infradead.org; Mon, 22 Aug 2005 04:47:17 -0400
+Message-ID: <43099109.3050609@inf.u-szeged.hu>
+Date: Mon, 22 Aug 2005 10:47:05 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: Komal Shah <komal_shah802003@yahoo.com>
-References: <20050821085340.52982.qmail@web53606.mail.yahoo.com>
-In-Reply-To: <20050821085340.52982.qmail@web53606.mail.yahoo.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Bernhard Priewasser <bernhard@prie.de>
+References: <43098213.1020807@prie.de>
+In-Reply-To: <43098213.1020807@prie.de>
+Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [omap2420 NOR] mounting jffs2
+Subject: Re: Testing JFFS2 using mtdram
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Komal Shah wrote:
-> Hi All,
-> 
-> I have added the nor flash support for omap2420. I am using the
-> omap_nor.c as mapping driver. [note: disabled set_vpp function..as it
-> too specifc to omap1].
-> 
-> o Flash is getting detected, but unable to mount the jffs2 filesystem.
-> o Right now I am flashing it through u-boot. [Will try flashing from
-> ramdisk..as my jffs2 fs size is ~1.9M]
+Hello Bernhard,
 
-Which MTD snapshot do you use? Please, try the latest. If you still see 
-JFFS2 bugs, enable JFFS2 debugging, gather its output, and send it.
+> I'm going to run some performance and stability testing on JFFS2.
+> Using mtdram makes basic testing issues very comfortable. My question
+> is how far mtdram can substitute a "real" flash (not for absolute
+> measurement of course, only comparisons)?
+> Am I right with my first approach:
+>  read operations - yes
+>  write operations - no?
 
-And write about how did you create your JFFS2 image, how did you flash 
-it? Try to mount empty flash, create files, remount and see if it is OK.
+mtdram emulates NOR flash (both read and write operations), but does not
+emulate delays. You can test stability with it, but for performance I
+suggest Artem's nand simulator. It's included in the official MTD. It
+can emulate delays and ceratinly you can test the NAND functionalities
+of JFFS2, too.
 
-Thanks.
-
-To MTD developers:
-
-* we probably should add this to the MTD FAQ.
-* we probably want to print JFFS2 snapshot version, in order not to 
-constantly re-ask people to provide the information about JFFS2 version.
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Ferenc
