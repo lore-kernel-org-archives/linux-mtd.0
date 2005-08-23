@@ -1,28 +1,27 @@
-Received: from 207.88.121.43.ptr.us.xo.net ([207.88.121.43]
-	helo=mail.realmsys.com)
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7iJl-0000I3-Iq
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 19:36:41 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by mail.realmsys.com (Postfix) with ESMTP id 4681C4C23D
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2005 17:28:59 -0600 (MDT)
-Received: from mail.realmsys.com ([127.0.0.1])
-	by localhost (mail [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 32565-09 for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2005 17:28:57 -0600 (MDT)
-Received: from pgrayson1.inrealm.net (fire2.inream.net [66.239.3.2])
-	by mail.realmsys.com (Postfix) with ESMTP id DBC0E3DCC0
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2005 17:28:56 -0600 (MDT)
-From: Peter Grayson <pgrayson@realmsys.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Tue, 23 Aug 2005 17:36:26 -0600
-Message-Id: <1124840186.7086.19.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Latest jffs2 broken?
+	id 1E7iRC-0000Xj-Qe
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 19:44:23 -0400
+Received: from ep_mmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0ILP007PT8JGIC@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 08:42:52 +0900 (KST)
+Received: from july7 ([168.219.213.193])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0ILP000HI8JG7E@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 08:42:52 +0900 (KST)
+Date: Wed, 24 Aug 2005 08:42:53 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+In-reply-to: <430B2B12.8000307@gmail.com>
+To: 'Bernhard Priewasser' <priewasser@gmail.com>
+Message-id: <0ILP000HJ8JG7E@mmp1.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: [PATCH] OneNAND: Simple Bad Block handling support
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +31,158 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am trying to use the latest mtd from cvs. There appears to be a
-problem with jffs2 -- I'm surprised this has not tripped up anyone else
-yet. I am seeing a kernel oops when I do the following procedure: erase
-an mtd partition, mount the partition as jffs2, touch a file, unmount,
-and remount.
+Hi
 
-This is fully reproducible for me. I am running the latest mtd cvs (as
-of 8/23/2005) on a 2.6.10 kernel. I am using a 32MB partition for this
-test, but it is not obvious that the partition size matters. My nand
-part has a 2048-byte page size and 128 kB eraseblock size.
+Which directory are you patch? MTD-CVS or kernel?
 
-I have included the output showing the problem. Debug level is set to 1.
+In MTD-CVS I also have similar message 
 
-Has anyone else run into this?
+$ patch --dry-run -p1 < ../onenand-bbm.patch
+patching file drivers/mtd/onenand/Makefile
+Hunk #1 FAILED at 3.
+1 out of 1 hunk FAILED -- saving rejects to file
+drivers/mtd/onenand/Makefile.rej
+patching file drivers/mtd/onenand/onenand_base.c
+Hunk #1 FAILED at 311.
+Hunk #2 succeeded at 1033 (offset -29 lines).
+Hunk #4 succeeded at 1158 (offset -29 lines).
+Hunk #6 succeeded at 1504 (offset -35 lines).
+1 out of 6 hunks FAILED -- saving rejects to file
+drivers/mtd/onenand/onenand_base.c.rej
+patching file drivers/mtd/onenand/onenand_bbt.c
+patching file include/linux/mtd/bbm.h
+patching file include/linux/mtd/onenand.h
+Hunk #3 FAILED at 101.
+Hunk #4 succeeded at 109 (offset -1 lines).
+1 out of 4 hunks FAILED -- saving rejects to file
+include/linux/mtd/onenand.h.rej
 
-Pete
+I think the patch scenario is following
 
----- Debug output below ----
+1. patching onenand-syncread.patch (check previous e-mail)
+2. onenand-bbm.patch
+3. omap-onenand.patch
 
-# flash_eraseall -jq /dev/mtd3
-# mount /mnt/mtdb3
-# touch /mnt/mtdb3/foo
-jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they
-all?
-jffs2: Couldn't find erase block to garbage collect!
-# umount /mnt/mtdb3
-# mount /mnt/mtdb3
-kernel BUG in read_unknown at fs/jffs2/readinode.c:353!
-Oops: Exception in kernel mode, sig: 5 [#1]
-TASK = c0601190[74] 'jffs2_gcd_mtd3' THREAD: c044c000
-Last syscall: -1
-NIP [c00ad818] jffs2_do_read_inode_internal+0x804/0x1220
-LR [c00ad1f4] jffs2_do_read_inode_internal+0x1e0/0x1220
-Call trace:
- [c00ae2a4] jffs2_do_crccheck_inode+0x70/0xcc
- [c00b2de4] jffs2_garbage_collect_pass+0x284/0xa80
- [c00b4fc8] jffs2_garbage_collect_thread+0x1a0/0x1f4
- [c0004f6c] kernel_thread+0x44/0x60
+Try again and If you have same problem. please let me know
+
+In my test there's two .rej file
+
+./drivers/mtd/onenand/Makefile.rej
+./drivers/mtd/onenand/onenand_base.c.rej
+
+***************
+*** 3,9 ****
+  #
+
+  # Core functionality.
+- obj-$(CONFIG_MTD_ONENAND)             += onenand_base.o
+
+  # Board specific.
+  obj-$(CONFIG_MTD_ONENAND_OMAP)                += omap-onenand.o
+--- 3,11 ----
+  #
+
+  # Core functionality.
++ obj-$(CONFIG_MTD_ONENAND)             += onenand.o
+
+  # Board specific.
+  obj-$(CONFIG_MTD_ONENAND_OMAP)                += omap-onenand.o
++
++ onenand-objs = onenand_base.o onenand_bbt.o
+
+***************
+*** 311,329 ****
+        ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
+
+        if (ctrl & ONENAND_CTRL_ERROR) {
+-               DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error =
+0x%04x", ctrl);
+-               return -EAGAIN;
+        }
+
+        if (ctrl & ONENAND_CTRL_LOCK) {
+-               DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error =
+0x%04x", ctrl);
+-               return -EIO;
+        }
+
+        if (interrupt & ONENAND_INT_READ) {
+                ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
+                if (ecc & ONENAND_ECC_2BIT_ALL) {
+-                       DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error =
+0x%04x", ecc);
+                        return -EBADMSG;
+                }
+        }
+--- 311,331 ----
+        ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
+
+        if (ctrl & ONENAND_CTRL_ERROR) {
++               /* It maybe occur at initial bad block */
++               DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error =
+0x%04x\n", ctrl);
++               /* Clear other interrupt bits for preventing ECC error */
++               interrupt &= ONENAND_INT_MASTER;
+        }
+
+        if (ctrl & ONENAND_CTRL_LOCK) {
++               DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error =
+0x%04x\n", ctrl);
++               return -EACCES;
+        }
+
+        if (interrupt & ONENAND_INT_READ) {
+                ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
+                if (ecc & ONENAND_ECC_2BIT_ALL) {
++                       DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error =
+0x%04x\n", ecc);
+                        return -EBADMSG;
+                }
+        }
+
+I tried to solve this problem
+
+Thank you
+
+Kyungmin Park
+
+> -----Original Message-----
+> From: Bernhard Priewasser [mailto:priewasser@gmail.com] 
+> Sent: Tuesday, August 23, 2005 10:57 PM
+> To: kyungmin.park@samsung.com
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH] OneNAND: Simple Bad Block handling support
+> 
+> Hi,
+> 
+> trying patching a today's snapshot I get:
+> 
+> patch -p1 < onenand-bbm.patch
+> patching file drivers/mtd/onenand/Makefile
+> Hunk #1 FAILED at 3.
+> 1 out of 1 hunk FAILED -- saving rejects to file 
+> drivers/mtd/onenand/Makefile.rej
+> patching file drivers/mtd/onenand/onenand_base.c
+> Hunk #1 FAILED at 311.
+> Hunk #2 succeeded at 1033 (offset -29 lines).
+> Hunk #3 succeeded at 1101 (offset -29 lines).
+> Hunk #4 succeeded at 1158 (offset -29 lines).
+> Hunk #5 succeeded at 1444 (offset -29 lines).
+> Hunk #6 succeeded at 1504 (offset -35 lines).
+> 1 out of 6 hunks FAILED -- saving rejects to file 
+> drivers/mtd/onenand/onenand_base.c.rej
+> patching file drivers/mtd/onenand/onenand_bbt.c
+> patching file include/linux/mtd/bbm.h
+> patching file include/linux/mtd/onenand.h
+> Hunk #3 FAILED at 101.
+> Hunk #4 succeeded at 109 (offset -1 lines).
+> 1 out of 4 hunks FAILED -- saving rejects to file 
+> include/linux/mtd/onenand.h.rej
+> 
+> .rej files are available.
+> Perhaps it's a silly fault... I'm new to diff/patch, sorry.
+> 
+> Regards,
+> Bernhard
+> 
+> 
