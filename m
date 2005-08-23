@@ -1,16 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Josh Boyer <jdub@us.ibm.com>
-In-Reply-To: <1124758473.29360.0.camel@windu.rchland.ibm.com>
-References: <0ILH00A5RUY3DW@mmp1.samsung.com>
-	<1124613404.3407.31.camel@localhost.localdomain>
-	<1124758473.29360.0.camel@windu.rchland.ibm.com>
-Content-Type: text/plain
-Date: Tue, 23 Aug 2005 09:06:02 +0100
-Message-Id: <1124784363.5248.43.camel@baythorne.infradead.org>
+Received: from wproxy.gmail.com ([64.233.184.206])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7U5s-00041U-Cb
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 04:25:19 -0400
+Received: by wproxy.gmail.com with SMTP id i21so1043484wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Aug 2005 01:25:11 -0700 (PDT)
+Message-ID: <9185a3fa05082301256f52151d@mail.gmail.com>
+Date: Tue, 23 Aug 2005 17:25:11 +0900
+From: Amit Sharma <amitsharma91@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: LTP fs test results on OneNAND
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: JFFS3 expected release
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,11 +23,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-08-22 at 19:54 -0500, Josh Boyer wrote:
-> Isn't fsx-linux part of the LTP now?
+HI=20
 
-Yes, although LTP by default invokes it in a mode which tries shared
-writable mmap, and fails quite quickly.
+When  I can use JFFS3
 
--- 
-dwmw2
+AK
