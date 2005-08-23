@@ -1,11 +1,11 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7Zk6-00023V-JB
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 10:27:15 -0400
-Date: Tue, 23 Aug 2005 16:27:06 +0200
+	id 1E7a2a-0002W9-8W
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 10:46:26 -0400
+Date: Tue, 23 Aug 2005 16:45:42 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050823142706.GA1445@wohnheim.fh-wedel.de>
+Message-ID: <20050823144542.GA2398@wohnheim.fh-wedel.de>
 References: <430B2F84.30307@inf.u-szeged.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -32,17 +32,12 @@ On Tue, 23 August 2005 16:15:32 +0200, Ferenc Havasi wrote:
 > use own lists rather than the kernel's ones. Now they are o(1), too.
 > (will be changed in the next round)
 
-Good.  Will take a look...
-
-> Does any official decision about the new virtual erase block handling
-> (or 1:1 mapping) of JFFS2?
-
-Not before a patch is merged.  But I haven't seen any opposition
-against the 1:1 mapping yet.
+I'm slowly running out of stuff.  Good job.
 
 Jörn
 
 -- 
-People will accept your ideas much more readily if you tell them
-that Benjamin Franklin said it first.
--- unknown
+To recognize individual spam features you have to try to get into the
+mind of the spammer, and frankly I want to spend as little time inside
+the minds of spammers as possible.
+-- Paul Graham
