@@ -1,19 +1,11 @@
-Received: from xproxy.gmail.com ([66.249.82.193])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7RZW-0001J4-KW
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 01:43:46 -0400
-Received: by xproxy.gmail.com with SMTP id i30so295064wxd
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Aug 2005 22:43:38 -0700 (PDT)
-Message-ID: <802ad8b60508222243345b5e18@mail.gmail.com>
-Date: Tue, 23 Aug 2005 11:13:38 +0530
-From: Suresh K <sureshkanniappan@gmail.com>
-To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: JFFS2 Mount issue
+Message-ID: <53573.196.200.121.14.1124777475.squirrel@mail.onemail.ru>
+Date: Tue, 23 Aug 2005 06:11:15 -0000 (GMT)
+From: "Idioma St.Michael Adams" <adioomms@yahoo.it>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: ACKNOWLEDGE
+Reply-To: adioomms@yahoo.it
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +15,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hai,
+Email: adiooms@yahoo.es
 
-I am looking for reliable compressed R/W file system. I came to know
-that JFFS2 is the reliable one. I started implementing the same in
-2.4.26 kernel. Created a JFFS2 image of 80MB and copied to one of
-partition in Hard Disk. I am trying to mount a 80MB JFFS2 image in
-Hard disk. The time taken to mount the JFFS2 image is 30 seconds.
+I am the chairman of the contract award committee of the oil ministry here
+in Nigeria, for security reasons, I may not wish to disclose how I got
+your email address for now.
 
-I tried with 2.6.10 kernel also. The time taken to mount the JFFS2
-image is too large. Also i am not able to create multiple JFFS2
-partition.
-        cp jffs2.imf /dev/mtdblock0 - Copied the JFFS2 image to one
-partition in Hard Disk
-        cp jffs2.imf /dev/mtdblock1 - cannot create regular file
-'/dev/mtdblock1' : No Such Device or Address
+After due deliberation with my partner, I decided to forward to you this
+business proposal, we want you to assist us receive the sum of Twenty
+eight million, six hundred thousand united state bills(us28.6m) into your
+account. This fund resulted from an over-invoiced contract awarded by us
+under the budget allocation to my ministry and the bill was approved for
+payment by the concerned ministries. The contract was executed,
+commissioned and the contractor was paid his actual cost of the contract.
+Now, we are left with the balance of us28.6m as the over invoiced amount,
+which we have deliberately over estimated for our own use. Please note
+that the law forbids civil servants to operate or own foreign accounts
+hence this contact, we have agreed to share the money in the following
+percentages: 30 for you, 60 for us 10 for tax as may be required by your
+government.
 
-How cai reduce the more mounting time. Kindly help me in this regard.
+Note that this transaction is very much free from all sorts of risk hence
+the business was carefully planned before it was successfully executed and
+we the officials involved in the deal have put many years in service to
+our ministry. We have been exercising patience for this privilege for so
+long not until the presidential announcement last week, that all foreign
+contractors owed be paid forthwith, this will enable the presidency
+reconcile our debt ratio with the outside world and to most of us, this is
+a lifetime blessing we cannot afford to miss. Upon indication of your
+interest to fully co-operate with us, a payment application/information
+form will be sent to you via email for completion.
 
-Regards,
-K. Suresh
+Note that the following information: a) bankers name and address, b)
+account number and account name and c) your private phone number and email
+address will enable us seek/secure approval of the fund from the concerned
+government quarters/ministries within 3-4 banking days.
+
+As soon as we confirm receipt of this money in your nominated bank
+account, my partner and I will come over to your country to arrange for
+our own share and possibly invest part of this money in your country.
+
+Let honesty and trust be our watchword throughout this transaction. I
+shall furnish you with some details about myself. Your prompt reply will
+be highly appreciated.
+
+Best regards.
+
+Engr. Idioma St.michael Adams
