@@ -1,22 +1,19 @@
-Received: from xproxy.gmail.com ([66.249.82.198])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7XED-0007Ok-0E
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 07:46:13 -0400
-Received: by xproxy.gmail.com with SMTP id i30so314533wxd
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Aug 2005 04:46:01 -0700 (PDT)
-Message-ID: <802ad8b6050823044641e0180d@mail.gmail.com>
-Date: Tue, 23 Aug 2005 17:16:01 +0530
-From: Suresh K <sureshkanniappan@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <802ad8b60508230349683751c6@mail.gmail.com>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7Y4D-00086H-Io
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 08:39:53 -0400
+Date: Tue, 23 Aug 2005 14:39:23 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Ma Yun <sx_yunma@hotmail.com>
+Message-ID: <20050823123923.GA30853@wohnheim.fh-wedel.de>
+References: <BAY21-F2970080DD3DE9F24391283F5A90@phx.gbl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-References: <802ad8b60508222243345b5e18@mail.gmail.com>
-	<802ad8b60508230349683751c6@mail.gmail.com>
-Subject: Re: JFFS2 Mount issue
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BAY21-F2970080DD3DE9F24391283F5A90@phx.gbl>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] XATTR support in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,74 +23,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hai,
+On Tue, 23 August 2005 11:24:20 +0800, Ma Yun wrote:
+> 
+> I've implemented the extended attributes for JFFS2. The implementation 
+> mechanism is simple, but it can work:). This implementation support 
+> standard extended attributes system call, such as setxattr, getxattr .... 
+> but does not support ACL.
+> 
+> The patch is based on Linux-2.6.10
+> 
+> Comments are welcome...
 
-I solved the JFFS2 mount time issue. The kernel version is 2.6.10. I
-have faced following problems after successful mounting.
+Great stuff!
 
- 1. Compiled the kernel with JFFS2 summary support. Created the JFFS2
-image with the following command.
-     mkfs.jffs2 -d testjffs2 -e 0x40000 --pad=3D0x7800000 -o jffs2.img -v
+First round of comments follows...
 
-     This comand created the JFFS2 image of size 120MB.
-     Copied the jffs2.img to one of the partition in Hard Disk.
-Mounted
-     the partition using blkmtd support. It takes around 27 seconds
-to
-     mount.
+> diff -uNr linux-2.6.10.mxc/fs/jffs2/file.c 
+> linux-2.6.10.jffs2/fs/jffs2/file.c
+> --- linux-2.6.10.mxc/fs/jffs2/file.c	2005-08-19 15:40:26.000000000 +0800
+> +++ linux-2.6.10.jffs2/fs/jffs2/file.c	2005-08-19 15:48:40.000000000 +0800
+> @@ -20,6 +20,9 @@
+> #include <linux/highmem.h>
+> #include <linux/crc32.h>
+> #include <linux/jffs2.h>
+> +#ifdef CONFIG_JFFS2_FS_XATTR
+> +#include <linux/jffs2_xattr.h>
+> +#endif
 
-     Why the mount time is high even if the kernel having the "JFFS2
-summary" support?.
+Include that file unconditionally.
 
-  2. Created the JFFS2 image with summary information inbuilt support
-using sumtool2 utility.
-        sumtool2 -e 0x40000 -i jffs2.img -o jffs2-sum.img
+...
 
-      Copied the jffs2-sum.img to other partition in Hard Disk.
-Mounted
-      the partition using blkmtd support. It takes around 6 seconds
-to
-      mount.
-Another problem is that "Segmentation fault" occurs when copying a
-directory of size 10MB to JFFS2 partition after mount.
+> +			#ifndef CONFIG_JFFS2_FS_XATTR
 
-Following are the error posted when copying the directory.
+#ifdef and friends should start in the first column.
 
-JFFS2: jffs2_sum_write_sumnode(): empty summary info!!!
---------------[ cut here ]-----------
-kernel bug at fs/jffs2/summary.c:572
-invalid operand: 0000 [#1]
-....
-....
-Segmentation fault
+...
 
-Segmantation fault occured only in 2.6.10 kernel but not with 2.4.x kernel.
-This is occured in both partitions. Kindly help me in this regard.
-How to solve this problem.
+> diff -uNr linux-2.6.10.mxc/fs/jffs2/xattr.c 
+> linux-2.6.10.jffs2/fs/jffs2/xattr.c
+> --- linux-2.6.10.mxc/fs/jffs2/xattr.c	1970-01-01 08:00:00.000000000 +0800
+> +++ linux-2.6.10.jffs2/fs/jffs2/xattr.c	2005-08-19 
+> 16:17:29.000000000 +0800
+> @@ -0,0 +1,467 @@
+> +/*
+> + *
+> + * Copyright 2005 Motorola, Inc. All Rights Reserved.
+> + *
+> + * Created by Ma yun <yunma@sc.mcel.mot.com>
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License as published by
+> + * the Free Software Foundation; either version 2 of the License, or
+> + * (at your option) any later version.
+> + *
+> + * This program is distributed in the hope that it will be useful,
+> + * but WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+> + * GNU General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  
+> USA
 
-Regards,
-K. Suresh
+Would be nice if you could remove the GPL preamble from the most
+important part of the file (first page when opened up).  Not sure if
+your lawyers require this.
 
-On 8/23/05, Suresh K <sureshkanniappan@gmail.com> wrote:
-> Hai,
->
-> I am looking for reliable compressed R/W file system. I came to know
-> that JFFS2 is the reliable one. I started implementing the same in
-> 2.4.26 kernel. Created a JFFS2 image of 80MB and copied to one of
-> partition in Hard Disk. I am trying to mount a 80MB JFFS2 image in
-> Hard disk. The time taken to mount the JFFS2 image is 30 seconds.
->
-> I tried with 2.6.10 kernel also. The time taken to mount the JFFS2
-> image is too large. Also i am not able to create multiple JFFS2
-> partition.
->         cp jffs2.imf /dev/mtdblock0 - Copied the JFFS2 image to one
-> partition in Hard Disk
->         cp jffs2.imf /dev/mtdblock1 - cannot create regular file
-> '/dev/mtdblock1' : No Such Device or Address
->
-> How cai reduce the more mounting time. Kindly help me in this regard.
->
-> Regards,
-> K. Suresh
->
->
+> + */
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include <linux/fs.h>
+> +#include <linux/xattr.h>
+> +#include <linux/crc32.h>
+> +#include <linux/jffs2.h>
+> +#include <linux/jffs2_fs_i.h>
+> +#include <linux/jffs2_fs_sb.h>
+> +#include <linux/jffs2_xattr.h>
+> +#include <linux/mtd/mtd.h>
+> +#include <linux/time.h>
+> +#include "nodelist.h"
+> +
+> +
+> +struct xattr_buffer {
+> +	int size;				/* the size of current use  
+> buffer */
+
+Your mailer is adding line breaks.  The patch is unusable like this.
+
+...
+
+> +		if (ea_buf->xattr == NULL) {
+> +			return -ENOMEM;
+> +		}
+
+Curly brackets for single lines are usually frowned upon.  See
+Documentation/CodingStyle.
+
+> +		/* copy rd EAs to ea_buf */
+> +		offset = ref_offset(raw);
+> +		ret = jffs2_flash_read(c, offset + sizeof(findnode) + 
+> findnode.nsize, size, &readlen, (char *)ea_buf->xattr);
+> +		if (ret|| readlen != size){
+> +			printk(KERN_WARNING"Error reading node form 0x%08x: 
+> %d\n", offset, ret);
+> +			return ret;
+> +		}
+> +		return size;
+> +	}
+> +}
+> +
+> +
+> +static int ea_put(struct dentry *parent, struct inode *inode, struct 
+> xattr_buffer *ea_buf, int new_size)
+> +{
+> +	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
+> +	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode), *p;
+> +	struct jffs2_raw_dirent *rd, findnode;
+> +        struct jffs2_raw_node_ref *raw;
+> +        struct jffs2_full_dirent *fd, *fd_list = NULL;
+
+Quoting makes the tab vs. 8 chars difference visible. :)
+
+> +	uint32_t direntlen, offset, alloclen, readlen;
+> +	int ret = 0;
+> +	char *name, *write_buf = NULL;
+> +	int namelen = 0;
+> +	uint32_t ino = f->inocache->ino;
+> +	int     n_version =0 ;
+> +
+> +	memset(&findnode, 0, sizeof(findnode));
+> +	/* lookup the dirent list and find raw dirent*/
+> +        p = JFFS2_INODE_INFO(parent->d_inode);
+> +       	down(&p->sem);
+> +
+> +	for(fd_list = p->dents; fd_list; fd_list = fd_list->next){
+           ^                                                     ^
+Extra space where indicated.
+
+...
+
+> +		if (write_buf)
+> +			kfree(write_buf);
+
+Same check is done inside kfree already.  Remove the conditional.
+
+...
+
+> +ssize_t jffs2_getxattr(struct dentry *dentry, const char *name, void 
+> *data, size_t buf_size)
+> +{
+> +	struct inode *inode = dentry->d_inode;
+> +	struct dentry *parent;
+> +	struct jffs2_xattr_list *ealist;
+> +	struct jffs2_xattr	*ea;
+> +	struct xattr_buffer	ea_buf;
+> +	int xattr_size;
+> +	ssize_t	size;
+> +	int namelen = strlen(name);
+> +	char *value;
+> +
+> +	if (name == NULL)
+> +		return -EINVAL;
+> +
+> +	D1(printk(KERN_DEBUG"jffs2_getxattr: name=%s, buffer=%p, 
+> buffer_size=%ld",name,data,(long)buf_size));
+> +
+> +//	down_read(&JFFS2_INODE_INFO(inode)->xattr_sem);
+
+What happened here?
+
+> +	parent = dentry->d_parent;
+> +	xattr_size = ea_get(parent, inode, &ea_buf, 0);
+> +	if (xattr_size < 0) {
+> +		size = xattr_size;
+> +		goto out;
+> +	}
+
+...
+
+> +/* jffs2_xattr describe the on-disk format of the extended attributes.
+> + *
+> + */
+> +struct jffs2_xattr {
+> +	uint8_t namelen;	/* Length of name */
+> +	uint8_t valuelen;	/* Length of value */
+> +	char name[0];		/* Attribute name (include null-terminator)*/
+> +				/* Attribute Valude immediately follows name 
+> */
+
+Why just 8bit length fields?
+
+> +}__attribute__((packed));
+> +
+> +struct jffs2_xattr_list {
+> +	struct jffs2_xattr xattr[0];	/* EAs list */
+> +}__attribute__((packed));
+
+An array of variable-length members?  This looks wrong.
+
+> +
+> +
+> +/*
+> + * Some macros for dealing with variable length EA lists.
+> + */
+> +#define JFFS2_XATTR_SIZE(xattr)	\
+> +	(sizeof(struct jffs2_xattr) + (xattr)->namelen + 1 + \
+> +	(xattr)->valuelen)
+
+Inconsistent.  Either add the NUL-termination to both key and value,
+or to none of them.
+
+> +#define NEXT_XATTR(xattr)	\
+> +	((struct jffs2_xattr *)(((char *)(xattr)) + 
+> (JFFS2_XATTR_SIZE(xattr))))
+> +#define FIRST_XATTR(xattr_list)	\
+> +	((xattr_list)->xattr)
+> +#define END_XATTR(xattr_list,size)	\
+> +	((struct jffs2_xattr *)(((char *)(xattr_list)) + size))
+> +
+> +extern int jffs2_setxattr(struct dentry *, const char *, const void *, 
+> size_t, int);
+> +extern ssize_t jffs2_getxattr(struct dentry *, const char *, void *, 
+> size_t);
+> +extern ssize_t jffs2_listxattr(struct dentry *, char *, size_t);
+> +extern int jffs2_removexattr(struct dentry *, const char *);
+> +
+> +#endif
+> +
+> 
+
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+
+
+Jörn
+
+-- 
+If you're willing to restrict the flexibility of your approach,
+you can almost always do something better.
+-- John Carmack
