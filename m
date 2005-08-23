@@ -1,19 +1,24 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7a2a-0002W9-8W
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 10:46:26 -0400
-Date: Tue, 23 Aug 2005 16:45:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050823144542.GA2398@wohnheim.fh-wedel.de>
-References: <430B2F84.30307@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <430B2F84.30307@inf.u-szeged.hu>
-Cc: dedekind@yandex.ru, dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] summary
+Received: from smtprelay02.ispgateway.de ([80.67.18.14])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7a3t-0002hb-FU
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 10:47:46 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.120.114])
+	(envelope-sender <priewasser@gmail.com>)
+	by smtprelay02.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 23 Aug 2005 14:47:36 -0000
+Message-ID: <430B3706.7080208@gmail.com>
+Date: Tue, 23 Aug 2005 16:47:34 +0200
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <43098213.1020807@prie.de>
+	<43099109.3050609@inf.u-szeged.hu>	<430993B1.5010502@yandex.ru>
+	<20050822094433.GA10958@wohnheim.fh-wedel.de>
+In-Reply-To: <20050822094433.GA10958@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
+Subject: Re: Testing JFFS2 using mtdram
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 August 2005 16:15:32 +0200, Ferenc Havasi wrote:
-> 
-> Here is the latest version of summary patch:
-> http://www.inf.u-szeged.hu/jffs2/jffs2-summary-20050823.patch
-> Some additional comment has been added, and if we are right all of the
-> mentioned thing have been fixed. There is only one exception: we still
-> use own lists rather than the kernel's ones. Now they are o(1), too.
-> (will be changed in the next round)
+ > I did that for ramtd.  Allocate an array of pointers and then lazily
+ > allocate memory for those pointers.
 
-I'm slowly running out of stuff.  Good job.
+Did anyone do something similar for mtdram too?
+I tried it quick & dirty, but didn't work :-) If there's a solution for 
+mtdram I would be grateful, otherwise I had to try further. 
+mtdram's/vmalloc()'s total size limit indeed is rather low for extensive 
+testing.
 
-Jörn
-
--- 
-To recognize individual spam features you have to try to get into the
-mind of the spammer, and frankly I want to spend as little time inside
-the minds of spammers as possible.
--- Paul Graham
+Regards,
+Bernhard
