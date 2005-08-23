@@ -1,19 +1,16 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7YBu-0008VH-Sd
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 08:48:01 -0400
-Message-ID: <430B1B29.2010004@inf.u-szeged.hu>
-Date: Tue, 23 Aug 2005 14:48:41 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: Suresh K <sureshkanniappan@gmail.com>
-References: <802ad8b60508222243345b5e18@mail.gmail.com>
-	<802ad8b60508230349683751c6@mail.gmail.com>
-In-Reply-To: <802ad8b60508230349683751c6@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Mount issue
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050823124649.GB30853@wohnheim.fh-wedel.de>
+References: <430AF95F.1050704@ak.jp.nec.com>
+	<20050823124649.GB30853@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 23 Aug 2005 13:52:48 +0100
+Message-Id: <1124801569.29448.13.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Ma Yun <sx_yunma@hotmail.com>, linux-mtd@lists.infradead.org,
+	Kaigai Kohei <kaigai@ak.jp.nec.com>
+Subject: Re: [PATCH] XATTR issues on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2005-08-23 at 14:46 +0200, Jörn Engel wrote:
+> Which is quite nice.  Would you two mind reading the others patch and
+> stating what is bad at that one and why your's is better?  If there is
+> a clear winner in this batter, we should merge that one. 
 
->  1. Compiled the kernel with JFFS2 summary support. Created the JFFS2
->image with the following command.
->      mkfs.jffs2 -d testjffs2 -e 0x40000 --pad=0x7800000 -o jffs2.img -v
->
->      This comand created the JFFS2 image of size 120MB.
->      Copied the jffs2.img to one of the partition in Hard Disk.
->Mounted
->      the partition using blkmtd support. It takes around 27 seconds
->to
->      mount.
->
->      Why the mount time is high even if the kernel having the "JFFS2
->summary" support?.
->  
->
-Because there was no summary support in your image, so the original
-scanning method had to be applied. Summary support means to process this
-summary information and generate it automatically if you write date onto
-the filesystem.
+I'm happier with inventing new node types for xattrs instead of re-using
+existing nodes, I think. And I'd also like to make sure we can share
+xattr data on the medium where appropriate. In an selinux system, you'll
+end up with a _multitude_ of xattrs used for selinux, many of which will
+have precisely the same contents. Each should be stored only once on the
+flash, like hard links. The ext2 implementation manages this.
 
->   2. Created the JFFS2 image with summary information inbuilt support
->using sumtool2 utility.
->         sumtool2 -e 0x40000 -i jffs2.img -o jffs2-sum.img
->
->       Copied the jffs2-sum.img to other partition in Hard Disk.
->Mounted
->       the partition using blkmtd support. It takes around 6 seconds
->to
->       mount.
->Another problem is that "Segmentation fault" occurs when copying a
->directory of size 10MB to JFFS2 partition after mount.
->
->Following are the error posted when copying the directory.
->  
->
-Can you send me more information about it? For example kernel log with
-debug level 1. And please make sure that you use the latest mtd snapshot
-with newest summary patch - use only erase block summary, centralized
-summary is now under construction.
-
-It would be also good to know that if it works without summary.
-
-Another question: is there any reason that you use 2.6.10 instead of the
-newest kernel?
-
-Bye,
-Ferenc
+-- 
+dwmw2
