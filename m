@@ -1,11 +1,19 @@
-Message-ID: <53573.196.200.121.14.1124777475.squirrel@mail.onemail.ru>
-Date: Tue, 23 Aug 2005 06:11:15 -0000 (GMT)
-From: "Idioma St.Michael Adams" <adioomms@yahoo.it>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: ACKNOWLEDGE
-Reply-To: adioomms@yahoo.it
+Received: from mailout05.sul.t-online.com ([194.25.134.82])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7SHI-00023j-Rp
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 02:28:59 -0400
+To: "Arvind Agrawal" <arvind@4access-comm.com>
+From: Wolfgang Denk <wd@denx.de>
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Mon, 22 Aug 2005 18:38:42 PDT."
+	<035a01c5a783$65057ce0$6501a8c0@arvindwin2000>
+Date: Tue, 23 Aug 2005 08:27:56 +0200
+Sender: wd@denx.de
+Message-Id: <20050823062756.1D843353D32@atlas.denx.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND support in BLOB 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,50 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Email: adiooms@yahoo.es
+In message <035a01c5a783$65057ce0$6501a8c0@arvindwin2000> you wrote:
+> 
+> We have been using BLOB on a Lubbock Board using Intel Streta flash.
+>  Now we are planning on using a ST Micro NAND flash and boot from
+>  EPROM. Still need NAND support to Read linux Kernel Image in memory
+>  and to be able to write images on the NAND flash.
+>  
+> I was wondering if anybody already has such a solution which we can port
+>  or help in changing the existing Blob to support NAND.
 
-I am the chairman of the contract award committee of the oil ministry here
-in Nigeria, for security reasons, I may not wish to disclose how I got
-your email address for now.
+It's definitely a bigger change, but here we go: use U-Boot instead?
 
-After due deliberation with my partner, I decided to forward to you this
-business proposal, we want you to assist us receive the sum of Twenty
-eight million, six hundred thousand united state bills(us28.6m) into your
-account. This fund resulted from an over-invoiced contract awarded by us
-under the budget allocation to my ministry and the bill was approved for
-payment by the concerned ministries. The contract was executed,
-commissioned and the contractor was paid his actual cost of the contract.
-Now, we are left with the balance of us28.6m as the over invoiced amount,
-which we have deliberately over estimated for our own use. Please note
-that the law forbids civil servants to operate or own foreign accounts
-hence this contact, we have agreed to share the money in the following
-percentages: 30 for you, 60 for us 10 for tax as may be required by your
-government.
+Best regards,
 
-Note that this transaction is very much free from all sorts of risk hence
-the business was carefully planned before it was successfully executed and
-we the officials involved in the deal have put many years in service to
-our ministry. We have been exercising patience for this privilege for so
-long not until the presidential announcement last week, that all foreign
-contractors owed be paid forthwith, this will enable the presidency
-reconcile our debt ratio with the outside world and to most of us, this is
-a lifetime blessing we cannot afford to miss. Upon indication of your
-interest to fully co-operate with us, a payment application/information
-form will be sent to you via email for completion.
+Wolfgang Denk
 
-Note that the following information: a) bankers name and address, b)
-account number and account name and c) your private phone number and email
-address will enable us seek/secure approval of the fund from the concerned
-government quarters/ministries within 3-4 banking days.
-
-As soon as we confirm receipt of this money in your nominated bank
-account, my partner and I will come over to your country to arrange for
-our own share and possibly invest part of this money in your country.
-
-Let honesty and trust be our watchword throughout this transaction. I
-shall furnish you with some details about myself. Your prompt reply will
-be highly appreciated.
-
-Best regards.
-
-Engr. Idioma St.michael Adams
+-- 
+Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Forty two.
