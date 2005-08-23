@@ -1,22 +1,19 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7aDY-0002yA-Rh
-	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 10:57:39 -0400
-Date: Tue, 23 Aug 2005 16:57:20 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Bernhard Priewasser <priewasser@gmail.com>
-Message-ID: <20050823145720.GB2398@wohnheim.fh-wedel.de>
-References: <43098213.1020807@prie.de> <43099109.3050609@inf.u-szeged.hu>
-	<430993B1.5010502@yandex.ru>
-	<20050822094433.GA10958@wohnheim.fh-wedel.de>
-	<430B3706.7080208@gmail.com>
+Received: from wproxy.gmail.com ([64.233.184.199])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7hYa-00087f-9N
+	for linux-mtd@lists.infradead.org; Tue, 23 Aug 2005 18:47:50 -0400
+Received: by wproxy.gmail.com with SMTP id 37so1688077wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Aug 2005 15:47:41 -0700 (PDT)
+Message-ID: <f9d2a5e1050823154740e66385@mail.gmail.com>
+Date: Tue, 23 Aug 2005 15:47:41 -0700
+From: Russ Dill <russ.dill@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <430B3706.7080208@gmail.com>
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Subject: Re: Testing JFFS2 using mtdram
+Subject: RedBoot FIS Directory parsing bails out early
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 23 August 2005 16:47:34 +0200, Bernhard Priewasser wrote:
-> 
-> > I did that for ramtd.  Allocate an array of pointers and then lazily
-> > allocate memory for those pointers.
-> 
-> Did anyone do something similar for mtdram too?
-> I tried it quick & dirty, but didn't work :-) If there's a solution for 
-> mtdram I would be grateful, otherwise I had to try further. 
-> mtdram's/vmalloc()'s total size limit indeed is rather low for extensive 
-> testing.
+Deleted partitions cause the FIS directory parsing to bail out early,
+this is because in redboot, deleting a partition causes the first byte
+in the entry to be set to 0xff. The kernel is currently looking for
+0xff as an end of table marker.
 
-Ramtd was supposed to replace mtdram.  There were the usual problems
-with parameter parsing, and writing a new one was easier than fixing
-the old.
+This means that if you create two partitions, ie, test1 and test2, and
+then delete test1, the kernel will no longer detect test1.
 
-Jörn
+redboot.c should instead scan every entry in the FIS table, and throw
+out any entries that begin with 0xff, ie, change the break to a
+continue. The checksum check should also be changed  from a break to a
+continue (even though checksums in fis tables were never implemented
+anyway).
 
--- 
-He who knows that enough is enough will always have enough.
--- Lao Tsu
+pseudo patch:
+
+ struct fis_list *new_fl, **prev
+=20
+ if (buf[i].name[0] =3D=3D 0xff)
+-       break;
++       continue;
+ if (!redboot_checksum(&buf[i]))
+-       break;
++       continue;
