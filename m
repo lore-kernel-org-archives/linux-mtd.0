@@ -1,18 +1,15 @@
-Received: from zproxy.gmail.com ([64.233.162.197])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8bqq-0001wt-L8
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 06:54:30 -0400
-Received: by zproxy.gmail.com with SMTP id s18so298378nze
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Aug 2005 03:54:22 -0700 (PDT)
-Message-ID: <82e4189c05082603546248689a@mail.gmail.com>
-Date: Fri, 26 Aug 2005 15:54:22 +0500
-From: Adil Hafeez <adilhafeez80@gmail.com>
+Received: from rt-soft-2.moscow.itn.ru ([80.240.96.70] helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E8c21-0002Gn-Pr
+	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 07:06:14 -0400
+Message-ID: <430C46B4.10406@dev.rtsoft.ru>
+Date: Wed, 24 Aug 2005 14:06:44 +0400
+From: Dmitry Krivoschokov <dkrivoschokov@dev.rtsoft.ru>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_5748_2625876.1125053662173"
-Subject: Flash erase wait time
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: flash status after unlocking
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,54 +19,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_5748_2625876.1125053662173
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+    Hi all,
 
-Hi,
+it appears that cfi flash unlocking routines always leaves a flash chip 
+in status mode (if CONFIG_MTD_XIP is not set).
+But in some cases it is desired that the chip remains in read array 
+mode, for linear cramfs at least.
+So I've added code to put a chip in read array mode after unlocking, see 
+patch below (the patch against 2.4 kernel, sorry), tested on OMAP1610. 
+The patch is for Intel's command set only,  though it is easy to add the 
+fix to others.
+If  no complaints for the fix I can test it with the latest kernel and 
+submit a patch.
 
-I am using a custom mips board that includes 8 MB Am29LV641D flash
-chip. This chip is 16-bit, has 128 sectors of 64k each.
+    Thanks,
+       Dmitry
 
-This flash is memory mapped and starts at address 1c40:0000. I can
-read the flash using dd utility. But I cannot erase flash. Erase
-operation using 'eraseall' utility doesnt take more than 6 seconds to
-finish and erases only first two blocks i.e. 128k. Whereas, full flash
-erase from our custom developed flash utlity takes 60 seconds to erase
-flash.
-
-Then after hacking into cmd cfi commad set. The erase issue was fixed by=20
-adding a while loop for checking polarity bit in do_erase_oneblock function=
-.
-
-while (!sectorDone) {
-    unsigned volatile short *flash_addr =3D adr + map->map_priv_1;
-    if( (*flash_addr) & 0x0080 )
-        sectorDone =3D 1;
-}
-
-Was it really required to double check the polarity bit, or there are
-some timeout timer issues with my mips port ?
-
-
-- Adil
-
-------=_Part_5748_2625876.1125053662173
-Content-Type: application/octet-stream; name="erase_all_fix.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="erase_all_fix.patch"
-
-SW5kZXg6IGRyaXZlcnMvbXRkL2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jDQo9PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQpS
-Q1MgZmlsZTogL2hvbWUvZW1iZWRkZWQvbGludXgtMi40LjIwX3BhbG1jaGlwL2RyaXZlcnMvbXRk
-L2NoaXBzL2NmaV9jbWRzZXRfMDAwMi5jLHYNCnJldHJpZXZpbmcgcmV2aXNpb24gMS4xDQpkaWZm
-IC1yMS4xIGNmaV9jbWRzZXRfMDAwMi5jDQoyNDBjMjQwDQo8ICAgICAgICAgICAgICAgY2ZpLT5m
-YXN0X3Byb2cgPSAwOw0KLS0tDQo+ICAgICAgICAgICAgICAgY2ZpLT5mYXN0X3Byb2cgPSAxOw0K
-ODk3YTg5OA0KPg0KOTc1YTk3Nyw5ODkNCj4gICAgIHsNCj4gICAgIGludCBzZWN0b3JEb25lID0g
-MDsNCj4gICAgIHdoaWxlICghc2VjdG9yRG9uZSkgew0KPiAgICAgICAgIHVuc2lnbmVkIHZvbGF0
-aWxlIHNob3J0ICpmbGFzaF9hZGRyID0gYWRyICsgbWFwLT5tYXBfcHJpdl8xOw0KPiAgICAgICAg
-IGlmKCAoKmZsYXNoX2FkZHIpICYgMHgwMDgwICkgIHsNCj4gICAgICAgICAgICAgICAgIHNlY3Rv
-ckRvbmUgPSAxOw0KPiAgICAgICAgIH0NCj4gICAgICAgICBlbHNlIHsNCj4gICAgICAgICB9DQo+
-DQo+ICAgICB9DQo+ICAgICB9DQo+DQoxMTI1YTExNDANCj4NCg==
-------=_Part_5748_2625876.1125053662173--
+diff -upr linux-2.4.orig/drivers/mtd/chips/cfi_cmdset_0001.c 
+linux-2.4/drivers/mtd/chips/cfi_cmdset_0001.c
+--- linux-2.4.orig/drivers/mtd/chips/cfi_cmdset_0001.c  2005-04-06 
+03:01:44.000000000 +0400
++++ linux-2.4/drivers/mtd/chips/cfi_cmdset_0001.c       2005-08-23 
+15:31:31.000000000 +0400
+@@ -1920,6 +1920,13 @@ static int __xipram do_xxlock_oneblock(s
+        /* Done and happy. */
+        chip->state = FL_STATUS;
+        xip_enable(map, chip, adr);
++
++#ifndef CONFIG_MTD_XIP
++       if (chip->state != FL_POINT && chip->state != FL_READY) {
++               map_write(map, CMD(0xff), adr);
++               chip->state = FL_READY;
++       }
++#endif
+        put_chip(map, chip, adr);
+        spin_unlock(chip->mutex);
+        return 0;
