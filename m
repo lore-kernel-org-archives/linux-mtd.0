@@ -1,21 +1,16 @@
-Received: from smtprelay03.ispgateway.de ([80.67.18.15])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7spc-000076-30
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 06:50:18 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.120.114])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay03.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 24 Aug 2005 10:49:55 -0000
-Message-ID: <430C50D3.5080808@gmail.com>
-Date: Wed, 24 Aug 2005 12:49:55 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
-MIME-Version: 1.0
-To: kyungmin.park@samsung.com
-References: <0ILP000HJ8JG7E@mmp1.samsung.com>
-In-Reply-To: <0ILP000HJ8JG7E@mmp1.samsung.com>
-Content-Type: multipart/mixed; boundary="------------060004020805030807080904"
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] OneNAND: Simple Bad Block handling support
+Received: from bay17-f30.bay17.hotmail.com ([64.4.43.80] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7udK-0007jp-0x
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 13:45:35 +0100
+Message-ID: <BAY17-F30CC2FC4525C7421C68681E8A80@phx.gbl>
+In-Reply-To: <20050824120535.GA8670@wohnheim.fh-wedel.de>
+From: "zhao forrest" <zhao_fusheng@hotmail.com>
+To: joern@wohnheim.fh-wedel.de
+Date: Wed, 24 Aug 2005 20:45:23 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Add erase count tracking support in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,104 +20,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060004020805030807080904
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+>
+> > diff -auNrp ./mtd/include/linux/jffs2_fs_sb.h 
+./mtd_new/include/linux/jffs2_fs_sb.h
+> > --- ./mtd/include/linux/jffs2_fs_sb.h	2005-05-20 06:00:14.000000000 
++0800
+> > +++ ./mtd_new/include/linux/jffs2_fs_sb.h	2005-08-18 13:28:36.000000000 
++0800
+> > @@ -40,7 +40,9 @@ struct jffs2_sb_info {
+> >  					   out-of-order writing of nodes. And GC. */
+> >  	uint32_t cleanmarker_size;	/* Size of an _inline_ CLEANMARKER
+> >  					 (i.e. zero for OOB CLEANMARKER */
+> > -
+> > +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> > +	uint32_t erasecount_size;	/* size of an _inline_ erase-count node */
+> > +#endif
+> >  	uint32_t flash_size;
+> >  	uint32_t used_size;
+> >  	uint32_t dirty_size;
+> > @@ -89,6 +91,10 @@ struct jffs2_sb_info {
+> >  	wait_queue_head_t inocache_wq;
+> >  	struct jffs2_inode_cache **inocache_list;
+> >  	spinlock_t inocache_lock;
+> > +
+> > +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> > +	uint32_t total_erase_count;	/* The summary erase count of all erase 
+blocks on a Flash  */
+> > +#endif
+>
+>This field is write-only?  What did you plan to do with it?
+>
 
-OK, sync read patch seems to work when applied directly to the kernel 
-tree, e.g.
- > /usr/src/linux> patch -p1 < onenand-syncread_20050813.patch
+total_erase_count will be used in my next patch for "enhanced 
+wear-leveling" patch.
+I'll send out another to fix other points soon.
 
-BBM patch, e.g.
- > /usr/src/linux> patch -p1 < onenand-bbm_20050818.patch
-runs through nearly successful. I get a rej in onenand_base.c, line 311 
-(see attached file).
-On line 315 you are looking for "return -EAGAIN;", but there's a "return 
--EIO;" -> patch fails.
-I don't know what's wrong with line 319/320, the patch fails anyway... 
-Same thing for line 326.
-
-
-Is the following code valid (assuming patch has been run)?
- > ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
-
- > if (ctrl & ONENAND_CTRL_ERROR) {
- > 	/* It maybe occur at initial bad block */
- > 	DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error = 0x%04x\n", 
-ctrl);
- > 	/* Clear other interrupt bits for preventing ECC error */
- > 	interrupt &= ONENAND_INT_MASTER;
- > }
-
- > if (ctrl & ONENAND_CTRL_LOCK) {
- > 	DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error = 
-0x%04x\n", ctrl);
- > 	return -EACCES;
- > }
-
- > if (interrupt & ONENAND_INT_READ) {
- > 	ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
- > 	if (ecc & ONENAND_ECC_2BIT_ALL) {
- > 		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error = 0x%04x\n", ecc);
- > 		return -EBADMSG;
- > 	}
- > }
-
-1) interrupt &= ONENAND_INT_MASTER instead of return?
-2) return -EACCES instead of return -EIO?
-
-Bernhard
-
---------------060004020805030807080904
-Content-Type: text/plain;
- name="onenand_base.c.rej"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="onenand_base.c.rej"
-
-*************** static int onenand_wait(struct mtd_info 
-*** 311,329 ****
-  	ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
-  
-  	if (ctrl & ONENAND_CTRL_ERROR) {
-- 		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error = 0x%04x", ctrl);
-- 		return -EAGAIN;
-  	}
-  
-  	if (ctrl & ONENAND_CTRL_LOCK) {
-- 		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error = 0x%04x", ctrl);
-- 		return -EIO;
-  	}
-  
-  	if (interrupt & ONENAND_INT_READ) {
-  		ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
-  		if (ecc & ONENAND_ECC_2BIT_ALL) {
-- 			DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error = 0x%04x", ecc);
-  			return -EBADMSG;
-  		}
-  	}
---- 311,331 ----
-  	ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
-  
-  	if (ctrl & ONENAND_CTRL_ERROR) {
-+ 		/* It maybe occur at initial bad block */
-+ 		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error = 0x%04x\n", ctrl);
-+ 		/* Clear other interrupt bits for preventing ECC error */
-+ 		interrupt &= ONENAND_INT_MASTER;
-  	}
-  
-  	if (ctrl & ONENAND_CTRL_LOCK) {
-+ 		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error = 0x%04x\n", ctrl);
-+ 		return -EACCES;
-  	}
-  
-  	if (interrupt & ONENAND_INT_READ) {
-  		ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
-  		if (ecc & ONENAND_ECC_2BIT_ALL) {
-+ 			DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error = 0x%04x\n", ecc);
-  			return -EBADMSG;
-  		}
-  	}
-
---------------060004020805030807080904--
+Thanks,
+Forrest
