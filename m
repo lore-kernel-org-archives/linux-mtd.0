@@ -1,13 +1,17 @@
-Received: from bay17-f13.bay17.hotmail.com ([64.4.43.63] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E7sik-0008Fq-GE
-	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 06:43:12 -0400
-Message-ID: <BAY17-F13B1D0DBDECF059C874E6FE8A80@phx.gbl>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: joern@wohnheim.fh-wedel.de
-Date: Wed, 24 Aug 2005 18:43:00 +0800
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E7u15-0000tl-VW
+	for linux-mtd@lists.infradead.org; Wed, 24 Aug 2005 08:06:12 -0400
+Date: Wed, 24 Aug 2005 14:05:35 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050824120535.GA8670@wohnheim.fh-wedel.de>
+References: <BAY17-F13B1D0DBDECF059C874E6FE8A80@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_NextPart_000_44f3_69a7_774c"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BAY17-F13B1D0DBDECF059C874E6FE8A80@phx.gbl>
 Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH]Add erase count tracking support in JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,505 +23,386 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+On Wed, 24 August 2005 18:43:00 +0800, zhao forrest wrote:
+> 
+> I refined the patch according to your comments. In particular
+> I removed some unnecessary #ifdef, reconstruct function 
+> jffs2_mark_erased_block() to make it shorter and more clean.
 
-------=_NextPart_000_44f3_69a7_774c
-Content-Type: text/plain; charset=gb2312; format=flowed
+Thou shalt not toppost.
 
-Joern,
+Anyway, let's have another look...
 
-I refined the patch according to your comments. In particular
-I removed some unnecessary #ifdef, reconstruct function 
-jffs2_mark_erased_block() to make it shorter and more clean.
+> diff -auNrp ./mtd/fs/jffs2/build.c ./mtd_new/fs/jffs2/build.c
+> --- ./mtd/fs/jffs2/build.c	2005-07-31 06:00:11.000000000 +0800
+> +++ ./mtd_new/fs/jffs2/build.c	2005-08-18 13:33:55.000000000 +0800
+> @@ -336,6 +336,10 @@ int jffs2_do_mount_fs(struct jffs2_sb_in
+>  		c->blocks[i].first_node = NULL;
+>  		c->blocks[i].last_node = NULL;
+>  		c->blocks[i].bad_count = 0;
+> +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> +		c->blocks[i].has_erase_count_node = 0;
+> +		c->blocks[i].erase_count = 0;
+> +#endif
 
-Thanks,
-Forrest
+sizeof(struct jffs2_eraseblock) is growing with your code enabled.
+That means we have yet another reason to use a fixed 1:1 physical
+block : virtual block mapping.
 
->From: Jörn Engel <joern@wohnheim.fh-wedel.de>
->To: zhao forrest <zhao_fusheng@hotmail.com>
->CC: tglx@linutronix.de, 
-dedekind@infradead.org,linux-mtd@lists.infradead.org
->Subject: Re: [PATCH]Add erase count tracking support in JFFS2
->Date: Thu, 18 Aug 2005 13:34:39 +0200
->
->On Thu, 18 August 2005 17:08:41 +0800, zhao forrest wrote:
-> >
-> > This patch adds the "erase count tracking" support in JFFS2.
-> > In particular it records the erase count of each erase block.
-> > By knowing the erase count of each erase block, we can further
-> > enhance the current wear-leveling algorithm of random nature
-> > in JFFS2.
-> > So this patch is also the basis of my future patch for
-> > enhancing the wear-leveling algorithm in JFFS2.
-> >
-> > Your comments are highly welcome.
->
->Getting rid of the #ifdefs would help.  Will have a closer look
->sometime later...
->
->Jörn
->
->--
->tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
->-- Thomas Gleixner
+Which means that your patch can't go in before someone has written the
+necessary 1:1 mapping code.
 
+Back to your patch, you should remove this #ifdef as well.  Either
+spend the memory for the two variables unconditionally and always
+initialize them here, or create a helper function.
 
-------=_NextPart_000_44f3_69a7_774c
-Content-Type: application/octet-stream; name="erase_count_r1.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="erase_count_r1.patch"
+>  	}
+>  
+>  	INIT_LIST_HEAD(&c->clean_list);
+> diff -auNrp ./mtd/fs/jffs2/erase.c ./mtd_new/fs/jffs2/erase.c
+> --- ./mtd/fs/jffs2/erase.c	2005-07-23 06:00:13.000000000 +0800
+> +++ ./mtd_new/fs/jffs2/erase.c	2005-08-24 18:26:14.000000000 +0800
+> @@ -209,7 +209,12 @@ static void jffs2_erase_callback(struct 
+>  		jffs2_erase_failed(priv->c, priv->jeb, instr->fail_addr);
+>  	} else {
+>  		jffs2_erase_succeeded(priv->c, priv->jeb);
+> -	}	
+> +	}
+> +
+> +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> +	priv->jeb->erase_count++;
+> +	priv->c->total_erase_count++;
+> +#endif	
 
-ZGlmZiAtYXVOcnAgLi9tdGQvZnMvamZmczIvYnVpbGQuYyAuL210ZF9uZXcv
-ZnMvamZmczIvYnVpbGQuYwotLS0gLi9tdGQvZnMvamZmczIvYnVpbGQuYwky
-MDA1LTA3LTMxIDA2OjAwOjExLjAwMDAwMDAwMCArMDgwMAorKysgLi9tdGRf
-bmV3L2ZzL2pmZnMyL2J1aWxkLmMJMjAwNS0wOC0xOCAxMzozMzo1NS4wMDAw
-MDAwMDAgKzA4MDAKQEAgLTMzNiw2ICszMzYsMTAgQEAgaW50IGpmZnMyX2Rv
-X21vdW50X2ZzKHN0cnVjdCBqZmZzMl9zYl9pbgogCQljLT5ibG9ja3NbaV0u
-Zmlyc3Rfbm9kZSA9IE5VTEw7CiAJCWMtPmJsb2Nrc1tpXS5sYXN0X25vZGUg
-PSBOVUxMOwogCQljLT5ibG9ja3NbaV0uYmFkX2NvdW50ID0gMDsKKyNpZmRl
-ZiBDT05GSUdfSkZGUzJfRlNfRVJBU0VfQ09VTlRfVFJBQ0tJTkcKKwkJYy0+
-YmxvY2tzW2ldLmhhc19lcmFzZV9jb3VudF9ub2RlID0gMDsKKwkJYy0+Ymxv
-Y2tzW2ldLmVyYXNlX2NvdW50ID0gMDsKKyNlbmRpZgogCX0KIAogCUlOSVRf
-TElTVF9IRUFEKCZjLT5jbGVhbl9saXN0KTsKZGlmZiAtYXVOcnAgLi9tdGQv
-ZnMvamZmczIvZXJhc2UuYyAuL210ZF9uZXcvZnMvamZmczIvZXJhc2UuYwot
-LS0gLi9tdGQvZnMvamZmczIvZXJhc2UuYwkyMDA1LTA3LTIzIDA2OjAwOjEz
-LjAwMDAwMDAwMCArMDgwMAorKysgLi9tdGRfbmV3L2ZzL2pmZnMyL2VyYXNl
-LmMJMjAwNS0wOC0yNCAxODoyNjoxNC4wMDAwMDAwMDAgKzA4MDAKQEAgLTIw
-OSw3ICsyMDksMTIgQEAgc3RhdGljIHZvaWQgamZmczJfZXJhc2VfY2FsbGJh
-Y2soc3RydWN0IAogCQlqZmZzMl9lcmFzZV9mYWlsZWQocHJpdi0+YywgcHJp
-di0+amViLCBpbnN0ci0+ZmFpbF9hZGRyKTsKIAl9IGVsc2UgewogCQlqZmZz
-Ml9lcmFzZV9zdWNjZWVkZWQocHJpdi0+YywgcHJpdi0+amViKTsKLQl9CQor
-CX0KKworI2lmZGVmIENPTkZJR19KRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFD
-S0lORworCXByaXYtPmplYi0+ZXJhc2VfY291bnQrKzsKKwlwcml2LT5jLT50
-b3RhbF9lcmFzZV9jb3VudCsrOworI2VuZGlmCQogCWtmcmVlKGluc3RyKTsK
-IH0KICNlbmRpZiAvKiAhX19FQ09TICovCkBAIC0zNDksNiArMzU0LDE4OCBA
-QCBmYWlsOgogCXJldHVybiByZXQ7CiB9CiAKKyNpZmRlZiBDT05GSUdfSkZG
-UzJfRlNfRVJBU0VfQ09VTlRfVFJBQ0tJTkcKK3N0YXRpYyBpbnQgd3JpdGVf
-ZXJhc2VfY291bnRfbm9kZShzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywgc3Ry
-dWN0IGpmZnMyX2VyYXNlYmxvY2sgKmplYikKK3sKKwlzdHJ1Y3QgamZmczJf
-cmF3X25vZGVfcmVmICplcmFzZV9jb3VudF9yZWYgPSBOVUxMOworCXN0cnVj
-dCBrdmVjIHZlY3NbMV07CisJaW50IHJldDsKKwlzaXplX3QgcmV0bGVuOwor
-CXN0cnVjdCBqZmZzMl9lcmFzZV9jb3VudF9ub2RlIGVyYXNlX2NvdW50X25v
-ZGUgPSB7CisJCS5tYWdpYyA9ICAgICAgICBjcHVfdG9famUxNihKRkZTMl9N
-QUdJQ19CSVRNQVNLKSwKKwkJLm5vZGV0eXBlID0gICAgIGNwdV90b19qZTE2
-KEpGRlMyX05PREVUWVBFX0VSQVNFX0NPVU5UKSwKKwkJLnRvdGxlbiA9ICAg
-ICAgIGNwdV90b19qZTMyKGMtPmVyYXNlY291bnRfc2l6ZSksCisJCS5lcmFz
-ZV9jb3VudCA9ICBjcHVfdG9famUzMihqZWItPmVyYXNlX2NvdW50KQorCX07
-CisKKwllcmFzZV9jb3VudF9yZWYgPSBqZmZzMl9hbGxvY19yYXdfbm9kZV9y
-ZWYoKTsKKwlpZiAoIWVyYXNlX2NvdW50X3JlZikgeworCQlwcmludGsoS0VS
-Tl9XQVJOSU5HICJGYWlsZWQgdG8gYWxsb2NhdGUgcmF3IG5vZGUgcmVmIGZv
-ciBlcmFzZSBjb3VudCBub2RlLlxuIik7CisJCXJldHVybiBFTk9NRU07CisJ
-fQorCWVyYXNlX2NvdW50X25vZGUuaGRyX2NyYyA9IGNwdV90b19qZTMyKGNy
-YzMyKDAsICZlcmFzZV9jb3VudF9ub2RlLAorCQkJCQlzaXplb2Yoc3RydWN0
-IGpmZnMyX3Vua25vd25fbm9kZSktNCkpOworIAllcmFzZV9jb3VudF9ub2Rl
-Lm5vZGVfY3JjID0gY3B1X3RvX2plMzIoY3JjMzIoMCwgJmVyYXNlX2NvdW50
-X25vZGUsCisJCQkJCXNpemVvZihzdHJ1Y3QgamZmczJfZXJhc2VfY291bnRf
-bm9kZSktNCkpOworCXZlY3NbMF0uaW92X2Jhc2UgPSAodW5zaWduZWQgY2hh
-ciAqKSAmZXJhc2VfY291bnRfbm9kZTsKKwl2ZWNzWzBdLmlvdl9sZW4gPSBz
-aXplb2YoZXJhc2VfY291bnRfbm9kZSk7CisJcmV0ID0gamZmczJfZmxhc2hf
-ZGlyZWN0X3dyaXRldihjLCB2ZWNzLCAxLCBqZWItPm9mZnNldCArIFBBRChj
-LT5jbGVhbm1hcmtlcl9zaXplKSwgJnJldGxlbik7CisKKwlpZiAocmV0IHx8
-IHJldGxlbiAhPSBzaXplb2YoZXJhc2VfY291bnRfbm9kZSkpIHsKKwkJaWYg
-KHJldCkKKwkJCXByaW50ayhLRVJOX1dBUk5JTkcgIldyaXRlIGVyYXNlIGNv
-dW50IHRvIGJsb2NrIGF0IDB4JTA4eCBmYWlsZWQ6ICVkXG4iLAorCQkJCQlq
-ZWItPm9mZnNldCwgcmV0KTsKKwkJZWxzZQorCQkJcHJpbnRrKEtFUk5fV0FS
-TklORyAiU2hvcnQgd3JpdGUgdG8gbmV3bHktZXJhc2VkIGJsb2NrIGF0IDB4
-JTA4eDogV2FudGVkICV6ZCwgZ290ICV6ZFxuIiwKKwkJCQkJamViLT5vZmZz
-ZXQsIHNpemVvZihlcmFzZV9jb3VudF9ub2RlKSwgcmV0bGVuKTsKKwkJamZm
-czJfZnJlZV9yYXdfbm9kZV9yZWYoZXJhc2VfY291bnRfcmVmKTsKKwkJcmV0
-dXJuIHJldDsKKwl9CisKKwllcmFzZV9jb3VudF9yZWYtPm5leHRfaW5faW5v
-ID0gTlVMTDsKKwllcmFzZV9jb3VudF9yZWYtPm5leHRfcGh5cyA9IE5VTEw7
-CisJZXJhc2VfY291bnRfcmVmLT5mbGFzaF9vZmZzZXQgPSAoamViLT5vZmZz
-ZXQgKyBQQUQoYy0+Y2xlYW5tYXJrZXJfc2l6ZSkpIHwgUkVGX05PUk1BTDsK
-KwllcmFzZV9jb3VudF9yZWYtPl9fdG90bGVuID0gUEFEKGMtPmVyYXNlY291
-bnRfc2l6ZSk7CisKKwlpZiAoIWplYi0+Zmlyc3Rfbm9kZSkKKwkJamViLT5m
-aXJzdF9ub2RlID0gZXJhc2VfY291bnRfcmVmOworCWlmIChqZWItPmxhc3Rf
-bm9kZSkKKwkJamViLT5sYXN0X25vZGUtPm5leHRfcGh5cyA9IGVyYXNlX2Nv
-dW50X3JlZjsKKwlqZWItPmxhc3Rfbm9kZSA9IGVyYXNlX2NvdW50X3JlZjsK
-KworCXJldHVybiAwOworfQorCitzdGF0aWMgdm9pZCBqZmZzMl9tYXJrX2Vy
-YXNlZF9ibG9jayhzdHJ1Y3QgamZmczJfc2JfaW5mbyAqYywgc3RydWN0IGpm
-ZnMyX2VyYXNlYmxvY2sgKmplYikKK3sKKwlzdHJ1Y3QgamZmczJfcmF3X25v
-ZGVfcmVmICptYXJrZXJfcmVmID0gTlVMTDsKKwlzaXplX3QgcmV0bGVuOwor
-CWludCByZXQ7CisJdWludDMyX3QgYmFkX29mZnNldDsKKworCXN3aXRjaCAo
-amZmczJfYmxvY2tfY2hlY2tfZXJhc2UoYywgamViLCAmYmFkX29mZnNldCkp
-IHsKKwljYXNlIC1FQUdBSU46ICAgZ290byByZWZpbGU7CisJY2FzZSAtRUlP
-OiAgICAgIGdvdG8gZmlsZWJhZDsKKwl9CisKKwkvKiBXcml0ZSB0aGUgZXJh
-c2UgY29tcGxldGUgbWFya2VyICovCisJRDEocHJpbnRrKEtFUk5fREVCVUcg
-IldyaXRpbmcgZXJhc2VkIG1hcmtlciB0byBibG9jayBhdCAweCUwOHhcbiIs
-IGplYi0+b2Zmc2V0KSk7CisJYmFkX29mZnNldCA9IGplYi0+b2Zmc2V0Owor
-CisJLyogQ2xlYW5tYXJrZXIgaW4gb29iIGFyZWEgb3Igbm8gY2xlYW5tYXJr
-ZXIgYXQgYWxsID8gKi8KKwlpZiAoamZmczJfY2xlYW5tYXJrZXJfb29iKGMp
-IHx8IGMtPmNsZWFubWFya2VyX3NpemUgPT0gMCkgeworCQlpZiAoamZmczJf
-Y2xlYW5tYXJrZXJfb29iKGMpKSB7CisJCQlpZiAoamZmczJfd3JpdGVfbmFu
-ZF9jbGVhbm1hcmtlcihjLCBqZWIpKQorCQkJCWdvdG8gZmlsZWJhZDsKKwor
-CQkJamViLT5maXJzdF9ub2RlID0gamViLT5sYXN0X25vZGUgPSBOVUxMOwor
-CQkJamViLT5mcmVlX3NpemUgPSBjLT5zZWN0b3Jfc2l6ZTsKKwkJCWplYi0+
-dXNlZF9zaXplID0gMDsKKwkJCWplYi0+ZGlydHlfc2l6ZSA9IDA7CisJCQlq
-ZWItPndhc3RlZF9zaXplID0gMDsKKwkJfSBlbHNlIHsKKwkJCXJldCA9IHdy
-aXRlX2VyYXNlX2NvdW50X25vZGUoYywgamViKTsKKworCQkJaWYgKHJldCA9
-PSBFTk9NRU0pCisJCQkJZ290byByZWZpbGU7CisJCQllbHNlIGlmIChyZXQp
-CisJCQkJZ290byBmaWxlYmFkOworCisJCQlqZWItPmZyZWVfc2l6ZSA9IGMt
-PnNlY3Rvcl9zaXplIC0gUEFEKGMtPmVyYXNlY291bnRfc2l6ZSk7CisJCQlq
-ZWItPnVzZWRfc2l6ZSA9IFBBRChjLT5lcmFzZWNvdW50X3NpemUpOworCQkJ
-amViLT5kaXJ0eV9zaXplID0gMDsKKwkJCWplYi0+d2FzdGVkX3NpemUgPSAw
-OyAgICAgICAgICAgICAgICAJCisJCX0KKwl9IGVsc2UgeworCisJCXN0cnVj
-dCBrdmVjIHZlY3NbMV07CisJCXN0cnVjdCBqZmZzMl91bmtub3duX25vZGUg
-bWFya2VyID0geworCQkJLm1hZ2ljID0gICAgICAgIGNwdV90b19qZTE2KEpG
-RlMyX01BR0lDX0JJVE1BU0spLAorCQkJLm5vZGV0eXBlID0gICAgIGNwdV90
-b19qZTE2KEpGRlMyX05PREVUWVBFX0NMRUFOTUFSS0VSKSwKKwkJCS50b3Rs
-ZW4gPSAgICAgICBjcHVfdG9famUzMihjLT5jbGVhbm1hcmtlcl9zaXplKQor
-CQl9OworCisJCW1hcmtlcl9yZWYgPSBqZmZzMl9hbGxvY19yYXdfbm9kZV9y
-ZWYoKTsKKwkJaWYgKCFtYXJrZXJfcmVmKSB7CisJCQlwcmludGsoS0VSTl9X
-QVJOSU5HICJGYWlsZWQgdG8gYWxsb2NhdGUgcmF3IG5vZGUgcmVmIGZvciBj
-bGVhbiBtYXJrZXIuIFJlZmlsaW5nXG4iKTsKKwkJCWdvdG8gcmVmaWxlOwor
-CQl9CisKKwkJbWFya2VyLmhkcl9jcmMgPSBjcHVfdG9famUzMihjcmMzMigw
-LCAmbWFya2VyLCBzaXplb2Yoc3RydWN0IGpmZnMyX3Vua25vd25fbm9kZSkt
-NCkpOworCisJCXZlY3NbMF0uaW92X2Jhc2UgPSAodW5zaWduZWQgY2hhciAq
-KSAmbWFya2VyOworCQl2ZWNzWzBdLmlvdl9sZW4gPSBzaXplb2YobWFya2Vy
-KTsKKwkJcmV0ID0gamZmczJfZmxhc2hfZGlyZWN0X3dyaXRldihjLCB2ZWNz
-LCAxLCBqZWItPm9mZnNldCwgJnJldGxlbik7CisKKwkJaWYgKHJldCB8fCBy
-ZXRsZW4gIT0gc2l6ZW9mKG1hcmtlcikpIHsKKwkJCWlmIChyZXQpCisJCQkJ
-cHJpbnRrKEtFUk5fV0FSTklORyAiV3JpdGUgY2xlYW4gbWFya2VyIHRvIGJs
-b2NrIGF0IDB4JTA4eCBmYWlsZWQ6ICVkXG4iLAorCQkJCQlqZWItPm9mZnNl
-dCwgcmV0KTsKKwkJCWVsc2UKKwkJCQlwcmludGsoS0VSTl9XQVJOSU5HICJT
-aG9ydCB3cml0ZSB0byBuZXdseS1lcmFzZWQgYmxvY2sgYXQgMHglMDh4OiBX
-YW50ZWQgJXpkLCBnb3QgJXpkXG4iLAorCQkJCQlqZWItPm9mZnNldCwgc2l6
-ZW9mKG1hcmtlciksIHJldGxlbik7CisKKwkJCWpmZnMyX2ZyZWVfcmF3X25v
-ZGVfcmVmKG1hcmtlcl9yZWYpOworCQkJZ290byBmaWxlYmFkOworCQl9CisK
-KwkJbWFya2VyX3JlZi0+bmV4dF9pbl9pbm8gPSBOVUxMOworCQltYXJrZXJf
-cmVmLT5uZXh0X3BoeXMgPSBOVUxMOworCQltYXJrZXJfcmVmLT5mbGFzaF9v
-ZmZzZXQgPSBqZWItPm9mZnNldCB8IFJFRl9OT1JNQUw7CisJCW1hcmtlcl9y
-ZWYtPl9fdG90bGVuID0gYy0+Y2xlYW5tYXJrZXJfc2l6ZTsKKworCQlqZWIt
-PmZpcnN0X25vZGUgPSBqZWItPmxhc3Rfbm9kZSA9IG1hcmtlcl9yZWY7CisK
-KwkJcmV0ID0gd3JpdGVfZXJhc2VfY291bnRfbm9kZShjLCBqZWIpOworCisJ
-CWlmIChyZXQpIHsKKwkJCWpmZnMyX2ZyZWVfcmF3X25vZGVfcmVmKG1hcmtl
-cl9yZWYpOworCQkJaWYgKHJldCA9PSBFTk9NRU0pCisJCQkJZ290byByZWZp
-bGU7CisJCQllbHNlIGlmIChyZXQpCisJCQkJZ290byBmaWxlYmFkOworCQl9
-CisKKwkJamViLT5mcmVlX3NpemUgPSBjLT5zZWN0b3Jfc2l6ZSAtIGMtPmNs
-ZWFubWFya2VyX3NpemUgLSBQQUQoYy0+ZXJhc2Vjb3VudF9zaXplKTsKKwkJ
-amViLT51c2VkX3NpemUgPSBjLT5jbGVhbm1hcmtlcl9zaXplICsgUEFEKGMt
-PmVyYXNlY291bnRfc2l6ZSk7CisJCWplYi0+ZGlydHlfc2l6ZSA9IDA7CisJ
-CWplYi0+d2FzdGVkX3NpemUgPSAwOworCX0KKworCXNwaW5fbG9jaygmYy0+
-ZXJhc2VfY29tcGxldGlvbl9sb2NrKTsKKwljLT5lcmFzaW5nX3NpemUgLT0g
-Yy0+c2VjdG9yX3NpemU7CisJYy0+ZnJlZV9zaXplICs9IGplYi0+ZnJlZV9z
-aXplOworCWMtPnVzZWRfc2l6ZSArPSBqZWItPnVzZWRfc2l6ZTsKKworCWpm
-ZnMyX2RiZ19hY2N0X3Nhbml0eV9jaGVja19ub2xvY2soYyxqZWIpOworCWpm
-ZnMyX2RiZ19hY2N0X3BhcmFub2lhX2NoZWNrX25vbG9jayhjLCBqZWIpOwor
-CisJbGlzdF9hZGRfdGFpbCgmamViLT5saXN0LCAmYy0+ZnJlZV9saXN0KTsK
-KwljLT5ucl9lcmFzaW5nX2Jsb2Nrcy0tOworCWMtPm5yX2ZyZWVfYmxvY2tz
-Kys7CisJc3Bpbl91bmxvY2soJmMtPmVyYXNlX2NvbXBsZXRpb25fbG9jayk7
-CisJd2FrZV91cCgmYy0+ZXJhc2Vfd2FpdCk7CisJcmV0dXJuOworCitmaWxl
-YmFkOgorCXNwaW5fbG9jaygmYy0+ZXJhc2VfY29tcGxldGlvbl9sb2NrKTsK
-KwkvKiBTdGljayBpdCBvbiBhIGxpc3QgKGFueSBsaXN0KSBzbyBlcmFzZV9m
-YWlsZWQgY2FuIHRha2UgaXQKKwkgICByaWdodCBvZmYgYWdhaW4uICBTaWxs
-eSwgYnV0IHNob3VsZG4ndCBoYXBwZW4gb2Z0ZW4uICovCisJbGlzdF9hZGQo
-JmplYi0+bGlzdCwgJmMtPmVyYXNpbmdfbGlzdCk7CisJc3Bpbl91bmxvY2so
-JmMtPmVyYXNlX2NvbXBsZXRpb25fbG9jayk7CisJamZmczJfZXJhc2VfZmFp
-bGVkKGMsIGplYiwgYmFkX29mZnNldCk7CisJcmV0dXJuOworCityZWZpbGU6
-CisJLyogU3RpY2sgaXQgYmFjayBvbiB0aGUgbGlzdCBmcm9tIHdoZW5jZSBp
-dCBjYW1lIGFuZCBjb21lIGJhY2sgbGF0ZXIgKi8KKwlqZmZzMl9lcmFzZV9w
-ZW5kaW5nX3RyaWdnZXIoYyk7CisJc3Bpbl9sb2NrKCZjLT5lcmFzZV9jb21w
-bGV0aW9uX2xvY2spOworCWxpc3RfYWRkKCZqZWItPmxpc3QsICZjLT5lcmFz
-ZV9jb21wbGV0ZV9saXN0KTsKKwlzcGluX3VubG9jaygmYy0+ZXJhc2VfY29t
-cGxldGlvbl9sb2NrKTsKKwlyZXR1cm47Cit9CisjZWxzZQorCiBzdGF0aWMg
-dm9pZCBqZmZzMl9tYXJrX2VyYXNlZF9ibG9jayhzdHJ1Y3QgamZmczJfc2Jf
-aW5mbyAqYywgc3RydWN0IGpmZnMyX2VyYXNlYmxvY2sgKmplYikKIHsKIAlz
-dHJ1Y3QgamZmczJfcmF3X25vZGVfcmVmICptYXJrZXJfcmVmID0gTlVMTDsK
-QEAgLTM2Nyw3ICs1NTQsNiBAQCBzdGF0aWMgdm9pZCBqZmZzMl9tYXJrX2Vy
-YXNlZF9ibG9jayhzdHJ1CiAKIAkvKiBDbGVhbm1hcmtlciBpbiBvb2IgYXJl
-YSBvciBubyBjbGVhbm1hcmtlciBhdCBhbGwgPyAqLwogCWlmIChqZmZzMl9j
-bGVhbm1hcmtlcl9vb2IoYykgfHwgYy0+Y2xlYW5tYXJrZXJfc2l6ZSA9PSAw
-KSB7Ci0KIAkJaWYgKGpmZnMyX2NsZWFubWFya2VyX29vYihjKSkgewogCQkJ
-aWYgKGpmZnMyX3dyaXRlX25hbmRfY2xlYW5tYXJrZXIoYywgamViKSkKIAkJ
-CQlnb3RvIGZpbGViYWQ7CkBAIC0zNzgsNyArNTY0LDYgQEAgc3RhdGljIHZv
-aWQgamZmczJfbWFya19lcmFzZWRfYmxvY2soc3RydQogCQlqZWItPnVzZWRf
-c2l6ZSA9IDA7CiAJCWplYi0+ZGlydHlfc2l6ZSA9IDA7CiAJCWplYi0+d2Fz
-dGVkX3NpemUgPSAwOwotCiAJfSBlbHNlIHsKIAogCQlzdHJ1Y3Qga3ZlYyB2
-ZWNzWzFdOwpAQCAtNDU3LDMgKzY0Miw0IEBAIHJlZmlsZToKIAlzcGluX3Vu
-bG9jaygmYy0+ZXJhc2VfY29tcGxldGlvbl9sb2NrKTsKIAlyZXR1cm47CiB9
-CisjZW5kaWYKZGlmZiAtYXVOcnAgLi9tdGQvZnMvamZmczIvZnMuYyAuL210
-ZF9uZXcvZnMvamZmczIvZnMuYwotLS0gLi9tdGQvZnMvamZmczIvZnMuYwky
-MDA1LTA4LTA3IDA2OjAwOjE2LjAwMDAwMDAwMCArMDgwMAorKysgLi9tdGRf
-bmV3L2ZzL2pmZnMyL2ZzLmMJMjAwNS0wOC0xOCAxMzozMjo1Ni4wMDAwMDAw
-MDAgKzA4MDAKQEAgLTQ5MCw2ICs0OTAsMTAgQEAgaW50IGpmZnMyX2RvX2Zp
-bGxfc3VwZXIoc3RydWN0IHN1cGVyX2JsbwogCX0KIAogCWMtPmNsZWFubWFy
-a2VyX3NpemUgPSBzaXplb2Yoc3RydWN0IGpmZnMyX3Vua25vd25fbm9kZSk7
-CisKKyNpZmRlZiBDT05GSUdfSkZGUzJfRlNfRVJBU0VfQ09VTlRfVFJBQ0tJ
-TkcKKwljLT5lcmFzZWNvdW50X3NpemUgPSBzaXplb2Yoc3RydWN0IGpmZnMy
-X2VyYXNlX2NvdW50X25vZGUpOworI2VuZGlmCiAJLyogSm9lcm4gLS0gc3Rp
-Y2sgYWxpZ25tZW50IGZvciB3ZWlyZCA4LWJ5dGUtcGFnZSBmbGFzaCBoZXJl
-ICovCiAKIAkvKiBOQU5EIChvciBvdGhlciBiaXphcnJlKSBmbGFzaC4uLiBk
-byBzZXR1cCBhY2NvcmRpbmdseSAqLwpkaWZmIC1hdU5ycCAuL210ZC9mcy9q
-ZmZzMi9ub2RlbGlzdC5oIC4vbXRkX25ldy9mcy9qZmZzMi9ub2RlbGlzdC5o
-Ci0tLSAuL210ZC9mcy9qZmZzMi9ub2RlbGlzdC5oCTIwMDUtMDgtMTggMDY6
-MDA6MTIuMDAwMDAwMDAwICswODAwCisrKyAuL210ZF9uZXcvZnMvamZmczIv
-bm9kZWxpc3QuaAkyMDA1LTA4LTE4IDEzOjMyOjAyLjAwMDAwMDAwMCArMDgw
-MApAQCAtMTk1LDYgKzE5NSwxMSBAQCBzdHJ1Y3QgamZmczJfZXJhc2VibG9j
-awogCXN0cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKmxhc3Rfbm9kZTsKIAog
-CXN0cnVjdCBqZmZzMl9yYXdfbm9kZV9yZWYgKmdjX25vZGU7CS8qIE5leHQg
-bm9kZSB0byBiZSBnYXJiYWdlIGNvbGxlY3RlZCAqLworCisjaWZkZWYgQ09O
-RklHX0pGRlMyX0ZTX0VSQVNFX0NPVU5UX1RSQUNLSU5HCisJdWludDhfdCBo
-YXNfZXJhc2VfY291bnRfbm9kZTsgICAvKiBXaGV0aGVyIGFuIGVyYXNlX2Nv
-dW50X25vZGUgaXMgZm91bmQgZm9yIHRoaXMgZXJhc2UgYmxvY2sgKi8KKwl1
-aW50MzJfdCBlcmFzZV9jb3VudDsgICAgICAgICAgIC8qIEtlZXAgdHJhY2sg
-b2YgdGhlIGVyYXNlIGNvdW50IG9mIHRoaXMgZXJhc2UgYmxvY2sgKi8KKyNl
-bmRpZgogfTsKIAogLyogQ2FsY3VsYXRlIHRvdGxlbiBmcm9tIHN1cnJvdW5k
-aW5nIG5vZGVzIG9yIGVyYXNlYmxvY2sgKi8KZGlmZiAtYXVOcnAgLi9tdGQv
-ZnMvamZmczIvbm9kZW1nbXQuYyAuL210ZF9uZXcvZnMvamZmczIvbm9kZW1n
-bXQuYwotLS0gLi9tdGQvZnMvamZmczIvbm9kZW1nbXQuYwkyMDA1LTA3LTIx
-IDA2OjAwOjEyLjAwMDAwMDAwMCArMDgwMAorKysgLi9tdGRfbmV3L2ZzL2pm
-ZnMyL25vZGVtZ210LmMJMjAwNS0wOC0xOCAxMzozMzozMC4wMDAwMDAwMDAg
-KzA4MDAKQEAgLTI1OCw3ICsyNTgsMTIgQEAgc3RhdGljIGludCBqZmZzMl9k
-b19yZXNlcnZlX3NwYWNlKHN0cnVjdAogCQljLT5uZXh0YmxvY2sgPSBqZWIg
-PSBsaXN0X2VudHJ5KG5leHQsIHN0cnVjdCBqZmZzMl9lcmFzZWJsb2NrLCBs
-aXN0KTsKIAkJYy0+bnJfZnJlZV9ibG9ja3MtLTsKIAorI2lmZGVmIENPTkZJ
-R19KRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFDS0lORworCQlpZiAoKGplYi0+
-ZnJlZV9zaXplICE9IGMtPnNlY3Rvcl9zaXplIC0gYy0+Y2xlYW5tYXJrZXJf
-c2l6ZSkgJiYKKwkJCShqZWItPmZyZWVfc2l6ZSAhPSBjLT5zZWN0b3Jfc2l6
-ZSAtIGMtPmNsZWFubWFya2VyX3NpemUgLSBjLT5lcmFzZWNvdW50X3NpemUp
-KXsKKyNlbHNlCiAJCWlmIChqZWItPmZyZWVfc2l6ZSAhPSBjLT5zZWN0b3Jf
-c2l6ZSAtIGMtPmNsZWFubWFya2VyX3NpemUpIHsKKyNlbmRpZgogCQkJcHJp
-bnRrKEtFUk5fV0FSTklORyAiRWVwLiBCbG9jayAweCUwOHggdGFrZW4gZnJv
-bSBmcmVlX2xpc3QgaGFkIGZyZWVfc2l6ZSBvZiAweCUwOHghIVxuIiwgamVi
-LT5vZmZzZXQsIGplYi0+ZnJlZV9zaXplKTsKIAkJCWdvdG8gcmVzdGFydDsK
-IAkJfQpkaWZmIC1hdU5ycCAuL210ZC9mcy9qZmZzMi9zY2FuLmMgLi9tdGRf
-bmV3L2ZzL2pmZnMyL3NjYW4uYwotLS0gLi9tdGQvZnMvamZmczIvc2Nhbi5j
-CTIwMDUtMDctMjEgMDY6MDA6MTIuMDAwMDAwMDAwICswODAwCisrKyAuL210
-ZF9uZXcvZnMvamZmczIvc2Nhbi5jCTIwMDUtMDgtMTggMTM6MzI6MzEuMDAw
-MDAwMDAwICswODAwCkBAIC00MzgsNiArNDM4LDE0IEBAIHNjYW5fbW9yZToJ
-CiAJCQkJcmV0dXJuIEJMS19TVEFURV9DTEVBTk1BUktFUjsKIAkJCX0KIAor
-I2lmZGVmIENPTkZJR19KRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFDS0lORwor
-CQkJaWYgKGplYi0+aGFzX2VyYXNlX2NvdW50X25vZGUgJiYgamViLT51c2Vk
-X3NpemUgPT0gKFBBRChjLT5jbGVhbm1hcmtlcl9zaXplKQorCQkJICAgICtQ
-QUQoYy0+ZXJhc2Vjb3VudF9zaXplKSkgJiYgIWplYi0+ZGlydHlfc2l6ZSkg
-eworCQkJCUQxKHByaW50ayhLRVJOX0RFQlVHICIlZCBieXRlcyBhdCBzdGFy
-dCBvZiBibG9jayBzZWVtcyBjbGVhbi4uLiBhc3N1bWluZyBhbGwgY2xlYW5c
-biIsIEVNUFRZX1NDQU5fU0laRShjLT5zZWN0b3Jfc2l6ZSkpKTsKKwkJCQly
-ZXR1cm4gQkxLX1NUQVRFX0NMRUFOTUFSS0VSOworCQkJfQorI2VuZGlmCisK
-IAkJCS8qIFNlZSBob3cgbXVjaCBtb3JlIHRoZXJlIGlzIHRvIHJlYWQgaW4g
-dGhpcyBlcmFzZWJsb2NrLi4uICovCiAJCQlidWZfbGVuID0gbWluX3QodWlu
-dDMyX3QsIGJ1Zl9zaXplLCBqZWItPm9mZnNldCArIGMtPnNlY3Rvcl9zaXpl
-IC0gb2ZzKTsKIAkJCWlmICghYnVmX2xlbikgewpAQCAtNTgxLDYgKzU4OSw2
-MSBAQCBzY2FuX21vcmU6CQogCQkJfQogCQkJYnJlYWs7CiAKKyNpZmRlZiBD
-T05GSUdfSkZGUzJfRlNfRVJBU0VfQ09VTlRfVFJBQ0tJTkcKKwkJY2FzZSBK
-RkZTMl9OT0RFVFlQRV9FUkFTRV9DT1VOVDoKKwkJCWlmIChidWZfb2ZzICsg
-YnVmX2xlbiA8IG9mcyArIGplMzJfdG9fY3B1KG5vZGUtPnRvdGxlbikpIHsK
-KwkJCQlidWZfbGVuID0gbWluX3QodWludDMyX3QsIGJ1Zl9zaXplLCBqZWIt
-Pm9mZnNldCArIGMtPnNlY3Rvcl9zaXplIC0gb2ZzKTsKKwkJCQlEMShwcmlu
-dGsoS0VSTl9ERUJVRyAiRmV3ZXIgdGhhbiAlZCBieXRlcyAoZXJhc2UgY291
-bnQgbm9kZSkgbGVmdCB0byBlbmQgb2YgYnVmLiBSZWFkaW5nIDB4JXggYXQg
-MHglMDh4XG4iLAorCQkJCQkgIGplMzJfdG9fY3B1KG5vZGUtPnRvdGxlbiks
-IGJ1Zl9sZW4sIG9mcykpOworCQkJCWVyciA9IGpmZnMyX2ZpbGxfc2Nhbl9i
-dWYoYywgYnVmLCBvZnMsIGJ1Zl9sZW4pOworCQkJCWlmIChlcnIpCisJCQkJ
-CXJldHVybiBlcnI7CisJCQkJYnVmX29mcyA9IG9mczsKKwkJCQlub2RlID0g
-KHZvaWQgKilidWY7CisJCQl9CisJCQlpZiAoamUzMl90b19jcHUobm9kZS0+
-dG90bGVuKSAhPSBjLT5lcmFzZWNvdW50X3NpemUpIHsKKwkJCQlwcmludGso
-S0VSTl9OT1RJQ0UgIkVSQVNFX0NPVU5UIG5vZGUgZm91bmQgYXQgMHglMDh4
-IGhhcyB0b3RsZW4gMHgleCAhPSBub3JtYWwgMHgleFxuIiwKKwkJCQkgICAg
-ICBvZnMsIGplMzJfdG9fY3B1KG5vZGUtPnRvdGxlbiksIHNpemVvZihzdHJ1
-Y3QgamZmczJfZXJhc2VfY291bnRfbm9kZSkpOworCQkJCURJUlRZX1NQQUNF
-KFBBRChzaXplb2Yoc3RydWN0IGpmZnMyX2VyYXNlX2NvdW50X25vZGUpKSk7
-CisJCQkJb2ZzICs9IFBBRChzaXplb2Yoc3RydWN0IGpmZnMyX2VyYXNlX2Nv
-dW50X25vZGUpKTsKKwkJCX0gZWxzZSBpZiAob2ZzICE9IGplYi0+b2Zmc2V0
-ICsgUEFEKGMtPmNsZWFubWFya2VyX3NpemUpKSB7CisJCQkJcHJpbnRrKEtF
-Uk5fTk9USUNFICJFUkFTRV9DT1VOVCBub2RlIGZvdW5kIGF0IDB4JTA4eCwg
-bm90IGNsb3NlbHkgZm9sbG93IHRoZSBDTEVBTk1BUktFUiBub2RlIGluIGJs
-b2NrICgweCUwOHgpXG4iLCBvZnMsIGplYi0+b2Zmc2V0KTsKKwkJCQlESVJU
-WV9TUEFDRShQQUQoc2l6ZW9mKHN0cnVjdCBqZmZzMl9lcmFzZV9jb3VudF9u
-b2RlKSkpOworCQkJCW9mcyArPSBQQUQoc2l6ZW9mKHN0cnVjdCBqZmZzMl9l
-cmFzZV9jb3VudF9ub2RlKSk7CisJCQl9IGVsc2UgeworCQkJCXVpbnQzMl90
-IGNyYzsKKwkJCQlzdHJ1Y3QgamZmczJfZXJhc2VfY291bnRfbm9kZSAqZXJh
-c2VfY291bnRfbm9kZSA9IChzdHJ1Y3QgamZmczJfZXJhc2VfY291bnRfbm9k
-ZSAqKW5vZGU7CisJCQkJc3RydWN0IGpmZnMyX3Jhd19ub2RlX3JlZiAqZXJh
-c2VfY291bnRfcmVmID0gamZmczJfYWxsb2NfcmF3X25vZGVfcmVmKCk7CisJ
-CQkJaWYgKCFlcmFzZV9jb3VudF9yZWYpIHsKKwkJCQkJcHJpbnRrKEtFUk5f
-Tk9USUNFICJGYWlsZWQgdG8gYWxsb2NhdGUgbm9kZSByZWYgZm9yIGVyYXNl
-IGNvdW50XG4iKTsKKwkJCQkJcmV0dXJuIC1FTk9NRU07CisJCQkJfQorCQkJ
-CWNyYyA9IGNyYzMyKDAsIGVyYXNlX2NvdW50X25vZGUsIHNpemVvZigqZXJh
-c2VfY291bnRfbm9kZSkgLSA0KTsKKwkJCQlpZiAoY3JjICE9IGplMzJfdG9f
-Y3B1KGVyYXNlX2NvdW50X25vZGUtPm5vZGVfY3JjKSkgeworCQkJCQlwcmlu
-dGsoS0VSTl9OT1RJQ0UgIkVSQVNFX0NPVU5UIG5vZGUgZm91bmQgYXQgMHgl
-MDh4LCBidXQgQ1JDIGZhaWxlZDogUmVhZCAweCUwOHgsIGNhbGN1bGF0ZWQg
-MHglMDh4XG4iLCBvZnMsIGplMzJfdG9fY3B1KGVyYXNlX2NvdW50X25vZGUt
-Pm5vZGVfY3JjKSwgY3JjKTsKKwkJCQkJRElSVFlfU1BBQ0UoUEFEKHNpemVv
-ZihzdHJ1Y3QgamZmczJfZXJhc2VfY291bnRfbm9kZSkpKTsKKwkJCQkJb2Zz
-ICs9IFBBRChzaXplb2Yoc3RydWN0IGpmZnMyX2VyYXNlX2NvdW50X25vZGUp
-KTsKKwkJCQkJamZmczJfZnJlZV9yYXdfbm9kZV9yZWYoZXJhc2VfY291bnRf
-cmVmKTsKKwkJCQkJYnJlYWs7CisJCQkJfQorCQkJCWplYi0+aGFzX2VyYXNl
-X2NvdW50X25vZGUgPSAxOworCQkJCWplYi0+ZXJhc2VfY291bnQgPSBqZTMy
-X3RvX2NwdShlcmFzZV9jb3VudF9ub2RlLT5lcmFzZV9jb3VudCk7CisJCQkJ
-Yy0+dG90YWxfZXJhc2VfY291bnQgKz0gamViLT5lcmFzZV9jb3VudDsKKwkJ
-CQllcmFzZV9jb3VudF9yZWYtPm5leHRfaW5faW5vID0gTlVMTDsKKwkJCQll
-cmFzZV9jb3VudF9yZWYtPm5leHRfcGh5cyA9IE5VTEw7CisJCQkJZXJhc2Vf
-Y291bnRfcmVmLT5mbGFzaF9vZmZzZXQgPSBvZnMgfCBSRUZfTk9STUFMOwor
-CQkJCWVyYXNlX2NvdW50X3JlZi0+X190b3RsZW4gPSBQQUQoYy0+ZXJhc2Vj
-b3VudF9zaXplKTsKKwkJCQlpZiAoIWplYi0+Zmlyc3Rfbm9kZSkKKwkJCQkJ
-amViLT5maXJzdF9ub2RlID0gZXJhc2VfY291bnRfcmVmOworCQkJCWlmIChq
-ZWItPmxhc3Rfbm9kZSkKKwkJCQkJamViLT5sYXN0X25vZGUtPm5leHRfcGh5
-cyA9IGVyYXNlX2NvdW50X3JlZjsKKwkJCQlqZWItPmxhc3Rfbm9kZSA9IGVy
-YXNlX2NvdW50X3JlZjsKKwkJCQlVU0VEX1NQQUNFKFBBRChjLT5lcmFzZWNv
-dW50X3NpemUpKTsKKwkJCQlvZnMgKz0gUEFEKGMtPmVyYXNlY291bnRfc2l6
-ZSk7CisJCQl9CisJCQlicmVhazsKKyNlbmRpZgorCiAJCWNhc2UgSkZGUzJf
-Tk9ERVRZUEVfUEFERElORzoKIAkJCURJUlRZX1NQQUNFKFBBRChqZTMyX3Rv
-X2NwdShub2RlLT50b3RsZW4pKSk7CiAJCQlvZnMgKz0gUEFEKGplMzJfdG9f
-Y3B1KG5vZGUtPnRvdGxlbikpOwpkaWZmIC1hdU5ycCAuL210ZC9mcy9qZmZz
-Mi93YnVmLmMgLi9tdGRfbmV3L2ZzL2pmZnMyL3didWYuYwotLS0gLi9tdGQv
-ZnMvamZmczIvd2J1Zi5jCTIwMDUtMDgtMDcgMDY6MDA6MTYuMDAwMDAwMDAw
-ICswODAwCisrKyAuL210ZF9uZXcvZnMvamZmczIvd2J1Zi5jCTIwMDUtMDgt
-MjQgMTg6MjY6NTAuMDAwMDAwMDAwICswODAwCkBAIC05NzYsOCArOTc2LDI4
-IEBAIGludCBqZmZzMl9jaGVja19vb2JfZW1wdHkoIHN0cnVjdCBqZmZzMl8K
-IAkJfQogCX0KIAotCS8qIHdlIGtub3csIHdlIGFyZSBhbGlnbmVkIDopICov
-CQorI2lmZGVmIENPTkZJR19KRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFDS0lO
-RworCWlmIChqZWItPmhhc19lcmFzZV9jb3VudF9ub2RlKSB7CisJCWZvciAo
-aSA9IDA7IGkgPCBvb2Jfc2l6ZSA7IGkrKykgeworCQkJaWYgKGkgPj0gYy0+
-ZnNkYXRhX3BvcyAmJiBpIDwgYy0+ZnNkYXRhX3BvcyArIGMtPmZzZGF0YV9s
-ZW4pCisJCQkJY29udGludWU7CisKKwkJCWlmIChidWZbb29iX3NpemUgKyBp
-XSAhPSAweEZGKSB7CisJCQkJRDIocHJpbnRrKEtFUk5fREVCVUcgIkZvdW5k
-ICUwMnggYXQgJXggaW4gT09CIGZvciAlMDh4XG4iLAorCQkJCQlidWZbb29i
-X3NpemUgKyBpXSwgb29iX3NpemUgKyBpLCBqZWItPm9mZnNldCkpOworCQkJ
-CXJldCA9IDE7CisJCQkJZ290byBvdXQ7CisJCQl9CisJCX0KKwl9CisjZW5k
-aWYKKworCS8qIHdlIGtub3csIHdlIGFyZSBhbGlnbmVkIDopICovCisjaWZk
-ZWYgQ09ORklHX0pGRlMyX0ZTX0VSQVNFX0NPVU5UX1RSQUNLSU5HCisJZm9y
-IChwYWdlID0gKG9vYl9zaXplICogMik7IHBhZ2UgPCBsZW47IHBhZ2UgKz0g
-c2l6ZW9mKGxvbmcpKSB7CisjZWxzZQkKIAlmb3IgKHBhZ2UgPSBvb2Jfc2l6
-ZTsgcGFnZSA8IGxlbjsgcGFnZSArPSBzaXplb2YobG9uZykpIHsKKyNlbmRp
-ZgogCQl1bnNpZ25lZCBsb25nIGRhdCA9ICoodW5zaWduZWQgbG9uZyAqKSgm
-YnVmW3BhZ2VdKTsKIAkJaWYoZGF0ICE9IC0xKSB7CiAJCQlyZXQgPSAxOyAK
-QEAgLTEwMDUsNyArMTAyNSw5IEBAIGludCBqZmZzMl9jaGVja19uYW5kX2Ns
-ZWFubWFya2VyIChzdHJ1Y3QKIAlpbnQgcmV0LCBpLCBjbnQsIHJldHZhbCA9
-IDA7CiAJc2l6ZV90IHJldGxlbiwgb2Zmc2V0OwogCWludCBvb2Jfc2l6ZTsK
-LQorI2lmZGVmIENPTkZJR19KRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFDS0lO
-RworCXN0cnVjdCBqZmZzMl9lcmFzZV9jb3VudF9ub2RlX29vYiAqZTsKKyNl
-bmRpZgogCW9mZnNldCA9IGplYi0+b2Zmc2V0OwogCW9vYl9zaXplID0gYy0+
-bXRkLT5vb2JzaXplOwogCkBAIC0xMDUyLDYgKzEwNzQsMTUgQEAgaW50IGpm
-ZnMyX2NoZWNrX25hbmRfY2xlYW5tYXJrZXIgKHN0cnVjdAogCQkJCX0KIAkJ
-CQlwcmludGsoIlxuIik7CiAJCQl9KQorI2lmZGVmIENPTkZJR19KRkZTMl9G
-U19FUkFTRV9DT1VOVF9UUkFDS0lORworCQkJZSA9IChzdHJ1Y3QgamZmczJf
-ZXJhc2VfY291bnRfbm9kZV9vb2IgKikgJmJ1Zltvb2Jfc2l6ZSArIGMtPmZz
-ZGF0YV9wb3NdOworCQkJaWYgKGplMTZfdG9fY3B1IChlLT5tYWdpYykgPT0g
-SkZGUzJfTUFHSUNfQklUTUFTSyAmJgorCQkJICAgIGplMTZfdG9fY3B1IChl
-LT5ub2RldHlwZSkgPT0gSkZGUzJfTk9ERVRZUEVfRVJBU0VfQ09VTlQpIHsK
-KwkJCQlqZWItPmhhc19lcmFzZV9jb3VudF9ub2RlID0gMTsKKwkJCQlqZWIt
-PmVyYXNlX2NvdW50ID0gamUzMl90b19jcHUgKGUtPmVyYXNlX2NvdW50KTsK
-KwkJCQljLT50b3RhbF9lcmFzZV9jb3VudCArPSBqZWItPmVyYXNlX2NvdW50
-OworCQkJfQorI2VuZGlmCiAJCX0KIAkJb2Zmc2V0ICs9IGMtPm10ZC0+ZXJh
-c2VzaXplOwogCX0KQEAgLTEwNjEsNiArMTA5Miw5IEBAIGludCBqZmZzMl9j
-aGVja19uYW5kX2NsZWFubWFya2VyIChzdHJ1Y3QKIGludCBqZmZzMl93cml0
-ZV9uYW5kX2NsZWFubWFya2VyKHN0cnVjdCBqZmZzMl9zYl9pbmZvICpjLCBz
-dHJ1Y3QgamZmczJfZXJhc2VibG9jayAqamViKQogewogCXN0cnVjdCAJamZm
-czJfdW5rbm93bl9ub2RlIG47CisjaWZkZWYgQ09ORklHX0pGRlMyX0ZTX0VS
-QVNFX0NPVU5UX1RSQUNLSU5HCisJc3RydWN0IGpmZnMyX2VyYXNlX2NvdW50
-X25vZGVfb29iIGVjOworI2VuZGlmCiAJaW50IAlyZXQ7CiAJc2l6ZV90IAly
-ZXRsZW47CiAKQEAgLTEwNzgsNiArMTExMiwyMyBAQCBpbnQgamZmczJfd3Jp
-dGVfbmFuZF9jbGVhbm1hcmtlcihzdHJ1Y3QgCiAJCUQxKHByaW50ayhLRVJO
-X1dBUk5JTkcgImpmZnMyX3dyaXRlX25hbmRfY2xlYW5tYXJrZXIoKTogU2hv
-cnQgd3JpdGUgZm9yIGJsb2NrIGF0ICUwOHg6ICV6ZCBub3QgJWRcbiIsIGpl
-Yi0+b2Zmc2V0LCByZXRsZW4sIGMtPmZzZGF0YV9sZW4pKTsKIAkJcmV0dXJu
-IHJldDsKIAl9CisKKyNpZmRlZiBDT05GSUdfSkZGUzJfRlNfRVJBU0VfQ09V
-TlRfVFJBQ0tJTkcKKwllYy5tYWdpYyA9IGNwdV90b19qZTE2KEpGRlMyX01B
-R0lDX0JJVE1BU0spOworCWVjLm5vZGV0eXBlID0gY3B1X3RvX2plMTYoSkZG
-UzJfTk9ERVRZUEVfRVJBU0VfQ09VTlQpOworCWVjLmVyYXNlX2NvdW50ID0g
-Y3B1X3RvX2plMzIoamViLT5lcmFzZV9jb3VudCk7CisKKwlyZXQgPSBqZmZz
-Ml9mbGFzaF93cml0ZV9vb2IoYywgamViLT5vZmZzZXQgKyBjLT5tdGQtPm9v
-YmJsb2NrICsgYy0+ZnNkYXRhX3BvcywgYy0+ZnNkYXRhX2xlbiwgJnJldGxl
-biwgKHVuc2lnbmVkIGNoYXIgKikmZWMpOworCisJaWYgKHJldCkgeworCQlE
-MShwcmludGsoS0VSTl9XQVJOSU5HICJqZmZzMl93cml0ZV9uYW5kX2NsZWFu
-bWFya2VyKCk6IFdyaXRlIGZhaWxlZCBmb3IgYmxvY2sgYXQgJTA4eDogZXJy
-b3IgJWRcbiIsIGplYi0+b2Zmc2V0LCByZXQpKTsKKwkJcmV0dXJuIHJldDsK
-Kwl9CisJaWYgKHJldGxlbiAhPSBjLT5mc2RhdGFfbGVuKSB7CisJCUQxKHBy
-aW50ayhLRVJOX1dBUk5JTkcgImpmZnMyX3dyaXRlX25hbmRfY2xlYW5tYXJr
-ZXIoKTogU2hvcnQgd3JpdGUgZm9yIGJsb2NrIGF0ICUwOHg6ICV6ZCBub3Qg
-JWRcbiIsIGplYi0+b2Zmc2V0LCByZXRsZW4sIGMtPmZzZGF0YV9sZW4pKTsK
-KwkJcmV0dXJuIHJldDsKKwl9CisjZW5kaWYKIAlyZXR1cm4gMDsKIH0KIApA
-QCAtMTEzMCw2ICsxMTgxLDEwIEBAIHN0YXRpYyBpbnQgamZmczJfbmFuZF9z
-ZXRfb29iaW5mbyhzdHJ1Y3QKIAkvKiBDbGVhbm1hcmtlciBpcyBvdXQtb2Yt
-YmFuZCwgc28gaW5saW5lIHNpemUgemVybyAqLwogCWMtPmNsZWFubWFya2Vy
-X3NpemUgPSAwOwogCisjaWZkZWYgQ09ORklHX0pGRlMyX0ZTX0VSQVNFX0NP
-VU5UX1RSQUNLSU5HCisJYy0+ZXJhc2Vjb3VudF9zaXplID0gMDsKKyNlbmRp
-ZgorCiAJLyogU2hvdWxkIHdlIHVzZSBhdXRvcGxhY2VtZW50ID8gKi8KIAlp
-ZiAob2luZm8gJiYgb2luZm8tPnVzZWVjYyA9PSBNVERfTkFOREVDQ19BVVRP
-UExBQ0UpIHsKIAkJRDEocHJpbnRrKEtFUk5fREVCVUcgIkpGRlMyIHVzaW5n
-IGF1dG9wbGFjZSBvbiBOQU5EXG4iKSk7CkBAIC0xMjE4LDYgKzEyNzMsOSBA
-QCBpbnQgamZmczJfbm9yX2VjY19mbGFzaF9zZXR1cChzdHJ1Y3QgamZmCiAJ
-LyogQ2xlYW5tYXJrZXIgaXMgYWN0dWFsbHkgbGFyZ2VyIG9uIHRoZSBmbGFz
-aGVzICovCiAJYy0+Y2xlYW5tYXJrZXJfc2l6ZSA9IDE2OwogCisjaWZkZWYg
-Q09ORklHX0pGRlMyX0ZTX0VSQVNFX0NPVU5UX1RSQUNLSU5HCisJYy0+ZXJh
-c2Vjb3VudF9zaXplID0gMjQ7CisjZW5kaWYKIAkvKiBJbml0aWFsaXplIHdy
-aXRlIGJ1ZmZlciAqLwogCWluaXRfcndzZW0oJmMtPndidWZfc2VtKTsKIAlj
-LT53YnVmX3BhZ2VzaXplID0gYy0+bXRkLT5lY2NzaXplOwpkaWZmIC1hdU5y
-cCAuL210ZC9mcy9LY29uZmlnIC4vbXRkX25ldy9mcy9LY29uZmlnCi0tLSAu
-L210ZC9mcy9LY29uZmlnCTIwMDUtMDUtMTAgMDY6MDA6MTAuMDAwMDAwMDAw
-ICswODAwCisrKyAuL210ZF9uZXcvZnMvS2NvbmZpZwkyMDA1LTA4LTE4IDEz
-OjQ1OjExLjAwMDAwMDAwMCArMDgwMApAQCAtNjQsNiArNjQsMTYgQEAgY29u
-ZmlnIEpGRlMyX0ZTX1dSSVRFQlVGRkVSCiAJICAgIC0gTk9SIGZsYXNoIHdp
-dGggdHJhbnNwYXJlbnQgRUNDCiAJICAgIC0gRGF0YUZsYXNoCiAKK2NvbmZp
-ZyBKRkZTMl9GU19FUkFTRV9DT1VOVF9UUkFDS0lORworCWJvb2wgIkpGRlMy
-IGVyYXNlIGNvdW50IHRyYWNraW5nIHN1cHBvcnQiCisJZGVwZW5kcyBvbiBK
-RkZTMl9GUworCWRlZmF1bHQgeQorCWhlbHAKKwkgIFRoaXMgZW5hYmxlcyB0
-aGUgZXJhc2UgY291bnQgdHJhY2tpbmcgc3VwcG9ydCBpbiBKRkZTMi4KKwor
-CSAgVGhpcyBmdW5jdGlvbmFsaXR5IHByb3ZpZGVzIHRoZSBzdXBwb3J0IHRv
-IHRyYWNrIHRoZSBlcmFzZSBjb3VudCBvZgorCSAgZWFjaCBlcmFzZSBibG9j
-ay4KKwogY29uZmlnIEpGRlMyX0NPTVBSRVNTSU9OX09QVElPTlMKIAlib29s
-ICJBZHZhbmNlZCBjb21wcmVzc2lvbiBvcHRpb25zIGZvciBKRkZTMiIKIAlk
-ZWZhdWx0IG4KZGlmZiAtYXVOcnAgLi9tdGQvaW5jbHVkZS9saW51eC9qZmZz
-Ml9mc19zYi5oIC4vbXRkX25ldy9pbmNsdWRlL2xpbnV4L2pmZnMyX2ZzX3Ni
-LmgKLS0tIC4vbXRkL2luY2x1ZGUvbGludXgvamZmczJfZnNfc2IuaAkyMDA1
-LTA1LTIwIDA2OjAwOjE0LjAwMDAwMDAwMCArMDgwMAorKysgLi9tdGRfbmV3
-L2luY2x1ZGUvbGludXgvamZmczJfZnNfc2IuaAkyMDA1LTA4LTE4IDEzOjI4
-OjM2LjAwMDAwMDAwMCArMDgwMApAQCAtNDAsNyArNDAsOSBAQCBzdHJ1Y3Qg
-amZmczJfc2JfaW5mbyB7CiAJCQkJCSAgIG91dC1vZi1vcmRlciB3cml0aW5n
-IG9mIG5vZGVzLiBBbmQgR0MuICovCiAJdWludDMyX3QgY2xlYW5tYXJrZXJf
-c2l6ZTsJLyogU2l6ZSBvZiBhbiBfaW5saW5lXyBDTEVBTk1BUktFUgogCQkJ
-CQkgKGkuZS4gemVybyBmb3IgT09CIENMRUFOTUFSS0VSICovCi0KKyNpZmRl
-ZiBDT05GSUdfSkZGUzJfRlNfRVJBU0VfQ09VTlRfVFJBQ0tJTkcKKwl1aW50
-MzJfdCBlcmFzZWNvdW50X3NpemU7CS8qIHNpemUgb2YgYW4gX2lubGluZV8g
-ZXJhc2UtY291bnQgbm9kZSAqLworI2VuZGlmCiAJdWludDMyX3QgZmxhc2hf
-c2l6ZTsKIAl1aW50MzJfdCB1c2VkX3NpemU7CiAJdWludDMyX3QgZGlydHlf
-c2l6ZTsKQEAgLTg5LDYgKzkxLDEwIEBAIHN0cnVjdCBqZmZzMl9zYl9pbmZv
-IHsKIAl3YWl0X3F1ZXVlX2hlYWRfdCBpbm9jYWNoZV93cTsKIAlzdHJ1Y3Qg
-amZmczJfaW5vZGVfY2FjaGUgKippbm9jYWNoZV9saXN0OwogCXNwaW5sb2Nr
-X3QgaW5vY2FjaGVfbG9jazsKKworI2lmZGVmIENPTkZJR19KRkZTMl9GU19F
-UkFTRV9DT1VOVF9UUkFDS0lORworCXVpbnQzMl90IHRvdGFsX2VyYXNlX2Nv
-dW50OwkvKiBUaGUgc3VtbWFyeSBlcmFzZSBjb3VudCBvZiBhbGwgZXJhc2Ug
-YmxvY2tzIG9uIGEgRmxhc2ggICovCisjZW5kaWYKIAkKIAkvKiBTZW0gdG8g
-YWxsb3cgamZmczJfZ2FyYmFnZV9jb2xsZWN0X2RlbGV0aW9uX2RpcmVudCB0
-bwogCSAgIGRyb3AgdGhlIGVyYXNlX2NvbXBsZXRpb25fbG9jayB3aGlsZSBp
-dCdzIGhvbGRpbmcgYSBwb2ludGVyIApkaWZmIC1hdU5ycCAuL210ZC9pbmNs
-dWRlL2xpbnV4L2pmZnMyLmggLi9tdGRfbmV3L2luY2x1ZGUvbGludXgvamZm
-czIuaAotLS0gLi9tdGQvaW5jbHVkZS9saW51eC9qZmZzMi5oCTIwMDUtMDct
-MjcgMDY6MDA6MDkuMDAwMDAwMDAwICswODAwCisrKyAuL210ZF9uZXcvaW5j
-bHVkZS9saW51eC9qZmZzMi5oCTIwMDUtMDgtMjQgMTg6MjU6NDYuMDAwMDAw
-MDAwICswODAwCkBAIC02MCw2ICs2MCw4IEBACiAjZGVmaW5lIEpGRlMyX05P
-REVUWVBFX0NMRUFOTUFSS0VSIChKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0RF
-TEVURSB8IEpGRlMyX05PREVfQUNDVVJBVEUgfCAzKQogI2RlZmluZSBKRkZT
-Ml9OT0RFVFlQRV9QQURESU5HIChKRkZTMl9GRUFUVVJFX1JXQ09NUEFUX0RF
-TEVURSB8IEpGRlMyX05PREVfQUNDVVJBVEUgfCA0KQogCisjZGVmaW5lIEpG
-RlMyX05PREVUWVBFX0VSQVNFX0NPVU5UIChKRkZTMl9GRUFUVVJFX1JXQ09N
-UEFUX0RFTEVURSB8IEpGRlMyX05PREVfQUNDVVJBVEUgfCA1KQorCiAvLyBN
-YXliZSBsYXRlci4uLgogLy8jZGVmaW5lIEpGRlMyX05PREVUWVBFX0NIRUNL
-UE9JTlQgKEpGRlMyX0ZFQVRVUkVfUldDT01QQVRfREVMRVRFIHwgSkZGUzJf
-Tk9ERV9BQ0NVUkFURSB8IDMpCiAvLyNkZWZpbmUgSkZGUzJfTk9ERVRZUEVf
-T1BUSU9OUyAoSkZGUzJfRkVBVFVSRV9SV0NPTVBBVF9DT1BZIHwgSkZGUzJf
-Tk9ERV9BQ0NVUkFURSB8IDQpCkBAIC0xNDYsMTAgKzE0OCwyOCBAQCBzdHJ1
-Y3QgamZmczJfcmF3X2lub2RlCiAJdWludDhfdCBkYXRhWzBdOwogfSBfX2F0
-dHJpYnV0ZV9fKChwYWNrZWQpKTsKIAorc3RydWN0IGpmZnMyX2VyYXNlX2Nv
-dW50X25vZGUKK3sKKwlqaW50MTZfdCBtYWdpYzsgICAgICAvKiBBIGNvbnN0
-YW50IG1hZ2ljIG51bWJlci4gICovCisJamludDE2X3Qgbm9kZXR5cGU7ICAg
-LyogPT0gSkZGUzJfTk9ERVRZUEVfRVJBU0VfQ09VTlQgKi8KKwlqaW50MzJf
-dCB0b3RsZW47CisJamludDMyX3QgaGRyX2NyYzsKKwlqaW50MzJfdCBlcmFz
-ZV9jb3VudDsgLyogdXNlZCB0byB0cmFjayB0aGUgZXJhc2UgY291bnRzIG9m
-IGVhY2ggZXJhc2UgYmxvY2sgKi8KKwlqaW50MzJfdCBub2RlX2NyYzsKK30g
-X19hdHRyaWJ1dGVfXygocGFja2VkKSk7CisKK3N0cnVjdCBqZmZzMl9lcmFz
-ZV9jb3VudF9ub2RlX29vYgoreworCWppbnQxNl90IG1hZ2ljOyAgICAgIC8q
-IEEgY29uc3RhbnQgbWFnaWMgbnVtYmVyLiAgKi8KKwlqaW50MTZfdCBub2Rl
-dHlwZTsgICAvKiA9PSBKRkZTMl9OT0RFVFlQRV9FUkFTRV9DT1VOVCAqLwor
-CWppbnQzMl90IGVyYXNlX2NvdW50OyAvKiB1c2VkIHRvIHRyYWNrIHRoZSBl
-cmFzZSBjb3VudHMgb2YgZWFjaCBlcmFzZSBibG9jayAqLworfSBfX2F0dHJp
-YnV0ZV9fKChwYWNrZWQpKTsKKwogdW5pb24gamZmczJfbm9kZV91bmlvbiB7
-CiAJc3RydWN0IGpmZnMyX3Jhd19pbm9kZSBpOwogCXN0cnVjdCBqZmZzMl9y
-YXdfZGlyZW50IGQ7CiAJc3RydWN0IGpmZnMyX3Vua25vd25fbm9kZSB1Owor
-CXN0cnVjdCBqZmZzMl9lcmFzZV9jb3VudF9ub2RlIGU7CiB9OwogCiAjZW5k
-aWYgLyogX19MSU5VWF9KRkZTMl9IX18gKi8K
+See above.  Helper function or unconditional code.
+
+>  	kfree(instr);
+>  }
+>  #endif /* !__ECOS */
+> @@ -349,6 +354,188 @@ fail:
+>  	return ret;
+>  }
+>  
+> +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> +static int write_erase_count_node(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
+> +{
+> +	struct jffs2_raw_node_ref *erase_count_ref = NULL;
+> +	struct kvec vecs[1];
+> +	int ret;
+> +	size_t retlen;
+> +	struct jffs2_erase_count_node erase_count_node = {
+> +		.magic =        cpu_to_je16(JFFS2_MAGIC_BITMASK),
+> +		.nodetype =     cpu_to_je16(JFFS2_NODETYPE_ERASE_COUNT),
+> +		.totlen =       cpu_to_je32(c->erasecount_size),
+> +		.erase_count =  cpu_to_je32(jeb->erase_count)
+> +	};
+> +
+> +	erase_count_ref = jffs2_alloc_raw_node_ref();
+> +	if (!erase_count_ref) {
+> +		printk(KERN_WARNING "Failed to allocate raw node ref for erase count node.\n");
+> +		return ENOMEM;
+                      ^^
+Looks like a bug.
+
+> +	}
+> +	erase_count_node.hdr_crc = cpu_to_je32(crc32(0, &erase_count_node,
+> +					sizeof(struct jffs2_unknown_node)-4));
+> + 	erase_count_node.node_crc = cpu_to_je32(crc32(0, &erase_count_node,
+> +					sizeof(struct jffs2_erase_count_node)-4));
+> +	vecs[0].iov_base = (unsigned char *) &erase_count_node;
+> +	vecs[0].iov_len = sizeof(erase_count_node);
+> +	ret = jffs2_flash_direct_writev(c, vecs, 1, jeb->offset + PAD(c->cleanmarker_size), &retlen);
+
+Ferenc did the same thing before, now he has created a helper function
+for this.  I guess you should take a look at his patch.
+
+Since the helper function would be useful for both patches, you might
+want to add the helper function in a seperate patch which imo could go
+right in.
+
+> +
+> +	if (ret || retlen != sizeof(erase_count_node)) {
+> +		if (ret)
+> +			printk(KERN_WARNING "Write erase count to block at 0x%08x failed: %d\n",
+> +					jeb->offset, ret);
+> +		else
+> +			printk(KERN_WARNING "Short write to newly-erased block at 0x%08x: Wanted %zd, got %zd\n",
+> +					jeb->offset, sizeof(erase_count_node), retlen);
+
+How much of this information is needed to debug problems? I think
+jeb->offset, ret and retlen.  So combine the two branches into a
+single printk.  Saves both code size and reading time.
+
+> +		jffs2_free_raw_node_ref(erase_count_ref);
+> +		return ret;
+> +	}
+> +
+> +	erase_count_ref->next_in_ino = NULL;
+> +	erase_count_ref->next_phys = NULL;
+> +	erase_count_ref->flash_offset = (jeb->offset + PAD(c->cleanmarker_size)) | REF_NORMAL;
+> +	erase_count_ref->__totlen = PAD(c->erasecount_size);
+> +
+> +	if (!jeb->first_node)
+> +		jeb->first_node = erase_count_ref;
+> +	if (jeb->last_node)
+> +		jeb->last_node->next_phys = erase_count_ref;
+> +	jeb->last_node = erase_count_ref;
+> +
+> +	return 0;
+> +}
+> +
+> +static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
+> +{
+> +	struct jffs2_raw_node_ref *marker_ref = NULL;
+> +	size_t retlen;
+> +	int ret;
+> +	uint32_t bad_offset;
+> +
+> +	switch (jffs2_block_check_erase(c, jeb, &bad_offset)) {
+> +	case -EAGAIN:   goto refile;
+> +	case -EIO:      goto filebad;
+> +	}
+> +
+> +	/* Write the erase complete marker */
+> +	D1(printk(KERN_DEBUG "Writing erased marker to block at 0x%08x\n", jeb->offset));
+> +	bad_offset = jeb->offset;
+> +
+> +	/* Cleanmarker in oob area or no cleanmarker at all ? */
+> +	if (jffs2_cleanmarker_oob(c) || c->cleanmarker_size == 0) {
+> +		if (jffs2_cleanmarker_oob(c)) {
+> +			if (jffs2_write_nand_cleanmarker(c, jeb))
+> +				goto filebad;
+> +
+> +			jeb->first_node = jeb->last_node = NULL;
+> +			jeb->free_size = c->sector_size;
+> +			jeb->used_size = 0;
+> +			jeb->dirty_size = 0;
+> +			jeb->wasted_size = 0;
+> +		} else {
+> +			ret = write_erase_count_node(c, jeb);
+> +
+> +			if (ret == ENOMEM)
+                                  ^^
+Ok, maybe the thing above was not a but, but general convention is to
+return -ENOMEM and friends.
+       ^
+> +				goto refile;
+> +			else if (ret)
+> +				goto filebad;
+> +
+> +			jeb->free_size = c->sector_size - PAD(c->erasecount_size);
+> +			jeb->used_size = PAD(c->erasecount_size);
+> +			jeb->dirty_size = 0;
+> +			jeb->wasted_size = 0;                	
+> +		}
+> +	} else {
+> +
+> +		struct kvec vecs[1];
+> +		struct jffs2_unknown_node marker = {
+> +			.magic =        cpu_to_je16(JFFS2_MAGIC_BITMASK),
+> +			.nodetype =     cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER),
+> +			.totlen =       cpu_to_je32(c->cleanmarker_size)
+> +		};
+> +
+> +		marker_ref = jffs2_alloc_raw_node_ref();
+> +		if (!marker_ref) {
+> +			printk(KERN_WARNING "Failed to allocate raw node ref for clean marker. Refiling\n");
+> +			goto refile;
+> +		}
+> +
+> +		marker.hdr_crc = cpu_to_je32(crc32(0, &marker, sizeof(struct jffs2_unknown_node)-4));
+> +
+> +		vecs[0].iov_base = (unsigned char *) &marker;
+> +		vecs[0].iov_len = sizeof(marker);
+> +		ret = jffs2_flash_direct_writev(c, vecs, 1, jeb->offset, &retlen);
+> +
+> +		if (ret || retlen != sizeof(marker)) {
+> +			if (ret)
+> +				printk(KERN_WARNING "Write clean marker to block at 0x%08x failed: %d\n",
+> +					jeb->offset, ret);
+> +			else
+> +				printk(KERN_WARNING "Short write to newly-erased block at 0x%08x: Wanted %zd, got %zd\n",
+> +					jeb->offset, sizeof(marker), retlen);
+> +
+> +			jffs2_free_raw_node_ref(marker_ref);
+> +			goto filebad;
+> +		}
+> +
+> +		marker_ref->next_in_ino = NULL;
+> +		marker_ref->next_phys = NULL;
+> +		marker_ref->flash_offset = jeb->offset | REF_NORMAL;
+> +		marker_ref->__totlen = c->cleanmarker_size;
+> +
+> +		jeb->first_node = jeb->last_node = marker_ref;
+> +
+> +		ret = write_erase_count_node(c, jeb);
+> +
+> +		if (ret) {
+> +			jffs2_free_raw_node_ref(marker_ref);
+> +			if (ret == ENOMEM)
+                                  ^^
+> +				goto refile;
+> +			else if (ret)
+> +				goto filebad;
+> +		}
+> +
+> +		jeb->free_size = c->sector_size - c->cleanmarker_size - PAD(c->erasecount_size);
+> +		jeb->used_size = c->cleanmarker_size + PAD(c->erasecount_size);
+> +		jeb->dirty_size = 0;
+> +		jeb->wasted_size = 0;
+> +	}
+> +
+> +	spin_lock(&c->erase_completion_lock);
+> +	c->erasing_size -= c->sector_size;
+> +	c->free_size += jeb->free_size;
+> +	c->used_size += jeb->used_size;
+> +
+> +	jffs2_dbg_acct_sanity_check_nolock(c,jeb);
+> +	jffs2_dbg_acct_paranoia_check_nolock(c, jeb);
+> +
+> +	list_add_tail(&jeb->list, &c->free_list);
+> +	c->nr_erasing_blocks--;
+> +	c->nr_free_blocks++;
+> +	spin_unlock(&c->erase_completion_lock);
+> +	wake_up(&c->erase_wait);
+> +	return;
+> +
+> +filebad:
+> +	spin_lock(&c->erase_completion_lock);
+> +	/* Stick it on a list (any list) so erase_failed can take it
+> +	   right off again.  Silly, but shouldn't happen often. */
+> +	list_add(&jeb->list, &c->erasing_list);
+> +	spin_unlock(&c->erase_completion_lock);
+> +	jffs2_erase_failed(c, jeb, bad_offset);
+> +	return;
+> +
+> +refile:
+> +	/* Stick it back on the list from whence it came and come back later */
+> +	jffs2_erase_pending_trigger(c);
+> +	spin_lock(&c->erase_completion_lock);
+> +	list_add(&jeb->list, &c->erase_complete_list);
+> +	spin_unlock(&c->erase_completion_lock);
+> +	return;
+> +}
+> +#else
+> +
+>  static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
+>  {
+>  	struct jffs2_raw_node_ref *marker_ref = NULL;
+> @@ -367,7 +554,6 @@ static void jffs2_mark_erased_block(stru
+>  
+>  	/* Cleanmarker in oob area or no cleanmarker at all ? */
+>  	if (jffs2_cleanmarker_oob(c) || c->cleanmarker_size == 0) {
+> -
+
+Can you create a seperate patch for the whitespace cleanups?
+
+>  		if (jffs2_cleanmarker_oob(c)) {
+>  			if (jffs2_write_nand_cleanmarker(c, jeb))
+>  				goto filebad;
+> @@ -378,7 +564,6 @@ static void jffs2_mark_erased_block(stru
+>  		jeb->used_size = 0;
+>  		jeb->dirty_size = 0;
+>  		jeb->wasted_size = 0;
+> -
+>  	} else {
+>  
+>  		struct kvec vecs[1];
+> @@ -457,3 +642,4 @@ refile:
+>  	spin_unlock(&c->erase_completion_lock);
+>  	return;
+>  }
+> +#endif
+
+...
+
+> diff -auNrp ./mtd/include/linux/jffs2_fs_sb.h ./mtd_new/include/linux/jffs2_fs_sb.h
+> --- ./mtd/include/linux/jffs2_fs_sb.h	2005-05-20 06:00:14.000000000 +0800
+> +++ ./mtd_new/include/linux/jffs2_fs_sb.h	2005-08-18 13:28:36.000000000 +0800
+> @@ -40,7 +40,9 @@ struct jffs2_sb_info {
+>  					   out-of-order writing of nodes. And GC. */
+>  	uint32_t cleanmarker_size;	/* Size of an _inline_ CLEANMARKER
+>  					 (i.e. zero for OOB CLEANMARKER */
+> -
+> +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> +	uint32_t erasecount_size;	/* size of an _inline_ erase-count node */
+> +#endif
+>  	uint32_t flash_size;
+>  	uint32_t used_size;
+>  	uint32_t dirty_size;
+> @@ -89,6 +91,10 @@ struct jffs2_sb_info {
+>  	wait_queue_head_t inocache_wq;
+>  	struct jffs2_inode_cache **inocache_list;
+>  	spinlock_t inocache_lock;
+> +
+> +#ifdef CONFIG_JFFS2_FS_ERASE_COUNT_TRACKING
+> +	uint32_t total_erase_count;	/* The summary erase count of all erase blocks on a Flash  */
+> +#endif
+
+This field is write-only?  What did you plan to do with it?
+
+>  	
+>  	/* Sem to allow jffs2_garbage_collect_deletion_dirent to
+>  	   drop the erase_completion_lock while it's holding a pointer 
+> diff -auNrp ./mtd/include/linux/jffs2.h ./mtd_new/include/linux/jffs2.h
+> --- ./mtd/include/linux/jffs2.h	2005-07-27 06:00:09.000000000 +0800
+> +++ ./mtd_new/include/linux/jffs2.h	2005-08-24 18:25:46.000000000 +0800
+> @@ -60,6 +60,8 @@
+>  #define JFFS2_NODETYPE_CLEANMARKER (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3)
+>  #define JFFS2_NODETYPE_PADDING (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 4)
+>  
+> +#define JFFS2_NODETYPE_ERASE_COUNT (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 5)
+> +
+>  // Maybe later...
+>  //#define JFFS2_NODETYPE_CHECKPOINT (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3)
+>  //#define JFFS2_NODETYPE_OPTIONS (JFFS2_FEATURE_RWCOMPAT_COPY | JFFS2_NODE_ACCURATE | 4)
+> @@ -146,10 +148,28 @@ struct jffs2_raw_inode
+>  	uint8_t data[0];
+>  } __attribute__((packed));
+>  
+> +struct jffs2_erase_count_node
+> +{
+> +	jint16_t magic;      /* A constant magic number.  */
+> +	jint16_t nodetype;   /* == JFFS2_NODETYPE_ERASE_COUNT */
+> +	jint32_t totlen;
+> +	jint32_t hdr_crc;
+> +	jint32_t erase_count; /* used to track the erase counts of each erase block */
+> +	jint32_t node_crc;
+> +} __attribute__((packed));
+
+I hope Artem is peeking here.  What we could do is split this patch
+into two parts:
+1. data defitions
+2. code to use that data
+
+Then 1) could go in rather quickly and the existance of a struct
+jffs2_erase_count_node on flash can be used as an indication of a 1:1
+mapping.  We merge the code to deal with a 1:1 mapping, let it settle
+for a while and then merge 2).
+
+Comments?
+
+> +struct jffs2_erase_count_node_oob
+> +{
+> +	jint16_t magic;      /* A constant magic number.  */
+> +	jint16_t nodetype;   /* == JFFS2_NODETYPE_ERASE_COUNT */
+> +	jint32_t erase_count; /* used to track the erase counts of each erase block */
+> +} __attribute__((packed));
+> +
+>  union jffs2_node_union {
+>  	struct jffs2_raw_inode i;
+>  	struct jffs2_raw_dirent d;
+>  	struct jffs2_unknown_node u;
+> +	struct jffs2_erase_count_node e;
+>  };
+>  
+>  #endif /* __LINUX_JFFS2_H__ */
 
 
-------=_NextPart_000_44f3_69a7_774c--
+Jörn
+
+-- 
+Public Domain  - Free as in Beer
+General Public - Free as in Speech
+BSD License    - Free as in Enterprise
+Shared Source  - Free as in "Work will make you..."
