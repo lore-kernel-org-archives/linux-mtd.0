@@ -1,22 +1,34 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8K3t-0005vM-0B
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2005 11:54:48 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0ILS00FMI9LE0450@VL-MO-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 25 Aug 2005 10:58:26 -0400 (EDT)
-Date: Thu, 25 Aug 2005 10:58:26 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1124978894.17190.40.camel@icampbell-debian>
-To: Ian Campbell <icampbell@arcom.com>
-Message-id: <Pine.LNX.4.63.0508251039400.15345@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1124978894.17190.40.camel@icampbell-debian>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: problem with strataflash after suspend and resume
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E8K7m-0006C2-FZ
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2005 11:58:48 -0400
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e3.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j7PFweEU019014
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Aug 2005 11:58:40 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j7PFvXct262946
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Aug 2005 09:57:33 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
+	j7PFvMxM014383
+	for <linux-mtd@lists.infradead.org>; Thu, 25 Aug 2005 09:57:23 -0600
+From: Josh Boyer <jdub@us.ibm.com>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050825150329.GC5625@wohnheim.fh-wedel.de>
+References: <430B2F84.30307@inf.u-szeged.hu>
+	<20050823144542.GA2398@wohnheim.fh-wedel.de>
+	<430DDB47.40900@inf.u-szeged.hu>
+	<20050825150329.GC5625@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 25 Aug 2005 10:56:43 -0500
+Message-Id: <1124985403.29360.3.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: dedekind@yandex.ru, zhao forrest <zhao_fusheng@hotmail.com>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] summary
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,56 +38,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 25 Aug 2005, Ian Campbell wrote:
-
-> Hi,
+On Thu, 2005-08-25 at 17:03 +0200, Jörn Engel wrote:
+> On Thu, 25 August 2005 16:52:55 +0200, Ferenc Havasi wrote:
+> > Jörn Engel wrote:
+> > >On Tue, 23 August 2005 16:15:32 +0200, Ferenc Havasi wrote:
+> > >
+> > >>Here is the latest version of summary patch:
+> > >>http://www.inf.u-szeged.hu/jffs2/jffs2-summary-20050823.patch
+> > >>
+> > >I'm slowly running out of stuff.  Good job.
+> > >
+> > Does it mean that we are allowed to commit the patch? (after some some
+> > more final testing) Or other patches are sceduled earlier?
 > 
-> I have a PXA255 (Xscale/ARM) platform with a strataflash part on it
-> (28F128J3). With 2.6.11.11 (the only previous version I have convenient
-> access to) I can suspend and resume repeatedly just fine, however with
-> 2.6.13-rc7 I occasionally get something like this just after resume:
+> The 1:1 mapping should get merged first.  Code doesn't exist yet, but
+> Forrest (Zhao Fusheng) promised to write some.  Once that's in, I'd
+> like to let it brew for a month or so.
 > 
->         Waiting for chip to be ready timed out. Status 0
->         Write of 68 bytes at 0x00b99f3c failed. returned -5, retlen 0
->         Not marking the space at 0x00b99f3c as dirty because the flash driver returned retlen zero
+> After that is finished, both summary and erase count could be merged.
+> I'd prefer to take summary first and wait another month before merging
+> erase count.
 > 
-> Any attempt to write a file results in a similar message.
+> So unless anyone has objections to this plan, summary will be merged
+> in the near future.  Only option for speed-up would be to write the
+> 1:1 mapping code yourself, before Forrest does.
 
-This rings a bell...
+I've been out of the loop for a bit.  What does 1:1 mapping refer too?
+A pointer to the thread talking about would be appreciated?
 
-> Once it has occurred it seems to happen every time unless I do an
-> mtd-unlock. Doing an mtd-unlock on the device seems to fix it (most of
-> the time) even though I don't think the device is locked (I didn't lock
-> it and J3 parts don't reset locked). I've occasionally observed that
-> just doing "dd if=/dev/mtd1 of=/dev/null bs=1 count=0" seems to work
-> too. Other times it seems to sort itself out if left alone for a bit
-> (but not consistently).
-
-Yeah...  Anything that is likely to resynchronize the state machine with 
-reality will do.
-
-> The error originates in drivers/mtd/chips/cfi_cmdset_0001.c get_chip()
-> which is returning EIO at line 659. The call is made via
-> cfi_intelext_write_buffers() which calls do_write_buffer() which calls
-> get_chip().
-> 
-> I've seen status 0 as well as 0xF018, 0xFF0A, 0x203A, 0x4946, 0x7465,
-> 0x312e -- none of which appear to make much sense and I suspect they are
-> just garbage.
-
-They are probably just flash content.  0x203a is " :", 0x4946 is "IF", 
-0x7465 is "te", 0x312e is "1." (or the other way around) and so on.
-
-> The flash would appear to be readable, since resuming involves running
-> the very early parts of the bootloader, which is stored in flash.
-
-And that's the problem.  The flash is in data mode while the driver 
-probably still thinks it is in status mode.
-
-Make sure that cfi_intelext_suspend() gets called prior going to sleep 
-and that cfi_intelext_resume() is called upon getting back from sleep 
-mode.  If those calls don't take place you'll have inconsistent driver 
-state, or worse inconsistent flash content.
-
-
-Nicolas
+josh
