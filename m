@@ -1,15 +1,24 @@
-Received: from webapps.arcom.com ([194.200.159.168])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8IOv-0003mL-Hh
-	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2005 10:08:29 -0400
-From: Ian Campbell <icampbell@arcom.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Thu, 25 Aug 2005 15:08:14 +0100
-Message-Id: <1124978894.17190.40.camel@icampbell-debian>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E8IUJ-0003zy-1e
+	for linux-mtd@lists.infradead.org; Thu, 25 Aug 2005 10:13:59 -0400
+Date: Thu, 25 Aug 2005 16:12:55 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Kaigai Kohei <kaigai@ak.jp.nec.com>
+Message-ID: <20050825141255.GA5625@wohnheim.fh-wedel.de>
+References: <430AF95F.1050704@ak.jp.nec.com>
+	<20050823124649.GB30853@wohnheim.fh-wedel.de>
+	<1124801569.29448.13.camel@hades.cambridge.redhat.com>
+	<430C429B.6040500@ak.jp.nec.com> <430D9D5A.4000504@ak.jp.nec.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: problem with strataflash after suspend and resume
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <430D9D5A.4000504@ak.jp.nec.com>
+Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>,
+	Ma Yun <sx_yunma@hotmail.com>
+Subject: Re: [PATCH] XATTR issues on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,53 +28,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 25 August 2005 19:28:42 +0900, Kaigai Kohei wrote:
+> 
+> Today, I think about appropriate locking in JFFS2's XATTR.
+> I hope to get some comments about dividing locking.
+> 
+> >* Dividing the global xattr_sem semaphore into more small lock.
+> 
+> xattr_sem is a global read/write semaphore stored in jffs2_sb_info
+> to protect any XATTR structure.
+> In common case, dividing lock/semaphore has good effects for scalability
+> toward the number of CPUs. But JFFS2 is frequently used for small
+> and embedded region in my understanding.
+> 
+> If global semaphore is divided into many per-entry locks, we may be able
+> to execute setxattr() concurrently. But each locking/un-locking cost
+> may also exceed the scalability effect.
+> Since I don't have much experience in this region, I hope any professional's
+> worthwhile comments.
+> 
+> Now, I think one global read/write semaphore is enough for 1-2 CPUs,
+> if assumption of the XATTR processing with wrinting does not happen
+> so much is permitted.  In almost case, we can execute get/listxattr
+> cuncurrently with one lock/un-locking, I think.
 
-I have a PXA255 (Xscale/ARM) platform with a strataflash part on it
-(28F128J3). With 2.6.11.11 (the only previous version I have convenient
-access to) I can suspend and resume repeatedly just fine, however with
-2.6.13-rc7 I occasionally get something like this just after resume:
+Your idea to go to fine-grained locking surprised me a bit when I
+first saw it.  JFFS2 is hardly the fs that cares much about SMP
+scalability.  Unless you can prove real contentions around the
+xattr_lock in realistic benchmarks, I would ignore this issue.
 
-        Waiting for chip to be ready timed out. Status 0
-        Write of 68 bytes at 0x00b99f3c failed. returned -5, retlen 0
-        Not marking the space at 0x00b99f3c as dirty because the flash driver returned retlen zero
+Correctness is another issue.  I guess you have read
+fs/jffs2/README.Locking and started a graph on paper to visualize
+locking order.  This is more important, as a deadlock is about the
+worst performance you can get. ;)
 
-Any attempt to write a file results in a similar message.
+Jörn
 
-Once it has occurred it seems to happen every time unless I do an
-mtd-unlock. Doing an mtd-unlock on the device seems to fix it (most of
-the time) even though I don't think the device is locked (I didn't lock
-it and J3 parts don't reset locked). I've occasionally observed that
-just doing "dd if=/dev/mtd1 of=/dev/null bs=1 count=0" seems to work
-too. Other times it seems to sort itself out if left alone for a bit
-(but not consistently).
-
-The error originates in drivers/mtd/chips/cfi_cmdset_0001.c get_chip()
-which is returning EIO at line 659. The call is made via
-cfi_intelext_write_buffers() which calls do_write_buffer() which calls
-get_chip().
-
-I've seen status 0 as well as 0xF018, 0xFF0A, 0x203A, 0x4946, 0x7465,
-0x312e -- none of which appear to make much sense and I suspect they are
-just garbage.
-
-I also occasionally see "SR.4 or SR.5 bits set in buffer write (status
-8dff). Clearing." after resume but they don't appear to be a problem...
-
-The flash would appear to be readable, since resuming involves running
-the very early parts of the bootloader, which is stored in flash.
-
-I've also tried using the latest MTD CVS stuff on top of 2.6.13-rc7 but
-have the same problem.
-
-Any ideas? I'd blame hardware if 2.6.11.11 didn't appear to work
-flawlessly... (I can do 30+ suspend resume iterations with 2.6.11.11,
-with 2.6.13-rc7 I'm lucky to get 4).
-
-Thanks,
-Ian.
 -- 
-Ian Campbell, Senior Design Engineer
-                                        Web: http://www.arcom.com
-Arcom, Clifton Road,                    Direct: +44 (0)1223 403 465
-Cambridge CB1 7EA, United Kingdom       Phone:  +44 (0)1223 411 200
+He that composes himself is wiser than he that composes a book.
+-- B. Franklin
