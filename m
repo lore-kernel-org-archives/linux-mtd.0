@@ -1,15 +1,20 @@
-Received: from rt-soft-2.moscow.itn.ru ([80.240.96.70] helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8c21-0002Gn-Pr
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 07:06:14 -0400
-Message-ID: <430C46B4.10406@dev.rtsoft.ru>
-Date: Wed, 24 Aug 2005 14:06:44 +0400
-From: Dmitry Krivoschokov <dkrivoschokov@dev.rtsoft.ru>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E8c2H-0002H5-Eb
+	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 07:06:38 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Adil Hafeez <adilhafeez80@gmail.com>
+In-Reply-To: <82e4189c05082603546248689a@mail.gmail.com>
+References: <82e4189c05082603546248689a@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 26 Aug 2005 13:07:02 +0200
+Message-Id: <1125054422.20120.153.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: flash status after unlocking
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Flash erase wait time
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,39 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    Hi all,
+On Fri, 2005-08-26 at 15:54 +0500, Adil Hafeez wrote:
+> Was it really required to double check the polarity bit, or there are
+> some timeout timer issues with my mips port ?
 
-it appears that cfi flash unlocking routines always leaves a flash chip 
-in status mode (if CONFIG_MTD_XIP is not set).
-But in some cases it is desired that the chip remains in read array 
-mode, for linear cramfs at least.
-So I've added code to put a chip in read array mode after unlocking, see 
-patch below (the patch against 2.4 kernel, sorry), tested on OMAP1610. 
-The patch is for Intel's command set only,  though it is easy to add the 
-fix to others.
-If  no complaints for the fix I can test it with the latest kernel and 
-submit a patch.
+1. We have no idea, which version of cfi_cmset_0002.c you are using.
+Please provide the $Id string on top of the file. The kernel version and
+the applied patches on top of this kernel.
 
-    Thanks,
-       Dmitry
+2. If you send patches, read linux/Documentation/SubmittingPatches first
 
-diff -upr linux-2.4.orig/drivers/mtd/chips/cfi_cmdset_0001.c 
-linux-2.4/drivers/mtd/chips/cfi_cmdset_0001.c
---- linux-2.4.orig/drivers/mtd/chips/cfi_cmdset_0001.c  2005-04-06 
-03:01:44.000000000 +0400
-+++ linux-2.4/drivers/mtd/chips/cfi_cmdset_0001.c       2005-08-23 
-15:31:31.000000000 +0400
-@@ -1920,6 +1920,13 @@ static int __xipram do_xxlock_oneblock(s
-        /* Done and happy. */
-        chip->state = FL_STATUS;
-        xip_enable(map, chip, adr);
-+
-+#ifndef CONFIG_MTD_XIP
-+       if (chip->state != FL_POINT && chip->state != FL_READY) {
-+               map_write(map, CMD(0xff), adr);
-+               chip->state = FL_READY;
-+       }
-+#endif
-        put_chip(map, chip, adr);
-        spin_unlock(chip->mutex);
-        return 0;
+3 . From your patch:
+
+file: /home/embedded/linux-2.4.20_palmchip/drivers/mtd/chips/cfi_cmdset_0002.c,v
+
+Please read
+http://www.linux-mtd.infradead.org/source.html#kernelversions
+
+tglx
