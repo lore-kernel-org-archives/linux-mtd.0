@@ -1,18 +1,18 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8dEw-0003bT-B5
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 08:23:26 -0400
-Message-ID: <430F09E5.10607@inf.u-szeged.hu>
-Date: Fri, 26 Aug 2005 14:24:05 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Received: from jupiter.lunarpages.com ([64.235.234.141])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1E8eEg-0004Ri-Ib
+	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 09:27:16 -0400
+Received: from [61.246.2.163] (helo=[10.20.50.70])
+	by jupiter.lunarpages.com with esmtpa (Exim 4.50) id 1E8eEd-0003xe-E8
+	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 06:27:07 -0700
+Message-ID: <430F18A9.9000303@kritikalsolutions.com>
+Date: Fri, 26 Aug 2005 18:57:05 +0530
+From: Narinder Kumar <narinder@kritikalsolutions.com>
 MIME-Version: 1.0
-To: Peter Grayson <pgrayson@realmsys.com>
-References: <1124840186.7086.19.camel@localhost.localdomain>
-In-Reply-To: <1124840186.7086.19.camel@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-2
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Latest jffs2 broken?
+Subject: Creating MTD partition using USB SMC reader
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +22,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pete,
+Hi all,
 
-Peter Grayson wrote:
+     I am using ARM9 on samsumg's s3c2410 and i am using SMC for keeping the bootloader(vivi), kernel(2.4.19) and rootfile system. All these partitions are cramfs. For some reason by bootloader got corrupted and now its not booting anymore. I am trying to use a USB All-in-1 Card reader which can read/write SD/MMC/SMC MS/MSPRO etc.  Now i want to create an MTD partition on my SMC and want to write the VIVI(bootloader) onto that MTD partition. If anyone has ever come across this scene then please provide me some guidance. I am stuck because we don't have JTAG with us right now (with which i was use to write SMC card earlier)  so were trying to find some alternate solution to write SMC. If there is some other way , then please give information about that also.
 
->This is fully reproducible for me. I am running the latest mtd cvs (as
->of 8/23/2005) on a 2.6.10 kernel. I am using a 32MB partition for this
->test, but it is not obvious that the partition size matters. My nand
->part has a 2048-byte page size and 128 kB eraseblock size.
->
->---- Debug output below ----
->
-># flash_eraseall -jq /dev/mtd3
-># mount /mnt/mtdb3
-># touch /mnt/mtdb3/foo
->jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they
->all?
->jffs2: Couldn't find erase block to garbage collect!
-># umount /mnt/mtdb3
-># mount /mnt/mtdb3
->kernel BUG in read_unknown at fs/jffs2/readinode.c:353!
->Oops: Exception in kernel mode, sig: 5 [#1]
->TASK = c0601190[74] 'jffs2_gcd_mtd3' THREAD: c044c000
->Last syscall: -1
->NIP [c00ad818] jffs2_do_read_inode_internal+0x804/0x1220
->LR [c00ad1f4] jffs2_do_read_inode_internal+0x1e0/0x1220
->Call trace:
-> [c00ae2a4] jffs2_do_crccheck_inode+0x70/0xcc
-> [c00b2de4] jffs2_garbage_collect_pass+0x284/0xa80
-> [c00b4fc8] jffs2_garbage_collect_thread+0x1a0/0x1f4
-> [c0004f6c] kernel_thread+0x44/0x60
->  
->
-Is this problem still present at you?
 
-Something very strange happened here. All of the relevant lists are
-empty, there is an unknow (?) node that is REF_UNCHECKED.
-
-Did you try which earlier snapshot works correctly? It can be a good
-starting point where the problem is. 2005-07-30? 2005-08-01? 2005-08-05?
-
-You also may attach some more from the log...
-
-Bye,
-Ferenc
+Narinder
