@@ -1,30 +1,23 @@
-Received: from e32.co.us.ibm.com ([32.97.110.130])
+Received: from c-24-91-108-216.hsd1.ma.comcast.net ([24.91.108.216]
+	helo=ahgu.homeunix.com)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E8kZj-00011O-Fw
-	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 16:13:26 -0400
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j7QKDGnR128164
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Aug 2005 16:13:16 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j7QKDQTJ345512
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Aug 2005 14:13:26 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	j7QKDFq0007800
-	for <linux-mtd@lists.infradead.org>; Fri, 26 Aug 2005 14:13:16 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050826102512.GA23886@wohnheim.fh-wedel.de>
-References: <20050826102512.GA23886@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 26 Aug 2005 15:12:29 -0500
-Message-Id: <1125087149.26481.12.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] remove support for virtual blocks
+	id 1E8pOV-0004KN-1p
+	for linux-mtd@lists.infradead.org; Fri, 26 Aug 2005 21:22:07 -0400
+Received: from weiwei (blue.appledor.net [216.132.23.20])
+	(authenticated bits=0)
+	by ahgu.homeunix.com (8.12.11/8.12.11) with ESMTP id j7R1HPTm077686
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Aug 2005 21:17:29 -0400 (EDT)
+	(envelope-from ahgu@ahgu.homeunix.com)
+Message-ID: <015b01c5aaa5$b9ab1550$0c00a8c0@weiwei>
+From: "ahgu" <ahgu@ahgu.homeunix.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 26 Aug 2005 21:21:47 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="gb2312"; reply-type=response
+Content-Transfer-Encoding: 7bit
+Subject: NAND error retry does not work,
+Reply-To: ahgu <ahgu@ahgu.homeunix.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +27,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-08-26 at 12:25 +0200, Jörn Engel wrote:
-> Trivial patch.  Anyone complaining about this is free to write a
-> better one.  Can I commit?
+In case of page write failure(write.c), it calls  jffs2_reserve_space(c,
+ sizeof(*ri) + datalen, &flash_ofs, &dummy, alloc_mode);
+ to get a new block (new flash_ofs), but it always return the same address.
 
-So now with this 1:1 mapping, a user is limited to using a 64 MiB chip
-if the physical block size is 32 KiB?  I know there are NAND chips out
-there that use such a block size and are larger than 64MiB.  Do we
-really want to stop supporting all of these devices?  
+ My understanding of the logic is as follows:
+ In case of write failure, it will put the whole block in the unused queue
+ and get a new block. Not just a new page on the block? And copy the content
+ of the bad block to the new one?
 
-Even MTD devices using 128 KiB eraseblocks are limited to approximately
-341 MiB in total size.  Remember, with NOR flash multiple devices of the
-exact same type can be mapped as a single device as long as they are
-physically contiguous in memory space.
+ This is the latest jffs2 version. Is that a bug?
 
-And these numbers are based on a 32 bit machine, where sizeof(struct
-jffs2_eraseblock) is 48 bytes.  On a 64 bit machine, even smaller
-devices are supported since the structure goes up to 68 bytes.
+ -Andrew
 
-Of course, these are all based on my math being correct.  Which of
-course it might not be since sleep is a precious, precious thing at the
-moment.
 
-josh
+
+ if (!retried && alloc_mode != ALLOC_NORETRY && (raw =
+> jffs2_alloc_raw_node_ref())) {
+>   /* Try to reallocate space and retry */
+>   uint32_t dummy;
+>   struct jffs2_eraseblock *jeb = &c->blocks[flash_ofs / c->sector_size];
+>
+>   retried = 1;
+>
+>   D1(printk(KERN_DEBUG "Retrying failed write.\n"));
+>
+>   jffs2_dbg_acct_sanity_check(c,jeb);
+>   jffs2_dbg_acct_paranoia_check(c, jeb);
+>
+>   if (alloc_mode == ALLOC_GC) {
+>    ret = jffs2_reserve_space_gc(c, sizeof(*ri) + datalen, &flash_ofs, 
+> &dummy);
+>   } else {
+>    /* Locking pain */
+>    up(&f->sem);
+>    jffs2_complete_reservation(c);
+>
+>    ret = jffs2_reserve_space(c, sizeof(*ri) + datalen, &flash_ofs, &dummy, 
+> alloc_mode);
+>    down(&f->sem);
+>   }
+>
+>   if (!ret) {
+>    D1(printk(KERN_DEBUG "Allocated space at 0x%08x to retry failed 
+> write.\n", flash_ofs));
+>
+>    jffs2_dbg_acct_sanity_check(c,jeb);
+>    jffs2_dbg_acct_paranoia_check(c, jeb);
+>
+>    goto retry;
+>   }
+>   D1(printk(KERN_DEBUG "Failed to allocate space to retry failed write: 
+> %d!\n", ret));
+>   jffs2_free_raw_node_ref(raw);
+>  }
+>  /* Release the full_dnode which is now useless, and return */
+>  jffs2_free_full_dnode(fn);
+>  return ERR_PTR(ret?ret:-EIO);
+> } 
