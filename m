@@ -1,18 +1,18 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1E9gYO-0006cS-ML
-	for linux-mtd@lists.infradead.org; Mon, 29 Aug 2005 06:07:52 -0400
-Date: Mon, 29 Aug 2005 12:07:22 +0200
+	id 1E9gqu-0006yP-SY
+	for linux-mtd@lists.infradead.org; Mon, 29 Aug 2005 06:27:02 -0400
+Date: Mon, 29 Aug 2005 12:26:54 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-ID: <20050829100722.GB17088@wohnheim.fh-wedel.de>
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Message-ID: <20050829102654.GC17088@wohnheim.fh-wedel.de>
 References: <20050826102512.GA23886@wohnheim.fh-wedel.de>
-	<1125087149.26481.12.camel@windu.rchland.ibm.com>
+	<431187E8.8010805@inf.u-szeged.hu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1125087149.26481.12.camel@windu.rchland.ibm.com>
+In-Reply-To: <431187E8.8010805@inf.u-szeged.hu>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH] remove support for virtual blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,39 +24,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 August 2005 15:12:29 -0500, Josh Boyer wrote:
-> On Fri, 2005-08-26 at 12:25 +0200, Jörn Engel wrote:
-> > Trivial patch.  Anyone complaining about this is free to write a
-> > better one.  Can I commit?
+On Sun, 28 August 2005 11:46:16 +0200, Ferenc Havasi wrote:
 > 
-> So now with this 1:1 mapping, a user is limited to using a 64 MiB chip
-> if the physical block size is 32 KiB?  I know there are NAND chips out
-> there that use such a block size and are larger than 64MiB.  Do we
-> really want to stop supporting all of these devices?  
+> Maybe we should use (temporary) vmalloc here instead of simply throwing 
+> a BUG(). It's slower I know, but slow working is still better than not 
+> working.
 
-No.
+That sounded like a good idea, until I had a look at the code.
+Basically, we shouldn't use vmalloc, unless we have to.  Using both
+kmalloc and vmalloc means that we have to remember our choice of
+allocation somewhere.  And once we do that, it's quite a bit of code
+and complexity.
 
-What we have right now is an ugly hack that causes random
-incompatibilities.  And it happens to be that both summary and erase
-count increase the chances of an incompatibility, so this hack
-effectively blocks both patches from inclusion.
+All that brainpower should rather go into a decent patch.
 
-What we need is a decent design that works without incompatibilities.
-And the design should define what's on the medium, _independently_ of
-whatever goes on in memory.  Changing the format on the medium because
-some struct now has an extra field is not an option.  Changing the
-format because the medium moved from a 32bit to a 64bit machine is not
-an option.
-
-Problem is that code for the decent design doesn't exist yet.  I
-personally prefer this patch to the current broken implementation, as
-it increases the pressure to write the correct code.  If such code
-doesn't show up in the near future, I'd be inclined to commit my
-patch.
+But here is the next best thing.  Note the third printk line.
 
 Jörn
 
 -- 
-They laughed at Galileo.  They laughed at Copernicus.  They laughed at
-Columbus. But remember, they also laughed at Bozo the Clown.
--- unknown
+A defeated army first battles and then seeks victory.
+-- Sun Tzu
+
+
+
+Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+---
+
+ fs/jffs2/fs.c |   11 ++++++-----
+ 1 files changed, 6 insertions(+), 5 deletions(-)
+
+--- linux-2.6.13-rc6mtd/fs/jffs2/fs.c~jffs2_remove_virtual_mapping	2005-08-26 17:18:04.000000000 +0200
++++ linux-2.6.13-rc6mtd/fs/jffs2/fs.c	2005-08-29 12:23:06.000000000 +0200
+@@ -468,11 +468,12 @@ int jffs2_do_fill_super(struct super_blo
+ 	 */
+ 	c->sector_size = c->mtd->erasesize; 
+ 	blocks = c->flash_size / c->sector_size;
+-	if (!(c->mtd->flags & MTD_NO_VIRTBLOCKS)) {
+-		while ((blocks * sizeof (struct jffs2_eraseblock)) > (128 * 1024)) {
+-			blocks >>= 1;
+-			c->sector_size <<= 1;
+-		}	
++	if (!(c->mtd->flags & MTD_NO_VIRTBLOCKS) && (blocks * sizeof (struct jffs2_eraseblock)) > (128 * 1024)) {
++		printk(KERN_ERR "jffs2: Support for virtual blocks was removed\n"
++				"	Please contact JFFS2 maintainers about this.\n"
++				"	Alternative, add the flag 'MTD_NO_VIRTBLOCKS' to your mapping driver\n");
++		BUG();
++		return -EIO;
+ 	}
+ 
+ 	/*
