@@ -1,12 +1,19 @@
-To: 
-From: Mr.Roland Wessel <rolandwes@i12.com>
-Cc: 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from wproxy.gmail.com ([64.233.184.197])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1E9d2I-00043c-M1
+	for linux-mtd@lists.infradead.org; Mon, 29 Aug 2005 02:22:29 -0400
+Received: by wproxy.gmail.com with SMTP id i3so302384wra
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 28 Aug 2005 23:22:22 -0700 (PDT)
+Message-ID: <4312A854.5020109@gmail.com>
+Date: Mon, 29 Aug 2005 09:16:52 +0300
+From: gxkahn <gxkahn@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20050827225335.417293CFC95D@mail.desertfox.com.br>
-Date: Sat, 27 Aug 2005 19:53:35 -0300 (BRT)
-Subject: From Star Energy Group Plc (UK)
+Subject: module params for physycal memory map
+Reply-To: gxkahn@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,120 +23,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Top of the day to you.
-
-
-
-Let me crave your indulgence to introduce myself to you
-
-I am Mr Roland Wessel cheif executive officer of
-
-Star Energy Group plc we are OPEC members who deal on
-
-crude oil and raw material and export into the
-
-Canada/America and Europe.
-
-
-
-I will want to solicit for your assistance to help
-
-collect a cheque that is due for payment to me for
-
-services and supplies i rendered.
-
-
-
-Please if you are willing to assist, i will want you
-
-to furnish me with your particulars, so as to enable
-
-me give you further details. Please, you have to
-
-be an honest and trusted person, as more payments
-
-wil be made through you in the course of this
-
-transaction.And moreso you will be entitled to 10%
-
-of every payment that you are able to recieve for us
-
-from our customers.
-
-
-
-Please contact us for more information via email
-
-with the below informations filled out.
-
-
-
-
-
-NAME...............................
-
-
-
-MAILING ADDRESS....................
-
-
-
-AGE:...............................
-
-
-
-STATUS:............................
-
-
-
-STATE/COUNTRY......................
-
-
-
-TEL/FAX NUMBERS....................
-
-
-
-We look forward in working with you.
-
-
-
-Do note that for you to be our representative it does not require any of your financial obligation to get started.
-
-
-
-C.E.O
-
-Mr.Roland Wessel
-
-Star Energy Group plc
-
-
-
-Star Energy Group plc.
-
-6th Floor
-
-5 Lower Belgrave Street
-
-London SW1W 0NR
-
-United Kingdom
-
-Tel: +447031902853
-
-Tel: +447031909779
-
-Fax: +448704902670
-
-
-
-Please send your response to rolandwes@i12.com
-
-
-
-___________________________________________________________________________
-Mail sent from WebMail service at PHP-Nuke Powered Site
-
-- http://www.desertfox.com.br/portal/
+i have NOR flash which works fine with CFI module.
+currently linux kernel configured with start/length numbers to help 
+recognize
+physical flash. can it be done by module parameter?
