@@ -1,15 +1,23 @@
-Received: from bay17-f4.bay17.hotmail.com ([64.4.43.54] helo=hotmail.com)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAONU-0000Xq-UY
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 04:55:32 -0400
-Message-ID: <BAY17-F41BC3A8A470FB28B1AB03E8A10@phx.gbl>
-In-Reply-To: <20050830102739.GC9504@wohnheim.fh-wedel.de>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: joern@wohnheim.fh-wedel.de, jaredeh@gmail.com
-Date: Wed, 31 Aug 2005 16:34:01 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+	id 1EAOo4-0000wQ-Bg
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 05:23:02 -0400
+Message-ID: <431576F8.8070405@inf.u-szeged.hu>
+Date: Wed, 31 Aug 2005 11:23:04 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: =?ISO-8859-2?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <20050826102512.GA23886@wohnheim.fh-wedel.de>
+	<1125087149.26481.12.camel@windu.rchland.ibm.com>
+	<20050829100722.GB17088@wohnheim.fh-wedel.de>
+	<1125340972.30800.7.camel@windu.rchland.ibm.com>
+	<20050829185042.GA28514@wohnheim.fh-wedel.de>
+	<43142B62.6040909@inf.u-szeged.hu>
+	<20050830100036.GB9504@wohnheim.fh-wedel.de>
+In-Reply-To: <20050830100036.GB9504@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: quoted-printable
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] remove support for virtual blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,32 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->
->	The solution
->
->Quite a few things are possible now.  But any real fix for this design
->problem will require a fixed amount of physical blocks to be part of a
->virtual block.  No matter what else changes, the number of physical
->blocks per virtual one *must not*.
->
->Imo, the best number of physical blocks per virtual one to pick is one
->(1).  Any higher number will limit scalability towards small flashes.
->JFFS2 requires 5 erase blocks in _addition_ to whatever is occupied by
->data.  With a 2:1 mapping, devices smaller than 12 physical blocks
->wouldn't work with JFFS2 at all.
->
->The rest is code and implementation details.
->
-Hmm...I think I don't have a very clear picture of implementation
-details. In particular I don't have a clear mind of following points:
+J=F6rn Engel wrote:
 
-1 compatibility issue. Let's name the JFFS2 with 1:1 mapping support
-as "new", and the JFFS2 without 1:1 mapping as "old". So what's the
-expected behaviour of mounting "new" JFFS2 binary upon "old" JFFS2 fs
-image? What's the expected behaviour of mounting "old" JFFS2 binary 
-upon "new" JFFS2 fs image?
+>On Tue, 30 August 2005 11:48:18 +0200, Ferenc Havasi wrote:
+> =20
+>
+>>What do you think about this patch?
+>>   =20
+>>
+>
+>I like it.  If you could turn JFFS2_BLOCKS_USE_VMALLOC into an inline
+>function (for type safety) and use a lowercase name, we have a winner.
+> =20
+>
+OK, it's ready: http://www.inf.u-szeged.hu/jffs2/jffs2-novirtblocks.patch
 
-2 Will a new node type be introduced in order to implement 1:1 mapping?
+May I commit it? (for temporary solution)
 
-Thanks,
-Forrest
+Ferenc
