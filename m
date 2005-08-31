@@ -1,26 +1,22 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAPeS-0001m9-8Q
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 06:17:08 -0400
-Date: Wed, 31 Aug 2005 12:17:00 +0200
+	id 1EAQ7f-0002FS-0U
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 06:47:21 -0400
+Received: from wohnheim.fh-wedel.de ([213.39.233.138]:60968)
+	by moskovskaya.fh-wedel.de with esmtp (Exim 4.34) id 1EAPmV-000622-7x
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 12:25:23 +0200
+Received: from joern by wohnheim.fh-wedel.de with local (Exim 3.35 #1 (Debian))
+	id 1EAPmZ-0005L4-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Aug 2005 12:25:27 +0200
+Date: Wed, 31 Aug 2005 12:25:27 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050831101700.GB19207@wohnheim.fh-wedel.de>
-References: <20050826102512.GA23886@wohnheim.fh-wedel.de>
-	<1125087149.26481.12.camel@windu.rchland.ibm.com>
-	<20050829100722.GB17088@wohnheim.fh-wedel.de>
-	<1125340972.30800.7.camel@windu.rchland.ibm.com>
-	<20050829185042.GA28514@wohnheim.fh-wedel.de>
-	<43142B62.6040909@inf.u-szeged.hu>
-	<20050830100036.GB9504@wohnheim.fh-wedel.de>
-	<431576F8.8070405@inf.u-szeged.hu>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20050831102527.GC19207@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <431576F8.8070405@inf.u-szeged.hu>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] remove support for virtual blocks
+Subject: BIG FAT WARNING: CVS UPDATE MAY CAUSE DATA LOSS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 31 August 2005 11:23:04 +0200, Ferenc Havasi wrote:
-> >
-> OK, it's ready: http://www.inf.u-szeged.hu/jffs2/jffs2-novirtblocks.patch
+Sorry about the capital letters, but I guess a problem of this caliber
+deserves some attention.
 
-I'm not sure about the operand order and couldn't find it in c99.
-Either put brackets around "c->flash_size / c->sector_size" or tell me
-the section in c99 that I missed.
+Ferenc will commit a patch today, that may cause data loss, if you
+upgrade to it without looking over both your shoulders twice.  Please
+read the whole thread named:
+[PATCH] remove support for virtual blocks
 
-> May I commit it? (for temporary solution)
+After you understand the problem, please decide for yourself.  If you
+are absolutely sure that you never used virtual block aggregation for
+any of your JFFS2 filesystems, then you can safely upgrade.  This
+should be true for the vast majority, but you should check it anyway.
 
-I'm still a bit afraid.  This is exactly the patch that will cause
-data loss for some poor users, if they upgrade.  I'll write a warning
-mail to the list.  Once you read that, you can go ahead and commit.
+If you are not sure, please make a backup of all your data using the
+old code.  Then create a new filesystem using the new code and restore
+your data.
+
+I will send another mail once the patch is integrated in cvs.
 
 Jörn
 
 -- 
-It is better to die of hunger having lived without grief and fear,
-than to live with a troubled spirit amid abundance.
--- Epictetus
+All art is but imitation of nature.
+-- Lucius Annaeus Seneca
