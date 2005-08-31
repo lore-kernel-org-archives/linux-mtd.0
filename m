@@ -1,15 +1,28 @@
-Received: from toxygen.net ([213.146.59.4])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAWVX-0006mB-La
-	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 13:36:23 -0400
-Message-ID: <4315EA57.20104@toxygen.net>
-Date: Wed, 31 Aug 2005 19:35:19 +0200
-From: Wojtek Kaniewski <wojtekka@toxygen.net>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: CRC problems with current JFFS2
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAbyP-0001Du-QQ
+	for linux-mtd@lists.infradead.org; Wed, 31 Aug 2005 19:26:37 -0400
+Received: from ep_mmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0IM40080514072@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:26:24 +0900 (KST)
+Received: from july7 ([168.219.213.193])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0IM40087K13ZIL@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:26:24 +0900 (KST)
+Date: Thu, 01 Sep 2005 08:26:24 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+In-reply-to: <4315BD10.80209@gmail.com>
+To: 'Bernhard Priewasser' <priewasser@gmail.com>
+Message-id: <0IM40087L13ZIL@mmp1.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: [PATCH] OneNAND: Update OMAP OneNAND mapping using device driver
+ model
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +32,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi
 
-Couple of days ago I tried to setup JFFS2 filesystem on a NAND chip. 
-After dealing with missing ECC (although I enabled it in the driver) and 
-mysterious CRC errors I went to MTD website and found that the 2.4 
-kernel tree that I'm using is unsupported. Unfortunately I can't switch 
-to 2.6 because I doesn't seem to support WBC's PPChameleon boards. So I 
-have backported current JFFS2 and MTD drivers to 2.4. Unfortunately it 
-solved only the ECC issues. I still get CRC errors. The strange thing is 
-that they occur only when dealing with symlinks, the rest of the 
-filesystem is copied without complaints. For example, copying 50MB /usr 
-results in no errors, but 5MB /lib gives:
+In previous way. we have to modify omap-onenand.c file itself. and it is
+difficult to adapt another omap platform.
 
-~ # cp -a /lib /mnt/flash
-Node CRC 88217c9d != calculated CRC 2e2558a6 for node at 00e779c8
-cp: unable to preserve ownership of `/mnt/flash/lib/ld.so.1':
-Input/output errorNode CRC 9b96bd4b != calculated CRC a58fd4f1 for node
-at 00d047f0
-cp: unable to preserve ownership of `/mnt/flash/lib/libexpat.so':
-Input/output error
-Node CRC ffffffff != calculated CRC f09e7845 for node at 00945184
-cp: unable to preserve ownership of `/mnt/flash/lib/libcrypt.so.1':
-Input/output error
+But each platform has some different partition configurations and
+chip-select.
 
-The failed symlinks are never the same. Besides, they seem quite normal 
-even though there were errors:
+e.g., OSK use CS2 as OneNAND, But my custom board use CS3. 
 
-~ # ls -l /mnt/flash/lib/ld.so.1
-lrwxrwxrwx    1 root     root           11 Jan  1 01:19
-/mnt/flash/lib/ld.so.1 -> ld-2.3.1.so
+So I move the partition information to each platform as NOR does
 
-I'm quite stuck now, because the only reasonable answers for CRC 
-problems I've found in list archive and Google were flash corruption and 
-outdated JFFS2 drivers. Unfortunately the NAND chips were soldered 
-couple of days ago and the JFFS2 were taken from CVS HEAD this week.
+e.g., linux/arm/arch/mach-omap1/board-*.c
 
-The system is a modified 2.4.20 running on IBM PowerPC 405EP with 
-backported MTD/JFFS2 drivers. NAND chip is ST NAND512Wxx. If some more 
-information is needed I'll be glad to provide it.
+Now we only modify each platform configuation file.
 
-Regards,
-Wojtek
+Regrads,
+
+Kyungmin Park
+
+> -----Original Message-----
+> From: Bernhard Priewasser [mailto:priewasser@gmail.com] 
+> Sent: Wednesday, August 31, 2005 11:22 PM
+> To: kyungmin.park@samsung.com
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH] OneNAND: Update OMAP OneNAND mapping 
+> using device driver model
+> 
+> Hi Kyungmin,
+> 
+> what are the advantages in opposite to the existing way, e.g. (why) 
+> shall I use it for "porting" the OneNAND stuff to another board?
+> 
+> Regards,
+> Bernhard
+> 
+> 
