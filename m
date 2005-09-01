@@ -1,16 +1,22 @@
-Received: from send.forptr.21cn.com ([202.105.45.49] helo=21cn.com)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAlMx-00085J-Ka
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 05:29:34 -0400
-Date: Thu, 1 Sep 2005 17:28:19 +0800
-From: "Liao Kai" <carlliao@21cn.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
+Received: from smtprelay02.ispgateway.de ([80.67.18.14])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAlPS-0008QV-MI
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 05:31:18 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.94.177])
+	(envelope-sender <priewasser@gmail.com>)
+	by smtprelay02.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 1 Sep 2005 09:31:03 -0000
+Message-ID: <4316CA53.7070201@gmail.com>
+Date: Thu, 01 Sep 2005 11:30:59 +0200
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: kyungmin.park@samsung.com
+References: <0ILR00B812WSF3@mmp1.samsung.com>
+In-Reply-To: <0ILR00B812WSF3@mmp1.samsung.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-ID: <zT949098826967.01695@send5.inner-21cn.com>
-Subject: NAND  JFFS2 mount umount problems
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] OneNAND: Simple Bad Block handling support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,40 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI ALL,
+Hi Kyungmin,
 
-I used the linux-2.6.11 kernel from MIPS-LINUX.ORG. I am not sure which 
-snapshot does it merged from. The drivers/mtd/mtdchar.c is:
-    $Id: mtdchar.c,v 1.66 2005/01/05 18:05:11 dwmw2 Exp $
+please let me bother you with another question.
+It's about scanning for bad blocks during reading/writing flash (/* TODO 
+handling oob */...)
+What's the possibility of having a bad block at r/w? OneNAND spec isn't 
+very extensive regarding handling bad blocks beside the initial scan. 
+Which things must/should be done by the flash driver, which ones by the 
+file system in this case?
+I would be very grateful if you could give me a brief outline, I'm 
+afraid BBM is a bit "too new" for us because we are used to operate on 
+plain NOR... :-)
 
-I tried to test my NAND flash driver following the steps below:
+Thanks,
+Bernhard
 
-(1) Format the NAND partition to JFFS2, mount it and read/write for
-100 times. There are no error at all.
-    $ eraseall -j /dev/mtd/0
-    $ mount -t jffs2 /dev/mtdblock/0 /mnt  
-      
-Then repeat the following step 100 times:
-    $ rm -f /mnt/test.rpm
-    $ cp -f /test/nand/test.rpm /mnt
-    $ cp -f /mnt/test.rpm /test/nand/dump${i}.rpm
-    where ${i} are [1..100]
-    
-After 100 read/write, then umount the NAND partition.
 
-(2) If at each time, first mount /dev/mtdblock/0, copy the test.rpm file out,
-then umount /dev/mtdblock/0, about 8 copied files will be corrupted.
-    $ eraseall -j /dev/mtd/0
-    $ mount -t jffs2 /dev/mtdblock/0 /mnt 
-    $ cp -f /test/nand/test.rpm /mnt
-    $ umount /mnt
-    
-Then repeat the following step 100 times:
-    $ mount -t jffs2 /dev/mtdblock/0 /mnt
-    $ cp -f /mnt/test.rpm /test/nand/dump${i}.rpm
-    where ${i} are [1..100]
-    $ umount /mnt
-    
-Could you please give me some hints about this problem? Thanks!
-
-Carl Liao
+PS: Kyungmin, sorry for double mail
