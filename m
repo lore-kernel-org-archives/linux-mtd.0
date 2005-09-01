@@ -1,27 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAlwn-0000P9-Vq
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 06:05:36 -0400
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0IM4004NBUMGM8@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 19:03:52 +0900 (KST)
-Received: from july7 ([168.219.213.193])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPA id <0IM4002SXUMFJ8@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 19:03:52 +0900 (KST)
-Date: Thu, 01 Sep 2005 19:03:52 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-In-reply-to: <4316CA53.7070201@gmail.com>
-To: 'Bernhard Priewasser' <priewasser@gmail.com>
-Message-id: <0IM4002SYUMFJ8@mmp2.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAlxk-0000Th-PN
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 06:08:27 -0400
+Date: Thu, 1 Sep 2005 12:05:35 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: =?iso-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+Message-ID: <20050901100535.GA30932@wohnheim.fh-wedel.de>
+References: <1125480492.18626.42.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1125480492.18626.42.camel@localhost.localdomain>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: [PATCH] OneNAND: Simple Bad Block handling support
-Reply-To: kyungmin.park@samsung.com
+Subject: Re: PATCH: allow JFFS2 to write to really small disks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,46 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-
+On Wed, 31 August 2005 11:28:12 +0200, Øyvind Harboe wrote:
 > 
-> please let me bother you with another question.
-> It's about scanning for bad blocks during reading/writing 
-> flash (/* TODO 
-> handling oob */...)
+> The attached patch allows JFFS2 to write to really small JFFS2 disks.
+> 
+> This is e.g. useful when using JFFS2 for in-system one time programming
+> of embedded device parameters: serial number, MAC, etc.
+> 
+> Comments?
 
-'TODO handling oob' is for YAFFS filesystem
-In JFFS2, they only use erase mark at oob area
-But YAFFS use some many files, 
-We needs to test YAFFS. currently not yet run and tested.
+> Index: build.c
+> ===================================================================
+> RCS file: /home/cvs/mtd/fs/jffs2/build.c,v
+> retrieving revision 1.76
+> diff -u -r1.76 build.c
+> --- build.c    30 Jul 2005 15:29:27 -0000	1.76
+> +++ build.c    31 Aug 2005 09:01:34 -0000
+> @@ -279,6 +279,14 @@
+>  
+> 	c->resv_blocks_write = c->resv_blocks_deletion + (size / c->sector_size);
+>  
+> +	/* If the flash disk is smaller than resv_blocks_write, then we 
+> +	   allow writing to the disk anyway. The flash disk is then most likely
+> +	      being used as write once - read many medimum, e.g. in-system configuration of 
+> +	         static parameters(e.g. MAC address of device in stored in "ROM"). */
+> +		 if (c->resv_blocks_write * c->sector_size > c->flash_size) {
+> +		   c->resv_blocks_write = 0; 
+> +		   }
+> +
+> 	/* When do we let the GC thread run in the background */
+>  
+> 	c->resv_blocks_gctrigger = c->resv_blocks_write + 1;
 
-> What's the possibility of having a bad block at r/w?
- OneNAND spec isn't 
-> very extensive regarding handling bad blocks beside the initial scan. 
+Minor stuff: You indentation is broken.
 
-> Which things must/should be done by the flash driver, which 
-> ones by the 
-> file system in this case?
+If you changed the patch to add a mount option for the WORM case and
+check for the mount option instead, this might go in.  Looks like it
+could be useful.
 
-I don't know the exactly but I heard that JFFS2 handles runtime badblock
-internally. 
-So OneNAND MTD don't care badblock handling in read/write function. 
-MTD only care the initial bad block at erase operation.
+Jörn
 
-> I would be very grateful if you could give me a brief outline, I'm 
-> afraid BBM is a bit "too new" for us because we are used to 
-> operate on 
-> plain NOR... :-)
-
-In our commercial software, we use another bad block handling, known as Bad
-Block Management (BBM) based on replace instead of skip as BBT
-So we don't care the intial bad and runtime bad. 
-
-Now we are trying to implement our scheme and will be released at open
-source. But not yet available in this time.
-
-If do you have any question. please let me know :)
-
-Regards.
-
-Kyungmin Park
+-- 
+Courage is not the absence of fear, but rather the judgement that
+something else is more important than fear.
+-- Ambrose Redmoon
