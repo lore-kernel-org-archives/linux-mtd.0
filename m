@@ -1,20 +1,28 @@
-Received: from asav1.lyse.net ([213.167.96.68])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAomX-0004eR-PB
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 09:07:16 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050901125707.GA1623@wohnheim.fh-wedel.de>
-References: <20050901120030.GB694@wohnheim.fh-wedel.de><1125578756.4884.10.c
-	amel@localhost.localdomain><20050901125707.GA1623@wohnheim.fh-wedel.de>
-Content-Type: text/plain;
-	charset=ISO-8859-1
-Date: Thu, 01 Sep 2005 15:06:50 +0200
-Message-Id: <1125580010.4884.14.camel@localhost.localdomain>
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAorm-0004rX-Ay
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 09:12:38 -0400
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j81DCTiN012578
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 09:12:29 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j81DCTNb082298
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 09:12:29 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j81DCSYp031079
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 09:12:28 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: Brian Gunnison <bgunnison@2wire.com>
+In-Reply-To: <FCB63FA5C6B0BA46A4F6A10096F1C3BB037C0294@exchange01.corp.2wire.com>
+References: <FCB63FA5C6B0BA46A4F6A10096F1C3BB037C0294@exchange01.corp.2wire.com>
+Content-Type: text/plain
+Date: Thu, 01 Sep 2005 08:12:12 -0500
+Message-Id: <1125580332.27733.8.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: PATCH: allow JFFS2 to write to really small disks
+Subject: Re: Getting manufacturer id and device ID from user space
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > If I get some indication that there is a consensus from
-> > maintainers/committers to add this mount option, I'll go ahead and writ=
-e
-> > it up.
->=20
-> You're asking for too much. :)
->=20
-> Most of the time, most people just don't care.  If they actually do
-> care and are opposed to your patch, they will speak up.  But you won't
-> ever find out before actively trying to merge the patch.
+On Tue, 2005-08-30 at 10:51 -0700, Brian Gunnison wrote:
+> Hi,
+> 
+> I searched the archive (I wish it was all in one list). 
+> 
+> I have a product that may have one or more flash manufacturers. 
+> 
+> I need the manufacturer and device types. i.e. the .name field from amd_flash_info
 
-I guess. I'll set aside some time to read up on the mount options for
-JFFS2(incidentally I'm using JFFS2 for eCos) and put together a properly
-indented & commented patch.
+Currently there is no way to get this information from userspace.  Most
+likely due to the fact that userspace shouldn't care because that's
+MTD's job, but whatever.
 
-Thanks for the feedback btw, hopefully this will work out.
+If you want to get this info from userspace, you could create
+some /sysfs or /proc entries in your mapping driver.  Or patch mtdchar
+to add an ioctl to return that information.
 
-
-
-
---=20
-=D8yvind Harboe
-http://www.zylin.com
+josh
