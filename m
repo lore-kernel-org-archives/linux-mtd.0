@@ -1,18 +1,20 @@
-Received: from world.rdmcorp.com ([204.225.180.10] helo=mailhost.rdmcorp.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAn8Y-00027h-Ly
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 07:21:51 -0400
-Received: from cayuga (10.1.2.1) by mailhost.rdmcorp.com (Worldmail 1.3.167)
-	for linux-mtd@lists.infradead.org; 1 Sep 2005 07:00:06 -0400
-Date: Thu, 1 Sep 2005 06:58:56 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-In-Reply-To: <Pine.LNX.4.63.0509010640030.4232@cayuga>
-Message-ID: <Pine.LNX.4.63.0509010658080.4522@cayuga>
-References: <Pine.LNX.4.63.0509010640030.4232@cayuga>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: Re: what's up with ftp://ftp.uk.linux.org??
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAnV3-0002XW-5e
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 07:45:04 -0400
+Date: Thu, 1 Sep 2005 13:44:38 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: =?iso-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+Message-ID: <20050901114438.GA694@wohnheim.fh-wedel.de>
+References: <20050901100535.GA30932@wohnheim.fh-wedel.de>
+	<1125573176.30825.17.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1125573176.30825.17.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: PATCH: allow JFFS2 to write to really small disks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Sep 2005, Robert P. J. Day wrote:
+On Thu, 1 September 2005 13:12:56 +0200, Øyvind Harboe wrote:
+> 
+> > > 	/* When do we let the GC thread run in the background */
+> > >  
+> > > 	c->resv_blocks_gctrigger = c->resv_blocks_write + 1;
+> > 
+> > Minor stuff: You indentation is broken.
+> 
+> Will fix of course. What emacs mode should I use for indentation? :-)
 
->   this site has been unavailable for a couple of days.  is there a
-> better choice for grabbing the latest MTD snapshots?  thanks.
+No idea, I use vim.  Try to mimic existing code, use scripts/Lindent
+or read Documentation/CodingStyle.
 
-let me rephrase that more precisely -- where to grab the latest
-*tarball* snapshots, since i know i can always get the source via CVS.
+> > If you changed the patch to add a mount option for the WORM case and
+> > check for the mount option instead, this might go in.  Looks like it
+> > could be useful.
+> 
+> I prefer it the way it is now. There are less options to read up on and
+> document.
+> 
+> W.r.t. documentation it would possibly call for a footnote that the
+> JFFS2 disk will only support read/write many times if it is large
+> enough. If it is too small, it only supports Write Once Read Many. 
+> 
+> What do you think?
 
-rday
+I think that most users don't want JFFS2 to run in WORM mode.  And for
+those users, failing on every write is actually better.  They notice
+the problem right away, not just after a while.
+
+People that want WORM mode are the minority and therefore should be
+the ones that are inconvenienced.
+
+Jörn
+
+-- 
+The only real mistake is the one from which we learn nothing.
+-- John Powell
