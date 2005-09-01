@@ -1,29 +1,20 @@
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAocZ-00042A-48
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:56:57 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e4.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j81CuYE4029122
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j81CuYMR079006
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j81CuY2c017143
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-In-Reply-To: <Pine.LNX.4.63.0509010658080.4522@cayuga>
-References: <Pine.LNX.4.63.0509010640030.4232@cayuga>
-	<Pine.LNX.4.63.0509010658080.4522@cayuga>
-Content-Type: text/plain
-Date: Thu, 01 Sep 2005 07:56:05 -0500
-Message-Id: <1125579365.27733.0.camel@windu.rchland.ibm.com>
+	id 1EAodN-00045N-9O
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:58:33 -0400
+Date: Thu, 1 Sep 2005 14:57:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: =?iso-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+Message-ID: <20050901125707.GA1623@wohnheim.fh-wedel.de>
+References: <20050901120030.GB694@wohnheim.fh-wedel.de>
+	<1125578756.4884.10.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: what's up with ftp://ftp.uk.linux.org??
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1125578756.4884.10.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: PATCH: allow JFFS2 to write to really small disks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,15 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-09-01 at 06:58 -0400, Robert P. J. Day wrote:
-> On Thu, 1 Sep 2005, Robert P. J. Day wrote:
+On Thu, 1 September 2005 14:45:56 +0200, Øyvind Harboe wrote:
+> On Thu, 2005-09-01 at 14:00 +0200, Jörn Engel wrote:
 > 
-> >   this site has been unavailable for a couple of days.  is there a
-> > better choice for grabbing the latest MTD snapshots?  thanks.
+> > > But who mounts a *tiny* JFFS2 volume except those that will be using it
+> > > as a WORM drive?
+> > 
+> > People making mistakes.  It is a very important usability issue to
+> > mark mistakes as such.  Making it appear as if everything is ok and
+> > having it fail later, possibly days or weeks later, is bad usability.
+> > 
+> > I would agree with you if the user-perceived behaviour was
+> > *immediatly* and *noticably* different.  But unless people write
+> > enough data to fill their fs, the difference may go unnoticed.
 > 
-> let me rephrase that more precisely -- where to grab the latest
-> *tarball* snapshots, since i know i can always get the source via CVS.
+> Sounds good.
+> 
+> If I get some indication that there is a consensus from
+> maintainers/committers to add this mount option, I'll go ahead and write
+> it up.
 
-At the moment, nowhere.
+You're asking for too much. :)
 
-josh
+Most of the time, most people just don't care.  If they actually do
+care and are opposed to your patch, they will speak up.  But you won't
+ever find out before actively trying to merge the patch.
+
+Jörn
+
+-- 
+...one more straw can't possibly matter...
+-- Kirby Bakken
