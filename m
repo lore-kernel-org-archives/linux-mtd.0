@@ -1,20 +1,29 @@
-Received: from asav1.lyse.net ([213.167.96.68])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EAoSJ-0003iT-Qm
-	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:46:20 -0400
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050901120030.GB694@wohnheim.fh-wedel.de>
-References: <20050901114438.GA694@wohnheim.fh-wedel.de><1125575555.4884.9.ca
-	mel@localhost.localdomain><20050901120030.GB694@wohnheim.fh-wedel.de>
-Content-Type: text/plain;
-	charset=ISO-8859-1
-Date: Thu, 01 Sep 2005 14:45:56 +0200
-Message-Id: <1125578756.4884.10.camel@localhost.localdomain>
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EAocZ-00042A-48
+	for linux-mtd@lists.infradead.org; Thu, 01 Sep 2005 08:56:57 -0400
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j81CuYE4029122
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j81CuYMR079006
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j81CuY2c017143
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Sep 2005 08:56:34 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+In-Reply-To: <Pine.LNX.4.63.0509010658080.4522@cayuga>
+References: <Pine.LNX.4.63.0509010640030.4232@cayuga>
+	<Pine.LNX.4.63.0509010658080.4522@cayuga>
+Content-Type: text/plain
+Date: Thu, 01 Sep 2005 07:56:05 -0500
+Message-Id: <1125579365.27733.0.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: PATCH: allow JFFS2 to write to really small disks
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: what's up with ftp://ftp.uk.linux.org??
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +33,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-09-01 at 14:00 +0200, J=F6rn Engel wrote:
+On Thu, 2005-09-01 at 06:58 -0400, Robert P. J. Day wrote:
+> On Thu, 1 Sep 2005, Robert P. J. Day wrote:
+> 
+> >   this site has been unavailable for a couple of days.  is there a
+> > better choice for grabbing the latest MTD snapshots?  thanks.
+> 
+> let me rephrase that more precisely -- where to grab the latest
+> *tarball* snapshots, since i know i can always get the source via CVS.
 
-> > But who mounts a *tiny* JFFS2 volume except those that will be using it
-> > as a WORM drive?
->=20
-> People making mistakes.  It is a very important usability issue to
-> mark mistakes as such.  Making it appear as if everything is ok and
-> having it fail later, possibly days or weeks later, is bad usability.
->=20
-> I would agree with you if the user-perceived behaviour was
-> *immediatly* and *noticably* different.  But unless people write
-> enough data to fill their fs, the difference may go unnoticed.
+At the moment, nowhere.
 
-Sounds good.
-
-If I get some indication that there is a consensus from
-maintainers/committers to add this mount option, I'll go ahead and write
-it up.
-
-
---=20
-=D8yvind Harboe
-http://www.zylin.com
+josh
