@@ -1,27 +1,19 @@
-Received: from asav1.lyse.net ([213.167.96.68])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EBAul-00043B-2j
-	for linux-mtd@lists.infradead.org; Fri, 02 Sep 2005 08:45:11 -0400
-Received: from asav1.lyse.net (asav1.lyse.net [127.0.0.1])
-	by localhost.lyse.net (Postfix) with ESMTP id 0AFEF904CE
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  2 Sep 2005 14:38:45 +0200 (CEST)
-Received: from mail1.lyse.net (unknown [192.168.42.2])by asav1.lyse.net (Pos
-	tfix) with ESMTP id EE2B1904C1for <linux-mtd@lists.infradead.org>;
-	Fri,  2 Sep 2005 14:38:44 +0200 (CEST)
-Received: from [84.234.138.230] (helo=[192.168.0.193])by mail1.lyse.net with
-	esmtp (Exim 4.34)id 1EBAto-0004Cp-Vufor linux-mtd@lists.infradead.org;
-	Fri , 02 Sep 2005 14:44:04 +0200
-From: =?ISO-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20050901125707.GA1623@wohnheim.fh-wedel.de>
-References: <20050901120030.GB694@wohnheim.fh-wedel.de><1125578756.4884.10.c
-	amel@localhost.localdomain><20050901125707.GA1623@wohnheim.fh-wedel.de>
-Content-Type: multipart/mixed;
-	boundary="=-n6HrmXqObrPuxBfEPeu6"
-Date: Fri, 02 Sep 2005 14:44:47 +0200
-Message-Id: <1125665087.32593.41.camel@localhost.localdomain>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EBqMv-00065N-0d
+	for linux-mtd@lists.infradead.org; Sun, 04 Sep 2005 05:00:59 -0400
+Date: Sun, 4 Sep 2005 11:00:43 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: =?iso-8859-1?Q?=D8yvind?= Harboe <oyvind.harboe@zylin.com>
+Message-ID: <20050904090043.GA9632@wohnheim.fh-wedel.de>
+References: <20050901125707.GA1623@wohnheim.fh-wedel.de>
+	<1125665087.32593.41.camel@localhost.localdomain>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1125665087.32593.41.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: PATCH: allow JFFS2 to write to really small disks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,71 +24,133 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2 September 2005 14:44:47 +0200, Øyvind Harboe wrote:
+>
+> To: linux-mtd@lists.infradead.org
 
---=-n6HrmXqObrPuxBfEPeu6
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Please keep everyone in the thread on Cc:.  Being subscribed to a
+dozen mailing lists causes me to miss some things otherwise.
 
-How about this patch?
+> How about this patch?
+> 
+> It adds a mount option to allow Write Once Read Many if the disk is too
+> small to support read/write many times.
+> 
+> W.r.t. eCos, I expect the WORM capability to be enabled via a CDL
+> option.
 
-It adds a mount option to allow Write Once Read Many if the disk is too
-small to support read/write many times.
+I have to admit being clueless about eCos.  For Linux, the parser bits
+are still missing.  How about this patch?  The parser stuff is quite
+large, as this appears to be the first JFFS2 mount option ever.
 
-W.r.t. eCos, I expect the WORM capability to be enabled via a CDL
-option.
+Jörn
+
+-- 
+The cheapest, fastest and most reliable components of a computer
+system are those that aren't there.
+-- Gordon Bell, DEC labratories
 
 
---=20
-=D8yvind Harboe
-http://www.zylin.com
+Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+---
 
---=-n6HrmXqObrPuxBfEPeu6
-Content-Disposition: attachment; filename=jffs2worm.txt
-Content-Type: text/x-patch; name=jffs2worm.txt; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+ fs/jffs2/build.c            |    6 ++++++
+ fs/jffs2/fs.c               |   41 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/jffs2_fs_sb.h |    7 ++++---
+ 3 files changed, 51 insertions(+), 3 deletions(-)
 
-Index: fs/jffs2/build.c
-===================================================================
-RCS file: /home/cvs/mtd/fs/jffs2/build.c,v
-retrieving revision 1.77
-diff -u -r1.77 build.c
---- fs/jffs2/build.c	31 Aug 2005 13:51:00 -0000	1.77
-+++ fs/jffs2/build.c	2 Sep 2005 12:42:49 -0000
-@@ -279,6 +279,18 @@
+--- linux-2.6.13-rc6mtd/fs/jffs2/build.c~jffs2_worm	2005-08-26 17:18:04.000000000 +0200
++++ linux-2.6.13-rc6mtd/fs/jffs2/build.c	2005-09-04 10:29:39.000000000 +0200
+@@ -279,6 +279,12 @@ static void jffs2_calc_trigger_levels(st
  
  	c->resv_blocks_write = c->resv_blocks_deletion + (size / c->sector_size);
  
-+	/* It is possible to mount a JFFS2 in a mode where it allows
-+	   Write Once Read Many operation if the flash disk is too small
-+	   to support read/write many times.
-+	   
-+	   If the flash disk is smaller than resv_blocks_write, then we 
-+	   allow writing to the disk anyway. The flash disk is then most likely
-+       being used as write once - read many medimum, e.g. in-system configuration of 
-+	   static parameters(e.g. MAC address of device in stored in "ROM"). */
-+	if ((c->flags & JFFS2_SB_FLAG_ALLOW_WORM)!=0)&& (c->resv_blocks_write * c->sector_size > c->flash_size)) {
++	/* Allow JFFS2 to run in WORM (write once read many) mode.
++	   This mode makes sense for small flashes with very rare
++	   updates of small amounts of data. */
++	if ((c->flags & JFFS2_SB_FLAG_WORM) && (c->nr_blocks < c->resv_blocks_write))
 +		c->resv_blocks_write = 0; 
-+	}
 +
  	/* When do we let the GC thread run in the background */
  
  	c->resv_blocks_gctrigger = c->resv_blocks_write + 1;
-Index: include/linux/jffs2_fs_sb.h
-===================================================================
-RCS file: /home/cvs/mtd/include/linux/jffs2_fs_sb.h,v
-retrieving revision 1.52
-diff -u -r1.52 jffs2_fs_sb.h
---- include/linux/jffs2_fs_sb.h	19 May 2005 16:12:17 -0000	1.52
-+++ include/linux/jffs2_fs_sb.h	2 Sep 2005 12:42:49 -0000
-@@ -16,6 +16,9 @@
- #define JFFS2_SB_FLAG_RO 1
- #define JFFS2_SB_FLAG_SCANNING 2 /* Flash scanning is in progress */
- #define JFFS2_SB_FLAG_BUILDING 4 /* File system building is in progress */
-+#define JFFS2_SB_FLAG_ALLOW_WORM 8 /* allow write once read many if the
-+                                      disk is too small to support read/write
-+                                      many times*/
+--- linux-2.6.13-rc6mtd/fs/jffs2/fs.c~jffs2_worm	2005-09-04 10:15:36.000000000 +0200
++++ linux-2.6.13-rc6mtd/fs/jffs2/fs.c	2005-09-04 10:57:33.000000000 +0200
+@@ -22,6 +22,7 @@
+ #include <linux/vmalloc.h>
+ #include <linux/vfs.h>
+ #include <linux/crc32.h>
++#include <linux/parser.h>
+ #include "nodelist.h"
+ 
+ static int jffs2_flash_setup(struct jffs2_sb_info *c);
+@@ -440,6 +441,44 @@ struct inode *jffs2_new_inode (struct in
+ }
+ 
+ 
++enum {
++	opt_worm,
++};
++
++
++static match_table_t tokens = {
++	{opt_worm,	"worm"},
++};
++
++
++static int jffs2_parse_options(struct jffs2_sb_info *c, void *_data)
++{
++	char *data = _data;
++	char *p;
++	substring_t args[MAX_OPT_ARGS];
++
++	if (!data)
++		return 0;
++
++	while ((p = strsep(&data, ","))) {
++		int token;
++
++		if (!*p)
++			continue;
++		token = match_token(p, tokens, args);
++		switch (token) {
++		case opt_worm:
++			c->flags |= JFFS2_SB_FLAG_WORM;
++			break;
++		default:
++			printk(KERN_ERR"jffs2: unknown mount flag \"%s\"\n", p);
++			return -EINVAL;
++		}
++	}
++	return 0;
++}
++
++
+ int jffs2_do_fill_super(struct super_block *sb, void *data, int silent)
+ {
+ 	struct jffs2_sb_info *c;
+@@ -459,6 +498,8 @@ int jffs2_do_fill_super(struct super_blo
+ 		return -EINVAL;
+ 	}
+ #endif
++	if (jffs2_parse_options(c, data))
++		return -EINVAL;
+ 
+ 	c->flash_size = c->mtd->size;
+ 
+--- linux-2.6.13-rc6mtd/include/linux/jffs2_fs_sb.h~jffs2_worm	2005-08-17 13:37:29.000000000 +0200
++++ linux-2.6.13-rc6mtd/include/linux/jffs2_fs_sb.h	2005-09-04 10:55:07.000000000 +0200
+@@ -13,9 +13,10 @@
+ #include <linux/list.h>
+ #include <linux/rwsem.h>
+ 
+-#define JFFS2_SB_FLAG_RO 1
+-#define JFFS2_SB_FLAG_SCANNING 2 /* Flash scanning is in progress */
+-#define JFFS2_SB_FLAG_BUILDING 4 /* File system building is in progress */
++#define JFFS2_SB_FLAG_RO	1
++#define JFFS2_SB_FLAG_SCANNING	2 /* Flash scanning is in progress */
++#define JFFS2_SB_FLAG_BUILDING	4 /* File system building is in progress */
++#define JFFS2_SB_FLAG_WORM	8 /* Write once read many - writes but no GC */
  
  struct jffs2_inodirty;
  
-
---=-n6HrmXqObrPuxBfEPeu6--
