@@ -1,15 +1,22 @@
-Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ECE0V-0000vG-Pu
-	for linux-mtd@lists.infradead.org; Mon, 05 Sep 2005 06:15:26 -0400
-Date: Mon, 5 Sep 2005 12:15:07 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20050905101502.GA21861@synertronixx3>
+	id 1ECEVo-0001KH-3G
+	for linux-mtd@lists.infradead.org; Mon, 05 Sep 2005 06:47:45 -0400
+Date: Mon, 5 Sep 2005 12:27:06 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: oyvind.harboe@zylin.com
+Message-ID: <20050905102706.GC23470@wohnheim.fh-wedel.de>
+References: <20050901125707.GA1623@wohnheim.fh-wedel.de>
+	<1125665087.32593.41.camel@localhost.localdomain>
+	<20050904090043.GA9632@wohnheim.fh-wedel.de>
+	<20050905120511.bq6majze2x2sc48g@www.zylin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Subject: XIP on 2.6.13 broken
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20050905120511.bq6majze2x2sc48g@www.zylin.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: PATCH: allow JFFS2 to write to really small disks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi People!
+On Mon, 5 September 2005 12:05:11 +0200, oyvind.harboe@zylin.com wrote:
+> 
+> >>W.r.t. eCos, I expect the WORM capability to be enabled via a CDL
+> >>option.
+> >
+> >I have to admit being clueless about eCos.  For Linux, the parser bits
+> >are still missing.  How about this patch?  The parser stuff is quite
+> >large, as this appears to be the first JFFS2 mount option ever.
+> 
+> Do you think this is useful for Linux?
+> 
+> I mostly foresaw it as being useful for deeply embedded systems, like eCos.
 
-I recently ported my code running perfect on 2.6.12 to 2.6.13.
-I use an Intel K3 Flash device (cfi_cmdset_0001.c).
+I don't know.  So far you've been the only person to ask for this.  If
+that doesn't change, maybe it would be best if you maintained a
+minimal patch and we would just forget about this.  But if the patch
+is useful for others as well, we could merge it.
 
-However, the recent XIP on 2.6.13 is very unstable. It mostly freezes
-when the bootup init.d processes start to read/write the / partition.
-Sometimes it comes to live but for example usb-storage gets an
-garbaged read (ls -la) from an mounted usb-device.
-linux-wlan-ng is not able to issue one succesful ping command.
-The error seemed to be either in the usb host-controller driver or in
-the linux-wlan-ng package so I searched the error there for a couple
-of days. 
+Anyone?
 
-But I found out, the system is working perfect when I disable
-xip!
-
-Well, I think I followed the change from the #ifdef mess in
-include/linux/mtd/xip.h to asm/arch/mtd-xip.h correct...
-
-Here it is:
-
-#ifndef __ARCH_IMX_MTD_XIP_H__
-#define __ARCH_IMX_MTD_XIP_H__
-
-#include <asm/arch/imx-regs.h>
-
-#define xip_irqpending()        ( IMX_NIPNDH || IMX_NIPNDL )
-
-#define xip_currtime()          (IMX_TCN(IMX_TIM1_BASE))
-#define xip_elapsed_since(x)    (signed)((IMX_TCN(IMX_TIM1_BASE) -(x)) * 31)
-
-#define xip_iprefetch() asm volatile (".rep 8; nop; .endr");
-
-#define xip_cpu_idle()  asm volatile ("mcr p14, 0, %0, c7, c0, 0" :: "r" (1))
-
-#warning KGK 
-
-#endif /* __ARCH_IMX_MTD_XIP_H__ */
-
-
-Hm, well, where could I start to search for a significant change?
-
-Regards, Konsti
+Jörn
 
 -- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+A quarrel is quickly settled when deserted by one party; there is
+no battle unless there be two.
+-- Seneca
