@@ -1,22 +1,26 @@
-Received: from smtprelay04.ispgateway.de ([80.67.18.16])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ECv0H-0005n4-MR
-	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2005 04:10:01 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.66.112])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay04.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 7 Sep 2005 08:09:55 -0000
-Message-ID: <431EA052.5010303@gmail.com>
-Date: Wed, 07 Sep 2005 10:09:54 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ECveS-0008Jf-Ry
+	for linux-mtd@lists.infradead.org; Wed, 07 Sep 2005 09:51:31 +0100
+Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
+	[10.125.2.23])
+	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
+	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id j8791o6F014785
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Sep 2005 09:01:50 GMT
+Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
+	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
+	M2005090712511903245
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Sep 2005 12:51:19 +0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: kyungmin.park@samsung.com
-References: <0IM4002SYUMFJ8@mmp2.samsung.com>
-In-Reply-To: <0IM4002SYUMFJ8@mmp2.samsung.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] OneNAND: Simple Bad Block handling support
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 7 Sep 2005 12:51:17 +0400
+Message-ID: <F92C2EFE7C3BA745855BF7036E1F3F9A012BCE29@NNSMSX401>
+From: "Korolev, Alexey" <alexey.korolev@intel.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Old tarballs on FTP.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +30,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-
-Kyungmin, I'm still not completely clear about your bad block handling, 
-sorry for bothering you another time.
-
-In onenand_scan() you call scan_bbt() which calls onenand_memory_bbt() 
-  which calls create_bbt() which builds the BBT using OOB data.
-Fine so far.
-
-But: the only time onenand_block_checkbad() is called is in 
-onenand_erase() before issueing the (erase-)command to prevent erasing 
-already scanned bad blocks.
-
-Question: what about reading and writing (onenand_write_ecc(), 
-onenand_read_ecc())? There is no onenand_block_checkbad() before 
-issueing the write/read command. Shouldn't this be done??
-scan_bbt() is only called on initial scan, e.g. device boot. What if 
-this happens very rarely and bad blocks due to wear occur; that meant 
-you cannot provide data integrity.
-
-I wonder why this is not done in nand_base.c too. I'm afraid I missed 
-some BBT stuff to gather in my investigations :-)... So please kindly 
-excuse me if I'm wrong with my very limited MTD/OneNAND experience!
-
-Best Regards,
-Bernhard
+I can't get the latest snapshot from FTP link.
+Actually ftp works fine, but the latest snapshot i can see there was
+built in 2004 !
+I would really appreciate if you resolve the problem with FTP.=20
+It's the only way I can get snapshots (CVS access is closed by our IT
+security).
