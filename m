@@ -1,22 +1,26 @@
-Received: from mail2.extendcp.co.uk ([82.110.105.34])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDR1Y-0008Ex-Tt
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2005 14:21:38 -0400
-Received: from dynamic-62-56-51-33.park-s46b.dslaccess.co.uk ([62.56.51.33]
-	helo=GladysDNS) by mail2.extendcp.com with esmtpa (Exim 4.42)
-	id 1EDQwu-00066a-En
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2005 19:16:36 +0100
-From: yahoo_groups@rovoreed.com
-To: linux-mtd@lists.infradead.org
-Date: Thu, 08 Sep 2005 18:23:19 -0000
-MIME-Version: 1.0
-Message-ID: <43208197.21719.34982B@localhost>
-In-reply-to: <1126174618.4171.149.camel@baythorne.infradead.org>
-References: <431DE248.20912.15DAC1@localhost>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
-Subject: Re: DiskonChip problems.
+	id 1EDRMt-0000HY-Ly
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2005 14:43:35 -0400
+Date: Thu, 8 Sep 2005 20:43:26 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050908184326.GE20668@wohnheim.fh-wedel.de>
+References: <42FB68AE.6070805@inf.u-szeged.hu>
+	<20050815094816.GA27229@wohnheim.fh-wedel.de>
+	<43007773.2070602@yandex.ru> <43008129.2060303@inf.u-szeged.hu>
+	<43008BFB.502@yandex.ru> <4300970E.2090803@inf.u-szeged.hu>
+	<43009AE1.6010907@yandex.ru> <4301A259.3090304@yandex.ru>
+	<1126186364.28995.10.camel@hades.cambridge.redhat.com>
+	<43203E13.3080204@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <43203E13.3080204@yandex.ru>
+Cc: zhao_fusheng@hotmail.com, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2 eraseblock header
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8 Sep 2005 at 11:16, David Woodhouse wrote:
+On Thu, 8 September 2005 17:35:15 +0400, Artem B. Bityuckiy wrote:
+> David Woodhouse wrote:
+>
+> >Should it? I wonder if it should silently upgrade, instead? Or at least
+> >have a mount option to make it upgrade? We want to leave the old format
+> >behind...
+>
+> That would be spiffy to leave it behind and save a lot efforts.
+> But in this case new JFFS2 binaries will reject mounting old JFFS2 images.
+> If this is accaptable - fine. Personally I don't care, but people may.
+> :-)
 
-> You were using a binary-only module. If you were shipping embedded
-> products which used a combination of that and the GPL'd kernel, then you
-> were violating the GPL. You really shouldn't admit to such things in
-> public. I hope you were doing this only in your lab and not shipping
-> such code.
+Current strategy is to push the effort to the user.  Not perfect, but
+it is necessary to inform the users about the problem anyway.
 
-OK. I'm well aware of the GPL. I'm was not shipping anything. I was  
-just trying to prove to myself that the DOC (and hardware interface) 
-did work.
+What we could additionally do is detect nodes that span several erase
+blocks.  Whenever such a thing comes up, refuse the mount and error
+out.
 
-Anyway, thanks to your help I'm now using the kernel and modules 
-exclusively.
+But then again, I just couldn't care less.  So someone else please
+provide the code.
 
-Thanks again.
+Jörn
 
-Mike
+-- 
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
