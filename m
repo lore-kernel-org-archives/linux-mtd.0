@@ -1,18 +1,20 @@
-Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDNcs-0005gN-Fc
-	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2005 10:43:51 -0400
-Message-ID: <43204DFD.7050805@yandex.ru>
-Date: Thu, 08 Sep 2005 18:43:09 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: ahgu <ahgu@ahgu.homeunix.com>
-References: <023a01c5b483$acdc2070$1f1a12ac@atitech.com>
-In-Reply-To: <023a01c5b483$acdc2070$1f1a12ac@atitech.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: How many consecutive write failure can JFFS2 handle?
+	id 1EDQco-0007mS-3F
+	for linux-mtd@lists.infradead.org; Thu, 08 Sep 2005 13:56:03 -0400
+Date: Thu, 8 Sep 2005 19:55:28 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050908175528.GA20668@wohnheim.fh-wedel.de>
+References: <20050830104737.GD9504@wohnheim.fh-wedel.de>
+	<BAY17-F33D027CAAFE3148BB59A23E8A60@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BAY17-F33D027CAAFE3148BB59A23E8A60@phx.gbl>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] remove support for virtual blocks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ahgu wrote:
+On Wed, 7 September 2005 14:52:45 +0800, zhao forrest wrote:
 > 
-> I notice in the code that write failure during recover from write error 
-> will
-> call BUG_ON. halts the kernel.
-> Is it true that JFFS2 can only handle one write failure, not consecutive
-> write failure.
+> I agree with you that "slab cache" is a good idea. But "struct 
+> jffs2_eraseblock are put into a linked list or similar structure" is
+> not a perfect solution IMO. In JFFS2 code, there're several places
+> where the jeb is got by block_nr. So if struct jffs2_eraseblock are
+> put into linked list, the time of searching a jeb by block_nr will
+> not be O(1).
 > 
-Please, point file/line number.
+> The data structure in my mind is "pointer array + slab cache".
+> So jeb is got by jeb = blocks[block_nr].element;, element is a 
+> pointer to struct jffs2_eraseblock.
+> 
+> Does it make sense?
+
+Mostly.  Why do you want the element part?
+
+struct jffs2_eraseblock *blocks;
+...
+blocks = kmalloc(...);
+...
+jeb = blocks[block_nr];
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Don't worry about people stealing your ideas. If your ideas are any good,
+you'll have to ram them down people's throats.
+-- Howard Aiken quoted by Ken Iverson quoted by Jim Horning quoted by
+   Raph Levien, 1979
