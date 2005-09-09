@@ -1,20 +1,23 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDrYM-0003jI-QJ
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 18:41:14 -0400
-Date: Sat, 10 Sep 2005 00:40:57 +0200
+	id 1EDrdR-0003y9-1V
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 18:46:31 -0400
+Date: Sat, 10 Sep 2005 00:46:06 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: zhao forrest <zhao_fusheng@hotmail.com>
-Message-ID: <20050909224057.GC5358@wohnheim.fh-wedel.de>
-References: <20050909073302.GB19251@wohnheim.fh-wedel.de>
-	<BAY17-F31EF04DBBF374276A00682E8980@phx.gbl>
+To: Bernhard Priewasser <priewasser@gmail.com>
+Message-ID: <20050909224606.GD5358@wohnheim.fh-wedel.de>
+References: <Pine.LNX.4.63.0509010640030.4232@cayuga>
+	<Pine.LNX.4.63.0509010658080.4522@cayuga>
+	<1125579365.27733.0.camel@windu.rchland.ibm.com>
+	<43218312.4030809@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY17-F31EF04DBBF374276A00682E8980@phx.gbl>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]enhanced wear-leveling algorithm based on erase count
+In-Reply-To: <43218312.4030809@gmail.com>
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	"Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: what's up with ftp://ftp.uk.linux.org??
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,54 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 September 2005 17:17:10 +0800, zhao forrest wrote:
-> >
-> >I had the same idea:
-> >
-> >static int pick_used_block(void)
-> >{
-> >	static atomic_t seqno = 99;
-> >
-> >	if ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) 
-> >	< 2)
-> >		return 0;
-> >
-> >	/* it is time to pick a used block - just not too often */
-> >	atomic_inc(seqno);
-> >	if (atomic_read(seqno) != 0)
-> >		return 0;
-> >
-> >	/* first pick after mount and every 100th pick afterwards */
-> >	return 1;
-> >}
+On Fri, 9 September 2005 14:41:54 +0200, Bernhard Priewasser wrote:
 > 
-> But it'll pick a block from used_block_hash_table only with 1% possibility.
-> Do you think this 1% possibility is too small? How about 10% or 20%?
+> >At the moment, nowhere.
+> 
+> Hm, why?
+> I have exactly the same problem as Robert (since CVS is blocked here).
 
-1% should be good enough.  That's about what we use now, after all.
+Because people don't care enough?
 
-We need to make sure that static blocks that never accumulate much
-garbage and thus never get GC'd otherwise get shaken up once in a
-while.  After such a shakeup, they get filled with other data.  Data
-that is obsoleting faster, so the erase block in question will
-naturally get reused again.
-
-In the worst case, the filesystem has 5 blocks to accumulate garbage
-(the spare ones) and everything else static.  That means, each of the
-5 blocks will get erased 20 times until a static block gets mixed into
-the bunch and one of the dynamic blocks turns static.  More than good
-enough, .1% would still be plenty.
-
-What you could do to improve things further is seperate data between
-probably-static and probably-dynamic.  Then have two erase blocks to
-write into, one for static data, one for dynamic.  Always pick the
-highest erase count free block for static data - it will likely not
-get reused for a while.  Whenever picking a used block, fill it with
-dynamic data.
+If you volunteer to do the work, I'm sure you will get help with
+blocking problems.
 
 Jörn
 
 -- 
-"[One] doesn't need to know [...] how to cause a headache in order
-to take an aspirin."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+People will accept your ideas much more readily if you tell them
+that Benjamin Franklin said it first.
+-- unknown
