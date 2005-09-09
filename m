@@ -1,19 +1,27 @@
-Received: from zeus.bridgeport.edu ([216.87.96.66])
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDm2o-0000FV-VU
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 12:48:16 -0400
-From: itche <itche@bridgeport.edu>
-To: uclinux-dev@uclinux.org
-Date: Fri, 9 Sep 2005 12:47:42 -0400
-MIME-Version: 1.0
+	id 1EDrF2-0003O8-IL
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 18:21:12 -0400
+Date: Sat, 10 Sep 2005 00:20:40 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Message-ID: <20050909222040.GA5358@wohnheim.fh-wedel.de>
+References: <43008129.2060303@inf.u-szeged.hu> <43008BFB.502@yandex.ru>
+	<4300970E.2090803@inf.u-szeged.hu> <43009AE1.6010907@yandex.ru>
+	<4301A259.3090304@yandex.ru>
+	<1126186364.28995.10.camel@hades.cambridge.redhat.com>
+	<43203E13.3080204@yandex.ru>
+	<20050908184326.GE20668@wohnheim.fh-wedel.de>
+	<1126270658.4491.8.camel@windu.rchland.ibm.com>
+	<4321894C.8050809@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200509091247.42340.itche@bridgeport.edu>
-Cc: linux-mtd@lists.infradead.org
-Subject: MTD help
-Reply-To: itche@bridgeport.edu
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4321894C.8050809@yandex.ru>
+Cc: zhao_fusheng@hotmail.com, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 eraseblock header
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello all, 
-thanks for all those who replied to my previous messages.
-I am still stuck.
-I am trying to make this nand to work
-i can get the device id and creating the partitions with no problem.
-i have a problem with erasing, mounting, etc.
-i think my problem lies with the R/!B line.
-it is connected to my 5272 on PB4.
-i have no problem to access the other control lines.
-how do i "make" the driver to look at this line on PB4?
-is there a file where these definitions are defined?
+On Fri, 9 September 2005 17:08:28 +0400, Artem B. Bityuckiy wrote:
+> Josh Boyer wrote:
+> >
+> >In any case, would you please bump the overall version of JFFS2 if this
+> >change is made?  I don't mean "JFFS3", I mean "JFFS2 version 2.3" or
+> >similar.  See super.c line 320 for where I'm talking about.
+> Agree, this should be done. I also offered to introduce a version number 
+> byte to the erasebloch header. This is somewhat ugly but will help to 
+> quickly recognize the JFFS2 image version. In future this will help us.
 
-i am using uclinux 2.4.19 
-i have modified NAND.C and created my own board specific .C fie as well.  
+All right, you win.  Can you bump the version to 2.3?
 
-thanks in advance 
-Isack
+Jörn
+
+-- 
+tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
+-- Thomas Gleixner
