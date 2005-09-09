@@ -1,26 +1,20 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDdFH-0000jk-Hy
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 03:24:43 -0400
-Date: Fri, 9 Sep 2005 09:24:16 +0200
+	id 1EDdNg-000171-2u
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 03:33:32 -0400
+Date: Fri, 9 Sep 2005 09:33:02 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Kaigai Kohei <kaigai@ak.jp.nec.com>
-Message-ID: <20050909072416.GA19251@wohnheim.fh-wedel.de>
-References: <430AF95F.1050704@ak.jp.nec.com>
-	<20050823124649.GB30853@wohnheim.fh-wedel.de>
-	<1124801569.29448.13.camel@hades.cambridge.redhat.com>
-	<430C429B.6040500@ak.jp.nec.com> <431E772B.9090004@ak.jp.nec.com>
-	<20050908194915.GG20668@wohnheim.fh-wedel.de>
-	<43210C7A.60109@ak.jp.nec.com>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050909073302.GB19251@wohnheim.fh-wedel.de>
+References: <20050908182110.GB20668@wohnheim.fh-wedel.de>
+	<BAY17-F1901E7830CCC07E43A8E42E8980@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <43210C7A.60109@ak.jp.nec.com>
-Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>,
-	Ma Yun <sx_yunma@hotmail.com>
-Subject: Re: [PATCH] XATTR issues on JFFS2
+In-Reply-To: <BAY17-F1901E7830CCC07E43A8E42E8980@phx.gbl>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]enhanced wear-leveling algorithm based on erase count
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,290 +24,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 September 2005 13:15:54 +0900, Kaigai Kohei wrote:
-> Thanks for reviewing in spite of so long patch.
+On Fri, 9 September 2005 12:23:18 +0800, zhao forrest wrote:
 > 
-> > Sounds good.
 > >
-> > It appears as if your patch or something based on it will win.  So
-> > let's have a look...
+> >> 5 Here we use (max_erase_count - average_erase_count) instead
+> >> of (max_erase_count - min_erase_count), because min_erase_count
+> >> can't be got by O(1) algorithm. So I choose average_erase_count
+> >> for approximation.
 > >
-> > I notice that you make a couple of mistakes by copying them from
-> > existing jffs2 code.  You are excused for that, no doubt.  But I still
-> > don't want copies of old mistakes to go in, just because we have a bad
-> > example.
+> >This could be a problem.  If 990 out of 1000 erase blocks are
+> >constantly reused and 10 stay stale, when will the delta exceed the
+> >threshold?  In this scenario, your threshold is effectively increased
+> >100x.
+> >
+> >You could use an estimate based on the lowest filled bucket instead.
 > 
-> Is this using uint32_t, xattr scanning code and so on ?
-
-Yes.
-
-> > Review is just partial.  It's late enough already and I need to get
-> > some sleep.
+> You are quite right! I decide to use following condition judgement:
 > 
-> Please take a rest slowly on the weekend.
-> I'll modify my patch during this period. ;-)
-
-Thanks.
-
-> >> struct jffs2_full_dirent *jffs2_alloc_full_dirent(int namesize)
-> >>@@ -169,6 +195,7 @@ struct jffs2_raw_node_ref *jffs2_alloc_r
-> >> 	struct jffs2_raw_node_ref *ret;
-> >> 	ret = kmem_cache_alloc(raw_node_ref_slab, GFP_KERNEL);
-> >> 	JFFS2_DBG_MEMALLOC("%p\n", ret);
-> >>+	memset(ret, 0, sizeof(*ret));	/* to guarantee owner==NULL */
-> >
-> >
-> > This could be optimized a little by using the constructor/destructor
-> > stuff in slabs.  Not too important.
+> if (((max_erase_count - average_erase_count)*2 > WL_DELTA) ||
+> ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) > 1))
+> //althought we don't know the exact minimum erase count, here we do
+> //know that maximum_erase_count - minimum_erase_count has execeeded
+> // WL_DELTA.
+> {
+>    get_block_from_used_hash_table();
+> }
 > 
-> I'll prepare a tiny and obvious constructor for jffs2_raw_node_ref.
-> NULL is set in raw->owner by default is important, the method of setting
-> is not so, I think.
+> This way it can avoid the above case you mentioned.
 
-Right.  One of the least important issues I had.
+Would it be enough to use ((index_of_highest_filled_bucket -
+index_of_lowest_filled_bucket) > 1) alone?
 
-> >>@@ -205,3 +232,35 @@ void jffs2_free_inode_cache(struct jffs2
-> >> 	JFFS2_DBG_MEMALLOC("%p\n", x);
-> >> 	kmem_cache_free(inode_cache_slab, x);
-> >> }
-> >>+
-> >>+#ifdef CONFIG_JFFS2_XATTR
-> >>+
-> >>+struct jffs2_xattr_cache *jffs2_alloc_xattr_cache(void)
-> >>+{
-> >>+	struct jffs2_xattr_cache *xc;
+> >What concerns me is the danger of a "reuse block" storm.  Picking a
+> >block from the used_blocks array is quite a latency hit.  If we do
+> >this 10x in a row without picking a block from the free_blocks array,
+> >people will complain and send bug reports.  Let's see...
 > >
-> >                           ^^^^^^
-> > The name doesn't make sense.  You're referring to a single object, not
-> > the complete cache.  Quite confusing.
+> >Most of the time, you pick free blocks.  So max_erase_count will
+> >constantly grow and grow faster than average_erase_count.  When the
+> >first block hits some magic value, you start picking used blocks
+> >instead.  Doing so will leave max_erase_count unchanged and slightly
+> >increase average_erase_count.  But the increase is only fractional and
+> >doesn't change your condition until the fractions add up to 1.  We
+> >have a storm.
 > >
-> >
-> >>+	xc = kmem_cache_alloc(xattr_cache_slab, GFP_KERNEL);
-> >
-> >                                          ^^^^^
-> > This is the cache.  A slab is just part of the cache.  So please
-> > rename the two.
+> >In this form, the algorithm is not acceptable.
 > 
-> For example, how about the following names ?
-> "jffs2_xattr_datum" as an alternative of jffs2_xattr_cache.
-> "xattr_datum_cache" as an alternative of xattr_cache_slab.
+> Yes, this is really a problem. I want to improve the algorithm by
+> invoking get_block_from_used_hash_table() by 50% possibility and using
+> old WL algorithm by 50% possibility when condition meets.
 > 
-> In this case, "xc" defined as jffs2_xattr_cache structure
-> should be renamed to "xd" defined as jffs2_xattr_datum.
-
-Would be fine.
-
-> >>diff -rpNU3 mtd-0829/fs/jffs2/nodelist.h 
-> mtd-0829.xattr/fs/jffs2/nodelist.h
-> >>--- mtd-0829/fs/jffs2/nodelist.h	2005-08-17 18:00:12.000000000 -0400
-> >>+++ mtd-0829.xattr/fs/jffs2/nodelist.h	2005-09-06 
-> 10:28:53.000000000 -0400
-> >>@@ -20,6 +20,7 @@
-> >> #include <linux/jffs2.h>
-> >> #include <linux/jffs2_fs_sb.h>
-> >> #include <linux/jffs2_fs_i.h>
-> >>+#include <linux/jffs2_fs_x.h>
-> >
-> >
-> > I p a l n.
-> >
-> > I prefer a longer name.  jffs2_fs_xattr.h would be fine.
-> > jffs2_xattr.h would also, the "_fs" is more redundant that "attr".
+> The psudo code may look like this:
 > 
-> OK, I'll rename "jffs2_fs_x.h" to "jffs2_xattr.h" and deploy it under
-> "fs/jffs2" as David says.
-
-Can you rename it to xattr.h instead?  The prefix has lost its meaning
-in fs/jffs2/.
-
-> >> #ifdef __ECOS
-> >> #include "os-ecos.h"
-> >>@@ -80,6 +81,7 @@ struct jffs2_raw_node_ref
-> >> 	struct jffs2_raw_node_ref *next_phys;
-> >> 	uint32_t flash_offset;
-> >> 	uint32_t __totlen; /* This may die; use ref_totlen(c, jeb, ) below */
-> >>+	void *owner;
-> >
-> >
-> > This grows a node reference from 16/24 bytes to 20/32 bytes for 32/64
-> > bit architectures.  I'm not entirely happy about that, but don't a
-> > better solution either.
+> static char flag = 1;
 > 
-> Indeed, it's involved the growing of object size.
-> But we must discriminate XATTR node from other non-inode node
-> and indicate jffs2_xattr_cache/jffs2_xattr_ref object from this.
-> I didn't have a good idea more than this.
+> if ((((max_erase_count - average_erase_count)*2 > WL_DELTA) ||
+> ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) > 1))
+> && flag) {
+>    get_block_from_used_hash_table();
+>    flag = 0;
+> }else {
+>    old_WL_algorithm();
+>    flag = 1;
+> }
 > 
-> And, I forgot to enclose the declaration of "void *owner"
-> by #ifdef - #endif.
+> This way we can avoid the storm and in the meantime adjust WL. It's
+> true that at this time the user request(create, write, delete) will 
+> progress slower than usual. But at this time point, we have to slightly
+> prefer WL because the erase_count gap between erase blocks has became
+> too large.
 
-True.
+I had the same idea:
 
-Most likely this idea is stupid, but let me have a try anyway.  You
-could give your xattr/xref objects an inode number - either one per
-object or a special one shared for all xattr/xref objects.  That would
-open a new bag of worms, but keep the size down.
+static int pick_used_block(void)
+{
+	static atomic_t seqno = 99;
 
-Would it be possible to work with such an approach?
+	if ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) < 2)
+		return 0;
 
-> > By itself, this code is not too bad.  But it add a little more crap to
-> > a function that is aching for a rewrite already.  Not sure.
-> 
-> Hmm,,, I wrote the above part of codes with referring to existing code.
-> If the policy is shown, I'll follow it. How should I do ?
+	/* it is time to pick a used block - just not too often */
+	atomic_inc(seqno);
+	if (atomic_read(seqno) != 0)
+		return 0;
 
-In a perfect world, you should send a cleanup patch to break
-jffs2_scan_eraseblock() into several smaller functions.  Have the
-xattr patch depend on the cleanup.  I might still have an old patch
-that I could send you for inspiration.
-
-> >>+
-> >>+	nlen = JFFS2_XATTR_NAMELEN(je32_to_cpu(rx->length));
-> >>+	vlen = JFFS2_XATTR_VALUELEN(je32_to_cpu(rx->length));
-> >
-> >
-> > Types don't match.  nlen and vlen should become u32.
-> 
-> Is it enought for "int"?  JFFS2_XATTR_NAMELEN has 12-bit length, and
-> JFFS2_XATTR_VALUELEN has 20-bit length.
-
-Makes sense.  But endianness conversions between je32 and int (which
-can be anything from 8-64 bit signed/unsigned per c standard) should
-be avoided.
-
-> > Btw, I agree with Linus.  u32 is _much_ nicer than uint32_t, not to
-> > speak of the uint32_fast_t insanity.
-> 
-> Is is necessary to correct the part where other uint32_t used.
-
-Not really.  Without the above ("should become u32") I wouldn't even
-have mentioned it.  Really minor.
-
-> >>+	xc = jffs2_find_xattr_cache_xid(c, je32_to_cpu(rx->xid));
-> >>+	if (xc) {
-> >>+		printk(KERN_NOTICE "jffs2_scan_xattr_node(): Duplicate XID 
-> Found"
-> >>+		       " on node at 0x%08x XID=%d Later one ignored\n", ofs, 
-> xc->xid);
-> >>+		DIRTY_SPACE(PAD(je32_to_cpu(rx->totlen)));
-> >>+		return 0;
-> >>+	}
-> >
-> >
-> > How do you deal with xattr reference counting and lifetime?
-> 
-> When xc->xlist is empty, jffs2_xattr_cache type object will be released.
-> jffs2_xattr_ref type object is chained to xc->xlist.
-> list_empty(xc->xlist) means nobady refers this XATTR.
-
-...at which time you also remove the xattr from medium, I assume.  Ok.
-
-Next question: How do you remove the xattr from medium?  How is it
-garbage collected?
-
-> >>+	xtype = jffs2_xattr_prefix_to_xtype(rx->data, nlen);
-> >>+	if (JFFS2_XATTRTYPE_INVALID==xtype) {
-> >>+		printk(KERN_NOTICE "jffs2_scan_xattr_node(): Unsupported 
-> xattr type"
-> >>+		       " on node at 0x%08x\n", ofs);
-> >>+		USED_SPACE(PAD(je32_to_cpu(rx->totlen)));
-> >>+		return 0;
-> >>+	}
-> >
-> >
-> > Why is it required that JFFS2 knows the type of the xattr?
-> 
-> Hmm,,, I added this member to discriminate the prefix of xattr
-> without strncmp(). But it might be a bit ugly design.
-
-Then why is it required that JFFS2 knows the prefix?
-
-> >>+static inline int jffs2_scan_xref_node_helper(struct jffs2_sb_info *c,
-> >>+			struct jffs2_xattr_ref *new, struct jffs2_xattr_ref 
-> *old)
-> >>+{
-> >>+	/* (uint32_t)new->xc == (uint32_t)old->xc has been made sure. */
-> >>+	if ((uint32_t)new->ic == (uint32_t)old->ic) {
-> >
-> >
-> > Why the casts?  How can this be safe on 64bit machines?
-> 
-> This function is called before jffs2_build_xattr_cache() while FS-mounting.
-> In this implementation, xid (uint32 value) is stored in jffs2_xattr_ref->xc
-> before jffs2_build_xattr_cache(), and ino (uint32 value) is stored in
-> jffs2_xattr_ref->ic.
-> 
-> After calling jffs2_build_xattr_cache(), xc and ic is used as a pointer
-> which indicate to jffs2_xattr_cache/jffs2_inode_cache.
-
-Ok.
-
-> It might be bad manner, but is the following implementation preferable ?
-
-Yes.  And you can use unnamed unions, just remove the "x" and "i".
-
-> struct jffs2_xattr_ref {
->         uint32_t seqno;
->         struct list_head ilist;
->         struct list_head xlist;
->         union {
->                 struct jffs2_xattr_cache *xc;
->                 uint32_t xid;
->         } x;
->         union {
->                 struct jffs2_inode_cache *ic;
->                 uint32_t ino;
->         } i;
->         struct jffs2_raw_node_ref *node;
-> };
-> 
-> 
-> >>+static int jffs2_scan_xref_node(struct jffs2_sb_info *c, struct 
-> jffs2_eraseblock *jeb,
-> >>+				struct jffs2_raw_xref *rr, uint32_t ofs)
-> >>+{
-> >>+	struct jffs2_raw_node_ref *raw;
-> 
->              - snip -
-> 
-> >>+	ref->seqno = je32_to_cpu(rr->seqno);
-> >>+	if (ref->seqno > c->highest_seqno)
-> >>+		c->highest_seqno = ref->seqno;
-> >>+	ref->ic = (void *)je32_to_cpu(rr->ino);
-> >>+	ref->xc = (void *)je32_to_cpu(rr->xid);
-> >
-> >
-> > WTF?!?
-> >
-> > You read a je32 from flash and use that as a pointer?!?
-> >
-> > Please tell me I'm wrong.
-> 
-> If we use above emample, we can write it as follows:
-> 
->     ref->i.ino = je32_to_cpu(rr->ino);
->     ref->x.xid = je32_to_cpu(rr->xid);
-
-	ret->ino = je32_to_cpu(rr->ino);
-	...
-
-> In jffs2_build_xattr_cache(), we find up the jffs2_inode_cache and
-> jffs2_xattr_cache by using ino/xid as a key. Then the correct pointers
-> are stored in ref->ic and ref->xc after jffs2_build_xattr_cache().
-> 
-> Is it the situation to use union ?
-
-Yes.  Makes more sense now.  Sorry about the tone.
-
-Still, you can take it as an indication that your reuse-old-fields
-trick is not obvious to new readers.  A comment explaining this would
-be useful.  Maybe you already have it further down, in the part I
-didn't review yet.
-
-Good stuff.
+	/* first pick after mount and every 100th pick afterwards */
+	return 1;
+}
 
 Jörn
 
 -- 
-All art is but imitation of nature.
--- Lucius Annaeus Seneca
+The wise man seeks everything in himself; the ignorant man tries to get
+everything from somebody else.
+-- unknown
