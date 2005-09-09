@@ -1,16 +1,15 @@
-Received: from bay17-f31.bay17.hotmail.com ([64.4.43.81] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDf0g-0008UC-Pq
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 10:17:28 +0100
-Message-ID: <BAY17-F31EF04DBBF374276A00682E8980@phx.gbl>
-In-Reply-To: <20050909073302.GB19251@wohnheim.fh-wedel.de>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: joern@wohnheim.fh-wedel.de
-Date: Fri, 09 Sep 2005 17:17:10 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]enhanced wear-leveling algorithm based on erase count
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EDgh2-0003pq-Sl
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 07:05:40 -0400
+Message-ID: <43216C69.2060404@arcom.com>
+Date: Fri, 09 Sep 2005 12:05:13 +0100
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: linux-mtd list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Subject: Badness in do_exit after remounting JFFS2 read-only
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-> >
-> > You are quite right! I decide to use following condition judgement:
-> >
-> > if (((max_erase_count - average_erase_count)*2 > WL_DELTA) ||
-> > ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) > 1))
-> > //althought we don't know the exact minimum erase count, here we do
-> > //know that maximum_erase_count - minimum_erase_count has execeeded
-> > // WL_DELTA.
-> > {
-> >    get_block_from_used_hash_table();
-> > }
-> >
-> > This way it can avoid the above case you mentioned.
->
->Would it be enough to use ((index_of_highest_filled_bucket -
->index_of_lowest_filled_bucket) > 1) alone?
+With 2.6.13 remounting a JFFS2 filesystem read-only results in
 
-yes, I'll not use average erase count any more.
+Badness in do_exit at
+/home/dvrabel/embed/qed/linux-2.6-working/kernel/exit.c:787
+[<c001c8f8>] (dump_stack+0x0/0x14) from [<c002f9d0>] (do_exit+0x44/0xb0c)
+[<c002f98c>] (do_exit+0x0/0xb0c) from [<c00304b8>] (sys_exit+0x0/0x18)
+[<c0030498>] (complete_and_exit+0x0/0x20) from [<c00a4c30>]
+(jffs2_garbage_collect_thread+0x124/0x12c)
+[<c00a4b0c>] (jffs2_garbage_collect_thread+0x0/0x12c) from [<c002f98c>]
+(do_exit+0x0/0xb0c)
+ r6 = 00000000  r5 = 00000000  r4 = 00000000
 
-> >
-> > This way we can avoid the storm and in the meantime adjust WL. It's
-> > true that at this time the user request(create, write, delete) will
-> > progress slower than usual. But at this time point, we have to slightly
-> > prefer WL because the erase_count gap between erase blocks has became
-> > too large.
->
->I had the same idea:
->
->static int pick_used_block(void)
->{
->	static atomic_t seqno = 99;
->
->	if ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) < 2)
->		return 0;
->
->	/* it is time to pick a used block - just not too often */
->	atomic_inc(seqno);
->	if (atomic_read(seqno) != 0)
->		return 0;
->
->	/* first pick after mount and every 100th pick afterwards */
->	return 1;
->}
->
+This is the WARN_ON(atomic_read(&tsk->fs_excl)); in do_exit().
 
-But it'll pick a block from used_block_hash_table only with 1% possibility.
-Do you think this 1% possibility is too small? How about 10% or 20%?
+I can't work out where .fs_excl is being set though.  It doesn't seem to
+be anywhere in the JFFS2 code.
 
+David Vrabel
+-- 
+David Vrabel, Design Engineer
 
-Thanks,
-Forrest
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
