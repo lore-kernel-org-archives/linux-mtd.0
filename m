@@ -1,27 +1,20 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDrF2-0003O8-IL
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 18:21:12 -0400
-Date: Sat, 10 Sep 2005 00:20:40 +0200
+	id 1EDrYM-0003jI-QJ
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 18:41:14 -0400
+Date: Sat, 10 Sep 2005 00:40:57 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-Message-ID: <20050909222040.GA5358@wohnheim.fh-wedel.de>
-References: <43008129.2060303@inf.u-szeged.hu> <43008BFB.502@yandex.ru>
-	<4300970E.2090803@inf.u-szeged.hu> <43009AE1.6010907@yandex.ru>
-	<4301A259.3090304@yandex.ru>
-	<1126186364.28995.10.camel@hades.cambridge.redhat.com>
-	<43203E13.3080204@yandex.ru>
-	<20050908184326.GE20668@wohnheim.fh-wedel.de>
-	<1126270658.4491.8.camel@windu.rchland.ibm.com>
-	<4321894C.8050809@yandex.ru>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050909224057.GC5358@wohnheim.fh-wedel.de>
+References: <20050909073302.GB19251@wohnheim.fh-wedel.de>
+	<BAY17-F31EF04DBBF374276A00682E8980@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4321894C.8050809@yandex.ru>
-Cc: zhao_fusheng@hotmail.com, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 eraseblock header
+In-Reply-To: <BAY17-F31EF04DBBF374276A00682E8980@phx.gbl>
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]enhanced wear-leveling algorithm based on erase count
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 September 2005 17:08:28 +0400, Artem B. Bityuckiy wrote:
-> Josh Boyer wrote:
+On Fri, 9 September 2005 17:17:10 +0800, zhao forrest wrote:
 > >
-> >In any case, would you please bump the overall version of JFFS2 if this
-> >change is made?  I don't mean "JFFS3", I mean "JFFS2 version 2.3" or
-> >similar.  See super.c line 320 for where I'm talking about.
-> Agree, this should be done. I also offered to introduce a version number 
-> byte to the erasebloch header. This is somewhat ugly but will help to 
-> quickly recognize the JFFS2 image version. In future this will help us.
+> >I had the same idea:
+> >
+> >static int pick_used_block(void)
+> >{
+> >	static atomic_t seqno = 99;
+> >
+> >	if ((index_of_highest_filled_bucket - index_of_lowest_filled_bucket) 
+> >	< 2)
+> >		return 0;
+> >
+> >	/* it is time to pick a used block - just not too often */
+> >	atomic_inc(seqno);
+> >	if (atomic_read(seqno) != 0)
+> >		return 0;
+> >
+> >	/* first pick after mount and every 100th pick afterwards */
+> >	return 1;
+> >}
+> 
+> But it'll pick a block from used_block_hash_table only with 1% possibility.
+> Do you think this 1% possibility is too small? How about 10% or 20%?
 
-All right, you win.  Can you bump the version to 2.3?
+1% should be good enough.  That's about what we use now, after all.
+
+We need to make sure that static blocks that never accumulate much
+garbage and thus never get GC'd otherwise get shaken up once in a
+while.  After such a shakeup, they get filled with other data.  Data
+that is obsoleting faster, so the erase block in question will
+naturally get reused again.
+
+In the worst case, the filesystem has 5 blocks to accumulate garbage
+(the spare ones) and everything else static.  That means, each of the
+5 blocks will get erased 20 times until a static block gets mixed into
+the bunch and one of the dynamic blocks turns static.  More than good
+enough, .1% would still be plenty.
+
+What you could do to improve things further is seperate data between
+probably-static and probably-dynamic.  Then have two erase blocks to
+write into, one for static data, one for dynamic.  Always pick the
+highest erase count free block for static data - it will likely not
+get reused for a while.  Whenever picking a used block, fill it with
+dynamic data.
 
 Jörn
 
 -- 
-tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
--- Thomas Gleixner
+"[One] doesn't need to know [...] how to cause a headache in order
+to take an aspirin."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
