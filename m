@@ -1,30 +1,24 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EDhXL-0004Vk-6I
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 07:59:27 -0400
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1EDhXH-0005uY-J8
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 13:59:15 +0200
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.0.0.59) with SMTP id
-	M2005090913591516030
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Sep 2005 13:59:15 +0200
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1EDhXH-0005uV-Fk
-	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 13:59:15 +0200
-Received: from [160.114.36.214] (kpax.inf.u-szeged.hu [160.114.36.214])
-	by mail.inf.u-szeged.hu (Postfix) with ESMTP id 5DE1C23969
-	for <linux-mtd@lists.infradead.org>;
-	Fri,  9 Sep 2005 13:59:15 +0200 (CEST)
-Message-ID: <43217913.106@inf.u-szeged.hu>
-Date: Fri, 09 Sep 2005 13:59:15 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1EDiCh-0005JD-Hs
+	for linux-mtd@lists.infradead.org; Fri, 09 Sep 2005 08:42:19 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.114.148])
+	(envelope-sender <priewasser@gmail.com>)
+	by smtprelay03.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 9 Sep 2005 12:41:58 -0000
+Message-ID: <43218312.4030809@gmail.com>
+Date: Fri, 09 Sep 2005 14:41:54 +0200
+From: Bernhard Priewasser <priewasser@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2
+To: Josh Boyer <jdub@us.ibm.com>
+References: <Pine.LNX.4.63.0509010640030.4232@cayuga>	<Pine.LNX.4.63.0509010658080.4522@cayuga>
+	<1125579365.27733.0.camel@windu.rchland.ibm.com>
+In-Reply-To: <1125579365.27733.0.camel@windu.rchland.ibm.com>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: hardware
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
+	"Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: what's up with ftp://ftp.uk.linux.org??
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,13 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+> At the moment, nowhere.
 
-Until now we was developed JFFS2 without real flash - only using
-emulators (mtdram and nandsim). Now we decided to buy a real stuff.
-
-Please suggest us some development board (or similar thing) which have
-good linux and mtd support and uses NAND flash.
+Hm, why?
+I have exactly the same problem as Robert (since CVS is blocked here).
 
 Thanks,
-Ferenc
+Bernhard
