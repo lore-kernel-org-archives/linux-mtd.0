@@ -1,27 +1,12 @@
-Received: from [61.95.205.91] (helo=mail.ncoretech.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EE3l2-00021R-6r
-	for linux-mtd@lists.infradead.org; Sat, 10 Sep 2005 07:43:05 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.ncoretech.com (Postfix) with ESMTP id 426C95FFE8
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 10 Sep 2005 17:29:58 +0530 (IST)
-Received: from mail.ncoretech.com ([127.0.0.1])
-	by localhost (mail.ncoretech.com [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 14238-03 for <linux-mtd@lists.infradead.org>;
-	Sat, 10 Sep 2005 17:29:57 +0530 (IST)
-Received: from ncoretech.com (ws192.ncoretech.com [192.168.1.192])
-	by mail.ncoretech.com (Postfix) with ESMTP id EA2CC5FFAB
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 10 Sep 2005 17:29:56 +0530 (IST)
-Message-ID: <4322C6D6.2010805@ncoretech.com>
-Date: Sat, 10 Sep 2005 17:13:18 +0530
-From: ramprasad <ramprasad@ncoretech.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Date: Sat, 10 Sep 2005 02:38:56 -0400 (EDT)
+Message-Id: <200509100638.j8A6cuT62864@nwsolutions.webair.com>
+To: 
+From: "Mr. Olsom Berghart" <meil123@eresmas.com>
+CC: 
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: Samsung nand flash on pxa
+Subject: Business offer
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,126 +16,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-	I am working on 2.6.12 kernel with the latest mtdsnap shot.I have 
-Samsung nand chip K9F1208UoM and it is on GPIO.Nand chip is detecting 
-and i am able to mount also. when i mount i get this error messages ,but 
-it mounts.
 
-BOOT messages....
+Gooday, 
 
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB 
-3,3V 8-bit)
-Scanning device for bad blocks
-Bad eraseblock 0 at 0x00000000
-Bad eraseblock 185 at 0x002e4000
-cmdlinepart partition parsing not available
-Using static partition definition
-Creating 2 MTD partitions on "edb7312-nand":
-0x00000000-0x00800000 : "EP7312 Nand Flash"
-mtd: Giving out device 4 to EP7312 Nand Flash
-0x00800000-0x04000000 : "EP7312 Nand Flash"
-mtd: Giving out device 5 to EP7312 Nand Flash
-pxa2xx_udc: version 14-Dec-2003
+I am Mr Olsom Berghart a personal treasurer to Mikhail Khodorkovsky the richest man in Russia and owner of the following companies:Chairman CEO: YUKOS OIL (Russian Most Largest Oil Company)Chairman CEO: Menatep SBP Bank (A well reputable financial institution with its branches all over the world) 
 
+SOURCE OF FUNDS: 
+I have a profiling amount in an excess of US$100.5M, which I seek your partnership in accommodating for me. You will be rewarded with 4% of the total sum for your partnership. Can you be my partner on this? 
 
-Mount messages.....
+INTRODUCTION OF MY SELF: 
+As a personal consultant to him, authority was handed over to me in transfer of money of an American oil merchant for his last oil deal with my boss Mikhail Khodorkovsky. Already the funds have left the shore of Russia to an European private bank where the final crediting is expected to be carried out. While I was on the process, My Boss got arrested for his involvement in politics by financing the leading and opposing political parties (the Union of Right Forces, led by Boris Nemtsov, and Yabloko, a liberal/social democratic party led by Gregor Yavlinsky) which poses treat to President Vladimir Putin second tenure as Russian president. 
 
-#mount -t jffs2 /dev/mtdblock4 /mnt/cf/
+You can catch more of the story on this website: 
+http://www.opendemocracy.net/debates/article-3-56-1409.jspor 
+http://newsfromrussia.com/main/2003/11/13/51215.html 
 
-nand_read_ecc: Failed ECC read, page 0x000000e0
-nand_read_ecc: Failed ECC read, page 0x000000e0
-mtd->read(0x400 bytes from 0x1c000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x00000120
-nand_read_ecc: Failed ECC read, page 0x00000120
-mtd->read(0x400 bytes from 0x24000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x000001c0
-mtd->read(0x400 bytes from 0x38000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x000002e0
-nand_read_ecc: Failed ECC read, page 0x000002e0
-mtd->read(0x400 bytes from 0x5c000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x00000320
-nand_read_ecc: Failed ECC read, page 0x00000320
-mtd->read(0x400 bytes from 0x64000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x000003c0
-mtd->read(0x400 bytes from 0x78000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x000004e0
-nand_read_ecc: Failed ECC read, page 0x000004e0
-mtd->read(0x400 bytes from 0x9c000) returned ECC error
-nand_read_ecc: Failed ECC read, page 0x00000520
-nand_read_ecc: Failed ECC read, page 0x00000520
-mtd->read(0x400 bytes from 0xa4000) returned ECC error
+YOUR ROLE: 
+All I need from you is to stand as the beneficiary of the above quoted sum and I will re-profile the funds with your name, which will enable the European bank transfer the sum to you. I have decided to use this sum to relocate to American continent and never to be connected to any of Mikhail Khodorkovsky conglomerates. 
 
-NAND write gives me this......
+The transaction has to be concluded in 2 weeks before Mikhail Khodorkovsky is out on bail. As soon as I confirm your readiness to conclude the transaction with me, I will provide you with the details. Thank you very much. 
 
-./nandwrite -j -f /dev/mtd4 nand.jffs2
+Regards,
+Olsom Berghart(Mr) 
 
-MTD_open
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-Writing data to block 0
-MTD_ioctl
-Bad block at 0, 1 block(s) from 0 will be skippedMTD_ioctl
- 
-
-Writing data to block 4000
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
-MTD_write
+NB: Please contact me through this secure email: berolsom@indiatimes.com 
 
 
-NANDTEST gives me this
-
-
-[root@Sarva /root]#./nandtest /dev/mtd4
-MTD_open
-MTD_ioctl
-This will erase the first block of device, continue? y
- 
-
-Performing Flash Erase of length 16384 at offset 0...MTD_ioctl
- 
-
-nand_erase: Device is write protected!!!
- 
-
-MTD Erase failure
-: Input/output errorMTD_close
- 
-
-[root@Sarva /root]#./nandtest /dev/mtd4
-MTD_open
-MTD_ioctl
-This will erase the first block of device, continue? y
- 
-
-Performing Flash Erase of length 16384 at offset 0...MTD_ioctl
- 
-
-nand_erase: attempt to erase a bad block at page 0x00000000
- 
-
-MTD Erase failure
-: Input/output errorMTD_close
- 
-
-
-
-After mounting if i try to write any thing it writes ,when i REBOOT the 
-system nothing remains on the chip.Could  any body give me some pointers.
-
-Thanks in advance,
-Ramprasad
+___________________________________________________________________________
