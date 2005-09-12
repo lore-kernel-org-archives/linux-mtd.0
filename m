@@ -1,19 +1,19 @@
-Received: from xrelay04.mail2web.com ([168.144.1.50])
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EEoGa-0001PR-Iv
-	for linux-mtd@lists.infradead.org; Mon, 12 Sep 2005 14:22:38 +0100
-Received: from [168.144.251.131] (helo=M2W027.mail2web.com)
-	by xrelay04.mail2web.com with smtp (Exim 4.50) id 1EEoG5-00048R-Pi
-	for linux-mtd@lists.infradead.org; Mon, 12 Sep 2005 09:22:07 -0400
-Message-ID: <380-22005911213225774@M2W027.mail2web.com>
-From: "chandrasekar@aelixsystems.com" <chandrasekar@aelixsystems.com>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 12 Sep 2005 09:22:05 -0400
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EEqq2-0002wh-QI
+	for linux-mtd@lists.infradead.org; Mon, 12 Sep 2005 12:07:34 -0400
+Message-ID: <4325A7F0.30303@ru.mvista.com>
+Date: Mon, 12 Sep 2005 20:08:16 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Subject: Reg. Nand Flash - large page(2112 bytes)
-Reply-To: chandrasekar@aelixsystems.com
+To: Martin Waitz <tali@admingilde.org>
+References: <20050912151244.3e512086.vwool@ru.mvista.com>
+	<20050912152436.GR12535@admingilde.org>
+In-Reply-To: <20050912152436.GR12535@admingilde.org>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] power management for NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Martin,
+
+Exactly. We should.
+But prior to shut off the clock/power down the flash we need to put the 
+flash driver into the corresponding state (suspended).
+
+Thus, a typical suspend (pseudo) code for NAND flash will look the 
+following way:
+
+static int chip_nand_suspend(struct device *dev, u32 state, u32 level)
+{
+        int retval = 0;
+
+#ifdef CONFIG_PM
+        struct mtd_info *mtd = dev_get_drvdata(dev);
+        if (mtd && mtd->suspend && level == SUSPEND_SAVE_STATE) {
+                retval = mtd->suspend(mtd);
+                if (retval == 0) {
+                        /* shut off the clocks and power down the 
+controller here */
+                }
+        }
+#endif
+        return retval;
+}
+
+with a resume routine doing just the oppsite.
 
 
-Hi,
-    I m working on armboot bootloader=2E I m trying to access the large
-page(2112 bytes) NAND Flash from the bootloader=2E I had succeeded in writ=
-ing
-a small pattern to test erase, write and read the flash=2E I dont have any=
+Hope that clarifies the whole thing :)
 
-idea abt checking ECC for the same=2E If anyone have worked on the same ie=
-=2E,
-the modification of the code to support large page nand flash, please give=
+Best regards,
+   Vitaly
 
-me some suggestions=2E FYI my present code supports NAND flash woth page s=
-ize
-528 bytes=2E=20
-    I would be very grateful if any of you could suggest me as of where
-exactly I m going wrong=3F
+Martin Waitz wrote:
 
-    regards,
-    chandru=2E
-
---------------------------------------------------------------------
-mail2web - Check your email from the web at
-http://mail2web=2Ecom/ =2E
+>hoi :)
+>
+>On Mon, Sep 12, 2005 at 03:12:44PM +0400, Vitaly Wool wrote:
+>  
+>
+>>the patch inlined below allows to suspend/resume NAND flash.
+>>    
+>>
+>
+>shouldn't we call the board driver while suspending,
+>to allow to actually power down the NAND flash?
+>
+>  
+>
