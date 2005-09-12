@@ -1,18 +1,23 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EF9Rr-0006CA-JG
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 08:00:21 -0400
-Message-ID: <4326BF19.40806@inf.u-szeged.hu>
-Date: Tue, 13 Sep 2005 13:59:21 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: zhao forrest <zhao_fusheng@hotmail.com>
-References: <BAY17-F5764D8A5D6C706B910F94E89C0@phx.gbl>
-In-Reply-To: <BAY17-F5764D8A5D6C706B910F94E89C0@phx.gbl>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from admingilde.org ([213.95.32.146] helo=mail.admingilde.org)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EEtD1-0004N7-3v
+	for linux-mtd@lists.infradead.org; Mon, 12 Sep 2005 14:39:22 -0400
+Date: Mon, 12 Sep 2005 20:39:13 +0200
+From: Martin Waitz <tali@admingilde.org>
+To: Vitaly Wool <vwool@ru.mvista.com>
+Message-ID: <20050912183912.GS12535@admingilde.org>
+References: <20050912151244.3e512086.vwool@ru.mvista.com>
+	<20050912152436.GR12535@admingilde.org>
+	<4325A7F0.30303@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="TRkqPRiqIDKgfg/F"
+Content-Disposition: inline
+In-Reply-To: <4325A7F0.30303@ru.mvista.com>
+Sender: "Martin Waitz, Lachnerstrasse 65, +49 179 8230 463, +49 9131 6878391,
+	91058 Erlangen" <martin@mail.admingilde.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Should we put jffs2_sum_marker into eraseblock_header?
+Subject: Re: [PATCH] power management for NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +27,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-zhao forrest wrote:
-> When writing the eraseblock_header patch, I found the current
-> summary patch in MTD CVS place jffs2_sum_marker at the end of
-> each erase block. Since jffs2_sum_marker is a per-eraseblock
-> structure, should we put it into eraseblock_header when the
-> eraseblock_header patch is ready in the future?
 
-The information which is stored in the sum_marker is avaiable only at 
-the time when the the erase block is under closing. (it is the time when 
-we store the summary infromation and we know its size)
+--TRkqPRiqIDKgfg/F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If the eraseblock_header can be changed at that time than OK, otherwise 
-it is not helpfull for summary purposes.
+hoi :)
 
-Ferenc
+On Mon, Sep 12, 2005 at 08:08:16PM +0400, Vitaly Wool wrote:
+> Hope that clarifies the whole thing :)
+
+yeah, thanks a lot.
+now it's clear how to integrate it into drivers.
+
+--=20
+Martin Waitz
+
+--TRkqPRiqIDKgfg/F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
+
+iD8DBQFDJctQj/Eaxd/oD7IRAjJOAJ9kg8jvS0VYLeRR+3SvEkEnbTSWNwCfRV3o
+434lPfeE+iLmQ0a1r+FrAWI=
+=RHZz
+-----END PGP SIGNATURE-----
+
+--TRkqPRiqIDKgfg/F--
