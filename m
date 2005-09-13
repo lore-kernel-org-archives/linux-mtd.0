@@ -1,18 +1,21 @@
 Received: from mx1.cdacindia.com ([203.199.132.35] helo=mailx.cdac.ernet.in)
 	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EF4jM-0001AB-FW
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 02:58:13 -0400
+	id 1EF5OV-0001te-JX
+	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 03:40:04 -0400
 Received: from mailhub.cdac.in ([196.1.109.254])
 	by mailx.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005091312264229980
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:26:42 +0530
+	M2005091313094931247
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 13:09:49 +0530
 Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j8D6u5PT007795
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:26:05 +0530
-Date: Tue, 13 Sep 2005 12:26:04 +0530 (IST)
+	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j8D79nuM013803
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:39:51 +0530
+Received: from mailhub.cdac.in (mailhub [196.1.109.254])
+	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j8D6gPtW001793
+	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:12:25 +0530
+Date: Tue, 13 Sep 2005 12:12:24 +0530 (IST)
 To: <linux-mtd@lists.infradead.org>
 From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1126594564.33471@cdac.in>
+Message-ID: <twig.1126593744.74079@cdac.in>
 Subject: "Perhaps the file system was created with the wrong erasesize"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
