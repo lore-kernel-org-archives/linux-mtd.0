@@ -1,22 +1,26 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mailx.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EF5OV-0001te-JX
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 03:40:04 -0400
-Received: from mailhub.cdac.in ([196.1.109.254])
-	by mailx.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005091313094931247
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 13:09:49 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j8D79nuM013803
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:39:51 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id j8D6gPtW001793
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Sep 2005 12:12:25 +0530
-Date: Tue, 13 Sep 2005 12:12:24 +0530 (IST)
-To: <linux-mtd@lists.infradead.org>
-From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1126593744.74079@cdac.in>
-Subject: "Perhaps the file system was created with the wrong erasesize"
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=mail.magtech.com.au)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EF6QM-0002ot-GR
+	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 04:46:01 -0400
+Received: from mail.magtech.com.au (localhost [127.0.0.1])
+	by localhost.magtech.com.au (Postfix) with ESMTP id 782BC8948BB
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Sep 2005 18:45:45 +1000 (EST)
+Received: from [192.168.65.196] (unknown [192.168.65.196])
+	by mail.magtech.com.au (Postfix) with ESMTP id 32A318948BB
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Sep 2005 18:45:44 +1000 (EST)
+Message-ID: <432691B7.5040804@magellan-technology.com>
+Date: Tue, 13 Sep 2005 18:45:43 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+References: <43267172.20702@magellan-technology.com>
+In-Reply-To: <43267172.20702@magellan-technology.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2+NAND problem in 2.6.13-at91
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,38 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Aras Vaichas wrote:
+> Hi,
+> 
+> I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
+> problems whatsoever with using JFFS2 on NAND.
+> 
+> I recently upgraded to 2.6.13 and now JFFS2 on NAND seems a little broken ...
 
-I am a newbie in this MTD field so perhaps my question might sound a bit
-outdated.
+<SNIP>
 
-actually i was emulate the compact flash as mtd device, when i try to
-mount jffs2 as an ordinary filesystem it is not working. it did work for a
-Harddisk partition but when i used the same set of command to make the
-same image on a compact flash through USB /dev/sdb2 things are not
-working, mount is not sucessfull and i get the following msg :
+> This sounds like some sort of timing issues to me if switching on debugging
+> output causes the system to start working.
 
-empty flash at 0X004C8BFC ends at 0X004C8C00
-CLEANMAKER node found at 0X004c8C00 not first node in block
-node at 0X004CFFE4 with length 0X0000063C would run over the end of the
-erase block
+I did a quick experiment and I added a 1ms delay at the end of each command as
+a test and it "fixes" the problem.
 
-Perhaps the filesystem was created with the wrong erasesize?
+in at91_nand.c:at91_nand_command()
 
-Eep. Child "msg.h".......................
+        /* wait until command is processed */
+        while (!my_nand->dev_ready(mtd))
+                ;
 
-i am using linux kernel 2.6.12 with mtd support and relevant modules
-compiled in kernel and BLKMTD as a loadable Kernel module
+        msleep(1);
+}
 
-while insmod i am also specifying erase size as 64....
-i had tried diff permutations of erasesize with insmod and the eraseblock
-of mkfs.jffs2 command but the system hangs for CF and works fine in case
-of harddisk 
-i think many of you all must have gone through this one, i tried to get
-around but i am in vain.
+But of course scanning and mounting now takes a very long time and this
+obviously isn't a permanent fix but it might help to locate where the problem
+code is.
 
-someone help!!
--- 
-Nikhil Shirodkar
-Project Engineer
-NISG, CDAC
+Does this prove that it's a timing problem? perhaps some race condition?
+
+regards,
+
+Aras Vaichas
