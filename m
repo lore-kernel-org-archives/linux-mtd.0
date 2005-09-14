@@ -1,24 +1,15 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFVys-0003yS-A8
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:03:23 -0400
-Date: Wed, 14 Sep 2005 14:03:09 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Marius Groeger <mgroeger@sysgo.com>
-Message-ID: <20050914120309.GB25468@wohnheim.fh-wedel.de>
-References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
-	<20050913230631.GB29579@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0509140900250.18636@mag.sysgo.com>
-	<20050914092634.GB22847@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0509141136040.12001@mag.sysgo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.63.0509141136040.12001@mag.sysgo.com>
-Cc: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: Silent GCC4.0 warning
+Received: from www.mw-itcon.de ([213.146.115.73])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFW4c-0004BW-3C
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:09:25 -0400
+Message-ID: <432812E8.2030807@mw-itcon.de>
+Date: Wed, 14 Sep 2005 14:09:12 +0200
+From: Peter Menzebach <pm-mtd@mw-itcon.de>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: data  loss on jffs2 filesystem on dataflash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +19,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 September 2005 12:04:48 +0200, Marius Groeger wrote:
-> 
-> I know I'm quite religous here, and my point isn't really who's using
-> something else than GCC today -- I grant you that this is quite unlikely.
-> Experience shows however that you never know in what context you will have
-> to reuse a specific piece of software, so if your write it portable in the
-> first place, you're always safe.
+Hi,
+I loose files, which I write on a jffs2 filesystem.
 
-My experience is that you cannot anticipate the problem coming up in
-the future.  Next hardware revision will have unbelievable bugs, next
-OS/compiler/etc. you port to just the same.
+I start with a freshly erased mtd partition. Then I start the following 
+sequence:
 
-"if your write it portable in the first place" sounds nice, but noone
-really knows what that means, before the acid test happens.
+mount /conf
+echo aaa > /conf/aaa
+echo aaa > /conf/aaa
+umount /conf
+mount /conf
 
+After remounting, the file gets lost (I think because the GC removes the 
+inode). I use kernel 2.6.13 with mtd out of cvs of today.
+The machine is a AT91RM9200 with a serial dataflash. I used already
+jffs2 (most time readonly) as rootfs here for months without problems. 
+The only specialty is, that the dataflash has a unfamiliar erase size of 
+8448 bytes.
 
-Back to the original topic, we really need to do something about the
-warnings.  Most of them can be solved by using void* for the "just a
-hunk of memory" type fields.
+Maybe someone can give me a pointer, what might be wrong.
 
-Jörn
+Best regards
+Peter
+
+Here a log of the problem:
+(The lines PM: are write and erase logs at the mtd device)
+
+mount /conf
+JFFS2 write-buffering enabled (8448)
+[JFFS2 DBG] (109) __jffs2_dbg_dump_block_lists_nolock: dump JFFS2 blocks 
+lists:
+[JFFS2 DBG] (109) __jffs2_dbg_dump_block_lists_nolock: dump JFFS2 blocks 
+lists:
+[JFFS2 DBG] (109) jffs2_do_read_inode: read inode #1
+[JFFS2 DBG] (109) jffs2_do_read_inode: creating inocache for root inode
+[JFFS2 DBG] (109) jffs2_add_ino_cache: add c0e213c4 (ino #1)
+[JFFS2 DBG] (109) jffs2_do_read_inode_internal: ino #1 nlink is 1
+[JFFS2 DBG] (109) jffs2_get_inode_nodes: ino #1
+[JFFS2 DBG] (109) jffs2_get_inode_nodes: nodes of inode #1 were read, 
+the highest version is 0, latest_mctime 3221420188, mctime_ver 0.
+[root@armbox /root]$echo  aaa > /conf/aaa
+[JFFS2 DBG] (94) jffs2_add_ino_cache: add c0e213dc (ino #2)
+[JFFS2 DBG] (94) jffs2_add_fd_to_list: add dirent "aaa", ino #2
+[JFFS2 DBG] (111) jffs2_add_full_dnode_to_inode: adding node 0x00-0x04 
+@0x006a1770 on flash, newfrag *c0f343b8
+[root@armbox /root]$
+jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they all?
+jffs2: Couldn't find erase block to garbage collect!
+PM: dataflash_write: 8574720 .. 8583168
+
+[root@armbox /root]$echo aaa > /conf/aaa
+[JFFS2 DBG] (94) jffs2_truncate_fragtree: truncating fragtree to 
+0x00000000 bytes
+[JFFS2 DBG] (112) jffs2_add_full_dnode_to_inode: adding node 0x00-0x04 
+@0x006a17fc on flash, newfrag *c0f343b8
+[root@armbox /root]$jffs2: No clean, dirty _or_ erasable blocks to GC 
+from! Where are they all?
+jffs2: Couldn't find erase block to garbage collect!
+PM: dataflash_write: 8574720 .. 8583168
+
+[root@armbox /root]$umount /conf
+[JFFS2 DBG] (113) jffs2_kill_fragtree: killing
+[root@armbox /root]$mount /conf
+JFFS2 write-buffering enabled (8448)
+[JFFS2 DBG] (114) jffs2_scan_eraseblock: no summary found in jeb 
+0x006a1700. Apply original scan.
+[JFFS2 DBG] (114) jffs2_add_ino_cache: add c0f933c4 (ino #2)
+[JFFS2 DBG] (114) __jffs2_dbg_dump_block_lists_nolock: dump JFFS2 blocks 
+lists:
+[JFFS2 DBG] (114) __jffs2_dbg_dump_block_lists_nolock: dump JFFS2 blocks 
+lists:
+[JFFS2 DBG] (114) jffs2_do_read_inode: read inode #1
+[JFFS2 DBG] (114) jffs2_do_read_inode: creating inocache for root inode
+[JFFS2 DBG] (114) jffs2_add_ino_cache: add c0f933ac (ino #1)
+[JFFS2 DBG] (114) jffs2_do_read_inode_internal: ino #1 nlink is 1
+[JFFS2 DBG] (114) jffs2_get_inode_nodes: ino #1
+[JFFS2 DBG] (114) jffs2_get_inode_nodes: nodes of inode #1 were read, 
+the highest version is 0, latest_mctime 3221420188, mctime_ver 0.
+[JFFS2 DBG] (8) jffs2_del_ino_cache: del c0f933c4 (ino #2)
+
+PM: dataflash_erase: addr=8574720 len=8448
 
 -- 
-To announce that there must be no criticism of the President, or that we
-are to stand by the President, right or wrong, is not only unpatriotic
-and servile, but is morally treasonable to the American public.
--- Theodore Roosevelt, Kansas City Star, 1918
+Peter Menzebach
+Menzebach und Wolff IT-Consulting GbR
+Phone +49 751 355 387 1
