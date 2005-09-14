@@ -1,21 +1,20 @@
-Received: from mail.sysgo.com ([62.8.134.5])
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFRKx-0008Ls-Gl
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 03:05:55 -0400
-Date: Wed, 14 Sep 2005 09:05:31 +0200 (CEST)
-From: Marius Groeger <mgroeger@sysgo.com>
-Sender: mag@sysgo.com
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050913230631.GB29579@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.63.0509140900250.18636@mag.sysgo.com>
-References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
-	<20050913230631.GB29579@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: Silent GCC4.0 warning
+	id 1EFRMA-0008P8-D8
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 03:08:28 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+In-Reply-To: <BAY17-F15A89BAEF117B1219F73ACE89C0@phx.gbl>
+References: <BAY17-F15A89BAEF117B1219F73ACE89C0@phx.gbl>
+Content-Type: text/plain
+Date: Wed, 14 Sep 2005 09:06:44 +0200
+Message-Id: <1126681604.6509.223.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: A question about fsdata_pos and fsdata_len
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Sep 2005, J=F6rn Engel wrote:
+On Tue, 2005-09-13 at 18:24 +0800, zhao forrest wrote:
+> 1 In jffs2_nand_set_oobinfo():
+> c->fsdata_pos = oinfo->oobfree[0][0];
+> c->fsdata_len = oinfo->oobfree[0][1];
+> 2 In line 88 of nand_base.c
+> static struct nand_oobinfo nand_oob_8 = {
+> 	.useecc = MTD_NANDECC_AUTOPLACE,
+> 	.eccbytes = 3,
+> 	.eccpos = {0, 1, 2},
+> 	.oobfree = { {3, 2}, {6, 2} }
+> };
+> so for this kind of NAND flash, c->fsdata_len is 2.
+> 3 but in jffs2_write_nand_cleanmarker(), it's assumed that
+> c->fsdata_len is at least 8
+> n.totlen = cpu_to_je32(8);
 
-> Rejected.  Examplary reasons below...
+If you look at the clean marker code in wbuf.c you will see, that the
+code restricts itself to the available number of oob bytes. I would not
+care much about the 256 Byte/Page NANDs as they are obsolete and not
+longer available. The relevant chips are 512 resp 2048 Bytes/Page, where
+you have 8/38 byte free in the oob area. 
 
-Unless you feel your comments are insignificant, please don't put them=20
-below the sigdashes "-- <NL>". Otherwise good Mailers will strip them=20
-in the reply.
+We really should modify the oob read/write code to take another argument
+to be capable of handling the scattered
+AUTOPLACE byte positions rather than enforcing the caller (usually
+filesystem) to deal with the raw oob. So the fs code has just to check
+for the number of available bytes and read/write the oob data in/from a
+contigous buffer. The modified read/write_oob does the scattering
+into/from the autoplace information provided by the oob_info. 
 
-> In principle, I'd like a patch to silence gcc warnings.  But only when
-> the patch actually improves code quality.  If I get to choose between
-> bad code and compiler warnings, I'll pick the warning.
-[...]
-> > -                     unsigned long *datum =3D ebuf + i;
-> > +                     unsigned long *datum =3D (unsigned long *)((char*=
-)
-> ebuf + i);
->=20
-> Arithmetic with void* pointers is one of the best gcc extensions.  Use
-> it!  The above is obviously correct, while below makes my brain rotate
-> around itself at dangerous speed.
-
-If I get to choose between portable code and some remote developers=20
-brain rotation, I'll pick the portable code. :-)
-
-Regards,
-Marius
-
---=20
-Marius Groeger <mgroeger@sysgo.com>
-SYSGO AG                      Embedded and Real-Time Software
-Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
-www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
+tglx
