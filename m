@@ -1,19 +1,27 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFJrH-0004hS-Cv
-	for linux-mtd@lists.infradead.org; Tue, 13 Sep 2005 19:06:42 -0400
-Date: Wed, 14 Sep 2005 01:06:31 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>
-Message-ID: <20050913230631.GB29579@wohnheim.fh-wedel.de>
-References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <005e01c5b882$9b318420$0100000a@LuCyFir3>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Silent GCC4.0 warning
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=mail.magtech.com.au)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFOky-0007AO-Vj
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 00:20:33 -0400
+Received: from mail.magtech.com.au (localhost [127.0.0.1])
+	by localhost.magtech.com.au (Postfix) with ESMTP id F3546896F4D
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Sep 2005 14:20:09 +1000 (EST)
+Received: from [192.168.65.196] (unknown [192.168.65.196])
+	by mail.magtech.com.au (Postfix) with ESMTP id 23B83896F4D
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Sep 2005 14:20:09 +1000 (EST)
+Message-ID: <4327A4F8.60300@magellan-technology.com>
+Date: Wed, 14 Sep 2005 14:20:08 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+References: <43267172.20702@magellan-technology.com>
+	<432691B7.5040804@magellan-technology.com>
+In-Reply-To: <432691B7.5040804@magellan-technology.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Subject: Re: JFFS2+NAND problem in 2.6.13-at91
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,92 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 13 September 2005 18:45:41 +0200, Sébastien Couret wrote:
+Aras Vaichas wrote:
+> Aras Vaichas wrote:
 > 
-> I'm not used to post to this mailing list as i use jffs2 with ecos.
-> 
-> Here are JFFS2 patches to silent gcc 4.0 warnings.
+>>Hi,
+>>
+>>I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
+>>problems whatsoever with using JFFS2 on NAND.
+>>
+>>I recently upgraded to 2.6.13 and now JFFS2 on NAND seems a little broken ...
 
-Rejected.  Examplary reasons below...
+Jian Zhang wrote:
 
-In principle, I'd like a patch to silence gcc warnings.  But only when
-the patch actually improves code quality.  If I get to choose between
-bad code and compiler warnings, I'll pick the warning.
+> i turn off debugging information( only MTD_DEBUG_LEVEL3) in nand_read_ecc( ),
+> nand_write_ecc( ),nand_read_oob( ),nand_write_oob( ) which contained in
+nand_base.c
+> seperately. eventually,i found that it works well except turning off debugging
+> info in nand_read_oob( ).so i insert  3us delay in this routine.
 
-Jörn
+Thanks for the hint, I've got my NAND working again.
 
--- 
-Data expands to fill the space available for storage.
--- Parkinson's Law
+I did a diff between the nand_base.c version shipped with 2.6.13 (v1.147) and
+2.6.12-rc1 (v1.138) and noticed that a delay loop had been moved further down
+the code, I moved this delay back to where it was in v1.138 and it is now
+working again. i assume that there was a probably a good reason to move this
+delay in the first place though and I don't wish to break anything else ...
 
-> -	init_pushpull(&rs.pp, cpage_out, *dstlen * 8, 0, 32);
-> +	init_pushpull(&rs.pp,(char*) cpage_out, *dstlen * 8, 0, 32);
+e.g.
 
-If it was a bug before, it will still be a bug.  Either way, new code
-would be uglier than old.
+--- drivers/mtd/nand/nand_base.c.orig   2005-09-14 13:28:07.000000000 +1000
++++ drivers/mtd/nand/nand_base.c        2005-09-14 13:37:59.000000000 +1000
+@@ -1410,6 +1410,18 @@
+                this->read_buf(mtd, &buf[i], thislen);
+                i += thislen;
 
-Simply adding an explicit cast is *not* a solution.
++
++               /* Apply delay or wait for ready/busy pin
++                * Do this before the AUTOINCR check, so no problems
++                * arise if a chip which does auto increment
++                * is marked as NOAUTOINCR by the board driver.
++                */
++               if (!this->dev_ready)
++                       udelay (this->chip_delay);
++               else
++                       nand_wait_ready(mtd);
++
++
+                /* Read more ? */
+                if (i < len) {
+                        page++;
+@@ -1421,16 +1433,6 @@
+                                this->select_chip(mtd, -1);
+                                this->select_chip(mtd, chipnr);
+                        }
+-
+-                       /* Apply delay or wait for ready/busy pin
+-                        * Do this before the AUTOINCR check, so no problems
+-                        * arise if a chip which does auto increment
+-                        * is marked as NOAUTOINCR by the board driver.
+-                        */
+-                       if (!this->dev_ready)
+-                               udelay (this->chip_delay);
+-                       else
+-                               nand_wait_ready(mtd);
 
-Solution would be to use void* as parameter type for init_pushpull().
-The meaning of the parameter is a chunk of memory, not an array of
-signed or unsigned chars, shorts, ints longs or whatnot.
+                        /* Check, if the chip supports auto page increment
+                         * or if we have hit a block boundary.
 
-> -			unsigned long *datum = ebuf + i;
-> +			unsigned long *datum = (unsigned long *)((char*) ebuf + i);
+Tom, did you want to check this? Should I submit a patch?
 
-Arithmetic with void* pointers is one of the best gcc extensions.  Use
-it!  The above is obviously correct, while below makes my brain rotate
-around itself at dangerous speed.
+regards,
 
-> @@ -352,11 +352,11 @@
->  static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
->  {
->  	struct jffs2_raw_node_ref *marker_ref = NULL;
->  	size_t retlen;
->  	int ret;
-> -	uint32_t bad_offset;
-> +	uint32_t bad_offset=0;
->  
->  	switch (jffs2_block_check_erase(c, jeb, &bad_offset)) {
->  	case -EAGAIN:	goto refile;
->  	case -EIO:	goto filebad;
->  	}
-
-Obviously a false positive.  Gcc should be smart enough to notice that
-jffs2_block_check_erase() - a static function - never reads bad_offset
-before writing to it.
-
->  				    jffs2_flash_write(c, to, sizetomalloc,
-> -						      &thislen, cbuf);
-> +						      &thislen,(unsigned char *) cbuf);
-
-Correct solution would be void* as parameter type for
-jffs2_flash_write().
-
-> -	ret = jffs2_flash_read(c, ref_offset(raw), rawlen, &retlen, (char *)node);
-> +	ret = jffs2_flash_read(c, ref_offset(raw), rawlen, &retlen, (unsigned char *)node);
-
-Dito here.
-
-> -	rd.nsize = strlen(fd->name);
-> +	rd.nsize = strlen((char*)fd->name);
-> -		int name_len = strlen(fd->name);
-> +		int name_len = strlen((char*)fd->name);
-
-We might use char* for fd->name.  Cast is no solution.
-
-> -	ret = jffs2_flash_read(c, ref_offset(ref), sizeof(n), &retlen, (char *)&n);
-> +	ret = jffs2_flash_read(c, ref_offset(ref), sizeof(n), &retlen, (unsigned char *)&n);
-
-void* for jffs2_flash_read() and remove cast from original code.
-
->  static inline void init_pushpull(struct pushpull *pp, char *buf, unsigned buflen, unsigned ofs, unsigned reserve)
-                                                         ^^^^
-Make that "void" instead of below.
->  {
-> -	pp->buf = buf;
-> +	pp->buf = (unsigned char*)buf;
->  	pp->buflen = buflen;
->  	pp->ofs = ofs;
->  	pp->reserve = reserve;
->  }
+Aras Vaichas
