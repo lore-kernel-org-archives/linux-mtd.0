@@ -1,25 +1,18 @@
-Received: from mail.sysgo.com ([62.8.134.5])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFWTU-0004lp-10
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:35:23 -0400
-Date: Wed, 14 Sep 2005 14:34:47 +0200 (CEST)
-From: Marius Groeger <mgroeger@sysgo.com>
-Sender: mag@sysgo.com
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050914120309.GB25468@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.63.0509141426340.26040@mag.sysgo.com>
-References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
-	<20050913230631.GB29579@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0509140900250.18636@mag.sysgo.com>
-	<20050914092634.GB22847@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0509141136040.12001@mag.sysgo.com>
-	<20050914120309.GB25468@wohnheim.fh-wedel.de>
+Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFWTb-0004lr-Eu
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:35:36 -0400
+Message-ID: <432818D2.3080004@yandex.ru>
+Date: Wed, 14 Sep 2005 16:34:26 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: Silent GCC4.0 warning
+To: Aras Vaichas <arasv@magellan-technology.com>
+References: <43267172.20702@magellan-technology.com>
+In-Reply-To: <43267172.20702@magellan-technology.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD-LIST <linux-mtd@lists.infradead.org>
+Subject: Re: JFFS2+NAND problem in 2.6.13-at91
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 14 Sep 2005, J=F6rn Engel wrote:
+Aras Vaichas wrote:
+> Hi,
+> 
+> I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
+> problems whatsoever with using JFFS2 on NAND.
+This is the third report saying about the same problem, but the other two
+claimed that disabling summary helps, could you confirm this ? Or this is
+unrelated?
 
-> "if your write it portable in the first place" sounds nice, but noone
-> really knows what that means, before the acid test happens.
-
-I think this is a weak argument in this context. Sticking to the=20
-standards should always be a prime directive for any programmer.=20
-Moreover, /if/ I follow your argument: it's very unlikely something=20
-happens to the semantics of (char*)buf + i, compared to the likelihood=20
-of a future GCC discovering honour and making the extensions harder to=20
-access.
-
-Regards,
-Marius
-
---=20
-Marius Groeger <mgroeger@sysgo.com>
-SYSGO AG                      Embedded and Real-Time Software
-Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
-www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
