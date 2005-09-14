@@ -1,18 +1,25 @@
-Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFWQG-0004Yy-0a
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:31:40 -0400
-Message-ID: <432817FF.10307@yandex.ru>
-Date: Wed, 14 Sep 2005 16:30:55 +0400
-From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Received: from mail.sysgo.com ([62.8.134.5])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFWTU-0004lp-10
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 08:35:23 -0400
+Date: Wed, 14 Sep 2005 14:34:47 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050914120309.GB25468@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.63.0509141426340.26040@mag.sysgo.com>
+References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
+	<20050913230631.GB29579@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.63.0509140900250.18636@mag.sysgo.com>
+	<20050914092634.GB22847@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.63.0509141136040.12001@mag.sysgo.com>
+	<20050914120309.GB25468@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-To: Peter Menzebach <pm-mtd@mw-itcon.de>
-References: <432812E8.2030807@mw-itcon.de>
-In-Reply-To: <432812E8.2030807@mw-itcon.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: data  loss on jffs2 filesystem on dataflash
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: Silent GCC4.0 warning
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Menzebach wrote:
-> Hi,
-> I loose files, which I write on a jffs2 filesystem.
-Do you have sumary enabled ? If yes, try to disable it.
+On Wed, 14 Sep 2005, J=F6rn Engel wrote:
 
-> Maybe someone can give me a pointer, what might be wrong.
-Frankly, I do not know DataFlash specificity but I have several basic 
-questions bellow :)
+> "if your write it portable in the first place" sounds nice, but noone
+> really knows what that means, before the acid test happens.
 
-> mount /conf
-> JFFS2 write-buffering enabled (8448)
-> [JFFS2 DBG] (109) __jffs2_dbg_dump_block_lists_nolock: dump JFFS2 blocks 
-[snip]
-> [JFFS2 DBG] (111) jffs2_add_full_dnode_to_inode: adding node 0x00-0x04 
-Why I don't see messages from scan.c? Strange.
+I think this is a weak argument in this context. Sticking to the=20
+standards should always be a prime directive for any programmer.=20
+Moreover, /if/ I follow your argument: it's very unlikely something=20
+happens to the semantics of (char*)buf + i, compared to the likelihood=20
+of a future GCC discovering honour and making the extensions harder to=20
+access.
 
-> [root@armbox /root]$
-[snip]
-> PM: dataflash_write: 8574720 .. 8583168
-[snip]
-> PM: dataflash_write: 8574720 .. 8583168
-two nodes are written to the same place ? That's odd...
+Regards,
+Marius
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+--=20
+Marius Groeger <mgroeger@sysgo.com>
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
