@@ -1,27 +1,21 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=mail.magtech.com.au)
+Received: from mail.sysgo.com ([62.8.134.5])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFOky-0007AO-Vj
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 00:20:33 -0400
-Received: from mail.magtech.com.au (localhost [127.0.0.1])
-	by localhost.magtech.com.au (Postfix) with ESMTP id F3546896F4D
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Sep 2005 14:20:09 +1000 (EST)
-Received: from [192.168.65.196] (unknown [192.168.65.196])
-	by mail.magtech.com.au (Postfix) with ESMTP id 23B83896F4D
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Sep 2005 14:20:09 +1000 (EST)
-Message-ID: <4327A4F8.60300@magellan-technology.com>
-Date: Wed, 14 Sep 2005 14:20:08 +1000
-From: Aras Vaichas <arasv@magellan-technology.com>
+	id 1EFRKx-0008Ls-Gl
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 03:05:55 -0400
+Date: Wed, 14 Sep 2005 09:05:31 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050913230631.GB29579@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.63.0509140900250.18636@mag.sysgo.com>
+References: <005e01c5b882$9b318420$0100000a@LuCyFir3>
+	<20050913230631.GB29579@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-To: MTD-LIST <linux-mtd@lists.infradead.org>
-References: <43267172.20702@magellan-technology.com>
-	<432691B7.5040804@magellan-technology.com>
-In-Reply-To: <432691B7.5040804@magellan-technology.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Subject: Re: JFFS2+NAND problem in 2.6.13-at91
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: =?iso-8859-1?Q?S=E9bastien?= Couret <sebastiencouret@aol.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: Silent GCC4.0 warning
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,75 +25,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Aras Vaichas wrote:
-> Aras Vaichas wrote:
-> 
->>Hi,
->>
->>I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
->>problems whatsoever with using JFFS2 on NAND.
->>
->>I recently upgraded to 2.6.13 and now JFFS2 on NAND seems a little broken ...
+On Wed, 14 Sep 2005, J=F6rn Engel wrote:
 
-Jian Zhang wrote:
+> Rejected.  Examplary reasons below...
 
-> i turn off debugging information( only MTD_DEBUG_LEVEL3) in nand_read_ecc( ),
-> nand_write_ecc( ),nand_read_oob( ),nand_write_oob( ) which contained in
-nand_base.c
-> seperately. eventually,i found that it works well except turning off debugging
-> info in nand_read_oob( ).so i insert  3us delay in this routine.
+Unless you feel your comments are insignificant, please don't put them=20
+below the sigdashes "-- <NL>". Otherwise good Mailers will strip them=20
+in the reply.
 
-Thanks for the hint, I've got my NAND working again.
+> In principle, I'd like a patch to silence gcc warnings.  But only when
+> the patch actually improves code quality.  If I get to choose between
+> bad code and compiler warnings, I'll pick the warning.
+[...]
+> > -                     unsigned long *datum =3D ebuf + i;
+> > +                     unsigned long *datum =3D (unsigned long *)((char*=
+)
+> ebuf + i);
+>=20
+> Arithmetic with void* pointers is one of the best gcc extensions.  Use
+> it!  The above is obviously correct, while below makes my brain rotate
+> around itself at dangerous speed.
 
-I did a diff between the nand_base.c version shipped with 2.6.13 (v1.147) and
-2.6.12-rc1 (v1.138) and noticed that a delay loop had been moved further down
-the code, I moved this delay back to where it was in v1.138 and it is now
-working again. i assume that there was a probably a good reason to move this
-delay in the first place though and I don't wish to break anything else ...
+If I get to choose between portable code and some remote developers=20
+brain rotation, I'll pick the portable code. :-)
 
-e.g.
+Regards,
+Marius
 
---- drivers/mtd/nand/nand_base.c.orig   2005-09-14 13:28:07.000000000 +1000
-+++ drivers/mtd/nand/nand_base.c        2005-09-14 13:37:59.000000000 +1000
-@@ -1410,6 +1410,18 @@
-                this->read_buf(mtd, &buf[i], thislen);
-                i += thislen;
-
-+
-+               /* Apply delay or wait for ready/busy pin
-+                * Do this before the AUTOINCR check, so no problems
-+                * arise if a chip which does auto increment
-+                * is marked as NOAUTOINCR by the board driver.
-+                */
-+               if (!this->dev_ready)
-+                       udelay (this->chip_delay);
-+               else
-+                       nand_wait_ready(mtd);
-+
-+
-                /* Read more ? */
-                if (i < len) {
-                        page++;
-@@ -1421,16 +1433,6 @@
-                                this->select_chip(mtd, -1);
-                                this->select_chip(mtd, chipnr);
-                        }
--
--                       /* Apply delay or wait for ready/busy pin
--                        * Do this before the AUTOINCR check, so no problems
--                        * arise if a chip which does auto increment
--                        * is marked as NOAUTOINCR by the board driver.
--                        */
--                       if (!this->dev_ready)
--                               udelay (this->chip_delay);
--                       else
--                               nand_wait_ready(mtd);
-
-                        /* Check, if the chip supports auto page increment
-                         * or if we have hit a block boundary.
-
-Tom, did you want to check this? Should I submit a patch?
-
-regards,
-
-Aras Vaichas
+--=20
+Marius Groeger <mgroeger@sysgo.com>
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
