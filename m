@@ -1,20 +1,18 @@
-Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFoCp-000885-CR
-	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2005 03:31:03 -0400
-From: "Artem B. Bityuckiy" <dedekind@infradead.org>
-To: Aras Vaichas <arasv@magellan-technology.com>
-In-Reply-To: <4328D275.603@magellan-technology.com>
-References: <43267172.20702@magellan-technology.com>
-	<432818D2.3080004@yandex.ru>  <4328D275.603@magellan-technology.com>
-Content-Type: text/plain
-Date: Thu, 15 Sep 2005 11:30:12 +0400
-Message-Id: <1126769412.20014.0.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from www.mw-itcon.de ([213.146.115.73])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFoKo-0008Oy-6U
+	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2005 03:39:15 -0400
+Message-ID: <4329251C.7050102@mw-itcon.de>
+Date: Thu, 15 Sep 2005 09:39:08 +0200
+From: Peter Menzebach <pm-mtd@mw-itcon.de>
+MIME-Version: 1.0
+To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+References: <432812E8.2030807@mw-itcon.de> <432817FF.10307@yandex.ru>
+In-Reply-To: <432817FF.10307@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: MTD-LIST <linux-mtd@lists.infradead.org>
-Subject: Re: JFFS2+NAND problem in 2.6.13-at91
-Reply-To: dedekind@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: data  loss on jffs2 filesystem on dataflash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-09-15 at 11:46 +1000, Aras Vaichas wrote:
-> perhaps unrelated, and I can't find *any* summary options in my configuration
-> ... can you be more specific?  Do you mean EBS?
-> 
-Ah, ok, it is now called EBS, yes.
+Thanks for your help!
+
+I found (at least partly) out, whats happening: Some parts of code are 
+relying still on the assumption, that the erase size/sector size is 
+fixed to a power of 2.
+
+Example nodelist.c:
+len = ofs & (c->wbuf_pagesize - 1)
+
+So the jffs2 code is broken, if it *should* support erase sizes which 
+are not 2^X.
+
+Best regards
+Peter
+
+
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Peter Menzebach
+Menzebach und Wolff IT-Consulting GbR
+Phone +49 751 355 387 1
