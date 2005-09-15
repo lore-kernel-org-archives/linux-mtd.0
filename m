@@ -1,16 +1,17 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFpB5-0001e4-RD
-	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2005 04:33:29 -0400
-Message-ID: <432931C9.5090907@mw-itcon.de>
-Date: Thu, 15 Sep 2005 10:33:13 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFpPe-0001ti-0z
+	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2005 04:48:20 -0400
+Message-ID: <43293527.9010504@yandex.ru>
+Date: Thu, 15 Sep 2005 12:47:35 +0400
+From: "Artem B. Bityuckiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>	<4329251C.7050102@mw-itcon.de>	<43292A8B.4020707@yandex.ru>
-	<43292E94.4020702@mw-itcon.de> <4329302A.4010300@yandex.ru>
-In-Reply-To: <4329302A.4010300@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Peter Menzebach <pm-mtd@mw-itcon.de>
+References: <432812E8.2030807@mw-itcon.de>
+	<432817FF.10307@yandex.ru>	<4329251C.7050102@mw-itcon.de>
+	<43292A8B.4020707@yandex.ru> <43292E94.4020702@mw-itcon.de>
+In-Reply-To: <43292E94.4020702@mw-itcon.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: data  loss on jffs2 filesystem on dataflash
@@ -23,30 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
-> Peter Menzebach wrote:
-> 
->> The chance is not too high  ;)  .
->>
->> I have done some further search...
->> Here one other patch for fix and the other is only for better look...
->>
->> Now I will do a little test again...
->>
-> Oh, but you said JFFS2 worked with your dataflash for ages? How could it?
-> 
-Andrew Victor have had some patches for fix, and I worked with this old 
-version since last week: http://maxim.org.za/AT91RM9200/
-
-He committed his changes to the mtd cvs at the beginning of this year.
-And I now have upgraded to 2.6.13, and found some problems in the recent 
-version.
-
-Best regards
-Peter
-
+Peter Menzebach wrote:
+> -	if (!jffs2_can_mark_obsolete(c) && c->nextblock && (c->nextblock->free_size & (c->wbuf_pagesize-1))) {
+> +	if (!jffs2_can_mark_obsolete(c) && c->nextblock && (c->nextblock->free_size % c->wbuf_pagesize)) {
+[snip]
+> -		uint32_t skip = c->nextblock->free_size & (c->wbuf_pagesize-1);
+> +		uint32_t skip = c->nextblock->free_size % c->wbuf_pagesize;
+[snip]
+> -#ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+>  #define PAGE_DIV(x) ( ((unsigned long)(x) / (unsigned long)(c->wbuf_pagesize)) * (unsigned long)(c->wbuf_pagesize) )
+>  #define PAGE_MOD(x) ( (unsigned long)(x) % (unsigned long)(c->wbuf_pagesize) )
+> -#else
+> -#define PAGE_DIV(x) ( (x) & (~(c->wbuf_pagesize - 1)) )
+> -#define PAGE_MOD(x) ( (x) & (c->wbuf_pagesize - 1) )
+> -#endif
+Looks sane.
 
 -- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
