@@ -1,27 +1,20 @@
-Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
-	helo=mail.magtech.com.au)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFipk-0004zP-7g
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 21:46:47 -0400
-Received: from mail.magtech.com.au (localhost [127.0.0.1])
-	by localhost.magtech.com.au (Postfix) with ESMTP id 9C444896F64
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Sep 2005 11:46:30 +1000 (EST)
-Received: from [192.168.65.196] (unknown [192.168.65.196])
-	by mail.magtech.com.au (Postfix) with ESMTP id DB698896F64
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Sep 2005 11:46:29 +1000 (EST)
-Message-ID: <4328D275.603@magellan-technology.com>
-Date: Thu, 15 Sep 2005 11:46:29 +1000
-From: Aras Vaichas <arasv@magellan-technology.com>
-MIME-Version: 1.0
-To: MTD-LIST <linux-mtd@lists.infradead.org>
+Received: from [84.204.75.148] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EFoCp-000885-CR
+	for linux-mtd@lists.infradead.org; Thu, 15 Sep 2005 03:31:03 -0400
+From: "Artem B. Bityuckiy" <dedekind@infradead.org>
+To: Aras Vaichas <arasv@magellan-technology.com>
+In-Reply-To: <4328D275.603@magellan-technology.com>
 References: <43267172.20702@magellan-technology.com>
-	<432818D2.3080004@yandex.ru>
-In-Reply-To: <432818D2.3080004@yandex.ru>
-Content-Type: text/plain; charset=UTF-8
+	<432818D2.3080004@yandex.ru>  <4328D275.603@magellan-technology.com>
+Content-Type: text/plain
+Date: Thu, 15 Sep 2005 11:30:12 +0400
+Message-Id: <1126769412.20014.0.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: MTD-LIST <linux-mtd@lists.infradead.org>
 Subject: Re: JFFS2+NAND problem in 2.6.13-at91
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityuckiy wrote:
-> Aras Vaichas wrote:
+On Thu, 2005-09-15 at 11:46 +1000, Aras Vaichas wrote:
+> perhaps unrelated, and I can't find *any* summary options in my configuration
+> ... can you be more specific?  Do you mean EBS?
 > 
->> Hi,
->>
->> I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
->> problems whatsoever with using JFFS2 on NAND.
-> 
-> This is the third report saying about the same problem, but the other two
-> claimed that disabling summary helps, could you confirm this ? Or this is
-> unrelated?
-> 
+Ah, ok, it is now called EBS, yes.
 
-perhaps unrelated, and I can't find *any* summary options in my configuration
-... can you be more specific?  Do you mean EBS?
-
-
-Aras
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
