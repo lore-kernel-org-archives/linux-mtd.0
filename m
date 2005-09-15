@@ -1,19 +1,27 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=av.mvista.com)
+Received: from dsl-210-15-250-78.nsw.netspace.net.au ([210.15.250.78]
+	helo=mail.magtech.com.au)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EFdsE-0002SX-1E
-	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 16:29:09 -0400
-From: Wade Farnsworth <wfarnsworth@mvista.com>
-To: Stefan Roese <sr@denx.de>
-In-Reply-To: <200509141108.44960.sr@denx.de>
-References: <1126642370.27734.84.camel@rhino.az.mvista.com>
-	<200509141108.44960.sr@denx.de>
-Content-Type: text/plain
-Message-Id: <1126729684.27734.254.camel@rhino.az.mvista.com>
-Mime-Version: 1.0
-Date: 14 Sep 2005 13:28:04 -0700
+	id 1EFipk-0004zP-7g
+	for linux-mtd@lists.infradead.org; Wed, 14 Sep 2005 21:46:47 -0400
+Received: from mail.magtech.com.au (localhost [127.0.0.1])
+	by localhost.magtech.com.au (Postfix) with ESMTP id 9C444896F64
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Sep 2005 11:46:30 +1000 (EST)
+Received: from [192.168.65.196] (unknown [192.168.65.196])
+	by mail.magtech.com.au (Postfix) with ESMTP id DB698896F64
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Sep 2005 11:46:29 +1000 (EST)
+Message-ID: <4328D275.603@magellan-technology.com>
+Date: Thu, 15 Sep 2005 11:46:29 +1000
+From: Aras Vaichas <arasv@magellan-technology.com>
+MIME-Version: 1.0
+To: MTD-LIST <linux-mtd@lists.infradead.org>
+References: <43267172.20702@magellan-technology.com>
+	<432818D2.3080004@yandex.ru>
+In-Reply-To: <432818D2.3080004@yandex.ru>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Add MTD support for the AMCC PPC440EP Bamboo Eval Board
+Subject: Re: JFFS2+NAND problem in 2.6.13-at91
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-09-14 at 02:08, Stefan Roese wrote:
-> Hi Wade,
+Artem B. Bityuckiy wrote:
+> Aras Vaichas wrote:
 > 
-> On Tuesday 13 September 2005 22:12, Wade Farnsworth wrote:
-> > [MTD] MAPS/NAND:  This adds MTD support for the AMCC PPC440EP Bamboo
-> > Evaluation Board.
-> >
-> > The Bamboo has both NAND and NOR chips.  Currently, HW ECC for the NAND
-> > chips is not supported.  Any comments would be appreciated.
+>> Hi,
+>>
+>> I was previously using 2.6.12-rc1, AT91 with JFFS2 on NAND and I had no
+>> problems whatsoever with using JFFS2 on NAND.
 > 
-> Just gave it a try. I am using the Bamboo with U-Boot (not PIBS). Linux NOR 
-> support works fine for me. But I am having trouble with the NAND support. The 
-> 2nd chip can't be detected (same problem in U-Boot by the way). Do you have 
-> any idea why?
+> This is the third report saying about the same problem, but the other two
+> claimed that disabling summary helps, could you confirm this ? Or this is
+> unrelated?
 > 
 
-Hi Stefan,
+perhaps unrelated, and I can't find *any* summary options in my configuration
+... can you be more specific?  Do you mean EBS?
 
-I'm not sure what's causing this.  I tested this with PIBS level 10, and
-didn't have any problems, so obviously PIBS is tweaking some register
-that U-Boot and this driver are not.
 
--Wade Farnsworth
-
-> Best regards,
-> Stefan
+Aras
