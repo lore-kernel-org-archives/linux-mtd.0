@@ -1,20 +1,22 @@
-Received: from xproxy.gmail.com ([66.249.82.205])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EGC7x-0000bO-6L
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2005 05:03:40 -0400
-Received: by xproxy.gmail.com with SMTP id i26so23294wxd
+Received: from [144.16.67.8] (helo=csa.iisc.ernet.in)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EGGoI-0003Iu-P5
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2005 10:03:40 -0400
+Received: from deimos.csa.iisc.ernet.in (deimos.csa.iisc.ernet.in
+	[10.192.12.57])
+	by csa.iisc.ernet.in (8.12.11/8.12.11) with ESMTP id j8GDZ1T7016279
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Sep 2005 19:05:01 +0530
+Received: from ada.(none) (ada.csa.iisc.ernet.in [10.192.12.35])
+	by deimos.csa.iisc.ernet.in (Postfix) with SMTP id F0DA04E020
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 16 Sep 2005 02:03:24 -0700 (PDT)
-Message-ID: <5b42f131050916020370766b86@mail.gmail.com>
-Date: Fri, 16 Sep 2005 17:03:23 +0800
-From: Alpha Root <alpharoot@gmail.com>
+	Fri, 16 Sep 2005 19:33:12 +0530 (IST)
+Date: Fri, 16 Sep 2005 19:32:55 +0530 (IST)
+From: Keyur Kumar V Faldu <keyur@csa.iisc.ernet.in>
 To: linux-mtd@lists.infradead.org
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: bad block found but data is still written into the bad block
-Reply-To: alpharoot@gmail.com
+Message-ID: <Pine.LNX.4.61.0509161930040.6639@ada.csa.iisc.ernet.in>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Subject: JFFS3 - when will get released?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have a 2K page sized Nand flash, which has a bad block. The bad
-block can be found by mtd driver:
-Scanning device for bad blocks
-Bad eraseblock 1513 at 0x0bd20000
+Hi everybody!
 
-However, when I try to copy file into the mtd partition, mtd driver
-still writes data into this block. Then when I read back the file I
-got I/O errors and the read fails. Does anyone know why this happens?
+I have read one of the message in this group saying "JFFS3 will not
+ever-released , but the modification will be done in JFFS2".
 
---
-Bill
+But by reading "JFFS3 Design Issues, by Artem B. Bityuckiy ", it seems 
+that JFFS3 gonna completely orthogonal to JFFS2. So i guess it not 
+feasible to just update the JFFS2 to have functionality of JFFS3.
+
+So can anybody please let me know that when JFFS3 is going to released? 
+Because its much more related to the "Research Work" I m doing.
+
+keyur.
