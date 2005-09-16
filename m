@@ -1,20 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from xproxy.gmail.com ([66.249.82.205])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EGB9o-0008C3-CH
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2005 04:01:24 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: itche@bridgeport.edu
-In-Reply-To: <200509151022.53885.itche@bridgeport.edu>
-References: <200509151022.53885.itche@bridgeport.edu>
-Content-Type: text/plain
-Date: Fri, 16 Sep 2005 10:01:19 +0200
-Message-Id: <1126857679.6509.568.camel@tglx.tec.linutronix.de>
+	id 1EGC7x-0000bO-6L
+	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2005 05:03:40 -0400
+Received: by xproxy.gmail.com with SMTP id i26so23294wxd
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 16 Sep 2005 02:03:24 -0700 (PDT)
+Message-ID: <5b42f131050916020370766b86@mail.gmail.com>
+Date: Fri, 16 Sep 2005 17:03:23 +0800
+From: Alpha Root <alpharoot@gmail.com>
+To: linux-mtd@lists.infradead.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, uclinux-dev@uclinux.org
-Subject: Re: Almost there
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: bad block found but data is still written into the bad block
+Reply-To: alpharoot@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-09-15 at 10:22 -0400, itche wrote:
-> I still don't have the device fully functional.
-> I am attaching a txt file containing the terminal output, and the 
-> modifications i have made to some of the files involved.
+Hi,
+I have a 2K page sized Nand flash, which has a bad block. The bad
+block can be found by mtd driver:
+Scanning device for bad blocks
+Bad eraseblock 1513 at 0x0bd20000
 
-Uuurg. The nand code you are obviously trying to get working is
-stoneaged and broken. Same applies to your kernel (< 2.4.21 - right ?)
+However, when I try to copy file into the mtd partition, mtd driver
+still writes data into this block. Then when I read back the file I
+got I/O errors and the read fails. Does anyone know why this happens?
 
-Full working NAND support is available in 2.6 kernels and some people
-managed a backport to 2.4 (>2.4.27).
-
-Sorry, 
-
-tglx
+--
+Bill
