@@ -1,18 +1,20 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EGGxg-0003ab-TP
-	for linux-mtd@lists.infradead.org; Fri, 16 Sep 2005 10:13:19 -0400
-Message-ID: <432AD2BF.5070906@yandex.ru>
-Date: Fri, 16 Sep 2005 18:12:15 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Keyur Kumar V Faldu <keyur@csa.iisc.ernet.in>
-References: <Pine.LNX.4.61.0509161930040.6639@ada.csa.iisc.ernet.in>
-In-Reply-To: <Pine.LNX.4.61.0509161930040.6639@ada.csa.iisc.ernet.in>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS3 - when will get released?
+Received: from xproxy.gmail.com ([66.249.82.203])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EGcDj-00060h-8i
+	for linux-mtd@lists.infradead.org; Sat, 17 Sep 2005 08:55:21 -0400
+Received: by xproxy.gmail.com with SMTP id i26so502786wxd
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 17 Sep 2005 05:55:05 -0700 (PDT)
+Message-ID: <5b42f131050917055543f3d84f@mail.gmail.com>
+Date: Sat, 17 Sep 2005 20:55:05 +0800
+From: Sphinx King <alpharoot@gmail.com>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: ext2 and fat32 can't handle bad block of nand flash?
+Reply-To: alpharoot@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Keyur Kumar V Faldu wrote:
-> So can anybody please let me know that when JFFS3 is going to released? 
-> Because its much more related to the "Research Work" I m doing.
+Hi all,
+It sounds like we can not use ext2 or fat32 file system on nand flash
+if the nand flash has bad blocks.
 
-JFFS3 is an non-commertial open source project which is being done by
-enthusiasts (actually, I'm alone here and has no schedule/budget and the 
-other attributes of commertial projects. Everything depends on a lot of 
-factors like:
+My board has only one bad block which can be handled by mtd driver
+because I saw message like "bad eraseblock ..." during linux booting
+up. I've managed to use mke2fs to format the mtdblock as ext2
+(although it has bad block). When I copy file to this partition, it
+soulds like ext2 still attempts to write data to the bad block
+although this bad block is already put into the mtd bad block table.
+This finally results in I/O error and the write fails. I also tried
+fat32 and got the same result.
 
-1. Are the ideas valid and implemantable?
-2. How much time will I spend on it?
-3. Will I always be alone or somebody join me?
-4. May be some company will sponsour the project to speed up the 
-research/develoment?
-5 And the like.
+After looking into the mtd code, I found the write request (which is
+from the up layer) to the bad block is transfered to the function
+do_cached_write() in mtdblock.c. In this function mtd might do a
+cached_write after it receives data from up layer, ie., it attempts to
+read out sector data and do buffering, which will be written back to
+the block later. Here the problem comes out. Since the block is bad,
+an ECC error occurs which results in the failure of the read. And the
+do_cached_write() returns error to inform up layer. However it seems
+the up layer will try to write to the bad block again and again
+although the write fails. Finally the copy of file completes but the
+file is corrupt.
 
-Thus, nobody knows. If you are researchng in the same field, feel free 
-to join - I'll be happy! :-))
+Is my understanding correct? Why ext2 or fat32 trys to write to a bad
+block? Can we use ext2 or fat on nand flash if the flash has bad
+block?
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+By reading some doc I was told there is no such problem for jffs2
+because jffs2 can handle bad block info. Is it true? Currently I
+haven't try jffs2 yet. I will try it in some days.
+
+Can anybody help me on this? Thanks in advance.
+
+--=20
+Sphinx
