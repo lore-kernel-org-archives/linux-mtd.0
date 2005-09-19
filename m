@@ -1,18 +1,18 @@
-Received: from xproxy.gmail.com ([66.249.82.196])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EGe6W-0007Do-2s
-	for linux-mtd@lists.infradead.org; Sat, 17 Sep 2005 10:56:01 -0400
-Received: by xproxy.gmail.com with SMTP id i30so361940wxd
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 17 Sep 2005 07:55:46 -0700 (PDT)
-Message-ID: <432C2E6C.6050400@gmail.com>
-Date: Sat, 17 Sep 2005 10:55:40 -0400
-From: "David A. Braun" <braunster@gmail.com>
+	id 1EHFuV-0006n0-0C
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 03:18:03 -0400
+Message-ID: <432E660F.3010508@inf.u-szeged.hu>
+Date: Mon, 19 Sep 2005 09:17:35 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Rob Zwiebel <rob.zwiebel@leitch.com>
+References: <200501101530.46348.rob.zwiebel@leitch.com>
+In-Reply-To: <200501101530.46348.rob.zwiebel@leitch.com>
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Subject: Command line parsing
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: zlib version 1.1.3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,13 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any particular reason parse_cmdline_partitions() in 
-drivers/mtd/cmdlineparse.c doesn't completely setup the partition 
-table(s) it builds? It fails to initialize the offsets and sizes of any 
-partition tabled unless it is the one named by "master". This one has 
-the offsets and lengths filled in but the others are left zero with the 
-exception of partitions specified with "-" or SIZE_REMAINING. I would 
-have expected all partitions described in the cmdline to be initialized 
-if any are.
+Hi Rob,
 
-Dave Braun
+Rob Zwiebel wrote:
+
+>I am using SUSE 9.1 which includes zlib version 1.1.3.
+>
+>When I compile the latest version of the mkfs.jffs2. 
+>There are errors caused by the lack of the zalloc variable found in the 
+>z_stream structure.
+>
+>compr_zlib.c: In function `jffs2_zlib_compress':
+>compr_zlib.c:65: error: structure has no member named `zalloc'
+>compr_zlib.c:66: error: structure has no member named `zfree'
+>compr_zlib.c:68: warning: implicit declaration of function `deflateInit'
+>compr_zlib.c:80: warning: implicit declaration of function `deflate'
+>compr_zlib.c:82: warning: implicit declaration of function `deflateEnd'
+>compr_zlib.c: In function `jffs2_zlib_decompress':
+>compr_zlib.c:110: error: structure has no member named `zalloc'
+>compr_zlib.c:111: error: structure has no member named `zfree'
+>compr_zlib.c:113: warning: implicit declaration of function `inflateInit'
+>compr_zlib.c:124: warning: implicit declaration of function `inflate'
+>compr_zlib.c:127: warning: implicit declaration of function `inflateEnd'
+>  
+>
+Did you installed the development package of zlib, too?
+
+At me there is two zlib related packages installed: 
+zlib1g and zlib1g-dev. 
+
+The version of them is 1.2.2 and on an other machine it is 1.1.4 - so I think it should work with 1.1.3, too.
+
+Bye,
+Ferenc
