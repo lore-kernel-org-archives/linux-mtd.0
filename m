@@ -1,21 +1,19 @@
-Received: from mail.sysgo.com ([62.8.134.5])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHMb5-0001nR-8A
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 10:26:43 -0400
-Date: Mon, 19 Sep 2005 16:26:07 +0200 (CEST)
-From: Marius Groeger <mgroeger@sysgo.com>
-Sender: mag@sysgo.com
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20050919093300.GB21380@wohnheim.fh-wedel.de>
-Message-ID: <Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>
-References: <432C2E6C.6050400@gmail.com>
-	<20050919093300.GB21380@wohnheim.fh-wedel.de>
+	id 1EHMmK-00027A-9G
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 10:38:04 -0400
+Message-ID: <432ECD75.1040300@inf.u-szeged.hu>
+Date: Mon, 19 Sep 2005 16:38:45 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: "David A. Braun" <braunster@gmail.com>, linux-mtd@lists.infradead.org,
-	Robert Kaiser <rkaiser@sysgo.com>
-Subject: Re: Command line parsing
+To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+References: <431EAF8F.2000903@inf.u-szeged.hu>
+	<20050919142611.GA14858@angel.research.nokia.com>
+In-Reply-To: <20050919142611.GA14858@angel.research.nokia.com>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Erase block summary commited
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 19 Sep 2005, J=F6rn Engel wrote:
+Hi Jarkko,
 
-> On Sat, 17 September 2005 10:55:40 -0400, David A. Braun wrote:
->>
->> Is there any particular reason parse_cmdline_partitions() in
->> drivers/mtd/cmdlineparse.c doesn't completely setup the partition
->> table(s) it builds? It fails to initialize the offsets and sizes of any
->> partition tabled unless it is the one named by "master". This one has
->> the offsets and lengths filled in but the others are left zero with the
->> exception of partitions specified with "-" or SIZE_REMAINING. I would
->> have expected all partitions described in the cmdline to be initialized
->> if any are.
+>I just tried the CVS head on a device with a JFFS2 image which works
+>with summary patch from last May.  With CVS head I got several of 
 >
-> Iirc, the code was written by someone at Sysgo, possibly Robert, and
-> hasn't been touched for quite a while.  So if you have any patches
-> that improve the situation for you, feel free to send them.
+>  JFFS2 warning: (337) jffs2_sum_scan_sumnode: Summary node crc error,
+>skipping summary information.
+>
+>Did the summary node format change recently and do I have to reflash
+>in order to use the new summary code?
+>  
+>
+Yes, I've forgotten to warn you. Sorry.
 
-Acutally it was me :-), but someone decided to remove my name and just=20
-leave in the reference to our company... Anyway you're right about my=20
-not having touched that code. Looking at it briefly, though, I don't=20
-really spot anything suspicous. Apart from the (potential) oddity that=20
-the cmdline is saved and processed much later at a time the flash=20
-hardware is actually, I don't see what is not initialized.
+There was some small change in the summary node format (for example
+jint16 => jint32) suggested by Joern, which makes necessary to
+regenarate summary with the new sumtool utility. If you do it, it should
+work fine again.
 
-In other words, David, what is the actual problem you're seeing?
-
-Regards,
-Marius
-
---=20
-Marius Groeger <mgroeger@sysgo.com>
-SYSGO AG                      Embedded and Real-Time Software
-Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
-www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
+Bye,
+Ferenc
