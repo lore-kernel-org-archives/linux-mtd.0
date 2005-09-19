@@ -1,22 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHTQI-0007Ek-JG
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 17:43:50 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <432F3057.4080600@ru.mvista.com>
-References: <432EBFC8.3090803@ru.mvista.com>
-	<1127162439.24044.235.camel@tglx.tec.linutronix.de>
-	<432F3057.4080600@ru.mvista.com>
-Content-Type: text/plain
-Date: Mon, 19 Sep 2005 23:43:45 +0200
-Message-Id: <1127166226.24044.251.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND/ HW ECC problem
-Reply-To: tglx@linutronix.de
+Received: from hkn.eecs.berkeley.edu ([128.32.47.228])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHUFD-0007sF-Fy
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 18:36:23 -0400
+Received: from gagpcool (helo=localhost)
+	by hkn.eecs.berkeley.edu with local-esmtp (Exim 3.35 #1 (Debian))
+	id 1EHUFA-00064Y-00
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Sep 2005 15:36:12 -0700
+Date: Mon, 19 Sep 2005 15:36:11 -0700 (PDT)
+From: Gagan Prakash <gagpcool@hkn.eecs.berkeley.edu>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.44.0509191525180.1130-100000@hkn.eecs.berkeley.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: FAT on raw Nand
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,23 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-09-20 at 01:40 +0400, Vitaly Wool wrote:
-> >Hmm, we really should think about making the ECC size per chunksize run
-> >time configurable.
-> >
-> What if have it in the same way as oobfree is stored, i. e. {offset, 
-> length} pairs instead?
+Hi
 
-Yes
+I am trying to solve the problem of allowing a device with raw nand to be
+exposed to any Desktop OS (OS 10, Windows and Linux) without having to
+install any sort of driver on the Desktop OS that is not already present.
+The only solution I have read of/come up with is for the device to act as
+USB external drive and let the host OS mount it as a FAT filesystem. This
+means that the filesystem on device partition that is exposed needs to be
+FAT.
 
-> >If your chip does it different, please use the correct parts of the data
-> >structure to implement it. 
-> >
-> Yes, it does and I'm not at all happy with that. However, I guess this 
-> controller is likely to be used in other boards' designs...
-> So, the right way to handle this bizarre stuff currently is to 
-> write/read ECC data byte-by-byte following the eccpos array, correct?
+Now from the archives I know its not the easiest and safest thing to
+expose a partition as FAT on raw nand. And it also requires the writing of
+a FTL layer. I was wondering if there is a better solution for this
+problem.
 
-Yes
+For example is there a way to emulate FAT on top of existing nand fs like
+YAFFS or JFFS2 (this would seem hard specially for writes). Or is the only
+solution is to format the device as FAT and expose it as an external USB
+drive to the host OS.
 
-tglx
+Thanks
+
+Gagan Prakash
