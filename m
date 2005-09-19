@@ -1,19 +1,21 @@
-Received: from mgw-ext01.nokia.com ([131.228.20.93])
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHMb1-0001nP-H5
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 10:26:38 -0400
-Date: Mon, 19 Sep 2005 17:26:11 +0300
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050919142611.GA14858@angel.research.nokia.com>
-References: <431EAF8F.2000903@inf.u-szeged.hu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <431EAF8F.2000903@inf.u-szeged.hu>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Erase block summary commited
-Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+Received: from mail.sysgo.com ([62.8.134.5])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHMb5-0001nR-8A
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 10:26:43 -0400
+Date: Mon, 19 Sep 2005 16:26:07 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050919093300.GB21380@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>
+References: <432C2E6C.6050400@gmail.com>
+	<20050919093300.GB21380@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: "David A. Braun" <braunster@gmail.com>, linux-mtd@lists.infradead.org,
+	Robert Kaiser <rkaiser@sysgo.com>
+Subject: Re: Command line parsing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +25,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Sep 07, 2005 at 11:14:55AM +0200, ext Ferenc Havasi wrote:
-> I've now commited our mount time improvement called erase block summary.
+On Mon, 19 Sep 2005, J=F6rn Engel wrote:
 
-I just tried the CVS head on a device with a JFFS2 image which works
-with summary patch from last May.  With CVS head I got several of 
+> On Sat, 17 September 2005 10:55:40 -0400, David A. Braun wrote:
+>>
+>> Is there any particular reason parse_cmdline_partitions() in
+>> drivers/mtd/cmdlineparse.c doesn't completely setup the partition
+>> table(s) it builds? It fails to initialize the offsets and sizes of any
+>> partition tabled unless it is the one named by "master". This one has
+>> the offsets and lengths filled in but the others are left zero with the
+>> exception of partitions specified with "-" or SIZE_REMAINING. I would
+>> have expected all partitions described in the cmdline to be initialized
+>> if any are.
+>
+> Iirc, the code was written by someone at Sysgo, possibly Robert, and
+> hasn't been touched for quite a while.  So if you have any patches
+> that improve the situation for you, feel free to send them.
 
-  JFFS2 warning: (337) jffs2_sum_scan_sumnode: Summary node crc error,
-skipping summary information.
+Acutally it was me :-), but someone decided to remove my name and just=20
+leave in the reference to our company... Anyway you're right about my=20
+not having touched that code. Looking at it briefly, though, I don't=20
+really spot anything suspicous. Apart from the (potential) oddity that=20
+the cmdline is saved and processed much later at a time the flash=20
+hardware is actually, I don't see what is not initialized.
 
-Did the summary node format change recently and do I have to reflash
-in order to use the new summary code?
+In other words, David, what is the actual problem you're seeing?
 
-Even with this problem, I am very pleased the erase block summaries finally 
-went to CVS.
+Regards,
+Marius
 
-Jarkko Lavinen
+--=20
+Marius Groeger <mgroeger@sysgo.com>
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
