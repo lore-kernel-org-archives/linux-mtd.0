@@ -1,25 +1,22 @@
-Received: from xproxy.gmail.com ([66.249.82.204])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHQjA-0004X1-O2
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 14:51:06 -0400
-Received: by xproxy.gmail.com with SMTP id i30so1017080wxd
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 19 Sep 2005 11:50:47 -0700 (PDT)
-Message-ID: <432F0884.2020409@gmail.com>
-Date: Mon, 19 Sep 2005 14:50:44 -0400
-From: "David A. Braun" <braunster@gmail.com>
-MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <432C2E6C.6050400@gmail.com>
-	<20050919093300.GB21380@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>
-	<20050919153217.GA26968@wohnheim.fh-wedel.de>
-In-Reply-To: <20050919153217.GA26968@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHQzC-0004sq-Hz
+	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 15:07:39 -0400
+Date: Mon, 19 Sep 2005 21:07:27 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Shawn Jin <shawnxjin@gmail.com>
+Message-ID: <20050919190727.GA32650@wohnheim.fh-wedel.de>
+References: <200509191155.36540.david.jander@protonic.nl>
+	<20050919153747.78ACC352682@atlas.denx.de>
+	<c3d0340b050919114040d0a0fe@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Robert Kaiser <rkaiser@sysgo.com>,
-	Marius Groeger <mgroeger@sysgo.com>
-Subject: Re: Command line parsing
+In-Reply-To: <c3d0340b050919114040d0a0fe@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Jander <david.jander@protonic.nl>,
+	linuxppc-embedded@ozlabs.org
+Subject: Re: Which way to store log in flash on mpc8xx?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,80 +26,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If the name in master->name doesn't match any of the partitions 
-mentioned on the kernel command line then *pparts->offset is not 
-initialized. The result is that all the partitions start at 0. Also the 
-length of the "SIZE_REMAINING" partition is never initialized. Also the 
-return value is -EINVAL instead of the number of partitions. This 
-results in none of the partitions being pass to the driver. The only 
-partition that appears in /proc/partitions is one for the whole device.
+On Mon, 19 September 2005 11:40:05 -0700, Shawn Jin wrote:
+> 
+> > > This must be a very common task (to store logfiles in flash), but I just can't
+> > > seem to find the right way to do it.
+> > 
+> > Note that log files may cause a lot of trouble  when  using  a  JFFS2
+> > file  system. Youmay want to addd a buffering layer, like pramfs in a
+> > dedicated RAM area (SRAM ideally).
+> 
+> What's the trouble caused by log files when using a JFFS2? I'm not
+> aware of that. Any pointers to where I should look into are much
+> appreciated.
 
-There are two problems. The if statement
+I guess this should become a FAQ item.
 
-    if ((!mtd_id) || (!strcmp(part->mtd_id, mtd_id)))
-    {
-          ...
+JFFS2 creates one or more nodes whenever sys_write is called.
+Unbuffered log entries are usually quite small, so a single node is
+written.  Let's assume the worst case, just for fun, writes of a
+single by.
 
-before the innermost for loop prevents the non-matching cmdline 
-partitions from being initialized. Secondly the return statement just 
-after this same for loop stops processing any remaining partitions 
-following the matching partition.
+Now, each node is prepended by a struct jffs2_raw_inode of 64 bytes.
+So you're causing the first problem:
+1. Up to 65x the raw file data is written to flash.
 
-As it turns out after looking over the code some more the table in 
-question is internal to the cmdline parser anyway so no harm is done. 
-Any partition declared on the cmdline that is referenced by a mtd driver 
-gets initialized correctly. Unreferenced ones don't and need not be. 
-There is however a small amount of kernel memory wasted on the partition 
-table in cmdlineparts. It doesn't look like it ever gets released, not 
-even if the cmdline parser gets de-registered (which it doesn't).
+Which means you waste bus bandwidth, was flash space and waste flash
+lifetime.  After GC, most of those nodes should get combined to 4k
+nodes (plus 64 bytes for the header).  Now, JFFS2 also requires an
+in-memory structure per node, the struct jffs2_raw_node_ref, weighing
+in at 16 or 24 bytes, if you have a 32bit or 64bit arch.  Those will
+cost you precious memory:
+2. Up to 24x the raw file data is required in DRAM.
 
-dave
+Next problem is with GC accounting.  JFFS2 only differentiates between
+valid and obsolete data.  After writing a huge logfile, all of its
+nodes are still valid.  Therefore GC will never try to GC such nodes,
+unless they happen to sit in an erase block with a lot of obsolete
+data.  And even then, they could get copied as-is, with no combining.
+3. JFFS2 GC is too stupid to detect miniature nodes and combine them.
 
-Jörn Engel wrote:
+So, your problem 1 and 2 will not go away if you wait long enough.
+Renaming the log file also won't help.  The only cure would be to
+*copy* it to the new location and delete the original file afterwards.
+Or - alternatively - to fix JFFS2 GC and send a patch.
+Or - as already proposed - by writing in larger chunks in the first
+place.
 
->On Mon, 19 September 2005 16:26:07 +0200, Marius Groeger wrote:
->  
->
->>On Mon, 19 Sep 2005, Jörn Engel wrote:
->>    
->>
->>>On Sat, 17 September 2005 10:55:40 -0400, David A. Braun wrote:
->>>      
->>>
->>>>Is there any particular reason parse_cmdline_partitions() in
->>>>drivers/mtd/cmdlineparse.c doesn't completely setup the partition
->>>>table(s) it builds? It fails to initialize the offsets and sizes of any
->>>>partition tabled unless it is the one named by "master". This one has
->>>>the offsets and lengths filled in but the others are left zero with the
->>>>exception of partitions specified with "-" or SIZE_REMAINING. I would
->>>>have expected all partitions described in the cmdline to be initialized
->>>>if any are.
->>>>        
->>>>
->>>Iirc, the code was written by someone at Sysgo, possibly Robert, and
->>>hasn't been touched for quite a while.  So if you have any patches
->>>that improve the situation for you, feel free to send them.
->>>      
->>>
->>Acutally it was me :-), but someone decided to remove my name and just 
->>leave in the reference to our company... Anyway you're right about my 
->>not having touched that code. Looking at it briefly, though, I don't 
->>really spot anything suspicous. Apart from the (potential) oddity that 
->>the cmdline is saved and processed much later at a time the flash 
->>hardware is actually, I don't see what is not initialized.
->>    
->>
->
->[ slightly off-topic ]
->
->If you want your copyright line restored and don't have cvs access,
->send me a patch.
->
->For those less aware of how copyright law works:
->The copyright itself is independent of some lines explicitly claiming
->it for somebody.  So this is not about a legal issue, just politeness.
->
->Jörn
->
->  
->
+If you decide to fix JFFS2 GC, I'd be happy to review the patches and
+merge them if deemed worthy.
+
+Jörn
+
+-- 
+My second remark is that our intellectual powers are rather geared to
+master static relations and that our powers to visualize processes
+evolving in time are relatively poorly developed.
+-- Edsger W. Dijkstra
