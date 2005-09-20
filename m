@@ -1,22 +1,21 @@
-Received: from xproxy.gmail.com ([66.249.82.199])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHgOk-0003zu-9o
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 07:34:59 -0400
-Received: by xproxy.gmail.com with SMTP id i30so1338726wxd
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Sep 2005 04:34:53 -0700 (PDT)
-Message-ID: <432FF3DA.1030003@gmail.com>
-Date: Tue, 20 Sep 2005 07:34:50 -0400
-From: "David A. Braun" <braunster@gmail.com>
-MIME-Version: 1.0
-To: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
-References: <432C2E6C.6050400@gmail.com>	<20050919093300.GB21380@wohnheim.fh-wedel.de>	<Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>	<20050919153217.GA26968@wohnheim.fh-wedel.de>
-	<432F0884.2020409@gmail.com> <432FC69D.30602@ipi.ac.ru>
-In-Reply-To: <432FC69D.30602@ipi.ac.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Command line parsing
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHgQ7-000478-F2
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 07:37:53 -0400
+Date: Tue, 20 Sep 2005 13:36:16 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-ID: <20050920113616.GD2143@wohnheim.fh-wedel.de>
+References: <BAY17-F171945FE7F31D429CCE8BEE8950@phx.gbl>
+	<20050920102436.GC2143@wohnheim.fh-wedel.de>
+	<1127213984.20014.34.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1127213984.20014.34.camel@sauron.oktetlabs.ru>
+Cc: zhao forrest <zhao_fusheng@hotmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Add JFFS2 eraseblock header support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-as Clinton said - it depends on what you mean by "it"
+On Tue, 20 September 2005 14:59:43 +0400, Artem B. Bityutskiy wrote:
+> On Tue, 2005-09-20 at 12:24 +0200, Jörn Engel wrote:
+> > > 4 old JFFS2 binaries reject mounting new JFFS2 images
+> > 
+> > Why this?
+> 
+> Because he changed cleanmarker to the EB header (eraseblock header). Old
+> binaries got confused by this since there are working no compatibility
+> flags in cleanmarkers. 
 
-If by "it" you mean the return value of EINVAL when the named partition 
-by master->name is not found then you are correct. My mistake.
+WTF?  Old code can simply delete the EB.  You lost all the goodies
+from EB, sure, but they are only optimization.  So who cares?
 
-dave
+> Moreover, we are going to implement the 1:1 mapping at the same time.
+> 
+> If old binary mounts new image, it starts writing its cleanmarkers, use
+> 1:N mapping etc. A "mixed" image appears. Afterwords, if this mixed
+> image is being mounted on new JFFS2 binary, what poor Zhao is supposed
+> to do? There will be too much ugliness in the code to handle that.
 
-Timofei V. Bondarenko wrote:
+Please don't mix those two problems.  1:1 mapping has been dealt with.
+If you don't like how it has been dealt with, complain in the context
+of 1:1 mapping.
 
-> David A. Braun wrote:
->
->> If the name in master->name doesn't match any of the partitions 
->> mentioned on the kernel command line then *pparts->offset is not 
->> initialized. The result is that all the partitions start at 0. Also 
->> the length of the "SIZE_REMAINING" partition is never initialized. 
->> Also the return value is -EINVAL instead of the number of partitions. 
->> This results in none of the partitions being pass to the driver. The 
->> only partition that appears in /proc/partitions is one for the whole 
->> device.
->>
->
-> Is not it intentional?
->
-> There is a comment:
-> <Q> mtd-id := unique name used in mapping driver/device (mtd->name) </Q>
->
-> These names are identifing the separate devices rather than partitions.
-> And IMO it's only way to deal multiple flash devices with different 
-> partitioning.
->
-> -- 
-> Regards.
->     Tim.
->
+Jörn
+
+-- 
+When in doubt, use brute force.
+-- Ken Thompson
