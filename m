@@ -1,18 +1,22 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHgJp-0003ld-44
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 07:30:01 -0400
-Message-ID: <432FF28C.7030005@yandex.ru>
-Date: Tue, 20 Sep 2005 15:29:16 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from xproxy.gmail.com ([66.249.82.199])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHgOk-0003zu-9o
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 07:34:59 -0400
+Received: by xproxy.gmail.com with SMTP id i30so1338726wxd
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Sep 2005 04:34:53 -0700 (PDT)
+Message-ID: <432FF3DA.1030003@gmail.com>
+Date: Tue, 20 Sep 2005 07:34:50 -0400
+From: "David A. Braun" <braunster@gmail.com>
 MIME-Version: 1.0
-To: zhao forrest <zhao_fusheng@hotmail.com>
-References: <BAY17-F171945FE7F31D429CCE8BEE8950@phx.gbl>
-In-Reply-To: <BAY17-F171945FE7F31D429CCE8BEE8950@phx.gbl>
-Content-Type: text/plain; charset=us-ascii
+To: "Timofei V. Bondarenko" <timm@ipi.ac.ru>
+References: <432C2E6C.6050400@gmail.com>	<20050919093300.GB21380@wohnheim.fh-wedel.de>	<Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>	<20050919153217.GA26968@wohnheim.fh-wedel.de>
+	<432F0884.2020409@gmail.com> <432FC69D.30602@ipi.ac.ru>
+In-Reply-To: <432FC69D.30602@ipi.ac.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]Add JFFS2 eraseblock header support
+Subject: Re: Command line parsing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hmm,
+as Clinton said - it depends on what you mean by "it"
 
-zhao forrest wrote:
-> Your comments are welcome.
+If by "it" you mean the return value of EINVAL when the named partition 
+by master->name is not found then you are correct. My mistake.
 
-+struct jffs2_eraseblock_header
-+{
-+       jint16_t magic;
-+       jint16_t nodetype; /* == JFFS2_NODETYPE_ERASEBLOCK_HEADER */
-+       jint32_t totlen;
-+       jint32_t hdr_crc;
-+       jint32_t fs_version; /* the version of this JFFS2 fs image */
-Well, I assume we may have 3 fields here:
-u8 version;
-u8 compat_fset;
-u8 incompat_fset;
-u8 rocompat_fset;
+dave
 
-+       jint32_t erase_count; /* the erase count of this erase block */
-4 bytes enough?
+Timofei V. Bondarenko wrote:
 
-+       jint16_t dsize; /* the size of additional data behind node_crc */
-What for?
-
-+       jint32_t node_crc;
-+       jint32_t data_crc;
-+       jint32_t data[0];
-+} __attribute__((packed));
-+
-
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+> David A. Braun wrote:
+>
+>> If the name in master->name doesn't match any of the partitions 
+>> mentioned on the kernel command line then *pparts->offset is not 
+>> initialized. The result is that all the partitions start at 0. Also 
+>> the length of the "SIZE_REMAINING" partition is never initialized. 
+>> Also the return value is -EINVAL instead of the number of partitions. 
+>> This results in none of the partitions being pass to the driver. The 
+>> only partition that appears in /proc/partitions is one for the whole 
+>> device.
+>>
+>
+> Is not it intentional?
+>
+> There is a comment:
+> <Q> mtd-id := unique name used in mapping driver/device (mtd->name) </Q>
+>
+> These names are identifing the separate devices rather than partitions.
+> And IMO it's only way to deal multiple flash devices with different 
+> partitioning.
+>
+> -- 
+> Regards.
+>     Tim.
+>
