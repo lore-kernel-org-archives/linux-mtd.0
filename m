@@ -1,28 +1,19 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHl2m-0002N0-Tc
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 12:32:48 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Andrew Victor <andrew@sanpeople.com>
-In-Reply-To: <1127229060.17496.128.camel@fuzzie.sanpeople.com>
-References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>
-	<4329251C.7050102@mw-itcon.de>	<4329288B.8050909@yandex.ru>
-	<43292AC6.40809@mw-itcon.de>	<43292E16.70401@yandex.ru>
-	<43292F91.9010302@mw-itcon.de> <432FE1EF.9000807@yandex.ru>
-	<432FEF55.5090700@mw-itcon.de> <433006D8.4010502@yandex.ru>
-	<43300C08.80005@yandex.ru> <433010D8.7000209@mw-itcon.de>
-	<1127225899.20014.61.camel@sauron.oktetlabs.ru>
-	<43302456.4080601@mw-itcon.de>
-	<1127229060.17496.128.camel@fuzzie.sanpeople.com>
-Content-Type: text/plain
-Date: Tue, 20 Sep 2005 20:31:55 +0400
-Message-Id: <1127233915.20014.76.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	id 1EHlIf-0002gL-Vz
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 12:49:13 -0400
+Message-ID: <43303D59.1040805@yandex.ru>
+Date: Tue, 20 Sep 2005 20:48:25 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Anders Grafstrom <grfstrm@users.sourceforge.net>
+References: <E1EHjUk-0001IT-Dn@phoenix.infradead.org>
+	<43303409.5030406@users.sourceforge.net>
+In-Reply-To: <43303409.5030406@users.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	Peter Menzebach <pm-mtd@mw-itcon.de>
-Subject: Re: data  loss on jffs2 filesystem on dataflash
-Reply-To: dedekind@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd/fs/jffs2 erase.c,1.84,1.85 roll back
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,41 +23,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrew,
+Hello,
 
-On Tue, 2005-09-20 at 17:11 +0200, Andrew Victor wrote:
-> > In the code, I see at the moment only, that in the device driver 
-> > mtd_info.erasesize is set, later on in jffs2 I see, that this has become 
-> > the sector_size, which becomes then the wbuf_pagesize.
+Anders Grafstrom wrote:
+> Artem Bityutskiy wrote:
+>> Index: erase.c
+>> ===================================================================
+>> RCS file: /home/cvs/mtd/fs/jffs2/erase.c,v
+>> retrieving revision 1.84
+>> retrieving revision 1.85
+>> diff -u -r1.84 -r1.85
+>> --- erase.c    20 Sep 2005 14:27:34 -0000    1.84
+>> +++ erase.c    20 Sep 2005 14:53:15 -0000    1.85
+>> @@ -337,7 +337,6 @@
+>>              if (*datum + 1) {
+>>                  *bad_offset += i;
+>>                  printk(KERN_WARNING "Newly-erased block contained 
+>> word 0x%lx at offset 0x%08x\n", *datum, *bad_offset);
+>> -                ret = -EIO;
+>>                  goto fail;
+>>              }
+>>          }
 > 
-> To reduce the number of erase blocks, JFFS2 may also concatenate a
-> number of erase-blocks in a 'virtual block'.  That is what sector_size
-> and wbuf_pagesize might get set to.
-Yes, right. Albeit this is fixed, this doesn't matter.
-
-The question is *why you set wbuf size = eraseblock size?* In case of
-DataFlash, I assume, wbuf_size = DataFlash page size (the minimal
-writing unit). Eraseblock size must be = DataFlash block size.
-
-Yes, it is theoretically correct to set write buffer size = eraseblock
-size, but this is *really* bad. This is wasteful (imagine, any sync will
-will add lots of padding and waste the whole eraseblock).
-
-And, the size wbuf has nothing to do with "concatenate number of
-eraseblocks", whare is the relation?
-
-> > Is here mtd_info.ooblock to be set?
 > 
-> No.  All bytes on a DataFlash device are directly addressable, so there
-> is not really an OOB area.
-Stop, mtd_info.ooblock is the size of NAND page in case of NAND. I would
-read it as 'the size of block which contains OOB'. Agree, not very good
-name.
+> May I ask why you rolled back this change?
+No problems :-)
 
-So, I offered to fill mtd_info.ooblock by the size of DataFlash page,
-and set.
+> I have a problem, that I'm trying to solve, with blocks that are not 
+> erased despite a "successful" return from c->mtd->erase(). The result of 
+> this is a very broken filesystem when the blocks are reused. It seems to 
+> me that the above rolled back change would prevent the filesystem from 
+> being broken in this situation(?).
 
-Comments? Thanks.
+Let's analyse the situation.
+
+JFFS2 issues the erase command, MTD returns OK, but the eraseblock does 
+not contain all 0xFFs. Is this JFFS2's fault? No. this is driver's 
+fault. The driver must not return success in this case. It must return 
+an error.
+
+And the check in JFFS2 that the eraseblock contains all FFs is *wrong*. 
+That's not JFFS2's business at all. That's MTD's business. MTD 
+guarantees that it either erases the eraseblock or returns error. My 
+oppinion is that this check must go to MTD. Perhaps, you may embrace it 
+by #ifdefs - this is the implementation detal.
+
+So, JFFS2 does what it is not supposed to do at all. It slows down 
+things by this. I wanted to remove the check, but dwmw2 loudly 
+complained. He wants to be as reliable as it is possible.
+
+Ok, now about the rollback. If we return -EIO, JFFS2 will mark the block 
+as bad. Imagine your driver is broken, and the block is not actually 
+bad. That's just driver. JFFS2 will mark nearly all eraseblocks as bad. 
+What will you do next? In case of NAND, this assumes you're in trouble 
+unless you have a list of real bad blocks.
+
+So, this is why I rolled back. Probably the right approach will be to 
+add such blocks to the JFFS2 in-RAM bad block list but not mark them as 
+bad physically. But this is a distinct activity. I didn't explore this.
+
+That "fix" slipped there accidentally. I didn't test it. So I removed 
+it. If you are energetic enough, work this problem out please :-)
 
 -- 
 Best Regards,
