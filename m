@@ -1,20 +1,25 @@
-Received: from blood.actrix.co.nz ([203.96.16.163])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHWuw-00016j-1h
-	for linux-mtd@lists.infradead.org; Mon, 19 Sep 2005 21:27:50 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 20 Sep 2005 13:32:31 +1200
-References: <Pine.LNX.4.44.0509191525180.1130-100000@hkn.eecs.berkeley.edu>
-In-Reply-To: <Pine.LNX.4.44.0509191525180.1130-100000@hkn.eecs.berkeley.edu>
+Received: from wip-ectls-mx1.wipro.com ([203.91.193.21])
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHazH-0003n7-TP
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 01:48:33 -0400
+Received: from wip-ectls-mx1.wipro.com (localhost.localdomain [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 419C522031E
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Sep 2005 11:17:40 +0530 (IST)
+Received: from blr-ec-bh01.wipro.com (blr-ec-bh01.wipro.com [10.201.50.91])
+	by wip-ectls-mx1.wipro.com (Postfix) with ESMTP id 3388E22031C
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Sep 2005 11:17:40 +0530 (IST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200509201332.31431.manningc2@actrix.gen.nz>
-Cc: Gagan Prakash <gagpcool@hkn.eecs.berkeley.edu>
-Subject: Re: FAT on raw Nand
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 20 Sep 2005 11:17:39 +0530
+Message-ID: <30A4A576EB47C64AB2694E1F17DBE117026DA4CE@blr-itp-msg.wipro.com>
+From: <srinath.satyanarayana@wipro.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 on Samsung NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +29,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 20 September 2005 10:36, Gagan Prakash wrote:
-> Hi
->
-> I am trying to solve the problem of allowing a device with raw nand to be
-> exposed to any Desktop OS (OS 10, Windows and Linux) without having to
-> install any sort of driver on the Desktop OS that is not already present.
-> The only solution I have read of/come up with is for the device to act as
-> USB external drive and let the host OS mount it as a FAT filesystem. This
-> means that the filesystem on device partition that is exposed needs to be
-> FAT.
 
-If you can't install any drivers then FAT is probably the only way to go for a 
-FS.
+Hi ,
 
-The only alternative I can think of to this is to use ethernet + nfs  instead. 
-ie. Your device looks like a USB ethernet device with a host running nfs  on 
-the other end. That would allow you to run an alternative FS like YAFFS.
+I am using linux-2.6.12 and Redboot on my board.  I have Samsung 32Mb,
+16Kb erase block flash on my board
+I am not able to mount the  jffs2 partition of NAND.=0D
+The procedure followed=0D
 
->
-> Now from the archives I know its not the easiest and safest thing to
-> expose a partition as FAT on raw nand. And it also requires the writing of
-> a FTL layer. I was wondering if there is a better solution for this
-> problem.
->
-> For example is there a way to emulate FAT on top of existing nand fs like
-> YAFFS or JFFS2 (this would seem hard specially for writes). Or is the only
-> solution is to format the device as FAT and expose it as an external USB
-> drive to the host OS.
+mkfs.jffs2 -d jffs2  -n -o fs.jffs2 -e 0x4000 --pad=3D0x400000
+flasheraseall -j /dev/mtd/7
+nandwrite  /dev/mtd/7 fs.jffs2=0D
+mount -t jffs2 /dev/mtdblock/7 /mnt
 
-Unfortunately there is no USB-NFS. There is only a USB mass storage device 
-which can be used with most block file systems (typically FAT). USB-NFS would 
-have been a good idea because it would allow devices to use their own FS 
-internally.
 
-The USB Mass Storage spec has no notion of a file system, just read/write 
-blocks of data. To use YAFFS etc on the device and make it look like a USB 
-mass storage device running FAT is probably too much to ask.
+Node at 0x00003eec with length 0x00000615 would run over the end of the
+erase block Perhaps the file system was  reated with the wrong erase
+size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003ef0:
+0x0615 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003ef4:
+0xef68 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003ef8:
+0x001e in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003efc:
+0x0004 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f00:
+0x81ed in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f04:
+0x01f5 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f08:
+0x4de2 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f18:
+0x3000 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f1c:
+0x05d1 in
+stead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00003f20:
+0x1000 in
+stead
+Further such events for this erase block will not be printed
+
+Is steps followed  are corrent? Any suggestion is appreciated.
+
+Thanks
+Srinath
+
+
+
+Confidentiality Notice=0D
+
+The information contained in this electronic message and any attachments to=
+ this message are intended
+for the exclusive use of the addressee(s) and may contain confidential or=
+ privileged information. If
+you are not the intended recipient, please notify the sender at Wipro or=
+ Mailadmin@wipro.com immediately
+and destroy all copies of this message and any attachments.
