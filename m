@@ -1,25 +1,22 @@
-Received: from wip-ectls-mx1.wipro.com ([203.91.193.21])
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHb1f-0003wZ-5e
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 01:51:37 -0400
-Received: from wip-ectls-mx1.wipro.com (localhost.localdomain [127.0.0.1])
-	by localhost (Postfix) with ESMTP id 872682202CA
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Sep 2005 11:20:04 +0530 (IST)
-Received: from blr-ec-bh02.wipro.com (blr-ec-bh02.wipro.com [10.201.50.92])
-	by wip-ectls-mx1.wipro.com (Postfix) with ESMTP id 7C224220319
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Sep 2005 11:20:04 +0530 (IST)
-Content-class: urn:content-classes:message
+Received: from mail.sysgo.com ([62.8.134.5])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EHcgl-0005Bm-GW
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 03:37:24 -0400
+Date: Tue, 20 Sep 2005 09:37:12 +0200 (CEST)
+From: Marius Groeger <mgroeger@sysgo.com>
+Sender: mag@sysgo.com
+To: "David A. Braun" <braunster@gmail.com>
+In-Reply-To: <432F0884.2020409@gmail.com>
+Message-ID: <Pine.LNX.4.63.0509200934300.10905@mag.sysgo.com>
+References: <432C2E6C.6050400@gmail.com>
+	<20050919093300.GB21380@wohnheim.fh-wedel.de>
+	<Pine.LNX.4.63.0509191622500.3180@mag.sysgo.com>
+	<20050919153217.GA26968@wohnheim.fh-wedel.de>
+	<432F0884.2020409@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 20 Sep 2005 11:19:33 +0530
-Message-ID: <30A4A576EB47C64AB2694E1F17DBE117026DA4D0@blr-itp-msg.wipro.com>
-From: <srinath.satyanarayana@wipro.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: mounting NAND+JFFS2
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Command line parsing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,42 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 19 Sep 2005, David A. Braun wrote:
 
-Hi,
+> If the name in master->name doesn't match any of the partitions 
+> mentioned on the kernel command line then *pparts->offset is not 
+> initialized. The result is that all the partitions start at 0. Also 
+> the length of the "SIZE_REMAINING" partition is never initialized. 
+> Also the return value is -EINVAL instead of the number of 
+> partitions. This results in none of the partitions being pass to the 
+> driver. The only partition that appears in /proc/partitions is one 
+> for the whole device.
 
-I am using linux-2.6.12 and Redboot on my board.  I have Samsung 32Mb,
-16Kb erase block flash on my board
-I am not able to mount the empty  jffs2 partition of NAND.=0D
-The procedure followed=0D
+Thanks for digging so deeply in to the code. I suggest it would be 
+best if you prepare a patch and send it to the list.
 
-flasheraseall -j /dev/mtd/7
-mount -t jffs2 /dev/mtdblock/7 /mnt
+Regards,
+Marius
 
-
-ffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block at
-000000
-00
-OOB at 00000000 was ff ff ff ff ff ff ff ff ff ff 03 ff ff ff ff ff
-jffs_check_nand_cleanmarker returned 1
-jffs2_check_oob_empty returned 1
-JFFS2: Erase block at 0x00000000 is not formatted. It will be erased
-jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block
-at 000040
-00
-
-Any ideas about what might be wrong.
-
-Thanks
-Srinath
-
-
-
-Confidentiality Notice=0D
-
-The information contained in this electronic message and any attachments to=
- this message are intended
-for the exclusive use of the addressee(s) and may contain confidential or=
- privileged information. If
-you are not the intended recipient, please notify the sender at Wipro or=
- Mailadmin@wipro.com immediately
-and destroy all copies of this message and any attachments.
+-- 
+Marius Groeger <mgroeger@sysgo.com>
+SYSGO AG                      Embedded and Real-Time Software
+Voice: +49 6136 9948 0                  FAX: +49 6136 9948 10
+www.sysgo.com | www.elinos.com | www.osek.de | www.pikeos.com
