@@ -1,25 +1,24 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHixQ-0007La-HS
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 10:19:00 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Peter Menzebach <pm-mtd@mw-itcon.de>
-In-Reply-To: <433010D8.7000209@mw-itcon.de>
-References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>
-	<4329251C.7050102@mw-itcon.de>	<4329288B.8050909@yandex.ru>
-	<43292AC6.40809@mw-itcon.de>	<43292E16.70401@yandex.ru>
+	id 1EHjFM-0007lg-8f
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 10:37:54 -0400
+Date: Tue, 20 Sep 2005 16:36:22 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Message-ID: <20050920143622.GD4634@wohnheim.fh-wedel.de>
+References: <4329251C.7050102@mw-itcon.de> <4329288B.8050909@yandex.ru>
+	<43292AC6.40809@mw-itcon.de> <43292E16.70401@yandex.ru>
 	<43292F91.9010302@mw-itcon.de> <432FE1EF.9000807@yandex.ru>
 	<432FEF55.5090700@mw-itcon.de> <433006D8.4010502@yandex.ru>
-	<43300C08.80005@yandex.ru>  <433010D8.7000209@mw-itcon.de>
-Content-Type: text/plain
-Date: Tue, 20 Sep 2005 18:18:19 +0400
-Message-Id: <1127225899.20014.61.camel@sauron.oktetlabs.ru>
+	<20050920133244.GC4634@wohnheim.fh-wedel.de>
+	<43301877.3040306@yandex.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
-	Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <43301877.3040306@yandex.ru>
+Cc: linux-mtd@lists.infradead.org, Peter Menzebach <pm-mtd@mw-itcon.de>
 Subject: Re: data  loss on jffs2 filesystem on dataflash
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,45 +28,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-09-20 at 15:38 +0200, Peter Menzebach wrote:
-> I do need some wear leveling (and a filesystem which supports block 
-> sizes of 1056 bytes ;) )
-Ok.
+On Tue, 20 September 2005 18:11:03 +0400, Artem B. Bityutskiy wrote:
+> Jörn Engel wrote:
+> >Still can't.  Block devices have the attribute that writing AAA... to
+> >a block containing BBB... gives you one of three possible results in
+> >case of power failure:
+> >
+> >1. BBB...BBB all written
+> >2. AAA...AAA nothing written
+> >3. AAA...BBB partially written.
+> >
+> >Flash doesn't have 3, but two more cases:
+> >4. FFF...FFF erased, nothing written
+> >5. AAA...FFF erased, partially written
+> >
+> >Plus the really obnoxious
+> >6. FFF...FFF partially erased.  Looks fine but some bits may flip
+> >   randomly, writes may not stick, etc.
+> >
+> >Now try finding a filesystem that is robust if 4-6 happens. ;)
+> Don't underastand this. If you mean the atomicity, CRC may help here. 
+> And no problems. Or may be you missed the the fact that we have 
+> eraseblock size = writeblock size?
 
-> The main memory array is the flash itself with pages of 1056 bytes
-Ok, just strange name. On the picture they call it "Flash memory array".
+Image this block contains the used block bitmap of ext2.  All blocks
+handled with this bitmap are free, so the complete block contains
+zeroes.  Now we allocate a single block, writing a single one to the
+bitmap.  When writing, a power failure happens right after the erase:
 
-> my reasons for setting erase block size to 8(16)*1056:
-> 1. my lazyness -> I have to patch the mkfs.jff2 every time, since it 
-> makes a guess, that -e 1056 is not a very good idea (at lest the 
-> versions some times ago)
--e specifies the *erasesize*. In your case, make it = DataFlash block
-size = 8*1056. So, all is OK. Although you may make it 1056 (DataFlash
-allows this?), it is bad idea.
+Before:
+00000000000
 
-But In your logs, I saw that you have *write buffer* size = 8*1056!
-Write buffer size is another thing. It is the minimal flash IO unit.
-JFFS2 assumes that it cannot write 1 byte or 100 bytes, it assumes that
-it can only write 'write buffer size' bytes. And the goal of the write
-buffer is to accumulate many small JFFS2 writes in RAM, and when the
-write buffer becomes full, it is flushed to flash. 
+After:
+FFFFFFFFFF
 
-So, in your case, make write buffer = Data Flash page size = 1056.
+Gee, every single block is used now.  Good thing this happened to the
+block bitmap, so we only lost some space on the fs.  Somewhere else,
+we'd have data corruption.
 
+Any hard disk filesystem will suffer some kind of corruption in such a
+case.  They heavily depend on the non-existance of 4-6.
 
-> 2. It seemed to me, that jffs2 boots faster, if the number of blocks is 
-> smaller.
-I guess we have got confused with terminology. Please, let use this:
+> >>JFFS2 orients to "classical" flashes. They have no "write page with 
+> >>built-in erase" operation.
+> >What does this thing do?
+> It erases individual page, then writes there. To put it differently, in 
+> your terminology, eraseblock size = writeblock size.
 
-eraseblock - the minimal erase unit
-IO block - the minimal IO unit = write buffer size
+Neat.
 
-eraseblocks are usually larger then IO blocks.
+> P.S. I actually missed the mailing list, this should have gone to the 
+> MTD ML. So let's move there please.
 
-The larger is the IO block, the more data you loose due to unclean
-reboots in case of JFFS2. So, don't make it larger then 1056.
+As always.  You fuck it up, I get to fix it. ;)
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Homo Sapiens is a goal, not a description.
+-- unknown
