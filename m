@@ -1,22 +1,19 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EI1of-0002Vv-B0
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 06:27:42 -0400
-Message-ID: <4331357A.2040501@mw-itcon.de>
-Date: Wed, 21 Sep 2005 12:27:06 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EI23g-0002wK-5b
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 06:42:47 -0400
+Message-ID: <43313923.5050308@inf.u-szeged.hu>
+Date: Wed, 21 Sep 2005 12:42:43 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>		<4329251C.7050102@mw-itcon.de>	<4329288B.8050909@yandex.ru>		<43292AC6.40809@mw-itcon.de>	<43292E16.70401@yandex.ru>		<43292F91.9010302@mw-itcon.de>
-	<432FE1EF.9000807@yandex.ru>		<432FEF55.5090700@mw-itcon.de>
-	<433006D8.4010502@yandex.ru>		<43300C08.80005@yandex.ru>
-	<433010D8.7000209@mw-itcon.de>		<1127225899.20014.61.camel@sauron.oktetlabs.ru>		<43302456.4080601@mw-itcon.de>		<1127229060.17496.128.camel@fuzzie.sanpeople.com>		<1127233915.20014.76.camel@sauron.oktetlabs.ru>	<1127287279.25521.866.camel@fuzzie.sanpeople.com>
-	<433126F4.7060904@yandex.ru>
-In-Reply-To: <433126F4.7060904@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: =?ISO-8859-2?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <20050920113616.GD2143@wohnheim.fh-wedel.de>	<BAY17-F127FC28C2D9627C1F5DCC6E8940@phx.gbl>
+	<20050921071036.GA9369@wohnheim.fh-wedel.de>
+In-Reply-To: <20050921071036.GA9369@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: data  loss on jffs2 filesystem on dataflash
+Cc: zhao forrest <zhao_fusheng@hotmail.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Add JFFS2 eraseblock header support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,51 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
-> Andrew,
-> 
-> Andrew Victor wrote:
-> 
->> I do know that JFFS2-on-Dataflash was working fine when I committed the
->> changes in February.
-> 
-> Now it doesn't :-) Sure, you don't have to fix it :-) We were just 
-> curious. I guess Peter should deal with this.
-> 
-Ok guys,
-I will try, to get it to work, but at the moment I'm a little bit lost.
+Dear All,
 
-So here, what I saw in the data sheet, code and your answers:
+I just would like to write my opinion about these topics.
 
-Dataflash:
+I don't think that we should keep absolut monkey-safe compatibility. To
+deal still with 1:N images makes the things unnecessary complicated
+IMHO. The big warning (what Joern wrote to the list) should be enough
+for every serious user. Or there is one more thing what we can do: if we
+detect a cross-erase block node we reject mounting/set read-only flag.
+Is there anything other (than cross erase block nodes) can be problem
+with 1:N => 1:1?
 
-The dataflash has a smallest unit = dataflash page, which can be written 
-and erased (528/1056 bytes)
+I agree with Joern that erase block header now only a performance
+improvement, so it should not be INCOMPAT. I think it would not even
+solve the 1:N => 1:1 problem well. It only force the user than if he
+uses new utils (mkfs.jffs2, ..) than use new JFFS2, tool; and if he used
+a newer JFFS2 code, do not use an older one again. Nothing more. (Did I
+misunderstand something?) I don't think that it is a real problem. But
+if we afraid of it, I think we should introduce a distict new node type,
+and not new types for inodes and dirents.
 
-The dataflash has blocks, which are 8 * pagesize. This units may be used 
-for programming/erasing, but is not used in the driver
+Bye,
+Ferenc
 
-The dataflash has sectors, which are 256 pages (sector0+1 are special). 
-These sectors are only relevant in terms of wear leveling, since each 
-page of a sector must be reprogrammed at least once each 10.000 writes.
-
-jffs2:
-jffs2 nodes are 4 K
-the wbuf_size should be the smallest size, which you can re-program
-
-My assumptions now:
-
-We have to set the jffs2->sector_size to 8 * dataflash pagesize
-We have to set the jffs2->wbuf_size to dataflash pagesize (528/1056)
-We have to set the mtd->erasesize to 8 * dataflash pagesize
-
-
-And still I didn't get the point, why it isn't working today....
-
-Best regards
-Peter
-
--- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+P.S.: Zhao: If your patch reach the final state we will extend the
+summary code to handle your node type correctly, too.
