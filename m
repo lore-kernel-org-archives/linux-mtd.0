@@ -1,33 +1,18 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EI7Kc-0001vk-Fm
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 12:20:42 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Peter Menzebach <pm-mtd@mw-itcon.de>
-In-Reply-To: <433185EC.1000509@mw-itcon.de>
-References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>
-	<4329251C.7050102@mw-itcon.de>	<4329288B.8050909@yandex.ru>
-	<43292AC6.40809@mw-itcon.de>	<43292E16.70401@yandex.ru>
-	<43292F91.9010302@mw-itcon.de> <432FE1EF.9000807@yandex.ru>
-	<432FEF55.5090700@mw-itcon.de> <433006D8.4010502@yandex.ru>
-	<43300C08.80005@yandex.ru> <433010D8.7000209@mw-itcon.de>
-	<1127225899.20014.61.camel@sauron.oktetlabs.ru>
-	<43302456.4080601@mw-itcon.de>
-	<1127229060.17496.128.camel@fuzzie.sanpeople.com>
-	<1127233915.20014.76.camel@sauron.oktetlabs.ru>
-	<1127287279.25521.866.camel@fuzzie.sanpeople.com>
-	<433126F4.7060904@yandex.ru> <4331357A.2040501@mw-itcon.de>
-	<1127309771.20014.80.camel@sauron.oktetlabs.ru>
-	<43317FF6.1010507@mw-itcon.de> <43318348.7050401@yandex.ru>
-	<433185EC.1000509@mw-itcon.de>
-Content-Type: text/plain
-Date: Wed, 21 Sep 2005 20:19:51 +0400
-Message-Id: <1127319592.20014.93.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from anchor-post-35.mail.demon.net ([194.217.242.85])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EI7nA-0002Q3-44
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 12:50:17 -0400
+From: "Andy Hawkins" <a.hawkins@cabletime.com>
+To: <support@mvista.com>, <linux-mtd@lists.infradead.org>,
+	<linuxppc-embedded@ozlabs.org>
+Date: Wed, 21 Sep 2005 17:49:15 +0100
+Message-ID: <003401c5becc$6795bf00$153335bf@cabletime.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: data  loss on jffs2 filesystem on dataflash
-Reply-To: dedekind@infradead.org
+Cc: 
+Subject: Slow read performance of NAND flash on PPC 405EP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,24 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-09-21 at 18:10 +0200, Peter Menzebach wrote:
-> Artem B. Bityutskiy wrote:
-> >
-> > But.. Argh! Look at line 488: if (pad && !jffs2_dataflash(c))
-> > 
-> > Why !jffs2_dataflash(c)??? I bet this is the bug.
-> > 
-> Nope, it's OK there, only when padding.
-OK, its late here and my head is working only on 2%. But anyway, today I
-insist this is a bug. :-)
+Hi,
 
-I don't understand what is the pad parameter at all. AFAICS, it is just
-an old rudiment. What is padding? If the write buffer is not full, we
-fill the rest of it by padding and flush it. Why we may not want this? I
-have no idea. This is something odd. Why DataFlash is something
-special??? May be I'm too stupid today to understand this? Later.
+We have a custom PPC-405EP based board, with a Samsumg 8Gbit flash
+(K9W8G08U1M) attached via EBC bank 2. When we read from this flash, we are
+only getting data rates of around 20 MBits/sec (this is using 'dd' to read
+direct from the linux /dev/mtd/x device). Our estimates show that the device
+should be capable of something like 100 MBits/sec.
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+The EBC bank is set up as follows:
+
+#define CFG_EBC_PB2AP           0x8a015480
+#define CFG_EBC_PB2CR           0xFF458000  /*
+BAS=0xFF4,BS=4MB,BU=R/W,BW=8bit */
+
+The EBC bus is running at 54 MHz. We were originally running this bus at 27
+MHz, and this speed increase doesn't appear to have done an awful lot for
+us. By looking at the timings of various signals on an oscilloscope, we
+adjusted the PB2AP register to that shown above, in an attempt to remove as
+many of the wait states as possible.
+
+However, during a read, we are seeing that each byte read cycle takes around
+220 nSec (this is taken between the times when the #PERCS2 line for the
+device goes low). A significant portion (about 6 clock periods) of this
+time, the device appears to be doing nothing (i.e. the chip select line is
+inactive). The code in the linux kernel to read a page of data from the
+flash is very simple:
+
+static void nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+{
+        int i;
+        struct nand_chip *this = mtd->priv;
+
+        for (i=0; i<len; i++)
+                buf[i] = readb(this->IO_ADDR_R);
+}
+
+readb maps to a call to in_8(FLASH_BASE_ADDRESS). The in_8 function does
+contain what appear to be un-necessary calls to twi and isync, but removing
+these calls does not alter the cycle time significantly.
+
+Is there some setup of the EBC (or other component in the processor) that we
+have incorrect that could be affecting the throughput?
+
+Any advice you can offer would be greatly appreciated.
+
+Thanks
+
+Andy
