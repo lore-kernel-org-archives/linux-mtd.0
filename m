@@ -1,22 +1,17 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from [210.245.1.55] (helo=fsoft-email01.fsoft.fpt.vn)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHvTA-00044C-UP
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 23:40:39 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: David Woodhouse <dwmw2@infradead.org>
-Date: Wed, 21 Sep 2005 15:45:32 +1200
-References: <Pine.LNX.4.44.0509191525180.1130-100000@hkn.eecs.berkeley.edu>
-	<200509201332.31431.manningc2@actrix.gen.nz>
-	<1127209144.9750.47.camel@baythorne.infradead.org>
-In-Reply-To: <1127209144.9750.47.camel@baythorne.infradead.org>
+	id 1EHvW4-0004Gq-He
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 23:44:40 -0400
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="utf-8"
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200509211545.32443.manningc2@actrix.gen.nz>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: FAT on raw Nand -->PTP
+Date: Wed, 21 Sep 2005 10:20:27 +0700
+Message-ID: <BD3D9FF82608A74BA5407250FF83ACB7023368@fsoft-email01.fsoft.fpt.vn>
+From: "Nguyen Manh Dung \(G7\)" <DungNM2@fsoft.com.vn>
+To: <linux-mtd@lists.infradead.org>
+Subject: System Memory Layout
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 20 September 2005 21:39, David Woodhouse wrote:
-> On Tue, 2005-09-20 at 13:32 +1200, Charles Manning wrote:
-> > Unfortunately there is no USB-NFS. There is only a USB mass storage
-> > device which can be used with most block file systems (typically FAT).
-> > USB-NFS would have been a good idea because it would allow devices to u=
-se
-> > their own FS internally.
->
-> The 'USB-NFS' of which you speak is called 'PTP', and it's used by many
-> cameras.
+Hi all !
+I'm building Embedded Linux System.
+My board has 16M of RAM and 8M of Flash.The RAM is mapped from address =
+0x0000000 to address 0x00FFFFFF, and the flash is mapped from address =
+0x40000000 to address 0x407FFFFF
+I use u-boot, kernel 2.6.12.5, JFFS2 root filesystem for my board.
 
-=46rom a quick read of the USB PTP spec, it would seem that PTP is rather=20
-picture centric. Is that the case or can PTP also be used for more general=
-=20
-data?
+can you help me :
+1. How to layout system memory?
+2. how to store u-boot image, Kernel image, root filesystem in flash.
+
+thanks!
