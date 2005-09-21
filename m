@@ -1,12 +1,12 @@
-Received: from bay17-f13.bay17.hotmail.com ([64.4.43.63] helo=hotmail.com)
+Received: from bay17-f12.bay17.hotmail.com ([64.4.43.62] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EHuAO-0002Ra-0H
-	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 22:17:15 -0400
-Message-ID: <BAY17-F135E742AF3080EE7F27B59E8940@phx.gbl>
-In-Reply-To: <1127213984.20014.34.camel@sauron.oktetlabs.ru>
+	id 1EHuG8-0002nK-SZ
+	for linux-mtd@lists.infradead.org; Tue, 20 Sep 2005 22:23:24 -0400
+Message-ID: <BAY17-F12F1E2B388A262D0276F04E8940@phx.gbl>
+In-Reply-To: <432FF28C.7030005@yandex.ru>
 From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: dedekind@infradead.org, joern@wohnheim.fh-wedel.de
-Date: Wed, 21 Sep 2005 10:16:58 +0800
+To: dedekind@yandex.ru
+Date: Wed, 21 Sep 2005 10:22:54 +0800
 Mime-Version: 1.0
 Content-Type: text/plain; charset=gb2312; format=flowed
 Cc: linux-mtd@lists.infradead.org
@@ -20,18 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > > 6 new JFFS2 binary, when mounting an old JFFS2 image, will reject
-> > > mounting unless the old JFFS2 image doesn't use 1:N(N>1)mapping.
-> >
-> > I wouldn't waste code on this.
->I would just reject mounting old images as well.
 >
-For trying to keep compatibility, I think there's no reason for new 
-JFFS2 binary to reject mounting old JFFS2 image(with clean marker) if
-this image use 1:1 mapping. So I'd insist on this. Does it make sense
-to you?
-In fact I didn't waste many code on this, it's only a little code
-for it :)
+>+struct jffs2_eraseblock_header
+>+{
+>+       jint16_t magic;
+>+       jint16_t nodetype; /* == JFFS2_NODETYPE_ERASEBLOCK_HEADER */
+>+       jint32_t totlen;
+>+       jint32_t hdr_crc;
+>+       jint32_t fs_version; /* the version of this JFFS2 fs image */
+>Well, I assume we may have 3 fields here:
+>u8 version;
+>u8 compat_fset;
+>u8 incompat_fset;
+>u8 rocompat_fset;
 
-Thanks,
-Forrest
+OK. I'll modify the patch to add support for these 3 new fields.
+
+>
+>+       jint32_t erase_count; /* the erase count of this erase block */
+>4 bytes enough?
+>
+
+Yes. Now the erase cycles of flash erase block is about 100,000. So 4 
+bytes is enough.
+
+>+       jint16_t dsize; /* the size of additional data behind node_crc */
+>What for?
+
+This is for future extension. For example, if we decide to add more fields
+into eraseblock_header in the future, they'll be appended to
+eraseblock_header. dsize tells the data length of appended data; 
+data_crc tells the crc of appended data.
+
+>
+>+       jint32_t node_crc;
+>+       jint32_t data_crc;
+>+       jint32_t data[0];
+>+} __attribute__((packed));
+>+
+>
+>
