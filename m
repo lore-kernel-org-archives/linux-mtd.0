@@ -1,9 +1,9 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EI7vt-0002q8-UI
-	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 12:59:13 -0400
-Message-ID: <43319131.1080101@yandex.ru>
-Date: Wed, 21 Sep 2005 20:58:25 +0400
+	id 1EI7xV-0002yw-O3
+	for linux-mtd@lists.infradead.org; Wed, 21 Sep 2005 13:02:20 -0400
+Message-ID: <43319192.70406@yandex.ru>
+Date: Wed, 21 Sep 2005 21:00:02 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Andy Hawkins <a.hawkins@cabletime.com>
@@ -25,26 +25,14 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Andy Hawkins wrote:
 > Hi,
-Hi Andy
-
 > 
 > We have a custom PPC-405EP based board, with a Samsumg 8Gbit flash
 > (K9W8G08U1M) attached via EBC bank 2. When we read from this flash, we are
 > only getting data rates of around 20 MBits/sec (this is using 'dd' to read
 > direct from the linux /dev/mtd/x device). Our estimates show that the device
 > should be capable of something like 100 MBits/sec.
-
-Bah, 8Gbit! :-)
-
-JFFS2 is not enough scalable to work with 8Gbit Flashes. The practical 
-limit is about 1Gbit. I would suggest to forget about JFFS2 in your 
-case. You will never feel comfortable with JFFS2 + 8Gbit flashes.
-
-Try to make 500MB file and remount JFFS2, then open it. See how much 
-time this will take. See how much memory will me used.
-
-Also ypu may glance at the introduction chapters at 
-http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf
+> 
+Ops, pardon, you are not going to use JFFS2 :-) Ignore that mail then :-)
 
 -- 
 Best Regards,
