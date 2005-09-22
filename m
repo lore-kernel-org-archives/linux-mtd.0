@@ -1,20 +1,24 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EINjI-0001Uw-Jf
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 05:51:12 -0400
-Message-ID: <43327E5E.5090701@yandex.ru>
-Date: Thu, 22 Sep 2005 13:50:22 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from www.mw-itcon.de ([213.146.115.73])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EIOTW-0002Mr-Ft
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 06:38:53 -0400
+Message-ID: <433289B9.7070609@mw-itcon.de>
+Date: Thu, 22 Sep 2005 12:38:49 +0200
+From: Peter Menzebach <pm@mw-itcon.de>
 MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <20050921211326.GK8421@lunn.ch>
-	<43324D42.5060407@yandex.ru>	<20050922064104.GM8421@lunn.ch>
-	<43325439.1060307@yandex.ru> <43327C07.6020506@inf.u-szeged.hu>
-In-Reply-To: <43327C07.6020506@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Peter Menzebach <pm-mtd@mw-itcon.de>
+References: <432812E8.2030807@mw-itcon.de>	<432817FF.10307@yandex.ru>		<4329251C.7050102@mw-itcon.de>	<4329288B.8050909@yandex.ru>		<43292AC6.40809@mw-itcon.de>	<43292E16.70401@yandex.ru>		<43292F91.9010302@mw-itcon.de>
+	<432FE1EF.9000807@yandex.ru>		<432FEF55.5090700@mw-itcon.de>
+	<433006D8.4010502@yandex.ru>		<43300C08.80005@yandex.ru>
+	<433010D8.7000209@mw-itcon.de>		<1127225899.20014.61.camel@sauron.oktetlabs.ru>		<43302456.4080601@mw-itcon.de>		<1127229060.17496.128.camel@fuzzie.sanpeople.com>		<1127233915.20014.76.camel@sauron.oktetlabs.ru>		<1127287279.25521.866.camel@fuzzie.sanpeople.com>		<433126F4.7060904@yandex.ru>
+	<4331357A.2040501@mw-itcon.de>		<1127309771.20014.80.camel@sauron.oktetlabs.ru>		<43317FF6.1010507@mw-itcon.de>
+	<43318348.7050401@yandex.ru>		<433185EC.1000509@mw-itcon.de>	<1127319592.20014.93.camel@sauron.oktetlabs.ru>
+	<433193E8.7030501@mw-itcon.de>
+In-Reply-To: <433193E8.7030501@mw-itcon.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Lunn <andrew@lunn.ch>, Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Another compiler error: sumtool.c
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: data  loss on jffs2 filesystem on dataflash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,34 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Ferenc,
-
-Ferenc Havasi wrote:
->>EBS makes mount really faster. But then the JFFS2 checker is working,
->>and in case of NOR+EBS it will work longer and eat more CPU. JFFS2
->>writers are blocked while the checker is working, so it may slow down
->>the boot process. That's the theory, experiments are needed.
+Peter Menzebach wrote:
+> Artem B. Bityutskiy wrote:
 > 
-> Artem, I think you have a little bit negative attitude against
-> summary/EBS. :) You are right, we should write docs for summary, and we
-> will do it soon.
-No, beleave me! :-) I am actually fond of it as it improves JFFS2 
-scalability. I'm just being strict.
+>> On Wed, 2005-09-21 at 18:10 +0200, Peter Menzebach wrote:
+>>
+>>> Artem B. Bityutskiy wrote:
+>>>
+>>>> But.. Argh! Look at line 488: if (pad && !jffs2_dataflash(c))
+>>>>
+>>>> Why !jffs2_dataflash(c)??? I bet this is the bug.
+>>>>
+>>>
+>>> Nope, it's OK there, only when padding.
+>>
+>>
+>> OK, its late here and my head is working only on 2%. But anyway, today I
+>> insist this is a bug. :-)
+>>
+>> I don't understand what is the pad parameter at all. AFAICS, it is just
+>> an old rudiment. What is padding? If the write buffer is not full, we
+>> fill the rest of it by padding and flush it. Why we may not want this? I
+>> have no idea. This is something odd. Why DataFlash is something
+>> special??? May be I'm too stupid today to understand this? Later.
+>>
+> You are right (both):
+> It's late, and it was the bug....
+> Tomorrow is another day....
+> 
+Ok, so far one step again...
+but I don't find the place, where jeb->free_size and c->free_size is 
+adjusted for the *data* (wbuf_len). I find this only for the padding.
+Any ideas?
 
-> Just for information: EBS was mainly designed for NAND, because JFFS2
-> was designed for NOR, and produces very very slow mounting on big NAND
-> chips. The idea is simple, and it seems to cause mount speed up at NOR,
-> too. We've got many positive feedbacks. The price of the using EBS at
-> NOR is to disable the obsolating method of NOR and apply the one used on
-> NAND. I don't think it cause too much CPU penalty in normal usage, at
-> least nobody complained of it.
-May be you did not notice, I said EBS *may* be slow for *small* NOR 
-flashes. This means it should be OK for large ones. How small - no idea. 
-Just off the top of my head - may be 8-16 MB. I explained why I think so 
-- if you don't agree - complain please :-). Don't take any offense 
-please :-)
+Best regards
+Peter
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Peter Menzebach
+Menzebach und Wolff IT-Consulting GbR
+Phone +49 751 355 387 1
