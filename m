@@ -1,18 +1,18 @@
-Received: from setabox.com.tw ([220.135.128.161] helo=mail.setabox.com.tw)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIJnT-0005Qu-J8
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 01:39:09 -0400
-Message-ID: <43323D33.6040000@setabox.com>
-Date: Thu, 22 Sep 2005 13:12:19 +0800
-From: William J Beksi <wjbeksi@setabox.com>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EIKSU-00069H-Lz
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 02:21:34 -0400
+Message-ID: <43324D42.5060407@yandex.ru>
+Date: Thu, 22 Sep 2005 10:20:50 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: Hsu sabrina <sabrina.hsu1@hotmail.com>
-References: <BAY18-F12FD5D013FA03D0DF29370DA970@phx.gbl>
-In-Reply-To: <BAY18-F12FD5D013FA03D0DF29370DA970@phx.gbl>
-Content-Type: text/plain; charset=Big5
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: No RedBoot partition table
+To: Andrew Lunn <andrew@lunn.ch>
+References: <20050921211326.GK8421@lunn.ch>
+In-Reply-To: <20050921211326.GK8421@lunn.ch>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Another compiler error: sumtool.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sabrina,
-
-Hsu sabrina wrote:
-> Hi, Linux gurus!
-> I¡¦ve got a problem with booting my kernel. The kernel on reference board
-> boots successfully while on my board fails. The only difference is a
-> flash memory I use in my board. I understand that I need to make some
-> adjustments but unfortunately I¡¦m not a linux specialist. I attached the
-> boot log and marked differences in booting process.
-> Reference board:
-> 6 RedBoot partitions found on MTD device phys_mapped_flash"
-> Creating 6 MTD partitions on "phys_mapped_flash":
-> 0x00000000-0x00040000 : "RedBoot"
-> 0x00040000-0x00100000 : "kernel"
-> 0x00100000-0x00e80000 : "root"
-> 0x00e80000-0x01fe0000 : "unallocated"
-> 0x01fe0000-0x01fff000 : "FIS directory"
+Andrew Lunn wrote:
+> Hi Folks
 > 
-> My board:
-> No RedBoot partition table detected in phys_mapped_flash
-> Using physmap partition definition
-> Creating 3 MTD partitions on "phys_mapped_flash":
-> 0x00000000-0x00100000 : "Bootloader"
-> 0x00100000-0x00300000 : "Kernel"
-> 0x00300000-0x02000000 : "UserFS"
+> Thanks to Artem's fix i can now compile jffs2 without write buffer
+> support. However the sumtool does not compile.....
+> 
+> lunn@londo:~/pkgs/mtd/mtd/util$ make
+> gcc -I../include -O2 -Wall -g -c -o sumtool.o sumtool.c -g -Wp,-MD,.sumtool.c.dep
+> sumtool.c:66: error: static declaration of 'target_endian' follows non-static declaration../include/mtd/jffs2-user.h:22: error: previous declaration of 'target_endian' was here
+> make: *** [sumtool.o] Error 1
 
-You should first verify that your board can boot by directly loading the
-images into ram through tftp:
-load -v -r -b 0x800000 root
-load -v -r -b 0x1600000 kernel
-exec
-
-If that works you need to correctly create the partitions on the your
-board's NOR flash using the fis command. See the Redboot user's guide.
+Hmm, I did not enable EBS and did not test how it works. If you have 
+small NOR flash, don't use EBS. EBS may make things worse on small NORs 
+- both because of wasting space and because NOR+EBS looks like NAND for 
+JFFS2 (jffs2_can_mark_obsolete() is 0 at os-linux.h), which leads to 
+greater CPU load on mount (much more nodes to check). I believe Ferenc 
+should write about this in a Readme file or in the EBS config help.
 
 -- 
-William J Beksi                          <wjbeksi@users.sourceforge.net>
-GPG Key Fingerprint = ED4B 32C3 69E6 C2B7 705C  263F CB2F 3253 E7E1 DB3B
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
