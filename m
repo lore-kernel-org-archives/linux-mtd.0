@@ -1,19 +1,19 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIjS9-00007W-EZ
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 05:02:49 -0400
-Date: Fri, 23 Sep 2005 11:02:48 +0200
+	id 1EIjXM-0000MJ-Lp
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 05:08:21 -0400
+Date: Fri, 23 Sep 2005 11:08:02 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Message-ID: <20050923090248.GC7522@wohnheim.fh-wedel.de>
-References: <BAY17-F2907FD1D0C39129EF734BAE8960@phx.gbl>
-	<4333B867.4050801@inf.u-szeged.hu>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050923090802.GD7522@wohnheim.fh-wedel.de>
+References: <20050922140223.GB6854@wohnheim.fh-wedel.de>
+	<BAY17-F31136691CA372165BD3066E8960@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <4333B867.4050801@inf.u-szeged.hu>
-Cc: zhao forrest <zhao_fusheng@hotmail.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <BAY17-F31136691CA372165BD3066E8960@phx.gbl>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: 1:1 mapping
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,51 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 September 2005 10:10:15 +0200, Ferenc Havasi wrote:
-> zhao forrest wrote:
-> 
-> > Your patch may have problem.
-> > In fact this "reject to mount when cross-boundary" has been in my
-> > patch, it's quite simple. This code segment is extracted from my patch:
+On Fri, 23 September 2005 10:56:56 +0800, zhao forrest wrote:
+> >> > Can you explain "when JFFS2 has detected that the image is an old
+> >> > image" in C?
+> >> Well, we may even do better. Scan FS. If we meet any node which crosses
+> >> the eraseblock boundary - bye bye. That must be easy to implement as
+> >> node headers contain the total node length.
 > >
-> > @@ -570,10 +584,8 @@ scan_more:
-> >              /* Eep. Node goes over the end of the erase block. */
-> >         printk(KERN_WARNING "Node at 0x%08x with length 0x%08x would
-> > run over the end of the erase block\n",
-> >                               ofs, je32_to_cpu(node->totlen));
-> > -        printk(KERN_WARNING "Perhaps the file system was created
-> >           with the wrong erase size?\n");
-> > -                       DIRTY_SPACE(4);
-> > -                       ofs += 4;
-> > -                       continue;
-> > +                       printk(KERN_NOTICE "Perhaps the file system
-> >       was created with the wrong erase size? Reject to mount.\n");
-> > +                       return -EINVAL;
-> >                }
+> >Sounds fine.  Yes, that appears to be the best solution.
+> >
+> This solution has been in my patch.
 > 
-> My patch has one more part: detecting that case, if the node header is
-> also cross-boundary. But that case we cannot say: it is absolutely sure
-> that it is a cross-boundary node, just can say: it is likely.
-> 
-> Forutnatelly the node header is small enough to say that if someone uses
-> bad (larger) erase block size, there will be a cross-boundary node which
-> have a correct node header at the end of the erase block, and only the
-> body is cross-boundary.
-> 
-> So If everyone agrees we can commit this small part of Zhao's patch.
+> Until now we only disscussed one aspect of the problem.
+> Another aspect is that what should we do when users mount new JFFS2 image
+> with old JFFS2 code? Is the "big warning" in readme enough? Or we should
+> let old JFFS2 code reject mounting new JFFS2 image?
 
-Actually, I preferred your patch:
-o -EIO makes slightly more sense than -EINVAL.
-o Detecting nodes with headers crossing the boundary also makes sense.
+Just let them mount it.  If people actually convert to virtual block
+in this way, it should be relatively safe.  On their way back they
+will notice.
 
-The shorter string constant of Zhao's patch, on the other hand,
-reduces binary size and should be enough.  People will report problem
-to the mailing list and get pointed in the right direction.
+Really, this is an unlikely case of an unlikely case.  People would
+have to
+1. have enough erase blocks to need virtual blocks,
+2. not have MTD_NO_VIRTBLOCKS flag set,
+3. decide to downgrade from newer code,
+4. by all chances, previously have upgraded to the newer code and
+   either not see a problem or ignore it.
 
-I'll try to have a better look over the weekend.
+Just ignore that case.
 
 Jörn
 
 -- 
-It's just what we asked for, but not what we want!
--- anonymous
+I don't understand it. Nobody does.
+-- Richard P. Feynman
