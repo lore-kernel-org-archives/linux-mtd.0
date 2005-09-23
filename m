@@ -1,15 +1,13 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIrz0-000170-6w
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 14:09:21 -0400
-Message-ID: <43344342.8030303@mw-itcon.de>
-Date: Fri, 23 Sep 2005 20:02:42 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+From: =?iso-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
+To: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
+Date: Fri, 23 Sep 2005 15:29:07 +0200
+Message-ID: <002001c5c042$c76f1e90$050213ac@MCaloMobile>
 MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: [PATCH] fix for mtd partitions for erase_size != 2^X
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Cc: dedekind@yandex.ru
+Subject: Newly-erased Block...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +17,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Here a trivial patch,
-which allows correct creation of mtd partitions, which have erase sizes
-which are not a power of 2.
 
-Best regards
-Peter
+Hi Artem,
 
-Sorry, I didn't succeed to get the patch accepted by the mailing list as
-attachment.
+	do you remember about my flash problem?
 
---- drivers/mtd/mtdpart.c.orig    2005-09-23 09:28:07.000000000 +0200
-+++ drivers/mtd/mtdpart.c    2005-09-23 09:29:37.000000000 +0200
-@@ -465,9 +465,9 @@
-          if (slave->offset == MTDPART_OFS_APPEND)
-              slave->offset = cur_offset;
-          if (slave->offset == MTDPART_OFS_NXTBLK) {
--            u_int32_t emask = master->erasesize-1;
--            slave->offset = (cur_offset + emask) & ~emask;
--            if (slave->offset != cur_offset) {
-+            slave->offset = cur_offset;
-+            if ((cur_offset % master->erasesize) != 0) {
-+                slave->offset = ((cur_offset / master->erasesize) + 1) 
-* master->erasesize;
-                  printk(KERN_NOTICE "Moving partition %d: "
-                         "0x%08x -> 0x%08x\n", i,
-                         cur_offset, slave->offset);
+>>/>mount -t jffs2 /dev/mtdblock5 /mnt
+>>/>Newly-erased block contained word 0x4c004c at offest 0x00040000
+>>Newly-erased block contained word 0x4c004c at offest 0x00030000
+
+I have found the cause : the Samsung S3C4510b when access to the memory =
+use
+the "cache" by default.
+If you have to disable it (like while you program the flash) you have to =
+'or
+0x4000000 to the base address.
+
+So I have modifyed the file "cfi_cmdset_0002.c" as follow :
+
+	for esample: "do_erase_chip" function
+
+		...
+		chip->start |=3D 0x4000000; //my modify!!!!!!!!!!!!!
+
+		chip->state =3D FL_ERASING;
+
+		ENABLE_VPP(map);
+=09
+cfi_send_gen_cmd(0xAA,cfi->addr_unlock1,chip->start,map,cfi,......
+
+
+I did the same for every "cfi_send_gen_cmd" : the 3rd parameter has been
+ored to 0x4000000.
+
+What do you think about this modify? Do you know a better way?
+
+Now I still have one warning msg :=20
+	"Warning: DQ5 raised while program operation was in progress,
+however operation completed OK"
+Can I ignore this msg?
+
+Thanks!
+
+	Massimo.
