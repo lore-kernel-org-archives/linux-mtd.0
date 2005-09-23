@@ -1,18 +1,16 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIkRi-0001ns-66
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 06:06:51 -0400
-Message-ID: <4333D37A.1020900@yandex.ru>
-Date: Fri, 23 Sep 2005 14:05:46 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Peter Menzebach <pm-mtd@mw-itcon.de>
-References: <4333D014.8000809@mw-itcon.de>
-In-Reply-To: <4333D014.8000809@mw-itcon.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Minimum/optimal sector_size for jffs2
+Received: from bay17-f31.bay17.hotmail.com ([64.4.43.81] helo=hotmail.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EIklV-0004tH-2X
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 11:26:49 +0100
+Message-ID: <BAY17-F3118D3CF10B5EEDFDB67CEE8960@phx.gbl>
+In-Reply-To: <4333CAF3.3070004@inf.u-szeged.hu>
+From: "zhao forrest" <zhao_fusheng@hotmail.com>
+To: havasi@inf.u-szeged.hu
+Date: Fri, 23 Sep 2005 18:24:33 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]Erase block header(revision 1)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,33 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Peter Menzebach wrote:
-> Hi,
-> since my grep through the source code was not successful:
-> Is there a minimum possible jffs2_sb_info.sector_size and somewhere a 
-> definition?
-There is probably no minimum value, but not because it doesn't matter, 
-just because nobody cared adding a check.
+>
+>I have only one big problem with this patch. I'm strongly against to
+>introduce INCOMPAT nodes JFFS2_NODETYPE_DIRENT_EBH and
+>JFFS2_NODETYPE_INODE_EBH just to make unusable new JFFS2 images for old
+>JFFS2 code on NAND devices, too. Do I understand well: is this the only
+>reason?
 
-> Is there somewhat like an optimal sector_size?
-Not sure about optimal, probably yes. Consider the following aspects:
+Yes. We have decided to remove JFFS2_NODETYPE_DIRENT_EBH and
+JFFS2_NODETYPE_INODE_EBH.
 
-1. There is an array (c->blocks[]) with one element per eraseblock. The 
-smaller is yur eraseblock - the larger is the array.
+I'll send out a patch to fix all these problems next week.
 
-2. The eraseblock size cannot be less then PAGE_SIZE + sizeof(struct 
-jffs2_raw_inode). PAGE_SIZE is mostly 4096 bytes.
+Have a happy weekend!
 
-3. The space at the end of eraseblock is not used if there are less then 
-JFFS2_MIN_DATA_LEN bytes, or if the node beinf written does not fit that 
-space. So, the smaller is the eraseblock, the more space is wasted.
-
-> I have here a device (dataflash), which has a very small
-> erase/write page size (1056 bytes).
-Err, AFAIR, I explained why you cannot use 1056 bytes eraseblocks... It 
-is simply too small.
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Forrest
