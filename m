@@ -1,18 +1,16 @@
 Received: from www.mw-itcon.de ([213.146.115.73])
 	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIll4-0003E0-3Z
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 07:30:33 -0400
-Message-ID: <4333E759.8000804@mw-itcon.de>
-Date: Fri, 23 Sep 2005 13:30:33 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
-MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <4333D014.8000809@mw-itcon.de> <4333D37A.1020900@yandex.ru>
-In-Reply-To: <4333D37A.1020900@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Minimum/optimal sector_size for jffs2
+	id 1EIkQd-0001mE-9D
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 06:05:25 -0400
+Message-ID: <20050923100513.26965.qmail@mw-itcon.de>
+From: "Peter Menzebach" <pm-mtd@mw-itcon.de>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 23 Sep 2005 12:05:13 +0200
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_0_26872_1127469913";
+	charset="iso-8859-1"
+Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>
+Subject: [PATCH] fix for mtd partitions for erase_size != 2^X
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
-> Peter Menzebach wrote:
-> 
->> Hi,
->> since my grep through the source code was not successful:
->> Is there a minimum possible jffs2_sb_info.sector_size and somewhere a 
->> definition?
-> 
-> There is probably no minimum value, but not because it doesn't matter, 
-> just because nobody cared adding a check.
-> 
->> Is there somewhat like an optimal sector_size?
-> 
-> Not sure about optimal, probably yes. Consider the following aspects:
-> 
-> 1. There is an array (c->blocks[]) with one element per eraseblock. The 
-> smaller is yur eraseblock - the larger is the array.
-> 
-> 2. The eraseblock size cannot be less then PAGE_SIZE + sizeof(struct 
-> jffs2_raw_inode). PAGE_SIZE is mostly 4096 bytes.
-> 
-Sorry,
-I was not precise in terms. When I talked about erasesize, I mean 
-mtd_info.erasesize.
+This is a MIME-formatted message.  If you see this text it means that your
+mail software cannot handle MIME-formatted messages.
 
-As far as I see in the code, for jffs2 the erase vloack size (used by 
-jeb) is jffs2_sb_info.sector_size.
+--=_0_26872_1127469913
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
-So, in these terms, the jffs2 sector_size has a minimum:
-jffs2 sector_size >= PAGE_SIZE + sizeof(struct jffs2_raw_inode)
-
-That's the information, I wanted to confirm.
-
->> I have here a device (dataflash), which has a very small
->> erase/write page size (1056 bytes).
-> 
-> Err, AFAIR, I explained why you cannot use 1056 bytes eraseblocks... It 
-> is simply too small.
-See explanation above, sorry for the confusion ;) .
-
+Here a trivial patch,
+which allows correct creation of mtd partitions, which have erase sizes 
+which are not a power of 2. 
 
 Best regards
-Peter
+Peter 
 
--- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+
+
+--=_0_26872_1127469913
+Content-Disposition: inline; filename=patch.mtdpart.c
+Content-Type: text/plain; charset="iso-8859-1"; name=patch.mtdpart.c
+Content-Transfer-Encoding: 7bit
+
+--- drivers/mtd/mtdpart.c.orig	2005-09-23 09:28:07.000000000 +0200
++++ drivers/mtd/mtdpart.c	2005-09-23 09:29:37.000000000 +0200
+@@ -465,9 +465,9 @@
+ 		if (slave->offset == MTDPART_OFS_APPEND)
+ 			slave->offset = cur_offset;
+ 		if (slave->offset == MTDPART_OFS_NXTBLK) {
+-			u_int32_t emask = master->erasesize-1;
+-			slave->offset = (cur_offset + emask) & ~emask;
+-			if (slave->offset != cur_offset) {
++			slave->offset = cur_offset;
++			if ((cur_offset % master->erasesize) != 0) {
++				slave->offset = ((cur_offset / master->erasesize) + 1) * master->erasesize;
+ 				printk(KERN_NOTICE "Moving partition %d: "
+ 				       "0x%08x -> 0x%08x\n", i,
+ 				       cur_offset, slave->offset);
+
+--=_0_26872_1127469913--
