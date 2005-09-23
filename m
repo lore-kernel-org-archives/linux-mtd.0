@@ -1,26 +1,16 @@
-Received: from gamwsm02.mwga.mailwatch.com ([216.157.255.16])
+Received: from bay17-f29.bay17.hotmail.com ([64.4.43.79] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIc5S-00019V-3B
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 21:11:08 -0400
-Received: from gamwsc12.mwga.mailwatch.com
-	(ltm-3-4-floating.mwga.mailwatch.com [216.157.255.9])
-	by gamwsm02.mwga.mailwatch.com (8.13.4/8.12.9) with ESMTP id
-	j8MJWadq001292 for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Sep 2005 15:32:36 -0400 (EDT)
-Received: from linkex.interlink.local ( [207.178.156.186] (may be forged))
-	by gamwsm07.mwga.mailwatch.com (8.13.4/8.12.9) with ESMTP id
-	j8MJWZhX000732 for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Sep 2005 15:32:35 -0400 (EDT)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 22 Sep 2005 12:32:37 -0700
-Message-ID: <BF08AC56BA03AE4C93BC111167C8725393C001@linkex2.interlink.local>
-From: "Van Beveren, David" <dvanbeveren@interlinkelec.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Raw character access to mtd device
+	id 1EIdN2-0002Oz-MH
+	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 22:33:25 -0400
+Message-ID: <BAY17-F2907FD1D0C39129EF734BAE8960@phx.gbl>
+In-Reply-To: <433342CF.9000102@inf.u-szeged.hu>
+From: "zhao forrest" <zhao_fusheng@hotmail.com>
+To: havasi@inf.u-szeged.hu, joern@wohnheim.fh-wedel.de
+Date: Fri, 23 Sep 2005 10:33:02 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: 1:1 mapping
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +20,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-At the following MTD documentation page:
 
-http://www.linux-mtd.infradead.org/doc/general.html
 
-There is a reference to a planned user agent for raw character access of
-mtd partitions.=20
 
-Should I be able to read and write to my (NOR flash) /dev/mtdc1 given it
-is correctly aligned on an erase sector boundary? Can I treat this
-device the same way I would treat a file with respect to simple
-open/lseek/read/write/close system calls?
+>From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+>To: Jörn Engel <joern@wohnheim.fh-wedel.de>
+>CC: "Artem B. Bityutskiy" <dedekind@infradead.org>,  zhao forrest 
+<zhao_fusheng@hotmail.com>,  linux-mtd@lists.infradead.org
+>Subject: Re: 1:1 mapping
+>Date: Fri, 23 Sep 2005 01:48:31 +0200
+>
+>Jörn Engel wrote:
+>
+> >On Thu, 22 September 2005 17:54:58 +0400, Artem B. Bityutskiy wrote:
+> >
+> >
+> >>On Thu, 2005-09-22 at 15:48 +0200, Jörn Engel wrote:
+> >>
+> >>
+> >>>Can you explain "when JFFS2 has detected that the image is an old
+> >>>image" in C?
+> >>>
+> >>>
+> >>Well, we may even do better. Scan FS. If we meet any node which crosses
+> >>the eraseblock boundary - bye bye. That must be easy to implement as
+> >>node headers contain the total node length.
+> >>
+> >>
+> >
+> >Sounds fine.  Yes, that appears to be the best solution.
+> >
+> >
+>
+>Yes, that is the same I wrote in my letter. As Artem asked me to
+>implement it I wrote a patch, you can find it at
+>http://www.inf.u-szeged.hu/jffs2/cross-boundary.patch
+>
+>I have not tested it yet (it will be task of tomorrow) I would just to
+>show what is in my mind.
+>
+>Ferenc
+>
 
-Or, do I need a user module of some kind? If so, guidance on where to
-look would be appreciated.=20
+Your patch may have problem.
+In fact this "reject to mount when cross-boundary" has been in my
+patch, it's quite simple. This code segment is extracted from my patch:
+
+@@ -570,10 +584,8 @@ scan_more:
+              /* Eep. Node goes over the end of the erase block. */
+         printk(KERN_WARNING "Node at 0x%08x with length 0x%08x would
+ run over the end of the erase block\n",
+                               ofs, je32_to_cpu(node->totlen));
+-        printk(KERN_WARNING "Perhaps the file system was created 
+           with the wrong erase size?\n");
+-                       DIRTY_SPACE(4);
+-                       ofs += 4;
+-                       continue;
++                       printk(KERN_NOTICE "Perhaps the file system
+       was created with the wrong erase size? Reject to mount.\n");
++                       return -EINVAL;
+                }
 
 Thanks,
-
-David
-*********************************
-**** Appended by Interlink Electronics. ***** 
-This e-mail and any attachments may contain information which is confidential, proprietary, privileged or otherwise protected by law. The information is solely intended for the named addressee (or a person responsible for delivering it to the addressee). If you are not the intended recipient of this message, you are not authorized to read, print, retain, copy or disseminate this message or any part of it. If you have received this e-mail in error, please notify the sender immediately by return e-mail and delete it from your computer.
+Forrest
