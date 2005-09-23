@@ -1,16 +1,14 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIkJR-0001hx-22
-	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 05:58:04 -0400
-Message-ID: <4333D014.8000809@mw-itcon.de>
-Date: Fri, 23 Sep 2005 11:51:16 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+Message-ID: <433403DE.4020403@yandex.ru>
+Date: Fri, 23 Sep 2005 17:32:14 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
+To: =?ISO-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
+References: <002001c5c042$c76f1e90$050213ac@MCaloMobile>
+In-Reply-To: <002001c5c042$c76f1e90$050213ac@MCaloMobile>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityuckiy" <dedekind@yandex.ru>
-Subject: Minimum/optimal sector_size for jffs2
+Content-Transfer-Encoding: quoted-printable
+Cc: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
+Subject: Re: Newly-erased Block...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-since my grep through the source code was not successful:
-Is there a minimum possible jffs2_sb_info.sector_size and somewhere a 
-definition?
+Cal=F2 Massimo wrote:
+> What do you think about this modify? Do you know a better way?
+I'm sorry Carlo, I have never used CFI and have no comments.
+But there are compitent people present here, the may comment this.
 
-Is there somewhat like an optimal sector_size?
-
-I have here a device (dataflash), which has a very small
-erase/write page size (1056 bytes).
-
-Best regards
-Peter
--- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
