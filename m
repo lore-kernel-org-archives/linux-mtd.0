@@ -1,16 +1,18 @@
-Received: from bay17-f4.bay17.hotmail.com ([64.4.43.54] helo=hotmail.com)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EIdvu-0003X8-Cd
-	for linux-mtd@lists.infradead.org; Thu, 22 Sep 2005 23:09:18 -0400
-Message-ID: <BAY17-F4A95E389D8C2DAC614952E8960@phx.gbl>
-In-Reply-To: <43329ED5.7070909@yandex.ru>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: dedekind@yandex.ru
-Date: Fri, 23 Sep 2005 11:08:55 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
+	id 1EIich-0007cM-TD
+	for linux-mtd@lists.infradead.org; Fri, 23 Sep 2005 04:09:49 -0400
+Message-ID: <4333B867.4050801@inf.u-szeged.hu>
+Date: Fri, 23 Sep 2005 10:10:15 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: zhao forrest <zhao_fusheng@hotmail.com>
+References: <BAY17-F2907FD1D0C39129EF734BAE8960@phx.gbl>
+In-Reply-To: <BAY17-F2907FD1D0C39129EF734BAE8960@phx.gbl>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Adding eraseblock header support(revised version)
+Subject: Re: 1:1 mapping
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +22,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+zhao forrest wrote:
 
+> Your patch may have problem.
+> In fact this "reject to mount when cross-boundary" has been in my
+> patch, it's quite simple. This code segment is extracted from my patch:
 >
->zhao forrest wrote:
-> > Your comments for the revised patch are welcome :)
->
->It is supposed that you eliminated cleanmarkers completely, right?
->Why then I still see functions like jffs2_check_nand_cleanmarker()?
->--
+> @@ -570,10 +584,8 @@ scan_more:
+>              /* Eep. Node goes over the end of the erase block. */
+>         printk(KERN_WARNING "Node at 0x%08x with length 0x%08x would
+> run over the end of the erase block\n",
+>                               ofs, je32_to_cpu(node->totlen));
+> -        printk(KERN_WARNING "Perhaps the file system was created
+>           with the wrong erase size?\n");
+> -                       DIRTY_SPACE(4);
+> -                       ofs += 4;
+> -                       continue;
+> +                       printk(KERN_NOTICE "Perhaps the file system
+>       was created with the wrong erase size? Reject to mount.\n");
+> +                       return -EINVAL;
+>                }
 
-We'll allow mount old JFFS2 image if it used 1:1 mapping. So
-during mount scan we need to scan both cleanmarker and eraseblock
-header. So I don't change the name. Maybe a new name like
-jffs2_check_nand_cleanmarker_ebh() is better.
+My patch has one more part: detecting that case, if the node header is
+also cross-boundary. But that case we cannot say: it is absolutely sure
+that it is a cross-boundary node, just can say: it is likely.
 
-Thanks,
-Forrest
+Forutnatelly the node header is small enough to say that if someone uses
+bad (larger) erase block size, there will be a cross-boundary node which
+have a correct node header at the end of the erase block, and only the
+body is cross-boundary.
+
+So If everyone agrees we can commit this small part of Zhao's patch.
+
+Ferenc
