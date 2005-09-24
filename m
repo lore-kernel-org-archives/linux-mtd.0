@@ -1,13 +1,12 @@
-From: =?iso-8859-1?Q?Cal=F2_Massimo?= <m.calo@ctsgroup.it>
-To: "ucLinux-Mtd@Lists. Infradead. Org" <Linux-Mtd@Lists.Infradead.Org>
-Date: Fri, 23 Sep 2005 15:29:07 +0200
-Message-ID: <002001c5c042$c76f1e90$050213ac@MCaloMobile>
+From: <adams2@organizer.net>
+To: adams2@organizer.net
+Date: Sat, 24 Sep 2005 04:29:48 +0100
+Message-ID: <web-23122226@mail.organizer.net>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Cc: dedekind@yandex.ru
-Subject: Newly-erased Block...
+Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
+Content-Transfer-Encoding: 8bit
+Cc: 
+Subject: good day
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,46 +16,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+phone: (24 hours): 234-802-764-0445
+please reply to adamsidioma20053@yahoo.co.uk
 
-Hi Artem,
-
-	do you remember about my flash problem?
-
->>/>mount -t jffs2 /dev/mtdblock5 /mnt
->>/>Newly-erased block contained word 0x4c004c at offest 0x00040000
->>Newly-erased block contained word 0x4c004c at offest 0x00030000
-
-I have found the cause : the Samsung S3C4510b when access to the memory =
-use
-the "cache" by default.
-If you have to disable it (like while you program the flash) you have to =
-'or
-0x4000000 to the base address.
-
-So I have modifyed the file "cfi_cmdset_0002.c" as follow :
-
-	for esample: "do_erase_chip" function
-
-		...
-		chip->start |=3D 0x4000000; //my modify!!!!!!!!!!!!!
-
-		chip->state =3D FL_ERASING;
-
-		ENABLE_VPP(map);
-=09
-cfi_send_gen_cmd(0xAA,cfi->addr_unlock1,chip->start,map,cfi,......
-
-
-I did the same for every "cfi_send_gen_cmd" : the 3rd parameter has been
-ored to 0x4000000.
-
-What do you think about this modify? Do you know a better way?
-
-Now I still have one warning msg :=20
-	"Warning: DQ5 raised while program operation was in progress,
-however operation completed OK"
-Can I ignore this msg?
-
-Thanks!
-
-	Massimo.
+I am the chairman of the contract award committee of the
+petroluem and  natural resources ministry here in Nigeria,
+for security reasons, I may  not wish to disclose how I
+got your email address for now.
+After due deliberation with my partner, I decided to
+forward to you  this business proposal, we want you to
+assist us receive the sum of
+Twenty eight million, six hundred thousand united state
+bills
+(us28.6m) into your account. This fund resulted from an
+over-invoiced  contract awarded by us under the budget
+allocation to my ministry and  the bill was approved for
+payment by the concerned ministries. The  contract was
+executed, commissioned and the contractor was paid his
+actual cost of the contract. Now, we are left with the
+balance of  us28.6m as the over invoiced amount, which we
+have deliberately over  estimated for our own use. Please
+note that the law forbids civil  servants to operate or
+own foreign accounts hence this contact, we have  agreed
+to share the money in the following percentages: 30 for
+you, 60  for us 10 for tax as may be required by your
+government.
+Note that this transaction is very much free from all
+sorts of risk  hence the business was carefully planned
+before it was successfully  executed and we the officials
+involved in the deal have put many years  in service to
+our ministry. We have been exercising patience for this
+privilege for so long not until the presidential
+announcement last  week, that all foreign contractors owed
+be paid forthwith, this will  enable the presidency
+reconcile our debt ratio with the outside world  and to
+most of us, this is a lifetime blessing we cannot afford
+to  miss. Upon indication of your interest to fully
+co-operate with us, a  payment application/information
+form will be sent to you via email for  completion.
+Note that the following information: a) bankers name and
+address, b)  account number and account name and c) your
+private phone number and  email address will enable us
+seek/secure approval of the fund from the  concerned
+government quarters/ministries within 3-4 banking days.
+As soon as we confirm receipt of this money in your
+nominated bank  account, my partner and I will come over
+to your country to arrange for  our own share and possibly
+invest part of this money in your country.
+Let honesty and trust be our watchword throughout this
+transaction. I  shall furnish you with some details about
+myself. Your prompt reply  will be highly appreciated.
+Best regards.
+Adams. I. S. A
