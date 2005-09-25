@@ -1,19 +1,19 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EJW6h-00061E-Nz
-	for linux-mtd@lists.infradead.org; Sun, 25 Sep 2005 08:59:56 -0400
-Date: Sun, 25 Sep 2005 14:59:52 +0200
+	id 1EJWMn-0006Oj-HY
+	for linux-mtd@lists.infradead.org; Sun, 25 Sep 2005 09:16:34 -0400
+Date: Sun, 25 Sep 2005 15:16:30 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Lior Balkohen <balkohen@gmail.com>
-Message-ID: <20050925125952.GB28978@wohnheim.fh-wedel.de>
-References: <196b7d310509201437bd93c27@mail.gmail.com>
+To: Peter Menzebach <pm-mtd@mw-itcon.de>
+Message-ID: <20050925131630.GC28978@wohnheim.fh-wedel.de>
+References: <43344342.8030303@mw-itcon.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <196b7d310509201437bd93c27@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: kernel panic with block2mtd
+In-Reply-To: <43344342.8030303@mw-itcon.de>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] fix for mtd partitions for erase_size != 2^X
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 September 2005 23:37:31 +0200, Lior Balkohen wrote:
+On Fri, 23 September 2005 20:02:42 +0200, Peter Menzebach wrote:
 > 
-> after patching my kernel with today's mtd cvs,
+> Here a trivial patch,
+> which allows correct creation of mtd partitions, which have erase sizes
+> which are not a power of 2.
 > 
-> [...]
->
-> Modules linked in: jffs2 zlib_deflate block2mtd mtdcore snd_pcm_oss
-> snd_mixer_oss snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq
-> snd_via82xx snd_ac97_codec snd_pcm snd_timer snd_page_alloc
-> snd_mpu401_uart snd_rawmidi snd_seq_device snd soundcore nvidia
-> CPU:    0
-> EIP:    0060:[<e0bdacf8>]    Tainted: P      VLI
->
-> [...]
+> Best regards
+> Peter
 > 
-> what's going on?
+> Sorry, I didn't succeed to get the patch accepted by the mailing list as
+> attachment.
 
-Hard to say.  Are you able to reproduce this with a plain 2.6.13
-kernel without the nvidia module loaded?  And if yes, can you send me
-your kernel config?
+I actually prefer inline.  Except that your mailer seems to have
+messed things up - grr.
+
+> --- drivers/mtd/mtdpart.c.orig    2005-09-23 09:28:07.000000000 +0200
+> +++ drivers/mtd/mtdpart.c    2005-09-23 09:29:37.000000000 +0200
+> @@ -465,9 +465,9 @@
+>          if (slave->offset == MTDPART_OFS_APPEND)
+>              slave->offset = cur_offset;
+>          if (slave->offset == MTDPART_OFS_NXTBLK) {
+> -            u_int32_t emask = master->erasesize-1;
+> -            slave->offset = (cur_offset + emask) & ~emask;
+> -            if (slave->offset != cur_offset) {
+> +            slave->offset = cur_offset;
+> +            if ((cur_offset % master->erasesize) != 0) {
+> +                slave->offset = ((cur_offset / master->erasesize) + 1) 
+> * master->erasesize;
+>                  printk(KERN_NOTICE "Moving partition %d: "
+>                         "0x%08x -> 0x%08x\n", i,
+>                         cur_offset, slave->offset);
+
+Looks complicated.  I guess we could use the equivalent of this:
+#define ALIGN(x,a) (((x)+(a)-1)&~((a)-1))
+in some header.  Then your patch would be as simple as
+
+         if (slave->offset == MTDPART_OFS_APPEND)
+             slave->offset = cur_offset;
+         if (slave->offset == MTDPART_OFS_NXTBLK) {
+-            u_int32_t emask = master->erasesize-1;
+-            slave->offset = (cur_offset + emask) & ~emask;
++	     slave->offset = TRUE_ALIGN(cur_offset, master->erasesize);
+             if (slave->offset != cur_offset) {
+                 printk(KERN_NOTICE "Moving partition %d: "
+                        "0x%08x -> 0x%08x\n", i,
+
+Maybe this:
+#define TRUE_ALIGN(x,a) (((x)+(a)-1) - ((x)+(a)-1) % a)
+
+The macro is still complicated, but we just have to get it right once.
 
 Jörn
 
 -- 
-It's just what we asked for, but not what we want!
--- anonymous
+Public Domain  - Free as in Beer
+General Public - Free as in Speech
+BSD License    - Free as in Enterprise
+Shared Source  - Free as in "Work will make you..."
