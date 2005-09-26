@@ -1,28 +1,24 @@
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EJsOk-0001sj-G7
-	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 13:48:01 +0100
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j8QClfNq028673
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Sep 2005 08:47:41 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j8QClfdF097410
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Sep 2005 08:47:41 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j8QClfSJ000654
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Sep 2005 08:47:41 -0400
-Received: from windu.rchland.ibm.com (windu.rchland.ibm.com [9.10.78.142])
-	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j8QCleJn000641
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Sep 2005 08:47:41 -0400
-From: Josh Boyer <jdub@us.ibm.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 26 Sep 2005 07:47:31 -0500
-Message-Id: <1127738851.3760.2.camel@windu.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Sync please
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EJwfp-0005c9-AY
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 13:22:02 -0400
+Message-ID: <43382E0E.9040005@yandex.ru>
+Date: Mon, 26 Sep 2005 21:21:18 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Peter Grayson <pgrayson@realmsys.com>
+References: <1127433949.6937.30.camel@localhost.localdomain>	
+	<20050925150635.GD28978@wohnheim.fh-wedel.de>
+	<4337B727.2050809@yandex.ru>	
+	<20050926093440.GE17756@wohnheim.fh-wedel.de>
+	<4337C35C.6060007@yandex.ru>	
+	<20050926110150.GG17756@wohnheim.fh-wedel.de>
+	<1127755073.6937.74.camel@localhost.localdomain>
+In-Reply-To: <1127755073.6937.74.camel@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2 whitespace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,10 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Could someone sync the git tree and send it to akpm/Linus?  Trying to
-rebase to the current CVS is like trying to chase a rabid cheeta.  Lots
-of stuff going in, lots of churn, lots of random renames...  it's bound
-to drive one mad.
+Peter Grayson wrote:
+> On Mon, 2005-09-26 at 13:01 +0200, J=C3=B6rn Engel wrote:
+> I agree that other patches are more important than code formatting.
+> However, we may also enable more people to contribute to jffs2 if the
+> code is as readable/understandable as possible. I want to help make a
+> small, but tangible step in that direction.
+>=20
+>=20
+> Since there appears to be at least some benefit, maybe we can do this i=
+n
+> easy to digest pieces. I have made another patch just against the files=
 
-thx,
-josh
+> concerning compression in jffs2. These files had a lot of problems and =
+I
+> do not believe they conflict with any of the main outstanding patches
+> (ebh, xattr, centsum).
+>=20
+Wait a bit, I gonna just try those patches and check if there are actuall=
+y
+any big problem if they are applied above your patch.
+
+
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
