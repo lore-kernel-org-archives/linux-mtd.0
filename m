@@ -1,20 +1,25 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EJoD0-00032L-Nt
-	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 04:20:04 -0400
-Date: Mon, 26 Sep 2005 10:19:22 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: zhao forrest <zhao_fusheng@hotmail.com>
-Message-ID: <20050926081922.GA17756@wohnheim.fh-wedel.de>
-References: <20050925110412.GB25279@wohnheim.fh-wedel.de>
-	<BAY17-F17EC8A97636E63E12669C5E88B0@phx.gbl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY17-F17EC8A97636E63E12669C5E88B0@phx.gbl>
-Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]Erase block header(revision 1)
+	id 1EJoNF-0003Og-8m
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 04:30:15 -0400
+Message-ID: <4337AB45.9020607@yandex.ru>
+Date: Mon, 26 Sep 2005 12:03:17 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <E1EHjUk-0001IT-Dn@phoenix.infradead.org>
+	<43303409.5030406@users.sourceforge.net>
+	<43303D59.1040805@yandex.ru>
+	<433067BF.6080909@users.sourceforge.net>
+	<1127399674.28625.18.camel@sauron.oktetlabs.ru>
+	<43341DCD.6090002@users.sourceforge.net>
+	<20050925125455.GA28978@wohnheim.fh-wedel.de>
+In-Reply-To: <20050925125455.GA28978@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org,
+	Anders Grafstrom <grfstrm@users.sourceforge.net>
+Subject: Re: mtd/fs/jffs2 erase.c,1.84,1.85 roll back
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 26 September 2005 16:02:50 +0800, zhao forrest wrote:
-> 
-> >> +struct jffs2_eraseblock_header
-> >> +{
-> >> +	jint16_t magic;
-> >> +	jint16_t nodetype; /* == JFFS2_NODETYPE_ERASEBLOCK_HEADER */
-> >> +	jint32_t totlen;
-> >> +	jint32_t hdr_crc;
-> >> +	uint8_t  fs_version; /* the version of this JFFS2 fs image */
-> >
-> >Version is completely useless.
-> 
-> I agree that version field is not used in my patch after compat_fset,
-> incompat_fset and rocompat_fset are introduced in my patch.
-> But I'm not sure if we should keep this field. 
-> Artem,
-> What's your opinion about this?
+J=F6rn Engel wrote:
+> On Fri, 23 September 2005 17:22:53 +0200, Anders Grafstrom wrote:
+>=20
+>>jffs2 makes a second try if a failed erase is reported by the mtd=20
+>>driver. But only for NAND (in jffs2_write_nand_badblock()). What I'm=20
+>>after is a retry for NOR as well. But I wrote the patch so it would=20
+>>retry for other cases of failure too.
+>=20
+> Is a retry really an improvement?  When a block cannot be properly
+> erased on the first try, I would not trust it anymore.  Instead of a
+> retry, I'd rather mark it as a bad block and not touch it again.
 
-Just give it a useful name like "reserved" or "unused".  We still need
-the alignment.
+ From the other hand, why not to retry? Does it hurt? Is this in the=20
+critical code-path? Deity knows what happend to the hardware/driver, may =
 
-> >> +	uint8_t  compat_fset;
-> >> +	uint8_t  incompat_fset;
-> >> +	uint8_t  rocompat_fset;
+be there was a short magnetical disturbance and that was the reason why=20
+the block was not erased. May be one of the lines/cirquits outside of=20
+the flash was affected but the block is really erasable. Actually, after =
 
-What does "fset" mean?  Why not just "flags_compat" etc.?
+I've read the paper that *you* pointed=20
+(http://www.cs.wisc.edu/adsl/Publications/iron-sosp05.pdf), I'm rather=20
+positive about the idea of retrying. The articlae is about HDDs, but IMO =
 
-> >> +	jint32_t erase_count; /* the erase count of this erase block */
-> >> +	jint16_t dsize; /* the size of additional data behind node_crc */
-> >
-> >Breaks alignment and pretty useless.  Information can be deduced from
-> >totlen.  Remove.
-> >
-> Sometimes we can't deduce the exact additional data size from totlen.
-> In particular this is true for NOR ECC. For example, sizeof(struct
-> jffs2_eraseblock_header) is 34 bytes; totlen is 40 bytes, dsize is
-> 0 byte.
+is also acceptable flash devices in this respect.
 
-Even then it doesn't matter.  We just copy all fields and ignore the
-ones we don't know about.  What we know about is defined in the three
-flags fields.
-
-Jörn
-
--- 
-Simplicity is prerequisite for reliability.
--- Edsger W. Dijkstra
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
