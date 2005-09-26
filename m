@@ -1,18 +1,23 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EJpj2-00070h-Mi
-	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 05:56:50 -0400
-Message-ID: <4337C619.2070300@inf.u-szeged.hu>
-Date: Mon, 26 Sep 2005 11:57:45 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EJqk4-0008JV-If
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 07:02:08 -0400
+Date: Mon, 26 Sep 2005 13:01:50 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <4337BF3F.5020200@yandex.ru>
-In-Reply-To: <4337BF3F.5020200@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: EBS minor offer
+Message-ID: <20050926110150.GG17756@wohnheim.fh-wedel.de>
+References: <1127433949.6937.30.camel@localhost.localdomain>
+	<20050925150635.GD28978@wohnheim.fh-wedel.de>
+	<4337B727.2050809@yandex.ru>
+	<20050926093440.GE17756@wohnheim.fh-wedel.de>
+	<4337C35C.6060007@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4337C35C.6060007@yandex.ru>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2 whitespace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Mon, 26 September 2005 13:46:04 +0400, Artem B. Bityutskiy wrote:
+> Jörn Engel wrote:
+> >Because we want things like ebh, summary, xattr, etc.?  If we accept
+> >this patch, it makes life a bit worse for people who write the stuff
+> >we want.  It may be the straw that makes them go away and never come
+> >back.
+> 
+> Ok, but the patch also does the right thing, isn't it? Then let's get 
+> determined with (1) will it be accepted at all and (2) when?
 
-> in JFFS2 on-flash nodes' names start from jffs2_raw_, why don't you
-> name your summary nodes jffs2_raw_summary instead, just to be
-> consistent with the style?
->
-You are right, I'll change it today. (and now I noticed the comment at
-the nodetype of summary node is also incorrect)
+(1) no.
 
-Thanks,
-Ferenc
+Imo, the costs outweigh the benefit.  [ Which doesn't mean that I
+question the benefit.  It's just not big enough. ]
+
+Jörn
+
+-- 
+To recognize individual spam features you have to try to get into the
+mind of the spammer, and frankly I want to spend as little time inside
+the minds of spammers as possible.
+-- Paul Graham
