@@ -1,19 +1,21 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EJp2u-0005PO-96
-	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 05:14:44 -0400
-Message-ID: <4337BBA7.8050304@mw-itcon.de>
-Date: Mon, 26 Sep 2005 11:13:11 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EJpZF-0006WQ-Sm
+	for linux-mtd@lists.infradead.org; Mon, 26 Sep 2005 05:46:42 -0400
+Message-ID: <4337C35C.6060007@yandex.ru>
+Date: Mon, 26 Sep 2005 13:46:04 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <43344342.8030303@mw-itcon.de>
-	<20050925131630.GC28978@wohnheim.fh-wedel.de>
-In-Reply-To: <20050925131630.GC28978@wohnheim.fh-wedel.de>
+References: <1127433949.6937.30.camel@localhost.localdomain>
+	<20050925150635.GD28978@wohnheim.fh-wedel.de>
+	<4337B727.2050809@yandex.ru>
+	<20050926093440.GE17756@wohnheim.fh-wedel.de>
+In-Reply-To: <20050926093440.GE17756@wohnheim.fh-wedel.de>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] fix for mtd partitions for erase_size != 2^X
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2 whitespace
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> Maybe this:
-> #define TRUE_ALIGN(x,a) (((x)+(a)-1) - ((x)+(a)-1) % a)
-> 
-> The macro is still complicated, but we just have to get it right once.
-> 
-> Jörn
-> 
-Are you sure, this is not as complicated as my version ;) ?
-But if you like it, no problem.
+J=F6rn Engel wrote:
+> Because we want things like ebh, summary, xattr, etc.?  If we accept
+> this patch, it makes life a bit worse for people who write the stuff
+> we want.  It may be the straw that makes them go away and never come
+> back.
 
-Shall I resubmit the patch?
+Ok, but the patch also does the right thing, isn't it? Then let's get=20
+determined with (1) will it be accepted at all and (2) when?
 
-Is there any known good way to submit a patch here? I have two mailer 
-here, but the mailing list refuses both (as attachment and inline 
-attachment).
-
-Best regards
-Peter
-
--- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+--=20
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
