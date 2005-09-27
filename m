@@ -1,20 +1,19 @@
-Received: from [218.145.145.151] (helo=mail.moimstone.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKDaR-0001wp-Pc
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 07:25:35 -0400
-Received: from LocalHost (unknown [192.168.0.180])
-	by mail.moimstone.com (Postfix) with ESMTP id D3B9E237DA
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Sep 2005 20:37:11 +0900 (KST)
-Message-ID: <000901c5c356$101c96c0$b400a8c0@LocalHost>
-From: =?ks_c_5601-1987?B?w9a/tcDP?= <yichoi@moimstone.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 27 Sep 2005 20:24:45 +0900
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: base64
-Subject: large-nand flash mount ?
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKE3f-0002OT-SZ
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 07:55:50 -0400
+Date: Tue, 27 Sep 2005 13:55:31 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: zhao forrest <zhao_fusheng@hotmail.com>
+Message-ID: <20050927115531.GA20702@wohnheim.fh-wedel.de>
+References: <BAY17-F26CCF10BB1004AFDDBDF51E88A0@phx.gbl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BAY17-F26CCF10BB1004AFDDBDF51E88A0@phx.gbl>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]enhanced 1:1 mapping(revision 1)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +23,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkNCkkgYW0gZGV2ZWxvcGluZyBzeXN0ZW0gd2l0aCBjcHUgYXUxNTUwIGFuZCAyRyBuYW5kIGZs
-YXNoPw0KSSB3YW50IHJvb3QgZmlsZXN5c3RlbSBieSAyRyBuYW5kIGZsYXNoLiANCmZvciB0ZXN0
-LCBJIGNhbiBtb3VudCBuYW5kIGZsYXNoIGFuZCByZWFkLCB3cml0ZSB0byBmbGFzaC4NCnNvLCBJ
-IG1ha2UgamZmczIgZmlsZXN5c3RlbSBhbmQgd3JpdGUgdG8gZmxhc2guDQp0aGVuLCBJIG1ha2Ug
-dG8gYm9vdCB3aXRoIGJvb3QgYXJndW1lbnQocm9vdD0vZGV2L210ZGJsb2NrMCksIGJ1dCBmYWls
-DQp0aGUgbWVzc2FnZSBmb2xsb3dzDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQptdGRi
-bG9ja19vcGVuDQpvaw0KbXRkYmxvY2s6IHJlYWQgb24gIkRiMTU1MCBOQU5EIEZTIDAiIGF0IDB4
-NDAwLCBzaXplIDB4MjAwDQpuYW5kX3JlYWRfZWNjOiBmcm9tID0gMHgwMDAwMDQwMCwgbGVuID0g
-NTEyDQptdGRibG9jazogcmVhZCBvbiAiRGIxNTUwIE5BTkQgRlMgMCIgYXQgMHg2MDAsIHNpemUg
-MHgyMDANCm5hbmRfcmVhZF9lY2M6IGZyb20gPSAweDAwMDAwNjAwLCBsZW4gPSA1MTINCm10ZGJs
-b2NrX3JlbGVhc2UNCm5hbmRfc3luYzogY2FsbGVkDQpvaw0KS2VybmVsIHBhbmljIC0gbm90IHN5
-bmNpbmc6IFZGUzogVW5hYmxlIHRvIG1vdW50IHJvb3QgZnMgb24gdW5rbm93bi1ibG9jaygzMSww
-KQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCmRpZCBhbnlvbmUgc3VjY2Vz
-cyB0byByb290IG1vdW50IHdpdGggMkcgbGFyZ2UgbmFuZCBmbGFzaChqZmZzMik/
+On Tue, 27 September 2005 15:59:41 +0800, zhao forrest wrote:
+> 
+> I revised the patch according to Joern's comments.
+> Now the basic data structure is:
+> vmalloc()/kmalloc + pointer array + slab cache.
+> Also I did some code re-constructure to make it more clean.
+
+
+> @@ -205,3 +215,57 @@ void jffs2_free_inode_cache(struct jffs2
+>  	dbg_memalloc("%p\n", x);
+>  	kmem_cache_free(inode_cache_slab, x);
+>  }
+> +
+> +int jffs2_alloc_eraseblocks(struct jffs2_sb_info *c)
+> +{
+> +	uint32_t i;
+> +#ifndef __ECOS
+> +	if (jffs2_blocks_use_vmalloc(c))
+> +		c->blocks = vmalloc(sizeof(uint8_t *) * c->nr_blocks);
+> +	else
+> +#endif
+> +		c->blocks = kmalloc(sizeof(uint8_t *) * c->nr_blocks, GFP_KERNEL);
+> +	if (!c->blocks)
+> +		return -ENOMEM;
+> +	memset(c->blocks, 0, sizeof(uint8_t *) * c->nr_blocks);
+
+sizeof(uint8_t *) is rather odd.  Either this should be
+sizeof(struct jffs2_eraseblock*), which is correct but admittedly
+quite long, or a simple sizeof(void*).  uint8_t puts people on the
+wrong track.
+
+> +
+> +	for (i=0; i<c->nr_blocks; i++) {
+> +		c->blocks[i] = kmem_cache_alloc(eraseblock_slab, GFP_KERNEL);
+> +		dbg_memalloc("%p\n", ret);
+                                     ^^^
+That should be c->blocks[i], I assume.
+
+> +		if (!c->blocks[i]) {
+> +			jffs2_free_eraseblocks(c);
+> +			return -ENOMEM;
+> +		}
+> +		memset(c->blocks[i], 0, sizeof(struct jffs2_eraseblock));
+> +	}
+> +
+> +	
+> +	for (i=0; i<c->nr_blocks; i++) {
+> +		INIT_LIST_HEAD(&c->blocks[i]->list);
+> +		c->blocks[i]->offset = i * c->sector_size;
+> +		c->blocks[i]->free_size = c->sector_size;
+> +		c->blocks[i]->first_node = NULL;
+> +		c->blocks[i]->last_node = NULL;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +void jffs2_free_eraseblocks(struct jffs2_sb_info *c)
+> +{
+> +	uint32_t i;
+> +
+> +	for (i=0; i<c->nr_blocks; i++) {
+> +		if (c->blocks[i]) {
+> +			dbg_memalloc("%p\n", c->blocks[i]);
+> +			kmem_cache_free(eraseblock_slab, c->blocks[i]);
+> +		}
+> +	}
+> +#ifndef __ECOS
+> +	if (jffs2_blocks_use_vmalloc(c))
+> +		vfree(c->blocks);
+> +	else
+> +#endif
+> +	kfree(c->blocks);
+        ^
+another indentation level?  Not sure.
+> +}
+> +
+ 
+It appears as if jffs2_blocks_use_vmalloc(c) was unchanged.  Maybe I
+missed it, but that function should get adjusted by this patch.
+Maybe we can move it into malloc.c, as that file contains the only two
+remaining users, now.
+
+Looks quite nice, thanks.
+
+Jörn
+
+-- 
+The story so far:
+In the beginning the Universe was created.  This has made a lot
+of people very angry and been widely regarded as a bad move.
+-- Douglas Adams
