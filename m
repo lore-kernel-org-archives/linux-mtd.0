@@ -1,19 +1,18 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKEhX-0007fJ-7U
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 13:36:53 +0100
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: =?UTF-8?Q?=EC=B5=9C=EC=98=81?= =?UTF-8?Q?=EC=9D=BC?= <yichoi@moimstone.com>
-In-Reply-To: <000901c5c356$101c96c0$b400a8c0@LocalHost>
-References: <000901c5c356$101c96c0$b400a8c0@LocalHost>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 27 Sep 2005 15:57:04 +0400
-Message-Id: <1127822225.5380.4.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKFd5-0004Qa-08
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 09:36:36 -0400
+Message-ID: <43394A92.9000400@yandex.ru>
+Date: Tue, 27 Sep 2005 17:35:14 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: zhao forrest <zhao_fusheng@hotmail.com>
+References: <BAY17-F186337C136F8081E8E2828E88A0@phx.gbl>
+In-Reply-To: <BAY17-F186337C136F8081E8E2828E88A0@phx.gbl>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: large-nand flash mount ?
-Reply-To: dedekind@infradead.org
+Subject: Re: [PATCH]erase block header(revision 3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,74 +22,118 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-09-27 at 20:24 +0900, 최영일 wrote:
-> Hi
-> I am developing system with cpu au1550 and 2G nand flash?
-> I want root filesystem by 2G nand flash. 
-> for test, I can mount nand flash and read, write to flash.
-> so, I make jffs2 filesystem and write to flash.
-> then, I make to boot with boot argument(root=/dev/mtdblock0), but fail
-> the message follows
-> ----------------------------
-> mtdblock_open
-> ok
-> mtdblock: read on "Db1550 NAND FS 0" at 0x400, size 0x200
-> nand_read_ecc: from = 0x00000400, len = 512
-> mtdblock: read on "Db1550 NAND FS 0" at 0x600, size 0x200
-> nand_read_ecc: from = 0x00000600, len = 512
-> mtdblock_release
-> nand_sync: called
-> ok
-
-Even if you have healed your problems with MTD, JFFS2 is anyway unusable
-on large flashes. Hmm, MTD archive seems broken, so I just insert here
-my recent reply to similar questions.
-
-
--------- Original Message --------
-Subject: Re: fragtree method?
-Date: Mon, 26 Sep 2005 12:16:01 +0400
-From: Artem B. Bityutskiy <dedekind@yandex.ru>
-To: hinko.kocevar@cetrtapot.si <hinko.kocevar@cetrtapot.si>
-CC: Linux MTD <linux-mtd@lists.infradead.org>
-References: <4337A604.6050204@cetrtapot.si>
-
-Hello Hinko,
-
-hinko.kocevar@cetrtapot.si wrote:
-> Hello all,
+zhao forrest wrote:
+> Hi,
 > 
-> We are using JFFS2 fs on toshiba NAND flash. There are several 
-> partitions defined, but scan time at boot time gets longer every day
-of 
-> usage. Eg.  when flash is empty it takes ~10 s to mount 20Mb of flash
-in 
-> 3 partitions later when there are some files present it takes > 30s
-and 
-> increasing.
-The picture you are observing is normal for JFFS2. The more data is in 
-your flash, the longer is JFFS2 being mounted. I would shortly explain 
-this as follows.
+> This is the revision 3 of erase block header patch.
+> Compare with revision 2, the main changes are:
+> 1 to keep consistency, rename struct jffs2_eraseblock_header
+> to struct jffs2_raw_ebh
+> 2 change the type of has_ebh to uint32_t
+> 3 store the real length into totlen
+> 4 rename fs_version into reserved in order to give it a
+> useful name.
 
-There is no indexing information stored on the flash media. Each JFFS2 
-node contains full information about itself, but there is no central 
-index. The index is the crucial part of any file system as it is used
-to 
-quickly locate any piece of information (i.e., find all the files kept 
-in a directory, find the physical flash address where the files data is 
-stored, etc.). In JFFS2, the index is maintained in RAM and takes 
-significant amount of it. Roughly speaking, there is a in-RAM data 
-structure for each on-flash node.
+Here is my review. Sure, not full yet.
 
-The in RAM index must be built on each mount. For this reason, JFFS2 
-must scan the flash media. And it is logically then the more data you 
-have on flash, the longer is JFFS2 mount time and memory consumption. 
-Namely, the above 2 characteristics linearly depend on the flash size 
-(O(N), N - flash size).
+1. The patch is not against the latest MTD.
 
-You may also glance at 
-http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf for some 
-additional info.
+Hunk #4 FAILED at 191.
+1 out of 4 hunks FAILED -- saving rejects to file include/linux/jffs2.h.rej
+
+
+2. The patch is not applied with 'patch -p1', use
+
+"diff -auNrp mtd/ mtd_EBH_EBS/", not
+"diff -auNrp ./mtd/ ./mtd_EBH_EBS/"
+
+3. Really _very_ minor. Could you please add the definition of struct
+jffs2_raw_ebh in jffs2.h after the definitions of other nodes, not before.
+
+4. From your patch:
+----------------------------
++
++	if (!priv->jeb->has_ebh) {
++		priv->jeb->has_ebh = 1;
++	}
+----------------------------
+a. Joern already pointed, just set it unconditionally.
+b. This flag is set in a function which does not exist in eCos. eCos
+will be broken. I would move this to jffs2_erase_succeeded().
+
+
+5. From your patch:
+----------------------------
+ 		struct kvec vecs[1];
+-		struct jffs2_unknown_node marker = {
++		struct jffs2_raw_ebh marker = {
+ 			.magic =	cpu_to_je16(JFFS2_MAGIC_BITMASK),
+-			.nodetype =	cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER),
+-			.totlen =	cpu_to_je32(c->cleanmarker_size)
++			.nodetype =	cpu_to_je16(JFFS2_NODETYPE_ERASEBLOCK_HEADER),
++			.totlen =	cpu_to_je32(sizeof(struct jffs2_raw_ebh)),
++			.reserved =     0,
++			.compat_fset =  JFFS2_EBH_COMPAT_FSET,
++			.incompat_fset = JFFS2_EBH_INCOMPAT_FSET,
++			.rocompat_fset = JFFS2_EBH_ROCOMPAT_FSET,
++			.erase_count =  cpu_to_je32(jeb->erase_count),
++			.dsize =        cpu_to_je16(0),
++			.data_crc =     cpu_to_je32(0)
+ 		};
+----------------------------
+I understand that you just do things as JFFS2 does. But there is a
+better way. IMO, there is no need to define the EBH object straight in
+jffs2_mark_erased_block(). Define it at the top of erase.c.
+
+Furthermore, the same static object is initialized in
+jffs2_write_nand_ebh() (wbuf.c). Please, share the same object.
+
+I would also move jffs2_write_nand_ebh() to erase.c.
+
+And please, for readability, don't name this structure 'marker' ...
+
+
+6. From your patch:
+----------------------------
+ 	c->cleanmarker_size = sizeof(struct jffs2_unknown_node);
++	c->ebh_size = sizeof(struct jffs2_raw_ebh);
+----------------------------
+Use PAD() here, and don't use PAD(c->ebh_size) elsewhere.
+
+And could you please add a comment at the definition of struct
+jffs2_eraseblock which will clarify what is ebh_size?
+
+
+7. From your patch:
+----------------------------
+@@ -196,6 +196,9 @@ struct jffs2_eraseblock
+ 	struct jffs2_raw_node_ref *last_node;
+
+ 	struct jffs2_raw_node_ref *gc_node;	/* Next node to be garbage
+collected */
++
++	uint32_t has_ebh;
++	uint32_t erase_count;
+ };
+----------------------------
+struct jffs2_eraseblock has an 'int bad_count' field which actually
+stores only small values. To save some memory I would better do:
+- int bad_count;
++ uint16_t bad_count
++ uint16_t flags;
+
+and add a JFFS2_EBFLAGS_HAS_EBH flag instead of has_ebh field. This
+would save 4 bytes for each 'struct jffs2_eraseblock' object.
+
+8. From your patch:
+----------------------------
++		if ((!jeb->has_ebh && jeb->free_size != c->sector_size -
+c->cleanmarker_size) ||
++		    (jeb->has_ebh && c->ebh_size && jeb->free_size != c->sector_size
+- jeb->first_node->__totlen) ||
++		    (jeb->has_ebh && !c->ebh_size && jeb->free_size != c->sector_size))
+----------------------------
+See the previous review about __totlen usage. use ref_totlen() instead.
 
 -- 
 Best Regards,
