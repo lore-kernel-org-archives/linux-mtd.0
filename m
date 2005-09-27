@@ -1,15 +1,18 @@
-Received: from bay17-f26.bay17.hotmail.com ([64.4.43.76] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKAf9-0008HD-Ut
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 04:18:17 -0400
-Message-ID: <BAY17-F26CCF10BB1004AFDDBDF51E88A0@phx.gbl>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: joern@wohnheim.fh-wedel.de
-Date: Tue, 27 Sep 2005 15:59:41 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKAze-0000G8-Kj
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 04:39:29 -0400
+Message-ID: <4339050F.8020201@yandex.ru>
+Date: Tue, 27 Sep 2005 12:38:39 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: zhao forrest <zhao_fusheng@hotmail.com>
+References: <BAY17-F6CC7B5950D57B60A67C44E88A0@phx.gbl>
+In-Reply-To: <BAY17-F6CC7B5950D57B60A67C44E88A0@phx.gbl>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH]enhanced 1:1 mapping(revision 1)
+Subject: Re: [PATCH]erase block header(revision 2)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,15 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+zhao forrest wrote:
+>>          marker_ref->next_in_ino = NULL;
+>>          marker_ref->next_phys = NULL;
+>>          marker_ref->flash_offset = jeb->offset | REF_NORMAL;
+>> -        marker_ref->__totlen = c->cleanmarker_size;
+>> +        marker_ref->__totlen = PAD(c->ebh_size);
+>> ---------------------------------------------------
+>> Why do you use PAD() here? What for?
+>>
+> I'll not eliminate this PAD(), you may grep "__totlen" to find the
+> reason.
+I did not ask to remove that so far, I asked why do you use it here?
+Is it explainable in words?
 
-I revised the patch according to Joern's comments.
-Now the basic data structure is:
-vmalloc()/kmalloc + pointer array + slab cache.
-Also I did some code re-constructure to make it more clean.
-
-The patch is at 
-http://www.infradead.org/~forrest/1:1mapping_r1.patch
-
-Thanks,
-Forrest
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
