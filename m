@@ -1,18 +1,20 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKAze-0000G8-Kj
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 04:39:29 -0400
-Message-ID: <4339050F.8020201@yandex.ru>
-Date: Tue, 27 Sep 2005 12:38:39 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from [218.145.145.151] (helo=mail.moimstone.com)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKDaR-0001wp-Pc
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 07:25:35 -0400
+Received: from LocalHost (unknown [192.168.0.180])
+	by mail.moimstone.com (Postfix) with ESMTP id D3B9E237DA
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Sep 2005 20:37:11 +0900 (KST)
+Message-ID: <000901c5c356$101c96c0$b400a8c0@LocalHost>
+From: =?ks_c_5601-1987?B?w9a/tcDP?= <yichoi@moimstone.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 27 Sep 2005 20:24:45 +0900
 MIME-Version: 1.0
-To: zhao forrest <zhao_fusheng@hotmail.com>
-References: <BAY17-F6CC7B5950D57B60A67C44E88A0@phx.gbl>
-In-Reply-To: <BAY17-F6CC7B5950D57B60A67C44E88A0@phx.gbl>
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]erase block header(revision 2)
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
+Subject: large-nand flash mount ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-zhao forrest wrote:
->>          marker_ref->next_in_ino = NULL;
->>          marker_ref->next_phys = NULL;
->>          marker_ref->flash_offset = jeb->offset | REF_NORMAL;
->> -        marker_ref->__totlen = c->cleanmarker_size;
->> +        marker_ref->__totlen = PAD(c->ebh_size);
->> ---------------------------------------------------
->> Why do you use PAD() here? What for?
->>
-> I'll not eliminate this PAD(), you may grep "__totlen" to find the
-> reason.
-I did not ask to remove that so far, I asked why do you use it here?
-Is it explainable in words?
-
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+SGkNCkkgYW0gZGV2ZWxvcGluZyBzeXN0ZW0gd2l0aCBjcHUgYXUxNTUwIGFuZCAyRyBuYW5kIGZs
+YXNoPw0KSSB3YW50IHJvb3QgZmlsZXN5c3RlbSBieSAyRyBuYW5kIGZsYXNoLiANCmZvciB0ZXN0
+LCBJIGNhbiBtb3VudCBuYW5kIGZsYXNoIGFuZCByZWFkLCB3cml0ZSB0byBmbGFzaC4NCnNvLCBJ
+IG1ha2UgamZmczIgZmlsZXN5c3RlbSBhbmQgd3JpdGUgdG8gZmxhc2guDQp0aGVuLCBJIG1ha2Ug
+dG8gYm9vdCB3aXRoIGJvb3QgYXJndW1lbnQocm9vdD0vZGV2L210ZGJsb2NrMCksIGJ1dCBmYWls
+DQp0aGUgbWVzc2FnZSBmb2xsb3dzDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQptdGRi
+bG9ja19vcGVuDQpvaw0KbXRkYmxvY2s6IHJlYWQgb24gIkRiMTU1MCBOQU5EIEZTIDAiIGF0IDB4
+NDAwLCBzaXplIDB4MjAwDQpuYW5kX3JlYWRfZWNjOiBmcm9tID0gMHgwMDAwMDQwMCwgbGVuID0g
+NTEyDQptdGRibG9jazogcmVhZCBvbiAiRGIxNTUwIE5BTkQgRlMgMCIgYXQgMHg2MDAsIHNpemUg
+MHgyMDANCm5hbmRfcmVhZF9lY2M6IGZyb20gPSAweDAwMDAwNjAwLCBsZW4gPSA1MTINCm10ZGJs
+b2NrX3JlbGVhc2UNCm5hbmRfc3luYzogY2FsbGVkDQpvaw0KS2VybmVsIHBhbmljIC0gbm90IHN5
+bmNpbmc6IFZGUzogVW5hYmxlIHRvIG1vdW50IHJvb3QgZnMgb24gdW5rbm93bi1ibG9jaygzMSww
+KQ0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCmRpZCBhbnlvbmUgc3VjY2Vz
+cyB0byByb290IG1vdW50IHdpdGggMkcgbGFyZ2UgbmFuZCBmbGFzaChqZmZzMik/
