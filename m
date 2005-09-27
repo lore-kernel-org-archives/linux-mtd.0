@@ -1,19 +1,19 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKE3f-0002OT-SZ
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 07:55:50 -0400
-Date: Tue, 27 Sep 2005 13:55:31 +0200
+	id 1EKEJp-0002dT-UA
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 08:12:25 -0400
+Date: Tue, 27 Sep 2005 14:12:26 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: zhao forrest <zhao_fusheng@hotmail.com>
-Message-ID: <20050927115531.GA20702@wohnheim.fh-wedel.de>
-References: <BAY17-F26CCF10BB1004AFDDBDF51E88A0@phx.gbl>
+Message-ID: <20050927121226.GB20702@wohnheim.fh-wedel.de>
+References: <BAY17-F186337C136F8081E8E2828E88A0@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY17-F26CCF10BB1004AFDDBDF51E88A0@phx.gbl>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]enhanced 1:1 mapping(revision 1)
+In-Reply-To: <BAY17-F186337C136F8081E8E2828E88A0@phx.gbl>
+Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]erase block header(revision 3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,95 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 September 2005 15:59:41 +0800, zhao forrest wrote:
+On Tue, 27 September 2005 15:51:42 +0800, zhao forrest wrote:
 > 
-> I revised the patch according to Joern's comments.
-> Now the basic data structure is:
-> vmalloc()/kmalloc + pointer array + slab cache.
-> Also I did some code re-constructure to make it more clean.
+> This is the revision 3 of erase block header patch.
+> Compare with revision 2, the main changes are:
+> 1 to keep consistency, rename struct jffs2_eraseblock_header
+> to struct jffs2_raw_ebh
+> 2 change the type of has_ebh to uint32_t
+> 3 store the real length into totlen
+> 4 rename fs_version into reserved in order to give it a
+> useful name.
 
 
-> @@ -205,3 +215,57 @@ void jffs2_free_inode_cache(struct jffs2
->  	dbg_memalloc("%p\n", x);
->  	kmem_cache_free(inode_cache_slab, x);
+> diff -auNrp ./mtd/fs/jffs2/erase.c ./mtd_EBH_EBS/fs/jffs2/erase.c
+> --- ./mtd/fs/jffs2/erase.c	2005-09-22 11:08:47.000000000 +0800
+> +++ ./mtd_EBH_EBS/fs/jffs2/erase.c	2005-09-27 15:30:26.000000000 +0800
+> @@ -210,6 +210,10 @@ static void jffs2_erase_callback(struct 
+>  	} else {
+>  		jffs2_erase_succeeded(priv->c, priv->jeb);
+>  	}	
+> +
+> +	if (!priv->jeb->has_ebh) {
+> +		priv->jeb->has_ebh = 1;
+> +	}
+
+The complete condition is bullock.  See last review.
+
+>  	kfree(instr);
 >  }
-> +
-> +int jffs2_alloc_eraseblocks(struct jffs2_sb_info *c)
+>  #endif /* !__ECOS */
+
+[...]
+
+> +struct jffs2_raw_ebh
 > +{
-> +	uint32_t i;
-> +#ifndef __ECOS
-> +	if (jffs2_blocks_use_vmalloc(c))
-> +		c->blocks = vmalloc(sizeof(uint8_t *) * c->nr_blocks);
-> +	else
-> +#endif
-> +		c->blocks = kmalloc(sizeof(uint8_t *) * c->nr_blocks, GFP_KERNEL);
-> +	if (!c->blocks)
-> +		return -ENOMEM;
-> +	memset(c->blocks, 0, sizeof(uint8_t *) * c->nr_blocks);
+> +	jint16_t magic;
+> +	jint16_t nodetype; /* == JFFS2_NODETYPE_ERASEBLOCK_HEADER */
+> +	jint32_t totlen;
+> +	jint32_t hdr_crc;
+> +	uint8_t  reserved; /* reserved for future use and alignment */
+> +	uint8_t  compat_fset;
+> +	uint8_t  incompat_fset;
+> +	uint8_t  rocompat_fset;
+> +	jint32_t erase_count; /* the erase count of this erase block */
+> +	jint16_t dsize; /* the size of additional data behind node_crc */
+> +	jint32_t node_crc;
+> +	jint32_t data_crc;
+> +	jint32_t data[0];
+> +} __attribute__((packed));
 
-sizeof(uint8_t *) is rather odd.  Either this should be
-sizeof(struct jffs2_eraseblock*), which is correct but admittedly
-quite long, or a simple sizeof(void*).  uint8_t puts people on the
-wrong track.
-
-> +
-> +	for (i=0; i<c->nr_blocks; i++) {
-> +		c->blocks[i] = kmem_cache_alloc(eraseblock_slab, GFP_KERNEL);
-> +		dbg_memalloc("%p\n", ret);
-                                     ^^^
-That should be c->blocks[i], I assume.
-
-> +		if (!c->blocks[i]) {
-> +			jffs2_free_eraseblocks(c);
-> +			return -ENOMEM;
-> +		}
-> +		memset(c->blocks[i], 0, sizeof(struct jffs2_eraseblock));
-> +	}
-> +
-> +	
-> +	for (i=0; i<c->nr_blocks; i++) {
-> +		INIT_LIST_HEAD(&c->blocks[i]->list);
-> +		c->blocks[i]->offset = i * c->sector_size;
-> +		c->blocks[i]->free_size = c->sector_size;
-> +		c->blocks[i]->first_node = NULL;
-> +		c->blocks[i]->last_node = NULL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +void jffs2_free_eraseblocks(struct jffs2_sb_info *c)
-> +{
-> +	uint32_t i;
-> +
-> +	for (i=0; i<c->nr_blocks; i++) {
-> +		if (c->blocks[i]) {
-> +			dbg_memalloc("%p\n", c->blocks[i]);
-> +			kmem_cache_free(eraseblock_slab, c->blocks[i]);
-> +		}
-> +	}
-> +#ifndef __ECOS
-> +	if (jffs2_blocks_use_vmalloc(c))
-> +		vfree(c->blocks);
-> +	else
-> +#endif
-> +	kfree(c->blocks);
-        ^
-another indentation level?  Not sure.
-> +}
-> +
- 
-It appears as if jffs2_blocks_use_vmalloc(c) was unchanged.  Maybe I
-missed it, but that function should get adjusted by this patch.
-Maybe we can move it into malloc.c, as that file contains the only two
-remaining users, now.
-
-Looks quite nice, thanks.
+Structure still doesn't make sense.  See my last review.
 
 Jörn
 
 -- 
-The story so far:
-In the beginning the Universe was created.  This has made a lot
-of people very angry and been widely regarded as a bad move.
--- Douglas Adams
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
