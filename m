@@ -1,18 +1,19 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKclc-0005vW-KU
-	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 10:19:02 -0400
-Message-ID: <433AA62B.20102@ieee.org>
-Date: Wed, 28 Sep 2005 10:18:19 -0400
-From: Dan Brown <dan_brown@ieee.org>
+Received: from n1.cetrtapot.si ([212.30.80.17])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKdp5-0006lH-1C
+	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 11:26:26 -0400
+Message-ID: <433AB60D.4090107@cetrtapot.si>
+Date: Wed, 28 Sep 2005 17:26:05 +0200
+From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-To: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
-References: <4339830F.14600.1D083FD@localhost>
-In-Reply-To: <4339830F.14600.1D083FD@localhost>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <433A640D.6030200@cetrtapot.si>
+	<20050928100031.GA18192@wohnheim.fh-wedel.de>
+In-Reply-To: <20050928100031.GA18192@wohnheim.fh-wedel.de>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DOCBoot: "diskonchip" driver depreciated?
+Content-Transfer-Encoding: 8bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Great jffs2 speedup
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joseph M Dupre (AVAB Inc.) wrote:
-> The DOCboot README refers to the kernel's diskonchip driver.
+Jörn Engel wrote:
+> On Wed, 28 September 2005 11:36:13 +0200, hinko.kocevar@cetrtapot.si wrote:
+> 
+>>On new setup - using yesterdays MTD CVS and 2.6.12 kernel with EBS enabled:
+>>Mounting flash4 clean partition	[1]
+>>real    0m 3.75s
+>>user    0m 0.02s
+>>sys     0m 1.17s
+>>-- -- -- -- -- -- -- -- -- --
+>>Mounting flash4 dirty partition	[2]
+>>real    0m 0.75s
+>>user    0m 0.02s
+>>sys     0m 0.73s
+> 
+> 
+> I assume above numbers are for a dirty partition and below for a clean
+> one?
 
-There are more than one.  By referring in the README to the "diskonchip" 
-driver, I mean specifically the driver that is *called* "diskonchip". 
-(The parenthesized hint in step one about doing "modprobe diskonchip" is 
-intended to make this clear).
+No.
 
-> I am currently working with an un-patched 2.6.11.12 kernel.  It it 
-> there are drivers for Disk-On-Chip 2000 and various Millennium 
-> devices.  These are all marked depreciated.  Menuconfig help suggests 
-> to use the generic NAND device driver instead on the Disk-On-Chip 
-> driver.
+I've used the same script - It seemed little weird, but ...
+I'll do more tests in days to come, hopefully I'll be able solve this too.
 
-I'll have to check the menuconfig wording, but what it should say is to 
-use the new DOC driver that works *with* the generic NAND device layer, 
-rather than the old DOC driver(s) that doesn't.  If you enable NAND 
-support, you'll find this new driver.
-
-> Should this generic NAND driver work in conjunction with the DOCboot 
-> code and a "newer" DOC 2000 device?
-
-Yes.
-
-> I'm not tied to this kernel by any means, it is just what was current 
-> when I started.  But I _do_ need to get booting from the DOC 2000 
-> device and have not yet figured out how to do this.  I am using the 
-> DOC MD2202 series DIP on an i486 platform.
-
-Should work fine; let me know if you need any more help.
-
-	-Dan
+regrds,
+hinko
