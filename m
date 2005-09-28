@@ -1,26 +1,22 @@
-Received: from 207.88.121.47.ptr.us.xo.net ([207.88.121.47]
-	helo=ba.realmsys.com)
+Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
+	helo=ns1.pwrseries.com)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKMX1-0001dY-MC
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 16:58:46 -0400
-From: Peter Grayson <pgrayson@realmsys.com>
-To: dedekind@infradead.org
-In-Reply-To: <1127829412.5380.7.camel@sauron.oktetlabs.ru>
-References: <1127433949.6937.30.camel@localhost.localdomain>
-	<20050925150635.GD28978@wohnheim.fh-wedel.de>
-	<4337B727.2050809@yandex.ru>
-	<20050926093440.GE17756@wohnheim.fh-wedel.de>
-	<4337C35C.6060007@yandex.ru>
-	<20050926110150.GG17756@wohnheim.fh-wedel.de>
-	<1127755073.6937.74.camel@localhost.localdomain>
-	<1127829412.5380.7.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Tue, 27 Sep 2005 14:58:14 -0600
-Message-Id: <1127854694.6918.2.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2 whitespace
+	id 1EKPVQ-0003RZ-P4
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 20:09:16 -0400
+Received: from jmd (w238.z208176144.sjc-ca.dsl.cnc.net [208.176.144.238])
+	(authenticated bits=0)
+	by ns1.pwrseries.com (8.12.8/8.12.8) with ESMTP id j8RNkCYu025396
+	(version=TLSv1/SSLv3 cipher=DES-CBC3-SHA bits=168 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2005 16:46:12 -0700
+From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 27 Sep 2005 17:08:59 -0700
+MIME-Version: 1.0
+Message-ID: <43397CAB.21913.1B78D5B@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Subject: DOCboot "BDK" partition, TLAs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,15 +26,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-09-27 at 17:56 +0400, Artem B. Bityutskiy wrote:
-> Well, Joern is right, there are some problems with patches...
+What is meant by the "BDK partition" the DOCboot README?
 
-That's too bad.
+M-Systems literature uses BDK to refer to their Boot software 
+Development Kit.  With that software API you can access the "Binary 
+Partition".
 
-> And people are asking to postpone  your fix and do it after JFFS2 will
-> be synched with Linus's tree. Could you come up with it later please?
+So when you refer to the "BDK partition" are you refering to what M-
+Systems calls the "Binary Partition"?
 
-Yes. I will wait until it looks like things have settled down, or until
-someone asks me to do it; whichever comes first.
+- Joe 
 
-Pete
+... too many TLAs
