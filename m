@@ -1,22 +1,22 @@
 Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
 	helo=ns1.pwrseries.com)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKPVQ-0003RZ-P4
-	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 20:09:16 -0400
+	id 1EKPvn-0003q8-S1
+	for linux-mtd@lists.infradead.org; Tue, 27 Sep 2005 20:36:37 -0400
 Received: from jmd (w238.z208176144.sjc-ca.dsl.cnc.net [208.176.144.238])
 	(authenticated bits=0)
-	by ns1.pwrseries.com (8.12.8/8.12.8) with ESMTP id j8RNkCYu025396
+	by ns1.pwrseries.com (8.12.8/8.12.8) with ESMTP id j8S0DSYu025429
 	(version=TLSv1/SSLv3 cipher=DES-CBC3-SHA bits=168 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2005 16:46:12 -0700
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Sep 2005 17:13:28 -0700
 From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 27 Sep 2005 17:08:59 -0700
+Date: Tue, 27 Sep 2005 17:36:15 -0700
 MIME-Version: 1.0
-Message-ID: <43397CAB.21913.1B78D5B@localhost>
+Message-ID: <4339830F.14600.1D083FD@localhost>
 Content-type: text/plain; charset=US-ASCII
 Content-transfer-encoding: 7BIT
 Content-description: Mail message body
-Subject: DOCboot "BDK" partition, TLAs
+Subject: DOCBoot: "diskonchip" driver depreciated?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What is meant by the "BDK partition" the DOCboot README?
+The DOCboot README refers to the kernel's diskonchip driver.
 
-M-Systems literature uses BDK to refer to their Boot software 
-Development Kit.  With that software API you can access the "Binary 
-Partition".
+I am currently working with an un-patched 2.6.11.12 kernel.  It it 
+there are drivers for Disk-On-Chip 2000 and various Millennium 
+devices.  These are all marked depreciated.  Menuconfig help suggests 
+to use the generic NAND device driver instead on the Disk-On-Chip 
+driver.
 
-So when you refer to the "BDK partition" are you refering to what M-
-Systems calls the "Binary Partition"?
+Should this generic NAND driver work in conjunction with the DOCboot 
+code and a "newer" DOC 2000 device?
 
-- Joe 
+I'm not tied to this kernel by any means, it is just what was current 
+when I started.  But I _do_ need to get booting from the DOC 2000 
+device and have not yet figured out how to do this.  I am using the 
+DOC MD2202 series DIP on an i486 platform.
 
-... too many TLAs
+Thanks,
+
+- Joe
+ 
