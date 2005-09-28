@@ -1,21 +1,19 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKvDI-0003iU-6H
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 06:01:50 -0400
-Message-ID: <433BBB19.9060905@yandex.ru>
-Date: Thu, 29 Sep 2005 13:59:53 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from [218.94.130.26] (helo=mail.mobilesoft.com.cn)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKvMA-00040g-Ee
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 06:09:58 -0400
+Received: from [192.168.164.117] (unknown [221.226.103.136])
+	by mail.mobilesoft.com.cn (Postfix) with ESMTP id 9E6F16F009A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Sep 2005 16:28:43 +0800 (CST)
+Message-ID: <433A54EB.4060900@mobilesoft.com.cn>
+Date: Wed, 28 Sep 2005 16:31:39 +0800
+From: Zhonglin <zhonglinzh@mobilesoft.com.cn>
 MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <433A640D.6030200@cetrtapot.si>
-	<433BA402.3040703@inf.u-szeged.hu>	<20050929093433.GB18741@wohnheim.fh-wedel.de>
-	<433BB979.7010904@inf.u-szeged.hu>
-In-Reply-To: <433BB979.7010904@inf.u-szeged.hu>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>,
-	"hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-Subject: Re: Great jffs2 speedup
+Subject: JFFS2 Error or Maybe Flash Driver Error
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ferenc Havasi wrote:
-> The first way stores a reference in the first (usable) erase block. (If
-> it is not free, it moves the data to somewhere else, and reserve). It
-> stores only a reference to it at umount, and a "mount-log" at mount
-> (just to mark that it is invalid in case of unclean umount). It means
-> one page write at mount, one page write at umount. If the erase block
-> consist 16 pages than it is necesarry to erase the first erase block
-> after every 8 mounts. So the typical timelife of it is about 8*100.000
-> mounting, I think it is big enough.
-This spoils the overall wear-leveling, which is no good. But should work.
+Hi All,
 
-> The other way is to specify the cenratlized summary information with
-> mount option (not to use the first erase block to store this pointer).
-> In this case some other system have to store it (typically on an other
-> file system), and the new location after umount can be read using sysfs.
-This also spoils wear-levelling...
+I pulled the JFFS2 code from CVS.  And Ported 2.6.12-omap1 to p2-sample.
+When P2 sample run for a while, Sometimes The following message will show.
 
-And I don't like CS in general as it is not tolerant to unclean 
-reboots... Albeit, if this does not matter to a specific system - this 
-will work.
+But when I boot again, it is ok again. 
 
-Nevertheless, I don't believe CS will make JFFS2 usable on 256MB 
-flashes, due to memory consumprion issues. Nor it will not (IMO) make it 
-scalable, which is sad :-(
+Does anybody meet the same problem ?
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+
+Node CRC 00800080 != calculated CRC 4bf2ff8d for node at 00676518
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9dfa60.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x0000059c)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9deb3c.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000f24)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9ddcbc.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000e80)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9dce64.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000e58)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9dbf3c.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000f28)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9db5dc.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000960)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9da914.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000cc8)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9d9c94.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000c80)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9d93c8.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x000008cc)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9d883c.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x00000b8c)
+JFFS2 notice: (247) read_unknown: node header CRC failed at 0x9d7f74.
+But it must have been OK earl.Node totlen on flash (0x00800080) !=
+totlen from node ref (0x000008c8)
+
+
+In our kernel source code, FILE drivers/mtd/chips/cfi_cmdset_0001.c ,
+we change like below to fix a bug.
+
+static void cfi_intelext_resume(struct mtd_info *mtd)
+{
+    struct map_info *map = mtd->priv;
+    struct cfi_private *cfi = map->fldrv_priv;
+    int i;
+    struct flchip *chip;
+
+    for (i=0; i<cfi->numchips; i++) {
+
+        chip = &cfi->chips[i];
+
+        spin_lock(chip->mutex);
+
+        /* Go to known state. Chip may have been power cycled */
+        if (chip->state == FL_PM_SUSPENDED) {
+            //map_write(map, CMD(0xFF), cfi->chips[i].start);  //@@@@@@@@@@@@@@@ It will report error!!!
+            map_write(map, CMD(0xFF), 0);
+            chip->oldstate = chip->state = FL_READY;
+            wake_up(&chip->wq);
+        }
+
+        spin_unlock(chip->mutex);
+    }
+}
+
+
+When our p2-sample enter the sleep mode, then resume , the resume code will be called. 
+
+So could anyone give me to fix the bug ??
+
+
+
+Thanks a lot!
+
+zhonglin
