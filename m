@@ -1,19 +1,18 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
+Received: from [12.44.186.158] (helo=av.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKdp5-0006lH-1C
-	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 11:26:26 -0400
-Message-ID: <433AB60D.4090107@cetrtapot.si>
-Date: Wed, 28 Sep 2005 17:26:05 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+	id 1EKesf-0007eo-Rw
+	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 12:34:13 -0400
+Message-ID: <433AC5CC.9060204@mvista.com>
+Date: Wed, 28 Sep 2005 09:33:16 -0700
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <433A640D.6030200@cetrtapot.si>
-	<20050928100031.GA18192@wohnheim.fh-wedel.de>
-In-Reply-To: <20050928100031.GA18192@wohnheim.fh-wedel.de>
+To: Chen Zhigao <banyan8@yahoo.com.sg>
+References: <433A474A.8040502@yahoo.com.sg>
+In-Reply-To: <433A474A.8040502@yahoo.com.sg>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Great jffs2 speedup
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Compiling Errors of map_funcs.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> On Wed, 28 September 2005 11:36:13 +0200, hinko.kocevar@cetrtapot.si wrote:
+Chen Zhigao wrote:
+> Folks,
 > 
->>On new setup - using yesterdays MTD CVS and 2.6.12 kernel with EBS enabled:
->>Mounting flash4 clean partition	[1]
->>real    0m 3.75s
->>user    0m 0.02s
->>sys     0m 1.17s
->>-- -- -- -- -- -- -- -- -- --
->>Mounting flash4 dirty partition	[2]
->>real    0m 0.75s
->>user    0m 0.02s
->>sys     0m 0.73s
-> 
-> 
-> I assume above numbers are for a dirty partition and below for a clean
-> one?
+> I try to enable support MTD device under MontaVista 3.1 for our Intel 
+> IXP425 demo board. 
 
-No.
+You need to contact your MontaVista support channel for your problem. 
+Those are old file versions of a kernel no longer supported here at 
+linux-mtd, and no one here knows how to translate those line numbers to 
+some previous version of the source code.  If a supported IXP425 LSP 
+cannot compile its supported mtd mapping driver then it's a bug in that 
+product.  I can give you a hint that your ixp425.c is apparently older 
+than the rest of the mtd code and needs various mods to match the rest 
+of the code.
 
-I've used the same script - It seemed little weird, but ...
-I'll do more tests in days to come, hopefully I'll be able solve this too.
 
-regrds,
-hinko
+-- 
+Todd
