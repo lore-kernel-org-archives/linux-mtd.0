@@ -1,18 +1,24 @@
-Received: from [12.44.186.158] (helo=av.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKesf-0007eo-Rw
-	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 12:34:13 -0400
-Message-ID: <433AC5CC.9060204@mvista.com>
-Date: Wed, 28 Sep 2005 09:33:16 -0700
-From: Todd Poynor <tpoynor@mvista.com>
+Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
+	helo=ns1.pwrseries.com)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKhSm-0001Ck-Sh
+	for linux-mtd@lists.infradead.org; Wed, 28 Sep 2005 15:20:05 -0400
+Received: from jmd (w238.z208176144.sjc-ca.dsl.cnc.net [208.176.144.238])
+	(authenticated bits=0)
+	by ns1.pwrseries.com (8.12.8/8.12.8) with ESMTP id j8SIuVYu027134
+	(version=TLSv1/SSLv3 cipher=DES-CBC3-SHA bits=168 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Sep 2005 11:56:31 -0700
+From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 28 Sep 2005 12:19:21 -0700
 MIME-Version: 1.0
-To: Chen Zhigao <banyan8@yahoo.com.sg>
-References: <433A474A.8040502@yahoo.com.sg>
-In-Reply-To: <433A474A.8040502@yahoo.com.sg>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Compiling Errors of map_funcs.c
+Message-ID: <433A8A49.27652.B22ADB@localhost>
+In-reply-to: <433AA62B.20102@ieee.org>
+References: <4339830F.14600.1D083FD@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Subject: Re: DOCBoot: "diskonchip" driver depreciated?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Chen Zhigao wrote:
-> Folks,
-> 
-> I try to enable support MTD device under MontaVista 3.1 for our Intel 
-> IXP425 demo board. 
+On 28 Sep 2005 at 10:18, Dan Brown wrote:
 
-You need to contact your MontaVista support channel for your problem. 
-Those are old file versions of a kernel no longer supported here at 
-linux-mtd, and no one here knows how to translate those line numbers to 
-some previous version of the source code.  If a supported IXP425 LSP 
-cannot compile its supported mtd mapping driver then it's a bug in that 
-product.  I can give you a hint that your ixp425.c is apparently older 
-than the rest of the mtd code and needs various mods to match the rest 
-of the code.
+> I'll have to check the menuconfig wording, but what it should say is
+> to use the new DOC driver that works *with* the generic NAND device
+> layer, rather than the old DOC driver(s) that doesn't.  If you enable
+> NAND support, you'll find this new driver.
 
+Ah ha.  I had CONFIG_EXPERIMENTAL unset which prevented the new 
+driver from showing up under NAND Flash Device Drivers.  I will carry 
+on...
 
--- 
-Todd
+- Joe
