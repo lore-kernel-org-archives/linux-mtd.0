@@ -1,19 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKtLM-0000ei-Vq
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 04:01:04 -0400
-Date: Thu, 29 Sep 2005 09:53:44 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKu1m-0001WD-Rj
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 04:44:52 -0400
+Message-ID: <433BA402.3040703@inf.u-szeged.hu>
+Date: Thu, 29 Sep 2005 10:21:22 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
 To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-Message-ID: <20050929075344.GC16687@wohnheim.fh-wedel.de>
 References: <433A640D.6030200@cetrtapot.si>
-	<20050928100031.GA18192@wohnheim.fh-wedel.de>
-	<433AB60D.4090107@cetrtapot.si>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <433AB60D.4090107@cetrtapot.si>
+In-Reply-To: <433A640D.6030200@cetrtapot.si>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
 Cc: Linux MTD <linux-mtd@lists.infradead.org>
 Subject: Re: Great jffs2 speedup
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,42 +22,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 September 2005 17:26:05 +0200, hinko.kocevar@cetrtapot.si wrote:
-> Jörn Engel wrote:
-> >On Wed, 28 September 2005 11:36:13 +0200, hinko.kocevar@cetrtapot.si wrote:
-> >
-> >>On new setup - using yesterdays MTD CVS and 2.6.12 kernel with EBS 
-> >>enabled:
-> >>Mounting flash4 clean partition	[1]
-> >>real    0m 3.75s
-> >>user    0m 0.02s
-> >>sys     0m 1.17s
-> >>-- -- -- -- -- -- -- -- -- --
-> >>Mounting flash4 dirty partition	[2]
-> >>real    0m 0.75s
-> >>user    0m 0.02s
-> >>sys     0m 0.73s
-> >
-> >
-> >I assume above numbers are for a dirty partition and below for a clean
-> >one?
-> 
-> No.
-> 
-> I've used the same script - It seemed little weird, but ...
-> I'll do more tests in days to come, hopefully I'll be able solve this too.
+Hi Hinko,
 
-Then your results don't make sense to me.  Either you made a stupid
-mistake when measuring this or you have found something quite
-interesting.  Remember, most inventions don't start with the word
-"Heureka!" but rather with "This is odd!".
+hinko.kocevar@cetrtapot.si wrote:
 
-Can anyone verify/falsify?
+> Compared to old setup this is GREAAAAAT improvment (if my mesurements
+> are correct:). Great job!
 
-Jörn
+Thanks. :)
 
--- 
-To announce that there must be no criticism of the President, or that we
-are to stand by the President, right or wrong, is not only unpatriotic
-and servile, but is morally treasonable to the American public.
--- Theodore Roosevelt, Kansas City Star, 1918
+> We found sumtool utility in tools dir and if my understanding is
+> correct it is used to convert jffs2 image with no EBS to jffs2 image
+> with EBS.
+>
+> Is this the only way to upgrade 'old' jffs2 partitions already in
+> place (on the nand flash) to use EBS? Thing is, we have several system
+> up and running in the wild and would like to upgrade jffs2 partitions
+> as-painless-as-possible, preferably without complete reflash of the
+> systems.
+
+At this moment: yes, that is the only way. If more people need it we can
+implement a special extension for EBS. (but it takes time) This
+extension would make possible if user set a special mount option the
+system will convert all the non-summarizied erase blocks to summarized.
+It would take a lot of time (and need some percent free space), but only
+at that mount.
+
+Or you may try our other technique: CS (Centralized Summary). That
+technique does not requie user space tool, and cause very fast mount
+after any clean umount. (if the umount was not clean the speed will be
+same as before). It is not the part of the official JFFS2 now, we would
+like to little bit rewrite before bringing on it. But it works already -
+use the variant which stores the reference in the first erase block. You
+can download it from our webpage ( http://www.inf.u-szeged.hu/jffs2/ ).
+
+Bye,
+Ferenc
