@@ -1,18 +1,29 @@
-Received: from www.itv-con.net ([203.125.253.66] helo=localhost.localdomain)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKt5X-00006d-RB
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 03:44:32 -0400
-Received: from yahoo.com.sg (localhost.localdomain [127.0.0.1])
-	by localhost.localdomain (8.12.8/8.12.8) with ESMTP id j8T7gkfu002193
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Sep 2005 15:42:47 +0800
-Message-ID: <433B9AF6.6020202@yahoo.com.sg>
-Date: Thu, 29 Sep 2005 15:42:46 +0800
-From: Chen Zhigao <banyan8@yahoo.com.sg>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Wrong CLEANMARKER Position
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKt8f-0002hK-5e
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 08:47:33 +0100
+Date: Thu, 29 Sep 2005 09:45:00 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Kaigai Kohei <kaigai@ak.jp.nec.com>
+Message-ID: <20050929074500.GA16687@wohnheim.fh-wedel.de>
+References: <431E772B.9090004@ak.jp.nec.com>
+	<20050908194915.GG20668@wohnheim.fh-wedel.de>
+	<43210C7A.60109@ak.jp.nec.com>
+	<20050909072416.GA19251@wohnheim.fh-wedel.de>
+	<43225DEB.4070809@ak.jp.nec.com>
+	<20050911114642.GA11788@wohnheim.fh-wedel.de>
+	<4324E525.60805@ak.jp.nec.com>
+	<20050912064038.GA21304@wohnheim.fh-wedel.de>
+	<43255FF5.4020903@ak.jp.nec.com> <433A57D8.9030501@ak.jp.nec.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <433A57D8.9030501@ak.jp.nec.com>
+Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>,
+	Ma Yun <sx_yunma@hotmail.com>
+Subject: Re: [PATCH] XATTR issues on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +33,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 28 September 2005 17:44:08 +0900, Kaigai Kohei wrote:
+> 
+> I revised the previous xattr patch in jffs2 based on some suggestions.
+> 
+> [1] scanning xattr related node for cleaned-up scan.c.
+>     (jffs2_xattr_scan.c-cleanup.patch)
+> [2] enables xattr support in jffs2.
+>     (jffs2_xattr_take-3.patch)
+> (*) We can apply jffs2_xattr_take-3.patch for current CVS independently.
 
-I try to boot my IXP425 board with a JFFS2 root FS on the MTD, into 
-which I burned two images, "zImage" and "jffs2". I got a lot of messages 
-regarding wrong CLEANMARKER position during booting, although I can use 
-the root FS. What's wrong here?
+Looks quite interesting.  I'll take a closer look over the weekend.
 
-============================================
-6 RedBoot partitions found on MTD device IXP425 Flash
-Creating 6 MTD partitions on "IXP425 Flash":
-0x00000000-0x00040000 : "RedBoot"
-0x00040000-0x00100000 : "zImage"
-0x00100000-0x00f00000 : "jffs2"
-0x00f00000-0x00fc0000 : "unallocated"
-0x00fc0000-0x00fc1000 : "RedBoot config"
-mtd: partition "RedBoot config" doesn't end on an erase block -- force 
-read-only
-0x00fe0000-0x01000000 : "FIS directory"
-<snip>
-Empty flash at 0x0000fffc ends at 0x00010000
-CLEANMARKER node found at 0x00010000, not first node in block (0x00000000)
-Empty flash at 0x0002fffc ends at 0x00030000
-CLEANMARKER node found at 0x00030000, not first node in block (0x00020000)
-Empty flash at 0x0004fffc ends at 0x00050000
-CLEANMARKER node found at 0x00050000, not first node in block (0x00040000)
-Empty flash at 0x0006fffc ends at 0x00070000
-CLEANMARKER node found at 0x00070000, not first node in block (0x00060000)
-<snip>
-CLEANMARKER node found at 0x00310000, not first node in block (0x00300000)
-Empty flash at 0x0032ffd4 ends at 0x00330000
-CLEANMARKER node found at 0x00330000, not first node in block (0x00320000)
-CLEANMARKER node found at 0x00350000, not first node in block (0x00340000)
-CLEANMARKER node found at 0x00370000, not first node in block (0x00360000)
-CLEANMARKER node found at 0x00390000, not first node in block (0x00380000)
-Empty flash at 0x003afffc ends at 0x003b0000
-CLEANMARKER node found at 0x003b0000, not first node in block (0x003a0000)
-CLEANMARKER node found at 0x003d0000, not first node in block (0x003c0000)
-VFS: Mounted root (jffs2 filesystem).
-====================================================
+Thanks!
 
-Another problem is that I can not find any "/dev/mtd*" in the FS, though 
-"cat /proc/mtd" can return me the flash partition infor.
+Jörn
 
-Any comment is welcome.
-
---Zhigao
+-- 
+The strong give up and move away, while the weak give up and stay.
+-- unknown
