@@ -1,20 +1,20 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKtB9-0000Ip-9j
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 03:50:36 -0400
-Date: Thu, 29 Sep 2005 09:50:15 +0200
+	id 1EKtLB-0000ei-0E
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 04:00:38 -0400
+Date: Thu, 29 Sep 2005 10:00:37 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: zhao forrest <zhao_fusheng@hotmail.com>
-Message-ID: <20050929075015.GB16687@wohnheim.fh-wedel.de>
-References: <20050928081635.GA16484@wohnheim.fh-wedel.de>
-	<BAY17-F17BAE916A33A743D7E8592E88C0@phx.gbl>
+To: Deepak Saxena <dsaxena@plexity.net>
+Message-ID: <20050929080037.GD16687@wohnheim.fh-wedel.de>
+References: <20050928234254.GA21547@plexity.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <BAY17-F17BAE916A33A743D7E8592E88C0@phx.gbl>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]1:1 mapping(revision 2)
+In-Reply-To: <20050928234254.GA21547@plexity.net>
+Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix ixp4xx MTD driver module build
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 September 2005 11:04:14 +0800, zhao forrest wrote:
+On Wed, 28 September 2005 16:42:54 -0700, Deepak Saxena wrote:
 > 
-> Since we have gone through the review, the patch is in good quality.
-> On the other hand, I even saw the check-in of new feature today. Then why
-> only I should wait for this one month delay??
-> So if there's no solid reason, I'll check in the patch today.
+> Missing ';' breaks module build.
+> 
+> Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
+> 
+> diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+> --- a/drivers/mtd/maps/ixp4xx.c
+> +++ b/drivers/mtd/maps/ixp4xx.c
+> @@ -254,6 +255,6 @@ module_init(ixp4xx_flash_init);
+>  module_exit(ixp4xx_flash_exit);
+>  
+>  MODULE_LICENSE("GPL");
+> -MODULE_DESCRIPTION("MTD map driver for Intel IXP4xx systems")
+> +MODULE_DESCRIPTION("MTD map driver for Intel IXP4xx systems");
+>  MODULE_AUTHOR("Deepak Saxena");
 
-Reason remains unchanged.  We have merged quite a bit of stuff, most
-notably the ebs patch from Ferenc.  Ebs appears to have caused some
-trouble for some people, so we have semi-known unfixed bugs in cvs.
-
-This is a good time to settle down and wait for a while, before
-introducing new bugs.  Once the existing stuff is fixed or it appears
-as if all bug reports were bogus (could also be), we can start merging
-new feature (which always have new bugs as well).
-
-Not sure what you considered to be the new feature today.  Kyunmin's
-onenand stuff is confined to drivers/mtd and doesn't have any
-influence on jffs2 for existing users.  If it did, I'd still not merge
-your stuff but write an angry mail to him instead. ;)
-
-Stay patient, please.
+Applied to mtd cvs.  (Actually, with cvs it was easier to just redo
+the change myself, but basically...)
 
 Jörn
 
