@@ -1,19 +1,20 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKxqo-0000Nk-5x
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 08:49:35 -0400
-Message-ID: <433BE2AD.4090609@yandex.ru>
-Date: Thu, 29 Sep 2005 16:48:45 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Josh Boyer <jdub@us.ibm.com>
-References: <433A54EB.4060900@mobilesoft.com.cn>
-	<1127997819.3231.8.camel@windu.rchland.ibm.com>
-In-Reply-To: <1127997819.3231.8.camel@windu.rchland.ibm.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 Error or Maybe Flash Driver Error
+	id 1EKy7m-0000rn-30
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 09:07:43 -0400
+Date: Thu, 29 Sep 2005 15:07:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+Message-ID: <20050929130707.GC21332@wohnheim.fh-wedel.de>
+References: <433A640D.6030200@cetrtapot.si> <433BA402.3040703@inf.u-szeged.hu>
+	<433BBED5.4040306@cetrtapot.si>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <433BBED5.4040306@cetrtapot.si>
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Great jffs2 speedup
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> I have seen this problem, yes.  Specifically, it has shown up when I try
-> to mount a JFFS2 filesystem as the rootfs.  When mounting it as a
-> non-rootfs, I haven't seen the problem.  I doubt that really makes a
-> difference though, and it's probably related more to timing than
-> anything.
-Well, if you gather and send the full JFFS2 debugging log I may try to help.
+On Thu, 29 September 2005 12:15:49 +0200, hinko.kocevar@cetrtapot.si wrote:
+> 
+> All of our umounts are unclean - or said better application is not 
+> taking care of umount at all. System may be powered off anytime. Which 
+> raises another question: Will this impact mount time in long run? Eg. 
+> after more and more unclean (u)mounts should we expect significant 
+> performance degradation?
+
+Only if your applications write to the fs in small chunks.  Known
+problem, noone cared enough to actually fix it yet.
+
+If most writes are in the range of 4k, you're safe.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+My second remark is that our intellectual powers are rather geared to
+master static relations and that our powers to visualize processes
+evolving in time are relatively poorly developed.
+-- Edsger W. Dijkstra
