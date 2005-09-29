@@ -1,21 +1,24 @@
-Received: from rwcrmhc11.comcast.net ([204.127.198.35])
+Received: from zproxy.gmail.com ([64.233.162.202])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EL5oi-0006lc-3q
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 17:20:01 -0400
-Date: Thu, 29 Sep 2005 14:20:55 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: Linus Torvalds <torvalds@osdl.org>, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Message-ID: <20050929212055.GA311@plexity.net>
-References: <20050929195205.GA30002@plexity.net>
-	<20050929205252.GG7684@flint.arm.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1EL7Fr-0007l0-8D
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 18:52:02 -0400
+Received: by zproxy.gmail.com with SMTP id i11so817833nzh
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 29 Sep 2005 15:51:50 -0700 (PDT)
+Message-ID: <6934efce05092915519ffe76c@mail.gmail.com>
+Date: Thu, 29 Sep 2005 15:51:50 -0700
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <20050929205252.GG7684@flint.arm.linux.org.uk>
-Cc: 
-Subject: Re: [PATCH] Fix IXP4xx MTD driver no cast warning
-Reply-To: dsaxena@plexity.net
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A01376415@NNSMSX401>
+	<Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org
+Subject: Re: XIP fails on kernels 2.6.12 and higher
+Reply-To: Jared Hulbert <jaredeh@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +28,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sep 29 2005, at 21:52, Russell King was caught saying:
-> On Thu, Sep 29, 2005 at 12:52:05PM -0700, Deepak Saxena wrote:
-> > Fix following warning:
-> > 
-> > drivers/mtd/maps/ixp4xx.c: In function 'ixp4xx_flash_probe':
-> > drivers/mtd/maps/ixp4xx.c:199: warning: assignment makes integer from
-> > pointer without a cast
-> > 
-> > Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
-> > 
-> > diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
-> > --- a/drivers/mtd/maps/ixp4xx.c
-> > +++ b/drivers/mtd/maps/ixp4xx.c
-> > @@ -196,7 +196,7 @@ static int ixp4xx_flash_probe(struct dev
-> >  		goto Error;
-> >  	}
-> >  
-> > -	info->map.map_priv_1 = ioremap(dev->resource->start,
-> > +	info->map.map_priv_1 = (unsigned long)ioremap(dev->resource->start,
-> 
-> Shouldn't this be using info->map.virt instead of the old map.map_priv_1 ?
+> If you can find the exact intermediate release between 2.6.11 and 2.6.12
+> that broke it that would be extrelely helpful.
 
-I think when I wrote this, having a !0 value in map->virt would cause the mtd
-core to assume that the map driver supported point()ing and direct copy
-of data.  Looking at the mtd code it looks like this assumption might
-have gone away...will change code.
+2.6.11.12 works and 2.6.12 does not.  I'll see if I can't find an
+intermediate release.
 
-~Deepak
+> This is generic code so probably on all platforms.
 
--- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-Even a stopped clock gives the right time twice a day.
+In mm/bootmem.c free_all_bootmem_core() does not return.   It seems
+after i hits 288 if I step I get a imprecise data abort.  It seems to
+occur at the __ClearPageReserved() which is an inlined __clear_bit()
+from include/asm/bitops.h.  It does this at somewhere around
+page=3D0xC0042400 which seems perfectly normal and is readable/writeable
+with the JTAG debugger.  Its really hard to replicate but it seems
+like a LDR op code is always at fault.  I've tried 2 different
+toolchains and compiling with -O0, while the LDR command was always a
+little different it was basically a read to the same address range. =20
+It is really baffling me.  Nothing seems wrong with what it is doing.=20
+I almost suspect hardware.  I'm also testing on a Mainstone2 like
+Alexey.  My OSK got destroyed.  Can somebody confirm xipImage of
+2.6.12 fails to boot where 2.6.11 runs on a different hardware
+platform?
