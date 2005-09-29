@@ -1,19 +1,24 @@
-Received: from apgrc3atc-wsgw1.atc.army.mil ([134.194.13.55])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKx7g-0007RO-C5
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 08:05:14 -0400
-Received: from APGRC3ATC-SMTP1.nae.ds.army.mil ([134.194.25.160])
-	by apgrc3atc-wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
-	M2005092908024130667
-	for <linux-mtd@lists.infradead.org>; Thu, 29 Sep 2005 08:02:41 -0400
-Message-ID: <22CECCE071A8DC4CAB2412DC44CBEDF10A9BED@apgrb1atc-0058e.atc.army.mil>
-From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
-To: 'Dan Brown' <dan_brown@ieee.org>
-Date: Thu, 29 Sep 2005 08:02:39 -0400
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: linux-mtd@lists.infradead.org
-Subject: JFFS2 on DOC
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKvcC-0004lc-MI
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 06:28:08 -0400
+Date: Thu, 29 Sep 2005 12:26:20 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Message-ID: <20050929102620.GE18741@wohnheim.fh-wedel.de>
+References: <433A640D.6030200@cetrtapot.si> <433BA402.3040703@inf.u-szeged.hu>
+	<20050929093433.GB18741@wohnheim.fh-wedel.de>
+	<433BB979.7010904@inf.u-szeged.hu> <433BBB19.9060905@yandex.ru>
+	<20050929101247.GD18741@wohnheim.fh-wedel.de>
+	<433BC021.7090409@yandex.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <433BC021.7090409@yandex.ru>
+Cc: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>,
+	Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: Great jffs2 speedup
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- 
-Hello all,
+On Thu, 29 September 2005 14:21:21 +0400, Artem B. Bityutskiy wrote:
+> Jörn Engel wrote:
+> >
+> >Dummy argument.  Wear levelling is just a means to avoid the real
+> >problem - early wear-out of specific blocks.  Spending one erase block
+> >for cs is pretty sane, as long as this block doesn't wear-out well
+> >before the rest.
+> "As long as" is the essential part. If it is true - nice. In general 
+> this can't be true. And, anticipating your remark, I agree that it still 
+> may have its place. :-)
 
-  I have a question about when JFFS2 could be used on a INFTLA device (DOC).
-Could this be done in the 2.4.28 kernel time frame using DOCboot?
+Agreed.  In general, this patch opens an option for a DoS attack.
 
-Thanks,
-John
+Jörn
+
+-- 
+Write programs that do one thing and do it well. Write programs to work
+together. Write programs to handle text streams, because that is a
+universal interface. 
+-- Doug MacIlroy
