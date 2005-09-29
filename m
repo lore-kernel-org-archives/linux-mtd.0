@@ -1,24 +1,20 @@
-Received: from zproxy.gmail.com ([64.233.162.202])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EL7Fr-0007l0-8D
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 18:52:02 -0400
-Received: by zproxy.gmail.com with SMTP id i11so817833nzh
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 Sep 2005 15:51:50 -0700 (PDT)
-Message-ID: <6934efce05092915519ffe76c@mail.gmail.com>
-Date: Thu, 29 Sep 2005 15:51:50 -0700
-From: Jared Hulbert <jaredeh@gmail.com>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EL7Po-000813-Sc
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 19:02:31 -0400
+Date: Fri, 30 Sep 2005 01:02:23 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Linus Torvalds <torvalds@osdl.org>
+Message-ID: <20050929230222.GA30887@wohnheim.fh-wedel.de>
+References: <20050929195205.GA30002@plexity.net>
+	<Pine.LNX.4.58.0509291259110.3308@g5.osdl.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A01376415@NNSMSX401>
-	<Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: XIP fails on kernels 2.6.12 and higher
-Reply-To: Jared Hulbert <jaredeh@gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.58.0509291259110.3308@g5.osdl.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Fix IXP4xx MTD driver no cast warning
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> If you can find the exact intermediate release between 2.6.11 and 2.6.12
-> that broke it that would be extrelely helpful.
+On Thu, 29 September 2005 13:00:18 -0700, Linus Torvalds wrote:
+> On Thu, 29 Sep 2005, Deepak Saxena wrote:
+> > 
+> > drivers/mtd/maps/ixp4xx.c: In function 'ixp4xx_flash_probe':
+> > drivers/mtd/maps/ixp4xx.c:199: warning: assignment makes integer from
+> > pointer without a cast
+> 
+> Please don't. The warning is entirely warranted, as far as I can tell.
+> 
+> Shutting up warnings just because they are warnings is bad practice. 
+> Either fix them, or leave them be.
+> 
+> If you do an "ioremap()", then the result is a "(void __iomem *)". If you 
+> assign it to something that is "unsigned long", you _should_ get a 
+> warning.
 
-2.6.11.12 works and 2.6.12 does not.  I'll see if I can't find an
-intermediate release.
+Code is correct, as far as this specific mapping driver is concerned.
+But it would make some sense to convert one of the map_priv_[12] in
+struct map_info to (void __iomem *).
 
-> This is generic code so probably on all platforms.
+Jörn
 
-In mm/bootmem.c free_all_bootmem_core() does not return.   It seems
-after i hits 288 if I step I get a imprecise data abort.  It seems to
-occur at the __ClearPageReserved() which is an inlined __clear_bit()
-from include/asm/bitops.h.  It does this at somewhere around
-page=3D0xC0042400 which seems perfectly normal and is readable/writeable
-with the JTAG debugger.  Its really hard to replicate but it seems
-like a LDR op code is always at fault.  I've tried 2 different
-toolchains and compiling with -O0, while the LDR command was always a
-little different it was basically a read to the same address range. =20
-It is really baffling me.  Nothing seems wrong with what it is doing.=20
-I almost suspect hardware.  I'm also testing on a Mainstone2 like
-Alexey.  My OSK got destroyed.  Can somebody confirm xipImage of
-2.6.12 fails to boot where 2.6.11 runs on a different hardware
-platform?
+-- 
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
