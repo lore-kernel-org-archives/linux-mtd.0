@@ -1,19 +1,19 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EKx3C-0007DD-0Y
-	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 07:58:18 -0400
-Message-ID: <433BD7A6.60405@inf.u-szeged.hu>
-Date: Thu, 29 Sep 2005 14:01:42 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Received: from apgrc3atc-wsgw1.atc.army.mil ([134.194.13.55])
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EKx7g-0007RO-C5
+	for linux-mtd@lists.infradead.org; Thu, 29 Sep 2005 08:05:14 -0400
+Received: from APGRC3ATC-SMTP1.nae.ds.army.mil ([134.194.25.160])
+	by apgrc3atc-wsgw1.atc.army.mil (SMSSMTP 4.0.0.59) with SMTP id
+	M2005092908024130667
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Sep 2005 08:02:41 -0400
+Message-ID: <22CECCE071A8DC4CAB2412DC44CBEDF10A9BED@apgrb1atc-0058e.atc.army.mil>
+From: "Carlos, John J USAATC" <john.carlos@atc.army.mil>
+To: 'Dan Brown' <dan_brown@ieee.org>
+Date: Thu, 29 Sep 2005 08:02:39 -0400
 MIME-Version: 1.0
-To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-References: <433A640D.6030200@cetrtapot.si> <433BA402.3040703@inf.u-szeged.hu>
-	<433BBED5.4040306@cetrtapot.si>
-In-Reply-To: <433BBED5.4040306@cetrtapot.si>
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: Great jffs2 speedup
+Content-Type: text/plain
+Cc: linux-mtd@lists.infradead.org
+Subject: JFFS2 on DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hinko.kocevar@cetrtapot.si wrote:
+ 
+Hello all,
 
-> All of our umounts are unclean - or said better application is not
-> taking care of umount at all. System may be powered off anytime. Which
-> raises another question: Will this impact mount time in long run? Eg.
-> after more and more unclean (u)mounts should we expect significant
-> performance degradation?
+  I have a question about when JFFS2 could be used on a INFTLA device (DOC).
+Could this be done in the 2.4.28 kernel time frame using DOCboot?
 
-Using EBS there should not be significant performance degradation even
-if there is no umount at all.
-
-Only CS needs clean umount.
-
-Ferenc
+Thanks,
+John
