@@ -1,16 +1,17 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELJUS-0000t4-Tv
-	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 07:56:36 -0400
-Message-ID: <433D2815.6040603@ru.mvista.com>
-Date: Fri, 30 Sep 2005 15:57:09 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: tglx@linutronix.de
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: more flexible HW ECC support for nand_base
+Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
+	by pentafluge.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ELKqN-0003RT-DK
+	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 14:22:39 +0100
+Date: Fri, 30 Sep 2005 14:17:41 +0200
+From: Pavel Machek <pavel@ucw.cz>
+To: dwmw2@infradead.org, kernel list <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org
+Message-ID: <20050930121741.GA5506@elf.ucw.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: 
+Subject: [patch] switch mtd to new driver model & cleanups
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,58 +21,194 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi  Thomas,
+Switch mtd to new power management.
 
-as you might recall, during the PNX4008 LSP development we came across 
-the MTD problem which turned to be a shipstopper for hardware ECC 
-support on SanDisk MLC controller.  The patch (quite inmature) suggested 
-and a kind of struggle around it are in September linux-mtd e-mail 
-archive ;-)
-The problem basically is that the MTD NAND core assumes that layout is 
-like "(data bytes) (possible ecc data) (oob data)", and more often just 
-"(data bytes) (oob data)". To perform ECC data reading, the NAND chip 
-driver needs to set the special option like NAND_HWECC_SYNDROME.
-On the other hand, the page layout may vary from chip to chip. For 
-SanDisk MLC it looks like 
-"(data)(ecc)(oob)(data)(ecc)(oob)(data)(ecc)(oob)(data)(ecc)(oob)" what 
-can't be handled properly by nand_base since it doesn't even try to read 
-OOB data in loop (i. e. eccsteps times).
+Signed-off-by: Pavel Machek <pavel@suse.cz>
 
-After some local discussions, we suggest the following modification to 
-the MTD NAND core to allow driver to specify its own layout of nand 
-page. Namely, the solution proposed is to provide the `page_layout' 
-field in nand_chip structure, that will point to array of structures like
+---
+commit c608c935000f919426316a2f76084e31cab0171b
+tree e5bbc83aac75f5916cf79f7e531530c9655e38c6
+parent 81a2889a21eb2bfdf8b242f2cc2cc1d6ad424ea2
+author <pavel@amd.(none)> Fri, 30 Sep 2005 00:19:32 +0200
+committer <pavel@amd.(none)> Fri, 30 Sep 2005 00:19:32 +0200
 
-struct page_layout_item {
-    int length;
-    enum {
-        SPARE, DATA, OOB, ECC,
-    } type;
-}
+ drivers/mtd/mtdcore.c |   68 ++++++++++++++++++++++++++++++++-----------------
+ 1 files changed, 44 insertions(+), 24 deletions(-)
 
-Any standard types like NAND_HW512_6 will be replaced then by standard 
-layouts like
-    nand_layout_512_6 = {
-        { 512, DATA },
-        { 6, ECC },
-    };
-The rest of page, if any, might be considered as OOB data or explicitly 
-defined, like
-        { 10, OOB }
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -19,6 +19,7 @@
+ #include <linux/ioctl.h>
+ #include <linux/init.h>
+ #include <linux/mtd/compatmac.h>
++#include <linux/sysdev.h>
+ #ifdef CONFIG_PROC_FS
+ #include <linux/proc_fs.h>
+ #endif
+@@ -80,6 +81,7 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	return 1;
+ }
+ 
++
+ /**
+  *	del_mtd_device - unregister an MTD device
+  *	@mtd: pointer to MTD device info structure
+@@ -303,30 +305,59 @@ EXPORT_SYMBOL(default_mtd_readv);
+ 
+ #include <linux/pm.h>
+ 
+-static struct pm_dev *mtd_pm_dev = NULL;
++static int mtd_resume(struct sys_device *dev)
++{
++	int ret = 0, i;
+ 
+-static int mtd_pm_callback(struct pm_dev *dev, pm_request_t rqst, void *data)
++	if (down_trylock(&mtd_table_mutex))
++		return -EAGAIN;
++
++	for (i = MAX_MTD_DEVICES-1; i >= 0; i--) {
++		if (mtd_table[i] && mtd_table[i]->resume)
++			mtd_table[i]->resume(mtd_table[i]);
++	}
++
++	up(&mtd_table_mutex);
++	return ret;
++}
++
++static int mtd_suspend(struct sys_device *dev, pm_message_t state)
+ {
+ 	int ret = 0, i;
+ 
+ 	if (down_trylock(&mtd_table_mutex))
+ 		return -EAGAIN;
+-	if (rqst == PM_SUSPEND) {
+-		for (i = 0; ret == 0 && i < MAX_MTD_DEVICES; i++) {
+-			if (mtd_table[i] && mtd_table[i]->suspend)
+-				ret = mtd_table[i]->suspend(mtd_table[i]);
+-		}
+-	} else i = MAX_MTD_DEVICES-1;
+ 
+-	if (rqst == PM_RESUME || ret) {
+-		for ( ; i >= 0; i--) {
+-			if (mtd_table[i] && mtd_table[i]->resume)
+-				mtd_table[i]->resume(mtd_table[i]);
+-		}
++	for (i = 0; ret == 0 && i < MAX_MTD_DEVICES; i++) {
++		if (mtd_table[i] && mtd_table[i]->suspend)
++			ret = mtd_table[i]->suspend(mtd_table[i]);
+ 	}
++
+ 	up(&mtd_table_mutex);
+ 	return ret;
+ }
++
++static struct sysdev_class mtd_sysdev_class = {
++	set_kset_name("mtd"),
++	.suspend = mtd_suspend,
++	.resume = mtd_resume,
++};
++
++static struct sys_device device_mtd = {
++	.id	= 0,
++	.cls	= &mtd_sysdev_class,
++};
++
++static int __init mtd_init_sysfs(void)
++{
++	int error = sysdev_class_register(&mtd_sysdev_class);
++	if (!error)
++		error = sysdev_register(&device_mtd);
++	return error;
++}
++
++device_initcall(mtd_init_sysfs);
++
+ #endif
+ 
+ /*====================================================================*/
+@@ -388,22 +419,11 @@ static int __init init_mtd(void)
+ 	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
+ 		proc_mtd->read_proc = mtd_read_proc;
+ #endif
+-
+-#ifdef CONFIG_PM
+-	mtd_pm_dev = pm_register(PM_UNKNOWN_DEV, 0, mtd_pm_callback);
+-#endif
+ 	return 0;
+ }
+ 
+ static void __exit cleanup_mtd(void)
+ {
+-#ifdef CONFIG_PM
+-	if (mtd_pm_dev) {
+-		pm_unregister(mtd_pm_dev);
+-		mtd_pm_dev = NULL;
+-	}
+-#endif
+-
+ #ifdef CONFIG_PROC_FS
+         if (proc_mtd)
+ 		remove_proc_entry( "mtd", NULL);
 
-Another part of the problem is nand_read_oob()/nand_write_oob() 
-functions that also make assumptions on NAND flash page layout. It's 
-suggested that they go to nand_chip structure, i. e. it will become a 
-specific chip driver's responsibility to provide those; and if driver 
-does not provide one, the current implementation can be used. If 
-nand_chip provides its own layout, it must read/write oob data according 
-to the layout.
 
-These steps should provide backward compatibility and the ability for 
-particular driver owners to update their drivers accordingly with as 
-less pain as possible.
+
 
-Any comments are welcome,
+!-------------------------------------------------------------flip-
 
-Best regards,
-  Vitaly
+
+Kill useless ifdefs from mtd.
+
+---
+commit b6ee6a389e7679a4f81e61a4c1ce84232df1a6f5
+tree b71d9dbd8d035ef167134b88e67ed1d662b43146
+parent c608c935000f919426316a2f76084e31cab0171b
+author <pavel@amd.(none)> Fri, 30 Sep 2005 00:20:52 +0200
+committer <pavel@amd.(none)> Fri, 30 Sep 2005 00:20:52 +0200
+
+ drivers/mtd/mtdcore.c |    6 ------
+ 1 files changed, 0 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
+--- a/drivers/mtd/mtdcore.c
++++ b/drivers/mtd/mtdcore.c
+@@ -20,9 +20,7 @@
+ #include <linux/init.h>
+ #include <linux/mtd/compatmac.h>
+ #include <linux/sysdev.h>
+-#ifdef CONFIG_PROC_FS
+ #include <linux/proc_fs.h>
+-#endif
+ 
+ #include <linux/mtd/mtd.h>
+ 
+@@ -415,19 +413,15 @@ done:
+ 
+ static int __init init_mtd(void)
+ {
+-#ifdef CONFIG_PROC_FS
+ 	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
+ 		proc_mtd->read_proc = mtd_read_proc;
+-#endif
+ 	return 0;
+ }
+ 
+ static void __exit cleanup_mtd(void)
+ {
+-#ifdef CONFIG_PROC_FS
+         if (proc_mtd)
+ 		remove_proc_entry( "mtd", NULL);
+-#endif
+ }
+ 
+ module_init(init_mtd);
+
+
+
+
+!-------------------------------------------------------------flip-
+
+
+
+-- 
+if you have sharp zaurus hardware you don't need... you know my address
