@@ -1,25 +1,19 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELGte-0001eq-Bi
-	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 10:09:40 +0100
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Peter Grayson <pgrayson@realmsys.com>
-In-Reply-To: <1128070714.4267.8.camel@sauron.oktetlabs.ru>
-References: <433A640D.6030200@cetrtapot.si> <433BA402.3040703@inf.u-szeged.hu>
-	<20050929093433.GB18741@wohnheim.fh-wedel.de>
-	<433BB979.7010904@inf.u-szeged.hu> <433BBB19.9060905@yandex.ru>
-	<1128010237.6926.10.camel@localhost.localdomain>
-	<loom.20050929T193349-733@post.gmane.org>
-	<1128053984.6926.59.camel@localhost.localdomain>
-	<1128070714.4267.8.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Fri, 30 Sep 2005 13:08:06 +0400
-Message-Id: <1128071286.4267.12.camel@sauron.oktetlabs.ru>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1ELH7Z-0006ww-FP
+	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 05:24:23 -0400
+Date: Fri, 30 Sep 2005 11:24:09 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Daniel Ann <ktdann@gmail.com>
+Message-ID: <20050930092409.GA19495@wohnheim.fh-wedel.de>
+References: <9b7ca6570509300036r47c410a4la8f8598794a17041@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b7ca6570509300036r47c410a4la8f8598794a17041@mail.gmail.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Great jffs2 speedup
-Reply-To: dedekind@infradead.org
+Subject: Re: Problem partitioning discontinuous physical start address
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-09-30 at 12:58 +0400, Artem B. Bityutskiy wrote:
-> And another fun is to create a directory with thousands of small (or
-> empty) files, remount the FS and run stat on the directory or enter it.
-> But this is not that fundamental problem and may be fixed.
-Oh, I'm actually lying, it is fundamental, but it may be relaxed greatly
-if we switch to balanced trees instead of lists in the internal
-directory representation.
+On Fri, 30 September 2005 16:36:06 +0900, Daniel Ann wrote:
+> 
+> Im trying to partion my flash using partioning support (ie. parse
+> partition from the kernel argument) but for board with 2x intel flash
+> linearly connected, I can partition it no problem.
+> 
+> Problem exist with board with 2x intel flash (16MB each) non-linearly connected.
+> One is located at 0x7C00_0000 and another at 0xFF00_0000. If I give
+> 0x7C00_0000 as a physical start address with length as 0x84000000 (ie.
+> (0xFFFF_FFFF - 7C00_0000) + 1)and select support for non-linear
+> mappings of flash chips, I get an error saying that its too large.
+> 
+> What options do I have without having to write my own physmap.c. I've
+> had one before when I was using 2.4 kernel, but having moved to 2.6,
+> I'm trying not to make any custom changes and trying to stick with the
+> main stream.
+> 
+> Any advice would be welcome. thanks.
+
+You could try concat.  iirc, it was created for this purpose.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+"Error protection by error detection and correction."
+-- from a university class
