@@ -1,21 +1,21 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELcND-0000Fm-1n
-	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 04:06:37 -0400
-Message-ID: <433E432B.7010406@yandex.ru>
-Date: Sat, 01 Oct 2005 12:04:59 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: dsaxena@plexity.net
+Received: from rwcrmhc12.comcast.net ([216.148.227.85])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ELcNL-0000Fq-QK
+	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 04:06:43 -0400
+Date: Sat, 1 Oct 2005 01:00:27 -0700
+From: Deepak Saxena <dsaxena@plexity.net>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-ID: <20051001080027.GM25424@plexity.net>
 References: <20051001050003.GD11137@plexity.net>
 	<1128152797.3546.15.camel@sauron.oktetlabs.ru>
-	<20051001080027.GM25424@plexity.net>
-In-Reply-To: <20051001080027.GM25424@plexity.net>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1128152797.3546.15.camel@sauron.oktetlabs.ru>
 Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] [MTD] kmalloc + memzero -> kzalloc conversion
+Reply-To: dsaxena@plexity.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Deepak Saxena wrote:
-> I see it more as an API usage cleanup then a "fix" of any sort. 
-> 
-Well, actually it may be helpful in only future, for example, if it is 
-known that the allocated memory is zero-filled already, memzero() may be 
-avoided at all.
+On Oct 01 2005, at 11:46, Artem B. Bityutskiy was caught saying:
+> On Fri, 2005-09-30 at 22:00 -0700, Deepak Saxena wrote:
+> > We have the API, so use it.
+> > 
+> > Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
+> > 
+> Well, does it really hurt if one does kmalloc() + memset(zero) instead? Is it worth fixing this? Doubts.
+
+I see it more as an API usage cleanup then a "fix" of any sort. 
+
+~Deepak
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
+
+Even a stopped clock gives the right time twice a day.
