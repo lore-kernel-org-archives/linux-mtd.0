@@ -1,20 +1,21 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELc5S-0008GZ-9C
-	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 03:48:35 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+	id 1ELcND-0000Fm-1n
+	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 04:06:37 -0400
+Message-ID: <433E432B.7010406@yandex.ru>
+Date: Sat, 01 Oct 2005 12:04:59 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
 To: dsaxena@plexity.net
-In-Reply-To: <20051001050003.GD11137@plexity.net>
 References: <20051001050003.GD11137@plexity.net>
-Content-Type: text/plain
-Date: Sat, 01 Oct 2005 11:46:37 +0400
-Message-Id: <1128152797.3546.15.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+	<1128152797.3546.15.camel@sauron.oktetlabs.ru>
+	<20051001080027.GM25424@plexity.net>
+In-Reply-To: <20051001080027.GM25424@plexity.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] [MTD] kmalloc + memzero -> kzalloc conversion
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-09-30 at 22:00 -0700, Deepak Saxena wrote:
-> We have the API, so use it.
+Deepak Saxena wrote:
+> I see it more as an API usage cleanup then a "fix" of any sort. 
 > 
-> Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
-> 
-Well, does it really hurt if one does kmalloc() + memset(zero) instead? Is it worth fixing this? Doubts.
+Well, actually it may be helpful in only future, for example, if it is 
+known that the allocated memory is zero-filled already, memzero() may be 
+avoided at all.
 
 -- 
 Best Regards,
