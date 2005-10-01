@@ -1,21 +1,17 @@
-Received: from 207.88.121.47.ptr.us.xo.net ([207.88.121.47]
-	helo=ba.realmsys.com)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELV48-0001ic-VG
-	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 20:17:32 -0400
-Received: from pgrayson1.inrealm.net (unknown [66.239.3.2])
-	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
-	(No client certificate requested)
-	by ba.realmsys.com (Spam Firewall) with ESMTP id D15E016EAD
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 30 Sep 2005 18:17:22 -0600 (MDT)
-From: Peter Grayson <pgrayson@realmsys.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-qdX6QIF5Pl+jT2s72Vfk"
-Date: Fri, 30 Sep 2005 18:17:26 -0600
-Message-Id: <1128125846.6926.120.camel@localhost.localdomain>
+Received: from sccrmhc11.comcast.net ([204.127.202.55])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ELZcN-0005us-RP
+	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 01:09:12 -0400
+Date: Fri, 30 Sep 2005 22:00:03 -0700
+From: Deepak Saxena <dsaxena@plexity.net>
+To: Linus Torvalds <torvalds@osdl.org>
+Message-ID: <20051001050003.GD11137@plexity.net>
 Mime-Version: 1.0
-Subject: [PATCH] jffs2, symlink, and 2.6.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] [MTD] kmalloc + memzero -> kzalloc conversion
+Reply-To: dsaxena@plexity.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,86 +22,79 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-qdX6QIF5Pl+jT2s72Vfk
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+We have the API, so use it.
 
-The function prototype for follow_link() in struct inode_operations
-changed in linux 2.6.13. Instead of returning int, it now expects
-returning void*.
+Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
 
-I have attached a patch that fixes up the jffs2 code to accommodate the
-new prototype. No functional changes were made to the jffs2 code.
-
-For those on earlier kernel versions, this change will yield compiler
-warnings. I am not sure what the policy is for maintaining compatibility
-with older kernel versions, so I did not include any changes to
-compatmac.h. Do we want to reproduce the struct inode_operations
-declaration in compatmac.h just so that latest mtd does not yield
-compiler warnings on older kernels?
-
-Pete
-
-
---=-qdX6QIF5Pl+jT2s72Vfk
-Content-Disposition: attachment; filename=jffs2-symlink.patch
-Content-Type: text/x-patch; name=jffs2-symlink.patch; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-[jffs2] Fixup symlink.c for linux 2.6.13
-[From: Peter Grayson <pgrayson@realmsys.com>]
-diff -uNr mtd/fs/jffs2/symlink.c mtd-jffs2-symlink/fs/jffs2/symlink.c
---- mtd/fs/jffs2/symlink.c	2005-08-30 15:47:52.000000000 -0600
-+++ mtd-jffs2-symlink/fs/jffs2/symlink.c	2005-09-30 17:41:48.164336152 -0600
-@@ -18,19 +18,19 @@
- #include <linux/namei.h>
- #include "nodelist.h"
+diff --git a/drivers/mtd/maps/bast-flash.c b/drivers/mtd/maps/bast-flash.c
+--- a/drivers/mtd/maps/bast-flash.c
++++ b/drivers/mtd/maps/bast-flash.c
+@@ -123,14 +123,13 @@ static int bast_flash_probe(struct devic
+ 	struct resource *res;
+ 	int err = 0;
  
--static int jffs2_follow_link(struct dentry *dentry, struct nameidata *nd);
-+static void *jffs2_follow_link(struct dentry *dentry, struct nameidata *nd);
- 
- struct inode_operations jffs2_symlink_inode_operations =
--{	
-+{
- 	.readlink =	generic_readlink,
- 	.follow_link =	jffs2_follow_link,
- 	.setattr =	jffs2_setattr
- };
- 
--static int jffs2_follow_link(struct dentry *dentry, struct nameidata *nd)
-+static void *jffs2_follow_link(struct dentry *dentry, struct nameidata *nd)
- {
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(dentry->d_inode);
--	
-+
- 	/*
- 	 * We don't acquire the f->sem mutex here since the only data we
- 	 * use is f->target.
-@@ -43,20 +43,20 @@
- 	 * stopped using our f->target string which we provide by means of
- 	 * nd_set_link() call.
- 	 */
--	
-+
- 	if (!f->target) {
--		printk(KERN_ERR "jffs2_follow_link(): can't find symlink taerget\n");
--		return -EIO;
-+		printk(KERN_ERR "jffs2_follow_link(): can't find symlink target\n");
-+		return ERR_PTR(-EIO);
+-	info = kmalloc(sizeof(*info), GFP_KERNEL);
++	info = kzalloc(sizeof(*info), GFP_KERNEL);
+ 	if (info == NULL) {
+ 		printk(KERN_ERR PFX "no memory for flash info\n");
+ 		err = -ENOMEM;
+ 		goto exit_error;
  	}
- 	D1(printk(KERN_DEBUG "jffs2_follow_link(): target path is '%s'\n", (char *) f->target));
  
- 	nd_set_link(nd, (char *)f->target);
--	
-+
- 	/*
- 	 * We will unlock the f->sem mutex but VFS will use the f->target string. This is safe
- 	 * since the only way that may cause f->target to be changed is iput() operation.
- 	 * But VFS will not use f->target after iput() has been called.
- 	 */
--	return 0;
-+	return NULL;
- }
+-	memzero(info, sizeof(*info));
+ 	dev_set_drvdata(dev, info);
+ 
+ 	res = pdev->resource;  /* assume that the flash has one resource */
+diff --git a/drivers/mtd/maps/epxa10db-flash.c b/drivers/mtd/maps/epxa10db-flash.c
+--- a/drivers/mtd/maps/epxa10db-flash.c
++++ b/drivers/mtd/maps/epxa10db-flash.c
+@@ -142,8 +142,7 @@ static int __init epxa_default_partition
+ 
+ 	printk("Using default partitions for %s\n",BOARD_NAME);
+ 	npartitions=1;
+-	parts = kmalloc(npartitions*sizeof(*parts)+strlen(name), GFP_KERNEL);
+-	memzero(parts,npartitions*sizeof(*parts)+strlen(name));
++	parts = kzalloc(npartitions*sizeof(*parts)+strlen(name), GFP_KERNEL);
+ 	if (!parts) {
+ 		ret = -ENOMEM;
+ 		goto out;
+diff --git a/drivers/mtd/maps/ixp2000.c b/drivers/mtd/maps/ixp2000.c
+--- a/drivers/mtd/maps/ixp2000.c
++++ b/drivers/mtd/maps/ixp2000.c
+@@ -168,12 +168,11 @@ static int ixp2000_flash_probe(struct de
+ 		return -EIO;
+ 	}
+ 
+-	info = kmalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
++	info = kzalloc(sizeof(struct ixp2000_flash_info), GFP_KERNEL);
+ 	if(!info) {
+ 		err = -ENOMEM;
+ 		goto Error;
+ 	}	
+-	memzero(info, sizeof(struct ixp2000_flash_info));
+ 
+ 	dev_set_drvdata(&dev->dev, info);
+ 
+diff --git a/drivers/mtd/maps/ixp4xx.c b/drivers/mtd/maps/ixp4xx.c
+--- a/drivers/mtd/maps/ixp4xx.c
++++ b/drivers/mtd/maps/ixp4xx.c
+@@ -153,12 +153,11 @@ static int ixp4xx_flash_probe(struct dev
+ 			return err;
+ 	}
+ 
+-	info = kmalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
++	info = kzalloc(sizeof(struct ixp4xx_flash_info), GFP_KERNEL);
+ 	if(!info) {
+ 		err = -ENOMEM;
+ 		goto Error;
+ 	}	
+-	memzero(info, sizeof(struct ixp4xx_flash_info));
+ 
+ 	dev_set_drvdata(&dev->dev, info);
  
 
---=-qdX6QIF5Pl+jT2s72Vfk--
+
+-- 
+Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
+
+Even a stopped clock gives the right time twice a day.
