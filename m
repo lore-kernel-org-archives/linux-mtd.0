@@ -1,25 +1,24 @@
-Received: from 207.88.121.47.ptr.us.xo.net ([207.88.121.47]
-	helo=ba.realmsys.com)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELUDR-00013u-Us
-	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 19:23:07 -0400
-From: Peter Grayson <pgrayson@realmsys.com>
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20050930T223859-922@post.gmane.org>
-References: <433A640D.6030200@cetrtapot.si> <433BA402.3040703@inf.u-szeged.hu>
-	<20050929093433.GB18741@wohnheim.fh-wedel.de>
-	<433BB979.7010904@inf.u-szeged.hu> <433BBB19.9060905@yandex.ru>
-	<1128010237.6926.10.camel@localhost.localdomain>
-	<loom.20050929T193349-733@post.gmane.org>
-	<1128053984.6926.59.camel@localhost.localdomain>
-	<loom.20050930T223859-922@post.gmane.org>
-Content-Type: text/plain
-Date: Fri, 30 Sep 2005 17:22:59 -0600
-Message-Id: <1128122579.6926.110.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from wproxy.gmail.com ([64.233.184.205])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ELVOW-0001vi-0T
+	for linux-mtd@lists.infradead.org; Fri, 30 Sep 2005 20:38:36 -0400
+Received: by wproxy.gmail.com with SMTP id i20so18456wra
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 30 Sep 2005 17:38:26 -0700 (PDT)
+Message-ID: <9b7ca6570509301738q4a130642x4a87792d6879525a@mail.gmail.com>
+Date: Sat, 1 Oct 2005 09:38:26 +0900
+From: Daniel Ann <ktdann@gmail.com>
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20050930092409.GA19495@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <9b7ca6570509300036r47c410a4la8f8598794a17041@mail.gmail.com>
+	<20050930092409.GA19495@wohnheim.fh-wedel.de>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Great jffs2 speedup
+Subject: Re: Problem partitioning discontinuous physical start address
+Reply-To: Daniel Ann <ktdann@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,44 +28,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-09-30 at 21:15 +0000, Sergei Sharonov wrote:
-> Aha!!! Of course, CS reduced your time to first write down to seconds.
-> Could you repeat the test after the un-clean unmount (e.g. power off without
-> sync)? I bet the numbers will be very different. Probably you also need to 
-> be writing to flash during the power off to force full scan on startup.
+Hey Jorn,
 
-I'll add this to my list of "things to try for the list".
+I was thinking concat must be doing something along this line but I
+have tried it as I couldnt get any doc's on how to use it with command
+line partition table parsing.
+Or even setting it up with using make menuconfig.
 
-> Hmm.. I was getting a read throughput jffs2 -> samba network fs of about 
-> 1.1 MB/s (180 MHz ARM9, linux 2.6.10, mtd 3/28/2005). I believe jffs2/mtd 
-> was the bottleneck since the throughput was 7.25x higher when files were 
-> comming from ext2/RAM. Looks like your hw controller is doing a good job.
-> Not sure how overhead is split between mtd and jffs2.
+Any hints on this please ?
 
-The mtd layer does not really introduce any overhead; it accounts for
-the time it takes to get bytes in and out of the hardware. Jffs2, on the
-other hand, has a number of aspects that use RAM and cpu cycles. Also,
-the choices jffs2 makes affects how often it has to access flash.
+Thanks.
 
-> Tricky, tricky, tricky ;-)
-> Not everybody is that lucky to have a battery. Reminds me of a conversation
-> with one "high reliability RTOS" vendor, you guess who.
-> - Is your file system power fail safe?
-> - Yes, of course. We do require that you use UPS though.
-> 
-> > However, the thing to
-> > remember about centralized summary is that in the unclean shutdown
-> > cases, the mount time is no worse than jffs2 without CS. So even if you
-> > only expect the filesystem to be cleanly unmounted sometimes, CS can be
-> > worth it.
-> 
-> As long as specification allows for an "occasional" 30 minutes startup time.
+On 9/30/05, J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+> On Fri, 30 September 2005 16:36:06 +0900, Daniel Ann wrote:
+> >
+> > Im trying to partion my flash using partioning support (ie. parse
+> > partition from the kernel argument) but for board with 2x intel flash
+> > linearly connected, I can partition it no problem.
+> >
+> > Problem exist with board with 2x intel flash (16MB each) non-linearly c=
+onnected.
+> > One is located at 0x7C00_0000 and another at 0xFF00_0000. If I give
+> > 0x7C00_0000 as a physical start address with length as 0x84000000 (ie.
+> > (0xFFFF_FFFF - 7C00_0000) + 1)and select support for non-linear
+> > mappings of flash chips, I get an error saying that its too large.
+> >
+> > What options do I have without having to write my own physmap.c. I've
+> > had one before when I was using 2.4 kernel, but having moved to 2.6,
+> > I'm trying not to make any custom changes and trying to stick with the
+> > main stream.
+> >
+> > Any advice would be welcome. thanks.
+>
+> You could try concat.  iirc, it was created for this purpose.
+>
+> J=F6rn
+>
+> --
+> "Error protection by error detection and correction."
+> -- from a university class
+>
 
-Touche.
 
-> Your hw controller does sound very interesting.
-> What is the hardware implementation : asic, fpga? Is it available as a 
-> separate product (chip)?
-
-This is a soft core in an fpga. My company may be willing to license its
-use.
+--
+Daniel
