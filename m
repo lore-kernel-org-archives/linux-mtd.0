@@ -1,21 +1,18 @@
-Received: from rwcrmhc12.comcast.net ([216.148.227.85])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ELcNL-0000Fq-QK
-	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 04:06:43 -0400
-Date: Sat, 1 Oct 2005 01:00:27 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-ID: <20051001080027.GM25424@plexity.net>
-References: <20051001050003.GD11137@plexity.net>
-	<1128152797.3546.15.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1128152797.3546.15.camel@sauron.oktetlabs.ru>
-Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [MTD] kmalloc + memzero -> kzalloc conversion
-Reply-To: dsaxena@plexity.net
+	id 1ELupa-0004MK-58
+	for linux-mtd@lists.infradead.org; Sat, 01 Oct 2005 23:48:15 -0400
+Message-ID: <433F586B.2000102@mvista.com>
+Date: Sat, 01 Oct 2005 20:47:55 -0700
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Kathy Richards <kath_rich64@yahoo.com>
+References: <20051001053902.90833.qmail@web33008.mail.mud.yahoo.com>
+In-Reply-To: <20051001053902.90833.qmail@web33008.mail.mud.yahoo.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Spansion MirrorBit support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Oct 01 2005, at 11:46, Artem B. Bityutskiy was caught saying:
-> On Fri, 2005-09-30 at 22:00 -0700, Deepak Saxena wrote:
-> > We have the API, so use it.
-> > 
-> > Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
-> > 
-> Well, does it really hurt if one does kmalloc() + memset(zero) instead? Is it worth fixing this? Doubts.
+Kathy Richards wrote:
+> Hi list,
+> 
+> I have to use S29GL032M flash which is Spansion
+> MirrorBit, CFI compatible. I searched the archives and
+> it seems like it should work "out of the box". I'm
+> using kernel version 2.6.13. 
+> 
+> 1. I'm wondering if anyone has actually used this (or
+> a similar spansion mirrorbit chip) and knows for sure
+> that it works...?
+> 
+> 2. Is the MirrorBit tech transparent to mtd/jffs2 (as
+> long as the chip is CFI compatible?)
 
-I see it more as an API usage cleanup then a "fix" of any sort. 
+Have used S29W models, check the datasheet for your model and see if the 
+CFI query address is 0x555, if so see:
 
-~Deepak
+http://lists.infradead.org/pipermail/linux-mtd/2005-September/013641.html
+
+Haven't checked if there are features of the flash that mtd/jffs2 aren't 
+taking advantage of, but most chips do work.
 
 -- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-Even a stopped clock gives the right time twice a day.
+Todd
