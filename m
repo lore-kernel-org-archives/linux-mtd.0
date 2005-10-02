@@ -1,22 +1,22 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EM2dQ-0005r8-VV
-	for linux-mtd@lists.infradead.org; Sun, 02 Oct 2005 08:08:24 -0400
-Date: Sun, 2 Oct 2005 14:07:48 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Message-ID: <20051002120748.GA10697@wohnheim.fh-wedel.de>
-References: <20051001050003.GD11137@plexity.net>
-	<1128152797.3546.15.camel@sauron.oktetlabs.ru>
-	<20051001080027.GM25424@plexity.net> <433E432B.7010406@yandex.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Received: from blood.actrix.co.nz ([203.96.16.163])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EM9eG-000267-FY
+	for linux-mtd@lists.infradead.org; Sun, 02 Oct 2005 15:37:41 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org,
+	=?utf-8?q?=EC=B5=9C=EC=98=81=EC=9D=BC?= <yichoi@moimstone.com>
+Date: Mon, 3 Oct 2005 07:43:04 +1300
+References: <000901c5c356$101c96c0$b400a8c0@LocalHost>
+	<1127822225.5380.4.camel@sauron.oktetlabs.ru>
+In-Reply-To: <1127822225.5380.4.camel@sauron.oktetlabs.ru>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <433E432B.7010406@yandex.ru>
-Cc: Linus Torvalds <torvalds@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [MTD] kmalloc + memzero -> kzalloc conversion
+Message-Id: <200510030743.04998.manningc2@actrix.gen.nz>
+Cc: 
+Subject: Re: large-nand flash mount ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 1 October 2005 12:04:59 +0400, Artem B. Bityutskiy wrote:
-> Deepak Saxena wrote:
-> >I see it more as an API usage cleanup then a "fix" of any sort. 
-> >
-> Well, actually it may be helpful in only future, for example, if it is 
-> known that the allocated memory is zero-filled already, memzero() may be 
-> avoided at all.
+On Tuesday 27 September 2005 23:57, Artem B. Bityutskiy wrote:
+> On Tue, 2005-09-27 at 20:24 +0900, =EC=B5=9C=EC=98=81=EC=9D=BC wrote:
+> > Hi
+> > I am developing system with cpu au1550 and 2G nand flash?
+> > I want root filesystem by 2G nand flash.
+> > for test, I can mount nand flash and read, write to flash.
+> > so, I make jffs2 filesystem and write to flash.
+> > then, I make to boot with boot argument(root=3D/dev/mtdblock0), but fail
+> > the message follows
+> > ----------------------------
+> > mtdblock_open
+> > ok
+> > mtdblock: read on "Db1550 NAND FS 0" at 0x400, size 0x200
+> > nand_read_ecc: from =3D 0x00000400, len =3D 512
+> > mtdblock: read on "Db1550 NAND FS 0" at 0x600, size 0x200
+> > nand_read_ecc: from =3D 0x00000600, len =3D 512
+> > mtdblock_release
+> > nand_sync: called
+> > ok
+>
+> Even if you have healed your problems with MTD, JFFS2 is anyway unusable
+> on large flashes. Hmm, MTD archive seems broken, so I just insert here
+> my recent reply to similar questions.
 
-Even today, kzalloc() takes less code than kmalloc() + memset().
-Shrinks your binary size by a tiny amount.
+You might want to try looking at YAFFS.
 
-Jörn
+YAFFS has been used successfully with quite large NAND arrays (at least as=
+=20
+large as 1.5G bytes). 2GB should be very achievable.
 
--- 
-Mundie uses a textbook tactic of manipulation: start with some
-reasonable talk, and lead the audience to an unreasonable conclusion.
--- Bruce Perens
+=2D- Charles
