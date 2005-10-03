@@ -1,22 +1,21 @@
-Received: from blood.actrix.co.nz ([203.96.16.163])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EM9eG-000267-FY
-	for linux-mtd@lists.infradead.org; Sun, 02 Oct 2005 15:37:41 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org,
-	=?utf-8?q?=EC=B5=9C=EC=98=81=EC=9D=BC?= <yichoi@moimstone.com>
-Date: Mon, 3 Oct 2005 07:43:04 +1300
-References: <000901c5c356$101c96c0$b400a8c0@LocalHost>
-	<1127822225.5380.4.camel@sauron.oktetlabs.ru>
-In-Reply-To: <1127822225.5380.4.camel@sauron.oktetlabs.ru>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EMNsU-0003fg-7S
+	for linux-mtd@lists.infradead.org; Mon, 03 Oct 2005 06:49:15 -0400
+Date: Mon, 3 Oct 2005 12:49:02 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Daniel Ann <ktdann@gmail.com>
+Message-ID: <20051003104902.GA4639@wohnheim.fh-wedel.de>
+References: <9b7ca6570509300036r47c410a4la8f8598794a17041@mail.gmail.com>
+	<20050930092409.GA19495@wohnheim.fh-wedel.de>
+	<9b7ca6570509301738q4a130642x4a87792d6879525a@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Message-Id: <200510030743.04998.manningc2@actrix.gen.nz>
-Cc: 
-Subject: Re: large-nand flash mount ?
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b7ca6570509301738q4a130642x4a87792d6879525a@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Problem partitioning discontinuous physical start address
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 27 September 2005 23:57, Artem B. Bityutskiy wrote:
-> On Tue, 2005-09-27 at 20:24 +0900, =EC=B5=9C=EC=98=81=EC=9D=BC wrote:
-> > Hi
-> > I am developing system with cpu au1550 and 2G nand flash?
-> > I want root filesystem by 2G nand flash.
-> > for test, I can mount nand flash and read, write to flash.
-> > so, I make jffs2 filesystem and write to flash.
-> > then, I make to boot with boot argument(root=3D/dev/mtdblock0), but fail
-> > the message follows
-> > ----------------------------
-> > mtdblock_open
-> > ok
-> > mtdblock: read on "Db1550 NAND FS 0" at 0x400, size 0x200
-> > nand_read_ecc: from =3D 0x00000400, len =3D 512
-> > mtdblock: read on "Db1550 NAND FS 0" at 0x600, size 0x200
-> > nand_read_ecc: from =3D 0x00000600, len =3D 512
-> > mtdblock_release
-> > nand_sync: called
-> > ok
->
-> Even if you have healed your problems with MTD, JFFS2 is anyway unusable
-> on large flashes. Hmm, MTD archive seems broken, so I just insert here
-> my recent reply to similar questions.
+On Sat, 1 October 2005 09:38:26 +0900, Daniel Ann wrote:
+> 
+> I was thinking concat must be doing something along this line but I
+> have tried it as I couldnt get any doc's on how to use it with command
+> line partition table parsing.
+> Or even setting it up with using make menuconfig.
+> 
+> Any hints on this please ?
 
-You might want to try looking at YAFFS.
+Sorry, I never actually used it myself.  Try reading the source or
+hunting down the author.
 
-YAFFS has been used successfully with quite large NAND arrays (at least as=
-=20
-large as 1.5G bytes). 2GB should be very achievable.
+Jörn
 
-=2D- Charles
+-- 
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
