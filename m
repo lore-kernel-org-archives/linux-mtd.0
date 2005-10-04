@@ -1,21 +1,17 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMvgl-0007y6-MU
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 18:55:31 -0400
-Received: from [202.154.143.52] (unknown [202.154.143.52])
-	by desire.actrix.co.nz (Postfix) with ESMTP id 770EC156FC
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 11:54:58 +1300 (NZDT)
-From: Charles Manning <manningc2@actrix.gen.nz>
+	id 1EMvnW-0008AD-IN
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 19:02:17 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
 To: linux-mtd@lists.infradead.org
-Date: Wed, 5 Oct 2005 11:00:53 +1300
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
+Date: Wed, 05 Oct 2005 01:03:21 +0200
+Message-Id: <1128467002.13057.124.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510051100.53425.manningc2@actrix.gen.nz>
-Subject: Simulating 2k page devices with nandsim
+Subject: [Administrativa] Ignoring of moderation messages
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks
 
-I have used nandsim to do yaffs testing using nandsim to simulate 512-byte 
-page devices. No problems. Basic procedure outlined in 
-http://www.aleph1.co.uk/pipermail/yaffs/2005q3/001356.html
+Please accept, that this mailing list has restrictive posting rules. 
 
-Is there a quick howto on using nandsim to simulate 2k page devices? I would 
-like to test the 2k page support using nandsim rather than hardware.
+It's not a discussable point as this is a community service provided by
+volunteers.
 
-I know there is a memory allocation limitation with nandsim that prevents 
-simulation of huge devices, but I would be happy simulating, say, a 16MB 
-device with 2k pages.
+If you want to have immidiate response without restrictions of mail
+formats please contact the sales departement of the developer you want
+to consult.
 
-Thanx
+Ignoring a "please wait for moderation" message will be handled more
+restrictive from now on. I.e. will end up in a "reject any postings from
+offender" filter rule.
 
--- CHarles
+Again, this is a community service and I'm fed up with this "Hey you
+have to fix my problem now" expectations.
+
+tglx
