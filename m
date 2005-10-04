@@ -1,22 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from mail.glaze.se ([212.209.188.162] helo=rocket.glaze.se)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMpq7-0003Sn-Kw
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 12:40:35 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Vitaly Bordug <vbordug@ru.mvista.com>
-In-Reply-To: <43426D4F.2000400@ru.mvista.com>
-References: <434130A3.2090908@ru.mvista.com>
-	<1128381010.13057.16.camel@tglx.tec.linutronix.de>
-	<43426D4F.2000400@ru.mvista.com>
-Content-Type: text/plain
-Date: Tue, 04 Oct 2005 18:41:42 +0200
-Message-Id: <1128444102.13057.46.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1EMu1L-0006Me-Jo
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 17:08:41 -0400
+Received: from IBMJP (unknown [10.42.1.6])
+	by rocket.glaze.se (Postfix) with ESMTP id 1DE0737645D
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  4 Oct 2005 22:47:26 +0200 (CEST)
+From: "Jan Pedersen" <jan.pedersen@glaze.dk>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 4 Oct 2005 22:47:29 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD NAND: Fix ECC errors in au1550nd.c
-Reply-To: tglx@linutronix.de
+Message-Id: <20051004204726.1DE0737645D@rocket.glaze.se>
+Subject: [patch] cfi: prevent kernel panic with cfi flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-10-04 at 15:53 +0400, Vitaly Bordug wrote:
-> > 
-> Actually, yes, a sort of. The issue was in some bytes lost during read 
-> cycles (ECC errors reported) when PCMCIA (board AMD Alchemy 1550) is 
-> active. This does not take place when 4 CS drives  happen - as shown on 
-> the timing diagram - e.g.
-> cs: \__/\__/\__/\__/\_<CS low>______ [works fine]
->                      ^
-> 	    asserted by SoC controller
-> unchanged code:
-> cs:\______________/\_[PCMCIA driver steals bytes ]...
-> 	           ^
-> 	    asserted by SoC controller
+When using the cfi (common flash interface) driver, every word written to
+the flash chips is followed by a operation complete poll. This poll is
+intended to have a timeout of 1 ms. However this timeout is calculated by
+HZ/1000, which happends to be 0 because HZ < 1000. The result of this is
+that there will be just one poll for operation complete. If this single poll
+fails, the kernel panics. This patch increases this timeout to HZ (1
+second). This is far more than needed, but is preferred over a panic. This
+fix is well tested and completely avoids the panic.
 
-Right. Thats a known problem with those FLASH types. You have to hold CS
-low until the busy pin goes high.
-
-Hmm, you have to protect against interrupts during this time I guess ?
-If not you can use the existing controller lock implementation to
-protect against concurrent access.
-
-tglx
+Signed-off-by: Jan Pedersen <jp@jp-embedded.com>
+---
+diff -Naur linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c
+linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c
+--- linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c	2004-11-17
+06:54:21.000000000 -0500
++++ linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c	2005-08-22
+12:14:17.000000000 -0400
+@@ -510,7 +510,7 @@
+ 	   or tells us why it failed. */        
+ 	dq6 = CMD(1<<6);
+ 	dq5 = CMD(1<<5);
+-	timeo = jiffies + (HZ/1000); /* setting timeout to 1ms for now */
++	timeo = jiffies + (HZ); /* setting timeout to 1s for now */
+ 		
+ 	oldstatus = cfi_read(map, adr);
+ 	status = cfi_read(map, adr);
