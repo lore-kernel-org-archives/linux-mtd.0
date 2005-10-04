@@ -1,18 +1,22 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMozm-0002bx-DC
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 11:46:33 -0400
-Message-ID: <4342A3CD.1080006@mw-itcon.de>
-Date: Tue, 04 Oct 2005 17:46:21 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
-MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <43429D54.5010103@mw-itcon.de> <4342A0FC.3060602@yandex.ru>
-In-Reply-To: <4342A0FC.3060602@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EMpq7-0003Sn-Kw
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 12:40:35 -0400
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Vitaly Bordug <vbordug@ru.mvista.com>
+In-Reply-To: <43426D4F.2000400@ru.mvista.com>
+References: <434130A3.2090908@ru.mvista.com>
+	<1128381010.13057.16.camel@tglx.tec.linutronix.de>
+	<43426D4F.2000400@ru.mvista.com>
+Content-Type: text/plain
+Date: Tue, 04 Oct 2005 18:41:42 +0200
+Message-Id: <1128444102.13057.46.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: size of ebs enabled image much bigger than original
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD NAND: Fix ECC errors in au1550nd.c
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,24 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
-> Peter Menzebach wrote:
-> 
->> The image before sumtool has a size of about 3.7Mb. After sumtool it 
->> has 5,9 Mb
->> Is this "normal"?
-> 
-> It is perfectly normal if the image becomes larger, but 60% looks too 
-> much...
-> May be this is the result of small eraseblocks?
-> 
+On Tue, 2005-10-04 at 15:53 +0400, Vitaly Bordug wrote:
+> > 
+> Actually, yes, a sort of. The issue was in some bytes lost during read 
+> cycles (ECC errors reported) when PCMCIA (board AMD Alchemy 1550) is 
+> active. This does not take place when 4 CS drives  happen - as shown on 
+> the timing diagram - e.g.
+> cs: \__/\__/\__/\__/\_<CS low>______ [works fine]
+>                      ^
+> 	    asserted by SoC controller
+> unchanged code:
+> cs:\______________/\_[PCMCIA driver steals bytes ]...
+> 	           ^
+> 	    asserted by SoC controller
 
-You are right. With 64K erasesize it gives about 3,7Mb -> 4.0Mb
+Right. Thats a known problem with those FLASH types. You have to hold CS
+low until the busy pin goes high.
 
-Thanks
-Peter
+Hmm, you have to protect against interrupts during this time I guess ?
+If not you can use the existing controller lock implementation to
+protect against concurrent access.
 
--- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+tglx
