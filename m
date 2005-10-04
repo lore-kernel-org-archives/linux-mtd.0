@@ -1,19 +1,29 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMlMn-0007Fj-Ix
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 07:54:19 -0400
-Message-ID: <43426D4F.2000400@ru.mvista.com>
-Date: Tue, 04 Oct 2005 15:53:51 +0400
-From: Vitaly Bordug <vbordug@ru.mvista.com>
-MIME-Version: 1.0
-To: Thomas Gleixner <tglx@linutronix.de>
-References: <434130A3.2090908@ru.mvista.com>
-	<1128381010.13057.16.camel@tglx.tec.linutronix.de>
-In-Reply-To: <1128381010.13057.16.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EMmRz-00069p-8y
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 14:03:20 +0100
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e5.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j94D2vtd004968
+	for <linux-mtd@lists.infradead.org>; Tue, 4 Oct 2005 09:02:57 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j94D2uhH058796
+	for <linux-mtd@lists.infradead.org>; Tue, 4 Oct 2005 09:02:56 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j94D2uM8011276
+	for <linux-mtd@lists.infradead.org>; Tue, 4 Oct 2005 09:02:56 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+In-Reply-To: <434264A0.5000708@yandex.ru>
+References: <1128125846.6926.120.camel@localhost.localdomain>
+	<434264A0.5000708@yandex.ru>
+Content-Type: text/plain
+Date: Tue, 04 Oct 2005 08:02:43 -0500
+Message-Id: <1128430963.20490.3.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD NAND: Fix ECC errors in au1550nd.c
+Subject: Re: [PATCH] jffs2, symlink, and 2.6.13
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,77 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas, thanks for reviewing this.
-I asked the intern who did this work to clarify some points more preciously.
+On Tue, 2005-10-04 at 15:16 +0400, Artem B. Bityutskiy wrote:
+> Peter Grayson wrote:
+> > For those on earlier kernel versions, this change will yield compiler
+> > warnings. I am not sure what the policy is for maintaining compatibility
+> > with older kernel versions, so I did not include any changes to
+> > compatmac.h. Do we want to reproduce the struct inode_operations
+> > declaration in compatmac.h just so that latest mtd does not yield
+> > compiler warnings on older kernels?
+> 
+> The patch looks OK. Not sure how to support compatimility, I would just 
+> let gcc print warnings in older kernels. And it looks like it is 
+> harmless. Anyone, comments?
 
-My comments and understanding of the situation is below.
-Thomas Gleixner wrote:
-> On Mon, 2005-10-03 at 17:22 +0400, Vitaly Bordug wrote:
-> 
->>David,
->>This patch fixes ECC errors by automatic CS assertion in the driver.
->>We still use manual drive of CS only during READ CYCLE and READ OOB
->>CYCLE, while overriding CS right after third address byte latch and
->>finishing override after first data byte read.
->>
->>  From the Nand read page cycle timings (Toshiba Datasheet) 
-> 
-> 
-> Come on. I know those data sheets quite well and there is more than one.
-> Which chip type (Manufacturer part Nr) are you using ? 
-> 
-TC58DVM92A1FT00
-> 
->>- we have to
->>keep CS active from third address byte latch to the end of the cycle
-> 
-> 
-> Thats a known issue and the controller has worked with those chips
-> before.
-> 
-Actually, yes, a sort of. The issue was in some bytes lost during read 
-cycles (ECC errors reported) when PCMCIA (board AMD Alchemy 1550) is 
-active. This does not take place when 4 CS drives  happen - as shown on 
-the timing diagram - e.g.
-cs: \__/\__/\__/\__/\_<CS low>______ [works fine]
-                     ^
-	    asserted by SoC controller
-unchanged code:
-cs:\______________/\_[PCMCIA driver steals bytes ]...
-	           ^
-	    asserted by SoC controller
-> 
->>It seems that static controller drives CS to low after fourth address
->>byte latch - this interrupts the read cycle.
-> 
-> 
-> It seems ? 
-> 
-> "drives CS to low ?" CS is active low.
-> 
+I'd rather it be added to compatmac.h.  We have things in there that
+support older 2.6 kernels already, so adding another wouldn't hurt.
+There's even a section for kernels older than 2.6.13 already.
 
-> 
->>We must manually keep CS in active state 
-> 
-> 
-> So whats active state: low or high or high-Z ?
-> 
-The developer of this code will provide detailed description of the 
-situation.
-> 
->>from third address byte latch
->>to second data byte read, not during all read page cycles. And when we
->>drive CS manualy - we have to disable interrupts to prevent simultaneous
->>CS-s activation (NAND, PCMCIA,NOR CS).
-> 
-> 
-> Oh well. Disable interrupts with cli(). 
-> 
-> Have your Makefiles a builtin -Wignore ?
->
-Heh, how could I miss this crap... Really funny
-
-
--- 
-Sincerely,
-Vitaly
+josh
