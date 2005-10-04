@@ -1,15 +1,18 @@
-Received: from www.mw-itcon.de ([213.146.115.73])
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMoZ6-0001uB-Dn
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 11:18:53 -0400
-Message-ID: <43429D54.5010103@mw-itcon.de>
-Date: Tue, 04 Oct 2005 17:18:44 +0200
-From: Peter Menzebach <pm-mtd@mw-itcon.de>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EMooo-0002Ik-Ut
+	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 11:35:15 -0400
+Message-ID: <4342A0FC.3060602@yandex.ru>
+Date: Tue, 04 Oct 2005 19:34:20 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Peter Menzebach <pm-mtd@mw-itcon.de>
+References: <43429D54.5010103@mw-itcon.de>
+In-Reply-To: <43429D54.5010103@mw-itcon.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: size of ebs enabled image much bigger than original
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: size of ebs enabled image much bigger than original
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I wanted to test EBS for faster boot of my embedded system. I created a 
-new rootfs with mkfs.jffs2 (mkfs.jffs2+sumtool from cvs today)
-
-The image before sumtool has a size of about 3.7Mb. After sumtool it has 
-5,9 Mb
-
-Submitted commands:
-mkfs.jffs2 -e 8448 -n -l -r act -o image1
-sumtool -e 8448 -n -l -i image1 -o image2
-
-Is this "normal"?
-
-Best regards
-Peter
-
+Peter Menzebach wrote:
+> The image before sumtool has a size of about 3.7Mb. After sumtool it has 
+> 5,9 Mb
+> Is this "normal"?
+It is perfectly normal if the image becomes larger, but 60% looks too 
+much...
+May be this is the result of small eraseblocks?
 
 -- 
-Peter Menzebach
-Menzebach und Wolff IT-Consulting GbR
-Phone +49 751 355 387 1
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
