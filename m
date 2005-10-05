@@ -1,32 +1,21 @@
-Received: from s131.mittwaldmedien.de ([62.216.178.31])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ENAoa-0002k0-4F
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 11:04:27 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id DA9C55E4129
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 17:04:13 +0200 (CEST)
-Received: from lin01.mn-solutions.de (p54B28E33.dip0.t-ipconnect.de
-	[84.178.142.51])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id EB39F5E4115
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 17:04:12 +0200 (CEST)
-Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-solutions.de (Postfix) with ESMTP id 4779E1E014A
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 17:03:41 +0200 (CEST)
-From: Holger Schurig <hs4233@mail.mn-solutions.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 5 Oct 2005 17:01:54 +0200
-References: <200510051437.11856.hs4233@mail.mn-solutions.de>
-In-Reply-To: <200510051437.11856.hs4233@mail.mn-solutions.de>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ENByf-0003gL-8A
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 12:18:59 -0400
+Message-ID: <4343FCE3.8090307@ru.mvista.com>
+Date: Wed, 05 Oct 2005 20:18:43 +0400
+From: Vitaly Bordug <vbordug@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: tglx@linutronix.de
+References: <434130A3.2090908@ru.mvista.com>	
+	<1128381010.13057.16.camel@tglx.tec.linutronix.de>	
+	<43426D4F.2000400@ru.mvista.com>
+	<1128444102.13057.46.camel@tglx.tec.linutronix.de>
+In-Reply-To: <1128444102.13057.46.camel@tglx.tec.linutronix.de>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510051701.54776.hs4233@mail.mn-solutions.de>
-Subject: Re: Bug: Flash writing & suspending
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD NAND: Fix ECC errors in au1550nd.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,23 +25,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I use Kernel 2.6.13-rc2, but with the MTD (drivers/mtd/, include/mtd,
-> include/linux/mtd) from today's CVS. JFFS2 is still the old one.
+Thomas Gleixner wrote:
+> On Tue, 2005-10-04 at 15:53 +0400, Vitaly Bordug wrote:
+> 
+>>Actually, yes, a sort of. The issue was in some bytes lost during read 
+>>cycles (ECC errors reported) when PCMCIA (board AMD Alchemy 1550) is 
+>>active. This does not take place when 4 CS drives  happen - as shown on 
+>>the timing diagram - e.g.
+>>cs: \__/\__/\__/\__/\_<CS low>______ [works fine]
+>>                     ^
+>>	    asserted by SoC controller
+>>unchanged code:
+>>cs:\______________/\_[PCMCIA driver steals bytes ]...
+>>	           ^
+>>	    asserted by SoC controller
+> 
+> 
+> Right. Thats a known problem with those FLASH types. You have to hold CS
+> low until the busy pin goes high.
+> 
+> Hmm, you have to protect against interrupts during this time I guess ?
+> If not you can use the existing controller lock implementation to
+> protect against concurrent access.
+> 
+Yes. That's because making a global locking mechanism across 3 different 
+divers looks more ugly than just local_irq_save() for a short period in 
+one callback.
 
-Oh, BTW, the same error happens also on:
+Is this acceptable or we need to do it other way?
+> tglx
+> 
+> 
+> 
+> 
+> 
+> 
 
-a) plain 2.6.13-rc2
-b) 2.6.13-rc2 with both MTD and JFFS2 from CVS (using the ./patchkernel.sh)
 
-The reason I just installed (manually) the MTD stuff only has to do with a 
-suspicion about the problem source.
-
-I suspect that maybe MTD is writing data into the StrataFlash. While this 
-erasing & writings happens, it probably polls the built-in state-machine 
-status of the chips. Probably during such an operation the suspend-to-memory 
-takes place. The hardware switches off the power to the StrataFlash, but MTD 
-doesn't know about this.
-
-At resume time, the StataFlash get's power and resets to some initial state. 
-Linux thaws the processes, among them the JFFS2/MTD thread. Which continues 
-to poll the StrataFlash, but because it has been resetted in the meantime ...
+-- 
+Sincerely,
+Vitaly
