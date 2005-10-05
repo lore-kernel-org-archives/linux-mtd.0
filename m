@@ -1,27 +1,26 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EN204-0004Mc-C5
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 01:39:45 -0400
-Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 0488BBB5E
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 07:39:28 +0200 (CEST)
-Received: from n1.cetrtapot.si ([127.0.0.1])
-	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 20723-08 for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 07:39:19 +0200 (CEST)
-Received: from [192.1.1.75] (unknown [192.168.66.2])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 75F84BB5D
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Oct 2005 07:39:19 +0200 (CEST)
-Message-ID: <4343670A.1040003@cetrtapot.si>
-Date: Wed, 05 Oct 2005 07:39:22 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Removable serial flash devices
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EN7ej-00087x-Q9
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 07:42:05 -0400
+Received: from dslc-082-082-156-022.pools.arcor-ip.net ([82.82.156.22]:49112
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1EN7gQ-00025T-2Q
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2005 13:43:38 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1EN7fh-00087F-00
+	for <linux-mtd@lists.infradead.org>; Wed, 05 Oct 2005 13:42:53 +0200
+Date: Wed, 5 Oct 2005 13:42:53 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051005114253.GA31190@zappa>
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A01376415@NNSMSX401>
+	<Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
+	<6934efce05092915519ffe76c@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6934efce05092915519ffe76c@mail.gmail.com>
+Subject: Re: XIP fails on kernels 2.6.12 and higher
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,22 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+* Jared Hulbert <jaredeh@gmail.com> [Thu, Sep 29, 2005 at 03:51:50PM -0700]:
 
-We have SPI dataflash (www.datakey.com) connected to CPU GPIO pins. 
-Device can hold up to 32Mbit serial flash and can be added/removed at 
-any time. How is MTD coping with 'hotpluging' of MTD devices? Are there 
-any available designs or device drivers that implement similar? Can we 
-add/remove (mtd register/unregister) device as it is detected or are 
-there any other limitations to this procedure?
+> Alexey.  My OSK got destroyed.  Can somebody confirm xipImage of
+> 2.6.12 fails to boot where 2.6.11 runs on a different hardware
+> platform?
 
-Right now we are presenting datakey device as character device and use 
-stream I/O operations. In this case we can quickly detect and add/remove 
-device from the system. In case of MTD we are worried about mtdxx dev 
-entry that could remain registered if datakey is removed during data access.
+http://lists.infradead.org/pipermail/linux-mtd/2005-September/013536.html
 
-With the stunning EBS mount performance we would like to put jffs2 on 
-datakey device in contrast to raw flash access we are using now.
+Is about the same. I can't get it running on 2.6.13.
+I dont know anymore how I got 2.6.12 working or digged around the 
+problems but IIRC there where several regarding the XIP stuff.
 
-Regards,
-hinko
+Konsti
