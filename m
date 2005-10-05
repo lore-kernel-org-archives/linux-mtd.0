@@ -1,17 +1,27 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EMvnW-0008AD-IN
-	for linux-mtd@lists.infradead.org; Tue, 04 Oct 2005 19:02:17 -0400
-From: Thomas Gleixner <tglx@linutronix.de>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Wed, 05 Oct 2005 01:03:21 +0200
-Message-Id: <1128467002.13057.124.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1EN204-0004Mc-C5
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 01:39:45 -0400
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 0488BBB5E
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Oct 2005 07:39:28 +0200 (CEST)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 20723-08 for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Oct 2005 07:39:19 +0200 (CEST)
+Received: from [192.1.1.75] (unknown [192.168.66.2])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 75F84BB5D
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Oct 2005 07:39:19 +0200 (CEST)
+Message-ID: <4343670A.1040003@cetrtapot.si>
+Date: Wed, 05 Oct 2005 07:39:22 +0200
+From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+MIME-Version: 1.0
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: [Administrativa] Ignoring of moderation messages
-Reply-To: tglx@linutronix.de
+Subject: Removable serial flash devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +31,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-Please accept, that this mailing list has restrictive posting rules. 
+We have SPI dataflash (www.datakey.com) connected to CPU GPIO pins. 
+Device can hold up to 32Mbit serial flash and can be added/removed at 
+any time. How is MTD coping with 'hotpluging' of MTD devices? Are there 
+any available designs or device drivers that implement similar? Can we 
+add/remove (mtd register/unregister) device as it is detected or are 
+there any other limitations to this procedure?
 
-It's not a discussable point as this is a community service provided by
-volunteers.
+Right now we are presenting datakey device as character device and use 
+stream I/O operations. In this case we can quickly detect and add/remove 
+device from the system. In case of MTD we are worried about mtdxx dev 
+entry that could remain registered if datakey is removed during data access.
 
-If you want to have immidiate response without restrictions of mail
-formats please contact the sales departement of the developer you want
-to consult.
+With the stunning EBS mount performance we would like to put jffs2 on 
+datakey device in contrast to raw flash access we are using now.
 
-Ignoring a "please wait for moderation" message will be handled more
-restrictive from now on. I.e. will end up in a "reject any postings from
-offender" filter rule.
-
-Again, this is a community service and I'm fed up with this "Hey you
-have to fix my problem now" expectations.
-
-tglx
+Regards,
+hinko
