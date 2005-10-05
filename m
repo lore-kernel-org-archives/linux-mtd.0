@@ -1,17 +1,16 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by pentafluge.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EN9MA-0003WK-Kw
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 14:30:51 +0100
-Date: Wed, 5 Oct 2005 15:28:35 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ENAD0-0002Bf-MS
+	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 10:25:45 -0400
+Message-ID: <4343E24E.8020507@arcom.com>
+Date: Wed, 05 Oct 2005 15:25:18 +0100
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
 To: Jan Pedersen <jan.pedersen@glaze.dk>
-Message-ID: <20051005132835.GC1290@wohnheim.fh-wedel.de>
 References: <20051004204918.E02AE37646A@rocket.glaze.se>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
 In-Reply-To: <20051004204918.E02AE37646A@rocket.glaze.se>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: [patch] cfi: remove warning message on expected behaivor
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,8 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 4 October 2005 22:49:21 +0200, Jan Pedersen wrote:
-> 
+Jan Pedersen wrote:
 > When an erase operation is in progress, the DQ5 (data bit 5 / exceeded
 > timing limit) pin on the flash chips may raise just before operation
 > complete is detected. This is expected behaivor because when the erase is
@@ -32,38 +30,16 @@ On Tue, 4 October 2005 22:49:21 +0200, Jan Pedersen wrote:
 > therefore might be read as '1' just before operation complete is detected.
 > This fix is well tested.
 
-Do you have a testcase that fails with old code and succeeds with new
-code?
+If you look at the current cfi_cmdset_0002.c (in 2.6) you'll notice that
+all it does it check for toggling bits.  The software timeout handles
+failed erases and writes rather than checking DQ5.
 
-> Signed-off-by: Jan Pedersen <jp@jp-embedded.com>
-> ---
-> diff -Naur linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c
-> linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c
-> --- linux-2.4.31.org/drivers/mtd/chips/cfi_cmdset_0002.c	2004-11-17
-> 06:54:21.000000000 -0500
-> +++ linux-2.4.31/drivers/mtd/chips/cfi_cmdset_0002.c	2005-08-22
-> 12:14:17.000000000 -0400
-> @@ -950,12 +950,8 @@
->  		    oldstatus   = cfi_read( map, adr );
->  		    status      = cfi_read( map, adr );
->  		    
-> -		    if( ( oldstatus & 0x00FF ) == ( status & 0x00FF ) )
-> +		    if( ( oldstatus & 0x00FF ) != ( status & 0x00FF ) )
->  		    {
-> -                printk( "Warning: DQ5 raised while erase operation was in
-> progress, but erase completed OK\n" ); 		    
-> -		    } 			
-> -			else
-> -            {
->  			    /* DQ5 is active so we can do a reset and stop
-> the erase */
->  				cfi_write(map, CMD(0xF0), chip->start);
->                  printk( KERN_WARNING "Internal flash device timeout occured
-> or write operation was performed while flash was erasing\n" );
+Trying to handle the various error bits was deemed too tricky/complex to
+get right for interleaved chips.
 
-Jörn
-
+David Vrabel
 -- 
-The grand essentials of happiness are: something to do, something to
-love, and something to hope for.
--- Allan K. Chalmers
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
