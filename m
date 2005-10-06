@@ -1,19 +1,25 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ENEr2-0005j2-Bm
-	for linux-mtd@lists.infradead.org; Wed, 05 Oct 2005 15:23:13 -0400
-Message-ID: <43442813.8050700@ru.mvista.com>
-Date: Wed, 05 Oct 2005 23:22:59 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: Vitaly Bordug <vbordug@ru.mvista.com>
-References: <434130A3.2090908@ru.mvista.com>		<1128381010.13057.16.camel@tglx.tec.linutronix.de>		<43426D4F.2000400@ru.mvista.com>	<1128444102.13057.46.camel@tglx.tec.linutronix.de>
-	<4343FCE3.8090307@ru.mvista.com>
-In-Reply-To: <4343FCE3.8090307@ru.mvista.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD NAND: Fix ECC errors in au1550nd.c
+Received: from [81.3.11.18] (helo=mail.ku-gbr.de)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1ENVpX-0006oe-7s
+	for linux-mtd@lists.infradead.org; Thu, 06 Oct 2005 09:30:55 -0400
+Received: from dslc-082-082-157-240.pools.arcor-ip.net ([82.82.157.240]:34712
+	helo=zappa) by mail.ku-gbr.de with esmtpa (Exim 4.50 #1 (Debian))
+	id 1ENVrB-0008Kg-7Y
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Oct 2005 15:32:21 +0200
+Received: from konsti by zappa with local (Exim 3.36 #1 (Debian))
+	id 1ENVqE-0006ti-00
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Oct 2005 15:31:22 +0200
+Date: Thu, 6 Oct 2005 15:31:22 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051006133122.GA26508@zappa>
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A01376415@NNSMSX401>
+	<20051005114511.GB31190@zappa>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20051005114511.GB31190@zappa>
+Subject: Re: XIP fails on kernels  2.6.12 and higher
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +29,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vitaly Bordug wrote:
+* Konstantin Kletschke <lists@ku-gbr.de> [Wed, Oct 05, 2005 at 01:45:11PM +0200]:
 
-> Thomas Gleixner wrote:
->
->> On Tue, 2005-10-04 at 15:53 +0400, Vitaly Bordug wrote:
->>
->>> Actually, yes, a sort of. The issue was in some bytes lost during 
->>> read cycles (ECC errors reported) when PCMCIA (board AMD Alchemy 
->>> 1550) is active. This does not take place when 4 CS drives  happen - 
->>> as shown on the timing diagram - e.g.
->>> cs: \__/\__/\__/\__/\_<CS low>______ [works fine]
->>>                     ^
->>>         asserted by SoC controller
->>> unchanged code:
->>> cs:\______________/\_[PCMCIA driver steals bytes ]...
->>>                ^
->>>         asserted by SoC controller
->>
->>
->>
->> Right. Thats a known problem with those FLASH types. You have to hold CS
->> low until the busy pin goes high.
->>
->> Hmm, you have to protect against interrupts during this time I guess ?
->> If not you can use the existing controller lock implementation to
->> protect against concurrent access.
->>
-> Yes. That's because making a global locking mechanism across 3 
-> different divers looks more ugly than just local_irq_save() for a 
-> short period in one callback.
+> My 2.6.13 breaks near the same location:
 
-Enabling interrupts in callback looks quite dangerous to me. I'm also 
-afraid that real-time responsiveness of that system is not gonna be 
-satisfactory.
-So why not implement mutex-based bus_lock()/bus_unlock() routines 
-somewhere in arch/mips/somewhere and call those from wherever they are 
-needed to prevent concurrent access? It'a a question due to the fact 
-that I haven't seen evidence that you really need to disable interrupts, 
-if that's not the case, please elaborate :)
+In order to try debugging this I found out, that ther Kernel boots
+if I disable jffs2 support ... weird...
 
-Vitaly
+K
