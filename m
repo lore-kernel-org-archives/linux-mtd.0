@@ -1,16 +1,34 @@
-Received: from host46-203.pool8538.interbusiness.it ([85.38.203.46]
-	helo=dave-tech.it)
-	by canuck.infradead.org with smtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1ENpPp-0000nT-8K
-	for linux-mtd@lists.infradead.org; Fri, 07 Oct 2005 06:25:44 -0400
-Message-ID: <43464D6A.3050902@dave-tech.it>
-Date: Fri, 07 Oct 2005 12:26:50 +0200
-From: llandre <r&d2@dave-tech.it>
-MIME-Version: 1.0
+Received: from s131.mittwaldmedien.de ([62.216.178.31])
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1ENrT0-00024q-VB
+	for linux-mtd@lists.infradead.org; Fri, 07 Oct 2005 08:37:03 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id F09025E49C7
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  7 Oct 2005 14:36:45 +0200 (CEST)
+Received: from lin01.mn-solutions.de (p54B285C4.dip0.t-ipconnect.de
+	[84.178.133.196])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 0998F5E4181
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  7 Oct 2005 14:36:45 +0200 (CEST)
+Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-solutions.de (Postfix) with ESMTP id 7A7B61E014A
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  7 Oct 2005 14:36:12 +0200 (CEST)
+From: Holger Schurig <hs4233@mail.mn-solutions.de>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Date: Fri, 7 Oct 2005 14:36:09 +0200
+References: <200510051437.11856.hs4233@mail.mn-solutions.de>
+	<200510051701.54776.hs4233@mail.mn-solutions.de>
+	<4344038C.3040506@mvista.com>
+In-Reply-To: <4344038C.3040506@mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Subject: MTD crash with kernel 2.6.13
+Content-Disposition: inline
+Message-Id: <200510071436.09694.hs4233@mail.mn-solutions.de>
+Subject: Re: Bug: Flash writing & suspending
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +38,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+> In the meantime, get the struct mtd_info's ->resume routine called
+> somehow at resume time.
 
-I encountered a problem with MTD with kernel 2.6.13 on ARM architecure. 
-It crashes in __wake_up_common function when I try to erase a MTD 
-partition on StrataFlash. I've already talked with David Woodhouse over 
-#mtd channel and it really seems it is a bug in MTD code (he suggests it 
-is due to an uninitialized wait queue). I tried to patch the kernel with 
-latest MTD code but the crash still occurs. Here are available the full 
-dumps of the console (with and without DEBUG_WAITQ flag): 
-http://www.dave-tech.it/download/misc/sw/zefeer/zelk/mtd/
-
-Anybody experienced the same problem? Any suggestions about how to solve it?
+Thanks, that solved my problem.
 
 
-Thanks in advance,
-llandre
+> If that's accepted, I'll send a common PXA2xx platform driver for mtd that
+> adds the PM suspend/resume callbacks as discussed here recently.
 
-DAVE Electronics System House - R&D Department
-web:   http://www.dave-tech.it
-email: r&d2@dave-tech.it
+Do you mean something like the sa1100-flash.c file?  Can't you re-use this 
+file?
