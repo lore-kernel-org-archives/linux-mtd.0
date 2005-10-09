@@ -1,15 +1,18 @@
-Received: from bay17-f15.bay17.hotmail.com ([64.4.43.65] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EOV3Z-000718-1y
-	for linux-mtd@lists.infradead.org; Sun, 09 Oct 2005 02:53:27 -0400
-Message-ID: <BAY17-F15DEB2FFF5F102120DB7A6E8860@phx.gbl>
-From: "zhao forrest" <zhao_fusheng@hotmail.com>
-To: joern@wohnheim.fh-wedel.de, dedekind@yandex.ru
-Date: Sun, 09 Oct 2005 14:53:11 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
+	id 1EOVGn-0007IN-0E
+	for linux-mtd@lists.infradead.org; Sun, 09 Oct 2005 03:07:15 -0400
+Message-ID: <4348C169.2050907@yandex.ru>
+Date: Sun, 09 Oct 2005 11:06:17 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: zhao forrest <zhao_fusheng@hotmail.com>
+References: <BAY17-F16E854B08AE4BE53C22062E8860@phx.gbl>
+In-Reply-To: <BAY17-F16E854B08AE4BE53C22062E8860@phx.gbl>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: [PATCH]erase block header(revision 5)
+Subject: Re: [PATCH]erase block header(revision 4)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,18 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+zhao forrest wrote:
+> It's true that "c->cleanmarker_size was 0" for NAND flash.
+> But besides  NAND flash, "c->cleanmarker_size was 0" is also true
+> for dataflash. That means that cleanmarker was not needed for
+> dataflash for some reason that I don't know :)
 
-Being compared with version 4, the main changes are:
-1 remove data_crc field from struct jffs2_raw_ebh
-2 change the macro names for EBH in flags
-3 rollback to stack allocation of ebh
-4 encapsulate the complidated condition judgement into
-small functions. has_expected_free_size() and 
-need_mark_first_node_obsolete().
+DataFlash is has a minimum IO unit (DataFlash block, 528/1056 AFAIR),
+and has no OOB. So the cleanmarker would consume the whole DataFlash
+block which considered wasteful I suppose.
 
-The revised patch is at:
-http://www.infradead.org/~forrest/eraseblock_header_r5.patch
-
-Thanks,
-Forrest
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
