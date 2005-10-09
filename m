@@ -1,16 +1,15 @@
-Received: from bay17-f16.bay17.hotmail.com ([64.4.43.66] helo=hotmail.com)
+Received: from bay17-f15.bay17.hotmail.com ([64.4.43.65] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EOUMk-0006Vk-7W
-	for linux-mtd@lists.infradead.org; Sun, 09 Oct 2005 02:09:09 -0400
-Message-ID: <BAY17-F16E854B08AE4BE53C22062E8860@phx.gbl>
-In-Reply-To: <20051003142851.GE4639@wohnheim.fh-wedel.de>
+	id 1EOV3Z-000718-1y
+	for linux-mtd@lists.infradead.org; Sun, 09 Oct 2005 02:53:27 -0400
+Message-ID: <BAY17-F15DEB2FFF5F102120DB7A6E8860@phx.gbl>
 From: "zhao forrest" <zhao_fusheng@hotmail.com>
 To: joern@wohnheim.fh-wedel.de, dedekind@yandex.ru
-Date: Sun, 09 Oct 2005 14:08:55 +0800
+Date: Sun, 09 Oct 2005 14:53:11 +0800
 Mime-Version: 1.0
 Content-Type: text/plain; charset=gb2312; format=flowed
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]erase block header(revision 4)
+Subject: [PATCH]erase block header(revision 5)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,22 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
->
-> > >> What was (c->cleanmarker_size == 0) used for?
-> > >
-> > > For the flash that don't need a clean marker.
-> > No, that worked for NAND this way (c->cleanmarker_size was 0)
->
->So why is this part unnecessary now?  Or should it just be replaced by
->something else?
+Being compared with version 4, the main changes are:
+1 remove data_crc field from struct jffs2_raw_ebh
+2 change the macro names for EBH in flags
+3 rollback to stack allocation of ebh
+4 encapsulate the complidated condition judgement into
+small functions. has_expected_free_size() and 
+need_mark_first_node_obsolete().
 
-It's true that "c->cleanmarker_size was 0" for NAND flash.
-But besides  NAND flash, "c->cleanmarker_size was 0" is also true
-for dataflash. That means that cleanmarker was not needed for
-dataflash for some reason that I don't know :)
-Now eraseblock header is needed for any kind of flash. So I removed
-the original (c->cleanmarker_size == 0).
+The revised patch is at:
+http://www.infradead.org/~forrest/eraseblock_header_r5.patch
 
 Thanks,
 Forrest
