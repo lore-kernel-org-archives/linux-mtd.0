@@ -1,20 +1,19 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from webapps.arcom.com ([194.200.159.168])
 	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
-	id 1EOr3j-0001yE-Hd
-	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2005 02:23:06 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 10 Oct 2005 19:28:35 +1300
-References: <BAY112-F220F3A8DFFA9ECE3156A5AB3790@phx.gbl>
-In-Reply-To: <BAY112-F220F3A8DFFA9ECE3156A5AB3790@phx.gbl>
+	id 1EOsti-0003Bx-2y
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2005 04:20:51 -0400
+Message-ID: <434A2452.3090107@arcom.com>
+Date: Mon, 10 Oct 2005 09:20:34 +0100
+From: David Vrabel <dvrabel@arcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="gb2312"
+To: Vitaly Wool <vwool@ru.mvista.com>
+References: <5080.61.95.208.3.1128750482.squirrel@61.95.208.3>		<43479777.5060309@ru.mvista.com>	<1128765885.1728.82.camel@tglx.tec.linutronix.de>
+	<4347C82A.3060209@ru.mvista.com>
+In-Reply-To: <4347C82A.3060209@ru.mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510101928.35485.manningc2@actrix.gen.nz>
-Cc: wen jia <ganganwen@hotmail.com>
-Subject: Re: what should i do? using DOM and CF's problem
+Cc: nreddy@netenrich.com, tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: "Timing issue when we use SPANSION 8MB Flash"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 10 October 2005 16:53, wen jia wrote:
-> hi,everyone
->    I want to use DOM or CF in a ATM-like machine. In this machine I have to
-> record after each exchange, and there is no UPS, so sudden Power loss must
-> be accepted. I don't select DOC for its high price, not using harddisk for
-> its high heat and easy damage.
->    There is a article talking about the DOM,CF & DOC. And from this article
-> there is no safe way to use a DOM,CF even DOC under such environment. what
-> should I do?
->    here is the article:http://www.koansoftware.com/en/art.php?art=40
+Vitaly Wool wrote:
+> Thomas Gleixner wrote:
+>> Vitaly Wool wrote:
+>>>
+>>> am I right that it's a NOR flash? What's the reason for using JFFS2
+>>> on it then?
+>>
+>> Err, why shouldnt he use JFFS2 on NOR ? Is there a better suited file
+>> system which can handle NOR FLASH?
+>
+> cramfs ;)
 
-DOM and DOC or anything else won't help if you're using FAT.
+When you can write to cramfs let me know!
 
-Consider using NAND flash or SmartMedia or XD. These are raw NAND flash parts. 
-Then, use them with JFFS2 or YAFFS. That should give you a very reliable 
-solution.
+In case you didn't know, JFFS2 (and its predecessor, JFFS) was actually
+originally designed for NOR flash -- NAND support was added later.
+
+David Vrabel
+-- 
+David Vrabel, Design Engineer
+
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
