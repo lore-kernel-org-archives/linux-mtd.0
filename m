@@ -1,20 +1,14 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.52 #1 (Red Hat Linux))
-	id 1EOYXA-0000nG-VY
-	for linux-mtd@lists.infradead.org; Sun, 09 Oct 2005 06:36:18 -0400
-Date: Sun, 9 Oct 2005 12:35:55 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Message-ID: <20051009103555.GA32487@wohnheim.fh-wedel.de>
-References: <BAY17-F16E854B08AE4BE53C22062E8860@phx.gbl>
-	<4348C169.2050907@yandex.ru>
+Received: from bay112-f22.bay112.hotmail.com ([64.4.26.32] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.52 #1 (Red Hat Linux))
+	id 1EOp35-0000cJ-G9
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2005 00:14:18 -0400
+Message-ID: <BAY112-F220F3A8DFFA9ECE3156A5AB3790@phx.gbl>
+From: "wen jia" <ganganwen@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 10 Oct 2005 03:53:21 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4348C169.2050907@yandex.ru>
-Cc: zhao forrest <zhao_fusheng@hotmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]erase block header(revision 4)
+Content-Type: text/plain; charset=gb2312; format=flowed
+Subject: what should i do? using DOM and CF's problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +18,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 9 October 2005 11:06:17 +0400, Artem B. Bityutskiy wrote:
-> zhao forrest wrote:
-> > It's true that "c->cleanmarker_size was 0" for NAND flash.
-> > But besides  NAND flash, "c->cleanmarker_size was 0" is also true
-> > for dataflash. That means that cleanmarker was not needed for
-> > dataflash for some reason that I don't know :)
-> 
-> DataFlash is has a minimum IO unit (DataFlash block, 528/1056 AFAIR),
-> and has no OOB. So the cleanmarker would consume the whole DataFlash
-> block which considered wasteful I suppose.
+hi,everyone
+   I want to use DOM or CF in a ATM-like machine. In this machine I have to 
+record after each exchange, and there is no UPS, so sudden Power loss must 
+be accepted. I don't select DOC for its high price, not using harddisk for 
+its high heat and easy damage.
+   There is a article talking about the DOM,CF & DOC. And from this article 
+there is no safe way to use a DOM,CF even DOC under such environment. what 
+should I do?
+   here is the article:http://www.koansoftware.com/en/art.php?art=40
 
-Is it possible for dataflash to erase a block, power cycle before
-erase has completed, and later write to this block before erasing it
-again?
+Linux DiskOnChip, DiskOnModule, Compact Flash
 
-Cleanmarkers are the means to prevent above events from happening.  If
-dataflash has some other means, we can dump cleanmarkers.  If not,
-dumping them would be a reliability problem.
+Note that DOC (DiskOnChip) adn DOM (DiskOnModule) are completely different 
+items:
 
-J鰎n
+DiskOnModule
+A DOM device is interface compatible with a standard IDE drive, the 
+software can't tell the difference, so consequently, you don't need any 
+special boot sector or driver for it, the normal IDE driver and boot 
+techniques will do. They do have some problems which I have tried to 
+summarize in another posting in this thread.
 
--- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+DiskOnChip
+A a DOC is basically a bank-switched flash memory device that comes with a 
+tricky boot firmware preinstalled which replaces the BIOS's handlers for 
+disk access calls. So the device *appears* as an IDE drive, but only as 
+long as all accesses go through the BIOS. Since Linux does not use the 
+BIOS, using a DOC requires a special device driver (which has been 
+available for quite some time under "MTD Devices".
+
+
+There are two things to consider when running a Linux system off a DOM, DOC 
+or a CF
+
+Wear
+These devices use flash memory as their storage media. You can write to 
+each block of flash memory only so many times (typically in the range of 
+ten thousand to hundred thousand times). They do presumably implement some 
+kind ow wear levelling internally (transparently distribute write accesses 
+evenly over all available flash blocks) which improves things,
+but nevertheless, if the Linux system keeps writing data to files, such a 
+device can be worn out in a matter of weeks. To deal with this, the system 
+should avoid write accesses where possible (best is to mount it read only, 
+if not possible, at least use the "-noatime" mount option).
+
+Sudden power loss
+These devices are made to replace IDE disks, so they have apparently copied 
+some of the problems of rotating had disk as well: It appears that, if 
+power is lost while a write access was in progress, such a device can be 
+seriously damaged. This has never been officialy acknowledged nor denied by 
+any manufacturer as far as I am aware, but I have read numerous reports 
+from credible people who have seen it happen. Some said that the device was 
+damaged completely in the process, others said they were able to bring it 
+back to life by doing a low-level format. In any case, all data on the 
+device was lost.
+
+
+In summary
+
+If a sudden loss of power is an even remote possiblity for your 
+application, the only way to safely use a DOM or CF is to keep it mounted 
+read-only, and even if a power failure can be ruled out, there are still 
+good reasons to keep it like that.
+
+
+JFFS2
+Neither a DOM or CF formatted with JFFS2 won't help for several reasons:
+
+1. No read/write filesystem (neither JFFS* nor any other) can prevent a 
+situation where a power failure happens while a write access is pending.
+
+2. In order to do proper wear-levelling, JFFS needs to know the underlying 
+media's block structure. But this information is invisible at the IDE 
+interface. It may even vary across different CF makes/models.
+
+
+About StrataFlash
+
+StrataFlash is just plain flash memory and it makes sense
+to use JFFS2 on Strataflash, because such a configuration should be 
+resilient to power failures.
+
+_________________________________________________________________
+与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
