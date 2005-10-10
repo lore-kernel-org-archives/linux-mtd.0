@@ -1,15 +1,32 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Charles Manning <manningc2@actrix.gen.nz>
-In-Reply-To: <200510101928.35485.manningc2@actrix.gen.nz>
-References: <BAY112-F220F3A8DFFA9ECE3156A5AB3790@phx.gbl>
-	<200510101928.35485.manningc2@actrix.gen.nz>
+Received: from e6.ny.us.ibm.com ([32.97.182.146])
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EOzlc-0004Xt-85
+	for linux-mtd@lists.infradead.org; Mon, 10 Oct 2005 16:40:45 +0100
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e6.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j9AFclZX018522
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2005 11:38:47 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j9AFcl2t096216
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2005 11:38:47 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j9AFcbcw007567
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Oct 2005 11:38:37 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: David Vrabel <dvrabel@arcom.com>
+In-Reply-To: <434A2452.3090107@arcom.com>
+References: <5080.61.95.208.3.1128750482.squirrel@61.95.208.3>
+	<43479777.5060309@ru.mvista.com>
+	<1128765885.1728.82.camel@tglx.tec.linutronix.de>
+	<4347C82A.3060209@ru.mvista.com>  <434A2452.3090107@arcom.com>
 Content-Type: text/plain
-Date: Mon, 10 Oct 2005 10:02:00 +0100
-Message-Id: <1128934920.3830.19.camel@baythorne.infradead.org>
+Date: Mon, 10 Oct 2005 10:38:13 -0500
+Message-Id: <1128958693.32503.2.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, wen jia <ganganwen@hotmail.com>
-Subject: Re: what should i do? using DOM and CF's problem
+Cc: nreddy@netenrich.com, tglx@linutronix.de, Vitaly Wool <vwool@ru.mvista.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: "Timing issue when we use SPANSION 8MB Flash"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,18 +36,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-10-10 at 19:28 +1300, Charles Manning wrote:
-> DOM and DOC or anything else won't help if you're using FAT.
+On Mon, 2005-10-10 at 09:20 +0100, David Vrabel wrote:
+> Vitaly Wool wrote:
+> > Thomas Gleixner wrote:
+> >> Vitaly Wool wrote:
+> >>>
+> >>> am I right that it's a NOR flash? What's the reason for using JFFS2
+> >>> on it then?
+> >>
+> >> Err, why shouldnt he use JFFS2 on NOR ? Is there a better suited file
+> >> system which can handle NOR FLASH?
+> >
+> > cramfs ;)
 > 
-> Consider using NAND flash or SmartMedia or XD. These are raw NAND
-> flash parts. Then, use them with JFFS2 or YAFFS. That should give you
-> a very reliable solution.
+> When you can write to cramfs let me know!
+> 
+> In case you didn't know, JFFS2 (and its predecessor, JFFS) was actually
+> originally designed for NOR flash -- NAND support was added later.
 
-The DiskOnChip _is_ basically raw NAND parts, albeit with a helpful
-extra ASIC with ECC and a FIFO, and possibly even DMA support in the
-latest versions. You should be able to use JFFS2 on that quite happily.
+And if what you are after is a read-only compressed filesystem, I would
+recommend squashfs over cramfs.
 
-DOM and CF are different.
-
--- 
-dwmw2
+josh
