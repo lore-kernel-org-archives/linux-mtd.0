@@ -1,17 +1,12 @@
-Received: from webapps.arcom.com ([194.200.159.168])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EPLFD-0002mL-Nm
-	for linux-mtd@lists.infradead.org; Tue, 11 Oct 2005 10:36:52 -0400
-Message-ID: <434BCDF7.5080807@arcom.com>
-Date: Tue, 11 Oct 2005 15:36:39 +0100
-From: David Vrabel <dvrabel@arcom.com>
-MIME-Version: 1.0
-To: linux-mtd list <linux-mtd@lists.infradead.org>
-References: <43216C69.2060404@arcom.com>
-In-Reply-To: <43216C69.2060404@arcom.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: Re: Badness in do_exit after remounting JFFS2 read-only
+Message-Id: <200510111649.j9BGn2cC025642@mail17.syd.optusnet.com.au>
+Content-Type: text/plain
+Content-Disposition: inline
+Content-Transfer-Encoding: binary
+Mime-Version: 1.0
+From: Alexei Zakharenko <alexei1957@yahoo.com>
+Date: Wed, 12 Oct 2005 02:49:02 +1000
+Subject: Hello.
+Reply-To: alexezakharenko@walla.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +16,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Vrabel wrote:
-> 
-> With 2.6.13 remounting a JFFS2 filesystem read-only results in
-> 
-> Badness in do_exit at
-> /home/dvrabel/embed/qed/linux-2.6-working/kernel/exit.c:787
-> [<c001c8f8>] (dump_stack+0x0/0x14) from [<c002f9d0>] (do_exit+0x44/0xb0c)
-> [<c002f98c>] (do_exit+0x0/0xb0c) from [<c00304b8>] (sys_exit+0x0/0x18)
-> [<c0030498>] (complete_and_exit+0x0/0x20) from [<c00a4c30>]
-> (jffs2_garbage_collect_thread+0x124/0x12c)
-> [<c00a4b0c>] (jffs2_garbage_collect_thread+0x0/0x12c) from [<c002f98c>]
-> (do_exit+0x0/0xb0c)
->  r6 = 00000000  r5 = 00000000  r4 = 00000000
-> 
-> This is the WARN_ON(atomic_read(&tsk->fs_excl)); in do_exit().
+(Mail from Mr.Alexei Zakharenko)
 
-This no longer happens in (at least) 2.6.14-rc4.
+With due Respect,
 
-David Vrabel
--- 
-David Vrabel, Design Engineer
+Greetings to you and i hope all is perfectly well with you. I am Mr. Alexei Zakharenko, living in Russia with my family. I am a personal treasurer to Mikhail Khodorkovsky The Richest man in Russia and owner of the following Companies: Chairman CEO: YUKOSOIL (Russian Largest Oil Company) Chairman CEO: Menatep SBP Bank (A well reputable financial institution with its Branches all Over the world).
 
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+SOURCE OF FUNDS: I have a profiling amount in an excess of S$100.5M,which I seek your Partnership in accommodating for me. You will be rewarded with 4% of the total sum for your partnership. Can you be my partner on this? 
+
+
+INTRODUCTION OF MY SELF: As a personal consultant to him, authority was handed over to me in transfer of money of an American oil merchant for his last oil deal with my boss Mikhail Khodorkovsky.Already the funds have left the shores of America to a European private Bank where the final crediting is expected to be carried out. While I was on the process, My Boss got arrested for his Involvement in politics by financing the leading And opposing political parties (the Union of Right Forces, Led by Boris Nemtsov, and Yabloko, a liberal/social democratic party Led by Gregor Yavlinsky) which Poses a treat to President Vladimir Putin Second Tenure as Russian president.
+
+Please go through this website to view more:
+http://news.ft.com/cms/4bb9612a-d254-11d8-b661-00000e2511c8.html
+http://www.hoovers.com/yukos/--ID__53700--/free-co-factsheet.xhtml
+http://newsfromrussia.com/main/2003/11/13/51215.html
+   
+
+YOUR ROLE: All I need from you is to stand as the beneficiary of the Above quoted Sum and I will re-profile the funds with your Name, which will enable The European bank transfer the sum to you. 
+
+I have decided to use this Sum to relocate to American Continent and never to be connected to any Of Mikhail Khodorkovsky Conglomerates. The transaction has to be concluded soon and as confirm Your readiness to conclude the transaction with me, I Will provide you with the details,As soon as possible.
+
+Thank for your understanding.
+
+Regard.
+Alexei Zakharenko (Mr.)
+
+Note:Please contact me at my private E-mail Address: alexei1957@katamail.com 
