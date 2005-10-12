@@ -1,19 +1,18 @@
-Received: from mail.ureach.com ([63.150.151.36] helo=ureach.com)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EPeN3-0006kw-9Z
-	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2005 07:02:20 -0400
-Received: from www23.ureach.com (www23.ureach.com [172.16.2.51])
-	by ureach.com (8.12.9/8.12.9) with ESMTP id j9CB24NR022704
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Oct 2005 07:02:04 -0400
-Date: Wed, 12 Oct 2005 07:02:04 -0400
-Message-Id: <200510121102.HAA03587@www23.ureach.com>
-To: linux-mtd@lists.infradead.org
-From: yogesh shivabasappa <yogesh@ureach.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
+	id 1EPgsz-0008JE-6m
+	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2005 09:43:29 -0400
+Message-ID: <434D13D2.6030600@inf.u-szeged.hu>
+Date: Wed, 12 Oct 2005 15:46:58 +0200
+From: Zoltan Sogor <weth@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: priewasser@gmail.com
+References: <434CE6CB.9040509@gmail.com>
+In-Reply-To: <434CE6CB.9040509@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Mtd 
-Reply-To: yogesh@ureach.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: How to determine MTD/JFFS2 RAM consumption
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
+Hi!
 
-I'm new to mtd devices. I'm using intelp30 Nor flash memory chip
-in one of my project . i am accessing this as a character device
-I wanted to know how this deffers from the normal character
-devices
+Bernhard Priewasser wrote:
 
-thanks 
+> - Why are there 64 jffs2_raw_node_refs after mounting an empty JFFS2?
 
-yogesh
+If you are using NOR memory then there is a cleanmarker node in the
+begining of every jeb and the scan process allocates a raw_node_ref for it.
 
-________________________________________________
-Get your own "800" number
-Voicemail, fax, email, and a lot more
-http://www.ureach.com/reg/tag
+> - Why are there 103 jffs2_raw_node_ref after writing 10 (small) files?
+
+If you write a new file to the flash then it allocates a inode, dentry
+and an other inode. Every dentry has an inode number to which it belongs
+to, that's why jffs2 allocates the inode first and after then the
+dentry. The second inode contains the writed data (if the compreessed
+size of the data and the inode header is smaller than 4k ).
+64 + 30 = 94
+(What is about the other 9? I don't know exactly but if you send us the
+testcase then maybe we can tell more)
+
+> - What about jffs2_node_frag and jffs2_full_dnode?
+
+Jffs2 builds up the full inode data by fragments (as on flash) and
+builds a red-black tree (using the version number as key).
+jffs2_node_frag stores the size of the fragment and the offset of the
+fragment. Offset is the distance from the begining of the file.
+jffs2_full_dnode is an extension of raw_node_ref.  Write_dnode returns a
+full_dnode pointer, it contains the offset and the size of the written
+data and a pointer to a raw node. From this information jffs2 can build
+up the new fragment and add it to the fragment tree.
+
+Zoltan
