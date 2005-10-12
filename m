@@ -1,26 +1,19 @@
-Received: from zproxy.gmail.com ([64.233.162.201])
+Received: from rproxy.gmail.com ([64.233.170.194])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EPo3U-0005Pr-P8
-	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2005 17:22:45 -0400
-Received: by zproxy.gmail.com with SMTP id i11so206204nzh
+	id 1EPpxd-0006eL-Fm
+	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2005 19:25:04 -0400
+Received: by rproxy.gmail.com with SMTP id b11so4401rne
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Oct 2005 14:22:31 -0700 (PDT)
-Message-ID: <6934efce0510121422x587f9a42q8bea97d62e68d201@mail.gmail.com>
-Date: Wed, 12 Oct 2005 14:22:30 -0700
-From: Jared Hulbert <jaredeh@gmail.com>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.64.0510121621020.23357@localhost.localdomain>
+	Wed, 12 Oct 2005 16:24:32 -0700 (PDT)
+Message-ID: <9b7ca6570510121624h5abdbf3erf526aab893bf285a@mail.gmail.com>
+Date: Thu, 13 Oct 2005 08:24:31 +0900
+From: Daniel Ann <ktdann@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A01376415@NNSMSX401>
-	<Pine.LNX.4.63.0509221318180.18381@localhost.localdomain>
-	<6934efce05092915519ffe76c@mail.gmail.com>
-	<6934efce0510121205t2558aaei8ab91a79e22f75a0@mail.gmail.com>
-	<Pine.LNX.4.64.0510121621020.23357@localhost.localdomain>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: XIP fails on kernels 2.6.12 and higher
+Subject: FYI, problem in CVS version
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,11 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Are you using JFFS2?
->
-> Does it still crash if you don't?
+Hey folks,
 
-No.
+I've downloaded CVS version yesterday and patched linux-2.6.12.3
+kernel but everytime I try to do make mrproper I get an error saying
+fs/jffs3/makefile.clean doesnt exist.
 
-Opps, this is on the wrong list, I'm not even building with the MTD.=20
-I meant to post this on arm-linux.  Watch for it there, please.
+I've noticed that patch didnt include any JFFS3 files since there
+werent any fs/jffs3 directory to start with, but fs/Makefile had line
+mentioning JFFS3. So, I've commented out and did make mrproper which
+worked.
+
+Just to let you know how I've patched the kernel, I've executed
+patchkernel.sh with following argument,
+./patchkernel.sh -c -2 -3 -v /usr/src/linux-2.6.12.3
+
+
+--
+Daniel
