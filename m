@@ -1,21 +1,29 @@
-Received: from tyo201.gate.nec.co.jp ([202.32.8.214])
+Received: from xproxy.gmail.com ([66.249.82.203])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EPYDv-0002ES-48
-	for linux-mtd@lists.infradead.org; Wed, 12 Oct 2005 00:28:42 -0400
-Message-ID: <434C9056.4020600@ak.jp.nec.com>
-Date: Wed, 12 Oct 2005 13:25:58 +0900
-From: Kaigai Kohei <kaigai@ak.jp.nec.com>
+	id 1EQR9f-0000aN-EP
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2005 11:09:58 -0400
+Received: by xproxy.gmail.com with SMTP id h30so390358wxd
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2005 08:07:25 -0700 (PDT)
+From: Jesper Juhl <jesper.juhl@gmail.com>
+To: "linux-kernel" <linux-kernel@vger.kernel.org>
+Date: Thu, 13 Oct 2005 21:26:12 +0200
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
-	linux-mtd@lists.infradead.org
-References: <20050823124649.GB30853@wohnheim.fh-wedel.de>	<1124801569.29448.13.camel@hades.cambridge.redhat.com>	<430C429B.6040500@ak.jp.nec.com>	<431E772B.9090004@ak.jp.nec.com>	<20050908194915.GG20668@wohnheim.fh-wedel.de>	<43210C7A.60109@ak.jp.nec.com>	<20050909072416.GA19251@wohnheim.fh-wedel.de>	<43225DEB.4070809@ak.jp.nec.com>	<20050911114642.GA11788@wohnheim.fh-wedel.de>	<4324E525.60805@ak.jp.nec.com>	<20050912064038.GA21304@wohnheim.fh-wedel.de>	<43255FF5.4020903@ak.jp.nec.com>
-	<433A57D8.9030501@ak.jp.nec.com>
-In-Reply-To: <433A57D8.9030501@ak.jp.nec.com>
-Content-Type: multipart/mixed; boundary="------------020109040000000700020605"
-Cc: James Morris <jmorris@redhat.com>, Ma Yun <sx_yunma@hotmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>,
-	Kaigai Kohei <kaigai@ak.jp.nec.com>
-Subject: Re: [PATCH] XATTR issues on JFFS2
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200510132126.13411.jesper.juhl@gmail.com>
+Cc: Andrew Morton <akpm@osdl.org>, Simon Evans <spse@secret.org.uk>,
+	Greg Ungerer <gerg@snapgear.com>,
+	"Steven J. Hill" <sjhill@realitydiluted.com>, source@mvista.com,
+	David Woodhouse <dwmw2@infradead.org>,
+	Jesper Juhl <jesper.juhl@gmail.com>, jamey.hicks@hp.com,
+	Ben Dooks <ben@simtec.co.uk>, Kirk Lee <kirk@hpc.ee.ntu.edu.tw>,
+	linux-mtd@lists.infradead.org, Eric Brower <ebrower@usa.net>,
+	jzhang@ti.com, Thomas Gleixner <tglx@linutronix.de>,
+	Nicolas Pitre <nico@cam.org>
+Subject: [PATCH 03/14] Big kfree NULL check cleanup - drivers/mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,421 +33,344 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------020109040000000700020605
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+This is the drivers/mtd part of the big kfree cleanup patch.
 
-Hi,
+Remove pointless checks for NULL prior to calling kfree() in drivers/mtd/.
 
-The attached patch adds an functionality for mkfs.jffs2.
 
-'-A' or '--with-xattr' enables to stuff up any xattr-imforamations
-for each files into JFFS2 image file.
-This patch depends on 'jffs2_xattr_take-3.patch' I posted on 28-Sep.
+Sorry about the long Cc: list, but I wanted to make sure I included everyone
+who's code I've changed with this patch.
 
-In addition, some constants of JFFS2_XPREFIX_* are moved from
-fs/jffs2/xattr.h to include/linux/jffs2.h, because I want to
-use those constants in mkfs.jffs2. This change has no effects
-in kernel-side.
 
-Perhaps, another style like '--with-selinux' or '--with-acl' might
-be better than '--with-xattr'.
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
 
-Any comments please,
-Thanks.
+Please see the initial announcement mail on LKML with subject
+"[PATCH 00/14] Big kfree NULL check cleanup"
+for additional details.
 
-Kaigai Kohei wrote:
-> Hi,
-> 
-> I revised the previous xattr patch in jffs2 based on some suggestions.
-> 
-> [1] scanning xattr related node for cleaned-up scan.c.
->     (jffs2_xattr_scan.c-cleanup.patch)
-> [2] enables xattr support in jffs2.
->     (jffs2_xattr_take-3.patch)
-> (*) We can apply jffs2_xattr_take-3.patch for current CVS independently.
+ drivers/mtd/chips/cfi_cmdset_0001.c |    3 +--
+ drivers/mtd/chips/cfi_cmdset_0002.c |    4 ++--
+ drivers/mtd/devices/blkmtd.c        |    7 ++-----
+ drivers/mtd/inftlcore.c             |   12 ++++--------
+ drivers/mtd/maps/amd76xrom.c        |    4 +---
+ drivers/mtd/maps/bast-flash.c       |    3 +--
+ drivers/mtd/maps/ceiva.c            |    3 +--
+ drivers/mtd/maps/ichxrom.c          |    5 ++---
+ drivers/mtd/maps/integrator-flash.c |    6 ++----
+ drivers/mtd/maps/ipaq-flash.c       |    3 +--
+ drivers/mtd/maps/iq80310.c          |    3 +--
+ drivers/mtd/maps/ixp2000.c          |    3 +--
+ drivers/mtd/maps/ixp4xx.c           |    3 +--
+ drivers/mtd/maps/lubbock-flash.c    |    3 +--
+ drivers/mtd/maps/omap-toto-flash.c  |    3 +--
+ drivers/mtd/maps/sa1100-flash.c     |    3 +--
+ drivers/mtd/maps/sun_uflash.c       |    4 +---
+ drivers/mtd/maps/tqm8xxl.c          |    6 ++----
+ drivers/mtd/nand/nand_base.c        |    5 ++---
+ drivers/mtd/nftlcore.c              |   12 ++++--------
+ 20 files changed, 32 insertions(+), 63 deletions(-)
 
--- 
-Linux Promotion Center, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
-
---------------020109040000000700020605
-Content-Type: text/x-patch;
- name="mkfs.jffs2-xattr.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="mkfs.jffs2-xattr.patch"
-
-diff -prNU3 mtd-051011.xattr/fs/jffs2/xattr.c mtd-051011.xattr-mkfs/fs/jffs2/xattr.c
---- mtd-051011.xattr/fs/jffs2/xattr.c	2005-10-12 11:33:37.000000000 +0900
-+++ mtd-051011.xattr-mkfs/fs/jffs2/xattr.c	2005-10-12 11:34:39.000000000 +0900
-@@ -42,6 +42,7 @@ static int do_jffs2_setxattr(struct inod
- 			     const char *buffer, size_t size, int flags);
- 
- /* ---- XATTR Handler for "user.*" --------------------- */
-+#define XATTR_USER_PREFIX	"user."
- static int jffs2_user_getxattr(struct inode *inode, const char *name,
-                                void *buffer, size_t size)
- {
-@@ -97,6 +98,7 @@ static struct xattr_handler jffs2_user_x
- };
- 
- /* ---- XATTR Handler for "trusted.*" ------------------ */
-+#define XATTR_TRUSTED_PREFIX	"trusted."
- static int jffs2_trusted_getxattr(struct inode *inode, const char *name,
- 				  void *buffer, size_t size)
- {
-diff -prNU3 mtd-051011.xattr/fs/jffs2/xattr.h mtd-051011.xattr-mkfs/fs/jffs2/xattr.h
---- mtd-051011.xattr/fs/jffs2/xattr.h	2005-10-12 11:33:37.000000000 +0900
-+++ mtd-051011.xattr-mkfs/fs/jffs2/xattr.h	2005-10-12 11:34:39.000000000 +0900
-@@ -14,16 +14,6 @@
- #include <linux/xattr.h>
- 
- #define XATTRINDEX_HASHSIZE (57)
--#define XATTR_USER_PREFIX		"user."
--#define XATTR_TRUSTED_PREFIX		"trusted."
--
--#define JFFS2_XPREFIX_USER		1	/* for "user.*" */
--#define JFFS2_XPREFIX_SECURITY		2	/* for "security.*" */
--#define JFFS2_XPREFIX_ACL_ACCESS	3	/* for "system.posix_acl_access" */
--#define JFFS2_XPREFIX_ACL_DEFAULT	4	/* for "system.posix_acl_default" */
--#define JFFS2_XPREFIX_TRUSTED		5	/* for "trusted.*" */
--#define JFFS2_XPREFIX_INVALID		6
--
- #define JFFS2_XDATUM_FLAGS_HOT		0x01	/* This is hot xattr_datum */
- 
- #define RAWNODE_CLASS_INODE_CACHE	0
-diff -prNU3 mtd-051011.xattr/include/linux/jffs2.h mtd-051011.xattr-mkfs/include/linux/jffs2.h
---- mtd-051011.xattr/include/linux/jffs2.h	2005-10-12 11:33:37.000000000 +0900
-+++ mtd-051011.xattr-mkfs/include/linux/jffs2.h	2005-10-12 11:34:39.000000000 +0900
-@@ -68,6 +68,13 @@
- #define JFFS2_NODETYPE_XATTR (JFFS2_FEATURE_INCOMPAT | JFFS2_NODE_ACCURATE | 8)
- #define JFFS2_NODETYPE_XREF (JFFS2_FEATURE_INCOMPAT | JFFS2_NODE_ACCURATE | 9)
- 
-+/* XATTR Related */
-+#define JFFS2_XPREFIX_USER		1	/* for "user." */
-+#define JFFS2_XPREFIX_SECURITY		2	/* for "security." */
-+#define JFFS2_XPREFIX_ACL_ACCESS	3	/* for "system.posix_acl_access" */
-+#define JFFS2_XPREFIX_ACL_DEFAULT	4	/* for "system.posix_acl_default" */
-+#define JFFS2_XPREFIX_TRUSTED		5	/* for "trusted.*" */
-+
- // Maybe later...
- //#define JFFS2_NODETYPE_CHECKPOINT (JFFS2_FEATURE_RWCOMPAT_DELETE | JFFS2_NODE_ACCURATE | 3)
- //#define JFFS2_NODETYPE_OPTIONS (JFFS2_FEATURE_RWCOMPAT_COPY | JFFS2_NODE_ACCURATE | 4)
-diff -prNU3 mtd-051011.xattr/util/mkfs.jffs2.1 mtd-051011.xattr-mkfs/util/mkfs.jffs2.1
---- mtd-051011.xattr/util/mkfs.jffs2.1	2005-09-15 21:18:43.000000000 +0900
-+++ mtd-051011.xattr-mkfs/util/mkfs.jffs2.1	2005-10-12 11:34:39.000000000 +0900
-@@ -49,6 +49,9 @@ mkfs.jffs2 \- Create a JFFS2 file system
- .B -P,--squash-perms
- ]
- [
-+.B -A,--with-xattr
-+]
-+[
- .B -m,--compression-mode=MODE
- ]
- [
-@@ -178,6 +181,9 @@ Squash owners making all files be owned 
- .B -P, --squash-perms
- Squash permissions, removing write permission for \'group\' and \'other\'.
- .TP
-+.B -A, --with-xattr
-+Include XATTR meta information. It's necessary for SELinux or ACL support.
-+.TP
- .B -m, --compression-mode=MODE
- Set the default compression mode. The default mode is 
- .B priority 
-diff -prNU3 mtd-051011.xattr/util/mkfs.jffs2.c mtd-051011.xattr-mkfs/util/mkfs.jffs2.c
---- mtd-051011.xattr/util/mkfs.jffs2.c	2005-09-15 21:18:43.000000000 +0900
-+++ mtd-051011.xattr-mkfs/util/mkfs.jffs2.c	2005-10-12 11:55:09.000000000 +0900
-@@ -7,6 +7,7 @@
-  *           2002 Axis Communications AB
-  *           2001, 2002 Erik Andersen <andersen@codepoet.org>
-  *           2004 University of Szeged, Hungary
-+ *           2005 KaiGai Kohei <kaigai@ak.jp.nec.com>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-@@ -63,6 +64,7 @@
- #include <ctype.h>
- #include <time.h>
- #include <getopt.h>
-+#include <attr/xattr.h>
- #include <byteswap.h>
- #define crc32 __complete_crap
- #include <zlib.h>
-@@ -1018,6 +1020,166 @@ static void write_special_file(struct fi
- 	padword();
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/omap-toto-flash.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/omap-toto-flash.c	2005-10-12 16:17:34.000000000 +0200
+@@ -124,8 +124,7 @@ static void  __exit omap_toto_mtd_cleanu
+ 	if (flash_mtd) {
+ 		del_mtd_partitions(flash_mtd);
+ 		map_destroy(flash_mtd);
+-		if (parsed_parts)
+-			kfree(parsed_parts);
++		kfree(parsed_parts);
+ 	}
  }
  
-+struct xattr_entry {
-+	struct xattr_entry *next;
-+	uint32_t xid;
-+	int xprefix;
-+	char *xname;
-+	char *xvalue;
-+	int value_len;
-+};
-+static int enable_xattr = 0;
-+static uint32_t xseqno = 0;
-+static struct {
-+	int code;
-+	char *string;
-+	int length;
-+} xprefix_tbl[] = {
-+	{ JFFS2_XPREFIX_USER, "user.", sizeof("user.")-1 },
-+	{ JFFS2_XPREFIX_SECURITY, "security.", sizeof("security.")-1 },
-+//	{ JFFS2_XPREFIX_ACL_ACCESS, "system.posix_acl_access", sizeof("system.posix_acl_access")-1 },
-+//	{ JFFS2_XPREFIX_ACL_DEFAULT, "system.posix_acl_default", sizeof("system.posix_acl_default")-1 },
-+	{ JFFS2_XPREFIX_TRUSTED, "trusted.", sizeof("trusted")-1 },
-+	{ 0, NULL, 0 }
-+};
-+
-+static struct xattr_entry *create_xattr_entry(int xprefix, char *xname, char *xvalue, int value_len)
-+{
-+	struct xattr_entry *xe;
-+	struct jffs2_raw_xattr rx;
-+	int name_len, data_len;
-+
-+	name_len = strlen(xname);
-+	data_len = name_len + 1 + value_len;
-+	xe = xcalloc(1, sizeof(struct xattr_entry) + data_len);
-+	xe->xid = ++xseqno;
-+	xe->xprefix = xprefix;
-+	xe->xname = (char *)(xe + 1);
-+	xe->xvalue = xe->xname + name_len + 1;
-+	xe->value_len = value_len;
-+	strcpy(xe->xname, xname);
-+	memcpy(xe->xvalue, xvalue, value_len);
-+
-+	memset(&rx, 0, sizeof(rx));
-+	rx.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
-+	rx.nodetype = cpu_to_je16(JFFS2_NODETYPE_XATTR);
-+	rx.totlen = cpu_to_je32(sizeof(rx) + data_len);
-+	rx.hdr_crc = cpu_to_je32(crc32(0, &rx, sizeof(struct jffs2_unknown_node) - 4));
-+
-+	rx.xid = cpu_to_je32(xe->xid);
-+	rx.xprefix = xprefix;	/* 8bit width */
-+	rx.name_len = name_len;	/* 8bit width */
-+	rx.value_len = cpu_to_je16(value_len);
-+	rx.data_crc = cpu_to_je32(crc32(0, xe->xname, data_len));
-+	rx.node_crc = cpu_to_je32(crc32(0, &rx, sizeof(rx) - 8));
-+
-+	pad_block_if_less_than(sizeof(rx) + data_len);
-+	full_write(out_fd, &rx, sizeof(rx));
-+	full_write(out_fd, xe->xname, data_len);
-+	padword();
-+
-+	return xe;
-+}
-+
-+#define XATTRENTRY_HASHSIZE  (256)
-+static struct xattr_entry *find_xattr_entry(char *xname, char *xvalue, int value_len)
-+{
-+	static struct xattr_entry **xentry_hash = NULL;
-+	struct xattr_entry *xe;
-+	int i, name_len, xprefix, index;
-+
-+	/* -- lookup xprefix -- */
-+	for (xprefix=0, i=0; xprefix_tbl[i].string; i++) {
-+		char *prstr = xprefix_tbl[i].string;
-+		int prlen = xprefix_tbl[i].length;
-+		if (!strncmp(xname, prstr, prlen)) {
-+			xprefix = xprefix_tbl[i].code;
-+			xname += prlen;
-+			break;
-+		}
-+	}
-+	if (xprefix == 0)
-+		return NULL;
-+
-+	/* -- find or create xattr entry -- */
-+	if (!xentry_hash)
-+		xentry_hash = xcalloc(1, sizeof(struct xattr_entry *) * XATTRENTRY_HASHSIZE);
-+
-+	name_len = strlen(xname) + 1;
-+	index = (crc32(0, xname, name_len) ^ crc32(0, xvalue, value_len)) & XATTRENTRY_HASHSIZE;
-+	for (xe = xentry_hash[index]; xe; xe = xe->next) {
-+		if (xe->xprefix == xprefix
-+		    && xe->value_len == value_len
-+		    && !strcmp(xe->xname, xname)
-+		    && !memcmp(xe->xvalue, xvalue, value_len))
-+			break;
-+	}
-+	if (!xe) {
-+		xe = create_xattr_entry(xprefix, xname, xvalue, value_len);
-+		xe->next = xentry_hash[index];
-+		xentry_hash[index] = xe;
-+	}
-+
-+	return xe;
-+}
-+
-+#define XATTR_BUFSZ  65536
-+static void write_xattr_entry(struct filesystem_entry *e)
-+{
-+	struct jffs2_raw_xref ref;
-+	struct xattr_entry *xe;
-+	char xlist[XATTR_BUFSZ], xvalue[XATTR_BUFSZ], filepath[PATH_MAX+1];
-+	char *xname;
-+	int list_sz, offset, name_len, value_len;
-+
-+	if (!enable_xattr)
-+		return;
-+
-+	sprintf(filepath, "%s%s", rootdir, e->fullname);
-+
-+	list_sz = llistxattr(filepath, xlist, XATTR_BUFSZ);
-+	if (list_sz < 0) {
-+		if (verbose)
-+			printf("llistxattr(\"%s\") returned %d:%s\n",
-+			       e->fullname, errno, strerror(errno));
-+		return;
-+	}
-+
-+	for (offset = 0; offset < list_sz; offset += name_len) {
-+		xname = xlist+offset;
-+		name_len = strlen(xname) + 1;
-+
-+		value_len = lgetxattr(filepath, xname, xvalue, XATTR_BUFSZ);
-+		if (value_len < 0) {
-+			if (verbose)
-+				printf("lgetxattr(\"%s\", \"%s\") returned %d:%s\n",
-+				       e->fullname, xname, errno, strerror(errno));
-+			continue;
-+		}
-+
-+		xe = find_xattr_entry(xname, xvalue, value_len);
-+		if (!xe) {
-+			if (verbose)
-+				printf("XATTR \"%s\" -- Not supported on \"%s\"\n", xname, e->fullname);
-+			continue;
-+		}
-+
-+		memset(&ref, 0, sizeof(ref));
-+		ref.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
-+		ref.nodetype = cpu_to_je16(JFFS2_NODETYPE_XREF);		
-+		ref.totlen = cpu_to_je32(sizeof(ref));
-+		ref.hdr_crc = cpu_to_je32(crc32(0, &ref, sizeof(struct jffs2_unknown_node) - 4));
-+		ref.seqno = cpu_to_je32(++xseqno);
-+		ref.ino = cpu_to_je32(e->sb.st_ino);
-+		ref.xid = cpu_to_je32(xe->xid);
-+		ref.node_crc = cpu_to_je32(crc32(0, &ref, sizeof(ref) - 4));
-+
-+		pad_block_if_less_than(sizeof(ref));
-+		full_write(out_fd, &ref, sizeof(ref));
-+		padword();
-+	}
-+}
-+
- static void recursive_populate_directory(struct filesystem_entry *dir)
- {
- 	struct filesystem_entry *e;
-@@ -1025,9 +1187,10 @@ static void recursive_populate_directory
- 	if (verbose) {
- 		printf("%s\n", dir->fullname);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/ipaq-flash.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/ipaq-flash.c	2005-10-12 16:17:48.000000000 +0200
+@@ -431,8 +431,7 @@ static void __exit ipaq_mtd_cleanup(void
+ 				if (my_sub_mtd[i])
+ 					map_destroy(my_sub_mtd[i]);
+ 			}
+-		if (parsed_parts)
+-			kfree(parsed_parts);
++		kfree(parsed_parts);
  	}
-+	write_xattr_entry(dir);		/* for '/' */
-+
- 	e = dir->files;
- 	while (e) {
--
- 		switch (e->sb.st_mode & S_IFMT) {
- 			case S_IFDIR:
- 				if (verbose) {
-@@ -1037,6 +1200,7 @@ static void recursive_populate_directory
- 							e->name);
- 				}
- 				write_pipe(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFSOCK:
- 				if (verbose) {
-@@ -1045,6 +1209,7 @@ static void recursive_populate_directory
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFIFO:
- 				if (verbose) {
-@@ -1053,6 +1218,7 @@ static void recursive_populate_directory
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_pipe(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFCHR:
- 				if (verbose) {
-@@ -1062,6 +1228,7 @@ static void recursive_populate_directory
- 							(int) e->sb.st_gid, e->name);
- 				}
- 				write_special_file(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFBLK:
- 				if (verbose) {
-@@ -1071,6 +1238,7 @@ static void recursive_populate_directory
- 							(int) e->sb.st_gid, e->name);
- 				}
- 				write_special_file(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFLNK:
- 				if (verbose) {
-@@ -1080,6 +1248,7 @@ static void recursive_populate_directory
- 							e->link);
- 				}
- 				write_symlink(e);
-+				write_xattr_entry(e);
- 				break;
- 			case S_IFREG:
- 				if (verbose) {
-@@ -1088,6 +1257,7 @@ static void recursive_populate_directory
- 							(int) e->sb.st_uid, (int) e->sb.st_gid, e->name);
- 				}
- 				write_regular_file(e);
-+				write_xattr_entry(e);
- 				break;
- 			default:
- 				error_msg("Unknown mode %o for %s", e->sb.st_mode,
-@@ -1165,6 +1335,7 @@ static struct option long_options[] = {
- 	{"test-compression", 0, NULL, 't'},
- 	{"compressor-priority", 1, NULL, 'y'},
- 	{"incremental", 1, NULL, 'i'},
-+	{"with-xattr", 0, NULL, 'A'},
- 	{NULL, 0, NULL, 0}
- };
+ }
  
-@@ -1200,7 +1371,8 @@ static char *helptext =
- 	"  -h, --help              Display this help text\n"
- 	"  -v, --verbose           Verbose operation\n"
- 	"  -V, --version           Display version information\n"
--	"  -i, --incremental=FILE  Parse FILE and generate appendage output for it\n\n";
-+	"  -i, --incremental=FILE  Parse FILE and generate appendage output for it\n"
-+	"  -A, --with-xattr        include XATTR meta informatin.\n\n";
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/sa1100-flash.c	2005-10-11 22:41:10.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/sa1100-flash.c	2005-10-12 16:17:58.000000000 +0200
+@@ -235,8 +235,7 @@ static void sa1100_destroy(struct sa_inf
+ #endif
+ 	}
  
- static char *revtext = "$Revision: 1.45 $";
+-	if (info->parts)
+-		kfree(info->parts);
++	kfree(info->parts);
  
-@@ -1353,7 +1525,7 @@ int main(int argc, char **argv)
-         jffs2_compressors_init();
+ 	for (i = info->num_subdev - 1; i >= 0; i--)
+ 		sa1100_destroy_subdev(&info->subdev[i]);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/iq80310.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/iq80310.c	2005-10-12 16:18:05.000000000 +0200
+@@ -103,8 +103,7 @@ static void __exit cleanup_iq80310(void)
+ 	if (mymtd) {
+ 		del_mtd_partitions(mymtd);
+ 		map_destroy(mymtd);
+-		if (parsed_parts)
+-			kfree(parsed_parts);
++		kfree(parsed_parts);
+ 	}
+ 	if (iq80310_map.virt)
+ 		iounmap((void *)iq80310_map.virt);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/ixp4xx.c	2005-10-11 22:41:10.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/ixp4xx.c	2005-10-12 16:18:23.000000000 +0200
+@@ -120,8 +120,7 @@ static int ixp4xx_flash_remove(struct de
+ 	if (info->map.map_priv_1)
+ 		iounmap((void *) info->map.map_priv_1);
  
- 	while ((opt = getopt_long(argc, argv, 
--					"D:d:r:s:o:qUPfh?vVe:lbp::nc:m:x:X:Lty:i:", long_options, &c)) >= 0) 
-+					"D:d:r:s:o:qUPfh?vVe:lbp::nc:m:x:X:Lty:i:A", long_options, &c)) >= 0) 
- 	{
- 		switch (opt) {
- 			case 'D':
-@@ -1515,6 +1687,9 @@ int main(int argc, char **argv)
- 					perror_msg_and_die("cannot open (incremental) file");
- 				}
- 				break;
-+			case 'A':
-+				enable_xattr = 1;
-+				break;
+-	if (info->partitions)
+-		kfree(info->partitions);
++	kfree(info->partitions);
+ 
+ 	if (info->res) {
+ 		release_resource(info->res);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/amd76xrom.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/amd76xrom.c	2005-10-12 16:18:41.000000000 +0200
+@@ -259,9 +259,7 @@ static int __devinit amd76xrom_init_one 
+ 
+  out:
+ 	/* Free any left over map structures */
+-	if (map) {
+-		kfree(map);
+-	}
++	kfree(map);
+ 	/* See if I have any map structures */
+ 	if (list_empty(&window->maps)) {
+ 		amd76xrom_cleanup(window);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/tqm8xxl.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/tqm8xxl.c	2005-10-12 16:19:17.000000000 +0200
+@@ -222,10 +222,8 @@ int __init init_tqm_mtd(void)
+ error_mem:
+ 	for(idx = 0 ; idx < FLASH_BANK_MAX ; idx++) {
+ 		if(map_banks[idx] != NULL) {
+-			if(map_banks[idx]->name != NULL) {
+-				kfree(map_banks[idx]->name);
+-				map_banks[idx]->name = NULL;
+-			}
++			kfree(map_banks[idx]->name);
++			map_banks[idx]->name = NULL;
+ 			kfree(map_banks[idx]);
+ 			map_banks[idx] = NULL;
  		}
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/integrator-flash.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/integrator-flash.c	2005-10-12 16:19:37.000000000 +0200
+@@ -148,8 +148,7 @@ static int armflash_probe(struct device 
+ 			del_mtd_partitions(info->mtd);
+ 			map_destroy(info->mtd);
+ 		}
+-		if (info->parts)
+-			kfree(info->parts);
++		kfree(info->parts);
+ 
+  no_device:
+ 		iounmap(base);
+@@ -176,8 +175,7 @@ static int armflash_remove(struct device
+ 			del_mtd_partitions(info->mtd);
+ 			map_destroy(info->mtd);
+ 		}
+-		if (info->parts)
+-			kfree(info->parts);
++		kfree(info->parts);
+ 
+ 		iounmap(info->map.virt);
+ 		release_resource(info->res);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/ixp2000.c	2005-10-11 22:41:10.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/ixp2000.c	2005-10-12 16:20:13.000000000 +0200
+@@ -126,8 +126,7 @@ static int ixp2000_flash_remove(struct d
+ 	if (info->map.map_priv_1)
+ 		iounmap((void *) info->map.map_priv_1);
+ 
+-	if (info->partitions) {
+-		kfree(info->partitions); }
++	kfree(info->partitions);
+ 
+ 	if (info->res) {
+ 		release_resource(info->res);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/lubbock-flash.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/lubbock-flash.c	2005-10-12 16:20:20.000000000 +0200
+@@ -155,8 +155,7 @@ static void __exit cleanup_lubbock(void)
+ 		if (lubbock_maps[i].cached)
+ 			iounmap(lubbock_maps[i].cached);
+ 
+-		if (parsed_parts[i])
+-			kfree(parsed_parts[i]);
++		kfree(parsed_parts[i]);
  	}
- 	if (out_fd == -1) {
-
---------------020109040000000700020605--
+ }
+ 
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/bast-flash.c	2005-10-11 22:41:10.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/bast-flash.c	2005-10-12 16:20:29.000000000 +0200
+@@ -103,8 +103,7 @@ static int bast_flash_remove(struct devi
+ 		map_destroy(info->mtd);
+ 	}
+ 
+-	if (info->partitions)
+-		kfree(info->partitions);
++	kfree(info->partitions);
+ 
+ 	if (info->area) {
+ 		release_resource(info->area);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/sun_uflash.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/sun_uflash.c	2005-10-12 16:20:56.000000000 +0200
+@@ -166,9 +166,7 @@ static void __exit uflash_cleanup(void)
+ 			iounmap(udev->map.virt);
+ 			udev->map.virt = NULL;
+ 		}
+-		if(0 != udev->name) {
+-			kfree(udev->name);
+-		}
++		kfree(udev->name);
+ 		kfree(udev);
+ 	}	
+ }
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/ichxrom.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/ichxrom.c	2005-10-12 16:21:20.000000000 +0200
+@@ -306,9 +306,8 @@ static int __devinit ichxrom_init_one (s
+ 
+  out:
+ 	/* Free any left over map structures */
+-	if (map) {
+-		kfree(map);
+-	}
++	kfree(map);
++
+ 	/* See if I have any map structures */
+ 	if (list_empty(&window->maps)) {
+ 		ichxrom_cleanup(window);
+--- linux-2.6.14-rc4-orig/drivers/mtd/maps/ceiva.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/maps/ceiva.c	2005-10-12 16:21:37.000000000 +0200
+@@ -312,8 +312,7 @@ static void __init clps_locate_partition
+ 
+ static void __exit clps_destroy_partitions(void)
+ {
+-	if (parsed_parts)
+-		kfree(parsed_parts);
++	kfree(parsed_parts);
+ }
+ 
+ static struct mtd_info *mymtd;
+--- linux-2.6.14-rc4-orig/drivers/mtd/nand/nand_base.c	2005-10-11 22:41:10.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/nand/nand_base.c	2005-10-12 16:22:12.000000000 +0200
+@@ -2676,9 +2676,8 @@ void nand_release (struct mtd_info *mtd)
+ 	/* Deregister the device */
+ 	del_mtd_device (mtd);
+ 
+-	/* Free bad block table memory, if allocated */
+-	if (this->bbt)
+-		kfree (this->bbt);
++	/* Free bad block table memory */
++	kfree (this->bbt);
+ 	/* Buffer allocated by nand_scan ? */
+ 	if (this->options & NAND_OOBBUF_ALLOC)
+ 		kfree (this->oob_buf);
+--- linux-2.6.14-rc4-orig/drivers/mtd/devices/blkmtd.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/devices/blkmtd.c	2005-10-12 16:22:46.000000000 +0200
+@@ -539,11 +539,8 @@ static void free_device(struct blkmtd_de
+ {
+ 	DEBUG(2, "blkmtd: free_device() dev = %p\n", dev);
+ 	if(dev) {
+-		if(dev->mtd_info.eraseregions)
+-			kfree(dev->mtd_info.eraseregions);
+-		if(dev->mtd_info.name)
+-			kfree(dev->mtd_info.name);
+-
++		kfree(dev->mtd_info.eraseregions);
++		kfree(dev->mtd_info.name);
+ 		if(dev->blkdev) {
+ 			invalidate_inode_pages(dev->blkdev->bd_inode->i_mapping);
+ 			close_bdev_excl(dev->blkdev);
+--- linux-2.6.14-rc4-orig/drivers/mtd/inftlcore.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/inftlcore.c	2005-10-12 16:23:13.000000000 +0200
+@@ -126,10 +126,8 @@ static void inftl_add_mtd(struct mtd_blk
+ 	}
+ 
+ 	if (add_mtd_blktrans_dev(&inftl->mbd)) {
+-		if (inftl->PUtable)
+-			kfree(inftl->PUtable);
+-		if (inftl->VUtable)
+-			kfree(inftl->VUtable);
++		kfree(inftl->PUtable);
++		kfree(inftl->VUtable);
+ 		kfree(inftl);
+ 		return;
+ 	}
+@@ -147,10 +145,8 @@ static void inftl_remove_dev(struct mtd_
+ 
+ 	del_mtd_blktrans_dev(dev);
+ 
+-	if (inftl->PUtable)
+-		kfree(inftl->PUtable);
+-	if (inftl->VUtable)
+-		kfree(inftl->VUtable);
++	kfree(inftl->PUtable);
++	kfree(inftl->VUtable);
+ 	kfree(inftl);
+ }
+ 
+--- linux-2.6.14-rc4-orig/drivers/mtd/chips/cfi_cmdset_0001.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/chips/cfi_cmdset_0001.c	2005-10-12 16:23:58.000000000 +0200
+@@ -455,8 +455,7 @@ static struct mtd_info *cfi_intelext_set
+ 
+  setup_err:
+ 	if(mtd) {
+-		if(mtd->eraseregions)
+-			kfree(mtd->eraseregions);
++		kfree(mtd->eraseregions);
+ 		kfree(mtd);
+ 	}
+ 	kfree(cfi->cmdset_priv);
+--- linux-2.6.14-rc4-orig/drivers/mtd/chips/cfi_cmdset_0002.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/chips/cfi_cmdset_0002.c	2005-10-12 16:24:25.000000000 +0200
+@@ -378,8 +378,7 @@ static struct mtd_info *cfi_amdstd_setup
+ 
+  setup_err:
+ 	if(mtd) {
+-		if(mtd->eraseregions)
+-			kfree(mtd->eraseregions);
++		kfree(mtd->eraseregions);
+ 		kfree(mtd);
+ 	}
+ 	kfree(cfi->cmdset_priv);
+@@ -1742,6 +1741,7 @@ static void cfi_amdstd_destroy(struct mt
+ {
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
++
+ 	kfree(cfi->cmdset_priv);
+ 	kfree(cfi->cfiq);
+ 	kfree(cfi);
+--- linux-2.6.14-rc4-orig/drivers/mtd/nftlcore.c	2005-08-29 01:41:01.000000000 +0200
++++ linux-2.6.14-rc4/drivers/mtd/nftlcore.c	2005-10-12 16:24:52.000000000 +0200
+@@ -114,10 +114,8 @@ static void nftl_add_mtd(struct mtd_blkt
+ 	}
+ 
+ 	if (add_mtd_blktrans_dev(&nftl->mbd)) {
+-		if (nftl->ReplUnitTable)
+-			kfree(nftl->ReplUnitTable);
+-		if (nftl->EUNtable)
+-			kfree(nftl->EUNtable);
++		kfree(nftl->ReplUnitTable);
++		kfree(nftl->EUNtable);
+ 		kfree(nftl);
+ 		return;
+ 	}
+@@ -133,10 +131,8 @@ static void nftl_remove_dev(struct mtd_b
+ 	DEBUG(MTD_DEBUG_LEVEL1, "NFTL: remove_dev (i=%d)\n", dev->devnum);
+ 
+ 	del_mtd_blktrans_dev(dev);
+-	if (nftl->ReplUnitTable)
+-		kfree(nftl->ReplUnitTable);
+-	if (nftl->EUNtable)
+-		kfree(nftl->EUNtable);
++	kfree(nftl->ReplUnitTable);
++	kfree(nftl->EUNtable);
+ 	kfree(nftl);
+ }
+ 
