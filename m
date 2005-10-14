@@ -1,16 +1,32 @@
-Received: from sccrmhc11.comcast.net ([204.127.202.55])
+Received: from s131.mittwaldmedien.de ([62.216.178.31])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EQTIx-0000Uh-Qf
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2005 13:25:19 -0400
-Date: Thu, 13 Oct 2005 18:07:26 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
+	id 1EQTQy-0000ld-Pg
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2005 13:33:37 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 5BE655E471C
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2005 08:25:51 +0200 (CEST)
+Received: from lin01.mn-solutions.de (p54B2B138.dip0.t-ipconnect.de
+	[84.178.177.56])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 7BCF25E417F
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2005 08:25:50 +0200 (CEST)
+Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-solutions.de (Postfix) with ESMTP id 719381E014A
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2005 08:25:15 +0200 (CEST)
+From: Holger Schurig <hs4233@mail.mn-solutions.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20051014010726.GA28898@plexity.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 14 Oct 2005 08:25:12 +0200
+References: <434E7211.6020709@gmail.com>
+In-Reply-To: <434E7211.6020709@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: [PATCH] [Trivial] Make physmap messages more user friendly
-Reply-To: dsaxena@plexity.net
+Message-Id: <200510140825.12934.hs4233@mail.mn-solutions.de>
+Subject: Re: /dev/mtd* not there with latest MTD
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +36,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> But: there is no /dev/mtd* or /dev/mtdblock* at all!
+> There are no changes to u-boot or some other kernel config, only the new
+> MTD source.
 
-Can I commit the following to CVS? It makes the message a bit more
-readalbe (and obvious that it is in hex) and tells the user if 
-the probe failed.
-
-Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
-
-diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
---- a/drivers/mtd/maps/physmap.c
-+++ b/drivers/mtd/maps/physmap.c
-@@ -50,11 +50,12 @@ static int __init init_physmap(void)
- 	static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
- 	const char **type;
- 
--       	printk(KERN_NOTICE "physmap flash device: %lx at %lx\n", physmap_map.size, physmap_map.phys);
-+       	printk(KERN_NOTICE "MTD physmap flash device: %#010lx @ %#010lx\n", 
-+			physmap_map.size, physmap_map.phys);
- 	physmap_map.virt = ioremap(physmap_map.phys, physmap_map.size);
- 
- 	if (!physmap_map.virt) {
--		printk("Failed to ioremap\n");
-+		printk("MTD physmap: Failed to ioremap\n");
- 		return -EIO;
- 	}
- 
-@@ -90,6 +91,8 @@ static int __init init_physmap(void)
- 		add_mtd_device(mymtd);
- 
- 		return 0;
-+	} else {
-+		printk("MTD physmap: failed to probe flash\n");
- 	}
- 
- 	iounmap(physmap_map.virt);
-
--- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-Even a stopped clock gives the right time twice a day.
+This is no longer created by the CVS version MTD. Not wanting udev on my 
+device (I was able to not use initrd's for years, why should I now begin?), I 
+made some old-fanshiond mknod-style device files there. They have the same 
+names as devfs without devfsd had, so my software just runs fine.
