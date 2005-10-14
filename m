@@ -1,19 +1,18 @@
-Received: from mail.ureach.com ([63.150.151.36] helo=ureach.com)
+Received: from fmr20.intel.com ([134.134.136.19] helo=orsfmr005.jf.intel.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EQLrx-0004yc-3w
-	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2005 10:28:55 +0100
-Received: from www20.ureach.com (www20.ureach.com [172.16.2.48])
-	by ureach.com (8.12.9/8.12.9) with ESMTP id j9E6oKNR020294
-	for <linux-mtd@lists.infradead.org>; Fri, 14 Oct 2005 02:50:20 -0400
-Date: Fri, 14 Oct 2005 02:50:20 -0400
-Message-Id: <200510140650.CAA17772@www20.ureach.com>
-To: "Linux " <linux-mtd@lists.infradead.org>
-From: yogesh shivabasappa <yogesh@ureach.com>
+	id 1EQMRe-00064L-Gw
+	for linux-mtd@lists.infradead.org; Fri, 14 Oct 2005 11:05:51 +0100
+From: "zhao, forrest" <forrest.zhao@intel.com>
+To: z xw <zxwitsme@hotmail.com>
+In-Reply-To: <BAY14-F27BE6C869E203D2FA57691DC7A0@phx.gbl>
+References: <BAY14-F27BE6C869E203D2FA57691DC7A0@phx.gbl>
+Content-Type: text/plain
+Date: Fri, 14 Oct 2005 13:53:20 +0800
+Message-Id: <1129269200.20274.16.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
-Subject: Nor flash
-Reply-To: yogesh@ureach.com
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: About nand flash mtd block
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
+> 
+> The mtd4 is the nand flash I added. But I can't find the device file in 
+> /dev/mtdblock/
+> The device file only 0,1,2,3.there is no device file for nand flash.
+> Anybody have met such a problem? Any reply is welcome.
+> Great appreciation to you help.
+> 
+I think you could manually create the device file 4 under /dev/mtdblock
+by "mknod". Then you can proceed with /dev/mtdblock/4 as normal.......
 
-I'm using intel p30 nor flash on our custom board. The nor
-device is mapped to boot device. It has bootloader in it . When
-powered up it has to invoke  bootloader . I wanted to know how
-the flow will be 
-
-regards 
-
-yogesh
-
-________________________________________________
-Get your own "800" number
-Voicemail, fax, email, and a lot more
-http://www.ureach.com/reg/tag
+Thanks,
+Forrest
