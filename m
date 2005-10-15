@@ -1,10 +1,19 @@
-From: <dennisedewor@walla.com>
-Date: Sun, 16 Oct 2005 21:33:58 +0100
-Message-ID: <web-24111329@mail.organizer.net>
+Received: from zproxy.gmail.com ([64.233.162.194])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EQcSt-0003A6-JX
+	for linux-mtd@lists.infradead.org; Sat, 15 Oct 2005 04:12:08 +0100
+Received: by zproxy.gmail.com with SMTP id 14so808659nzn
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 14 Oct 2005 20:12:07 -0700 (PDT)
+Message-ID: <b1c6420f0510142012m3c6807acx885ff7d71e532368@mail.gmail.com>
+Date: Sat, 15 Oct 2005 12:12:07 +0900
+From: Suzuki Takashi <suzuki.takashi@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
-Content-Transfer-Encoding: 8bit
-Subject: GET BACK TO ME, IF...
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: [PATCH 2/4] util/jffs2reader file size fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,48 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From:Dennis Edewor
-NNPC TOWERS IKOYI LAGOS,
-Lagos, Nigeria.
+This is a trivial patch for util/jffs2reader
+to correct file sizes shown in the listings.
 
-Hello Dear friend,
+Please review and apply if it is ok.
+Thanks.
 
-Good day to you, I am the Chairman of the Contract Award 
-Committee, Federal Ministry of Petroleum 
-Resources,Nigeria.I am in search of an agent to assist me 
-in the transfer/safegaurding of Twelve million, Four
-hundred Thousand United states Dollars.And subsequent 
-investment in properties in your country.You will be 
-required to:
 
-(1) Assist in the safegaurding of the said sum
+[PATCH 2/4] util/jffs2reader print file size fix
 
-(2) Advise on lucrative areas for investment
-(
-3) Assist us in purchase of properties.
+jffs2reader outputs wrong size for a file larger than a block size.
+It outputs dsize of the newest raw inode as the file size.
+This patch corrects it to use isize instead.
 
-If you decide to render your service to me in this 
-regard,20% of the total sum will be offerred to you. 10% 
-will be set aside for any expences encountered during the 
-transfer.However,it might also interest you to know that i 
-will make sure that the fund gets into your hands by me 
-personally making sure that a diplomat will get it to you 
-as soon as you indicate interest and i will bear the cost.
+This patch depends on:
+[PATCH 1/4] util/jffs2reader compile fix
 
-Pls, quickly get back to me should this PROJECT be of 
-interest to you on the way forward so that i give you more 
-details on how to proceed in this good and risk free 
-transaction through my alternative 
-email:den_edewor01@yahoo.com or else do not bother to 
-respond in order not to divert this fund from me.It is 
-strictly on trust,seriousness and business.
+Signed-off-by: Suzuki Takashi <suzuki.takashi@gmail.com>
 
-Please if you know i cannot trust you and you have an evil 
-motives as regards this fund,please i beg you do not 
-respond to me as it is my only hope when i retire next 
-year from civil service.
 
-Yours faithfully,
-Dennis Edewor
-Chairman of the Contract Award Committee{CCAC}.
-   
+--- jffs2reader.c.compile=092005-10-10 12:51:37.000000000 +0900
++++ jffs2reader.c=092005-10-10 17:55:17.000000000 +0900
+@@ -369,7 +369,7 @@ void printdir(char *o, size_t size, stru
+ =09=09=09putblock((char*)&rdev, sizeof(rdev), &devsize, ri);
+ =09=09=09printf("%4d, %3d ", (int)MAJOR(rdev), (int)MINOR(rdev));
+ =09=09} else {
+-=09=09=09printf("%9ld ", (long)je32_to_cpu (ri->dsize));
++=09=09=09printf("%9ld ", (long)je32_to_cpu (ri->isize));
+ =09=09}
+ =09=09d->name[d->nsize]=3D'\0';
+ =09=09if (age < 3600L * 24 * 365 / 2 && age > -15 * 60) {
+
+--
+Suzuki Takashi
