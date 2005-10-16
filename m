@@ -1,29 +1,10 @@
-Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EROv0-0003Sb-Qx
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2005 07:56:55 +0100
-Received: from localhost (localhost [127.0.0.1])
-	by protonic.prtnl (Postfix) with ESMTP id EB90629EC6
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2005 08:49:43 +0200 (CEST)
-Received: from protonic.prtnl ([127.0.0.1])
-	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 12257-09 for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2005 08:49:42 +0200 (CEST)
-Received: from linux.local (linux.prtnl [192.168.1.97])
-	by protonic.prtnl (Postfix) with ESMTP id 99F7128067
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2005 08:49:42 +0200 (CEST)
-From: David Jander <david.jander@protonic.nl>
-To: linux-mtd@lists.infradead.org
+From: <dennisedewor@walla.com>
+Date: Sun, 16 Oct 2005 21:33:58 +0100
+Message-ID: <web-24111329@mail.organizer.net>
 MIME-Version: 1.0
-Content-Disposition: inline
-Date: Mon, 17 Oct 2005 08:51:14 +0200
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200510170851.14579.david.jander@protonic.nl>
-Subject: jffs2 robustness against powerfailure
+Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
+Content-Transfer-Encoding: 8bit
+Subject: GET BACK TO ME, IF...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +14,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+From:Dennis Edewor
+NNPC TOWERS IKOYI LAGOS,
+Lagos, Nigeria.
 
-Hi,
+Hello Dear friend,
 
-We have a custom embedded linux board, based on a MPC852T processor, running 
-2.4.25 kernel from denx. Jffs2 has certain backported patches after cvs from 
-03/2005.
-I wanted to try some stress-testing the flash using jffs2 and the "checkfs" 
-tool which comes as part of the jffs2 sources. I setup a "power-cycle-box" as 
-described in the README and started logging everything the system produced.
-Since jffs2 claims to be robust against power-failures I set the threshold for 
-maximum number of corrupt files allowed to 0. The test procedure rewrites all 
-testfiles using a single write() call for each file, so that should be ok.
-After 279 power-cycles, it stopped with a CRC error in "file13". Of course 
-"file13" was the one being written to when power was cut off the last time.
+Good day to you, I am the Chairman of the Contract Award 
+Committee, Federal Ministry of Petroleum 
+Resources,Nigeria.I am in search of an agent to assist me 
+in the transfer/safegaurding of Twelve million, Four
+hundred Thousand United states Dollars.And subsequent 
+investment in properties in your country.You will be 
+required to:
 
-Question: Is this a known shorcoming of jffs2, or must I assume that my 
-hardware is broken?
+(1) Assist in the safegaurding of the said sum
 
-The latter is relatively unlikely, once I try to explain the contents of the 
-file:
+(2) Advise on lucrative areas for investment
+(
+3) Assist us in purchase of properties.
 
-diskles9:/flash # hexdump file13
-0000000 0000 0300 0000 036d 0000 0942 0000 20b0
-0000010 0000 08dd 0000 0715 0000 1da1 0000 043c
-0000020 0000 05c2 0000 228d 0000 10ad 0000 1c35
-...
-00002e0 0000 14f1 0000 0d94 0000 1911 0000 12dd
-00002f0 0000 09e9 0000 0686 0000 2380 0000 2294
-0000300 0000 18f1 0000 01be 0000 25bb 0000 1af9
-0000310 0000 1b94 0000 02b0 0000 2511 0000 1f79
-0000320 0000 1f97 0000 0b53 0000 1eb7 0000 10bb
-0000330 0000 2529 0000 2130 0000 0361 0000 0ff8
-0000340 0000 1428 0000 10ab 0000 0364 0000 1b89
-0000350 b110
+If you decide to render your service to me in this 
+regard,20% of the total sum will be offerred to you. 10% 
+will be set aside for any expences encountered during the 
+transfer.However,it might also interest you to know that i 
+will make sure that the fund gets into your hands by me 
+personally making sure that a diplomat will get it to you 
+as soon as you indicate interest and i will bear the cost.
 
-As one can easily see, the first int (0x00000300) indicates the file-length, 
-of 0x0300 bytes, after which the 16-bit CRC should be placed. At offset 
-0000300 in the file there seems to be just more random data (a CRC of 0x0000 
-is unlikely and known wrong in this case).
-At the end of the file (offset 0x0000350) there is something that looks more 
-like a checksum.
-Apparently the previous file was 0x0352 bytes long and the new file was going 
-to be 0x0302 bytes long, but was never written completely. 
-How comes I get a to see a valid file containing a mix of old and new data if 
-it was written with a single write() call?????
-Shouldn't jffs2 throw away the new incomplete node and keep the old version of 
-the file?
+Pls, quickly get back to me should this PROJECT be of 
+interest to you on the way forward so that i give you more 
+details on how to proceed in this good and risk free 
+transaction through my alternative 
+email:den_edewor01@yahoo.com or else do not bother to 
+respond in order not to divert this fund from me.It is 
+strictly on trust,seriousness and business.
 
-Can anyone please explain what happened here??
+Please if you know i cannot trust you and you have an evil 
+motives as regards this fund,please i beg you do not 
+respond to me as it is my only hope when i retire next 
+year from civil service.
 
-Greetings,
-
--- 
-David Jander
+Yours faithfully,
+Dennis Edewor
+Chairman of the Contract Award Committee{CCAC}.
+   
