@@ -1,22 +1,14 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ERbvB-0002r8-9Y
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2005 16:49:29 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IOI006WAV67HCE0@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 17 Oct 2005 16:49:19 -0400 (EDT)
-Date: Mon, 17 Oct 2005 16:49:19 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <F92C2EFE7C3BA745855BF7036E1F3F9A01495FB0@NNSMSX401>
-To: "Korolev, Alexey" <alexey.korolev@intel.com>
-Message-id: <Pine.LNX.4.64.0510171635110.5288@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A01495FB0@NNSMSX401>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: XIP & GCC optimization & halting
+From: David Woodhouse <dwmw2@infradead.org>
+To: David Jander <david.jander@protonic.nl>
+In-Reply-To: <200510141135.47186.david.jander@protonic.nl>
+References: <200510141135.47186.david.jander@protonic.nl>
+Content-Type: text/plain
+Date: Mon, 17 Oct 2005 13:37:52 +0100
+Message-Id: <1129552672.3830.249.camel@baythorne.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
+Subject: Re: jffs2 robustness against powerfailure
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +18,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 17 Oct 2005, Korolev, Alexey wrote:
+On Fri, 2005-10-14 at 11:35 +0200, David Jander wrote:
+> We have a custom embedded linux board, based on a MPC852T processor, running 
+> 2.4.25 kernel from denx. Jffs2 has certain backported patches after cvs from 
+> 03/2005.
 
-> Hi all,
-> 
-> I faced several issues with XIP on kernel 2.6.11.
-> I used Mainstone board and NOR flash with the only partition (non RWW
-> device).
-> First found issue of XIP was concerned with GCC optimization.
-> The function Do_write_buffer was inlined into upper function and as a
-> result loose __xipram attribute in case of default -Os compile option.
-> I reduced compile option to -O1 and it helped.
+That sounds like a recipe for pain. March 2005 wasn't a good time to
+take a snapshot from CVS; that just happens to be the time that we
+stopped bothering to make it build in obsolete kernels.
 
-Please apply this patch to your tree:
+If you want _stable_ JFFS2 code, you should use the code which is in the
+2.4.31 kernel, or use the code which is in the 2.6 kernel (perhaps
+updated from current CVS). 
 
-diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
-index 7b7deef..46ddb14 100644
---- a/include/linux/mtd/xip.h
-+++ b/include/linux/mtd/xip.h
-@@ -27,7 +27,7 @@
-  * obviously not be running from flash.  The __xipram is therefore marking
-  * those functions so they get relocated to ram.
-  */
--#define __xipram __attribute__ ((__section__ (".data")))
-+#define __xipram noinline __attribute__ ((__section__ (".data")))
- 
- /*
-  * We really don't want gcc to guess anything.
+> How comes I get a to see a valid file containing a mix of old and new
+> data if it was written with a single write() call?????
 
-> After resolving this issue I found another one halting. 
-> The system halts with rather big probability on write and erase
-> operations (good way to reproduce it download file (of size ~1M) via
-> tftp on JFFS2 volume).
-> I used BDI debugger to investigate the issue and found that after
-> halting flash device was in READ_STATUS mode and write operation is not
-> complete. PC reg points to stuff in virtual memory region mapped to
-> FLASH.
-> I disabled for just a case FIQs, but it didn't help.
+Linux doesn't guarantee atomicity of writes larger than a single page,
+but since your case is smaller than a page, it should have been atomic.
 
-The default FIQ exception handler lives in ram anyway.
+> Shouldn't jffs2 throw away the new incomplete node and keep the old
+> version of the file?
 
-> I really puzzled what code could interrupt write operation then IRQs and
-> FIQs are disabled. 
+Yes, it should. It's acceptable that there are extra data in the file
+after 0x300 bytes, because the test program first does a write() call
+and then a subsequent truncate() call. But it's not expected that the
+0x300-byte write was not atomic; except in certain circumstances (like
+reaching the end of an eraseblock and writing a smaller node there) you
+should have seen all of it, or none. 
 
-data abort I'd guess.
+Please could you reproduce on a sane kernel and show the output of the
+checkfs program during your test just before the power down, and also if
+possible take an image of the contents of the flash _before_ mounting it
+again after the power cycle. I'd like to see precisely the log nodes
+which were present on the flash. If it's difficult to take a snapshot
+before remounting, then running with CONFIG_JFFS2_FS_DEBUG=1 and
+capturing all the KERN_DEBUG output via a serial console would suffice.
 
-If you could set your BDI to trap any data abort when XIP is disabled 
-and provide the content of the FAR (fault address register) when it 
-happens that might be extremely helpful.
-
-> Also from time to time I see another issue. 
-> I get kernel panic message of the view :
-> I added debug print just before BUG was called. 
-> It looks very strange according to code chips_per_word = worwidth *
-> cfi_interleave / map_bankwidth. There is no way to get 6 !
-> 
-> 2005-10-15 17:49:58 | cfi_interleave = 2 worwidth = 4 map_bankwidth = 4
-> chips_per_word = 6 cmd = 0x80.
-
-Probably a side effect of the above bug.
-
-
-Nicolas
+-- 
+dwmw2
