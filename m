@@ -1,14 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: David Jander <david.jander@protonic.nl>
-In-Reply-To: <200510141135.47186.david.jander@protonic.nl>
-References: <200510141135.47186.david.jander@protonic.nl>
-Content-Type: text/plain
-Date: Mon, 17 Oct 2005 13:37:52 +0100
-Message-Id: <1129552672.3830.249.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
-Subject: Re: jffs2 robustness against powerfailure
+Received: from qproxy.gmail.com ([72.14.204.202])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ERenb-0005bz-2z
+	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2005 19:53:50 -0400
+Received: by qproxy.gmail.com with SMTP id f11so957691qba
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Oct 2005 16:53:44 -0700 (PDT)
+Message-ID: <dc98d8d90510171653r4b0e193bi9fd066ff8aefb752@mail.gmail.com>
+Date: Tue, 18 Oct 2005 09:53:43 +1000
+From: Paul Webster <pjwebster@gmail.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: Definition of MTD's
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,42 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-10-14 at 11:35 +0200, David Jander wrote:
-> We have a custom embedded linux board, based on a MPC852T processor, running 
-> 2.4.25 kernel from denx. Jffs2 has certain backported patches after cvs from 
-> 03/2005.
+Hi,
 
-That sounds like a recipe for pain. March 2005 wasn't a good time to
-take a snapshot from CVS; that just happens to be the time that we
-stopped bothering to make it build in obsolete kernels.
-
-If you want _stable_ JFFS2 code, you should use the code which is in the
-2.4.31 kernel, or use the code which is in the 2.6 kernel (perhaps
-updated from current CVS). 
-
-> How comes I get a to see a valid file containing a mix of old and new
-> data if it was written with a single write() call?????
-
-Linux doesn't guarantee atomicity of writes larger than a single page,
-but since your case is smaller than a page, it should have been atomic.
-
-> Shouldn't jffs2 throw away the new incomplete node and keep the old
-> version of the file?
-
-Yes, it should. It's acceptable that there are extra data in the file
-after 0x300 bytes, because the test program first does a write() call
-and then a subsequent truncate() call. But it's not expected that the
-0x300-byte write was not atomic; except in certain circumstances (like
-reaching the end of an eraseblock and writing a smaller node there) you
-should have seen all of it, or none. 
-
-Please could you reproduce on a sane kernel and show the output of the
-checkfs program during your test just before the power down, and also if
-possible take an image of the contents of the flash _before_ mounting it
-again after the power cycle. I'd like to see precisely the log nodes
-which were present on the flash. If it's difficult to take a snapshot
-before remounting, then running with CONFIG_JFFS2_FS_DEBUG=1 and
-capturing all the KERN_DEBUG output via a serial console would suffice.
-
--- 
-dwmw2
+I was wondering what type of devices fall under the category of an mtd
+rather than block device or char device? Are mtd's non-removable
+media? I understand that USB flash disks and built in CompactFlash
+card readers are not mtd's but what about devices such as built in
+MemoryStick, SD, XD, MMC and SmartCard readers?
