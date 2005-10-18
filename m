@@ -1,19 +1,21 @@
-Received: from qproxy.gmail.com ([72.14.204.202])
+Received: from ring.vpop.net ([207.178.248.5])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ERenb-0005bz-2z
-	for linux-mtd@lists.infradead.org; Mon, 17 Oct 2005 19:53:50 -0400
-Received: by qproxy.gmail.com with SMTP id f11so957691qba
+	id 1ERj68-00081y-3j
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 00:29:19 -0400
+Received: from bilbo.vpop.net (bilbo.vpop.net [70.56.77.194])
+	by ring.vpop.net (Postfix) with ESMTP id 9BFCAAFAAD8
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Oct 2005 16:53:44 -0700 (PDT)
-Message-ID: <dc98d8d90510171653r4b0e193bi9fd066ff8aefb752@mail.gmail.com>
-Date: Tue, 18 Oct 2005 09:53:43 +1000
-From: Paul Webster <pjwebster@gmail.com>
+	Mon, 17 Oct 2005 21:28:46 -0700 (PDT)
+From: Matthew Reimer <mreimer@vpop.net>
 To: linux-mtd@lists.infradead.org
+Date: Mon, 17 Oct 2005 21:27:39 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: Definition of MTD's
+Message-Id: <200510172127.39342.mreimer@vpop.net>
+Subject: mtd_blkdevs.c missing flush_dcache_page()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,10 +25,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I came across this post in which RMK says mtd_blkdevs.c is missing a call to 
+flush_dcache_page(), patch included:
 
-I was wondering what type of devices fall under the category of an mtd
-rather than block device or char device? Are mtd's non-removable
-media? I understand that USB flash disks and built in CompactFlash
-card readers are not mtd's but what about devices such as built in
-MemoryStick, SD, XD, MMC and SmartCard readers?
+http://lists.arm.linux.org.uk/pipermail/linux-arm-kernel/2005-May/029023.html
+
+I suppose not calling flush_dcache_page() could result in file corruption.
+
+Should this patch be applied?
+
+Matt
