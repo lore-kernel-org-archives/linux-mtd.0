@@ -1,19 +1,26 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ES0yt-0002w5-FN
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:35:10 -0400
-Date: Wed, 19 Oct 2005 01:34:41 +0200
+	id 1ES14t-0003AB-1x
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:41:10 -0400
+Date: Wed, 19 Oct 2005 01:39:34 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Deepak Saxena <dsaxena@plexity.net>
-Message-ID: <20051018233441.GC20236@wohnheim.fh-wedel.de>
-References: <20051014010726.GA28898@plexity.net>
+To: Jesper Juhl <jesper.juhl@gmail.com>
+Message-ID: <20051018233934.GD20236@wohnheim.fh-wedel.de>
+References: <200510132126.13411.jesper.juhl@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20051014010726.GA28898@plexity.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [Trivial] Make physmap messages more user friendly
+In-Reply-To: <200510132126.13411.jesper.juhl@gmail.com>
+Cc: Andrew Morton <akpm@osdl.org>, Simon Evans <spse@secret.org.uk>,
+	Greg Ungerer <gerg@snapgear.com>, source@mvista.com,
+	Nicolas Pitre <nico@cam.org>, jzhang@ti.com,
+	linux-kernel <linux-kernel@vger.kernel.org>, jamey.hicks@hp.com,
+	Ben Dooks <ben@simtec.co.uk>, Kirk Lee <kirk@hpc.ee.ntu.edu.tw>,
+	linux-mtd@lists.infradead.org, Eric Brower <ebrower@usa.net>,
+	"Steven J. Hill" <sjhill@realitydiluted.com>,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH 03/14] Big kfree NULL check cleanup - drivers/mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 13 October 2005 18:07:26 -0700, Deepak Saxena wrote:
+On Thu, 13 October 2005 21:26:12 +0200, Jesper Juhl wrote:
 > 
-> Can I commit the following to CVS? It makes the message a bit more
-> readalbe (and obvious that it is in hex) and tells the user if 
-> the probe failed.
-
-I'd like to wait until tglx considers cvs stable enough for a mainline
-merge.  Thomas, besides the general lack of time, are there any major
-blockers left?
-
-> Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
+> This is the drivers/mtd part of the big kfree cleanup patch.
 > 
-> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-> --- a/drivers/mtd/maps/physmap.c
-> +++ b/drivers/mtd/maps/physmap.c
-> @@ -50,11 +50,12 @@ static int __init init_physmap(void)
->  	static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
->  	const char **type;
->  
-> -       	printk(KERN_NOTICE "physmap flash device: %lx at %lx\n", physmap_map.size, physmap_map.phys);
-> +       	printk(KERN_NOTICE "MTD physmap flash device: %#010lx @ %#010lx\n", 
-> +			physmap_map.size, physmap_map.phys);
->  	physmap_map.virt = ioremap(physmap_map.phys, physmap_map.size);
->  
->  	if (!physmap_map.virt) {
-> -		printk("Failed to ioremap\n");
-> +		printk("MTD physmap: Failed to ioremap\n");
->  		return -EIO;
->  	}
->  
-> @@ -90,6 +91,8 @@ static int __init init_physmap(void)
->  		add_mtd_device(mymtd);
->  
->  		return 0;
-> +	} else {
-> +		printk("MTD physmap: failed to probe flash\n");
-                       ^
-All other messages were KERN_NOTICE.
-
->  	}
->  
->  	iounmap(physmap_map.virt);
+> Remove pointless checks for NULL prior to calling kfree() in drivers/mtd/.
 > 
+> 
+> Sorry about the long Cc: list, but I wanted to make sure I included everyone
+> who's code I've changed with this patch.
+> 
+> 
+> Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+Acked-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
 
 Jörn
 
 -- 
-Mundie uses a textbook tactic of manipulation: start with some
-reasonable talk, and lead the audience to an unreasonable conclusion.
--- Bruce Perens
+A surrounded army must be given a way out.
+-- Sun Tzu
