@@ -1,19 +1,20 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ES0nD-0002TG-Hh
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:22:55 -0400
-Date: Wed, 19 Oct 2005 01:22:38 +0200
+	id 1ES0sf-0002go-Ia
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:28:32 -0400
+Date: Wed, 19 Oct 2005 01:28:21 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Paul Webster <pjwebster@gmail.com>
-Message-ID: <20051018232238.GA20236@wohnheim.fh-wedel.de>
-References: <dc98d8d90510171653r4b0e193bi9fd066ff8aefb752@mail.gmail.com>
+To: Holger Schurig <hs4233@mail.mn-solutions.de>
+Message-ID: <20051018232821.GB20236@wohnheim.fh-wedel.de>
+References: <b1c6420f0510142011i28bee950s3827e341452430ba@mail.gmail.com>
+	<200510180901.03326.hs4233@mail.mn-solutions.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <dc98d8d90510171653r4b0e193bi9fd066ff8aefb752@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Definition of MTD's
+In-Reply-To: <200510180901.03326.hs4233@mail.mn-solutions.de>
+Cc: linux-mtd@lists.infradead.org, Suzuki Takashi <suzuki.takashi@gmail.com>
+Subject: Re: [PATCH 1/4] util/jffs2reader compile fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 October 2005 09:53:43 +1000, Paul Webster wrote:
+On Tue, 18 October 2005 09:01:03 +0200, Holger Schurig wrote:
 > 
-> I was wondering what type of devices fall under the category of an mtd
-> rather than block device or char device? Are mtd's non-removable
-> media? I understand that USB flash disks and built in CompactFlash
-> card readers are not mtd's but what about devices such as built in
-> MemoryStick, SD, XD, MMC and SmartCard readers?
+> > Index: Makefile
+> > ===================================================================
+> > RCS file: /home/cvs/mtd/util/Makefile,v
+> > retrieving revision 1.59
+> > diff -u -p -r1.59 Makefile
+> > --- Makefile	7 Sep 2005 08:34:57 -0000	1.59
+> > +++ Makefile	10 Oct 2005 07:31:58 -0000
+> > @@ -16,7 +16,7 @@ TARGETS = ftl_format flash_erase flash_e
+> >  	jffs2dump \
+> >  	nftldump nftl_format docfdisk \
+> 
+> You did not attach your patch, but put it inline into your e-mail. So you 
+> cannot do "Save Attachment", which would do all the de-MIME-ification. If I 
+> save the whole e-mail, I get this output:
+> 
+> Index: Makefile
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-http://www.linux-mtd.infradead.org/faq/general.html
-
-mtd's can be either removable or not.  Generally, mtd is just a
-different abstraction than char or block devices and better suited for
-flash than the other two.  Any device can be represented as an mtd.
-Whether it actually makes sense is a different matter.
+Same here.  Suzuki-san, can you resend either as an attachment or
+preferrably inline without any damages done by the mailer - be it
+whitespace corruption, mime encoding or line breaking?
 
 Jörn
 
 -- 
-When in doubt, punt.  When somebody actually complains, go back and fix it...
-The 90% solution is a good thing.
--- Rob Landley
+It is better to die of hunger having lived without grief and fear,
+than to live with a troubled spirit amid abundance.
+-- Epictetus
