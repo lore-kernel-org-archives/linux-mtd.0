@@ -1,20 +1,19 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ES0sf-0002go-Ia
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:28:32 -0400
-Date: Wed, 19 Oct 2005 01:28:21 +0200
+	id 1ES0yt-0002w5-FN
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:35:10 -0400
+Date: Wed, 19 Oct 2005 01:34:41 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Holger Schurig <hs4233@mail.mn-solutions.de>
-Message-ID: <20051018232821.GB20236@wohnheim.fh-wedel.de>
-References: <b1c6420f0510142011i28bee950s3827e341452430ba@mail.gmail.com>
-	<200510180901.03326.hs4233@mail.mn-solutions.de>
+To: Deepak Saxena <dsaxena@plexity.net>
+Message-ID: <20051018233441.GC20236@wohnheim.fh-wedel.de>
+References: <20051014010726.GA28898@plexity.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200510180901.03326.hs4233@mail.mn-solutions.de>
-Cc: linux-mtd@lists.infradead.org, Suzuki Takashi <suzuki.takashi@gmail.com>
-Subject: Re: [PATCH 1/4] util/jffs2reader compile fix
+In-Reply-To: <20051014010726.GA28898@plexity.net>
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [Trivial] Make physmap messages more user friendly
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 October 2005 09:01:03 +0200, Holger Schurig wrote:
+On Thu, 13 October 2005 18:07:26 -0700, Deepak Saxena wrote:
 > 
-> > Index: Makefile
-> > ===================================================================
-> > RCS file: /home/cvs/mtd/util/Makefile,v
-> > retrieving revision 1.59
-> > diff -u -p -r1.59 Makefile
-> > --- Makefile	7 Sep 2005 08:34:57 -0000	1.59
-> > +++ Makefile	10 Oct 2005 07:31:58 -0000
-> > @@ -16,7 +16,7 @@ TARGETS = ftl_format flash_erase flash_e
-> >  	jffs2dump \
-> >  	nftldump nftl_format docfdisk \
-> 
-> You did not attach your patch, but put it inline into your e-mail. So you 
-> cannot do "Save Attachment", which would do all the de-MIME-ification. If I 
-> save the whole e-mail, I get this output:
-> 
-> Index: Makefile
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> Can I commit the following to CVS? It makes the message a bit more
+> readalbe (and obvious that it is in hex) and tells the user if 
+> the probe failed.
 
-Same here.  Suzuki-san, can you resend either as an attachment or
-preferrably inline without any damages done by the mailer - be it
-whitespace corruption, mime encoding or line breaking?
+I'd like to wait until tglx considers cvs stable enough for a mainline
+merge.  Thomas, besides the general lack of time, are there any major
+blockers left?
+
+> Signed-off-by: Deepak Saxena <dsaxena@plexity.net>
+> 
+> diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+> --- a/drivers/mtd/maps/physmap.c
+> +++ b/drivers/mtd/maps/physmap.c
+> @@ -50,11 +50,12 @@ static int __init init_physmap(void)
+>  	static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
+>  	const char **type;
+>  
+> -       	printk(KERN_NOTICE "physmap flash device: %lx at %lx\n", physmap_map.size, physmap_map.phys);
+> +       	printk(KERN_NOTICE "MTD physmap flash device: %#010lx @ %#010lx\n", 
+> +			physmap_map.size, physmap_map.phys);
+>  	physmap_map.virt = ioremap(physmap_map.phys, physmap_map.size);
+>  
+>  	if (!physmap_map.virt) {
+> -		printk("Failed to ioremap\n");
+> +		printk("MTD physmap: Failed to ioremap\n");
+>  		return -EIO;
+>  	}
+>  
+> @@ -90,6 +91,8 @@ static int __init init_physmap(void)
+>  		add_mtd_device(mymtd);
+>  
+>  		return 0;
+> +	} else {
+> +		printk("MTD physmap: failed to probe flash\n");
+                       ^
+All other messages were KERN_NOTICE.
+
+>  	}
+>  
+>  	iounmap(physmap_map.virt);
+> 
 
 Jörn
 
 -- 
-It is better to die of hunger having lived without grief and fear,
-than to live with a troubled spirit amid abundance.
--- Epictetus
+Mundie uses a textbook tactic of manipulation: start with some
+reasonable talk, and lead the audience to an unreasonable conclusion.
+-- Bruce Perens
