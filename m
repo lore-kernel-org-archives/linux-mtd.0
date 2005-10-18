@@ -1,26 +1,20 @@
 Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ES14t-0003AB-1x
-	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:41:10 -0400
-Date: Wed, 19 Oct 2005 01:39:34 +0200
+	id 1ES18o-0003N8-8B
+	for linux-mtd@lists.infradead.org; Tue, 18 Oct 2005 19:45:18 -0400
+Date: Wed, 19 Oct 2005 01:44:54 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Jesper Juhl <jesper.juhl@gmail.com>
-Message-ID: <20051018233934.GD20236@wohnheim.fh-wedel.de>
-References: <200510132126.13411.jesper.juhl@gmail.com>
+To: Daniel Ann <ktdann@gmail.com>
+Message-ID: <20051018234454.GE20236@wohnheim.fh-wedel.de>
+References: <200510130455.AAA04284@www22.ureach.com>
+	<9b7ca6570510130053w42892a33h668d20d17219cd84@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200510132126.13411.jesper.juhl@gmail.com>
-Cc: Andrew Morton <akpm@osdl.org>, Simon Evans <spse@secret.org.uk>,
-	Greg Ungerer <gerg@snapgear.com>, source@mvista.com,
-	Nicolas Pitre <nico@cam.org>, jzhang@ti.com,
-	linux-kernel <linux-kernel@vger.kernel.org>, jamey.hicks@hp.com,
-	Ben Dooks <ben@simtec.co.uk>, Kirk Lee <kirk@hpc.ee.ntu.edu.tw>,
-	linux-mtd@lists.infradead.org, Eric Brower <ebrower@usa.net>,
-	"Steven J. Hill" <sjhill@realitydiluted.com>,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH 03/14] Big kfree NULL check cleanup - drivers/mtd
+In-Reply-To: <9b7ca6570510130053w42892a33h668d20d17219cd84@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, yogesh@ureach.com
+Subject: Re: nor flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 13 October 2005 21:26:12 +0200, Jesper Juhl wrote:
+On Thu, 13 October 2005 16:53:41 +0900, Daniel Ann wrote:
 > 
-> This is the drivers/mtd part of the big kfree cleanup patch.
-> 
-> Remove pointless checks for NULL prior to calling kfree() in drivers/mtd/.
-> 
-> 
-> Sorry about the long Cc: list, but I wanted to make sure I included everyone
-> who's code I've changed with this patch.
-> 
-> 
-> Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
-Acked-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+> I think you gonna have to elaborate on that, if you want advice from
+> others. So far, there just aint enuf info in your email.
+
+It is preferred to have the reply below quoted text.  More to the
+point, though, this is not the correct list for u-boot related
+questions.  ppc-embedded is slightly better, but I'm sure there is a
+dedicated u-boot mailing list as well.
+
+> On 10/13/05, yogesh shivabasappa <yogesh@ureach.com> wrote:
+> >
+> > I'm using intel p30 nor flash in one of my project. for uboot
+> > loader how can i do read and write to nor flash with out using
+> > file system.
 
 Jörn
 
 -- 
-A surrounded army must be given a way out.
--- Sun Tzu
+"Error protection by error detection and correction."
+-- from a university class
