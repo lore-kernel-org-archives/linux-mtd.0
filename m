@@ -1,18 +1,25 @@
-Received: from tyo202.gate.nec.co.jp ([210.143.35.52])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESDqK-0004Ka-15
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 09:19:07 -0400
-Message-ID: <435647A8.6090103@ak.jp.nec.com>
-Date: Wed, 19 Oct 2005 22:18:32 +0900
-From: Kaigai Kohei <kaigai@ak.jp.nec.com>
-MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <431E772B.9090004@ak.jp.nec.com>	<20050908194915.GG20668@wohnheim.fh-wedel.de>	<43210C7A.60109@ak.jp.nec.com>	<20050909072416.GA19251@wohnheim.fh-wedel.de>	<43225DEB.4070809@ak.jp.nec.com>	<20050911114642.GA11788@wohnheim.fh-wedel.de>	<4324E525.60805@ak.jp.nec.com>	<20050912064038.GA21304@wohnheim.fh-wedel.de>	<43255FF5.4020903@ak.jp.nec.com>
-	<433A57D8.9030501@ak.jp.nec.com>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1ESEsE-00053Z-4F
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 10:25:02 -0400
+Date: Wed, 19 Oct 2005 16:24:38 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Kaigai Kohei <kaigai@ak.jp.nec.com>
+Message-ID: <20051019142438.GA32362@wohnheim.fh-wedel.de>
+References: <43210C7A.60109@ak.jp.nec.com>
+	<20050909072416.GA19251@wohnheim.fh-wedel.de>
+	<43225DEB.4070809@ak.jp.nec.com>
+	<20050911114642.GA11788@wohnheim.fh-wedel.de>
+	<4324E525.60805@ak.jp.nec.com>
+	<20050912064038.GA21304@wohnheim.fh-wedel.de>
+	<43255FF5.4020903@ak.jp.nec.com> <433A57D8.9030501@ak.jp.nec.com>
 	<20050929074500.GA16687@wohnheim.fh-wedel.de>
-In-Reply-To: <20050929074500.GA16687@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+	<435647A8.6090103@ak.jp.nec.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <435647A8.6090103@ak.jp.nec.com>
 Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>
 Subject: Re: [PATCH] XATTR issues on JFFS2
@@ -25,33 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi J=F6rn,
+On Wed, 19 October 2005 22:18:32 +0900, Kaigai Kohei wrote:
+> 
+> What status is the XATTR patch of JFFS2 now ??
+> 
+> I hope to merge it, if this patch has no problem.
+> Of course, I'll correct any inconvenient points which we found.
 
-What status is the XATTR patch of JFFS2 now ??
+Lack of time.  I still have your patch and some from Forrest lingering
+in my inbox.  They all should receive a thorough line-by-line review -
+not necessarily by me, but by someone with enough knowledge.
 
-I hope to merge it, if this patch has no problem.
-Of course, I'll correct any inconvenient points which we found.
+If it helps you, your patches are already in a relatively good state.
+I cannot easily find problems with it.
 
-# I droped a Cc: for Ma, since his address seems to be invalid.
+> # I droped a Cc: for Ma, since his address seems to be invalid.
 
-J=F6rn Engel wrote:
-> On Wed, 28 September 2005 17:44:08 +0900, Kaigai Kohei wrote:
->=20
->>I revised the previous xattr patch in jffs2 based on some suggestions.
->>
->>[1] scanning xattr related node for cleaned-up scan.c.
->>    (jffs2_xattr_scan.c-cleanup.patch)
->>[2] enables xattr support in jffs2.
->>    (jffs2_xattr_take-3.patch)
->>(*) We can apply jffs2_xattr_take-3.patch for current CVS independently.
->=20
->=20
-> Looks quite interesting.  I'll take a closer look over the weekend.
->=20
-> Thanks!
->=20
-> J=F6rn
+Fair enough.
 
---=20
-Linux Promotion Center, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
+Jörn
+
+-- 
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
