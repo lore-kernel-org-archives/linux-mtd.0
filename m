@@ -1,24 +1,22 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESHM2-0006zd-EB
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 13:03:58 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IOM007KSA15EZ90@VL-MO-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 13:03:05 -0400 (EDT)
-Date: Wed, 19 Oct 2005 13:03:05 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <435678BA.6080809@ru.mvista.com>
+	id 1ESJ1e-0008BY-2w
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 14:51:04 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
 To: Vitaly Wool <vwool@ru.mvista.com>
-Message-id: <Pine.LNX.4.64.0510191258080.5288@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A014CE48D@NNSMSX401>
-	<Pine.LNX.4.64.0510191058000.5288@localhost.localdomain>
-	<435678BA.6080809@ru.mvista.com>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: XIP & GCC optimization & halting
+Date: Thu, 20 Oct 2005 07:57:11 +1300
+References: <20051018211330.GA28414@slurryseal.ddns.mvista.com>
+	<200510191158.49192.manningc2@actrix.gen.nz>
+	<4356354A.9020805@ru.mvista.com>
+In-Reply-To: <4356354A.9020805@ru.mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510200757.11770.manningc2@actrix.gen.nz>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 ignore ECC bytes in cleanmarker
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 Oct 2005, Vitaly Wool wrote:
-
+On Thursday 20 October 2005 01:00, Vitaly Wool wrote:
 > Hi,
-> 
-> >  
-> > > Now I'm not clear about solution for the problem.
-> > >    
-> > 
-> > Select only one CFI buswidth and only one chip interleave when configuring
-> > your kernel.  That will allow gcc to precompute everything a t compile time
-> > and avoid the runtime divide.
-> >  
-> Does it make sense to lock runtime divide functions in i-cache during flash
-> not being in linear mode?
+>
+> I do agree that the OOB data returned should be in the same format as
+> OOB data provided. The layout-based model for handling NAND reads/writes
+> is capable of fixing that, however, I didn't implement that in my
+> layout-based patch due to the fact that I wanted to make it compatible
+> with the current drivers.
 
-No.
+Sounds good. Fix one thing at a time.
 
-That _could_ be done of course.  But that is a completely non generic 
-(non portable) solution adding yet more complexity and dependencies to a 
-setup which is already fragile.  Better aim for more simplicity instead 
-which is to make the XIP-off code paths as short, simple and verifiable 
-as possible.  Going with a single buswidth and chip interval should 
-achieve that.
+In the mean time I (or maybe someone else) will see if that proposal patch can 
+be made to work properly. If so, I think we can get useful semantics pretty 
+quickly too (without impacting on your work).
 
+I wonder whether fixing things the other way around makes your life easier for 
+what you're doing now (ie. if you are not boxed in by the current oobsel 
+stuff)?
 
-Nicolas
+>
+> So, I suggest the following way to go:
+>
+> 1. After linux-mtd is merged into the kernel, commit layout-based patch
+> and fix the problems found (if any :)).
+> 2. Agree on the format of OOB data.
+> 3. Implement what was agreed upon.
+> 4. Get rid of redundant structures (I hope that redundant will become
+> eccbytes and maybe even oobfree).
+Most definitely progress. We've had about four or five iterations of these and 
+keeping everyone on the same page all the time is tricky.
+> 5. Update the MTD userland utilities accordingly.
+>
+> Does that make sense?
+
+Makes good sense to me.
+
+-- Charles
