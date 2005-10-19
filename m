@@ -1,28 +1,22 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESEsE-00053Z-4F
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 10:25:02 -0400
-Date: Wed, 19 Oct 2005 16:24:38 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Kaigai Kohei <kaigai@ak.jp.nec.com>
-Message-ID: <20051019142438.GA32362@wohnheim.fh-wedel.de>
-References: <43210C7A.60109@ak.jp.nec.com>
-	<20050909072416.GA19251@wohnheim.fh-wedel.de>
-	<43225DEB.4070809@ak.jp.nec.com>
-	<20050911114642.GA11788@wohnheim.fh-wedel.de>
-	<4324E525.60805@ak.jp.nec.com>
-	<20050912064038.GA21304@wohnheim.fh-wedel.de>
-	<43255FF5.4020903@ak.jp.nec.com> <433A57D8.9030501@ak.jp.nec.com>
-	<20050929074500.GA16687@wohnheim.fh-wedel.de>
-	<435647A8.6090103@ak.jp.nec.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <435647A8.6090103@ak.jp.nec.com>
-Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>
-Subject: Re: [PATCH] XATTR issues on JFFS2
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ESFQt-0005Vn-85
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 11:00:52 -0400
+Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IOM00E0H4D5AZ00@VL-MO-MR004.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 11:00:41 -0400 (EDT)
+Date: Wed, 19 Oct 2005 11:00:41 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <F92C2EFE7C3BA745855BF7036E1F3F9A014CE48D@NNSMSX401>
+To: "Korolev, Alexey" <alexey.korolev@intel.com>
+Message-id: <Pine.LNX.4.64.0510191058000.5288@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A014CE48D@NNSMSX401>
+Cc: linux-mtd@lists.infradead.org
+Subject: RE: XIP & GCC optimization & halting
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,26 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 October 2005 22:18:32 +0900, Kaigai Kohei wrote:
-> 
-> What status is the XATTR patch of JFFS2 now ??
-> 
-> I hope to merge it, if this patch has no problem.
-> Of course, I'll correct any inconvenient points which we found.
+On Wed, 19 Oct 2005, Korolev, Alexey wrote:
 
-Lack of time.  I still have your patch and some from Forrest lingering
-in my inbox.  They all should receive a thorough line-by-line review -
-not necessarily by me, but by someone with enough knowledge.
+> Disassembling of cfi_cmdset001.o showed that operation ("/") is mapped
+> to __divsi3 and __udivsi3 call from arch/arm/lib. 
 
-If it helps you, your patches are already in a relatively good state.
-I cannot easily find problems with it.
+Ahhhh.
 
-> # I droped a Cc: for Ma, since his address seems to be invalid.
+> Now I'm not clear about solution for the problem.
 
-Fair enough.
+Select only one CFI buswidth and only one chip interleave when 
+configuring your kernel.  That will allow gcc to precompute everything a 
+t compile time and avoid the runtime divide.
 
-Jörn
+I'll think of a way to enforce that in Kconfig.
 
--- 
-"Security vulnerabilities are here to stay."
--- Scott Culp, Manager of the Microsoft Security Response Center, 2001
+
+Nicolas
