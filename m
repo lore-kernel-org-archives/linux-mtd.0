@@ -1,16 +1,18 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: David Jander <david.jander@protonic.nl>
-In-Reply-To: <200510191010.47799.david.jander@protonic.nl>
-References: <200510141135.47186.david.jander@protonic.nl>
-	<1129552672.3830.249.camel@baythorne.infradead.org>
-	<200510191010.47799.david.jander@protonic.nl>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 19 Oct 2005 10:50:06 +0100
-Message-Id: <1129715406.3830.353.camel@baythorne.infradead.org>
+Received: from topsns.toshiba-tops.co.jp ([202.230.225.5])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ESB8V-0002Gk-9H
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 06:25:35 -0400
+Date: Wed, 19 Oct 2005 19:26:29 +0900 (JST)
+Message-Id: <20051019.192629.126139764.nemoto@toshiba-tops.co.jp>
+To: mreimer@vpop.net
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <200510172127.39342.mreimer@vpop.net>
+References: <200510172127.39342.mreimer@vpop.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
-Subject: Re: jffs2 robustness against powerfailure
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd_blkdevs.c missing flush_dcache_page()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2005-10-19 at 10:10 +0200, David Jander wrote:
-> 2.6 is not an option yet for mpc8xx architecture, so I'll have to stick with 
-> either what I have now or 2.4.31, but I fear the tradeoff of using vanilla 
-> 2.4.31 jffs2 will be much slower fs, prohibitively long mount-times, etc... 
-> am I right?
+>>>>> On Mon, 17 Oct 2005 21:27:39 -0700, Matthew Reimer <mreimer@vpop.net> said:
+mreimer> I came across this post in which RMK says mtd_blkdevs.c is
+mreimer> missing a call to flush_dcache_page(), patch included:
 
-If it's all running perfectly for you and you have no work to do, then
-yes, perhaps you're right. But since that's evidently _not_ the case,
-then no, I would disagree.
+mreimer> http://lists.arm.linux.org.uk/pipermail/linux-arm-kernel/2005-May/029023.html
 
-If I were you, the first thing I'd do would be to get a current kernel
-working. It should only take a week or so -- porting from 2.4 to 2.6
-really isn't that difficult.
+mreimer> I suppose not calling flush_dcache_page() could result in
+mreimer> file corruption.
 
-> I am still busy doing experiments, please have a little patience.
-> Until now I have turned on debug info in the same kernel as before, and get 
-> literally tons of log info. My monitor script had a bug, so the board was 
-> reset a little to soon in several occasions (shouldn't harm, should it), so 
-> now I have an image of jffs2 which on boot of the system produces a BUG() in 
-> gc.c line 139.
+mreimer> Should this patch be applied?
 
-That should never happen, regardless of when the board is reset.
-Assuming it still happens with JFFS2 code I care about (either 2.4 or
-2.6), please could I have a copy of this image?
+Yes.  Without this patch, I saw file corruption on following
+conditions:
 
-The problem you first reported doesn't seem too worrying to me. Writes
-aren't always atomic -- in fact the Linux VFS¹ _guarantees_ that writes
-larger than a page are _not_ atomic, because it splits pages up to call
-prepare_write() and commit_write() on each one.
+* CPU have dcache aliasing
+* use ext2 (etc.  not jffs2 neither cramfs) on /dev/mtdblock
+* mmap and read a file in the filesystem
 
-JFFS2 will mostly write each page out in a single node, but when there
-is only a small amount of space at the end of an eraseblock it will
-split writes still further, filling the eraseblock with as much data as
-possible before writing the remainder of the page into a new eraseblock.
-I suspect that's what happened in the case you showed. 
- 
--- 
-dwmw2
+I tested this patch on MIPS and it works fine.
 
-¹ Assuming you use generic_file_write()
+---
+Atsushi Nemoto
