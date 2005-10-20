@@ -1,22 +1,26 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EScfY-0002y7-69
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2005 11:49:32 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IOO000VR19Z77A0@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 20 Oct 2005 11:49:11 -0400 (EDT)
-Date: Thu, 20 Oct 2005 11:49:11 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1129819053.4219.10.camel@windu.rchland.ibm.com>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-id: <Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EScvZ-0007vF-Uy
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2005 17:06:03 +0100
+Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
+	[10.125.2.23])
+	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
+	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id j9KGHQD2027176
+	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 16:17:26 GMT
+Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
+	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
+	M2005102020055417064
+	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 20:05:54 +0400
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 20 Oct 2005 20:05:52 +0400
+Message-ID: <F92C2EFE7C3BA745855BF7036E1F3F9A014CEB20@NNSMSX401>
+From: "Korolev, Alexey" <alexey.korolev@intel.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: (no subject)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +30,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Oct 2005, Josh Boyer wrote:
+Nicolas,
 
-> Hi,
-> 
-> Support for Extended Query Table version 1.4 was added to
-> cfi_cmdset_0001.c recent.  For the most part it works, however I'm
-> seeing it detect an incorrect number of hardware partitions on an Intel
-> P30 chip.  Adding some debug printks showed it reported 7, which is
-> incorrect for this chip.
+Selecting of only one CFI buswidth and chip interleave helped to resolve
+the halting issue.
+cfi_cmdset001.o doesn't contain any reference to __udivsi3 __divsi3 and
+__ashrdi3 in data segment.
+I made several tests no halts or kernel panics got appeared.=20
 
-7 is indeed an "odd" value in all its meanings.
+P/S=20
+1. I also tried to relocate some /arch/arm/lib code into RAM. It was
+very bad move because it caused kernel Data abort at the very beginning
+of kernel bootup process. Looks some code uses __divsi3 operations
+before memory got initialized.
+2. I have a question about XIP and icache=20
+	a. Execute kernel instructions from FLASH. Start filling of
+icache pages by instructions from FLASH.
+	b. Do_write_buffer call. Switching to READ_STATUS.=20
+	c. Finish filling of icache pages by instructions from FLASH.
+(Part of icache is corrupted).
+	d. Return from Do_write_buffer=20
+	e. Execute instruction from FLASH which is presorted in icache.
+-> Data abort or kernel panic.
 
-> Digging through the code, I noticed the following lines:
-> 
-> 		/* Burst Read info */
-> 		extra_size += (extp->MinorVersion < '4') ? 6 : 5;
-> 
-> I think the values to be used are reversed here.
+Is it possible to face the following scenario?=20
 
-They are certainly not reversed as it used to be 6 for version 1.3 only.
-
-> Version 1.4 of the extended query table shows that the Burst Read info 
-> spans 6 bytes, whereas the above code results in a value of 5 being 
-> used.  This also accounts for the incorrect 7 value I'm seeing, since 
-> the last byte of the burst read info is 7.
-
-Could you double check with other flash model docs please?
-
-I don't have the Intel M18/M30 documentation handy but I think the 
-current code is right in that case.
-
-
-Nicolas
+Thanks,
+Alexey
