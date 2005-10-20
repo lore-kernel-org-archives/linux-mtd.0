@@ -1,22 +1,21 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
+Received: from tyo201.gate.nec.co.jp ([202.32.8.214])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESJ1e-0008BY-2w
-	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 14:51:04 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: Vitaly Wool <vwool@ru.mvista.com>
-Date: Thu, 20 Oct 2005 07:57:11 +1300
-References: <20051018211330.GA28414@slurryseal.ddns.mvista.com>
-	<200510191158.49192.manningc2@actrix.gen.nz>
-	<4356354A.9020805@ru.mvista.com>
-In-Reply-To: <4356354A.9020805@ru.mvista.com>
+	id 1ESPl1-0003TK-Tz
+	for linux-mtd@lists.infradead.org; Wed, 19 Oct 2005 22:02:17 -0400
+Message-ID: <4356FA80.8000803@ak.jp.nec.com>
+Date: Thu, 20 Oct 2005 11:01:36 +0900
+From: Kaigai Kohei <kaigai@ak.jp.nec.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <43210C7A.60109@ak.jp.nec.com>	<20050909072416.GA19251@wohnheim.fh-wedel.de>	<43225DEB.4070809@ak.jp.nec.com>	<20050911114642.GA11788@wohnheim.fh-wedel.de>	<4324E525.60805@ak.jp.nec.com>	<20050912064038.GA21304@wohnheim.fh-wedel.de>	<43255FF5.4020903@ak.jp.nec.com>
+	<433A57D8.9030501@ak.jp.nec.com>	<20050929074500.GA16687@wohnheim.fh-wedel.de>	<435647A8.6090103@ak.jp.nec.com>
+	<20051019142438.GA32362@wohnheim.fh-wedel.de>
+In-Reply-To: <20051019142438.GA32362@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510200757.11770.manningc2@actrix.gen.nz>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 ignore ECC bytes in cleanmarker
+Cc: James Morris <jmorris@redhat.com>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Stephen Smalley <sds@tycho.nsa.gov>
+Subject: Re: [PATCH] XATTR issues on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,40 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 20 October 2005 01:00, Vitaly Wool wrote:
-> Hi,
->
-> I do agree that the OOB data returned should be in the same format as
-> OOB data provided. The layout-based model for handling NAND reads/writes
-> is capable of fixing that, however, I didn't implement that in my
-> layout-based patch due to the fact that I wanted to make it compatible
-> with the current drivers.
+Hi,
 
-Sounds good. Fix one thing at a time.
+> Lack of time.  I still have your patch and some from Forrest lingering
+> in my inbox.  They all should receive a thorough line-by-line review -
+> not necessarily by me, but by someone with enough knowledge.
 
-In the mean time I (or maybe someone else) will see if that proposal patch can 
-be made to work properly. If so, I think we can get useful semantics pretty 
-quickly too (without impacting on your work).
+Sorry for hastening.
 
-I wonder whether fixing things the other way around makes your life easier for 
-what you're doing now (ie. if you are not boxed in by the current oobsel 
-stuff)?
+> If it helps you, your patches are already in a relatively good state.
+> I cannot easily find problems with it.
 
->
-> So, I suggest the following way to go:
->
-> 1. After linux-mtd is merged into the kernel, commit layout-based patch
-> and fix the problems found (if any :)).
-> 2. Agree on the format of OOB data.
-> 3. Implement what was agreed upon.
-> 4. Get rid of redundant structures (I hope that redundant will become
-> eccbytes and maybe even oobfree).
-Most definitely progress. We've had about four or five iterations of these and 
-keeping everyone on the same page all the time is tricky.
-> 5. Update the MTD userland utilities accordingly.
->
-> Does that make sense?
+Thanks, I was hesitating whether I should begin to develop the ACL
+features based on XATTR.
+If XATTR would be in a good state, I'm willing to begin the design
+and implementation.
 
-Makes good sense to me.
-
--- Charles
+-- 
+Linux Promotion Center, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
