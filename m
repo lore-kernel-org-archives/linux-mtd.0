@@ -1,36 +1,20 @@
-Received: from over.ny.us.ibm.com ([32.97.182.150] helo=pokfb.esmtp.ibm.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESbYX-0006xQ-06
-	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2005 15:38:10 +0100
-Received: from e35.co.us.ibm.com (e35.boulder.ibm.com [9.17.249.45])
-	by pokfb.esmtp.ibm.com (8.12.11/8.12.11) with ESMTP id j9KEbrNo017980
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 10:37:53 -0400
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.12.11/8.12.11) with ESMTP id j9KEbWuV010482
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 10:37:32 -0400
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j9KEcQtE533768
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 08:38:26 -0600
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	j9KEbWDK017089
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 08:37:32 -0600
-Received: from sig-9-65-70-134.mts.ibm.com (sig-9-65-70-134.mts.ibm.com
-	[9.65.70.134])
-	by d03av04.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id
-	j9KEbV6d017000
-	for <linux-mtd@lists.infradead.org>; Thu, 20 Oct 2005 08:37:31 -0600
-From: Josh Boyer <jdub@us.ibm.com>
+Received: from zproxy.gmail.com ([64.233.162.202])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ESbeU-0001rT-HB
+	for linux-mtd@lists.infradead.org; Thu, 20 Oct 2005 10:45:12 -0400
+Received: by zproxy.gmail.com with SMTP id 14so278557nzn
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Oct 2005 07:44:00 -0700 (PDT)
+Date: Thu, 20 Oct 2005 23:43:51 +0900
+From: Suzuki Takashi <suzuki.takashi@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Thu, 20 Oct 2005 09:37:33 -0500
-Message-Id: <1129819053.4219.10.camel@windu.rchland.ibm.com>
+In-Reply-To: <b1c6420f0510142012m3c6807acx885ff7d71e532368@mail.gmail.com>
+References: <b1c6420f0510142012m3c6807acx885ff7d71e532368@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Subject: Wrong CFI offset in cfi_cmdset_0001.c
+Message-ID: <4357ad30.3d4bb9f2.6009.3397@mx.gmail.com>
+Subject: Re: [PATCH 2/4] util/jffs2reader file size fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,26 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Sat, 15 Oct 2005 12:12:07 +0900, I wrote:
+> This is a trivial patch for util/jffs2reader
+> to correct file sizes shown in the listings.
+> 
+> Please review and apply if it is ok.
 
-Support for Extended Query Table version 1.4 was added to
-cfi_cmdset_0001.c recent.  For the most part it works, however I'm
-seeing it detect an incorrect number of hardware partitions on an Intel
-P30 chip.  Adding some debug printks showed it reported 7, which is
-incorrect for this chip.
+The patch without quoted-printable encoding.
+Thanks.
 
-Digging through the code, I noticed the following lines:
 
-		/* Burst Read info */
-		extra_size += (extp->MinorVersion < '4') ? 6 : 5;
+--- jffs2reader.c.compile	2005-10-10 12:51:37.000000000 +0900
++++ jffs2reader.c	2005-10-10 17:55:17.000000000 +0900
+@@ -369,7 +369,7 @@ void printdir(char *o, size_t size, stru
+ 			putblock((char*)&rdev, sizeof(rdev), &devsize, ri);
+ 			printf("%4d, %3d ", (int)MAJOR(rdev), (int)MINOR(rdev));
+ 		} else {
+-			printf("%9ld ", (long)je32_to_cpu (ri->dsize));
++			printf("%9ld ", (long)je32_to_cpu (ri->isize));
+ 		}
+ 		d->name[d->nsize]='\0';
+ 		if (age < 3600L * 24 * 365 / 2 && age > -15 * 60) {
 
-I think the values to be used are reversed here.  Version 1.4 of the
-extended query table shows that the Burst Read info spans 6 bytes,
-whereas the above code results in a value of 5 being used.  This also
-accounts for the incorrect 7 value I'm seeing, since the last byte of
-the burst read info is 7.
 
-Nico, could you confirm whether this is a bug or not?
-
-thx,
-josh
+-- 
+Suzuki Takashi
