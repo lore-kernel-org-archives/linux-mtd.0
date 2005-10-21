@@ -1,20 +1,20 @@
-Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
-	helo=ns1.pwrseries.com)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1ET0xZ-0002Nh-5f
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2005 13:45:43 -0400
-From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+Received: from blood.actrix.co.nz ([203.96.16.163])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ET17N-0002ds-KX
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2005 13:55:54 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
 To: linux-mtd@lists.infradead.org
-Date: Fri, 21 Oct 2005 10:45:30 -0700
+Date: Sat, 22 Oct 2005 07:02:13 +1300
+References: <B7803DC652E2F9458758AEBB6A5FD60F19526E@ZMY16EXM67.ds.mot.com>
+In-Reply-To: <B7803DC652E2F9458758AEBB6A5FD60F19526E@ZMY16EXM67.ds.mot.com>
 MIME-Version: 1.0
-Message-ID: <4358C6CA.16998.6EB936@localhost>
-In-reply-to: <434BFE23.4060701@ieee.org>
-References: <434B98B0.776.50BEDB@localhost>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
-Cc: Dan Brown <dan_brown@ieee.org>
-Subject: Re: docboot: nandwrite:  Input file is not page aligned
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510220702.13494.manningc2@actrix.gen.nz>
+Cc: M Sudharshana-A18475 <sudharshana@motorola.com>
+Subject: Re: NAND Low level flash routiens
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 Oct 2005 at 14:02, Dan Brown wrote:
+On Friday 21 October 2005 16:44, M Sudharshana-A18475 wrote:
+> Hi,
+> 	I do believe NAND flash manufacturers give low level flash
+> routines to erase/program data on the flash memory. While providing
+> them, they do mention unit of erase is of minimum 4K. 
+I have never heard of a NAND with 4K erase units (unless these were the very 
+old 256-byte page devices).
+Most have programming pages used today are 512+16 or 2k+64 byte pages with 
+erase sizes of 16k and 128K respectively.
 
-> If you get the same result, then we're in really weird territory, and
-> I'd start to wonder if the mtd tools just don't build (or run)
-> properly under uClibc.  Is there any chance you can use a standard
-> glibc environment to doublecheck?
+> Would this still 
+> hold good with low level flash routines that some embedded device
+> manufacturers? Or would this erase be of the unit of sector size which
+> are usually of 64K/128K/256K ?
 
-OK, issue solved.  There is no problem with nandwrite using uClibc 
-librarires.  Docboot works "as advertised" using the uClibc buildroot 
-tools. 
-
-My problem was that the doc_spl file was getting corrupted when I 
-transferred the image from the build machine to the target.  The 
-ftpget command in the uClibc buildroot environment is truncating the 
-file durring transfer.  Thus the error messages about "not page 
-aligned" were correct.  Sorry.
-
-- Joe 
+I suggest you read the Toshiba NAND flash appliocation guide. it will tell you 
+almost everything you need to know.
