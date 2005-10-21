@@ -1,17 +1,20 @@
-Received: from mail.ureach.com ([63.150.151.36] helo=ureach.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ESuiY-0006ql-02
-	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2005 07:05:50 -0400
-Date: Fri, 21 Oct 2005 07:05:30 -0400
-Message-Id: <200510211105.HAA13098@www23.ureach.com>
-To: ktdann@gmail.com, linux-mtd@lists.infradead.org
-From: yogesh shivabasappa <yogesh@ureach.com>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: NOR with out file system
-Reply-To: yogesh@ureach.com
+Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
+	helo=ns1.pwrseries.com)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1ET0xZ-0002Nh-5f
+	for linux-mtd@lists.infradead.org; Fri, 21 Oct 2005 13:45:43 -0400
+From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 21 Oct 2005 10:45:30 -0700
+MIME-Version: 1.0
+Message-ID: <4358C6CA.16998.6EB936@localhost>
+In-reply-to: <434BFE23.4060701@ieee.org>
+References: <434B98B0.776.50BEDB@localhost>
+Content-type: text/plain; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+Content-description: Mail message body
+Cc: Dan Brown <dan_brown@ieee.org>
+Subject: Re: docboot: nandwrite:  Input file is not page aligned
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
- I have a nor flash in our custom board. My boot loader image
-will be in NAND flash. Nand flash has jffs2 fils system.
-The NOR flash does not have a filesystem.
-Then the read(), write() calls from the appication 
-to copy the boot image from the NAND to NOR maps to which
-calls??
+On 11 Oct 2005 at 14:02, Dan Brown wrote:
 
-regards
+> If you get the same result, then we're in really weird territory, and
+> I'd start to wonder if the mtd tools just don't build (or run)
+> properly under uClibc.  Is there any chance you can use a standard
+> glibc environment to doublecheck?
 
-yogesh s
- 
+OK, issue solved.  There is no problem with nandwrite using uClibc 
+librarires.  Docboot works "as advertised" using the uClibc buildroot 
+tools. 
 
+My problem was that the doc_spl file was getting corrupted when I 
+transferred the image from the build machine to the target.  The 
+ftpget command in the uClibc buildroot environment is truncating the 
+file durring transfer.  Thus the error messages about "not page 
+aligned" were correct.  Sorry.
 
-________________________________________________
-Get your own "800" number
-Voicemail, fax, email, and a lot more
-http://www.ureach.com/reg/tag
+- Joe 
