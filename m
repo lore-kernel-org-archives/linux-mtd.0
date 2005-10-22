@@ -1,20 +1,20 @@
-Received: from zproxy.gmail.com ([64.233.162.198])
+Received: from zproxy.gmail.com ([64.233.162.197])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ETC0l-0000nN-D1
-	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2005 01:33:47 -0400
-Received: by zproxy.gmail.com with SMTP id 14so592112nzn
+	id 1ETC1d-0000rS-NJ
+	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2005 01:35:35 -0400
+Received: by zproxy.gmail.com with SMTP id s18so549633nze
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Oct 2005 22:33:39 -0700 (PDT)
-Date: Sat, 22 Oct 2005 14:33:23 +0900
+	Fri, 21 Oct 2005 22:34:33 -0700 (PDT)
+Date: Sat, 22 Oct 2005 14:34:25 +0900
 From: Suzuki Takashi <suzuki.takashi@gmail.com>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
-References: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
+In-Reply-To: <b1c6420f0510142013u634116eag4f360a6a2e7f8432@mail.gmail.com>
+References: <b1c6420f0510142013u634116eag4f360a6a2e7f8432@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-ID: <4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
-Subject: Re: [PATCH 3/4] util/jffs2reader catfile fix
+Message-ID: <4359cf69.67e8a797.2ae9.ffffa9e5@mx.gmail.com>
+Subject: Re: [PATCH 4/4] util/jffs2reader better output formats
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,8 +25,9 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Sat, 15 Oct 2005 12:13:29 +0900, I wrote:
-> This is another bug fix for util/jffs2reader.c.
+On Sat, 15 Oct 2005 12:13:46 +0900, I wrote:
+> This is the 4th patch for util/jffs2reader.c.
+> It is not a bug fix and makes some improvements.
 > 
 > Please review and apply if it is ok.
 
@@ -34,145 +35,95 @@ The patch without quoted-printable encoding and extra linebreaks.
 Thanks.
 
 
---- jffs2reader.c.printsize	2005-10-10 17:55:17.000000000 +0900
-+++ jffs2reader.c	2005-10-10 18:22:02.000000000 +0900
-@@ -87,7 +87,14 @@
- #include <linux/jffs2.h>
- #include <mtd/jffs2-user.h>
+--- jffs2reader.c.catfile	2005-10-10 18:22:02.000000000 +0900
++++ jffs2reader.c	2005-10-10 19:31:21.000000000 +0900
+@@ -320,6 +320,7 @@ void printdir(char *o, size_t size, stru
+ 	char *filetime;
+ 	time_t age;
+ 	struct jffs2_raw_inode *ri;
++	struct dir *od = d;
  
-+#ifdef DEBUG
-+#define dprintf(...) printf (__VA_ARGS__)
-+#else /* not DEBUG */
-+#define dprintf(...)
-+#endif /* not DEBUG */
-+
- #define SCRATCH_SIZE (5*1024*1024)
-+#define SCRATCH_NUM  (64)
- 
- #ifndef MAJOR
- /* FIXME:  I am using illicit insider knowledge of 
-@@ -117,6 +124,7 @@ void printdir(char *o, size_t size, stru
- void freedir(struct dir *);
- 
- struct jffs2_raw_inode *find_raw_inode(char *o, size_t size, uint32_t ino);
-+struct jffs2_raw_inode **collect_raw_inodes(char *o, size_t size, uint32_t ino, int *);
- struct jffs2_raw_dirent *resolvedirent(char *, size_t, uint32_t, uint32_t,
- 									   char *, uint8_t);
- struct jffs2_raw_dirent *resolvename(char *, size_t, uint32_t, char *, uint8_t);
-@@ -420,7 +428,7 @@ void freedir(struct dir *d)
- 	}
- }
- 
--/* collects directory/file nodes in version order. */
-+/* searches the newest directory/file nodes. */
- 
- /*
-   f       - file flag.
-@@ -491,6 +499,67 @@ struct jffs2_raw_inode *find_raw_inode(c
- 	return NULL;
- }
- 
-+/* collects directory/file nodes in version order. */
-+
-+/*
-+  o       - filesystem image pointer
-+  size    - size of filesystem image
-+  ino     - inode to compare against. see f.
-+  *num    - number of raw inodes (result)
-+
-+  return value: a pointer to jffs2_raw_inode array and should be freed later.
-+*/
-+
-+struct jffs2_raw_inode **collect_raw_inodes(char *o, size_t size, uint32_t ino, int *num)
-+{
-+	/* aligned! */
-+	union jffs2_node_union *n = (union jffs2_node_union *) o;
-+	union jffs2_node_union *e = (union jffs2_node_union *) (o + size);
-+
-+	struct jffs2_raw_inode **ri = NULL;
-+	int i, count = 0, bufnum = 0;
-+	uint32_t ver;
-+
-+	do {
-+		while (n < e && je16_to_cpu (n->u.magic) != JFFS2_MAGIC_BITMASK)
-+			n = (union jffs2_node_union *) ((char *) n + 4);
-+
-+		if (n < e && je16_to_cpu (n->u.magic) == JFFS2_MAGIC_BITMASK) {
-+			if (je16_to_cpu (n->u.nodetype) == JFFS2_NODETYPE_INODE &&
-+				je32_to_cpu (n->i.ino) == ino) {
-+				/* XXX crc check */
-+
-+				if (bufnum <= count) {
-+					bufnum += SCRATCH_NUM;
-+					ri = realloc(ri, sizeof(struct jffs2_raw_inode *) * bufnum);
-+					if (ri == NULL) {
-+						fprintf(stderr, "memory exhausted\n");
-+						exit(EXIT_FAILURE);
-+					}
-+				}
-+
-+				ver = je32_to_cpu (n->i.version);
-+
-+				for (i = 0; i < count; i++) {
-+					if (ver < je32_to_cpu (ri[i]->version)) {
-+						memmove(&ri[i + 1], &ri[i], 
-+								sizeof(struct jffs2_raw_inode *) * (count - i));
-+						break;
-+					}
-+				}
-+
-+				ri[i] = &(n->i);
-+				count++;
-+			}
+ 	if (!path)
+ 		return;
+@@ -369,7 +370,7 @@ void printdir(char *o, size_t size, stru
+ 		age = je32_to_cpu (ri->ctime);
+ 		filetime = ctime(&age);
+ 		age = time(NULL) - je32_to_cpu (ri->ctime);
+-		printf("%s %-4d %-8d %-8d ", mode_string(jemode_to_cpu (ri->mode)),
++		printf("%s %-4d %-5d %-5d ", mode_string(jemode_to_cpu (ri->mode)),
+ 			   1, je16_to_cpu (ri->uid), je16_to_cpu (ri->gid));
+ 		if ( d->type==DT_BLK || d->type==DT_CHR ) {
+ 			dev_t rdev;
+@@ -382,9 +383,14 @@ void printdir(char *o, size_t size, stru
+ 		d->name[d->nsize]='\0';
+ 		if (age < 3600L * 24 * 365 / 2 && age > -15 * 60) {
+ 			/* hh:mm if less than 6 months old */
+-			printf("%6.6s %5.5s %s/%s%c", filetime + 4, filetime + 11, path, d->name, m);
++			printf("%6.6s %5.5s ", filetime + 4, filetime + 11);
+ 		} else {
+-			printf("%6.6s %4.4s %s/%s%c", filetime + 4, filetime + 20, path, d->name, m);
++			printf("%6.6s  %4.4s ", filetime + 4, filetime + 20);
 +		}
-+
-+		n = (union jffs2_node_union *) ((char *) n + ((je32_to_cpu (n->u.totlen) + 3) & ~3));
-+	} while (n < e);
-+
-+	*num = count;
-+	return ri;
-+}
-+
- /* collects dir struct for selected inode */
++		if (*path == '\0') {
++			printf ("%s%c", d->name, m);
++		} else {
++			printf ("%s/%s%c", path, d->name, m);
+ 		}
+ 		if (d->type == DT_LNK) {
+ 			char symbuf[1024];
+@@ -395,19 +401,32 @@ void printdir(char *o, size_t size, stru
+ 		}
+ 		printf("\n");
  
- /*
-@@ -853,8 +922,9 @@ void catfile(char *o, size_t size, char 
- 			 size_t * rsize)
- {
- 	struct jffs2_raw_dirent *dd;
--	struct jffs2_raw_inode *ri;
-+	struct jffs2_raw_inode **rip;
- 	uint32_t ino;
-+	int i, count;
+-		if (d->type == DT_DIR && recurse) {
+-			char *tmp;
+-			tmp = malloc(BUFSIZ);
+-			if (!tmp) {
+-				fprintf(stderr, "memory exhausted\n");
+-				exit(EXIT_FAILURE);
++		d = d->next;
++	}
++
++	if (recurse) {
++		d = od;
++		while (d != NULL) {
++			if (d->type == DT_DIR) {
++				char *tmp;
++				tmp = malloc(BUFSIZ);
++				if (!tmp) {
++					fprintf(stderr, "memory exhausted\n");
++					exit(EXIT_FAILURE);
++				}
++				printf ("\n");
++				if (*path == '\0') {
++					strcpy (tmp, d->name);
++				} else {
++					sprintf(tmp, "%s/%s", path, d->name);
++				}
++				printf("%s/\n", tmp);
++				lsdir(o, size, tmp, recurse);		/* Go recursive */
++				free(tmp);
+ 			}
+-			sprintf(tmp, "%s/%s", path, d->name);
+-			lsdir(o, size, tmp, recurse);		/* Go recursive */
+-			free(tmp);
+-		}
  
- 	dd = resolvepath(o, size, 1, path, &ino);
+-		d = d->next;
++			d = d->next;
++		}
+ 	}
+ }
  
-@@ -868,8 +938,23 @@ void catfile(char *o, size_t size, char 
- 		exit(EXIT_FAILURE);
+@@ -1032,7 +1051,7 @@ int main(int argc, char **argv)
  	}
  
--	ri = find_raw_inode(o, size, ino);
--	putblock(b, bsize, rsize, ri);
-+	rip = collect_raw_inodes(o, size, ino, &count);
-+
-+	dprintf(" ver   isize   offset    csize    dsize      ctime      mtime\n");
-+
-+	for (i = 0; i < count; i++) {
-+		struct jffs2_raw_inode *ri = rip[i];
-+		dprintf ("%4u %8u %8u %8u %8u %10u %10u\n",
-+				 je32_to_cpu (ri->version), je32_to_cpu (ri->isize),
-+				 je32_to_cpu (ri->offset),
-+				 je32_to_cpu (ri->csize), je32_to_cpu (ri->dsize),
-+				 je32_to_cpu (ri->ctime), je32_to_cpu (ri->mtime));
-+		putblock(b, bsize, rsize, ri);
-+	};
-+
-+	fflush (stdout);
-+
-+	free (rip);
+ 	if (!dir && !file)
+-		lsdir(buf, st.st_size, "/", 1);
++		lsdir(buf, st.st_size, "", recurse);
  
- 	write(1, b, *rsize);
- }
+ 
+ 	free(buf);
 
 
 -- 
