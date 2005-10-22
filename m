@@ -1,20 +1,11 @@
-Received: from zproxy.gmail.com ([64.233.162.197])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ETC1d-0000rS-NJ
-	for linux-mtd@lists.infradead.org; Sat, 22 Oct 2005 01:35:35 -0400
-Received: by zproxy.gmail.com with SMTP id s18so549633nze
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 21 Oct 2005 22:34:33 -0700 (PDT)
-Date: Sat, 22 Oct 2005 14:34:25 +0900
-From: Suzuki Takashi <suzuki.takashi@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <b1c6420f0510142013u634116eag4f360a6a2e7f8432@mail.gmail.com>
-References: <b1c6420f0510142013u634116eag4f360a6a2e7f8432@mail.gmail.com>
+Message-ID: <27072353.1129960920802.JavaMail.root@pswm17.cp.tin.it>
+Date: Sat, 22 Oct 2005 07:02:00 +0100 (GMT+01:00)
+From: <chrisosi@virgilio.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <4359cf69.67e8a797.2ae9.ffffa9e5@mx.gmail.com>
-Subject: Re: [PATCH 4/4] util/jffs2reader better output formats
+Subject: GOOD DAY
+Reply-To: chrisosi@virgilio.it
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,107 +15,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Sat, 15 Oct 2005 12:13:46 +0900, I wrote:
-> This is the 4th patch for util/jffs2reader.c.
-> It is not a bug fix and makes some improvements.
-> 
-> Please review and apply if it is ok.
-
-The patch without quoted-printable encoding and extra linebreaks.
-Thanks.
+Phone: 234-80-27640445
+Email: chrisosi@virgilo.it.
 
 
---- jffs2reader.c.catfile	2005-10-10 18:22:02.000000000 +0900
-+++ jffs2reader.c	2005-10-10 19:31:21.000000000 +0900
-@@ -320,6 +320,7 @@ void printdir(char *o, size_t size, stru
- 	char *filetime;
- 	time_t age;
- 	struct jffs2_raw_inode *ri;
-+	struct dir *od = d;
- 
- 	if (!path)
- 		return;
-@@ -369,7 +370,7 @@ void printdir(char *o, size_t size, stru
- 		age = je32_to_cpu (ri->ctime);
- 		filetime = ctime(&age);
- 		age = time(NULL) - je32_to_cpu (ri->ctime);
--		printf("%s %-4d %-8d %-8d ", mode_string(jemode_to_cpu (ri->mode)),
-+		printf("%s %-4d %-5d %-5d ", mode_string(jemode_to_cpu (ri->mode)),
- 			   1, je16_to_cpu (ri->uid), je16_to_cpu (ri->gid));
- 		if ( d->type==DT_BLK || d->type==DT_CHR ) {
- 			dev_t rdev;
-@@ -382,9 +383,14 @@ void printdir(char *o, size_t size, stru
- 		d->name[d->nsize]='\0';
- 		if (age < 3600L * 24 * 365 / 2 && age > -15 * 60) {
- 			/* hh:mm if less than 6 months old */
--			printf("%6.6s %5.5s %s/%s%c", filetime + 4, filetime + 11, path, d->name, m);
-+			printf("%6.6s %5.5s ", filetime + 4, filetime + 11);
- 		} else {
--			printf("%6.6s %4.4s %s/%s%c", filetime + 4, filetime + 20, path, d->name, m);
-+			printf("%6.6s  %4.4s ", filetime + 4, filetime + 20);
-+		}
-+		if (*path == '\0') {
-+			printf ("%s%c", d->name, m);
-+		} else {
-+			printf ("%s/%s%c", path, d->name, m);
- 		}
- 		if (d->type == DT_LNK) {
- 			char symbuf[1024];
-@@ -395,19 +401,32 @@ void printdir(char *o, size_t size, stru
- 		}
- 		printf("\n");
- 
--		if (d->type == DT_DIR && recurse) {
--			char *tmp;
--			tmp = malloc(BUFSIZ);
--			if (!tmp) {
--				fprintf(stderr, "memory exhausted\n");
--				exit(EXIT_FAILURE);
-+		d = d->next;
-+	}
-+
-+	if (recurse) {
-+		d = od;
-+		while (d != NULL) {
-+			if (d->type == DT_DIR) {
-+				char *tmp;
-+				tmp = malloc(BUFSIZ);
-+				if (!tmp) {
-+					fprintf(stderr, "memory exhausted\n");
-+					exit(EXIT_FAILURE);
-+				}
-+				printf ("\n");
-+				if (*path == '\0') {
-+					strcpy (tmp, d->name);
-+				} else {
-+					sprintf(tmp, "%s/%s", path, d->name);
-+				}
-+				printf("%s/\n", tmp);
-+				lsdir(o, size, tmp, recurse);		/* Go recursive */
-+				free(tmp);
- 			}
--			sprintf(tmp, "%s/%s", path, d->name);
--			lsdir(o, size, tmp, recurse);		/* Go recursive */
--			free(tmp);
--		}
- 
--		d = d->next;
-+			d = d->next;
-+		}
- 	}
- }
- 
-@@ -1032,7 +1051,7 @@ int main(int argc, char **argv)
- 	}
- 
- 	if (!dir && !file)
--		lsdir(buf, st.st_size, "/", 1);
-+		lsdir(buf, st.st_size, "", recurse);
- 
- 
- 	free(buf);
+I am the chairman 
+of the contract award committee of the oil ministry here 
+in Nigeria, 
+for security reasons, I may not wish to disclose how I got your 
+email 
+address for now.
 
+After due deliberation with my partner, I decided to 
+forward to you this 
+business proposal, we want you to assist us 
+receive the sum of Twenty eight 
+million, six hundred thousand united 
+state bills(us28.6m) into your account. 
+This fund resulted from an 
+over-invoiced contract awarded by us under the 
+budget allocation to my 
+ministry and the bill was approved for payment by 
+the concerned 
+ministries. The contract was executed, commissioned and the 
+contractor 
+was paid his actual cost of the contract. Now, we are left with 
+the 
+balance of us28.6m as the over invoiced amount, which we have 
+deliberately over estimated for our own use. Please note that the law 
+forbids civil servants to operate or own foreign accounts hence this 
+contact, we have agreed to share the money in the following 
+percentages: 30 
+for you, 60 for us 10 for tax as may be required by 
+your government.
 
--- 
-Suzuki Takashi
+Note that this transaction is very much free from all 
+sorts of risk hence 
+the business was carefully planned before it was 
+successfully executed and 
+we the officials involved in the deal have 
+put many years in service to our 
+ministry. We have been exercising 
+patience for this privilege for so long 
+not until the presidential 
+announcement last week, that all foreign 
+contractors owed be paid 
+forthwith, this will enable the presidency 
+reconcile our debt ratio 
+with the outside world and to most of us, this is a 
+lifetime blessing 
+we cannot afford to miss. Upon indication of your interest 
+to fully co-
+operate with us, a payment application/information form will be 
+sent 
+to you via email for completion.
+Note that the following information: 
+a) bankers name and address, b) account 
+number and account name and c) 
+your private phone number and email address 
+will enable us seek/secure 
+approval of the fund from the concerned 
+government quarters/ministries 
+within 3-4 banking days.
+
+As soon as we confirm receipt of this money 
+in your nominated bank account, 
+my partner and I will come over to 
+your country to arrange for our own share 
+and possibly invest part of 
+this money in your country.
+
+Let honesty and trust be our watchword 
+throughout this transaction. I shall 
+furnish you with some details 
+about myself. Your prompt reply will be highly 
+appreciated.
+Best 
+regards.
+
+Engr. St.michael Adams
