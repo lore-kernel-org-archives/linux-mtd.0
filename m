@@ -1,14 +1,33 @@
-Received: from bay14-f15.bay14.hotmail.com ([64.4.49.15] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ETqov-00042m-7w
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 02:08:14 +0100
-Message-ID: <BAY14-F1500C94F4B63F41DF7A2D3DC770@phx.gbl>
-From: "z xw" <zxwitsme@hotmail.com>
+Received: from s131.mittwaldmedien.de ([62.216.178.31])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ETyoT-00072e-G2
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 05:40:22 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 579C35E4113
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Oct 2005 11:40:13 +0200 (CEST)
+Received: from lin01.mn-solutions.de (p54B28AD0.dip0.t-ipconnect.de
+	[84.178.138.208])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 76CC75E4102
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Oct 2005 11:40:12 +0200 (CEST)
+Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-solutions.de (Postfix) with ESMTP id 15ABD1E014A
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Oct 2005 11:39:33 +0200 (CEST)
+From: Holger Schurig <hs4233@mail.mn-solutions.de>
 To: linux-mtd@lists.infradead.org
-Date: Mon, 24 Oct 2005 09:04:00 +0800
-Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Subject: NAND flash on dbmx1ads 
+Date: Mon, 24 Oct 2005 11:39:30 +0200
+References: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
+	<4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
+In-Reply-To: <4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200510241139.30533.hs4233@mail.mn-solutions.de>
+Subject: Re: [PATCH 3/4] util/jffs2reader catfile fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,61 +37,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+> The patch without quoted-printable encoding and extra linebreaks.
+> Thanks.
 
-          I want to use the k9f2808 NAND flash on my mx1ads board, and I 
-use kernel 2.4.27 version. Also, the nand_scan function can sucussfully 
-read the manufacture id and vendor id from my nand flash, but when boot up, 
-it will pop up such following message, it seems that the kernel try to 
-erase the NAND flash but failed and the whole kernel halt.
-          Anybody has encounterred such a situation. I really got a 
-headache on my NAND device. Thanks for you help.
-          The kernel boot up information is as below:
+You'll save a lot of trouble if you do NOT inline the patch, but attach it as 
+a file. That will create a MIME encoded e-mail that is understood since about 
+8 years by about every e-mail program. Attachments are MEANT to be 
+byte-transparent :-)
 
-Linux version 2.4.27-vrs1-ssl7 (root@localhost.localdomain) (gcc version 
-3.2.3) #22 五 10月 21 18:01:05 CST 2005
-CPU: Arm920Tid(wb) revision 0
-Machine: Motorola MX1ADS
-......
-start to init nand flash
-ep7312_fio_pbase=0xf2000000
-ep7312_fio_base=0xf2000000
-start to scan the mx1 nand flash
-nand_scan() function start
-nand_command
-nand_maf_id=0xec,nand_dev_id=0x73
-NAND device: Manufacture ID: 0xec, Chip ID: 0x73 (Samsung NAND 16MB 3,3V)
-bp6
-nand_scan() function end
-Using static partition definition
-Creating 1 MTD partitions on "NAND 16MB 3,3V":
-0x00000000-0x01000000 : "MX1 Nand Flash"
-init nand flash complete
-SDRAM disk initialized.
-cramfs: wrong magic
-FAT: bogus logical sector size 29440
-UMSDOS: msdos_read_super failed, mount aborted.
-FAT: bogus logical sector size 29440
-FAT: bogus logical sector size 29440
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000: 
-0x3de5 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000004: 
-0xe073 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000008: 
-0x00ef instead
-......
-......
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004e0004: 
-0x00ad instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x004e0008: 
-0xb0f3 instead
-JFFS2: Erase block at 0x004e0000 is not formatted. It will be erased
-Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-Kernel panic: VFS: Unable to mount root fs on 1f:02
-
-
-Regards,
-Vincent Zhou
-
-_________________________________________________________________
-免费下载 MSN Explorer:   http://explorer.msn.com/lccn  
+Surely even GMAIL allows you to attach a file, maybe via a button in the web 
+formular?
