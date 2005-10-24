@@ -1,33 +1,24 @@
-Received: from s131.mittwaldmedien.de ([62.216.178.31])
+Received: from smtprelay02.ispgateway.de ([80.67.18.14])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ETyoT-00072e-G2
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 05:40:22 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id 579C35E4113
+	id 1ETzgV-0007jq-VG
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 06:36:13 -0400
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.89.151])
+	(envelope-sender <priewasser@gmail.com>)
+	by smtprelay02.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 24 Oct 2005 10:36:05 -0000
+Received: from [192.168.0.63] (unknown [192.168.0.63])
+	by deepspace9.in2soft.meep (Postfix) with ESMTP id 2EA8265FE
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Oct 2005 11:40:13 +0200 (CEST)
-Received: from lin01.mn-solutions.de (p54B28AD0.dip0.t-ipconnect.de
-	[84.178.138.208])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id 76CC75E4102
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Oct 2005 11:40:12 +0200 (CEST)
-Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-solutions.de (Postfix) with ESMTP id 15ABD1E014A
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Oct 2005 11:39:33 +0200 (CEST)
-From: Holger Schurig <hs4233@mail.mn-solutions.de>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 24 Oct 2005 11:39:30 +0200
-References: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
-	<4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
-In-Reply-To: <4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
+	Mon, 24 Oct 2005 12:35:03 +0200 (CEST)
+Message-ID: <435CB911.4060005@gmail.com>
+Date: Mon, 24 Oct 2005 12:36:01 +0200
+From: Bernhard Priewasser <priewasser@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200510241139.30533.hs4233@mail.mn-solutions.de>
-Subject: Re: [PATCH 3/4] util/jffs2reader catfile fix
+Subject: malloc.c:100: error: dereferencing pointer to incomplete type /
+	dbg_memalloc()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,13 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> The patch without quoted-printable encoding and extra linebreaks.
-> Thanks.
+Hello,
 
-You'll save a lot of trouble if you do NOT inline the patch, but attach it as 
-a file. That will create a MIME encoded e-mail that is understood since about 
-8 years by about every e-mail program. Attachments are MEANT to be 
-byte-transparent :-)
+when trying to compile latest CVS MTD with JFFS2_FS_DEBUG=2 I get the 
+following compiling errors on dbg_memalloc():
 
-Surely even GMAIL allows you to attach a file, maybe via a button in the web 
-formular?
+>   CC      fs/jffs2/malloc.o
+> fs/jffs2/malloc.c: In function `jffs2_alloc_full_dirent':
+> fs/jffs2/malloc.c:100: error: dereferencing pointer to incomplete type
+> fs/jffs2/malloc.c: In function `jffs2_free_full_dirent':
+> fs/jffs2/malloc.c:106: error: dereferencing pointer to incomplete type
+> [...]
+> fs/jffs2/malloc.c: In function `jffs2_alloc_inode_cache':
+> fs/jffs2/malloc.c:199: error: dereferencing pointer to incomplete type
+> fs/jffs2/malloc.c: In function `jffs2_free_inode_cache':
+> fs/jffs2/malloc.c:205: error: dereferencing pointer to incomplete type
+> make[2]: *** [fs/jffs2/malloc.o] Error 1
+> make[1]: *** [fs/jffs2] Error 2
+> make: *** [fs] Error 2
+
+It's reproducible; with JFFS2_FS_DEBUG!=2 it does compile.
+I hope this information helps; I would be grateful if it ran through.
+
+Regards,
+Bernhard
