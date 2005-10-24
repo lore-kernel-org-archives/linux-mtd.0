@@ -1,19 +1,19 @@
-Received: from smtprelay03.ispgateway.de ([80.67.18.15])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EU2wr-0002Qc-II
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 10:05:20 -0400
-Message-ID: <435CEA17.7000802@gmail.com>
-Date: Mon, 24 Oct 2005 16:05:11 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EU55R-0003qU-MV
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 12:22:20 -0400
+Message-ID: <435D0A05.5090508@yandex.ru>
+Date: Mon, 24 Oct 2005 20:21:25 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Bernhard Priewasser <priewasser@gmail.com>
 References: <435CB911.4060005@gmail.com>
 In-Reply-To: <435CB911.4060005@gmail.com>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: Re: malloc.c:100: error: dereferencing pointer to incomplete type
- / dbg_memalloc()
+ /	dbg_memalloc()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,6 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kernel version is 2.6.11.
+Bernhard Priewasser wrote:
+> Hello,
+> 
+> when trying to compile latest CVS MTD with JFFS2_FS_DEBUG=2 I get the 
+> following compiling errors on dbg_memalloc():
+> 
+Fixed in CVS, thanks.
 
-Bernhard
+-- 
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
