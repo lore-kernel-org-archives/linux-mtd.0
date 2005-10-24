@@ -1,21 +1,18 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EU0Os-0008IC-1b
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 07:22:02 -0400
-Date: Mon, 24 Oct 2005 13:20:58 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Holger Schurig <hs4233@mail.mn-solutions.de>
-Message-ID: <20051024112058.GA26819@wohnheim.fh-wedel.de>
-References: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
-	<4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
-	<200510241139.30533.hs4233@mail.mn-solutions.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200510241139.30533.hs4233@mail.mn-solutions.de>
+	id 1EU2Ac-0000yc-CJ
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 09:15:29 -0400
+Message-ID: <435CDE62.1010405@ieee.org>
+Date: Mon, 24 Oct 2005 09:15:14 -0400
+From: Dan Brown <dan_brown@ieee.org>
+MIME-Version: 1.0
+To: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+References: <434B98B0.776.50BEDB@localhost> <4358C6CA.16998.6EB936@localhost>
+In-Reply-To: <4358C6CA.16998.6EB936@localhost>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 3/4] util/jffs2reader catfile fix
+Subject: Re: docboot: nandwrite:  Input file is not page aligned
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 October 2005 11:39:30 +0200, Holger Schurig wrote:
-> 
-> > The patch without quoted-printable encoding and extra linebreaks.
-> > Thanks.
-> 
-> You'll save a lot of trouble if you do NOT inline the patch, but attach it as 
-> a file. That will create a MIME encoded e-mail that is understood since about 
-> 8 years by about every e-mail program. Attachments are MEANT to be 
-> byte-transparent :-)
+Joseph M Dupre (AVAB Inc.) wrote:
 
-Actually, I prefer inline patches.  Attachments are better than broken
-patches, but as long as it works, inlines keep patch description and
-patch itself together.
+>OK, issue solved.  There is no problem with nandwrite using uClibc 
+>librarires.  Docboot works "as advertised" using the uClibc buildroot 
+>tools. 
+>  
+>
+Glad to hear it's working for you!  Pity you had so much trouble 
+figuring out the problem, but suffering builds character :)
 
-Jörn
+    -Dan
 
--- 
-Mundie uses a textbook tactic of manipulation: start with some
-reasonable talk, and lead the audience to an unreasonable conclusion.
--- Bruce Perens
+>My problem was that the doc_spl file was getting corrupted when I 
+>transferred the image from the build machine to the target.  The 
+>ftpget command in the uClibc buildroot environment is truncating the 
+>file durring transfer.  Thus the error messages about "not page 
+>aligned" were correct.  Sorry.
+>
+>- Joe 
+>  
+>
