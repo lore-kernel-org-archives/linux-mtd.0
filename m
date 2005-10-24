@@ -1,24 +1,21 @@
-Received: from smtprelay02.ispgateway.de ([80.67.18.14])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ETzgV-0007jq-VG
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 06:36:13 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.89.151])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay02.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 24 Oct 2005 10:36:05 -0000
-Received: from [192.168.0.63] (unknown [192.168.0.63])
-	by deepspace9.in2soft.meep (Postfix) with ESMTP id 2EA8265FE
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Oct 2005 12:35:03 +0200 (CEST)
-Message-ID: <435CB911.4060005@gmail.com>
-Date: Mon, 24 Oct 2005 12:36:01 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
-MIME-Version: 1.0
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: malloc.c:100: error: dereferencing pointer to incomplete type /
-	dbg_memalloc()
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EU0Os-0008IC-1b
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 07:22:02 -0400
+Date: Mon, 24 Oct 2005 13:20:58 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Holger Schurig <hs4233@mail.mn-solutions.de>
+Message-ID: <20051024112058.GA26819@wohnheim.fh-wedel.de>
+References: <b1c6420f0510142013q68d95bfak59086ca9a1887240@mail.gmail.com>
+	<4359cf33.4d2108c5.1cab.ffff918e@mx.gmail.com>
+	<200510241139.30533.hs4233@mail.mn-solutions.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200510241139.30533.hs4233@mail.mn-solutions.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 3/4] util/jffs2reader catfile fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Mon, 24 October 2005 11:39:30 +0200, Holger Schurig wrote:
+> 
+> > The patch without quoted-printable encoding and extra linebreaks.
+> > Thanks.
+> 
+> You'll save a lot of trouble if you do NOT inline the patch, but attach it as 
+> a file. That will create a MIME encoded e-mail that is understood since about 
+> 8 years by about every e-mail program. Attachments are MEANT to be 
+> byte-transparent :-)
 
-when trying to compile latest CVS MTD with JFFS2_FS_DEBUG=2 I get the 
-following compiling errors on dbg_memalloc():
+Actually, I prefer inline patches.  Attachments are better than broken
+patches, but as long as it works, inlines keep patch description and
+patch itself together.
 
->   CC      fs/jffs2/malloc.o
-> fs/jffs2/malloc.c: In function `jffs2_alloc_full_dirent':
-> fs/jffs2/malloc.c:100: error: dereferencing pointer to incomplete type
-> fs/jffs2/malloc.c: In function `jffs2_free_full_dirent':
-> fs/jffs2/malloc.c:106: error: dereferencing pointer to incomplete type
-> [...]
-> fs/jffs2/malloc.c: In function `jffs2_alloc_inode_cache':
-> fs/jffs2/malloc.c:199: error: dereferencing pointer to incomplete type
-> fs/jffs2/malloc.c: In function `jffs2_free_inode_cache':
-> fs/jffs2/malloc.c:205: error: dereferencing pointer to incomplete type
-> make[2]: *** [fs/jffs2/malloc.o] Error 1
-> make[1]: *** [fs/jffs2] Error 2
-> make: *** [fs] Error 2
+Jörn
 
-It's reproducible; with JFFS2_FS_DEBUG!=2 it does compile.
-I hope this information helps; I would be grateful if it ran through.
-
-Regards,
-Bernhard
+-- 
+Mundie uses a textbook tactic of manipulation: start with some
+reasonable talk, and lead the audience to an unreasonable conclusion.
+-- Bruce Perens
