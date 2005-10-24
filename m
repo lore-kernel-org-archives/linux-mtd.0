@@ -1,20 +1,19 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EU2lq-00025v-EV
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 09:53:54 -0400
-Date: Mon, 24 Oct 2005 15:53:35 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Wolfgang Denk <wd@denx.de>
-Message-ID: <20051024135335.GB26819@wohnheim.fh-wedel.de>
-References: <20051024095748.GA6566@home.fluff.org>
-	<20051024133010.79DCD353450@atlas.denx.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20051024133010.79DCD353450@atlas.denx.de>
-Cc: Ben Dooks <ben@fluff.org.uk>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: Add support for the "TQM834x" Boards
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EU2wr-0002Qc-II
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 10:05:20 -0400
+Message-ID: <435CEA17.7000802@gmail.com>
+Date: Mon, 24 Oct 2005 16:05:11 +0200
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: Bernhard Priewasser <priewasser@gmail.com>
+References: <435CB911.4060005@gmail.com>
+In-Reply-To: <435CB911.4060005@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: malloc.c:100: error: dereferencing pointer to incomplete type
+ / dbg_memalloc()
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +23,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 October 2005 15:30:10 +0200, Wolfgang Denk wrote:
-> 
-> Um... what shall I do now? Resubmit the whole  patch,  or  submit  an
-> incremental one?
+Kernel version is 2.6.11.
 
-Resubmit the whole patch.  Someone(1) still has to go through the
-archives and pick up a bunch of patches.  It's less work to just take
-the latest one.
-
-(1) Volunteers, anyone?  I should do it, but don't find the time.
-
-Jörn
-
--- 
-Fools ignore complexity.  Pragmatists suffer it.
-Some can avoid it.  Geniuses remove it.
--- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
+Bernhard
