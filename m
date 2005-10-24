@@ -1,23 +1,19 @@
-Received: from smtprelay04.ispgateway.de ([80.67.18.16])
+Received: from mailout06.sul.t-online.com ([194.25.134.19])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EU2PA-0001HS-29
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 09:30:26 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.89.151])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay04.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 24 Oct 2005 13:30:21 -0000
-Message-ID: <435CE1ED.8020301@gmail.com>
-Date: Mon, 24 Oct 2005 15:30:21 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
-MIME-Version: 1.0
-To: Holger Schurig <hs4233@mail.mn-solutions.de>
-References: <434E7211.6020709@gmail.com>
-	<200510140825.12934.hs4233@mail.mn-solutions.de>
-In-Reply-To: <200510140825.12934.hs4233@mail.mn-solutions.de>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1EU2PX-0001He-8B
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 09:31:08 -0400
+To: Ben Dooks <ben@fluff.org.uk>
+From: Wolfgang Denk <wd@denx.de>
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Mon, 24 Oct 2005 10:57:48 BST."
+	<20051024095748.GA6566@home.fluff.org>
+Date: Mon, 24 Oct 2005 15:30:10 +0200
+Sender: wd@denx.de
+Message-Id: <20051024133010.79DCD353450@atlas.denx.de>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: /dev/mtd* not there with latest MTD
+Subject: Re: [PATCH] MTD: Add support for the "TQM834x" Boards 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I made some old-fanshiond mknod-style device files there. They have the
-> same names as devfs without devfsd had, so my software just runs fine.
+In message <20051024095748.GA6566@home.fluff.org> you wrote:
+>
+> > [PATCH] MTD: Add support for the "TQM834x" Boards
+...
+> > +#define NB_OF(x)  (sizeof(x)/sizeof(x[0]))
+> 
+> how about ARRAY_SIZE() here?
 
-/dev/mtdblockX works fine, but /dev/mtdX NOT.
+Good idea. Thanks for pointing out.
 
-Did you only create mtdblocks or mtds too?
-Older MTD creates /dev/mtdX with minor numbers X*2; running flash_erase 
-(for example) works fine.
-Not so with same kernel, but latest CVS: creating exactly the same 
-/dev/mtdX as mtdchar.c would do (e.g. older MTD would do), I cannot 
-operate the flash properly. flash_erase results in an CFI error:
+Um... what shall I do now? Resubmit the whole  patch,  or  submit  an
+incremental one?
 
- > > flash_erase /dev/mtd4
- > Erase Total 1 Units
- > Performing Flash Erase of length 262144 at offset 0x0
- > H720X: block erase error: (status timeout)
- > MTD Erase failure: Input/output error
- > H720X: Waiting for chip to be ready timed out. Status 300080
+Best regards,
 
-Hm...
+Wolfgang Denk
 
-Regards,
-Bernhard
+-- 
+Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+Sorry, but my karma just ran over your dogma.
