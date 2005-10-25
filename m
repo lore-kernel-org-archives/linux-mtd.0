@@ -1,18 +1,25 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikana.artecdesign.ee)
+Received: from zproxy.gmail.com ([64.233.162.202])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EU9q3-0006gG-FL
-	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 17:26:44 -0400
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=pcy.artec.ee)
-	by postikana.artecdesign.ee with esmtp (Exim 3.35 #1 (Debian))
-	id 1EU9iJ-0005cu-00
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Oct 2005 00:18:39 +0300
-Date: Tue, 25 Oct 2005 00:26:35 +0300 (EEST)
-From: Olav Kongas <ok@artecdesign.ee>
-To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.63.0510250011420.25354@pcy.artec.ee>
+	id 1EUDBI-0000AP-MG
+	for linux-mtd@lists.infradead.org; Mon, 24 Oct 2005 21:00:49 -0400
+Received: by zproxy.gmail.com with SMTP id 13so455618nzn
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Oct 2005 18:00:25 -0700 (PDT)
+Message-ID: <6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
+Date: Mon, 24 Oct 2005 18:00:24 -0700
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1130173789.15275.1.camel@windu.rchland.ibm.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: Solved - Buffer I/O error - chip access timings in 2.6.13?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
+	<6934efce0510201038h2dbc72abvc610c894a9763bce@mail.gmail.com>
+	<1130173789.15275.1.camel@windu.rchland.ibm.com>
+Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@cam.org>
+Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +29,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Sorry. It took me longer than it should have to track down a P30 part
+and get it on my machine.  Does this work for you?
 
-It turned out that the flash chip was in the 'read' mode, 
-while it was expected to be in the 'read status' mode. Hence 
-the errors described in the parent e-mail. The following 
-patch cures the problem for me. I hope the patch is suitable 
-for submission to mainline. 
+Is this format ok?
 
-Olav
+[MTD] CHIPS: fix for P30 cfi parsing
 
+Change to the extended cfi table parsing for Intel NOR flash that uses
+the info in the extended table to 'walk' the table rather than using
+hard coding for various primary extended query table version numbers.
+[From: Jared Hulbert <jaredeh@gmail.com>]
 
---- linux-2.6.14-rc4-or/drivers/mtd/chips/cfi_cmdset_0001.c	2005-10-11 04:19:19.000000000 +0300
-+++ linux-2.6.14-rc4-flash/drivers/mtd/chips/cfi_cmdset_0001.c	2005-10-24 23:52:12.000000000 +0300
-@@ -643,6 +643,9 @@ static int get_chip(struct map_info *map
- 	switch (chip->state) {
- 
- 	case FL_STATUS:
-+		/* Some chips (e.g. Sharp's LHF64F12) need to be
-+		   explicitly set to 'status read' mode. */
-+		map_write(map, CMD(0x70), adr);
- 		for (;;) {
- 			status = map_read(map, adr);
- 			if (map_word_andequal(map, status, status_OK, status_OK))
+Index: trunk/drivers/mtd/chips/cfi_cmdset_0001.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- trunk/drivers/mtd/chips/cfi_cmdset_0001.c=09(revision 8)
++++ trunk/drivers/mtd/chips/cfi_cmdset_0001.c=09(revision 10)
+@@ -285,7 +285,7 @@
+ =09=09=09      sizeof(struct cfi_intelext_otpinfo);
+
+ =09=09/* Burst Read info */
+-=09=09extra_size +=3D (extp->MinorVersion < '4') ? 6 : 5;
++=09=09extra_size +=3D (unsigned int)extp->extra[extra_size+1]+2;
+
+ =09=09/* Number of hardware-partitions */
+ =09=09extra_size +=3D 1;
+@@ -519,7 +519,7 @@
+ =09=09       sizeof(struct cfi_intelext_otpinfo);
+
+ =09=09/* Burst Read info */
+-=09=09offs +=3D (extp->MinorVersion < '4') ? 6 : 5;
++=09=09offs +=3D (int)extp->extra[offs+1]+2;
+
+ =09=09/* Number of partition regions */
+ =09=09numregions =3D extp->extra[offs];
