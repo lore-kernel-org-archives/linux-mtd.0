@@ -1,19 +1,27 @@
-Received: from relay01.roc.ny.frontiernet.net ([66.133.182.164])
+Received: from zproxy.gmail.com ([64.233.162.202])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EUTHO-0001kR-Hb
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 14:12:15 -0400
-From: John Bowler <jbowler@acm.org>
-To: <dwmw2@infradead.org>
-Date: Tue, 25 Oct 2005 10:40:03 -0700
-Message-ID: <001701c5d98b$2284feb0$1001a8c0@kalmiopsis>
+	id 1EUTPF-000203-66
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 14:20:22 -0400
+Received: by zproxy.gmail.com with SMTP id 13so574494nzn
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 25 Oct 2005 11:20:16 -0700 (PDT)
+Message-ID: <6934efce0510251120x30b29008ocdf1c445c5bcd753@mail.gmail.com>
+Date: Tue, 25 Oct 2005 11:20:15 -0700
+From: Jared Hulbert <jaredeh@gmail.com>
+To: Josh Boyer <jdub@us.ibm.com>
+In-Reply-To: <1130247989.16443.3.camel@windu.rchland.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH]: 2.6.14-rc3 drives/mtd/redboot.c: recognise a foreign byte
-	sex partition table
-Reply-To: jbowler@acm.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
+	<6934efce0510201038h2dbc72abvc610c894a9763bce@mail.gmail.com>
+	<1130173789.15275.1.camel@windu.rchland.ibm.com>
+	<6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
+	<1130247989.16443.3.camel@windu.rchland.ibm.com>
+Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@cam.org>
+Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +31,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The RedBoot boot loader writes flash partition tables containing native byte
-sex 32 bit values.  When booting an opposite byte sex kernel (e.g. an LE
-kernel from BE RedBoot) the current MTD driver fails to handle the partition
-table and therefore is unable to generate the correct partition map for the
-flash.
+On 10/25/05, Josh Boyer <jdub@us.ibm.com> wrote:
+> On Mon, 2005-10-24 at 18:00 -0700, Jared Hulbert wrote:
+> > Sorry. It took me longer than it should have to track down a P30 part
+> > and get it on my machine.  Does this work for you?
+>
+> No worries.  The patch seems to be working fine on my P30 chips.  I
+> don't have any other chips to test on at the moment, but it looks like
+> it should work.
+>
+> Nicolas, could you try it on the chips you have?
 
-So far as I am aware this problem is ARM specific, because only ARM supports
-software change of the CPU (memory system) byte sex, however the partition
-table parsing is in generic MTD code.  The patch below has been tested on
-NSLU2 (an IXP4XX based system) with a patch, 10-ixp4xx-copy-from.patch
-(submitted to linux-arm-kernel - it's ARM specific) required to make the
-maps/ixp4xx.c driver work with an LE kernel.
+FYI - I did try this on L18, M18, and P30.
 
-Builds of the patched system are in the 'unstable' release of OpenSlug and
-UcSlugC available from  www.nslu2-linux.org.  These builds are BE, the
-archives at www.nslu2-linux.org and www.handhelds.org (see
-monotone.vanille.de) can be built LE (currently DISTRO targets nslu-ltu.conf
-for LE thumb uclibc (32 bit kernel) and nslu2-lau.conf, nslu2-lag.conf for
-LE arm uclibc/glibc) and this patch has been tested extensively will both BE
-and LE systems on the NSLU2 (including swapping between BE and LE by
-reflashing from both RedBoot and Linux).
+> >
+> > [MTD] CHIPS: fix for P30 cfi parsing
+> >
+> > Change to the extended cfi table parsing for Intel NOR flash that uses
+> > the info in the extended table to 'walk' the table rather than using
+> > hard coding for various primary extended query table version numbers.
+> > [From: Jared Hulbert <jaredeh@gmail.com>]
+> >
+> > Index: trunk/drivers/mtd/chips/cfi_cmdset_0001.c
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > --- trunk/drivers/mtd/chips/cfi_cmdset_0001.c (revision 8)
+> > +++ trunk/drivers/mtd/chips/cfi_cmdset_0001.c (revision 10)
+> > @@ -285,7 +285,7 @@
+> >                             sizeof(struct cfi_intelext_otpinfo);
+> >
+> >               /* Burst Read info */
+> > -             extra_size +=3D (extp->MinorVersion < '4') ? 6 : 5;
+> > +             extra_size +=3D (unsigned int)extp->extra[extra_size+1]+2=
+;
+> >
+> >               /* Number of hardware-partitions */
+> >               extra_size +=3D 1;
+> > @@ -519,7 +519,7 @@
+> >                      sizeof(struct cfi_intelext_otpinfo);
+> >
+> >               /* Burst Read info */
+> > -             offs +=3D (extp->MinorVersion < '4') ? 6 : 5;
+> > +             offs +=3D (int)extp->extra[offs+1]+2;
+>
+> Why (int) here and (unsigned int) above?  Not a big deal, but I'm
+> curious.
 
-The patch recognises that the FIS directory (the partition table) is
-byte-reversed by examining the partition table size, which is known to be
-one erase block (this is an assumption made elsewhere in redboot.c).  If the
-size matches the erase block after byte swapping the value then
-byte-reversal is assumed, if not no further action is taken.  The patched
-code is fail safe; should redboot.c be changed to support a partition table
-with a modified size field the test will fail and the partition table will
-be assumed to have the host byte sex.
-
-If byte-reversal is detected the patch byte swaps the remainder of the 32
-bit fields in the copy of the table; this copy is then used to set up the
-MTD partition map.
-
-Signed-off-by: John Bowler <jbowler@acm.org>
-
----
-linux-2.6.13/.pc/10-mtdpart-redboot-fis-byteswap.patch/drivers/mtd/redboot.c
-2005-08-28 16:41:01.000000000 -0700
-+++ linux-2.6.13/drivers/mtd/redboot.c	2005-10-23 21:44:59.999694674 -0700
-@@ -89,8 +89,34 @@
- 			i = numslots;
- 			break;
- 		}
--		if (!memcmp(buf[i].name, "FIS directory", 14))
-+		if (!memcmp(buf[i].name, "FIS directory", 14)) {
-+			/* This is apparently the FIS directory entry for the
-+			 * FIS directory itself.  The FIS directory size is
-+			 * one erase block, if the buf[i].size field is
-+			 * swab32(erasesize) then we know we are looking at
-+			 * a byte swapped FIS directory - swap all the entries!
-+			 * (NOTE: this is 'size' not 'data_length', size is
-+			 * the full size of the entry.)
-+			 */
-+			if (swab32(buf[i].size) == master->erasesize) {
-+				int j;
-+				for (j = 0; j < numslots && buf[j].name[0] != 0xff; ++j) {
-+					/* The unsigned long fields were written with the
-+					 * wrong byte sex, name and pad have no byte sex.
-+					 */
-+#					define do_swab32(x) (x) = swab32(x)
-+					do_swab32(buf[j].flash_base);
-+					do_swab32(buf[j].mem_base);
-+					do_swab32(buf[j].size);
-+					do_swab32(buf[j].entry_point);
-+					do_swab32(buf[j].data_length);
-+					do_swab32(buf[j].desc_cksum);
-+					do_swab32(buf[j].file_cksum);
-+#					undef do_swab32
-+				}
-+			}
- 			break;
-+		}
- 	}
- 	if (i == numslots) {
- 		/* Didn't find it */
+off is an int, extra_size is an unsigned int.  Though off should
+probably be made unsigned as well.
