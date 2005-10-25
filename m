@@ -1,12 +1,12 @@
-Received: from bay14-f28.bay14.hotmail.com ([64.4.49.28] helo=hotmail.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EUKe0-0006OQ-Tz
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 09:59:00 +0100
-Message-ID: <BAY14-F284F99B375BA928F50D3A3DC760@phx.gbl>
+Received: from bay14-f6.bay14.hotmail.com ([64.4.49.6] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EUKnt-000570-9t
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 05:09:14 -0400
+Message-ID: <BAY14-F6816619ADEB02C2E69011DC760@phx.gbl>
 In-Reply-To: <BAY14-F1500C94F4B63F41DF7A2D3DC770@phx.gbl>
 From: "z xw" <zxwitsme@hotmail.com>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 25 Oct 2005 16:58:51 +0800
+Date: Tue, 25 Oct 2005 16:51:38 +0800
 Mime-Version: 1.0
 Content-Type: text/plain; charset=gb2312; format=flowed
 Subject: RE: NAND flash on dbmx1ads
@@ -97,4 +97,4 @@ Thanks for you kindly help.
 >http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 _________________________________________________________________
-与联机的朋友进行交流，请使用 MSN Messenger:  http://messenger.msn.com/cn  
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
