@@ -1,22 +1,15 @@
-Received: from pop-tawny.atl.sa.earthlink.net ([207.69.195.67])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EV4s7-0007FY-97
-	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2005 06:20:36 -0400
-Received: from cpe-66-1-91-99.az.sprintbbd.net ([66.1.91.99]
-	helo=[192.168.0.254])
-	by pop-tawny.atl.sa.earthlink.net with esmtp (Exim 3.36 #10)
-	id 1EV4s4-0001wc-00
-	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2005 06:20:33 -0400
-From: Brent Roberts <randd@globalopensource.net>
-To: MTD list <linux-mtd@lists.infradead.org>
-Date: Thu, 27 Oct 2005 03:22:13 -0700
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EUSeT-0001Q9-CU
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 13:31:59 -0400
+Message-ID: <435E6C74.8010406@ru.mvista.com>
+Date: Tue, 25 Oct 2005 21:33:40 +0400
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200510270322.13555.randd@globalopensource.net>
-Subject: MTD_open:  permission denied
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------070204000107050903040601"
+Cc: Konstantin Baidarov <kbaidarov@ru.mvista.com>
+Subject: [PATCH] CFI: prevent the false software timeouts on writes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +19,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all. 
+This is a multi-part message in MIME format.
+--------------070204000107050903040601
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-When attempting to do a 'flash_eraseall /dev/mtd1" I get "/dev/mtd1: 
-permission denied".  It seems that MTD_open attempts but fails here.
+Hello.
 
-I'm using a  DiskOnChip TSOP 192 MB.  All neccesary kernel drivers are 
-compiled into the kernel as far as I know.  I am able to fdisk and 
-mkfs.ext2 /dev/inftla1, and mount it, write to it, etc.
+       We've noticed that sometimes "MTD do_write_buffer(): software timeout"
+message was printed out when writing to a Fujitsu NOR flash.
+       It turned out that this was because of a race in the timeout handling
+do_write_buffer(). A small timeout of (HZ / 1000) + 1 is used there, and
+sometimes if the timer interrupt handling takes more than one or even two
+jiffies (which is 1-2 ms with HZ == 1000) and that interrupt happens just
+after chip_ready() call, the driver bails out from a ready polling loop
+despite the chip has actually become ready while all those interrupts were
+handled. To deal with this issue, extra check for chip ready is neccessary on
+timeout expiration (and the checks should better be reordered).
+       As do_write_oneword() uses the same approach, it needs to also be changed.
 
-/proc/mtd looks like this:
-mtd0: 0c000000 00004000 "DiskOnChip 2000 (INFTL Model)"
-mtd1: 00010000 00004000 " DiskOnChip BDK partition"
-mtd2: 0bfdc000 00004000 " DiskOnChip BDTL partition"
+Signed-off-by: Konstantin Baidarov <kbaidarov@ru.mvista.com>
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 
-Any suggestions as to why permission is denied?
 
-Thanks.
 
--Brent Roberts
+
+
+--------------070204000107050903040601
+Content-Type: text/plain;
+ name="cfi_cmdset_0002-write-timeout.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cfi_cmdset_0002-write-timeout.patch"
+
+Index: drivers/mtd/chips/cfi_cmdset_0002.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0002.c,v
+retrieving revision 1.120
+diff -a -u -p -r1.120 cfi_cmdset_0002.c
+--- drivers/mtd/chips/cfi_cmdset_0002.c	20 Jul 2005 21:01:13 -0000	1.120
++++ drivers/mtd/chips/cfi_cmdset_0002.c	25 Oct 2005 15:38:44 -0000
+@@ -1014,16 +1014,16 @@ static int __xipram do_write_oneword(str
+ 			continue;
+ 		}
+ 
+-		if (chip_ready(map, adr))
+-			break;
+-
+-		if (time_after(jiffies, timeo)) {
++		if (time_after(jiffies, timeo) && !chip_ready(map, adr)){
+ 			xip_enable(map, chip, adr);
+ 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
+ 			xip_disable(map, chip, adr);
+-                        break;
++			break;
+ 		}
+ 
++		if (chip_ready(map, adr))
++			break;
++
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+ 	}
+@@ -1275,13 +1275,13 @@ static int __xipram do_write_buffer(stru
+ 			continue;
+ 		}
+ 
++		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
++			break;
++
+ 		if (chip_ready(map, adr)) {
+ 			xip_enable(map, chip, adr);
+ 			goto op_done;
+ 		}
+-		    
+-		if( time_after(jiffies, timeo))
+-			break;
+ 
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+
+
+
+
+
+--------------070204000107050903040601--
