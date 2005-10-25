@@ -1,15 +1,32 @@
-Received: from bay14-f6.bay14.hotmail.com ([64.4.49.6] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EUKnt-000570-9t
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 05:09:14 -0400
-Message-ID: <BAY14-F6816619ADEB02C2E69011DC760@phx.gbl>
-In-Reply-To: <BAY14-F1500C94F4B63F41DF7A2D3DC770@phx.gbl>
-From: "z xw" <zxwitsme@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 25 Oct 2005 16:51:38 +0800
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EUP8X-0007NI-F7
+	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 14:46:46 +0100
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j9PDkUbp006151
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Oct 2005 09:46:30 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j9PDkUvr092814
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Oct 2005 09:46:30 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j9PDkTNf020931
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Oct 2005 09:46:29 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: Jared Hulbert <jaredeh@gmail.com>
+In-Reply-To: <6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
+References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
+	<6934efce0510201038h2dbc72abvc610c894a9763bce@mail.gmail.com>
+	<1130173789.15275.1.camel@windu.rchland.ibm.com>
+	<6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 25 Oct 2005 08:46:29 -0500
+Message-Id: <1130247989.16443.3.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312; format=flowed
-Subject: RE: NAND flash on dbmx1ads
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Nicolas Pitre <nico@cam.org>
+Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,82 +36,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Because the NAND flash hasn't change the order of the mtd minor number, the 
-root filesystem should be still norflash.But the mounting of root fs 
-failed. I am puzzled about it.  
-Thanks for you kindly help.
+On Mon, 2005-10-24 at 18:00 -0700, Jared Hulbert wrote:
+> Sorry. It took me longer than it should have to track down a P30 part
+> and get it on my machine.  Does this work for you?
 
->From: "z xw" <zxwitsme@hotmail.com>
->To: linux-mtd@lists.infradead.org
->Subject: NAND flash on dbmx1ads 
->Date: Mon, 24 Oct 2005 09:04:00 +0800
->
->Dear All,
->
->          I want to use the k9f2808 NAND flash on my mx1ads board, 
->and I use kernel 2.4.27 version. Also, the nand_scan function can 
->sucussfully read the manufacture id and vendor id from my nand 
->flash, but when boot up, it will pop up such following message, it 
->seems that the kernel try to erase the NAND flash but failed and the 
->whole kernel halt.
->          Anybody has encounterred such a situation. I really got a 
->headache on my NAND device. Thanks for you help.
->          The kernel boot up information is as below:
->
->Linux version 2.4.27-vrs1-ssl7 (root@localhost.localdomain) (gcc 
->version 3.2.3) #22 五 10月 21 18:01:05 CST 2005
->CPU: Arm920Tid(wb) revision 0
->Machine: Motorola MX1ADS
->......
->start to init nand flash
->ep7312_fio_pbase=0xf2000000
->ep7312_fio_base=0xf2000000
->start to scan the mx1 nand flash
->nand_scan() function start
->nand_command
->nand_maf_id=0xec,nand_dev_id=0x73
->NAND device: Manufacture ID: 0xec, Chip ID: 0x73 (Samsung NAND 16MB 
->3,3V)
->bp6
->nand_scan() function end
->Using static partition definition
->Creating 1 MTD partitions on "NAND 16MB 3,3V":
->0x00000000-0x01000000 : "MX1 Nand Flash"
->init nand flash complete
->SDRAM disk initialized.
->cramfs: wrong magic
->FAT: bogus logical sector size 29440
->UMSDOS: msdos_read_super failed, mount aborted.
->FAT: bogus logical sector size 29440
->FAT: bogus logical sector size 29440
->jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
->0x00000000: 0x3de5 instead
->jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
->0x00000004: 0xe073 instead
->jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
->0x00000008: 0x00ef instead
->......
->......
->jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
->0x004e0004: 0x00ad instead
->jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 
->0x004e0008: 0xb0f3 instead
->JFFS2: Erase block at 0x004e0000 is not formatted. It will be erased
->Cowardly refusing to erase blocks on filesystem with no valid JFFS2 
->nodes
->Kernel panic: VFS: Unable to mount root fs on 1f:02
->
->
->Regards,
->Vincent Zhou
->
->_________________________________________________________________
->免费下载 MSN Explorer:   http://explorer.msn.com/lccn
->
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
+No worries.  The patch seems to be working fine on my P30 chips.  I
+don't have any other chips to test on at the moment, but it looks like
+it should work.
 
-_________________________________________________________________
-享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
+Nicolas, could you try it on the chips you have?
+
+> 
+> [MTD] CHIPS: fix for P30 cfi parsing
+> 
+> Change to the extended cfi table parsing for Intel NOR flash that uses
+> the info in the extended table to 'walk' the table rather than using
+> hard coding for various primary extended query table version numbers.
+> [From: Jared Hulbert <jaredeh@gmail.com>]
+> 
+> Index: trunk/drivers/mtd/chips/cfi_cmdset_0001.c
+> ===================================================================
+> --- trunk/drivers/mtd/chips/cfi_cmdset_0001.c	(revision 8)
+> +++ trunk/drivers/mtd/chips/cfi_cmdset_0001.c	(revision 10)
+> @@ -285,7 +285,7 @@
+>  			      sizeof(struct cfi_intelext_otpinfo);
+> 
+>  		/* Burst Read info */
+> -		extra_size += (extp->MinorVersion < '4') ? 6 : 5;
+> +		extra_size += (unsigned int)extp->extra[extra_size+1]+2;
+> 
+>  		/* Number of hardware-partitions */
+>  		extra_size += 1;
+> @@ -519,7 +519,7 @@
+>  		       sizeof(struct cfi_intelext_otpinfo);
+> 
+>  		/* Burst Read info */
+> -		offs += (extp->MinorVersion < '4') ? 6 : 5;
+> +		offs += (int)extp->extra[offs+1]+2;
+
+Why (int) here and (unsigned int) above?  Not a big deal, but I'm
+curious.
+
+thx,
+josh
