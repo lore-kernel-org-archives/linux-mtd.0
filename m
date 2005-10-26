@@ -1,28 +1,15 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EUVQy-0003Zj-0A
-	for linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 16:30:16 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IOX00G23NMA1Y60@VL-MO-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 25 Oct 2005 16:30:11 -0400 (EDT)
-Date: Tue, 25 Oct 2005 16:30:10 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <6934efce0510251302k5621409dt863efdc8f3d36eb1@mail.gmail.com>
-To: Jared Hulbert <jaredeh@gmail.com>
-Message-id: <Pine.LNX.4.64.0510251629060.5288@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
-	<6934efce0510201038h2dbc72abvc610c894a9763bce@mail.gmail.com>
-	<1130173789.15275.1.camel@windu.rchland.ibm.com>
-	<6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
-	<Pine.LNX.4.64.0510251436590.5288@localhost.localdomain>
-	<6934efce0510251302k5621409dt863efdc8f3d36eb1@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EUjS7-0002mk-NH
+	for linux-mtd@lists.infradead.org; Wed, 26 Oct 2005 07:28:24 -0400
+Date: Wed, 26 Oct 2005 15:28:28 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-Id: <20051026152828.3959d71d.vwool@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Subject: [PATCH] [trivial] fixing rightshift in nand_block_bad
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,11 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 Oct 2005, Jared Hulbert wrote:
+As was discussed in the IRC chat, it's necessary to shift value obtained read_word from right by 8 in case of odd this->badblockpos.
+The patch from that is inlined below.
 
-> How's this look?
+Best regards,
+   Vitaly
 
-Great.  I pushed it to CVS.
-
-
-Nicolas
+Index: drivers/mtd/nand/nand_base.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/nand_base.c,v
+retrieving revision 1.150
+diff -u -r1.150 nand_base.c
+--- drivers/mtd/nand/nand_base.c	15 Sep 2005 13:58:48 -0000	1.150
++++ drivers/mtd/nand/nand_base.c	26 Oct 2005 11:24:50 -0000
+@@ -433,7 +433,7 @@
+ 		this->cmdfunc (mtd, NAND_CMD_READOOB, this->badblockpos & 0xFE, page & this->pagemask);
+ 		bad = cpu_to_le16(this->read_word(mtd));
+ 		if (this->badblockpos & 0x1)
+-			bad >>= 1;
++			bad >>= 8;
+ 		if ((bad & 0xFF) != 0xff)
+ 			res = 1;
+ 	} else {
