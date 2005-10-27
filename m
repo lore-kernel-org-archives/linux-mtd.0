@@ -1,25 +1,22 @@
-Received: from smtprelay04.ispgateway.de ([80.67.18.16])
+Received: from pop-tawny.atl.sa.earthlink.net ([207.69.195.67])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EV3lF-0006Vc-KO
-	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2005 05:09:28 -0400
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.97.128])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay04.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 27 Oct 2005 09:09:23 -0000
-Message-ID: <43609940.6080702@gmail.com>
-Date: Thu, 27 Oct 2005 11:09:20 +0200
-From: Bernhard Priewasser <priewasser@gmail.com>
+	id 1EV4s7-0007FY-97
+	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2005 06:20:36 -0400
+Received: from cpe-66-1-91-99.az.sprintbbd.net ([66.1.91.99]
+	helo=[192.168.0.254])
+	by pop-tawny.atl.sa.earthlink.net with esmtp (Exim 3.36 #10)
+	id 1EV4s4-0001wc-00
+	for linux-mtd@lists.infradead.org; Thu, 27 Oct 2005 06:20:33 -0400
+From: Brent Roberts <randd@globalopensource.net>
+To: MTD list <linux-mtd@lists.infradead.org>
+Date: Thu, 27 Oct 2005 03:22:13 -0700
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <436089F3.806@gmail.com>
-	<20051027082108.GC24422@wohnheim.fh-wedel.de>
-	<43609066.1010805@gmail.com>
-	<20051027084900.GE24422@wohnheim.fh-wedel.de>
-In-Reply-To: <20051027084900.GE24422@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: NOR "bad blocks"
+Message-Id: <200510270322.13555.randd@globalopensource.net>
+Subject: MTD_open:  permission denied
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,13 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I'd doubt that there is even decent literature.  Stuff is
-> big-business, but not sexy for research papers.  Try finding an
-> unbiased explanation is such an environment. ;)
+Hello all. 
 
-Hehe, you may be right...
-But - no doubt - there should be some decent _book_ about basic 
-principles of flash memory. OK, let's serach...
+When attempting to do a 'flash_eraseall /dev/mtd1" I get "/dev/mtd1: 
+permission denied".  It seems that MTD_open attempts but fails here.
 
--- 
-Bernhard
+I'm using a  DiskOnChip TSOP 192 MB.  All neccesary kernel drivers are 
+compiled into the kernel as far as I know.  I am able to fdisk and 
+mkfs.ext2 /dev/inftla1, and mount it, write to it, etc.
+
+/proc/mtd looks like this:
+mtd0: 0c000000 00004000 "DiskOnChip 2000 (INFTL Model)"
+mtd1: 00010000 00004000 " DiskOnChip BDK partition"
+mtd2: 0bfdc000 00004000 " DiskOnChip BDTL partition"
+
+Any suggestions as to why permission is denied?
+
+Thanks.
+
+-Brent Roberts
