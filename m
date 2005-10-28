@@ -1,19 +1,28 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EVVDN-00071x-La
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 10:28:22 -0400
-Date: Fri, 28 Oct 2005 16:27:39 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Pierre.Ricadat@UTBM.fr" <Pierre.Ricadat@utbm.fr>
-Message-ID: <20051028142739.GB1269@wohnheim.fh-wedel.de>
-References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EVZ80-0002BT-T6
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 19:39:02 +0100
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id j9SIcrvd027093
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2005 14:38:53 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	j9SIcruX121366
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2005 14:38:53 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id j9SIcr1q019432
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2005 14:38:53 -0400
+Received: from windu.rchland.ibm.com (windu.rchland.ibm.com [9.10.78.129])
+	by d01av04.pok.ibm.com (8.12.11/8.12.11) with ESMTP id j9SIcqvJ019161
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Oct 2005 14:38:53 -0400
+From: Josh Boyer <jdub@us.ibm.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Fri, 28 Oct 2005 13:38:49 -0500
+Message-Id: <1130524729.3775.39.camel@windu.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1130311964.435f311cf30e9@webmail2.utbm.fr>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] separate routine to check jffs2_flash_read
+Content-Transfer-Encoding: 7bit
+Subject: Write performance issue with cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,70 +32,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 26 October 2005 09:32:44 +0200, Pierre.Ricadat@UTBM.fr wrote:
-> 
-> here i attach a small patch for that 'todo' in nodelist.c:
-> 
->   /* TODO: this is very frequent pattern, make it a separate
-> 		   * routine */
->   err = jffs2_flash_read(c, ofs, len, &retlen, buffer);
->   ...
-> 
-> about the checking of jffs2_flash_read().
-> 
-> I made a new function : jffs2_check_flash_read to
-> - check that jffs2_flash_read returns success
-> - check that it read all
-> and in a case of failure, print error, free the buffer and return error code.
+Hi all,
 
-Nice.  Two things you could improve:
+I'll preface this with a disclaimer that we saw this on 2.4, however the
+same general issue still seems to be present in MTD CVS.
 
-> @@ -131,12 +131,8 @@
->                 return;
-> 
->         ret = jffs2_flash_read(c, ofs, len, &retlen, buf);
-> -       if (ret || (retlen != len)) {
-> -               JFFS2_WARNING("read %d bytes failed or short. ret %d, retlen %zd.\n",
-> -                               len, ret, retlen);
-> -               kfree(buf);
-> +       if (!jffs2_check_flash_read(ret, ofs, len, retlen, &buf))
->                 return;
-> -       }
+We recently had an issue where we were getting some poor write
+performance to flash through JFFS2.  Specifically, a write of about
+256KiB was taking between 20-50 seconds at times.  After debugging this
+for a couple days, we realized the following was happening:
 
-All cases but one call jffs2_flash_read() before doing the various
-error checks.  A function jffs2_flash_read_safe() that combines your
-existing function and the actual read would be even nicer.
+Kupdated woke up and started erasing blocks on JFFS2's erase_pending
+list.  The application writing continued to write in 256KiB chunks.  In
+do_write_buffer, the chip is put into FL_WRITING mode and then
+cfi_udelay(1) is called, which will call schedule_timeout if needed.
 
+Here is where the difficult part comes in.  Kupdated got scheduled in
+due to the wake_up at the end of do_write_buffer, but since the chip was
+in FL_WRITING mode, it couldn't make any progress and got stuck on the
+wait queue again.  So then the writing thread came in and finished it's
+write, and called wake_up again.  But wake_up doesn't actually call
+schedule, so the writing thread called do_write_buffer again with the
+next chunk of data to be written and it wasn't scheduled out until
+cfi_udelay was called after putting the chip into FL_WRITING state
+again.  Repeat this until the overall 256KiB write was done.
 
->  /*
-> + *     Check if jffs2_flash_read was successful
-> + */
-> +int jffs2_check_flash_read(int err, uint32_t ofs, int len, size_t retlen, u_char *buf)
-> +{
-> +       int ret = 1;
-> +
-> +       /* did the read succeed? */
-> +       if (err) {
-> +               JFFS2_ERROR("can not read %d bytes from 0x%08x, error code: %d.\n", len, ofs, err);
-> +               kfree(buf);
-> +               ret = 0;
-> +       }
-> +       /* did we read all? */
-> +       if (retlen != len) {
-> +               JFFS2_ERROR("short read at 0x%08x: %d instead of %d.\n", ofs, retlen, len);
-> +               kfree(buf);
-> +               ret = 0;
-> +       }
-> +       return ret;
-> +}
+Basically, the writing thread was starving kupdated from making any
+progress and since kupdated was never charged with any time, the writing
+thread was always being marked as needing to be scheduled in the wake_up
+code.  This cause it to do a schedule_timeout(1) every buffer write (32
+bytes).  In 2.4, that's approximately 10 milliseconds of wait time
+because it's based on jiffies.
 
-The return code doesn't match common convention at all - people will
-get confused and create bugs in the future.  Return 0 on success and
--EIO for errors.
+For a fix, we added a conditional reschedule in the loop that calls
+do_write_buffer in the cfi_intelext_write_buffers function.  This made
+write times of 256KiB go from 20-50 seconds to 1-6 seconds on average.
 
+In 2.6 the problem is a bit less drastic since HZ is 1000 (or was at one
+point) which means each jiffy is 1 ms instead of 10.  Also, you'd have
+to be writing a _lot_ of data to probably see this happen.  But the fact
+remains that it is possible.
 
-Jörn
+Would adding a conditional reschedule be an acceptable fix?
 
--- 
-Schrödinger's cat is <BLINK>not</BLINK> dead.
--- Illiad
+josh
