@@ -1,31 +1,16 @@
-Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EWZW9-0003wf-7K
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2005 08:16:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by protonic.prtnl (Postfix) with ESMTP id 0227D29EBB
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Oct 2005 14:14:22 +0100 (CET)
-Received: from protonic.prtnl ([127.0.0.1])
-	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 27989-03 for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Oct 2005 14:14:21 +0100 (CET)
-Received: from linux.local (linux.prtnl [192.168.1.97])
-	by protonic.prtnl (Postfix) with ESMTP id 32A8328067
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Oct 2005 14:14:21 +0100 (CET)
-From: David Jander <david.jander@protonic.nl>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 31 Oct 2005 15:15:54 +0200
-References: <EF4121B4EBC4E045BDE1273F9D0A87FFCD410C@esealmw107.eemea.ericsson.se>
-In-Reply-To: <EF4121B4EBC4E045BDE1273F9D0A87FFCD410C@esealmw107.eemea.ericsson.se>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EVSG1-0003kF-LN
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 07:18:55 -0400
+Message-ID: <4362097F.5080609@ru.mvista.com>
+Date: Fri, 28 Oct 2005 15:20:31 +0400
+From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200510311415.54208.david.jander@protonic.nl>
-Subject: Re: The magic bitmask question - again
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------010902060203060105030904"
+Cc: Konstantin Baidarov <kbaidarov@ru.mvista.com>
+Subject: [PATCH] JFFS: drop kernel lock on exit from garbage collecting
+	thread
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,24 +20,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 31 October 2005 13:31, Fredrik J=F6nsson B wrote:
->[...]
-> We have a system with a 128Mb NOR-flash of which 3Mb is used as a keep-of=
-f=20
-> area for the kernel and the rest for a JFFS2 root file system. The system
-> boots and mounts properly and everything seems fine, but during mounting a
-> number of messages such as the one below are shown for each of the first
-> four erase-blocks of the mtd partition.
+This is a multi-part message in MIME format.
+--------------010902060203060105030904
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-How do you define your partition layout?
-Are you sure that the beginning of the first jffs2 partition of MTD is not=
-=20
-overlapping with your "keep-off" region? Eventually you could be trying to=
-=20
-interpret parts of the kernel image as jffs2 filesystem. In that case you=20
-will get such messages.
+Hello.
 
-Greetings,
+    JFFS forgets to drop a kernel lock it grabs in the garbage collecting 
+thread when that thread is killed by jffs_put_user(). This causes a couple of 
+BUG messages and a call trace to be printed out on unmounting JFFS with the 
+alternate spinlock implemetation which checks for the kernel lock state 
+consistency...
 
-=2D-=20
-David Jander
+WBR, Sergei
+
+--------------010902060203060105030904
+Content-Type: text/plain;
+ name="JFFS-GC-drop-kernel-lock.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="JFFS-GC-drop-kernel-lock.patch"
+
+Signed-off-by: Konstantin Baidarov <kbaidarov@ru.mvista.com>
+Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+
+Index: fs/jffs/intrep.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs/intrep.c,v
+retrieving revision 1.105
+diff -a -u -p -r1.105 intrep.c
+--- fs/jffs/intrep.c	2 Jul 2003 20:39:55 -0000	1.105
++++ fs/jffs/intrep.c	28 Oct 2005 11:09:06 -0000
+@@ -3442,6 +3442,7 @@ jffs_garbage_collect_thread(void *ptr)
+ 			case SIGKILL:
+ 				D1(printk("jffs_garbage_collect_thread(): SIGKILL received.\n"));
+ 				c->gc_task = NULL;
++				unlock_kernel();
+ 				complete_and_exit(&c->gc_thread_comp, 0);
+ 			}
+ 		}
+
+--------------010902060203060105030904--
