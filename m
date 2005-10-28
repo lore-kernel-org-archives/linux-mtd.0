@@ -1,30 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EVUts-0006Xe-Cg
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 10:08:12 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IP2003XCPXEJN20@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 10:08:02 -0400 (EDT)
-Date: Fri, 28 Oct 2005 10:08:02 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1130502194.3775.0.camel@windu.rchland.ibm.com>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-id: <Pine.LNX.4.64.0510281007110.5288@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1129819053.4219.10.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510201141520.5288@localhost.localdomain>
-	<6934efce0510201038h2dbc72abvc610c894a9763bce@mail.gmail.com>
-	<1130173789.15275.1.camel@windu.rchland.ibm.com>
-	<6934efce0510241800y4c3111a4gf4f34dc5c8ac2853@mail.gmail.com>
-	<Pine.LNX.4.64.0510251436590.5288@localhost.localdomain>
-	<6934efce0510251302k5621409dt863efdc8f3d36eb1@mail.gmail.com>
-	<Pine.LNX.4.64.0510251629060.5288@localhost.localdomain>
-	<1130502194.3775.0.camel@windu.rchland.ibm.com>
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EVVDN-00071x-La
+	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 10:28:22 -0400
+Date: Fri, 28 Oct 2005 16:27:39 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Pierre.Ricadat@UTBM.fr" <Pierre.Ricadat@utbm.fr>
+Message-ID: <20051028142739.GB1269@wohnheim.fh-wedel.de>
+References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1130311964.435f311cf30e9@webmail2.utbm.fr>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Wrong CFI offset in cfi_cmdset_0001.c
+Subject: Re: [PATCH] separate routine to check jffs2_flash_read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +23,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 28 Oct 2005, Josh Boyer wrote:
-
-> On Tue, 2005-10-25 at 16:30 -0400, Nicolas Pitre wrote:
-> > On Tue, 25 Oct 2005, Jared Hulbert wrote:
-> > 
-> > > How's this look?
-> > 
-> > Great.  I pushed it to CVS.
+On Wed, 26 October 2005 09:32:44 +0200, Pierre.Ricadat@UTBM.fr wrote:
 > 
-> You probably don't really care, but the patch is working for me on my
-> setups.  Thanks for the quick response.
+> here i attach a small patch for that 'todo' in nodelist.c:
+> 
+>   /* TODO: this is very frequent pattern, make it a separate
+> 		   * routine */
+>   err = jffs2_flash_read(c, ofs, len, &retlen, buffer);
+>   ...
+> 
+> about the checking of jffs2_flash_read().
+> 
+> I made a new function : jffs2_check_flash_read to
+> - check that jffs2_flash_read returns success
+> - check that it read all
+> and in a case of failure, print error, free the buffer and return error code.
 
-Of course we care!
+Nice.  Two things you could improve:
 
-Success reports are still welcome.
+> @@ -131,12 +131,8 @@
+>                 return;
+> 
+>         ret = jffs2_flash_read(c, ofs, len, &retlen, buf);
+> -       if (ret || (retlen != len)) {
+> -               JFFS2_WARNING("read %d bytes failed or short. ret %d, retlen %zd.\n",
+> -                               len, ret, retlen);
+> -               kfree(buf);
+> +       if (!jffs2_check_flash_read(ret, ofs, len, retlen, &buf))
+>                 return;
+> -       }
+
+All cases but one call jffs2_flash_read() before doing the various
+error checks.  A function jffs2_flash_read_safe() that combines your
+existing function and the actual read would be even nicer.
 
 
-Nicolas
+>  /*
+> + *     Check if jffs2_flash_read was successful
+> + */
+> +int jffs2_check_flash_read(int err, uint32_t ofs, int len, size_t retlen, u_char *buf)
+> +{
+> +       int ret = 1;
+> +
+> +       /* did the read succeed? */
+> +       if (err) {
+> +               JFFS2_ERROR("can not read %d bytes from 0x%08x, error code: %d.\n", len, ofs, err);
+> +               kfree(buf);
+> +               ret = 0;
+> +       }
+> +       /* did we read all? */
+> +       if (retlen != len) {
+> +               JFFS2_ERROR("short read at 0x%08x: %d instead of %d.\n", ofs, retlen, len);
+> +               kfree(buf);
+> +               ret = 0;
+> +       }
+> +       return ret;
+> +}
+
+The return code doesn't match common convention at all - people will
+get confused and create bugs in the future.  Return 0 on success and
+-EIO for errors.
+
+
+Jörn
+
+-- 
+Schrödinger's cat is <BLINK>not</BLINK> dead.
+-- Illiad
