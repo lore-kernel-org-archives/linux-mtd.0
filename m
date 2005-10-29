@@ -1,16 +1,15 @@
 Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EVSG1-0003kF-LN
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 07:18:55 -0400
-Message-ID: <4362097F.5080609@ru.mvista.com>
-Date: Fri, 28 Oct 2005 15:20:31 +0400
+	id 1EVvWU-0006Ql-5e
+	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 14:33:48 -0400
+Message-ID: <4363C0EF.3000607@ru.mvista.com>
+Date: Sat, 29 Oct 2005 22:35:27 +0400
 From: Sergei Shtylylov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="------------010902060203060105030904"
-Cc: Konstantin Baidarov <kbaidarov@ru.mvista.com>
-Subject: [PATCH] JFFS: drop kernel lock on exit from garbage collecting
-	thread
+Content-Type: multipart/mixed; boundary="------------070701050200010400020402"
+Cc: Pete Popov <ppopov@embeddedalley.com>
+Subject: [PATCH] NAND: AMD Au1550 driver reads write only register
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,44 +20,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------010902060203060105030904
+--------------070701050200010400020402
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Hello.
 
-    JFFS forgets to drop a kernel lock it grabs in the garbage collecting 
-thread when that thread is killed by jffs_put_user(). This causes a couple of 
-BUG messages and a call trace to be printed out on unmounting JFFS with the 
-alternate spinlock implemetation which checks for the kernel lock state 
-consistency...
+       I have noticed that during the last commit to AMD Au1550 NAND driver the
+old buglet was reintroduced: as MEM_STNDCTL register is write only, and
+seem to always read as 0x31, read-modify-write of it in au1xxx_nand_init()
+will cause undesirable effect of enabling -RCS0/1 pin override (bits 4/5 of
+this reg.), thus possibly causing a contention on the static bus when the NOR
+flash (which uses  -RCS0) or board control status regs. (using -RCS2) are
+read. Luckily, this now goes away with a first NAND access, since
+au1550_hwcontrol() doesn't try to read this register before writing anymore.
+      There's another issue with that though -- to be addressed by the next
+patch...
 
 WBR, Sergei
 
---------------010902060203060105030904
+
+
+
+--------------070701050200010400020402
 Content-Type: text/plain;
- name="JFFS-GC-drop-kernel-lock.patch"
+ name="Au1550-NAND-STNDCTL-write-only.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="JFFS-GC-drop-kernel-lock.patch"
+ filename="Au1550-NAND-STNDCTL-write-only.patch"
 
-Signed-off-by: Konstantin Baidarov <kbaidarov@ru.mvista.com>
 Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 
-Index: fs/jffs/intrep.c
+Index: au1550nd.c
 ===================================================================
-RCS file: /home/cvs/mtd/fs/jffs/intrep.c,v
-retrieving revision 1.105
-diff -a -u -p -r1.105 intrep.c
---- fs/jffs/intrep.c	2 Jul 2003 20:39:55 -0000	1.105
-+++ fs/jffs/intrep.c	28 Oct 2005 11:09:06 -0000
-@@ -3442,6 +3442,7 @@ jffs_garbage_collect_thread(void *ptr)
- 			case SIGKILL:
- 				D1(printk("jffs_garbage_collect_thread(): SIGKILL received.\n"));
- 				c->gc_task = NULL;
-+				unlock_kernel();
- 				complete_and_exit(&c->gc_thread_comp, 0);
- 			}
- 		}
+RCS file: /home/cvs/mtd/drivers/mtd/nand/au1550nd.c,v
+retrieving revision 1.12
+diff -a -u -p -r1.12 au1550nd.c
+--- au1550nd.c	23 Sep 2005 01:44:55 -0000	1.12
++++ au1550nd.c	29 Oct 2005 18:21:04 -0000
+@@ -343,11 +343,8 @@ int __init au1xxx_nand_init (void)
+ 	au1550_mtd->priv = this;
+ 
+ 
+-	/* disable interrupts */
+-	au_writel(au_readl(MEM_STNDCTL) & ~(1<<8), MEM_STNDCTL);
+- 
+-	/* disable NAND boot */
+-	au_writel(au_readl(MEM_STNDCTL) & ~(1<<0), MEM_STNDCTL);
++	/* MEM_STNDCTL: disable ints, disable nand boot */
++	au_writel(0, MEM_STNDCTL);
+ 
+ #ifdef CONFIG_MIPS_PB1550
+ 	/* set gpio206 high */
 
---------------010902060203060105030904--
+
+
+
+--------------070701050200010400020402--
