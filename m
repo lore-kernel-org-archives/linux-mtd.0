@@ -1,24 +1,25 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mailout2.samsung.com ([203.254.224.25])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EVcKX-0004af-Ti
-	for linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 18:04:11 -0400
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IP30096VBYTCB50@VL-MO-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 28 Oct 2005 18:04:05 -0400 (EDT)
-Date: Fri, 28 Oct 2005 18:04:05 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1130536220.3901.5.camel@windu.rchland.ibm.com>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-id: <Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
+	id 1EVkmm-0000cG-NJ
+	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 03:05:56 -0400
+Received: from ep_mmp1 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0IP400G9811OKJ@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 16:05:48 +0900 (KST)
+Received: from july7 ([10.88.163.199])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0IP40047711OXJ@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 16:05:48 +0900 (KST)
+Date: Sat, 29 Oct 2005 16:05:48 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: linux-mtd@lists.infradead.org
+Message-id: <0IP40047811OXJ@mmp1.samsung.com>
 MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=US-ASCII
 Content-transfer-encoding: 7BIT
-References: <1130524729.3775.39.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510281717020.5288@localhost.localdomain>
-	<1130536220.3901.5.camel@windu.rchland.ibm.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Write performance issue with cfi_cmdset_0001.c
+Subject: [PATCH] OneNAND: Use flash_platform_data
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +29,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 28 Oct 2005, Josh Boyer wrote:
+Hi
 
-> On Fri, 2005-10-28 at 17:34 -0400, Nicolas Pitre wrote:
-> > On Fri, 28 Oct 2005, Josh Boyer wrote:
-> > 
-> > > I'll preface this with a disclaimer that we saw this on 2.4, however the
-> > > same general issue still seems to be present in MTD CVS.
-> > 
-> > For 2.6.x? Are you sure?
-> 
-> Apparently not.
-> 
-> > 
-> > In 2.6 there is no schedule_timeout() anywhere in the MTD code.
-> 
-> Yeah, nevermind.  I forgot that cfi_udelay no longer does that.  In our
-> kernel, cfi_udelay has:
-> 
-> if (current->need_resched)
-> 	schedule_timeout(us);
-> else
-> 	udelay(us);
+Now we use flash_platform_data instead of onenand_platform_data.
 
-But current code has almost same behavior:
+If you want to support OneNAND Sync. Burst Read, apply following patch and
+enable mmcontrol 
 
-        if (us >= 1000) {
-                msleep((us+999)/1000);
-        } else {
-                udelay(us);
-                cond_resched();
-        }
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=3057/1
 
-And therefore I wonder if what you saw could occur with that version as 
-well.
+Of course, you have to implement mmcontrol function in board specific files.
 
+Thank you,
 
-Nicolas
+Kyungmin Park
+
+--
+
+diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
+--- a/drivers/mtd/onenand/generic.c
++++ b/drivers/mtd/onenand/generic.c
+@@ -39,7 +39,7 @@ static int __devinit generic_onenand_pro
+ {
+ 	struct onenand_info *info;
+ 	struct platform_device *pdev = to_platform_device(dev);
+-	struct onenand_platform_data *pdata = pdev->dev.platform_data;
++	struct flash_platform_data *pdata = pdev->dev.platform_data;
+ 	struct resource *res = pdev->resource;
+ 	unsigned long size = res->end - res->start + 1;
+ 	int err;
+@@ -61,7 +61,8 @@ static int __devinit generic_onenand_pro
+ 		goto out_release_mem_region;
+ 	}
+ 
+-	info->onenand.mmcontrol = pdata->mmcontrol;
++	// FIXME Enable this, If flash_platform_data has mmcontrol method
++//	info->onenand.mmcontrol = pdata->mmcontrol;
+ 
+ 	info->mtd.name = pdev->dev.bus_id;
+ 	info->mtd.priv = &info->onenand;
