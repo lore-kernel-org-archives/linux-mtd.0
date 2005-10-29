@@ -1,37 +1,19 @@
-Received: from over.ny.us.ibm.com ([32.97.182.150] helo=pokfb.esmtp.ibm.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EVuBz-0007qL-OP
-	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 18:08:33 +0100
-Received: from e31.co.us.ibm.com (e31.boulder.ibm.com [9.17.249.41])
-	by pokfb.esmtp.ibm.com (8.12.11/8.12.11) with ESMTP id j9TH8QBQ016646
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2005 13:08:26 -0400
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.12.11/8.12.11) with ESMTP id j9TH8BvX001409
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2005 13:08:11 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
-	j9TH9BlV531506
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2005 11:09:11 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
-	j9TH89Wl006546
-	for <linux-mtd@lists.infradead.org>; Sat, 29 Oct 2005 11:08:10 -0600
-From: Josh Boyer <jdub@us.ibm.com>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
-References: <1130524729.3775.39.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510281717020.5288@localhost.localdomain>
-	<1130536220.3901.5.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
+Received: from smtp103.biz.mail.mud.yahoo.com ([68.142.200.238])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EVvmr-0006ZJ-07
+	for linux-mtd@lists.infradead.org; Sat, 29 Oct 2005 14:50:45 -0400
+From: Pete Popov <ppopov@embeddedalley.com>
+To: Sergei Shtylylov <sshtylyov@ru.mvista.com>
+In-Reply-To: <4363C0EF.3000607@ru.mvista.com>
+References: <4363C0EF.3000607@ru.mvista.com>
 Content-Type: text/plain
-Date: Sat, 29 Oct 2005 12:08:06 -0500
-Message-Id: <1130605687.15940.2.camel@windu.rchland.ibm.com>
+Date: Sat, 29 Oct 2005 11:50:49 -0700
+Message-Id: <1130611849.12171.2.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Write performance issue with cfi_cmdset_0001.c
+Subject: Re: [PATCH] NAND: AMD Au1550 driver reads write only register
+Reply-To: ppopov@embeddedalley.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -41,44 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-10-28 at 18:04 -0400, Nicolas Pitre wrote:
-> On Fri, 28 Oct 2005, Josh Boyer wrote:
+On Sat, 2005-10-29 at 22:35 +0400, Sergei Shtylylov wrote:
+> Hello.
 > 
-> > On Fri, 2005-10-28 at 17:34 -0400, Nicolas Pitre wrote:
-> > > On Fri, 28 Oct 2005, Josh Boyer wrote:
-> > > 
-> > > > I'll preface this with a disclaimer that we saw this on 2.4, however the
-> > > > same general issue still seems to be present in MTD CVS.
-> > > 
-> > > For 2.6.x? Are you sure?
-> > 
-> > Apparently not.
-> > 
-> > > 
-> > > In 2.6 there is no schedule_timeout() anywhere in the MTD code.
-> > 
-> > Yeah, nevermind.  I forgot that cfi_udelay no longer does that.  In our
-> > kernel, cfi_udelay has:
-> > 
-> > if (current->need_resched)
-> > 	schedule_timeout(us);
-> > else
-> > 	udelay(us);
-> 
-> But current code has almost same behavior:
-> 
->         if (us >= 1000) {
->                 msleep((us+999)/1000);
->         } else {
->                 udelay(us);
->                 cond_resched();
->         }
-> 
-> And therefore I wonder if what you saw could occur with that version as 
-> well.
-> 
+>        I have noticed that during the last commit to AMD Au1550 NAND driver the
+> old buglet was reintroduced: as MEM_STNDCTL register is write only, and
+> seem to always read as 0x31, read-modify-write of it in au1xxx_nand_init()
+> will cause undesirable effect of enabling -RCS0/1 pin override (bits 4/5 of
+> this reg.), thus possibly causing a contention on the static bus when the NOR
+> flash (which uses  -RCS0) or board control status regs. (using -RCS2) are
+> read. Luckily, this now goes away with a first NAND access, since
+> au1550_hwcontrol() doesn't try to read this register before writing anymore.
+>       There's another issue with that though -- to be addressed by the next
+> patch...
 
-Hm.. probably.  I need more coffee and time to dig into stuff.  I'll
-post a more detailed evaluation on Monday.
+Thanks for catching that. I'll make a note in the code so it doesn't
+happen again.
 
-josh
+Pete
+
+> WBR, Sergei
+> 
+> 
+> 
+> plain text document attachment (Au1550-NAND-STNDCTL-write-only.patch)
+> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+> 
+> Index: au1550nd.c
+> ===================================================================
+> RCS file: /home/cvs/mtd/drivers/mtd/nand/au1550nd.c,v
+> retrieving revision 1.12
+> diff -a -u -p -r1.12 au1550nd.c
+> --- au1550nd.c	23 Sep 2005 01:44:55 -0000	1.12
+> +++ au1550nd.c	29 Oct 2005 18:21:04 -0000
+> @@ -343,11 +343,8 @@ int __init au1xxx_nand_init (void)
+>  	au1550_mtd->priv = this;
+>  
+> 
+> -	/* disable interrupts */
+> -	au_writel(au_readl(MEM_STNDCTL) & ~(1<<8), MEM_STNDCTL);
+> - 
+> -	/* disable NAND boot */
+> -	au_writel(au_readl(MEM_STNDCTL) & ~(1<<0), MEM_STNDCTL);
+> +	/* MEM_STNDCTL: disable ints, disable nand boot */
+> +	au_writel(0, MEM_STNDCTL);
+>  
+>  #ifdef CONFIG_MIPS_PB1550
+>  	/* set gpio206 high */
+> 
+> 
+> 
