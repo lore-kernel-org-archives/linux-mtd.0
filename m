@@ -1,19 +1,21 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EWaax-0005Jh-Ge
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2005 09:25:18 -0500
-Message-ID: <4366294D.4000700@ru.mvista.com>
-Date: Mon, 31 Oct 2005 17:25:17 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: Sergei Shtylylov <sshtylyov@ru.mvista.com>
-References: <435E6C74.8010406@ru.mvista.com>
-In-Reply-To: <435E6C74.8010406@ru.mvista.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Konstantin Baidarov <kbaidarov@ru.mvista.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] CFI: prevent the false software timeouts on writes
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EWajM-0005Zu-Ap
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2005 09:33:55 -0500
+Date: Mon, 31 Oct 2005 15:33:45 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "pierre.ricadat@utbm.fr" <Pierre.Ricadat@utbm.fr>
+Message-ID: <20051031143345.GB27238@wohnheim.fh-wedel.de>
+References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
+	<20051028142739.GB1269@wohnheim.fh-wedel.de>
+	<1130753526.4365edf6b2807@webmail1.utbm.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1130753526.4365edf6b2807@webmail1.utbm.fr>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] separate routine to check jffs2_flash_read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,98 +25,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergey,
-
-I'm going to verify if this works with XIP and get back to you.
-
-Best regards,
-   Vitaly
-
-Sergei Shtylylov wrote:
-
-> Hello.
->
->       We've noticed that sometimes "MTD do_write_buffer(): software 
-> timeout"
-> message was printed out when writing to a Fujitsu NOR flash.
->       It turned out that this was because of a race in the timeout 
-> handling
-> do_write_buffer(). A small timeout of (HZ / 1000) + 1 is used there, and
-> sometimes if the timer interrupt handling takes more than one or even two
-> jiffies (which is 1-2 ms with HZ == 1000) and that interrupt happens just
-> after chip_ready() call, the driver bails out from a ready polling loop
-> despite the chip has actually become ready while all those interrupts 
-> were
-> handled. To deal with this issue, extra check for chip ready is 
-> neccessary on
-> timeout expiration (and the checks should better be reordered).
->       As do_write_oneword() uses the same approach, it needs to also 
-> be changed.
->
-> Signed-off-by: Konstantin Baidarov <kbaidarov@ru.mvista.com>
-> Signed-off-by: Sergei Shtylyov <sshtylyov@ru.mvista.com>
->
->
->
->
->------------------------------------------------------------------------
->
->Index: drivers/mtd/chips/cfi_cmdset_0002.c
->===================================================================
->RCS file: /home/cvs/mtd/drivers/mtd/chips/cfi_cmdset_0002.c,v
->retrieving revision 1.120
->diff -a -u -p -r1.120 cfi_cmdset_0002.c
->--- drivers/mtd/chips/cfi_cmdset_0002.c	20 Jul 2005 21:01:13 -0000	1.120
->+++ drivers/mtd/chips/cfi_cmdset_0002.c	25 Oct 2005 15:38:44 -0000
->@@ -1014,16 +1014,16 @@ static int __xipram do_write_oneword(str
-> 			continue;
-> 		}
+On Mon, 31 October 2005 11:12:06 +0100, pierre.ricadat@utbm.fr wrote:
 > 
->-		if (chip_ready(map, adr))
->-			break;
->-
->-		if (time_after(jiffies, timeo)) {
->+		if (time_after(jiffies, timeo) && !chip_ready(map, adr)){
-> 			xip_enable(map, chip, adr);
-> 			printk(KERN_WARNING "MTD %s(): software timeout\n", __func__);
-> 			xip_disable(map, chip, adr);
->-                        break;
->+			break;
-> 		}
+> I made the two changes you proposed:
+> - new function (jffs2_flash_read_safe) who calls jffs2_flash_read and checks it
+> - better return code
 > 
->+		if (chip_ready(map, adr))
->+			break;
->+
-> 		/* Latency issues. Drop the lock, wait a while and retry */
-> 		UDELAY(map, chip, adr, 1);
-> 	}
->@@ -1275,13 +1275,13 @@ static int __xipram do_write_buffer(stru
-> 			continue;
-> 		}
+> So i attach the new patch.
+
+Better.  There's one bit that actually concerns me, though:
+
+> diff -u ./mtd/fs/jffs2/nodelist.c ./mtd_pierre/fs/jffs2/nodelist.c
+> --- ./mtd/fs/jffs2/nodelist.c   2005-09-21 22:28:35.000000000 +0900
+> +++ ./mtd_pierre/fs/jffs2/nodelist.c    2005-10-31 18:27:34.000000000 +0900
+> @@ -451,19 +451,8 @@
+>                 if (unlikely(!buffer))
+>                         return -ENOMEM;
 > 
->+		if (time_after(jiffies, timeo) && !chip_ready(map, adr))
->+			break;
->+
-> 		if (chip_ready(map, adr)) {
-> 			xip_enable(map, chip, adr);
-> 			goto op_done;
-> 		}
->-		    
->-		if( time_after(jiffies, timeo))
->-			break;
+> -               /* TODO: this is very frequent pattern, make it a separate
+> -                * routine */
+> -               err = jffs2_flash_read(c, ofs, len, &retlen, buffer);
+> -               if (err) {
+> -                       JFFS2_ERROR("can not read %d bytes from 0x%08x, error code: %d.\n", len, ofs, err);
+> -                       goto free_out;
+> -               }
+> -
+> -               if (retlen != len) {
+> -                       JFFS2_ERROR("short read at %#08x: %d instead of %d.\n", ofs, retlen, len);
+> -                       err = -EIO;
+> -                       goto free_out;
+> -               }
+> +               if (jffs2_flash_read_safe(c, ofs, len, buffer))
+> +                       return -EIO;
+>         }
 > 
-> 		/* Latency issues. Drop the lock, wait a while and retry */
-> 		UDELAY(map, chip, adr, 1);
->
->
->
->
->  
->
->------------------------------------------------------------------------
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->  
->
+>         /* Continue calculating CRC */
+> @@ -498,14 +487,6 @@
+> 
+>         return 0;
+> 
+> -free_out:
+> -       if(!pointed)
+> -               kfree(buffer);
+> -#ifndef __ECOS
+> -       else
+> -               c->mtd->unpoint(c->mtd, buffer, ofs, len);
+> -#endif
+> -       return err;
+>  }
+
+Nowhere in jffs2_flash_read_safe() do you call c->mtd->unpoint.  So
+obviously your code is not equivalent to the existing.  Can you look
+into it and see what needs to be don?
+
+
+Jörn
+
+-- 
+When you close your hand, you own nothing. When you open it up, you
+own the whole world.
+-- Li Mu Bai in Tiger & Dragon
