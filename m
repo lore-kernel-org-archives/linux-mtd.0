@@ -1,23 +1,21 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EWbWN-0006gm-Lx
-	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2005 10:24:37 -0500
-Date: Mon, 31 Oct 2005 16:24:30 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "pierre.ricadat@utbm.fr" <Pierre.Ricadat@utbm.fr>
-Message-ID: <20051031152430.GC27238@wohnheim.fh-wedel.de>
-References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
-	<20051028142739.GB1269@wohnheim.fh-wedel.de>
-	<1130753526.4365edf6b2807@webmail1.utbm.fr>
-	<20051031143345.GB27238@wohnheim.fh-wedel.de>
-	<1130771777.4366354129c88@webmail1.utbm.fr>
+Received: from smtp102.biz.mail.mud.yahoo.com ([68.142.200.237])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EWc4p-000793-Mp
+	for linux-mtd@lists.infradead.org; Mon, 31 Oct 2005 11:00:08 -0500
+From: Pete Popov <ppopov@embeddedalley.com>
+To: Leif Lindholm <leif.lindholm@i3micro.com>
+In-Reply-To: <1130769581.6003.43.camel@localhost>
+References: <4363DF17.6080906@ru.mvista.com>
+	<1130745519.12171.93.camel@localhost.localdomain>
+	<1130769581.6003.43.camel@localhost>
+Content-Type: text/plain
+Date: Mon, 31 Oct 2005 08:00:02 -0800
+Message-Id: <1130774403.12171.111.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1130771777.4366354129c88@webmail1.utbm.fr>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] separate routine to check jffs2_flash_read
+Content-Transfer-Encoding: 7bit
+Cc: Sergei Shtylylov <sshtylyov@ru.mvista.com>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] NAND: Fix NAND ECC errors on AMD Au1550
+Reply-To: ppopov@embeddedalley.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 31 October 2005 16:16:17 +0100, pierre.ricadat@utbm.fr wrote:
-> Quoting Jörn Engel <joern@wohnheim.fh-wedel.de>:
-> > On Mon, 31 October 2005 11:12:06 +0100, pierre.ricadat@utbm.fr wrote:
-> > >
-> > > -free_out:
-> > > -       if(!pointed)
-> > > -               kfree(buffer);
-> > > -#ifndef __ECOS
-> > > -       else
-> > > -               c->mtd->unpoint(c->mtd, buffer, ofs, len);
-> > > -#endif
-> > > -       return err;
-> > >  }
-> >
-> > Nowhere in jffs2_flash_read_safe() do you call c->mtd->unpoint.  So
-> > obviously your code is not equivalent to the existing.  Can you look
-> > into it and see what needs to be don?
+On Mon, 2005-10-31 at 15:39 +0100, Leif Lindholm wrote:
+> On Sun, 2005-10-30 at 23:58 -0800, Pete Popov wrote:
+> > It works on the Db1550. I need to run a sanity check on the Db1200. If
+> > no one has any objections, I'll commit it in the next couple of days
+> > after I check the Db1200.
 > 
-> In fact the only place where we goto free_out was there :
+> Just a comment (forgot to post this last time around):
+> At least one of the chips we're using - identified as
+> "NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB 3,3V 8-bit)"
+> seems to also need the CS manually asserted during a READID operation.
 > 
-> @ line 449:
-> 	if (!pointed) {
-> 		buffer = kmalloc(len, GFP_KERNEL);
-> 		if (unlikely(!buffer))
-> 			return -ENOMEM;
+> This made the if-statements ridicilously long, so I added a case
+> statement and a variable keeping track of wether or not to force-enable
+> CS to the au1550_command function.
 > 
-> 		/* TODO: this is very frequent pattern, make it a separate
-> 		 * routine */
-> 		err = jffs2_flash_read(c, ofs, len, &retlen, buffer);
-> 		if (err) {
-> 			JFFS2_ERROR("can not read %d bytes from 0x%08x, error code: %d.\n", len, ofs,
-> err);
-> 			goto free_out;
-> 		}
-> 
-> 		if (retlen != len) {
-> 			JFFS2_ERROR("short read at %#08x: %d instead of %d.\n", ofs, retlen, len);
-> 			err = -EIO;
-> 			goto free_out;
-> 		}
-> 	}
-> 
-> The goto free_out was located in a if(!pointed), so the if(!pointed) in the
-> free_out will always be true, and c->mtd->unpoint will never be called.
+> If there is any interest, I could post a patch, but am unsure of the
+> correct way. Should I send a new patch against cvs HEAD containing my
+> trivial tweak as well as Sergeis modifications, or...?
 
-Hmmyess, makes sense.  I'd vote for inclusion "right after the merge".
+Send an incremental patch on top of Sergey's patch if you can.
 
-Not sure what that actually means.  If it takes too long, I might just
-shrug and dump new stuff into cvs.  We've had a calm-down period for a
-while now and the merge could even happen with code from some date
-like today.
-
-Jörn
-
--- 
-The competent programmer is fully aware of the strictly limited size of
-his own skull; therefore he approaches the programming task in full
-humility, and among other things he avoids clever tricks like the plague. 
--- Edsger W. Dijkstra
+Pete
