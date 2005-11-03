@@ -1,23 +1,18 @@
-Received: from smtprelay04.ispgateway.de ([80.67.18.16])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EXhrO-0005rp-Rd
-	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2005 11:22:46 -0500
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.109.34])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay04.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 3 Nov 2005 16:22:36 -0000
-Received: from [192.168.0.63] (unknown [192.168.0.63])
-	by deepspace9.in2soft.meep (Postfix) with ESMTP id 997E0689F
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  3 Nov 2005 17:21:34 +0100 (CET)
-Message-ID: <436A3949.1000001@gmail.com>
-Date: Thu, 03 Nov 2005 17:22:33 +0100
-From: Bernhard Priewasser <priewasser@gmail.com>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EXi1z-00067R-Tg
+	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2005 11:33:42 -0500
+Message-ID: <436A3BBD.5040405@yandex.ru>
+Date: Thu, 03 Nov 2005 19:33:01 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+To: Bernhard Priewasser <priewasser@gmail.com>
+References: <436A3949.1000001@gmail.com>
+In-Reply-To: <436A3949.1000001@gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: GC operation
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: GC operation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Bernhard Priewasser wrote:
+> When and how is GC called?
+ From the GC thread and when there is no (or few) free space to write. 
+In the latter case the writing process is blocked and waits until GC has 
+freed some space.
 
-a question just for better understanding of JFFS2...
+> (or jffs2_garbage_collect_trigger() or SIGHUP) proceed only one node at 
+> a time?  For each node / for each block / ..... some loop?
+jffs2_garbage_collect_pass() moves one node at a time.
 
-When and how is GC called?
-jffs2_garbage_collect_pass() is called from GC thread AND after each 
-writing to flash. But does a single call of jffs2_garbage_collect_pass() 
-(or jffs2_garbage_collect_trigger() or SIGHUP) proceed only one node at 
-a time?  For each node / for each block / ..... some loop?
+> Ah, another one: Are blocks on the erase_pending_list erased beside the 
+> GC cycles?
+They are erased later, yes.
 
-Ah, another one: Are blocks on the erase_pending_list erased beside the 
-GC cycles?
-
-Hm, sorry for the annoying questions, but garbage collection can be an 
-ugly and confusing thing if one is not used to it :-) Thanks for your 
-assistance!
+> Hm, sorry for the annoying questions, but garbage collection can be an 
+> ugly and confusing thing if one is not used to it :-)
+Brr, didn't get it.. GC may be ugly if what?
 
 -- 
-Bernhard
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
