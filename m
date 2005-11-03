@@ -1,26 +1,16 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from bay113-f16.bay113.hotmail.com ([65.54.168.26] helo=hotmail.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EXLJJ-0000XB-Ut
-	for linux-mtd@lists.infradead.org; Wed, 02 Nov 2005 11:18:06 -0500
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IPC00H6J59RZ1I0@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 02 Nov 2005 11:17:52 -0500 (EST)
-Date: Wed, 02 Nov 2005 11:17:51 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1130946658.4348.26.camel@windu.rchland.ibm.com>
-To: Josh Boyer <jdub@us.ibm.com>
-Message-id: <Pine.LNX.4.64.0511021116090.12873@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1130524729.3775.39.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510281717020.5288@localhost.localdomain>
-	<1130536220.3901.5.camel@windu.rchland.ibm.com>
-	<Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
-	<1130946658.4348.26.camel@windu.rchland.ibm.com>
+	id 1EXUVr-0005zs-P3
+	for linux-mtd@lists.infradead.org; Wed, 02 Nov 2005 21:07:43 -0500
+Message-ID: <BAY113-F1669CA3931C829A1382D63E8610@phx.gbl>
+In-Reply-To: <43689B3F.2000401@yandex.ru>
+From: "zhao forrest" <zhao_fusheng@hotmail.com>
+To: dedekind@yandex.ru
+Date: Thu, 03 Nov 2005 09:48:16 +0800
+Mime-Version: 1.0
+Content-Type: text/plain; charset=gb2312; format=flowed
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Write performance issue with cfi_cmdset_0001.c
+Subject: Re: [PATCH]erase block header support in JFFS2(revision 6)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2 Nov 2005, Josh Boyer wrote:
+> > This is the 6th version of the patch.
+> > The only change compared with 5th version is:
+> > I replace jffs2_cleanmarker_oob() with jffs2_ebh_oob() to
+> > avoid confusion since cleanmarker is gone.
+>> >
+>I wonder, did you try this on NOR or mtdram?
 
-> On Fri, 2005-10-28 at 18:04 -0400, Nicolas Pitre wrote:
-> > 
-> > But current code has almost same behavior:
-> 
-> > And therefore I wonder if what you saw could occur with that version as 
-> > well.
-> 
-> Ok, here is a pseduo-description of the problem.  Sorry for the delay in
-> my reply, I've been trying to verify that it still exists in 2.6.  The
-> answer is "I think so" ;).
+oh, it's my fault to forget to mention the testing status of
+this patch.
+I tested this patch on NOR, mtdram, nandsim and even Joern's
+ramtd.
 
-Your explanation makes sense.
+For NOR, I run LTP for about 4 hours;
+for mtdram, nansim and ramtd, I run LTP for about 12 hours.
+Also I did many mount/umount tests.
+Unitil now, no problem is found.
 
-Could you prepare a patch with it and a signed-off line?
-
-
-Nicolas
+Thanks,
+Forrest
