@@ -1,19 +1,33 @@
-Received: from mail.astrocell.net ([66.129.137.194] helo=mail.techno-sat.com)
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EXZ45-0000Cn-8P
-	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2005 01:59:18 -0500
-Received: from mail.techno-sat.com (mail.techno-sat.com [127.0.0.1])
-	by mail.techno-sat.com (8.13.1/8.13.1) with ESMTP id jA34BxMn006164
-	for <linux-mtd@lists.infradead.org>; Wed, 2 Nov 2005 23:11:59 -0500
-Content-Disposition: inline
-Content-Transfer-Encoding: binary
+	id 1EXgcr-0004w6-Q5
+	for linux-mtd@lists.infradead.org; Thu, 03 Nov 2005 10:03:39 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.12.11/8.12.11) with ESMTP id jA3F3Zq9007590
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Nov 2005 10:03:35 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.12.10/NCO/VERS6.7) with ESMTP id
+	jA3F3V87117322
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Nov 2005 10:03:34 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11/8.13.3) with ESMTP id jA3F3V4V021695
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Nov 2005 10:03:31 -0500
+From: Josh Boyer <jdub@us.ibm.com>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <Pine.LNX.4.64.0511021116090.12873@localhost.localdomain>
+References: <1130524729.3775.39.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510281717020.5288@localhost.localdomain>
+	<1130536220.3901.5.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
+	<1130946658.4348.26.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0511021116090.12873@localhost.localdomain>
 Content-Type: text/plain
-MIME-Version: 1.0
-Date: Thu, 3 Nov 2005 04:11:54 UT
-From: "ggstar"   <info1@technosat.com>
-To: linux-mtd@lists.infradead.org
-Message-Id: <962227_74960_751216_301920@astrocell.net>
-Subject: nouveaux membres commercant EXTRA
+Date: Thu, 03 Nov 2005 09:03:26 -0600
+Message-Id: <1131030206.3435.1.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Write performance issue with cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +37,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GGstar
-4515, boul Industriel
-Sherbrooke, Qué. J1L 2S9
-819-340-3118          ggstar@videotron.ca
+On Wed, 2005-11-02 at 11:17 -0500, Nicolas Pitre wrote:
+> On Wed, 2 Nov 2005, Josh Boyer wrote:
+> 
+> > On Fri, 2005-10-28 at 18:04 -0400, Nicolas Pitre wrote:
+> > > 
+> > > But current code has almost same behavior:
+> > 
+> > > And therefore I wonder if what you saw could occur with that version as 
+> > > well.
+> > 
+> > Ok, here is a pseduo-description of the problem.  Sorry for the delay in
+> > my reply, I've been trying to verify that it still exists in 2.6.  The
+> > answer is "I think so" ;).
+> 
+> Your explanation makes sense.
+> 
+> Could you prepare a patch with it and a signed-off line?
 
+I have no problems doing this (obviously I have the patch already :) ),
+but I need to clear it with my employer for legal reasons.  I'll see if
+I can expedite the process some.
 
-La direction de GGstar et de 5STAR Extra désire souhaiter la bienvenue aux nouveaux membres commerçant de la région de Sherbrooke.
-
-GOBEIL & FILLES INC.,  4505, boul. Industriel, Sherbrooke, QC.  563-0406 
-                                               offre un rabais de 10% sur les accessoires cellulaire 
-
-TECHNO-SAT / LIQUIDATION O.P.C.,   4515, Industriel, Sherbrooke, Qué, 563-2036, 
-                	offre 10% d’escompte sur les outils et accessoires satellite
-
-LES ENSEIGNES MULTI-VISUEL, 1001, Woodward, Sherbrooke, Qué. 562-0363          
-offre10% sur enseignes et 15% sur graphisme
-
-LA BOUTIQUE STRATA EQUIPEMENT ET FOURNITURES DE GYMNASE,
- 2500 King Ouest, Sherbrooke, Qué.    821-9211 ,
-offre 5% sur tout les produits à prix régulier
-
-GRAPHXDESIGN,  985, Galt ouest, suite 100, Sherbrooke, Qué. 569-2769
-offre 5% sur tout les vêtements et articles promotionels
-
-EXCLUSIF DESIGN COIFFURE, 2832, rue Dussault, Sherbrooke, Qué.    569-5421      
-offre 20% sur lescoupes de cheveux et 20% sur les produits Paul Mitchell et Redken
-  
-
-Pour  devenir membre commerçant de la carte EXTRA, contactez-nous et un de nos représentants se fera un plaisir de vous informer des avantages.
-
-De plus,  nous sommes fièrs de contribuer au financement de la maison Jeune-est de Sherbrooke, en versant $1.00 par carte vendue par le groupe GGstar.
-
-
-ENCOURAGEZ NOS COMMERÇANTS MEMBRES, C’EST PAYANT ET VOUS CONTRIBUEZ AU FINANCEMENT D’UN ORGANISME QUI SE DÉVOUE POUR LE BIEN-ÊTRE DES JEUNES DE LA RÉGION.
-
-
-
-
-Sincèrement vôtre.
-
-Nancy Gagnon                                      Pierre Gobeil
-Directrice                                               Directeur
-
-
-
-Si vous ne voulez plus recevoir de message de nous, simplement clicquer sur le lien ci-bas et votre adress courriel sera enlevée.
-http://www.astrocell.net/cgi-bin/arp3/arp3-un.pl?c=314998&p=6484
+josh
