@@ -1,30 +1,16 @@
-Message-Id: <20051105162650.620266000@b551138y.boeblingen.de.ibm.com>
-Date: Sat, 05 Nov 2005 17:26:50 +0100
+Received: from moutng.kundenserver.de ([212.227.126.186])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EYQzs-00085A-5x
+	for linux-mtd@lists.infradead.org; Sat, 05 Nov 2005 11:34:41 -0500
+Message-Id: <20051105162712.921102000@b551138y.boeblingen.de.ibm.com>
+References: <20051105162650.620266000@b551138y.boeblingen.de.ibm.com>
+Date: Sat, 05 Nov 2005 17:26:56 +0100
 From: Arnd Bergmann <arnd@arndb.de>
 To: linux-kernel@vger.kernel.org
-Cc: video4linux-list@redhat.com, linux-parport@lists.infradead.org,
-	zippel@linux-m68k.org, rmk+serial@arm.linux.org.uk,
-	ext2-devel@lists.sourceforge.net, Kai.Makisara@kolumbus.fi,
-	netdev@vger.kernel.org, linux-mtd@lists.infradead.org,
-	bluez-devel@lists.sf.net, hpa@zytor.com, urban@teststation.com,
-	samba-technical@lists.samba.org, Christoph Hellwig <hch@lst.de>,
-	tim@cyberelk.net, chas@cmf.nrl.navy.mil, osst@riede.org,
-	linux-usb-devel@lists.sourceforge.net, linux-scsi@vger.kernel.org,
-	linux-atm-general@lists.sourceforge.net,
-	reiserfs-dev@namesys.com, lm-sensors@lm-sensors.org,
-	sfrench@samba.org, vandrove@vc.cvut.cz, gadio@netvision.net.il,
-	linux-serial@vger.kernel.org, dgilbert@interlog.com,
-	osst-users@lists.sourceforge.net, James.Bottomley@SteelEye.com,
-	emoenke@gwdg.de, nathans@sgi.com, marcel@holtmann.org,
-	schwidefsky@de.ibm.com, maxk@qualcomm.com,
-	packet-writing@suse.com, adaplas@pol.net, axboe@suse.de,
-	hirofumi@mail.parknet.co.jp, autofs@linux.kernel.org,
-	linux-fbdev-devel@lists.sourceforge.net, xfs-masters@oss.sgi.com,
-	petero2@telia.com, linux-ppp@vger.kernel.org, gregkh@suse.de,
-	linux-tape@vger.kernel.org, ak@suse.de, linux-xfs@oss.sgi.com,
-	samba@samba.org, ext3-users@redhat.com, mchehab@brturbo.com.br,
-	khali@linux-fr.org, dwmw2@infradead.org, linware@sh.cvut.cz
-Subject: [PATCH 00/25] reduce code in fs/compat_ioctl.c
+Content-Disposition: inline; filename=mtd-ioctl.diff
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	Christoph Hellwig <hch@lst.de>, Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH 06/25] mtd: move ioctl32 code to mtdchar.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,175 +20,220 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sünnavend 05 November 2005 00:51, Christoph Hellwig wrote:
-> On Sat, Nov 05, 2005 at 12:10:46AM +0100, Arnd Bergmann wrote:
-> >
-> > BTW, I now have a set of 25 patches that moves all handlers from
-> > fs/compat_ioctl.c over to the respective drivers and subsystems,
-> > but I'm not sure how to best test that.
-> > I intend to at least give it a test run on my Opteron for the whatever
-> > ioctls I normally use, but the rest is just guesswork. Christoph,
-> > can you review those patches?
-> 
-> I'm not sure moving everything from fs/compat_ioctl.c is a good idea.
-> Everything that is just in a single driver or subsystem that has
-> common ioctl code - sure.  else it doesn't make a lot of sense.
+The MTD ioctls are all specific to mtdchar.c, so the
+compat code for them should be there as well.
 
-Ok, here is my full set of patches, let's see which ones are
-sensible and which ones we are better off without.
+Also, some of the ioctl commands used in that driver
+were previously not marked as compatible.
 
-Getting rid of fs/compat_ioctl.c completely could at least simplify
-the compat_sys_ioctl() code a bit and would also make sure that
-we only build the handlers into the kernel that can be used
-potentially, which reduces the binary size.
+The conversion handlers could be further simplified
+by not using compat_alloc_user_space any more.
 
-The patch set is still largely untested, except for a single
-compile test, but at least some of the patches are very simple,
-so maybe I can get a quick ack or nack on them.
+CC: dwmw2@infradead.org
+CC: linux-mtd@lists.infradead.org
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-In general, I'm just moving over the handlers to the respective
-subsystem without changing the logic, so the patch should not
-have any effect on the ioctl operation itself, but it also
-means that the handlers still use compat_alloc_user_space
-or get_fs/set_fs when it's not really necessary.
+Index: linux-2.6.14-rc/drivers/mtd/mtdchar.c
+===================================================================
+--- linux-2.6.14-rc.orig/drivers/mtd/mtdchar.c	2005-11-05 02:41:10.000000000 +0100
++++ linux-2.6.14-rc/drivers/mtd/mtdchar.c	2005-11-05 02:41:30.000000000 +0100
+@@ -6,6 +6,7 @@
+  */
+ 
+ #include <linux/config.h>
++#include <linux/compat.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mtd/mtd.h>
+@@ -300,8 +301,7 @@
+ 	wake_up((wait_queue_head_t *)instr->priv);
+ }
+ 
+-static int mtd_ioctl(struct inode *inode, struct file *file,
+-		     u_int cmd, u_long arg)
++static int mtd_do_ioctl(struct file *file, u_int cmd, u_long arg)
+ {
+ 	struct mtd_info *mtd = TO_MTD(file);
+ 	void __user *argp = (void __user *)arg;
+@@ -626,12 +626,100 @@
+ 	return ret;
+ } /* memory_ioctl */
+ 
++static long mtd_ioctl(struct inode *inode, struct file *file,
++			unsigned int cmd, unsigned long arg)
++{
++	int ret;
++	lock_kernel();
++	ret = mtd_do_ioctl(file, cmd, arg);
++	unlock_kernel();
++	return ret;
++}
++
++#ifdef CONFIG_COMPAT
++struct mtd_oob_buf32 {
++	u_int32_t start;
++	u_int32_t length;
++	compat_caddr_t ptr;	/* unsigned char* */
++};
++
++#define MEMWRITEOOB32 	_IOWR('M',3,struct mtd_oob_buf32)
++#define MEMREADOOB32 	_IOWR('M',4,struct mtd_oob_buf32)
++
++static int compat_mtd_rw_oob(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct mtd_oob_buf __user *buf = compat_alloc_user_space(sizeof(*buf));
++	struct mtd_oob_buf32 __user *buf32 = compat_ptr(arg);
++	u32 data;
++	char __user *datap;
++	unsigned int real_cmd;
++	int err;
++
++	real_cmd = (cmd == MEMREADOOB32) ?
++		MEMREADOOB : MEMWRITEOOB;
++
++	if (copy_in_user(&buf->start, &buf32->start,
++			 2 * sizeof(u32)) ||
++	    get_user(data, &buf32->ptr))
++		return -EFAULT;
++	datap = compat_ptr(data);
++	if (put_user(datap, &buf->ptr))
++		return -EFAULT;
++
++	err = mtd_do_ioctl(file, real_cmd, (unsigned long) buf);
++
++	if (!err) {
++		if (copy_in_user(&buf32->start, &buf->start,
++				 2 * sizeof(u32)))
++			err = -EFAULT;
++	}
++
++	return err;
++}
++
++static long compat_mtd_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	int ret = -ENOIOCTLCMD;
++
++	lock_kernel();
++	switch (cmd) {
++	case MEMWRITEOOB32:
++	case MEMREADOOB32:
++		ret = compat_mtd_rw_oob(file, cmd, arg);
++		break;
++
++	case MEMGETINFO:
++	case MEMERASE:
++	case MEMLOCK:
++	case MEMUNLOCK:
++	case MEMGETREGIONCOUNT:
++	case MEMGETREGIONINFO:
++	case MEMSETOOBSEL:
++	case MEMGETOOBSEL:
++	case MEMGETBADBLOCK:
++	case MEMSETBADBLOCK:
++	case OTPSELECT:
++	case OTPGETREGIONCOUNT:
++	case OTPGETREGIONINFO:
++	case OTPLOCK:
++		ret = mtd_do_ioctl(file, cmd, arg);
++		break;
++	}
++	unlock_kernel();
++
++	return ret;
++}
++#endif
++
+ static struct file_operations mtd_fops = {
+ 	.owner		= THIS_MODULE,
+ 	.llseek		= mtd_lseek,
+ 	.read		= mtd_read,
+ 	.write		= mtd_write,
+-	.ioctl		= mtd_ioctl,
++	.unlocked_ioctl	= mtd_ioctl,
++#ifdef CONFIG_COMPAT
++	.compat_ioctl	= compat_mtd_ioctl,
++#endif
+ 	.open		= mtd_open,
+ 	.release	= mtd_close,
+ };
+Index: linux-2.6.14-rc/fs/compat_ioctl.c
+===================================================================
+--- linux-2.6.14-rc.orig/fs/compat_ioctl.c	2005-11-05 02:41:18.000000000 +0100
++++ linux-2.6.14-rc/fs/compat_ioctl.c	2005-11-05 02:41:30.000000000 +0100
+@@ -1551,46 +1551,6 @@
+ 	return err;
+ }
+ 
+-struct mtd_oob_buf32 {
+-	u_int32_t start;
+-	u_int32_t length;
+-	compat_caddr_t ptr;	/* unsigned char* */
+-};
+-
+-#define MEMWRITEOOB32 	_IOWR('M',3,struct mtd_oob_buf32)
+-#define MEMREADOOB32 	_IOWR('M',4,struct mtd_oob_buf32)
+-
+-static int mtd_rw_oob(unsigned int fd, unsigned int cmd, unsigned long arg)
+-{
+-	struct mtd_oob_buf __user *buf = compat_alloc_user_space(sizeof(*buf));
+-	struct mtd_oob_buf32 __user *buf32 = compat_ptr(arg);
+-	u32 data;
+-	char __user *datap;
+-	unsigned int real_cmd;
+-	int err;
+-
+-	real_cmd = (cmd == MEMREADOOB32) ?
+-		MEMREADOOB : MEMWRITEOOB;
+-
+-	if (copy_in_user(&buf->start, &buf32->start,
+-			 2 * sizeof(u32)) ||
+-	    get_user(data, &buf32->ptr))
+-		return -EFAULT;
+-	datap = compat_ptr(data);
+-	if (put_user(datap, &buf->ptr))
+-		return -EFAULT;
+-
+-	err = sys_ioctl(fd, real_cmd, (unsigned long) buf);
+-
+-	if (!err) {
+-		if (copy_in_user(&buf32->start, &buf->start,
+-				 2 * sizeof(u32)))
+-			err = -EFAULT;
+-	}
+-
+-	return err;
+-}	
+-
+ #define	VFAT_IOCTL_READDIR_BOTH32	_IOR('r', 1, struct compat_dirent[2])
+ #define	VFAT_IOCTL_READDIR_SHORT32	_IOR('r', 2, struct compat_dirent[2])
+ 
+@@ -2144,8 +2104,6 @@
+ #endif
+ 
+ #ifdef DECLARES
+-HANDLE_IOCTL(MEMREADOOB32, mtd_rw_oob)
+-HANDLE_IOCTL(MEMWRITEOOB32, mtd_rw_oob)
+ HANDLE_IOCTL(HDIO_GETGEO, hdio_getgeo)
+ HANDLE_IOCTL(BLKRAGET, w_long)
+ HANDLE_IOCTL(BLKGETSIZE, w_long)
+Index: linux-2.6.14-rc/include/linux/compat_ioctl.h
+===================================================================
+--- linux-2.6.14-rc.orig/include/linux/compat_ioctl.h	2005-11-05 02:41:18.000000000 +0100
++++ linux-2.6.14-rc/include/linux/compat_ioctl.h	2005-11-05 02:41:30.000000000 +0100
+@@ -656,13 +656,6 @@
+ COMPATIBLE_IOCTL(USBDEVFS_REAPURB32)
+ COMPATIBLE_IOCTL(USBDEVFS_REAPURBNDELAY32)
+ COMPATIBLE_IOCTL(USBDEVFS_CLEAR_HALT)
+-/* MTD */
+-COMPATIBLE_IOCTL(MEMGETINFO)
+-COMPATIBLE_IOCTL(MEMERASE)
+-COMPATIBLE_IOCTL(MEMLOCK)
+-COMPATIBLE_IOCTL(MEMUNLOCK)
+-COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
+-COMPATIBLE_IOCTL(MEMGETREGIONINFO)
+ /* NBD */
+ ULONG_IOCTL(NBD_SET_SOCK)
+ ULONG_IOCTL(NBD_SET_BLKSIZE)
 
-	Arnd <><
-
- drivers/block/ioctl.c                       |  549 +++++
- drivers/block/loop.c                        |   76
- drivers/block/paride/pcd.c                  |    1
- drivers/block/paride/pd.c                   |    1
- drivers/block/paride/pt.c                   |    1
- drivers/block/pktcdvd.c                     |   20
- drivers/bluetooth/hci_ldisc.c               |   22
- drivers/cdrom/Makefile                      |    2
- drivers/cdrom/aztcd.c                       |    1
- drivers/cdrom/cdu31a.c                      |    1
- drivers/cdrom/cm206.c                       |    1
- drivers/cdrom/compat.c                      |  163 +
- drivers/cdrom/gscd.c                        |    1
- drivers/cdrom/mcdx.c                        |    1
- drivers/cdrom/optcd.c                       |    1
- drivers/cdrom/sbpcd.c                       |    1
- drivers/cdrom/sjcd.c                        |    1
- drivers/cdrom/sonycd535.c                   |    2
- drivers/char/Makefile                       |    1
- drivers/char/compat_mtio.c                  |   81
- drivers/char/ftape/zftape/zftape-init.c     |    1
- drivers/char/n_tty.c                        |    1
- drivers/char/raw.c                          |   91
- drivers/char/tty_io.c                       |  191 +
- drivers/char/viotape.c                      |    1
- drivers/char/vt.c                           |    3
- drivers/char/vt_ioctl.c                     |  195 +
- drivers/i2c/i2c-dev.c                       |  141 +
- drivers/ide/ide-cd.c                        |    1
- drivers/ide/ide-floppy.c                    |    1
- drivers/ide/ide-tape.c                      |    1
- drivers/media/radio/miropcm20-radio.c       |    1
- drivers/media/radio/radio-aimslab.c         |    1
- drivers/media/radio/radio-aztech.c          |    1
- drivers/media/radio/radio-cadet.c           |    1
- drivers/media/radio/radio-gemtek-pci.c      |    1
- drivers/media/radio/radio-gemtek.c          |    1
- drivers/media/radio/radio-maestro.c         |    1
- drivers/media/radio/radio-maxiradio.c       |    1
- drivers/media/radio/radio-rtrack2.c         |    1
- drivers/media/radio/radio-sf16fmi.c         |    1
- drivers/media/radio/radio-sf16fmr2.c        |    1
- drivers/media/radio/radio-terratec.c        |    1
- drivers/media/radio/radio-trust.c           |    1
- drivers/media/radio/radio-typhoon.c         |    1
- drivers/media/radio/radio-zoltrix.c         |    1
- drivers/media/video/Makefile                |    2
- drivers/media/video/arv.c                   |    1
- drivers/media/video/bttv-driver.c           |    1
- drivers/media/video/bw-qcam.c               |    1
- drivers/media/video/c-qcam.c                |    1
- drivers/media/video/compat_ioctl.c          |  318 +++
- drivers/media/video/cpia.c                  |    1
- drivers/media/video/cx88/cx88-video.c       |    2
- drivers/media/video/meye.c                  |    1
- drivers/media/video/pms.c                   |    1
- drivers/media/video/saa5249.c               |    1
- drivers/media/video/saa7134/saa7134-video.c |    2
- drivers/media/video/stradis.c               |    1
- drivers/media/video/w9966.c                 |    1
- drivers/media/video/zoran_driver.c          |    1
- drivers/media/video/zr36120.c               |    1
- drivers/mtd/mtdchar.c                       |   94
- drivers/net/ppp_generic.c                   |  179 +
- drivers/s390/char/tape_char.c               |    1
- drivers/scsi/osst.c                         |    2
- drivers/scsi/sg.c                           |  154 +
- drivers/scsi/sr.c                           |    1
- drivers/scsi/st.c                           |    2
- drivers/usb/core/devio.c                    |  139 +
- drivers/usb/media/dsbr100.c                 |    1
- drivers/usb/media/ov511.c                   |    1
- drivers/usb/media/pwc/pwc-if.c              |    1
- drivers/usb/media/se401.c                   |    1
- drivers/usb/media/stv680.c                  |    1
- drivers/usb/media/usbvideo.c                |    1
- drivers/usb/media/vicam.c                   |    1
- drivers/usb/media/w9968cf.c                 |    1
- drivers/video/fbmem.c                       |  147 +
- fs/autofs/root.c                            |   35
- fs/autofs4/root.c                           |   41
- fs/block_dev.c                              |   10
- fs/cifs/cifsfs.c                            |   10
- fs/cifs/cifsfs.h                            |    2
- fs/cifs/ioctl.c                             |   29
- fs/compat.c                                 |   27
- fs/compat_ioctl.c                           | 2918 ----------------------------
- fs/ext2/dir.c                               |    3
- fs/ext2/ext2.h                              |    1
- fs/ext2/file.c                              |    6
- fs/ext2/ioctl.c                             |   31
- fs/ext3/dir.c                               |    3
- fs/ext3/file.c                              |    3
- fs/ext3/ioctl.c                             |   66
- fs/fat/dir.c                                |   54
- fs/hfsplus/dir.c                            |    4
- fs/hfsplus/hfsplus_fs.h                     |    4
- fs/hfsplus/inode.c                          |    4
- fs/hfsplus/ioctl.c                          |   29
- fs/ncpfs/dir.c                              |    3
- fs/ncpfs/file.c                             |    4
- fs/ncpfs/ioctl.c                            |  241 ++
- fs/reiserfs/dir.c                           |    3
- fs/reiserfs/file.c                          |    4
- fs/reiserfs/ioctl.c                         |   36
- fs/smbfs/dir.c                              |    4
- fs/smbfs/file.c                             |    4
- fs/smbfs/ioctl.c                            |   16
- fs/smbfs/proto.h                            |    1
- fs/xfs/linux-2.6/xfs_ioctl32.c              |   15
- include/linux/cdrom.h                       |    2
- include/linux/compat_ioctl.h                |  387 ---
- include/linux/ext2_fs.h                     |    7
- include/linux/ext3_fs.h                     |    1
- include/linux/fs.h                          |    3
- include/linux/ioctl32.h                     |    2
- include/linux/mtio.h                        |   12
- include/linux/ncp_fs.h                      |    1
- include/linux/net.h                         |    2
- include/linux/reiserfs_fs.h                 |    9
- include/linux/socket.h                      |    4
- include/linux/tty.h                         |    2
- include/linux/tty_driver.h                  |    4
- include/linux/tty_ldisc.h                   |    2
- include/linux/videodev.h                    |    2
- include/net/sock.h                          |    9
- net/atm/common.h                            |    1
- net/atm/ioctl.c                             |  167 +
- net/atm/pvc.c                               |    3
- net/atm/svc.c                               |    3
- net/bluetooth/bnep/sock.c                   |    1
- net/bluetooth/cmtp/sock.c                   |    1
- net/bluetooth/hci_sock.c                    |    1
- net/bluetooth/hidp/sock.c                   |    1
- net/bluetooth/rfcomm/sock.c                 |    1
- net/compat.c                                | 1456 +++++++++----
- net/socket.c                                |    7
- 137 files changed, 4527 insertions(+), 3807 deletions(-)
+--
