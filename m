@@ -1,19 +1,11 @@
-Received: from smtp.osdl.org ([65.172.181.4])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EYAji-0006gu-4r
-	for linux-mtd@lists.infradead.org; Fri, 04 Nov 2005 18:12:44 -0500
-Date: Fri, 4 Nov 2005 15:12:39 -0800
-From: Andrew Morton <akpm@osdl.org>
-To: Pavel Machek <pavel@ucw.cz>, David Woodhouse <dwmw2@infradead.org>
-Message-Id: <20051104151239.4a39a529.akpm@osdl.org>
-In-Reply-To: <20051101233320.GA31263@elf.ucw.cz>
-References: <20051101233320.GA31263@elf.ucw.cz>
+Message-ID: <BAY112-F10B2CE2B270C3EDCCE602B3630@phx.gbl>
+From: =?gb2312?B?wO4gy8w=?= <lisongemail@hotmail.com>
+To: linux-mtd-owner@lists.infradead.org, linux-mtd-request@lists.infradead.org,
+	linux-mtd@lists.infradead.org
+Date: Sat, 05 Nov 2005 15:06:15 +0000
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org, lenz@cs.wisc.edu,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org, rmk@arm.linux.org.uk
-Subject: Re: [patch] collie: fixup mtd a bit
+Content-Type: text/plain; charset=gb2312; format=flowed
+Subject: get help!!!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +15,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pavel Machek <pavel@ucw.cz> wrote:
->
-> Get collie mtd support closer to working/clean state.
-> 
+dear sir:
+       i am a postgraduate student from china.when i used the diskonchip 
+2000,i did something wrong with the bbt in the doc,so now i can't do 
+anything with it.fortunely,i wrote the bad block number and the addresses 
+on a paper;  Can you give me an example of the bbt.txt? so i think i can do 
+it on hand! thank you very much !
 
-This patch throws a screen-sized reject due to conflicting changes in
-dwmw2's MTD tree.  I'd suggest that you rework the patch and send it in via
-David (who needs to get a wiggle on if he wants his stuff in 2.6.15).
+                                                                      
+lisong 
+                                                           Computer Dep 
+Xiamen .China
 
->  	default:
-> -		printk("Waiting for chip\n");
-> -
->  		set_current_state(TASK_INTERRUPTIBLE);
->  		add_wait_queue(&chip->wq, &wait);
->  
->  		spin_unlock_bh(chip->mutex);
->  
-> -		schedule();
-> +		udelay(1);
-> +
-> +		set_current_state(TASK_RUNNING);
->  		remove_wait_queue(&chip->wq, &wait);
->  
->  		if(signal_pending(current))
-> @@ -255,7 +256,7 @@ retry:
-
-If you're going to do this then you should remove all that now-pointless
-waitqueue and task-state handling.
+_________________________________________________________________
+享用世界上最大的电子邮件系统— MSN Hotmail。  http://www.hotmail.com  
