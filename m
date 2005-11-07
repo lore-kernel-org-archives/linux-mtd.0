@@ -1,10 +1,22 @@
-Message-ID: <BAY5-F5FB48C216171263D10DFE9B650@phx.gbl>
-From: "Ali Usman" <aliusman_89@msn.com>
-Date: Mon, 07 Nov 2005 11:28:30 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Subject: ASSISTANCE 
-Reply-To: aliusman4@yahoo.com
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EZ6PH-0001UH-4j
+	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2005 07:47:33 -0500
+Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.114.160])
+	(envelope-sender <priewasser@gmail.com>)
+	by smtprelay03.ispgateway.de (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 7 Nov 2005 12:47:21 -0000
+Message-ID: <436F4CD5.6030909@gmail.com>
+Date: Mon, 07 Nov 2005 13:47:17 +0100
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+References: <436A3949.1000001@gmail.com> <436A3BBD.5040405@yandex.ru>
+In-Reply-To: <436A3BBD.5040405@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: GC operation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,41 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ARTS & CRAFT COMPANY PLC.
-DL0311 VAUXHALL CROSS LONDON
-UNITED KINGDOM.
-E-MAIL:aliusman4@yahoo.com
+Hi Artem,
 
-Attn:Sir/Ma,
+ > Brr, didn't get it.. GC may be ugly if what?
+If someone wants to understand how it works in detail :-)
 
-With due respect to you, I am sorry for any inconveniences or embarrassement 
-this my letter of assistance may cause you. I am writing following an 
-impressive information we got about you through a consultancy firm under 
-UK/USA/CA. CHAMBER OF COMMERCE AND INDUSTRY. Thus we assured your capability 
-and reliability to champion a business of great magnitude.
+ >> When and how is GC called?
+ > From the GC thread and when there is no (or few) free space to write.
+ > In the latter case the writing process is blocked and waits until GC
+ > has freed some space.
+E.g. if it is considered as neccessary either by jffs2_reserve_space()
+or jffs2_thread_should_wake().
+Something about the blocking topic... If there is almost no free space
+and a write command issued, can it be blocked until the whole partition
+is GC'd (worst case)?? What a latency time... Are there mechanisms to
+avoid/control this? What about the "erase suspend" thing?
 
-I am Mr.Ali Usman, the managing director of the above mentioned company. 
-Base on the assurance given on your behalf, my company has appoint you as 
-our debt collector from our overseas creditors. The creditors always send us 
-CHEQUES for our payment, but foreign cheque take LONGER time to clear and 
-sometimes some of them got lost on transit, which impact a great lost to 
-this Company. It is on this effect, we the management outstand a dept 
-collect or overseas. You haven been selected on these contract, the 
-management has agreed that any debt YOU collected on our behalf, 5% is 
-allowed for you as your share while the remaining will be remitted to us 
-through wire transfer on our coparate  account.
+ >> Ah, another one: Are blocks on the erase_pending_list erased beside
+ >> the GC cycles?
+ > They are erased later, yes.
+jffs2_erase_pending_blocks(), am I right? When is it called? I can only
+find it in jffs2_write_super() with count=0 and jffs2_find_nextblock()
+with count=1.
 
-To commence on this transaction, you are to send the following in your 
-reply:
-1. Name you want the cheque to be raised.
-2. Direct telephone and fax numbers
-3. Mailing address
-4. Your company name if any.
-5. Sex/ Age and Occupation.
-If you are interested, please reply through my secure email address:
-aliusman4@yahoo.com
-
-Awaiting your positive reply.
-
-Yours sincerely,
-Mr. Ali Usman.
+Many thanks,
+Bernhard
