@@ -1,19 +1,17 @@
-Received: from desire.actrix.co.nz ([203.96.16.164])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EZCfO-0006RR-61
-	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2005 14:28:41 -0500
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Date: Tue, 8 Nov 2005 08:26:30 +1300
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EZDpu-0007KN-Pm
+	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2005 15:43:33 -0500
+Message-ID: <436FBC6E.8050609@ru.mvista.com>
+Date: Mon, 07 Nov 2005 23:43:26 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
+To: Thomas Gleixner <tglx@linutronix.de>
 References: <200511071915.03263.tglx@linutronix.de>
 In-Reply-To: <200511071915.03263.tglx@linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200511080826.30601.manningc2@actrix.gen.nz>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: MTD git repository status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,82 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas
+Hi Thomas et al,
 
-As an "mtd user outside of mtd" I have an opinion on the nand stuff.
+>- [MTD] NAND: OOB changes
+>	Needs more thoughts. I'm particularly unhappy with the introduction of new 
+>functions and the still pending problem of the automatic placement/retrieval 
+>of oob data. The change should subsume and/or extend the oob_info 
+>functionality rather than introducing a parallel solution.
+>  
+>
+Yeah I do agree that this stuff has not been verified enough to go into 
+git tree.
+And I do understand your concerns, so let me elaborate on all that once 
+more.
 
-On Tuesday 08 November 2005 07:15, Thomas Gleixner wrote:
-> Hi folks,
->
-> I've updated the mtd git repository hopefully in time for 2.6.15.
->
-> http://www.kernel.org/git/?p=linux/kernel/git/tglx/mtd-2.6.git;a=summary
->
-> 	tglx
->
-> Following changes are not included into the update:
->
-> - [JFFS2]  Erase Block Header(EBH)
-> 	Needs proper testing and stabilizing first
->
-> - [MTD] NAND: OOB changes
-> 	Needs more thoughts. I'm particularly unhappy with the introduction of new
-> functions and the still pending problem of the automatic
-> placement/retrieval of oob data. The change should subsume and/or extend
-> the oob_info
-> functionality rather than introducing a parallel solution.
+First, there's a hardware-driven need to support the OOB data 
+distributed across the page. The fact is that nand_oobinfo *can't hold 
+the info needed* for that since it implies that OOB data is contiguous. 
+The adequate patcure can be derived only from nand_oobinfo plus 
+eccsteps, but anyway handling all that in read/write functions will lead 
+to the introduction of the structure similar to page_layout_item.
+So, rather then trying to revise nand_oobinfo, I was moving towards 
+creation of a new data structure, more say 'linear' and straightforward. 
+I think that layout structure well fits.
+Let's look at nand_oobinfo from the POV that page_layout_item has been 
+introduced and autoplacement is the only option.
+In this case the whole nand_oobinfo becomes redundant and will go away, 
+and that's what I'm targeting.
 
-There are two parts to this, I think:
-1) The client (ie fs) side: 
-More and more I think that the client should just call read_ecc etc with null 
-data params in the spirit of my semi-patch proposal. This is pretty straight 
-forward and obvious as to what is intended. read_oob is ambiguous. I expect 
-that with time all fs/clients will move all oob handling to AUTOPLACE because 
-it is too messy having oob_sel hanging through the interface. ( I know I have 
-small intestines, I want to have small intestines, but I don't want to see 
-them). From an OS perspective (ie outside of mtd), getting a simple interface 
-that is well defined and will be consistent over time is pretty important.
+I guess that the new functions introduced you're talking about are 
+nand_read_oob_hwecc and nand_write_oob_hwecc.
+I think that nand_read_oob and nand_write_oob will soon go away, as soon 
+as the two new functions prove they are working in all the HW ECC cases. 
+Extending them to support SW ECC case is trivial.
+On the other hand, I do think that handling the layout in 
+read_ecc/write_page should go to the separate function as now these two 
+functions have become almost unreadable due to lotsa nesting levels.
 
-2) I think that oob_info-driven nand_base has got about as complex as it can - 
-perhaps gone too far. You cannot handle all possible cases with nand_base 
-anyway(eg. dma-based solutions). If you try, then do too many things with the 
-same code you end up with so many ifs and branches that performance goes to 
-hell, as well as very convoluted code where bugs can hide with ease. I agree 
-therefore that using functions to replace functionality is a better idea. It 
-is perhaps time for a bit of modularity too.
+Then, I'd like to point out once more that the approach introduced was 
+intended to be absolutely transparent to both MTD users and particular 
+NAND device drivers. This approach is capable of automated 
+placement/retrieval of OOB data but that's gonna be a new stage which I 
+deliberately wanted to separate from the approach introduction.
+I can create a sort of design proposal for the OOB data handling and 
+you/dedekind/Charles/whoever else will tear it apart :) We do need a 
+good co-ordination on the changes that alter the behavior of MTD functions.
 
+Hope that all makes sense,
 
->
-> - [MTD] NAND: nandsim
-> 	There is still the big Kconfig clutter. For testing environments it _is_
-> sufficient to provide all this information as module parameters. No need to
-> bloat the config file
-
-Agree. At present nandsim is quite a chore to configure and doing this through 
-Kconfig is almost pointless.
-
-As an example, I recently created a bogus 32MB 2k page device.  I did not want 
-to go much bigger for various reasons. I thus had to create a bogus nand_id 
-first and then set up the Kconfig Id bytes to match.
-
->
-> - [MTD] ONENAND: Simulator
-> 	Is depending on arch/??? probably ARM and uses some obscure __iomem*
-> constructs.
->
-> Can the authors please shed some light on the status of following drivers:
->
-> - [MTD] maps mphysram.c
-> 	It needs a bunch of coding style cleanups.
->
-> - [MTD] devices ramtd.c
-> 	Needs probably a go on the fixed size allocation already marked with
-> 	/* FIXME */
->
-> - [MTD] ssfdc.c
-> 	AFAIK the driver is mostly functional. What's missing ?
-> 	It needs a bunch of coding style cleanups.
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Best regards,
+   Vitaly
