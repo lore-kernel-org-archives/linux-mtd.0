@@ -1,18 +1,19 @@
-Received: from mail.avantwave.com ([210.17.210.210])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EZ497-0006pk-5l
-	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2005 05:22:42 -0500
-Received: from [172.16.9.196] ([172.16.9.196])
-	by mail.avantwave.com (8.12.10/8.12.10) with ESMTP id jA7AC6Js026062
-	for <linux-mtd@lists.infradead.org>; Mon, 7 Nov 2005 18:12:06 +0800
-Message-ID: <436F2894.2040104@avantwave.com>
-Date: Mon, 07 Nov 2005 18:12:36 +0800
-From: mike lee <mikelee@avantwave.com>
-MIME-Version: 1.0
+Received: from zproxy.gmail.com ([64.233.162.201])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EZ4YF-0007Pa-Mf
+	for linux-mtd@lists.infradead.org; Mon, 07 Nov 2005 05:48:39 -0500
+Received: by zproxy.gmail.com with SMTP id i1so283823nzh
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 07 Nov 2005 02:48:34 -0800 (PST)
+Message-ID: <cda58cb80511070248o6d7a18bex@mail.gmail.com>
+Date: Mon, 7 Nov 2005 11:48:34 +0100
+From: Franck <vagabon.xyz@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Could not write to flash AT49BV6416T
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: How can I prevent MTD to access the end of a flash device ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear all
-   I can boot linux with this AT49BV6414T flash, but can not erase/write 
-to the flash. Every time i write to that flash it finish up with 
-"Input/Output Error".
-    Below is the debug output of cfi_cmdset0002, it is wrong according 
-to chip datasheet . I have tried to use JEDEC enabled kernel, the result 
-is the same.
-   By the way, that ATMEL flash is CFI version 1.0 , i don't know 
-whether it is update or not.
+Hi,
 
----- debug msg ---
-NOR Flash 1: Found 1 x16 devices at 0x0 in 16-bit bank
- Amd/Fujitsu Extended Query Table at 0x0041
-  Silicon revision: 87
-  Address sensitive unlock: Not required
-  Erase Suspend: Not supported
-  Block protection: Not supported
-  Temporary block unprotect: Supported
-  Block protect/unprotect scheme: 128
-  Number of simultaneous operations: 3
-  Burst mode: Supported
-  Page mode: 1020 word page
-  Vpp Supply Minimum Program/Erase Voltage: 15.15 V
-  Vpp Supply Maximum Program/Erase Voltage: 15.15 V
-  Top/Bottom Boot Block: Unknown value 255
-NOR Flash 1: CFI does not contain boot bank location. Assuming top.
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+I have two questions that I can't answer by my own. I tried to look at
+FAQ and documentation on MTD website but found no answer.
+
+First question is about size of flash. I have a Intel strataflash
+whose size is 32MB but because of a buggy platform hardware I can't
+access to the last 64KB of the flash. How can I make MTD module aware
+of this new size. The restricted map size is initialized by my driver
+but it doesn't seem to be used by MTD.
+
+The second question is about the "cacheable" mapping field in map_info
+structure. I looked at others drivers and this field seems to be
+optional. Does this field, if set, improve flash access a lot ? Should
+I set up a cacheable mapping ?
 
 Thanks
-Mike Lee
+--
+               Franck
+
+PS: could you CC me in your answer since I'm not subscribed to the list
