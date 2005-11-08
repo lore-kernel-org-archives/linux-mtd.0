@@ -1,18 +1,18 @@
-Received: from romsoft.iasi.rdsnet.ro ([82.77.20.73] helo=mail.rms.ro)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EZTue-0002iA-Aq
-	for linux-mtd@lists.infradead.org; Tue, 08 Nov 2005 08:53:32 -0500
-Received: from [192.168.100.31] (pc31.rms.ro [192.168.100.31])
-	by mail.rms.ro (8.11.6/8.11.6) with ESMTP id jA8DA4U09752
-	for <linux-mtd@lists.infradead.org>; Tue, 8 Nov 2005 15:10:04 +0200
-Message-ID: <4370A357.5060805@rms.ro>
-Date: Tue, 08 Nov 2005 15:08:39 +0200
-From: Edgar Grimberg <edgar.grimberg@rms.ro>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EZUCA-000360-Mu
+	for linux-mtd@lists.infradead.org; Tue, 08 Nov 2005 09:11:40 -0500
+Message-ID: <4370B1EC.8000504@yandex.ru>
+Date: Tue, 08 Nov 2005 17:10:52 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Thomas Gleixner <tglx@linutronix.de>
+References: <200511071915.03263.tglx@linutronix.de>
+In-Reply-To: <200511071915.03263.tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: "Skipping dirent" message
+Cc: manningc2@actrix.gen.nz, linux-mtd@lists.infradead.org
+Subject: Re: MTD git repository status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +22,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I have eCos and JFFS, and I get the following message from JFFS debug 
-output:
 
-<7>Skipping dirent: "2007-01-08 08-27", ino #10, type 8, because curofs 2 < offset 3
+Thomas Gleixner wrote:
+> - [MTD] NAND: OOB changes
+> 	Needs more thoughts. I'm particularly unhappy with the introduction of new 
+> functions and the still pending problem of the automatic placement/retrieval 
+> of oob data. The change should subsume and/or extend the oob_info 
+> functionality rather than introducing a parallel solution.
 
-I am not sure what it means, but the fact is that I have the "2007-01-08 08-27" directory and I want to opendir and readdir it.
+As for me, the ideal would be to have:
+1. a method to fetch the number of OOB bytes available for user;
+2. a method of read/write a buffer of that length to/from OOB; that 
+space may be non-contiguous, but this should be hidden from the user.
 
-Regards,
-Edgar
+Complications like the need to supply oob_info look unreasonable to me. 
+Most (may be all?) people don't care about the OOB layout and just want 
+to read/write data from/to it. So, I agree with Charles.
+
+Any example of when users want to know the oob layout? May be nanddump 
+utilities? Not sure.
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
