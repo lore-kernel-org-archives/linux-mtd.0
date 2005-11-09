@@ -1,25 +1,25 @@
-Received: from smtprelay04.ispgateway.de ([80.67.18.16])
+Received: from zproxy.gmail.com ([64.233.162.201])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EZq4e-0005C7-Lm
-	for linux-mtd@lists.infradead.org; Wed, 09 Nov 2005 08:33:17 -0500
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.73.11])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay04.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 9 Nov 2005 13:33:11 -0000
-Received: from [192.168.0.63] (unknown [192.168.0.63])
-	by deepspace9.in2soft.meep (Postfix) with ESMTP id 6783B6A77
+	id 1EZqD9-0005TZ-CK
+	for linux-mtd@lists.infradead.org; Wed, 09 Nov 2005 08:42:03 -0500
+Received: by zproxy.gmail.com with SMTP id i11so227712nzi
 	for <linux-mtd@lists.infradead.org>;
-	Wed,  9 Nov 2005 14:32:07 +0100 (CET)
-Message-ID: <4371FA94.6070602@gmail.com>
-Date: Wed, 09 Nov 2005 14:33:08 +0100
-From: Bernhard Priewasser <priewasser@gmail.com>
+	Wed, 09 Nov 2005 05:41:56 -0800 (PST)
+Message-ID: <625fc13d0511090541w5961eaeel70921ae94dc9ca79@mail.gmail.com>
+Date: Wed, 9 Nov 2005 07:41:56 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Bernhard Priewasser <priewasser@gmail.com>
+In-Reply-To: <4371F867.6060301@gmail.com>
 MIME-Version: 1.0
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-References: <4370AA55.6060703@gmail.com> <4370B9A3.2000809@yandex.ru>
-In-Reply-To: <4370B9A3.2000809@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: Re: How to produce dirty space
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <436A3949.1000001@gmail.com> <436A3BBD.5040405@yandex.ru>
+	<436F4CD5.6030909@gmail.com> <4370B6DC.4070203@yandex.ru>
+	<4371F867.6060301@gmail.com>
+Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: GC operation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +29,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- > For the information when things are flushed see "/proc/sys/vm - the
- > virtual memory subsystem" at Documentation/filesystems/proc.txt.
+On 11/9/05, Bernhard Priewasser <priewasser@gmail.com> wrote:
+>
+> >> jffs2_erase_pending_blocks(), am I right? When is it called? I can onl=
+y
+> >> find it in jffs2_write_super() with count=3D0 and jffs2_find_nextblock=
+()
+> >> with count=3D1.
+> > So, you've answered your question :-)
+> I meant the way it is called by kupdated (which I don't know at all).
 
-Got it:
+The kupdated thread wakes up every 5 seconds or so and calls
+sync_supers, which will eventually call jffs2_write_super() and hence
+jffs2_erase_pending_blocks is called.
 
- > [/proc/sys/vm/]dirty_writeback_centisecs
- > ----------------------------------------
- >
- > The pdflush writeback daemons will periodically wake up and write
- > `old' data out to disk.  This tunable expresses the interval between
- >  those wakeups, in 100'ths of a second.
-
-Thanks,
--- 
-Bernhard
+josh
