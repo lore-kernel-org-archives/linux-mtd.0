@@ -1,23 +1,20 @@
-Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaL8O-0006xr-FC
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 22:43:11 +0000
-Date: Thu, 10 Nov 2005 23:41:58 +0100
-From: Pavel Machek <pavel@suse.cz>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20051110224158.GC9905@elf.ucw.cz>
-References: <20051109221712.GA28385@elf.ucw.cz> <4372B7A8.5060904@mvista.com>
-	<20051110095050.GC2021@elf.ucw.cz>
-	<1131616948.27347.174.camel@baythorne.infradead.org>
-	<20051110103823.GB2401@elf.ucw.cz>
-	<1131619903.27347.177.camel@baythorne.infradead.org>
-	<20051110105954.GE2401@elf.ucw.cz>
-	<1131621090.27347.184.camel@baythorne.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1131621090.27347.184.camel@baythorne.infradead.org>
-Cc: linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EaMIv-0007Ni-2h
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 18:58:09 -0500
+Message-ID: <4373DEB4.5070406@mvista.com>
+Date: Thu, 10 Nov 2005 15:58:44 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Pavel Machek <pavel@suse.cz>
+References: <20051109221712.GA28385@elf.ucw.cz>
+	<4372B7A8.5060904@mvista.com>	<20051110095050.GC2021@elf.ucw.cz>	<1131616948.27347.174.camel@baythorne.infradead.org>	<20051110103823.GB2401@elf.ucw.cz>	<1131619903.27347.177.camel@baythorne.infradead.org>	<20051110105954.GE2401@elf.ucw.cz>	<1131621090.27347.184.camel@baythorne.infradead.org>
+	<20051110224158.GC9905@elf.ucw.cz>
+In-Reply-To: <20051110224158.GC9905@elf.ucw.cz>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	kernel list <linux-kernel@vger.kernel.org>
 Subject: Re: latest mtd changes broke collie
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,78 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-> > Well, how do I found out? I tried switching to CFI, and it will not
-> > boot (unable to mount root...). No mtd-related messages as far as I
-> > can see. There's quite a lot of mtd-related config options, I set them
-> > like this:
+Pavel Machek wrote:
 > 
-> If the old sharp driver had even a _chance_ of working, then you
-> presumably have four 8-bit flash chips laid out on a 32-bit bus, and
-> those chips are compatible with the Intel command set.
+> With these hacks, I'm able to mount flash at least read-only. On
+> attempt to remount read-write, I get 
 > 
-> You can CONFIG_MTD_JEDECPROBE, and you want CONFIG_MTD_MAP_BANK_WIDTH=4,
-> CONFIG_MTD_CFI_I4, CONFIG_MTD_CFI_INTELEXT.
+> "Write error in obliterating obsoleted node at 0x00bc0000: -30
+> ...
+> Erase at 0x00c00000 failed immediately: -EROFS. Is the sector locked?"
 > 
-> Check that your chips are listed in the table in jedec_probe.c and turn
-> on all the debugging in jedec_probe.c 
+> Is it good news?
 
-With these hacks, I'm able to mount flash at least read-only. On
-attempt to remount read-write, I get 
+I see the old sharp driver has a normally-not-defined AUTOUNLOCK symbol 
+that would enable some code to unlock blocks before writing/erasing 
+(which isn't recommended since the code doesn't know the policy on 
+whether the block is supposed to be locked).  The tree previously in use 
+may have had something similar setup.  It seems these flashes have all 
+blocks locked by default at power up.
 
-"Write error in obliterating obsoleted node at 0x00bc0000: -30
-...
-Erase at 0x00c00000 failed immediately: -EROFS. Is the sector locked?"
+Try flash_unlock /dev/mtdX before remounting.  More automatic means of 
+handling this are still under debate, I need to try another stab at 
+resolving that soon.
 
-Is it good news?
-								Pavel
-
-diff --git a/arch/arm/mach-sa1100/collie.c b/arch/arm/mach-sa1100/collie.c
---- a/arch/arm/mach-sa1100/collie.c
-+++ b/arch/arm/mach-sa1100/collie.c
-@@ -208,7 +208,7 @@ static void collie_set_vpp(int vpp)
- }
- 
- static struct flash_platform_data collie_flash_data = {
--	.map_name	= "sharp",
-+	.map_name	= "jedec_probe",
- 	.set_vpp	= collie_set_vpp,
- 	.parts		= collie_partitions,
- 	.nr_parts	= ARRAY_SIZE(collie_partitions),
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -25,6 +25,8 @@
- #include <linux/mtd/cfi.h>
- #include <linux/mtd/gen_probe.h>
- 
-+#define DEBUG(a, b...) printk(b)
-+
- /* Manufacturers */
- #define MANUFACTURER_AMD	0x0001
- #define MANUFACTURER_ATMEL	0x001f
-@@ -271,6 +273,19 @@ struct amd_flash_info {
-  */
- static const struct amd_flash_info jedec_table[] = {
- 	{
-+		.mfr_id		= 0x00b0,
-+		.dev_id		= 0x00b0,
-+		.name		= "Collie hack",
-+		.uaddr		= {
-+                        [0] = MTD_UADDR_UNNECESSARY,    /* x8 */
-+		},
-+		.DevSize	= SIZE_4MiB,
-+                .CmdSet         = P_ID_INTEL_EXT,
-+                .NumEraseRegions= 1,
-+                .regions        = {
-+                        ERASEINFO(0x10000,64),
-+                }
-+	}, {
- 		.mfr_id		= MANUFACTURER_AMD,
- 		.dev_id		= AM29F032B,
- 		.name		= "AMD AM29F032B",
-
+Looks like you're close to obsoleting the pre-CFI Sharp flash driver, 
+it's good news...
 
 -- 
-Thanks, Sharp!
+Todd
