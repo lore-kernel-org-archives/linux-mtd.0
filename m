@@ -1,26 +1,23 @@
 Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
 	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaKa7-0006mb-V2
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 22:07:46 +0000
-Date: Thu, 10 Nov 2005 23:06:39 +0100
+	id 1EaL8O-0006xr-FC
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 22:43:11 +0000
+Date: Thu, 10 Nov 2005 23:41:58 +0100
 From: Pavel Machek <pavel@suse.cz>
-To: Richard Purdie <rpurdie@rpsys.net>
-Message-ID: <20051110220639.GB9905@elf.ucw.cz>
-References: <1131616948.27347.174.camel@baythorne.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20051110224158.GC9905@elf.ucw.cz>
+References: <20051109221712.GA28385@elf.ucw.cz> <4372B7A8.5060904@mvista.com>
+	<20051110095050.GC2021@elf.ucw.cz>
+	<1131616948.27347.174.camel@baythorne.infradead.org>
 	<20051110103823.GB2401@elf.ucw.cz>
 	<1131619903.27347.177.camel@baythorne.infradead.org>
 	<20051110105954.GE2401@elf.ucw.cz>
 	<1131621090.27347.184.camel@baythorne.infradead.org>
-	<20051110120708.GG2401@elf.ucw.cz> <437344E0.9040502@cantab.net>
-	<20051110130930.GJ2401@elf.ucw.cz>
-	<1131644476.24595.18.camel@localhost.localdomain>
-	<1131646197.23410.27.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1131646197.23410.27.camel@localhost.localdomain>
-Cc: David Vrabel <dvrabel@cantab.net>, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+In-Reply-To: <1131621090.27347.184.camel@baythorne.infradead.org>
+Cc: linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
 Subject: Re: latest mtd changes broke collie
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,28 +30,76 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi!
 
-> > > > Shouldn't you get hold of the datasheet for the flash chips and fill in
-> > > > this information correctly?
-> > > 
-> > > I already have working sharp.c driver... And I do not even know
-> > > manufacturer of the chip, just its ids.
-> > 
-> > The chip number is LF28F640BX which is a 64MBit device so perhaps Intel
-> > StrataFlash 28F640? That seems to be a fairly common chip...
+> > Well, how do I found out? I tried switching to CFI, and it will not
+> > boot (unable to mount root...). No mtd-related messages as far as I
+> > can see. There's quite a lot of mtd-related config options, I set them
+> > like this:
 > 
-> Some further research suggests it should perhaps be LH28F640BX which is
-> a 48 pin Sharp flash chip (much more likely). The nearest datasheet I
-> can find is:
+> If the old sharp driver had even a _chance_ of working, then you
+> presumably have four 8-bit flash chips laid out on a 32-bit bus, and
+> those chips are compatible with the Intel command set.
 > 
-> http://www.datasheetarchive.com/semiconductors/download.php?Datasheet=1120647
+> You can CONFIG_MTD_JEDECPROBE, and you want CONFIG_MTD_MAP_BANK_WIDTH=4,
+> CONFIG_MTD_CFI_I4, CONFIG_MTD_CFI_INTELEXT.
+> 
+> Check that your chips are listed in the table in jedec_probe.c and turn
+> on all the debugging in jedec_probe.c 
 
-That's strange; first the datasheet is pretty much useless; it does
-not even give you product ID ("refer to documentation"). Then it
-claims this device supports CFI. I guess it is easier to get the
-values from sharp.c than from this datasheet :-(.
+With these hacks, I'm able to mount flash at least read-only. On
+attempt to remount read-write, I get 
 
-[It seems like the chip has many "options", and it is up to user how
-it uses the chip.]
-							Pavel
+"Write error in obliterating obsoleted node at 0x00bc0000: -30
+...
+Erase at 0x00c00000 failed immediately: -EROFS. Is the sector locked?"
+
+Is it good news?
+								Pavel
+
+diff --git a/arch/arm/mach-sa1100/collie.c b/arch/arm/mach-sa1100/collie.c
+--- a/arch/arm/mach-sa1100/collie.c
++++ b/arch/arm/mach-sa1100/collie.c
+@@ -208,7 +208,7 @@ static void collie_set_vpp(int vpp)
+ }
+ 
+ static struct flash_platform_data collie_flash_data = {
+-	.map_name	= "sharp",
++	.map_name	= "jedec_probe",
+ 	.set_vpp	= collie_set_vpp,
+ 	.parts		= collie_partitions,
+ 	.nr_parts	= ARRAY_SIZE(collie_partitions),
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -25,6 +25,8 @@
+ #include <linux/mtd/cfi.h>
+ #include <linux/mtd/gen_probe.h>
+ 
++#define DEBUG(a, b...) printk(b)
++
+ /* Manufacturers */
+ #define MANUFACTURER_AMD	0x0001
+ #define MANUFACTURER_ATMEL	0x001f
+@@ -271,6 +273,19 @@ struct amd_flash_info {
+  */
+ static const struct amd_flash_info jedec_table[] = {
+ 	{
++		.mfr_id		= 0x00b0,
++		.dev_id		= 0x00b0,
++		.name		= "Collie hack",
++		.uaddr		= {
++                        [0] = MTD_UADDR_UNNECESSARY,    /* x8 */
++		},
++		.DevSize	= SIZE_4MiB,
++                .CmdSet         = P_ID_INTEL_EXT,
++                .NumEraseRegions= 1,
++                .regions        = {
++                        ERASEINFO(0x10000,64),
++                }
++	}, {
+ 		.mfr_id		= MANUFACTURER_AMD,
+ 		.dev_id		= AM29F032B,
+ 		.name		= "AMD AM29F032B",
+
+
 -- 
 Thanks, Sharp!
