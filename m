@@ -1,10 +1,10 @@
 Received: from tim.rpsys.net ([194.106.48.114])
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaGQT-0002OE-21
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 12:41:34 -0500
+	id 1EaGsB-0002u2-QY
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 13:10:13 -0500
 From: Richard Purdie <rpurdie@rpsys.net>
 To: Pavel Machek <pavel@ucw.cz>
-In-Reply-To: <20051110130930.GJ2401@elf.ucw.cz>
+In-Reply-To: <1131644476.24595.18.camel@localhost.localdomain>
 References: <20051109221712.GA28385@elf.ucw.cz>
 	<4372B7A8.5060904@mvista.com> <20051110095050.GC2021@elf.ucw.cz>
 	<1131616948.27347.174.camel@baythorne.infradead.org>
@@ -14,9 +14,10 @@ References: <20051109221712.GA28385@elf.ucw.cz>
 	<1131621090.27347.184.camel@baythorne.infradead.org>
 	<20051110120708.GG2401@elf.ucw.cz> <437344E0.9040502@cantab.net>
 	<20051110130930.GJ2401@elf.ucw.cz>
+	<1131644476.24595.18.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Thu, 10 Nov 2005 17:41:16 +0000
-Message-Id: <1131644476.24595.18.camel@localhost.localdomain>
+Date: Thu, 10 Nov 2005 18:09:57 +0000
+Message-Id: <1131646197.23410.27.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: David Vrabel <dvrabel@cantab.net>, David Woodhouse <dwmw2@infradead.org>,
@@ -31,14 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-11-10 at 14:09 +0100, Pavel Machek wrote:
-> > Shouldn't you get hold of the datasheet for the flash chips and fill in
-> > this information correctly?
+On Thu, 2005-11-10 at 17:41 +0000, Richard Purdie wrote:
+> On Thu, 2005-11-10 at 14:09 +0100, Pavel Machek wrote:
+> > > Shouldn't you get hold of the datasheet for the flash chips and fill in
+> > > this information correctly?
+> > 
+> > I already have working sharp.c driver... And I do not even know
+> > manufacturer of the chip, just its ids.
 > 
-> I already have working sharp.c driver... And I do not even know
-> manufacturer of the chip, just its ids.
+> The chip number is LF28F640BX which is a 64MBit device so perhaps Intel
+> StrataFlash 28F640? That seems to be a fairly common chip...
 
-The chip number is LF28F640BX which is a 64MBit device so perhaps Intel
-StrataFlash 28F640? That seems to be a fairly common chip...
+Some further research suggests it should perhaps be LH28F640BX which is
+a 48 pin Sharp flash chip (much more likely). The nearest datasheet I
+can find is:
+
+http://www.datasheetarchive.com/semiconductors/download.php?Datasheet=1120647
 
 Richard
