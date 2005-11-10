@@ -1,18 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.192])
+Received: from wproxy.gmail.com ([64.233.184.206])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ea5MX-0001BM-V8
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 00:52:49 -0500
-Received: by wproxy.gmail.com with SMTP id 58so500955wri
+	id 1Ea5Nv-0001IM-1b
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 00:54:43 -0500
+Received: by wproxy.gmail.com with SMTP id 58so501141wri
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Nov 2005 21:52:38 -0800 (PST)
-From: "Li Weichen" <iaadoa@gmail.com>
+	Wed, 09 Nov 2005 21:54:00 -0800 (PST)
+From: "Li Weichen" <liwch.nk@gmail.com>
 To: <linux-mtd@lists.infradead.org>
-Date: Thu, 10 Nov 2005 13:52:24 +0800
+Date: Thu, 10 Nov 2005 13:53:41 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Message-ID: <4372e026.03e0031e.11a6.4cf6@mx.gmail.com>
+Message-ID: <4372e078.5ad00bc9.1c07.48a3@mx.gmail.com>
 Subject: Help on erase block errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -45,8 +45,7 @@ Li Weichen
 error messages:
 
 Node at 0x0063cd78 with length 0x80000a0d would run over the end of the
-erase block
-Perhaps the file system was created with the wrong erase size?
+erase block Perhaps the file system was created with the wrong erase size?
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd7c:
 0x0a0d instead
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd80:
@@ -66,17 +65,13 @@ jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd9c:
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cda0:
 0xf819 instead
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cda4:
-0xa000 instead
-Further such events for this erase block will not be printed
+0xa000 instead Further such events for this erase block will not be printed
 Node at 0x0063eb78 with length 0x80000a21 would run over the end of the
-erase block
-Perhaps the file system was created with the wrong erase size?
-Calculated unchecked size 0001e978 != stored unchecked size 8001e978
-kernel BUG at fs/jffs2/scan.c:133!
+erase block Perhaps the file system was created with the wrong erase size?
+Calculated unchecked size 0001e978 != stored unchecked size 8001e978 kernel
+BUG at fs/jffs2/scan.c:133!
 Unable to handle kernel NULL pointer dereference at virtual address 00000000
-pgd = c0004000
-[00000000] *pgd=00000000
-Internal error: Oops: 805 [#1]
+pgd = c0004000 [00000000] *pgd=00000000 Internal error: Oops: 805 [#1]
 Modules linked in:
 CPU: 0
 PC is at __bug+0x40/0x54
@@ -87,8 +82,8 @@ r10: 00000000  r9 : 00000031  r8 : 00000000
 r7 : 00000250  r6 : 00000002  r5 : c02dc930  r4 : 00000000
 r3 : 00000000  r2 : 00000000  r1 : 0000173c  r0 : 00000001
 Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
-Control: 5317F  Table: 10004000  DAC: 00000017
-Process swapper (pid: 1, stack limit = 0xc02d2194)
+Control: 5317F  Table: 10004000  DAC: 00000017 Process swapper (pid: 1,
+stack limit = 0xc02d2194)
 Stack: (0xc02d3cc4 to 0xc02d4000)
 3cc0:          c1c55200 c02d3d18 c02d3cd8 c00e0c80 c002a75c c02d3cec
 c02d3ce8
@@ -153,34 +148,29 @@ Backtrace:
  r8 = C1C552D0  r7 = C1C552C8  r6 = C1C552C0  r5 = C1C552A8
  r4 = C1C552B8
 [<c00e4874>] (jffs2_do_mount_fs+0x0/0x210) from [<c00e6834>]
-(jffs2_do_fill_super+0x124/0x238)
-[<c00e6710>] (jffs2_do_fill_super+0x0/0x238) from [<c00e6f98>]
+(jffs2_do_fill_super+0x124/0x238) [<c00e6710>]
+(jffs2_do_fill_super+0x0/0x238) from [<c00e6f98>]
 (jffs2_get_sb_mtd+0xe0/0x140)
  r8 = 00008400  r7 = C1C552E8  r6 = C1C552E0  r5 = C1C55000
  r4 = C1C55200
 [<c00e6eb8>] (jffs2_get_sb_mtd+0x0/0x140) from [<c00e704c>]
-(jffs2_get_sb_mtdnr+0x54/0x60)
-[<c00e6ff8>] (jffs2_get_sb_mtdnr+0x0/0x60) from [<c00e71ec>]
-(jffs2_get_sb+0x194/0x1d0)
- r7 = 00008000  r6 = C1C62000  r5 = 00000003  r4 = FFFFFFEA
-[<c00e7058>] (jffs2_get_sb+0x0/0x1d0) from [<c00849d8>]
-(do_kern_mount+0x5c/0xf0)
+(jffs2_get_sb_mtdnr+0x54/0x60) [<c00e6ff8>] (jffs2_get_sb_mtdnr+0x0/0x60)
+from [<c00e71ec>] (jffs2_get_sb+0x194/0x1d0)
+ r7 = 00008000  r6 = C1C62000  r5 = 00000003  r4 = FFFFFFEA [<c00e7058>]
+(jffs2_get_sb+0x0/0x1d0) from [<c00849d8>] (do_kern_mount+0x5c/0xf0)
 [<c008497c>] (do_kern_mount+0x0/0xf0) from [<c009af60>]
-(do_new_mount+0x7c/0xac)
-[<c009aee4>] (do_new_mount+0x0/0xac) from [<c009b5a8>]
-(do_mount+0x150/0x16c)
- r7 = 00000000  r6 = C1C61000  r5 = 00000000  r4 = 00008000
-[<c009b458>] (do_mount+0x0/0x16c) from [<c009b99c>] (sys_mount+0xa4/0xe8)
-[<c009b8f8>] (sys_mount+0x0/0xe8) from [<c0008bb0>]
-(do_mount_root+0x30/0xbc)
+(do_new_mount+0x7c/0xac) [<c009aee4>] (do_new_mount+0x0/0xac) from
+[<c009b5a8>] (do_mount+0x150/0x16c)
+ r7 = 00000000  r6 = C1C61000  r5 = 00000000  r4 = 00008000 [<c009b458>]
+(do_mount+0x0/0x16c) from [<c009b99c>] (sys_mount+0xa4/0xe8) [<c009b8f8>]
+(sys_mount+0x0/0xe8) from [<c0008bb0>] (do_mount_root+0x30/0xbc)
  r8 = 00000000  r7 = 00000000  r6 = 00008000  r5 = C02D9000
  r4 = C02D9000
 [<c0008b80>] (do_mount_root+0x0/0xbc) from [<c0008c98>]
 (mount_block_root+0x5c/0x174)
  r4 = C02D9000
 [<c0008c3c>] (mount_block_root+0x0/0x174) from [<c0008fbc>]
-(mount_root+0x7c/0x98)
-[<c0008f40>] (mount_root+0x0/0x98) from [<c00090b0>]
+(mount_root+0x7c/0x98) [<c0008f40>] (mount_root+0x0/0x98) from [<c00090b0>]
 (prepare_namespace+0xd8/0x124)
  r4 = 00000000
 [<c0008fd8>] (prepare_namespace+0x0/0x124) from [<c00240cc>]
@@ -188,5 +178,5 @@ Backtrace:
  r5 = 00000000  r4 = C025422C
 [<c002406c>] (init+0x0/0x138) from [<c0041910>] (do_exit+0x0/0x3cc)
  r4 = 00000000
-Code: 1b0053e7 e59f0014 eb0053e5 e3a03000 (e5833000)
- <0>Kernel panic - not syncing: Attempted to kill init!
+Code: 1b0053e7 e59f0014 eb0053e5 e3a03000 (e5833000)  <0>Kernel panic - not
+syncing: Attempted to kill init!
