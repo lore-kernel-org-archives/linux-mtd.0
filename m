@@ -1,21 +1,19 @@
-Received: from zproxy.gmail.com ([64.233.162.198])
+Received: from wproxy.gmail.com ([64.233.184.192])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ea4wg-0000fb-1m
-	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 00:26:09 -0500
-Received: by zproxy.gmail.com with SMTP id i11so429553nzi
+	id 1Ea5MX-0001BM-V8
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 00:52:49 -0500
+Received: by wproxy.gmail.com with SMTP id 58so500955wri
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 09 Nov 2005 21:25:57 -0800 (PST)
-Message-ID: <51d250110511092125s2bbc4decy425c94964fff7fd2@mail.gmail.com>
-Date: Thu, 10 Nov 2005 10:55:56 +0530
-From: yonathana wodeselia <yonathanaw@gmail.com>
-To: dwmw2@shinybook.infradead.org, ben@simtec.co.uk,
-	linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
+	Wed, 09 Nov 2005 21:52:38 -0800 (PST)
+From: "Li Weichen" <iaadoa@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 10 Nov 2005 13:52:24 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Cc: 
-Subject: samsung nand timing issues or oob ?
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Message-ID: <4372e026.03e0031e.11a6.4cf6@mx.gmail.com>
+Subject: Help on erase block errors
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,559 +23,170 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi friends ,
-               I have a samsung 0x76 id,  128M , 512 page chip sitting
-on gpio on a pxa , I have been trying to get nandwrite and nanddump
-work on the mtd. Kernel is 2.6.12.1 . My driver is attached below. I
-notice some inconsistency
-[root@device yoni]#insmod driver.ko
-Using driver.ko
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB
-3,3V 8-bit)
-Scanning device for bad blocks
-Bad eraseblock 364 at 0x005b0000
-Creating 1 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-0x00000000-0x00200000 : "Filesystem on nand"
-mtd: Giving out device 3 to Filesystem on nand
+Hi everyone,
 
-[root@device yoni]#rmmod driver
-[root@device yoni]#insmod driver.ko
-Using manav.ko
-NAND device: Manufacturer ID: 0xec, Chip ID: 0x76 (Samsung NAND 64MiB
-3,3V 8-bit)
-Scanning device for bad blocks
-Creating 1 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-0x00000000-0x00200000 : "Filesystem on nand"
-mtd: Giving out device 4 to Filesystem on nand
+I have met a trouble in jffs2 file system.  I am using the TI OMAP 5912 OSK
+as my developing board.  I used the latest linux omap 2.6 git tree that
+updated just now.  I made my file system followed the OSK5912 Newbie Guide
+with this commad,
 
-Once it detects bad blocks and then it doesnt .My this->chip_delay =3D
-50; and have tried it till 20
-How do i verify that the basic driver is working. have tried nandwrite
-with p option  the file am writing is -rw-r--r--    1 root     root  =20
-     4221 Jan  1 00:10 test
-Usually do a nandwrite -p /dev/mtd3 test.txt and i  get
- /nandwrite -p -y /dev/mtd3 test
-MTD_open
-MTD_ioctl
-MTD_ioctl
-Use -f option to enforce legacy placement on autoplacement enablMTD_close
-ed mtd device
+#mkfs.jffs2 -p -l -e 0x20000 -n -v -r /data/rootfs2.6/ -o filesys.jffs2
 
-and nanddump
- ./nanddump -p -l 4000 /dev/mtd3
-MTD_open
-MTD_ioctl
-Block size 16384, page size 512, OOB size 16MTD_ioctl
+And the version of mkfs.jffs2 is 1.43.  Finally I got many erase block
+errors about erase block which are listed below.  I found that there is a
+kernel bug in the messages.  Can anyone give me some advice?  
 
-Dumping data starting at 0x00000000 and ending at 0x00000fa0..MTD_read
-.
-0x00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000010: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0MTD_ioctl
-x00000020: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00MTD_read
-000030: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000040: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000050MTD_ioctl
-: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000060: fMTD_read
-f ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000070: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000080: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000090: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000000f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000100: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000110: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000120: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000130: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000140: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000150: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000160: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000170: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000180: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000190: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000001f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000210: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000220: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000230: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000240: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000250: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000260: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000270: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000280: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000290: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000002f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000300: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000310: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000320: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000330: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000340: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000350: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000360: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000370: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000390: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000003f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000400: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000410: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000420: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000430: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000440: ff ff ff ff ff ff ff ff ff ff ff MTD_ioctl
-ff ff ff ff ff
-0x00000450: ff ff ff ff ff ff ff ff ff ff ff ff MTD_read
-ff ff ff ff
-0x00000460: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000470: ff ff ff ff ff ff ff ff ff ff ff ff ff ff MTD_ioctl
-ff ff
-0x00000480: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff MTD_read
-ff
-0x00000490: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000004f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000500: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000510: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000520: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000530: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000540: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000550: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000560: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000570: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000580: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000590: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000005f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000600: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000610: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000620: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000630: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000640: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000650: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000660: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000670: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000680: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000690: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000006f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000700: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000710: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000720: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000730: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000740: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000750: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000760: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000770: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000790: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000007f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000810: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000820: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000830: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000840: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000850: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000860: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-MTD_ioctl0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+Thank you in advance.
+Best regards!
 
-0x00000880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0xMTD_read
-00000890: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008MTD_ioctl
-b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008c0:MTD_read
- ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000008f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000910: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000920: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000930: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000940: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000950: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000960: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000970: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000990: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009a0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009b0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009c0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009d0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009e0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x000009f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000a90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000aa0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ab0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ac0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ad0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ae0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000af0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000b90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ba0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000bb0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000bc0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000bd0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000be0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000bf0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000c90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ca0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000cb0: ffMTD_ioctl
- ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000cc0: ff ffMTD_read
- ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000cd0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ce0: ff ff ff ffMTD_ioctl
- ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000cf0: ff ff ff ff ffMTD_close
- ff ff ff ff ff ff ff ff ff ff ff
-0x00000d00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000d90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000da0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000db0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000dc0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000dd0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000de0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000df0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000e90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ea0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000eb0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ec0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ed0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ee0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ef0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f00: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f10: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f20: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f30: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f40: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f50: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f60: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f70: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f80: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000f90: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000fa0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000fb0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000fc0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000fd0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000fe0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-0x00000ff0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-  OOB Data: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+Li Weichen
+2005-11-10
 
-Where is the data that is being written ?
-What am am thinking is that maybe the oob structure is not been
-initilised properly. what i see is the following oob placements
-defined in nand_base
-/* Define default oob placement schemes for large and small page devices */
-static struct nand_oobinfo nand_oob_8 =3D {
-        .useecc =3D MTD_NANDECC_AUTOPLACE,
-        .eccbytes =3D 3,
-        .eccpos =3D {0, 1, 2},
-        .oobfree =3D { {3, 2}, {6, 2} }
-};
+error messages:
 
-static struct nand_oobinfo nand_oob_16 =3D {
-        .useecc =3D MTD_NANDECC_AUTOPLACE,
-        .eccbytes =3D 6,
-        .eccpos =3D {0, 1, 2, 3, 6, 7},
-        .oobfree =3D { {8, 8} }
-};
-
-static struct nand_oobinfo nand_oob_64 =3D {
-        .useecc =3D MTD_NANDECC_AUTOPLACE,
-        .eccbytes =3D 24,
-        .eccpos =3D {
-                40, 41, 42, 43, 44, 45, 46, 47,
-                48, 49, 50, 51, 52, 53, 54, 55,
-                56, 57, 58, 59, 60, 61, 62, 63},
-        .oobfree =3D { {2, 38} }
-};
-
-Which one would be right to choose for a yaffs file system and a jffs2
-file system .I am thinking that these might be not be right  , cause i
-read dat these samsung k9f1208 chips are already being used in
-places.Are there any low level tools available out there for me to use
-to verify if data is being written and in a proper way. Any help will
-be highly appreciated , am at total loss of speech and thoughts here
-..
- The driver below
-/*
- *  drivers/mtd/nand/spia.c
- *
- *  Copyright (C) 2000 Steven J. Hill (sjhill@realitydiluted.com)
- *
- *
- *      10-29-2001 TG   change to support hardwarespecific access
- *                      to controllines (due to change in nand.c)
- *                      page_cache added
- *
- * $Id: spia.c,v 1.21 2003/07/11 15:12:29 dwmw2 Exp $
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- *  Overview:
- *   This is a device driver for the NAND flash device found on the
- *   SPIA board which utilizes the Toshiba TC58V64AFT part. This is
- *   a 64Mibit (8MiB x 8 bits) NAND flash device.
- */
-
-#include <linux/kernel.h>
-#include <linux/init.h>
-#include <linux/slab.h>
-#include <linux/module.h>
-#include <linux/mtd/mtd.h>
-#include <linux/mtd/nand.h>
-#include <linux/mtd/partitions.h>
-#include <asm/io.h>
-#include <asm/sizes.h>
-#include <asm/arch-pxa/pxa-regs.h>
-/*
- * MTD structure for SPIA board
- */
-static struct mtd_info *spia_mtd =3D NULL;
-
-/*
- * Values specific to the SPIA board (used with EP7212 processor)
- */
-#define SPIA_IO_BASE    0xd0000000      /* Start of EP7212 IO address space=
- */
-#define SPIA_FIO_BASE   0x06000000      /* Address where flash is mapped */
-#define SPIA_PEDR       0x0080          /*
-                                         * IO offset to Port E data registe=
-r
-                                         * where the CLE, ALE and NCE pins
-                                         * are wired to.
-                                         */
-#define SPIA_PEDDR      0x00c0          /*
-                                         * IO offset to Port E data directi=
-on
-                                         * register so we can control the I=
-O
-                                         * lines.
-                                         */
-
-/*
- * Module stuff
- */
-
-static int spia_fio_base =3D SPIA_FIO_BASE;
-
-
-/*
- * Define partitions for flash device
- */
-const static struct mtd_partition partition_info[] =3D {
-        { name: "Filesystem on nand",
-                offset: 0,
-                size:   2 * SZ_1M},
-};
-#define NUM_PARTITIONS 1
-
-
-/*
- *      hardware specific access to control-lines
-*/
-static void spia_hwcontrol(struct mtd_info *mtd, int cmd){
-
-    switch(cmd){
-
-        case NAND_CTL_SETCLE: GPSR2 =3D 0x80000;   break;
-        case NAND_CTL_CLRCLE:GPCR2 =3D 0x80000;   break;
-
-        case NAND_CTL_SETALE: GPSR2 =3D 0x100000; break;
-        case NAND_CTL_CLRALE: GPCR2 =3D 0x100000;  break;
-
-        case NAND_CTL_SETNCE: GPCR2 =3D 0x20000; break;
-        case NAND_CTL_CLRNCE: GPSR2 =3D 0x20000; break;
-    }
-}
-
-/*
- * Main initialization routine
- */
-int __init spia_init (void)
-{
-        struct nand_chip *this;
-        GPSR2 =3D 0x60000;
-        GPDR2 |=3D 0x1e0000;
-
-        GPCR2 =3D 0x20000;
-        /* Allocate memory for MTD device structure and private data */
-        spia_mtd =3D kmalloc (sizeof(struct mtd_info) + sizeof (struct nand=
-_chip),
-                                GFP_KERNEL);
-        if (!spia_mtd) {
-                printk ("Unable to allocate SPIA NAND MTD device structure.=
-\n");
-                return -ENOMEM;
-        }
-
-        /* Get pointer to private data */
-        this =3D (struct nand_chip *) (&spia_mtd[1]);
-
-        /* Initialize structures */
-        memset((char *) spia_mtd, 0, sizeof(struct mtd_info));
-        memset((char *) this, 0, sizeof(struct nand_chip));
-spia_fio_base=3D(unsigned long)ioremap(spia_fio_base,SZ_1K);       =20
-//??? cache _nocache roblems
-        /* Link the private data with the MTD structure */
-        spia_mtd->priv =3D this;
-
-        /*
-         * Set GPIO Port E control register so that the pins are configured
-         * to be outputs for controlling the NAND flash.
-         */
-
-        /* Set address of NAND IO lines */
-        this->IO_ADDR_R =3D spia_fio_base;
-        this->IO_ADDR_W =3D spia_fio_base;
-        /* Set address of hardware control function */
-        this->hwcontrol =3D spia_hwcontrol;
-        /* 15 us command delay time */
-        this->chip_delay =3D 50;                                       =20
-     // timing issues
-        this->eccmode =3D NAND_ECC_SOFT;
-
-        /* Scan to find existence of the device */
-        if (nand_scan (spia_mtd, 1)) {
-                kfree (spia_mtd);
-                return -ENXIO;
-        }
-
-        /* Allocate memory for internal data buffer */
-        this->data_buf =3D kmalloc (sizeof(u_char) * (spia_mtd->oobblock
-+ spia_mtd->oobsize), GFP_KERNEL);
-        if (!this->data_buf) {
-                printk ("Unable to allocate NAND data buffer for SPIA.\n");
-                kfree (spia_mtd);
-                return -ENOMEM;
-        }
-
-        /* Register the partitions */
-        add_mtd_partitions(spia_mtd, partition_info, NUM_PARTITIONS);
-
-        /* Return happy */
-        return 0;
-}
-module_init(spia_init);
-
-/*
- * Clean up routine
- */
-#ifdef MODULE
-static void __exit spia_cleanup (void)
-{
-        struct nand_chip *this =3D (struct nand_chip *) &spia_mtd[1];
-
-        /* Unregister the device */
-        del_mtd_device (spia_mtd);
-
-        /* Free internal data buffer */
-        kfree (this->data_buf);
-
-        /* Free the MTD device structure */
-        kfree (spia_mtd);
-}
-module_exit(spia_cleanup);
-#endif
-
-MODULE_LICENSE("GPL");
-MODULE_AUTHOR("Steven J. Hill <sjhill@realitydiluted.com");
-MODULE_DESCRIPTION("Board-specific glue layer for NAND flash on SPIA board"=
-);
-
-Is there a cache / fill buffer that is leaking somewhere , I have seen
-drivers that implement this ?? arnt nandwrite and nanddump low level
-mtd tools ?
-regards,
-Yoni
+Node at 0x0063cd78 with length 0x80000a0d would run over the end of the
+erase block
+Perhaps the file system was created with the wrong erase size?
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd7c:
+0x0a0d instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd80:
+0x697c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd84:
+0x014c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd88:
+0x001b instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd8c:
+0x81ed instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd94:
+0x7edc instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd98:
+0xf819 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cd9c:
+0xf819 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cda0:
+0xf819 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0063cda4:
+0xa000 instead
+Further such events for this erase block will not be printed
+Node at 0x0063eb78 with length 0x80000a21 would run over the end of the
+erase block
+Perhaps the file system was created with the wrong erase size?
+Calculated unchecked size 0001e978 != stored unchecked size 8001e978
+kernel BUG at fs/jffs2/scan.c:133!
+Unable to handle kernel NULL pointer dereference at virtual address 00000000
+pgd = c0004000
+[00000000] *pgd=00000000
+Internal error: Oops: 805 [#1]
+Modules linked in:
+CPU: 0
+PC is at __bug+0x40/0x54
+LR is at 0x1
+pc : [<c002a78c>]    lr : [<00000001>]    Not tainted
+sp : c02d3cc4  ip : 60000093  fp : c02d3cd4
+r10: 00000000  r9 : 00000031  r8 : 00000000
+r7 : 00000250  r6 : 00000002  r5 : c02dc930  r4 : 00000000
+r3 : 00000000  r2 : 00000000  r1 : 0000173c  r0 : 00000001
+Flags: nZCv  IRQs on  FIQs on  Mode SVC_32  Segment kernel
+Control: 5317F  Table: 10004000  DAC: 00000017
+Process swapper (pid: 1, stack limit = 0xc02d2194)
+Stack: (0xc02d3cc4 to 0xc02d4000)
+3cc0:          c1c55200 c02d3d18 c02d3cd8 c00e0c80 c002a75c c02d3cec
+c02d3ce8
+3ce0: 00000000 00000003 c22c0000 01dc0000 00000000 c1c552a8 c1c55200
+c1c552c8
+3d00: c1c552d0 c1c55200 c1c552d8 c02d3d44 c02d3d1c c00e42fc c00e06fc
+00000000
+3d20: 000000d0 c1c552b8 c1c552a8 c1c552c0 c1c552c8 c1c552d0 c02d3d70
+c02d3d48
+3d40: c00e4a30 c00e42e0 c1c45e00 c1c55200 00000000 c1c55000 00008400
+00000000
+3d60: 00000001 c02d3d94 c02d3d74 c00e6834 c00e4884 c1c55200 c1c55000
+c1c552e0
+3d80: c1c552e8 00008400 c02d3dc4 c02d3d98 c00e6f98 c00e6720 c1c62000
+c1c62000
+3da0: 00000000 c0217a28 00008000 c0217a28 00000000 00000000 c02d3de8
+c02d3dc8
+3dc0: c00e704c c00e6ec8 c1c45e00 ffffffea 00000003 c1c62000 00008000
+c02d3e58
+3de0: c02d3dec c00e71ec c00e7008 00000003 00000004 c1c48e60 c02c4600
+c02d3e20
+3e00: c02d3e0c c0095508 00000001 00000001 00000000 0000000a c02c4240
+c1c49260
+3e20: c1c62000 00008000 00000000 c02d3e58 c02d3e3c c02c4240 fffffff4
+c0217a28
+3e40: c1c62000 00008000 00000000 c02d3e80 c02d3e5c c00849d8 c00e7068
+ffffffff
+3e60: 00008000 c02d3eb0 00000000 c1c62000 c02d3eb0 c02d3ea0 c02d3e84
+c009af60
+3e80: c008498c 00008000 00000000 c1c61000 00000000 c02d3f18 c02d3ea4
+c009b5a8
+3ea0: c009aef4 c1c62000 00000000 c1c60000 c02c7558 c02c4600 00000010
+c0067000
+3ec0: 00000000 00000001 00000001 00000000 00008000 c01dd4a4 00000000
+c02d3ef8
+3ee0: c02d3eec c0062cac 00001000 c02d3f18 00000000 00000000 c01dd4a4
+c1c61000
+3f00: 00008000 c01dd4a4 00000000 c02d3f4c c02d3f1c c009b99c c009b468
+00000000
+3f20: 00000000 c1c62000 c1c60000 c02d9000 c02d9000 00008000 00000000
+00000000
+3f40: c02d3f64 c02d3f50 c0008bb0 c009b908 00000000 c02d9000 c02d3fb0
+c02d3f68
+3f60: c0008c98 c0008b90 00000000 00000000 00000000 c008dc4c 00000000
+c02d3f91
+3f80: c00200a0 c02d3fa0 01f00003 c025423c 00000000 00000000 00000000
+00000000
+3fa0: 00000000 c02d3fc4 c02d3fb4 c0008fbc c0008c4c 00000000 c02d3fe0
+c02d3fc8
+3fc0: c00090b0 c0008f50 00000000 c025422c 00000000 c02d3ff4 c02d3fe4
+c00240cc
+3fe0: c0008fe8 00000000 00000000 c02d3ff8 c0041910 c002407c a70b64d3
+f2bd63da
+Backtrace:
+[<c002a74c>] (__bug+0x0/0x54) from [<c00e0c80>]
+(jffs2_scan_medium+0x594/0x750)
+ r4 = C1C55200
+[<c00e06ec>] (jffs2_scan_medium+0x0/0x750) from [<c00e42fc>]
+(jffs2_build_filesystem+0x2c/0x438)
+[<c00e42d0>] (jffs2_build_filesystem+0x0/0x438) from [<c00e4a30>]
+(jffs2_do_mount_fs+0x1bc/0x210)
+ r8 = C1C552D0  r7 = C1C552C8  r6 = C1C552C0  r5 = C1C552A8
+ r4 = C1C552B8
+[<c00e4874>] (jffs2_do_mount_fs+0x0/0x210) from [<c00e6834>]
+(jffs2_do_fill_super+0x124/0x238)
+[<c00e6710>] (jffs2_do_fill_super+0x0/0x238) from [<c00e6f98>]
+(jffs2_get_sb_mtd+0xe0/0x140)
+ r8 = 00008400  r7 = C1C552E8  r6 = C1C552E0  r5 = C1C55000
+ r4 = C1C55200
+[<c00e6eb8>] (jffs2_get_sb_mtd+0x0/0x140) from [<c00e704c>]
+(jffs2_get_sb_mtdnr+0x54/0x60)
+[<c00e6ff8>] (jffs2_get_sb_mtdnr+0x0/0x60) from [<c00e71ec>]
+(jffs2_get_sb+0x194/0x1d0)
+ r7 = 00008000  r6 = C1C62000  r5 = 00000003  r4 = FFFFFFEA
+[<c00e7058>] (jffs2_get_sb+0x0/0x1d0) from [<c00849d8>]
+(do_kern_mount+0x5c/0xf0)
+[<c008497c>] (do_kern_mount+0x0/0xf0) from [<c009af60>]
+(do_new_mount+0x7c/0xac)
+[<c009aee4>] (do_new_mount+0x0/0xac) from [<c009b5a8>]
+(do_mount+0x150/0x16c)
+ r7 = 00000000  r6 = C1C61000  r5 = 00000000  r4 = 00008000
+[<c009b458>] (do_mount+0x0/0x16c) from [<c009b99c>] (sys_mount+0xa4/0xe8)
+[<c009b8f8>] (sys_mount+0x0/0xe8) from [<c0008bb0>]
+(do_mount_root+0x30/0xbc)
+ r8 = 00000000  r7 = 00000000  r6 = 00008000  r5 = C02D9000
+ r4 = C02D9000
+[<c0008b80>] (do_mount_root+0x0/0xbc) from [<c0008c98>]
+(mount_block_root+0x5c/0x174)
+ r4 = C02D9000
+[<c0008c3c>] (mount_block_root+0x0/0x174) from [<c0008fbc>]
+(mount_root+0x7c/0x98)
+[<c0008f40>] (mount_root+0x0/0x98) from [<c00090b0>]
+(prepare_namespace+0xd8/0x124)
+ r4 = 00000000
+[<c0008fd8>] (prepare_namespace+0x0/0x124) from [<c00240cc>]
+(init+0x60/0x138)
+ r5 = 00000000  r4 = C025422C
+[<c002406c>] (init+0x0/0x138) from [<c0041910>] (do_exit+0x0/0x3cc)
+ r4 = 00000000
+Code: 1b0053e7 e59f0014 eb0053e5 e3a03000 (e5833000)
+ <0>Kernel panic - not syncing: Attempted to kill init!
