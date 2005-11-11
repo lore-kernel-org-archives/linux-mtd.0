@@ -1,21 +1,28 @@
 Received: from portail2.utbm.fr ([193.48.246.11] helo=portail1.utbm.fr)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaVNZ-0007Ly-9h
-	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 04:39:33 -0500
+	id 1EaVSL-0007Yx-SI
+	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 04:44:32 -0500
 Received: from portail2.utbm.fr (localhost.localdomain [127.0.0.1])
-	by portail1.utbm.fr (8.12.8/jtpda-5.4) with ESMTP id jAB9dNgf010773
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:39:23 +0100
+	by portail1.utbm.fr (8.12.8/jtpda-5.4) with ESMTP id jAB9iKgf011336
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:44:20 +0100
 Received: from vers-webmail.utbm.fr (vers-webmail.utbm.fr [192.168.1.28])
-	by portail2.utbm.fr (8.12.8/8.12.8) with ESMTP id jAB9dN2b010767
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:39:23 +0100
-Message-ID: <1131701962.437466ca80ccc@webmail2.utbm.fr>
-Date: Fri, 11 Nov 2005 10:39:22 +0100
+	by portail2.utbm.fr (8.12.8/8.12.8) with ESMTP id jAB9iK2b011330
+	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:44:20 +0100
+Message-ID: <1131702259.437467f3dd940@webmail2.utbm.fr>
+Date: Fri, 11 Nov 2005 10:44:19 +0100
 From: "Pierre.Ricadat@UTBM.fr" <Pierre.Ricadat@utbm.fr>
 To: linux-mtd@lists.infradead.org
+References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
+	<20051028142739.GB1269@wohnheim.fh-wedel.de>
+	<1130753526.4365edf6b2807@webmail1.utbm.fr>
+	<20051031143345.GB27238@wohnheim.fh-wedel.de>
+	<1130771777.4366354129c88@webmail1.utbm.fr>
+	<20051031152430.GC27238@wohnheim.fh-wedel.de>
+In-Reply-To: <20051031152430.GC27238@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Subject: [JFFS2]remove totlen from jffs2_raw_node_ref
+Subject: Re: [PATCH] separate routine to check jffs2_flash_read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Quoting Jörn Engel <joern@wohnheim.fh-wedel.de>:
 
-Hi'
+> Hmmyess, makes sense.  I'd vote for inclusion "right after the merge".
+>
+> Not sure what that actually means.  If it takes too long, I might just
+> shrug and dump new stuff into cvs.  We've had a calm-down period for a
+> while now and the merge could even happen with code from some date
+> like today.
+>
+> Jörn
 
-I'm trying to remove totlen from jffs2_raw_node_ref structure.
+Could it be added to cvs now?
 
-Could you confirm (or not) the following changes are needed? I understood that
-from http://lists.infradead.org/pipermail/linux-mtd/2003-October/008689.html
-
-- create a jffs2_raw_node_ref structure even for the dirty nodes (in scan.c :
-case JFFS2_NODETYPE_CLEANMARKER, line 632)
-
-- create a jffs2_raw_node_ref for the obsolete nodes we add to wasted (in
-scan.c, line 729)
-
-- then modify the calls to totlen in the other files and use
-ref_totlen()instead.
-
-Is it enough to ensure we can calculate totlen well in every cases?
-
-Thanks
+Regards
 -- 
 Pierre Ricadat
