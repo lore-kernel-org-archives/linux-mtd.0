@@ -1,26 +1,16 @@
-Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaMbf-0007aw-Mz
-	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 00:17:30 +0000
-Date: Fri, 11 Nov 2005 01:16:17 +0100
-From: Pavel Machek <pavel@suse.cz>
-To: Todd Poynor <tpoynor@mvista.com>
-Message-ID: <20051111001617.GD9905@elf.ucw.cz>
-References: <20051109221712.GA28385@elf.ucw.cz> <4372B7A8.5060904@mvista.com>
-	<20051110095050.GC2021@elf.ucw.cz>
-	<1131616948.27347.174.camel@baythorne.infradead.org>
-	<20051110103823.GB2401@elf.ucw.cz>
-	<1131619903.27347.177.camel@baythorne.infradead.org>
-	<20051110105954.GE2401@elf.ucw.cz>
-	<1131621090.27347.184.camel@baythorne.infradead.org>
-	<20051110224158.GC9905@elf.ucw.cz> <4373DEB4.5070406@mvista.com>
+Received: from bay113-f13.bay113.hotmail.com ([65.54.168.23] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EaOkY-000161-Bd
+	for linux-mtd@lists.infradead.org; Thu, 10 Nov 2005 21:34:51 -0500
+Message-ID: <BAY113-F13EF0719D34C6B00B273F2E8590@phx.gbl>
+In-Reply-To: <20050929075015.GB16687@wohnheim.fh-wedel.de>
+From: "zhao forrest" <zhao_fusheng@hotmail.com>
+To: joern@wohnheim.fh-wedel.de
+Date: Fri, 11 Nov 2005 10:15:17 +0800
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4373DEB4.5070406@mvista.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: latest mtd changes broke collie
+Content-Type: text/plain; charset=gb2312; format=flowed
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]1:1 mapping(revision 2)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,41 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+>
+>This is a good time to settle down and wait for a while, before
+>introducing new bugs.  Once the existing stuff is fixed or it appears
+>as if all bug reports were bogus (could also be), we can start merging
+>new feature (which always have new bugs as well).
+>
 
-> >With these hacks, I'm able to mount flash at least read-only. On
-> >attempt to remount read-write, I get 
-> >
-> >"Write error in obliterating obsoleted node at 0x00bc0000: -30
-> >...
-> >Erase at 0x00c00000 failed immediately: -EROFS. Is the sector locked?"
-> >
-> >Is it good news?
-> 
-> I see the old sharp driver has a normally-not-defined AUTOUNLOCK symbol 
-> that would enable some code to unlock blocks before writing/erasing 
-> (which isn't recommended since the code doesn't know the policy on 
-> whether the block is supposed to be locked).  The tree previously in use 
-> may have had something similar setup.  It seems these flashes have all 
-> blocks locked by default at power up.
+Since Tglx has finished syncing MTD repository with kernel tree, I'll
+check in this patch now.
 
-Is there some quick hack I can do in kernel to unlock it? Is it
-possible to accidentally unlock "BIOS" area and brick the device?
-
-> Try flash_unlock /dev/mtdX before remounting.  More automatic means of 
-> handling this are still under debate, I need to try another stab at 
-> resolving that soon.
-
-Good news is that I do have /dev/mtdX. Bad news is I do not have
-flash_unlock. Does anyone have binary suitable for arm, preferably
-statically linked?
-
-> Looks like you're close to obsoleting the pre-CFI Sharp flash driver, 
-> it's good news...
-
-Ok, good. Read-only access is certainly better than nothing, and might
-even be enough. Sharp shipped it with flash read-only originally.
-
-								Pavel
--- 
-Thanks, Sharp!
+Thanks,
+Forrest
