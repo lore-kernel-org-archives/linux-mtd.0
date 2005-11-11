@@ -1,21 +1,19 @@
-Received: from [218.94.130.26] (helo=mail.mobilesoft.com.cn)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaSNZ-0004S3-N2
-	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 01:27:24 -0500
-Received: from mobile-8f709cb0 (unknown [221.226.103.173])
-	by mail.mobilesoft.com.cn (Postfix) with ESMTP id 0EB186F0017
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Nov 2005 14:27:03 +0800 (CST)
-Date: Fri, 11 Nov 2005 14:26:40 +0800
-From: "=?gb2312?B?zMDA2r3w?=" <leijint@mobilesoft.com.cn>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-Message-Id: <20051111062703.0EB186F0017@mail.mobilesoft.com.cn>
-Subject: available space  reduce sharply in the jffs2 file system
-Reply-To: leijint@mobilesoft.com.cn
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EaSqo-000509-Ft
+	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 01:57:38 -0500
+Message-ID: <437440D0.6090007@ru.mvista.com>
+Date: Fri, 11 Nov 2005 09:57:20 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
+To: Charles Manning <manningc2@actrix.gen.nz>
+References: <200511071915.03263.tglx@linutronix.de>
+	<200511080826.30601.manningc2@actrix.gen.nz>
+In-Reply-To: <200511080826.30601.manningc2@actrix.gen.nz>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: MTD git repository status
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,146 +23,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-bGludXgtbXRko6zE+rrDo6ENCg0Kd2UgdGFrZSBzb21lIGV4cGVyaW1lbnRzIGluIHRoZSBqZmZz
-MiBmaWxlIHN5c3RlbSBvZiBsaW51eCBrZXJuZWwgMi42LjEyLndlIGNhdWdodCBhIGJpZyBwcm9i
-bGVtLiANCg0Kd2Ugd3JpdGUgNCBieXRlcyBhbmQgd2UgcmFuZG9tIGxsc2VlayBpbiB0aGUgamZm
-czIsdGhlIGF2YWlsYWJsZSBzcGFjZSBjb250aW51ZSB0byByZWR1Y2Ugc2hhcnBseS4NCiAgICAg
-ICAgICAgICAgICBmZCA9IGZvcGVuKGFyZ3ZbMV0sICJyKyIpOw0KICAgICAgICAgICAgICAgIGNo
-YXIgYnVmWzEwMjRdPXsnYScsJ2InLCdjJ307DQogICAgICAgICAgICAgICAgZm9yICg7Oykgew0K
-ICAgICAgICAgICAgICAgICAgICAgICAgb2Zmc2V0ID0gcmFuZCgpOw0KICAgICAgICAgICAgICAg
-ICAgICAgICAgZnNlZWsoZmQsIG9mZnNldCAlICgxMDI0KjEwMjQpLCBTRUVLX1NFVCk7DQogICAg
-ICAgICAgICAgICAgICAgICAgICBmd3JpdGUoYnVmLCAxMDI0LCAxLCBmZCk7DQogICAgICAgICAg
-ICAgICAgfQ0KDQogICAgICAgICAgICAgICAgZmNsb3NlKGZkKTsNCg0Kd2UgY2F1Z2h0IHRoZSBz
-bGFiaW5mbyBpbiB0aGUgcHJvYyBldmVyeSBvdGhlciAxMCBzZWNvbmQuDQoNCjxhY3RpdmVfb2Jq
-cz4gPG51bV9vYmpzPiA8b2Jqc2l6ZT4NCmpmZnMyX2lub2RlX2NhY2hlICAgMTk5OCAgIDIwMzAg
-ICAgIDI0ICAxNDUgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAg
-IDE0ICAgICAxNDANCmpmZnMyX25vZGVfZnJhZyAgICAgMTkzNiAgIDIwMzIgICAgIDI4ICAxMjcg
-ICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgIDE2ICAgICAxNjAN
-CmpmZnMyX3Jhd19ub2RlX3JlZiAgMTE1MjkgIDExNTcxICAgICAxNiAgMjAzICAgIDEgOiB0dW5h
-YmxlcyAgMTIwICAgNjAgICAgMCA6IHNsYWJkYXRhICAgICA1NyAgICAgNTANCmpmZnMyX3RtcF9k
-bm9kZSAgICAgICAgMCAgICAgIDAgICAgIDM2ICAxMDEgICAgMSA6IHR1bmFibGVzICAxMjAgICA2
-MCAgICAwIDogc2xhYmRhdGEgICAgICAwICAgICAgMDANCmpmZnMyX3Jhd19pbm9kZSAgICAgICAg
-MCAgICAgIDAgICAgIDY4ICAgNTYgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xh
-YmRhdGEgICAgICAwICAgICAgMDANCmpmZnMyX3Jhd19kaXJlbnQgICAgICAgMCAgICAgIDAgICAg
-IDQwICAgOTIgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgICAw
-ICAgICAgMDANCmpmZnMyX2Z1bGxfZG5vZGUgICAgMjExNiAgIDIyMzMgICAgIDE2ICAyMDMgICAg
-MSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgIDExICAgICAxMTANCg0K
-DQpqZmZzMl9pbm9kZV9jYWNoZSAgIDIwMDYgICAyMDMwICAgICAyNCAgMTQ1ICAgIDEgOiB0dW5h
-YmxlcyAgMTIwICAgNjAgICAgMCA6IHNsYWJkYXRhICAgICAxNCAgICAgMTQwDQpqZmZzMl9ub2Rl
-X2ZyYWcgICAgIDM4NzAgICAzOTM3ICAgICAyOCAgMTI3ICAgIDEgOiB0dW5hYmxlcyAgMTIwICAg
-NjAgICAgMCA6IHNsYWJkYXRhICAgICAzMSAgICAgMzEwDQpqZmZzMl9yYXdfbm9kZV9yZWYgIDEy
-NDQzICAxMjU4NiAgICAgMTYgIDIwMyAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBz
-bGFiZGF0YSAgICAgNjIgICAgIDYwDQpqZmZzMl90bXBfZG5vZGUgICAgICAgIDEgICAgMTAxICAg
-ICAzNiAgMTAxICAgIDEgOiB0dW5hYmxlcyAgMTIwICAgNjAgICAgMCA6IHNsYWJkYXRhICAgICAg
-MSAgICAgIDEwDQpqZmZzMl9yYXdfaW5vZGUgICAgICAgIDIgICAgIDU2ICAgICA2OCAgIDU2ICAg
-IDEgOiB0dW5hYmxlcyAgMTIwICAgNjAgICAgMCA6IHNsYWJkYXRhICAgICAgMSAgICAgIDEwDQpq
-ZmZzMl9yYXdfZGlyZW50ICAgICAgIDggICAgIDkyICAgICA0MCAgIDkyICAgIDEgOiB0dW5hYmxl
-cyAgMTIwICAgNjAgICAgMCA6IHNsYWJkYXRhICAgICAgMSAgICAgIDEwDQpqZmZzMl9mdWxsX2Ru
-b2RlICAgIDQwMzcgICA0MDYwICAgICAxNiAgMjAzICAgIDEgOiB0dW5hYmxlcyAgMTIwICAgNjAg
-ICAgMCA6IHNsYWJkYXRhICAgICAyMCAgICAgMjAwDQoNCg0KamZmczJfaW5vZGVfY2FjaGUgICAx
-OTk5ICAgMjAzMCAgICAgMjQgIDE0NSAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBz
-bGFiZGF0YSAgICAgMTQgICAgIDE0MA0KamZmczJfbm9kZV9mcmFnICAgICA0ODExICAgNDgyNiAg
-ICAgMjggIDEyNyAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAg
-MzggICAgIDM4MA0KamZmczJfcmF3X25vZGVfcmVmICAxMzQwMCAgMTM2MDEgICAgIDE2ICAyMDMg
-ICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgIDY3ICAgICA2MA0K
-amZmczJfdG1wX2Rub2RlICAgICAgICAwICAgICAgMCAgICAgMzYgIDEwMSAgICAxIDogdHVuYWJs
-ZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAgIDAgICAgICAwMA0KamZmczJfcmF3X2lu
-b2RlICAgICAgICAwICAgICA1NiAgICAgNjggICA1NiAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYw
-ICAgIDAgOiBzbGFiZGF0YSAgICAgIDAgICAgICAxMA0KamZmczJfcmF3X2RpcmVudCAgICAgICAw
-ICAgICAgMCAgICAgNDAgICA5MiAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFi
-ZGF0YSAgICAgIDAgICAgICAwMA0KamZmczJfZnVsbF9kbm9kZSAgICA0OTQzICAgNTA3NSAgICAg
-MTYgIDIwMyAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAgMjUg
-ICAgIDI1MA0KDQplYWRsaW5lX2RycSAgICAgICAgICAgOCAgICAgNzggICAgIDQ4ICAgNzggICAg
-MSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgICAxICAgICAgMTANCmpm
-ZnMyX2lub2RlX2NhY2hlICAgMTk5OSAgIDIwMzAgICAgIDI0ICAxNDUgICAgMSA6IHR1bmFibGVz
-ICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgIDE0ICAgICAxNDANCmpmZnMyX25vZGVfZnJh
-ZyAgICAgNTY5OCAgIDU3MTUgICAgIDI4ICAxMjcgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAg
-ICAwIDogc2xhYmRhdGEgICAgIDQ1ICAgICA0NTANCmpmZnMyX3Jhd19ub2RlX3JlZiAgMTQzMzcg
-IDE0NDEzICAgICAxNiAgMjAzICAgIDEgOiB0dW5hYmxlcyAgMTIwICAgNjAgICAgMCA6IHNsYWJk
-YXRhICAgICA3MSAgICAgNzANCmpmZnMyX3RtcF9kbm9kZSAgICAgICAgMCAgICAgIDAgICAgIDM2
-ICAxMDEgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgICAwICAg
-ICAgMDANCmpmZnMyX3Jhd19pbm9kZSAgICAgICAgMiAgICAgNTYgICAgIDY4ICAgNTYgICAgMSA6
-IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgICAxICAgICAgMTANCmpmZnMy
-X3Jhd19kaXJlbnQgICAgICAgMCAgICAgIDAgICAgIDQwICAgOTIgICAgMSA6IHR1bmFibGVzICAx
-MjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgICAwICAgICAgMDANCmpmZnMyX2Z1bGxfZG5vZGUg
-ICAgNTc5NSAgIDU4ODcgICAgIDE2ICAyMDMgICAgMSA6IHR1bmFibGVzICAxMjAgICA2MCAgICAw
-IDogc2xhYmRhdGEgICAgIDI5ICAgICAyOTANCg0KamZmczJfaW5vZGVfY2FjaGUgICAxOTk5ICAg
-MjAzMCAgICAgMjQgIDE0NSAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0
-YSAgICAgMTQgICAgIDE0MA0KamZmczJfbm9kZV9mcmFnICAgICA2NTg3ICAgNjYwNCAgICAgMjgg
-IDEyNyAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAgNTIgICAg
-IDUyMA0KamZmczJfcmF3X25vZGVfcmVmICAxNTI2OSAgMTU0MjggICAgIDE2ICAyMDMgICAgMSA6
-IHR1bmFibGVzICAxMjAgICA2MCAgICAwIDogc2xhYmRhdGEgICAgIDc2ICAgICA3MA0KamZmczJf
-dG1wX2Rub2RlICAgICAgICAwICAgICAgMCAgICAgMzYgIDEwMSAgICAxIDogdHVuYWJsZXMgIDEy
-MCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAgIDAgICAgICAwMA0KamZmczJfcmF3X2lub2RlICAg
-ICAgICA0ICAgICA1NiAgICAgNjggICA1NiAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAg
-OiBzbGFiZGF0YSAgICAgIDEgICAgICAxMA0KamZmczJfcmF3X2RpcmVudCAgICAgICAwICAgICAg
-MCAgICAgNDAgICA5MiAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAg
-ICAgIDAgICAgICAwMA0KamZmczJfZnVsbF9kbm9kZSAgICA2NjQ5ICAgNjY5OSAgICAgMTYgIDIw
-MyAgICAxIDogdHVuYWJsZXMgIDEyMCAgIDYwICAgIDAgOiBzbGFiZGF0YSAgICAgMzMgICAgIDMz
-MA0KDQp0aGUgc2FtZSB0ZXN0aW5nIGNvZGVzIGlzIHJ1bm5pbmcgaW4gdGhlIHN5c3RlbSBvZiBr
-ZXJuZWwgdmVyc2lvbiAyLjQuMTgsYnV0IHRoZSBzbGFiaW5mbyBpcyBhcyBmb2xsb3c6DQoNCmpm
-ZnMyX2lub2RlX2NhY2hlICAgIDUwMiAgICA1MDcgICAgIDIwICAgIDMgICAgMyAgICAxDQpqZmZz
-Ml9ub2RlX2ZyYWcgICAgICAzMzYgICAgNjA2ICAgICAxNiAgICAzICAgIDMgICAgMQ0KamZmczJf
-cmF3X25vZGVfcmVmICAgNDUyNSAgIDQ2NDYgICAgIDE2ICAgMjMgICAyMyAgICAxDQpqZmZzMl90
-bXBfZG5vZGUgICAgICAgIDAgICAgMjUzICAgICAxMiAgICAwICAgIDEgICAgMQ0KamZmczJfcmF3
-X2lub2RlICAgICAgICAxICAgICA1NiAgICAgNjggICAgMSAgICAxICAgIDENCmpmZnMyX3Jhd19k
-aXJlbnQgICAgICAgMCAgICAgOTIgICAgIDQwICAgIDAgICAgMSAgICAxDQpqZmZzMl9mdWxsX2Ru
-b2RlICAgICAzNTYgICAgODA4ICAgICAxNiAgICA0ICAgIDQgICAgMQ0KDQoNCmpmZnMyX2lub2Rl
-X2NhY2hlICAgIDUwMiAgICA1MDcgICAgIDIwICAgIDMgICAgMyAgICAxDQpqZmZzMl9ub2RlX2Zy
-YWcgICAgICAzNTUgICAgNjA2ICAgICAxNiAgICAzICAgIDMgICAgMQ0KamZmczJfcmF3X25vZGVf
-cmVmICAgNjE3NSAgIDYyNjIgICAgIDE2ICAgMzEgICAzMSAgICAxDQpqZmZzMl90bXBfZG5vZGUg
-ICAgICAgIDAgICAgMjUzICAgICAxMiAgICAwICAgIDEgICAgMQ0KamZmczJfcmF3X2lub2RlICAg
-ICAgICAxICAgICA1NiAgICAgNjggICAgMSAgICAxICAgIDENCmpmZnMyX3Jhd19kaXJlbnQgICAg
-ICAgMCAgICAgOTIgICAgIDQwICAgIDAgICAgMSAgICAxDQpqZmZzMl9mdWxsX2Rub2RlICAgICAz
-NzUgICAgODA4ICAgICAxNiAgICA0ICAgIDQgICAgMQ0KDQoNCmpmZnMyX2lub2RlX2NhY2hlICAg
-IDUwMiAgICA1MDcgICAgIDIwICAgIDMgICAgMyAgICAxDQpqZmZzMl9ub2RlX2ZyYWcgICAgICAz
-NjAgICAgNjA2ICAgICAxNiAgICAzICAgIDMgICAgMQ0KamZmczJfcmF3X25vZGVfcmVmICAgNjY2
-MCAgIDY2NjYgICAgIDE2ICAgMzMgICAzMyAgICAxDQpqZmZzMl90bXBfZG5vZGUgICAgICAgIDAg
-ICAgMjUzICAgICAxMiAgICAwICAgIDEgICAgMQ0KamZmczJfcmF3X2lub2RlICAgICAgICAwICAg
-ICA1NiAgICAgNjggICAgMCAgICAxICAgIDENCmpmZnMyX3Jhd19kaXJlbnQgICAgICAgMCAgICAg
-OTIgICAgIDQwICAgIDAgICAgMSAgICAxDQpqZmZzMl9mdWxsX2Rub2RlICAgICAzNzkgICAgODA4
-ICAgICAxNiAgICA0ICAgIDQgICAgMQ0KDQoNCmpmZnMyX2lub2RlX2NhY2hlICAgIDUwMiAgICA1
-MDcgICAgIDIwICAgIDMgICAgMyAgICAxDQpqZmZzMl9ub2RlX2ZyYWcgICAgICA0NjUgICAgNjA2
-ICAgICAxNiAgICAzICAgIDMgICAgMQ0KamZmczJfcmF3X25vZGVfcmVmICAgNzc0NCAgIDc4Nzgg
-ICAgIDE2ICAgMzkgICAzOSAgICAxDQpqZmZzMl90bXBfZG5vZGUgICAgICAgIDAgICAgMjUzICAg
-ICAxMiAgICAwICAgIDEgICAgMQ0KamZmczJfcmF3X2lub2RlICAgICAgICAwICAgICA1NiAgICAg
-NjggICAgMCAgICAxICAgIDENCmpmZnMyX3Jhd19kaXJlbnQgICAgICAgMCAgICAgOTIgICAgIDQw
-ICAgIDAgICAgMSAgICAxDQpqZmZzMl9mdWxsX2Rub2RlICAgICA2MzIgICAgODA4ICAgICAxNiAg
-ICA0ICAgIDQgICAgMQ0KDQoNCmpmZnMyX2lub2RlX2NhY2hlICAgIDQzNiAgICA1MDcgICAgIDIw
-ICAgIDMgICAgMyAgICAxDQpqZmZzMl9ub2RlX2ZyYWcgICAgICA1NjYgICAgNjA2ICAgICAxNiAg
-ICAzICAgIDMgICAgMQ0KamZmczJfcmF3X25vZGVfcmVmICAgNTk4MiAgIDc4NzggICAgIDE2ICAg
-MzEgICAzOSAgICAxDQpqZmZzMl90bXBfZG5vZGUgICAgICAgIDAgICAgMjUzICAgICAxMiAgICAw
-ICAgIDEgICAgMQ0KamZmczJfcmF3X2lub2RlICAgICAgICAwICAgICA1NiAgICAgNjggICAgMCAg
-ICAxICAgIDENCmpmZnMyX3Jhd19kaXJlbnQgICAgICAgMCAgICAgOTIgICAgIDQwICAgIDAgICAg
-MSAgICAxDQpqZmZzMl9mdWxsX2Rub2RlICAgICA3NTAgICAgODA4ICAgICAxNiAgICA0ICAgIDQg
-ICAgMQ0KDQpqZmZzMl9pbm9kZV9jYWNoZSAgICA0MzYgICAgNTA3ICAgICAyMCAgICAzICAgIDMg
-ICAgMQ0KamZmczJfbm9kZV9mcmFnICAgICAgNTgxICAgIDYwNiAgICAgMTYgICAgMyAgICAzICAg
-IDENCmpmZnMyX3Jhd19ub2RlX3JlZiAgIDU1NDQgICA3ODc4ICAgICAxNiAgIDI4ICAgMzkgICAg
-MQ0KamZmczJfdG1wX2Rub2RlICAgICAgICAwICAgIDI1MyAgICAgMTIgICAgMCAgICAxICAgIDEN
-CmpmZnMyX3Jhd19pbm9kZSAgICAgICAgMCAgICAgNTYgICAgIDY4ICAgIDAgICAgMSAgICAxDQpq
-ZmZzMl9yYXdfZGlyZW50ICAgICAgIDAgICAgIDkyICAgICA0MCAgICAwICAgIDEgICAgMQ0KamZm
-czJfZnVsbF9kbm9kZSAgICAgNzY1ICAgIDgwOCAgICAgMTYgICAgNCAgICA0ICAgIDENCg0KamZm
-czJfaW5vZGVfY2FjaGUgICAgNDM2ICAgIDUwNyAgICAgMjAgICAgMyAgICAzICAgIDENCmpmZnMy
-X25vZGVfZnJhZyAgICAgIDYxNSAgICA4MDggICAgIDE2ICAgIDQgICAgNCAgICAxDQpqZmZzMl9y
-YXdfbm9kZV9yZWYgICA0ODYzICAgNzg3OCAgICAgMTYgICAzMSAgIDM5ICAgIDENCmpmZnMyX3Rt
-cF9kbm9kZSAgICAgICAgMCAgICAyNTMgICAgIDEyICAgIDAgICAgMSAgICAxDQpqZmZzMl9yYXdf
-aW5vZGUgICAgICAgIDAgICAgIDU2ICAgICA2OCAgICAwICAgIDEgICAgMQ0KamZmczJfcmF3X2Rp
-cmVudCAgICAgICAwICAgICA5MiAgICAgNDAgICAgMCAgICAxICAgIDENCmpmZnMyX2Z1bGxfZG5v
-ZGUgICAgIDc5OSAgICA4MDggICAgIDE2ICAgIDQgICAgNCAgICAxDQoNCndlIGFsc28gdGFrZSBh
-bnRob3IgdGVzdGluZyBpbiB0aGUga2VybmVsIDIuNi4xMi4gdGhlIGNvZGVzIGlzIGFzIGZvbGxv
-d3M6DQoJICAgICAgICAgICAgZmQgPSBmb3Blbihhcmd2WzFdLCAicisiKTsgDQogICAgICAgICAg
-ICAgICAgZm9yICg7Oykgew0KICAgICAgICAgICAgICAgICAgICAgICAgZndyaXRlKCZvZmZzZXQs
-c2l6ZW9mKGludCksIDEsIGZkKTsNCiAgICAgICAgICAgICAgICAgICAgICAgIG9mZnNldCArPSA0
-Ow0KICAgICAgICAgICAgICAgICAgICAgICAgaWYgKG9mZnNldCA+PSAxMDI0KjEwMjQpIHsNCiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb2Zmc2V0ID0gMDsNCiAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgZnNlZWsoZmQsIDAsIFNFRUtfU0VUKTsNCiAgICAgICAgICAgICAg
-ICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICB9DQoNCiAgICAgICAgICAgICAgICBmY2xvc2Uo
-ZmQpOw0KdGhlcmUgaXMgbm8gcHJvYmxlbSBpbiB0aGUgamZmczIgZmlsZSBzeXN0ZW0gYW5kIHRo
-ZSBzeXN0ZW0ncyBzcGFjZSBpcyBkZWNyZWFzZSBhYm91dCAxMDBLIHdoZW4gd2Ugd3JpdGUgMU0g
-Ynl0ZXMuIA0KDQoNCndlIGZlbHQgdGhlIHJlYXNvbiBpcyBtYWJ5ZSB0aGUgcHJpbmNpcGxlcyBv
-ZiBHYXJiYWdlIGNvbGxlY3Rpb24uIHdoZW4gd2UgcnVuIHRoZSB0ZXN0IGNvZGVzIGluIHRoZSBr
-ZXJuZWwgMi40LjE4IG9yIHdyaXRlIGRhdGEgb3JkZXJseSx0aGUgamZmczJfcmF3X25vZGVfcmVm
-IGlzIGtlZXBpbmcgcXVhbnRpdHkuIA0KCQ0KQW55IGhlbHAgaXMgbXVjaCBhcHByZWNpYXRlZC4g
-DQoNCqGhoaGhoaGhoaGhoaGhoaHWwg0KwPGjoQ0KIAkJCQkNCg0KoaGhoaGhoaGhoaGhoaGhoczA
-wNq98A0KoaGhoaGhoaGhoaGhoaGhoWxlaWppbnRAbW9iaWxlc29mdC5jb20uY24NCqGhoaGhoaGh
-oaGhoaGhoaGhoaGhMjAwNS0xMS0xMQ0K
+Hi Charles et al,
+
+>>- [MTD] NAND: OOB changes
+>>	Needs more thoughts. I'm particularly unhappy with the introduction of new
+>>functions and the still pending problem of the automatic
+>>placement/retrieval of oob data. The change should subsume and/or extend
+>>the oob_info
+>>functionality rather than introducing a parallel solution.
+>>    
+>>
+>
+>There are two parts to this, I think:
+>1) The client (ie fs) side: 
+>More and more I think that the client should just call read_ecc etc with null 
+>data params in the spirit of my semi-patch proposal. This is pretty straight 
+>forward and obvious as to what is intended. read_oob is ambiguous. I expect 
+>that with time all fs/clients will move all oob handling to AUTOPLACE because 
+>it is too messy having oob_sel hanging through the interface. ( I know I have 
+>small intestines, I want to have small intestines, but I don't want to see 
+>them). From an OS perspective (ie outside of mtd), getting a simple interface 
+>that is well defined and will be consistent over time is pretty important.
+>  
+>
+This may be implemented but will lead to more complicated do_read_ecc 
+function so I suggest not to do that.
+Reasons:
+1. nand_read_oob is capable of reading the oob data from a given offset. 
+nand_do_read_ecc is not. The need for that may go away as we move 
+forward with the new approach to the oob, but still...
+2. There may be a need to read oob data from more than one page. If we 
+want to have this functionality supported in do_read_ecc, it will lead 
+to introduction of yet another parameter of this function and 
+complicated function finish criteria.
+
+>2) I think that oob_info-driven nand_base has got about as complex as it can - 
+>perhaps gone too far. You cannot handle all possible cases with nand_base 
+>anyway(eg. dma-based solutions). If you try, then do too many things with the 
+>same code you end up with so many ifs and branches that performance goes to 
+>hell, as well as very convoluted code where bugs can hide with ease. I agree 
+>therefore that using functions to replace functionality is a better idea. It 
+>is perhaps time for a bit of modularity too.
+>  
+>
+I propose to get rid of nand_oobinfo completely and introduce the only 
+one 'oobfree' integer which will denote spare (i. e. not used by the MTD 
+layer) OOB data size per page.
+This should be enough for the MTD users, as far as I can see. On the 
+other hand, it will provide better modularity.
+This also shows the advantage of layout-based NAND page handling. The 
+layouts remain inner part of the MTD layer so MTD users like JFFSx or 
+YAFFSx don't need to know anything about that as opposed to nand_oobinfo 
+which needs to be exported.
+
+Details:
+Currently we have the following layout item structure:
+
+struct page_layout_item {
+        int length;
+        enum {
+                ITEM_TYPE_DATA,
+                ITEM_TYPE_OOB,
+                ITEM_TYPE_ECC,
+        } type;
+};
+
+This reflects the current nand_base implementation, but in order to 
+implement what's proposed above, this needs to be
+
+struct page_layout_item {
+        int length;
+        enum {
+                ITEM_TYPE_DATA,
+                ITEM_TYPE_OOB_MTD,
+                ITEM_TYPE_OOB_SPARE,
+                ITEM_TYPE_ECC,
+        } type;
+};
+
+Then it's going to be as simple as follows. do_read_ecc/read_oob will 
+just copy only the OOB_SPARE data to the data pointer provided. 
+write_page/write_oob will treat the incoming oob data as data that is 
+needed to be written into the OOB_SPARE parts.
+OOB_MTD will define OOB bytes used for bad block markers and whatever 
+else MTD layer wants.
+
+Best regards,
+   Vitaly
