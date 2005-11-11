@@ -1,27 +1,24 @@
-Received: from portail2.utbm.fr ([193.48.246.11] helo=portail1.utbm.fr)
+Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EaVSL-0007Yx-SI
-	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 04:44:32 -0500
-Received: from portail2.utbm.fr (localhost.localdomain [127.0.0.1])
-	by portail1.utbm.fr (8.12.8/jtpda-5.4) with ESMTP id jAB9iKgf011336
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:44:20 +0100
-Received: from vers-webmail.utbm.fr (vers-webmail.utbm.fr [192.168.1.28])
-	by portail2.utbm.fr (8.12.8/8.12.8) with ESMTP id jAB9iK2b011330
-	for <linux-mtd@lists.infradead.org>; Fri, 11 Nov 2005 10:44:20 +0100
-Message-ID: <1131702259.437467f3dd940@webmail2.utbm.fr>
-Date: Fri, 11 Nov 2005 10:44:19 +0100
-From: "Pierre.Ricadat@UTBM.fr" <Pierre.Ricadat@utbm.fr>
-To: linux-mtd@lists.infradead.org
+	id 1EaVqD-00089t-Oh
+	for linux-mtd@lists.infradead.org; Fri, 11 Nov 2005 05:09:13 -0500
+Date: Fri, 11 Nov 2005 11:08:59 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Pierre.Ricadat@UTBM.fr" <Pierre.Ricadat@utbm.fr>
+Message-ID: <20051111100859.GA23660@wohnheim.fh-wedel.de>
 References: <1130311964.435f311cf30e9@webmail2.utbm.fr>
 	<20051028142739.GB1269@wohnheim.fh-wedel.de>
 	<1130753526.4365edf6b2807@webmail1.utbm.fr>
 	<20051031143345.GB27238@wohnheim.fh-wedel.de>
 	<1130771777.4366354129c88@webmail1.utbm.fr>
 	<20051031152430.GC27238@wohnheim.fh-wedel.de>
-In-Reply-To: <20051031152430.GC27238@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	<1131702259.437467f3dd940@webmail2.utbm.fr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1131702259.437467f3dd940@webmail2.utbm.fr>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] separate routine to check jffs2_flash_read
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,19 +29,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Quoting Jörn Engel <joern@wohnheim.fh-wedel.de>:
+On Fri, 11 November 2005 10:44:19 +0100, Pierre.Ricadat@UTBM.fr wrote:
+> Quoting Jörn Engel <joern@wohnheim.fh-wedel.de>:
+> 
+> > Hmmyess, makes sense.  I'd vote for inclusion "right after the merge".
+> >
+> > Not sure what that actually means.  If it takes too long, I might just
+> > shrug and dump new stuff into cvs.  We've had a calm-down period for a
+> > while now and the merge could even happen with code from some date
+> > like today.
+> 
+> Could it be added to cvs now?
 
-> Hmmyess, makes sense.  I'd vote for inclusion "right after the merge".
->
-> Not sure what that actually means.  If it takes too long, I might just
-> shrug and dump new stuff into cvs.  We've had a calm-down period for a
-> while now and the merge could even happen with code from some date
-> like today.
->
-> Jörn
+In principle, yes.  I get half a page of rejects, though.  Can you
+respin the patch against current cvs, preferrably so that it applies
+with patch -p1?
 
-Could it be added to cvs now?
+Jörn
 
-Regards
 -- 
-Pierre Ricadat
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
