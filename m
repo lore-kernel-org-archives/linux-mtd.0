@@ -1,28 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EbNho-0000sO-01
-	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 14:40:07 -0500
-Message-ID: <437796B7.9070800@mvista.com>
-Date: Sun, 13 Nov 2005 11:40:39 -0800
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Pavel Machek <pavel@ucw.cz>
-References: <20051110095050.GC2021@elf.ucw.cz>
-	<1131616948.27347.174.camel@baythorne.infradead.org>
-	<20051110103823.GB2401@elf.ucw.cz>
-	<1131619903.27347.177.camel@baythorne.infradead.org>
-	<20051110105954.GE2401@elf.ucw.cz>
-	<1131621090.27347.184.camel@baythorne.infradead.org>
-	<20051110224158.GC9905@elf.ucw.cz> <4373DEB4.5070406@mvista.com>
-	<20051111001617.GD9905@elf.ucw.cz>
-	<1131692514.3525.41.camel@localhost.localdomain>
-	<20051112213355.GA4676@elf.ucw.cz>
-In-Reply-To: <20051112213355.GA4676@elf.ucw.cz>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1EbOF3-0001DS-5Z
+	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 15:14:26 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Russell King <rmk@arm.linux.org.uk>
+In-Reply-To: <20051112182155.GE28987@flint.arm.linux.org.uk>
+References: <20051112182155.GE28987@flint.arm.linux.org.uk>
+Content-Type: text/plain
+Date: Sun, 13 Nov 2005 21:18:38 +0100
+Message-Id: <1131913118.32542.22.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	kernel list <linux-kernel@vger.kernel.org>
-Subject: Re: latest mtd changes broke collie
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: fyi: jornada720 build failure in jffs2
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,20 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Pavel Machek wrote:
+On Sat, 2005-11-12 at 18:21 +0000, Russell King wrote:
+> jffs2 seems to have a problem.  Anyone care to fix it /in/
+> /mainline/ please?
 
-> [Plus I get a warning from jffs2 that flashsize is not aligned to
-> erasesize. Then I get lot of messages that empty flash at XXX ends at
-> XXX.]
+Fixed.
 
-The datasheet ref'ed earlier says the chips have a 64KB erase block 
-size, and the sharp driver multiplies that value by an interleave of 4 
-chips to set the erase size.  What erase size is set under the new 
-setup?  cat /proc/mtd or set loglevel for KERN_DEBUG at chip probe time. 
-  The new code is setting it based on what was read from the CFI query 
-info reported by the chip times the interleave factor (which apparently 
-should be set as 4 after detecting 4 chips if CONFIG_MTD_CFI_I4=y).
-
-
--- 
-Todd
+	tglx
