@@ -1,20 +1,19 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EbHcQ-00067g-Ef
-	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 08:10:11 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: =?UTF-8?Q?=E9=99=B3=E7=BE=BF?= =?UTF-8?Q?=E9=80=9E?= "\\(Chuck\\)"
-	<ycchen@realtek.com.tw>
-In-Reply-To: <010201c5e43f$796bd5f0$135415ac@realtek.com.tw>
-References: <010201c5e43f$796bd5f0$135415ac@realtek.com.tw>
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 13 Nov 2005 16:09:21 +0300
-Message-Id: <1131887362.3479.29.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CRC error of jffs2_get_inode_nodes() for JFFS2 on NAND
-Reply-To: dedekind@infradead.org
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EbMCy-0008Ln-0h
+	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 13:04:09 -0500
+Message-ID: <4377803B.9050403@mvista.com>
+Date: Sun, 13 Nov 2005 10:04:43 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+References: <20051112182155.GE28987@flint.arm.linux.org.uk>
+	<437646F5.6080803@mvista.com> <43771EFF.4090407@yandex.ru>
+In-Reply-To: <43771EFF.4090407@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: fyi: jornada720 build failure in jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,9 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-11-08 at 16:36 +0800, 陳羿逞 \(Chuck\) wrote:
-> What time will JFFS2 flush wbuf out to sync the data if there is a
-> remainder in wbuf ?
->  
-http://lists.infradead.org/pipermail/linux-mtd/2005-November/014285.html
-http://lists.infradead.org/pipermail/linux-mtd/2005-November/014286.html
+Artem B. Bityutskiy wrote:
+>> Fixed in linux-mtd CVS.  Avoid with CONFIG_JFFS2_FS_DEBUG=0 in the 
+>> meantime.
+>>
+>> Thomas, please consider for sending upstream, or give me the word and 
+>> I'll mail it to Andrew, thanks,
+>>
+> I would just remove that D2() printkeys instead of fixing them.
+
+That was my first thought as well, but didn't want to remove debugging 
+info somebody found useful, so figured I'd fix it to quickly get 
+kernel.org back in shape.  If it's not that useful then let's kill it.
+
+-- 
+Todd
