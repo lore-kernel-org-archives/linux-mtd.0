@@ -1,19 +1,23 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from zproxy.gmail.com ([64.233.162.203])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EbMCy-0008Ln-0h
-	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 13:04:09 -0500
-Message-ID: <4377803B.9050403@mvista.com>
-Date: Sun, 13 Nov 2005 10:04:43 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1EbMWx-0000Ip-7o
+	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 13:24:47 -0500
+Received: by zproxy.gmail.com with SMTP id i11so1130254nzi
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 13 Nov 2005 10:24:28 -0800 (PST)
+Message-ID: <625fc13d0511131024j7a7af5a4xc00f4433d1e7e8af@mail.gmail.com>
+Date: Sun, 13 Nov 2005 12:24:28 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Alexey Dobriyan <adobriyan@gmail.com>
+In-Reply-To: <20051112205610.GA20860@mipter.zuzino.mipt.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <20051112182155.GE28987@flint.arm.linux.org.uk>
-	<437646F5.6080803@mvista.com> <43771EFF.4090407@yandex.ru>
-In-Reply-To: <43771EFF.4090407@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: fyi: jornada720 build failure in jffs2
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <20051112205610.GA20860@mipter.zuzino.mipt.ru>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Remove include/linux/mtd/compatmac.h
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
->> Fixed in linux-mtd CVS.  Avoid with CONFIG_JFFS2_FS_DEBUG=0 in the 
->> meantime.
->>
->> Thomas, please consider for sending upstream, or give me the word and 
->> I'll mail it to Andrew, thanks,
->>
-> I would just remove that D2() printkeys instead of fixing them.
+On 11/12/05, Alexey Dobriyan <adobriyan@gmail.com> wrote:
+> From: Alexey Dobriyan <adobriyan@gmail.com>
+>
+> File is effectively empty.
 
-That was my first thought as well, but didn't want to remove debugging 
-info somebody found useful, so figured I'd fix it to quickly get 
-kernel.org back in shape.  If it's not that useful then let's kill it.
+I would prefer not to do this.  The file is effectively empty in
+Linus' tree, but it's quite full of stuff in MTD CVS.  It's not really
+hurting anything being there and makes the merge from MTD CVS easier.
 
--- 
-Todd
+josh
