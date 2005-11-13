@@ -1,23 +1,28 @@
-Received: from zproxy.gmail.com ([64.233.162.203])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EbMWx-0000Ip-7o
-	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 13:24:47 -0500
-Received: by zproxy.gmail.com with SMTP id i11so1130254nzi
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 13 Nov 2005 10:24:28 -0800 (PST)
-Message-ID: <625fc13d0511131024j7a7af5a4xc00f4433d1e7e8af@mail.gmail.com>
-Date: Sun, 13 Nov 2005 12:24:28 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Alexey Dobriyan <adobriyan@gmail.com>
-In-Reply-To: <20051112205610.GA20860@mipter.zuzino.mipt.ru>
+	id 1EbNho-0000sO-01
+	for linux-mtd@lists.infradead.org; Sun, 13 Nov 2005 14:40:07 -0500
+Message-ID: <437796B7.9070800@mvista.com>
+Date: Sun, 13 Nov 2005 11:40:39 -0800
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <20051112205610.GA20860@mipter.zuzino.mipt.ru>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Remove include/linux/mtd/compatmac.h
+To: Pavel Machek <pavel@ucw.cz>
+References: <20051110095050.GC2021@elf.ucw.cz>
+	<1131616948.27347.174.camel@baythorne.infradead.org>
+	<20051110103823.GB2401@elf.ucw.cz>
+	<1131619903.27347.177.camel@baythorne.infradead.org>
+	<20051110105954.GE2401@elf.ucw.cz>
+	<1131621090.27347.184.camel@baythorne.infradead.org>
+	<20051110224158.GC9905@elf.ucw.cz> <4373DEB4.5070406@mvista.com>
+	<20051111001617.GD9905@elf.ucw.cz>
+	<1131692514.3525.41.camel@localhost.localdomain>
+	<20051112213355.GA4676@elf.ucw.cz>
+In-Reply-To: <20051112213355.GA4676@elf.ucw.cz>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	kernel list <linux-kernel@vger.kernel.org>
+Subject: Re: latest mtd changes broke collie
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/12/05, Alexey Dobriyan <adobriyan@gmail.com> wrote:
-> From: Alexey Dobriyan <adobriyan@gmail.com>
->
-> File is effectively empty.
+Pavel Machek wrote:
 
-I would prefer not to do this.  The file is effectively empty in
-Linus' tree, but it's quite full of stuff in MTD CVS.  It's not really
-hurting anything being there and makes the merge from MTD CVS easier.
+> [Plus I get a warning from jffs2 that flashsize is not aligned to
+> erasesize. Then I get lot of messages that empty flash at XXX ends at
+> XXX.]
 
-josh
+The datasheet ref'ed earlier says the chips have a 64KB erase block 
+size, and the sharp driver multiplies that value by an interleave of 4 
+chips to set the erase size.  What erase size is set under the new 
+setup?  cat /proc/mtd or set loglevel for KERN_DEBUG at chip probe time. 
+  The new code is setting it based on what was read from the CFI query 
+info reported by the chip times the interleave factor (which apparently 
+should be set as 4 after detecting 4 chips if CONFIG_MTD_CFI_I4=y).
+
+
+-- 
+Todd
