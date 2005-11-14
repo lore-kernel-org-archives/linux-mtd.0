@@ -1,16 +1,19 @@
-Received: from fmr18.intel.com ([134.134.136.17] helo=orsfmr003.jf.intel.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ebb4W-0006nT-IT
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2005 09:56:21 +0000
-From: "zhao, forrest" <forrest.zhao@intel.com>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 14 Nov 2005 17:51:15 +0800
-Message-Id: <1131961875.3417.35.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from webapps.arcom.com ([194.200.159.168])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EbbMM-00077G-4F
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2005 05:14:54 -0500
+Message-ID: <43786392.5030102@arcom.com>
+Date: Mon, 14 Nov 2005 10:14:42 +0000
+From: David Vrabel <dvrabel@arcom.com>
+MIME-Version: 1.0
+To: jbowler@acm.org
+References: <006101c5e8e7$bb98f460$1001a8c0@kalmiopsis>
+In-Reply-To: <006101c5e8e7$bb98f460$1001a8c0@kalmiopsis>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Some thoughts about JFFS3 design doc
+Cc: 'Alessandro Zummo' <azummo-lists@towertech.it>,
+	linux-mtd@lists.infradead.org
+Subject: Re: ixp4xx stuff
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+John Bowler wrote:
+> 
+> along with the other NSLU2 patches.  We found that it is now necessary to
+> set CONFIG_MTD_LE_BYTE_SWAP - with the NSLU2 patches CONFIG_MTD_BE_BYTE_SWAP
+> must be set.  If this is not done (i.e. if BE is set) the flash probe fails.
 
-I read through your JFFS3 design doc and had some thoughts
+Neither of these options should be enabled.  The flash data is returned
+in the same order regardless of the endianness of the CPU.
 
-1 in Section 4.1->4, there's a typo:
-direntries contain {xattr name =>xattr ID}......
+David Vrabel
+-- 
+David Vrabel, Design Engineer
 
-2 in section 3.6, I think it's better if you could
-give a description or an example of how to replay
-the journal to build the journal tree in RAM and
-recover the inconsistent meta data on flash.
-
-3 In section 4, I think it's better if you could
-give a description or an example of what happens
-for an update operation. Such as what happens when
-a write operation update offset from 100 to 200 for
-a file of length 400 bytes. I guess maybe you are
-working on this now :)
-
-4 I think your design doc is well-organized and give
-reader a very clear picture and illustration of the
-JFFS3 design.
-
-Thanks,
-Forrest
+Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
+Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
