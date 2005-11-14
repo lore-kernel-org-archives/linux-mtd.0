@@ -1,18 +1,16 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ebbl8-0007RR-Qf
-	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2005 05:40:25 -0500
-Message-ID: <43786975.9000204@yandex.ru>
-Date: Mon, 14 Nov 2005 13:39:49 +0300
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: "zhao, forrest" <forrest.zhao@intel.com>
-References: <1131961875.3417.35.camel@localhost.localdomain>
-In-Reply-To: <1131961875.3417.35.camel@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from perninha.conectiva.com.br ([200.140.247.100])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EbdQt-0008GB-Dp
+	for linux-mtd@lists.infradead.org; Mon, 14 Nov 2005 07:27:37 -0500
+Date: Mon, 14 Nov 2005 09:54:11 -0200
+From: Luiz Fernando Capitulino <lcapitulino@mandriva.com.br>
+To: akpm <akpm@osdl.org>
+Message-Id: <20051114095411.4a30d25e.lcapitulino@mandriva.com.br>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Some thoughts about JFFS3 design doc
+Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] - Fixes sparse warning in nettel driver.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,45 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-zhao, forrest wrote:
-> Hi, Artem
-> 
-> I read through your JFFS3 design doc and had some thoughts
-I'm flattered you're reading my writings :-)
+Hi,
 
-> 1 in Section 4.1->4, there's a typo:
-> direntries contain {xattr name =>xattr ID}......
-Oh, thanks.
+The patch below fixes the following sparse warning:
 
-> 2 in section 3.6, I think it's better if you could
-> give a description or an example of how to replay
-> the journal to build the journal tree in RAM and
-> recover the inconsistent meta data on flash.
-Yes, there is supposed a distinct big chapter related to this topic. I 
-just have not had time to write it so far.
+drivers/mtd/maps/nettel.c:482:27: warning: Using plain integer as NULL pointer
 
-> 3 In section 4, I think it's better if you could
-> give a description or an example of what happens
-> for an update operation. Such as what happens when
-> a write operation update offset from 100 to 200 for
-> a file of length 400 bytes. I guess maybe you are
-> working on this now :)
-Nothing interesting - the new node just goes to the journal and the old 
-one is considered obsolete.
+Signed-off-by: Luiz Capitulino <lcapitulino@mandriva.com.br>
 
-I'm planning to add a distinct chapter with description of 
-JFFS3-in0action where this will be described. Thanks for the note.
+ drivers/mtd/maps/nettel.c |    2 +-
+ include/linux/mtd/map.h   |    0 
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
-> 4 I think your design doc is well-organized and give
-> reader a very clear picture and illustration of the
-> JFFS3 design.
-Thanks, the only really major missing thing is Garbage Collection. Will 
-describe it as soon as I completely design it.
+diff --git a/drivers/mtd/maps/nettel.c b/drivers/mtd/maps/nettel.c
+--- a/drivers/mtd/maps/nettel.c
++++ b/drivers/mtd/maps/nettel.c
+@@ -479,7 +479,7 @@ void __exit nettel_cleanup(void)
+ 	}
+ 	if (nettel_intel_map.virt) {
+ 		iounmap(nettel_intel_map.virt);
+-		nettel_intel_map.virt = 0;
++		nettel_intel_map.virt = NULL;
+ 	}
+ #endif
+ }
+diff --git a/include/linux/mtd/map.h b/include/linux/mtd/map.h
 
-Feel free to send any comments, and even patches - the design sources 
-are in MTD CVS (Documentation/mtd/).
 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Luiz Fernando N. Capitulino
