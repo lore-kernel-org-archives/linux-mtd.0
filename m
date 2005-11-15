@@ -1,22 +1,20 @@
-Received: from zproxy.gmail.com ([64.233.162.205])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ec15V-0004ZP-Jo
-	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 08:43:11 -0500
-Received: by zproxy.gmail.com with SMTP id i11so1595487nzi
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Nov 2005 05:43:02 -0800 (PST)
-Message-ID: <625fc13d0511150543y34f0841bj5eef02d96a9c20a1@mail.gmail.com>
-Date: Tue, 15 Nov 2005 07:43:02 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Achin Gupta <achin.gupta@conexant.com>
-In-Reply-To: <4D6E93075B31154298572E6B73CA849D02DBC3A5@noida-mail.bbnet.ad>
+Received: from smtp22.mail.bbt.yahoo.co.jp ([202.93.85.137])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ec18r-0004mX-Nu
+	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 08:46:43 -0500
+Message-ID: <004d01c5e9ea$f9fccac0$0b01a8c0@YANO>
+From: "Keijiro Yano" <keijiro_yano@yahoo.co.jp>
+To: <dedekind@infradead.org>
+References: <000c01c5e6d6$abf22490$0b01a8c0@YANO> <4375EA0D.2060704@yandex.ru>
+	<002001c5e91a$a7c87180$0b01a8c0@YANO>
+	<1131980118.3479.34.camel@sauron.oktetlabs.ru>
+Date: Tue, 15 Nov 2005 22:46:27 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <4D6E93075B31154298572E6B73CA849D02DBC3A5@noida-mail.bbnet.ad>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: MTD build broken
+Content-Type: text/plain; format=flowed; charset="iso-2022-jp";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 mutex problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/15/05, Achin Gupta <achin.gupta@conexant.com> wrote:
-> Hi,
-> I am trying to add support for an Intel NOR Flash device on an ARM
-> 1026-EJS platform. As mentioned in the "mtd-jffs-HOWTO.txt" I checked
-> out the latest code from CVS. However, the build breaks while trying to
-> compile the file "fs/jffs2/background.c" as follows :-
->
-> >>>>>
-> fs/jffs2/background.c:95:22: macro "try_to_freeze" passed 1 arguments,
-> but takes just 0
-> fs/jffs2/background.c: In function `jffs2_garbage_collect_thread':
-> fs/jffs2/background.c:95: warning: the address of `try_to_freeze', will
-> always evaluate as `true'
-> make[2]: *** [fs/jffs2/background.o] Error 1
-> make[1]: *** [fs/jffs2] Error 2
-> make: *** [fs] Error 2
-> >>>>>
->
-> After diffing "background.c" with a previous version I found that the
-> problem lies in a call to "try_to_freeze". While it was
-> "try_to_freeze(0)" earlier, its become "try_to_freeze()" now.
-> I suppose this is a typo. If so kindly fix it at the earliest.
+> Is this against the latest CVS?
 
-What version do you have and what version did you diff against?  The
-latest MTD CVS does not have this problem.  How did you do your
-checkout?
+It is for Linux 2.6.10.
+But, based on my source level investigation, it can 
+be applied for the latest CVS.
 
-Version 1.59 of background.c has this at line 99:
+> Can you confirm that you tested the patch?
 
-if (try_to_freeze())
-        continue;
+I have tested it only on Linux 2.6.10.
 
-josh
+> What about to fix ecos as well?
+
+I think that ecos doesn't have this problem, because 
+ecos initializes the locked mutex in jffs2_init_inode_info().
+
+Best Regards,
+Keijiro Yano
+
+
+--------------------------------------
+Know more about Breast Cancer
+http://pr.mail.yahoo.co.jp/pinkribbon/
