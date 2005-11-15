@@ -1,23 +1,17 @@
-Received: from smtprelay02.ispgateway.de ([80.67.18.14])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eby2f-00015D-DM
-	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 05:28:01 -0500
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.112.74])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay02.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 15 Nov 2005 10:27:35 -0000
-Received: from [192.168.0.63] (unknown [192.168.0.63])
-	by deepspace9.in2soft.meep (Postfix) with ESMTP id E896F6C75
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Nov 2005 11:26:29 +0100 (CET)
-Message-ID: <4379B814.3010407@gmail.com>
-Date: Tue, 15 Nov 2005 11:27:32 +0100
-From: Bernhard Priewasser <priewasser@gmail.com>
+Received: from mail.presenzia.net ([193.127.102.120])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ec01a-0002zg-DT
+	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 07:35:11 -0500
+From: "Daniel Alomar" <dalomar@serrasold.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Tue, 15 Nov 2005 13:25:28 +0100
+Message-ID: <004201c5e9df$acb885c0$091a1bac@serra.es>
 MIME-Version: 1.0
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: Strange NOR read/write throughput behaviour
+Content-Type: text/plain;
+	charset="US-ASCII"
+Subject: Information I forgot to attach
+Reply-To: dalomar@serrasold.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,19 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-can anybody help me explaining this diagram of NOR read throughput?
-
-	http://files.lamark.de/nor_read.png
-
-As soon as a file, read from a StrataFlash containing only this file,
-exceeds erase block size (128KiB), file reading lasts a portion of time
-longer and read throughput stagnates...
-
-Write throughput seems to be constant around erase block size:
-
-	http://files.lamark.de/nor_write.png
+I forgot to say I'm using a 2.6.9 kernel. I tested also in a 2.6.14. Both
+patched to work with uclinux. 
 
 Best regards,
-Bernhard
+
+Daniel Alomar i Claramonte
+Research & Development Electronic Dept.
+SERRA SOLDADURA, S.A.
+WEB Site: http://www.serrasold.com
+Knowledge Site: http://serratron.serrasold.com 
