@@ -1,23 +1,19 @@
-Received: from zproxy.gmail.com ([64.233.162.198])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ec1GN-000553-23
-	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 08:54:31 -0500
-Received: by zproxy.gmail.com with SMTP id i11so1598042nzi
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 15 Nov 2005 05:54:18 -0800 (PST)
-Message-ID: <625fc13d0511150554v3ecfef0ekc9f481630e187eca@mail.gmail.com>
-Date: Tue, 15 Nov 2005 07:54:18 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Keijiro Yano <keijiro_yano@yahoo.co.jp>
-In-Reply-To: <004d01c5e9ea$f9fccac0$0b01a8c0@YANO>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ec1Jg-0005Ho-SD
+	for linux-mtd@lists.infradead.org; Tue, 15 Nov 2005 08:57:53 -0500
+Message-ID: <4379E936.6040309@yandex.ru>
+Date: Tue, 15 Nov 2005 16:57:10 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+To: Keijiro Yano <keijiro_yano@yahoo.co.jp>
 References: <000c01c5e6d6$abf22490$0b01a8c0@YANO> <4375EA0D.2060704@yandex.ru>
 	<002001c5e91a$a7c87180$0b01a8c0@YANO>
 	<1131980118.3479.34.camel@sauron.oktetlabs.ru>
 	<004d01c5e9ea$f9fccac0$0b01a8c0@YANO>
+In-Reply-To: <004d01c5e9ea$f9fccac0$0b01a8c0@YANO>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: jffs2 mutex problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,19 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/15/05, Keijiro Yano <keijiro_yano@yahoo.co.jp> wrote:
-> > Is this against the latest CVS?
->
+Keijiro Yano wrote:
 > It is for Linux 2.6.10.
-> But, based on my source level investigation, it can
-> be applied for the latest CVS.
+> But, based on my source level investigation, it can be applied for the 
+> latest CVS.
+Ok.
 
-Somehow I doubt that.  There was recently a large whitespace cleanup
-in the latest CVS.  I'm sure a patch that doesn't take that into
-account will either throw lots of rejects or introduce whitespace
-stuff that was just cleaned up.
+> I have tested it only on Linux 2.6.10.
+Ok.
 
-Remember, you should diff against the latest.  You can't see the
-whitespace stuff unless you have some option in your editor turned on.
+> I think that ecos doesn't have this problem, because ecos initializes 
+> the locked mutex in jffs2_init_inode_info().
+Hmm, I do you mean that Ecos's jffs2_init_inode_info() is not a slab
+cache constructor so the bug does not exist there? Probably you're right.
 
-josh
+Thanks. I think I'll commit this patch if people are OK.
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
