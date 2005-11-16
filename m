@@ -1,22 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EcQkz-0006Rp-RZ
-	for linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:08:18 -0500
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR003.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IQ2005MX4WFQYD0@VL-MO-MR003.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:07:27 -0500 (EST)
-Date: Wed, 16 Nov 2005 12:07:27 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <4D6E93075B31154298572E6B73CA849D02DBCC11@noida-mail.bbnet.ad>
-To: Achin Gupta <achin.gupta@conexant.com>
-Message-id: <Pine.LNX.4.64.0511161206200.14287@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <4D6E93075B31154298572E6B73CA849D02DBCC11@noida-mail.bbnet.ad>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Crash while accessing Intel 28F128 flash
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EcQy2-00074V-06
+	for linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:21:10 -0500
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id ECEA74733B
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 16 Nov 2005 20:20:28 +0300 (MSK)
+Message-ID: <437B6A5C.9040100@yandex.ru>
+Date: Wed, 16 Nov 2005 20:20:28 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: [JFFS3] design update: v0.30
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 16 Nov 2005, Achin Gupta wrote:
+Hello,
 
-> Hi, 
-> I am consistently getting a crash in the "mtd_close" routine whenever I
-> try performing any read/write operation on an Intel NOR flash chip on my
-> harwdare. I have been trying to run utilities like "flash_info",
-> "mtd_debug", "flash_erase" & all of them crash with the following stack
-> backtrace :-
+I would like to announce that new "Keys compression" sub-chapter was 
+added to the JFFS3 design document.
 
-What kernel version?
+The latest document version is v0.30.
 
-What MTd version?
+Any comments are welcome.
 
-What additional modifications to your kernel if any?
-
-
-Nicolas
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
