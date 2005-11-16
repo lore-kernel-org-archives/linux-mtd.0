@@ -1,20 +1,22 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EcQkN-0006PD-8t
-	for linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:07:01 -0500
-Date: Wed, 16 Nov 2005 18:06:42 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Message-ID: <20051116170642.GC24753@wohnheim.fh-wedel.de>
-References: <200511161024.00999.manningc2@actrix.gen.nz>
-	<437B3BE4.1000902@yandex.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <437B3BE4.1000902@yandex.ru>
-Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org
-Subject: Re: Some JFFS3 feedback
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EcQkz-0006Rp-RZ
+	for linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:08:18 -0500
+Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR003.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IQ2005MX4WFQYD0@VL-MO-MR003.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 12:07:27 -0500 (EST)
+Date: Wed, 16 Nov 2005 12:07:27 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <4D6E93075B31154298572E6B73CA849D02DBCC11@noida-mail.bbnet.ad>
+To: Achin Gupta <achin.gupta@conexant.com>
+Message-id: <Pine.LNX.4.64.0511161206200.14287@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <4D6E93075B31154298572E6B73CA849D02DBCC11@noida-mail.bbnet.ad>
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Crash while accessing Intel 28F128 flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 16 November 2005 17:02:12 +0300, Artem B. Bityutskiy wrote:
-> Charles Manning wrote:
-> 
-> >About 9 years back, I did some flash file system patent research and IIRC 
-> >one of the patents covered something very similar to the Wandering Tree 
-> >approach to addressing the write-in-place problem, so there might be some 
-> >IP issues with this. I shall have a scratch around to see if I can find it 
-> >(though finding something in a 20+ year old paper mountain is a challenge).
->
-> Hmm, it is interesting. We would be very appreciated if you provide some 
-> information.
+On Wed, 16 Nov 2005, Achin Gupta wrote:
 
-Definitely.  If there is a patent on this, we need to do the usual
-dance to find some prior art and either invalidate the patent or make
-it specific enough to be trivially avoided.
+> Hi, 
+> I am consistently getting a crash in the "mtd_close" routine whenever I
+> try performing any read/write operation on an Intel NOR flash chip on my
+> harwdare. I have been trying to run utilities like "flash_info",
+> "mtd_debug", "flash_erase" & all of them crash with the following stack
+> backtrace :-
 
-Jörn
+What kernel version?
 
--- 
-Ninety percent of everything is crap.
--- Sturgeon's Law
+What MTd version?
+
+What additional modifications to your kernel if any?
+
+
+Nicolas
