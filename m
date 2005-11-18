@@ -1,18 +1,22 @@
-Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
+Received: from blood.actrix.co.nz ([203.96.16.163])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EcqQn-0006jP-8E
-	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2005 15:32:34 -0500
-Date: Thu, 17 Nov 2005 21:13:56 +0100
-From: Lennert Buytenhek <buytenh@wantstofly.org>
+	id 1EctwN-0001f2-Ub
+	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2005 19:17:23 -0500
+From: Charles Manning <manningc2@actrix.gen.nz>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20051117201356.GA25011@xi.wantstofly.org>
-References: <20051117194056.GA24824@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 18 Nov 2005 13:15:52 +1300
+References: <200511161024.00999.manningc2@actrix.gen.nz>
+	<437B3BE4.1000902@yandex.ru>
+	<20051116170642.GC24753@wohnheim.fh-wedel.de>
+In-Reply-To: <20051116170642.GC24753@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <20051117194056.GA24824@xi.wantstofly.org>
-Cc: tglx@linutronix.de
-Subject: Re: [PATCH] fix ixp2000 map driver compile
+Message-Id: <200511181315.52694.manningc2@actrix.gen.nz>
+Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Subject: Re: Some JFFS3 feedback
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Nov 17, 2005 at 08:40:57PM +0100, Lennert Buytenhek wrote:
+On Thursday 17 November 2005 06:06, J=F6rn Engel wrote:
+> On Wed, 16 November 2005 17:02:12 +0300, Artem B. Bityutskiy wrote:
+> > Charles Manning wrote:
+> > >About 9 years back, I did some flash file system patent research and
+> > > IIRC one of the patents covered something very similar to the Wanderi=
+ng
+> > > Tree approach to addressing the write-in-place problem, so there might
+> > > be some IP issues with this. I shall have a scratch around to see if I
+> > > can find it (though finding something in a 20+ year old paper mountain
+> > > is a challenge).
+> >
+> > Hmm, it is interesting. We would be very appreciated if you provide some
+> > information.
+>
+> Definitely.  If there is a patent on this, we need to do the usual
+> dance to find some prior art and either invalidate the patent or make
+> it specific enough to be trivially avoided.
 
-> The recent platform driver conversion broke the ixp2000 map driver.
-> The attached patch attempts to repair it, and now it appears to work
-> once again.
+I had a bit of a scratch through stuff and could not find any patent on=20
+wandering trees, but I am pretty sure I have seen this in a paper somewhere=
+=2E=20
+So, inconclusive as to whether it is patented or not.
 
-Apologies -- I've just been told that a patch to fix this was
-already submitted upstream by rmk.
+One bloke that I will ping is Sivan Toledo (http://www.cs.tau.ac.il/~stoled=
+o/)=20
+who has done heaps of research into FFSs.=20
 
-
---L
+=2D- Charles
