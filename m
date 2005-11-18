@@ -1,19 +1,18 @@
-Received: from [218.22.21.7] (helo=ustc.edu)
+Received: from fmr20.intel.com ([134.134.136.19] helo=orsfmr005.jf.intel.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eczqi-0006w2-8l
-	for linux-mtd@lists.infradead.org; Fri, 18 Nov 2005 01:35:58 -0500
-Received: from unknown (HELO image) (caiqiang@[211.138.144.18])
-	(envelope-sender <caiqiang@ustc.edu>) by 0 (magicmail-2.1) with SMTP
-	for <linux-mtd@lists.infradead.org>; 18 Nov 2005 06:35:58 -0000
-Message-ID: <006201c5ec0a$4f2610d0$9d02a8c0@image>
-From: "Cai Qiang" <caiqiang@ustc.edu>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 18 Nov 2005 14:35:45 +0800
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
-Subject: about mmap with MAP_SHARED in jffs2
+	id 1Ed2MT-0000ux-CI
+	for linux-mtd@lists.infradead.org; Fri, 18 Nov 2005 04:16:56 -0500
+From: "zhao, forrest" <forrest.zhao@intel.com>
+To: David Jander <david.jander@protonic.nl>
+In-Reply-To: <200511171227.20593.david.jander@protonic.nl>
+References: <200511171227.20593.david.jander@protonic.nl>
+Content-Type: text/plain
+Date: Fri, 18 Nov 2005 17:11:28 +0800
+Message-Id: <1132305088.18546.8.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Performance of wear-levelling in JFFS2.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQogICAgQ3VycmVudGx5IGpmZnMyIG5vdCBzdXBwb3J0IG1tYXAgd2l0aCBNQVBfU0hBUkVE
-LiBJcyBpdCBwb3NzaWJsZSB0byBpbXBsZW1lbnQgaXQ/IFdoYXQncyB0aGUgZHJhd2JhY2s/IElm
-IGl0J3MgcG9zc2libGUsIHdoYXQgc2hvb3VsZCB3ZSBkbz8gSSBjaGFuZ2VkIC5tbWFwIGZyb20g
-Z2VuZXJpY19maWxlX3JlYWRvbmx5X21tYXAgdG8gZ2VuZXJpY19maWxlX21tYXAgDQpidXQgc3lz
-dGVtIGNyYXNoIHdoZW4gSSB3cml0ZSB0byBtbWFwZWQgYnVmZmVyIGFuZCB1bm1hcC4gRG8gSSBu
-ZWVkIGEgc3BlY2lhbCB3cml0ZXBhZ2U/DQoNCkJlc3QgcmVnYXJkcyE=
+On Thu, 2005-11-17 at 13:27 +0200, David Jander wrote:
+> Hi,
+> 
+> I am wondering about how good wear-levelling really is in JFFS2. I have made 
+> an experiment which ended with a "MTD do_write_buffer(): software timeout", 
+> which really looks like flash is taking too long to write data because of it 
+> beeing near end of life. Only thing is, although the experiment has lasted 
+> quite long already (in terms of amount of data (re-)written), it doesn't seem 
+> anyway near as long as expected, when making some "educated guesses" about 
+> the perfomrance of jffs2. 
+
+This is really good! By my patch for erase count tracking in
+JFFS2, you may read the erase count of each erase block using jffs2dump.
+
+My patch for enhanced WL is also in MTD CVS now. You may also test how
+good this new WL is :)
+
+For testing, I think using RAM test driver is enough when we can know
+the erase count of each erase block.
+
+Thanks,
+Forrest
