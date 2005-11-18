@@ -1,18 +1,19 @@
-Received: from fmr20.intel.com ([134.134.136.19] helo=orsfmr005.jf.intel.com)
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ed2MT-0000ux-CI
-	for linux-mtd@lists.infradead.org; Fri, 18 Nov 2005 04:16:56 -0500
-From: "zhao, forrest" <forrest.zhao@intel.com>
-To: David Jander <david.jander@protonic.nl>
-In-Reply-To: <200511171227.20593.david.jander@protonic.nl>
-References: <200511171227.20593.david.jander@protonic.nl>
-Content-Type: text/plain
-Date: Fri, 18 Nov 2005 17:11:28 +0800
-Message-Id: <1132305088.18546.8.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1Ed2aj-0001Go-E5
+	for linux-mtd@lists.infradead.org; Fri, 18 Nov 2005 04:31:41 -0500
+Message-ID: <437D9F6F.80102@gmail.com>
+Date: Fri, 18 Nov 2005 10:31:27 +0100
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: Jared Hulbert <jaredeh@gmail.com>
+References: <4379B814.3010407@gmail.com>
+	<6934efce0511170958j9df6e3cu6329cf51088416f@mail.gmail.com>
+In-Reply-To: <6934efce0511170958j9df6e3cu6329cf51088416f@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Performance of wear-levelling in JFFS2.
+Subject: Re: Strange NOR read/write throughput behaviour
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2005-11-17 at 13:27 +0200, David Jander wrote:
-> Hi,
-> 
-> I am wondering about how good wear-levelling really is in JFFS2. I have made 
-> an experiment which ended with a "MTD do_write_buffer(): software timeout", 
-> which really looks like flash is taking too long to write data because of it 
-> beeing near end of life. Only thing is, although the experiment has lasted 
-> quite long already (in terms of amount of data (re-)written), it doesn't seem 
-> anyway near as long as expected, when making some "educated guesses" about 
-> the perfomrance of jffs2. 
+ > Could you please explain the experiment a little more?
+Sure!
 
-This is really good! By my patch for erase count tracking in
-JFFS2, you may read the erase count of each erase block using jffs2dump.
+ > How are you measuring read and write throughput?
+C-Program, gettimeofday(). Very clean conditions: Empty flash, mount 
+JFFS2, fopen one file. Measure duration of fwrite(filesize). Throughput 
+= 1/duration.
 
-My patch for enhanced WL is also in MTD CVS now. You may also test how
-good this new WL is :)
+ > Which StrataFlash are you using?
+E28F128J3, 128 Mbit. 128KiB erase block size.
 
-For testing, I think using RAM test driver is enough when we can know
-the erase count of each erase block.
+ > What board are you connecting the flash to?
+Hynix HMS30C7202 evaluation board.
 
-Thanks,
-Forrest
+ > What kernel and MTD are you using?
+Kernel 2.6.11-hnx3
+MTD/JFFS2 of kernel 2.6.11. (I know, I should try newest CVS...)
+
+-- 
+Bernhard
