@@ -1,19 +1,25 @@
-Received: from webapps.arcom.com ([194.200.159.168])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EcQGD-000536-69
-	for linux-mtd@lists.infradead.org; Wed, 16 Nov 2005 11:35:56 -0500
-Message-ID: <437B5FD8.9060900@arcom.com>
-Date: Wed, 16 Nov 2005 16:35:36 +0000
-From: David Vrabel <dvrabel@arcom.com>
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ecx5f-0004MT-7G
+	for linux-mtd@lists.infradead.org; Thu, 17 Nov 2005 22:39:11 -0500
+Date: Fri, 18 Nov 2005 04:37:02 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: Dave Jones <davej@redhat.com>, Andrew Morton <akpm@osdl.org>,
+	linux-kernel@vger.kernel.org
+Message-ID: <20051118033702.GY11494@stusta.de>
+References: <20051118014055.GK11494@stusta.de>
+	<20051117175015.6aa99fcf.akpm@osdl.org>
+	<20051118020640.GM11494@stusta.de>
+	<20051117182047.5fe1a5eb.akpm@osdl.org>
+	<20051118024433.GN11494@stusta.de>
+	<20051117185529.31d33192.akpm@osdl.org>
+	<20051118031751.GA2773@redhat.com>
 MIME-Version: 1.0
-To: jbowler@acm.org
-References: <007301c5e961$3083a300$1001a8c0@kalmiopsis>
-In-Reply-To: <007301c5e961$3083a300$1001a8c0@kalmiopsis>
-Content-Type: multipart/mixed; boundary="------------060506010606080503080200"
-Cc: 'Alessandro Zummo' <azummo-lists@towertech.it>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] MAPS/ixp4xx.c: fix BE system break in 2.6.15-rc1,
- enable LE operation in 2.6.15
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20051118031751.GA2773@redhat.com>
+Cc: linux-mtd@lists.infradead.org, rusty@rustcorp.com.au, dwmw2@infradead.org
+Subject: [2.6 patch] build kernel/intermodule.c only when required
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,94 +29,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060506010606080503080200
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+On Thu, Nov 17, 2005 at 10:17:51PM -0500, Dave Jones wrote:
+> On Thu, Nov 17, 2005 at 06:55:29PM -0800, Andrew Morton wrote:
+> 
+>  > > IMHO the warnings are the best solution for getting a vast amount fixed, 
+>  > > and then it's time to think about the rest.
+>  > 
+>  > But the warnings don't *work*.  I'm *still* staring at stupid pm_register
+>  > and intermodule_foo warnings.  How long has that been?
+> 
+> Too long.  I think the mtd stuff won't ever get fixed until after that
+> function gets removed.
 
-Commited with some cleanups.
+Let's limit the inclusion of kernel/intermodule.c to the users of these 
+drivers.
 
-FYI, I've attached what was committed.
+> 		Dave
 
-David Vrabel
--- 
-David Vrabel, Design Engineer
+cu
+Adrian
 
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
 
---------------060506010606080503080200
-Content-Type: text/plain;
- name="mtd-ixp4xx-updates"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="mtd-ixp4xx-updates"
+<--  snip  -->
 
-aXhwNHh4IHVwZGF0ZXM6CiAgLSBIYW5kbGUgcmVhZHMgdGhhdCBkb24ndCBzdGFydCBvbiBh
-IGhhbGYtd29yZCBib3VuZGFyeS4KICAtIE1ha2UgaXQgd29yayB3aGVuIENQVSBpcyBpbiBs
-aXR0bGUtZW5kaWFuIG1vZGUuCiAgICAKU2lnbmVkLW9mZi1ieTogSm9obiBCb3dsZXIgPGpi
-b3dsZXJAYWNtLm9yZz4KU2lnbmVkLW9mZi1ieTogQWxlc3NhbmRybyBadW1tbyA8YS56dW1t
-b0B0b3dlcnRlY2guaXQ+ClNpZ25lZC1vZmYtYnk6IERhdmlkIFZyYWJlbCA8ZHZyYWJlbEBh
-cmNvbS5jb20+CgpJbmRleDogbGludXgtMi42LXdvcmtpbmcvZHJpdmVycy9tdGQvbWFwcy9p
-eHA0eHguYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09Ci0tLSBsaW51eC0yLjYtd29ya2luZy5vcmlnL2RyaXZl
-cnMvbXRkL21hcHMvaXhwNHh4LmMJMjAwNS0xMS0xNiAxNToxOTozNC4wMDAwMDAwMDAgKzAw
-MDAKKysrIGxpbnV4LTIuNi13b3JraW5nL2RyaXZlcnMvbXRkL21hcHMvaXhwNHh4LmMJMjAw
-NS0xMS0xNiAxNjowNjo1NC4wMDAwMDAwMDAgKzAwMDAKQEAgLTM0LDEwICszNCw1NSBAQAog
-CiAjaW5jbHVkZSA8bGludXgvcmVib290Lmg+CiAKKy8qCisgKiBSZWFkL3dyaXRlIGEgMTYg
-Yml0IHdvcmQgZnJvbSBmbGFzaCBhZGRyZXNzICdhZGRyJy4KKyAqCisgKiBXaGVuIHRoZSBj
-cHUgaXMgaW4gbGl0dGxlLWVuZGlhbiBtb2RlIGl0IHN3aXp6bGVzIHRoZSBhZGRyZXNzIGxp
-bmVzCisgKiAoJ2FkZHJlc3MgY29oZXJlbmN5Jykgc28gd2UgbmVlZCB0byB1bmRvIHRoZSBz
-d2l6emxpbmcgdG8gZW5zdXJlIGNvbW1hbmRzCisgKiBhbmQgdGhlIGxpa2UgZW5kIHVwIG9u
-IHRoZSBjb3JyZWN0IGZsYXNoIGFkZHJlc3MuCisgKgorICogVG8gZnVydGhlciBjb21wbGlj
-YXRlIG1hdHRlcnMsIGR1ZSB0byB0aGUgd2F5IHRoZSBleHBhbnNpb24gYnVzIGNvbnRyb2xs
-ZXIKKyAqIGhhbmRsZXMgMzIgYml0IHJlYWRzLCB0aGUgYnl0ZSBzdHJlYW0gQUJDRCBpcyBz
-dG9yZWQgb24gdGhlIGZsYXNoIGFzOgorICogICAgIEQxNSAgICBEMAorICogICAgICstLS0r
-LS0tKworICogICAgIHwgQSB8IEIgfCAwCisgKiAgICAgKy0tLSstLS0rCisgKiAgICAgfCBD
-IHwgRCB8IDIKKyAqICAgICArLS0tKy0tLSsKKyAqIFRoaXMgbWVhbnMgdGhhdCBvbiBMRSBz
-eXN0ZW1zIGVhY2ggMTYgYml0IHdvcmQgbXVzdCBiZSBzd2FwcGVkLiBOb3RlIHRoYXQKKyAq
-IHRoaXMgcmVxdWlyZXMgQ09ORklHX01URF9DRklfQkVfQllURV9TV0FQIHRvIGJlIGVuYWJs
-ZWQgdG8gJ3Vuc3dhcCcgdGhlIENGSQorICogZGF0YSBhbmQgb3RoZXIgZmxhc2ggY29tbWFu
-ZHMgd2hpY2ggYXJlIGFsd2F5cyBpbiBENy1EMC4KKyAqLwogI2lmbmRlZiBfX0FSTUVCX18K
-KyNpZm5kZWYgQ09ORklHX01URF9DRklfQkVfQllURV9TV0FQCisjICBlcnJvciBDT05GSUdf
-TVREX0NGSV9CRV9CWVRFX1NXQVAgcmVxdWlyZWQKKyNlbmRpZgorCitzdGF0aWMgaW5saW5l
-IHUxNiBmbGFzaF9yZWFkMTYodm9pZCBfX2lvbWVtICphZGRyKQoreworCXJldHVybiBiZTE2
-X3RvX2NwdShfX3Jhd19yZWFkdygodm9pZCBfX2lvbWVtICopKCh1bnNpZ25lZCBsb25nKWFk
-ZHIgXiAweDIpKSk7Cit9CisKK3N0YXRpYyBpbmxpbmUgdm9pZCBmbGFzaF93cml0ZTE2KHUx
-NiBkLCB2b2lkIF9faW9tZW0gKmFkZHIpCit7CisJX19yYXdfd3JpdGV3KGNwdV90b19iZTE2
-KGQpLCAodm9pZCBfX2lvbWVtICopKCh1bnNpZ25lZCBsb25nKWFkZHIgXiAweDIpKTsKK30K
-KwogI2RlZmluZQlCWVRFMChoKQkoKGgpICYgMHhGRikKICNkZWZpbmUJQllURTEoaCkJKCgo
-aCkgPj4gOCkgJiAweEZGKQorCiAjZWxzZQorCitzdGF0aWMgaW5saW5lIHUxNiBmbGFzaF9y
-ZWFkMTYoY29uc3Qgdm9pZCBfX2lvbWVtICphZGRyKQoreworCXJldHVybiBfX3Jhd19yZWFk
-dyhhZGRyKTsKK30KKworc3RhdGljIGlubGluZSB2b2lkIGZsYXNoX3dyaXRlMTYodTE2IGQs
-IHZvaWQgX19pb21lbSAqYWRkcikKK3sKKwlfX3Jhd193cml0ZXcoZCwgYWRkcik7Cit9CisK
-ICNkZWZpbmUJQllURTAoaCkJKCgoaCkgPj4gOCkgJiAweEZGKQogI2RlZmluZQlCWVRFMSho
-KQkoKGgpICYgMHhGRikKICNlbmRpZgpAQCAtNDUsNyArOTAsNyBAQAogc3RhdGljIG1hcF93
-b3JkIGl4cDR4eF9yZWFkMTYoc3RydWN0IG1hcF9pbmZvICptYXAsIHVuc2lnbmVkIGxvbmcg
-b2ZzKQogewogCW1hcF93b3JkIHZhbDsKLQl2YWwueFswXSA9IGxlMTZfdG9fY3B1KHJlYWR3
-KG1hcC0+dmlydCArIG9mcykpOworCXZhbC54WzBdID0gZmxhc2hfcmVhZDE2KG1hcC0+dmly
-dCArIG9mcyk7CiAJcmV0dXJuIHZhbDsKIH0KIApAQCAtNTcsMTkgKzEwMiwyOCBAQAogc3Rh
-dGljIHZvaWQgaXhwNHh4X2NvcHlfZnJvbShzdHJ1Y3QgbWFwX2luZm8gKm1hcCwgdm9pZCAq
-dG8sCiAJCQkgICAgIHVuc2lnbmVkIGxvbmcgZnJvbSwgc3NpemVfdCBsZW4pCiB7Ci0JaW50
-IGk7CiAJdTggKmRlc3QgPSAodTggKikgdG87CiAJdm9pZCBfX2lvbWVtICpzcmMgPSBtYXAt
-PnZpcnQgKyBmcm9tOwotCXUxNiBkYXRhOwogCi0JZm9yIChpID0gMDsgaSA8IChsZW4gLyAy
-KTsgaSsrKSB7Ci0JCWRhdGEgPSBsZTE2X3RvX2NwdShyZWFkdyhzcmMgKyAyKmkpKTsKLQkJ
-ZGVzdFtpICogMl0gPSBCWVRFMChkYXRhKTsKLQkJZGVzdFtpICogMiArIDFdID0gQllURTEo
-ZGF0YSk7CisJaWYgKGxlbiA8PSAwKQorCQlyZXR1cm47CisKKwlpZiAoZnJvbSAmIDEpIHsK
-KwkJKmRlc3QrKyA9IEJZVEUxKGZsYXNoX3JlYWQxNihzcmMpKTsKKyAgICAgICAgICAgICAg
-ICBzcmMrKzsKKwkJLS1sZW47CiAJfQogCi0JaWYgKGxlbiAmIDEpCi0JCWRlc3RbbGVuIC0g
-MV0gPSBCWVRFMChsZTE2X3RvX2NwdShyZWFkdyhzcmMgKyAyKmkpKSk7CisJd2hpbGUgKGxl
-biA+PSAyKSB7CisJCXUxNiBkYXRhID0gZmxhc2hfcmVhZDE2KHNyYyk7CisJCSpkZXN0Kysg
-PSBCWVRFMChkYXRhKTsKKwkJKmRlc3QrKyA9IEJZVEUxKGRhdGEpOworCQlzcmMgKz0gMjsK
-KwkJbGVuIC09IDI7CisgICAgICAgIH0KKworCWlmIChsZW4gPiAwKQorCQkqZGVzdCsrID0g
-QllURTAoZmxhc2hfcmVhZDE2KHNyYykpOwogfQogCiAvKgpAQCAtNzksNyArMTMzLDcgQEAK
-IHN0YXRpYyB2b2lkIGl4cDR4eF9wcm9iZV93cml0ZTE2KHN0cnVjdCBtYXBfaW5mbyAqbWFw
-LCBtYXBfd29yZCBkLCB1bnNpZ25lZCBsb25nIGFkcikKIHsKIAlpZiAoIShhZHIgJiAxKSkK
-LQkJd3JpdGV3KGNwdV90b19sZTE2KGQueFswXSksIG1hcC0+dmlydCArIGFkcik7CisJCWZs
-YXNoX3dyaXRlMTYoZC54WzBdLCBtYXAtPnZpcnQgKyBhZHIpOwogfQogCiAvKgpAQCAtODcs
-NyArMTQxLDcgQEAKICAqLwogc3RhdGljIHZvaWQgaXhwNHh4X3dyaXRlMTYoc3RydWN0IG1h
-cF9pbmZvICptYXAsIG1hcF93b3JkIGQsIHVuc2lnbmVkIGxvbmcgYWRyKQogewotCXdyaXRl
-dyhjcHVfdG9fbGUxNihkLnhbMF0pLCBtYXAtPnZpcnQgKyBhZHIpOworCWZsYXNoX3dyaXRl
-MTYoZC54WzBdLCBtYXAtPnZpcnQgKyBhZHIpOwogfQogCiBzdHJ1Y3QgaXhwNHh4X2ZsYXNo
-X2luZm8gewo=
---------------060506010606080503080200--
+
+Let's build kernel/intermodule.c only when required.
+
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ drivers/mtd/chips/Kconfig   |    1 +
+ drivers/mtd/devices/Kconfig |    1 +
+ init/Kconfig                |    3 +++
+ kernel/Makefile             |    3 ++-
+ 4 files changed, 7 insertions(+), 1 deletion(-)
+
+--- linux-2.6.15-rc1-mm1-full/init/Kconfig.old	2005-11-18 03:22:53.000000000 +0100
++++ linux-2.6.15-rc1-mm1-full/init/Kconfig	2005-11-18 03:23:29.000000000 +0100
+@@ -456,6 +456,9 @@
+ 	default !SLAB
+ 	bool
+ 
++config OBSOLETE_INTERMODULE
++	tristate
++
+ menu "Loadable module support"
+ 
+ config MODULES
+--- linux-2.6.15-rc1-mm1-full/kernel/Makefile.old	2005-11-18 03:21:55.000000000 +0100
++++ linux-2.6.15-rc1-mm1-full/kernel/Makefile	2005-11-18 03:22:35.000000000 +0100
+@@ -6,10 +6,11 @@
+ 	    exit.o itimer.o time.o softirq.o resource.o \
+ 	    sysctl.o capability.o ptrace.o timer.o user.o \
+ 	    signal.o sys.o kmod.o workqueue.o pid.o \
+-	    rcupdate.o intermodule.o extable.o params.o posix-timers.o \
++	    rcupdate.o extable.o params.o posix-timers.o \
+ 	    kthread.o wait.o kfifo.o sys_ni.o posix-cpu-timers.o \
+ 	    ktimers.o
+ 
++obj-$(CONFIG_OBSOLETE_INTERMODULE) += intermodule.o
+ obj-$(CONFIG_FUTEX) += futex.o
+ obj-$(CONFIG_GENERIC_ISA_DMA) += dma.o
+ obj-$(CONFIG_SMP) += cpu.o spinlock.o
+--- linux-2.6.15-rc1-mm1-full/drivers/mtd/chips/Kconfig.old	2005-11-18 03:23:52.000000000 +0100
++++ linux-2.6.15-rc1-mm1-full/drivers/mtd/chips/Kconfig	2005-11-18 03:28:09.000000000 +0100
+@@ -31,6 +31,7 @@
+ 
+ config MTD_GEN_PROBE
+ 	tristate
++	select OBSOLETE_INTERMODULE
+ 
+ config MTD_CFI_ADV_OPTIONS
+ 	bool "Flash chip driver advanced configuration options"
+--- linux-2.6.15-rc1-mm1-full/drivers/mtd/devices/Kconfig.old	2005-11-18 03:25:17.000000000 +0100
++++ linux-2.6.15-rc1-mm1-full/drivers/mtd/devices/Kconfig	2005-11-18 03:27:46.000000000 +0100
+@@ -202,6 +202,7 @@
+ config MTD_DOCPROBE
+ 	tristate
+ 	select MTD_DOCECC
++	select OBSOLETE_INTERMODULE
+ 
+ config MTD_DOCECC
+ 	tristate
