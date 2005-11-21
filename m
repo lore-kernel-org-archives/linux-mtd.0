@@ -1,19 +1,16 @@
-Received: from smtprelay01.ispgateway.de ([80.67.18.13])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EeDUt-0004tX-1Y
-	for linux-mtd@lists.infradead.org; Mon, 21 Nov 2005 10:22:30 -0500
-Received: from unknown (HELO deepspace9.in2soft.meep) (547986@[84.153.73.210])
-	(envelope-sender <priewasser@gmail.com>)
-	by smtprelay01.ispgateway.de (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 21 Nov 2005 15:22:17 -0000
-Message-ID: <4381E625.1060402@gmail.com>
-Date: Mon, 21 Nov 2005 16:22:13 +0100
-From: Bernhard Priewasser <priewasser@gmail.com>
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EeDpU-0007vG-FD
+	for linux-mtd@lists.infradead.org; Mon, 21 Nov 2005 15:43:41 +0000
+Message-ID: <4381EAE2.2010207@yandex.ru>
+Date: Mon, 21 Nov 2005 18:42:26 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+To: Bernhard Priewasser <priewasser@gmail.com>
 References: <435CB911.4060005@gmail.com> <435D0A05.5090508@yandex.ru>
-In-Reply-To: <435D0A05.5090508@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	<4381E625.1060402@gmail.com>
+In-Reply-To: <4381E625.1060402@gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: MTD mailing list <linux-mtd@lists.infradead.org>
 Subject: Re: malloc.c:100: error: dereferencing pointer to incomplete type
@@ -27,20 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy schrieb:
-> Bernhard Priewasser wrote:
-> 
->> Hello,
->>
->> when trying to compile latest CVS MTD with JFFS2_FS_DEBUG=2 I get the 
->> following compiling errors on dbg_memalloc():
->>
-> Fixed in CVS, thanks.
-> 
+Bernhard Priewasser wrote:
+> It's there again... in MTD CVS 2005-11-21.
+> If you can't reproduce it, perhaps we have screwed something. But it's 
+> reproducible here.
 
-It's there again... in MTD CVS 2005-11-21.
-If you can't reproduce it, perhaps we have screwed something. But it's 
-reproducible here.
+Could you please double-check this? I've just compiled JFFS2 with 
+DBGLVL=2 and saw only one warning, no errors.
 
-Regards,
-Bernhard
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
