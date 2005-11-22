@@ -1,22 +1,19 @@
-Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EebWl-0002uI-Mb
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 12:02:01 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.64.0511221155400.6022@localhost.localdomain>
-References: <520AB2AD990DC04082102F77CA17263801CE70B4@dlee03.ent.ti.com>
-	<43834421.1050509@yandex.ru>
-	<Pine.LNX.4.64.0511221155400.6022@localhost.localdomain>
-Content-Type: text/plain
-Date: Tue, 22 Nov 2005 20:01:18 +0300
-Message-Id: <1132678878.19838.2.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EegMM-0006v0-Sw
+	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 17:11:33 -0500
+Message-ID: <438397B8.5060205@mvista.com>
+Date: Tue, 22 Nov 2005 14:12:08 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
+References: <20051122151042.57202.qmail@web26306.mail.ukl.yahoo.com>
+In-Reply-To: <20051122151042.57202.qmail@web26306.mail.ukl.yahoo.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org,
-	"Menon, Nishanth" <x0nishan@ti.com>
-Subject: Re: Jffs2 issue on latest mtd for Sibley NOR
-Reply-To: dedekind@infradead.org
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Question regarding mounting CRAMFS and JFFS2 from a single flash
+ chip on ucLinux
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-11-22 at 11:57 -0500, Nicolas Pitre wrote:
-> > Could you please try to reproduce this on mtdram device which is just an
-> > emulator of NOR flash in RAM ?
-> 
-> That's useless in this case.
-> 
-OK, fine, then it must be something related to 'Sibley' flash drivers or
-the jffs2-to-Sibley port. 
+Sreecharan Sivadevuni wrote:
+> I am using an arm processor based development board on
+> which there is an Intel E28F320(NOR) flash chip which
+> is of 4MB. ...
+> my flash is getting detected on 'cfi_probe'. But when
+> I am trying to mount JFFS2(or trying to write to )
+> '/dev/mtdblock0'(at 0x00600000) I am getting an error
+> that it is a readonly file system. The error as it is
+> printed on console is "-EROFS. Is the Sector Locked ?"
+> This is coming from file 'cfi_cmdset_0001.c' from
+> function 'do_erase_one_block'. This is despite that I
+> have made my JFFS2 partition as MTD_WRITEB_WRITEABLE
+> in 'physmem.c' file.
+
+Your flash chips probably power up with all blocks locked, and blocks to 
+be written must be unlocked first.  Can use flash_unlock /dev/mtdX prior 
+to mounting the writeable fs, or various ways of unlocking blocks at 
+chip probe or maps setup time have been discussed in the archives.
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Todd
