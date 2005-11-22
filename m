@@ -1,22 +1,21 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EeSWd-0002Q4-41
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 02:25:17 -0500
-Received: from mailhub.cdac.in ([196.1.109.254])
-	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005112212535223931
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2005 12:53:52 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id jAM7P5Rf003767
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2005 12:55:05 +0530
-Received: from cdac.in (localhost [127.0.0.1])
-	by mailhub.cdac.in (8.13.4/8.13.4) with SMTP id jAM7P5wo003758
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2005 12:55:05 +0530
-Date: Tue, 22 Nov 2005 12:55:05 +0530 (IST)
-To: <linux-mtd@lists.infradead.org>
-From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1132644305.54050@cdac.in>
-Subject: MKFS.JFFS2 util
+Received: from smtprelay03.ispgateway.de ([80.67.18.15])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EeVA6-0004r6-2z
+	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 05:14:10 -0500
+Message-ID: <4382EF68.3010204@gmail.com>
+Date: Tue, 22 Nov 2005 11:14:00 +0100
+From: Bernhard Priewasser <priewasser@gmail.com>
+MIME-Version: 1.0
+To: Jared Hulbert <jaredeh@gmail.com>
+References: <4379B814.3010407@gmail.com>	
+	<6934efce0511170958j9df6e3cu6329cf51088416f@mail.gmail.com>	
+	<437D9F6F.80102@gmail.com>
+	<6934efce0511211418s5317b7a6tee5b391e28eb8491@mail.gmail.com>
+In-Reply-To: <6934efce0511211418s5317b7a6tee5b391e28eb8491@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Strange NOR read/write throughput behaviour
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi all,
+> What about the read test.
 
-I am a bit confused whether i need to use mkfs.jffs2 when i need to save
-data files on flash in jffs2 format, or is it fine to just mount flash
-partition as jffs2 and simply copy the file from another storage(e.g. hard
-disk)
-
-i had a txt file on /home/mydir/test.txt which i need to have it on flash
-in JFFS2 format. 
-
-i followed the following steps.
-1) mount the partition as JFFS2 (mount -t jffs2 /dev/mtdblock0 /mnt/cf)
-and 
-2) then copy the file (cp /home/mydir/test.txt /mnt/cf/) or 
-
-1) i can MKFS.JFFS2 on the dir (mkfs.jffs2 -d /home/mydir/ -o myimage) 
-2) then dd it to flash (dd if=myimage of=/dev/mtdblock0)
-3) and then mount it (mount -t jffs2 /dev/mtdblock0 /mnt/cf/)
-
-is the first method the correct way of implementation, as i am getting the
-same results either way but i need not use mkfs.jffs2. if yes, then when
-shud i use mkfs.jffs2 utility 
-
-
-
+As simple as you can imagine. Write a file (fopen, fwrite, fclose), wait 
+some time, read the file (fopen, fread, fclose).
+Do you think there are caching mechanism responsible for it?
 
 -- 
-Thanks & Regards
-
-Nikhil Shirodkar
-Project Engineer
-NISG, CDAC
+Bernhard
