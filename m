@@ -1,21 +1,18 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EerxO-0001o5-18
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 05:34:32 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
+Received: from baythorne.infradead.org ([2001:8b0:10b:1::1])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EeuHE-0004Ig-C6
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 08:03:08 -0500
+From: David Woodhouse <dwmw2@infradead.org>
 To: hs@denx.de
-In-Reply-To: <AHEILKONAKAEJPHNMOPNKEMACDAA.hs@denx.de>
-References: <AHEILKONAKAEJPHNMOPNKEMACDAA.hs@denx.de>
+In-Reply-To: <AHEILKONAKAEJPHNMOPNCEMHCDAA.hs@denx.de>
+References: <AHEILKONAKAEJPHNMOPNCEMHCDAA.hs@denx.de>
 Content-Type: text/plain
-Date: Wed, 23 Nov 2005 11:39:24 +0100
-Message-Id: <1132742364.32542.122.camel@tglx.tec.linutronix.de>
+Date: Wed, 23 Nov 2005 13:03:06 +0000
+Message-Id: <1132750986.15117.252.camel@baythorne.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
-Subject: RE: [PATCH]	MTD:	Add support for the PM82x Boards.
-Reply-To: tglx@linutronix.de
+Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH]	MTD:	Add support for the PM82x Boards.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-11-22 at 07:18 +0100, Heiko Schocher wrote:
-> > Please use the new DiskOnChip driver in drivers/mtd/nand/ not the old
-> > one.
-> 
-> I use the new driver.
-> I made the changes in drivers/mtd/devices/docprobe.c,  because I
-> ported it from the 2.4 Kernel. Should I delete this and resubmit
-> the patch?
+On Wed, 2005-11-23 at 13:37 +0100, Heiko Schocher wrote:
+> now without drivers/mtd/devices/docprobe.c
 
-Yes, please.
+Thanks. Are those Intel chips really not CFI-compliant? 
+Please could you also correct each instance of 'MB' to 'MiB'?
 
-	tglx
+-- 
+dwmw2
