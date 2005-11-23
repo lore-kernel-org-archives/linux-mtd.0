@@ -1,19 +1,27 @@
-Received: from [222.66.49.139] (helo=smailsh.E28.COM)
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eejys-0002Pu-12
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 21:03:36 -0500
-From: kevinwu <kevinwu@e28.com>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <438322C6.6020002@inf.u-szeged.hu>
-References: <1132624224.3577.15.camel@localhost.localdomain>
-	<438322C6.6020002@inf.u-szeged.hu>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 23 Nov 2005 09:57:33 +0800
-Message-Id: <1132711053.3539.25.camel@localhost.localdomain>
+	id 1Eekez-0003B3-7n
+	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 21:47:03 -0500
+Received: from slurryseal.ddns.mvista.com (slurryseal.ddns.mvista.com
+	[10.0.10.193])
+	by hermes.mvista.com (Postfix) with ESMTP id 5BAF21A853
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Nov 2005 18:46:59 -0800 (PST)
+Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
+	by slurryseal.ddns.mvista.com (8.13.4/8.13.4) with ESMTP id
+	jAN2lcaE020161
+	for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2005 18:47:38 -0800
+Received: (from tpoynor@localhost)
+	by slurryseal.ddns.mvista.com (8.13.4/8.13.4/Submit) id jAN2lcpA020160
+	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 18:47:38 -0800
+Date: Tue, 22 Nov 2005 18:47:38 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051123024738.GA19609@slurryseal.ddns.mvista.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: small erase block size with EBS
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: nandwrite autoplace for real
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,60 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ferenc,
-I successfully mounted a 128KiB erase block size summary image on a
-16KiB erase block size NAND. The mounting speed is very high. It takes
-only about 0.5 second mounting on a 32MiB partition with 90% disk
-full.(My cpu is ARM926 running at 201 MHz) It seems OK. The performance
-is good. I modified JFFS2 source code a little.
-I changed souce code in function jffs2_do_fill_super()
-from:
-c->sector_size =3D c->mtd->size;
-to:
-c->sector_size =3D 0x00020000; //erase block size of image you generated.=20
+nand_write_ecc() treats OOB autoplace as "take a string of fs-supplied
+bytes (without ECC bytes, bad block marker, etc.) and place them
+sequentially in free OOB positions" (implemented in
+nand_prepare_oobbuf).
 
-It does work if the jffs2 partition has no bad block.
-If there is a bad block, it will get error imformation. But I will fix
-this bug soon. I know what happend.=20
+nandwrite -a, on the other hand, requires the input to have the OOB data
+already autoplaced (skipping ECC bytes, etc.), and copies the free bytes
+position-by-position from input to OOB.
 
-=E5=9C=A8 2005-11-22=E4=BA=8C=E7=9A=84 14:53 +0100=EF=BC=8CFerenc Havasi=E5=
-=86=99=E9=81=93=EF=BC=9A
-> Hi,
->=20
-> > I have a NAND flash with a small erase block(16KiB)
-> > When I use sumtool, I find that the summary image size is much larger
-> > than the original one if I use option --eraseblock=3D0x4000.
-> > But When I use option --eraseblock=3D0x20000, The summary image is a bi=
-t
-> > larger than the original one.
-> > EBS fits for large erase block as far as I know.=20
-> > That is to say, I can not use EBS if the NAND erase block is small. Wha=
-t
-> > a pitty!
->  > Is there any way to use EBS on a small erase block size NAND?
->=20
-> EBS should work on your system but if the erase block size is small it=20
-> may be not too usefull. Generally if you use bigger erase block size the=20
-> speedup will be greater and the "used place penalty" will be smaller.
->=20
-> So I suggest to test it: measure the rete of speedup and the difference=20
-> in image size on your system, and you can decide it is OK for you or not.
->=20
-> > What about CS?
->=20
-> CS doesn't depend on erase block size as EBS does, so you may try it.=20
-> The code of CS is more then one mouth old, so you should use it with=20
-> earlier mtd snapshot. If you can wait a little we will update it at the=20
-> first week of december.
-It seems a better choise. I will try it.
+The former definition seems much more useful.  Any objection to the
+following patch?  Is anything using the current definition?
 
-Thanks for your information.
---=20
-Best Regards
+BTW, I couldn't make heads or tails of the non-autoplace oob writing
+code, which uses the number of ECC bytes as the starting position to
+copy fs data from and to.
 
-Kevin Wu
+If I'm misunderstanding any of this I'd appreciate the clue bat. -- Todd
 
-System Software Engineer, E28.com
-
-
-Office: 86-21-23060088-352
+Index: util/nandwrite.c
+===================================================================
+RCS file: /home/cvs/mtd/util/nandwrite.c,v
+retrieving revision 1.32
+diff -u -r1.32 nandwrite.c
+--- util/nandwrite.c	7 Nov 2005 11:15:13 -0000	1.32
++++ util/nandwrite.c	23 Nov 2005 02:20:36 -0000
+@@ -401,13 +401,15 @@
+ 				 * such as the layout used by diskonchip.c
+ 				 */
+ 				if (!oobinfochanged && (old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE)) {
+-					for (i = 0;old_oobinfo.oobfree[i][1]; i++) {
+-						/* Set the reserved bytes to 0xff */
++					int src;
++
++					for (src = 0, i = 0;old_oobinfo.oobfree[i][1]; i++) {
+ 						start = old_oobinfo.oobfree[i][0];
+ 						len = old_oobinfo.oobfree[i][1];
+ 						memcpy(oobbuf + start,
+-							oobreadbuf + start,
++							oobreadbuf + src,
+ 							len);
++						src += len;
+ 					}
+ 				} else {
+ 					/* Set at least the ecc byte positions to 0xff */
