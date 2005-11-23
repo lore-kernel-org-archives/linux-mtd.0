@@ -1,27 +1,21 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eekez-0003B3-7n
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 21:47:03 -0500
-Received: from slurryseal.ddns.mvista.com (slurryseal.ddns.mvista.com
-	[10.0.10.193])
-	by hermes.mvista.com (Postfix) with ESMTP id 5BAF21A853
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 Nov 2005 18:46:59 -0800 (PST)
-Received: from slurryseal.ddns.mvista.com (localhost.localdomain [127.0.0.1])
-	by slurryseal.ddns.mvista.com (8.13.4/8.13.4) with ESMTP id
-	jAN2lcaE020161
-	for <linux-mtd@lists.infradead.org>; Tue, 22 Nov 2005 18:47:38 -0800
-Received: (from tpoynor@localhost)
-	by slurryseal.ddns.mvista.com (8.13.4/8.13.4/Submit) id jAN2lcpA020160
-	for linux-mtd@lists.infradead.org; Tue, 22 Nov 2005 18:47:38 -0800
-Date: Tue, 22 Nov 2005 18:47:38 -0800
-From: Todd Poynor <tpoynor@mvista.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20051123024738.GA19609@slurryseal.ddns.mvista.com>
+	id 1EerxO-0001o5-18
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 05:34:32 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: hs@denx.de
+In-Reply-To: <AHEILKONAKAEJPHNMOPNKEMACDAA.hs@denx.de>
+References: <AHEILKONAKAEJPHNMOPNKEMACDAA.hs@denx.de>
+Content-Type: text/plain
+Date: Wed, 23 Nov 2005 11:39:24 +0100
+Message-Id: <1132742364.32542.122.camel@tglx.tec.linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: nandwrite autoplace for real
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org
+Subject: RE: [PATCH]	MTD:	Add support for the PM82x Boards.
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,47 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-nand_write_ecc() treats OOB autoplace as "take a string of fs-supplied
-bytes (without ECC bytes, bad block marker, etc.) and place them
-sequentially in free OOB positions" (implemented in
-nand_prepare_oobbuf).
+On Tue, 2005-11-22 at 07:18 +0100, Heiko Schocher wrote:
+> > Please use the new DiskOnChip driver in drivers/mtd/nand/ not the old
+> > one.
+> 
+> I use the new driver.
+> I made the changes in drivers/mtd/devices/docprobe.c,  because I
+> ported it from the 2.4 Kernel. Should I delete this and resubmit
+> the patch?
 
-nandwrite -a, on the other hand, requires the input to have the OOB data
-already autoplaced (skipping ECC bytes, etc.), and copies the free bytes
-position-by-position from input to OOB.
+Yes, please.
 
-The former definition seems much more useful.  Any objection to the
-following patch?  Is anything using the current definition?
-
-BTW, I couldn't make heads or tails of the non-autoplace oob writing
-code, which uses the number of ECC bytes as the starting position to
-copy fs data from and to.
-
-If I'm misunderstanding any of this I'd appreciate the clue bat. -- Todd
-
-Index: util/nandwrite.c
-===================================================================
-RCS file: /home/cvs/mtd/util/nandwrite.c,v
-retrieving revision 1.32
-diff -u -r1.32 nandwrite.c
---- util/nandwrite.c	7 Nov 2005 11:15:13 -0000	1.32
-+++ util/nandwrite.c	23 Nov 2005 02:20:36 -0000
-@@ -401,13 +401,15 @@
- 				 * such as the layout used by diskonchip.c
- 				 */
- 				if (!oobinfochanged && (old_oobinfo.useecc == MTD_NANDECC_AUTOPLACE)) {
--					for (i = 0;old_oobinfo.oobfree[i][1]; i++) {
--						/* Set the reserved bytes to 0xff */
-+					int src;
-+
-+					for (src = 0, i = 0;old_oobinfo.oobfree[i][1]; i++) {
- 						start = old_oobinfo.oobfree[i][0];
- 						len = old_oobinfo.oobfree[i][1];
- 						memcpy(oobbuf + start,
--							oobreadbuf + start,
-+							oobreadbuf + src,
- 							len);
-+						src += len;
- 					}
- 				} else {
- 					/* Set at least the ecc byte positions to 0xff */
+	tglx
