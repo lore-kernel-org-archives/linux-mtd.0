@@ -1,26 +1,22 @@
-Received: from petasus.ims.intel.com ([62.118.80.130])
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EexRp-0007K6-2t
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 16:26:18 +0000
-Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
-	[10.125.2.23])
-	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
-	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id jANGcOYZ032305
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2005 16:38:28 GMT
-Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
-	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
-	M2005112319260311495
-	for <linux-mtd@lists.infradead.org>; Wed, 23 Nov 2005 19:26:03 +0300
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 23 Nov 2005 19:26:04 +0300
-Message-ID: <F92C2EFE7C3BA745855BF7036E1F3F9A0161CDF8@NNSMSX401>
-From: "Korolev, Alexey" <alexey.korolev@intel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Deadlock in cfi_cmdset_0001.c on simultaneous write operations.
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EeyB6-0000Br-IH
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 12:13:09 -0500
+Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR001.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IQF00D5U3TOZWB0@VL-MO-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 12:13:00 -0500 (EST)
+Date: Wed, 23 Nov 2005 12:13:00 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <F92C2EFE7C3BA745855BF7036E1F3F9A0161CDF8@NNSMSX401>
+To: "Korolev, Alexey" <alexey.korolev@intel.com>
+Message-id: <Pine.LNX.4.64.0511231141460.6022@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A0161CDF8@NNSMSX401>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Deadlock in cfi_cmdset_0001.c on simultaneous write operations.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,75 +26,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
-=20
-I faced a halting issue on multi partitioned chip when I tried to
-execute simultaneous write operations.
-Platform has halted, on execution of this sequence:
-dd if=3Drandom of=3D/dev/mtd4 bs=3D4k count=3D1k&
-dd if=3Drandom of=3D/dev/mtd5 bs=3D4k count=3D1k&
-dd if=3Drandom of=3D/dev/mtd6 bs=3D4k count=3D1k
+On Wed, 23 Nov 2005, Korolev, Alexey wrote:
 
-Halt didn't happens on two simultaneous write operations
-Execution of=20
-dd if=3Drandom of=3D/dev/mtd5 bs=3D4k count=3D1k&
-dd if=3Drandom of=3D/dev/mtd6 bs=3D4k count=3D1k
-was ok.
-=20
-I made small investigation. Platform falls to deadlock in get_chip
-function.
-I was unable to definetly locate the place of the halt. But I gues it
-happened here.
-=20
-  struct flchip_shared *shared =3D chip->priv;
-  struct flchip *contender;
-  spin_lock(&shared->lock);
-  contender =3D shared->writing;
-  if (contender && contender !=3D chip) {
-   int ret =3D spin_trylock(contender->mutex);
-   spin_unlock(&shared->lock);
-   if (!ret)
-    goto retry;
-   spin_unlock(chip->mutex);
-   ret =3D get_chip(map, contender, contender->start, mode);
-   spin_lock(chip->mutex);
-   if (ret) {
-    spin_unlock(contender->mutex);
-    return ret;
-   }
-   timeo =3D jiffies + HZ;
-   spin_lock(&shared->lock);
-  }
-  shared->writing =3D chip;
-  if (mode =3D=3D FL_ERASING)
-   shared->erasing =3D chip;
-  if (contender && contender !=3D chip)
-   spin_unlock(contender->mutex);
-  spin_unlock(&shared->lock);
+> Hi All,
+>  
+> I faced a halting issue on multi partitioned chip when I tried to
+> execute simultaneous write operations.
 
-I slightly simplified functionality of the code and it helped, the
-following code doesn't halt
-  struct flchip_shared *shared =3D chip->priv;
-  struct flchip *contender;
-=20
-  contender =3D shared->writing;
-  if (contender && contender !=3D chip) {
-      yield();=20
-       timeo =3D jiffies + HZ;
-      goto retry;
-  }
-  /* We now own it */
-  spin_lock(&shared->lock);    =20
-  shared->writing =3D chip;
-  if (mode =3D=3D FL_ERASING)
-   shared->erasing =3D chip;
-  if (contender && contender !=3D chip)
-   spin_unlock(contender->mutex);
-  spin_unlock(&shared->lock);
+What platform are you using?  SMP or not?  Using CONFIG_PREEMPT or not?
 
-I know that it can not be solution because it reduces functionality.=20
-I would be very much appreciate if someone advice me solution for
-deadlock issue on simultaneous write operations.
-=20
-Thanks,
-Alexey
+> Platform has halted, on execution of this sequence:
+> dd if=random of=/dev/mtd4 bs=4k count=1k&
+> dd if=random of=/dev/mtd5 bs=4k count=1k&
+> dd if=random of=/dev/mtd6 bs=4k count=1k
+> 
+> Halt didn't happens on two simultaneous write operations
+> Execution of 
+> dd if=random of=/dev/mtd5 bs=4k count=1k&
+> dd if=random of=/dev/mtd6 bs=4k count=1k
+> was ok.
+
+How big are your MTD partitions?  Are they located on separate 
+_hardware_ partitions or do some of them share one of them?
+
+> I made small investigation. Platform falls to deadlock in get_chip
+> function.
+> I was unable to definetly locate the place of the halt. But I gues it
+> happened here.
+
+Could you add some printk()'s to determine if the code is looping ...
+
+>   struct flchip_shared *shared = chip->priv;
+>   struct flchip *contender;
+>   spin_lock(&shared->lock);
+>   contender = shared->writing;
+>   if (contender && contender != chip) {
+>    int ret = spin_trylock(contender->mutex);
+>    spin_unlock(&shared->lock);
+>    if (!ret)
+>     goto retry;
+      ^^^^^^^^^^^ here?
+
+>    spin_unlock(chip->mutex);
+>    ret = get_chip(map, contender, contender->start, mode);
+>    spin_lock(chip->mutex);
+>    if (ret) {
+>     spin_unlock(contender->mutex);
+>     return ret;
+>    }
+>    timeo = jiffies + HZ;
+>    spin_lock(&shared->lock);
+>   }
+>   shared->writing = chip;
+>   if (mode == FL_ERASING)
+>    shared->erasing = chip;
+>   if (contender && contender != chip)
+>    spin_unlock(contender->mutex);
+>   spin_unlock(&shared->lock);
+> 
+> I slightly simplified functionality of the code and it helped, the
+> following code doesn't halt
+
+But that code is broken.
+
+>   struct flchip_shared *shared = chip->priv;
+>   struct flchip *contender;
+>  
+>   contender = shared->writing;
+>   if (contender && contender != chip) {
+>       yield(); 
+>        timeo = jiffies + HZ;
+>       goto retry;
+>   }
+>   /* We now own it */
+    ^^^^^^^^^^^^^^^^^^^  wrong !
+
+Nothing prevents another thread coming along and assigning itself the 
+ability to write at this point, just _after_ the current thread 
+determined that no contender was there but _before_ the shared lock is 
+acquired below.
+
+>   spin_lock(&shared->lock);     
+>   shared->writing = chip;
+
+And then the other thread sees its ownership overwritten.
+
+
+Nicolas
