@@ -1,22 +1,18 @@
-Received: from natfrord.rzone.de ([81.169.145.161])
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EetTq-0005ss-N7
-	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 12:12:08 +0000
-Received: from shuttle.lan (ip51cf43f8.direct-adsl.nl [81.207.67.248])
-	by post.webmailer.de (8.13.1/8.13.1) with ESMTP id jANCBqDI020724
+Received: from setabox.com.tw ([220.135.128.161] helo=mail.setabox.com.tw)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Eeuf4-0004nt-Pk
+	for linux-mtd@lists.infradead.org; Wed, 23 Nov 2005 08:27:52 -0500
+Received: from [192.168.2.126] (dhcp-126.setabox.com [192.168.2.126])
+	by mail.setabox.com.tw (Postfix) with ESMTP id 7641E5675C
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 23 Nov 2005 13:11:53 +0100 (MET)
-From: Stefan Roese <sr@denx.de>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 23 Nov 2005 13:11:51 +0100
-References: <AHEILKONAKAEJPHNMOPNIELBCDAA.hs@denx.de>
-In-Reply-To: <AHEILKONAKAEJPHNMOPNIELBCDAA.hs@denx.de>
+	Wed, 23 Nov 2005 21:27:27 +0800 (CST)
+Message-ID: <43846D5B.4060908@setabox.com>
+Date: Wed, 23 Nov 2005 21:23:39 +0800
+From: William J Beksi <wjbeksi@setabox.com>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_HyFhDYRwKty1xan"
-Message-Id: <200511231311.51467.sr@denx.de>
-Subject: [PATCH] MTD: Add P3P440 MTD support
+To: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed; boundary="------------020002020106010103000105"
+Subject: NAND flash utilities and driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,219 +22,344 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Boundary-00=_HyFhDYRwKty1xan
-Content-Type: text/plain;
-  charset="iso-8859-1"
+This is a multi-part message in MIME format.
+--------------020002020106010103000105
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 
-This patch adds MTD support (NOR FLASH) for the Prodrive P3P440
-(440GP) PMC module.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Signed-off-by: Stefan Roese <sr@denx.de>
+Greetings,
+The following driver allows one to access NAND flash through the IDE
+interface on a PC. There is also a patch for the Makefile and Kconfig in
+mtd/nand.
 
-Best regards,
-Stefan
+A set of userspace utilities for accessing a flash device:
+http://sourceforge.net/projects/nand-flash-util/
 
---Boundary-00=_HyFhDYRwKty1xan
-Content-Type: text/x-diff; charset="iso-8859-1";
-	name="add-p3p440-mtd-support.patch"
+May be useful for people interested in developing/experimenting with
+NAND flash on a PC that don't have a development board.
+
+William
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFDhG1Zyy8yU+fh2zsRApDdAJ9I4L/B22rxmMDwKWEVVdz9JbdPrQCeN+KU
+TZ9gHutPgfKGh64SBagQEQc=
+=5I85
+-----END PGP SIGNATURE-----
+
+--------------020002020106010103000105
+Content-Type: text/x-csrc;
+ name="ide.c"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="add-p3p440-mtd-support.patch"
+Content-Disposition: inline;
+ filename="ide.c"
 
-This patch adds MTD support (NOR FLASH) for the Prodrive P3P440
-(440GP) PMC module.
+/* drivers/mtd/nand/ide.c
+ *
+ * Copyright (C) 2005  William J Beksi <wjbeksi@users.sourceforge.net> 
+ *
+ * Overview:
+ *  This driver allows a NAND flash device to be accessed from
+ *  an IDE interface.  
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or 
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111, USA.
+ */
 
-Signed-off-by: Stefan Roese <sr@denx.de>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/slab.h>
+#include <linux/module.h>
+#include <linux/mtd/mtd.h>
+#include <linux/mtd/nand.h>
+#include <linux/mtd/partitions.h>
+#include <linux/delay.h>
+#include <asm/io.h>
 
----
-commit 5bca0cf9bea1ea8f04e7292266da040ef8a13b80
-tree 70398872c104f16d34eb64a8560029d3839e46ad
-parent 1778d55edb62753a92b979fa57072c2e1ff3d062
-author Stefan Roese <sr@denx.de> Wed, 23 Nov 2005 13:09:39 +0100
-committer Stefan Roese <sr@denx.de> Wed, 23 Nov 2005 13:09:39 +0100
+/*
+ * Values specific to the IDE
+ */
+#define IDE_IO_BASE_1   0x1F0		/* IDE1 NAND flash I/O base address */
+#define IDE_IO_BASE_2   0x170		/* IDE2 NAND flash I/O base address */
 
- drivers/mtd/maps/Kconfig  |    8 +++
- drivers/mtd/maps/Makefile |    1 
- drivers/mtd/maps/p3p440.c |  135 +++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 144 insertions(+), 0 deletions(-)
+#define IDE_IO_BASE IDE_IO_BASE_1
 
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 846a533..4f618eb 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -339,6 +339,14 @@ config MTD_OCOTEA
- 	  Ocotea board. If you have one of these boards and would like to
- 	  use the flash chips on it, say 'Y'.
+#ifdef CONFIG_MTD_NAND_USE_IO_INSTR
+static int nand_use_io_instr = 1;
+#else
+static int nand_use_io_instr = 0;
+#endif
+
+#ifdef CONFIG_MTD_NAND_X86_IO_INSTR
+static int nand_x86_io_instr = 1;
+#endif
+
+/*
+ * IDE MTD structure
+ */
+static struct mtd_info *ide_mtd = NULL;
+
+/*
+ * Define partitions for flash device
+ */
+const static struct mtd_partition partition_info[] = {
+	{ 
+		.name   = "IDE flash partition 1", 
+		.offset = 0,  
+		.size   = 4*1024*1024 
+	},
+	{
+		.name   = "IDE flash partition 2",
+		.offset = 4*1024*1024,
+		.size   = 4*1024*1024
+	}
+};
+#define NUM_PARTITIONS  2 
+
+static void ide_hwcontrol(struct mtd_info *mtd, int cmd) 
+{
+	struct nand_chip *this = (struct nand_chip *)mtd->priv;
+
+	switch (cmd) {
+		case NAND_CTL_SETCLE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE+1; break;
+		case NAND_CTL_CLRCLE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE;   break;
+		case NAND_CTL_SETALE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE+2; break;	
+		case NAND_CTL_CLRALE: this->IO_ADDR_W = (unsigned char *) IDE_IO_BASE;   break;
+	}
+}
+
+static u_char ide_read_byte(struct mtd_info *mtd)
+{
+	struct nand_chip *this = (struct nand_chip *)mtd->priv;
+
+	if (nand_use_io_instr) {
+		if (nand_x86_io_instr)
+			return inb((unsigned int) this->IO_ADDR_R);
+	}
+
+	return readb(this->IO_ADDR_R);
+}
+
+static void ide_write_byte(struct mtd_info *mtd, u_char byte)
+{
+	struct nand_chip *this = (struct nand_chip *)mtd->priv;
+
+	switch (nand_use_io_instr) {
+		case 0:
+			writeb(byte, this->IO_ADDR_W);
+			break;
+		case 1:
+			if (nand_x86_io_instr)
+				outb(byte, (unsigned int)this->IO_ADDR_W);
+			break;
+	}
+}
+
+static void ide_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+{
+	int i;
+	struct nand_chip *this = mtd->priv;
+	
+	switch(nand_use_io_instr) {
+		case 0:
+			for (i=0; i<len; i++)
+				buf[i] = readb(this->IO_ADDR_R);
+			break;
+		case 1:
+			for (i=0; i<len; i++)
+				if (nand_x86_io_instr)
+					buf[i] = inb((unsigned int)this->IO_ADDR_R);
+			break;
+	}
+}
+
+static void ide_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+{
+	int i;
+	struct nand_chip *this = (struct nand_chip *)mtd->priv;
+
+	switch (nand_use_io_instr) {
+		case 0:
+			for (i=0; i<len; i++)
+				writeb(buf[i], this->IO_ADDR_W);
+			break;
+		case 1:
+			for (i=0; i<len; i++)
+				if (nand_x86_io_instr)
+					outb(buf[i], (unsigned int) this->IO_ADDR_W);
+			break;
+	}
+}
+
+static int ide_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
+{
+	int i;
+	struct nand_chip *this = (struct nand_chip *)mtd->priv;
+
+	switch (nand_use_io_instr) {
+		case 0:
+			for (i=0; i<len; i++)
+				if (buf[i] != readb(this->IO_ADDR_R))
+					return -EFAULT;
+			break;
+		case 1:
+			for (i=0; i<len; i++)
+				if (nand_x86_io_instr)
+					if (buf[i] != inb((unsigned int) this->IO_ADDR_R))
+						return -EFAULT;
+			break;
+	}
+	
+	return 0;
+}
+
+/*
+ * Main initialization routine
+ */
+int __init ide_init(void)
+{
+	struct nand_chip *this;
+
+	/* Allocate memory for MTD device structure and private data */
+	ide_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+	if (!ide_mtd) {
+		printk("Unable to allocate IDE NAND MTD structure\n");
+		return -ENOMEM; 
+	}
+
+	/* Initialize structures */
+	memset((char *) ide_mtd, 0, sizeof(struct mtd_info) + sizeof(struct nand_chip));
+
+	/* Get pointer to private data */
+	this = (struct nand_chip *) (&ide_mtd[1]);
+
+	/* Link the private data with the MTD structure */
+	ide_mtd->priv = this;
+
+	/* Set address of NAND IO lines */
+	this->IO_ADDR_R  = (void __iomem *) IDE_IO_BASE;
+	this->IO_ADDR_W  = (void __iomem *) IDE_IO_BASE;
+
+	/* Reference hardware control function */
+	this->hwcontrol = ide_hwcontrol;
+
+	/* Set read/write functions */
+	this->read_buf   = ide_read_buf;
+	this->read_byte  = ide_read_byte;
+	this->write_buf  = ide_write_buf;
+	this->write_byte = ide_write_byte;
+	this->verify_buf = ide_verify_buf;
+
+	/* Set command delay time */
+	this->chip_delay = 20;
+
+	/* Assign the device ready function */
+	this->dev_ready = NULL;
+
+	/* Set the ECC generator mode */
+	this->eccmode = NAND_ECC_SOFT;
+
+	/* Scan to find existance of the device */
+	if (nand_scan(ide_mtd, 1)) {
+		kfree(ide_mtd);
+		return -ENXIO;
+	}
+
+	/* Register the partitions */
+	add_mtd_partitions(ide_mtd, partition_info, NUM_PARTITIONS);
+
+	return 0;
+}
+module_init(ide_init);
+
+/*
+ * Clean up routine
+ */
+#ifdef MODULE
+static void __exit ide_cleanup (void)
+{
+	/* Release resources, unregister the device */
+	nand_release(ide_mtd);	
+
+	/* Free the MTD device structure */
+	kfree(ide_mtd);
+}
+module_exit(ide_cleanup);
+#endif
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("William J Beksi <wjbeksi@users.sourceforge.net>");
+MODULE_DESCRIPTION("Glue layer for NAND flash through an IDE interface");
+
+--------------020002020106010103000105
+Content-Type: text/x-patch;
+ name="nand_io_instr.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="nand_io_instr.patch"
+
+Index: Kconfig
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/Kconfig,v
+retrieving revision 1.35
+diff -u -r1.35 Kconfig
+--- Kconfig	7 Nov 2005 11:14:30 -0000	1.35
++++ Kconfig	19 Nov 2005 14:44:37 -0000
+@@ -268,4 +268,26 @@
+ 	help
+ 	  For 16 bit devices word is 2 bytes, for 8 bit devices - 1 byte
  
-+config MTD_P3P440
-+	tristate "Flash devices mapped on Prodrive P3P440"
-+	depends on MTD_CFI && P3P440
-+	help
-+	  This enables access routined for the flash chips on the Prodrive
-+	  P3P440 board.  If you have this board and would like to use the
-+	  flash chips on it, say 'Y'.
++config MTD_NAND_IDE
++        tristate "Support for NAND Flash through an IDE interface"
++        depends on MTD_NAND && MTD_PARTITIONS
++        help
++          Enables the driver for accessing NAND Flash from the IDE 
++          interface of a PC. If you say Y, you will be asked 
++          if you want access through the I/O ports.
 +
- config MTD_REDWOOD
- 	tristate "CFI Flash devices mapped on IBM Redwood"
- 	depends on MTD_CFI && ( REDWOOD_4 || REDWOOD_5 || REDWOOD_6 )
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index 7d9e940..73a681a 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -73,3 +73,4 @@ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
- obj-$(CONFIG_MTD_PQ2FADS)	+= pq2fads.o
- obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
- obj-$(CONFIG_MTD_TQM834x)	+= tqm834x.o
-+obj-$(CONFIG_MTD_P3P440)	+= p3p440.o
-diff --git a/drivers/mtd/maps/p3p440.c b/drivers/mtd/maps/p3p440.c
-new file mode 100644
-index 0000000..443fbb6
---- /dev/null
-+++ b/drivers/mtd/maps/p3p440.c
-@@ -0,0 +1,135 @@
-+/*
-+ * $Id: $
-+ *
-+ * drivers/mtd/maps/p3p440.c
-+ *
-+ * Mapping for Prodrive P3P440 flash
-+ *
-+ * Copyright (c) 2005 DENX Software Engineering
-+ * Stefan Roese <sr@denx.de>
-+ *
-+ * This program is free software; you can redistribute  it and/or modify it
-+ * under  the terms of  the GNU General  Public License as published by the
-+ * Free Software Foundation;  either version 2 of the  License, or (at your
-+ * option) any later version.
-+ */
++config MTD_NAND_USE_IO_INSTR
++        bool "Support for accessing NAND flash through the I/O ports"
++        depends on MTD_NAND_IDE
++        help
++          Allows for accessing NAND Flash through the I/O ports. 
++          If you say Y, you will be asked to select your architecture 
++          below.
 +
-+#include <linux/config.h>
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <linux/init.h>
++config MTD_NAND_X86_IO_INSTR
++        bool "Support for x86 architecture I/O instructions"
++        depends on MTD_NAND_USE_IO_INSTR
++        help
++          Port numbers are of type unsigned int.        
 +
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <asm/io.h>
-+#include <asm/ibm4xx.h>
-+#include <asm/ppcboot.h>
-+
-+extern bd_t __res;
-+
-+#define RW_PART0_OF	0
-+#define RW_PART0_SZ	0x180000
-+#define RW_PART1_OF	RW_PART0_OF + RW_PART0_SZ
-+#define RW_PART1_SZ	0x280000
-+#define RW_PART2_OF	RW_PART1_OF + RW_PART1_SZ
-+/* Partition 2 will be autosized dynamically... */
-+#define RW_PART3_SZ	0x40000
-+#define RW_PART4_SZ	0x40000
-+
-+static struct mtd_partition p3p440_flash_partitions[] = {
-+	{
-+		.name = "kernel",
-+		.offset = RW_PART0_OF,
-+		.size = RW_PART0_SZ
-+	},
-+	{
-+		.name = "root",
-+		.offset = RW_PART1_OF,
-+		.size = RW_PART1_SZ,
-+	},
-+	{
-+		.name = "user",
-+		.offset = RW_PART2_OF,
-+/*		.size = RW_PART2_SZ */ /* will be adjusted dynamically */
-+	},
-+	{
-+		.name = "env",
-+/*		.offset = RW_PART3_OF, */ /* will be adjusted dynamically */
-+		.size = RW_PART3_SZ,
-+	},
-+	{
-+		.name = "u-boot",
-+/*		.offset = RW_PART4_OF, */ /* will be adjusted dynamically */
-+		.size = RW_PART4_SZ,
-+	}
-+};
-+
-+struct map_info p3p440_flash_map = {
-+	.name = "p3p440-flash",
-+	.bankwidth = 2,
-+};
-+
-+static struct mtd_info *p3p440_mtd;
-+
-+int __init init_p3p440_flash(void)
-+{
-+	unsigned long long flash_base;
-+	unsigned long flash_size;
-+
-+	flash_base = __res.bi_flashstart | 0x0000000100000000LL;
-+	flash_size = __res.bi_flashsize;
-+
-+	p3p440_flash_map.size = flash_size;
-+	p3p440_flash_map.phys = flash_base;
-+	p3p440_flash_map.virt = ioremap64(flash_base,
-+					  p3p440_flash_map.size);
-+
-+
-+	if (!p3p440_flash_map.virt) {
-+		printk("init_p3p440_flash: failed to ioremap\n");
-+		return -EIO;
-+	}
-+
-+	/*
-+	 * Adjust partitions to flash size
-+	 */
-+	p3p440_flash_partitions[2].size = p3p440_flash_map.size -
-+		RW_PART0_SZ - RW_PART1_SZ - RW_PART3_SZ - RW_PART4_SZ;
-+	p3p440_flash_partitions[3].offset = p3p440_flash_partitions[2].size +
-+		RW_PART2_OF;
-+	p3p440_flash_partitions[4].offset = p3p440_flash_partitions[3].size +
-+		p3p440_flash_partitions[3].offset;
-+
-+	simple_map_init(&p3p440_flash_map);
-+
-+	p3p440_mtd = do_map_probe("cfi_probe", &p3p440_flash_map);
-+
-+	if (p3p440_mtd) {
-+		p3p440_mtd->owner = THIS_MODULE;
-+		return add_mtd_partitions(p3p440_mtd,
-+					  p3p440_flash_partitions,
-+					  ARRAY_SIZE(p3p440_flash_partitions));
-+	}
-+
-+	return -ENXIO;
-+}
-+
-+static void __exit cleanup_p3p440_flash(void)
-+{
-+	if (p3p440_mtd) {
-+		del_mtd_partitions(p3p440_mtd);
-+		/* moved iounmap after map_destroy - armin */
-+		map_destroy(p3p440_mtd);
-+		iounmap((void *)p3p440_flash_map.virt);
-+	}
-+}
-+
-+module_init(init_p3p440_flash);
-+module_exit(cleanup_p3p440_flash);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Stefan Roese <sr@denx.de>");
-+MODULE_DESCRIPTION("MTD map and partitions for Prodrive P3P440 board");
+ endmenu
+Index: Makefile.common
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/nand/Makefile.common,v
+retrieving revision 1.16
+diff -u -r1.16 Makefile.common
+--- Makefile.common	6 Jul 2005 09:33:28 -0000	1.16
++++ Makefile.common	19 Nov 2005 14:44:37 -0000
+@@ -18,5 +18,6 @@
+ obj-$(CONFIG_MTD_NAND_RTC_FROM4)	+= rtc_from4.o
+ obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
++obj-$(CONFIG_MTD_NAND_IDE)		+= ide.o
+ 
+ nand-objs = nand_base.o nand_bbt.o
 
-
-
-
-!-------------------------------------------------------------flip-
-
-
-
---Boundary-00=_HyFhDYRwKty1xan--
+--------------020002020106010103000105--
