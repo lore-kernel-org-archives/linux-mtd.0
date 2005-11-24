@@ -1,23 +1,16 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EfK7z-00067F-0Y
-	for linux-mtd@lists.infradead.org; Thu, 24 Nov 2005 11:39:25 -0500
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR003.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IQG0041HWXE6DO0@VL-MO-MR003.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 24 Nov 2005 11:39:14 -0500 (EST)
-Date: Thu, 24 Nov 2005 11:39:14 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <4385E2F4.6010603@intel.com>
-To: "Alexey, Korolev" <alexey.korolev@intel.com>
-Message-id: <Pine.LNX.4.64.0511241116270.6022@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <Pine.LNX.4.64.0511231440450.6022@localhost.localdomain>
-	<4385E2F4.6010603@intel.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Deadlock in cfi_cmdset_0001.c on simultaneous write operations.
+	id 1EfKtx-00072B-Op
+	for linux-mtd@lists.infradead.org; Thu, 24 Nov 2005 12:28:57 -0500
+Date: Fri, 25 Nov 2005 02:28:02 +0900 (JST)
+Message-Id: <20051125.022802.112626259.anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org
+Subject: [PATCH] [MTD] cmdlinepart: allow zero offset value
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,56 +20,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 24 Nov 2005, Alexey, Korolev wrote:
+Current cmdlinepart.c uses offset value 0 to specify continuous
+partition.  This prevents creating a second partition starting at 0.
 
-> Nicolas,
-> 
-> I'm using non SMP platform ( Mainstone II). CONFIG_PREEMPT is disabled.
+For example, I can split 4MB device using "mtdparts=id:2M,2M", but I
+can not do "mtdparts=id:2M@2M,2M@0".  In this case, I wanted to swap
+mtd0 and mtd1 by command line.
 
-What kernel version are you using?
+This patch introduce special OFFSET_CONTINUOUS value for continuous
+partition and allow 0 for offset value.
 
-Can you send me your kernel .config?  I'll try to reproduce it here.
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 
-> Partition size is 8MB. Current configuration: each logical volume is located
-> on each h/w partition. Logical volumes don't share h/w partitions.
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index 6b8bb2e..123cfe0 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -43,6 +43,7 @@
+ 
+ /* special size referring to all the remaining space in a partition */
+ #define SIZE_REMAINING 0xffffffff
++#define OFFSET_CONTINUOUS 0xffffffff
+ 
+ struct cmdline_mtd_partition {
+ 	struct cmdline_mtd_partition *next;
+@@ -75,7 +76,7 @@ static struct mtd_partition * newpart(ch
+ {
+ 	struct mtd_partition *parts;
+ 	unsigned long size;
+-	unsigned long offset = 0;
++	unsigned long offset = OFFSET_CONTINUOUS;
+ 	char *name;
+ 	int name_len;
+ 	unsigned char *extra_mem;
+@@ -314,7 +315,7 @@ static int parse_cmdline_partitions(stru
+ 		{
+ 			for(i = 0, offset = 0; i < part->num_parts; i++)
+ 			{
+-				if (!part->parts[i].offset)
++				if (part->parts[i].offset == OFFSET_CONTINUOUS)
+ 				  part->parts[i].offset = offset;
+ 				else
+ 				  offset = part->parts[i].offset;
 
-This is Sibley flash?
-
-> I also disabled erase suspend on write feature.
-
-Why?
-
-> I applied code which you have send in previous letter.
-> After that code behavior has changed.
-> It didn't halt on basic simultaneous write operations.
-
-Actually, I wonder why.  Especially with CONFIG_PREEMPT on non SMP 
-system all spin_locks are just no ops.
-
-> But it failed to kernel panic in our test case. (Five applications, each of
-> them performs writing, erasing and reading own logical volume )
-
-Can you share your test application with me?
-
-> Here is kernel panic message:
-> After this message I received two more almost the same as this kernel panic
-> messages.
-> 
-[...]
-> Stack: (0xc391dfa8 to 0xc391e000)
-> dfa0:                   c391dfc8 c391dfb8 c003129c c0030eb4 02c76300 c391e004
-> dfc0: c391dfcc c01a0928 c0031284 02734e47 33c93d00 00000075 c3982450 c3c732f0
-> dfe0: c391e08c c02deba0 00000007 c3c732d4 00000001 00000001 c391e0c8 c391e008
-> Backtrace:
-[...]
-
-This looks extremely suspicious, given that the backtrace has at least 
-40 calls and the stack cannot contain all of them given its location 
-(the kernel stack is 8kb aligned).  So this really looks like a kernel 
-stack overflow, and frankly I wonder how you managed that.
-
-Did you modify your kernel somehow?  What patches if any did you apply 
-to it?
-
-
-Nicolas
+---
+Atsushi Nemoto
