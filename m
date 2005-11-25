@@ -1,21 +1,19 @@
-Received: from smtp19.mail.bbt.yahoo.co.jp ([202.93.83.112])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EffKc-0007aT-1s
-	for linux-mtd@lists.infradead.org; Fri, 25 Nov 2005 10:17:53 -0500
-Message-ID: <005901c5f1d3$5d866750$0b01a8c0@YANO>
-From: "Keijiro Yano" <keijiro_yano@yahoo.co.jp>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <000c01c5e6d6$abf22490$0b01a8c0@YANO> <4375EA0D.2060704@yandex.ru>
-	<002001c5e91a$a7c87180$0b01a8c0@YANO>
-	<1131980118.3479.34.camel@sauron.oktetlabs.ru>
-	<004d01c5e9ea$f9fccac0$0b01a8c0@YANO> <4385EA24.7070709@yandex.ru>
-Date: Sat, 26 Nov 2005 00:17:34 +0900
+Received: from zproxy.gmail.com ([64.233.162.200])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EfhZO-0001At-0J
+	for linux-mtd@lists.infradead.org; Fri, 25 Nov 2005 12:41:12 -0500
+Received: by zproxy.gmail.com with SMTP id m22so1855202nzf
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Nov 2005 09:41:08 -0800 (PST)
+Message-ID: <7febb0a10511250941i1f020fc0m3c3b74de09c211ae@mail.gmail.com>
+Date: Sat, 26 Nov 2005 00:41:08 +0700
+From: HS8JCV <hs8jcv@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 mutex problem
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: How to fix this message.?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I've committed your patch to CVS, thanks.
->
-> Note: the patch wasn't applicable to the CVS code and I tweaked it 
-> manually.
+Hi all
+After I mount jffs2 partition and I read write partition.
+I got this message follow below.
+.......................
+Internal flash device timeout occurred or write operation was performed whi=
+le fl
+ash was programming.
+Internal flash device timeout occurred or write operation was performed whi=
+le fl
+ash was programming.
+.........................
 
-Thank you !
-And sorry for inconvenience.
+I use nor flash SST39VF3201.
+How to fix this message.?
 
-Best Regards,
-Keijiro Yano
-
---------------------------------------
-STOP HIV/AIDS.
-Yahoo! JAPAN Redribbon Campaign 2005
-http://pr.mail.yahoo.co.jp/redribbon/
+Thank you and Regard
+Mr.X
