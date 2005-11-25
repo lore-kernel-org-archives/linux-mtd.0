@@ -1,20 +1,21 @@
-Received: from moutvdom.kundenserver.de ([212.227.126.249]
-	helo=moutvdomng.kundenserver.de)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EffAW-0007HQ-ST
-	for linux-mtd@lists.infradead.org; Fri, 25 Nov 2005 10:07:26 -0500
-Message-ID: <43872881.3010608@anagramm.de>
-Date: Fri, 25 Nov 2005 16:06:41 +0100
-From: Clemens Koller <clemens.koller@anagramm.de>
+Received: from smtp19.mail.bbt.yahoo.co.jp ([202.93.83.112])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EffKc-0007aT-1s
+	for linux-mtd@lists.infradead.org; Fri, 25 Nov 2005 10:17:53 -0500
+Message-ID: <005901c5f1d3$5d866750$0b01a8c0@YANO>
+From: "Keijiro Yano" <keijiro_yano@yahoo.co.jp>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+References: <000c01c5e6d6$abf22490$0b01a8c0@YANO> <4375EA0D.2060704@yandex.ru>
+	<002001c5e91a$a7c87180$0b01a8c0@YANO>
+	<1131980118.3479.34.camel@sauron.oktetlabs.ru>
+	<004d01c5e9ea$f9fccac0$0b01a8c0@YANO> <4385EA24.7070709@yandex.ru>
+Date: Sat, 26 Nov 2005 00:17:34 +0900
 MIME-Version: 1.0
-To: hs@denx.de
-References: <AHEILKONAKAEJPHNMOPNKEMMCDAA.hs@denx.de>
-In-Reply-To: <AHEILKONAKAEJPHNMOPNKEMMCDAA.hs@denx.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH]	MTD:	Add support for the PM82x Boards.
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2 mutex problem
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, Heiko!
+> I've committed your patch to CVS, thanks.
+>
+> Note: the patch wasn't applicable to the CVS code and I tweaked it 
+> manually.
 
-> i made the changes in the code you suggested to me.
-> 
-> Additional changes:
-> - I now use the CFI interface (I tested it, and it seems OK
->   to me)
+Thank you !
+And sorry for inconvenience.
 
-Datasheets should confirm the same.
+Best Regards,
+Keijiro Yano
 
-Just in case you do the PM854 support anytime soon,
-the i128J3C150 Flash supports CFI, too, which makes
-these things also pretty simple.
-
-Best greets,
--- 
-Clemens Koller
-_______________________________
-R&D Imaging Devices
-Anagramm GmbH
-Rupert-Mayer-Str. 45/1
-81379 Muenchen
-Germany
-
-http://www.anagramm.de
-Phone: +49-89-741518-50
-Fax: +49-89-741518-19
+--------------------------------------
+STOP HIV/AIDS.
+Yahoo! JAPAN Redribbon Campaign 2005
+http://pr.mail.yahoo.co.jp/redribbon/
