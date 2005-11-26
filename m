@@ -1,19 +1,22 @@
-Received: from zproxy.gmail.com ([64.233.162.196])
+Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EfhbF-0001Me-Hj
-	for linux-mtd@lists.infradead.org; Fri, 25 Nov 2005 12:43:15 -0500
-Received: by zproxy.gmail.com with SMTP id m22so1855509nzf
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Nov 2005 09:43:04 -0800 (PST)
-Message-ID: <7febb0a10511250943jc23af8p99c6fe048654f168@mail.gmail.com>
-Date: Sat, 26 Nov 2005 00:43:02 +0700
-From: HS8JCV <hs8jcv@gmail.com>
-To: linux-mtd@lists.infradead.org
+	id 1EfwvQ-00053Q-Vn
+	for linux-mtd@lists.infradead.org; Sat, 26 Nov 2005 05:05:04 -0500
+Received: from [193.205.82.6] (HELO feanor.sssup.it)
+	by sssup.it (CommuniGate Pro SMTP 4.1.8)
+	with ESMTP-TLS id 17561017 for linux-mtd@lists.infradead.org;
+	Sat, 26 Nov 2005 10:56:28 +0100
+Message-ID: <20051126110450.72feva7a8kwog444@feanor.sssup.it>
+Date: Sat, 26 Nov 2005 11:04:50 +0100
+From: trimarchi@gandalf.sssup.it
+To: linux-mtd@lists.infradead.org, .@gandalf.sssup.it
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=ISO-8859-1
 Content-Disposition: inline
-Subject: Warning: DQ5 raised
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: NAND s3c2410 probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all
-I use nor flash of SST39VF3201.
-I create 3 partition.
-Last partition size 256K.and map to jffs2.img(size 256K)
-After I mount it.(mount -t jffs2 /dev/mtdblock/3 /flashdisk).
-I got this message.
+Hi,
+I configure the kernel 2.6.14 for support s3c2410 NAND. I change a little bit
+the config of smdk4410 add the partition info but the kernel never call the
+probe function for nand search. When is colled the probe function?
+Regards
+Michael
 
-ash was programming.
-Internal flash device timeout occurred or write operation was performed whi=
-le fl
-ash was programming.
-Internal flash device timeout occurred or write operation was
-performed while flash was programming.
-Warning: DQ5 raised while program operation was in progress, however
-operation completed OK
-Internal flash device timeout occurred or write operation was
-performed while flash was programming.
-Internal flash device timeout occurred or write operation was
-performed while flash was programming.
 
-I can read/write this partition.
-but,I still got this message.
-
-How to fix it?
-
-Thank you for advantage
-Mr.X
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
