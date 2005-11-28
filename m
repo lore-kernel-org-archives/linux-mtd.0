@@ -1,18 +1,18 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from fmr17.intel.com ([134.134.136.16] helo=orsfmr002.jf.intel.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EgWwc-0000FC-Nn
-	for linux-mtd@lists.infradead.org; Sun, 27 Nov 2005 19:32:37 -0500
-Message-ID: <438A5023.4040503@inf.u-szeged.hu>
-Date: Mon, 28 Nov 2005 01:32:35 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
+	id 1EgYiw-0001k8-M4
+	for linux-mtd@lists.infradead.org; Sun, 27 Nov 2005 21:26:40 -0500
+From: "zhao, forrest" <forrest.zhao@intel.com>
 To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <8126E4F969BA254AB43EA03C59F44E840C3738@pdsmsx404>	<4386FC5F.9050305@yandex.ru>
-	<4389AE3D.8000807@inf.u-szeged.hu> <4389B293.3020507@yandex.ru>
-In-Reply-To: <4389B293.3020507@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+In-Reply-To: <4386FC5F.9050305@yandex.ru>
+References: <8126E4F969BA254AB43EA03C59F44E840C3738@pdsmsx404>
+	<4386FC5F.9050305@yandex.ru>
+Content-Type: text/plain
+Date: Mon, 28 Nov 2005 10:20:58 +0800
+Message-Id: <1133144458.3156.15.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, "Zhao, Forrest" <forrest.zhao@intel.com>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: The problem that I didn't think out
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,32 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-> Nonetheless, tests should show the worthiness of keys compression. 
-> There is obviously a (CPU time) vs. (amount of flash IO) trade-off. 
-> Thus, I offer to wait for a JFFS3 prototype and evaluate this. Let's 
-> mark this stuff as "to be evaluated".
+> > If we store the erase block usage information in a file on flash,
+> > we need to sort it in RAM in order to find the dirtiest one.
+> > Then this sort operation is O(N), N is the number of erase blocks.
+> > Also the memory consumed by this sorted data structure is O(N).
+> We may devide this file on constant-size chunks, and search only one 
+> chunk at a time. And we may have a list of 10 most worn out eraseblocks 
+> and keep it in the superblock. So the scalability will be O(1) IMO.
+> 
+I think keeping track of a list of 10 most worn out eraseblocks
+is hard to be O(1) since this list is changed dynamically.
+In particular, we need to recalculate the list after every update
+operation; in order to recalculate the list we need to keep the usage
+information of all erase blocks in RAM in sorted manner. So if this is
+the case, the RAM occupation is O(N).
 
-Yes, I think the same.
 
->> The big questions are that questions you already thinging on: garbage
->> collection and wear leveling. Without solving them JFFS3 have no nice
->> future. I only would like to say that now we are also thinking on these
->> important problems... and we will write if anything usable found. (I may
->> be better feeling to thinking on someting not alone... :) )
->
-> Great! :-)
+> > I used to think that we could put the sorted data structure on flash,
+> > but this will incur enormous update operations.
+> Enormous? This needs measuring and evaluating. Let's create a user-level 
+> prototype and see.
 
-I was thinking a lot. There is something in my mind, but I have to think 
-it over again tomorrow before writing it down.
+Agree. We need to do much measuring, evaluating and comparing work
+before achieving the final design decision.
+Do you have a time table for the user-level prototype? I think I can
+give my contribution to it.
 
-Be that as it may I have a NAND question, I think you know the answer 
-(NAND Guru Artem :) ):
-- if there is and erase block aready fulled, is there any possibility to 
-mark its pages as obsolated (individually)? Is it allowed to write to 
-OOB (or data) area one more? (or write OOB later than the data... or 
-similar trick?)
-At NOR it is so easy.
 
-Ferenc
+Thanks,
+Forrest
