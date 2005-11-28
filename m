@@ -1,16 +1,20 @@
-Received: from fmr19.intel.com ([134.134.136.18] helo=orsfmr004.jf.intel.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Egf8G-0007uE-32
-	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 04:17:13 -0500
-From: "zhao, forrest" <forrest.zhao@intel.com>
-To: dedekind@infradead.org, linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 28 Nov 2005 17:11:35 +0800
-Message-Id: <1133169095.3156.98.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1Egg3E-0000Lm-M8
+	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 05:16:04 -0500
+Message-ID: <438AD8BF.8020905@yandex.ru>
+Date: Mon, 28 Nov 2005 13:15:27 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+References: <8126E4F969BA254AB43EA03C59F44E840C3738@pdsmsx404>	<4386FC5F.9050305@yandex.ru>
+	<4389AE3D.8000807@inf.u-szeged.hu> <4389B293.3020507@yandex.ru>
+	<438A5023.4040503@inf.u-szeged.hu>
+In-Reply-To: <438A5023.4040503@inf.u-szeged.hu>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Basic problems and possible solutions for GC in JFFS3
+Cc: linux-mtd@lists.infradead.org, "Zhao, Forrest" <forrest.zhao@intel.com>
+Subject: Re: The problem that I didn't think out
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,75 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Artem
+Ferenc Havasi wrote:
+> Be that as it may I have a NAND question, I think you know the answer 
+> (NAND Guru Artem :) ):
+> - if there is and erase block aready fulled, is there any possibility to 
+> mark its pages as obsolated (individually)? Is it allowed to write to 
+> OOB (or data) area one more? (or write OOB later than the data... or 
+> similar trick?)
 
-Since you just added a GC entry in JFFS3 design doc, I
-try to identify the basic problems and possible solutions
-for GC here. Hope this could inspire further discussion
-on this topic in the mailing list.
+Yes, but this depends on NAND type. In the worst case, you may write at 
+least once there. In case of some NANDs - more.
 
-Basic problem:
-Whatever the GC policy is adopted in JFFS3, the goal is
-the same: achieve the good reclamation efficiency while
-try to keep wear-leveling delta within a reasonable value.
-
-To achieve the good reclamation efficiency, the accounting
-information of each erase block(which record which pages
-within the erase block are obsolete, which are valid) need
-to be stored in sorted order, the sort key is (the number
-of obsolete pages). This way GC can select erase block
-with largest key value to do efficient reclamation.
-To keep wear-leveling delta within a reasonable value,
-the erase count of each erase block need to be stored in
-sorted order, the sort key is erase count. This way GC can
-select the erase block with least erase count to do WL.
-
-So I think the basic problem in JFFS3 GC is "how(where)
-the indexing tree of accounting information and erase
-count of each erase block is stored?".
-
-Possible solutions:
-1 stored in RAM
-For this approach, accounting information and erase count
-are stored in normal files on flash without order. During
-system initialization(or mount), they are read into RAM and
-the indexing tree is built. And the whole indexing tress is
-in RAM.
-After a write or an erase operation, the indexing tree
-in RAM is updated to reflect the change, also accounting
-information and erase count on flash is updated.
-The disadvantage of this approach is: the RAM consumption
-is O(N), N is the number of erase blocks on flash, the time
-spent on building indexing tree in RAM is also O(N).
-The advantage of this approach is: it's fast since all the
-operations related with sort are accomplished in RAM.
-
-2 stored in flash
-For this approach, accounting information and erase count
-are stored in normal file on flash. Also the indexing tree
-is in flash. After a write or an erase operation, the file
-for storing accounting information and erase count is
-updated, also the indexing tree in flash is updated to
-reflect the order change.
-In particular, for accounting information, an indexing tree
-is built in flash, the key is (the number of obsolete page), 
-the leaf node is erase block number. Those who
-only have valid pages are not indexed by this indexing tree.
-Those who are in clean state(just be erased and haven't 
-been written) have key value 0.So if the tree is sorted 
-by ascending order,by walking down the leftest branch, we
-can find free blocks; by walking down the rightest branch,
-we can find the dirtiest block.
-The similar idea applies to erase count tracking.
-The advantage of this approach is: it's O(1).
-Its disadvantage is: by storing indexing tree in flash,
-it'll involve more update operations on flash.
+Note, JFFS2 writes clean marker to OOB area of the first page of a newly 
+erased eraseblock. But it doesn't prohibit JFFS2 to write to this page 
+later, and store ECC in OOB, even though this OOB already contains some 
+data (the clean marker).
 
 
-Thanks,
-Forrest
-
-
-
-
-  
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
