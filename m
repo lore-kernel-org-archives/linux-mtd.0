@@ -1,20 +1,18 @@
 Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EggBe-0000cV-CB
-	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 05:24:46 -0500
-Message-ID: <438ADACA.3090102@yandex.ru>
-Date: Mon, 28 Nov 2005 13:24:10 +0300
+	id 1EghJ9-0001fe-6S
+	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 06:36:38 -0500
+Message-ID: <438AEB9B.7010504@yandex.ru>
+Date: Mon, 28 Nov 2005 14:35:55 +0300
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: "zhao, forrest" <forrest.zhao@intel.com>
-References: <8126E4F969BA254AB43EA03C59F44E840C3738@pdsmsx404>	
-	<4386FC5F.9050305@yandex.ru>
-	<1133144458.3156.15.camel@localhost.localdomain>
-In-Reply-To: <1133144458.3156.15.camel@localhost.localdomain>
+References: <1133169095.3156.98.camel@localhost.localdomain>
+In-Reply-To: <1133169095.3156.98.camel@localhost.localdomain>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: The problem that I didn't think out
+Subject: Re: Basic problems and possible solutions for GC in JFFS3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +23,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 zhao, forrest wrote:
-> I think keeping track of a list of 10 most worn out eraseblocks
-> is hard to be O(1) since this list is changed dynamically.
-> In particular, we need to recalculate the list after every update
-> operation; in order to recalculate the list we need to keep the usage
-> information of all erase blocks in RAM in sorted manner. So if this is
-> the case, the RAM occupation is O(N).
-> 
-Hmm, I meant the following.
+> Basic problem:
+> Whatever the GC policy is adopted in JFFS3, the goal is
+> the same: achieve the good reclamation efficiency while
+> try to keep wear-leveling delta within a reasonable value.
+Agreed.
 
-1. How to choose an eraseblock to garbage collect.
+> To achieve the good reclamation efficiency, the accounting
+> information of each erase block(which record which pages
+> within the erase block are obsolete, which are valid) need
+> to be stored in sorted order, the sort key is (the number
+> of obsolete pages). This way GC can select erase block
+> with largest key value to do efficient reclamation.
+> To keep wear-leveling delta within a reasonable value,
+> the erase count of each erase block need to be stored in
+> sorted order, the sort key is erase count. This way GC can
+> select the erase block with least erase count to do WL.
+Are you sure we must keep this sorted? Can we implement an algorithm 
+when we keep this sorted byt the eraseblock number and do partial search 
+in a small group? Sure, this means we don't choos the best every time, 
+but maintaining this information on flash becomes easier.
 
-We split all the eraseblocks onto several (virtual) groups, N 
-eraseblocks in each. For example, 30 eraseblocks in each group: 0-29. 
-30-59, ... One of the groups is "current".
+> Possible solutions:
+> 1 stored in RAM
+> For this approach, accounting information and erase count
+> are stored in normal files on flash without order. During
+> system initialization(or mount), they are read into RAM and
+> the indexing tree is built. And the whole indexing tress is
+> in RAM.
+> After a write or an erase operation, the indexing tree
+> in RAM is updated to reflect the change, also accounting
+> information and erase count on flash is updated.
+> The disadvantage of this approach is: the RAM consumption
+> is O(N), N is the number of erase blocks on flash, the time
+> spent on building indexing tree in RAM is also O(N).
+> The advantage of this approach is: it's fast since all the
+> operations related with sort are accomplished in RAM.
+This is the worst solution which I'd like to avoid.
 
-Suppose we have mounted JFFS3. Assign group 0 to be "current". GC asks 
-us to choose an eraseblock to GC. We search for the "best" candidate 
-only in the current group. And GC it. During search we also find out M 
-"best" candidates. Then switch the current group to the next. Next time 
-we'll search in the next group. We'll correct our "best" list. Etc.
+> 2 stored in flash
+> For this approach, accounting information and erase count
+> are stored in normal file on flash. Also the indexing tree
+> is in flash. After a write or an erase operation, the file
+> for storing accounting information and erase count is
+> updated, also the indexing tree in flash is updated to
+> reflect the order change.
+> In particular, for accounting information, an indexing tree
+> is built in flash, the key is (the number of obsolete page), 
+> the leaf node is erase block number. Those who
+> only have valid pages are not indexed by this indexing tree.
+> Those who are in clean state(just be erased and haven't 
+> been written) have key value 0.So if the tree is sorted 
+> by ascending order,by walking down the leftest branch, we
+> can find free blocks; by walking down the rightest branch,
+> we can find the dirtiest block.
+> The similar idea applies to erase count tracking.
+> The advantage of this approach is: it's O(1).
+> Its disadvantage is: by storing indexing tree in flash,
+> it'll involve more update operations on flash.
 
-Something like this. Not, this wont give us absolutely best candidates. 
-But still.
-
-The description is just an idea, don't take it as a serious description.
+I thought about storing the accounting/WL information in a file. But for 
+effeciency reasons, this file should not be a part of the tree. It ought 
+to be stored in a distinct data structures and distinct eraseblocks/ 
+This may be one more dedicated mini acounting-tree or we may use ext3 
+technique with direct/indirect blocks here. To provide atomicity, the 
+accounting-tree and the tree will have one root (SB for example).
 
 -- 
 Best Regards,
