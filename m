@@ -1,22 +1,16 @@
-Received: from tyo202.gate.nec.co.jp ([210.143.35.52])
+Received: from fmr19.intel.com ([134.134.136.18] helo=orsfmr004.jf.intel.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EgaPu-0003C1-E6
-	for linux-mtd@lists.infradead.org; Sun, 27 Nov 2005 23:15:08 -0500
-Message-ID: <438A83F2.2080605@ak.jp.nec.com>
-Date: Mon, 28 Nov 2005 13:13:38 +0900
-From: Kaigai Kohei <kaigai@ak.jp.nec.com>
-MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <43210C7A.60109@ak.jp.nec.com>	<20050909072416.GA19251@wohnheim.fh-wedel.de>	<43225DEB.4070809@ak.jp.nec.com>	<20050911114642.GA11788@wohnheim.fh-wedel.de>	<4324E525.60805@ak.jp.nec.com>	<20050912064038.GA21304@wohnheim.fh-wedel.de>	<43255FF5.4020903@ak.jp.nec.com>	<433A57D8.9030501@ak.jp.nec.com>	<20050929074500.GA16687@wohnheim.fh-wedel.de>	<435647A8.6090103@ak.jp.nec.com>	<20051019142438.GA32362@wohnheim.fh-wedel.de>	<43895906.3040705@ak.jp.nec.com>
-	<43897FDB.50405@ak.jp.nec.com> <4389D4B2.2050001@yandex.ru>
-In-Reply-To: <4389D4B2.2050001@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1Egf8G-0007uE-32
+	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 04:17:13 -0500
+From: "zhao, forrest" <forrest.zhao@intel.com>
+To: dedekind@infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 28 Nov 2005 17:11:35 +0800
+Message-Id: <1133169095.3156.98.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: James Morris <jmorris@redhat.com>, Stephen Smalley <sds@tycho.nsa.gov>,
-	David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org, lorenzohgh@gmail.com,
-	Andreas Gruenbacher <agruen@suse.de>
-Subject: Re: [PATCH] XATTR issues on JFFS2
+Cc: 
+Subject: Basic problems and possible solutions for GC in JFFS3
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +20,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Artem,
+Hi, Artem
 
-> to ease JFFS2 debugging I split debugging messages by subsystems and one 
-> may enable/disable debugging messages from each subsystem separately. I 
-> wonder, if it is possible to add DBG_XATTR() or the like instead of 
-> using D1()? It really makes bugs hunting easier. Please, glance at debug.h.
+Since you just added a GC entry in JFFS3 design doc, I
+try to identify the basic problems and possible solutions
+for GC here. Hope this could inspire further discussion
+on this topic in the mailing list.
 
-I agree what you say.
-There is especially no reason why such a stub macro is not used.
+Basic problem:
+Whatever the GC policy is adopted in JFFS3, the goal is
+the same: achieve the good reclamation efficiency while
+try to keep wear-leveling delta within a reasonable value.
 
-In the next patch, I'll use some stub macros as are defined in debug.h.
-The following definition will be added in debug.h, and I'll use JFFS2_NOTICE()
-and so on instead of raw-printk().
+To achieve the good reclamation efficiency, the accounting
+information of each erase block(which record which pages
+within the erase block are obsolete, which are valid) need
+to be stored in sorted order, the sort key is (the number
+of obsolete pages). This way GC can select erase block
+with largest key value to do efficient reclamation.
+To keep wear-leveling delta within a reasonable value,
+the erase count of each erase block need to be stored in
+sorted order, the sort key is erase count. This way GC can
+select the erase block with least erase count to do WL.
 
-/* Watch the XATTR subsystem */
-#ifdef JFFS2_DBG_XATTR_MESSAGES
-#define dbg_xattr(fmt, ...)  JFFS2_DEBUG(fmt, ##__VA_ARGS__)
-#else
-#define dbg_xattr(fmt, ...)
-#endif
+So I think the basic problem in JFFS3 GC is "how(where)
+the indexing tree of accounting information and erase
+count of each erase block is stored?".
+
+Possible solutions:
+1 stored in RAM
+For this approach, accounting information and erase count
+are stored in normal files on flash without order. During
+system initialization(or mount), they are read into RAM and
+the indexing tree is built. And the whole indexing tress is
+in RAM.
+After a write or an erase operation, the indexing tree
+in RAM is updated to reflect the change, also accounting
+information and erase count on flash is updated.
+The disadvantage of this approach is: the RAM consumption
+is O(N), N is the number of erase blocks on flash, the time
+spent on building indexing tree in RAM is also O(N).
+The advantage of this approach is: it's fast since all the
+operations related with sort are accomplished in RAM.
+
+2 stored in flash
+For this approach, accounting information and erase count
+are stored in normal file on flash. Also the indexing tree
+is in flash. After a write or an erase operation, the file
+for storing accounting information and erase count is
+updated, also the indexing tree in flash is updated to
+reflect the order change.
+In particular, for accounting information, an indexing tree
+is built in flash, the key is (the number of obsolete page), 
+the leaf node is erase block number. Those who
+only have valid pages are not indexed by this indexing tree.
+Those who are in clean state(just be erased and haven't 
+been written) have key value 0.So if the tree is sorted 
+by ascending order,by walking down the leftest branch, we
+can find free blocks; by walking down the rightest branch,
+we can find the dirtiest block.
+The similar idea applies to erase count tracking.
+The advantage of this approach is: it's O(1).
+Its disadvantage is: by storing indexing tree in flash,
+it'll involve more update operations on flash.
+
 
 Thanks,
--- 
-Linux Promotion Center, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
+Forrest
+
+
+
+
+  
