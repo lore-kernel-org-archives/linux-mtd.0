@@ -1,20 +1,19 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from 246.063.dsl.mel.iprimus.net.au ([211.27.107.246]
+	helo=greyinnovation.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Egpbq-0008UC-I2
-	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 15:28:25 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Vitaly Bordug <vbordug@ru.mvista.com>
-In-Reply-To: <438B52FE.9040802@ru.mvista.com>
-References: <438B52FE.9040802@ru.mvista.com>
-Content-Type: text/plain
-Date: Mon, 28 Nov 2005 21:33:51 +0100
-Message-Id: <1133210031.32542.364.camel@tglx.tec.linutronix.de>
-Mime-Version: 1.0
+	id 1EgsPv-0002NT-Sl
+	for linux-mtd@lists.infradead.org; Mon, 28 Nov 2005 18:28:19 -0500
+Message-ID: <438B9355.6080603@greyinnovation.com>
+Date: Tue, 29 Nov 2005 10:31:33 +1100
+From: Tehn Yit Chin <tehn-yit.chin@greyinnovation.com>
+MIME-Version: 1.0
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>
+References: <4386F21B.9010507@inf.u-szeged.hu>
+In-Reply-To: <4386F21B.9010507@inf.u-szeged.hu>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: Add support for the MPC8xxADS boards
-Reply-To: tglx@linutronix.de
+Subject: Re: New compression method for JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-11-28 at 21:57 +0300, Vitaly Bordug wrote:
-> The following patch adds support for the JEDEC-compatible flashes on
-> the MPC8xxADS boards.
+> New feautres:
+> - it uses the kernel's CryptoAPI interface, and will allow not only
+> compressors but also crypto algorithms
+> - advanced compressor configuration which allows to compress/encode a
+> block with more algorithm sequencially.
+> - certainly full backward compatibility for old JFFS2 images
+> 
 
-Can you please explain how this is supposed to work ?
+With the crypto stuff being used, is there much of a performance hit?
 
-In any case whether compiled as module or compiled in the init code of
-the physmap driver is called before the init code of your board driver.
-The physmap_configure() call is just bogus as it overwrites the compiled
-in values of the physmap_map structure in physmap.c after the flash was
-detected (or not detected) with the compiled in defaults.
-
-Also this code was never compiled and used as a module. 
-
-> Currently verified with MPC885ADS and MPC 866ADS. The patch is against
-> MTD git tree.
-
-Currently verified means: it compiles when the config switch is equal
-"Y" and the resulting kernel does not oops, right ?
-
-
-The physmap driver has to be either used with the compiled in address,
-size and bankwidth settings or the values have to be set by the early
-boot code of the board. Grep through arch/mips to find the two lonely,
-but correct, users of physmap_configure().
-
-The same applies for the pq2fads driver. The pq2fads driver is hereby
-scheduled for removal.
-
-	tglx
+Tehn Yit Chin
+Software Engineer, Grey Innovation Pty. Ltd.
