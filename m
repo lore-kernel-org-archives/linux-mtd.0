@@ -1,18 +1,23 @@
-Received: from ns.firmix.at ([62.141.48.66])
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eh31T-0002y9-P9
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 10:47:45 +0000
-From: Bernd Petrovitsch <bernd@firmix.at>
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-In-Reply-To: <20051129100937.AF133353F54@atlas.denx.de>
-References: <20051129100937.AF133353F54@atlas.denx.de>
-Content-Type: text/plain
-Date: Tue, 29 Nov 2005 11:41:00 +0100
-Message-Id: <1133260860.32224.23.camel@tara.firmix.at>
+Received: from atlantis.8hz.com ([212.129.237.78])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Eh4fR-0005oV-Kt
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 07:33:13 -0500
+Received: from atlantis.8hz.com (localhost [127.0.0.1])
+	by atlantis.8hz.com (Postfix) with ESMTP id 536DCBAC3
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 Nov 2005 13:33:02 +0100 (CET)
+Received: (from sean@localhost)
+	by atlantis.8hz.com (8.13.1/8.13.1/Submit) id jATCX2A9080135
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 13:33:02 +0100 (CET)
+	(envelope-from sean@mess.org)
+Date: Tue, 29 Nov 2005 13:33:02 +0100
+From: Sean Young <sean@mess.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051129123301.GA79821@atlantis.8hz.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] --cvs-exclude for mkfs.jffs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [PATCH] major assigned for rfd ftl
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +27,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-11-29 at 11:09 +0100, Wolfgang Denk wrote:
-> In message <v0mzjofaup.fsf@marajade.sandelman.ca> you wrote:
-[...]
-> > This adds an option to ignore CVS directories.
-> 
-> This doesn't make sense to me. You can and should use "cvs export" to
-> create the directory trees you want to package.
+Lanana has assigned major 256 to the RFD FTL. This is the first 2.6 only
+major, since it is >255. See:
 
-Or do a `find \( -name CVS -o -name .svn \) -print0 | xargs -0r rm -rf`
-before.
-Especially the name `.KEEP_ME` is not even standardized (more .keep
-IIRC) - not even in the CVS world AFAIK.
+http://www.lanana.org/docs/device-list/devices-2.6+.txt
 
-> You use  CVS,  others  use  GIT,  or  Subversion,  or  ClearCase,  or
-> Monotone,  or darcs, or ... - it would not be really practical to add
-> special rules for everybody's favorite tool.
+Would it be possible to push this to Linus for inclusion inc 2.6.15? It
+would be nice if the major doesn't change after 2.6.15 is released.
 
-Ar at least name and implement the option as '--exclude' similar to
-`tar` and `diff`.
-
-	Bernd
--- 
-Firmix Software GmbH                   http://www.firmix.at/
-mobil: +43 664 4416156                 fax: +43 1 7890849-55
-          Embedded Linux Development and Services
+Signed-off-by: Sean Young <sean@mess.org>
+--
+diff -u -r1.5 -r1.6
+--- a/drivers/mtd/rfd_ftl.c	7 Nov 2005 11:14:21 -0000	1.5
++++ b/drivers/mtd/rfd_ftl.c	29 Nov 2005 11:47:57 -0000	1.6
+@@ -3,7 +3,7 @@
+  *
+  * Copyright (C) 2005  Sean Young <sean@mess.org>
+  *
+- * $Id: rfd_ftl.c,v 1.5 2005/11/07 11:14:21 gleixner Exp $
++ * $Id: rfd_ftl.c,v 1.6 2005/11/29 11:47:57 sean Exp $
+  *
+  * This type of flash translation layer (FTL) is used by the Embedded BIOS
+  * by General Software. It is known as the Resident Flash Disk (RFD), see:
+@@ -29,11 +29,9 @@
+ 
+ #define PREFIX "rfd_ftl: "
+ 
+-/* Major device # for FTL device */
+-
+-/* A request for this major has been sent to device@lanana.org */
++/* This major has been assigned by device@lanana.org */
+ #ifndef RFD_FTL_MAJOR
+-#define RFD_FTL_MAJOR		95
++#define RFD_FTL_MAJOR		256
+ #endif
+ 
+ /* Maximum number of partitions in an FTL region */
