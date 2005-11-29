@@ -1,19 +1,20 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from blood.actrix.co.nz ([203.96.16.163])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EhCNS-0007Zl-4i
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 15:47:07 -0500
-To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
-From: Wolfgang Denk <wd@denx.de>
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Tue, 29 Nov 2005 10:18:18 EST."
-	<v0sltfeb45.fsf@marajade.sandelman.ca>
-Date: Tue, 29 Nov 2005 21:46:58 +0100
-Sender: wd@denx.de
-Message-Id: <20051129204658.EE6FC353B0C@atlas.denx.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/2] --cvs-exclude for mkfs.jffs2 
+	id 1EhEJv-0000wW-5C
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 17:51:39 -0500
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 30 Nov 2005 11:12:14 +1300
+References: <20051129180204.2f79e2ae.vwool@ru.mvista.com>
+In-Reply-To: <20051129180204.2f79e2ae.vwool@ru.mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200511301112.14512.manningc2@actrix.gen.nz>
+Cc: Vitaly Wool <vwool@ru.mvista.com>
+Subject: Re: [PATCH] treat OOB as a single chunk of oobavail bytes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <v0sltfeb45.fsf@marajade.sandelman.ca> you wrote:
+On Wednesday 30 November 2005 04:02, Vitaly Wool wrote:
+> Hi,
 >
->     Wolfgang> You use CVS, others use GIT, or Subversion, or ClearCase, or
->     Wolfgang> Monotone, or darcs, or ... - it would not be really practical
->     Wolfgang> to add special rules for everybody's favorite tool.
-> 
->   It would very much be practical to do this.
->   I'd rather have a more general --exclude.
+> the patch below implements treating the OOB data as a chunk of _free_ OOB
+> bytes of mtd->oobavail size. This is what was announced several times. This
+> patch is a working one (verified with yaffs2 and jffs2), however, it's not
+> completely ready to work with 16bit NAND flashes. Anyway, I'd like to ask
+> for a permission to commit it to let other people start using it/report the
+> problems/etc. etc.
+>
+> Of course input of any kind is welcome.
+>
+> Best regards,
+>    Vitaly
 
-Now *this*  is  something  completely  different.  If  you  implement
-generic  exclude feature, like the "--exclude=PATTERN" optioon in GNU
-tar, than this would be really useful.
 
-Just hard-coding a specific directory name  is  nothing  else  but  a
-quick and dirty hack and should IMHO not be accepted for public code.
+Bloody Marvelous! This is very good news for the yaffs folk.
 
->   Of course, you argue for removing equivalent options from rsync and other
-> things.  Accept the patch or not. 
+My only concern/query is a taste issue:
+Should the read_oob funtion be used to do the available read or should is it 
+better to use a different function like read_ecc() using NULL for the data 
+argument?
 
-Note that "rsync and other things"  do  not  hard-code  any  specific
-names.
+I have enumerated what I believe to be the pros and cons a few times, and I 
+prefer using read_ecc with NULL because this is unambiguous.
 
-My vote is clear: this patch should not be accepted as is.
+However this is a taste issue and to me having a solution is better than 
+having an argument!
 
-Best regards,
-
-Wolfgang Denk
-
--- 
-Software Engineering:  Embedded and Realtime Systems,  Embedded Linux
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-But it's real. And if it's real it can be affected ... we may not  be
-able  to break it, but, I'll bet you credits to Navy Beans we can put
-a dent in it.
-	-- deSalle, "Catspaw", stardate 3018.2
+-- CHarles
