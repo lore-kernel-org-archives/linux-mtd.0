@@ -1,18 +1,24 @@
-Received: from dmzraw5.extranet.tce.com ([157.254.234.142])
+Received: from zproxy.gmail.com ([64.233.162.202])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eh806-0002QS-Fz
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 11:06:50 -0500
-content-class: urn:content-classes:message
+	id 1Eh8xm-0003gI-Je
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 12:08:24 -0500
+Received: by zproxy.gmail.com with SMTP id i11so1326825nzi
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 Nov 2005 09:08:17 -0800 (PST)
+Message-ID: <625fc13d0511290908h528df3e5j7a81163e7854ee1a@mail.gmail.com>
+Date: Tue, 29 Nov 2005 11:08:16 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Michael Richardson <mcr@sandelman.ottawa.on.ca>
+In-Reply-To: <v0sltfeb45.fsf@marajade.sandelman.ca>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 29 Nov 2005 16:37:12 +0100
-Message-ID: <1CFEB358338412458B21FAA0D78FE86D042A2EF6@rennsmail02.eu.thmulti.com>
-From: "Fillod Stephane" <stephane.fillod@thomson.net>
-To: "David Jander" <david.jander@protonic.nl>
-Cc: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
-Subject: RE: Which way to store log in flash on mpc8xx?
+Content-Disposition: inline
+References: <v0mzjofaup.fsf@marajade.sandelman.ca>
+	<20051129100937.AF133353F54@atlas.denx.de>
+	<v0sltfeb45.fsf@marajade.sandelman.ca>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH 1/2] --cvs-exclude for mkfs.jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,119 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Jander wrote:
-[..]
->After getting some advice from peoble at mtd-list, I switched to 2.6.14
-for=20
->our new developments, and jffs2 seems a lot more stable now. I can only
+On 11/29/05, Michael Richardson <mcr@sandelman.ottawa.on.ca> wrote:
+>
+> >>>>> "Wolfgang" =3D=3D Wolfgang Denk <wd@denx.de> writes:
+>     Wolfgang> In message <v0mzjofaup.fsf@marajade.sandelman.ca> you wrote=
+:
+>     >> This adds an option to ignore CVS directories.
+>
+>     Wolfgang> This doesn't make sense to me. You can and should use "cvs
+>     Wolfgang> export" to create the directory trees you want to package.
+>
+>   yes, one could do that. I chose not to.
+>   It isn't like I forced this option to be on.
+>
+>   cvs export requires that I actually check my changes in before I can te=
+st
+> them, which causes a lot of needless churn.
+>   It may also mean that developers in my team will check in debug stateme=
+nts
+> and forget to remove them.
+>
+>     Wolfgang> You use CVS, others use GIT, or Subversion, or ClearCase, o=
+r
+>     Wolfgang> Monotone, or darcs, or ... - it would not be really practic=
+al
+>     Wolfgang> to add special rules for everybody's favorite tool.
+>
+>   It would very much be practical to do this.
+>   I'd rather have a more general --exclude.
+>
+>   Of course, you argue for removing equivalent options from rsync and oth=
+er
+> things.  Accept the patch or not.
 
->recommend you to consider switching. Besides consuming a little more
-RAM and=20
->Flash, 2.6.14 is miles ahead in terms of almost anything else, plus
-it's a=20
->bit faster on 8xx than 2.4.25!!
+I believe the answer is "not".
 
-Strange. I heard a different song here[1], but haven't checked the fact=20
-myself. From what I've seen, mtd/jffs2 is faster on 2.6.x than 2.4.x.
-
-[1] http://www.denx.de/wiki/Know/Linux24vs26
-
->I have to warn you though, that it still seems not to be as rock-solid
-as one=20
->might want for an embedded system: We have a stress test running for a
-few=20
->weeks now simulating power-failures during writes to files on jffs2,
-and mtd=20
->has some occasional hick-ups. Those hick-ups seem to be far less
-serious than=20
->gc.c crashing, but we will have to take them into account in our
-application.
->This is the situation: Sometimes the test application crashes giving a=20
->write-error on the mtd device, preceded by an error message from the=20
->mtd-driver (and jffs2, but the problem seems to come from mtd). The
-error=20
->message is like "MTD do_write_buffer(): software timeout", which
-normally=20
-
-See the patch past my sig. It changes the timeout from couple ms to 1
-second.
-RTAI & Xenomai users should need it. IMHO, the WANT_SHORT_WTIMEOUT
-embraced code should simply go away, or get a decent explanation.
-
->means a flash programming error, most probably due to sector beeing
-worn out,=20
->but I don't think that is the case, since those problems began
-appearing=20
->quite early and went away all by them selves. Flash doesn't magically
-"fix"=20
-itself over time, does it?
->Maybe it's a problem in the AMD flash driver (our device is a Spansion=20
-Mirror-bit S29GL256M11)
-
-Regards,
---=20
-Stephane
-
-
---- drivers/mtd/chips/cfi_cmdset_0002.c	12 Sep 2005 09:27:29 -0000
-+++ drivers/mtd/chips/cfi_cmdset_0002.c	29 Nov 2005 15:30:30 -0000
-@@ -935,6 +935,12 @@
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	unsigned long timeo =3D jiffies + HZ;
- 	/*
-+	 * Hardware errors should be infrequent,
-+	 * so a short timeout is of no benefit.
-+	 * And it just hurts with RTAI.
-+	 */
-+#ifdef WANT_SHORT_WTIMEOUT
-+	/*
- 	 * We use a 1ms + 1 jiffies generic timeout for writes (most
-devices
- 	 * have a max write time of a few hundreds usec). However, we
-should
- 	 * use the maximum timeout value given by the chip at probe time
-@@ -944,6 +950,7 @@
- 	 * timeout of 0 jiffies if HZ is smaller than 1000.
- 	 */
- 	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+#endif
- 	int ret =3D 0;
- 	map_word oldd;
- 	int retry_cnt =3D 0;
-@@ -987,8 +994,10 @@
- 				adr, map_bankwidth(map),
- 				chip->word_write_time);
-=20
-+#ifdef WANT_SHORT_WTIMEOUT
- 	/* See comment above for timeout value. */
- 	timeo =3D jiffies + uWriteTimeout;=20
-+#endif
- 	for (;;) {
- 		if (chip->state !=3D FL_WRITING) {
- 			/* Someone's suspended the write. Sleep */
-@@ -1189,8 +1198,15 @@
- {
- 	struct cfi_private *cfi =3D map->fldrv_priv;
- 	unsigned long timeo =3D jiffies + HZ;
-+	/*
-+	 * Hardware errors should be infrequent,
-+	 * so a short timeout is of no benefit.
-+	 * And it just hurts with RTAI.
-+	 */
-+#ifdef WANT_SHORT_WTIMEOUT
- 	/* see comments in do_write_oneword() regarding uWriteTimeo. */
- 	unsigned long uWriteTimeout =3D ( HZ / 1000 ) + 1;
-+#endif
- 	int ret =3D -EIO;
- 	unsigned long cmd_adr;
- 	int z, words;
-@@ -1248,7 +1264,9 @@
- 				adr, map_bankwidth(map),
- 				chip->word_write_time);
-=20
-+#ifdef WANT_SHORT_WTIMEOUT
- 	timeo =3D jiffies + uWriteTimeout;=20
-+#endif
- 	=09
- 	for (;;) {
- 		if (chip->state !=3D FL_WRITING) {
+josh
