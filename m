@@ -1,30 +1,19 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from smtprelay04.ispgateway.de ([80.67.18.16])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eh9n5-0004gu-EH
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 13:01:23 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1Eh9mv-0002Vo-26
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 19:01:09 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
-	M2005112919010831893
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Nov 2005 19:01:08 +0100
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1Eh9mu-0002Yk-V3
-	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 19:01:08 +0100
-Received: from [160.114.36.214] (kpax.inf.u-szeged.hu [160.114.36.214])
-	by mail.inf.u-szeged.hu (Postfix) with ESMTP id DBC5723969
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Nov 2005 19:01:08 +0100 (CET)
-Message-ID: <438C9770.4070502@inf.u-szeged.hu>
-Date: Tue, 29 Nov 2005 19:01:20 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1Eh9tF-0004vf-Rq
+	for linux-mtd@lists.infradead.org; Tue, 29 Nov 2005 13:07:54 -0500
+Message-ID: <438C98EA.70105@gmail.com>
+Date: Tue, 29 Nov 2005 19:07:38 +0100
+From: Bernhard Priewasser <priewasser@gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
+To: Ferenc Havasi <havasi@inf.u-szeged.hu>,
+	MTD mailing list <linux-mtd@lists.infradead.org>
+References: <438C7B0C.5040001@gmail.com> <438C94BD.8020300@inf.u-szeged.hu>
+In-Reply-To: <438C94BD.8020300@inf.u-szeged.hu>
 Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: JFFS2 documentation
+Cc: 
+Subject: Re: NAND write buffering
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,16 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Hi all,
 
-I would like to introduce our other work. It is a documentation, a JFFS2 
-analysis. Not a complete, absolutely correct one and have a little bit 
-bad English, but I think it can be useful for developers who would like 
-to understand JFFS2.
+I just got the cited mail from Ferenc. I think it is useful for other 
+people too, that's why it is posted to the list.
 
-You can access it our homepage:
+Is there anything wrong with our assumptions?
 
-http://www.inf.u-szeged.hu/jffs2/documentation.php
+>> JFFS2 is claimed to be powerfail-safe. That's true as far it will 
+>> _always_ mount, nodes are CRC-protected and scanned at Mount/GC.
+>> But what about write buffering on NAND? Doesn't this break lots of the 
+>> powerfailsafe-efforts? All the data in the writebuffer will be lost. 
+>> Assuming we are updating a logfile with small data portions. The 
+>> portions accumulate in wbuf, waiting to reach c->wbuf_pagesize so that 
+>> the buffer is written to flash. Powerfail: all these small updates can 
+>> be lost. Hm...
+> 
+> I think you are right. But anyway, if you call "sync" all data will be 
+> flushed. Unfortunatelly NAND can be written only by page, so the end of 
+> the wbuf will be filled a padding node. It is a little flash wasting, 
+> but the data will be written out immediatelly.
+> 
+> Bye,
+> Ferenc
 
-Regards,
-Ferenc
+Thanks,
+Bernhard
