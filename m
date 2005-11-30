@@ -1,23 +1,24 @@
-Received: from mail.fh-wedel.de ([213.39.232.198] helo=moskovskaya.fh-wedel.de)
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EhNwf-00025Q-00
-	for linux-mtd@lists.infradead.org; Wed, 30 Nov 2005 09:08:09 +0000
-Date: Wed, 30 Nov 2005 10:08:10 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Bernhard Priewasser <priewasser@gmail.com>
-Message-ID: <20051130090810.GA25101@wohnheim.fh-wedel.de>
-References: <438C7B0C.5040001@gmail.com> <438C94BD.8020300@inf.u-szeged.hu>
-	<438C98EA.70105@gmail.com>
-	<625fc13d0511291107t3495a41byae11ba1832657291@mail.gmail.com>
-	<438CA82F.50600@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Received: from [213.151.107.2] (helo=aplicaciones)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EhONV-00016P-GE
+	for linux-mtd@lists.infradead.org; Wed, 30 Nov 2005 04:35:57 -0500
+Received: from aplicaciones (localhost [127.0.0.1])
+	by aplicaciones (Postfix) with SMTP id 0413F2E29A9
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 30 Nov 2005 10:09:02 +0100 (CET)
+Received: from davizin (unknown [213.151.107.2])
+	by aplicaciones (Postfix) with SMTP id EB54A2E29A6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 30 Nov 2005 10:09:01 +0100 (CET)
+Message-ID: <001e01c5f58d$544a5a80$1401a8c0@davizin>
+From: "David Huelves" <david.huelves@negone.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Wed, 30 Nov 2005 10:06:20 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="Windows-1252"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <438CA82F.50600@gmail.com>
-Cc: Josh Boyer <jwboyer@gmail.com>,
-	MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: NAND write buffering
+Subject: mounting jffs2 image on nand.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 November 2005 20:12:47 +0100, Bernhard Priewasser wrote:
-> 
-> Hehe... I'd say: rather use the flash unefficiently (sizeof(header) >> 
-> sizueof(data)) than loose data!
+NégoneDear,
+    We are trying to build a jffs2 image to mount it on a /dev/mtdblock?
+partition using kernel 2.6.10, we have compile kernel to support it, the
+boot params are:
+ "console=ttyS0,115200 root=/dev/mtdblock0 rootfstype=jffs2", we have create
+the image using mkfs.jffs2 on a i386 host computer (mkfs.jffs2 -d
+<root_dir> -e 16384 <image file>) our target is PXA255 and ST NAND512W3A. We
+have write it to the device using U-Boot in this way: "nand write.jffs2
+<source addr> <dest address of device> <size of image>". We have use nand
+write.jffs2 to avoid bad blocks (but in this mtdblock partition there is no
+one).
+    When we reboot it complains with "Kernel PANIC" trying to mount the
+device.
+    If we do such with an ext3 everything works fine.
+We have also record the image from inside another NAND partition using
+mtd-utils crosscompiled for arm and it has also failed.
 
-But remember to do your own math.  Once your flash usage is
-inefficient enough, you'll simply burn through the vendor-guaranteed
-erase cycles and permanently lose data. ;)
+any help would be apreciated.
 
-Jörn
-
--- 
-If you're willing to restrict the flexibility of your approach,
-you can almost always do something better.
--- John Carmack
+regards
