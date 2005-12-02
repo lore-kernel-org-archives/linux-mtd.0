@@ -1,25 +1,28 @@
-Received: from smtp6.wanadoo.fr ([193.252.22.25])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EiCwC-0001nv-AL
-	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2005 10:35:09 -0500
-Received: from me-wanadoo.net (localhost [127.0.0.1])
-	by mwinf0607.wanadoo.fr (SMTP Server) with ESMTP id F0BE41C00202
+	id 1EiG0z-0004Ol-V2
+	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2005 13:52:15 -0500
+Received: from mailserver.berlin.imc-berlin.de
+	(mailserver.berlin.imc-berlin.de [10.0.0.19])
+	by mail.imc-berlin.de (Postfix) with ESMTP id 35FE42EFDF
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  2 Dec 2005 16:35:00 +0100 (CET)
-Received: from genevrier (ARennes-251-1-35-231.w81-250.abo.wanadoo.fr
-	[81.250.198.231])
-	by mwinf0607.wanadoo.fr (SMTP Server) with ESMTP id A7C7C1C00219
+	Fri,  2 Dec 2005 19:52:10 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 2BDCC125D4
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  2 Dec 2005 16:35:00 +0100 (CET)
-From: "Pascal Fifre" <pascal.fifre@cleode.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 2 Dec 2005 16:34:59 +0100
-Message-ID: <004d01c5f755$f50edd00$1856a8c0@cleode.local>
+	Fri,  2 Dec 2005 19:52:10 +0100 (CET)
+Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
+	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 5E91D124B0
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  2 Dec 2005 19:52:09 +0100 (CET)
+Message-ID: <439097CD.7000901@imc-berlin.de>
+Date: Fri, 02 Dec 2005 19:51:57 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Chekfs and big-endian
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Subject: When to call cfi_amdstd_suspend() ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,26 +32,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I use a JFFS2 file system on a NAND Flash with a 2.4.25 kernel. It works
-fine for now.
+Hi all,
 
-But I want to run the checkfs utility against the power-fail problem.
+I implemented my MTD board driver as a platform device with support for
+suspend/resume.
 
-=20
+Upon suspend-to-ram its ->suspend() funktion is called three times for
+levels SUSPEND_DISABLE, SUSPEND_SAVE_STATE and SUSPEND_POWER_DOWN.
 
-My system is big-endian. How can I fix the checkfs utility to run =
-checkfs on
-my system ?
+In which level should I call the MTD suspend function (i.e.
+cfi_amdstd_suspend() in my case) ?
+What happens if I called it in every level as it is done in pxa2xx-flash.c?
 
-=20
+Similar situation in the resume path.
 
-Thanks
+Thanks,
 
-
-Pascal FIFRE
-Responsable Syst=E8mes Embarqu=E9s
-CLEODE
-5, rue de Broglie
-22300 LANNION
-Tel : 02 96 48 68 18
-http://www.cleode.com
+Steven
