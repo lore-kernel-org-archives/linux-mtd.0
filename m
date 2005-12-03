@@ -1,19 +1,18 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EiJ27-00074V-Aq
-	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2005 17:05:37 -0500
-Message-ID: <4390C552.60907@mvista.com>
-Date: Fri, 02 Dec 2005 14:06:10 -0800
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Vitaly Wool <vwool@ru.mvista.com>
-References: <438FF22A.2060203@ru.mvista.com>
-In-Reply-To: <438FF22A.2060203@ru.mvista.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
- rid of MEMGETOOBSEL/MEMSETOOBSEL
+Received: from [198.161.247.241] (helo=quartz.orcorp.ca)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EiPEU-0003ZA-P8
+	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2005 23:42:52 -0500
+Received: from jgg by quartz.orcorp.ca with local (Exim 4.50)
+	id 1EiOhJ-0000W1-QX
+	for linux-mtd@lists.infradead.org; Fri, 02 Dec 2005 21:08:29 -0700
+Date: Fri, 2 Dec 2005 21:08:29 -0700
+From: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051203040829.GA1929@obsidianresearch.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [PATCH 2.6.15-rc4] mtd: Improvements to plat-ram map
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,54 +22,154 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Vitaly, my comments...
+This enhances plat-ram to take a map_probes argument in the platform_data
+structure which allow plat-ram to support any direct-mapped device that
+MTD supports.
 
-> +++ util/nanddump.c	2 Dec 2005 06:54:11 -0000
-> @@ -163,6 +163,7 @@
->  	struct mtd_oob_buf oob = {0, 16, oobbuf};
->  	mtd_info_t meminfo;
->  	char pretty_buf[80];
-> +	uint32_t oobavail;
->  
->   	process_options(argc, argv);
->  
-> @@ -179,6 +180,13 @@
->  		exit (1);
->  	}
->  
-> +	if (ioctl(fd, MEMGETOOBAVAIL, &oobavail) != 0) {
-> +		perror("unable to get NAND oobavail");
-> +		close(fd);
-> +		exit(1);
-> +	}
+A few items are also fixed:
+- devinit/devexit are used to mark the driver probe/remove functions
+  so they can be discarded if hotplug is disabled
+- Don't panic if probes is 0
+- Actually use the partition list that is passed in
 
-How about fall back to all 16/64/etc. avail?
+This driver isn't used in tree right now, but the general mechanism
+it supports via the driver model could replace code in the simpler
+map drivers with a few calls into platform_*.
 
-For debugging purposes it can be nice to see the raw OOB, in case that 
-can be shoehorned in here somehow.
+Signed-off-by: Jason Gunthorpe <jgunthorpe@obsidianresearch.com>
 
-> +++ util/nandwrite.c	2 Dec 2005 06:54:11 -0000
+---
 
-> -	       "  -j, --jffs2  	 	force jffs2 oob layout (legacy support)\n"
-> -	       "  -y, --yaffs  	 	force yaffs oob layout (legacy support)\n"
+ drivers/mtd/maps/plat-ram.c  |   46 ++++++++++++++++++++++++++----------------
+ include/linux/mtd/plat-ram.h |    5 +++--
+ 2 files changed, 31 insertions(+), 20 deletions(-)
 
-Again, it may be good to keep a legacy mode around during the transition 
-period.
-
->  		if (writeoob) {
->  			/* Read OOB data from input file, exit on failure */
-> -			if ((cnt = read(ifd, oobreadbuf, meminfo.oobsize)) != meminfo.oobsize) {
-> +			if ((cnt = read(ifd, oobreadbuf, oobavail)) != oobavail) {
-
-This requires the input file to be tailored to the oobavail of a 
-specific destination device, reducing the benefit of autoplacement.  It 
-may be best to continue to pad input files oob data to the full oobsize, 
-much like the data portion is handled.
-
-> +				memcpy(oobbuf, oobreadbuf, oobavail);
-
-No need for oobreadbuf and copy if no OOB layout processing done anymore?
-
-
--- 
-Todd
+applies-to: cec49fea2095ec77123684854ed519f01cf890da
+53f385a7d61739b1ec209ffddb79f39555bd878c
+diff --git a/drivers/mtd/maps/plat-ram.c b/drivers/mtd/maps/plat-ram.c
+index 5d3c754..b2aa4aa 100644
+--- a/drivers/mtd/maps/plat-ram.c
++++ b/drivers/mtd/maps/plat-ram.c
+@@ -47,6 +47,7 @@ struct platram_info {
+ 	struct mtd_info		*mtd;
+ 	struct map_info		 map;
+ 	struct mtd_partition	*partitions;
++	int                      free_partitions;
+ 	struct resource		*area;
+ 	struct platdata_mtd_ram	*pdata;
+ };
+@@ -83,7 +84,7 @@ static inline void platram_setrw(struct 
+  * called to remove the device from the driver's control
+ */
+ 
+-static int platram_remove(struct platform_device *pdev)
++static int __devexit platram_remove(struct platform_device *pdev)
+ {
+ 	struct platram_info *info = to_platram_info(pdev);
+ 
+@@ -98,7 +99,8 @@ static int platram_remove(struct platfor
+ #ifdef CONFIG_MTD_PARTITIONS
+ 		if (info->partitions) {
+ 			del_mtd_partitions(info->mtd);
+-			kfree(info->partitions);
++			if (info->free_partitions)
++				kfree(info->partitions);
+ 		}
+ #endif
+ 		del_mtd_device(info->mtd);
+@@ -130,7 +132,7 @@ static int platram_remove(struct platfor
+  * driver is found.
+ */
+ 
+-static int platram_probe(struct platform_device *pdev)
++static int __devinit platram_probe(struct platform_device *pdev)
+ {
+ 	struct platdata_mtd_ram	*pdata;
+ 	struct platram_info *info;
+@@ -176,7 +178,7 @@ static int platram_probe(struct platform
+ 
+ 	info->map.phys = res->start;
+ 	info->map.size = (res->end - res->start) + 1;
+-	info->map.name = pdata->mapname != NULL ? pdata->mapname : (char *)pdev->name;
++	info->map.name = pdata->mapname != NULL ? (char *)pdata->mapname : (char *)pdev->name;
+ 	info->map.bankwidth = pdata->bankwidth;
+ 
+ 	/* register our usage of the memory area */
+@@ -205,7 +207,13 @@ static int platram_probe(struct platform
+ 
+ 	/* probe for the right mtd map driver */
+ 
+-	info->mtd = do_map_probe("map_ram" , &info->map);
++	if (pdata->map_probes != 0) {
++		const char **map_probes = pdata->map_probes;
++		for(; !info->mtd && *map_probes; map_probes++)
++			info->mtd = do_map_probe(*map_probes , &info->map);
++	}
++	else
++		info->mtd = do_map_probe("map_ram", &info->map);
+ 	if (info->mtd == NULL) {
+ 		dev_err(&pdev->dev, "failed to probe for map_ram\n");
+ 		err = -ENOMEM;
+@@ -218,21 +226,23 @@ static int platram_probe(struct platform
+ 
+ 	/* check to see if there are any available partitions, or wether
+ 	 * to add this device whole */
+-
+ #ifdef CONFIG_MTD_PARTITIONS
+-	if (pdata->nr_partitions > 0) {
+-		const char **probes = { NULL };
+-
+-		if (pdata->probes)
+-			probes = (const char **)pdata->probes;
+-
+-		err = parse_mtd_partitions(info->mtd, probes,
+-					   &info->partitions, 0);
+-		if (err > 0) {
+-			err = add_mtd_partitions(info->mtd, info->partitions,
+-						 err);
++	if (pdata->nr_partitions == 0) {
++		if (pdata->probes) {
++			err = parse_mtd_partitions(info->mtd,
++						   pdata->probes,
++						   &info->partitions, 0);
++			info->free_partitions = 1;
++			if (err > 0)
++				add_mtd_partitions(info->mtd, info->partitions,
++						   err);
+ 		}
+ 	}
++	else {
++		add_mtd_partitions(info->mtd,pdata->partitions,
++				   pdata->nr_partitions);
++	}
++
+ #endif /* CONFIG_MTD_PARTITIONS */
+ 
+ 	if (add_mtd_device(info->mtd)) {
+@@ -253,7 +263,7 @@ static int platram_probe(struct platform
+ 
+ static struct platform_driver platram_driver = {
+ 	.probe		= platram_probe,
+-	.remove		= platram_remove,
++	.remove		= __devexit_p(platram_remove),
+ 	.driver		= {
+ 		.name	= "mtd-ram",
+ 		.owner	= THIS_MODULE,
+diff --git a/include/linux/mtd/plat-ram.h b/include/linux/mtd/plat-ram.h
+index 2332eda..2b87684 100644
+--- a/include/linux/mtd/plat-ram.h
++++ b/include/linux/mtd/plat-ram.h
+@@ -21,8 +21,9 @@
+ #define PLATRAM_RW (1)
+ 
+ struct platdata_mtd_ram {
+-	char			*mapname;
+-	char		       **probes;
++	const char		*mapname;
++	const char	       **map_probes;
++	const char	       **probes;
+ 	struct mtd_partition	*partitions;
+ 	int			 nr_partitions;
+ 	int			 bankwidth;
+---
+0.99.9k
