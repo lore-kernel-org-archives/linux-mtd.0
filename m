@@ -1,16 +1,21 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EiubM-000382-NB
-	for linux-mtd@lists.infradead.org; Sun, 04 Dec 2005 09:12:31 -0500
-Message-ID: <4392F471.3060704@yandex.ru>
-Date: Sun, 04 Dec 2005 16:51:45 +0300
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from wproxy.gmail.com ([64.233.184.200])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ej6YQ-0003lH-QB
+	for linux-mtd@lists.infradead.org; Sun, 04 Dec 2005 21:58:17 -0500
+Received: by wproxy.gmail.com with SMTP id 71so530188wra
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 04 Dec 2005 18:58:10 -0800 (PST)
+Message-ID: <29f916510512041858j5939e0b2te9d10664c3029dd8@mail.gmail.com>
+Date: Sun, 4 Dec 2005 21:58:10 -0500
+From: alfred hitch <alfred.hitch@gmail.com>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+In-Reply-To: <4392F471.3060704@yandex.ru>
 MIME-Version: 1.0
-To: alfred hitch <alfred.hitch@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <29f916510512012309y59af9f3au455c5323f8ca230e@mail.gmail.com>
-In-Reply-To: <29f916510512012309y59af9f3au455c5323f8ca230e@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+	<4392F471.3060704@yandex.ru>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: file corruption with mtd / jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,20 +27,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-alfred hitch wrote:
-> I would like some inputs, if someone can give some pointer / idea.
-> 
-> We are running jffs2 based partitions on linux 2.4 snapgear distro boards.
-> partitions were mounted read-write.
-> 
-> We are observing that after running for 3-5 months, now boards have
-> started giving corruped executables !
-> We are getting many boards back which have a corrupted binary on flash itself.
-> 
-Hmm...
-Which JFFS2 snapshot and what kernel do you use?
+Hi,
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+we are using snapgear linux distro .. arm linux port kernel 2.4.25-x
+jffs2 version I dont know where to look ?
+
+Regards,
+Alfred
+
+
+On 12/4/05, Artem B. Bityutskiy <dedekind@yandex.ru> wrote:
+> alfred hitch wrote:
+> > I would like some inputs, if someone can give some pointer / idea.
+> >
+> > We are running jffs2 based partitions on linux 2.4 snapgear distro boar=
+ds.
+> > partitions were mounted read-write.
+> >
+> > We are observing that after running for 3-5 months, now boards have
+> > started giving corruped executables !
+> > We are getting many boards back which have a corrupted binary on flash =
+itself.
+> >
+> Hmm...
+> Which JFFS2 snapshot and what kernel do you use?
+>
+> --
+> Best Regards,
+> Artem B. Bityutskiy,
+> St.-Petersburg, Russia.
+>
