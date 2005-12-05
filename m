@@ -1,22 +1,40 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EjGCa-0003Sz-34
-	for linux-mtd@lists.infradead.org; Mon, 05 Dec 2005 08:16:26 -0500
-Received: from mailhub.cdac.in ([196.1.109.254])
-	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005120518451315485
-	for <linux-mtd@lists.infradead.org>; Mon, 05 Dec 2005 18:45:13 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id jB5DGEJL032572
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 18:46:14 +0530
-Received: from cdac.in (localhost [127.0.0.1])
-	by mailhub.cdac.in (8.13.4/8.13.4) with SMTP id jB5DGDaY032565
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 18:46:13 +0530
-Date: Mon, 5 Dec 2005 18:46:13 +0530 (IST)
-To: <linux-mtd@lists.infradead.org>
-From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1133788573.93553@cdac.in>
-Subject: mtdpart.c
+Received: from over.ny.us.ibm.com ([32.97.182.150] helo=pokfb.esmtp.ibm.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EjHth-0005x9-Lt
+	for linux-mtd@lists.infradead.org; Mon, 05 Dec 2005 15:04:59 +0000
+Received: from e33.co.us.ibm.com (e33.boulder.ibm.com [9.17.249.43])
+	by pokfb.esmtp.ibm.com (8.12.11/8.12.11) with ESMTP id jB5F4f1o024841
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 10:04:42 -0500
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.12.11/8.12.11) with ESMTP id jB5F4JKY027604
+	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 10:04:19 -0500
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.12.10/NCO/VERS6.8) with ESMTP id
+	jB5F5pIt096486
+	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 08:05:51 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11/8.13.3) with ESMTP id
+	jB5F4I1m011203
+	for <linux-mtd@lists.infradead.org>; Mon, 5 Dec 2005 08:04:18 -0700
+From: Josh Boyer <jdub@us.ibm.com>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <1131030206.3435.1.camel@windu.rchland.ibm.com>
+References: <1130524729.3775.39.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510281717020.5288@localhost.localdomain>
+	<1130536220.3901.5.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0510281800220.5288@localhost.localdomain>
+	<1130946658.4348.26.camel@windu.rchland.ibm.com>
+	<Pine.LNX.4.64.0511021116090.12873@localhost.localdomain>
+	<1131030206.3435.1.camel@windu.rchland.ibm.com>
+Content-Type: text/plain
+Date: Mon, 05 Dec 2005 09:04:21 -0600
+Message-Id: <1133795061.5082.1.camel@windu.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Write performance issue with cfi_cmdset_0001.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +44,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 2005-11-03 at 09:03 -0600, Josh Boyer wrote:
+> On Wed, 2005-11-02 at 11:17 -0500, Nicolas Pitre wrote:
+> > On Wed, 2 Nov 2005, Josh Boyer wrote:
+> > 
+> > > On Fri, 2005-10-28 at 18:04 -0400, Nicolas Pitre wrote:
+> > > > 
+> > > > But current code has almost same behavior:
+> > > 
+> > > > And therefore I wonder if what you saw could occur with that version as 
+> > > > well.
+> > > 
+> > > Ok, here is a pseduo-description of the problem.  Sorry for the delay in
+> > > my reply, I've been trying to verify that it still exists in 2.6.  The
+> > > answer is "I think so" ;).
+> > 
+> > Your explanation makes sense.
+> > 
+> > Could you prepare a patch with it and a signed-off line?
+> 
+> I have no problems doing this (obviously I have the patch already :) ),
+> but I need to clear it with my employer for legal reasons.  I'll see if
+> I can expedite the process some.
 
-hi all,
+Expediting takes a long time it seems.  Here's the patch:
 
-I had a trivial doubt about the functioning of mtdpart.c.
+http://marc.theaimsgroup.com/?l=linux-kernel&m=113355738408676&w=2
 
-First of all if we create the mtd partitions from the comandline (using
-mtdpart=...) how can we check whether the partitions heve been created? 
-
-I am using block2mtd for mounting JFFS2 on compact flash. whether i need
-to create different partitions using fdisk and then emulate each using
-block2mtd or i should use mtdpart for making partitions on a single mtd
-block created using block2mtd.
-
-which one is the better option?
-
--- 
-Thanks & Regards
-
-Nikhil Shirodkar
-Project Engineer
-NISG, CDAC
+josh
