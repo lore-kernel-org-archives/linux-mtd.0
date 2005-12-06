@@ -1,20 +1,23 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EjaB0-0006I5-LW
-	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2005 05:36:05 -0500
-Message-ID: <439569AC.8080409@ru.mvista.com>
-Date: Tue, 06 Dec 2005 13:36:28 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: tglx@linutronix.de
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EjaJf-0006Zu-To
+	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2005 05:45:01 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Vitaly Wool <vwool@ru.mvista.com>
+In-Reply-To: <439569AC.8080409@ru.mvista.com>
 References: <438FF22A.2060203@ru.mvista.com>
 	<1133865021.16302.37.camel@tglx.tec.linutronix.de>
-In-Reply-To: <1133865021.16302.37.camel@tglx.tec.linutronix.de>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+	<439569AC.8080409@ru.mvista.com>
+Content-Type: text/plain
+Date: Tue, 06 Dec 2005 11:51:01 +0100
+Message-Id: <1133866261.16302.49.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
- rid of MEMGETOOBSEL/MEMSETOOBSEL
+	rid of MEMGETOOBSEL/MEMSETOOBSEL
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+On Tue, 2005-12-06 at 13:36 +0300, Vitaly Wool wrote:
+> >2. Your current approach prevents me to
+> >- dump the raw flash content including OOB data
+> >- write a nand image with given oob data
+> >
+> >This is essential for troubleshooting and must still be possible
+> >somehow.
+> >
+> Lemme disagree with you here. Raw OOB content-related stuff is not IMHO 
+> the thing to debug from userland.
+> Suggest prinitng out the raw OOB contents for MTD_DEBUG_LEVEL3 instead.
 
->On Fri, 2005-12-02 at 10:05 +0300, Vitaly Wool wrote:
->  
->
->>Hi,
->>this patch reorganizes the MTD utls to
->>- not use MEMGETOOBSEL/MEMSETOOBSEL ioctls as they're planned for 
->>removal and anyway not needed
->>- use MEMGETOOBAVAIL ioctl to get the number of available OOB bytes and 
->>read/write OOB accordingly
->>
->>Any input is most welcome.
->>    
->>
->
->1. Rendering the utils unusable for older kernels is wrong.
->
->Its simple to handle this in the utils depending on the functionality
->which is exposed by the kernel.
->  
->
-Makes sense to me.
+Uuurg. Do you really want do analyse 20MB crappy formatted printk
+output?
 
->
->2. Your current approach prevents me to
->- dump the raw flash content including OOB data
->- write a nand image with given oob data
->
->This is essential for troubleshooting and must still be possible
->somehow.
->
->  
->
-Lemme disagree with you here. Raw OOB content-related stuff is not IMHO 
-the thing to debug from userland.
-Suggest prinitng out the raw OOB contents for MTD_DEBUG_LEVEL3 instead.
+We want output from live systems without requesting the user to
+recompile the kernel and setup capturing scenarios. 
 
-Vitaly
+We tracked down problems in the past by asking for a simple
+
+nanddump /dev/mtdX >file.dmp
+
+and I really want to keep it that way. Its simple, proven and people can
+handle it.
+
+	tglx
