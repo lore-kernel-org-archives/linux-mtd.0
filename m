@@ -1,22 +1,17 @@
-Received: from wproxy.gmail.com ([64.233.184.205])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EjpGE-0002y5-5I
-	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2005 21:42:31 -0500
-Received: by wproxy.gmail.com with SMTP id 67so604954wri
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Dec 2005 18:42:17 -0800 (PST)
-Message-ID: <29f916510512061842r3bfe6cbj7cd251bea8f5d39e@mail.gmail.com>
-Date: Tue, 6 Dec 2005 21:42:17 -0500
-From: alfred hitch <alfred.hitch@gmail.com>
-To: Vahid Fereydunkolahi <fereydunk@yahoo.com>
-In-Reply-To: <20051207004527.26888.qmail@web51006.mail.yahoo.com>
+Received: from web51014.mail.yahoo.com ([206.190.39.79])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EjpcD-0003UP-TD
+	for linux-mtd@lists.infradead.org; Tue, 06 Dec 2005 22:05:14 -0500
+Message-ID: <20051207025829.96686.qmail@web51014.mail.yahoo.com>
+Date: Tue, 6 Dec 2005 18:58:29 -0800 (PST)
+From: Vahid Fereydunkolahi <fereydunk@yahoo.com>
+To: alfred hitch <alfred.hitch@gmail.com>
+In-Reply-To: <29f916510512061842r3bfe6cbj7cd251bea8f5d39e@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=WINDOWS-1252
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <20051207004527.26888.qmail@web51006.mail.yahoo.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: file corruption with mtd / jffs2
+Subject: file corruption with mtd / jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,42 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgVmFoaWQsCgp5ZWEgc29tZXRoaW5nIHNpbWlsYXIuCk15IGRpZmYgdGhvdWdoIG9uIGJpbmFy
-aWVzIGRvZXNudCBuZWNlc3NhcmlsbHkgc2hvd3MgYW55IHNwZWNpZmljCmxvY2F0aW9uIHdoZXJl
-IGl0IGlzIGNvcnVwdGVkIChvciB3aGljaCBvbmUgYWxzbyBmb3IgdGhhdCBtYXR0ZXIpLgpJIGNh
-biBzZWUgc29tZSBieXRlcyAocmFuZ2luZyBmcm9tIDIwIGJ5dGUgZGlmZiBJIHNlZSBvciBldmVu
-IHVwdG8gMzAwIGJ5dGVzKS4KQnV0LCB3ZSBhcmUgYmVnaW5uaW5nIHRvIHNlZSB0aGlzIG1vcmUg
-b2Z0ZW4gaW4gMiBjYXNlczoKMSkgSWYgdGhlcmUgaXMgYSBjcmFzaCAocmVhZCBzZWcuIGZhdWx0
-IC8ga2VybmVsIHBhbmljIGJvdGggICkgLi4gdGhlbgp0aGUgcHJvY2VzcyBpbiBleGVjdXRpb24g
-bGFzdCAvIG5lYXIgYWJvdXQgYXJlIHRoZSB2aWN0aW1zLiBUaGlzIGlzCmhhcHBlbmluZyBtb3Jl
-IGFjcm9zcyByZXNldHMgYWxzbywgd2UgbGVmdCAxMCBib2FyZHMgb24gd2Vla2VuZCwgZG9pbmcK
-bm90aGluZyBidXQgcmVzZXQgZXZlcnkgMyBtaW51dGVzIGFuZCAxIG9mIHRoZW0gd2VudCBiYWQu
-CgoyKSBJZiB3ZSBtYWRlIHN5c3RlbSByZWFkIG9ubHkgcGFydGl0aW9uIG1vdW50ZWQsIHNvIGZh
-ciB3ZSBoYXZlbnQKb2JzZXJ2ZWQgYW55IG9uIGRpc2sgaW1hZ2UgY29ycnVwdGlvbiAob2J2aW9z
-dWx5ID8pIC4uIGJ1dCBvbmNlIEkgaGF2ZQpwZXJzb25hbGx5IGFsc28gZmFjZWQgYSBpbWFnZSBp
-biBtZW1vcnkgYmVpbmcgYmFkLCBhbmQgSSB3YXNudCBhYmxlIHRvCmRvIGFueXRoaW5nIHdpdGgg
-dGhhdCBiaW5hcnkgdGlsbCBJIHJlc2V0dGVkIGJvYXJkIGFuZCBpdCBjYW1lIC8gcmVhZApiYWNr
-IGZyb20gZmxhc2ggYWdhaW4uCgpBUlRFTToKJElkOiB3YnVmLmMsdiAxLjEgMjAwMi8wOS8xMiAw
-MDoyMzoyMiBkYXZpZG0gRXhwICQKCgpTb21lIHF1ZXN0aW9ucyBjb21lIHRvIG1pbmQ6CjEpICBG
-aWxlcyBpbiBvdXIgY2FzZSBhcmUgZXhlY3V0YWJsZXMsIHNvIGhvdyBjb21lIHRoZSBjb2RlIHNl
-Y3Rpb25zLAp3aGljaCBhcmUgcmVhZCBvbmx5IEkgYmVsaWV2ZSBtYXJrZWQgaW4gcGFnZSBwcm9w
-ZXJ0aWVzIGdldCBjb3JydXB0ZWQKPwoyKSBFdmVuIGlmIEkgc3VzcGVjdCBzbyBtYW55IDNyZCBw
-YXJ0eSBjb2RlIEkgYW0gcnVubmluZywgY291bGQgYmUKdHJhc2hpbmcgaW4ga2VybmVsIHNwYWNl
-LCB0aGUgcmVhZCBvbmx5IGF0dHJpYnV0ZSBzaG91bGRuJ3QgaGF2ZQphbGxvd2VkIGl0ID8KMykg
-V2h5IGlzIHRoZSBmaWxlIGJlaW5nIHdyaXR0ZW4gYmFjayB0byBkaXNrIChleGVjdXRhYmxlLCBy
-ZWFkIG9ubHkgcGFnZXMpID8KClJlZ2FyZHMsCkFsZnJlZAoKT24gMTIvNi8wNSwgVmFoaWQgRmVy
-ZXlkdW5rb2xhaGkgPGZlcmV5ZHVua0B5YWhvby5jb20+IHdyb3RlOgo+IEkgYmVsaWV2ZSB3ZSBo
-YXZlIHRoZSBzYW1lIGlzc3VlIHRoYXQgeW91IGd1eXMgaGF2ZQo+IHJlZ2FyaW5nIHRoZSBjb3Jy
-dXB0aW9uIGluIGJpbmFyeSBmaWxlcy4gVGhlIHByb2JsZW0KPiBzZWVtcyB0byBiZSByZWxhdGVk
-IHRvIGhhdmluZyBzb21lIHBhZ2Uocykgb2YgYWxsIHplcm8KPiBpbiB0aGUgbWlkZGxlIG9mIHRo
-ZSBiaW5hcnkgZmlsZS4gSSBiZWxpZXZlIHRoZSBkYXRhCj4gaXMgcGVyZmVjdGx5IGZpbmUgb24g
-dGhlIGZsYXNoLCBidXQgdGhlcmUgaXMgYSBtZW1vcnkKPiBjb3JydXB0aW9uIChvciBzb21ldGhp
-bmcgc2ltaWxhcikgdGhhdCBjYXVzZXMgdGhlIGZpbGUKPiB0byBiZSBjb3N0dXJjZWQgd3Jvbmcg
-aW4gdGhlIG1lbW9yeS4gTW9zdCBwcm9iYWx5IHdoZW4KPiBzb21lIHNlY3Rpb24gb2YgdGhlIGZp
-bGUgaXMgcmVhZCBpdCB0aGlua3MgdGhhdCwgdGhlCj4gc2VjdGlvbiBpcyBhIGZyYWcgaG9sZSwg
-YW5kIHJldHVybnMgYWxsIHplcm8gZm9yIHRoYXQKPiBzZWN0aW9uLgo+Cj4gV2UgYXJlIHVzaW5n
-IHRoZSAyLjQga2VybmVsIGFuZCBJIHBvcnRlZCB0aGUgSkZGUzIKPiBmcm9uIHRoZSAyLjYga2Vy
-bmVsLgo+Cj4gUmVnYXJkcywKPiAtLXZhaGlkCj4KPgo+Cj4gX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCj4gWWFob28hIERTTCCWIFNvbWV0aGluZyB0byB3cml0ZSBo
-b21lIGFib3V0Lgo+IEp1c3QgJDE2Ljk5L21vLiBvciBsZXNzLgo+IGRzbC55YWhvby5jb20KPgo+
-Cg==
+In our case the data is perfectly fine on the flash,
+but gets corruped in the memory.
+I noticed that when I copy the binary files, and I
+enable the debugging, sometimes I get the following
+message:
+"Filling non-frag hole from 7000-8192 ( inod 1323,
+size 1192)"
+
+Why should a complete copy of a file has a non-frag
+hole?
+
+--vahid
+
+By the way, Is the data corruption in your case caused
+on the NAND or in the memory?
+
+
+		
+__________________________________________ 
+Yahoo! DSL – Something to write home about. 
+Just $16.99/mo. or less. 
+dsl.yahoo.com 
