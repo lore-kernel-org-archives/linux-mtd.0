@@ -1,18 +1,19 @@
-Received: from fmr17.intel.com ([134.134.136.16] helo=orsfmr002.jf.intel.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EkcwG-00047W-NO
-	for linux-mtd@lists.infradead.org; Fri, 09 Dec 2005 02:45:10 -0500
-From: "zhao, forrest" <forrest.zhao@intel.com>
-To: Nikhil <nikhils@cdac.in>
-In-Reply-To: <twig.1134109865.32513@cdac.in>
-References: <twig.1134109865.32513@cdac.in>
-Content-Type: text/plain
-Date: Fri, 09 Dec 2005 15:39:24 +0800
-Message-Id: <1134113964.4740.3.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [195.209.228.254] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EkkSl-00024G-3T
+	for linux-mtd@lists.infradead.org; Fri, 09 Dec 2005 10:47:17 -0500
+Received: from [192.168.37.21] (sauron.oktetlabs.ru [192.168.37.21])
+	by shelob.oktetlabs.ru (Postfix) with ESMTP id CEA764733B
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  9 Dec 2005 18:46:29 +0300 (MSK)
+Message-ID: <4399A6D5.9050304@yandex.ru>
+Date: Fri, 09 Dec 2005 18:46:29 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd_debug
+Subject: [PATCH] MTD + 2.6.13/2.6.14 OOPS in class_device_create() fix
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2005-12-09 at 12:01 +0530, Nikhil wrote:
-> Hi all,
-> 
-> i just wanted to know if there is any utility to see how the JFFS2
-> filesystem is written on the flash. Places where inode structures are
-> stored when a new file is created or if a file has been modified where
-> actually on the flash this part is written is a new inode created or the
-> same inode is re-written to some another location along with the data
-> node.
-> 
-> i tried to view the flash layout using the "mtd-debug read" utility and i
-> can view part of the data nodes but i am not able to view what exactly is
-> written as the metadata of the file. Is there any way of getting the
-> information of the metadata stored on the flash. 
-> 
-> thanks in advance  
-> 
+Hello,
 
-Not sure if jffs2dump can meet your requirement......
-It can dump the meta data of each node on the flash.
+Current MTD CVS head oopses in class_device_create().
 
-Thanks,
-Forrest
+This are because there is 2 calls in mtdchar.c which look like this:
+
+class_device_create(mtd_class, NULL, MKDEV(MTD_CHAR_MAJOR, 
+mtd->index*2), NULL, "mtd%d", mtd->index);
+
+This is perfectly fine with 2.6.15-rc5, where class_device_create() has 
+the following prototype:
+
+struct class_device *class_device_create(struct class *cls, struct 
+class_device *parent, dev_t devt, struct device *device, char *fmt, ...)
+
+But it causes oops in 2.6.14.3, where class_device_create() has the 
+following (different) prototype:
+
+struct class_device *class_device_create(struct class *cls, dev_t devt, 
+struct device *device, char *fmt, ...)
+
+I.e., one more argument 'parent' was introduced in 2.6.15-rc5. And since 
+the function accepts any number of arguments, it compiles well, but 
+doesn't work.
+
+Usually problems like this are solved by means of 
+include/linux/mtd/compatmac.h, but in this case I have no idea how to 
+solve this gracefully there.
+
+As 2.6.15 is not yet out and 2.6.14 is still used, I offer the attached 
+hotfix for now.
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
