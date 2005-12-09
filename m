@@ -1,22 +1,18 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ekbmf-00033x-Bq
-	for linux-mtd@lists.infradead.org; Fri, 09 Dec 2005 01:31:18 -0500
-Received: from mailhub.cdac.in ([196.1.109.254])
-	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2005120911595302827
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Dec 2005 11:59:53 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id jB96V6Wh030269
-	for <linux-mtd@lists.infradead.org>; Fri, 9 Dec 2005 12:01:06 +0530
-Received: from cdac.in (localhost [127.0.0.1])
-	by mailhub.cdac.in (8.13.4/8.13.4) with SMTP id jB96V5SE030257
-	for <linux-mtd@lists.infradead.org>; Fri, 9 Dec 2005 12:01:05 +0530
-Date: Fri, 9 Dec 2005 12:01:05 +0530 (IST)
-To: <linux-mtd@lists.infradead.org>
-From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1134109865.32513@cdac.in>
-Subject: mtd_debug
+Received: from fmr17.intel.com ([134.134.136.16] helo=orsfmr002.jf.intel.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EkcwG-00047W-NO
+	for linux-mtd@lists.infradead.org; Fri, 09 Dec 2005 02:45:10 -0500
+From: "zhao, forrest" <forrest.zhao@intel.com>
+To: Nikhil <nikhils@cdac.in>
+In-Reply-To: <twig.1134109865.32513@cdac.in>
+References: <twig.1134109865.32513@cdac.in>
+Content-Type: text/plain
+Date: Fri, 09 Dec 2005 15:39:24 +0800
+Message-Id: <1134113964.4740.3.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd_debug
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Fri, 2005-12-09 at 12:01 +0530, Nikhil wrote:
+> Hi all,
+> 
+> i just wanted to know if there is any utility to see how the JFFS2
+> filesystem is written on the flash. Places where inode structures are
+> stored when a new file is created or if a file has been modified where
+> actually on the flash this part is written is a new inode created or the
+> same inode is re-written to some another location along with the data
+> node.
+> 
+> i tried to view the flash layout using the "mtd-debug read" utility and i
+> can view part of the data nodes but i am not able to view what exactly is
+> written as the metadata of the file. Is there any way of getting the
+> information of the metadata stored on the flash. 
+> 
+> thanks in advance  
+> 
 
-i just wanted to know if there is any utility to see how the JFFS2
-filesystem is written on the flash. Places where inode structures are
-stored when a new file is created or if a file has been modified where
-actually on the flash this part is written is a new inode created or the
-same inode is re-written to some another location along with the data
-node.
+Not sure if jffs2dump can meet your requirement......
+It can dump the meta data of each node on the flash.
 
-i tried to view the flash layout using the "mtd-debug read" utility and i
-can view part of the data nodes but i am not able to view what exactly is
-written as the metadata of the file. Is there any way of getting the
-information of the metadata stored on the flash. 
-
-thanks in advance  
-
--- 
-Thanks & Regards
-
-Nikhil Shirodkar
-Project Engineer
-NISG, CDAC
+Thanks,
+Forrest
