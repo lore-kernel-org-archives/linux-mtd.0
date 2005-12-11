@@ -1,22 +1,25 @@
-Received: from blood.actrix.co.nz ([203.96.16.163])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ElVOW-0008Vx-6q
-	for linux-mtd@lists.infradead.org; Sun, 11 Dec 2005 12:54:01 -0500
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Date: Mon, 12 Dec 2005 06:53:33 +1300
-References: <439821F4.7010403@yandex.ru>
-	<200512111128.34835.manningc2@actrix.gen.nz>
-	<439C2DA3.9090405@yandex.ru>
-In-Reply-To: <439C2DA3.9090405@yandex.ru>
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ElWvq-0001WY-S8
+	for linux-mtd@lists.infradead.org; Sun, 11 Dec 2005 14:32:28 -0500
+Resent-Message-ID: <20051211193226.GS23349@stusta.de>
+Date: Sun, 11 Dec 2005 20:31:18 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: linux-kernel@vger.kernel.org, tony.luck@intel.com,
+	linux-ia64@vger.kernel.org, matthew@wil.cx,
+	grundler@parisc-linux.org, parisc-linux@parisc-linux.org,
+	paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org,
+	kkojima@rr.iij4u.or.jp, dwmw2@infradead.org
+Message-ID: <20051211193118.GR23349@stusta.de>
+References: <20051211185212.GQ23349@stusta.de>
+	<20051211192109.GA22537@flint.arm.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200512120653.33614.manningc2@actrix.gen.nz>
-Cc: Linux MTD <linux-mtd@lists.infradead.org>
-Subject: Re: NAND simulator
+In-Reply-To: <20051211192109.GA22537@flint.arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.xn--org-boa
+Subject: Re: [2.6 patch] defconfig's shouldn't set CONFIG_BROKEN=y
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +29,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 12 December 2005 02:46, Artem B. Bityutskiy wrote:
-> Charles Manning wrote:
-> > Yes please.
->
-> Uhh, will pospone this for now, will try to repair JFFS2 which doesn't
-> work after the last month's commits. Crud! Not sure whom to blame so far.
->
-> > Can nandsim simulate storage larger than physical RAM (just swapping out)
-> > or would this need special support (eg. add some block device support?
-> > We're getting people in YAFFSland who are working with 8Gbytes of flash
-> > (and it will only get bigger!) and I expect you'd want large emulations
-> > to stress JFFS3. Being able to simulate areas up to, say, 16Gbytes for
-> > now would be a nice thing.
->
-> Well, did not plan it. But we probably may add this functionality. We
-> may borrow it from mtd2blk ...
->
-> > A way of simulating a failure (bit flip, write error) would also be handy
-> > for testing fs and ecc error handling.
->
-> Yeah, good feature. But I'm not sure how to implement an interface for
-> this. It is probably easier to hack nandsim and add this manually...
+On Sun, Dec 11, 2005 at 07:21:10PM +0000, Russell King wrote:
+> On Sun, Dec 11, 2005 at 07:52:12PM +0100, Adrian Bunk wrote:
+> > defconfig's shouldn't set CONFIG_BROKEN=y.
+> 
+> NACK.  This changes other configuration options in addition, for example
+> in collie_defconfig:
+> 
+> -CONFIG_MTD_OBSOLETE_CHIPS=y
+> -# CONFIG_MTD_AMDSTD is not set
+> -CONFIG_MTD_SHARP=y
+> -# CONFIG_MTD_JEDEC is not set
 
-Manual hacking does work. I have done stuff like that in the past. Perhaps 
-dynamic hacking could be done via procfs? 
-eg, perhaps somethiong like
-echo "flip 12345 400 1" > /procfs/nandsim   # flip bit 1 in byte 400, page 
-12345
+That's not a problem introduced by my patch.
+
+Either the depency of MTD_OBSOLETE_CHIPS on BROKEN is correct (in which 
+case CONFIG_MTD_OBSOLETE_CHIPS=y wouldn't bring you anything), or the 
+dependency on BROKEN is not correct and should be corrected.
+
+David, can you comment on this issue?
+
+> Russell King
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
