@@ -1,23 +1,20 @@
-Received: from zproxy.gmail.com ([64.233.162.196])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ElpkE-0000q3-7A
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 10:37:44 -0500
-Received: by zproxy.gmail.com with SMTP id i11so1474455nzi
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Dec 2005 07:37:40 -0800 (PST)
-Message-ID: <625fc13d0512120737w40d2ecf9o5c5145b119a93927@mail.gmail.com>
-Date: Mon, 12 Dec 2005 09:37:40 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Bernhard Priewasser <priewasser@gmail.com>
-In-Reply-To: <439D8BAD.3000105@gmail.com>
+	id 1ElxcG-0007eK-DR
+	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:02:02 -0500
+Message-ID: <439E0F99.8090008@mvista.com>
+Date: Mon, 12 Dec 2005 16:02:33 -0800
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <438C7B0C.5040001@gmail.com> <438C94BD.8020300@inf.u-szeged.hu>
-	<438C98EA.70105@gmail.com> <439D8BAD.3000105@gmail.com>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: NAND write buffering
+To: Vitaly Wool <vwool@ru.mvista.com>
+References: <438FF22A.2060203@ru.mvista.com> <4390C552.60907@mvista.com>
+	<4393D42C.9040303@ru.mvista.com>
+In-Reply-To: <4393D42C.9040303@ru.mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
+ rid of MEMGETOOBSEL/MEMSETOOBSEL
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/12/05, Bernhard Priewasser <priewasser@gmail.com> wrote:
->
-> When is NAND wbuf flushed?
-> sync()
+Vitaly Wool wrote:
+> Todd Poynor wrote:
+...
+>>>          if (writeoob) {
+>>>              /* Read OOB data from input file, exit on failure */
+>>> -            if ((cnt = read(ifd, oobreadbuf, meminfo.oobsize)) != 
+>>> meminfo.oobsize) {
+>>> +            if ((cnt = read(ifd, oobreadbuf, oobavail)) != oobavail) {
+>>
+>>
+>> This requires the input file to be tailored to the oobavail of a 
+>> specific destination device, reducing the benefit of autoplacement.  
+>> It may be best to continue to pad input files oob data to the full 
+>> oobsize, much like the data portion is handled.
+> 
+> Well, padding doesn't work in nandwrite if the image to be written 
+> contains OOB data. The idea as I see it is if you are trying to write 
+> the image with OOB data, you should know what you're doing, and that 
+> implies knowledge of the oobavail size.
+> On the other hand, it might be useful to implement an option for 
+> nandwrite which specifies what OOB data length user supposes (default 
+> will be the oobavail).
 
-Yes.
+In order to make it work as above, we'd need a way for users to find out 
+what oobavail their mtd driver uses (in dmesg and/or a util), and an 
+option on all the fs utils to write that number of bytes.  A file format 
+that specifies what data and OOB size have been generated would do the 
+trick, if we want to get that fancy about it.  Just filling out all 16 
+or 64 bytes in the input file and truncating to oobavail at nandwrite 
+time seems a lower-cost workaround.
 
-> fsync()
 
-Yes.
-
-> fflush()?
-
-Not necessarily.  From the fflush man page:
-
-"Note that fflush() only flushes the user space buffers provided by
-the C library.  To ensure that the data is physically stored on disk
-the kernel buffers must be flushed too, e.g. with sync(2) or
-fsync(2)."
-
-> fclose()?
-
-Not necessarily.  See the man page in the NOTES section.  It says the
-same as fflush.
-
-josh
+-- 
+Todd
