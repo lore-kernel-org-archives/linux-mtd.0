@@ -1,12 +1,19 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmFFe-0007Du-CL
-	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 13:51:55 -0500
-Date: Tue, 13 Dec 2005 19:51:50 +0100
-From: Adrian Bunk <bunk@stusta.de>
+Received: from wproxy.gmail.com ([64.233.184.193])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmFMv-0007Tt-Ey
+	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 13:59:28 -0500
+Received: by wproxy.gmail.com with SMTP id 67so198824wri
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Dec 2005 10:59:20 -0800 (PST)
+Message-ID: <9a8748490512131059m54cc56faueaab6ddf0f18520e@mail.gmail.com>
+Date: Tue, 13 Dec 2005 19:59:00 +0100
+From: Jesper Juhl <jesper.juhl@gmail.com>
 To: Geert Uytterhoeven <geert@linux-m68k.org>
-Message-ID: <20051213185150.GP23349@stusta.de>
+In-Reply-To: <Pine.LNX.4.62.0512131926530.17990@pademelon.sonytel.be>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <20051211185212.GQ23349@stusta.de>
 	<20051211192109.GA22537@flint.arm.linux.org.uk>
 	<20051211193118.GR23349@stusta.de>
@@ -16,12 +23,9 @@ References: <20051211185212.GQ23349@stusta.de>
 	<20051213173112.GA24094@flint.arm.linux.org.uk>
 	<20051213180551.GN23349@stusta.de>
 	<Pine.LNX.4.62.0512131926530.17990@pademelon.sonytel.be>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.62.0512131926530.17990@pademelon.sonytel.be>
 Cc: tony.luck@intel.com, linux-ia64@vger.kernel.org, grundler@parisc-linux.org,
 	matthew@wil.cx, Linux Kernel Development <linux-kernel@vger.kernel.org>,
+	Adrian Bunk <bunk@stusta.de>,
 	Linux/PPC Development <linuxppc-dev@ozlabs.org>,
 	lethal@linux-sh.org, Paul Mackerras <paulus@samba.org>,
 	linux-mtd@lists.infradead.org,
@@ -37,38 +41,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 13, 2005 at 07:28:41PM +0100, Geert Uytterhoeven wrote:
+On 12/13/05, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
 > On Tue, 13 Dec 2005, Adrian Bunk wrote:
-> > Do not allow people to create configurations with CONFIG_BROKEN=y.
-> > 
-> > The sole reason for CONFIG_BROKEN=y would be if you are working on 
-> > fixing a broken driver, but in this case editing the Kconfig file is 
+> > Do not allow people to create configurations with CONFIG_BROKEN=3Dy.
+> >
+> > The sole reason for CONFIG_BROKEN=3Dy would be if you are working on
+> > fixing a broken driver, but in this case editing the Kconfig file is
 > > trivial.
-> > 
+> >
 > > Never ever should a user enable CONFIG_BROKEN.
 >                       ^^^^
 > OK, a user, not an expert. Let's assume users don't enable EXPERIMENTAL.
-
-Let's assume users don't have any hardware (e.g. several SATA drivers) 
-that requires EXPERIMENTAL...
-
-> But I'd like to at least have the possibility to enable broken drivers, even if
+>
+> But I'd like to at least have the possibility to enable broken drivers, e=
+ven if
 > it's just for compile regression tests.
+>
+I agree, and it's very convenient to be able to enable it in
+menuconfig etc. Perhaps CONFIG_BROKEN should just be moved to kernel
+hacking instead...?
 
-If a kernel developer really wants to enable BROKEN drivers, my patch 
-still gives them the possibility to do so with a trivial edit of
-init/Kconfig.
-
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+--
+Jesper Juhl <jesper.juhl@gmail.com>
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please      http://www.expita.com/nomime.html
