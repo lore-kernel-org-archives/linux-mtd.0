@@ -1,26 +1,22 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ElxkS-00084j-Lw
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:10:46 -0500
-Date: Tue, 13 Dec 2005 01:10:28 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: linux-kernel@vger.kernel.org, tony.luck@intel.com,
-	linux-ia64@vger.kernel.org, matthew@wil.cx,
-	grundler@parisc-linux.org, parisc-linux@parisc-linux.org,
-	paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org,
-	kkojima@rr.iij4u.or.jp, dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Message-ID: <20051213001028.GS23349@stusta.de>
-References: <20051211185212.GQ23349@stusta.de>
-	<20051211192109.GA22537@flint.arm.linux.org.uk>
-	<20051211193118.GR23349@stusta.de>
-	<20051211194437.GB22537@flint.arm.linux.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20051211194437.GB22537@flint.arm.linux.org.uk>
-Cc: 
-Subject: Re: [2.6 patch] defconfig's shouldn't set CONFIG_BROKEN=y
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ElxnO-0008HC-Pq
+	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:13:41 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Todd Poynor <tpoynor@mvista.com>
+In-Reply-To: <439E0F99.8090008@mvista.com>
+References: <438FF22A.2060203@ru.mvista.com> <4390C552.60907@mvista.com>
+	<4393D42C.9040303@ru.mvista.com>  <439E0F99.8090008@mvista.com>
+Content-Type: text/plain
+Date: Tue, 13 Dec 2005 01:20:04 +0100
+Message-Id: <1134433204.4205.261.camel@tglx.tec.linutronix.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Vitaly Wool <vwool@ru.mvista.com>
+Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
+	rid of MEMGETOOBSEL/MEMSETOOBSEL
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,50 +26,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 11, 2005 at 07:44:37PM +0000, Russell King wrote:
-> On Sun, Dec 11, 2005 at 08:31:18PM +0100, Adrian Bunk wrote:
-> > On Sun, Dec 11, 2005 at 07:21:10PM +0000, Russell King wrote:
-> > > On Sun, Dec 11, 2005 at 07:52:12PM +0100, Adrian Bunk wrote:
-> > > > defconfig's shouldn't set CONFIG_BROKEN=y.
-> > > 
-> > > NACK.  This changes other configuration options in addition, for example
-> > > in collie_defconfig:
-> > > 
-> > > -CONFIG_MTD_OBSOLETE_CHIPS=y
-> > > -# CONFIG_MTD_AMDSTD is not set
-> > > -CONFIG_MTD_SHARP=y
-> > > -# CONFIG_MTD_JEDEC is not set
+On Mon, 2005-12-12 at 16:02 -0800, Todd Poynor wrote:
 > > 
-> > That's not a problem introduced by my patch.
+> > Well, padding doesn't work in nandwrite if the image to be written 
+> > contains OOB data. The idea as I see it is if you are trying to write 
+> > the image with OOB data, you should know what you're doing, and that 
+> > implies knowledge of the oobavail size.
+> > On the other hand, it might be useful to implement an option for 
+> > nandwrite which specifies what OOB data length user supposes (default 
+> > will be the oobavail).
 > 
-> It's a problem introduced by your patch because the resulting defconfig
-> file becomes _wrong_ by your change, and other changes in the defconfig
-> are thereby hidden.
->...
+> In order to make it work as above, we'd need a way for users to find out 
+> what oobavail their mtd driver uses (in dmesg and/or a util)
 
+Definitely not by consulting dmesg. There is no guarantee that dmesg
+contains the information you need at the time you are asking for it.
 
-No, CONFIG_BROKEN=y in a defconfig file is a bug.
+> , and an 
+> option on all the fs utils to write that number of bytes.  A file format 
+> that specifies what data and OOB size have been generated would do the 
+> trick, if we want to get that fancy about it.  Just filling out all 16 
+> or 64 bytes in the input file and truncating to oobavail at nandwrite 
+> time seems a lower-cost workaround.
 
-Either the defconfig doesn't use BROKEN code in which case it's simply 
-wrong, or it's a wrong workaround (as in the CONFIG_MTD_SHARP case) for 
-a wrong BROKEN dependency.
+Find a way to give access to raw data and to the "translated" data is
+the goal. Everything else is just an ivory tower experiment.
 
-
-And it's a dangerous workaround:
-
-Consider e.g. that "both marked as obsolete and BROKEN" are the best 
-candidates for "remove obsolete code" cleanups - and there goes your 
-driver to /dev/null ...
-
-
-> Russell King
-
-cu
-Adrian
-
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+	tglx
