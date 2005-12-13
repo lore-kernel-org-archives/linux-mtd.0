@@ -1,22 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from fmr19.intel.com ([134.134.136.18] helo=orsfmr004.jf.intel.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ElxnO-0008HC-Pq
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:13:41 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Todd Poynor <tpoynor@mvista.com>
-In-Reply-To: <439E0F99.8090008@mvista.com>
-References: <438FF22A.2060203@ru.mvista.com> <4390C552.60907@mvista.com>
-	<4393D42C.9040303@ru.mvista.com>  <439E0F99.8090008@mvista.com>
+	id 1Em3iC-0004Uv-2j
+	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 01:32:35 -0500
+From: "zhao, forrest" <forrest.zhao@intel.com>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+In-Reply-To: <439D5159.4030704@yandex.ru>
+References: <439C33D2.506@yandex.ru>
+	<1134367675.3152.9.camel@localhost.localdomain>
+	<439D5159.4030704@yandex.ru>
 Content-Type: text/plain
-Date: Tue, 13 Dec 2005 01:20:04 +0100
-Message-Id: <1134433204.4205.261.camel@tglx.tec.linutronix.de>
+Date: Tue, 13 Dec 2005 14:26:49 +0800
+Message-Id: <1134455209.7346.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Vitaly Wool <vwool@ru.mvista.com>
-Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
-	rid of MEMGETOOBSEL/MEMSETOOBSEL
-Reply-To: tglx@linutronix.de
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
+Subject: Re: EBH question 1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2005-12-12 at 16:02 -0800, Todd Poynor wrote:
-> > 
-> > Well, padding doesn't work in nandwrite if the image to be written 
-> > contains OOB data. The idea as I see it is if you are trying to write 
-> > the image with OOB data, you should know what you're doing, and that 
-> > implies knowledge of the oobavail size.
-> > On the other hand, it might be useful to implement an option for 
-> > nandwrite which specifies what OOB data length user supposes (default 
-> > will be the oobavail).
-> 
-> In order to make it work as above, we'd need a way for users to find out 
-> what oobavail their mtd driver uses (in dmesg and/or a util)
 
-Definitely not by consulting dmesg. There is no guarantee that dmesg
-contains the information you need at the time you are asking for it.
+Hi, Artem
 
-> , and an 
-> option on all the fs utils to write that number of bytes.  A file format 
-> that specifies what data and OOB size have been generated would do the 
-> trick, if we want to get that fancy about it.  Just filling out all 16 
-> or 64 bytes in the input file and truncating to oobavail at nandwrite 
-> time seems a lower-cost workaround.
+The following is what I do in my lab:
+1 download MTD snapshot of 2005/10/30(the
+snapshot before I check in EBH patch)
+2 ./patchkernel.sh -c -2 /usr/src/linux.2.6.12.2
+3 make; make modules_install
+4 modprobe mtdram
+5 cd util/; make
+6 ./flash_eraseall -j /dev/mtd0
+Then kernel panic happened, seemed there's a bug
+in mtd_char code.
 
-Find a way to give access to raw data and to the "translated" data is
-the goal. Everything else is just an ivory tower experiment.
+So I use another way to do the test:
+1 download MTD snapshot of 2005/10/30(the
+snapshot before I check in EBH patch)
+2 ./patchkernel.sh -c -2 /usr/src/linux.2.6.12.2
+3 make; make modules_install
+4 modprobe mtdram
+5 mount -t jffs2 /dev/mtdblock0 /mnt
+6 copy two files to /mnt
+7 umount /mnt
+8 download MTD snapshot of 2005/11/10(the
+snapshot with EBH patch)
+9 ./patchkernel.sh -c -2 /usr/src/linux.2.6.12.2
+10 make; make modules_install
+11 mount -t jffs2 /dev/mtdblock0 /mnt
+12 the previously copied two files are still there
+13 run ltp fs test on /mnt
+14 nothing wrong happened, no error report
 
-	tglx
+May I know what happened at your side?
+
+Thanks,
+Forrest
