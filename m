@@ -1,23 +1,27 @@
-Received: from mgw-ext01.nokia.com ([131.228.20.93])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1Em8dc-0000no-24
-	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 06:48:10 -0500
-Date: Tue, 13 Dec 2005 13:47:52 +0200
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Message-ID: <20051213114752.GA9165@angel.research.nokia.com>
-References: <439C33D2.506@yandex.ru>
-	<1134367675.3152.9.camel@localhost.localdomain>
-	<439D5159.4030704@yandex.ru>
-	<1134455209.7346.12.camel@localhost.localdomain>
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmAhK-0002aG-Ut
+	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 09:00:18 -0500
+Date: Tue, 13 Dec 2005 15:00:01 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: Simon Richter <Simon.Richter@hogyros.de>
+Message-ID: <20051213140001.GG23349@stusta.de>
+References: <20051211185212.GQ23349@stusta.de>
+	<20051211192109.GA22537@flint.arm.linux.org.uk>
+	<20051211193118.GR23349@stusta.de>
+	<20051211194437.GB22537@flint.arm.linux.org.uk>
+	<20051213001028.GS23349@stusta.de> <439ECDCC.80707@hogyros.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1134455209.7346.12.camel@localhost.localdomain>
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, "zhao,
-	forrest" <forrest.zhao@intel.com>
-Subject: Re: EBH question 1
-Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+In-Reply-To: <439ECDCC.80707@hogyros.de>
+Cc: tony.luck@intel.com, linux-ia64@vger.kernel.org, grundler@parisc-linux.org,
+	matthew@wil.cx, linux-kernel@vger.kernel.org,
+	linuxppc-dev@ozlabs.org, lethal@linux-sh.org, paulus@samba.org,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	kkojima@rr.iij4u.or.jp, parisc-linux@parisc-linux.org
+Subject: Re: [2.6 patch] defconfig's shouldn't set CONFIG_BROKEN=y
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Zhao
+On Tue, Dec 13, 2005 at 02:34:04PM +0100, Simon Richter wrote:
 
-I tried CVS head (Dec 12).  I used 2.6.14.3 on x86 and Nandsim.  2.6.14
-requires removal of the second NULL argument (parent) to class_device_create() 
-call to make it work.
+> Hi,
 
-I erased the partition with flash_eraseall (I tried both -j and without).
-I mounted the partition, copied big file (libc) onto it, unmounted, and then
-mounted again.
+Hi Simon,
 
-All messaged are directed to console, When I mount the file system
-again, I get:
+> Adrian Bunk wrote:
+> 
+> >>It's a problem introduced by your patch because the resulting defconfig
+> >>file becomes _wrong_ by your change, and other changes in the defconfig
+> >>are thereby hidden.
+> >>...
+> 
+> >No, CONFIG_BROKEN=y in a defconfig file is a bug.
+> 
+> Indeed, but that's not the point. A defconfig file should be the result 
+> of running one of the various configuration targets; yours are 
+> hand-patched. If you run the defconfig target, it will copy the config 
+> file and run oldconfig, thus resulting in a different configuration file 
+> (because options may now be gone and hence disabled) than what was in 
+> the defconfig, and thus people may come to the wrong conclusion that if 
+> a driver is enabled in a defconfig file, it will be built.
 
-  # mount -t jffs2 /dev/mtdblock0 /mnt
-  ...
-  Dec 13 12:53:15 slayer kernel: Node at 0x00001e30 with length 0x000008e0 would run over the end of the erase block 
-  Dec 13 12:53:15 slayer kernel: Perhaps the file system was created with the wrong erase size? Reject to mount.
-  Dec 13 12:53:15 slayer kernel: [JFFS2 DBG] (3602) jffs2_do_mount_fs: build_fs failed
-  mount: /dev/mtdblock0: can't read superblock
+defconfig files are virtually never a configuration for the kernel they 
+are shipped with since they aren't updated every time some configuration 
+option is changed.
 
-I can reproduce the same problem on an Arm based test board with 
-2.6.15-rc4 with Nandsim and Onenandsim. On 2.6.15 class_device_create()
-call works out of the box and no editing is needed.
+Consider a defconfig with CONFIG_BROKEN=n, and a driver that is enabled 
+in this defconfig gets for some reason marked as broken in the Kconfig 
+file - this will give exactly the same result as the one you describe.
 
-Jarkko Lavinn
+>    Simon
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
