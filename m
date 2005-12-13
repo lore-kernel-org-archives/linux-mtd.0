@@ -1,20 +1,17 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ElxcG-0007eK-DR
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:02:02 -0500
-Message-ID: <439E0F99.8090008@mvista.com>
-Date: Mon, 12 Dec 2005 16:02:33 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Elxfq-0007qy-Vo
+	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:05:59 -0500
+Date: Tue, 13 Dec 2005 01:05:42 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20051213000542.GR23349@stusta.de>
 MIME-Version: 1.0
-To: Vitaly Wool <vwool@ru.mvista.com>
-References: <438FF22A.2060203@ru.mvista.com> <4390C552.60907@mvista.com>
-	<4393D42C.9040303@ru.mvista.com>
-In-Reply-To: <4393D42C.9040303@ru.mvista.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] mtd/utils: sync with MTD ioctl interface rework to get
- rid of MEMGETOOBSEL/MEMSETOOBSEL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [2.6 patch] drivers/mtd/: small cleanups
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +21,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vitaly Wool wrote:
-> Todd Poynor wrote:
-...
->>>          if (writeoob) {
->>>              /* Read OOB data from input file, exit on failure */
->>> -            if ((cnt = read(ifd, oobreadbuf, meminfo.oobsize)) != 
->>> meminfo.oobsize) {
->>> +            if ((cnt = read(ifd, oobreadbuf, oobavail)) != oobavail) {
->>
->>
->> This requires the input file to be tailored to the oobavail of a 
->> specific destination device, reducing the benefit of autoplacement.  
->> It may be best to continue to pad input files oob data to the full 
->> oobsize, much like the data portion is handled.
-> 
-> Well, padding doesn't work in nandwrite if the image to be written 
-> contains OOB data. The idea as I see it is if you are trying to write 
-> the image with OOB data, you should know what you're doing, and that 
-> implies knowledge of the oobavail size.
-> On the other hand, it might be useful to implement an option for 
-> nandwrite which specifies what OOB data length user supposes (default 
-> will be the oobavail).
-
-In order to make it work as above, we'd need a way for users to find out 
-what oobavail their mtd driver uses (in dmesg and/or a util), and an 
-option on all the fs utils to write that number of bytes.  A file format 
-that specifies what data and OOB size have been generated would do the 
-trick, if we want to get that fancy about it.  Just filling out all 16 
-or 64 bytes in the input file and truncating to oobavail at nandwrite 
-time seems a lower-cost workaround.
+This patch contains the following cleanups:
+- chips/sharp.c: make the needlessly global sharp_probe_init() static
+- move some declarations to a header file where they belong to
 
 
--- 
-Todd
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ drivers/mtd/chips/sharp.c |    2 +-
+ drivers/mtd/inftlcore.c   |    5 -----
+ include/linux/mtd/inftl.h |    5 +++++
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+--- linux-2.6.15-rc5-mm2-full/drivers/mtd/chips/sharp.c.old	2005-12-13 00:30:03.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/drivers/mtd/chips/sharp.c	2005-12-13 00:30:14.000000000 +0100
+@@ -581,7 +581,7 @@
+ 
+ }
+ 
+-int __init sharp_probe_init(void)
++static int __init sharp_probe_init(void)
+ {
+ 	printk("MTD Sharp chip driver <ds@lineo.com>\n");
+ 
+--- linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h.old	2005-12-13 00:38:32.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h	2005-12-13 00:40:26.000000000 +0100
+@@ -52,6 +52,11 @@
+ int INFTL_mount(struct INFTLrecord *s);
+ int INFTL_formatblock(struct INFTLrecord *s, int block);
+ 
++extern char inftlmountrev[];
++
++void INFTL_dumptables(struct INFTLrecord *s);
++void INFTL_dumpVUchains(struct INFTLrecord *s);
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __MTD_INFTL_H__ */
+--- linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c.old	2005-12-13 00:39:14.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c	2005-12-13 00:40:43.000000000 +0100
+@@ -47,9 +47,6 @@
+  */
+ #define MAX_LOOPS 10000
+ 
+-extern void INFTL_dumptables(struct INFTLrecord *inftl);
+-extern void INFTL_dumpVUchains(struct INFTLrecord *inftl);
+-
+ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ {
+ 	struct INFTLrecord *inftl;
+@@ -885,8 +882,6 @@
+ 	.owner		= THIS_MODULE,
+ };
+ 
+-extern char inftlmountrev[];
+-
+ static int __init init_inftl(void)
+ {
+ 	printk(KERN_INFO "INFTL: inftlcore.c $Revision: 1.19 $, "
