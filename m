@@ -1,17 +1,26 @@
 Received: from emailhub.stusta.mhn.de ([141.84.69.5]
 	helo=mailout.stusta.mhn.de)
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Elxfq-0007qy-Vo
-	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:05:59 -0500
-Date: Tue, 13 Dec 2005 01:05:42 +0100
+	id 1ElxkS-00084j-Lw
+	for linux-mtd@lists.infradead.org; Mon, 12 Dec 2005 19:10:46 -0500
+Date: Tue, 13 Dec 2005 01:10:28 +0100
 From: Adrian Bunk <bunk@stusta.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20051213000542.GR23349@stusta.de>
+To: linux-kernel@vger.kernel.org, tony.luck@intel.com,
+	linux-ia64@vger.kernel.org, matthew@wil.cx,
+	grundler@parisc-linux.org, parisc-linux@parisc-linux.org,
+	paulus@samba.org, linuxppc-dev@ozlabs.org, lethal@linux-sh.org,
+	kkojima@rr.iij4u.or.jp, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Message-ID: <20051213001028.GS23349@stusta.de>
+References: <20051211185212.GQ23349@stusta.de>
+	<20051211192109.GA22537@flint.arm.linux.org.uk>
+	<20051211193118.GR23349@stusta.de>
+	<20051211194437.GB22537@flint.arm.linux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [2.6 patch] drivers/mtd/: small cleanups
+In-Reply-To: <20051211194437.GB22537@flint.arm.linux.org.uk>
+Cc: 
+Subject: Re: [2.6 patch] defconfig's shouldn't set CONFIG_BROKEN=y
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,63 +30,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch contains the following cleanups:
-- chips/sharp.c: make the needlessly global sharp_probe_init() static
-- move some declarations to a header file where they belong to
+On Sun, Dec 11, 2005 at 07:44:37PM +0000, Russell King wrote:
+> On Sun, Dec 11, 2005 at 08:31:18PM +0100, Adrian Bunk wrote:
+> > On Sun, Dec 11, 2005 at 07:21:10PM +0000, Russell King wrote:
+> > > On Sun, Dec 11, 2005 at 07:52:12PM +0100, Adrian Bunk wrote:
+> > > > defconfig's shouldn't set CONFIG_BROKEN=y.
+> > > 
+> > > NACK.  This changes other configuration options in addition, for example
+> > > in collie_defconfig:
+> > > 
+> > > -CONFIG_MTD_OBSOLETE_CHIPS=y
+> > > -# CONFIG_MTD_AMDSTD is not set
+> > > -CONFIG_MTD_SHARP=y
+> > > -# CONFIG_MTD_JEDEC is not set
+> > 
+> > That's not a problem introduced by my patch.
+> 
+> It's a problem introduced by your patch because the resulting defconfig
+> file becomes _wrong_ by your change, and other changes in the defconfig
+> are thereby hidden.
+>...
 
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+No, CONFIG_BROKEN=y in a defconfig file is a bug.
 
----
+Either the defconfig doesn't use BROKEN code in which case it's simply 
+wrong, or it's a wrong workaround (as in the CONFIG_MTD_SHARP case) for 
+a wrong BROKEN dependency.
 
- drivers/mtd/chips/sharp.c |    2 +-
- drivers/mtd/inftlcore.c   |    5 -----
- include/linux/mtd/inftl.h |    5 +++++
- 3 files changed, 6 insertions(+), 6 deletions(-)
 
---- linux-2.6.15-rc5-mm2-full/drivers/mtd/chips/sharp.c.old	2005-12-13 00:30:03.000000000 +0100
-+++ linux-2.6.15-rc5-mm2-full/drivers/mtd/chips/sharp.c	2005-12-13 00:30:14.000000000 +0100
-@@ -581,7 +581,7 @@
- 
- }
- 
--int __init sharp_probe_init(void)
-+static int __init sharp_probe_init(void)
- {
- 	printk("MTD Sharp chip driver <ds@lineo.com>\n");
- 
---- linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h.old	2005-12-13 00:38:32.000000000 +0100
-+++ linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h	2005-12-13 00:40:26.000000000 +0100
-@@ -52,6 +52,11 @@
- int INFTL_mount(struct INFTLrecord *s);
- int INFTL_formatblock(struct INFTLrecord *s, int block);
- 
-+extern char inftlmountrev[];
-+
-+void INFTL_dumptables(struct INFTLrecord *s);
-+void INFTL_dumpVUchains(struct INFTLrecord *s);
-+
- #endif /* __KERNEL__ */
- 
- #endif /* __MTD_INFTL_H__ */
---- linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c.old	2005-12-13 00:39:14.000000000 +0100
-+++ linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c	2005-12-13 00:40:43.000000000 +0100
-@@ -47,9 +47,6 @@
-  */
- #define MAX_LOOPS 10000
- 
--extern void INFTL_dumptables(struct INFTLrecord *inftl);
--extern void INFTL_dumpVUchains(struct INFTLrecord *inftl);
--
- static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- {
- 	struct INFTLrecord *inftl;
-@@ -885,8 +882,6 @@
- 	.owner		= THIS_MODULE,
- };
- 
--extern char inftlmountrev[];
--
- static int __init init_inftl(void)
- {
- 	printk(KERN_INFO "INFTL: inftlcore.c $Revision: 1.19 $, "
+And it's a dangerous workaround:
+
+Consider e.g. that "both marked as obsolete and BROKEN" are the best 
+candidates for "remove obsolete code" cleanups - and there goes your 
+driver to /dev/null ...
+
+
+> Russell King
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
