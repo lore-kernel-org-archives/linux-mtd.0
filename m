@@ -1,22 +1,23 @@
-Received: from zproxy.gmail.com ([64.233.162.194])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmWoz-00072E-9F
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 08:37:33 -0500
-Received: by zproxy.gmail.com with SMTP id i11so114687nzi
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Dec 2005 05:37:28 -0800 (PST)
-Message-ID: <625fc13d0512140537h20e291e8i10951ced01f2a290@mail.gmail.com>
-Date: Wed, 14 Dec 2005 07:37:28 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: alfred hitch <alfred.hitch@gmail.com>
-In-Reply-To: <29f916510512132353y39427546j1413e0fdc5dcaa7a@mail.gmail.com>
+Received: from allen.werkleitz.de ([80.190.251.108])
+	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmXZT-00063d-0Q
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 14:25:31 +0000
+Received: from p54bea901.dip0.t-ipconnect.de ([84.190.169.1] helo=void.local)
+	by allen.werkleitz.de with esmtpsa
+	(TLS-1.0:DHE_RSA_3DES_EDE_CBC_SHA1:24) (Exim 4.60)
+	(envelope-from <js@linuxtv.org>) id 1EmXZB-00048j-ME
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 15:25:19 +0100
+Received: from js by void.local with local (Exim 3.35 #1 (Debian))
+	id 1EmXZA-0002gn-00
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Dec 2005 15:25:12 +0100
+Date: Wed, 14 Dec 2005 15:25:12 +0100
+From: Johannes Stezenbach <js@linuxtv.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051214142512.GA10310@linuxtv.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <29f916510512132353y39427546j1413e0fdc5dcaa7a@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd size calcualtion assumes same size'd flashes ?
+Subject: Fix mounting jffs2 by mtd name
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/14/05, alfred hitch <alfred.hitch@gmail.com> wrote:
-> Hi,
->
-> Please correct me if my understanding is wrong here:
-> but while grepp'ing through the code of linux 2.6 base I had.
-> File cfi_cmdset0001.c :
-> function: static struct mtd_info *cfi_intelext_setup(struct map_info *map=
-)
->
->       mtd->size =3D devsize * cfi->numchips;
->
-> This seems to me an assumption that the flash'es in system are all of
-> same size and so can be added up ?
-> Is my understanding correct, sorry dont have latest code access.
+Hi,
 
-I believe your understanding is correct.  Your device size can span
-multiple chips if they are physically contiguous and of the same type.
+Busybox mount insists that mtd: refers to a NFS mount:
 
->
-> If that is the case, any reasons to do so  ?
-> My system happened to have an odd sized flash config and was creating mes=
-sups.
-> If my understanding is correct, I would have like to patch and post it.
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 02000000 00004000 "foo"
+# mount mtd:foo /mnt -t jffs2
+mount: mtd: Unknown host
+mount: nfsmount failed: Connection refused
+mount: Mounting mtd:foo on /mnt failed: Invalid argument
 
-The normal method of dealing with heterogenous chips is to create
-separate MTD devices for each chip in your map driver.  You can then
-use MTD_CONCAT to  concatenate these separate devices into one large
-device.
+I suggest new syntax:
 
-josh
+# mount mtd/foo /mnt -t jffs2
+
+Signed-off-by: Johannes Stezenbach <js@linuxtv.org>
+
+Index: fs/jffs2/super.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/super.c,v
+retrieving revision 1.112
+diff -u -p -r1.112 super.c
+--- fs/jffs2/super.c	24 Nov 2005 16:13:25 -0000	1.112
++++ fs/jffs2/super.c	14 Dec 2005 14:05:58 -0000
+@@ -208,7 +208,7 @@ static struct super_block *jffs2_get_sb(
+ 
+ 	if (dev_name[0] == 'm' && dev_name[1] == 't' && dev_name[2] == 'd') {
+ 		/* Probably mounting without the blkdev crap */
+-		if (dev_name[3] == ':') {
++		if (dev_name[3] == '/') {
+ 			struct mtd_info *mtd;
+ 
+ 			/* Mount by MTD device name */
