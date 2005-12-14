@@ -1,19 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.207])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmRS4-0001ZB-Px
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 02:53:36 -0500
-Received: by wproxy.gmail.com with SMTP id i1so318659wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Dec 2005 23:53:27 -0800 (PST)
-Message-ID: <29f916510512132353y39427546j1413e0fdc5dcaa7a@mail.gmail.com>
-Date: Wed, 14 Dec 2005 02:53:26 -0500
-From: alfred hitch <alfred.hitch@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from www.mw-itcon.de ([213.146.115.73])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmRrv-00024D-Ht
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 03:20:19 -0500
+Message-ID: <439FD5BF.1090507@mw-itcon.de>
+Date: Wed, 14 Dec 2005 09:20:15 +0100
+From: Peter Menzebach <pm-armlist@mw-itcon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: mtd size calcualtion assumes same size'd flashes ?
+To: colin <colin@realtek.com.tw>
+References: <014601c5ffb6$24baa670$106215ac@realtek.com.tw>	<439E8A77.8020400@mw-itcon.de>
+	<01dc01c60057$1b3fab30$106215ac@realtek.com.tw>
+In-Reply-To: <01dc01c60057$1b3fab30$106215ac@realtek.com.tw>
+Content-Type: text/plain; charset=Big5
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Does Linux have serial flash drivers?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+colin wrote:
+> Hi Peter,
+> I noticed this driver before.
+> But I think it is strnage that there are many serial Flash chips in the
+> world but there is no any corresponding mtd driver in Linux kernel source
+> tree.
+> What's the reason of this?
+> 
+> Regards,
+> Colin
 
-Please correct me if my understanding is wrong here:
-but while grepp'ing through the code of linux 2.6 base I had.
-File cfi_cmdset0001.c :
-function: static struct mtd_info *cfi_intelext_setup(struct map_info *map)
+Maybe, because most boards will then need 2 flashs with different
+interfaces. Afaik only the Atmel at91... can boot directly from serial
+dataflash due to it's internal ROM services.
 
-      mtd->size =3D devsize * cfi->numchips;
+Even this seems to be not a mainstream way to boot, because the
+maintainer of the available bootloader (u-boot) declared that way to
+boot deprecated.
 
-This seems to me an assumption that the flash'es in system are all of
-same size and so can be added up ?
-Is my understanding correct, sorry dont have latest code access.
+In our case it was fine, because this allowed to reduce the size of the
+board.
 
-If that is the case, any reasons to do so  ?
-My system happened to have an odd sized flash config and was creating messu=
-ps.
-If my understanding is correct, I would have like to patch and post it.
+Another reason might be a hen/egg problem. (driver/first board available)
 
-Regards,
-Alfred
+Best regards
+Peter
+
+-- 
+Peter Menzebach
+Menzebach und Wolff IT-Consulting GbR
+Phone +49 751 355 387 1
