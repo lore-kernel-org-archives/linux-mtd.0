@@ -1,24 +1,19 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmRIL-0001H1-B8
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 02:43:34 -0500
-Message-ID: <439FBEDF.7000506@yandex.ru>
-Date: Wed, 14 Dec 2005 09:42:39 +0300
-From: Artem Bityutskiy <dedekind@yandex.ru>
+Received: from wproxy.gmail.com ([64.233.184.207])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmRS4-0001ZB-Px
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 02:53:36 -0500
+Received: by wproxy.gmail.com with SMTP id i1so318659wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Dec 2005 23:53:27 -0800 (PST)
+Message-ID: <29f916510512132353y39427546j1413e0fdc5dcaa7a@mail.gmail.com>
+Date: Wed, 14 Dec 2005 02:53:26 -0500
+From: alfred hitch <alfred.hitch@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: "zhao, forrest" <forrest.zhao@intel.com>
-References: <439C33D2.506@yandex.ru>	
-	<1134367675.3152.9.camel@localhost.localdomain>	
-	<439D5159.4030704@yandex.ru>	
-	<1134455209.7346.12.camel@localhost.localdomain>	
-	<20051213114752.GA9165@angel.research.nokia.com>
-	<1134545396.27194.11.camel@localhost.localdomain>
-In-Reply-To: <1134545396.27194.11.camel@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux MTD <linux-mtd@lists.infradead.org>, tglx@linutronix.de,
-	Jarkko Lavinen <jarkko.lavinen@nokia.com>
-Subject: Re: JFFS2 CVS broken after 2005/11/14
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: mtd size calcualtion assumes same size'd flashes ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-zhao, forrest wrote:
+Hi,
 
->Hi, Artem
->
->I would change the mail subject to avoid the confusion.
->
->I did a lot of regression test today.......
->1 I checked in the EBH patch on 2005/11/04, so I checked out
->CVS snapshot of 2005/11/05. It works very well.
->2 I checked in the 1:1 mapping patch on 2005/11/11, so I checked
->out CVS snapshot of 2005/11/12. It works very well.
->3 I checked out CVS snapshot of 2005/11/13. It works very well.
->4 I checked out CVS snapshot of 2005/11/14. There're error 
->messages like the below posted by Jarkko.
->  
->
-Actually even without that patch JFFS2 doesn't work. I don't know which 
-regression tests you did, but JFFS2 fails to do simle a thing:
+Please correct me if my understanding is wrong here:
+but while grepp'ing through the code of linux 2.6 base I had.
+File cfi_cmdset0001.c :
+function: static struct mtd_info *cfi_intelext_setup(struct map_info *map)
 
-mount
-copy a file
-unmount
-mount
+      mtd->size =3D devsize * cfi->numchips;
 
-and it is reproducable on nandsim.
+This seems to me an assumption that the flash'es in system are all of
+same size and so can be added up ?
+Is my understanding correct, sorry dont have latest code access.
 
-Artem.
+If that is the case, any reasons to do so  ?
+My system happened to have an odd sized flash config and was creating messu=
+ps.
+If my understanding is correct, I would have like to patch and post it.
+
+Regards,
+Alfred
