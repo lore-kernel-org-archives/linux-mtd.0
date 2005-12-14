@@ -1,32 +1,19 @@
-Received: from [2002:d412:e8ba::1] (helo=caramon.arm.linux.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmIE2-000256-HO
-	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 17:02:43 -0500
-Date: Tue, 13 Dec 2005 22:01:57 +0000
-From: Russell King <rmk+lkml@arm.linux.org.uk>
-To: Adrian Bunk <bunk@stusta.de>
-Message-ID: <20051213220157.GD24094@flint.arm.linux.org.uk>
-References: <20051211192109.GA22537@flint.arm.linux.org.uk>
-	<20051211193118.GR23349@stusta.de>
-	<20051211194437.GB22537@flint.arm.linux.org.uk>
-	<20051213001028.GS23349@stusta.de> <439ECDCC.80707@hogyros.de>
-	<20051213140001.GG23349@stusta.de>
-	<20051213173112.GA24094@flint.arm.linux.org.uk>
-	<20051213180551.GN23349@stusta.de>
-	<20051213200106.GC24094@flint.arm.linux.org.uk>
-	<20051213201920.GT23349@stusta.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20051213201920.GT23349@stusta.de>
-Sender: Russell King <rmk@arm.linux.org.uk>
-Cc: tony.luck@intel.com, linux-ia64@vger.kernel.org, grundler@parisc-linux.org,
-	matthew@wil.cx, linux-kernel@vger.kernel.org,
-	linuxppc-dev@ozlabs.org, lethal@linux-sh.org, paulus@samba.org,
-	linux-mtd@lists.infradead.org,
-	Simon Richter <Simon.Richter@hogyros.de>, dwmw2@infradead.org,
-	kkojima@rr.iij4u.or.jp, parisc-linux@parisc-linux.org
-Subject: Re: [2.6 patch] don't allow users to set CONFIG_BROKEN=y
+Received: from mf2.realtek.com.tw ([220.128.56.22])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmMZk-0005s6-Ck
+	for linux-mtd@lists.infradead.org; Tue, 13 Dec 2005 21:41:07 -0500
+Message-ID: <01dc01c60057$1b3fab30$106215ac@realtek.com.tw>
+From: "colin" <colin@realtek.com.tw>
+To: "Peter Menzebach" <pm-armlist@mw-itcon.de>
+References: <014601c5ffb6$24baa670$106215ac@realtek.com.tw>
+	<439E8A77.8020400@mw-itcon.de>
+Date: Wed, 14 Dec 2005 10:35:54 +0800
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="big5"
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Does Linux have serial flash drivers?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,35 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Dec 13, 2005 at 09:19:20PM +0100, Adrian Bunk wrote:
-> On Tue, Dec 13, 2005 at 08:01:06PM +0000, Russell King wrote:
-> > That means that the original review was _worthless_.  It wasn't a
-> > review at all.
-> > 
-> > So, what I am trying to get across is the need to show the _full_ set
-> > of changes to a default configuratoin when you disable CONFIG_BROKEN,
-> > which is trivially producable if you run the script I've already posted.
-> > 
-> > You can even use that in conjunction with your present patch to produce
-> > a patch which shows _exactly_ _everything_ which changes as a result of
-> > disabling CONFIG_BROKEN.  Surely giving reviewers the _full_ story is
-> > far better than half a story, and should be something that any change
-> > to the kernel strives for.
-> > 
-> > If not, what's the point of the original change?
-> 
-> The point is that I haven't yet heard any good reason for 
-> CONFIG_BROKEN=y in a defconfig.
 
-I'm sorry, I feel like I'm beating my head against a brick wall.  I
-have said everything that needs to be said, and made my position on
-this patch crystal clear.
+Hi Peter,
+I noticed this driver before.
+But I think it is strnage that there are many serial Flash chips in the
+world but there is no any corresponding mtd driver in Linux kernel source
+tree.
+What's the reason of this?
 
-The patch to the ARM configuration files is nacked as it stands.
-Please go back and rework it along the guidelines I've pointed out
-several times in this thread and maybe then it becomes acceptable.
+Regards,
+Colin
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 Serial core
+
+----- Original Message ----- 
+From: "Peter Menzebach" <pm-armlist@mw-itcon.de>
+To: "colin" <colin@realtek.com.tw>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Tuesday, December 13, 2005 4:46 PM
+Subject: Re: Does Linux have serial flash drivers?
+
+
+> colin wrote:
+> > Hi all,
+> > I have looked for several days. No serial flash driver can be found in
+Linux
+> > source tree.
+> > Does Linux totally give up supporting serial flash?
+> > Is it easy to write a chip driver of serial flash for MTD?
+>
+> Hi Colin,
+> the at91rm9200dk board has a Atmel serial dataflash:
+> http://maxim.org.za/AT91RM9200/2.6/
+>
+> There is a linux mtd driver and jffs2 support.
+>
+>
+> Best regards
+> Peter
+>
+> -- 
+> Peter Menzebach
+> Menzebach und Wolff IT-Consulting GbR
+> Phone +49 751 355 387 1
