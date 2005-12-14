@@ -1,23 +1,33 @@
-Received: from allen.werkleitz.de ([80.190.251.108])
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmYhY-0006Mj-Fr
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 15:37:57 +0000
-Received: from p54bea901.dip0.t-ipconnect.de ([84.190.169.1] helo=void.local)
-	by allen.werkleitz.de with esmtpsa
-	(TLS-1.0:DHE_RSA_3DES_EDE_CBC_SHA1:24) (Exim 4.60)
-	(envelope-from <js@linuxtv.org>) id 1EmYhJ-0004RR-Op
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 16:37:47 +0100
-Received: from js by void.local with local (Exim 3.35 #1 (Debian))
-	id 1EmYhI-0002nL-00
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Dec 2005 16:37:40 +0100
-Date: Wed, 14 Dec 2005 16:37:40 +0100
-From: Johannes Stezenbach <js@linuxtv.org>
+Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmZ8N-00011G-DU
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 11:05:44 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by protonic.prtnl (Postfix) with ESMTP id CFC2F29EBC
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Dec 2005 17:03:58 +0100 (CET)
+Received: from protonic.prtnl ([127.0.0.1])
+	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 11707-09 for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Dec 2005 17:03:57 +0100 (CET)
+Received: from linux.local (linux.prtnl [192.168.1.97])
+	by protonic.prtnl (Postfix) with ESMTP id 97F7029EBB
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Dec 2005 17:03:57 +0100 (CET)
+From: David Jander <david.jander@protonic.nl>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20051214153740.GB10310@linuxtv.org>
+Date: Wed, 14 Dec 2005 17:05:30 +0100
+References: <014601c5ffb6$24baa670$106215ac@realtek.com.tw>
+	<01dc01c60057$1b3fab30$106215ac@realtek.com.tw>
+	<439FD5BF.1090507@mw-itcon.de>
+In-Reply-To: <439FD5BF.1090507@mw-itcon.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="big5"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: padding in mkfs.jffs2 and nandwrite
+Message-Id: <200512141705.31619.david.jander@protonic.nl>
+Subject: Re: Does Linux have serial flash drivers?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +37,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wednesday 14 December 2005 09:20, Peter Menzebach wrote:
+>[...]
+> Maybe, because most boards will then need 2 flashs with different
+> interfaces. Afaik only the Atmel at91... can boot directly from serial
 
-I've prepared a jffs2 image with mkfs.jffs2 and written it to
-NAND flash using nandwrite (details below). When the file system
-is mounted r/w and written to, on future mounts the following
-warning appears:
+This is actually quite conceivable. Have a small parallel NOR-Flash for 
+boot-loader+kernel, and a huge serial nand-flash (cheaper per-Mb) as flash 
+disk.
+Btw, I was wondering the same.
+AFAICR, there is QSlinux (do they still exist today?), that made a serial 
+flash driver (via SPI) and used serial data-flash as fs.
 
-	Empty flash at 0x000000f8 ends at 0x00000200
+Greetings,
 
-This is caused by the padding added by either mkfs.jffs2 -p512
-or nandwrite -p, because this padding is 0xff, which jffs2
-sees as "free space which was wasted" (when jffs2 flushes
-a page to disk it pads with 0x00, so it can tell that this space
-was deliberately left unused).
-(I think this warning will evetually go away when the block is garbage
-collected, but this can take a loooong time.)
-
-To avoid this warning I would like to suggest that we either
-change mkfs.jffs2 and nandwrite to pad with 0x00, or add
-an option to both to choose the padding value.
-
-One additional question: Why does mkfs.jffs2 -p by default
-pad to the end of the erase block? When whole pages are written
-with all 0xff, but the first N pages of an erase block contain
-valid nodes, jffs2 will assume that these pages are freshly
-erased and good to write in.
-Won't this cause instable bits when written again by jffs2?
-(The data sheet for my flash says that there may be up to
-three partial page write before erase is needed, but I'm not sure
-if this allows to write the same byte twice.)
-
-What I currently do to avoid the issue:
-
-$ mkfs.jffs2 -v -e16384 -d foo -b -n -q | dd bs=512 conv=sync >foo.jffs2
-$ flash_eraseall -j /dev/mtd0
-$ nandwrite /dev/mtd0 foo.jffs2
-
-
-Johannes
+-- 
+David Jander
