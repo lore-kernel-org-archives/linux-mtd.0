@@ -1,33 +1,23 @@
-Received: from protonic.xs4all.nl ([213.84.116.84] helo=protonic.prtnl)
+Received: from wproxy.gmail.com ([64.233.184.198])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EmZ8N-00011G-DU
-	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 11:05:44 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by protonic.prtnl (Postfix) with ESMTP id CFC2F29EBC
+	id 1Emkks-00021r-L3
+	for linux-mtd@lists.infradead.org; Wed, 14 Dec 2005 23:30:12 -0500
+Received: by wproxy.gmail.com with SMTP id i5so582047wra
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Dec 2005 17:03:58 +0100 (CET)
-Received: from protonic.prtnl ([127.0.0.1])
-	by localhost (protonic [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 11707-09 for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Dec 2005 17:03:57 +0100 (CET)
-Received: from linux.local (linux.prtnl [192.168.1.97])
-	by protonic.prtnl (Postfix) with ESMTP id 97F7029EBB
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Dec 2005 17:03:57 +0100 (CET)
-From: David Jander <david.jander@protonic.nl>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 14 Dec 2005 17:05:30 +0100
-References: <014601c5ffb6$24baa670$106215ac@realtek.com.tw>
-	<01dc01c60057$1b3fab30$106215ac@realtek.com.tw>
-	<439FD5BF.1090507@mw-itcon.de>
-In-Reply-To: <439FD5BF.1090507@mw-itcon.de>
+	Wed, 14 Dec 2005 20:30:08 -0800 (PST)
+Message-ID: <29f916510512142030i3f6df27aqb6230f518e2b7526@mail.gmail.com>
+Date: Wed, 14 Dec 2005 23:30:08 -0500
+From: alfred hitch <alfred.hitch@gmail.com>
+To: Josh Boyer <jwboyer@gmail.com>
+In-Reply-To: <625fc13d0512140537h20e291e8i10951ced01f2a290@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="big5"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200512141705.31619.david.jander@protonic.nl>
-Subject: Re: Does Linux have serial flash drivers?
+References: <29f916510512132353y39427546j1413e0fdc5dcaa7a@mail.gmail.com>
+	<625fc13d0512140537h20e291e8i10951ced01f2a290@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd size calcualtion assumes same size'd flashes ?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,19 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 14 December 2005 09:20, Peter Menzebach wrote:
->[...]
-> Maybe, because most boards will then need 2 flashs with different
-> interfaces. Afaik only the Atmel at91... can boot directly from serial
+Hi josh,
 
-This is actually quite conceivable. Have a small parallel NOR-Flash for 
-boot-loader+kernel, and a huge serial nand-flash (cheaper per-Mb) as flash 
-disk.
-Btw, I was wondering the same.
-AFAICR, there is QSlinux (do they still exist today?), that made a serial 
-flash driver (via SPI) and used serial data-flash as fs.
+Thanks for your mail.
+I am not so clear on this separate mtd device for each chip thing.
+I have been simply creating the say map file in ixp425.c with whole
+flash layout declared there.
+I had to do mknod for each partition created in map separately
+something like this say:
+ixp425.c: static struct mtd_partition ixp425_partitions[] =3D {
+        {
+                name:   "bootloader",
+                offset: 0x00000000,
+                size:   0x00020000,
+        },
+        {
+                name:   "bootloader-config",
+                offset: 0x00020000,
+                size:   0x00020000,
+        },
+        {
+                name:   "normal-kernel",
+                offset: 0x00040000,
+                size:   0x00100000,
+        },
+}
 
-Greetings,
+and I had to do a mknod of  /dev/mtd0,1.2 etc with sequential minor numbers=
+ ..
 
--- 
-David Jander
+Can you please tell me how to create separate MTD devices if this isnt
+that ? or any relavant doc ?
+
+Regards,
+Alfred
+
+On 12/14/05, Josh Boyer <jwboyer@gmail.com> wrote:
+> On 12/14/05, alfred hitch <alfred.hitch@gmail.com> wrote:
+> > Hi,
+> >
+> > Please correct me if my understanding is wrong here:
+> > but while grepp'ing through the code of linux 2.6 base I had.
+> > File cfi_cmdset0001.c :
+> > function: static struct mtd_info *cfi_intelext_setup(struct map_info *m=
+ap)
+> >
+> >       mtd->size =3D devsize * cfi->numchips;
+> >
+> > This seems to me an assumption that the flash'es in system are all of
+> > same size and so can be added up ?
+> > Is my understanding correct, sorry dont have latest code access.
+>
+> I believe your understanding is correct.  Your device size can span
+> multiple chips if they are physically contiguous and of the same type.
+>
+> >
+> > If that is the case, any reasons to do so  ?
+> > My system happened to have an odd sized flash config and was creating m=
+essups.
+> > If my understanding is correct, I would have like to patch and post it.
+>
+> The normal method of dealing with heterogenous chips is to create
+> separate MTD devices for each chip in your map driver.  You can then
+> use MTD_CONCAT to  concatenate these separate devices into one large
+> device.
+>
+> josh
+>
