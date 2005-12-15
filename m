@@ -1,28 +1,19 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Emq6H-0006i0-Vh
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2005 05:12:41 -0500
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id 2B7AB2EFDF
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Dec 2005 11:12:33 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 1E9A31E1AC8
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Dec 2005 11:12:33 +0100 (CET)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id 4D9D2125DB
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Dec 2005 11:12:32 +0100 (CET)
-Message-ID: <43A1418F.3060701@imc-berlin.de>
-Date: Thu, 15 Dec 2005 11:12:31 +0100
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+Received: from mgw-ext01.nokia.com ([131.228.20.93])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EmqJ7-00072y-B2
+	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2005 05:25:55 -0500
+Date: Thu, 15 Dec 2005 12:26:07 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Steven Scholz <steven.scholz@imc-berlin.de>
+Message-ID: <20051215102607.GA20431@angel.research.nokia.com>
+References: <43A1418F.3060701@imc-berlin.de>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Subject: Do I have to umount JFFS2?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <43A1418F.3060701@imc-berlin.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Do I have to umount JFFS2?
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,28 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Thu, Dec 15, 2005 at 11:12:31AM +0100, ext Steven Scholz wrote:
+> Now I wonder if it is needed to umount this partition explicitly before
+> rebooting? Or mount it read only first by having
 
-we're using JFFS2 as rootfs for embedded devices.
+JFFS2 is synhronous except for the write buffer (used with Nand chips).  
+Doing sync is enough and flushes the write buffer.
 
->From time to time we have to reboot shortly after writing to this fs,
-e.g. a firware update is basically copying the new fw to the jffs2
-partition and call "reboot".
-
-Now I wonder if it is needed to umount this partition explicitly before
-rebooting? Or mount it read only first by having
-
-::shutdown:/bin/umount -a -r
-
-in /etc/inittab. Or call "sync"?
-
-Or is the unmounting done by the kernel before actually rebooting?
-So the system only reboots when all writing to flash is finished?
-
-(I've lately seen corrupt root fs and want to find out if these reboots
-could cause the trouble...)
-
-Thanks a million!
-
--- 
-Steven
+Jarkko Lavinen
