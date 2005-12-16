@@ -1,19 +1,18 @@
 Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EnBvo-0001xk-Dq
-	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 04:31:26 -0500
-Message-ID: <43A28959.1030108@ru.mvista.com>
-Date: Fri, 16 Dec 2005 12:31:05 +0300
+	id 1EnBwZ-0001z5-Cz
+	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 04:32:44 -0500
+Message-ID: <43A2898F.5030205@ru.mvista.com>
+Date: Fri, 16 Dec 2005 12:31:59 +0300
 From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-To: Charles Manning <manningc2@actrix.gen.nz>
-References: <43A1484C.5030300@ru.mvista.com>
-	<200512161144.19130.manningc2@actrix.gen.nz>
-In-Reply-To: <200512161144.19130.manningc2@actrix.gen.nz>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+To: Vitaly Wool <vwool@ru.mvista.com>
+References: <20051215122842.7ec739ca.vwool@ru.mvista.com>
+In-Reply-To: <20051215122842.7ec739ca.vwool@ru.mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] the way to proceed with OOB data
+Subject: Re: [PATCH/RFC] HW ECC optimization
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +22,105 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning wrote:
+So, if noone disagrees, I'm gonna commit that...
 
->>1. Change the API for nand_read_ecc and nand_write_ecc, namely add OOB
->>read/write length parameter. This is what Charles proposes; it's nice
->>for MTD users but it will overcomplicate nand_read_ecc/nand_write_ecc,
->>which are complicated enough at the moment.
->>    
->>
+Vitaly
+
+Vitaly Wool wrote:
+
+>Hi,
 >
->I disagree that it needs to make the current code more complicated.
+>currently the whole page is being written for nand_write_oob in HW ECC case.
+>This is done in order to support some HW ECC generators which need a whole page to be written to generate proper ECC. However, for most of those generators it's not necessary and it results in perfrormance penalty during OOB writes.
+>Well, the patch inlined below presents a proof-of-concept approach for speeding this up. The main problem is how to distinguish between different types of HW ECC generators? I'm using SYNDROME flag for this purpose, although it may make sense to create a separate one.
 >
->I did submit a patch of sorts that was quite simple, but fractured the logic 
->in do_read_ecc, do_read_ecc is pretty convoluted and effort should be made to 
->not make it any more complicated.
+>Anyway, here's some measurements with and w/o this patch applied on my 2k-page NAND.
 >
->I think the better solution is to just wrap the code better. ie:
+>layout {data, oob, ecc, data, oob, ecc, data, oob, ecc, data, oob, ecc}, w/ the patch:
+>root@192.168.3.101:~# time flash_eraseall -j /dev/mtd/3
+>Erasing 128 Kibyte @ 12e0000 -- 99 % complete. Cleanmarker written at 12e0000.
 >
->static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
->			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo 
->*oobsel)
->{
+>real    0m0.709s
+>user    0m0.010s
+>sys     0m0.350s
 >
->       if(buf) {    <-------- 
->	/* use userspace supplied oobinfo, if zero */
->	if (oobsel == NULL)
->		oobsel = &mtd->oobinfo;
->	return nand_do_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel, 0xff);
->       } else {   <--------------------
->            /* just read the oob according to oobinfo */  
-><---------------------
->           call whatever local function <----------------------
->      }  <----------------
+>layout {data, oob, ecc, data, oob, ecc, data, oob, ecc, data, oob, ecc}, w/o the patch:
+>root@192.168.3.101:~# time flash_eraseall -j /dev/mtd/3
+>Erasing 128 Kibyte @ 12e0000 -- 99 % complete. Cleanmarker written at 12e0000.
+>
+>real    0m0.811s
+>user    0m0.000s
+>sys     0m0.370s
+>
+>layout {data, oob, ecc, oob, ecc, oob, ecc, oob, ecc}, w/o the patch:
+>root@192.168.3.101:~# ./xx.sh
+>root@192.168.3.101:~# time flash_eraseall -j /dev/mtd/3
+>Erasing 128 Kibyte @ 12e0000 -- 99 % complete. Cleanmarker written at 12e0000.
+>
+>real    0m0.849s
+>user    0m0.000s
+>sys     0m0.330s
+>
+>layout {data, oob, ecc, oob, ecc, oob, ecc, oob, ecc}, w/ the patch:
+>root@192.168.3.101:~# time flash_eraseall -j /dev/mtd/3
+>Erasing 128 Kibyte @ 12e0000 -- 99 % complete. Cleanmarker written at 12e0000.
+>
+>real    0m0.709s
+>user    0m0.000s
+>sys     0m0.340s
+>
+>Any comments are welcome.
+>
+>Vitaly 
+>
+>--- drivers/mtd/nand/nand_base.c	2005-12-14 15:29:42.000000000 +0300
+>+++ drivers/mtd/nand/nand_base.c	2005-12-14 21:37:47.324960872 +0300
+>@@ -1948,7 +1948,7 @@
+> 		}
+> 	} else {
+> 		int i = 0, j = 0;
+>-		int fflen = 0, ooblen = 0;
+>+		int fflen = 0, old_fflen = 0, ooblen = 0;
+> 
+> 		/* Write out desired data */
+> 		this->cmdfunc (mtd, NAND_CMD_SEQIN, 0, page & this->pagemask);
+>@@ -1957,9 +1957,27 @@
+> 		for (j = 0; this->layout[j].length; j++) {
+> 			switch (this->layout[j].type) {
+> 			case ITEM_TYPE_DATA:
+>-				this->enable_hwecc(mtd, NAND_ECC_WRITE);
+>-				this->write_buf(mtd, ffchars, this->layout[j].length);
+>-				fflen += this->layout[j].length;
+>+				if (this->options & NAND_HWECC_SYNDROME) {
+>+					this->enable_hwecc(mtd, NAND_ECC_WRITE);
+>+					this->write_buf(mtd, ffchars, this->layout[j].length);
+>+					fflen += this->layout[j].length;
+>+				} else {
+>+					if (old_fflen < fflen) {
+>+						this->cmdfunc (mtd, NAND_CMD_PAGEPROG, -1, -1);
+>+						status = this->waitfunc (mtd, this, FL_WRITING);
+>+						if (status & NAND_STATUS_FAIL) {
+>+							DEBUG (MTD_DEBUG_LEVEL0, "%s: Failed write, page 0x%08x\n", __FUNCTION__, page);
+>+							ret = -EIO;
+>+							goto out;
+>+						}
+>+					}
+>+					fflen += this->layout[j].length;
+>+					if (this->options & NAND_BUSWIDTH_16 && (fflen + ooblen) & 1)
+>+						this->cmdfunc (mtd, NAND_CMD_SEQIN, fflen + ooblen - 1, page & this->pagemask);
+>+					else
+>+						this->cmdfunc (mtd, NAND_CMD_SEQIN, fflen + ooblen, page & this->pagemask);
+>+					old_fflen = fflen;
+>+				}
+> 				break;
+> 
+> 			case ITEM_TYPE_ECC:
+>
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>
 >  
 >
-That doesn't seem to be a comprehensive solution to me. You imply here 
-that in case buf is NULL, OOB area of only one page is to be read which 
-may be inconvenient in some cases. Basically that means that you need to 
-specify two more parameters - the OOB data length to read and (ptr to 
-the var for) the OOB data length actually read. On the other hand, this 
-means you shouldn't ignore these parameters in nand_do_read_ecc call, 
-thus it's either you make everything a lot more complicated or you get 
-routime with quite a limited functionality for OOB reading/writing 
-(suppose you have a long, say, cleanmarker which is pread across several 
-pages of the eraseblock; you willthen have to figure out how many read 
-calls to do in order to retrieve it all).
-So, lemme a bit disagree with you, I hope that makes sense a bit :)
-
->>3. Leave everything as is and add a new functionto the MTD interface
->>that will read/write only free OOB bytes as a single chunk of data.
->>    
->>
->
->In some ways this is the best since all the other options have either  
->compatability issues of one sort or another. It is also very clear what is 
->going on. For this reason, this would be my preferred approach.
->  
->
-Yeah, to me as well :)
-I'm planning to work out something of a kind soon, maybe even before 
-Christmas ;)
-
-Best regards,
-   Vitaly
