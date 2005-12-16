@@ -1,25 +1,22 @@
-Received: from allen.werkleitz.de ([80.190.251.108])
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EnJMT-0007Ve-Kx
-	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 17:27:18 +0000
-Received: from p54bea8c6.dip0.t-ipconnect.de ([84.190.168.198] helo=void.local)
-	by allen.werkleitz.de with esmtpsa
-	(TLS-1.0:DHE_RSA_3DES_EDE_CBC_SHA1:24) (Exim 4.60)
-	(envelope-from <js@linuxtv.org>) id 1EnJMC-0000OD-Fv
-	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 18:27:05 +0100
-Received: from js by void.local with local (Exim 3.35 #1 (Debian))
-	id 1EnJMA-0002iG-00
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Dec 2005 18:26:58 +0100
-Date: Fri, 16 Dec 2005 18:26:58 +0100
-From: Johannes Stezenbach <js@linuxtv.org>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20051216172658.GB6953@linuxtv.org>
-References: <20051214153740.GB10310@linuxtv.org>
+Received: from desire.actrix.co.nz ([203.96.16.164])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EnLe9-0001sn-6s
+	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 14:53:43 -0500
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: Vitaly Wool <vwool@ru.mvista.com>
+Date: Sat, 17 Dec 2005 08:53:32 +1300
+References: <43A1484C.5030300@ru.mvista.com>
+	<200512161144.19130.manningc2@actrix.gen.nz>
+	<43A28959.1030108@ru.mvista.com>
+In-Reply-To: <43A28959.1030108@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20051214153740.GB10310@linuxtv.org>
-Subject: Re: padding in mkfs.jffs2 and nandwrite
+Message-Id: <200512170853.32451.manningc2@actrix.gen.nz>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [RFC] the way to proceed with OOB data
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,46 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 14, 2005, Johannes Stezenbach wrote:
-> I've prepared a jffs2 image with mkfs.jffs2 and written it to
-> NAND flash using nandwrite (details below). When the file system
-> is mounted r/w and written to, on future mounts the following
-> warning appears:
-> 
-> 	Empty flash at 0x000000f8 ends at 0x00000200
-> 
-> This is caused by the padding added by either mkfs.jffs2 -p512
-> or nandwrite -p, because this padding is 0xff, which jffs2
-> sees as "free space which was wasted" (when jffs2 flushes
-> a page to disk it pads with 0x00, so it can tell that this space
-> was deliberately left unused).
-> (I think this warning will evetually go away when the block is garbage
-> collected, but this can take a loooong time.)
-> 
-> To avoid this warning I would like to suggest that we either
-> change mkfs.jffs2 and nandwrite to pad with 0x00, or add
-> an option to both to choose the padding value.
-> 
-> One additional question: Why does mkfs.jffs2 -p by default
-> pad to the end of the erase block? When whole pages are written
-> with all 0xff, but the first N pages of an erase block contain
-> valid nodes, jffs2 will assume that these pages are freshly
-> erased and good to write in.
-> Won't this cause instable bits when written again by jffs2?
-> (The data sheet for my flash says that there may be up to
-> three partial page write before erase is needed, but I'm not sure
-> if this allows to write the same byte twice.)
-> 
-> What I currently do to avoid the issue:
-> 
-> $ mkfs.jffs2 -v -e16384 -d foo -b -n -q | dd bs=512 conv=sync >foo.jffs2
-> $ flash_eraseall -j /dev/mtd0
-> $ nandwrite /dev/mtd0 foo.jffs2
+On Friday 16 December 2005 22:31, Vitaly Wool wrote:
+> Charles Manning wrote:
+> >>1. Change the API for nand_read_ecc and nand_write_ecc, namely add OOB
+> >>read/write length parameter. This is what Charles proposes; it's nice
+> >>for MTD users but it will overcomplicate nand_read_ecc/nand_write_ecc,
+> >>which are complicated enough at the moment.
+> >
+> >I disagree that it needs to make the current code more complicated.
+> >
+> >I did submit a patch of sorts that was quite simple, but fractured the
+> > logic in do_read_ecc, do_read_ecc is pretty convoluted and effort should
+> > be made to not make it any more complicated.
+> >
+> >I think the better solution is to just wrap the code better. ie:
+> >
+> >static int nand_read_ecc (struct mtd_info *mtd, loff_t from, size_t len,
+> >			  size_t * retlen, u_char * buf, u_char * oob_buf, struct nand_oobinfo
+> >*oobsel)
+> >{
+> >
+> >       if(buf) {    <--------
+> >	/* use userspace supplied oobinfo, if zero */
+> >	if (oobsel == NULL)
+> >		oobsel = &mtd->oobinfo;
+> >	return nand_do_read_ecc(mtd, from, len, retlen, buf, oob_buf, oobsel,
+> > 0xff); } else {   <--------------------
+> >            /* just read the oob according to oobinfo */
+> ><---------------------
+> >           call whatever local function <----------------------
+> >      }  <----------------
+>
+> That doesn't seem to be a comprehensive solution to me. You imply here
+> that in case buf is NULL, OOB area of only one page is to be read which
+> may be inconvenient in some cases. Basically that means that you need to
+> specify two more parameters - the OOB data length to read and (ptr to
+> the var for) the OOB data length actually read. On the other hand, this
+> means you shouldn't ignore these parameters in nand_do_read_ecc call,
+> thus it's either you make everything a lot more complicated or you get
+> routime with quite a limited functionality for OOB reading/writing
+> (suppose you have a long, say, cleanmarker which is pread across several
+> pages of the eraseblock; you willthen have to figure out how many read
+> calls to do in order to retrieve it all).
+> So, lemme a bit disagree with you, I hope that makes sense a bit :)
 
-Would someone be so kind and comment on this?
+OK, I admit I'm looking at this through YAFFS eyes. YAFFS always writes one 
+page at a time, so this would not be an issue.
 
-Why is padding handled differently in fs/jffs2/ and mkfs.jffs2?
-Is it a bug?
+Do any other fs or users write multiple NAND pages at a time? If so how do 
+they handle any failures?
 
-Greetings,
-Johannes
+>
+> >>3. Leave everything as is and add a new functionto the MTD interface
+> >>that will read/write only free OOB bytes as a single chunk of data.
+> >
+> >In some ways this is the best since all the other options have either
+> >compatability issues of one sort or another. It is also very clear what is
+> >going on. For this reason, this would be my preferred approach.
+>
+> Yeah, to me as well :)
+> I'm planning to work out something of a kind soon, maybe even before
+> Christmas ;)
+
+Cool :-) If you get that done by Christmas, I'll try to get the YAFFS side 
+done by New Year. It is summer here so that is a bit of a challenge.
+
+I don't think the programming effort is really going to be much different one 
+way or another, it is just how to serve it up to the customers.
+
+Thanx Vitaly.
+
+
+-- Charles
