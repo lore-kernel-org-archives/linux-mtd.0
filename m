@@ -1,29 +1,20 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1En5Ad-0004KT-Cb
-	for linux-mtd@lists.infradead.org; Thu, 15 Dec 2005 21:18:36 -0500
-Received: from ep_mmp1 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0IRK00JH1JP68N@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 11:17:30 +0900 (KST)
-Received: from july7 ([10.88.163.199])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPA id <0IRK00I4YJP6FZ@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 11:17:30 +0900 (KST)
-Date: Fri, 16 Dec 2005 11:17:29 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-In-reply-to: <20051216005505.GW23349@stusta.de>
-To: 'Adrian Bunk' <bunk@stusta.de>
-Message-id: <0IRK00I50JP6FZ@mmp1.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Cc: 'Andrew Morton' <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	'Linus Torvalds' <torvalds@osdl.org>, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: RE: drivers/mtd/onenand/: unacceptable stack usage
-Reply-To: kyungmin.park@samsung.com
+Received: from www.mw-itcon.de ([213.146.115.73])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EnBbw-0001RM-Ck
+	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 04:10:51 -0500
+Message-ID: <43A2849E.8000907@mw-itcon.de>
+Date: Fri, 16 Dec 2005 10:10:54 +0100
+From: Peter Menzebach <pm-mtd@mw-itcon.de>
+MIME-Version: 1.0
+To: alfred hitch <alfred.hitch@gmail.com>
+References: <43A1418F.3060701@imc-berlin.de>	<20051215102607.GA20431@angel.research.nokia.com>	<43A1609C.80705@imc-berlin.de>
+	<43A166C6.5060803@mw-itcon.de>
+	<29f916510512151816v59b1f584h346a415b3888728@mail.gmail.com>
+In-Reply-To: <29f916510512151816v59b1f584h346a415b3888728@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Steven Scholz <steven.scholz@imc-berlin.de>, linux-mtd@lists.infradead.org
+Subject: Re: Do I have to umount JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,337 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+alfred hitch wrote:
+> Hi Steven, Peter,
+> 
+> I would like to put in some problems we are also facing. I had
+> reported it sometime back here also.
+> 
+> On our system, we are observing that files on flash (jffs2 intel cfi nand)
+> are getting corrupted, after  a number of resets and say 3 months of usage)
+> 
+> Anyone seen anything like this ? any clues on how one can look into this.
+> 
 
-OK. I change the source code. 
-It is working well on OMAP H4 with 2.6.15-rc4 kernel and LTP fs test is
-passed.
+Hi Alfred,
+I have had no non recoverable error here up to now, but I am not 
+representative, since I do not need many permanent writes: I have all 
+permanently changeable informations like configuration files in one rw 
+partition, and all temporary information like log, lock, pidfiles... in 
+the ramdisk. My rootfs stays ro. In my case, I can simply erase the 
+"config-partition", and the board definitely is clean.
 
-And please apply the recent onenand patch
+I have 2 ideas to your problems:
+1. Single files can be still corrupted, when you write them and press reset.
+2. Your jffs2 version is from a let's say "not so good time"
 
-	- check correct manufacturer 
-	- unlock problem in DDP (Double Density Package)
-	- add platform_device.h instead of device.h
+What I do not understand (from one of your previous posts): You said, a 
+command file was damaged. Was this file written at generation time of 
+the fs, and then not written any more?
 
-Thank you
+Best regards
+Peter
 
-Kyungmin Park
-
-1. check correct manufacturer
-
-Index: drivers/mtd/onenand/onenand_base.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_base.c,v
-retrieving revision 1.8
-diff -u -p -r1.8 onenand_base.c
---- drivers/mtd/onenand/onenand_base.c	29 Nov 2005 14:49:36 -0000	1.8
-+++ drivers/mtd/onenand/onenand_base.c	2 Dec 2005 06:20:29 -0000
-@@ -1346,7 +1346,6 @@ static void onenand_print_device_info(in
- 
- static const struct onenand_manufacturers onenand_manuf_ids[] = {
-         {ONENAND_MFR_SAMSUNG, "Samsung"},
--        {ONENAND_MFR_UNKNOWN, "Unknown"}
- };
- 
- /**
-@@ -1357,17 +1356,22 @@ static const struct onenand_manufacturer
-  */
- static int onenand_check_maf(int manuf)
- {
-+	int size = ARRAY_SIZE(onenand_manuf_ids);
-+	char *name;
-         int i;
- 
--        for (i = 0; onenand_manuf_ids[i].id; i++) {
-+        for (i = 0; i < size; i++)
-                 if (manuf == onenand_manuf_ids[i].id)
-                         break;
--        }
- 
--        printk(KERN_DEBUG "OneNAND Manufacturer: %s (0x%0x)\n",
--                onenand_manuf_ids[i].name, manuf);
-+	if (i < size)
-+		name = onenand_manuf_ids[i].name;
-+	else
-+		name = "Unknown";
-+
-+        printk(KERN_DEBUG "OneNAND Manufacturer: %s (0x%0x)\n", name,
-manuf);
- 
--        return (i != ONENAND_MFR_UNKNOWN);
-+        return (i == size);
- }
- 
- /**
-Index: include/linux/mtd/onenand.h
-===================================================================
-RCS file: /home/cvs/mtd/include/linux/mtd/onenand.h,v
-retrieving revision 1.8
-diff -u -p -r1.8 onenand.h
---- include/linux/mtd/onenand.h	7 Nov 2005 11:14:55 -0000	1.8
-+++ include/linux/mtd/onenand.h	2 Dec 2005 06:20:30 -0000
-@@ -140,7 +140,6 @@ struct onenand_chip {
-  * OneNAND Flash Manufacturer ID Codes
-  */
- #define ONENAND_MFR_SAMSUNG	0xec
--#define ONENAND_MFR_UNKNOWN	0x00
- 
- /**
-  * struct nand_manufacturers - NAND Flash Manufacturer ID Structure
-
-2. unlock problem in DDP
-
-Index: drivers/mtd/onenand/onenand_base.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_base.c,v
-retrieving revision 1.9
-diff -u -p -r1.9 onenand_base.c
---- drivers/mtd/onenand/onenand_base.c	2 Dec 2005 07:43:37 -0000	1.9
-+++ drivers/mtd/onenand/onenand_base.c	16 Dec 2005 00:37:59 -0000
-@@ -1296,6 +1296,12 @@ static int onenand_unlock(struct mtd_inf
- 
- 	/* Block lock scheme */
- 	for (block = start; block < end; block++) {
-+		/* Set block address */
-+		value = onenand_block_address(this, block);
-+		this->write_word(value, this->base +
-ONENAND_REG_START_ADDRESS1);
-+		/* Select DataRAM for DDP */
-+		value = onenand_bufferram_address(this, block);
-+		this->write_word(value, this->base +
-ONENAND_REG_START_ADDRESS2);
- 		/* Set start block address */
- 		this->write_word(block, this->base +
-ONENAND_REG_START_BLOCK_ADDRESS);
- 		/* Write unlock command */
-@@ -1309,10 +1315,6 @@ static int onenand_unlock(struct mtd_inf
- 		    & ONENAND_CTRL_ONGO)
- 			continue;
- 
--		/* Set block address for read block status */
--		value = onenand_block_address(this, block);
--		this->write_word(value, this->base +
-ONENAND_REG_START_ADDRESS1);
--
- 		/* Check lock status */
- 		status = this->read_word(this->base +
-ONENAND_REG_WP_STATUS);
- 		if (!(status & ONENAND_WP_US))
-
-
-# reduce stack usage
-
-Index: drivers/mtd/onenand/onenand_base.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_base.c,v
-retrieving revision 1.10
-diff -u -p -r1.10 onenand_base.c
---- drivers/mtd/onenand/onenand_base.c	16 Dec 2005 00:41:48 -0000	1.10
-+++ drivers/mtd/onenand/onenand_base.c	16 Dec 2005 01:45:15 -0000
-@@ -940,7 +940,7 @@ static int onenand_writev_ecc(struct mtd
- 	u_char *eccbuf, struct nand_oobinfo *oobsel)
- {
- 	struct onenand_chip *this = mtd->priv;
--	unsigned char buffer[MAX_ONENAND_PAGESIZE], *pbuf;
-+	unsigned char *pbuf;
- 	size_t total_len, len;
- 	int i, written = 0;
- 	int ret = 0;
-@@ -975,7 +975,7 @@ static int onenand_writev_ecc(struct mtd
- 	/* Loop until all keve's data has been written */
- 	len = 0;
- 	while (count) {
--		pbuf = buffer;
-+		pbuf = this->page_buf;
- 		/*
- 		 * If the given tuple is >= pagesize then
- 		 * write it out from the iov
-@@ -995,7 +995,7 @@ static int onenand_writev_ecc(struct mtd
- 			int cnt = 0, thislen;
- 			while (cnt < mtd->oobblock) {
- 				thislen = min_t(int, mtd->oobblock - cnt,
-vecs->iov_len - len);
--				memcpy(buffer + cnt, vecs->iov_base + len,
-thislen);
-+				memcpy(this->page_buf + cnt, vecs->iov_base
-+ len, thislen);
- 				cnt += thislen;
- 				len += thislen;
- 
-@@ -1519,6 +1519,18 @@ int onenand_scan(struct mtd_info *mtd, i
- 		this->read_bufferram = onenand_sync_read_bufferram;
- 	}
- 
-+	/* Allocate buffers, if necessary */
-+	if (!this->page_buf) {
-+		size_t len;
-+		len = mtd->oobblock + mtd->oobsize;
-+		this->page_buf = kmalloc(len, GFP_KERNEL);
-+		if (!this->page_buf) {
-+			printk(KERN_ERR "onenand_scan(): Can't allocate
-page_buf\n");
-+			return -ENOMEM;
-+		}
-+		this->options |= ONENAND_PAGEBUF_ALLOC;
-+	}
-+
- 	this->state = FL_READY;
- 	init_waitqueue_head(&this->wq);
- 	spin_lock_init(&this->chip_lock);
-@@ -1580,12 +1592,21 @@ int onenand_scan(struct mtd_info *mtd, i
-  */
- void onenand_release(struct mtd_info *mtd)
- {
-+	struct onenand_chip *this = mtd->priv;
-+
- #ifdef CONFIG_MTD_PARTITIONS
- 	/* Deregister partitions */
- 	del_mtd_partitions (mtd);
- #endif
- 	/* Deregister the device */
- 	del_mtd_device (mtd);
-+
-+	/* Free bad block table memory, if allocated */
-+	if (this->bbm)
-+		kfree(this->bbm);
-+	/* Buffer allocated by onenand_scan */
-+	if (this->options & ONENAND_PAGEBUF_ALLOC)
-+		kfree(this->page_buf);
- }
- 
- EXPORT_SYMBOL_GPL(onenand_scan);
-Index: drivers/mtd/onenand/onenand_bbt.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_bbt.c,v
-retrieving revision 1.1
-diff -u -p -r1.1 onenand_bbt.c
---- drivers/mtd/onenand/onenand_bbt.c	27 Sep 2005 10:26:36 -0000	1.1
-+++ drivers/mtd/onenand/onenand_bbt.c	16 Dec 2005 01:45:15 -0000
-@@ -118,10 +118,10 @@ static int create_bbt(struct mtd_info *m
-  */
- static inline int onenand_memory_bbt (struct mtd_info *mtd, struct
-nand_bbt_descr *bd)
- {
--	unsigned char data_buf[MAX_ONENAND_PAGESIZE];
-+	struct onenand_chip *this = mtd->priv;
- 
-         bd->options &= ~NAND_BBT_SCANEMPTY;
--        return create_bbt(mtd, data_buf, bd, -1);
-+        return create_bbt(mtd, this->page_buf, bd, -1);
- }
- 
- /**
-Index: include/linux/mtd/onenand.h
-===================================================================
-RCS file: /home/cvs/mtd/include/linux/mtd/onenand.h,v
-retrieving revision 1.9
-diff -u -p -r1.9 onenand.h
---- include/linux/mtd/onenand.h	2 Dec 2005 07:43:38 -0000	1.9
-+++ include/linux/mtd/onenand.h	16 Dec 2005 01:45:15 -0000
-@@ -17,7 +17,6 @@
- #include <linux/mtd/bbm.h>
- 
- #define MAX_BUFFERRAM		2
--#define MAX_ONENAND_PAGESIZE	(2048 + 64)
- 
- /* Scan and identify a OneNAND device */
- extern int onenand_scan(struct mtd_info *mtd, int max_chips);
-@@ -110,6 +109,7 @@ struct onenand_chip {
- 	spinlock_t		chip_lock;
- 	wait_queue_head_t	wq;
- 	onenand_state_t		state;
-+	unsigned char		*page_buf;
- 
- 	struct nand_oobinfo	*autooob;
- 
-@@ -134,7 +134,7 @@ struct onenand_chip {
-  * Options bits
-  */
- #define ONENAND_CONT_LOCK		(0x0001)
--
-+#define ONENAND_PAGEBUF_ALLOC		(0x1000)
- 
- /*
-  * OneNAND Flash Manufacturer ID Codes
-
-4. Add platform_device.h instead device.h
-
-diff --git a/drivers/mtd/onenand/generic.c b/drivers/mtd/onenand/generic.c
---- a/drivers/mtd/onenand/generic.c
-+++ b/drivers/mtd/onenand/generic.c
-@@ -12,9 +12,9 @@
-  *   This is a device driver for the OneNAND flash for generic boards.
-  */
-
--#include <linux/device.h>
- #include <linux/module.h>
- #include <linux/init.h>
-+#include <linux/platform_device.h>
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/onenand.h>
- #include <linux/mtd/partitions.h>
-@@ -39,7 +39,7 @@ static int __devinit generic_onenand_pro
- {
-        struct onenand_info *info;
-        struct platform_device *pdev = to_platform_device(dev);
--       struct onenand_platform_data *pdata = pdev->dev.platform_data;
-+       struct flash_platform_data *pdata = pdev->dev.platform_data;
-        struct resource *res = pdev->resource;
-        unsigned long size = res->end - res->start + 1;
-        int err;
---
-
-> -----Original Message-----
-> From: Adrian Bunk [mailto:bunk@stusta.de] 
-> Sent: Friday, December 16, 2005 9:55 AM
-> To: Kyungmin Park
-> Cc: dwmw2@infradead.org; linux-mtd@lists.infradead.org; Linus 
-> Torvalds; Andrew Morton; linux-kernel@vger.kernel.org
-> Subject: drivers/mtd/onenand/: unacceptable stack usage
-> 
-> In 2.6.15-rc, the following driver was added:
-> 
-> 
-> include/linux/mtd/onenand.h:
-> #define MAX_ONENAND_PAGESIZE        (2048 + 64)
-> 
-> 
-> drivers/mtd/onenand/onenand_base.c:
-> static int onenand_writev_ecc(struct mtd_info *mtd, const 
-> struct kvec *vecs,
->         unsigned long count, loff_t to, size_t *retlen,
->         u_char *eccbuf, struct nand_oobinfo *oobsel)
-> {
->         struct onenand_chip *this = mtd->priv;
->         unsigned char buffer[MAX_ONENAND_PAGESIZE], *pbuf;
-> 
-> 
-> drivers/mtd/onenand/onenand_bbt.c:
-> static inline int onenand_memory_bbt (struct mtd_info *mtd, 
-> struct nand_bbt_descr *bd)
-> {
->         unsigned char data_buf[MAX_ONENAND_PAGESIZE];
-> 
-> 
-> These are variables on the stack that are > 2kB which is not 
-> acceptable 
-> since the complete stack might be only 4kB.
-> 
-> 
-> Please either fix this before 2.6.15 or mark the MTD_ONENAND 
-> driver as 
-> BROKEN until it's fixed.
-> 
-> 
-> TIA
-> Adrian
-> 
-> -- 
-> 
->        "Is there not promise of rain?" Ling Tan asked suddenly out
->         of the darkness. There had been need of rain for many days.
->        "Only a promise," Lao Er said.
->                                        Pearl S. Buck - Dragon Seed
-> 
-> 
-> 
+-- 
+Peter Menzebach
+Menzebach und Wolff IT-Consulting GbR
+Phone +49 751 355 387 1
