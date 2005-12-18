@@ -1,19 +1,20 @@
-Received: from zproxy.gmail.com ([64.233.162.199])
+Received: from mail.imc-berlin.de ([217.110.46.186])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EnQj4-0005Qk-EY
-	for linux-mtd@lists.infradead.org; Fri, 16 Dec 2005 20:19:10 -0500
-Received: by zproxy.gmail.com with SMTP id i11so823560nzi
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 16 Dec 2005 17:19:02 -0800 (PST)
-Message-ID: <758a2bbf0512161719h98a2a84h2967a4771245fac9@mail.gmail.com>
-Date: Fri, 16 Dec 2005 17:19:02 -0800
-From: Vijay Sampath <vsampath@gmail.com>
-To: linux-mtd@lists.infradead.org
+	id 1Eo09A-0002Zi-4D
+	for linux-mtd@lists.infradead.org; Sun, 18 Dec 2005 10:08:28 -0500
+Message-ID: <43A57B60.9090203@imc-berlin.de>
+Date: Sun, 18 Dec 2005 16:08:16 +0100
+From: Steven Scholz <steven.scholz@imc-berlin.de>
 MIME-Version: 1.0
+To: Peter Menzebach <pm-mtd@mw-itcon.de>
+References: <43A1418F.3060701@imc-berlin.de>		<20051215102607.GA20431@angel.research.nokia.com>		<43A1609C.80705@imc-berlin.de>
+	<43A166C6.5060803@mw-itcon.de>		<29f916510512151816v59b1f584h346a415b3888728@mail.gmail.com>		<43A2849E.8000907@mw-itcon.de>	<29f916510512160836q21a0b585h9894990b0fc0d7f3@mail.gmail.com>
+	<43A2F15A.6070407@mw-itcon.de>
+In-Reply-To: <43A2F15A.6070407@mw-itcon.de>
 Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: bug in MTD code based on kernel 2.4.32
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Do I have to umount JFFS2?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Peter,
 
-I will probably get flamed for referring to ancient kernels. However
-we have been using 2.4 based kernels for a while now, and do not want
-to change for customer compatability issues etc. We occasionally see
-board lockups on flash accesses. I have traced this down to a bug in
-the 2.4 MTD code, and I see this problem even in the latest code I
-could download (2.4.32).
+>> Didnt get this comment of ur's :
+>> 1. Single files can be still corrupted, when you write them and press
+>> reset.
+>>
+> When you press reset, when a file is written, you get a partly written
+> block. So you get a file, which is not written completely. This
+> corruption is detected by jffs2 and issues warnings. The filesystem as
+> whole stays intact, but the file as such doesn't have the contents you
+> might expect.
 
-The problem is in cfi_cmdset_0001.c, and may be present in drivers for
-other chips as well. In the function cfi_intelext_sync() function
-before calling add_wait_queue, the current process needs to be put to
-sleep by calling set_current_state(TASK_INTERRUPTIBLE). If it is not
-put to sleep, the task remains in the run queue of the kernel and if
-its priority is high enough, the kernel will constantly keep
-scheduling this process, the state of the chip will never change.
+Since you're talking about "pressing reset" I have to ask again.
 
-Adding this one line seems to make our lockups go away.
+When we do a firmware update of our devices we do something like
 
-Please let me know if this is an accurate assessment. BTW we are using
-Timesys Linux kernel, which is slightly different from the stock
-kernel.
+ cp /tmp/large_file /opt/imc/application
+ reboot
 
-Thanks,
+where /tmp is a ramdisk and / a jffs2 rw rootfs.
 
-Vijay
+So we're not pressing reset but doing a reboot. And I wanted to know if
+linux does only reboot _after_ all data is correctly written to flash?
+
+Would it make sense to do
+
+ cp /tmp/large_file /opt/imc/application
+ sync
+ reboot
+
+???
+
+What's the point of having a line
+
+::shutdown:/bin/umount -a -r
+
+in /etc/inittab?
+
+I have
+
+/dev/mtdblock0 on / type jffs2 (rw,noatime)
+/proc on /proc type proc (rw,nodiratime)
+devpts on /dev/pts type devpts (rw)
+sysfs on /sys type sysfs (rw)
+/dev/shm on /var type tmpfs (rw)
+/sys/kernel/debug on /var/tmp/debug type debugfs (rw)
+
+So the only real fs is jffs2. Does it help to unmount it before reboot?
+
+--
+Steven
