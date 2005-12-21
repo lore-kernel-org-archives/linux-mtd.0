@@ -1,22 +1,21 @@
-Received: from mgw-ext04.nokia.com ([131.228.20.96])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ep1nj-0004q9-0X
-	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2005 06:06:35 -0500
-Date: Wed, 21 Dec 2005 13:06:46 +0200
-From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20051221110646.GA12156@angel.research.nokia.com>
-References: <20051216122331.GA801@angel.research.nokia.com>
-	<43A690EA.5050903@gmx.de>
-	<20051221093034.GA7781@angel.research.nokia.com>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ep3J3-0005qy-Bg
+	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2005 07:43:02 -0500
+Message-ID: <43A94DF7.8050209@ru.mvista.com>
+Date: Wed, 21 Dec 2005 15:43:35 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+References: <20051216122331.GA801@angel.research.nokia.com>	<43A690EA.5050903@gmx.de>
+	<20051221093034.GA7781@angel.research.nokia.com>
 In-Reply-To: <20051221093034.GA7781@angel.research.nokia.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: Christian Lehne <christian_lehne@gmx.de>, tglx@linutronix.de,
-	priewasser@gmail.com, "Zhao, Forrest" <forrest.zhao@intel.com>
+	priewasser@gmail.com, "Zhao, Forrest" <forrest.zhao@intel.com>,
+	linux-mtd@lists.infradead.org
 Subject: Re: EBH with OneNAND doesn't work
-Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,9 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Dec 21, 2005 at 11:30:34AM +0200, Jarkko Lavinen wrote:
-> +		jffs2_copy_nand_fsdata(c, n, buf, sizeof(sizeof(struct jffs2_unknown_node)), oob_size);
+Jarkko Lavinen wrote:
 
-Grrr... sizeof(sizeof()) looks ugly crap.
+>Thanks Christian, your patch helpt me to get JFFS2 working without
+>using too many printks.
+>
+>Currently wbuf.c:jffs2_check_nand_cleanmarker_ebh() assumes the node header 
+>fits in the first free region.  The magic and node type would take 4 bytes.
+>If we have only 2 byte free regions available,  this is not enough
+>and the struct jffs2_unknown_node needs to be assembled.
+>  
+>
+I hope we'll eliminate this problem soon when new functions to 
+read/write the free OOB area as a contiguous array of bytes are introduced.
 
-Jarkko
+Vitaly
