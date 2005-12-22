@@ -1,17 +1,19 @@
-Received: from 66.239.25.20.ptr.us.xo.net ([66.239.25.20] helo=zoot.lnxi.com)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ep9HB-00015l-2E
-	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2005 14:05:29 -0500
-To: Dave Peterson <dsp@llnl.gov>
-References: <200512201642.05224.dsp@llnl.gov>
-	<m3vexjqlc2.fsf@maxwell.lnxi.com> <200512211037.17680.dsp@llnl.gov>
-From: ebiederman@lnxi.com (Eric W. Biederman)
-Date: Wed, 21 Dec 2005 12:05:20 -0700
-In-Reply-To: <200512211037.17680.dsp@llnl.gov> (Dave Peterson's message of
-	"Wed, 21 Dec 2005 10:37:17 -0800")
-Message-ID: <m38xueqnin.fsf@maxwell.lnxi.com>
+Received: from smtp-3.llnl.gov ([128.115.41.83])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EpFwF-0004mx-IR
+	for linux-mtd@lists.infradead.org; Wed, 21 Dec 2005 21:12:16 -0500
+From: Dave Peterson <dsp@llnl.gov>
+To: ebiederman@lnxi.com (Eric W. Biederman)
+Date: Wed, 21 Dec 2005 18:12:10 -0800
+References: <200512201642.05224.dsp@llnl.gov> <200512211037.17680.dsp@llnl.gov>
+	<m38xueqnin.fsf@maxwell.lnxi.com>
+In-Reply-To: <m38xueqnin.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200512211812.10597.dsp@llnl.gov>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: ichxrom driver question
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,57 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dave Peterson <dsp@llnl.gov> writes:
-
-> On Tuesday 20 December 2005 17:40, Eric W. Biederman wrote:
->> Hmm. Immediately after the erase operation you should see all f's.
+On Wednesday 21 December 2005 11:05, Eric W. Biederman wrote:
+> > What does "cached flash chip" mean?  I have very little familiarity
+> > with how these flash chips operate.
 >
-> I tried it a few times.  My recollection is that after the first
-> attempt at erasing, the first part of the flash memory contained
-> all f's and the rest contained data that appeared to be the old BIOS.
-> On a subsequent attempt, I saw all zeros, and this is what I still
-> see when I try to flash the BIOS again.
+> The flash chips contents being cached in the cpus cache.
+> cat /proc/mtrr and see if covers the 0xfff80000 - 0xffffffff
+> range where your flash chip lives.
+
+The MTRR setup looks ok:
+
+    # cat /proc/mtrr
+    reg00: base=0x00000000 (   0MB), size=2048MB: write-back, count=1
+    #
+
+> > How do I determine whether there is motherboard-specific magic?
 >
->> The only thing I can think of that might trigger what you are seeing
->> is a cached flash chip.
+> Usually I see if I can read out the id on the flash chip.  That
+> tests to see if writes make it to the device because you have
+> to write a command.
+
+How do I do this?
+
+> > The flash image I tried to install was an exact duplicate of the
+> > currently installed flash image, obtained as follows:
+> >
+> >     # dd if=/dev/mtd0 of=bios_image
+> >
+> > I was just testing the BIOS flashing mechanism to see if it worked.
 >
-> What does "cached flash chip" mean?  I have very little familiarity
-> with how these flash chips operate.
+> Ok.  That sounds sane.  Are you running linuxbios right now or something
+> else?
 
-The flash chips contents being cached in the cpus cache.
-cat /proc/mtrr and see if covers the 0xfff80000 - 0xffffffff
-range where your flash chip lives.
-
->> The ICH3-S is more of a conduit.  The usual questions are:
->>
->> Is there motherboard specific magic that denies writes?
->> What is the actual flash chip you are flashing.
->
-> How do I determine whether there is motherboard-specific magic?
-
-Usually I see if I can read out the id on the flash chip.  That
-tests to see if writes make it to the device because you have
-to write a command.
-
-> The motherboard is a Supermicro P4DPR-iGM and the flash chip is an
-> Intel 82802AB.
-
-Ok.  That is one of the configurations I have tested although I
-haven't gone back and regression tested on one of those boards
-in a while.
-
->> Except for the possibility of bad cache I can't think of anything
->> that would cause the wrong data to be written.  Are you certain
->> you have a good flash image?
->
-> The flash image I tried to install was an exact duplicate of the
-> currently installed flash image, obtained as follows:
->
->     # dd if=/dev/mtd0 of=bios_image
->
-> I was just testing the BIOS flashing mechanism to see if it worked.
-
-Ok.  That sounds sane.  Are you running linuxbios right now or something
-else?
-
-Eric
+Yes, I'm using linuxbios.
