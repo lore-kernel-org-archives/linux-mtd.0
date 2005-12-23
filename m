@@ -1,17 +1,18 @@
-Received: from web26305.mail.ukl.yahoo.com ([217.146.176.16])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EpkDI-0007IS-HY
-	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2005 05:31:57 -0500
-Message-ID: <20051223103150.72407.qmail@web26305.mail.ukl.yahoo.com>
-Date: Fri, 23 Dec 2005 10:31:50 +0000 (GMT)
-From: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <43ABB749.40709@yandex.ru>
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EpqjJ-0002nJ-Pd
+	for linux-mtd@lists.infradead.org; Fri, 23 Dec 2005 12:29:25 -0500
+Message-ID: <43AC3411.6050604@mvista.com>
+Date: Fri, 23 Dec 2005 09:29:53 -0800
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+To: =?UTF-8?B?5ZSQ6ZW36bS7?= <changhung@mail.im.tku.edu.tw>
+References: <8b6915c1bd80465b68edd5092af49f52@59.120.32.217>
+In-Reply-To: <8b6915c1bd80465b68edd5092af49f52@59.120.32.217>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: JFFS2 doesn't detect end of space on flash device instead
-	breaks kernel
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: where is platform_device.h header file
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,49 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
-         the kernel I am using is uClinux-2.4.24 and
-JFFS2 I am using is version 2.1. It look like my
-kernel doesnot support JFFS2 v2.2. I tried to
-integrate it but it gives me lot of compilations
-errors. 
-
-Thanks
-Sreecharan
-
-Thanks
-Sreecharan.S
-
-
---- "Artem B. Bityutskiy" <dedekind@yandex.ru> wrote:
-
-> Sreecharan Sivadevuni wrote:
->  > Hello,
->  >       The JFFS2 on my flash doesnot report back
-> to me
->  > end of space on my flash, instead I get a kernel
-> oops
->  > message and sometimes the kernel hangs. This is
-> when I
->  > am trying to copy a file which is of larger size
-> than
->  > there is space on device.
-> Hmm, looks like a bug.
+唐長鴻 wrote:
+> Hi, all.
+> I'm a newbie on mtd. When I patched the newest snapshot in
+> linux kernel 2.6.14.2 and "make" it, I received kernel complaint,
+> "platform_device.h: No such file."
+> I re-searched in linux-mtd archives and google, but there was no
+> resolution. I wondered that it was maybe a populate problem and
+> resolved.
 > 
-> Could you please enable JFFS2 debugging and send the
-> output?
-> Which kernel? Which JFFS2? Try the latest please.
-> 
-> Thanks.
-> 
-> -- 
-> Best Regards,
-> Artem B. Bityutskiy,
-> St.-Petersburg, Russia.
-> 
+> Could anyone help me to find that file?
 
+This has been changing in mainline, can probably check the CVS logs and 
+find a version of the files of interest prior to converting to 
+platform_device.h.
 
-
-		
-___________________________________________________________ 
-Yahoo! Exclusive Xmas Game, help Santa with his celebrity party - http://santas-christmas-party.yahoo.net/
+-- 
+Todd
