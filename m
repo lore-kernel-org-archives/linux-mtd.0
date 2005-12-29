@@ -1,16 +1,16 @@
-Received: from rwcrmhc11.comcast.net ([204.127.198.35])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Es75Y-0002nx-3h
-	for linux-mtd@lists.infradead.org; Thu, 29 Dec 2005 18:21:43 -0500
-Date: Thu, 29 Dec 2005 15:21:38 -0800
-From: Deepak Saxena <dsaxena@plexity.net>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20051229232138.GA32463@plexity.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Subject: [RFC] Make physmap into a platform device driver...
-Reply-To: dsaxena@plexity.net
+Received: from adsl-66-218-63-32.dslextreme.com ([66.218.63.32]
+	helo=mail.pomoyka.com)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EsCKF-0005eI-Jr
+	for linux-mtd@lists.infradead.org; Thu, 29 Dec 2005 23:57:17 -0500
+Message-ID: <55666.196.200.121.14.1135868256.squirrel@mail.tmobileprepaid.com>
+Date: Thu, 29 Dec 2005 14:57:36 -0000 (UTC)
+From: "St.Michael" <adams.st@chelny.com>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Trusted
+Reply-To: telmichaels@myway.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,50 +21,50 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-I'm working on a system where I want to use the physmap driver
-but the size or buswidth of the flash device might change depending
-on the specific board layout. I want to be able to build a single kernel
-that boots on all boards using this NPU (IXP2350) and with the hardcoded
-approach to buswidth and such, it makes it rather impossible. On ARM
-platforms, we've been using the following data structure to pass
-board-specific flash information to the SOC-specific drivers and I 
-am wondering if it makes sense to move it out of ARM into the generic
-MTD layer and have the physmap driver use it. The physmap driver
-could register itself as a platform driver for "phys-mtd" devices
-and boards would just fill in platform_device structure with the
-appropriate resource window and the needed fields below as the
-platform_data. We may want to trim down the structure to remove 
-ARM-specific fields and let ARM have it's own structure that contains
-the generic structure as a member. Thoughts?
-
-~Deepak
-
-/*
- * map_name:	the map probe function name
- * name:	flash device name (eg, as used with mtdparts=)
- * width:	width of mapped device
- * init:	method called at driver/device initialisation
- * exit:	method called at driver/device removal
- * set_vpp:	method called to enable or disable VPP
- * mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
- * parts:	optional array of mtd_partitions for static partitioning
- * nr_parts:	number of mtd_partitions for static partitoning
- */
-struct flash_platform_data {
-	const char	*map_name;
-	const char	*name;
-	unsigned int	width;
-	int		(*init)(void);
-	void		(*exit)(void);
-	void		(*set_vpp)(int on);
-	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
-	struct mtd_partition *parts;
-	unsigned int	nr_parts;
-};
 
 
--- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
+Phone: +234-802-764-0445
 
-A starving child in Africa or you in front of your TV?
-Where's the real tragedy?
+I am the chairman of the contract award committee of the National Petroleum
+Corporation here in Nigeria.
+
+After due deliberation with my partner, I decided to forward to you this
+business proposal, we want you to assist us receive the sum of Twenty eight
+million, six hundred thousand united state bills(us28.6m) into your account.
+This fund resulted from an over-invoiced contract awarded by us under the
+budget allocation to my ministry and the bill was approved for payment by
+the concerned ministries. The contract was executed, commissioned and the
+contractor was paid his actual cost of the contract. Now, we are left with
+the balance of us28.6m as the over invoiced amount, which we have
+deliberately over estimated for our own use. Please note that the law
+forbids civil servants to operate or own foreign accounts hence this
+contact, we have agreed to share the money in the following percentages: 30
+for you, 60 for us 10 for tax as may be required by your government.
+
+Note that this transaction is very much free from all sorts of risk hence
+the business was carefully planned before it was successfully executed and
+we the officials involved in the deal have put many years in service to our
+ministry. We have been exercising patience for this privilege for so long
+not until the presidential announcement last week, that all foreign
+contractors owed be paid forthwith, this will enable the presidency
+reconcile our debt ratio with the outside world and to most of us, this is a
+lifetime blessing we cannot afford to miss. Upon indication of your interest
+to fully co-operate with us, a payment application/information form will be
+sent to you via email for completion.
+
+Be informed also that the above mentioned formV when properly completed by
+you and
+return  via email, will enable us seek/secure approval of the fund from the
+concerned government quarters/ministries within 1-2 banking days.
+
+As soon as we confirm receipt of this money in your nominated bank account,
+my partner and I will come over to your country to arrange for our own share
+and possibly invest part of this money in your country.
+
+Let honesty and trust be our watchword throughout this transaction. I shall
+furnish you with some details about myself. Your prompt reply will be highly
+appreciated.
+
+Best regards.
+
+Adams I.S.A
