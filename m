@@ -1,20 +1,16 @@
-Received: from fmr17.intel.com ([134.134.136.16] helo=orsfmr002.jf.intel.com)
+Received: from rwcrmhc11.comcast.net ([204.127.198.35])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ErQjM-00053y-Tn
-	for linux-mtd@lists.infradead.org; Tue, 27 Dec 2005 21:08:00 -0500
-From: "zhao, forrest" <forrest.zhao@intel.com>
-To: "Alexey, Korolev" <alexey.korolev@intel.com>, dedekind@infradead.org
-In-Reply-To: <43B13C9D.3000008@intel.com>
-References: <43B13C9D.3000008@intel.com>
-Content-Type: text/plain
-Date: Wed, 28 Dec 2005 10:00:58 +0800
-Message-Id: <1135735258.3155.8.camel@localhost.localdomain>
+	id 1Es75Y-0002nx-3h
+	for linux-mtd@lists.infradead.org; Thu, 29 Dec 2005 18:21:43 -0500
+Date: Thu, 29 Dec 2005 15:21:38 -0800
+From: Deepak Saxena <dsaxena@plexity.net>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20051229232138.GA32463@plexity.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Belyakov@petasus.ims.intel.com, Kutergin@petasus.ims.intel.com,
-	linux-mtd@lists.infradead.org, Alexander@petasus.ims.intel.com,
-	Timofey@petasus.ims.intel.com
-Subject: Re: [PATCH] JFFS2 kernel panics fixup on Sibley
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Subject: [RFC] Make physmap into a platform device driver...
+Reply-To: dsaxena@plexity.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,87 +20,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2005-12-27 at 16:07 +0300, Alexey, Korolev wrote:
 
-> ======================================= 
->  
-> diff -aur c/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
-> --- c/fs/jffs2/nodelist.c 2005-12-23 16:43:09.000000000 +0300
-> +++ b/fs/jffs2/nodelist.c 2005-12-23 16:48:43.000000000 +0300
-> @@ -436,7 +436,7 @@
->    * adding and jffs2_flash_read_end() interface. */
->   if (c->mtd->point) {
->    err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
-> -  if (!err && retlen < tn->csize) {
-> +  if (!err && retlen < len) {
->     JFFS2_WARNING("MTD point returned len too short: %u instead of 
-> %u.\n", retlen, tn->csize);
->     c->mtd->unpoint(c->mtd, buffer, ofs, len);
->    } else if (err)
-> diff -aur c/fs/jffs2/scan.c b/fs/jffs2/scan.c
-> --- c/fs/jffs2/scan.c 2005-12-23 16:43:09.000000000 +0300
-> +++ b/fs/jffs2/scan.c 2005-12-23 16:48:43.000000000 +0300
-> @@ -454,7 +454,7 @@
->     buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
->     D1(printk(KERN_DEBUG "Fewer than %zd bytes (node header) left to end 
-> of buf. Reading 0x%x at 0x%08x\n",
->        sizeof(struct jffs2_unknown_node), buf_len, ofs));
-> -   err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-> +   err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
->     if (err)
->      return err;
->     buf_ofs = ofs;
-> @@ -511,7 +511,7 @@
->      break;
->     }
->     D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", buf_len, ofs));
-> -   err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-> +   err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
->     if (err)
->      return err;
->     buf_ofs = ofs;
-> @@ -587,7 +587,7 @@
->      buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - 
-> ofs);
->      D1(printk(KERN_DEBUG "Fewer than %zd bytes (inode node) left to end 
-> of buf. Reading 0x%x at 0x%08x\n",
->         sizeof(struct jffs2_raw_inode), buf_len, ofs));
-> -    err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-> +    err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
->      if (err)
->       return err;
->      buf_ofs = ofs;
-> @@ -603,7 +603,7 @@
->      buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - 
-> ofs);
->      D1(printk(KERN_DEBUG "Fewer than %d bytes (dirent node) left to end 
-> of buf. Reading 0x%x at 0x%08x\n",
->         je32_to_cpu(node->totlen), buf_len, ofs));
-> -    err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-> +    err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
->      if (err)
->       return err;
->      buf_ofs = ofs;
-> @@ -650,7 +650,7 @@
->     } else {
->      if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
->       buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - 
-> ofs);
-> -     err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-> +     err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
->       if (err)
->        return err;
->       buf_ofs = ofs;
+I'm working on a system where I want to use the physmap driver
+but the size or buswidth of the flash device might change depending
+on the specific board layout. I want to be able to build a single kernel
+that boots on all boards using this NPU (IXP2350) and with the hardcoded
+approach to buswidth and such, it makes it rather impossible. On ARM
+platforms, we've been using the following data structure to pass
+board-specific flash information to the SOC-specific drivers and I 
+am wondering if it makes sense to move it out of ARM into the generic
+MTD layer and have the physmap driver use it. The physmap driver
+could register itself as a platform driver for "phys-mtd" devices
+and boards would just fill in platform_device structure with the
+appropriate resource window and the needed fields below as the
+platform_data. We may want to trim down the structure to remove 
+ARM-specific fields and let ARM have it's own structure that contains
+the generic structure as a member. Thoughts?
 
-Artem,
+~Deepak
 
-I reviewed the part of this patch for EBH, the above remaining
-part need your review before we could check in the patch to CVS.
+/*
+ * map_name:	the map probe function name
+ * name:	flash device name (eg, as used with mtdparts=)
+ * width:	width of mapped device
+ * init:	method called at driver/device initialisation
+ * exit:	method called at driver/device removal
+ * set_vpp:	method called to enable or disable VPP
+ * mmcontrol:	method called to enable or disable Sync. Burst Read in OneNAND
+ * parts:	optional array of mtd_partitions for static partitioning
+ * nr_parts:	number of mtd_partitions for static partitoning
+ */
+struct flash_platform_data {
+	const char	*map_name;
+	const char	*name;
+	unsigned int	width;
+	int		(*init)(void);
+	void		(*exit)(void);
+	void		(*set_vpp)(int on);
+	void		(*mmcontrol)(struct mtd_info *mtd, int sync_read);
+	struct mtd_partition *parts;
+	unsigned int	nr_parts;
+};
 
-Alexey,
 
-I don't have a Sibley flash at hand, so didn't do intensive
-test for it. Thank you for the fix.
+-- 
+Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
 
-Thanks,
-Forrest
+A starving child in Africa or you in front of your TV?
+Where's the real tragedy?
