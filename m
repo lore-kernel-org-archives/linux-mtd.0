@@ -1,18 +1,19 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from host-84-9-200-140.bulldogdsl.com ([84.9.200.140]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EtX3Z-0007mo-97
-	for linux-mtd@lists.infradead.org; Mon, 02 Jan 2006 16:17:34 -0500
-Message-ID: <43B99860.1010103@ru.mvista.com>
-Date: Tue, 03 Jan 2006 00:17:20 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
+	id 1Etk1L-0006kZ-7u
+	for linux-mtd@lists.infradead.org; Tue, 03 Jan 2006 06:08:08 -0500
+Date: Tue, 3 Jan 2006 10:34:36 +0000
+From: Ben Dooks <ben@fluff.org.uk>
+To: Deepak Saxena <dsaxena@plexity.net>
+Message-ID: <20060103103436.GA2152@home.fluff.org>
+References: <20051229232138.GA32463@plexity.net>
 MIME-Version: 1.0
-To: Ole Reinhardt <ole.reinhardt@kernelconcepts.de>
-References: <1136219436.11699.55.camel@platon>
-In-Reply-To: <1136219436.11699.55.camel@platon>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20051229232138.GA32463@plexity.net>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd with AMD AM29LV800DB nor flash
+Subject: Re: [RFC] Make physmap into a platform device driver...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,58 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, Dec 29, 2005 at 03:21:38PM -0800, Deepak Saxena wrote:
+> 
+> I'm working on a system where I want to use the physmap driver
+> but the size or buswidth of the flash device might change depending
+> on the specific board layout. I want to be able to build a single kernel
+> that boots on all boards using this NPU (IXP2350) and with the hardcoded
+> approach to buswidth and such, it makes it rather impossible. On ARM
+> platforms, we've been using the following data structure to pass
+> board-specific flash information to the SOC-specific drivers and I 
+> am wondering if it makes sense to move it out of ARM into the generic
+> MTD layer and have the physmap driver use it. The physmap driver
+> could register itself as a platform driver for "phys-mtd" devices
+> and boards would just fill in platform_device structure with the
+> appropriate resource window and the needed fields below as the
+> platform_data. We may want to trim down the structure to remove 
+> ARM-specific fields and let ARM have it's own structure that contains
+> the generic structure as a member. Thoughts?
 
-you might want to try patch from Todd Poynor sent to this list 
-16.11.2005. If you wish, I can provide you the direct link to this email 
-in the linux-mts mailing list archive.
+Several people have said they where going to modify the
+plat-ram driver I wrote a while ago to support flash...
 
-Hope that helps,
+I think a number of the flash drivers currently in the
+mtd system could be rolled into a generic mtd flash driver
 
-Best regards,
-   Vitaly
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
 
-Ole Reinhardt wrote:
-
->Hello,
->
->I have a problem using 2.6.15-rc7'th mtd with an AMD AM29LV800DB nor
->flash device.
->
->The flash chip is connected to CS0 and is using 16bit bus width. It is
->recognised as AM29LV800BB, which is fully software and pin compatible to
->the AM29LV800DB device.
->
->Everything works quite fine, except writing / erasing. I tracked down
->the problem downto the following function:
->
->finfo_uaddr() in drivers/mtd/chips/jedec_probe.c
->
->I have a 16bit bus width, so I would expect it to return
->MTD_UADDR_0x0555_0x02AA, but there are the following lines:
->
->
->if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
->	/* ASSERT("The unlock addresses for non-8-bit mode
->	   are bollocks. We don't really need an array."); */
->	uaddr = finfo->uaddr[0];
->}
->
->In other words: For my flash chip, always MTD_UADDR_0x0AAA_0x0555 is
->returned.
->
->This is definatly the wrong unlock address for 16bit mode and every
->erase command will fail.
->
->If I comment out the "if (uaddr != MTD_UADDR_NOT_SUPPORTED ) ..."
->everything works fine.
->
->Can anybody explain me what's going wrong or is this a bug in the mtd
->code?
->
->Best regards,
->
->Ole Reinhardt
->
->  
->
+  'a smiley only costs 4 bytes'
