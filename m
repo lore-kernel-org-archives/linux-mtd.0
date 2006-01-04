@@ -1,19 +1,20 @@
-Received: from host-84-9-200-140.bulldogdsl.com ([84.9.200.140]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Etk1L-0006kZ-7u
-	for linux-mtd@lists.infradead.org; Tue, 03 Jan 2006 06:08:08 -0500
-Date: Tue, 3 Jan 2006 10:34:36 +0000
-From: Ben Dooks <ben@fluff.org.uk>
-To: Deepak Saxena <dsaxena@plexity.net>
-Message-ID: <20060103103436.GA2152@home.fluff.org>
-References: <20051229232138.GA32463@plexity.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20051229232138.GA32463@plexity.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC] Make physmap into a platform device driver...
+Received: from smtp.osdl.org ([65.172.181.4])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1Etwvm-0005a9-78
+	for linux-mtd@lists.infradead.org; Tue, 03 Jan 2006 19:55:16 -0500
+Date: Tue, 3 Jan 2006 16:54:37 -0800
+From: Andrew Morton <akpm@osdl.org>
+To: kyungmin.park@samsung.com
+Message-Id: <20060103165437.2311cfc1.akpm@osdl.org>
+In-Reply-To: <0IRK00I50JP6FZ@mmp1.samsung.com>
+References: <20051216005505.GW23349@stusta.de>
+	<0IRK00I50JP6FZ@mmp1.samsung.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, torvalds@osdl.org, dwmw2@infradead.org,
+	linux-kernel@vger.kernel.org, bunk@stusta.de
+Subject: Re: drivers/mtd/onenand/: unacceptable stack usage
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 29, 2005 at 03:21:38PM -0800, Deepak Saxena wrote:
+Kyungmin Park <kyungmin.park@samsung.com> wrote:
+>
+>  OK. I change the source code. 
+>  It is working well on OMAP H4 with 2.6.15-rc4 kernel and LTP fs test is
+>  passed.
 > 
-> I'm working on a system where I want to use the physmap driver
-> but the size or buswidth of the flash device might change depending
-> on the specific board layout. I want to be able to build a single kernel
-> that boots on all boards using this NPU (IXP2350) and with the hardcoded
-> approach to buswidth and such, it makes it rather impossible. On ARM
-> platforms, we've been using the following data structure to pass
-> board-specific flash information to the SOC-specific drivers and I 
-> am wondering if it makes sense to move it out of ARM into the generic
-> MTD layer and have the physmap driver use it. The physmap driver
-> could register itself as a platform driver for "phys-mtd" devices
-> and boards would just fill in platform_device structure with the
-> appropriate resource window and the needed fields below as the
-> platform_data. We may want to trim down the structure to remove 
-> ARM-specific fields and let ARM have it's own structure that contains
-> the generic structure as a member. Thoughts?
+>  And please apply the recent onenand patch
+> 
+>  	- check correct manufacturer 
+>  	- unlock problem in DDP (Double Density Package)
+>  	- add platform_device.h instead of device.h
+> 
+>  Thank you
 
-Several people have said they where going to modify the
-plat-ram driver I wrote a while ago to support flash...
+These patches are wordwrapped and cannot be applied.
 
-I think a number of the flash drivers currently in the
-mtd system could be rolled into a generic mtd flash driver
+You've included three separate patches in the body of a single email. 
+Please don't do that.  One patch per email is preferred.
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+So please redo these patches against 2.6.15 and resend them, as per
+http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt, thanks.
