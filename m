@@ -1,21 +1,15 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
+Received: from mail99.messagelabs.com ([216.82.255.195])
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Etx3Y-0005oc-Kf
-	for linux-mtd@lists.infradead.org; Tue, 03 Jan 2006 20:03:18 -0500
-Date: Wed, 4 Jan 2006 02:03:02 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>
-Message-ID: <20060104010302.GL3831@stusta.de>
-References: <20051216005505.GW23349@stusta.de>
-	<0IRK00I50JP6FZ@mmp1.samsung.com>
-	<20060103165437.2311cfc1.akpm@osdl.org>
+	id 1Eu390-0000q2-Lc
+	for linux-mtd@lists.infradead.org; Wed, 04 Jan 2006 02:33:18 -0500
+Message-ID: <BFE6A582D4E7C4408B28C922F9D55842094DF86E@canary.corp.resmed.org>
+From: Clancy Dennis <ClancyD@resmed.com.au>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Wed, 4 Jan 2006 18:33:04 +1100 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060103165437.2311cfc1.akpm@osdl.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org, torvalds@osdl.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: drivers/mtd/onenand/: unacceptable stack usage
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: MTD Linux Basics (Modules etc..)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +19,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 03, 2006 at 04:54:37PM -0800, Andrew Morton wrote:
-> Kyungmin Park <kyungmin.park@samsung.com> wrote:
-> >
-> >  OK. I change the source code. 
-> >  It is working well on OMAP H4 with 2.6.15-rc4 kernel and LTP fs test is
-> >  passed.
-> > 
-> >  And please apply the recent onenand patch
-> > 
-> >  	- check correct manufacturer 
-> >  	- unlock problem in DDP (Double Density Package)
-> >  	- add platform_device.h instead of device.h
-> > 
-> >  Thank you
-> 
-> These patches are wordwrapped and cannot be applied.
-> 
-> You've included three separate patches in the body of a single email. 
-> Please don't do that.  One patch per email is preferred.
-> 
-> So please redo these patches against 2.6.15 and resend them, as per
-> http://www.zip.com.au/~akpm/linux/patches/stuff/tpp.txt, thanks.
 
-???
 
-The patches are already included in 2.6.15.
+Hullo all
 
-cu
-Adrian
+New to the list and to MTD.
 
--- 
+I have been working with debian linux over the last month or so getting it
+to work on compact flash cards and other removable storage.
 
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+My latest challenge though is to create a bootable Diskonchip 2000 recovery
+partition for a versalogic jaguar board.
+
+I am using kernel 2.6.14 and have tried many different methods.
+
+The main methods i have read about are
+a) using the new nftl and inftl modules with the 2.6 kernel
+		then use nftl_format etc...
+
+b)using the old and deprectated doc2000 and docprobe modules with 2.6
+
+c) using m systems modules patched into a 2.4 kernel (unfavorable)
+
+d) using m systems dos utilities to set up the DOC (most succesful so far,
+unfortunatly i cannot mount the created partition under linux)
+
+i have a million questions but im sure that it is some part of my method
+that is incorrect and was hoping for some assistance.
+
+Also, google comes up rather dry to search terms such as "anand media header
+not found", and flunknownmedia, would anyone know a good resource of
+information about linux and DiskonChip2000 devices?
+
+Thanks
+
+Clancy Dennis
+
+Warning:  Copyright ResMed.  Where the contents of this email and/or attachment includes materials prepared by ResMed, the use of those
+materials is subject exclusively to the conditions of engagement between ResMed and the intended recipient.
+ 
+This communication is confidential and may contain legally privileged information.
+By the use of email over the Internet or other communication systems, ResMed is not waiving either confidentiality of, or legal
+privilege in,the content of the email and of any attachments.
+If the recipient of this message is not the intended addressee, please call ResMed immediately on  +61 2 9886 5000 Sydney, Australia.
