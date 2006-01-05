@@ -1,18 +1,24 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from zproxy.gmail.com ([64.233.162.192])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EubOK-00060I-1Q
-	for linux-mtd@lists.infradead.org; Thu, 05 Jan 2006 15:07:23 -0500
-Message-ID: <43BD7C8E.3070708@mvista.com>
-Date: Thu, 05 Jan 2006 12:07:42 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1Euc6l-0006YA-5p
+	for linux-mtd@lists.infradead.org; Thu, 05 Jan 2006 15:53:19 -0500
+Received: by zproxy.gmail.com with SMTP id i11so2762250nzi
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Jan 2006 12:53:08 -0800 (PST)
+From: husamsenussi@gmail.com
+To: Balint Cristian <rezso@rdsor.ro>
+Date: Thu, 5 Jan 2006 20:52:38 +0000
+References: <200512230211.11487.husamsenussi@gmail.com>
+	<200601040926.38030.rezso@rdsor.ro>
+In-Reply-To: <200601040926.38030.rezso@rdsor.ro>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?Juha_Yrj=F6l=E4?= <juha.yrjola@nokia.com>
-References: <1136235272.8963.21.camel@two.research.nokia.com>
-In-Reply-To: <1136235272.8963.21.camel@two.research.nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+Message-Id: <200601052052.38441.husamsenussi@gmail.com>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [JFFS2] Make NAND OOB usage more flexible
+Subject: Re: DiskOnChip Millennium Plus 64M in OMAP1510 device
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +28,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Juha Yrjölä wrote:
-> +	for (i = 0; i < oob_nr; i++) {
-> +		int j;
-> +
-> +		for (j = 0; j < oob_size; j++) {
-> +			if (data_len && is_within_clean_marker_area(c, j)) {
->  				data_len--;
->  				continue;
->  			}
-> -			if (buf[i*oob_size+j] != 0xFF) {
-> +			if (buf[i * oob_size + j] != 0xff) {
->  				ret = 1;
+Hi,
 
-Just found a reason to use AUTOPLACE info to avoid unavailable bytes 
-when checking for 0xFF in the non-cleanmarker/EBH bytes as well: there's 
-at least one NAND H/W controller that generates non-0xFF ECC bytes for 
-writes of all 0xFF (not sure if that's a bug), and its handy to have 
-such writes continue to look like an empty page.  Anyhow, holding out 
-hope for Vitaly's solution, but can send a patch if this is messing 
-anybody up in the meantime.
+No I don't  have VTIHOST,  but I have iPAQ h6300with OMAP1510  and with lin=
+ux=20
+(2.6.14), and I'm willing to help.
 
--- 
-Todd
+I manage to get the old driver to  discover the card, but I couldn't mount =
+the=20
+filesystem because I don;t have TrueFFS file system
+
+Do you know the prices for VTIHOST !!!!
+
+Thanks
+
+On Wednesday 04 January 2006 07:26, Balint Cristian wrote:
+> On Friday 23 December 2005 04:11, husamsenussi@gmail.com wrote:
+>
+>
+> Hello !
+>
+> 	Do you have   Texas Instruments (VTIHOST) for flash this chip
+> via JTAG ?
+> 	This comes with the OMAP 1510 platform from TI.
+>
+> 	It can help us to write a sane driver for 2.6.x and this chip.
+>
+> > Hi,
+> >
+> > I'm having problem loading the MDOC + driver, for some reason the driver
+> > returning the wrong flash ID.
+> >
+> > This is what I see in my log file
+> >
+> > Jan =A01 00:18:32 h6300 user.info kernel: Flash chip found: Manufacturer
+> > ID: 98, Chip ID: A5 (Toshiba:NAND 2GiB 1,8V 8-bit)
+> > Jan =A01 00:18:32 h6300 user.info kernel: Flash chip found: Manufacturer
+> > ID: 98, Chip ID: A5 (Toshiba:NAND 2GiB 1,8V 8-bit)
+> > Jan =A01 00:18:32 h6300 user.info kernel: 2 flash chips found. Total
+> > DiskOnChip size: 0 MiB
+> >
+> >
+> > I'm running linux 2.6.14.3 in iPAQ h6340 with OMAP1510 processer, and I=
+'m
+> > using the old driver because the new only support 16M
+> >
+> > Thanks.
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
