@@ -1,20 +1,18 @@
-Received: from xproxy.gmail.com ([66.249.82.199])
+Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eua1n-00052h-Hi
-	for linux-mtd@lists.infradead.org; Thu, 05 Jan 2006 13:40:04 -0500
-Received: by xproxy.gmail.com with SMTP id s12so2060498wxc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Jan 2006 10:39:55 -0800 (PST)
-Message-ID: <b2a468ae0601051039r2cd0b823r@mail.gmail.com>
-Date: Thu, 5 Jan 2006 19:39:55 +0100
-From: <priewasser@googlemail.com>
-To: linux-mtd@lists.infradead.org
+	id 1EubOK-00060I-1Q
+	for linux-mtd@lists.infradead.org; Thu, 05 Jan 2006 15:07:23 -0500
+Message-ID: <43BD7C8E.3070708@mvista.com>
+Date: Thu, 05 Jan 2006 12:07:42 -0800
+From: Todd Poynor <tpoynor@mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: Question: jffs2_mark_node_obsolete() with NAND
-Reply-To: priewasser@gmail.com
+To: =?ISO-8859-1?Q?Juha_Yrj=F6l=E4?= <juha.yrjola@nokia.com>
+References: <1136235272.8963.21.camel@two.research.nokia.com>
+In-Reply-To: <1136235272.8963.21.camel@two.research.nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [JFFS2] Make NAND OOB usage more flexible
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Juha Yrjölä wrote:
+> +	for (i = 0; i < oob_nr; i++) {
+> +		int j;
+> +
+> +		for (j = 0; j < oob_size; j++) {
+> +			if (data_len && is_within_clean_marker_area(c, j)) {
+>  				data_len--;
+>  				continue;
+>  			}
+> -			if (buf[i*oob_size+j] != 0xFF) {
+> +			if (buf[i * oob_size + j] != 0xff) {
+>  				ret = 1;
 
-as far as i understand, jffs2_mark_node_obsolete() gets the
-raw_node_ref of the flash node to delete, flash_reads the appropriate
-common header in a struct jffs2_unknown_node, sets the node type to
-~JFFS2_NODE_ACCURATE and writes the common header into the flash. The
-existing common header is overwritten. This works for NOR as there is
-some "valid" bit that flips from 1->0 (?). But what about NAND? I do
-not understand how obsoleting nodes can work in the described
-overwrite-way, with a 2KiB-granularity and wbuf......
+Just found a reason to use AUTOPLACE info to avoid unavailable bytes 
+when checking for 0xFF in the non-cleanmarker/EBH bytes as well: there's 
+at least one NAND H/W controller that generates non-0xFF ECC bytes for 
+writes of all 0xFF (not sure if that's a bug), and its handy to have 
+such writes continue to look like an empty page.  Anyhow, holding out 
+hope for Vitaly's solution, but can send a patch if this is messing 
+anybody up in the meantime.
 
-Thanks for your answer,
-Bernhard
+-- 
+Todd
