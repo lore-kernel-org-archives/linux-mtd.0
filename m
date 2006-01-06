@@ -1,22 +1,16 @@
-Received: from zproxy.gmail.com ([64.233.162.195])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Euu2Z-0001nO-LI
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 11:02:32 -0500
-Received: by zproxy.gmail.com with SMTP id i11so2944437nzi
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 06 Jan 2006 08:02:06 -0800 (PST)
-Message-ID: <625fc13d0601060802n2710bc26wf57b8c0578cc1c7f@mail.gmail.com>
-Date: Fri, 6 Jan 2006 10:02:06 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Pramod P K <pra.engr@gmail.com>
-In-Reply-To: <417f1b740601052237w84b78dbqf2cb44d4f8ffdeee@mail.gmail.com>
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Eux8U-0004AX-4q
+	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 14:20:29 -0500
+Date: Fri, 6 Jan 2006 20:20:17 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20060106192017.GA12131@stusta.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <417f1b740601052237w84b78dbqf2cb44d4f8ffdeee@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: "Bad eraseblock" and "Failed ECC read"
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [2.6 patch] drivers/mtd/: small cleanups
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,72 +20,90 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1/6/06, Pramod P K <pra.engr@gmail.com> wrote:
-> This is the MTD NAND with JFFS2 and after I flash I get:
->
->
-> My U-Boot v0.1
->
-> .......
->
->
-> NAND device: Manufacturer ID: 0xec, Chip ID: 0xa1 (Samsung NAND 128MiB
-> 1,8V 8-bit)
-> Scanning device for bad blocks
-> ....
-> ....
->
-> check_short_pattern: p[td->offs + i]: ff td->pattern[i]: ff
->
-> ...
->
-> check_short_pattern: p[td->offs + i]: 84 td->pattern[i]: ff
-> Bad eraseblock 96 at 0x00c00000
->
-> td->len:2
-> check_short_pattern: p[td->offs + i]: 23 td->pattern[i]: ff
-> Bad eraseblock 97 at 0x00c20000
->
-> .....
->
-> NAND flash probing at 0x20020000 Finished
-> In:    console
-> Out:   console
-> Err:   console
-> Hit any key to stop autoboot:  2 =08=08=08 1 =08=08=08 0
->
-> Loading from device 0: NAND 128MiB 1,8V 8-bit at 0x200b8000 (offset 0xd00=
-000)
->
-> .....
->
-> : do_nandboot(): ecc_status=3D-1
-> nand_read_ecc: Failed ECC read, page 0x00001a00
->
-> .....
->
-> : do_nandboot(): ecc_status=3D-1
-> nand_read_ecc: Failed ECC read, page 0x00001a00
->
-> ...
->
-> ** Read error on 0
-> Boot reached stage -1
->
->
->
-> Please come with the possibilities.
+This patch contains the following cleanups:
+- chips/sharp.c: make two needlessly global functions static
+- move some declarations to a header file where they belong to
 
-1) This shows u-boot failing, not MTD/JFFS2.  This has been sent to
-the wrong list.
 
-2) The amount of information is so small that nobody would even know
-where to begin to look if it were a MTD/JFFS2 problem.  You don't say
-what version of the kernel, what version of MTD, what board you are
-even using.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-I seriously doubt anybody will even think of coming up with
-possiblities for you unless you give way more detailed information
-that is relevant to MTD/JFFS2.
+---
 
-josh
+ drivers/mtd/chips/sharp.c |    7 +++----
+ drivers/mtd/inftlcore.c   |    5 -----
+ include/linux/mtd/inftl.h |    5 +++++
+ 3 files changed, 8 insertions(+), 9 deletions(-)
+
+--- linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h.old	2005-12-13 00:38:32.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h	2005-12-13 00:40:26.000000000 +0100
+@@ -52,6 +52,11 @@
+ int INFTL_mount(struct INFTLrecord *s);
+ int INFTL_formatblock(struct INFTLrecord *s, int block);
+ 
++extern char inftlmountrev[];
++
++void INFTL_dumptables(struct INFTLrecord *s);
++void INFTL_dumpVUchains(struct INFTLrecord *s);
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __MTD_INFTL_H__ */
+--- linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c.old	2005-12-13 00:39:14.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c	2005-12-13 00:40:43.000000000 +0100
+@@ -47,9 +47,6 @@
+  */
+ #define MAX_LOOPS 10000
+ 
+-extern void INFTL_dumptables(struct INFTLrecord *inftl);
+-extern void INFTL_dumpVUchains(struct INFTLrecord *inftl);
+-
+ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ {
+ 	struct INFTLrecord *inftl;
+@@ -885,8 +882,6 @@
+ 	.owner		= THIS_MODULE,
+ };
+ 
+-extern char inftlmountrev[];
+-
+ static int __init init_inftl(void)
+ {
+ 	printk(KERN_INFO "INFTL: inftlcore.c $Revision: 1.19 $, "
+
+--- linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c.old	2006-01-06 19:37:50.000000000 +0100
++++ linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c	2006-01-06 19:38:32.000000000 +0100
+@@ -64,7 +64,7 @@
+ 
+ #undef AUTOUNLOCK  /* automatically unlocks blocks before erasing */
+ 
+-struct mtd_info *sharp_probe(struct map_info *);
++static struct mtd_info *sharp_probe(struct map_info *);
+ 
+ static int sharp_probe_map(struct map_info *map,struct mtd_info *mtd);
+ 
+@@ -96,7 +96,6 @@
+ 	struct flchip chips[1];
+ };
+ 
+-struct mtd_info *sharp_probe(struct map_info *map);
+ static void sharp_destroy(struct mtd_info *mtd);
+ 
+ static struct mtd_chip_driver sharp_chipdrv = {
+@@ -107,7 +106,7 @@
+ };
+ 
+ 
+-struct mtd_info *sharp_probe(struct map_info *map)
++static struct mtd_info *sharp_probe(struct map_info *map)
+ {
+ 	struct mtd_info *mtd = NULL;
+ 	struct sharp_info *sharp = NULL;
+@@ -581,7 +580,7 @@
+ 
+ }
+ 
+-int __init sharp_probe_init(void)
++static int __init sharp_probe_init(void)
+ {
+ 	printk("MTD Sharp chip driver <ds@lineo.com>\n");
+ 
