@@ -1,27 +1,22 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from zproxy.gmail.com ([64.233.162.195])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eusb2-0000he-L3
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 09:29:42 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1Eusaz-0003c5-Uv
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 15:29:33 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
-	M2006010615293328310
-	for <linux-mtd@lists.infradead.org>; Fri, 06 Jan 2006 15:29:33 +0100
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1Eusaz-0003cT-Rb
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 15:29:33 +0100
-Message-ID: <43BE7ECD.2080606@inf.u-szeged.hu>
-Date: Fri, 06 Jan 2006 15:29:33 +0100
-From: Zoltan Sogor <weth@inf.u-szeged.hu>
+	id 1Euu2Z-0001nO-LI
+	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 11:02:32 -0500
+Received: by zproxy.gmail.com with SMTP id i11so2944437nzi
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 06 Jan 2006 08:02:06 -0800 (PST)
+Message-ID: <625fc13d0601060802n2710bc26wf57b8c0578cc1c7f@mail.gmail.com>
+Date: Fri, 6 Jan 2006 10:02:06 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Pramod P K <pra.engr@gmail.com>
+In-Reply-To: <417f1b740601052237w84b78dbqf2cb44d4f8ffdeee@mail.gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Latest mtd snapshot
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <417f1b740601052237w84b78dbqf2cb44d4f8ffdeee@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: "Bad eraseblock" and "Failed ECC read"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,50 +26,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+On 1/6/06, Pramod P K <pra.engr@gmail.com> wrote:
+> This is the MTD NAND with JFFS2 and after I flash I get:
+>
+>
+> My U-Boot v0.1
+>
+> .......
+>
+>
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0xa1 (Samsung NAND 128MiB
+> 1,8V 8-bit)
+> Scanning device for bad blocks
+> ....
+> ....
+>
+> check_short_pattern: p[td->offs + i]: ff td->pattern[i]: ff
+>
+> ...
+>
+> check_short_pattern: p[td->offs + i]: 84 td->pattern[i]: ff
+> Bad eraseblock 96 at 0x00c00000
+>
+> td->len:2
+> check_short_pattern: p[td->offs + i]: 23 td->pattern[i]: ff
+> Bad eraseblock 97 at 0x00c20000
+>
+> .....
+>
+> NAND flash probing at 0x20020000 Finished
+> In:    console
+> Out:   console
+> Err:   console
+> Hit any key to stop autoboot:  2 =08=08=08 1 =08=08=08 0
+>
+> Loading from device 0: NAND 128MiB 1,8V 8-bit at 0x200b8000 (offset 0xd00=
+000)
+>
+> .....
+>
+> : do_nandboot(): ecc_status=3D-1
+> nand_read_ecc: Failed ECC read, page 0x00001a00
+>
+> .....
+>
+> : do_nandboot(): ecc_status=3D-1
+> nand_read_ecc: Failed ECC read, page 0x00001a00
+>
+> ...
+>
+> ** Read error on 0
+> Boot reached stage -1
+>
+>
+>
+> Please come with the possibilities.
 
-we have a problem with the latest mtd snapshot and nandsim. (kernel
-version is 2.6.14.3 (x86))
+1) This shows u-boot failing, not MTD/JFFS2.  This has been sent to
+the wrong list.
 
-We run the following commands, but it doesn't work.
-# modprobe nandsim
-# flash_eraseall -j /dev/mtd0
-# mount /mnt/flash/
-# cp /boot/vmlinuz-2.6.14.3 /mnt/flash/
-# umount /mnt/flash/
-# mount /mnt/flash/
-mount: /dev/mtd0: can't read superblock
+2) The amount of information is so small that nobody would even know
+where to begin to look if it were a MTD/JFFS2 problem.  You don't say
+what version of the kernel, what version of MTD, what board you are
+even using.
 
-kern.log:
-kernel: NAND device: Manufacturer ID: 0x98, Chip ID: 0x39 (Toshiba NAND 
-8MiB 1,8V 8-bit)
-kernel: flash size: 8 MiB
-kernel: page size: 512 bytes
-kernel: OOB area size: 16 bytes
-kernel: sector size: 8 KiB
-kernel: pages number: 16384
-kernel: pages per sector: 16
-kernel: bus width: 8
-kernel: bits in sector size: 13
-kernel: bits in page size: 9
-kernel: bits in OOB size: 4
-kernel: flash size with OOB: 8448 KiB
-kernel: page address bytes: 3
-kernel: sector address bytes: 2
-kernel: options: 0x62
-kernel: Scanning device for bad blocks
-kernel: Creating 1 MTD partitions on "NAND 8MiB 1,8V 8-bit":
-kernel: 0x00000000-0x00800000 : "NAND simulator partition"
-kernel: JFFS2 version 2.2. (NAND) (C) 2001-2003 Red Hat, Inc.
-kernel: Node at 0x00529b64 with length 0x000006ba would run over the end
-of the erase block
-kernel: Perhaps the file system was created with the wrong erase size?
-Reject to mount.
+I seriously doubt anybody will even think of coming up with
+possiblities for you unless you give way more detailed information
+that is relevant to MTD/JFFS2.
 
-Has somebody get the same effect on a real NAND device on recent snapshot ?
-
-It works on mtdram.
-
-Any idea ???
-
-Zoltan
+josh
