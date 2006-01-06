@@ -1,22 +1,15 @@
-Received: from mail.rdsor.ro ([193.231.238.10])
+Received: from [62.254.209.121] (helo=drmail.stives.linx.gbr)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EuogS-0006S2-QB
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 05:19:00 -0500
-From: Balint Cristian <rezso@rdsor.ro>
-To: husamsenussi@gmail.com
-Date: Fri, 6 Jan 2006 12:18:46 +0200
-References: <200512230211.11487.husamsenussi@gmail.com>
-	<200601040926.38030.rezso@rdsor.ro>
-	<200601052052.38441.husamsenussi@gmail.com>
-In-Reply-To: <200601052052.38441.husamsenussi@gmail.com>
+	id 1Eupf8-0007FG-Rj
+	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 06:21:42 -0500
+Message-ID: <DB1B6B12D0E2F0469EB35A9586066B6ECE7974@stivesemail.stives.linx.gbr>
+From: James Hughes <JHughes@Linx.co.uk>
+To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
+Date: Fri, 6 Jan 2006 11:09:52 -0000 
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200601061218.46838.rezso@rdsor.ro>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip Millennium Plus 64M in OMAP1510 device
+	charset="iso-8859-1"
+Subject: Trying to get MTD to do anything...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,102 +19,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 05 January 2006 22:52, husamsenussi@gmail.com wrote:
-> Hi,
->=20
-> No I don't  have VTIHOST,  but I have iPAQ h6300with OMAP1510  and with l=
-inux=20
-> (2.6.14), and I'm willing to help.
+Hello all, 
 
+sorry about this very basic (I assume) question.
 
->=20
-> I manage to get the old driver to  discover the card, but I couldn't moun=
-t the=20
+I have a SandgateII PXA270 (ARM) board, and am trying to get the flash to be
+recognised by MTD so I can mount a jffs2 fs over it.
 
-Do you manageged in 16 bit mode ? Can please share with me the patch ?
+The board uses Blob bootldr, and this shows 4 partitions on the flash. Last
+of these is called ramdisk, from which originally the rootfs was loaded.
+However I now use a rootfs over nfs so this partition is not used. I now
+want to mount this partition as jffs2 as it's no longer used as a rootfs, so
+I can do some performance testing of file handling on the flash itself -
+which I obviously cannot do on the rootfs as it is over a network.
 
-> filesystem because I don;t have TrueFFS file system
+However, although I have enabled MTD in the kernel config, and all various
+options I think I need, during kernel boot there is no indication that the
+MTD driver(s) is being started up - no scanning, no flash finds etc.
+Documentation for the patches for this board says MTD should be working.
+Kernel version is 2.6.10.
 
-Well, you can erase it ;-) JFFS is better.
+Once booted, if I cat /proc/mtd there are no found MTD blocks.
 
-   I have develed a patch for openwince's jtag tool to access via jtag the =
-whole MTD
-chip [based on a 8-bit kernel driver], a 16 bit version of the driver is tr=
-ivial, to have a sane tool,
-especialy that pxa use the DoC at boot time in 16 bit. This jtag tool can h=
-elp a ton
-do port linux from the scratch.
+My question (amongst many) is how do I get the MTD system to start up - what
+have I missed? Is there any comprehensive documentation on this MTD system
+and setting it up from the bootloader forward? (I have the book Building
+Embedded Linux systems but its hasn't helped so far - but this is probably
+because I am lacking a piece of information somewhere in my head which make
+things clear)
 
-
-
-I would apreciate tho shere with me the patch.
-
-~cristian
-
->=20
-> Do you know the prices for VTIHOST !!!!
-
-Well, openwince's jtag is far more beter idea .....
-
-
-> Thanks
->=20
-> On Wednesday 04 January 2006 07:26, Balint Cristian wrote:
-> > On Friday 23 December 2005 04:11, husamsenussi@gmail.com wrote:
-> >
-> >
-> > Hello !
-> >
-> > 	Do you have   Texas Instruments (VTIHOST) for flash this chip
-> > via JTAG ?
-> > 	This comes with the OMAP 1510 platform from TI.
-> >
-> > 	It can help us to write a sane driver for 2.6.x and this chip.
-> >
-> > > Hi,
-> > >
-> > > I'm having problem loading the MDOC + driver, for some reason the dri=
-ver
-> > > returning the wrong flash ID.
-> > >
-> > > This is what I see in my log file
-> > >
-> > > Jan =A01 00:18:32 h6300 user.info kernel: Flash chip found: Manufactu=
-rer
-> > > ID: 98, Chip ID: A5 (Toshiba:NAND 2GiB 1,8V 8-bit)
-> > > Jan =A01 00:18:32 h6300 user.info kernel: Flash chip found: Manufactu=
-rer
-> > > ID: 98, Chip ID: A5 (Toshiba:NAND 2GiB 1,8V 8-bit)
-> > > Jan =A01 00:18:32 h6300 user.info kernel: 2 flash chips found. Total
-> > > DiskOnChip size: 0 MiB
-> > >
-> > >
-> > > I'm running linux 2.6.14.3 in iPAQ h6340 with OMAP1510 processer, and=
- I'm
-> > > using the old driver because the new only support 16M
-> > >
-> > > Thanks.
-> > >
-> > > ______________________________________________________
-> > > Linux MTD discussion mailing list
-> > > http://lists.infradead.org/mailman/listinfo/linux-mtd/
->=20
->=20
-
-=2D-=20
-Balint Cristian
-area network engineer
-=2E........................................................................=
-=2E...
-RCS & RDS  Oradea
-Tel.: +40359.400.400
-=46ax: +40359.400.444
-http://www.rcs-rds.ro
-        suport@rdsor.ro
-=2E........................................................................=
-=2E..........
-Privileged/Confidential Information may be contained in this message.=20
-If you are not in the addresses indicated in this message (or responsible
-for delivery of the message to such person), you may not copy or deliver
-this message to anyone. In such a case, you should destroy this=20
-message and kindly notify the sender by reply e-mail.=20
+James
