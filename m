@@ -1,14 +1,13 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Euw6I-0003bQ-5Y
-	for linux-mtd@lists.infradead.org; Fri, 06 Jan 2006 13:14:11 -0500
-Date: Fri, 6 Jan 2006 19:14:00 +0100
+	id 1EvMDQ-00022d-Hc
+	for linux-mtd@lists.infradead.org; Sat, 07 Jan 2006 17:07:25 -0500
+Date: Sat, 7 Jan 2006 23:07:02 +0100
 From: Adrian Bunk <bunk@stusta.de>
 To: Andrew Morton <akpm@osdl.org>
-Message-ID: <20060106181359.GW12131@stusta.de>
+Message-ID: <20060107220702.GZ3774@stusta.de>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0eh6TmSyL6TZE2Uz"
+Content-Type: multipart/mixed; boundary="0ntfKIWw70PvrIHh"
 Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
 	linux-kernel@vger.kernel.org
@@ -24,7 +23,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---0eh6TmSyL6TZE2Uz
+--0ntfKIWw70PvrIHh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -40,6 +39,7 @@ Signed-off-by: Adrian Bunk <bunk@stusta.de>
 ---
 
 This patch was already sent on:
+- 6 Jan 2006
 - 13 Dec 2005
 
 Due to it's size, the patch is attached gzip'ed.
@@ -59,8 +59,7 @@ Due to it's size, the patch is attached gzip'ed.
  include/linux/mtd/jedec.h                 |   66 -
  13 files changed, 1 insertion(+), 2901 deletions(-)
 
-
---0eh6TmSyL6TZE2Uz
+--0ntfKIWw70PvrIHh
 Content-Type: application/octet-stream
 Content-Disposition: attachment; filename="patch-MTD_OBSOLETE_CHIPS.gz"
 Content-Transfer-Encoding: base64
@@ -435,4 +434,4 @@ LEIv2wp5p3mhCa+cZVth7+iu3aZd3sbcag2Pi26QBf2LRel6bEc2bV8eulmL+tMS9DvoyxKc
 31VvSXlvHhxjfVpdTF6Ga9Td0OVtFpBbCFVhvGU6nyVScr8IW5BTmQjbKl5ZhH3n4ukSSSoZ
 GmA//w+IcrcW5U0BAA==
 
---0eh6TmSyL6TZE2Uz--
+--0ntfKIWw70PvrIHh--
