@@ -1,21 +1,18 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eva6X-0002oE-Ez
-	for linux-mtd@lists.infradead.org; Sun, 08 Jan 2006 07:57:09 -0500
-Date: Sun, 8 Jan 2006 13:57:00 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060108125700.GI3774@stusta.de>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060108125700.GI3774@stusta.de>
 References: <20060107220702.GZ3774@stusta.de>
 	<1136678409.30348.26.camel@pmac.infradead.org>
 	<20060108002457.GE3774@stusta.de>
 	<1136680734.30348.34.camel@pmac.infradead.org>
 	<20060107174523.460f1849.akpm@osdl.org>
 	<1136724072.30348.66.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1136724072.30348.66.camel@pmac.infradead.org>
+	<20060108125700.GI3774@stusta.de>
+Content-Type: text/plain
+Date: Sun, 08 Jan 2006 13:06:20 +0000
+Message-Id: <1136725580.30348.69.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 Subject: Re: [2.6 patch] no longer mark MTD_OBSOLETE_CHIPS as BROKEN and
@@ -29,51 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 08, 2006 at 12:41:12PM +0000, David Woodhouse wrote:
-> On Sat, 2006-01-07 at 17:45 -0800, Andrew Morton wrote:
-> > Hey, Adrian isn't an MTD developer
+On Sun, 2006-01-08 at 13:57 +0100, Adrian Bunk wrote:
+> What I want for 2.6.16 is to remove the wrong dependency of MTD_SHARP on 
+> BROKEN and the non-compiling drivers either still hidden under BROKEN or 
+> removed.
 > 
-> Indeed he is not. And while his minor nitpicks can sometimes be worth
-> the effort, it's less useful for him to start making value judgements
-> about removing drivers which have _theoretically_ been replaced by new
-> code, but which are actually still being used in some cases.
+> If there is any way I can submit a patch achieving this that would be 
+> acceptable for you simply tell how exactly you want this patch.
 
-I interpreted your "or just removed" in [1] as your approval for a patch 
-to remove the non-compiling drivers.
+Remove the incorrect BROKEN dependency from MTD_OBSOLETE_CHIPS.
 
-I'm not a native English speaker, and therefore I might have 
-misunderstood your email.
-
-What I want for 2.6.16 is to remove the wrong dependency of MTD_SHARP on 
-BROKEN and the non-compiling drivers either still hidden under BROKEN or 
-removed.
-
-If there is any way I can submit a patch achieving this that would be 
-acceptable for you simply tell how exactly you want this patch.
-
-> > What he's doing here is to poke other maintainers into getting the tree
-> > cleaned up.  It's a useful thing to do.
-> 
-> I know what needs doing to clean the tree up -- and removing the older
-> chip drivers is very far from the top of my todo list. If you really
-> want to accelerate their demise, add a #warning and a printk saying "You
-> should no longer be using this driver -- try using jedec_probe or
-> cfi_probe instead and contact the linux-mtd list if that fails". 
->...
-
-We are talking about drivers marked as BROKEN for one and a half years 
-that do no longer compile.
-
-> dwmw2
-
-cu
-Adrian
-
-[1] http://lkml.org/lkml/2005/12/12/43
+If you then want to add it again to any chip driver which really doesn't
+compile, feel free. But leave the map drivers alone. Those can be
+switched to use different chip back-ends. 
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+dwmw2
