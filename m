@@ -1,19 +1,15 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikana.artecdesign.ee)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EvrHI-0005zh-Md
-	for linux-mtd@lists.infradead.org; Mon, 09 Jan 2006 02:17:22 -0500
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=pcy.artec.ee)
-	by postikana.artecdesign.ee with esmtp (Exim 3.35 #1 (Debian))
-	id 1Evr6k-0000VE-00
-	for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2006 09:06:22 +0200
-Date: Mon, 9 Jan 2006 09:17:08 +0200 (EET)
-From: Olav Kongas <ok@artecdesign.ee>
+Received: from mail109.messagelabs.com ([216.82.255.131])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Evrdh-0006QJ-HH
+	for linux-mtd@lists.infradead.org; Mon, 09 Jan 2006 02:40:32 -0500
+Message-ID: <BFE6A582D4E7C4408B28C922F9D55842094DF870@canary.corp.resmed.org>
+From: Clancy Dennis <ClancyD@resmed.com.au>
 To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.63.0601090858480.11546@pcy.artec.ee>
+Date: Mon, 9 Jan 2006 18:40:13 +1100 
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Subject: [PATCH] cfi_cmdset_0001.c: Set flash explicitly to 'status read'
- mode
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: Diskonchip module Hang
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi there
 
-Set flash explicitly to 'status read' mode. Without this patch, I have
-experienced failures like an example below, if running executables from the
-cramfs residing on Sharp's LHF64F12 flash chip.
+after mucking around with different recent snapshots i am starting to wonder
+if the latest few versions have been broken.
 
-	Waiting for chip to be ready timed out. Status 3c31
-	end_request: I/O error, dev mtdblock0, sector 5400
-	Buffer I/O error on device mtdblock0, logical block 675
-	Error -3 while decompressing!
+As soon as i run modprobe diskonchip, modprobe falls into an infintie hang
 
-Signed-off-by: Olav Kongas <ok@artecdesign.ee>
+Can someone please spend a minute to tell me if the know of a working (well
+partially working) cvs version that would work with either
+2.6.10 or 2.6.15
 
---- linux-2.6.15-a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-01-06 16:43:05.000000000 +0200
-+++ linux-2.6.15-b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-01-06 16:46:36.000000000 +0200
-@@ -687,6 +687,9 @@ static int get_chip(struct map_info *map
- 	switch (chip->state) {
+Clancy Dennis
+
+I am a little way off fixing it myself
+
+
+Warning:  Copyright ResMed.  Where the contents of this email and/or attachment includes materials prepared by ResMed, the use of those
+materials is subject exclusively to the conditions of engagement between ResMed and the intended recipient.
  
- 	case FL_STATUS:
-+		/* Some chips (e.g. Sharp's LHF64F12) need to be
-+		   explicitly set to 'status read' mode. */
-+		map_write(map, CMD(0x70), adr);
- 		for (;;) {
- 			status = map_read(map, adr);
- 			if (map_word_andequal(map, status, status_OK, status_OK))
+This communication is confidential and may contain legally privileged information.
+By the use of email over the Internet or other communication systems, ResMed is not waiving either confidentiality of, or legal
+privilege in,the content of the email and of any attachments.
+If the recipient of this message is not the intended addressee, please call ResMed immediately on  +61 2 9886 5000 Sydney, Australia.
