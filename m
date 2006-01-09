@@ -1,23 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20060108141430.GJ3774@stusta.de>
-References: <20060107220702.GZ3774@stusta.de>
-	<1136678409.30348.26.camel@pmac.infradead.org>
-	<20060108002457.GE3774@stusta.de>
-	<1136680734.30348.34.camel@pmac.infradead.org>
-	<20060107174523.460f1849.akpm@osdl.org>
-	<1136724072.30348.66.camel@pmac.infradead.org>
-	<20060108125700.GI3774@stusta.de>
-	<1136725580.30348.69.camel@pmac.infradead.org>
-	<20060108141430.GJ3774@stusta.de>
-Content-Type: text/plain
-Date: Sun, 08 Jan 2006 14:24:40 +0000
-Message-Id: <1136730280.30348.78.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [2.6 patch] no longer mark MTD_OBSOLETE_CHIPS as BROKEN
+Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikana.artecdesign.ee)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EvrHI-0005zh-Md
+	for linux-mtd@lists.infradead.org; Mon, 09 Jan 2006 02:17:22 -0500
+Received: from malvek.artecdesign.ee ([62.65.32.4] helo=pcy.artec.ee)
+	by postikana.artecdesign.ee with esmtp (Exim 3.35 #1 (Debian))
+	id 1Evr6k-0000VE-00
+	for <linux-mtd@lists.infradead.org>; Mon, 09 Jan 2006 09:06:22 +0200
+Date: Mon, 9 Jan 2006 09:17:08 +0200 (EET)
+From: Olav Kongas <ok@artecdesign.ee>
+To: linux-mtd@lists.infradead.org
+Message-ID: <Pine.LNX.4.63.0601090858480.11546@pcy.artec.ee>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Subject: [PATCH] cfi_cmdset_0001.c: Set flash explicitly to 'status read'
+ mode
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-01-08 at 15:14 +0100, Adrian Bunk wrote:
-> This patch removes the wrong dependency of MTD_OBSOLETE_CHIPS on BROKEN 
-> and marks the non-compiling MTD_AMDSTD and MTD_JEDEC drivers as BROKEN.
 
-Looks better; thanks.
+Set flash explicitly to 'status read' mode. Without this patch, I have
+experienced failures like an example below, if running executables from the
+cramfs residing on Sharp's LHF64F12 flash chip.
 
-> Signed-off-by: Adrian Bunk <bunk@stusta.de>
+	Waiting for chip to be ready timed out. Status 3c31
+	end_request: I/O error, dev mtdblock0, sector 5400
+	Buffer I/O error on device mtdblock0, logical block 675
+	Error -3 while decompressing!
 
-Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+Signed-off-by: Olav Kongas <ok@artecdesign.ee>
 
--- 
-dwmw2
+--- linux-2.6.15-a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-01-06 16:43:05.000000000 +0200
++++ linux-2.6.15-b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-01-06 16:46:36.000000000 +0200
+@@ -687,6 +687,9 @@ static int get_chip(struct map_info *map
+ 	switch (chip->state) {
+ 
+ 	case FL_STATUS:
++		/* Some chips (e.g. Sharp's LHF64F12) need to be
++		   explicitly set to 'status read' mode. */
++		map_write(map, CMD(0x70), adr);
+ 		for (;;) {
+ 			status = map_read(map, adr);
+ 			if (map_word_andequal(map, status, status_OK, status_OK))
