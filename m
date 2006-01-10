@@ -1,22 +1,17 @@
-Received: from nproxy.gmail.com ([64.233.182.204])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EwOWh-0002n6-Nb
-	for linux-mtd@lists.infradead.org; Tue, 10 Jan 2006 13:47:25 -0500
-Received: by nproxy.gmail.com with SMTP id x30so163991nfb
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Jan 2006 10:47:21 -0800 (PST)
-Message-ID: <6934efce0601101047q2d40d5ecic5205aad4743c341@mail.gmail.com>
-Date: Tue, 10 Jan 2006 10:47:21 -0800
-From: Jared Hulbert <jaredeh@gmail.com>
-To: James Hughes <JHughes@linx.co.uk>
-In-Reply-To: <DB1B6B12D0E2F0469EB35A9586066B6ECE7974@stivesemail.stives.linx.gbr>
+Received: from sorrow.cyrius.com ([65.19.161.204])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1EwQvt-0004lG-H3
+	for linux-mtd@lists.infradead.org; Tue, 10 Jan 2006 16:21:52 -0500
+Date: Tue, 10 Jan 2006 21:20:54 +0000
+From: Martin Michlmayr <tbm@cyrius.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20060110212054.GA12650@deprecation.cyrius.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <DB1B6B12D0E2F0469EB35A9586066B6ECE7974@stivesemail.stives.linx.gbr>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Trying to get MTD to do anything...
+Content-Transfer-Encoding: 8bit
+Cc: Nicolas Pitre <nico@cam.org>
+Subject: [PATCH] Fix compilation errors in maps/dc21285.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> However, although I have enabled MTD in the kernel config, and all variou=
-s
-> options I think I need, during kernel boot there is no indication that th=
-e
-> MTD driver(s) is being started up - no scanning, no flash finds etc.
-> Documentation for the patches for this board says MTD should be working.
-> Kernel version is 2.6.10.
+This patch fixes the following compilation errors in maps/dc21285.c.
 
-> My question (amongst many) is how do I get the MTD system to start up - w=
-hat
-> have I missed?
+  CC      drivers/mtd/maps/dc21285.o
+drivers/mtd/maps/dc21285.c: In function ‘dc21285_copy_to_32’:
+drivers/mtd/maps/dc21285.c:113: error: invalid lvalue in increment
+drivers/mtd/maps/dc21285.c: In function ‘dc21285_copy_to_16’:
+drivers/mtd/maps/dc21285.c:124: error: invalid lvalue in increment
+drivers/mtd/maps/dc21285.c: In function ‘dc21285_copy_to_8’:
+drivers/mtd/maps/dc21285.c:134: error: invalid lvalue in increment
+make[3]: *** [drivers/mtd/maps/dc21285.o] Error 1
 
-Sounds like you are probably missing a map file for you system.=20
-drivers/mtd/maps/*.c
+Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
 
-You can use the mainstone.c as a template.
+---
+
+ dc21285.c |    9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+The patch is against 2.6.15
+
+--- drivers/mtd/maps/dc21285.c~	2006-01-10 19:40:53.000000000 +0000
++++ drivers/mtd/maps/dc21285.c	2006-01-10 19:52:14.000000000 +0000
+@@ -110,8 +110,9 @@
+ {
+ 	while (len > 0) {
+ 		map_word d;
+-		d.x[0] = *((uint32_t*)from)++;
++		d.x[0] = *((uint32_t*)from);
+ 		dc21285_write32(map, d, to);
++		from += 4;
+ 		to += 4;
+ 		len -= 4;
+ 	}
+@@ -121,8 +122,9 @@
+ {
+ 	while (len > 0) {
+ 		map_word d;
+-		d.x[0] = *((uint16_t*)from)++;
++		d.x[0] = *((uint16_t*)from);
+ 		dc21285_write16(map, d, to);
++		from += 2;
+ 		to += 2;
+ 		len -= 2;
+ 	}
+@@ -131,8 +133,9 @@
+ static void dc21285_copy_to_8(struct map_info *map, unsigned long to, const void *from, ssize_t len)
+ {
+ 	map_word d;
+-	d.x[0] = *((uint8_t*)from)++;
++	d.x[0] = *((uint8_t*)from);
+ 	dc21285_write8(map, d, to);
++	from++;
+ 	to++;
+ 	len--;
+ }
+
+-- 
+Martin Michlmayr
+http://www.cyrius.com/
