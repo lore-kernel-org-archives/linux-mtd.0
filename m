@@ -1,15 +1,18 @@
-Received: from [62.254.209.121] (helo=drmail.stives.linx.gbr)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Eweyx-0005Iv-M5
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 07:21:42 -0500
-Message-ID: <DB1B6B12D0E2F0469EB35A9586066B6ECE7999@stivesemail.stives.linx.gbr>
-From: James Hughes <JHughes@Linx.co.uk>
-To: linux-mtd@lists.infradead.org
-Date: Wed, 11 Jan 2006 12:25:03 -0000
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EwffE-0007XW-EO
+	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 13:05:21 +0000
+Message-ID: <43C50274.8060606@intel.com>
+Date: Wed, 11 Jan 2006 16:04:52 +0300
+From: "Alexey, Korolev" <alexey.korolev@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Subject: FW: Trying to get MTD to do anything...
+To: "Zhao, Forrest" <forrest.zhao@intel.com>, dedekind@infradead.org
+References: <1135735258.3155.8.camel@localhost.localdomain>
+In-Reply-To: <1135735258.3155.8.camel@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] JFFS2 kernel panics fixup on Sibley
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +22,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > However, although I have enabled MTD in the kernel config, 
-> and all various
-> > options I think I need, during kernel boot there is no 
-> indication that the
-> > MTD driver(s) is being started up - no scanning, no flash finds etc.
-> > Documentation for the patches for this board says MTD 
-> should be working.
-> > Kernel version is 2.6.10.
-> 
-> > My question (amongst many) is how do I get the MTD system 
-> to start up - what
-> > have I missed?
-> 
-> Sounds like you are probably missing a map file for you system. 
-> drivers/mtd/maps/*.c
-> 
-> You can use the mainstone.c as a template.
+Artem,
+
+I verified the latest mtd snapshot it looks it still doesn't contain 
+fixes I sent.
+Would you please review and checkin the patch if nobody has complains 
+about it .
+
+Zhao,
+We did some tests on four* differe*nt h/w configurations including 
+Generic NOR, Sibley, NAND.
+JFFS2 with the patch works fine. Without it we have kernel panics on 
+configuration with Sibley.
+
+Thanks,
+Alexey
+
+> On Tue, 2005-12-27 at 16:07 +0300, Alexey, Korolev wrote:
 >
-
-I have done exactlythat, changing the mapping to the correct place (very
-minor change). However, although the driver is being registered (printk
-confirms this), the probe function is never called to set up the flash. Does
-anyone know why that may be the case? Is there something I haven't done in
-the kernel set up? Anyone know the reasons why the probe callback may not be
-called, even though a driver has been registered?
-
-James
+> > =======================================
+> > 
+> > diff -aur c/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
+> > --- c/fs/jffs2/nodelist.c 2005-12-23 16:43:09.000000000 +0300
+> > +++ b/fs/jffs2/nodelist.c 2005-12-23 16:48:43.000000000 +0300
+> > @@ -436,7 +436,7 @@
+> >    * adding and jffs2_flash_read_end() interface. */
+> >   if (c->mtd->point) {
+> >    err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
+> > -  if (!err && retlen < tn->csize) {
+> > +  if (!err && retlen < len) {
+> >     JFFS2_WARNING("MTD point returned len too short: %u instead of
+> > %u.\n", retlen, tn->csize);
+> >     c->mtd->unpoint(c->mtd, buffer, ofs, len);
+> >    } else if (err)
+> > diff -aur c/fs/jffs2/scan.c b/fs/jffs2/scan.c
+> > --- c/fs/jffs2/scan.c 2005-12-23 16:43:09.000000000 +0300
+> > +++ b/fs/jffs2/scan.c 2005-12-23 16:48:43.000000000 +0300
+> > @@ -454,7 +454,7 @@
+> >     buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size 
+> - ofs);
+> >     D1(printk(KERN_DEBUG "Fewer than %zd bytes (node header) left to 
+> end
+> > of buf. Reading 0x%x at 0x%08x\n",
+> >        sizeof(struct jffs2_unknown_node), buf_len, ofs));
+> > -   err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
+> > +   err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
+> >     if (err)
+> >      return err;
+> >     buf_ofs = ofs;
+> > @@ -511,7 +511,7 @@
+> >      break;
+> >     }
+> >     D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", 
+> buf_len, ofs));
+> > -   err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
+> > +   err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
+> >     if (err)
+> >      return err;
+> >     buf_ofs = ofs;
+> > @@ -587,7 +587,7 @@
+> >      buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size -
+> > ofs);
+> >      D1(printk(KERN_DEBUG "Fewer than %zd bytes (inode node) left to 
+> end
+> > of buf. Reading 0x%x at 0x%08x\n",
+> >         sizeof(struct jffs2_raw_inode), buf_len, ofs));
+> > -    err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
+> > +    err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
+> >      if (err)
+> >       return err;
+> >      buf_ofs = ofs;
+> > @@ -603,7 +603,7 @@
+> >      buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size -
+> > ofs);
+> >      D1(printk(KERN_DEBUG "Fewer than %d bytes (dirent node) left to 
+> end
+> > of buf. Reading 0x%x at 0x%08x\n",
+> >         je32_to_cpu(node->totlen), buf_len, ofs));
+> > -    err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
+> > +    err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
+> >      if (err)
+> >       return err;
+> >      buf_ofs = ofs;
+> > @@ -650,7 +650,7 @@
+> >     } else {
+> >      if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
+> >       buf_len = min_t(uint32_t, buf_size, jeb->offset + 
+> c->sector_size -
+> > ofs);
+> > -     err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
+> > +     err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
+> >       if (err)
+> >        return err;
+> >       buf_ofs = ofs;
+>
+> Artem,
+>
+> I reviewed the part of this patch for EBH, the above remaining
+> part need your review before we could check in the patch to CVS.
+>
+> Alexey,
+>
+> I don't have a Sibley flash at hand, so didn't do intensive
+> test for it. Thank you for the fix.
+>
+> Thanks,
+> Forrest
+>
+>
