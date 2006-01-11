@@ -1,27 +1,15 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from [62.254.209.121] (helo=drmail.stives.linx.gbr)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ewdfn-0004N7-9w
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 05:57:51 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1Ewdfh-0004gH-Gv
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 11:57:41 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
-	M2006011111574103332
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2006 11:57:41 +0100
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1Ewdfh-0004hb-BO
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 11:57:41 +0100
-Message-ID: <43C4E4A2.9050500@inf.u-szeged.hu>
-Date: Wed, 11 Jan 2006 11:57:38 +0100
-From: Zoltan Sogor <weth@inf.u-szeged.hu>
-MIME-Version: 1.0
+	id 1Eweyx-0005Iv-M5
+	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 07:21:42 -0500
+Message-ID: <DB1B6B12D0E2F0469EB35A9586066B6ECE7999@stivesemail.stives.linx.gbr>
+From: James Hughes <JHughes@Linx.co.uk>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: 
-Subject: Mount problem on latest mtd
+Date: Wed, 11 Jan 2006 12:25:03 -0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Subject: FW: Trying to get MTD to do anything...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All!
+> > However, although I have enabled MTD in the kernel config, 
+> and all various
+> > options I think I need, during kernel boot there is no 
+> indication that the
+> > MTD driver(s) is being started up - no scanning, no flash finds etc.
+> > Documentation for the patches for this board says MTD 
+> should be working.
+> > Kernel version is 2.6.10.
+> 
+> > My question (amongst many) is how do I get the MTD system 
+> to start up - what
+> > have I missed?
+> 
+> Sounds like you are probably missing a map file for you system. 
+> drivers/mtd/maps/*.c
+> 
+> You can use the mainstone.c as a template.
+>
 
-I think we found reason of the previous mount problem! The problem is in
-scan.c, where the jffs2_fill_scan_buf was replaced by
-jffs2_read_flash_safe and during the replacement the 'ofs' paramater is
-changed to 'buf_ofs' which is wrong.
+I have done exactlythat, changing the mapping to the correct place (very
+minor change). However, although the driver is being registered (printk
+confirms this), the probe function is never called to set up the flash. Does
+anyone know why that may be the case? Is there something I haven't done in
+the kernel set up? Anyone know the reasons why the probe callback may not be
+called, even though a driver has been registered?
 
-Here is the URL where you can download the patch:
-http://www.inf.u-szeged.hu/jffs2/jffs2-scan-fix.patch
-
-If nobody complains Ferenc can commit the patch into the CVS.
-
-Zoltan
+James
