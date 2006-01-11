@@ -1,23 +1,27 @@
-Received: from wproxy.gmail.com ([64.233.184.201])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EwdQA-00043P-7T
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 05:41:44 -0500
-Received: by wproxy.gmail.com with SMTP id i1so106040wra
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Jan 2006 02:41:37 -0800 (PST)
-Message-ID: <29f916510601110241v952772fge443a6620b647f00@mail.gmail.com>
-Date: Wed, 11 Jan 2006 05:41:37 -0500
-From: alfred hitch <alfred.hitch@gmail.com>
-To: Peter Wippich <pewi@gw-instruments.de>
-In-Reply-To: <Pine.LNX.4.33.0601111107380.26443-100000@redbean.intranet.gw-instruments.de>
+	id 1Ewdfn-0004N7-9w
+	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 05:57:51 -0500
+Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
+	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1Ewdfh-0004gH-Gv
+	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 11:57:41 +0100
+Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
+	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
+	M2006011111574103332
+	for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2006 11:57:41 +0100
+Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
+	helo=mail.inf.u-szeged.hu)
+	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1Ewdfh-0004hb-BO
+	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 11:57:41 +0100
+Message-ID: <43C4E4A2.9050500@inf.u-szeged.hu>
+Date: Wed, 11 Jan 2006 11:57:38 +0100
+From: Zoltan Sogor <weth@inf.u-szeged.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <29f916510601102154i4935a716g7ee1751465e21c3d@mail.gmail.com>
-	<Pine.LNX.4.33.0601111107380.26443-100000@redbean.intranet.gw-instruments.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: sector locks handling for J3 flashes?
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: 
+Subject: Mount problem on latest mtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,76 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-HI Peter,
+Hi All!
 
-Thanks for your reply.
+I think we found reason of the previous mount problem! The problem is in
+scan.c, where the jffs2_fill_scan_buf was replaced by
+jffs2_read_flash_safe and during the replacement the 'ofs' paramater is
+changed to 'buf_ofs' which is wrong.
 
-If my partitions are to be used as read only jffs2 partitions ..
-Will removing this unlock on these sectors harm anything ??
+Here is the URL where you can download the patch:
+http://www.inf.u-szeged.hu/jffs2/jffs2-scan-fix.patch
 
-We are currently undergoing a whole exercise of locking flash sectors
-to get past some random flash corruptions we are observing.
+If nobody complains Ferenc can commit the patch into the CVS.
 
-Can you please help me to point in code, where this unlock is being done ?
-
-I am actually surprised that noone is running his / her boards with
-flash sectors locked ?
-
-I am new to embedded designs, but wont this be a pretty standard /
-accepted practice to lock your flash sectors ?
-
-Regards,
-Alfred
-
-On 1/11/06, Peter Wippich <pewi@gw-instruments.de> wrote:
->
-> Hi Alfred,
->
-> the original MTD driver unlocks all flash sector during initialization.
-> However, this is a lenghty operation. Took about 2..3 seconds, depending
-> on flash size. Uli Luckas has supplied a patch which does "lazy"
-> unlocking. Each time a write / erase operation fails it unlocks the secto=
-r
-> and retries the operation. But this is only available for the latest 2.6
-> kernel. You may have a look there and / or check Russel's patch history
-> for the ARM linux kernel.
->
-> Ciao,
->
-> Peter
->
->
->
-> On Wed, 11 Jan 2006, alfred hitch wrote:
->
-> > Hi,
-> >
-> > I am trying to understand how it works for flash'es which have
-> > Hardware flash protection.
-> > Bootloader say locks say 1 partition, then linux kernel / MTD while com=
-ing up
-> > reads / probes flash (sector by sector) for locked sectors ?
-> > If yes, and it maintain this in an internal software structure. Using
-> > it when writes to partitions is done ?
-> >
-> > I hope linux kernel arm-linux2.4.25-x (snapgear 3.1) has support for
-> > ixdp425 and Intel J3 Strata flash for automatic detection and working
-> > with locked flashes ?
-> >
-> > Any one already tried this ?
-> >
-> > Regards,
-> > Alfred
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
->
-> |       Peter Wippich                   Voice: +49 30 46776411          |
-> |       G&W Instruments GmbH            fax:   +49 30 46776419          |
-> |       Gustav-Meyer-Allee 25, Geb. 12  Email: pewi@gw-instruments.de   |
-> |       D-13355 Berlin  / Germany                                       |
->
->
->
+Zoltan
