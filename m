@@ -1,26 +1,22 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EwKtJ-0000OR-BI
-	for linux-mtd@lists.infradead.org; Tue, 10 Jan 2006 09:54:33 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1EwKtH-0000O4-EW
-	for linux-mtd@lists.infradead.org; Tue, 10 Jan 2006 15:54:27 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
-	M2006011015542723418
-	for <linux-mtd@lists.infradead.org>; Tue, 10 Jan 2006 15:54:27 +0100
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1EwKtH-0000Pb-Ak
-	for linux-mtd@lists.infradead.org; Tue, 10 Jan 2006 15:54:27 +0100
-Message-ID: <43C3CB22.7070606@inf.u-szeged.hu>
-Date: Tue, 10 Jan 2006 15:56:34 +0100
-From: Zoltan Sogor <weth@inf.u-szeged.hu>
+Received: from nproxy.gmail.com ([64.233.182.201])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ex60k-0005GN-Ge
+	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 17:13:19 +0000
+Received: by nproxy.gmail.com with SMTP id k27so11406nfc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jan 2006 09:11:44 -0800 (PST)
+Message-ID: <6934efce0601120911u33294d1by1dcebac8555118c4@mail.gmail.com>
+Date: Thu, 12 Jan 2006 09:11:44 -0800
+From: Jared Hulbert <jaredeh@gmail.com>
+To: James Hughes <JHughes@linx.co.uk>
+In-Reply-To: <DB1B6B12D0E2F0469EB35A9586066B6ECE79A1@stivesemail.stives.linx.gbr>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="------------010709070105090100020201"
-Cc: 
-Subject: Mount problem on latest mtd
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <DB1B6B12D0E2F0469EB35A9586066B6ECE79A1@stivesemail.stives.linx.gbr>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: Re: Trying to get MTD to do anything...
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,78 +26,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------010709070105090100020201
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
+> I don't know - the driver itself is being registered, since the printk I
+> have put in are outputting to the kernel boot console. I get no other
+> messages from the MTD system AT ALL.
+>
+> I asked where I need to debug to find out what causes the probe to be cal=
+led
+> - i.e. the area of code that starts up the MTD system, as I don't know wh=
+ere
+> to start debugging
 
-Hi All!
+This seems more clear to me now.  You have a a sandgate map driver.=20
+You know it is being executed because of the printk()s, but it does
+not actually call the probing routines.
 
-I think we found reason of the previous mount problem! The problem is in
-scan.c, where the jffs2_fill_scan_buf was replaced by
-jffs2_read_flash_safe and during the replacement the 'ofs' paramater is
-changed to 'buf_ofs' which is wrong.
+>(I'm not talking about the map driver itself, but the
+> code that call the map driver).
 
-I've attached the patch to the mail which fix this problem.
+I'm not sure I understand your reasoning here.  The map driver is
+being called.  The probing routines should be called by the map driver
+but are not.  You need to debug the map driver at this point.
 
-If nobody complains Ferenc can commit the patch into the CVS.
+> There's no point in debugging in the probe
+> function as I know that isn't being called.
 
-Zoltan
+Exactly.
 
---------------010709070105090100020201
-Content-Type: text/x-patch;
- name="jffs2-scan-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="jffs2-scan-fix.patch"
+> I created a file in the maps directory, which is a copy of the mainstone =
+map
+> (mainstone-flash.c)with alteration to match the sandgate2 flash map. I
+> stated this in my previous message. This contains the module which is
+> registered, but doesn't appear to be probed. There may be a problem with =
+me
+> misunderstanding what you mean map file - do you mean my Sandgate equival=
+ent
+> of mainstone-flash.c or is there a different map file I need to be sortin=
+g
+> out?
 
-diff -Narup -x CVS Mtd-orig-20060105/fs/jffs2/scan.c mtd/fs/jffs2/scan.c
---- Mtd-orig-20060105/fs/jffs2/scan.c	2006-01-06 08:13:51.000000000 +0100
-+++ mtd/fs/jffs2/scan.c	2006-01-10 14:53:29.000000000 +0100
-@@ -454,7 +454,7 @@ scan_more:
- 			buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
- 			D1(printk(KERN_DEBUG "Fewer than %zd bytes (node header) left to end of buf. Reading 0x%x at 0x%08x\n",
- 				  sizeof(struct jffs2_unknown_node), buf_len, ofs));
--			err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-+			err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
- 			if (err)
- 				return err;
- 			buf_ofs = ofs;
-@@ -511,7 +511,7 @@ scan_more:
- 				break;
- 			}
- 			D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", buf_len, ofs));
--			err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-+			err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
- 			if (err)
- 				return err;
- 			buf_ofs = ofs;
-@@ -587,7 +587,7 @@ scan_more:
- 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
- 				D1(printk(KERN_DEBUG "Fewer than %zd bytes (inode node) left to end of buf. Reading 0x%x at 0x%08x\n",
- 					  sizeof(struct jffs2_raw_inode), buf_len, ofs));
--				err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-+				err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
- 				if (err)
- 					return err;
- 				buf_ofs = ofs;
-@@ -603,7 +603,7 @@ scan_more:
- 				buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
- 				D1(printk(KERN_DEBUG "Fewer than %d bytes (dirent node) left to end of buf. Reading 0x%x at 0x%08x\n",
- 					  je32_to_cpu(node->totlen), buf_len, ofs));
--				err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-+				err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
- 				if (err)
- 					return err;
- 				buf_ofs = ofs;
-@@ -650,7 +650,7 @@ scan_more:
- 			} else {
- 				if (buf_ofs + buf_len < ofs + je32_to_cpu(node->totlen)) {
- 					buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
--					err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
-+					err = jffs2_flash_read_safe(c, ofs, buf_len, buf);
- 					if (err)
- 						return err;
- 					buf_ofs = ofs;
+Yes, I mean the sandgate equivalent of mainstone-flash.c.
 
---------------010709070105090100020201--
+> If it isn't being called (i.e. the probe section) how do I ensure that it
+> *is* called????
+
+Fix the map driver.
+
+> I hope I have answered you questions satisfactorily this time.
+
+Sorry about the unfriendly tone of the previous email.  It did not
+read as I had intended.   I started and stopped that email several
+times, apparently each time I restarted I added a new dig about not
+answering question, oops :)
