@@ -1,19 +1,20 @@
-Received: from gateway-1237.mvista.com ([12.44.186.158] helo=hermes.mvista.com)
+Received: from wproxy.gmail.com ([64.233.184.203])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ex9bn-0004RE-AI
-	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 16:03:48 -0500
-Message-ID: <43C6C44F.8060100@mvista.com>
-Date: Thu, 12 Jan 2006 13:04:15 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1Ex9hw-0004im-DQ
+	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 16:10:15 -0500
+Received: by wproxy.gmail.com with SMTP id i2so456657wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jan 2006 13:10:06 -0800 (PST)
+Message-ID: <a3d47b60601121310t45c62851qf8300ea432dab4d5@mail.gmail.com>
+Date: Fri, 13 Jan 2006 07:40:01 +1030
+From: Rod Whitby <rod@whitby.id.au>
+Sender: rwhitby@gmail.com
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: James Hughes <JHughes@linx.co.uk>
-References: <DB1B6B12D0E2F0469EB35A9586066B6ECE79AD@stivesemail.stives.linx.gbr>
-	<6934efce0601121114v63ffb32brd20ced641161c3cf@mail.gmail.com>
-In-Reply-To: <6934efce0601121114v63ffb32brd20ced641161c3cf@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: Trying to get MTD to do anything...
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: Resend: [PATCH]: Make JFFS2 endianness configurable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +24,89 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> This function simply does the following :
->>
->>         return driver_register(&sandgate2_flash_driver);
->>
->> and a printk in the function does display.
->>
->> I am not sure what there is to fix. The driver gets registered, but probe is
->> never called. Its correctly added to the driver structure (in fact a direct
->> copy from the mainstone variant, but with name changes to match sandgate2) -
->> what else is there to debug?
+[Sorry for the bad formatting of the previous message.]
 
-Make sure the .name field of your struct device_driver exactly matches 
-the .name field of your struct device that you (hopefully) registered in 
-your board file (since you're using mainstone-flash as an example see 
-arch/arm/mach-pxa/mainstone.c for the board device side of it).
+This patch allows the endianness of the JFSS2 filesystem to be
+specified by config options.
 
-If you think that's setup right then debug what's going on in 
-drivers/base/platform.c: platform_match().
+It defaults to native-endian (the previously hard-coded option).
+
+Some architectures (in particular, the NSLU2) benefit from having a
+single known endianness of JFFS2 filesystem (for data, not
+executables) independent of the endianness of the processor (ARM
+processors can be switched to either endianness at run-time).
+
+Signed-off-by: Rod Whitby <rod@whitby.id.au>
+
+--- linux-2.6.15/fs/Kconfig~    2006-01-03 13:51:10.000000000 +1030
++++ linux-2.6.15/fs/Kconfig     2006-01-05 01:35:36.000000000 +1030
+@@ -1132,6 +1132,31 @@ config JFFS2_CMODE_SIZE
+
+ endchoice
+
++choice
++        prompt "JFFS2 endianness"
++        default JFFS2_NATIVE_ENDIAN
++        depends on JFFS2_FS
++        help
++          You can set here the default endianness of JFFS2 from
++          the available options. Don't touch if unsure.
++
++config JFFS2_NATIVE_ENDIAN
++        bool "native endian"
++        help
++          Uses a native endian bytestream.
++
++config JFFS2_BIG_ENDIAN
++        bool "big endian"
++        help
++          Uses a big endian bytestream.
++
++config JFFS2_LITTLE_ENDIAN
++        bool "little endian"
++        help
++          Uses a little endian bytestream.
++
++endchoice
++
+ config CRAMFS
+        tristate "Compressed ROM file system support (cramfs)"
+        select ZLIB_INFLATE
+--- linux-2.6.15/fs/jffs2/nodelist.h~   2006-01-05 01:37:06.000000000 +1030
++++ linux-2.6.15/fs/jffs2/nodelist.h    2006-01-05 01:37:54.000000000 +1030
+@@ -29,12 +29,10 @@
+ #include "os-linux.h"
+ #endif
+
+-#define JFFS2_NATIVE_ENDIAN
+-
+ /* Note we handle mode bits conversion from JFFS2 (i.e. Linux) to/from
+    whatever OS we're actually running on here too. */
+
+-#if defined(JFFS2_NATIVE_ENDIAN)
++#if defined(CONFIG_JFFS2_NATIVE_ENDIAN)
+ #define cpu_to_je16(x) ((jint16_t){x})
+ #define cpu_to_je32(x) ((jint32_t){x})
+ #define cpu_to_jemode(x) ((jmode_t){os_to_jffs2_mode(x)})
+@@ -42,7 +40,7 @@
+ #define je16_to_cpu(x) ((x).v16)
+ #define je32_to_cpu(x) ((x).v32)
+ #define jemode_to_cpu(x) (jffs2_to_os_mode((x).m))
+-#elif defined(JFFS2_BIG_ENDIAN)
++#elif defined(CONFIG_JFFS2_BIG_ENDIAN)
+ #define cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
+ #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
+ #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(x))})
+@@ -50,7 +48,7 @@
+ #define je16_to_cpu(x) (be16_to_cpu(x.v16))
+ #define je32_to_cpu(x) (be32_to_cpu(x.v32))
+ #define jemode_to_cpu(x) (be32_to_cpu(jffs2_to_os_mode((x).m)))
+-#elif defined(JFFS2_LITTLE_ENDIAN)
++#elif defined(CONFIG_JFFS2_LITTLE_ENDIAN)
+ #define cpu_to_je16(x) ((jint16_t){cpu_to_le16(x)})
+ #define cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
+ #define cpu_to_jemode(x) ((jmode_t){cpu_to_le32(os_to_jffs2_mode(x))})
 
 
--- 
-Todd
+-- Rod Whitby
+-- NSLU2-Linux Project Lead
