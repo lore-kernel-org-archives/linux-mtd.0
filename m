@@ -1,21 +1,22 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1EwnHF-0004bU-Li
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 16:13:11 -0500
-Received: from mail.shareable.org (localhost [127.0.0.1])
-	by mail.shareable.org (8.12.8/8.12.8) with ESMTP id k0BLCxHc007584
-	for <linux-mtd@lists.infradead.org>; Wed, 11 Jan 2006 21:12:59 GMT
-Received: (from jamie@localhost)
-	by mail.shareable.org (8.12.8/8.12.8/Submit) id k0BLCxaN007579
-	for linux-mtd@lists.infradead.org; Wed, 11 Jan 2006 21:12:59 GMT
-Date: Wed, 11 Jan 2006 21:12:59 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20060111211259.GA27357@mail.shareable.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from wproxy.gmail.com ([64.233.184.204])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1Ewvme-0001J0-Mx
+	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 01:18:10 -0500
+Received: by wproxy.gmail.com with SMTP id 70so326072wra
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 11 Jan 2006 22:18:00 -0800 (PST)
+Message-ID: <29f916510601112218j3aaace0ct63bb1dd8b6d9ef4f@mail.gmail.com>
+Date: Thu, 12 Jan 2006 01:18:00 -0500
+From: alfred hitch <alfred.hitch@gmail.com>
+To: "ghannon@cspi.com" <ghannon@cspi.com>
+In-Reply-To: <852570F3.00522FB1.00@pine.cspi.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Subject: Question about JFFS2 space overhead
+References: <852570F3.00522FB1.00@pine.cspi.com>
+Cc: linux-mtd@lists.infradead.org, Peter Wippich <pewi@gw-instruments.de>
+Subject: Re: sector locks handling for J3 flashes?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +26,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a 1MB partition (on an 8MB chip), on which I'm using JFFS2.
-The kernel is 2.4.26-uc0 (uclinux), with patches.
+Hi Ghannon,
 
-The intention is to store some executables, configuration and scripts
-which have to be updated occasionally, and logs which must be updated
-regularly.
+Could you please share the code for lock / unlock.
+I presume that it must be based on ioctl calls to mtd , same as like
+what netlfash does with -l option ?'
 
-I'm rather surprised to find it reporting as full sometimes.
+Our flash corruption is pretty much random as of now.
+Sometimes within a week on new boards (and while running itself, no
+resets) and sometimes as much as 3 weeks.
+Suspecting some hardware isssues, but difficult to convince them !
 
-According to du, it has 510k of data on it right now.
-According to df, it has 916k (108 available, 1024 total).
+Our requirement is pretty much similar to you, to avoid corruption
+lock some flash sectors.  No permanent lock desired.
 
-    # du -s /mnt/flash
-    510     /mnt/flash
-    # df /mnt/flash
-    Filesystem           1k-blocks      Used Available Use% Mounted on
-    /dev/mtdblock/2           1024       916       108  89% /mnt/flash
+The fact you mentioned of unlock "feature" wasnt known to me, thanks a
+lot for the timely tip.
 
-When I try to do little things like touching a file, or even setting
-timestamps on existing files, it reports "No space left on device".
+One more thing, I happened to have put some traces in the lock /
+unlock handlers attached to MTD layer.
+And I observed that when netflash tried to unlock, erase, write,  lock
+ the registers value dumped were ff which became fc after lock.
+Just curious to know if these are correct as I am confused from the
+data sheet on which register is this actually .. is it the status
+register ? Block Status register ?
 
-Is this due to the space required for garbage collection?
+Regards,
+Alfred
 
-In the JFFS2 paper at
-http://sourceware.org/jffs2/jffs2-html/node4.html#SECTION00042000000000000000
-it says:
 
-    A major annoyance for users is the amount of space currently required
-    to be left spare for garbage collection. It is hoped that a formal
-    proof of the amount of required space can be produced, but in the
-    meantime a very conservative approach is taken -- five full erase
-    blocks must be available for writing before new writes will be
-    permitted from user space.
-
-This chip has 64k erase blocks, so that would be 320k of space
-consumed for eraseblocks.  Is that why I can't write the smallest
-thing when the 1024k filesystem has only 510k of data?  And that
-doesn't explain (to me) why the filesystem reports 916k usage.
-
-My most important question is: how much data can I reliably store on a
-1MB JFFS2 partition, before I might see write errors?  At the moment,
-I don't know how big I need the partition to be, because I don't know
-how much space files can effectively take after many writes.  Most of
-the time, I have no problem with these files, or indeed larger ones.
-It is only occasionally, after several updates, that it gets into this
-state.
-
->From the paper which mentions 5 eraseblocks, I might expect df's
-"used" to include those, plus any alignment overhead, and for writes
-to stop exactly the point where "available" reaches zero.  But I don't
-see that, and I'm surprised that I cannot even fill it to 50% reliably.
-
-Is this to be expected, or is something wrong?  Also, any advice in
-picking the most reliable JFFS2 code with 2.4 kernels would be
-appreciated, as I saw a number of messages in the archive recently
-about data loss problems.
-
-Thanks,
--- Jamie
+On 1/11/06, ghannon@cspi.com <ghannon@cspi.com> wrote:
+>
+> On Wed, 11 Jan 2006, alfred hitch wrote:
+>
+> > I am actually surprised that noone is running his / her boards with
+> > flash sectors locked ?
+>
+> > I am new to embedded designs, but wont this be a pretty standard /
+> > accepted practice to lock your flash sectors ?
+>
+> We are also using that same part and we were having some flash
+> corruption at reboot, although I think it was due to an
+> error in the reset timing on the board.
+>
+> I keep the flash locked at all times except to reflash our firmware.
+> The locking and unlocking is all handled  by a userspace tool
+> we wrote up and the reflashing script takes care of doing the
+> unlock/lock around the programming step.
+>
+> I could send you the code if you would like.
+>
+> Also, one thing about the J3 part is that any "unlock" of
+> a block unlocks the whole flash, and a lock only locks one block.
+> The linux mtd drivers do not take this into consideration.
+> Although I think the lazy unlock mentioned would not have a
+> problem with it, it would just never find anything locked once
+> it unlocked the first block.
+>
+> The rev D of J3 allows you to make certain sectors permanently locked,
+> so that an unlock of one area will not unlock sectors that are
+> setup to not allow unlocking.   Be careful though, or your can turn your
+> flash into rom very easily if you have no way of stopping the code
+> before it sets up these bits.
+>
+> Gary Hannon
+>
+>
+>
+>
+>
+>
+>
