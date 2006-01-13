@@ -1,27 +1,18 @@
-Received: from [213.239.212.131] (helo=mail2.syneticon.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ExNOK-0003V8-Du
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 11:46:50 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by mail2.syneticon.net (Postfix) with ESMTP id 9277346ABF
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jan 2006 12:46:35 +0100 (CET)
-Received: from mail2.syneticon.net ([127.0.0.1])
-	by localhost (linux [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 08888-17 for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jan 2006 12:46:25 +0100 (CET)
-Received: from [81.173.143.146] (xdsl-81-173-143-146.netcologne.de
-	[81.173.143.146]) by mail2.syneticon.net (Postfix) with ESMTP
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jan 2006 12:46:24 +0100 (CET)
-Message-ID: <43C7930F.3030807@wpkg.org>
-Date: Fri, 13 Jan 2006 12:46:23 +0100
-From: Tomasz Chmielewski <mangoo@wpkg.org>
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1ExPJs-0000FJ-UO
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 08:50:25 -0500
+Date: Fri, 13 Jan 2006 12:48:17 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: dwmw2@infradead.org
+Message-ID: <20060113114817.GG29663@stusta.de>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: how to mount a 256 MB jffs2 image (without using 256 MB of RAM)?
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Subject: [RFC: 2.6 patch] MTD_NAND_SHARPSL and MTD_NAND_NANDSIM should be
+	tristate's
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +22,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I just began to play with jffs2.
+MTD_NAND=m and MTD_NAND_SHARPSL=y or MTD_NAND_NANDSIM=y are illegal 
+combinations that mustn't be allowed.
 
-I have a small ASUS router which has a 4 MB flash, and 32 MB of RAM. It 
-runs linux (http://www.openwrt.org).
+This patch fixes this bug by making MTD_NAND_SHARPSL and 
+MTD_NAND_NANDSIM tristate's.
 
-4 MB flash is not much for a Linux distribution, but this tiny router 
-has also a USB port, so I can connect a USB stick to it.
-
-My original idea was to "format" this 256 MB USB stick with jffs2 to get 
-more space - but of course, it's not possible, as it's not really a 
-mtd/flash device.
-
-So my second though was to create a ~256 MB jffs2 image on my Linux PC, 
-copy it to the USB stick (formatted with ext2/3), and mount this image 
-on a router.
-
-I made some test, and unfortunately, it seems that to mount a 256 MB 
-jffs image one needs an equal amount of RAM (256):
+Additionally, it fixes some whitespace damage at these options.
 
 
-insmod mtdram total_size=262144 erase_size=256
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
+---
 
-Are there any alternative ways to mount a jffs2 image, so that it 
-doesn't take so much RAM?
+This patch was already sent on:
+- 31 Dec 2005
 
-
--- 
-Tomasz Chmielewski
-http://wpkg.org
+--- linux-git/drivers/mtd/nand/Kconfig.old	2005-12-31 12:20:12.000000000 +0100
++++ linux-git/drivers/mtd/nand/Kconfig	2005-12-31 12:21:35.000000000 +0100
+@@ -178,17 +178,16 @@
+ 	  Even if you leave this disabled, you can enable BBT writes at module
+ 	  load time (assuming you build diskonchip as a module) with the module
+ 	  parameter "inftl_bbt_write=1".
+-	  
+- config MTD_NAND_SHARPSL
+- 	bool "Support for NAND Flash on Sharp SL Series (C7xx + others)"
+- 	depends on MTD_NAND && ARCH_PXA
+- 
+- config MTD_NAND_NANDSIM
+- 	bool "Support for NAND Flash Simulator"
+- 	depends on MTD_NAND && MTD_PARTITIONS
+ 
++config MTD_NAND_SHARPSL
++	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
++	depends on MTD_NAND && ARCH_PXA
++
++config MTD_NAND_NANDSIM
++	tristate "Support for NAND Flash Simulator"
++	depends on MTD_NAND && MTD_PARTITIONS
+ 	help
+ 	  The simulator may simulate verious NAND flash chips for the
+ 	  MTD nand layer.
+- 
++
+ endmenu
