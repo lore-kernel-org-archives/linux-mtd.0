@@ -1,23 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.196])
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ExJYI-0003Ag-U3
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 02:40:55 -0500
-Received: by wproxy.gmail.com with SMTP id 70so589595wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Jan 2006 23:40:47 -0800 (PST)
-Message-ID: <29f916510601122340k457d7ba9l3c92f0618306dc90@mail.gmail.com>
-Date: Fri, 13 Jan 2006 02:40:47 -0500
-From: alfred hitch <alfred.hitch@gmail.com>
-To: Peter Wippich <pewi@gw-instruments.de>
-In-Reply-To: <Pine.LNX.4.33.0601111107380.26443-100000@redbean.intranet.gw-instruments.de>
+	id 1ExMIM-000652-AX
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 05:36:45 -0500
+Message-ID: <43C783D9.1030700@inf.u-szeged.hu>
+Date: Fri, 13 Jan 2006 11:41:29 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <29f916510601102154i4935a716g7ee1751465e21c3d@mail.gmail.com>
-	<Pine.LNX.4.33.0601111107380.26443-100000@redbean.intranet.gw-instruments.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: sector locks handling for J3 flashes?
+To: "Alexey, Korolev" <alexey.korolev@intel.com>
+References: <1135735258.3155.8.camel@localhost.localdomain>
+	<43C50274.8060606@intel.com>
+In-Reply-To: <43C50274.8060606@intel.com>
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, "Zhao, Forrest" <forrest.zhao@intel.com>
+Subject: Re: [PATCH] JFFS2 kernel panics fixup on Sibley
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,67 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Peter,
+Hi Alexey,
 
-I have been trying to find the patch you have mentioned for whole day in va=
-in.
-Could you please point me to the correct path ?
+> I verified the latest mtd snapshot it looks it still doesn't contain
+> fixes I sent.
+> Would you please review and checkin the patch if nobody has complains
+> about it .
+>
+We've verified your patch and commited it into the CVS. (scan.c,
+nodelist.c) The scan.c part of the patch was the same as Zoltan also
+found. It fixes the current snapshot, I think now it is usable. (at
+least here)
 
-I shall have to do back porting for it to 2.4. Will share the results
-back to community if anyone is interested.
+Thanks.
 
 Regards,
-Alfred
-
-On 1/11/06, Peter Wippich <pewi@gw-instruments.de> wrote:
->
-> Hi Alfred,
->
-> the original MTD driver unlocks all flash sector during initialization.
-> However, this is a lenghty operation. Took about 2..3 seconds, depending
-> on flash size. Uli Luckas has supplied a patch which does "lazy"
-> unlocking. Each time a write / erase operation fails it unlocks the secto=
-r
-> and retries the operation. But this is only available for the latest 2.6
-> kernel. You may have a look there and / or check Russel's patch history
-> for the ARM linux kernel.
->
-> Ciao,
->
-> Peter
->
->
->
-> On Wed, 11 Jan 2006, alfred hitch wrote:
->
-> > Hi,
-> >
-> > I am trying to understand how it works for flash'es which have
-> > Hardware flash protection.
-> > Bootloader say locks say 1 partition, then linux kernel / MTD while com=
-ing up
-> > reads / probes flash (sector by sector) for locked sectors ?
-> > If yes, and it maintain this in an internal software structure. Using
-> > it when writes to partitions is done ?
-> >
-> > I hope linux kernel arm-linux2.4.25-x (snapgear 3.1) has support for
-> > ixdp425 and Intel J3 Strata flash for automatic detection and working
-> > with locked flashes ?
-> >
-> > Any one already tried this ?
-> >
-> > Regards,
-> > Alfred
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> >
->
-> |       Peter Wippich                   Voice: +49 30 46776411          |
-> |       G&W Instruments GmbH            fax:   +49 30 46776419          |
-> |       Gustav-Meyer-Allee 25, Geb. 12  Email: pewi@gw-instruments.de   |
-> |       D-13355 Berlin  / Germany                                       |
->
->
->
+Ferenc
