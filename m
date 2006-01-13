@@ -1,18 +1,20 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ExPJs-0000FJ-UO
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 08:50:25 -0500
-Date: Fri, 13 Jan 2006 12:48:17 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: dwmw2@infradead.org
-Message-ID: <20060113114817.GG29663@stusta.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: [RFC: 2.6 patch] MTD_NAND_SHARPSL and MTD_NAND_NANDSIM should be
-	tristate's
+Received: from tim.rpsys.net ([194.106.48.114])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1ExQBC-00014X-Se
+	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 09:45:32 -0500
+From: Richard Purdie <rpurdie@rpsys.net>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060113114817.GG29663@stusta.de>
+References: <20060113114817.GG29663@stusta.de>
+Content-Type: text/plain
+Date: Fri, 13 Jan 2006 14:45:02 +0000
+Message-Id: <1137163503.6644.36.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC: 2.6 patch] MTD_NAND_SHARPSL and MTD_NAND_NANDSIM should
+	be tristate's
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD_NAND=m and MTD_NAND_SHARPSL=y or MTD_NAND_NANDSIM=y are illegal 
-combinations that mustn't be allowed.
+On Fri, 2006-01-13 at 12:48 +0100, Adrian Bunk wrote:
+> MTD_NAND=m and MTD_NAND_SHARPSL=y or MTD_NAND_NANDSIM=y are illegal 
+> combinations that mustn't be allowed.
+> 
+> This patch fixes this bug by making MTD_NAND_SHARPSL and 
+> MTD_NAND_NANDSIM tristate's.
+> 
+> Additionally, it fixes some whitespace damage at these options.
+> 
+> 
+> Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> ---
+> 
+> This patch was already sent on:
+> - 31 Dec 2005
+> 
 
-This patch fixes this bug by making MTD_NAND_SHARPSL and 
-MTD_NAND_NANDSIM tristate's.
 
-Additionally, it fixes some whitespace damage at these options.
+I can ack the MTD_NAND_SHARPSL part of the patch.
 
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
----
-
-This patch was already sent on:
-- 31 Dec 2005
-
---- linux-git/drivers/mtd/nand/Kconfig.old	2005-12-31 12:20:12.000000000 +0100
-+++ linux-git/drivers/mtd/nand/Kconfig	2005-12-31 12:21:35.000000000 +0100
-@@ -178,17 +178,16 @@
- 	  Even if you leave this disabled, you can enable BBT writes at module
- 	  load time (assuming you build diskonchip as a module) with the module
- 	  parameter "inftl_bbt_write=1".
--	  
-- config MTD_NAND_SHARPSL
-- 	bool "Support for NAND Flash on Sharp SL Series (C7xx + others)"
-- 	depends on MTD_NAND && ARCH_PXA
-- 
-- config MTD_NAND_NANDSIM
-- 	bool "Support for NAND Flash Simulator"
-- 	depends on MTD_NAND && MTD_PARTITIONS
- 
-+config MTD_NAND_SHARPSL
-+	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
-+	depends on MTD_NAND && ARCH_PXA
-+
-+config MTD_NAND_NANDSIM
-+	tristate "Support for NAND Flash Simulator"
-+	depends on MTD_NAND && MTD_PARTITIONS
- 	help
- 	  The simulator may simulate verious NAND flash chips for the
- 	  MTD nand layer.
-- 
-+
- endmenu
+Richard
