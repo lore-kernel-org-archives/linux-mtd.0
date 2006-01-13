@@ -1,20 +1,16 @@
-Received: from wproxy.gmail.com ([64.233.184.203])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1Ex9hw-0004im-DQ
-	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 16:10:15 -0500
-Received: by wproxy.gmail.com with SMTP id i2so456657wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Jan 2006 13:10:06 -0800 (PST)
-Message-ID: <a3d47b60601121310t45c62851qf8300ea432dab4d5@mail.gmail.com>
-Date: Fri, 13 Jan 2006 07:40:01 +1030
-From: Rod Whitby <rod@whitby.id.au>
-Sender: rwhitby@gmail.com
-To: linux-mtd@lists.infradead.org
+Received: from mail.tataelxsi.co.in ([203.200.1.48])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1ExGId-0000qH-4N
+	for linux-mtd@lists.infradead.org; Thu, 12 Jan 2006 23:12:30 -0500
+From: "Gururaj" <gururajabo@tataelxsi.co.in>
+To: <linux-mtd@lists.infradead.org>
+Date: Fri, 13 Jan 2006 09:42:13 +0530
+Message-ID: <EC9C808FA0414604BD56D5CF59331C43@telxsi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: Resend: [PATCH]: Make JFFS2 endianness configurable
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Subject: "YAFFS-Direct and YAFFS-guts"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,89 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[Sorry for the bad formatting of the previous message.]
-
-This patch allows the endianness of the JFSS2 filesystem to be
-specified by config options.
-
-It defaults to native-endian (the previously hard-coded option).
-
-Some architectures (in particular, the NSLU2) benefit from having a
-single known endianness of JFFS2 filesystem (for data, not
-executables) independent of the endianness of the processor (ARM
-processors can be switched to either endianness at run-time).
-
-Signed-off-by: Rod Whitby <rod@whitby.id.au>
-
---- linux-2.6.15/fs/Kconfig~    2006-01-03 13:51:10.000000000 +1030
-+++ linux-2.6.15/fs/Kconfig     2006-01-05 01:35:36.000000000 +1030
-@@ -1132,6 +1132,31 @@ config JFFS2_CMODE_SIZE
-
- endchoice
-
-+choice
-+        prompt "JFFS2 endianness"
-+        default JFFS2_NATIVE_ENDIAN
-+        depends on JFFS2_FS
-+        help
-+          You can set here the default endianness of JFFS2 from
-+          the available options. Don't touch if unsure.
-+
-+config JFFS2_NATIVE_ENDIAN
-+        bool "native endian"
-+        help
-+          Uses a native endian bytestream.
-+
-+config JFFS2_BIG_ENDIAN
-+        bool "big endian"
-+        help
-+          Uses a big endian bytestream.
-+
-+config JFFS2_LITTLE_ENDIAN
-+        bool "little endian"
-+        help
-+          Uses a little endian bytestream.
-+
-+endchoice
-+
- config CRAMFS
-        tristate "Compressed ROM file system support (cramfs)"
-        select ZLIB_INFLATE
---- linux-2.6.15/fs/jffs2/nodelist.h~   2006-01-05 01:37:06.000000000 +1030
-+++ linux-2.6.15/fs/jffs2/nodelist.h    2006-01-05 01:37:54.000000000 +1030
-@@ -29,12 +29,10 @@
- #include "os-linux.h"
- #endif
-
--#define JFFS2_NATIVE_ENDIAN
--
- /* Note we handle mode bits conversion from JFFS2 (i.e. Linux) to/from
-    whatever OS we're actually running on here too. */
-
--#if defined(JFFS2_NATIVE_ENDIAN)
-+#if defined(CONFIG_JFFS2_NATIVE_ENDIAN)
- #define cpu_to_je16(x) ((jint16_t){x})
- #define cpu_to_je32(x) ((jint32_t){x})
- #define cpu_to_jemode(x) ((jmode_t){os_to_jffs2_mode(x)})
-@@ -42,7 +40,7 @@
- #define je16_to_cpu(x) ((x).v16)
- #define je32_to_cpu(x) ((x).v32)
- #define jemode_to_cpu(x) (jffs2_to_os_mode((x).m))
--#elif defined(JFFS2_BIG_ENDIAN)
-+#elif defined(CONFIG_JFFS2_BIG_ENDIAN)
- #define cpu_to_je16(x) ((jint16_t){cpu_to_be16(x)})
- #define cpu_to_je32(x) ((jint32_t){cpu_to_be32(x)})
- #define cpu_to_jemode(x) ((jmode_t){cpu_to_be32(os_to_jffs2_mode(x))})
-@@ -50,7 +48,7 @@
- #define je16_to_cpu(x) (be16_to_cpu(x.v16))
- #define je32_to_cpu(x) (be32_to_cpu(x.v32))
- #define jemode_to_cpu(x) (be32_to_cpu(jffs2_to_os_mode((x).m)))
--#elif defined(JFFS2_LITTLE_ENDIAN)
-+#elif defined(CONFIG_JFFS2_LITTLE_ENDIAN)
- #define cpu_to_je16(x) ((jint16_t){cpu_to_le16(x)})
- #define cpu_to_je32(x) ((jint32_t){cpu_to_le32(x)})
- #define cpu_to_jemode(x) ((jmode_t){cpu_to_le32(os_to_jffs2_mode(x))})
 
 
--- Rod Whitby
--- NSLU2-Linux Project Lead
+HI all,
+
+I am new to YAFFS. I have gone through YAFFS open source code. But I am able
+to understand little bit.
+Please guide me how I have to start and get some understanding about YAFFS
+in terms of Algorithms they have implemented.
+Also I am not clear about YAFFS-Direct and YAFFS-guts.
+
+Plz guide.
+
+Thanks
+
+Gururaja B O
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s)and may contain confidential or privileged information. If you are not the intended recipient, please notify the sender or administrator@tataelxsi.co.in
