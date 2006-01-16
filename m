@@ -1,16 +1,19 @@
-Received: from dexter.ooi.net ([66.251.134.16])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1ExTa1-0004X3-HP
-	for linux-mtd@lists.infradead.org; Fri, 13 Jan 2006 13:23:23 -0500
-From: "Ron Kundla" <ron@eccincorp.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Fri, 13 Jan 2006 13:23:15 -0500
-Message-ID: <JCEOLKMAAGHNKFADCFPFCEFBCCAA.ron@eccincorp.com>
+Received: from wproxy.gmail.com ([64.233.184.195])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EyJ3Q-0001aI-6L
+	for linux-mtd@lists.infradead.org; Sun, 15 Jan 2006 20:21:09 -0500
+Received: by wproxy.gmail.com with SMTP id 71so1013469wra
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 15 Jan 2006 17:20:47 -0800 (PST)
+Message-ID: <7e560e180601151720g6d2f8378x578a1225646ca7e2@mail.gmail.com>
+Date: Mon, 16 Jan 2006 14:20:46 +1300
+From: Braden Simpson <braden.simpson@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Subject: Any reported issues with mtd and Intel Strataflash TE28F128 J3D75?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: Eternal loop in fill_autooob_layout
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hi all,
 
-I do software work on a board that is moving from the TE28F128 J3C150 to the
-TE28F128 J3D75 because the J3C parts are going obsolete.
+I'm pretty new to this whole Linux and MTD thing so my apologies in
+advance if I seem to
+be unusually clueless in this regard.
 
-According to the Intel migration guide, the J3D part is a drop in
-replacement for the J3C with a couple of exceptions, such as a change when
-reading the block
-locking configuration identifier codes (J3D uses 0x0000/0x0001 versus J3C
-using 0xFFFC/0xFFFF) and some minor detail about the Enhanced Configuration
-Register (ECR).
+I am working on getting a 2.6.16 kernel to boot from a Diskonchip 2000
+TSOP on a PC/104
+'embedded' platform with mixed success.
 
-I am using the mtd driver from the 2.4.20 build of Linux and the problem I
-am seeing with the new flash is I getting IO errors during the write cycle,
-not as much when using cat /dev/mtd2 >/dev/mtd1 but using the program curl
-to load images into a mtd partition. Reading partitions and erasing
-partitions seem to work okay.
+When I patch my 2.6.12.6 kernel with any of the more recent MTD
+snapshots (12th Jan 2006
+for example) it causes the kernel to hang on startup.  I have tracked
+down the location of the hang to the fill_autooob_layout function in
+nand_base.c and it appears that the while loop is
+never being exited.
 
-The timings of the J3D are the same or faster than the J3C, so I don't think
-it is a chip select configuration issue.
+Turning on the MTD kernel debug to level three gives a continuous stream of=
+:
 
-I appreciate any insight you all might have.
+     fill_autooob_layout: oob concatenated, aggregate length 0
+
+Note that this is being logged by the second kernel debug line in the
+'else' clause.  Further
+investigation shows that the 'i' counter never gets incremented above
+2 and if I follow the code
+it is reasonably obvious why.  Neither loop termination condition will
+ever become true as 'i' is
+decremented and incremented by one each loop, and 'cur' is always
+incremented by zero!
+
+What is not so obvious is what this routine is doing as the unpatched
+MTD version of the
+nand_base.c code in the 2.6.12.6 kernel doesn't have this routine and
+works as expected.
+Can anybody provide any pointers as to what should be happening here?
 
 Regards,
-Ron Kundla
+
+Braden Simpson
