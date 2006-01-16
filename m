@@ -1,19 +1,22 @@
 Received: from wproxy.gmail.com ([64.233.184.195])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EyJ3Q-0001aI-6L
-	for linux-mtd@lists.infradead.org; Sun, 15 Jan 2006 20:21:09 -0500
-Received: by wproxy.gmail.com with SMTP id 71so1013469wra
+	id 1EyLOJ-0003KK-Tt
+	for linux-mtd@lists.infradead.org; Sun, 15 Jan 2006 22:50:53 -0500
+Received: by wproxy.gmail.com with SMTP id i1so1059374wra
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 15 Jan 2006 17:20:47 -0800 (PST)
-Message-ID: <7e560e180601151720g6d2f8378x578a1225646ca7e2@mail.gmail.com>
-Date: Mon, 16 Jan 2006 14:20:46 +1300
-From: Braden Simpson <braden.simpson@gmail.com>
-To: linux-mtd@lists.infradead.org
+	Sun, 15 Jan 2006 19:50:42 -0800 (PST)
+Message-ID: <29f916510601151950u54c41a4ay426b12a523b5df11@mail.gmail.com>
+Date: Sun, 15 Jan 2006 22:50:41 -0500
+From: alfred hitch <alfred.hitch@gmail.com>
+To: Ron Kundla <rkundla@gmail.com>
+In-Reply-To: <e02f82380601130813y57900b8do909d942d48ad4da5@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Subject: Eternal loop in fill_autooob_layout
+References: <e02f82380601130813y57900b8do909d942d48ad4da5@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Any reported mtd issues with Intel Strataflash TE28F128 J3D75?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +26,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Ron,
 
-I'm pretty new to this whole Linux and MTD thing so my apologies in
-advance if I seem to
-be unusually clueless in this regard.
+Even we are observing random  write errors (say when we use netflash
+to put imgaes / upgrade) ..
+not been able to identify any pattern yet ..
+We get something like SR.4 bit set <blah blah>
 
-I am working on getting a 2.6.16 kernel to boot from a Diskonchip 2000
-TSOP on a PC/104
-'embedded' platform with mixed success.
+Infact, I was about to check timings etc in mtd code vis a vis errata
+intel published and the datasheet addendum ..
+Have you already done that exercise (will save time for us / we can
+split work ) ..  ?
 
-When I patch my 2.6.12.6 kernel with any of the more recent MTD
-snapshots (12th Jan 2006
-for example) it causes the kernel to hang on startup.  I have tracked
-down the location of the hang to the fill_autooob_layout function in
-nand_base.c and it appears that the while loop is
-never being exited.
+We have also observed a consistent MTD read only file system crib, at
+a certian block sector, its not locked or anything .. any such
+observation by you ?
 
-Turning on the MTD kernel debug to level three gives a continuous stream of=
-:
-
-     fill_autooob_layout: oob concatenated, aggregate length 0
-
-Note that this is being logged by the second kernel debug line in the
-'else' clause.  Further
-investigation shows that the 'i' counter never gets incremented above
-2 and if I follow the code
-it is reasonably obvious why.  Neither loop termination condition will
-ever become true as 'i' is
-decremented and incremented by one each loop, and 'cur' is always
-incremented by zero!
-
-What is not so obvious is what this routine is doing as the unpatched
-MTD version of the
-nand_base.c code in the 2.6.12.6 kernel doesn't have this routine and
-works as expected.
-Can anybody provide any pointers as to what should be happening here?
+We just finished our exercise to lock flash etc because of some random
+flash corruptions we were observing and am trying to convince hardware
+chap for early shift to j3 ver d .. somehow looks more stable to me
+(not just that it's  just the only choice anways in future)
 
 Regards,
+Alfred
 
-Braden Simpson
+On 1/13/06, Ron Kundla <rkundla@gmail.com> wrote:
+> Hello!
+>
+> A board I work on is moving from the TE28F128 J3C150 to the TE28F128
+> J3D75 because the J3C parts are going obsolete. According to the Intel
+> migration guide, the J3D part is a drop in replacement for the J3C
+> with a couple of exceptions, such as a change when reading the block
+> locking configuration identifier codes (J3D uses 0x0000/0x0001 versus
+> J3C using 0xFFFC/0xFFFF) and some minor detail about the Enhanced
+> Configuration Register (ECR).
+>
+> I am using the mtd driver from the 2.4.20 build of Linux (hisses from
+> the crowd using old kernel) and the problems I am seeing with the new
+> flash is I get *sporadic* errors on the write cycle. Reading and
+> erasing seem to work okay.
+>
+> I've checked my chip select timings and they are in spec for the J3C
+> part which is okay also for the J3D part.
+>
+> I appreciate any insight you all might have.
+>
+> Regards,
+> Ron Kundla
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
