@@ -1,21 +1,17 @@
-Received: from fed1rmmtao10.cox.net ([68.230.241.29])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EyaZT-0005pl-Ub
-	for linux-mtd@lists.infradead.org; Mon, 16 Jan 2006 15:03:25 -0500
-Received: from [192.168.11.9] (really [68.7.81.85]) by fed1rmmtao08.cox.net
-	(InterMail vM.6.01.05.02 201-2131-123-102-20050715) with ESMTP
-	id <20060116194655.RGUN26964.fed1rmmtao08.cox.net@[192.168.11.9]>
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jan 2006 14:46:55 -0500
-From: rick adams <rgadams@cox.net>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <E1EyXiO-0003vi-Vj@canuck.infradead.org>
-References: <E1EyXiO-0003vi-Vj@canuck.infradead.org>
-Content-Type: text/plain
-Date: Mon, 16 Jan 2006 10:49:55 -0800
-Message-Id: <1137437396.7786.22.camel@laptop.sandiego.IdealSolutions.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: Any reported mtd issues with Intel Strataflash TE28F128
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EzPHB-0002Af-8e
+	for linux-mtd@lists.infradead.org; Wed, 18 Jan 2006 21:11:53 -0500
+Date: Thu, 19 Jan 2006 03:11:39 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: Andrew Morton <akpm@osdl.org>
+Message-ID: <20060119021139.GZ19398@stusta.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
+Subject: [2.6 patch] drivers/mtd/: small cleanups
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +21,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-01-16  Ron Kundla <rkundla@gmail.com> wrote:
->
-> I've looked at the data sheet for the J3D part and it is identical or
-> faster than the J3C part. Intel also states that the J3D part is
-> functionally equivalent to the J3C.
+This patch contains the following cleanups:
+- chips/sharp.c: make two needlessly global functions static
+- move some declarations to a header file where they belong to
 
-Ron
 
-A word of warning of Intels idea of equivalent. A year or so ago I was
-working for a client who was modifying a design and changing from a
-Strataflash rev J part to a rev K part. Intel had told the client that
-the parts were identical except for the form factor and an added feature
-(burst mode). They stated that code written for the J part would work
-fine on the D part (just the old code wouldn't utilize the new feature).
-We were experiencing write failures and traced it to a difference in the
-power on initialization state between a rev J part and a rev K part. The
-rev J part has all it sectors unlocked at power on reset. The rev K part
-has all it sectors locked on power on reset. You might want to compare
-of the data sheets and not just take Intels word.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Rick
+---
+
+This patch was already sent on:
+- 6 Jan 2006
+
+ drivers/mtd/chips/sharp.c |    7 +++----
+ drivers/mtd/inftlcore.c   |    5 -----
+ include/linux/mtd/inftl.h |    5 +++++
+ 3 files changed, 8 insertions(+), 9 deletions(-)
+
+--- linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h.old	2005-12-13 00:38:32.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h	2005-12-13 00:40:26.000000000 +0100
+@@ -52,6 +52,11 @@
+ int INFTL_mount(struct INFTLrecord *s);
+ int INFTL_formatblock(struct INFTLrecord *s, int block);
+ 
++extern char inftlmountrev[];
++
++void INFTL_dumptables(struct INFTLrecord *s);
++void INFTL_dumpVUchains(struct INFTLrecord *s);
++
+ #endif /* __KERNEL__ */
+ 
+ #endif /* __MTD_INFTL_H__ */
+--- linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c.old	2005-12-13 00:39:14.000000000 +0100
++++ linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c	2005-12-13 00:40:43.000000000 +0100
+@@ -47,9 +47,6 @@
+  */
+ #define MAX_LOOPS 10000
+ 
+-extern void INFTL_dumptables(struct INFTLrecord *inftl);
+-extern void INFTL_dumpVUchains(struct INFTLrecord *inftl);
+-
+ static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
+ {
+ 	struct INFTLrecord *inftl;
+@@ -885,8 +882,6 @@
+ 	.owner		= THIS_MODULE,
+ };
+ 
+-extern char inftlmountrev[];
+-
+ static int __init init_inftl(void)
+ {
+ 	printk(KERN_INFO "INFTL: inftlcore.c $Revision: 1.19 $, "
+
+--- linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c.old	2006-01-06 19:37:50.000000000 +0100
++++ linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c	2006-01-06 19:38:32.000000000 +0100
+@@ -64,7 +64,7 @@
+ 
+ #undef AUTOUNLOCK  /* automatically unlocks blocks before erasing */
+ 
+-struct mtd_info *sharp_probe(struct map_info *);
++static struct mtd_info *sharp_probe(struct map_info *);
+ 
+ static int sharp_probe_map(struct map_info *map,struct mtd_info *mtd);
+ 
+@@ -96,7 +96,6 @@
+ 	struct flchip chips[1];
+ };
+ 
+-struct mtd_info *sharp_probe(struct map_info *map);
+ static void sharp_destroy(struct mtd_info *mtd);
+ 
+ static struct mtd_chip_driver sharp_chipdrv = {
+@@ -107,7 +106,7 @@
+ };
+ 
+ 
+-struct mtd_info *sharp_probe(struct map_info *map)
++static struct mtd_info *sharp_probe(struct map_info *map)
+ {
+ 	struct mtd_info *mtd = NULL;
+ 	struct sharp_info *sharp = NULL;
+@@ -581,7 +580,7 @@
+ 
+ }
+ 
+-int __init sharp_probe_init(void)
++static int __init sharp_probe_init(void)
+ {
+ 	printk("MTD Sharp chip driver <ds@lineo.com>\n");
+ 
