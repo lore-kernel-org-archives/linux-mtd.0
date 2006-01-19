@@ -1,17 +1,21 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EzPHB-0002Af-8e
-	for linux-mtd@lists.infradead.org; Wed, 18 Jan 2006 21:11:53 -0500
-Date: Thu, 19 Jan 2006 03:11:39 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>
-Message-ID: <20060119021139.GZ19398@stusta.de>
+Received: from mail.tqs.de ([62.157.136.17])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1EzU5z-0004uj-9k
+	for linux-mtd@lists.infradead.org; Thu, 19 Jan 2006 02:20:41 -0500
+Received: from tq-mailsrv.tq-net.de (tq-mailsrv.tqs.de [172.20.1.2])
+	by mail.tqs.de (Postfix) with ESMTP id 78C8E785D
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Jan 2006 08:20:35 +0100 (CET)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
-Subject: [2.6 patch] drivers/mtd/: small cleanups
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 19 Jan 2006 08:20:36 +0100
+Message-ID: <47F3F98010FF784EBEE6526EAAB078D1C05FA3@tq-mailsrv.tq-net.de>
+From: "Martin Krause" <Martin.Krause@tqs.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: NAND flash on MPC8xxx via UPM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,93 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch contains the following cleanups:
-- chips/sharp.c: make two needlessly global functions static
-- move some declarations to a header file where they belong to
+Hi all,
 
+we are working on a new board with a MPC8272 cpu. We plan to connect
+the NAND flashes over the Local Bus Controller and control it via
+the UPM, like described in the freescale application note:
+"How to Interface the PowerQUICC II Pro and PowerQUICC III Local
+Bus Controller to NAND Flash":
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+http://www.freescale.com/files/32bit/doc/white_paper/NANDFLASHWP.pdf
 
----
+I'm wondering, if this had been done already by someone or if there
+is a working lowlevel driver? Or perhaps someone is currently working
+on a driver or has plans to do so?
 
-This patch was already sent on:
-- 6 Jan 2006
+Regards,
+Martin
 
- drivers/mtd/chips/sharp.c |    7 +++----
- drivers/mtd/inftlcore.c   |    5 -----
- include/linux/mtd/inftl.h |    5 +++++
- 3 files changed, 8 insertions(+), 9 deletions(-)
-
---- linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h.old	2005-12-13 00:38:32.000000000 +0100
-+++ linux-2.6.15-rc5-mm2-full/include/linux/mtd/inftl.h	2005-12-13 00:40:26.000000000 +0100
-@@ -52,6 +52,11 @@
- int INFTL_mount(struct INFTLrecord *s);
- int INFTL_formatblock(struct INFTLrecord *s, int block);
- 
-+extern char inftlmountrev[];
-+
-+void INFTL_dumptables(struct INFTLrecord *s);
-+void INFTL_dumpVUchains(struct INFTLrecord *s);
-+
- #endif /* __KERNEL__ */
- 
- #endif /* __MTD_INFTL_H__ */
---- linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c.old	2005-12-13 00:39:14.000000000 +0100
-+++ linux-2.6.15-rc5-mm2-full/drivers/mtd/inftlcore.c	2005-12-13 00:40:43.000000000 +0100
-@@ -47,9 +47,6 @@
-  */
- #define MAX_LOOPS 10000
- 
--extern void INFTL_dumptables(struct INFTLrecord *inftl);
--extern void INFTL_dumpVUchains(struct INFTLrecord *inftl);
--
- static void inftl_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
- {
- 	struct INFTLrecord *inftl;
-@@ -885,8 +882,6 @@
- 	.owner		= THIS_MODULE,
- };
- 
--extern char inftlmountrev[];
--
- static int __init init_inftl(void)
- {
- 	printk(KERN_INFO "INFTL: inftlcore.c $Revision: 1.19 $, "
-
---- linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c.old	2006-01-06 19:37:50.000000000 +0100
-+++ linux-2.6.15-mm1-full/drivers/mtd/chips/sharp.c	2006-01-06 19:38:32.000000000 +0100
-@@ -64,7 +64,7 @@
- 
- #undef AUTOUNLOCK  /* automatically unlocks blocks before erasing */
- 
--struct mtd_info *sharp_probe(struct map_info *);
-+static struct mtd_info *sharp_probe(struct map_info *);
- 
- static int sharp_probe_map(struct map_info *map,struct mtd_info *mtd);
- 
-@@ -96,7 +96,6 @@
- 	struct flchip chips[1];
- };
- 
--struct mtd_info *sharp_probe(struct map_info *map);
- static void sharp_destroy(struct mtd_info *mtd);
- 
- static struct mtd_chip_driver sharp_chipdrv = {
-@@ -107,7 +106,7 @@
- };
- 
- 
--struct mtd_info *sharp_probe(struct map_info *map)
-+static struct mtd_info *sharp_probe(struct map_info *map)
- {
- 	struct mtd_info *mtd = NULL;
- 	struct sharp_info *sharp = NULL;
-@@ -581,7 +580,7 @@
- 
- }
- 
--int __init sharp_probe_init(void)
-+static int __init sharp_probe_init(void)
- {
- 	printk("MTD Sharp chip driver <ds@lineo.com>\n");
- 
+TQ-Systems GmbH
+M=FChlstra=DFe 2, Gut Delling, 82229 Seefeld
+Tel. +49 (8153) 93 08-157, Fax +49 (8153) 93 08-7157
+martin.krause@tqs.de
+www.tq-group.com
