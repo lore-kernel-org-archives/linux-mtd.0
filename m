@@ -1,21 +1,18 @@
-Received: from mail.tqs.de ([62.157.136.17])
+Received: from [209.183.211.17] (helo=mail.theptrgroup.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1EzUNm-0005F4-2W
-	for linux-mtd@lists.infradead.org; Thu, 19 Jan 2006 02:39:06 -0500
-Received: from tq-mailsrv.tq-net.de (tq-mailsrv.tqs.de [172.20.1.2])
-	by mail.tqs.de (Postfix) with ESMTP id 2C332785D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 19 Jan 2006 08:38:59 +0100 (CET)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 19 Jan 2006 08:38:59 +0100
-Message-ID: <47F3F98010FF784EBEE6526EAAB078D1C05FA4@tq-mailsrv.tq-net.de>
-From: "Martin Krause" <Martin.Krause@tqs.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: Support for parallel connected NAND flash chips
+	id 1Ezhhs-0004nA-N4
+	for linux-mtd@lists.infradead.org; Thu, 19 Jan 2006 16:52:38 -0500
+From: Jeff Angielski <jeff@theptrgroup.com>
+To: Tomasz Chmielewski <mangoo@wpkg.org>
+In-Reply-To: <43C7930F.3030807@wpkg.org>
+References: <43C7930F.3030807@wpkg.org>
+Content-Type: text/plain
+Date: Thu, 19 Jan 2006 16:46:09 -0500
+Message-Id: <1137707169.7181.58.camel@nighteyes.site>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: how to mount a 256 MB jffs2 image (without using 256 MB of RAM)?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Fri, 2006-01-13 at 12:46 +0100, Tomasz Chmielewski wrote:
+> Are there any alternative ways to mount a jffs2 image, so that it 
+> doesn't take so much RAM?
 
-in the NAND Flash API documentation I read, that parallel arrays
-of NAND flashes (e. g. to extend the buswith from 8x to 16x=20
-with two 8 bit flashes in parrallel) are currently not sopported=20
-by the driver. Are there any plans to implement such a feature
-in future?
+You might want to take a look at this under "Procedure":
 
-Regards,
-Martin
+http://www.handhelds.org/moin/moin.cgi/FamiliarBackupHowto
 
-TQ-Systems GmbH
-M=FChlstra=DFe 2, Gut Delling, 82229 Seefeld
-Tel. +49 (8153) 93 08-157, Fax +49 (8153) 93 08-7157
-martin.krause@tqs.de
-www.tq-group.com
+Google is your friend....  :)
+
+Jeff Angielski
+The PTR Group
