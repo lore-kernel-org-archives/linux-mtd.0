@@ -1,19 +1,18 @@
-Received: from [213.239.212.131] (helo=mail2.syneticon.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F0PAD-0005og-Sj
-	for linux-mtd@lists.infradead.org; Sat, 21 Jan 2006 20:16:49 +0000
-Message-ID: <43D29696.2020904@wpkg.org>
-Date: Sat, 21 Jan 2006 21:16:22 +0100
-From: Tomasz Chmielewski <mangoo@wpkg.org>
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1F0Qdd-0006oY-PB
+	for linux-mtd@lists.infradead.org; Sat, 21 Jan 2006 16:51:23 -0500
+Message-ID: <43D2ACD7.7010602@inf.u-szeged.hu>
+Date: Sat, 21 Jan 2006 22:51:19 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: Jeff Angielski <jeff@theptrgroup.com>
-References: <43C7930F.3030807@wpkg.org>
-	<1137707169.7181.58.camel@nighteyes.site>
-In-Reply-To: <1137707169.7181.58.camel@nighteyes.site>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+To: "Alexey, Korolev" <alexey.korolev@intel.com>
+References: <43C783D9.1030700@inf.u-szeged.hu> <43D0FC08.1010700@intel.com>
+In-Reply-To: <43D0FC08.1010700@intel.com>
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: how to mount a 256 MB jffs2 image (without using 256 MB of	RAM)?
+Subject: Re: [PATCH] JFFS2 kernel panics fixup on Sibley
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +22,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jeff Angielski schrieb:
-> On Fri, 2006-01-13 at 12:46 +0100, Tomasz Chmielewski wrote:
-> 
->>Are there any alternative ways to mount a jffs2 image, so that it 
->>doesn't take so much RAM?
-> 
-> 
-> You might want to take a look at this under "Procedure":
-> 
-> http://www.handhelds.org/moin/moin.cgi/FamiliarBackupHowto
-> 
-> Google is your friend....  :)
+Hi Alexey,
 
-I googled long enough, then I asked at this list as I didn't found :)
+Zoltan and me have verified your patch. We think it is OK, and have
+commited into CVS. We hope the other maintainaers of MTD/JFFS2 will
+agree with it.
 
-It works, well, almost.
+We've deleted 3 lines from your patch, which is releted to
+CONFIG_JFFS2_FORCED_BUFFER_FLUSH. We think its your private kernel
+config option.
 
-Why the image mounted this way is read only?
+Thank you.
 
-
--- 
-Tomasz Chmielewski
-http://wpkg.org
+Ferenc
