@@ -1,20 +1,18 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1F0j0w-00012G-L5
-	for linux-mtd@lists.infradead.org; Sun, 22 Jan 2006 12:28:42 -0500
-Message-ID: <43D3C098.70808@yandex.ru>
-Date: Sun, 22 Jan 2006 20:27:52 +0300
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from [213.239.212.131] (helo=mail2.syneticon.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1F0jpM-00076M-V8
+	for linux-mtd@lists.infradead.org; Sun, 22 Jan 2006 18:20:41 +0000
+Message-ID: <43D3CCD8.1000402@wpkg.org>
+Date: Sun, 22 Jan 2006 19:20:08 +0100
+From: Tomasz Chmielewski <mangoo@wpkg.org>
 MIME-Version: 1.0
-To: Adrian Bunk <bunk@stusta.de>
-References: <20060122171256.GE10003@stusta.de>
-In-Reply-To: <20060122171256.GE10003@stusta.de>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+References: <43C7930F.3030807@wpkg.org>	<1137707169.7181.58.camel@nighteyes.site>
+	<43D29696.2020904@wpkg.org>
+In-Reply-To: <43D29696.2020904@wpkg.org>
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC: 2.6 patch] MTD_NAND_SHARPSL and MTD_NAND_NANDSIM should
- be	tristate's
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: how to mount a 256 MB jffs2 image (without using 256 MB of	RAM)?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adrian Bunk wrote:
-> - config MTD_NAND_NANDSIM
-> - 	bool "Support for NAND Flash Simulator"
-> - 	depends on MTD_NAND && MTD_PARTITIONS
-Oh, thanks, long time supposed to be fixed.
+Tomasz Chmielewski schrieb:
+> Jeff Angielski schrieb:
+> 
+>> On Fri, 2006-01-13 at 12:46 +0100, Tomasz Chmielewski wrote:
+>>
+>>> Are there any alternative ways to mount a jffs2 image, so that it 
+>>> doesn't take so much RAM?
+>>
+>>
+>>
+>> You might want to take a look at this under "Procedure":
+>>
+>> http://www.handhelds.org/moin/moin.cgi/FamiliarBackupHowto
+>>
+>> Google is your friend....  :)
+> 
+> 
+> I googled long enough, then I asked at this list as I didn't found :)
+> 
+> It works, well, almost.
+> 
+> Why the image mounted this way is read only?
+
+Well, not really "read only", but whenever I try to remove anything, the 
+system says "not enough space", and refuses to remove files (or add 
+them), which results in the filesystem being read-only.
+
 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Tomasz Chmielewski
+http://wpkg.org
