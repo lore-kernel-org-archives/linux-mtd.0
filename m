@@ -1,18 +1,17 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F1Nn6-0000TY-J8
-	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2006 08:01:12 -0500
-Message-ID: <43D6254D.4000408@ru.mvista.com>
-Date: Tue, 24 Jan 2006 16:02:05 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
+	id 1F1Xvs-0006OB-M9
+	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2006 18:50:42 -0500
+Date: Wed, 25 Jan 2006 00:50:38 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: dwmw2@infradead.org
+Message-ID: <20060124235038.GL3590@stusta.de>
 MIME-Version: 1.0
-To: yuri.golovach@mindspeed.com
-References: <OFFED20C5C.C2FC40DE-ON882570FF.005D6B36-C22570FF.005ED903@mindspeed.com>
-In-Reply-To: <OFFED20C5C.C2FC40DE-ON882570FF.005D6B36-C22570FF.005ED903@mindspeed.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] treat OOB as a single chunk of oobavail bytes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RFC: 2.6 patch] Kconfig help: MTD_JEDECPROBE already supports
+	Intel chips
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +21,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Yuri,
+Unless I'm misunderstanding the code in jedec_probe.c, Intel chips are 
+already supported.
 
-can you please specify what patches you did apply and what flash you're 
-using. Thanks!
 
-Vitaly
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-yuri.golovach@mindspeed.com wrote:
+---
 
->Good day Vitaly.
->
->I've tried your patches which modifies nand_base.c, other mtdfiles and 
->mtdutils to be compatible with yaffs2.
->
->Unfortunately, I've some issues with them.
->
->1) 
->        my version of mtd is newer then your and I was unable to patch 
->nand_base.c with your patch. So, I add this patch manually (but I'm not 
->sure - have I done some mistakes or             not).
->
->2)       After the kernel compiling with your patches I've started it and 
->receive a long list of
->                Bad eraseblock1 ... at ...x..................
->
->        After "mount" and "df" commands I saw that there is no free space 
->on flash because all bloks were marked as "bad block" .
->        Than I've tried patched version of flash_eraseall but it was not 
->able to see blocks also.
->
->
->3) I've changed nand_bbt.c file (in the patched kernel) where simply 
->comment the bad blocks checking. Have booted from it and _successfully_ 
->used patched flash_eraseall.
->
->4) Than I've start the patched kernel _with bad blocks checking_ but these 
->(previously erased blocks) were marked like "bad blocks" again (in a 
->kernel booting procedure).
->
->
->So, can you, please, provide your vision what should I do to run your 
->patch. Or you can send the link on the mtd line which supports yaffs2, 
->because I was unable to find your updates in CVS mainline :(
->
->Thank you,
->        Yuri Golovach
->
->
->  
->
+ drivers/mtd/chips/Kconfig |    5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+--- linux-2.6.16-rc1-mm2-full/drivers/mtd/chips/Kconfig.old	2006-01-25 00:42:51.000000000 +0100
++++ linux-2.6.16-rc1-mm2-full/drivers/mtd/chips/Kconfig	2006-01-25 00:43:20.000000000 +0100
+@@ -19,21 +19,20 @@
+ config MTD_JEDECPROBE
+ 	tristate "Detect non-CFI AMD/JEDEC-compatible flash chips"
+ 	depends on MTD
+ 	select MTD_GEN_PROBE
+ 	help
+ 	  This option enables JEDEC-style probing of flash chips which are not
+ 	  compatible with the Common Flash Interface, but will use the common
+ 	  CFI-targetted flash drivers for any chips which are identified which
+ 	  are in fact compatible in all but the probe method. This actually
+-	  covers most AMD/Fujitsu-compatible chips, and will shortly cover also
+-	  non-CFI Intel chips (that code is in MTD CVS and should shortly be sent
+-	  for inclusion in Linus' tree)
++	  covers most AMD/Fujitsu-compatible chips and also non-CFI
++	  Intel chips.
+ 
+ config MTD_GEN_PROBE
+ 	tristate
+ 	select OBSOLETE_INTERMODULE
+ 
+ config MTD_CFI_ADV_OPTIONS
+ 	bool "Flash chip driver advanced configuration options"
+ 	depends on MTD_GEN_PROBE
+ 	help
