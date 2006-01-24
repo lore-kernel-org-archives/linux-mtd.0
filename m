@@ -1,18 +1,17 @@
-Received: from petasus.ims.intel.com ([62.118.80.130])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F15Xu-0006Mv-Gu
-	for linux-mtd@lists.infradead.org; Mon, 23 Jan 2006 12:32:09 -0500
-Message-ID: <43D512EA.70800@intel.com>
-Date: Mon, 23 Jan 2006 20:31:22 +0300
-From: "Alexey, Korolev" <alexey.korolev@intel.com>
+Received: from mgw-ext04.nokia.com ([131.228.20.96])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1F1NZm-00009Q-41
+	for linux-mtd@lists.infradead.org; Tue, 24 Jan 2006 07:47:12 -0500
+Date: Tue, 24 Jan 2006 14:47:10 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Message-ID: <20060124124710.GA29129@angel.research.nokia.com>
 MIME-Version: 1.0
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-References: <43D2ACD7.7010602@inf.u-szeged.hu>
-In-Reply-To: <43D2ACD7.7010602@inf.u-szeged.hu>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] JFFS2 kernel panics fixup on Sibley
+Subject: Erase verify problem with OneNAND
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +21,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Feneric,
+Hi Kyungmin
 
-Thanks a lot for assistance.
+I have a strange erase verify read problem with OneNand. It occurs
+strangely when crossing the 128MB border, first erasing (and
+presumably verifying) a block on other side and then erasing another
+block on the other side. Then verify reads garbage.
 
-I've download and verified the latest snapshot.
-Seems you have commited all neccessary code. Thank you very much!
-I did several tests today. Now JFFS2  works rather stable both on Sibley 
-and on NAND.
+I am using CVS head for the drivers/mtd but the JFFS2 part is from the
+2.6.15 kernel, before Erase Block Headers were committed. Onenand_base.c
+is rev 1.15. The test board has muxed 256MB OneNand.
 
+I see JFFS2 repeatably complaining "Newly-erased block contained
+word...".  This comes from fs/jffs2/erase.c:jffs2_block_check_erase()
+which reads the erased block and checks all the bits are 1.
 
-Ferenc Havasi wrote:
+I see this occuring when I flash JFFS2 root image and boot it. Our
+bootloader leaves unused erase blocks empty, without cleanmarker.
+When JFFS2 sees an empty block, it has to erase it again since there 
+is no cleanmarker. After erasing, it reads the first page to see it 
+really is empty.
 
-> Hi Alexey,
->
-> Zoltan and me have verified your patch. We think it is OK, and have
-> commited into CVS. We hope the other maintainaers of MTD/JFFS2 will
-> agree with it.
->
-> We've deleted 3 lines from your patch, which is releted to
-> CONFIG_JFFS2_FORCED_BUFFER_FLUSH. We think its your private kernel
-> config option.
->
-Ooops. I missed to remove this part of code. You are right it's there is 
-no need to include it. Currently this part of code is useless.
+For some reason the first verify read at physical offset 0x7fe0000 
+(JFFS2 report offset 0x07b60000 relative to the partition offset 
+0x480000) fails but retry succeeds -- which means the block was 
+correctly erased but the first verify reads some garbage.
 
-> Thank you.
->
-> Ferenc
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+This is tricky to debug, since the problem disappears if I increase 
+MTD debug level. On the other hand the verify problem seems to appear
+always after after flashing and booting the board.
 
-Thanks,
-Alexey
+I have modified jffs2_block_check_erase() to retry the verify read
+if garbage is seen at the erased page.  I am using MTD debug level
+0 and changed onenand_erase to report at that level to see when it 
+is being called.
+
+The repeatably occuring one:
+
+  ...
+  onenand_erase: start = 0x08040000, len = 131072
+  onenand_erase: start = 0x08020000, len = 131072
+  onenand_erase: start = 0x08000000, len = 131072
+  onenand_erase: start = 0x07fe0000, len = 131072
+  Newly-erased block contained word 0x45e0f628 at offset 0x07b60000
+  Read OK after 1 retries
+  onenand_erase: start = 0x07fc0000, len = 131072
+  onenand_erase: start = 0x07fa0000, len = 131072
+  onenand_erase: start = 0x07f80000, len = 131072
+  ...
+
+Another exmaple, less frequent:
+
+  onenand_erase: start = 0x04ce0000, len = 131072
+  onenand_erase: start = 0x04cc0000, len = 131072
+  onenand_erase: start = 0x04ca0000, len = 131072
+  onenand_erase: start = 0x0ffe0000, len = 131072
+  Newly-erased block contained word 0x7ea4c at offset 0x0fb60000
+  Read OK after 1 retries
+
+Jarkko Lavinen
