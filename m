@@ -1,27 +1,20 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F1f8n-0002PV-R8
-	for linux-mtd@lists.infradead.org; Wed, 25 Jan 2006 02:32:33 -0500
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0ITN00N5U0Y10P@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 25 Jan 2006 16:32:26 +0900 (KST)
-Received: from july7 ([10.88.163.199])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPA id <0ITN00AYD0Y14Q@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 25 Jan 2006 16:32:25 +0900 (KST)
-Date: Wed, 25 Jan 2006 16:32:25 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-In-reply-to: <20060124124710.GA29129@angel.research.nokia.com>
-To: 'Jarkko Lavinen' <jarkko.lavinen@nokia.com>
-Message-id: <0ITN00AYE0Y14Q@mmp2.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
+Received: from mgw-ext04.nokia.com ([131.228.20.96])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1F1jH9-0005QV-If
+	for linux-mtd@lists.infradead.org; Wed, 25 Jan 2006 06:57:26 -0500
+Date: Wed, 25 Jan 2006 13:57:21 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Message-ID: <20060125115721.GA31115@angel.research.nokia.com>
+References: <0ITM009NXY6NSL@mmp2.samsung.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <0ITM009NXY6NSL@mmp2.samsung.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: Erase verify problem with OneNAND
-Reply-To: kyungmin.park@samsung.com
+Subject: Re: Mount failed after clean mount & umount test
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,103 +24,138 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Jakko 
+Hello Kyungmin
 
-I think it's same problem related with Double Density Package (DDP) previous
+Your problem might be the same OOB free region problem I met a month=20
+ago.
 
-In erase call path, there's no DDP select. It only set DFS, FBA as following
+(Before EBH) JFFS2 tried to write 8-byte cleanmarker node into the first fr=
+ee region
+at OOB. If you had less than 8 byes, you could cut the length into 4 bytes.=
+ Then
+cleanmarker contained just JFFS2 magic and nodetype.
 
-% onenand_command()
-        if (block != -1) {
-                /* Write 'DFS, FBA' of Flash */
-                value = onenand_block_address(this, block);
-                this->write_word(value, this->base +
-ONENAND_REG_START_ADDRESS1);
+OneNAND has free byte regions of 2 and 3 bytes.  One cannot fit the
+magic and nodetype together into either of them alone.
+
+Currently the 3 byte regions seem also unusable since writing into them=20
+has a side effect of changing spare area HW ECC bytes from 0xFF to somethin=
+g=20
+else. As a result jffs2_check_oob_empty() will fail, since there are non=20
+0xFF bytes outside the cleanmarker area.
+
+I am myself using only 2 byte free regions where one can write without
+changingh any other bytes and jffs2_check_oob_empty() works.  I have=20
+to also use separate patch for wbuf.c to make it able to write and read=20
+cleanmarker from multiple 2 byte fragments.
+
+I am using at onenand_oob_64:
+        .oobfree	=3D {
+  =02		{14, 2}, {30, 2}, {46, 2}, {62, 2},
         }
 
-I think we have to add 
+Alternatively one could teach MTD to understand HW ECC bytes and
+separate which ECC bytes are for main area and which for spare area.
 
-	  /* Select DataRAM for DDP */
-              value = onenand_bufferram_address(this, block);
-              this->write_word(value, this->base +
-ONENAND_REG_START_ADDRESS2);
 
-Now I can't have a DDP chip I can't test.  please test this code and
-feekback
+Below is also a oob write verify which I used to make sure the clean
+marker/EBH is written correctly.
 
-And "Newly-erased block contained word ..." is also happend on my board in
-latest omap kernel tree.
-Now I also debugging this problem
+Jarkko
 
-Regards,
-Kyungmin Park
+---
 
-> -----Original Message-----
-> From: Jarkko Lavinen [mailto:jarkko.lavinen@nokia.com] 
-> Sent: Tuesday, January 24, 2006 9:47 PM
-> To: Kyungmin Park
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Erase verify problem with OneNAND
-> 
-> Hi Kyungmin
-> 
-> I have a strange erase verify read problem with OneNand. It occurs
-> strangely when crossing the 128MB border, first erasing (and
-> presumably verifying) a block on other side and then erasing another
-> block on the other side. Then verify reads garbage.
-> 
-> I am using CVS head for the drivers/mtd but the JFFS2 part is from the
-> 2.6.15 kernel, before Erase Block Headers were committed. 
-> Onenand_base.c
-> is rev 1.15. The test board has muxed 256MB OneNand.
-> 
-> I see JFFS2 repeatably complaining "Newly-erased block contained
-> word...".  This comes from fs/jffs2/erase.c:jffs2_block_check_erase()
-> which reads the erased block and checks all the bits are 1.
-> 
-> I see this occuring when I flash JFFS2 root image and boot it. Our
-> bootloader leaves unused erase blocks empty, without cleanmarker.
-> When JFFS2 sees an empty block, it has to erase it again since there 
-> is no cleanmarker. After erasing, it reads the first page to see it 
-> really is empty.
-> 
-> For some reason the first verify read at physical offset 0x7fe0000 
-> (JFFS2 report offset 0x07b60000 relative to the partition offset 
-> 0x480000) fails but retry succeeds -- which means the block was 
-> correctly erased but the first verify reads some garbage.
-> 
-> This is tricky to debug, since the problem disappears if I increase 
-> MTD debug level. On the other hand the verify problem seems to appear
-> always after after flashing and booting the board.
-> 
-> I have modified jffs2_block_check_erase() to retry the verify read
-> if garbage is seen at the erased page.  I am using MTD debug level
-> 0 and changed onenand_erase to report at that level to see when it 
-> is being called.
-> 
-> The repeatably occuring one:
-> 
->   ...
->   onenand_erase: start = 0x08040000, len = 131072
->   onenand_erase: start = 0x08020000, len = 131072
->   onenand_erase: start = 0x08000000, len = 131072
->   onenand_erase: start = 0x07fe0000, len = 131072
->   Newly-erased block contained word 0x45e0f628 at offset 0x07b60000
->   Read OK after 1 retries
->   onenand_erase: start = 0x07fc0000, len = 131072
->   onenand_erase: start = 0x07fa0000, len = 131072
->   onenand_erase: start = 0x07f80000, len = 131072
->   ...
-> 
-> Another exmaple, less frequent:
-> 
->   onenand_erase: start = 0x04ce0000, len = 131072
->   onenand_erase: start = 0x04cc0000, len = 131072
->   onenand_erase: start = 0x04ca0000, len = 131072
->   onenand_erase: start = 0x0ffe0000, len = 131072
->   Newly-erased block contained word 0x7ea4c at offset 0x0fb60000
->   Read OK after 1 retries
-> 
-> Jarkko Lavinen
-> 
-> 
+Index: drivers/mtd/onenand/onenand_base.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_base.c,v
+retrieving revision 1.15
+diff -u -b -B -p -r1.15 onenand_base.c
+--- drivers/mtd/onenand/onenand_base.c	20 Jan 2006 15:29:28 -0000	1.15
++++ drivers/mtd/onenand/onenand_base.c	23 Jan 2006 11:20:19 -0000
+@@ -761,6 +761,36 @@ out:
+=20
+ #ifdef CONFIG_MTD_ONENAND_VERIFY_WRITE
+ /**
++ * onenand_verify_oob - [GENERIC] verify the oob contents after a write
++ * @param mtd		MTD device structure
++ * @param buf		the databuffer to verify
++ * @param to		offset to read from
++ * @param len		number of bytes to read and compare
++ *
++ */
++static int onenand_verify_oob(struct mtd_info *mtd, const u_char *buf, lof=
+f_t to, int len)
++{
++	struct onenand_chip *this =3D mtd->priv;
++	char *readp =3D this->page_buf;
++	int column =3D to & (mtd->oobsize - 1);
++	int status, i;
++
++	this->command(mtd, ONENAND_CMD_READOOB, to, mtd->oobsize);
++	onenand_update_bufferram(mtd, to, 0);
++	status =3D this->wait(mtd, FL_READING);
++	if (status)
++		return status;
++	=09
++	this->read_bufferram(mtd, ONENAND_SPARERAM, readp, column, len);
++=09
++	for(i =3D 0; i < len; i++)
++		if (buf[i] !=3D 0xFF && buf[i] !=3D readp[i])
++			return -EBADMSG;
++=09
++	return 0;
++}
++
++/**
+  * onenand_verify_page - [GENERIC] verify the chip contents after a write
+  * @param mtd		MTD device structure
+  * @param buf		the databuffer to verify
+@@ -792,6 +822,7 @@ static int onenand_verify_page(struct mt
+ }
+ #else
+ #define onenand_verify_page(...)	(0)
++#define onenand_verify_oob(...)         (0)
+ #endif
+=20
+ #define NOTALIGNED(x)	((x & (mtd->oobblock - 1)) !=3D 0)
+@@ -911,7 +942,7 @@ static int onenand_write_oob(struct mtd_
+ 	size_t *retlen, const u_char *buf)
+ {
+ 	struct onenand_chip *this =3D mtd->priv;
+-	int column, status;
++	int column, ret =3D 0;
+ 	int written =3D 0;
+=20
+ 	DEBUG(MTD_DEBUG_LEVEL3, "onenand_write_oob: to =3D 0x%08x, len =3D %i\n",=
+ (unsigned int) to, (int) len);
+@@ -943,9 +974,17 @@ static int onenand_write_oob(struct mtd_
+=20
+ 		onenand_update_bufferram(mtd, to, 0);
+=20
+-		status =3D this->wait(mtd, FL_WRITING);
+-		if (status)
++		ret =3D this->wait(mtd, FL_WRITING);
++		if (ret) {
++			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: write filaed %d\n", ret);
+ 			goto out;
++		}
++
++		ret =3D onenand_verify_oob(mtd, buf, to, thislen);
++		if (ret) {
++			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: verify failed %d\n", ret);
++			goto out;
++		}
+=20
+ 		written +=3D thislen;
+=20
+@@ -962,7 +1001,7 @@ out:
+=20
+ 	*retlen =3D written;
+=20
+-	return 0;
++	return ret;
+ }
+=20
+ /**
