@@ -1,23 +1,21 @@
-Received: from zproxy.gmail.com ([64.233.162.196])
+Received: from desire.actrix.co.nz ([203.96.16.164])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F2BE4-00070c-WF
-	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2006 12:48:09 -0500
-Received: by zproxy.gmail.com with SMTP id i11so418890nzi
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Jan 2006 09:48:03 -0800 (PST)
-Message-ID: <625fc13d0601260948i555e2c77nca6590d5ba5baa6e@mail.gmail.com>
-Date: Thu, 26 Jan 2006 11:48:03 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: "Korolev, Alexey" <alexey.korolev@intel.com>
-In-Reply-To: <F92C2EFE7C3BA745855BF7036E1F3F9A018B833E@NNSMSX401>
+	id 1F2FXo-0001Eq-3U
+	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2006 17:24:50 -0500
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
+Date: Fri, 27 Jan 2006 11:26:23 +1300
+References: <OFD870B79D.90A804FE-ON88257101.0037ED08-C2257101.0037DF6B@mindspeed.com>
+	<43D8C5E1.4010600@ru.mvista.com>
+In-Reply-To: <43D8C5E1.4010600@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A018B833E@NNSMSX401>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [RFC/PATCH] map drivers. DCACHE option for physmap and mphysmap
-	drivers
+Message-Id: <200601271126.23808.manningc2@actrix.gen.nz>
+Cc: yuri.golovach@mindspeed.com, Vitaly Wool <vwool@ru.mvista.com>
+Subject: Re: [PATCH] treat OOB as a single chunk of oobavail bytes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,68 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1/26/06, Korolev, Alexey <alexey.korolev@intel.com> wrote:
-> Hi All,
+On Friday 27 January 2006 01:51, Vitaly Wool wrote:
+> Hi Yuri,
 >
-> Some mapping drivers of linux-mtd has feature of cached mapping. This
-> can improve read performance on FLASH significantly .
-> I think adding the option of data cache mapping would also be helpful
-> for physmap and mphysmap drivers.
-
-Is this a read-only caching?  I know several architectures and
-hardware configurations that would quickly throw a machine check if
-trying to flush the cache back to flash since they don't support
-bursted writes.
-
-
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> =3D=3D=3D=3D=3D
-> diff -uNr a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-> --- a/drivers/mtd/maps/Kconfig 2005-12-22 15:06:38.000000000 +0300
-> +++ b/drivers/mtd/maps/Kconfig 2005-12-22 15:05:24.000000000 +0300
-> @@ -60,6 +60,12 @@
->     Ignore this option if you use run-time physmap configuration
->     (i.e., run-time calling physmap_configure()).
+> well, lemme just summarize what you hafta do in order to make YAFFS2
+> work with my patches.
 >
-> +config MTD_PHYSMAP_DCACHE
-> + bool "Enable dcache for flash mapping"
-> + depends on MTD_PHYSMAP
-> + help
-> +   This option enables CPU data cache for flash mapping
-> +   This improves flash read speed significantly.
+> 1. Apply the following patch to the mtd code:
+> http://lists.infradead.org/pipermail/linux-mtd/2005-December/014648.html
+> (yes, it's a single patch!)
+> 2. Modify the fs/yaffs2/yaffs_mtdif2.c to use read_oobfree/write_oobfree
+> where appropriate.
+>
+> Hope that helps,
+>
+>    Vitaly
 
-I would recommend adding a dependency on ARM for all of this for now.=20
-As other architectures are proven to be working, they can be added.
+Hi Vitaly
 
+Is this in CVS yet? If not, I hope it will be there soon.
 
-> +#ifdef CONFIG_MTD_MULTI_PHYSMAP_DCACHE
-> +        if (map->inval_cache)
-> +        {
-> +#ifdef CONFIG_ARM
-> +           map->cached =3D ioremap_cached(map->phys, map->size);
-> +#else
-> +           map->cached =3D __ioremap(map->phys, map->size,
-> L_PTE_CACHEABLE);
-> +#endif
+=46rom what I see, this is going to be just what we need.
 
-Gah.  The above doesn't work.  L_PTE_CACHEABLE seems to be an ARM only
-flag.  And it wouldn't work on PPC for example.  That version of
-__ioremap makes everything implicitly cached unless _PAGE_NO_CACHED is
-passed in.
+YAFFS2 does not need to write_oobfree as a seperate function (it is always=
+=20
+written as a single page write). YAFFS2 only needs read_oobfree.
 
-As I said before, I would make this an ARM only option for now.
+However, YAFFS1 could use the write_oobfree function at some future date if=
+=20
+YAFFS1 gets moved to this interface to remove the current reliance on hangi=
+ng=20
+the ugly ECC parameter stuff through the interface.
 
-> +#ifdef CONFIG_MTD_PHYSMAP_DCACHE
-> +#ifdef CONFIG_ARM
-> + physmap_map.cached =3D ioremap_cached(physmap_map.phys,
-> physmap_map.size);
-> +#else
-> + physmap_map.cached =3D __ioremap(physmap_map.phys, physmap_map.size,
-> L_PTE_CACHEABLE);
-> +#endif
+I am pretty busy right now, but will try get the YAFFS2 side sorted ASAP. I=
+f=20
+the YAFFS2 stuff is CVSed before the mtd then I'll just point people to thi=
+s=20
+patch.
 
-Same issues as in mphysmap.
+Thanx!
 
-josh
+Charles
