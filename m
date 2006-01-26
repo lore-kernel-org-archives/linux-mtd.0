@@ -1,25 +1,19 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from moutvdom.kundenserver.de ([212.227.126.249]
+	helo=moutvdomng.kundenserver.de)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F1w4y-0004s4-2y
-	for linux-mtd@lists.infradead.org; Wed, 25 Jan 2006 20:37:44 -0500
-Received: from ep_mmp2 (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0ITO004R1F6MID@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 26 Jan 2006 10:37:34 +0900 (KST)
-Received: from july7 ([10.88.163.199])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPA id <0ITO00KYGF6MGM@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 26 Jan 2006 10:37:34 +0900 (KST)
-Date: Thu, 26 Jan 2006 10:37:35 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: linux-mtd@lists.infradead.org
-Message-id: <0ITO00KYHF6MGM@mmp2.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Subject: [PATCH] OneNAND: write oob with oobsize to prevent byte access
-Reply-To: kyungmin.park@samsung.com
+	id 1F26G2-00033f-4v
+	for linux-mtd@lists.infradead.org; Thu, 26 Jan 2006 07:29:49 -0500
+Message-ID: <43D8C0E3.6040204@anagramm.de>
+Date: Thu, 26 Jan 2006 13:30:27 +0100
+From: Clemens Koller <clemens.koller@anagramm.de>
+MIME-Version: 1.0
+To: Martin Krause <Martin.Krause@tqs.de>
+References: <47F3F98010FF784EBEE6526EAAB078D1C05FA3@tq-mailsrv.tq-net.de>
+In-Reply-To: <47F3F98010FF784EBEE6526EAAB078D1C05FA3@tq-mailsrv.tq-net.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NAND flash on MPC8xxx via UPM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,39 +23,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
+Hello, Martin!
 
-There's some problem with write oob in serveral platform.
-So we write oob with oobsize aligned (16bytes) instead of 3 bytes (from {2,
-3})
+> we are working on a new board with a MPC8272 cpu. We plan to connect
+> the NAND flashes over the Local Bus Controller and control it via
+> the UPM, like described in the freescale application note:
+> "How to Interface the PowerQUICC II Pro and PowerQUICC III Local
+> Bus Controller to NAND Flash":
+> 
+> http://www.freescale.com/files/32bit/doc/white_paper/NANDFLASHWP.pdf
 
-If you don't mind I will commit this with write oob verify patch from Jarkko
-Lavinen
+That should be possible. I guess I'll need that in the future, too
+for MPC8540.
 
-Regards,
-Kyungmin Park
+> I'm wondering, if this had been done already by someone or if there
+> is a working lowlevel driver? Or perhaps someone is currently working
+> on a driver or has plans to do so?
 
-Index: drivers/mtd/onenand/onenand_base.c
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/onenand/onenand_base.c,v
-retrieving revision 1.15
-diff -u -p -r1.15 onenand_base.c
---- drivers/mtd/onenand/onenand_base.c	20 Jan 2006 15:29:28 -0000	1.15
-+++ drivers/mtd/onenand/onenand_base.c	26 Jan 2006 01:29:00 -0000
-@@ -936,8 +936,11 @@ static int onenand_write_oob(struct mtd_
- 
- 		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, mtd->oobsize);
- 
--		this->write_bufferram(mtd, ONENAND_SPARERAM, ffchars, 0,
-mtd->oobsize);
--		this->write_bufferram(mtd, ONENAND_SPARERAM, buf, column,
-thislen);
-+		/* We send data to spare ram with oobsize
-+		 * to prevent byte access */
-+		memset(this->page_buf, 0xff, mtd->oobsize);
-+		memcpy(this->page_buf + column, buf, thislen);
-+		this->write_bufferram(mtd, ONENAND_SPARERAM, this->page_buf,
-0, mtd->oobsize);
- 
- 		this->command(mtd, ONENAND_CMD_PROGOOB, to, mtd->oobsize);
- 
+I have a little MPC8540ish raw test driver kernel 2.6 module which
+allows to access something on the Local Bus via GPCM as well as via
+UPM. It was a useful thing to experiment around.
+
+Feel free to contact me if you want to have it.
+
+Best greets,
+-- 
+Clemens Koller
+_______________________________
+R&D Imaging Devices
+Anagramm GmbH
+Rupert-Mayer-Str. 45/1
+81379 Muenchen
+Germany
+
+http://www.anagramm.de
+Phone: +49-89-741518-50
+Fax: +49-89-741518-19
