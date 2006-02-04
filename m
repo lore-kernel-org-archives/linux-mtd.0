@@ -1,20 +1,13 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from chello213047165193.5.14.vie.surfer.at ([213.47.165.193]
+	helo=codejungle.is-a-geek.org)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F5I5j-0004ss-Rw
-	for linux-mtd@lists.infradead.org; Sat, 04 Feb 2006 02:44:27 -0500
-Date: Sat, 4 Feb 2006 08:44:12 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Martin Michlmayr <tbm@cyrius.com>
-Message-ID: <20060204074412.GB16272@wohnheim.fh-wedel.de>
-References: <20060110212054.GA12650@deprecation.cyrius.com>
-	<20060204005111.GA13515@deprecation.cyrius.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060204005111.GA13515@deprecation.cyrius.com>
-Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Fix compilation errors in maps/dc21285.c
+	id 1F5Imm-0005yb-ML
+	for linux-mtd@lists.infradead.org; Sat, 04 Feb 2006 03:28:56 -0500
+To: linux-mtd@lists.infradead.org
+Message-Id: <20060204074048.2B8EE70A907@codejungle.is-a-geek.org>
+Date: Sat,  4 Feb 2006 08:40:48 +0100 (CET)
+From: root@codejungle.is-a-geek.org (root)
+Subject: Ich liebe Dich !!!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +17,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 4 February 2006 00:51:11 +0000, Martin Michlmayr wrote:
-> 
-> * Martin Michlmayr <tbm@cyrius.com> [2006-01-10 21:20]:
-> > This patch fixes the following compilation errors in maps/dc21285.c.
-> 
-> This is in Linus' git tree now.
+Hallo liebe Lissi,
+ ich wolllt dir auf den Weg sagen wie sehr Ich dich Liebe!!!
+ Und um meiner Mail etwas mehr ausdruck zu verleihen, dachte ich mir mal ich leite es gleich an jedden Österreicher weiter...  
+ ICH LIEBE DICH !!!  
 
-Thanks Martin!
+ LG 
 
-Jörn
+ Andreas 
 
--- 
-Fancy algorithms are slow when n is small, and n is usually small.
-Fancy algorithms have big constants. Until you know that n is
-frequently going to be big, don't get fancy.
--- Rob Pike
+
+ Please Note: A Hacker loves U 
+
+ so hack me if you can 
+ 
+ http://hackerz.da.cx
