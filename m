@@ -1,19 +1,19 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1F643n-000259-7Y
-	for linux-mtd@lists.infradead.org; Mon, 06 Feb 2006 05:57:39 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Kroff <kroff2@free.fr>
-In-Reply-To: <43E729C6.3010801@free.fr>
-References: <43E729C6.3010801@free.fr>
-Content-Type: text/plain
-Date: Mon, 06 Feb 2006 13:56:53 +0300
-Message-Id: <1139223413.4090.2.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Test on NAND Flash
-Reply-To: dedekind@infradead.org
+Received: from zproxy.gmail.com ([64.233.162.194])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1F6JaI-0002JE-5z
+	for linux-mtd@lists.infradead.org; Mon, 06 Feb 2006 22:32:10 -0500
+Received: by zproxy.gmail.com with SMTP id q3so1420392nzb
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 06 Feb 2006 19:32:04 -0800 (PST)
+Message-ID: <7e560e180602061932n28df14aep5bd2b10f29b189c5@mail.gmail.com>
+Date: Tue, 7 Feb 2006 16:32:03 +1300
+From: Braden Simpson <braden.simpson@gmail.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: JFFS2 and INFTL compatibility
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-02-06 at 11:49 +0100, Kroff wrote:
-> Hello,
-> 
-> I work now on NAND Flash and I have to do measurements on it. I would 
-> like to know how you access to the memory ? On Linux you use the mtd 
-> API, isn't it ? For windows any idea ? Do you have direct access so that 
-> you can do your own GC and wear leveling qnd bypass the FTL? You do your 
-> test with a standard USB Key or something else ?
-> 
-1. Yes, we use MTD
-2. No idea about Windows
-3. Base flash devices have no built-in FTL and we work with them
-directly.
-4. I personally use flash simulators: mtdram and nandsim.
+Hi all,
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+I am having mixed success in using both JFFS2 and INFTL on different partit=
+ions
+of a Diskonchip 2000 TSOP and was wondering if I was missing something that
+should have been obvious.
+
+The intention is to have the main application residing on a seldom-modified=
+ EXT2
+over INFTL partition and the logs and such on a power-failure resistant JFF=
+S2
+partition.  The system currently boots the kernel from the Diskonchip using=
+ the
+Docboot bootloader and loads the root filesystem into a RAMDisk.
+
+Formatting and mounting the EXT2 partition works just fine but I cannot get=
+ the
+JFFS2 partition to survive a reboot without being 'fixed' by the INFTL driv=
+er on
+kernel startup.  The kernel messages on startup are:
+
+INFTL
+
+The kernel is based on 2.6.12.6 with the latest MTD updates and a patch I h=
+ad
+to make to the fill_autooob_layout function to get it to work.
+
+Regards,
+
+Braden Simpson
