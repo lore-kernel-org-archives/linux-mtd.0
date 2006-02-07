@@ -1,12 +1,12 @@
-Received: from zproxy.gmail.com ([64.233.162.194])
+Received: from zproxy.gmail.com ([64.233.162.206])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F6JaI-0002JE-5z
-	for linux-mtd@lists.infradead.org; Mon, 06 Feb 2006 22:32:10 -0500
-Received: by zproxy.gmail.com with SMTP id q3so1420392nzb
+	id 1F6KAS-0002nO-PM
+	for linux-mtd@lists.infradead.org; Mon, 06 Feb 2006 23:09:34 -0500
+Received: by zproxy.gmail.com with SMTP id q3so1425123nzb
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Feb 2006 19:32:04 -0800 (PST)
-Message-ID: <7e560e180602061932n28df14aep5bd2b10f29b189c5@mail.gmail.com>
-Date: Tue, 7 Feb 2006 16:32:03 +1300
+	Mon, 06 Feb 2006 20:09:27 -0800 (PST)
+Message-ID: <7e560e180602062009v7fbe544ay4a93751778626b07@mail.gmail.com>
+Date: Tue, 7 Feb 2006 17:09:27 +1300
 From: Braden Simpson <braden.simpson@gmail.com>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
@@ -22,6 +22,10 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+[Apologies for the partial post sent earlier but somehow I managed to press=
+ a
+magic key combination for Gmail and it decided to send the message for me]
 
 Hi all,
 
@@ -44,11 +48,36 @@ JFFS2 partition to survive a reboot without being 'fixed' by the INFTL driv=
 er on
 kernel startup.  The kernel messages on startup are:
 
-INFTL
+...
+INFTL : corrupt block 8147 in chain 8147, chain length 0, erase mark 0xffff=
+?
+INFTL : formatting chain at block 8147
+INFTL : formatting block 8147
+...
 
-The kernel is based on 2.6.12.6 with the latest MTD updates and a patch I h=
-ad
-to make to the fill_autooob_layout function to get it to work.
+If I use nanddump to view the OOB I can see that the OOB data for the fifth
+512-byte page (after offset 0x05F0) in every 16KiB block is set to:
+
+   FF FF FF FF FF FF FF FF 00 00 00 00 69 3C 69 3C
+
+All the rest of the pages and OOB data look to be blank.
+
+This is in contrast to the contents of the OOB after using "flash_eraseall =
+-j"
+where the OOB data for the first 512-byte page (after offset 0x01F0) is set=
+ to:
+
+   FF FF FF FF FF FF FF FF 85 19 03 20 08 00 00 00
+
+Again all the rest of the pages and OOB data look to be blank.
+
+The kernel is based on 2.6.12.6 with the latest MTD updates and a small
+change I had to make to the fill_autooob_layout function to get it to work.
+This is an embedded PC/104 platform so all the MTD code used is compiled
+into the kernel.  The root filesystem was generated using Buildroot.
+
+What do I need to do to stop the INFTL driver from corrupting the JFFS2
+partition?
 
 Regards,
 
