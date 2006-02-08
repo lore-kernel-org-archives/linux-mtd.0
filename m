@@ -1,24 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F6sUt-0006u1-Bt
-	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2006 11:49:03 -0500
-Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IUD00GMHO174Q20@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 08 Feb 2006 11:48:43 -0500 (EST)
-Date: Wed, 08 Feb 2006 11:48:43 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <43EA19C9.40909@intel.com>
+	id 1F6ver-0000Mw-LP
+	for linux-mtd@lists.infradead.org; Wed, 08 Feb 2006 15:11:23 -0500
+Message-ID: <43EA5056.2070300@ru.mvista.com>
+Date: Wed, 08 Feb 2006 23:11:02 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
 To: "Alexey, Korolev" <alexey.korolev@intel.com>
-Message-id: <Pine.LNX.4.64.0602081147400.5397@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <F92C2EFE7C3BA745855BF7036E1F3F9A018F2071@NNSMSX401>
-	<43EA19C9.40909@intel.com>
-Cc: linux-mtd@lists.infradead.org, jwboyer@gmail.com, dwmw2@infradead.org
-Subject: Re: [PATCH] CFI cmdset_0001 A small fixup of wrong cache
- invalidationregions.
+References: <43D10544.10408@intel.com> <43EA16CC.6060401@intel.com>
+In-Reply-To: <43EA16CC.6060401@intel.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org, jwboyer@gmail.com
+Subject: Re: [PATCH] Fixup in NAND bad block management + fix of misspring
+ .(nand_base.c)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +23,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 8 Feb 2006, Alexey, Korolev wrote:
+Hi Alexey,
 
-> David, Josh
-> 
-> Would you please review this patch.
+Alexey, Korolev wrote:
 
-I reviewed and committed your patch.
+>
+> ==================================
+> --- a/drivers/mtd/nand/nand_base.c    2006-01-20 18:13:49.657859296 +0300
+> +++ b/drivers/mtd/nand/nand_base.c    2006-01-20 18:38:50.281729792 +0300
+> @@ -410,6 +410,7 @@
+> static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+> {
+>     int page, chipnr, res = 0;
+> +    int badblockpos;
 
-Thanks.
+Bah, alignment/tabs problem...
 
+>
+> +    /* If pattern is given we must use offset from badblock_pattern
+> structure
+> +       else we should use badblockpos which is filled by default 
+> values */
+> +    if (this->badblock_pattern)
+> +        badblockpos=this->badblock_pattern->offs;
+> +    else
+> +        badblockpos=this->badblockpos;
+> +
 
-Nicolas
+I'm not sure this is right. If badblock_pattern is set, we shouldn't 
+ever be here.
+
+>         if (this->badblockpos & 0x1)
+> -            bad >>= 8;
+> +            bad >>= 1;
+
+And here you do revert the bugfix committed long ago.
+
+>     @@ -470,8 +478,11 @@
+>     if (this->options & NAND_USE_FLASH_BBT)
+>         return nand_update_bbt (mtd, ofs);
+>
+> -    /* We write two bytes, so we dont have to mess with 16 bit access */
+> -    ofs += mtd->oobsize + (this->badblockpos & ~0x01);
+> +    if (this->badblock_pattern)
+> +        ofs += (this->badblock_pattern->offs & ~0x01);
+> +    else
+> +        ofs += (this->badblockpos & ~0x01);
+> +
+
+See above.
+
+Vitaly
