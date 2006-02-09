@@ -1,18 +1,27 @@
-Received: from osdsun1.nrl.navy.mil ([132.250.130.7])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1F7D7s-00024f-SB
-	for linux-mtd@lists.infradead.org; Thu, 09 Feb 2006 09:50:46 -0500
-Message-ID: <43EB4CDF.6040101@nrl.navy.mil>
-Date: Thu, 09 Feb 2006 09:08:31 -0500
-From: Dan Brown <dan.brown@nrl.navy.mil>
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1F7G8h-0001Wr-SO
+	for linux-mtd@lists.infradead.org; Thu, 09 Feb 2006 13:03:35 -0500
+Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
+	[10.125.2.23])
+	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
+	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id k19IHZEc009900
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Feb 2006 18:17:42 GMT
+Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
+	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
+	M2006020921032926660
+	for <linux-mtd@lists.infradead.org>; Thu, 09 Feb 2006 21:03:29 +0300
+Message-ID: <43EB83EC.5040701@intel.com>
+Date: Thu, 09 Feb 2006 21:03:24 +0300
+From: "Alexey, Korolev" <alexey.korolev@intel.com>
 MIME-Version: 1.0
-To: Braden Simpson <braden.simpson@gmail.com>
-References: <7e560e180602062009v7fbe544ay4a93751778626b07@mail.gmail.com>
-In-Reply-To: <7e560e180602062009v7fbe544ay4a93751778626b07@mail.gmail.com>
+CC: linux-mtd@lists.infradead.org
+References: <43EA16CC.6060401@intel.com>
+In-Reply-To: <43EA16CC.6060401@intel.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 and INFTL compatibility
+Subject: Re: [PATCH] Fixup in NAND bad block management + fix of misspring
+ .(nand_base.c)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +31,95 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Braden Simpson wrote:
-> What do I need to do to stop the INFTL driver from corrupting the JFFS2
-> partition?
+Hi Vitaly,
 
-Here's the deal.  Basically, the INFTL driver was written assuming it's 
-the only driver using the device.  However, I believe you can work 
-around this.
+Thanks a lot for feedback.
+I agree for most of your comments. I missed some lines when I was 
+merging the patch to the latest snapshot. I corrected it. Here is the 
+second version at the end of the letter. Your comments are welcome.
 
-When the INFTL driver is loaded (or when your kernel boots, if it's 
-compiled in), it searches through each MTD device.  It rejects anything 
-that isn't a DiskOnChip.  For each DiskOnChip, it scans for the *first* 
-BDTL partition, and mounts it as an INFTL volume.  It can't distinguish 
-between a corrupted INFTL volume and something that isn't INFTL at all 
-(such as JFFS2).
+You wrote
+ >> +    /* If pattern is given we must use offset from badblock_pattern
+ >> structure
+ >> +       else we should use badblockpos which is filled by default
+ >> values */
+ >> +    if (this->badblock_pattern)
+ >> +        badblockpos=this->badblock_pattern->offs;
+ >> +    else
+ >> +        badblockpos=this->badblockpos;
+ >> +
 
-So, make sure your INFTL partition is FIRST, then your jffs2.  If this 
-was already the case for you, I'll have to give this some more thought.
+ > I'm not sure this is right. If badblock_pattern is set, we shouldn't
+ > ever be here.
 
-The relevant code is find_boot_record() in inftlmount.c.
+We definetely get here and badblock_pattern is given for the case of ST 
+Nand. This patch should fix bad block marking issues found on ST Nand. 
+Why we shouldn't be here if bad block pattern is given?
 
-You mentioned that you had to patch fill_autooob_layout().  If you think 
-this is relevant to other users, please consider posting your changes 
-and the reason for them on this list.
+Please see patch below. I believe there shouldn't be tab issues.
 
-Good luck!
+Thanks
+Alexey
+=======================
+diff -aur b/drivers/mtd/nand/nand_base.c c/drivers/mtd/nand/nand_base.c
 
-	-Dan
+--- b/drivers/mtd/nand/nand_base.c	2006-02-09 20:05:28.447558688 +0300
++++ c/drivers/mtd/nand/nand_base.c	2006-02-09 20:14:58.182945744 +0300
+@@ -409,7 +409,7 @@
+  */
+ static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
+ {
+-	int page, chipnr, res = 0;
++	int page, badblockpos, chipnr, res = 0;
+ 	struct nand_chip *this = mtd->priv;
+ 	u16 bad;
+ 
+@@ -425,15 +425,22 @@
+ 	} else
+ 		page = (int) ofs;
+ 
++	/* If pattern is given use offset from badblock_pattern structure
++	   else use badblockpos which take default values */
++	if (this->badblock_pattern)
++		badblockpos=this->badblock_pattern->offs;
++	else
++		badblockpos=this->badblockpos;
++
+ 	if (this->options & NAND_BUSWIDTH_16) {
+-		this->cmdfunc (mtd, NAND_CMD_READOOB, this->badblockpos & 0xFE, page & this->pagemask);
++		this->cmdfunc (mtd, NAND_CMD_READOOB, badblockpos & 0xFE, page & this->pagemask);
+ 		bad = cpu_to_le16(this->read_word(mtd));
+ 		if (this->badblockpos & 0x1)
+ 			bad >>= 8;
+ 		if ((bad & 0xFF) != 0xff)
+ 			res = 1;
+ 	} else {
+-		this->cmdfunc (mtd, NAND_CMD_READOOB, this->badblockpos, page & this->pagemask);
++		this->cmdfunc (mtd, NAND_CMD_READOOB, badblockpos, page & this->pagemask);
+ 		if (this->read_byte(mtd) != 0xff)
+ 			res = 1;
+ 	}
+@@ -470,8 +477,11 @@
+ 	if (this->options & NAND_USE_FLASH_BBT)
+ 		return nand_update_bbt (mtd, ofs);
+ 
+-	/* We write two bytes, so we dont have to mess with 16 bit access */
+-	ofs += mtd->oobsize + (this->badblockpos & ~0x01);
++	if (this->badblock_pattern)
++		ofs += (this->badblock_pattern->offs & ~0x01);
++	else
++		ofs += (this->badblockpos & ~0x01);
++
+ 	return nand_write_oob (mtd, ofs , 2, &retlen, buf);
+ }
+ 
+@@ -1700,7 +1710,7 @@
+ 			len += num;
+ 			fsbuf += num;
+ 		}
+-		ofs += mtd->oobavail;
++		ofs += mtd->oobsize;
+ 	}
+ 	return this->oob_buf;
+ }
+====================
