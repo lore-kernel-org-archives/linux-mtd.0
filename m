@@ -1,19 +1,21 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F7S8s-0007SG-1S
-	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2006 01:52:32 -0500
-Message-ID: <43EC3824.2040805@ru.mvista.com>
-Date: Fri, 10 Feb 2006 09:52:20 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
+Received: from mail.wiscore.com ([210.241.236.27] helo=server3.wiscore.com)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1F7SBX-0007f2-TD
+	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2006 01:55:23 -0500
+Received: from [192.168.0.75] (milk.wiscore.com [210.241.236.28])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by server3.wiscore.com (Postfix) with ESMTP id E71FD11D
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 10 Feb 2006 14:55:06 +0800 (CST)
+Message-ID: <43EC38E0.9060007@wiscore.com>
+Date: Fri, 10 Feb 2006 14:55:28 +0800
+From: Robert Liu <robertliu@wiscore.com>
 MIME-Version: 1.0
-To: "Alexey, Korolev" <alexey.korolev@intel.com>
-References: <43EA16CC.6060401@intel.com> <43EB83EC.5040701@intel.com>
-In-Reply-To: <43EB83EC.5040701@intel.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Fixup in NAND bad block management + fix of misspring
- .(nand_base.c)
+Subject: JFFS2 summary error!
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexey,
+Hi All,
 
-> You wrote
-> >> +    /* If pattern is given we must use offset from badblock_pattern
-> >> structure
-> >> +       else we should use badblockpos which is filled by default
-> >> values */
-> >> +    if (this->badblock_pattern)
-> >> +        badblockpos=this->badblock_pattern->offs;
-> >> +    else
-> >> +        badblockpos=this->badblockpos;
-> >> +
->
-> > I'm not sure this is right. If badblock_pattern is set, we shouldn't
-> > ever be here.
->
-> We definetely get here and badblock_pattern is given for the case of 
-> ST Nand. This patch should fix bad block marking issues found on ST 
-> Nand. Why we shouldn't be here if bad block pattern is given?
->
-Because if bad block pattern is used, we should use bad block table. 
-This is how I see it, though I can be wrong.
+I am using Linux-2.6.10 with the lastest CVS MTD codes.
+My device is a Intel IXP E.V. board, configured as a big-endian machine,
+with 8M NOR flash and 32M NAND flash.
 
-> Please see patch below. I believe there shouldn't be tab issues.
->
-I'm afraid there still are. It's probably due to your mailer converting 
-tabs to spaces.
+I can mount a JFFS2 partition correctly without enabling the JFFS2 
+summary support.
+But, I usually got warning messages, when turn on the JFFS2 summary support.
+(I don't know this problem occurs unders what condition)
+The following steps are used to test:
+  1. flash_eraseall /dev/mtdblock/3
+  2. mount -t jffs2 /dev/mtdblock/3 /mnt
+  3. do some operations (mkdir, touch, dd, ...)
+  4. umount /mnt
+  5. mount -t jffs2 /dev/mtdblock/3 /mnt
+then the warning (error!?) meesage showed:
+  JFFS2 warning: (86) jffs2_sum_process_sum_data: Unsupported node type 
+found in summary! Exiting...
+  mount: Mounting /dev/mtdblock/3 on /mnt failed: Input/output error
 
-Best regards,
-    Vitaly
+I added some debug code and found the warrnig always occured with 
+nodetype 02E0.
+This looks like a endian problem.
+Would someone help me to debug?
+
+Regards,
+Robert
