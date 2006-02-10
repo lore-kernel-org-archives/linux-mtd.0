@@ -1,19 +1,18 @@
-Received: from mail.auerswald.de ([212.185.163.229])
+Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
+	helo=nonameb.ptu.promise.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F7TeN-0000cW-Bi
-	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2006 03:29:16 -0500
-From: Wolfgang =?iso-8859-15?q?M=FCes?= <wolfgang.mues@auerswald.de>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 10 Feb 2006 09:28:59 +0100
-References: <200602091126.10462.manningc2@actrix.gen.nz>
-In-Reply-To: <200602091126.10462.manningc2@actrix.gen.nz>
+	id 1F7dVH-00082H-Dl
+	for linux-mtd@lists.infradead.org; Fri, 10 Feb 2006 14:00:26 -0500
+content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200602100928.59907.wolfgang.mues@auerswald.de>
-Subject: Re: Questions about NAND (double)bit errors
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 10 Feb 2006 10:50:42 -0800
+Message-ID: <B70A50D07063384EB9BCE3330D18414F024CEC5D@nonameb.ptu.promise.com>
+From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Newbie Q
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Charles,
+Hello Forum:
+I need to write a device driver for Spansion Flash on a new board.
+I read through the MTD documentation, whatever I can get, from the
+internet.=20
 
-thank you for sharing your experience...
+I have few question which I know you could help me out.
 
-You wrote:
-> If you have not already done so, read the Toshiba NAND flash application
-> guide:
+I would like to understand the files that needs to be modified/written
+for bringing up a FLASH device; the complete picture.
 
-Yes, I have.
+So, can someone point one currently supported FLASH (With its
+specification
+and its associated board) and its associated driver files that had been
+written to bring this up
+on linux.
 
-> I have done a few accelerated lifetime tests that have gone very well. In
-> one test (run once on 512byte page devices and once on 2k page devices) I
-> wrote, read back and verified over 120Gbytes of data to the fs without a
-> single bit betting lost.
+I understand there should atleast be two files.
+1) Board specific mapping files; comes under mtd/maps
+2) CFI layer for flash; comes under mtd/chips
 
-You mean, without a single error correction? Or do you mean that ECC has done 
-its job?
+And where/how does top layer file systems gets hooked onto the device.
+This should be the MTD layer, correct?
 
-Regarding the 120 GBytes: How many times was each block written/erased? Have 
-you reached the specified lifetime of the flash?
+I also see another directory under mtd, namely mtd/devices.
+Cannot figure what this is for and how different is it from other
+directories.
 
-> * YAFFS is very conservative on dealing with ECC failures. YAFFS retires a
-> block if one ECC failure is seen. JFFS2, IIRC allows five of so failure
-> before retiring a block. The Toshiba folk have told me that if a block is
-> going bad, it is most likely to start displaying recoverable 1-bit errors
-> before displaying non-recoverable multi-bit errors.
+Please let me know about these.
 
-This is a valuable information not found in other resources.
-
-> Still, I think those reliability differences, at the flash level, are more
-> than likely theoretical noise and are unlikely to be material in the real
-> world.
-
-Hmmmm... can you come and tell this to my boss ;-)
-
-> One important factor, IMHO, is how you handle the write protect pin on the
-> NAND. Some people tie the WP to the power supply failure flag. IMHO this is
-> a bad thing to do since it can cause incomplete writes to happen if the wp
-> is asserted during a write or erase cycle.
-
-I will check this.
-
-best regards
-
--- 
-Wolfgang Muees                    Vor den Grashoefen 1
-Auerswald GmbH & Co. KG       	  D-38162 Cremlingen
-Hardware Development              Germany
-Tel +49 5306 9219 0               Fax +49 5306 9219 94
+Thanks & Regards,
+-LN
