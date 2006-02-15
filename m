@@ -1,19 +1,19 @@
-Received: from mail.auerswald.de ([212.185.163.229])
+Received: from wproxy.gmail.com ([64.233.184.205])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1F90sm-00051W-Dt
-	for linux-mtd@lists.infradead.org; Tue, 14 Feb 2006 09:10:26 -0500
-From: Wolfgang =?iso-8859-15?q?M=FCes?= <wolfgang.mues@auerswald.de>
+	id 1F9V7X-00045v-7W
+	for linux-mtd@lists.infradead.org; Wed, 15 Feb 2006 17:27:37 -0500
+Received: by wproxy.gmail.com with SMTP id 58so228914wri
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Feb 2006 14:27:30 -0800 (PST)
+Message-ID: <7e560e180602151427x3efcd032n9e43b29f084c54b4@mail.gmail.com>
+Date: Thu, 16 Feb 2006 11:27:30 +1300
+From: Braden Simpson <braden.simpson@gmail.com>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 14 Feb 2006 15:10:12 +0100
-References: <200602091126.10462.manningc2@actrix.gen.nz>
-In-Reply-To: <200602091126.10462.manningc2@actrix.gen.nz>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200602141510.12749.wolfgang.mues@auerswald.de>
-Subject: Re: Questions about NAND (double)bit errors
+Subject: Diskonchip BDK versus BDTL partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Charles,
+Hi All,
 
-Charles Manning wrote:
-> * YAFFS is very conservative on dealing with ECC failures. YAFFS retires a
-> block if one ECC failure is seen. JFFS2, IIRC allows five of so failure
-> before retiring a block. The Toshiba folk have told me that if a block is
-> going bad, it is most likely to start displaying recoverable 1-bit errors
-> before displaying non-recoverable multi-bit errors. Thus, YAFFS will
-> potentially perform differently in this area.
+I am building a system on a Diskonchip 2000 TSOP and I'm a little
+confused over the
+distinction between a BDK binary partition and a BDTL disk partition.
+I had gathered
+from what I had read that the Diskonchip NAND driver didn't care if a
+partition was BDK
+or BDTL, but recent problems indicate that this might not be the case.
 
-About bad block detection: what is your oppinion about partitioning the flash 
-(the programs in a read-only partition, the data in r/w).
+My understanding of the layers between the filesystem and the physical
+chips on the
+Diskonchip are shown in the diagrams below.
 
-How about detection of ECC errors in read only partitions?
+Ext2 filesystem:
 
-> One important factor, IMHO, is how you handle the write protect pin on the
-> NAND. Some people tie the WP to the power supply failure flag. IMHO this is
-> a bad thing to do since it can cause incomplete writes to happen if the wp
-> is asserted during a write or erase cycle.
+   EXT2 -> MTDBLOCKn -> INFTL -> NAND (Diskonchip) -> DISKONCHIP
 
-I have checked this.
+JFFS2 filesystem:
 
-WP is tied to VCC, and VCC is stable at least 500ms after a power fail detect.
+   JFFS2 -> MTDBLOCKn -> NAND (Diskonchip) -> DISKONCHIP
 
-best regards
--- 
-Wolfgang Muees                    Vor den Grashoefen 1
-Auerswald GmbH & Co. KG       	  D-38162 Cremlingen
-Hardware Development              Germany
-Tel +49 5306 9219 0               Fax +49 5306 9219 94
+This is based on the parameters to the mount command that are used:
+   "mount /dev/mtdblock2 /mnt" for ext2 formatted partitions
+   "mount -t jffs2 /dev/mtdblock2 /mnt" for JFFS2 formatted partitions
+
+Things all seem to work fine for mtdblock2, which is a BDK partition,
+but the BDTL
+partition on mtdblock3 will not mount with the ext2 filesystem.
+
+Regards,
+
+Braden Simpson
