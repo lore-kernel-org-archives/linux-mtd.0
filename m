@@ -1,21 +1,23 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1F9rJC-0007mY-P4
-	for linux-mtd@lists.infradead.org; Thu, 16 Feb 2006 17:09:07 -0500
-Date: Thu, 16 Feb 2006 22:08:54 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Charles Manning <manningc2@actrix.gen.nz>
-Message-ID: <20060216220854.GA27562@mail.shareable.org>
-References: <200602091126.10462.manningc2@actrix.gen.nz>
-	<200602141510.12749.wolfgang.mues@auerswald.de>
-	<200602161617.04905.manningc2@actrix.gen.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200602161617.04905.manningc2@actrix.gen.nz>
-Cc: linux-mtd@lists.infradead.org,
-	Wolfgang =?iso-8859-1?Q?M=FCes?= <wolfgang.mues@auerswald.de>
-Subject: Re: Questions about NAND (double)bit errors
+Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FA28D-0005ED-Kn
+	for linux-mtd@lists.infradead.org; Fri, 17 Feb 2006 04:42:35 -0500
+Received: from [193.205.82.7] (HELO gandalf.sssup.it)
+	by sssup.it (CommuniGate Pro SMTP 4.1.8)
+	with ESMTP-TLS id 19770340 for linux-mtd@lists.infradead.org;
+	Fri, 17 Feb 2006 10:42:02 +0100
+Received: from [10.30.3.59] (silmarillion.retis [10.30.3.59])
+	by gandalf.sssup.it (8.12.10/8.12.10) with ESMTP id k1HAfIXi022771
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Fri, 17 Feb 2006 11:41:21 +0100
+Message-ID: <43F59A7F.9020204@gandalf.sssup.it>
+Date: Fri, 17 Feb 2006 10:42:23 +0100
+From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+MIME-Version: 1.0
+To: MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: Write on an mtd mount read only partitioon
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +27,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning wrote:
-> > About bad block detection: what is your oppinion about partitioning the
-> > flash (the programs in a read-only partition, the data in r/w).
-> 
-> This gets fs specific. With YAFFS (and I assume JFFS2, but consult
-> an expert), grabage collection will force read-only files to get
-> rewritten occasionally.  Thus for ultimate reliability it is
-> probably a GoodIdea to seperate the read-only stuff into a seperate
-> partition. This is also a GoodIdea in that a smaller partition
-> mounts faster (true for YAFFS and JFFS2). So if all your kernel +
-> mount stuff is seperated from your rw stuff things will probably dgo
-> better.
-
-Absolutely.
-
-I've been testing 40 devices lately, and in 2 weeks, 5 of them (out of 40)
-have corrupted files in JFFS2 when those files aren't being written.
-I haven't seen any errors in the ROMFS partitions.
-
-I'm still getting round to analysing the corrupt files / filesystems,
-because that failure rate is too high even for configuration files
-that are written from time to time.
-
-These are 8MB chips, so presumably NOR.
-
--- Jamie
+Hi all,
+Is it possible to write on a read only mtd partition using a char device?
+Regards Michael
