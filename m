@@ -1,22 +1,27 @@
-Received: from skyhigh.actrix.co.nz ([203.96.16.175])
+Received: from zproxy.gmail.com ([64.233.162.201])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FAcOx-00088R-30
-	for linux-mtd@lists.infradead.org; Sat, 18 Feb 2006 19:26:12 -0500
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: "Russ Dill" <russ.dill@gmail.com>
-Date: Sun, 19 Feb 2006 13:29:00 +1300
+	id 1FAgoT-0001vE-K9
+	for linux-mtd@lists.infradead.org; Sun, 19 Feb 2006 00:08:50 -0500
+Received: by zproxy.gmail.com with SMTP id k1so717289nzf
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 18 Feb 2006 21:08:48 -0800 (PST)
+Message-ID: <35fb2e590602182108i28e1c375s84cde94f12ce504b@mail.gmail.com>
+Date: Sun, 19 Feb 2006 05:08:47 +0000
+From: "Jon Masters" <jonmasters@gmail.com>
+To: "Charles Manning" <manningc2@actrix.gen.nz>
+In-Reply-To: <200602191329.00413.manningc2@actrix.gen.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <43EB96DC.3030900@eptar.com>
 	<1140253826.2480.651.camel@localhost.localdomain>
 	<f9d2a5e10602181011k6552d396q4da6daef944a6fff@mail.gmail.com>
-In-Reply-To: <f9d2a5e10602181011k6552d396q4da6daef944a6fff@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200602191329.00413.manningc2@actrix.gen.nz>
-Cc: linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
+	<200602191329.00413.manningc2@actrix.gen.nz>
+Cc: Russ Dill <russ.dill@gmail.com>, linux-mtd@lists.infradead.org,
+	yaffs@stoneboat.aleph1.co.uk
 Subject: Re: [Yaffs] bit error rates --> a vendor speaks
+Reply-To: jonathan@jonmasters.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +31,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 19 February 2006 07:11, Russ Dill wrote:
-> > Some words about Reed Solomon.
-> >
-> > Reed Solomon needs hardware support for performance reasons. Efficient
-> > usage of Reed Solomon requires a different Data / RS-code layout:
->
-> At what level is hardware support required? I'm involved in the design
-> of a new system with a 466Mhz 80200. Should fpga considerations be
-> mode for ecc correction? What sort of logic would be best to put in
-> the fpga?
+On 2/19/06, Charles Manning <manningc2@actrix.gen.nz> wrote:
 
-If you have NAND going past or through the FPGA then thinking about RS or ECC 
-is a GoodIdea.
+> If you have NAND going past or through the FPGA then thinking about RS or=
+ ECC
+> is a GoodIdea.
 
-ECC is pretty expensive (yaffs_ecc.c is a bit faster than nand_ecc.c, but 
-still requires quite a bit of computation). From what I've heard, RS is a lot 
-more expensive.
+On a related note, does anyone know of a good Xilinx reference board
+that comes with a good amount of NAND already soldered on?
 
-I have not yet looked at RS yet, but I "pencil designed" a fast and simple ECC 
-scheme that needs approx 22 flipflops + some other gates a while ago. This 
-mechanism is used pretty much as follows:
+Having just quit working with Montavista stuff, I'm looking to pick up
+a board for myself at home - something like an ML403 but with a good
+amount of NAND would be nice :-)
 
-1) Clear flipflops.
-2) Transfer data
-3) Read calculated ECC out of flipflops.
-
-So the actual correction is still done in software, but the expensive part - 
-the calculation - is done in hw. This gets you most of the way there with 
-limited hw costs.
-
-I hunch that you could do something similar for RS.
-
--- CHarles
+Jon.
