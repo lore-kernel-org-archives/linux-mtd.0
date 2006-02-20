@@ -1,20 +1,22 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FB9py-0006pm-3o
-	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 07:08:22 -0500
-Message-ID: <43F9B12B.7020903@ru.mvista.com>
-Date: Mon, 20 Feb 2006 15:08:11 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
+	id 1FB9sO-00073F-O9
+	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 07:10:55 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
 To: "Alexey, Korolev" <alexey.korolev@intel.com>
+In-Reply-To: <43F9AE68.4040206@intel.com>
 References: <1140433245.2480.699.camel@localhost.localdomain>
 	<43F9AE68.4040206@intel.com>
-In-Reply-To: <43F9AE68.4040206@intel.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Type: text/plain
+Date: Mon, 20 Feb 2006 13:11:43 +0100
+Message-Id: <1140437503.2480.711.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Fixup in NAND bad block management + fix
-	of	misspring.(nand_base.c)
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Fixup in NAND bad block management + fix of
+	misspring.(nand_base.c)
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexey,
-
-Alexey, Korolev wrote:
-
+On Mon, 2006-02-20 at 14:56 +0300, Alexey, Korolev wrote:
 > Thomas,
->
->> I still do not get why you need all this magic instead of fixing up
->> this->badblockpos in the first place.
->>
+> 
+> > I still do not get why you need all this magic instead of fixing up
+> > this->badblockpos in the first place.
+> >
 > Fixing this->badblockpos in low level driver will not help because, 
 > according to the code this->badblockpos updates in nand_base.c 
 > unconditionally.
+
+Did I say low level driver ?
+
 > Moreover it's rather hard to define the conditions, because by default 
 > structure "this" is filled by zeroes. (We can't distinguish advisedly 
 > setting of badblockpos from the default value).
 
-Well, maybe I'm missting something, but what prevents you from setting 
-this->badblockpos to 0 *after* call to nand_scan??
+And you believe that your patch is the only way to solve that trivial
+problem ?
 
-Best regards,
-   Vitaly
+Without thinking too much about the problem, there _are_ at least two
+sane places to fix that.
+
+1. nand_scan() can handle this based on chip id and/or manufacturer id
+2. nand_scan_bbt() can do the fixup as well
+
+When the ST chips have the bad block pos at offset 0 in general then we
+want a generic solution which fixes up the nand_scan_bbt code as well
+instead of requiring a seperate board driver supplied badblock_pattern.
+
+Your patch is bogus anyway, as the else path will _NEVER_ be executed.
+this->badblock_pattern is never NULL.
+
+	tglx
