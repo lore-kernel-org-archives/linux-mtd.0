@@ -1,21 +1,31 @@
-Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+Received: from igloo.df.lth.se ([194.47.250.47] helo=df.lth.se)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FBCUH-0008Uq-7K
-	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 09:58:14 -0500
-Received: from portal.sanpeople.com ([192.168.1.40])
-	by za-gw.sanpeople.com with esmtp (Exim 4.51) id 1FBCYA-0001dJ-AA
-	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 17:02:06 +0200
-Received: from fuzzie.sanpeople.com ([192.168.4.5])
-	by portal.sanpeople.com with esmtp (Exim 3.33 #1) id 1FBCo6-0000HI-00
-	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 17:18:34 +0200
-From: Andrew Victor <andrew@sanpeople.com>
+	id 1FBD7w-0000MX-Gx
+	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 10:39:07 -0500
+Received: from festis.df.lth.se (UNKNOWN@festis.df.lth.se [194.47.250.37])
+	by df.lth.se (8.13.1/8.13.1) with ESMTP id k1KFcvFQ025162
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 20 Feb 2006 16:38:57 +0100 (CET)
+Received: from festis.df.lth.se (hagar@localhost.localdomain [127.0.0.1])
+	by festis.df.lth.se (8.13.4/8.13.4/Debian-3) with ESMTP id
+	k1KFcv9E008055
+	for <linux-mtd@lists.infradead.org>; Mon, 20 Feb 2006 16:38:57 +0100
+Received: (from hagar@localhost)
+	by festis.df.lth.se (8.13.4/8.13.4/Submit) id k1KFcvXA008054
+	for linux-mtd@lists.infradead.org; Mon, 20 Feb 2006 16:38:57 +0100
+Date: Mon, 20 Feb 2006 16:38:57 +0100
+From: =?iso-8859-1?Q?H=E5kan?= Kvist <hagar@df.lth.se>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Message-Id: <1140447277.1638.63.camel@fuzzie.sanpeople.com>
+Message-ID: <20060220153856.GA8027@festis.df.lth.se>
+References: <20060217094403.GA20803@festis.df.lth.se>
+	<20060217152524.GA21805@festis.df.lth.se>
 Mime-Version: 1.0
-Date: 20 Feb 2006 16:54:37 +0200
-Content-Transfer-Encoding: 7bit
-Subject: NAND driver for AT91RM9200
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060217152524.GA21805@festis.df.lth.se>
+Subject: Re: Problems with getting a nand-flash chip to work
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,407 +35,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+On Fri, Feb 17, 2006 at 04:25:25PM +0100, Håkan Kvist wrote:
+> On Fri, Feb 17, 2006 at 10:44:03AM +0100, Håkan Kvist wrote:
 
-This patch adds support for the NAND (SmartMedia) controller on the
-Atmel AT91RM9200 processor.
+[..]
 
-Could it please be reviewed for addition to the MTD CVS / mainline
-kernels.  Thanks.
+> I belive that I forget to mention that the chip that we are currently 
+> using is the 512 Mbit chip from STMicroelectronics.
+> 
+> I also have tested the to write directly to the nand with the 
+> mtd_debug utility.
+> 
+> I've filled the first 4 blocks (65535 bytes) with data, and I can read
+> it back successfully and verify that it is identical to what I wrote.
+> 
+> What is the next thing I should look into?
+
+Now I have erased the flash with "flash_eraseall -j /dev/mtdx",
+then the nanddump utility was used to dump the contens of the flash to
+a file.
+
+According to the documentation on the linux-mtd homepage the first
+oob-area of every page should look like this 
+(03 20 is ERASEBLOCK_CLEANMARKER):
+
+          xx xx xx xx xx xx xx xx  85 19 03 20 08 00 00 00
+
+and what I got is (05 20 is ERASEBLOCK_HEADER)
+         
+          xx xx xx xx xx xx xx xx  85 19 05 20 18 00 00 00
+
+Is that correct?
+
+The state of the flash after a flash_erasell -j, should be a
+filesystem that can be mounted directly, without doing any erasing,
+right?
+
+As the result from doing mtd_eraseall isn't cleanmarker blocks it is
+perhpahs not so strange that mount complains about that 
+cleanmarker nodes aren't to be found.
+
+And as posted before, I get the following when running
+  mount -t JFFS2 /dev/mtdX /mnt
+
+========== Output from mount (just the last rows)
+mtd->read(0x400 bytes from 0x3fec000) returned ECC error
+nand_read_oob: from = 0x03fec000, len = 64
+nand_isbad_bbt(): bbt info for offs 0x03ff0000: (block 4092) 0x00
+nand_read_oob: from = 0x03ff0000, len = 48
+jffs2_check_nand_cleanmarker_ebh(): Cleanmarker node not 
+detected in block at 03ff0000
+nand_read_ecc: from = 0x03ff0000, len = 1024
+nand_read_ecc: Failed ECC read, page 0x0001ff80
+mtd->read(0x400 bytes from 0x3ff0000) returned ECC error
+nand_read_oob: from = 0x03ff0000, len = 64
+JFFS2: Erase block at 0x03ff0000 is not formatted. It will be erased
+nand_isbad_bbt(): bbt info for offs 0x03ff4000: (block 4093) 0x00
+nand_read_oob: from = 0x03ff4000, len = 48
+jffs2_check_nand_cleanmarker_ebh(): Cleanmarker node not detected 
+in block at 03ff4000
+nand_read_ecc: from = 0x03ff4000, len = 1024
+nand_read_ecc: Failed ECC read, page 0x0001ffa0
+nand_read_ecc: Failed ECC read, page 0x0001ffa1
+mtd->read(0x400 bytes from 0x3ff4000) returned ECC error
+nand_read_oob: from = 0x03ff4000, len = 64
+JFFS2: Erase block at 0x03ff4000 is not formatted. It will be erased
+nand_isbad_bbt(): bbt info for offs 0x03ff8000: (block 4094) 0x00
+nand_read_oob: from = 0x03ff8000, len = 48
+nand_read_ecc: from = 0x03ff8000, len = 1024
+nand_read_ecc: Failed ECC read, page 0x0001ffc0
+mtd->read(0x400 bytes from 0x3ff8000) returned ECC error
+nand_read_oob: from = 0x03ff8000, len = 64
+nand_isbad_bbt(): bbt info for offs 0x03ffc000: (block 4095) 0x00
+nand_read_oob: from = 0x03ffc000, len = 48
+nand_read_ecc: from = 0x03ffc000, len = 1024
+nand_read_ecc: Failed ECC read, page 0x0001ffe0
+nand_read_ecc: Failed ECC read, page 0x0001ffe1
+mtd->read(0x400 bytes from 0x3ffc000) returned ECC error
+nand_read_oob: from = 0x03ffc000, len = 64
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
+empty_blocks 0, bad_blocks 1, c->nr_blocks 4096
+mount: Mounting /dev/mtdblock1 on /mnt/flash failed: Input/output error
 
 
-Regards,
-  Andrew Victor
+========== Output from hexdump|tail -20
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00000200  ff ff ff ff ff ff ff ff  85 19 05 20 18 00 00 00
+00000210  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00000410  ff ff ff ff ff ff ff ff  64 93 3c ed 00 00 00 00
+00000420  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00000620  ff ff ff ff ff ff ff ff  00 00 00 00 00 00 00 00
+00000630  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00004400  ff ff ff ff ff ff ff ff  85 19 05 20 18 00 00 00
+00004410  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00004610  ff ff ff ff ff ff ff ff  64 93 3c ed 00 00 00 00
+00004620  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+*
+00004820  ff ff ff ff ff ff ff ff  00 00 00 00 00 00 00 00
+00004830  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
 
 
-diff -urN linux-2.6.16-rc4.orig/drivers/mtd/nand/Kconfig linux-2.6.16-rc4/drivers/mtd/nand/Kconfig
---- linux-2.6.16-rc4.orig/drivers/mtd/nand/Kconfig	Mon Feb 20 14:40:22 2006
-+++ linux-2.6.16-rc4/drivers/mtd/nand/Kconfig	Mon Feb 20 14:47:11 2006
-@@ -190,5 +190,11 @@
- 	help
- 	  The simulator may simulate verious NAND flash chips for the
- 	  MTD nand layer.
-- 
-+
-+config MTD_NAND_AT91
-+	bool "AT91 NAND Access (Smart Media)"
-+	depends on MTD_NAND && ARCH_AT91RM9200 && EXPERIMENTAL
-+	help
-+	  Enables access to the Smart Media Card interface on the AT91RM9200
-+
- endmenu
-diff -urN linux-2.6.16-rc4.orig/drivers/mtd/nand/Makefile linux-2.6.16-rc4/drivers/mtd/nand/Makefile
---- linux-2.6.16-rc4.orig/drivers/mtd/nand/Makefile	Mon Feb 20 14:35:48 2006
-+++ linux-2.6.16-rc4/drivers/mtd/nand/Makefile	Mon Feb 20 14:47:11 2006
-@@ -18,5 +18,6 @@
- obj-$(CONFIG_MTD_NAND_RTC_FROM4)	+= rtc_from4.o
- obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
-+obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
- 
- nand-objs = nand_base.o nand_bbt.o
-diff -urN linux-2.6.16-rc4.orig/drivers/mtd/nand/at91_nand.c linux-2.6.16-rc4/drivers/mtd/nand/at91_nand.c
---- linux-2.6.16-rc4.orig/drivers/mtd/nand/at91_nand.c	Thu Jan  1 02:00:00 1970
-+++ linux-2.6.16-rc4/drivers/mtd/nand/at91_nand.c	Mon Feb 20 16:29:51 2006
-@@ -0,0 +1,361 @@
-+/*
-+ * drivers/mtd/nand/at91_nand.c
-+ *
-+ *  Copyright (C) 2003 Rick Bronson
-+ *
-+ *  Derived from drivers/mtd/nand/autcpu12.c
-+ *	 Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
-+ *
-+ *  Derived from drivers/mtd/spia.c
-+ *	 Copyright (C) 2000 Steven J. Hill (sjhill@cotw.com)
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <asm/io.h>
-+#include <asm/sizes.h>
-+
-+#include <asm/arch/hardware.h>
-+#include <asm/arch/board.h>
-+#include <asm/arch/gpio.h>
-+
-+struct at91_nand_host {
-+	struct nand_chip	nand_chip;
-+	struct mtd_info		mtd;
-+	void __iomem		*io_base;
-+	struct at91_nand_data	*board;
-+};
-+
-+/*
-+ * Hardware specific access to control-lines
-+ */
-+static void at91_nand_hwcontrol(struct mtd_info *mtd, int cmd)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct at91_nand_host *host = nand_chip->priv;
-+
-+	switch(cmd) {
-+		case NAND_CTL_SETCLE:
-+			nand_chip->IO_ADDR_W = (void __iomem *)(host->io_base + (1 << host->board->cle));
-+			break;
-+		case NAND_CTL_CLRCLE:
-+			nand_chip->IO_ADDR_W = (void __iomem *)(host->io_base);
-+			break;
-+		case NAND_CTL_SETALE:
-+			nand_chip->IO_ADDR_W = (void __iomem *)(host->io_base + (1 << host->board->ale));
-+			break;
-+		case NAND_CTL_CLRALE:
-+			nand_chip->IO_ADDR_W = (void __iomem *)(host->io_base);
-+			break;
-+		case NAND_CTL_SETNCE:
-+			break;
-+		case NAND_CTL_CLRNCE:
-+			break;
-+	}
-+}
-+
-+static void at91_nand_command_largepage(struct mtd_info *mtd, unsigned command, int column, int page_addr)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct at91_nand_host *host = nand_chip->priv;
-+
-+	/* Begin command latch cycle */
-+	unsigned long NAND_IO_ADDR = (unsigned long)(nand_chip->IO_ADDR_W + (1 << host->board->cle));
-+
-+	/*
-+	 * Write out the command to the device.
-+	 */
-+	if (command == NAND_CMD_READ1) {
-+		command = NAND_CMD_READ0;
-+		column += 256;
-+	} else if (command == NAND_CMD_READOOB) {
-+		command = NAND_CMD_READ0;
-+		column += 2048;
-+	}
-+	writeb (command, NAND_IO_ADDR);
-+
-+	/* Set ALE and clear CLE to start address cycle */
-+	NAND_IO_ADDR = (unsigned long) host->io_base;
-+
-+	if (column != -1 || page_addr != -1)
-+		NAND_IO_ADDR += (1 << host->board->ale);
-+
-+	/* Serially input address */
-+	if (column != -1) {
-+		writeb (column, NAND_IO_ADDR);
-+		writeb ((unsigned char) ((column >> 8) & 0x0f), NAND_IO_ADDR);
-+	}
-+	if (page_addr != -1) {
-+		writeb ((unsigned char) (page_addr & 0xff), NAND_IO_ADDR);
-+		writeb ((unsigned char) ((page_addr >> 8) & 0xff), NAND_IO_ADDR);
-+	}
-+
-+	if (command == NAND_CMD_READ0) {
-+		NAND_IO_ADDR = (unsigned long)(nand_chip->IO_ADDR_W + (1 << host->board->cle));
-+		writeb (0x30, NAND_IO_ADDR);
-+	}
-+
-+	/* wait until command is processed */
-+	while (!nand_chip->dev_ready(mtd)) {}
-+}
-+
-+/*
-+ * Send command to NAND device
-+ */
-+static void at91_nand_command(struct mtd_info *mtd, unsigned command, int column, int page_addr)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct at91_nand_host *host = nand_chip->priv;
-+
-+	/* Begin command latch cycle */
-+	unsigned long NAND_IO_ADDR = (unsigned long)(nand_chip->IO_ADDR_W + (1 << host->board->cle));
-+
-+	if (mtd->oobblock > 512 && command != NAND_CMD_READID) {
-+		at91_nand_command_largepage(mtd, command, column, page_addr);
-+		return;
-+	}
-+
-+	/*
-+	 * Write out the command to the device.
-+	 */
-+	if (command != NAND_CMD_SEQIN)
-+		writeb (command, NAND_IO_ADDR);
-+	else {
-+		if (mtd->oobblock == 256 && column >= 256) {
-+			column -= 256;
-+			writeb (NAND_CMD_RESET, NAND_IO_ADDR);
-+			writeb (NAND_CMD_READOOB, NAND_IO_ADDR);
-+			writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-+		}
-+		else
-+			if (mtd->oobblock == 512 && column >= 256) {
-+				if (column < 512) {
-+					column -= 256;
-+					writeb (NAND_CMD_READ1, NAND_IO_ADDR);
-+					writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-+				} else {
-+					column -= 512;
-+					writeb (NAND_CMD_READOOB, NAND_IO_ADDR);
-+					writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-+				}
-+			} else {
-+				writeb (NAND_CMD_READ0, NAND_IO_ADDR);
-+				writeb (NAND_CMD_SEQIN, NAND_IO_ADDR);
-+			}
-+	}
-+
-+	/* Set ALE and clear CLE to start address cycle */
-+	NAND_IO_ADDR = (unsigned long) host->io_base;
-+
-+	if (column != -1 || page_addr != -1)
-+		NAND_IO_ADDR += (1 << host->board->ale);
-+
-+	/* Serially input address */
-+	if (column != -1)
-+		writeb (column, NAND_IO_ADDR);
-+	if (page_addr != -1) {
-+		writeb ((unsigned char) (page_addr & 0xff), NAND_IO_ADDR);
-+		writeb ((unsigned char) ((page_addr >> 8) & 0xff), NAND_IO_ADDR);
-+		/* One more address cycle for higher density devices */
-+		if (mtd->size & 0x0c000000) {
-+			writeb ((unsigned char) ((page_addr >> 16) & 0x0f), NAND_IO_ADDR);
-+		}
-+	}
-+
-+	/* wait until command is processed */
-+	while (!nand_chip->dev_ready(mtd)) {}
-+}
-+
-+/*
-+ * Read the Device Ready pin.
-+ */
-+static int at91_nand_device_ready(struct mtd_info *mtd)
-+{
-+	struct nand_chip *nand_chip = mtd->priv;
-+	struct at91_nand_host *host = nand_chip->priv;
-+
-+	return at91_get_gpio_value(host->board->rdy_pin);
-+}
-+
-+
-+/*
-+ * Enable NAND and detect card.
-+ */
-+static void at91_nand_enable(struct at91_nand_host *host)
-+{
-+	unsigned int csa;
-+
-+	/* Setup Smart Media, first enable the address range of CS3 */
-+	csa = at91_sys_read(AT91_EBI_CSA);
-+	at91_sys_write(AT91_EBI_CSA, csa | AT91_EBI_CS3A_SMC_SMARTMEDIA);
-+
-+	/* set the bus interface characteristics */
-+	at91_sys_write(AT91_SMC_CSR(3), AT91_SMC_ACSS_STD | AT91_SMC_DBW_8 | AT91_SMC_WSEN
-+				| AT91_SMC_NWS_(5)
-+				| AT91_SMC_TDF_(1)
-+				| AT91_SMC_RWSETUP_(0)	/* tDS Data Set up Time 30 - ns */
-+				| AT91_SMC_RWHOLD_(1)	/* tDH Data Hold Time 20 - ns */
-+	);
-+
-+	if (host->board->enable_pin)
-+		at91_set_gpio_value(host->board->enable_pin, 0);
-+}
-+
-+/*
-+ * Disable NAND.
-+ */
-+static void at91_nand_disable(struct at91_nand_host *host)
-+{
-+	if (host->board->enable_pin)
-+		at91_set_gpio_value(host->board->enable_pin, 1);
-+}
-+
-+/*
-+ * Probe for the NAND device.
-+ */
-+static int __init at91_nand_probe(struct platform_device *pdev)
-+{
-+	struct at91_nand_host *host;
-+	struct mtd_info *mtd;
-+	struct nand_chip *nand_chip;
-+	int res;
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	struct mtd_partition *partitions = NULL;
-+	int num_partitions = 0;
-+#endif
-+
-+	/* Allocate memory for the device structure */
-+	host = kmalloc(sizeof(struct at91_nand_host), GFP_KERNEL);
-+	if (!host) {
-+		printk(KERN_ERR "at91_nand: failed to allocate device structure.\n");
-+		return -ENOMEM;
-+	}
-+	memset(host, 0, sizeof(struct at91_nand_host));
-+
-+	host->io_base = ioremap(pdev->resource[0].start,
-+				pdev->resource[0].end - pdev->resource[0].start + 1);
-+	if (host->io_base == NULL) {
-+		printk(KERN_ERR "at91_nand: ioremap failed\n");
-+		kfree(host);
-+		return -EIO;
-+	}
-+
-+	mtd = &host->mtd;
-+	nand_chip = &host->nand_chip;
-+	host->board = pdev->dev.platform_data;
-+
-+	nand_chip->priv = host;		/* link the private data structures */
-+	mtd->priv = nand_chip;
-+
-+	/* Set address of NAND IO lines */
-+	nand_chip->IO_ADDR_R = host->io_base;
-+	nand_chip->IO_ADDR_W = host->io_base;
-+	nand_chip->hwcontrol = at91_nand_hwcontrol;
-+	nand_chip->dev_ready = at91_nand_device_ready;
-+	nand_chip->cmdfunc = at91_nand_command;	/* we need our own */
-+	nand_chip->eccmode = NAND_ECC_SOFT;	/* enable ECC */
-+	/* 20 us command delay time */
-+	nand_chip->chip_delay = 20;
-+
-+	platform_set_drvdata(pdev, host);
-+
-+	at91_nand_enable(host);
-+
-+	if (host->board->det_pin) {
-+		if (at91_get_gpio_value(host->board->det_pin)) {
-+			printk ("No SmartMedia card inserted.\n");
-+			res = ENXIO;
-+			goto out;
-+		}
-+	}
-+
-+	/* Scan to find existance of the device */
-+	if (nand_scan(mtd, 1)) {
-+		res = -ENXIO;
-+		goto out;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	if (host->board->partition_info)
-+		partitions = host->board->partition_info(mtd->size, &num_partitions);
-+
-+	if ((!partitions) || (num_partitions == 0)) {
-+		printk(KERN_ERR "at91_nand: No parititions defined, or unsupported device.\n");
-+		res = ENXIO;
-+		goto out;
-+	}
-+
-+	res = add_mtd_partitions(mtd, partitions, num_partitions);
-+#else
-+	res = add_mtd_device(mtd);
-+#endif
-+
-+out:
-+	at91_nand_disable(host);
-+	platform_set_drvdata(pdev, NULL);
-+
-+	if (res) {
-+		iounmap(host->io_base);
-+		kfree(host);
-+	}
-+
-+	return res;
-+}
-+
-+/*
-+ * Remove a NAND device.
-+ */
-+static int __devexit at91_nand_remove(struct platform_device *pdev)
-+{
-+	struct at91_nand_host *host = platform_get_drvdata(pdev);
-+	struct mtd_info *mtd = &host->mtd;
-+
-+	del_mtd_partitions(mtd);
-+	del_mtd_device(mtd);
-+
-+	at91_nand_disable(host);
-+
-+	iounmap(host->io_base);
-+	kfree(host);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver at91_nand_driver = {
-+	.probe		= at91_nand_probe,
-+	.remove		= at91_nand_remove,
-+	.driver		= {
-+		.name	= "at91_nand",
-+		.owner	= THIS_MODULE,
-+	},
-+};
-+
-+static int __init at91_nand_init(void)
-+{
-+	return platform_driver_register(&at91_nand_driver);
-+}
-+
-+
-+static void __exit at91_nand_exit(void)
-+{
-+	platform_driver_unregister(&at91_nand_driver);
-+}
-+
-+
-+module_init(at91_nand_init);
-+module_exit(at91_nand_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Rick Bronson");
-+MODULE_DESCRIPTION("Glue layer for SmartMediaCard on ATMEL AT91RM9200");
+
+best regards
+Håkan
