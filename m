@@ -1,30 +1,23 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FBV1i-0001K4-Qj
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 05:45:54 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1FBV1c-0006cV-Hw
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 11:45:44 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.9.35) with SMTP id
-	M2006022111454427750
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Feb 2006 11:45:44 +0100
-Received: from zsofi.inf.u-szeged.hu ([160.114.37.199]
-	helo=mail.inf.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1FBV1c-0006cg-DI
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 11:45:44 +0100
-Received: from [160.114.36.214] (kpax.inf.u-szeged.hu [160.114.36.214])
-	by mail.inf.u-szeged.hu (Postfix) with ESMTP id 559FA23969
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Feb 2006 11:45:44 +0100 (CET)
-Message-ID: <43FAEFD6.1090308@inf.u-szeged.hu>
-Date: Tue, 21 Feb 2006 11:47:50 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FBWBw-00024D-ON
+	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 07:00:32 -0500
+Message-ID: <43FB00B4.9040706@yandex.ru>
+Date: Tue, 21 Feb 2006 14:59:48 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+To: tglx@linutronix.de
+References: <43EB96DC.3030900@eptar.com>
+	<43F74BF1.1080307@ru.mvista.com>	<1140337326.2480.674.camel@localhost.localdomain>	<200602210942.38302.manningc2@actrix.gen.nz>
+	<1140471467.2480.793.camel@localhost.localdomain>
+In-Reply-To: <1140471467.2480.793.camel@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Subject: A simple JFFS3 GC algorithm
+Cc: William Watson <wjw1961@gmail.com>,
+	Charles Manning <manningc2@actrix.gen.nz>,
+	Vitaly Wool <vwool@ru.mvista.com>, yaffs@stoneboat.aleph1.co.uk,
+	linux-mtd@lists.infradead.org
+Subject: Re: [Yaffs] bit error rates --> a vendor speaks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,13 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
+Thomas Gleixner wrote:
+> Wake up please. Thats going to be reality for NAND based stuff in the
+> future. The controllers will expose the raw FLASH but claim the OOB area
+> for their own purpose - hardware based error correction.
+One of my colleagues said a very interesting argument against this.
 
-We have been thinking about JFFS3 and its remaining parts (such us 
-garbage collection), and described a simple idea for it. I don't think 
-it is the best one, but relatively simple, may implemented in the 
-first/prototype version of JFFS3. The document can be downloaded from here:
+Look, consider all those CompactFlash cards. They are NAND flash based. 
+They have a kind of block device emulation built-in. And I bet they use 
+OOB to store the logical block number corresponding to this physical 
+block. The block device over Flash device emulation is so widespread, so 
+vendors will never forbid OOB usage.
 
-http://www.inf.u-szeged.hu/jffs2/documentation.php
+ From this point of view, OOB is no going to go.
 
-Ferenc
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
