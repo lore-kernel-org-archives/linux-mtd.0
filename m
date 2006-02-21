@@ -1,20 +1,27 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FBTkj-00005N-6v
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 04:24:18 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Robert Liu <robertliu@wiscore.com>
-In-Reply-To: <43FA6A26.8000005@wiscore.com>
-References: <43FA6A26.8000005@wiscore.com>
-Content-Type: text/plain
-Date: Tue, 21 Feb 2006 10:25:14 +0100
-Message-Id: <1140513914.2480.861.camel@localhost.localdomain>
+	id 1FBTwf-0000N0-2W
+	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 04:36:39 -0500
+Date: Tue, 21 Feb 2006 10:35:50 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <20060221093550.GA32288@wohnheim.fh-wedel.de>
+References: <43EB96DC.3030900@eptar.com>
+	<200602210942.38302.manningc2@actrix.gen.nz>
+	<1140471467.2480.793.camel@localhost.localdomain>
+	<200602211140.30069.manningc2@actrix.gen.nz>
+	<1140477524.2480.827.camel@localhost.localdomain>
+	<35fb2e590602201629i1c4eefd8v3dc4e43bfa194f2c@mail.gmail.com>
+	<1140510373.2480.842.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: do R/W tests on JFFS2 and suffer  segmentation fault
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1140510373.2480.842.camel@localhost.localdomain>
+Cc: jonathan@jonmasters.org, Vitaly Wool <vwool@ru.mvista.com>,
+	Charles Manning <manningc2@actrix.gen.nz>,
+	linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
+Subject: Re: [Yaffs] bit error rates --> a vendor speaks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +31,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-02-21 at 09:17 +0800, Robert Liu wrote:
-> I am doing some read/write tests on JFFS2 partition, and find there may be
-> a bug in jffs2_remove_from_hash_table().
+On Tue, 21 February 2006 09:26:13 +0100, Thomas Gleixner wrote:
+> 
+> It's about some piece of software relying on a non guaranteed hardware
+> feature.
+> 
+> I'm looking into the variety of hardware which evolves around NAND flash
+> and I carefully look in which direction this is going.
+> 
+> I see that the near future will require more complexity in the nand code
+> and I'm looking for a sane solution for that. I'm not saying that its
+> wrong, when something uses a nice hardware feature, but my point still
+> stands that it is wrong to rely on a feature which is nowhere
+> guaranteed. 
 
-Which kernel version ? Any patches related to MTD/JFFS2 applied ?
+Ack.  One of the better features of hard disks is that they have a
+standard interface.  I can take an ext3 image from a 5 year old disk
+from one vendor and write it to a brand new disk from a different
+vendor and things just work.  No conversion tool is needed.
 
-> Tests sometimes failed with segmentation fault.
-> I set the JFFS2 debug level to 1, and add several debug infomation in 
-> jffs2_remove_from_hash_table().
-> It seems jffs2 try to remove an entry with prev is 0x200200 and next is 
-> 0x100100.
+For flash, moving images between arbitrary chips is just a pipe dream.
+But things will get pushed into that direction.  So for a filesystem
+to work on many chips, it should be prepared to work with different
+page- and block-sizes and not rely on OOB at all.
 
-Thats the list_head poison code (see include/linux/list.h
-LIST_POISON1/2). The entry was removed before.
+Jörn
 
-	tglx
+-- 
+You ain't got no problem, Jules. I'm on the motherfucker. Go back in
+there, chill them niggers out and wait for the Wolf, who should be
+coming directly.
+-- Marsellus Wallace
