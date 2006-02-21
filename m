@@ -1,27 +1,20 @@
-Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
-	helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FBWHD-0002Kb-IS
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 07:06:17 -0500
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-In-Reply-To: <43FB00B4.9040706@yandex.ru>
-References: <43EB96DC.3030900@eptar.com> <43F74BF1.1080307@ru.mvista.com>
-	<1140337326.2480.674.camel@localhost.localdomain>
-	<200602210942.38302.manningc2@actrix.gen.nz>
-	<1140471467.2480.793.camel@localhost.localdomain>
-	<43FB00B4.9040706@yandex.ru>
-Content-Type: text/plain
-Date: Tue, 21 Feb 2006 13:06:53 +0100
-Message-Id: <1140523614.2480.931.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FBWQ2-0002dN-Cs
+	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 07:15:09 -0500
+Message-ID: <43FB0424.1020309@yandex.ru>
+Date: Tue, 21 Feb 2006 15:14:28 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Charles Manning <manningc2@actrix.gen.nz>, tglx@linutronix.de
+References: <43EB96DC.3030900@eptar.com>	<200602210942.38302.manningc2@actrix.gen.nz>	<1140471467.2480.793.camel@localhost.localdomain>
+	<200602211140.30069.manningc2@actrix.gen.nz>
+In-Reply-To: <200602211140.30069.manningc2@actrix.gen.nz>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: William Watson <wjw1961@gmail.com>,
-	Charles Manning <manningc2@actrix.gen.nz>,
-	Vitaly Wool <vwool@ru.mvista.com>, yaffs@stoneboat.aleph1.co.uk,
-	linux-mtd@lists.infradead.org
+Cc: William Watson <wjw1961@gmail.com>, Vitaly Wool <vwool@ru.mvista.com>,
+	linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
 Subject: Re: [Yaffs] bit error rates --> a vendor speaks
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-02-21 at 14:59 +0300, Artem B. Bityutskiy wrote:
-> Thomas Gleixner wrote:
-> > Wake up please. Thats going to be reality for NAND based stuff in the
-> > future. The controllers will expose the raw FLASH but claim the OOB area
-> > for their own purpose - hardware based error correction.
-> One of my colleagues said a very interesting argument against this.
-> 
-> Look, consider all those CompactFlash cards. They are NAND flash based. 
-> They have a kind of block device emulation built-in. And I bet they use 
-> OOB to store the logical block number corresponding to this physical 
-> block. The block device over Flash device emulation is so widespread, so 
-> vendors will never forbid OOB usage.
+Charles Manning wrote:
+> Sorry Thomas I don't buy that argument. If a system has a NAND device that 
+> does have spare OOB available then it does have spare OOB and I can rely on 
+> that. If a NAND chip is soldered to a board, and the system exposes the OOB  
+> it is there. YAFFS (or whatever) can then be used on this device.
 
-I did nowhere say, that oob usage will be forbidden.
+I understand Thomas's point as as he is fighting for generalization. 
+Indeed, this OOB stuff introduces a lot of mess.
 
->  From this point of view, OOB is no going to go.
+Charles' point is - if OOB is there, why not to let users use it? Also 
+sounds reasonable.
 
-The CF controller does its own closed proprietary magic and looking at
-the robustness of those cards I dont want to know what it does.
+What I think would be nice to do is to get rid of OOB in MTD stuff, but 
+add a possibility to access OOB via some NAND-specific interfaces from 
+nand_base. Indeed, if one wants to work with a generalized flash device 
+- please use MTD interface. If one still wants to access OOB, use 
+lower-layer NAND interfaces. That's all about to have more then one 
+layer of Generalization. And I believe this is the right way to go.
 
-The OOB usage of a closed device is in no way relevant for a discussion
-about a robust, sane and quite generic solution for handling NAND flash
-devices inside of Linux.
-
-I don't care what those chips do unless they run Linux inside.
-
-	tglx
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
