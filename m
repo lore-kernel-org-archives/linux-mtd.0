@@ -1,22 +1,19 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FBi1z-0008V6-8A
-	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 19:39:04 -0500
-Date: Wed, 22 Feb 2006 00:38:44 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: Charles Manning <manningc2@actrix.gen.nz>
-Message-ID: <20060222003844.GA31305@mail.shareable.org>
-References: <43EB96DC.3030900@eptar.com>
-	<200602211140.30069.manningc2@actrix.gen.nz>
-	<1140477524.2480.827.camel@localhost.localdomain>
-	<200602211408.05208.manningc2@actrix.gen.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200602211408.05208.manningc2@actrix.gen.nz>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org,
-	yaffs@stoneboat.aleph1.co.uk
-Subject: Re: [Yaffs] bit error rates --> YAFFS for devices with no OOB
+Received: from gateway-1237.mvista.com ([63.81.120.158] helo=hermes.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FBidl-0000UX-Nm
+	for linux-mtd@lists.infradead.org; Tue, 21 Feb 2006 20:18:03 -0500
+Message-ID: <43FBB6FF.4070203@mvista.com>
+Date: Tue, 21 Feb 2006 16:57:35 -0800
+From: Todd Poynor <tpoynor@mvista.com>
+MIME-Version: 1.0
+To: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
+References: <43A2F819.1040106@ru.mvista.com> <43C69EC2.2070601@mvista.com>
+	<43F1D439.60205@ru.mvista.com>
+In-Reply-To: <43F1D439.60205@ru.mvista.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] PNX8550 NAND flash driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning wrote:
-> OK, I'll start investigating an OOB-less YAFFS and give that a priority 
-> depending on the amount of interest. Hint to everyone: If this sounds 
-> interesting, respond (on or off list), especially if you'd like to be 
-> involved in some way.
+Hi Vladimir -- a couple comments.
 
-Would that make it more usable as a filesystem for Compact Flash cards?
+> +	PNX8550_XIO_FLASH_CTRL = reg_nand;
+> +	barrier();
+> +}
 
-I've heard of people using JFFS2 on Compact Flash (using blkmtd),
-because it's power-fail-safe and is much better for wear than, say,
-ext3.
+barrier() at the end of a function shouldn't be needed, function exit is 
+an implicit optimizer flush?
 
--- Jamie
+
+> +	pnx8550_nand_alloc_transfer_buffer();
+> +
+> +	memcpy(transferBuffer, buf, len);
+
+Something should check for NULL return from kmalloc in both places this 
+is called.
+
+> +	/* Scan to find existence of the device */
+> +	if (nand_scan(&pnx8550_mtd, 1)) {
+> +		printk(KERN_ERR "No NAND devices\n");
+> +		return -ENXIO;
+> +	}
+> +
+> +	if (!transferBuffer) {
+> +		printk(KERN_ERR
+> +		    "Unable to allocate NAND data buffer for PNX8550\n");
+> +		return -ENOMEM;
+> +	}
+
+Not sure why transferBuffer was expected to be allocated at this point 
+(only when first read/write_buf called, scan does read_byte)?
+
+
+-- 
+Todd
