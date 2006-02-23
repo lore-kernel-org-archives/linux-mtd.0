@@ -1,26 +1,29 @@
-Received: from petasus.ims.intel.com ([62.118.80.130])
+Received: from wproxy.gmail.com ([64.233.184.203])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FByYK-0003zo-0R
-	for linux-mtd@lists.infradead.org; Wed, 22 Feb 2006 13:17:30 -0500
-Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
-	[10.125.2.23])
-	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
-	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id k1MIVgCi028195
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2006 18:31:42 GMT
-Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
-	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
-	M2006022221171020299
-	for <linux-mtd@lists.infradead.org>; Wed, 22 Feb 2006 21:17:10 +0300
-Content-class: urn:content-classes:message
+	id 1FC4d5-0000jM-OL
+	for linux-mtd@lists.infradead.org; Wed, 22 Feb 2006 19:46:49 -0500
+Received: by wproxy.gmail.com with SMTP id 69so265798wri
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Feb 2006 16:46:43 -0800 (PST)
+Message-ID: <f9d2a5e10602221646h240ae399p88c88233e0fb3bb8@mail.gmail.com>
+Date: Wed, 22 Feb 2006 17:46:43 -0700
+From: "Russ Dill" <russ.dill@gmail.com>
+To: tglx@linutronix.de
+In-Reply-To: <1140337746.2480.682.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-Date: Wed, 22 Feb 2006 21:17:09 +0300
-Message-ID: <F92C2EFE7C3BA745855BF7036E1F3F9A01A06023@NNSMSX401>
-From: "Korolev, Alexey" <alexey.korolev@intel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] cfi: Fixup of write errors on XIP 
+Content-Disposition: inline
+References: <43EB96DC.3030900@eptar.com>
+	<35fb2e590602100558s2d868fa3o1752fbf3217439e4@mail.gmail.com>
+	<d97046180602151153g23064424x9e1ddf83a1d7ae4f@mail.gmail.com>
+	<200602161432.17447.manningc2@actrix.gen.nz>
+	<1140253826.2480.651.camel@localhost.localdomain>
+	<f9d2a5e10602181011k6552d396q4da6daef944a6fff@mail.gmail.com>
+	<1140337746.2480.682.camel@localhost.localdomain>
+Cc: Charles Manning <manningc2@actrix.gen.nz>, linux-mtd@lists.infradead.org,
+	yaffs@stoneboat.aleph1.co.uk
+Subject: Re: [Yaffs] bit error rates --> a vendor speaks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,62 +33,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-=20
-Here is fixup of issue I have seen on XIP configuration.=20
-Sometimes I received write errors with message "buffer write error
-(status timeout)" on test  which did read write and erase on several
-volumes at the same time.
-=20
-I investigated the issue.=20
-The scenario of the issue is following:
-=20
-1. do_write_buffer=20
-2. Waiting for write complete in xip_udelay
-3. System Interrupt
-4. Write suspend
-5. Rescheduling
-6. Block erasing by other process. ( This operation typically took
-rather long time )
-7. Complete, rescheduling=20
-8. Return to write (write is not complete due to suspend ).=20
-9. Check timeout. Time is up.
-10. Error.
-=20
-I made small fixup for these issue. Please see patch below.
+> Depends. The 1bit correction/ 2bit detection Hamming ECC algorithm found
+> in the kernel is not too bad, but Reed Solomon is a quite conmputation
+> expensive algorithm. Look into the encoder / decoder code in
+> lib/reed_solomon.
 
-Thanks,
-Alexey
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- c/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22
-20:58:05.869203280 +0300
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22
-20:55:42.272033368 +0300
-@@ -1571,6 +1571,7 @@
- 	/* GO GO GO */
- 	map_write(map, CMD(0xd0), cmd_adr);
- 	chip->state =3D FL_WRITING;
-+	chip->write_suspended =3D 0;
-=20
- 	INVALIDATE_CACHE_UDELAY(map, chip, cmd_adr,
- 				adr, len,
-@@ -1592,6 +1593,12 @@
- 			continue;
- 		}
-=20
-+		/* Somebody suspended write. We should reset timeo. */
-+		if (chip->write_suspended) {
-+			chip->write_suspended =3D 0;
-+			timeo =3D jiffies + (HZ/2);
-+		}
-+	=09
- 		status =3D map_read(map, cmd_adr);
- 		if (map_word_andequal(map, status, status_OK,
-status_OK))
- 			break;
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Do NAND errors tend to clump in sequences of bits (ie, something reed
+solomon is paticularly good at)?
+
+> In general you have to iterate over the data buffer and compute on each
+> step. The performance penalty depends on the complexitiy of the
+> algortihm. If you have enough space in your FPGA then its definitely a
+> good idea to put some ECC calculation mechanism into it. There are
+> implementations for both ECC and Reed Solomon available.
+
+Care to recommend any?
