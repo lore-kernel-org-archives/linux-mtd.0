@@ -1,20 +1,21 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FCBt3-00079h-Tj
-	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2006 03:31:51 -0500
-Message-ID: <43FD72E8.9080203@ru.mvista.com>
-Date: Thu, 23 Feb 2006 11:31:36 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: Charles Manning <manningc2@actrix.gen.nz>
-References: <43EB96DC.3030900@eptar.com>	<35fb2e590602100558s2d868fa3o1752fbf3217439e4@mail.gmail.com>	<d97046180602151153g23064424x9e1ddf83a1d7ae4f@mail.gmail.com>
-	<200602161432.17447.manningc2@actrix.gen.nz>
-In-Reply-To: <200602161432.17447.manningc2@actrix.gen.nz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FCDyb-0000um-T9
+	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2006 05:45:40 -0500
+Received: from portal.sanpeople.com ([192.168.1.40])
+	by za-gw.sanpeople.com with esmtp (Exim 4.51) id 1FCE3L-0001HG-Bg
+	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2006 12:50:31 +0200
+Received: from fuzzie.sanpeople.com ([192.168.4.5])
+	by portal.sanpeople.com with esmtp (Exim 3.33 #1) id 1FCEJI-0000dO-00
+	for linux-mtd@lists.infradead.org; Thu, 23 Feb 2006 13:07:00 +0200
+From: Andrew Victor <andrew@sanpeople.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Message-Id: <1140691375.1880.49.camel@fuzzie.sanpeople.com>
+Mime-Version: 1.0
+Date: 23 Feb 2006 12:42:56 +0200
 Content-Transfer-Encoding: 7bit
-Cc: William Watson <wjw1961@gmail.com>, linux-mtd@lists.infradead.org,
-	yaffs@stoneboat.aleph1.co.uk
-Subject: Re: [Yaffs] bit error rates --> a vendor speaks
+Subject: AT49BV1614 not detected
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,134 +25,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello folks,
+hi,
 
-my two cents...
+I'm trying to get the AT49BV1614 flash working on the Atmel
+AT91RM9200-DK board.  (2.6.16-rc4)
 
-The way out I'd like to suggest is to [re]design the NAND filesystems 
-(jffs{2|3}, yaffs[2]) in such a way that no sensible information is 
-stored in OOB area. That will mean no compatibility/applicability issues.
-But how to deal with speed decrease within this approach? I think it's 
-reasonable to store speedup information (indexes, hash values etc.) in 
-the OOB area. Well, this speedup info will need to be designed in an 
-adaptable way as the amount of spare OOB bytes can be whatever.
-Also, the tools for writing the filesystem image onto the flash better 
-be capable of generating this speedup info as they write the image, 
-otherwise first mount will take a lot of time (probably as it happens 
-once, it's also acceptable but less convenient).
+The kernel log shows the following:
+  Search for id:(1f c0) interleave(1) type(2)
+  MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+  MTD jedec_match(): check unlock addrs 0x5555 0x2aaa
+  MTD jedec_match(): 0x0555 0x0aaa did not match
 
-And... I do not like the idea to remove OOB-handling stuff from the MTD 
-layer. I also do not like the idea to make a separate interface for NAND 
-layer, I'm afraid this will lead to confusion and hard to track errors.
+In jedec_probe.c I see:
+    .name           = "Atmel AT49BV16X",
+    .uaddr          = {
+           [0] = MTD_UADDR_0x0555_0x0AAA,  /* x8 */
+           [1] = MTD_UADDR_0x0555_0x0AAA   /* x16 */
+    },
 
-Hope that makes sense,
+If I change the both 'uaddr' to MTD_UADDR_0x5555_0x2AAA:
 
-Best regards,
-   Vitaly
+   Search for id:(1f c0) interleave(1) type(2)
+   MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+   MTD jedec_match(): check unlock addrs 0x5555 0x2aaa
+   MTD jedec_match(): check ID's disappear when not in ID mode reset unlock called 5555 2aaa 
+   MTD jedec_match(): return to ID mode
+   MTD jedec_probe_chip(): matched device 0x1f,0xc0 unlock_addrs: 0x5555 0x2aaa
+   Found: Atmel AT49BV16X
+   reset unlock called 5555 2aaa 
+   flash:: Found 1 x16 devices at 0x0 in 16-bit bank
+   number of JEDEC chips: 1
 
-Charles Manning wrote:
 
->To mtd-ers... Please forgive the cross-posting, but I think the content is 
->sufficiently important  to those who use NAND but are not plugged in to the 
->YAFFS list.
->
->
->On Thursday 16 February 2006 08:53, William Watson wrote:
->
->  
->
->>I will also note that a NAND vendor who paid us a visit at about that same
->>time said that we should expect WORSE soft error behaviour with succeeding
->>generations of NAND flash chips.  The geometries would get smaller and
->>smaller, the chip dies would get larger and larger, and the amount of time
->>for production testing of each chip would not increase, or at least, not
->>increase as fast as the total storage of a chip.  Thus, the testing per
->>page would only go down in subsequent generations of chips.  These two
->>statements seemed to say that we would see both (1) increased rates of ECC
->>errors, and (2) an increase in the number of marginal blocks not marked bad
->>by the chip vendor.
->>    
->>
->
->A vendor on the list contacted me off list, so I asked their permission before 
->posting what they said on-list.  I got that permission so long as their name 
->was removed.
->
->As William states,  It seems that the reliability has peaked. NAND is expected 
->to get worse, and a move to better correction schemes is encouraged.
->
->For the most part, this is not really a YAFFS2 issue since the ECC mechanism 
->(on the data) is not part of YAFFS2 per se. THis is now part of the mtd, or 
->flash driver for non-Linux (eg. William's case). For YAFFS2, the impact is 
->probably limited to:
->1) ECC on tags....  Tags are so small that a single-bit correction is probably 
->enough. Multibit is probably a good thing to investigate.
->2) More OOB being used for multi-bit schemes will probably mean less space 
->available for tags.
->3) An emerging need for more forgiving block retirement.
->4) Thinking about "spreading" to reduce write disturb.
->
->Thus far it has been quite hard to engage NAND vendors but it seems some are 
->now willing to talk a bit more. I will try to discuss the issues to better 
->understand them.
->
->-- Charles
->
->
->Without further blaah, the vendor's words, slightly edited:
->
->It's difficult to decide what the best block retirement policy should be.
->For a program or erase failure, block retirement should be mandatory
->because internally, the chip has already tried to program or erase multiple
->times already.  For ECC (soft errors), it's more of an open question.
->Should the errors be scrubbed and the data written back (to the same
->location or a different location) or should the data be moved and the block
->permanently retired?
->
->One thing I can say with certainty, overall NAND flash reliability is
->degrading.  At the time the application note was written, 0.16 micron based
->NAND flash had a block write/erase endurance of 250k-1M cycles with
->reasonable data retention.  However, as lithography shrinks have continued
->(0.16um -> 0.13um -> 90nm -> 70nm), the physical cell area has been cut by
->roughly half at each die shrink.  The physics of the materials don't
->change, therefore, less charge is being stored in the memory cell every
->generation.  90nm SLC (single level cell) NAND flash was nominally rated at
->100K write/erase cycles per block, and it is very likely that 70nm SLC NAND
->flash will be significantly less.  Better ECC is going to be necessary.
->The single bit correcting Hamming code that is currently used for SLC NAND
->was originally designed for SmartMedia over 10 years ago.  Today, most
->memory cards using NAND flash implement Reed Solomon ECC capable of
->correcting 4 or more symbol errors (typically 8 or more bits per symbol)
->per 512 bytes.  This enables the ability to correct 4 random errors per
->sector. However, for speed reasons, the ECC is usually done in hardware.
->If a multi-bit ECC was implemented, then it would be possible to implement
->a policy like: if there is the maximum number of correctable errors or an
->uncorrectable error in a page, then the block can be permanently retired,
->otherwise, scrub the data and move to a new location.  But this kind of
->policy would be difficult to implement with single bit correcting Hamming
->code.   Disturbance errors (read disturb, program disturb) will become more
->probable in the future due to increased capacitive coupling between bit
->lines and word lines due to decreased separation at each lithography
->shrink.
->
->One fact that is somewhat underappreciated is that one cannot have both
->high block write/erase endurance and long data retention simultaneously.
->One can have better data retention if the block sees fewer write/erase
->cycles.  The more the data is spread out across all the blocks, the better
->the overall data retention since every block is written and erased as few
->times a necessary.  Journaling appears to be one of the best ways to spread
->out the writes but some kind of static data wear leveling could improve it
->further (however, there might be IP issues).
->
->Keep up the good work,
->
->Sincerely,
->[name scrubbed]
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->  
->
+It previously "just worked" in 2.4:
+  Search for id:(1f c0) interleave(1) type(2)
+  Found: Atmel AT49BV16X
+  Physically mapped flash: Found 1 x16 devices at 0x0 in 16-bit mode
+
+
+What could be the cause / correct fix for this problem?
+
+
+Regards,
+  Andrew Victor
