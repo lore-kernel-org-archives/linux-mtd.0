@@ -1,20 +1,18 @@
-Received: from host-84-9-202-22.bulldogdsl.com ([84.9.202.22]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FCbVO-0000EC-Ez
-	for linux-mtd@lists.infradead.org; Fri, 24 Feb 2006 06:53:06 -0500
-Date: Fri, 24 Feb 2006 11:24:25 +0000
-From: Ben Dooks <ben-mtd@fluff.org>
-To: Russ Dill <russ.dill@gmail.com>
-Message-ID: <20060224112425.GA25880@home.fluff.org>
-References: <f9d2a5e10602232107y57accef1r3420d9b903d9cf4c@mail.gmail.com>
+Received: from smtp1-g19.free.fr ([212.27.42.27])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FCdKC-000082-Ns
+	for linux-mtd@lists.infradead.org; Fri, 24 Feb 2006 13:49:39 +0000
+Message-ID: <1140788970.43ff0eead9180@imp5-g19.free.fr>
+Date: Fri, 24 Feb 2006 14:49:30 +0100
+From: kroff2@free.fr
+To: kroff2@free.fr
+References: <1140778994.43fee7f26f0ec@imp4-g19.free.fr>
+In-Reply-To: <1140778994.43fee7f26f0ec@imp4-g19.free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f9d2a5e10602232107y57accef1r3420d9b903d9cf4c@mail.gmail.com>
-Sender: Ben Dooks <ben@fluff.org.uk>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: FPGA NAND Interface tips
+Subject: Re: Perform test on Flash with a SD card reader/USB pendrive
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +22,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Feb 23, 2006 at 10:07:36PM -0700, Russ Dill wrote:
-> I'm providing some input on the NAND wire up, and FPGA design on a new
-> board (80200 + FPGA).  I'm currently using rtc_from4.c and s3c2410.c
-> as examples.
-> 
-> So I'm thinking the following for a basic setup:
-> 
-> reed solomon encoder
-> Bit in the FPGA to reset the reed solomon encoder
-> place in the FPGA to read out rs codes from last written/read block
-> CLE/ALE as address lines
-> Read/Busy connected as gpio/interrupt (multiple chips connect to multiple lines)
+Do you know if this kind of "trick" could work ?
+http://lists.soekris.com/pipermail/soekris-tech/2002-May/015308.html
 
-these sound like good ideas.
- 
-> Also, when writing/reading to a single address, the 80200 will not
-> burst, and round trip time is horrid, especially when talking to IO
-> devices. Would a FIFO with a 32 byte interface be a good solution to
-> this? maybe with 16 entries (512 bytes)? I realize that DMA would be
-> more ideal, but a fifo seems like it might be simplier.
+Regards
 
-you might also think about a way of writing cmd+addr in one go, or
-at-least the address cycles.
- 
-> Does anyone have any paticular pet peeves when dealing with their NAND
-> interface?
-> 
+Selon kroff2@free.fr:
+
+> I would like to perform test on flash Nand and I try to use MTD but doesn't
+> seem
+> to work.
+>
+> I saw you already answer the question of "SD card reader" last year but I
+> want
+> to know if you know some "tricks" to do it working with your mtd or if you
+> know
+> how I can access directly to my SD memory.
+>
+> If there is no possibilty to test them like this, do you know some cheap mean
+> (USB /PCI card ???) to test the flash nand with a x86 base computer.
+>
+> Thanks for your answer.
+>
+> PS : ref of my SD card reader :
+>   Vendor=04e6 ProdID=0006 Rev= 4.04
+>   Manufacturer=SCM Microsystems Inc.
+>   Product=eUSB MultiMediaCard Adapter
+>
 > ______________________________________________________
 > Linux MTD discussion mailing list
 > http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+>
