@@ -1,23 +1,20 @@
-Received: from wproxy.gmail.com ([64.233.184.200])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FChFi-0006RH-0t
-	for linux-mtd@lists.infradead.org; Fri, 24 Feb 2006 13:01:15 -0500
-Received: by wproxy.gmail.com with SMTP id 68so346368wra
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Feb 2006 10:01:12 -0800 (PST)
-Message-ID: <f9d2a5e10602241001l532a1b98rdac5fce52aaf635f@mail.gmail.com>
-Date: Fri, 24 Feb 2006 11:01:12 -0700
-From: "Russ Dill" <russ.dill@gmail.com>
-To: "Ben Dooks" <ben-mtd@fluff.org>, linux-mtd@lists.infradead.org
-In-Reply-To: <20060224112425.GA25880@home.fluff.org>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FCy4u-0005HR-4G
+	for linux-mtd@lists.infradead.org; Sat, 25 Feb 2006 06:59:15 -0500
+Message-ID: <44004666.8030805@yandex.ru>
+Date: Sat, 25 Feb 2006 14:58:30 +0300
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <f9d2a5e10602232107y57accef1r3420d9b903d9cf4c@mail.gmail.com>
-	<20060224112425.GA25880@home.fluff.org>
-Cc: 
-Subject: Re: FPGA NAND Interface tips
+To: tglx@linutronix.de
+References: <43EB96DC.3030900@eptar.com>
+	<43F74BF1.1080307@ru.mvista.com>	<1140337326.2480.674.camel@localhost.localdomain>	<200602210942.38302.manningc2@actrix.gen.nz>	<1140471467.2480.793.camel@localhost.localdomain>	<43FB00B4.9040706@yandex.ru>
+	<1140523614.2480.931.camel@localhost.localdomain>
+In-Reply-To: <1140523614.2480.931.camel@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [Yaffs] bit error rates --> a vendor speaks
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,12 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> you might also think about a way of writing cmd+addr in one go, or
-> at-least the address cycles.
+BTW, talking about generalization, that mtd->eraseregions stuff is as 
+bad as OOB. IMO, it is better to treat different regions as different 
+partitions or as different MTD devices.
 
-I did consider that, a seperate command/address fifo. It would have 2
-addresses, one for command, one for address, internally, extra bits
-would be stored with each byte to indicate command or address.
-
-However, it seems like a nice to have, since command/address setup
-would be such a small percentage of total accesses.
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
