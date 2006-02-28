@@ -1,31 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.201])
+Received: from nproxy.gmail.com ([64.233.182.207])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FDmMV-0003Oq-0c
-	for linux-mtd@lists.infradead.org; Mon, 27 Feb 2006 12:40:46 -0500
-Received: by wproxy.gmail.com with SMTP id i20so887842wra
+	id 1FDtbP-0000Vi-Mm
+	for linux-mtd@lists.infradead.org; Mon, 27 Feb 2006 20:24:38 -0500
+Received: by nproxy.gmail.com with SMTP id l23so772581nfc
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Feb 2006 09:40:39 -0800 (PST)
-Message-ID: <625fc13d0602270940l7121a5dbq16161d5b41049468@mail.gmail.com>
-Date: Mon, 27 Feb 2006 11:40:38 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-In-Reply-To: <44033534.7040708@yandex.ru>
+	Mon, 27 Feb 2006 17:24:26 -0800 (PST)
+Message-ID: <d0cf8c90602271724k474cae9dsad5af4fd2ad8f517@mail.gmail.com>
+Date: Tue, 28 Feb 2006 09:24:25 +0800
+From: "Kein Yuan" <kein.yuan@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <43EB96DC.3030900@eptar.com>
-	<200602210942.38302.manningc2@actrix.gen.nz>
-	<1140471467.2480.793.camel@localhost.localdomain>
-	<43FB00B4.9040706@yandex.ru>
-	<1140523614.2480.931.camel@localhost.localdomain>
-	<44004666.8030805@yandex.ru>
-	<625fc13d0602270527k39b18cabv5762c008bb1e2b73@mail.gmail.com>
-	<44032266.1040501@yandex.ru>
-	<625fc13d0602270815l5c334b06u1a41a1ed7b7dc4ad@mail.gmail.com>
-	<44033534.7040708@yandex.ru>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Subject: Re: [Yaffs] bit error rates --> a vendor speaks
+Subject: Intel J3A Flash support in latest cvs broken?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,78 +23,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2/27/06, Artem B. Bityutskiy <dedekind@yandex.ru> wrote:
-> Josh, I believe you're only *partially* right
+Hi all,
+    I am working on PXA270 with Intel J3 flash.  CFI detect is OK and
+jffs2 image was correctly written to the place by blob, the
+bootloader. However kernel failed to mount jffs2 partition as root
+filesystem.  After I boot with NFS as rootfs and tried to use
+"flash_eraseall /dev/mtd2" to erase file system partition, it always
+reports:
 
-I'm surprised I'm right at all :).  Normally I just make an idiot of myself=
-.
+MTD_open
+MTD_ioctl
+MTD_ioctl
+MTD_ioctl
+Panther Flash: block erase error: (bad command sequence, status 0x700070)
+MTD_ioctl
+Panther Flash: block erase error: (status timeout)
+MTD_ioctl
+Panther Flash: Waiting for chip to be ready timed out. Status 0
+MTD_ioctl
+Panther Flash: Waiting for chip to be ready timed out. Status 0
+MTD_ioctl
+Panther Flash: Waiting for chip to be ready timed out. Status 0
+MTD_ioctl
+Panther Flash: Waiting for chip to be ready timed out. Status 0
+MTD_ioctl
+Panther Flash: Waiting for chip to be ready timed out. Status 0
+MTD_ioctl
+Panther Flash: block erase error: (status timeout)
+MTD_close
+Panther Flash: Waiting for chip to be ready timed out. Status 0
 
-> 1. The region is an attribute of *flash chip*. The region is *not* an
-> attribute of MTD device. MTD device may describe the whole flash chip,
-> it may describe a part of flash chip (partitions), and it may describe
-> many flash chips (concatenation).
->
-> So, I state: the notion of region has nothing to do with the notion of
-> MTD device.
 
-Ok.  I agree with that.  Regions are indeed a chip thing.
+I also checked  drivers/mtd/chips/cfi_cmdset_0001.c :
+static void fixup_intel_strataflash(struct mtd_info *mtd, void* param)
+{
+    struct map_info *map =3D mtd->priv;
+    struct cfi_private *cfi =3D map->fldrv_priv;
+    struct cfi_pri_amdstd *extp =3D cfi->cmdset_priv;
 
-> If you have a specific application, which works with a *flash chip* not
-> an *MTD device*, please, introduce another software object, sort of
-> "struct flash_chip". Let your applications to work with these "struct
-> flash_chip" objects.
->
-> Putting references to regions to the MTD device structure (struct
-> mtd_info) is *bad*.
+    printk(KERN_WARNING "cfi_cmdset_0001: Suspend "
+                        "erase on write disabled.\n");
+    extp->SuspendCmdSupport &=3D ~1;
+}
 
-Yes.  And that is where we are getting our signals crossed.  Or mabye
-it was just me.  I was thinking that you wanted to take the region
-info and make it manditory for a new MTD to be created.  If it's still
-valid for the _chip_ driver to abstract away the region stuff, I'm all
-for that.
+This function is obviously wrong since it can't be built.  It should be
 
-> 2. Well, you're in ecstasy of the current approach (kidding :-) ). Then
-> explain me, why if, let's say JFFS3, opens an MTD device, it has access
-> to some weird "regions"? What's on earth is going on? This is definitely
-> error-prone. This is messy. This is bad design. JFFS3 does not want to
-> see regions.
+    struct cfi_pri_intelext *extp =3D cfi->cmdset_priv;
+instead of
+    struct cfi_pri_amdstd *extp =3D cfi->cmdset_priv;
 
-Right.  This is indeed not really wanted.  Are there even users of the
-region info in the mtd_info structure?
 
-> 3. Regions... How do you look at them?
->
-> We could look at them like this:
-> a). They are different entities, used for completely different purposes,
-> a rare program needs to use all of them simultaneously, they may have
-> different eraseblock size and other properties, they are just different.
-> Yes, it happened to be that they are on one single chip, but they are
-> still different.
->
-> Or we could look at them narrower:
-> b). A region is a kind of "appendix" to the flash chip, where the
-> bootcode or whatever may be put. There is not more then one (or really
-> few) regions per flash chip. There is only one big and main "data"
-> region, and one or few small auxiliary regions.
->
-> I reckon that the reality is more like b). And in this respect I see
-> your point. Indeed, what for should we spend more DRAM to describe this
-> unworthy "appendix" (aka region) by a distinct software object? Let's
-> push this all together!
->
-> I can agree with you *partially*, providing that chips like a). are
-> *not* going to appear. Partially means that I only agree that there *may
-> be* no reason to create a distinct MTD device for this poor appendix.
->
-> So I state: Ok, in b)-like chips, do not create a distinct MTD device.
-> Let's invent something different. But this must not be in struct
-> mtd_info anyway.
+So I am doube does this file still supported?
 
-Or not invent anything at all unless it's really, really, really needed :).
+Can anybody give me some hints that why "bad command sequence, status 0x700=
+070"
+will happen since I can delect flash by CFI?  The boot log was pasted as be=
+low:
+...
 
->
-> Do you see my points?
+Probing Panther Flash at physical address 0x00000000 (32-bit bankwidth)
+Panther Flash: Found 2 x16 devices at 0x0 in 32-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+cfi_cmdset_0001: Suspend erase on write disabled.
+cfi_cmdset_0001: write suspend disabled
+Using buffer write method
+erase region 0: offset=3D0x0,size=3D0x40000,blocks=3D128
+Using static partitions on Panther Flash
+Creating 3 MTD partitions on "Panther Flash":
+0x00000000-0x00040000 : "Bootloader"
+mtd: Giving out device 0 to Bootloader
+0x00040000-0x00240000 : "Kernel"
+mtd: Giving out device 1 to Kernel
+0x00240000-0x01240000 : "Filesystem"
+mtd: Giving out device 2 to Filesystem
+MSC0 is 0x7ffc7ff0.
+...
 
-Yep.  I think we agree for the most part now.
 
-josh
+Thanks,
+
+Kein
