@@ -1,19 +1,27 @@
-Received: from nproxy.gmail.com ([64.233.182.207])
+Received: from n1.cetrtapot.si ([212.30.80.17])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FDtbP-0000Vi-Mm
-	for linux-mtd@lists.infradead.org; Mon, 27 Feb 2006 20:24:38 -0500
-Received: by nproxy.gmail.com with SMTP id l23so772581nfc
+	id 1FE7zU-0003oc-Q7
+	for linux-mtd@lists.infradead.org; Tue, 28 Feb 2006 11:46:27 -0500
+Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
+	by n1.cetrtapot.si (Postfix) with ESMTP id DF1EFBC03
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 27 Feb 2006 17:24:26 -0800 (PST)
-Message-ID: <d0cf8c90602271724k474cae9dsad5af4fd2ad8f517@mail.gmail.com>
-Date: Tue, 28 Feb 2006 09:24:25 +0800
-From: "Kein Yuan" <kein.yuan@gmail.com>
-To: linux-mtd@lists.infradead.org
+	Tue, 28 Feb 2006 17:46:07 +0100 (CET)
+Received: from n1.cetrtapot.si ([127.0.0.1])
+	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 44976-07 for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Feb 2006 17:46:02 +0100 (CET)
+Received: from [192.1.1.75] (unknown [192.168.66.2])
+	by n1.cetrtapot.si (Postfix) with ESMTP id 999B6BBF6
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 28 Feb 2006 17:46:02 +0100 (CET)
+Message-ID: <44047E4A.7060208@cetrtapot.si>
+Date: Tue, 28 Feb 2006 17:46:02 +0100
+From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: Intel J3A Flash support in latest cvs broken?
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Subject: readback after write
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,83 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-    I am working on PXA270 with Intel J3 flash.  CFI detect is OK and
-jffs2 image was correctly written to the place by blob, the
-bootloader. However kernel failed to mount jffs2 partition as root
-filesystem.  After I boot with NFS as rootfs and tried to use
-"flash_eraseall /dev/mtd2" to erase file system partition, it always
-reports:
+Hi,
 
-MTD_open
-MTD_ioctl
-MTD_ioctl
-MTD_ioctl
-Panther Flash: block erase error: (bad command sequence, status 0x700070)
-MTD_ioctl
-Panther Flash: block erase error: (status timeout)
-MTD_ioctl
-Panther Flash: Waiting for chip to be ready timed out. Status 0
-MTD_ioctl
-Panther Flash: Waiting for chip to be ready timed out. Status 0
-MTD_ioctl
-Panther Flash: Waiting for chip to be ready timed out. Status 0
-MTD_ioctl
-Panther Flash: Waiting for chip to be ready timed out. Status 0
-MTD_ioctl
-Panther Flash: Waiting for chip to be ready timed out. Status 0
-MTD_ioctl
-Panther Flash: block erase error: (status timeout)
-MTD_close
-Panther Flash: Waiting for chip to be ready timed out. Status 0
+I have a general question regarding FLASH memories (It does not have to 
+do anything directly with linux MTD).
+I have connected SPI serial flash to my embedded device. Due to slow 
+speed provided by the device I had to drop JFFS2 or similar flash fs in 
+favor of accessing the flash memory in raw mode (using stdio I/O 
+functions). It works nice and much faster than JFFS2.
 
+What I would like to add to my code is read-back operation after write 
+operation, to make sure I haven't overwritten any of the date already 
+present on the flash. My intention was to:
+- open fp for read and write
+- (erase the sector if needed)
+- write data to flash
+- seek back
+- read data back and compare write and read buffer byte-by-byte
 
-I also checked  drivers/mtd/chips/cfi_cmdset_0001.c :
-static void fixup_intel_strataflash(struct mtd_info *mtd, void* param)
-{
-    struct map_info *map =3D mtd->priv;
-    struct cfi_private *cfi =3D map->fldrv_priv;
-    struct cfi_pri_amdstd *extp =3D cfi->cmdset_priv;
+This could have major performance downside considering I can transfer 
+(R/W) 64K of data in ~700ms to/from the device (SLOWWW). Device is sized 
+at 4Mbit. In the worst case this would probably double (triple?) R/W 
+times for single operation, which is why I would like to ask if anyone 
+has any information/algoritm for such things?
 
-    printk(KERN_WARNING "cfi_cmdset_0001: Suspend "
-                        "erase on write disabled.\n");
-    extp->SuspendCmdSupport &=3D ~1;
-}
-
-This function is obviously wrong since it can't be built.  It should be
-
-    struct cfi_pri_intelext *extp =3D cfi->cmdset_priv;
-instead of
-    struct cfi_pri_amdstd *extp =3D cfi->cmdset_priv;
-
-
-So I am doube does this file still supported?
-
-Can anybody give me some hints that why "bad command sequence, status 0x700=
-070"
-will happen since I can delect flash by CFI?  The boot log was pasted as be=
-low:
-...
-
-Probing Panther Flash at physical address 0x00000000 (32-bit bankwidth)
-Panther Flash: Found 2 x16 devices at 0x0 in 32-bit bank
- Intel/Sharp Extended Query Table at 0x0031
-cfi_cmdset_0001: Suspend erase on write disabled.
-cfi_cmdset_0001: write suspend disabled
-Using buffer write method
-erase region 0: offset=3D0x0,size=3D0x40000,blocks=3D128
-Using static partitions on Panther Flash
-Creating 3 MTD partitions on "Panther Flash":
-0x00000000-0x00040000 : "Bootloader"
-mtd: Giving out device 0 to Bootloader
-0x00040000-0x00240000 : "Kernel"
-mtd: Giving out device 1 to Kernel
-0x00240000-0x01240000 : "Filesystem"
-mtd: Giving out device 2 to Filesystem
-MSC0 is 0x7ffc7ff0.
-...
-
-
-Thanks,
-
-Kein
+regards,
+hinko
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenija
+Tel. +386 (0) 4 280 66 37
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
