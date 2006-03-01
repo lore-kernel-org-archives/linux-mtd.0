@@ -1,22 +1,22 @@
-Received: from the.earth.li ([193.201.200.66])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FEQXS-0002aI-A7
-	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2006 07:34:47 -0500
-Date: Wed, 1 Mar 2006 12:29:37 +0000
-From: Jonathan McDowell <noodles@earth.li>
-To: Ben Dooks <ben-mtd@fluff.org>
-Message-ID: <20060301122937.GL14749@earth.li>
-References: <20060228205903.GZ14749@earth.li>
-	<20060228221243.GC25880@home.fluff.org>
-	<20060228222559.GC14749@earth.li>
-	<20060301115020.GD25880@home.fluff.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from dobropan.easily.co.uk ([217.206.220.18]
+	helo=customermail2.easily.co.uk)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FERTx-0003UA-Dt
+	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2006 08:35:13 -0500
+Received: from [87.113.12.150] (account d407toh54t65 HELO [192.168.1.2])
+	by customermail2.easily.co.uk (CommuniGate Pro SMTP 4.1.8)
+	with ESMTP id 42914693 for linux-mtd@lists.infradead.org;
+	Wed, 01 Mar 2006 13:35:06 +0000
+From: Neil Wilson <nwilson@airspan.com>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 1 Mar 2006 13:35:02 +0000
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20060301115020.GD25880@home.fluff.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Make nand block functions use provided byte/word
-	helpers.
+Message-Id: <200603011335.03116.nwilson@airspan.com>
+Subject: NAND +concatenation
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,100 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 01, 2006 at 11:50:20AM +0000, Ben Dooks wrote:
-> On Tue, Feb 28, 2006 at 10:25:59PM +0000, Jonathan McDowell wrote:
-> > On Tue, Feb 28, 2006 at 10:12:43PM +0000, Ben Dooks wrote:
-> > > On Tue, Feb 28, 2006 at 08:59:03PM +0000, Jonathan McDowell wrote:
-> > > > I've been writing a NAND driver for the flash on the Amstrad E3.
-> > > > One of the peculiarities of this device is that the write & read
-> > > > enable lines are on a latch, rather than strobed by the act of
-> > > > reading/writing from the data latch. As such I've got custom
-> > > > read_byte/write_byte functions defined. However the nand_*_buf
-> > > > functions in drivers/mtd/nand/nand_base.c are all appropriate,
-> > > > except for the fact they call readb/writeb themselves, instead
-> > > > of using this->read_byte or this->write_byte. The patch below
-> > > > changes them to use these functions, meaning a driver just needs
-> > > > to define read_byte and write_byte functions and gains all the
-> > > > nand_*_buf functions free.
-> > > 
-> > > Why not make life easier on everyone else by over-riding the
-> > > functions for read/write buffer (etc) in the nand driver... less
-> > > intrusive into the core code!
-> > 
-> > If the patch is deemed too intrusive then that's what I'll do; I
-> > nearly did so originally but when I caught myself cut and pasting
-> > the code from nand_base I thought my patch was the cleaner way.
-> > 
-> > The patch shouldn't cause any extra work for anyone that I can see
-> > and I don't think it's intrusive at all; I submitted it because I
-> > figured it might save someone else some work down the line as well.
-> 
-> Well, a small iritation is that it adds work for the read and write
-> byte function, as a function call adds instructions to the path.
+Hi,
 
-Well, the _buf functions rather than the read/write_byte functions, but
-yes, there will be extra instructions in the path.
+I am being a bit thick today & cannot quite understand if I am doing this 
+right...
 
-> Also, do you want to check that it dosen't break any existing drivers?
+I have 4 64MB NAND chips, I can get the MTD concatenation to add them to a 
+single device (6) which is defined as having one partition.
 
-Hard to do without the hardware, but I did check out the existing
-drivers (from mtd-snapshot-20060222 mtd/drivers/mtd/nand/):
+How can I use this single device ?
 
-at91_nand.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-au1550nd.c
-	Overrides the _buf functions, unaffected.
-autcpu12.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-diskonchip.c
-	Overrides the _buf functions, unaffected.
-edb7312.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-h1910.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-rtc_from4.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-s3c2410.c
-	Overrides the _buf functions, unaffected.
-sharpsl.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-spia.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-toto.c
-	Doesn't override any of the _buf functions, will end up being
-	hit by the extra instructions in the path.
-tx4925ndfmc.c
-	Overrides the _buf functions.
-tx4938ndfmc.c
-	Overrides the _buf functions.
+Should I be able to "flash_eraseall -j /dev/mtd6 " ?, this returns a 
+"/dev/mtd6: Bad block check not available" error.
+or do I need to format each chip in turn ?
 
-So 8 drivers that will have the extra instructions in the call path, 5
-that already provide their own. Nothing overrides the
-read_byte/write_byte functions that doesn't also override the _buf
-functions that I can see, so there should be no change in behaviour.
+Also should I be able to mount this single device as a formatted filesystem ?
+"mount -t jffs2 /dev/mtdblock6 xxx"
 
-> Secondly, you'll probably have a better piece of code for the E3
-> driver if you did the block calls with only one setup for the r/w
-> enable lines per block, instead of checking them for every byte done.
-> You may even want to use readsb/writesb or DMA to accelerate the
-> operation.
+Thanks for any advice.
 
-It's not a case of checking the lines; the problem is that all of NCE,
-NWE and NRE are hooked up to a latch, rather than processor control
-lines. My understanding is that NCE or NWE/NRE need pulled high between
-writes/reads and the only way to do this is output to the control latch.
-As such I don't think readsb/writesb or DMA are able to help me out?
-
-J.
-
--- 
-Web [            noodles is almost too good to be true             ]
-site: http:// [                                          ]       Made by
-www.earth.li/~noodles/  [                      ]         HuggieTag 0.0.23
+Neil 
