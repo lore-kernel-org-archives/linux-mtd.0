@@ -1,24 +1,26 @@
-Received: from mxs2.siemens.at ([194.138.12.133])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHcoo-0004x6-4U
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 03:17:53 -0500
-Received: from vies1k7x.sie.siemens.at ([158.226.129.83])
-	by mxs2.siemens.at  with ESMTP id k2A8HmD6022377
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 09:17:48 +0100
-Received: from nets138a.ww300.siemens.net ([158.226.129.98])
-	by vies1k7x.sie.siemens.at (8.12.11/8.12.1) with ESMTP id
-	k2A8HZCh030645
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 09:17:48 +0100
-Content-class: urn:content-classes:message
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FEVR5-000701-Rk
+	for linux-mtd@lists.infradead.org; Wed, 01 Mar 2006 12:48:55 -0500
+Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
+	[10.125.2.23])
+	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
+	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id k21I32Sd029199
+	for <linux-mtd@lists.infradead.org>; Wed, 1 Mar 2006 18:03:02 GMT
+Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
+	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
+	M2006030120482119443
+	for <linux-mtd@lists.infradead.org>; Wed, 01 Mar 2006 20:48:21 +0300
+Message-ID: <4405DE64.4060807@intel.com>
+Date: Wed, 01 Mar 2006 20:48:20 +0300
+From: "Alexey, Korolev" <alexey.korolev@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 10 Mar 2006 09:16:49 +0100
-Message-ID: <38F58D7B92CB20438DF49D28B572CC6F23BBE3@budgw09a.ww300.siemens.net>
-From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Bonfs and SMC
+To: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A01A06023@NNSMSX401>
+In-Reply-To: <F92C2EFE7C3BA745855BF7036E1F3F9A01A06023@NNSMSX401>
+Content-Type: multipart/mixed; boundary="------------010804000606000401070906"
+Cc: 
+Subject: Re: [PATCH] cfi: Fixup of write errors on XIP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,66 +30,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+This is a multi-part message in MIME format.
+--------------010804000606000401070906
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I'm working with a developer board (Embest S3CEB2410 with S3C2410
-processor) which has a SmartMedia Card
-interface and is able to boot from it. Embest supplied a boot manager
-called Vivi with the board, and this boot manager can make BonFS
-partitions/fs.
+Hi all.
 
-I'm quite confused, because I don't know what bonfs is: I could locate
-no documentation on the web.=20
+Several days ago I sent this patch to the list. I wonder has anybody 
+complains about it?
+I my opinion the patch shouldn't break anything. It just fixes up write 
+errors I saw in our tests.
+If you don't mind I will commit it.
 
-This command is used to create bonfs partitions on the SMC: (after
-booting from the SMC)
-vivi> bon part 0 192k 1M
+Thanks,
+Alexey
 
-creates three partitions for vivi+param, kernel and the root filesystem.
-According to vivi, this is the bonfs partition table: (on a 64MB SMC)
-vivi> bon part info
+>  
+> Here is fixup of issue I have seen on XIP configuration.
+> Sometimes I received write errors with message "buffer write error
+> (status timeout)" on test  which did read write and erase on several
+> volumes at the same time.
+>  
+> I investigated the issue.
+> The scenario of the issue is following:
+>  
+> 1. do_write_buffer
+> 2. Waiting for write complete in xip_udelay
+> 3. System Interrupt
+> 4. Write suspend
+> 5. Rescheduling
+> 6. Block erasing by other process. ( This operation typically took
+> rather long time )
+> 7. Complete, rescheduling
+> 8. Return to write (write is not complete due to suspend ).
+> 9. Check timeout. Time is up.
+> 10. Error.
+>  
+> I made small fixup for these issue. Please see patch below.
+>
 
-BON info. (3 partitions)
-No: offset      size            flags     bad
----------------------------------------------
- 0: 0x00000000  0x00030000      00000000    0  192k
- 1: 0x00030000  0x000d0000      00000000    0  832k
- 2: 0x00100000  0x03efc000      00000000    0   62M+1008k
 
-But Vivi also has an other set of tools, called "part". These tools are
-for manipulating MTD partitions:
-vivi>part show
+--------------010804000606000401070906
+Content-Type: text/plain;
+ name="XIP_wr_errors_fixup.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="XIP_wr_errors_fixup.diff"
 
-mtdpart info. (4 partitions)
-name              offset        size        flag
-------------------------------------------------
-vivi            : 0x00000000    0x00020000     0  128k
-param           : 0x00020000    0x00010000     0   64k
-kernel          : 0x00030000    0x000c0000     0  768k
-root            : 0x00100000    0x00140000     4    1M+256k
+--- c/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22 20:58:05.869203280 +0300
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22 20:55:42.272033368 +0300
+@@ -1571,6 +1571,7 @@
+ 	/* GO GO GO */
+ 	map_write(map, CMD(0xd0), cmd_adr);
+ 	chip->state = FL_WRITING;
++	chip->write_suspended = 0;
+ 
+ 	INVALIDATE_CACHE_UDELAY(map, chip, cmd_adr,
+ 				adr, len,
+@@ -1592,6 +1593,12 @@
+ 			continue;
+ 		}
+ 
++		/* Somebody suspended write. We should reset timeo. */
++		if (chip->write_suspended) {
++			chip->write_suspended = 0;
++			timeo = jiffies + (HZ/2);
++		}
++		
+ 		status = map_read(map, cmd_adr);
+ 		if (map_word_andequal(map, status, status_OK, status_OK))
+ 			break;
 
-This has four partitions: the vivi and param partitions are merged in
-the list of bonfs. Partition sizes don't match: vivi+param=3D192k, but
-kernel is smaller than 832 (the difference is 64KB), and root partition
-is extremely small. Now I can't see the relationship between between
-Bonfs and mtd partitions. Is anybody here who 's seeing?
-
-I would be very grateful if someone could tell me what are bonfs and mtd
-partitions meaning, what are the differences between them, and a few
-links on bonfs and/or mtd partitions are also welcome. Why do we need to
-use bonfs on SMC, if is it needed? My goal is to create such a bootable
-SMC which mounts its root filesystem from the root partition of the SMC,
-and this partition should be either JFFS(2) or cramfs. cramfs is now
-mounted perfectly, but I want to avoid using bonfs (since I don't what
-it's all about). Is it possible to simply partition (mtd) the SMC and to
-boot from that and mount a root filesystem?
-
-Many thanks
-
-Bye
---
-Tamas Selmeci
-Siemens PSE HU
-Tel.   : +36-1-471-3861
-Email  : tamas.selmeci@siemens.com
-Address: H-1143 Budapest, Gizella ut 51-59
+--------------010804000606000401070906--
