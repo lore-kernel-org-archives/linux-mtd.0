@@ -1,26 +1,18 @@
-Received: from petasus.ims.intel.com ([62.118.80.130])
+Received: from smtp12.singnet.com.sg ([165.21.6.22])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FEktA-0002GE-D6
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2006 05:18:37 -0500
-Received: from MSSMSXVS01.ccr.corp.intel.com (MSSMSXVS01.ccr.corp.intel.com
-	[10.125.2.23])
-	by petasus.ims.intel.com (8.12.9-20030918-01/8.12.10/d: small-solo.mc,
-	v 1.2 2004/09/17 18:05:04 root Exp $) with SMTP id k22AX3mn009493
-	for <linux-mtd@lists.infradead.org>; Thu, 2 Mar 2006 10:33:08 GMT
-Received: from mssmsx331.ccr.corp.intel.com ([10.125.2.16])
-	by MSSMSXVS01.ccr.corp.intel.com (SAVSMTP 3.1.7.47) with SMTP id
-	M2006030213182522103
-	for <linux-mtd@lists.infradead.org>; Thu, 02 Mar 2006 13:18:25 +0300
-Content-class: urn:content-classes:message
+	id 1FEmUK-0003df-6s
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2006 07:00:59 -0500
+Received: from [167.116.151.204] ([63.150.136.42])
+	by smtp12.singnet.com.sg (8.13.5/8.13.4) with ESMTP id k22BMbPm031997
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Mar 2006 19:22:37 +0800
+Message-ID: <4406D574.8050808@singnet.com.sg>
+Date: Thu, 02 Mar 2006 19:22:28 +0800
+From: Terence Soh <gopher@singnet.com.sg>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 2 Mar 2006 13:18:06 +0300
-Message-ID: <F92C2EFE7C3BA745855BF7036E1F3F9A01A7D3E1@NNSMSX401>
-From: "Korolev, Alexey" <alexey.korolev@intel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH]   cfi: Fixup of write errors on XIP 
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: How to partition NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,71 +22,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-Several days ago I sent this patch to the list. I wonder are there any
-objections to it?
-I guess this patch shouldn't break anything. It just fixes write errors
-I saw in our tests. The patch has been verified on several
-configurations.=20
-If you don't mind I will commit it by the end of this week.
+I'm trying to get a 64 MByte nand flash to be partitioned in a 32MB 
+cramfs and 32MB jffs2 partition.
 
-Thanks,
-Alexey=20
+I tried to do this in the kernel by
 
-=20
-> Here is fixup of issue I have seen on XIP configuration.=20
-> Sometimes I received write errors with message "buffer write error
-> (status timeout)" on test  which did read write and erase on several
-> volumes at the same time.
->=20
-> I investigated the issue.=20
-> The scenario of the issue is following:
-=20
-> 1. do_write_buffer=20
-> 2. Waiting for write complete in xip_udelay
-> 3. System Interrupt
-> 4. Write suspend
-> 5. Rescheduling
-> 6. Block erasing by other process. ( This operation typically took
-> rather long time )
-> 7. Complete, rescheduling=20
-> 8. Return to write (write is not complete due to suspend ).=20
-> 9. Check timeout. Time is up.
-> 10. Error.
-> =20
-> I made small fixup for these issue. Please see patch below.
+static struct mtd_partition partition_info[] = {
+         [0] = {
+                 .name   = "CRAM",
+                 .offset = 0,
+                 .size   = 32 * 1024 * 1024,
+                 .mask_flags     = MTD_WRITEABLE,  /* force read-only */
+         },
+     [1] = {
+                 .name   = "JFFS2",
+                 .offset = 32 * 1024 * 1024,
+                 .size   = MTDPART_SIZ_FULL,
+     }
+};
 
+but when I cat/proc/mtd, I get
+/ # cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 04000000 00004000 "rootfs"
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
---- c/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22
-20:58:05.869203280 +0300
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-02-22
-20:55:42.272033368 +0300
-@@ -1571,6 +1571,7 @@
- 	/* GO GO GO */
- 	map_write(map, CMD(0xd0), cmd_adr);
- 	chip->state =3D FL_WRITING;
-+	chip->write_suspended =3D 0;
-=20
- 	INVALIDATE_CACHE_UDELAY(map, chip, cmd_adr,
- 				adr, len,
-@@ -1592,6 +1593,12 @@
- 			continue;
- 		}
-=20
-+		/* Somebody suspended write. We should reset timeo. */
-+		if (chip->write_suspended) {
-+			chip->write_suspended =3D 0;
-+			timeo =3D jiffies + (HZ/2);
-+		}
-+	=09
- 		status =3D map_read(map, cmd_adr);
- 		if (map_word_andequal(map, status, status_OK,
-status_OK))
- 			break;
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+so I realise that this is affected by the bootargs passed which is
+"console=ttyS0 mtdparts=a9m9750:0x4000000@0(rootfs) root=mtdblock/0 
+rootfstype=jffs2"
+
+How should I passed the bootargs?
+
+Thanks in advance,
+Terence.
