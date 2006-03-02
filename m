@@ -1,19 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FEoG2-0005ZY-Bw
-	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2006 08:54:24 -0500
-Date: Thu, 2 Mar 2006 14:54:00 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Message-ID: <20060302135400.GB12074@wohnheim.fh-wedel.de>
-References: <20060302131203.GA29525@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060302131203.GA29525@xi.wantstofly.org>
-Cc: Jesse Off <joff@embeddedARM.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH,RFC] ts72xx NAND driver
+	id 1FEprK-00076T-Ib
+	for linux-mtd@lists.infradead.org; Thu, 02 Mar 2006 10:37:00 -0500
+Received: from xanadu.home ([24.202.136.67]) by VL-MO-MR001.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IVI00EEIBDAGWF0@VL-MO-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 02 Mar 2006 10:36:46 -0500 (EST)
+Date: Thu, 02 Mar 2006 10:36:46 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <F92C2EFE7C3BA745855BF7036E1F3F9A01A420F2@NNSMSX401>
+To: "Korolev, Alexey" <alexey.korolev@intel.com>
+Message-id: <Pine.LNX.4.64.0603021012120.29834@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <F92C2EFE7C3BA745855BF7036E1F3F9A01A420F2@NNSMSX401>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: RE: [PATCH] cfi: Fixup of write errors on XIP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +26,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2 March 2006 14:12:03 +0100, Lennert Buytenhek wrote:
+On Wed, 1 Mar 2006, Korolev, Alexey wrote:
+
+> Hi all,
 > 
-> Any feedback appreciated..
+> Several days ago I sent this patch to the list. I wonder are there any
+> objections to it?
 
-Just some minor (irrelevant?) stuff.
+I do have some.
 
-> +extern int parse_cmdline_partitions(struct mtd_info *master,
-> +		struct mtd_partition **pparts, const char *mtd_id);
+> I guess this patch shouldn't break anything. It just fixes write errors
+> I saw in our tests. The patch has been verified on several
+> configurations. 
 
-Adrian Bunk would send a patch against these lines within a few weeks.
-His reasoning is that .c files should include headers instead of
-adding function declarations on their own.
+It is not a proper fix.  Something else doesn't work as expected.
 
-> +	if (nand_scan (ts7250_mtd, 1)) {
-> +		kfree (ts7250_mtd);
-                     ^
-Non-compliant to kernel coding style.
+> If you don't mind I will commit it by the end of this week.
 
-> +	del_mtd_device (ts7250_mtd);
+Please don't just yet.
 
-Jörn
+> The scenario of the issue is following:
+>  
+> 1. do_write_buffer 
+> 2. Waiting for write complete in xip_udelay
+> 3. System Interrupt
+> 4. Write suspend
+> 5. Rescheduling
+> 6. Block erasing by other process. ( This operation typically took
+> rather long time )
+> 7. Complete, rescheduling 
+> 8. Return to write (write is not complete due to suspend ). 
+> 9. Check timeout. Time is up.
+> 10. Error.
 
--- 
-To my face you have the audacity to advise me to become a thief - the worst
-kind of thief that is conceivable, a thief of spiritual things, a thief of
-ideas! It is insufferable, intolerable!
--- M. Binet in Scarabouche
+This should not happen.  And if it does then the bug is in xip_udelay() 
+and therefore should be fixed there.
+
+The fact is, xip_udelay() should not return until either the flash 
+status is 0x80 (done) or the delay expired.  The code looks like:
+
+	...
+	start = xip_curtime();
+	...
+	do {
+		...
+		if (xip_irqpending()...) {
+			/* suspend code */
+			...
+			[here we substract the time waited so far]
+			usec -= xip_elapsed_since(start);
+			...
+			/* schedule code */
+			...
+			/* Resume the write or erase operation */
+			map_write(map, CMD(0xd0), adr);
+			map_write(map, CMD(0x70), adr);
+			chip->state = oldstate;
+			start = xip_currtime();
+		}
+		...
+		status = map_read(map, adr);
+	} while (!map_word_andequal(map, status, OK, OK)
+		 && xip_elapsed_since(start) < usec);
+
+So, even if this gets rescheduled a long time after an erase occurred in 
+another process, the "start" variable will get set to the new time when 
+the write is resumed and the erase delay is therefore already accounted 
+for.
+
+What if you replace "usec -= xip_elapsed_since(start)" by
+"usec -= xip_elapsed_since(start) / 2" instead?  This doesn't have to be 
+exactly accurate -- in fact this is there just to avoid looping forever 
+if the flash never return a success status.
+
+
+
+Nicolas
