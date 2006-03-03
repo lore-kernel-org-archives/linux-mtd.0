@@ -1,20 +1,24 @@
-Received: from rwcrmhc13.comcast.net ([216.148.227.153])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FF6HV-0005mf-Ae
-	for linux-mtd@lists.infradead.org; Fri, 03 Mar 2006 04:09:06 -0500
-Date: Fri, 3 Mar 2006 01:09:23 -0800
-From: Deepak Saxena <dsaxena@plexity.net>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Message-ID: <20060303090923.GA17881@plexity.net>
-References: <20060212170441.GA28427@xi.wantstofly.org>
-	<20060221135145.GA30056@xi.wantstofly.org>
+	id 1FF7rM-0007H4-GQ
+	for linux-mtd@lists.infradead.org; Fri, 03 Mar 2006 05:50:14 -0500
+Date: Fri, 3 Mar 2006 11:49:55 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-ID: <20060303104955.GA13523@wohnheim.fh-wedel.de>
+References: <20060302135400.GB12074@wohnheim.fh-wedel.de>
+	<20060302171539.GA30402@xi.wantstofly.org>
+	<20060302173202.GA28045@wohnheim.fh-wedel.de>
+	<20060302181928.GA30632@xi.wantstofly.org>
+	<1141368821.3920.3.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20060221135145.GA30056@xi.wantstofly.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH,RFC] convert physmap to platform driver
-Reply-To: dsaxena@plexity.net
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1141368821.3920.3.camel@sauron.oktetlabs.ru>
+Cc: Jesse Off <joff@embeddedARM.com>, linux-mtd@lists.infradead.org,
+	Lennert Buytenhek <buytenh@wantstofly.org>
+Subject: Re: [PATCH,RFC] ts72xx NAND driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Feb 21 2006, at 14:51, Lennert Buytenhek was caught saying:
-> Hi,
+On Fri, 3 March 2006 09:53:41 +0300, Artem B. Bityutskiy wrote:
 > 
-> On Sun, Feb 12, 2006 at 06:04:41PM +0100, Lennert Buytenhek wrote:
-> 
-> > After dwmw2 let me know it ought to be done, I rewrote the physmap map
-> > driver to be a platform driver.  I know zilch about the driver model,
-> > so I probably botched it in some way, but I've done some tests on an
-> > ixp23xx board which uses physmap, and it all seems to work.
-> 
-> I wonder whether anyone had a chance to look at this yet?
+> > +	/* Return happy */
+> > +	return 0;
+> This is very informative comment :-)
 
-/me wonders same. Would like to see this upstream.
+And it should definitely be changed to "happily". ;)
 
-~Deepak
+Jörn
 
 -- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-A starving child in Africa or you in front of your TV?
-Where's the real tragedy?
+Man darf nicht das, was uns unwahrscheinlich und unnatürlich erscheint,
+mit dem verwechseln, was absolut unmöglich ist.
+-- Carl Friedrich Gauß
