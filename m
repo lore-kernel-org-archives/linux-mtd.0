@@ -1,23 +1,20 @@
-Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
+Received: from host-84-9-216-86.bulldogdsl.com ([84.9.216.86]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FFARG-0001tB-NE
-	for linux-mtd@lists.infradead.org; Fri, 03 Mar 2006 08:35:26 -0500
-Received: from [193.205.82.7] (HELO gandalf.sssup.it)
-	by sssup.it (CommuniGate Pro SMTP 4.1.8)
-	with ESMTP-TLS id 20164168 for linux-mtd@lists.infradead.org;
-	Fri, 03 Mar 2006 14:34:29 +0100
-Received: from [10.30.3.59] (silmarillion.retis [10.30.3.59])
-	by gandalf.sssup.it (8.12.10/8.12.10) with ESMTP id k23EYDXi018648
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Mar 2006 15:34:13 +0100
-Message-ID: <44084617.2030003@gandalf.sssup.it>
-Date: Fri, 03 Mar 2006 14:35:19 +0100
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+	id 1FFCp0-00041K-OD
+	for linux-mtd@lists.infradead.org; Fri, 03 Mar 2006 11:08:07 -0500
+Date: Fri, 3 Mar 2006 15:48:31 +0000
+From: Ben Dooks <ben-mtd@fluff.org>
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Message-ID: <20060303154831.GF25880@home.fluff.org>
+References: <44084617.2030003@gandalf.sssup.it>
 MIME-Version: 1.0
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: s3c2442x nand support
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <44084617.2030003@gandalf.sssup.it>
+Sender: Ben Dooks <ben@fluff.org.uk>
+Cc: MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: s3c2442x nand support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,7 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-is there a support for the s3c2442x nand device?
+On Fri, Mar 03, 2006 at 02:35:19PM +0100, Michael Trimarchi wrote:
+> Hi all,
+> is there a support for the s3c2442x nand device?
 
-Regards Michael
+It _should_ be supported by the 2410/2440 driver, but
+since I cannot get a response from Samsung for data
+about the 2442, there is no guarantee it will work.
+
+Please tell your Samsung re-seller to get them to
+give me some support on these issues.
+
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
