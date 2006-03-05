@@ -1,20 +1,18 @@
-Received: from host-84-9-216-86.bulldogdsl.com ([84.9.216.86]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FFCp0-00041K-OD
-	for linux-mtd@lists.infradead.org; Fri, 03 Mar 2006 11:08:07 -0500
-Date: Fri, 3 Mar 2006 15:48:31 +0000
-From: Ben Dooks <ben-mtd@fluff.org>
-To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Message-ID: <20060303154831.GF25880@home.fluff.org>
-References: <44084617.2030003@gandalf.sssup.it>
-MIME-Version: 1.0
+Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=amd.ucw.cz)
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FFufP-00042s-DJ
+	for linux-mtd@lists.infradead.org; Sun, 05 Mar 2006 14:57:09 +0000
+Date: Sun, 5 Mar 2006 15:04:08 +0100
+From: Pavel Machek <pavel@ucw.cz>
+To: rpurdie@rpsys.net, lenz@cs.wisc.edu,
+	kernel list <linux-kernel@vger.kernel.org>,
+	Russell King <rmk@arm.linux.org.uk>, linux-mtd@lists.infradead.org
+Message-ID: <20060305140408.GA17192@elf.ucw.cz>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <44084617.2030003@gandalf.sssup.it>
-Sender: Ben Dooks <ben@fluff.org.uk>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: s3c2442x nand support
+Cc: 
+Subject: [patch] collie: add flash type to jedec_probe
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Mar 03, 2006 at 02:35:19PM +0100, Michael Trimarchi wrote:
-> Hi all,
-> is there a support for the s3c2442x nand device?
+This adds support for flash chip used in collie (sharp zaurus sl-5500)
+to jedec_probe.
 
-It _should_ be supported by the 2410/2440 driver, but
-since I cannot get a response from Samsung for data
-about the 2442, there is no guarantee it will work.
+Signed-off-by: Pavel Machek <pavel@suse.cz>
 
-Please tell your Samsung re-seller to get them to
-give me some support on these issues.
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index edb306c..6c27bff 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -34,6 +34,7 @@
+ #define MANUFACTURER_MACRONIX	0x00C2
+ #define MANUFACTURER_NEC	0x0010
+ #define MANUFACTURER_PMC	0x009D
++#define MANUFACTURER_SHARP	0x00b0
+ #define MANUFACTURER_SST	0x00BF
+ #define MANUFACTURER_ST		0x0020
+ #define MANUFACTURER_TOSHIBA	0x0098
+@@ -124,6 +125,9 @@
+ #define PM49FL004	0x006E
+ #define PM49FL008	0x006A
+ 
++/* Sharp */
++#define LH28F640BF	0x00b0
++
+ /* ST - www.st.com */
+ #define M29W800DT	0x00D7
+ #define M29W800DB	0x005B
+@@ -1267,6 +1271,19 @@ static const struct amd_flash_info jedec
+ 		.regions	= {
+ 			ERASEINFO( 0x01000, 256 )
+ 		}
++	}, {
++		.mfr_id		= MANUFACTURER_SHARP,
++		.dev_id		= LH28F640BF,
++		.name		= "LH28F640BF",
++		.uaddr		= {
++			[0] = MTD_UADDR_UNNECESSARY,    /* x8 */
++		},
++		.DevSize	= SIZE_4MiB,
++		.CmdSet         = P_ID_INTEL_STD,
++		.NumEraseRegions= 1,
++		.regions        = {
++			ERASEINFO(0x40000,16),
++		}
+         }, {
+ 		.mfr_id		= MANUFACTURER_SST,
+ 		.dev_id		= SST39LF512,
 
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+Web maintainer for suspend.sf.net (www.sf.net/projects/suspend) wanted...
