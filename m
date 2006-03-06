@@ -1,20 +1,16 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHezU-0007f7-Q8
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 05:38:40 -0500
-Received: from mailhub.cdac.in ([203.199.132.67])
-	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2006031016034124442
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:03:41 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id k2AAZkPF004606
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:05:49 +0530
-Date: Fri, 10 Mar 2006 16:05:46 +0530 (IST)
+Received: from [66.174.85.156] (helo=txslsmtp2.vzwmail.net)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FGICc-0004l1-R7
+	for linux-mtd@lists.infradead.org; Mon, 06 Mar 2006 11:05:06 -0500
+From: "Chuck Meade" <chuckmeade@mindspring.com>
 To: <linux-mtd@lists.infradead.org>
-From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1141986946.27247@cdac.in>
-Cc: nikhils@cdac.in
-Subject: About JFFS2 garbage collector.
+Date: Mon, 6 Mar 2006 10:46:30 -0500
+Message-ID: <IIEEICKJLNEPBBDJICNGAEHLKDAA.chuckmeade@mindspring.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_02FC_01C6410B.3A1099D0"
+Cc: 
+Subject: cmdlinepart.c patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +20,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
-Hi all,
+------=_NextPart_000_02FC_01C6410B.3A1099D0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 
-I am fascinated about the JFFS3 garbage collect mechanism but before
-moving to the JFFS3 garbage collection policy i wanted to analyse the
-jffs2 garbage collection. 
+The cmdlinepart.c logic treats a partition offset that has been explicitly
+specified as zero the same as an unspecified offset.  This causes the
+partitioning logic to fail if your partition that starts at 0x0 is not the
+first partition listed on the cmdline.
 
-Is there any documentations as such for the JFFS2 garbage collection
-policy. Plaese let me know if any. Even if there is none, i am not
-hesistant to look in the code, can some one of you give me some pointers
-for the same.
+For example, if you have several partitions, and you want the third partition
+to be an all-encompassing partition covering the whole device, then you
+would give it offset 0x0.  The cmdlinepart.c logic treats this the same as
+if you had not specified an offset, and instead tries to start the third
+partition after the end of your second partition.  This is because the logic
+uses zero as the "unspecified offset" value.  However, zero is not a good
+choice for "unspecified offset" -- it is quite valid as a "specified" offset.
 
-i would also like to kno all the instances when the GC thread gets
-activated for JFFS2.
+The attached patch defines the "unspecified offset" value as 0xffffffff and
+makes the changes needed to support partitions that explicitly start at
+offset 0x0, but are not necessarily listed first on the cmdline.
 
-Seeking your advice, thanks for the same..
- 
--- 
-Thanks & Regards
+Chuck
 
-Nikhil Shirodkar
-Project Engineer
-NISG, CDAC
+------=_NextPart_000_02FC_01C6410B.3A1099D0
+Content-Type: application/octet-stream;
+	name="cmdlinepart.c.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="cmdlinepart.c.patch"
+
+--- cmdlinepart.c.ORIG	2006-03-05 19:34:43.000000000 -0500=0A=
++++ cmdlinepart.c	2006-03-06 10:17:15.063475104 -0500=0A=
+@@ -40,6 +40,10 @@=0A=
+ #define dbg(x)=0A=
+ #endif=0A=
+ =0A=
++/* indicates that the offset for a partition was not specified, so =
+start at=0A=
++ * end of previous partition.=0A=
++ */=0A=
++#define OFFSET_UNSPECIFIED 0xffffffff=0A=
+ =0A=
+ /* special size referring to all the remaining space in a partition */=0A=
+ #define SIZE_REMAINING 0xffffffff=0A=
+@@ -75,7 +79,7 @@ static struct mtd_partition * newpart(ch=0A=
+ {=0A=
+ 	struct mtd_partition *parts;=0A=
+ 	unsigned long size;=0A=
+-	unsigned long offset =3D 0;=0A=
++	unsigned long offset =3D OFFSET_UNSPECIFIED;=0A=
+ 	char *name;=0A=
+ 	int name_len;=0A=
+ 	unsigned char *extra_mem;=0A=
+@@ -314,7 +318,7 @@ static int parse_cmdline_partitions(stru=0A=
+ 		{=0A=
+ 			for(i =3D 0, offset =3D 0; i < part->num_parts; i++)=0A=
+ 			{=0A=
+-				if (!part->parts[i].offset)=0A=
++				if (part->parts[i].offset =3D=3D OFFSET_UNSPECIFIED)=0A=
+ 				  part->parts[i].offset =3D offset;=0A=
+ 				else=0A=
+ 				  offset =3D part->parts[i].offset;=0A=
+
+------=_NextPart_000_02FC_01C6410B.3A1099D0--
