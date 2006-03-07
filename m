@@ -1,19 +1,30 @@
-Received: from s05.tal.de ([81.92.0.8] helo=smtp.tal.de)
+Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGbzl-00042w-75
-	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 08:13:07 -0500
-From: =?iso-8859-1?Q?Bernd_B=FCttner?= <b.buettner@mkc-gmbh.de>
-To: =?iso-8859-1?Q?Bernd_B=FCttner?= <b.buettner@mkc-gmbh.de>,
-	<linux-mtd@lists.infradead.org>
-Date: Tue, 7 Mar 2006 14:12:46 +0100
-Message-ID: <NIEOKDANPOACMMCCAHPAOENODAAA.b.buettner@mkc-gmbh.de>
+	id 1FGhSw-0008Ev-4U
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 14:03:37 -0500
+Received: from [193.205.82.6] (HELO feanor.sssup.it)
+	by sssup.it (CommuniGate Pro SMTP 4.1.8)
+	with ESMTP-TLS id 20317240 for linux-mtd@lists.infradead.org;
+	Tue, 07 Mar 2006 20:02:22 +0100
+Received: from feanor.sssup.it (localhost [127.0.0.1])
+	by feanor.sssup.it (8.13.3/8.13.3) with ESMTP id k27J3KCr025923
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 7 Mar 2006 20:03:20 +0100 (CET)
+	(envelope-from trimarchi@gandalf.sssup.it)
+Received: (from www@localhost)
+	by feanor.sssup.it (8.13.3/8.13.3/Submit) id k27J3KkF025921
+	for linux-mtd@lists.infradead.org; Tue, 7 Mar 2006 20:03:20 +0100 (CET)
+	(envelope-from trimarchi@gandalf.sssup.it)
+Message-ID: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>
+Date: Tue,  7 Mar 2006 20:03:20 +0100
+From: trimarchi@gandalf.sssup.it
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <NIEOKDANPOACMMCCAHPAOENJDAAA.b.buettner@mkc-gmbh.de>
-Cc: 
-Subject: RE: problem patching latest snapshot
+	charset=ISO-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Subject: jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +34,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Hi,
->
-> I'm working with uClinux for Coldfire (kernel 2.6.12-uc0) and I want to
-> update mtd to the lastest snapshot (mtd-snapshot-20060306)
-> patchkernel.sh shows the following:
->
-> Patching /home/project/distribution/linux-2.6.x
-> Include JFFS2 file system: jffs2
-> Include JFFS3 file system (experimental): no
-> Method: cp
-> Can we start now ? [y/N]y
->
-> Traceback (most recent call last):
->   File "scripts/treewalk.py", line 23, in ?
->     import xml.sax
-> ImportError: No module named xml.sax
->
-> The host system I'm working on is a SuSe Linux 8.2.
-> My Python environment seems to be wrong.
-> I'm not familiar with Python, so what can I do?
->
-> Bernd Büttner
->
+Hi all,
+I need to know the order of magnitude of time spent to mount a NAND of 128MB
+using a jffs2 filesystem.
 
-Problem solved by updating Python to 2.4.2
+Regards
+Michael
 
-Bernd
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
