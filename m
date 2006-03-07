@@ -1,21 +1,19 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGaKq-0002Vc-N1
-	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 06:27:06 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <1141730681.3920.8.camel@sauron.oktetlabs.ru>
-References: <43FAEFD6.1090308@inf.u-szeged.hu> <440C7D45.9080406@yandex.ru>
-	<440D68CA.7090002@inf.u-szeged.hu>
-	<1141730681.3920.8.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Tue, 07 Mar 2006 14:26:01 +0300
-Message-Id: <1141730761.3920.10.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: A simple JFFS3 GC algorithm
-Reply-To: dedekind@infradead.org
+Received: from s05.tal.de ([81.92.0.8] helo=smtp.tal.de)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FGbzl-00042w-75
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 08:13:07 -0500
+From: =?iso-8859-1?Q?Bernd_B=FCttner?= <b.buettner@mkc-gmbh.de>
+To: =?iso-8859-1?Q?Bernd_B=FCttner?= <b.buettner@mkc-gmbh.de>,
+	<linux-mtd@lists.infradead.org>
+Date: Tue, 7 Mar 2006 14:12:46 +0100
+Message-ID: <NIEOKDANPOACMMCCAHPAOENODAAA.b.buettner@mkc-gmbh.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <NIEOKDANPOACMMCCAHPAOENJDAAA.b.buettner@mkc-gmbh.de>
+Cc: 
+Subject: RE: problem patching latest snapshot
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,6 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-03-07 at 14:24 +0300, Artem B. Bityutskiy wrote:
-> Providing this number is correct, indiid, not too much.
-I meant "indeed" :-)
+> Hi,
+>
+> I'm working with uClinux for Coldfire (kernel 2.6.12-uc0) and I want to
+> update mtd to the lastest snapshot (mtd-snapshot-20060306)
+> patchkernel.sh shows the following:
+>
+> Patching /home/project/distribution/linux-2.6.x
+> Include JFFS2 file system: jffs2
+> Include JFFS3 file system (experimental): no
+> Method: cp
+> Can we start now ? [y/N]y
+>
+> Traceback (most recent call last):
+>   File "scripts/treewalk.py", line 23, in ?
+>     import xml.sax
+> ImportError: No module named xml.sax
+>
+> The host system I'm working on is a SuSe Linux 8.2.
+> My Python environment seems to be wrong.
+> I'm not familiar with Python, so what can I do?
+>
+> Bernd Büttner
+>
+
+Problem solved by updating Python to 2.4.2
+
+Bernd
