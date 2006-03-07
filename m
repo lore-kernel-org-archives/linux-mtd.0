@@ -1,22 +1,18 @@
-Received: from wproxy.gmail.com ([64.233.184.200])
+Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
+	helo=nonameb.ptu.promise.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGhcA-00005D-JG
-	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 14:13:04 -0500
-Received: by wproxy.gmail.com with SMTP id 57so1469951wri
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Mar 2006 11:12:54 -0800 (PST)
-Message-ID: <625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
-Date: Tue, 7 Mar 2006 13:12:53 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "trimarchi@gandalf.sssup.it" <trimarchi@gandalf.sssup.it>
-In-Reply-To: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>
+	id 1FGhue-0000TC-Sa
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 14:32:10 -0500
+content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2
+Date: Tue, 7 Mar 2006 11:31:57 -0800
+Message-ID: <B70A50D07063384EB9BCE3330D18414F024CCCE5@nonameb.ptu.promise.com>
+From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Questions.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/7/06, trimarchi@gandalf.sssup.it <trimarchi@gandalf.sssup.it> wrote:
-> Hi all,
-> I need to know the order of magnitude of time spent to mount a NAND of 12=
-8MB
-> using a jffs2 filesystem.
+Hello Team:
+I have a basic question on the definition of a variable in use.
 
-That's a pretty vague question, so I'll give you a vague answer:
+What is the definition of "bankwidth" on FLASH devices?
+Is it the data bus width in bytes?
+A 16bit data bus would have a bankwidth of 2?
+An 8bit data bus FLASH would have a bankwidth of 1?
 
-It will take less than 3 years to mount a NAND of 126MiB using a JFFS2
-filesystem.
+Please can someone clarify.
 
-If you specify more information, perhaps you'll get a better answer.=20
-Things like the type of processor, the type of NAND flash, how full
-the filesystem is, whether or not the Summary option is on, etc. all
-have a direct impact to your question.
-
-josh
+Thanks,
+-LN
