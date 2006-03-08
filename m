@@ -1,18 +1,18 @@
-Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGyDs-00068B-EH
-	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 07:57:05 -0500
-Message-ID: <440ED49A.2060502@gandalf.sssup.it>
-Date: Wed, 08 Mar 2006 13:56:58 +0100
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+	id 1FH1D5-0008Qw-Po
+	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 11:08:26 -0500
+Message-ID: <440F0171.1080302@inf.u-szeged.hu>
+Date: Wed, 08 Mar 2006 17:08:17 +0100
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-References: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>
-	<625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
-In-Reply-To: <625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+References: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>	<625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
+	<440ED49A.2060502@gandalf.sssup.it>
+In-Reply-To: <440ED49A.2060502@gandalf.sssup.it>
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
 Subject: Re: jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,42 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-s3c2440
-128MB nand
-full file system
+Michael Trimarchi wrote:
 
-jffs2 and jffs2+Erase Block Summary (EBS)
+> s3c2440
+> 128MB nand
+> full file system
+>
+> jffs2 and jffs2+Erase Block Summary (EBS)
 
-regards
-Michael
+Do you use sumtool utility after mkfs.jffs2?
 
-
-Josh Boyer wrote:
-
->On 3/7/06, trimarchi@gandalf.sssup.it <trimarchi@gandalf.sssup.it> wrote:
->  
->
->>Hi all,
->>I need to know the order of magnitude of time spent to mount a NAND of 128MB
->>using a jffs2 filesystem.
->>    
->>
->
->That's a pretty vague question, so I'll give you a vague answer:
->
->It will take less than 3 years to mount a NAND of 126MiB using a JFFS2
->filesystem.
->
->If you specify more information, perhaps you'll get a better answer. 
->Things like the type of processor, the type of NAND flash, how full
->the filesystem is, whether or not the Summary option is on, etc. all
->have a direct impact to your question.
->
->josh
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->  
->
+Ferenc
