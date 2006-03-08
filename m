@@ -1,22 +1,20 @@
-Received: from mail1.bizmail.net.au ([202.162.77.164])
+Received: from topsns2.toshiba-tops.co.jp ([202.230.225.126])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGr1l-0008Q9-MC
-	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 00:16:04 -0500
-Received: from webmail.bizmail.com.au (localhost.localdomain [127.0.0.1])
-	by mail1.bizmail.net.au (Postfix) with ESMTP id 75690CDC18B
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  8 Mar 2006 16:27:17 +1100 (EST)
-Message-ID: <32919.58.105.227.226.1141795637.squirrel@58.105.227.226>
+	id 1FGtOG-0001qx-57
+	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 02:47:27 -0500
+Date: Wed, 08 Mar 2006 16:47:19 +0900 (JST)
+Message-Id: <20060308.164719.10248383.nemoto@toshiba-tops.co.jp>
+To: chuckmeade@mindspring.com
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 In-Reply-To: <IIEEICKJLNEPBBDJICNGIENBKDAA.chuckmeade@mindspring.com>
 References: <20060308.102944.124550323.nemoto@toshiba-tops.co.jp>
 	<IIEEICKJLNEPBBDJICNGIENBKDAA.chuckmeade@mindspring.com>
-Date: Wed, 8 Mar 2006 16:27:17 +1100 (EST)
-From: yh@bizmail.com.au
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: RE: Intel P3 flash support
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [MTD] cmdlineparts.c: fix to allow partition offset zero for
+ any partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,10 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+>>>>> On Tue, 7 Mar 2006 22:21:31 -0500, "Chuck Meade" <chuckmeade@mindspring.com> said:
+>> I wish it was merged to mainline someday ...
 
-Does MTD support Intel P3 flash?
+chuck> That is quite a coincidence!  I viewed your patch -- since
+chuck> yours has the additional advantage of using UINT_MAX instead of
+chuck> 0xffffffff, plus it is already in -mm, it makes much more sense
+chuck> to proceed with your version of the patch.
 
-Thanks.
+Actually, that is third trial.  I sent almost same patch to this ML on
+Aug 2003 and Oct 2003, but could not get any response at that time.
 
-Jim
+---
+Atsushi Nemoto
