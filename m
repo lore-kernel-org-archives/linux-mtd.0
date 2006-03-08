@@ -1,22 +1,19 @@
-Received: from wproxy.gmail.com ([64.233.184.202])
+Received: from topsns2.toshiba-tops.co.jp ([202.230.225.126])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGi8r-0000pI-5n
-	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 14:46:52 -0500
-Received: by wproxy.gmail.com with SMTP id i23so8764wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 07 Mar 2006 11:46:43 -0800 (PST)
-Message-ID: <625fc13d0603071146n32101127id68056c6a52f96c2@mail.gmail.com>
-Date: Tue, 7 Mar 2006 13:46:42 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
-In-Reply-To: <B70A50D07063384EB9BCE3330D18414F024CCCE5@nonameb.ptu.promise.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <B70A50D07063384EB9BCE3330D18414F024CCCE5@nonameb.ptu.promise.com>
+	id 1FGnUu-0005Zb-8m
+	for linux-mtd@lists.infradead.org; Tue, 07 Mar 2006 20:29:55 -0500
+Date: Wed, 08 Mar 2006 10:29:44 +0900 (JST)
+Message-Id: <20060308.102944.124550323.nemoto@toshiba-tops.co.jp>
+To: chuckmeade@mindspring.com
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <IIEEICKJLNEPBBDJICNGIEIAKDAA.chuckmeade@mindspring.com>
+References: <IIEEICKJLNEPBBDJICNGIEIAKDAA.chuckmeade@mindspring.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Questions.
+Subject: Re: [MTD] cmdlineparts.c: fix to allow partition offset zero for
+ any partition
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/7/06, Lakshmi N. Sundararajan <lakshmi.s@promise.com> wrote:
-> Hello Team:
-> I have a basic question on the definition of a variable in use.
->
-> What is the definition of "bankwidth" on FLASH devices?
-> Is it the data bus width in bytes?
-> A 16bit data bus would have a bankwidth of 2?
-> An 8bit data bus FLASH would have a bankwidth of 1?
+>>>>> On Mon, 6 Mar 2006 12:38:46 -0500, "Chuck Meade" <chuckmeade@mindspring.com> said:
+chuck> Here is the patch I sent earlier today (that email is pending
+chuck> moderator approval) in the MTD-approved patch format.  Sorry I
+chuck> didn't see this MTD patch format earlier.
 
-Yes, sort of.  The variable used to be called buswidth, however there
-can be configurations where the bank is not fully addressable in the
-buswidth.  So the bankwidth variable represents how you can access all
-of the chips.
+chuck> [MTD] cmdlineparts.c: fix to allow partition offset zero for
+chuck> any partition
 
-"Normal" boards will use bankwidth exactly as you described above.  See:
+I sent same fix to LKML (CC: David Woodhouse, Andrew Morton) on 29
+January.  And it has been in -mm tree since 2.6.16-rc1-mm4.  You can
+get the latest version from:
 
-http://lists.infradead.org/pipermail/linux-mtd/2004-July/009974.html
+http://kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.16-rc5/2.6.16-rc5-mm3/broken-out/mtd-cmdlinepart-allow-zero-offset-value.patch
 
-and
-
-http://lists.infradead.org/pipermail/linux-mtd/2004-July/009986.html
-
-for more info.
-
-josh
+I wish it was merged to mainline someday ...
+---
+Atsushi Nemoto
