@@ -1,16 +1,19 @@
-Received: from topsns2.toshiba-tops.co.jp ([202.230.225.126])
+Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FGwyJ-00052V-Ib
-	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 06:36:56 -0500
-Date: Wed, 08 Mar 2006 20:36:45 +0900 (JST)
-Message-Id: <20060308.203645.48545307.nemoto@toshiba-tops.co.jp>
-To: linux-kernel@vger.kernel.org
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
+	id 1FGyDs-00068B-EH
+	for linux-mtd@lists.infradead.org; Wed, 08 Mar 2006 07:57:05 -0500
+Message-ID: <440ED49A.2060502@gandalf.sssup.it>
+Date: Wed, 08 Mar 2006 13:56:58 +0100
+From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+MIME-Version: 1.0
+To: Josh Boyer <jwboyer@gmail.com>
+References: <20060307200320.vret812nko8k0k4g@feanor.sssup.it>
+	<625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
+In-Reply-To: <625fc13d0603071112w2b846443n466c8cc77cb37211@mail.gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: akpm@osdl.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH] mtd: 64bit fixes
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,52 +23,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes some bugs in mtd/jffs2 on 64bit platform.
+s3c2440
+128MB nand
+full file system
 
-The MEMGETBADBLOCK/MEMSETBADBLOCK ioctl are not listed in
-compat_ioctl.h.
-And some variables in jffs2 are declared as uint32_t but used to hold
-size_t values.
+jffs2 and jffs2+Erase Block Summary (EBS)
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+regards
+Michael
 
-diff --git a/fs/jffs2/nodelist.c b/fs/jffs2/nodelist.c
-index b635e16..d4d0c41 100644
---- a/fs/jffs2/nodelist.c
-+++ b/fs/jffs2/nodelist.c
-@@ -406,7 +406,8 @@ static int check_node_data(struct jffs2_
- 	int err = 0, pointed = 0;
- 	struct jffs2_eraseblock *jeb;
- 	unsigned char *buffer;
--	uint32_t crc, ofs, retlen, len;
-+	uint32_t crc, ofs, len;
-+	size_t retlen;
- 
- 	BUG_ON(tn->csize == 0);
- 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 5f0652d..f169564 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -112,7 +112,7 @@ static struct jffs2_raw_node_ref *jffs2_
-  * 	    negative error code on failure.
-  */
- static inline int read_direntry(struct jffs2_sb_info *c, struct jffs2_raw_node_ref *ref,
--				struct jffs2_raw_dirent *rd, uint32_t read, struct jffs2_full_dirent **fdp,
-+				struct jffs2_raw_dirent *rd, size_t read, struct jffs2_full_dirent **fdp,
- 				uint32_t *latest_mctime, uint32_t *mctime_ver)
- {
- 	struct jffs2_full_dirent *fd;
-diff --git a/include/linux/compat_ioctl.h b/include/linux/compat_ioctl.h
-index 8fad50f..ae7dfb7 100644
---- a/include/linux/compat_ioctl.h
-+++ b/include/linux/compat_ioctl.h
-@@ -696,6 +696,8 @@ COMPATIBLE_IOCTL(MEMLOCK)
- COMPATIBLE_IOCTL(MEMUNLOCK)
- COMPATIBLE_IOCTL(MEMGETREGIONCOUNT)
- COMPATIBLE_IOCTL(MEMGETREGIONINFO)
-+COMPATIBLE_IOCTL(MEMGETBADBLOCK)
-+COMPATIBLE_IOCTL(MEMSETBADBLOCK)
- /* NBD */
- ULONG_IOCTL(NBD_SET_SOCK)
- ULONG_IOCTL(NBD_SET_BLKSIZE)
+
+Josh Boyer wrote:
+
+>On 3/7/06, trimarchi@gandalf.sssup.it <trimarchi@gandalf.sssup.it> wrote:
+>  
+>
+>>Hi all,
+>>I need to know the order of magnitude of time spent to mount a NAND of 128MB
+>>using a jffs2 filesystem.
+>>    
+>>
+>
+>That's a pretty vague question, so I'll give you a vague answer:
+>
+>It will take less than 3 years to mount a NAND of 126MiB using a JFFS2
+>filesystem.
+>
+>If you specify more information, perhaps you'll get a better answer. 
+>Things like the type of processor, the type of NAND flash, how full
+>the filesystem is, whether or not the Summary option is on, etc. all
+>have a direct impact to your question.
+>
+>josh
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>  
+>
