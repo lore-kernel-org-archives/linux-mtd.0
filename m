@@ -1,24 +1,12 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mailgw0.mh.bbc.co.uk ([132.185.144.140])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHOQf-0001s7-Nj
-	for linux-mtd@lists.infradead.org; Thu, 09 Mar 2006 11:56:09 -0500
-Received: from xanadu.home ([66.131.142.204]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IVV009IWDP75J00@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 09 Mar 2006 11:55:55 -0500 (EST)
-Date: Thu, 09 Mar 2006 11:55:55 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <32919.58.105.227.226.1141795637.squirrel@58.105.227.226>
-To: yh@bizmail.com.au
-Message-id: <Pine.LNX.4.64.0603091155250.20617@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <20060308.102944.124550323.nemoto@toshiba-tops.co.jp>
-	<IIEEICKJLNEPBBDJICNGIENBKDAA.chuckmeade@mindspring.com>
-	<32919.58.105.227.226.1141795637.squirrel@58.105.227.226>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: Intel P3 flash support
+	id 1FHTrb-0006EM-Rq
+	for linux-mtd@lists.infradead.org; Thu, 09 Mar 2006 17:44:10 -0500
+Date: Thu, 9 Mar 2006 22:43:40 GMT
+From: Mail Delivery Subsystem <MAILER-DAEMON@mailgw0.mh.bbc.co.uk>
+Message-Id: <200603092243.k29Mheu5026017@mailgw0.mh.bbc.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Subject: Returned mail: see transcript for details
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +16,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 8 Mar 2006, yh@bizmail.com.au wrote:
+The original message was received at Thu, 9 Mar 2006 22:43:37 GMT
+from  [207.178.218.197] (may be forged)
 
-> Hello,
-> 
-> Does MTD support Intel P3 flash?
+   ----- The following addresses had permanent fatal errors -----
+<willy@bofh.ai>
+    (reason: 550-Verification failed for <linux-mtd@lists.infradead.org>)
 
-It should.
+   ----- Transcript of session follows -----
+... while talking to pentafluge.infradead.org.:
+>>> MAIL From:<linux-mtd@lists.infradead.org> SIZE=41935
+<<< 550-Verification failed for <linux-mtd@lists.infradead.org>
+<<< 550-Lists do not send messages and should not receive bounces
+<<< 550 Sender verify failed
+554 5.0.0 Service unavailable
 
+   ----- Message header follows -----
 
-Nicolas
+Return-Path: <linux-mtd@lists.infradead.org>
+Received: from bofh.ai ( [207.178.218.197] (may be forged))
+	by mailgw0.mh.bbc.co.uk (8.12.11/8.12.11) with ESMTP id k29Mhbu5025818
+	for <willy@bofh.ai>; Thu, 9 Mar 2006 22:43:37 GMT
+Message-Id: <200603092243.k29Mhbu5025818@mailgw0.mh.bbc.co.uk>
+From: linux-mtd@lists.infradead.org
+To: willy@bofh.ai
+Subject: Mail Delivery (failure willy@bofh.ai)
+Date: Thu, 9 Mar 2006 14:43:49 -0800
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="multipart/alternative";
+	boundary="----=_NextPart_000_001B_01C0CA80.6B015D10"
+X-Priority: 3
+X-MSMail-Priority: Normal
+
+   ----- Message body suppressed -----
