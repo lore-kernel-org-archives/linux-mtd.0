@@ -1,16 +1,24 @@
-Received: from alephnull.demon.nl ([83.160.184.112] helo=xi.wantstofly.org)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHMBG-0008IL-6y
-	for linux-mtd@lists.infradead.org; Thu, 09 Mar 2006 09:31:58 -0500
-Date: Thu, 9 Mar 2006 15:31:48 +0100
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20060309143148.GJ25190@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Subject: [PATCH] ts72xx NAND driver
+Received: from mxs2.siemens.at ([194.138.12.133])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FHNzN-0001OH-Fx
+	for linux-mtd@lists.infradead.org; Thu, 09 Mar 2006 11:27:54 -0500
+Received: from vies1k7x.sie.siemens.at ([158.226.129.83])
+	by mxs2.siemens.at  with ESMTP id k29GRgrT007391
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Mar 2006 17:27:42 +0100
+Received: from nets139a.ww300.siemens.net ([158.226.129.98])
+	by vies1k7x.sie.siemens.at (8.12.11/8.12.1) with ESMTP id
+	k29GRVuf022889
+	for <linux-mtd@lists.infradead.org>; Thu, 9 Mar 2006 17:27:42 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 9 Mar 2006 17:27:33 +0100
+Message-ID: <38F58D7B92CB20438DF49D28B572CC6F13C49E@budgw09a.ww300.siemens.net>
+From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: SMC and BonFS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,251 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The TS-72xx is a series of embedded single board computers from
-Technologic Systems based on the Cirrus ep93xx (arm920t based) CPU.
+Hello!
 
-The TS-7200 uses NOR flash, while all the other models in the series
-(TS-7250, TS-7260) use NAND flash -- included is a driver for the NAND
-flash on those boards.
+I'm working with a developer board (Embest S3CEB2410 with S3C2410 =
+processor) which has a SmartMedia Card
+interface and is able to boot from it. Embest supplied a boot manager =
+called Vivi with the board, and this boot manager can make BonFS =
+partitions/fs.
 
-Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+I'm quite confused, because I don't know what bonfs is: I could locate =
+no documentation on the web.=20
 
-diff -urN linux-2.6.15.orig/drivers/mtd/nand/Kconfig linux-2.6.15/drivers/mtd/nand/Kconfig
---- linux-2.6.15.orig/drivers/mtd/nand/Kconfig	2006-02-12 10:22:16.000000000 +0100
-+++ linux-2.6.15/drivers/mtd/nand/Kconfig	2006-02-20 21:20:41.000000000 +0100
-@@ -55,6 +55,12 @@
- 	help
- 	  Support for NAND flash on Texas Instruments Toto platform.
- 
-+config MTD_NAND_TS7250
-+	tristate "NAND Flash device on TS-7250 board"
-+	depends on MACH_TS72XX && MTD_NAND
-+	help
-+	  Support for NAND flash on Technologic Systems TS-7250 platform.
-+
- config MTD_NAND_IDS
- 	tristate
- 
-diff -urN linux-2.6.15.orig/drivers/mtd/nand/Makefile linux-2.6.15/drivers/mtd/nand/Makefile
---- linux-2.6.15.orig/drivers/mtd/nand/Makefile	2006-02-12 10:22:16.000000000 +0100
-+++ linux-2.6.15/drivers/mtd/nand/Makefile	2006-02-20 21:19:38.000000000 +0100
-@@ -17,6 +17,7 @@
- obj-$(CONFIG_MTD_NAND_H1900)		+= h1910.o
- obj-$(CONFIG_MTD_NAND_RTC_FROM4)	+= rtc_from4.o
- obj-$(CONFIG_MTD_NAND_SHARPSL)		+= sharpsl.o
-+obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250.o
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- 
- nand-objs = nand_base.o nand_bbt.o
-diff -urN linux-2.6.15.orig/drivers/mtd/nand/ts7250.c linux-2.6.15/drivers/mtd/nand/ts7250.c
---- linux-2.6.15.orig/drivers/mtd/nand/ts7250.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.15/drivers/mtd/nand/ts7250.c	2006-03-02 19:04:44.000000000 +0100
-@@ -0,0 +1,208 @@
-+/*
-+ * drivers/mtd/nand/ts7250.c
-+ *
-+ * Copyright (C) 2004 Technologic Systems (support@embeddedARM.com)
-+ *
-+ * Derived from drivers/mtd/nand/edb7312.c
-+ *   Copyright (C) 2004 Marius Gröger (mag@sysgo.de)
-+ *
-+ * Derived from drivers/mtd/nand/autcpu12.c
-+ *   Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
-+ *
-+ * $Id: ts7250.c,v 1.4 2004/12/30 22:02:07 joff Exp $
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ * Overview:
-+ *   This is a device driver for the NAND flash device found on the
-+ *   TS-7250 board which utilizes a Samsung 32 Mbyte part.
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <asm/io.h>
-+#include <asm/arch/hardware.h>
-+#include <asm/sizes.h>
-+#include <asm/mach-types.h>
-+
-+/*
-+ * MTD structure for TS7250 board
-+ */
-+static struct mtd_info *ts7250_mtd = NULL;
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+static const char *part_probes[] = { "cmdlinepart", NULL };
-+
-+#define NUM_PARTITIONS 3
-+
-+/*
-+ * Define static partitions for flash device
-+ */
-+static struct mtd_partition partition_info32[] = {
-+	{
-+		.name		= "TS-BOOTROM",
-+		.offset		= 0x00000000,
-+		.size		= 0x00004000,
-+	}, {
-+		.name		= "Linux",
-+		.offset		= 0x00004000,
-+		.size		= 0x01d00000,
-+	}, {
-+		.name		= "RedBoot",
-+		.offset		= 0x01d04000,
-+		.size		= 0x002fc000,
-+	},
-+};
-+
-+/*
-+ * Define static partitions for flash device
-+ */
-+static struct mtd_partition partition_info128[] = {
-+	{
-+		.name		= "TS-BOOTROM",
-+		.offset		= 0x00000000,
-+		.size		= 0x00004000,
-+	}, {
-+		.name		= "Linux",
-+		.offset		= 0x00004000,
-+		.size		= 0x07d00000,
-+	}, {
-+		.name		= "RedBoot",
-+		.offset		= 0x07d04000,
-+		.size		= 0x002fc000,
-+	},
-+};
-+#endif
-+
-+
-+/*
-+ *	hardware specific access to control-lines
-+ */
-+static void ts7250_hwcontrol(struct mtd_info *mtd, int cmd)
-+{
-+	unsigned long ctrl = TS72XX_NAND_CONTROL_VIRT_BASE;
-+
-+	switch(cmd) {
-+	case NAND_CTL_SETCLE:
-+		__raw_writeb(__raw_readb(ctrl) | 0x2, ctrl);
-+		break;
-+	case NAND_CTL_CLRCLE:
-+		__raw_writeb(__raw_readb(ctrl) & ~0x2, ctrl);
-+		break;
-+	case NAND_CTL_SETALE:
-+		__raw_writeb(__raw_readb(ctrl) | 0x1, ctrl);
-+		break;
-+	case NAND_CTL_CLRALE:
-+		__raw_writeb(__raw_readb(ctrl) & ~0x1, ctrl);
-+		break;
-+	case NAND_CTL_SETNCE:
-+		__raw_writeb(__raw_readb(ctrl) | 0x4, ctrl);
-+		break;
-+	case NAND_CTL_CLRNCE:
-+		__raw_writeb(__raw_readb(ctrl) & ~0x4, ctrl);
-+		break;
-+	}
-+}
-+
-+/*
-+ *	read device ready pin
-+ */
-+static int ts7250_device_ready(struct mtd_info *mtd)
-+{
-+	return __raw_readb(TS72XX_NAND_BUSY_VIRT_BASE) & 0x20;
-+}
-+
-+/*
-+ * Main initialization routine
-+ */
-+static int __init ts7250_init(void)
-+{
-+	struct nand_chip *this;
-+	const char *part_type = 0;
-+	int mtd_parts_nb = 0;
-+	struct mtd_partition *mtd_parts = 0;
-+
-+	if (!machine_is_ts72xx() || board_is_ts7200())
-+		return -ENXIO;
-+
-+	/* Allocate memory for MTD device structure and private data */
-+	ts7250_mtd = kmalloc(sizeof(struct mtd_info) +
-+				sizeof(struct nand_chip), GFP_KERNEL);
-+	if (!ts7250_mtd) {
-+		printk("Unable to allocate TS7250 NAND MTD device structure.\n");
-+		return -ENOMEM;
-+	}
-+
-+	/* Get pointer to private data */
-+	this = (struct nand_chip *)(&ts7250_mtd[1]);
-+
-+	/* Initialize structures */
-+	memset(ts7250_mtd, 0, sizeof(struct mtd_info));
-+	memset(this, 0, sizeof(struct nand_chip));
-+
-+	/* Link the private data with the MTD structure */
-+	ts7250_mtd->priv = this;
-+
-+	/* insert callbacks */
-+	this->IO_ADDR_R = (void *)TS72XX_NAND_DATA_VIRT_BASE;
-+	this->IO_ADDR_W = (void *)TS72XX_NAND_DATA_VIRT_BASE;
-+	this->hwcontrol = ts7250_hwcontrol;
-+	this->dev_ready = ts7250_device_ready;
-+	this->chip_delay = 15;
-+	this->eccmode = NAND_ECC_SOFT;
-+
-+	printk("Searching for NAND flash...\n");
-+	/* Scan to find existence of the device */
-+	if (nand_scan(ts7250_mtd, 1)) {
-+		kfree(ts7250_mtd);
-+		return -ENXIO;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	ts7250_mtd->name = "ts7250-nand";
-+	mtd_parts_nb = parse_mtd_partitions(ts7250_mtd, part_probes,
-+						&mtd_parts, 0);
-+	if (mtd_parts_nb > 0)
-+		part_type = "command line";
-+	else
-+		mtd_parts_nb = 0;
-+#endif
-+	if (mtd_parts_nb == 0) {
-+		mtd_parts = partition_info32;
-+		if (ts7250_mtd->size >= (128 * 0x100000))
-+			mtd_parts = partition_info128;
-+		mtd_parts_nb = NUM_PARTITIONS;
-+		part_type = "static";
-+	}
-+
-+	/* Register the partitions */
-+	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
-+	add_mtd_partitions(ts7250_mtd, mtd_parts, mtd_parts_nb);
-+
-+	/* Return happy */
-+	return 0;
-+}
-+module_init(ts7250_init);
-+
-+/*
-+ * Clean up routine
-+ */
-+static void __exit ts7250_cleanup(void)
-+{
-+	/* Unregister the device */
-+	del_mtd_device(ts7250_mtd);
-+
-+	/* Free the MTD device structure */
-+	kfree(ts7250_mtd);
-+}
-+module_exit(ts7250_cleanup);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Jesse Off <joff@embeddedARM.com>");
-+MODULE_DESCRIPTION("MTD map driver for Technologic Systems TS-7250 board");
+This command is used to create bonfs partitions on the SMC: (after =
+booting from the SMC)
+vivi> bon part 0 192k 1M
+
+creates three partitions for vivi+param, kernel and the root filesystem.
+According to vivi, this is the bonfs partition table: (on a 64MB SMC)
+vivi> bon part info
+
+BON info. (3 partitions)
+No: offset      size            flags     bad
+---------------------------------------------
+ 0: 0x00000000  0x00030000      00000000    0  192k
+ 1: 0x00030000  0x000d0000      00000000    0  832k
+ 2: 0x00100000  0x03efc000      00000000    0   62M+1008k
+
+But Vivi also has an other set of tools, called "part". These tools are =
+for manipulating MTD partitions:
+vivi>part show
+
+mtdpart info. (4 partitions)
+name              offset        size        flag
+------------------------------------------------
+vivi            : 0x00000000    0x00020000     0  128k
+param           : 0x00020000    0x00010000     0   64k
+kernel          : 0x00030000    0x000c0000     0  768k
+root            : 0x00100000    0x00140000     4    1M+256k
+
+This has four partitions: the vivi and param partitions are merged in =
+the list of bonfs. Partition sizes don't match: vivi+param=3D192k, but =
+kernel is smaller than 832 (the difference is 64KB), and root partition =
+is extremely small. Now I can't see the relationship between between =
+Bonfs and mtd partitions. Is anybody here who 's seeing?
+
+I would be very grateful if someone could tell me what are bonfs and mtd =
+partitions meaning, what are the differences between them, and a few =
+links on bonfs and/or mtd partitions are also welcome. Why do we need to =
+use bonfs on SMC, if is it needed? My goal is to create such a bootable =
+SMC which mounts its root filesystem from the root partition of the SMC, =
+and this partition should be either JFFS(2) or cramfs. cramfs is now =
+mounted perfectly, but I want to avoid using bonfs (since I don't what =
+it's all about). Is it possible to simply partition (mtd) the SMC and to =
+boot from that and mount a root filesystem?
+
+Many thanks
+
+Bye
+--
+Tamas Selmeci
+Siemens PSE HU
+Tel.   : +36-1-471-3861
+Email  : tamas.selmeci@siemens.com
+Address: H-1143 Budapest, Gizella ut 51-59
