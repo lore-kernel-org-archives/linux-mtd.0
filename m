@@ -1,26 +1,23 @@
-Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHgOx-0002J3-GK
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 07:07:33 -0500
-Received: from mailhub.cdac.in ([203.199.132.67])
-	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2006031017343828903
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 17:34:38 +0530
-Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id k2AC7HgE011694
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 17:37:17 +0530
-From: "NIkhil Shirodkar" <nikhils@cdac.in>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Date: Fri, 10 Mar 2006 17:45:21 +0530
-Message-ID: <GKELLIPIEBJEKGFGNIFKGEHACAAA.nikhils@cdac.in>
+Received: from wproxy.gmail.com ([64.233.184.198])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FHhK5-0003vO-D3
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 08:06:31 -0500
+Received: by wproxy.gmail.com with SMTP id 69so642834wra
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 10 Mar 2006 05:06:18 -0800 (PST)
+Message-ID: <625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
+Date: Fri, 10 Mar 2006 07:06:17 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Terence Soh" <gopher@singnet.com.sg>
+In-Reply-To: <44079DE4.3070804@singnet.com.sg>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <44115D6D.8030702@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <E1FErAE-00004u-2M@canuck.infradead.org>
+	<44079DE4.3070804@singnet.com.sg>
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: About JFFS2 garbage collector.
-Reply-To: nikhils@cdac.in
+Subject: Re: Cramfs on NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,43 +27,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What I figured out one call jffs2_garbage_collect_pass() which initiates
-garbage collection when there is not enough space to write a file. I figured
-out few more instances when this got called, Let me know if this is the only
-call to trigger garbage collector or are there any more calls?
+On 3/2/06, Terence Soh <gopher@singnet.com.sg> wrote:
+> Hi again,
+>
+> I hear that cramfs on NAND flash is not a good idea because of the bad
+> blocks. Is this still true? There was talks some time  ago about making
+> cramfs work on top on NAND.
+> <http://lists.infradead.org/pipermail/linux-mtd/2004-May/009784.html>
 
-Is it essential to call jffs2_garbage_collect_pass() repeatedly to get a
-free jeb, or if once the jffs2_garbage_collect_pass() is called, it ensures
-of making one jeb free. (barring the case when ic-->state of
-INO_STATE_READING is found and the GC returns success without achieving the
-desired)
+Yes, it's still true.  CRAMFS expects it's data to be contiguous so
+unless you have something similar to a flash translation layer that
+hides the bad blocks, insanity will ensue.
 
-I also wanted to find out _all_ other instances when the GC thread runs. Is
-there any way one can force the GC thread to run like the case when, you are
-not performing any I/O operations. This might be helpful to reduce the write
-latency of a nearly full filesystem.
+> If this is true, are there any recommendations of what other fs to use.
+> I already have one partition of jffs2 to store read-write files.
 
-thx,
+Could you use a read-only JFFS2 partition?
 
-nik
-NISG, CDAC
-
------Original Message-----
-From: Artem B. Bityutskiy [mailto:dedekind@yandex.ru]
-Sent: Friday, March 10, 2006 4:35 PM
-To: Nikhil
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: About JFFS2 garbage collector.
-
-Nikhil wrote:
-> Is there any documentations as such for the JFFS2 garbage collection
-> policy. Plaese let me know if any. Even if there is none, i am not
-> hesistant to look in the code, can some one of you give me some pointers
-> for the same.
-I don't think there is some documentation. JFFS2 GC policy is fairly
-trivial. Just ask your questions, I'll try to answer.
-
---
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+josh
