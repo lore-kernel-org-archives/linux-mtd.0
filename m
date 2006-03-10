@@ -1,21 +1,22 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wproxy.gmail.com ([64.233.184.207])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHjZ1-00076w-5C
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 10:30:04 -0500
-Received: from xanadu.home ([66.131.142.204]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IVX00C8W4DR2TE0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 10:29:52 -0500 (EST)
-Date: Fri, 10 Mar 2006 10:29:51 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
-To: Adam Ward <adamward2005@yahoo.co.uk>
-Message-id: <Pine.LNX.4.64.0603101027230.3274@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
+	id 1FHjeo-0007Pr-GH
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 10:36:04 -0500
+Received: by wproxy.gmail.com with SMTP id i21so741064wra
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 10 Mar 2006 07:35:54 -0800 (PST)
+Message-ID: <625fc13d0603100735o37c96bcfl78b213eab41b5e54@mail.gmail.com>
+Date: Fri, 10 Mar 2006 09:35:54 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Nicolas Pitre" <nico@cam.org>
+In-Reply-To: <Pine.LNX.4.64.0603101027230.3274@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+	<Pine.LNX.4.64.0603101027230.3274@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, Adam Ward <adamward2005@yahoo.co.uk>
 Subject: Re: Read only forced on jffs2 by mtd layer?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,23 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Mar 2006, Adam Ward wrote:
+On 3/10/06, Nicolas Pitre <nico@cam.org> wrote:
+> On Fri, 10 Mar 2006, Adam Ward wrote:
+>
+> > My jffs2 image will mount as ro.
+> > If I do 'mount / -o remount,rw' it appears to be
+> > happy, but I soon get told 'Read-only file system' if
+> > I try anything too presumptuous!
+> >
+> > As running mount still declares it as read/write, I am
+> > assuming the error is with the mtd block driver
+> > refusing to co-operate.
+> >
+> > Is there anything you guys can suggest that I should
+> > pay closer attention to?
+>
+> Did you unlock the flash partition with the flash_unlock tool?
+> Some NOR flash parts initialize themselves with all sectors locked by
+> default.
 
-> My jffs2 image will mount as ro.
-> If I do 'mount / -o remount,rw' it appears to be
-> happy, but I soon get told 'Read-only file system' if
-> I try anything too presumptuous!
-> 
-> As running mount still declares it as read/write, I am
-> assuming the error is with the mtd block driver
-> refusing to co-operate.
-> 
-> Is there anything you guys can suggest that I should
-> pay closer attention to?
+Also, does your JFFS2 filesystem have free space available?  If a
+minimum amount of free eraseblocks are not present, JFFS2 will mark
+itself as read-only no matter what you do.
 
-Did you unlock the flash partition with the flash_unlock tool?
-Some NOR flash parts initialize themselves with all sectors locked by 
-default.
-
-
-Nicolas
+josh
