@@ -1,23 +1,24 @@
-Received: from wproxy.gmail.com ([64.233.184.198])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHhK5-0003vO-D3
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 08:06:31 -0500
-Received: by wproxy.gmail.com with SMTP id 69so642834wra
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Mar 2006 05:06:18 -0800 (PST)
-Message-ID: <625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
-Date: Fri, 10 Mar 2006 07:06:17 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Terence Soh" <gopher@singnet.com.sg>
-In-Reply-To: <44079DE4.3070804@singnet.com.sg>
+Received: from mxs2.siemens.at ([194.138.12.133])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FHhct-0004LS-Gh
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 08:25:58 -0500
+Received: from vies1k7x.sie.siemens.at ([158.226.129.83])
+	by mxs2.siemens.at  with ESMTP id k2ADPmoV013511
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 14:25:48 +0100
+Received: from nets138a.ww300.siemens.net ([158.226.129.98])
+	by vies1k7x.sie.siemens.at (8.12.11/8.12.1) with ESMTP id
+	k2ADPcHE007173
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 14:25:48 +0100
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <E1FErAE-00004u-2M@canuck.infradead.org>
-	<44079DE4.3070804@singnet.com.sg>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Cramfs on NAND
+Date: Fri, 10 Mar 2006 14:25:41 +0100
+Message-ID: <38F58D7B92CB20438DF49D28B572CC6F13C4A0@budgw09a.ww300.siemens.net>
+From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: NAND + partitions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +28,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/2/06, Terence Soh <gopher@singnet.com.sg> wrote:
-> Hi again,
->
-> I hear that cramfs on NAND flash is not a good idea because of the bad
-> blocks. Is this still true? There was talks some time  ago about making
-> cramfs work on top on NAND.
-> <http://lists.infradead.org/pipermail/linux-mtd/2004-May/009784.html>
+Hi!
 
-Yes, it's still true.  CRAMFS expects it's data to be contiguous so
-unless you have something similar to a flash translation layer that
-hides the bad blocks, insanity will ensue.
+Is it possible to create partitions on a NAND flash card? And if that =
+card is a SmartMedia Card?
 
-> If this is true, are there any recommendations of what other fs to use.
-> I already have one partition of jffs2 to store read-write files.
+I'd need to following layout:
+partition0: boot loader                       128 KB
+partition1: linux kernel boot params           64 KB
+partition2: linux kernel
+partition3: root filesystem (now it's cramfs but I'd like to change to =
+JFFS2)   50 MB
 
-Could you use a read-only JFFS2 partition?
-
-josh
+Bye
+--
+Tamas Selmeci
+Siemens PSE HU
+Tel.   : +36-1-471-3861
+Email  : tamas.selmeci@siemens.com
+Address: H-1143 Budapest, Gizella ut 51-59
