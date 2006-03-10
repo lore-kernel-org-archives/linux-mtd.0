@@ -1,29 +1,24 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wproxy.gmail.com ([64.233.184.196])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHkfN-0001Bl-Aa
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 11:40:50 -0500
-Received: from xanadu.home ([66.131.142.204]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IVX0084I7NLGX80@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 11:40:33 -0500 (EST)
-Date: Fri, 10 Mar 2006 11:40:33 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <625fc13d0603100821i22409112xc60e8a26f4167191@mail.gmail.com>
-To: Josh Boyer <jwboyer@gmail.com>
-Message-id: <Pine.LNX.4.64.0603101139270.3274@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
-	<Pine.LNX.4.64.0603101027230.3274@localhost.localdomain>
-	<625fc13d0603100735o37c96bcfl78b213eab41b5e54@mail.gmail.com>
-	<44119E8F.1000504@yandex.ru>
-	<625fc13d0603100753r33fde8b8n3b9ff39f24b37b72@mail.gmail.com>
-	<4411A3D9.6050505@yandex.ru>
-	<625fc13d0603100821i22409112xc60e8a26f4167191@mail.gmail.com>
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, linux-mtd@lists.infradead.org,
-	Adam Ward <adamward2005@yahoo.co.uk>
-Subject: Re: Read only forced on jffs2 by mtd layer?
+	id 1FHlXD-0002Fe-Hw
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 12:36:19 -0500
+Received: by wproxy.gmail.com with SMTP id i24so712683wra
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 10 Mar 2006 09:36:11 -0800 (PST)
+Message-ID: <f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
+Date: Fri, 10 Mar 2006 10:36:08 -0700
+From: "Russ Dill" <russ.dill@gmail.com>
+To: "Josh Boyer" <jwboyer@gmail.com>
+In-Reply-To: <625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <E1FErAE-00004u-2M@canuck.infradead.org>
+	<44079DE4.3070804@singnet.com.sg>
+	<625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, Terence Soh <gopher@singnet.com.sg>
+Subject: Re: Cramfs on NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,24 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 10 Mar 2006, Josh Boyer wrote:
+> > I hear that cramfs on NAND flash is not a good idea because of the bad
+> > blocks. Is this still true? There was talks some time  ago about making
+> > cramfs work on top on NAND.
+> > <http://lists.infradead.org/pipermail/linux-mtd/2004-May/009784.html>
+>
+> Yes, it's still true.  CRAMFS expects it's data to be contiguous so
+> unless you have something similar to a flash translation layer that
+> hides the bad blocks, insanity will ensue.
+>
+> > If this is true, are there any recommendations of what other fs to use.
+> > I already have one partition of jffs2 to store read-write files.
+>
+> Could you use a read-only JFFS2 partition?
 
-> On 3/10/06, Artem B. Bityutskiy <dedekind@yandex.ru> wrote:
-> > Josh Boyer wrote:
-> > > Sorta.  If there isn't enough physical space to write nodes out, then
-> > > you can't really have a writeable filesystem.  It'll actually just
-> > > return -ENOSPC for everything instead of -EROFS, but the effect is the
-> > > same.
-> > I mean, if I ask to mount read-write, but end-up with RO, this is bad.
-> > Shouldn't I explicitely request RO mount?
-> 
-> Oh, the mount will still show it as being RW from what I recall.  But
-> you won't actually be able to write anything.  Which is also
-> confusing.  Especially in the case where it won't even let you
-> _delete_ things.
-
-Sure, but what is important here is the exact error returned, be it 
--ENOSPC or -EROFS.
-
-
-Nicolas
+The other solution is to use an ftl ontop of the flash, and then put a
+cramfs on that. Of course, that depends on you living somewhere where
+algorithms are not restricted to those with the license to use them.
+(iirc)
