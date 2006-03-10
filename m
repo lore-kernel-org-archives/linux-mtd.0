@@ -1,19 +1,22 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHiyb-0006Oq-Ta
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 09:52:54 -0500
-Message-ID: <44119281.7080200@yandex.ru>
-Date: Fri, 10 Mar 2006 17:51:45 +0300
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: nikhils@cdac.in
-References: <GKELLIPIEBJEKGFGNIFKGEHACAAA.nikhils@cdac.in>
-	<44119218.9050208@yandex.ru>
-In-Reply-To: <44119218.9050208@yandex.ru>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FHjZ1-00076w-5C
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 10:30:04 -0500
+Received: from xanadu.home ([66.131.142.204]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IVX00C8W4DR2TE0@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 10:29:52 -0500 (EST)
+Date: Fri, 10 Mar 2006 10:29:51 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
+To: Adam Ward <adamward2005@yahoo.co.uk>
+Message-id: <Pine.LNX.4.64.0603101027230.3274@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: About JFFS2 garbage collector.
+Subject: Re: Read only forced on jffs2 by mtd layer?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
->
-> 1. is just an optimization and is run when you do not perform any I/O. 
-Err, its better to say "even when you do not perform any I/O".
+On Fri, 10 Mar 2006, Adam Ward wrote:
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+> My jffs2 image will mount as ro.
+> If I do 'mount / -o remount,rw' it appears to be
+> happy, but I soon get told 'Read-only file system' if
+> I try anything too presumptuous!
+> 
+> As running mount still declares it as read/write, I am
+> assuming the error is with the mtd block driver
+> refusing to co-operate.
+> 
+> Is there anything you guys can suggest that I should
+> pay closer attention to?
+
+Did you unlock the flash partition with the flash_unlock tool?
+Some NOR flash parts initialize themselves with all sectors locked by 
+default.
+
+
+Nicolas
