@@ -1,18 +1,18 @@
 Received: from mx1.cdacindia.com ([203.199.132.35] helo=mx2.cdac.ernet.in)
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHezb-0007iP-Gp
+	id 1FHezU-0007f7-Q8
 	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 05:38:40 -0500
 Received: from mailhub.cdac.in ([203.199.132.67])
 	by mx2.cdac.ernet.in (SAVSMTP 3.1.0.29) with SMTP id
-	M2006031016041324452
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:04:13 +0530
+	M2006031016034124442
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:03:41 +0530
 Received: from mailhub.cdac.in (mailhub [196.1.109.254])
-	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id k2AAZrEB004697
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:05:54 +0530
-Date: Fri, 10 Mar 2006 16:05:52 +0530 (IST)
+	by mailhub.cdac.in (8.13.4/8.13.4) with ESMTP id k2AAZkPF004606
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 16:05:49 +0530
+Date: Fri, 10 Mar 2006 16:05:46 +0530 (IST)
 To: <linux-mtd@lists.infradead.org>
 From: "Nikhil" <nikhils@cdac.in>
-Message-ID: <twig.1141986952.51718@cdac.in>
+Message-ID: <twig.1141986946.27247@cdac.in>
 Cc: nikhils@cdac.in
 Subject: About JFFS2 garbage collector.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
