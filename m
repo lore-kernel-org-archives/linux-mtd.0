@@ -1,24 +1,15 @@
-Received: from mxs2.siemens.at ([194.138.12.133])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHi7F-0005CQ-WA
-	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 08:57:23 -0500
-Received: from vies1k7x.sie.siemens.at ([158.226.129.83])
-	by mxs2.siemens.at  with ESMTP id k2ADvBrH023138
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 14:57:11 +0100
-Received: from nets138a.ww300.siemens.net ([158.226.129.98])
-	by vies1k7x.sie.siemens.at (8.12.11/8.12.1) with ESMTP id
-	k2ADvBBR023613
-	for <linux-mtd@lists.infradead.org>; Fri, 10 Mar 2006 14:57:11 +0100
-Content-class: urn:content-classes:message
+Received: from web86903.mail.ukl.yahoo.com ([217.12.13.55])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FHiB9-0005Pf-DP
+	for linux-mtd@lists.infradead.org; Fri, 10 Mar 2006 09:01:27 -0500
+Message-ID: <20060310135431.62022.qmail@web86903.mail.ukl.yahoo.com>
+Date: Fri, 10 Mar 2006 13:54:31 +0000 (GMT)
+From: Adam Ward <adamward2005@yahoo.co.uk>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 10 Mar 2006 14:57:10 +0100
-Message-ID: <38F58D7B92CB20438DF49D28B572CC6F23BBE5@budgw09a.ww300.siemens.net>
-From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: (no subject)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Read only forced on jffs2 by mtd layer?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +19,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Yes it possible,
-> You can use cmdpartion if it is present in the kernel, or static
-partion.
+Hi,
 
-Maybe this will be a silly question, but how can I create those
-partitions on my SMC using PC-based Linux if I have a card reader? Is
-cmdpartition for this purpose? (using vivi on the developer board I can
-create partitions, but vivi is in close relationship with BonFS and it
-keeps on creating BonFS for me - probably I should modify the
-sources...)
+I'm working on a Sandgate2-P board on 2.6.15-4 kernel.
+I was a little confused by the existence of mtd
+initialisation code in /arch/arm/mach-pax/mainstone.c
+which when duplicated for SG2-P failed to work.
 
-And does anybody know why should BonFS be used if partitioning can be
-solved without that too?
+So I realised that there was also
+/devices/mtd/maps/mainstone-flash.c (and I had played
+with this under 2.6.9 when it was pxa27x-flash.c)
+which I again duplicated and have had some success
+with.
 
-Bye
+But only to read!
+
+My jffs2 image will mount as ro.
+If I do 'mount / -o remount,rw' it appears to be
+happy, but I soon get told 'Read-only file system' if
+I try anything too presumptuous!
+
+As running mount still declares it as read/write, I am
+assuming the error is with the mtd block driver
+refusing to co-operate.
+
+Is there anything you guys can suggest that I should
+pay closer attention to?
+
 --
-Tamas Selmeci
-Siemens PSE HU
-Tel.:    +36-1-471-3861
-Email:   tamas.selmeci@siemens.com
-Address: H-1143 Budapest, Gizella ut 51-59=20
+Adam
+
+
+
+		
+___________________________________________________________ 
+NEW Yahoo! Cars - sell your car and browse thousands of new and used cars online! http://uk.cars.yahoo.com/
