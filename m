@@ -1,20 +1,19 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FIYoJ-0007Eo-E0
-	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 17:13:16 -0500
-Date: Sun, 12 Mar 2006 23:12:48 +0100
+	id 1FIYpv-0007Qa-Aw
+	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 17:15:01 -0500
+Date: Sun, 12 Mar 2006 23:14:42 +0100
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Message-ID: <20060312221248.GA7525@wohnheim.fh-wedel.de>
-References: <20060212170441.GA28427@xi.wantstofly.org>
-	<20060228191642.GB19811@xi.wantstofly.org>
+To: Chuck Meade <chuckmeade@mindspring.com>
+Message-ID: <20060312221442.GB7525@wohnheim.fh-wedel.de>
+References: <IIEEICKJLNEPBBDJICNGAEHLKDAA.chuckmeade@mindspring.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060228191642.GB19811@xi.wantstofly.org>
+In-Reply-To: <IIEEICKJLNEPBBDJICNGAEHLKDAA.chuckmeade@mindspring.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [less intrusive PATCH, RFC] don't load physmap if length is zero
+Subject: Re: cmdlinepart.c patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +23,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 28 February 2006 20:16:42 +0100, Lennert Buytenhek wrote:
+On Mon, 6 March 2006 10:46:30 -0500, Chuck Meade wrote:
 > 
-> OK, so if the previous patch (which converted physmap into a platform
-> driver) was too nonobvious, can we at least apply a patch like this so
-> that it's possible to compile in physmap without using it?
+> The cmdlinepart.c logic treats a partition offset that has been explicitly
+> specified as zero the same as an unspecified offset.  This causes the
+> partitioning logic to fail if your partition that starts at 0x0 is not the
+> first partition listed on the cmdline.
 > 
-> This is useful for example on the Technologic Systems TS-72xx boards,
-> where some models in the series have NOR flash while others have NAND
-> flash, and you'd like to be able to compile a single kernel that works
-> on all models.  (So for the NOR models, you call physmap_configure at
-> run time, while for the NAND models, you initialise the board-specific
-> NAND driver (which I shall submit later.))
+> For example, if you have several partitions, and you want the third partition
+> to be an all-encompassing partition covering the whole device, then you
+> would give it offset 0x0.  The cmdlinepart.c logic treats this the same as
+> if you had not specified an offset, and instead tries to start the third
+> partition after the end of your second partition.  This is because the logic
+> uses zero as the "unspecified offset" value.  However, zero is not a good
+> choice for "unspecified offset" -- it is quite valid as a "specified" offset.
 > 
-> I'd still prefer the platform driver patch to be applied, but having
-> some kind of solution merged is better than no solution at all :-)
+> The attached patch defines the "unspecified offset" value as 0xffffffff and
+> makes the changes needed to support partitions that explicitly start at
+> offset 0x0, but are not necessarily listed first on the cmdline.
 
-Is there a good reason why you didn't just write your own mapping
-driver?  Most people copy physmap.c, change a few things and use that
-driver instead of physmap.c.  It does involve many copies of
-essentially the same code, but that code is very simple and no sane
-kernel should have more than one mapping driver included, so no object
-code is duplicated.
+I don't have any objections against your patch.  And seeing that it
+was submitted at least three times without any other objections
+either, it looks like it could go in.
+
+And it also appears to indicate that few people care much about
+cmdline.c. ;)
+
+Any objections against inclusion?
 
 Jörn
 
 -- 
-Public Domain  - Free as in Beer
-General Public - Free as in Speech
-BSD License    - Free as in Enterprise
-Shared Source  - Free as in "Work will make you..."
+To recognize individual spam features you have to try to get into the
+mind of the spammer, and frankly I want to spend as little time inside
+the minds of spammers as possible.
+-- Paul Graham
