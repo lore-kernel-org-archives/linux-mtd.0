@@ -1,19 +1,22 @@
-Received: from gateway-1237.mvista.com ([63.81.120.158] helo=hermes.mvista.com)
+Received: from 213-239-205-147.clients.your-server.de ([213.239.205.147]
+	helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FHxn1-0004bo-Nc
-	for linux-mtd@lists.infradead.org; Sat, 11 Mar 2006 01:41:28 -0500
-Message-ID: <4412701A.2070202@mvista.com>
-Date: Fri, 10 Mar 2006 22:37:14 -0800
-From: Todd Poynor <tpoynor@mvista.com>
-MIME-Version: 1.0
-To: Adam Ward <adamward2005@yahoo.co.uk>
-References: <20060311013956.53555.qmail@web86904.mail.ukl.yahoo.com>
-In-Reply-To: <20060311013956.53555.qmail@web86904.mail.ukl.yahoo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1FISLR-0001Oe-OJ
+	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 10:19:05 -0500
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Alexey, Korolev" <alexey.korolev@intel.com>
+In-Reply-To: <43EB81CF.1000400@intel.com>
+References: <43EA5056.2070300@ru.mvista.com>  <43EB81CF.1000400@intel.com>
+Content-Type: text/plain
+Date: Sun, 12 Mar 2006 16:18:57 +0100
+Message-Id: <1142176737.19916.463.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
-	Nicolas Pitre <nico@cam.org>
-Subject: Re: Read only forced on jffs2 by mtd layer?
+Cc: linux-mtd@lists.infradead.org, jwboyer@gmail.com,
+	Vitaly Wool <vwool@ru.mvista.com>
+Subject: Re: [PATCH] Fixup in NAND bad block management + fix of misspring
+	.(nand_base.c)
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adam Ward wrote:
-...
-> but the flash is 2 * 28F256L18B - only difference
-> being it's 2 * 28F128L18B parts on the Mainstone. (I
-> think that's on C5 revision processor cards?)
+On Thu, 2006-02-09 at 20:54 +0300, Alexey, Korolev wrote:
+> Hi Vitaly,
+> 
+> Thanks a lot for feedback.
+> I agree for most of your comments. I missed some lines when I was 
+> merging the patch to the latest snapshot. I corrected it. Here is the 
+> second version at the end of the letter. Your comments are welcome.
 
-The L18 StrataFlash chips featured on some Mainstone II boards do power 
-up with all blocks locked.  Run flash_unlock on writeable partitions 
-prior to mounting.
+I still do not understand what this whole crap is for. This patch will
+not make it anywhere.
 
--- 
-Todd
+As I said before, this problem can simply be solved by a check for the
+manufacturer ID in nand_scan() and a small tweak of nand_default_bbt().
+
+Your solution requires board driver support, but this is a chip level
+not a board level problem.
+
+	tglx
