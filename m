@@ -1,18 +1,21 @@
-Received: from [66.174.76.155] (helo=njbrsmtp1.vzwmail.net)
+Received: from smtp42.singnet.com.sg ([165.21.103.146])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FIan7-0000mu-Eb
-	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 19:20:07 -0500
-From: "Chuck Meade" <chuckmeade@mindspring.com>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-Date: Sun, 12 Mar 2006 19:07:09 -0500
-Message-ID: <IIEEICKJLNEPBBDJICNGAEKAKEAA.chuckmeade@mindspring.com>
+	id 1FIbRM-0001Wm-TY
+	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 20:01:45 -0500
+Message-ID: <4414BE02.3080300@singnet.com.sg>
+Date: Mon, 13 Mar 2006 08:34:10 +0800
+From: Terence Soh <gopher@singnet.com.sg>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-In-reply-to: <20060312221442.GB7525@wohnheim.fh-wedel.de>
+To: Russ Dill <russ.dill@gmail.com>, Josh Boyer <jwboyer@gmail.com>
+References: <E1FErAE-00004u-2M@canuck.infradead.org>	
+	<44079DE4.3070804@singnet.com.sg>	
+	<625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
+	<f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
+In-Reply-To: <f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: RE: cmdlinepart.c patch
+Subject: Re: Cramfs on NAND
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > ...
-> > The attached patch defines the "unspecified offset" value as 0xffffffff and
-> > makes the changes needed to support partitions that explicitly start at
-> > offset 0x0, but are not necessarily listed first on the cmdline.
->
-> I don't have any objections against your patch.  And seeing that it
-> was submitted at least three times without any other objections
-> either, it looks like it could go in.
->
-> And it also appears to indicate that few people care much about
-> cmdline.c. ;)
->
-> Any objections against inclusion?
+Hi,
 
-Hi Jörn,
+>>Yes, it's still true.  CRAMFS expects it's data to be contiguous so
+>>unless you have something similar to a flash translation layer that
+>>hides the bad blocks, insanity will ensue.
+FTL will not work for me because of the licensing issues :(.
 
-I received email on this patch from Atsushi Nemoto, who submitted the earlier
-patches for the same problem.  His patch has a couple of other nice features,
-such as using UINT_MAX rather than 0xffffffff.  So if you want to use his
-patch version that would be fine.
+>>Could you use a read-only JFFS2 partition?
+Besides the read-only characteristic, I'm also looking at fast mount 
+time. I guess I should take a look at YAFFS.
 
-Thanks for getting back to me on this patch.
+Question: Does a read-only JFFS2/YAFFS partition means that there will 
+not be any wear-levelling performed?
 
-Regards,
-Chuck
+> 
+> 
+> The other solution is to use an ftl ontop of the flash, and then put a
+> cramfs on that. Of course, that depends on you living somewhere where
+> algorithms are not restricted to those with the license to use them.
+> (iirc)
+> 
+
+Bye and thanks for your time,
+Terence.
