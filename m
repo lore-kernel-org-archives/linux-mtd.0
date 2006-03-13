@@ -1,21 +1,18 @@
-Received: from smtp42.singnet.com.sg ([165.21.103.146])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FIbRM-0001Wm-TY
-	for linux-mtd@lists.infradead.org; Sun, 12 Mar 2006 20:01:45 -0500
-Message-ID: <4414BE02.3080300@singnet.com.sg>
-Date: Mon, 13 Mar 2006 08:34:10 +0800
-From: Terence Soh <gopher@singnet.com.sg>
-MIME-Version: 1.0
-To: Russ Dill <russ.dill@gmail.com>, Josh Boyer <jwboyer@gmail.com>
-References: <E1FErAE-00004u-2M@canuck.infradead.org>	
-	<44079DE4.3070804@singnet.com.sg>	
-	<625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
-	<f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
-In-Reply-To: <f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FIhb8-0006kD-5m
+	for linux-mtd@lists.infradead.org; Mon, 13 Mar 2006 02:36:17 -0500
+From: Andrew Victor <andrew@sanpeople.com>
+To: Brian Stafford <brian@stafford.uklinux.net>
+In-Reply-To: <441496CE.3050302@stafford.uklinux.net>
+References: <441496CE.3050302@stafford.uklinux.net>
+Content-Type: text/plain
+Message-Id: <1142235187.8956.56.camel@fuzzie.sanpeople.com>
+Mime-Version: 1.0
+Date: 13 Mar 2006 09:33:07 +0200
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Cramfs on NAND
+Subject: Re: Building at91_nand.c for 2.6.15
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+hi Brian,
 
->>Yes, it's still true.  CRAMFS expects it's data to be contiguous so
->>unless you have something similar to a flash translation layer that
->>hides the bad blocks, insanity will ensue.
-FTL will not work for me because of the licensing issues :(.
+> I'm trying to build a 2.6.15.3 kernel for the AT91RM9200 patched with 
+> current mtd from CVS and 2.6.15-at91.patch.gz (in that order), however 
+> compilation fails on at91_nand.c because struct at91_nand_data is not 
+> defined.  I would have expected the declaration of this struct to be in 
+> one of the at91 header files but I cannot find it mentioned in any other 
+> source files.  Any idea where I should be looking?
 
->>Could you use a read-only JFFS2 partition?
-Besides the read-only characteristic, I'm also looking at fast mount 
-time. I guess I should take a look at YAFFS.
+It's defined in the 2.6.16-rc3-at91 patch.
+  http://maxim.org.za/AT91RM9200/2.6/2.6.16-rc3-at91.patch.gz
 
-Question: Does a read-only JFFS2/YAFFS partition means that there will 
-not be any wear-levelling performed?
+If you want to use it with 2.6.15, back-port the NAND stuff from the
+following files:
+   include/asm-arm/arch-at91rm9200/board.h
+   arch/arm/mach-at91rm9200/devices.c 
 
-> 
-> 
-> The other solution is to use an ftl ontop of the flash, and then put a
-> cramfs on that. Of course, that depends on you living somewhere where
-> algorithms are not restricted to those with the license to use them.
-> (iirc)
-> 
+Then in you board-specific file, you need to initialize a "struct
+at91_nand_data" structure, and call at91_add_device_nand() from your 
+board init code.  [Have a look at the board-dk.c code as an example]
 
-Bye and thanks for your time,
-Terence.
+
+Regards,
+  Andrew Victor
