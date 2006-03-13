@@ -1,20 +1,20 @@
-Received: from host-84-9-202-225.bulldogdsl.com ([84.9.202.225]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FIpaU-0006Yc-GO
-	for linux-mtd@lists.infradead.org; Mon, 13 Mar 2006 11:08:11 -0500
-Date: Mon, 13 Mar 2006 15:41:29 +0000
-From: Ben Dooks <ben-linux@fluff.org>
-To: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-Message-ID: <20060313154129.GA7957@home.fluff.org>
-References: <38F58D7B92CB20438DF49D28B572CC6F23BBEA@budgw09a.ww300.siemens.net>
-MIME-Version: 1.0
+Received: from cassiel.sirena.org.uk ([80.68.93.111])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FIsAh-0000Wt-D3
+	for linux-mtd@lists.infradead.org; Mon, 13 Mar 2006 13:53:39 -0500
+Date: Mon, 13 Mar 2006 18:47:30 +0000
+From: Mark Brown <broonie@sirena.org.uk>
+To: J?rn Engel <joern@wohnheim.fh-wedel.de>
+Message-ID: <20060313184729.GB19014@sirena.org.uk>
+References: <20060212170441.GA28427@xi.wantstofly.org>
+	<20060228191642.GB19811@xi.wantstofly.org>
+	<20060312221248.GA7525@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <38F58D7B92CB20438DF49D28B572CC6F23BBEA@budgw09a.ww300.siemens.net>
-Sender: Ben Dooks <ben@fluff.org.uk>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: SMC+vivi
+In-Reply-To: <20060312221248.GA7525@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
+Subject: Re: [less intrusive PATCH, RFC] don't load physmap if length is zero
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Mar 13, 2006 at 04:24:56PM +0100, Selmeci, Tamas wrote:
-> Hello!
-> 
-> Is anybody here who has some experience with SmartMedia Cards and Vivi?
-> (Especially on S3C2410?)
+On Sun, Mar 12, 2006 at 11:12:48PM +0100, J?rn Engel wrote:
+> On Tue, 28 February 2006 20:16:42 +0100, Lennert Buytenhek wrote:
 
-Do you have the following:
+> > I'd still prefer the platform driver patch to be applied, but having
+> > some kind of solution merged is better than no solution at all :-)
 
-1) The S3C2410 NAND driver compiled into the kernel
-2) Your board code adding the platform device for the NAND
+> Is there a good reason why you didn't just write your own mapping
+> driver?  Most people copy physmap.c, change a few things and use that
+> driver instead of physmap.c.  It does involve many copies of
+> essentially the same code, but that code is very simple and no sane
+> kernel should have more than one mapping driver included, so no object
+> code is duplicated.
 
-> My boot device is a 64MB SMC. This is partitioned with Vivi, which is
-> also the boot manager. These are the partitions:
-> 1. Vivi program code
-> 2. Vivi data
-> 3. Kernel image
-> 4. Root FS
-> 
-> Data is downloaded to the card via the developer board, using it's
-> specific download tool. 
-> 
-> Everything is OK until the point where I want to mount root fs. It seems
-> that the SMC is partitioned in the standard MTD-manner, but currently I
-> can't make my kernel mount the rootfs.I don't know if I have to enable
-> NFTL and FTL in 2.6.15-5 kernel in order to be able to mount the root fs
-> located on SMC. Currently they're enabled, but during the boot, the
-> kernel displays no message at all about MTD devices - I think it should,
-> because SMC is an MTD too... That's why the given kernel root parameters
-> (root=/dev/mtdblock/3, mtdblock3) are all useless.
-> 
-> What should I do? Does anybody has any idea?
-> 
-> Regards:
-> --
-> Tamas Selmeci
-> Siemens PSE HU
-> Tel.:    +36-1-471-3861
-> Email:   tamas.selmeci@siemens.com
-> Address: H-1143 Budapest, Gizella ut 51-59 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+It is reasonable to have multiple board variants with differing flash
+setups but still want them all to run the same kernel.  If you're using
+platform devices to tell the world about the rest of the differing fit
+information it's reasonable to also want to use it for the flash.
 
 -- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+"You grabbed my hand and we fell into it, like a daydream - or a fever."
