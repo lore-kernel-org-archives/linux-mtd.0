@@ -1,18 +1,20 @@
-Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FIhb8-0006kD-5m
-	for linux-mtd@lists.infradead.org; Mon, 13 Mar 2006 02:36:17 -0500
-From: Andrew Victor <andrew@sanpeople.com>
-To: Brian Stafford <brian@stafford.uklinux.net>
-In-Reply-To: <441496CE.3050302@stafford.uklinux.net>
-References: <441496CE.3050302@stafford.uklinux.net>
-Content-Type: text/plain
-Message-Id: <1142235187.8956.56.camel@fuzzie.sanpeople.com>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by pentafluge.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FIkMm-0003ZY-6b
+	for linux-mtd@lists.infradead.org; Mon, 13 Mar 2006 10:33:32 +0000
+Date: Mon, 13 Mar 2006 11:33:26 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Chuck Meade <chuckmeade@mindspring.com>
+Message-ID: <20060313103326.GA11768@wohnheim.fh-wedel.de>
+References: <20060312221442.GB7525@wohnheim.fh-wedel.de>
+	<IIEEICKJLNEPBBDJICNGAEKAKEAA.chuckmeade@mindspring.com>
 Mime-Version: 1.0
-Date: 13 Mar 2006 09:33:07 +0200
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <IIEEICKJLNEPBBDJICNGAEKAKEAA.chuckmeade@mindspring.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Building at91_nand.c for 2.6.15
+Subject: Re: cmdlinepart.c patch
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi Brian,
+On Sun, 12 March 2006 19:07:09 -0500, Chuck Meade wrote:
+> 
+> I received email on this patch from Atsushi Nemoto, who submitted the earlier
+> patches for the same problem.  His patch has a couple of other nice features,
+> such as using UINT_MAX rather than 0xffffffff.  So if you want to use his
+> patch version that would be fine.
 
-> I'm trying to build a 2.6.15.3 kernel for the AT91RM9200 patched with 
-> current mtd from CVS and 2.6.15-at91.patch.gz (in that order), however 
-> compilation fails on at91_nand.c because struct at91_nand_data is not 
-> defined.  I would have expected the declaration of this struct to be in 
-> one of the at91 header files but I cannot find it mentioned in any other 
-> source files.  Any idea where I should be looking?
+Can you send me his patch then?  Preferrably inline in the mail.
 
-It's defined in the 2.6.16-rc3-at91 patch.
-  http://maxim.org.za/AT91RM9200/2.6/2.6.16-rc3-at91.patch.gz
+Jörn
 
-If you want to use it with 2.6.15, back-port the NAND stuff from the
-following files:
-   include/asm-arm/arch-at91rm9200/board.h
-   arch/arm/mach-at91rm9200/devices.c 
-
-Then in you board-specific file, you need to initialize a "struct
-at91_nand_data" structure, and call at91_add_device_nand() from your 
-board init code.  [Have a look at the board-dk.c code as an example]
-
-
-Regards,
-  Andrew Victor
+-- 
+I don't understand it. Nobody does.
+-- Richard P. Feynman
