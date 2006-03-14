@@ -1,16 +1,17 @@
-Received: from mga01.intel.com ([192.55.52.88] helo=fmsmga101-1.fm.intel.com)
+Received: from nproxy.gmail.com ([64.233.182.202])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FOa7p-0003qv-RS
-	for linux-mtd@lists.infradead.org; Wed, 29 Mar 2006 07:50:22 -0500
-Content-class: urn:content-classes:message
+	id 1FJ4At-0002V1-3x
+	for linux-mtd@lists.infradead.org; Tue, 14 Mar 2006 02:42:38 -0500
+Received: by nproxy.gmail.com with SMTP id a27so74588nfc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 13 Mar 2006 23:42:32 -0800 (PST)
+Message-ID: <fd16d25f0603132342l37cecfc6o2b236a138036ca75@mail.gmail.com>
+From: "Sudhakar Rajashekhara" <sudhakar.raj@gmail.com>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6532D.6FFFA4AF"
-Date: Wed, 29 Mar 2006 13:36:44 +0100
-Message-ID: <39CC97884CA19A4D8D6296FE94357BCB04D9C0AE@swsmsx404>
-From: "Kolakowski, Mikolaj" <Mikolaj.Kolakowski@intel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: erase suspend functionality
+	boundary="----=_Part_2134_7509881.1142322152478"
+Subject: Hardware ECC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,94 +20,43 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Tue, 14 Mar 2006 07:42:40 -0000
 
-This is a multi-part message in MIME format.
-
-------_=_NextPart_001_01C6532D.6FFFA4AF
-Content-Type: text/plain;
-	charset="us-ascii"
+------=_Part_2134_7509881.1142322152478
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
 Hi,
 
-Anybody can explain how erase suspend should work from the macro
-perspective?
-I assume that when I delete huge file and JFFS2 starts erasing sectors
-then when I try to write small amount of data I shouldn't wait until all
-the sectors on a erase pending list will be erased? The write should
-stop erasing. Is it true?
+I am working on the NAND driver for an ARM based SoC which has Samsung
+K9K1208Q0C 64MB nand (Size of oobblock =3D 512 and Amount of oob data per
+block =3D 16). The driver is up and working. This nand chip is capable of
+generating hardware ECC. Now I want to integrate the Hardware ECC support
+into my NAND driver. How I should populate the "eccmode" and "options"
+fields of the nand_chip structure? Can I use NAND_HWECC_SYNDROME as one of
+the options?
 
-On my system I observe that erase suspend is supported but when I delete
-5MB file then copy of a small file (20 bytes) to the partition takes a
-few seconds. Is it a bug?
+Thanks in advance,
+Sudhakar
 
-Thank you,
-Mikolaj
-
-
-------_=_NextPart_001_01C6532D.6FFFA4AF
-Content-Type: text/html;
-	charset="us-ascii"
+------=_Part_2134_7509881.1142322152478
+Content-Type: text/html; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2//EN">
-<HTML>
-<HEAD>
-<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
-charset=3Dus-ascii">
-<META NAME=3D"Generator" CONTENT=3D"MS Exchange Server version =
-6.5.7638.1">
-<TITLE>erase suspend functionality</TITLE>
-</HEAD>
-<BODY>
-<!-- Converted from text/rtf format -->
+<div>Hi,</div>
+<div>&nbsp;</div>
+<div>I am working on the NAND driver for an ARM based SoC which has Samsung=
+ K9K1208Q0C 64MB nand (Size of oobblock =3D 512 and Amount of oob data per =
+block =3D 16). The driver is up and working. This nand chip is capable of g=
+enerating hardware ECC. Now I want to integrate the Hardware ECC support in=
+to&nbsp;my NAND&nbsp;driver. How I should populate the &quot;eccmode&quot; =
+and &quot;options&quot; fields of the nand_chip structure? Can I use NAND_H=
+WECC_SYNDROME as one of the options?
+</div>
+<div>&nbsp;</div>
+<div>Thanks in advance,</div>
+<div>Sudhakar</div>
 
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Hi,</FONT></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Anybody can explain how erase suspend should work from =
-the macro perspective?</FONT></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">I =
-assume that when I delet</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">e</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> huge file and</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">JFFS2 starts erasing sectors</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial"> then when I try to write small amount of data I =
-shouldn</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">&#8217;</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">t wait until all the sectors on a erase pending list will =
-be erased?</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial"> The write should stop =
-erasing. Is it true?</FONT></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">On my =
-system I observe that erase suspend is supported but when I delete 5MB =
-file then</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> =
-<FONT SIZE=3D2 FACE=3D"Arial">copy of a small file (20 bytes) to the =
-partition takes a few seconds. Is it a</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"> <FONT SIZE=3D2 =
-FACE=3D"Arial">bug</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">?</FONT></SPAN><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"><FONT SIZE=3D2 FACE=3D"Arial">Thank =
-you,</FONT></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"></SPAN><A NAME=3D""><SPAN =
-LANG=3D"en-us"><FONT SIZE=3D2 =
-FACE=3D"Arial">Mikolaj</FONT></SPAN></A><SPAN =
-LANG=3D"en-us"></SPAN><SPAN LANG=3D"en-us"></SPAN><SPAN =
-LANG=3D"en-us"></SPAN></P>
-
-<P ALIGN=3DLEFT><SPAN LANG=3D"en-us"></SPAN></P>
-
-</BODY>
-</HTML>
-------_=_NextPart_001_01C6532D.6FFFA4AF--
+------=_Part_2134_7509881.1142322152478--
