@@ -1,18 +1,24 @@
-Received: from gateway-1237.mvista.com ([63.81.120.158] helo=hermes.mvista.com)
+Received: from pproxy.gmail.com ([64.233.166.178])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FKION-0002bt-IF
-	for linux-mtd@lists.infradead.org; Fri, 17 Mar 2006 12:05:47 -0500
-Message-ID: <441AEAE0.1080609@mvista.com>
-Date: Fri, 17 Mar 2006 08:59:12 -0800
-From: Todd Poynor <tpoynor@mvista.com>
+	id 1FKKMg-0004Bf-MR
+	for linux-mtd@lists.infradead.org; Fri, 17 Mar 2006 14:12:00 -0500
+Received: by pproxy.gmail.com with SMTP id x31so1152843pye
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 17 Mar 2006 11:11:57 -0800 (PST)
+Message-ID: <f9d2a5e10603171104p4cf9b28es4f574ccdd08ab340@mail.gmail.com>
+Date: Fri, 17 Mar 2006 12:04:53 -0700
+From: "Russ Dill" <russ.dill@gmail.com>
+To: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
+In-Reply-To: <38F58D7B92CB20438DF49D28B572CC6F13C4A7@budgw09a.ww300.siemens.net>
 MIME-Version: 1.0
-To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-References: <20060317151241.GG28927@wohnheim.fh-wedel.de>
-In-Reply-To: <20060317151241.GG28927@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] move mtd_fake_writev where it belongs
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <38F58D7B92CB20438DF49D28B572CC6F13C4A4@budgw09a.ww300.siemens.net>
+	<6d6a94c50603170012l62ee51dfxe0b33166398ad88d@mail.gmail.com>
+	<38F58D7B92CB20438DF49D28B572CC6F13C4A7@budgw09a.ww300.siemens.net>
+Cc: linux-mtd@lists.infradead.org, Aubrey <aubreylee@gmail.com>
+Subject: Re: why can't kernel read from NAND/SMC device?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +28,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> Patch applies to current -linus.  Should I send it to akpm?
+> [can't mount root fs (cramfs) from SMC, complaining about ECC read errors=
+]
 
-But now it is no longer "fake" but in fact "default", no?
-
-
--- 
-Todd
+Wait, you are trying to store a kernel and cramfs filesystem on raw
+NAND flash? Chances are, they are each sitting on at least one bad
+sector. You need an FTL or YAFFS.
