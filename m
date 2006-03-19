@@ -1,24 +1,23 @@
-Received: from uproxy.gmail.com ([66.249.92.206])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FKRPV-0000lz-JL
-	for linux-mtd@lists.infradead.org; Fri, 17 Mar 2006 21:43:24 -0500
-Received: by uproxy.gmail.com with SMTP id o2so376852uge
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 17 Mar 2006 18:43:19 -0800 (PST)
-Message-ID: <43507b7c0603171843y6d903493o858837d22c50bdc9@mail.gmail.com>
-Date: Fri, 17 Mar 2006 20:43:17 -0600
-From: "Sean Kelley" <sean.sweng@gmail.com>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FL6QS-00027c-9B
+	for linux-mtd@lists.infradead.org; Sun, 19 Mar 2006 17:31:06 -0500
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1FL6QE-0001KV-JD
+	for linux-mtd@lists.infradead.org; Sun, 19 Mar 2006 23:30:50 +0100
+Received: from ool-4355be81.dyn.optonline.net ([67.85.190.129])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2006 23:30:50 +0100
+Received: from micah by ool-4355be81.dyn.optonline.net with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Sun, 19 Mar 2006 23:30:50 +0100
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <E1FErAE-00004u-2M@canuck.infradead.org>
-	<44079DE4.3070804@singnet.com.sg>
-	<625fc13d0603100506k31e3da28kd51f65712447165b@mail.gmail.com>
-	<f9d2a5e10603100936s43f3d7bdoe8d118b9009ff925@mail.gmail.com>
-Subject: Re: Cramfs on NAND
+From: Micah Anderson <micah@riseup.net>
+Date: Sun, 19 Mar 2006 18:28:39 +0000 (UTC)
+Message-ID: <slrne1r8ne.u13.micah@pond.riseup.net>
+Sender: news <news@sea.gmane.org>
+Subject: local redeclaration of name_to_dev_t in drivers/mtd/devices/blkmtd.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +27,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-U28gaXMgYSBOQU5EIGJhc2VkIEZUTCBmb3IgbGludXggZW5jdW1iZXJlZCB3aXRoIHBhdGVudHMv
-bGljZW5zaW5nIGJ5IE0tU3lzdGVtcz8KClNlYW4KCk9uIDMvMTAvMDYsIFJ1c3MgRGlsbCA8cnVz
-cy5kaWxsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPiA+IEkgaGVhciB0aGF0IGNyYW1mcyBvbiBOQU5E
-IGZsYXNoIGlzIG5vdCBhIGdvb2QgaWRlYSBiZWNhdXNlIG9mIHRoZSBiYWQKPiA+ID4gYmxvY2tz
-LiBJcyB0aGlzIHN0aWxsIHRydWU/IFRoZXJlIHdhcyB0YWxrcyBzb21lIHRpbWUgIGFnbyBhYm91
-dCBtYWtpbmcKPiA+ID4gY3JhbWZzIHdvcmsgb24gdG9wIG9uIE5BTkQuCj4gPiA+IDxodHRwOi8v
-bGlzdHMuaW5mcmFkZWFkLm9yZy9waXBlcm1haWwvbGludXgtbXRkLzIwMDQtTWF5LzAwOTc4NC5o
-dG1sPgo+ID4KPiA+IFllcywgaXQncyBzdGlsbCB0cnVlLiAgQ1JBTUZTIGV4cGVjdHMgaXQncyBk
-YXRhIHRvIGJlIGNvbnRpZ3VvdXMgc28KPiA+IHVubGVzcyB5b3UgaGF2ZSBzb21ldGhpbmcgc2lt
-aWxhciB0byBhIGZsYXNoIHRyYW5zbGF0aW9uIGxheWVyIHRoYXQKPiA+IGhpZGVzIHRoZSBiYWQg
-YmxvY2tzLCBpbnNhbml0eSB3aWxsIGVuc3VlLgo+ID4KPiA+ID4gSWYgdGhpcyBpcyB0cnVlLCBh
-cmUgdGhlcmUgYW55IHJlY29tbWVuZGF0aW9ucyBvZiB3aGF0IG90aGVyIGZzIHRvIHVzZS4KPiA+
-ID4gSSBhbHJlYWR5IGhhdmUgb25lIHBhcnRpdGlvbiBvZiBqZmZzMiB0byBzdG9yZSByZWFkLXdy
-aXRlIGZpbGVzLgo+ID4KPiA+IENvdWxkIHlvdSB1c2UgYSByZWFkLW9ubHkgSkZGUzIgcGFydGl0
-aW9uPwo+Cj4gVGhlIG90aGVyIHNvbHV0aW9uIGlzIHRvIHVzZSBhbiBmdGwgb250b3Agb2YgdGhl
-IGZsYXNoLCBhbmQgdGhlbiBwdXQgYQo+IGNyYW1mcyBvbiB0aGF0LiBPZiBjb3Vyc2UsIHRoYXQg
-ZGVwZW5kcyBvbiB5b3UgbGl2aW5nIHNvbWV3aGVyZSB3aGVyZQo+IGFsZ29yaXRobXMgYXJlIG5v
-dCByZXN0cmljdGVkIHRvIHRob3NlIHdpdGggdGhlIGxpY2Vuc2UgdG8gdXNlIHRoZW0uCj4gKGlp
-cmMpCj4KPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KPiBMaW51eCBNVEQgZGlzY3Vzc2lvbiBtYWlsaW5nIGxpc3QKPiBodHRwOi8vbGlzdHMu
-aW5mcmFkZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZC8KPgo=
+There is a local redeclaration of name_to_dev_t in
+drivers/mtd/devices/blkmtd.c:617 which is inconsistant with the
+function in mount.h.
+
+The way to fix this would be to remove the declaration and include the
+mount.h as the attached patch does.
+
+Note: this issue appears in 2.6.15 (and likely 2.6.16) and should be
+fixed there as well.
+
+Thanks,
+Micah
+
+--- drivers/mtd/devices/blkmtd.c	2006-01-02 22:21:10.000000000 -0500
++++ /usr/src/linux-source-2.6.15/drivers/mtd/devices/blkmtd.c	2006-03-17 19:03:21.000000000 -0500
+@@ -29,6 +29,7 @@
+ #include <linux/list.h>
+ #include <linux/init.h>
+ #include <linux/mtd/mtd.h>
++#include <linux/mount.h>
+ 
+ 
+ #define err(format, arg...) printk(KERN_ERR "blkmtd: " format "\n" , ## arg)
+@@ -614,8 +615,6 @@
+ }
+ 
+ 
+-extern dev_t __init name_to_dev_t(const char *line);
+-
+ static struct blkmtd_dev *add_device(char *devname, int readonly, int erase_size)
+ {
+ 	struct block_device *bdev;
