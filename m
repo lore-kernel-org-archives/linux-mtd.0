@@ -1,18 +1,18 @@
-Received: from mxs2.siemens.at ([194.138.12.133])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLFne-0001DR-1h
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 03:31:50 -0500
-Content-class: urn:content-classes:message
+Received: from petasus.ims.intel.com ([62.118.80.130])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FLL28-0005Rt-7r
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 09:07:02 -0500
+Message-ID: <441EB6F5.7020704@intel.com>
+Date: Mon, 20 Mar 2006 17:06:45 +0300
+From: "Alexey, Korolev" <alexey.korolev@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 20 Mar 2006 09:30:49 +0100
-Message-ID: <38F58D7B92CB20438DF49D28B572CC6F23BBED@budgw09a.ww300.siemens.net>
-From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-To: <igor.trevisan@bluewind.it>, <linux-mtd@lists.infradead.org>
+To: tglx@linutronix.de, linux-mtd@lists.infradead.org
+References: <1142181850.19916.507.camel@localhost.localdomain>
+In-Reply-To: <1142181850.19916.507.camel@localhost.localdomain>
+Content-Type: multipart/mixed; boundary="------------010205010109080309030403"
 Cc: 
-Subject: RE: jffs2 fs overload
+Subject: Re: [PATCH] Fixup in NAND bad block management +
+	fixofmisspring.(nand_base.c)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,29 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+This is a multi-part message in MIME format.
+--------------010205010109080309030403
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> I'm defining the flash partitions content for my target
-> and I need a rewritable flash area.
-> So I formatted and mounted a flash partition as jffs2.
-> What I noted is that, on a 1MByte flash area I loose
-> about 600K immediately. If I use the command df I see
-> that only 30less than 400k are really available.
-> Is it possible that this is the normal overload if a=20
-> format my flash partition with jffs2?
-> Or am I doing something wtong?
+Hello Thomas,
 
-I think this is normal, JFFS2 allocates inodes (as far as I know) in
-advance like ext2 also does - in case of a very small filesystem, this
-may lead to serious capacity waste... If my assumption is wrong,
-somebody please correct me.
+I appologize for delay. I was away on vacation.
 
-> Is there any good guide or document that can help me
-> building a jffs2 RW flash partition?
+I your point of view regarding BB mabnagement is clear.
+Fixup of badblockpos is rather suitable.
 
-I would make a filesystem on a host PC, and then make a jffs2 from it
-(mkjffs). The image can be written with a download tool.
+There was another very small fix for a missprint in nand_base.c. I think 
+it shouldn't raise many objections.
+If you don't have any would you please check in the patch below ?
 
-Bye
---
-Tamas Selmeci
+Thanks,
+Alexey
+
+
+
+
+
+
+
+
+--------------010205010109080309030403
+Content-Type: text/plain;
+ name="miss_print_fixup.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="miss_print_fixup.diff"
+
+diff -aur b/drivers/mtd/nand/nand_base.c c/drivers/mtd/nand/nand_base.c
+--- b/drivers/mtd/nand/nand_base.c	2006-02-09 20:05:28.447558688 +0300
++++ c/drivers/mtd/nand/nand_base.c	2006-02-09 20:14:58.182945744 +0300
+@@ -1700,7 +1710,7 @@
+ 			len += num;
+ 			fsbuf += num;
+ 		}
+-		ofs += mtd->oobavail;
++		ofs += mtd->oobsize;
+ 	}
+ 	return this->oob_buf;
+ }
+
+--------------010205010109080309030403--
