@@ -1,26 +1,20 @@
-Received: from pproxy.gmail.com ([64.233.166.178])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLFiG-0000z6-LY
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 03:26:09 -0500
-Received: by pproxy.gmail.com with SMTP id t32so1714498pyc
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Mar 2006 00:26:01 -0800 (PST)
-Message-ID: <f9d2a5e10603200026m3554fb35q2847dda09fa1defd@mail.gmail.com>
-Date: Mon, 20 Mar 2006 01:26:00 -0700
-From: "Russ Dill" <russ.dill@gmail.com>
-To: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-In-Reply-To: <38F58D7B92CB20438DF49D28B572CC6F13C4AC@budgw09a.ww300.siemens.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	id 1FLKBA-0004Rp-5v
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 08:12:20 -0500
+Date: Mon, 20 Mar 2006 14:11:51 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Todd Poynor <tpoynor@mvista.com>
+Message-ID: <20060320131151.GB31001@wohnheim.fh-wedel.de>
+References: <20060317151241.GG28927@wohnheim.fh-wedel.de>
+	<441AEAE0.1080609@mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-References: <38F58D7B92CB20438DF49D28B572CC6F13C4A4@budgw09a.ww300.siemens.net>
-	<6d6a94c50603170012l62ee51dfxe0b33166398ad88d@mail.gmail.com>
-	<38F58D7B92CB20438DF49D28B572CC6F13C4A7@budgw09a.ww300.siemens.net>
-	<f9d2a5e10603171104p4cf9b28es4f574ccdd08ab340@mail.gmail.com>
-	<38F58D7B92CB20438DF49D28B572CC6F13C4AC@budgw09a.ww300.siemens.net>
-Cc: linux-mtd@lists.infradead.org, Aubrey <aubreylee@gmail.com>
-Subject: Re: The solution for NAND/SMC on S3C2410 problems
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <441AEAE0.1080609@mvista.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] move mtd_fake_writev where it belongs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,19 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> For some reason, with correct root=3D kernel parameter, the kernel compla=
-ined about read errors (ECC), when it tried to mount the root partition. Wi=
-th hardware ECC, there were less, with SW ECC, there were more ECC-error me=
-ssages... It seems, that there are still bugs or misconfigurations in the E=
-CC-calculation algorithms in S3C2410, because after manually disabling ECC-=
-check, everything worked well, the root partition was mounted!!! (I saw som=
-e selections for ECC-calculations, maybe I'm gonna try them)
->
+On Fri, 17 March 2006 08:59:12 -0800, Todd Poynor wrote:
+> Jörn Engel wrote:
+> >Patch applies to current -linus.  Should I send it to akpm?
+> 
+> But now it is no longer "fake" but in fact "default", no?
 
-sigh...because you are pretty much garunteed that you'll have bad
-blocks on NAND, its part of the technology. The only place you'll get
-blocks that always work is in the bootloader area (on some chips, that
-are designed in this way).
+Or "generic", yeah.  I was lazy.  Do you care enough to send an
+updated patch?
 
-Read the data sheet for any NAND part. You can't store data on NAND
-flash like you can on NOR flash.
+Jörn
+
+-- 
+This above all: to thine own self be true.
+-- Shakespeare
