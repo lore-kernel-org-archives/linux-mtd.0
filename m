@@ -1,19 +1,18 @@
-Received: from sorrow.cyrius.com ([65.19.161.204])
-	by pentafluge.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLCCr-0007cb-6L
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 04:41:26 +0000
-Date: Mon, 20 Mar 2006 04:40:46 +0000
-From: Martin Michlmayr <tbm@cyrius.com>
-To: akpm@osdl.org
-Message-ID: <20060320044046.GJ20416@deprecation.cyrius.com>
-References: <20060320043802.GA20389@deprecation.cyrius.com>
+Received: from mxs2.siemens.at ([194.138.12.133])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FLFne-0001DR-1h
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 03:31:50 -0500
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060320043802.GA20389@deprecation.cyrius.com>
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 10/12] [MTD] LASAT depends on MTD_CFI
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 20 Mar 2006 09:30:49 +0100
+Message-ID: <38F58D7B92CB20438DF49D28B572CC6F23BBED@budgw09a.ww300.siemens.net>
+From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
+To: <igor.trevisan@bluewind.it>, <linux-mtd@lists.infradead.org>
+Cc: 
+Subject: RE: jffs2 fs overload
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following difference was found between the mainline and linux-mips
-kernel.  LASAT depends on MTD_CFI.
+Hello!
 
-Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
+> I'm defining the flash partitions content for my target
+> and I need a rewritable flash area.
+> So I formatted and mounted a flash partition as jffs2.
+> What I noted is that, on a 1MByte flash area I loose
+> about 600K immediately. If I use the command df I see
+> that only 30less than 400k are really available.
+> Is it possible that this is the normal overload if a=20
+> format my flash partition with jffs2?
+> Or am I doing something wtong?
 
+I think this is normal, JFFS2 allocates inodes (as far as I know) in
+advance like ext2 also does - in case of a very small filesystem, this
+may lead to serious capacity waste... If my assumption is wrong,
+somebody please correct me.
 
---- linux-2.6/drivers/mtd/maps/Kconfig	2006-03-05 19:35:04.000000000 +0000
-+++ mips.git/drivers/mtd/maps/Kconfig	2006-03-05 18:51:15.000000000 +0000
-@@ -200,8 +200,8 @@
- 	  Support for the flash chip on Tsunami TIG bus.
- 
- config MTD_LASAT
--	tristate "Flash chips on LASAT board"
--	depends on LASAT
-+	tristate "LASAT flash device"
-+	depends on LASAT && MTD_CFI
- 	help
- 	  Support for the flash chips on the Lasat 100 and 200 boards.
- 
+> Is there any good guide or document that can help me
+> building a jffs2 RW flash partition?
 
--- 
-Martin Michlmayr
-http://www.cyrius.com/
+I would make a filesystem on a host PC, and then make a jffs2 from it
+(mkjffs). The image can be written with a download tool.
+
+Bye
+--
+Tamas Selmeci
