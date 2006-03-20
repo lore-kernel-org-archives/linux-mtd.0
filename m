@@ -1,22 +1,15 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from assei2bl6.telenet-ops.be ([195.130.133.69])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLN1x-0007cX-4i
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 11:15:04 -0500
-Received: from xanadu.home ([74.56.105.38]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IWF0070OP4QJUI0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 11:14:50 -0500 (EST)
-Date: Mon, 20 Mar 2006 11:14:50 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <61285.58.105.227.226.1142567282.squirrel@58.105.227.226>
-To: yh@bizmail.com.au
-Message-id: <Pine.LNX.4.64.0603201110240.3631@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <61285.58.105.227.226.1142567282.squirrel@58.105.227.226>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Intel P30 flash support
+	id 1FLQRV-00028m-Aj
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 14:53:30 -0500
+To: linux-mtd@lists.infradead.org
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Mon, 20 Mar 2006 20:53:38 +0100
+Message-ID: <87hd5slwot.fsf@48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] mtd/redboot: Handle holes in fis table
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +19,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 17 Mar 2006, yh@bizmail.com.au wrote:
+Hi,
 
-> Hello,
-> 
-> Thanks for your response. I am sorry, it was my mistake, I was asking for
-> Intel P30 flash. But, if you did mean that the MTD should support Intel
-> P30 flash, could you please let me know which version of MTD suports P30?
-> I am currently using mtd_20011217, what the patch I need, or do I have to
-> use the latest version of the MTD?
+Redboot simply sets the first character of a fis entry to 0xff on
+"fis delete". The kernel redboot parser stops parsing on such an
+entry, and without this patch any entries after a deleted image would
+not be detected.
 
-Please realize that mtd_20011217 means it was released on december 17th 
-of 2001, i.e. more than four years ago.  I'm not even sure P30 flash 
-existed back then.
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+--
 
-Using the latest version should obviously be the first thing to try.
+ drivers/mtd/redboot.c |    6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-
-Nicolas
+Index: linux/drivers/mtd/redboot.c
+===================================================================
+--- linux.orig/drivers/mtd/redboot.c	2006-03-20 15:54:37.000000000 +0100
++++ linux/drivers/mtd/redboot.c	2006-03-20 16:00:06.000000000 +0100
+@@ -85,10 +85,6 @@
+ 
+ 	numslots = (master->erasesize / sizeof(struct fis_image_desc));
+ 	for (i = 0; i < numslots; i++) {
+-		if (buf[i].name[0] == 0xff) {
+-			i = numslots;
+-			break;
+-		}
+ 		if (!memcmp(buf[i].name, "FIS directory", 14)) {
+ 			/* This is apparently the FIS directory entry for the
+ 			 * FIS directory itself.  The FIS directory size is
+@@ -128,7 +124,7 @@
+ 		struct fis_list *new_fl, **prev;
+ 
+ 		if (buf[i].name[0] == 0xff)
+-			break;
++			continue;
+ 		if (!redboot_checksum(&buf[i]))
+ 			break;
+ 
+-- 
+Bye, Peter Korsgaard
