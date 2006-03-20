@@ -1,17 +1,22 @@
-Received: from lotus.glocalnet.net ([213.163.128.201])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLSq0-0004z0-8d
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 17:26:58 -0500
-Date: Mon, 20 Mar 2006 23:04:44 +0100
-To: Nicolas Pitre <nico@cam.org>
+	id 1FLSyp-0005Go-VA
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 17:36:10 -0500
+Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR003.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTPA id <0IWG00IBP6RJ9930@VL-MO-MR003.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 17:36:03 -0500 (EST)
+Date: Mon, 20 Mar 2006 17:35:43 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <ops6qfl6emoeqxpi@privat.utfors.se>
+To: Tomas <Tomas2003@home.se>
+Message-id: <Pine.LNX.4.64.0603201735160.3631@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 References: <1142865089.c65a3380tomas2003@home.se>
 	<Pine.LNX.4.64.0603201102430.3631@localhost.localdomain>
-From: Tomas <Tomas2003@home.se>
-Content-Type: text/plain; format=flowed; charset=iso-8859-15
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Message-ID: <ops6qfl6emoeqxpi@privat.utfors.se>
-In-Reply-To: <Pine.LNX.4.64.0603201102430.3631@localhost.localdomain>
+	<ops6qfl6emoeqxpi@privat.utfors.se>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: cfi 0001
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,62 +28,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre <nico@cam.org> skrev den Mon, 20 Mar 2006 11:08:19 -0500 
-(EST):
-Hi,
+On Mon, 20 Mar 2006, Tomas wrote:
 
-> On Mon, 20 Mar 2006, Tomas E wrote:
->
->> Hi,
->>
->> I have a problem with writing to a Intel Strata flash
->> and then doing a warm reset.
->
-> How do you "warm reset" ?
+> Nicolas Pitre <nico@cam.org> skrev den Mon, 20 Mar 2006 11:08:19 -0500 (EST):
+> Hi,
+> 
+> > On Mon, 20 Mar 2006, Tomas E wrote:
+> > 
+> > > Hi,
+> > > 
+> > > I have a problem with writing to a Intel Strata flash
+> > > and then doing a warm reset.
+> > 
+> > How do you "warm reset" ?
+> 
+> I use the at91rm9200 built in watchdog on a custom board, which is very
+> convient but there is no external pin from the watchdog to make the
+> a reset of the flash.
 
-I use the at91rm9200 built in watchdog on a custom board, which is very
-convient but there is no external pin from the watchdog to make the
-a reset of the flash.
+You mean from include/asm-arm/arch-at91rm9200/system.h:
 
-The flash has several partitions starting with the bootloader and
-an other partition in the same flash is the jffs2 area.
+static inline void arch_reset(char mode)
+{
+        /*
+         * Perform a hardware reset with the use of the Watchdog timer.
+         */
+        at91_sys_write(AT91_ST_WDMR, AT91_ST_RSTEN | AT91_ST_EXTEN | 1);
+        at91_sys_write(AT91_ST_CR, AT91_ST_WDRST);
+}
 
->
->> When I do a simple write echo "xxxx" > /MyFlash/test.text the flash
->> writes but remain in the state that only 0080 can be read when I
->> ioremap some address in the flash.
->>
->> My problem is that the bootcode also exist in the flash so if the
->> watchdog resets the everything just hang.
->
-> How does the watchdog perform its reset?
+then it is usually called from machine_restart() in 
+arch/arm/kernel/process.c...
 
-As described above no reset on external hw (but on periphial on the chip)
-then ??? puts pc=0 where the flash is supposed to be located.
+which is called from kernel_restart() in kernel/sys.c...
 
->
->> Is this a expected behavior or shouldn't a write put the flash in a
->> readable state (on a hardware level)?
->
-> Normally, the flash is put back into read mode with cfi_intelext_reset()
-> through a reboot notifier handler, assuming of course that you're
-> using a standard kernel interface to reboot your system.
+But kernel_restart() has called kernel_restart_prepare() which calls 
+notifier_call_chain(&reboot_notifier_list, SYS_RESTART, cmd)...
+ 
+And incidentally one of those reboot notifiers is cfi_intelext_reboot() 
+in drivers/mtd/chips/cfi_cmdset_0001.c which calls cfi_intelext_reset() 
+... which has this comment:
 
-A normal reset power on/off works well but the problem is this watchdog.
-Since there is no reset from the watchdog to the flash. I dont think I
-cannot do anything useful before this warm reset.
+		/* force the completion of any ongoing operation
+		   and switch to array mode so any bootloader in
+		   flash is accessible for soft reboot. */
 
-I was hoping to minimize the time when the flash was in a non readable
-state but with jffs2/mtdblock/cfi and caching/buffering is there anything
-that can be done?
+That looks like what you need already.
 
->
->> What should I do to debug this?
->
-> First you should tell us a bit more about your board reset.
->
->
-> Nicolas
->
 
-Tomas
+Nicolas
