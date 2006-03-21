@@ -1,27 +1,25 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLmfv-0000VM-U2
-	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 14:37:56 -0500
-Received: from xanadu.home ([74.56.105.38]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IWH00A22T70H170@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 14:37:48 -0500 (EST)
-Date: Tue, 21 Mar 2006 14:37:48 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1142967444.13740.9.camel@sauron.oktetlabs.ru>
-To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-id: <Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
+	id 1FLnPZ-0001IQ-GP
+	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 15:25:11 -0500
+Date: Tue, 21 Mar 2006 21:24:42 +0100
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Nicolas Pitre <nico@cam.org>
+Message-ID: <20060321202442.GA31992@wohnheim.fh-wedel.de>
 References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
 	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
 	<442041BE.9070407@intel.com>
 	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>,
+	<Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
+Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
 	linux-mtd@lists.infradead.org, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>
+	Timofey" <timofey.kutergin@intel.com>, "Korolev,
+	Alexey" <alexey.korolev@intel.com>
 Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,18 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 Mar 2006, Artem B. Bityutskiy wrote:
+On Tue, 21 March 2006 14:37:48 -0500, Nicolas Pitre wrote:
+> On Tue, 21 Mar 2006, Artem B. Bityutskiy wrote:
+> > On Tue, 2006-03-21 at 21:11 +0300, Alexander Belyakov wrote:
+> > > Striped mtd device erasesize is an erasesize of subdevice multiplied by 
+> > > number of subdevices (in case of equal erasesize subdevices). As 
+> > > erasesize is commonly considered as a power-of-2 number it is not good 
+> > > idea to use 3, 5, etc devices.
+> > Why? I don't see any thing bad with having 3*128KiB eraseblock size...
+> 
+> I agree with you ....... as long as someone is willing to audit all MTD 
+> client code to certify that no assumption about erase block sizes being 
+> a power of 2 is present.
 
-> On Tue, 2006-03-21 at 21:11 +0300, Alexander Belyakov wrote:
-> > Striped mtd device erasesize is an erasesize of subdevice multiplied by 
-> > number of subdevices (in case of equal erasesize subdevices). As 
-> > erasesize is commonly considered as a power-of-2 number it is not good 
-> > idea to use 3, 5, etc devices.
-> Why? I don't see any thing bad with having 3*128KiB eraseblock size...
+Hasn't that already been done for dataflash?  As long as some people
+still use dataflash, we have people (un?)willingly testing this.
 
-I agree with you ....... as long as someone is willing to audit all MTD 
-client code to certify that no assumption about erase block sizes being 
-a power of 2 is present.
+Jörn
 
-
-Nicolas
+-- 
+The story so far:
+In the beginning the Universe was created.  This has made a lot
+of people very angry and been widely regarded as a bad move.
+-- Douglas Adams
