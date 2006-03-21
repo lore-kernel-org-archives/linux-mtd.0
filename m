@@ -1,20 +1,28 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLmDc-0008Mf-Pq
-	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 14:08:40 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: "Belyakov, Alexander" <alexander.belyakov@intel.com>
-In-Reply-To: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FLmfv-0000VM-U2
+	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 14:37:56 -0500
+Received: from xanadu.home ([74.56.105.38]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IWH00A22T70H170@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 14:37:48 -0500 (EST)
+Date: Tue, 21 Mar 2006 14:37:48 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <1142967444.13740.9.camel@sauron.oktetlabs.ru>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-id: <Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-Content-Type: text/plain
-Date: Tue, 21 Mar 2006 22:08:04 +0300
-Message-Id: <1142968084.13740.19.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	"Kutergin, Timofey" <timofey.kutergin@intel.com>
+	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
+	<442041BE.9070407@intel.com>
+	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
+Cc: Alexander Belyakov <alexander.belyakov@intel.com>, "Korolev,
+	Alexey" <alexey.korolev@intel.com>,
+	linux-mtd@lists.infradead.org, "Kutergin,
+	Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +32,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-03-21 at 15:36 +0300, Belyakov, Alexander wrote:
-> Hello,
-> 
-> attached diff file is a patch to be applied on MTD snapshot 20060315
-> introducing striping feature for Linux MTD. Despite striping
-> is well known feature is was not implemented in MTD for some reason.
-> We did it and ready to share with community. Hope, striping will find
-> its
-> place in Linux MTD.
+On Tue, 21 Mar 2006, Artem B. Bityutskiy wrote:
 
-More questions about how do you handle bad blocks. I do not look to the
-source code so far. Actually I believe you should write a short text
-file with some documentation...
+> On Tue, 2006-03-21 at 21:11 +0300, Alexander Belyakov wrote:
+> > Striped mtd device erasesize is an erasesize of subdevice multiplied by 
+> > number of subdevices (in case of equal erasesize subdevices). As 
+> > erasesize is commonly considered as a power-of-2 number it is not good 
+> > idea to use 3, 5, etc devices.
+> Why? I don't see any thing bad with having 3*128KiB eraseblock size...
 
-1. In case of NAND concatenation, what do you do with bad eraseblocks?
-Say, you stripe 2 NAND flashes, and the fist one has bad eraseblock 0,
-and the second one has bad eraseblock 1? Am I right that in this case
-you'll just waste eraseblock 0 of chip 1 and eraseblock 1 of chip 0?
-
-2. Suppose we have a stripped device mtd2 which stripes mtd0 and mtd1.
-Suppose user calls mtd2->block_mark_bad(N) (the block_mark_bad(N) method
-of the mtd2 device). Your actions? Will you mark eraseblock N of both
-mtd0 and mtd1 as bad physically? Note, actually only one of them became
-bad...
+I agree with you ....... as long as someone is willing to audit all MTD 
+client code to certify that no assumption about erase block sizes being 
+a power of 2 is present.
 
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Nicolas
