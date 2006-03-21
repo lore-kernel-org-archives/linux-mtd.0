@@ -1,16 +1,18 @@
-Received: from alephnull.demon.nl ([83.160.184.112] helo=xi.wantstofly.org)
+Received: from lotus.glocalnet.net ([213.163.128.201])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLebA-0006zE-U9
-	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 06:00:28 -0500
-Date: Tue, 21 Mar 2006 12:00:20 +0100
-From: Lennert Buytenhek <buytenh@wantstofly.org>
+	id 1FLfIn-0007gv-EW
+	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 06:45:41 -0500
 To: linux-mtd@lists.infradead.org
-Message-ID: <20060321110020.GB9282@xi.wantstofly.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: 
-Subject: [PATCH] ixp2000 map: remove unused nr_banks variable
+References: <1142865089.c65a3380tomas2003@home.se>
+	<Pine.LNX.4.64.0603201102430.3631@localhost.localdomain>
+Message-ID: <ops6rhi7cvoeqxpi@privat.utfors.se>
+From: Tomas <Tomas2003@home.se>
+Content-Type: text/plain; format=flowed; charset=iso-8859-15
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Date: Tue, 21 Mar 2006 12:43:45 +0100
+In-Reply-To: <Pine.LNX.4.64.0603201102430.3631@localhost.localdomain>
+Subject: Re: cfi 0001
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,25 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
+Hi,
 
-Index: linux-2.6.16/drivers/mtd/maps/ixp2000.c
-===================================================================
---- linux-2.6.16.orig/drivers/mtd/maps/ixp2000.c
-+++ linux-2.6.16/drivers/mtd/maps/ixp2000.c
-@@ -42,7 +42,6 @@ struct ixp2000_flash_info {
- 	struct		map_info map;
- 	struct		mtd_partition *partitions;
- 	struct		resource *res;
--	int		nr_banks;
- };
- 
- static inline unsigned long flash_bank_setup(struct map_info *map, unsigned long ofs)
-@@ -183,7 +182,6 @@ static int ixp2000_flash_probe(struct pl
- 	 */
- 	info->map.phys = NO_XIP;
- 
--	info->nr_banks = ixp_data->nr_banks;
- 	info->map.size = ixp_data->nr_banks * window_size;
- 	info->map.bankwidth = 1;
- 
+There are 2 things that I didn't expect:
+
+First that the flash allways seems to be in non-readable
+state after a write. It will not change state until a read
+is performed. This might be by design for performance?
+The cfi-driver uses the buffered write and then
+returns. Next time the cfi-driver is called it checks
+if the operation done before was completed
+and issue the current task?
+
+The second thing is that it whole flash is put
+into a non-readable state in a write operation.
+I have partition the flash in several partition
+by using physmap. I don't know how the cfi flash
+works but shoudn't it be possible to work on sector basis?
+
+Thanks in advance, Tomas
