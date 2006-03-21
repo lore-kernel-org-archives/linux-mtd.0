@@ -1,18 +1,16 @@
-Received: from petasus.ims.intel.com ([62.118.80.130])
+Received: from smtp3.home.se ([212.78.199.23])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLL28-0005Rt-7r
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 09:07:02 -0500
-Message-ID: <441EB6F5.7020704@intel.com>
-Date: Mon, 20 Mar 2006 17:06:45 +0300
-From: "Alexey, Korolev" <alexey.korolev@intel.com>
+	id 1FLbAT-0003eX-Va
+	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 02:20:42 -0500
+From: "Tomas E" <tomas2003@home.se>
+To: x0nishan@ti.com
+Date: Tue, 21 Mar 2006 08:20:04 +0100
 MIME-Version: 1.0
-To: tglx@linutronix.de, linux-mtd@lists.infradead.org
-References: <1142181850.19916.507.camel@localhost.localdomain>
-In-Reply-To: <1142181850.19916.507.camel@localhost.localdomain>
-Content-Type: multipart/mixed; boundary="------------010205010109080309030403"
-Cc: 
-Subject: Re: [PATCH] Fixup in NAND bad block management +
-	fixofmisspring.(nand_base.c)
+Message-ID: <1142925604.72140700tomas2003@home.se>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, nico@cam.org
+Subject: Re: RE: cfi 0001
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------010205010109080309030403
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello Thomas,
+Hi,=20
 
-I appologize for delay. I was away on vacation.
+>Tomas,
+> First you should tell us a bit more about your board reset.
+>Just confirm if the warm-reset is linked to the reset pin of strata NOR.
 
-I your point of view regarding BB mabnagement is clear.
-Fixup of badblockpos is rather suitable.
+The at91rm9200 has a built in hardware watchdog which has no external=20
+pin to make use of for a reset of the flash.
 
-There was another very small fix for a missprint in nand_base.c. I think 
-it shouldn't raise many objections.
-If you don't have any would you please check in the patch below ?
-
-Thanks,
-Alexey
+The flash is the intel strata 28F640 (rev C)
 
 
 
+>CFI command sequences can put the NOR flash into a >state(e.g. in
+>buffered write) where the flash contents are not >visible. If the CPU
+>resets in the middle of this process and the NOR flash >is not reset back
+>to the reset state, and the first instruction is being >executed from
+>NOR, then you might face a state where even your >bootloader does not
+
+Yes, I think this is the case but every time I ioremap the flash
+0080 show up. I only write a small file but I could never see the
+0080 go away.=20
+
+I expected the flash to become in a readable state
+after a while when the write operation was done.
 
 
+>work - this is not a fault of the driver or the flash,=20
+>rather is a problem with the board's signal routing as such.
 
+Yes this is a problem as well. As long as there is no external reset 
+of the flash there is no 100% garantee but I would like to 
+minimize the problem.
 
+>
+>Regards,
+>Nishanth Menon
 
---------------010205010109080309030403
-Content-Type: text/plain;
- name="miss_print_fixup.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="miss_print_fixup.diff"
-
-diff -aur b/drivers/mtd/nand/nand_base.c c/drivers/mtd/nand/nand_base.c
---- b/drivers/mtd/nand/nand_base.c	2006-02-09 20:05:28.447558688 +0300
-+++ c/drivers/mtd/nand/nand_base.c	2006-02-09 20:14:58.182945744 +0300
-@@ -1700,7 +1710,7 @@
- 			len += num;
- 			fsbuf += num;
- 		}
--		ofs += mtd->oobavail;
-+		ofs += mtd->oobsize;
- 	}
- 	return this->oob_buf;
- }
-
---------------010205010109080309030403--
+Tomas
