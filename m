@@ -1,24 +1,18 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
+	helo=nonameb.ptu.promise.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLSyp-0005Go-VA
-	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 17:36:10 -0500
-Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR003.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTPA id <0IWG00IBP6RJ9930@VL-MO-MR003.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 17:36:03 -0500 (EST)
-Date: Mon, 20 Mar 2006 17:35:43 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <ops6qfl6emoeqxpi@privat.utfors.se>
-To: Tomas <Tomas2003@home.se>
-Message-id: <Pine.LNX.4.64.0603201735160.3631@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <1142865089.c65a3380tomas2003@home.se>
-	<Pine.LNX.4.64.0603201102430.3631@localhost.localdomain>
-	<ops6qfl6emoeqxpi@privat.utfors.se>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: cfi 0001
+	id 1FLUNx-0006WC-L3
+	for linux-mtd@lists.infradead.org; Mon, 20 Mar 2006 19:06:09 -0500
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 20 Mar 2006 16:06:15 -0800
+Message-ID: <B70A50D07063384EB9BCE3330D18414F024CCD28@nonameb.ptu.promise.com>
+From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: boot issue.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,52 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 20 Mar 2006, Tomas wrote:
+Hello Team:
+This may or may not be only related to MTD, but chances are someone
+would be knowing
+solutions for my case.
 
-> Nicolas Pitre <nico@cam.org> skrev den Mon, 20 Mar 2006 11:08:19 -0500 (EST):
-> Hi,
-> 
-> > On Mon, 20 Mar 2006, Tomas E wrote:
-> > 
-> > > Hi,
-> > > 
-> > > I have a problem with writing to a Intel Strata flash
-> > > and then doing a warm reset.
-> > 
-> > How do you "warm reset" ?
-> 
-> I use the at91rm9200 built in watchdog on a custom board, which is very
-> convient but there is no external pin from the watchdog to make the
-> a reset of the flash.
+I have a compressed ext2 filesystem on a FLASH partition which I would
+like
+to use as a root file system mounted in RAM. The FLASH is accessed via
+MTD layer.
 
-You mean from include/asm-arm/arch-at91rm9200/system.h:
+The kernel parameters are "console=3DttyS0,115200  noinitrd mem=3D128M
+root=3D/dev/mtdblock5"
+But kernel panics saying "VFS: Cannot mount root unknown device (31,5)".
 
-static inline void arch_reset(char mode)
-{
-        /*
-         * Perform a hardware reset with the use of the Watchdog timer.
-         */
-        at91_sys_write(AT91_ST_WDMR, AT91_ST_RSTEN | AT91_ST_EXTEN | 1);
-        at91_sys_write(AT91_ST_CR, AT91_ST_WDRST);
-}
+If I were to use cramfs on FLASH and use the same kernel command line,
+I am able to bringup the system.I am using 2.6 linux.
 
-then it is usually called from machine_restart() in 
-arch/arm/kernel/process.c...
+Would anyone know about this issue? Is there any thing I got to do?
+Any pointers would be helpful.
 
-which is called from kernel_restart() in kernel/sys.c...
-
-But kernel_restart() has called kernel_restart_prepare() which calls 
-notifier_call_chain(&reboot_notifier_list, SYS_RESTART, cmd)...
- 
-And incidentally one of those reboot notifiers is cfi_intelext_reboot() 
-in drivers/mtd/chips/cfi_cmdset_0001.c which calls cfi_intelext_reset() 
-... which has this comment:
-
-		/* force the completion of any ongoing operation
-		   and switch to array mode so any bootloader in
-		   flash is accessible for soft reboot. */
-
-That looks like what you need already.
-
-
-Nicolas
+Thanks,
+-LN
