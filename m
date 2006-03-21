@@ -1,21 +1,19 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLiwV-0003Js-Q3
-	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 10:39:47 -0500
-Date: Tue, 21 Mar 2006 16:37:51 +0100
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+	id 1FLjBG-0004GN-Rd
+	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 10:54:03 -0500
+Message-ID: <442017B0.4010508@ru.mvista.com>
+Date: Tue, 21 Mar 2006 18:11:44 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
 To: Alexander Belyakov <alexander.belyakov@intel.com>
-Message-ID: <20060321153751.GC8512@wohnheim.fh-wedel.de>
-References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-	<44200736.5010102@ru.mvista.com> <44201084.3000708@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>	<44200736.5010102@ru.mvista.com>
+	<44201084.3000708@intel.com>
 In-Reply-To: <44201084.3000708@intel.com>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>,
-	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Kutergin, Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,26 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 21 March 2006 17:41:08 +0300, Alexander Belyakov wrote:
-> 
-> [TOFU*]
+Alexander Belyakov wrote:
+
+> Vitaly,
 >
-> Vitaly Wool wrote:
-> >
-> > [TOFU*]
+> 1. No. Striping itself does not kill XIP. But it's true that using XIP 
+> with striped volume will not give any performance increase.
 
-How about you both go and read
-http://www.infradead.org/~dwmw2/email.html
-before you continue.
+I'm quite unsure that XIP will be working on any other platform that 
+yours if your changes are applied, sorry.
 
-That or unsubscribe yourself from the list.
+> 2. Please note, that mtdstripe.c is a just another middle layer module 
+> as mtdconcat.c or mtdpart.c, for example. It can be used on top of ANY 
+> command set.
 
-*) TOFU: Text oben, Fullquote unten
-   oben: German for "on top"
-   unten: "German for "on the bottom"
+So why didn't you provide a comprehensive patch for all the command sets?
 
-Jörn
+>
+> As it was described in original message, we have to provide correct 
+> thread switching process - it is NOT striping problem but more generic 
+> one. We have fixed it in cfi_cmdset_0001.c. And it can be fixed (CPT) 
+> or workarounded (Priority switching and udelay modification) for other 
+> command sets. CPT (Common polling thread) has also been made as 
+> turnable module so anyone in any command set implementation could use it.
 
--- 
-This above all: to thine own self be true.
--- Shakespeare
+What PREEMPT_ modes did you test it with?
+
+>
+> Another important thing to be mentioned. The patch below was validated 
+> on 4 different Intel flash chips (including Sibley) on arm-based 
+> platform. It works and gives up to 85% performance increase on two 
+> independent chips in system.
+
+...on Intel ARM-like platform, I need to add. No other ARM platforms, I 
+guess :P
+
+We had a somewhat heated discussion on your changes in IRC :)
+My POV is -- the idea itself definitely has some added value but I'm not 
+sure if incorporating it into the main MTD code is a good idea.
+I still think that having a lot of NOR flash erase cases means either HW 
+or SW design mistake. And striping might be not a really necessary thing 
+if the number of erase cases is small.
+
+The implementation itself seems to be quite inmature and leaves a lot of 
+questions - starting from what command-line parameters do mean and 
+ending up with how it's supposed to work in a workload environment, 
+given the threads etc. etc. Maybe it slows down the performance of the 
+whole system, even though it does speed up the block erase.
+
+Vitaly
