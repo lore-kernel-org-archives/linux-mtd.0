@@ -1,28 +1,18 @@
-Received: from [80.250.169.156] (helo=shelob.oktetlabs.ru)
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FM6Ef-0005bm-T2
-	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 11:31:13 -0500
+	id 1FM6pF-0006a5-7O
+	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 12:08:54 -0500
 From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Alexander Belyakov <alexander.belyakov@intel.com>
-In-Reply-To: <442179EB.9050605@intel.com>
+To: "Belyakov, Alexander" <alexander.belyakov@intel.com>
+In-Reply-To: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
 References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
-	<442041BE.9070407@intel.com>
-	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
-	<Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
-	<442111B5.6090308@yandex.ru> <442161C3.80604@intel.com>
-	<1143038877.29683.10.camel@sauron.oktetlabs.ru>	<442168D3.70302@intel.com>
-	<1143040557.29683.14.camel@sauron.oktetlabs.ru>
-	<44216F99.9040304@intel.com> <44217124.20607@ru.mvista.com>
-	<442179EB.9050605@intel.com>
 Content-Type: text/plain
-Date: Wed, 22 Mar 2006 19:30:21 +0300
-Message-Id: <1143045021.29683.36.camel@sauron.oktetlabs.ru>
+Date: Wed, 22 Mar 2006 20:08:16 +0300
+Message-Id: <1143047296.29683.44.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, Nicolas Pitre <nico@cam.org>,
-	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Kutergin, Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,26 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-03-22 at 19:23 +0300, Alexander Belyakov wrote:
-> as I have already said concatenation is like JBOD in the world of hard 
-> drives. JBOD means "just a bunch of disks". Meanwhile striping is like 
-> RAID level 0. As you may know JBOD and RAID0 are completely different. 
-> Concatenation and striping have only one common thing - each of them 
-> makes larger devices. That's all. All the rest are different including 
-> new device parameters, writing, reading, erasing routines. Note, that 
-> concatenation layer writes/erases/etc from the caller thread, meanwhile 
-> striping layer do this from several separate threads, splitting 
-> operations by special algorithm.
+On Tue, 2006-03-21 at 15:36 +0300, Belyakov, Alexander wrote:
+> Hello,
 > 
-> Moreover the idea is different. Concatenation only purpose is to make 
-> larger device from several smaller devices. Striping purpose is to make 
-> devices operate faster.
->From this I see that I have to study RAID stuff before looking at your
-patch. This is why I did not understand your "threading" stuff. Pardon
-me for repeating myself, but you should have noticed this in your post
-and even provide an URL where people could read a short explanation of
-concepts. Any good URL which could help me to realize your plays with
-threads?
+> attached diff file is a patch to be applied on MTD snapshot 20060315
+> introducing striping feature for Linux MTD. Despite striping
+> is well known feature is was not implemented in MTD for some reason.
+> We did it and ready to share with community. Hope, striping will find
+> its
+> place in Linux MTD.
+
+$ diffstat stripe.diff
+ b/drivers/mtd/Kconfig               |   47
+ b/drivers/mtd/Makefile              |    1
+ b/drivers/mtd/chips/Kconfig         |    7
+ b/drivers/mtd/chips/Makefile        |    2
+ b/drivers/mtd/chips/cfi_cpt.c       |  345 +++
+ b/drivers/mtd/maps/mphysmap.c       |   20
+ b/drivers/mtd/mtdstripe.c           | 3556
++++++++++++++++++++++++++++++++++++
+ b/include/linux/mtd/cfi_cpt.h       |   47
+ b/include/linux/mtd/stripe.h        |   40
+ drivers/mtd/chips/Makefile          |    1
+ drivers/mtd/chips/cfi_cmdset_0001.c |  109 -
+ drivers/mtd/chips/cfi_cpt.c         |    1
+ drivers/mtd/maps/mphysmap.c         |    1
+ include/linux/mtd/cfi_cpt.h         |    1
+ include/linux/mtd/stripe.h          |    1
+ 15 files changed, 4144 insertions(+), 33 deletions(-), 2
+modifications(!)
+
+You definitely have to split your patch on several parts. Your patch has
+to only affect drivers/mtd/mtdstripe.c and include/linux/mtd/stripe.h.
+If you have to modify other subsystem, send the modification separately,
+motivate them and let the corresponding janitor to review them.
 
 -- 
 Best Regards,
