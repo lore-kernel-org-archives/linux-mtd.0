@@ -1,29 +1,22 @@
 Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FM6xh-0006qh-U4
-	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 12:17:45 -0500
+	id 1FM73R-0007AZ-Lr
+	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 12:23:38 -0500
 Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR001.ip.videotron.ca
 	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IWJ00NSBHD03N80@VL-MO-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 12:17:25 -0500 (EST)
-Date: Wed, 22 Mar 2006 12:17:24 -0500 (EST)
+	with ESMTP id <0IWJ00NHXHN42W80@VL-MO-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 12:23:28 -0500 (EST)
+Date: Wed, 22 Mar 2006 12:23:28 -0500 (EST)
 From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <1143044379.29683.28.camel@sauron.oktetlabs.ru>
+In-reply-to: <1143047296.29683.44.camel@sauron.oktetlabs.ru>
 To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-id: <Pine.LNX.4.64.0603221159300.3631@localhost.localdomain>
+Message-id: <Pine.LNX.4.64.0603221222270.3631@localhost.localdomain>
 MIME-version: 1.0
 Content-type: TEXT/PLAIN; charset=US-ASCII
 Content-transfer-encoding: 7BIT
 References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
-	<442041BE.9070407@intel.com>
-	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
-	<44211B5F.2030200@intel.com>
-	<44211E6E.7070406@yandex.ru> <4421263A.7010900@intel.com>
-	<1143024670.13740.40.camel@sauron.oktetlabs.ru>
-	<442152A5.9020300@intel.com>
-	<1143044379.29683.28.camel@sauron.oktetlabs.ru>
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>, "Korolev,
+	<1143047296.29683.44.camel@sauron.oktetlabs.ru>
+Cc: "Belyakov, Alexander" <alexander.belyakov@intel.com>, "Korolev,
 	Alexey" <alexey.korolev@intel.com>,
 	linux-mtd@lists.infradead.org, "Kutergin,
 	Timofey" <timofey.kutergin@intel.com>
@@ -39,31 +32,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Wed, 22 Mar 2006, Artem B. Bityutskiy wrote:
 
-[...]
-> I still don't understand your stuff with threads, will ask questions
-> later. I'm not alone who does not understand it. So I conclude the
-> explanation is crippled, not me.
+>  15 files changed, 4144 insertions(+), 33 deletions(-), 2
+> modifications(!)
+> 
+> You definitely have to split your patch on several parts. Your patch has
+> to only affect drivers/mtd/mtdstripe.c and include/linux/mtd/stripe.h.
+> If you have to modify other subsystem, send the modification separately,
+> motivate them and let the corresponding janitor to review them.
 
-Please stop being so difficult with Alexander.
-
-The explanations provided so far might not be stellar English, but I 
-consider them still quite understandable.  A disk stripe is a common 
-concept in computer science so simply saying that the same technique can 
-be applied to flash storage should be enough for you to grasp the whole 
-idea.  If you are not familiar with the concept it is not Alexander's 
-fault and I don't think he should lecture you on the topic.
-
-And regarding my opinion about a MTD stripe layer, well I think this is 
-a damn good idea and I wish I had thought about it before myself. It is 
-indeed a concept entirely separate from the MTD concat layer.  And it 
-doesn't obsolete the concat layer in any ways either.  Both have serious 
-advantages and inconvenients to consider before selecting either of 
-those.
-
-Now regarding the source I cannot comment as I didn't look at it yet.  
-But from the provided description of needed changes to flash drivers I 
-suspect I might have one or two suggestions for doing things 
-differently.  But that won't happen just yet.
+I'm definitely with you on this.
 
 
 Nicolas
