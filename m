@@ -1,24 +1,19 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLzBJ-0003Pf-W0
-	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 03:59:09 -0500
-Message-ID: <442111B5.6090308@yandex.ru>
-Date: Wed, 22 Mar 2006 11:58:29 +0300
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from mga03.intel.com ([143.182.124.21] helo=azsmga101-1.ch.intel.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FLzmA-0004F8-Gk
+	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 04:37:18 -0500
+Message-ID: <44211AB7.9000707@intel.com>
+Date: Wed, 22 Mar 2006 12:36:55 +0300
+From: Alexander Belyakov <alexander.belyakov@intel.com>
 MIME-Version: 1.0
-To: Nicolas Pitre <nico@cam.org>
-References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
-	<442041BE.9070407@intel.com>
-	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
-	<Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.64.0603211434261.3631@localhost.localdomain>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: Vitaly Wool <vwool@ru.mvista.com>
+References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>	<44200736.5010102@ru.mvista.com>
+	<44201084.3000708@intel.com> <442017B0.4010508@ru.mvista.com>
+In-Reply-To: <442017B0.4010508@ru.mvista.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
-	linux-mtd@lists.infradead.org, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Kutergin, Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,21 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
->>Why? I don't see any thing bad with having 3*128KiB eraseblock size...
-> I agree with you ....... as long as someone is willing to audit all MTD 
-> client code to certify that no assumption about erase block sizes being 
-> a power of 2 is present.
+Vitaly,
 
-Well, there is no much client code. JFFS2 is happy with this size. If 
-some client is not happy, this is its problems. This client just has to 
-be fixed or not use striping with non-power-of-two devices. Indeed, 
-striping is a distinct layer and is not compulsory to use.
+>
+> What PREEMPT_ modes did you test it with?
 
-I don't see any reason in prohibiting striping 3 devices, or 5 devices. 
-Just because power of 2 is digits are widely used is not a serious argument.
+Why do you think enabling preemptible kernel option will help to switch 
+two or more kernel threads with equal priority? And anyway preemptible 
+kernel option is an experimental one and someone willing to use striping 
+may not want to use it.
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+>
+> The implementation itself seems to be quite inmature and leaves a lot 
+> of questions - starting from what command-line parameters do mean and 
+> ending up with how it's supposed to work in a workload environment, 
+> given the threads etc. etc. Maybe it slows down the performance of the 
+> whole system, even though it does speed up the block erase.
+It is RFC and everything can be explained or changed.
+
+Considering command line parameters. Suggested solution can be 
+configured by two ways. First applies if mtdstripe.ko is a standalone 
+module and user uses insmod to insert it - good for debug, etc. Second 
+is for solid kernel where striping is configured from kernel 
+configuration string. Please find some clarifications in reply to 
+Artem's message.
+
+In our experience striping does not affect much overall system performance.
+
+And not only erase speed increases due to striping, but write speed too.
+
+Thanks,
+Alexander Belyakov
