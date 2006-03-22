@@ -1,16 +1,18 @@
 Received: from mga03.intel.com ([143.182.124.21] helo=azsmga101-1.ch.intel.com)
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLzmA-0004F8-Gk
-	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 04:37:18 -0500
-Message-ID: <44211AB7.9000707@intel.com>
-Date: Wed, 22 Mar 2006 12:36:55 +0300
+	id 1FLzop-0004Rb-8M
+	for linux-mtd@lists.infradead.org; Wed, 22 Mar 2006 04:40:08 -0500
+Message-ID: <44211B5F.2030200@intel.com>
+Date: Wed, 22 Mar 2006 12:39:43 +0300
 From: Alexander Belyakov <alexander.belyakov@intel.com>
 MIME-Version: 1.0
-To: Vitaly Wool <vwool@ru.mvista.com>
-References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>	<44200736.5010102@ru.mvista.com>
-	<44201084.3000708@intel.com> <442017B0.4010508@ru.mvista.com>
-In-Reply-To: <442017B0.4010508@ru.mvista.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+To: dedekind@infradead.org
+References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>	
+	<1142953764.13740.0.camel@sauron.oktetlabs.ru>
+	<442041BE.9070407@intel.com>
+	<1142967444.13740.9.camel@sauron.oktetlabs.ru>
+In-Reply-To: <1142967444.13740.9.camel@sauron.oktetlabs.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
 	"Kutergin, Timofey" <timofey.kutergin@intel.com>
@@ -24,34 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vitaly,
+Artem,
 
->
-> What PREEMPT_ modes did you test it with?
+>> Subdevices are mtd devices which participate in creation of striped mtd 
+>> device (superdevice). vol1, vol2 here are the names of subdevices 
+>> assigned on partitioning stage (for example) by the following part of 
+>> kernel configuration string:
+>> CONFIG_CMDLINE=".......... 
+>> mtdparts=flash1:512k(blob)ro,2m(kernel)ro,16m(root),16m(vol1);flash2:16m(vol2),8m(vol3) 
+>> ........."
+>>     
+> IMO, it is better to use MTD device numbers. 0 = mtd0, 1 = mtd1, etc. I
+> can always glance at /proc/mtd and realize which numbers to use. Names
+> may contain white spaces, or whatever inappropriate characters one may
+> conceive, right?
+>   
 
-Why do you think enabling preemptible kernel option will help to switch 
-two or more kernel threads with equal priority? And anyway preemptible 
-kernel option is an experimental one and someone willing to use striping 
-may not want to use it.
+At the stage of writing CONFIG_CMDLINE (mtdpart and mtdstripe parts) 
+user generally do not know what mtd device number will be assigned to 
+each partition. Using names IMO is a better solution if mtdstripe is a 
+built-in module since user gives and uses partition names by himself.
 
->
-> The implementation itself seems to be quite inmature and leaves a lot 
-> of questions - starting from what command-line parameters do mean and 
-> ending up with how it's supposed to work in a workload environment, 
-> given the threads etc. etc. Maybe it slows down the performance of the 
-> whole system, even though it does speed up the block erase.
-It is RFC and everything can be explained or changed.
+Using /proc/mtd and stripe mtd device by number (your suggestion) can be 
+quite good for loadable from command line mtdstripe.ko module. But using 
+two different configuration methods for built-in and loadable module can 
+be quite confusing for user.
 
-Considering command line parameters. Suggested solution can be 
-configured by two ways. First applies if mtdstripe.ko is a standalone 
-module and user uses insmod to insert it - good for debug, etc. Second 
-is for solid kernel where striping is configured from kernel 
-configuration string. Please find some clarifications in reply to 
-Artem's message.
+>>> 4. I erase eraseblock 0 of mtd7
+>>>       
+>> In simple case eraseblock 0 on both subdevices 1 and 2 will be erased
+>>     
+> I see. Why did you say "In simple case" ?
 
-In our experience striping does not affect much overall system performance.
-
-And not only erase speed increases due to striping, but write speed too.
+Suggested algorithm supports striping for devices with different 
+erasesize. In that (quite uncommon) case erasesize of superdevice is not 
+just erasesize of subdevice multiplied by number of subdevices.
 
 Thanks,
 Alexander Belyakov
