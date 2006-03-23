@@ -1,19 +1,21 @@
-Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
-	helo=nonameb.ptu.promise.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FLnd6-0001ea-Al
-	for linux-mtd@lists.infradead.org; Tue, 21 Mar 2006 15:39:12 -0500
-content-class: urn:content-classes:message
+Received: from smtp.seznam.cz ([212.80.76.43])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FMUU2-0002jP-IT
+	for linux-mtd@lists.infradead.org; Thu, 23 Mar 2006 13:24:34 -0500
+Received: from ladis by orphique with local (Exim 3.36 #1 (Debian))
+	id 1FMUVE-0005Ef-00
+	for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2006 19:25:44 +0100
+Date: Thu, 23 Mar 2006 19:25:44 +0100
+From: Ladislav Michl <ladis@linux-mips.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20060323182544.GA19445@orphique>
+References: <20060322115409.GA2242@orphique> <20060322194939.GA10058@orphique>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 21 Mar 2006 12:39:07 -0800
-Message-ID: <B70A50D07063384EB9BCE3330D18414F024CCD2B@nonameb.ptu.promise.com>
-From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
-To: "Peter Menzebach" <pm-mtd@mw-itcon.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: boot issue.
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20060322194939.GA10058@orphique>
+Sender: Ladislav Michl <Ladislav.Michl@seznam.cz>
+Subject: jffs2 BUG() on mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +25,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(This thread is no way related to mtd. Just wanting to update interested
+On Wed, Mar 22, 2006 at 08:49:39PM +0100, Ladislav Michl wrote:
+> With more debugs enabled it ends like this:
+> Skipping ino #228 already checked
+> Skipping ino #229 already checked
+> Skipping ino #270 already checked
+> Skipping check of ino #273 with nlink zero
+> [lots of skipping check of ino #xxx with nlink zero]
+> Skipping check of ino #800 with nlink zero
+> Skipping check of ino #801 with nlink zero
+> Skipping ino #802 already checked
+> Skipping check of ino #803 with nlink zero
+> Checked all inodes but still 0x13364c bytes of unchecked space?
+> 
+> Where checked_ino is 804 and highest_ino 803. ino 802 is already checked
+> because userspace requested read meanwhile.
 
-  members)
+jffs2_scan_inode_node adds also inodes with zero nlink to
+unchecked_space, but jffs2_garbage_collect_pass skips them. That
+probably leads to above problem. After applying following patch
+BUG() is no longer triggered.
 
-Hi Peter,
-Thanks for your response. After some effort, I found that it is
-possible.
-It needs some changes in the linux kernel.
+Index: fs/jffs2/gc.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/gc.c,v
+retrieving revision 1.159
+diff -u -r1.159 gc.c
+--- fs/jffs2/gc.c	18 Nov 2005 07:27:45 -0000	1.159
++++ fs/jffs2/gc.c	23 Mar 2006 17:39:00 -0000
+@@ -211,12 +211,6 @@
+ 			continue;
+ 		}
+ 
+-		if (!ic->nlink) {
+-			D1(printk(KERN_DEBUG "Skipping check of ino #%d with nlink zero\n",
+-				  ic->ino));
+-			spin_unlock(&c->inocache_lock);
+-			continue;
+-		}
+ 		switch(ic->state) {
+ 		case INO_STATE_CHECKEDABSENT:
+ 		case INO_STATE_PRESENT:
 
-One could boot from a floppy which has a compressed root file system on
-it.
-(Note, not an initrd) The code path is similar to it, except that the
-compression=20
-is now on FLASH. The code in prepare_namespace() recognizes this case
-only=20
-when booted from floppy.
+I'm not sure what is correct solution. With this change there are lots of
+JFFS2 warning: (138) jffs2_get_inode_nodes: Eep. No valid nodes for ino #465.
+JFFS2 warning: (138) jffs2_do_read_inode_internal: no data nodes found for ino #465
+Returned error for crccheck of ino #465. Expect badness...
+warnings. Jffs2 summary feature is disabled. I'd be very gratefull for ideas.
 
-Instead now I changed it to recognize flash also in a similar way to
-floppy.
-    is_floppy =3D (MAJOR(ROOT_DEV) =3D=3D FLOPPY_MAJOR ||
-                MAJOR(ROOT_DEV) =3D=3D 31);
-
-This is all the change required.
-Now the system boots fine.
-
-Thanks,
--LN
-
-
-
-> -----Original Message-----
-> From: Peter Menzebach [mailto:pm-mtd@mw-itcon.de]=20
-> Sent: Tuesday, March 21, 2006 1:14 AM
-> To: Lakshmi N. Sundararajan
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: boot issue.
->=20
->=20
-> Hi,
->=20
-> Lakshmi N. Sundararajan wrote:
-> > I have a compressed ext2 filesystem on a FLASH partition=20
-> which I would
-> > like
-> > to use as a root file system mounted in RAM. The FLASH is=20
-> accessed via
-> > MTD layer.
-> So you have *no* filesystem in the flash, but a compressed=20
-> image. This=20
-> is not usable as a filesystem directly in this format. Afaik,=20
-> only the=20
-> initrd code can use this...
->=20
-> > The kernel parameters are "console=3DttyS0,115200  noinitrd =
-mem=3D128M
-> > root=3D/dev/mtdblock5"
-> > But kernel panics saying "VFS: Cannot mount root unknown=20
-> device (31,5)".
-> >=20
-> which is correct, since there is no fs there...
->=20
-> > If I were to use cramfs on FLASH and use the same kernel=20
-> command line,
-> > I am able to bringup the system.I am using 2.6 linux.
-> which would save the RAM space. You can still put some=20
-> directories into=20
-> RAM...
->=20
-> > Would anyone know about this issue? Is there any thing I got to do?
-> > Any pointers would be helpful.
-> The only solution I know is (assuming parallel flash) to give the=20
-> compressed image as an initrd=3D<address>,<size> to the kernel.
->=20
->=20
-> Best regards
-> Peter
-> --=20
-> Peter Menzebach
-> Menzebach und Wolff IT-Consulting GbR
-> Phone +49 751 355 387 1
->=20
+	ladis
