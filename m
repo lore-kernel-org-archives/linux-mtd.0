@@ -1,22 +1,18 @@
-Received: from mga01.intel.com ([192.55.52.88] helo=fmsmga101-1.fm.intel.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FMR4m-0008LM-UP
-	for linux-mtd@lists.infradead.org; Thu, 23 Mar 2006 09:46:22 -0500
-Message-ID: <4422B4A1.4010702@intel.com>
-Date: Thu, 23 Mar 2006 17:45:53 +0300
-From: Alexander Belyakov <alexander.belyakov@intel.com>
+Received: from fmmailgate04.web.de ([217.72.192.242])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FMgXK-0002p2-NG
+	for linux-mtd@lists.infradead.org; Fri, 24 Mar 2006 02:16:46 -0500
+Received: by fmmailgate04.web.de (8.12.10/8.12.10/webde Linux 0.7) with SMTP
+	id k2O7GQW4016165
+	for <linux-mtd@lists.infradead.org>; Fri, 24 Mar 2006 08:16:39 +0100
+Date: Fri, 24 Mar 2006 08:16:39 +0100
+Message-Id: <459451265@web.de>
 MIME-Version: 1.0
-To: Nicolas Pitre <nico@cam.org>
-References: <F048F58F304F0040BC3E937DE4E231E701D05FBF@NNSMSX401>
-	<1143047296.29683.44.camel@sauron.oktetlabs.ru>
-	<44226CEB.70200@intel.com>
-	<Pine.LNX.4.64.0603230920030.3631@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.64.0603230920030.3631@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: Mirco Fuchs <mircofuchs@web.de>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-15
 Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	"Kutergin, Timofey" <timofey.kutergin@intel.com>
-Subject: Re: [PATCH/RFC] Linux MTD striping middle layer
+Subject: 2.6.16 compile error with latest cvs mtd source
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
-> You should split your patch into pieces: mtdstrip core in one patch, and 
-> driver modifications in their own separate patch for each of them.  But 
-> please post the whole serie.
->
->
-> Nicolas
+Thanks for your fast reply.
 
-Sounds reasonable.
+>> Hello,
+>>>
+>> i have a problem compiling the 2.6.16 kernel for my csb637 board. I think this
+>> is an mtd related question because it works without patching the kernel
+>> against the mtd source code.
+>>
+>> I have gcc 3.4.4 and binutils 2.16 and glibx 2.3.5.
+>>
+>> The first step was compiling the 2.6.16 kernel without patching against the
+>> mtd cvs sources. --> The compilation was successfull.
+>>
+>> But patching the kernel against the head of the mtd cvs repo resulted in the
+>> following warnings and errors:
+>>
+>> (I used the command 'patchkernel.sh -2cyv $KERNELDIR' for patching)
 
-I'll split my patch in three parts, make some changes in striping core 
-we have already spoken about, and then post again starting three 
-separate threads cross referencing to each other.
+>Did you enable CONFIG_OBSOLETE_INTERMODULE in your .config? That was
+>added in the 2.6.16 kernel because the inter_module stuff should
+>really go away sometime.
 
-Thank you,
-Alexander Belyakov
+>Alternatively, the MTD subsystem should also probably select that
+>Kconfig option so users don't see this. But MTD needs a sync anyway.
+
+I do not find CONFIG_OBSOLETE_INTERMODULE in my .config file, is there a
+patch concering this?
+
+Mirco
+______________________________________________________________
+Verschicken Sie romantische, coole und witzige Bilder per SMS!
+Jetzt bei WEB.DE FreeMail: http://f.web.de/?mc=021193
