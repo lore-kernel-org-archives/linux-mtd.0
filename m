@@ -1,19 +1,18 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FN4oh-0004R5-T5
-	for linux-mtd@lists.infradead.org; Sat, 25 Mar 2006 04:12:21 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Han Chang <posaune@hotmail.com>
-In-Reply-To: <BAY101-F7B62563E26F6D6318B633BCDF0@phx.gbl>
-References: <BAY101-F7B62563E26F6D6318B633BCDF0@phx.gbl>
-Content-Type: text/plain
-Date: Sat, 25 Mar 2006 12:11:42 +0300
-Message-Id: <1143277902.3579.0.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 & NAND problem.
-Reply-To: dedekind@infradead.org
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailout.stusta.mhn.de)
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FNUKo-0000Ts-9g
+	for linux-mtd@lists.infradead.org; Sun, 26 Mar 2006 07:27:16 -0500
+Date: Sun, 26 Mar 2006 14:25:04 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: Andrew Morton <akpm@osdl.org>, Pavel Machek <pavel@ucw.cz>
+Message-ID: <20060326122504.GI4053@stusta.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+Subject: [2.6 patch] drivers/mtd/mtdcore.c: less PROC_FS=n #ifdef's
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +22,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-03-24 at 10:44 -0800, Han Chang wrote:
-> jffs2_get_inode_nodes(): CRC failed on node at 0x0005efd0: Read 0xffffffff, 
-> calc
-> ulated 0x6791a538
-I would suggest you to dig your drivers - do they function well?
+I'm surprised that kill-ifdefs-in-mtdcorec.patch in -mm that removes
+#ifdef's for the PROC_FS=n case wasn't tested with PROC_FS=n...
 
--- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+<--  snip  -->
+
+...
+  CC      drivers/mtd/mtdcore.o
+drivers/mtd/mtdcore.c: In function 'init_mtd':
+drivers/mtd/mtdcore.c:352: error: 'proc_mtd' undeclared (first use in this function)
+drivers/mtd/mtdcore.c:352: error: (Each undeclared identifier is reported only once
+drivers/mtd/mtdcore.c:352: error: for each function it appears in.)
+drivers/mtd/mtdcore.c:353: error: 'mtd_read_proc' undeclared (first use in this function)
+drivers/mtd/mtdcore.c: In function 'cleanup_mtd':
+drivers/mtd/mtdcore.c:359: error: 'proc_mtd' undeclared (first use in this function)
+make[2]: *** [drivers/mtd/mtdcore.o] Error 1
+
+<--  snip  -->
+
+
+The patch below tries to do it in a correct way.
+
+cu
+Adrian
+
+
+<--  snip  -->
+
+
+This patch reduces the number of #ifdef's for CONFIG_PROC_FS=n.
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ drivers/mtd/mtdcore.c |   13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
+
+--- linux-2.6.16-mm1-full/drivers/mtd/mtdcore.c.old	2006-03-25 23:22:06.000000000 +0100
++++ linux-2.6.16-mm1-full/drivers/mtd/mtdcore.c	2006-03-25 23:23:03.000000000 +0100
+@@ -19,9 +19,7 @@
+ #include <linux/ioctl.h>
+ #include <linux/init.h>
+ #include <linux/mtd/compatmac.h>
+-#ifdef CONFIG_PROC_FS
+ #include <linux/proc_fs.h>
+-#endif
+ 
+ #include <linux/mtd/mtd.h>
+ 
+@@ -296,10 +294,11 @@
+ EXPORT_SYMBOL(default_mtd_writev);
+ EXPORT_SYMBOL(default_mtd_readv);
+ 
++#ifdef CONFIG_PROC_FS
++
+ /*====================================================================*/
+ /* Support for /proc/mtd */
+ 
+-#ifdef CONFIG_PROC_FS
+ static struct proc_dir_entry *proc_mtd;
+ 
+ static inline int mtd_proc_info (char *buf, int i)
+@@ -344,31 +343,27 @@
+         return ((count < begin+len-off) ? count : begin+len-off);
+ }
+ 
+-#endif /* CONFIG_PROC_FS */
+-
+ /*====================================================================*/
+ /* Init code */
+ 
+ static int __init init_mtd(void)
+ {
+-#ifdef CONFIG_PROC_FS
+ 	if ((proc_mtd = create_proc_entry( "mtd", 0, NULL )))
+ 		proc_mtd->read_proc = mtd_read_proc;
+-#endif
+ 	return 0;
+ }
+ 
+ static void __exit cleanup_mtd(void)
+ {
+-#ifdef CONFIG_PROC_FS
+         if (proc_mtd)
+ 		remove_proc_entry( "mtd", NULL);
+-#endif
+ }
+ 
+ module_init(init_mtd);
+ module_exit(cleanup_mtd);
+ 
++#endif /* CONFIG_PROC_FS */
++
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
