@@ -1,19 +1,18 @@
-Received: from host61-50.pool80105.interbusiness.it ([80.105.50.61]
-	helo=linuxbw2.bwlocal.it)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FNvdE-0001r2-TU
-	for linux-mtd@lists.infradead.org; Mon, 27 Mar 2006 12:36:23 -0500
-From: igor.trevisan@bluewind.it
-To: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-Date: Mon, 27 Mar 2006 19:38:25 +0200
-MIME-Version: 1.0
-Message-ID: <44283F31.31644.285825A@localhost>
-In-reply-to: <38F58D7B92CB20438DF49D28B572CC6F23BBED@budgw09a.ww300.siemens.net>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: jffs2 fs overload
+Received: from xenotime.net ([66.160.160.81])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FO1oQ-0005yc-2d
+	for linux-mtd@lists.infradead.org; Mon, 27 Mar 2006 19:11:56 -0500
+Received: from midway.site ([71.111.157.99]) by xenotime.net for
+	<linux-mtd@lists.infradead.org>; Mon, 27 Mar 2006 16:11:46 -0800
+Date: Mon, 27 Mar 2006 16:14:02 -0800
+From: "Randy.Dunlap" <rdunlap@xenotime.net>
+To: dwmw2@infradead.org, akpm <akpm@osdl.org>
+Message-Id: <20060327161402.06eaa84b.rdunlap@xenotime.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH] MTD: m25p80: fix printk format warning
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,61 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Tamas,
+From: Randy Dunlap <rdunlap@xenotime.net>
 
-thanks for your answer.
-Just another one: is it possible to have a single RFS that 's mounted
-read/write?
-Is it enough to specify r/w on the mtdparts section of the command 
-line? (I'm using that way to define flash partitions).
-In this way I could have three partitions: bootloader, kernel and RFS
-with the rfs mounted rewritable but with the files that cannot be 
-changed that don't have write permission.
-In this way I could avoid the overload due to having two small partitions
-each one with its JFFS2 tables and structures and so on.
-Is it right?
-Any suggestion and comment is obviously welcome!
-Thanks in advance,
-Igor.
-  
+Fix printk format warning:
+drivers/mtd/devices/m25p80.c:189: warning: format '%zd' expects type 'signed size_t', but argument 6 has type 'u_int32_t'
 
-On 20 Mar 2006 at 9:30, Selmeci, Tamas wrote:
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+---
+ drivers/mtd/devices/m25p80.c |    2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
 
-> Hello!
-> 
-> > I'm defining the flash partitions content for my target
-> > and I need a rewritable flash area.
-> > So I formatted and mounted a flash partition as jffs2.
-> > What I noted is that, on a 1MByte flash area I loose
-> > about 600K immediately. If I use the command df I see
-> > that only 30less than 400k are really available.
-> > Is it possible that this is the normal overload if a 
-> > format my flash partition with jffs2?
-> > Or am I doing something wtong?
-> 
-> I think this is normal, JFFS2 allocates inodes (as far as I know) in
-> advance like ext2 also does - in case of a very small filesystem, this
-> may lead to serious capacity waste... If my assumption is wrong,
-> somebody please correct me.
-> 
-> > Is there any good guide or document that can help me
-> > building a jffs2 RW flash partition?
-> 
-> I would make a filesystem on a host PC, and then make a jffs2 from it
-> (mkjffs). The image can be written with a download tool.
-> 
-> Bye
-> --
-> Tamas Selmeci
-> 
-> 
+--- linux-2616-g13.orig/drivers/mtd/devices/m25p80.c
++++ linux-2616-g13/drivers/mtd/devices/m25p80.c
+@@ -186,7 +186,7 @@ static int m25p80_erase(struct mtd_info 
+ 	struct m25p *flash = mtd_to_m25p(mtd);
+ 	u32 addr,len;
+ 
+-	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %zd\n",
++	DEBUG(MTD_DEBUG_LEVEL2, "%s: %s %s 0x%08x, len %d\n",
+ 			flash->spi->dev.bus_id, __FUNCTION__, "at",
+ 			(u32)instr->addr, instr->len);
+ 
 
--- 
---- BlueWind 
---- Embedded Systems Design 
---- Borgo Pieve 55c interno c
---- 31033 Castelfranco V.to (TV)
---- Tel.: +39 0423 723431 Fax.: +39 0423 744738
---- mailto: igor.trevisan@bluewind.it
---- http://www.bluewind.it
-------------------------------------------------------------------
+
+---
