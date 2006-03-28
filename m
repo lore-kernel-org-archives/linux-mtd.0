@@ -1,21 +1,16 @@
-Received: from smtp.seznam.cz ([212.80.76.43])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FMUU2-0002jP-IT
-	for linux-mtd@lists.infradead.org; Thu, 23 Mar 2006 13:24:34 -0500
-Received: from ladis by orphique with local (Exim 3.36 #1 (Debian))
-	id 1FMUVE-0005Ef-00
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Mar 2006 19:25:44 +0100
-Date: Thu, 23 Mar 2006 19:25:44 +0100
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20060323182544.GA19445@orphique>
-References: <20060322115409.GA2242@orphique> <20060322194939.GA10058@orphique>
+Received: from [61.17.198.148] (helo=mail.formulasys.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FO94J-0002Xf-Rl
+	for linux-mtd@lists.infradead.org; Tue, 28 Mar 2006 02:56:56 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060322194939.GA10058@orphique>
-Sender: Ladislav Michl <Ladislav.Michl@seznam.cz>
-Subject: jffs2 BUG() on mount
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6523A.A5EB39B8"
+content-class: urn:content-classes:message
+Date: Tue, 28 Mar 2006 13:08:47 +0530
+Message-ID: <618FC0C88768E54FBE53E17CFC9E69DF2829D1@mail.fspl.com>
+From: "Milind Adkar" <Milind.Adkar@formulasys.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: FW: cfi_cmdset_0002.c support for erase suspend and resume
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,52 +20,152 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Mar 22, 2006 at 08:49:39PM +0100, Ladislav Michl wrote:
-> With more debugs enabled it ends like this:
-> Skipping ino #228 already checked
-> Skipping ino #229 already checked
-> Skipping ino #270 already checked
-> Skipping check of ino #273 with nlink zero
-> [lots of skipping check of ino #xxx with nlink zero]
-> Skipping check of ino #800 with nlink zero
-> Skipping check of ino #801 with nlink zero
-> Skipping ino #802 already checked
-> Skipping check of ino #803 with nlink zero
-> Checked all inodes but still 0x13364c bytes of unchecked space?
-> 
-> Where checked_ino is 804 and highest_ino 803. ino 802 is already checked
-> because userspace requested read meanwhile.
+This is a multi-part message in MIME format.
 
-jffs2_scan_inode_node adds also inodes with zero nlink to
-unchecked_space, but jffs2_garbage_collect_pass skips them. That
-probably leads to above problem. After applying following patch
-BUG() is no longer triggered.
+------_=_NextPart_001_01C6523A.A5EB39B8
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Index: fs/jffs2/gc.c
-===================================================================
-RCS file: /home/cvs/mtd/fs/jffs2/gc.c,v
-retrieving revision 1.159
-diff -u -r1.159 gc.c
---- fs/jffs2/gc.c	18 Nov 2005 07:27:45 -0000	1.159
-+++ fs/jffs2/gc.c	23 Mar 2006 17:39:00 -0000
-@@ -211,12 +211,6 @@
- 			continue;
- 		}
- 
--		if (!ic->nlink) {
--			D1(printk(KERN_DEBUG "Skipping check of ino #%d with nlink zero\n",
--				  ic->ino));
--			spin_unlock(&c->inocache_lock);
--			continue;
--		}
- 		switch(ic->state) {
- 		case INO_STATE_CHECKEDABSENT:
- 		case INO_STATE_PRESENT:
+STEPHANIE
 
-I'm not sure what is correct solution. With this change there are lots of
-JFFS2 warning: (138) jffs2_get_inode_nodes: Eep. No valid nodes for ino #465.
-JFFS2 warning: (138) jffs2_do_read_inode_internal: no data nodes found for ino #465
-Returned error for crccheck of ino #465. Expect badness...
-warnings. Jffs2 summary feature is disabled. I'd be very gratefull for ideas.
+JOB AVAILABLE.
 
-	ladis
+Also please cc to m_milind786@hotmail.com
+
+Monta Vista Hard Hat Expert=20
+
+Start ASAP    Duration: A few days   Rate: Whatever...    Location:
+Telecommute
+
+Our client is having a problem with their Monta Vista Hard Hat Cross
+Development Tools.  We need an expert for a few days to help them out of
+the problems.
+
+Your reply is appreciated.
+
+=20
+
+Look forward to work with you.
+
+
+Best regards
+Milind
+--------------------------------------------
+Milind Adkar.
+Formulasys Inc.
+19925 Stevens creek blvd.
+Cupertino. Ca 95014 2358.
+Phone - 408 850 4985.
+Fax - 408 904 7208.
+www.formulasys.com <http://www.formulasys.com/>=20
+milind.adkar@formulasys.com
+
+=20
+
+=20
+
+=20
+
+------_=_NextPart_001_01C6523A.A5EB39B8
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Message</TITLE>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii">
+<META content=3D"MSHTML 6.00.2900.2802" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=3DArial size=3D2><SPAN=20
+class=3D810494107-28032006>STEPHANIE</SPAN></FONT></DIV>
+<DIV>
+<P><SPAN class=3D895503306-28032006><FONT face=3DArial size=3D2>JOB=20
+AVAILABLE.</FONT></SPAN></P>
+<P><SPAN class=3D895503306-28032006><SPAN =
+class=3D895503306-28032006><FONT=20
+color=3D#000099><FONT face=3DArial size=3D2><FONT color=3D#000000>Also =
+please cc to=20
+</FONT><A=20
+href=3D"mailto:m_milind786@hotmail.com">m_milind786@hotmail.com</A></FONT=
+><BR><BR><B><U><FONT=20
+face=3DArial color=3Dred size=3D4><SPAN=20
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
+Arial">Monta=20
+Vista Hard Hat Expert </SPAN></FONT></U></B><FONT face=3DArial =
+size=3D3><SPAN=20
+style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial"></SPAN></FONT></P>
+<P class=3DMsoNormal><FONT size=3D3><SPAN=20
+style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Start =
+</SPAN></FONT><B><FONT=20
+size=3D4><SPAN=20
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
+Arial">ASAP<SPAN=20
+class=3D895503306-28032006>&nbsp;&nbsp;&nbsp; =
+</SPAN></SPAN></FONT></B><FONT=20
+size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Duration:=20
+</SPAN></FONT><B><FONT size=3D4><SPAN=20
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
+Arial">A few=20
+days<SPAN class=3D895503306-28032006>&nbsp;&nbsp; =
+</SPAN></SPAN></FONT></B><FONT=20
+size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Rate:=20
+</SPAN></FONT><B><FONT size=3D4><SPAN=20
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
+Arial">Whatever&#8230;<SPAN=20
+class=3D895503306-28032006>&nbsp;&nbsp;&nbsp; =
+</SPAN></SPAN></FONT></B><FONT=20
+face=3DArial size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: =
+Arial">Location:=20
+</SPAN></FONT><B><FONT face=3DArial color=3Dred size=3D4><SPAN=20
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
+Arial">Telecommute</SPAN></FONT></B></P>
+<P class=3DMsoNormal><FONT face=3DArial size=3D3><SPAN=20
+style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Our client is having a =
+problem with=20
+their </SPAN></FONT><B><U><FONT face=3DArial color=3Dblue size=3D4><SPAN =
+
+style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: blue; FONT-FAMILY: =
+Arial">Monta=20
+Vista Hard Hat Cross Development Tools.</SPAN></FONT></U></B><FONT =
+face=3DArial=20
+size=3D4><SPAN style=3D"FONT-SIZE: 14pt; FONT-FAMILY: Arial">&nbsp;=20
+</SPAN></FONT><FONT face=3DArial><SPAN style=3D"FONT-FAMILY: Arial">We =
+need an=20
+expert for a few days to help them out of the=20
+problems.</SPAN></FONT></P></FONT></SPAN></SPAN><FONT face=3DArial =
+size=3D2><SPAN=20
+style=3D"mso-no-proof: yes"><SPAN=20
+style=3D"FONT-SIZE: 10pt; COLOR: navy; FONT-FAMILY: Arial"></DIV>
+<DIV align=3Dleft><?xml:namespace prefix =3D o ns =3D=20
+"urn:schemas-microsoft-com:office:office" /><o:p></o:p></SPAN></SPAN>
+<P class=3DMsoNormal=20
+style=3D"MARGIN: 0in 0in 0pt; mso-margin-top-alt: auto; =
+mso-margin-bottom-alt: auto"><SPAN=20
+style=3D"mso-no-proof: yes"><FONT size=3D3><FONT face=3D"Times New =
+Roman"><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Your reply is=20
+appreciated.</SPAN><o:p></o:p></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">&nbsp;<o:p></o:p></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Look forward to work with=20
+you.</SPAN><o:p></o:p></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
+style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><BR>Best=20
+regards<BR>Milind<BR>--------------------------------------------<BR>Mili=
+nd=20
+Adkar.<BR>Formulasys Inc.<BR>19925 Stevens creek blvd.<BR>Cupertino. Ca =
+95014=20
+2358.<BR>Phone - 408&nbsp;850 4985.<BR>Fax - 408 904 7208.<BR><A=20
+href=3D"http://www.formulasys.com/">www.formulasys.com</A><BR><A=20
+href=3D"mailto:milind.adkar@formulasys.com">milind.adkar@formulasys.com</=
+A></SPAN><o:p></o:p></P>
+<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">&nbsp;<o:p></o:p></P>
+<P class=3DMsoNormal=20
+style=3D"MARGIN: 0in 0in 0pt; mso-margin-top-alt: auto; =
+mso-margin-bottom-alt: =
+auto"><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P></FONT></DIV>
+<DIV>&nbsp;</DIV></BODY></HTML>
+=00
+------_=_NextPart_001_01C6523A.A5EB39B8--
