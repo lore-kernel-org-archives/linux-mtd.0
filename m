@@ -1,16 +1,24 @@
-Received: from [61.17.198.148] (helo=mail.formulasys.com)
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FO94J-0002Xf-Rl
-	for linux-mtd@lists.infradead.org; Tue, 28 Mar 2006 02:56:56 -0500
+Received: from wip-cdctls-mx1.wipro.com ([203.91.201.15])
+	by pentafluge.infradead.org with esmtps (Exim 4.60 #1 (Red Hat Linux))
+	id 1FOZu5-000333-DZ
+	for linux-mtd@lists.infradead.org; Wed, 29 Mar 2006 13:36:05 +0100
+Received: from wip-cdctls-mx1.wipro.com (localhost.localdomain [127.0.0.1])
+	by localhost (Postfix) with ESMTP id 834B53C408A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Mar 2006 17:59:24 +0530 (IST)
+Received: from chn-snr-bh2.wipro.com (chn-snr-bh2.wipro.com [10.145.50.92])
+	by wip-cdctls-mx1.wipro.com (Postfix) with ESMTP id 788D93C4021
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Mar 2006 17:59:24 +0530 (IST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----_=_NextPart_001_01C6523A.A5EB39B8"
-content-class: urn:content-classes:message
-Date: Tue, 28 Mar 2006 13:08:47 +0530
-Message-ID: <618FC0C88768E54FBE53E17CFC9E69DF2829D1@mail.fspl.com>
-From: "Milind Adkar" <Milind.Adkar@formulasys.com>
+	boundary="----_=_NextPart_001_01C6532D.2297EE2E"
+Date: Wed, 29 Mar 2006 18:04:33 +0530
+Message-ID: <5DE86B4C624D4545B8A5CA1467DB936402453378@PNE-HJN-MBX01.wipro.com>
+From: <sandeep.lahane@wipro.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: FW: cfi_cmdset_0002.c support for erase suspend and resume
+Subject: How to use TrueFFs and smartMedia Disk FAT on Linux 2.6/2.4?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,150 +30,213 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C6523A.A5EB39B8
+------_=_NextPart_001_01C6532D.2297EE2E
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-STEPHANIE
 
-JOB AVAILABLE.
+Hi
 
-Also please cc to m_milind786@hotmail.com
+I have fundamental doubts regarding the usage of propriatery file
+systems TrueFFS and Smart Media disk FAT.
 
-Monta Vista Hard Hat Expert=20
+=0D
 
-Start ASAP    Duration: A few days   Rate: Whatever...    Location:
-Telecommute
+1.      Is TrueFFs / SmartMedia disk FAT freely available for Linux 2.6
+and 2.4?=0D
 
-Our client is having a problem with their Monta Vista Hard Hat Cross
-Development Tools.  We need an expert for a few days to help them out of
-the problems.
+2.      Is any evaluation / dummy  version available for free download
+which can be used test purposes?=0D
 
-Your reply is appreciated.
+3.      If either of above is true then, from where one can download
+TrueFFs /smartMedia Disk FAT?=0D
 
-=20
+If anyone give pointers about where to look then that will be great..
 
-Look forward to work with you.
+=0D
+
+=0D
+
+=0D
+
+Regards,
+
+Sandeep.
+
+=0D
 
 
-Best regards
-Milind
---------------------------------------------
-Milind Adkar.
-Formulasys Inc.
-19925 Stevens creek blvd.
-Cupertino. Ca 95014 2358.
-Phone - 408 850 4985.
-Fax - 408 904 7208.
-www.formulasys.com <http://www.formulasys.com/>=20
-milind.adkar@formulasys.com
 
-=20
 
-=20
+The information contained in this electronic message and any attachments to=
+ this message are intended for the exclusive use of the addressee(s) and=
+ may contain proprietary, confidential or privileged information. If you=
+ are not the intended recipient, you should not disseminate, distribute or=
+ copy this e-mail. Please notify the sender immediately and destroy all=
+ copies of this message and any attachments.=0D
 
-=20
-
-------_=_NextPart_001_01C6523A.A5EB39B8
+WARNING: Computer viruses can be transmitted via email. The recipient=
+ should check this email and any attachments for the presence of viruses.=
+ The company accepts no liability for any damage caused by any virus=
+ transmitted by this email.
+=0D
+www.wipro.com
+------_=_NextPart_001_01C6532D.2297EE2E
 Content-Type: text/html;
 	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>Message</TITLE>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2900.2802" name=3DGENERATOR></HEAD>
-<BODY>
-<DIV><FONT face=3DArial size=3D2><SPAN=20
-class=3D810494107-28032006>STEPHANIE</SPAN></FONT></DIV>
-<DIV>
-<P><SPAN class=3D895503306-28032006><FONT face=3DArial size=3D2>JOB=20
-AVAILABLE.</FONT></SPAN></P>
-<P><SPAN class=3D895503306-28032006><SPAN =
-class=3D895503306-28032006><FONT=20
-color=3D#000099><FONT face=3DArial size=3D2><FONT color=3D#000000>Also =
-please cc to=20
-</FONT><A=20
-href=3D"mailto:m_milind786@hotmail.com">m_milind786@hotmail.com</A></FONT=
-><BR><BR><B><U><FONT=20
-face=3DArial color=3Dred size=3D4><SPAN=20
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
-Arial">Monta=20
-Vista Hard Hat Expert </SPAN></FONT></U></B><FONT face=3DArial =
-size=3D3><SPAN=20
-style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial"></SPAN></FONT></P>
-<P class=3DMsoNormal><FONT size=3D3><SPAN=20
-style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Start =
-</SPAN></FONT><B><FONT=20
-size=3D4><SPAN=20
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
-Arial">ASAP<SPAN=20
-class=3D895503306-28032006>&nbsp;&nbsp;&nbsp; =
-</SPAN></SPAN></FONT></B><FONT=20
-size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Duration:=20
-</SPAN></FONT><B><FONT size=3D4><SPAN=20
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
-Arial">A few=20
-days<SPAN class=3D895503306-28032006>&nbsp;&nbsp; =
-</SPAN></SPAN></FONT></B><FONT=20
-size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Rate:=20
-</SPAN></FONT><B><FONT size=3D4><SPAN=20
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
-Arial">Whatever&#8230;<SPAN=20
-class=3D895503306-28032006>&nbsp;&nbsp;&nbsp; =
-</SPAN></SPAN></FONT></B><FONT=20
-face=3DArial size=3D3><SPAN style=3D"FONT-SIZE: 12pt; FONT-FAMILY: =
-Arial">Location:=20
-</SPAN></FONT><B><FONT face=3DArial color=3Dred size=3D4><SPAN=20
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: red; FONT-FAMILY: =
-Arial">Telecommute</SPAN></FONT></B></P>
-<P class=3DMsoNormal><FONT face=3DArial size=3D3><SPAN=20
-style=3D"FONT-SIZE: 12pt; FONT-FAMILY: Arial">Our client is having a =
-problem with=20
-their </SPAN></FONT><B><U><FONT face=3DArial color=3Dblue size=3D4><SPAN =
+<html>
 
-style=3D"FONT-WEIGHT: bold; FONT-SIZE: 14pt; COLOR: blue; FONT-FAMILY: =
-Arial">Monta=20
-Vista Hard Hat Cross Development Tools.</SPAN></FONT></U></B><FONT =
-face=3DArial=20
-size=3D4><SPAN style=3D"FONT-SIZE: 14pt; FONT-FAMILY: Arial">&nbsp;=20
-</SPAN></FONT><FONT face=3DArial><SPAN style=3D"FONT-FAMILY: Arial">We =
-need an=20
-expert for a few days to help them out of the=20
-problems.</SPAN></FONT></P></FONT></SPAN></SPAN><FONT face=3DArial =
-size=3D2><SPAN=20
-style=3D"mso-no-proof: yes"><SPAN=20
-style=3D"FONT-SIZE: 10pt; COLOR: navy; FONT-FAMILY: Arial"></DIV>
-<DIV align=3Dleft><?xml:namespace prefix =3D o ns =3D=20
-"urn:schemas-microsoft-com:office:office" /><o:p></o:p></SPAN></SPAN>
-<P class=3DMsoNormal=20
-style=3D"MARGIN: 0in 0in 0pt; mso-margin-top-alt: auto; =
-mso-margin-bottom-alt: auto"><SPAN=20
-style=3D"mso-no-proof: yes"><FONT size=3D3><FONT face=3D"Times New =
-Roman"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Your reply is=20
-appreciated.</SPAN><o:p></o:p></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">&nbsp;<o:p></o:p></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial">Look forward to work with=20
-you.</SPAN><o:p></o:p></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt"><SPAN=20
-style=3D"FONT-SIZE: 10pt; FONT-FAMILY: Arial"><BR>Best=20
-regards<BR>Milind<BR>--------------------------------------------<BR>Mili=
-nd=20
-Adkar.<BR>Formulasys Inc.<BR>19925 Stevens creek blvd.<BR>Cupertino. Ca =
-95014=20
-2358.<BR>Phone - 408&nbsp;850 4985.<BR>Fax - 408 904 7208.<BR><A=20
-href=3D"http://www.formulasys.com/">www.formulasys.com</A><BR><A=20
-href=3D"mailto:milind.adkar@formulasys.com">milind.adkar@formulasys.com</=
-A></SPAN><o:p></o:p></P>
-<P class=3DMsoNormal style=3D"MARGIN: 0in 0in 0pt">&nbsp;<o:p></o:p></P>
-<P class=3DMsoNormal=20
-style=3D"MARGIN: 0in 0in 0pt; mso-margin-top-alt: auto; =
-mso-margin-bottom-alt: =
-auto"><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P></FONT></DIV>
-<DIV>&nbsp;</DIV></BODY></HTML>
-=00
-------_=_NextPart_001_01C6523A.A5EB39B8--
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; charset=
+=3Dus-ascii">
+
+
+<meta name=3DGenerator content=3D"Microsoft Word 10 (filtered)">
+
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Tahoma;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:"Comic Sans MS";
+	panose-1:3 15 7 2 3 3 2 2 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{font-family:Tahoma;
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
+
+</head>
+
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
+
+<div class=3DSection1>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>Hi</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>I have fundamental doubts regarding the usage of=
+ propriatery
+file systems TrueFFS and Smart Media disk FAT.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:1.0in;text-indent:-.25in'><font=
+ size=3D3
+face=3D"Times New Roman"><span style=
+=3D'font-size:12.0pt'>1.</span></font><font
+size=3D1><span style=3D'font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+ </span></font><font
+size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;font-family:Tahoma'>Is TrueFFs
+/ SmartMedia disk FAT freely available for Linux 2.6 and 2.4?=
+ </span></font></p>
+
+<p class=3DMsoNormal style=3D'margin-left:1.0in;text-indent:-.25in'><font=
+ size=3D3
+face=3D"Times New Roman"><span style=
+=3D'font-size:12.0pt'>2.</span></font><font
+size=3D1><span style=3D'font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+ </span></font><font
+size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;font-family:Tahoma'>Is any
+evaluation / dummy &nbsp;version available for free download which can be=
+ used
+test purposes?</span></font> </p>
+
+<p class=3DMsoNormal style=3D'margin-left:1.0in;text-indent:-.25in'><font=
+ size=3D3
+face=3D"Times New Roman"><span style=
+=3D'font-size:12.0pt'>3.</span></font><font
+size=3D1><span style=3D'font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=
+ </span></font><font
+size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;font-family:Tahoma'>If either
+of above is true then, from where one can download TrueFFs /smartMedia Disk=
+ FAT?</span></font>
+</p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>If anyone give pointers about where to look then that=
+ will
+be great..</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 face=3DTahoma><span style=
+=3D'font-size:10.0pt;
+font-family:Tahoma'>&nbsp;</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblue face=3D"Comic Sans=
+ MS"><span
+style=3D'font-size:10.0pt;font-family:"Comic Sans=
+ MS";color:blue'>Regards,</span></font></p>
+
+<p class=3DMsoNormal><font size=3D2 color=3Dblue face=3D"Comic Sans=
+ MS"><span
+style=3D'font-size:10.0pt;font-family:"Comic Sans=
+ MS";color:blue'>Sandeep.</span></font></p>
+
+<p class=3DMsoNormal><font size=3D3 face=3D"Times New Roman"><span style=
+=3D'font-size:
+12.0pt'>&nbsp;</span></font></p>
+
+</div>
+
+</body>
+
+</html>
+
+<table><tr><td bgcolor=3D#ffffff><font color=3D#000000><br>
+The information contained in this electronic message and any attachments to=
+ this message are intended for the exclusive use of the addressee(s) and=
+ may contain proprietary, confidential or privileged information. If you=
+ are not the intended recipient, you should not disseminate, distribute or=
+ copy this e-mail. Please notify the sender immediately and destroy all=
+ copies of this message and any attachments. <br>
+<br>
+WARNING: Computer viruses can be transmitted via email. The recipient=
+ should check this email and any attachments for the presence of viruses.=
+ The company accepts no liability for any damage caused by any virus=
+ transmitted by this email.<br>
+ <br>
+www.wipro.com<br>
+</font></td></tr></table>
+------_=_NextPart_001_01C6532D.2297EE2E--
