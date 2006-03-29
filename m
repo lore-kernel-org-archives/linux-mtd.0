@@ -1,24 +1,17 @@
-Received: from mxs1.siemens.at ([194.138.12.131])
+Received: from corp-200-105-227-214-uio.punto.net.ec ([200.105.227.214]
+	helo=mail.mrbooks.com)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FOWs2-0001U1-EQ
-	for linux-mtd@lists.infradead.org; Wed, 29 Mar 2006 04:21:49 -0500
-Received: from vies1k7x.sie.siemens.at ([158.226.129.83])
-	by mxs1.siemens.at  with ESMTP id k2T96dtG001523
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2006 11:06:39 +0200
-Received: from nets138a.ww300.siemens.net ([158.226.129.98])
-	by vies1k7x.sie.siemens.at (8.12.11.20060308/8.12.1) with ESMTP id
-	k2T96crO027909
-	for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2006 11:06:38 +0200
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 29 Mar 2006 11:06:37 +0200
-Message-ID: <38F58D7B92CB20438DF49D28B572CC6F13C4BC@budgw09a.ww300.siemens.net>
-From: "Selmeci, Tamas" <tamas.selmeci@siemens.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 + NAND solution
+	id 1FOYSf-0002cT-OI
+	for linux-mtd@lists.infradead.org; Wed, 29 Mar 2006 06:03:42 -0500
+Received: from mail.mrbooks.com (mail.mrbooks.com [127.0.0.1])
+	by mail.mrbooks.com (8.12.11/8.12.11) with ESMTP id k2T9jMFo028285
+	for <linux-mtd@lists.infradead.org>; Wed, 29 Mar 2006 04:45:22 -0500
+Date: Wed, 29 Mar 2006 04:45:22 -0500
+Message-Id: <200603290945.k2T9jMCK028284@mail.mrbooks.com>
+To: linux-mtd@lists.infradead.org
+From: Online Banking Chase<service@chase.com>
+Content-Type: text/plain
+Subject: {Virus?} Important information regarding your Chase account
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+Warning: This message has had one or more attachments removed
+Warning: (the entire message).
+Warning: Please read the "yoursite-Attachment-Warning.txt" attachment(s) for more information.
 
-Now I have the solution for JFFS2 problem.
+This is a message from the MailScanner E-Mail Virus Protection Service
+----------------------------------------------------------------------
+The original e-mail attachment "the entire message"
+was believed to be infected by a virus and has been replaced by this warning
+message.
 
-If you remember my previous message written yesterday, I could =
-successfully mount the JFFS2 partition.
+If you wish to receive a copy of the *infected* attachment, please
+e-mail helpdesk and include the whole of this message
+in your request. Alternatively, you can call them, with
+the contents of this message to hand when you call.
 
-If you want to use it as rootfs, then the following kernel parameters =
-must be given:
+At Wed Mar 29 04:45:25 2006 the virus scanner said:
+   ClamAV: msg-15918-3221.html contains HTML.Phishing.Bank-393 
 
-    root=3D/dev/mtdblock4 rootfstype=3Djffs2
-
-That's it. I hope this little bit of information will help others.
-
-Bye
---
-Tamas Selmeci
-Siemens PSE HU
-Tel.   : +36-1-471-3861
-Email  : tamas.selmeci@siemens.com
-Address: H-1143 Budapest, Gizella ut 51-59
+Note to Help Desk: Look on the yoursite MailScanner in /var/spool/MailScanner/quarantine/20060329 (message k2T9jMFo028285).
+-- 
+Postmaster
+MailScanner thanks transtec Computers for their support
