@@ -1,26 +1,20 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FP0ZR-00068U-LY
-	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 12:04:55 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce0603300856x11b5557fk811737263625d8db@mail.gmail.com>
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
-	<1143714902.3579.31.camel@sauron.oktetlabs.ru>
-	<Pine.LNX.4.64.0603301119220.14923@localhost.localdomain>
-	<1143736739.3579.50.camel@sauron.oktetlabs.ru>
-	<6934efce0603300856x11b5557fk811737263625d8db@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 30 Mar 2006 21:03:54 +0400
-Message-Id: <1143738234.3579.53.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Belyakov, Alexander" <alexander.belyakov@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>, Nicolas Pitre <nico@cam.org>,
-	"Kutergin, Timofey" <timofey.kutergin@intel.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] MTD: Striping layer core
-Reply-To: dedekind@infradead.org
+Received: from host-84-9-202-240.bulldogdsl.com ([84.9.202.240]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FP15u-0006hT-6d
+	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 12:38:09 -0500
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1FP0ki-0007z1-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2006 18:16:08 +0100
+Date: Thu, 30 Mar 2006 18:16:08 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
+To: linux-mtd@lists.infradead.org
+Message-ID: <20060330171608.GA30647@home.fluff.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org.uk>
+Subject: compile fix for drivers/mtd/redboot.c
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-03-30 at 08:56 -0800, Jared Hulbert wrote:
-> Most high performance NOR today have a buffered write mode to get
-> decent write speed.  This requires you write a bunch of words to the
-> chips write buffer and then tell it to program.  See
-> cfi_ident.MaxBufWriteSize in cfi.h.
+>From the current kernel build, the following errors are 
+comming from drivers/mtd/redboot.c:
 
-Ah, ok, thanks. Yeah, id does matter. The question though is how to
-represent this in a generic way...
+In function 'parse_redboot_partitions':
+107: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+108: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+109: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+110: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+111: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+112: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+113: warning: passing argument 1 of '__swab32s' from incompatible pointer type
+
+I belive the best way to fix this is to change the
+`unsigned long` declerations in `struct fis_image_desc`
+to __u32, which is what swab32s() expects to see, and
+is more specific that `unsigned long`.
+
+Should I commit the following patch to the CVS? 
+
+Index: drivers/mtd/redboot.c
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/redboot.c,v
+retrieving revision 1.20
+diff -u -r1.20 redboot.c
+--- drivers/mtd/redboot.c	29 Mar 2006 08:43:21 -0000	1.20
++++ drivers/mtd/redboot.c	30 Mar 2006 17:15:03 -0000
+@@ -15,14 +15,14 @@
+ 
+ struct fis_image_desc {
+     unsigned char name[16];      // Null terminated name
+-    unsigned long flash_base;    // Address within FLASH of image
+-    unsigned long mem_base;      // Address in memory where it executes
+-    unsigned long size;          // Length of image
+-    unsigned long entry_point;   // Execution entry point
+-    unsigned long data_length;   // Length of actual data
+-    unsigned char _pad[256-(16+7*sizeof(unsigned long))];
+-    unsigned long desc_cksum;    // Checksum over image descriptor
+-    unsigned long file_cksum;    // Checksum over image data
++    __u32	  flash_base;    // Address within FLASH of image
++    __u32	  mem_base;      // Address in memory where it executes
++    __u32	  size;          // Length of image
++    __u32	  entry_point;   // Execution entry point
++    __u32	  data_length;   // Length of actual data
++    __u32	  _pad[256-(16+7*sizeof(__u32))];
++    __u32	  desc_cksum;    // Checksum over image descriptor
++    __u32	  file_cksum;    // Checksum over image data
+ };
+ 
+ struct fis_list {
+
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
