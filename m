@@ -1,23 +1,20 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FOvgV-00015Y-Ph
-	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 06:51:35 -0500
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <442B9FA5.9070901@ru.mvista.com>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FOw0V-0001ST-0o
+	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 07:12:17 -0500
+Date: Thu, 30 Mar 2006 14:11:56 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Belyakov, Alexander" <alexander.belyakov@intel.com>
+Message-ID: <20060330121156.GA31749@wohnheim.fh-wedel.de>
 References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
-	<442B9FA5.9070901@ru.mvista.com>
-Content-Type: text/plain
-Date: Thu, 30 Mar 2006 15:50:55 +0400
-Message-Id: <1143719455.3579.41.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "Belyakov, Alexander" <alexander.belyakov@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>,
-	linux-mtd@lists.infradead.org, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Kutergin, Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +24,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-03-30 at 13:06 +0400, Vitaly Wool wrote:
-> Hi Alexander,
-> 
-> Belyakov, Alexander wrote:
-> > One may say that striping is quite similar to already existing in MTD
-> > concatenation layer. That is not true since these layers have some sharp
-> > distinctions. The first one is the purpose. Concatenation only purpose
-> > is to make larger device from several smaller devices. Striping purpose
-> > is to make devices operate faster. Next difference is provided access to
-> > sub-devices. Concatenation layer provides linear access to sub-devices.
-> > Striping provides interleaved access to sub-devices.
-> >   
-> Still it's unclear why not to provide a configurable extension to 
-> mtdconcat rather than create a new layer.
+On Thu, 30 March 2006 11:57:37 +0400, Belyakov, Alexander wrote:
+> diff -uNr a/drivers/mtd/maps/mphysmap.c b/drivers/mtd/maps/mphysmap.c
+> --- a/drivers/mtd/maps/mphysmap.c	2006-03-28 12:08:28.000000000
+> +0400
+> +++ b/drivers/mtd/maps/mphysmap.c	2006-03-28 12:10:48.000000000
+> +0400
+> @@ -12,6 +12,9 @@
+>  #ifdef CONFIG_MTD_PARTITIONS
+>  #include <linux/mtd/partitions.h>
+>  #endif
+> +#ifdef CONFIG_MTD_CMDLINE_STRIPE
+> +#include <linux/mtd/stripe.h>
+> +#endif
 
-Well, it is actually quite clear. Yes, in a way this may be considered
-as a concatenation, but this is not the purpose of the striping layer.
-If you want to concatenate, you don't need all its complexities.
+Move the #ifdef into the header.
 
-I think that concatenation has to stay concatenation - simple and
-straight-forward. It has to do its small task and do it well.  No need
-to jam tons of the striping code to the tiny'n'shiny concatenation
-module.
+>  static struct map_info mphysmap_static_maps[] = {
+>  #if CONFIG_MTD_MULTI_PHYSMAP_1_WIDTH
+> @@ -155,6 +158,15 @@
+>  		};
+>  	};
+>  	up(&map_mutex);
+> +
+> +#ifdef CONFIG_MTD_CMDLINE_STRIPE
+> +#ifndef MODULE
+> +	if(mtd_stripe_init()) {
+> +	    printk(KERN_WARNING "MTD stripe initialization from cmdline
+> has failed\n");
+> +	}
+> +#endif
+> +#endif
+> +
+>  	return 0;
+>  }
+
+o Lindent.
+o Dokumentation/CodingStyle
+o remove #ifdefs
+
+Your code suffers from a lot of very basic things that make it hard to
+review.  In its current state, you get a clean NACK from me.  Whether
+the design makes sense, I didn't even look at.  You seem to receive
+enough feedback there already.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityuckiy,
-St.-Petersburg, Russia.
+You cannot suppose that Moliere ever troubled himself to be original in the
+matter of ideas. You cannot suppose that the stories he tells in his plays
+have never been told before. They were culled, as you very well know.
+-- Andre-Louis Moreau in Scarabouche
