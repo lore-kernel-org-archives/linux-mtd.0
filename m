@@ -1,23 +1,23 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FOw3p-0001ey-H5
-	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 07:15:45 -0500
-Message-ID: <442BCBE3.70206@ru.mvista.com>
-Date: Thu, 30 Mar 2006 16:15:31 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
+Received: from mga02.intel.com ([134.134.136.20] helo=orsmga101-1.jf.intel.com)
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FOxBj-0002Uh-6u
+	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 08:27:56 -0500
+Message-ID: <442BDCCA.6000408@intel.com>
+Date: Thu, 30 Mar 2006 17:27:38 +0400
+From: "Alexey, Korolev" <alexey.korolev@intel.com>
 MIME-Version: 1.0
-To: dedekind@infradead.org
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	
-	<442B9FA5.9070901@ru.mvista.com>
-	<1143719455.3579.41.camel@sauron.oktetlabs.ru>
-In-Reply-To: <1143719455.3579.41.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+To: Nicolas Pitre <nico@cam.org>
+References: <Pine.LNX.4.64.0603101044290.3274@localhost.localdomain>
+	<44200D27.2060404@intel.com>
+	<Pine.LNX.4.64.0603211002250.3631@localhost.localdomain>
+	<442943A3.6060807@intel.com>
+	<Pine.LNX.4.64.0603291125480.14923@localhost.localdomain>
+	<Pine.LNX.4.64.0603291745000.14923@localhost.localdomain>
+In-Reply-To: <Pine.LNX.4.64.0603291745000.14923@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "Belyakov, Alexander" <alexander.belyakov@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>,
-	linux-mtd@lists.infradead.org, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>
-Subject: Re: [PATCH/RFC] MTD: Striping layer core
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] cfi: Fixup of write errors on XIP
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,21 +27,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
->> Still it's unclear why not to provide a configurable extension to 
->> mtdconcat rather than create a new layer.
->>     
->
-> Well, it is actually quite clear. Yes, in a way this may be considered
-> as a concatenation, but this is not the purpose of the striping layer.
-> If you want to concatenate, you don't need all its complexities.
->
-> I think that concatenation has to stay concatenation - simple and
-> straight-forward. It has to do its small task and do it well.  No need
-> to jam tons of the striping code to the tiny'n'shiny concatenation
-> module.
->
->   
-Yep, probably you both are right.
+Nicolas
 
-Vitaly
+Thank you very much for assistance.
+
+>>I think both solutions, although they fix this particular problem, are 
+>>not addressing the fundamental issue which is that the current code 
+>>structure to cope with XIP and non-XIP is becoming a total mess.  In 
+>>fact the whole timeout/error handling should be factored out of every 
+>>functions into a sincle subfunction, actually one for XIP and one for 
+>>non-XIP.  This way the XIP case would not have to care about chip 
+>>state changing since that cannot happen, and the timeout treshold 
+>>would be more accurately computed as well.
+>>    
+>>
+It's correct. I had to spent some time to find out the solution which 
+doesn't break anything and doesn't change the architecure.
+IMO your fix is much better than I expected.
+
+>Please find attached a patch for what I mean.
+>
+>Could you test it and confirm the problem is actually gone?
+>  
+>
+This code definetely will not cause the write error issue on XIP.
+For just a case I made tests. No write errors were faced after 3 hours 
+of testing.
+
+I have one comment to the patch:
+
+>+
+>+	if (!z) {
+>+		if (!--(*chip_op_time))
+>+			*chip_op_time = 1;
+>+	} else if (z > 1)
+>+		*chip_op_time += z/2;
+>
+This change may negativelly affect on write performance in case of SND 
+kernel configuration.
+The process of write timeout increasing if faster than process of write 
+timeout decreasing.
+If we consider write time as a random value with mean = 
+chip->buffer_write_time and unknown variance.
+It means that average buffer write timeout will be greater than 
+necessary timeout.
+For example: consider the process : 1 write: average time + 10us; 2 
+write: average time - 10us; 3 write average time time + 10us etc.
+
+To check it I made additional performance test on station with P30 chip.
+MTD RAW write performance degradation was 3% in comaprision to kernel 
+witout the patch.
+I think it would be better to left    *chip_op_time ++  as it was before.
+
+Thanks,
+Alexey
