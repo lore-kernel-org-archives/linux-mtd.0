@@ -1,28 +1,21 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FOyIK-0003KH-NB
-	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 09:38:49 -0500
-Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IWY005753CBSS50@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 09:38:36 -0500 (EST)
-Date: Thu, 30 Mar 2006 09:38:35 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <442BDCCA.6000408@intel.com>
-To: "Alexey, Korolev" <alexey.korolev@intel.com>
-Message-id: <Pine.LNX.4.64.0603300927540.14923@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <Pine.LNX.4.64.0603101044290.3274@localhost.localdomain>
-	<44200D27.2060404@intel.com>
-	<Pine.LNX.4.64.0603211002250.3631@localhost.localdomain>
-	<442943A3.6060807@intel.com>
-	<Pine.LNX.4.64.0603291125480.14923@localhost.localdomain>
-	<Pine.LNX.4.64.0603291745000.14923@localhost.localdomain>
-	<442BDCCA.6000408@intel.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] cfi: Fixup of write errors on XIP
+Received: from mailwasher.lanl.gov ([192.65.95.54] helo=mailwasher-b.lanl.gov)
+	by pentafluge.infradead.org with esmtp (Exim 4.60 #1 (Red Hat Linux))
+	id 1FOykB-0003OV-K0
+	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 16:07:28 +0100
+Received: from godiva.ta-18.lanl.gov (godiva.ta-18.lanl.gov [128.165.164.98])
+	by mailwasher-b.lanl.gov (8.12.11/8.12.11/(ccn-5)) with ESMTP id
+	k2UF74NU007966
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Mar 2006 08:07:04 -0700
+Message-Id: <200603301513.k2UFD5G3010570@godiva.ta-18.lanl.gov>
+Date: Thu, 30 Mar 2006 08:08:58 -0700
+To: Benjamin Sapp <bsapp@lanl.gov>, linux-mtd@lists.infradead.org
+From: Benjamin Sapp <bsapp@lanl.gov>
+In-Reply-To: <200603271446.k2REkMG3017802@godiva.ta-18.lanl.gov>
+References: <200603271446.k2REkMG3017802@godiva.ta-18.lanl.gov>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+Cc: 
+Subject: Re: getting an older mkfs.jffs2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,44 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 30 Mar 2006, Alexey, Korolev wrote:
-
-> > Please find attached a patch for what I mean.
-> > 
-> > Could you test it and confirm the problem is actually gone?
-> >  
-> This code definetely will not cause the write error issue on XIP.
-> For just a case I made tests. No write errors were faced after 3 hours of
-> testing.
-
-Good.  It also constitute a nice cleanup, as shown by diffstat:
-
- 1 files changed, 156 insertions(+), 264 deletions(-)
-
-> I have one comment to the patch:
-> 
-> > +
-> > +	if (!z) {
-> > +		if (!--(*chip_op_time))
-> > +			*chip_op_time = 1;
-> > +	} else if (z > 1)
-> > +		*chip_op_time += z/2;
-> > 
-> This change may negativelly affect on write performance in case of SND kernel
-> configuration.
-> The process of write timeout increasing if faster than process of write
-> timeout decreasing.
-> If we consider write time as a random value with mean =
-> chip->buffer_write_time and unknown variance.
-> It means that average buffer write timeout will be greater than necessary
-> timeout.
-
-True.  I wanted for the delay to converge faster, especially in the 
-erase case which is much larger.  I'll commit the patch with the 
-original increment and think of a solution for better convergence in a 
-separate patch.
-
-Thanks for testing.
 
 
-Nicolas
+In order to get an older CVS I had to checkout then perform "updates" 
+specifying later and later dates.  When I found version 1.38 I compiled it 
+on my fedora core 4 machine and all worked great after that.  I don't know 
+exactly what the issue was...   I'll just continue with the older version 
+until we move to version 2.6 of the kernel.
+
+Ben
+
+At 07:42 AM 3/27/2006, Benjamin Sapp wrote:
+>Hello,
+>
+>I have version 1.38 of mkfs.jffs2 on a RedHat 7 machine and it works 
+>perfectly.  I have  version 1.47 on a Fedora Core 4 machine and it does 
+>not work.  I'd like a working version on the Fedora machine.  However, 
+>copying the binary over did not work because of library 
+>incompatibilities.  Do you know where I can find the source code thaHi t 
+>would correspond to mkfs.jffs2 version 1.38?  Is there a command that 
+>would allow me to get it from the CVS?
+>
+>Thanks for any help,
+>Ben.
+>
+>
+>
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
