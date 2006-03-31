@@ -1,21 +1,22 @@
-Received: from mga03.intel.com ([143.182.124.21] helo=azsmga101-1.ch.intel.com)
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPF68-0000hP-Pn
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:35:20 -0500
-Message-ID: <442CE9B6.7040008@intel.com>
-Date: Fri, 31 Mar 2006 12:35:02 +0400
-From: Alexander Belyakov <alexander.belyakov@intel.com>
-MIME-Version: 1.0
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	<20060330121156.GA31749@wohnheim.fh-wedel.de>
-	<442CD1CB.7050509@intel.com> <442CE0E8.1080105@yandex.ru>
-	<442CE431.5050700@intel.com> <442CE8ED.2020501@yandex.ru>
-In-Reply-To: <442CE8ED.2020501@yandex.ru>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] MTD: Striping layer core
+	id 1FPF9f-0000zm-2u
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:39:01 -0500
+Date: Fri, 31 Mar 2006 10:38:27 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <20060331083827.GA11367@wohnheim.fh-wedel.de>
+References: <20060329232520.1677d2b3.akpm@osdl.org>
+	<442C0494.2040609@zytor.com>
+	<20060330114014.53150d1b.akpm@osdl.org>
+	<442C6B78.3060706@zytor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <442C6B78.3060706@zytor.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: Re: blkmtd and name_to_dev_t
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
-> Alexander Belyakov wrote:
->> I followed the already existing example for partitions.h in the same 
->> mphysmap.c file. Just thought it's OK. I'll try to fix that, thanks.
->
-> You know, Linux is eveloping, and older code is not always the best 
-> coding example. If you read LKML, you should have noticed how strict 
-> people are, a lot of those patches which would had been accepted in 
-> the past are blamed and rejected now. And this is normal IMO, people 
-> study on their own mistakes.
->
-That's OK. I see no problems here. I'll fix that.
+On Thu, 30 March 2006 15:36:24 -0800, H. Peter Anvin wrote:
+> 
+> I talked to Jörg Engel about this; he indicated that the blkmtd driver 
+                 ^
+*grumble* ;)
+
+> There seems to be a few options, in order from least work to more work:
+> 
+> - Removing the blkmtd driver and tell people to use block2mtd;
+
+Fair enough.  No objections from my side.
+Most users of mtd tend to use ancient kernels anyway, so there is less
+reason for a warning period, compared to other parts of the kernel.
+
+> - Have kinit intercept blkmtd configuration options and emulate them 
+> using block2mtd;
+> - Adjust blkmtd to have a configuration interface, and then make kinit 
+> configure it.
+
+Jörn
+
+-- 
+I don't understand it. Nobody does.
+-- Richard P. Feynman
