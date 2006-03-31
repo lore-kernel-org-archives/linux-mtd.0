@@ -1,19 +1,22 @@
-Received: from uproxy.gmail.com ([66.249.92.204])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPLDb-00017Q-I5
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 10:07:25 -0500
-Received: by uproxy.gmail.com with SMTP id j3so330445ugf
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 31 Mar 2006 07:07:18 -0800 (PST)
-Message-ID: <43507b7c0603310700l2b22bb0q34ac7198c27d3fe8@mail.gmail.com>
-Date: Fri, 31 Mar 2006 09:00:08 -0600
-From: "Sean Kelley" <sean.sweng@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from [2002:c053:f936::1] (helo=terminus.zytor.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.60 #1 (Red Hat Linux))
+	id 1FPLIp-00021n-8X
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 16:12:46 +0100
+Message-ID: <442D467D.7030806@zytor.com>
+Date: Fri, 31 Mar 2006 07:10:53 -0800
+From: "H. Peter Anvin" <hpa@zytor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-Subject: Maximum file size in Yaffs2 and jffs2
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <20060329232520.1677d2b3.akpm@osdl.org>
+	<442C0494.2040609@zytor.com>
+	<20060330114014.53150d1b.akpm@osdl.org>
+	<442C6B78.3060706@zytor.com>
+	<20060331083827.GA11367@wohnheim.fh-wedel.de>
+In-Reply-To: <20060331083827.GA11367@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Subject: Re: blkmtd and name_to_dev_t
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,5 +26,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksCgpXaGF0IGlzIHRoZSBtYXhpbXVtIGZpbGUgc2l6ZSBpbiBZYWZmczIgYW5kIGpmZnMyPwoK
-CgpUaGFua3MsCgpTZWFuCg==
+Jörn Engel wrote:
+> On Thu, 30 March 2006 15:36:24 -0800, H. Peter Anvin wrote:
+>> I talked to Jörg Engel about this; he indicated that the blkmtd driver 
+>                  ^
+> *grumble* ;)
+> 
+
+*D'OH!!!*  SORRY!!!!! :) :) :)
+
+	-hpa
