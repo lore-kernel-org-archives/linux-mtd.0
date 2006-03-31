@@ -1,10 +1,10 @@
-Received: from web15102.mail.cnb.yahoo.com ([202.165.103.71])
+Received: from web15110.mail.cnb.yahoo.com ([202.165.103.79])
 	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FP8ZM-0002nF-4Z
-	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 20:37:05 -0500
-Message-ID: <20060331013014.73949.qmail@web15102.mail.cnb.yahoo.com>
-Date: Fri, 31 Mar 2006 09:30:14 +0800 (CST)
-From: =?gb2312?q?=D6=EC=20=D6=EC?= <peterjzhu@yahoo.com.cn>
+	id 1FP8ps-00037x-Iu
+	for linux-mtd@lists.infradead.org; Thu, 30 Mar 2006 20:54:08 -0500
+Message-ID: <20060331014718.12468.qmail@web15110.mail.cnb.yahoo.com>
+Date: Fri, 31 Mar 2006 09:46:48 +0800 (CST)
+From: Peter J Zhu <peterjzhu@yahoo.com.cn>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=gb2312
@@ -41,15 +41,9 @@ page NAND. Any hints are very much appreciated.
 
 Thanks
 Peter
-   
 
 
-
-
-	
-
-	
 		
 ___________________________________________________________ 
-雅虎1G免费邮箱百分百防垃圾信 
-http://cn.mail.yahoo.com/
+无限容量雅虎相册，原图等大下载，超快速度，赶快抢注！ 
+http://cn.photos.yahoo.com
