@@ -1,23 +1,21 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPF9v-0000zt-Dl
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:39:31 -0500
-Message-ID: <442CEA8A.8030106@yandex.ru>
-Date: Fri, 31 Mar 2006 12:38:34 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FPFHi-0001P7-Ez
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:47:20 -0500
+Date: Fri, 31 Mar 2006 10:47:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: Alexander Belyakov <alexander.belyakov@intel.com>
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	
-	<442B9FA5.9070901@ru.mvista.com> <442BF839.8060402@intel.com>
-	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
-	<442CD50A.6070006@intel.com> <442CE217.8080103@yandex.ru>
-	<442CE2DC.7020505@yandex.ru> <442CE5AB.8030903@intel.com>
-In-Reply-To: <442CE5AB.8030903@intel.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>,
-	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
+Message-ID: <20060331084707.GB11367@wohnheim.fh-wedel.de>
+References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
+	<20060330121156.GA31749@wohnheim.fh-wedel.de>
+	<442CD1CB.7050509@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <442CD1CB.7050509@intel.com>
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Kutergin, Timofey" <timofey.kutergin@intel.com>
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,31 +26,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexander Belyakov wrote:
-> In that case clients should be aware of using striped devices and 
-> provide special support for them. The one of the ideas of the suggested 
-> solution is to hide striping internals from the client providing generic 
-> mtd device (just with somewhat increased performance).
-False.
+On Fri, 31 March 2006 10:52:59 +0400, Alexander Belyakov wrote:
+> 
+> >Your code suffers from a lot of very basic things that make it hard to
+> >review.  
+> 
+> What exactly you wish to see here? Hope I can bring clarifications by 
+> changing code/comments or via this mailing list.
 
-People don't have to look at mtd->type and may be happy. But if they do 
-want to do some mtd type-specific things, they do look at mtd type, 
-recognize what is this flash, and do the flash-specific things.
+To some degree, I leave it to you to take a look at your code and
+improve it.  There is little point in me pointing out every detail.
+In that case I could just write the code myself.
 
-This does not work in case of NAND at the moment. Indeed, users have to 
-use weird mtd->read_ecc() instead of just mtd->read(), etc. But this is 
-long agreed as bad interface and will be fixed some time later. In future,
+As a starting point, you should take a close look at
+Dokumentation/CodingStyle and will notice that your code has a rather
+different style.  Worse, your style is not even consistent within
+itself.  People will be more inclined to take a closer look if the
+code looks similar to what they would expect elsewhere.
 
-I believe, we'll have a common generic flash model, and a generic MTD 
-interface. And everyone will be able to work with all flash types in the 
-same generic way. Although if users will want to do some flash-specific 
-things, they will look at mtd->type, and have a big switch doing 
-whatever flash-specific actions are wanted.
+Then there's the general rule to make code simple to read.  #ifdef is
+a concept that makes code complicated.  Avoiding it where possible is
+a good idea.  Having the #ifdef once in a header is better than having
+it once in each source file including the header.  Having pretty much
+anything once is better than having it in many places.
 
-MTD is currently rather far from this nice picture, but this is a 
-question of time I believe.
+When you're done with this, please come back.  I'll take a closer look
+then.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Public Domain  - Free as in Beer
+General Public - Free as in Speech
+BSD License    - Free as in Enterprise
+Shared Source  - Free as in "Work will make you..."
