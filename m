@@ -1,11 +1,10 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPIHZ-00063n-TA
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 06:59:59 -0500
-Date: Fri, 31 Mar 2006 13:59:04 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-ID: <20060331115904.GJ14713@wohnheim.fh-wedel.de>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FPIOp-0006OG-IF
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 07:06:48 -0500
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060331115605.GI14713@wohnheim.fh-wedel.de>
 References: <442CE217.8080103@yandex.ru> <442CE2DC.7020505@yandex.ru>
 	<20060331092715.GC11367@wohnheim.fh-wedel.de>
 	<442CF82B.5060904@yandex.ru>
@@ -14,17 +13,20 @@ References: <442CE217.8080103@yandex.ru> <442CE2DC.7020505@yandex.ru>
 	<20060331100709.GD14713@wohnheim.fh-wedel.de>
 	<1143800324.3579.87.camel@sauron.oktetlabs.ru>
 	<20060331114049.GH14713@wohnheim.fh-wedel.de>
-	<1143806110.3579.90.camel@sauron.oktetlabs.ru>
+	<442D16BE.8010509@yandex.ru>
+	<20060331115605.GI14713@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Date: Fri, 31 Mar 2006 16:06:10 +0400
+Message-Id: <1143806770.3579.99.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1143806110.3579.90.camel@sauron.oktetlabs.ru>
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>,
+Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
 	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
+	Timofey" <timofey.kutergin@intel.com>, "Korolev,
+	Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	"Artem B. Bityutskiy" <dedekind@yandex.ru>
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +36,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 March 2006 15:55:10 +0400, Artem B. Bityutskiy wrote:
-> > 
-> Add an c->flags field to the per-JFFS2 structure. Initialize it on mount
-> properly. Then
+On Fri, 2006-03-31 at 13:56 +0200, Jörn Engel wrote:
+> Why?  It is not as if we couldn't count all the features that are
+> currently used and make sense.  And in the future, the number of sane
+> features will still be fairly low.  All we have to do is tell people
+> trying to add "can_do_my_crap" that we don't want such crap in the
+> kernel.
 > 
-> #define jffs2_can_mark_obsolete(c) (c->flags & JFFS2_CAN_MARK_OBSOLETE)
-> 
-> Don't try to jam this to MTD please.
+> Note the "and make sense" part in the second sentence. ;)
 
-Whether the flash can mark things obsolete is a flash feature.  At
-least this is based on a flash feature.  So maybe we should rename it
-to MTD_CAN_FLIP_SINGLE_BITS or similar and then have
+Please define the notion of "feature".
 
-	c->can_mark_obsolete = c->mtd & MTD_CAN_FLIP_SINGLE_BITS;
-
-That would make sense, yes.
-
-Jörn
+If you call "can mark obsolete" a feature, then you assume that feature
+may be application-specific. This really does not make sens to add this
+to MTD. Application-specific stuff must be in only application.
 
 -- 
-The cost of changing business rules is much more expensive for software
-than for a secretaty.
--- unknown
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
