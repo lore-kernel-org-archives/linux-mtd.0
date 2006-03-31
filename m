@@ -1,22 +1,26 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPFHi-0001P7-Ez
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:47:20 -0500
-Date: Fri, 31 Mar 2006 10:47:07 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FPFQO-0001es-33
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:56:22 -0500
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
 To: Alexander Belyakov <alexander.belyakov@intel.com>
-Message-ID: <20060331084707.GB11367@wohnheim.fh-wedel.de>
+In-Reply-To: <442CE5AB.8030903@intel.com>
 References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
-	<20060330121156.GA31749@wohnheim.fh-wedel.de>
-	<442CD1CB.7050509@intel.com>
+	<442B9FA5.9070901@ru.mvista.com>  <442BF839.8060402@intel.com>
+	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
+	<442CD50A.6070006@intel.com>
+	<442CE217.8080103@yandex.ru> <442CE2DC.7020505@yandex.ru>
+	<442CE5AB.8030903@intel.com>
+Content-Type: text/plain
+Date: Fri, 31 Mar 2006 12:55:35 +0400
+Message-Id: <1143795335.3579.63.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <442CD1CB.7050509@intel.com>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	"Kutergin, Timofey" <timofey.kutergin@intel.com>
+Content-Transfer-Encoding: 7bit
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>,
+	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
+	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +30,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 March 2006 10:52:59 +0400, Alexander Belyakov wrote:
-> 
-> >Your code suffers from a lot of very basic things that make it hard to
-> >review.  
-> 
-> What exactly you wish to see here? Hope I can bring clarifications by 
-> changing code/comments or via this mailing list.
+On Fri, 2006-03-31 at 12:17 +0400, Alexander Belyakov wrote:
+> In that case clients should be aware of using striped devices and 
+> provide special support for them. The one of the ideas of the suggested 
+> solution is to hide striping internals from the client providing generic 
+> mtd device (just with somewhat increased performance).
 
-To some degree, I leave it to you to take a look at your code and
-improve it.  There is little point in me pointing out every detail.
-In that case I could just write the code myself.
+I think you are one more guy who hit on the not generic enough
+interface.
 
-As a starting point, you should take a close look at
-Dokumentation/CodingStyle and will notice that your code has a rather
-different style.  Worse, your style is not even consistent within
-itself.  People will be more inclined to take a closer look if the
-code looks similar to what they would expect elsewhere.
+Indeed, on the one hand, you want to inform the type of flash used. If
+this is NAND, people have to use NAND-specific stuff like
+mtd->write_ecc. If this is NOR, they have to use NOR-related stuff like
+mtd->write, mtd->point and so on.
 
-Then there's the general rule to make code simple to read.  #ifdef is
-a concept that makes code complicated.  Avoiding it where possible is
-a good idea.  Having the #ifdef once in a header is better than having
-it once in each source file including the header.  Having pretty much
-anything once is better than having it in many places.
+On the other hand, you still want to inform users that this is a striped
+MTD device. They may want to know this.
 
-When you're done with this, please come back.  I'll take a closer look
-then.
+And the best thing you can do is not to adopt yourself to far too old
+MTD interface, which is like this for historical reasons, but to make a
+revolution in the MTD interface itself.
 
-Jörn
+By revolution I mean:
+
+1. To invent a common generic flash model.
+2. To make MTD interface generic.
+3. To fix existing users. Well, I would say fixing JFFS2 may be enough.
+
+This is a big piece of work, but it is what I consider a professional
+approach.
 
 -- 
-Public Domain  - Free as in Beer
-General Public - Free as in Speech
-BSD License    - Free as in Enterprise
-Shared Source  - Free as in "Work will make you..."
+Best Regards,
+Artem B. Bityuckiy,
+St.-Petersburg, Russia.
