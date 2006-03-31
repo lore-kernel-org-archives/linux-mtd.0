@@ -1,18 +1,21 @@
 Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPEWD-0007AL-C8
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 02:58:11 -0500
-Message-ID: <442CE0E8.1080105@yandex.ru>
-Date: Fri, 31 Mar 2006 11:57:28 +0400
+	id 1FPEb1-0007NY-Of
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 03:03:12 -0500
+Message-ID: <442CE217.8080103@yandex.ru>
+Date: Fri, 31 Mar 2006 12:02:31 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Alexander Belyakov <alexander.belyakov@intel.com>
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	<20060330121156.GA31749@wohnheim.fh-wedel.de>
-	<442CD1CB.7050509@intel.com>
-In-Reply-To: <442CD1CB.7050509@intel.com>
+References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	
+	<442B9FA5.9070901@ru.mvista.com> <442BF839.8060402@intel.com>
+	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
+	<442CD50A.6070006@intel.com>
+In-Reply-To: <442CD50A.6070006@intel.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, "Kutergin,
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>,
+	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
 	Timofey" <timofey.kutergin@intel.com>, linux-mtd@lists.infradead.org
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,31 +28,27 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Alexander Belyakov wrote:
->>> @@ -12,6 +12,9 @@
->>>  #ifdef CONFIG_MTD_PARTITIONS
->>>  #include <linux/mtd/partitions.h>
->>>  #endif
->>> +#ifdef CONFIG_MTD_CMDLINE_STRIPE
->>> +#include <linux/mtd/stripe.h>
->>> +#endif
->>
->> Move the #ifdef into the header.
+>> Well, probably this is a perversion and is not needed in reality, but
+>> still. I conceive it like this. Yo have 2 flashes. You as usually,
+>> calculate the resulting eraseblock size. You see at the minimal I/O unit
+>> size of both flashes and similarly calculate the resulting minimal I/O
+>> size. So that's it. You'll end up with a though perverted, but still a
+>> striped MTD device.
 > 
-> May I ask what is the reason for that (taking into account that 
-> partitions.h is already included here the same way for the same purpose)?
+> First problem in case of striping NOR and NAND is a question about type 
+> of striped device. Should we report it as NOR or as NAND. I believe it 
+> is important for clients to know about that. Imagine, for example, 
+> device reported as NAND behaves as NOR or vice versa. Another problem is 
+> a difference in operation speed. Apparently you won't get any 
+> performance gain. These are only top of iceberg. Note that even plain 
+> and simple mtdconcat is not supposed to work with flashes of different 
+> types.
 
-Just in general, the
-
-#ifdef EPRST
-#include <elki-palki.h>
-#endif
-
-is not very nice. It is nicer to add the #ifdef protection in the header 
-itself. This is not a major problem, but it is just nicer and Linux 
-people like this. Just incapsulate all the protection in the header 
-itself. Don't spread the protection over many .c files which may 
-potentially want to include your header.
-
+Good question. I think you could report this is a striped device 
+(introducing an MTD_STRIPED option). Also you may provide a 
+stripe_get_info(struct mtd_info *mtd) function which will return a 
+struct stripe_info object describing this striped device, including the 
+components it consists of.
 
 -- 
 Best Regards,
