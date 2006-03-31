@@ -1,11 +1,11 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FPIEd-0005h0-DP
-	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 06:56:33 -0500
-Date: Fri, 31 Mar 2006 13:56:05 +0200
+	id 1FPIHZ-00063n-TA
+	for linux-mtd@lists.infradead.org; Fri, 31 Mar 2006 06:59:59 -0500
+Date: Fri, 31 Mar 2006 13:59:04 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Message-ID: <20060331115605.GI14713@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-ID: <20060331115904.GJ14713@wohnheim.fh-wedel.de>
 References: <442CE217.8080103@yandex.ru> <442CE2DC.7020505@yandex.ru>
 	<20060331092715.GC11367@wohnheim.fh-wedel.de>
 	<442CF82B.5060904@yandex.ru>
@@ -14,12 +14,12 @@ References: <442CE217.8080103@yandex.ru> <442CE2DC.7020505@yandex.ru>
 	<20060331100709.GD14713@wohnheim.fh-wedel.de>
 	<1143800324.3579.87.camel@sauron.oktetlabs.ru>
 	<20060331114049.GH14713@wohnheim.fh-wedel.de>
-	<442D16BE.8010509@yandex.ru>
+	<1143806110.3579.90.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <442D16BE.8010509@yandex.ru>
+In-Reply-To: <1143806110.3579.90.camel@sauron.oktetlabs.ru>
 Cc: Alexander Belyakov <alexander.belyakov@intel.com>, "Korolev,
 	Alexey" <alexey.korolev@intel.com>,
 	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
@@ -34,25 +34,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 31 March 2006 15:47:10 +0400, Artem B. Bityutskiy wrote:
->
-> This piece of code indeed looks better. But nevertheless, MTD does not 
-> have to please JFFS2. It is difficult to foresee all "features" MTD 
-> users can conceive and add corresponding flags. Tomorrow a "XYZ" file 
-> system will apear and will want a "can_do_my_crap" feature, and you'll 
-> have to add this to mtd_info. This is really a bad idea.
+On Fri, 31 March 2006 15:55:10 +0400, Artem B. Bityutskiy wrote:
+> > 
+> Add an c->flags field to the per-JFFS2 structure. Initialize it on mount
+> properly. Then
+> 
+> #define jffs2_can_mark_obsolete(c) (c->flags & JFFS2_CAN_MARK_OBSOLETE)
+> 
+> Don't try to jam this to MTD please.
 
-Why?  It is not as if we couldn't count all the features that are
-currently used and make sense.  And in the future, the number of sane
-features will still be fairly low.  All we have to do is tell people
-trying to add "can_do_my_crap" that we don't want such crap in the
-kernel.
+Whether the flash can mark things obsolete is a flash feature.  At
+least this is based on a flash feature.  So maybe we should rename it
+to MTD_CAN_FLIP_SINGLE_BITS or similar and then have
 
-Note the "and make sense" part in the second sentence. ;)
+	c->can_mark_obsolete = c->mtd & MTD_CAN_FLIP_SINGLE_BITS;
+
+That would make sense, yes.
 
 Jörn
 
 -- 
-The grand essentials of happiness are: something to do, something to
-love, and something to hope for.
--- Allan K. Chalmers
+The cost of changing business rules is much more expensive for software
+than for a secretaty.
+-- unknown
