@@ -1,31 +1,30 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQOyW-0004jt-4t
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:20:15 -0400
-Date: Mon, 3 Apr 2006 15:18:40 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Nicolas Pitre <nico@cam.org>
-Message-ID: <20060403131840.GB7659@wohnheim.fh-wedel.de>
-References: <20060331100709.GD14713@wohnheim.fh-wedel.de>
-	<1143800324.3579.87.camel@sauron.oktetlabs.ru>
-	<20060331114049.GH14713@wohnheim.fh-wedel.de>
-	<1143806110.3579.90.camel@sauron.oktetlabs.ru>
-	<20060331115904.GJ14713@wohnheim.fh-wedel.de>
-	<1143807072.3579.105.camel@sauron.oktetlabs.ru>
-	<20060331122055.GK14713@wohnheim.fh-wedel.de>
-	<442D207D.9030903@yandex.ru>
-	<Pine.LNX.4.64.0603311221070.14923@localhost.localdomain>
-	<20060403130619.GA7659@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060403130619.GA7659@wohnheim.fh-wedel.de>
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
-	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
+	id 1FQPLt-0005HM-FW
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:44:24 -0400
+Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IX500LOKFHRPCC0@VL-MO-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:44:15 -0400 (EDT)
+Date: Mon, 03 Apr 2006 09:44:15 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <44309F34.8010301@ru.mvista.com>
+To: Vitaly Wool <vwool@ru.mvista.com>
+Message-id: <Pine.LNX.4.64.0604030943200.2550@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
+	<442B9FA5.9070901@ru.mvista.com> <442BF839.8060402@intel.com>
+	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
+	<442CD50A.6070006@intel.com> <442CE217.8080103@yandex.ru>
+	<Pine.LNX.4.64.0603311143460.14923@localhost.localdomain>
+	<44309F34.8010301@ru.mvista.com>
+Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
+	Alexander Belyakov <alexander.belyakov@intel.com>,
+	linux-mtd@lists.infradead.org, "Kutergin,
 	Timofey" <timofey.kutergin@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	"Artem B. Bityutskiy" <dedekind@yandex.ru>
+	Alexey" <alexey.korolev@intel.com>
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -36,46 +35,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 April 2006 15:06:19 +0200, Jörn Engel wrote:
-> 
-> As a step in that direction, please take a look at this patchset:
-> http://wh.fh-wedel.de/~joern/mtd_type.tgzwh.fh-wedel.de/~joern/mtd_type.tgz
+On Mon, 3 Apr 2006, Vitaly Wool wrote:
 
-Taking a closer look at the code, reader should notice three
-interesting things, btw:
+> Nicolas Pitre wrote:
+> > IMHO striping NOR and NAND together simply makes no sense.  NOR and NAND are
+> > fundamentally different things when it comes to writing to them, and apart
+> > from evaluation boards where every possible peripheral can be found you
+> > rarely will find both NOR and NAND in the same real life design.
+> >   
+> Oh really? What about MP3 player-oriented design with NAND flash as a main
+> storage and NOR flash for kernel/userspace XIP etc?
 
-1. Nico is a lazy moron,
-2. Artem is a lazy moron and
-3. Jörn is a lazy moron.
+You just demonstrated above why you'd never stripe those.  ;-)
 
-Nico, you didn't notice that the Sibley flashes are just another
-iteration of ST's ECC NOR flashes.  Special code for both flash types
-is nearly identical, except for the field used to store the writesize
-in struct mtd_info.
 
-Artem, you didn't notice that Dataflash has the exact same cleanup
-routine as ECC NOR and NAND flash has.  And for the initialization
-code, that could be shared as well.
-
-Jörn, I didn't notice that ECC NOR has the exact same cleanup routine
-as NAND flash.  And for the initialization code, that could be shared
-as well.
-
-Overall, JFFS2 currently has four sets of special setup/cleanup code
-for NAND, ECC NOR, Dataflash and Sibley.  Simply because the three of
-us were too lazy to read the existing code and didn't notice.  Noone
-else seemed to have noticed either, so the "lazy moron" thing seems to
-be fairly universal.  Don't take it as an insult, but rather as a
-statement about human nature (and a trick to attract attention).
-
-Nico, can you take a close look at the Sibley part of the patches and
-checker whether I broke anything?  Combining ECC NOR and Sibley was
-the low hanging fruit, so I already picked it.  Combining the three
-remaining sets is harder.  Maybe someone else is feeling the urge to
-combine those.
-
-Jörn
-
--- 
-He who knows that enough is enough will always have enough.
--- Lao Tsu
+Nicolas
