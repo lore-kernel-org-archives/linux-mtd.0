@@ -1,21 +1,22 @@
-Received: from smtp.seznam.cz ([212.80.76.43])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQRJB-00074L-Da
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 11:49:41 -0400
-Received: from ladis by orphique with local (Exim 3.36 #1 (Debian))
-	id 1FQRJ7-0004op-00
-	for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2006 17:49:33 +0200
-Date: Mon, 3 Apr 2006 17:49:33 +0200
-From: Ladislav Michl <ladis@linux-mips.org>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20060403154933.GA18475@orphique>
-References: <20060322115409.GA2242@orphique> <20060322194939.GA10058@orphique>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060322194939.GA10058@orphique>
-Sender: Ladislav Michl <Ladislav.Michl@seznam.cz>
-Subject: jffs2 BUG() on mount
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FQSY1-0001bn-2t
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 13:09:37 -0400
+Received: from xanadu.home ([74.56.105.38]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IX500ISYOYWUU70@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 13:08:56 -0400 (EDT)
+Date: Mon, 03 Apr 2006 13:08:56 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <39CC97884CA19A4D8D6296FE94357BCB04D9C0AE@swsmsx404>
+To: "Kolakowski, Mikolaj" <Mikolaj.Kolakowski@intel.com>
+Message-id: <Pine.LNX.4.64.0604031307050.2550@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <39CC97884CA19A4D8D6296FE94357BCB04D9C0AE@swsmsx404>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: erase suspend functionality
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-(Resend in hope it will not be eaten by spam filter)
+On Wed, 29 Mar 2006, Kolakowski, Mikolaj wrote:
 
-On Wed, Mar 22, 2006 at 08:49:39PM +0100, Ladislav Michl wrote:
-> With more debugs enabled it ends like this:
-> Skipping ino #228 already checked
-> Skipping ino #229 already checked
-> Skipping ino #270 already checked
-> Skipping check of ino #273 with nlink zero
-> [lots of skipping check of ino #xxx with nlink zero]
-> Skipping check of ino #800 with nlink zero
-> Skipping check of ino #801 with nlink zero
-> Skipping ino #802 already checked
-> Skipping check of ino #803 with nlink zero
-> Checked all inodes but still 0x13364c bytes of unchecked space?
+> Hi,
 > 
-> Where checked_ino is 804 and highest_ino 803. ino 802 is already checked
-> because userspace requested read meanwhile.
+> Anybody can explain how erase suspend should work from the macro
+> perspective?
+> I assume that when I delete huge file and JFFS2 starts erasing sectors
+> then when I try to write small amount of data I shouldn't wait until all
+> the sectors on a erase pending list will be erased? The write should
+> stop erasing. Is it true?
 
-jffs2_scan_inode_node adds also inodes with zero nlink to
-unchecked_space, but jffs2_garbage_collect_pass skips them. That
-probably leads to above problem. After applying following patch
-BUG() is no longer triggered.
+Only if the write is going to happen in a sector not scheduled for 
+erase.
 
-Index: fs/jffs2/gc.c
-===================================================================
-RCS file: /home/cvs/mtd/fs/jffs2/gc.c,v
-retrieving revision 1.159
-diff -u -r1.159 gc.c
---- fs/jffs2/gc.c	18 Nov 2005 07:27:45 -0000	1.159
-+++ fs/jffs2/gc.c	23 Mar 2006 17:39:00 -0000
-@@ -211,12 +211,6 @@
- 			continue;
- 		}
- 
--		if (!ic->nlink) {
--			D1(printk(KERN_DEBUG "Skipping check of ino #%d with nlink zero\n",
--				  ic->ino));
--			spin_unlock(&c->inocache_lock);
--			continue;
--		}
- 		switch(ic->state) {
- 		case INO_STATE_CHECKEDABSENT:
- 		case INO_STATE_PRESENT:
 
-I'm not sure what is correct solution. With this change there are lots of
-JFFS2 warning: (138) jffs2_get_inode_nodes: Eep. No valid nodes for ino #465.
-JFFS2 warning: (138) jffs2_do_read_inode_internal: no data nodes found for ino #465
-Returned error for crccheck of ino #465. Expect badness...
-warnings. Jffs2 summary feature is disabled. I'd be very gratefull for ideas.
-
-	ladis
+Nicolas
