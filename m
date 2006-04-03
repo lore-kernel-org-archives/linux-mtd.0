@@ -1,30 +1,21 @@
-Received: from s131.mittwaldmedien.de ([62.216.178.31])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQQrx-0006YV-I4
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 11:21:31 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id 17FE45E42E3
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  3 Apr 2006 17:21:25 +0200 (CEST)
-Received: from lin01.mn-solutions.de (p54B2804B.dip0.t-ipconnect.de
-	[84.178.128.75])
-	by s131.mittwaldmedien.de (Postfix) with ESMTP id 7CBDC5E42E0
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  3 Apr 2006 17:21:23 +0200 (CEST)
-Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
-	by lin01.mn-solutions.de (Postfix) with ESMTP id DA2AB1E00FE
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  3 Apr 2006 16:40:52 +0200 (CEST)
-From: Holger Schurig <h.schurig@mn-solutions.de>
+Received: from smtp.seznam.cz ([212.80.76.43])
+	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FQRJB-00074L-Da
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 11:49:41 -0400
+Received: from ladis by orphique with local (Exim 3.36 #1 (Debian))
+	id 1FQRJ7-0004op-00
+	for <linux-mtd@lists.infradead.org>; Mon, 03 Apr 2006 17:49:33 +0200
+Date: Mon, 3 Apr 2006 17:49:33 +0200
+From: Ladislav Michl <ladis@linux-mips.org>
 To: linux-mtd@lists.infradead.org
-Date: Mon, 3 Apr 2006 16:41:22 +0200
+Message-ID: <20060403154933.GA18475@orphique>
+References: <20060322115409.GA2242@orphique> <20060322194939.GA10058@orphique>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200604031641.22989.h.schurig@mn-solutions.de>
-Subject: behavior of JFFS2 and old data in flash
+In-Reply-To: <20060322194939.GA10058@orphique>
+Sender: Ladislav Michl <Ladislav.Michl@seznam.cz>
+Subject: jffs2 BUG() on mount
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,20 +25,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is the following statement correct?
+(Resend in hope it will not be eaten by spam filter)
 
-  When I have an JFFS2 file system which was used for some time
-  at a customer and now I want to re-flash it, then I have to
-  erase the whole flash (e.g. all of the 64 MB), even when my
-  image is only 2.5 MB. Otherwise at the next mount JFFS2 might
-  intermix sectors from the old image in unerase sectors and
-  from the new image".
+On Wed, Mar 22, 2006 at 08:49:39PM +0100, Ladislav Michl wrote:
+> With more debugs enabled it ends like this:
+> Skipping ino #228 already checked
+> Skipping ino #229 already checked
+> Skipping ino #270 already checked
+> Skipping check of ino #273 with nlink zero
+> [lots of skipping check of ino #xxx with nlink zero]
+> Skipping check of ino #800 with nlink zero
+> Skipping check of ino #801 with nlink zero
+> Skipping ino #802 already checked
+> Skipping check of ino #803 with nlink zero
+> Checked all inodes but still 0x13364c bytes of unchecked space?
+> 
+> Where checked_ino is 804 and highest_ino 803. ino 802 is already checked
+> because userspace requested read meanwhile.
 
-Now, what if I use sumtool?  AFAIK sumtool stores the erase sectors
-inside an the image. Now JFFS2 knows where erased sectors are located 
-and doesn't scan the whole image. Therefore the old garbage in the 
-not-erased-sectors should't make a problem.
+jffs2_scan_inode_node adds also inodes with zero nlink to
+unchecked_space, but jffs2_garbage_collect_pass skips them. That
+probably leads to above problem. After applying following patch
+BUG() is no longer triggered.
 
-If this statement is true as well, then I could omit the 
-tediuous/time-consuming blockwise erase (my chips don't have a 
-erase-the-whole-chip function).
+Index: fs/jffs2/gc.c
+===================================================================
+RCS file: /home/cvs/mtd/fs/jffs2/gc.c,v
+retrieving revision 1.159
+diff -u -r1.159 gc.c
+--- fs/jffs2/gc.c	18 Nov 2005 07:27:45 -0000	1.159
++++ fs/jffs2/gc.c	23 Mar 2006 17:39:00 -0000
+@@ -211,12 +211,6 @@
+ 			continue;
+ 		}
+ 
+-		if (!ic->nlink) {
+-			D1(printk(KERN_DEBUG "Skipping check of ino #%d with nlink zero\n",
+-				  ic->ino));
+-			spin_unlock(&c->inocache_lock);
+-			continue;
+-		}
+ 		switch(ic->state) {
+ 		case INO_STATE_CHECKEDABSENT:
+ 		case INO_STATE_PRESENT:
+
+I'm not sure what is correct solution. With this change there are lots of
+JFFS2 warning: (138) jffs2_get_inode_nodes: Eep. No valid nodes for ino #465.
+JFFS2 warning: (138) jffs2_do_read_inode_internal: no data nodes found for ino #465
+Returned error for crccheck of ino #465. Expect badness...
+warnings. Jffs2 summary feature is disabled. I'd be very gratefull for ideas.
+
+	ladis
