@@ -1,26 +1,31 @@
-Received: from mga03.intel.com ([143.182.124.21] helo=azsmga101-1.ch.intel.com)
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQJMP-00007e-Os
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 03:20:31 -0400
-Message-ID: <4430CCAA.1020405@intel.com>
-Date: Mon, 03 Apr 2006 11:20:10 +0400
-From: Alexander Belyakov <alexander.belyakov@intel.com>
-MIME-Version: 1.0
-To: tglx@linutronix.de
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>	
-	<442B9FA5.9070901@ru.mvista.com> <442BF839.8060402@intel.com>	
-	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
-	<442CD50A.6070006@intel.com>	 <442CE217.8080103@yandex.ru>	
-	<Pine.LNX.4.64.0603311143460.14923@localhost.localdomain>	
-	<44309F34.8010301@ru.mvista.com>
-	<1144044282.5344.350.camel@localhost.localdomain>
-In-Reply-To: <1144044282.5344.350.camel@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
+	id 1FQOlb-0004Od-Et
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:07:00 -0400
+Date: Mon, 3 Apr 2006 15:06:19 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Nicolas Pitre <nico@cam.org>
+Message-ID: <20060403130619.GA7659@wohnheim.fh-wedel.de>
+References: <1143799209.3579.74.camel@sauron.oktetlabs.ru>
+	<20060331100709.GD14713@wohnheim.fh-wedel.de>
+	<1143800324.3579.87.camel@sauron.oktetlabs.ru>
+	<20060331114049.GH14713@wohnheim.fh-wedel.de>
+	<1143806110.3579.90.camel@sauron.oktetlabs.ru>
+	<20060331115904.GJ14713@wohnheim.fh-wedel.de>
+	<1143807072.3579.105.camel@sauron.oktetlabs.ru>
+	<20060331122055.GK14713@wohnheim.fh-wedel.de>
+	<442D207D.9030903@yandex.ru>
+	<Pine.LNX.4.64.0603311221070.14923@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.64.0603311221070.14923@localhost.localdomain>
+Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
+	Vitaly Wool <vwool@ru.mvista.com>, "Kutergin,
 	Timofey" <timofey.kutergin@intel.com>, "Korolev,
 	Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	"Artem B. Bityutskiy" <dedekind@yandex.ru>, Nicolas Pitre <nico@cam.org>
+	"Artem B. Bityutskiy" <dedekind@yandex.ru>
 Subject: Re: [PATCH/RFC] MTD: Striping layer core
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -31,38 +36,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
->> Oh really? What about MP3 player-oriented design with NAND flash as a
->> main storage and NOR flash for kernel/userspace XIP etc?
->
-> Granted, but you can not mix the usage of those chips.
->
-> Functions like concat or striping can only be used with FLASH of the
-> same type. NAND and NOR are so fundamentally different it wont work
-> without some ugly hack around. There is no point to even think about
-> that.
+On Fri, 31 March 2006 12:22:50 -0500, Nicolas Pitre wrote:
+> 
+> You are right here.  This is why MTD drivers should export _flash_ 
+> features rather than filesystem requirements.  And it is up to 
+> filesystem code to cope with the (lack of) certain flash features not 
+> the other way around.
 
-That's my point too. Moreover there is no reason to stripe NOR and NAND. 
-Even if you were able to make "some ugly hacks" to configure it you wont 
-get any performance increase due to significantly different speed of 
-those chips. Striped device will work with the speed of the slowest 
-sub-device.
+As long as noone is being a fundamentalist zealot, we all agree here.
 
-> I have the feeling that the striping support
-> needs more than a bunch of hacks to the core mtd chip support if we do
-> not want to end up with a complete unmaintainable mess.
+My fine point of disagreement is that I stress "should" above
+everything else.  Quite a few things can and should be improved about
+mtd and its users.  If everything were perfect, it would all be about
+flash features.  Until then, it may make sense to _temporarily_ hold
+some filesystem features.  While this is undeniably a bad thing in its
+own, it can allow you to get rid of bigger warts.
 
-Originally striping layer has been developed for NOR and Sibley flashes 
-which quite slow. Striping for NOR is quite simple despite it requires 
-some changes in command sets implementation.
+Once the bigger warts are gone, we can aim for perfect. ;)
 
-If you look at my patches you find nothing that changes MTD NAND 
-subsystem. Only interleaving algorithm (virtual pages merging) and 
-worker threads queues have been implemented for NAND flashes. It was not 
-possible to check striped NAND performance gain due to some hardware 
-limitations we have - but I believe NAND striping will come across the 
-same problems with thread switching as we had for NOR devices. Anyway I 
-feel that in general NAND striping wont be so simple as NOR striping.
+As a step in that direction, please take a look at this patchset:
+http://wh.fh-wedel.de/~joern/mtd_type.tgzwh.fh-wedel.de/~joern/mtd_type.tgz
 
-Thanks,
-Alexander
+It removes all types except MTD_ABSENT and all flags but MTD_OOB.  As
+a replacement, three new flags are introduced.  So now we're at a
+total of 4 flags (previously 9) and two types (previously 9).
+
+Jörn
+
+-- 
+...one more straw can't possibly matter...
+-- Kirby Bakken
