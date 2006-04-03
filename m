@@ -1,31 +1,30 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from s131.mittwaldmedien.de ([62.216.178.31])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQPLt-0005HM-FW
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:44:24 -0400
-Received: from xanadu.home ([74.56.105.38]) by VL-MO-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0IX500LOKFHRPCC0@VL-MO-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 09:44:15 -0400 (EDT)
-Date: Mon, 03 Apr 2006 09:44:15 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <44309F34.8010301@ru.mvista.com>
-To: Vitaly Wool <vwool@ru.mvista.com>
-Message-id: <Pine.LNX.4.64.0604030943200.2550@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <F048F58F304F0040BC3E937DE4E231E701DC3ABB@NNSMSX401>
-	<442B9FA5.9070901@ru.mvista.com> <442BF839.8060402@intel.com>
-	<1143733184.3579.47.camel@sauron.oktetlabs.ru>
-	<442CD50A.6070006@intel.com> <442CE217.8080103@yandex.ru>
-	<Pine.LNX.4.64.0603311143460.14923@localhost.localdomain>
-	<44309F34.8010301@ru.mvista.com>
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
-	Alexander Belyakov <alexander.belyakov@intel.com>,
-	linux-mtd@lists.infradead.org, "Kutergin,
-	Timofey" <timofey.kutergin@intel.com>, "Korolev,
-	Alexey" <alexey.korolev@intel.com>
-Subject: Re: [PATCH/RFC] MTD: Striping layer core
+	id 1FQQrx-0006YV-I4
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 11:21:31 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 17FE45E42E3
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Apr 2006 17:21:25 +0200 (CEST)
+Received: from lin01.mn-solutions.de (p54B2804B.dip0.t-ipconnect.de
+	[84.178.128.75])
+	by s131.mittwaldmedien.de (Postfix) with ESMTP id 7CBDC5E42E0
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Apr 2006 17:21:23 +0200 (CEST)
+Received: from mnz66.mn-solutions.de (mnz66.mn-logistik.de [192.168.233.66])
+	by lin01.mn-solutions.de (Postfix) with ESMTP id DA2AB1E00FE
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  3 Apr 2006 16:40:52 +0200 (CEST)
+From: Holger Schurig <h.schurig@mn-solutions.de>
+To: linux-mtd@lists.infradead.org
+Date: Mon, 3 Apr 2006 16:41:22 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200604031641.22989.h.schurig@mn-solutions.de>
+Subject: behavior of JFFS2 and old data in flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,18 +34,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 3 Apr 2006, Vitaly Wool wrote:
+Is the following statement correct?
 
-> Nicolas Pitre wrote:
-> > IMHO striping NOR and NAND together simply makes no sense.  NOR and NAND are
-> > fundamentally different things when it comes to writing to them, and apart
-> > from evaluation boards where every possible peripheral can be found you
-> > rarely will find both NOR and NAND in the same real life design.
-> >   
-> Oh really? What about MP3 player-oriented design with NAND flash as a main
-> storage and NOR flash for kernel/userspace XIP etc?
+  When I have an JFFS2 file system which was used for some time
+  at a customer and now I want to re-flash it, then I have to
+  erase the whole flash (e.g. all of the 64 MB), even when my
+  image is only 2.5 MB. Otherwise at the next mount JFFS2 might
+  intermix sectors from the old image in unerase sectors and
+  from the new image".
 
-You just demonstrated above why you'd never stripe those.  ;-)
+Now, what if I use sumtool?  AFAIK sumtool stores the erase sectors
+inside an the image. Now JFFS2 knows where erased sectors are located 
+and doesn't scan the whole image. Therefore the old garbage in the 
+not-erased-sectors should't make a problem.
 
-
-Nicolas
+If this statement is true as well, then I could omit the 
+tediuous/time-consuming blockwise erase (my chips don't have a 
+erase-the-whole-chip function).
