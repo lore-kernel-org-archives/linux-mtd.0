@@ -1,23 +1,22 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQjYA-0006eY-9F
-	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 07:18:28 -0400
-Date: Tue, 4 Apr 2006 13:18:02 +0200
+	by pentafluge.infradead.org with esmtp (Exim 4.60 #1 (Red Hat Linux))
+	id 1FQhqI-00032T-Ew
+	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 10:28:55 +0100
+Date: Tue, 4 Apr 2006 11:28:32 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: Andrew Morton <akpm@osdl.org>
-Message-ID: <20060404111802.GA15749@wohnheim.fh-wedel.de>
+Message-ID: <20060404092832.GB12277@wohnheim.fh-wedel.de>
 References: <20060404092628.GA12277@wohnheim.fh-wedel.de>
-	<20060404092930.GC12277@wohnheim.fh-wedel.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060404092930.GC12277@wohnheim.fh-wedel.de>
+In-Reply-To: <20060404092628.GA12277@wohnheim.fh-wedel.de>
 Cc: Simon Evans <spse@secret.org.uk>, "Eric W. Biederman" <ebiederman@lnxi.com>,
 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	"H. Peter Anvin" <hpa@zytor.com>, Thomas Gleixner <tglx@linutronix.de>,
 	David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [Patch 2/3] Mark block2mtd as not deprecated
+Subject: [Patch 1/3] Immediatly deprecate blkmtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 4 April 2006 11:29:30 +0200, Jörn Engel wrote:
-> Subject: [Patch 2/3] Mark block2mtd as not deprecated
-                                             ^^^^^^^^^^
-Lack of coffee.  That should have been "experimental".
+Deprecate blkmtd.  Reasoning is described in the patch itself.
 
-Jörn
+Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
+---
 
--- 
-Das Aufregende am Schreiben ist es, eine Ordnung zu schaffen, wo
-vorher keine existiert hat.
--- Doris Lessing
+ Documentation/feature-removal-schedule.txt |   14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+--- blkmtd/Documentation/feature-removal-schedule.txt~blkmtd_deprecation	2006-04-04 10:55:42.000000000 +0200
++++ blkmtd/Documentation/feature-removal-schedule.txt	2006-04-04 11:03:56.000000000 +0200
+@@ -246,3 +246,17 @@ Why:	The interface no longer has any cal
+ Who:	Nick Piggin <npiggin@suse.de>
+ 
+ ---------------------------
++
++What:	blkmtd
++When:	April 2006
++Files:	drivers/mtd/devices/blkmtd.c
++Why:	o An alternative exists that hasn't had  bug report for > 1 year.
++	o Most embedded people tend to use ancient kernels with custom patches
++  	  from mtd cvs and elsewhere, so the 1 year warning period neither
++  	  helps nor hurts them too much.
++	o It's in the way of klibc.  The problems caused by pulling blkmtd
++  	  support are fairly low, while the problems caused by delaying klibc
++  	  can be fairly substantial.  At best, this would be a severe burden
++  	  on hpa's time.
++
++Who:	Joern Engel <joern@wh.fh-wedel.de>
