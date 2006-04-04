@@ -1,16 +1,20 @@
-Received: from web15103.mail.cnb.yahoo.com ([202.165.103.72])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQayG-0004LN-3N
-	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 22:08:51 -0400
-Message-ID: <20060404020154.30683.qmail@web15103.mail.cnb.yahoo.com>
-Date: Tue, 4 Apr 2006 10:01:54 +0800 (CST)
-From: Peter J Zhu <peterjzhu@yahoo.com.cn>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20060331014718.12468.qmail@web15110.mail.cnb.yahoo.com>
+Received: from 66.239.25.20.ptr.us.xo.net ([66.239.25.20] helo=zoot.lnxi.com)
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FQbix-00057X-8t
+	for linux-mtd@lists.infradead.org; Mon, 03 Apr 2006 22:57:00 -0400
+To: "H. Peter Anvin" <hpa@zytor.com>
+References: <20060329232520.1677d2b3.akpm@osdl.org>
+	<442C0494.2040609@zytor.com> <20060330114014.53150d1b.akpm@osdl.org>
+	<442C6B78.3060706@zytor.com>
+From: ebiederman@lnxi.com (Eric W. Biederman)
+Date: Mon, 03 Apr 2006 20:56:26 -0600
+In-Reply-To: <442C6B78.3060706@zytor.com> (H. Peter Anvin's message of "Thu,
+	30 Mar 2006 15:36:24 -0800")
+Message-ID: <m3hd5anj51.fsf@maxwell.lnxi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
-Subject: EBS effect
+Content-Type: text/plain; charset=us-ascii
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: Re: blkmtd and name_to_dev_t
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,35 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello,
- 
-  Recently I enanbled EBS with 2.6.15 on Samsung small
-  page(oobblock = 512B)NAND chip. The results is as
-  following:
-  
-             Without EBS       With EBS
+"H. Peter Anvin" <hpa@zytor.com> writes:
 
-  Imagesize  31378292B         42379624B
+> There seems to be a few options, in order from least work to more work:
+>
+> - Removing the blkmtd driver and tell people to use block2mtd;
+> - Have kinit intercept blkmtd configuration options and emulate them using
+> block2mtd;
+> - Adjust blkmtd to have a configuration interface, and then make kinit configure
+> it.
 
-  Mouttime   17s ~             14s ~
+Block devices are not especially interesting when working with flash chips, as they
+are an emulation layer.  The character devices are much more interesting,
+and the native filesystems don't go through a block or a character device.
+So killing blkmtd sounds like a reasonable thing to do.
 
-  The overhead space is too much while providing NOT
-  high mout time improvement But from the thread
-  http://mhonarc.axis.se/jffs-dev/msg01763.html, 
-  results seems too bad compared with what's claimed. 
+Given that klibc will reduce the size of the kernel I expect most embedded
+users will in general be in favor of it.
 
-  The only diff I can imagine is that he might use big
-  page NAND. Any hints are very much appreciated. 
+So I suggest what happens is that we deprecate blkmtd in Documentation/FeatureRemoval
+of 2.6.17 and delete it in the -mm tree.
 
-Thanks
-Peter
+Then you can merge klibc.
 
+Does any one have a problem with that plan?
 
-
-	
-
-	
-		
-___________________________________________________________ 
-—≈ª¢1G√‚∑—” œ‰∞Ÿ∑÷∞Ÿ∑¿¿¨ª¯–≈ 
-http://cn.mail.yahoo.com/
+Eric
