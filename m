@@ -1,19 +1,16 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQnXf-0002Sz-Cv
-	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 11:34:07 -0400
-Date: Tue, 4 Apr 2006 17:33:54 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Richard Purdie <richard@openedhand.com>
-Message-ID: <20060404153354.GD25130@wohnheim.fh-wedel.de>
-References: <1144163888.6441.48.camel@localhost.localdomain>
+Received: from o-hand.com ([70.86.75.186])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FQnao-0002l7-T4
+	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 11:37:27 -0400
+From: Richard Purdie <richard@openedhand.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Date: Tue, 04 Apr 2006 16:18:08 +0100
+Message-Id: <1144163888.6441.48.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1144163888.6441.48.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC/testing] Upgrade the zlib_inflate library code to a
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: [PATCH RFC/testing] Upgrade the zlib_inflate library code to a
 	recent version
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,60 +21,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 4 April 2006 16:18:08 +0100, Richard Purdie wrote:
-> 
-> Upgrade the zlib_inflate implementation in the kernel from a patched
-> version 1.1.3 to a patched 1.2.3. 
+Upgrade the zlib_inflate implementation in the kernel from a patched
+version 1.1.3 to a patched 1.2.3. 
 
-s/1.1.3/1.1.4/
+The code in the kernel is about seven years old and I noticed that the
+external zlib library's inflate performance was significantly faster
+(~50%) than the code in the kernel on ARM (and faster again on x86_32).
 
-I once pulled all the bugfixes between the versions into the kernel.
+For comparison the newer deflate code is 20% slower on ARM and 50%
+slower on x86_32 but gives an approx 1% compression ratio improvement. I
+don't consider this to be an improvement for kernel use so have no plans
+to change the zlib_deflate code.
 
-> The code in the kernel is about seven years old and I noticed that the
-> external zlib library's inflate performance was significantly faster
-> (~50%) than the code in the kernel on ARM (and faster again on x86_32).
-> 
-> For comparison the newer deflate code is 20% slower on ARM and 50%
-> slower on x86_32 but gives an approx 1% compression ratio improvement. I
-> don't consider this to be an improvement for kernel use so have no plans
-> to change the zlib_deflate code.
-> 
-> Various changes have been made to the zlib code in the kernel, the most
-> significant being the extra functions/flush option used by ppp_deflate.
-> This update reimplements the features PPP needs to ensure it continues
-> to work.
-> 
-> This code has been tested on ARM under both JFFS2 (with zlib compression
-> enabled) and ppp_deflate and on x86_32. JFFS2 sees an approx. 10% real
-> world file read speed improvement.
-> 
-> This patch also removes ZLIB_VERSION as it no longer has a correct
-> value. We don't need version checks anyway as the kernel's module
-> handling will take care of that for us. This removal is also more in
-> keeping with the zlib author's wishes
-> (http://www.zlib.net/zlib_faq.html#faq24) and I've added something to
-> the zlib.h header to note its a modified version.
+Various changes have been made to the zlib code in the kernel, the most
+significant being the extra functions/flush option used by ppp_deflate.
+This update reimplements the features PPP needs to ensure it continues
+to work.
 
-Sounds good.
+This code has been tested on ARM under both JFFS2 (with zlib compression
+enabled) and ppp_deflate and on x86_32. JFFS2 sees an approx. 10% real
+world file read speed improvement.
 
-> +#if 0
-> +int zlib_inflatePrime(z_streamp strm, int bits, int value)
+This patch also removes ZLIB_VERSION as it no longer has a correct
+value. We don't need version checks anyway as the kernel's module
+handling will take care of that for us. This removal is also more in
+keeping with the zlib author's wishes
+(http://www.zlib.net/zlib_faq.html#faq24) and I've added something to
+the zlib.h header to note its a modified version.
 
-Was this code dead in 1.2.3 as well?
+Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
+---
 
-> +#ifndef PKZIP_BUG_WORKAROUND
+ include/linux/zconf.h           |   12
+ include/linux/zlib.h            |  209 ++++---
+ include/linux/zutil.h           |   12
+ lib/zlib_deflate/deflate.c      |   25
+ lib/zlib_deflate/deflate_syms.c |    3
+ lib/zlib_inflate/Makefile       |    4
+ lib/zlib_inflate/infblock.c     |  365 -------------
+ lib/zlib_inflate/infblock.h     |   48 -
+ lib/zlib_inflate/infcodes.c     |  202 -------
+ lib/zlib_inflate/infcodes.h     |   33 -
+ lib/zlib_inflate/inffast.c      |  462 ++++++++++------
+ lib/zlib_inflate/inffast.h      |   12
+ lib/zlib_inflate/inffixed.h     |   94 +++
+ lib/zlib_inflate/inflate.c      | 1114 +++++++++++++++++++++++++++++++---------
+ lib/zlib_inflate/inflate.h      |  107 +++
+ lib/zlib_inflate/inflate_syms.c |    3
+ lib/zlib_inflate/inflate_sync.c |  152 -----
+ lib/zlib_inflate/inftrees.c     |  677 ++++++++++--------------
+ lib/zlib_inflate/inftrees.h     |   99 +--
+ lib/zlib_inflate/infutil.c      |   88 ---
+ lib/zlib_inflate/infutil.h      |  178 ------
+ 21 files changed, 1886 insertions(+), 2013 deletions(-)
 
-For the kernel, we can remove compat code against DOS compilers, etc.
-In this particular case, I believe we can just consider data
-compressed with PKZIP to be illegal and throw an error.
+The patch is ~160kb so I'll link to it:
 
-Overall the patch doesn't contain any obvious problems and seems to do
-what you described.  If testing agrees as well, I'm all for merging
-it.
-
-Jörn
-
--- 
-It is better to die of hunger having lived without grief and fear,
-than to live with a troubled spirit amid abundance.
--- Epictetus
+http://www.o-hand.com/~richard/zlib_inflate-r3.patch
