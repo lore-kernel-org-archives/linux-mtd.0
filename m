@@ -1,19 +1,24 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FQg4A-0001NT-Ul
-	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 03:35:10 -0400
-Message-ID: <44322186.3060800@yandex.ru>
-Date: Tue, 04 Apr 2006 11:34:30 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-MIME-Version: 1.0
-To: Ladislav Michl <ladis@linux-mips.org>
-References: <20060322115409.GA2242@orphique> <20060322194939.GA10058@orphique>
-	<20060403154933.GA18475@orphique>
-In-Reply-To: <20060403154933.GA18475@orphique>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: jffs2 BUG() on mount
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FQgvx-0002RU-T6
+	for linux-mtd@lists.infradead.org; Tue, 04 Apr 2006 04:30:50 -0400
+Date: Tue, 4 Apr 2006 10:30:20 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "H. Peter Anvin" <hpa@zytor.com>
+Message-ID: <20060404083019.GA9747@wohnheim.fh-wedel.de>
+References: <20060329232520.1677d2b3.akpm@osdl.org>
+	<442C0494.2040609@zytor.com>
+	<20060330114014.53150d1b.akpm@osdl.org>
+	<442C6B78.3060706@zytor.com> <m3hd5anj51.fsf@maxwell.lnxi.com>
+	<4431E304.6020908@zytor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4431E304.6020908@zytor.com>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	"Eric W. Biederman" <ebiederman@lnxi.com>
+Subject: Re: blkmtd and name_to_dev_t
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +28,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-Ladislav Michl wrote:
-> jffs2_scan_inode_node adds also inodes with zero nlink to
-> unchecked_space, but jffs2_garbage_collect_pass skips them. That
-> probably leads to above problem. After applying following patch
-> BUG() is no longer triggered.
+On Mon, 3 April 2006 20:07:48 -0700, H. Peter Anvin wrote:
+> Eric W. Biederman wrote:
 > 
+> I thought (am I wrong?) that blkmtd referred to using a block device as 
+> an MTD device.  Either which way, Jörn tells me that blkmtd is 
+> deprecated by block2mtd anyway, and only retained for boot support, 
+> which is pretty easy to do in klibc.
 
-<snip>
+You are not wrong.
 
-> I'm not sure what is correct solution. With this change there are lots of
-> JFFS2 warning: (138) jffs2_get_inode_nodes: Eep. No valid nodes for ino #465.
-> JFFS2 warning: (138) jffs2_do_read_inode_internal: no data nodes found for ino #465
-> Returned error for crccheck of ino #465. Expect badness...
-> warnings. Jffs2 summary feature is disabled. I'd be very gratefull for ideas.
+A possibly better way to deliver the same functionality (jffs2 rootfs
+on block device through emulation) might be to add transparent
+translation support to jffs2.  Something that will make "mount
+/dev/hda1 /mnt -t jffs2" work.  How exactly the code for this should
+look, I don't know yet.  But given that jffs2 is the only sane user of
+bd->mtd translation, it looks like the Right Thing to me.
 
-Actually, there is a jffs2_build_filesystem() function which walks all 
-inodes with nlink == 0 and pretends to dispense with them. I believe 
-that function is the right place to fix. I ganced at it, and it appeared 
-to be thet it calls jffs2_mark_node_obsolete() for all nodes of this 
-inode. jffs2_mark_node_obsolete() is a huge and fearsom monster-function 
-which may do something wrong.
+> >So I suggest what happens is that we deprecate blkmtd in 
+> >Documentation/FeatureRemoval
+> >of 2.6.17 and delete it in the -mm tree.
+> >
+> >Then you can merge klibc.
+> >
+> >Does any one have a problem with that plan?
+> 
+> That certainly works for me.  Jörn indicated he's going to sign off on a 
+> patch to remove blkmtd, which will solve my problem.
+
+Once the coffee kicks in, yes.  Good morning everyone.
+
+Ordinarily, we should go through the usual 1 year deprecation period
+for blkmtd.  But in this case I find it justified to pull the support
+immediatly:
+o An alternative exists that hasn't had  bug report for > 1 year.
+o Most embedded people tend to use ancient kernels with custom patches
+  from mtd cvs and elsewhere, so the 1 year warning period neither
+  helps nor hurts them too much.
+o It's in the way of klibc.  The problems caused by pulling blkmtd
+  support are fairly low, while the problems caused by delaying klibc
+  can be fairly substantial.  At best, this would be a severe burden
+  on hpa's time.
+
+That said, deprecating the driver in -linus and removing it in -mm
+until klibc is merged to -linus sounds like a good idea.  Will do
+that.
+
+Jörn
 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Anything that can go wrong, will.
+-- Finagle's Law
