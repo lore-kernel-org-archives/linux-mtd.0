@@ -1,17 +1,20 @@
-Received: from web15105.mail.cnb.yahoo.com ([202.165.103.74])
-	by canuck.infradead.org with smtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FR0UM-0006nX-BN
-	for linux-mtd@lists.infradead.org; Wed, 05 Apr 2006 01:23:39 -0400
-Message-ID: <20060405050257.17756.qmail@web15105.mail.cnb.yahoo.com>
-Date: Wed, 5 Apr 2006 13:02:57 +0800 (CST)
-From: Peter J Zhu <peterjzhu@yahoo.com.cn>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-In-Reply-To: <44322FF7.80909@yandex.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: =?gb2312?b?u9i4tKO6IFJlOiBFQlMgZWZmZWN0?=
+Received: from smtp.osdl.org ([65.172.181.4])
+	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
+	id 1FR1pH-00009R-9L
+	for linux-mtd@lists.infradead.org; Wed, 05 Apr 2006 02:49:20 -0400
+Date: Tue, 4 Apr 2006 23:47:58 -0700
+From: Andrew Morton <akpm@osdl.org>
+To: =?ISO-8859-1?B?SvZybg==?= Engel <joern@wohnheim.fh-wedel.de>
+Message-Id: <20060404234758.66a70968.akpm@osdl.org>
+In-Reply-To: <20060404092628.GA12277@wohnheim.fh-wedel.de>
+References: <20060404092628.GA12277@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: spse@secret.org.uk, ebiederman@lnxi.com, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, hpa@zytor.com, tglx@linutronix.de,
+	dwmw2@infradead.org
+Subject: Re: [Patch 0/3] Remove blkmtd
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,52 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The size of my MTD device is 48M. And I used the small
-block NAND with erase block size being 16KB.
-
---- "Artem B. Bityutskiy" <dedekind@yandex.ru>Ð´µÀ:
-
-> Peter J Zhu wrote:
-> > hello,
-> >  
-> >   Recently I enanbled EBS with 2.6.15 on Samsung
-> small
-> >   page(oobblock = 512B)NAND chip. The results is
-> as
-> >   following:
-> >   
-> >              Without EBS       With EBS
-> > 
-> >   Imagesize  31378292B         42379624B
-> > 
-> >   Mouttime   17s ~             14s ~
-> > 
-> >   The overhead space is too much while providing
-> NOT
-> >   high mout time improvement But from the thread
-> >   http://mhonarc.axis.se/jffs-dev/msg01763.html, 
-> >   results seems too bad compared with what's
-> claimed. 
-> > 
-> >   The only diff I can imagine is that he might use
-> big
-> >   page NAND. Any hints are very much appreciated. 
-> > 
-> What's the size of your MTD device?
-> 
-> -- 
-> Best Regards,
-> Artem B. Bityutskiy,
-> St.-Petersburg, Russia.
-> 
+J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
 >
-______________________________________________________
-> Linux MTD discussion mailing list
->
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+> This patchset removed blkmtd in three steps:
+> 1. Mark it as deprecated,
+> 2. mark block2mtd, the replacement, as no longer experimental and
+> 3. remove the driver.
+>=20
+> Eric suggested sending patch 1 and 2 directly to Linus while leaving
+> patch 3 in -mm as long as klibc remains there as well.  Andrew, do you
+> prefer me to send the first two patches to Linus or will you rather do
+> it yourself?
+>=20
 
-
-
-		
-____________________________________________________
+That's all too much fuss.  Let's just zap it.
