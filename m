@@ -1,20 +1,20 @@
-Received: from smtp.osdl.org ([65.172.181.4])
-	by canuck.infradead.org with esmtps (Exim 4.54 #1 (Red Hat Linux))
-	id 1FR1pH-00009R-9L
-	for linux-mtd@lists.infradead.org; Wed, 05 Apr 2006 02:49:20 -0400
-Date: Tue, 4 Apr 2006 23:47:58 -0700
-From: Andrew Morton <akpm@osdl.org>
-To: =?ISO-8859-1?B?SvZybg==?= Engel <joern@wohnheim.fh-wedel.de>
-Message-Id: <20060404234758.66a70968.akpm@osdl.org>
-In-Reply-To: <20060404092628.GA12277@wohnheim.fh-wedel.de>
-References: <20060404092628.GA12277@wohnheim.fh-wedel.de>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
+	id 1FR3WJ-0002uI-Md
+	for linux-mtd@lists.infradead.org; Wed, 05 Apr 2006 04:37:54 -0400
+Date: Wed, 5 Apr 2006 10:37:38 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Richard Purdie <richard@openedhand.com>
+Message-ID: <20060405083738.GA2505@wohnheim.fh-wedel.de>
+References: <1144163888.6441.48.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Cc: spse@secret.org.uk, ebiederman@lnxi.com, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org, hpa@zytor.com, tglx@linutronix.de,
-	dwmw2@infradead.org
-Subject: Re: [Patch 0/3] Remove blkmtd
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1144163888.6441.48.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC/testing] Upgrade the zlib_inflate library code to a
+	recent version
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
->
-> This patchset removed blkmtd in three steps:
-> 1. Mark it as deprecated,
-> 2. mark block2mtd, the replacement, as no longer experimental and
-> 3. remove the driver.
->=20
-> Eric suggested sending patch 1 and 2 directly to Linus while leaving
-> patch 3 in -mm as long as klibc remains there as well.  Andrew, do you
-> prefer me to send the first two patches to Linus or will you rather do
-> it yourself?
->=20
+On Tue, 4 April 2006 16:18:08 +0100, Richard Purdie wrote:
+> 
+> Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 
-That's all too much fuss.  Let's just zap it.
+Acked-by: Joern Engel <joern@wh.fh-wedel.de>
+
+Jörn
+
+-- 
+There is no worse hell than that provided by the regrets
+for wasted opportunities.
+-- Andre-Louis Moreau in Scarabouche
