@@ -1,20 +1,26 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from smtp5.libero.it ([193.70.192.55])
 	by canuck.infradead.org with esmtp (Exim 4.54 #1 (Red Hat Linux))
-	id 1FRnnW-0001jE-Uk
-	for linux-mtd@lists.infradead.org; Fri, 07 Apr 2006 06:02:42 -0400
-Message-ID: <443638A3.1020807@inf.u-szeged.hu>
-Date: Fri, 07 Apr 2006 12:02:11 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+	id 1FRvEm-0007hS-UN
+	for linux-mtd@lists.infradead.org; Fri, 07 Apr 2006 13:59:18 -0400
+Received: from localhost (172.16.1.48) by smtp5.libero.it (7.0.027-DD01)
+	id 43F225CF0511F1FC for linux-mtd@lists.infradead.org;
+	Fri, 7 Apr 2006 19:59:10 +0200
+Received: from smtp2.libero.it ([172.16.1.225])
+	by localhost (asav8.libero.it [193.70.193.94]) (amavisd-new, port 10024)
+	with ESMTP id 23418-02 for <linux-mtd@lists.infradead.org>;
+	Fri,  7 Apr 2006 19:59:10 +0200 (CEST)
+Received: from [151.28.241.13] (ppp-13-241.28-151.libero.it [151.28.241.13])
+	by smtp2.libero.it (Postfix) with ESMTP id 15259A8C23
+	for <linux-mtd@lists.infradead.org>;
+	Fri,  7 Apr 2006 19:59:08 +0200 (MEST)
+Message-ID: <4436A961.7050209@libero.it>
+Date: Fri, 07 Apr 2006 20:03:13 +0200
+From: Massimiliano Galanti <massiblue@libero.it>
 MIME-Version: 1.0
-To: Alexander Belyakov <alexander.belyakov@intel.com>
-References: <20060406135055.BE6FA43AA1@ws5-1.us4.outblaze.com>	<200604070828.33546.h.schurig@mn-solutions.de>	<20060407081220.GE10831@localhost.localdomain>
-	<4436211B.7020004@intel.com>
-In-Reply-To: <4436211B.7020004@intel.com>
-Content-Type: text/plain; charset=ISO-8859-2
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Holger Schurig <h.schurig@mn-solutions.de>,
-	Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: Problem of "JFFS2 summary"
+Subject: checking write_cached_data return status inside _release and _flush?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexander Belyakov wrote:
+hi!
 
-> I have disabled that code and got my rootfs successfully mounted with
-> JFFS2_SUMMARY enabled..
->
-> ...
->    if (!buf_size) {
->        buf_len = c->sector_size;
->
-> #if 0
->        if (jffs2_sum_active()) {
->            /* must reread because of summary test */
->            err = jffs2_flash_read_safe(c, buf_ofs, buf_len, buf);
->            if (err)
->                return err;
->        }
-> #endif
->
->    }
-> ...
->
-> Probably someone who is in charge of JFFS2_SUMMARY feature can
-> elaborate on this.
+i experienced some corruption of data on flash memories i am using, and
+discovered that this is related to these functions in mtdblock.c:
 
-You are right. It was a forgatten code. We removed it with a patch
-commited now.
+	static int mtdblock_release(struct mtd_blktrans_dev *mbd)
+	static int mtdblock_flush(struct mtd_blktrans_dev *dev)
 
-Thanks!
+not checking the return value of the function:
 
-Ferenc
+         write_cached_data(mtdblk)
+
+i fixed that by checking the return value inside a while cycle but is 
+there any particular reason the original code is written that way?
+
+Thank you.
+
+-- 
+Massimiliano Galanti
+
+-IM-----------------------
+MSN:  viperzed@hotmail.com
+Yahoo: massimilianogalanti
+ICQ:             227544335
+Skype: massimilianogalanti
+--------------------------
