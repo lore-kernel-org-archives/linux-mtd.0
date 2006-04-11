@@ -1,20 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by pentafluge.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FSvWk-0002cH-EN
-	for linux-mtd@lists.infradead.org; Mon, 10 Apr 2006 13:29:55 +0100
-Date: Mon, 10 Apr 2006 14:24:40 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "massiblue@libero.it" <massiblue@libero.it>
-Message-ID: <20060410122440.GB17383@wohnheim.fh-wedel.de>
-References: <IXI8OW$25AAA6D68166E4BF09ED12F6E5747466@libero.it>
-Mime-Version: 1.0
+Received: from web51601.mail.yahoo.com ([206.190.38.206])
+	by canuck.infradead.org with smtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FTC0c-0006Hp-8L
+	for linux-mtd@lists.infradead.org; Tue, 11 Apr 2006 02:06:04 -0400
+Message-ID: <20060411055908.60646.qmail@web51601.mail.yahoo.com>
+Date: Mon, 10 Apr 2006 22:59:08 -0700 (PDT)
+From: "C. Rahul" <rahul_kdmr@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <IXI8OW$25AAA6D68166E4BF09ED12F6E5747466@libero.it>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: checking write_cached_data return status inside _release and
-	_flush?
+Subject: Problem with DOC
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 10 April 2006 13:46:08 +0200, massiblue@libero.it wrote:
-> 
-> i'll fix it properly (finite number of retries, error handling etc...) against 2.6.16.2 and send you the patch, ok?
+Hi
 
-Great!
+  I am having SBC with DOC 2000 on it. I hav connected
+HD with linux kernel version 2.6.15.3 to SBC. I hav
+included all the neccessary MTD drivers and rebuilded
+the kernel.
 
-Jörn
+  During loading of OS the DiskOnChip was detected and
+was given out to device MTD2.
 
--- 
-"Error protection by error detection and correction."
--- from a university class
+  But after that I am unable to write into it
+anything.
+
+  I hav gone through various documents available on
+net but unable find a solution.
+
+  Please suggest a solution for this.
+
+Rahul
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
