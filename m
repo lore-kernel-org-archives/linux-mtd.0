@@ -1,22 +1,20 @@
-Received: from w228.z208176144.sjc-ca.dsl.cnc.net ([208.176.144.228]
-	helo=ns1.avab.com)
+Received: from host61-50.pool80105.interbusiness.it ([80.105.50.61]
+	helo=linuxbw2.bwlocal.it)
 	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FTMDF-0004wr-14
-	for linux-mtd@lists.infradead.org; Tue, 11 Apr 2006 12:59:39 -0400
-Received: from [192.168.1.142] (w238.z208176144.sjc-ca.dsl.cnc.net
-	[208.176.144.238])
-	by ns1.avab.com (8.12.8/8.12.8) with ESMTP id k3BGN81h013326
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2006 09:23:08 -0700
-From: "Joseph M Dupre (AVAB Inc.)" <dupre@avab.com>
+	id 1FTOCs-0006Lm-To
+	for linux-mtd@lists.infradead.org; Tue, 11 Apr 2006 15:07:31 -0400
+Received: from igortr (igortr.bwlocal.it [192.168.0.14])
+	by linuxbw2.bwlocal.it (8.12.1/8.12.1) with ESMTP id k3BJ7ALH010433
+	for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2006 21:07:10 +0200
+From: igor.trevisan@bluewind.it
 To: linux-mtd@lists.infradead.org
-Date: Tue, 11 Apr 2006 09:59:27 -0700
+Date: Tue, 11 Apr 2006 21:10:26 +0200
 MIME-Version: 1.0
-Message-ID: <443B7DFF.29677.2EE3D2@dupre.avab.com>
-In-reply-to: <E1FTLID-0004I7-2m@canuck.infradead.org>
+Message-ID: <443C1B42.8415.2E1D42D@localhost>
 Content-type: text/plain; charset=US-ASCII
 Content-transfer-encoding: 7BIT
 Content-description: Mail message body
-Subject: Re: Problem with DOC
+Subject: handling a flash split in two parts
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11 Apr 2006 at 12:00, linux-mtd-request@lists.infradead.org wrote:
+Hi all!
 
->    1. Problem with DOC (C. Rahul)
-> included all the neccessary MTD drivers and rebuilded
-> the kernel.
->   During loading of OS the DiskOnChip was detected and
-> was given out to device MTD2.
->   But after that I am unable to write into it
-> anything.
+I've a very particular problem:
 
-More information please.  Which kernel drivers did you load?  How did 
-you format the DOC?  What DOC (NFTL or INFTL, use DINFO tool)? What 
-firmware?  How are you mounting the DOC...?
+I've a board that,for reasons that are too long to be explained,
+has a 4MB flash chip that is not mapped in a contiguos way.
+Physically the microcontroller can see:
 
--J
+2Mbytes of flash -- 2MB of "jump" -- other  2MBytes of flash
+
+I modified the mmu map in the file
+
+arch/arm/mach-mx1ads/mm.c
+
+(I've a custom board with Freescale iMX1)
+
+and this should make things work but it's not so.
+With the emulator I can see the memory as if it was
+contiguous, but when mounting my Root File System
+flash partition, the system look at the wronk address.
+It seems that it looks at the physical addresses instead of the virtual 
+one fixed with the MMU map.
+Is it possible?
+If so, how can I solve this?
+I tried some workarounds but with no luck!
+Any suggestion is very appreciated.
+If more details are needed, please tell em and forgive me if
+I missed them!
+Thanks a lot in advance,
+
+Igor.
+-- 
+--- BlueWind 
+--- Embedded Systems Design 
+--- Borgo Pieve 55c interno c
+--- 31033 Castelfranco V.to (TV)
+--- Tel.: +39 0423 723431 Fax.: +39 0423 744738
+--- mailto: igor.trevisan@bluewind.it
+--- http://www.bluewind.it
+------------------------------------------------------------------
