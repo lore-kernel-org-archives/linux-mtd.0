@@ -1,20 +1,15 @@
-Received: from host61-50.pool80105.interbusiness.it ([80.105.50.61]
-	helo=linuxbw2.bwlocal.it)
-	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FTOCs-0006Lm-To
-	for linux-mtd@lists.infradead.org; Tue, 11 Apr 2006 15:07:31 -0400
-Received: from igortr (igortr.bwlocal.it [192.168.0.14])
-	by linuxbw2.bwlocal.it (8.12.1/8.12.1) with ESMTP id k3BJ7ALH010433
-	for <linux-mtd@lists.infradead.org>; Tue, 11 Apr 2006 21:07:10 +0200
-From: igor.trevisan@bluewind.it
+Received: from 1cc-dhcp-117.media.mit.edu ([18.85.46.117])
+	by pentafluge.infradead.org with esmtpsa (Exim 4.61 #1 (Red Hat Linux))
+	id 1FTSHJ-0005dS-ME
+	for linux-mtd@lists.infradead.org; Wed, 12 Apr 2006 00:28:09 +0100
+From: David Woodhouse <dwmw2@infradead.org>
 To: linux-mtd@lists.infradead.org
-Date: Tue, 11 Apr 2006 21:10:26 +0200
-MIME-Version: 1.0
-Message-ID: <443C1B42.8415.2E1D42D@localhost>
-Content-type: text/plain; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-Content-description: Mail message body
-Subject: handling a flash split in two parts
+Content-Type: text/plain
+Date: Tue, 11 Apr 2006 19:28:11 -0400
+Message-Id: <1144798092.2645.42.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: Switching to GIT.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +19,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all!
+I think it's about time for us to switch to git -- the CVS repository
+isn't really working too well. It was OK for a long time because I could
+let people play with things in CVS and then clean it up to merge it
+upstream, but that hasn't really worked for us with recent JFFS2
+changes, partly because I haven't had much time to do that and the
+changes have been too intrusive for me to keep up with them properly.
 
-I've a very particular problem:
+I think the better way to do things like that would be for people to
+have their own git tree with stuff like EBH, xattr support, and then
+others can use it from there -- it doesn't have to be merged directly
+into CVS _first_. Once it's all working and stable, _then_ we can merge
+it into the main tree.
 
-I've a board that,for reasons that are too long to be explained,
-has a 4MB flash chip that is not mapped in a contiguos way.
-Physically the microcontroller can see:
+I'd also like to retire the machine which is cvs.infradead.org at some
+point, so the git service is all on pentafluge.infradead.org (aka
+git.infradead.org). If you don't have an account there yet, you'll need
+to ask me to set it up for you.
 
-2Mbytes of flash -- 2MB of "jump" -- other  2MBytes of flash
+Users can create git trees in their ~/public_git/treename.git which will
+be publicly accessible as git://git.infradead.org/~whoever/treename.git 
 
-I modified the mmu map in the file
+There's a clean copy of Linus' kernel tree in /home/git/linux-2.6.git
+which is updated nightly, and also the 'official' MTD tree next to it --
+please clone from one of those using 'alternates' instead of creating an
+entirely new tree with all its own objects. For example:
+     git-clone -l -n -s --bare /home/git/linux-2.6.git blah-2.6.git
 
-arch/arm/mach-mx1ads/mm.c
+There's also gitweb running on http://git.infradead.org/ but it doesn't
+scan the users' home directories yet. Feel free to send me patches
+against gitweb.cgi.
 
-(I've a custom board with Freescale iMX1)
+The MTD tree is now at git://git.infradead.org/mtd-2.6.git and the
+utilities are at git://git.infradead.org/mtd-utils.git
 
-and this should make things work but it's not so.
-With the emulator I can see the memory as if it was
-contiguous, but when mounting my Root File System
-flash partition, the system look at the wronk address.
-It seems that it looks at the physical addresses instead of the virtual 
-one fixed with the MMU map.
-Is it possible?
-If so, how can I solve this?
-I tried some workarounds but with no luck!
-Any suggestion is very appreciated.
-If more details are needed, please tell em and forgive me if
-I missed them!
-Thanks a lot in advance,
+The latter has just been imported directly from CVS and probably doesn't
+build yet. The former is currently a clean copy of Linus' tree -- I'll
+be cherry-picking some stuff from CVS shortly.
 
-Igor.
+I haven't yet sorted out a script to feed the commits list, although it
+shouldn't be hard. It's just a special case of the one I already use to
+feed the git-commits lists on kernel.org.
+
 -- 
---- BlueWind 
---- Embedded Systems Design 
---- Borgo Pieve 55c interno c
---- 31033 Castelfranco V.to (TV)
---- Tel.: +39 0423 723431 Fax.: +39 0423 744738
---- mailto: igor.trevisan@bluewind.it
---- http://www.bluewind.it
-------------------------------------------------------------------
+dwmw2
