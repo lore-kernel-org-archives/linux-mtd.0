@@ -1,15 +1,23 @@
-Received: from 1cc-dhcp-117.media.mit.edu ([18.85.46.117])
-	by pentafluge.infradead.org with esmtpsa (Exim 4.61 #1 (Red Hat Linux))
-	id 1FTSHJ-0005dS-ME
-	for linux-mtd@lists.infradead.org; Wed, 12 Apr 2006 00:28:09 +0100
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Tue, 11 Apr 2006 19:28:11 -0400
-Message-Id: <1144798092.2645.42.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Switching to GIT.
+Received: from uproxy.gmail.com ([66.249.92.173])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FVSVM-0003Q2-Mj
+	for linux-mtd@lists.infradead.org; Mon, 17 Apr 2006 08:07:06 -0400
+Received: by uproxy.gmail.com with SMTP id j3so456309ugf
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Apr 2006 05:06:54 -0700 (PDT)
+Message-ID: <625fc13d0604170506n53147772vec944cdd7f2daef7@mail.gmail.com>
+Date: Mon, 17 Apr 2006 07:06:54 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Thiago Galesi" <thiagogalesi@gmail.com>
+In-Reply-To: <82ecf08e0604141938w4b29259av797e3115b79042a0@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <82ecf08e0604141938w4b29259av797e3115b79042a0@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Remove unnecessary kmalloc/kfree calls in mtdchar
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,47 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I think it's about time for us to switch to git -- the CVS repository
-isn't really working too well. It was OK for a long time because I could
-let people play with things in CVS and then clean it up to merge it
-upstream, but that hasn't really worked for us with recent JFFS2
-changes, partly because I haven't had much time to do that and the
-changes have been too intrusive for me to keep up with them properly.
+On 4/14/06, Thiago Galesi <thiagogalesi@gmail.com> wrote:
+> This patch removes the use of repeated calls to kmalloc / kfree when
+> writing / reading from a MTD char device. Not the ideal solution
+> mentioned in the driver, but nonetheless better.
 
-I think the better way to do things like that would be for people to
-have their own git tree with stuff like EBH, xattr support, and then
-others can use it from there -- it doesn't have to be merged directly
-into CVS _first_. Once it's all working and stable, _then_ we can merge
-it into the main tree.
+NAK.  This patch introduces a bug.  See below.
 
-I'd also like to retire the machine which is cvs.infradead.org at some
-point, so the git service is all on pentafluge.infradead.org (aka
-git.infradead.org). If you don't have an account there yet, you'll need
-to ask me to set it up for you.
+>
+> Index: linux-2.6.16.2/drivers/mtd/mtdchar.c
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6.16.2.orig/drivers/mtd/mtdchar.c
+> +++ linux-2.6.16.2/drivers/mtd/mtdchar.c
+> @@ -170,15 +170,18 @@ static ssize_t mtd_read(struct file *fil
+>
+>         /* FIXME: Use kiovec in 2.5 to lock down the user's buffers
+>            and pass them directly to the MTD functions */
+> -       while (count) {
+> -               if (count > MAX_KMALLOC_SIZE)
+> -                       len =3D MAX_KMALLOC_SIZE;
+> -               else
+> -                       len =3D count;
+>
+> -               kbuf=3Dkmalloc(len,GFP_KERNEL);
+> -               if (!kbuf)
+> -                       return -ENOMEM;
+> +       if (count > MAX_KMALLOC_SIZE)
+> +               len =3D MAX_KMALLOC_SIZE;
+> +       else
+> +               len =3D count;
 
-Users can create git trees in their ~/public_git/treename.git which will
-be publicly accessible as git://git.infradead.org/~whoever/treename.git 
+Now that len is set outside of the loop, it is always the same size.=20
+If count is large enough to require more than a single read, the the
+original size will still be used and it could overflow the user's
+buffer.
 
-There's a clean copy of Linus' kernel tree in /home/git/linux-2.6.git
-which is updated nightly, and also the 'official' MTD tree next to it --
-please clone from one of those using 'alternates' instead of creating an
-entirely new tree with all its own objects. For example:
-     git-clone -l -n -s --bare /home/git/linux-2.6.git blah-2.6.git
+I agree that doing the kmallocs in a loop looks nasty.  But we need to
+make sure moving out of the loop doesn't break things.
 
-There's also gitweb running on http://git.infradead.org/ but it doesn't
-scan the users' home directories yet. Feel free to send me patches
-against gitweb.cgi.
-
-The MTD tree is now at git://git.infradead.org/mtd-2.6.git and the
-utilities are at git://git.infradead.org/mtd-utils.git
-
-The latter has just been imported directly from CVS and probably doesn't
-build yet. The former is currently a clean copy of Linus' tree -- I'll
-be cherry-picking some stuff from CVS shortly.
-
-I haven't yet sorted out a script to feed the commits list, although it
-shouldn't be hard. It's just a special case of the one I already use to
-feed the git-commits lists on kernel.org.
-
--- 
-dwmw2
+josh
