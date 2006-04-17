@@ -1,23 +1,17 @@
-Received: from uproxy.gmail.com ([66.249.92.173])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FVSVM-0003Q2-Mj
-	for linux-mtd@lists.infradead.org; Mon, 17 Apr 2006 08:07:06 -0400
-Received: by uproxy.gmail.com with SMTP id j3so456309ugf
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Apr 2006 05:06:54 -0700 (PDT)
-Message-ID: <625fc13d0604170506n53147772vec944cdd7f2daef7@mail.gmail.com>
-Date: Mon, 17 Apr 2006 07:06:54 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Thiago Galesi" <thiagogalesi@gmail.com>
-In-Reply-To: <82ecf08e0604141938w4b29259av797e3115b79042a0@mail.gmail.com>
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FVV3G-0004pY-Ct
+	for linux-mtd@lists.infradead.org; Mon, 17 Apr 2006 10:50:15 -0400
+Date: Mon, 17 Apr 2006 16:48:23 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: rmk@arm.linux.org.uk
+Message-ID: <20060417144823.GC7429@stusta.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <82ecf08e0604141938w4b29259av797e3115b79042a0@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Remove unnecessary kmalloc/kfree calls in mtdchar
+Subject: [RFC: 2.6 patch] let arm use drivers/Kconfig
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,44 +21,119 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/14/06, Thiago Galesi <thiagogalesi@gmail.com> wrote:
-> This patch removes the use of repeated calls to kmalloc / kfree when
-> writing / reading from a MTD char device. Not the ideal solution
-> mentioned in the driver, but nonetheless better.
+This patch lets arm use drivers/Kconfig.
 
-NAK.  This patch introduces a bug.  See below.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
->
-> Index: linux-2.6.16.2/drivers/mtd/mtdchar.c
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.16.2.orig/drivers/mtd/mtdchar.c
-> +++ linux-2.6.16.2/drivers/mtd/mtdchar.c
-> @@ -170,15 +170,18 @@ static ssize_t mtd_read(struct file *fil
->
->         /* FIXME: Use kiovec in 2.5 to lock down the user's buffers
->            and pass them directly to the MTD functions */
-> -       while (count) {
-> -               if (count > MAX_KMALLOC_SIZE)
-> -                       len =3D MAX_KMALLOC_SIZE;
-> -               else
-> -                       len =3D count;
->
-> -               kbuf=3Dkmalloc(len,GFP_KERNEL);
-> -               if (!kbuf)
-> -                       return -ENOMEM;
-> +       if (count > MAX_KMALLOC_SIZE)
-> +               len =3D MAX_KMALLOC_SIZE;
-> +       else
-> +               len =3D count;
+---
 
-Now that len is set outside of the loop, it is always the same size.=20
-If count is large enough to require more than a single read, the the
-original size will still be used and it could overflow the user's
-buffer.
+ arch/arm/Kconfig    |   75 --------------------------------------------
+ drivers/Kconfig     |    2 +
+ drivers/mtd/Kconfig |    1 
+ 3 files changed, 4 insertions(+), 74 deletions(-)
 
-I agree that doing the kmallocs in a loop looks nasty.  But we need to
-make sure moving out of the loop doesn't break things.
-
-josh
+--- linux-2.6.17-rc1-mm2-arm/arch/arm/Kconfig.old	2006-04-17 14:25:08.000000000 +0200
++++ linux-2.6.17-rc1-mm2-arm/arch/arm/Kconfig	2006-04-17 14:54:15.000000000 +0200
+@@ -794,80 +794,7 @@
+ 
+ source "net/Kconfig"
+ 
+-menu "Device Drivers"
+-
+-source "drivers/base/Kconfig"
+-
+-source "drivers/connector/Kconfig"
+-
+-if ALIGNMENT_TRAP
+-source "drivers/mtd/Kconfig"
+-endif
+-
+-source "drivers/parport/Kconfig"
+-
+-source "drivers/pnp/Kconfig"
+-
+-source "drivers/block/Kconfig"
+-
+-source "drivers/acorn/block/Kconfig"
+-
+-if PCMCIA || ARCH_CLPS7500 || ARCH_IOP3XX || ARCH_IXP4XX \
+-	|| ARCH_L7200 || ARCH_LH7A40X || ARCH_PXA || ARCH_RPC \
+-	|| ARCH_S3C2410 || ARCH_SA1100 || ARCH_SHARK || FOOTBRIDGE \
+-	|| ARCH_IXP23XX
+-source "drivers/ide/Kconfig"
+-endif
+-
+-source "drivers/scsi/Kconfig"
+-
+-source "drivers/md/Kconfig"
+-
+-source "drivers/message/fusion/Kconfig"
+-
+-source "drivers/ieee1394/Kconfig"
+-
+-source "drivers/message/i2o/Kconfig"
+-
+-source "drivers/net/Kconfig"
+-
+-source "drivers/isdn/Kconfig"
+-
+-# input before char - char/joystick depends on it. As does USB.
+-
+-source "drivers/input/Kconfig"
+-
+-source "drivers/char/Kconfig"
+-
+-source "drivers/i2c/Kconfig"
+-
+-source "drivers/spi/Kconfig"
+-
+-source "drivers/w1/Kconfig"
+-
+-source "drivers/hwmon/Kconfig"
+-
+-#source "drivers/l3/Kconfig"
+-
+-source "drivers/misc/Kconfig"
+-
+-source "drivers/mfd/Kconfig"
+-
+-source "drivers/leds/Kconfig"
+-
+-source "drivers/media/Kconfig"
+-
+-source "drivers/video/Kconfig"
+-
+-source "sound/Kconfig"
+-
+-source "drivers/usb/Kconfig"
+-
+-source "drivers/mmc/Kconfig"
+-
+-source "drivers/rtc/Kconfig"
+-
+-endmenu
++source "drivers/Kconfig"
+ 
+ source "fs/Kconfig"
+ 
+--- linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig.old	2006-04-17 14:32:35.000000000 +0200
++++ linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig	2006-04-17 15:00:57.000000000 +0200
+@@ -1,6 +1,7 @@
+ # $Id: Kconfig,v 1.11 2005/11/07 11:14:19 gleixner Exp $
+ 
+ menu "Memory Technology Devices (MTD)"
++	depends on (ALIGNMENT_TRAP || !ARM)
+ 
+ config MTD
+ 	tristate "Memory Technology Device (MTD) support"
+--- linux-2.6.17-rc1-mm2-arm/drivers/Kconfig.old	2006-04-17 14:51:25.000000000 +0200
++++ linux-2.6.17-rc1-mm2-arm/drivers/Kconfig	2006-04-17 14:51:38.000000000 +0200
+@@ -14,6 +14,8 @@
+ 
+ source "drivers/block/Kconfig"
+ 
++source "drivers/acorn/block/Kconfig"
++
+ source "drivers/ide/Kconfig"
+ 
+ source "drivers/scsi/Kconfig"
