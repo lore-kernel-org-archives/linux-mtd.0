@@ -1,15 +1,17 @@
+Received: from shinybook.infradead.org ([81.187.2.165])
+	by pentafluge.infradead.org with esmtpsa (Exim 4.61 #1 (Red Hat Linux))
+	id 1FVfjG-0006QC-Pn
+	for linux-mtd@lists.infradead.org; Tue, 18 Apr 2006 03:14:10 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20060417144823.GC7429@stusta.de>
-References: <20060417144823.GC7429@stusta.de>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1144798092.2645.42.camel@shinybook.infradead.org>
+References: <1144798092.2645.42.camel@shinybook.infradead.org>
 Content-Type: text/plain
-Date: Mon, 17 Apr 2006 15:55:54 +0100
-Message-Id: <1145285754.13200.15.camel@pmac.infradead.org>
+Date: Tue, 18 Apr 2006 03:14:20 +0100
+Message-Id: <1145326461.16166.10.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	rmk@arm.linux.org.uk
-Subject: Re: [RFC: 2.6 patch] let arm use drivers/Kconfig
+Subject: Re: Switching to GIT.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,29 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-04-17 at 16:48 +0200, Adrian Bunk wrote:
-> --- linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig.old    2006-04-17 14:32:35.000000000 +0200
-> +++ linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig        2006-04-17 15:00:57.000000000 +0200
-> @@ -1,6 +1,7 @@
->  # $Id: Kconfig,v 1.11 2005/11/07 11:14:19 gleixner Exp $
->  
->  menu "Memory Technology Devices (MTD)"
-> +       depends on (ALIGNMENT_TRAP || !ARM)
->  
->  config MTD
->         tristate "Memory Technology Device (MTD) support"
+On Tue, 2006-04-11 at 19:28 -0400, David Woodhouse wrote:
+> There's also gitweb running on http://git.infradead.org/ but it
+> doesn't scan the users' home directories yet. Feel free to send me
+> patches against gitweb.cgi.
 
-This dependency is incorrect. It's only one or two chip-specific drivers
-which require that the architecture correctly handle alignment traps,
-and even then it's only actually apparent when used with JFFS2 which
-actually _gives_ it an unaligned buffer occasionally. Everything else
-works fine.
+This is now fixed -- users' public_git directories are scanned by a cron
+job every five minutes and an index is created. We only look for _bare_
+repositories _directly_ under your ~/public_git directory -- i.e. the
+script looks for ~/public_git/*/HEAD files.
 
-Also, I don't want to see this dependency expressed in the MTD Kconfig
-file unless it's not arch-specific. Please make a generic
-BROKEN_UNALIGNED config option, and set it on all architectures which
-need it. Then propose a saner place to put the restriction instead of on
-CONFIG_MTD.
+If you have a deeper directory structure, or if your repository isn't a
+bare repository, then it won't find your trees. It also won't find them
+if your home directory isn't world-executable.
+
+The switch to git seems to be working out OK so far. It should be fairly
+simple for anyone to create git trees and ask me to pull from them --
+I'd prefer that rather than patches in mail, if possible. Please make
+sure your tree is based on the current contents of the mtd-2.6.git tree
+though, to reduce the number of merges we have.
 
 -- 
 dwmw2
