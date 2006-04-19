@@ -1,16 +1,21 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from pproxy.gmail.com ([64.233.166.180])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWIie-0002Rm-Ac
-	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 15:52:13 -0400
-Message-ID: <444694E1.8020704@ru.mvista.com>
-Date: Wed, 19 Apr 2006 23:52:01 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
+	id 1FWJIy-0002yL-9K
+	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 16:29:49 -0400
+Received: by pproxy.gmail.com with SMTP id w49so1284145pyg
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 19 Apr 2006 13:29:38 -0700 (PDT)
+Message-ID: <f19298770604191321l73d88d38r607c452c5bc44220@mail.gmail.com>
+Date: Wed, 19 Apr 2006 20:21:11 +0000
+From: "Alexey Zaytsev" <alexey.zaytsev@gmail.com>
+To: "Vitaly Wool" <vwool@ru.mvista.com>
+In-Reply-To: <444694E1.8020704@ru.mvista.com>
 MIME-Version: 1.0
-To: Alexey Zaytsev <alexey.zaytsev@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-In-Reply-To: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	<444694E1.8020704@ru.mvista.com>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] Random fixes for the ixp4xx mapping driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,21 +27,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Alexey,
+Both patches can be found here:
 
-Alexey Zaytsev wrote:
-
->Hi all.
->
->I've made a few fixes to the driver, including:
->
->- Fix build with partitioning disabled.
->- Change the error handling path in a cleaner way.
->- Some coding style.
->  
->
-can you please resend your patches with tabs not spaces?
-
-Thx,
-
-Vitaly
+http://80.253.205.252/stuff/mtd-patches/
