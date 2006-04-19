@@ -1,20 +1,16 @@
-Received: from ns.innomedia.soft.net ([164.164.79.130]
-	helo=gateway.innomedia.soft.net)
-	by pentafluge.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWBT9-0007bE-CC
-	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 13:07:41 +0100
-Received: from [192.168.19.4] ([192.168.19.4]) (authenticated bits=0)
-	by gateway.innomedia.soft.net (8.12.11/8.12.11) with ESMTP id
-	k3JC769O001370
-	for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2006 17:37:09 +0530
-Message-ID: <444627EA.3@innomedia.soft.net>
-Date: Wed, 19 Apr 2006 17:37:06 +0530
-From: kanhu <kanhu@innomedia.soft.net>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <1145444426.13200.71.camel@pmac.infradead.org>
+References: <4444C8FD.1070406@inf.u-szeged.hu>
+	<20060418113258.GA4720@wohnheim.fh-wedel.de>
+	<1145444426.13200.71.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Wed, 19 Apr 2006 13:45:38 +0100
+Message-Id: <1145450738.13200.77.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: mtd device on RAM
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: A JFFS2 optimization related to syslog
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi list,
+On Wed, 2006-04-19 at 12:00 +0100, David Woodhouse wrote:
+> So even if we do that, I think Ferenc's patch _also_ makes sense,
+> because it fixes the worst of the problem at its source. We could
+> perhaps make it conditional -- only write out the whole page if there's
+> more than N nodes already in the same page, or if the previous nodes for
+> the same page are in the same eraseblock _and_ the new 'full' node would
+> actually fit in the eraseblock.
 
-I am using uclinux on my gateway(Having 32mb sdram with armnommu acrh).
-I was successfull using the mtd device on a flash chip of 8mb. I want to 
-use it on the RAM chip.
-Can anybody help me on how can i use the mtd device on the ram chip and 
-how to define the partition table.
+Something like this, perhaps....?
 
+http://git.infradead.org/?p=users/dwmw2/merge-2.6.git;a=commitdiff;h=51d838550c9aaf346e918d7964b2cb66ecd61b8d
 
-With Thanks,
-    kanhu
+-- 
+dwmw2
