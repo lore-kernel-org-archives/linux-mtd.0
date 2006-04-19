@@ -1,15 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060418113258.GA4720@wohnheim.fh-wedel.de>
-References: <4444C8FD.1070406@inf.u-szeged.hu>
-	<20060418113258.GA4720@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 19 Apr 2006 12:00:26 +0100
-Message-Id: <1145444426.13200.71.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: A JFFS2 optimization related to syslog
+Received: from ns.innomedia.soft.net ([164.164.79.130]
+	helo=gateway.innomedia.soft.net)
+	by pentafluge.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FWBT9-0007bE-CC
+	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 13:07:41 +0100
+Received: from [192.168.19.4] ([192.168.19.4]) (authenticated bits=0)
+	by gateway.innomedia.soft.net (8.12.11/8.12.11) with ESMTP id
+	k3JC769O001370
+	for <linux-mtd@lists.infradead.org>; Wed, 19 Apr 2006 17:37:09 +0530
+Message-ID: <444627EA.3@innomedia.soft.net>
+Date: Wed, 19 Apr 2006 17:37:06 +0530
+From: kanhu <kanhu@innomedia.soft.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Subject: mtd device on RAM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,45 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-04-18 at 13:32 +0200, Jörn Engel wrote:
-> Very interesting idea.  I had another one which is more complicated
-> and it looks like yours is much better.  Just for completeness, here
-> is mine:
-> o For every node with less than one page uncompressed size, account it
->   some dirty space for it.
-> o Node header is 68 bytes (on 32bit).  Therefore, a node with 1/2 page
->   uncompressed size should cause 34 bytes of "dirty space".
-> o Complete formula:
->   dirty_space = 68 * (PAGE_SIZE - ri->csize) / PAGE_SIZE
-> o Possibly don't account dirty space if node is last node of a file.
-> 
-> With this little hack, tiny nodes would be garbage collected for being
-> "dirty space".
-> 
-> Maybe both approaches would make sense, but yours is much simpler and
-> should be used independently of whether mine makes sense.
+Hi list,
 
-My idea was similar to Jörn's but slightly simpler in the
-implementation. We already make a distinction between REF_PRISTINE and
-REF_NORMAL nodes, and I thought that we should keep track of those
-counts in jeb->pristine_size and jeb->normal_size instead of the
-existing jeb->used_size which holds them both. Then we should use that
-information when selecting blocks to be garbage collected -- we should
-tend to pick blocks with REF_NORMAL nodes for garbage collection.
+I am using uclinux on my gateway(Having 32mb sdram with armnommu acrh).
+I was successfull using the mtd device on a flash chip of 8mb. I want to 
+use it on the RAM chip.
+Can anybody help me on how can i use the mtd device on the ram chip and 
+how to define the partition table.
 
-This would fix the problem which Ferenc refers to, that none of the
-nodes are obsoleted. However, it still only means that the nodes would
-be garbage-collected in the fullness of time -- it's not clear how
-_much_ of an effect that would have -- you could still end up with whole
-eraseblocks full of these REF_NORMAL nodes, if there's plenty of free
-space and garbage collection isn't being pressured.
 
-So even if we do that, I think Ferenc's patch _also_ makes sense,
-because it fixes the worst of the problem at its source. We could
-perhaps make it conditional -- only write out the whole page if there's
-more than N nodes already in the same page, or if the previous nodes for
-the same page are in the same eraseblock _and_ the new 'full' node would
-actually fit in the eraseblock.
-
--- 
-dwmw2
+With Thanks,
+    kanhu
