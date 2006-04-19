@@ -1,23 +1,21 @@
-Received: from pproxy.gmail.com ([64.233.166.180])
+Received: from nz-out-0102.google.com ([64.233.162.196])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWJIy-0002yL-9K
-	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 16:29:49 -0400
-Received: by pproxy.gmail.com with SMTP id w49so1284145pyg
+	id 1FWKYH-0003rt-FC
+	for linux-mtd@lists.infradead.org; Wed, 19 Apr 2006 17:49:38 -0400
+Received: by nz-out-0102.google.com with SMTP id v1so1165041nzb
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 19 Apr 2006 13:29:38 -0700 (PDT)
-Message-ID: <f19298770604191321l73d88d38r607c452c5bc44220@mail.gmail.com>
-Date: Wed, 19 Apr 2006 20:21:11 +0000
-From: "Alexey Zaytsev" <alexey.zaytsev@gmail.com>
-To: "Vitaly Wool" <vwool@ru.mvista.com>
-In-Reply-To: <444694E1.8020704@ru.mvista.com>
+	Wed, 19 Apr 2006 14:49:31 -0700 (PDT)
+Message-ID: <4770282f0604191449v4a01370epdf3de8302b67f24c@mail.gmail.com>
+Date: Wed, 19 Apr 2006 23:49:28 +0200
+From: "Jean-Laurent Gazelle" <jlgazelle@gmail.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <4770282f0604180809v52de6531sd10198663204813b@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-	<444694E1.8020704@ru.mvista.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Random fixes for the ixp4xx mapping driver
+References: <4770282f0604180809v52de6531sd10198663204813b@mail.gmail.com>
+Subject: Re: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,6 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Both patches can be found here:
+Hi again,
 
-http://80.253.205.252/stuff/mtd-patches/
+Do you know another forum where I can post on ?
+(linux-mtd on infradead, was the only I found relevant for this kind
+of question)
+
+I'm really having hard time with this issue, and some new ideas or
+experiences might be really helpfull.
+
+thanks,
+Jean-Laurent
