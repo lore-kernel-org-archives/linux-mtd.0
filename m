@@ -1,23 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from vsmtp3alice.tin.it ([212.216.176.143] helo=vsmtp3.tin.it)
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWZek-0005Gq-9c
-	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 09:57:41 -0400
-Date: Thu, 20 Apr 2006 15:57:07 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Alexey Zaytsev <alexey.zaytsev@gmail.com>
-Message-ID: <20060420135706.GE4047@wohnheim.fh-wedel.de>
-References: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-	<20060420101101.GB4047@wohnheim.fh-wedel.de>
-	<f19298770604200558r4b29a4d9ma4156539ca54838f@mail.gmail.com>
-	<20060420133500.GD4047@wohnheim.fh-wedel.de>
-	<f19298770604200647q467f1ae8w5512ae3d46dd744b@mail.gmail.com>
+	id 1FWZxA-0005cr-1o
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 10:16:20 -0400
+Message-ID: <10ab793c4a5.anitahans@virgilio.it>
+Date: Thu, 20 Apr 2006 14:53:35 +0100 (GMT+01:00)
+From: <anitahans@virgilio.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f19298770604200647q467f1ae8w5512ae3d46dd744b@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Random fixes for the ixp4xx mapping driver
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Subject: Ref No;ILPB642857301
+Reply-To: anitahans@virgilio.it
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +19,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 April 2006 17:47:35 +0400, Alexey Zaytsev wrote:
-> >
-> > Take a look at the U-Boot source if you don't believe me.
-> Ok-ok, agree here.
+Inorbit Promotion BV,
+Hovanstraat 28-35,
+3025 RH, Rotterdam.
+Royal 
+Dutch Republic.
 
-:)
+Ref No;ILPB642857301,
+Ticket No;483752202ch
 
-> Ok, I'll add them to include/linux/mtd/partitions.h, and clean the
-> other drivers.
+This is 
+to inform you that, base on our  yearly draw of Inorbit Promotion BV 
+carried out on the 14th, April,2006,your e-mail address attached with 
+the above ticket No. popped out in the third stake.
 
-Excellent!
+This automatically 
+declares you the winner of our third prize of Eight Hundred and Fifty
+Thousand Dollars(US$850,000:00) in the open charity ballot device.
 
-I have a tiny amount of time this weekend, so you can send patches to
-me and I'll try to integrate them to git.  "Try" because things are
-still quite new and the workflow isn't exactly established yet.
+The 
+source of fund is majorly from well meaning companies and 
+humananitarian sprited industries selected from european community.
 
-Jörn
+Be 
+informed that in line with the sponsors' regulation, you are to 
+contribute a substantial amount(at least 10%) to a recognized non-
+governmental charity project in your environ.This should be given only 
+after your fund has been acknowledged by you.
 
--- 
-But this is not to say that the main benefit of Linux and other GPL
-software is lower-cost. Control is the main benefit--cost is secondary.
--- Bruce Perens
+Application and 
+inquiries should be forwarded to Mrs Juliana Van dijk via e-mail ;
+(julianadijk@inorbit.com).
+
+Accept my heart felt congratulations.
+
+Mrs. 
+Anita Hans
+PS:Kindly state your Ticket No in your expected
+application.
