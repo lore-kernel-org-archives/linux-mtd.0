@@ -1,20 +1,23 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by canuck.infradead.org with smtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWXvW-0003XI-OD
-	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 08:06:38 -0400
-Date: Thu, 20 Apr 2006 14:06:24 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060420120624.GO25047@stusta.de>
-References: <20060417144823.GC7429@stusta.de>
-	<1145285754.13200.15.camel@pmac.infradead.org>
+Received: from pproxy.gmail.com ([64.233.166.176])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FWYpu-0004Cg-M4
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 09:04:45 -0400
+Received: by pproxy.gmail.com with SMTP id i49so269040pyi
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Apr 2006 06:04:41 -0700 (PDT)
+Message-ID: <f19298770604200558r4b29a4d9ma4156539ca54838f@mail.gmail.com>
+Date: Thu, 20 Apr 2006 16:58:39 +0400
+From: "Alexey Zaytsev" <alexey.zaytsev@gmail.com>
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060420101101.GB4047@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <1145285754.13200.15.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	rmk@arm.linux.org.uk
-Subject: Re: [RFC: 2.6 patch] let arm use drivers/Kconfig
+References: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
+	<20060420101101.GB4047@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Random fixes for the ixp4xx mapping driver
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +27,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Apr 17, 2006 at 03:55:54PM +0100, David Woodhouse wrote:
-> On Mon, 2006-04-17 at 16:48 +0200, Adrian Bunk wrote:
-> > --- linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig.old    2006-04-17 14:32:35.000000000 +0200
-> > +++ linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig        2006-04-17 15:00:57.000000000 +0200
-> > @@ -1,6 +1,7 @@
-> >  # $Id: Kconfig,v 1.11 2005/11/07 11:14:19 gleixner Exp $
-> >  
-> >  menu "Memory Technology Devices (MTD)"
-> > +       depends on (ALIGNMENT_TRAP || !ARM)
-> >  
-> >  config MTD
-> >         tristate "Memory Technology Device (MTD) support"
-> 
-> This dependency is incorrect. It's only one or two chip-specific drivers
-> which require that the architecture correctly handle alignment traps,
-> and even then it's only actually apparent when used with JFFS2 which
-> actually _gives_ it an unaligned buffer occasionally. Everything else
-> works fine.
-> 
-> Also, I don't want to see this dependency expressed in the MTD Kconfig
-> file unless it's not arch-specific. Please make a generic
-> BROKEN_UNALIGNED config option, and set it on all architectures which
-> need it. Then propose a saner place to put the restriction instead of on
-> CONFIG_MTD.
+On 4/20/06, J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+> > @@ -151,7 +151,9 @@
+> >        struct resource *res;
+> >  };
+> >
+> > -static const char *probes[] =3D { "RedBoot", "cmdlinepart", NULL };
+> > +#ifdef CONFIG_MTD_PARTITIONS
+> > +static const char *probes[] __initdata =3D { "RedBoot", "cmdlinepart",=
+ NULL };
+> > +#endif
+>
+> All this #ifdef mess doesn't make me happy.  In this case, it saves 32
+> bytes for people using this driver but not having
+> CONFIG_MTD_PARTITIONS enabled.  That's not a very small gain for a
+> very small group.  Just make it unconditional.
 
-Can anyone tell me which chip-specific drivers are affected by this 
-issue so that I can send a patch?
+The gain is not big, but the price is small too. The thing I'm not
+sure about is __initdata.
+Now I see that it may be needed after initialization too, not sure.
 
-> dwmw2
+>
+> >   static int ixp4xx_flash_remove(struct platform_device *dev)
+> >  {
+> > @@ -164,7 +166,9 @@
+> >                return 0;
+> >
+> >        if (info->mtd) {
+> > +#ifdef CONFIG_MTD_PARTITIONS
+> >                del_mtd_partitions(info->mtd);
+> > +#endif
+>
+> In this case, del_mtd_partitions() should be defined to a noop if
+> CONFIG_MTD_PARTITIONS is not defined.
+>
+> > +#ifdef CONFIG_MTD_PARTITIONS
+> >        err =3D parse_mtd_partitions(info->mtd, probes, &info->partition=
+s, 0);
+> >        if (err > 0) {
+> >                err =3D add_mtd_partitions(info->mtd, info->partitions, =
+err);
+> > -               if(err)
+> > -                       printk(KERN_ERR "Could not parse partitions\n")=
+;
+> > +
+> >        }
+> > +       if (err < 0)
+> > +               printk(KERN_ERR "Could not parse partitions\n");
+> > +#endif
+>
+> Same here.  parse_mtd_partitions() should be a noop, the rest can just
+> stay.  Gcc should be smart enough to optimize it away.
+>
+> The rest looks fine.
 
-TIA
-Adrian
+Why do you think nooping functions is better than having #ifdefs? I
+agree that lots of
+#ifdefs make code hard to follow, but if you noop a function, defined
+in some other place,
+someone reading the code may not notice it, and refer to the un-nooped func=
+tion.
 
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+> J=F6rn
+>
+> --
+> Everything should be made as simple as possible, but not simpler.
+> -- Albert Einstein
+>
