@@ -1,19 +1,20 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWW7r-0002Jj-8u
-	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 06:11:17 -0400
-Date: Thu, 20 Apr 2006 12:11:01 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Alexey Zaytsev <alexey.zaytsev@gmail.com>
-Message-ID: <20060420101101.GB4047@wohnheim.fh-wedel.de>
-References: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FWXvW-0003XI-OD
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 08:06:38 -0400
+Date: Thu, 20 Apr 2006 14:06:24 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20060420120624.GO25047@stusta.de>
+References: <20060417144823.GC7429@stusta.de>
+	<1145285754.13200.15.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f19298770604191204he066f6ctd090a21c6aaeca83@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Random fixes for the ixp4xx mapping driver
+In-Reply-To: <1145285754.13200.15.camel@pmac.infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	rmk@arm.linux.org.uk
+Subject: Re: [RFC: 2.6 patch] let arm use drivers/Kconfig
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 19 April 2006 23:04:25 +0400, Alexey Zaytsev wrote:
+On Mon, Apr 17, 2006 at 03:55:54PM +0100, David Woodhouse wrote:
+> On Mon, 2006-04-17 at 16:48 +0200, Adrian Bunk wrote:
+> > --- linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig.old    2006-04-17 14:32:35.000000000 +0200
+> > +++ linux-2.6.17-rc1-mm2-arm/drivers/mtd/Kconfig        2006-04-17 15:00:57.000000000 +0200
+> > @@ -1,6 +1,7 @@
+> >  # $Id: Kconfig,v 1.11 2005/11/07 11:14:19 gleixner Exp $
+> >  
+> >  menu "Memory Technology Devices (MTD)"
+> > +       depends on (ALIGNMENT_TRAP || !ARM)
+> >  
+> >  config MTD
+> >         tristate "Memory Technology Device (MTD) support"
 > 
-> I've made a few fixes to the driver, including:
+> This dependency is incorrect. It's only one or two chip-specific drivers
+> which require that the architecture correctly handle alignment traps,
+> and even then it's only actually apparent when used with JFFS2 which
+> actually _gives_ it an unaligned buffer occasionally. Everything else
+> works fine.
 > 
-> - Fix build with partitioning disabled.
-> - Change the error handling path in a cleaner way.
-> - Some coding style.
-> 
-> 
-> Hope gmail won't mess with it.
-> 
-> --- linux-2.6.16.1.orig/drivers/mtd/maps/ixp4xx.c       2006-04-19
-> 21:03:06.000000000 +0400
-> +++ linux-2.6.16.1/drivers/mtd/maps/ixp4xx.c    2006-04-19
-> 22:13:37.000000000 +0400
-> @@ -151,7 +151,9 @@
->        struct resource *res;
->  };
-> 
-> -static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
-> +#ifdef CONFIG_MTD_PARTITIONS
-> +static const char *probes[] __initdata = { "RedBoot", "cmdlinepart", NULL };
-> +#endif
+> Also, I don't want to see this dependency expressed in the MTD Kconfig
+> file unless it's not arch-specific. Please make a generic
+> BROKEN_UNALIGNED config option, and set it on all architectures which
+> need it. Then propose a saner place to put the restriction instead of on
+> CONFIG_MTD.
 
-All this #ifdef mess doesn't make me happy.  In this case, it saves 32
-bytes for people using this driver but not having
-CONFIG_MTD_PARTITIONS enabled.  That's not a very small gain for a
-very small group.  Just make it unconditional.
+Can anyone tell me which chip-specific drivers are affected by this 
+issue so that I can send a patch?
 
->   static int ixp4xx_flash_remove(struct platform_device *dev)
->  {
-> @@ -164,7 +166,9 @@
->                return 0;
-> 
->        if (info->mtd) {
-> +#ifdef CONFIG_MTD_PARTITIONS
->                del_mtd_partitions(info->mtd);
-> +#endif
+> dwmw2
 
-In this case, del_mtd_partitions() should be defined to a noop if
-CONFIG_MTD_PARTITIONS is not defined.
-
-> +#ifdef CONFIG_MTD_PARTITIONS
->        err = parse_mtd_partitions(info->mtd, probes, &info->partitions, 0);
->        if (err > 0) {
->                err = add_mtd_partitions(info->mtd, info->partitions, err);
-> -               if(err)
-> -                       printk(KERN_ERR "Could not parse partitions\n");
-> +
->        }
-> +       if (err < 0)
-> +               printk(KERN_ERR "Could not parse partitions\n");
-> +#endif
-
-Same here.  parse_mtd_partitions() should be a noop, the rest can just
-stay.  Gcc should be smart enough to optimize it away.
-
-The rest looks fine.
-
-Jörn
+TIA
+Adrian
 
 -- 
-Everything should be made as simple as possible, but not simpler.
--- Albert Einstein
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
