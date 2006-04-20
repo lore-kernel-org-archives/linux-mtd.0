@@ -1,15 +1,20 @@
-Received: from vsmtp3alice.tin.it ([212.216.176.143] helo=vsmtp3.tin.it)
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FWZxA-0005cr-1o
-	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 10:16:20 -0400
-Message-ID: <10ab793c4a5.anitahans@virgilio.it>
-Date: Thu, 20 Apr 2006 14:53:35 +0100 (GMT+01:00)
-From: <anitahans@virgilio.it>
-Mime-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
+Received: from regina.sibername.com ([66.246.246.233])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FWdNH-000806-6c
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 13:55:51 -0400
+Received: from ottgate.precidia.com ([206.191.32.162]:49457 helo=[10.0.2.13])
+	by regina.sibername.com with esmtpa (Exim 4.52) id 1FWdNF-0000Sz-RP
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 13:55:25 -0400
+Mime-Version: 1.0 (Apple Message framework v749.3)
+In-Reply-To: <4770282f0604180809v52de6531sd10198663204813b@mail.gmail.com>
+References: <4770282f0604180809v52de6531sd10198663204813b@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Message-Id: <2A72046C-9115-480A-9C8D-67B89555381B@logicaloutcome.ca>
 Content-Transfer-Encoding: 7bit
-Subject: Ref No;ILPB642857301
-Reply-To: anitahans@virgilio.it
+From: Glenn Henshaw <thraxisp@logicaloutcome.ca>
+Date: Thu, 20 Apr 2006 13:55:21 -0400
+To: linux-mtd@lists.infradead.org
+Subject: Re: jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,41 +24,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Inorbit Promotion BV,
-Hovanstraat 28-35,
-3025 RH, Rotterdam.
-Royal 
-Dutch Republic.
 
-Ref No;ILPB642857301,
-Ticket No;483752202ch
+On 18-Apr-06, at 11:09 AM, Jean-Laurent Gazelle wrote:
 
-This is 
-to inform you that, base on our  yearly draw of Inorbit Promotion BV 
-carried out on the 14th, April,2006,your e-mail address attached with 
-the above ticket No. popped out in the third stake.
+> Hi,
+>
+> I'm running linux 2.6.9 on an ARM based platform booting from Uboot.
+> My root filesystem is a flash partition.
+>
+> And I'm experiencing flash JFFS2/MTD corruption on some units while
+> power cycling its on/off after 1 day of usage.
+>
+> I saw several posting on the subject, but none about a fix or
+> workaround. Most of its were talking about powering off units while
+> accessing the FS (write or erase block)
+>
+> I'm trying to investigate more deaper the problem, by setting up
+> something like a watchdog and adding FS stress test.
+>
+> So if you've experienced similar issue and you've finally fixed it or
+> workarounded it, please let me know.
+>
+> thanks,
+> Jean-Laurent
+>
+> Here are the details of my configuration :
+>
+> Here is my flash topology :
+> Probing Flash2 at physical address 0x04000000 (16-bit bankwidth)
+> Flash2: Found 1 x16 devices at 0x0 in 16-bit bank
+>  Intel/Sharp Extended Query Table at 0x0031
+> cfi_cmdset_0001: Erase suspend on write enabled
+> Using buffer write method
+> RedBoot partition parsing not available
+> cmdlinepart partition parsing not available
+> Using static partitions on Flash1
+> Creating 5 MTD partitions on "Flash1":
+> 0x00000000-0x00020000 : "BootLoader"
+> 0x00020000-0x00040000 : "BIOS Data"
+> 0x00040000-0x001c0000 : "Fixed Kernel"
+> 0x001c0000-0x00340000 : "D/L Kernel"
+> 0x00340000-0x02000000 : "Root File-system"
+>
+> My flash device is intel stratflash 128J3C type.
+>
+>
+>
+> Everything works properly on the major part of my units.
+> About ~ 5% of our devices are experiencing data corruption in Flash
+> when Power Cycling the unit.
+>
+> What I mean by data corruption is :
+> - bad CRC of the kernel image in flash.
+> - corruption of the JFFS2 filesystem with the following errors .
+>
+> I have set the JFFS2 debug level to 2 to have more infos :
+> jffs2_scan_inode_node(): CRC failed on node at 0x00082968: Read
+> 0x53550700, calculated 0x5355a705
+> jffs2_scan_dirent_node(): Node CRC failed on node at 0x00085cb4: Read
+> 0x40be781e, calculated 0xd96b6459
+> jffs2_scan_dirent_node(): Node CRC failed on node at 0x000876f4: Read
+> 0xdb341107, calculated 0x70a4cf41
+> jffs2_scan_inode_node(): CRC failed on node at 0x00091794: Read
+> 0x0b79aada, calculated 0x18f814d5
+> jffs2_scan_eraseblock(): Node at 0x00092964 {0x1985, 0xe002,
+> 0x00000000) has invalid CRC 0x32fe3396 (calculated
+> 0x8c813477)^Mjffs2_scan_eraseblock(): Magic bitmask 0x1985 not found
+> at 0x0009296c: 0x3396 instead
 
-This automatically 
-declares you the winner of our third prize of Eight Hundred and Fifty
-Thousand Dollars(US$850,000:00) in the open charity ballot device.
 
-The 
-source of fund is majorly from well meaning companies and 
-humananitarian sprited industries selected from european community.
+   Is it possible that your erase_block size is wrong (too small). I  
+had the opposite experience with SST parts erasing 32k when I  
+expected 4k.
 
-Be 
-informed that in line with the sponsors' regulation, you are to 
-contribute a substantial amount(at least 10%) to a recognized non-
-governmental charity project in your environ.This should be given only 
-after your fund has been acknowledged by you.
 
-Application and 
-inquiries should be forwarded to Mrs Juliana Van dijk via e-mail ;
-(julianadijk@inorbit.com).
-
-Accept my heart felt congratulations.
-
-Mrs. 
-Anita Hans
-PS:Kindly state your Ticket No in your expected
-application.
+-- 
+Glenn Henshaw                     Logical Outcome Ltd.
+e: thraxisp@logicaloutcome.ca     w: www.logicaloutcome.ca
