@@ -1,17 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20060420120624.GO25047@stusta.de>
-References: <20060417144823.GC7429@stusta.de>
-	<1145285754.13200.15.camel@pmac.infradead.org>
-	<20060420120624.GO25047@stusta.de>
-Content-Type: text/plain
-Date: Thu, 20 Apr 2006 21:54:11 +0100
-Message-Id: <1145566451.11909.111.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FWkuc-0004Ww-H3
+	for linux-mtd@lists.infradead.org; Thu, 20 Apr 2006 21:58:27 -0400
+Message-ID: <44483C34.9020003@inf.u-szeged.hu>
+Date: Fri, 21 Apr 2006 03:58:12 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: Alexander Belyakov <alexander.belyakov@intel.com>
+References: <20060406135055.BE6FA43AA1@ws5-1.us4.outblaze.com>	<200604070828.33546.h.schurig@mn-solutions.de>	<20060407081220.GE10831@localhost.localdomain>
+	<4436211B.7020004@intel.com> <443638A3.1020807@inf.u-szeged.hu>
+	<44449DFE.6040905@intel.com>
+In-Reply-To: <44449DFE.6040905@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	rmk@arm.linux.org.uk
-Subject: Re: [RFC: 2.6 patch] let arm use drivers/Kconfig
+Cc: Holger Schurig <h.schurig@mn-solutions.de>,
+	Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
+Subject: Re: Problem of "JFFS2 summary"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,23 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-04-20 at 14:06 +0200, Adrian Bunk wrote:
-> > This dependency is incorrect. It's only one or two chip-specific drivers
-> > which require that the architecture correctly handle alignment traps,
-> > and even then it's only actually apparent when used with JFFS2 which
-> > actually _gives_ it an unaligned buffer occasionally. Everything else
-> > works fine.
->
-> Can anyone tell me which chip-specific drivers are affected by this 
-> issue so that I can send a patch?
+Hi Alexander,
 
-Disabling those chip drivers isn't necessarily the answer, since they
-can still be used in most cases; just not for JFFS2. Perhaps we should
-just disable JFFS2 if BROKEN_UNALIGNED is set -- or disable JFFS2 on NOR
-flash if it's set. 
+> Ferenc, I have just looked at Centralized summary patch. It seems it 
+> is good idea to add check c->mtd->block_isbad against NULL before call 
+> in jffs2_cs_build_filesystem_jeb() function. I understand that your 
+> patch at the moment is for NAND only but someone, for example, may 
+> have rootfs on NOR where block_isbad() method is not provided. Adding 
+> that check you will just get message "...cs_block is not valid..." for 
+> JFFS2 at NOR, otherwise Kernel panic.
 
-Get the generic BROKEN_UNALIGNED thing done across all architectures
-which need it, and we'll work out precisely where to use it.
+We've updated the centralized summary patch. Now if it does not find 
+block_isbad() (NOR), centralized summary will be disabled for that 
+filesystem.
 
--- 
-dwmw2
+Thank for your feedback.
+
+Ferenc
