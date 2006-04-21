@@ -1,21 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <44483C34.9020003@inf.u-szeged.hu>
-References: <20060406135055.BE6FA43AA1@ws5-1.us4.outblaze.com>
-	<200604070828.33546.h.schurig@mn-solutions.de>
-	<20060407081220.GE10831@localhost.localdomain>
-	<4436211B.7020004@intel.com>
-	<443638A3.1020807@inf.u-szeged.hu> <44449DFE.6040905@intel.com>
-	<44483C34.9020003@inf.u-szeged.hu>
-Content-Type: text/plain
-Date: Fri, 21 Apr 2006 14:44:38 +0100
-Message-Id: <1145627078.11909.147.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alexander Belyakov <alexander.belyakov@intel.com>,
-	Holger Schurig <h.schurig@mn-solutions.de>,
-	Sascha Hauer <s.hauer@pengutronix.de>, linux-mtd@lists.infradead.org
-Subject: Re: Problem of "JFFS2 summary"
+Received: from host-84-9-200-189.bulldogdsl.com ([84.9.200.189]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FX3KE-0007pk-0Q
+	for linux-mtd@lists.infradead.org; Fri, 21 Apr 2006 17:38:10 -0400
+Date: Fri, 21 Apr 2006 22:13:24 +0100
+From: Ben Dooks <ben@fluff.org.uk>
+To: kanhu <kanhu@innomedia.soft.net>
+Message-ID: <20060421211324.GA20463@home.fluff.org>
+References: <444627EA.3@innomedia.soft.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <444627EA.3@innomedia.soft.net>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: mtd device on RAM
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-04-21 at 03:58 +0200, Ferenc Havasi wrote:
-> We've updated the centralized summary patch. Now if it does not find 
-> block_isbad() (NOR), centralized summary will be disabled for that 
-> filesystem.
+On Wed, Apr 19, 2006 at 05:37:06PM +0530, kanhu wrote:
+> Hi list,
+> 
+> I am using uclinux on my gateway(Having 32mb sdram with armnommu acrh).
+> I was successfull using the mtd device on a flash chip of 8mb. I want to 
+> use it on the RAM chip.
+> Can anybody help me on how can i use the mtd device on the ram chip and 
+> how to define the partition table.
 
-I've given you an account on git.infradead.org so that you can place git
-trees there.
+There is a plat-ram driver which binds to a platform device
+registered by the board support, which provides an MTD
+interface.
 
 -- 
-dwmw2
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
