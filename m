@@ -1,21 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FXeSW-0004A6-FW
-	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 09:18:29 -0400
-Date: Sun, 23 Apr 2006 15:16:43 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Josh Boyer <jwboyer@gmail.com>
-Message-ID: <20060423131643.GD19326@wohnheim.fh-wedel.de>
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060423122721.GC19326@wohnheim.fh-wedel.de>
 References: <20060422165138.GE6629@wohnheim.fh-wedel.de>
 	<20060422171133.GF6629@wohnheim.fh-wedel.de>
 	<20060423122721.GC19326@wohnheim.fh-wedel.de>
-	<625fc13d0604230605s4ef156aev67d498eed9be629b@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Sun, 23 Apr 2006 14:27:26 +0100
+Message-Id: <1145798847.16166.204.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <625fc13d0604230605s4ef156aev67d498eed9be629b@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
 Subject: Re: [HOWTO] Using git for mtd (v3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,24 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 23 April 2006 08:05:57 -0500, Josh Boyer wrote:
->
-> > 4. Fetch mtd tree
-> >
-> >   $ git fetch mtd
+On Sun, 2006-04-23 at 14:27 +0200, JÃ¶rn Engel wrote:
 > 
-> Does that really do what you want though?  It will fetch the objects
-> from the mtd-2.6 tree, but it doesn't merge them into your local tree
-> from what I remember.  So to actually get the changes into the source,
-> you'd have to do 'git fetch mtd'; 'git merge', no?
+> 8. Create private tree on pentafluge
+> 
+>   $ ssh git.infradead.org
+>   $ mkdir public_git
+>   $ cd public_git
+>   $ ln -s ~/public_git
+>   $ git clone -l -n -s --bare /home/git/mtd-2.6.git mtd-2.6.git
+>   $ chmod og+rx ~ ~/public_git
 
-That doesn't do a merge, correct.  I was told that a merge is to be
-avoided at all costs.  What it does is create a branch that i switch
-to in step 5.
+Edit mtd-2.6.git/description too.
 
-Jörn
+You need to set up a remote branch in your local repository which
+matches your new tree on pentafluge, just as you did for the 'mtd'
+branch above. Except that this one is for pushing _and_ pulling, of
+course:
 
+cat > .git/remotes/mymtd << EOF
+URL: git+ssh://git.infradead.org/~/public_git/mtd-2.6.git
+Pull: master:mtd
+Push: mtd:master
+EOF
+
+It's probably easier not to play with branches -- that's fine for people
+who want to get clever, but the HOWTO should probably just tell people
+to use 'git-clone --reference'; either to clone the mtd-2.6.git tree if
+they want a read-only copy of that, or to clone locally on pentafluge
+and then git-clone from that if they want their own tree.
+
+> 9. Push to private tree on pentafluge
+> 
+>   $ git push ssh://git.infradead.org/~/public_git/mtd-2.6.git
+
+git push mymtd
+
+>   http://git.infradead.org/ will index the tree every five minutes via
+>   cron. 
 -- 
-Beware of bugs in the above code; I have only proved it correct, but
-not tried it.
--- Donald Knuth
+dwmw2
