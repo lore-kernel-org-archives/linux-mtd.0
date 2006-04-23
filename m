@@ -1,17 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060423121714.GB19326@wohnheim.fh-wedel.de>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FXdgY-0003Js-KY
+	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 08:27:50 -0400
+Date: Sun, 23 Apr 2006 14:27:21 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Josh Boyer <jwboyer@gmail.com>
+Message-ID: <20060423122721.GC19326@wohnheim.fh-wedel.de>
 References: <20060422165138.GE6629@wohnheim.fh-wedel.de>
 	<20060422171133.GF6629@wohnheim.fh-wedel.de>
-	<1145794113.11909.338.camel@pmac.infradead.org>
-	<20060423121714.GB19326@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 23 Apr 2006 13:23:42 +0100
-Message-Id: <1145795022.16166.184.camel@shinybook.infradead.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: [HOWTO] Using git for mtd
+In-Reply-To: <20060422171133.GF6629@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [HOWTO] Using git for mtd (v3)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +24,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-04-23 at 14:17 +0200, JÃ¶rn Engel wrote:
-> On Sun, 23 April 2006 13:08:33 +0100, David Woodhouse wrote:
-> > 
-> > Probably best to explain _why_ we're asking people to refrain from just
-> > cloning git://git.infradead.org/mtd-2.6.git 
-> 
-> Because you are a cheap bastard and count every single byte, of
-> course. ;)
+On Sat, 22 April 2006 19:11:33 +0200, Jörn Engel wrote:
 
-That and the fact that you IBMers managed to put pentafluge into swap
-death when you were trying to clone trees from it. There's another
-512MiB of RAM being delivered to the site within the next few days, and
-hopefully I can get it installed during the week too. After that,
-cloning directly from pentafluge ought to be a little saner. The network
-still isn't great though, iirc. 
+1. Clone Linus' tree
+
+  $ git clone git://rsync.kernel.org/pub/scm/linux/kernel/git/torvalds/linux-2.6.git mtd
+
+  The mtd git server is behind a slow DSL line and does not have
+  enough network bandwith for people to clone the full tree on a
+  regular basis.
+
+2. Change into soon-to-be mtd tree
+
+  $ cd mtd
+
+3. Setup mtd remotes file
+
+  $ vi .git/remotes/mtd
+  URL: git://git.infradead.org/mtd-2.6
+  Pull: master:mtd
+
+4. Fetch mtd tree
+
+  $ git fetch mtd
+
+5. Checkout mtd tree
+
+  $ git checkout mtd
+
+6. Edit some files
+
+  Use your favorite editor.  Don't forget to tell git about new files
+  with "git add".
+
+7. Commit changes
+
+  $ git commit -a -s
+
+  Don't forget the '-s' part or you have to add the Signed-Off-By:
+  line yourself.
+
+8. Create private tree on pentafluge
+
+  $ ssh git.infradead.org
+  $ mkdir public_git
+  $ cd public_git
+  $ ln -s ~/public_git
+  $ git clone -l -n -s --bare /home/git/mtd-2.6.git mtd-2.6.git
+  $ chmod og+rx ~ ~/public_git
+
+9. Push to private tree on pentafluge
+
+  $ git push ssh://git.infradead.org/~/public_git/mtd-2.6.git
+
+  http://git.infradead.org/ will index the tree every five minutes via
+  cron.
+
+Jörn
 
 -- 
-dwmw2
+Sometimes, asking the right question is already the answer.
+-- Unknown
