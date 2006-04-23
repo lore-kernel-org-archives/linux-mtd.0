@@ -1,21 +1,21 @@
 Received: from list.admingilde.org ([2001:780:0:13::80]
 	helo=mail.admingilde.org)
 	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FXkM4-0000Hb-UG
-	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 15:34:55 -0400
+	id 1FXkN0-0000JM-SO
+	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 15:37:31 -0400
 Received: from martin by mail.admingilde.org with local  (Exim 4.50 #1)
-	id 1FXkLv-0003hU-5i
-	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 21:34:39 +0200
-Date: Sun, 23 Apr 2006 21:34:39 +0200
+	id 1FXkMr-0003j7-BO
+	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 21:35:37 +0200
+Date: Sun, 23 Apr 2006 21:35:37 +0200
 From: Martin Waitz <tali@admingilde.org>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20060423193438.GF29948@admingilde.org>
+Message-ID: <20060423193537.GG29948@admingilde.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Sender: "Martin Waitz, Lachnerstrasse 65, +49 179 8230 463, +49 9131 6878391,
 	91058 Erlangen" <martin@mail.admingilde.org>
-Subject: [PATCH] MTD: make mtd->name const
+Subject: [PATCH] MTD: remove mtd_info->bank_size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,76 +25,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtd->name is never used read-write and often holds a pointer to constant data.
+According to the comment the variable should go away in 2.5.
+There are no in-tree users of this variable left.
 
 Signed-off-by: Martin Waitz <tali@admingilde.org>
 
 ---
 
- drivers/mtd/cmdlinepart.c       |    2 +-
- drivers/mtd/devices/block2mtd.c |   10 +++++-----
- include/linux/mtd/mtd.h         |    2 +-
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ drivers/mtd/mtdpart.c   |    1 -
+ include/linux/mtd/mtd.h |    3 ---
+ 2 files changed, 0 insertions(+), 4 deletions(-)
 
-94152d03bf8d7a28519a8e7f6bf1b53c30664f8d
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index a7a7bfe..615ae4d 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -300,7 +300,7 @@ static int parse_cmdline_partitions(stru
- 	unsigned long offset;
- 	int i;
- 	struct cmdline_mtd_partition *part;
--	char *mtd_id = master->name;
-+	const char *mtd_id = master->name;
+e973bcb6279c0d772afe4e969a3323265dcb0e00
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 9939591..41cbe11 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -404,7 +404,6 @@ int add_mtd_partitions(struct mtd_info *
+ 		slave->mtd.eccsize = master->eccsize;
  
- 	if(!cmdline)
- 		return -EINVAL;
-diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-index 4160b83..adb0ae8 100644
---- a/drivers/mtd/devices/block2mtd.c
-+++ b/drivers/mtd/devices/block2mtd.c
-@@ -289,6 +289,7 @@ static struct block2mtd_dev *add_device(
- {
- 	struct block_device *bdev;
- 	struct block2mtd_dev *dev;
-+	char * name;
+ 		slave->mtd.name = parts[i].name;
+-		slave->mtd.bank_size = master->bank_size;
+ 		slave->mtd.owner = master->owner;
  
- 	if (!devname)
- 		return NULL;
-@@ -315,13 +316,12 @@ static struct block2mtd_dev *add_device(
- 
- 	/* Setup the MTD structure */
- 	/* make the name contain the block device in */
--	dev->mtd.name = kmalloc(sizeof("block2mtd: ") + strlen(devname),
--			GFP_KERNEL);
--	if (!dev->mtd.name)
-+	name = kmalloc(sizeof("block2mtd: ") + strlen(devname), GFP_KERNEL);
-+	if (!name)
- 		goto devinit_err;
- 
--	sprintf(dev->mtd.name, "block2mtd: %s", devname);
--
-+	sprintf(name, "block2mtd: %s", devname);
-+	dev->mtd.name = name;
- 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
- 	dev->mtd.erasesize = erase_size;
- 	dev->mtd.type = MTD_RAM;
+ 		slave->mtd.read = part_read;
 diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index b6f2fda..886f481 100644
+index 886f481..e267370 100644
 --- a/include/linux/mtd/mtd.h
 +++ b/include/linux/mtd/mtd.h
-@@ -84,7 +84,7 @@ #define MTD_PROGREGION_CTRLMODE_VALID(mt
- #define MTD_PROGREGION_CTRLMODE_INVALID(mtd)  (mtd)->ecctype
+@@ -97,9 +97,6 @@ #define MTD_PROGREGION_CTRLMODE_INVALID(
+ 	int numeraseregions;
+ 	struct mtd_erase_region_info *eraseregions;
  
- 	// Kernel-only stuff starts here.
--	char *name;
-+	const char *name;
- 	int index;
+-	/* This really shouldn't be here. It can go away in 2.5 */
+-	u_int32_t bank_size;
+-
+ 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
  
- 	// oobinfo is a nand_oobinfo structure, which can be set by iotcl (MEMSETOOBINFO)
+ 	/* This stuff for eXecute-In-Place */
 -- 
 1.3.0.gc5417
+
 
 -- 
 Martin Waitz
