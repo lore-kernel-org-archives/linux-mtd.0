@@ -1,21 +1,21 @@
-Received: from list.admingilde.org ([2001:780:0:13::80]
-	helo=mail.admingilde.org)
-	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FXkN0-0000JM-SO
-	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 15:37:31 -0400
-Received: from martin by mail.admingilde.org with local  (Exim 4.50 #1)
-	id 1FXkMr-0003j7-BO
-	for linux-mtd@lists.infradead.org; Sun, 23 Apr 2006 21:35:37 +0200
-Date: Sun, 23 Apr 2006 21:35:37 +0200
-From: Martin Waitz <tali@admingilde.org>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FXvR2-0006uz-Mm
+	for linux-mtd@lists.infradead.org; Mon, 24 Apr 2006 03:24:44 -0400
+Received: from joern by wohnheim.fh-wedel.de with local (Exim 3.36 #1 (Debian))
+	id 1FXvR2-0004sb-00
+	for <linux-mtd@lists.infradead.org>; Mon, 24 Apr 2006 09:24:40 +0200
+Date: Mon, 24 Apr 2006 09:24:40 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
 To: linux-mtd@lists.infradead.org
-Message-ID: <20060423193537.GG29948@admingilde.org>
+Message-ID: <20060424072440.GA15854@wohnheim.fh-wedel.de>
+References: <20060423193438.GF29948@admingilde.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Sender: "Martin Waitz, Lachnerstrasse 65, +49 179 8230 463, +49 9131 6878391,
-	91058 Erlangen" <martin@mail.admingilde.org>
-Subject: [PATCH] MTD: remove mtd_info->bank_size
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060423193438.GF29948@admingilde.org>
+Subject: Re: [PATCH] MTD: make mtd->name const
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-According to the comment the variable should go away in 2.5.
-There are no in-tree users of this variable left.
+On Sun, 23 April 2006 21:34:39 +0200, Martin Waitz wrote:
+> 
+> mtd->name is never used read-write and often holds a pointer to constant data.
+> 
+> Signed-off-by: Martin Waitz <tali@admingilde.org>
 
-Signed-off-by: Martin Waitz <tali@admingilde.org>
+Applied, thanks.
 
----
-
- drivers/mtd/mtdpart.c   |    1 -
- include/linux/mtd/mtd.h |    3 ---
- 2 files changed, 0 insertions(+), 4 deletions(-)
-
-e973bcb6279c0d772afe4e969a3323265dcb0e00
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 9939591..41cbe11 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -404,7 +404,6 @@ int add_mtd_partitions(struct mtd_info *
- 		slave->mtd.eccsize = master->eccsize;
- 
- 		slave->mtd.name = parts[i].name;
--		slave->mtd.bank_size = master->bank_size;
- 		slave->mtd.owner = master->owner;
- 
- 		slave->mtd.read = part_read;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 886f481..e267370 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -97,9 +97,6 @@ #define MTD_PROGREGION_CTRLMODE_INVALID(
- 	int numeraseregions;
- 	struct mtd_erase_region_info *eraseregions;
- 
--	/* This really shouldn't be here. It can go away in 2.5 */
--	u_int32_t bank_size;
--
- 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
- 
- 	/* This stuff for eXecute-In-Place */
--- 
-1.3.0.gc5417
-
+Jörn
 
 -- 
-Martin Waitz
+To my face you have the audacity to advise me to become a thief - the worst
+kind of thief that is conceivable, a thief of spiritual things, a thief of
+ideas! It is insufferable, intolerable!
+-- M. Binet in Scarabouche
