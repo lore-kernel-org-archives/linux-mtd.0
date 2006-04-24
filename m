@@ -1,21 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FY2fE-0004LV-LL
+	id 1FY2f5-0004KT-VF
 	for linux-mtd@lists.infradead.org; Mon, 24 Apr 2006 11:08:39 -0400
-Date: Mon, 24 Apr 2006 17:07:41 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Nicolas Pitre <nico@cam.org>
-Message-ID: <20060424150741.GB12370@wohnheim.fh-wedel.de>
-References: <625fc13d0604240550x2bdcf5e0p179a25ae25483551@mail.gmail.com>
-	<Pine.LNX.4.64.0604240932340.18520@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.64.0604240932340.18520@localhost.localdomain>
-Cc: Josh Boyer <jwboyer@gmail.com>,
-	MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: Re: Sibley and wbuf fixups
+Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IY800D4OFCQAQV1@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Mon, 24 Apr 2006 11:07:38 -0400 (EDT)
+Date: Mon, 24 Apr 2006 11:07:38 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <cda58cb80604240740j62e51ecctb3ad75673b98445a@mail.gmail.com>
+To: Franck Bui-Huu <vagabon.xyz@gmail.com>
+Message-id: <Pine.LNX.4.64.0604241104570.18520@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <cda58cb80604240740j62e51ecctb3ad75673b98445a@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Reduce the size of a probed flash for broken HW
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 24 April 2006 09:43:05 -0400, Nicolas Pitre wrote:
-> 
-> Sibley has two write modes.  "object" and "control" modes if I remember 
-> the names correctly.  The mode that behaves like traditional NOR may 
-> only use half the flash size since 16 out of 32 flash words are then 
-> unusable (16 writable words are followed by 16 unusable words and so 
-> on).
-> 
-> The other mode can use the full flash size but it must write a full 1KB 
-> block at once and it can be written only once.  To be able to write 
-> again you must erase the whole flash sector.
-> 
-> Therefore JFFS2 on Sibley currently uses the 1KB block write mode with 
-> the help of CONFIG_JFFS2_FS_WRITEBUFFER.  This also means, 
-> unfortunately, that the JFFS2 clean marker must waste a whole 1KB block 
-> per erase sector.
+On Mon, 24 Apr 2006, Franck Bui-Huu wrote:
 
-Very interesting.  Thank you for the explanation.
+> [discussed with Vitaly Wool on IRC]
+> 
+> My hardware has some problem to access my onboard flashes specially
+> the last 64Ko of them. So I need a way to restrict access to these areas.
+> 
+> Several solutions comes in mind:
+> 
+>   - In the mapping driver, try to modify the mtd_info and cfi_info
+>     setup by the MTD probing functions to reduce the detected
+>     size. This solution is really hackish since it modifies internal
+>     structures of the MTD layer that the mapping driver is not
+>     supposed to be aware of. I just did this in my driver:
+> 
+> 	*mtd = do_map_probe("xxx_probe", map);
+> 	while ((*mtd)->size > 32Mo - 64Ko)
+> 		(*mtd)->size -= (*mtd)->erasesize;
+> 
+>     and it seems to work fine...
 
-Jörn
+I think that is indeed the easiest solution.  Just keep it to your map 
+driver and clearly label it with a big comment explaining why you do so.
 
--- 
-Happiness isn't having what you want, it's wanting what you have.
--- unknown
+I don't think you need to modify the cfi_info at all.
+
+
+Nicolas
