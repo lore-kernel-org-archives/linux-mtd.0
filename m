@@ -1,21 +1,18 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYOAO-00030K-NG
-	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 10:05:30 -0400
-Date: Tue, 25 Apr 2006 16:05:21 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Received: from the.earth.li ([193.201.200.66])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FYODA-0003CY-VO
+	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 10:08:25 -0400
+Date: Tue, 25 Apr 2006 15:03:11 +0100
+From: Jonathan McDowell <noodles@earth.li>
 To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060425140521.GD3781@wohnheim.fh-wedel.de>
+Message-ID: <20060425140311.GP7570@earth.li>
 References: <20060424161529.GR7570@earth.li>
 	<1145972592.11909.392.camel@pmac.infradead.org>
-	<20060425134822.GC3781@wohnheim.fh-wedel.de>
-	<1145973504.11909.394.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1145973504.11909.394.camel@pmac.infradead.org>
-Cc: Jonathan McDowell <noodles@earth.li>, linux-mtd@lists.infradead.org
+In-Reply-To: <1145972592.11909.392.camel@pmac.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH/RFC] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,22 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 25 April 2006 14:58:24 +0100, David Woodhouse wrote:
-> On Tue, 2006-04-25 at 15:48 +0200, Jörn Engel wrote:
-> > We could have a nand_read_byte()/nand_write_byte() pair of macros that
-> > are defined to readb/writeb for the generic case and to
-> > read_byte/write_byte for CONFIG_FIND_SOME_SANE_NAME.
+On Tue, Apr 25, 2006 at 02:43:12PM +0100, David Woodhouse wrote:
+> On Mon, 2006-04-24 at 17:15 +0100, Jonathan McDowell wrote:
+> > In particular I'm using "udelay(1);" in the read/write routines to wait
+> > for the bus to settle after setting the read/write enable lines. Really
+> > I want "ndelay(40);", but ndelay doesn't seem to be implemented on ARM,
+> > except in terms of udelay. Can I get away with udelay(0.04)? Should I be
+> > doing something else entirely?
 > 
-> That makes nand.o non-generic, and prevents you from using it for
-> multiple 'board drivers' in the same kernel build.
+> That's a question best directed at linux-arm-kernel list.
 
-Valid concern.  Still, I'd like some method to at least share all the
-identical source code.  You know the usual problems when two copies of
-essentially the same get out of sync.
+Ok, ta.
 
-Jörn
+> > +/*
+> > + * These 3 functions are basically identical to the ones in nand_base.c, but
+> > + * we have to call our read_byte/write_byte functions instead of readb/writeb
+> > + * directly. I submitted a patch to MTD to move this to nand_base.c, but it
+> > + * was deemed too intrusive.
+> > + */
+>
+> Thomas' decision, I assume? I think he's right -- this way it can be
+> inlined in the loop rather than being a real function call for every
+> byte.
+ 
+Ben Dooks. I'd actually forgotten I'd left that comment in. I'll remove
+it before I submit the patch proper; it was mainly a note to people who
+might have picked up my earlier version that patches nand-core as well.
+
+J.
 
 -- 
-Beware of bugs in the above code; I have only proved it correct, but
-not tried it.
--- Donald Knuth
+/-\                             |     What's the worse that could
+|@/  Debian GNU/Linux Developer |     happen?  Smoke. - Anonymous
+\-                              |              HWHacker
