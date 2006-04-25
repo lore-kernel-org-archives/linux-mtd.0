@@ -1,25 +1,18 @@
-Received: from anchor-post-36.mail.demon.net ([194.217.242.86])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYKl4-000832-Lw
-	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 06:27:08 -0400
-Received: from mailgate.cabletime.com ([80.177.138.66] helo=cabletime.com)
-	by anchor-post-36.mail.demon.net with esmtp (Exim 4.42)
-	id 1FYKl2-000CSn-Jp
-	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 10:27:00 +0000
-Received: from adh.cabletime.com ([191.53.51.21] helo=adh)
-	by cabletime.com with smtp (Exim 3.35 #1 (Debian))
-	id 1FYKkx-0004fU-00
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Apr 2006 11:26:55 +0100
-From: "Andy Hawkins" <a.hawkins@cabletime.com>
-To: <linux-mtd@lists.infradead.org>
-Date: Tue, 25 Apr 2006 11:26:55 +0100
-Message-ID: <003301c66852$c7371280$153335bf@cabletime.com>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FYMXH-0000qp-AN
+	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 08:21:04 -0400
+Message-ID: <444E1435.4030208@ru.mvista.com>
+Date: Tue, 25 Apr 2006 16:21:09 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+To: Anil Gupta <anilgupta9@hotmail.com>
+References: <BAY19-F25626592BB956CC2B586828BBF0@phx.gbl>
 In-Reply-To: <BAY19-F25626592BB956CC2B586828BBF0@phx.gbl>
-Subject: RE: squashfs and NAND flash
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: squashfs and NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +24,24 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
+Anil Gupta wrote:
+> Hi,
+> We have an embedded system with a squashfs rootfs in NAND flash. The
+> rootfs is mounted using the RO mtdblock device. The rootfs is
+> occasionally upgraded, writing the entire squashfs
+> image into flash using nandwrite.
+>
+> We found that if the NAND flash has a bad sector, the bad sector is
+> correctly skipped when the image is written but fs access errors occur
+> when the fs is mounted. Some debugging shows that the filesystem is
+> off by 1 when reading flash sectors beyond the bad sector.
+>
+> We are using squashfs-2.1, kernel 2.4.31, mtd snapshot 20051003.
+>
 > Should mtd handle bad blocks when using squashfs?
+Please see 
+http://lists.infradead.org/pipermail/linux-mtd/2004-May/009695.html.
+It's outdated, but I don't think it's hard to make it up-to-date.
+if it's of interest to many people, I can even do that :)
 
-I suspect you will have to write a simple 'translation layer' that
-automatically skips bad blocks. This is something we had to do in our
-device.
-
-Basically, if (for example) block 4 is bad, then any request for block 4
-should actually return block 5. Also, any request for block 5 should return
-block 6 etc. etc. etc.
-
-Hope this helps.
-
-Andy
+Vitaly
