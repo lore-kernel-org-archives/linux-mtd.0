@@ -1,22 +1,22 @@
-Received: from mail.dsa-ac.de ([62.112.80.99])
+Received: from nz-out-0102.google.com ([64.233.162.194])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYHJF-0004xh-Ox
-	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 02:46:07 -0400
-Received: from komserver.dsa-ac.de (KOMSERVER2.dsa-ac.de [172.28.1.4])
-	by mail.dsa-ac.de (Maildaemon on Linux) with ESMTP id 2E17F9229
+	id 1FYJi7-00078p-Mg
+	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 05:19:58 -0400
+Received: by nz-out-0102.google.com with SMTP id 16so1050089nzp
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Apr 2006 08:46:01 +0200 (CEST)
-Received: from pcgl.dsa-ac.de (PCGL.dsa-ac.de [172.29.17.23])
-	by komserver.dsa-ac.de (Postfix on Linux-Server) with ESMTP id
-	7A7DE1988A for <linux-mtd@lists.infradead.org>;
-	Tue, 25 Apr 2006 08:45:59 +0200 (CEST)
-Date: Tue, 25 Apr 2006 08:45:59 +0200 (CEST)
-From: Guennadi Liakhovetski <gl@dsa-ac.de>
+	Tue, 25 Apr 2006 02:19:54 -0700 (PDT)
+Message-ID: <cda58cb80604250219k5d564aa5n5dde6c55add3bd9d@mail.gmail.com>
+Date: Tue, 25 Apr 2006 11:19:54 +0200
+From: "Franck Bui-Huu" <vagabon.xyz@gmail.com>
 To: linux-mtd@lists.infradead.org
-Message-ID: <Pine.LNX.4.63.0604250841510.1846@pcgl.dsa-ac.de>
+In-Reply-To: <cda58cb80604240740j62e51ecctb3ad75673b98445a@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Subject: pxa2xx-flash.c return?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <cda58cb80604240740j62e51ecctb3ad75673b98445a@mail.gmail.com>
+Cc: Franck <vagabon.xyz@gmail.com>, Nicolas Pitre <nico@cam.org>
+Subject: Re: Reduce the size of a probed flash for broken HW
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +26,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all
+2006/4/24, Franck Bui-Huu <vagabon.xyz@gmail.com>:
+> [discussed with Vitaly Wool on IRC]
+>
+> My hardware has some problem to access my onboard flashes specially
+> the last 64Ko of them. So I need a way to restrict access to these areas.
+>
+> Several solutions comes in mind:
+>
+>   - In the mapping driver, try to modify the mtd_info and cfi_info
+>     setup by the MTD probing functions to reduce the detected
+>     size. This solution is really hackish since it modifies internal
+>     structures of the MTD layer that the mapping driver is not
+>     supposed to be aware of. I just did this in my driver:
+>
+>         *mtd =3D do_map_probe("xxx_probe", map);
+>         while ((*mtd)->size > 32Mo - 64Ko)
+>                 (*mtd)->size -=3D (*mtd)->erasesize;
+>
+>     and it seems to work fine...
+>
+>   - Use a partition that exclude the last 64Ko of the flash. This
+>     solution was suggested by Nicolas Pitre, but I think it imposes
+>     some restrictions on flash concatenation for example.
+>
 
-I saw on the mtd-cvs list, that earlier there was a generic pxa2xx mtd 
-mapping driver, that later was removed and 2 separate drivers for 
-mainstone and lubbock were added, later yet there was another patch 
-submitted to re-introduce pxa2xx-flash.c and remove lubbock and mainstone 
-again... This latter patch was submitted around January this year, I 
-think, and it is still not in the queue for 2.6.17, AFAICS. What's the 
-current status of this? Is it going in? If yes - when?
+in case someone is interested, here is the implementation of the first
+and second solutions:
 
-Thanks
-Guennadi
----------------------------------
-Guennadi Liakhovetski, Ph.D.
-DSA Daten- und Systemtechnik GmbH
-Pascalstr. 28
-D-52076 Aachen
-Germany
+static struct mtd_info * __init fix_mtd_size(struct mtd_info *mtd)
+{
+#if 0
+=09while (mtd->size > MAX_BANK_SIZE)
+=09=09mtd->size -=3D mtd->erasesize;
+
+=09return mtd;
+#else
+=09struct mtd_partition fixed_part;
+=09struct mtd_info *fixed_mtd =3D NULL;
+
+=09memset(&fixed_part, 0, sizeof (struct mtd_partition));
+=09fixed_part.name =3D mtd->name;
+=09fixed_part.size =3D mtd->size;
+=09while (fixed_part.size > MAX_BANK_SIZE)
+=09=09fixed_part.size -=3D mtd->erasesize;
+=09fixed_part.mtdp =3D &fixed_mtd;
+
+=09add_mtd_partitions(mtd, &fixed_part, 1);
+
+=09return fixed_mtd;
+#endif
+}
+
+--
+               Franck
