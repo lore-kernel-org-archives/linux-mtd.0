@@ -1,19 +1,19 @@
-Received: from the.earth.li ([193.201.200.66])
+Received: from s20.s20avahost.net ([207.44.250.61])
 	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYODA-0003CY-VO
-	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 10:08:25 -0400
-Date: Tue, 25 Apr 2006 15:03:11 +0100
-From: Jonathan McDowell <noodles@earth.li>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060425140311.GP7570@earth.li>
-References: <20060424161529.GR7570@earth.li>
-	<1145972592.11909.392.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1145972592.11909.392.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] Add Amstrad Delta NAND support.
+	id 1FYZ0E-0001Bn-LS
+	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 21:39:40 -0400
+Received: from h-67-101-205-98.chcgilgm.covad.net ([67.101.205.98]
+	helo=www.westnelson.net) by s20.s20avahost.net with esmtp (Exim 4.52)
+	id 1FYTzH-0002Il-U4
+	for linux-mtd@lists.infradead.org; Tue, 25 Apr 2006 15:18:20 -0500
+Message-ID: <44871.129.188.33.221.1145996362.squirrel@www.westnelson.net>
+Date: Tue, 25 Apr 2006 15:19:22 -0500 (CDT)
+From: "Peter Buelow" <pete@putzin.net>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Unlocking Intel flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,36 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Apr 25, 2006 at 02:43:12PM +0100, David Woodhouse wrote:
-> On Mon, 2006-04-24 at 17:15 +0100, Jonathan McDowell wrote:
-> > In particular I'm using "udelay(1);" in the read/write routines to wait
-> > for the bus to settle after setting the read/write enable lines. Really
-> > I want "ndelay(40);", but ndelay doesn't seem to be implemented on ARM,
-> > except in terms of udelay. Can I get away with udelay(0.04)? Should I be
-> > doing something else entirely?
-> 
-> That's a question best directed at linux-arm-kernel list.
+Ok, hoping someone knows, because Google isn't helping oddly enough. I've
+just started putting together some work that includes adding a JFFS2
+partition using MTD (obviously) that sits on it's own (ie, it's not
+bootable and is just a small area that I would like to read/write to where
+the rest of the FS is squashfs read only). Basically, an rc script either
+creates it, or mounts it depending, and then I would use it mounted under
+/store. Here's what's happening.
 
-Ok, ta.
+I can create the JFFS2 fielsystem, no errors. I can mount the new
+filesystem, no errors. I can initially write to the filesystem, but then
+the writes fail (usually after the first write) with the following error
 
-> > +/*
-> > + * These 3 functions are basically identical to the ones in nand_base.c, but
-> > + * we have to call our read_byte/write_byte functions instead of readb/writeb
-> > + * directly. I submitted a patch to MTD to move this to nand_base.c, but it
-> > + * was deemed too intrusive.
-> > + */
->
-> Thomas' decision, I assume? I think he's right -- this way it can be
-> inlined in the loop rather than being a real function call for every
-> byte.
- 
-Ben Dooks. I'd actually forgotten I'd left that comment in. I'll remove
-it before I submit the patch proper; it was mainly a note to people who
-might have picked up my earlier version that patches nand-core as well.
+Write of 68 bytes at 0x000e0214 failed. returned 0, retlen 0
 
-J.
+This happens after initial creation and will happen immediately after
+reboot and remount of the existing partition. OK, so I need to unlock the
+flash maybe? I try the unlock command, and get the following.
+
+# unlock /dev/mtdblock/8
+Could not get MTD device info from /dev/mtdblock/8
+
+I've looked at the error leg in the kernel, but am not familiar enough
+with MTD to make an informed decision as to why it's failing. Hoping
+someone here can help.
+
+This is a stock 2.4.17 kernel, no patches to MTD (yet?) and gcc version
+2.95.3. It's Intel Strata flash, the P30 family. Many thanks in advance to
+anyone who can help.
 
 -- 
-/-\                             |     What's the worse that could
-|@/  Debian GNU/Linux Developer |     happen?  Smoke. - Anonymous
-\-                              |              HWHacker
+"Knowledge is in every country the surest basis of public happiness."
+George Washington (State of the Union address, 1790)
+--
+Pete
