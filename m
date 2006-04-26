@@ -1,23 +1,19 @@
-Received: from s20.s20avahost.net ([207.44.250.61])
-	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYmHx-0003Uh-69
-	for linux-mtd@lists.infradead.org; Wed, 26 Apr 2006 11:51:00 -0400
-Message-ID: <22415.136.182.2.222.1146066646.squirrel@www.westnelson.net>
-In-Reply-To: <20060426154045.GK29108@wohnheim.fh-wedel.de>
-References: <44871.129.188.33.221.1145996362.squirrel@www.westnelson.net>
-	<625fc13d0604251925o10a5062bj45f8397948f6fe5f@mail.gmail.com>
-	<2349.136.182.2.222.1146057120.squirrel@www.westnelson.net>
-	<20060426142928.GH29108@wohnheim.fh-wedel.de>
-	<62862.136.182.2.222.1146063871.squirrel@www.westnelson.net>
-	<20060426154045.GK29108@wohnheim.fh-wedel.de>
-Date: Wed, 26 Apr 2006 10:50:46 -0500 (CDT)
-From: "Peter Buelow" <pete@putzin.net>
-To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FYmIk-0003Y0-9S
+	for linux-mtd@lists.infradead.org; Wed, 26 Apr 2006 11:52:20 -0400
+Date: Wed, 26 Apr 2006 17:51:16 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Belyakov, Alexander" <alexander.belyakov@intel.com>
+Message-ID: <20060426155116.GL29108@wohnheim.fh-wedel.de>
+References: <F048F58F304F0040BC3E937DE4E231E701F5D409@NNSMSX401>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <F048F58F304F0040BC3E937DE4E231E701F5D409@NNSMSX401>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Unlocking Intel flash
+Subject: Re: [PATCH] MTD: mtdconcat NAND/Sibley support
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,62 +23,189 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 26 April 2006 15:36:08 +0400, Belyakov, Alexander wrote:
+> 
+> diff -uNr a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
+> --- a/drivers/mtd/mtdconcat.c	2006-04-07 20:56:47.000000000 +0400
+> +++ b/drivers/mtd/mtdconcat.c	2006-04-26 15:26:21.000000000 +0400
+> @@ -141,6 +141,97 @@
+>  }
+>  
+>  static int
+> +concat_writev (struct mtd_info *mtd, const struct kvec *vecs, unsigned
+> long count, 
+> +		loff_t to, size_t * retlen)
+> +{
+> +	int i, page, len, total_len, ret = 0, written = 0, cnt = 0,
+> towrite;
+> +	u_char *bufstart;
+> +	char* data_poi;
+> +	char* data_buf;
+> +	loff_t write_offset;
+> +	int rl_wr;
+> +	u_int32_t pagesize;
+> +
+> +	if (mtd->flags & MTD_PROGRAM_REGIONS) {
+> +		pagesize = MTD_PROGREGION_SIZE(mtd);
+> +	} else {
+> +		pagesize = mtd->oobblock;
+> +	}
 
-> On Wed, 26 April 2006 10:04:31 -0500, Peter Buelow wrote:
->>
->> Ah for life to be so black and white. While you are absolutely correct,
->> I'm not asking for a bug fix. My assumption is that age is the problem,
->> not implementation bugs. My hope was that someone would point out
->> something I missed that would magically cause it to work.
->
-> Well, I partially want to help you as well.  Just that my help is some
-> fodder for the decision makers to make them think again about a
-> questionable decision.  Most likely, they simply didn't know all the
-> effects it would cause.  And it helps if someone outside publically
-> writes some nasty words about it.  Trust me on this one. ;)
-Yeah, I know. The list of issues with our ref implementation is not
-limited to the kernel. Seriously, we're using 2.95 as our compiler. Some
-of the stuff we want to do doesn't even build with that quite right.
+Take a look at my tree:
+http://git.infradead.org/?p=users/joern/mtd-2.6.git;a=summary
 
->
-> As for the code, you should take a look at a 2.6.16, specifically in
-> drivers/mtd/chips/cfi_cmdset_0001.c.  Most likely that has some
-> strings attached and you have to pull in additional files or parts of
-> files.  JFFS2 was changed as well, so the same applies.
->
-Thanks. We're looking at some of the later packaged stuff from David
-Woodhouse's webpage (I believe) to see what is required. Given the choice,
-I would like to migrate the whole subsystem, but that might cause
-problems, so it's gonna take some investigation.
+Once writesize is in, this part can just go.
 
-> And don't forget to document your problems and tell manager about
-> them.  And have them talk to your hardware supplier about it.
+> +	data_buf = kmalloc(pagesize, GFP_KERNEL);
 
-HW supplier won't budge. You might be surprised at how many devices are
-floating around sporting this ref design that they still support. I have a
-better chance of reimplementing this entire platform on my own than
-getting them to migrate kernels.
+Allocation can fail.
 
-Which is a thought...
+> +	/* Preset written len for early exit */
+> +	*retlen = 0;
+> +
+> +	/* Calculate total length of data */
+> +	total_len = 0;
+> +	for (i = 0; i < count; i++)
+> +		total_len += (int) vecs[i].iov_len;
+> +
+> +	/* Do not allow write past end of page */
+> +	if ((to + total_len) > mtd->size) {
+> +		kfree(data_buf);
 
->
-> Jörn
->
-> --
-> Fancy algorithms are buggier than simple ones, and they're much harder
-> to implement. Use simple algorithms as well as simple data structures.
-> -- Rob Pike
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->
->
+Move the allocation below this check instead.
 
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* Setup start page */
+> +	page = ((int) to) / pagesize;
+
+If you have to cast, at least take uint32_t, as mtd->size has that
+type as well.
+
+> +	towrite = (page + 1) * pagesize - to;
+> +	write_offset = to;
+> +	written = 0;
+> +	
+> +	/* Loop until all iovecs' data has been written */
+> +	len = 0;
+> +	while (len < total_len) {
+> +    		bufstart = (u_char *)vecs->iov_base;
+
+Why the cast?  Can't bufstart be a void*?
+
+> +		bufstart += written;
+> +		data_poi = bufstart;
+> +
+> +    		/* If the given tuple is >= reet of page then
+> +		 * write it out from the iov
+> +		 */
+> +		if ( (vecs->iov_len-written) >= towrite) {
+> +			ret = mtd->write(mtd, write_offset, towrite,
+> &rl_wr, data_poi);
+> +			if(ret)
+
+Documentation/CodingStyle requires a space here.
+
+> +	    			break;
+> +			len += towrite;
+> +			page ++;
+> +			write_offset = page * pagesize;
+> +			towrite = pagesize;
+> +			written += towrite;
+> +			if (vecs->iov_len  == written) {
+> +				vecs ++;
+> +				written = 0;
+> +			}
+> +		} else {
+> +			cnt = 0;
+> +			while (cnt < towrite ) {
+> +				data_buf[cnt++] = ((u_char *)
+> vecs->iov_base)[written++];
+> +				if (vecs->iov_len == written ) {
+> +					if((cnt+len) == total_len )
+> +						break;
+> +					vecs ++;
+> +					written = 0;
+> +				}
+> +			}
+> +			data_poi = data_buf;
+> +			ret = mtd->write(mtd, write_offset, cnt, &rl_wr,
+> data_poi);
+> +			if (ret)
+> +				break;
+> +			len += cnt;
+> +			page ++;
+> +			write_offset = page * pagesize;
+> +			towrite = pagesize;
+> +		}
+> +	}
+> +
+> +	if(retlen)
+> +		*retlen = len;
+> +	kfree(data_buf);
+> +	return ret;
+> +}
+> +
+> +static int
+>  concat_read_ecc(struct mtd_info *mtd, loff_t from, size_t len,
+>  		size_t * retlen, u_char * buf, u_char * eccbuf,
+>  		struct nand_oobinfo *oobsel)
+> @@ -251,6 +342,123 @@
+>  }
+>  
+>  static int
+> +concat_writev_ecc (struct mtd_info *mtd, const struct kvec *vecs,
+> unsigned long count, 
+> +		loff_t to, size_t * retlen, u_char *eccbuf, struct
+> nand_oobinfo *oobsel)
+> +{
+> +	int i, page, len, total_len, ret = 0, written = 0, cnt = 0,
+> towrite;
+> +	u_char *bufstart;
+> +	char* data_poi;
+> +	char* data_buf;
+> +	loff_t write_offset;
+> +	int rl_wr;
+> +	u_int32_t pagesize;
+> +
+> +	if (mtd->flags & MTD_PROGRAM_REGIONS) {
+> +		pagesize = MTD_PROGREGION_SIZE(mtd);
+> +	} else {
+> +		pagesize = mtd->oobblock;
+> +	}
+
+Again.
+
+> +	data_buf = kmalloc(pagesize, GFP_KERNEL);
+
+Again.
+
+> +	if (!(mtd->flags & MTD_WRITEABLE))
+> +		return -EROFS;
+> +
+> +	/* Preset written len for early exit */
+> +	*retlen = 0;
+> +
+> +	/* Calculate total length of data */
+> +	total_len = 0;
+> +	for (i = 0; i < count; i++)
+> +		total_len += (int) vecs[i].iov_len;
+> +
+> +	/* check if no data is going to be written */
+> +	if (!total_len) {
+> +		kfree(data_buf);
+
+Again.
+
+I'll stop reading here.  These two functions look fairly similar so
+there might be some duplicated code you can move into a common helper.
+
+Once you have the above fixed up and checked all the code for similar
+problems, I'll take another look.
+
+Jörn
 
 -- 
-"Knowledge is in every country the surest basis of public happiness."
-George Washington (State of the Union address, 1790)
---
-Pete
+Simplicity is prerequisite for reliability.
+-- Edsger W. Dijkstra
