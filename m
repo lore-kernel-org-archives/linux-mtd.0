@@ -1,21 +1,25 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FYmOo-0003y6-67
-	for linux-mtd@lists.infradead.org; Wed, 26 Apr 2006 11:58:03 -0400
-Date: Wed, 26 Apr 2006 17:57:41 +0200
+	id 1FYmTK-0004KE-0y
+	for linux-mtd@lists.infradead.org; Wed, 26 Apr 2006 12:02:42 -0400
+Date: Wed, 26 Apr 2006 18:02:24 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Alexander Belyakov <alexander.belyakov@intel.com>
-Message-ID: <20060426155741.GM29108@wohnheim.fh-wedel.de>
-References: <F048F58F304F0040BC3E937DE4E231E701F5D409@NNSMSX401>
-	<20060426141609.GG29108@wohnheim.fh-wedel.de>
-	<444F9002.9060000@intel.com>
+To: Peter Buelow <pete@putzin.net>
+Message-ID: <20060426160224.GN29108@wohnheim.fh-wedel.de>
+References: <44871.129.188.33.221.1145996362.squirrel@www.westnelson.net>
+	<625fc13d0604251925o10a5062bj45f8397948f6fe5f@mail.gmail.com>
+	<2349.136.182.2.222.1146057120.squirrel@www.westnelson.net>
+	<20060426142928.GH29108@wohnheim.fh-wedel.de>
+	<62862.136.182.2.222.1146063871.squirrel@www.westnelson.net>
+	<20060426154045.GK29108@wohnheim.fh-wedel.de>
+	<22415.136.182.2.222.1146066646.squirrel@www.westnelson.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <444F9002.9060000@intel.com>
+In-Reply-To: <22415.136.182.2.222.1146066646.squirrel@www.westnelson.net>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: mtdconcat NAND/Sibley support
+Subject: Re: Unlocking Intel flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,54 +29,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 26 April 2006 19:21:38 +0400, Alexander Belyakov wrote:
-> Jorn Engel wrote:
+On Wed, 26 April 2006 10:50:46 -0500, Peter Buelow wrote:
+> > On Wed, 26 April 2006 10:04:31 -0500, Peter Buelow wrote:
 > >
-> >concat_writev() is far too complicated.  I have a patch somewhere that
-> >adds a generic writev() function to every device.  Once that is in,
-> >your patch should get a respin and be much simpler.
-> >
+> > Well, I partially want to help you as well.  Just that my help is some
+> > fodder for the decision makers to make them think again about a
+> > questionable decision.  Most likely, they simply didn't know all the
+> > effects it would cause.  And it helps if someone outside publically
+> > writes some nasty words about it.  Trust me on this one. ;)
+> Yeah, I know. The list of issues with our ref implementation is not
+> limited to the kernel. Seriously, we're using 2.95 as our compiler. Some
+> of the stuff we want to do doesn't even build with that quite right.
+
+You are aware of the preprocessor bug with commas?
+#define my_printk(fmt, args...) printk("foo" fmt, ##args)
+                                               ^^
+The above won't work with 2.95, you have to leave a space between
+"fmt" and the comma.  'tis a fairly common problem.
+
+> > And don't forget to document your problems and tell manager about
+> > them.  And have them talk to your hardware supplier about it.
 > 
-> Having generic writev() still requires concat_writev() to split the data 
-> into several parts (in general case by number of subdevices). So I do 
-> not see how concat_writev() could become simpler.
-
-Fair.  Having writev() for the underlying devices doesn't buy you
-much.
-
-> In my patch you split data from downcoming vector into several  _equal_  
-> page-sized chunks and write them by calling generic write().
-
-Not sure whether the splitting makes much sense.  As long as you don't
-cross a boundary, just send the whole vector to the subdevice.  And in
-case of a boudary, there is no guarantee for it to reside on a page
-boundary, so you currently have a bug anyway.  One that you'll quickly
-hit on dataflash.
-
-> >I didn't closely look at the rest of it but suspect similar things.
+> HW supplier won't budge. You might be surprised at how many devices are
+> floating around sporting this ref design that they still support. I have a
+> better chance of reimplementing this entire platform on my own than
+> getting them to migrate kernels.
 > 
-> Why I'm not surprised here? :)
+> Which is a thought...
 
-Either because
-a) I'm lazy or
-b) your code doesn't look inviting.
-
-And just because I'm lazy doesn't imply anything about your code. :)
-
-> Patch have nothing complex and have completely nothing new. Just fixes 
-> some broken stuff.
-> 
-> Is it better to leave concatenation layer without any changes and only 
-> compatible with NOR devices, despite mtdconcat.c file comments claim 
-> that it does support NAND?
-
-I'm not sure about your "nothing complex" statement, but fixing concat
-is a worthy goal.  Hope you don't mind if I point out the questionable
-parts of your patch.
+:)
 
 Jörn
 
 -- 
-Linux [...] existed just for discussion between people who wanted
-to show off how geeky they were.
--- Rob Enderle
+The competent programmer is fully aware of the strictly limited size of
+his own skull; therefore he approaches the programming task in full
+humility, and among other things he avoids clever tricks like the plague. 
+-- Edsger W. Dijkstra
