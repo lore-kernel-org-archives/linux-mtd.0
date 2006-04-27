@@ -1,24 +1,26 @@
-Received: from emc.emcraft.com ([80.240.96.158])
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FZ7L1-0004GA-92
-	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 10:19:26 -0400
-Received: from emc.emcraft.com ([127.0.0.1] helo=[::1])
-	by emc.emcraft.com with esmtp (Exim 4.10) id 1FZ7Ie-0005NW-00
-	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 18:16:56 +0400
-From: Dmitry Bazhenov <atrey@emcraft.com>
+	id 1FZAmi-0006oF-Ne
+	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 14:00:17 -0400
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1FZAmY-0000Bf-23
+	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 20:00:02 +0200
+Received: from vpn49.rz.tu-ilmenau.de ([141.24.172.49])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2006 20:00:02 +0200
+Received: from andre.puschmann by vpn49.rz.tu-ilmenau.de with local (Gmexim
+	0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Apr 2006 20:00:02 +0200
 To: linux-mtd@lists.infradead.org
-Date: Thu, 27 Apr 2006 18:19:25 +0400
-References: <200604271140.37488.atrey@emcraft.com>
-	<1146146360.11909.456.camel@pmac.infradead.org>
-In-Reply-To: <1146146360.11909.456.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200604271819.25608.atrey@emcraft.com>
-Subject: Re: JFFS2: scan leaves dirent for inode which has no valid data
-	nodes
+From: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+Date: Thu, 27 Apr 2006 19:55:41 +0200
+Message-ID: <e2qvnp$jgi$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Sender: news <news@sea.gmane.org>
+Subject: register mtdchar devices in sysfs
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +30,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 27 April 2006 17:59, David Woodhouse wrote:
-> You should still be able to unlink it.
+hi folks,
+i am trying to get mtdchar devices to work with sysfs + udev.
+my goal is that every mtd-partition gets a device attribute called 
+partname which i can use in my udev-rules to give them explicit names 
+like /dev/filesystem or /dev/kernel (instead of /dev/mtd0 and /dev/mtd1 
+in case that they change their order on the flash device).
+to do so i modified mdrchar.c a little bit to add a attribute "partname" 
+in every specific sysfs-folder.
+well, this is working so far with a dummy entry "partname" but how can i 
+get the specific partition name stored in "struct mtd_info*" out of 
+"struct class_device" to set it correctly in read_partname()???
 
-I was not and I am still not able to do any operation upon the file. The 
-jffs2_read_inode() function marked the inode as bad and all I/O operations 
-return EIO, even unlink() does.
+thank you in advance
 
-For the moment, I have to find and eliminate the reason(s) that could lead to 
-appearance of the situation. I think, there is some kind of a race here. My 
-experience with the filesystem is much to be desired and I would appreciate 
-any points to the possible places of error.
+regards
+andré
 
-Thanks,
-Dmitry
+
+
+my code looks like this:
+<code>
+static ssize_t read_partname( struct class_device *cd, char *buf)
+{
+	return snprintf(buf, 265, "%s\n", "partname");
+}
+static CLASS_DEVICE_ATTR( partname, S_IRUGO, read_partname, NULL );
+
+static void mtd_notify_add(struct mtd_info* mtd)
+{
+	struct class_device *class_dev;
+
+	if (!mtd)
+		return;
+
+	class_dev = class_device_create(mtd_class, NULL, 					 
+MKDEV(MTD_CHAR_MAJOR, mtd->index*2),
+			NULL, "mtd%d", mtd->index);
+	if (!class_dev)
+		return;
+
+	class_device_create_file(class_dev,&class_device_attr_partname);
+
+	class_device_create(mtd_class, NULL,
+			    MKDEV(MTD_CHAR_MAJOR, mtd->index*2+1),
+			    NULL, "mtd%dro", mtd->index);
+
+}
+</code>
