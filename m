@@ -1,21 +1,15 @@
-Received: from mga02.intel.com ([134.134.136.20] helo=orsmga101-1.jf.intel.com)
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FZ6p1-0003YO-3M
-	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 09:46:23 -0400
-Message-ID: <4450CB21.1010604@intel.com>
-Date: Thu, 27 Apr 2006 17:46:09 +0400
-From: Alexander Belyakov <alexander.belyakov@intel.com>
-MIME-Version: 1.0
-To: Nicolas Pitre <nico@cam.org>
-References: <F048F58F304F0040BC3E937DE4E231E701F5D409@NNSMSX401>
-	<Pine.LNX.4.64.0604261157030.18520@localhost.localdomain>
-	<445081B4.8070801@intel.com>
-	<Pine.LNX.4.64.0604270859130.18816@localhost.localdomain>
-In-Reply-To: <Pine.LNX.4.64.0604270859130.18816@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dmitry Bazhenov <atrey@emcraft.com>
+In-Reply-To: <200604271140.37488.atrey@emcraft.com>
+References: <200604271140.37488.atrey@emcraft.com>
+Content-Type: text/plain
+Date: Thu, 27 Apr 2006 14:59:20 +0100
+Message-Id: <1146146360.11909.456.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: mtdconcat NAND/Sibley support
+Subject: Re: JFFS2: scan leaves dirent for inode which has no valid data
+	nodes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +19,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
->
-> Which means you have to copy data into your page, which is against the
-> point of writev().  If you're copying data into a separate page in order
-> to use write() then JFFS2 could simply do it itself and writev()
-> eliminated entirely.
->
+On Thu, 2006-04-27 at 11:40 +0400, Dmitry Bazhenov wrote:
+> 1. Should the scan process during mounting mark as obsolete dirent
+> nodes which has no valid data nodes?
 
-I've got your point.
+Maybe. We don't keep track of such things though -- and when we detect
+it we _know_ there's something wrong, so it's not clear that writing to
+the file system is the right thing to do.
 
-Thanks,
-Alexander
+> 2. Is this a bug when such dirent exists and there is no chanse to 
+> create/read/write a file with the same name?
 
--------
-The content of this message is my personal opinion only and although
-I am an employee of Intel, the statements I make here in no way
-represent Intel's position on the issue.
+You should still be able to unlink it.
+
+-- 
+dwmw2
