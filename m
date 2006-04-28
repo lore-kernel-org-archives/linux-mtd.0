@@ -1,14 +1,14 @@
 Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FZLj1-0006Nh-Ke
-	for linux-mtd@lists.infradead.org; Fri, 28 Apr 2006 01:41:09 -0400
+	id 1FZLr2-0006gB-Cd
+	for linux-mtd@lists.infradead.org; Fri, 28 Apr 2006 01:49:30 -0400
 From: "Artem B. Bityutskiy" <dedekind@infradead.org>
 To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
 In-Reply-To: <e2qvnp$jgi$1@sea.gmane.org>
 References: <e2qvnp$jgi$1@sea.gmane.org>
 Content-Type: text/plain
-Date: Fri, 28 Apr 2006 09:40:34 +0400
-Message-Id: <1146202834.4054.1.camel@sauron.oktetlabs.ru>
+Date: Fri, 28 Apr 2006 09:48:52 +0400
+Message-Id: <1146203332.2516.3.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -35,7 +35,13 @@ On Thu, 2006-04-27 at 19:55 +0200, Andre Puschmann wrote:
 > well, this is working so far with a dummy entry "partname" but how can i 
 > get the specific partition name stored in "struct mtd_info*" out of 
 > "struct class_device" to set it correctly in read_partname()???
-I wonder, why mtd->name is not suitable?
+You have to embed struct class_device to mtd_info and use
+constructor_of(). Read LDD3. LDD3 does not contain much information
+about the class_device stuff, but the techniques used in "struct device"
+stuff are the same.
+
+Why don't you use the "struct device/device_driver/bus" stuff which
+would be natural? 
 
 -- 
 Best Regards,
