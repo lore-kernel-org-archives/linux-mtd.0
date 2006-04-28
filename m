@@ -1,25 +1,19 @@
-Received: from uproxy.gmail.com ([66.249.92.172])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FZHtO-0003f0-Dc
-	for linux-mtd@lists.infradead.org; Thu, 27 Apr 2006 21:35:37 -0400
-Received: by uproxy.gmail.com with SMTP id j3so1597718ugf
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 27 Apr 2006 18:35:32 -0700 (PDT)
-Message-ID: <625fc13d0604271806q422fb20cm2f748cd669d5080@mail.gmail.com>
-Date: Thu, 27 Apr 2006 20:06:28 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Phillip Lougher" <phillip@lougher.demon.co.uk>
-In-Reply-To: <44515552.6040606@lougher.demon.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <BAY19-F25626592BB956CC2B586828BBF0@phx.gbl>
-	<003301c66852$c7371280$153335bf@cabletime.com>
-	<f9d2a5e10604271433y34b72c19p22bb10c79b305d97@mail.gmail.com>
-	<44515552.6040606@lougher.demon.co.uk>
-Cc: Russ Dill <russ.dill@gmail.com>, linux-mtd@lists.infradead.org
-Subject: Re: squashfs and NAND flash
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FZLj1-0006Nh-Ke
+	for linux-mtd@lists.infradead.org; Fri, 28 Apr 2006 01:41:09 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: Andre Puschmann <andre.puschmann@stud.tu-ilmenau.de>
+In-Reply-To: <e2qvnp$jgi$1@sea.gmane.org>
+References: <e2qvnp$jgi$1@sea.gmane.org>
+Content-Type: text/plain
+Date: Fri, 28 Apr 2006 09:40:34 +0400
+Message-Id: <1146202834.4054.1.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: register mtdchar devices in sysfs
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,21 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/27/06, Phillip Lougher <phillip@lougher.demon.co.uk> wrote:
-> A couple of years ago I did some work making Squashfs work with NAND.
-> Because of the inherent unreliability of NAND, and the constant MTD code
-> base changes, I decided not to make this work publically available.
+On Thu, 2006-04-27 at 19:55 +0200, Andre Puschmann wrote:
+> hi folks,
+> i am trying to get mtdchar devices to work with sysfs + udev.
+> my goal is that every mtd-partition gets a device attribute called 
+> partname which i can use in my udev-rules to give them explicit names 
+> like /dev/filesystem or /dev/kernel (instead of /dev/mtd0 and /dev/mtd1 
+> in case that they change their order on the flash device).
+> to do so i modified mdrchar.c a little bit to add a attribute "partname" 
+> in every specific sysfs-folder.
+> well, this is working so far with a dummy entry "partname" but how can i 
+> get the specific partition name stored in "struct mtd_info*" out of 
+> "struct class_device" to set it correctly in read_partname()???
+I wonder, why mtd->name is not suitable?
 
-Just out of curiosity, did you do this in the filesystem itself or via
-a FTL like what has been discussed so far?
-
-> Providing native NAND support in Squashfs represents too much work for
-> absolutely no gain.  It is unlikely this is going to change in the near
-> future.
-
-There is gain in providing a generic mechansim that block type
-filesystems can use to do this though.  Simple economics are going to
-drive more devices to have NAND parts than NOR, so something needs to
-eventually fill this gap.
-
-josh
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
