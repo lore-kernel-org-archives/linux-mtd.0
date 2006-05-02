@@ -1,14 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Steve Finney <saf76@earthlink.net>
-In-Reply-To: <6361049.1146520195983.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
-References: <6361049.1146520195983.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
-Content-Type: text/plain
-Date: Mon, 01 May 2006 23:31:55 +0100
-Message-Id: <1146522716.16449.18.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from emc.emcraft.com ([80.240.96.158])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1Faq7X-0005QP-Un
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 04:20:39 -0400
+Received: from emc.emcraft.com ([127.0.0.1] helo=[::1])
+	by emc.emcraft.com with esmtp (Exim 4.10) id 1Faq50-0005ky-00
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 12:17:58 +0400
+From: Dmitry Bazhenov <atrey@emcraft.com>
+To: linux-mtd@lists.infradead.org
+Date: Tue, 2 May 2006 12:20:41 +0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: mtd-utils
+Content-Disposition: inline
+Message-Id: <200605021220.41864.atrey@emcraft.com>
+Subject: Searching for JFFS2 stress test
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,11 +24,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-05-01 at 17:49 -0400, Steve Finney wrote:
-> If these would be generally useful things, I can post the (fairly
-> trivial) patches to the list.
+Hello everybody!
 
-That would be much appreciated -- thanks.
+Could anybody tell me is there any stress test for the JFFS2 file system?
 
--- 
-dwmw2
+--
+Regards,
+Dmitry
