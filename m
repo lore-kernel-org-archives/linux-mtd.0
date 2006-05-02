@@ -1,18 +1,20 @@
-Received: from webapps.arcom.com ([194.200.159.168])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FauQk-00005s-Ip
-	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 08:56:52 -0400
-Message-ID: <44575705.7030104@arcom.com>
-Date: Tue, 02 May 2006 13:56:37 +0100
-From: David Vrabel <dvrabel@arcom.com>
-MIME-Version: 1.0
-To: dsaxena@plexity.net
-References: <20060502085045.GA15204@plexity.net>
-In-Reply-To: <20060502085045.GA15204@plexity.net>
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from elasmtp-banded.atl.sa.earthlink.net ([209.86.89.70])
+	by pentafluge.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1Fay9J-0001dS-D2
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 17:54:58 +0100
+Received: from [209.86.224.44] (helo=elwamui-ovcar.atl.sa.earthlink.net)
+	by elasmtp-banded.atl.sa.earthlink.net with asmtp (Exim 4.34)
+	id 1Fay99-0002PD-1l
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 12:54:47 -0400
+Message-ID: <18996390.1146588887040.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
+Date: Tue, 2 May 2006 12:54:46 -0400 (EDT)
+From: Steve Finney <saf76@earthlink.net>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: RedBoot partition not @ end of flash...
+Subject: [PATCH 1/3] MTD Utils. Allow hex argument in nandwrite
+Reply-To: Steve Finney <saf76@earthlink.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Deepak Saxena wrote:
-> I've got a board with a 32MiB flash (128K SectorSize) with the redboot table
-> only covering the first (32MiB - SectorSize) and the rest setup as OTP from
-> what I understand. What is the proper way to deal with this? What I'm doing 
-> right now is a heinous hack:
+It's reasonable to allow specifying the start address in hex. If these patches 
+arn't in the appropriate format, I'm sure someone will let me know :-).
 
-'redboot.directory=-2' command line option?
+sf
 
-David Vrabel
--- 
-David Vrabel, Design Engineer
+Signed-off-by: Steven FInney <sfinney@healthhero.com>
 
-Arcom, Clifton Road           Tel: +44 (0)1223 411200 ext. 3233
-Cambridge CB1 7EA, UK         Web: http://www.arcom.com/
+----------------------------------
+
+--- util.orig/nandwrite.c       2006-05-02 07:52:41.556880288 -0700
++++ util/nandwrite.c    2006-05-02 09:37:13.843347808 -0700
+@@ -183,7 +183,7 @@ void process_options (int argc, char *ar
+                        pad = 1;
+                        break;
+                case 's':
+-                       mtdoffset = atoi (optarg);
++                       mtdoffset = strtol (optarg, NULL, 0);
+                        break;
+                case 'b':
+                        blockalign = atoi (optarg);
