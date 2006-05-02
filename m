@@ -1,16 +1,22 @@
-Received: from sccrmhc12.comcast.net ([63.240.77.82])
+Received: from nz-out-0102.google.com ([64.233.162.199])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FaqjG-0005wR-Mw
-	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 04:59:40 -0400
-Date: Tue, 2 May 2006 01:50:45 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: linux-mtd@lists.infradead.org
-Message-ID: <20060502085045.GA15204@plexity.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1Fatpd-00081x-3v
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 08:18:29 -0400
+Received: by nz-out-0102.google.com with SMTP id 16so2854849nzp
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 May 2006 05:18:05 -0700 (PDT)
+Message-ID: <4770282f0605020518u542a952fg27c19e21dc931d95@mail.gmail.com>
+Date: Tue, 2 May 2006 14:18:05 +0200
+From: "Jean-Laurent Gazelle" <jlgazelle@gmail.com>
+To: "Dmitry Bazhenov" <atrey@emcraft.com>
+In-Reply-To: <200605021220.41864.atrey@emcraft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Subject: RedBoot partition not @ end of flash...
-Reply-To: dsaxena@plexity.net
+References: <200605021220.41864.atrey@emcraft.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Searching for JFFS2 stress test
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Maybe you can try fileop binary from iozone benchmark...
 
-I've got a board with a 32MiB flash (128K SectorSize) with the redboot table
-only covering the first (32MiB - SectorSize) and the rest setup as OTP from
-what I understand. What is the proper way to deal with this? What I'm doing 
-right now is a heinous hack:
+regards,
+Jean-Laurent
 
-        ixp425_mtd->size -= ixp425_mtd->erasesize;
-        /* Try to parse RedBoot partitions */
-        npart = parse_mtd_partitions(ixp425_mtd, probes, &parsed_parts, 0);
-        if (npart > 0) {
-                res = add_mtd_partitions(ixp425_mtd, parsed_parts, npart);
-        } else {
-                printk("IXP425 Flash: Using static MTD partitions.\n");
-                res = add_mtd_partitions(ixp425_mtd, ixp425_partitions,
-                                         NB_OF(ixp425_partitions));
-        }
-        ixp425_mtd->size += ixp425_mtd->erasesize;
-
-I tried setting the window size to (32MiB - SectorSize) before probing
-but that failed miserably. One other thought I had was to create a
-static partition map dividing the flash and then parse partitions
-on the first region. Can the code handle recursive parsing?
-
-I doubt I'm the first one to deal with this...
-
-Tnx,
-~Deepak
-
--- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-I am not a consumer. My existence on this planet is not defined by my
-relationship to a producer of goods.  I was not put on this planet to
-consume goods from a company for their profit. - Michael W.
+2006/5/2, Dmitry Bazhenov <atrey@emcraft.com>:
+> Hello everybody!
+>
+> Could anybody tell me is there any stress test for the JFFS2 file system?
+>
+> --
+> Regards,
+> Dmitry
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
