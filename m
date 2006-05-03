@@ -1,14 +1,14 @@
 Received: from localhost ([127.0.0.1] helo=canuck.infradead.org)
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FbLeu-0002xn-L6
-	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 14:01:08 -0400
+	id 1FbLf7-0002yn-6J
+	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 14:01:21 -0400
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 From: linux-mtd-cvs-bounces@lists.infradead.org
 To: linux-mtd@lists.infradead.org
-Message-ID: <mailman.46.1146679249.1794.linux-mtd-cvs@lists.infradead.org>
-Date: Wed, 03 May 2006 14:00:49 -0400
+Message-ID: <mailman.54.1146679271.1794.linux-mtd-cvs@lists.infradead.org>
+Date: Wed, 03 May 2006 14:01:11 -0400
 Sender: linux-mtd-cvs-bounces@lists.infradead.org
 Errors-To: linux-mtd-cvs-bounces@lists.infradead.org
 Subject: Your message to linux-mtd-cvs awaits moderator approval
@@ -23,7 +23,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Your mail to 'linux-mtd-cvs' with the subject
 
-    [PATCH] jffs2: fix printk warnings
+    Remove unused MTD types
 
 Is being held until the list moderator can review it for approval.
 
@@ -35,4 +35,4 @@ Either the message will get posted to the list, or you will receive
 notification of the moderator's decision.  If you would like to cancel
 this posting, please visit the following URL:
 
-    http://lists.infradead.org/mailman/confirm/linux-mtd-cvs/e3ae19fd8e0c1580b8b458eb912374d0c46c0794
+    http://lists.infradead.org/mailman/confirm/linux-mtd-cvs/0300eadda2535a4c46c28589a9ecc70d69f001d9
