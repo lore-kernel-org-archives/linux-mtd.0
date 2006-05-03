@@ -1,19 +1,19 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from ug-out-1314.google.com ([66.249.92.175])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FaySY-0003Mq-85
-	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 13:15:00 -0400
-Date: Tue, 2 May 2006 19:14:32 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Steve Finney <saf76@earthlink.net>
-Message-ID: <20060502171432.GE23849@wohnheim.fh-wedel.de>
-References: <18996390.1146588887040.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	id 1Fb7i9-0000ZI-T2
+	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 23:07:37 -0400
+Received: by ug-out-1314.google.com with SMTP id m3so23267ugc
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 02 May 2006 20:07:30 -0700 (PDT)
+Message-ID: <43507b7c0605022007o102309e6lca9f25a14f65d7cd@mail.gmail.com>
+Date: Tue, 2 May 2006 22:07:30 -0500
+From: "Sean Kelley" <sean.sweng@gmail.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <18996390.1146588887040.JavaMail.root@elwamui-ovcar.atl.sa.earthlink.net>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH 1/3] MTD Utils. Allow hex argument in nandwrite
+Subject: Subversion layout for embedded development
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2 May 2006 12:54:46 -0400, Steve Finney wrote:
-> 
-> +                       mtdoffset = strtol (optarg, NULL, 0);
-
-How about doing something similar to block2mtd?
-http://git.infradead.org/?p=users/joern/mtd-2.6.git;a=blob;h=f54e4bf9b968f153400312a74689f7028650b5d4;hb=954c24227318c166ec1925e1229db442e1f56f51;f=drivers/mtd/devices/block2mtd.c#l354
-
-Jörn
-
--- 
-Why do musicians compose symphonies and poets write poems?
-They do it because life wouldn't have any meaning for them if they didn't.
-That's why I draw cartoons.  It's my life.
--- Charles Shultz
+V2l0aCB0aGUgcmVjZW50IGRpc2N1c3Npb24gb24gdXNpbmcgR2l0LCBJIHdhcyBjdXJpb3VzIGlm
+IGFueW9uZSBoYWQKYW55IHJlY29tbWVuZGF0aW9ucyBmb3IgaG93IGJlc3QgdG8gbGF5b3V0IGEg
+c3VidmVyc2lvbiByZXBvc2l0b3J5IGZvcgplbWJlZGRlZCBkZXZlbG9wbWVudC4gIEluIG15IGNh
+c2UgSSBoYXZlIG9mIGNvdXJzZSB0aGUgc2lsaWNvbiB2ZW5kb3JzCkJTUCB0aGF0IEkgYW0gcmVm
+ZXJlbmNpbmcgYnV0IG5vdCBlbnRpcmVseSB1c2luZy4gIEFyZSB0aGVyZSBhbnkgZ29vZApleGFt
+cGxlcyBvbiBob3cgdG8gbGF5IHRoaW5ncyBvdXQ/CgpGb3IgZXhhbXBsZSwgb25lIG1pZ2h0IGxh
+eW91dCB0aGUgYnNwIGRyb3BzIHRoYXQgeW91IHJlY2VpdmUKdW5kZXJuZWF0aCBzb21ldGhpbmcg
+bGlrZSB2ZW5kb3JzcmM6CgogICAgICAgL3ZlbmRvcnNyYwogICAgICAgICAgL0ludGVsCiAgICAg
+ICAgICAgICAvbWhsX2JzcAogICAgICAgICAgICAgICAgICAvdHJ1bmsKICAgICAgICAgICAgICAg
+ICAgL2JyYW5jaGVzCiAgICAgICAgICAgICAgICAgIC90YWdzCgpCdXQgeW91ciBhY3R1YWwgcHJv
+amVjdCB0cmVlIG1heSBoYXZlIG1hbnkgZWxlbWVudHMKCiAxKSBZb3VyIG1vZGlmaWVkIEJTUAog
+MikgWW91ciByb290c3RyYXAKIDMpIFlvdXIgYXBwbGljYXRpb25zCiBldGMuCgpUaGFua3MsCgpT
+ZWFuCg==
