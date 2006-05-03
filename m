@@ -1,19 +1,20 @@
-Received: from ug-out-1314.google.com ([66.249.92.175])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1Fb7i9-0000ZI-T2
-	for linux-mtd@lists.infradead.org; Tue, 02 May 2006 23:07:37 -0400
-Received: by ug-out-1314.google.com with SMTP id m3so23267ugc
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 May 2006 20:07:30 -0700 (PDT)
-Message-ID: <43507b7c0605022007o102309e6lca9f25a14f65d7cd@mail.gmail.com>
-Date: Tue, 2 May 2006 22:07:30 -0500
-From: "Sean Kelley" <sean.sweng@gmail.com>
+Received: from emc.emcraft.com ([80.240.96.158])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FbFy3-0005yD-NY
+	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 07:56:36 -0400
+Received: from emc.emcraft.com ([127.0.0.1] helo=[::1])
+	by emc.emcraft.com with esmtp (Exim 4.10) id 1FbFvV-0001kT-00
+	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 15:53:53 +0400
+From: Dmitry Bazhenov <atrey@emcraft.com>
 To: linux-mtd@lists.infradead.org
+Date: Wed, 3 May 2006 15:56:37 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Subject: Subversion layout for embedded development
+Message-Id: <200605031556.37660.atrey@emcraft.com>
+Subject: JFFS2 node versioning problem?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-V2l0aCB0aGUgcmVjZW50IGRpc2N1c3Npb24gb24gdXNpbmcgR2l0LCBJIHdhcyBjdXJpb3VzIGlm
-IGFueW9uZSBoYWQKYW55IHJlY29tbWVuZGF0aW9ucyBmb3IgaG93IGJlc3QgdG8gbGF5b3V0IGEg
-c3VidmVyc2lvbiByZXBvc2l0b3J5IGZvcgplbWJlZGRlZCBkZXZlbG9wbWVudC4gIEluIG15IGNh
-c2UgSSBoYXZlIG9mIGNvdXJzZSB0aGUgc2lsaWNvbiB2ZW5kb3JzCkJTUCB0aGF0IEkgYW0gcmVm
-ZXJlbmNpbmcgYnV0IG5vdCBlbnRpcmVseSB1c2luZy4gIEFyZSB0aGVyZSBhbnkgZ29vZApleGFt
-cGxlcyBvbiBob3cgdG8gbGF5IHRoaW5ncyBvdXQ/CgpGb3IgZXhhbXBsZSwgb25lIG1pZ2h0IGxh
-eW91dCB0aGUgYnNwIGRyb3BzIHRoYXQgeW91IHJlY2VpdmUKdW5kZXJuZWF0aCBzb21ldGhpbmcg
-bGlrZSB2ZW5kb3JzcmM6CgogICAgICAgL3ZlbmRvcnNyYwogICAgICAgICAgL0ludGVsCiAgICAg
-ICAgICAgICAvbWhsX2JzcAogICAgICAgICAgICAgICAgICAvdHJ1bmsKICAgICAgICAgICAgICAg
-ICAgL2JyYW5jaGVzCiAgICAgICAgICAgICAgICAgIC90YWdzCgpCdXQgeW91ciBhY3R1YWwgcHJv
-amVjdCB0cmVlIG1heSBoYXZlIG1hbnkgZWxlbWVudHMKCiAxKSBZb3VyIG1vZGlmaWVkIEJTUAog
-MikgWW91ciByb290c3RyYXAKIDMpIFlvdXIgYXBwbGljYXRpb25zCiBldGMuCgpUaGFua3MsCgpT
-ZWFuCg==
+Hello everybody!
+
+I was just thinking about hypothetical situation with JFFS2 wich possibly 
+could be met in the reality. What happens when the highest node version of a 
+certain inode exceeds the maximum value?
+
+I think this can be a point where the inode can be broken. If there are two 
+data nodes which have overlapped regions and more recent node has a lesser 
+value then the other node has, then, when the partition is dismounted and 
+mounted again the more recent inode is treated as an older one and could be 
+obsoleted. Even if it is not obsoleted, its data become superseeded by data 
+from the least recent node as the last one has a higher version number.
+
+--
+Regards,
+Dmitry
