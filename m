@@ -1,21 +1,17 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by pentafluge.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FbK5Q-00036g-4u
-	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 17:20:25 +0100
-From: Thomas Gleixner <tglx@linutronix.de>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060426155116.GL29108@wohnheim.fh-wedel.de>
-References: <F048F58F304F0040BC3E937DE4E231E701F5D409@NNSMSX401>
-	<20060426155116.GL29108@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 03 May 2006 18:22:38 +0200
-Message-Id: <1146673359.27820.100.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: "Belyakov, Alexander" <alexander.belyakov@intel.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: mtdconcat NAND/Sibley support
-Reply-To: tglx@linutronix.de
+Received: from localhost ([127.0.0.1] helo=canuck.infradead.org)
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FbLei-0002ws-DK
+	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 14:00:56 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+From: linux-mtd-cvs-bounces@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Message-ID: <mailman.40.1146679245.1794.linux-mtd-cvs@lists.infradead.org>
+Date: Wed, 03 May 2006 14:00:45 -0400
+Sender: linux-mtd-cvs-bounces@lists.infradead.org
+Errors-To: linux-mtd-cvs-bounces@lists.infradead.org
+Subject: Your message to linux-mtd-cvs awaits moderator approval
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-04-26 at 17:51 +0200, Jörn Engel wrote:
-> > +	if (mtd->flags & MTD_PROGRAM_REGIONS) {
-> > +		pagesize = MTD_PROGREGION_SIZE(mtd);
-> > +	} else {
-> > +		pagesize = mtd->oobblock;
-> > +	}
-> 
-> Take a look at my tree:
-> http://git.infradead.org/?p=users/joern/mtd-2.6.git;a=summary
-> 
-> Once writesize is in, this part can just go.
+Your mail to 'linux-mtd-cvs' with the subject
 
-And we should get rid of the _ecc variants too. Nothing outside of the
-flash chip driver itself needs to be aware of them. Hopefully I come
-around to clean that up along with the oob mess in the next weeks.
+    JFFS2: Return an error for long filenames
 
-	tglx
+Is being held until the list moderator can review it for approval.
+
+The reason it is being held:
+
+    Message has a suspicious header
+
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.  If you would like to cancel
+this posting, please visit the following URL:
+
+    http://lists.infradead.org/mailman/confirm/linux-mtd-cvs/badcd354db0b600cf54a716364e3fac940b284a5
