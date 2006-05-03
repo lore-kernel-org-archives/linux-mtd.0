@@ -1,17 +1,15 @@
-Received: from localhost ([127.0.0.1] helo=canuck.infradead.org)
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FbLf9-0002yy-Ud
-	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 14:01:25 -0400
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-From: linux-mtd-cvs-bounces@lists.infradead.org
+Received: from pmac.infradead.org ([81.187.2.168])
+	by canuck.infradead.org with esmtpsa (Exim 4.61 #1 (Red Hat Linux))
+	id 1FbLiK-0003NY-Kp
+	for linux-mtd@lists.infradead.org; Wed, 03 May 2006 14:05:00 -0400
+From: David Woodhouse <dwmw2@infradead.org>
 To: linux-mtd@lists.infradead.org
-Message-ID: <mailman.56.1146679273.1794.linux-mtd-cvs@lists.infradead.org>
-Date: Wed, 03 May 2006 14:01:13 -0400
-Sender: linux-mtd-cvs-bounces@lists.infradead.org
-Errors-To: linux-mtd-cvs-bounces@lists.infradead.org
-Subject: Your message to linux-mtd-cvs awaits moderator approval
+Content-Type: text/plain
+Date: Wed, 03 May 2006 19:04:34 +0100
+Message-Id: <1146679474.20773.46.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Subject: mtd-cvs list running again.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +19,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Your mail to 'linux-mtd-cvs' with the subject
+I've set a script feeding the mtd-cvs list with git commits. And yes, I
+screwed it up so the mtd list got lots of warnings; that should be fixed
+now.
 
-    [JFFS2] Fix race in post-mount node checking
-
-Is being held until the list moderator can review it for approval.
-
-The reason it is being held:
-
-    Message has a suspicious header
-
-Either the message will get posted to the list, or you will receive
-notification of the moderator's decision.  If you would like to cancel
-this posting, please visit the following URL:
-
-    http://lists.infradead.org/mailman/confirm/linux-mtd-cvs/28d736736a10927bf418021d6b4dd321fe1dbe18
+-- 
+dwmw2
