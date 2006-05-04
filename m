@@ -1,24 +1,19 @@
-Received: from nz-out-0102.google.com ([64.233.162.194])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1Fbihk-0002aB-SB
-	for linux-mtd@lists.infradead.org; Thu, 04 May 2006 14:37:41 -0400
-Received: by nz-out-0102.google.com with SMTP id z6so523645nzd
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 May 2006 11:37:35 -0700 (PDT)
-Message-ID: <c0c067900605041137r2f90ebc7kd56a24c10c08152@mail.gmail.com>
-Date: Thu, 4 May 2006 14:37:35 -0400
-From: "Dan Merillat" <harik.attar@gmail.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <Pine.LNX.4.64.0605040909570.28543@localhost.localdomain>
+Received: from mgw-ext11.nokia.com ([131.228.20.170])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1FbjFP-00033g-DQ
+	for linux-mtd@lists.infradead.org; Thu, 04 May 2006 15:12:27 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <c0c067900605031926w730bc9a3sed5c7eee03585b2b@mail.gmail.com>
-	<Pine.LNX.4.64.0605032257120.28543@localhost.localdomain>
-	<c0c067900605040020n74a74da8s4ed1c3cd0abc3fed@mail.gmail.com>
-	<Pine.LNX.4.64.0605040909570.28543@localhost.localdomain>
-Subject: Re: CFI Extended (Intel P30) problems on an ARM PXA255
+Date: Thu, 4 May 2006 20:45:26 +0200
+Message-ID: <4B0FFE7A6560A446891539D2F673659559ED38@duebe101.NOE.Nokia.com>
+In-Reply-To: <c0c067900605041137r2f90ebc7kd56a24c10c08152@mail.gmail.com>
+From: <ext-manjunath.govindashetty@nokia.com>
+To: <harik.attar@gmail.com>, <linux-mtd@lists.infradead.org>
+Cc: 
+Subject: RE: CFI Extended (Intel P30) problems on an ARM PXA255
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,6 +22,39 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Hi ,
+
+I am getting the kernel panic while mounting the partition using jffs2 =
+for amd29lV256MH flash.Hence if u have some pointer for this problem =
+please suggest. There are two chips on IXP23xx based board
+
+Best Regards
+
+
+Given below is the log of the error
+
+ erase /dev/mtdblock/4
+mtdblock_open
+ok
+Erase Total 1 Units
+mtdblock_release
+Unable to handle kernel paging request at virtual address fffffffc
+mm =3D 40149380 pgd =3D 40004000
+*pgd =3D 00002041, *pmd =3D 00002041, *pte =3D 00000000, *ppte =3D =
+00000000
+Internal error: Oops: 0
+
+Regards
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org]On Behalf Of ext Dan
+Merillat
+Sent: Thursday, 04. May 2006 20:38
+To: linux-mtd@lists.infradead.org
+Subject: Re: CFI Extended (Intel P30) problems on an ARM PXA255
+
 
 On 5/4/06, Nicolas Pitre <nico@cam.org> wrote:
 > On Thu, 4 May 2006, Dan Merillat wrote:
@@ -60,3 +88,7 @@ remaining flash with 0x0.   U-boot has no problems performing any of
 this, so the flash is indeed unlocked.  Then I started linux and ended
 up with the same deal, after a write whatever the first read happens
 to be returns 0x0080 and gets all sorts of wacky corruption errors.
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
