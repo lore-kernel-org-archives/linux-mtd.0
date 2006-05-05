@@ -1,21 +1,22 @@
-Received: from emc.emcraft.com ([80.240.96.158])
-	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FbzfP-0008R1-9l
-	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 08:44:21 -0400
-From: Dmitry Bazhenov <atrey@emcraft.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 5 May 2006 16:44:33 +0400
-References: <200605051050.24227.atrey@emcraft.com>
-	<1146830084.20773.117.camel@pmac.infradead.org>
-In-Reply-To: <1146830084.20773.117.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200605051644.33891.atrey@emcraft.com>
-Cc: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 has possible race when setting file attributes
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1Fc0ix-0000y7-A1
+	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 09:52:05 -0400
+Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IYS009XDP6NDMB0@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Fri, 05 May 2006 09:51:59 -0400 (EDT)
+Date: Fri, 05 May 2006 09:51:59 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <F048F58F304F0040BC3E937DE4E231E701F9F027@NNSMSX401>
+To: "Belyakov, Alexander" <alexander.belyakov@intel.com>
+Message-id: <Pine.LNX.4.64.0605050949490.28543@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <F048F58F304F0040BC3E937DE4E231E701F9F027@NNSMSX401>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD: mtdconcat NAND/Sibley support (revised)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,44 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 05 May 2006 15:54, David Woodhouse wrote:
-> Thanks. Please could you resend, including a 'Signed-off-by:' line?
+On Fri, 5 May 2006, Belyakov, Alexander wrote:
 
-I posted it to the list, but it didn't appear. So, I repost it.
+> This patch adds concat_writev(), concat_writev_ecc(),
+> concat_block_isbad(), concat_block_markbad() functions to make
+> concatenation layer compatible with Sibley and NAND chips.
+> 
+> The patch has been changed to use writev() functions of underlying
+> devices.
+
+>From a quick glance at the writev part it looks much better than your 
+former version.
 
 
-It seems like there is a potential race in the function jffs2_do_setattr() in 
-the case when attributes of a symlink are updated. The symlink metadata is 
-read without having f->sem locked.
-The following patch should fix the race.
-
-Signed-off-by: Dmitry Bazhenov <atrey@emcraft.com>
-
---- a/fs/jffs2/fs.c     2006-04-29 18:51:53.000000000 +0400
-+++ b/fs/jffs2/fs.c     2006-05-04 17:32:09.000000000 +0400
-@@ -56,15 +56,20 @@ static int jffs2_do_setattr (struct inod
-                mdatalen = sizeof(dev);
-                D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of 
-kdev_t\n", mdatalen));
-        } else if (S_ISLNK(inode->i_mode)) {
-+               down(&f->sem);
-                mdatalen = f->metadata->size;
-                mdata = kmalloc(f->metadata->size, GFP_USER);
--               if (!mdata)
-+               if (!mdata) {
-+                       up(&f->sem);
-                        return -ENOMEM;
-+               }
-                ret = jffs2_read_dnode(c, f, f->metadata, mdata, 0, mdatalen);
-                if (ret) {
-+                       up(&f->sem);
-                        kfree(mdata);
-                        return ret;
-                }
-+               up(&f->sem);
-                D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of 
-symlink target\n", mdatalen));
-        }
-
---
-Dmitry
+Nicolas
