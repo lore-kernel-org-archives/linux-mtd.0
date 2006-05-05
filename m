@@ -1,26 +1,20 @@
-Received: from nz-out-0102.google.com ([64.233.162.202])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1FbjKe-0003IH-7e
-	for linux-mtd@lists.infradead.org; Thu, 04 May 2006 15:17:54 -0400
-Received: by nz-out-0102.google.com with SMTP id o1so522053nzf
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 May 2006 12:17:46 -0700 (PDT)
-Message-ID: <6934efce0605041217k3d6da532uf7dc0bc0ad5037da@mail.gmail.com>
-Date: Thu, 4 May 2006 12:17:45 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Dan Merillat" <harik.attar@gmail.com>
-In-Reply-To: <c0c067900605041137r2f90ebc7kd56a24c10c08152@mail.gmail.com>
+Received: from emc.emcraft.com ([80.240.96.158])
+	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
+	id 1Fbu8f-00013s-Kr
+	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 02:50:14 -0400
+Received: from emc.emcraft.com ([127.0.0.1] helo=[::1])
+	by emc.emcraft.com with esmtp (Exim 4.10) id 1Fbu6A-0007qH-00
+	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 10:47:34 +0400
+From: Dmitry Bazhenov <atrey@emcraft.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 5 May 2006 10:50:24 +0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <200605051050.24227.atrey@emcraft.com>
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <c0c067900605031926w730bc9a3sed5c7eee03585b2b@mail.gmail.com>
-	<Pine.LNX.4.64.0605032257120.28543@localhost.localdomain>
-	<c0c067900605040020n74a74da8s4ed1c3cd0abc3fed@mail.gmail.com>
-	<Pine.LNX.4.64.0605040909570.28543@localhost.localdomain>
-	<c0c067900605041137r2f90ebc7kd56a24c10c08152@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI Extended (Intel P30) problems on an ARM PXA255
+Subject: JFFS2 has possible race when setting file attributes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Then I started linux and ended
-> up with the same deal, after a write whatever the first read happens
-> to be returns 0x0080 and gets all sorts of wacky corruption errors.
+Hello everybody!
 
-Okay.  Instead of mounting jffs2...
-start with an erased volume.
-'dd if=3D/dev/mtdX of=3D/original_data bs=3D32 count=3D1'
-try 'flash_eraseall' then
-'dd if=3D/dev/mtdX of=3D/erased_data bs=3D32 count=3D1'
-try 'echo "jared is cool" >> /dev/mtdX'
-'dd if=3D/dev/mtdX of=3D/written_data bs=3D32 count=3D1'
+It seems like there is a potential race in the function jffs2_do_setattr() in 
+the case when attributes of a symlink are updated. The symlink metadata is 
+read without having f->sem locked.
+The following patch should fix the race.
 
-Now what do each *_data contain?
+--- a/fs/jffs2/fs.c     2006-04-29 18:51:53.000000000 +0400
++++ b/fs/jffs2/fs.c     2006-05-04 17:32:09.000000000 +0400
+@@ -56,15 +56,20 @@ static int jffs2_do_setattr (struct inod
+                mdatalen = sizeof(dev);
+                D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of 
+kdev_t\n", mdatalen));
+        } else if (S_ISLNK(inode->i_mode)) {
++               down(&f->sem);
+                mdatalen = f->metadata->size;
+                mdata = kmalloc(f->metadata->size, GFP_USER);
+-               if (!mdata)
++               if (!mdata) {
++                       up(&f->sem);
+                        return -ENOMEM;
++               }
+                ret = jffs2_read_dnode(c, f, f->metadata, mdata, 0, mdatalen);
+                if (ret) {
++                       up(&f->sem);
+                        kfree(mdata);
+                        return ret;
+                }
++               up(&f->sem);
+                D1(printk(KERN_DEBUG "jffs2_setattr(): Writing %d bytes of 
+symlink target\n", mdatalen));
+        }
+
+
+Regards,
+Dmitry
