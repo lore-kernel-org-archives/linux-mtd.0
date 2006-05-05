@@ -1,18 +1,23 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
+Received: from nz-out-0102.google.com ([64.233.162.203])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1Fc2Kd-0002Dt-K6
-	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 11:35:06 -0400
-Message-ID: <445B709E.6090008@imc-berlin.de>
-Date: Fri, 05 May 2006 17:34:54 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
+	id 1Fc7EW-00056b-M3
+	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 16:49:06 -0400
+Received: by nz-out-0102.google.com with SMTP id z6so775910nzd
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 05 May 2006 13:48:58 -0700 (PDT)
+Message-ID: <c0c067900605051348u5f7edf0esd23ff0ced74f904e@mail.gmail.com>
+Date: Fri, 5 May 2006 16:48:58 -0400
+From: "Dan Merillat" <harik.attar@gmail.com>
+To: "David Vrabel" <dvrabel@arcom.com>
+In-Reply-To: <445B0CF1.8020400@arcom.com>
 MIME-Version: 1.0
-To: Ushit Kumar <ukumar@neomagic.com>
-References: <FE01084Ikv3ySjWrywN00012b68@mX1.Myoutlookonline.com>
-In-Reply-To: <FE01084Ikv3ySjWrywN00012b68@mX1.Myoutlookonline.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <c0c067900605031926w730bc9a3sed5c7eee03585b2b@mail.gmail.com>
+	<445B0CF1.8020400@arcom.com>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Probe function not being called
+Subject: Re: CFI Extended (Intel P30) problems on an ARM PXA255
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,47 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ushit,
+On 5/5/06, David Vrabel <dvrabel@arcom.com> wrote:
+>
+> Perhaps the cache invalidating operation in the MTD map driver you're
+> using is wrong?
 
-> I am trying to implement a nor driver for a Intel strata flash chip on Linux
-> 2.6.14. My problem is that the driver code is not calling the probe
-> function. My declarations are as follows:
-> 
-> static struct device_driver mm6p_flash_driver = {
->         .name           = "mm6p_flash",
->         .bus            = &platform_bus_type,
->         .probe          = mm6p_flash_probe,
->         .remove         = mm6p_flash_remove,
-> };
-> 
-> static int __init mm6p_flash_init(void)
-> {
->         printk("$$$$$in mm6p_flash_init$$$$$$$$$$\n");
->         return driver_register(&mm6p_flash_driver);
-> }
+Ouch, it doesn't appear to have a map->inval_cache member.  I'm going
+to copy the one from pxa25x-flash.c and see if that fixes it, however,
+how could this work with an intel J3 part, but not an intel P30 part?
+Same kernel exactly, booting back and forth.  It should either work
+for both, or fail for both.
 
-Did you register a suitable platform_device with the same name!?
+> If you suspect memory timings may be an issue I would advise slowing the
+> timings under Linux to the lowest possible.  The experiment you describe
+> here changes two variables (the software and the timings) which is not
+> good practice.
 
-Something like
-
-struct platform_device foo_device = {
-        .name           = "mm6p_flash",
-        .id             = -1,
-        .dev            = {
-                                .platform_data          = &foo_data,
-        },
-        .resource       = foo_resources,
-        .num_resources  = ARRAY_SIZE(foo_resources),
-};
-
-platform_device_register(&foo_device);
-
-Usually in your board specific startup files.
-
-driver and device are matched by name! So if there's no device "mm6p_flash"
-registered, then there's no need to call probe in driver "mm6p_flash".
-
-Ok?
-
---
-Steven
+I changed one variable.   I changed u-boot to use linux's memory
+timings, and the problem did not manifest.  I would then conclude that
+memory timing in and of itself is not the problem.
