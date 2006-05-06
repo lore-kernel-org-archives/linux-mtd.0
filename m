@@ -1,24 +1,15 @@
-Received: from nz-out-0102.google.com ([64.233.162.198])
-	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1Fc8Rz-0005xI-M1
-	for linux-mtd@lists.infradead.org; Fri, 05 May 2006 18:07:06 -0400
-Received: by nz-out-0102.google.com with SMTP id z6so788465nzd
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 May 2006 15:07:02 -0700 (PDT)
-Message-ID: <c0c067900605051507o6c53c42cgf677d51154d5e75c@mail.gmail.com>
-Date: Fri, 5 May 2006 18:07:02 -0400
-From: "Dan Merillat" <harik.attar@gmail.com>
-To: "David Vrabel" <dvrabel@arcom.com>
-In-Reply-To: <c0c067900605051348u5f7edf0esd23ff0ced74f904e@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <c0c067900605031926w730bc9a3sed5c7eee03585b2b@mail.gmail.com>
-	<445B0CF1.8020400@arcom.com>
-	<c0c067900605051348u5f7edf0esd23ff0ced74f904e@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CFI Extended (Intel P30) problems on an ARM PXA255
+From: David Woodhouse <dwmw2@infradead.org>
+To: KaiGai Kohei <kaigai@ak.jp.nec.com>
+In-Reply-To: <445C476A.2090506@ak.jp.nec.com>
+References: <445C476A.2090506@ak.jp.nec.com>
+Content-Type: text/plain
+Date: Sat, 06 May 2006 13:07:21 +0100
+Message-Id: <1146917241.2766.61.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: jmorris@redhat.com, sds@tycho.nsa.gov, russell@coker.com.au,
+	linux-mtd@lists.infradead.org, lorenzo@gnu.org, joern@wohnheim.fh-wedel.de
+Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,55 +19,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On 5/5/06, David Vrabel <dvrabel@arcom.com> wrote:
-> >
-> > Perhaps the cache invalidating operation in the MTD map driver you're
-> > using is wrong?
+On Sat, 2006-05-06 at 15:51 +0900, KaiGai Kohei wrote:
+> Hello,
+> 
+> This attached patches provide xattr support including POSIX-ACL and
+> SELinux support on JFFS2 (version.5).
+> We can apply those patches to the latest git-tree.
+> - xattr_on_jffs2.kernel.version-5.patch can be applied to mtd-2.6.git.
+> - xattr_on_jffs2.utils.version-5.patch can be applied to mtd-utils.git.
 
-And no such luck there, either.
+Thank you. These patches look good to me, in general. I do have a couple
+of minor comments to make, but I'll do that with a slightly shorter Cc
+list.
 
-static void pxa25x_map_inval_cache(struct map_info *map, unsigned long from=
-,
-                ssize_t len)
-{
-        consistent_sync((char *)map->cached + from, len, DMA_FROM_DEVICE);
-}
+In the meantime I've committed the utils patch directly to the mtd-utils
+git tree at git://git.infradead.org/mtd-utils.git and I have created a
+new kernel git tree at git://git.infradead.org/jffs2-xattr-2.6.git. 
+(Both of these are browsable at http://git.infradead.org for non-git
+users).
 
-map_info.inval_cache=3Dpxa25x_map_inval_cache;
+I've created a new git tree for the kernel side because I want Linus to
+pull from the existing MTD git tree immediately after he releases
+2.6.17, and I'd like the xattr code to be in public view (and the -mm
+tree) for a bit longer than that. As soon as Linus releases 2.6.17 and
+pulls from the MTD tree for 2.6.18, I intend to pull the xattr code into
+the main mtd tree -- as long as other reviewers are happy. OK?
 
-Is that wrong? It is getting called after writes to flash.
-
-
->
-> > If you suspect memory timings may be an issue I would advise slowing th=
-e
-> > timings under Linux to the lowest possible.  The experiment you describ=
-e
-> > here changes two variables (the software and the timings) which is not
-> > good practice.
-
-Tried it the other way around as well, set msc0 to boot-up paranoid
-mode: 0x7ff07ff8 or longest waits on all reads/writes and no
-burst-mode read.  No go, same deal.
-
-# mount / -o remount,rw
-# touch /tmp/test
-# ls
-JFFS2 notice: (1) read_unknown: node header CRC failed at 0x048f70.
-But it must have been OK earlier.
-Node totlen on flash (0x00800080) !=3D totlen from node ref (0x0000004c)
-JFFS2 warning: (1) jffs2_do_read_inode_internal: no data nodes found for in=
-o #47
-/bin/sh: ls: Input/output error
-
-(xscale-gdb) monitor long 0xff000000
-Read long at 0xff000000 : 0x00800080
-(xscale-gdb) monitor short 0xff0000aa =3D 0xff
-Wrote short to 0xff0000aa : 0xff
-(xscale-gdb) monitor long 0xff000000
-Read long at 0xff000000 : 0xea000212
-
-same deal, I can remount RO and use the filesystem (aside from /bin/ls
-which is marked invalid until I reboot)
-
-Trying vanilla 2.6.16.14 now.
+-- 
+dwmw2
