@@ -1,19 +1,23 @@
-Received: from tyo201.gate.nec.co.jp ([202.32.8.193])
+Received: from tyo200.gate.nec.co.jp ([210.143.35.50])
 	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
-	id 1Fcu8n-0000x6-Ne
-	for linux-mtd@lists.infradead.org; Sun, 07 May 2006 21:02:30 -0400
-Message-ID: <445E9880.1000404@ak.jp.nec.com>
-Date: Mon, 08 May 2006 10:01:52 +0900
+	id 1Fcv6q-0001gm-4S
+	for linux-mtd@lists.infradead.org; Sun, 07 May 2006 22:04:33 -0400
+Received: from tyo202.gate.nec.co.jp ([10.7.69.202])
+	by tyo200.gate.nec.co.jp (8.13.6/8.13.4) with ESMTP id k4824OhX001031
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 8 May 2006 11:04:24 +0900 (JST)
+Message-ID: <445EA6D4.5000909@ak.jp.nec.com>
+Date: Mon, 08 May 2006 11:03:00 +0900
 From: KaiGai Kohei <kaigai@ak.jp.nec.com>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <445C476A.2090506@ak.jp.nec.com>	
-	<1147005973.2516.13.camel@sauron.oktetlabs.ru>
-	<1147007911.2766.108.camel@pmac.infradead.org>
-In-Reply-To: <1147007911.2766.108.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, joern@wohnheim.fh-wedel.de
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+References: <445C476A.2090506@ak.jp.nec.com>
+	<20060507171601.GA7990@wohnheim.fh-wedel.de>
+In-Reply-To: <20060507171601.GA7990@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: jmorris@redhat.com, sds@tycho.nsa.gov, lorenzo@gnu.org,
+	russell@coker.com.au, linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,134 +28,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, David and Aterm.
-Thanks for your comments.
+Hi, Jörn. Thanks for your comments.
 
-David Woodhouse wrote:
-> On Sun, 2006-05-07 at 16:46 +0400, Artem B. Bityutskiy wrote:
+> On Sat, 6 May 2006 15:51:22 +0900, KaiGai Kohei wrote:
+>> +
+>> +static struct posix_acl *jffs2_acl_from_medium(const void *value, size_t size)
+>> +{
+>> +	const char *end = (char *)value + size;
 > 
->> +/*-------------------------------------------------------------------------*
->>> + *  File: fs/jffs2/xattr.c
->> Not sure it makes sense to specify file name here.
-> 
-> It's a common thing to do though; I don't think it matters much.
-> 
-> I would prefer to to have a consistent 'header' across all the JFFS2
-> files though -- I would have been inclined to copy the form used in
-> those. It's purely cosmetic though.
+> This cast appears to be unnecessary.  Gcc has an extention that allows
+> arithmetic on void* pointers.  The behaviour is just as if the pointer
+> was casted to unsigned long and back - quite useful.
 
-I agree. The file header part at xattr.[ch], acl.[ch], security.c,
-xattr_user.c and xattr_trusted.c should be updated.
+Hmm, I'll review the implementation and reduce the unnecessary casts.
 
->>> +#include <linux/xattr.h>
->> You're using 'struct list_head' in your 'xattr.h' file, wouldn't it be a
->> good tone to add #include <linux/lists.h> then?
-> 
-> Yes, it's good practice to include the header files you need directly,
-> rather than relying on the C file to include stuff like <linux/list.h>
-> before including "xattr.h". 
 
-OK, I'll fix it.
+>> +	ver = je32_to_cpu(((jffs2_acl_header *)value)->a_version);
+> 
+> In this case, it might make sense to create a local variable:
+> 	jffs2_acl_header *header = value;
+> 	...
+> 	ver = je32_to_cpu(header->a_version);
+> 
+> If only a single field is used from the header, this is a matter of
+> taste.  If it occurs more often, the local variable helps with
+> readability.
 
->>> +struct jffs2_xattr_datum
->>> +{
->>> +	void *always_null;
->>> +	u8 class;
->>> +	u8 flags;
->>> +	u16 xprefix;			/* see JFFS2_XATTR_PREFIX_* */
->>> +
->>> +	struct jffs2_raw_node_ref *node;
->>> +	struct list_head xindex;	/* chained from c->xattrindex[n] */
->>> +	uint32_t refcnt;		/* # of xattr_ref refers this */
->>> +	uint32_t xid;
->>> +	uint32_t version;
->>> +
->>> +	uint32_t data_crc;
->>> +	uint32_t hashkey;
->>> +	char *xname;		/* XATTR name without prefix */
->>> +	uint32_t name_len;	/* length of xname */
->>> +	char *xvalue;		/* XATTR value */
->>> +	uint32_t value_len;	/* length of xvalue */
->>> +};
+The most of posix-acl implementation on jffs2 is mede with referring
+to ext2/3's implementation. The jffs2_acl_header structure is reflection
+of ext2_acl_header.
+I also think using local variable is good idea for readability. I'll fix it.
+
+
+>> +	value = (char *)value + sizeof(jffs2_acl_header);
 > 
->> Would be cuter to use Linux-style comments.
+> Can be removed.
 > 
-> I think Artem is referring to kernel-doc style comments, which look like
-> this...
+>> +	for (i=0; i < count; i++) {
+>> +		jffs2_acl_entry *entry = (jffs2_acl_entry *)value;
 > 
-> /**
->  * struct jffs2_xattr_datum - inode_cache equivalent for XATTR data
->  * 
->  * @always_null: Equivalent of ic->scan_dents. Must be NULL
->  * @class:       Used to distinguish from jffs2_inode_cache/jffs2_xattr_ref
+> This cast can be removed.  void* can implicitly be cast to any pointer
+> type.  Also, would it be possible to move this variable to the
+> beginning of the function and use it for the version check?
+
+jffs2_acl_header is used for version checking, not jffs2_acl_entry.
+Thus, it's not possible to use version checking. But I'll remove
+unnecessary cast.
+
+>> +	jffs2_acl = (jffs2_acl_header *)kmalloc(sizeof(jffs2_acl_header)
+> 
+> kmalloc() returns a void*, so no explicit cast is needed.
+> 
+>> +	return (char *)jffs2_acl;
+> 
+> And this function returns void*, so this explicit cast isn't needed
+> either.
+
+I agreed. Those should be reduced.
+
+> #ifndef JFFS2_ACL_H
+> #define JFFS2_ACL_H
 > ...
+> #endif
 > 
-> I suppose it _might_ be nice if we were to do kerneldoc-style comments
-> all through JFFS2, and create a proper set of documentation for the
-> source code. I don't think it's fair to expert _you_ to start on that
-> though; there's plenty of work for Artem to do first if he wants that. 
+>> +#ifdef __KERNEL__
+>> +#ifdef CONFIG_JFFS2_FS_POSIX_ACL
+   ... <snip> ...
+>> +#endif	/* CONFIG_JFFS2_FS_POSIX_ACL */
+>> +#endif	/* __KERNEL__ */
 > 
-> Personally, I prefer the comments _with_ the struct members, on the
-> right-hand-side as you've placed them. I'd want to keep those even if we
-> _do_ also have the kerneldoc comments which produce _external_
-> documentation for printing.
+> The kernel is in a fairly bad shape wrt. seperating userspace
+> interface and in-kernel headers.  dwmw2 is currently trying to sort
+> things out.  Splitting this part into a seperate file would make his
+> job a bit easier.
 
-I'll follow the common style on jffs2 implementation, when we can arrive
-at an agreement. Now, I hope to suspend it.
-
->>> +struct jffs2_inode_cache;	/* forward refence */
->> A classic example of a senseless comment :-)
-> 
-> Yes, it's best to avoid commenting on things which don't need it.
-
+Because 'acl.h' was shared by mkfs.jffs2 at previous version of xattr
+patches. But the __KERNEL__ ifdef block is unnecessary now.
 I'll remove it.
-(Futhermore, it's wrong in spelling. orz)
 
->>> +extern struct jffs2_xattr_datum *jffs2_setup_xattr_datum(struct jffs2_sb_info *c,
->>> +                                                  uint32_t xid, uint32_t version);
->>> +
->>> +extern void jffs2_xattr_delete_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
->>> +extern void jffs2_xattr_free_inode(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
->>> +
->>> +extern int jffs2_garbage_collect_xattr(struct jffs2_sb_info *c, struct jffs2_inode_cache *ic);
+>> @@ -107,11 +109,16 @@ struct jffs2_inode_cache {
+>>  		temporary lists of dirents, and later must be set to
+>>  		NULL to mark the end of the raw_node_ref->next_in_ino
+>>  		chain. */
+>> +	u8 class;	/* It's used for identification */
+>> +	u8 flags;
+>> +	uint16_t state;
+>>  	struct jffs2_inode_cache *next;
+>>  	struct jffs2_raw_node_ref *nodes;
+>>  	uint32_t ino;
+>>  	int nlink;
+>> -	int state;
+>> +#ifdef CONFIG_JFFS2_FS_XATTR
+>> +	struct list_head ilist;
+>> +#endif
+>>  };
 > 
->> I wouldn't follow old JFFS2 style and would not exceed the 80-characters
->> per line limit.
-> 
-> Even in prototypes? I disagree. Limiting yourself to 80 characters just
-> makes it messier.
+> Why does this field depend on CONFIG_JFFS2_FS_XATTR, while the above
+> doesn't?  It looks as if splitting state into several fields is a
+> generic cleanup and can be merged independently of xattr support.
 
-I'll follow the common style on jffs2 implementation, when we can arrive
-at an agreement. Now, I hope to suspend it.
+If ilist would be always enabled, it will enforce any users the amount
+of 2 * sizeof(void *) bytes memory usage increase per inode_cache
+whether they hope to use xattr or not regardless of.
+Thus, this field is defined with depending on CONFIG_JFFS2_FS_XATTR.
 
-
->>> +/*---- Any inline initialize functions ----*/
->>> +#define init_xattr_inode_cache(x) INIT_LIST_HEAD(&((x)->ilist))
->> Wierd comment.
-> 
-> I think it was meant to read something like:
-> 
->  /*----- inline initialisation functions -----*/
-> 
-> But yes, since there's only one 'function' defined there and it's fairly
-> obvious that it's an initialisation function, the comment is probably
-> not needed.
-> 
-> If all Artem can come up with is cosmetics, then I'm sure we're doing
-> well :)
-
-Ah, some inline functions were defined here at the previous versions of
-xattr patches. This comment remained with old information.
-
-Futhermore, init_xattr_inode_cache() will become also unnecesary because
-'list_head ilist' will be replaced by 'struct jffs2_xattr_ref *xref' and
-'xref' will be initialized as NULL by memset(ic, 0, sizeof(*ic)).
-David suggested me to use single direction list instead of list_head for
-memory usage reduction at previous reply.
-
-Thus, I'll remove both this comment and definition of init_xattr_inode_cache().
+About the state variable, I splited it into three variable unconditionaly
+because it didn't have such a bad effect (if int has 32-bit width).
 
 Thanks,
+
+[Current TODO list]
+* Fix the declaration of jffs2_acl_header and so on by using 'struct'
+   instead of 'typedef' in kernel space.
+- Fix the declaration of jffs2_acl_header and so on by using 'struct'
+   instead of 'typedef' in user space header.
+* Add documentation about xattr_sem into README.Locking.
+* Call jffs2_garbage_collect_xattr_datum/ref() from gc.c directly
+   instead of jffs2_garbage_collect_xattr()
+- Use unidirection list beween inode_chache and xattr_ref, instead of
+   list_head.
+- Add '#include <linux/list.h>' into xattr.h.
+- Unify each file header part with any jffs2 files.
+- Remove a senseless comment. ("/* forward refence */")
+- Remove unneccesary pointer casts.
+- Remove unneccesary '#ifdef __KERNEL__' on acl.h
+
+*: It has already prepared, but I've not publicated yet.
+-: It has not prepated yet. I should work from now.
+
 -- 
 Open Source Software Promotion Center, NEC
 KaiGai Kohei <kaigai@ak.jp.nec.com>
