@@ -1,14 +1,21 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: srideep.devireddy@wipro.com
-In-Reply-To: <6AD9F6A5F6E096408F0B703773355A07E252C5@CHN-SNR-MBX01.wipro.com>
-References: <6AD9F6A5F6E096408F0B703773355A07E252C5@CHN-SNR-MBX01.wipro.com>
-Content-Type: text/plain
-Date: Mon, 08 May 2006 21:51:02 +0100
-Message-Id: <1147121462.2694.33.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Jffs2 memory problem ..
+Received: from nz-out-0102.google.com ([64.233.162.194])
+	by canuck.infradead.org with esmtp (Exim 4.61 #1 (Red Hat Linux))
+	id 1FdHu8-0008UI-Rm
+	for linux-mtd@lists.infradead.org; Mon, 08 May 2006 22:24:57 -0400
+Received: by nz-out-0102.google.com with SMTP id z6so363673nzd
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 08 May 2006 19:24:45 -0700 (PDT)
+Message-ID: <29f916510605081924x3adfe599oed1e2a9071b97f61@mail.gmail.com>
+Date: Tue, 9 May 2006 02:24:45 +0000
+From: "alfred hitch" <alfred.hitch@gmail.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <29f916510605080406g5298445ev1dc98026e668f910@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <29f916510605080406g5298445ev1dc98026e668f910@mail.gmail.com>
+Subject: 2.6 and IXDP425
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,48 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-09 at 00:52 +0530, srideep.devireddy@wipro.com wrote:
->        We are using MPC 8247 . processor with 32MB sdram and we are
-> using 2.4 Montavista linux kernel .when I make my board up ...I use a
-> top and see my memory consumption is 8 Mb and 23Mb is free .After
-> running the card with applications for almost 1 or 2 days ... when I
-> reboot the card I am not able to run my application . If I then use a
-> top command see memory consumption is 27MB and free is 3 Mb . only
-> think
-> I can do to run my applications is to reformat the file system and run
-> the applications ....then it will run for another day . until it get
-> to memory usage of 27 MB . Please do let me know if any one have any
-> pointers on this ...which will solve my the Problem ...
+Hi,
 
-Unless you are using the _standard_ JFFS2 code from the 2.4.32 kernel,
-without any modifications, then you need to contact Montavista for
-support -- only they can help you. 
+We are trying to port kernel 2.6 from snapgear depot (snapgear 3,3
+version) on our IXDP425 based board.
 
-Check the memory usage with 'slabtop' or manually reading
-from /proc/slabinfo. 
+I am not being able to get MTD partitions mapped. I don;t see my
+traces from cfi_cmdset0001.c file itself coming up.
+I am suspecting some wrong configuration option I am missing or something.
 
-If it's being taken up in JFFS2 data structures, then it could be a
-known problem. Are you making lots of short writes to some files, like
-syslog files?
+Exact Error is:
+....
+IXP4XX-Flash.0: failed to claim resource 0
+....
+blkmtd: error missing 'device' name
+....
+VFS: Cannot open root device "mtdblock4"
+Kernel panic ..
 
-> The information contained in this electronic message and any
-> attachments to this message are intended for the exclusive use of the
-> addressee(s) and may contain proprietary, confidential or privileged
-> information. If you are not the intended recipient, you should not
-> disseminate, distribute or copy this e-mail. Please notify the sender
-> immediately and destroy all copies of this message and any
-> attachments.
-> 
-> WARNING: Computer viruses can be transmitted via email. The recipient
-> should check this email and any attachments for the presence of
-> viruses. The company accepts no liability for any damage caused by any
-> virus transmitted by this email. 
+Has anyone else also experienced this ? Any pointers on how to get past thi=
+s ?
+Can someone send me his .config for comparison ?
 
-Do not _EVER_ post to my lists with a disclaimer like this again. I
-consider it an abuse of the service I provide to the community, and I
-will report it as network abuse if it happens again. Make sure you
-contact your sysadmin and/or your manager and make sure this disclaimer
-is not added to your mail in future.
 
--- 
-dwmw2
+TIA,
+Alfred
