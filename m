@@ -1,22 +1,21 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+Received: from www346.sakura.ne.jp ([202.181.99.66])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fdk4d-0002Et-Jt
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 04:29:41 -0400
-Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 69069472FB
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 May 2006 12:29:02 +0400 (MSD)
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Wed, 10 May 2006 12:29:02 +0400
-Message-Id: <1147249742.16853.16.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH/RFC] reserved pool
-Reply-To: dedekind@infradead.org
+	id 1FdUnx-0000Qy-NI
+	for linux-mtd@lists.infradead.org; Tue, 09 May 2006 12:11:30 -0400
+Message-ID: <4460BEEE.2070704@ak.jp.nec.com>
+Date: Wed, 10 May 2006 01:10:22 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+References: <445C476A.2090506@ak.jp.nec.com>	<20060507171601.GA7990@wohnheim.fh-wedel.de>	<445EA6D4.5000909@ak.jp.nec.com>
+	<1147092567.2766.146.camel@pmac.infradead.org>
+In-Reply-To: <1147092567.2766.146.camel@pmac.infradead.org>
+Content-Type: multipart/mixed; boundary="------------050407070604080008020801"
+Cc: jmorris@redhat.com, KaiGai Kohei <kaigai@ak.jp.nec.com>,
+	russell@coker.com.au, lorenzo@gnu.org,
+	linux-mtd@lists.infradead.org, sds@tycho.nsa.gov,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@wohnheim.fh-wedel.de>
+Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,251 +25,132 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-09 at 16:45 +0400, Artem B. Bityutskiy wrote:
-> Hello,
+This is a multi-part message in MIME format.
+--------------050407070604080008020801
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Hi,
+
+Some fixes and updates on the todo list are already
+pushed to git://git.infradead.org/jffs2-xattr-2.6.git .
+
+The broken-out patches are available at here:
+http://www.kaigai.gr.jp/index.php?FrontPage#vd169842
+
+01. jffs2-xattr-v5.1-01-remove_typedef_kernel.patch
+02. jffs2-xattr-v5.1-02-remove_typedef_utils.patch
+03. jffs2-xattr-v5.1-03-append_README.Locking.patch
+04. jffs2-xattr-v5.1-04-remove_ilist_from_ic.patch
+05. jffs2-xattr-v5.1-05-update_xattr_gc.patch
+06. jffs2-xattr-v5.1-06-add_list.h.patch
+07. jffs2-xattr-v5.1-07-unify_file_header.patch
+08. jffs2-xattr-v5.1-08-remove_senseless_comment.patch
+09. jffs2-xattr-v5.1-09-remove__KERNEL__.patch
+10. jffs2-xattr-v5.1-10-remove_pointer_cast.patch
+
+I hope to merge the second patch (jffs2-xattr-v5.1-02-remove_typedef_utils.patch),
+because this patch is for mtd-utils.git, not jffs2-xattr-2.6.git.
+
+P.S.
+Thanks David for your introduction about git on infradead.org.
+
+David Woodhouse wrote:
+> On Mon, 2006-05-08 at 11:03 +0900, KaiGai Kohei wrote:
 > 
-> long time I was asked to solve a problem when users eat all the file
-> system free space and the system cannot boot because different programs
-> can't write any longer (-ENOSPC). I made a straight-forward patch and it
-> solved the problem.
+>>[Current TODO list]
+>>* Fix the declaration of jffs2_acl_header and so on by using 'struct'
+>>   instead of 'typedef' in kernel space.
+>>- Fix the declaration of jffs2_acl_header and so on by using 'struct'
+>>   instead of 'typedef' in user space header.
+>>* Add documentation about xattr_sem into README.Locking.
+>>* Call jffs2_garbage_collect_xattr_datum/ref() from gc.c directly
+>>   instead of jffs2_garbage_collect_xattr()
+>>- Use unidirection list beween inode_chache and xattr_ref, instead of
+>>   list_head.
+>>- Add '#include <linux/list.h>' into xattr.h.
+>>- Unify each file header part with any jffs2 files.
+>>- Remove a senseless comment. ("/* forward refence */")
+>>- Remove unneccesary pointer casts.
+>>- Remove unneccesary '#ifdef __KERNEL__' on acl.h
+>>
+>>*: It has already prepared, but I've not publicated yet.
+>>-: It has not prepated yet. I should work from now. 
+> 
+> 
+> That's an excellent summary; thanks. It does serve to show that we've
+> mostly picked on cosmetic details so far though :)
+> 
+> If you have patches committed into a git tree, you should be able to
+> just 'git-push ssh://git.infradead.org/home/git/jffs2-xattr-2.6.git' to
+> make it available.
+-- 
+KaiGai Kohei <kaigai@kaigai.gr.jp>
 
-The patch is updated
-(http://git.infradead.org/?p=users/dedekind/dedekind-mtd-2.6.git;a=commit;h=73229f32650fcefbcc0b0bf8b4c48fae1a70c10d).
+--------------050407070604080008020801
+Content-Type: text/plain; name="jffs2-xattr-v5.1-02-remove_typedef_utils.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+	filename="jffs2-xattr-v5.1-02-remove_typedef_utils.patch"
 
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index ea1f37d..f5d4319 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -348,10 +348,16 @@ void jffs2_dirty_inode(struct inode *ino
- int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+	int ret;
- 
- 	if (c->flags & JFFS2_SB_FLAG_RO && !(sb->s_flags & MS_RDONLY))
- 		return -EROFS;
- 
-+	/* Re-parse mount options */
-+	ret = jffs2_parse_options(sb, data);
-+	if (ret)
-+		return ret;
-+	
- 	/* We stop if it was running, then restart if it needs to.
- 	   This also catches the case where it was stopped and this
- 	   is just a remount to restart it.
-diff --git a/fs/jffs2/jffs2_fs_sb.h b/fs/jffs2/jffs2_fs_sb.h
-index 4bcfb55..9f6bc18 100644
---- a/fs/jffs2/jffs2_fs_sb.h
-+++ b/fs/jffs2/jffs2_fs_sb.h
-@@ -97,6 +97,11 @@ struct jffs2_sb_info {
- 
- 	uint32_t wbuf_pagesize; /* 0 for NOR and other flashes with no wbuf */
- 
-+	/* Size of the reserved pool. I.e., how many bytes of flash space are
-+	 * reserved for root. Mortals cannot use it (-ENOSPC is returned). Set
-+	 * up via mount options. */
-+	unsigned int rp_size;
-+
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
- 	/* Write-behind buffer for NAND flash */
- 	unsigned char *wbuf;
-diff --git a/fs/jffs2/nodelist.h b/fs/jffs2/nodelist.h
-index f6645af..ffe4176 100644
---- a/fs/jffs2/nodelist.h
-+++ b/fs/jffs2/nodelist.h
-@@ -18,6 +18,7 @@ #include <linux/config.h>
- #include <linux/fs.h>
- #include <linux/types.h>
- #include <linux/jffs2.h>
-+#include <linux/capability.h>
- #include "jffs2_fs_sb.h"
- #include "jffs2_fs_i.h"
- #include "summary.h"
-@@ -255,6 +256,23 @@ #endif
- 	return ret;
- }
- 
-+/*
-+ * Check whether there is enough space for a user to write.
-+ */
-+static inline int jffs2_user_can_write(struct jffs2_sb_info *c)
-+{
-+	unsigned int avail;
-+	
-+	if (capable(CAP_SYS_ADMIN))
-+		return 1;
-+
-+	avail = c->dirty_size + c->free_size + c->unchecked_size +
-+		c->erasing_size - c->resv_blocks_write * c->sector_size
-+		- c->nospc_dirty_size;
-+
-+	return avail > c->rp_size;
-+}
-+
- #define ALLOC_NORMAL	0	/* Normal allocation */
- #define ALLOC_DELETION	1	/* Deletion node. Best to allow it */
- #define ALLOC_GC	2	/* Space requested for GC. Give it or die */
-@@ -399,6 +417,9 @@ int jffs2_do_mount_fs(struct jffs2_sb_in
- 
- /* erase.c */
- void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count);
-+
-+/* super.c */
-+int jffs2_parse_options(struct super_block *sb, char *opts);
- 
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
- /* wbuf.c */
-diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-index 49127a1..547af15 100644
---- a/fs/jffs2/nodemgmt.c
-+++ b/fs/jffs2/nodemgmt.c
-@@ -57,6 +57,12 @@ int jffs2_reserve_space(struct jffs2_sb_
- 
- 	spin_lock(&c->erase_completion_lock);
- 
-+        if (prio != ALLOC_DELETION && !jffs2_user_can_write(c)) {
-+		spin_unlock(&c->erase_completion_lock);
-+		up(&c->alloc_sem);
-+		return -ENOSPC;
-+	}
-+
- 	/* this needs a little more thought (true <tglx> :)) */
- 	while(ret == -EAGAIN) {
- 		while(c->nr_free_blocks + c->nr_erasing_blocks < blocksneeded) {
-diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
-index ffd8e84..d9db0bb 100644
---- a/fs/jffs2/super.c
-+++ b/fs/jffs2/super.c
-@@ -24,10 +24,13 @@ #include <linux/pagemap.h>
- #include <linux/mtd/mtd.h>
- #include <linux/ctype.h>
- #include <linux/namei.h>
-+#include <linux/parser.h>
-+#include <linux/seq_file.h>
- #include "compr.h"
- #include "nodelist.h"
- 
- static void jffs2_put_super(struct super_block *);
-+static int jffs2_show_options(struct seq_file *m, struct vfsmount
-*mnt);
- 
- static kmem_cache_t *jffs2_inode_cachep;
- 
-@@ -78,6 +81,7 @@ static struct super_operations jffs2_sup
- 	.clear_inode =	jffs2_clear_inode,
- 	.dirty_inode =	jffs2_dirty_inode,
- 	.sync_fs =	jffs2_sync_fs,
-+	.show_options = jffs2_show_options,
- };
- 
- static int jffs2_sb_compare(struct super_block *sb, void *data)
-@@ -152,15 +156,15 @@ static struct super_block *jffs2_get_sb_
- 	sb->s_op = &jffs2_super_operations;
- 	sb->s_flags = flags | MS_NOATIME;
- 
--	ret = jffs2_do_fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
-+ 	/* Parse mount options */
-+ 	ret = jffs2_parse_options(sb, data);
-+ 	if (ret)
-+ 		goto error;
-+ 	
-+ 	ret = jffs2_do_fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
-+ 	if (ret) 
-+ 		goto error;
- 
--	if (ret) {
--		/* Failure case... */
--		up_write(&sb->s_umount);
--		deactivate_super(sb);
--		return ERR_PTR(ret);
--	}
--
- 	sb->s_flags |= MS_ACTIVE;
- 	return sb;
- 
-@@ -169,6 +173,12 @@ static struct super_block *jffs2_get_sb_
- 	put_mtd_device(mtd);
- 
- 	return sb;
-+
-+ error:
-+	/* Failure case... */
-+	up_write(&sb->s_umount);
-+	deactivate_super(sb);
-+	return ERR_PTR(ret);
- }
- 
- static struct super_block *jffs2_get_sb_mtdnr(struct file_system_type
-*fs_type,
-@@ -271,6 +281,70 @@ static struct super_block *jffs2_get_sb(
- out:
- 	path_release(&nd);
- 	return ERR_PTR(err);
-+}
-+
-+/*
-+ * Mount option identifiers.
-+ */
-+enum {
-+	JFFS2_OPT_RP_SIZE,
-+	JFFS2_OPT_LAST_FAKE
-+};
-+
-+/*
-+ * Supported mount options.
-+ */
-+static struct match_token tokens[] = {
-+	{JFFS2_OPT_RP_SIZE, "rpsize=%u"}, /* Size of the reserved pool in KiB
-*/
-+	{JFFS2_OPT_LAST_FAKE, NULL}       /* End of list marker */
-+};
-+
-+#define JFFS2_MAX_ARGS	1
-+
-+int jffs2_parse_options(struct super_block *sb, char *opts)
-+{
-+	unsigned int opt;
-+	char *p;
-+	substring_t args[JFFS2_MAX_ARGS];
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+
-+	if (!opts)
-+		return 0;
-+
-+	while ((p = strsep(&opts, ",")) != NULL) {
-+		int token;
-+
-+		if (!*p)
-+			continue;
-+		
-+		token = match_token(p, tokens, args);
-+
-+		switch (token) {
-+			case JFFS2_OPT_RP_SIZE:
-+				if (match_int(&args[0], &opt))
-+					return -EINVAL;
-+				c->rp_size = opt * 1024;
-+				if (c->rp_size > c->mtd->size) {
-+					JFFS2_WARNING("too large reserved pool size, max is %u KB\n",
-+						      c->mtd->size/1024);
-+					return -EINVAL;
-+				}
-+				break;
-+			default:
-+				return -EINVAL;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int jffs2_show_options(struct seq_file *m, struct vfsmount *mnt)
-+{
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(mnt->mnt_sb);
-+	
-+	if (c->rp_size)
-+		seq_printf(m, ",rpsize=%d", c->rp_size/1024);
-+	return 0;
- }
- 
- static void jffs2_put_super (struct super_block *sb)
+ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbXRkL2pmZnMyLXVzZXIuaCBiL2luY2x1ZGUvbXRkL2pm
+ZnMyLXVzZXIuaAppbmRleCA4YjUzOTkwLi5iYzVkOTlhIDEwMDY0NAotLS0gYS9pbmNsdWRl
+L210ZC9qZmZzMi11c2VyLmgKKysrIGIvaW5jbHVkZS9tdGQvamZmczItdXNlci5oCkBAIC01
+MCwzMyArNTAsMzMgQEAgZXh0ZXJuIGludCB0YXJnZXRfZW5kaWFuOwogI2RlZmluZSBYQVRU
+Ul9UUlVTVEVEX1BSRUZJWAkJInRydXN0ZWQuIgogI2RlZmluZSBYQVRUUl9UUlVTVEVEX1BS
+RUZJWF9MRU4JKHNpemVvZiAoWEFUVFJfVFJVU1RFRF9QUkVGSVgpIC0gMSkKIAotdHlwZWRl
+ZiBzdHJ1Y3Qgeworc3RydWN0IGpmZnMyX2FjbF9lbnRyeSB7CiAJamludDE2X3QJZV90YWc7
+CiAJamludDE2X3QJZV9wZXJtOwogCWppbnQzMl90CWVfaWQ7Ci19IGpmZnMyX2FjbF9lbnRy
+eTsKK307CiAKLXR5cGVkZWYgc3RydWN0IHsKK3N0cnVjdCBqZmZzMl9hY2xfZW50cnlfc2hv
+cnQgewogCWppbnQxNl90CWVfdGFnOwogCWppbnQxNl90CWVfcGVybTsKLX0gamZmczJfYWNs
+X2VudHJ5X3Nob3J0OworfTsKIAotdHlwZWRlZiBzdHJ1Y3Qgeworc3RydWN0IGpmZnMyX2Fj
+bF9oZWFkZXIgewogCWppbnQzMl90CWFfdmVyc2lvbjsKLX0gamZmczJfYWNsX2hlYWRlcjsK
+K307CiAKIC8qIGNvcGllZCBmcm9tIGluY2x1ZGUvbGludXgvcG9zaXhfYWNsX3hhdHRyLmgg
+Ki8KICNkZWZpbmUgUE9TSVhfQUNMX1hBVFRSX1ZFUlNJT04gMHgwMDAyCiAKLXR5cGVkZWYg
+c3RydWN0IHsKK3N0cnVjdCBwb3NpeF9hY2xfeGF0dHJfZW50cnkgewogCXVpbnQxNl90CQll
+X3RhZzsKIAl1aW50MTZfdAkJZV9wZXJtOwogCXVpbnQzMl90CQllX2lkOwotfSBwb3NpeF9h
+Y2xfeGF0dHJfZW50cnk7Cit9OwogCi10eXBlZGVmIHN0cnVjdCB7Ci0JdWludDMyX3QJCWFf
+dmVyc2lvbjsKLQlwb3NpeF9hY2xfeGF0dHJfZW50cnkJYV9lbnRyaWVzWzBdOwotfSBwb3Np
+eF9hY2xfeGF0dHJfaGVhZGVyOworc3RydWN0IHBvc2l4X2FjbF94YXR0cl9oZWFkZXIgewor
+CXVpbnQzMl90CQkJYV92ZXJzaW9uOworCXN0cnVjdCBwb3NpeF9hY2xfeGF0dHJfZW50cnkJ
+YV9lbnRyaWVzWzBdOworfTsKIAogI2VuZGlmIC8qIF9fSkZGUzJfVVNFUl9IX18gKi8KZGlm
+ZiAtLWdpdCBhL21rZnMuamZmczIuYyBiL21rZnMuamZmczIuYwppbmRleCAwMmY1N2Y5Li5m
+YTRhNWYzIDEwMDY0NAotLS0gYS9ta2ZzLmpmZnMyLmMKKysrIGIvbWtmcy5qZmZzMi5jCkBA
+IC0xMDUyLDIyICsxMDUyLDIyIEBAIHN0YXRpYyBzdHJ1Y3QgewogCXsgMCwgTlVMTCwgMCB9
+CiB9OwogCi1zdGF0aWMgdm9pZCBmb3JtYWxpemVfcG9zaXhfYWNsKGNoYXIgKnh2YWx1ZSwg
+aW50ICp2YWx1ZV9sZW4pCitzdGF0aWMgdm9pZCBmb3JtYWxpemVfcG9zaXhfYWNsKHZvaWQg
+Knh2YWx1ZSwgaW50ICp2YWx1ZV9sZW4pCiB7Ci0JcG9zaXhfYWNsX3hhdHRyX2hlYWRlciAq
+cGFjbF9oZWFkZXI7Ci0JcG9zaXhfYWNsX3hhdHRyX2VudHJ5ICpwZW50LCAqcGxpbTsKLQlq
+ZmZzMl9hY2xfaGVhZGVyICpqYWNsX2hlYWRlcjsKLQlqZmZzMl9hY2xfZW50cnkgKmplbnQ7
+Ci0JamZmczJfYWNsX2VudHJ5X3Nob3J0ICpqZW50X3M7CisJc3RydWN0IHBvc2l4X2FjbF94
+YXR0cl9oZWFkZXIgKnBhY2xfaGVhZGVyOworCXN0cnVjdCBwb3NpeF9hY2xfeGF0dHJfZW50
+cnkgKnBlbnQsICpwbGltOworCXN0cnVjdCBqZmZzMl9hY2xfaGVhZGVyICpqYWNsX2hlYWRl
+cjsKKwlzdHJ1Y3QgamZmczJfYWNsX2VudHJ5ICpqZW50OworCXN0cnVjdCBqZmZzMl9hY2xf
+ZW50cnlfc2hvcnQgKmplbnRfczsKIAljaGFyIGJ1ZmZlcltYQVRUUl9CVUZGRVJfU0laRV07
+CiAJaW50IG9mZnNldCA9IDA7CiAKLQlwYWNsX2hlYWRlciA9IChwb3NpeF9hY2xfeGF0dHJf
+aGVhZGVyICopeHZhbHVlOzsKKwlwYWNsX2hlYWRlciA9IHh2YWx1ZTs7CiAJcGVudCA9IHBh
+Y2xfaGVhZGVyLT5hX2VudHJpZXM7Ci0JcGxpbSA9IChwb3NpeF9hY2xfeGF0dHJfZW50cnkg
+KikoeHZhbHVlICsgKnZhbHVlX2xlbik7CisJcGxpbSA9IHh2YWx1ZSArICp2YWx1ZV9sZW47
+CiAKLQlqYWNsX2hlYWRlciA9IChqZmZzMl9hY2xfaGVhZGVyICopYnVmZmVyOwotCW9mZnNl
+dCArPSBzaXplb2YoamZmczJfYWNsX2hlYWRlcik7CisJamFjbF9oZWFkZXIgPSAoc3RydWN0
+IGpmZnMyX2FjbF9oZWFkZXIgKilidWZmZXI7CisJb2Zmc2V0ICs9IHNpemVvZihzdHJ1Y3Qg
+amZmczJfYWNsX2hlYWRlcik7CiAJamFjbF9oZWFkZXItPmFfdmVyc2lvbiA9IGNwdV90b19q
+ZTMyKEpGRlMyX0FDTF9WRVJTSU9OKTsKIAogCXdoaWxlIChwZW50IDwgcGxpbSkgewpAQCAt
+MTA3NiwxNSArMTA3NiwxNSBAQCBzdGF0aWMgdm9pZCBmb3JtYWxpemVfcG9zaXhfYWNsKGNo
+YXIgKnh2CiAJCWNhc2UgQUNMX0dST1VQX09CSjoKIAkJY2FzZSBBQ0xfTUFTSzoKIAkJY2Fz
+ZSBBQ0xfT1RIRVI6Ci0JCQlqZW50X3MgPSAoamZmczJfYWNsX2VudHJ5X3Nob3J0ICopKGJ1
+ZmZlciArIG9mZnNldCk7Ci0JCQlvZmZzZXQgKz0gc2l6ZW9mKGpmZnMyX2FjbF9lbnRyeV9z
+aG9ydCk7CisJCQlqZW50X3MgPSAoc3RydWN0IGpmZnMyX2FjbF9lbnRyeV9zaG9ydCAqKShi
+dWZmZXIgKyBvZmZzZXQpOworCQkJb2Zmc2V0ICs9IHNpemVvZihzdHJ1Y3QgamZmczJfYWNs
+X2VudHJ5X3Nob3J0KTsKIAkJCWplbnRfcy0+ZV90YWcgPSBjcHVfdG9famUxNihsZTE2X3Rv
+X2NwdShwZW50LT5lX3RhZykpOwogCQkJamVudF9zLT5lX3Blcm0gPSBjcHVfdG9famUxNihs
+ZTE2X3RvX2NwdShwZW50LT5lX3Blcm0pKTsKIAkJCWJyZWFrOwogCQljYXNlIEFDTF9VU0VS
+OgogCQljYXNlIEFDTF9HUk9VUDoKLQkJCWplbnQgPSAoamZmczJfYWNsX2VudHJ5ICopKGJ1
+ZmZlciArIG9mZnNldCk7Ci0JCQlvZmZzZXQgKz0gc2l6ZW9mKGpmZnMyX2FjbF9lbnRyeSk7
+CisJCQlqZW50ID0gKHN0cnVjdCBqZmZzMl9hY2xfZW50cnkgKikoYnVmZmVyICsgb2Zmc2V0
+KTsKKwkJCW9mZnNldCArPSBzaXplb2Yoc3RydWN0IGpmZnMyX2FjbF9lbnRyeSk7CiAJCQlq
+ZW50LT5lX3RhZyA9IGNwdV90b19qZTE2KGxlMTZfdG9fY3B1KHBlbnQtPmVfdGFnKSk7CiAJ
+CQlqZW50LT5lX3Blcm0gPSBjcHVfdG9famUxNihsZTE2X3RvX2NwdShwZW50LT5lX3Blcm0p
+KTsKIAkJCWplbnQtPmVfaWQgPSBjcHVfdG9famUzMihsZTMyX3RvX2NwdShwZW50LT5lX2lk
+KSk7Cg==
+--------------050407070604080008020801--
