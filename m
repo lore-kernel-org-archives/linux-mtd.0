@@ -1,17 +1,22 @@
-Received: from mx1.myoutlookonline.com ([69.25.74.59])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FdhV5-0007bO-Su
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 01:44:49 -0400
-From: "Ushit Kumar" <ukumar@neomagic.com>
+Received: from pat.uio.no ([129.240.10.6])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fdhe1-0007sb-Mg
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 01:54:05 -0400
+Received: from mail-mx5.uio.no ([129.240.10.46])
+	by pat.uio.no with esmtp (Exim 4.43) id 1Fdhdu-0006Qh-6R
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 07:53:50 +0200
+Received: from grid.uio.no ([129.240.86.18] helo=AAAA)
+	by mail-mx5.uio.no with smtp (Exim 4.43) id 1Fdhdp-00084A-0L
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 07:53:45 +0200
+Message-ID: <006e01c673f6$1d51ffa0$0100a8c0@AAAA>
+From: "Aleksandr Konstantinov" <aleksandr.konstantinov@fys.uio.no>
 To: <linux-mtd@lists.infradead.org>
-Date: Wed, 10 May 2006 11:12:35 +0530
+Date: Wed, 10 May 2006 08:53:51 +0300
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="windows-1257";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Message-ID: <FE011ltcNdbUu2o8q3p000014ec@mx1.MyoutlookonlinE.com>
-Subject: Getting Erro Message: CFI:Hello Found no mm6p_flash.0 device at
-	location zero
+Subject: How to extract file from JFFS2 image?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,30 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+ Hello,
 
-I am trying to write a NOR flash driver for a Arm 926 based SOC.  The code
-sequence I am trying to execute is as follows:
-        info->map.size          = size;
-      info->map.bankwidth     = 4;//plat->width;
-      info->map.phys          = res->start;
-      info->map.virt          = base;
-      info->map.name          = dev->dev.bus_id;
-      info->map.set_vpp       = mm6p_flash_set_vpp;
-        info->mtd = do_map_probe("cfi_probe", &info->map);
-      if (!info->mtd) {
-                err = -ENXIO;
-                printk("Error do_map_probe\n:");
-                goto no_device;
-        }
+Is there any way to extract content of JFFS2 image stored in file without 
+copying it to MTD device?
 
-The error message I get is:
-"CFI:Hello  Found no mm6p_flash.0 device at location zero". On digging
-through the MTD layer, I see that the genprobe_new_chip() call fails.
-Unfortunately at this point I am somewhat lost.
+Thanks
 
-Is this a configuration issue, or do I have do to some other setup?
 
-Thanks,
-
-Ushit
+A.K.
