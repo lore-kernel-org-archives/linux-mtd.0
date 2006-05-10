@@ -1,22 +1,20 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FdmmR-0005cY-A1
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 07:23:10 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1147259209.2794.178.camel@pmac.infradead.org>
-References: <445C476A.2090506@ak.jp.nec.com>
+Received: from tyo201.gate.nec.co.jp ([202.32.8.193])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FdnQY-0006DU-BM
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 08:04:39 -0400
+Message-ID: <4461D69C.3010909@ak.jp.nec.com>
+Date: Wed, 10 May 2006 21:03:40 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>, dedekind@infradead.org
+References: <445C476A.2090506@ak.jp.nec.com>	
 	<1147255421.16853.28.camel@sauron.oktetlabs.ru>
 	<1147259209.2794.178.camel@pmac.infradead.org>
-Content-Type: text/plain
-Date: Wed, 10 May 2006 15:22:25 +0400
-Message-Id: <1147260146.16853.41.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+In-Reply-To: <1147259209.2794.178.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, joern@wohnheim.fh-wedel.de,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>
+Cc: linux-mtd@lists.infradead.org, joern@wohnheim.fh-wedel.de
 Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,22 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-05-10 at 12:06 +0100, David Woodhouse wrote:
+Hi,
+
+>> Few suggestions for now (again cosmetic):
+>>
+>> 1. GC-related functions and summary-related functions should be moved to
+>> gc.c and summary.c
+> 
+> Then they'd need ifdefs. I'd prefer to keep them where they are, in
+> separate files which aren't compiled if the XATTR options are disabled.
+
+I also agree David's opinion.
+
+In addition, those functions are deployed enough locally-separating
+in xattr.c.
+Sorry, I could not understand your dissatisfaction.
+
+>> 2. JFFS2 uses namings we all are used to. E.g., c - JFFS2 superblock
+>> structure, ref - struct jffs2_node_ref. I've noticed you use 'ref' as
+>> jffs2_xattr_ref pointers which is just a bit confusing. I would suggest
+>> you calling them 'xref' - this would improve readability a bit.
+> 
+> Really, I don't think it matters.
+> 
+>>> +		delete_xattr_ref(c, ref);
+>>> +		delete_xattr_ref(c, xref);
+> 
+>> It's minor, but still.
+> 
 > It's not even 'minor'. It's total bullshit. If you can't look at the
 > function name "delete_XATTR_REF" and work out what 'ref' is in that
 > context, then you really shouldn't be trying to read the code. Life is
 > hard; let's go shopping.
-It's not bullshit. The name of function has nothing to do here - there
-are many places like that (1), the function name does not have to
-correlate (2).
 
-> I got annoyed with you when you started on stuff like this in JFFS2
-> code. Don't start on the XATTR code too.
-I remember - you prevented me from many clean-ups and tidy-ups.
+Is the 'raw' used as the common name for jffs2_raw_node_ref, not 'ref',
+isn't it? Because I thought those are not confusable, I adopted 'ref'
+as a name of jffs2_xattr_ref.
 
-> I do see your point to a _certain_ extent, but let's concentrate on
-> things that actually matter instead, OK?
-I also see your point. Sorry, but I do not agree with this strategy.
-Many things which "don't matter" may start mattering sooner or later.
+If we can arrive an agreement that it's confusable naming scheme,
+I'll prepare to change the common name of jffs2_xattr_ref.
+Both naming schemes are acceptable for me.
 
-Thanks.
+It's important to decide what should be decided at first, I think.
+
+Thanks,
+-- 
+Open Source Software Promotion Center, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
