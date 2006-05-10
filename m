@@ -1,20 +1,22 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FdoqM-0000E7-Kv
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 09:35:25 -0400
-Date: Wed, 10 May 2006 15:35:10 +0200
+	id 1FdouZ-0000RM-BJ
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 09:39:43 -0400
+Date: Wed, 10 May 2006 15:39:05 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-ID: <20060510133510.GD31935@wohnheim.fh-wedel.de>
-References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
+To: Vitaly Wool <vwool@ru.mvista.com>
+Message-ID: <20060510133905.GE31935@wohnheim.fh-wedel.de>
+References: <4461B7CD.9010100@ru.mvista.com>
+	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
+	<4461CC8C.6010105@ru.mvista.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1147249742.16853.16.camel@sauron.oktetlabs.ru>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] reserved pool
+In-Reply-To: <4461CC8C.6010105@ru.mvista.com>
+Cc: Josh Boyer <jwboyer@gmail.com>,
+	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: Re: [RFC] read-only filesystem support for NAND flash devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 May 2006 12:29:02 +0400, Artem B. Bityutskiy wrote:
-> +
-> +int jffs2_parse_options(struct super_block *sb, char *opts)
-> +{
-> +	unsigned int opt;
-> +	char *p;
-> +	substring_t args[JFFS2_MAX_ARGS];
-> +	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-> +
-> +	if (!opts)
-> +		return 0;
-> +
-> +	while ((p = strsep(&opts, ",")) != NULL) {
+On Wed, 10 May 2006 15:20:44 +0400, Vitaly Wool wrote:
+> Josh Boyer wrote:
+>
+> >Not quite the case.  You need bad block skipping, yes.  But NAND can
+> >get bit flips in good blocks still.  How do you deal with that?  You
+> >can't leave the block in that state forever because it will continue
+> >to get bit flips and then your data will be unusable.
+> Yep, I know about the issue. The recommended way to go here AFAIK is to 
+> mark the block as bad and copy its contents to a free one.
+> However, this will make mapping a lot more complicated so I'd like to go 
+> another way, i. e. erasing and rewriting this very block, and if it 
+> wears out, cache the data read from it and schedule moving the data 
+> forward within the partition in a background. Does that make sense?
 
-" != NULL" is superfluous.
-
-> +		int token;
-> +
-> +		if (!*p)
-> +			continue;
-> +		
-> +		token = match_token(p, tokens, args);
-> +
-> +		switch (token) {
-> +			case JFFS2_OPT_RP_SIZE:
-
-One level of indentation can be save here.  Unlike dwmw2, I don't
-participate in the terminal size arms race and still care about 80
-columns. ;)
-
-> +				if (match_int(&args[0], &opt))
-> +					return -EINVAL;
-> +				c->rp_size = opt * 1024;
-> +				if (c->rp_size > c->mtd->size) {
-> +					JFFS2_WARNING("too large reserved pool size, max is %u KB\n",
-> +						      c->mtd->size/1024);
-> +					return -EINVAL;
-> +				}
-> +				break;
-> +			default:
-> +				return -EINVAL;
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
-
-Rest looks fine to me.
+Or you could just ignore the issue.  The way I read it, your RFC is
+basically "Don't do the real thing, just a quick hack to make it work
+at all."  Which is perfectly fine to me.  It is not perfect, but that
+is well documented and if people actually use it and care a lot about
+some particular deficiency, you can solve it then.
 
 Jörn
 
 -- 
-With a PC, I always felt limited by the software available. On Unix, 
-I am limited only by my knowledge.
--- Peter J. Schoenster
+Anything that can go wrong, will.
+-- Finagle's Law
