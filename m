@@ -1,16 +1,19 @@
-Received: from [70.90.161.73] (helo=exchange.cnpriv.local)
+Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FdpiE-0001ZN-9Y
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 10:31:11 -0400
-From: Blair Barnett <bbarnett@circumnavnetworks.com>
-To: Linux MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Message-Id: <1147271448.4649.63.camel@blairs-desktop>
+	id 1Fds6F-0003a6-WD
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 13:03:58 -0400
+Date: Thu, 11 May 2006 02:04:20 +0900 (JST)
+Message-Id: <20060511.020420.12190675.anemo@mba.ocn.ne.jp>
+To: jwboyer@gmail.com
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
+References: <4461B7CD.9010100@ru.mvista.com>
+	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
 Mime-Version: 1.0
-Date: Wed, 10 May 2006 07:30:48 -0700
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Subject: NAND write problem on a 400 MHz Xscale
-Reply-To: blair@circumnavnetworks.com
+Cc: linux-mtd@lists.infradead.org, vwool@ru.mvista.com
+Subject: Re: [RFC] read-only filesystem support for NAND flash devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,23 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 10 May 2006 06:00:57 -0500, "Josh Boyer" <jwboyer@gmail.com> wrote:
+> Not quite the case.  You need bad block skipping, yes.  But NAND can
+> get bit flips in good blocks still.  How do you deal with that?  You
+> can't leave the block in that state forever because it will continue
+> to get bit flips and then your data will be unusable.
 
+If I mounted a JFFS2 filesystem on NAND and _never_ write anything (or
+mounted read-only), does current MTD/NAND/JFFS2 layer handle those bit
+flips?  I've thought JFFS2 only reassign blocks on writing, so JFFS2
+also suffer those "bit flips on read" problem, is it right?
 
-We're having problems writing from a 400 MHz Xscale to our nand chip, a
-Samsung NAND 512MiB 3,3V 8-bit. Reading works.
-
-I was wondering if we need to change the MSC0 register on the Xscale.
-Currently it's set to 0x133924A8. Or maybe I'm looking in the wrong
-place.
-
-We've added an ndelay(150) in the writeb loop in nand_write_buf, which
-works, but which I think is sub-optimal.
-
-We're using the 4/22/2006 MTD source with the 2.6.15 kernel.
-
-Anybody have a clue what we might try?
-
-Thanks in advance,
-
-Blair
+---
+Atsushi Nemoto
