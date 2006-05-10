@@ -1,20 +1,17 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.61 #1 (Red Hat Linux))
-	id 1FdRb0-0006cE-49
-	for linux-mtd@lists.infradead.org; Tue, 09 May 2006 08:45:49 -0400
-Received: from sauron.oktetlabs.ru (sauron.oktetlabs.ru [192.168.37.21])
-	by shelob.oktetlabs.ru (Postfix) with ESMTP id 9C43D47287
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  9 May 2006 16:45:06 +0400 (MSD)
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Tue, 09 May 2006 16:45:06 +0400
-Message-Id: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Received: from mx1.myoutlookonline.com ([69.25.74.59])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FdhV5-0007bO-Su
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 01:44:49 -0400
+From: "Ushit Kumar" <ukumar@neomagic.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Wed, 10 May 2006 11:12:35 +0530
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Subject: [PATCH/RFC] reserved pool
-Reply-To: dedekind@infradead.org
+Message-ID: <FE011ltcNdbUu2o8q3p000014ec@mx1.MyoutlookonlinE.com>
+Subject: Getting Erro Message: CFI:Hello Found no mm6p_flash.0 device at
+	location zero
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-long time I was asked to solve a problem when users eat all the file
-system free space and the system cannot boot because different programs
-can't write any longer (-ENOSPC). I made a straight-forward patch and it
-solved the problem.
+I am trying to write a NOR flash driver for a Arm 926 based SOC.  The code
+sequence I am trying to execute is as follows:
+        info->map.size          = size;
+      info->map.bankwidth     = 4;//plat->width;
+      info->map.phys          = res->start;
+      info->map.virt          = base;
+      info->map.name          = dev->dev.bus_id;
+      info->map.set_vpp       = mm6p_flash_set_vpp;
+        info->mtd = do_map_probe("cfi_probe", &info->map);
+      if (!info->mtd) {
+                err = -ENXIO;
+                printk("Error do_map_probe\n:");
+                goto no_device;
+        }
 
-I've adapted the patch to the newest JFFS2 and it is available here:
+The error message I get is:
+"CFI:Hello  Found no mm6p_flash.0 device at location zero". On digging
+through the MTD layer, I see that the genprobe_new_chip() call fails.
+Unfortunately at this point I am somewhat lost.
 
-http://git.infradead.org/?p=users/dedekind/dedekind-mtd-2.6.git;a=commit;h=848824f86e755a4fbcf2052085b0c1a8e3e8c583
+Is this a configuration issue, or do I have do to some other setup?
 
-Do you have any suggestions how to better solve this problem? Objections
-to let this solution go mainstream (after clean-ups/changes)?
+Thanks,
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Ushit
