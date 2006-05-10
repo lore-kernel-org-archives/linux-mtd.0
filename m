@@ -1,19 +1,22 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fdmjw-0005QY-Sk
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 07:20:34 -0400
-Message-ID: <4461CC8C.6010105@ru.mvista.com>
-Date: Wed, 10 May 2006 15:20:44 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-References: <4461B7CD.9010100@ru.mvista.com>
-	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
-In-Reply-To: <625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FdmmR-0005cY-A1
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 07:23:10 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1147259209.2794.178.camel@pmac.infradead.org>
+References: <445C476A.2090506@ak.jp.nec.com>
+	<1147255421.16853.28.camel@sauron.oktetlabs.ru>
+	<1147259209.2794.178.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Wed, 10 May 2006 15:22:25 +0400
+Message-Id: <1147260146.16853.41.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC] read-only filesystem support for NAND flash devices
+Cc: linux-mtd@lists.infradead.org, joern@wohnheim.fh-wedel.de,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>
+Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
->> As a filesystem is read-only, wear-out can't occur during the normal
->> use, only on root filesystem upgrade. Therefore writing it using a tool
->> like nandwrite that bypasses bad blocks seems to be enough, and the only
->> thing needed is either an in-MTD layer that makes a partition look as if
->> there's no babd blocks, or  similar means within a filesystem.
-> Not quite the case.  You need bad block skipping, yes.  But NAND can
-> get bit flips in good blocks still.  How do you deal with that?  You
-> can't leave the block in that state forever because it will continue
-> to get bit flips and then your data will be unusable.
-Yep, I know about the issue. The recommended way to go here AFAIK is to 
-mark the block as bad and copy its contents to a free one.
-However, this will make mapping a lot more complicated so I'd like to go 
-another way, i. e. erasing and rewriting this very block, and if it 
-wears out, cache the data read from it and schedule moving the data 
-forward within the partition in a background. Does that make sense?
+On Wed, 2006-05-10 at 12:06 +0100, David Woodhouse wrote:
+> It's not even 'minor'. It's total bullshit. If you can't look at the
+> function name "delete_XATTR_REF" and work out what 'ref' is in that
+> context, then you really shouldn't be trying to read the code. Life is
+> hard; let's go shopping.
+It's not bullshit. The name of function has nothing to do here - there
+are many places like that (1), the function name does not have to
+correlate (2).
 
-Vitaly
+> I got annoyed with you when you started on stuff like this in JFFS2
+> code. Don't start on the XATTR code too.
+I remember - you prevented me from many clean-ups and tidy-ups.
+
+> I do see your point to a _certain_ extent, but let's concentrate on
+> things that actually matter instead, OK?
+I also see your point. Sorry, but I do not agree with this strategy.
+Many things which "don't matter" may start mattering sooner or later.
+
+Thanks.
