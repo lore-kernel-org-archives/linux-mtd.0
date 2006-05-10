@@ -1,24 +1,20 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fdonz-0008T1-OZ
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 09:32:59 -0400
-Date: Wed, 10 May 2006 15:28:54 +0200
+	id 1FdoqM-0000E7-Kv
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 09:35:25 -0400
+Date: Wed, 10 May 2006 15:35:10 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060510132854.GC31935@wohnheim.fh-wedel.de>
-References: <445C476A.2090506@ak.jp.nec.com>
-	<20060507171601.GA7990@wohnheim.fh-wedel.de>
-	<445EA6D4.5000909@ak.jp.nec.com>
-	<1147092567.2766.146.camel@pmac.infradead.org>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-ID: <20060510133510.GD31935@wohnheim.fh-wedel.de>
+References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
+	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1147092567.2766.146.camel@pmac.infradead.org>
-Cc: jmorris@redhat.com, KaiGai Kohei <kaigai@ak.jp.nec.com>,
-	russell@coker.com.au, lorenzo@gnu.org,
-	linux-mtd@lists.infradead.org, sds@tycho.nsa.gov
-Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
+In-Reply-To: <1147249742.16853.16.camel@sauron.oktetlabs.ru>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH/RFC] reserved pool
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 8 May 2006 13:49:27 +0100, David Woodhouse wrote:
-> On Mon, 2006-05-08 at 11:03 +0900, KaiGai Kohei wrote:
-> > [Current TODO list]
-> > * Fix the declaration of jffs2_acl_header and so on by using 'struct'
-> >    instead of 'typedef' in kernel space.
-> > - Fix the declaration of jffs2_acl_header and so on by using 'struct'
-> >    instead of 'typedef' in user space header.
-> > * Add documentation about xattr_sem into README.Locking.
-> > * Call jffs2_garbage_collect_xattr_datum/ref() from gc.c directly
-> >    instead of jffs2_garbage_collect_xattr()
-> > - Use unidirection list beween inode_chache and xattr_ref, instead of
-> >    list_head.
-> > - Add '#include <linux/list.h>' into xattr.h.
-> > - Unify each file header part with any jffs2 files.
-> > - Remove a senseless comment. ("/* forward refence */")
-> > - Remove unneccesary pointer casts.
-> > - Remove unneccesary '#ifdef __KERNEL__' on acl.h
-> > 
-> > *: It has already prepared, but I've not publicated yet.
-> > -: It has not prepated yet. I should work from now. 
-> 
-> That's an excellent summary; thanks. It does serve to show that we've
-> mostly picked on cosmetic details so far though :)
+On Wed, 10 May 2006 12:29:02 +0400, Artem B. Bityutskiy wrote:
+> +
+> +int jffs2_parse_options(struct super_block *sb, char *opts)
+> +{
+> +	unsigned int opt;
+> +	char *p;
+> +	substring_t args[JFFS2_MAX_ARGS];
+> +	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+> +
+> +	if (!opts)
+> +		return 0;
+> +
+> +	while ((p = strsep(&opts, ",")) != NULL) {
 
-Correct.  The basic design makes sense, the code is good.  I don't
-feel opposed to merging it once above list is handled.  The number of
-new #ifdefs still concerns me a bit, but we can still deal with that
-after the merge.  There has been worse.
+" != NULL" is superfluous.
+
+> +		int token;
+> +
+> +		if (!*p)
+> +			continue;
+> +		
+> +		token = match_token(p, tokens, args);
+> +
+> +		switch (token) {
+> +			case JFFS2_OPT_RP_SIZE:
+
+One level of indentation can be save here.  Unlike dwmw2, I don't
+participate in the terminal size arms race and still care about 80
+columns. ;)
+
+> +				if (match_int(&args[0], &opt))
+> +					return -EINVAL;
+> +				c->rp_size = opt * 1024;
+> +				if (c->rp_size > c->mtd->size) {
+> +					JFFS2_WARNING("too large reserved pool size, max is %u KB\n",
+> +						      c->mtd->size/1024);
+> +					return -EINVAL;
+> +				}
+> +				break;
+> +			default:
+> +				return -EINVAL;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+
+Rest looks fine to me.
 
 Jörn
 
 -- 
-You can't tell where a program is going to spend its time. Bottlenecks
-occur in surprising places, so don't try to second guess and put in a
-speed hack until you've proven that's where the bottleneck is.
--- Rob Pike
+With a PC, I always felt limited by the software available. On Unix, 
+I am limited only by my knowledge.
+-- Peter J. Schoenster
