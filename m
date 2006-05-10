@@ -1,22 +1,16 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from [70.90.161.73] (helo=exchange.cnpriv.local)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FdpCg-00012w-3H
-	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 09:58:23 -0400
-Date: Wed, 10 May 2006 15:58:14 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: "Artem B. Bityutskiy" <dedekind@infradead.org>
-Message-ID: <20060510135814.GG31935@wohnheim.fh-wedel.de>
-References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
-	<20060510133510.GD31935@wohnheim.fh-wedel.de>
-	<1147269251.16853.50.camel@sauron.oktetlabs.ru>
+	id 1FdpiE-0001ZN-9Y
+	for linux-mtd@lists.infradead.org; Wed, 10 May 2006 10:31:11 -0400
+From: Blair Barnett <bbarnett@circumnavnetworks.com>
+To: Linux MTD <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Message-Id: <1147271448.4649.63.camel@blairs-desktop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1147269251.16853.50.camel@sauron.oktetlabs.ru>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] reserved pool
+Date: Wed, 10 May 2006 07:30:48 -0700
+Content-Transfer-Encoding: 7bit
+Subject: NAND write problem on a 400 MHz Xscale
+Reply-To: blair@circumnavnetworks.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 10 May 2006 17:54:11 +0400, Artem B. Bityutskiy wrote:
-> On Wed, 2006-05-10 at 15:35 +0200, Jörn Engel wrote:
-> 
-> > > +	while ((p = strsep(&opts, ",")) != NULL) {
-> > " != NULL" is superfluous.
-> Fixed.
-> 
-> > > +		switch (token) {
-> > > +			case JFFS2_OPT_RP_SIZE:
-> > 
-> > One level of indentation can be save here.  Unlike dwmw2, I don't
-> > participate in the terminal size arms race and still care about 80
-> > columns. ;)
-> Fixed.
+Hi,
 
-Then go and bug dwmw2 about merging it. ;)
 
-Jörn
+We're having problems writing from a 400 MHz Xscale to our nand chip, a
+Samsung NAND 512MiB 3,3V 8-bit. Reading works.
 
--- 
-Data expands to fill the space available for storage.
--- Parkinson's Law
+I was wondering if we need to change the MSC0 register on the Xscale.
+Currently it's set to 0x133924A8. Or maybe I'm looking in the wrong
+place.
+
+We've added an ndelay(150) in the writeb loop in nand_write_buf, which
+works, but which I think is sub-optimal.
+
+We're using the 4/22/2006 MTD source with the 2.6.15 kernel.
+
+Anybody have a clue what we might try?
+
+Thanks in advance,
+
+Blair
