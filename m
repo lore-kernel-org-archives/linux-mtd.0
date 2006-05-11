@@ -1,24 +1,20 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FeTQB-0004QG-Lg
-	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 04:55:14 -0400
-Message-ID: <44644D79.7000903@ru.mvista.com>
-Date: Fri, 12 May 2006 12:55:21 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: Russ Dill <russ.dill@gmail.com>
-References: <4461B7CD.9010100@ru.mvista.com>	
-	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>	
-	<4461CC8C.6010105@ru.mvista.com>	
-	<f9d2a5e10605111206i4a5a425el17a28bb81989c6b6@mail.gmail.com>	
-	<1147386362.12030.9.camel@shinybook.infradead.org>
-	<f9d2a5e10605111626u743b101dgfc7e90422dec9a80@mail.gmail.com>
-In-Reply-To: <f9d2a5e10605111626u743b101dgfc7e90422dec9a80@mail.gmail.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>,
-	Josh Boyer <jwboyer@gmail.com>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] read-only filesystem support for NAND flash devices
+Received: from elasmtp-junco.atl.sa.earthlink.net ([209.86.89.63])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FeJj5-0002bu-V1
+	for linux-mtd@lists.infradead.org; Thu, 11 May 2006 23:33:45 +0100
+Received: from [209.86.224.34] (helo=elwamui-hound.atl.sa.earthlink.net)
+	by elasmtp-junco.atl.sa.earthlink.net with asmtp (Exim 4.34)
+	id 1FeJia-0007pD-Me
+	for linux-mtd@lists.infradead.org; Thu, 11 May 2006 18:33:12 -0400
+Message-ID: <9639100.1147386792549.JavaMail.root@elwamui-hound.atl.sa.earthlink.net>
+Date: Thu, 11 May 2006 15:33:12 -0700 (GMT-07:00)
+From: Steve Finney <saf76@earthlink.net>
+To: linux-mtd@lists.infradead.org
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_Part_13258_18847491.1147386792222"
+Subject: [PATCH 1/3] MTD Utils.  (Resubmit as attachment)
+Reply-To: Steve Finney <saf76@earthlink.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Russ Dill wrote:
-> True, I also realized another possible shortcut. If a blocks gets an
-> ECC correction on a read, rewrite it to a free block, erase the block,
-> rewrite it from the data written to the free block, and then erase the
-> free block. You'd need to put some info in the OOB so you could know
-> what the state is on power recovery.
->
-Oh thanks, that's the idea I'm going to use. It's a pretty reasonable 
-assumption that 1 byte out of OOB is available as there's not going to 
-be anything in OOB but ECC code in case of RO filesystem.
+------=_Part_13258_18847491.1147386792222
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-Vitaly
+Add a basic usage message to flash_erase.c.
+
+Signed-off-by: Steven Finney <sfinney@healthhero.com>
+
+------=_Part_13258_18847491.1147386792222
+Content-Disposition: attachment; filename="patch.flash_erase"
+Content-Type: application/octet-stream; name=patch.flash_erase
+Content-Transfer-Encoding: 7bit
+
+Add a basic usage message to flash_erase.c.
+
+Signed-off-by: Steven Finney <sfinney@healthhero.com>
+
+----------------------------
+
+--- util.orig/flash_erase.c	2006-05-02 07:52:41.000000000 -0700
++++ util/flash_erase.c	2006-05-10 14:08:09.307564448 -0700
+@@ -7,6 +7,7 @@
+ #include <stdio.h>
+ #include <fcntl.h>
+ #include <time.h>
++#include <string.h>
+ #include <sys/ioctl.h>
+ #include <sys/mount.h>
+ #include <mtd/mtd-user.h>
+@@ -141,10 +142,10 @@ int main(int argc,char *argv[])
+ 	int unlock;
+ 	int res = 0;
+ 
+-	if (1 >= argc)
+-	{
+-		fprintf(stderr,"You must specify a device\n");
+-		return 16;
++	if (1 >= argc ||  !strcmp(argv[1], "-h") || !strcmp (argv[1], "--help") ) {
++		printf("Usage: flash_erase MTD-device [start] [cnt (# erase blocks)] [lock]\n"
++		       "       flash_erase -h | --help\n") ;
++		return 16 ;
+ 	}
+ 
+ 	if (argc > 2)
+
+------=_Part_13258_18847491.1147386792222--
