@@ -1,18 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Russ Dill <russ.dill@gmail.com>
-In-Reply-To: <f9d2a5e10605111206i4a5a425el17a28bb81989c6b6@mail.gmail.com>
-References: <4461B7CD.9010100@ru.mvista.com>
-	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
-	<4461CC8C.6010105@ru.mvista.com>
-	<f9d2a5e10605111206i4a5a425el17a28bb81989c6b6@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 11 May 2006 23:26:02 +0100
-Message-Id: <1147386362.12030.9.camel@shinybook.infradead.org>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FeJpA-0003Lc-Ee
+	for linux-mtd@lists.infradead.org; Thu, 11 May 2006 18:40:15 -0400
+Date: Fri, 12 May 2006 00:39:48 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Message-ID: <20060511223948.GG14232@wohnheim.fh-wedel.de>
+References: <E1FeJBW-0002Du-BX@pentafluge.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>,
-	Josh Boyer <jwboyer@gmail.com>, Vitaly Wool <vwool@ru.mvista.com>
-Subject: Re: [RFC] read-only filesystem support for NAND flash devices
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E1FeJBW-0002Du-BX@pentafluge.infradead.org>
+Cc: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [MTD] Basic NAND driver for AMD/NatSemi CS5535/CS5536 Geode
+	companion chip
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-05-11 at 12:06 -0700, Russ Dill wrote:
-> Free block list? Bad block list? Tracking of block numbers? Sounds
-> like a full on FTL to me. 
+On Thu, 11 May 2006 22:59:02 +0100, Linux-MTD Mailing List wrote:
+>
+> +static int cs553x_device_ready(struct mtd_info *mtd)
+> +{
+> +	struct nand_chip *this = mtd->priv;
+> +	void __iomem *mmio_base = this->IO_ADDR_R;
+> +	unsigned char foo = readb(mmio_base + MM_NAND_STS);
+> +
+> +	return (foo & CS_NAND_STS_FLASH_RDY) && !(foo & CS_NAND_CTLR_BUSY); 
 
-A full read-write FTL needs to handle 512-byte writes if it's going to
-pretend to be a normal block device. A simple FTL for read-only stuff
-like cramfs/squashfs doesn't need that.
+Foo?
 
-We should probably do this kind of thing as an FTL -- we already have
-the 'mtd_blkdevs' infrastructure to help you by doing most of the
-interfacing to MTD and block layers for you. And then you can use any
-read-only file system on it.
+> +	/* Initialize structures */
+> +	memset((char *) new_mtd, 0, sizeof(struct mtd_info));
+> +	memset((char *) this, 0, sizeof(struct nand_chip));
+
+Why the cast?
+
+> +	kfree (new_mtd);
+
+Extra space.
+
+Jörn
 
 -- 
-dwmw2
+Invincibility is in oneself, vulnerability is in the opponent.
+-- Sun Tzu
