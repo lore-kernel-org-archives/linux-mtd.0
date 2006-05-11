@@ -1,14 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: ajain@neomagic.com
-In-Reply-To: <005701c674df$0808c7c0$561fa8c0@pcajain>
-References: <005701c674df$0808c7c0$561fa8c0@pcajain>
-Content-Type: text/plain
-Date: Thu, 11 May 2006 13:47:19 +0100
-Message-Id: <1147351639.2794.296.camel@pmac.infradead.org>
+Received: from mba.ocn.ne.jp ([210.190.142.172] helo=smtp.mba.ocn.ne.jp)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FeC3e-00042n-L3
+	for linux-mtd@lists.infradead.org; Thu, 11 May 2006 10:22:33 -0400
+Date: Thu, 11 May 2006 23:23:04 +0900 (JST)
+Message-Id: <20060511.232304.05600722.anemo@mba.ocn.ne.jp>
+To: jwboyer@gmail.com
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+In-Reply-To: <625fc13d0605101020i5a21bcf5t1eea0401c350a5f3@mail.gmail.com>
+References: <625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
+	<20060511.020420.12190675.anemo@mba.ocn.ne.jp>
+	<625fc13d0605101020i5a21bcf5t1eea0401c350a5f3@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Test Mail, plz ignore
+Cc: linux-mtd@lists.infradead.org, vwool@ru.mvista.com
+Subject: Re: [RFC] read-only filesystem support for NAND flash devices
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,25 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-05-11 at 15:11 +0530, Ajay Jain wrote:
-> Not receiving any mails since last week !!
+On Wed, 10 May 2006 12:20:58 -0500, "Josh Boyer" <jwboyer@gmail.com> wrote:
+> > If I mounted a JFFS2 filesystem on NAND and _never_ write anything (or
+> > mounted read-only), does current MTD/NAND/JFFS2 layer handle those bit
+> > flips?  I've thought JFFS2 only reassign blocks on writing, so JFFS2
+> > also suffer those "bit flips on read" problem, is it right?
+> 
+> If you truly never write anything, then yes it probably suffers from
+> the same problem.  In a typical JFFS2 setup where writes do occur, the
+> theory is that garbage collection will eventually reclaim that block. 
+> Whether that actually happens or not is largely determined on a per
+> use case basis.
 
-And what makes you think spamming the list will help? You can see in the
-archives that there _has_ been traffic on the list. You don't have to
-create your own.
+Thank you.  Then something like periodical garbage collection will
+save the bit flips, but of course unnecessary writes should shorten
+the life of the device ...  so ambivalent.
 
-You could also have tried contacting the list admin, who would have been
-able to tell you that messages to your address _are_ at least being sent
-(and being accepted by your MX host), and can give you some precise
-dates and times from the logs. Like these (times in UTC-4)...
-
-2006-05-10 16:03:26 1Fduty-000691-66 => ajain@neomagic.com R=lookuphost T=verp_smtp H=mx1.MyOutlookOnline.com [69.25.74.33] X=TLSv1:RC4-MD5:128 C="250 2.6.0  <20060510200138.GA31385@wohnheim.fh-wedel.de> Queued mail for delivery"
-2006-05-10 16:13:07 1Fdv3M-0006SK-8x => ajain@neomagic.com R=lookuphost T=verp_smtp H=mx1.MyOutlookOnline.com [69.25.74.33] X=TLSv1:RC4-MD5:128 C="250 2.6.0  <625fc13d0605101311h55679760xbcf66bceb5003d28@mail.gmail.com> Queued mail for delivery"
-2006-05-10 19:29:41 1Fdy7a-0000Lw-UU => ajain@neomagic.com R=lookuphost T=verp_smtp H=mx1.MyOutlookOnline.com [69.25.74.33] X=TLSv1:RC4-MD5:128 C="250 2.6.0  <20060510232808.GA1778@mail.shareable.org> Queued mail for delivery"
-2006-05-11 05:42:21 1Fe7gW-0000V9-EG => ajain@neomagic.com R=lookuphost T=verp_smtp H=mx1.MyOutlookOnline.com [69.25.74.59] X=TLSv1:RC4-MD5:128 C="250 2.6.0  <005701c674df$0808c7c0$561fa8c0@pcajain> Queued mail for delivery"
-
-If you really haven't received the mails, you need to talk to your own
-mail admins. They certainly left my systems OK.
-
--- 
-dwmw2
+---
+Atsushi Nemoto
