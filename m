@@ -1,17 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: David Vrabel <dvrabel@arcom.com>
-In-Reply-To: <44635DD6.10805@arcom.com>
-References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
-	<44635DD6.10805@arcom.com>
-Content-Type: text/plain
-Date: Fri, 12 May 2006 01:28:18 +0100
-Message-Id: <1147393699.12030.37.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from ug-out-1314.google.com ([66.249.92.169])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FeMGq-0006d1-Hv
+	for linux-mtd@lists.infradead.org; Thu, 11 May 2006 21:16:48 -0400
+Received: by ug-out-1314.google.com with SMTP id u40so241047ugc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 11 May 2006 18:16:42 -0700 (PDT)
+From: Husam <husamsenussi@gmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 12 May 2006 02:06:12 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Leon Woestenberg <leon.woestenberg@gmail.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Do not oops when configured flash size is less then
-	chip size
+Content-Disposition: inline
+Message-Id: <200605120206.13047.husamsenussi@gmail.com>
+Subject: Writting to NAND flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +24,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-05-11 at 16:52 +0100, David Vrabel wrote:
-> This sounds like a valid, if unlikely, board configuration.  e.g., a
-> board with chips fitted that are larger than the chip-select memory
-> window.
+Hi,
 
-An alternative plan is to (warn and) artificially reduce mtd->size so
-that it fits in the map. That way, you at least get to use the region of
-the flash that you can address.
+If I want to update data in page, do I have to erase the block first then 
+write or can just write to the page.
 
--- 
-dwmw2
+Thanks
