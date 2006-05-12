@@ -1,31 +1,14 @@
-Received: from smtp-out.google.com ([216.239.45.12])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FecDb-00041b-Nb
-	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 14:18:34 -0400
-Received: from vegeta.corp.google.com (vegeta.corp.google.com [172.24.0.3])
-	by smtp-out.google.com with ESMTP id k4CIIBXh011445
-	for <linux-mtd@lists.infradead.org>; Fri, 12 May 2006 11:18:12 -0700
-Received: from smtp-out2.google.com (fpr7.prod.google.com [10.253.18.7])
-	by vegeta.corp.google.com with ESMTP id k4CEO6wJ007784
-	for <linux-mtd@lists.infradead.org>; Fri, 12 May 2006 11:18:10 -0700
-Received: by smtp-out2.google.com with SMTP id 7so275058fpr
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 May 2006 11:18:10 -0700 (PDT)
-Message-ID: <50e923300605121118wca72278h967bc5d685bf68ae@mail.google.com>
-Date: Fri, 12 May 2006 11:18:10 -0700
-From: "Peter Hanson" <peterh@google.com>
-To: "David Vrabel" <dvrabel@arcom.com>
-In-Reply-To: <44635DD6.10805@arcom.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
-	<44635DD6.10805@arcom.com>
-Cc: Leon Woestenberg <leon.woestenberg@gmail.com>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Do not oops when configured flash size is less then
-	chip size
+Received: from bay110-f5.bay110.hotmail.com ([65.54.229.15] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FecTn-0004OE-Ly
+	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 14:35:16 -0400
+Message-ID: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
+From: "Han Chang" <posaune@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Date: Fri, 12 May 2006 11:17:00 -0700
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
+Subject: NAND/JFFS2 utility tools.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,19 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/11/06, David Vrabel <dvrabel@arcom.com> wrote:
-> Leon Woestenberg wrote:
-[snip]
-> This sounds like a valid, if unlikely, board configuration.  e.g., a
-> board with chips fitted that are larger than the chip-select memory windo=
-w.
-[/snip]
+Hello,
 
-Not so very unlikely.  A product update may call for lashing upgraded
-flash chips into a clunky old design.  MPC82xx chips are still
-shipping, and their legacy ROM chip selects are smaller than many
-modern flash chips.
+I'm trying to make use of the utility tools, such as mkfs.jffs2, 
+flash_eraseall, flash_erase, flash_info, nanddump, etc.. Except the 
+mkfs.jffs2, looks like other tools are using the mtdchar's ioctl.
 
-Mind you, I'm not saying MTD _should_ support such nonsense.  But one
-definition of `driver' is `n. Software written to paper over the flaws
-of your brain dead hardware.'
+When I enable the NAND driver, it creates the partition and puts entries as 
+/dev/mtd2 and /dev/mtdblock2. I usually use the /dev/mtdblock2 for "dd" or 
+"mount -t jffs2".
+
+Now, I realized those tools don't work with /dev/mtdblock2, so i tried 
+/dev/mtd2, which is the char driver. For flash_info, which tries to open 
+/dev/mtd2 in RDONLY mode, it opened file ok, but got msg "Device /dev/mtd2 
+has 0 erase regions". For flash_erase and flash_eraseall, which try to open 
+/dev/mtd2 in RDWR mode, it got "File open error".
+
+Anyone has any advices on making these tools working?
+
+Thanks,
+Han
