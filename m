@@ -1,25 +1,27 @@
-Received: from www346.sakura.ne.jp ([202.181.99.66])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FeZS3-0000v0-6S
-	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 11:21:17 -0400
-Message-ID: <4464A7B1.4070605@kaigai.gr.jp>
-Date: Sat, 13 May 2006 00:20:17 +0900
-From: KaiGai Kohei <kaigai@kaigai.gr.jp>
-MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-References: <445C476A.2090506@ak.jp.nec.com>	
-	<20060507171601.GA7990@wohnheim.fh-wedel.de>	
-	<445EA6D4.5000909@ak.jp.nec.com>	
-	<1147092567.2766.146.camel@pmac.infradead.org>	
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FeZdP-0001DZ-ES
+	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 11:33:00 -0400
+Date: Fri, 12 May 2006 17:32:38 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: KaiGai Kohei <kaigai@kaigai.gr.jp>
+Message-ID: <20060512153238.GB26763@wohnheim.fh-wedel.de>
+References: <445C476A.2090506@ak.jp.nec.com>
+	<20060507171601.GA7990@wohnheim.fh-wedel.de>
+	<445EA6D4.5000909@ak.jp.nec.com>
+	<1147092567.2766.146.camel@pmac.infradead.org>
 	<4460BEEE.2070704@ak.jp.nec.com> <4463C5B8.1070708@kaigai.gr.jp>
 	<1147390288.12030.16.camel@shinybook.infradead.org>
-In-Reply-To: <1147390288.12030.16.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+	<4464A7B1.4070605@kaigai.gr.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4464A7B1.4070605@kaigai.gr.jp>
 Cc: jmorris@redhat.com, KaiGai Kohei <kaigai@ak.jp.nec.com>,
 	russell@coker.com.au, linux-mtd@lists.infradead.org,
-	lorenzo@gnu.org, sds@tycho.nsa.gov,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@wohnheim.fh-wedel.de>
+	lorenzo@gnu.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, sds@tycho.nsa.gov
 Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,30 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, Thanks for yout comments.
+On Sat, 13 May 2006 00:20:17 +0900, KaiGai Kohei wrote:
+> 
+> OK, I'll pay attention to attach 'JFFS2' to the subject.
+> But nine of previous patches which have been already commited did not
+> attach such a keyword. Is it necessary to update the subject of them ?
+> (But I don't know how to operate for this. Hmm...)
 
-> It does look correct to me. The patch seems to highlight some
-> inconsistency of tabs vs. spaces in the indenting though.
+Quite likely, the easiest way would be to work with two scripts.  One
+to convert a git tree into a quilt series and another to convert the
+quilt series back into a git tree.
 
-Sorry, it's translated by terminal emulator automatically.
-The patch keeps consistency of tabs in the indenting.
+Advantage of quilt is the ease with which one can cherry-pick patches,
+change patches or descriptions, reorder patches, rebase them for a new
+kernel, etc.
 
-> When committing to the a git tree, please remember that if I pull from
-> it and then Linux pulls from it, the 'subject' of your commit should be
-> meaningful in that context. So it should mention 'JFFS2' at the very
-> least.
+I believe tglx (added to Cc:) has some scripts like that.  And since
+many kernel hacker have similar needs, google should find even more.
 
-OK, I'll pay attention to attach 'JFFS2' to the subject.
-But nine of previous patches which have been already commited did not
-attach such a keyword. Is it necessary to update the subject of them ?
-(But I don't know how to operate for this. Hmm...)
+[ Note to self: I need them as well. ]
 
-Thanks,
+Jörn
 
-> That's probably not quite so important for your jffs2-xattr tree, since
-> I think I'll probably import that as a _patch_ when we're ready, rather
-> than just pulling the whole thing. But in general, it's a useful thing
-> to remember for people committing to git trees and expecting me to pull
-> from them.
 -- 
-KaiGai Kohei <kaigai@kaigai.gr.jp>
+This above all: to thine own self be true.
+-- Shakespeare
