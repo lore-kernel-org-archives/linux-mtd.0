@@ -1,14 +1,25 @@
-Received: from bay110-f5.bay110.hotmail.com ([65.54.229.15] helo=hotmail.com)
+Received: from nz-out-0102.google.com ([64.233.162.201])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FecTn-0004OE-Ly
-	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 14:35:16 -0400
-Message-ID: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
-From: "Han Chang" <posaune@hotmail.com>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 12 May 2006 11:17:00 -0700
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Subject: NAND/JFFS2 utility tools.
+	id 1FegJK-0006pO-IR
+	for linux-mtd@lists.infradead.org; Fri, 12 May 2006 18:40:43 -0400
+Received: by nz-out-0102.google.com with SMTP id k1so514679nzf
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 12 May 2006 15:40:32 -0700 (PDT)
+Message-ID: <c384c5ea0605121540g29f6d612u1642b051a10cba77@mail.gmail.com>
+Date: Sat, 13 May 2006 00:40:32 +0200
+From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+In-Reply-To: <1147393699.12030.37.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
+	<44635DD6.10805@arcom.com>
+	<1147393699.12030.37.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Do not oops when configured flash size is less then
+	chip size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,23 +29,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello all,
 
-I'm trying to make use of the utility tools, such as mkfs.jffs2, 
-flash_eraseall, flash_erase, flash_info, nanddump, etc.. Except the 
-mkfs.jffs2, looks like other tools are using the mtdchar's ioctl.
+On 5/12/06, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Thu, 2006-05-11 at 16:52 +0100, David Vrabel wrote:
+> > This sounds like a valid, if unlikely, board configuration.  e.g., a
+> > board with chips fitted that are larger than the chip-select memory
+> > window.
+>
+> An alternative plan is to (warn and) artificially reduce mtd->size so
+> that it fits in the map. That way, you at least get to use the region of
+> the flash that you can address.
+>
+Thanks for reviewing my problem description and patch.
 
-When I enable the NAND driver, it creates the partition and puts entries as 
-/dev/mtd2 and /dev/mtdblock2. I usually use the /dev/mtdblock2 for "dd" or 
-"mount -t jffs2".
+I did indeed try a few things to make this automagically work, but
+then decided that this clashed with the definition of the 'fixed flash
+size configuration' in the kernel configuration.
+(And I am not familiar enough with the MTD code to just twiddle with
+variables of which I have no idea about subtle assumptions and/or
+interdependencies within MTD.)
 
-Now, I realized those tools don't work with /dev/mtdblock2, so i tried 
-/dev/mtd2, which is the char driver. For flash_info, which tries to open 
-/dev/mtd2 in RDONLY mode, it opened file ok, but got msg "Device /dev/mtd2 
-has 0 erase regions". For flash_erase and flash_eraseall, which try to open 
-/dev/mtd2 in RDWR mode, it got "File open error".
+Instead, I think just warning the user properly is the best solution.
 
-Anyone has any advices on making these tools working?
+Regards,
 
-Thanks,
-Han
+Leon.
