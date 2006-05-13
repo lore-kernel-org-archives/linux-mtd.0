@@ -1,25 +1,17 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: KaiGai Kohei <kaigai@kaigai.gr.jp>
-In-Reply-To: <44657EB8.6030404@kaigai.gr.jp>
-References: <445C476A.2090506@ak.jp.nec.com>
-	<20060507171601.GA7990@wohnheim.fh-wedel.de>
-	<445EA6D4.5000909@ak.jp.nec.com>
-	<1147092567.2766.146.camel@pmac.infradead.org>
-	<4460BEEE.2070704@ak.jp.nec.com>  <4463C5B8.1070708@kaigai.gr.jp>
-	<1147390288.12030.16.camel@shinybook.infradead.org>
-	<4464A7B1.4070605@kaigai.gr.jp>
-	<1147448312.2794.421.camel@pmac.infradead.org>
-	<44657EB8.6030404@kaigai.gr.jp>
+To: David Vrabel <dvrabel@arcom.com>
+In-Reply-To: <44635DD6.10805@arcom.com>
+References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
+	<44635DD6.10805@arcom.com>
 Content-Type: text/plain
-Date: Sat, 13 May 2006 11:46:42 +0100
-Message-Id: <1147517202.32310.16.camel@pmac.infradead.org>
+Date: Sat, 13 May 2006 12:22:42 +0100
+Message-Id: <1147519362.32310.21.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: jmorris@redhat.com, KaiGai Kohei <kaigai@ak.jp.nec.com>,
-	russell@coker.com.au, linux-mtd@lists.infradead.org,
-	lorenzo@gnu.org, sds@tycho.nsa.gov,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-Subject: Re: [PATCH] XATTR support on JFFS2 (version. 5)
+Cc: Leon Woestenberg <leon.woestenberg@gmail.com>,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Do not oops when configured flash size is less then
+	chip size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,11 +21,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2006-05-13 at 15:37 +0900, KaiGai Kohei wrote:
-> The all of previous 12 patches has '[JFFS2][XATTR]' prefix now.
-> Please confirm at http://git.infradead.org/?p=jffs2-xattr-2.6.git;a=log
+On Thu, 2006-05-11 at 16:52 +0100, David Vrabel wrote:
+> This sounds like a valid, if unlikely, board configuration.  e.g., a
+> board with chips fitted that are larger than the chip-select memory
+> window.
+> 
+> It might be better to pretend such configuration is a single chip
+> that's smaller than it physically is.
 
-That looks good; thanks.
+Yes, I agree.
+
+> Maybe something as simple as:
+> 
+>     /* there's at least one chip present */
+>     max_chips = max(map->size >> cfi.chipshift, 1);
+> 
+> ?
+
+You also need to reduce mtd->size after you've done the probe.
+And while we're at it, we'll slap Deepak around a little bit and stop
+using byte arrays with the Linux bitops. 
+
+Please could you test this for me?
+
+diff --git a/drivers/mtd/chips/gen_probe.c b/drivers/mtd/chips/gen_probe.c
+index 9b252d2..9915ab8 100644
+--- a/drivers/mtd/chips/gen_probe.c
++++ b/drivers/mtd/chips/gen_probe.c
+@@ -37,8 +37,14 @@ struct mtd_info *mtd_do_chip_probe(struc
+ 	if (!mtd)
+ 		mtd = check_cmd_set(map, 0); /* Then the secondary */
+ 
+-	if (mtd)
++	if (mtd) {
++		if (mtd->size > map->size) {
++			printk(KERN_WARNING "Reducing visibility of %dKiB chip to %dKiB\n",
++			       mtd->size >> 10, map->size >> 10);
++			mtd->size = map->size;
++		}
+ 		return mtd;
++	}
+ 
+ 	printk(KERN_WARNING"gen_probe: No supported Vendor Command Set found\n");
+ 
+@@ -100,7 +106,12 @@ #endif
+ 	 * Align bitmap storage size to full byte.
+ 	 */
+ 	max_chips = map->size >> cfi.chipshift;
+-	mapsize = (max_chips / 8) + ((max_chips % 8) ? 1 : 0);
++	if (!max_chips) {
++		printk(KERN_WARNING "NOR chip too large to fit in mapping. Attempting to cope...\n");
++		max_chips = 1;
++	}
++
++	mapsize = (max_chips + BITS_PER_LONG-1) / BITS_PER_LONG;
+ 	chip_map = kmalloc(mapsize, GFP_KERNEL);
+ 	if (!chip_map) {
+ 		printk(KERN_WARNING "%s: kmalloc failed for CFI chip map\n", map->name);
+
 
 -- 
 dwmw2
