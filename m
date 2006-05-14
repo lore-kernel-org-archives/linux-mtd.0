@@ -1,19 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <44644CE7.6060909@ru.mvista.com>
-References: <4461B7CD.9010100@ru.mvista.com>
-	<625fc13d0605100400t458ab59enbd36f70c90e10b2e@mail.gmail.com>
-	<4461CC8C.6010105@ru.mvista.com>
-	<f9d2a5e10605111206i4a5a425el17a28bb81989c6b6@mail.gmail.com>
-	<44644CE7.6060909@ru.mvista.com>
+To: Jonathan McDowell <noodles@earth.li>
+In-Reply-To: <20060424161529.GR7570@earth.li>
+References: <20060424161529.GR7570@earth.li>
 Content-Type: text/plain
-Date: Sat, 13 May 2006 15:08:13 +0100
-Message-Id: <1147529294.8521.1.camel@pmac.infradead.org>
+Date: Sun, 14 May 2006 03:45:05 +0100
+Message-Id: <1147574706.19840.0.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Russ Dill <russ.dill@gmail.com>, Josh Boyer <jwboyer@gmail.com>,
-	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Subject: Re: [RFC] read-only filesystem support for NAND flash devices
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH/RFC] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +18,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-12 at 12:52 +0400, Vitaly Wool wrote:
-> I'd rather go modifying mtdblock_ro. I don't want to implement FTL 
-> because 1) as David pointed out, I don't need to handle writes; 2) I'm
-> afraid we may end up dealing with patent issues here again. 
+On Mon, 2006-04-24 at 17:15 +0100, Jonathan McDowell wrote:
+> he patch below adds support for the NAND device on the Amstrad Delta.
+> This is a 32MB 8bit Toshiba device, with the data bus connected to the
+> OMAP MPUIO pins and ALE, CLE, NCE, NRE, NWE and NWP all connected to the
+> Delta's latch2 16bit latch.
+> 
+> I'm submitting this purely for comments at this stage. While I have
+> tested it (booting fine with the NAND as / and able to read/write to it
+> ok) and had a report from another user that it works fine for them I
+> would appreciate any opinions you may have about the code.
 
-mtdblock_ro _is_ an FTL. Just a very very primitive one :)
-
-By all means extend it until it does what we need -- but don't call it
-mtdblock_ro.
+Needs to set ams_delta_mtd->owner = THIS_MODULE; before calling
+nand_scan().
 
 -- 
 dwmw2
