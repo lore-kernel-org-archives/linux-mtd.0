@@ -1,18 +1,18 @@
 From: David Woodhouse <dwmw2@infradead.org>
 To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060419125551.GA1185@wohnheim.fh-wedel.de>
-References: <4444C8FD.1070406@inf.u-szeged.hu>
-	<20060418113258.GA4720@wohnheim.fh-wedel.de>
-	<1145444426.13200.71.camel@pmac.infradead.org>
-	<1145450738.13200.77.camel@pmac.infradead.org>
-	<20060419125551.GA1185@wohnheim.fh-wedel.de>
+In-Reply-To: <20060510135814.GG31935@wohnheim.fh-wedel.de>
+References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
+	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
+	<20060510133510.GD31935@wohnheim.fh-wedel.de>
+	<1147269251.16853.50.camel@sauron.oktetlabs.ru>
+	<20060510135814.GG31935@wohnheim.fh-wedel.de>
 Content-Type: text/plain; charset=UTF-8
-Date: Sun, 14 May 2006 04:22:46 +0100
-Message-Id: <1147576966.19840.2.camel@shinybook.infradead.org>
+Date: Sun, 14 May 2006 20:39:43 +0100
+Message-Id: <1147635584.2551.20.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: A JFFS2 optimization related to syslog
+Subject: Re: [PATCH/RFC] reserved pool
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-04-19 at 14:55 +0200, Jörn Engel wrote:
-> 
-> Too complicated, imo.  The patch writes a pristine node, if
-> 1) node is last node of page,
-> 2) node is last node of file,
-> 3) other nodes exist in the same eraseblock.
-> 
-> Condition 1 makes sense.  2 can be argued about.  Maybe a benchmark or
-> two can show whether it makes sense or not.  3 is fairly complicated
-> and I fail to see what it buys us.  If the other fragments are in
-> seperate eraseblocks, why shouldn't we write out a pristine node?
+On Wed, 2006-05-10 at 15:58 +0200, Jörn Engel wrote:
+> > > One level of indentation can be save here.  Unlike dwmw2, I don't
+> > > participate in the terminal size arms race and still care about 80
+> > > columns. ;)
 
-Fair enough. I've committed a (cosmetic) variant of Ferenc's original
-patch then.
+My terminals also have 80 columns, but they only have 25 lines. So while
+you're fixing the 'too large reserved pool size' printk to say 'KiB',
+please also make it fit on one line... if someone can't look at the
+first 80 columns and work out what that printk is about, then they're
+really beyond help. Don't go using up extra lines for their benefit.
+
+> > Fixed.
+> 
+> Then go and bug dwmw2 about merging it. ;) 
+
+We talked about changing the way the reserved size is actually handled
+in the allocation routine.... did a new version ever show up?
 
 -- 
 dwmw2
