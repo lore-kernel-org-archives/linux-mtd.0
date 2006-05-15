@@ -1,18 +1,26 @@
-Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
-	helo=nonameb.ptu.promise.com)
+Received: from nz-out-0102.google.com ([64.233.162.207])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ffgdr-0005Vc-Eb
-	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 13:14:09 -0400
-content-class: urn:content-classes:message
+	id 1FfjJD-0007Y0-34
+	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 16:04:55 -0400
+Received: by nz-out-0102.google.com with SMTP id o1so253034nzf
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 May 2006 13:04:48 -0700 (PDT)
+Message-ID: <c384c5ea0605151304h66ebfael77a3079326fe5937@mail.gmail.com>
+Date: Mon, 15 May 2006 22:04:47 +0200
+From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+In-Reply-To: <c384c5ea0605130623kbe33713n25c28669022d94e1@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 15 May 2006 10:14:57 -0700
-Message-ID: <B70A50D07063384EB9BCE3330D18414F024CCE28@nonameb.ptu.promise.com>
-From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Subject: jffs questions
+Content-Disposition: inline
+References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
+	<44635DD6.10805@arcom.com>
+	<1147519362.32310.21.camel@pmac.infradead.org>
+	<c384c5ea0605130623kbe33713n25c28669022d94e1@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Do not oops when configured flash size is less then
+	chip size
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +30,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Team:
-I have an AMD 32MB/64Ksector block and a SPANSION 32MB/128Ksector block
-FLASH chips.
+Hello David,
 
-I create partitions on both of them, to align on the 128KB boundary.
-Now, can I create a jffs2 filesystem once, and make it run on both of
-them successfully? Is there any issues that makes the same image not=20
-to run on both of them?
+On 5/13/06, Leon Woestenberg <leon.woestenberg@gmail.com> wrote:
+> Hello David W, David V et al,
+>
+> On 5/13/06, David Woodhouse <dwmw2@infradead.org> wrote:
+> > Please could you test this for me?
+> The right code paths seem to be taken, and it solves the issue. See
+> the 'too small' boot (that oopsed earlier) below.
+>
+> I had to change the last formatter in printk from %d to %lu to prevent
+> a compiler warning:
+>
+I am curious if this made it into your MTD GIT tree, so I can flag
+this issue as being "streamed up for mainline"? :-)
 
-I also see an option eraseblock whose size is default to 64KB. I guess
-this needs to match the sector block size, but it can be made a multiple
-of 64KB
-also right (on the AMD Flash with 64KB sector size, can it also be
-chosen to be
-128KB)?
+Regards, thanks,
 
-Please JFFS2 experts can you comment on this one.
-
-BTW, I also see BADMAGIC JFFS2 partition not recognized, expected magic
-0x1984 got something else from jffs2_scan_eraseblock() on bootup
-sometimes.
-What does this really mean? And sometimes the boot is successfull.
-Sometimes=20
-the system hangs (Cannot mount root). Infact the root filesystem is not
-even JFFS2=20
-it is compressed ext2. But during the initialization, other jffs2
-partitions are mounted.
-
-Any pointers on this?=20
-
-Thanks,
--LN
+Leon.
