@@ -1,19 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Leon Woestenberg <leon.woestenberg@gmail.com>
-In-Reply-To: <c384c5ea0605151304h66ebfael77a3079326fe5937@mail.gmail.com>
-References: <c384c5ea0605110820m606a04e7nc87cbc9302fd619c@mail.gmail.com>
-	<44635DD6.10805@arcom.com>
-	<1147519362.32310.21.camel@pmac.infradead.org>
-	<c384c5ea0605130623kbe33713n25c28669022d94e1@mail.gmail.com>
-	<c384c5ea0605151304h66ebfael77a3079326fe5937@mail.gmail.com>
+To: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+In-Reply-To: <B70A50D07063384EB9BCE3330D18414F024CCE28@nonameb.ptu.promise.com>
+References: <B70A50D07063384EB9BCE3330D18414F024CCE28@nonameb.ptu.promise.com>
 Content-Type: text/plain
-Date: Mon, 15 May 2006 22:54:12 +0100
-Message-Id: <1147730052.2571.4.camel@shinybook.infradead.org>
+Date: Tue, 16 May 2006 00:02:37 +0100
+Message-Id: <1147734157.2571.20.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Do not oops when configured flash size is less then
-	chip size
+Cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: jffs questions
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-05-15 at 22:04 +0200, Leon Woestenberg wrote:
-> I am curious if this made it into your MTD GIT tree, so I can flag
-> this issue as being "streamed up for mainline"? :-)
+On Mon, 2006-05-15 at 10:14 -0700, Lakshmi N. Sundararajan wrote:
+> Hello Team:
+> I have an AMD 32MB/64Ksector block and a SPANSION 32MB/128Ksector block
+> FLASH chips.
+> 
+> I create partitions on both of them, to align on the 128KB boundary.
+> Now, can I create a jffs2 filesystem once, and make it run on both of
+> them successfully? Is there any issues that makes the same image not 
+> to run on both of them?
+> 
+> I also see an option eraseblock whose size is default to 64KB. I guess
+> this needs to match the sector block size, but it can be made a multiple
+> of 64KB also right (on the AMD Flash with 64KB sector size, can it also be
+> chosen to be 128KB)?
 
-It did. The MTD git tree is browsable at
-http://git.infradead.org/?p=mtd-2.6.git;a=summary
+The important rule is that data nodes must not cross from one eraseblock
+to another. So you should tell mkfs.jffs2 that your erasesize is 64KiB,
+and the resulting image will work on both devices. 
 
-That commit in particular is at
-http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=0f5ae3d2e9f49af55eb2a9b7cb54b4c0c2373017
+Make sure you omit 'cleanmarkers' from the image, because the device
+with 128KiB erase blocks won't enjoy having a marker at the start _and_
+in the middle of each block :)
 
-It should be in the 2.6.17-rc4-mm1 kernel which was released today, and
-I'll send it to Linus for inclusion immediately after he releases
-2.6.17. So it should be in 2.6.18.
+> BTW, I also see BADMAGIC JFFS2 partition not recognized, expected magic
+> 0x1984 got something else from jffs2_scan_eraseblock() on bootup
+> sometimes.
+> What does this really mean? And sometimes the boot is successfull.
+> Sometimes the system hangs (Cannot mount root). Infact the root 
+> filesystem is not even JFFS2 it is compressed ext2. But during 
+> the initialization, other jffs2 partitions are mounted.
+
+You mean that sometimes it complains about failing to mount JFFS2 even
+when it's actually supposed to be mounting a compressed ext2? Or it
+mounts the ext2 and then fails later when the boot scripts are supposed
+to be mounting the JFFS2 file systems?
 
 -- 
 dwmw2
