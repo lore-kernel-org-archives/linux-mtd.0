@@ -1,18 +1,22 @@
-Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
-	helo=nonameb.ptu.promise.com)
+Received: from ug-out-1314.google.com ([66.249.92.168])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FfgQO-0004zp-48
-	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 13:00:13 -0400
-content-class: urn:content-classes:message
+	id 1Ffgaw-0005J9-KG
+	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 13:11:06 -0400
+Received: by ug-out-1314.google.com with SMTP id u40so813688ugc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 May 2006 10:10:56 -0700 (PDT)
+Message-ID: <625fc13d0605151010y2cc26a6dre62d66e465b2c9ae@mail.gmail.com>
+Date: Mon, 15 May 2006 12:10:56 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+In-Reply-To: <B70A50D07063384EB9BCE3330D18414F024CECBA@nonameb.ptu.promise.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 15 May 2006 10:01:00 -0700
-Message-ID: <B70A50D07063384EB9BCE3330D18414F024CECBA@nonameb.ptu.promise.com>
-From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
-To: "mtd" <linux-mtd@lists.infradead.org>
-Subject: jffs2 compatibility 
+Content-Disposition: inline
+References: <B70A50D07063384EB9BCE3330D18414F024CECBA@nonameb.ptu.promise.com>
+Cc: mtd <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2 compatibility
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,50 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Team:
-I have an AMD 32MB/64Ksector block and a SPANSION 32MB/128Ksector block
-FLASH chips.
+On 5/15/06, Lakshmi N. Sundararajan <lakshmi.s@promise.com> wrote:
+>
+> CONFIDENTIALITY NOTICE: The information contained in or attached to this
+> email message is either proprietary and/or confidential information, or
+> information intended solely for the use of the individual or entity
+> named above.  If the reader of this message is not the intended
+> recipient, or the employee or agent responsible to deliver it to the
+> intended recipient, you are hereby notified that any dissemination,
+> distribution or copying of this communication is strictly prohibited.
+> If you have received this communication in error, please immediately
+> notify us by email and delete the original message from your
+> computer/server with confirmation to us that you have done so.  Thank
+> you.
 
-I create partitions on both of them, to align on the 128KB boundary.
-Now, can I create a jffs2 filesystem once, and make it run on both of
-them successfully?
-Is there any issues that makes the same image not to run on both of
-them?
+I doubt you'll get any help with a disclaimer like that.  In fact,
+it'll probably get you ignored.
 
-I also see an option eraseblock whose size is default to 64KB. I guess
-this needs
-to match the sector block size, but it can be made a multiple of 64KB
-also right=20
-(on the AMD Flash with 64KB sector size, can it also be chosen to be
-128KB)?
-
-Please JFFS2 experts can you comment on this one.
-
-BTW, I also see BADMAGIC JFFS2 partition not recognized, expected magic
-0x1984
-got something else from jffs2_scan_eraseblock() on bootup sometimes.
-What does this
-really mean? And sometimes the boot is successfull. Sometimes the system
-hangs=20
-(Cannot mount root). Infact the root filesystem is not even JFFS2 it is
-compressed ext2.=20
-But during the initialization, other jffs2 partitions are mounted.
-
-Any pointers on this?=20
-
-Thanks,
--LN
-
-
-
-CONFIDENTIALITY NOTICE: The information contained in or attached to this
-email message is either proprietary and/or confidential information, or
-information intended solely for the use of the individual or entity
-named above.  If the reader of this message is not the intended
-recipient, or the employee or agent responsible to deliver it to the
-intended recipient, you are hereby notified that any dissemination,
-distribution or copying of this communication is strictly prohibited.
-If you have received this communication in error, please immediately
-notify us by email and delete the original message from your
-computer/server with confirmation to us that you have done so.  Thank
-you.
+josh
