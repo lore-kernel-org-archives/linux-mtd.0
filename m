@@ -1,18 +1,28 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060510135814.GG31935@wohnheim.fh-wedel.de>
-References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
-	<20060510133510.GD31935@wohnheim.fh-wedel.de>
-	<1147269251.16853.50.camel@sauron.oktetlabs.ru>
-	<20060510135814.GG31935@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Sun, 14 May 2006 20:39:43 +0100
-Message-Id: <1147635584.2551.20.camel@shinybook.infradead.org>
+Received: from diadema.ru ([80.66.89.150] helo=mail.diadema.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FfWJz-0004MD-BY
+	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 02:12:51 -0400
+Received: from localhost (bridge [127.0.0.1])
+	by mail.diadema.ru (Postfix) with ESMTP id 128D967E91
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 May 2006 12:40:27 +0700 (NOVST)
+Received: from mail.diadema.ru ([127.0.0.1])
+	by localhost (bridge [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 18172-06-2 for <linux-mtd@lists.infradead.org>;
+	Mon, 15 May 2006 12:40:22 +0700 (NOVST)
+Received: from [192.168.2.239] (sigrand.ru [80.66.88.167])
+	by mail.diadema.ru (Postfix) with ESMTP id 3C0D268279
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 15 May 2006 12:39:51 +0700 (NOVST)
+From: Polyakov Artem <art@sigrand.ru>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=Windows-1251
+Date: Mon, 15 May 2006 03:54:23 +0000
+Message-Id: <1147665263.6999.7.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH/RFC] reserved pool
+Subject: Reading data from NAND FLASH without ECC is not recommended
+Reply-To: art@sigrand.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-05-10 at 15:58 +0200, JÃ¶rn Engel wrote:
-> > > One level of indentation can be save here.  Unlike dwmw2, I don't
-> > > participate in the terminal size arms race and still care about 80
-> > > columns. ;)
-
-My terminals also have 80 columns, but they only have 25 lines. So while
-you're fixing the 'too large reserved pool size' printk to say 'KiB',
-please also make it fit on one line... if someone can't look at the
-first 80 columns and work out what that printk is about, then they're
-really beyond help. Don't go using up extra lines for their benefit.
-
-> > Fixed.
-> 
-> Then go and bug dwmw2 about merging it. ;) 
-
-We talked about changing the way the reserved size is actually handled
-in the allocation routine.... did a new version ever show up?
-
--- 
-dwmw2
+Hi all! Sorry for my poor english.
+I want to ask - why by default reading from NAND flash provided without
+ECC?
+I work with Samsung K9F5608U0Ñ 32M flash.
+And one interest thing for me is that debug messages show that oob bytes
+for ECC are used by system. I mean, after eraseing - all bytes are 0xFF.
+But my debug messages shows this:
+> write oob(00001890): 65 55 97 5a ffff 69 57 ff ff ff ff ff ff ff ff
+bytes for ECC are not equal 0xFF!
+but system dont use this bytes for ECC correction:
+> Reading data from NAND FLASH without ECC is not recommended
