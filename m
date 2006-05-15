@@ -1,25 +1,15 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FfdvA-0002Zj-6l
-	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 10:19:45 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1147635584.2551.20.camel@shinybook.infradead.org>
-References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>
-	<1147249742.16853.16.camel@sauron.oktetlabs.ru>
-	<20060510133510.GD31935@wohnheim.fh-wedel.de>
-	<1147269251.16853.50.camel@sauron.oktetlabs.ru>
-	<20060510135814.GG31935@wohnheim.fh-wedel.de>
-	<1147635584.2551.20.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Date: Mon, 15 May 2006 18:19:06 +0400
-Message-Id: <1147702746.20604.10.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-Subject: Re: [PATCH/RFC] reserved pool
-Reply-To: dedekind@infradead.org
+Received: from web37902.mail.mud.yahoo.com ([209.191.124.97])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Ffeu6-0003Nm-Gh
+	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 11:22:43 -0400
+Message-ID: <20060515151556.21775.qmail@web37902.mail.mud.yahoo.com>
+Date: Mon, 15 May 2006 08:15:56 -0700 (PDT)
+From: syed khader <khader_s_s@yahoo.com>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: CRC errors when continuous fseek/fputs on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,18 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-05-14 at 20:39 +0100, David Woodhouse wrote:
-> > Then go and bug dwmw2 about merging it. ;) 
-> 
-> We talked about changing the way the reserved size is actually handled
-> in the allocation routine.... did a new version ever show up?
-> 
-Please,
+Hi,
+   I am finding this strange problem.
+I am running the following piece of code :
 
-look/pull the '[JFFS2] add reserved pool feature' patch from
-http://git.infradead.org/?p=users/dedekind/dedekind-mtd-2.6.git;a=summary
+int main()
+{
+   FILE *fp;
+   int i;
+   fp = fopen("/var/mnt/testfile","w");
+   for(i =0 ; i < 100000 ; i++)
+   {
+   fputs("xxxx", fp);
+   fseek(fp, -4, SEEK_CUR);
+   fputs("xx", fp);
+  }
+   fclose(fp);
+}
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+  JFFS2 is mounted on /var/mnt. While the program is
+running I am getting CRC errors like this:
+
+Data CRC 6c48916e != calculated CRC 11ebde1b for node
+at 000e0a68
+  
+   If  I am not doing fseek above and just add writing
+to file in the loop I dont see any CRC errors.
+   Pleae let me know what is happening here. Is JFFS2
+running out of buffers or something?
+   BTW I am using uclinux2.4.24 JFFS2.2 on a ARM7
+board
+
+Regards
+Syed
+
+
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
