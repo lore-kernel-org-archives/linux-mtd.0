@@ -1,20 +1,18 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from 67.111.72.3.ptr.us.xo.net ([67.111.72.3]
+	helo=nonameb.ptu.promise.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FffSO-00045c-Pd
-	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 11:58:11 -0400
-Date: Mon, 15 May 2006 17:57:59 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: syed khader <khader_s_s@yahoo.com>
-Message-ID: <20060515155759.GC10730@wohnheim.fh-wedel.de>
-References: <20060515151556.21775.qmail@web37902.mail.mud.yahoo.com>
-	<20060515154606.GB10730@wohnheim.fh-wedel.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060515154606.GB10730@wohnheim.fh-wedel.de>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
+	id 1FfgQO-0004zp-48
+	for linux-mtd@lists.infradead.org; Mon, 15 May 2006 13:00:13 -0400
+content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 15 May 2006 10:01:00 -0700
+Message-ID: <B70A50D07063384EB9BCE3330D18414F024CECBA@nonameb.ptu.promise.com>
+From: "Lakshmi N. Sundararajan" <lakshmi.s@promise.com>
+To: "mtd" <linux-mtd@lists.infradead.org>
+Subject: jffs2 compatibility 
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 15 May 2006 17:46:06 +0200, Jörn Engel wrote:
-> 
-> fopen(...,"w") will set fpos to 0.  fseek(..., -4, SEEK_CUR) then sets
-> it _back_.  I would assume that an integer underflow happens next and
-> fpos is close to 2^31, 2^32, 2^63 or 2^64.  What is certain is that
-> your testcase is not a valid piece of code.
+Hello Team:
+I have an AMD 32MB/64Ksector block and a SPANSION 32MB/128Ksector block
+FLASH chips.
 
-I am an idiot.  fseek doesn't go negative, as you write first.
+I create partitions on both of them, to align on the 128KB boundary.
+Now, can I create a jffs2 filesystem once, and make it run on both of
+them successfully?
+Is there any issues that makes the same image not to run on both of
+them?
 
-> Can you try to change your testcase in two ways:
-> o replace fopen/fseek/fwrite etc. with open/seek/write etc.
-> o seek to something large directly after open
-> and retest with that?
+I also see an option eraseblock whose size is default to 64KB. I guess
+this needs
+to match the sector block size, but it can be made a multiple of 64KB
+also right=20
+(on the AMD Flash with 64KB sector size, can it also be chosen to be
+128KB)?
 
-However, I always dislike extra layers when debugging.  So
-replacing fopen and friends with open is still a good idea.
+Please JFFS2 experts can you comment on this one.
 
-Jörn
+BTW, I also see BADMAGIC JFFS2 partition not recognized, expected magic
+0x1984
+got something else from jffs2_scan_eraseblock() on bootup sometimes.
+What does this
+really mean? And sometimes the boot is successfull. Sometimes the system
+hangs=20
+(Cannot mount root). Infact the root filesystem is not even JFFS2 it is
+compressed ext2.=20
+But during the initialization, other jffs2 partitions are mounted.
 
--- 
-Courage is not the absence of fear, but rather the judgement that
-something else is more important than fear.
--- Ambrose Redmoon
+Any pointers on this?=20
+
+Thanks,
+-LN
+
+
+
+CONFIDENTIALITY NOTICE: The information contained in or attached to this
+email message is either proprietary and/or confidential information, or
+information intended solely for the use of the individual or entity
+named above.  If the reader of this message is not the intended
+recipient, or the employee or agent responsible to deliver it to the
+intended recipient, you are hereby notified that any dissemination,
+distribution or copying of this communication is strictly prohibited.
+If you have received this communication in error, please immediately
+notify us by email and delete the original message from your
+computer/server with confirmation to us that you have done so.  Thank
+you.
