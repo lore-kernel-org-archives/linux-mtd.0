@@ -1,19 +1,17 @@
-Received: from wr-out-0506.google.com ([64.233.184.236])
+Received: from mail.aaesys.com ([67.131.247.41] helo=aae-exchange.aaesys.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fg3Tx-00020X-AU
-	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 13:37:22 -0400
-Received: by wr-out-0506.google.com with SMTP id i21so24918wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 May 2006 10:37:06 -0700 (PDT)
-Message-ID: <a3cf34de0605161037x2ebff8a3w3b85dbd52d1bba6f@mail.gmail.com>
-Date: Tue, 16 May 2006 13:37:03 -0400
-From: sebrlw@gmail.com
-To: linux-mtd@lists.infradead.org
+	id 1Fg8TI-0005IF-Oh
+	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 18:57:00 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Subject: Strange "raw node error"
+Content-class: urn:content-classes:message
+Date: Tue, 16 May 2006 15:56:38 -0700
+Message-ID: <E76D631A87C2874E895D1639A1CEDB962AF95B@aae-exchange.aaesys.com>
+From: "Jayasri Sangu" <JayasriS@aaesys.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Intel P30 flash  support MTD 2.4.16 kernel
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm receiving the following message in my syslog.
 
-   Raw node at 0x01c622c0 wasn't in node lists for ino #46
+Hi,
 
-I'd like to know what might cause this problem.  I have looked at the
-driver source code, but it is not obvious to me what causes the error
-to occur.
+    We are using 2.4.16 kernel on our powerpc 8260 board. Currently we =
+are using 28F320C3 flash and it works fine with the MTD(JFFS2).
 
-The system is a XScale with JFFS2 on strata flash using kernel 2.4.19.
- I'm hoping someone can provide me with an understanding of what the
-error message means.
+We are planning to change to P30 flash. Does 2.4.16 kernel supports this =
+flash?
 
-SEB
+If not what are my choices?
+
+Thanks
+Jayasri
+
+
+Come see us at CommunicAsia 2006 http://www.communicasia.com/
+June 20-23, 2006 in Singapore at the US International Pavilion booth =
+6F1-03
