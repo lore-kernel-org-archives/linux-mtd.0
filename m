@@ -1,20 +1,21 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fg0Vw-0006g5-4N
-	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 10:27:12 -0400
-Date: Tue, 16 May 2006 16:26:18 +0200
+	id 1Fg1BG-0007Xh-R6
+	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 11:09:57 -0400
+Date: Tue, 16 May 2006 17:09:28 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: syed khader <sk.syed@yahoo.com>
-Message-ID: <20060516142618.GB11656@wohnheim.fh-wedel.de>
-References: <20060516061354.GA18958@wohnheim.fh-wedel.de>
-	<20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
+To: David Brownell <david-b@pacbell.net>
+Message-ID: <20060516150928.GC11656@wohnheim.fh-wedel.de>
+References: <200604010831.57875.david-b@pacbell.net>
+	<200605160755.38606.david-b@pacbell.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
+In-Reply-To: <200605160755.38606.david-b@pacbell.net>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	Linux Kernel list <linux-kernel@vger.kernel.org>, jffs-dev@axis.com
+Subject: Re: jffs2 build fixes
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +25,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 16 May 2006 05:40:46 -0700, syed khader wrote:
+On Tue, 16 May 2006 07:55:37 -0700, David Brownell wrote:
+> On Saturday 01 April 2006 8:31 am, David Brownell wrote:
+> > against today's GIT; there's a section error and
+> > several printk format warnings.  x86_64.
 > 
->   when I removed fseek/fwrite in the test case I am
-> not seeing any CRC errors. The modified code goes like
-> this :
+> I see that Andrew also got tired of such printk warnings, so his
+> fix is now in the kernel.org tree ... here's a resend of this
+> patch, updated against today's GIT by removing two of the printk
+> warning fixes.
+
+jffs-dev@axis.com is practically dead.  Iirc, the list was used for
+the old jffs[1] code.  Jffs2 is usually discussed on
+linux-mtd@lists.infradead.org (added to Cc:).
+
+> Resolve some JFFS2 build problems:
+>   (a) section mismatch error
+>   (b) wrong printk format warnings
 > 
-> int main()
-> {
->    int fd;
->    int i;
->    char buf[SIZE];
+> The section mismatch issue was fixed by making a few more routines as
+> belonging in init or exit sections, but there are more routines that
+> could (should!) get such annotations.
+
+Patch looks sane.  Does it still apply against dwmw2's latest tree?
+http://git.infradead.org/?p=mtd-2.6.git
+
+[ Patch kept for the benefit of linux-mtd ]
+
+> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
 > 
->    strcpy(buf, "abcdefg\r\n");
->    printf("%s", buf);
->    fd = open("testfile",O_RDWR|O_CREAT);
->    for(i =0 ; i < 10 ; i++)
->    {
->       write(fd, buf, sizeof(buf));
->       lseek(fd, -4, SEEK_CUR);
->   }
-> }
->    Why does CRC errors occur when I use fseek/fwrite
-> and not when I use plain system calls write/lseek??
+> Index: g26/fs/jffs2/compr.c
+> ===================================================================
+> --- g26.orig/fs/jffs2/compr.c	2006-05-12 18:48:21.000000000 -0700
+> +++ g26/fs/jffs2/compr.c	2006-05-12 19:40:08.000000000 -0700
+> @@ -412,7 +412,7 @@ void jffs2_free_comprbuf(unsigned char *
+>                  kfree(comprbuf);
+>  }
+>  
+> -int jffs2_compressors_init(void)
+> +int __init jffs2_compressors_init(void)
+>  {
+>  /* Registering compressors */
+>  #ifdef CONFIG_JFFS2_ZLIB
+> @@ -440,7 +440,7 @@ int jffs2_compressors_init(void)
+>          return 0;
+>  }
+>  
+> -int jffs2_compressors_exit(void)
+> +int __exit jffs2_compressors_exit(void)
+>  {
+>  /* Unregistering compressors */
+>  #ifdef CONFIG_JFFS2_RUBIN
+> Index: g26/fs/jffs2/compr_zlib.c
+> ===================================================================
+> --- g26.orig/fs/jffs2/compr_zlib.c	2006-05-12 18:48:21.000000000 -0700
+> +++ g26/fs/jffs2/compr_zlib.c	2006-05-12 19:40:08.000000000 -0700
+> @@ -60,7 +60,7 @@ static int __init alloc_workspaces(void)
+>  	return 0;
+>  }
+>  
+> -static void free_workspaces(void)
+> +static void __exit free_workspaces(void)
+>  {
+>  	vfree(def_strm.workspace);
+>  	vfree(inf_strm.workspace);
+> @@ -216,7 +216,7 @@ int __init jffs2_zlib_init(void)
+>      return ret;
+>  }
+>  
+> -void jffs2_zlib_exit(void)
+> +void __exit jffs2_zlib_exit(void)
+>  {
+>      jffs2_unregister_compressor(&jffs2_zlib_comp);
+>      free_workspaces();
+> Index: g26/fs/jffs2/readinode.c
+> ===================================================================
+> --- g26.orig/fs/jffs2/readinode.c	2006-05-12 18:48:21.000000000 -0700
+> +++ g26/fs/jffs2/readinode.c	2006-05-12 19:40:08.000000000 -0700
+> @@ -204,7 +204,7 @@ static inline int read_dnode(struct jffs
+>  
+>  	tn = jffs2_alloc_tmp_dnode_info();
+>  	if (!tn) {
+> -		JFFS2_ERROR("failed to allocate tn (%d bytes).\n", sizeof(*tn));
+> +		JFFS2_ERROR("failed to allocate tn (%zd bytes).\n", sizeof(*tn));
+>  		return -ENOMEM;
+>  	}
+>  
+> @@ -434,7 +434,7 @@ static int read_more(struct jffs2_sb_inf
+>  	}
+>  
+>  	if (retlen < len) {
+> -		JFFS2_ERROR("short read at %#08x: %d instead of %d.\n",
+> +		JFFS2_ERROR("short read at %#08x: %zu instead of %d.\n",
+>  				offs, retlen, len);
+>  		return -EIO;
+>  	}
+> @@ -542,7 +542,8 @@ static int jffs2_get_inode_nodes(struct 
+>  		}
+>  
+>  		if (retlen < len) {
+> -			JFFS2_ERROR("short read at %#08x: %d instead of %d.\n", ref_offset(ref), retlen, len);
+> +			JFFS2_ERROR("short read at %#08x: %zd instead of %d.\n",
+> +					ref_offset(ref), retlen, len);
+>  			err = -EIO;
+>  			goto free_out;
+>  		}
 
-Because it doesn't do the same thing.  But what did the fseek/fwrite
-version do?
-
-Can you run the old testcase with strace?  Something like
-
-$ strace -v 1>1 2>2 your_testcase
-
-Then send us the contents of 2.
 
 Jörn
 
 -- 
-When in doubt, punt.  When somebody actually complains, go back and fix it...
-The 90% solution is a good thing.
--- Rob Landley
+They laughed at Galileo.  They laughed at Copernicus.  They laughed at
+Columbus. But remember, they also laughed at Bozo the Clown.
+-- unknown
