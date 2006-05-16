@@ -1,19 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060516153318.GE11656@wohnheim.fh-wedel.de>
-References: <200604010831.57875.david-b@pacbell.net>
-	<200605160755.38606.david-b@pacbell.net>
-	<20060516150928.GC11656@wohnheim.fh-wedel.de>
-	<200605160825.54972.david-b@pacbell.net>
-	<20060516153318.GE11656@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 16 May 2006 16:34:52 +0100
-Message-Id: <1147793692.3806.18.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	Linux Kernel list <linux-kernel@vger.kernel.org>, jffs-dev@axis.com
-Subject: Re: jffs2 build fixes
+Received: from wr-out-0506.google.com ([64.233.184.236])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fg3Tx-00020X-AU
+	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 13:37:22 -0400
+Received: by wr-out-0506.google.com with SMTP id i21so24918wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 16 May 2006 10:37:06 -0700 (PDT)
+Message-ID: <a3cf34de0605161037x2ebff8a3w3b85dbd52d1bba6f@mail.gmail.com>
+Date: Tue, 16 May 2006 13:37:03 -0400
+From: sebrlw@gmail.com
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Subject: Strange "raw node error"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-16 at 17:33 +0200, Jörn Engel wrote:
-> Ouch!  Yes, you are correct.
-> 
-> Can you send a patch to dwmw2? 
+I'm receiving the following message in my syslog.
 
-dwmw2 is still subscribed to jffs-dev and responds... when the
-moderators eventually approve non-subscriber posts, at least :)
+   Raw node at 0x01c622c0 wasn't in node lists for ino #46
 
-Changing it to linux-mtd@lists.infradead.org would seem to make sense
-though.
+I'd like to know what might cause this problem.  I have looked at the
+driver source code, but it is not obvious to me what causes the error
+to occur.
 
--- 
-dwmw2
+The system is a XScale with JFFS2 on strata flash using kernel 2.4.19.
+ I'm hoping someone can provide me with an understanding of what the
+error message means.
+
+SEB
