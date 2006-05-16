@@ -1,18 +1,16 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
+Received: from web37910.mail.mud.yahoo.com ([209.191.124.105])
 	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FfyoB-0004OF-8Q
-	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 08:37:57 -0400
-Date: Tue, 16 May 2006 14:37:50 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>, dwmw2@infradead.org
-Message-ID: <20060516123750.GS6931@stusta.de>
-References: <20060515005637.00b54560.akpm@osdl.org>
+	id 1FfyxU-0004eO-TY
+	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 08:47:38 -0400
+Message-ID: <20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
+Date: Tue, 16 May 2006 05:40:46 -0700 (PDT)
+From: syed khader <sk.syed@yahoo.com>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <20060516061354.GA18958@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060515005637.00b54560.akpm@osdl.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [-mm patch] make drivers/mtd/nand/cs553x_nand.c:cs553x_init() static
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 15, 2006 at 12:56:37AM -0700, Andrew Morton wrote:
->...
-> Changes since 2.6.17-rc3-mm1:
->...
->  git-mtd.patch
->...
->  git trees
->...
 
-This patch makes the needlessly global cs553x_init() static.
+Hi 
+  when I removed fseek/fwrite in the test case I am
+not seeing any CRC errors. The modified code goes like
+this :
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+int main()
+{
+   int fd;
+   int i;
+   char buf[SIZE];
 
---- linux-2.6.17-rc4-mm1-full/drivers/mtd/nand/cs553x_nand.c.old	2006-05-16 13:02:13.000000000 +0200
-+++ linux-2.6.17-rc4-mm1-full/drivers/mtd/nand/cs553x_nand.c	2006-05-16 13:02:24.000000000 +0200
-@@ -267,7 +267,7 @@
- 	return err;
- }
- 
--int __init cs553x_init(void)
-+static int __init cs553x_init(void)
- {
- 	int err = -ENXIO;
- 	int i;
+   strcpy(buf, "abcdefg\r\n");
+   printf("%s", buf);
+   fd = open("testfile",O_RDWR|O_CREAT);
+   for(i =0 ; i < 10 ; i++)
+   {
+      write(fd, buf, sizeof(buf));
+      lseek(fd, -4, SEEK_CUR);
+  }
+}
+   Why does CRC errors occur when I use fseek/fwrite
+and not when I use plain system calls write/lseek??
+
+Regards
+Syed
+
+
+
+--- J�rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+
+> On Mon, 15 May 2006 21:58:47 -0700, syed khader
+> wrote:
+> > 
+> >   My question is not how the test case  should be
+> > written, why would CRC errors appear when I never
+> > powered off my system while it is writing into
+> jffs2.
+> >   I would like to ask what would happen if a
+> integer
+> > overflow occurs: does it result in crc error?
+> 
+> Anything resulting in a crc error is a bug.  But I
+> cannot tell you
+> much more with your current testcase.  fwrite() is
+> implemented by the
+> libc and does buffering.  Therefore it is impossible
+> to tell when libc
+> actually calls the kernel and which functions it
+> calls with which
+> parameters.  And that makes debugging fairly hard.
+> 
+> So a temporary question is indeed how the testcase
+> should be written.
+> Please replace the f* functions so we can remove
+> libc from the
+> picture.
+> 
+> J�rn
+> 
+> -- 
+> Invincibility is in oneself, vulnerability is in the
+> opponent.
+> -- Sun Tzu
+> 
+
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
