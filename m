@@ -1,16 +1,16 @@
 From: David Woodhouse <dwmw2@infradead.org>
 To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20060516102554.GL6931@stusta.de>
+In-Reply-To: <20060516114644.GN6931@stusta.de>
 References: <20060515005637.00b54560.akpm@osdl.org>
-	<20060516102554.GL6931@stusta.de>
+	<20060516114644.GN6931@stusta.de>
 Content-Type: text/plain
-Date: Tue, 16 May 2006 13:13:21 +0100
-Message-Id: <1147781601.27870.17.camel@pmac.infradead.org>
+Date: Tue, 16 May 2006 13:14:31 +0100
+Message-Id: <1147781671.27870.20.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: 2.6.17-rc4-mm1: no help text for MTD_NAND_CS553
+Subject: Re: [-mm patch] drivers/mtd/devices/docprobe.c: correct #if's
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,24 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-16 at 12:25 +0200, Adrian Bunk wrote:
-> This patch adds an MTD_NAND_CS553 option without a help text.
-> 
-> Please add at least a small help text.
+On Tue, 2006-05-16 at 13:46 +0200, Adrian Bunk wrote:
+> If we correct the names of the config options, the code might actually
+> work as intended...
 
-Done; thanks.
+S'true. Applied; thanks.
 
-config MTD_NAND_CS553X
-	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
-	depends on MTD_NAND && X86_PC && PCI
-	help
-	  The CS553x companion chips for the AMD Geode processor
-	  include NAND flash controllers with built-in hardware ECC
-	  capabilities; enabling this option will allow you to use
-	  these. The driver will check the MSRs to verify that the
-	  controller is enabled for NAND, and currently requires that
-	  the controller be in MMIO mode.
+I've dug out one or two of these devices from the toy cupboard -- I want
+to make sure we get the new version of the driver, using the generic
+NAND code, working with all of them... and then we can drop the old
+drivers altogether.
 
-	  If you say "m", the module will be called "cs553x_nand.ko".
 -- 
 dwmw2
