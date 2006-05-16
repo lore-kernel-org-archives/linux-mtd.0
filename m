@@ -1,16 +1,17 @@
-Received: from web37910.mail.mud.yahoo.com ([209.191.124.105])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FfyxU-0004eO-TY
-	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 08:47:38 -0400
-Message-ID: <20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
-Date: Tue, 16 May 2006 05:40:46 -0700 (PDT)
-From: syed khader <sk.syed@yahoo.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <20060516061354.GA18958@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060516123750.GS6931@stusta.de>
+References: <20060515005637.00b54560.akpm@osdl.org>
+	<20060516123750.GS6931@stusta.de>
+Content-Type: text/plain
+Date: Tue, 16 May 2006 14:04:19 +0100
+Message-Id: <1147784659.27870.43.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [-mm patch] make drivers/mtd/nand/cs553x_nand.c:cs553x_init()
+	static
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Tue, 2006-05-16 at 14:37 +0200, Adrian Bunk wrote:
+> This patch makes the needlessly global cs553x_init() static.
 
-Hi 
-  when I removed fseek/fwrite in the test case I am
-not seeing any CRC errors. The modified code goes like
-this :
+NAK. That problem was inherited from another board driver which was
+copied and modified. And that driver inherited it in turn... let's not
+piss about with them one at a time; let's just fix them _all_ at once,
+instead. And let's remove the bizarre use of '#ifdef MODULE' around the
+cleanup functions while we're at it.
 
-int main()
-{
-   int fd;
-   int i;
-   char buf[SIZE];
+http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=cead4dbc03ba6eb2e35bac04439b76a0cc2286ce
 
-   strcpy(buf, "abcdefg\r\n");
-   printf("%s", buf);
-   fd = open("testfile",O_RDWR|O_CREAT);
-   for(i =0 ; i < 10 ; i++)
-   {
-      write(fd, buf, sizeof(buf));
-      lseek(fd, -4, SEEK_CUR);
-  }
-}
-   Why does CRC errors occur when I use fseek/fwrite
-and not when I use plain system calls write/lseek??
-
-Regards
-Syed
-
-
-
---- J�rn Engel <joern@wohnheim.fh-wedel.de> wrote:
-
-> On Mon, 15 May 2006 21:58:47 -0700, syed khader
-> wrote:
-> > 
-> >   My question is not how the test case  should be
-> > written, why would CRC errors appear when I never
-> > powered off my system while it is writing into
-> jffs2.
-> >   I would like to ask what would happen if a
-> integer
-> > overflow occurs: does it result in crc error?
-> 
-> Anything resulting in a crc error is a bug.  But I
-> cannot tell you
-> much more with your current testcase.  fwrite() is
-> implemented by the
-> libc and does buffering.  Therefore it is impossible
-> to tell when libc
-> actually calls the kernel and which functions it
-> calls with which
-> parameters.  And that makes debugging fairly hard.
-> 
-> So a temporary question is indeed how the testcase
-> should be written.
-> Please replace the f* functions so we can remove
-> libc from the
-> picture.
-> 
-> J�rn
-> 
-> -- 
-> Invincibility is in oneself, vulnerability is in the
-> opponent.
-> -- Sun Tzu
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+-- 
+dwmw2
