@@ -1,14 +1,20 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-In-Reply-To: <4469D3F2.6010109@ru.mvista.com>
-References: <4469D3F2.6010109@ru.mvista.com>
-Content-Type: text/plain
-Date: Tue, 16 May 2006 14:34:40 +0100
-Message-Id: <1147786480.3806.4.camel@pmac.infradead.org>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fg0Vw-0006g5-4N
+	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 10:27:12 -0400
+Date: Tue, 16 May 2006 16:26:18 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: syed khader <sk.syed@yahoo.com>
+Message-ID: <20060516142618.GB11656@wohnheim.fh-wedel.de>
+References: <20060516061354.GA18958@wohnheim.fh-wedel.de>
+	<20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: ppopov@infradead.org, linux-mtd@lists.infradead.org
-Subject: Re: [Fwd: mtd/drivers/mtd/nand au1550nd.c,1.13,1.14]
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060516124046.35261.qmail@web37910.mail.mud.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +24,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-16 at 17:30 +0400, Sergei Shtylyov wrote:
->     Looks like this patch has not been pushed upstream and, what's
-> worse, has been lost when Linux-MTD switched from CVS to git. Can it
-> be put back? Should I resend? 
+On Tue, 16 May 2006 05:40:46 -0700, syed khader wrote:
+> 
+>   when I removed fseek/fwrite in the test case I am
+> not seeing any CRC errors. The modified code goes like
+> this :
+> 
+> int main()
+> {
+>    int fd;
+>    int i;
+>    char buf[SIZE];
+> 
+>    strcpy(buf, "abcdefg\r\n");
+>    printf("%s", buf);
+>    fd = open("testfile",O_RDWR|O_CREAT);
+>    for(i =0 ; i < 10 ; i++)
+>    {
+>       write(fd, buf, sizeof(buf));
+>       lseek(fd, -4, SEEK_CUR);
+>   }
+> }
+>    Why does CRC errors occur when I use fseek/fwrite
+> and not when I use plain system calls write/lseek??
 
-We still haven't yet done a final pass through the CVS code to pick up
-anything like this which should be merged into the git tree.
+Because it doesn't do the same thing.  But what did the fseek/fwrite
+version do?
 
-If you update the patch so that it applies to the current git tree and
-either resend it or put it into a git tree of your own to be pulled,
-I'll apply it. Thanks.
+Can you run the old testcase with strace?  Something like
+
+$ strace -v 1>1 2>2 your_testcase
+
+Then send us the contents of 2.
+
+Jörn
 
 -- 
-dwmw2
+When in doubt, punt.  When somebody actually complains, go back and fix it...
+The 90% solution is a good thing.
+-- Rob Landley
