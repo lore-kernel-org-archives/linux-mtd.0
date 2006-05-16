@@ -1,19 +1,16 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ffy0o-0002gY-1M
-	for linux-mtd@lists.infradead.org; Tue, 16 May 2006 07:46:55 -0400
-Date: Tue, 16 May 2006 13:46:44 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>, dwmw2@infradead.org
-Message-ID: <20060516114644.GN6931@stusta.de>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060516102554.GL6931@stusta.de>
 References: <20060515005637.00b54560.akpm@osdl.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20060515005637.00b54560.akpm@osdl.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [-mm patch] drivers/mtd/devices/docprobe.c: correct #if's
+	<20060516102554.GL6931@stusta.de>
+Content-Type: text/plain
+Date: Tue, 16 May 2006 13:13:21 +0100
+Message-Id: <1147781601.27870.17.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: 2.6.17-rc4-mm1: no help text for MTD_NAND_CS553
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +20,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, May 15, 2006 at 12:56:37AM -0700, Andrew Morton wrote:
->...
-> Changes since 2.6.17-rc3-mm1:
->...
->  git-mtd.patch
->...
->  git trees
->...
+On Tue, 2006-05-16 at 12:25 +0200, Adrian Bunk wrote:
+> This patch adds an MTD_NAND_CS553 option without a help text.
+> 
+> Please add at least a small help text.
 
-If we correct the names of the config options, the code might actually 
-work as intended...
- 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Done; thanks.
 
----
+config MTD_NAND_CS553X
+	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
+	depends on MTD_NAND && X86_PC && PCI
+	help
+	  The CS553x companion chips for the AMD Geode processor
+	  include NAND flash controllers with built-in hardware ECC
+	  capabilities; enabling this option will allow you to use
+	  these. The driver will check the MSRs to verify that the
+	  controller is enabled for NAND, and currently requires that
+	  the controller be in MMIO mode.
 
- drivers/mtd/devices/docprobe.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- linux-2.6.17-rc4-mm1-full/drivers/mtd/devices/docprobe.c.old	2006-05-16 12:58:49.000000000 +0200
-+++ linux-2.6.17-rc4-mm1-full/drivers/mtd/devices/docprobe.c	2006-05-16 12:59:08.000000000 +0200
-@@ -231,21 +231,21 @@
- 
- static int docfound;
- 
--#ifdef CONFIG_DOC2000
-+#ifdef CONFIG_MTD_DOC2000
- extern void DoC2k_init(struct mtd_info *);
- #define doc2k_initfunc (&DoC2k_init)
- #else 
- #define doc2k_initfunc NULL
- #endif
- 
--#ifdef CONFIG_DOC2001
-+#ifdef CONFIG_MTD_DOC2001
- extern void DoCMil_init(struct mtd_info *);
- #define docmil_initfunc (&DoCMil_init)
- #else 
- #define docmil_initfunc NULL
- #endif
- 
--#ifdef CONFIG_DOC2001PLUS
-+#ifdef CONFIG_MTD_DOC2001PLUS
- extern void DoCMilPlus_init(struct mtd_info *);
- #define docmplus_initfunc (&DoCMilPlus_init)
- #else 
+	  If you say "m", the module will be called "cs553x_nand.ko".
+-- 
+dwmw2
