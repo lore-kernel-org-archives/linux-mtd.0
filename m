@@ -1,14 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: art@sigrand.ru
-In-Reply-To: <1147665263.6999.7.camel@localhost>
-References: <1147665263.6999.7.camel@localhost>
+To: Han Chang <posaune@hotmail.com>
+In-Reply-To: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
+References: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
 Content-Type: text/plain
-Date: Wed, 17 May 2006 00:36:46 +0100
-Message-Id: <1147822606.30771.15.camel@shinybook.infradead.org>
+Date: Wed, 17 May 2006 00:38:22 +0100
+Message-Id: <1147822702.30771.17.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Reading data from NAND FLASH without ECC is not recommended
+Subject: Re: NAND/JFFS2 utility tools.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-05-15 at 03:54 +0000, Polyakov Artem wrote:
-> But my debug messages shows this:
-> > write oob(00001890): 65 55 97 5a ffff 69 57 ff ff ff ff ff ff ff ff
-> bytes for ECC are not equal 0xFF!
-> but system dont use this bytes for ECC correction:
-> > Reading data from NAND FLASH without ECC is not recommended 
+On Fri, 2006-05-12 at 11:17 -0700, Han Chang wrote:
+> Now, I realized those tools don't work with /dev/mtdblock2, so i tried 
+> /dev/mtd2, which is the char driver. For flash_info, which tries to open 
+> /dev/mtd2 in RDONLY mode, it opened file ok, but got msg "Device /dev/mtd2 
+> has 0 erase regions". For flash_erase and flash_eraseall, which try to open 
+> /dev/mtd2 in RDWR mode, it got "File open error".
+> 
+> Anyone has any advices on making these tools working? 
 
-You're saying that the system _writes_ ECC data to the flash, but does
-not use ECC when reading from the flash?
-
-Please show your NAND board driver, and also the code you used for
-reading from the flash.
+Do you have the correct major and minor numbers for /dev/mtd2 ?
 
 -- 
 dwmw2
