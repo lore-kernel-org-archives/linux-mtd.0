@@ -1,17 +1,14 @@
-Received: from web37913.mail.mud.yahoo.com ([209.191.124.108])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FgMUh-00033R-VK
-	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 09:55:24 -0400
-Message-ID: <20060517134838.73136.qmail@web37913.mail.mud.yahoo.com>
-Date: Wed, 17 May 2006 06:48:38 -0700 (PDT)
-From: syed khader <sk.syed@yahoo.com>
-To: "J�rn" Engel <joern@wohnheim.fh-wedel.de>,
-  syed khader <sk.syed@yahoo.com>
-In-Reply-To: <20060517131918.GB22457@wohnheim.fh-wedel.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+From: David Woodhouse <dwmw2@infradead.org>
+To: syed khader <sk.syed@yahoo.com>
+In-Reply-To: <20060517134838.73136.qmail@web37913.mail.mud.yahoo.com>
+References: <20060517134838.73136.qmail@web37913.mail.mud.yahoo.com>
+Content-Type: text/plain
+Date: Wed, 17 May 2006 15:28:33 +0100
+Message-Id: <1147876113.3875.10.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+	=?UTF-8?Q?J=EF=BF=BDrn?= Engel <joern@wohnheim.fh-wedel.de>
 Subject: Re: zlib compression is failing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,64 +19,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
-  yeah that is an option. but till the time we move to
-2.6 we should support 2.4 and have to resolve this
-problem.
-  Probably looking into the changes would help.
-Thanks
-syed
+On Wed, 2006-05-17 at 06:48 -0700, syed khader wrote:
+>   yeah that is an option. but till the time we move to
+> 2.6 we should support 2.4 and have to resolve this
+> problem.
+>   Probably looking into the changes would help.
+> Thanks
+> syed 
 
+Please stop top-posting. Read http://david.woodhou.se/email.html
+and please also trim your quotations appropriately.
 
---- J�rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+You seem to have a hybrid of old, relatively stable code (2.4) with
+newer, 'exciting' JFFS2 -- but not even the _current_ JFFS2 code; older
+code in which we _know_ we've fixed bugs since then. That isn't really
+something we can support you with.
 
-> On Wed, 17 May 2006 04:22:39 -0700, syed khader
-> wrote:
-> > 
-> >   I have uClinux2.4.24(which corresponds to 2.4
-> > kernel). It originally had jffs2.1. Since 2.1 was
-> > quite slow, we moved it to jffs2.2 by applying
-> patch
-> > from mtd cvs as follows:
-> > 
-> >    cvs -d
-> :pserver:anoncvs@cvs.infradead.org:/home/cvs
-> > login (password: anoncvs)
-> >    cvs -d
-> :pserver:anoncvs@cvs.infradead.org:/home/cvs
-> > co mtd
-> >    cd <mtd-path>/patches
-> >   sh patchin.sh -c -j <kernel-path> 
-> > 
-> >   The CVS tag was D2004.05.11.18.30.00
-> 
-> All of that is quite old.  1.5 years for the
-> mtd/jffs2 and 2.5 years
-> for 2.4.24.
-> 
-> Can you reproduce the same problem with current
-> code?  Either 2.6.16
-> or 2.4.32?
-> 
-> J�rn
-> 
-> -- 
-> More computing sins are committed in the name of
-> efficiency (without
-> necessarily achieving it) than for any other single
-> reason - including
-> blind stupidity.
-> -- W. A. Wulf 
-> 
->
-______________________________________________________
-> Linux MTD discussion mailing list
->
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+If you want the stability of 2.4, then _use_ 2.4, and deal with the fact
+that its JFFS2 is slow.
 
+If you want the improvements which are in 2.6, then just switch to it
+and don't attempt to mix and match.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Mixing the 2.4 kernel with a JFFS2 snapshot from CVS is entirely
+unsupportable and basically gets you the worst of both worlds.
+
+-- 
+dwmw2
