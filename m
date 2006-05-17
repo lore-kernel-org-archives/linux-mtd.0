@@ -1,17 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: art <art@sigrand.ru>
-In-Reply-To: <576464173.20060517142813@sigrand.ru>
-References: <1147665263.6999.7.camel@localhost>
-	<1147822606.30771.15.camel@shinybook.infradead.org>
-	<576464173.20060517142813@sigrand.ru>
-Content-Type: text/plain
-Date: Wed, 17 May 2006 10:47:14 +0100
-Message-Id: <1147859234.8013.8.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Re[2]: Reading data from NAND FLASH without ECC is not
-	recommended
+Received: from ug-out-1314.google.com ([66.249.92.173])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FgJUM-00009p-JE
+	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 06:42:57 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so184394uge
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 May 2006 03:42:42 -0700 (PDT)
+Message-ID: <625fc13d0605170342s1dc0411reb3b7d96421ebd4e@mail.gmail.com>
+Date: Wed, 17 May 2006 05:42:41 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060517091038.GA22457@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <20060517051201.33135.qmail@web37904.mail.mud.yahoo.com>
+	<20060517062552.78956.qmail@web37909.mail.mud.yahoo.com>
+	<20060517091038.GA22457@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org, syed khader <sk.syed@yahoo.com>
+Subject: Re: zlib compression is failing
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,11 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-05-17 at 14:28 +0700, art wrote:
-> and I attach nand_base driver from my kernel.
+On 5/17/06, J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
+>
+> Quite interesting, though, are the sizes.  68 bytes is exactly a jffs2
+> inode header.  It makes me a bit uneasy if that cannot be compressed.
 
-Either this is the same as the one in the current kernel tree, or it's
-the one from 2.6.16, or I don't care at all. Which of the three?
+Why?  JFFS2 doesn't store the node headers compressed.  It shouldn't
+even be trying to compress them.
 
--- 
-dwmw2
+josh
