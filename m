@@ -1,14 +1,15 @@
+Received: from shinybook.infradead.org ([81.187.2.165])
+	by pentafluge.infradead.org with esmtpsa (Exim 4.62 #1 (Red Hat Linux))
+	id 1FgAjs-0006NH-Rq
+	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 02:22:13 +0100
 From: David Woodhouse <dwmw2@infradead.org>
-To: Han Chang <posaune@hotmail.com>
-In-Reply-To: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
-References: <BAY110-F56850C54FA653AED377E3BCAC0@phx.gbl>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Wed, 17 May 2006 00:38:22 +0100
-Message-Id: <1147822702.30771.17.camel@shinybook.infradead.org>
+Date: Wed, 17 May 2006 02:22:14 +0100
+Message-Id: <1147828934.30771.32.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: NAND/JFFS2 utility tools.
+Subject: Map driver updates from CVS
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +19,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-12 at 11:17 -0700, Han Chang wrote:
-> Now, I realized those tools don't work with /dev/mtdblock2, so i tried 
-> /dev/mtd2, which is the char driver. For flash_info, which tries to open 
-> /dev/mtd2 in RDONLY mode, it opened file ok, but got msg "Device /dev/mtd2 
-> has 0 erase regions". For flash_erase and flash_eraseall, which try to open 
-> /dev/mtd2 in RDWR mode, it got "File open error".
-> 
-> Anyone has any advices on making these tools working? 
+I've taken a quick look at drivers/mtd/maps in CVS, and most of the
+changes there are just merges of cleanups which happened upstream, or
+look like they're real changes which were also merged upstream as well
+as being committed to CVS -- but without a $Id$ update.
 
-Do you have the correct major and minor numbers for /dev/mtd2 ?
+So I'm going to ignore what's in CVS for drivers/mtd/maps -- if there
+are any changes in there which do still need to be sent upstream, would
+the owners of those files please send me an updated patch against the
+git tree.
 
 -- 
 dwmw2
