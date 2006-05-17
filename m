@@ -1,17 +1,15 @@
-Received: from web37904.mail.mud.yahoo.com ([209.191.124.99])
+Received: from web27307.mail.ukl.yahoo.com ([217.146.177.168])
 	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FgEQk-00026o-Mt
-	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 01:18:45 -0400
-Message-ID: <20060517051201.33135.qmail@web37904.mail.mud.yahoo.com>
-Date: Tue, 16 May 2006 22:12:01 -0700 (PDT)
-From: syed khader <sk.syed@yahoo.com>
-To: "Jörn" Engel <joern@wohnheim.fh-wedel.de>, syed khader <sk.syed@yahoo.com>
-In-Reply-To: <20060516153131.GD11656@wohnheim.fh-wedel.de>
+	id 1FgEbH-0002Qm-Pi
+	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 01:29:45 -0400
+Message-ID: <20060517052933.92640.qmail@web27307.mail.ukl.yahoo.com>
+Date: Wed, 17 May 2006 05:29:33 +0000 (GMT)
+From: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: CRC errors when continuous fseek/fputs on JFFS2
+Content-Type: text/plain; charset=us-ascii
+Subject: JFFS2 reports warning continuously !
+Reply-To: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,56 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
+ Hi all,
+          I am running JFFS2.1 on uClinux2.4.24. My flash chip is SST39VF6401B. For all Write/erase/ (and may be also read) operations the MTD drivers print the following warning message. 
 
-   I am sending the log file after doing a fresh test.
-Here is the link to the log:
+Warning: DQ5 raised while program operation was in progress, however operation completed OK
 
-http://rapidshare.de/files/20655260/jffs2crclog.txt.html
+Is this normal? can I get over it anyway? any comments would be great!
 
+I am using JEDEC_PROBE. The following is the code I am using in jedec_probe.c file to support above flash device.
+ {
+         .mfr_id        = MANUFACTURER_SST,
+         .dev_id        = SST39VF6401B,
+         .name        = "SST 39VF6401B",
+         .DevSize    = SIZE_8MiB,
+         .CmdSet        = P_ID_AMD_STD,
+         .NumEraseRegions= 2,
+         .regions    = {
+             ERASEINFO(0x02000, 8),
+             ERASEINFO(0x10000, 127),
+         }
+   }
 
---- Jörn Engel <joern@wohnheim.fh-wedel.de> wrote:
-
-> On Tue, 16 May 2006 08:01:54 -0700, syed khader
-> wrote:
-> > 
-> > jffs2_read_inode_range: offset 139961, end 143360
-> > Reading 139961-139964 from node at 0x0017c9e4 (3)
-> > Node read from 0017c9e4: node_crc 57239698,
-> calculated
-> > CRC 57239698. dsize 4, csize 4, offset 222b9, buf
-> > 00c972b9
-> > Read 4 bytes to 00c09b60
-> > Data CRC 675ef222 != calculated CRC 83b8ee96 for
-> node
-> > at 0017c9e4
-> > node read done
-> 
-> This is the only mismatch I could find in your log. 
-> What I couldn't
-> find was the matching write to 0x0017c9e4.  Still
-> unable to see the
-> actual bug.  Hmm.
-> 
-> Can you start out with a fresh image, run your
-> testcase and get a
-> complete log?  I hope that it contains both a crc
-> mismatch like this
-> and the write of the node before.
-> 
-> Quite likely the log will be too large for this
-> list.  A link to a
-> webpage would be sufficient, if that is possible.
-> 
-> Jörn
-> 
-> -- 
-> I don't understand it. Nobody does.
-> -- Richard P. Feynman
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Thanks
+Sreecharan.S
