@@ -1,18 +1,26 @@
-Received: from web37909.mail.mud.yahoo.com ([209.191.124.104])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FgFaD-0003G6-SS
-	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 02:32:40 -0400
-Message-ID: <20060517062552.78956.qmail@web37909.mail.mud.yahoo.com>
-Date: Tue, 16 May 2006 23:25:52 -0700 (PDT)
-From: syed khader <sk.syed@yahoo.com>
-To: syed khader <sk.syed@yahoo.com>,
-  "J�rn" Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060517051201.33135.qmail@web37904.mail.mud.yahoo.com>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FgFrN-0003c9-NY
+	for linux-mtd@lists.infradead.org; Wed, 17 May 2006 02:50:29 -0400
+Message-ID: <446AC77C.4010407@yandex.ru>
+Date: Wed, 17 May 2006 10:49:32 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Subject: zlib compression is failing
+To: David Woodhouse <dwmw2@infradead.org>
+References: <1147178706.16853.6.camel@sauron.oktetlabs.ru>	
+	<1147249742.16853.16.camel@sauron.oktetlabs.ru>	
+	<20060510133510.GD31935@wohnheim.fh-wedel.de>	
+	<1147269251.16853.50.camel@sauron.oktetlabs.ru>	
+	<20060510135814.GG31935@wohnheim.fh-wedel.de>	
+	<1147635584.2551.20.camel@shinybook.infradead.org>	
+	<1147702746.20604.10.camel@sauron.oktetlabs.ru>
+	<1147822221.30771.6.camel@shinybook.infradead.org>
+In-Reply-To: <1147822221.30771.6.camel@shinybook.infradead.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@wohnheim.fh-wedel.de>,
+	linux-mtd@lists.infradead.org
+Subject: Re: [PATCH/RFC] reserved pool
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
-  in the logs I am seeing the following error
-messages:
+David Woodhouse wrote:
+> I cleaned it up so it looks like this.... and then decided not to apply
+> it. I don't like this kind of thing being a mount option. Make a new
+> node type for 'filesystem options'. Make it an RWCOMPAT_COPY node type.
+> Store the reserved size in it and do it through an ioctl like chattr
+> does on ext2 -- and make mkfs.jffs2 write it too. 
+> 
+> We'll want compression types stored in that node type too, I suspect.
+Well, looks fair.
 
-zlib compressed 68 bytes into 77; failing
+Note: you have trickily decided to kill two birds with one stone, 
+exploiting me to add a superblock node facility to JFFS2.
 
-  why does zlib compression fail?
-
-regards
-Syed
-
---- syed khader <sk.syed@yahoo.com> wrote:
-
-> Hi 
-> 
->    I am sending the log file after doing a fresh
-> test.
-> Here is the link to the log:
-> 
->
-http://rapidshare.de/files/20655260/jffs2crclog.txt.html
-> 
-> 
-> --- J�rn Engel <joern@wohnheim.fh-wedel.de> wrote:
-> 
-> > On Tue, 16 May 2006 08:01:54 -0700, syed khader
-> > wrote:
-> > > 
-> > > jffs2_read_inode_range: offset 139961, end
-> 143360
-> > > Reading 139961-139964 from node at 0x0017c9e4
-> (3)
-> > > Node read from 0017c9e4: node_crc 57239698,
-> > calculated
-> > > CRC 57239698. dsize 4, csize 4, offset 222b9,
-> buf
-> > > 00c972b9
-> > > Read 4 bytes to 00c09b60
-> > > Data CRC 675ef222 != calculated CRC 83b8ee96 for
-> > node
-> > > at 0017c9e4
-> > > node read done
-> > 
-> > This is the only mismatch I could find in your
-> log. 
-> > What I couldn't
-> > find was the matching write to 0x0017c9e4.  Still
-> > unable to see the
-> > actual bug.  Hmm.
-> > 
-> > Can you start out with a fresh image, run your
-> > testcase and get a
-> > complete log?  I hope that it contains both a crc
-> > mismatch like this
-> > and the write of the node before.
-> > 
-> > Quite likely the log will be too large for this
-> > list.  A link to a
-> > webpage would be sufficient, if that is possible.
-> > 
-> > J�rn
-> > 
-> > -- 
-> > I don't understand it. Nobody does.
-> > -- Richard P. Feynman
-> > 
-> 
-> 
-> __________________________________________________
-> Do You Yahoo!?
-> Tired of spam?  Yahoo! Mail has the best spam
-> protection around 
-> http://mail.yahoo.com 
-> 
->
-______________________________________________________
-> Linux MTD discussion mailing list
->
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
