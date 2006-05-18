@@ -1,12 +1,17 @@
-Received: from sccmmhc92.asp.att.net ([204.127.203.212])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FgiMi-0005Za-JU
-	for linux-mtd@lists.infradead.org; Thu, 18 May 2006 09:16:35 -0400
-From: jmrobert5@mchsi.com
+Received: from the.ipv6.earth.li ([2001:1b40:0:1000:c1c9:c842:0:1]
+	helo=the.earth.li)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FglP4-0007zm-7K
+	for linux-mtd@lists.infradead.org; Thu, 18 May 2006 12:31:15 -0400
+Date: Thu, 18 May 2006 17:09:41 +0100
+From: Jonathan McDowell <noodles@earth.li>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 18 May 2006 13:08:00 +0000
-Message-Id: <051820061308.1998.446C71B000096E03000007CE219791336303010CD2079C080C03BFCA9B9D0A0D019D0306@mchsi.com>
-Subject: DoC 2000 and Grub 0.92 not Booting
+Message-ID: <20060518160940.GS7570@earth.li>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,59 +21,299 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+The patch below adds support for the NAND device on the Amstrad Delta.
+This is a 32MB 8bit Toshiba device, with the data bus connected to the
+OMAP MPUIO pins and ALE, CLE, NCE, NRE, NWE and NWP all connected to the
+Delta's latch2 16bit latch.
 
-We have used DoC and MTD code and patches before on a system that is a PC104
-booting from a DoC 2000.  We were using 12Mb and 16Mb parts.  Building Grub 0.92
-and kernel 2.4 once we got it working we just gave the codeover to production
-for duplication. No Problems.  I remember it took us a long time to get it all
-working.  Unfortunately notes and scribbles have been lost in more than 1 move
-since then.
+This is the same patch as submitted to linux-mtd for comments a month
+ago, with 3 changes:
 
-Now for Rev 2.0.  This time I have DoC 2000 32, 48 and 96 Mb parts.  Series 2200
-and 2202.
+ * Set ams_delta_mtd->owner = THIS_MODULE; before calling nand_scan()
+ * Remove spurious comment.
+ * Lower udelay length.
 
-I cannot get Grub to Boot.  This is the most common error I get:
-A few 
-"_DoC_WaitReady  timed out..."
-followed by
-"Sorry, we don't support UnitSizeFactor of !=1 yet"
+Patch is against vanilla 2.6.17-rc4.
 
-Whereupon it then drops to the Grub commandline prompt.  But dc0,0 is not
-available.  I have 2 ext2 formatted partitions, neither of which are visible.
-Once I got it to just go to grub command line.  But still the partitions were
-not available.
+Signed-Off-By: Jonathan McDowell <noodles@earth.li>
 
-I thought is was because theres no (or corrupted) NFTL Header, so I rebuilt a
-DoC and used nftl_format, but I get the same error.
+-----
+diff -ruN linux-2.6.17-rc4/drivers/mtd/nand/ams-delta.c linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/ams-delta.c
+--- linux-2.6.17-rc4/drivers/mtd/nand/ams-delta.c	1970-01-01 01:00:00.000000000 +0100
++++ linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/ams-delta.c	2006-05-18 17:02:00.000000000 +0100
+@@ -0,0 +1,239 @@
++/*
++ *  drivers/mtd/nand/ams-delta.c
++ *
++ *  Copyright (C) 2006 Jonathan McDowell <noodles@earth.li>
++ *
++ *  Derived from drivers/mtd/toto.c
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  Overview:
++ *   This is a device driver for the NAND flash device found on the
++ *   Amstrad E3 (Delta).
++ */
++
++#include <linux/slab.h>
++#include <linux/init.h>
++#include <linux/module.h>
++#include <linux/delay.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++#include <asm/io.h>
++#include <asm/arch/hardware.h>
++#include <asm/sizes.h>
++#include <asm/arch/gpio.h>
++#include <asm/arch/board-ams-delta.h>
++
++/*
++ * MTD structure for E3 (Delta)
++ */
++static struct mtd_info *ams_delta_mtd = NULL;
++
++#define NAND_MASK (AMS_DELTA_LATCH2_NAND_NRE | AMS_DELTA_LATCH2_NAND_NWE | AMS_DELTA_LATCH2_NAND_CLE | AMS_DELTA_LATCH2_NAND_ALE | AMS_DELTA_LATCH2_NAND_NCE | AMS_DELTA_LATCH2_NAND_NWP)
++
++#define T_NAND_CTL_CLRALE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_ALE, 0)
++#define T_NAND_CTL_SETALE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_ALE, AMS_DELTA_LATCH2_NAND_ALE)
++#define T_NAND_CTL_CLRCLE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_CLE, 0)
++#define T_NAND_CTL_SETCLE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_CLE, AMS_DELTA_LATCH2_NAND_CLE)
++#define T_NAND_CTL_SETNCE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NCE, 0)
++#define T_NAND_CTL_CLRNCE(iob) ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NCE, AMS_DELTA_LATCH2_NAND_NCE)
++
++/*
++ * Define partitions for flash devices
++ */
++
++static struct mtd_partition partition_info[] = {
++	{ .name		= "Kernel",
++	  .offset	= 0,
++	  .size		= 3 * SZ_1M + SZ_512K },
++	{ .name		= "u-boot",
++	  .offset	= 3 * SZ_1M + SZ_512K,
++	  .size		= SZ_256K },
++	{ .name		= "u-boot params",
++	  .offset	= 3 * SZ_1M + SZ_512K + SZ_256K,
++	  .size		= SZ_256K },
++	{ .name		= "Amstrad LDR",
++	  .offset	= 4 * SZ_1M,
++	  .size		= SZ_256K },
++	{ .name		= "File system",
++	  .offset	= 4 * SZ_1M + 1 * SZ_256K,
++	  .size		= 27 * SZ_1M },
++	{ .name		= "PBL reserved",
++	  .offset	= 32 * SZ_1M - 3 * SZ_256K,
++	  .size		=  3 * SZ_256K },
++};
++
++/*
++ *	hardware specific access to control-lines
++*/
++
++static void ams_delta_hwcontrol(struct mtd_info *mtd, int cmd)
++{
++	switch(cmd){
++
++		case NAND_CTL_SETCLE: T_NAND_CTL_SETCLE(cmd); break;
++		case NAND_CTL_CLRCLE: T_NAND_CTL_CLRCLE(cmd); break;
++
++		case NAND_CTL_SETALE: T_NAND_CTL_SETALE(cmd); break;
++		case NAND_CTL_CLRALE: T_NAND_CTL_CLRALE(cmd); break;
++
++		case NAND_CTL_SETNCE: T_NAND_CTL_SETNCE(cmd); break;
++		case NAND_CTL_CLRNCE: T_NAND_CTL_CLRNCE(cmd); break;
++	}
++}
++
++static void ams_delta_write_byte(struct mtd_info *mtd, u_char byte)
++{
++	struct nand_chip *this = mtd->priv;
++
++	omap_writew(0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
++	omap_writew(byte, this->IO_ADDR_W);
++	ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NWE, 0);
++	udelay(0.04);
++	ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NWE,
++			AMS_DELTA_LATCH2_NAND_NWE);
++}
++
++static u_char ams_delta_read_byte(struct mtd_info *mtd)
++{
++	u_char res;
++	struct nand_chip *this = mtd->priv;
++
++	ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NRE, 0);
++	udelay(0.04);
++	omap_writew(~0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
++	res = omap_readw(this->IO_ADDR_R);
++	ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_NRE,
++			AMS_DELTA_LATCH2_NAND_NRE);
++
++	return res;
++}
++
++static void ams_delta_write_buf(struct mtd_info *mtd, const u_char *buf,
++		int len)
++{
++	int i;
++
++	for (i=0; i<len; i++)
++		ams_delta_write_byte(mtd, buf[i]);
++}
++
++static void ams_delta_read_buf(struct mtd_info *mtd, u_char *buf, int len)
++{
++	int i;
++
++	for (i=0; i<len; i++)
++		buf[i] = ams_delta_read_byte(mtd);
++}
++
++static int ams_delta_verify_buf(struct mtd_info *mtd, const u_char *buf,
++		int len)
++{
++	int i;
++
++	for (i=0; i<len; i++)
++		if (buf[i] != ams_delta_read_byte(mtd))
++			return -EFAULT;
++
++	return 0;
++}
++
++static int ams_delta_nand_ready(struct mtd_info *mtd)
++{
++	return omap_get_gpio_datain(AMS_DELTA_GPIO_PIN_NAND_RB);
++}
++
++/*
++ * Main initialization routine
++ */
++int __init ams_delta_init (void)
++{
++	struct nand_chip *this;
++	int err = 0;
++
++	/* Allocate memory for MTD device structure and private data */
++	ams_delta_mtd = kmalloc (sizeof(struct mtd_info) +
++					sizeof (struct nand_chip), GFP_KERNEL);
++	if (!ams_delta_mtd) {
++		printk (KERN_WARNING
++			"Unable to allocate E3 NAND MTD device structure.\n");
++		err = -ENOMEM;
++		goto out;
++	}
++
++	ams_delta_mtd->owner = THIS_MODULE;
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *) (&ams_delta_mtd[1]);
++
++	/* Initialize structures */
++	memset((char *) ams_delta_mtd, 0, sizeof(struct mtd_info));
++	memset((char *) this, 0, sizeof(struct nand_chip));
++
++	/* Link the private data with the MTD structure */
++	ams_delta_mtd->priv = this;
++
++	/* Set address of NAND IO lines */
++	this->IO_ADDR_R = (OMAP_MPUIO_BASE + OMAP_MPUIO_INPUT_LATCH);
++	this->IO_ADDR_W = (OMAP_MPUIO_BASE + OMAP_MPUIO_OUTPUT);
++	this->read_byte = ams_delta_read_byte;
++	this->write_byte = ams_delta_write_byte;
++	this->write_buf = ams_delta_write_buf;
++	this->read_buf = ams_delta_read_buf;
++	this->verify_buf = ams_delta_verify_buf;
++	this->hwcontrol = ams_delta_hwcontrol;
++	if (!omap_request_gpio(AMS_DELTA_GPIO_PIN_NAND_RB)) {
++		this->dev_ready = ams_delta_nand_ready;
++	} else {
++		this->dev_ready = NULL;
++		printk(KERN_NOTICE
++			"Couldn't request gpio for Delta NAND ready.\n");
++	}
++	/* 25 us command delay time */
++	this->chip_delay = 30;
++	this->eccmode = NAND_ECC_SOFT;
++
++	/* Set chip enabled, but  */
++	ams_delta_latch2_write(NAND_MASK, AMS_DELTA_LATCH2_NAND_NRE | \
++			AMS_DELTA_LATCH2_NAND_NWE | \
++			AMS_DELTA_LATCH2_NAND_NCE | AMS_DELTA_LATCH2_NAND_NWP);
++
++        /* Scan to find existance of the device */
++	if (nand_scan (ams_delta_mtd, 1)) {
++		err = -ENXIO;
++		goto out_mtd;
++	}
++
++	/* Register the partitions */
++	add_mtd_partitions(ams_delta_mtd, partition_info,
++			ARRAY_SIZE(partition_info));
++
++	goto out;
++
++out_mtd:
++	kfree (ams_delta_mtd);
++out:
++	return err;
++}
++
++module_init(ams_delta_init);
++
++/*
++ * Clean up routine
++ */
++static void __exit ams_delta_cleanup (void)
++{
++	/* Release resources, unregister device */
++	nand_release (ams_delta_mtd);
++
++	/* Free the MTD device structure */
++	kfree (ams_delta_mtd);
++}
++module_exit(ams_delta_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Jonathan McDowell <noodles@earth.li>");
++MODULE_DESCRIPTION("Glue layer for NAND flash on Amstrad E3 (Delta)");
+diff -ruN linux-2.6.17-rc4/drivers/mtd/nand/Kconfig linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/Kconfig
+--- linux-2.6.17-rc4/drivers/mtd/nand/Kconfig	2006-05-18 16:56:39.000000000 +0100
++++ linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/Kconfig	2006-05-18 17:03:29.000000000 +0100
+@@ -49,6 +49,12 @@
+ 	help
+ 	  If you had to ask, you don't have one. Say 'N'.
+ 
++config MTD_NAND_AMS_DELTA
++	tristate "NAND Flash device on Amstrad E3"
++	depends on MACH_AMS_DELTA && MTD_NAND
++	help
++	  Support for NAND flash on Amstrad E3 (Delta).
++
+ config MTD_NAND_TOTO
+ 	tristate "NAND Flash device on TOTO board"
+ 	depends on ARCH_OMAP && MTD_NAND
+diff -ruN linux-2.6.17-rc4/drivers/mtd/nand/Makefile linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/Makefile
+--- linux-2.6.17-rc4/drivers/mtd/nand/Makefile	2006-01-03 03:21:10.000000000 +0000
++++ linux-2.6.17-rc4-e3-nand/drivers/mtd/nand/Makefile	2006-05-18 17:03:47.000000000 +0100
+@@ -7,6 +7,7 @@
+ obj-$(CONFIG_MTD_NAND_IDS)		+= nand_ids.o
+ 
+ obj-$(CONFIG_MTD_NAND_SPIA)		+= spia.o
++obj-$(CONFIG_MTD_NAND_AMS_DELTA)	+= ams-delta.o
+ obj-$(CONFIG_MTD_NAND_TOTO)		+= toto.o
+ obj-$(CONFIG_MTD_NAND_AUTCPU12)		+= autcpu12.o
+ obj-$(CONFIG_MTD_NAND_EDB7312)		+= edb7312.o
+-----
 
-Heres my process:
-Host 1.  Linux 2.4.31
-patch and compile Grub-0.92 with Mtd utils 20060505 snapshot
-compile the utils.
-ftp grub_firmware and utils to Host 2
+J.
 
-Host 2 Linux 2.6.12
-DoC in ISA socket card
-1. Boot DOS from floppy with MSys tools (5.1.4)
-2. DFORMAT /WIN:d000 /BDKL0:98304
-3. PowerOff restart
-4. Boot to Linux 2.6.12
-5. doc_loadbios /dev/mtd0 grub_firmware
-6. PowerOff restart
-7. Boot to Linux 2.6.12
-8. fdisk /dev/nftla
-    setup 2 linux partitions
-9. mke2fs -i 1024 /dev/nftla1  (and 2)
-10. Copy my system to each partition
-11. Power off, remove DoC, insert into PC104 and see the error above.
-
-
-I will happily update the Grub patches and even move these patches up to Grub
-0.97, but I'll need help, as I don't understand all the intricacies...
-
-Anything else I can try???
-
---
-Joe Robertson
-Yamaha YZF600R Thundercat
+-- 
+  Trust me, you wouldn't like us   |  .''`.  Debian GNU/Linux Developer
+         when we're angry.         | : :' :  Happy to accept PGP signed
+                                   | `. `'   or encrypted mail - RSA +
+                                   |   `-    DSA keys on the keyservers.
