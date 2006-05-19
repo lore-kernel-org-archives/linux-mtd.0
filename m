@@ -1,21 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fh1p4-0005vE-EG
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 06:03:22 -0400
-Date: Fri, 19 May 2006 12:03:03 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Jonathan McDowell <noodles@earth.li>
-Message-ID: <20060519100303.GB17270@wohnheim.fh-wedel.de>
-References: <20060518160940.GS7570@earth.li>
-	<20060518165728.GA26113@wohnheim.fh-wedel.de>
-	<20060519090142.GB7570@earth.li>
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060519060559.GA17270@wohnheim.fh-wedel.de>
+References: <1147999465.13399.33.camel@shinybook.infradead.org>
+	<20060519060559.GA17270@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 19 May 2006 11:08:52 +0100
+Message-Id: <1148033332.3875.102.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060519090142.GB7570@earth.li>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Add Amstrad Delta NAND support.
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Duplication of dirent names in JFFS2 summary
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +19,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 May 2006 10:01:42 +0100, Jonathan McDowell wrote:
-> On Thu, May 18, 2006 at 06:57:28PM +0200, Jörn Engel wrote:
-> > On Thu, 18 May 2006 17:09:41 +0100, Jonathan McDowell wrote:
-> > > +	omap_writew(0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
-> >                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> > Could that be done in a macro?
-> 
-> Is there any benefit to doing so?
+On Fri, 2006-05-19 at 08:05 +0200, JÃ¶rn Engel wrote:
+> Worse, what happens if the power fails?  Do we block creat/mkdir/mknod
+> until summary is written?  Could be a long time.  Or do we return to
+> userspace and claim we've written everything while in fact we haven't?
 
-Not a big one.  A common pattern is to have some defines like
-
-#define FOO_BASE 0x12340000
-#define FOO_THIS (FOO_BASE + 0)
-#define FOO_THAT (FOO_BASE + 4)
-etc.
-
-Your code looks similar to this pattern, so I asked.  If it doesn't
-make sense, fair.
-
-> > > +	udelay(0.04);
-> > 
-> > Floating point in the kernel?
-> 
-> Not quite. udelay is a macro on ARM so this ends up as an integer before
-> it ever hits a function call.
-
-Hmm.  It does what you say.  Whether this is robust and will continue
-to do so... I'm not sure.
-
-> In an ideal world I'd use "ndelay(40);"
-> but that would result in a delay of over 1µs as ARM doesn't have ndelay
-> defined so we hit the generic fallback.
-
-Can you either introduce a proper ndelay or get rmk to officially
-bless your use of (constant, I know) floats in the kernel source?  A
-proper ndelay would obviously be preferred.
-
-> > > +	ams_delta_mtd = kmalloc (sizeof(struct mtd_info) +
-> >                                ^
-> > > +					sizeof (struct nand_chip), GFP_KERNEL);
-> > 
-> > Remove space
-> > 
-> > And please create a structure containing both struct mtd_info and
-> > struct nand_chip.  Then use sizeof(that structure)...
-> 
-> This format is used throughout the drivers/mtd/nand/ directory. I'd
-> suggest it'd be more appropriate to have a separate patch that did this
-> for all of them if it's desired, rather than having each driver do its
-> own thing.
-> 
-> Agreed on all the spacing comments you raised; hangovers from toto.c
-> that I used as a base.
-
-We have suboptimal code in the kernel, true.  I still prefer new code
-to have slightly higher standards, so the overall quality improves
-slowly.  Therefore, pointing to the other ugly duckling is not an
-excuse for being mud-covered. ;)
-
-But you are right.  The other ducklings could use a bath as well.
-
-Jörn
+That's why I said it could happen only during GC.
 
 -- 
-There are two ways of constructing a software design: one way is to make
-it so simple that there are obviously no deficiencies, and the other is
-to make it so complicated that there are no obvious deficiencies.
--- C. A. R. Hoare
+dwmw2
