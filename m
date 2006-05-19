@@ -1,12 +1,17 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <1147999465.13399.33.camel@shinybook.infradead.org>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fgy7j-0000yS-8g
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 02:06:13 -0400
+Date: Fri, 19 May 2006 08:05:59 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Message-ID: <20060519060559.GA17270@wohnheim.fh-wedel.de>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Date: Fri, 19 May 2006 02:01:21 +0100
-Message-Id: <1148000482.13399.42.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1147999465.13399.33.camel@shinybook.infradead.org>
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Duplication of dirent names in JFFS2 summary
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -18,28 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-While I'm looking at how to reduce the size of the summary... would we
-also gain by dropping the 'totlen' field and assuming that each node's
-length can be found by subtracting its offset from the offset on the
-next node on the flash? (Much as I plan to do to reduce memory usage by
-shrinking the struct jffs2_raw_node_ref.)
+On Fri, 19 May 2006 01:44:24 +0100, David Woodhouse wrote:
+> 
+> It's a little unfortunate that we have to actually keep a second copy of
+> the name in the summary. Is there any way we could avoid it?
+> 
+> One possibility might be to refrain from storing the name in the dirent
+> node itself -- store it _only_ in the summary. This could happen only
+> during garbage collection -- when we GC a dirent node, we could write it
+> out _without_ its name. In fact, we could possibly refrain from writing
+> the GC'd dirent to the log at all -- put it _only_ in the summary.
+> 
+> That does break backwards compatibility though, which isn't ideal.
 
-That'd mean we have to have a summary representation of 'dirty' space,
-but there should be relatively few of those in the eraseblocks we've
-only just finished writing out, so it should be a gain overall.
+Worse, what happens if the power fails?  Do we block creat/mkdir/mknod
+until summary is written?  Could be a long time.  Or do we return to
+userspace and claim we've written everything while in fact we haven't?
 
-We don't actually need 'type' in the jffs2_sum_dirent_flash either, do
-we? Depending on the number of crc32 collisions we get and how expensive
-it is to read the names from the flash, we might not even need the nsize
-field.
+I'd pick the other option.
 
-And would we benefit by using a variable-length encoding of the integers
-in the summary entries? We're far from being CPU-bound when we eat
-these, surely?
-
-... which in turn means we should keep storing totlen and drop _offset_,
-since we can infer one from the other and the length can always be
-stored in fewer bits...
+Jörn
 
 -- 
-dwmw2
+The story so far:
+In the beginning the Universe was created.  This has made a lot
+of people very angry and been widely regarded as a bad move.
+-- Douglas Adams
