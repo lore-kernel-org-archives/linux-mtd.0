@@ -1,19 +1,15 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fgy7j-0000yS-8g
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 02:06:13 -0400
-Date: Fri, 19 May 2006 08:05:59 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-ID: <20060519060559.GA17270@wohnheim.fh-wedel.de>
-References: <1147999465.13399.33.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1147999465.13399.33.camel@shinybook.infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Duplication of dirent names in JFFS2 summary
+Received: from web27307.mail.ukl.yahoo.com ([217.146.177.168])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FgyMy-0001K0-Ha
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 02:22:00 -0400
+Message-ID: <20060519062151.13769.qmail@web27307.mail.ukl.yahoo.com>
+Date: Fri, 19 May 2006 06:21:51 +0000 (GMT)
+From: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Subject: JFFS2 reports warning continuously !
+Reply-To: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 May 2006 01:44:24 +0100, David Woodhouse wrote:
-> 
-> It's a little unfortunate that we have to actually keep a second copy of
-> the name in the summary. Is there any way we could avoid it?
-> 
-> One possibility might be to refrain from storing the name in the dirent
-> node itself -- store it _only_ in the summary. This could happen only
-> during garbage collection -- when we GC a dirent node, we could write it
-> out _without_ its name. In fact, we could possibly refrain from writing
-> the GC'd dirent to the log at all -- put it _only_ in the summary.
-> 
-> That does break backwards compatibility though, which isn't ideal.
+ 
+On Thu, 2006-05-18 at 08:27 +0000, Sreecharan Sivadevuni wrote:
+>>          I am running JFFS2.1 on uClinux2.4.24. My flash chip is
+>> SST39VF6401B. For all Write/erase/ (and may be also read) operations,
+>> the MTD drivers print the following warning message.  
+>>  "Warning: DQ5 raised while program operation was in progress, however
+>> operation completed OK"
 
-Worse, what happens if the power fails?  Do we block creat/mkdir/mknod
-until summary is written?  Could be a long time.  Or do we return to
-userspace and claim we've written everything while in fact we haven't?
+> Try updating to version 1.65 from CVS. I'm very wary of actually
+> updating the 2.4 tree with that, though.
 
-I'd pick the other option.
+Just could not understand what I must upgrade to 1.65 verison. 
+Is it JFFS2 that I need to upgrade?
 
-Jörn
-
--- 
-The story so far:
-In the beginning the Universe was created.  This has made a lot
-of people very angry and been widely regarded as a bad move.
--- Douglas Adams
+Thanks
+Sreecharan.S
