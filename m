@@ -1,20 +1,16 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fh3jo-0000Vh-3O
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 08:07:26 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1148039861.3199.10.camel@sauron.oktetlabs.ru>
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind@infradead.org
+In-Reply-To: <1148040313.3199.15.camel@sauron.oktetlabs.ru>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
 	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
+	<1148040313.3199.15.camel@sauron.oktetlabs.ru>
 Content-Type: text/plain
-Date: Fri, 19 May 2006 16:05:13 +0400
-Message-Id: <1148040313.3199.15.camel@sauron.oktetlabs.ru>
+Date: Fri, 19 May 2006 13:23:54 +0100
+Message-Id: <1148041434.3875.137.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Duplication of dirent names in JFFS2 summary
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 15:57 +0400, Artem B. Bityutskiy wrote:
-> About reading names during scanning.
-> 
-> The only reason why we read direntry names during scanning is to find
-> out which directory entries were deleted. There is no other reason to
-> read names.
-> 
-> Let's think if we may avoid reading direntry names at all. Yes, it is
-> possible I think - we just have to postpone this for later. But I don't
-> see a simple way do do this. Ideas?
-> 
-I mean, we don't have to know the right inode refcount values at the
-scanning time, may we calculate it at the readinode() time?
+On Fri, 2006-05-19 at 16:05 +0400, Artem B. Bityutskiy wrote:
+> I mean, we don't have to know the right inode refcount values at the
+> scanning time, may we calculate it at the readinode() time?
 
+Stop. Look at where we use the _name_. Hint: It's only in
+jffs2_add_fd_to_list(). Observe that we almost never need it, and we can
+actually fetch it from the flash only when we have to.
+
+Ponder whether that's going to be an improvement overall. It means the
+summary shrinks, so takes less space and is faster to read because it
+doesn't contain any names. The down side is that _sometimes_ when
+there's a crc32 collision, you have to actually read the name for some
+nodes from the flash after reading the summary.
+ 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+dwmw2
