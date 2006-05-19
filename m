@@ -1,19 +1,21 @@
-Received: from mail.auerswald.de ([212.185.163.229])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FgzMB-0003CO-9a
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 03:25:12 -0400
-From: Wolfgang =?utf-8?q?M=C3=BCes?= <wolfgang.mues@auerswald.de>
-To: linux-mtd@lists.infradead.org
-Date: Fri, 19 May 2006 09:24:49 +0200
-References: <446C4265.8090108@lios-tech.com>
-In-Reply-To: <446C4265.8090108@lios-tech.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Received: from the.ipv6.earth.li ([2001:1b40:0:1000:c1c9:c842:0:1]
+	helo=the.earth.li)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fh0rh-0004dV-71
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 05:01:54 -0400
+Date: Fri, 19 May 2006 10:01:42 +0100
+From: Jonathan McDowell <noodles@earth.li>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Message-ID: <20060519090142.GB7570@earth.li>
+References: <20060518160940.GS7570@earth.li>
+	<20060518165728.GA26113@wohnheim.fh-wedel.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Message-Id: <200605190924.49734.wolfgang.mues@auerswald.de>
-Subject: Re: [OT?] File system recommendation for SD cards
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060518165728.GA26113@wohnheim.fh-wedel.de>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +25,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Albrecht,
+On Thu, May 18, 2006 at 06:57:28PM +0200, Jörn Engel wrote:
+> On Thu, 18 May 2006 17:09:41 +0100, Jonathan McDowell wrote:
+> > +	omap_writew(0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
+>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> Could that be done in a macro?
 
-Am Donnerstag, 18. Mai 2006 12:15 schrieb Albrecht Dre=C3=9F:
-> After reading a Sandisk whitepaper about wear levelling [1] I thought
-> about using a standard vfat file system on it (mainly to have the
-> ability to remove the sd card and to read it on a Winbloze pc).
-> However, I read a report that using a sync vfat fs could lead to fast
-> corruption of the SD card [2].
+Is there any benefit to doing so?
 
-Why don't you use async vfat (standard up to 2.6.13(?)), because vfat has
-not implemented the sync option until then.
+> > +	udelay(0.04);
+> 
+> Floating point in the kernel?
 
-I've had no problems with it - dirty data is written to sd very fast.
+Not quite. udelay is a macro on ARM so this ends up as an integer before
+it ever hits a function call. In an ideal world I'd use "ndelay(40);"
+but that would result in a delay of over 1µs as ARM doesn't have ndelay
+defined so we hit the generic fallback.
 
-regards
-Wolfgang
+> > +	ams_delta_mtd = kmalloc (sizeof(struct mtd_info) +
+>                                ^
+> > +					sizeof (struct nand_chip), GFP_KERNEL);
+> 
+> Remove space
+> 
+> And please create a structure containing both struct mtd_info and
+> struct nand_chip.  Then use sizeof(that structure)...
 
-=2D-=20
-Wolfgang Muees                    Vor den Grashoefen 1
-Auerswald GmbH & Co. KG       	  D-38162 Cremlingen
-Hardware Development              Germany
-Tel +49 5306 9219 0               Fax +49 5306 9219 94
+This format is used throughout the drivers/mtd/nand/ directory. I'd
+suggest it'd be more appropriate to have a separate patch that did this
+for all of them if it's desired, rather than having each driver do its
+own thing.
+
+Agreed on all the spacing comments you raised; hangovers from toto.c
+that I used as a base.
+
+J.
+
+-- 
+I am a passenger.
