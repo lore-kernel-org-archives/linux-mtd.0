@@ -1,29 +1,12 @@
-Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fh7C1-00062S-18
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 11:47:32 -0400
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1148053436.3875.190.camel@pmac.infradead.org>
-References: <1147999465.13399.33.camel@shinybook.infradead.org>
-	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
-	<1148040313.3199.15.camel@sauron.oktetlabs.ru>
-	<1148041434.3875.137.camel@pmac.infradead.org>
-	<1148048246.3199.34.camel@sauron.oktetlabs.ru>
-	<1148050203.3875.167.camel@pmac.infradead.org>
-	<1148051254.3199.54.camel@sauron.oktetlabs.ru>
-	<1148052379.3199.58.camel@sauron.oktetlabs.ru>
-	<1148052791.3875.180.camel@pmac.infradead.org>
-	<1148053135.3199.63.camel@sauron.oktetlabs.ru>
-	<1148053436.3875.190.camel@pmac.infradead.org>
-Content-Type: text/plain
-Date: Fri, 19 May 2006 19:46:36 +0400
-Message-Id: <1148053596.3199.68.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: Duplication of dirent names in JFFS2 summary
-Reply-To: dedekind@infradead.org
+Received: from sccmmhc92.asp.att.net ([204.127.203.212])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fh7TY-0006Wk-EZ
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 12:05:24 -0400
+From: jmrobert5@mchsi.com
+To: linux-mtd@lists.infradead.org
+Date: Fri, 19 May 2006 16:05:10 +0000
+Message-Id: <051920061605.8551.446DECB60001E21100002167219792676103010CD2079C080C03BFCA9B9D0A0D019D0306@mchsi.com>
+Subject: Need a working gub_firmware.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,14 +16,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 16:43 +0100, David Woodhouse wrote:
-> Q: What affects nlink? If there's a file 'foo' in the '/' directory,
-> which is inode #365 -- where do you look for dirents which might affect
-> the nlink of that inode #365?
-> 
-OK, got it. Thanks.
+Anyone have a working grub_firmware they can email me?
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+I want to boot an ext2 partition, linux 2.6.12.
+
+Shouldn't a MSys 5.1.4 tools work with 2202 chips?  Which one writes the NFTL
+Header?  It seems like my grub_firmware can't read the header.
+
+Thanks,
+--
+Joe Robertson
+Yamaha YZF600R Thundercat
