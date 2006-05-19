@@ -1,18 +1,15 @@
 Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fh3sm-0000o2-4f
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 08:15:15 -0400
+	id 1Fh3jo-0000Vh-3O
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 08:07:26 -0400
 From: "Artem B. Bityutskiy" <dedekind@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1148040679.3875.133.camel@pmac.infradead.org>
+In-Reply-To: <1148039861.3199.10.camel@sauron.oktetlabs.ru>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
-	<1148000482.13399.42.camel@shinybook.infradead.org>
-	<1148039632.3875.131.camel@pmac.infradead.org>
-	<1148039931.3199.12.camel@sauron.oktetlabs.ru>
-	<1148040679.3875.133.camel@pmac.infradead.org>
+	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
 Content-Type: text/plain
-Date: Fri, 19 May 2006 16:14:31 +0400
-Message-Id: <1148040871.3199.17.camel@sauron.oktetlabs.ru>
+Date: Fri, 19 May 2006 16:05:13 +0400
+Message-Id: <1148040313.3199.15.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -27,11 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 13:11 +0100, David Woodhouse wrote:
-> If we can halve the amount of space taken on the flash by the summary
-> nodes, I think that's a worthwhile aim.
+On Fri, 2006-05-19 at 15:57 +0400, Artem B. Bityutskiy wrote:
+> About reading names during scanning.
 > 
-If halve, OK, but why do you think this encoding will halve it?
+> The only reason why we read direntry names during scanning is to find
+> out which directory entries were deleted. There is no other reason to
+> read names.
+> 
+> Let's think if we may avoid reading direntry names at all. Yes, it is
+> possible I think - we just have to postpone this for later. But I don't
+> see a simple way do do this. Ideas?
+> 
+I mean, we don't have to know the right inode refcount values at the
+scanning time, may we calculate it at the readinode() time?
 
 -- 
 Best Regards,
