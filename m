@@ -1,19 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@infradead.org
-In-Reply-To: <1148040871.3199.17.camel@sauron.oktetlabs.ru>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fh5nl-00034o-0g
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 10:18:05 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1148041434.3875.137.camel@pmac.infradead.org>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
-	<1148000482.13399.42.camel@shinybook.infradead.org>
-	<1148039632.3875.131.camel@pmac.infradead.org>
-	<1148039931.3199.12.camel@sauron.oktetlabs.ru>
-	<1148040679.3875.133.camel@pmac.infradead.org>
-	<1148040871.3199.17.camel@sauron.oktetlabs.ru>
+	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
+	<1148040313.3199.15.camel@sauron.oktetlabs.ru>
+	<1148041434.3875.137.camel@pmac.infradead.org>
 Content-Type: text/plain
-Date: Fri, 19 May 2006 13:31:06 +0100
-Message-Id: <1148041866.3875.145.camel@pmac.infradead.org>
+Date: Fri, 19 May 2006 18:17:26 +0400
+Message-Id: <1148048246.3199.34.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Duplication of dirent names in JFFS2 summary
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +26,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 16:14 +0400, Artem B. Bityutskiy wrote:
-> On Fri, 2006-05-19 at 13:11 +0100, David Woodhouse wrote:
-> > If we can halve the amount of space taken on the flash by the summary
-> > nodes, I think that's a worthwhile aim.
-> > 
-> If halve, OK, but why do you think this encoding will halve it? 
+On Fri, 2006-05-19 at 13:23 +0100, David Woodhouse wrote:
+> On Fri, 2006-05-19 at 16:05 +0400, Artem B. Bityutskiy wrote:
+> > I mean, we don't have to know the right inode refcount values at the
+> > scanning time, may we calculate it at the readinode() time?
+> 
+> Stop. Look at where we use the _name_. Hint: It's only in
+> jffs2_add_fd_to_list(). 
+True.
 
-I think overall we can about halve the size of the summary nodes. A
-variable-length encoding would be part of that.
+> Observe that we almost never need it, and we can
+> actually fetch it from the flash only when we have to.
+Let's talk not in 'summary' context. Suppose there is no summary. I'm
+talking about how to avoid reading names (and CRC-checking) in this
+case. 
 
-struct jffs2_sum_inode_flash
-{
-	jint16_t nodetype;	/* node type */
-	jint32_t inode;		/* inode number */
-	jint32_t version;	/* inode version */
-	jint32_t offset;	/* offset on jeb */
-	jint32_t totlen; 	/* record length */
-} __attribute__((packed));
+WIn the current implementation, we have to read names. At the source
+code-level language, because we need nhash at jffs2_add_fd_to_list().
 
-The nodetype can be a single byte. 
+But I'll repeat my statement. The only fundamental reason why we need
+names at the scanning time is to provide correct nlink of inodes. This
+is because the way how JFFS2 unlinks: it writes direntry with the same
+name but with target ino=0.
 
-Inode number is going to start low, and will take only two bytes if it's
-less than 16364 -- three bytes up to 2097152. Storing it as an index
-into a table of 'inodes affected by this summary' might also be
-worthwhile, since we'll often have many nodes which belong to the same
-inode.
+So, if we'd not read names at the scanning time at all, we'd have no
+possibility to calculate correct nlinks. They'd be greater or equivalent
+to the correct values. And some dead inodes would no go at scan time.
+And my idea: so what? Nothing really bad in this. We'll adjust them
+later.
 
-Version is also going to start low -- and we can also avoid storing it
-for the second and subsequent nodes belonging to any given inode. We
-_know_ it only counts up by one at a time.
+> Ponder whether that's going to be an improvement overall. It means the
+> summary shrinks, so takes less space and is faster to read because it
+> doesn't contain any names. The down side is that _sometimes_ when
+> there's a crc32 collision, you have to actually read the name for some
+> nodes from the flash after reading the summary.
 
-Offset can be entirely redundant if we represent dirty space with a
-separate summary entry -- there shouldn't be much dirty space in the
-eraseblock when we've only just finished writing it anyway.
-
-Totlen is going to be small. 
-
-So yes, for the 'struct jffs2_sum_inode_flash' I think we can halve it.
-
-Much of the same goes for the 'struct jffs2_sum_dirent_flash', and we
-can also drop the name from that too. So yes, I suspect we can get close
-to half the size of that too.
+So, we can skip reading names. But then we'll have incorrect nlinks
+after scanning. And what I'm saying is that it is possible to refine
+nlinks at readinode() time.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
