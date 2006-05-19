@@ -1,15 +1,19 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-In-Reply-To: <1148000482.13399.42.camel@shinybook.infradead.org>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fh3cW-0008G0-DS
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 07:58:27 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1147999465.13399.33.camel@shinybook.infradead.org>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
-	<1148000482.13399.42.camel@shinybook.infradead.org>
 Content-Type: text/plain
-Date: Fri, 19 May 2006 12:53:52 +0100
-Message-Id: <1148039632.3875.131.camel@pmac.infradead.org>
+Date: Fri, 19 May 2006 15:57:41 +0400
+Message-Id: <1148039861.3199.10.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: Duplication of dirent names in JFFS2 summary
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 02:01 +0100, David Woodhouse wrote:
-> And would we benefit by using a variable-length encoding of the integers
-> in the summary entries? We're far from being CPU-bound when we eat
-> these, surely?
+On Fri, 2006-05-19 at 01:44 +0100, David Woodhouse wrote:
+> Another possibility might be to omit the full name from the summary, but
+> to store only the hash (or name_crc) instead. We hardly ever actually
+> need the full name -- it's only used if there's a hash collision, in
+> jffs2_add_fd_to_list().
 
-Thinking of something vaguely like UTF-8, but more optimal. Each byte
-would convey seven bits of information, and the top bit would indicate
-whether there's a further byte to be added.
+About reading names during scanning.
 
-So a number from 0-127 would be stored as-is, while numbers from
-128-16383 are stored with seven bits in each of two bytes, with the top
-bit of the first set and the top bit of the second clear.
+The only reason why we read direntry names during scanning is to find
+out which directory entries were deleted. There is no other reason to
+read names.
 
-This means we take only two bytes for the common node lengths -- one
-byte for nodes up to 508 bytes (obviously we can shift the length >>2
-before storing it since it's always a multiple of 4). 
-
-Or should we be more ambitious and actually go for bit-packing instead
-of just bytes?
-
-unsigned char *encode_int(unsigned char *p, uint32_t val)
-{
-	switch (val) {
-	case (1<<28) ... 0xffffffff:
-		*p++ = 0x80 | ((val >> 28) & 0x7f);
-	case (1<<21) ... (1<<28)-1:
-		*p++ = 0x80 | ((val >> 21) & 0x7f);
-	case (1<<14) ... (1<<21)-1:
-		*p++ = 0x80 | ((val >> 14) & 0x7f);
-	case (1<<7) ... (1<<14)-1:
-		*p++ = 0x80 | ((val >> 7) & 0x7f);
-	default:
-		*p++ = val & 0x7f;
-	}
-	return p;
-}
-
-unsigned char *decode_int(unsigned char *p, uint32_t *val)
-{
-	uint32_t ret = 0;
-	unsigned char c;
-
-	while ((c = *p++) & 0x80) {
-		ret |= c & 0x7f;
-		ret <<= 7;
-	}
-	ret |= c;
-	*val = ret;
-	return p;
-}
-
+Let's think if we may avoid reading direntry names at all. Yes, it is
+possible I think - we just have to postpone this for later. But I don't
+see a simple way do do this. Ideas?
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
