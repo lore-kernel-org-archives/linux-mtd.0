@@ -1,14 +1,18 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
-In-Reply-To: <20060519062151.13769.qmail@web27307.mail.ukl.yahoo.com>
-References: <20060519062151.13769.qmail@web27307.mail.ukl.yahoo.com>
-Content-Type: text/plain
-Date: Fri, 19 May 2006 11:13:12 +0100
-Message-Id: <1148033592.3875.105.camel@pmac.infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060519100303.GB17270@wohnheim.fh-wedel.de>
+References: <20060518160940.GS7570@earth.li>
+	<20060518165728.GA26113@wohnheim.fh-wedel.de>
+	<20060519090142.GB7570@earth.li>
+	<20060519100303.GB17270@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 19 May 2006 11:26:31 +0100
+Message-Id: <1148034391.3875.109.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 reports warning continuously !
+Content-Transfer-Encoding: 8bit
+Cc: Jonathan McDowell <noodles@earth.li>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 06:21 +0000, Sreecharan Sivadevuni wrote:
-> 
-> > Try updating to version 1.65 from CVS. I'm very wary of actually
-> > updating the 2.4 tree with that, though.
-> 
-> Just could not understand what I must upgrade to 1.65 verison. 
-> Is it JFFS2 that I need to upgrade? 
+On Fri, 2006-05-19 at 12:03 +0200, Jörn Engel wrote: 
+> > > And please create a structure containing both struct mtd_info and
+> > > struct nand_chip.  Then use sizeof(that structure)...
+> > 
+> > This format is used throughout the drivers/mtd/nand/ directory. I'd
+> > suggest it'd be more appropriate to have a separate patch that did this
+> > for all of them if it's desired, rather than having each driver do its
+> > own thing.
 
-Sorry. Version 1.65 of drivers/mtd/chips/cfi_cmdset_0002.c.
+It's fine as-is. The claim that it's nicer to introduce an extra
+datatype just for the allocation is subjective, at best.
 
-Please do not start new threads to continue an existing discussion --
-reply to the old one.
+> > Agreed on all the spacing comments you raised; hangovers from toto.c
+> > that I used as a base.
+> 
+> We have suboptimal code in the kernel, true.  I still prefer new code
+> to have slightly higher standards, so the overall quality improves
+> slowly.  Therefore, pointing to the other ugly duckling is not an
+> excuse for being mud-covered. ;)
+> 
+> But you are right.  The other ducklings could use a bath as well.
+
+They already got it.
 
 -- 
 dwmw2
