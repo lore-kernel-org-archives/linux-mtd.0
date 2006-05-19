@@ -1,6 +1,6 @@
 From: David Woodhouse <dwmw2@infradead.org>
 To: dedekind@infradead.org
-In-Reply-To: <1148052379.3199.58.camel@sauron.oktetlabs.ru>
+In-Reply-To: <1148051254.3199.54.camel@sauron.oktetlabs.ru>
 References: <1147999465.13399.33.camel@shinybook.infradead.org>
 	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
 	<1148040313.3199.15.camel@sauron.oktetlabs.ru>
@@ -8,10 +8,9 @@ References: <1147999465.13399.33.camel@shinybook.infradead.org>
 	<1148048246.3199.34.camel@sauron.oktetlabs.ru>
 	<1148050203.3875.167.camel@pmac.infradead.org>
 	<1148051254.3199.54.camel@sauron.oktetlabs.ru>
-	<1148052379.3199.58.camel@sauron.oktetlabs.ru>
 Content-Type: text/plain
-Date: Fri, 19 May 2006 16:33:11 +0100
-Message-Id: <1148052791.3875.180.camel@pmac.infradead.org>
+Date: Fri, 19 May 2006 16:37:56 +0100
+Message-Id: <1148053076.3875.186.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -25,25 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 19:26 +0400, Artem B. Bityutskiy wrote:
-> 1. During scan nobody can access JFFS2, so "giving incorrect values to
-> userspace until we've finished the scan" is wrong.
+On Fri, 2006-05-19 at 19:07 +0400, Artem B. Bityutskiy wrote:
+> > First, there's the case where we've garbage-collected a dirent node but
+> > haven't _yet_ deleted the original. But deleting the original is the
+> > whole _point_ in GC, so that's not a common case.
+> Sorry, -ENOPARSE on "But deleting the original is the whole _point_ in
+> GC, so that's not a common case." 
 
-I shouldn't have said 'scan'. I should have said 'until the GC thread
-has finished checking nodes'. 
+Q: Why do we write new nodes out during GC?
+A: So that we can delete the original.
 
-> 2. Before accessing *any* inode, read_inode() is called. So what I'm
-> saying is to calculate *correct* nlink at the read_inode() time.
+Q: What is the point in GC?
+A: The point in GC is that we can delete the original nodes. 
 
-You can't do that. You don't have correct nlink until you've checked all
-the dirents in _all_ the directories on the file system.
+Better now?
 
-> I'm repeating for the 3rd time my statement: names (or their hashes) are
-> only needed to calculate correct nlinks. We don't have to calculate
-> correct nlinks at the *scan* time, we may try to do this at the
-> *read_inode()* time. See what I mean? 
+My point is that when we've written out a colliding node during garbage
+collection, that is because we intend to delete the original node real
+soon now -- that deletion is what the GC is _for_. That's the whole
+_point_ in the GC.
 
-I know what you mean, and it's _still_ not correct.
+So we needn't worry too much about these collisions -- they'll be
+short-lived and hence uncommon.
 
 -- 
 dwmw2
