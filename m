@@ -1,12 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ferenc Havasi <havasi@inf.u-szeged.hu>
-Content-Type: text/plain
-Date: Fri, 19 May 2006 01:44:24 +0100
-Message-Id: <1147999465.13399.33.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: Duplication of dirent names in JFFS2 summary
+Received: from ug-out-1314.google.com ([66.249.92.169])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FgtAD-0005eL-K3
+	for linux-mtd@lists.infradead.org; Thu, 18 May 2006 20:48:37 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so616954uge
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 18 May 2006 17:48:20 -0700 (PDT)
+Message-ID: <625fc13d0605181741o555494ceg392a72f415c3132b@mail.gmail.com>
+Date: Thu, 18 May 2006 19:41:38 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Charles Manning" <manningc2@actrix.gen.nz>
+In-Reply-To: <200605190943.03913.manningc2@actrix.gen.nz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <200605190943.03913.manningc2@actrix.gen.nz>
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: Re: Why are there 2 oobinfos for a NAND mtd?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,26 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-It's a little unfortunate that we have to actually keep a second copy of
-the name in the summary. Is there any way we could avoid it?
+On 5/18/06, Charles Manning <manningc2@actrix.gen.nz> wrote:
+> There are both mtd->oobinfo and
+> ((struct nand_chip *)mtd->priv)->autooob.
+>
+> There's even a memcpy from one to the other. If they're supposed to be th=
+e
+> same all the time, surely there should only be one of these?
+>
+> They both get used in nand_base, which is perhaps wrong. For example,
+> nand_read_ecc() uses mtd->oobinfo and nand_do_read_ecc() uses the other o=
+ne.
+>
+> Having two gets confusing and I have seen drivers where one has been  hac=
+ked
+> one but not the other  which has lead to inconsistencies and faailures.
+>
+> Is there any valid reason to have two?
 
-One possibility might be to refrain from storing the name in the dirent
-node itself -- store it _only_ in the summary. This could happen only
-during garbage collection -- when we GC a dirent node, we could write it
-out _without_ its name. In fact, we could possibly refrain from writing
-the GC'd dirent to the log at all -- put it _only_ in the summary.
+I have no idea, but I do know that Thomas plans for some oob cleanup
+soon.  Perhaps this is on his list.
 
-That does break backwards compatibility though, which isn't ideal.
-
-Another possibility might be to omit the full name from the summary, but
-to store only the hash (or name_crc) instead. We hardly ever actually
-need the full name -- it's only used if there's a hash collision, in
-jffs2_add_fd_to_list().
-
-Further thoughts...? 
-
-Do we have any current data on how much space is taken by summary nodes
-on typical file systems, and how much of that is names?
-
--- 
-dwmw2
+josh
