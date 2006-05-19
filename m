@@ -1,15 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-In-Reply-To: <20060519060559.GA17270@wohnheim.fh-wedel.de>
-References: <1147999465.13399.33.camel@shinybook.infradead.org>
-	<20060519060559.GA17270@wohnheim.fh-wedel.de>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 19 May 2006 11:08:52 +0100
-Message-Id: <1148033332.3875.102.camel@pmac.infradead.org>
+To: Sreecharan Sivadevuni <mailsreecharan@yahoo.co.uk>
+In-Reply-To: <20060519062151.13769.qmail@web27307.mail.ukl.yahoo.com>
+References: <20060519062151.13769.qmail@web27307.mail.ukl.yahoo.com>
+Content-Type: text/plain
+Date: Fri, 19 May 2006 11:13:12 +0100
+Message-Id: <1148033592.3875.105.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: Duplication of dirent names in JFFS2 summary
+Subject: Re: JFFS2 reports warning continuously !
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,12 +18,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-05-19 at 08:05 +0200, Jörn Engel wrote:
-> Worse, what happens if the power fails?  Do we block creat/mkdir/mknod
-> until summary is written?  Could be a long time.  Or do we return to
-> userspace and claim we've written everything while in fact we haven't?
+On Fri, 2006-05-19 at 06:21 +0000, Sreecharan Sivadevuni wrote:
+> 
+> > Try updating to version 1.65 from CVS. I'm very wary of actually
+> > updating the 2.4 tree with that, though.
+> 
+> Just could not understand what I must upgrade to 1.65 verison. 
+> Is it JFFS2 that I need to upgrade? 
 
-That's why I said it could happen only during GC.
+Sorry. Version 1.65 of drivers/mtd/chips/cfi_cmdset_0002.c.
+
+Please do not start new threads to continue an existing discussion --
+reply to the old one.
 
 -- 
 dwmw2
