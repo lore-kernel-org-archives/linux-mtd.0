@@ -1,20 +1,19 @@
-Received: from the.ipv6.earth.li ([2001:1b40:0:1000:c1c9:c842:0:1]
-	helo=the.earth.li)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fh1nA-0005f1-2P
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 06:01:18 -0400
-Date: Fri, 19 May 2006 11:01:05 +0100
-From: Jonathan McDowell <noodles@earth.li>
-To: David Vrabel <dvrabel@arcom.com>
-Message-ID: <20060519100105.GF7570@earth.li>
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fh1p4-0005vE-EG
+	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 06:03:22 -0400
+Date: Fri, 19 May 2006 12:03:03 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Jonathan McDowell <noodles@earth.li>
+Message-ID: <20060519100303.GB17270@wohnheim.fh-wedel.de>
 References: <20060518160940.GS7570@earth.li>
 	<20060518165728.GA26113@wohnheim.fh-wedel.de>
-	<20060519090142.GB7570@earth.li> <446D90B5.2090802@arcom.com>
+	<20060519090142.GB7570@earth.li>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <446D90B5.2090802@arcom.com>
+In-Reply-To: <20060519090142.GB7570@earth.li>
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 Subject: Re: [PATCH] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,38 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, May 19, 2006 at 10:32:37AM +0100, David Vrabel wrote:
-> Jonathan McDowell wrote:
-> > On Thu, May 18, 2006 at 06:57:28PM +0200, Jörn Engel wrote:
-> >> On Thu, 18 May 2006 17:09:41 +0100, Jonathan McDowell wrote:
-> >>> +	omap_writew(0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
-> >>                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> >> Could that be done in a macro?
-> > 
-> > Is there any benefit to doing so?
-> > 
-> >>> +	udelay(0.04);
-> >> Floating point in the kernel?
-> > 
-> > Not quite. udelay is a macro on ARM so this ends up as an integer before
-> > it ever hits a function call. In an ideal world I'd use "ndelay(40);"
-> > but that would result in a delay of over 1µs as ARM doesn't have ndelay
-> > defined so we hit the generic fallback.
+On Fri, 19 May 2006 10:01:42 +0100, Jonathan McDowell wrote:
+> On Thu, May 18, 2006 at 06:57:28PM +0200, Jörn Engel wrote:
+> > On Thu, 18 May 2006 17:09:41 +0100, Jonathan McDowell wrote:
+> > > +	omap_writew(0, (OMAP_MPUIO_BASE + OMAP_MPUIO_IO_CNTL));
+> >                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > Could that be done in a macro?
 > 
-> Use instead:
+> Is there any benefit to doing so?
+
+Not a big one.  A common pattern is to have some defines like
+
+#define FOO_BASE 0x12340000
+#define FOO_THIS (FOO_BASE + 0)
+#define FOO_THAT (FOO_BASE + 4)
+etc.
+
+Your code looks similar to this pattern, so I asked.  If it doesn't
+make sense, fair.
+
+> > > +	udelay(0.04);
+> > 
+> > Floating point in the kernel?
 > 
-> /* delay for at least 40 ns */
-> udelay(1);
+> Not quite. udelay is a macro on ARM so this ends up as an integer before
+> it ever hits a function call.
 
-Using "ndelay(40);" here would seem to make more sense; it's equivalent
-at present and means that once I or someone else provided an ndelay
-implementation for ARM the driver wouldn't need changed to take
-advantage of it.
+Hmm.  It does what you say.  Whether this is robust and will continue
+to do so... I'm not sure.
 
-J.
+> In an ideal world I'd use "ndelay(40);"
+> but that would result in a delay of over 1µs as ARM doesn't have ndelay
+> defined so we hit the generic fallback.
+
+Can you either introduce a proper ndelay or get rmk to officially
+bless your use of (constant, I know) floats in the kernel source?  A
+proper ndelay would obviously be preferred.
+
+> > > +	ams_delta_mtd = kmalloc (sizeof(struct mtd_info) +
+> >                                ^
+> > > +					sizeof (struct nand_chip), GFP_KERNEL);
+> > 
+> > Remove space
+> > 
+> > And please create a structure containing both struct mtd_info and
+> > struct nand_chip.  Then use sizeof(that structure)...
+> 
+> This format is used throughout the drivers/mtd/nand/ directory. I'd
+> suggest it'd be more appropriate to have a separate patch that did this
+> for all of them if it's desired, rather than having each driver do its
+> own thing.
+> 
+> Agreed on all the spacing comments you raised; hangovers from toto.c
+> that I used as a base.
+
+We have suboptimal code in the kernel, true.  I still prefer new code
+to have slightly higher standards, so the overall quality improves
+slowly.  Therefore, pointing to the other ugly duckling is not an
+excuse for being mud-covered. ;)
+
+But you are right.  The other ducklings could use a bath as well.
+
+Jörn
 
 -- 
-                 /------------------------------------\
-                 |      Ships log... erm... one.      |
-                 | http://www.blackcatnetworks.co.uk/ |
-                 \------------------------------------/
+There are two ways of constructing a software design: one way is to make
+it so simple that there are obviously no deficiencies, and the other is
+to make it so complicated that there are no obvious deficiencies.
+-- C. A. R. Hoare
