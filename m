@@ -1,12 +1,22 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: KaiGai Kohei <kaigai@ak.jp.nec.com>
-Content-Type: text/plain
-Date: Sat, 20 May 2006 19:41:26 +0100
-Message-Id: <1148150486.3875.251.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Subject: JFFS2/xattr problems.
+Received: from ug-out-1314.google.com ([66.249.92.169])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FhYjT-0007xa-35
+	for linux-mtd@lists.infradead.org; Sat, 20 May 2006 17:11:33 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so980096uge
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 20 May 2006 14:11:26 -0700 (PDT)
+Message-ID: <625fc13d0605201411kb7f40e1sd6cfe8ebf50a6e38@mail.gmail.com>
+Date: Sat, 20 May 2006 16:11:26 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Linux-MTD Mailing List" <linux-mtd@lists.infradead.org>
+In-Reply-To: <E1FhOEg-0003dX-4R@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <E1FhOEg-0003dX-4R@pentafluge.infradead.org>
+Cc: Andrew Morton <akpm@osdl.org>
+Subject: Re: [MTD] Avoid 64-bit division in mtdconcat
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,36 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I created a user xattr on JFFS2, then attempted to remove it. On NAND
-flash I get the following BUG():
+On 5/20/06, Linux-MTD Mailing List <linux-mtd@lists.infradead.org> wrote:
+> Commit:     6c8b44abc86a3e23dd1a22c0ee187f06bd7c7f5d
+> Parent:     5fc3dbc418e01345e25e96b3192a1c46051c3fdc
+> Author:     Andrew Morton <akpm@osdl.org>
+> AuthorDate: Sat May 20 10:17:21 2006 +0100
+> Commit:     David Woodhouse <dwmw2@infradead.org>
+> CommitDate: Sat May 20 10:17:21 2006 +0100
+>
+>     [MTD] Avoid 64-bit division in mtdconcat
+>
+>     WARNING: "__moddi3" [drivers/mtd/mtdconcat.ko] undefined!
+>
+>     Signed-off-by: Andrew Morton <akpm@osdl.org>
+>     Signed-off-by: David Woodhouse <dwmw2@infradead.org>
 
-jffs2_flash_writev(): Non-contiguous write to 004ca000
-wbuf was previously 004ca000-004ca040
-------------[ cut here ]------------
-kernel BUG at /root/jffs2/wbuf.c:672!
+NAK.  asm-ppc/div64.h doesn't exist.  Whether we like it or not,
+arch/ppc is still valid and this breaks mtdconcat support on lots of
+embedded stuff.  There might be other architectures too, but only one
+is required for this to be broken :).
 
-Call Trace:
- [<c8222aad>] jffs2_flash_writev+0x616/0x6ac [jffs2]
- [<c823eadb>] nand_read_ecc+0x29/0x2f [nand]     [<c823eadb>] nand_read_ecc+0x29/0x2f [nand]
- [<c8221a6a>] jffs2_flash_read+0x8a/0x22b [jffs2]     [<c8222b8b>] jffs2_flash_write+0x48/0x51 [jffs2]
- [<c822364d>] delete_xattr_datum_node+0xcc/0x144 [jffs2]     [<c8223dea>] delete_xattr_datum+0x2c/0x3c [jffs2]
- [<c8223ed2>] delete_xattr_ref+0x32/0x3b [jffs2]     [<c8224e37>] do_jffs2_setxattr+0x1a9/0x5aa [jffs2]
- [<c01c1462>] _atomic_dec_and_lock+0x22/0x2c     [<c82254fc>] jffs2_user_setxattr+0x3c/0x47 [jffs2]
- [<c016e9e8>] generic_removexattr+0x37/0x3d     [<c016ef78>] vfs_removexattr+0x78/0xc8
-
-What is delete_xattr_datum_node() trying to do? It seems to be writing
-for a second time to an area of flash which has _already_ been written.
-You can't do that.
-
-Also, just 'cp -av /lib/libc.so.6 /mnt/jffs2' is failing to set the
-POSIX ACL, with -EINVAL. This happens because posix_acl_equiv_mode()
-returns zero, because the ACL is entirely equivalent to normal modes. So
-the 'value' passed to do_jffs2_setxattr() is NULL, which should _delete_
-the corresponding xattr.
-
-But because the xattr is not found, the code returns -EINVAL. Shouldn't
-that error be -ENOATTR? And shouldn't the ACL code then convert it to a
-more appropriate return value?
-
--- 
-dwmw2
+josh
