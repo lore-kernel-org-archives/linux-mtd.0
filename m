@@ -1,18 +1,29 @@
-Received: from sccmmhc91.asp.att.net ([204.127.203.211])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FhGaN-0006aK-KJ
-	for linux-mtd@lists.infradead.org; Fri, 19 May 2006 21:48:58 -0400
-Message-ID: <446E7581.2040501@mchsi.com>
-Date: Fri, 19 May 2006 20:48:49 -0500
-From: Joe Robertson <jmrobert5@mchsi.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-References: <051920061605.8551.446DECB60001E21100002167219792676103010CD2079C080C03BFCA9B9D0A0D019D0306@mchsi.com>
-	<1148071495.2566.3.camel@shinybook.infradead.org>
-In-Reply-To: <1148071495.2566.3.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FhMzR-0005XQ-KH
+	for linux-mtd@lists.infradead.org; Sat, 20 May 2006 04:39:32 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1148053436.3875.190.camel@pmac.infradead.org>
+References: <1147999465.13399.33.camel@shinybook.infradead.org>
+	<1148039861.3199.10.camel@sauron.oktetlabs.ru>
+	<1148040313.3199.15.camel@sauron.oktetlabs.ru>
+	<1148041434.3875.137.camel@pmac.infradead.org>
+	<1148048246.3199.34.camel@sauron.oktetlabs.ru>
+	<1148050203.3875.167.camel@pmac.infradead.org>
+	<1148051254.3199.54.camel@sauron.oktetlabs.ru>
+	<1148052379.3199.58.camel@sauron.oktetlabs.ru>
+	<1148052791.3875.180.camel@pmac.infradead.org>
+	<1148053135.3199.63.camel@sauron.oktetlabs.ru>
+	<1148053436.3875.190.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Sat, 20 May 2006 12:38:38 +0400
+Message-Id: <1148114318.3199.76.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: Re: Need a working gub_firmware.
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Duplication of dirent names in JFFS2 summary
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,38 +33,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Well, DINFO 5.1.4 reports them as NFTL.
+On Fri, 2006-05-19 at 16:43 +0100, David Woodhouse wrote:
+> Q: What affects nlink? If there's a file 'foo' in the '/' directory,
+> which is inode #365 -- where do you look for dirents which might affect
+> the nlink of that inode #365?
 
-However I notice that DINFO 5.1.4 reports the TrueFFS as 5.1.4, BUT 
-using DINFO 5.1.2 on THE SAME CHIP reports TrueFFS as 5.1.2!?
-So the diagnostic tool may be wrong. Could be part of my problem.
+One more idea that came to my mind today: your approach with nhashes
+seems good, but it has one drawback - collisions. They may be rare, but
+we'll anyway deal with them - more code, more testing.
 
-I am going to go thru the grub-0.92 patch thouroghly sometime this 
-weekend.  If anyone has any specs or docs they can share with me on the 
-2202(or 2200) series (Msys 5.1.x tools), I would appreciate it.  I've 
-got to understand my build chain and find out what works.  I know lots 
-of stuff that doesn't work.
+How about to introduce "direntry IDs"? Just 32 bit values, constantly
+incremented, per-inode. They'd act instead of names. We'd not need names
+at all, as those IDs would play their role. Advantages of fixed-width
+IDs vs variable length names are obvious.
 
-I need Grub because we use the serial/console choice, boot menus and a 
-few other features.  This all worked once upon a time, but we've updated 
-compilers and tools and other parts.  Grub 0.92 won't even compile under 
-gcc 3.3.x.  I need to fix all this.
+I suspect it'd simplify and improve many things, but I'm not sure we
+could make it compatible.
 
-Also what is the difference between the code in patches/ for grub-0.92 
-and the code in the grub/ folder???
-
-Thanks, and have good weekend.
-
-Joe
-jmrobert5[at]mchsi.com
-
-
-David Woodhouse wrote:
-> On Fri, 2006-05-19 at 16:05 +0000, jmrobert5@mchsi.com wrote:
-> 
->>Shouldn't a MSys 5.1.4 tools work with 2202 chips?  Which one writes the NFTL
->>Header?  It seems like my grub_firmware can't read the header. 
-> 
-> 
-> Are the 2202 chips not the new ones which use INFTL?
-> 
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
