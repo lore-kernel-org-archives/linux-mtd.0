@@ -1,15 +1,24 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: KaiGai Kohei <kaigai@ak.jp.nec.com>
-In-Reply-To: <44704CA9.8010604@ak.jp.nec.com>
-References: <1148150486.3875.251.camel@pmac.infradead.org>
-	<44704CA9.8010604@ak.jp.nec.com>
-Content-Type: text/plain
-Date: Sun, 21 May 2006 13:41:27 +0100
-Message-Id: <1148215287.3875.274.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from ug-out-1314.google.com ([66.249.92.173])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FhozJ-00029U-LJ
+	for linux-mtd@lists.infradead.org; Sun, 21 May 2006 10:33:02 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so1060636uge
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 21 May 2006 07:32:55 -0700 (PDT)
+Message-ID: <625fc13d0605210732x189256c6o21f3b49a17e5622e@mail.gmail.com>
+Date: Sun, 21 May 2006 09:32:55 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Andrew Morton" <akpm@osdl.org>
+In-Reply-To: <20060520141924.2f2e5289.akpm@osdl.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <E1FhOEg-0003dX-4R@pentafluge.infradead.org>
+	<625fc13d0605201411kb7f40e1sd6cfe8ebf50a6e38@mail.gmail.com>
+	<20060520141924.2f2e5289.akpm@osdl.org>
 Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2/xattr problems.
+Subject: Re: [MTD] Avoid 64-bit division in mtdconcat
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +28,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-05-21 at 20:19 +0900, KaiGai Kohei wrote:
-> delete_xattr_datum_node() try to write invalid data to ensure the target
-> node was already deleted. I was worried about that a xdatum already removed
-> may be reused as a effective xdatum on next mounting.
-> But it's purely design problem that should be changed.
+On 5/20/06, Andrew Morton <akpm@osdl.org> wrote:
+> "Josh Boyer" <jwboyer@gmail.com> wrote:
+> > >     [MTD] Avoid 64-bit division in mtdconcat
+> > >
+> > >     WARNING: "__moddi3" [drivers/mtd/mtdconcat.ko] undefined!
+> > >
+> > >     Signed-off-by: Andrew Morton <akpm@osdl.org>
+> > >     Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+> >
+> > NAK.  asm-ppc/div64.h doesn't exist.
+>
+> It must exist.  Things like mm/vmscan.c include it.
 
-Yes. You cannot remove it from the flash -- you have to know that it is
-there and make sure your scan code copes with it appropriately.
+Ugh.  Of course, you're right.  It's obfuscated by having
+-Iarch/ppc/include and then having arch/ppc/include/asm a symlink to
+include/asm-powerpc.
 
-> Alternatively, I plan to write a delete marker on new node allocated by
-> jffs2_reserve_space() when xdatum is removed.
-> I intend to be dealt with a xdatum with 0xffffffff of version number
-> as a delete marker for xdatum. This node will be ignored on next mounting.
+Sigh.
 
-OK, that can work. It'll be a little like the 'deletion dirent' with
-child inode #0. The same issues apply here -- the 'deletion' node must
-remain on the flash for as long as any copies of the _original_ xattr
-do.
+Sorry for the noise.  At least it motivated me to finally setup a
+cross compile environment on my new machine ;)
 
-Also, you must not reuse that xid until all nodes are completely erased.
-For inodes, we do this by keeping the jffs2_inode_cache around even when
-it's dead, as long as it has nodes. You could possibly use the same
-mechanism in erase.c
-
-> Some days will be necessary to change it.
-> Would you wait for a while? 
-
-Of course.
-
-If it's convenient (i.e. if I haven't broken it entirely), please work
-from git://git.infradead.org/jffs2-devel-2.6.git from now on. That tree
-contains a few other JFFS2 improvements, including the elimination of
-'__totlen' from the jffs2_raw_node_ref, and some speedup of the code
-which reads a summary node from the flash during mount.
-
--- 
-dwmw2
+josh
