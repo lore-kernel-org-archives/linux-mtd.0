@@ -1,17 +1,14 @@
 From: David Woodhouse <dwmw2@infradead.org>
-To: Josh Boyer <jwboyer@gmail.com>
-In-Reply-To: <625fc13d0605210732x189256c6o21f3b49a17e5622e@mail.gmail.com>
-References: <E1FhOEg-0003dX-4R@pentafluge.infradead.org>
-	<625fc13d0605201411kb7f40e1sd6cfe8ebf50a6e38@mail.gmail.com>
-	<20060520141924.2f2e5289.akpm@osdl.org>
-	<625fc13d0605210732x189256c6o21f3b49a17e5622e@mail.gmail.com>
+To: Jonathan McDowell <noodles@earth.li>
+In-Reply-To: <20060520141011.GJ7570@earth.li>
+References: <20060518160940.GS7570@earth.li> <20060520141011.GJ7570@earth.li>
 Content-Type: text/plain
-Date: Sun, 21 May 2006 18:04:07 +0100
-Message-Id: <1148231047.12285.2.camel@pmac.infradead.org>
+Date: Sun, 21 May 2006 18:12:58 +0100
+Message-Id: <1148231578.12285.5.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org
-Subject: Re: [MTD] Avoid 64-bit division in mtdconcat
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Add Amstrad Delta NAND support.
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,11 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-05-21 at 09:32 -0500, Josh Boyer wrote:
-> Sorry for the noise.  At least it motivated me to finally setup a
-> cross compile environment on my new machine ;) 
+On Sat, 2006-05-20 at 15:10 +0100, Jonathan McDowell wrote:
+> Ok, taking the comments on board let's try again.
+> 
+>  * Use ndelay(40) instead of udelay(0.04). This will involve a longer
+>    delay, but works fine and will take advantage of ndelay once ARM
+>    stops using the generic fallback.
+>  * Fixup errant spacing.
+>  * Make ams_delta_init static.
 
-And to switch your board to arch/powerpc too, I hope?
+Applied; thanks.
 
 -- 
 dwmw2
