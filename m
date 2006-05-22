@@ -1,26 +1,34 @@
-Received: from ug-out-1314.google.com ([66.249.92.174])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FhtCz-0006Rx-0P
-	for linux-mtd@lists.infradead.org; Sun, 21 May 2006 15:04:11 -0400
-Received: by ug-out-1314.google.com with SMTP id q2so1099375uge
+Received: from fra-del-02.spheriq.net ([195.46.51.98])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fi7bV-0003MI-FV
+	for linux-mtd@lists.infradead.org; Mon, 22 May 2006 06:25:47 -0400
+Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
+	by fra-del-02.spheriq.net with ESMTP id k4MAPASa008134
+	for <linux-mtd@lists.infradead.org>; Mon, 22 May 2006 10:25:10 GMT
+Received: from fra-cus-02.spheriq.net (fra-cus-02.spheriq.net [195.46.51.38])
+	by fra-out-03.spheriq.net with ESMTP id k4MAP94K027611
+	for <linux-mtd@lists.infradead.org>; Mon, 22 May 2006 10:25:09 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by fra-cus-02.spheriq.net with ESMTP id k4MAP7tT006354
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 22 May 2006 10:25:08 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2953ADAD4
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 21 May 2006 12:03:08 -0700 (PDT)
-Message-ID: <625fc13d0605211203o406ba610p2354840941380b77@mail.gmail.com>
-Date: Sun, 21 May 2006 14:03:08 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-In-Reply-To: <1148231047.12285.2.camel@pmac.infradead.org>
+	Mon, 22 May 2006 10:22:13 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 33AD647473
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 22 May 2006 10:22:05 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 22 May 2006 12:21:57 +0200
+Message-ID: <000c01c67d89$93035ae0$253682a4@nap.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <E1FhOEg-0003dX-4R@pentafluge.infradead.org>
-	<625fc13d0605201411kb7f40e1sd6cfe8ebf50a6e38@mail.gmail.com>
-	<20060520141924.2f2e5289.akpm@osdl.org>
-	<625fc13d0605210732x189256c6o21f3b49a17e5622e@mail.gmail.com>
-	<1148231047.12285.2.camel@pmac.infradead.org>
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org
-Subject: Re: [MTD] Avoid 64-bit division in mtdconcat
+Subject: latest patch download
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,14 +38,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/21/06, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Sun, 2006-05-21 at 09:32 -0500, Josh Boyer wrote:
-> > Sorry for the noise.  At least it motivated me to finally setup a
-> > cross compile environment on my new machine ;)
->
-> And to switch your board to arch/powerpc too, I hope?
+I have visited the suggested web-address =
+http://git.infradead.org/?p=3Dmtd-2.6.git with the latest updates; how =
+can download the latest version of all files (mtd and jffs2)? Are there =
+available some patches to add all the latest updates on my Linux =
+release?
 
-Eventually, yes.  4xx is currently lagging quite a bit in that area
-and there's no clear direction for  a dtb yet.  More sighs.
-
-josh
+Thank you for your support.
+Best Regards,
+ Davide Cascone
