@@ -1,17 +1,12 @@
-From: David Woodhouse <dwmw2@infradead.org>
-To: Ronny L Nilsson <rln-mtd@arbetsmyra.dyndns.org>
-In-Reply-To: <20060523094607.5B30C8B3@arbetsmyra.dyndns.org>
-References: <20060502214507.C56443DC@arbetsmyra.dyndns.org>
-	<20060510122626.GB31935@wohnheim.fh-wedel.de>
-	<20060523094607.5B30C8B3@arbetsmyra.dyndns.org>
-Content-Type: text/plain
-Date: Tue, 23 May 2006 12:05:49 +0100
-Message-Id: <1148382349.12285.124.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>,
-	linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] for passing JFFS2 options at mount time
+Received: from sccmmhc91.asp.att.net ([204.127.203.211])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FiXas-0002Pz-F8
+	for linux-mtd@lists.infradead.org; Tue, 23 May 2006 10:10:45 -0400
+From: jmrobert5@mchsi.com
+To: linux-mtd@lists.infradead.org
+Date: Tue, 23 May 2006 14:10:40 +0000
+Message-Id: <052320061410.24390.447317E00004605700005F46219791336303010CD2079C080C03BFCA9B9D0A0D019D0306@mchsi.com>
+Subject: Anyone know the DoC2000 Header?
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,16 +16,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-05-23 at 11:44 +0200, Ronny L Nilsson wrote:
-> 
-> Here's an update for my JFFS2 mount option patch. It allow users to 
-> control runtime options on a per mounted fs basis.
->         mount -t jffs2 mtd1 /flash -o compressor=none
->         mount -t jffs2 mtd1 /flash -o compressor=priority 
+Hi All,
 
-That's not per-fs. That's per-mount. Like whatever it was Artem was
-trying to do last week, this _also_ wants to be stored on the medium
-rather than provided every time as a mount option.
 
--- 
-dwmw2
+I think my problems are that I am somehow getting 0x00 in the nftl_header in
+place of the 0xff for the UnitSizeFactor that supposed to be there.
+
+Does someone know the offset for the UnitSizeFactor value?
+
+I am thinking that for a quick test, if I got one of my bad DoCs and set that
+byte to 0xff, if that works then thats the issue.  But then theres the ??? of
+how it got that way???  And how to avoid it.
+
+Thanks!
+
+--
+Joe Robertson
+Yamaha YZF600R Thundercat
