@@ -1,19 +1,20 @@
-Received: from nz-out-0102.google.com ([64.233.162.203])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FjGBZ-0007UR-7u
-	for linux-mtd@lists.infradead.org; Thu, 25 May 2006 09:47:40 -0400
-Received: by nz-out-0102.google.com with SMTP id q3so1664374nzb
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 May 2006 06:47:31 -0700 (PDT)
-Message-ID: <4475B575.1070903@gmail.com>
-Date: Thu, 25 May 2006 08:47:33 -0500
-From: Nishanth Menon <menon.nishanth@gmail.com>
-MIME-Version: 1.0
+	id 1FjGOm-0007nZ-5b
+	for linux-mtd@lists.infradead.org; Thu, 25 May 2006 10:01:17 -0400
+Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0IZT009P1QXYG8A0@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 25 May 2006 10:01:10 -0400 (EDT)
+Date: Thu, 25 May 2006 10:01:10 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <001501c67fd4$b50e37c0$253682a4@nap.st.com>
 To: Davide CASCONE <davide.cascone@st.com>
+Message-id: <Pine.LNX.4.64.0605250945150.6268@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 References: <001501c67fd4$b50e37c0$253682a4@nap.st.com>
-In-Reply-To: <001501c67fd4$b50e37c0$253682a4@nap.st.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 Subject: Re: JFFS2 Control Mode Program on Sibley
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,18 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Davide CASCONE wrote:
-> Does JFFS2 use the Control Mode Program on Sibley device? After a my preliminary analysis, it seems that only the Object Mode Program is used. Is it right?
+On Thu, 25 May 2006, Davide CASCONE wrote:
+
 > 
-That is correct Davide. the reason for that is that in Control mode, one
-of the A/B halfs cannot be written, in short we only get 16 bits of
-contiguous data in memory.
+> Does JFFS2 use the Control Mode Program on Sibley device?
 
-The neagitve part of using only Object mode is that Of the programming
-regions/sector, we loose one complete region for the cleanmarker..
-something like 128K(? dont remember off hand) for 8/12 bytes of
-cleanmarker/EBH and hence the implementation using write buffering
-(something we do on nand-like flash devices) on M18 flashes.
+No.
 
-Regards,
-Nishanth Menon
+> After a my preliminary analysis, it seems that only the Object Mode 
+> Program is used. Is it right?
+
+Yes.
+
+The Sibley "Control Mode" is just too awkward for JFFS2 to take 
+advantage of without major modifications.
+
+
+Nicolas
