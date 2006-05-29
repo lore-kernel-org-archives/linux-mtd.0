@@ -1,16 +1,15 @@
-Received: from moutng.kundenserver.de ([212.227.126.183])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fk4Kx-0005gN-6H
-	for linux-mtd@lists.infradead.org; Sat, 27 May 2006 15:20:42 -0400
-From: Johannes Niess <linux@johannes-niess.de>
-To: linux-mtd@lists.infradead.org
-Date: Sat, 27 May 2006 21:20:11 +0200
+Received: from smtp001.mail.ukl.yahoo.com ([217.12.11.32])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fkf0A-00039g-Sg
+	for linux-mtd@lists.infradead.org; Mon, 29 May 2006 06:29:38 -0400
+Message-ID: <447ACCF2.1080700@themis.com>
+Date: Mon, 29 May 2006 12:29:06 +0200
+From: jean-francois simon <jfs@themis.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1565851.AX4l17nQIT";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <200605272120.19348.linux@johannes-niess.de>
-Subject: mtd2block should not expand sparse loopback files
+Subject: do_erase_oneblock() wait queue
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,84 +19,146 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1565851.AX4l17nQIT
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi,
+I am going through the MTD code and I was wondering what function
+is doing the wake_up() after do_erase_oneblock goes to sleep (see
+1260 below).
+My basic problem is that when i do an "eraseall /dev/mtd[x]' I
+get a lot of input/output errors:
 
-Hi list,
+ash-3.00# eraseall /dev/mtd1
+Erasing 256 Kibyte @ 0 --  0 % complete.
+eraseall: /dev/mtd1: MTD Erase failure: Input/output error
 
-Thank you all for providing mtd and jffs2. I'm using it a little bit differ=
-ent=20
-than intended and it looks like the crash recovery feature is causing me=20
-trouble. I'm trying to save disk space on my gentoo installation for an old=
-=20
-notebook. AFAIK jffs2 is  the only way to provide transparent read and writ=
-e=20
-access with compression. Other FS can be used with sparse loopback files an=
-d=20
-do not occupy disk space for unused blocks ("Over commiting disk space"=20
-becomes feasible). I want to combine the features, e. g. to=20
-store /usr/portage in a sparse loopback file formated with jffs2.
+My geometry is:
+-interleave = 4
+-bankwidth = 8 (64b)
+p/n = ST MICRO M29DW640
 
-I tried this:
+In chip_good() I get a weird status of 005c005cffff0018 or
+005cffff00180018
 
-# make1G sparse loop file, taking 1M real disk space
-dd if=3D/dev/null of=3Dsparse.jffs2 bs=3D1M count=3D1000 seek=3D1000
-# mount it as loop device
-losetup /dev/loop/0 sparse.jffs2
-# make a jffs2 file system on it
-mkfs.jffs2 -o /dev/loop/0 -d /emptydir
-# convert it into a mtd
-modprobe block2mtd block2mtd=3D/dev/loop/0
-# mount the mtd device
-mount -t jffs2 /dev/mtdblock0 /mnt/somewhere
+I am thinking that maybe I get woken up too early and before 
+erase is complte, but since I  can't find who is doing it, I am 
+not sure of it.
+Note that it I comment out the "return -EIO" (line 1294) I can
+erase the chips and write to them.
 
-The jffs2 is readable and writable as expected. BUT upon first mount a coup=
-le=20
-of pdflush (pseudo kernel) processes become active and completely expand th=
-e=20
-sparse loopback file. Only after that disk activity has settled, "ls" and=20
-"du" give identical numbers of 1GB. Before mounting "ls" gives the maximum=
-=20
-size and "du" just counts occupied sectors, e. g. "ls" gives 1 GB and "du"=
-=20
-only 1 MB.
+Thanks for the help,
 
-"od -h sparse.jffs2|less" gives a repeating pattern after mount:
+-jf simon
 
-*
-617750000 1985 2003 000c 0000 b0b1 e41e ffff ffff
-617750020 ffff ffff ffff ffff ffff ffff ffff ffff
-*
-617760000 1985 2003 000c 0000 b0b1 e41e ffff ffff
-617760020 ffff ffff ffff ffff ffff ffff ffff ffff
-*
+1219 static inline int do_erase_oneblock(struct map_info *map,
+struct flchip *chip, unsigned long adr, int len, void *thunk)
+1220 {
+1221         struct cfi_private *cfi = map->fldrv_priv;
+1222         unsigned long timeo = jiffies + HZ;
+1223         DECLARE_WAITQUEUE(wait, current);
+1224         int ret = 0;
+1225
+1226         adr += chip->start;
+1227
+1228         cfi_spin_lock(chip->mutex);
+1229         ret = get_chip(map, chip, adr, FL_ERASING);
+1230         if (ret) {
+1231                 cfi_spin_unlock(chip->mutex);
+1232                 return ret;
+1233         }
+1234
+1235         DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): ERASE 0x%.8lx\n",
+1236                __func__, adr );
+1237
+1238         ENABLE_VPP(map);
+1239         cfi_send_gen_cmd(0xAA, cfi->addr_unlock1,
+chip->start, map, cfi, cfi->device_type, NULL);
+1240         cfi_send_gen_cmd(0x55, cfi->addr_unlock2,
+chip->start, map, cfi, cfi->device_type, NULL);
+1241         cfi_send_gen_cmd(0x80, cfi->addr_unlock1,
+chip->start, map, cfi, cfi->device_type, NULL);
+1242         cfi_send_gen_cmd(0xAA, cfi->addr_unlock1,
+chip->start, map, cfi, cfi->device_type, NULL);
+1243         cfi_send_gen_cmd(0x55, cfi->addr_unlock2,
+chip->start, map, cfi, cfi->device_type, NULL);
+1244         map_write(map, CMD(0x30), adr);
+1245
+1246         chip->state = FL_ERASING;
+1247         chip->erase_suspended = 0;
+1248         chip->in_progress_block_addr = adr;
+1249
+1250         cfi_spin_unlock(chip->mutex);
+1251         msleep(chip->erase_time/2);
+1252         cfi_spin_lock(chip->mutex);
+1253
+1254         timeo = jiffies + (HZ*20);
+1255
+1256         for (;;) {
+1257                 if (chip->state != FL_ERASING) {
+1258                         /* Someone's suspended the erase.
+Sleep */
+1259                         set_current_state(TASK_UNINTERRUPTIBLE);
+1260                         add_wait_queue(&chip->wq, &wait);
+1261                         cfi_spin_unlock(chip->mutex);
+1262                         schedule();
+1263                         remove_wait_queue(&chip->wq, &wait);
+1264                         cfi_spin_lock(chip->mutex);
+1265                         continue;
+1266                 }
+1267                 if (chip->erase_suspended) {
+1268                         /* This erase was suspended and resumed.
+1269                            Adjust the timeout */
+1270                         timeo = jiffies + (HZ*20); /* FIXME */
+1271                         chip->erase_suspended = 0;
+1272                 }
+1273
+1274                 if (chip_ready(map, adr))
+1275                         goto op_done;
+1276
+1277                 if (time_after(jiffies, timeo))
+1278                         break;
+1279
+1280                 /* Latency issues. Drop the lock, wait a
+while and retry */
+1281                 cfi_spin_unlock(chip->mutex);
+1282                 set_current_state(TASK_UNINTERRUPTIBLE);
+1283                 schedule_timeout(1);
+1284                 cfi_spin_lock(chip->mutex);
+1285         }
+1286
+1287         printk(KERN_WARNING "MTD %s(): software timeout\n",
+1288                __func__ );
+1289
+1290         /* reset on all failures. */
+1291         map_write( map, CMD(0xF0), chip->start );
+1292         /* FIXME - should have reset delay before continuing */
+1293
+1294  		     ret = -EIO;
+1295  op_done:
+1296         chip->state = FL_READY;
+1297         put_chip(map, chip, adr);
+1298         cfi_spin_unlock(chip->mutex);
+1299         return ret;
+1300 }
+1301
 
-I guess that the "fill with 1's" flash strategy is taking its toll together=
-=20
-with the "Clean" markers. Can I switch that off? Using
-"mkfs.jffs2 --no-cleanmarkers"  does not help, as does  --eraseblock=3D0.
 
-block2mtd should not touch unused blocks at all in this setup. They should=
-=20
-only be written to on first use for storing real data.
 
-Please make transparent compression AND loop file expansion on demand=20
-possible. Thank you very much for your work!
 
-Johannes Nie=DF
+-- 
 
---nextPart1565851.AX4l17nQIT
-Content-Type: application/pgp-signature
+Best regards,
+_______________________________________
+jean-francois simon - themis computer
+5, rue irene joliot curie
+38330 eybens - france
++33 (0)870 448 638
++33 (0)4 76 14 77 85 - jfs@themis.com
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.2.2 (GNU/Linux)
 
-iD8DBQBEeKZzZ86b9aw2E+0RAkN5AKCtZ+1TKDPzyOIedVkwoKxjoXrOXwCfQk1Q
-XeLHiGiOaU8PvIe98k0ZZEg=
-=zU8l
------END PGP SIGNATURE-----
 
---nextPart1565851.AX4l17nQIT--
+	
+
+	
+		
+___________________________________________________________________________ 
+Yahoo! Mail réinvente le mail ! Découvrez le nouveau Yahoo! Mail et son interface révolutionnaire.
+http://fr.mail.yahoo.com
