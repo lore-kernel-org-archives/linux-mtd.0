@@ -1,25 +1,20 @@
 Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fl8iz-00045n-LL
-	for linux-mtd@lists.infradead.org; Tue, 30 May 2006 14:13:55 -0400
+	id 1Fl9bZ-0005TK-V7
+	for linux-mtd@lists.infradead.org; Tue, 30 May 2006 15:11:13 -0400
 Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR001.ip.videotron.ca
 	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J03003G4BZ1V8B0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 30 May 2006 14:13:49 -0400 (EDT)
-Date: Tue, 30 May 2006 14:13:49 -0400 (EDT)
+	with ESMTP id <0J03003W5EKWV7D0@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Tue, 30 May 2006 15:10:08 -0400 (EDT)
+Date: Tue, 30 May 2006 15:10:08 -0400 (EDT)
 From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <20060530174552.GE26220@wohnheim.fh-wedel.de>
+In-reply-to: <20060530185017.GG26220@wohnheim.fh-wedel.de>
 To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-Message-id: <Pine.LNX.4.64.0605301412030.16927@localhost.localdomain>
+Message-id: <Pine.LNX.4.64.0605301506470.16927@localhost.localdomain>
 MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_VUxmjtsZi6o2Mf52tAQjeQ)"
+Content-type: multipart/mixed; boundary="Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)"
 References: <20060530152406.GA15284@wohnheim.fh-wedel.de>
-	<1149003621.2885.185.camel@hades.cambridge.redhat.com>
-	<20060530155001.GA26220@wohnheim.fh-wedel.de>
-	<1149004893.32620.6.camel@sauron.oktetlabs.ru>
-	<20060530161035.GC26220@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.64.0605301226001.16927@localhost.localdomain>
-	<20060530174552.GE26220@wohnheim.fh-wedel.de>
+	<20060530185017.GG26220@wohnheim.fh-wedel.de>
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH,RFC] [MTD] replace MTD_NORFLASH with MTD_GENERIC_TYPE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -34,39 +29,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---Boundary_(ID_VUxmjtsZi6o2Mf52tAQjeQ)
+--Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)
 Content-type: TEXT/PLAIN; charset=iso-8859-1
 Content-transfer-encoding: 8BIT
 
 On Tue, 30 May 2006, Jörn Engel wrote:
 
-> On Tue, 30 May 2006 12:32:58 -0400, Nicolas Pitre wrote:
-> > 
-> > I'm firmly with you and so far I agree 100% with your effort.  The 
-> > cleanups you're providing are much appreciated.
-> > 
-> > However Artem might have a point.  You probably should leave mtd->type 
-> > alone, at least for now.  It is good to not depend on it anymore but it 
-> > probably still has its informative value, just like name string attached 
-> > to MTD partitions.  If it should go then it should be removed at the 
-> > very end when no one uses it anymore.
+> Here is another migration path, that will likely receive Artems
+> objections as well.
 > 
-> In a way, that is what I do.  mtd->type still exists, although only
-> for those types that are still used.  MTD_RAM and MTD_ROM have been
-> converted to MTD_GENERIC_TYPE.  In part, that helps me to easily see
-> how far I've come with a simple grep.  And in part it prevents others
-> from reintroducing new dependencies.  My plan is to remove mtd->type
-> completely when every device is of type MTD_GENERIC_TYPE.
+> Invariant:
+> In the end, initialization of the wbuf code will be identical for all
+> devices that require wbuf.  Whether a device requires wbuf is simply
+> checked by looking at mtd->size.  If mtd->size is greater than 1, we
+> need wbuf.
 > 
-> But if there is a general consensus, I can leave that field alone for
-> now and hope that people don't introduce new dependencies.
+> Step 1:
+> Turn MTD_NOR into MTD_GENERIC_TYPE and call the current initialization
+> for NOR the generic one.
+> 
+> Step 2:
+> Turn MTD_DATAFLASH into MTD_GENERIC_TYPE, remove its special cased
+> wbuf initialization and make sure the generic one is usable for
+> DATAFLASH as well.
+> 
+> Step 3:
+> Turn MTD_NAND into MTD_GENERIC_TYPE, remove its special cased wbuf
+> initialization and make sure the generic one is usable for NAND as
+> well.
 
-Like you discovered yourself, people tend to duplicate existing code.  
-So once enough of the current code is moved away from using mtd->type 
-then the probability for new usage added to the tree will go down as 
-well.
+If presented that way you're indeed up for more protests.
+
+Just don't "turn MTD_* into MTD_GENERIC_TYPE".  Instead, try to "move 
+MTD_* away from using mtd->type".  Or something like that.
 
 
 Nicolas
 
---Boundary_(ID_VUxmjtsZi6o2Mf52tAQjeQ)--
+--Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)--
