@@ -1,22 +1,20 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fl9bZ-0005TK-V7
-	for linux-mtd@lists.infradead.org; Tue, 30 May 2006 15:11:13 -0400
-Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J03003W5EKWV7D0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 30 May 2006 15:10:08 -0400 (EDT)
-Date: Tue, 30 May 2006 15:10:08 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-In-reply-to: <20060530185017.GG26220@wohnheim.fh-wedel.de>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-Message-id: <Pine.LNX.4.64.0605301506470.16927@localhost.localdomain>
-MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)"
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FlLmR-0008JL-1M
+	for linux-mtd@lists.infradead.org; Wed, 31 May 2006 04:10:23 -0400
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060530185017.GG26220@wohnheim.fh-wedel.de>
 References: <20060530152406.GA15284@wohnheim.fh-wedel.de>
 	<20060530185017.GG26220@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Date: Wed, 31 May 2006 12:09:42 +0400
+Message-Id: <1149062982.32620.67.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH,RFC] [MTD] replace MTD_NORFLASH with MTD_GENERIC_TYPE
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,44 +24,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)
-Content-type: TEXT/PLAIN; charset=iso-8859-1
-Content-transfer-encoding: 8BIT
-
-On Tue, 30 May 2006, Jörn Engel wrote:
-
-> Here is another migration path, that will likely receive Artems
-> objections as well.
+On Tue, 2006-05-30 at 20:50 +0200, Jörn Engel wrote:
+> Again, Artem won't like this.  But this time I would like to see
+> better objections than before.  Just to show how silly they are:
 > 
-> Invariant:
-> In the end, initialization of the wbuf code will be identical for all
-> devices that require wbuf.  Whether a device requires wbuf is simply
-> checked by looking at mtd->size.  If mtd->size is greater than 1, we
-> need wbuf.
+> 	"*you* should prove why it is useless, not me"
+> That is what these patches are doing.  I remove every existing user of
+> mtd->type and thereby prove that mtd->type was useless in this
+> particular case.  When I'm finished and have dealt with every case,
+> the proof is complete.
 > 
-> Step 1:
-> Turn MTD_NOR into MTD_GENERIC_TYPE and call the current initialization
-> for NOR the generic one.
-> 
-> Step 2:
-> Turn MTD_DATAFLASH into MTD_GENERIC_TYPE, remove its special cased
-> wbuf initialization and make sure the generic one is usable for
-> DATAFLASH as well.
-> 
-> Step 3:
-> Turn MTD_NAND into MTD_GENERIC_TYPE, remove its special cased wbuf
-> initialization and make sure the generic one is usable for NAND as
-> well.
+> 	"i want to print a type of flash my JFFS2 file system is
+> 	working on"
+> Show me the code.  If you have out-of-tree patches that may collide
+> with my work - tough luck.  I have out-of-tree patches as well and as
+> long as they are not merged, it is _my_ duty to deal with any breakage
+> created by other's changes in the kernel.  That has always been the
+> general rule and for a good reason.
 
-If presented that way you're indeed up for more protests.
+Please, stop this, there is no reason for greening. You was several
+times said about my real reasons. This was just an answer for your "I
+don't want to delve into your explanation, I just let David judge".
 
-Just don't "turn MTD_* into MTD_GENERIC_TYPE".  Instead, try to "move 
-MTD_* away from using mtd->type".  Or something like that.
+Once more.
 
+1. Having an mtd->field field and capabilities flags a bad idea. Why?
 
-Nicolas
+1a: Who initializes this mtd->flags field? If I want to add 20 new
+capabilities, how many places do I have to change? As many as there are
+drivers in MTD? Insane.
 
---Boundary_(ID_y5cVKT2h/A0v+CREmTsUtw)--
+2a. In general, the capabilities thing is application-dependent. And it
+must stay in application's area, not deep in drivers.
+
+3a: If I'm a user of MTD, and I want to add 20 new capability, do I have
+to change MTD itself? It's not my business to do this.
+
+4a. How wide is the mtd->flags field? 32 bits? So, you restrict me by 32
+capabilities? And if I need more, I have to combine the existing ones?
+Why is it better then using mtd->type?
+
+So, this is not an extensible solution.
+
+2. OK, what do you offer instead (the question nobody asked yet)?
+
+Forget about mtd->flags. Leave alone mtd->type. Add an
+include/linux/mtd/flash_capabilities.h header which looks like this:
+
+/* If the flash allows to clear individual bits */
+#define mtd_can_clear_bits(mtd) (mtd->type == MTD_NORFLASH)
+/* If the goat may be milked */
+#define mtd_can_milk_a_goat(mtd) (bah)
+....
+etc.
+
+So, you have your set of capabilities. You use this header in JFFS2 and
+clean it up. Your task is solved.
+
+If I want to add a new flash type, I fix the flash_capabilities.h
+header. If I add a new capability - I fix the header as well. I don't
+get my dirty forepaws into other drivers. It's extensible.
+
+To put it differently, I offer to add the capabilities stuff as a thin
+layer over MTD, not to jab it deeply into the MTD core.
+
+3. It's difficult to understand what is MTD_GENERIC_TYPE stuff. In
+reality, this is just a temporary junk, which is supposed to go later.
+But temporary junk usually tends to stay forever. I can't understand why
+you cannot avoid introducing it. 
+
+4. OK, if you still think that mtd->flags is better, please, go ahead.
+After all, it may be fixed later if needed. And may be I'm just wrong.
+But, please, do it without this strange MTD_GENERIC_TYPE stuff. Why
+can't you?
+
+5. Introducing capabilities and removing mtd->type are 2 completely
+different activities. No need to mix them, IMO.
+
+I appreciate your work, and offer another way to do this. I think it is
+better, and didn't so far hear any good argument against it. Thanks for
+reading this :-)
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
