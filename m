@@ -1,15 +1,26 @@
-Received: from smtp003.mail.ukl.yahoo.com ([217.12.11.34])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FlOze-0002Z3-DS
-	for linux-mtd@lists.infradead.org; Wed, 31 May 2006 07:36:14 -0400
-Message-ID: <447D7F83.1000500@yahoo.fr>
-Date: Wed, 31 May 2006 13:35:31 +0200
-From: jfaslist <jfaslist@yahoo.fr>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Subject: I/O errors from do_erase_oneblock()
+Received: from relais.videotron.ca ([24.201.245.36])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FlRGk-0004RK-Vz
+	for linux-mtd@lists.infradead.org; Wed, 31 May 2006 10:02:00 -0400
+Received: from xanadu.home ([74.56.108.184]) by VL-MO-MR004.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0J040070EUZ41EH0@VL-MO-MR004.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 31 May 2006 10:01:52 -0400 (EDT)
+Date: Wed, 31 May 2006 10:01:52 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+In-reply-to: <1149062982.32620.67.camel@sauron.oktetlabs.ru>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Message-id: <Pine.LNX.4.64.0605310947550.16927@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <20060530152406.GA15284@wohnheim.fh-wedel.de>
+	<20060530185017.GG26220@wohnheim.fh-wedel.de>
+	<1149062982.32620.67.camel@sauron.oktetlabs.ru>
+Cc: linux-mtd@lists.infradead.org,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH,RFC] [MTD] replace MTD_NORFLASH with MTD_GENERIC_TYPE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,137 +30,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I have a question on the chips/cfi_cmdset0002.c:do_erase_oneblock()  
-function (see below). It is probably a stupid question but I can't find 
-the answer:
+On Wed, 31 May 2006, Artem B. Bityutskiy wrote:
 
--What is the use of  INVALIDATE_CACHE_UDELAY (seems to be just a call to 
-cfi_udelay() ) . I guess I don't understand the reason for having this 
-delay, plus the HZ*20 delay in the following for(;;) loop.
--After the function do a "add_wait_queue" and "schedule", what code is 
-going to send a "wake_up()" to end the wait?
+> 1. Having an mtd->field field and capabilities flags a bad idea. Why?
+> 
+> 1a: Who initializes this mtd->flags field?
 
-My problem is that on erase, I get I/O errors coming  from this 
-function. I have added call to cfi_udelay() (up to 12ms) and that seems 
-to solve the problem (even though ST Micro claims worst case is 6ms). 
-But I  prefer to understand what's going on. I have a suspicion that 
-chip_ready() may be ending the for(;;) loop too soon causing chip_good() 
-to fail.
+The chip driver providing anMTD interface to said chip.
 
-My geometry is:
--interleave = 4
--bankwidth = 8 (64b)
-p/n = ST MICRO M29DW640
+> If I want to add 20 new
+> capabilities, how many places do I have to change? As many as there are
+> drivers in MTD? Insane.
 
-I use the  MTD code from linux-2.6.15
+Don't be ridiculous.  There is no way you can find 20 capabilities total 
+for a generic MTD interface.
 
-Thanks for the help,
--jf simon
+> 2a. In general, the capabilities thing is application-dependent. And it
+> must stay in application's area, not deep in drivers.
 
+Not true.  The capabilities are function of the hardware not the 
+application.
 
-static int __xipram do_erase_oneblock(struct map_info *map, struct 
-flchip *chip, unsigned long adr, int len, void *thunk)
-{
-        struct cfi_private *cfi = map->fldrv_priv;
-        unsigned long timeo = jiffies + HZ;
-        DECLARE_WAITQUEUE(wait, current);
-        int ret = 0;
+> 3a: If I'm a user of MTD, and I want to add 20 new capability, do I have
+> to change MTD itself? It's not my business to do this.
 
-        adr += chip->start;
+If you want to add new capabilities, you only have to care about users 
+of those capabilities and of course users that worked without them 
+before will just continue to work if they ignore them.
 
-        spin_lock(chip->mutex);
-        ret = get_chip(map, chip, adr, FL_ERASING);
-        if (ret) {
-                spin_unlock(chip->mutex);
-                return ret;
-        }
+> 4a. How wide is the mtd->flags field? 32 bits? So, you restrict me by 32
+> capabilities? And if I need more, I have to combine the existing ones?
+> Why is it better then using mtd->type?
 
-        DEBUG( MTD_DEBUG_LEVEL3, "MTD %s(): ERASE 0x%.8lx\n",
-               __func__, adr );
+Who said capabilities have to be only single bits?
 
-        XIP_INVAL_CACHED_RANGE(map, adr, len);
-        ENABLE_VPP(map);
-        xip_disable(map, chip, adr);
+And even if the capability field as you insist to see it has only 32 
+bits, what prevents you from extending it in the unlikely event more 
+bits might be needed?
 
-        cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-        cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-        cfi_send_gen_cmd(0x80, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-        cfi_send_gen_cmd(0xAA, cfi->addr_unlock1, chip->start, map, cfi, 
-cfi->device_type, NULL);
-        cfi_send_gen_cmd(0x55, cfi->addr_unlock2, chip->start, map, cfi, 
-cfi->device_type, NULL);
-        map_write(map, CMD(0x30), adr);
+> So, this is not an extensible solution.
 
-        chip->state = FL_ERASING;
-        chip->erase_suspended = 0;
-        chip->in_progress_block_addr = adr;
- 
+Artem you're more brilliant than that.
 
-     INVALIDATE_CACHE_UDELAY(map, chip,
-                                adr, len,
-                                chip->erase_time*500);
+> 2. OK, what do you offer instead (the question nobody asked yet)?
+> 
+> Forget about mtd->flags. Leave alone mtd->type. Add an
+> include/linux/mtd/flash_capabilities.h header which looks like this:
+> 
+> /* If the flash allows to clear individual bits */
+> #define mtd_can_clear_bits(mtd) (mtd->type == MTD_NORFLASH)
+> /* If the goat may be milked */
+> #define mtd_can_milk_a_goat(mtd) (bah)
+> ....
+> etc.
+> 
+> So, you have your set of capabilities. You use this header in JFFS2 and
+> clean it up. Your task is solved.
 
-        timeo = jiffies + (HZ*20);
-
-        for (;;) {
-                if (chip->state != FL_ERASING) {
-                        /* Someone's suspended the erase. Sleep */
-                        set_current_state(TASK_UNINTERRUPTIBLE);
-                        add_wait_queue(&chip->wq, &wait);
-                        spin_unlock(chip->mutex);
-                        schedule();
-                        remove_wait_queue(&chip->wq, &wait);
-                        spin_lock(chip->mutex);
-                        continue;
-                }
-                if (chip->erase_suspended) {
-                        /* This erase was suspended and resumed.
-                           Adjust the timeout */
-                        timeo = jiffies + (HZ*20); /* FIXME */
-                        chip->erase_suspended = 0;
-                }
-
-                if (chip_ready(map, adr)) {
-                        xip_enable(map, chip, adr);
-                        break;
-                }
-
-                if (time_after(jiffies, timeo)) {
-                        xip_enable(map, chip, adr);
-                        printk(KERN_WARNING "MTD %s(): software timeout\n",
-                                __func__ );
-                        break;
-                }
-
-                /* Latency issues. Drop the lock, wait a while and retry */
-                UDELAY(map, chip, adr, 1000000/HZ);
-        }
-        /* Did we succeed? */
-        if (!chip_good(map, adr, map_word_ff(map))) {
-                /* reset on all failures. */
-                map_write( map, CMD(0xF0), chip->start );
-                /* FIXME - should have reset delay before continuing */
-
-                ret = -EIO;
-        }
-
-        chip->state = FL_READY;
-        put_chip(map, chip, adr);
-        spin_unlock(chip->mutex);
-        return ret;
-}
-
-                                    
+And the runtime code is both larger and slower.  And the source is 
+even more obfuscated.  Isn't that great?
 
 
-	
-
-	
-		
-___________________________________________________________________________ 
-Yahoo! Mail réinvente le mail ! Découvrez le nouveau Yahoo! Mail et son interface révolutionnaire.
-http://fr.mail.yahoo.com
+Nicolas
