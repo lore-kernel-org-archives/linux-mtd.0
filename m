@@ -1,16 +1,19 @@
-Received: from elasmtp-banded.atl.sa.earthlink.net ([209.86.89.70])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FlqCV-0000VI-Bp
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 17:39:12 +0100
-Message-ID: <32905508.1149179928067.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
-Date: Thu, 1 Jun 2006 09:38:47 -0700 (GMT-07:00)
-From: Steve Finney <saf76@earthlink.net>
-To: linux-mtd@lists.infradead.org
-Subject: NAND OOB Questions...
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from host29.root-name-server.net ([67.19.46.165])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FlsaE-0003uo-7D
+	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 15:11:58 -0400
+Message-ID: <447F117A.7070708@realmsys.com>
+Date: Thu, 01 Jun 2006 10:10:34 -0600
+From: Kevin Vigor <kevin@realmsys.com>
+MIME-Version: 1.0
+To: ghannon@cspi.com
+Subject: Re: [PATCH] avoid unnnecessary mtd read when read can be	 satisfied
+	by	write buffer
+References: <85257180.00537972.00@pine.cspi.com>
+In-Reply-To: <85257180.00537972.00@pine.cspi.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: Steve Finney <saf76@earthlink.net>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,33 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have 3 questions about OOB and NAND chips that I'm
-hoping someone can answer. Per an earlier post, I think
-there may be two (obscure?) bugs in nand_base.c, but
-there's too much I don't know about NAND (and the code) to be sure.
-I believe the following description applies to the most recent
-stable kernel source (2.6.16.19).
+ghannon@cspi.com wrote:
 
-1) The Samsung K9F56* NAND chip allows doing more than one write
-to the OOB area of a page without an erase; the second write
-may zero bits that were set to 1 by the first write. Is the Samsung
-chip unusual in this, or is this normal NAND behavior? (I believe
-this would be normal for NOR flash).
+>However when programming a flash device and then reading back
+>to verify that it was programmed correctly,  I think this write
+>cache would defeat the purpose.
+>
+>  
+>
+This problem already exists with the wbuf code since a call to 
+jffs2_flash_read will return the write buffer contents regardless of the 
+actual contents of the media (unless you call  jffs2_flush_wbuf_pad() 
+between the write and the read).
 
-2) In nand_base.c:nand_write_page(), OOB data is written even when
-NAND_ECC_NONE is set. Under what circumstances is this useful?
-(The issue with this is that, in conjunction with (1), this may
-overwrite OOB in a circumstance where you're trying to write it
-yourself from user space; pernaps this is something that's only relevant
-for diagnostics/debugging).
-
-3) nand_prepare_oobbuf() makes a point of setting the internal oobbuf
-to 0xFF if it's had ECC bytes written to it (based on the this->oobdirty
-flag). However, the default case (which includes hardware ECC) in
-nand_write_page() can write the internal oobbuf without setting
-this->oobdirty, and thus not triggering the later reset to 0xFF. Is
-there a rationale for this? (The OOB issue induced by 1 & 2 would be
-benign if oobbuf was cleared to 0xFF).
-
-Thanks for any info.
-sf
+So the semantics could remain the same in that an explicit flush would 
+be necessary in order to validate the data on flash.
