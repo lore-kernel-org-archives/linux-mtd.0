@@ -1,21 +1,21 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Flnwj-0007EN-Cu
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:14:47 -0400
-Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J0600E7DQ8HVWD0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:14:42 -0400 (EDT)
-Date: Thu, 01 Jun 2006 10:14:41 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: XIP kernel(2.6.11 with MTD) fail in compiling
-In-reply-to: <447EEB2A.70307@sjtu.edu.cn>
-To: "Chen,Xi" <xichen@sjtu.edu.cn>
-Message-id: <Pine.LNX.4.64.0606011011240.16927@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <447EEB2A.70307@sjtu.edu.cn>
+	id 1FloAd-0007Zz-Me
+	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:29:21 -0400
+Date: Thu, 1 Jun 2006 16:29:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Johannes Niess <linux@johannes-niess.de>
+Subject: Re: mtd2block should not expand sparse loopback files
+Message-ID: <20060601142907.GA15216@wohnheim.fh-wedel.de>
+References: <200605272120.19348.linux@johannes-niess.de>
+	<625fc13d0605290629h4aabd512q5f53e06a5399fcf7@mail.gmail.com>
+	<20060530110354.GA24129@wohnheim.fh-wedel.de>
+	<200605302135.57963.linux@johannes-niess.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200605302135.57963.linux@johannes-niess.de>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,26 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 Jun 2006, Chen,Xi wrote:
+On Tue, 30 May 2006 21:35:51 +0200, Johannes Niess wrote:
+> >
+> > For now.  I have a patch pending that removes the cleanmarker
+> > generation from jffs2.  Still needs some polishing, though.
+>
+> That is great news. If your patch is still applicable to a released vanilla 
+> kernel  (or not requiring too many other patches) I'd volunteer as beta 
+> tester. I see potential of wide spread use in "compact" linux distributions. 
+> It makes it very easy to use a full scale distribution in reduced space.
 
-> Hello,
-> 
-> I'm working on a PXA-272 based development board and trying to enable a 
-> XIP kernel for it.
+"Still needs some polishing" can be read as "I have something
+half-arsed that noone should ever see before I rewrite it properly".
+Might still take a while.  You shouldn't hold your breath until it
+happens.
 
-Please try a later kernel.
+> I'm quite sure that you have seen the difference of mtd wanting 1's all over 
+> the place and a sparse file returning implicit 0's when reading in the holes. 
+> I've no idea whether this is relevant.
 
-> I found an option in kernel configuration, named "MTD_XIP" and it seemed 
-> a solution.
+Known problem.  If I had a time machine, one of the immediate uses
+would be to LART whichever genius decided to device "1" as erased and
+"0" as written.  The reverse would have had quite some advantages.
+Changing it today would break pretty much everything, so without a
+time machine, the situation remains as is.
 
-It is mandatory if you want to use MTD with a XIP kernel.
+> Following up on Josh's hint to e2compr I had the feeling that 
+> "e2compr.infradead.org" would be an address to describe the current 
+> status :-)  But that stuff has patches to kernel 2.6.10 . I don't consider it 
+> being "alive" enough to be usefull.
 
-> I also added a "-mlong-calls" option to CFLAGS when XIP enabled, in case 
-> some function
-> calls exceeded the PC24 limitation in ARM.
+Yup.
 
-This is unnecessary.  The XIP kernel is already properly located in 
-memory so to not exceed linkage requirements on ARM.
+Jörn
 
-
-Nicolas
+-- 
+A victorious army first wins and then seeks battle.
+-- Sun Tzu
