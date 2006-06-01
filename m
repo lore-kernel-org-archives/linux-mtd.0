@@ -1,27 +1,22 @@
-Received: from mx.sjtu.edu.cn ([202.112.26.52])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FlnfQ-0006n4-OY
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 09:57:03 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mx.sjtu.edu.cn (Postfix) with ESMTP id 670501DA1DA
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  1 Jun 2006 21:29:52 +0800 (CST)
-Received: from mx.sjtu.edu.cn ([127.0.0.1])
-	by localhost (mx [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
-	id 28826-02 for <linux-mtd@lists.infradead.org>;
-	Thu, 1 Jun 2006 21:29:52 +0800 (CST)
-Received: from [192.168.1.12] (unknown [202.120.40.69])
-	by mx.sjtu.edu.cn (Postfix) with ESMTP id 4E9F31DA153
-	for <linux-mtd@lists.infradead.org>;
-	Thu,  1 Jun 2006 21:29:52 +0800 (CST)
-Message-ID: <447EEB2A.70307@sjtu.edu.cn>
-Date: Thu, 01 Jun 2006 21:27:06 +0800
-From: "Chen,Xi" <xichen@sjtu.edu.cn>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: XIP kernel(2.6.11 with MTD) fail in compiling
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Flnwj-0007EN-Cu
+	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:14:47 -0400
+Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0J0600E7DQ8HVWD0@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:14:42 -0400 (EDT)
+Date: Thu, 01 Jun 2006 10:14:41 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
+Subject: Re: XIP kernel(2.6.11 with MTD) fail in compiling
+In-reply-to: <447EEB2A.70307@sjtu.edu.cn>
+To: "Chen,Xi" <xichen@sjtu.edu.cn>
+Message-id: <Pine.LNX.4.64.0606011011240.16927@localhost.localdomain>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
+References: <447EEB2A.70307@sjtu.edu.cn>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,62 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Thu, 1 Jun 2006, Chen,Xi wrote:
 
-I'm working on a PXA-272 based development board and trying to enable a 
-XIP kernel for it.
-The root file system needs to be JFFS2, so MTD support should be 
-included. When I tried to
-boot the kernel, it stalled at that message:
-===============================================
-......
-eth0: cs8900 rev K found at 0xf0000300 no EEPROM
-cs89x0: No EEPROM, relying on command line....
-cs89x0 media RJ-45, IRQ 41, programmed I/O, MAC 00:0b:f4:2f:9b:e5
-Probing flash0 at physical address 0x00000000 (32-bit bankwidth)
-===============================================
+> Hello,
+> 
+> I'm working on a PXA-272 based development board and trying to enable a 
+> XIP kernel for it.
 
-I found an option in kernel configuration, named "MTD_XIP" and it seemed 
-a solution.
-I also added a "-mlong-calls" option to CFLAGS when XIP enabled, in case 
-some function
-calls exceeded the PC24 limitation in ARM.
-Compilation errors occured like that:
-===============================================
-drivers/built-in.o(.text+0x59130): In function `cfi_intelext_write_words':
-: relocation truncated to fit: R_ARM_PC24 .data
-drivers/built-in.o(.text+0x591bc): In function `cfi_intelext_write_words':
-: relocation truncated to fit: R_ARM_PC24 .data
-drivers/built-in.o(.text+0x59270): In function `cfi_intelext_write_words':
-: relocation truncated to fit: R_ARM_PC24 .data
-drivers/built-in.o(.text+0x593e4): In function `cfi_intelext_write_buffers':
-: relocation truncated to fit: R_ARM_PC24 .data
-drivers/built-in.o(.data+0x8a40): In function `do_xxlock_oneblock':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x8aa4): In function `do_xxlock_oneblock':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x8d14): In function `do_xxlock_oneblock':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x8dbc): In function `do_xxlock_oneblock':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x8eb4): In function `do_write_oneword':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x8f38): In function `do_write_oneword':
-: relocation truncated to fit: R_ARM_PC24 .text
-drivers/built-in.o(.data+0x92e4): In function `do_write_oneword':
-: additional relocation overflows omitted from the output
-make: *** [.tmp_vmlinux1] Error 1
-===============================================
+Please try a later kernel.
 
-Anyone knows why the linker still complains, even with "-mlong-calls" used?
+> I found an option in kernel configuration, named "MTD_XIP" and it seemed 
+> a solution.
 
-My cross compile toolchain versions:
-arm-linux-gcc 3.4.3
-binutils 2.16
-And some basic info about my memory layout:
-flash memory start from 0x00000000, 64MB
-SDRAM start from 0xa0000000, 64MB
+It is mandatory if you want to use MTD with a XIP kernel.
 
-Thanks a lot for your time.
+> I also added a "-mlong-calls" option to CFLAGS when XIP enabled, in case 
+> some function
+> calls exceeded the PC24 limitation in ARM.
 
-Chen,Xi
+This is unnecessary.  The XIP kernel is already properly located in 
+memory so to not exceed linkage requirements on ARM.
+
+
+Nicolas
