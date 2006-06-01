@@ -1,24 +1,16 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Flp5L-0000lQ-Ix
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 11:27:57 -0400
-Date: Thu, 1 Jun 2006 17:27:38 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] avoid unnnecessary mtd read when read can be satisfied by
-	write buffer
-Message-ID: <20060601152738.GA26319@wohnheim.fh-wedel.de>
-References: <447E0FA4.7010201@realmsys.com>
-	<20060601143249.GB15216@wohnheim.fh-wedel.de>
-	<200606011539.35964.dwmw2@infradead.org>
-	<20060601144902.GC15216@wohnheim.fh-wedel.de>
-	<1149174307.10909.3.camel@pmac.infradead.org>
+Received: from elasmtp-banded.atl.sa.earthlink.net ([209.86.89.70])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FlqCV-0000VI-Bp
+	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 17:39:12 +0100
+Message-ID: <32905508.1149179928067.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
+Date: Thu, 1 Jun 2006 09:38:47 -0700 (GMT-07:00)
+From: Steve Finney <saf76@earthlink.net>
+To: linux-mtd@lists.infradead.org
+Subject: NAND OOB Questions...
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1149174307.10909.3.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org, Kevin Vigor <kevin@realmsys.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Reply-To: Steve Finney <saf76@earthlink.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +20,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 1 June 2006 16:05:07 +0100, David Woodhouse wrote:
-> 
-> My point is that for any given problem, raw caching of flash is not the
-> answer -- something more cunning is going to be better.
+I have 3 questions about OOB and NAND chips that I'm
+hoping someone can answer. Per an earlier post, I think
+there may be two (obscure?) bugs in nand_base.c, but
+there's too much I don't know about NAND (and the code) to be sure.
+I believe the following description applies to the most recent
+stable kernel source (2.6.16.19).
 
-Not necessarily.  JFFS2, all metadata is not just cached, but cannot
-even get evicted from cache.  Logfs*) currently doesn't cache metadata
-at all, which is fairly bad.  But there is no requirement to pin the
-metadata into memory, so it can have a dynamic cache with a shrinker.
-And now the caching should be based on a (device, offset) tupel.
-Nothing cunning about it, except to decide whether any given offset
-contains metadata or file data, which is already cached elsewhere.
+1) The Samsung K9F56* NAND chip allows doing more than one write
+to the OOB area of a page without an erase; the second write
+may zero bits that were set to 1 by the first write. Is the Samsung
+chip unusual in this, or is this normal NAND behavior? (I believe
+this would be normal for NOR flash).
 
-*) No code released yet, yadda yadda
+2) In nand_base.c:nand_write_page(), OOB data is written even when
+NAND_ECC_NONE is set. Under what circumstances is this useful?
+(The issue with this is that, in conjunction with (1), this may
+overwrite OOB in a circumstance where you're trying to write it
+yourself from user space; pernaps this is something that's only relevant
+for diagnostics/debugging).
 
-Jörn
+3) nand_prepare_oobbuf() makes a point of setting the internal oobbuf
+to 0xFF if it's had ECC bytes written to it (based on the this->oobdirty
+flag). However, the default case (which includes hardware ECC) in
+nand_write_page() can write the internal oobbuf without setting
+this->oobdirty, and thus not triggering the later reset to 0xFF. Is
+there a rationale for this? (The OOB issue induced by 1 & 2 would be
+benign if oobbuf was cleared to 0xFF).
 
--- 
-The wise man seeks everything in himself; the ignorant man tries to get
-everything from somebody else.
--- unknown
+Thanks for any info.
+sf
