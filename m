@@ -1,21 +1,19 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FloAd-0007Zz-Me
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:29:21 -0400
-Date: Thu, 1 Jun 2006 16:29:07 +0200
+	id 1FloEm-0007nr-Hn
+	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 10:33:37 -0400
+Date: Thu, 1 Jun 2006 16:32:49 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Johannes Niess <linux@johannes-niess.de>
-Subject: Re: mtd2block should not expand sparse loopback files
-Message-ID: <20060601142907.GA15216@wohnheim.fh-wedel.de>
-References: <200605272120.19348.linux@johannes-niess.de>
-	<625fc13d0605290629h4aabd512q5f53e06a5399fcf7@mail.gmail.com>
-	<20060530110354.GA24129@wohnheim.fh-wedel.de>
-	<200605302135.57963.linux@johannes-niess.de>
+To: Kevin Vigor <kevin@realmsys.com>
+Subject: Re: [PATCH] avoid unnnecessary mtd read when read can be satisfied by
+	write buffer
+Message-ID: <20060601143249.GB15216@wohnheim.fh-wedel.de>
+References: <447E0FA4.7010201@realmsys.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200605302135.57963.linux@johannes-niess.de>
+In-Reply-To: <447E0FA4.7010201@realmsys.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,40 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 May 2006 21:35:51 +0200, Johannes Niess wrote:
-> >
-> > For now.  I have a patch pending that removes the cleanmarker
-> > generation from jffs2.  Still needs some polishing, though.
->
-> That is great news. If your patch is still applicable to a released vanilla 
-> kernel  (or not requiring too many other patches) I'd volunteer as beta 
-> tester. I see potential of wide spread use in "compact" linux distributions. 
-> It makes it very easy to use a full scale distribution in reduced space.
+On Wed, 31 May 2006 15:50:28 -0600, Kevin Vigor wrote:
+> 
+> The following small patch modifies wbuf.c::jffs2_flash_read to avoid a 
+> call to the mtd read layer in the case where all data returned by the 
+> read would be replaced by data from the write buffer anyway. This 
+> condition occurs relatively infrequently, but the cost of the test is 
+> low and the benefit of avoiding the mtd read is high.
 
-"Still needs some polishing" can be read as "I have something
-half-arsed that noone should ever see before I rewrite it properly".
-Might still take a while.  You shouldn't hold your breath until it
-happens.
-
-> I'm quite sure that you have seen the difference of mtd wanting 1's all over 
-> the place and a sparse file returning implicit 0's when reading in the holes. 
-> I've no idea whether this is relevant.
-
-Known problem.  If I had a time machine, one of the immediate uses
-would be to LART whichever genius decided to device "1" as erased and
-"0" as written.  The reverse would have had quite some advantages.
-Changing it today would break pretty much everything, so without a
-time machine, the situation remains as is.
-
-> Following up on Josh's hint to e2compr I had the feeling that 
-> "e2compr.infradead.org" would be an address to describe the current 
-> status :-)  But that stuff has patches to kernel 2.6.10 . I don't consider it 
-> being "alive" enough to be usefull.
-
-Yup.
+Not sure whether this micro optimization is worth the code.  A real
+solution would be to have a cache for the full device.  Possibly read
+the device through pagecache somehow (writing obviously should be
+write-through, not write-back).  That would have a significantly
+higher hit rate than your patch.
 
 Jörn
 
 -- 
-A victorious army first wins and then seeks battle.
--- Sun Tzu
+Don't worry about people stealing your ideas. If your ideas are any good,
+you'll have to ram them down people's throats.
+-- Howard Aiken quoted by Ken Iverson quoted by Jim Horning quoted by
+   Raph Levien, 1979
