@@ -1,14 +1,20 @@
-Subject: Re: Scam
-From: David Woodhouse <dwmw2@infradead.org>
-To: scott.wimberly@ifrsys.com
-In-Reply-To: <448093E0.6050603@ifrsys.com>
-References: <448093E0.6050603@ifrsys.com>
+Received: from 13-120-13-69.cust.propagation.net ([69.13.120.13]
+	helo=server.thevenusserver.com)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FmmLk-0000uB-Ln
+	for linux-mtd@lists.infradead.org; Sun, 04 Jun 2006 02:44:41 -0400
+Received: from apache by server.thevenusserver.com with local (Exim 4.42)
+	id 1FmB8m-0004dZ-4g
+	for linux-mtd@lists.infradead.org; Fri, 02 Jun 2006 09:00:44 -0600
+To: linux-mtd@lists.infradead.org
+Subject: EMPLOYMENT MAIL
+From: KENT ANDERSON <ken.anderson@laposte.net>
+MIME-Version: 1.0
 Content-Type: text/plain
-Date: Fri, 02 Jun 2006 23:27:57 +0100
-Message-Id: <1149287277.5053.109.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1FmB8m-0004dZ-4g@server.thevenusserver.com>
+Date: Fri, 02 Jun 2006 09:00:44 -0600
+Reply-To: ken.anderson@laposte.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-06-02 at 14:39 -0500, Scott Wimberley wrote:
-> I received the following email via this mailing list and was asked bt 
-> the FBI to pass this info along to the list used as the conduit for
-> the scam. 
+>From The Desk of:
 
-The FBI ought to know better. I would appreciate it if you could respond
-to them, and point out that their request is _extremely_ unwelcome.
+Kent Anderson PhD
+L. G. A. (Woodworking Machinery) Ltd,
+1 Rutland Court,EH3 8EY,
+London.
 
-Anyone stupid enough to actually fall for it probably deserves to be
-scammed (or just taken out back and shot). The occasional piece of spam
-or scan which gets past the list filters is bad enough, without it
-provoking follow-up 'warnings' :)
 
-I appreciate that you were acting on advice from people who really ought
-to have known better, but please _don't_ bother to post such a 'warning'
-again.
+Dear Sir/Madam,
 
--- 
-dwmw2
+We will be very glad if you can be our representative in your country 
+and earn 10% of every payment made through you to us.
+
+For more information, contact us through email. Note that you shall not 
+be liable to make any upfront payment.
+
+Thanks in advance.
+
+Kind Regards,
+Kent Anderson (CEO)
