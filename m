@@ -1,19 +1,19 @@
-Received: from sstu.ru ([212.193.48.22] helo=cross.sstu.ru)
+Received: from [65.196.219.163] (helo=mail7.ifrsys.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fm2E1-0002VK-NB
-	for linux-mtd@lists.infradead.org; Fri, 02 Jun 2006 01:29:41 -0400
-Received: from [192.168.16.100] (localhost.localdomain [127.0.0.1])
-	by cross.sstu.ru (8.12.11/8.12.9) with ESMTP id k525JRb3011397
-	for <linux-mtd@lists.infradead.org>; Fri, 2 Jun 2006 09:19:28 +0400
-Date: Fri, 2 Jun 2006 09:28:56 +0400
-From: rs <rs@sstu.ru>
-Message-ID: <1187690488.20060602092856@sstu.ru>
-To: linux-mtd@lists.infradead.org
-Subject: probing address
+	id 1FmFln-0004dT-NL
+	for linux-mtd@lists.infradead.org; Fri, 02 Jun 2006 15:57:27 -0400
+Received: from [10.200.145.196] ([10.200.145.196])
+	by mail7.ifrsys.com  with ESMTP id k52JdEa14541
+	for <linux-mtd@lists.infradead.org>; Fri, 2 Jun 2006 14:39:14 -0500
+Message-ID: <448093E0.6050603@ifrsys.com>
+Date: Fri, 02 Jun 2006 14:39:12 -0500
+From: Scott Wimberley <scott.wimberly@ifrsys.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+To: linux-mtd@lists.infradead.org
+Subject: Scam
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: rs <rs@sstu.ru>
+Reply-To: scott.wimberly@ifrsys.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello,
- on what reason computer can halted on phrase "probing address" when finding the microcircuit flash?
+I received the following email via this mailing list and was asked bt 
+the FBI to pass this info along to the list used as the conduit for the 
+scam.
+
+/* recvd email text follows */
+
+Attn: Beneficiary,
+Dear Sir,
+ 
+Sequel to the secretive arrangement in 
+regards of the shipment of contract sum, I wish to inform you that all 
+necessary modalities have been automatically concluded and has left 
+Nigeria to London via your Country by Express Cargo Flight. Note 
+carefully the content of the crate is "MONEY" but I did not disclose it 
+to the Courier Services as Money, rather I informed them that the crate 
+contain Vital "DIPLOMATIC DOCUMENTS" belonging to my client (that's 
+you). Furthermore, the weight of the consignment is 220kg but I manage 
+to pay 120kg, which cost US$75,600.00. On no account should you 
+disclose the content of the crate with the Diplomatic Courier Services 
+for fear of betrayal. So do not allow them to know that the content is 
+money. In the meantime, contact the Diplomatic! Courier Services on 
+Tel: in London tomorrow to know the actual situation with the 
+consignment and also give them your address where the consignment will 
+be delivered and then get back to me as soon as possible so that I can 
+give you the shipment document. Meanwhile,
+
+I will be coming over to 
+your country immediately the consignment arrives in your Country for my 
+share. Contact them and get back to me. Congrats and remain blessed.
+
+Best Regards, 
+Dr.Alhaji Usman.
 
 
-____________________________ 
-Yegorov Stas
- ICQ:270805968
- mailto:rs@sstu.ru
+______________________________________________________
+/* end of message rcvd */
+
+This is a scam! Of course everyone on this mailing list should be intelligent enough to know it is phoney, however; just in case...
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
