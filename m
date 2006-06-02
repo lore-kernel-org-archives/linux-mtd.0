@@ -1,19 +1,19 @@
-Received: from host29.root-name-server.net ([67.19.46.165])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FlsaE-0003uo-7D
-	for linux-mtd@lists.infradead.org; Thu, 01 Jun 2006 15:11:58 -0400
-Message-ID: <447F117A.7070708@realmsys.com>
-Date: Thu, 01 Jun 2006 10:10:34 -0600
-From: Kevin Vigor <kevin@realmsys.com>
+Received: from sstu.ru ([212.193.48.22] helo=cross.sstu.ru)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fm2E1-0002VK-NB
+	for linux-mtd@lists.infradead.org; Fri, 02 Jun 2006 01:29:41 -0400
+Received: from [192.168.16.100] (localhost.localdomain [127.0.0.1])
+	by cross.sstu.ru (8.12.11/8.12.9) with ESMTP id k525JRb3011397
+	for <linux-mtd@lists.infradead.org>; Fri, 2 Jun 2006 09:19:28 +0400
+Date: Fri, 2 Jun 2006 09:28:56 +0400
+From: rs <rs@sstu.ru>
+Message-ID: <1187690488.20060602092856@sstu.ru>
+To: linux-mtd@lists.infradead.org
+Subject: probing address
 MIME-Version: 1.0
-To: ghannon@cspi.com
-Subject: Re: [PATCH] avoid unnnecessary mtd read when read can be	 satisfied
-	by	write buffer
-References: <85257180.00537972.00@pine.cspi.com>
-In-Reply-To: <85257180.00537972.00@pine.cspi.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: rs <rs@sstu.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ghannon@cspi.com wrote:
+hello,
+ on what reason computer can halted on phrase "probing address" when finding the microcircuit flash?
 
->However when programming a flash device and then reading back
->to verify that it was programmed correctly,  I think this write
->cache would defeat the purpose.
->
->  
->
-This problem already exists with the wbuf code since a call to 
-jffs2_flash_read will return the write buffer contents regardless of the 
-actual contents of the media (unless you call  jffs2_flush_wbuf_pad() 
-between the write and the read).
 
-So the semantics could remain the same in that an explicit flush would 
-be necessary in order to validate the data on flash.
+____________________________ 
+Yegorov Stas
+ ICQ:270805968
+ mailto:rs@sstu.ru
