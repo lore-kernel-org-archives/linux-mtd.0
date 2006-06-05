@@ -1,20 +1,19 @@
-Received: from 13-120-13-69.cust.propagation.net ([69.13.120.13]
-	helo=server.thevenusserver.com)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FmmLk-0000uB-Ln
-	for linux-mtd@lists.infradead.org; Sun, 04 Jun 2006 02:44:41 -0400
-Received: from apache by server.thevenusserver.com with local (Exim 4.42)
-	id 1FmB8m-0004dZ-4g
-	for linux-mtd@lists.infradead.org; Fri, 02 Jun 2006 09:00:44 -0600
-To: linux-mtd@lists.infradead.org
-Subject: EMPLOYMENT MAIL
-From: KENT ANDERSON <ken.anderson@laposte.net>
-MIME-Version: 1.0
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FnADc-00061Z-24
+	for linux-mtd@lists.infradead.org; Mon, 05 Jun 2006 09:13:49 +0100
+Subject: Re: NAND OOB Questions...
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Steve Finney <saf76@earthlink.net>
+In-Reply-To: <32905508.1149179928067.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
+References: <32905508.1149179928067.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
 Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1FmB8m-0004dZ-4g@server.thevenusserver.com>
-Date: Fri, 02 Jun 2006 09:00:44 -0600
-Reply-To: ken.anderson@laposte.net
+Date: Mon, 05 Jun 2006 10:14:24 +0200
+Message-Id: <1149495264.11983.12.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From The Desk of:
+On Thu, 2006-06-01 at 09:38 -0700, Steve Finney wrote:
+> 1) The Samsung K9F56* NAND chip allows doing more than one write
+> to the OOB area of a page without an erase; the second write
+> may zero bits that were set to 1 by the first write. Is the Samsung
 
-Kent Anderson PhD
-L. G. A. (Woodworking Machinery) Ltd,
-1 Rutland Court,EH3 8EY,
-London.
+Bits can not be set to 1 by the first write. FLASH cells are set to 1 by
+erasing and programming can set bits to 0.
 
+> chip unusual in this, or is this normal NAND behavior? (I believe
+> this would be normal for NOR flash).
 
-Dear Sir/Madam,
+On NOR you can do this almost unlimited. NAND is much more restricted
+vs. write ordering.
 
-We will be very glad if you can be our representative in your country 
-and earn 10% of every payment made through you to us.
+> 2) In nand_base.c:nand_write_page(), OOB data is written even when
+> NAND_ECC_NONE is set. Under what circumstances is this useful?
+> (The issue with this is that, in conjunction with (1), this may
+> overwrite OOB in a circumstance where you're trying to write it
+> yourself from user space; pernaps this is something that's only relevant
+> for diagnostics/debugging).
 
-For more information, contact us through email. Note that you shall not 
-be liable to make any upfront payment.
+The buffer is usually 0xff except when a caller provides content.
 
-Thanks in advance.
+> 3) nand_prepare_oobbuf() makes a point of setting the internal oobbuf
+> to 0xFF if it's had ECC bytes written to it (based on the this->oobdirty
+> flag). However, the default case (which includes hardware ECC) in
+> nand_write_page() can write the internal oobbuf without setting
+> this->oobdirty, and thus not triggering the later reset to 0xFF. Is
+> there a rationale for this? (The OOB issue induced by 1 & 2 would be
+> benign if oobbuf was cleared to 0xFF).
 
-Kind Regards,
-Kent Anderson (CEO)
+Well, if you use ECC then ECC is always at the same offset in the buffer
+so there is no point in setting it back to 0xff all them time.
+
+Please be aware that the NAND driver has been refactored and some of the
+algorithms have been changed. 
+See: http://git.infradead.org/?p=mtd-2.6.git;a=summary
+These changes will hit mainline in the 2.6.18 merge window.
+
+	tglx
