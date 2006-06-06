@@ -1,22 +1,19 @@
-Received: from pop.scorch.co.nz ([203.167.215.14] helo=firstline.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FnBAy-0003HR-7i
-	for linux-mtd@lists.infradead.org; Mon, 05 Jun 2006 05:15:16 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org,
- tglx@linutronix.de
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FnUGC-0001in-5s
+	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 06:37:49 +0100
 Subject: Re: NAND OOB Questions...
-Date: Mon, 5 Jun 2006 21:23:47 +1200
-References: <32905508.1149179928067.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
-	<1149495264.11983.12.camel@localhost.localdomain>
-In-Reply-To: <1149495264.11983.12.camel@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Steve Finney <saf76@earthlink.net>
+In-Reply-To: <21148625.1149520632350.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
+References: <21148625.1149520632350.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
+Content-Type: text/plain
+Date: Tue, 06 Jun 2006 07:38:49 +0200
+Message-Id: <1149572330.11983.25.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200606052123.47126.manningc2@actrix.gen.nz>
-Cc: Steve Finney <saf76@earthlink.net>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 05 June 2006 20:14, Thomas Gleixner wrote:
-> On Thu, 2006-06-01 at 09:38 -0700, Steve Finney wrote:
-> > 1) The Samsung K9F56* NAND chip allows doing more than one write
-> > to the OOB area of a page without an erase; the second write
-> > may zero bits that were set to 1 by the first write. Is the Samsung
->
-> Bits can not be set to 1 by the first write. FLASH cells are set to 1 by
-> erasing and programming can set bits to 0.
->
-> > chip unusual in this, or is this normal NAND behavior? (I believe
-> > this would be normal for NOR flash).
->
-> On NOR you can do this almost unlimited. NAND is much more restricted
-> vs. write ordering.
+On Mon, 2006-06-05 at 08:17 -0700, Steve Finney wrote:
+> >From: Thomas Gleixner <tglx@linutronix.de>
+> >The buffer is usually 0xff except when a caller provides content.
+> 
+> I'm not going to repeat all the previous content, but from what you've said,
+> it confirms that there is a bug in the current nand_base.c code under the following particular
+> set of circumstances:
+> 
+> 1) A NAND flash that allows more than one cycle of writing between erases (at
+>   least in the OOB area). (e.g., the Samsung K9F* chip).
+> 2) Using hardware ECC (e.g., the Samsung S3C2410 processor).
+> 3) A sequence in which you initially write to the device with ECC, and then
+>   turn off ECC and do additional writes including the OOB area.
+> 
+> In the above sequence, the ECC the user writes to the OOB may get corrupted.
 
-Just one point of clarification that tglx might not have spelled out clearly 
-here.
+Yeah. I did not think about that abstruse scenario :) What the hell is
+this for ?
 
-In both NAND and NOR you cannot set a 0 bit back to a 1 bit by programming. 
-You can only do this by erasing the erasable block.
+> I  have an (ugly) user-level workaround: before I turn off the ECC, I write a 
+> block that I know will generate ECC bytes consisting of 0xFF. Then the subsequent
+> user ECC writes are OK.
+> 
+> It's obscure enough that it's probably not worth fixing (well, I'm not going to try to
+> fix it :-) ),  and hopefully it's fixed in the refactoring. 
 
-Where NOR and NAND differ is that if you program a pattern into NOR that tries 
-to set a 0 to a 1 then (in most cases) the programming operation will be 
-aborted. However, NAND will program the zeros only and 1 bits are just "don't 
-care".
+Should be.
+
+	tglx
