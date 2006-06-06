@@ -1,19 +1,27 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FnUGC-0001in-5s
-	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 06:37:49 +0100
-Subject: Re: NAND OOB Questions...
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Steve Finney <saf76@earthlink.net>
-In-Reply-To: <21148625.1149520632350.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
-References: <21148625.1149520632350.JavaMail.root@elwamui-karabash.atl.sa.earthlink.net>
-Content-Type: text/plain
-Date: Tue, 06 Jun 2006 07:38:49 +0200
-Message-Id: <1149572330.11983.25.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from ctb-mesg5.saix.net ([196.25.240.75])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FnXyr-0007Tf-Uh
+	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 05:36:18 -0400
+Received: from kreon-mail.kreon.co.za (dsl-145-133-06.telkomadsl.co.za
+	[165.145.133.6])
+	by ctb-mesg5.saix.net (Postfix) with ESMTP id BC40B70E0
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  6 Jun 2006 11:36:10 +0200 (SAST)
+Received: from [192.168.0.102] ([192.168.0.102])
+	by kreon-mail.kreon.co.za (8.13.4/8.13.4/SuSE Linux 0.7) with ESMTP id
+	k569dNhU005708
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Jun 2006 11:39:25 +0200
+From: Kobus Wolvaardt <kobus@kreon.co.za>
+To: linux-mtd@lists.infradead.org
+Subject: Newbie question
+Date: Tue, 6 Jun 2006 11:41:22 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Content-Disposition: inline
+Message-Id: <200606061141.23003.kobus@kreon.co.za>
+Reply-To: kobus@kreon.co.za
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-06-05 at 08:17 -0700, Steve Finney wrote:
-> >From: Thomas Gleixner <tglx@linutronix.de>
-> >The buffer is usually 0xff except when a caller provides content.
-> 
-> I'm not going to repeat all the previous content, but from what you've said,
-> it confirms that there is a bug in the current nand_base.c code under the following particular
-> set of circumstances:
-> 
-> 1) A NAND flash that allows more than one cycle of writing between erases (at
->   least in the OOB area). (e.g., the Samsung K9F* chip).
-> 2) Using hardware ECC (e.g., the Samsung S3C2410 processor).
-> 3) A sequence in which you initially write to the device with ECC, and then
->   turn off ECC and do additional writes including the OOB area.
-> 
-> In the above sequence, the ECC the user writes to the OOB may get corrupted.
+Hi,
 
-Yeah. I did not think about that abstruse scenario :) What the hell is
-this for ?
+I'm trying to build grub for an embedded system. I'm working in gentoo and I 
+have most of my stuff up and running. I use kernel 2.6.11, i've compiled mtd 
+support and after lots of headaces (and then changing to a workind doc) I got 
+the doc to recognize.
 
-> I  have an (ugly) user-level workaround: before I turn off the ECC, I write a 
-> block that I know will generate ECC bytes consisting of 0xFF. Then the subsequent
-> user ECC writes are OK.
-> 
-> It's obscure enough that it's probably not worth fixing (well, I'm not going to try to
-> fix it :-) ),  and hopefully it's fixed in the refactoring. 
+Not for the question.... I have Karim Yaghmour's book and I tried to follow 
+the instructions to the letter. Problem is it doesnt compile: error below. (I 
+can only think that it has something to do with a too new gcc version, any 
+other idees) And more importantly how do I fix it or what newer version of 
+the grub patch can I download (where, cvs?) and what version of grub can be 
+patched with it?
 
-Should be.
+Thanks a million,
+Kobus
 
-	tglx
+
+
+
+////////////////command and compile error
+as  -DHAVE_CONFIG_H -I. -I. -I.. -I../stage1 -Wall -Wmissing-prototypes 
+-Wunused -Wshadow -Wpointer-arith -malign-jumps=1 -malign-loops=1 
+-malign-functions=1 -Wundef -g -c `test -f asm.S || echo './'`asm.S
+as: unrecognized option `-HAVE_CONFIG_H'
+/////////////////
+
+-- 
+This message was scanned for viruses by MailScanner and Sophos.
