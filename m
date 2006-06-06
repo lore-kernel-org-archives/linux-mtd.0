@@ -1,27 +1,19 @@
-Received: from ctb-mesg5.saix.net ([196.25.240.75])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FnXyr-0007Tf-Uh
-	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 05:36:18 -0400
-Received: from kreon-mail.kreon.co.za (dsl-145-133-06.telkomadsl.co.za
-	[165.145.133.6])
-	by ctb-mesg5.saix.net (Postfix) with ESMTP id BC40B70E0
-	for <linux-mtd@lists.infradead.org>;
-	Tue,  6 Jun 2006 11:36:10 +0200 (SAST)
-Received: from [192.168.0.102] ([192.168.0.102])
-	by kreon-mail.kreon.co.za (8.13.4/8.13.4/SuSE Linux 0.7) with ESMTP id
-	k569dNhU005708
-	for <linux-mtd@lists.infradead.org>; Tue, 6 Jun 2006 11:39:25 +0200
-From: Kobus Wolvaardt <kobus@kreon.co.za>
-To: linux-mtd@lists.infradead.org
-Subject: Newbie question
-Date: Tue, 6 Jun 2006 11:41:22 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fnd4o-0003jx-GV
+	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 16:02:39 +0100
+Subject: Re: NAND OOB Questions...
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Steve Finney <saf76@earthlink.net>
+In-Reply-To: <15200571.1149603155027.JavaMail.root@elwamui-darkeyed.atl.sa.earthlink.net>
+References: <15200571.1149603155027.JavaMail.root@elwamui-darkeyed.atl.sa.earthlink.net>
+Content-Type: text/plain
+Date: Tue, 06 Jun 2006 17:03:41 +0200
+Message-Id: <1149606221.11983.47.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200606061141.23003.kobus@kreon.co.za>
-Reply-To: kobus@kreon.co.za
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,32 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2006-06-06 at 07:12 -0700, Steve Finney wrote:
+> >Yeah. I did not think about that abstruse scenario :) What the hell is
+> >this for ?
+> 
+> Well, I didn't go looking for bugs :-). The hardware is the board I'm working on,
+> and what I wanted to do was force single bit errors to verify that the read correction
+> code worked. My way of doing that was to let the kernel write the correct ECC, 
+> and then read it back, corrupt a single data bit, and write the data +OOB back with unchanged
+> OOB. It didn't work :-(.
 
-I'm trying to build grub for an embedded system. I'm working in gentoo and I 
-have most of my stuff up and running. I use kernel 2.6.11, i've compiled mtd 
-support and after lots of headaces (and then changing to a workind doc) I got 
-the doc to recognize.
+Ok. Makes sense.
 
-Not for the question.... I have Karim Yaghmour's book and I tried to follow 
-the instructions to the letter. Problem is it doesnt compile: error below. (I 
-can only think that it has something to do with a too new gcc version, any 
-other idees) And more importantly how do I fix it or what newer version of 
-the grub patch can I download (where, cvs?) and what version of grub can be 
-patched with it?
+> As long as I'm here...is there any clever way of clearing a bad block marker? I realize
+> you do _not_ want to do this in the real world, but I created a few fake bad blocks for
+> testing purposes and there seems to be no way to get rid of them; neither Linux nor U-Boot
+> will let you call erase on a bad block. You can recompile U-Boot to allow it to do so, but
+> I'm wondering if there's any other way.
 
-Thanks a million,
-Kobus
+Yes, switch the bad block stuff off in the kernel. :) You can do this
+also from your module by overriding the block_bad function.
 
-
-
-
-////////////////command and compile error
-as  -DHAVE_CONFIG_H -I. -I. -I.. -I../stage1 -Wall -Wmissing-prototypes 
--Wunused -Wshadow -Wpointer-arith -malign-jumps=1 -malign-loops=1 
--malign-functions=1 -Wundef -g -c `test -f asm.S || echo './'`asm.S
-as: unrecognized option `-HAVE_CONFIG_H'
-/////////////////
-
--- 
-This message was scanned for viruses by MailScanner and Sophos.
+	tglx
