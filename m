@@ -1,14 +1,20 @@
-Subject: Re: Root mounting time
-From: David Woodhouse <dwmw2@infradead.org>
-To: Davide CASCONE <davide.cascone@st.com>
-In-Reply-To: <001c01c68a2c$2a67d600$253682a4@nap.st.com>
-References: <001c01c68a2c$2a67d600$253682a4@nap.st.com>
-Content-Type: text/plain
-Date: Wed, 07 Jun 2006 13:28:12 +0100
-Message-Id: <1149683292.13596.74.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from mail.cknet.co.za ([196.31.207.69] helo=cknet.co.za)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fo4ZQ-0004CL-DF
+	for linux-mtd@lists.infradead.org; Wed, 07 Jun 2006 16:24:12 -0400
+Received: from [10.0.0.123] by cknet.co.za (MDaemon.PRO.v8.1.4.R)
+	with ESMTP id md50000698762.msg
+	for <linux-mtd@lists.infradead.org>; Wed, 07 Jun 2006 22:23:57 +0200
+From: Kobus Wolvaardt <kobus@kreon.co.za>
+To: linux-mtd@lists.infradead.org
+Subject: Grub problems
+Date: Wed, 7 Jun 2006 22:23:47 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200606072223.47352.kobus@kreon.co.za>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,23 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-06-07 at 14:16 +0200, Davide CASCONE wrote:
-> I'm working in XIP mode on a OMAP platform using Sibley device in
-> burst mode (burst frequency = 48MHz). I see that it's necessary about
-> 1 sec to mount JFFS2 on a 1MB root image. Do you feel this is a
-> reasonable time? How long does it usually take to mount the JFFS2 on a
-> typical root image? 
+Hi,
 
-Are you using the current git tree and summary support?
+I posted earlier about having problems compiling grub. I have followed the 
+steps in Karim Yaghmour's book and the step from a online tutorial. I checked 
+out the newest grub from cvs and newest mtd also from cvs, downloaded grub 
+0.97 0.96 0.95/4/3/2 Extracted all and patched it. I tried compiling on a 
+mepis machine (updated in the last few months). Any ideas on what works? Or 
+anybody got a ready compiled grub_firmware file I can download?
 
-I can mount a 512MiB NAND flash in 5.9s on hardware where I get only
-2.7MiB/s transfer speed from the flash. Mounting 1MiB from NOR flash
-really shouldn't be that slow.
-
-Profile the current code and show where it takes all the time.
-
-I have plans to halve the size of the summary nodes, which should go
-into the git tree this week too. 
-
--- 
-dwmw2
+Thanks,
+Kobus
