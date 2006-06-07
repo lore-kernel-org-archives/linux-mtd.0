@@ -1,16 +1,16 @@
-Received: from [200.68.39.2] (helo=www.gorevalparaiso.cl.gorevalparaiso.cl)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FndrQ-0005FL-AG
-	for linux-mtd@lists.infradead.org; Tue, 06 Jun 2006 16:52:53 +0100
-To: 
-Subject: READ AND GET BACK TO ME ASAP!!!
-From: xin jiang <xinjiang_06@yahoo.com.cn>
-Cc: 
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fnqg3-0002Wg-Vi
+	for linux-mtd@lists.infradead.org; Wed, 07 Jun 2006 01:34:05 -0400
+Date: Wed, 7 Jun 2006 09:34:37 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] NAND: fix remaining OOB length calculation in
+	nand_read_page_syndrome/nand_write_page_syndrome
+Message-Id: <20060607093437.f6ceb09b.vwool@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <20060606154444.40E94DEF1A@www.gorevalparaiso.cl.gorevalparaiso.cl>
-Date: Tue,  6 Jun 2006 11:44:44 -0400 (CLT)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,37 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi folks,
 
-            SHANGHAI KINGSTRONIC IMPORT AND EXPORT LTD(SKIAEL)
+inlined is the trivial patch that fixes remaining OOB length calculation in nand_read_page_syndrome/nand_write_page_syndrome.
 
+Signed-off-by: Vitaly Wool <vwool@ru.mvista.com>
 
-SHANGHAI KINGSTRONIC IMPORT & EXPORT LTD (SKIAEL) is the specialized foreign trade company,which chiefly engages in exporting and importing of Electronic Mechinary such as Universal Swivel Head Machine,Circular Loom,Laser Engraving, Cutting Machine,Mix Machine,Paper Machine,Spinning Machine,Battery Machine etc. The company has its head office in Shanghai, Qingdao province, its branch in Shenzhen, Hainan, branch office in Zhingzhou , Henan, liaison offices in Beijing, Tianjin, Xiamen. 
-
-Dear Sir/ma,
-  It is my pleasure to write you in respect of our company. We are experts in the sale of  Electronic Mechinary and we export into Canada/America and some parts of Europe.
-  We are searching for reliable representatives who can help us establish a medium of getting to our customers in the Canada/America/Europe as well as legally receiving cash and all forms of payment on our behalf from them as our Representative and earn 10% . 
-  Please if interested in transacting business in view of helping us, so our clients could be making payment to you as our representative, we will be very glad.Compensations will be given and other benefits. 
-  Contact us for more information, if this proposal is acceptable to you. Please get back to us, so that remuneration can be worked out for your services as our representative in Canada/America/Europe as your location shall determine. 
-We anticipate your earliest response in this regard.
-
-Thanks,
-
-For further information and enquiries, 
-Contact Mr.Xin Jiang (Contact Person)
-Email:xinjiang_06@yahoo.com.cn 
-SHANGHAI KINGSTRONIC IMPORT & EXPORT LTD (SKIAEL)
-
-
-please fill in the blank spaces below:
-1.Your Full Names:.......................................
-2.Your Full Contact Address:........................
-3.Direct Phone/Cell:......................................
-4.State/Country:............................................
-5.Occupation:................................................
-6.company name:..........................................
-
-
-
-___________________________________________________________________________
-Mail sent from WebMail service at PHP-Nuke Powered Site
-- http://yoursite.com
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 77406fc..e74678e 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -883,7 +883,7 @@ static int nand_read_page_syndrome(struc
+ 	}
+ 
+ 	/* Calculate remaining oob bytes */
+-	i = oob - chip->oob_poi;
++	i = mtd->oobsize - (oob - chip->oob_poi);
+ 	if (i)
+ 		chip->read_buf(mtd, oob, i);
+ 
+@@ -1334,7 +1334,7 @@ static void nand_write_page_syndrome(str
+ 	}
+ 
+ 	/* Calculate remaining oob bytes */
+-	i = oob - chip->oob_poi;
++	i = mtd->oobsize - (oob - chip->oob_poi);
+ 	if (i)
+ 		chip->write_buf(mtd, oob, i);
+ }
