@@ -1,21 +1,18 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from py-out-1112.google.com ([64.233.166.177])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FoJ3Y-0006HB-1O
-	for linux-mtd@lists.infradead.org; Thu, 08 Jun 2006 07:52:16 -0400
-Date: Thu, 8 Jun 2006 13:52:08 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Guennadi Liakhovetski <gl@dsa-ac.de>
-Subject: Re: pxa2xx-flash again, please?
-Message-ID: <20060608115208.GA4155@wohnheim.fh-wedel.de>
-References: <Pine.LNX.4.63.0606080916491.1760@pcgl.dsa-ac.de>
-	<20060608073632.GA12338@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0606080955050.1760@pcgl.dsa-ac.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.63.0606080955050.1760@pcgl.dsa-ac.de>
-Cc: tpoynor@infradead.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+	id 1FoMIt-0008A1-Mp
+	for linux-mtd@lists.infradead.org; Thu, 08 Jun 2006 11:20:18 -0400
+Received: by py-out-1112.google.com with SMTP id i49so638977pyi
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 08 Jun 2006 08:20:06 -0700 (PDT)
+Message-ID: <44884012.8060609@gmail.com>
+Date: Thu, 08 Jun 2006 23:19:46 +0800
+From: xie chao <xiechao.mail@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: MTD NAND driver supports for  multi-page read and write
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,25 +22,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 June 2006 09:59:10 +0200, Guennadi Liakhovetski wrote:
-> 
-> Sorry. This patch has been committed to mtd CVS (I think so, as it 
-> appeared on mtd-cvs ML: 
-> http://lists.infradead.org/pipermail/linux-mtd-cvs/2005-December/005252.html) 
-> and I asked this question already a few weeks ago, so, I thought it might 
-> ring the bell... The problem is - the patch has been submitted last 
-> December still it is not in stock kernel nor in 2 mtd git-trees on 
-> kernel.org/git, so...
-
-Well, the cvs has basically been abandoned.  There was some effort to
-pull the important patches from cvs into git, but as you noticed,
-things were lost.
-
-Not sure whether the patch makes sense or not.  Maybe Todd can comment
-that.
-
-Jörn
-
--- 
-It does not matter how slowly you go, so long as you do not stop.
--- Confucius
+hi
+I found that JFFS2 invokes MTD callback directly. Does every read/write
+to JFFS2 will make be scheduled by block device layer? Because I find
+that most of read to my NAND flash is composed by one page, write to my
+NAND flash is composed by one or two page when i use iozone to test the
+JFFS2 performance. In fact, the NAND flash i have con support
+multi-pages(at most 32 pages) read/write which has better efficiency.
+How i have improve the JFFS2 performance by read/write as many pages i
+during one access to the FS? Thanks.
