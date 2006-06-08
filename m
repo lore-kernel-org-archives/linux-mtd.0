@@ -1,21 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.177])
+Received: from mail.dsa-ac.de ([62.112.80.99])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fpged-00084X-5L
-	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 03:16:20 -0400
-Received: by py-out-1112.google.com with SMTP id i49so3409735pyi
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Jun 2006 00:16:03 -0700 (PDT)
-Message-ID: <3a00f25a0606120016s7bebf353q6a9a790fc772ca58@mail.gmail.com>
-Date: Mon, 12 Jun 2006 15:16:03 +0800
-From: "Brian Wang" <brian.wang.0721@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: MTD NFTL Performance
-In-Reply-To: <3a00f25a0606081841n5f727893u6792e2c0c2c89db3@mail.gmail.com>
+	id 1FoFQB-0003fC-AA
+	for linux-mtd@lists.infradead.org; Thu, 08 Jun 2006 03:59:26 -0400
+Date: Thu, 8 Jun 2006 09:59:10 +0200 (CEST)
+From: Guennadi Liakhovetski <gl@dsa-ac.de>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Subject: Re: pxa2xx-flash again, please?
+In-Reply-To: <20060608073632.GA12338@wohnheim.fh-wedel.de>
+Message-ID: <Pine.LNX.4.63.0606080955050.1760@pcgl.dsa-ac.de>
+References: <Pine.LNX.4.63.0606080916491.1760@pcgl.dsa-ac.de>
+	<20060608073632.GA12338@wohnheim.fh-wedel.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <3a00f25a0606081841n5f727893u6792e2c0c2c89db3@mail.gmail.com>
+Content-Type: MULTIPART/MIXED; BOUNDARY="497817361-1783767325-1149753550=:1760"
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,38 +22,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I am wondering what kind of performance figure is _reasonable_ when we
-use NFTL on NAND flash.
+--497817361-1783767325-1149753550=:1760
+Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8BIT
 
-Here is mine:
-Platform: S3C2410X, 202MHz ARM920T, with a built-in hardware NAND
-controller, and a Samsung K9F1208 NAND (8-bit)
-- Hardware ECC is turned on
-- No debug messages
-- nftl_format on an MTD partition of about 62MB takes 4m 0.39s
-- Copy 17688580 bytes from tmpfs (RAM) to that partition (FAT32) takes
-18.73s; this is about 922 kB/s
+On Thu, 8 Jun 2006, Jörn Engel wrote:
 
-* I have to use FAT32 + NFTL because this device is going to behave as
-a USB mass storage device.
+> On Thu, 8 June 2006 09:25:07 +0200, Guennadi Liakhovetski wrote:
+>>
+>> Are there plans to integrate the pxa2xx-flash unification patch from
+>> Nicolas Pitre?
+>
+> Not by me, as I don't know anything about this patch.
+>
+> [ Hint: a link to the patch or even inlining it might help. ]
 
-Is that performance figure reasonable?
-What gets in my head is that nowadays, USB high-speed flash
-controllers can get 6-8 MB/s throughput.
-Many of them have 8051 embedded, but mine is an ARM9...
-I know the translation layer gets some overhead, but so does the USB
-flash controllers that implement some wear-levelling algorithms.
+Sorry. This patch has been committed to mtd CVS (I think so, as it 
+appeared on mtd-cvs ML: 
+http://lists.infradead.org/pipermail/linux-mtd-cvs/2005-December/005252.html) 
+and I asked this question already a few weeks ago, so, I thought it might 
+ring the bell... The problem is - the patch has been submitted last 
+December still it is not in stock kernel nor in 2 mtd git-trees on 
+kernel.org/git, so...
 
-Could someone give me a hint?  Must be missing something here...
-
-Thanks. :-)
-
-
-
-brian
-
--- 
-brian
-iMaGiNaTiOn iS mOrE iMpOrTaNt tHaN kNoWlEdGe
+Thanks
+Guennadi
+---------------------------------
+Guennadi Liakhovetski, Ph.D.
+DSA Daten- und Systemtechnik GmbH
+Pascalstr. 28
+D-52076 Aachen
+Germany
+--497817361-1783767325-1149753550=:1760--
