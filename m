@@ -1,27 +1,23 @@
-Received: from nz-out-0102.google.com ([64.233.162.201])
+Received: from ug-out-1314.google.com ([66.249.92.172])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FoQOP-0002yW-Vi
-	for linux-mtd@lists.infradead.org; Thu, 08 Jun 2006 15:42:19 -0400
-Received: by nz-out-0102.google.com with SMTP id 4so487000nzn
+	id 1FoUUG-00055l-HX
+	for linux-mtd@lists.infradead.org; Thu, 08 Jun 2006 20:04:41 -0400
+Received: by ug-out-1314.google.com with SMTP id m3so829450ugc
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Jun 2006 12:42:08 -0700 (PDT)
-Message-ID: <44887D8C.2040806@gmail.com>
-Date: Thu, 08 Jun 2006 12:42:04 -0700
-From: Todd Poynor <toddpoynor@gmail.com>
+	Thu, 08 Jun 2006 17:04:26 -0700 (PDT)
+From: Husam <husamsenussi@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: DiskOn Chip Millennium Plus 32MB + INFTL
+Date: Fri, 9 Jun 2006 01:04:37 +0100
+References: <4488665D.5010908@kalikstein.com>
+	<1149794376.18635.2.camel@shinybook.infradead.org>
+In-Reply-To: <1149794376.18635.2.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-To: Guennadi Liakhovetski <gl@dsa-ac.de>
-Subject: Re: pxa2xx-flash again, please?
-References: <Pine.LNX.4.63.0606080916491.1760@pcgl.dsa-ac.de>
-	<20060608073632.GA12338@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0606080955050.1760@pcgl.dsa-ac.de>
-	<20060608115208.GA4155@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0606081356100.1760@pcgl.dsa-ac.de>
-In-Reply-To: <Pine.LNX.4.63.0606081356100.1760@pcgl.dsa-ac.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: tpoynor@infradead.org, linux-mtd@lists.infradead.org,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
-	dwmw2@infradead.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200606090104.37756.husamsenussi@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,42 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Guennadi Liakhovetski wrote:
-> On Thu, 8 Jun 2006, Jörn Engel wrote:
-> 
->> On Thu, 8 June 2006 09:59:10 +0200, Guennadi Liakhovetski wrote:
->>>
->>> Sorry. This patch has been committed to mtd CVS (I think so, as it
->>> appeared on mtd-cvs ML:
->>> http://lists.infradead.org/pipermail/linux-mtd-cvs/2005-December/005252.html) 
->>>
->>> and I asked this question already a few weeks ago, so, I thought it 
->>> might
->>> ring the bell... The problem is - the patch has been submitted last
->>> December still it is not in stock kernel nor in 2 mtd git-trees on
->>> kernel.org/git, so...
->>
->> Well, the cvs has basically been abandoned.  There was some effort to
->> pull the important patches from cvs into git, but as you noticed,
->> things were lost.
->>
->> Not sure whether the patch makes sense or not.  Maybe Todd can comment
->> that.
-> 
-> I think it does. It makes one file per (pxa) platform fewer.
+I have device with  DiskOnChip Millennium Plus 64M "2x 32M", so I start making 
+changes to nand based driver using the old one but I found the following 
+problems:
 
-When I last checked the patch was a good thing, collapsing two 
-practically identical XScale PXA2xx mapping drivers into one and 
-converting to platform devices.  It had previously been acked by PXA2xx 
-and MTD guy Nicolas Pitre, and Russell King accepted the ARM-side 
-changes, which are in kernel.org waiting to become useful.  I think the 
-patch happened to hit a window in which it wasn't merged upstream and 
-has sat in limbo since then.
-
-(And then the driver is almost totally generic other than relying on the 
-ARM-only (last I knew) asm/mach/flash.h stuff and needs pxa-specific 
-cache invalidate functions, in case anybody's tackling those problems.)
+1. The NAND layer use lookup table to set the size of the page, erase block ..  
+etc, but this does work will 32/64M because of interleave.
+2. When I set bus width to 16 in diskonchip level nand_scan return an error 
+because that doesn't match with table.
+3. Reading and writing has to be done in 16 bit otherwise you lose data, 
+because MDOC+ 32/64M moves the pointer 2 bytes even if you read one byte.
+4. I found that read_buff terminate the read each time, and because of that 
+nand_read_ecc skip bytes when read across sections.
+5. Layout of the data on the page is different form 16M, but I'm not sure if 
+this is specific  to INTFL.  
 
 
--- 
-Todd
+I had look at the changes you guys made recently and I found that some of 
+these change would fix some of the above problems but not all of them,.
+
+My question will be would someboday be able to sumbit patch to you guys to fix 
+the above problem.
+
+
+
+On Thursday 08 June 2006 20:19, David Woodhouse wrote:
+> On Thu, 2006-06-08 at 13:03 -0500, Jeff Kalikstein wrote:
+> > and the MTD NAND based driver complains that "DiskOnChip Millennium
+> > Plus 32MB is not supported, ignoring.".
+>
+> This is fixable. The 32MiB unit is just the same as the 16MiB unit
+> except that it works in 16-bit mode instead of 8-bit mode, and by
+> default does some bizarre interleaving of the data.
+>
+> Just look for 'interleave' in drivers/mtd/devices/doc2001plus.c and see
+> how many places there are where we treat the 16MiB and 32MiB units
+> differently -- there aren't that many. Getting this to work in the
+> NAND-based driver should be relatively simple.
