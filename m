@@ -1,17 +1,27 @@
-Subject: Re: JFFS2/xattr problems.
-From: David Woodhouse <dwmw2@infradead.org>
-To: KaiGai Kohei <kaigai@ak.jp.nec.com>
-In-Reply-To: <448D3752.3090605@ak.jp.nec.com>
-References: <1148150486.3875.251.camel@pmac.infradead.org>
-	<44704CA9.8010604@ak.jp.nec.com>  <448CCEC8.2080903@ak.jp.nec.com>
-	<1150099418.11159.44.camel@shinybook.infradead.org>
-	<448D3752.3090605@ak.jp.nec.com>
-Content-Type: text/plain
-Date: Mon, 12 Jun 2006 10:53:15 +0100
-Message-Id: <1150105995.8184.17.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from ctb-mesg2.saix.net ([196.25.240.82])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fplzz-0003gd-8q
+	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 13:58:33 +0100
+Received: from kreon-mail.kreon.co.za (dsl-145-133-06.telkomadsl.co.za
+	[165.145.133.6])
+	by ctb-mesg2.saix.net (Postfix) with ESMTP id CEFD8395D
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 Jun 2006 14:57:57 +0200 (SAST)
+Received: from [192.168.0.102] ([192.168.0.102])
+	by kreon-mail.kreon.co.za (8.13.4/8.13.4/SuSE Linux 0.7) with ESMTP id
+	k5C8as8c007296
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Jun 2006 10:36:56 +0200
+From: Kobus Wolvaardt <kobus@kreon.co.za>
+To: linux-mtd@lists.infradead.org
+Subject: Doc grub patch
+Date: Mon, 12 Jun 2006 10:38:57 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200606121038.57460.kobus@kreon.co.za>
+Reply-To: kobus@kreon.co.za
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +31,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-06-12 at 18:43 +0900, KaiGai Kohei wrote:
-> In my opinion, a xattr across multiple nodes isn't neccesary.
-> What do you think?
+Hi,
 
-I'd be happier if it worked -- some of us have plans to abuse XATTR
-support by building a simple database on it... :)
+I have been struggeling with compiling grub. I finally managed to compile it. 
+This is for anyone who may be struggeling with the same.
 
-But as long as the failure mode is _graceful_, I suppose we can live
-without it for now, if ext3 is also limited to 4KiB.
+I followed this howto: http://lakeshoremicro.com/diskonchip-grub-howto.html 
+but I didnt use grub cvs seeing as it doesnt patch nicely (maybe there is 
+newer patches, but I couldnt find it). I patched the 0.92 version of grub 
+with the 0.92 patch and installed a 2.95 gcc. Compiling worked and gave me a 
+grub_firmware. I also patched grub 0.94 with the 2003 patch (try 2003-01 and 
+2003-11 one should patch with very few complaints). The patched grub 0.94 
+compiled with gcc 3.3 (couldnt get 4.0 or 4.1 to work).
 
-I'm looking through your handling of deletion now... I'm not sure that
-we _need_ the physical deletion node for xdata, do we? Those can go away
-just because there are no xrefs which link to them, just like our inodes
-do?
+I made a cd using barts dos cd creating tools, adding the grub_firmare from 
+0.94 to the cd. dformat /win:0xd0000 /bdkf0:grub_firmware loaded the firmware 
+and left me with a fat16 partition. I wiped it using fdisk in linux created a 
+new one and mkfs.ext2 on /dev/nftla1 and voilla.
 
-Also, the physical deletion node for xrefs is only needed when the xattr
-is deleted _without_ the inode being deleted. When the inode goes away,
-again the xref becomes obsolete all by itself, right?
-
-Finally, we need to be careful about garbage collection of deletion
-nodes. Remember that the deletion node might be garbage-collected
-_before_ the older node which it is deleting. So you must decide whether
-to write the deletion node out again, when you are garbage collecting
-it.
-
-See the horrid mess we make of 'deletion dirents'.
+Thanks,
+Kobus
 
 -- 
-dwmw2
+This message was scanned for viruses by MailScanner and Sophos.
