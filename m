@@ -1,22 +1,23 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FppnR-000770-5Z
-	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 13:01:54 -0400
-Received: from xanadu.home ([74.56.108.184]) by VL-MO-MR004.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J0R00D97BAUES50@VL-MO-MR004.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 13:01:43 -0400 (EDT)
-Date: Mon, 12 Jun 2006 13:01:42 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH] MTD: fix endian issue of additional protection fields
-In-reply-to: <20060612153458.GJ24758@tweety>
-To: Christian Hohnstaedt <chohnstaedt@innominate.com>
-Message-id: <Pine.LNX.4.64.0606121301080.2703@localhost.localdomain>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <20060612153458.GJ24758@tweety>
-Cc: linux-mtd@lists.infradead.org
+	id 1Fpqol-0007hk-8p
+	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 14:07:20 -0400
+Date: Mon, 12 Jun 2006 20:06:53 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2/xattr problems.
+Message-ID: <20060612180653.GA17177@wohnheim.fh-wedel.de>
+References: <1148150486.3875.251.camel@pmac.infradead.org>
+	<44704CA9.8010604@ak.jp.nec.com> <448CCEC8.2080903@ak.jp.nec.com>
+	<1150099418.11159.44.camel@shinybook.infradead.org>
+	<448D3752.3090605@ak.jp.nec.com>
+	<1150105995.8184.17.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1150105995.8184.17.camel@pmac.infradead.org>
+Cc: linux-mtd@lists.infradead.org, KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,65 +27,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Jun 2006, Christian Hohnstaedt wrote:
+On Mon, 12 June 2006 10:53:15 +0100, David Woodhouse wrote:
+> On Mon, 2006-06-12 at 18:43 +0900, KaiGai Kohei wrote:
+> > In my opinion, a xattr across multiple nodes isn't neccesary.
+> > What do you think?
+> 
+> I'd be happier if it worked -- some of us have plans to abuse XATTR
+> support by building a simple database on it... :)
+> 
+> But as long as the failure mode is _graceful_, I suppose we can live
+> without it for now, if ext3 is also limited to 4KiB.
 
-> add byte-swapping for extended OTP areas (NumProtectionFields > 1)
-> 
-> Signed-off-by: Christian Hohnstaedt <chohnstaedt@innominate.com>
+Seems you missed Ted's presentation at LCA this year.  Among the
+interesting bits:
+o Pretty much anything on Linux is limited to 64KiB or less.
+o Ext[23] is limited to 4KiB total for all attributes, including all
+  keys and all values.
+o The biggest user of Alternate Streams (less-limited versions of
+  xattr on Windows, Solaris, etc.) arguably is root kits.  Alternate
+  Streams have the advantage that tripwire etc. don't understand them
+  and won't look for malware there.
+o Some system administrators have no plans to upgrade to Solaris 9
+  ever, because it supports Alternate Streams.  The trouble of hidden
+  malware is not worth the gains.
 
-Signed-off-by: Nicolas Pitre <nico@cam.org>
+Notable was also, that Ted repeated the last two points in several
+variations.  Not sure if I would follow his line of thought 100%, but
+he does have a point.
 
-> 
-> ---
-> 
->  drivers/mtd/chips/cfi_cmdset_0001.c |   13 +++++++++++++
->  1 files changed, 13 insertions(+), 0 deletions(-)
-> 
-> 0bdeefafb76db54cdb12a10e8fcc5c197221c276
-> diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> index 0d43581..3227d1e 100644
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-> @@ -279,11 +279,24 @@ read_pri_intelext(struct map_info *map, 
->  	if (extp->MajorVersion == '1' && extp->MinorVersion >= '3') {
->  		unsigned int extra_size = 0;
->  		int nb_parts, i;
-> +		struct cfi_intelext_otpinfo *otp;
->  
->  		/* Protection Register info */
->  		extra_size += (extp->NumProtectionFields - 1) *
->  			      sizeof(struct cfi_intelext_otpinfo);
->  
-> +		if (extp_size < sizeof(*extp) + extra_size)
-> +			goto need_more;
-> +
-> +		/* Byteswapping for additional ProtectionFields */
-> +		otp = (struct cfi_intelext_otpinfo*)(extp->extra);
-> +		for (i=1; i<extp->NumProtectionFields; i++) {
-> +			otp->ProtRegAddr = le32_to_cpu(otp->ProtRegAddr);
-> +			otp->FactGroups = le16_to_cpu(otp->FactGroups);
-> +			otp->UserGroups = le16_to_cpu(otp->UserGroups);
-> +			otp++;
-> +		}
-> +
->  		/* Burst Read info */
->  		extra_size += 2;
->  		if (extp_size < sizeof(*extp) + extra_size)
-> -- 
-> Christian Hohnstaedt
-> Software Engineer
-> 
-> Innominate Security Technologies AG  /device attached security/
-> tel: +49.30.6392-3285
-> fax: +49.30.6392-3307
-> Albert-Einstein-Str. 14
-> D-12489 Berlin, Germany
-> http://www.innominate.com
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+Jörn
 
-
-Nicolas
+-- 
+The competent programmer is fully aware of the strictly limited size of
+his own skull; therefore he approaches the programming task in full
+humility, and among other things he avoids clever tricks like the plague. 
+-- Edsger W. Dijkstra
