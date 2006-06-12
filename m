@@ -1,16 +1,14 @@
-Received: from web30510.mail.mud.yahoo.com ([68.142.200.123])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FpufR-0001KC-B6
-	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 18:13:56 -0400
-Message-ID: <20060612220711.8263.qmail@web30510.mail.mud.yahoo.com>
-Date: Mon, 12 Jun 2006 15:07:11 -0700 (PDT)
-From: Justin Treon <justin_treon@yahoo.com>
-Subject: Does anyone have patches for Sibley on the 2.4 kernel?
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <Pine.LNX.4.64.0606121301080.2703@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Subject: Re: Does anyone have patches for Sibley on the 2.4 kernel?
+From: David Woodhouse <dwmw2@infradead.org>
+To: Justin Treon <justin_treon@yahoo.com>
+In-Reply-To: <20060612220711.8263.qmail@web30510.mail.mud.yahoo.com>
+References: <20060612220711.8263.qmail@web30510.mail.mud.yahoo.com>
+Content-Type: text/plain
+Date: Mon, 12 Jun 2006 23:49:07 +0100
+Message-Id: <1150152547.11159.55.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,18 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MTD,
+On Mon, 2006-06-12 at 15:07 -0700, Justin Treon wrote:
+> If no one has a patch, would it be easier to port MTD
+> back to the 2.4 kernel or to insert the changes for
+> Sibley into the old version of MTD? 
 
-Does anyone have patches for Intel M18 Flash (a.k.a.
-Sibley) on the 2.4 kernel?  
+or (3), port your board support to the 2.6 kernel.
 
-If no one has a patch, would it be easier to port MTD
-back to the 2.4 kernel or to insert the changes for
-Sibley into the old version of MTD?
-
-Justin
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+-- 
+dwmw2
