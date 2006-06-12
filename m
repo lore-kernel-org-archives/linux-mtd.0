@@ -1,14 +1,20 @@
-Subject: Re: FW: JFFS2 Mounting time
-From: David Woodhouse <dwmw2@infradead.org>
-To: Davide CASCONE <davide.cascone@st.com>
-In-Reply-To: <001a01c68df6$750dfcc0$253682a4@nap.st.com>
-References: <001a01c68df6$750dfcc0$253682a4@nap.st.com>
-Content-Type: text/plain
-Date: Mon, 12 Jun 2006 09:14:04 +0100
-Message-Id: <1150100044.11159.51.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fpixe-0002QI-9l
+	for linux-mtd@lists.infradead.org; Mon, 12 Jun 2006 05:44:00 -0400
+Message-ID: <448D3752.3090605@ak.jp.nec.com>
+Date: Mon, 12 Jun 2006 18:43:46 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2/xattr problems.
+References: <1148150486.3875.251.camel@pmac.infradead.org>	
+	<44704CA9.8010604@ak.jp.nec.com> <448CCEC8.2080903@ak.jp.nec.com>
+	<1150099418.11159.44.camel@shinybook.infradead.org>
+In-Reply-To: <1150099418.11159.44.camel@shinybook.infradead.org>
+Content-Type: text/plain; charset=ISO-2022-JP
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, Kaigai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-06-12 at 10:01 +0200, Davide CASCONE wrote:
-> I'm using Linux 2.6.16 with mtd-snapshot-20060504. I mount JFFS2 on
-> Sibley device (configured in burst mode with burst frequency of
-> 48MHz). If I reserve a 16MByte MTD partition to JFFS2 with 80% file
-> system usage, I'm able to mount the root file system in 2.6 sec. Is
-> this a reasonable time? Any suggestion to improve the mounting
-> performances? Any information about the JFFS2 mounting time with NOR
-> devices?
+Hi,
 
-Use the current code from the git tree. Profile it and see where it's
-spending the time.
+> I have an unrelated question.... what is the maximum size of an XATTR?
+> Am I right in thinking that it's 64KiB? That's rather large; we won't be
+> able to write it in a single node on some flash chips, where the
+> eraseblock size is smaller than that. Don't we need to allow multiple
+> nodes, to cover the range of an xdatum?
 
+Indeed, the maximum size of an XATTR is limited by eraseblock size.
+As it may be smaller than XATTR_SIZE_MAX (=65536), we can't handle
+very large xattr in the current implementation.
+It was blind spot for me.
+
+But is it actually needed ?
+For example, the length of xattr in EXT2 implementation is limited
+by block size which is 4096 at most. But nobody (probably) has claimed
+yet.
+
+In my opinion, a xattr across multiple nodes isn't neccesary.
+What do you think?
+
+Thanks,
 -- 
-dwmw2
+Open Source Software Promotion Center, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
