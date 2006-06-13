@@ -1,22 +1,25 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FqBkh-0007NS-GH
-	for linux-mtd@lists.infradead.org; Tue, 13 Jun 2006 12:28:36 -0400
-Date: Tue, 13 Jun 2006 20:29:15 +0400
-From: Vitaly Wool <vwool@ru.mvista.com>
-To: Vitaly Wool <vwool@ru.mvista.com>
-Subject: Re: [PATCH] NAND: fix reading/writing OOB for syndrome
-Message-Id: <20060613202915.6e7603d7.vwool@ru.mvista.com>
-In-Reply-To: <20060613195633.86a315d6.vwool@ru.mvista.com>
-References: <20060613190146.f0e5f2b8.vwool@ru.mvista.com>
-	<1150212895.5257.342.camel@localhost.localdomain>
-	<20060613194814.4ee01f06.vwool@ru.mvista.com>
-	<1150213973.5257.350.camel@localhost.localdomain>
-	<20060613195633.86a315d6.vwool@ru.mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Received: from ug-out-1314.google.com ([66.249.92.168])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FqEsv-0000mn-6B
+	for linux-mtd@lists.infradead.org; Tue, 13 Jun 2006 15:49:13 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so3269228uge
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Jun 2006 12:49:07 -0700 (PDT)
+From: Husam <husamsenussi@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: DiskOn Chip Millennium Plus 32MB + INFTL
+Date: Tue, 13 Jun 2006 20:42:44 +0100
+References: <4488665D.5010908@kalikstein.com>
+	<200606101321.37502.husamsenussi@gmail.com>
+	<1149977115.18635.158.camel@shinybook.infradead.org>
+In-Reply-To: <1149977115.18635.158.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200606132042.44659.husamsenussi@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,292 +29,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Okay,
+On Saturday 10 June 2006 23:05, you wrote:
+> On Sat, 2006-06-10 at 13:21 +0100, Husam wrote:
+> > Yes thats correct but the 32MiB consist of two "NAND 16MiB, 8-bit" Chip,
+> > providing 16 bit access using interleave, and that double size the page
+> > "Page =3D 1024 + 32 OOB".
+> >
+> > But does NAND layer need to be abee to handle Multi floor device?
+>
+> Hm, no -- it's two separate device, isn't it? So don't we just have to
+> probe them separately and then perhaps use something like mtdconcat?
+>
+OK ... I guess that would cleaner way and makes the interface more compatib=
+le.
+I haven't seen mtdconcat yet.
 
-here's the new one :)
+> > > > 2. When I set bus width to 16 in diskonchip level nand_scan return =
+an
+> > > > error because that doesn't match with table.
+> > >
+> > > Doesn't match with which table? What chip ID is detected?
+> >
+> > Yes the ID exist on the table "mfr =3D 0x98 (Toshiba) , id =3D 0x75" wh=
+ich
+> > match the id I get from trueffs driver for wince, so I would expect "NA=
+ND
+> > 16MiB, 8-bit". However as I said before the driver should double the si=
+ze
+> > of the page because of interleave.
+>
+> Hm, is it actually two 8-bit chips, rather than a single 16-bit chip?
+>
+> In that case, we might have to do a bit more to make it work.
+>
+Yes it's not single 16-bit, could we add anther flag to NAND say=20
+"NAND_INTERLEAVE" .. or maybe pass number =C2=A0of chips from device layer =
+to NAND=20
+layer.
 
-Index: linux-2.6/drivers/mtd/nand/nand_base.c
-===================================================================
---- linux-2.6.orig/drivers/mtd/nand/nand_base.c
-+++ linux-2.6/drivers/mtd/nand/nand_base.c
-@@ -1084,6 +1084,168 @@ static int nand_read(struct mtd_info *mt
- }
- 
- /**
-+ * nand_read_oob_raw - [REPLACABLE] the most common OOB data read function
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer to store read data
-+ * @offs:	offset to start writing from
-+ * @length:	length of the OOB data to read
-+ * @page:	page number to read
-+ * @sndcmd:	pointer to the flag whether to issue read command or not
-+ */
-+static void nand_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
-+			      uint8_t *buf, int offs, int length, int page,
-+			      int *sndcmd)
-+{
-+	if (*sndcmd) {
-+		chip->cmdfunc(mtd, NAND_CMD_READOOB, col, page);
-+		*sndcmd = 0;
-+	}
-+	chip->read_buf(mtd, buf, length);
-+}
-+static void (*nand_read_oob_swecc) (struct mtd_info *mtd,
-+				    struct nand_chip *chip, uint8_t *buf,
-+				    int offs, int length, int page,
-+				    int *sndcmd) =
-+    &nand_read_oob_raw;
-+static void (*nand_read_oob_hwecc) (struct mtd_info *mtd,
-+				    struct nand_chip *chip, uint8_t *buf,
-+				    int offs, int length, int page,
-+				    int *sndcmd) =
-+    &nand_read_oob_raw;
-+
-+/**
-+ * nand_read_oob_syndrome - [REPLACABLE] OOB data read function for HW ECC
-+ * 					 with syndromes
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer to store read data
-+ * @offs:	offset to start reading from
-+ * @length:	length of the OOB data to read
-+ * @page:	page number to read
-+ * @sndcmd:	pointer to the flag whether to issue read command or not
-+ */
-+static void nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
-+				   uint8_t *buf, int offs, int length,
-+				   int page, int *sndcmd)
-+{
-+	int portion = mtd->eccbytes + chip->ecc.prepad + chip->ecc.postpad;
-+	uint8_t *bufpoi = buf;
-+	int i, toread;
-+
-+	for (i = 0; i < chip->ecc.steps; i++) {
-+		if (offs) {
-+			while (portion < offs) {
-+				offs -= portion;
-+				i++;
-+			}
-+		}
-+		chip->cmdfunc(mtd, NAND_CMD_READ0,
-+				(i + 1) * chip->ecc.size + i * portion + offs,
-+				page);
-+		toread = min_t(length, portion - offs);
-+		chip->read_buf(mtd, bufpoi, toread);
-+		bufpoi += toread;
-+		length -= toread;
-+		offs = 0;
-+	}
-+	if (length > 0)
-+		chip->read_buf(mtd, bufpoi, length);
-+}
-+
-+/**
-+ * nand_write_oob_raw - [REPLACABLE] the most common OOB data write function
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer where to write data from
-+ * @offs:	offset to start writing from
-+ * @length:	length of the OOB data to write
-+ * @page:	page number to write
-+ */
-+static void nand_write_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
-+			       const uint8_t *buf, int offs, int length,
-+			       int page)
-+{
-+	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize,
-+			page & chip->pagemask);
-+	chip->write_buf(mtd, buf, length);
-+	/* Send command to program the OOB data */
-+	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+
-+	status = chip->waitfunc(mtd, chip, FL_WRITING);
-+
-+	/* See if device thinks it succeeded */
-+	if (status & NAND_STATUS_FAIL) {
-+		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
-+		      "Failed write, page 0x%08x\n", page);
-+	}
-+}
-+static void (*nand_write_oob_swecc) (struct mtd_info *mtd,
-+				     struct nand_chip *chip,
-+				     const uint8_t *buf, int offs, int length,
-+				     int page) = nand_write_oob_raw;
-+static void (*nand_write_oob_hwecc) (struct mtd_info *mtd,
-+				     struct nand_chip *chip,
-+				     const uint8_t *buf, int offs, int length,
-+				     int page) = nand_write_oob_raw;
-+
-+/**
-+ * nand_write_oob_syndrome - [REPLACABLE] OOB data write function for HW ECC
-+ * 					  with syndrome
-+ * @mtd:	mtd info structure
-+ * @chip:	nand chip info structure
-+ * @buf:	buffer where to write data from
-+ * @offs:	offset to start writing from
-+ * @length:	length of the OOB data to write
-+ * @page:	page number to write
-+ */
-+static void nand_write_oob_syndrome(struct mtd_info *mtd,
-+				    struct nand_chip *chip, const uint8_t *buf,
-+				    int offs, int length, int page)
-+{
-+	int portion = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
-+	int eccsize = chip->ecc.size;
-+	const uint8_t *bufpoi = buf;
-+	int i, len;
-+
-+	for (i = 0; i < chip->ecc.steps; i++) {
-+		if (offs < portion) {
-+			int status;
-+			chip->cmdfunc(mtd, NAND_CMD_SEQIN,
-+				      eccsize + i * (eccsize + portion) + offs,
-+				      page);
-+			len = min_t(int, length, portion - offs);
-+			chip->write_buf(mtd, bufpoi, len);
-+			bufpoi += len;
-+			length -= len;
-+			offs = 0;
-+
-+			if (i < chip->ecc.steps - 1 && length > 0) {
-+				chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+				status = chip->waitfunc(mtd, chip, FL_WRITING);
-+
-+				/* See if device thinks it succeeded */
-+				if (status & NAND_STATUS_FAIL)
-+					DEBUG(MTD_DEBUG_LEVEL0, "%s: "
-+					      "Failed write, page 0x%08x\n",
-+					      __FUNCTION__, page);
-+			}
-+		} else
-+			offs -= portion;
-+	}
-+	if (length > 0)
-+		chip->write_buf(mtd, bufpoi, length);
-+	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-+	status = chip->waitfunc(mtd, chip, FL_WRITING);
-+
-+	/* See if device thinks it succeeded */
-+	if (status & NAND_STATUS_FAIL)
-+		DEBUG(MTD_DEBUG_LEVEL0, "%s: "
-+		      "Failed write, page 0x%08x\n",
-+		      __FUNCTION__, page);
-+}
-+
-+/**
-  * nand_do_read_oob - [Intern] NAND read out-of-band
-  * @mtd:	MTD device structure
-  * @from:	offset to read from
-@@ -1122,12 +1284,8 @@ static int nand_do_read_oob(struct mtd_i
- 		bytes = direct ? ops->ooblen : mtd->oobsize;
- 		bufpoi = direct ? buf : chip->buffers.oobrbuf;
- 
--		if (likely(sndcmd)) {
--			chip->cmdfunc(mtd, NAND_CMD_READOOB, col, page);
--			sndcmd = 0;
--		}
--
--		chip->read_buf(mtd, bufpoi, bytes);
-+		chip->ecc.read_oob(mtd, chip, bufpoi, col,
-+				  bytes, page, &sndcmd);
- 
- 		if (unlikely(!direct))
- 			buf = nand_transfer_oob(chip, buf, ops);
-@@ -1596,28 +1754,17 @@ static int nand_do_write_oob(struct mtd_
- 		chip->oob_poi = chip->buffers.oobwbuf;
- 		memset(chip->oob_poi, 0xff, mtd->oobsize);
- 		nand_fill_oob(chip, ops->oobbuf, ops);
--		chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize,
--			      page & chip->pagemask);
--		chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-+		chip->ecc.write_oob(mtd, chip, chip->oob_poi, 0, mtd->oobsize,
-+				    page & chip->pagemask);
- 		memset(chip->oob_poi, 0xff, mtd->oobsize);
- 	} else {
- 		chip->cmdfunc(mtd, NAND_CMD_SEQIN,
- 			      mtd->writesize + ops->ooboffs,
- 			      page & chip->pagemask);
--		chip->write_buf(mtd, ops->oobbuf, ops->len);
-+		chip->ecc.write_oob(mtd, chip, ops->oobbuf, ops->ooboffs,
-+				    ops->len, page & chip->pagemask);
- 	}
- 
--	/* Send command to program the OOB data */
--	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
--
--	status = chip->waitfunc(mtd, chip, FL_WRITING);
--
--	/* See if device thinks it succeeded */
--	if (status & NAND_STATUS_FAIL) {
--		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
--		      "Failed write, page 0x%08x\n", page);
--		return -EIO;
--	}
- 	ops->retlen = ops->len;
- 
- #ifdef CONFIG_MTD_NAND_VERIFY_WRITE
-@@ -2265,6 +2412,10 @@ int nand_scan(struct mtd_info *mtd, int 
- 			chip->ecc.read_page = nand_read_page_hwecc;
- 		if (!chip->ecc.write_page)
- 			chip->ecc.write_page = nand_write_page_hwecc;
-+		if (!chip->ecc.read_oob)
-+			chip->ecc.read_oob = nand_read_oob_hwecc;
-+		if (!chip->ecc.write_oob)
-+			chip->ecc.write_oob = nand_write_oob_hwecc;
- 
- 	case NAND_ECC_HW_SYNDROME:
- 		if (!chip->ecc.calculate || !chip->ecc.correct ||
-@@ -2278,6 +2429,10 @@ int nand_scan(struct mtd_info *mtd, int 
- 			chip->ecc.read_page = nand_read_page_syndrome;
- 		if (!chip->ecc.write_page)
- 			chip->ecc.write_page = nand_write_page_syndrome;
-+		if (!chip->ecc.read_oob)
-+			chip->ecc.read_oob = nand_read_oob_syndrome;
-+		if (!chip->ecc.write_oob)
-+			chip->ecc.write_oob = nand_write_oob_syndrome;
- 
- 		if (mtd->writesize >= chip->ecc.size)
- 			break;
-@@ -2291,6 +2446,8 @@ int nand_scan(struct mtd_info *mtd, int 
- 		chip->ecc.correct = nand_correct_data;
- 		chip->ecc.read_page = nand_read_page_swecc;
- 		chip->ecc.write_page = nand_write_page_swecc;
-+		chip->ecc.read_oob = nand_read_oob_swecc;
-+		chip->ecc.write_oob = nand_write_oob_swecc;
- 		chip->ecc.size = 256;
- 		chip->ecc.bytes = 3;
- 		break;
-@@ -2300,6 +2457,8 @@ int nand_scan(struct mtd_info *mtd, int 
- 		       "This is not recommended !!\n");
- 		chip->ecc.read_page = nand_read_page_raw;
- 		chip->ecc.write_page = nand_write_page_raw;
-+		chip->ecc.read_oob = nand_read_oob_raw;
-+		chip->ecc.write_oob = nand_write_oob_raw;
- 		chip->ecc.size = mtd->writesize;
- 		chip->ecc.bytes = 0;
- 		break;
-Index: linux-2.6/include/linux/mtd/nand.h
-===================================================================
---- linux-2.6.orig/include/linux/mtd/nand.h
-+++ linux-2.6/include/linux/mtd/nand.h
-@@ -250,6 +250,19 @@ struct nand_ecc_ctrl {
- 	void			(*write_page)(struct mtd_info *mtd,
- 					      struct nand_chip *chip,
- 					      const uint8_t *buf);
-+	void			(*read_oob)(struct mtd_info *mtd,
-+					    struct nand_chip *chip,
-+					    uint8_t *buf,
-+					    int offs,
-+					    int length,
-+					    int page,
-+					    int *sndcmd);
-+	void			(*write_oob)(struct mtd_info *mtd,
-+					     struct nand_chip *chip,
-+					     const uint8_t *buf,
-+					     int offs,
-+					     int length,
-+					     int page);
- };
- 
- /**
+All we need to do I guess is to pass the right information so the NAND laye=
+r=20
+can calculate the right size for page and to block.
+=C2=A0
+> > > > 4. I found that read_buff terminate the read each time, and because
+> > > > of that nand_read_ecc skip bytes when read across sections.
+> > >
+> > > I think the new code probably fixed this, didn't it? If not, we can
+> > > make sure it does.
+> >
+> > No =C2=A0you are still terminating the read at the end of read_buf func=
+tion,
+> > you wold need to
+> >
+> > 1. Send READ command
+> > 2. Read date "e.g. 512 bytes"
+> > 3. Read ECC 6 bytes
+> > 4. terminate read stream
+> >
+> > My be diskonchip layer should implement read_page !!!
+>
+> Yeah, I think that's probably a sane plan.
+>
+> > > > 5. Layout of the data on the page is different form 16M, but I'm not
+> > > > sure if this is specific =C2=A0to INTFL.
+> > >
+> > > I _think_ it's specific to INFTL -- it's weird, though. I don't
+> > > actually know why M-Systems did that interleaving. There are guys from
+> > > M-Systems on the list though -- perhaps they can enlighten us?
+> >
+> > But would be able to use the same layout with jffs?
+>
+> I see no reason why not.
+>
+> > > Now is a good time to get the remaining issues fixed. I'd very much
+> > > like to have the 32MiB and 64MiB DiskOnChip Millennium Plus devices
+> > > working.
+> >
+> > Thats good ... because from what I see 64MiB is not even supported by
+> > INTFL layer, in 64MiB each device has separate boot records but
+> > information for some of the partitions into the two boot records.
+>
+> Hm, OK -- we'll need to work on that too.
+>
+> Let's forget INFTL for now -- can we work on getting basic read/write
+> operations on the 32MiB unit working first? We can do 64MiB next, then
+> INFTL (for 32MiB and then 64MiB).
+I guess that would be the right way to go ... I'm looking at the code for m=
+y=20
+device bootloader and so far I manage to get alots of info about the MDOC+
