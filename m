@@ -1,18 +1,20 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FqVAd-0002nY-RE
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 09:12:46 -0400
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=localhost)
-	by postikukk.artecdesign.ee with smtp (Exim 4.50) id 1FqVAZ-00034K-Sb
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 16:12:38 +0300
-Date: Wed, 14 Jun 2006 16:13:00 +0300
-From: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] cs553x_nand driver PIO mode support, cs553x_cleanup() fix
-Message-Id: <20060614161300.35c48903.indrek.kruusa@artecdesign.ee>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Received: from nf-out-0910.google.com ([64.233.182.186])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FqVHY-00036d-VM
+	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 09:19:54 -0400
+Received: by nf-out-0910.google.com with SMTP id o63so84174nfa
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Jun 2006 06:19:39 -0700 (PDT)
+Message-ID: <fe810cf0606140613k7ea7918fl48ead339530c4cb6@mail.gmail.com>
+Date: Wed, 14 Jun 2006 17:13:09 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "Josh Boyer" <jwboyer@gmail.com>
+Subject: [PATCH] MTD: mphysmap driver resurrection
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,263 +24,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-
-Attatched patch for drivers/mtd/nand/cs553x_nand.c (in linux-2.6.17-rc6-mm1):
-- add PIO mode support
-- fix bug in cs553x_cleanup: 'for' loop shouldn't be broked if device is
-missing
-- added some informative printk's
-
-Signed-off-by: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-
-
-Indrek
-
-
---- cs553x_nand.c	2006-06-13 10:19:19.000000000 +0300
-+++ cs553x_nand_mix_working.c	2006-06-13 11:29:40.000000000 +0300
-@@ -30,6 +30,11 @@
- #include <asm/io.h>
- 
- #define NR_CS553X_CONTROLLERS	4
-+#define DEVICE_NAME "cs553x_nand"
-+#define IO_REG_CNT 16
-+
-+/* I/O base address will be fetched from controller's MSR's  */
-+static unsigned long io_base[NR_CS553X_CONTROLLERS];
- 
- #define MSR_DIVIL_GLD_CAP	0x51400000	/* DIVIL capabilitiies */
- #define CAP_CS5535		0x2df000ULL
-@@ -93,6 +98,109 @@
- #define CS_NAND_ECC_CLRECC	(1<<1)
- #define CS_NAND_ECC_ENECC	(1<<0)
- 
-+/*
-+ * 
-+ * functions for PIO mode
-+ * 
-+ * Currently all I/O is 1 byte at a time.
-+ * If your hardware can do more: you could get more
-+ * performance by changing read/write functions here
-+ * 
-+ */
-+
-+static void cs553x_write_byte_pio(struct mtd_info *mtd, u_char byte);
-+
-+static void cs553x_read_buf_pio(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	ioread8_rep(this->IO_ADDR_R, buf, len);
-+}
-+
-+
-+static void cs553x_write_buf_pio(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	int i;
-+	for (i = 0; i < len; i++)
-+	    cs553x_write_byte_pio(mtd, buf[i]);
-+}
-+
-+
-+static unsigned char cs553x_read_byte_pio(struct mtd_info *mtd)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	return ioread8(this->IO_ADDR_R);
-+}
-+
-+
-+static void cs553x_write_byte_pio(struct mtd_info *mtd, u_char byte)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	int i = 100000;
-+
-+	while (i && ioread8(this->IO_ADDR_R + IO_NAND_STS) & CS_NAND_CTLR_BUSY) {
-+		udelay(1);
-+		i--;
-+	}
-+	iowrite8(byte, this->IO_ADDR_W + IO_NAND_IO);
-+}
-+
-+
-+static void cs553x_hwcontrol_pio(struct mtd_info *mtd, int cmd,
-+			     unsigned int ctrl)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	void __iomem *mmio_base = this->IO_ADDR_R;
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		unsigned char ctl = (ctrl & ~NAND_CTRL_CHANGE ) ^ 0x01;
-+		iowrite8(ctl, mmio_base + IO_NAND_CTL);
-+	}
-+	if (cmd != NAND_CMD_NONE)
-+		cs553x_write_byte_pio(mtd, cmd);
-+}
-+
-+
-+static int cs553x_device_ready_pio(struct mtd_info *mtd)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	void __iomem *mmio_base = this->IO_ADDR_R;
-+	unsigned char foo = ioread8(mmio_base + IO_NAND_STS);
-+
-+	return (foo & CS_NAND_STS_FLASH_RDY) && !(foo & CS_NAND_CTLR_BUSY);
-+}
-+
-+
-+static void cs_enable_hwecc_pio(struct mtd_info *mtd, int mode)
-+{
-+	struct nand_chip *this = mtd->priv;
-+	void __iomem *mmio_base = this->IO_ADDR_R;
-+
-+	iowrite8(0x07, mmio_base + IO_NAND_ECC_CTL);
-+}
-+
-+
-+static int cs_calculate_ecc_pio(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
-+{
-+	uint32_t ecc;
-+	struct nand_chip *this = mtd->priv;
-+	void __iomem *mmio_base = this->IO_ADDR_R;
-+
-+	ecc = ioread16(mmio_base + IO_NAND_STS);
-+
-+	ecc_code[1] = ecc >> 8;
-+	ecc_code[0] = ecc >> 16;
-+	ecc_code[2] = ecc >> 24;
-+	return 0;
-+}
-+
-+
-+/*
-+ * 
-+ * functions for MMIO mode
-+ * 
-+ * 
-+ */
-+
-+
- static void cs553x_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- {
- 	struct nand_chip *this = mtd->priv;
-@@ -187,12 +295,7 @@
- 	struct nand_chip *this;
- 	struct mtd_info *new_mtd;
- 
--	printk(KERN_NOTICE "Probing CS553x NAND controller CS#%d at %sIO 0x%08lx\n", cs, mmio?"MM":"P", adr);
--
--	if (mmio) {
--		printk(KERN_NOTICE "PIO mode not yet implemented for CS553X NAND controller\n");
--		return -ENXIO;
--	}
-+	printk(KERN_NOTICE "Probing CS553x NAND controller CS%d# at %sIO 0x%08lx\n", cs, mmio?"MM":"P", adr);
- 
- 	/* Allocate memory for MTD device structure and private data */
- 	new_mtd = kmalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
-@@ -214,27 +317,54 @@
- 	new_mtd->owner = THIS_MODULE;
- 
- 	/* map physical address */
--	this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
-+	if (mmio) {
-+		this->IO_ADDR_R = this->IO_ADDR_W = ioremap(adr, 4096);
-+		io_base[cs] = 0;
-+	} else {
-+		io_base[cs] = adr;
-+
-+		if (!request_region(io_base[cs], IO_REG_CNT, DEVICE_NAME)) {
-+			printk(KERN_ERR "%s: requested I/O region %#lx:%#lx is "
-+		       "in use\n", DEVICE_NAME, io_base[cs], io_base[cs] + IO_REG_CNT - 1);
-+			return -ENODEV;
-+		} else {
-+			printk(KERN_INFO "I/O region %#lx:%#lx for %s\n", io_base[cs], io_base[cs] + IO_REG_CNT - 1, DEVICE_NAME);
-+		}
-+
-+		this->IO_ADDR_R = this->IO_ADDR_W = ioport_map(io_base[cs], IO_REG_CNT);
-+	}
-+
- 	if (!this->IO_ADDR_R) {
--		printk(KERN_WARNING "ioremap cs553x NAND @0x%08lx failed\n", adr);
-+		printk(KERN_WARNING "%s cs553x NAND @0x%08lx failed\n", mmio? "ioremap" : "ioport_map",adr);
- 		err = -EIO;
- 		goto out_mtd;
- 	}
- 
--	this->cmd_ctrl = cs553x_hwcontrol;
--	this->dev_ready = cs553x_device_ready;
--	this->read_byte = cs553x_read_byte;
--	this->read_buf = cs553x_read_buf;
--	this->write_buf = cs553x_write_buf;
-+	this->ecc.correct  = nand_correct_data;
- 
- 	this->chip_delay = 0;
- 
- 	this->ecc.mode = NAND_ECC_HW;
- 	this->ecc.size = 256;
- 	this->ecc.bytes = 3;
--	this->ecc.hwctl  = cs_enable_hwecc;
--	this->ecc.calculate = cs_calculate_ecc;
--	this->ecc.correct  = nand_correct_data;
-+
-+	if (mmio) {
-+		this->cmd_ctrl = cs553x_hwcontrol;
-+		this->dev_ready = cs553x_device_ready;
-+		this->read_byte = cs553x_read_byte;
-+		this->read_buf = cs553x_read_buf;
-+		this->write_buf = cs553x_write_buf;
-+		this->ecc.hwctl  = cs_enable_hwecc;
-+		this->ecc.calculate = cs_calculate_ecc;
-+	} else {
-+		this->cmd_ctrl = cs553x_hwcontrol_pio;
-+		this->dev_ready = cs553x_device_ready_pio;
-+		this->read_byte = cs553x_read_byte_pio;
-+		this->read_buf = cs553x_read_buf_pio;
-+		this->write_buf = cs553x_write_buf_pio;
-+		this->ecc.hwctl  = cs_enable_hwecc_pio;
-+		this->ecc.calculate = cs_calculate_ecc_pio;
-+	}
- 
- 	/* Enable the following for a flash based bad block table */
- 	this->options = NAND_USE_FLASH_BBT | NAND_NO_AUTOINCR;
-@@ -249,9 +379,16 @@
- 	goto out;
- 
- out_ior:
--	iounmap((void *)this->IO_ADDR_R);
-+	if (mmio)
-+		iounmap((void *)this->IO_ADDR_R);
-+	else {
-+		ioport_unmap((void *)this->IO_ADDR_R);
-+		release_region(io_base[cs], IO_REG_CNT);
-+	}
- out_mtd:
- 	kfree(new_mtd);
-+	if (!mmio)
-+		release_region(io_base[cs], IO_REG_CNT);
- out:
- 	return err;
- }
-@@ -329,7 +466,7 @@
- 		void __iomem *mmio_base;
- 
- 		if (!mtd)
--			break;
-+			continue;
- 
- 		this = cs553x_mtd[i]->priv;
- 		mmio_base = this->IO_ADDR_R;
-@@ -339,7 +476,14 @@
- 		cs553x_mtd[i] = NULL;
- 
- 		/* unmap physical adress */
--		iounmap(mmio_base);
-+		if (!io_base[i]) {
-+			iounmap(mmio_base);
-+		} else {
-+			ioport_unmap(mmio_base);
-+			release_region(io_base[i], IO_REG_CNT);
-+		}
-+
-+		printk(KERN_INFO "CS553x NAND driver: resources released for device at CS%d# \n", i);
- 
- 		/* Free the MTD device structure */
- 		kfree(mtd);
+T24gNi8xMy8wNiwgSm9zaCBCb3llciA8andib3llckBnbWFpbC5jb20+IHdyb3RlOgo+IFNvbWVo
+b3cgSSBqdXN0IHRoaW5rIGl0IHdhcyBmb3Jnb3R0ZW4uICBDYXJlIGVub3VnaCB0byBzZW5kIGEg
+cGF0Y2gKPiAob3IgZ2l0IHRyZWUpIHRvIHJlc3VycmVjdCBpdD8KPgo+IGpvc2gKPgoKVGhlIHBh
+dGNoIGp1c3QgY29udGFpbnMgbXBoeXNtYXAgZHJpdmVyIGNvZGUgZnJvbSBvbmUgb2YgdGhlIGxh
+dGVzdApDVlMgc25hcHNob3RzLgoKClNpZ25lZC1vZmYtYnk6IEFsZXhhbmRlciBCZWx5YWtvdiA8
+YWxleGFuZGVyLmJlbHlha292QGludGVsLmNvbT4KCi0tLS0tLS0KCmRpZmYgLXVOciBhL2RyaXZl
+cnMvbXRkL21hcHMvS2NvbmZpZyBiL2RyaXZlcnMvbXRkL21hcHMvS2NvbmZpZwotLS0gYS9kcml2
+ZXJzL210ZC9tYXBzL0tjb25maWcJMjAwNi0wNS0zMSAxNjoxMjo0NS4wMDAwMDAwMDAgKzA0MDAK
+KysrIGIvZHJpdmVycy9tdGQvbWFwcy9LY29uZmlnCTIwMDYtMDYtMTMgMTk6MjA6NTEuMDAwMDAw
+MDAwICswNDAwCkBAIC02MCw2ICs2MCw5MiBAQAogCSAgSWdub3JlIHRoaXMgb3B0aW9uIGlmIHlv
+dSB1c2UgcnVuLXRpbWUgcGh5c21hcCBjb25maWd1cmF0aW9uCiAJICAoaS5lLiwgcnVuLXRpbWUg
+Y2FsbGluZyBwaHlzbWFwX2NvbmZpZ3VyZSgpKS4KCitjb25maWcgTVREX01VTFRJX1BIWVNNQVAK
+Kwl0cmlzdGF0ZSAibXVsdGlwbGUgQ0ZJIEZsYXNoIGRldmljZXMgaW4gcGh5c2ljYWwgbWVtb3J5
+IG1hcCIKKwlkZXBlbmRzIG9uIE1URF9DRkkKKwloZWxwCisJICBTaW1pbGFyIHRvIE1URF9QSFlT
+TUFQLCBqdXN0IGFsbG93cyBzZXZlcmFsIHNlcGVyYXRlIG1hcHBpbmdzLgorCitjb25maWcgTVRE
+X01VTFRJX1BIWVNNQVBfMV9OQU1FCisJc3RyaW5nICIxc3QgbWFwcGluZyBuYW1lIgorCWRlcGVu
+ZHMgb24gTVREX01VTFRJX1BIWVNNQVAKKwlkZWZhdWx0ICIiCisKK2NvbmZpZyBNVERfTVVMVElf
+UEhZU01BUF8xX1NUQVJUCisJaGV4ICIxc3QgbWFwcGluZyBzdGFydCIKKwlkZXBlbmRzIG9uIE1U
+RF9NVUxUSV9QSFlTTUFQCisJZGVmYXVsdCAiMHgwMDAwMDAwMCIKKworY29uZmlnIE1URF9NVUxU
+SV9QSFlTTUFQXzFfTEVOCisJaGV4ICIxc3QgbWFwcGluZyBsZW5ndGgiCisJZGVwZW5kcyBvbiBN
+VERfTVVMVElfUEhZU01BUAorCWRlZmF1bHQgIjB4MDAwMDAwMDAiCisKK2NvbmZpZyBNVERfTVVM
+VElfUEhZU01BUF8xX1dJRFRICisJaW50ICIxc3QgbWFwcGluZyBidXMgd2lkdGggLSAwIGRpc2Fi
+bGVzIG1hcHBpbmciCisJZGVwZW5kcyBvbiBNVERfTVVMVElfUEhZU01BUAorCWRlZmF1bHQgIjIi
+CisKK2NvbmZpZyBNVERfTVVMVElfUEhZU01BUF8yX05BTUUKKwlzdHJpbmcgIjJuZCBtYXBwaW5n
+IG5hbWUiCisJZGVwZW5kcyBvbiBNVERfTVVMVElfUEhZU01BUAorCWRlZmF1bHQgIiIKKworY29u
+ZmlnIE1URF9NVUxUSV9QSFlTTUFQXzJfU1RBUlQKKwloZXggIjJuZCBtYXBwaW5nIHN0YXJ0Igor
+CWRlcGVuZHMgb24gTVREX01VTFRJX1BIWVNNQVAKKwlkZWZhdWx0ICIweDAwMDAwMDAwIgorCitj
+b25maWcgTVREX01VTFRJX1BIWVNNQVBfMl9MRU4KKwloZXggIjJuZCBtYXBwaW5nIGxlbmd0aCIK
+KwlkZXBlbmRzIG9uIE1URF9NVUxUSV9QSFlTTUFQCisJZGVmYXVsdCAiMHgwMDAwMDAwMCIKKwor
+Y29uZmlnIE1URF9NVUxUSV9QSFlTTUFQXzJfV0lEVEgKKwlpbnQgIjJuZCBtYXBwaW5nIGJ1cyB3
+aWR0aCAtIDAgZGlzYWJsZXMgbWFwcGluZyIKKwlkZXBlbmRzIG9uIE1URF9NVUxUSV9QSFlTTUFQ
+CisJZGVmYXVsdCAiMiIKKworY29uZmlnIE1URF9NVUxUSV9QSFlTTUFQXzNfTkFNRQorCXN0cmlu
+ZyAiM3JkIG1hcHBpbmcgbmFtZSIKKwlkZXBlbmRzIG9uIE1URF9NVUxUSV9QSFlTTUFQCisJZGVm
+YXVsdCAiIgorCitjb25maWcgTVREX01VTFRJX1BIWVNNQVBfM19TVEFSVAorCWhleCAiM3JkIG1h
+cHBpbmcgc3RhcnQiCisJZGVwZW5kcyBvbiBNVERfTVVMVElfUEhZU01BUAorCWRlZmF1bHQgIjB4
+MDAwMDAwMDAiCisKK2NvbmZpZyBNVERfTVVMVElfUEhZU01BUF8zX0xFTgorCWhleCAiM3JkIG1h
+cHBpbmcgbGVuZ3RoIgorCWRlcGVuZHMgb24gTVREX01VTFRJX1BIWVNNQVAKKwlkZWZhdWx0ICIw
+eDAwMDAwMDAwIgorCitjb25maWcgTVREX01VTFRJX1BIWVNNQVBfM19XSURUSAorCWludCAiM3Jk
+IG1hcHBpbmcgYnVzIHdpZHRoIC0gMCBkaXNhYmxlcyBtYXBwaW5nIgorCWRlcGVuZHMgb24gTVRE
+X01VTFRJX1BIWVNNQVAKKwlkZWZhdWx0ICIyIgorCitjb25maWcgTVREX01VTFRJX1BIWVNNQVBf
+NF9OQU1FCisJc3RyaW5nICI0dGggbWFwcGluZyBuYW1lIgorCWRlcGVuZHMgb24gTVREX01VTFRJ
+X1BIWVNNQVAKKwlkZWZhdWx0ICIiCisKK2NvbmZpZyBNVERfTVVMVElfUEhZU01BUF80X1NUQVJU
+CisJaGV4ICI0dGggbWFwcGluZyBzdGFydCIKKwlkZXBlbmRzIG9uIE1URF9NVUxUSV9QSFlTTUFQ
+CisJZGVmYXVsdCAiMHgwMDAwMDAwMCIKKworY29uZmlnIE1URF9NVUxUSV9QSFlTTUFQXzRfTEVO
+CisJaGV4ICI0dGggbWFwcGluZyBsZW5ndGgiCisJZGVwZW5kcyBvbiBNVERfTVVMVElfUEhZU01B
+UAorCWRlZmF1bHQgIjB4MDAwMDAwMDAiCisKK2NvbmZpZyBNVERfTVVMVElfUEhZU01BUF80X1dJ
+RFRICisJaW50ICI0dGggbWFwcGluZyBidXMgd2lkdGggLSAwIGRpc2FibGVzIG1hcHBpbmciCisJ
+ZGVwZW5kcyBvbiBNVERfTVVMVElfUEhZU01BUAorCWRlZmF1bHQgIjIiCisKIGNvbmZpZyBNVERf
+U1VOX1VGTEFTSAogCXRyaXN0YXRlICJTdW4gTWljcm9zeXN0ZW1zIHVzZXJmbGFzaCBzdXBwb3J0
+IgogCWRlcGVuZHMgb24gU1BBUkMgJiYgTVREX0NGSQpkaWZmIC11TnIgYS9kcml2ZXJzL210ZC9t
+YXBzL01ha2VmaWxlIGIvZHJpdmVycy9tdGQvbWFwcy9NYWtlZmlsZQotLS0gYS9kcml2ZXJzL210
+ZC9tYXBzL01ha2VmaWxlCTIwMDYtMDUtMzEgMTY6MTI6NDUuMDAwMDAwMDAwICswNDAwCisrKyBi
+L2RyaXZlcnMvbXRkL21hcHMvTWFrZWZpbGUJMjAwNi0wNi0xMyAxOToyNjoxMi4wMDAwMDAwMDAg
+KzA0MDAKQEAgLTI2LDYgKzI2LDcgQEAKIG9iai0kKENPTkZJR19NVERfQ0VJVkEpCQkrPSBjZWl2
+YS5vCiBvYmotJChDT05GSUdfTVREX09DVEFHT04pCSs9IG9jdGFnb24tNTA2Ni5vCiBvYmotJChD
+T05GSUdfTVREX1BIWVNNQVApCSs9IHBoeXNtYXAubworb2JqLSQoQ09ORklHX01URF9NVUxUSV9Q
+SFlTTUFQKQkrPSBtcGh5c21hcC5vCiBvYmotJChDT05GSUdfTVREX1BOQzIwMDApCSs9IHBuYzIw
+MDAubwogb2JqLSQoQ09ORklHX01URF9QQ01DSUEpCSs9IHBjbWNpYW10ZC5vCiBvYmotJChDT05G
+SUdfTVREX1JQWExJVEUpCSs9IHJweGxpdGUubwpkaWZmIC11TnIgYS9kcml2ZXJzL210ZC9tYXBz
+L21waHlzbWFwLmMgYi9kcml2ZXJzL210ZC9tYXBzL21waHlzbWFwLmMKLS0tIGEvZHJpdmVycy9t
+dGQvbWFwcy9tcGh5c21hcC5jCTE5NzAtMDEtMDEgMDM6MDA6MDAuMDAwMDAwMDAwICswMzAwCisr
+KyBiL2RyaXZlcnMvbXRkL21hcHMvbXBoeXNtYXAuYwkyMDA1LTExLTA4IDA0OjAyOjEwLjAwMDAw
+MDAwMCArMDMwMApAQCAtMCwwICsxLDE4NiBAQAorLyoKKyAqICRJZDogbXBoeXNtYXAuYyx2IDEu
+NCAyMDA1LzExLzA3IDExOjE0OjI3IGdsZWl4bmVyIEV4cCAkCisgKgorICogU2V2ZXJhbCBtYXBw
+aW5ncyBvZiBOT1IgY2hpcHMKKyAqCisgKiBDb3B5cmlnaHQgKGMpIDIwMDEtMjAwNQlK0I5ybiBF
+bmdlbCA8am9lcm5Ad2guZmgtd2VkZWxkZT4KKyAqLworI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5o
+PgorI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPgorI2luY2x1ZGUgPGxpbnV4L210ZC9tYXAuaD4K
+KyNpbmNsdWRlIDxsaW51eC9tdGQvbXRkLmg+CisjaWZkZWYgQ09ORklHX01URF9QQVJUSVRJT05T
+CisjaW5jbHVkZSA8bGludXgvbXRkL3BhcnRpdGlvbnMuaD4KKyNlbmRpZgorCitzdGF0aWMgc3Ry
+dWN0IG1hcF9pbmZvIG1waHlzbWFwX3N0YXRpY19tYXBzW10gPSB7CisjaWYgQ09ORklHX01URF9N
+VUxUSV9QSFlTTUFQXzFfV0lEVEgKKwl7CisJCS5uYW1lCQk9IENPTkZJR19NVERfTVVMVElfUEhZ
+U01BUF8xX05BTUUsCisJCS5waHlzCQk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF8xX1NUQVJU
+LAorCQkuc2l6ZQkJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMV9MRU4sCisJCS5iYW5rd2lk
+dGgJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMV9XSURUSCwKKwl9LAorI2VuZGlmCisjaWYg
+Q09ORklHX01URF9NVUxUSV9QSFlTTUFQXzJfV0lEVEgKKwl7CisJCS5uYW1lCQk9IENPTkZJR19N
+VERfTVVMVElfUEhZU01BUF8yX05BTUUsCisJCS5waHlzCQk9IENPTkZJR19NVERfTVVMVElfUEhZ
+U01BUF8yX1NUQVJULAorCQkuc2l6ZQkJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMl9MRU4s
+CisJCS5iYW5rd2lkdGgJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfMl9XSURUSCwKKwl9LAor
+I2VuZGlmCisjaWYgQ09ORklHX01URF9NVUxUSV9QSFlTTUFQXzNfV0lEVEgKKwl7CisJCS5uYW1l
+CQk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF8zX05BTUUsCisJCS5waHlzCQk9IENPTkZJR19N
+VERfTVVMVElfUEhZU01BUF8zX1NUQVJULAorCQkuc2l6ZQkJPSBDT05GSUdfTVREX01VTFRJX1BI
+WVNNQVBfM19MRU4sCisJCS5iYW5rd2lkdGgJPSBDT05GSUdfTVREX01VTFRJX1BIWVNNQVBfM19X
+SURUSCwKKwl9LAorI2VuZGlmCisjaWYgQ09ORklHX01URF9NVUxUSV9QSFlTTUFQXzRfV0lEVEgK
+Kwl7CisJCS5uYW1lCQk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF80X05BTUUsCisJCS5waHlz
+CQk9IENPTkZJR19NVERfTVVMVElfUEhZU01BUF80X1NUQVJULAorCQkuc2l6ZQkJPSBDT05GSUdf
+TVREX01VTFRJX1BIWVNNQVBfNF9MRU4sCisJCS5iYW5rd2lkdGgJPSBDT05GSUdfTVREX01VTFRJ
+X1BIWVNNQVBfNF9XSURUSCwKKwl9LAorI2VuZGlmCit9OworCitERUNMQVJFX01VVEVYKG1hcF9t
+dXRleCk7CisKKworc3RhdGljIGludCBtcGh5c21hcF9tYXBfZGV2aWNlKHN0cnVjdCBtYXBfaW5m
+byAqbWFwKQoreworCXN0YXRpYyBjb25zdCBjaGFyICpyb21fcHJvYmVfdHlwZXNbXSA9IHsgImNm
+aV9wcm9iZSIsICJqZWRlY19wcm9iZSIsCiJtYXBfcm9tIiwgTlVMTCB9OworCWNvbnN0IGNoYXIg
+Kip0eXBlOworCXN0cnVjdCBtdGRfaW5mbyogbXRkOworI2lmZGVmIENPTkZJR19NVERfUEFSVElU
+SU9OUworICAgICAgIHN0cnVjdCBtdGRfcGFydGl0aW9uKiBtdGRfcGFydHM7CisgICAgICAgaW50
+IG10ZF9wYXJ0c19uYjsKKyAgICAgICBzdGF0aWMgY29uc3QgY2hhciAqcGFydF9wcm9iZXNbXSBf
+X2luaXRkYXRhID0geworI2lmZGVmIENPTkZJR19NVERfQ01ETElORV9QQVJUUworICAgICAgICJj
+bWRsaW5lcGFydCIsCisjZW5kaWYKKyNpZmRlZiBDT05GSUdfTVREX1JFREJPT1RfUEFSVFMKKyAg
+ICAgICAiUmVkQm9vdCIsCisjZW5kaWYKKyAgICAgICBOVUxMfTsKKyNlbmRpZgorCW1hcC0+dmly
+dCA9IGlvcmVtYXAobWFwLT5waHlzLCBtYXAtPnNpemUpOworCWlmICghbWFwLT52aXJ0KQorCQly
+ZXR1cm4gLUVJTzsKKworCXNpbXBsZV9tYXBfaW5pdChtYXApOworCW10ZCA9IE5VTEw7CisJdHlw
+ZSA9IHJvbV9wcm9iZV90eXBlczsKKwlmb3IoOyAhbXRkICYmICp0eXBlOyB0eXBlKyspIHsKKwkJ
+bXRkID0gZG9fbWFwX3Byb2JlKCp0eXBlLCBtYXApOworCX0KKworCWlmICghbXRkKSB7CisJCWlv
+dW5tYXAobWFwLT52aXJ0KTsKKwkJcmV0dXJuIC1FTlhJTzsKKwl9CisKKwltYXAtPm1hcF9wcml2
+XzEgPSAodW5zaWduZWQgbG9uZyltdGQ7CisJbXRkLT5vd25lciA9IFRISVNfTU9EVUxFOworCisj
+aWZkZWYgQ09ORklHX01URF9QQVJUSVRJT05TCisJbXRkX3BhcnRzX25iID0gcGFyc2VfbXRkX3Bh
+cnRpdGlvbnMobXRkLCBwYXJ0X3Byb2JlcywKKwkJCQkJICAgICZtdGRfcGFydHMsIDApOworCWlm
+IChtdGRfcGFydHNfbmIgPiAwKQorCXsKKwkJYWRkX210ZF9wYXJ0aXRpb25zIChtdGQsIG10ZF9w
+YXJ0cywgbXRkX3BhcnRzX25iKTsKKwkJbWFwLT5tYXBfcHJpdl8yPSh1bnNpZ25lZCBsb25nKW10
+ZF9wYXJ0czsKKwl9CisJZWxzZQorCXsKKwkJYWRkX210ZF9kZXZpY2UobXRkKTsKKwkJbWFwLT5t
+YXBfcHJpdl8yPSh1bnNpZ25lZCBsb25nKU5VTEw7CisgICAgICAgIH07CisjZWxzZQorCWFkZF9t
+dGRfZGV2aWNlKG10ZCk7CisjZW5kaWYKKwlyZXR1cm4gMDsKK30KKworCitzdGF0aWMgdm9pZCBt
+cGh5c21hcF91bm1hcF9kZXZpY2Uoc3RydWN0IG1hcF9pbmZvICptYXApCit7CisJc3RydWN0IG10
+ZF9pbmZvKiBtdGQgPSAoc3RydWN0IG10ZF9pbmZvKiltYXAtPm1hcF9wcml2XzE7CisjaWZkZWYg
+Q09ORklHX01URF9QQVJUSVRJT05TCisgICAgICAgc3RydWN0IG10ZF9wYXJ0aXRpb24qIG10ZF9w
+YXJ0cz0oc3RydWN0IG10ZF9wYXJ0aXRpb24qKW1hcC0+bWFwX3ByaXZfMjsKKyNlbmRpZgorCUJV
+R19PTighbXRkKTsKKwlpZiAoIW1hcC0+dmlydCkKKwkJcmV0dXJuOworCisjaWZkZWYgQ09ORklH
+X01URF9QQVJUSVRJT05TCisJaWYgKG10ZF9wYXJ0cykKKwl7CisJCWRlbF9tdGRfcGFydGl0aW9u
+cyhtdGQpOworCQlrZnJlZShtdGRfcGFydHMpOworCX0KKwllbHNlCisJICAgIGRlbF9tdGRfZGV2
+aWNlKG10ZCk7CisjZWxzZQorCWRlbF9tdGRfZGV2aWNlKG10ZCk7CisjZW5kaWYKKwltYXBfZGVz
+dHJveShtdGQpOworCWlvdW5tYXAobWFwLT52aXJ0KTsKKworCW1hcC0+bWFwX3ByaXZfMSA9IDA7
+CisJbWFwLT5tYXBfcHJpdl8yID0gMDsKKwltYXAtPnZpcnQgPSBOVUxMOworfQorCisKKworCitz
+dGF0aWMgaW50IF9faW5pdCBtcGh5c21hcF9pbml0KHZvaWQpCit7CisJaW50IGk7CisJZG93bigm
+bWFwX211dGV4KTsKKwlmb3IgKGk9MDsKKwkgICAgIGk8c2l6ZW9mKG1waHlzbWFwX3N0YXRpY19t
+YXBzKS9zaXplb2YobXBoeXNtYXBfc3RhdGljX21hcHNbMF0pOworCSAgICAgaSsrKQorCXsKKwkg
+ICAgICAgIGlmIChzdHJjbXAobXBoeXNtYXBfc3RhdGljX21hcHNbaV0ubmFtZSwiIikhPTAgJiYK
+KwkJICAgIG1waHlzbWFwX3N0YXRpY19tYXBzW2ldLnNpemUhPTAgJiYKKwkJICAgIG1waHlzbWFw
+X3N0YXRpY19tYXBzW2ldLmJhbmt3aWR0aCE9MCkKKwkJeworCQkgICAgbXBoeXNtYXBfbWFwX2Rl
+dmljZSgmbXBoeXNtYXBfc3RhdGljX21hcHNbaV0pOworCQl9OworCX07CisJdXAoJm1hcF9tdXRl
+eCk7CisJcmV0dXJuIDA7Cit9CisKKworc3RhdGljIHZvaWQgX19leGl0IG1waHlzbWFwX2V4aXQo
+dm9pZCkKK3sKKwlpbnQgaTsKKwlkb3duKCZtYXBfbXV0ZXgpOworCWZvciAoaT0wOworCSAgICAg
+aTxzaXplb2YobXBoeXNtYXBfc3RhdGljX21hcHMpL3NpemVvZihtcGh5c21hcF9zdGF0aWNfbWFw
+c1swXSk7CisJICAgICBpKyspCisJeworCSAgICAgICAgaWYgKHN0cmNtcChtcGh5c21hcF9zdGF0
+aWNfbWFwc1tpXS5uYW1lLCIiKSE9MCAmJgorCQkgICAgbXBoeXNtYXBfc3RhdGljX21hcHNbaV0u
+c2l6ZSE9MCAmJgorCQkgICAgbXBoeXNtYXBfc3RhdGljX21hcHNbaV0uYmFua3dpZHRoIT0wKQor
+CQl7CisJCSAgICBtcGh5c21hcF91bm1hcF9kZXZpY2UoJm1waHlzbWFwX3N0YXRpY19tYXBzW2ld
+KTsKKwkJfTsKKwl9OworCXVwKCZtYXBfbXV0ZXgpOworfQorCisKK21vZHVsZV9pbml0KG1waHlz
+bWFwX2luaXQpOworbW9kdWxlX2V4aXQobXBoeXNtYXBfZXhpdCk7CisKK01PRFVMRV9MSUNFTlNF
+KCJHUEwiKTsKK01PRFVMRV9BVVRIT1IoIkrQjnJuIEVuZ2VsIDxqb2VybkB3aC5maC13ZWRlbGRl
+PiIpOworTU9EVUxFX0RFU0NSSVBUSU9OKCJHZW5lcmljIGNvbmZpZ3VyYWJsZSBleHRlbnNpYmxl
+IE1URCBtYXAgZHJpdmVyIik7Cg==
