@@ -1,15 +1,27 @@
-Received: from bay110-f25.bay110.hotmail.com ([65.54.229.35] helo=hotmail.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fqg5s-0002rc-6L
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 20:52:27 -0400
-Message-ID: <BAY110-F252049B6BCEE0BB50A7CC3BC820@phx.gbl>
-In-Reply-To: <200605281754.26258.manningc2@actrix.gen.nz>
-From: "Han Chang" <posaune@hotmail.com>
-To: manningc2@actrix.gen.nz, linux-mtd@lists.infradead.org
-Subject: Re: FAT vs jFFS2 for NAND.
-Date: Wed, 14 Jun 2006 17:34:34 -0700
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Received: from [2002:4519:c427:1:220:edff:fe18:5794] (helo=thunker.thunk.org)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FqiHh-0004Aa-Ey
+	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 23:12:52 -0400
+Date: Wed, 14 Jun 2006 17:58:35 -0400
+From: Theodore Tso <tytso@mit.edu>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+Subject: Re: JFFS2/xattr problems.
+Message-ID: <20060614215835.GA5983@thunk.org>
+References: <1148150486.3875.251.camel@pmac.infradead.org>
+	<44704CA9.8010604@ak.jp.nec.com> <448CCEC8.2080903@ak.jp.nec.com>
+	<1150099418.11159.44.camel@shinybook.infradead.org>
+	<448D3752.3090605@ak.jp.nec.com>
+	<1150105995.8184.17.camel@pmac.infradead.org>
+	<20060612180653.GA17177@wohnheim.fh-wedel.de>
+	<448EBF7B.20306@kaigai.gr.jp>
+	<20060613141317.GB30066@wohnheim.fh-wedel.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060613141317.GB30066@wohnheim.fh-wedel.de>
+Cc: KaiGai Kohei <kaigai@kaigai.gr.jp>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,57 +31,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for the information. Now I started to make FAT work on NAND. 
-"mkdosfs" uses ioctl to check if the device is a floppy disk or hard disk, 
-but NAND is neither of these, so it fails. Is there any way to get around 
-this?
+On Tue, Jun 13, 2006 at 04:13:17PM +0200, Jörn Engel wrote:
+> On Tue, 13 June 2006 22:36:59 +0900, KaiGai Kohei wrote:
+> > 
+> > >Seems you missed Ted's presentation at LCA this year.  Among the
+> > >interesting bits:
+> > 
+> > If this presentation is public, could you tell me the URL?
+> > This indication is highly suggestive for me.
+> > Especially, I have not imagine yet the possibility that
+> > malware uses xattr to hide itself.
+> 
+> I can only find the abstract:
+> http://lca2006.linux.org.au/abstract.php?id=384
+> 
+> [ adding Ted to Cc: ]
+> 
+> Ted, do still have your foils and can make them available?  Kaigai-san
+> is working on an xattr implementation for jffs2.
 
-Should I do fdisk on the NAND device, if I can already create partition in 
-the driver initiation?
+Sure, here you go (see attached)
 
-Thanks,
-Han
+> > >o The biggest user of Alternate Streams (less-limited versions of
+> > >  xattr on Windows, Solaris, etc.) arguably is root kits.  Alternate
+> > >  Streams have the advantage that tripwire etc. don't understand them
+> > >  and won't look for malware there.
+> > >o Some system administrators have no plans to upgrade to Solaris 9
+> > >  ever, because it supports Alternate Streams.  The trouble of hidden
+> > >  malware is not worth the gains.
+> > >
+> > >Notable was also, that Ted repeated the last two points in several
+> > >variations.  Not sure if I would follow his line of thought 100%, but
+> > >he does have a point.
 
+See the article referenced in the slide, "Alternate Data Streams:
+Threat or Menace?"
 
->From: Charles Manning <manningc2@actrix.gen.nz>
->To: linux-mtd@lists.infradead.org
->CC: "Han Chang" <posaune@hotmail.com>
->Subject: Re: FAT vs jFFS2 for NAND.
->Date: Sun, 28 May 2006 17:54:26 +1200
->
->On Sunday 28 May 2006 14:58, Han Chang wrote:
-> > Hi there,
-> >
-> > My first question is that if I can use FAT file system for NAND. If yes,
-> > what are the pros and cons for using FAT vs. JFFS2.
->
->FAT needs to work with a block driver, so you can use FAT if you use a 
->block
->driver on top of the NAND.
->
->You can use JFFS2 or YAFFS as true flash file systems (ie that work 
->directly
->with the NAND).
->
->
->Pros of FAT:
->*) If you're using this on a device that must look like a USB mass storage
->device, or similar, then FAT is easier for people to use.
->*) Have a smaller RAM footprint than JFFS2 or YAFFS. JFFS2 and YAFFS both 
->use
->ram to build runtime look-up trees.
->*) FAT file systems will typically mount faster than JFFS2 and YAFFS, 
->though
->both YAFFS and JFFS2 mount times have reduced significantly in recent 
->weeks.
->
->Pros of YAFFS or JFFS2:
->*) Faster.  YAFFS is faster than JFFS2 which should be faster than FAT.
->*) YAFFS and JFFS2 are both log structured fs which make them far more 
->robust
->against corruption than FAT.
->*) YAFFS abd JFFS2 support features like links which are missing from FAT.
->
->-- Charles
->
->
+	http://www.awprofessional.com/articles/article.asp?p=413685
+
+(I love the title.  "Threat or Menace?"  "Menace or Threat?"  Or, to
+take a line from an old Bugs Bunny/Daffy Duck cartoon, "You got me
+dead to rights, Doc.  Would you like to shoot him now or shoot him
+later?"  :-)
+
+						- Ted
