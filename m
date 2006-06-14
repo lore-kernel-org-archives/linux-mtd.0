@@ -1,35 +1,26 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FqZ5O-0006YI-0R
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 13:23:31 -0400
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e2.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k5EHLJrL014928
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:19 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k5EHLJIe222270
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:19 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k5EHLIxA029588
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:18 -0400
-Received: from dyn-9-152-251-70.boeblingen.de.ibm.com
-	(dyn-9-152-251-70.boeblingen.de.ibm.com [9.152.251.70])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k5EHLIjn029491
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:18 -0400
-Subject: [MTD] UBI: Unsorted Block Images
-From: Frank Haverkamp <haver@vnet.ibm.com>
+Received: from moutng.kundenserver.de ([212.227.126.186])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FqW6K-0004Oz-0X
+	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 10:12:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by comm-neu.esd (Postfix) with ESMTP id B787910979F
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Jun 2006 16:06:25 +0200 (CEST)
+Received: from comm-neu.esd ([127.0.0.1])
+	by localhost (comm [127.0.0.1]) (amavisd-new, port 10024) with LMTP
+	id 08761-02-9 for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Jun 2006 16:06:25 +0200 (CEST)
+Received: from [10.0.18.190] (pc-linux-dev.esd [10.0.18.190])
+	by comm-neu.esd (Postfix) with ESMTP id 58FCA109792
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Jun 2006 16:06:25 +0200 (CEST)
+Message-ID: <449017E0.7070008@esd-electronics.com>
+Date: Wed, 14 Jun 2006 16:06:24 +0200
+From: Matthias Fuchs <matthias.fuchs@esd-electronics.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Wed, 14 Jun 2006 19:21:16 +0200
-Message-Id: <1150305676.5675.18.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Reply-To: haver@vnet.ibm.com
+Subject: [PATCH] MTD: Add support for the CPCI405 board
+Content-Type: multipart/mixed; boundary="------------040805070405010509010500"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,111 +30,247 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[MTD] UBI: Unsorted Block Images
+This is a multi-part message in MIME format.
+--------------040805070405010509010500
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-UBI (Latin: "where?") manages multiple logical volumes on a single
-flash device, specifically supporting NAND flash devices. UBI provides
-a flexible partitioning concept which still allows for wear-levelling
-across the whole flash device.
+This patch adds MTD support for the NOR flash on CPCI405 boards.
 
-In a sense, UBI may be compared to the Logical Volume Manager
-(LVM). Whereas LVM maps logical sector numbers to physical HDD sector
-numbers, UBI maps logical eraseblocks to physical eraseblocks.
+These boards may have different flash chips installed. Some of them
+are detected by the cfi probing. Others need the jedec_probe support.
+The patch also adds support for SST39VF3201 chips in jedec_probe.c
 
-More information may be found in the UBI design documentation:
-ubidesign.pdf. Which can be found here: 
-http://www.linux-mtd.infradead.org/doc/ubi.html
+The patch is tested with all available flash combinations against
+the recent mtd-2.6.git repository.
 
-Partitioning/Re-partitioning
+Regards
+Matthias
 
-  An UBI volume occupies a certain number of erase blocks. This is
-  limited by a configured maximum volume size, which could also be
-  viewed as the partition size. Each individual UBI volume's size can
-  be changed independently of the other UBI volumes, provided that the
-  sum of all volume sizes doesn't exceed a certain limit.
+Signed-off-by: Matthias Fuchs <matthias.fuchs@esd-electronics.com>
 
-  UBI supports dynamic volumes and static volumes. Static volumes are
-  read-only and their contents are protected by CRC check sums.
 
-Bad eraseblocks handling
 
-  UBI transparently handles bad eraseblocks. When a physical
-  eraseblock becomes bad, it is substituted by a good physical
-  eraseblock, and the user does not even notice this.
+--------------040805070405010509010500
+Content-Type: text/plain;
+ name="cpci405_mtd_2006_06_14.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="cpci405_mtd_2006_06_14.patch"
 
-Scrubbing
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 517ea33..f99f73e 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -147,6 +147,7 @@ #define SST29LE512	0x003d
+ #define SST39LF800	0x2781
+ #define SST39LF160	0x2782
+ #define SST39VF1601	0x234b
++#define SST39VF3201	0x235b
+ #define SST39LF512	0x00D4
+ #define SST39LF010	0x00D5
+ #define SST39LF020	0x00D6
+@@ -1483,6 +1484,22 @@ static const struct amd_flash_info jedec
+                }
+ 
+        }, {
++               .mfr_id         = MANUFACTURER_SST,     /* should be CFI */
++               .dev_id         = SST39VF3201,
++               .name           = "SST 39VF3201",
++               .uaddr          = {
++                       [0] = MTD_UADDR_0x5555_0x2AAA,  /* x8 */
++                       [1] = MTD_UADDR_0x5555_0x2AAA   /* x16 */
++               },
++               .DevSize        = SIZE_4MiB,
++               .CmdSet         = P_ID_AMD_STD,
++               .NumEraseRegions= 2,
++               .regions        = {
++                       ERASEINFO(0x1000,512),
++                       ERASEINFO(0x1000,512)
++               }
++
++       }, {
+ 		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
+ 		.dev_id		= M29W800DT,
+ 		.name		= "ST M29W800DT",
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 6bdaacc..9fd9c25 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -323,6 +323,14 @@ config MTD_WALNUT
+ 	  Walnut board. If you have one of these boards and would like to
+ 	  use the flash chips on it, say 'Y'.
+ 
++config MTD_CPCI405
++	tristate "Flash devices mapped on esd CPCI405"
++	depends on MTD_JEDECPROBE && CPCI405
++	help
++	  This enables access routines for the flash chips on the esd
++	  CPCI405 board.  If you have this board and would like to use the
++	  flash chips on it, say 'Y'.
++
+ config MTD_EBONY
+ 	tristate "Flash devices mapped on IBM 440GP Ebony"
+ 	depends on MTD_JEDECPROBE && EBONY
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index ab71f17..c298dc3 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -58,6 +58,7 @@ obj-$(CONFIG_MTD_OCOTEA)	+= ocotea.o
+ obj-$(CONFIG_MTD_BEECH)		+= beech-mtd.o
+ obj-$(CONFIG_MTD_ARCTIC)	+= arctic-mtd.o
+ obj-$(CONFIG_MTD_WALNUT)        += walnut.o
++obj-$(CONFIG_MTD_CPCI405)	+= cpci405-mtd.o
+ obj-$(CONFIG_MTD_H720X)		+= h720x-flash.o
+ obj-$(CONFIG_MTD_SBC8240)	+= sbc8240.o
+ obj-$(CONFIG_MTD_NOR_TOTO)	+= omap-toto-flash.o
+diff --git a/drivers/mtd/maps/cpci405-mtd.c b/drivers/mtd/maps/cpci405-mtd.c
+new file mode 100644
+index 0000000..ff2ae75
+--- /dev/null
++++ b/drivers/mtd/maps/cpci405-mtd.c
+@@ -0,0 +1,142 @@
++/*
++ *  drivers/mtd/maps/cpci405-mtd.c
++ *
++ *  Mapping for esd CPCI405 onboard flash
++ *
++ *  Copyright (c) 2006 electronic system design gmbh
++ *
++ *  Author:
++ *  Matthias Fuchs <matthias.fuchs@esd-electronics.com>
++ *
++ *  This program is free software; you can redistribute  it and/or modify it
++ *  under  the terms of  the GNU General  Public License as published by the
++ *  Free Software Foundation;  either version 2 of the  License, or (at your
++ *  option) any later version.
++ */
++
++#include <linux/config.h>
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <linux/init.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/io.h>
++#include <asm/ibm4xx.h>
++#include <asm/ppcboot.h>
++
++extern bd_t __res;
++
++#define P0_KERNEL_SIZE_MIN 0x100000
++#define P0_KERNEL_SIZE_MAX 0x140000
++#define P1_INITRD_SIZE	   0x180000
++#define P3_UBOOT_SIZE	   0x040000
++
++static struct mtd_partition cpci405_flash_partitions[] = {
++	{
++		.name = "kernel",
++		.offset = 0,
++		.size = P0_KERNEL_SIZE_MIN
++	},
++	{
++		.name = "initrd",
++		.offset = MTDPART_OFS_APPEND,
++		.size = P1_INITRD_SIZE
++	},
++	{
++		.name = "data",
++		.offset = MTDPART_OFS_APPEND,
++                /* size of partition 2 will be calculated at
++		   runtime dependent on the total flash size
++		*/
++	},
++	{
++		.name = "u-boot",
++		.offset = MTDPART_OFS_APPEND,
++		.size = P3_UBOOT_SIZE
++	}
++};
++
++static struct map_info cpci405_flash_map = {
++	.name = "CPCI405 Flash",
++	.bankwidth = 2,
++};
++
++static struct mtd_info *cpci405_mtd;
++
++static int __init init_cpci405_flash(void)
++{
++	unsigned long long flash_base;
++	unsigned long flash_size;
++
++	flash_base = __res.bi_flashstart;
++	flash_size = __res.bi_flashsize;
++
++	cpci405_flash_map.size = flash_size;
++	cpci405_flash_map.phys = flash_base;
++	cpci405_flash_map.virt = ioremap(flash_base, cpci405_flash_map.size);
++
++	if (!cpci405_flash_map.virt) {
++		printk(KERN_NOTICE "init_cpci405_flash: failed to ioremap\n");
++		return -EIO;
++	}
++
++	/*
++	 * Adjust kernel partition when we have a huge flash
++	 */
++	if (cpci405_flash_map.size > 0x400000) {
++		cpci405_flash_partitions[0].size = P0_KERNEL_SIZE_MAX;
++	}
++
++	/*
++	 * Adjust data partition to use the remaining flash
++	 */
++	cpci405_flash_partitions[2].size = cpci405_flash_map.size -
++		cpci405_flash_partitions[0].size - 
++		P1_INITRD_SIZE - P3_UBOOT_SIZE;
++
++	simple_map_init(&cpci405_flash_map);
++
++	/* 
++	 * On some boards there are CFI compatable flashes installed ...
++	 */
++	cpci405_mtd = do_map_probe("cfi_probe", &cpci405_flash_map);
++	if (!cpci405_mtd) {
++		/*
++		 * ... some others use SST flashes that are currently not 
++		 * detected by the cfi code, but jedec_probe works for these.
++		 */
++		cpci405_mtd = do_map_probe("jedec_probe", &cpci405_flash_map);
++	}
++
++	if (cpci405_mtd) {
++		cpci405_mtd->owner = THIS_MODULE;
++		return add_mtd_partitions(cpci405_mtd,
++					  cpci405_flash_partitions,
++					  ARRAY_SIZE(cpci405_flash_partitions));
++	} else {
++		printk(KERN_NOTICE \
++		       "init_cpci405_flash: failed to probe flash\n");
++	}
++
++	return -ENXIO;
++}
++
++static void __exit cleanup_cpci405_flash(void)
++{
++	if (cpci405_mtd) {
++		del_mtd_partitions(cpci405_mtd);
++		map_destroy(cpci405_mtd);
++		iounmap(cpci405_flash_map.virt);
++	}
++}
++
++module_init(init_cpci405_flash);
++module_exit(cleanup_cpci405_flash);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Matthias Fuchs <matthias.fuchs@esd-electronics.com>");
++MODULE_DESCRIPTION("MTD map for esd CPCI405 onboard flash");
 
-  On a NAND flash bit flips can occur on any write operation,
-  sometimes also on read. If bit flips persist on the device, at first
-  they can still be corrected by ECC, but once they accumulate,
-  correction will become impossible. Thus it is best to actively scrub
-  the affected eraseblock, by first copying it to a free eraseblock
-  and then erasing the original. The UBI layer performs this type of
-  scrubbing under the covers, transparently to the UBI volume users.
-
-Erase Counts
-
-  UBI maintains an erase count header per eraseblock. This frees
-  higher-level layers (like file systems) from doing this and allows
-  for centralized erase count management instead. The erase counts are
-  used by the wear-levelling algorithm in the UBI layer. The algorithm
-  itself is exchangeable.
-
-Booting from NAND
-
-  For booting directly from NAND flash the hardware must at least be
-  capable of fetching and executing a small portion of the NAND
-  flash. Some NAND flash controllers have this kind of support. They
-  usually limit the window to a few kilobytes in erase block 0. This
-  "initial program loader" (IPL) must then contain sufficient logic to
-  load and execute the next boot phase.
-
-  Due to bad eraseblocks, which may be randomly scattered over the
-  flash device, it is problematic to store the "secondary program
-  loader" (SPL) statically. Also, due to bit-flips it may become
-  corrupted over time. UBI allows to solve this problem gracefully by
-  storing the SPL in a small static UBI volume.
-
-UBI volumes vs. static partitions
-
-  UBI volumes are still very similar to static MTD partitions:
-
-    * both consist of eraseblocks (logical eraseblocks in case of UBI
-      volumes, and physical eraseblocks in case of static partitions;
-    * both support three basic operations - read, write, erase.
-
-  But UBI volumes have the following advantages over traditional
-  static MTD partitions:
-
-    * there are no eraseblock wear-leveling constraints in case of UBI
-      volumes, so the user should not care about this;
-    * there are no bit-flips and bad eraseblocks in case of UBI volumes.
-
-  So, UBI volumes may be considered as flash devices with relaxed
-  restrictions.
-
-Where can it be found?
-
-  Documentation, kernel code and applications can be found in the MTD
-  gits. 
-
-What are the applications for?
-
-  The applications help to create binary flash images for two
-  purposes: pfi files (partial flash images) for in-system update of
-  UBI volumes, and plain binary images, with or without OOB data in
-  case of NAND, for a manufacturing step. Furthermore some tools
-  are/and will be created that allow flash content analysis after a
-  system has crashed.
-
-Who did UBI?
-
-  The original ideas, where UBI is based on, were developed by Andreas
-  Arnez, Frank Haverkamp and Thomas Gleixner. Josh W. Boyer and
-  some others were involved too. The implementation of the kernel
-  layer was done by Artem B. Bityutskiy. The user-space applications
-  and tools were written by Oliver Lohmann with contributions from
-  Frank Haverkamp, Andreas Arnez, and Artem. Joern Engel contributed a
-  patch which modifies JFFS2 so that it can be run on a UBI
-  volume. Thomas Gleixner did modifications to the NAND layer and also
-  some to JFFS2 to make it work.
+--------------040805070405010509010500--
