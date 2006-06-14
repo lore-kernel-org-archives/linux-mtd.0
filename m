@@ -1,19 +1,35 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FqYTM-00044R-Nh
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 17:44:08 +0100
-Subject: Re: [PATCH] NAND: fix reading/writing OOB for syndrome: next iteration
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <20060614194520.ee6c500f.vwool@ru.mvista.com>
-References: <20060614194520.ee6c500f.vwool@ru.mvista.com>
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FqZ5O-0006YI-0R
+	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 13:23:31 -0400
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e2.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k5EHLJrL014928
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:19 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
+	k5EHLJIe222270
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:19 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	k5EHLIxA029588
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:18 -0400
+Received: from dyn-9-152-251-70.boeblingen.de.ibm.com
+	(dyn-9-152-251-70.boeblingen.de.ibm.com [9.152.251.70])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k5EHLIjn029491
+	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 13:21:18 -0400
+Subject: [MTD] UBI: Unsorted Block Images
+From: Frank Haverkamp <haver@vnet.ibm.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Wed, 14 Jun 2006 18:44:40 +0200
-Message-Id: <1150303481.5257.460.camel@localhost.localdomain>
+Date: Wed, 14 Jun 2006 19:21:16 +0200
+Message-Id: <1150305676.5675.18.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,282 +39,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-06-14 at 19:45 +0400, Vitaly Wool wrote:
-> Hi Thomas,
-> 
-> please see the new version inlined.
-> Notable is that you can't optimize write_oob() parameters as you've proposed im #mtd because buf, offs and length are not always taken from ops.
-> I've tested this version for syndrome and for software-based ecc and it seemed to work well with both (given that flash_eraseall -j won't work now anyway due to the OOB corruption we've discussed before).
+[MTD] UBI: Unsorted Block Images
 
-Grrr. Fix you mail client. 
+UBI (Latin: "where?") manages multiple logical volumes on a single
+flash device, specifically supporting NAND flash devices. UBI provides
+a flexible partitioning concept which still allows for wear-levelling
+across the whole flash device.
 
-> Index: linux-2.6/drivers/mtd/nand/nand_base.c
-> ===================================================================
-> --- linux-2.6.orig/drivers/mtd/nand/nand_base.c
-> +++ linux-2.6/drivers/mtd/nand/nand_base.c
-> @@ -1084,6 +1084,166 @@ static int nand_read(struct mtd_info *mt
->  }
->  
->  /**
-> + * nand_read_oob_raw - [REPLACABLE] the most common OOB data read function
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @buf:	buffer to store read data
-> + * @offs:	offset to start writing from
-> + * @length:	length of the OOB data to read
-> + * @page:	page number to read
-> + * @sndcmd:	pointer to the flag whether to issue read command or not
-> + */
-> +static void nand_read_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> +			      uint8_t *buf, int offs, int length, int page,
-> +			      int *sndcmd)
-> +{
-> +	if (*sndcmd) {
+In a sense, UBI may be compared to the Logical Volume Manager
+(LVM). Whereas LVM maps logical sector numbers to physical HDD sector
+numbers, UBI maps logical eraseblocks to physical eraseblocks.
 
-*smdcmd ?
+More information may be found in the UBI design documentation:
+ubidesign.pdf. Which can be found here: 
+http://www.linux-mtd.infradead.org/doc/ubi.html
 
-s/void nand_.../int nand.../
+Partitioning/Re-partitioning
 
-> +		chip->cmdfunc(mtd, NAND_CMD_READOOB, offs, page);
-> +		*sndcmd = 0;
-> +	}
-> +	chip->read_buf(mtd, buf, length);
-> +}
-> +static void (*nand_read_oob_swecc) (struct mtd_info *mtd,
-> +				    struct nand_chip *chip, uint8_t *buf,
-> +				    int offs, int length, int page,
-> +				    int *sndcmd) =
-> +    &nand_read_oob_raw;
+  An UBI volume occupies a certain number of erase blocks. This is
+  limited by a configured maximum volume size, which could also be
+  viewed as the partition size. Each individual UBI volume's size can
+  be changed independently of the other UBI volumes, provided that the
+  sum of all volume sizes doesn't exceed a certain limit.
 
-What is this for ? We can put nand_read_oob_raw into the chip->ecc.xxx
-pointer directly
+  UBI supports dynamic volumes and static volumes. Static volumes are
+  read-only and their contents are protected by CRC check sums.
 
-> +static void (*nand_read_oob_hwecc) (struct mtd_info *mtd,
-> +				    struct nand_chip *chip, uint8_t *buf,
-> +				    int offs, int length, int page,
-> +				    int *sndcmd) =
-> +    &nand_read_oob_raw;
-> +
+Bad eraseblocks handling
 
-Same here
+  UBI transparently handles bad eraseblocks. When a physical
+  eraseblock becomes bad, it is substituted by a good physical
+  eraseblock, and the user does not even notice this.
 
-> +/**
-> + * nand_read_oob_syndrome - [REPLACABLE] OOB data read function for HW ECC
-> + * 					 with syndromes
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @buf:	buffer to store read data
-> + * @offs:	offset to start reading from
-> + * @length:	length of the OOB data to read
-> + * @page:	page number to read
-> + * @sndcmd:	pointer to the flag whether to issue read command or not
-> + */
-> +static void nand_read_oob_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
-> +				   uint8_t *buf, int offs, int length,
-> +				   int page, int *sndcmd)
-> +{
-> +	int portion = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
-> +	uint8_t *bufpoi = buf;
-> +	int i, toread;
-> +
-> +	for (i = 0; i < chip->ecc.steps; i++) {
-> +		if (offs) {
-> +			while (portion < offs) {
-> +				offs -= portion;
-> +				i++;
-> +			}
-> +		}
+Scrubbing
 
-That breaks, if portion is < oobsize / ecc.steps and the offset is in
-the last area. I gave you a hint for the correct code before.
+  On a NAND flash bit flips can occur on any write operation,
+  sometimes also on read. If bit flips persist on the device, at first
+  they can still be corrected by ECC, but once they accumulate,
+  correction will become impossible. Thus it is best to actively scrub
+  the affected eraseblock, by first copying it to a free eraseblock
+  and then erasing the original. The UBI layer performs this type of
+  scrubbing under the covers, transparently to the UBI volume users.
 
-> +		chip->cmdfunc(mtd, NAND_CMD_READ0,
-> +				(i + 1) * chip->ecc.size + i * portion + offs,
-> +				page);
+Erase Counts
 
-We should use the random in command for the second read, as it is faster
+  UBI maintains an erase count header per eraseblock. This frees
+  higher-level layers (like file systems) from doing this and allows
+  for centralized erase count management instead. The erase counts are
+  used by the wear-levelling algorithm in the UBI layer. The algorithm
+  itself is exchangeable.
 
-> +		toread = min_t(int, length, portion - offs);
-> +		chip->read_buf(mtd, bufpoi, toread);
-> +		bufpoi += toread;
-> +		length -= toread;
-> +		offs = 0;
-> +	}
-> +	if (length > 0)
-> +		chip->read_buf(mtd, bufpoi, length);
+Booting from NAND
 
-When offset is far enough off, you need to reposition the flash
-pointer. 
+  For booting directly from NAND flash the hardware must at least be
+  capable of fetching and executing a small portion of the NAND
+  flash. Some NAND flash controllers have this kind of support. They
+  usually limit the window to a few kilobytes in erase block 0. This
+  "initial program loader" (IPL) must then contain sufficient logic to
+  load and execute the next boot phase.
 
-> +}
-> +
-> +/**
-> + * nand_write_oob_raw - [REPLACABLE] the most common OOB data write function
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @buf:	buffer where to write data from
-> + * @offs:	offset to start writing from
-> + * @length:	length of the OOB data to write
-> + * @page:	page number to write
-> + */
-> +static int nand_write_oob_raw(struct mtd_info *mtd, struct nand_chip *chip,
-> +			       const uint8_t *buf, int offs, int length,
-> +			       int page)
-> +{
-> +	int status = 0;
-> +
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize + offs,
-> +			page & chip->pagemask);
-> +	chip->write_buf(mtd, buf, length);
-> +	/* Send command to program the OOB data */
-> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +
-> +	status = chip->waitfunc(mtd, chip, FL_WRITING);
-> +
-> +	/* See if device thinks it succeeded */
-> +	if (status & NAND_STATUS_FAIL)
-> +		DEBUG(MTD_DEBUG_LEVEL0, "nand_write_oob: "
-> +		      "Failed write, page 0x%08x\n", page);
-> +
-> +	return status;
-> +}
-> +static int (*nand_write_oob_swecc) (struct mtd_info *mtd,
-> +				    struct nand_chip *chip,
-> +				    const uint8_t *buf, int offs, int length,
-> +				    int page) = nand_write_oob_raw;
-> +static int (*nand_write_oob_hwecc) (struct mtd_info *mtd,
-> +				    struct nand_chip *chip,
-> +				    const uint8_t *buf, int offs, int length,
-> +				    int page) = nand_write_oob_raw;
+  Due to bad eraseblocks, which may be randomly scattered over the
+  flash device, it is problematic to store the "secondary program
+  loader" (SPL) statically. Also, due to bit-flips it may become
+  corrupted over time. UBI allows to solve this problem gracefully by
+  storing the SPL in a small static UBI volume.
 
-See above
+UBI volumes vs. static partitions
 
-> +/**
-> + * nand_write_oob_syndrome - [REPLACABLE] OOB data write function for HW ECC
-> + * 					  with syndrome
-> + * @mtd:	mtd info structure
-> + * @chip:	nand chip info structure
-> + * @buf:	buffer where to write data from
-> + * @offs:	offset to start writing from
-> + * @length:	length of the OOB data to write
-> + * @page:	page number to write
-> + */
-> +static int nand_write_oob_syndrome(struct mtd_info *mtd,
-> +				   struct nand_chip *chip, const uint8_t *buf,
-> +				   int offs, int length, int page)
-> +{
-> +	int portion = chip->ecc.bytes + chip->ecc.prepad + chip->ecc.postpad;
-> +	int eccsize = chip->ecc.size;
-> +	const uint8_t *bufpoi = buf;
-> +	int i, len, status = 0, sndcmd = 0;
-> +
-> +	chip->cmdfunc(mtd, NAND_CMD_SEQIN,
-> +		      eccsize + offs,
-> +		      page);
+  UBI volumes are still very similar to static MTD partitions:
 
-One line please.
+    * both consist of eraseblocks (logical eraseblocks in case of UBI
+      volumes, and physical eraseblocks in case of static partitions;
+    * both support three basic operations - read, write, erase.
 
-> +	for (i = 0; i < chip->ecc.steps; i++) {
-> +		if (offs < portion) {
+  But UBI volumes have the following advantages over traditional
+  static MTD partitions:
 
+    * there are no eraseblock wear-leveling constraints in case of UBI
+      volumes, so the user should not care about this;
+    * there are no bit-flips and bad eraseblocks in case of UBI volumes.
 
-		if (offs >= portion) {
-			offs -= portion;
-			continue;	
-		}
+  So, UBI volumes may be considered as flash devices with relaxed
+  restrictions.
 
-		......
-> +			if (sndcmd)
-> +				chip->cmdfunc(mtd, NAND_CMD_RNDIN,
-> +				      eccsize + i * (eccsize + portion) + offs,
-> +				      -1);
+Where can it be found?
 
-Move the calculation into a seperate line please
-				pos = .....;
-				chip->...(...., pos, -1);
+  Documentation, kernel code and applications can be found in the MTD
+  gits. 
 
-> +			else
-> +				sndcmd = 1;
-> +			len = min_t(int, length, portion - offs);
-> +			chip->write_buf(mtd, bufpoi, len);
-> +			bufpoi += len;
-> +			length -= len;
-> +			offs = 0;
-> +		} else
-> +			offs -= portion;
-> +	}
-> +	if (length > 0)
-> +		chip->write_buf(mtd, bufpoi, length);
+What are the applications for?
 
-Needs seperate positioning depending on offset and layout
+  The applications help to create binary flash images for two
+  purposes: pfi files (partial flash images) for in-system update of
+  UBI volumes, and plain binary images, with or without OOB data in
+  case of NAND, for a manufacturing step. Furthermore some tools
+  are/and will be created that allow flash content analysis after a
+  system has crashed.
 
-> +	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +	status = chip->waitfunc(mtd, chip, FL_WRITING);
-> +
-> +	/* See if device thinks it succeeded */
-> +	if (status & NAND_STATUS_FAIL)
-> +		DEBUG(MTD_DEBUG_LEVEL0, "%s: Failed write, page 0x%08x\n",
-> +		      __FUNCTION__, page);
-> +
-> +	return status & NAND_STATUS_FAIL ? -EIO : 0;
+Who did UBI?
 
-Why is the pageprog command and the status wait in every implementation
-and not in the calling code ?
-
-> +}
-> +
-> +/**
->   * nand_do_read_oob - [Intern] NAND read out-of-band
->   * @mtd:	MTD device structure
->   * @from:	offset to read from
-> @@ -1122,12 +1283,8 @@ static int nand_do_read_oob(struct mtd_i
->  		bytes = direct ? ops->ooblen : mtd->oobsize;
->  		bufpoi = direct ? buf : chip->buffers.oobrbuf;
->  
-> -		if (likely(sndcmd)) {
-> -			chip->cmdfunc(mtd, NAND_CMD_READOOB, col, page);
-> -			sndcmd = 0;
-> -		}
-> -
-> -		chip->read_buf(mtd, bufpoi, bytes);
-> +		chip->ecc.read_oob(mtd, chip, bufpoi, col,
-> +				  bytes, page, &sndcmd);
->  		if (unlikely(!direct))
->  			buf = nand_transfer_oob(chip, buf, ops);
-
-Maybe we should get rid of that direct stuff and just read oobsize into
-the buffer and transfer it afterwards. Would make the code simpler and
-the number of arguments smaller:
-
-	sndcmd = ecc.read_oob(mtd, page, sndcmd);
-
-So we read the full oob into chip->buffers.oobrbuf and transfer it to
-the callers buffer then.
-
-> @@ -1596,28 +1753,16 @@ static int nand_do_write_oob(struct mtd_
->  		chip->oob_poi = chip->buffers.oobwbuf;
->  		memset(chip->oob_poi, 0xff, mtd->oobsize);
->  		nand_fill_oob(chip, ops->oobbuf, ops);
-> -		chip->cmdfunc(mtd, NAND_CMD_SEQIN, mtd->writesize,
-> -			      page & chip->pagemask);
-> -		chip->write_buf(mtd, chip->oob_poi, mtd->oobsize);
-> +		status = chip->ecc.write_oob(mtd, chip, chip->oob_poi, 0,
-> +				mtd->oobsize, page & chip->pagemask);
->  		memset(chip->oob_poi, 0xff, mtd->oobsize);
-> -	} else {
-> -		chip->cmdfunc(mtd, NAND_CMD_SEQIN,
-> -			      mtd->writesize + ops->ooboffs,
-> -			      page & chip->pagemask);
-> -		chip->write_buf(mtd, ops->oobbuf, ops->len);
-> -	}
-> -
-> -	/* Send command to program the OOB data */
-> -	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
-> +	} else
-> +		status = chip->ecc.write_oob(mtd, chip, ops->oobbuf,
-> +				ops->ooboffs, ops->len, page & chip->pagemask);
-
-Maybe we should think about the direct comment in read_oob here too. Not
-sure though.
-
-	tglx
+  The original ideas, where UBI is based on, were developed by Andreas
+  Arnez, Frank Haverkamp and Thomas Gleixner. Josh W. Boyer and
+  some others were involved too. The implementation of the kernel
+  layer was done by Artem B. Bityutskiy. The user-space applications
+  and tools were written by Oliver Lohmann with contributions from
+  Frank Haverkamp, Andreas Arnez, and Artem. Joern Engel contributed a
+  patch which modifies JFFS2 so that it can be run on a UBI
+  volume. Thomas Gleixner did modifications to the NAND layer and also
+  some to JFFS2 to make it work.
