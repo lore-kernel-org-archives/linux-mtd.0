@@ -1,33 +1,15 @@
-Received: from fra-del-01.spheriq.net ([195.46.51.97])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FqcCK-0000PA-2R
-	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 16:42:53 -0400
-Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
-	by fra-del-01.spheriq.net with ESMTP id k5EKgSk0020645
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 20:42:28 GMT
-Received: from fra-cus-01.spheriq.net (fra-cus-01.spheriq.net [195.46.51.37])
-	by fra-out-03.spheriq.net with ESMTP id k5EKgRoC015188
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 20:42:27 GMT
-Received: from beta.dmz-us.st.com (beta.dmz-us.st.com [167.4.1.35])
-	by fra-cus-01.spheriq.net with ESMTP id k5EKgPir030501
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Wed, 14 Jun 2006 20:42:27 GMT
-Received: from zeta.dmz-us.st.com (ns4.st.com [167.4.80.115])
-	by beta.dmz-us.st.com (STMicroelectronics) with ESMTP id 74114DA41
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Jun 2006 20:42:24 +0000 (GMT)
-Received: from mail1.phx.st.com (mail1.phx.st.com [167.4.198.60])
-	by zeta.dmz-us.st.com (STMicroelectronics) with ESMTP id 1CF5B4F61D
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Jun 2006 20:42:23 +0000 (GMT)
-Message-ID: <44907572.5040304@st.com>
-Date: Wed, 14 Jun 2006 13:45:38 -0700
-From: Paul J THACKER <paul.thacker@st.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: suspend/resume for multiple partitions
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from bay110-f25.bay110.hotmail.com ([65.54.229.35] helo=hotmail.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fqg5s-0002rc-6L
+	for linux-mtd@lists.infradead.org; Wed, 14 Jun 2006 20:52:27 -0400
+Message-ID: <BAY110-F252049B6BCEE0BB50A7CC3BC820@phx.gbl>
+In-Reply-To: <200605281754.26258.manningc2@actrix.gen.nz>
+From: "Han Chang" <posaune@hotmail.com>
+To: manningc2@actrix.gen.nz, linux-mtd@lists.infradead.org
+Subject: Re: FAT vs jFFS2 for NAND.
+Date: Wed, 14 Jun 2006 17:34:34 -0700
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,24 +19,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On my ARM9-based platform, we have 5 MTD partitions on NOR flash. One of 
-those partitions contains a jffs2 filesystem. Upon wake-up from deep 
-sleep, the NOR comes up in locked state. The resume code unlocks the 
-first partition, but not the rest. This causes subsequent writes to the 
-jffs2 filesystem to fail. Debugging showed that the mtd_info struct 
-fields for suspend and resume were only set for the first partition. I 
-traced this back to add_mtd_partitions():
+Thanks for the information. Now I started to make FAT work on NAND. 
+"mkdosfs" uses ioctl to check if the device is a floppy disk or hard disk, 
+but NAND is neither of these, so it fails. Is there any way to get around 
+this?
 
-        if (!i && master->suspend && master->resume) {
-                slave->mtd.suspend = part_suspend;
-                slave->mtd.resume = part_resume;
-        }
-
-which sets the fields, but only for the first partition. Removing the 
-"!i" condition seems to fix this problem, at least for my platform.
-
-I'm not that familiar with the MTD code, so can somebody explain why 
-it's done this way, and if changing it will break something somewhere else?
+Should I do fdisk on the NAND device, if I can already create partition in 
+the driver initiation?
 
 Thanks,
-Paul
+Han
+
+
+>From: Charles Manning <manningc2@actrix.gen.nz>
+>To: linux-mtd@lists.infradead.org
+>CC: "Han Chang" <posaune@hotmail.com>
+>Subject: Re: FAT vs jFFS2 for NAND.
+>Date: Sun, 28 May 2006 17:54:26 +1200
+>
+>On Sunday 28 May 2006 14:58, Han Chang wrote:
+> > Hi there,
+> >
+> > My first question is that if I can use FAT file system for NAND. If yes,
+> > what are the pros and cons for using FAT vs. JFFS2.
+>
+>FAT needs to work with a block driver, so you can use FAT if you use a 
+>block
+>driver on top of the NAND.
+>
+>You can use JFFS2 or YAFFS as true flash file systems (ie that work 
+>directly
+>with the NAND).
+>
+>
+>Pros of FAT:
+>*) If you're using this on a device that must look like a USB mass storage
+>device, or similar, then FAT is easier for people to use.
+>*) Have a smaller RAM footprint than JFFS2 or YAFFS. JFFS2 and YAFFS both 
+>use
+>ram to build runtime look-up trees.
+>*) FAT file systems will typically mount faster than JFFS2 and YAFFS, 
+>though
+>both YAFFS and JFFS2 mount times have reduced significantly in recent 
+>weeks.
+>
+>Pros of YAFFS or JFFS2:
+>*) Faster.  YAFFS is faster than JFFS2 which should be faster than FAT.
+>*) YAFFS and JFFS2 are both log structured fs which make them far more 
+>robust
+>against corruption than FAT.
+>*) YAFFS abd JFFS2 support features like links which are missing from FAT.
+>
+>-- Charles
+>
+>
