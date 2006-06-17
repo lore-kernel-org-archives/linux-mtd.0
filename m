@@ -1,14 +1,14 @@
-Subject: Re: stable oops
+Subject: Re: [JFFS2] a way to reduce memory usage
 From: David Woodhouse <dwmw2@infradead.org>
-To: Nickolay <nickolay@protei.ru>
-In-Reply-To: <448E920B.3050008@protei.ru>
-References: <448E920B.3050008@protei.ru>
+To: Dmitry Bazhenov <dbazhenov@rambler.ru>
+In-Reply-To: <200606151216.23086.dbazhenov@rambler.ru>
+References: <200606151216.23086.dbazhenov@rambler.ru>
 Content-Type: text/plain
-Date: Sun, 18 Jun 2006 00:10:06 +0100
-Message-Id: <1150585806.2584.28.camel@shinybook.infradead.org>
+Date: Sun, 18 Jun 2006 00:32:19 +0100
+Message-Id: <1150587140.2584.32.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,23 +18,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-06-13 at 14:23 +0400, Nickolay wrote:
-> [42949425.260000] kernel BUG at fs/jffs2/readinode.c:353! 
+On Thu, 2006-06-15 at 12:16 +0400, Dmitry Bazhenov wrote:
+> As I understand, for the moment every reference to raw node is kept in-core,
+> even for obsoleted one. I think it is a bit excessive.
 
-There are two problems. First, there is some hardware problem which is
-causing the ECC errors that you didn't show here. You need to fix that
-for yourself.
-
-Secondly, JFFS2 shouldn't be trusting node headers before their CRC is
-checked. What's happening here is we _know_ that there should be a data
-node at that location (which is why it's REF_UNCHECKED) because it's
-listed in a summary. But the node isn't actually readable -- we read a
-bogus value for its node type, and that's why we trigger the BUG() for
-an unknown node being REF_UNCHECKED.
-
-That BUG() seems to have crept in during another one of Artem's
-"cleanups" for which he's rapidly becoming unpopular, and should now be
-fixed in the git tree -- please could you confirm that?
+If you build without TEST_TOTLEN defined, we've already halved the size
+of the struct jffs2_raw_node_ref in the last few weeks. As well as
+finally removing the 'totlen' memory, we've also removed the 'next_phys'
+pointer and we're using arrays of them instead. That does mean that we
+can no longer drop obsolete nodes from the list though. However, we were
+only actually doing that on NOR flash anyway, because on NAND we do need
+access to obsolete dirent nodes.
 
 -- 
 dwmw2
