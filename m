@@ -1,13 +1,13 @@
 Received: from s23012.evanzo-server.de ([62.140.23.12]
 	helo=s512.evanzo-server.de)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Frv7b-0001VL-07
-	for linux-mtd@lists.infradead.org; Sun, 18 Jun 2006 07:07:26 -0400
-Message-ID: <20060618125745.h3u5lsw6psckosoo@webmail.7labs.de>
-Date: Sun, 18 Jun 2006 12:57:45 +0200
+	id 1FrvTV-0001uv-QD
+	for linux-mtd@lists.infradead.org; Sun, 18 Jun 2006 07:30:06 -0400
+Message-ID: <20060618125542.k4ipq4lfqtpwco88@webmail.7labs.de>
+Date: Sun, 18 Jun 2006 12:55:42 +0200
 From: Sebastian Haag <Sebastian@7labs.de>
 To: linux-mtd@lists.infradead.org
-Subject: Use jffs2-formatted initrd from RAM (not flash)
+Subject: Use jffs2-formatted initrd from RAM (not Flash)
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset=ISO-8859-1
