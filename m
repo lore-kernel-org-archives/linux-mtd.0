@@ -1,20 +1,21 @@
-Received: from host-84-9-201-23.bulldogdsl.com ([84.9.201.23]
-	helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fs76s-0007oW-Uw
-	for linux-mtd@lists.infradead.org; Sun, 18 Jun 2006 19:55:26 -0400
-Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
-	id 1Fs6v7-0001vH-00
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 00:43:09 +0100
-Date: Mon, 19 Jun 2006 00:43:09 +0100
-From: Ben Dooks <ben-mtd@fluff.org>
-To: linux-mtd@lists.infradead.org
-Subject: s3c24xx patches that seem to have missed going into kernel or git
-Message-ID: <20060618234309.GA7341@home.fluff.org>
+Received: from ocean.emcraft.com ([213.221.7.182])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FsEWj-0003oa-EO
+	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 03:50:38 -0400
+From: Dmitry Bazhenov <dbazhenov@rambler.ru>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [JFFS2] a way to reduce memory usage
+Date: Mon, 19 Jun 2006 11:50:08 +0400
+References: <200606151216.23086.dbazhenov@rambler.ru>
+	<1150587140.2584.32.camel@shinybook.infradead.org>
+In-Reply-To: <1150587140.2584.32.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Sender: Ben Dooks <ben@fluff.org.uk>
+Message-Id: <200606191150.08436.dbazhenov@rambler.ru>
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The following two patches seem to have missed getting either into
-the kernel or into the current git tree:
+> > As I understand, for the moment every reference to raw node is kept in-core,
+> > even for obsoleted one. I think it is a bit excessive.
+> 
+> ... However, we were
+> only actually doing that on NOR flash anyway, because on NAND we do need
+> access to obsolete dirent nodes.
+> 
+The algorithm allows to leave in memory only references to those nodes, that
+can affect future functionality, but to free references to all other nodes.
+The algorithm is appliable for the case of NAND chips also.
 
- 1) mtd-allow-clock-stop.patch 
- 2) mtd-fix-s3c2440-enable.patch
-
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+--
+Dmitry
