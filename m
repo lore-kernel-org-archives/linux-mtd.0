@@ -1,35 +1,34 @@
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+Received: from lon-del-02.spheriq.net ([195.46.50.98])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FsIqs-0007Et-1P
-	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 08:27:39 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e4.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k5JCRTM9016656
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 08:27:29 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k5JCRTJn271746
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 08:27:29 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k5JCRSv4023900
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 08:27:28 -0400
-Subject: Re: [UBI] Remove autotools from ubi-utils
-From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Josh Boyer <jwboyer@gmail.com>
-In-Reply-To: <625fc13d0606142102j46277f81gf45a6bf784dc6c90@mail.gmail.com>
-References: <625fc13d0606142102j46277f81gf45a6bf784dc6c90@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 19 Jun 2006 14:27:26 +0200
-Message-Id: <1150720046.6087.34.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Reply-To: haver@vnet.ibm.com
+	id 1FsJ5v-0007XY-O4
+	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 08:43:16 -0400
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-02.spheriq.net with ESMTP id k5JCgWRC002865
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 12:43:01 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-03.spheriq.net with ESMTP id k5JCgViQ032195
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 12:42:31 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by lon-cus-01.spheriq.net with ESMTP id k5JCgJ6u011398
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 12:42:22 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2ABDDDA65
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Jun 2006 12:41:04 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D9234475B2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 19 Jun 2006 12:41:03 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 mounting
+Date: Mon, 19 Jun 2006 14:41:01 +0200
+Message-ID: <000d01c6939d$9f056fc0$253682a4@nap.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,78 +38,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
 
-On Wed, 2006-06-14 at 23:02 -0500, Josh Boyer wrote:
-> Hi,
-> 
-> Take a look at the 'haver' branch of my mtd-utils tree.  It contains
-> the ubi-tools import that Frank did, and the start of removing the
-> autotools crap from them.
-> 
-> http://git.infradead.org/?p=users/jwboyer/mtd-utils;a=shortlog;h=haver
-> 
-> Next step would be to finish the standalone Makefiles, then add a
-> couple toplevel Makefiles so that the ubi tools get built with the
-> rest of the mtd-utils.
-> 
-> If this isn't the direction that people want to go with this, that's
-> fine.  But until someone comes up with something better, it's a start.
-> 
-> I'll be out of town for the next few days, so responses will be limited.
-> 
-> josh
+I have an OMAP5912 OSK platform and I'm using Linux in XIP mode from a =
+Sibley flash. I have the Linux OS image on the first flash bank and the =
+JFFS2 root image on the second flash bank. I have configured the flash =
+and the memory controller in burst mode and I have enabled the data =
+cache on the flash. During the JFFS2 mounting phase I thought every read =
+would have been performed in burst mode x8 (because the data cache is =
+enabled), while it seems some reads are performed in asynchronous mode. =
+Why are some reads performed in asynchronous mode? Does JFFS2 always use =
+the low level driver read function (cfi_intelext_read) to read the =
+flash?
 
-I saw your patches and figured that we should discuss an overall
-strategy, what we want to do in which fashion. When Oliver started the
-change to automake he had in mind, that he needed to provide libraries
-for our users. So he made libraries for everything. Some of the utils
-share the same libs. Finally (if you look at the configuration) the idea
-with the shared libs did not fully work out. I had to change some apps
-to be statically linked to get properly working binaries (automake
-produced bash scripts and a .bin/... directory which was not what I
-wanted). Olli was not there anymore and I did not took the time to
-investigate if this could have been solved differently.
-
-Now since you proposed to remove automake stuff and I do not
-know how to maintain it, I agree with you that we should replace it
-by something easier looking and better maintainable.
-
-When looking at it, I would assume that we should take care that the
-following stuff is resulting from the build:
-
-Tools:
-* ubimkvol
-* ubirmvol
-* ubiwritevol - Artem liked the name ubiupdatevol better
-* mkpfi
-* ubimirror
-* nand2bin
-* mkpfi
-* pfiflash
-* pfi2bin
-* ubigen
-* unubi
-* pddcustomize
-* mkbootenv
-
-Libraries (or linked into the apps?):
-* libubi
-
-I wonder where we put ECC and CRC, error printout logic? We can link the
-object files to the applications, or put them in a library, whatever. I
-think the code is very very small, so linking it into the apps has the
-advantage that we would not have to tweak library paths which I consider
-to be a big evil.
-
-My opinion is that we probably want to push all src into one directory 
-and the interface .h also in one. The non interface .hs we should put in
-the src directory too. What the makefile is concerned about I would
-prefer only one if possible, if we can somehow manage to be simple
-enough. Or multiple small ones including some reasonable Rules.mk files.
-
-Artem wanted to beautify libubi, but that is something different.
-
-Let us discuss tomorrow how we want to continue.
-
-Frank
+Thanks in advance.
+Best Regards,
+Davide
