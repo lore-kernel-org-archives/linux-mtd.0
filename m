@@ -1,20 +1,15 @@
-Received: from ocean.emcraft.com ([213.221.7.182])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FsEWj-0003oa-EO
-	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 03:50:38 -0400
-From: Dmitry Bazhenov <dbazhenov@rambler.ru>
-To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [JFFS2] a way to reduce memory usage
-Date: Mon, 19 Jun 2006 11:50:08 +0400
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dmitry Bazhenov <dbazhenov@rambler.ru>
+In-Reply-To: <200606191150.08436.dbazhenov@rambler.ru>
 References: <200606151216.23086.dbazhenov@rambler.ru>
 	<1150587140.2584.32.camel@shinybook.infradead.org>
-In-Reply-To: <1150587140.2584.32.camel@shinybook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+	<200606191150.08436.dbazhenov@rambler.ru>
+Content-Type: text/plain
+Date: Mon, 19 Jun 2006 09:00:54 +0100
+Message-Id: <1150704054.3176.387.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200606191150.08436.dbazhenov@rambler.ru>
 Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,16 +20,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > As I understand, for the moment every reference to raw node is kept in-core,
-> > even for obsoleted one. I think it is a bit excessive.
-> 
-> ... However, we were
-> only actually doing that on NOR flash anyway, because on NAND we do need
-> access to obsolete dirent nodes.
-> 
-The algorithm allows to leave in memory only references to those nodes, that
-can affect future functionality, but to free references to all other nodes.
-The algorithm is appliable for the case of NAND chips also.
+On Mon, 2006-06-19 at 11:50 +0400, Dmitry Bazhenov wrote:
+> The algorithm allows to leave in memory only references to those nodes, that
+> can affect future functionality, but to free references to all other nodes.
+> The algorithm is appliable for the case of NAND chips also. 
 
---
-Dmitry
+http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=9bfeb691e75b21fdaa80ffae719083200b190381
+
+-- 
+dwmw2
