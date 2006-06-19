@@ -1,16 +1,20 @@
-Subject: Re: [JFFS2] a way to reduce memory usage
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dmitry Bazhenov <dbazhenov@rambler.ru>
-In-Reply-To: <200606191150.08436.dbazhenov@rambler.ru>
-References: <200606151216.23086.dbazhenov@rambler.ru>
-	<1150587140.2584.32.camel@shinybook.infradead.org>
-	<200606191150.08436.dbazhenov@rambler.ru>
-Content-Type: text/plain
-Date: Mon, 19 Jun 2006 09:00:54 +0100
-Message-Id: <1150704054.3176.387.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Received: from host-84-9-201-23.bulldogdsl.com ([84.9.201.23]
+	helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FsFHV-0004jt-Se
+	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 04:39:04 -0400
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1FsFHU-0003lT-00
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 09:38:48 +0100
+Date: Mon, 19 Jun 2006 09:38:48 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [NAND] S3C2410 driver cleanu[
+Message-ID: <20060619083848.GA14466@home.fluff.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,12 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-06-19 at 11:50 +0400, Dmitry Bazhenov wrote:
-> The algorithm allows to leave in memory only references to those nodes, that
-> can affect future functionality, but to free references to all other nodes.
-> The algorithm is appliable for the case of NAND chips also. 
+Fix unused variables and commenting since tglx's
+new NAND updates
 
-http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=9bfeb691e75b21fdaa80ffae719083200b190381
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
--- 
-dwmw2
+diff -urNp -X linux-2.6-bjd2/Documentation/dontdiff linux-2.6-bjd2/drivers/mtd/nand/s3c2410.c linux-2.6-bjd3/drivers/mtd/nand/s3c2410.c
+--- linux-2.6-bjd2/drivers/mtd/nand/s3c2410.c	2006-06-19 09:24:03.000000000 +0100
++++ linux-2.6-bjd3/drivers/mtd/nand/s3c2410.c	2006-06-19 09:27:14.000000000 +0100
+@@ -268,20 +268,16 @@ static void s3c2410_nand_select_chip(str
+ 		clk_disable(info->clk);
+ }
+ 
+-/* command and control functions
+- *
+- * Note, these all use tglx's method of changing the IO_ADDR_W field
+- * to make the code simpler, and use the nand layer's code to issue the
+- * command and address sequences via the proper IO ports.
++/* s3c2410_nand_hwcontrol
+  *
++ * Issue command and address cycles to the chip
+ */
+ 
+ static void s3c2410_nand_hwcontrol(struct mtd_info *mtd, int cmd,
+ 				   unsigned int ctrl)
+ {
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+-	struct nand_chip *chip = mtd->priv;
+-
++	
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
+ 
+@@ -297,7 +293,6 @@ static void s3c2440_nand_hwcontrol(struc
+ 				   unsigned int ctrl)
+ {
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+-	struct nand_chip *chip = mtd->priv;
+ 
+ 	if (cmd == NAND_CMD_NONE)
+ 		return;
