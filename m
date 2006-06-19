@@ -1,14 +1,19 @@
-Subject: Re: JFFS2 mounting
-From: David Woodhouse <dwmw2@infradead.org>
-To: Davide CASCONE <davide.cascone@st.com>
-In-Reply-To: <000d01c6939d$9f056fc0$253682a4@nap.st.com>
-References: <000d01c6939d$9f056fc0$253682a4@nap.st.com>
-Content-Type: text/plain
-Date: Mon, 19 Jun 2006 13:56:33 +0100
-Message-Id: <1150721793.3176.421.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.elatec.si)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FsJi3-0008F8-Ky
+	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 09:22:38 -0400
+Received: from [192.168.0.3] (telperion.ee.elatec.si [192.168.0.3])
+	by lorien.ee.elatec.si (8.12.11.20060308/8.12.11) with ESMTP id
+	k5JCKia5020459
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 14:20:44 +0200
+Message-ID: <4496A162.5080305@epico.si>
+Date: Mon, 19 Jun 2006 15:06:42 +0200
+From: Savin Zlobec <savin@epico.si>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: NAND problems with at91 kernels
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-06-19 at 14:41 +0200, Davide CASCONE wrote:
-> I have an OMAP5912 OSK platform and I'm using Linux in XIP mode from a
-> Sibley flash. I have the Linux OS image on the first flash bank and
-> the JFFS2 root image on the second flash bank. I have configured the
-> flash and the memory controller in burst mode and I have enabled the
-> data cache on the flash. During the JFFS2 mounting phase I thought
-> every read would have been performed in burst mode x8 (because the
-> data cache is enabled), while it seems some reads are performed in
-> asynchronous mode. Why are some reads performed in asynchronous mode?
-> Does JFFS2 always use the low level driver read function
-> (cfi_intelext_read) to read the flash? 
+Hi all,
 
-During mount, the current code should _never_ use the read function, if
-it has a direct pointer to the flash chip which it can use instead.
+I'am running kernel 2.6.17 on AT91RM9200 board with Samsung 32MiB NAND.
+I've been experiencing a lot of NAND flash errors (running JFFS2 or 
+YAFFS)  which
+traced down to busy delay handling. Asking on linux-arm-kernel list I've 
+got a link to
+this message thread:
 
--- 
-dwmw2
+http://lists.infradead.org/pipermail/linux-mtd/2005-September/013625.html
+
+I've patched nand_base:nand_read_oob with the patch attached to the 
+above mail and
+it seems to solve my problems - I'am going to run some test for the next 
+couple of days
+just to be shure.
+
+Is there any reason why this patch was not accepted and more importantly 
+can I expect
+more delay related problems which apperantly show only on some platforms.
+
+Thanks,
+
+savin
