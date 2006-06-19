@@ -1,18 +1,18 @@
 Received: from host-84-9-201-23.bulldogdsl.com ([84.9.201.23]
 	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FsFHV-0004jt-Se
-	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 04:39:04 -0400
+	id 1FsF8s-0004f4-FI
+	for linux-mtd@lists.infradead.org; Mon, 19 Jun 2006 04:30:12 -0400
 Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
-	id 1FsFHU-0003lT-00
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 09:38:48 +0100
-Date: Mon, 19 Jun 2006 09:38:48 +0100
+	id 1FsF8o-0003jm-00
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Jun 2006 09:29:50 +0100
+Date: Mon, 19 Jun 2006 09:29:50 +0100
 From: Ben Dooks <ben-linux@fluff.org>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [NAND] S3C2410 driver cleanu[
-Message-ID: <20060619083848.GA14466@home.fluff.org>
+Subject: [PATCH] [NAND] S3C2410: cleanup compile
+Message-ID: <20060619082950.GA14365@home.fluff.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
 Content-Disposition: inline
 Sender: Ben Dooks <ben@fluff.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,10 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix unused variables and commenting since tglx's
-new NAND updates
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Remove two unused variables and update the comments
+for the new NAND command code entries
 
 Signed-off-by: Ben Dooks <ben-linux@fluff.org>
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="2617-mtd-nand-cleanup.patch"
 
 diff -urNp -X linux-2.6-bjd2/Documentation/dontdiff linux-2.6-bjd2/drivers/mtd/nand/s3c2410.c linux-2.6-bjd3/drivers/mtd/nand/s3c2410.c
 --- linux-2.6-bjd2/drivers/mtd/nand/s3c2410.c	2006-06-19 09:24:03.000000000 +0100
@@ -64,3 +73,5 @@ diff -urNp -X linux-2.6-bjd2/Documentation/dontdiff linux-2.6-bjd2/drivers/mtd/n
  
  	if (cmd == NAND_CMD_NONE)
  		return;
+
+--J2SCkAp4GZ/dPZZf--
