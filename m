@@ -1,14 +1,22 @@
-Subject: Re: JFFS2 mounting performance improvement
-From: David Woodhouse <dwmw2@infradead.org>
-To: Davide CASCONE <davide.cascone@st.com>
-In-Reply-To: <000601c69443$1c7de450$253682a4@nap.st.com>
-References: <000601c69443$1c7de450$253682a4@nap.st.com>
-Content-Type: text/plain
-Date: Tue, 20 Jun 2006 09:47:54 +0100
-Message-Id: <1150793274.3176.469.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FsbxG-0005iB-69
+	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 04:51:38 -0400
+Message-ID: <4497B6ED.3050701@yandex.ru>
+Date: Tue, 20 Jun 2006 12:50:53 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: haver@vnet.ibm.com
+Subject: Re: [UBI] Remove autotools from ubi-utils
+References: <625fc13d0606142102j46277f81gf45a6bf784dc6c90@mail.gmail.com>
+	<1150720046.6087.34.camel@localhost.localdomain>
+In-Reply-To: <1150720046.6087.34.camel@localhost.localdomain>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@wohnheim.fh-wedel.de>,
+	Josh Boyer <jwboyer@gmail.com>,
+	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,29 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-06-20 at 10:25 +0200, Davide CASCONE wrote:
-> 
-> It seems that during the JFFS2 mounting, the file system uses the
-> function cfi_intelext_point (in jffs2_scan_medium function) to point
-> to the flash memory. This function refers to the flash memory using
-> the virtual address (map->virt). But if the flash is cached and the
-> burst mode is enabled, it should be better to refer to the flash with
-> the address map->cached (in the same way of cfi_intelext_read
-> function, that calls the map_copy_from function, in which there is a
-> check to verify if the flash is cached). This improves in a
-> considerable way the performance during the mounting phase, reducing
-> the mounting time. 
-> What do you think about? Do you agree with me? 
+Frank Haverkamp wrote:
+> * ubiwritevol - Artem liked the name ubiupdatevol better
+Indeed, UBI allows only "update" operations from, userspace, not random 
+writes...
 
-Yes. As long as you handle the cache invalidation where appropriate, you
-should definitely use the cached address for the 'point' function.
+> Artem wanted to beautify libubi, but that is something different.
+Butify is not really suitable word here. I'd say to write it from 
+scratch cleanly :-)
 
-> Do you know if there are other points in JFFS2 code that uses the
-> virtual address map->virt instead of map->cached. 
-
-JFFS2 wouldn't touch that directly. It's down to the chip driver. JFFS2
-just uses the read() and point() methods (during scan), so I think the
-answer would be 'no'.
+Yes, I've finished most UBI TODOs, and now I want to write few 
+user-space tests. I certainly want to have them on top of a decent UBI 
+library.
 
 -- 
-dwmw2
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
