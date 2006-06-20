@@ -1,18 +1,34 @@
-Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.elatec.si)
+Received: from fra-del-04.spheriq.net ([195.46.51.100])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FsakZ-00038w-Ad
-	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 03:34:28 -0400
-Message-ID: <4497A723.2070006@epico.si>
-Date: Tue, 20 Jun 2006 09:43:31 +0200
-From: Savin Zlobec <savin@epico.si>
+	id 1FsbYY-0004uY-Nq
+	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 04:26:14 -0400
+Received: from fra-out-01.spheriq.net (fra-out-01.spheriq.net [195.46.51.129])
+	by fra-del-04.spheriq.net with ESMTP id k5K8PlnH004570
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2006 08:25:48 GMT
+Received: from fra-cus-01.spheriq.net (fra-cus-01.spheriq.net [195.46.51.37])
+	by fra-out-01.spheriq.net with ESMTP id k5K8PfOB020857
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2006 08:25:41 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by fra-cus-01.spheriq.net with ESMTP id k5K8Pd60029563
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Jun 2006 08:25:40 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E4AEDA43
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jun 2006 08:25:39 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 313C047344
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Jun 2006 08:25:39 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 mounting performance improvement
+Date: Tue, 20 Jun 2006 10:25:31 +0200
+Message-ID: <000601c69443$1c7de450$253682a4@nap.st.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] AT91RM9200 NAND support
-References: <1150786454.15581.289.camel@fuzzie.sanpeople.com>	<1150787336.6780.102.camel@localhost.localdomain>
-	<1150787823.15614.297.camel@fuzzie.sanpeople.com>
-In-Reply-To: <1150787823.15614.297.camel@fuzzie.sanpeople.com>
-Content-Type: multipart/mixed; boundary="------------000903040101060502040904"
-Cc: tglx@linutronix.de
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,91 +38,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------000903040101060502040904
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Andrew Victor wrote:
+It seems that during the JFFS2 mounting, the file system uses the =
+function cfi_intelext_point (in jffs2_scan_medium function) to point to =
+the flash memory. This function refers to the flash memory using the =
+virtual address (map->virt). But if the flash is cached and the burst =
+mode is enabled, it should be better to refer to the flash with the =
+address map->cached (in the same way of cfi_intelext_read function, that =
+calls the map_copy_from function, in which there is a check to verify if =
+the flash is cached). This improves in a considerable way the =
+performance during the mounting phase, reducing the mounting time.=20
+What do you think about? Do you agree with me? Do you know if there are =
+other points in JFFS2 code that uses the virtual address map->virt =
+instead of map->cached.
 
->hi Thomas,
->
->  
->
->>As I pointed out in my previous mail, the driver needs to be updated to
->>work with the latest changes in the nand driver.
->>    
->>
-I'am working on this right now. I've changed the at91 driver and I'am 
-going to
-test it when I finish the changes on YAFFS - read/write_ecc and oobblock are
-not part of mtd_info any more...
-
-I'am attaching the at91_nand.c changes.
- 
---
-savin
-
---------------000903040101060502040904
-Content-Type: text/x-patch;
- name="at91_nand.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="at91_nand.diff"
-
---- drivers/mtd.old/nand/at91_nand.c	2006-06-20 09:09:21.000000000 +0200
-+++ drivers/mtd/nand/at91_nand.c	2006-06-20 09:33:21.000000000 +0200
-@@ -39,12 +39,13 @@
- /*
-  * Hardware specific access to control-lines
-  */
--static void at91_nand_hwcontrol(struct mtd_info *mtd, int cmd)
-+static void at91_nand_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
- {
- 	struct nand_chip *nand_chip = mtd->priv;
- 	struct at91_nand_host *host = nand_chip->priv;
- 
--	switch(cmd) {
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		switch(cmd) {
- 		case NAND_CTL_SETCLE:
- 			nand_chip->IO_ADDR_W = host->io_base + (1 << host->board->cle);
- 			break;
-@@ -61,7 +62,10 @@
- 			break;
- 		case NAND_CTL_CLRNCE:
- 			break;
-+		}
- 	}
-+	if (cmd != NAND_CMD_NONE)
-+		writeb(cmd, chip->IO_ADDR_W);
- }
- 
- 
-@@ -145,13 +149,14 @@
- 
- 	nand_chip->priv = host;		/* link the private data structures */
- 	mtd->priv = nand_chip;
-+	mtd->owner = THIS_MODULE;
- 
- 	/* Set address of NAND IO lines */
- 	nand_chip->IO_ADDR_R = host->io_base;
- 	nand_chip->IO_ADDR_W = host->io_base;
--	nand_chip->hwcontrol = at91_nand_hwcontrol;
-+	nand_chip->cmd_ctrl = at91_nand_hwcontrol;
- 	nand_chip->dev_ready = at91_nand_device_ready;
--	nand_chip->eccmode = NAND_ECC_SOFT;	/* enable ECC */
-+	nand_chip->ecc.mode = NAND_ECC_SOFT;	/* enable ECC */
- 	nand_chip->chip_delay = 20;		/* 20us command delay time */
- 
- 	platform_set_drvdata(pdev, host);
-@@ -170,6 +175,7 @@
- 		res = -ENXIO;
- 		goto out;
- 	}
-+	nand_release(mtd);
- 
- #ifdef CONFIG_MTD_PARTITIONS
- 	if (host->board->partition_info)
-
---------------000903040101060502040904--
+Best Regards,
+Davide
