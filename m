@@ -1,38 +1,24 @@
-Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.elatec.si)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FsiYm-0006sA-60
-	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 11:55:40 -0400
-Message-ID: <44981C6F.2080907@epico.si>
-Date: Tue, 20 Jun 2006 18:03:59 +0200
-From: Savin Zlobec <savin@epico.si>
-MIME-Version: 1.0
-To: tglx@linutronix.de
-Subject: Re: [PATCH] AT91RM9200 NAND support
-References: <1150786454.15581.289.camel@fuzzie.sanpeople.com>	
-	<1150787336.6780.102.camel@localhost.localdomain>	
-	<1150787823.15614.297.camel@fuzzie.sanpeople.com>	
-	<4497A723.2070006@epico.si>	
-	<1150790417.6780.107.camel@localhost.localdomain>	
-	<4497BAE2.3010602@epico.si>	
-	<1150795093.6780.117.camel@localhost.localdomain>	
-	<4497D2CE.7070000@epico.si>	
-	<1150801960.6780.132.camel@localhost.localdomain>
-	<4497DF09.70404@epico.si>	
-	<1150804501.6780.141.camel@localhost.localdomain>	
-	<4497E9D4.9040307@epico.si>	
-	<1150807480.6780.157.camel@localhost.localdomain>	
-	<4497F1B4.8030702@epico.si>	
-	<1150809682.6780.172.camel@localhost.localdomain>	
-	<4497FCA4.1060601@epico.si>	
-	<1150811833.6780.195.camel@localhost.localdomain>	
-	<44980505.2000003@epico.si>	
-	<1150813786.6780.213.camel@localhost.localdomain>	
-	<449819F1.2010104@epico.si>
-	<1150818830.6780.232.camel@localhost.localdomain>
-In-Reply-To: <1150818830.6780.232.camel@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FskCv-0006Mw-Fu
+	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 18:40:10 +0100
+Subject: Re: FAT vs jFFS2 for NAND.
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Claudio Lanconelli <lanconelli.claudio@eptar.com>
+In-Reply-To: <44982FC3.8080501@eptar.com>
+References: <BAY110-F16C625F11A1D80EA24563ABC860@phx.gbl>
+	<4497DCA6.2080006@eptar.com>
+	<1150806658.17609.55.camel@hades.cambridge.redhat.com>
+	<4497F758.5090708@eptar.com>
+	<1150811549.6780.192.camel@localhost.localdomain>
+	<44982FC3.8080501@eptar.com>
+Content-Type: text/plain
+Date: Tue, 20 Jun 2006 19:41:24 +0200
+Message-Id: <1150825284.6780.270.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,27 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
+Claudio,
 
->Savin,
->
->On Tue, 2006-06-20 at 17:53 +0200, Savin Zlobec wrote:
->  
->
->>The problem is in nand_wait, the function is called (when writting files 
->>to jffs2) with
->>chip->state=FL_READING and state=FL_WRITING and consequently the waiting
->>is terminated instantly (chip->state != state) leaving the chip in busy 
->>state.
->>    
->>
->
->The problem is the calling code. Doh - where is the brown paperbag ?
->
->Thanks for tracking that down.
->
->  
->
-Just found it too. I guess something was indeed terribly wrong :-).
+On Tue, 2006-06-20 at 19:26 +0200, Claudio Lanconelli wrote:
+> Thanks Thomas for your tips.
+> Here a second try, does it look fine?
 
-savin
+Much better now.
+
+> I attached the file instead of inline to avoid tab/space replacement by 
+> email client.
+
+> however can I ask you where I find prototype/usage for mtd->block_is_bad()?
+
+Oops, mtd->block_isbad()
+
+	if (mtd->block_isbad(mtd, offset)
+		skip_bad_block();
+	else
+		scan_block()
+
+offs is the offset of the block:
+0 for the first block
+16384 for the second ...
+you certainly have this offset handy in the scan any way
+
+This looks up the bad block table which is created in ram after the NAND
+chip has been detected in nand_scan() and helps you to avoid reading bad
+blocks. Just skip the block, when the function returns 1.
+
+The only exception I think is block 0, which contains the SSFDC header
+and is marked bad for protection.
+
+> And against which tree I need to build it? Be patient, please.
+
+The best is to build against mtd-26.git from git.infradead.org. git
+instructions are on the MTD homepage.
+
+I do a thorough review, when you have it running with that tree.
+
+Thanks,
+
+	tglx
+
+
+> #define ArraySize(x)	( sizeof(x) / sizeof((x)[0]) )
+
+use the existing ARRAY_SIZE() macro please
+
+
+> //Must be ordered by size
+
+C++
+
+> static const chs_entry_t chs_table[] = {
+
+> /* Read and check for a valid CIS sector */
+> static int get_valid_cis_sector(struct mtd_info *mtd)
+> {
+> 	int ret, k, cis_sector;
+> 	size_t retlen;
+> 	loff_t offset;
+> 	uint8_t sect_buf[SECTOR_SIZE];
+> 
+> 	/* Look for CIS/IDI sector on the first GOOD block (give up after 4 bad
+> 	   blocks). If the first good block doesn't contain CIS number the flash
+> 	   is not SSFDC formatted */
+
+	/*
+	 * Use this for 
+	 * multiline comments please
+	 */
