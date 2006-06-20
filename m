@@ -1,7 +1,7 @@
 Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fsh8O-0001DX-Df
-	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 15:23:17 +0100
+	id 1FshDV-0001Km-Lz
+	for linux-mtd@lists.infradead.org; Tue, 20 Jun 2006 15:28:34 +0100
 Subject: Re: [PATCH] AT91RM9200 NAND support
 From: Thomas Gleixner <tglx@linutronix.de>
 To: Savin Zlobec <savin@epico.si>
@@ -25,8 +25,8 @@ References: <1150786454.15581.289.camel@fuzzie.sanpeople.com>
 	<1150811833.6780.195.camel@localhost.localdomain>
 	<44980505.2000003@epico.si>
 Content-Type: text/plain
-Date: Tue, 20 Jun 2006 16:24:37 +0200
-Message-Id: <1150813478.6780.207.camel@localhost.localdomain>
+Date: Tue, 20 Jun 2006 16:29:45 +0200
+Message-Id: <1150813786.6780.213.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -41,21 +41,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2006-06-20 at 16:24 +0200, Savin Zlobec wrote:
-> >I have no idea why this happens. Never seen that before.
-> >  
-> >
 > Indeed it is the STATUS command. If I don't wait after it I can't copy
 > a single file on the jffs2 partition, inserting a wait there seems to solve
 > the problem.
 
-Well, I really would be interested to find out why this happens. It
-might hit more users.
+Well, we also delay the codepath in nand_wait() with this. It feels
+terribly wrong and the problem is just hidden by that check.
 
-> The MTD in kernel 2.6.17 doesn't have this wait either, but works for
-> me... different code paths - different timings ? I'll try to find some time
-> to check this.
+Can you please remove the wait again and add a check of the r/b pin to 
 
-I guess its a timing problem, which was hidden by slower code. Can you
-figure out how long the R/B pin is low in this case ?
+static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip, int state)
+{
+
+just before the 
+
+	return status;
+}
 
 	tglx
