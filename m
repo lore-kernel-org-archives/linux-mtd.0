@@ -1,18 +1,35 @@
-Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.elatec.si)
+Received: from e1.ny.us.ibm.com ([32.97.182.141])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fsyeq-0003CO-5D
-	for linux-mtd@lists.infradead.org; Wed, 21 Jun 2006 05:06:17 -0400
-Received: from [192.168.0.3] (telperion.ee.elatec.si [192.168.0.3])
-	by lorien.ee.elatec.si (8.12.11.20060308/8.12.11) with ESMTP id
-	k5L8T8DX024458
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2006 10:29:08 +0200
-Message-ID: <44990E2B.1030009@epico.si>
-Date: Wed, 21 Jun 2006 11:15:23 +0200
-From: Savin Zlobec <savin@epico.si>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] NAND
-Content-Type: multipart/mixed; boundary="------------020405070409000109090707"
+	id 1Ft23q-0006MP-6l
+	for linux-mtd@lists.infradead.org; Wed, 21 Jun 2006 08:44:11 -0400
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e1.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k5LChqGD006834
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2006 08:43:52 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
+	k5LChql5281006
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2006 08:43:52 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	k5LChqI0020665
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2006 08:43:52 -0400
+Subject: Re: [UBI] Remove autotools from ubi-utils
+From: Frank Haverkamp <haver@vnet.ibm.com>
+To: Josh Boyer <jwboyer@gmail.com>
+In-Reply-To: <625fc13d0606142102j46277f81gf45a6bf784dc6c90@mail.gmail.com>
+References: <625fc13d0606142102j46277f81gf45a6bf784dc6c90@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 21 Jun 2006 14:43:47 +0200
+Message-Id: <1150893827.6049.4.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,69 +39,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------020405070409000109090707
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
 Hi,
 
-this patch fixes nand status handling in nand_write_oob_std and
-nand busy wait in nand_do_read_oob.
+I removed automake and autoconf. libubi is in this version no real
+library anymore. We can change that later on. Artem said, that he
+wanted to improve/rewrite the library anyhow. Now he can do without
+using automake, autoconf. ubiwritevol is now renamed to ubiupdatevol.
 
-savin
+http://git.infradead.org/?p=users/haver/mtd-utils.git;a=commit;h=a985bce4176b201d10d22036ea6b5f6d0f539e70
 
---------------020405070409000109090707
-Content-Type: text/x-patch;
- name="nand_base.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="nand_base.diff"
+On Wed, 2006-06-14 at 23:02 -0500, Josh Boyer wrote:
+> Take a look at the 'haver' branch of my mtd-utils tree.  It contains
+> the ubi-tools import that Frank did, and the start of removing the
+> autotools crap from them.
+> 
+> http://git.infradead.org/?p=users/jwboyer/mtd-utils;a=shortlog;h=haver
+> 
+> Next step would be to finish the standalone Makefiles, then add a
+> couple toplevel Makefiles so that the ubi tools get built with the
+> rest of the mtd-utils.
 
---- drivers/mtd/nand/nand_base.c.orig	2006-06-21 10:48:00.000000000 +0200
-+++ drivers/mtd/nand/nand_base.c	2006-06-21 11:10:38.000000000 +0200
-@@ -1174,11 +1174,11 @@
- 	/* Send command to program the OOB data */
- 	chip->cmdfunc(mtd, NAND_CMD_PAGEPROG, -1, -1);
- 
- 	status = chip->waitfunc(mtd, chip);
- 
--	return status;
-+	return status & NAND_STATUS_FAIL ? -EIO : 0;
- }
- 
- /**
-  * nand_write_oob_syndrome - [REPLACABLE] OOB data write function for HW ECC
-  *			     with syndrome - only for large page flash !
-@@ -1269,14 +1269,10 @@
- 
- 	while(1) {
- 		sndcmd = chip->ecc.read_oob(mtd, chip, page, sndcmd);
- 		buf = nand_transfer_oob(chip, buf, ops);
- 
--		readlen -= ops->ooblen;
--		if (!readlen)
--			break;
--
- 		if (!(chip->options & NAND_NO_READRDY)) {
- 			/*
- 			 * Apply delay or wait for ready/busy pin. Do this
- 			 * before the AUTOINCR check, so no problems arise if a
- 			 * chip which does auto increment is marked as
-@@ -1286,10 +1282,14 @@
- 				udelay(chip->chip_delay);
- 			else
- 				nand_wait_ready(mtd);
- 		}
- 
-+		readlen -= ops->ooblen;
-+		if (!readlen)
-+			break;
-+
- 		/* Increment page address */
- 		realpage++;
- 
- 		page = realpage & chip->pagemask;
- 		/* Check, if we cross a chip boundary */
-
---------------020405070409000109090707--
+Frank
