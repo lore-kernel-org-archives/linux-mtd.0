@@ -1,19 +1,20 @@
-Received: from mta076c.interbusiness.it ([85.37.17.76])
+Received: from host-84-9-201-23.bulldogdsl.com ([84.9.201.23]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ft3bg-0007jI-6L
-	for linux-mtd@lists.infradead.org; Wed, 21 Jun 2006 10:23:08 -0400
-Message-ID: <44995486.6060000@eptar.com>
-Date: Wed, 21 Jun 2006 16:15:34 +0200
-From: Claudio Lanconelli <lanconelli.claudio@eptar.com>
+	id 1Ft3vG-0008DG-05
+	for linux-mtd@lists.infradead.org; Wed, 21 Jun 2006 10:43:31 -0400
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1Ft3v7-00015x-00
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Jun 2006 15:43:05 +0100
+Date: Wed, 21 Jun 2006 15:43:05 +0100
+From: Ben Dooks <ben-linux@fluff.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [NAND] S3C2410 convert prinks to dev_*()s
+Message-ID: <20060621144305.GA4207@home.fluff.org>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-Subject: Re: FAT vs jFFS2 for NAND.
-References: <BAY110-F16C625F11A1D80EA24563ABC860@phx.gbl>	<4497DCA6.2080006@eptar.com>	<1150806658.17609.55.camel@hades.cambridge.redhat.com>	<4497F758.5090708@eptar.com>	<1150811549.6780.192.camel@localhost.localdomain>	<44982FC3.8080501@eptar.com>
-	<1150825284.6780.270.camel@localhost.localdomain>
-In-Reply-To: <1150825284.6780.270.camel@localhost.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Ben Dooks <ben@fluff.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +24,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Thomas,
+Convert the use of printk() to the correct dev_info/dev_err
+functions
 
-Thomas Gleixner wrote:
-> This looks up the bad block table which is created in ram after the NAND
-> chip has been detected in nand_scan() and helps you to avoid reading bad
-> blocks. Just skip the block, when the function returns 1.
->
-> The only exception I think is block 0, which contains the SSFDC header
-> and is marked bad for protection.
->
->   
-Are you sure about block 0 marked bad for protection? I read in
-smartmedia specification by Toshiba that SSFDC header called CIS/IDI is
-located on the first good block. Here the sentence:
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-"The CIS/IDI Field is placed in physical block 0.
-If physical block 0 is found to be a defective block, the area is placed 
-in the
-first normal block that is found after physical block 0.
-Irrespective of the page size, only one block is assigned."
-[...]
-"The indication of a defective block and logical block arrangement in 
-the data
-area will be set in the redundancy area.
-In the case of the 512+16 bytes/page models, the 6th byte (byte address 
-517th)
-in all pages in the redundant section contains two or more “0” bits to 
-indicate
-a defective block."
-
-My code follow these instructions on the SSFDC header location, is it 
-correct?
-Anyone who knows it for sure?
-
-
-Another question about the ECC placement. I think the MTD default ECC 
-bytes placement
-in the redundant area is not suitable for SSFDC. I found the 
-CONFIG_MTD_NAND_ECC_SMC
-in mtd configuration, but it's not used anywhere in the code. How can 
-the ssfdc_ro layer tell
-to use smartmedia ECC bytes placement?
-
-Thanks,
-Claudio
+diff -urpN -X ../dontdiff linux-2.6.17-git2/drivers/mtd/nand/s3c2410.c linux-2.6.17-git2-mtd1/drivers/mtd/nand/s3c2410.c
+--- linux-2.6.17-git2/drivers/mtd/nand/s3c2410.c	2006-06-21 10:00:38.000000000 +0100
++++ linux-2.6.17-git2-mtd1/drivers/mtd/nand/s3c2410.c	2006-06-21 15:32:44.000000000 +0100
+@@ -63,8 +63,6 @@
+ #include <asm/arch/regs-nand.h>
+ #include <asm/arch/nand.h>
+ 
+-#define PFX "s3c2410-nand: "
+-
+ #ifdef CONFIG_MTD_NAND_S3C2410_HWECC
+ static int hardware_ecc = 1;
+ #else
+@@ -195,11 +193,11 @@ static int s3c2410_nand_inithw(struct s3
+ 	}
+ 
+ 	if (tacls < 0 || twrph0 < 0 || twrph1 < 0) {
+-		printk(KERN_ERR PFX "cannot get timings suitable for board\n");
++		dev_err(info->device, "cannot get suitable timings\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	printk(KERN_INFO PFX "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
++	dev_info(info->device, "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
+ 	       tacls, to_ns(tacls, clkrate), twrph0, to_ns(twrph0, clkrate), twrph1, to_ns(twrph1, clkrate));
+ 
+ 	if (!info->is_s3c2440) {
+@@ -218,7 +216,7 @@ static int s3c2410_nand_inithw(struct s3
+ 		       info->regs + S3C2440_NFCONT);
+ 	}
+ 
+-	pr_debug(PFX "NF_CONF is 0x%lx\n", cfg);
++	dev_dbg(info->device, "NF_CONF is 0x%lx\n", cfg);
+ 
+ 	writel(cfg, info->regs + S3C2410_NFCONF);
+ 	return 0;
+@@ -250,7 +248,7 @@ static void s3c2410_nand_select_chip(str
+ 		cur |= bit;
+ 	} else {
+ 		if (nmtd->set != NULL && chip > nmtd->set->nr_chips) {
+-			printk(KERN_ERR PFX "chip %d out of range\n", chip);
++			dev_err(info->device, "invalid chip %d\n", chip);
+ 			return;
+ 		}
+ 
