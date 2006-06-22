@@ -1,21 +1,17 @@
-Received: from s23012.evanzo-server.de ([62.140.23.12]
-	helo=s512.evanzo-server.de)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtPCs-0007ly-2B
-	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 09:27:02 -0400
-Message-ID: <20060622131321.yu6xfz4noz34owck@webmail.7labs.de>
-Date: Thu, 22 Jun 2006 13:13:21 +0200
-From: Sebastian Haag <Sebastian@7labs.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Use jffs2-formatted initrd from RAM (not Flash)
-References: <20060618125542.k4ipq4lfqtpwco88@webmail.7labs.de>
-In-Reply-To: <20060618125542.k4ipq4lfqtpwco88@webmail.7labs.de>
+Received: from mta065b.interbusiness.it ([85.37.17.65])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FtQCP-0008RF-89
+	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 10:30:35 -0400
+Received: from [192.168.143.7] (claudio.eptar.com [192.168.143.7])
+	by eptar.com (8.11.6/8.9.3) with ESMTP id k5MEMsV19465
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2006 16:22:54 +0200
+Message-ID: <449AA7E2.5020609@eptar.com>
+Date: Thu, 22 Jun 2006 16:23:30 +0200
+From: Claudio Lanconelli <lanconelli.claudio@eptar.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH][NAND] Add ssfdc read-only translation layer
+Content-Type: multipart/mixed; boundary="------------010903000108030404050804"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +21,557 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
+--------------010903000108030404050804
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-sorry for the double post, had some problems with my mail client.
+Hi,
+here is another try.
+Now it builds fine against git mtd-2.6, however I can't test if it works 
+anymore after the changes,
+my target system at the moment doesn't support kernel 2.6, sigh!
 
+One question, I use major number 44 (since it's the number used by old 
+ssfdc.c) but I don't
+know if it's the correct number.
 
-Nobody an idea? I can=B4t believe that...
+Signed-off-by: Claudio Lanconelli <lanconelli.claudio@eptar.com>
 
-Could you please give me some hints/links where I can find the solution 
-for this
-problem? I googled too much the last days...
+--------------010903000108030404050804
+Content-Type: text/x-patch;
+ name="ssfdc_ro.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ssfdc_ro.patch"
 
-thanks
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 3db77ee..462c4ce 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -31,6 +31,22 @@ config MTD_NAND_ECC_SMC
+ 	  Software ECC according to the Smart Media Specification.
+ 	  The original Linux implementation had byte 0 and 1 swapped.
+ 
++config MTD_NAND_SSFDC_READONLY
++	bool "NAND SSFDC (SmartMedia) read only translation layer"
++	depends on MTD_NAND
++	default n
++	help
++	  This enable read only access to SmartMedia formatted Nand
++	  flash. You can mount it with FAT file system.
++
++config MTD_NAND_SSFDC_GETGEO
++	bool "Enable SmartMedia standard geometry CHS"
++	depends on MTD_NAND_SSFDC_READONLY
++	default n
++	help
++	  This forces the get geometry system call to return standard
++	  CHS values for SmartMedia.
++
+ config MTD_NAND_AUTCPU12
+ 	tristate "SmartMediaCard on autronix autcpu12 board"
+ 	depends on MTD_NAND && ARCH_AUTCPU12
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f747593..adee70e 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -22,5 +22,6 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
++obj-$(CONFIG_MTD_NAND_SSFDC_READONLY)	+= ssfdc_ro.o
+ 
+ nand-objs = nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/ssfdc_ro.c b/drivers/mtd/nand/ssfdc_ro.c
+new file mode 100644
+index 0000000..30a16ea
+--- /dev/null
++++ b/drivers/mtd/nand/ssfdc_ro.c
+@@ -0,0 +1,484 @@
++/*
++ * Linux driver for SSFDC Flash Translation Layer (Read only)
++ * (c) 2005 Eptar srl
++ * Author: Claudio Lanconelli <lanconelli.claudio@eptar.com>
++ *
++ * Based on NTFL and MTDBLOCK_RO drivers
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <linux/config.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/hdreg.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/blktrans.h>
++
++/* #undef CONFIG_MTD_NAND_SSFDC_GETGEO */
++
++struct ssfdcr_record {
++	struct mtd_blktrans_dev mbd;
++	int usecount;
++#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
++	unsigned char heads;
++	unsigned char sectors;
++	unsigned short cylinders;
++#endif
++	int cis_block;			/* block n. containing CIS/IDI */
++	int erase_size;			/* phys_block_size */
++	unsigned short *logic_block_map; /* all zones (max 8192 phys blocks on
++					    the 128MB) */
++	int map_len;			/* n. phys_blocks on the card */
++};
++
++
++#define SSFDCR_MAJOR		44
++#define SSFDCR_PARTN_BITS	3
++
++#define SECTOR_SIZE		512
++#define SECTOR_SHIFT		9
++#define OOB_SIZE		16
++
++#define MAX_LOGIC_BLK_PER_ZONE	1000
++#define MAX_PHYS_BLK_PER_ZONE	1024
++
++#define KB(x)	( (x) * 1024L )
++#define MB(x)	( KB(x) * 1024L )
++
++/** CHS Table
++		1MB	2MB	4MB	8MB	16MB	32MB	64MB	128MB
++NCylinder	125	125	250	250	500	500	500	500
++NHead		4	4	4	4	4	8	8	16
++NSector		4	8	8	16	16	16	32	32
++SumSector	2,000	4,000	8,000	16,000	32,000	64,000	128,000	256,000
++SectorSize	512	512	512	512	512	512	512	512
++**/
++
++#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
++
++typedef struct {
++	unsigned long size;
++	unsigned short cyl;
++	unsigned char head;
++	unsigned char sec;
++} chs_entry_t;
++
++/* Must be ordered by size */
++static const chs_entry_t chs_table[] = {
++	{ MB(  1), 125,  4,  4 },
++	{ MB(  2), 125,  4,  8 },
++	{ MB(  4), 250,  4,  8 },
++	{ MB(  8), 250,  4, 16 },
++	{ MB( 16), 500,  4, 16 },
++	{ MB( 32), 500,  8, 16 },
++	{ MB( 64), 500,  8, 32 },
++	{ MB(128), 500, 16, 32 },
++	{ 0 },
++};
++
++static int get_chs(unsigned long size, unsigned short *cyl, unsigned char *head,
++			unsigned char *sec)
++{
++	int k;
++	int found = 0;
++
++	k = 0;
++	while (chs_table[k].size > 0 && size > chs_table[k].size)
++		k++;
++
++	if (chs_table[k].size > 0) {
++		if (cyl)
++			*cyl = chs_table[k].cyl;
++		if (head)
++			*head = chs_table[k].head;
++		if (sec)
++			*sec = chs_table[k].sec;
++		found = 1;
++	}
++
++	return found;
++}
++#endif
++
++/* These bytes are the signature for the CIS/IDI sector */
++static const uint8_t cis_numbers[] = {
++	0x01, 0x03, 0xD9, 0x01, 0xFF, 0x18, 0x02, 0xDF, 0x01, 0x20
++};
++
++
++/* Read and check for a valid CIS sector */
++static int get_valid_cis_sector(struct mtd_info *mtd)
++{
++	int ret, k, cis_sector;
++	size_t retlen;
++	loff_t offset;
++	uint8_t sect_buf[SECTOR_SIZE];
++
++	/*
++	 * Look for CIS/IDI sector on the first GOOD block (give up after 4 bad
++	 * blocks). If the first good block doesn't contain CIS number the flash
++	 * is not SSFDC formatted
++	 */
++	cis_sector = -1;
++	for (k = 0, offset = 0; k < 4; k++, offset += mtd->erasesize) {
++		if (!mtd->block_isbad(mtd, offset)) {
++			ret = mtd->read(mtd, offset, SECTOR_SIZE, &retlen,
++				sect_buf);
++
++			/* CIS pattern match on the sector buffer */
++			if ( ret < 0 || retlen != SECTOR_SIZE ) {
++				printk(KERN_WARNING
++					"SSFDC_RO:can't read CIS/IDI sector\n");
++			} else if ( !memcmp(sect_buf, cis_numbers,
++					sizeof(cis_numbers)) ) {
++				/* Found */
++				cis_sector = (int)(offset >> SECTOR_SHIFT);
++			} else {
++				DEBUG(MTD_DEBUG_LEVEL0,
++					"SSFDC_RO: CIS/IDI sector not found"
++					" on %s (mtd%d)\n", mtd->name,
++					mtd->index);
++			}
++			break;
++		}
++	}
++
++	return cis_sector;
++}
++
++/* Read physical sector (wrapper to MTD_READ) */
++static int read_physical_sector(struct mtd_info *mtd, uint8_t *sect_buf,
++				int sect_no)
++{
++	int ret;
++	size_t retlen;
++	loff_t offset = (loff_t)sect_no << SECTOR_SHIFT;
++
++	ret = mtd->read(mtd, offset, SECTOR_SIZE, &retlen, sect_buf);
++	if (ret < 0 || retlen != SECTOR_SIZE)
++		return -1;
++
++	return 0;
++}
++
++/* Read redundancy area (wrapper to MTD_READ_OOB */
++static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
++{
++	struct mtd_oob_ops ops;
++	int ret;
++
++	ops.mode = MTD_OOB_RAW;
++	ops.ooboffs = 0;
++	ops.ooblen = mtd->oobsize;
++	ops.len = OOB_SIZE;
++	ops.oobbuf = buf;
++	ops.datbuf = NULL;
++
++	ret = mtd->read_oob(mtd, offs, &ops);
++	if (ret < 0 || ops.retlen != OOB_SIZE)
++		return -1;
++
++	return 0;
++}
++
++/* Parity calculator on a word of n bit size */
++static int get_parity(int number, int size)
++{
++ 	int k;
++	int parity;
++
++	parity = 1;
++	for (k = 0; k < size; k++) {
++		parity += (number >> k);
++		parity &= 1;
++	}
++	return parity;
++}
++
++/* Read and validate the logical block address field stored in the OOB */
++static int get_logical_address(uint8_t *oob_buf)
++{
++	int block_address, parity;
++	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
++	int j;
++	int ok = 0;
++
++	/*
++	 * Look for the first valid logical address
++	 * Valid address has fixed pattern on most significant bits and
++	 * parity check
++	 */
++	for (j = 0; j < ARRAY_SIZE(offset); j++) {
++		block_address = ((int)oob_buf[offset[j]] << 8) |
++			oob_buf[offset[j]+1];
++
++		/* Check for the signature bits in the address field (MSBits) */
++		if ((block_address & ~0x7FF) == 0x1000) {
++			parity = block_address & 0x01;
++			block_address &= 0x7FF;
++			block_address >>= 1;
++
++			if (get_parity(block_address, 10) != parity) {
++				DEBUG(MTD_DEBUG_LEVEL0,
++					"SSFDC_RO: logical address field%d"
++					"parity error(0x%04X)\n", j+1,
++					block_address);
++			} else {
++				ok = 1;
++				break;
++			}
++		}
++	}
++
++	if ( !ok )
++		block_address = -2;
++
++	DEBUG(MTD_DEBUG_LEVEL3, "SSFDC_RO: get_logical_address() %d\n",
++		block_address);
++
++	return block_address;
++}
++
++
++/* Build the logic block map */
++static int build_logical_block_map(struct ssfdcr_record *ssfdc)
++{
++	unsigned long offset;
++	uint8_t oob_buf[OOB_SIZE];
++	int ret, block_address, phys_block;
++	struct mtd_info *mtd = ssfdc->mbd.mtd;
++
++	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: build_block_map() nblks=%d (%luK)\n",
++		ssfdc->map_len, (unsigned long)ssfdc->map_len *
++		ssfdc->erase_size / 1024 );
++
++	/* Scan every physical block, skip CIS block */
++	for (phys_block = ssfdc->cis_block + 1; phys_block < ssfdc->map_len;
++			phys_block++) {
++		offset = (unsigned long)phys_block * ssfdc->erase_size;
++		if (mtd->block_isbad(mtd, offset))
++			continue;	/* skip bad blocks */
++
++		ret = read_raw_oob(mtd, offset, oob_buf);
++		if (ret < 0) {
++			DEBUG(MTD_DEBUG_LEVEL0,
++				"SSFDC_RO: mtd read_oob() failed at %lu\n",
++				offset);
++			return -1;
++		}
++		block_address = get_logical_address(oob_buf);
++
++		/* Skip invalid addresses */
++		if (block_address >= 0 &&
++				block_address < MAX_LOGIC_BLK_PER_ZONE) {
++			int zone_index;
++
++			zone_index = phys_block / MAX_PHYS_BLK_PER_ZONE;
++			block_address += zone_index * MAX_LOGIC_BLK_PER_ZONE;
++			ssfdc->logic_block_map[block_address] =
++				(unsigned short)phys_block;
++
++			DEBUG(MTD_DEBUG_LEVEL2,
++				"SSFDC_RO: build_block_map() phys_block=%d,"
++				"logic_block_addr=%d, zone=%d\n",
++				phys_block, block_address, zone_index);
++		}
++	}
++	return 0;
++}
++
++static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
++{
++	struct ssfdcr_record *ssfdc;
++	int cis_sector;
++
++	/* Check for small page NAND flash */
++	if (mtd->type != MTD_NANDFLASH || mtd->oobsize != OOB_SIZE)
++		return;
++
++	/* Check for SSDFC format by reading CIS/IDI sector */
++	cis_sector = get_valid_cis_sector(mtd);
++	if (cis_sector == -1)
++		return;
++
++	ssfdc = kzalloc(sizeof(struct ssfdcr_record), GFP_KERNEL);
++	if (!ssfdc) {
++		printk(KERN_WARNING
++			"SSFDC_RO: out of memory for data structures\n");
++		return;
++	}
++
++	ssfdc->mbd.mtd = mtd;
++	ssfdc->mbd.devnum = -1;
++	ssfdc->mbd.blksize = SECTOR_SIZE;
++	ssfdc->mbd.tr = tr;
++	ssfdc->mbd.readonly = 1;
++
++	ssfdc->cis_block = cis_sector / (mtd->erasesize >> SECTOR_SHIFT);
++	ssfdc->erase_size = mtd->erasesize;
++	ssfdc->map_len = mtd->size / mtd->erasesize;
++
++	DEBUG(MTD_DEBUG_LEVEL1,
++		"SSFDC_RO: cis_block=%d,erase_size=%d,map_len=%d,n_zones=%d\n",
++		ssfdc->cis_block, ssfdc->erase_size, ssfdc->map_len,
++		(ssfdc->map_len + MAX_PHYS_BLK_PER_ZONE - 1) /
++		MAX_PHYS_BLK_PER_ZONE);
++
++#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
++	/* Set geometry */
++	get_chs( mtd->size, NULL, &ssfdc->heads, &ssfdc->sectors);
++	ssfdc->cylinders = (unsigned short)((mtd->size >> SECTOR_SHIFT) /
++			((long)ssfdc->sectors * (long)ssfdc->heads));
++
++	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: using C:%d H:%d S:%d == %ld sects\n",
++		ssfdc->cylinders, ssfdc->heads , ssfdc->sectors, 
++		(long)ssfdc->cylinders * (long)ssfdc->heads *
++		(long)ssfdc->sectors );
++
++	ssfdc->mbd.size = (long)ssfdc->heads * (long)ssfdc->cylinders *
++				(long)ssfdc->sectors;
++#else
++	ssfdc->mbd.size  = ssfdc->map_len * (ssfdc->erase_size >> SECTOR_SHIFT);
++#endif
++
++	/* Allocate logical block map */
++	ssfdc->logic_block_map = kmalloc( sizeof(ssfdc->logic_block_map[0]) *
++						ssfdc->map_len, GFP_KERNEL);
++	if (!ssfdc->logic_block_map) {
++		printk(KERN_WARNING
++			"SSFDC_RO: out of memory for data structures\n");
++		goto out_err;
++	}
++	memset(ssfdc->logic_block_map, 0xff, sizeof(ssfdc->logic_block_map[0]) *
++		ssfdc->map_len);
++
++	/* Build logical block map */
++	if (build_logical_block_map(ssfdc) < 0)
++		goto out_err;
++
++	/* Register device + partitions */
++	if (add_mtd_blktrans_dev(&ssfdc->mbd))
++		goto out_err;
++
++	printk(KERN_INFO "SSFDC_RO: Found ssfdc%c on mtd%d (%s)\n",
++		ssfdc->mbd.devnum + 'a', mtd->index, mtd->name);
++	return;
++
++out_err:
++	kfree(ssfdc->logic_block_map);
++        kfree(ssfdc);
++}
++
++static void ssfdcr_remove_dev(struct mtd_blktrans_dev *dev)
++{
++	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
++
++	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: remove_dev (i=%d)\n", dev->devnum);
++
++	del_mtd_blktrans_dev(dev);
++	kfree(ssfdc->logic_block_map);
++	kfree(ssfdc);
++}
++
++static int ssfdcr_readsect(struct mtd_blktrans_dev *dev,
++				unsigned long logic_sect_no, char *buf)
++{
++	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
++	int sectors_per_block, offset, block_address;
++
++	sectors_per_block = ssfdc->erase_size >> SECTOR_SHIFT;
++	offset = (int)(logic_sect_no % sectors_per_block);
++	block_address = (int)(logic_sect_no / sectors_per_block);
++
++	DEBUG(MTD_DEBUG_LEVEL3,
++		"SSFDC_RO: ssfdcr_readsect(%lu) sec_per_blk=%d, ofst=%d,"
++		" block_addr=%d\n", logic_sect_no, sectors_per_block, offset,
++		block_address);
++
++	if (block_address >= ssfdc->map_len)
++		BUG();
++
++	block_address = ssfdc->logic_block_map[block_address];
++
++	DEBUG(MTD_DEBUG_LEVEL3,
++		"SSFDC_RO: ssfdcr_readsect() phys_block_addr=%d\n",
++		block_address);
++
++	if (block_address < 0xffff) {
++		unsigned long sect_no;
++
++		sect_no = (unsigned long)block_address * sectors_per_block +
++				offset;
++
++		DEBUG(MTD_DEBUG_LEVEL3,
++			"SSFDC_RO: ssfdcr_readsect() phys_sect_no=%lu\n",
++			sect_no);
++
++		if (read_physical_sector( ssfdc->mbd.mtd, buf, sect_no ) < 0)
++			return -EIO;
++	} else {
++		memset(buf, 0xff, SECTOR_SIZE);
++	}
++
++	return 0;
++}
++
++#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
++static int ssfdcr_getgeo(struct mtd_blktrans_dev *dev,  struct hd_geometry *geo)
++{
++	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
++
++	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: ssfdcr_getgeo() C=%d, H=%d, S=%d\n",
++			ssfdc->cylinders, ssfdc->heads, ssfdc->sectors);
++
++	geo->heads = ssfdc->heads;
++	geo->sectors = ssfdc->sectors;
++	geo->cylinders = ssfdc->cylinders;
++
++	return 0;
++}
++#endif
++
++/****************************************************************************
++ *
++ * Module stuff
++ *
++ ****************************************************************************/
++
++static struct mtd_blktrans_ops ssfdcr_tr = {
++	.name		= "ssfdc",
++	.major		= SSFDCR_MAJOR,
++	.part_bits	= SSFDCR_PARTN_BITS,
++#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
++	.getgeo		= ssfdcr_getgeo,
++#endif
++	.readsect	= ssfdcr_readsect,
++	.add_mtd	= ssfdcr_add_mtd,
++	.remove_dev	= ssfdcr_remove_dev,
++	.owner		= THIS_MODULE,
++};
++
++static int __init init_ssfdcr(void)
++{
++	printk(KERN_INFO "SSFDC read-only Flash Translation layer\n");
++
++	return register_mtd_blktrans(&ssfdcr_tr);
++}
++
++static void __exit cleanup_ssfdcr(void)
++{
++	deregister_mtd_blktrans(&ssfdcr_tr);
++}
++
++module_init(init_ssfdcr);
++module_exit(cleanup_ssfdcr);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Claudio Lanconelli <lanconelli.claudio@eptar.com>");
++MODULE_DESCRIPTION("Flash Translation Layer for read-only SSFDC SmartMedia card");
+
+--------------010903000108030404050804--
