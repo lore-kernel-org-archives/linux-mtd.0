@@ -1,17 +1,20 @@
-Received: from mta065b.interbusiness.it ([85.37.17.65])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtQCP-0008RF-89
-	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 10:30:35 -0400
-Received: from [192.168.143.7] (claudio.eptar.com [192.168.143.7])
-	by eptar.com (8.11.6/8.9.3) with ESMTP id k5MEMsV19465
-	for <linux-mtd@lists.infradead.org>; Thu, 22 Jun 2006 16:22:54 +0200
-Message-ID: <449AA7E2.5020609@eptar.com>
-Date: Thu, 22 Jun 2006 16:23:30 +0200
-From: Claudio Lanconelli <lanconelli.claudio@eptar.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH][NAND] Add ssfdc read-only translation layer
-Content-Type: multipart/mixed; boundary="------------010903000108030404050804"
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FtQh3-0000EX-P0
+	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 11:02:19 -0400
+Subject: Re: Current mtd tree is broken
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: Josh Boyer <jwboyer@gmail.com>
+In-Reply-To: <625fc13d0606220454o52d99efes74eb86ba3fe02bd7@mail.gmail.com>
+References: <625fc13d0606211535y2b85e229ubd235b3849c2013e@mail.gmail.com>
+	<1150959173.4244.9.camel@sauron.oktetlabs.ru>
+	<625fc13d0606220454o52d99efes74eb86ba3fe02bd7@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="=-oACt+IhCh18JfKNpY7/S"
+Date: Thu, 22 Jun 2006 19:01:32 +0400
+Message-Id: <1150988492.16043.32.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Cc: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,557 +24,166 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------010903000108030404050804
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+--=-oACt+IhCh18JfKNpY7/S
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Hi,
-here is another try.
-Now it builds fine against git mtd-2.6, however I can't test if it works 
-anymore after the changes,
-my target system at the moment doesn't support kernel 2.6, sigh!
+Dear Josh,
 
-One question, I use major number 44 (since it's the number used by old 
-ssfdc.c) but I don't
-know if it's the correct number.
+On Thu, 2006-06-22 at 06:54 -0500, Josh Boyer wrote:
+> I don't like that very much.  It's laziness.  An interface was added
+> and working.  Someone changed the semantics of it, but didn't fix all
+> the things effected.
 
-Signed-off-by: Claudio Lanconelli <lanconelli.claudio@eptar.com>
+the patch his attached and is also accessible at
+http://git.infradead.org/?p=users/dedekind/dedekind-mtd-2.6.git;a=summary
 
---------------010903000108030404050804
-Content-Type: text/x-patch;
- name="ssfdc_ro.patch"
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
+
+--=-oACt+IhCh18JfKNpY7/S
+Content-Disposition: attachment; filename=writesize-02.diff
+Content-Type: text/x-patch; name=writesize-02.diff; charset=KOI8-R
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ssfdc_ro.patch"
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3db77ee..462c4ce 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -31,6 +31,22 @@ config MTD_NAND_ECC_SMC
- 	  Software ECC according to the Smart Media Specification.
- 	  The original Linux implementation had byte 0 and 1 swapped.
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 0d43581..39edb82 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -357,6 +357,7 @@ struct mtd_info *cfi_cmdset_0001(struct 
+ 	mtd->resume  = cfi_intelext_resume;
+ 	mtd->flags   = MTD_CAP_NORFLASH;
+ 	mtd->name    = map->name;
++	mtd->writesize = 1;
  
-+config MTD_NAND_SSFDC_READONLY
-+	bool "NAND SSFDC (SmartMedia) read only translation layer"
-+	depends on MTD_NAND
-+	default n
-+	help
-+	  This enable read only access to SmartMedia formatted Nand
-+	  flash. You can mount it with FAT file system.
-+
-+config MTD_NAND_SSFDC_GETGEO
-+	bool "Enable SmartMedia standard geometry CHS"
-+	depends on MTD_NAND_SSFDC_READONLY
-+	default n
-+	help
-+	  This forces the get geometry system call to return standard
-+	  CHS values for SmartMedia.
-+
- config MTD_NAND_AUTCPU12
- 	tristate "SmartMediaCard on autronix autcpu12 board"
- 	depends on MTD_NAND && ARCH_AUTCPU12
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index f747593..adee70e 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -22,5 +22,6 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-+obj-$(CONFIG_MTD_NAND_SSFDC_READONLY)	+= ssfdc_ro.o
+ 	mtd->reboot_notifier.notifier_call = cfi_intelext_reboot;
  
- nand-objs = nand_base.o nand_bbt.o
-diff --git a/drivers/mtd/nand/ssfdc_ro.c b/drivers/mtd/nand/ssfdc_ro.c
-new file mode 100644
-index 0000000..30a16ea
---- /dev/null
-+++ b/drivers/mtd/nand/ssfdc_ro.c
-@@ -0,0 +1,484 @@
-+/*
-+ * Linux driver for SSFDC Flash Translation Layer (Read only)
-+ * (c) 2005 Eptar srl
-+ * Author: Claudio Lanconelli <lanconelli.claudio@eptar.com>
-+ *
-+ * Based on NTFL and MTDBLOCK_RO drivers
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/config.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/hdreg.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/blktrans.h>
-+
-+/* #undef CONFIG_MTD_NAND_SSFDC_GETGEO */
-+
-+struct ssfdcr_record {
-+	struct mtd_blktrans_dev mbd;
-+	int usecount;
-+#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
-+	unsigned char heads;
-+	unsigned char sectors;
-+	unsigned short cylinders;
-+#endif
-+	int cis_block;			/* block n. containing CIS/IDI */
-+	int erase_size;			/* phys_block_size */
-+	unsigned short *logic_block_map; /* all zones (max 8192 phys blocks on
-+					    the 128MB) */
-+	int map_len;			/* n. phys_blocks on the card */
-+};
-+
-+
-+#define SSFDCR_MAJOR		44
-+#define SSFDCR_PARTN_BITS	3
-+
-+#define SECTOR_SIZE		512
-+#define SECTOR_SHIFT		9
-+#define OOB_SIZE		16
-+
-+#define MAX_LOGIC_BLK_PER_ZONE	1000
-+#define MAX_PHYS_BLK_PER_ZONE	1024
-+
-+#define KB(x)	( (x) * 1024L )
-+#define MB(x)	( KB(x) * 1024L )
-+
-+/** CHS Table
-+		1MB	2MB	4MB	8MB	16MB	32MB	64MB	128MB
-+NCylinder	125	125	250	250	500	500	500	500
-+NHead		4	4	4	4	4	8	8	16
-+NSector		4	8	8	16	16	16	32	32
-+SumSector	2,000	4,000	8,000	16,000	32,000	64,000	128,000	256,000
-+SectorSize	512	512	512	512	512	512	512	512
-+**/
-+
-+#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
-+
-+typedef struct {
-+	unsigned long size;
-+	unsigned short cyl;
-+	unsigned char head;
-+	unsigned char sec;
-+} chs_entry_t;
-+
-+/* Must be ordered by size */
-+static const chs_entry_t chs_table[] = {
-+	{ MB(  1), 125,  4,  4 },
-+	{ MB(  2), 125,  4,  8 },
-+	{ MB(  4), 250,  4,  8 },
-+	{ MB(  8), 250,  4, 16 },
-+	{ MB( 16), 500,  4, 16 },
-+	{ MB( 32), 500,  8, 16 },
-+	{ MB( 64), 500,  8, 32 },
-+	{ MB(128), 500, 16, 32 },
-+	{ 0 },
-+};
-+
-+static int get_chs(unsigned long size, unsigned short *cyl, unsigned char *head,
-+			unsigned char *sec)
-+{
-+	int k;
-+	int found = 0;
-+
-+	k = 0;
-+	while (chs_table[k].size > 0 && size > chs_table[k].size)
-+		k++;
-+
-+	if (chs_table[k].size > 0) {
-+		if (cyl)
-+			*cyl = chs_table[k].cyl;
-+		if (head)
-+			*head = chs_table[k].head;
-+		if (sec)
-+			*sec = chs_table[k].sec;
-+		found = 1;
-+	}
-+
-+	return found;
-+}
-+#endif
-+
-+/* These bytes are the signature for the CIS/IDI sector */
-+static const uint8_t cis_numbers[] = {
-+	0x01, 0x03, 0xD9, 0x01, 0xFF, 0x18, 0x02, 0xDF, 0x01, 0x20
-+};
-+
-+
-+/* Read and check for a valid CIS sector */
-+static int get_valid_cis_sector(struct mtd_info *mtd)
-+{
-+	int ret, k, cis_sector;
-+	size_t retlen;
-+	loff_t offset;
-+	uint8_t sect_buf[SECTOR_SIZE];
-+
-+	/*
-+	 * Look for CIS/IDI sector on the first GOOD block (give up after 4 bad
-+	 * blocks). If the first good block doesn't contain CIS number the flash
-+	 * is not SSFDC formatted
-+	 */
-+	cis_sector = -1;
-+	for (k = 0, offset = 0; k < 4; k++, offset += mtd->erasesize) {
-+		if (!mtd->block_isbad(mtd, offset)) {
-+			ret = mtd->read(mtd, offset, SECTOR_SIZE, &retlen,
-+				sect_buf);
-+
-+			/* CIS pattern match on the sector buffer */
-+			if ( ret < 0 || retlen != SECTOR_SIZE ) {
-+				printk(KERN_WARNING
-+					"SSFDC_RO:can't read CIS/IDI sector\n");
-+			} else if ( !memcmp(sect_buf, cis_numbers,
-+					sizeof(cis_numbers)) ) {
-+				/* Found */
-+				cis_sector = (int)(offset >> SECTOR_SHIFT);
-+			} else {
-+				DEBUG(MTD_DEBUG_LEVEL0,
-+					"SSFDC_RO: CIS/IDI sector not found"
-+					" on %s (mtd%d)\n", mtd->name,
-+					mtd->index);
-+			}
-+			break;
-+		}
-+	}
-+
-+	return cis_sector;
-+}
-+
-+/* Read physical sector (wrapper to MTD_READ) */
-+static int read_physical_sector(struct mtd_info *mtd, uint8_t *sect_buf,
-+				int sect_no)
-+{
-+	int ret;
-+	size_t retlen;
-+	loff_t offset = (loff_t)sect_no << SECTOR_SHIFT;
-+
-+	ret = mtd->read(mtd, offset, SECTOR_SIZE, &retlen, sect_buf);
-+	if (ret < 0 || retlen != SECTOR_SIZE)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/* Read redundancy area (wrapper to MTD_READ_OOB */
-+static int read_raw_oob(struct mtd_info *mtd, loff_t offs, uint8_t *buf)
-+{
-+	struct mtd_oob_ops ops;
-+	int ret;
-+
-+	ops.mode = MTD_OOB_RAW;
-+	ops.ooboffs = 0;
-+	ops.ooblen = mtd->oobsize;
-+	ops.len = OOB_SIZE;
-+	ops.oobbuf = buf;
-+	ops.datbuf = NULL;
-+
-+	ret = mtd->read_oob(mtd, offs, &ops);
-+	if (ret < 0 || ops.retlen != OOB_SIZE)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+/* Parity calculator on a word of n bit size */
-+static int get_parity(int number, int size)
-+{
-+ 	int k;
-+	int parity;
-+
-+	parity = 1;
-+	for (k = 0; k < size; k++) {
-+		parity += (number >> k);
-+		parity &= 1;
-+	}
-+	return parity;
-+}
-+
-+/* Read and validate the logical block address field stored in the OOB */
-+static int get_logical_address(uint8_t *oob_buf)
-+{
-+	int block_address, parity;
-+	int offset[2] = {6, 11}; /* offset of the 2 address fields within OOB */
-+	int j;
-+	int ok = 0;
-+
-+	/*
-+	 * Look for the first valid logical address
-+	 * Valid address has fixed pattern on most significant bits and
-+	 * parity check
-+	 */
-+	for (j = 0; j < ARRAY_SIZE(offset); j++) {
-+		block_address = ((int)oob_buf[offset[j]] << 8) |
-+			oob_buf[offset[j]+1];
-+
-+		/* Check for the signature bits in the address field (MSBits) */
-+		if ((block_address & ~0x7FF) == 0x1000) {
-+			parity = block_address & 0x01;
-+			block_address &= 0x7FF;
-+			block_address >>= 1;
-+
-+			if (get_parity(block_address, 10) != parity) {
-+				DEBUG(MTD_DEBUG_LEVEL0,
-+					"SSFDC_RO: logical address field%d"
-+					"parity error(0x%04X)\n", j+1,
-+					block_address);
-+			} else {
-+				ok = 1;
-+				break;
-+			}
-+		}
-+	}
-+
-+	if ( !ok )
-+		block_address = -2;
-+
-+	DEBUG(MTD_DEBUG_LEVEL3, "SSFDC_RO: get_logical_address() %d\n",
-+		block_address);
-+
-+	return block_address;
-+}
-+
-+
-+/* Build the logic block map */
-+static int build_logical_block_map(struct ssfdcr_record *ssfdc)
-+{
-+	unsigned long offset;
-+	uint8_t oob_buf[OOB_SIZE];
-+	int ret, block_address, phys_block;
-+	struct mtd_info *mtd = ssfdc->mbd.mtd;
-+
-+	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: build_block_map() nblks=%d (%luK)\n",
-+		ssfdc->map_len, (unsigned long)ssfdc->map_len *
-+		ssfdc->erase_size / 1024 );
-+
-+	/* Scan every physical block, skip CIS block */
-+	for (phys_block = ssfdc->cis_block + 1; phys_block < ssfdc->map_len;
-+			phys_block++) {
-+		offset = (unsigned long)phys_block * ssfdc->erase_size;
-+		if (mtd->block_isbad(mtd, offset))
-+			continue;	/* skip bad blocks */
-+
-+		ret = read_raw_oob(mtd, offset, oob_buf);
-+		if (ret < 0) {
-+			DEBUG(MTD_DEBUG_LEVEL0,
-+				"SSFDC_RO: mtd read_oob() failed at %lu\n",
-+				offset);
-+			return -1;
-+		}
-+		block_address = get_logical_address(oob_buf);
-+
-+		/* Skip invalid addresses */
-+		if (block_address >= 0 &&
-+				block_address < MAX_LOGIC_BLK_PER_ZONE) {
-+			int zone_index;
-+
-+			zone_index = phys_block / MAX_PHYS_BLK_PER_ZONE;
-+			block_address += zone_index * MAX_LOGIC_BLK_PER_ZONE;
-+			ssfdc->logic_block_map[block_address] =
-+				(unsigned short)phys_block;
-+
-+			DEBUG(MTD_DEBUG_LEVEL2,
-+				"SSFDC_RO: build_block_map() phys_block=%d,"
-+				"logic_block_addr=%d, zone=%d\n",
-+				phys_block, block_address, zone_index);
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void ssfdcr_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
-+{
-+	struct ssfdcr_record *ssfdc;
-+	int cis_sector;
-+
-+	/* Check for small page NAND flash */
-+	if (mtd->type != MTD_NANDFLASH || mtd->oobsize != OOB_SIZE)
-+		return;
-+
-+	/* Check for SSDFC format by reading CIS/IDI sector */
-+	cis_sector = get_valid_cis_sector(mtd);
-+	if (cis_sector == -1)
-+		return;
-+
-+	ssfdc = kzalloc(sizeof(struct ssfdcr_record), GFP_KERNEL);
-+	if (!ssfdc) {
-+		printk(KERN_WARNING
-+			"SSFDC_RO: out of memory for data structures\n");
-+		return;
-+	}
-+
-+	ssfdc->mbd.mtd = mtd;
-+	ssfdc->mbd.devnum = -1;
-+	ssfdc->mbd.blksize = SECTOR_SIZE;
-+	ssfdc->mbd.tr = tr;
-+	ssfdc->mbd.readonly = 1;
-+
-+	ssfdc->cis_block = cis_sector / (mtd->erasesize >> SECTOR_SHIFT);
-+	ssfdc->erase_size = mtd->erasesize;
-+	ssfdc->map_len = mtd->size / mtd->erasesize;
-+
-+	DEBUG(MTD_DEBUG_LEVEL1,
-+		"SSFDC_RO: cis_block=%d,erase_size=%d,map_len=%d,n_zones=%d\n",
-+		ssfdc->cis_block, ssfdc->erase_size, ssfdc->map_len,
-+		(ssfdc->map_len + MAX_PHYS_BLK_PER_ZONE - 1) /
-+		MAX_PHYS_BLK_PER_ZONE);
-+
-+#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
-+	/* Set geometry */
-+	get_chs( mtd->size, NULL, &ssfdc->heads, &ssfdc->sectors);
-+	ssfdc->cylinders = (unsigned short)((mtd->size >> SECTOR_SHIFT) /
-+			((long)ssfdc->sectors * (long)ssfdc->heads));
-+
-+	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: using C:%d H:%d S:%d == %ld sects\n",
-+		ssfdc->cylinders, ssfdc->heads , ssfdc->sectors, 
-+		(long)ssfdc->cylinders * (long)ssfdc->heads *
-+		(long)ssfdc->sectors );
-+
-+	ssfdc->mbd.size = (long)ssfdc->heads * (long)ssfdc->cylinders *
-+				(long)ssfdc->sectors;
-+#else
-+	ssfdc->mbd.size  = ssfdc->map_len * (ssfdc->erase_size >> SECTOR_SHIFT);
-+#endif
-+
-+	/* Allocate logical block map */
-+	ssfdc->logic_block_map = kmalloc( sizeof(ssfdc->logic_block_map[0]) *
-+						ssfdc->map_len, GFP_KERNEL);
-+	if (!ssfdc->logic_block_map) {
-+		printk(KERN_WARNING
-+			"SSFDC_RO: out of memory for data structures\n");
-+		goto out_err;
-+	}
-+	memset(ssfdc->logic_block_map, 0xff, sizeof(ssfdc->logic_block_map[0]) *
-+		ssfdc->map_len);
-+
-+	/* Build logical block map */
-+	if (build_logical_block_map(ssfdc) < 0)
-+		goto out_err;
-+
-+	/* Register device + partitions */
-+	if (add_mtd_blktrans_dev(&ssfdc->mbd))
-+		goto out_err;
-+
-+	printk(KERN_INFO "SSFDC_RO: Found ssfdc%c on mtd%d (%s)\n",
-+		ssfdc->mbd.devnum + 'a', mtd->index, mtd->name);
-+	return;
-+
-+out_err:
-+	kfree(ssfdc->logic_block_map);
-+        kfree(ssfdc);
-+}
-+
-+static void ssfdcr_remove_dev(struct mtd_blktrans_dev *dev)
-+{
-+	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
-+
-+	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: remove_dev (i=%d)\n", dev->devnum);
-+
-+	del_mtd_blktrans_dev(dev);
-+	kfree(ssfdc->logic_block_map);
-+	kfree(ssfdc);
-+}
-+
-+static int ssfdcr_readsect(struct mtd_blktrans_dev *dev,
-+				unsigned long logic_sect_no, char *buf)
-+{
-+	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
-+	int sectors_per_block, offset, block_address;
-+
-+	sectors_per_block = ssfdc->erase_size >> SECTOR_SHIFT;
-+	offset = (int)(logic_sect_no % sectors_per_block);
-+	block_address = (int)(logic_sect_no / sectors_per_block);
-+
-+	DEBUG(MTD_DEBUG_LEVEL3,
-+		"SSFDC_RO: ssfdcr_readsect(%lu) sec_per_blk=%d, ofst=%d,"
-+		" block_addr=%d\n", logic_sect_no, sectors_per_block, offset,
-+		block_address);
-+
-+	if (block_address >= ssfdc->map_len)
-+		BUG();
-+
-+	block_address = ssfdc->logic_block_map[block_address];
-+
-+	DEBUG(MTD_DEBUG_LEVEL3,
-+		"SSFDC_RO: ssfdcr_readsect() phys_block_addr=%d\n",
-+		block_address);
-+
-+	if (block_address < 0xffff) {
-+		unsigned long sect_no;
-+
-+		sect_no = (unsigned long)block_address * sectors_per_block +
-+				offset;
-+
-+		DEBUG(MTD_DEBUG_LEVEL3,
-+			"SSFDC_RO: ssfdcr_readsect() phys_sect_no=%lu\n",
-+			sect_no);
-+
-+		if (read_physical_sector( ssfdc->mbd.mtd, buf, sect_no ) < 0)
-+			return -EIO;
-+	} else {
-+		memset(buf, 0xff, SECTOR_SIZE);
-+	}
-+
-+	return 0;
-+}
-+
-+#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
-+static int ssfdcr_getgeo(struct mtd_blktrans_dev *dev,  struct hd_geometry *geo)
-+{
-+	struct ssfdcr_record *ssfdc = (struct ssfdcr_record *)dev;
-+
-+	DEBUG(MTD_DEBUG_LEVEL1, "SSFDC_RO: ssfdcr_getgeo() C=%d, H=%d, S=%d\n",
-+			ssfdc->cylinders, ssfdc->heads, ssfdc->sectors);
-+
-+	geo->heads = ssfdc->heads;
-+	geo->sectors = ssfdc->sectors;
-+	geo->cylinders = ssfdc->cylinders;
-+
-+	return 0;
-+}
-+#endif
-+
-+/****************************************************************************
-+ *
-+ * Module stuff
-+ *
-+ ****************************************************************************/
-+
-+static struct mtd_blktrans_ops ssfdcr_tr = {
-+	.name		= "ssfdc",
-+	.major		= SSFDCR_MAJOR,
-+	.part_bits	= SSFDCR_PARTN_BITS,
-+#ifdef CONFIG_MTD_NAND_SSFDC_GETGEO
-+	.getgeo		= ssfdcr_getgeo,
-+#endif
-+	.readsect	= ssfdcr_readsect,
-+	.add_mtd	= ssfdcr_add_mtd,
-+	.remove_dev	= ssfdcr_remove_dev,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int __init init_ssfdcr(void)
-+{
-+	printk(KERN_INFO "SSFDC read-only Flash Translation layer\n");
-+
-+	return register_mtd_blktrans(&ssfdcr_tr);
-+}
-+
-+static void __exit cleanup_ssfdcr(void)
-+{
-+	deregister_mtd_blktrans(&ssfdcr_tr);
-+}
-+
-+module_init(init_ssfdcr);
-+module_exit(cleanup_ssfdcr);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Claudio Lanconelli <lanconelli.claudio@eptar.com>");
-+MODULE_DESCRIPTION("Flash Translation Layer for read-only SSFDC SmartMedia card");
+diff --git a/drivers/mtd/chips/jedec.c b/drivers/mtd/chips/jedec.c
+index c40b48d..2c3f019 100644
+--- a/drivers/mtd/chips/jedec.c
++++ b/drivers/mtd/chips/jedec.c
+@@ -256,6 +256,7 @@ static struct mtd_info *jedec_probe(stru
+    MTD->name = map->name;
+    MTD->type = MTD_NORFLASH;
+    MTD->flags = MTD_CAP_NORFLASH;
++   MTD->writesize = 1;
+    MTD->erasesize = SectorSize*(map->buswidth);
+    //   printk("MTD->erasesize is %x\n",(unsigned int)MTD->erasesize);
+    MTD->size = priv->size;
+diff --git a/drivers/mtd/chips/map_absent.c b/drivers/mtd/chips/map_absent.c
+index a611de9..ac01a94 100644
+--- a/drivers/mtd/chips/map_absent.c
++++ b/drivers/mtd/chips/map_absent.c
+@@ -64,7 +64,8 @@ static struct mtd_info *map_absent_probe
+ 	mtd->write 	= map_absent_write;
+ 	mtd->sync 	= map_absent_sync;
+ 	mtd->flags 	= 0;
+-	mtd->erasesize = PAGE_SIZE;
++	mtd->erasesize  = PAGE_SIZE;
++	mtd->writesize  = 1;
+ 
+ 	__module_get(THIS_MODULE);
+ 	return mtd;
+diff --git a/drivers/mtd/chips/map_ram.c b/drivers/mtd/chips/map_ram.c
+index 7639257..3a66680 100644
+--- a/drivers/mtd/chips/map_ram.c
++++ b/drivers/mtd/chips/map_ram.c
+@@ -71,6 +71,7 @@ #endif
+ 	mtd->write = mapram_write;
+ 	mtd->sync = mapram_nop;
+ 	mtd->flags = MTD_CAP_RAM;
++	mtd->writesize = 1;
+ 
+ 	mtd->erasesize = PAGE_SIZE;
+  	while(mtd->size & (mtd->erasesize - 1))
+diff --git a/drivers/mtd/chips/map_rom.c b/drivers/mtd/chips/map_rom.c
+index bc6ee9e..1b328b1 100644
+--- a/drivers/mtd/chips/map_rom.c
++++ b/drivers/mtd/chips/map_rom.c
+@@ -47,6 +47,7 @@ static struct mtd_info *map_rom_probe(st
+ 	mtd->sync = maprom_nop;
+ 	mtd->flags = MTD_CAP_ROM;
+ 	mtd->erasesize = map->size;
++	mtd->writesize = 1;
+ 
+ 	__module_get(THIS_MODULE);
+ 	return mtd;
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 0d98c22..be3f1c1 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -324,6 +324,7 @@ static struct block2mtd_dev *add_device(
+ 
+ 	dev->mtd.size = dev->blkdev->bd_inode->i_size & PAGE_MASK;
+ 	dev->mtd.erasesize = erase_size;
++	dev->mtd.writesize = 1;
+ 	dev->mtd.type = MTD_RAM;
+ 	dev->mtd.flags = MTD_CAP_RAM;
+ 	dev->mtd.erase = block2mtd_erase;
+diff --git a/drivers/mtd/devices/ms02-nv.c b/drivers/mtd/devices/ms02-nv.c
+index 4ab7670..08dfb89 100644
+--- a/drivers/mtd/devices/ms02-nv.c
++++ b/drivers/mtd/devices/ms02-nv.c
+@@ -225,6 +225,7 @@ static int __init ms02nv_init_one(ulong 
+ 	mtd->owner = THIS_MODULE;
+ 	mtd->read = ms02nv_read;
+ 	mtd->write = ms02nv_write;
++	mtd->writesize = 1;
+ 
+ 	ret = -EIO;
+ 	if (add_mtd_device(mtd)) {
+diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
+index a19480d..04271d0 100644
+--- a/drivers/mtd/devices/mtd_dataflash.c
++++ b/drivers/mtd/devices/mtd_dataflash.c
+@@ -478,6 +478,7 @@ add_dataflash(struct spi_device *spi, ch
+ 	device->name = (pdata && pdata->name) ? pdata->name : priv->name;
+ 	device->size = nr_pages * pagesize;
+ 	device->erasesize = pagesize;
++	device->writesize = pagesize;
+ 	device->owner = THIS_MODULE;
+ 	device->type = MTD_DATAFLASH;
+ 	device->flags = MTD_CAP_NORFLASH;
+diff --git a/drivers/mtd/devices/phram.c b/drivers/mtd/devices/phram.c
+index e09e416..6c7337f 100644
+--- a/drivers/mtd/devices/phram.c
++++ b/drivers/mtd/devices/phram.c
+@@ -151,6 +151,7 @@ static int register_device(char *name, u
+ 	new->mtd.owner = THIS_MODULE;
+ 	new->mtd.type = MTD_RAM;
+ 	new->mtd.erasesize = PAGE_SIZE;
++	new->mtd.writesize = 1;
+ 
+ 	ret = -EAGAIN;
+ 	if (add_mtd_device(&new->mtd)) {
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index 666cce1..f620d74 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -778,7 +778,8 @@ #endif
+                 mtd->type 	= MTD_RAM;
+                 mtd->name 	= "PMC551 RAM board";
+                 mtd->erasesize 	= 0x10000;
+-		mtd->owner = THIS_MODULE;
++                mtd->writesize  = 1;
++                mtd->owner = THIS_MODULE;
+ 
+                 if (add_mtd_device(mtd)) {
+                         printk(KERN_NOTICE "pmc551: Failed to register new device\n");
+diff --git a/drivers/mtd/devices/slram.c b/drivers/mtd/devices/slram.c
+index b3f665e..542a0c0 100644
+--- a/drivers/mtd/devices/slram.c
++++ b/drivers/mtd/devices/slram.c
+@@ -209,6 +209,7 @@ static int register_device(char *name, u
+ 	(*curmtd)->mtdinfo->owner = THIS_MODULE;
+ 	(*curmtd)->mtdinfo->type = MTD_RAM;
+ 	(*curmtd)->mtdinfo->erasesize = SLRAM_BLK_SZ;
++	(*curmtd)->mtdinfo->writesize = 1;
+ 
+ 	if (add_mtd_device((*curmtd)->mtdinfo))	{
+ 		E("slram: Failed to register new device\n");
 
---------------010903000108030404050804--
+--=-oACt+IhCh18JfKNpY7/S--
