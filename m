@@ -1,22 +1,22 @@
-Received: from mta01.verifone.com ([192.30.91.34]
-	helo=verifonedns.verifone.com)
+Received: from nz-out-0102.google.com ([64.233.162.201])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtZX3-0005cq-WC
-	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 20:28:32 -0400
-Received: from vfintmail1.verifone.com (vfintmail1.verifone.com [192.30.91.84])
-	by verifonedns.verifone.com (Postfix) with ESMTP id D2E1E947F1
+	id 1FteS5-00085c-C8
+	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 01:43:39 -0400
+Received: by nz-out-0102.google.com with SMTP id i11so683482nzh
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 22 Jun 2006 17:28:20 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Thu, 22 Jun 2006 22:43:29 -0700 (PDT)
+Message-ID: <449B7F8C.5040909@gmail.com>
+Date: Fri, 23 Jun 2006 00:43:40 -0500
+From: Nishanth Menon <menon.nishanth@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Creating NAND flash image outside embedded target
-Date: Thu, 22 Jun 2006 17:28:13 -0700
-Message-ID: <267BDCD982E696419B21B63BF91270310225258A@SMFNTMAIL.verifone.com>
-From: "Kevin Starinieri" <Kevin_S1@VERIFONE.com>
-To: <linux-mtd@lists.infradead.org>
+To: Sebastian Haag <Sebastian@7labs.de>
+Subject: Re: Use jffs2-formatted initrd from RAM (not Flash)
+References: <20060618125542.k4ipq4lfqtpwco88@webmail.7labs.de>
+	<20060622131321.yu6xfz4noz34owck@webmail.7labs.de>
+In-Reply-To: <20060622131321.yu6xfz4noz34owck@webmail.7labs.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have looked through the mail archives and did not see any subject
-threads regarding this.  I am trying to create a NAND flash image
-without having to do it on my embedded target. =20
+> Could you please give me some hints/links where I can find the solution 
+> for this
+> problem? I googled too much the last days...
 
-I have created a fake ram mtd device using mtdram driver, using the
-following commands on a linux Fedora Core 5 machine:
+Not an expert on this... my blind "googled" guess would be: mebbe try
+mtdram?
+here is a thread that might be of interest to you (mentions exactly how
+this is done):
+http://lists.infradead.org/pipermail/linux-mtd/2006-April/015285.html
+and this one (for general info):
+http://lists.infradead.org/pipermail/linux-mtd/2005-August/013390.html
 
-modprobe mtdcore
-modprobe mtdram total_size=3D32768 erase_size=3D16
-
-I then created the necessary mtd block and character devices (mknod) and
-then issued:
-
-modprobe mtdblock
-
-I then wanted to partition the fake mtd device and write to it using a
-nandwrite utility that I compiled for x86 that is used for samsung arm
-s3c2410 nand flash.  But the utility expects the device to be
-partitioned and erase regions to be defined.  But, I don't know of
-anyway to do this outside of my target.   It seems I need another x86
-utility that will create the partitions and erase regions.  Does anyone
-know how to create an MTD environment where I can create nand flash
-images on my linux Fedora Core 5 box?
-
-kstar
+Regards,
+Nishanth Menon
