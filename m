@@ -1,25 +1,33 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtgCT-0001jE-3s
-	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 03:35:41 -0400
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J1A00KRTYF2G3@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 16:35:26 +0900 (KST)
-Received: from hyoklinux ([168.219.193.142])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPA id <0J1A00B1FYF1YK@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 16:35:26 +0900 (KST)
-Date: Fri, 23 Jun 2006 16:35:40 +0900
-From: "Hyok S. Choi" <hyok.choi@samsung.com>
-Subject: [RFC] arm : ALIGNMENT_TRAP and MTD
-To: linux-mtd@lists.infradead.org
-Message-id: <200606231635.40655.hyok.choi@samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1FtgXK-000256-FW
+	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 03:57:15 -0400
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k5N7v3rP023007
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2006 03:57:03 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay04.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
+	k5N7v3WJ263236
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2006 03:57:03 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	k5N7v3Ra018481
+	for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2006 03:57:03 -0400
+Subject: Re: Creating NAND flash image outside embedded target
+From: Frank Haverkamp <haver@vnet.ibm.com>
+To: Kevin Starinieri <kevin_s1@verifone.com>
+In-Reply-To: <267BDCD982E696419B21B63BF91270310225258A@SMFNTMAIL.verifone.com>
+References: <267BDCD982E696419B21B63BF91270310225258A@SMFNTMAIL.verifone.com>
+Content-Type: text/plain
+Date: Fri, 23 Jun 2006 09:57:01 +0200
+Message-Id: <1151049421.6067.25.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,61 +37,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear MTD folks,
+Hi Kevin,
 
-In ARM arch, we're merging my uClinux/ARM tree into mainline.
-While merging a certain CPU support codes, we found a bit doubt on the
-conditional including of MTD configuration file in arch/arm/Kconfig.
-The CPU core has no H/W based alignment mechanism, thus can not handle unaligned access.
-However as many uClinux archs do, many of the platforms had supported MTD drivers.
+we had a similar problem with our embedded powerpc system where we
+needed pre-build binary images to be flashed via a JTAG programming
+utility into our NAND flashes. We also wanted to boot using NAND
+flash only and have NAND flash scrubbing and the possiblity to
+handle those bad blocks gracefully. 
 
-Currently, _only_ ARM arch includes MTD configuration file conditionally as follows:
+For those and other reasons we developed UBI which we recently
+published. It implements an interresting volume management approach,
+helping to overcome some limitations which a traditional fixed
+address/size partitioning scheme had. If you like, you can have a look
+at our design paper and the associated utilities in my mtd-utils.git.
 
-if ALIGNMENT_TRAP
-source "drivers/mtd/Kconfig"
-endif
+Here you can find our UBI design paper and a brief overview:
+http://www.linux-mtd.infradead.org/doc/ubi.html
 
-All the other archs includes the config w/o any condition.
+Maybe you find other aspects which are interessting for your
+application too.
 
-To support the CPU core which has no H/W alignment,
-the condition should be changed to somewhat strange :
+On Thu, 2006-06-22 at 17:28 -0700, Kevin Starinieri wrote:
+> I have looked through the mail archives and did not see any subject
+> threads regarding this.  I am trying to create a NAND flash image
+> without having to do it on my embedded target.  
 
-if ALIGNMENT_TRAP || CPU_HAS_NO_CP15
-source "drivers/mtd/Kconfig"
-endif
+> I then wanted to partition the fake mtd device and write to it using a
+> nandwrite utility that I compiled for x86 that is used for samsung arm
+> s3c2410 nand flash.  But the utility expects the device to be
+> partitioned and erase regions to be defined.  But, I don't know of
+> anyway to do this outside of my target.
 
-Currently only one platform (ARCH_EBSA110) is the out of the condition
-of above if condition.
+For generation of UBI/NAND images on your developemt (x86) systems we
+are using the ubi-utils toolchain:
 
-What would be the best condition? or just no condition?
-I think just including w/o any condition could be clear. :-)
+ o mkpfi is processing a configuration file and binary input data e.g.
+   JFFS2 images, boot-code, kernel images. It creates a partial flash
+   image (pfi) file which can be used by other tools e.g.
+ o pfi2bin which converts the pfi file into plain binary output.
+   For NOR flashes that would be an image you could directly burn
+   into your NOR which you solder afterwards onto your board,
+   for NAND you can run:
+ o bin2nand which adds the OOB whith ECC information (currently only
+   our layout, but one could consider enhancing it).
 
-On Wednesday 21 June 2006 20:32, Hyok S. Choi wrote:
-> On Wednesday 21 June 2006 19:42, Uwe Zeisberger wrote:
-> > >   However, the mtd drivers has been used for those CPUs.
-> > >   the drivers/mtd/Kconfig could be included if CPU_HAS_NO_CP15 in
-> > >   arch/arm/Kconfig.
-> > > 
-> > >   if ALIGNMENT_TRAP || CPU_HAS_NO_CP15
-> > >   source "drivers/mtd/Kconfig"
-> > >   endif
-> > I disbelieve this is the right fix.  Either the mtd drivers have
-> > alignment problems or not.  So in the first case it's not save if you
-> > have no alignment trap, be it on a processor with or without cp15.  In
-> > the latter case the complete if ALIGNMENT_TRAP should be removed.
->   See below.
-> 
-> > >   Anyway, is this really needed to be blocked if ALIGNMENT_TRAP is not
-> > >   enabled?
-> > There are (or may be) some drivers, that don't pay attention to only
-> > make aligned accesses.  I'd prefer if the individual drivers would be
-> > marked and not all mtd drivers together.  For me the AMDSTD driver seems
-> > to work.
-> I agree. That's why I commented as above. In general, every other
-> architectures including uClinux archs just includes mtd configuration
-> w/o any condition.
-> Currently the ALIGNMENT_TRAP is disabled only for ARCH_EBSA110.
+The output of this we can flash via JTAG to our systems. If this works
+we use on our embedded systems:
+ o overwriting files in JFFS2 ;-) and
+ o pfiflash to flash pfi files to the system e.g. boot-code, 
+   kernel which are stored in UBI static volumes. We are 
+   using this to update our systems. To create UBI volumes 
+   manually and update them, we use:
+ o ubimkvol, ubirmvol, ubiupdatevol
 
--- 
-Hyok
-ARM Linux 2.6 MPU/noMMU Project http://opensrc.sec.samsung.com/
+We even started (and have not finished yet) the inverse toolchain which
+can convert the data you read via JTAG from broken systems back into
+binary data which previously was written to the UBI volumes. This is
+intended to be used for field returns which do not boot/operate
+correctly anymore.
+
+Frank
