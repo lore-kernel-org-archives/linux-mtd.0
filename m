@@ -1,19 +1,22 @@
-Received: from radford.actrix.co.nz ([202.154.159.254] helo=radfordnz.net)
+Received: from mta01.verifone.com ([192.30.91.34]
+	helo=verifonedns.verifone.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtRL1-0001AJ-Bi
-	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 11:43:37 -0400
-Received: from [172.16.2.3] (eccles.radfordnz.net [172.16.2.3])
-	by radfordnz.net (Postfix) with ESMTP id D321D2CDD9
+	id 1FtZX3-0005cq-WC
+	for linux-mtd@lists.infradead.org; Thu, 22 Jun 2006 20:28:32 -0400
+Received: from vfintmail1.verifone.com (vfintmail1.verifone.com [192.30.91.84])
+	by verifonedns.verifone.com (Postfix) with ESMTP id D2E1E947F1
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Jun 2006 03:14:56 +1200 (NZST)
-Message-ID: <449AB3EE.5000306@radfordnz.net>
-Date: Fri, 23 Jun 2006 00:14:54 +0900
-From: Paul Radford <paul@radfordnz.net>
+	Thu, 22 Jun 2006 17:28:20 -0700 (PDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: block2mtd booting impossible?
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Creating NAND flash image outside embedded target
+Date: Thu, 22 Jun 2006 17:28:13 -0700
+Message-ID: <267BDCD982E696419B21B63BF91270310225258A@SMFNTMAIL.verifone.com>
+From: "Kevin Starinieri" <Kevin_S1@VERIFONE.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+I have looked through the mail archives and did not see any subject
+threads regarding this.  I am trying to create a NAND flash image
+without having to do it on my embedded target. =20
 
-(Sorry to bother the devs but I can't find *any* info about this yet)
+I have created a fake ram mtd device using mtdram driver, using the
+following commands on a linux Fedora Core 5 machine:
 
-I have an x86 machine that up until 2.6.16.x was booting from JFFS2 
-filesystems via blkmtd (CF card in an IDE adapter). The kernel 
-parameters were:
-ro root=/dev/mtdblock0 blkmtd_device=/dev/hda2,/dev/hda5,/dev/hda6 
-rootfstype=jffs2
+modprobe mtdcore
+modprobe mtdram total_size=3D32768 erase_size=3D16
 
-That worked well. Is it possible to get the same functionality from 
-block2mtd (compiled in, not a module) now that blkmtd has been removed 
-in 2.6.17?
+I then created the necessary mtd block and character devices (mknod) and
+then issued:
 
-My attempt at doing so failed miserably:
-ro root=/dev/mtdblock0 block2mtd=/dev/hda2 block2mtd=/dev/hda5 
-block2mtd=/dev/hda6 rootfstype=jffs2
+modprobe mtdblock
 
-I gave multiple block2mtd arguments because I don't see a 
-multiple-device capability in the code. Even with just one block2mtd 
-argument for the root FS, I just get the no-root panic. Am I missing 
-something here? Is JFFS2 block-device translation going to make the 
-whole block2mtd, mtdblock arrangement obsolete?
+I then wanted to partition the fake mtd device and write to it using a
+nandwrite utility that I compiled for x86 that is used for samsung arm
+s3c2410 nand flash.  But the utility expects the device to be
+partitioned and erase regions to be defined.  But, I don't know of
+anyway to do this outside of my target.   It seems I need another x86
+utility that will create the partitions and erase regions.  Does anyone
+know how to create an MTD environment where I can create nand flash
+images on my linux Fedora Core 5 box?
 
-Thanks,
-Paul
-(please copy me in on replies - I'm not subscribed)
+kstar
