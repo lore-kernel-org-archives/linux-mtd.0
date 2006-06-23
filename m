@@ -1,22 +1,20 @@
-Received: from mta066b.interbusiness.it ([85.37.17.66])
+Received: from host-84-9-201-23.bulldogdsl.com ([84.9.201.23]
+	helo=aeryn.fluff.org.uk)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ftkpx-0005iN-9D
-	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 08:32:47 -0400
-Received: from gianlinux.eptar.com (massimo.eptar.com [192.168.143.6])
-	by eptar.com (8.11.6/8.9.3) with ESMTP id k5NCWQV05669
-	for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2006 14:32:26 +0200
-From: Gianluca <gianlucarenzi@eptar.com>
+	id 1FtpLd-000088-Pw
+	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 13:21:41 -0400
+Received: from ben by aeryn.fluff.org.uk with local (Exim 3.36 #1 (Debian))
+	id 1FtpLW-0004Q3-00
+	for <linux-mtd@lists.infradead.org>; Fri, 23 Jun 2006 18:21:30 +0100
+Date: Fri, 23 Jun 2006 18:21:30 +0100
+From: Ben Dooks <ben-mtd@fluff.org>
 To: linux-mtd@lists.infradead.org
-Subject: Re: uboot performances
-Date: Fri, 23 Jun 2006 14:32:31 +0200
-References: <001001c696b3$9aeacf70$253682a4@nap.st.com>
-In-Reply-To: <001001c696b3$9aeacf70$253682a4@nap.st.com>
+Subject: patch with header files not in mtd includes
+Message-ID: <20060623172130.GA12107@home.fluff.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200606231432.32048.gianlucarenzi@eptar.com>
+Sender: Ben Dooks <ben@fluff.org.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday 23 June 2006 12:55, Davide CASCONE wrote:
-> I'm working with the OMAP5912 OSK platform. I have the boot-loader code and
-> the Linux OS compressed image in a Sibley flash. When I run the system, the
-> boot loader (uBoot) have to copy the Kernel Image (about 700KB) in RAM. It
-> takes about 300ms in order to perform that copy. But I have read some
-> benchmark results in which the copy of the kernel in RAM lasts only
-> 80-100ms. In order to reduce the time of the copy on my platform, the only
-> solution that I found (after checking the memory controller settings) is to
-> modify the copy function memmove (uboot/ lib_generic/string.c). This
-> function performs the copy byte by byte. If I modify this function to
-> perform the copy 4byte by 4byte, the bootloader only takes about 80 ms. Do
-> you think this is a good workaround for this problem? Can you suggest me
-> anything better?
-Sometime (I don't know about uboot) first-stage bootloaders are executing 
-themselves at very low clock timing due to flash-timing constraints (i.e.: 
-4Mhz/16Mhz/25Mhz). Are you sure your board is running at the maximum speed 
-allowed by Sibley flash device?
-Your consideration about memmove (4byte by 4byte (a single word) in a 32bit 
-micro) is correct. But what about other functions that are using memmove and 
-complain about byte ordering?
-It is better to write a memmove32() and use this instead.
+I have udpates for the s3c2410 nand driver which
+includes register updates for the header file
+include/asm-arm/arch-s3c2410/regs-nand.h.
 
-Regards,  
+Is it ok to send this as one patch, or does it
+need the include splitting and sending to rmk?
+A seperate split will mean a possible small period
+when the driver will not build.
+
 -- 
-Gianluca Renzi
-Eptar s.r.l.
-Via Celletta 8/B
-40026 Imola (BO) ITALY
-Tel.:	+39-0542-609060
-Fax.:	+39-0542-609054
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
