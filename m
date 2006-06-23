@@ -1,18 +1,21 @@
-Received: from mail.sanpeople.com ([196.41.13.122] helo=za-gw.sanpeople.com)
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FtiyO-0003xY-6A
-	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 06:33:16 -0400
+	id 1Ftj8y-0004Ea-NV
+	for linux-mtd@lists.infradead.org; Fri, 23 Jun 2006 06:44:16 -0400
 Subject: Re: DataFlash & writesize
-From: Andrew Victor <andrew@sanpeople.com>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-In-Reply-To: <4497A89F.4010202@yandex.ru>
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: Andrew Victor <andrew@sanpeople.com>
+In-Reply-To: <1151058432.27505.60.camel@fuzzie.sanpeople.com>
 References: <4497A89F.4010202@yandex.ru>
+	<1151058432.27505.60.camel@fuzzie.sanpeople.com>
 Content-Type: text/plain
-Message-Id: <1151058432.27505.60.camel@fuzzie.sanpeople.com>
+Date: Fri, 23 Jun 2006 14:43:35 +0400
+Message-Id: <1151059415.16043.45.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Date: 23 Jun 2006 12:27:12 +0200
 Content-Transfer-Encoding: 7bit
-Cc: david-b@pacbell.net, Linux MTD <linux-mtd@lists.infradead.org>
+Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, david-b@pacbell.net,
+	Linux MTD <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hi,
+On Fri, 2006-06-23 at 12:27 +0200, Andrew Victor wrote:
+> Since the writesize change is now in mainline git, here is a trivial
+> patch to set mtd->writesize for DataFlash.
+> [writesize = erasesize = pagesize]
+> 
 
-> So, I'm asking you to initialize mtd->writesize correctly.
+Andrew,
 
-Since the writesize change is now in mainline git, here is a trivial
-patch to set mtd->writesize for DataFlash.
-[writesize = erasesize = pagesize]
+I made the same yesterday and it is in GIT, but thank you anyway!
 
-(It compiles, but not tested).
-
-
-Signed-off-by: Andrew Victor <andrew@sanpeople.com>
-
-
-diff -urN linux-2.6.17-git5.orig/drivers/mtd/devices/mtd_dataflash.c linux-2.6.17-git5/drivers/mtd/devices/mtd_dataflash.c
---- linux-2.6.17-git5.orig/drivers/mtd/devices/mtd_dataflash.c	Tue May 30 11:41:52 2006
-+++ linux-2.6.17-git5/drivers/mtd/devices/mtd_dataflash.c	Fri Jun 23 12:07:09 2006
-@@ -478,6 +478,7 @@
- 	device->name = (pdata && pdata->name) ? pdata->name : priv->name;
- 	device->size = nr_pages * pagesize;
- 	device->erasesize = pagesize;
-+	device->writesize = pagesize;
- 	device->owner = THIS_MODULE;
- 	device->type = MTD_DATAFLASH;
- 	device->flags = MTD_CAP_NORFLASH;
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
