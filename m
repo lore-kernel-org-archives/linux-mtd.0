@@ -1,23 +1,23 @@
-Received: from smtp102.sbc.mail.mud.yahoo.com ([68.142.198.201])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FuzYH-0005UG-5D
-	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 18:27:39 -0400
-From: David Brownell <david-b@pacbell.net>
-To: "Josh Boyer" <jwboyer@gmail.com>
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FuzbP-0007NU-Q2
+	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 23:30:44 +0100
 Subject: Re: DataFlash & writesize
-Date: Mon, 26 Jun 2006 15:27:25 -0700
+From: Thomas Gleixner <tglx@linutronix.de>
+To: David Brownell <david-b@pacbell.net>
+In-Reply-To: <200606261527.25777.david-b@pacbell.net>
 References: <4497A89F.4010202@yandex.ru>
 	<200606261333.11632.david-b@pacbell.net>
 	<625fc13d0606261442p605d2291q5ec4b0ad4868e7b3@mail.gmail.com>
-In-Reply-To: <625fc13d0606261442p605d2291q5ec4b0ad4868e7b3@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+	<200606261527.25777.david-b@pacbell.net>
+Content-Type: text/plain
+Date: Tue, 27 Jun 2006 00:32:23 +0200
+Message-Id: <1151361143.25491.451.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200606261527.25777.david-b@pacbell.net>
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
+Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>, Josh Boyer <jwboyer@gmail.com>,
 	Linux MTD <linux-mtd@lists.infradead.org>
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,34 +27,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 26 June 2006 2:42 pm, Josh Boyer wrote:
-> On 6/26/06, David Brownell <david-b@pacbell.net> wrote:
-> > On Friday 23 June 2006 3:43 am, Artem B. Bityutskiy wrote:
-> > > On Fri, 2006-06-23 at 12:27 +0200, Andrew Victor wrote:
-> > > > Since the writesize change is now in mainline git, here is a trivial
-> > > > patch to set mtd->writesize for DataFlash.
-> > > > [writesize = erasesize = pagesize]
-> > > >
-> > >
-> > > Andrew,
-> > >
-> > > I made the same yesterday and it is in GIT, but thank you anyway!
-> >
-> > What are the intended semantics for "writesize" by the way?
-
-?
-
-> > I noticed I was getting that first BUG_ON in mtdcore:add_mtd_device
-> > since, with NOR CFI cmdset 1 flash, with current GIT.  Seems like
-> > writesie should have been set up already.
+On Mon, 2006-06-26 at 15:27 -0700, David Brownell wrote:
+> > Which git tree and when?  
 > 
-> Which git tree and when?  
+> Kernel.org GIT tree, pulled yesterday.
 
-Kernel.org GIT tree, pulled yesterday.
+Does not have the latest fixups. MTD git has. Sorry for the
+inconveniance.
 
-> That was a bug that should have been fixed 
-> last week in the mtd-2.6.git tree.  And it should also go to Linus
-> ASAP.
-> 
-> josh
-> 
+	tglx
