@@ -1,11 +1,19 @@
-Date: Mon, 26 Jun 2006 16:37:43 +0100 (BST)
-From: Alexey Korolev <akorolev@pentafluge.infradead.org>
-To: linux-mtd@lists.infradead.org, nico@cam.org, davide.cascone@st.com
-Subject: [PATCH] MTD performance issues on XIP configuration.
-Message-ID: <Pine.LNX.4.56.0606261628560.8547@pentafluge.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: JFFS2/xattr problems.
+From: David Woodhouse <dwmw2@infradead.org>
+To: KaiGai Kohei <kaigai@ak.jp.nec.com>
+In-Reply-To: <449CD47E.6010002@ak.jp.nec.com>
+References: <1148150486.3875.251.camel@pmac.infradead.org>
+	<44704CA9.8010604@ak.jp.nec.com>	<448CCEC8.2080903@ak.jp.nec.com>
+	<1150099418.11159.44.camel@shinybook.infradead.org>
+	<448D3752.3090605@ak.jp.nec.com>
+	<1150105995.8184.17.camel@pmac.infradead.org>
+	<448EBDE2.7090408@kaigai.gr.jp>  <449CD47E.6010002@ak.jp.nec.com>
+Content-Type: text/plain
+Date: Mon, 26 Jun 2006 16:45:16 +0100
+Message-Id: <1151336716.6394.169.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: KaiGai Kohei <kaigai@kaigai.gr.jp>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,28 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Sat, 2006-06-24 at 14:58 +0900, KaiGai Kohei wrote:
+> [3/5] jffs2-xattr-v6.1-03-redefine-refcnt-as-atomic_t.patch
+>    In jffs2_release_xattr_datum(), it refers xd->refcnt to ensure
+>    whether releasing xd is allowed or not.
+>    But we can't hold xattr_sem since this function is called under
+>    spin_lock(&c->erase_completion_lock). Thus we have to refer it
+>    without any locking.
 
-Current implementation of cfi_cmdset_0001 driver has serious performance issues in case of enabled MTD XIP configuration.
-Performance tests showed RAW write performance on XIP configuration ~60Kb/sec on Sibley (It should be over 400Kb/s)
-I investigated this problem:
-When we perform write or lock/unlock operation we call WAIT_TIMEOUT which passes chip_op_time = 0 to function xip_wait_for_operation. When zero timeout is passed to xip_wait_for_operation it automatically sets the usec = 500000 - and we send cpu to idle when it is unnecessary.
-To fix the issue I corrected the condition for sending CPU to idle.
+Surely c->alloc_sem is sufficient for this purpose? We can never change
+the refcount of anything without writing to the medium, so the alloc_sem
+ought to be enough.
 
-If you don't have any concerns regarding the following code could you please put it into the repository?
-
-Thanks,
-Alexey
------------------------
-diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-26 13:20:00.000000000 +0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-26 13:35:01.904969256 +0400
-@@ -1001,7 +1001,7 @@
- 			map_write(map, CMD(0x70), adr);
- 			chip->state = oldstate;
- 			start = xip_currtime();
--		} else if (usec >= 1000000/HZ) {
-+		} else if (*chip_op_time >= 1000000/HZ) {
- 			/*
- 			 * Try to save on CPU power when waiting delay
- 			 * is at least a system timer tick period.
+-- 
+dwmw2
