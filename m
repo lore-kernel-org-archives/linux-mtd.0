@@ -1,26 +1,16 @@
-Received: from ug-out-1314.google.com ([66.249.92.172])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FuyrE-0004c6-CU
-	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 17:43:13 -0400
-Received: by ug-out-1314.google.com with SMTP id q2so1617465uge
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Jun 2006 14:42:58 -0700 (PDT)
-Message-ID: <625fc13d0606261442p605d2291q5ec4b0ad4868e7b3@mail.gmail.com>
-Date: Mon, 26 Jun 2006 16:42:58 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "David Brownell" <david-b@pacbell.net>
-Subject: Re: DataFlash & writesize
-In-Reply-To: <200606261333.11632.david-b@pacbell.net>
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fuz9u-0004vo-7t
+	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 18:02:27 -0400
+Date: Tue, 27 Jun 2006 00:02:15 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: dwmw2@infradead.org
+Subject: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
+Message-ID: <20060626220215.GI23314@stusta.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <4497A89F.4010202@yandex.ru>
-	<1151058432.27505.60.camel@fuzzie.sanpeople.com>
-	<1151059415.16043.45.camel@sauron.oktetlabs.ru>
-	<200606261333.11632.david-b@pacbell.net>
-Cc: "Artem B. Bityutskiy" <dedekind@yandex.ru>,
-	Linux MTD <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/26/06, David Brownell <david-b@pacbell.net> wrote:
-> On Friday 23 June 2006 3:43 am, Artem B. Bityutskiy wrote:
-> > On Fri, 2006-06-23 at 12:27 +0200, Andrew Victor wrote:
-> > > Since the writesize change is now in mainline git, here is a trivial
-> > > patch to set mtd->writesize for DataFlash.
-> > > [writesize = erasesize = pagesize]
-> > >
-> >
-> > Andrew,
-> >
-> > I made the same yesterday and it is in GIT, but thank you anyway!
->
-> What are the intended semantics for "writesize" by the way?
->
-> I noticed I was getting that first BUG_ON in mtdcore:add_mtd_device
-> since, with NOR CFI cmdset 1 flash, with current GIT.  Seems like
-> writesie should have been set up already.
+This patch makes the needlessly global mtdpart_setup() static.
 
-Which git tree and when?  That was a bug that should have been fixed
-last week in the mtd-2.6.git tree.  And it should also go to Linus
-ASAP.
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-josh
+--- linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c.old	2006-06-26 23:18:39.000000000 +0200
++++ linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c	2006-06-26 23:18:51.000000000 +0200
+@@ -346,7 +346,7 @@
+  *
+  * This function needs to be visible for bootloaders.
+  */
+-int mtdpart_setup(char *s)
++static int mtdpart_setup(char *s)
+ {
+ 	cmdline = s;
+ 	return 1;
