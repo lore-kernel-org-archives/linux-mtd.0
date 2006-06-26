@@ -1,34 +1,11 @@
-Received: from node3.inaccessnetworks.com ([212.205.200.118]
-	helo=inaccessnetworks.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fup4S-0006IW-Nd
-	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 07:16:08 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by inaccessnetworks.com (8.13.6/8.13.5) with ESMTP id k5QBFv73001079
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Jun 2006 14:15:57 +0300
-Received: from inaccessnetworks.com ([127.0.0.1])
-	by localhost (host11.inaccessnetworks.com [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with LMTP id 00581-12 for <linux-mtd@lists.infradead.org>;
-	Mon, 26 Jun 2006 14:15:57 +0300 (EEST)
-Received: from priv.inaccessnetworks.com (orion.priv.inaccessnetworks.com
-	[192.168.1.2])
-	by inaccessnetworks.com (8.13.6/8.13.5) with ESMTP id k5QBFsSp001074
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Jun 2006 14:15:54 +0300
-Received: from draco (draco.priv.inaccessnetworks.com [192.168.1.3])
-	by priv.inaccessnetworks.com (8.12.1/8.12.1) with ESMTP id
-	k5QBFsBJ030172
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Jun 2006 14:15:54 +0300
-Received: from amanous by draco with local (Exim 4.50) id 1Fup4M-0000qR-46
-	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 14:15:54 +0300
-Date: Mon, 26 Jun 2006 14:15:53 +0300
-To: linux-mtd@lists.infradead.org
-Subject: Partition with multiple erasesize blocks
-Message-ID: <20060626111553.GA1664@inaccessnetworks.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: Angelos Manousarides <amanous@inaccessnetworks.com>
+Date: Mon, 26 Jun 2006 16:37:43 +0100 (BST)
+From: Alexey Korolev <akorolev@pentafluge.infradead.org>
+To: linux-mtd@lists.infradead.org, nico@cam.org, davide.cascone@st.com
+Subject: [PATCH] MTD performance issues on XIP configuration.
+Message-ID: <Pine.LNX.4.56.0606261628560.8547@pentafluge.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,75 +15,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a PXA-based board with intel P30 flash, top type (4 small sectors at the
-end, sized 0x10000, all the other flash large sectors sized 0x40000). I define
-from command line the partition sizes, using command line ATAG. The entire
-flash has size 0x4000000 (64MB), with two erase regions:
+Hi All,
 
-erase region 0: offset=0x0,size=0x40000,blocks=255
-erase region 1: offset=0x3fc0000,size=0x10000,blocks=4
+Current implementation of cfi_cmdset_0001 driver has serious performance issues in case of enabled MTD XIP configuration.
+Performance tests showed RAW write performance on XIP configuration ~60Kb/sec on Sibley (It should be over 400Kb/s)
+I investigated this problem:
+When we perform write or lock/unlock operation we call WAIT_TIMEOUT which passes chip_op_time = 0 to function xip_wait_for_operation. When zero timeout is passed to xip_wait_for_operation it automatically sets the usec = 500000 - and we send cpu to idle when it is unnecessary.
+To fix the issue I corrected the condition for sending CPU to idle.
 
-If I try this configuration:
+If you don't have any concerns regarding the following code could you please put it into the repository?
 
-3 cmdlinepart partitions found on MTD device mrg110-6
-Creating 3 MTD partitions on "mrg110-6":
-0x00000000-0x00040000 : "u-boot"
-0x00040000-0x00280000 : "kernel"
-0x00280000-0x04000000 : "filesystem"
-
-The linux filesystem (last partition) does not behave correctly at the limit,
-and I suspect that the problem arises when the last small sectors are used for
-the first time. If I do this:
-
-dd if=/dev/zero of=/foobar
-
-The command hangs, and once I saw a driver crash in zlib() calls.
-
-If I try this setup:
-
-Creating 3 MTD partitions on "mrg110-6":
-0x00000000-0x00040000 : "u-boot"
-0x00040000-0x00280000 : "kernel"
-0x00280000-0x03fc0000 : "filesystem"
-
-Thus, using an address space with a single erase size, the above tests
-completes successfully. The command finishes with a "out of space" error.
-
-I added some printk()'s in the kernel and saw that in the first case a single
-erase size is defined with is not right. This is not a surprise of course (code
-from add_mtd_partitions(), drivers/mtd/mtdpart.c):
-
-if (master->numeraseregions>1) {
-    /* Deal with variable erase size stuff */
-    int i;
-    struct mtd_erase_region_info *regions = master->eraseregions;
-
-    /* Find the first erase regions which is part of this partition. */
-    for (i=0; i < master->numeraseregions && slave->offset >= regions[i].offset; i++)
-        ;
-
-    for (i--; i < master->numeraseregions && slave->offset + slave->mtd.size > regions[i].offset; i++) {
-        if (slave->mtd.erasesize < regions[i].erasesize) {
-            slave->mtd.erasesize = regions[i].erasesize;
-        }
-    }
-} else {
-    /* Single erase size */
-    slave->mtd.erasesize = master->erasesize;
-}
-
-
-Shouldn't this code allocate and set the mtd->eraseregions accordingly, with
-the proper size and offsets of the new partition?
-
-My kernel is 2.6.13 with some stuff backported from 2.6.16 in order to support
-the P30 chip, but I saw that even the latest mtd code has the exact same code
-for add_mtd_partitions.
-
-Even worse, for this board I want to support 4 chips in 2 flash banks with
-mdtconcat, which means that I need not only the partition code to support
-partitions with multiple erase regions, but the concat code to support multiple
-erase regions as well. Is there any luck?
-
---
-Angelos Manousaridis
+Thanks,
+Alexey
+-----------------------
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-26 13:20:00.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-26 13:35:01.904969256 +0400
+@@ -1001,7 +1001,7 @@
+ 			map_write(map, CMD(0x70), adr);
+ 			chip->state = oldstate;
+ 			start = xip_currtime();
+-		} else if (usec >= 1000000/HZ) {
++		} else if (*chip_op_time >= 1000000/HZ) {
+ 			/*
+ 			 * Try to save on CPU power when waiting delay
+ 			 * is at least a system timer tick period.
