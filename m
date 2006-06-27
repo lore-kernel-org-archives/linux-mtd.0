@@ -1,9 +1,9 @@
 Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fv7bb-0001vR-Rs
-	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 03:03:36 -0400
-Message-ID: <44A0D81C.3080300@yandex.ru>
-Date: Tue, 27 Jun 2006 11:02:52 +0400
+	id 1Fv7eV-00038A-HU
+	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 03:06:39 -0400
+Message-ID: <44A0D8D3.4020908@yandex.ru>
+Date: Tue, 27 Jun 2006 11:05:55 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: David Brownell <david-b@pacbell.net>
@@ -25,10 +25,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello David,
+David,
 
 David Brownell wrote:
 > What are the intended semantics for "writesize" by the way?
+
 Design-wise, it an attempt to generalize MTD. Different flashes have 
 different minimal I/O unit size, like 1 byte in case of NOR, 16 bytes in 
 case of ECCed NOR, 512/2K in case of NAND, etc. There were no such a 
@@ -54,7 +55,6 @@ Here is a comment from include/linux/mtd.h:
   * 1 or larger.
   */
 
-> 
 > I noticed I was getting that first BUG_ON in mtdcore:add_mtd_device
 > since, with NOR CFI cmdset 1 flash, with current GIT.  Seems like
 > writesie should have been set up already.
