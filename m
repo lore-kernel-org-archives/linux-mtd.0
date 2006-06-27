@@ -1,20 +1,21 @@
-Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fv3YS-0008K6-6G
-	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 22:44:05 -0400
-Message-ID: <44A09B53.80908@ak.jp.nec.com>
-Date: Tue, 27 Jun 2006 11:43:31 +0900
-From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+Received: from [84.204.75.166] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fv7bb-0001vR-Rs
+	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 03:03:36 -0400
+Message-ID: <44A0D81C.3080300@yandex.ru>
+Date: Tue, 27 Jun 2006 11:02:52 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2/xattr problems.
-References: <1148150486.3875.251.camel@pmac.infradead.org>	<44704CA9.8010604@ak.jp.nec.com>	<448CCEC8.2080903@ak.jp.nec.com>	<1150099418.11159.44.camel@shinybook.infradead.org>	<448D3752.3090605@ak.jp.nec.com>	<1150105995.8184.17.camel@pmac.infradead.org>	<448EBDE2.7090408@kaigai.gr.jp>
-	<449CD47E.6010002@ak.jp.nec.com>
-	<1151336716.6394.169.camel@pmac.infradead.org>
-In-Reply-To: <1151336716.6394.169.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: David Brownell <david-b@pacbell.net>
+Subject: Re: DataFlash & writesize
+References: <4497A89F.4010202@yandex.ru>
+	<1151058432.27505.60.camel@fuzzie.sanpeople.com>
+	<1151059415.16043.45.camel@sauron.oktetlabs.ru>
+	<200606261333.11632.david-b@pacbell.net>
+In-Reply-To: <200606261333.11632.david-b@pacbell.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: KaiGai Kohei <kaigai@kaigai.gr.jp>, linux-mtd@lists.infradead.org
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Sat, 2006-06-24 at 14:58 +0900, KaiGai Kohei wrote:
->> [3/5] jffs2-xattr-v6.1-03-redefine-refcnt-as-atomic_t.patch
->>    In jffs2_release_xattr_datum(), it refers xd->refcnt to ensure
->>    whether releasing xd is allowed or not.
->>    But we can't hold xattr_sem since this function is called under
->>    spin_lock(&c->erase_completion_lock). Thus we have to refer it
->>    without any locking.
+Hello David,
+
+David Brownell wrote:
+> What are the intended semantics for "writesize" by the way?
+Design-wise, it an attempt to generalize MTD. Different flashes have 
+different minimal I/O unit size, like 1 byte in case of NOR, 16 bytes in 
+case of ECCed NOR, 512/2K in case of NAND, etc. There were no such a 
+field before and we had to do ugly things like
+
+
+switch (mtd->type) {
+	case MTD_NORFLASH:
+		blah();
+		break;
+	case MTD_NANDFLASH:
+		blah1();
+
+etc.
+
+Here is a comment from include/linux/mtd.h:
+
+/* Minimal writable flash unit size. In case of NOR flash it is 1 (even
+  * though individual bits can be cleared), in case of NAND flash it is
+  * one NAND page (or half, or one-fourths of it), in case of ECC-ed NOR
+  * it is of ECC block size, etc. It is illegal to have writesize = 0.
+  * Any driver registering a struct mtd_info must ensure a writesize of
+  * 1 or larger.
+  */
+
 > 
-> Surely c->alloc_sem is sufficient for this purpose? We can never change
-> the refcount of anything without writing to the medium, so the alloc_sem
-> ought to be enough.
+> I noticed I was getting that first BUG_ON in mtdcore:add_mtd_device
+> since, with NOR CFI cmdset 1 flash, with current GIT.  Seems like
+> writesie should have been set up already.
 
-In some cases without holding c->alloc_sem, we have a possibility to change
-xd->refcnt. For example, it's changed when delete_xattr_ref() is called
-from jffs2_xattr_delete_inode().
-This processing pass does not write anything (includes a delete marker),
-because orphan xattr_refs are certainly ignored in next mounting.
+We fixed all drivers and now it should be fine - see commit 
+17ffc7ba6d7ea68b8d5f55a5ca1b87163e69720d
 
-
-But I noticed this patch has another problem last night.
-In delete_xattr_ref(), we don't hold c->erase_completion_lock before
-atomic_dec_and_test(), so there is a possibility to release
-a xattr_datum twice.
-I think atomic_dec_and_lock() should be used in delete_xattr_datum().
-If so, we can release it safely with minimum locking pain.
-This behavior may be correct. Please wait a fix.
-
-Thanks,
 -- 
-Open Source Software Promotion Center, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
