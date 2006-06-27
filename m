@@ -1,16 +1,24 @@
-Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-In-Reply-To: <Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-Content-Type: text/plain
-Date: Tue, 27 Jun 2006 19:46:23 +0100
-Message-Id: <1151433983.6394.230.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from ug-out-1314.google.com ([66.249.92.170])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FvItv-0005cb-Cq
+	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 15:07:17 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so2136844uge
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Jun 2006 12:07:04 -0700 (PDT)
+From: Husam <husamsenussi@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: mtdconcat
+Date: Tue, 27 Jun 2006 20:07:06 +0100
+References: <200606262324.28262.husamsenussi@gmail.com>
+	<1151416218.17609.142.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1151416218.17609.142.camel@hades.cambridge.redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@pentafluge.infradead.org>
+Content-Disposition: inline
+Message-Id: <200606272007.06983.husamsenussi@gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +28,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-06-27 at 14:38 -0400, Nicolas Pitre wrote:
-> OK, but I think this should all be done within cfi_udelay().  Or maybe 
-> not since cfi_udelay() is used by other chip drivers.  
+Thanks I thought I would need to load this as separate driver
 
-I'm not sure I follow that argument. cfi_udelay() is used in basically
-the same circumstances by other chip drivers, so why not do it there
-instead of open-coding it?
 
--- 
-dwmw2
+On Tuesday 27 June 2006 14:50, David Woodhouse wrote:
+> grep mtd_concat_create -r drivers/mtd/maps
