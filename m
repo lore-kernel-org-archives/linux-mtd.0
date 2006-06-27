@@ -1,14 +1,15 @@
-Subject: Re: patch with header files not in mtd includes
+Subject: Re: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
 From: David Woodhouse <dwmw2@infradead.org>
-To: Ben Dooks <ben-mtd@fluff.org>
-In-Reply-To: <20060623172130.GA12107@home.fluff.org>
-References: <20060623172130.GA12107@home.fluff.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060626220215.GI23314@stusta.de>
+References: <20060626220215.GI23314@stusta.de>
 Content-Type: text/plain
-Date: Tue, 27 Jun 2006 14:26:56 +0100
-Message-Id: <1151414818.17609.126.camel@hades.cambridge.redhat.com>
+Date: Tue, 27 Jun 2006 14:49:00 +0100
+Message-Id: <1151416141.17609.140.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: juha.yrjola@solidboot.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +19,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-06-23 at 18:21 +0100, Ben Dooks wrote:
-> I have udpates for the s3c2410 nand driver which
-> includes register updates for the header file
-> include/asm-arm/arch-s3c2410/regs-nand.h.
+On Tue, 2006-06-27 at 00:02 +0200, Adrian Bunk wrote:
+> This patch makes the needlessly global mtdpart_setup() static.
 > 
-> Is it ok to send this as one patch, or does it
-> need the include splitting and sending to rmk?
-> A seperate split will mean a possible small period
-> when the driver will not build. 
+> Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> 
+> --- linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c.old 2006-06-26 23:18:39.000000000 +0200
+> +++ linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c     2006-06-26 23:18:51.000000000 +0200
+> @@ -346,7 +346,7 @@
+>   *
+>   * This function needs to be visible for bootloaders.
+>   */
+> -int mtdpart_setup(char *s)
+> +static int mtdpart_setup(char *s) 
 
-Stick it in a git tree, ask rmk if he's happy with it. If he is, ask me
-to pull it.
+Patch lacks sufficient explanation. Explain the relevance of the comment
+immediately above the function declaration, in the context of your
+patch. Explain your decision to change the behaviour, but not change the
+comment itself.
+
+Think. Or you will be replaced with a small shell script.
 
 -- 
 dwmw2
