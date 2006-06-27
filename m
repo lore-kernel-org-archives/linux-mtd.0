@@ -1,34 +1,18 @@
-Received: from fra-del-04.spheriq.net ([195.46.51.100])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fv9Wn-0004eX-EE
-	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 05:06:46 -0400
-Received: from fra-out-03.spheriq.net (fra-out-03.spheriq.net [195.46.51.131])
-	by fra-del-04.spheriq.net with ESMTP id k5R93owY021695
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2006 09:06:32 GMT
-Received: from fra-cus-01.spheriq.net (fra-cus-01.spheriq.net [195.46.51.37])
-	by fra-out-03.spheriq.net with ESMTP id k5R8xbYa023804
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2006 08:59:38 GMT
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by fra-cus-01.spheriq.net with ESMTP id k5R8xY4H015667
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Jun 2006 08:59:36 GMT
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 30D83DADE
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Jun 2006 08:33:54 +0000 (GMT)
-Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E1473473B9
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Jun 2006 08:33:53 +0000 (GMT)
-From: Davide CASCONE <davide.cascone@st.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: variable definition
-Date: Tue, 27 Jun 2006 10:33:52 +0200
-Message-ID: <000901c699c4$6bb52070$253682a4@nap.st.com>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FvA0E-00055E-JJ
+	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 05:37:10 -0400
+Message-ID: <44A0FC37.2010509@ru.mvista.com>
+Date: Tue, 27 Jun 2006 13:36:55 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+To: Davide CASCONE <davide.cascone@st.com>
+Subject: Re: variable definition
+References: <000901c699c4$6bb52070$253682a4@nap.st.com>
+In-Reply-To: <000901c699c4$6bb52070$253682a4@nap.st.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,10 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Davide,
 
-How can I define a variable that can be modified in =
-arch/arm/kernel/head.S and printed in init/main.c?
+Davide CASCONE wrote:
+> How can I define a variable that can be modified in arch/arm/kernel/head.S and printed in init/main.c?
+>
+>   
+It's off topic for the list.
+However, I don't think that you really need that at all unless you're 
+doing something nasty :)
 
-Thanks in advance.
-Best Regards,
-Davide
+Vitaly
