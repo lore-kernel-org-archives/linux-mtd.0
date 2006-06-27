@@ -1,12 +1,20 @@
-To: 
-Subject: BUSINESS INVITATION
-From: contactpost <contactpost@sanook.com>
-CC: 
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fv3YS-0008K6-6G
+	for linux-mtd@lists.infradead.org; Mon, 26 Jun 2006 22:44:05 -0400
+Message-ID: <44A09B53.80908@ak.jp.nec.com>
+Date: Tue, 27 Jun 2006 11:43:31 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2/xattr problems.
+References: <1148150486.3875.251.camel@pmac.infradead.org>	<44704CA9.8010604@ak.jp.nec.com>	<448CCEC8.2080903@ak.jp.nec.com>	<1150099418.11159.44.camel@shinybook.infradead.org>	<448D3752.3090605@ak.jp.nec.com>	<1150105995.8184.17.camel@pmac.infradead.org>	<448EBDE2.7090408@kaigai.gr.jp>
+	<449CD47E.6010002@ak.jp.nec.com>
+	<1151336716.6394.169.camel@pmac.infradead.org>
+In-Reply-To: <1151336716.6394.169.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <E1Fv02N-0003o6-Qv@research.msu.ac.th>
-Date: Tue, 27 Jun 2006 05:58:35 +0700
+Cc: KaiGai Kohei <kaigai@kaigai.gr.jp>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,47 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+David Woodhouse wrote:
+> On Sat, 2006-06-24 at 14:58 +0900, KaiGai Kohei wrote:
+>> [3/5] jffs2-xattr-v6.1-03-redefine-refcnt-as-atomic_t.patch
+>>    In jffs2_release_xattr_datum(), it refers xd->refcnt to ensure
+>>    whether releasing xd is allowed or not.
+>>    But we can't hold xattr_sem since this function is called under
+>>    spin_lock(&c->erase_completion_lock). Thus we have to refer it
+>>    without any locking.
+> 
+> Surely c->alloc_sem is sufficient for this purpose? We can never change
+> the refcount of anything without writing to the medium, so the alloc_sem
+> ought to be enough.
 
-From: Barr Frederick Williams
-MC DERMOTT WILL & EMERY
-http://www.mwe.com/
- 
-E-mail:business_relation@netbg.com
-For your kind attention;
-Greeting to you.
-
-The inspiration to contact you is simply divine providence,I am making this 
-proposition because  I have to seek the partnership of a resourceful person to help me realise this project. I am Barr Frederick Williams. a solicitor and investment consultant  based in London,United Kingdom.I was attending a business luncheon in Berlin,Germany and I got introduced to the renowned german businessman and property mogul, Mr Andreas Schranner(of blessed memory).He engaged my services as attorney and investment consultant and my primary assignment was to spearhead his investment forays in the United 
-Kingdom.Three months later I invited him to London and under my 
-professional guidance and based on my advice he made a fixed deposit of 
-15,000,000,00 million pounds sterling at a financial institution.
-This deposit was for 12 months and  upon maturity I made effort to 
-contact my client ,I could not reach him or any member of his family.I was 
-forced to travel to germany and there I got the tragic news that on july 25 2000, my client Mr Andreas Schranner,his wife Maria,their daughter Eich and 
-husband christian and two children perished in the air france concorde newyork bound flight;please click here
- 
-http://news.bbc.co.uk/1/hi/world/europe/859479.stm
- 
-I have made efforts to locate any member of his family with strong 
-biological links to my late client without success.The search to find a 
-close relation is one that has consumed time and resources.the 
-insitution is asking me to either present a next of kin to late Andreas Schranner or forfiet the depsosit. my proposal is to package , present you as next of kin to late Andreas Schranner and process the fixed deposit and transfer custody to you for our mutual benefit.
-My capacity as solicitor/investment consultant to my late client gives me 
-the discretion to package and transfer the deposit to you.
-I will give you 30%  for your effort,60% for me and 10% for Charity and 
-Tsunami Victims.it will amount to injustice if i do not take this decisive step to secure this deposit,and invest it. The late Schranner was also a friend in addition to our business relationship.
-I will wait for your reaction and response and then together we can 
-jumpstart this project and nurture it to reality.
-Your swift response is anticipated.
- 
-Barr Frederick Williams
- 
-Please contact me through the Email address below if you are willing to assist me as a partner.
-email address: business_relation@netbg.com
- 
-Best Regards
-Barr Frederick Williams
+In some cases without holding c->alloc_sem, we have a possibility to change
+xd->refcnt. For example, it's changed when delete_xattr_ref() is called
+from jffs2_xattr_delete_inode().
+This processing pass does not write anything (includes a delete marker),
+because orphan xattr_refs are certainly ignored in next mounting.
 
 
-___________________________________________________________________________
-ท่านได้รับข่าวสารอัตโนมัติจาก http://www.journal.msu.ac.th
+But I noticed this patch has another problem last night.
+In delete_xattr_ref(), we don't hold c->erase_completion_lock before
+atomic_dec_and_test(), so there is a possibility to release
+a xattr_datum twice.
+I think atomic_dec_and_lock() should be used in delete_xattr_datum().
+If so, we can release it safely with minimum locking pain.
+This behavior may be correct. Please wait a fix.
+
+Thanks,
+-- 
+Open Source Software Promotion Center, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
