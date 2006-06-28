@@ -1,22 +1,15 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FvUG7-0003M2-Li
-	for linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 08:14:48 +0100
-Subject: Re: [2.6 patch] drivers/mtd/devices/: remove dead _ecc code
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20060627131116.GL23314@stusta.de>
-References: <20060621215840.GP9111@stusta.de>
-	<1150928664.25491.34.camel@localhost.localdomain>
-	<20060627131116.GL23314@stusta.de>
-Content-Type: text/plain
-Date: Wed, 28 Jun 2006 09:16:25 +0200
-Message-Id: <1151478985.25491.489.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: tglx@linutronix.de
+Date: Wed, 28 Jun 2006 08:48:01 +0100 (BST)
+From: Alexey Korolev <akorolev@pentafluge.infradead.org>
+To: Nicolas Pitre <nico@cam.org>
+Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
+In-Reply-To: <Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
+Message-ID: <Pine.LNX.4.56.0606280837520.15141@pentafluge.infradead.org>
+References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
+	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Alexey Korolev <akorolev@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,16 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-06-27 at 15:11 +0200, Adrian Bunk wrote:
-> nand_ecc isn't dead code.
+
+
+On Tue, 27 Jun 2006, Nicolas Pitre wrote:
+
+> ... and it also improves system responsiveness too, especially in the 
+> case were the loop uses udelay() which is a spin delay as there is more 
+> opportunities for rescheduling.  However...
 > 
-> But if I do understand correctly, you have pending patches to let the 
-> code your patch made dead code and my patch would have removed be used 
-> again?
+> > If timeout is greater than timer resolution (probably erase operation)
+> > We do the following
+> > 	sleep for half of operation timeout
+> > 	and do in cycle the following
+> > 	"Checking the status"
+> > 	sleep for timer resolution
+> > It adds insignificant CPU overhead but it provides higher resolution 
+> > and resolves the issue of low erase speed. (In some cases this 
+> > solution saves CPU resources significantly - if we exit before than 
+> > erase operation is done we will wait for 1us in cycle for case old 
+> > implementation. Due to erase time is very big we will do cycle for 
+> > long time.)
+> 
+> OK, but I think this should all be done within cfi_udelay().  Or maybe 
+> not since cfi_udelay() is used by other chip drivers.  So actually I 
+> think we should simply not use cfi_udelay() and simply open code those 
+> delay choices right within inval_cache_and_wait_for_operation() 
+> directly.  
+>
+> What about this (untested) patch?  It does simplify the code as well.
+That is absolutely suitable. a) it shouldn't break the functionality b) it  makes code easier for reading.
+Could you please wait some time until I verify changes. I think I'll done it today.
 
-Ooops, sorry for shooting too fast. You're right I rendered that stuff
-dead unintentionally. But removing is not an option. I fix it proper
-
-Thanks
-
-	tglx
+Thanks,
+Alexey
