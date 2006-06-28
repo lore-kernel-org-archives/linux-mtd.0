@@ -1,15 +1,17 @@
-Date: Wed, 28 Jun 2006 08:48:01 +0100 (BST)
-From: Alexey Korolev <akorolev@pentafluge.infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
-In-Reply-To: <Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-Message-ID: <Pine.LNX.4.56.0606280837520.15141@pentafluge.infradead.org>
-References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Alexey Korolev <akorolev@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [RFC] arm : ALIGNMENT_TRAP and MTD
+From: David Woodhouse <dwmw2@infradead.org>
+To: "Hyok S. Choi" <hyok.choi@samsung.com>
+In-Reply-To: <200606281404.06926.hyok.choi@samsung.com>
+References: <200606231635.40655.hyok.choi@samsung.com>
+	<1151090570.25491.294.camel@localhost.localdomain>
+	<1151415031.17609.130.camel@hades.cambridge.redhat.com>
+	<200606281404.06926.hyok.choi@samsung.com>
+Content-Type: text/plain
+Date: Wed, 28 Jun 2006 10:05:26 +0100
+Message-Id: <1151485526.6394.318.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +21,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-On Tue, 27 Jun 2006, Nicolas Pitre wrote:
-
-> ... and it also improves system responsiveness too, especially in the 
-> case were the loop uses udelay() which is a spin delay as there is more 
-> opportunities for rescheduling.  However...
+On Wed, 2006-06-28 at 14:04 +0900, Hyok S. Choi wrote:
 > 
-> > If timeout is greater than timer resolution (probably erase operation)
-> > We do the following
-> > 	sleep for half of operation timeout
-> > 	and do in cycle the following
-> > 	"Checking the status"
-> > 	sleep for timer resolution
-> > It adds insignificant CPU overhead but it provides higher resolution 
-> > and resolves the issue of low erase speed. (In some cases this 
-> > solution saves CPU resources significantly - if we exit before than 
-> > erase operation is done we will wait for 1us in cycle for case old 
-> > implementation. Due to erase time is very big we will do cycle for 
-> > long time.)
+> > No, it isn't. ARM was just one of the first CPUs where we really _can't_
+> > fix up alignment faults. FR-V is another. It's often done in the MMU, so
+> > there's a strong correlation with uCLinux architectures -- and now we've
+> > merged uCLinux, it's a problem we should really address properly.
 > 
-> OK, but I think this should all be done within cfi_udelay().  Or maybe 
-> not since cfi_udelay() is used by other chip drivers.  So actually I 
-> think we should simply not use cfi_udelay() and simply open code those 
-> delay choices right within inval_cache_and_wait_for_operation() 
-> directly.  
->
-> What about this (untested) patch?  It does simplify the code as well.
-That is absolutely suitable. a) it shouldn't break the functionality b) it  makes code easier for reading.
-Could you please wait some time until I verify changes. I think I'll done it today.
+> I agree on this. I'm doing the uClinux merging for ARM architecture.
+> 
+> How about to make an option for enabling accessing through the get_unaligned() in MTD?
+> Then ARM uClinux and FR-V could select/deselect the option and will have no problem.
 
-Thanks,
-Alexey
+I don't like that. I'd rather see you add a probability argument to
+get_unaligned() instead, as I described in my other email.
+
+-- 
+dwmw2
