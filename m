@@ -1,27 +1,30 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from mailout3.samsung.com ([203.254.224.33])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FvKjN-0007Un-Nu
-	for linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 17:04:31 -0400
-Received: from xanadu.home ([74.56.108.184]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J1J006O9EJ8JYG0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Tue, 27 Jun 2006 17:04:21 -0400 (EDT)
-Date: Tue, 27 Jun 2006 17:04:20 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
-In-reply-to: <1151438714.6394.232.camel@pmac.infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <Pine.LNX.4.64.0606271701120.28771@localhost.localdomain>
+	id 1FvSDL-0002rA-I5
+	for linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 01:03:55 -0400
+Received: from ep_mmp1 (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J1K003PS0Q6X1@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 14:03:42 +0900 (KST)
+Received: from hyoklinux ([168.219.193.142])
+	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTPA id <0J1K00JML0Q5PC@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 14:03:42 +0900 (KST)
+Date: Wed, 28 Jun 2006 14:04:04 +0900
+From: "Hyok S. Choi" <hyok.choi@samsung.com>
+Subject: Re: [RFC] arm : ALIGNMENT_TRAP and MTD
+In-reply-to: <1151415031.17609.130.camel@hades.cambridge.redhat.com>
+To: linux-mtd@lists.infradead.org
+Message-id: <200606281404.06926.hyok.choi@samsung.com>
 MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-type: text/plain; charset=iso-8859-1
 Content-transfer-encoding: 7BIT
-References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-	<1151433983.6394.230.camel@pmac.infradead.org>
-	<Pine.LNX.4.64.0606271454150.28771@localhost.localdomain>
-	<1151438714.6394.232.camel@pmac.infradead.org>
-Cc: linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@pentafluge.infradead.org>
+Content-disposition: inline
+References: <200606231635.40655.hyok.choi@samsung.com>
+	<1151090570.25491.294.camel@localhost.localdomain>
+	<1151415031.17609.130.camel@hades.cambridge.redhat.com>
+Cc: tglx@linutronix.de, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,21 +34,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 27 Jun 2006, David Woodhouse wrote:
-
-> On Tue, 2006-06-27 at 15:16 -0400, Nicolas Pitre wrote:
-> > > I'm not sure I follow that argument. cfi_udelay() is used in basically
-> > > the same circumstances by other chip drivers, so why not do it there
-> > > instead of open-coding it?
+On Tuesday 27 June 2006 22:30, David Woodhouse wrote:
+> On Fri, 2006-06-23 at 21:22 +0200, Thomas Gleixner wrote:
 > > 
-> > The code simply ends up being simpler. 
+> > Is there a damn good reason, why the NOMMMU stuff cannot have this
+> > active ? If it enables code which is not feasible on NOMMU there are
+> > ways to solve such problems quite elegant.
+> > 
+> > It's not a MTD problem, it's an ARM specific requirement.
 > 
-> OK, fine. If someone could send me a tested version with an appropriate
-> commit comment and Signed-off-by:, or better still stick it in a git
-> tree for me to pull from, I'll add it to my tree.
+> No, it isn't. ARM was just one of the first CPUs where we really _can't_
+> fix up alignment faults. FR-V is another. It's often done in the MMU, so
+> there's a strong correlation with uCLinux architectures -- and now we've
+> merged uCLinux, it's a problem we should really address properly.
 
-I'll wait for Alexey's testing and confirmation since he evidently has 
-the test bench ready and knows what results to expect.
+I agree on this. I'm doing the uClinux merging for ARM architecture.
 
+How about to make an option for enabling accessing through the get_unaligned() in MTD?
+Then ARM uClinux and FR-V could select/deselect the option and will have no problem.
 
-Nicolas
+Hyok
+
+-- 
+Hyok
+ARM Linux 2.6 MPU/noMMU Project http://opensrc.sec.samsung.com/
