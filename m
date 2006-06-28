@@ -1,21 +1,29 @@
-Received: from palrel13.hp.com ([156.153.255.238])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FvgLz-0004LA-5z
-	for linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 16:09:46 -0400
-Received: from cacexg12.americas.cpqcorp.net (cacexg12.americas.cpqcorp.net
-	[16.92.1.72]) by palrel13.hp.com (Postfix) with ESMTP id 9F3DC342DE
+Received: from de01egw01.freescale.net ([192.88.165.102])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FvijK-0005fV-RF
+	for linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 18:42:15 -0400
+Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
+	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
+	k5SFe8HT004850 for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Jun 2006 09:40:08 -0600 (MDT)
+Received: from zch01exm40.ap.freescale.net (zch01exm40.ap.freescale.net
+	[10.192.130.11])
+	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id k5SEN9hv029736
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Jun 2006 13:09:32 -0700 (PDT)
-Content-class: urn:content-classes:message
+	Wed, 28 Jun 2006 09:23:11 -0500 (CDT)
+Message-ID: <9FCDBA58F226D911B202000BDBAD467306E04FD3@zch01exm40.ap.freescale.net>
+From: Li Yang-r58472 <LeoLi@freescale.com>
+To: "'dwmw2@infradead.org'" <dwmw2@infradead.org>
+Subject: [PATCH 2/7] mtd: Add map file for mpc83xx boards
+Date: Wed, 28 Jun 2006 22:23:08 +0800
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: NAND driver question
-Date: Wed, 28 Jun 2006 13:09:31 -0700
-Message-ID: <434C0230237FE94499EB9C6582CBA342048B3618@cacexc07.americas.cpqcorp.net>
-From: "Ramesh, Subramanian (HPSL-Firmware)" <s.ramesh@hp.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Cc: Phillips Kim-R1AAHA <Kim.Phillips@freescale.com>,
+	Yin Olivia-r63875 <Hong-Hua.Yin@freescale.com>,
+	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+	linuxppc-dev@ozlabs.org,
+	"'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
+	Chu hanjin-r52514 <Hanjin.Chu@freescale.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +33,199 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Flash mapping file for MPC83xx MDS platforms.
 
-	I don't know if this is the right forum, but I have a question.
-What we have is a powerpc board running 2.6.11 kernel (curently using a
-NOR flash) and the HW guys are proposing putting a ST micro 512MB NAND
-on the board, but behind an FPGA. They are also proposing to have a
-separate chip select for the NAND's address range so that the accesses
-to that range will be a straight "pass through" for the FPGA. My concern
-is that what impact will this have on the driver. Ideally, it should
-work as is, but I am not sure. Any pointers?=20
+Signed-off-by: Yin Olivia <hong-hua.yin@freescale.com>
+Signed-off-by: Li Yang <leoli@freescale.com>
+Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
 
-Thanks.
---Ramesh
+---
+ drivers/mtd/maps/Kconfig         |    6 +
+ drivers/mtd/maps/Makefile        |    1 
+ drivers/mtd/maps/mpc83xx_flash.c |  154 ++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 161 insertions(+), 0 deletions(-)
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index 7abd7fe..eac049e 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -631,5 +631,11 @@ config MTD_PLATRAM
+ 
+ 	  This selection automatically selects the map_ram driver.
+ 
++config MTD_MPC83xx
++	tristate "CFI Flash device map on MPC83xx MDS support"
++	depends on 83xx && MTD_CFI && MTD_PARTITIONS
++	help
++	  Freescale MPC83xx board uses CFI compliant flash.
++
+ endmenu
+ 
+diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
+index ab71f17..f0f8afd 100644
+--- a/drivers/mtd/maps/Makefile
++++ b/drivers/mtd/maps/Makefile
+@@ -71,3 +71,4 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
+ obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
+ obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
+ obj-$(CONFIG_MTD_TQM834x)	+= tqm834x.o
++obj-$(CONFIG_MTD_MPC83xx)	+= mpc83xx_flash.o
+diff --git a/drivers/mtd/maps/mpc83xx_flash.c b/drivers/mtd/maps/mpc83xx_flash.c
+new file mode 100644
+index 0000000..84f058a
+--- /dev/null
++++ b/drivers/mtd/maps/mpc83xx_flash.c
+@@ -0,0 +1,154 @@
++/*
++ * Handle mapping of the flash on MPC83xx board
++ *
++ * Copyright (C) 2005 Freescale semicondutor
++ * 
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ */
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/kernel.h>
++#include <asm/io.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/map.h>
++#include <linux/mtd/partitions.h>
++
++
++/* MPC8349MDS flash layout 
++ * 0 : 0xFE00 0000 - 0xFE01 FFFF : HRCW (128KB)
++ * 1 : 0xFE02 0000 - 0xFE5F FFFF : JFFS2 file system (5.875MB)
++ * 2 : 0xFE60 0000 - 0xFE6F FFFF : Kernel (1MB)
++ * 3 : 0xFE70 0000 - 0xFE7F FFFF : U-Boot (1MB)
++ */
++#ifdef CONFIG_MPC834x
++#define WINDOW_ADDR 0xFE000000
++#define WINDOW_SIZE 0x00800000
++#endif
++
++/* MPC8360EPB flash layout 
++ * 0 : 0xFE00 0000 - 0xFE01 FFFF : HRCW (128KB)
++ * 1 : 0xFE02 0000 - 0xFE8F FFFF : JFFS2 file system (8.875MB)
++ * 2 : 0xFE90 0000 - 0xFECF FFFF : Ramdisk file system (4MB)
++ * 3 : 0xFED0 0000 - 0xFEEF FFFF : Kernel (2MB)
++ * 4 : 0xFEF0 0000 - 0xFEFF FFFF : U-Boot (1MB)
++ */
++#ifdef CONFIG_MPC8360E_PB
++#define WINDOW_ADDR 0xFE000000
++#define WINDOW_SIZE 0x01000000
++#endif
++
++/* partition_info gives details on the logical partitions that the split the
++ * single flash device into. If the size if zero we use up to the end of the
++ * device. */
++static struct mtd_partition partition_info[]={
++	{
++		.name		= "HRCW",
++		.offset 	= 0,
++		.size		= 0x020000,
++		.mask_flags	= MTD_WRITEABLE
++	},
++	{
++		.name		= "JFFS2",
++		.offset		= MTDPART_OFS_APPEND,
++#ifdef CONFIG_MPC834x
++		.size		= 0x5E0000
++#endif
++#ifdef CONFIG_MPC8360E_PB
++		.size		= 0x8E0000
++#endif
++	},
++#ifdef CONFIG_MPC8360E_PB
++	{
++		.name           = "Ramdisk",
++		.offset         = MTDPART_OFS_APPEND,
++		.size           = 0x400000
++	},
++#endif
++	{
++		.name		= "Kernel",
++		.offset		= MTDPART_OFS_APPEND,
++#ifdef CONFIG_MPC834x
++		.size		= 0x100000
++#endif
++#ifdef CONFIG_MPC8360E_PB
++		.size		= 0x200000
++#endif
++	},
++	{
++		.name		= "U-Boot",
++		.offset		= MTDPART_OFS_APPEND,
++		.size		= 0x100000,
++		.mask_flags	= MTD_WRITEABLE
++    }
++};
++
++#define PARTITION_NUM (sizeof(partition_info)/sizeof(struct mtd_partition))
++
++static struct mtd_info *mymtd;
++
++
++struct map_info mpc83xx_map = {
++#ifdef CONFIG_MPC834x
++	.name		= "MPC8349MDS Flash Map Info",
++#endif
++#ifdef CONFIG_MPC8360E_PB
++	.name		= "MPC8360E PB Flash Map Info",
++#endif
++	.size		= WINDOW_SIZE,
++	.phys		= WINDOW_ADDR,
++	.bankwidth	= 2,
++};
++
++int __init init_mpc83xx_mtd(void)
++{
++	char *board;
++#ifdef CONFIG_MPC834x
++	board = "MPC8349MDS";
++#endif
++#ifdef CONFIG_MPC8360E_PB
++	board = "MPC8360E PB"; 
++#endif
++	printk(KERN_NOTICE "%s flash device: %x at %x Partition number %d\n",
++			board,WINDOW_SIZE, WINDOW_ADDR, PARTITION_NUM);
++	mpc83xx_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
++
++	if (!mpc83xx_map.virt) {
++		printk("Failed to ioremap\n");
++		return -EIO;
++	}
++	simple_map_init(&mpc83xx_map);
++	
++	mymtd = do_map_probe("cfi_probe", &mpc83xx_map);
++	if (mymtd) {
++		mymtd->owner = THIS_MODULE;
++                add_mtd_partitions(mymtd, partition_info, PARTITION_NUM);
++		printk(KERN_NOTICE "%s flash device initialized\n", board);
++		return 0;
++	}
++
++	iounmap((void *)mpc83xx_map.virt);
++	return -ENXIO;
++}
++
++static void __exit cleanup_mpc83xx_mtd(void)
++{
++	if (mymtd) {
++		del_mtd_device(mymtd);
++		map_destroy(mymtd);
++	}
++	if (mpc83xx_map.virt) {
++		iounmap((void *)mpc83xx_map.virt);
++		mpc83xx_map.virt = 0;
++	}
++}
++
++module_init(init_mpc83xx_mtd);
++module_exit(cleanup_mpc83xx_mtd);
++
++MODULE_AUTHOR("FSL");
++MODULE_DESCRIPTION("MTD map driver for Freescale MPC83xx board");
++MODULE_LICENSE("GPL");
