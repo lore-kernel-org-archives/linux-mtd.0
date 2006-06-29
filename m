@@ -1,29 +1,18 @@
-Received: from de01egw01.freescale.net ([192.88.165.102])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FvijK-0005fV-RF
-	for linux-mtd@lists.infradead.org; Wed, 28 Jun 2006 18:42:15 -0400
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by de01egw01.freescale.net (8.12.11/de01egw01) with ESMTP id
-	k5SFe8HT004850 for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Jun 2006 09:40:08 -0600 (MDT)
-Received: from zch01exm40.ap.freescale.net (zch01exm40.ap.freescale.net
-	[10.192.130.11])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id k5SEN9hv029736
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Jun 2006 09:23:11 -0500 (CDT)
-Message-ID: <9FCDBA58F226D911B202000BDBAD467306E04FD3@zch01exm40.ap.freescale.net>
-From: Li Yang-r58472 <LeoLi@freescale.com>
-To: "'dwmw2@infradead.org'" <dwmw2@infradead.org>
-Subject: [PATCH 2/7] mtd: Add map file for mpc83xx boards
-Date: Wed, 28 Jun 2006 22:23:08 +0800
-MIME-Version: 1.0
-Content-Type: text/plain
-Cc: Phillips Kim-R1AAHA <Kim.Phillips@freescale.com>,
-	Yin Olivia-r63875 <Hong-Hua.Yin@freescale.com>,
-	"'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
-	linuxppc-dev@ozlabs.org,
-	"'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>,
-	Chu hanjin-r52514 <Hanjin.Chu@freescale.com>
+Received: from xenotime.net ([66.160.160.81])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FvoPS-0008TV-UM
+	for linux-mtd@lists.infradead.org; Thu, 29 Jun 2006 00:46:01 -0400
+Received: from midway.site ([71.245.108.25]) by xenotime.net for
+	<linux-mtd@lists.infradead.org>; Wed, 28 Jun 2006 21:45:39 -0700
+Date: Wed, 28 Jun 2006 21:48:27 -0700
+From: "Randy.Dunlap" <rdunlap@xenotime.net>
+To: lkml <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] MTD: fix all kernel-doc warnings
+Message-Id: <20060628214827.c8a189c6.rdunlap@xenotime.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: akpm <akpm@osdl.org>, linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,199 +22,187 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Flash mapping file for MPC83xx MDS platforms.
+From: Randy Dunlap <rdunlap@xenotime.net>
 
-Signed-off-by: Yin Olivia <hong-hua.yin@freescale.com>
-Signed-off-by: Li Yang <leoli@freescale.com>
-Signed-off-by: Kim Phillips <kim.phillips@freescale.com>
+Fix all kernel-doc warnings in MTD headers and source files:
+- add some missing struct fields;
+- correct some function parameter names;
+- use kernel-doc format for function doc. headers;
+- nand_ecc.c contains only exported interfaces, no internal ones;
+
+
+Signed-off-by: Randy Dunlap <rdunlap@xenotime.net>
+---
+ Documentation/DocBook/mtdnand.tmpl |    4 +++-
+ drivers/mtd/nand/nand_base.c       |   16 ++++++++--------
+ drivers/mtd/nand/nand_ecc.c        |    3 +--
+ include/linux/mtd/nand.h           |   13 ++++++++++---
+ 4 files changed, 22 insertions(+), 14 deletions(-)
+
+--- linux-2617-g13.orig/include/linux/mtd/nand.h
++++ linux-2617-g13/include/linux/mtd/nand.h
+@@ -202,7 +202,7 @@ typedef enum {
+ struct nand_chip;
+ 
+ /**
+- * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independend devices
++ * struct nand_hw_control - Control structure for hardware controller (e.g ECC generator) shared among independent devices
+  * @lock:               protection lock
+  * @active:		the mtd device which holds the controller currently
+  * @wq:			wait queue to sleep on if a NAND operation is in progress
+@@ -223,12 +223,15 @@ struct nand_hw_control {
+  * @total:	total number of ecc bytes per page
+  * @prepad:	padding information for syndrome based ecc generators
+  * @postpad:	padding information for syndrome based ecc generators
++ * @layout:	ECC layout control struct pointer
+  * @hwctl:	function to control hardware ecc generator. Must only
+  *		be provided if an hardware ECC is available
+  * @calculate:	function for ecc calculation or readback from ecc hardware
+  * @correct:	function for ecc correction, matching to ecc generator (sw/hw)
+  * @read_page:	function to read a page according to the ecc generator requirements
+  * @write_page:	function to write a page according to the ecc generator requirements
++ * @read_oob:	function to read chip OOB data
++ * @write_oob:	function to write chip OOB data
+  */
+ struct nand_ecc_ctrl {
+ 	nand_ecc_modes_t	mode;
+@@ -300,11 +303,15 @@ struct nand_buffers {
+  * @cmdfunc:		[REPLACEABLE] hardwarespecific function for writing commands to the chip
+  * @waitfunc:		[REPLACEABLE] hardwarespecific function for wait on ready
+  * @ecc:		[BOARDSPECIFIC] ecc control ctructure
++ * @buffers:		buffer structure for read/write
++ * @hwcontrol:		platform-specific hardware control structure
++ * @ops:		oob operation operands
+  * @erase_cmd:		[INTERN] erase command write function, selectable due to AND support
+  * @scan_bbt:		[REPLACEABLE] function to scan bad block table
+  * @chip_delay:		[BOARDSPECIFIC] chip dependent delay for transfering data from array to read regs (tR)
+  * @wq:			[INTERN] wait queue to sleep on if a NAND operation is in progress
+  * @state:		[INTERN] the current state of the NAND device
++ * @oob_poi:		poison value buffer
+  * @page_shift:		[INTERN] number of address bits in a page (column address bits)
+  * @phys_erase_shift:	[INTERN] number of address bits in a physical eraseblock
+  * @bbt_erase_shift:	[INTERN] number of address bits in a bbt entry
+@@ -521,7 +528,7 @@ extern int nand_do_read(struct mtd_info 
+  * struct platform_nand_chip - chip level device structure
+  *
+  * @nr_chips:		max. number of chips to scan for
+- * @chip_offs:		chip number offset
++ * @chip_offset:	chip number offset
+  * @nr_partitions:	number of partitions pointed to by partitions (or zero)
+  * @partitions:		mtd partition list
+  * @chip_delay:		R/B delay value in us
+@@ -546,7 +553,7 @@ struct platform_nand_chip {
+  * @hwcontrol:		platform specific hardware control structure
+  * @dev_ready:		platform specific function to read ready/busy pin
+  * @select_chip:	platform specific chip select function
+- * @priv_data:		private data to transport driver specific settings
++ * @priv:		private data to transport driver specific settings
+  *
+  * All fields are optional and depend on the hardware driver requirements
+  */
+--- linux-2617-g13.orig/drivers/mtd/nand/nand_base.c
++++ linux-2617-g13/drivers/mtd/nand/nand_base.c
+@@ -155,7 +155,7 @@ static u16 nand_read_word(struct mtd_inf
+ /**
+  * nand_select_chip - [DEFAULT] control CE line
+  * @mtd:	MTD device structure
+- * @chip:	chipnumber to select, -1 for deselect
++ * @chipnr:	chipnumber to select, -1 for deselect
+  *
+  * Default select function for 1 chip devices.
+  */
+@@ -542,7 +542,6 @@ static void nand_command(struct mtd_info
+  * Send command to NAND device. This is the version for the new large page
+  * devices We dont have the separate regions as we have in the small page
+  * devices.  We must emulate NAND_CMD_READOOB to keep the code compatible.
+- *
+  */
+ static void nand_command_lp(struct mtd_info *mtd, unsigned int command,
+ 			    int column, int page_addr)
+@@ -656,7 +655,7 @@ static void nand_command_lp(struct mtd_i
+ 
+ /**
+  * nand_get_device - [GENERIC] Get chip for selected access
+- * @this:	the nand chip descriptor
++ * @chip:	the nand chip descriptor
+  * @mtd:	MTD device structure
+  * @new_state:	the state which is requested
+  *
+@@ -696,13 +695,12 @@ nand_get_device(struct nand_chip *chip, 
+ /**
+  * nand_wait - [DEFAULT]  wait until the command is done
+  * @mtd:	MTD device structure
+- * @this:	NAND chip structure
++ * @chip:	NAND chip structure
+  *
+  * Wait for command done. This applies to erase and program only
+  * Erase can take up to 400ms and program up to 20ms according to
+  * general NAND and SmartMedia specs
+- *
+-*/
++ */
+ static int nand_wait(struct mtd_info *mtd, struct nand_chip *chip)
+ {
+ 
+@@ -896,6 +894,7 @@ static int nand_read_page_syndrome(struc
+ /**
+  * nand_transfer_oob - [Internal] Transfer oob to client buffer
+  * @chip:	nand chip structure
++ * @oob:	oob destination address
+  * @ops:	oob ops structure
+  */
+ static uint8_t *nand_transfer_oob(struct nand_chip *chip, uint8_t *oob,
+@@ -946,6 +945,7 @@ static uint8_t *nand_transfer_oob(struct
+  *
+  * @mtd:	MTD device structure
+  * @from:	offset to read from
++ * @ops:	oob ops structure
+  *
+  * Internal function. Called with chip held.
+  */
+@@ -1760,7 +1760,7 @@ static int nand_do_write_oob(struct mtd_
+ /**
+  * nand_write_oob - [MTD Interface] NAND write data and/or out-of-band
+  * @mtd:	MTD device structure
+- * @from:	offset to read from
++ * @to:		offset to write to
+  * @ops:	oob operation description structure
+  */
+ static int nand_write_oob(struct mtd_info *mtd, loff_t to,
+@@ -2055,7 +2055,7 @@ static void nand_sync(struct mtd_info *m
+ /**
+  * nand_block_isbad - [MTD Interface] Check if block at offset is bad
+  * @mtd:	MTD device structure
+- * @ofs:	offset relative to mtd start
++ * @offs:	offset relative to mtd start
+  */
+ static int nand_block_isbad(struct mtd_info *mtd, loff_t offs)
+ {
+--- linux-2617-g13.orig/drivers/mtd/nand/nand_ecc.c
++++ linux-2617-g13/drivers/mtd/nand/nand_ecc.c
+@@ -65,8 +65,7 @@ static const u_char nand_ecc_precalc_tab
+ };
+ 
+ /**
+- * nand_calculate_ecc - [NAND Interface] Calculate 3 byte ECC code
+- *			for 256 byte block
++ * nand_calculate_ecc - [NAND Interface] Calculate 3-byte ECC for 256-byte block
+  * @mtd:	MTD block structure
+  * @dat:	raw data
+  * @ecc_code:	buffer for ECC
+--- linux-2617-g13.orig/Documentation/DocBook/mtdnand.tmpl
++++ linux-2617-g13/Documentation/DocBook/mtdnand.tmpl
+@@ -1295,7 +1295,9 @@ in this page</entry>
+      </para>
+ !Idrivers/mtd/nand/nand_base.c
+ !Idrivers/mtd/nand/nand_bbt.c
+-!Idrivers/mtd/nand/nand_ecc.c
++<!-- No internal functions for kernel-doc:
++X!Idrivers/mtd/nand/nand_ecc.c
++-->
+   </chapter>
+ 
+   <chapter id="credits">
+
 
 ---
- drivers/mtd/maps/Kconfig         |    6 +
- drivers/mtd/maps/Makefile        |    1 
- drivers/mtd/maps/mpc83xx_flash.c |  154 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 161 insertions(+), 0 deletions(-)
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index 7abd7fe..eac049e 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -631,5 +631,11 @@ config MTD_PLATRAM
- 
- 	  This selection automatically selects the map_ram driver.
- 
-+config MTD_MPC83xx
-+	tristate "CFI Flash device map on MPC83xx MDS support"
-+	depends on 83xx && MTD_CFI && MTD_PARTITIONS
-+	help
-+	  Freescale MPC83xx board uses CFI compliant flash.
-+
- endmenu
- 
-diff --git a/drivers/mtd/maps/Makefile b/drivers/mtd/maps/Makefile
-index ab71f17..f0f8afd 100644
---- a/drivers/mtd/maps/Makefile
-+++ b/drivers/mtd/maps/Makefile
-@@ -71,3 +71,4 @@ obj-$(CONFIG_MTD_PLATRAM)	+= plat-ram.o
- obj-$(CONFIG_MTD_OMAP_NOR)	+= omap_nor.o
- obj-$(CONFIG_MTD_MTX1)		+= mtx-1_flash.o
- obj-$(CONFIG_MTD_TQM834x)	+= tqm834x.o
-+obj-$(CONFIG_MTD_MPC83xx)	+= mpc83xx_flash.o
-diff --git a/drivers/mtd/maps/mpc83xx_flash.c b/drivers/mtd/maps/mpc83xx_flash.c
-new file mode 100644
-index 0000000..84f058a
---- /dev/null
-+++ b/drivers/mtd/maps/mpc83xx_flash.c
-@@ -0,0 +1,154 @@
-+/*
-+ * Handle mapping of the flash on MPC83xx board
-+ *
-+ * Copyright (C) 2005 Freescale semicondutor
-+ * 
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/types.h>
-+#include <linux/kernel.h>
-+#include <asm/io.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/map.h>
-+#include <linux/mtd/partitions.h>
-+
-+
-+/* MPC8349MDS flash layout 
-+ * 0 : 0xFE00 0000 - 0xFE01 FFFF : HRCW (128KB)
-+ * 1 : 0xFE02 0000 - 0xFE5F FFFF : JFFS2 file system (5.875MB)
-+ * 2 : 0xFE60 0000 - 0xFE6F FFFF : Kernel (1MB)
-+ * 3 : 0xFE70 0000 - 0xFE7F FFFF : U-Boot (1MB)
-+ */
-+#ifdef CONFIG_MPC834x
-+#define WINDOW_ADDR 0xFE000000
-+#define WINDOW_SIZE 0x00800000
-+#endif
-+
-+/* MPC8360EPB flash layout 
-+ * 0 : 0xFE00 0000 - 0xFE01 FFFF : HRCW (128KB)
-+ * 1 : 0xFE02 0000 - 0xFE8F FFFF : JFFS2 file system (8.875MB)
-+ * 2 : 0xFE90 0000 - 0xFECF FFFF : Ramdisk file system (4MB)
-+ * 3 : 0xFED0 0000 - 0xFEEF FFFF : Kernel (2MB)
-+ * 4 : 0xFEF0 0000 - 0xFEFF FFFF : U-Boot (1MB)
-+ */
-+#ifdef CONFIG_MPC8360E_PB
-+#define WINDOW_ADDR 0xFE000000
-+#define WINDOW_SIZE 0x01000000
-+#endif
-+
-+/* partition_info gives details on the logical partitions that the split the
-+ * single flash device into. If the size if zero we use up to the end of the
-+ * device. */
-+static struct mtd_partition partition_info[]={
-+	{
-+		.name		= "HRCW",
-+		.offset 	= 0,
-+		.size		= 0x020000,
-+		.mask_flags	= MTD_WRITEABLE
-+	},
-+	{
-+		.name		= "JFFS2",
-+		.offset		= MTDPART_OFS_APPEND,
-+#ifdef CONFIG_MPC834x
-+		.size		= 0x5E0000
-+#endif
-+#ifdef CONFIG_MPC8360E_PB
-+		.size		= 0x8E0000
-+#endif
-+	},
-+#ifdef CONFIG_MPC8360E_PB
-+	{
-+		.name           = "Ramdisk",
-+		.offset         = MTDPART_OFS_APPEND,
-+		.size           = 0x400000
-+	},
-+#endif
-+	{
-+		.name		= "Kernel",
-+		.offset		= MTDPART_OFS_APPEND,
-+#ifdef CONFIG_MPC834x
-+		.size		= 0x100000
-+#endif
-+#ifdef CONFIG_MPC8360E_PB
-+		.size		= 0x200000
-+#endif
-+	},
-+	{
-+		.name		= "U-Boot",
-+		.offset		= MTDPART_OFS_APPEND,
-+		.size		= 0x100000,
-+		.mask_flags	= MTD_WRITEABLE
-+    }
-+};
-+
-+#define PARTITION_NUM (sizeof(partition_info)/sizeof(struct mtd_partition))
-+
-+static struct mtd_info *mymtd;
-+
-+
-+struct map_info mpc83xx_map = {
-+#ifdef CONFIG_MPC834x
-+	.name		= "MPC8349MDS Flash Map Info",
-+#endif
-+#ifdef CONFIG_MPC8360E_PB
-+	.name		= "MPC8360E PB Flash Map Info",
-+#endif
-+	.size		= WINDOW_SIZE,
-+	.phys		= WINDOW_ADDR,
-+	.bankwidth	= 2,
-+};
-+
-+int __init init_mpc83xx_mtd(void)
-+{
-+	char *board;
-+#ifdef CONFIG_MPC834x
-+	board = "MPC8349MDS";
-+#endif
-+#ifdef CONFIG_MPC8360E_PB
-+	board = "MPC8360E PB"; 
-+#endif
-+	printk(KERN_NOTICE "%s flash device: %x at %x Partition number %d\n",
-+			board,WINDOW_SIZE, WINDOW_ADDR, PARTITION_NUM);
-+	mpc83xx_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
-+
-+	if (!mpc83xx_map.virt) {
-+		printk("Failed to ioremap\n");
-+		return -EIO;
-+	}
-+	simple_map_init(&mpc83xx_map);
-+	
-+	mymtd = do_map_probe("cfi_probe", &mpc83xx_map);
-+	if (mymtd) {
-+		mymtd->owner = THIS_MODULE;
-+                add_mtd_partitions(mymtd, partition_info, PARTITION_NUM);
-+		printk(KERN_NOTICE "%s flash device initialized\n", board);
-+		return 0;
-+	}
-+
-+	iounmap((void *)mpc83xx_map.virt);
-+	return -ENXIO;
-+}
-+
-+static void __exit cleanup_mpc83xx_mtd(void)
-+{
-+	if (mymtd) {
-+		del_mtd_device(mymtd);
-+		map_destroy(mymtd);
-+	}
-+	if (mpc83xx_map.virt) {
-+		iounmap((void *)mpc83xx_map.virt);
-+		mpc83xx_map.virt = 0;
-+	}
-+}
-+
-+module_init(init_mpc83xx_mtd);
-+module_exit(cleanup_mpc83xx_mtd);
-+
-+MODULE_AUTHOR("FSL");
-+MODULE_DESCRIPTION("MTD map driver for Freescale MPC83xx board");
-+MODULE_LICENSE("GPL");
