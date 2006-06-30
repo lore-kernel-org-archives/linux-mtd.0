@@ -1,27 +1,32 @@
-Received: from nf-out-0910.google.com ([64.233.182.188])
+Received: from node3.inaccessnetworks.com ([212.205.200.118]
+	helo=inaccessnetworks.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FwH1M-0001SK-2W
-	for linux-mtd@lists.infradead.org; Fri, 30 Jun 2006 07:18:53 -0400
-Received: by nf-out-0910.google.com with SMTP id d4so223478nfe
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 30 Jun 2006 04:18:43 -0700 (PDT)
-Message-ID: <fe810cf0606300418o797e889fu38755c9d9aa34d64@mail.gmail.com>
-Date: Fri, 30 Jun 2006 15:18:43 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@wohnheim.fh-wedel.de>
-Subject: Re: JFFS2 wbuf non-contiguous write bug
-In-Reply-To: <20060629150701.GB29253@wohnheim.fh-wedel.de>
+	id 1FwI9s-0002Bt-6R
+	for linux-mtd@lists.infradead.org; Fri, 30 Jun 2006 08:31:51 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by inaccessnetworks.com (8.13.6/8.13.5) with ESMTP id k5UCVbvp009103
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2006 15:31:37 +0300
+Received: from inaccessnetworks.com ([127.0.0.1])
+	by localhost (host11.inaccessnetworks.com [127.0.0.1]) (amavisd-new,
+	port 10024)
+	with LMTP id 08576-12 for <linux-mtd@lists.infradead.org>;
+	Fri, 30 Jun 2006 15:31:37 +0300 (EEST)
+Received: from priv.inaccessnetworks.com (orion.priv.inaccessnetworks.com
+	[192.168.1.2])
+	by inaccessnetworks.com (8.13.6/8.13.5) with ESMTP id k5UCVbLD009098
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2006 15:31:37 +0300
+Received: from [192.168.1.3] (draco.priv.inaccessnetworks.com [192.168.1.3])
+	by priv.inaccessnetworks.com (8.12.1/8.12.1) with ESMTP id
+	k5UCVaBJ002760
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Jun 2006 15:31:36 +0300
+Message-ID: <44A519A8.4030800@inaccessnetworks.com>
+Date: Fri, 30 Jun 2006 15:31:36 +0300
+From: Angelos Manousarides <amanous@inaccessnetworks.com>
 MIME-Version: 1.0
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Subject: MTD device with multiple regions & JFFS2
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <fe810cf0606290500h54295e34jbb018a5346dceb6a@mail.gmail.com>
-	<20060629124433.GA19237@wohnheim.fh-wedel.de>
-	<fe810cf0606290741r2b1de379mc0ba49c2aa336757@mail.gmail.com>
-	<625fc13d0606290746x1c8bff28j96769da31e5bc3f3@mail.gmail.com>
-	<20060629150701.GB29253@wohnheim.fh-wedel.de>
-Cc: Josh Boyer <jwboyer@gmail.com>,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +36,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/29/06, J=F6rn Engel <joern@wohnheim.fh-wedel.de> wrote:
->
-> Next question is: does the check against sibley/nor_ecc make sense?
-> Would the code hurt anyone if it was enabled for nand and dataflash as
-> well?
->
+I have a system with intel P30 flash chips, which have 2 erase regions. 
+The system can have either 2 flash chips in one bank or 4 flash chips in 
+2 banks. I am using mtdconcat to join the two devices and have unified 
+access. I have a problem with the multiple erase sizes. The chips are of 
+"top" type which means that the last sectors have a smaller block size 
+than the others.
 
-It seems the following patch (with unconditional wbuf fixup) works
-with both Sibley and NAND. At least holey.c test passed.
+The code in mtdconcat does transfer the region info to the resulting 
+device, I see a mtd device with 2 (or 4 regions). The partitioning code 
+however does not. "numeraseregions" is 0 and "erasesize" is only used.
 
+While I was trying to fix the code in mtdpart.c, I discovered that this 
+is futile. The JFFS2 code does not seem to support this as well. Only 
+the "erasesize" is used there also. Does that mean that I cannot have a 
+JFFS2 filesystem that spans across multiple block size flash space?
 
-Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
-
-diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
---- a/fs/jffs2/wbuf.c=092006-06-29 12:28:33.000000000 +0400
-+++ b/fs/jffs2/wbuf.c=092006-06-30 11:45:33.000000000 +0400
-@@ -754,6 +754,13 @@
- =09=09memset(c->wbuf,0xff,c->wbuf_pagesize);
- =09}
-
-+=09/* Fixup the wbuf if we are moving to a new eraseblock */
-+=09if (((c->wbuf_ofs % c->sector_size) =3D=3D 0) && !c->wbuf_len) {
-+=09=09c->wbuf_ofs =3D PAGE_DIV(to);
-+=09=09c->wbuf_len =3D PAGE_MOD(to);
-+=09=09memset(c->wbuf,0xff,c->wbuf_pagesize);
-+=09}
-+
- =09/*
- =09 * Sanity checks on target address.  It's permitted to write
- =09 * at PAD(c->wbuf_len+c->wbuf_ofs), and it's permitted to
+--
+Angelos Manousaridis
