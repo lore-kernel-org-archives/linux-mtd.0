@@ -1,18 +1,22 @@
-Received: from lilzmailso01.liwest.at ([212.33.55.23])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fxmgu-0003FI-4X
-	for linux-mtd@lists.infradead.org; Tue, 04 Jul 2006 11:20:24 -0400
-Received: from cm49-137.liwest.at ([212.33.49.137] helo=soft.uni-linz.ac.at)
-	by lilzmailso01.liwest.at with esmtp (Exim 4.44) id 1Fxmgk-0002nW-44
-	for linux-mtd@lists.infradead.org; Tue, 04 Jul 2006 17:19:46 +0200
-Message-ID: <44AA8646.4060306@soft.uni-linz.ac.at>
-Date: Tue, 04 Jul 2006 17:16:22 +0200
-From: Simon Vogl <vogl@soft.uni-linz.ac.at>
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fxpqb-000507-IT
+	for linux-mtd@lists.infradead.org; Tue, 04 Jul 2006 14:42:15 -0400
+Received: from [206.15.76.194] (HELO RudiDell)
+	by hheld.com (CommuniGate Pro SMTP 4.3.7)
+	with ESMTPS id 793630 for linux-mtd@lists.infradead.org;
+	Tue, 04 Jul 2006 11:39:39 -0700
+From: "David Byron" <dbyron@hheld.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: CFI info for Atmel AT49BV322A
+Date: Tue, 4 Jul 2006 11:39:17 -0700
+Message-ID: <001301c69f99$28e53340$a134800a@RudiDell>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: pxa271 p30 troubles
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,104 +26,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I have troubles with a pxa271 module that has an on-chip internal flash 
-chip.
-I can read teh flash in principle, via u-boot, and my kernel (2.6.17.1) 
-reads
-_mostly_ the right data, but at some point when mounting the root 
-filesystem,
-jffs2 runs havoc because the data is corrupted:
+I think the code for processing the extended query info for the Atmel
+AT49BV322A doesn't match what the chip provides.  I'm not sure this is a =
+big
+deal, but it's the first thing I found when looking into what I think is
+confusion over sector erase size.  The datasheet for the chip is here:
 
-[42949373.460000] Creating 5 MTD partitions on "PXA 270 flash":
-[42949373.470000] 0x00000000-0x00040000 : "Bootloader"
-[42949373.470000] mtd: Giving out device 0 to Bootloader
-[42949373.480000] 0x00040000-0x00080000 : "Environment"
-[42949373.490000] mtd: Giving out device 1 to Environment
-[42949373.490000] 0x00080000-0x00200000 : "Kernel"
-[42949373.500000] mtd: Giving out device 2 to Kernel
-[42949373.500000] 0x00200000-0x00500000 : "initrd"
-[42949373.500000] mtd: Giving out device 3 to initrd
-[42949373.510000] 0x00500000-0x02000000 : "jffs"
-[42949373.510000] mtd: Giving out device 4 to jffs
-[42949373.520000] added %ret partitions
-[42949373.520000] jffs2_get_sb(): dev_name "/dev/root"
-[42949373.530000] jffs2_get_sb(): path_lookup() returned 0, inode c02294b4
-[42949373.530000] jffs2_get_sb_mtd(): New superblock for device 4 ("jffs")
-[42949373.540000] [JFFS2 DBG] (1) jffs2_build_filesystem: build FS data 
-structures
-[42949373.550000] jffs2_scan_eraseblock(): Scanning block at 0x0
-[42949373.550000] [JFFS2 DBG] (1) jffs2_scan_eraseblock: no summary 
-found in jeb 0x00000000. Apply original scan.
-[42949373.560000] Unknown but compatible feature node (0x2005) found at 
-offset 0x00000000
-[42949373.570000] jffs2_scan_dirent_node(): Node at 0x00000018
-[42949373.580000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c02313c8 (ino #1)
-[42949373.580000] [JFFS2 DBG] (1) jffs2_add_fd_to_list: add dirent 
-"bin", ino #2
-[42949373.590000] jffs2_scan_inode_node(): Node at 0x00000044
-[42949373.600000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c02313b0 (ino #2)
-[42949373.600000] Node is ino #2, version 1. Range 0x0-0x0
-[42949373.610000] jffs2_scan_dirent_node(): Node at 0x00000088
-[42949373.620000] [JFFS2 DBG] (1) jffs2_add_fd_to_list: add dirent 
-"boot", ino #3
-[42949373.620000] jffs2_scan_inode_node(): Node at 0x000000b4
-[42949373.630000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c0231398 (ino #3)
-[42949373.630000] Node is ino #3, version 1. Range 0x0-0x0
-[42949373.640000] jffs2_scan_dirent_node(): Node at 0x000000f8
-[42949373.650000] [JFFS2 DBG] (1) jffs2_add_fd_to_list: add dirent 
-"dev", ino #4
-[42949373.650000] jffs2_scan_inode_node(): Node at 0x00000124
-[42949373.660000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c0231380 (ino #4)
-[42949373.660000] Node is ino #4, version 1. Range 0x0-0x0
-[42949373.670000] jffs2_scan_dirent_node(): Node at 0x00000168
-...... [which seems to be okay, but then:]
-[42949374.060000] Node is ino #17, version 1. Range 0x0-0xe
-[42949374.070000] jffs2_scan_dirent_node(): Node at 0x00000744
-[42949374.070000] [JFFS2 DBG] (1) jffs2_add_fd_to_list: add dirent 
-"ash", ino #18
-[42949374.080000] jffs2_scan_inode_node(): Node at 0x00000770
-[42949374.080000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c0231950 (ino 
-#18)
-[42949374.090000] Node is ino #18, version 1. Range 0x0-0x7
-[42949374.100000] jffs2_scan_dirent_node(): Node at 0x000007bc
-[42949374.100000] [JFFS2 DBG] (1) jffs2_add_fd_to_list: add dirent 
-"busybox", ino #19
-[42949374.110000] jffs2_scan_inode_node(): Node at 0x000007ec
-[42949374.110000] [JFFS2 DBG] (1) jffs2_add_ino_cache: add c0231938 (ino 
-#19)
-[42949374.120000] Node is ino #19, version 1. Range 0x0-0x1000
-[42949374.130000] jffs2_scan_inode_node(): Node at 0x00000c80
-[42949374.130000] Node is ino #19, version 2. Range 0x1000-0x2000
-[42949374.140000] jffs2_scan_inode_node(): Node at 0x000013a0
-[42949374.140000] Node is ino #19, version 3. Range 0x2000-0x3000
-[42949374.150000] jffs2_scan_inode_node(): Node at 0x00001c28
-[42949374.150000] Node is ino #19, version 4. Range 0x3000-0x4000
-[42949374.160000] jffs2_scan_inode_node(): Node at 0x000023b4
-[42949374.170000] Node is ino #19, version 5. Range 0x4000-0x5000
-[42949374.170000] jffs2_scan_inode_node(): Node at 0x00002718
-[42949374.180000] Node is ino #19, version 6. Range 0x5000-0x6000
-[42949374.180000] jffs2_scan_inode_node(): Node at 0x000031d8
-[42949374.190000] Node is ino #19, version 7. Range 0x6000-0x7000
-[42949374.190000] jffs2_scan_inode_node(): Node at 0x00003d88
-[42949374.200000] Node is ino #19, version 8. Range 0x7000-0x8000
-[42949374.210000] jffs2_scan_inode_node(): Node at 0x00004924
-[42949374.210000] Node is ino #19, version 9. Range 0x8000-0x9000
-[42949374.220000] jffs2_scan_inode_node(): Node at 0x0000543c
-[42949374.220000] Node is ino #19, version 10. Range 0x9000-0xa000
-[42949374.230000] jffs2_scan_inode_node(): Node at 0x00005f78
-[42949374.230000] Node is ino #19, version 11. Range 0xa000-0xb000
-[42949374.240000] jffs2_scan_inode_node(): Node at 0x00006b48
-[42949374.240000] Node is ino #19, version 12. Range 0xb000-0xc000
-.... running up to version >150, then it recovers on one of the next 
-sectors,
-but the behavior repeats until finished, whereupon the kernel can't find
-/sbin/init and panics.
-Anyone had a similar experience?
-Could it be a hardware/timing issue? [the driver works on our second
-board, which is a PXA270 with external p30 flash, the only difference is 
-that
-the pxa271 uses a 16bit memory interface, and I use a really slooooow timing
-for bus access].
+http://www.atmel.com/dyn/resources/prod_documents/doc3308.pdf
 
-Simon
+Here's what I see:
+
+- The first 8 sectors are 8K each
+- The next 63 sectors are 64K each
+- There's support for this chip in jedec_probe (manufacturer 0x1F, =
+device id
+0xC8) with the correct erase layout
+- I can only detect the chip using cfi
+
+Here's the CFI info I see:
+
+Number of erase regions: 2
+Primary Vendor Command Set: 0002 (AMD/Fujitsu Standard)
+Primary Algorithm Table at 0041
+Alternative Vendor Command Set: 0000 (None)
+No Alternate Algorithm Table
+Vcc Minimum:  2.7 V
+Vcc Maximum:  3.6 V
+Vpp Minimum: 11.5 V
+Vpp Maximum: 12.5 V
+Typical byte/word write timeout: 16 =B5s
+Maximum byte/word write timeout: 256 =B5s
+Full buffer write not supported
+Typical block erase timeout: 1024 ms
+Maximum block erase timeout: 4096 ms
+Typical chip erase timeout: 65536 ms
+Maximum chip erase timeout: 262144 ms
+Device size: 0x400000 bytes (4 MiB)
+Flash Device Interface description: 0x0002
+  - supports x8 and x16 via BYTE# with asynchronous interface
+Max. bytes in buffer write: 0x1
+Number of Erase Block Regions: 2
+  Erase Region #0: BlockSize 0x10000 bytes, 63 blocks
+  Erase Region #1: BlockSize 0x2000 bytes, 8 blocks
+
+which all looks correct.  The extended query info:
+
+ Amd/Fujitsu Extended Query Table at 0x0041 (16 bytes)
+  Silicon revision: 67
+  Address sensitive unlock: Not required
+  Erase Suspend: Read only
+  Block protection: Not supported
+  Temporary block unprotect: Not supported
+  Block protect/unprotect scheme: 128
+  Number of simultaneous operations: 3
+  Burst mode: Supported
+  Page mode: 1020 word page
+  Vpp Supply Minimum Program/Erase Voltage: 15.15 V
+  Vpp Supply Maximum Program/Erase Voltage: 15.15 V
+  Top/Bottom Boot Block: Unknown value 255
+phys_mapped_flash: CFI does not contain boot bank location. Assuming =
+top.
+number of CFI chips: 1
+cfi_amdstd_setup: 2 erase regions
+0: offset=3D0x0,size=3D0x10000,blocks=3D63
+1: offset=3D0x3f0000,size=3D0x2000,blocks=3D8
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+
+Doesn't seem right.  This chip doesn't provide silicon revision (see =
+page 28
+of the data sheet).  Also, it seems like the erase regions don't have =
+the
+correct offset....I think region 0 (with 63 64k blocks) should have =
+offset
+0x10000 and region 1 should have offset 0 since the little blocks begin =
+the
+chip.  Looking at the info in CFI, I'm not sure how the software is =
+supposed
+to figure that out.
+
+My real cause for concern comes with the physmap partition code.  The =
+option
+I give to the kernel is:
+
+mtdparts=3Dphys_mapped_flash:128K(u-boot),64K(boot-params),-(kernel)
+
+In other words, the first partition contains the 8 8k sectors and 1 64K
+sector.  I didn't decide to organize it like this, but for now this is =
+it.
+
+I added some extra debug to mtdpart.c and now I see this:
+
+Creating 3 MTD partitions on "phys_mapped_flash":
+add_mtd_partitions: master mtd_info numeraseregions is 2
+0x00000000-0x00020000 : "u-boot"
+add_mtd_partitions: multiple erase regions
+add_mtd_partitions: partition 0: first erase region is 1 (size 8192)
+add_mtd_partitions: erase size 65536
+add_mtd_partitions: numeraseregions 0
+0x00020000-0x00030000 : "boot-params"
+add_mtd_partitions: multiple erase regions
+add_mtd_partitions: partition 1: first erase region is 1 (size 8192)
+add_mtd_partitions: erase size 65536
+add_mtd_partitions: numeraseregions 0
+0x00030000-0x00400000 : "kernel"
+add_mtd_partitions: multiple erase regions
+add_mtd_partitions: partition 2: first erase region is 1 (size 8192)
+add_mtd_partitions: erase size 65536
+add_mtd_partitions: numeraseregions 0
+
+Seems like the erase size for the u-boot partition isn't correct since =
+part
+of is 8192 and part is 65536.  I haven't tried erasing it just yet since =
+I
+don't want to torch the bootloader unless I'm pretty sure it's going to
+work.
+
+Is this just a matter of adding/fixing some logic in add_mtd_partitions? =
+ If
+I fix the way the cfi extended query works, will that somehow let the =
+code
+figure out the right thing?  If that's the way forward, should I declare
+another packed structure in include/linux/mtd/cfi.h and then use it when =
+the
+device id matches?
+
+Thanks for your help.
+
+-DB
