@@ -1,21 +1,19 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
+Received: from h062040172167.moe.cm.kabsi.at ([62.40.172.167]
+	helo=quake.thinstuff.com)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fy2Di-0004NK-AL
-	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 03:55:05 -0400
-Subject: Re: kernel command line arguments for block2mtd do not work
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+	id 1Fy2Vc-0004ry-KG
+	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 04:13:35 -0400
+Message-ID: <44AB6EFA.9000604@thinstuff.com>
+Date: Wed, 05 Jul 2006 09:49:14 +0200
+From: Norbert Federa <nfedera@thinstuff.com>
+MIME-Version: 1.0
 To: vherva@vianova.fi
-In-Reply-To: <20060705071340.GN6240@vianova.fi>
-References: <20060704143836.GA5104@vianova.fi>
-	<1152082335.4825.2.camel@sauron.oktetlabs.ru>
-	<20060705070509.GB15078@vianova.fi> <20060705071340.GN6240@vianova.fi>
-Content-Type: text/plain
-Date: Wed, 05 Jul 2006 11:21:48 +0400
-Message-Id: <1152084108.4825.10.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
+Subject: Re: block2mtd: Overrun end of disk in cache readahead
+References: <20060705072614.GQ6240@vianova.fi>
+In-Reply-To: <20060705072614.GQ6240@vianova.fi>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-07-05 at 10:13 +0300, Ville Herva wrote:
-> What do you think?
+Ville,
+Try changing the PAGE_READAHEAD define in
+/drivers/mtd/devices/block2mtd.c from 64 to 0:
 
-Probably, I have not time to delve into this, sorry. I just wanted to
-say that the sad truth of life is that you'll barely be heard with
-lengthy mails like this (my experience shows this) unless you make a
-patch, test it, then bug this mailing list with it :-)
+-#define PAGE_READAHEAD 64
++#define PAGE_READAHEAD 0
+
+Or a bit more sophisticated:
+
+in drivers/mtd/devices/Kconfig ...
+
++config MTD_BLOCK2MTD_PAGE_READAHEAD
++    int "How many pages block2mtd reads ahead"
++    depends on MTD_BLOCK2MTD
++    default "64"
++    help
++      This allows you to configure the PAGE_READAHEAD value of the
++      MTD_BLOCK2MTD driver.
++
+
+... and in drivers/mtd/devices/block2mtd.c
+
+-#define PAGE_READAHEAD 64
++#define PAGE_READAHEAD CONFIG_MTD_BLOCK2MTD_PAGE_READAHEAD
 
 -- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Norbert
+
+
+Ville Herva wrote:
+> I get 
+> 	block2mtd: Overrun end of disk in cache readahead
+>
+> each time I mount a JFFS2 created with
+>
+> 	mkfs.jffs2 -o IMAGE -d skeleton --pad=999161856 -v
+> 	dd if=IMAGE of=/dev/hdc2
+>
+> Afaict, the fs should fit onto the device:
+>
+> 	du --block-size=512 --apparent-size IMAGE
+> 	1951488 IMAGE
+> 	blockdev --getsize /dev/hdc2             
+> 	1951488
+> 	blockdev --getsize /dev/mtdblock0        
+> 	1951488
+>
+> Should I leave some blocks worth of space in the end nevertheless?
+>
+>
+>
+>
+> -- v -- 
+>
+> v@iki.fi
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
