@@ -1,20 +1,22 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from ug-out-1314.google.com ([66.249.92.169])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fy5TF-0006ir-CT
-	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 07:23:13 -0400
-Date: Wed, 5 Jul 2006 13:22:23 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ville Herva <vherva@vianova.fi>
-Subject: Re: block2mtd: Overrun end of disk in cache readahead
-Message-ID: <20060705112223.GA29743@wohnheim.fh-wedel.de>
-References: <20060705072614.GQ6240@vianova.fi> <44AB6EFA.9000604@thinstuff.com>
-	<20060705100727.GC15078@vianova.fi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+	id 1Fy5g5-00070R-Bs
+	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 07:36:32 -0400
+Received: by ug-out-1314.google.com with SMTP id q2so1710875uge
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 05 Jul 2006 04:36:19 -0700 (PDT)
+Message-ID: <625fc13d0607050436r591a1857m348c8f64cc16e0b1@mail.gmail.com>
+Date: Wed, 5 Jul 2006 06:36:19 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: [PATCH 1/1] UBI
+In-Reply-To: <1151408975.16490.12.camel@sauron.oktetlabs.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060705100727.GC15078@vianova.fi>
-Cc: linux-mtd@lists.infradead.org, Norbert Federa <nfedera@thinstuff.com>
+References: <1151408975.16490.12.camel@sauron.oktetlabs.ru>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 July 2006 13:07:27 +0300, Ville Herva wrote:
-> On Wed, Jul 05, 2006 at 09:49:14AM +0200, you [Norbert Federa] wrote:
-> > Ville,
-> > Try changing the PAGE_READAHEAD define in
-> > /drivers/mtd/devices/block2mtd.c from 64 to 0:
-> > 
-> > -#define PAGE_READAHEAD 64
-> > +#define PAGE_READAHEAD 0
-> 
-> Looking at the source, it almost looks like the error message is just a
-> spurious warning, not a dangerous error. Doesn't this happen when the
-> underlying device does not end at 64k boundary? And the readahead code just
-> stops reading ahead after that warning?
+On 6/27/06, Artem B. Bityutskiy <dedekind@infradead.org> wrote:
+> Hello,
+>
+> Frank announced about UBI some time ago
+> (http://lists.infradead.org/pipermail/linux-mtd/2006-June/015887.html)
+>
+> The UBI GIT tree is now at git://git.infradead.org/ubi-2.6.git, or
+> http://git.infradead.org/?p=ubi-2.6.git;a=summary at WEB.
+>
+> Here is the UBI patch for your review.
 
-I'm fairly tempted to just nuke the readahead code completely.  For
-some users, it is outright harmful (usbstick, some other flash behind
-blockdev interface), for others it should be done by the block device
-driver, not by block2mtd.
+Thanks for sending this out.
 
-If either of you wants to do that and can test the resulting patch,
-you have my blessing.
+Here's some questions:
 
-Jörn
+Does the range for bad eraseblock reserve really need to be up to 1/2
+the device?
 
--- 
-This above all: to thine own self be true.
--- Shakespeare
+Perhaps all the MTD_UBI_DEBUG options could be hidden in a seperate
+Kconfig file that is sourced.  As it stands now, it's fairly bloated
+for a large majority of options that won't get enabled.
+
+Why all the forward declarations of structures in the various header
+files?  Couldn't this be done by properly including the header files
+that are needed?
+
+This is a short list at the moment.  I need to find some more time to
+dig into the patch.
+
+josh
