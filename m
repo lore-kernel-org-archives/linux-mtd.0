@@ -1,16 +1,18 @@
-Received: from herkules.vianova.fi ([194.100.28.129] helo=mail.vianova.fi)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fy1m5-0003nN-TW
-	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 03:26:27 -0400
-Date: Wed, 5 Jul 2006 10:26:14 +0300
-From: Ville Herva <vherva@vianova.fi>
-To: linux-mtd@lists.infradead.org
-Subject: block2mtd: Overrun end of disk in cache readahead
-Message-ID: <20060705072614.GQ6240@vianova.fi>
+Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Fy1hv-0004fu-CF
+	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 08:22:00 +0100
+Subject: Re: kernel command line arguments for block2mtd do not work
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org, vherva@vianova.fi
+In-Reply-To: <20060704143836.GA5104@vianova.fi>
+References: <20060704143836.GA5104@vianova.fi>
+Content-Type: text/plain
+Date: Wed, 05 Jul 2006 10:52:15 +0400
+Message-Id: <1152082335.4825.2.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Reply-To: vherva@vianova.fi
+Content-Transfer-Encoding: 7bit
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I get 
-	block2mtd: Overrun end of disk in cache readahead
+On Tue, 2006-07-04 at 17:38 +0300, Ville Herva wrote:
+> For the rough idea, see 
+>         http://iki.fi/v/tmp/block2mtd.c                      
+> (Sorry for the ugliness - it's just a workaround hack.)
 
-each time I mount a JFFS2 created with
+Hello,
 
-	mkfs.jffs2 -o IMAGE -d skeleton --pad=999161856 -v
-	dd if=IMAGE of=/dev/hdc2
+I'd suggest you to just send a patch. See "Patch submission" at
+http://www.linux-mtd.infradead.org/source.html
 
-Afaict, the fs should fit onto the device:
-
-	du --block-size=512 --apparent-size IMAGE
-	1951488 IMAGE
-	blockdev --getsize /dev/hdc2             
-	1951488
-	blockdev --getsize /dev/mtdblock0        
-	1951488
-
-Should I leave some blocks worth of space in the end nevertheless?
-
-
-
-
--- v -- 
-
-v@iki.fi
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
