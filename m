@@ -1,15 +1,26 @@
-Received: from web25010.mail.ukl.yahoo.com ([217.12.10.46])
+Received: from fw3.q-free.com ([62.92.116.8])
 	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FyHXK-0005n2-US
-	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 20:16:16 -0400
-Message-ID: <20060706000925.45150.qmail@web25010.mail.ukl.yahoo.com>
-Date: Thu, 6 Jul 2006 01:09:25 +0100 (BST)
-From: Steven Newbury <s_j_newbury@yahoo.co.uk>
-Subject: Fwd: sharpsl nand driver still broken in current git
-To: linux-mtd@lists.infradead.org
+	id 1FyK22-00078J-NI
+	for linux-mtd@lists.infradead.org; Wed, 05 Jul 2006 22:56:06 -0400
+Received: from gale.q-free.com ([192.168.14.3])
+	by fw3.q-free.com (NAVGW 2.5.1.2) with SMTP id M2006070604384908271
+	for <linux-mtd@lists.infradead.org>; Thu, 06 Jul 2006 04:38:50 +0200
+Received: from localhost.localdomain (h192-168-14-30.q-free.com
+	[192.168.14.30] (may be forged))
+	by gale.q-free.com (8.11.6/8.11.6) with ESMTP id k662ePw10708
+	for <linux-mtd@lists.infradead.org>; Thu, 6 Jul 2006 12:40:26 +1000
+Received: from [10.50.172.101] (unknown [10.50.172.101])
+	by localhost.localdomain (Postfix) with ESMTP id F2D89FE008C
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  6 Jul 2006 12:40:23 +1000 (EST)
+Message-ID: <44AC7817.6090209@Q-Free.com>
+Date: Thu, 06 Jul 2006 12:40:23 +1000
+From: Thiago Figueiro <Thiago.Figueiro@Q-Free.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: linux-mtd@lists.infradead.org
+Subject: DiskOnChip 2000
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +30,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I somehow managed to misread the git changelog and get the wrong mailing list
-first try so exchange ARM merge for MTD merge below.
+    Hi, all.  I have been lurking for some time but couldn't get this 
+straight.
 
-rmk wasn't impressed!
+    I see that the current DOC implementation purposedly ignores DOC2000 
+chips because the INFTL implementation doesn't handle the BBT.  I think 
+this goes back to 2003 so my guess is that this is not so easy to 
+implement or there's no community interest in doing it.
 
---- Steven Newbury <s_j_newbury@yahoo.co.uk> wrote:
+    I am not locked to the DOC because my hardware supports other memories:
 
-> Date: Wed, 5 Jul 2006 22:19:02 +0100 (BST)
-> From: Steven Newbury <s_j_newbury@yahoo.co.uk>
-> To: linux-arm-kernel@lists.arm.linux.org.uk
-> Subject: sharpsl nand driver still broken in current git
-> 
-> Since the NAND subsystem has been updated from the recent ARM merge the
-> sharpsl
-> driver no longer detects the NAND device from nand_scan.
-> ...
-> Sharp SL series flash device: 800000 at 0
-> Using static partision definition
-> Creating 1 MTD partitions on "sharpsl-flash":
-> 0x00140000-0x007f0000 : "Boot PROM Filesystem"
-> No NAND device found!!!
-> ...
-> 
-> It could be a difference in my tree, but I don't think so; especially given
-> the
-> recent changes.
-I should add that the machine is a Sharp Zaurus SL-C3100 (Borzoi) and the
-normal boot on ealier kernels appears as below:
+NVSRAM (Dallas, SGS, Simtek)
+EEROM (SST, Atmel)
+FLASH (AMD, Atmel, SST, SGS - 29F256/512/010/020/040' style)
+EPROM (AMD, SGS - 27C256/512/010/020/040' style)
 
-Sharp SL series flash device: 800000 at 0
-Using static partision definition
-Creating 1 MTD partitions on "sharpsl-flash":
-0x00140000-0x007f0000 : "Boot PROM Filesystem"
-NAND device: Manufacturer ID: 0xec, Chip ID: 0xf1 (Samsung NAND 128MiB 3,3V 8-b
-Scanning device for bad blocks
-Creating 3 MTD partitions on "sharpsl-nand":
-0x00000000-0x00700000 : "System Area"
-0x00700000-0x08000000 : "Root Filesystem"
-0x08000000-0x08000000 : "Home Filesystem"
-mtd: partition "Home Filesystem" is out of reach -- disabled
+    Which of the above would you guys recommend?  I would like to boot 
+from it and mount the root FS on it (it would have basically read-only 
+data).
 
+Many thanks,
 
-Steve
+-- 
 
-
-		
-___________________________________________________________ 
-Inbox full of spam? Get leading spam protection and 1GB storage with All New Yahoo! Mail. http://uk.docs.yahoo.com/nowyoucan.html
+Thiago Figueiro - Q-Free Australia Pty Ltd.
+--
+Thiago.Figueiro@Q-Free.com
+--
+Unit 17 / 1 Talavera Rd.
+North Ryde 2113 NSW
+Australia
+--
+Ph:  +61 2 9887 8216
+Fax: +61 2 9888 6800
+Mob: +61 405 700 814
+--
