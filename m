@@ -1,18 +1,19 @@
-Received: from sun.itp.ac.cn ([159.226.161.126])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FyjJr-0000tI-FY
-	for linux-mtd@lists.infradead.org; Fri, 07 Jul 2006 06:56:05 +0100
-Received: from sun.itp.ac.cn (localhost.localdomain [127.0.0.1])
-	by sun.itp.ac.cn (8.12.5/8.12.5) with ESMTP id k676TOcS001479
-	for <linux-mtd@lists.infradead.org>; Fri, 7 Jul 2006 14:29:24 +0800
-From: Wang Bin Tian <btw@itp.ac.cn>
-Message-ID: <4713.159.226.5.250.1152253764.squirrel@mail.itp.ac.cn>
-Date: Fri, 7 Jul 2006 14:29:24 +0800 (CST)
-Subject: About test or test suite about MTD
-To: <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from www.tglx.de ([213.239.205.147] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FyntX-0001W4-JF
+	for linux-mtd@lists.infradead.org; Fri, 07 Jul 2006 06:49:18 -0400
+Subject: Re: Fwd: sharpsl nand driver still broken in current git
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Steven Newbury <s_j_newbury@yahoo.co.uk>
+In-Reply-To: <20060706000925.45150.qmail@web25010.mail.ukl.yahoo.com>
+References: <20060706000925.45150.qmail@web25010.mail.ukl.yahoo.com>
+Content-Type: text/plain
+Date: Fri, 07 Jul 2006 12:51:52 +0200
+Message-Id: <1152269513.24611.183.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear:
-    I want to know if the MTD has the self-test capability or there are
-test suite for MTD?
-    If there are some tools for testing MTD, can you give me the links?
-    Thanks very much!
+On Thu, 2006-07-06 at 01:09 +0100, Steven Newbury wrote:
+> > Since the NAND subsystem has been updated from the recent ARM merge the
+> > sharpsl
+> > driver no longer detects the NAND device from nand_scan.
+> > ...
+> > Sharp SL series flash device: 800000 at 0
+> > Using static partision definition
+> > Creating 1 MTD partitions on "sharpsl-flash":
+> > 0x00140000-0x007f0000 : "Boot PROM Filesystem"
+> > No NAND device found!!!
+> > ...
 
+I converted the driver blindly after I changed the core code. Richard
+can you please look into that ?
 
-                                                         Bintian Wang
-                                                          From CHINA
+	tglx
