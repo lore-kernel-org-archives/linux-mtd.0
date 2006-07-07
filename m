@@ -1,20 +1,11 @@
-Date: Fri, 7 Jul 2006 18:00:28 +0100 (BST)
-From: Alexey Korolev <akorolev@pentafluge.infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
-In-Reply-To: <Pine.LNX.4.56.0606281918430.15911@pentafluge.infradead.org>
-Message-ID: <Pine.LNX.4.56.0607071751290.2326@pentafluge.infradead.org>
-References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-	<1151433983.6394.230.camel@pmac.infradead.org>
-	<Pine.LNX.4.64.0606271454150.28771@localhost.localdomain>
-	<1151438714.6394.232.camel@pmac.infradead.org>
-	<Pine.LNX.4.64.0606271701120.28771@localhost.localdomain>
-	<Pine.LNX.4.56.0606281918430.15911@pentafluge.infradead.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Alexey Korolev <akorolev@infradead.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Message-ID: <10c4b0f0467.bolaige_grace3@virgilio.it>
+Date: Fri, 7 Jul 2006 23:15:10 +0100 (GMT+01:00)
+From: GRACE <bolaige_grace3@virgilio.it>
+Subject: PLEASE READ & GET BACK TO ME
+Mime-Version: 1.0
+Content-Type: text/plain;charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Reply-To: bolaige_grace3@yahoo.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +15,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas,
-
-What is your opinion regardring the modified patch.
-If nobody complains would it be possible to include this patch into repository? 
-
-Thanks,
-Alexey
-> The code I verified today has some issues:
-> 
-> 1. The resolution of sleeping procedure on erase operations is still very low. 
-> Tests showed erase performance ~278Kb/sec it's better than 246Kb/sec from original code but it's still far from real device speed ~310Kb/sec.
-> 
-> 2. This code
-> >+		if (chip_op_time/2 >= 1000000/HZ) {
-> >+			/*
-> >+			 * Half of the normal delay still remaining
-> >+			 * can be performed with a sleeping delay instead
-> >+			 * of busy waiting.
-> >+			 */
-> >+			msleep(chip_op_time/2000);
-> >+			timeo -= chip_op_time/2;
-> >+			chip_op_time -= chip_op_time/2;
-> >+		} else {
-> >+			udelay(1);
-> >+			cond_resched();
-> >+			timeo--;
-> >+		}
-> may add additional load of CPU when it is unnecessary (necessety is doubtful here). If we need to wait for a long time (erase) we divide chip_op_time by 2 everytime. When we reach 10ms we go to the udelay(1) and perform ~10000 cycles. IMO there is no necessety to do this. 
-> 
-> I found a rather good idea in your code with handling of timeo variable. So I slightly modified your code to avoid the issues with erase performance and verified it. It passed the tests.
-> (New code showed erase performance ~310Kb/sec)
-> 
-> What do you think about this patch?
-> 
-> 
-Thanks,
-Alexey
+Greetings,
+ 
+I am making this contact to you on the fact that we may be 
+of assistance to each other in developing a long lasting cordial 
+business relationship, if you put your trust in God that this will work 
+out forthe benefit of my own family and yours. I was moved by my 
+personal inspiration to entrust on your sincerity to handle a business 
+relationship that involves huge money on trust. I was constrained by 
+the sudden death of my husband, the former Minister of Power andsteel 
+and currently before his death, the Minister for Justice of my country, 
+whom was assassinated by an unknown men. 
+ 
+I am Mrs. Grace Bola Ige, 
+the second wife of the late Mr. Bola Ige who died on December 23rd 
+2001. With heart full of grief, I regret to inform you of the inhumane 
+and harsh conditions which my husband's first wife and the brother's 
+have subjected my two daughters and me. Since my husband's death,the 
+relatives have been wicked to us because of the following reasons:
+ 
+1. 
+I am not from the same tribe with them.
+ 
+2 My refusal to learn and 
+speak their tribal language and dress like other women from their 
+tribe.
+ 
+3. My refusal to accept their religion
+ 
+4. Because I was 
+specially loved and favored I am absolutely tired of all these threats 
+from my husband relatives since the death of my husband.
+ 
+I am no 
+longer in their Family house. am now in my husband's guesthouse, with 
+my children, I seriously need your kind assistance and co-operations. 
+Few weeks before my husband's death, he entrusted some security 
+documents that cover a deposit he made to a financial house  to the 
+tune of 14 million Pounds Sterlings to my care for safe keeping in my 
+apartment.
+After his death I acted fast and required to gather 
+information about the consignment. I was made to know that it was 
+deposited as family treasure of a foreigner/associate to be delivered 
+on request. This fund was deposited for safe keeping with a Private 
+financial house.
+ 
+Now I am seeking for a reliable foreigner who can 
+come down to clear the funds in his/her name as the sole beneficiary of 
+the Deposit. This is so because of my status here as a widow of a 
+political juggernaut.  Now I solicit your assistance to accept this sum 
+for self-keeping. This I cannot lodge into a bank account here in my 
+name to avoid suspicion from the Government, my husband's brother's and 
+wife since they have Confiscated all that is left by my husband and 
+still places eyes on me if they could lay hands on more including cash 
+as they have left me and my children without any cash. If you can 
+accept this, I urge you to contact us immediately for us to brief you 
+on arrangement on how we can possibly handle this. 
+ 
+This is why I 
+honestly contacted you because investing this money abroad should be 
+the best for my two children  and me. I will be honored if I can be 
+given the privilege of dealing with the investment proceeding with 
+you.  I expect you to be trustworthy and kind enough to respond to this 
+distress call to save US from a hopeless future. And if you agree, I 
+hereby agree to compensate your sincere and candid effort in this 
+regard with 15% of the principal sum. While the remaining 85% will be 
+invested meaningfully for our future if possible in your area of 
+business and different sectors of the Economy in your country  which 
+are dividends yielding. Whatever your decision is please reach me 
+immediately through my email.And keep this letter tight secret for the 
+interest of my Family.
+ 
+ I hope to hear from you soon.
+ 
+Mrs Grace 
+Bola  Ige
+ 
