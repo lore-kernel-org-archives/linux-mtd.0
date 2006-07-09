@@ -1,11 +1,17 @@
-Message-ID: <10c4b0f0467.bolaige_grace3@virgilio.it>
-Date: Fri, 7 Jul 2006 23:15:10 +0100 (GMT+01:00)
-From: GRACE <bolaige_grace3@virgilio.it>
-Subject: PLEASE READ & GET BACK TO ME
+Subject: Re: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
+From: David Woodhouse <dwmw2@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20060629173206.GF19712@stusta.de>
+References: <20060626220215.GI23314@stusta.de>
+	<1151416141.17609.140.camel@hades.cambridge.redhat.com>
+	<20060629173206.GF19712@stusta.de>
+Content-Type: text/plain
+Date: Sun, 09 Jul 2006 10:12:12 +0100
+Message-Id: <1152436332.25567.12.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain;charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Reply-To: bolaige_grace3@yahoo.com
+Cc: juha.yrjola@solidboot.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, jlavi@iki.fi
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,79 +21,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings,
- 
-I am making this contact to you on the fact that we may be 
-of assistance to each other in developing a long lasting cordial 
-business relationship, if you put your trust in God that this will work 
-out forthe benefit of my own family and yours. I was moved by my 
-personal inspiration to entrust on your sincerity to handle a business 
-relationship that involves huge money on trust. I was constrained by 
-the sudden death of my husband, the former Minister of Power andsteel 
-and currently before his death, the Minister for Justice of my country, 
-whom was assassinated by an unknown men. 
- 
-I am Mrs. Grace Bola Ige, 
-the second wife of the late Mr. Bola Ige who died on December 23rd 
-2001. With heart full of grief, I regret to inform you of the inhumane 
-and harsh conditions which my husband's first wife and the brother's 
-have subjected my two daughters and me. Since my husband's death,the 
-relatives have been wicked to us because of the following reasons:
- 
-1. 
-I am not from the same tribe with them.
- 
-2 My refusal to learn and 
-speak their tribal language and dress like other women from their 
-tribe.
- 
-3. My refusal to accept their religion
- 
-4. Because I was 
-specially loved and favored I am absolutely tired of all these threats 
-from my husband relatives since the death of my husband.
- 
-I am no 
-longer in their Family house. am now in my husband's guesthouse, with 
-my children, I seriously need your kind assistance and co-operations. 
-Few weeks before my husband's death, he entrusted some security 
-documents that cover a deposit he made to a financial house  to the 
-tune of 14 million Pounds Sterlings to my care for safe keeping in my 
-apartment.
-After his death I acted fast and required to gather 
-information about the consignment. I was made to know that it was 
-deposited as family treasure of a foreigner/associate to be delivered 
-on request. This fund was deposited for safe keeping with a Private 
-financial house.
- 
-Now I am seeking for a reliable foreigner who can 
-come down to clear the funds in his/her name as the sole beneficiary of 
-the Deposit. This is so because of my status here as a widow of a 
-political juggernaut.  Now I solicit your assistance to accept this sum 
-for self-keeping. This I cannot lodge into a bank account here in my 
-name to avoid suspicion from the Government, my husband's brother's and 
-wife since they have Confiscated all that is left by my husband and 
-still places eyes on me if they could lay hands on more including cash 
-as they have left me and my children without any cash. If you can 
-accept this, I urge you to contact us immediately for us to brief you 
-on arrangement on how we can possibly handle this. 
- 
-This is why I 
-honestly contacted you because investing this money abroad should be 
-the best for my two children  and me. I will be honored if I can be 
-given the privilege of dealing with the investment proceeding with 
-you.  I expect you to be trustworthy and kind enough to respond to this 
-distress call to save US from a hopeless future. And if you agree, I 
-hereby agree to compensate your sincere and candid effort in this 
-regard with 15% of the principal sum. While the remaining 85% will be 
-invested meaningfully for our future if possible in your area of 
-business and different sectors of the Economy in your country  which 
-are dividends yielding. Whatever your decision is please reach me 
-immediately through my email.And keep this letter tight secret for the 
-interest of my Family.
- 
- I hope to hear from you soon.
- 
-Mrs Grace 
-Bola  Ige
- 
+On Thu, 2006-06-29 at 19:32 +0200, Adrian Bunk wrote:
+> On Tue, Jun 27, 2006 at 02:49:00PM +0100, David Woodhouse wrote:
+> > On Tue, 2006-06-27 at 00:02 +0200, Adrian Bunk wrote:
+> > > This patch makes the needlessly global mtdpart_setup() static.
+> > > 
+> > > Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> > > 
+> > > --- linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c.old 2006-06-26 23:18:39.000000000 +0200
+> > > +++ linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c     2006-06-26 23:18:51.000000000 +0200
+> > > @@ -346,7 +346,7 @@
+> > >   *
+> > >   * This function needs to be visible for bootloaders.
+> > >   */
+> > > -int mtdpart_setup(char *s)
+> > > +static int mtdpart_setup(char *s) 
+> > 
+> > Patch lacks sufficient explanation. Explain the relevance of the comment
+> > immediately above the function declaration, in the context of your
+> > patch. Explain your decision to change the behaviour, but not change the
+> > comment itself.
+> 
+> My explanation regarding the relevance of the comment is that it seems 
+> to be nonsense.
+> 
+> Do I miss something, or why and how should a bootloader access 
+> in-kernel functions? 
+
+I'm not entirely sure, but allegedly it does -- Juha, can you elaborate?
+
+-- 
+dwmw2
