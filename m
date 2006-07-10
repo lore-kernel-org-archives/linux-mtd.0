@@ -1,19 +1,20 @@
-Received: from py-out-1112.google.com ([64.233.166.183])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Fzlqf-0006Xn-GL
-	for linux-mtd@lists.infradead.org; Sun, 09 Jul 2006 22:50:27 -0400
-Received: by py-out-1112.google.com with SMTP id c31so3813336pyd
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 09 Jul 2006 19:50:11 -0700 (PDT)
-Message-ID: <91b24a870607091950q59a8d316gb3d561fd1bbe88e@mail.gmail.com>
-Date: Mon, 10 Jul 2006 10:50:11 +0800
-From: "Marteo Tim" <tim.marteo@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: how to use jff2 on UBI layer?
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1FzsSV-000178-7p
+	for linux-mtd@lists.infradead.org; Mon, 10 Jul 2006 10:53:46 +0100
+Subject: Re: [PATCH] PNX8550 NAND flash driver
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
+In-Reply-To: <43F1D439.60205@ru.mvista.com>
+References: <43A2F819.1040106@ru.mvista.com> <43C69EC2.2070601@mvista.com>
+	<43F1D439.60205@ru.mvista.com>
+Content-Type: text/plain
+Date: Mon, 10 Jul 2006 11:53:16 +0200
+Message-Id: <1152525196.30929.11.camel@localhost>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, Todd Poynor <tpoynor@mvista.com>,
+	linux-mips@linux-mips.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +24,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm interesting in UBI, which is the new flash management layer. I
-have also get the newest UBI sources from git.
-My question is: how can i use jff2 on UBI layer? In UBI's source, i
-can not find block device relating codes. After load UBI module, i
-found /dev/ubi0, but it is a char device.
-Thanks.
+On Tue, 2006-02-14 at 15:59 +0300, Vladimir A. Barinov wrote:
+> >> +    }
+> >> +
+> >> +    if (((bytes & 3) || (bytes < 16)) || ((u32) to & 3) || ((u32) 
+> >> from & 3)) {
+> >> +        if (((bytes & 1) == 0) &&
+> >> +            (((u32) to & 1) == 0) && (((u32) from & 1) == 0)) {
+> >> +            int words = bytes / 2;
+> >> +
+> >> +            local_irq_disable();
+> >> +            for (i = 0; i < words; i++) {
+> >> +                to16[i] = from16[i];
+> >> +            }
+> >> +            local_irq_enable();
+> >
+> >
+> > Really necessary to disable all irqs around this transfer?  How long 
+> > can interrupts be off during that time?
+> 
+> That is needed since the NAND device is binded to the external XIO bus 
+> that could be used by another devices.
 
-marteo
+Err, you have to protect the whole access sequence then. What protects
+the chip against access between the command write and data read ?
+
+If this really is a bus conflict problem, then you need some more
+protection than this.
+
+Can you please describe in detail why you think this is necessary. 
+
+	tglx
