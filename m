@@ -1,14 +1,19 @@
-Subject: Re: D. L. Moeller is not available.
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dennis Moeller <moeller@us.ibm.com>
-In-Reply-To: <OFBD618447.99DA310F-ON852571A7.00637C35-852571A7.00637C35@us.ibm.com>
-References: <OFBD618447.99DA310F-ON852571A7.00637C35-852571A7.00637C35@us.ibm.com>
-Content-Type: text/plain
-Date: Mon, 10 Jul 2006 20:39:08 +0100
-Message-Id: <1152560348.3373.120.camel@pmac.infradead.org>
+Received: from herkules.vianova.fi ([194.100.28.129] helo=mail.vianova.fi)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G04Hc-0001IC-QL
+	for linux-mtd@lists.infradead.org; Mon, 10 Jul 2006 18:31:23 -0400
+Date: Tue, 11 Jul 2006 01:31:07 +0300
+From: Ville Herva <vherva@vianova.fi>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [MTD] block2mtd.c: Make kernel boot command line
+	arguments work (try 3)
+Message-ID: <20060710223106.GX6240@vianova.fi>
+References: <20060707122221.GW6240@vianova.fi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: postmaster@us.ibm.com, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20060707122221.GW6240@vianova.fi>
+Reply-To: vherva@vianova.fi
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,36 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-07-10 at 14:06 -0400, Dennis Moeller wrote:
-> I will be out of the office starting  07/10/2006 and will not return until
-> 07/24/2006.
+On Fri, Jul 07, 2006 at 03:22:21PM +0300, you [Ville Herva] wrote:
+> 
+> --- linux-mtd-GIT/drivers/mtd/devices/block2mtd.c	2006-07-05 23:06:10.000000000 +0300
+> +++ linux-2.6.17.3.NEW3/drivers/mtd/devices/block2mtd.c	2006-07-07 15:04:48.000000000 +0300
 
-Your autoresponder is broken in many ways -- so much so that it is a
-denial of service attack waiting to happen.
-
-It is responding to the wrong address. It should only ever reply to the
-SMTP reverse-path of the mail which triggers it -- which in this case
-would have gone to the automatic list management software instead of to
-the list itself.
-
-It is responding _from_ the wrong address. Autoresponses should have
-'MAIL FROM:<>' in the SMTP transaction -- the 'null sender' as do
-bounces. By sending responses with a non-empty reverse-path of their
-own, you invite further bounces and automatic responses to your
-autoresponse.... potentially leading to a mail loop.
-
-You should also ensure that your autoreply does not respond to bulk
-messages such as mailing lists to which you have subscribed.
-
-Do not _ever_ subscribe this address again unless you have permanently
-disabled this broken autoresponder, or unless your admin staff have
-fixed its dangerous and abusive misbehaviour.
-
-If you or anyone from IBM spams my list with such responses again, I
-will consider that to be a deliberate attempt at a denial of service
-attack.
-
-I really don't expect this level of cluelessness from IBM.
-
--- 
-dwmw2
+For the record: I tested this variant of the patch in the following ways: 
+ - block2mtd compiled in statically, no block2mtd.block2mtd kernel parameter
+ - block2mtd compiled in statically, block2mtd.block2mtd=/dev/hda2 kernel parameter
+ - block2mtd compiled as a module, no block2mtd.block2mtd kernel parameter
+   - insert block2mtd.ko with no arguments, later 
+     echo /dev/hda2 > /sys/module/block2mtd/parameters/block2mtd
+   - insert block2mtd.ko with block2mtd=/dev/hda2 argument
+ - block2mtd compiled in statically, block2mtd.block2mtd=/dev/hda2 kernel parameter
