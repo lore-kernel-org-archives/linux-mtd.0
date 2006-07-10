@@ -1,33 +1,32 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1FzvO1-0004hG-O8
-	for linux-mtd@lists.infradead.org; Mon, 10 Jul 2006 09:01:28 -0400
+	id 1G009c-0007Ln-Cb
+	for linux-mtd@lists.infradead.org; Mon, 10 Jul 2006 14:06:52 -0400
 Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e1.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	k6AD1EEB028251
+	by e3.ny.us.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k6AI6fBx022383
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 09:01:14 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 14:06:41 -0400
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
 	by d01relay02.pok.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k6AD1E9V251966
+	k6AI6f7x263210
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 09:01:14 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k6AD1Dt6000709
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 09:01:14 -0400
-Subject: Re: how to use jff2 on UBI layer?
-From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Marteo Tim <tim.marteo@gmail.com>
-In-Reply-To: <91b24a870607091950q59a8d316gb3d561fd1bbe88e@mail.gmail.com>
-References: <91b24a870607091950q59a8d316gb3d561fd1bbe88e@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 10 Jul 2006 15:01:11 +0200
-Message-Id: <1152536472.6066.28.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: haver@vnet.ibm.com
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 14:06:41 -0400
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	k6AI6e0Y030798
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 14:06:40 -0400
+Received: from d01mll83.pok.ibm.com (d01mll83.pok.ibm.com [9.56.225.194])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	k6AI6esx030767
+	for <linux-mtd@lists.infradead.org>; Mon, 10 Jul 2006 14:06:40 -0400
+Subject: D. L. Moeller is not available. 
+From: Dennis Moeller <moeller@us.ibm.com>
+To: linux-mtd@lists.infradead.org
+Message-ID: <OFBD618447.99DA310F-ON852571A7.00637C35-852571A7.00637C35@us.ibm.com>
+Date: Mon, 10 Jul 2006 14:06:38 -0400
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,72 +36,5 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Mon, 2006-07-10 at 10:50 +0800, Marteo Tim wrote:
-> I'm interesting in UBI, which is the new flash management layer. I
-> have also get the newest UBI sources from git.
-> My question is: how can i use jff2 on UBI layer? In UBI's source, i
-> can not find block device relating codes. After load UBI module, i
-> found /dev/ubi0, but it is a char device.
-> Thanks.
-
-the code which enables you to run JFFS2 on a UBI volume is currently
-under discussion between Joern, Thomas Gleixer and Artem. We have
-a working prototype, but we think, that it needs some reworks. That is
-why it is not yet published. I am trying to make the folks hurry
-up, but they are currently busy.
-
-I will try to describe what you need to do to run JFFS2 although we
-need to wait for the code still.
-
-/dev/ubi0 is the UBI device, you cannot run JFFS2 on it. To run JFFS2,
-you need to create a dynamic UBI volume first. You can do that in three
-ways:
-
-1. Use the UBI toolchain to create a binary image containing UBI
-volumes. mtd-utils.git/ubi-utils/scripts/test.cfg shows a configuration
-file where you specify the volumes you want to have and the binary input
-you want to put into them. The JFFS2 volume needs to be a dynamic UBI
-volume, because you want to write single pages or subpages if mtd allows
-it. The pfi file is processed by pfi2bin and bin2nand to form an image
-for your flash. See the example Makefile in that directory too. In
-bin2nand you might want add your specific ECC layout in the OOB data if
-the existing one is not valid for your hardware. The resulting data you
-can flash - bad block aware - into your NAND flash. For NOR you ommit
-the bin2nand step and take the binary directly. This can be done by a
-JTAG utility or by nandwrite. The output will contain a UBI volume
-information table and when you attach your mtd device to UBI, it will
-generate all the volumes you defined automatically.
-
-2. Use the UBI tools on the system itself create, delete and update UBI
-volumes. ubimkvol creates volumes, ubiupdatevol will push data into them
-and with ubirmvol you can remove them (use ubiupdatevol ... -t to
-truncate them, otherwise UBI will not let you delete them).
-
-3. Use the pfi file generated by mkpfi and the tool pfiflash on the
-target system to automatically update your flash. This tool is intended
-to easily allow UBI volume update. The pfi contains the UBI volume
-parameters and if the volume is not existing it will be created
-automatically by the tool.
-
-Option 2 is good for trying it out. Option 1. is more for a
-manufacturing kind of process. Option 3. can be used for updating UBI
-volumes which are not in use (if you have a rootfs, or mounted fs in a
-UBI volume it is in use and cannot be updated that way of course).
-
-If you have the dynamic volumes for your JFFS2 created you could mount
-them like this:
-
-mount -t jffs2 mtd:rootfs_0 /mnt/
-                    ^
-                    |
-    name of UBI volume (specified in the cfg file or with ubimkvol
-
-The last step would work if the mtd->ubi translation layer, which we
-call gluebi (glue/UBI) would be available. I hope that this issue is
-solved soon.
-
-Regards, 
-
-Frank
+I will be out of the office starting  07/10/2006 and will not return until
+07/24/2006.
