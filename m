@@ -1,20 +1,21 @@
-Received: from mail.auerswald.de ([212.185.163.229])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G0DKg-0007cw-Cd
-	for linux-mtd@lists.infradead.org; Tue, 11 Jul 2006 04:11:17 -0400
-From: Wolfgang =?iso-8859-1?q?M=FCes?= <wolfgang.mues@auerswald.de>
-To: linux-mtd@lists.infradead.org,
- mike@compulab.co.il
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G0DUT-0001jm-Ou
+	for linux-mtd@lists.infradead.org; Tue, 11 Jul 2006 09:21:10 +0100
 Subject: Re: [PATCH] CM-x2xx NAND flash support
-Date: Tue, 11 Jul 2006 10:10:50 +0200
-References: <44B36563.9050103@compulab.co.il>
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Mike Rapoport <mike@compulab.co.il>
 In-Reply-To: <44B36563.9050103@compulab.co.il>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+References: <44AD06B5.7060708@compulab.co.il>
+	<1152437179.24611.376.camel@localhost.localdomain>
+	<44B36563.9050103@compulab.co.il>
+Content-Type: text/plain
+Date: Tue, 11 Jul 2006 10:23:53 +0200
+Message-Id: <1152606233.32107.98.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200607111010.50355.wolfgang.mues@auerswald.de>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag, 11. Juli 2006 09:48 schrieb Mike Rapoport:
-> Thomas Gleixner wrote:
-> >On Thu, 2006-07-06 at 14:48 +0200, Mike Rapoport wrote:
-> >>This patch provides MTD support for NAND flash devices on CM-x2xx
-> >> modules.
-> >>+#define DRAIN_WB() \
-> >>+       do { \
-> >>+               unsigned char dummy; \
-> >>+               asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
-> >>+               dummy=*((unsigned char*)UNCACHED_ADDR); \
-> >>+       } while(0);
+On Tue, 2006-07-11 at 10:46 +0200, Mike Rapoport wrote:
+> >>+       unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
+> >>    
+> >>
 > >
-> >stray semicolon ----^
+> >what the hell is this type cast for ?
 > >
-> >I bet xscale has this functionality somewhere as a macro / inline already
->
-> I found none. Even md() on xscale will not drain write buffer.
+> >	void __iomem *nandaddr = 
+> >  
+> >
+> you can't do |= and &= with void __iomem*
 
-dmac_clean_range() from asm/cacheflush.h is what you want.
+Err, why not ?
 
-regards
+> >Can you please combine both drivers into one and make it a platform
+> >device. There is no need to keep lots of duplicate functionality around.
+> >
+> I'm dropping cm-x255 support (management decision) so there's only one 
+> platform that can use this driver. What's the point then?
 
--- 
-Wolfgang Muees                    Vor den Grashoefen 1
-Auerswald GmbH & Co. KG       	  D-38162 Cremlingen
-Hardware Development              Germany
-Tel +49 5306 9219 0               Fax +49 5306 9219 94
+Sorry man, you submitted _two_ drivers in the first place and I did the
+review on those. I'm not good at witchcrafting the decisions of your
+management.
+
+	tglx
