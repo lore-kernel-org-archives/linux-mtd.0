@@ -1,20 +1,18 @@
 Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G0bMi-0000V4-Fg
-	for linux-mtd@lists.infradead.org; Wed, 12 Jul 2006 05:52:00 -0400
-Date: Wed, 12 Jul 2006 11:50:48 +0200
+	id 1G0bO0-0000bi-Ne
+	for linux-mtd@lists.infradead.org; Wed, 12 Jul 2006 05:53:25 -0400
+Date: Wed, 12 Jul 2006 11:52:05 +0200
 From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ville Herva <vherva@vianova.fi>
-Subject: Re: [PATCH] [MTD] block2mtd.c: Make kernel boot command line
-	arguments work (try 3)
-Message-ID: <20060712095048.GB14333@wohnheim.fh-wedel.de>
-References: <20060707122221.GW6240@vianova.fi>
-	<20060711062342.GY6240@vianova.fi>
+To: Han Chang <posaune@hotmail.com>
+Subject: Re: File size limitation on JFFS2.
+Message-ID: <20060712095205.GC14333@wohnheim.fh-wedel.de>
+References: <BAY110-F38A943ADF26D7AEF738A26BC680@phx.gbl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060711062342.GY6240@vianova.fi>
+In-Reply-To: <BAY110-F38A943ADF26D7AEF738A26BC680@phx.gbl>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,16 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 11 July 2006 09:23:42 +0300, Ville Herva wrote:
+On Tue, 11 July 2006 15:32:08 -0700, Han Chang wrote:
 > 
-> Jörn, the #ifdef MODULE do clutter up the code, so I leave it to you as the
-> maintainer to decide if they are worth it.
+> I'm trying to put a file of size 1G on the JFFS2/NAND. I got "Out of Memory" 
+> error. Looks like the max size of file I can put on it is 500M, though my 
+> NAND has 2G space. This is on Linux. I noticed JFFS2 is using filemap in the 
+> Linux mm, where it crashed. Any help?
 
-Good enough for now.  If the klibc discussion ever settles, the early
-initialization code could get moved to userspace.
+Just out of curiosity: how much memory does the machine have?
 
 Jörn
 
 -- 
-Schrödinger's cat is <BLINK>not</BLINK> dead.
--- Illiad
+The wise man seeks everything in himself; the ignorant man tries to get
+everything from somebody else.
+-- unknown
