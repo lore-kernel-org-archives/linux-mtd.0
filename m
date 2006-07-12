@@ -1,18 +1,20 @@
-Received: from smtp17.singnet.com.sg ([165.21.6.27])
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G0VTZ-0004R2-St
-	for linux-mtd@lists.infradead.org; Tue, 11 Jul 2006 23:33:38 -0400
-Received: from [167.116.151.204] ([63.150.136.42])
-	by smtp17.singnet.com.sg (8.13.6/8.13.6) with ESMTP id k6C3XHsa017851
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Jul 2006 11:33:17 +0800
-Message-ID: <44B46D63.4070206@singnet.com.sg>
-Date: Wed, 12 Jul 2006 11:32:51 +0800
-From: Terence Soh <gopher@singnet.com.sg>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Data Transfer Tests
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1G0bM4-0000Ue-Ms
+	for linux-mtd@lists.infradead.org; Wed, 12 Jul 2006 05:50:19 -0400
+Date: Wed, 12 Jul 2006 11:50:03 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Ville Herva <vherva@vianova.fi>
+Subject: Re: [PATCH] [MTD] block2mtd.c: Make kernel boot command line
+	arguments work (try 3)
+Message-ID: <20060712095003.GA14333@wohnheim.fh-wedel.de>
+References: <20060707122221.GW6240@vianova.fi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20060707122221.GW6240@vianova.fi>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,10 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 7 July 2006 15:22:21 +0300, Ville Herva wrote:
+> 
+> From: Ville Herva <vherva@vianova.fi>
+> Signed-off-by: Ville Herva <vherva@vianova.fi>
 
-I would like to seek advise(s) for ways to find out the data transfer 
-rate of a MTD device.
+Acked-by: Joern Engel <joern@wh.fh-wedel.de>
 
-Thanks,
-Terence.
+Jörn
+
+-- 
+Time? What's that? Time is only worth what you do with it.
+-- Theo de Raadt
