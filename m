@@ -1,29 +1,18 @@
-Received: from n1.cetrtapot.si ([212.30.80.17])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1FzvS5-0004uV-DU
-	for linux-mtd@lists.infradead.org; Mon, 10 Jul 2006 09:06:31 -0400
-Received: from localhost (localhost.dmz.cetrtapot.si [127.0.0.1])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 92F70BB77
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Jul 2006 15:05:15 +0200 (CEST)
-Received: from n1.cetrtapot.si ([127.0.0.1])
-	by localhost (n1.dmz.cetrtapot.si [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 64868-06 for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Jul 2006 15:04:56 +0200 (CEST)
-Received: from [192.1.1.75] (unknown [192.168.66.2])
-	by n1.cetrtapot.si (Postfix) with ESMTP id 3B297BB84
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Jul 2006 15:04:56 +0200 (CEST)
-Message-ID: <44B25073.4020601@cetrtapot.si>
-Date: Mon, 10 Jul 2006 15:04:51 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+Received: from mail.linux-boards.com ([62.90.235.247])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1G0djB-0002FP-E7
+	for linux-mtd@lists.infradead.org; Wed, 12 Jul 2006 08:22:14 -0400
+Message-ID: <44B4F764.5030801@compulab.co.il>
+Date: Wed, 12 Jul 2006 15:21:40 +0200
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-To: "'linux-mtd@lists.infradead.org'" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/7] mtd: Add map file for mpc83xx boards
-References: <9FCDBA58F226D911B202000BDBAD467306E04FD3@zch01exm40.ap.freescale.net>
-	<1151504861.17134.39.camel@pmac.infradead.org>
-In-Reply-To: <1151504861.17134.39.camel@pmac.infradead.org>
-Content-Type: multipart/mixed; boundary="------------090907040107000307010407"
+To: tglx@linutronix.de
+Subject: Re: [PATCH] CM-x2xx NAND flash support
+References: <44AD06B5.7060708@compulab.co.il>
+	<1152437179.24611.376.camel@localhost.localdomain>
+In-Reply-To: <1152437179.24611.376.camel@localhost.localdomain>
+Content-Type: multipart/mixed; boundary="------------060507030502040905070303"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,331 +23,414 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------090907040107000307010407
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+--------------060507030502040905070303
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-David Woodhouse wrote:
-> Use a platform device and physmap. Or better still, extend physmap to
-> handle of_devices too and just stick the flash information in the device
-> tree.
-> 
+Thomas Gleixner wrote:
 
-Hi,
+>On Thu, 2006-07-06 at 14:48 +0200, Mike Rapoport wrote:
+>  
+>
+>>This patch provides MTD support for NAND flash devices on CM-x2xx modules.
+>>
+>>Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+>>    
+>>
+I've tried to fix all the coding style errors.
 
-I would like to make flash map driver with physmap or platform device, 
-but am not really sure where to start. Is there an implementation 
-already in place, like an example? If I understand this correctly when 
-using physmap there is no need to create drivers/mtd/maps/xxxx-flash.c file?
+>  
+>
+>>+#define DRAIN_WB() \
+>>+       do { \
+>>+               unsigned char dummy; \
+>>+               asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
+>>+               dummy=*((unsigned char*)UNCACHED_ADDR); \
+>>+       } while(0);
+>>    
+>>
+>I bet xscale has this functionality somewhere as a macro / inline already
+>
+>  
+>
+There's dma_clean_range but it's not exactly what I need, so I left this 
+macro (without the last semi column)
 
-I've tried to use platform device like in arch/arm/mach-pxa/lubbock.c, 
-but I haven't seen any MTD device upon boot - instead I had to use 
-drivers/mtd/maps/lubbock.c like flash map to make /porc/mtd show something.
+>>+       unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
+>>    
+>>
+>
+>what the hell is this type cast for ?
+>
+>	void __iomem *nandaddr = 
+>
+>  
+>
+>>+       unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
+>>+
+>>+       DRAIN_WB();
+>>+
+>>+       if ( ctrl & NAND_CTRL_CHANGE ) {
+>>+               if ( ctrl & NAND_ALE ) /* ALE should be changed */
+>>+                       nandaddr |=  (1 << 3);
+>>+               else
+>>+                       nandaddr &= ~(1 << 3);
+>>+               if ( ctrl & NAND_CLE ) /* CLE should be changed */
+>>+                       nandaddr |=  (1 << 2);
+>>+               else 
+>>+                       nandaddr &= ~(1 << 2);
+>>+               if ( ctrl & NAND_NCE ) /* CE should be changed */
+>>+                       nand_cs_on();
+>>+               else
+>>+                       nand_cs_off();
+>>+       }
+>>+       this->IO_ADDR_W = (void*)nandaddr;
+>>    
+>>
+>	dito	
+>
+As I wrote earlier, void* cannot be operand of bitwise operations. I 
+have ALE and CLE connected to local bus address lines, that's why I'm 
+using bitwise operations for address. I'll appreciate any other way to 
+achieve the same functionality, but I've found none.
 
-I've attached my PXA ARM board with some bits from lubbock.c for flash 
-platform device. If someone spots whats missing there let me know!
+>Can you please combine both drivers into one and make it a platform
+>device. There is no need to keep lots of duplicate functionality around.
+>  
+>
+Sorry for the inconvenience, but I've dropped x255 support, so I don't 
+it makes sense to make the driver platform device.
 
-best regards,
-hinko
+>	tglx
+>
+>
+>______________________________________________________
+>Linux MTD discussion mailing list
+>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>  
+>
+
 
 -- 
-ÄŒETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenija
-Tel. +386 (0) 4 280 66 37
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+Sincerely yours,
+Mike Rapoport
 
 
---------------090907040107000307010407
-Content-Type: text/x-patch;
- name="trizeps2.c.diff"
-Content-Transfer-Encoding: 7bit
+--------------060507030502040905070303
+Content-Type: text/x-diff;
+ name="cm_x2xx_mtd.patch"
+Content-Transfer-Encoding: 8bit
 Content-Disposition: inline;
- filename="trizeps2.c.diff"
+ filename="cm_x2xx_mtd.patch"
 
-diff -urN linux-2.6.17-clean/arch/arm/mach-pxa/trizeps2.c linux-2.6.17-stab2/arch/arm/mach-pxa/trizeps2.c
---- linux-2.6.17-clean/arch/arm/mach-pxa/trizeps2.c	1970-01-01 01:00:00.000000000 +0100
-+++ linux-2.6.17-stab2/arch/arm/mach-pxa/trizeps2.c	2006-07-03 18:24:59.000000000 +0200
-@@ -0,0 +1,278 @@
+ drivers/mtd/nand/Kconfig       |    4 +
+ drivers/mtd/nand/Makefile      |    1 
+ drivers/mtd/nand/cmx270-nand.c |  271 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 276 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 3db77ee..4c212fd 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -232,6 +232,10 @@ config MTD_NAND_CS553X
+ 
+ 	  If you say "m", the module will be called "cs553x_nand.ko".
+ 
++config MTD_NAND_CM_X270
++	tristate "Support for NAND Flash on CM-X270 modules"
++	depends on MTD_NAND && MACH_CM_X270
++
+ config MTD_NAND_NANDSIM
+ 	tristate "Support for NAND Flash Simulator"
+ 	depends on MTD_NAND && MTD_PARTITIONS
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index f747593..f2718aa 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -22,5 +22,6 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250
+ obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
+ obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
+ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
++obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270-nand.o
+ 
+ nand-objs = nand_base.o nand_bbt.o
+diff --git a/drivers/mtd/nand/cmx270-nand.c b/drivers/mtd/nand/cmx270-nand.c
+new file mode 100644
+index 0000000..8a1911c
+--- /dev/null
++++ b/drivers/mtd/nand/cmx270-nand.c
+@@ -0,0 +1,271 @@
 +/*
-+ *  linux/arch/arm/mach-pxa/trizeps2.c
++ *  linux/drivers/mtd/nand/cmx270-nand.c
 + *
-+ *  Support for the Keith & Koep Trizeps2 PXA25x CPU module.
++ *  Copyright (C) 2006 Compulab, Ltd.
++ *  Mike Rapoport <mike@compulab.co.il>
 + *
-+ *  Author:	Hinko Kocevar
-+ *  Created:	Jun 29, 2006
-+ *  Copyright:	Hinko Kocevar <hinkocevar@gmail.com>
++ *  Derived from drivers/mtd/nand/h1910.c
++ *       Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
++ *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
 + *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License version 2 as
-+ *  published by the Free Software Foundation.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
++ *  Overview:
++ *   This is a device driver for the NAND flash device found on the
++ *   CM-X270 board.
 + */
-+#include <linux/module.h>
-+#include <linux/kernel.h>
++
++#include <linux/slab.h>
 +#include <linux/init.h>
-+#include <linux/platform_device.h>
-+#include <linux/sysdev.h>
-+#include <linux/major.h>
-+#include <linux/fb.h>
-+#include <linux/interrupt.h>
++#include <linux/module.h>
 +#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
 +#include <linux/mtd/partitions.h>
 +
-+#include <asm/setup.h>
-+#include <asm/memory.h>
-+#include <asm/mach-types.h>
-+#include <asm/hardware.h>
++#include <asm/io.h>
 +#include <asm/irq.h>
-+#include <asm/sizes.h>
 +
-+#include <asm/mach/arch.h>
-+#include <asm/mach/map.h>
-+#include <asm/mach/irq.h>
-+#include <asm/mach/flash.h>
-+
-+
-+#include <asm/arch/bitfield.h>
++#include <asm/arch/hardware.h>
 +#include <asm/arch/pxa-regs.h>
-+#include <asm/arch/trizeps2.h>
-+#include <asm/arch/pxafb.h>
 +
-+#include "generic.h"
++#define GPIO_NAND_CS	(11)
++#define GPIO_NAND_RB	(89)
 +
-+#define DEBUG_TRIZEPS2
-+#ifdef DEBUG_TRIZEPS2
-+#define DPRINTK(fmt, args...) printk("%s: " fmt, __FUNCTION__ , ## args)
-+#else
-+#define DPRINTK( x... )
-+#endif
++/* This macro needed to ensure in-order operation of GPIO and local
++ * bus. Without both asm command and dummy uncached read there're
++ * states when NAND access is broken. I've looked for such macro(s) in
++ * include/asm-arm but found nothing approptiate.
++ * dmac_clean_range is close, but is makes cache invalidation
++ * unnecessary here and it cannot be used in module
++ */
++#define DRAIN_WB() \
++	do { \
++		unsigned char dummy; \
++		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
++		dummy=*((unsigned char*)UNCACHED_ADDR); \
++	} while(0)
 +
++/* MTD structure for CM-X270 board */
++static struct mtd_info *cmx270_nand_mtd;
++
++/* remaped IO address of the device */
++static void __iomem *cmx270_nand_io;
 +
 +/*
-+ * Backlight power control is connected to pin 37
-+ * on NetTerm 40-pin LCD connector (unused IRQ_PIC
++ * Define static partitions for flash device
 + */
-+static void trizeps2_backlight_power(int on)
-+{
-+    if (on)
-+    {
-+#ifdef CONFIG_ARCH_TRIZEPS2_KK_NETTERM
-+        /* enable backlight, set GPIO0 low */
-+        GPCR(0) |= GPIO_bit(0);
-+        /* GPIO0 output */
-+        GPDR(0) |= GPIO_bit(0);
-+#elif CONFIG_ARCH_TRIZEPS2_IM_GREENFLASH1
-+        /* enable LCD, set GPIO1 high */
-+        GPSR(1) |= GPIO_bit(1);
-+        /* GPIO1 output */
-+        GPDR(1) |= GPIO_bit(1);
-+#endif
-+    }
-+    else
-+    {
-+#ifdef CONFIG_ARCH_TRIZEPS2_KK_NETTERM
-+	/* disable backlight, set GPIO0 high */
-+	GPSR(0) |= GPIO_bit(0);
-+	/* GPIO0 input */
-+	/* GPDR(0) &= ~GPIO_bit(0); */
-+#elif CONFIG_ARCH_TRIZEPS2_IM_GREENFLASH1
-+	/* disable LCD, set GPIO1 low */
-+	GPCR(1) |= GPIO_bit(1);
-+#endif
-+    }
-+}
-+
-+/*
-+ * LCD power control is connected to pin 25 on
-+ * NetTerm 40-pin LCD connector (L_DISP)
-+ *
-+ * LCD power control is connected to GPIO0 on
-+ * GreenFLASH1 board (LCD_ON).
-+ */
-+static void trizeps2_lcd_power(int on)
-+{
-+    if (on)
-+    {
-+#ifdef CONFIG_ARCH_TRIZEPS2_KK_NETTERM
-+	/* enable LCD, set GPIO1 high */
-+	GPSR(1) |= GPIO_bit(1);
-+	/* GPIO1 output */
-+	GPDR(1) |= GPIO_bit(1);
-+#elif CONFIG_ARCH_TRIZEPS2_IM_GREENFLASH1
-+	/* enable LCD, set GPIO0 high */
-+	GPSR(0) |= GPIO_bit(0);
-+	/* GPIO0 output */
-+	GPDR(0) |= GPIO_bit(0);
-+#endif
-+    }
-+    else
-+    {
-+#ifdef CONFIG_ARCH_TRIZEPS2_KK_NETTERM
-+	/* disable LCD, set GPIO1 low */
-+	GPCR(1) |= GPIO_bit(1);
-+#elif CONFIG_ARCH_TRIZEPS2_IM_GREENFLASH1
-+	/* disable LCD, set GPIO0 low */
-+	GPCR(0) |= GPIO_bit(0);
-+	/* GPIO0 input */
-+	/* GPDR(0) &= ~GPIO_bit(0); */
-+#endif
-+    }
-+}
-+    
-+
-+static void __init trizeps2_init_irq(void)
-+{
-+	pxa_init_irq();
-+
-+	pxa_gpio_mode(GPIO19_DREQ1 | GPIO_ALT_FN_1_IN);
-+	pxa_gpio_mode(GPIO46_STRXD_MD);
-+	pxa_gpio_mode(GPIO47_STTXD_MD);
-+
-+	/* 
-+	 * NOTE:
-+	 * disable IRQ PROBE of GPIO0 and GPIO1 to make sure
-+	 * LCD and BL is not powered off in probe_irq_on().
-+	 */
-+	set_irq_flags(1, IRQF_VALID);
-+	set_irq_flags(2, IRQF_VALID);
-+
-+	set_irq_flags(61, IRQF_VALID);  // disable PROBE
-+}
-+
-+static struct platform_device trizeps2_audio_device = {
-+	.name	= "pxa2xx-ac97",
-+	.id		= -1,
-+};
-+
-+static struct resource smc91x_resources[] = {
-+	[0] = {
-+		.name	= "smc91x-regs",
-+		.start	= TRIZEPS2_ETH_PHYS,    /*0x0c000300*/
-+		.end	= 0x0c0fffff,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+	[1] = {
-+		.start	= TRIZEPS2_ETH_IRQ,
-+		.end	= TRIZEPS2_ETH_IRQ,
-+		.flags	= IORESOURCE_IRQ,
-+	},
-+};
-+
-+static struct platform_device smc91x_device = {
-+	.name	= "smc91x",
-+	.id		= -1,
-+	.num_resources	= ARRAY_SIZE(smc91x_resources),
-+	.resource	= smc91x_resources,
-+};
-+
-+static struct resource flash_resources[] = {
-+	[0] = {
-+		.start	= 0x00000000,
-+		.end	= SZ_16M - 1,
-+		.flags	= IORESOURCE_MEM,
-+	},
-+};
-+
-+static struct mtd_partition trizeps2_partitions[] = {
++static struct mtd_partition partition_info[] = {
 +	{
-+		.name =		"Bootloader",
-+		.size =		0x00060000,
-+		.offset =	0,
-+		.mask_flags =	MTD_WRITEABLE  /* force read-only */
-+	},{
-+		.name =		"Kernel",
-+		.size =		0x00200000,
-+		.offset =	0x00060000,
-+	},{
-+		.name =		"Filesystem",
-+		.size =		MTDPART_SIZ_FULL,
-+		.offset =	0x00260000
++		.name	= "cmx270-0",
++		.offset	= 0,
++		.size	= MTDPART_SIZ_FULL
 +	}
 +};
++#define NUM_PARTITIONS (ARRAY_SIZE(partition_info))
 +
-+static struct flash_platform_data trizeps2_flash_data[1] = {
-+	{
-+		.map_name	= "cfi_probe",
-+		.parts		= trizeps2_partitions,
-+		.nr_parts	= ARRAY_SIZE(trizeps2_partitions),
-+	    	.width		= 2,
-+		.name		= "application-flash",
-+	}, 
-+};
++const char *part_probes[] = { "cmdlinepart", NULL };
 +
-+static struct platform_device trizeps2_flash_device[1] = {
-+	{
-+		.name		= "pxa2xx-flash",
-+		.id		= 0,
-+		.dev = {
-+			.platform_data = &trizeps2_flash_data[0],
-+		},
-+		.resource = &flash_resources[0],
-+		.num_resources = 1,
-+	},
-+};
++static 	u_char cmx270_read_byte(struct mtd_info *mtd)
++{
++	struct nand_chip *this = mtd->priv;
 +
-+static struct platform_device *devices[] __initdata = {
-+	&trizeps2_audio_device,
-+	&smc91x_device,
-+	&trizeps2_flash_device[0],
-+};
++	return (readl(this->IO_ADDR_R) >> 16);
++}
++
++static void cmx270_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++)
++		writel((*buf++ << 16), this->IO_ADDR_W);
++}
++
++static void cmx270_read_buf(struct mtd_info *mtd, u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++)
++		*buf++ = readl(this->IO_ADDR_R) >> 16;
++}
++
++static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	int i;
++	struct nand_chip *this = mtd->priv;
++
++	for (i=0; i<len; i++)
++		if (buf[i] != (u_char)(readl(this->IO_ADDR_R) >> 16))
++			return -EFAULT;
++
++	return 0;
++}
++
++static inline void nand_cs_on(void)
++{
++	GPCR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
++}
++
++static void nand_cs_off(void)
++{
++	DRAIN_WB();
++
++	GPSR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
++}
 +
 +/*
-+ * Hitachi SX14Q LCD properties struct
++ *	hardware specific access to control-lines
 + */
-+static struct pxafb_mach_info hitachi_sx14q __initdata = {
-+	.pixclock		= 173521,
-+	.xres			= 320,
-+	.yres			= 240,
-+	.bpp			= 8,
-+	.hsync_len		= 1,
-+	.left_margin		= 1,
-+	.right_margin		= 1,
-+	.vsync_len		= 10,
-+	.upper_margin		= 0,
-+	.lower_margin		= 0,
-+	.sync			= FB_SYNC_HOR_HIGH_ACT | FB_SYNC_VERT_HIGH_ACT,
-+	.cmap_greyscale		= 0,
-+	.cmap_inverse		= 0,
-+	.cmap_static		= 0,
-+	.lccr0			= LCCR0_Pas | LCCR0_Sngl | LCCR0_Color,
-+	.lccr3			= LCCR3_PCP | LCCR3_Acb(255),
-+	.pxafb_backlight_power	= trizeps2_backlight_power,
-+	.pxafb_lcd_power	= trizeps2_lcd_power,
-+};
-+
-+static void __init trizeps2_init(void)
++static void cmx270_hwcontrol(struct mtd_info *mtd, int dat,
++			     unsigned int ctrl)
 +{
-+	set_pxa_fb_info(&hitachi_sx14q);
-+	(void) platform_add_devices(devices, ARRAY_SIZE(devices));
++	struct nand_chip* this = mtd->priv;
++	unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
++
++	DRAIN_WB();
++
++	if (ctrl & NAND_CTRL_CHANGE) {
++		if ( ctrl & NAND_ALE )
++			nandaddr |=  (1 << 3);
++		else
++			nandaddr &= ~(1 << 3);
++		if ( ctrl & NAND_CLE )
++			nandaddr |=  (1 << 2);
++		else
++			nandaddr &= ~(1 << 2);
++		if ( ctrl & NAND_NCE )
++			nand_cs_on();
++		else
++			nand_cs_off();
++	}
++
++	DRAIN_WB();
++	this->IO_ADDR_W = (void __iomem*)nandaddr;
++	if (dat != NAND_CMD_NONE)
++		writel((dat << 16), this->IO_ADDR_W);
++
++	DRAIN_WB();
 +}
 +
-+static void __init trizeps2_map_io(void)
++/*
++ *	read device ready pin
++ */
++static int cmx270_device_ready(struct mtd_info *mtd)
 +{
-+	pxa_map_io();
++	DRAIN_WB();
 +
-+	/* This is for the SMC chip select */
-+	pxa_gpio_mode(GPIO79_nCS_3_MD);
-+
-+	/* setup sleep mode values */
-+	PWER  = 0x00000002;
-+	PFER  = 0x00000000;
-+	PRER  = 0x00000002;
-+	PGSR0 = 0x00008000;
-+	PGSR1 = 0x003F0202;
-+	PGSR2 = 0x0001C000;
-+	PCFR |= PCFR_OPDE;
++	return (GPLR(GPIO_NAND_RB) & GPIO_bit(GPIO_NAND_RB));
 +}
 +
-+MACHINE_START(TRIZEPS2, "Keith & Koep Trizeps2 PXA25x CPU module")
-+	/* Maintainer: Hinko Kocevar */
-+	.phys_io	= 0x40000000,
-+	.io_pg_offst	= (io_p2v(0x40000000) >> 18) & 0xfffc,
-+	.map_io		= trizeps2_map_io,
-+	.init_irq	= trizeps2_init_irq,
-+	.timer		= &pxa_timer,
-+	.init_machine	= trizeps2_init,
-+MACHINE_END
++/*
++ * Main initialization routine
++ */
++static int __devinit cmx270_init(void)
++{
++	struct nand_chip *this;
++	const char *part_type;
++	struct mtd_partition *mtd_parts;
++	int mtd_parts_nb = 0;
++	int ret;
++
++	/* Allocate memory for MTD device structure and private data */
++	cmx270_nand_mtd = kzalloc(sizeof(struct mtd_info) +
++				  sizeof(struct nand_chip),
++				  GFP_KERNEL);
++	if (!cmx270_nand_mtd) {
++		printk("Unable to allocate CM-X270 NAND MTD device structure.\n");
++		return -ENOMEM;
++	}
++
++	cmx270_nand_io = ioremap(PXA_CS1_PHYS, 12);
++	if (!cmx270_nand_io) {
++		printk("Unable to ioremap NAND device\n");
++		ret = -EINVAL;
++		goto err1;
++	}
++
++	/* Get pointer to private data */
++	this = (struct nand_chip *)(&cmx270_nand_mtd[1]);
++
++	/* Link the private data with the MTD structure */
++	cmx270_nand_mtd->owner = THIS_MODULE;
++	cmx270_nand_mtd->priv = this;
++
++	/* insert callbacks */
++	this->IO_ADDR_R = cmx270_nand_io;
++	this->IO_ADDR_W = cmx270_nand_io;
++	this->cmd_ctrl = cmx270_hwcontrol;
++	this->dev_ready = cmx270_device_ready;
++
++	/* 15 us command delay time */
++	this->chip_delay = 20;
++	this->ecc.mode = NAND_ECC_SOFT;
++
++	/* read/write functions */
++	this->read_byte = cmx270_read_byte;
++	this->read_buf = cmx270_read_buf;
++	this->write_buf = cmx270_write_buf;
++	this->verify_buf = cmx270_verify_buf;
++
++	/* Scan to find existence of the device */
++	if (nand_scan (cmx270_nand_mtd, 1)) {
++		printk(KERN_NOTICE "No NAND device\n");
++		ret = -ENXIO;
++		goto err2;
++	}
++
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, part_probes,
++					    &mtd_parts, 0);
++	if (mtd_parts_nb > 0)
++		part_type = "command line";
++	else
++		mtd_parts_nb = 0;
++#endif
++	if (!mtd_parts_nb) {
++		mtd_parts = partition_info;
++		mtd_parts_nb = NUM_PARTITIONS;
++		part_type = "static";
++	}
++
++	/* Register the partitions */
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
++	ret = add_mtd_partitions(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
++	if (ret)
++		goto err2;
++
++	/* Return happy */
++	return 0;
++
++err2:
++	iounmap(cmx270_nand_io);
++err1:
++	kfree(cmx270_nand_mtd);
++
++	return ret;
++
++}
++module_init(cmx270_init);
++
++/*
++ * Clean up routine
++ */
++static void __devexit cmx270_cleanup(void)
++{
++	/* Release resources, unregister device */
++	nand_release(cmx270_nand_mtd);
++
++	iounmap(cmx270_nand_io);
++
++	/* Free the MTD device structure */
++	kfree (cmx270_nand_mtd);
++}
++module_exit(cmx270_cleanup);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Mike Rapoport <mike@compulab.co.il>");
++MODULE_DESCRIPTION("NAND flash driver for Compulab CM-X270 Module");
 
---------------090907040107000307010407--
+--------------060507030502040905070303--
