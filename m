@@ -1,23 +1,16 @@
-Received: from py-out-1112.google.com ([64.233.166.181])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G0ULq-0003ah-O5
-	for linux-mtd@lists.infradead.org; Tue, 11 Jul 2006 22:21:29 -0400
-Received: by py-out-1112.google.com with SMTP id z74so60209pyg
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Jul 2006 19:21:19 -0700 (PDT)
-Message-ID: <91b24a870607111921k3339ee1ci3528345b4b2f41c0@mail.gmail.com>
-Date: Wed, 12 Jul 2006 10:21:18 +0800
-From: "Tim Marteo" <tim.marteo@gmail.com>
-To: haver@vnet.ibm.com
-Subject: Re: how to use jff2 on UBI layer?
-In-Reply-To: <1152536472.6066.28.camel@localhost.localdomain>
+Received: from web209.biz.mail.re2.yahoo.com ([68.142.224.171])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G0UxN-00041p-Ic
+	for linux-mtd@lists.infradead.org; Tue, 11 Jul 2006 23:00:14 -0400
+Message-ID: <20060712030005.51211.qmail@web209.biz.mail.re2.yahoo.com>
+Date: Tue, 11 Jul 2006 20:00:05 -0700 (PDT)
+From: z l <zql@glomationinc.com>
+Subject: Micron MT28F128J3 RP JFFS2 error
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <91b24a870607091950q59a8d316gb3d561fd1bbe88e@mail.gmail.com>
-	<1152536472.6066.28.camel@localhost.localdomain>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: zql@glomationinc.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,6 +20,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thanks for your reply,  I'll try it.  :)
+We have a ARM (Cirrus EP9315) based SBC with 2 FLASH
+chips, we used both Micron and Intel chips, 32MB
+total.  The JFFS2 driver will give,
 
-marteo
+jffs2_scan_eraseblock(): Magic bitmask 0xXXXX not
+found at 0xXXXXXXXX 
+
+errors when the MTD was re-mounted after umount.  But
+only on the boards with Micron chip not on the Intel. 
+Googling the net I realized that there are slight
+difference between the 2 chips.  Can someone kindly
+point me to where I should start to look in order to
+solve this problem?
+
+The Linux kernel is 2.4.21.
