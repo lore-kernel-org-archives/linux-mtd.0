@@ -1,20 +1,29 @@
-Date: Fri, 14 Jul 2006 09:48:05 +0100 (BST)
-From: Alexey Korolev <akorolev@pentafluge.infradead.org>
-To: Nicolas Pitre <nico@cam.org>, dwmw2@infradead.org
-Subject: Re: [PATCH]Fixes of performance and stability issues in CFI driver.
-In-Reply-To: <Pine.LNX.4.56.0606281918430.15911@pentafluge.infradead.org>
-Message-ID: <Pine.LNX.4.56.0607140939050.19430@pentafluge.infradead.org>
-References: <Pine.LNX.4.56.0606271335001.21751@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0606271222570.28771@localhost.localdomain>
-	<1151433983.6394.230.camel@pmac.infradead.org>
-	<Pine.LNX.4.64.0606271454150.28771@localhost.localdomain>
-	<1151438714.6394.232.camel@pmac.infradead.org>
-	<Pine.LNX.4.64.0606271701120.28771@localhost.localdomain>
-	<Pine.LNX.4.56.0606281918430.15911@pentafluge.infradead.org>
+Received: from ip-217-204-115-127.easynet.co.uk ([217.204.115.127]
+	helo=apollo.linkchoose.co.uk)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1G1Q9S-00027B-LE
+	for linux-mtd@lists.infradead.org; Fri, 14 Jul 2006 12:04:33 -0400
+Received: from [10.98.1.127] (helo=galaxy.dga.co.uk)
+	by apollo.linkchoose.co.uk with esmtp (Exim 4.60)
+	(envelope-from <david.goodenough@linkchoose.co.uk>)
+	id 1G1QCk-0002Pl-KI
+	for linux-mtd@lists.infradead.org; Fri, 14 Jul 2006 17:07:50 +0100
+Received: from [10.0.1.63] by galaxy.dga.co.uk with esmtp (Exim 4.62)
+	(envelope-from <david.goodenough@linkchoose.co.uk>)
+	id 1G1Q9G-0007GZ-IZ
+	for linux-mtd@lists.infradead.org; Fri, 14 Jul 2006 17:04:15 +0100
+From: David Goodenough <david.goodenough@linkchoose.co.uk>
+To: linux-mtd@lists.infradead.org
+Subject: Re: Your confirmation is required to join the linux-mtd mailing list
+Date: Fri, 14 Jul 2006 17:04:12 +0100
+References: <mailman.105.1152888627.17076.linux-mtd@lists.infradead.org>
+In-Reply-To: <mailman.105.1152888627.17076.linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Alexey Korolev <akorolev@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200607141704.12709.david.goodenough@linkchoose.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,222 +33,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
-
-Could you please commit the changes into repository?
-
-I've got mail from Nicolas he found it acceptable.
+On Friday 14 July 2006 15:50, 
+linux-mtd-confirm+d486e03180e9652ac6f939ae5dcfc53c44bc0b69@lists.infradead.org 
+wrote:
+> Mailing list subscription confirmation notice for mailing list
+> linux-mtd
 >
-> > Could you please tell me what do you think about this patch? It is not
-> > included yet.
+> We have received a request from david.goodenough@linkchoose.co.uk for
+> subscription of your email address,
+> "david.goodenough@linkchoose.co.uk", to the
+> linux-mtd@lists.infradead.org mailing list.  To confirm that you want
+> to be added to this mailing list, simply reply to this message,
+> keeping the Subject: header intact.  Or visit this web page:
 >
-> It is fine and you can add my sign-off for it.
->
-> Sorry for the delay.  I was on vacation last week and I am about to have
-> some more really soon.  In other words I won't have much time for MTD
-> stuff until mid august.  This includes committing your patch (someone
-> else will have to do it).
+>    
+> http://lists.infradead.org/mailman/confirm/linux-mtd/d486e03180e9652ac6f939
+>ae5dcfc53c44bc0b69
 >
 >
-> Nicolas
+> Or include the following line -- and only the following line -- in a
+> message to linux-mtd-request@lists.infradead.org:
 >
-
-> Here is a comment for the patch:
-> 
-> Fix of performance and stability issues on NOR chips. It fixes:
-> 1. Very low write performance on Sibley (perf tests demonstrated write performance less than 100Kb/sec when it should be over 400Kb/sec).
-> 2. Low erase performance. (perf tests on Sibleuy demonstrated erase performance 246Kb/sec when it should be over 300Kb/sec).
-> 3. Error on JFFS2 tests with CPU loading application when MTD returns "block erase error: (status timeout)"
-> To fix the issue it does the following:
-> 1. Removes the timeout tuning from inval_cache_and_wait_for_operation. 
-> 2. Waiting conditions in inval_cache_and_wait_for_operation now is based on timer resolution
-> If timeout is lower than timer resolution then we do in cycle
-> 	"Checking the status"
-> 	udelay(1);
-> 	cond_resched();
-> If timeout is greater than timer resolution (probably erase operation)
-> We do the following
-> 	sleep for half of operation timeout
-> 	and do in cycle the following
-> 	"Checking the status"
-> 	sleep for timer resolution
-> 
-> Thanks,
-> Alexey
-> 
-> 
-> Signed-off-by: Nicolas Pitre <nico@cam.org>
-> Signed-off-by: Alexey Korolev <akorolev@infradead.org>
-> 
-> diff -aur orig/drivers/mtd/chips/cfi_cmdset_0001.c latest/drivers/mtd/chips/cfi_cmdset_0001.c
-> --- orig/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-26 13:20:00.000000000 +0400
-> +++ latest/drivers/mtd/chips/cfi_cmdset_0001.c	2006-06-28 21:56:09.611390112 +0400
-> @@ -908,7 +908,7 @@
->  
->  static int __xipram xip_wait_for_operation(
->  		struct map_info *map, struct flchip *chip,
-> -		unsigned long adr, int *chip_op_time )
-> +		unsigned long adr, unsigned int chip_op_time )
->  {
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
-> @@ -917,7 +917,7 @@
->  	flstate_t oldstate, newstate;
->  
->         	start = xip_currtime();
-> -	usec = *chip_op_time * 8;
-> +	usec = chip_op_time * 8;
->  	if (usec == 0)
->  		usec = 500000;
->  	done = 0;
-> @@ -1027,8 +1027,8 @@
->  #define XIP_INVAL_CACHED_RANGE(map, from, size)  \
->  	INVALIDATE_CACHED_RANGE(map, from, size)
->  
-> -#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, p_usec) \
-> -	xip_wait_for_operation(map, chip, cmd_adr, p_usec)
-> +#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec) \
-> +	xip_wait_for_operation(map, chip, cmd_adr, usec)
->  
->  #else
->  
-> @@ -1040,64 +1040,64 @@
->  static int inval_cache_and_wait_for_operation(
->  		struct map_info *map, struct flchip *chip,
->  		unsigned long cmd_adr, unsigned long inval_adr, int inval_len,
-> -		int *chip_op_time )
-> +		unsigned int chip_op_time)
->  {
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	map_word status, status_OK = CMD(0x80);
-> -	int z, chip_state = chip->state;
-> -	unsigned long timeo;
-> +	int chip_state = chip->state;
-> +	unsigned int timeo, sleep_time;
->  
->  	spin_unlock(chip->mutex);
->  	if (inval_len)
->  		INVALIDATE_CACHED_RANGE(map, inval_adr, inval_len);
-> -	if (*chip_op_time)
-> -		cfi_udelay(*chip_op_time);
->  	spin_lock(chip->mutex);
->  
-> -	timeo = *chip_op_time * 8 * HZ / 1000000;
-> -	if (timeo < HZ/2)
-> -		timeo = HZ/2;
-> -	timeo += jiffies;
-> +	/* set our timeout to 8 times the expected delay */
-> +	timeo = chip_op_time * 8;
-> +	if (!timeo)
-> +		timeo = 500000;
-> +	sleep_time = chip_op_time / 2;
->  
-> -	z = 0;
->  	for (;;) {
-> -		if (chip->state != chip_state) {
-> -			/* Someone's suspended the operation: sleep */
-> -			DECLARE_WAITQUEUE(wait, current);
-> -
-> -			set_current_state(TASK_UNINTERRUPTIBLE);
-> -			add_wait_queue(&chip->wq, &wait);
-> -			spin_unlock(chip->mutex);
-> -			schedule();
-> -			remove_wait_queue(&chip->wq, &wait);
-> -			timeo = jiffies + (HZ / 2); /* FIXME */
-> -			spin_lock(chip->mutex);
-> -			continue;
-> -		}
-> -
->  		status = map_read(map, cmd_adr);
->  		if (map_word_andequal(map, status, status_OK, status_OK))
->  			break;
->  
-> -		/* OK Still waiting */
-> -		if (time_after(jiffies, timeo)) {
-> +		if (!timeo) {
->  			map_write(map, CMD(0x70), cmd_adr);
->  			chip->state = FL_STATUS;
->  			return -ETIME;
->  		}
->  
-> -		/* Latency issues. Drop the lock, wait a while and retry */
-> -		z++;
-> +		/* OK Still waiting. Drop the lock, wait a while and retry. */
->  		spin_unlock(chip->mutex);
-> -		cfi_udelay(1);
-> +		if (sleep_time >= 1000000/HZ) {
-> +			/*
-> +			 * Half of the normal delay still remaining
-> +			 * can be performed with a sleeping delay instead
-> +			 * of busy waiting.
-> +			 */
-> +			msleep(sleep_time/1000);
-> +			timeo -= sleep_time;
-> +			sleep_time = 1000000/HZ;
-> +		} else {
-> +			udelay(1);
-> +			cond_resched();
-> +			timeo--;
-> +		}
->  		spin_lock(chip->mutex);
-> -	}
->  
-> -	if (!z) {
-> -		if (!--(*chip_op_time))
-> -			*chip_op_time = 1;
-> -	} else if (z > 1)
-> -		++(*chip_op_time);
-> +		if (chip->state != chip_state) {
-> +			/* Someone's suspended the operation: sleep */
-> +			DECLARE_WAITQUEUE(wait, current);
-> +			set_current_state(TASK_UNINTERRUPTIBLE);
-> +			add_wait_queue(&chip->wq, &wait);
-> +			spin_unlock(chip->mutex);
-> +			schedule();
-> +			remove_wait_queue(&chip->wq, &wait);
-> +			spin_lock(chip->mutex);
-> +		}
-> +	}
->  
->  	/* Done and happy. */
->   	chip->state = FL_STATUS;
-> @@ -1107,8 +1107,7 @@
->  #endif
->  
->  #define WAIT_TIMEOUT(map, chip, adr, udelay) \
-> -	({ int __udelay = (udelay); \
-> -	   INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, &__udelay); })
-> +	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
->  
->  
->  static int do_point_onechip (struct map_info *map, struct flchip *chip, loff_t adr, size_t len)
-> @@ -1332,7 +1331,7 @@
->  
->  	ret = INVAL_CACHE_AND_WAIT(map, chip, adr,
->  				   adr, map_bankwidth(map),
-> -				   &chip->word_write_time);
-> +				   chip->word_write_time);
->  	if (ret) {
->  		xip_enable(map, chip, adr);
->  		printk(KERN_ERR "%s: word write error (status timeout)\n", map->name);
-> @@ -1569,7 +1568,7 @@
->  
->  	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
->  				   adr, len,
-> -				   &chip->buffer_write_time);
-> +				   chip->buffer_write_time);
->  	if (ret) {
->  		map_write(map, CMD(0x70), cmd_adr);
->  		chip->state = FL_STATUS;
-> @@ -1704,7 +1703,7 @@
->  
->  	ret = INVAL_CACHE_AND_WAIT(map, chip, adr,
->  				   adr, len,
-> -				   &chip->erase_time);
-> +				   chip->erase_time);
->  	if (ret) {
->  		map_write(map, CMD(0x70), adr);
->  		chip->state = FL_STATUS;
-> 
-Thanks,
-Alexey 
+>     confirm d486e03180e9652ac6f939ae5dcfc53c44bc0b69
+>
+> Note that simply sending a `reply' to this message should work from
+> most mail readers, since that usually leaves the Subject: line in the
+> right form (additional "Re:" text in the Subject: is okay).
+>
+> If you do not wish to be subscribed to this list, please simply
+> disregard this message.  If you think you are being maliciously
+> subscribed to the list, or have any other questions, send them to
+> linux-mtd-owner@lists.infradead.org.
