@@ -1,16 +1,14 @@
 Received: from tim.rpsys.net ([194.106.48.114])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G1iqK-0004Hh-Nx
-	for linux-mtd@lists.infradead.org; Sat, 15 Jul 2006 08:02:13 -0400
-Subject: Re: Fwd: sharpsl nand driver still broken in current git
+	id 1G1itn-0004UF-Id
+	for linux-mtd@lists.infradead.org; Sat, 15 Jul 2006 08:05:40 -0400
+Subject: [PATCH] MTD: [NAND] Fix the sharpsl driver after breakage from a
+	core conversion
 From: Richard Purdie <rpurdie@rpsys.net>
 To: tglx@linutronix.de, David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1152269513.24611.183.camel@localhost.localdomain>
-References: <20060706000925.45150.qmail@web25010.mail.ukl.yahoo.com>
-	<1152269513.24611.183.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Sat, 15 Jul 2006 13:01:34 +0100
-Message-Id: <1152964894.5546.77.camel@localhost.localdomain>
+Date: Sat, 15 Jul 2006 13:05:24 +0100
+Message-Id: <1152965125.13315.0.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Steven Newbury <s_j_newbury@yahoo.co.uk>, linux-mtd@lists.infradead.org
@@ -23,26 +21,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-07-07 at 12:51 +0200, Thomas Gleixner wrote:
-> On Thu, 2006-07-06 at 01:09 +0100, Steven Newbury wrote:
-> > > Since the NAND subsystem has been updated from the recent ARM merge the
-> > > sharpsl
-> > > driver no longer detects the NAND device from nand_scan.
-> > > ...
-> > > Sharp SL series flash device: 800000 at 0
-> > > Using static partision definition
-> > > Creating 1 MTD partitions on "sharpsl-flash":
-> > > 0x00140000-0x007f0000 : "Boot PROM Filesystem"
-> > > No NAND device found!!!
-> > > ...
-> 
-> I converted the driver blindly after I changed the core code. Richard
-> can you please look into that ?
+MTD: [NAND] Fix the sharpsl driver after breakage from a core conversion
 
-The conversion was at fault and a patch to fix it will follow this mail.
+The CNE bits are inverted on the device and writeb function is missing a
+NOT operation.
 
-I'm loathed to create an mtd git tree containing it as last time I spent
-time doing this, the pull request was totally ignored and someone else
-ended up duplicating the work.
+Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 
-Richard
+Index: git/drivers/mtd/nand/sharpsl.c
+===================================================================
+--- git.orig/drivers/mtd/nand/sharpsl.c	2006-07-15 12:47:53.000000000 +0100
++++ git/drivers/mtd/nand/sharpsl.c	2006-07-15 12:06:31.000000000 +0100
+@@ -78,7 +78,7 @@
+ /*
+  *	hardware specific access to control-lines
+  *	ctrl:
+- *	NAND_CNE: bit 0 -> bit 0 & 4
++ *	NAND_CNE: bit 0 -> ! bit 0 & 4
+  *	NAND_CLE: bit 1 -> bit 1
+  *	NAND_ALE: bit 2 -> bit 2
+  *
+@@ -92,7 +92,10 @@
+ 		unsigned char bits = ctrl & 0x07;
+ 
+ 		bits |= (ctrl & 0x01) << 4;
+-		writeb((readb(FLASHCTL) & 0x17) | bits, FLASHCTL);
++		
++		bits ^= 0x11;
++		
++		writeb((readb(FLASHCTL) & ~0x17) | bits, FLASHCTL);
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE)
