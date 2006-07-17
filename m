@@ -1,22 +1,34 @@
-Received: from mfront7.mail.yandex.net ([213.180.223.96])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G2QOd-0003y2-Mb
-	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 06:32:20 -0400
-Date: Mon, 17 Jul 2006 14:32:02 +0400 (MSD)
-From: "dedekind" <dedekind@yandex.ru>
-Sender: dedekind@yandex.ru
-Message-Id: <44BB6722.000003.20811@mfront7.yandex.ru>
+Received: from lon-del-04.spheriq.net ([195.46.50.101])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1G2Rct-0004k9-2U
+	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 07:51:11 -0400
+Received: from lon-out-02.spheriq.net ([195.46.50.130])
+	by lon-del-04.spheriq.net with ESMTP id k6HBoxcf015718
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2006 11:51:00 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-02.spheriq.net with ESMTP id k6HBoxXq001386
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2006 11:50:59 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by lon-cus-01.spheriq.net with ESMTP id k6HBoten015638
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Mon, 17 Jul 2006 11:50:58 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 60D5EDA48
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Jul 2006 11:50:52 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EE57A475B5
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Jul 2006 11:50:51 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 root file system on NAND device
+Date: Mon, 17 Jul 2006 13:50:31 +0200
+Message-ID: <000001c6a997$4064edf0$253682a4@nap.st.com>
 MIME-Version: 1.0
-Errors-To: dedekind@yandex.ru
-To: sudharshana@motorola.com
-Subject: Re: Nand read/write
-In-Reply-To: <B7803DC652E2F9458758AEBB6A5FD60FF88D90@ZMY16EXM67.ds.mot.com>
-References: <B7803DC652E2F9458758AEBB6A5FD60FF88D90@ZMY16EXM67.ds.mot.com>
 Content-Type: text/plain;
-  charset="US-ASCII"
+	charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@yandex.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,12 +38,8 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->I have the following scenario on an embedded Linux application.
->
->There is a partition in the NAND flash memory (with RAW type, no file
->system), which will be mounted and used for read/write. As an
->application which performs "read"/"write" on this partition after
->mounting, should it be assumed that "bad block algorithm" is covered? Or
->application has to handle the same?
 
-Nope. But UBI can do a lot. Try to look at it.
+How can I write a JFFS2 root image on a NAND device?
+
+thanks in advance,
+Davide
