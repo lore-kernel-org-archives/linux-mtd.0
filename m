@@ -1,27 +1,22 @@
-Received: from fmmailgate01.web.de ([217.72.192.221])
+Received: from mfront7.mail.yandex.net ([213.180.223.96])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G24hC-0000LO-3M
-	for linux-mtd@lists.infradead.org; Sun, 16 Jul 2006 07:22:01 -0400
-Received: from smtp07.web.de (fmsmtp07.dlan.cinetic.de [172.20.5.215])
-	by fmmailgate01.web.de (Postfix) with ESMTP id E13F38D18F9
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 16 Jul 2006 12:47:15 +0200 (CEST)
-Received: from [87.123.216.123] (helo=oelilaptop)
-	by smtp07.web.de with asmtp (TLSv1:EXP1024-RC4-SHA:128)
-	(WEB.DE 4.107 #114) id 1G249b-0002ak-00
-	for linux-mtd@lists.infradead.org; Sun, 16 Jul 2006 12:47:15 +0200
-From: Christian Oelschlegel <c.oelschlegel@web.de>
-To: linux-mtd@lists.infradead.org
-Subject: Support for command set 0003 not present
-Date: Sun, 16 Jul 2006 12:46:24 +0200
+	id 1G2QOd-0003y2-Mb
+	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 06:32:20 -0400
+Date: Mon, 17 Jul 2006 14:32:02 +0400 (MSD)
+From: "dedekind" <dedekind@yandex.ru>
+Sender: dedekind@yandex.ru
+Message-Id: <44BB6722.000003.20811@mfront7.yandex.ru>
 MIME-Version: 1.0
+Errors-To: dedekind@yandex.ru
+To: sudharshana@motorola.com
+Subject: Re: Nand read/write
+In-Reply-To: <B7803DC652E2F9458758AEBB6A5FD60FF88D90@ZMY16EXM67.ds.mot.com>
+References: <B7803DC652E2F9458758AEBB6A5FD60FF88D90@ZMY16EXM67.ds.mot.com>
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200607161246.24661.c.oelschlegel@web.de>
-Sender: c.oelschlegel@web.de
-Reply-To: c.oelschlegel@web.de
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@yandex.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,36 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi together,
+>I have the following scenario on an embedded Linux application.
+>
+>There is a partition in the NAND flash memory (with RAW type, no file
+>system), which will be mounted and used for read/write. As an
+>application which performs "read"/"write" on this partition after
+>mounting, should it be assumed that "bad block algorithm" is covered? Or
+>application has to handle the same?
 
-I have tried to find the solution in old Threads, but there wasn't sometimes 
-the question but never the Answer.
-
-The pcmciamtd module will be loaded but then the kernel log shows me the 
-following:
-
-Jul 16 11:55:14 localhost kernel: [17184337.632000] pccard: PCMCIA card 
-inserted into slot 0
-Jul 16 11:55:14 localhost kernel: [17184337.632000] cs: memory probe 
-0xa0000000-0xa0ffffff: clean.
-Jul 16 11:55:14 localhost kernel: [17184337.636000] pcmcia: registering new 
-device pcmcia0.0
-Jul 16 11:55:15 localhost kernel: [17184338.280000] pcmciamtd: PCMCIA Flash 
-memory card driver $Revision: 1.55 $
-Jul 16 11:55:15 localhost kernel: [17184338.312000] Found: Intel I28F016S3
-Jul 16 11:55:15 localhost kernel: [17184338.312000] intel VALUE SERIES 100  04  
-COPYRIGHT INTEL CORPORATION 1995: Found 2 x8 devices at 0x0 in 16-bit bank
-Jul 16 11:55:15 localhost kernel: [17184338.392000] Support for command set 
-0003 not present
-Jul 16 11:55:15 localhost kernel: [17184338.392000] gen_probe: No supported 
-Vendor Command Set found
-Jul 16 11:55:15 localhost kernel: [17184338.420000] CFI: Found no intel VALUE 
-SERIES 100  04  COPYRIGHT INTEL CORPORATION 1995 device at location zero
-
-What is wrong here.
-
-I'm just using mtd the first time here so try to explain a little bit more.
-
-Thank you to all who want to help me.
-
-Oelison.
+Nope. But UBI can do a lot. Try to look at it.
