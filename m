@@ -1,17 +1,23 @@
-Received: from mx1.myoutlookonline.com ([69.25.74.59])
+Received: from ug-out-1314.google.com ([66.249.92.173])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G2WUx-0007xj-5T
-	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 13:03:15 -0400
-From: "Raj Kumar Yadav" <ryadav@neomagic.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: RE: nandwrite problem
-Date: Mon, 17 Jul 2006 22:31:49 +0530
-Message-ID: <004e01c6a9c2$b330d7b0$491fa8c0@pcryadav>
+	id 1G2X85-0008SL-NB
+	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 13:43:42 -0400
+Received: by ug-out-1314.google.com with SMTP id u40so64305ugc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Jul 2006 10:43:33 -0700 (PDT)
+Message-ID: <625fc13d0607171043i79bad731mc9bfab4893147180@mail.gmail.com>
+Date: Mon, 17 Jul 2006 12:43:33 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Raj Kumar Yadav" <ryadav@neomagic.com>
+Subject: Re: nandwrite problem
+In-Reply-To: <004e01c6a9c2$b330d7b0$491fa8c0@pcryadav>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <625fc13d0607170804i745f2566k8173ba5d85cad662@mail.gmail.com>
+Content-Disposition: inline
+References: <625fc13d0607170804i745f2566k8173ba5d85cad662@mail.gmail.com>
+	<004e01c6a9c2$b330d7b0$491fa8c0@pcryadav>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Also for mtdblock/5 the character node will be mtd10  "mknod /dev/mtd10 c 90
-10".
-
-With mtd character interface every partition is accessed through pair of two
-char device node.
-First with  read-write permission. Second with read-only permission.
-
-It is like
-/dev/mtdblock/0   b 31 0
-/dev/mtd0		c 90 0 (Read-write)
-/dev/mtd1		c 90 1 (read only)
-
-/dev/mtdblock/1   b 31 1
-/dev/mtd2		c 90 2 (Read-write)
-/dev/mtd3		c 90 3 (read only)
-
-...
-
-/dev/mtdblock/5   b 31 5
-/dev/mtd10		c 90 10 (Read-write)
-/dev/mtd11		c 90 11 (read only)
-
-
-Raj Kumar Yadav
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Josh Boyer
-Sent: Monday, July 17, 2006 8:35 PM
-To: Davide CASCONE
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: nandwrite problem
-
-On 7/17/06, Davide CASCONE <davide.cascone@st.com> wrote:
+On 7/17/06, Raj Kumar Yadav <ryadav@neomagic.com> wrote:
+> Also for mtdblock/5 the character node will be mtd10  "mknod /dev/mtd10 c 90
+> 10".
 >
-> I have a NAND device related to MTD block 5. The NAND device is correctly
-probing during the kernel boot phase.
-> If I run the following commands
->
-> #mkdir /dev/mtdblock/5 b 31 5
-> #mount -t jffs2 /dev/mtdblock/5 /nand/
->
-> the JFFS2 file system is correctly mounting on the /nand/ directory.
-> But, if I run the following command
->
-> #./nandwrite -j /dev/mtdblock/5 filesys.jffs2_nand
+> With mtd character interface every partition is accessed through pair of two
+> char device node.
+> First with  read-write permission. Second with read-only permission.
 
-nandwrite needs a character device, not a block device.  Use /dev/mtd5
-instead.
+Quite right.  I had forgotten that particular horrible detail.  Thanks
+for correcting me.
 
 josh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
