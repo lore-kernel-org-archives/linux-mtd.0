@@ -1,15 +1,15 @@
-Received: from ug-out-1314.google.com ([66.249.92.175])
+Received: from py-out-1112.google.com ([64.233.166.178])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G2ftl-0004Zs-LI
-	for linux-mtd@lists.infradead.org; Mon, 17 Jul 2006 23:05:27 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so253180ugc
+	id 1G2int-00063J-J8
+	for linux-mtd@lists.infradead.org; Tue, 18 Jul 2006 02:11:37 -0400
+Received: by py-out-1112.google.com with SMTP id n25so1810341pyg
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Jul 2006 20:05:23 -0700 (PDT)
-Message-ID: <625fc13d0607172005k6acedb1r892d82ee484c4329@mail.gmail.com>
-Date: Mon, 17 Jul 2006 22:05:23 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Linux MTD mailing list" <linux-mtd@lists.infradead.org>
-Subject: [UBI] small cleanups for ubi-utils
+	Mon, 17 Jul 2006 23:11:31 -0700 (PDT)
+Message-ID: <f360e3ef0607172311g14b6c5afr655332f0bcc71e42@mail.gmail.com>
+Date: Tue, 18 Jul 2006 14:11:31 +0800
+From: "ken HP" <kenhp1982@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: yaffs2 and nand_write_ecc problem
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -23,24 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-See the ubi branch of git://git.infradead.org/users/jwboyer/mtd-utils
-for the following small cleanups.
+hello everyone
 
-commit 72ea1ebfc2eb9ad225ba0b5e9c3b7d00e980dfc0
-Author: Josh Boyer <jwboyer@gmail.com>
-Date:   Mon Jul 17 21:57:50 2006 -0500
+I use yaffs2 on samsung nand flash(2k page 512M) now. I download
+latest mtd CVS from ftp://ftp.uk.linux.org/pub/people/dwmw2/mtd/cvs/
+when I umount and remount,  file disappear.I knew about the interface
+between yaffs2 and mtd have some problem.but in my yaffs2 source code
+this problem seems just fixed.yaffs2 put and read tags just in 2-38
+field of oob.
 
-    Change DESTDIR and SBINDIR to something a bit more sane.
+I traced the code and found problem is here. in nand_base.c. I found
+that if I use option NAND_ECC_NONE, the function nand_write_ecc would
+not read any oob data. However,in yaffs2 side, it suppose
+mtd->write_ecc will write data and tags.
 
-    Signed-off-by: Josh Boyer <jwboyer@gmail.com>
+code is here
 
-commit fdc20f14a910689f0e2f711ff8f09385b8d10640
-Author: Josh Boyer <jwboyer@gmail.com>
-Date:   Mon Jul 17 21:57:09 2006 -0500
+$Id: nand_base.c,v 1.166 2006/03/13 06:09:08 vwool Exp $
 
-    Remove out-dated files
+ static int nand_write_page (struct mtd_info *mtd, struct
+ nand_chip *this, int page,u_char *oob_buf,  struct nand_oobinfo
+*oobsel, int cached)
+ {
+ ......
 
-    Signed-off-by: Josh Boyer <jwboyer@gmail.com>
+ switch (eccmode) {
+ /* No ecc, write all */
+ case NAND_ECC_NONE:
+  printk (KERN_WARNING "Writing data without ECC to   NAND-FLASH is
+not recommended\n");
+  this->write_buf(mtd, this->data_poi, mtd->oobblock);
+  break;
 
+nand_write_ecc calls nand_write_page, but if the option is
+NAND_ECC_NONE, it just simple writes 2048 byte data, break and return.
+so yaffs2'tag is not written to oob.
 
-josh
+I change nand_base.c to previous one whose nand_write_page will write
+oob, and yaffs2 works perfectly.
+
+Does anyone have the same problem ? and Does this problem(
+nand_write_page do not write data to oob with option NAND_ECC_NONE) is
+a bug?
+
+apologize for my poor english.
