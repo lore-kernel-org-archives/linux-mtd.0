@@ -1,12 +1,12 @@
-Received: from py-out-1112.google.com ([64.233.166.178])
+Received: from py-out-1112.google.com ([64.233.166.181])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G2int-00063J-J8
-	for linux-mtd@lists.infradead.org; Tue, 18 Jul 2006 02:11:37 -0400
-Received: by py-out-1112.google.com with SMTP id n25so1810341pyg
+	id 1G2jRB-0006Yg-Hm
+	for linux-mtd@lists.infradead.org; Tue, 18 Jul 2006 02:52:16 -0400
+Received: by py-out-1112.google.com with SMTP id n25so1819366pyg
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Jul 2006 23:11:31 -0700 (PDT)
-Message-ID: <f360e3ef0607172311g14b6c5afr655332f0bcc71e42@mail.gmail.com>
-Date: Tue, 18 Jul 2006 14:11:31 +0800
+	Mon, 17 Jul 2006 23:52:04 -0700 (PDT)
+Message-ID: <f360e3ef0607172352t13dc48h5088fd1dcd6457f7@mail.gmail.com>
+Date: Tue, 18 Jul 2006 14:52:04 +0800
 From: "ken HP" <kenhp1982@gmail.com>
 To: linux-mtd@lists.infradead.org
 Subject: yaffs2 and nand_write_ecc problem
@@ -50,10 +50,10 @@ $Id: nand_base.c,v 1.166 2006/03/13 06:09:08 vwool Exp $
  switch (eccmode) {
  /* No ecc, write all */
  case NAND_ECC_NONE:
-  printk (KERN_WARNING "Writing data without ECC to   NAND-FLASH is
+ printk (KERN_WARNING "Writing data without ECC to   NAND-FLASH is
 not recommended\n");
-  this->write_buf(mtd, this->data_poi, mtd->oobblock);
-  break;
+ this->write_buf(mtd, this->data_poi, mtd->oobblock);
+ break;
 
 nand_write_ecc calls nand_write_page, but if the option is
 NAND_ECC_NONE, it just simple writes 2048 byte data, break and return.
