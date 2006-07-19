@@ -1,19 +1,14 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G38OB-0004E3-Io
-	for linux-mtd@lists.infradead.org; Wed, 19 Jul 2006 05:30:47 -0400
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=[192.168.100.183])
-	by postikukk.artecdesign.ee with esmtp (Exim 4.50)
-	id 1G38O7-0003ws-Fx
-	for linux-mtd@lists.infradead.org; Wed, 19 Jul 2006 12:30:48 +0300
-Message-ID: <44BDFCAE.80807@artecdesign.ee>
-Date: Wed, 19 Jul 2006 12:34:38 +0300
-From: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: NAND behind INT13 BIOS interface
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: NAND behind INT13 BIOS interface
+From: David Woodhouse <dwmw2@infradead.org>
+To: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
+In-Reply-To: <44BDFCAE.80807@artecdesign.ee>
+References: <44BDFCAE.80807@artecdesign.ee>
+Content-Type: text/plain
+Date: Wed, 19 Jul 2006 11:09:45 -0400
+Message-Id: <1153321785.29664.3.camel@shinybook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +18,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Wed, 2006-07-19 at 12:34 +0300, Indrek Kruusa wrote:
+> I have board with NAND and BIOS seems to have built-in driver for that. 
+> BIOS provides INT 13 interface for the NAND too.
+> 
+> Is there a solution to access such NAND (with the help of INT 13) as a 
+> usual block device from Linux?
 
-I have board with NAND and BIOS seems to have built-in driver for that. 
-BIOS provides INT 13 interface for the NAND too.
+There used to be such a hack -- it's quite evil and fragile though. You
+have to switch back into real mode to invoke the BIOS call, and you need
+to preserve enough of the pre-boot environment that it can still work.
+Running it in vm86 mode might also work, if you're lucky.
 
-Is there a solution to access such NAND (with the help of INT 13) as a 
-usual block device from Linux?
+Seriously though, I wouldn't bother -- just implement a translation
+layer in Linux which is compatible.
 
-Best regards,
-Indrek
+-- 
+dwmw2
