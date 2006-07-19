@@ -1,15 +1,22 @@
-Received: from mail.linux-boards.com ([62.90.235.247])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G2hpT-0005cS-SL
-	for linux-mtd@lists.infradead.org; Tue, 18 Jul 2006 01:09:11 -0400
-Message-ID: <44BC7AF4.7010304@compulab.co.il>
-Date: Tue, 18 Jul 2006 08:08:52 +0200
-From: Mike Rapoport <mike@compulab.co.il>
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G3JlM-0002to-7J
+	for linux-mtd@lists.infradead.org; Wed, 19 Jul 2006 17:39:28 -0400
+Received: from [206.15.76.194] (HELO RudiDell)
+	by hheld.com (CommuniGate Pro SMTP 4.3.7)
+	with ESMTPS id 832347 for linux-mtd@lists.infradead.org;
+	Wed, 19 Jul 2006 14:39:22 -0700
+From: "David Byron" <dbyron@hheld.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: RE: autoconf for mtd-utils
+Date: Wed, 19 Jul 2006 14:37:58 -0700
+Message-ID: <000c01c6ab7b$9aa01f70$a134800a@RudiDell>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-Subject: [PATCH] [MTD] CM-x270 NAND flash support
-Content-Type: multipart/mixed; boundary="------------010202080601090707060107"
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_000D_01C6AB40.EE414770"
+In-Reply-To: AAAAAJOKoN+ryO5OkOyypB2eX+7kXiEA
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,329 +27,116 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------010202080601090707060107
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+
+------=_NextPart_000_000D_01C6AB40.EE414770
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-This patch provides MTD support for NAND flash device on CM-x270 modules.
+On Wed, 2006-07-19 at 12:25p, David Woodhouse wrote: 
 
-Signed-off-by: Mike Rapoport <mike@compulab.co.il>
+> If you just send a proper Makefile patch which provides
+> separate source and build directories, that'd be useful
+> though.
 
+Like this?
 
---------------010202080601090707060107
-Content-Type: text/x-diff;
- name="cm_x270_mtd.patch"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline;
- filename="cm_x270_mtd.patch"
+-DB
 
- drivers/mtd/nand/Kconfig       |    4 +
- drivers/mtd/nand/Makefile      |    1 
- drivers/mtd/nand/cmx270-nand.c |  271 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 276 insertions(+), 0 deletions(-)
+------=_NextPart_000_000D_01C6AB40.EE414770
+Content-Type: application/octet-stream;
+	name="Makefile.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="Makefile.patch"
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 3db77ee..4c212fd 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -232,6 +232,10 @@ config MTD_NAND_CS553X
- 
- 	  If you say "m", the module will be called "cs553x_nand.ko".
- 
-+config MTD_NAND_CM_X270
-+	tristate "Support for NAND Flash on CM-X270 modules"
-+	depends on MTD_NAND && MACH_CM_X270
-+
- config MTD_NAND_NANDSIM
- 	tristate "Support for NAND Flash Simulator"
- 	depends on MTD_NAND && MTD_PARTITIONS
-diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
-index f747593..f2718aa 100644
---- a/drivers/mtd/nand/Makefile
-+++ b/drivers/mtd/nand/Makefile
-@@ -22,5 +22,6 @@ obj-$(CONFIG_MTD_NAND_TS7250)		+= ts7250
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-+obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270-nand.o
- 
- nand-objs = nand_base.o nand_bbt.o
-diff --git a/drivers/mtd/nand/cmx270-nand.c b/drivers/mtd/nand/cmx270-nand.c
-new file mode 100644
-index 0000000..8a1911c
---- /dev/null
-+++ b/drivers/mtd/nand/cmx270-nand.c
-@@ -0,0 +1,271 @@
-+/*
-+ *  linux/drivers/mtd/nand/cmx270-nand.c
-+ *
-+ *  Copyright (C) 2006 Compulab, Ltd.
-+ *  Mike Rapoport <mike@compulab.co.il>
-+ *
-+ *  Derived from drivers/mtd/nand/h1910.c
-+ *       Copyright (C) 2002 Marius Gröger (mag@sysgo.de)
-+ *       Copyright (c) 2001 Thomas Gleixner (gleixner@autronix.de)
-+ *
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  Overview:
-+ *   This is a device driver for the NAND flash device found on the
-+ *   CM-X270 board.
-+ */
-+
-+#include <linux/slab.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+
-+#include <asm/io.h>
-+#include <asm/irq.h>
-+
-+#include <asm/arch/hardware.h>
-+#include <asm/arch/pxa-regs.h>
-+
-+#define GPIO_NAND_CS	(11)
-+#define GPIO_NAND_RB	(89)
-+
-+/* This macro needed to ensure in-order operation of GPIO and local
-+ * bus. Without both asm command and dummy uncached read there're
-+ * states when NAND access is broken. I've looked for such macro(s) in
-+ * include/asm-arm but found nothing approptiate.
-+ * dmac_clean_range is close, but is makes cache invalidation
-+ * unnecessary here and it cannot be used in module
-+ */
-+#define DRAIN_WB() \
-+	do { \
-+		unsigned char dummy; \
-+		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
-+		dummy=*((unsigned char*)UNCACHED_ADDR); \
-+	} while(0)
-+
-+/* MTD structure for CM-X270 board */
-+static struct mtd_info *cmx270_nand_mtd;
-+
-+/* remaped IO address of the device */
-+static void __iomem *cmx270_nand_io;
-+
-+/*
-+ * Define static partitions for flash device
-+ */
-+static struct mtd_partition partition_info[] = {
-+	{
-+		.name	= "cmx270-0",
-+		.offset	= 0,
-+		.size	= MTDPART_SIZ_FULL
-+	}
-+};
-+#define NUM_PARTITIONS (ARRAY_SIZE(partition_info))
-+
-+const char *part_probes[] = { "cmdlinepart", NULL };
-+
-+static 	u_char cmx270_read_byte(struct mtd_info *mtd)
-+{
-+	struct nand_chip *this = mtd->priv;
-+
-+	return (readl(this->IO_ADDR_R) >> 16);
-+}
-+
-+static void cmx270_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	int i;
-+	struct nand_chip *this = mtd->priv;
-+
-+	for (i=0; i<len; i++)
-+		writel((*buf++ << 16), this->IO_ADDR_W);
-+}
-+
-+static void cmx270_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	int i;
-+	struct nand_chip *this = mtd->priv;
-+
-+	for (i=0; i<len; i++)
-+		*buf++ = readl(this->IO_ADDR_R) >> 16;
-+}
-+
-+static int cmx270_verify_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	int i;
-+	struct nand_chip *this = mtd->priv;
-+
-+	for (i=0; i<len; i++)
-+		if (buf[i] != (u_char)(readl(this->IO_ADDR_R) >> 16))
-+			return -EFAULT;
-+
-+	return 0;
-+}
-+
-+static inline void nand_cs_on(void)
-+{
-+	GPCR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
-+}
-+
-+static void nand_cs_off(void)
-+{
-+	DRAIN_WB();
-+
-+	GPSR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS);
-+}
-+
-+/*
-+ *	hardware specific access to control-lines
-+ */
-+static void cmx270_hwcontrol(struct mtd_info *mtd, int dat,
-+			     unsigned int ctrl)
-+{
-+	struct nand_chip* this = mtd->priv;
-+	unsigned int nandaddr = (unsigned int)this->IO_ADDR_W;
-+
-+	DRAIN_WB();
-+
-+	if (ctrl & NAND_CTRL_CHANGE) {
-+		if ( ctrl & NAND_ALE )
-+			nandaddr |=  (1 << 3);
-+		else
-+			nandaddr &= ~(1 << 3);
-+		if ( ctrl & NAND_CLE )
-+			nandaddr |=  (1 << 2);
-+		else
-+			nandaddr &= ~(1 << 2);
-+		if ( ctrl & NAND_NCE )
-+			nand_cs_on();
-+		else
-+			nand_cs_off();
-+	}
-+
-+	DRAIN_WB();
-+	this->IO_ADDR_W = (void __iomem*)nandaddr;
-+	if (dat != NAND_CMD_NONE)
-+		writel((dat << 16), this->IO_ADDR_W);
-+
-+	DRAIN_WB();
-+}
-+
-+/*
-+ *	read device ready pin
-+ */
-+static int cmx270_device_ready(struct mtd_info *mtd)
-+{
-+	DRAIN_WB();
-+
-+	return (GPLR(GPIO_NAND_RB) & GPIO_bit(GPIO_NAND_RB));
-+}
-+
-+/*
-+ * Main initialization routine
-+ */
-+static int __devinit cmx270_init(void)
-+{
-+	struct nand_chip *this;
-+	const char *part_type;
-+	struct mtd_partition *mtd_parts;
-+	int mtd_parts_nb = 0;
-+	int ret;
-+
-+	/* Allocate memory for MTD device structure and private data */
-+	cmx270_nand_mtd = kzalloc(sizeof(struct mtd_info) +
-+				  sizeof(struct nand_chip),
-+				  GFP_KERNEL);
-+	if (!cmx270_nand_mtd) {
-+		printk("Unable to allocate CM-X270 NAND MTD device structure.\n");
-+		return -ENOMEM;
-+	}
-+
-+	cmx270_nand_io = ioremap(PXA_CS1_PHYS, 12);
-+	if (!cmx270_nand_io) {
-+		printk("Unable to ioremap NAND device\n");
-+		ret = -EINVAL;
-+		goto err1;
-+	}
-+
-+	/* Get pointer to private data */
-+	this = (struct nand_chip *)(&cmx270_nand_mtd[1]);
-+
-+	/* Link the private data with the MTD structure */
-+	cmx270_nand_mtd->owner = THIS_MODULE;
-+	cmx270_nand_mtd->priv = this;
-+
-+	/* insert callbacks */
-+	this->IO_ADDR_R = cmx270_nand_io;
-+	this->IO_ADDR_W = cmx270_nand_io;
-+	this->cmd_ctrl = cmx270_hwcontrol;
-+	this->dev_ready = cmx270_device_ready;
-+
-+	/* 15 us command delay time */
-+	this->chip_delay = 20;
-+	this->ecc.mode = NAND_ECC_SOFT;
-+
-+	/* read/write functions */
-+	this->read_byte = cmx270_read_byte;
-+	this->read_buf = cmx270_read_buf;
-+	this->write_buf = cmx270_write_buf;
-+	this->verify_buf = cmx270_verify_buf;
-+
-+	/* Scan to find existence of the device */
-+	if (nand_scan (cmx270_nand_mtd, 1)) {
-+		printk(KERN_NOTICE "No NAND device\n");
-+		ret = -ENXIO;
-+		goto err2;
-+	}
-+
-+#ifdef CONFIG_MTD_CMDLINE_PARTS
-+	mtd_parts_nb = parse_mtd_partitions(cmx270_nand_mtd, part_probes,
-+					    &mtd_parts, 0);
-+	if (mtd_parts_nb > 0)
-+		part_type = "command line";
-+	else
-+		mtd_parts_nb = 0;
-+#endif
-+	if (!mtd_parts_nb) {
-+		mtd_parts = partition_info;
-+		mtd_parts_nb = NUM_PARTITIONS;
-+		part_type = "static";
-+	}
-+
-+	/* Register the partitions */
-+	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
-+	ret = add_mtd_partitions(cmx270_nand_mtd, mtd_parts, mtd_parts_nb);
-+	if (ret)
-+		goto err2;
-+
-+	/* Return happy */
-+	return 0;
-+
-+err2:
-+	iounmap(cmx270_nand_io);
-+err1:
-+	kfree(cmx270_nand_mtd);
-+
-+	return ret;
-+
-+}
-+module_init(cmx270_init);
-+
-+/*
-+ * Clean up routine
-+ */
-+static void __devexit cmx270_cleanup(void)
-+{
-+	/* Release resources, unregister device */
-+	nand_release(cmx270_nand_mtd);
-+
-+	iounmap(cmx270_nand_io);
-+
-+	/* Free the MTD device structure */
-+	kfree (cmx270_nand_mtd);
-+}
-+module_exit(cmx270_cleanup);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Mike Rapoport <mike@compulab.co.il>");
-+MODULE_DESCRIPTION("NAND flash driver for Compulab CM-X270 Module");
+diff --git a/Makefile b/Makefile=0A=
+index 37cd7f7..62c7650 100644=0A=
+--- a/Makefile=0A=
++++ b/Makefile=0A=
+@@ -6,11 +6,18 @@ # $Id: Makefile,v 1.60 2005/11/07 11:15:=0A=
+ SBINDIR=3D/usr/sbin=0A=
+ MANDIR=3D/usr/man=0A=
+ INCLUDEDIR=3D/usr/include=0A=
+-#CROSS=3Darm-linux-=0A=
+-CC :=3D $(CROSS)gcc=0A=
++#CROSS=3Darm-linux=0A=
++CC :=3D $(CROSS)-gcc=0A=
+ CFLAGS :=3D -I./include -O2 -Wall=0A=
+ =0A=
+-TARGETS =3D ftl_format flash_erase flash_eraseall nanddump doc_loadbios =
+\=0A=
++ifeq ($(origin CROSS),undefined)=0A=
++  BUILDDIR =3D .=0A=
++else=0A=
++  BUILDDIR =3D $(CROSS)=0A=
++  CLEAN_BUILDDIR =3D $(BUILDDIR)=0A=
++endif=0A=
++=0A=
++RAWTARGETS =3D ftl_format flash_erase flash_eraseall nanddump =
+doc_loadbios \=0A=
+ 	mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \=0A=
+ 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite \=0A=
+ 	jffs2dump \=0A=
+@@ -18,40 +25,48 @@ TARGETS =3D ftl_format flash_erase flash_e=0A=
+ 	rfddump rfdformat \=0A=
+ 	sumtool #jffs2reader=0A=
+ =0A=
++TARGETS =3D $(foreach target,$(RAWTARGETS),$(BUILDDIR)/$(target))=0A=
++=0A=
+ SYMLINKS =3D=0A=
+ =0A=
+ %: %.o=0A=
+-	$(CC) $(LDFLAGS) -g -o $@ $^=0A=
++	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^=0A=
+ =0A=
+-%.o: %.c=0A=
+-	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$<.dep=0A=
++$(BUILDDIR)/%.o: %.c=0A=
++	mkdir -p $(BUILDDIR)=0A=
++	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep=0A=
+ =0A=
+ .SUFFIXES:=0A=
+ =0A=
+ all: $(TARGETS)=0A=
+ =0A=
+-IGNORE=3D${wildcard .*.c.dep}=0A=
++IGNORE=3D${wildcard $(BUILDDIR)/.*.c.dep}=0A=
+ -include ${IGNORE}=0A=
+ =0A=
+ clean:=0A=
+-	rm -f *.o $(TARGETS) .*.c.dep $(SYMLINKS)=0A=
++	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)=0A=
++	if [ "$(CROSS)x" !=3D "x" ]; then rm -rf $(CROSS); fi=0A=
+ =0A=
+ $(SYMLINKS):=0A=
+ 	ln -sf ../fs/jffs2/$@ $@=0A=
+ =0A=
+-mkfs.jffs2: crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr.o=0A=
++$(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc32.o \=0A=
++			$(BUILDDIR)/compr_rtime.o \=0A=
++			$(BUILDDIR)/mkfs.jffs2.o \=0A=
++			$(BUILDDIR)/compr_zlib.o \=0A=
++			$(BUILDDIR)/compr.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
+ =0A=
+-flash_eraseall: crc32.o flash_eraseall.o=0A=
++$(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o =
+$(BUILDDIR)/flash_eraseall.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+-jffs2reader: jffs2reader.o=0A=
++$(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
+ =0A=
+-jffs2dump: jffs2dump.o crc32.o=0A=
++$(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+-sumtool: sumtool.o crc32.o=0A=
++$(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+ install: ${TARGETS}=0A=
 
---------------010202080601090707060107--
+------=_NextPart_000_000D_01C6AB40.EE414770--
