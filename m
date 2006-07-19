@@ -1,14 +1,22 @@
-Subject: Re: NAND behind INT13 BIOS interface
-From: David Woodhouse <dwmw2@infradead.org>
-To: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-In-Reply-To: <44BDFCAE.80807@artecdesign.ee>
-References: <44BDFCAE.80807@artecdesign.ee>
-Content-Type: text/plain
-Date: Wed, 19 Jul 2006 11:09:45 -0400
-Message-Id: <1153321785.29664.3.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G3HBR-0001LI-K4
+	for linux-mtd@lists.infradead.org; Wed, 19 Jul 2006 14:54:14 -0400
+Received: from [206.15.76.194] (HELO RudiDell)
+	by hheld.com (CommuniGate Pro SMTP 4.3.7)
+	with ESMTPS id 831792 for linux-mtd@lists.infradead.org;
+	Wed, 19 Jul 2006 11:54:05 -0700
+From: "David Byron" <dbyron@hheld.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: autoconf for mtd-utils
+Date: Wed, 19 Jul 2006 11:52:48 -0700
+Message-ID: <000001c6ab64$87a7fad0$a134800a@RudiDell>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-07-19 at 12:34 +0300, Indrek Kruusa wrote:
-> I have board with NAND and BIOS seems to have built-in driver for that. 
-> BIOS provides INT 13 interface for the NAND too.
-> 
-> Is there a solution to access such NAND (with the help of INT 13) as a 
-> usual block device from Linux?
+In my environment, it would help to have separate build and source
+directories for mtd-utils.  I need a native build for mkfs.jffs2 and a
+cross-compiled build for flash_eraseall, etc.  A few weeks ago it looks like
+Josh Boyer removed an attempt at a Makefile.am.
 
-There used to be such a hack -- it's quite evil and fragile though. You
-have to switch back into real mode to invoke the BIOS call, and you need
-to preserve enough of the pre-boot environment that it can still work.
-Running it in vm86 mode might also work, if you're lucky.
+Is there a general aversion to automake?  If I submit a Makefile.in /
+configure.ac that uses autoconf but not automake, does it have a chance of
+getting accepted?
 
-Seriously though, I wouldn't bother -- just implement a translation
-layer in Linux which is compatible.
+I'm happy to create a Makefile.am and configure.ac for automake if that's
+got a better shot.
 
--- 
-dwmw2
+Thanks.
+
+-DB
