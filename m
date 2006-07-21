@@ -1,22 +1,18 @@
-Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
-	helo=hheld.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G3JlM-0002to-7J
-	for linux-mtd@lists.infradead.org; Wed, 19 Jul 2006 17:39:28 -0400
-Received: from [206.15.76.194] (HELO RudiDell)
-	by hheld.com (CommuniGate Pro SMTP 4.3.7)
-	with ESMTPS id 832347 for linux-mtd@lists.infradead.org;
-	Wed, 19 Jul 2006 14:39:22 -0700
-From: "David Byron" <dbyron@hheld.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: RE: autoconf for mtd-utils
-Date: Wed, 19 Jul 2006 14:37:58 -0700
-Message-ID: <000c01c6ab7b$9aa01f70$a134800a@RudiDell>
+Received: from roc.holo.8d.com ([64.254.227.115])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1G40jU-0003gG-Ok
+	for linux-mtd@lists.infradead.org; Fri, 21 Jul 2006 15:32:25 -0400
+Message-ID: <44C12C0C.9080505@8d.com>
+Date: Fri, 21 Jul 2006 15:33:32 -0400
+From: Raphael Assenat <raph@8d.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_000D_01C6AB40.EE414770"
-In-Reply-To: AAAAAJOKoN+ryO5OkOyypB2eX+7kXiEA
-Reply-To: dbyron@hheld.com
+To: Mike Rapoport <mike@compulab.co.il>
+Subject: Re: [PATCH] [MTD] CM-x270 NAND flash support
+References: <44BC7AF4.7010304@compulab.co.il>
+In-Reply-To: <44BC7AF4.7010304@compulab.co.il>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,117 +22,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
+Mike Rapoport wrote:
+> +
+> +/* This macro needed to ensure in-order operation of GPIO and local
+> + * bus. Without both asm command and dummy uncached read there're
+> + * states when NAND access is broken. I've looked for such macro(s) in
+> + * include/asm-arm but found nothing approptiate.
+> + * dmac_clean_range is close, but is makes cache invalidation
+> + * unnecessary here and it cannot be used in module
+> + */
+> +#define DRAIN_WB() \
+> +	do { \
+> +		unsigned char dummy; \
+> +		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
+> +		dummy=*((unsigned char*)UNCACHED_ADDR); \
+> +	} while(0)
+I think you should add the volatile keyword to the typecast:
 
-------=_NextPart_000_000D_01C6AB40.EE414770
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+dummy=*((volatile unsigned char*)UNCACHED_ADDR);
 
-On Wed, 2006-07-19 at 12:25p, David Woodhouse wrote: 
+In the cm-x255 nand flash driver, I had problems without it (read errors, ecc errors, 
+etc). Maybe the compiler is optimising this read away thinking it does nothing useful?
 
-> If you just send a proper Makefile patch which provides
-> separate source and build directories, that'd be useful
-> though.
-
-Like this?
-
--DB
-
-------=_NextPart_000_000D_01C6AB40.EE414770
-Content-Type: application/octet-stream;
-	name="Makefile.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="Makefile.patch"
-
-diff --git a/Makefile b/Makefile=0A=
-index 37cd7f7..62c7650 100644=0A=
---- a/Makefile=0A=
-+++ b/Makefile=0A=
-@@ -6,11 +6,18 @@ # $Id: Makefile,v 1.60 2005/11/07 11:15:=0A=
- SBINDIR=3D/usr/sbin=0A=
- MANDIR=3D/usr/man=0A=
- INCLUDEDIR=3D/usr/include=0A=
--#CROSS=3Darm-linux-=0A=
--CC :=3D $(CROSS)gcc=0A=
-+#CROSS=3Darm-linux=0A=
-+CC :=3D $(CROSS)-gcc=0A=
- CFLAGS :=3D -I./include -O2 -Wall=0A=
- =0A=
--TARGETS =3D ftl_format flash_erase flash_eraseall nanddump doc_loadbios =
-\=0A=
-+ifeq ($(origin CROSS),undefined)=0A=
-+  BUILDDIR =3D .=0A=
-+else=0A=
-+  BUILDDIR =3D $(CROSS)=0A=
-+  CLEAN_BUILDDIR =3D $(BUILDDIR)=0A=
-+endif=0A=
-+=0A=
-+RAWTARGETS =3D ftl_format flash_erase flash_eraseall nanddump =
-doc_loadbios \=0A=
- 	mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \=0A=
- 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite \=0A=
- 	jffs2dump \=0A=
-@@ -18,40 +25,48 @@ TARGETS =3D ftl_format flash_erase flash_e=0A=
- 	rfddump rfdformat \=0A=
- 	sumtool #jffs2reader=0A=
- =0A=
-+TARGETS =3D $(foreach target,$(RAWTARGETS),$(BUILDDIR)/$(target))=0A=
-+=0A=
- SYMLINKS =3D=0A=
- =0A=
- %: %.o=0A=
--	$(CC) $(LDFLAGS) -g -o $@ $^=0A=
-+	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^=0A=
- =0A=
--%.o: %.c=0A=
--	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$<.dep=0A=
-+$(BUILDDIR)/%.o: %.c=0A=
-+	mkdir -p $(BUILDDIR)=0A=
-+	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep=0A=
- =0A=
- .SUFFIXES:=0A=
- =0A=
- all: $(TARGETS)=0A=
- =0A=
--IGNORE=3D${wildcard .*.c.dep}=0A=
-+IGNORE=3D${wildcard $(BUILDDIR)/.*.c.dep}=0A=
- -include ${IGNORE}=0A=
- =0A=
- clean:=0A=
--	rm -f *.o $(TARGETS) .*.c.dep $(SYMLINKS)=0A=
-+	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)=0A=
-+	if [ "$(CROSS)x" !=3D "x" ]; then rm -rf $(CROSS); fi=0A=
- =0A=
- $(SYMLINKS):=0A=
- 	ln -sf ../fs/jffs2/$@ $@=0A=
- =0A=
--mkfs.jffs2: crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr.o=0A=
-+$(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc32.o \=0A=
-+			$(BUILDDIR)/compr_rtime.o \=0A=
-+			$(BUILDDIR)/mkfs.jffs2.o \=0A=
-+			$(BUILDDIR)/compr_zlib.o \=0A=
-+			$(BUILDDIR)/compr.o=0A=
- 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
- =0A=
--flash_eraseall: crc32.o flash_eraseall.o=0A=
-+$(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o =
-$(BUILDDIR)/flash_eraseall.o=0A=
- 	$(CC) $(LDFLAGS) -o $@ $^=0A=
- =0A=
--jffs2reader: jffs2reader.o=0A=
-+$(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o=0A=
- 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
- =0A=
--jffs2dump: jffs2dump.o crc32.o=0A=
-+$(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o=0A=
- 	$(CC) $(LDFLAGS) -o $@ $^=0A=
- =0A=
--sumtool: sumtool.o crc32.o=0A=
-+$(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o=0A=
- 	$(CC) $(LDFLAGS) -o $@ $^=0A=
- =0A=
- install: ${TARGETS}=0A=
-
-------=_NextPart_000_000D_01C6AB40.EE414770--
+Regards,
+Raphael Assenat
