@@ -1,18 +1,19 @@
-Received: from roc.holo.8d.com ([64.254.227.115])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G40jU-0003gG-Ok
-	for linux-mtd@lists.infradead.org; Fri, 21 Jul 2006 15:32:25 -0400
-Message-ID: <44C12C0C.9080505@8d.com>
-Date: Fri, 21 Jul 2006 15:33:32 -0400
-From: Raphael Assenat <raph@8d.com>
+Received: from nf-out-0910.google.com ([64.233.182.188])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G4Zsx-0005jI-Oo
+	for linux-mtd@lists.infradead.org; Sun, 23 Jul 2006 05:04:28 -0400
+Received: by nf-out-0910.google.com with SMTP id x4so1264435nfb
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 23 Jul 2006 02:04:25 -0700 (PDT)
+Message-ID: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
+Date: Sun, 23 Jul 2006 17:04:24 +0800
+From: "falls huang" <falls.huang@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: can I use vfat filesystem on UBI layer?
 MIME-Version: 1.0
-To: Mike Rapoport <mike@compulab.co.il>
-Subject: Re: [PATCH] [MTD] CM-x270 NAND flash support
-References: <44BC7AF4.7010304@compulab.co.il>
-In-Reply-To: <44BC7AF4.7010304@compulab.co.il>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mike Rapoport wrote:
-> +
-> +/* This macro needed to ensure in-order operation of GPIO and local
-> + * bus. Without both asm command and dummy uncached read there're
-> + * states when NAND access is broken. I've looked for such macro(s) in
-> + * include/asm-arm but found nothing approptiate.
-> + * dmac_clean_range is close, but is makes cache invalidation
-> + * unnecessary here and it cannot be used in module
-> + */
-> +#define DRAIN_WB() \
-> +	do { \
-> +		unsigned char dummy; \
-> +		asm volatile ("mcr p15, 0, r0, c7, c10, 4":::"r0"); \
-> +		dummy=*((unsigned char*)UNCACHED_ADDR); \
-> +	} while(0)
-I think you should add the volatile keyword to the typecast:
+Hello!
 
-dummy=*((volatile unsigned char*)UNCACHED_ADDR);
+   as title .
 
-In the cm-x255 nand flash driver, I had problems without it (read errors, ecc errors, 
-etc). Maybe the compiler is optimising this read away thinking it does nothing useful?
-
-Regards,
-Raphael Assenat
+-- 
+Regards
+Falls Huang
