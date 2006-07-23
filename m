@@ -1,22 +1,16 @@
-Received: from ug-out-1314.google.com ([66.249.92.175])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G4ilw-0002e1-6t
-	for linux-mtd@lists.infradead.org; Sun, 23 Jul 2006 14:33:54 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so1957852ugc
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 23 Jul 2006 11:33:42 -0700 (PDT)
-Message-ID: <625fc13d0607231133p28854ce7t74c96e3484415284@mail.gmail.com>
-Date: Sun, 23 Jul 2006 14:33:42 -0400
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "falls huang" <falls.huang@gmail.com>
-Subject: Re: can I use vfat filesystem on UBI layer?
-In-Reply-To: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G4jFr-00036g-4p
+	for linux-mtd@lists.infradead.org; Sun, 23 Jul 2006 15:04:46 -0400
+Date: Sun, 23 Jul 2006 21:02:39 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: RFC: remove include/mtd/jffs2-user.h
+Message-ID: <20060723190239.GB25367@stusta.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +20,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/23/06, falls huang <falls.huang@gmail.com> wrote:
-> Hello!
->
->   as title .
+include/mtd/jffs2-user.h is not used in the kernel, and depends on 
+user space providing a variable target_endian.
 
-I believe that is one of the intended goals.  A block layer needs to
-be added (much like mtdblock), and then one should be able to use
-vfat, ext2, ext3, reiserfs, etc.
+I don't see it providing an interface between the kernel and user space.
 
-josh
+It seems this header should be part of the user space MTD tools instead 
+of headers provided by the kernel?
+
+cu
+Adrian
+
+-- 
+
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
