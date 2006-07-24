@@ -1,20 +1,15 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G4yCZ-0005qm-EJ
-	for linux-mtd@lists.infradead.org; Mon, 24 Jul 2006 07:02:30 -0400
-Subject: Re: can I use vfat filesystem on UBI layer?
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: falls huang <falls.huang@gmail.com>
-In-Reply-To: <1153738747.16170.26.camel@sauron.oktetlabs.ru>
-References: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
-	<1153738747.16170.26.camel@sauron.oktetlabs.ru>
-Content-Type: text/plain
-Date: Mon, 24 Jul 2006 15:01:44 +0400
-Message-Id: <1153738904.16170.29.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Date: Mon, 24 Jul 2006 12:18:42 +0100 (BST)
+From: Alexey Korolev <akorolev@pentafluge.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] MTD performance issues on XIP configuration.
+In-Reply-To: <1151415660.17609.132.camel@hades.cambridge.redhat.com>
+Message-ID: <Pine.LNX.4.56.0607241153400.23994@pentafluge.infradead.org>
+References: <Pine.LNX.4.56.0606261628560.8547@pentafluge.infradead.org>
+	<1151415660.17609.132.camel@hades.cambridge.redhat.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Sender: Alexey Korolev <akorolev@infradead.org>
+Cc: davide.cascone@st.com, nico@cam.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +19,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-07-24 at 14:59 +0400, Artem B. Bityutskiy wrote:
-> UBI can be considered as a block device with a large (=eraseblock) block
-> size. But it is barely practical to use a block device with such a large
-> eraseblock size.
+David,
 
-I'm a bit incorrect here, I should have said, it is very easy to build a
-block device emulation over UBI when block size = lugical eraseblock
-size.
+Thanks a lot for commiting the patch which fixes some performance and stability issues in CFI driver.
+Is it possible to include the patch for XIP performance issues too? It's very simple and  I think it shouldn't cause any complains. The patch, comments and signed off are added to this letter
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+
+Thanks,
+Alexey
+> > Hi All,
+> > 
+> > Current implementation of cfi_cmdset_0001 driver has serious performance issues in case of enabled MTD XIP configuration.
+> > Performance tests showed RAW write performance on XIP configuration ~60Kb/sec on Sibley (It should be over 400Kb/s)
+> > I investigated this problem:
+> > When we perform write or lock/unlock operation we call WAIT_TIMEOUT which passes chip_op_time = 0 to function xip_wait_for_operation. When zero timeout is passed to xip_wait_for_operation it automatically sets the usec = 500000 - and we send cpu to idle when it is unnecessary.
+> > To fix the issue I corrected the condition for sending CPU to idle.
+> > 
+> > If you don't have any concerns regarding the following code could you please put it into the repository?
+> 
+> Code looks fine but please could you resubmit with an appropriate
+> Signed-off-by: line?
+> 
+> And how did you send your mail, btw? You should be sending from
+> akorolev@infradead.org rather than at any specific host.
+> 
+
+
+Fix of performance issues on XIP configurations. 
+Tests demonstrated very poor write and lock/unlock performance on XIP.
+The reason of the failure is related to the incorrect condition of sending CPU to idle.
+
+
+Signed-off-by: Alexey Korolev <akorolev@infradead.org>
+-------------------------------
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-07-19 21:40:04.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-07-24 14:30:28.542343528 +0400
+@@ -1001,7 +1001,7 @@
+ 			map_write(map, CMD(0x70), adr);
+ 			chip->state = oldstate;
+ 			start = xip_currtime();
+-		} else if (usec >= 1000000/HZ) {
++		} else if (chip_op_time >= 1000000/HZ) {
+ 			/*
+ 			 * Try to save on CPU power when waiting delay
+ 			 * is at least a system timer tick period.
