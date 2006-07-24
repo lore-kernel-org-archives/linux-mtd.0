@@ -1,15 +1,23 @@
-Date: Mon, 24 Jul 2006 12:18:42 +0100 (BST)
-From: Alexey Korolev <akorolev@pentafluge.infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] MTD performance issues on XIP configuration.
-In-Reply-To: <1151415660.17609.132.camel@hades.cambridge.redhat.com>
-Message-ID: <Pine.LNX.4.56.0607241153400.23994@pentafluge.infradead.org>
-References: <Pine.LNX.4.56.0606261628560.8547@pentafluge.infradead.org>
-	<1151415660.17609.132.camel@hades.cambridge.redhat.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Sender: Alexey Korolev <akorolev@infradead.org>
-Cc: davide.cascone@st.com, nico@cam.org, linux-mtd@lists.infradead.org
+Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G4ync-0006d3-TE
+	for linux-mtd@lists.infradead.org; Mon, 24 Jul 2006 07:40:40 -0400
+Date: Mon, 24 Jul 2006 13:40:07 +0200
+From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: "Artem B. Bityutskiy" <dedekind@infradead.org>
+Subject: Re: how to use jff2 on UBI layer?
+Message-ID: <20060724114007.GB20849@wohnheim.fh-wedel.de>
+References: <1152536472.6066.28.camel@localhost.localdomain>
+	<004601c6aba6$14554050$c7a3580a@swcenter.sec.samsung.co.kr>
+	<20060720094558.GA30897@wohnheim.fh-wedel.de>
+	<1153737968.16170.19.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1153737968.16170.19.camel@sauron.oktetlabs.ru>
+Cc: linux-mtd@lists.infradead.org, haver@vnet.ibm.com,
+	'Marteo Tim' <tim.marteo@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,48 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David,
-
-Thanks a lot for commiting the patch which fixes some performance and stability issues in CFI driver.
-Is it possible to include the patch for XIP performance issues too? It's very simple and  I think it shouldn't cause any complains. The patch, comments and signed off are added to this letter
-
-
-Thanks,
-Alexey
-> > Hi All,
-> > 
-> > Current implementation of cfi_cmdset_0001 driver has serious performance issues in case of enabled MTD XIP configuration.
-> > Performance tests showed RAW write performance on XIP configuration ~60Kb/sec on Sibley (It should be over 400Kb/s)
-> > I investigated this problem:
-> > When we perform write or lock/unlock operation we call WAIT_TIMEOUT which passes chip_op_time = 0 to function xip_wait_for_operation. When zero timeout is passed to xip_wait_for_operation it automatically sets the usec = 500000 - and we send cpu to idle when it is unnecessary.
-> > To fix the issue I corrected the condition for sending CPU to idle.
-> > 
-> > If you don't have any concerns regarding the following code could you please put it into the repository?
+On Mon, 24 July 2006 14:46:08 +0400, Artem B. Bityutskiy wrote:
+> On Thu, 2006-07-20 at 11:45 +0200, Jörn Engel wrote:
+> > As of now, it is impossible, sorry.  UBI exports an interface
+> > completely different from MTD, so JFFS2 cannot work on UBI.  What I
+> > used was a glue layer, called gluebi, that converts the UBI interface
+> > into an MTD interface.  But in its current form, that is still
+> > unacceptable, so I'm working on changing the code.
 > 
-> Code looks fine but please could you resubmit with an appropriate
-> Signed-off-by: line?
+> IMO, it would be much saner to do the following:
 > 
-> And how did you send your mail, btw? You should be sending from
-> akorolev@infradead.org rather than at any specific host.
-> 
+> Change JFFS2 and introduce I/O abstraction to it. E.g., add an io.c file
+> with basic I/O functions like
+> jffs2_read()/jffs2_write()/jffs2_point()/jffs2_erase(). Then you could
+> add different I/O back-ends, like UBI. Note, even now we already have 2
+> I/O back-ends: MTD and eCos. Then it would be a matter of adding one
+> more I/O back-end - UBI.
 
+Feel free to send a patch.
 
-Fix of performance issues on XIP configurations. 
-Tests demonstrated very poor write and lock/unlock performance on XIP.
-The reason of the failure is related to the incorrect condition of sending CPU to idle.
+Jörn
 
-
-Signed-off-by: Alexey Korolev <akorolev@infradead.org>
--------------------------------
-diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	2006-07-19 21:40:04.000000000 +0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2006-07-24 14:30:28.542343528 +0400
-@@ -1001,7 +1001,7 @@
- 			map_write(map, CMD(0x70), adr);
- 			chip->state = oldstate;
- 			start = xip_currtime();
--		} else if (usec >= 1000000/HZ) {
-+		} else if (chip_op_time >= 1000000/HZ) {
- 			/*
- 			 * Try to save on CPU power when waiting delay
- 			 * is at least a system timer tick period.
+-- 
+To recognize individual spam features you have to try to get into the
+mind of the spammer, and frankly I want to spend as little time inside
+the minds of spammers as possible.
+-- Paul Graham
