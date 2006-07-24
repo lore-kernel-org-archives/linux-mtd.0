@@ -1,15 +1,22 @@
-Received: from roc.holo.8d.com ([64.254.227.115])
+Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G40ZP-0003bn-EC
-	for linux-mtd@lists.infradead.org; Fri, 21 Jul 2006 15:22:04 -0400
-Message-ID: <44C12997.6080504@8d.com>
-Date: Fri, 21 Jul 2006 15:23:03 -0400
-From: Raphael Assenat <raph@8d.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Add support for NAND flash on cm-x255
-Content-Type: multipart/mixed; boundary="------------060704000100020003070301"
-Cc: mike@compulab.co.il
+	id 1G4xxT-0005L7-Uh
+	for linux-mtd@lists.infradead.org; Mon, 24 Jul 2006 06:46:46 -0400
+Subject: Re: how to use jff2 on UBI layer?
+From: "Artem B. Bityutskiy" <dedekind@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+In-Reply-To: <20060720094558.GA30897@wohnheim.fh-wedel.de>
+References: <1152536472.6066.28.camel@localhost.localdomain>
+	<004601c6aba6$14554050$c7a3580a@swcenter.sec.samsung.co.kr>
+	<20060720094558.GA30897@wohnheim.fh-wedel.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Date: Mon, 24 Jul 2006 14:46:08 +0400
+Message-Id: <1153737968.16170.19.camel@sauron.oktetlabs.ru>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: haver@vnet.ibm.com, linux-mtd@lists.infradead.org,
+	'Marteo Tim' <tim.marteo@gmail.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,241 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------060704000100020003070301
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Thu, 2006-07-20 at 11:45 +0200, Jörn Engel wrote:
+> As of now, it is impossible, sorry.  UBI exports an interface
+> completely different from MTD, so JFFS2 cannot work on UBI.  What I
+> used was a glue layer, called gluebi, that converts the UBI interface
+> into an MTD interface.  But in its current form, that is still
+> unacceptable, so I'm working on changing the code.
 
-This patch adds support for the NAND flash present on Compulab's cm-x255 boards. Since 
-Compulab chose to discontinue cm-x255 support, I decided to submit and support this driver 
-myself.
+IMO, it would be much saner to do the following:
 
-Note: This is the driver I wrote as part of my Compulab kernel fork project (see 
-http://raph.people.8d.com/armcore_kernel.php). It is not based on the driver Mike posted 
-to the list.
+Change JFFS2 and introduce I/O abstraction to it. E.g., add an io.c file
+with basic I/O functions like
+jffs2_read()/jffs2_write()/jffs2_point()/jffs2_erase(). Then you could
+add different I/O back-ends, like UBI. Note, even now we already have 2
+I/O back-ends: MTD and eCos. Then it would be a matter of adding one
+more I/O back-end - UBI.
 
-Applies to 2.6.18-rc2.
-
-Signed-off-by: Raphael Assenat <raph@8d.com>
-
---------------060704000100020003070301
-Content-Type: text/plain;
- name="cm-x255-nand.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="cm-x255-nand.diff"
-
-diff -Nru linux-2.6.18-rc2/drivers/mtd/nand/Kconfig linux-2.6.18-rc2-mtd/drivers/mtd/nand/Kconfig
---- linux-2.6.18-rc2/drivers/mtd/nand/Kconfig	2006-07-17 15:19:57.000000000 -0400
-+++ linux-2.6.18-rc2-mtd/drivers/mtd/nand/Kconfig	2006-07-21 14:36:03.000000000 -0400
-@@ -239,4 +239,11 @@
- 	  The simulator may simulate various NAND flash chips for the
- 	  MTD nand layer.
- 
-+config MTD_NAND_CM_X255
-+	tristate "Support for NAND Flash on Compulab cm-x255"
-+	depends on MTD_NAND && MACH_CM_X255
-+	help
-+	  This enables the driver for the NAND flash present
-+	  on the cm-x255 board from Compulab.
-+
- endmenu
-diff -Nru linux-2.6.18-rc2/drivers/mtd/nand/Makefile linux-2.6.18-rc2-mtd/drivers/mtd/nand/Makefile
---- linux-2.6.18-rc2/drivers/mtd/nand/Makefile	2006-07-17 15:19:57.000000000 -0400
-+++ linux-2.6.18-rc2-mtd/drivers/mtd/nand/Makefile	2006-07-21 14:36:31.000000000 -0400
-@@ -22,5 +22,6 @@
- obj-$(CONFIG_MTD_NAND_NANDSIM)		+= nandsim.o
- obj-$(CONFIG_MTD_NAND_CS553X)		+= cs553x_nand.o
- obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
-+obj-$(CONFIG_MTD_NAND_CM_X255)		+= cm-x255.o
- 
- nand-objs = nand_base.o nand_bbt.o
-diff -Nru linux-2.6.18-rc2/drivers/mtd/nand/cm-x255.c linux-2.6.18-rc2-mtd/drivers/mtd/nand/cm-x255.c
---- linux-2.6.18-rc2/drivers/mtd/nand/cm-x255.c	1969-12-31 19:00:00.000000000 -0500
-+++ linux-2.6.18-rc2-mtd/drivers/mtd/nand/cm-x255.c	2006-07-21 15:02:02.000000000 -0400
-@@ -0,0 +1,183 @@
-+/*
-+ * drivers/mtd/nand/cm-x255.c
-+ *
-+ * Copyright (c) 2006, 8D Technologies inc.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ *  Overview:
-+ *   This is a device driver for the NAND flash device found on the
-+ *   cm-x255 compulab sbc (formerly known as armcore).
-+ *   
-+ *  Changelog:
-+ *  - April 2006, Raphael Assenat <raph@8d.com>:
-+ * 	Creation of the driver.
-+ * 	   
-+ *  - Jul 18, 2006: Raphael Assenat <raph@8d.com>:
-+ * 	Updates for 2.6.18
-+ */
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/delay.h>
-+#include <asm/hardware.h>
-+#include <asm/io.h>
-+#include <asm/arch/pxa-regs.h>
-+#include <asm/arch/cm-x255.h>
-+
-+#define GPIO_NAND_CS	5
-+#define GPIO_NAND_ALE	4
-+#define GPIO_NAND_CLE	3
-+#define GPIO_NAND_RB	10
-+
-+#define DRAIN_WRITE_BUFFER() do { \
-+	asm volatile ("mcr p15, 0, r0, c7, c10, 4\n":::"r0"); \
-+	dummy=*((volatile unsigned char*)UNCACHED_ADDR); \
-+	} while(0)
-+
-+static struct mtd_info *armcore_mtd = NULL;
-+static void __iomem *armcore_nand_io_base;
-+static long armcore_nand_phys_base = 0x04000000;
-+
-+#define DEFAULT_NUM_PARTITIONS 1
-+static int nr_partitions;
-+static struct mtd_partition armcore_default_partition_info[] = {
-+	{
-+	.name = "rootfs",
-+	.offset = 0,
-+	.size = MTDPART_SIZ_FULL,
-+	},
-+};
-+
-+static void armcore_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, 
-+						unsigned int ctrl)
-+{
-+	struct nand_chip *chip = mtd->priv;	
-+	unsigned char dummy;
-+
-+	DRAIN_WRITE_BUFFER();
-+
-+	if (ctrl & NAND_CTRL_CHANGE)
-+	{
-+		if (ctrl & NAND_NCE) 
-+			GPCR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS); 
-+		else
-+			GPSR(GPIO_NAND_CS) = GPIO_bit(GPIO_NAND_CS); 
-+
-+		if (ctrl & NAND_CLE)
-+			GPSR(GPIO_NAND_CLE) = GPIO_bit(GPIO_NAND_CLE); 
-+		else
-+			GPCR(GPIO_NAND_CLE) = GPIO_bit(GPIO_NAND_CLE); 
-+
-+		if (ctrl & NAND_ALE)
-+			GPSR(GPIO_NAND_ALE) = GPIO_bit(GPIO_NAND_ALE); 
-+		else
-+			GPCR(GPIO_NAND_ALE) = GPIO_bit(GPIO_NAND_ALE); 
-+
-+	}
-+	
-+	DRAIN_WRITE_BUFFER();
-+
-+	if (cmd != NAND_CMD_NONE)
-+		writeb(cmd, chip->IO_ADDR_W);
-+}
-+
-+static int armcore_nand_device_ready(struct mtd_info *mtd)
-+{
-+	return GPLR(GPIO_NAND_RB) & GPIO_bit(GPIO_NAND_RB);
-+}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+const char *part_probes[] = { "cmdlinepart", NULL };
-+#endif
-+
-+int __init armcore_nand_init(void)
-+{
-+	struct nand_chip *this;
-+	struct mtd_partition* armcore_partition_info;
-+	int err = 0;
-+
-+	pxa_gpio_mode(GPIO_NAND_RB);
-+	pxa_gpio_mode(GPIO_NAND_CS | GPIO_OUT | GPIO_DFLT_HIGH);
-+	pxa_gpio_mode(GPIO_NAND_ALE | GPIO_OUT | GPIO_DFLT_LOW);
-+	pxa_gpio_mode(GPIO_NAND_CLE | GPIO_OUT | GPIO_DFLT_LOW);
-+	
-+	/* Allocate memory for MTD device structure and private data */	
-+	armcore_mtd = kmalloc(	sizeof(struct mtd_info) + 
-+				sizeof(struct nand_chip), 
-+						GFP_KERNEL);
-+	if (!armcore_mtd) {
-+		printk(KERN_WARNING 
-+		"Unable to allocate cm-x255 nand mtd device structure.\n");
-+		err = -ENOMEM;
-+		goto out;
-+	}
-+
-+	/* map physical adress */
-+	armcore_nand_io_base = ioremap(armcore_nand_phys_base, 0x100);
-+	if (!armcore_nand_io_base) {
-+		printk(KERN_WARNING "ioremap for cm-x255 NAND chip failed\n");
-+		err = -EIO;
-+		goto out_mtd;
-+	}
-+
-+	/* Get pointer to private data */
-+	this = (struct nand_chip *) (&armcore_mtd[1]);
-+
-+	/* Initialize structures */
-+	memset((char *) armcore_mtd, 0, sizeof(struct mtd_info));
-+	memset((char *) this, 0, sizeof(struct nand_chip));
-+
-+	/* Link the private data with the MTD structure */
-+	armcore_mtd->priv = this;
-+
-+	this->IO_ADDR_R = armcore_nand_io_base;	
-+	this->IO_ADDR_W = armcore_nand_io_base;	
-+	this->cmd_ctrl = armcore_nand_cmd_ctrl;
-+	this->dev_ready = armcore_nand_device_ready;
-+	this->chip_delay = 15;
-+	this->ecc.mode = NAND_ECC_SOFT;
-+
-+	/* Scan to find existance of the device */
-+	if (nand_scan(armcore_mtd, 1)) {
-+		printk(KERN_WARNING 
-+			"nand_scan() failed to scan cm-x255 nand flash\n");
-+		err = -ENXIO;
-+		goto out_ior;
-+	}
-+
-+	/* Register the partitions */
-+	armcore_mtd->name = "armcore-nand";
-+	nr_partitions = parse_mtd_partitions(armcore_mtd, part_probes,
-+						&armcore_partition_info, 0);
-+	if (nr_partitions <= 0) {
-+		nr_partitions = DEFAULT_NUM_PARTITIONS;
-+		armcore_partition_info = armcore_default_partition_info;
-+	}
-+
-+	add_mtd_partitions(armcore_mtd, armcore_partition_info, nr_partitions);	
-+	
-+	goto out;
-+
-+out_ior:
-+	iounmap((void*) armcore_nand_io_base);
-+out_mtd:
-+	kfree(armcore_mtd);
-+out:
-+	return err;
-+}
-+module_init(armcore_nand_init);
-+
-+static void __exit armcore_nand_cleanup(void)
-+{
-+	nand_release(armcore_mtd);
-+	iounmap((void*)armcore_nand_io_base);
-+	kfree(armcore_mtd);
-+}
-+module_exit(armcore_nand_cleanup);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Raphael Assenat <raph@8d.com>");
-+MODULE_DESCRIPTION("NAND flash driver for cm-x255 boards");
-
---------------060704000100020003070301--
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
