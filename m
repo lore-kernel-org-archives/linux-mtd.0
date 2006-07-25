@@ -1,34 +1,22 @@
-Received: from mtagate5.uk.ibm.com ([195.212.29.138])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G5REw-0003ss-HK
-	for linux-mtd@lists.infradead.org; Tue, 25 Jul 2006 19:02:43 +0100
-Received: from d06nrmr1407.portsmouth.uk.ibm.com
-	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
-	by mtagate5.uk.ibm.com (8.13.7/8.13.7) with ESMTP id k6PI2P8k067060
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 18:02:25 GMT
-Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
-	[9.149.37.216])
-	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
-	k6PI44oj116852
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 19:04:05 +0100
-Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
-	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id k6PI2P9O011438
-	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 19:02:25 +0100
-Sender: ARNEZ@BL3C0375.boeblingen.de.ibm.com
-To: "Josh Boyer" <jwboyer@gmail.com>
-Subject: Re: can I use vfat filesystem on UBI layer?
-References: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
-	<625fc13d0607231133p28854ce7t74c96e3484415284@mail.gmail.com>
-From: Andreas Arnez <arnez@vnet.ibm.com>
-Date: 25 Jul 2006 20:02:28 +0200
-In-Reply-To: <625fc13d0607231133p28854ce7t74c96e3484415284@mail.gmail.com>
-Message-ID: <m3psftlg0b.fsf@BL3C0375.boeblingen.de.ibm.com>
+Received: from asia.telenet-ops.be ([195.130.137.74])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G5Rjv-0006zp-0d
+	for linux-mtd@lists.infradead.org; Tue, 25 Jul 2006 14:34:47 -0400
+Message-ID: <44C66437.9030402@telenet.be>
+Date: Tue, 25 Jul 2006 20:34:31 +0200
+From: Jurgen <jurgen.parmentier@telenet.be>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Cc: falls huang <falls.huang@gmail.com>, linux-mtd@lists.infradead.org
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] PNX8550 NAND flash driver
+References: <43A2F819.1040106@ru.mvista.com> <43C69EC2.2070601@mvista.com>	
+	<43F1D439.60205@ru.mvista.com>
+	<1152525196.30929.11.camel@localhost>
+In-Reply-To: <1152525196.30929.11.camel@localhost>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+	"Vladimir A. Barinov" <vbarinov@ru.mvista.com>,
+	Todd Poynor <tpoynor@mvista.com>, linux-mips@linux-mips.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,16 +26,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-"Josh Boyer" <jwboyer@gmail.com> writes:
-> I believe that is one of the intended goals.  A block layer needs to
-> be added (much like mtdblock), and then one should be able to use
-> vfat, ext2, ext3, reiserfs, etc.
+Thomas Gleixner schreef:
+> On Tue, 2006-02-14 at 15:59 +0300, Vladimir A. Barinov wrote:
+>   
+>>>> +    }
+>>>> +
+>>>> +    if (((bytes & 3) || (bytes < 16)) || ((u32) to & 3) || ((u32) 
+>>>> from & 3)) {
+>>>> +        if (((bytes & 1) == 0) &&
+>>>> +            (((u32) to & 1) == 0) && (((u32) from & 1) == 0)) {
+>>>> +            int words = bytes / 2;
+>>>> +
+>>>> +            local_irq_disable();
+>>>> +            for (i = 0; i < words; i++) {
+>>>> +                to16[i] = from16[i];
+>>>> +            }
+>>>> +            local_irq_enable();
+>>>>         
+>>> Really necessary to disable all irqs around this transfer?  How long 
+>>> can interrupts be off during that time?
+>>>       
+>> That is needed since the NAND device is binded to the external XIO bus 
+>> that could be used by another devices.
+>>     
+>
+> Err, you have to protect the whole access sequence then. What protects
+> the chip against access between the command write and data read ?
+>
+> If this really is a bus conflict problem, then you need some more
+> protection than this.
+>
+> Can you please describe in detail why you think this is necessary. 
+>
+> 	tglx
+>
+>
+>
+>
+>
+>
+>
+>   
+Root cause of the problem lies within the early implementation of the 
+low-level NAND commands. There was a severe risk that the PCI accesses 
+were stalled because of a Read Status command for the NAND Flash. This 
+Read Status was launched immediately after program/erase command. The 
+hardware itself will wait for the Ready/Busy to be high and only then 
+launch the Read Status command. This behavior caused timeout on the 
+internal bus because PCI was unable to use the pins during this wait.
 
-A block layer like mtdblock should be offered.  This is one reason for
-gluebi -- which presents a UBI volume as an mtd device.  Note,
-however, that something like mtdblock is not very practical for
-read/write file systems like vfat, because of its large (internal)
-block size.
+If this problem was coinciding with an ISR that tried to perform a PCI 
+status register, then this PCI access could possibly timeout (because 
+the PCI pins were already claimed for the XIO access that is depending 
+on the RBY signal).
 
---
-Andreas Arnez
+Since the problem only showed during the PCI device ISR, the 
+quick'n'dirty hack was to disable interrupts during XIO accesses.
+
+A better fix that should be available somewhere, is to improve the 
+low-level NAND driver that will first check the status of the Ready/Busy 
+line and only THEN launch the Read NAND Status command...
+
+Jurgen
