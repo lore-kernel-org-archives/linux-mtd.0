@@ -1,16 +1,34 @@
-Received: from mail.windriver.com ([147.11.1.11] helo=mail.wrs.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G5E0R-0004iI-6C
-	for linux-mtd@lists.infradead.org; Tue, 25 Jul 2006 04:54:52 +0100
-Message-ID: <44C595ED.7070209@windriver.com>
-Date: Tue, 25 Jul 2006 11:54:21 +0800
-From: Mark Zhan <rongkai.zhan@windriver.com>
+Received: from mtagate5.uk.ibm.com ([195.212.29.138])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1G5REw-0003ss-HK
+	for linux-mtd@lists.infradead.org; Tue, 25 Jul 2006 19:02:43 +0100
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate5.uk.ibm.com (8.13.7/8.13.7) with ESMTP id k6PI2P8k067060
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL)
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 18:02:25 GMT
+Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
+	[9.149.37.216])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.6/NCO/VER7.0) with ESMTP id
+	k6PI44oj116852
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 19:04:05 +0100
+Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id k6PI2P9O011438
+	for <linux-mtd@lists.infradead.org>; Tue, 25 Jul 2006 19:02:25 +0100
+Sender: ARNEZ@BL3C0375.boeblingen.de.ibm.com
+To: "Josh Boyer" <jwboyer@gmail.com>
+Subject: Re: can I use vfat filesystem on UBI layer?
+References: <49eab5c80607230204k53cde2adm9ef7290ce90e465f@mail.gmail.com>
+	<625fc13d0607231133p28854ce7t74c96e3484415284@mail.gmail.com>
+From: Andreas Arnez <arnez@vnet.ibm.com>
+Date: 25 Jul 2006 20:02:28 +0200
+In-Reply-To: <625fc13d0607231133p28854ce7t74c96e3484415284@mail.gmail.com>
+Message-ID: <m3psftlg0b.fsf@BL3C0375.boeblingen.de.ibm.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Fix the unlock addr lookup BUG in MTD JEDEC probe
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Cc: falls huang <falls.huang@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,57 +38,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+"Josh Boyer" <jwboyer@gmail.com> writes:
+> I believe that is one of the intended goals.  A block layer needs to
+> be added (much like mtdblock), and then one should be able to use
+> vfat, ext2, ext3, reiserfs, etc.
 
-This patch fixes a BUG in the function finfo_uaddr() in driver/mtd/chips/jedec_probe.c.
-This function will fetch the unlock addr type from the pre-defined flash chip info.
+A block layer like mtdblock should be offered.  This is one reason for
+gluebi -- which presents a UBI volume as an mtd device.  Note,
+however, that something like mtdblock is not very practical for
+read/write file systems like vfat, because of its large (internal)
+block size.
 
-static inline __u8 finfo_uaddr(const struct amd_flash_info *finfo, int device_type)
-{
-	int uaddr_idx;
-	__u8 uaddr = MTD_UADDR_NOT_SUPPORTED;
-
-	switch ( device_type ) {
-	case CFI_DEVICETYPE_X8:  uaddr_idx = 0; break;
-	case CFI_DEVICETYPE_X16: uaddr_idx = 1; break;
-	case CFI_DEVICETYPE_X32: uaddr_idx = 2; break;
-	default:
-		printk(KERN_NOTICE "MTD: %s(): unknown device_type %d\n",
-		       __func__, device_type);
-		goto uaddr_done;
-	}
-
-	uaddr = finfo->uaddr[uaddr_idx];
-
-	if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
-		/* ASSERT("The unlock addresses for non-8-bit mode
-		   are bollocks. We don't really need an array."); */
-		uaddr = finfo->uaddr[0];
-	}
-
-  uaddr_done:
-	return uaddr;
-}
-
-However, the later 'if' sentence will force that the first unlock addr type is always returned.
-If a chip has two device types (x8 x16) and the chip works in x16 mode, this bug will result in
-that the chip can't be probed correctly because the unlock addr doesn't match.
-
-This patch fixes this bug.
-
-Signed-off-by: Rongkai.Zhan <rongkai.zhan@windriver.com>
-
-----
-diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-index 8f39d0a..a0ab0df 100644
---- a/drivers/mtd/chips/jedec_probe.c
-+++ b/drivers/mtd/chips/jedec_probe.c
-@@ -1804,7 +1804,7 @@ static inline __u8 finfo_uaddr(const str
-
-  	uaddr = finfo->uaddr[uaddr_idx];
-
--	if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
-+	if (uaddr == MTD_UADDR_NOT_SUPPORTED ) {
-  		/* ASSERT("The unlock addresses for non-8-bit mode
-  		   are bollocks. We don't really need an array."); */
-  		uaddr = finfo->uaddr[0];
+--
+Andreas Arnez
