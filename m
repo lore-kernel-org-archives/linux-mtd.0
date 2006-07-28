@@ -1,24 +1,21 @@
-Received: from smtp2.yandex.ru ([213.180.200.18] helo=mx18.yandex.ru)
+Received: from mail.windriver.com ([147.11.1.11] helo=mail.wrs.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G6Mid-0006Fl-Dq
-	for linux-mtd@lists.infradead.org; Fri, 28 Jul 2006 03:25:16 -0400
-Received: from MS-131-114.dyn-ip.SPb.SkyLink.RU ([212.129.114.131]:45797 "EHLO
-	[192.168.38.21]" smtp-auth: "dedekind" TLS-CIPHER: <none>
-	TLS-PEER-CN1:
-	<none>) by mail.yandex.ru with ESMTP id S3375793AbWG1HSw (ORCPT
-	<rfc822;linux-mtd@lists.infradead.org>);
-	Fri, 28 Jul 2006 11:18:52 +0400
-Message-ID: <44C9BA59.7030006@yandex.ru>
-Date: Fri, 28 Jul 2006 11:18:49 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+	id 1G6SqR-000203-DL
+	for linux-mtd@lists.infradead.org; Fri, 28 Jul 2006 09:57:44 -0400
+Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
+	by mail.wrs.com (8.13.6/8.13.3) with ESMTP id k6S85fck007117
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 28 Jul 2006 01:05:41 -0700 (PDT)
+Message-ID: <44C9C551.7040109@windriver.com>
+Date: Fri, 28 Jul 2006 16:05:37 +0800
+From: Mark Zhan <rongkai.zhan@windriver.com>
 MIME-Version: 1.0
-To: Marteo Tim <tim.marteo@gmail.com>
-Subject: Re: about using UBI on MLC Nand flash
-References: <91b24a870607272033n1fa43a45vb523982186708f8e@mail.gmail.com>
-In-Reply-To: <91b24a870607272033n1fa43a45vb523982186708f8e@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Fix the unlock addr lookup BUG in MTD JEDEC probe
+References: <44C595ED.7070209@windriver.com>
+In-Reply-To: <44C595ED.7070209@windriver.com>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,63 +25,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Tim,
+cc to linux-mtd
 
-Marteo Tim wrote:
-> I noticed that UBI need to write 2 times at 1st page in 1 block, one
-> for EC header, and the other for VID header. But it is not suitable
-> for MLC NAND flash, which only can write once per page. And by
-> default, MTD's nand_write can only write page-aligned data.
-> Although we can set the module parameter vid_hdr_offsets to the 2nd
-> page, but it will occupy more flash space. It is in a dilemma. :(
-
-I wonder, what's your flash What's the NAND page size of your flash?
-
-unfortunately, I failed to find any MLC NAND flash manual to read about
-it. If you could send me one, I'd be grateful. Or URL? Is it only
-Toshiba who produce them?
-
-Is this a feature of MLC NANDs or this is just MTD which does not
-support multiple writes? For example, Samsung SLC flashes *do* support 4
-writes per NAND page, but MTD *does not* support this so far (but there
-is a plan to implement this).
-
-And it is strange if UBI tries to write to one NAND page twice at your
-case. By default it should not, granted mtd->writesize is correct in
-your case.
-
-I guess you read at UBI-FAQ? FYI:
-
--------------------
-"How much flash space do UBI headers consume?
-
-This depends on the flash flash you are using. Both EC and VID headers
-take 64 bytes, so in case of NOR flash UBI headers consume 128 bytes,
-and the logical eraseblock size is equivalent to the physical eraseblock
-size minus 128 bytes. But the situation may be different in case of
-other flash types.
-
-As it is noted here , UBI writes twice to the flash, not just both UBI
-headers in one go. But many flashes have a notion of the "minimal
-Input/Output unit size". For example, in case of NAND flash it is
-typically equivalent to the NAND page size, which is either 512 bytes or
-2KiB. In this case, the EC header would be situated at the first NAND
-page, the VID header - at the second NAND page, and both headers would
-take two NAND pages (1KiB or 4KiB). The situation is similar in case of
-other flash types.
-
-Implementation-wise, UBI just looks at the writesize field of the struct
-mtd_info MTD device description object and uses it as the min. I/O unit
-when calculating sizes and positions of UBI headers.
-
-Fortunately, many NAND flashes allow several (typically 4) write
-operations to one NAND page. Thus, say, in case of a Samsung flash with
-2KiB NAND pages one may fit UBI headers at the first two 512-byte chunks
-of the NAND page. But this must be supported by the MTD flash driver
-(writesize has to be 512 bytes, not 2KiB)."
--------------------
-
--- 
 Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Mark. Zhan
+-----Original Message-----
+From: Zhan, Rongkai
+Sent: Thursday, July 27, 2006 7:39 PM
+To: 'David Woodhouse'
+Cc: akpm@osdl.org; 'linux-mtd@lists.infradead.org'
+Subject: RE: + fix-the-unlock-addr-lookup-bug-in-mtd-jedec-probe.patchadded to -mm tree
+
+Hi David,
+
+I use AMD AM29LV800BT chips (4 x16 in a 64-bit bank) in my MIPS32 4kc board.
+
+The following are the kernel boot logs before and after applying my patch.
+BTW, I turn on MTD DEBUG Level to 3, and add more DEBUG prinks in jedec_probe.c :-)
+
+===================Kernel boot log before patched =====================
+physmap flash device: 400000 at 1fc00000
+MTD jedec_probe_chip() enter: map phys_mapped_flash, base 0x0, chip_map 0x0, cfi interleave x4, device type 2-bit
+reset unlock called 555 2aa
+Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 02aa)
+MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
+MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
+MTD finfo_uaddr(): uaddr type changes from 1 to 4
+MTD jedec_match(): check CFI unlock addrs (0x0555 0x02aa) dev_type 2
+MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
+reset unlock called 555 aaa
+Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 0aaa)
+MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
+MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
+MTD finfo_uaddr(): uaddr type changes from 1 to 4
+MTD jedec_match(): check CFI unlock addrs (0x0555 0x0aaa) dev_type 2
+MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
+reset unlock called 5555 2aaa
+Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (5555 2aaa)
+MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
+MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
+MTD finfo_uaddr(): uaddr type changes from 1 to 4
+MTD jedec_match(): check CFI unlock addrs (0x5555 0x2aaa) dev_type 2
+MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
+reset unlock called aaa 555
+
+===================Kernel boot log After patched =====================
+physmap flash device: 400000 at 1fc00000
+MTD jedec_probe_chip() enter: map phys_mapped_flash, base 0x0, chip_map 0x0, cfi interleave x4, device type 2-bit
+reset unlock called 555 2aa
+Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 02aa)
+MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
+MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
+MTD jedec_match(): check CFI unlock addrs (0x0555 0x02aa) dev_type 2
+MTD jedec_match(): check ID's disappear when not in ID mode
+reset unlock called 555 2aa
+MTD jedec_match(): return to ID mode
+MTD jedec_probe_chip(): matched device 0x1,0x22da unlock_addrs: 0x0555 0x02aa
+Found: AMD AM29LV800BT
+=====================================================================
+
+Best Regards,
+Mark. Zhan
+
+-----Original Message-----
+From: David Woodhouse [mailto:dwmw2@infradead.org]
+Sent: Wednesday, July 26, 2006 3:25 PM
+To: akpm@osdl.org
+Cc: Zhan, Rongkai
+Subject: Re: + fix-the-unlock-addr-lookup-bug-in-mtd-jedec-probe.patchadded to -mm tree
+
+On Wed, 2006-07-26 at 00:08 -0700, akpm@osdl.org wrote:
+ > However, the later 'if' sentence will force that the first unlock addr type
+ > is always returned.  If a chip has two device types (x8 x16) and the chip
+ > works in x16 mode, this bug will result in that the chip can't be probed
+ > correctly because the unlock addr doesn't match.
+
+Chip probe code makes my head hurt. I have vague memories that this was
+done on purpose -- we want to drop the magic unlock addresses for
+different modes and _calculate_ them instead. The difference between x8
+and x16 mode is just a simple shift. I think the best answer is probably
+to fix your chip's entry in the table instead.
+
+Please post to the linux-mtd list, giving precise details of the chip
+you're using.
+
+--
+dwmw2
+
+Mark Zhan wrote:
+> Hi All,
+> 
+> This patch fixes a BUG in the function finfo_uaddr() in 
+> driver/mtd/chips/jedec_probe.c.
+> This function will fetch the unlock addr type from the pre-defined flash 
+> chip info.
+> 
+> static inline __u8 finfo_uaddr(const struct amd_flash_info *finfo, int 
+> device_type)
+> {
+>     int uaddr_idx;
+>     __u8 uaddr = MTD_UADDR_NOT_SUPPORTED;
+> 
+>     switch ( device_type ) {
+>     case CFI_DEVICETYPE_X8:  uaddr_idx = 0; break;
+>     case CFI_DEVICETYPE_X16: uaddr_idx = 1; break;
+>     case CFI_DEVICETYPE_X32: uaddr_idx = 2; break;
+>     default:
+>         printk(KERN_NOTICE "MTD: %s(): unknown device_type %d\n",
+>                __func__, device_type);
+>         goto uaddr_done;
+>     }
+> 
+>     uaddr = finfo->uaddr[uaddr_idx];
+> 
+>     if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
+>         /* ASSERT("The unlock addresses for non-8-bit mode
+>            are bollocks. We don't really need an array."); */
+>         uaddr = finfo->uaddr[0];
+>     }
+> 
+>  uaddr_done:
+>     return uaddr;
+> }
+> 
+> However, the later 'if' sentence will force that the first unlock addr 
+> type is always returned.
+> If a chip has two device types (x8 x16) and the chip works in x16 mode, 
+> this bug will result in
+> that the chip can't be probed correctly because the unlock addr doesn't 
+> match.
+> 
+> This patch fixes this bug.
+> 
+> Signed-off-by: Rongkai.Zhan <rongkai.zhan@windriver.com>
+> 
+> ----
+> diff --git a/drivers/mtd/chips/jedec_probe.c 
+> b/drivers/mtd/chips/jedec_probe.c
+> index 8f39d0a..a0ab0df 100644
+> --- a/drivers/mtd/chips/jedec_probe.c
+> +++ b/drivers/mtd/chips/jedec_probe.c
+> @@ -1804,7 +1804,7 @@ static inline __u8 finfo_uaddr(const str
+> 
+>      uaddr = finfo->uaddr[uaddr_idx];
+> 
+> -    if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
+> +    if (uaddr == MTD_UADDR_NOT_SUPPORTED ) {
+>          /* ASSERT("The unlock addresses for non-8-bit mode
+>             are bollocks. We don't really need an array."); */
+>          uaddr = finfo->uaddr[0];
+> 
