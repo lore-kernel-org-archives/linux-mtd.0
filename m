@@ -1,21 +1,16 @@
-Received: from mail.windriver.com ([147.11.1.11] helo=mail.wrs.com)
+Received: from alephnull.demon.nl ([83.160.184.112] helo=xi.wantstofly.org)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G6SqR-000203-DL
-	for linux-mtd@lists.infradead.org; Fri, 28 Jul 2006 09:57:44 -0400
-Received: from ALA-MAIL03.corp.ad.wrs.com (ala-mail03 [147.11.57.144])
-	by mail.wrs.com (8.13.6/8.13.3) with ESMTP id k6S85fck007117
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Jul 2006 01:05:41 -0700 (PDT)
-Message-ID: <44C9C551.7040109@windriver.com>
-Date: Fri, 28 Jul 2006 16:05:37 +0800
-From: Mark Zhan <rongkai.zhan@windriver.com>
-MIME-Version: 1.0
+	id 1G77wy-0001sW-0u
+	for linux-mtd@lists.infradead.org; Sun, 30 Jul 2006 05:51:13 -0400
+Date: Sun, 30 Jul 2006 11:50:54 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Fix the unlock addr lookup BUG in MTD JEDEC probe
-References: <44C595ED.7070209@windriver.com>
-In-Reply-To: <44C595ED.7070209@windriver.com>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH] remove iq80310 map driver
+Message-ID: <20060730095054.GA3075@xi.wantstofly.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: nico@cam.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,153 +20,164 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-cc to linux-mtd
+The iq80310 mtd map driver depends on ARCH_IQ80310, which isn't
+defined anywhere in the tree (as we don't have 80310 support), and
+furthermore, everything the driver does can be done with physmap
+instead.
 
-Best Regards,
-Mark. Zhan
------Original Message-----
-From: Zhan, Rongkai
-Sent: Thursday, July 27, 2006 7:39 PM
-To: 'David Woodhouse'
-Cc: akpm@osdl.org; 'linux-mtd@lists.infradead.org'
-Subject: RE: + fix-the-unlock-addr-lookup-bug-in-mtd-jedec-probe.patchadded to -mm tree
+Signed-off-by: Lennert Buytenhek <buytenh@wantstofly.org>
 
-Hi David,
-
-I use AMD AM29LV800BT chips (4 x16 in a 64-bit bank) in my MIPS32 4kc board.
-
-The following are the kernel boot logs before and after applying my patch.
-BTW, I turn on MTD DEBUG Level to 3, and add more DEBUG prinks in jedec_probe.c :-)
-
-===================Kernel boot log before patched =====================
-physmap flash device: 400000 at 1fc00000
-MTD jedec_probe_chip() enter: map phys_mapped_flash, base 0x0, chip_map 0x0, cfi interleave x4, device type 2-bit
-reset unlock called 555 2aa
-Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 02aa)
-MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
-MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
-MTD finfo_uaddr(): uaddr type changes from 1 to 4
-MTD jedec_match(): check CFI unlock addrs (0x0555 0x02aa) dev_type 2
-MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
-reset unlock called 555 aaa
-Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 0aaa)
-MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
-MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
-MTD finfo_uaddr(): uaddr type changes from 1 to 4
-MTD jedec_match(): check CFI unlock addrs (0x0555 0x0aaa) dev_type 2
-MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
-reset unlock called 5555 2aaa
-Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (5555 2aaa)
-MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
-MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
-MTD finfo_uaddr(): uaddr type changes from 1 to 4
-MTD jedec_match(): check CFI unlock addrs (0x5555 0x2aaa) dev_type 2
-MTD jedec_match(): pre-defined unlock addr (0x0aaa 0x0555) (idx: 4) did not match
-reset unlock called aaa 555
-
-===================Kernel boot log After patched =====================
-physmap flash device: 400000 at 1fc00000
-MTD jedec_probe_chip() enter: map phys_mapped_flash, base 0x0, chip_map 0x0, cfi interleave x4, device type 2-bit
-reset unlock called 555 2aa
-Search for id (01 22da): CFI interleave x4, device type (16-bit), unlock addr (0555 02aa)
-MTD jedec_match(): Check fit 0x00000000 + 0x00100000 = 0x00100000
-MTD finfo_uaddr(): uaddr_idx 1, uaddr type 1
-MTD jedec_match(): check CFI unlock addrs (0x0555 0x02aa) dev_type 2
-MTD jedec_match(): check ID's disappear when not in ID mode
-reset unlock called 555 2aa
-MTD jedec_match(): return to ID mode
-MTD jedec_probe_chip(): matched device 0x1,0x22da unlock_addrs: 0x0555 0x02aa
-Found: AMD AM29LV800BT
-=====================================================================
-
-Best Regards,
-Mark. Zhan
-
------Original Message-----
-From: David Woodhouse [mailto:dwmw2@infradead.org]
-Sent: Wednesday, July 26, 2006 3:25 PM
-To: akpm@osdl.org
-Cc: Zhan, Rongkai
-Subject: Re: + fix-the-unlock-addr-lookup-bug-in-mtd-jedec-probe.patchadded to -mm tree
-
-On Wed, 2006-07-26 at 00:08 -0700, akpm@osdl.org wrote:
- > However, the later 'if' sentence will force that the first unlock addr type
- > is always returned.  If a chip has two device types (x8 x16) and the chip
- > works in x16 mode, this bug will result in that the chip can't be probed
- > correctly because the unlock addr doesn't match.
-
-Chip probe code makes my head hurt. I have vague memories that this was
-done on purpose -- we want to drop the magic unlock addresses for
-different modes and _calculate_ them instead. The difference between x8
-and x16 mode is just a simple shift. I think the best answer is probably
-to fix your chip's entry in the table instead.
-
-Please post to the linux-mtd list, giving precise details of the chip
-you're using.
-
---
-dwmw2
-
-Mark Zhan wrote:
-> Hi All,
-> 
-> This patch fixes a BUG in the function finfo_uaddr() in 
-> driver/mtd/chips/jedec_probe.c.
-> This function will fetch the unlock addr type from the pre-defined flash 
-> chip info.
-> 
-> static inline __u8 finfo_uaddr(const struct amd_flash_info *finfo, int 
-> device_type)
-> {
->     int uaddr_idx;
->     __u8 uaddr = MTD_UADDR_NOT_SUPPORTED;
-> 
->     switch ( device_type ) {
->     case CFI_DEVICETYPE_X8:  uaddr_idx = 0; break;
->     case CFI_DEVICETYPE_X16: uaddr_idx = 1; break;
->     case CFI_DEVICETYPE_X32: uaddr_idx = 2; break;
->     default:
->         printk(KERN_NOTICE "MTD: %s(): unknown device_type %d\n",
->                __func__, device_type);
->         goto uaddr_done;
->     }
-> 
->     uaddr = finfo->uaddr[uaddr_idx];
-> 
->     if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
->         /* ASSERT("The unlock addresses for non-8-bit mode
->            are bollocks. We don't really need an array."); */
->         uaddr = finfo->uaddr[0];
->     }
-> 
->  uaddr_done:
->     return uaddr;
-> }
-> 
-> However, the later 'if' sentence will force that the first unlock addr 
-> type is always returned.
-> If a chip has two device types (x8 x16) and the chip works in x16 mode, 
-> this bug will result in
-> that the chip can't be probed correctly because the unlock addr doesn't 
-> match.
-> 
-> This patch fixes this bug.
-> 
-> Signed-off-by: Rongkai.Zhan <rongkai.zhan@windriver.com>
-> 
-> ----
-> diff --git a/drivers/mtd/chips/jedec_probe.c 
-> b/drivers/mtd/chips/jedec_probe.c
-> index 8f39d0a..a0ab0df 100644
-> --- a/drivers/mtd/chips/jedec_probe.c
-> +++ b/drivers/mtd/chips/jedec_probe.c
-> @@ -1804,7 +1804,7 @@ static inline __u8 finfo_uaddr(const str
-> 
->      uaddr = finfo->uaddr[uaddr_idx];
-> 
-> -    if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
-> +    if (uaddr == MTD_UADDR_NOT_SUPPORTED ) {
->          /* ASSERT("The unlock addresses for non-8-bit mode
->             are bollocks. We don't really need an array."); */
->          uaddr = finfo->uaddr[0];
-> 
+Index: linux-2.6.18-rc2/drivers/mtd/maps/Kconfig
+===================================================================
+--- linux-2.6.18-rc2.orig/drivers/mtd/maps/Kconfig
++++ linux-2.6.18-rc2/drivers/mtd/maps/Kconfig
+@@ -447,14 +447,6 @@ config MTD_DC21285
+ 	  21285 bridge used with Intel's StrongARM processors. More info at
+ 	  <http://www.intel.com/design/bridge/docs/21285_documentation.htm>.
+ 
+-config MTD_IQ80310
+-	tristate "CFI Flash device mapped on the XScale IQ80310 board"
+-	depends on MTD_CFI && ARCH_IQ80310
+-	help
+-	  This enables access routines for the flash chips on the Intel XScale
+-	  IQ80310 evaluation board. If you have one of these boards and would
+-	  like to use the flash chips on it, say 'Y'.
+-
+ config MTD_IXP4XX
+ 	tristate "CFI Flash device mapped on Intel IXP4xx based systems"
+ 	depends on MTD_CFI && MTD_COMPLEX_MAPPINGS && ARCH_IXP4XX
+Index: linux-2.6.18-rc2/drivers/mtd/maps/Makefile
+===================================================================
+--- linux-2.6.18-rc2.orig/drivers/mtd/maps/Makefile
++++ linux-2.6.18-rc2/drivers/mtd/maps/Makefile
+@@ -15,7 +15,6 @@ obj-$(CONFIG_MTD_CFI_FLAGADM)	+= cfi_fla
+ obj-$(CONFIG_MTD_CSTM_MIPS_IXX)	+= cstm_mips_ixx.o
+ obj-$(CONFIG_MTD_DC21285)	+= dc21285.o
+ obj-$(CONFIG_MTD_DILNETPC)	+= dilnetpc.o
+-obj-$(CONFIG_MTD_IQ80310)	+= iq80310.o
+ obj-$(CONFIG_MTD_L440GX)	+= l440gx.o
+ obj-$(CONFIG_MTD_AMD76XROM)	+= amd76xrom.o
+ obj-$(CONFIG_MTD_ICHXROM)	+= ichxrom.o
+Index: linux-2.6.18-rc2/drivers/mtd/maps/iq80310.c
+===================================================================
+--- linux-2.6.18-rc2.orig/drivers/mtd/maps/iq80310.c
++++ /dev/null
+@@ -1,118 +0,0 @@
+-/*
+- * $Id: iq80310.c,v 1.21 2005/11/07 11:14:27 gleixner Exp $
+- *
+- * Mapping for the Intel XScale IQ80310 evaluation board
+- *
+- * Author:	Nicolas Pitre
+- * Copyright:	(C) 2001 MontaVista Software Inc.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <linux/slab.h>
+-#include <asm/io.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-
+-#define WINDOW_ADDR 	0
+-#define WINDOW_SIZE 	8*1024*1024
+-#define BUSWIDTH 	1
+-
+-static struct mtd_info *mymtd;
+-
+-static struct map_info iq80310_map = {
+-	.name = "IQ80310 flash",
+-	.size = WINDOW_SIZE,
+-	.bankwidth = BUSWIDTH,
+-	.phys = WINDOW_ADDR
+-};
+-
+-static struct mtd_partition iq80310_partitions[4] = {
+-	{
+-		.name =		"Firmware",
+-		.size =		0x00080000,
+-		.offset =	0,
+-		.mask_flags =	MTD_WRITEABLE  /* force read-only */
+-	},{
+-		.name =		"Kernel",
+-		.size =		0x000a0000,
+-		.offset =	0x00080000,
+-	},{
+-		.name =		"Filesystem",
+-		.size =		0x00600000,
+-		.offset =	0x00120000
+-	},{
+-		.name =		"RedBoot",
+-		.size =		0x000e0000,
+-		.offset =	0x00720000,
+-		.mask_flags =	MTD_WRITEABLE
+-	}
+-};
+-
+-static struct mtd_info *mymtd;
+-static struct mtd_partition *parsed_parts;
+-static const char *probes[] = { "RedBoot", "cmdlinepart", NULL };
+-
+-static int __init init_iq80310(void)
+-{
+-	struct mtd_partition *parts;
+-	int nb_parts = 0;
+-	int parsed_nr_parts = 0;
+-	int ret;
+-
+-	iq80310_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+-	if (!iq80310_map.virt) {
+-		printk("Failed to ioremap\n");
+-		return -EIO;
+-	}
+-	simple_map_init(&iq80310_map);
+-
+-	mymtd = do_map_probe("cfi_probe", &iq80310_map);
+-	if (!mymtd) {
+-		iounmap((void *)iq80310_map.virt);
+-		return -ENXIO;
+-	}
+-	mymtd->owner = THIS_MODULE;
+-
+-	ret = parse_mtd_partitions(mymtd, probes, &parsed_parts, 0);
+-
+-	if (ret > 0)
+-		parsed_nr_parts = ret;
+-
+-	if (parsed_nr_parts > 0) {
+-		parts = parsed_parts;
+-		nb_parts = parsed_nr_parts;
+-	} else {
+-		parts = iq80310_partitions;
+-		nb_parts = ARRAY_SIZE(iq80310_partitions);
+-	}
+-	add_mtd_partitions(mymtd, parts, nb_parts);
+-	return 0;
+-}
+-
+-static void __exit cleanup_iq80310(void)
+-{
+-	if (mymtd) {
+-		del_mtd_partitions(mymtd);
+-		map_destroy(mymtd);
+-		kfree(parsed_parts);
+-	}
+-	if (iq80310_map.virt)
+-		iounmap((void *)iq80310_map.virt);
+-}
+-
+-module_init(init_iq80310);
+-module_exit(cleanup_iq80310);
+-
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
+-MODULE_DESCRIPTION("MTD map driver for Intel XScale IQ80310 evaluation board");
