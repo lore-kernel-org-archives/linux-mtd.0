@@ -1,9 +1,9 @@
 Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7SRa-00060S-R3
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 03:44:15 -0400
-Message-ID: <44CDB4A4.1010809@yandex.ru>
-Date: Mon, 31 Jul 2006 11:43:32 +0400
+	id 1G7SqP-0006gC-Kw
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 04:09:50 -0400
+Message-ID: <44CDBAA7.8020500@yandex.ru>
+Date: Mon, 31 Jul 2006 12:09:11 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Josh Boyer <jwboyer@gmail.com>
@@ -15,8 +15,7 @@ References: <1152536472.6066.28.camel@localhost.localdomain>
 	<20060724114007.GB20849@wohnheim.fh-wedel.de>	
 	<44C8B789.4030505@yandex.ru>
 	<625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
-	<44CDAF7D.4040300@yandex.ru>
-In-Reply-To: <44CDAF7D.4040300@yandex.ru>
+In-Reply-To: <625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, haver@vnet.ibm.com,
@@ -31,21 +30,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem B. Bityutskiy wrote:
+Josh Boyer wrote:
+> It seems somewhat superfluous to add a generalized I/O layer to jffs2.
+> It just doesn't sit right with me.
 
->> For what it's worth, I personally prefer the gluebi approach.  Or at
->> least it's design.  I don't see why UBI cannot add_mtd_device for
->> every volume that is found within the overall MTD given to it.
-> 
-> Just because it's strange from the design POV. UBI != MTD device 
-> semantically => any attempt to access UBI as MTD device is a dirty hack.
+And after all, what do you mean by superfluous? One more function call? 
+NP - this is a technical question, I can easily turn that into a macro.
 
-Err, I have to refine my position Of course, the idea itself is OK - it 
-is useful to make MTD-oriented software work on top of UBI. But it is 
-still a hack, just because UBI != MTD subset, strictly speaking.
+With my patch, JFFS2 I/O is clean and modularized. Examples:
 
-But again, see in my previous maul, JFFS2's gluebi port has little to do 
-with a transparent MTD emulation layer. At lease the gluebi I'm aware of.
+You have (jffs2_io)->cm_needed field which tells you if this particular 
+I/O backend needs clean markers. E.g. - Dataflash and UBI does not need 
+them. Or do you prefer this setup_data_flash() stuff in wbuf.c???
+
+Also, for eCos, you may put all the differences to io.c and don't spread 
+this over all sources.
+
+Etc.
+
+You just put all I/O-related stuff like this in one place. And depending 
+on the I/O backend you initialize it. And all this is in io.c file.
+
+So, it only makes JFFS2 more understandable and cleaner. And it makes 
+sense even without UBI. Is this "superfluous" ? I think no.
 
 -- 
 Best Regards,
