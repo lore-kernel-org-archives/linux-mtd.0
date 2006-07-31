@@ -1,26 +1,23 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7SqP-0006gC-Kw
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 04:09:50 -0400
-Message-ID: <44CDBAA7.8020500@yandex.ru>
-Date: Mon, 31 Jul 2006 12:09:11 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from wr-out-0506.google.com ([64.233.184.231])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G7TkL-0007Js-MI
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 05:07:42 -0400
+Received: by wr-out-0506.google.com with SMTP id 57so242447wri
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Jul 2006 02:07:32 -0700 (PDT)
+Message-ID: <91b24a870607310205w7fa0d847wb652da7a1b0c52c7@mail.gmail.com>
+Date: Mon, 31 Jul 2006 17:05:52 +0800
+From: "Marteo Tim" <tim.marteo@gmail.com>
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Subject: Re: about using UBI on MLC Nand flash
+In-Reply-To: <44C9BA59.7030006@yandex.ru>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: how to use jff2 on UBI layer?
-References: <1152536472.6066.28.camel@localhost.localdomain>	
-	<004601c6aba6$14554050$c7a3580a@swcenter.sec.samsung.co.kr>	
-	<20060720094558.GA30897@wohnheim.fh-wedel.de>	
-	<1153737968.16170.19.camel@sauron.oktetlabs.ru>	
-	<20060724114007.GB20849@wohnheim.fh-wedel.de>	
-	<44C8B789.4030505@yandex.ru>
-	<625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
-In-Reply-To: <625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, haver@vnet.ibm.com,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
-	Marteo Tim <tim.marteo@gmail.com>
+Content-Disposition: inline
+References: <91b24a870607272033n1fa43a45vb523982186708f8e@mail.gmail.com>
+	<44C9BA59.7030006@yandex.ru>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,31 +27,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> It seems somewhat superfluous to add a generalized I/O layer to jffs2.
-> It just doesn't sit right with me.
+2006/7/28, Artem B. Bityutskiy <dedekind@yandex.ru>:
+> Hello Tim,
+>
+> Marteo Tim wrote:
+> > I noticed that UBI need to write 2 times at 1st page in 1 block, one
+> > for EC header, and the other for VID header. But it is not suitable
+> > for MLC NAND flash, which only can write once per page. And by
+> > default, MTD's nand_write can only write page-aligned data.
+> > Although we can set the module parameter vid_hdr_offsets to the 2nd
+> > page, but it will occupy more flash space. It is in a dilemma. :(
+>
+> I wonder, what's your flash What's the NAND page size of your flash?
+>
 
-And after all, what do you mean by superfluous? One more function call? 
-NP - this is a technical question, I can easily turn that into a macro.
+My NAND flash page size is 2k byte.
 
-With my patch, JFFS2 I/O is clean and modularized. Examples:
+> unfortunately, I failed to find any MLC NAND flash manual to read about
+> it. If you could send me one, I'd be grateful. Or URL? Is it only
+> Toshiba who produce them?
+>
 
-You have (jffs2_io)->cm_needed field which tells you if this particular 
-I/O backend needs clean markers. E.g. - Dataflash and UBI does not need 
-them. Or do you prefer this setup_data_flash() stuff in wbuf.c???
+OK, I'm glad to send it to you, include SAMSUNG&TOSHIBA's MLC NAND
+flash datasheet, please check your email, :)
 
-Also, for eCos, you may put all the differences to io.c and don't spread 
-this over all sources.
+> Is this a feature of MLC NANDs or this is just MTD which does not
+> support multiple writes? For example, Samsung SLC flashes *do* support 4
+> writes per NAND page, but MTD *does not* support this so far (but there
+> is a plan to implement this).
+>
 
-Etc.
+By now, as the datasheet described, MLC NAND flash cannot write exceed
+one time for main area and one time for spare area. I don't know it is
+due to manufacture technology's limit or other reasons.
 
-You just put all I/O-related stuff like this in one place. And depending 
-on the I/O backend you initialize it. And all this is in io.c file.
+> And it is strange if UBI tries to write to one NAND page twice at your
+> case. By default it should not, granted mtd->writesize is correct in
+> your case.
+>
 
-So, it only makes JFFS2 more understandable and cleaner. And it makes 
-sense even without UBI. Is this "superfluous" ? I think no.
+Yes, for SLC NAND flash, it would be easy to write more times per page
+by setting mtd->writesize to 512.
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Due to cheap price, MLC NAND flash maybe use more and more popular,
+especially in bulky flash. Yaffs2 can already support MLC chips by
+zero page rewrites, and I want UBI can support it too. :)
