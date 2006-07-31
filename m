@@ -1,23 +1,19 @@
-Received: from py-out-1112.google.com ([64.233.166.183])
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7jUl-0001JV-Fi
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 21:56:35 -0400
-Received: by py-out-1112.google.com with SMTP id x31so769273pye
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Jul 2006 18:56:24 -0700 (PDT)
-Message-ID: <1b712b840607311856s3096a6ebu9bdef35601c25685@mail.gmail.com>
-Date: Mon, 31 Jul 2006 20:56:24 -0500
-From: "Brijesh Singh" <brijesh.ksingh@gmail.com>
-To: "Josh Boyer" <jwboyer@gmail.com>
-Subject: Re: mtdparts kernel cmdline
-In-Reply-To: <625fc13d0607311721l7fd6a0bcmfa00667edbe6885a@mail.gmail.com>
+	id 1G7brP-00050X-T7
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 13:47:27 -0400
+From: "David Byron" <dbyron@hheld.com>
+To: "'Josh Boyer'" <jwboyer@gmail.com>
+Subject: RE: autoconf for mtd-utils
+Date: Mon, 31 Jul 2006 10:47:12 -0700
+Message-ID: <002301c6b4c9$5aa3d3b0$a134800a@RudiDell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1b712b840607311534n2e67b5fcqde683b3469ccd65f@mail.gmail.com>
-	<625fc13d0607311721l7fd6a0bcmfa00667edbe6885a@mail.gmail.com>
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0024_01C6B48E.AE44FBB0"
+In-Reply-To: AAAAAJOKoN+ryO5OkOyypB2eX+5E9yEA
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,80 +23,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh,
+This is a multi-part message in MIME format.
 
-Thanks for your comment.
+------=_NextPart_000_0024_01C6B48E.AE44FBB0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-Yes i understand in first case physmap driver creates the requested
-two partitions. But when i tried to ran "eraseall -j /dev/mtd1" to
-create jffs2 filesystem. The utility erases the entire flash rather
-than starting from 0x40000 offset.
-Hence i suspected that its not picking up the correct starting offset.
+On Sun, 2006-07-30 at 11:10a, Josh Boyer wrote:
 
-To debug further i ran "mtd_debug" utility to verify the ambiguity
-between partitions created by cmdline and physmap driver.
+> Something like that.  But leave the definition of CROSS alone.  It's
+> better to leave the trailing '-' at the end so that if other cross
+> tools are needed, you just specify $(CROSS)ld, etc.
 
-1) mtd_debug info /dev/mtd0 without kernelcmd
-# mtd_debug info /dev/mtd0
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 33554432 (32M)
-mtd.erasesize = 65536 (64K)
-mtd.oobblock = 0
-mtd.oobsize = 0
-mtd.ecctype = MTD_ECC_NONE
-regions = 1
+How's this?
 
-region[0].offset = 0x00000000
-region[0].erasesize = 65536 (64K)
-region[0].numblocks = 512
-region[0].regionindex = 0
+-DB
 
-2) mtd_debug with kernel cmd
+------=_NextPart_000_0024_01C6B48E.AE44FBB0
+Content-Type: application/octet-stream;
+	name="Makefile.patch.3"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="Makefile.patch.3"
 
-root~# mtd_debug info /dev/mtd0
-       mtd.type = MTD_NORFLASH
-      mtd.flags = MTD_ERASEABLE
-       mtd.size = 262144 (256K)
-        mtd.erasesize = 65536 (64K)
-        mtd.oobblock = 0
-        mtd.oobsize = 0
-        mtd.ecctype = MTD_ECC_NONE
-        regions = 0
+diff --git a/Makefile b/Makefile=0A=
+index 37cd7f7..683ddbf 100644=0A=
+--- a/Makefile=0A=
++++ b/Makefile=0A=
+@@ -10,7 +10,14 @@ #CROSS=3Darm-linux-=0A=
+ CC :=3D $(CROSS)gcc=0A=
+ CFLAGS :=3D -I./include -O2 -Wall=0A=
+ =0A=
+-TARGETS =3D ftl_format flash_erase flash_eraseall nanddump doc_loadbios =
+\=0A=
++ifeq ($(origin CROSS),undefined)=0A=
++  BUILDDIR :=3D .=0A=
++else=0A=
++# Remove the trailing slash to make the directory name=0A=
++  BUILDDIR :=3D $(CROSS:-=3D)=0A=
++endif=0A=
++=0A=
++RAWTARGETS =3D ftl_format flash_erase flash_eraseall nanddump =
+doc_loadbios \=0A=
+ 	mkfs.jffs ftl_check mkfs.jffs2 flash_lock flash_unlock flash_info \=0A=
+ 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite \=0A=
+ 	jffs2dump \=0A=
+@@ -18,40 +25,48 @@ TARGETS =3D ftl_format flash_erase flash_e=0A=
+ 	rfddump rfdformat \=0A=
+ 	sumtool #jffs2reader=0A=
+ =0A=
++TARGETS =3D $(foreach target,$(RAWTARGETS),$(BUILDDIR)/$(target))=0A=
++=0A=
+ SYMLINKS =3D=0A=
+ =0A=
+ %: %.o=0A=
+-	$(CC) $(LDFLAGS) -g -o $@ $^=0A=
++	$(CC) $(CFLAGS) $(LDFLAGS) -g -o $@ $^=0A=
+ =0A=
+-%.o: %.c=0A=
+-	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,.$<.dep=0A=
++$(BUILDDIR)/%.o: %.c=0A=
++	mkdir -p $(BUILDDIR)=0A=
++	$(CC) $(CFLAGS) -g -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep=0A=
+ =0A=
+ .SUFFIXES:=0A=
+ =0A=
+ all: $(TARGETS)=0A=
+ =0A=
+-IGNORE=3D${wildcard .*.c.dep}=0A=
++IGNORE=3D${wildcard $(BUILDDIR)/.*.c.dep}=0A=
+ -include ${IGNORE}=0A=
+ =0A=
+ clean:=0A=
+-	rm -f *.o $(TARGETS) .*.c.dep $(SYMLINKS)=0A=
++	rm -f $(BUILDDIR)/*.o $(TARGETS) $(BUILDDIR)/.*.c.dep $(SYMLINKS)=0A=
++	if [ "$(BUILDDIR)x" !=3D ".x" ]; then rm -rf $(BUILDDIR); fi=0A=
+ =0A=
+ $(SYMLINKS):=0A=
+ 	ln -sf ../fs/jffs2/$@ $@=0A=
+ =0A=
+-mkfs.jffs2: crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o compr.o=0A=
++$(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc32.o \=0A=
++			$(BUILDDIR)/compr_rtime.o \=0A=
++			$(BUILDDIR)/mkfs.jffs2.o \=0A=
++			$(BUILDDIR)/compr_zlib.o \=0A=
++			$(BUILDDIR)/compr.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
+ =0A=
+-flash_eraseall: crc32.o flash_eraseall.o=0A=
++$(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o =
+$(BUILDDIR)/flash_eraseall.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+-jffs2reader: jffs2reader.o=0A=
++$(BUILDDIR)/jffs2reader: $(BUILDDIR)/jffs2reader.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^ -lz=0A=
+ =0A=
+-jffs2dump: jffs2dump.o crc32.o=0A=
++$(BUILDDIR)/jffs2dump: $(BUILDDIR)/jffs2dump.o $(BUILDDIR)/crc32.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+-sumtool: sumtool.o crc32.o=0A=
++$(BUILDDIR)/sumtool: $(BUILDDIR)/sumtool.o $(BUILDDIR)/crc32.o=0A=
+ 	$(CC) $(LDFLAGS) -o $@ $^=0A=
+ =0A=
+ install: ${TARGETS}=0A=
 
-# mtd_debug info /dev/mtd1
-mtd.type = MTD_NORFLASH
-mtd.flags = MTD_CAP_NORFLASH
-mtd.size = 3145728 (3M)
-mtd.erasesize = 65536 (64K)
-mtd.oobblock = 0
-mtd.oobsize = 0
-mtd.ecctype = MTD_ECC_NONE
-regions = 0
-
-
-So the question is why kernel does not find "regions" field when
-executed with cmdline argument ?
-
-Thanks,
-Brijesh
-
-On 7/31/06, Josh Boyer <jwboyer@gmail.com> wrote:
-> On 7/31/06, Brijesh Singh <brijesh.ksingh@gmail.com> wrote:
->
-> > Can you give me a pointer on  why the "regions/offset/numblocks"
-> > fields are blank when I use kernel cmdline parameter.
->
-> You're using physmap to map the overall chip.  The default behavior of
-> that mapping driver is to create partitions if they exist then return,
-> which it does in your first case.  If no partitions are found, it will
-> create a single MTD for the entire chip.  That is what you are seeing
-> in the case where you do not specify any partitions on the command
-> line.
->
-> josh
->
-
-
--- 
-Confusion is always the most honest response.
+------=_NextPart_000_0024_01C6B48E.AE44FBB0--
