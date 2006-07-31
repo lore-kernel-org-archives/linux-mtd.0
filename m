@@ -1,29 +1,24 @@
-Received: from ug-out-1314.google.com ([66.249.92.168])
+Received: from mailout2.samsung.com ([203.254.224.25])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7Gy5-0006rg-3e
-	for linux-mtd@lists.infradead.org; Sun, 30 Jul 2006 15:28:57 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so451986ugc
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 30 Jul 2006 12:28:51 -0700 (PDT)
-Message-ID: <625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
-Date: Sun, 30 Jul 2006 14:28:51 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
-Subject: Re: how to use jff2 on UBI layer?
-In-Reply-To: <44C8B789.4030505@yandex.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1152536472.6066.28.camel@localhost.localdomain>
-	<004601c6aba6$14554050$c7a3580a@swcenter.sec.samsung.co.kr>
-	<20060720094558.GA30897@wohnheim.fh-wedel.de>
-	<1153737968.16170.19.camel@sauron.oktetlabs.ru>
-	<20060724114007.GB20849@wohnheim.fh-wedel.de>
-	<44C8B789.4030505@yandex.ru>
-Cc: linux-mtd@lists.infradead.org, haver@vnet.ibm.com,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>,
-	Marteo Tim <tim.marteo@gmail.com>
+	id 1G7PZS-0002nw-BH
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 00:40:08 -0400
+Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J3900MZE3MKWW@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 13:39:57 +0900 (KST)
+Received: from sharmaami ([12.52.146.61])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
+	Jun 23 2003)) with ESMTPSA id <0J3900MVB3MKB0@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 13:39:56 +0900 (KST)
+Date: Mon, 31 Jul 2006 13:40:04 +0900
+From: Amit Kumar Sharma <sharma.amit@samsung.com>
+Subject: mtd onenand driver for kernel 2.4
+To: linux-mtd@lists.infradead.org
+Message-id: <003901c6b45b$644cb490$3d92340c@dsn.sec.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,28 +28,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/27/06, Artem B. Bityutskiy <dedekind@yandex.ru> wrote:
-> Tim, Joern,
->
-> I've made JFFS2 be able to mount UBI volumes directly, without gluebi.
->
-> Now you can do the folliwing:
->
-> 1. mount -t jffs2 ubiX_Y mnt/   --   mount UBI device number <X>, volume
-> <Y>;
-> 2. mount -t jffs2 ubiY mnt/   --   mount UBI device number 0, volume <Y>;
-> 3. mount -t jffs2 ubiX:<name> mnt/   --   mount UBI device X, volume
-> with name <name>;
-> 4. mount -t jffs2 ubi:<name> mnt/   --   mount UBI device 0, volume with
-> name <name>.
->
-> The patches are in ubi-2.6.git, please, try.
+Hi 
 
-For what it's worth, I personally prefer the gluebi approach.  Or at
-least it's design.  I don't see why UBI cannot add_mtd_device for
-every volume that is found within the overall MTD given to it.
+I want to post patch for mtd onenand driver using kernel 2.4,How it can be
+done ,as mtd does not support for 2.6 .
 
-It seems somewhat superfluous to add a generalized I/O layer to jffs2.
- It just doesn't sit right with me.
-
-josh
+Rgs
+Amit
