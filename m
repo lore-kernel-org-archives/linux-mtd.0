@@ -1,9 +1,9 @@
 Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7S6K-0005e5-8S
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 03:22:15 -0400
-Message-ID: <44CDAF7D.4040300@yandex.ru>
-Date: Mon, 31 Jul 2006 11:21:33 +0400
+	id 1G7SRa-00060S-R3
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 03:44:15 -0400
+Message-ID: <44CDB4A4.1010809@yandex.ru>
+Date: Mon, 31 Jul 2006 11:43:32 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: Josh Boyer <jwboyer@gmail.com>
@@ -15,7 +15,8 @@ References: <1152536472.6066.28.camel@localhost.localdomain>
 	<20060724114007.GB20849@wohnheim.fh-wedel.de>	
 	<44C8B789.4030505@yandex.ru>
 	<625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
-In-Reply-To: <625fc13d0607301228y2bfd2c62q462c508d57a32043@mail.gmail.com>
+	<44CDAF7D.4040300@yandex.ru>
+In-Reply-To: <44CDAF7D.4040300@yandex.ru>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org, haver@vnet.ibm.com,
@@ -30,50 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> For what it's worth, I personally prefer the gluebi approach.  Or at
-> least it's design.  I don't see why UBI cannot add_mtd_device for
-> every volume that is found within the overall MTD given to it.
+Artem B. Bityutskiy wrote:
 
-Just because it's strange from the design POV. UBI != MTD device 
-semantically => any attempt to access UBI as MTD device is a dirty hack.
+>> For what it's worth, I personally prefer the gluebi approach.  Or at
+>> least it's design.  I don't see why UBI cannot add_mtd_device for
+>> every volume that is found within the overall MTD given to it.
+> 
+> Just because it's strange from the design POV. UBI != MTD device 
+> semantically => any attempt to access UBI as MTD device is a dirty hack.
 
-> It seems somewhat superfluous to add a generalized I/O layer to jffs2.
-> It just doesn't sit right with me.
+Err, I have to refine my position Of course, the idea itself is OK - it 
+is useful to make MTD-oriented software work on top of UBI. But it is 
+still a hack, just because UBI != MTD subset, strictly speaking.
 
----------
-I have nothing against gluebi as soon as:
-
-1. It works. And AFAICS, we cannot make it all right *for months*.
-2. It does not include a lot of stuff like:
-	if (jffs2_is_ubi(c)) {doh()}
-scattered across JFFS2. Instead, JFFS2 must have zero changes in case of 
-gluebi.
-
-Otherwise, gluebi makes no sense, IMO.
-
----------
-
-"Something superfluous" are just some subjective words. The objective 
-things are
-
-1. JFFS2 just works with my patch over UBI: mount -t jffs2 ubi0 
-/mnt/jffs2 - and you're happy. No need to create strange "fake" MTD devices.
-
-2. There is no half-sane (from MTD's POW!) mtd->put_block() addition in 
-my patch.
-
-3. After all - I see nothing bad in this "superfluous" thing. It just 
-adds better modularization. Moreover, now I can remove crap like
-
-#ifdef __ECOS
-mtd->point()
-#endif
-
-as well as eCos erasure.
-
-just because I can implement eCos I/O in io.c.
-
+But again, see in my previous maul, JFFS2's gluebi port has little to do 
+with a transparent MTD emulation layer. At lease the gluebi I'm aware of.
 
 -- 
 Best Regards,
