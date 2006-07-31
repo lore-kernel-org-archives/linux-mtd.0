@@ -1,17 +1,19 @@
-Received: from iris-63.mc.com ([63.96.239.141] helo=mc.com)
+Received: from py-out-1112.google.com ([64.233.166.181])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7eUb-0006Fw-H1
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 16:36:07 -0400
-content-class: urn:content-classes:message
+	id 1G7gLU-0007Q8-FK
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 18:34:53 -0400
+Received: by py-out-1112.google.com with SMTP id x31so702314pye
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 31 Jul 2006 15:34:40 -0700 (PDT)
+Message-ID: <1b712b840607311534n2e67b5fcqde683b3469ccd65f@mail.gmail.com>
+Date: Mon, 31 Jul 2006 17:34:40 -0500
+From: "Brijesh Singh" <brijesh.ksingh@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: mtdparts kernel cmdline
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: 2 back to back 512Mbit P30 16 bit wide flashes on 32 bit bus
-Date: Mon, 31 Jul 2006 16:35:59 -0400
-Message-ID: <33D5D4623368C945BFAFDC37D6C035E4019A3824@ad-email1.ad.mc.com>
-From: "Miloslavsky, Philip" <pmilosla@mc.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,118 +23,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a flash that I'm trying to get to work with MTD physmap.
+Hi,
 
-I hear there are some bugs with P30 still, but for me the CFI interface
-does not even work.
+I have enabled AMD NOR flash support in 2.6.10 kernel and using
+mtdparts cmdline to partition NOR flash and mtd_debug utility to check
+the flags and all.
 
-I have 2 back to back 512Mbit Intel strataflash P30 16 bit wide flashes
-on 32 bit bus. One flash is on the lower half, one on the higher.
+1) If I use the below command line
+Kernel cmdline: mtdparts=phys_mapped_flash:256k(uboot)ro,3M@0x40000(root)
+Kernel creates two partitions as expected and if i exected mtd_debug command
 
-This is a sample sequence of events (the dump of the flash is in
-integers):
+     root~# mtd_debug info /dev/mtd0
+        mtd.type = MTD_NORFLASH
+       mtd.flags = MTD_ERASEABLE
+        mtd.size = 262144 (256K)
+         mtd.erasesize = 65536 (64K)
+         mtd.oobblock = 0
+         mtd.oobsize = 0
+         mtd.ecctype = MTD_ECC_NONE
+         regions = 0
 
-inline_map_write: map->virt: 0xE1000000 ofs: 0x0 data: 0xF000F0=20
-inline_map_write: bankwidth 1:0 2:0 4:1 8:0 large:0            =20
-inline_map_write: map->virt: 0xE1000000 ofs: 0x0 data: 0xFF00FF=20
-inline_map_write: bankwidth 1:0 2:0 4:1 8:0 large:0            =20
-inline_map_write: map->virt: 0xE1000000 ofs: 0x550 data: 0x980098=20
-inline_map_write: bankwidth 1:0 2:0 4:1 8:0 large:0              =20
-cfi_probe_chip: base: 0x0 size: 0x7ffffff phys: 0xd0000000 virt:
-0xe1000000 bankwidth: 0x=20
-cfi_probe_chip: flash_base after CFI commands:
+# mtd_debug info /dev/mtd1
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 3145728 (3M)
+mtd.erasesize = 65536 (64K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 0
 
-off 0x0:  0x890089 0x89198919 0x10001 0x10001 =20
-off 0x10:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0x20:  0x890089 0x89198919 0x10001 0x10001
-off 0x30:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0x40:  0x890089 0x89198919 0x10001 0x10001
-off 0x50:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0x60:  0x890089 0x89198919 0x10001 0x10001
-off 0x70:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0x80:  0x890089 0x89198919 0x10001 0x10001
-off 0x90:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0xA0:  0x890089 0x89198919 0x10001 0x10001
-off 0xB0:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0xC0:  0x890089 0x89198919 0x10001 0x10001
-off 0xD0:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0xE0:  0x890089 0x89198919 0x10001 0x10001
-off 0xF0:  0x890089 0xBFCFBFCF 0x10001 0x10001
-off 0x100:  0x510051 0x520052 0x590059 0x10001
-off 0x110:  0x0 0xA000A 0x10001 0x0          =20
-off 0x120:  0x510051 0x520052 0x590059 0x10001
-off 0x130:  0x0 0xA000A 0x10001 0x0          =20
-off 0x140:  0x510051 0x520052 0x590059 0x10001
-off 0x150:  0x0 0xA000A 0x10001 0x0          =20
-off 0x160:  0x510051 0x520052 0x590059 0x10001
-off 0x170:  0x0 0xA000A 0x10001 0x0          =20
-qry_present:   offset multiplier 0x10 times x where x is 0x10
-interleave: 2 device type: 8
-inline_map_read: map->virt: 0xE1000000 ofs: 0x100 result: 0x510051
-
-inline_map_read: bankwidth 1:0 2:0 4:1 8:0 large:0                =20
-inline_map_read: map->virt: 0xE1000000 ofs: 0x110 result: 0x0=20
-inline_map_read: bankwidth 1:0 2:0 4:1 8:0 large:0           =20
-inline_map_read: map->virt: 0xE1000000 ofs: 0x120 result: 0x510051=20
-inline_map_read: bankwidth 1:0 2:0 4:1 8:0 large:0                =20
-map_word_equal:   Read: 0x510051 Expected: 0x510051
-map_word_equal:   Read: 0x0 Expected: 0x520052    =20
-map_word_equal:   Read NOT Expected
-
-Note its reading from 0x120 not 0x104.
+2) If i do not use any kernel command line  then
 
 
-Thoughts? I don't think any set of geometry parameters will work for me.
-I think I've tried them all at this point.
+# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 65536 (64K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 1
 
-I am using linux 2.6.12.6 because I need chipset support that is only
-available against that version.
+region[0].offset = 0x00000000
+region[0].erasesize = 65536 (64K)
+region[0].numblocks = 512
+region[0].regionindex = 0
 
 
 
---
-Philip Miloslavsky =20
+Can you give me a pointer on  why the "regions/offset/numblocks"
+fields are blank when I use kernel cmdline parameter.
 
 
 
+Thanks,
 
-        volatile int * flash_zero;
+Brijesh
 
-xip_disable();
-
-        cfi_send_gen_cmd(0xF0, 0, base, map, cfi, cfi->device_type,
-NULL);
-
-        cfi_send_gen_cmd(0xFF, 0, base, map, cfi, cfi->device_type,
-NULL);
-
-        cfi_send_gen_cmd(0x98, 0x55, base, map, cfi, cfi->device_type,
-NULL);
-
-=20
-
-=20
-
-      printk(KERN_CRIT "cfi_probe_chip: base: 0x%x size: 0x%x phys: 0x%x
-virt: 0x%x bankwidth
-
-: 0x%x \n",
-
-                        (unsigned long)base, map->size -1, map->phys,
-map->virt, map->bankwid
-
-th);
-
-        flash_zero =3D map->virt;
-
-        printk(KERN_CRIT "cfi_probe_chip: flash_base after CFI commands:
-\n");
-
-        for(i =3D0; i < 0x60; i=3Di+4) {
-
-          printk("off 0x%X:  0x%X 0x%X 0x%X 0x%X\n",  i*4, *(flash_zero
-+i), *(flash_zero +i+
-
-1), *(flash_zero +i+2), *(flash_zero +i+3
-
-)); }
+dmesg#
+physmap flash device: 2000000 at 2000000
+phys_mapped_flash: Found 1 x16 devices at 0x0 in 8-bit bank
+ Amd/Fujitsu Extended Query Table at 0x0040
+Using buffer write method
+  Silicon revision: 4
+  Address sensitive unlock: Required
+  Erase Suspend: Read/write
+  Block protection: 1 sectors per group
+  Temporary block unprotect: Supported
+  Block protect/unprotect scheme: 4
+  Number of simultaneous operations: 0
+  Burst mode: Not supported
+  Page mode: 4 word page
+  Vpp Supply Minimum Program/Erase Voltage: 11.5 V
+  Vpp Supply Maximum Program/Erase Voltage: 12.5 V
+  Top/Bottom Boot Block: Uniform, Top WP
+phys_mapped_flash: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+0: offset=0x0,size=0x10000,blocks=512
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+DEBUG-CMDLINE-PART: parsing <256k(uboot)ro,3M@0x40000(root)>
+DEBUG-CMDLINE-PART: partition 1: name <root>, offset 40000, size
+300000, mask fl
+ags 0
+DEBUG-CMDLINE-PART: partition 0: name <uboot>, offset 0, size 40000, mask flags
+3
+DEBUG-CMDLINE-PART: mtdid=<phys_mapped_flash> num_parts=<2>
+2 cmdlinepart partitions found on MTD device phys_mapped_flash
+Creating 2 MTD partitions on "phys_mapped_flash":
+0x00000000-0x00040000 : "uboot"
+mtd: Giving out device 0 to uboot
+0x00040000-0x00340000 : "root"
+mtd: Giving out device 1 to root
