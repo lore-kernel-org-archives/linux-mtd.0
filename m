@@ -1,12 +1,21 @@
-Message-ID: <53383.213.185.118.200.1154440999.squirrel@nurrti.email.starband.net>
-Date: Tue, 1 Aug 2006 22:03:19 +0800 (CST)
-Subject: Project From Hong Kong.
-From: "Maybank Hong Kong." <edwinfong001@yahoo.com.hk>
-To: 
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G81Kw-0005f9-Of
+	for linux-mtd@lists.infradead.org; Tue, 01 Aug 2006 16:59:40 -0400
+Received: from [206.15.76.194] (HELO RudiDell)
+	by hheld.com (CommuniGate Pro SMTP 4.3.7)
+	with ESMTPS id 868029 for linux-mtd@lists.infradead.org;
+	Tue, 01 Aug 2006 13:59:33 -0700
+From: "David Byron" <dbyron@hheld.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: nandwrite in FAQ
+Date: Tue, 1 Aug 2006 13:59:57 -0700
+Message-ID: <001001c6b5ad$727d9400$c834800a@RudiDell>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: edwinfong001@yahoo.com.hk
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0011_01C6B572.C61EBC00"
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,56 +25,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
 
+------=_NextPart_000_0011_01C6B572.C61EBC00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
+Related to
+http://lists.infradead.org/pipermail/linux-mtd/2006-July/016184.html, what
+do you think of removing the -j argument to nandwrite in the NAND FAQ?
+Definitely would have saved me a bunch of time.
 
-Mr. Fong Edwin.
-Maybank Hong Kong,
-21/F, Man Yee Building,
-68 Des Voeux Road Central,
-Hong Kong.
-edwinfong001@yahoo.com.hk
+-DB
 
-Greetings.
+------=_NextPart_000_0011_01C6B572.C61EBC00
+Content-Type: application/octet-stream;
+	name="nand.xml.patch"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="nand.xml.patch"
 
-I am Mr. Fong Edwin of Trade Finance Department, Maybank Hong Kong. On
-July 6, 2004, our client Dr. Ravia Pumin, a businessman, made a numbered
-fixed deposit  for 6 (six) calendar months, with a value of US$16.5m only
-in my branch. Upon maturity several notice was sent to him and no response
-came from him. Another  notification was sent early August 2005 and still
-no response came from him. The Bank officially sent two-man delegate to
-his residence in Indonesia were he reside only to find out that the
-business mogul and his family perished in the Tsunami Disaster on 26th
-december 2004. After further investigations, it was also discovered that
-Dr. Ravia Pumin did not declare any next of kin in his official papers,
-including the paper work of  his bank deposit. And he also confided in me
-the last time he visited my office that no one except me knew of his
-deposit in my bank. So, Sixteen million, Five Hundred Thousand United
-State Dollars is still lying in my bank and no one will ever come forward
-to claim it.
+diff --git a/faq/nand.xml b/faq/nand.xml=0A=
+index f208d44..1a39c46 100644=0A=
+--- a/faq/nand.xml=0A=
++++ b/faq/nand.xml=0A=
+@@ -43,7 +43,7 @@ is also neccecary before you copy a fs-i=0A=
+ <p>Yes, as long as your chip does not contain bad blocks. Make sure, =
+that the erasesize you set to mkfs.jffs2 =0A=
+ is the same as the erasesize of your chip. Data will only be written =
+with ECC, if your default settings for=0A=
+ oob-layout selection are set for JFFS2. For bad block aware copying, =
+use nandwrite from mtd-utils.<br />=0A=
+-nandwrite -j /dev/mtdX image=0A=
++nandwrite /dev/mtdX image=0A=
+ </p>=0A=
+ =0A=
+ <h3>Can I use seek/read/write on /dev/mtdX ?</h3>=0A=
 
-According to the laws in Hong Kong, at the expiration of two year (2
-years) the funds will revert to the ownership of Hong Kong Government if
-nobody applies to claim the funds. I will like you as a foreigner to stand
-as the next of kin to Dr. Ravia Pumin to enable you receive the funds.
-Lets put heads together to see how we can transfer these funds out of Hong
-Kong and use it judiciously.I have contacted my Attorney that will prepare
-the necessary document that will back you up as the next of kin to Dr.
-Ravia Pumin, all that is require from you at this stage is for you to
-provide me with your full names and Address including your direct phone
-and fax numbers for my Attorney to commence his job. It can be sent
-through my personal email below.My Attorney will also file in for claims
-on your behalf and secure the necessary approval and letter of probate in
-your favor for the funds to be move to an account that will be provided by
-you. We are going to adopt a legalized method and the Attorney will
-prepare all the necessary documents and no risk involve.
-
-Note that sharing percentage is negotiable by the two parties. Contact me
-via my personal email address with your full names, address, fax and
-telephone number if you are interested and more details will be provided
-to you about the Project.
-
-Sincerely,
-
-Mr. Fong Edwin.
-edwinfong001@yahoo.com.hk
+------=_NextPart_000_0011_01C6B572.C61EBC00--
