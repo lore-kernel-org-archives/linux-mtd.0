@@ -1,19 +1,20 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7vPH-0001aQ-4T
-	for linux-mtd@lists.infradead.org; Tue, 01 Aug 2006 15:39:40 +0100
-Message-ID: <44CF66FD.1090106@yandex.ru>
-Date: Tue, 01 Aug 2006 18:36:45 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
+	helo=hheld.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G7zrU-0004i3-Tl
+	for linux-mtd@lists.infradead.org; Tue, 01 Aug 2006 15:25:12 -0400
+From: "David Byron" <dbyron@hheld.com>
+To: "'Josh Boyer'" <jwboyer@gmail.com>
+Subject: RE: autoconf for mtd-utils
+Date: Tue, 1 Aug 2006 12:25:19 -0700
+Message-ID: <000001c6b5a0$3a0a5bb0$c834800a@RudiDell>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: [PATCH] JFFS2 superblock support
-References: <1154440001.30995.7.camel@sauron.oktetlabs.ru>
-	<625fc13d0608010714u48a7e582qea5a719b4b0aab55@mail.gmail.com>
-In-Reply-To: <625fc13d0608010714u48a7e582qea5a719b4b0aab55@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+In-Reply-To: AAAAAJOKoN+ryO5OkOyypB2eX+7EESIA
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> I forget exactly why a super block should be added.  Could you refresh
-> my memory?
+On Mon, 2006-07-31 at 5:50p, Josh Boyer wrote: 
 
-Just a normal node with no fixed place contaning all the per-FS data.
+> Better.  But it only defines BUILDDIR during a cross compile.  Is that
+> what you wanted?  Or did you want a general purpose way to separate
+> the object and binary files from the source during build time?
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+I do define BUILDDIR for native builds too, but to the current directory.
+The important thing for me is that native objects live in a different place
+than cross-compiled objects.  Where they are relative to the source isn't
+important to me at the moment.
+
+-DB
