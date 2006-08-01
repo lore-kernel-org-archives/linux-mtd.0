@@ -1,21 +1,22 @@
-Received: from ug-out-1314.google.com ([66.249.92.173])
+Received: from py-out-1112.google.com ([64.233.166.183])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G7iSV-0000b4-O7
-	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 20:50:13 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so1098280ugc
+	id 1G7jUl-0001JV-Fi
+	for linux-mtd@lists.infradead.org; Mon, 31 Jul 2006 21:56:35 -0400
+Received: by py-out-1112.google.com with SMTP id x31so769273pye
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 31 Jul 2006 17:50:06 -0700 (PDT)
-Message-ID: <625fc13d0607311750t4537d54ai69273a4b0101affc@mail.gmail.com>
-Date: Mon, 31 Jul 2006 19:50:00 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: dbyron@hheld.com
-Subject: Re: autoconf for mtd-utils
-In-Reply-To: <002301c6b4c9$5aa3d3b0$a134800a@RudiDell>
+	Mon, 31 Jul 2006 18:56:24 -0700 (PDT)
+Message-ID: <1b712b840607311856s3096a6ebu9bdef35601c25685@mail.gmail.com>
+Date: Mon, 31 Jul 2006 20:56:24 -0500
+From: "Brijesh Singh" <brijesh.ksingh@gmail.com>
+To: "Josh Boyer" <jwboyer@gmail.com>
+Subject: Re: mtdparts kernel cmdline
+In-Reply-To: <625fc13d0607311721l7fd6a0bcmfa00667edbe6885a@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <002301c6b4c9$5aa3d3b0$a134800a@RudiDell>
+References: <1b712b840607311534n2e67b5fcqde683b3469ccd65f@mail.gmail.com>
+	<625fc13d0607311721l7fd6a0bcmfa00667edbe6885a@mail.gmail.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,20 +27,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/31/06, David Byron <dbyron@hheld.com> wrote:
-> On Sun, 2006-07-30 at 11:10a, Josh Boyer wrote:
+Josh,
+
+Thanks for your comment.
+
+Yes i understand in first case physmap driver creates the requested
+two partitions. But when i tried to ran "eraseall -j /dev/mtd1" to
+create jffs2 filesystem. The utility erases the entire flash rather
+than starting from 0x40000 offset.
+Hence i suspected that its not picking up the correct starting offset.
+
+To debug further i ran "mtd_debug" utility to verify the ambiguity
+between partitions created by cmdline and physmap driver.
+
+1) mtd_debug info /dev/mtd0 without kernelcmd
+# mtd_debug info /dev/mtd0
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 33554432 (32M)
+mtd.erasesize = 65536 (64K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 1
+
+region[0].offset = 0x00000000
+region[0].erasesize = 65536 (64K)
+region[0].numblocks = 512
+region[0].regionindex = 0
+
+2) mtd_debug with kernel cmd
+
+root~# mtd_debug info /dev/mtd0
+       mtd.type = MTD_NORFLASH
+      mtd.flags = MTD_ERASEABLE
+       mtd.size = 262144 (256K)
+        mtd.erasesize = 65536 (64K)
+        mtd.oobblock = 0
+        mtd.oobsize = 0
+        mtd.ecctype = MTD_ECC_NONE
+        regions = 0
+
+# mtd_debug info /dev/mtd1
+mtd.type = MTD_NORFLASH
+mtd.flags = MTD_CAP_NORFLASH
+mtd.size = 3145728 (3M)
+mtd.erasesize = 65536 (64K)
+mtd.oobblock = 0
+mtd.oobsize = 0
+mtd.ecctype = MTD_ECC_NONE
+regions = 0
+
+
+So the question is why kernel does not find "regions" field when
+executed with cmdline argument ?
+
+Thanks,
+Brijesh
+
+On 7/31/06, Josh Boyer <jwboyer@gmail.com> wrote:
+> On 7/31/06, Brijesh Singh <brijesh.ksingh@gmail.com> wrote:
 >
-> > Something like that.  But leave the definition of CROSS alone.  It's
-> > better to leave the trailing '-' at the end so that if other cross
-> > tools are needed, you just specify $(CROSS)ld, etc.
+> > Can you give me a pointer on  why the "regions/offset/numblocks"
+> > fields are blank when I use kernel cmdline parameter.
 >
-> How's this?
+> You're using physmap to map the overall chip.  The default behavior of
+> that mapping driver is to create partitions if they exist then return,
+> which it does in your first case.  If no partitions are found, it will
+> create a single MTD for the entire chip.  That is what you are seeing
+> in the case where you do not specify any partitions on the command
+> line.
+>
+> josh
+>
 
-Better.  But it only defines BUILDDIR during a cross compile.  Is that
-what you wanted?  Or did you want a general purpose way to separate
-the object and binary files from the source during build time?
 
-Sorry for not asking that question sooner.  I've just gotten back from
-vacation so I'm a bit slow to respond on some things.
-
-josh
+-- 
+Confusion is always the most honest response.
