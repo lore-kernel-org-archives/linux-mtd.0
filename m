@@ -1,20 +1,19 @@
-Received: from h-67-102-66-132.snfccasy.covad.net ([67.102.66.132]
-	helo=hheld.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8IBs-00085d-31
-	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 10:59:28 -0400
-From: "David Byron" <dbyron@hheld.com>
-To: "'Artem B. Bityutskiy'" <dedekind@yandex.ru>
-Subject: RE: nandwrite in FAQ
-Date: Wed, 2 Aug 2006 07:59:14 -0700
-Message-ID: <004901c6b644$38f305c0$c834800a@RudiDell>
+Received: from host46-203-static.38-85-b.business.telecomitalia.it
+	([85.38.203.46] helo=dave-tech.it)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G8IT4-0008Ta-OF
+	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 11:17:11 -0400
+Message-ID: <44D0C250.2030601@dave-tech.it>
+Date: Wed, 02 Aug 2006 17:18:40 +0200
+From: llandre <r&d2@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+To: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Subject: Re: How to generate a patch limited to MTD subsystem
+References: <44D0B33A.2080702@dave-tech.it> <44D0B8FF.6090601@yandex.ru>
+In-Reply-To: <44D0B8FF.6090601@yandex.ru>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: AAAAAJOKoN+ryO5OkOyypB2eX+4ELSIA
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dbyron@hheld.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,10 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday August 2, 2006, Artem B. Bityutskiy wrote:
+> I'd do like this:
+> 
+> rm -rf linux-2.6.15/drivers/mtd
+> cp -r linux-latest/drivers/mtd linux-2.6.15/drivers/
+> 
+> rm linux-2.6.15/include/mtd
+> cp -r linux-latest/include/mtd linux-2.6.15/include/mtd
+> 
+> rm linux-2.6.15/include/linux/mtd
+> cp -r linux-latest/include/linux/mtd linux-2.6.15/include/linux/mtd
+> 
+> Then try to compile & run and resolve all problems. I suspect there are 
+> not going to be many of them.
+> 
 
-> Committed to my tree so far. Will importune dwmw2 to pull from it.
+Hmm ... if I recall correctly MTD provides more stuff (JFFS2 for 
+example), doesn't it?
 
-Thank you.
+-- 
+llandre
 
--DB
+DAVE Electronics System House - R&D Department
+web:   http://www.dave-tech.it
+email: r&d2@dave-tech.it
