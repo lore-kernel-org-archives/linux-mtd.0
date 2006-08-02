@@ -1,9 +1,9 @@
 Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8HyH-0007ZM-Mb
-	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 10:45:26 -0400
-Message-ID: <44D0BA57.9040200@yandex.ru>
-Date: Wed, 02 Aug 2006 18:44:39 +0400
+	id 1G8I64-0007nI-Rt
+	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 10:53:26 -0400
+Message-ID: <44D0BC3C.8080700@yandex.ru>
+Date: Wed, 02 Aug 2006 18:52:44 +0400
 From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
 To: dbyron@hheld.com
@@ -22,13 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
 David Byron wrote:
 > I attached a patch to my original message.  Is that enough?  Getting an
 > account at infradead, making my own tree, etc. seems like overkill for a
 > three character change.
+> 
 
-Sorry, missed the attached patch.
+Committed to my tree so far. Will importune dwmw2 to pull from it.
 
 -- 
 Best Regards,
