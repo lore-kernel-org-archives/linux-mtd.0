@@ -1,22 +1,16 @@
-Received: from ug-out-1314.google.com ([66.249.92.173])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8ETF-0005EQ-R4
-	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 07:01:10 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so1806101ugc
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Aug 2006 04:00:57 -0700 (PDT)
-Message-ID: <625fc13d0608020400w307e5e77s40f4aa604c0e4395@mail.gmail.com>
-Date: Wed, 2 Aug 2006 06:00:57 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: dbyron@hheld.com
-Subject: Re: autoconf for mtd-utils
-In-Reply-To: <000001c6b5a0$3a0a5bb0$c834800a@RudiDell>
+Received: from host46-203-static.38-85-b.business.telecomitalia.it
+	([85.38.203.46] helo=dave-tech.it)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G8HSp-0006mf-9b
+	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 10:12:52 -0400
+Message-ID: <44D0B33A.2080702@dave-tech.it>
+Date: Wed, 02 Aug 2006 16:14:18 +0200
+From: llandre <r&d2@dave-tech.it>
 MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: How to generate a patch limited to MTD subsystem
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <000001c6b5a0$3a0a5bb0$c834800a@RudiDell>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/1/06, David Byron <dbyron@hheld.com> wrote:
-> On Mon, 2006-07-31 at 5:50p, Josh Boyer wrote:
->
-> > Better.  But it only defines BUILDDIR during a cross compile.  Is that
-> > what you wanted?  Or did you want a general purpose way to separate
-> > the object and binary files from the source during build time?
->
-> I do define BUILDDIR for native builds too, but to the current directory.
-> The important thing for me is that native objects live in a different place
-> than cross-compiled objects.  Where they are relative to the source isn't
-> important to me at the moment.
+I'm facing the following problem.
+I'm working on custom hardware with kernel 2.6.15. I suspect I need to 
+update the MTD subsystem with latest sources. How to do that without 
+migrating to latest kernel? In other words I need to generate a patch 
+from latest MTD code against MTD code included in v2.6.15 kernel. Is it 
+possible? How?
 
-This looks OK to me.  dwmw2, do you have any issues with this?
 
-josh
+TIA,
+llandre
+
+DAVE Electronics System House - R&D Department
+web:   http://www.dave-tech.it
+email: r&d2@dave-tech.it
