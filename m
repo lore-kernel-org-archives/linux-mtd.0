@@ -1,23 +1,19 @@
-Received: from ug-out-1314.google.com ([66.249.92.173])
+Received: from smtp12.dti.ne.jp ([202.216.231.187])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8cDq-0004SH-SC
-	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 08:22:48 -0400
-Received: by ug-out-1314.google.com with SMTP id u40so172978ugc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 Aug 2006 05:22:40 -0700 (PDT)
-Message-ID: <625fc13d0608030522g1495c843q3ae23e4db7252c2f@mail.gmail.com>
-Date: Thu, 3 Aug 2006 07:22:39 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: dbyron@hheld.com
-Subject: Re: autoconf for mtd-utils
-In-Reply-To: <625fc13d0608020400w307e5e77s40f4aa604c0e4395@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1G8dRE-0005Bc-7M
+	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 09:40:40 -0400
+Received: from shabby.localdomain (KHP059140016099.ppp-bb.dion.ne.jp
+	[59.140.16.99]) by smtp12.dti.ne.jp (3.11s) with ESMTP AUTH id
+	k73DSJx6028537 for <linux-mtd@lists.infradead.org>;
+	Thu, 3 Aug 2006 22:28:19 +0900 (JST)
+Date: Thu, 3 Aug 2006 22:28:18 +0900
+From: takasi-y@ops.dti.ne.jp
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] PHYSMAP depens on CFI or JEDECPROBE or ROM
+Message-Id: <20060803222818.7f8f0286.takasi-y@ops.dti.ne.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <000001c6b5a0$3a0a5bb0$c834800a@RudiDell>
-	<625fc13d0608020400w307e5e77s40f4aa604c0e4395@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,15 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/2/06, Josh Boyer <jwboyer@gmail.com> wrote:
-> On 8/1/06, David Byron <dbyron@hheld.com> wrote:
-> > I do define BUILDDIR for native builds too, but to the current directory.
-> > The important thing for me is that native objects live in a different place
-> > than cross-compiled objects.  Where they are relative to the source isn't
-> > important to me at the moment.
->
-> This looks OK to me.  dwmw2, do you have any issues with this?
+Hi,
+map/physmap.c tries to probe "cfi_probe", "jedec_probe" and "map_rom", but
+map/Kconfig says it depends on MTD_CFI only.
+Here is the fix. 
+# I think description should be rewritten by someone who speak real english, though.
+/yoshii
 
-I've committed this patch.  Thanks again David.
+Index: drivers/mtd/maps/Kconfig
+===================================================================
+RCS file: /home/cvs/mtd/drivers/mtd/maps/Kconfig,v
+retrieving revision 1.69
+diff -u -p -r1.69 Kconfig
+--- drivers/mtd/maps/Kconfig    28 Mar 2006 16:15:53 -0000      1.69
++++ drivers/mtd/maps/Kconfig    3 Aug 2006 13:22:08 -0000
+@@ -13,13 +13,13 @@ config MTD_COMPLEX_MAPPINGS
 
-josh
+ config MTD_PHYSMAP
+        tristate "CFI Flash device in physical memory map"
+-       depends on MTD_CFI
++       depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM
+        help
+-         This provides a 'mapping' driver which allows the CFI probe and
+-         command set driver code to communicate with flash chips which
+-         are mapped physically into the CPU's memory. You will need to
+-         configure the physical address and size of the flash chips on
+-         your particular board as well as the bus width, either statically
++         This provides a 'mapping' driver which allows the NOR Flash and
++         ROM driver code to communicate with chips which are mapped
++         physically into the CPU's memory. You will need to configure
++         the physical address and size of the flash chips on your
++         particular board as well as the bus width, either statically
+          with config options or at run-time.
+
+ config MTD_PHYSMAP_START
