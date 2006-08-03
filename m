@@ -1,16 +1,16 @@
 Received: from smtp12.dti.ne.jp ([202.216.231.187])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8dRE-0005Bc-7M
-	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 09:40:40 -0400
+	id 1G8dfj-0005TC-Ds
+	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 09:55:44 -0400
 Received: from shabby.localdomain (KHP059140016099.ppp-bb.dion.ne.jp
 	[59.140.16.99]) by smtp12.dti.ne.jp (3.11s) with ESMTP AUTH id
-	k73DSJx6028537 for <linux-mtd@lists.infradead.org>;
-	Thu, 3 Aug 2006 22:28:19 +0900 (JST)
-Date: Thu, 3 Aug 2006 22:28:18 +0900
+	k73DdfjZ029102 for <linux-mtd@lists.infradead.org>;
+	Thu, 3 Aug 2006 22:39:41 +0900 (JST)
+Date: Thu, 3 Aug 2006 22:39:36 +0900
 From: takasi-y@ops.dti.ne.jp
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] PHYSMAP depens on CFI or JEDECPROBE or ROM
-Message-Id: <20060803222818.7f8f0286.takasi-y@ops.dti.ne.jp>
+Subject: [PATCH] Mcronix MX29F040 support.
+Message-Id: <20060803223936.87040059.takasi-y@ops.dti.ne.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -24,36 +24,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
-map/physmap.c tries to probe "cfi_probe", "jedec_probe" and "map_rom", but
-map/Kconfig says it depends on MTD_CFI only.
-Here is the fix. 
-# I think description should be rewritten by someone who speak real english, though.
+I've got new board which has MX29F040, Macroix's NOR Flash on it.
+I'm now struggling to put kernel and userland into it.
+Could you(who? Mr. dwmw2?) add this one, please?
 /yoshii
 
-Index: drivers/mtd/maps/Kconfig
+Index: drivers/mtd/chips/jedec_probe.c
 ===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/maps/Kconfig,v
-retrieving revision 1.69
-diff -u -p -r1.69 Kconfig
---- drivers/mtd/maps/Kconfig    28 Mar 2006 16:15:53 -0000      1.69
-+++ drivers/mtd/maps/Kconfig    3 Aug 2006 13:22:08 -0000
-@@ -13,13 +13,13 @@ config MTD_COMPLEX_MAPPINGS
-
- config MTD_PHYSMAP
-        tristate "CFI Flash device in physical memory map"
--       depends on MTD_CFI
-+       depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM
-        help
--         This provides a 'mapping' driver which allows the CFI probe and
--         command set driver code to communicate with flash chips which
--         are mapped physically into the CPU's memory. You will need to
--         configure the physical address and size of the flash chips on
--         your particular board as well as the bus width, either statically
-+         This provides a 'mapping' driver which allows the NOR Flash and
-+         ROM driver code to communicate with chips which are mapped
-+         physically into the CPU's memory. You will need to configure
-+         the physical address and size of the flash chips on your
-+         particular board as well as the bus width, either statically
-          with config options or at run-time.
-
- config MTD_PHYSMAP_START
+RCS file: /home/cvs/mtd/drivers/mtd/chips/jedec_probe.c,v
+retrieving revision 1.68
+diff -u -p -r1.68 jedec_probe.c
+--- drivers/mtd/chips/jedec_probe.c	29 Mar 2006 08:42:49 -0000	1.68
++++ drivers/mtd/chips/jedec_probe.c	3 Aug 2006 13:31:52 -0000
+@@ -112,6 +112,7 @@
+ #define MX29LV040C	0x004F
+ #define MX29LV160T	0x22C4
+ #define MX29LV160B	0x2249
++#define MX29F040	0x00A4
+ #define MX29F016	0x00AD
+ #define MX29F002T	0x00B0
+ #define MX29F004T	0x0045
+@@ -1173,6 +1174,19 @@ static const struct amd_flash_info jedec
+ 		}
+ 	}, {
+ 		.mfr_id		= MANUFACTURER_MACRONIX,
++		.dev_id		= MX29F040,
++		.name		= "Macronix MX29F040",
++		.uaddr		= {
++			[0] = MTD_UADDR_0x0555_0x02AA /* x8 */
++		},
++		.DevSize	= SIZE_512KiB,
++		.CmdSet		= P_ID_AMD_STD,
++		.NumEraseRegions= 1,
++		.regions	= {
++			ERASEINFO(0x10000,8),
++		}
++        }, {
++		.mfr_id		= MANUFACTURER_MACRONIX,
+ 		.dev_id		= MX29F016,
+ 		.name		= "Macronix MX29F016",
+ 		.uaddr		= {
