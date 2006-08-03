@@ -1,15 +1,15 @@
 Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8eRR-0006Bv-7T
-	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 10:45:02 -0400
-Subject: Re: Problem with mounting JFFS2
+	id 1G8ehJ-0006Up-P6
+	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 11:01:27 -0400
+Subject: Re: "Bad eraseblock" - NAND memory gone bad? (Zaurus, mtdblock)
 From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: Iva Salom <diva@kondor.imp.bg.ac.yu>
-In-Reply-To: <001601c6b6ea$cb60f790$c6345b93@VLADIMIR>
-References: <001601c6b6ea$cb60f790$c6345b93@VLADIMIR>
+To: Jan Korger <Jan.Korger@uni-konstanz.de>
+In-Reply-To: <20060801200451.26e54e4e@urania.exp.univie.ac.at>
+References: <20060801200451.26e54e4e@urania.exp.univie.ac.at>
 Content-Type: text/plain
-Date: Thu, 03 Aug 2006 18:44:15 +0400
-Message-Id: <1154616255.9457.3.camel@sauron.oktetlabs.ru>
+Date: Thu, 03 Aug 2006 19:00:43 +0400
+Message-Id: <1154617243.9457.16.camel@sauron.oktetlabs.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,26 +23,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Iva,
+Hello Jan,
 
-On Thu, 2006-08-03 at 12:51 +0200, Iva Salom wrote:
-> I am a beginner in all these embedded linux - mtd - jffs stuff. I am
-> using Intel FLASH 28F320 (2 interleaved 16b chips of 8MB, so we have
-> 32bit buswidth) (CFI) with TMS320C5471 platform. I turnd on MTD
-> support, so I have 5 partitions: bootloader (/dev/mtd0), bootloader
-> parameters (/dev/mtd1), kernel image (/dev/mtd2), ROMFS SDRAM image
-> (/dev/mtd5), primary file system, which is romfs (/dev/mtd3) and I
-> want the second to be jffs2 (/dev/mtd4):
+On Tue, 2006-08-01 at 20:04 +0200, Jan Korger wrote:
+> Not working "properly" means the device does boot but the GUI (GPE 2.7,
+> X) is not usable (various minor issues, could be due to lost
+> configuration data). I can however manage to get a text console with
+> bash and friends. I saved the output from 'dmesg' after a reboot:
+> http://www.oesf.org/forums/index.php?act=Attach&type=post&id=2744
+Hmm, I don't see any MTD/JFFS2-related message there.
 
-Sorry, I didn't get it what's the question/problem. The output you
-provided looks OK. If you don't want all this output - just disable
-JFFS2 debugging. Or you deliberately enabled it?
+> The interesting part, which makes me think I may have a NAND problem, is
+> this:
+> 
+> NAND device: Manufacturer ID: 0xec, Chip ID: 0x79 (Samsung NAND 128MiB
+> 3,3V 8-bit)
+> Scanning device for bad blocks
+> Bad eraseblock 32 at 0x00080000
+> Bad eraseblock 3095 at 0x0305c000
+> Bad eraseblock 3099 at 0x0306c000
+Well, few bad eraseblocks is normal for NANDs. And the message looks OK.
 
-BTW, your original message included HTML and was not rejected by a
-mistake. Please, don't send HTML messages.
+> I understand that NAND chips usually have a few badblocks from the very
+> beginning, i.e. when they leave the manufacturer, and that NAND wears
+> out after c. 100'000 write/erase cycles. How can I tell the difference?
+> Are these worn out NAND blocks and -- if yes -- does this mean I have
+> already reached the end of the NAND's lifetime?
+Yeah, and more bad eraseblocks may appear with time.
 
-Regards,
-Artem.
+Unfortunately, with MTD/JFFS2 you cannot say how worn-out are your
+eraseblock. And it'll hardly help if I say that UBI - a new system -
+does provide this information as it stores erase-counters. But this is
+more for UBI advertising/promotion.
+
+
+> The only test I did was running md5sum on /dev/mtdblock? (where ? is 0
+> to 3). For mtdblock1 and mtdblock2 I saw "IO errors", these are the
+> first two partions on the NAND chip in question, i.e. the kernel
+> ("System area") and the "Root Filesystem". This is exactly where the
+> badblocks as seen above are. (JFTR, I think mtdblock0 refers to another
+> ROM.)
+
+AFAIR mtdblock was not bad-block aware, so it may try accessing bad
+eraseblocks. So it's all-right.
+
+> If possible, I want to get the Zaurus back to a usable state. I have
+> backed up my data but I don't want to experiment too much for not to
+> make things worse. There are three options to operate on the
+> built-in NAND: (I don't want to disassamble it. I don't have suitable
+> tools anyways.)
+
+One theory what could happen is that a new bad eraseblock appeared and
+you lost you data. JFFS2 is bad-block aware (in theory) and one of those
+3 bad eraseblocks could be marked bad by JFFS2.
+
+Probably, if you re-flash your gizmo, it'll be fine - but this is just
+my guess. Ideally, it would be nice to run a flash I/O test which would
+examine your flash, find&mark new bad eraseblock before. But I don't
+know such a tool.
 
 -- 
 Best Regards,
