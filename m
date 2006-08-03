@@ -1,20 +1,19 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G8IYa-0000GC-Ui
-	for linux-mtd@lists.infradead.org; Wed, 02 Aug 2006 11:22:51 -0400
-Subject: Re: How to generate a patch limited to MTD subsystem
-From: "Artem B. Bityutskiy" <dedekind@infradead.org>
-To: llandre <r&d2@dave-tech.it>
-In-Reply-To: <44D0C250.2030601@dave-tech.it>
-References: <44D0B33A.2080702@dave-tech.it> <44D0B8FF.6090601@yandex.ru>
-	<44D0C250.2030601@dave-tech.it>
-Content-Type: text/plain
-Date: Wed, 02 Aug 2006 19:22:10 +0400
-Message-Id: <1154532130.11061.3.camel@sauron.oktetlabs.ru>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from mail.tqs.de ([62.157.136.17])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1G8aUx-00032R-UJ
+	for linux-mtd@lists.infradead.org; Thu, 03 Aug 2006 06:32:18 -0400
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: MPC8xxx UPM NAND Flash
+Date: Thu, 3 Aug 2006 12:32:10 +0200
+Message-ID: <47F3F98010FF784EBEE6526EAAB078D1024F81D8@tq-mailsrv.tq-net.de>
+In-Reply-To: <BAF87F8E-7862-4676-98AC-DDF4649959BC@purplevisiontech.com>
+From: "Martin Krause" <Martin.Krause@tqs.de>
+To: "Harsha Padmanabha" <harsha@purplevisiontech.com>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-08-02 at 17:18 +0200, llandre wrote:
-> Hmm ... if I recall correctly MTD provides more stuff (JFFS2 for 
-> example), doesn't it?
+Hi Harsha,
 
-If you need JFFS2 as well, do similar for fs/jffs2,
-include/linux/jffs2*.
+Harsha Padmanabha wrote on Thursday, August 03, 2006 10:19 AM:
+> Hey Martin,
+>=20
+> I saw your post on the web-board for MTD support. Do you have any
+> clues or luck using the freescale whitepaper to interface with the
+> NAND Flash?. We are able to generate the required timing waveforms
+> but are unable to write to flash or read it back using UPM.
 
-I don't know another way ...
+Currently we are working on this on a MPC8548 board (TQM8548).
+Unfortunately I'm not involved in this project, so I don't know much
+details, but the guys working on this told me, that some basic flash
+accesses are running already (at a bus clock of 50 MHz).
 
-In JFFS2 you'll probably meet more merging problems. There was an
-RB-tree rework (special macros were introduced), and you may have
-troubles compiling JFFS2 because of this. But this is solvable.
+The boot software we use is not U-boot, but our own bootloader
+"MON85xx", so I couldn't send patches or code snippets. But I hope
+that U-Boot will be ported for this board too, once everything is=20
+running well.
 
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Regards,
+Martin
