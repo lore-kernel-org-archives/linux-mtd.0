@@ -1,21 +1,23 @@
-Received: from smtp12.dti.ne.jp ([202.216.231.187])
+Received: from nz-out-0102.google.com ([64.233.162.198])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G90LV-0002Hm-N0
-	for linux-mtd@lists.infradead.org; Fri, 04 Aug 2006 10:08:17 -0400
-Received: from shabby.localdomain (KHP059140016099.ppp-bb.dion.ne.jp
-	[59.140.16.99]) by smtp12.dti.ne.jp (3.11s) with ESMTP AUTH id
-	k74E83Xs019274 for <linux-mtd@lists.infradead.org>;
-	Fri, 4 Aug 2006 23:08:03 +0900 (JST)
-Date: Fri, 4 Aug 2006 23:08:02 +0900
-From: takasi-y@ops.dti.ne.jp
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] PHYSMAP depens on CFI or JEDECPROBE or ROM
-Message-Id: <20060804230802.80dc086b.takasi-y@ops.dti.ne.jp>
-In-Reply-To: <20060803222818.7f8f0286.takasi-y@ops.dti.ne.jp>
-References: <20060803222818.7f8f0286.takasi-y@ops.dti.ne.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1G93F1-0003rv-PM
+	for linux-mtd@lists.infradead.org; Fri, 04 Aug 2006 13:13:46 -0400
+Received: by nz-out-0102.google.com with SMTP id s1so72332nze
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 04 Aug 2006 10:13:42 -0700 (PDT)
+Message-ID: <e0590900608041013r51dae68ai3e7c4ba4a0543d70@mail.gmail.com>
+Date: Fri, 4 Aug 2006 13:13:42 -0400
+From: mitsy <mitsy12@gmail.com>
+To: "Sergei Shtylyov" <sshtylyov@ru.mvista.com>
+Subject: Re: NAND flash writeb fails
+In-Reply-To: <44D24A2C.2070002@ru.mvista.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <e0590900608031205r5d6c2878wbe21efa540f9ff7d@mail.gmail.com>
+	<44D24A2C.2070002@ru.mvista.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-# posting it agein.
-map/physmap.c tries to probe "cfi_probe", "jedec_probe" and "map_rom", but
-map/Kconfig says it depends on MTD_CFI only.
-This patch adds  MTD_JEDECPROBE and MTD_ROM to the dependency condition.
+Sergei,
 
-Signed-off-by: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
----
-Index: drivers/mtd/maps/Kconfig
-===================================================================
-RCS file: /home/cvs/mtd/drivers/mtd/maps/Kconfig,v
-retrieving revision 1.69
-diff -u -p -r1.69 Kconfig
---- drivers/mtd/maps/Kconfig	28 Mar 2006 16:15:53 -0000	1.69
-+++ drivers/mtd/maps/Kconfig	4 Aug 2006 14:00:58 -0000
-@@ -13,13 +13,13 @@ config MTD_COMPLEX_MAPPINGS
- 
- config MTD_PHYSMAP
- 	tristate "CFI Flash device in physical memory map"
--	depends on MTD_CFI
-+	depends on MTD_CFI || MTD_JEDECPROBE || MTD_ROM
- 	help
--	  This provides a 'mapping' driver which allows the CFI probe and
--	  command set driver code to communicate with flash chips which
--	  are mapped physically into the CPU's memory. You will need to
--	  configure the physical address and size of the flash chips on
--	  your particular board as well as the bus width, either statically
-+	  This provides a 'mapping' driver which allows the NOR Flash and
-+	  ROM driver code to communicate with chips which are mapped
-+	  physically into the CPU's memory. You will need to configure
-+	  the physical address and size of the flash chips on your
-+	  particular board as well as the bus width, either statically
- 	  with config options or at run-time.
- 
- config MTD_PHYSMAP_START
+Thank you for replying. Now I looked at for a while, I believe my
+problem was that I didn't set up TLB in the bootloader correctly.
+That's why the nand flash works with kernel (2.4.26) but not from my
+bootloader. I just need to figure out what is wrong with my TLB setup.
+
+Mitsy
+
+On 8/3/06, Sergei Shtylyov <sshtylyov@ru.mvista.com> wrote:
+> Hello, you wrote:
+>
+> > I have a AMD au1550 based board with NAND flash. When I try to write a
+> > command to the flash, it just hangs on writeb(). I can't figure out
+> > why it hangs there. Any suggestions?
+>
+>     First off, what driver and kernel verison you're using?
+>
+> > Mitsy
+>
+> WBR, Sergei
+>
