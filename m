@@ -1,23 +1,21 @@
-Received: from nz-out-0102.google.com ([64.233.162.198])
+Received: from outsmtp.i-o.com ([63.85.34.2] helo=barracuda.i-o.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1G93F1-0003rv-PM
-	for linux-mtd@lists.infradead.org; Fri, 04 Aug 2006 13:13:46 -0400
-Received: by nz-out-0102.google.com with SMTP id s1so72332nze
+	id 1G93uv-0004LC-Mu
+	for linux-mtd@lists.infradead.org; Fri, 04 Aug 2006 13:57:09 -0400
+Received: from staf-exfe-mail.i-o.com (unknown [10.50.10.14])
+	by barracuda.i-o.com (Spam Firewall) with ESMTP id 6876DD0DF186
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 Aug 2006 10:13:42 -0700 (PDT)
-Message-ID: <e0590900608041013r51dae68ai3e7c4ba4a0543d70@mail.gmail.com>
-Date: Fri, 4 Aug 2006 13:13:42 -0400
-From: mitsy <mitsy12@gmail.com>
-To: "Sergei Shtylyov" <sshtylyov@ru.mvista.com>
-Subject: Re: NAND flash writeb fails
-In-Reply-To: <44D24A2C.2070002@ru.mvista.com>
+	Fri,  4 Aug 2006 12:57:02 -0500 (CDT)
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <e0590900608031205r5d6c2878wbe21efa540f9ff7d@mail.gmail.com>
-	<44D24A2C.2070002@ru.mvista.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: 8gig multiCell nand parts
+Date: Fri, 4 Aug 2006 12:57:32 -0500
+Message-ID: <20CD42856DE21B48BC209EC1CBA00FB902B41976@STAFEXVS03.ioinc.ioroot.tld>
+From: "Kevin Bradway" <Kevin.Bradway@i-o.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sergei,
+I need help trying to get 8/16 gig multicell (mlc) Micron/Samsung parts
+working properly.  I am using JFFS2.
 
-Thank you for replying. Now I looked at for a while, I believe my
-problem was that I didn't set up TLB in the bootloader correctly.
-That's why the nand flash works with kernel (2.4.26) but not from my
-bootloader. I just need to figure out what is wrong with my TLB setup.
+Both cells are always getting written??  They are duplicated.
+I have 4 partitions=20
+Starting at offset 0 and then using the MTDPART_OFS_APPEND with size
+0x10000000.
 
-Mitsy
+The mlc parts require 2 CE#'s. One for each cell.
 
-On 8/3/06, Sergei Shtylyov <sshtylyov@ru.mvista.com> wrote:
-> Hello, you wrote:
->
-> > I have a AMD au1550 based board with NAND flash. When I try to write a
-> > command to the flash, it just hangs on writeb(). I can't figure out
-> > why it hangs there. Any suggestions?
->
->     First off, what driver and kernel verison you're using?
->
-> > Mitsy
->
-> WBR, Sergei
->
+I have used the "number of chips" in the option of the nand driver.
+This shows that the proper chip select is being selected but both cells
+still get written too. =20
+
+I have verified that the right chip select is set when the page address
+rolls past the page mask.
+
+I have verified the PLD addressing.
+
+Any ideas would be helpful.
+
+This email and any files transmitted with it are confidential and are =
+intended solely for the use of the individual or entity to whom they are =
+addressed.  If you are not the original recipient or the person =
+responsible for delivering the email to the intended recipient, be =
+advised that you have received this email in error, and that any use, =
+dissemination, forwarding, printing, or copying of this email is =
+strictly prohibited. If you received this email in error, please =
+immediately notify the sender and delete the original.
