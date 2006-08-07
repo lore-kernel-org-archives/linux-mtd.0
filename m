@@ -1,18 +1,16 @@
-Received: from www346.sakura.ne.jp ([202.181.99.66])
+Received: from tim.rpsys.net ([194.106.48.114])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GA5iz-0006yp-4X
-	for linux-mtd@lists.infradead.org; Mon, 07 Aug 2006 10:04:58 -0400
-Message-ID: <44D748E3.2070708@kaigai.gr.jp>
-Date: Mon, 07 Aug 2006 23:06:27 +0900
-From: KaiGai Kohei <kaigai@kaigai.gr.jp>
-MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: [PATCH] Add the latest xattr support on mtd-utils
-References: <44D53DAE.5020803@kaigai.gr.jp>
-	<625fc13d0608070419x556292dek44db8bdc53459886@mail.gmail.com>
-In-Reply-To: <625fc13d0608070419x556292dek44db8bdc53459886@mail.gmail.com>
-Content-Type: multipart/mixed; boundary="------------000207040102090804090800"
-Cc: linux-mtd@lists.infradead.org
+	id 1GAA3H-0000vn-Jl
+	for linux-mtd@lists.infradead.org; Mon, 07 Aug 2006 14:42:15 -0400
+Subject: 2.6.18-rc4 jffs2 problems
+From: Richard Purdie <rpurdie@rpsys.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain
+Date: Mon, 07 Aug 2006 19:41:50 +0100
+Message-Id: <1154976111.17725.8.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,66 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------000207040102090804090800
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+I previous reported problems with jffs2 on the Zaurus. I tested
+2.6.18-rc4 and nothing has changed - I see the following when booting,
+both with filesystems that work with 2.6.17 and freshly reflashed
+systems:
 
-> KaiGai-san,
-> 
-> The patch looks good, however could you please resend it with a
-> Signed-of-by: line?
+Linux version 2.6.18-rc4-.dev-snapshot-20060807 (richard@tim) (gcc version 3.4.3) #1 PREEMPT Mon Aug 7 17:47:07 BST 2006
+CPU: XScale-PXA250 [69052904] revision 4 (ARMv5TE), cr=0000397f
+Machine: SHARP Poodle
+[...]
+Sharp SL series flash device: 800000 at 0
+Using static partision definition
+Creating 1 MTD partitions on "sharpsl-flash":
+0x00120000-0x007f0000 : "Boot PROM Filesystem"
+NAND device: Manufacturer ID: 0x98, Chip ID: 0x76 (Toshiba NAND 64MiB 3,3V 8-bit)
+Scanning device for bad blocks
+Creating 3 MTD partitions on "sharpsl-nand":
+0x00000000-0x00700000 : "System Area"
+0x00700000-0x01d00000 : "Root Filesystem"
+0x01d00000-0x04000000 : "Home Filesystem"
+[...]
+Empty flash at 0x0054bc5c ends at 0x0054be00
+VFS: Mounted root (jffs2 filesystem) readonly.
+Freeing init memory: 100K
+JFFS2 error: (472) jffs2_get_inode_nodes: short read at 0x074e84: 68 instead of 380.
+JFFS2 error: (472) jffs2_do_read_inode_internal: cannot read nodes for ino 153, returned error is -5
 
-OK, I'll resend it with Signed-off-by: line again.
+The empty flash warning is probably due to a slightly corrupted image
+due to a reboot. The last two messages appear on freshly flashed images
+on both this and other Zaurus devices (all using nand/sharpsl.c).
 
-Thanks,
+Experience shows I can lock the device up with filesystem corruption if
+I use the device :-(.
 
-[PAATH] Add 'xseqno' into jffs2_raw_xref on mkfs.jffs2
-     Signed-off-by: KaiGai Kohei <kaigai@ak.jp.nec.com>
+Does anyone know what the problem is or have an idea of where I should
+start debugging this?
 
--- 
-KaiGai Kohei <kaigai@kaigai.gr.jp>
-               ^^^^^^^^^^^^^^^^^^^ <- Don't mind. I'm working
-                                      in my house today. :D
+Regards,
 
---------------000207040102090804090800
-Content-Type: text/plain;
-	name="jffs2-xattr-v6.2-04-add-xseqno-on-mtdutils.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="jffs2-xattr-v6.2-04-add-xseqno-on-mtdutils.patch"
-
-diff --git a/include/linux/jffs2.h b/include/linux/jffs2.h
-index 2cac60e..8fc99e5 100644
---- a/include/linux/jffs2.h
-+++ b/include/linux/jffs2.h
-@@ -186,6 +186,7 @@ struct jffs2_raw_xref
- 	jint32_t hdr_crc;
- 	jint32_t ino;		/* inode number */
- 	jint32_t xid;		/* XATTR identifier number */
-+	jint32_t xseqno;	/* xref sequencial number */
- 	jint32_t node_crc;
- } __attribute__((packed));
- 
-diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
-index fa4a5f3..c460a7b 100644
---- a/mkfs.jffs2.c
-+++ b/mkfs.jffs2.c
-@@ -1038,6 +1038,7 @@ typedef struct xattr_entry {
- #define XATTR_BUFFER_SIZE		(64 * 1024)	/* 64KB */
- static uint32_t enable_xattr = 0;
- static uint32_t highest_xid = 0;
-+static uint32_t highest_xseqno = 0;
- 
- static struct {
- 	int xprefix;
-@@ -1244,6 +1245,7 @@ static void write_xattr_entry(struct fil
- 		ref.hdr_crc = cpu_to_je32(crc32(0, &ref, sizeof(struct jffs2_unknown_node) - 4));
- 		ref.ino = cpu_to_je32(e->sb.st_ino);
- 		ref.xid = cpu_to_je32(xe->xid);
-+		ref.xseqno = cpu_to_je32(highest_xseqno += 2);
- 		ref.node_crc = cpu_to_je32(crc32(0, &ref, sizeof(ref) - 4));
- 
- 		pad_block_if_less_than(sizeof(ref));
-
---------------000207040102090804090800--
+Richard
