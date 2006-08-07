@@ -1,19 +1,22 @@
-Received: from elvira.its.uu.se ([130.238.164.5])
+Received: from ug-out-1314.google.com ([66.249.92.171])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GA2eA-0005AM-Dx
-	for linux-mtd@lists.infradead.org; Mon, 07 Aug 2006 06:47:51 -0400
-Received: from Psilocybe.Update.UU.SE (Psilocybe.Update.UU.SE [130.238.19.25])
-	by elvira.its.uu.se (Postfix) with ESMTP id B4E171E1
+	id 1GA396-0005ZI-Nd
+	for linux-mtd@lists.infradead.org; Mon, 07 Aug 2006 07:19:49 -0400
+Received: by ug-out-1314.google.com with SMTP id u40so14435ugc
 	for <linux-mtd@lists.infradead.org>;
-	Mon,  7 Aug 2006 12:42:32 +0200 (MSZ)
-Date: Mon, 7 Aug 2006 12:42:32 +0200
-To: linux-mtd@lists.infradead.org
-Subject: Bad typecast in flash_eraseall ?
-Message-ID: <20060807104232.GA27930@Update.UU.SE>
+	Mon, 07 Aug 2006 04:19:42 -0700 (PDT)
+Message-ID: <625fc13d0608070419x556292dek44db8bdc53459886@mail.gmail.com>
+Date: Mon, 7 Aug 2006 06:19:42 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "KaiGai Kohei" <kaigai@kaigai.gr.jp>
+Subject: Re: [PATCH] Add the latest xattr support on mtd-utils
+In-Reply-To: <44D53DAE.5020803@kaigai.gr.jp>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-From: samuel@Update.UU.SE (Samuel ]slund)
+References: <44D53DAE.5020803@kaigai.gr.jp>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +26,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 8/5/06, KaiGai Kohei <kaigai@kaigai.gr.jp> wrote:
+> Hi,
+>
+> This patch enables to pack xattr informations for _recent_ xattr
+> implementation.
+>
+> When I posted a patch which enables to operate xattr on NAND
+> flash by using delete marker at Jun, the format of xref node
+> was a bit changed.
+> As 'xseqno' was added into struct jffs2_raw_xref, I ought to
+> post a patch to modify it. But I left for posting.
+>
+> Please apply it, Thanks.
 
-I recently dovnloaded the mtd-utils-1.0.0.tar.gz from www.infradead.org.
-When running "flash_eraseall" on a Micrel ks8695p I get some wierd output: 
+KaiGai-san,
 
-/ # flash_eraseall /dev/mtd1
-Erasing 64 Kibyte @ 30000 -- 4294901765 % complete.
+The patch looks good, however could you please resend it with a
+Signed-of-by: line?
 
-When I moved the typecast (unsigned long long)
-at line 155 from before "erase.start" to before "100" :
-                           ("\rErasing %d Kibyte @ %x -- %2llu %% complete.",
-                             meminfo.erasesize / 1024, erase.start,
-                             erase.start *
-                             (unsigned long long) 100 / meminfo.size);
-
-the output became correct:
-/ # flash_eraseall /dev/mtd1
-Erasing 64 Kibyte @ 100000 -- 26 % complete.
-
-Seems like a bug, thought you might want to know.
-
-//Samuel
-
-PS.
-Sorry if this has been mentioned before, I did google a bit on the 
-list archives but the search interface is not very friendly.
-DS.
+thx,
+josh
