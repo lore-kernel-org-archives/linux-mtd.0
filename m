@@ -1,19 +1,19 @@
-Received: from www346.sakura.ne.jp ([202.181.99.66])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1G9Wsc-0002UW-24
-	for linux-mtd@lists.infradead.org; Sat, 05 Aug 2006 20:52:40 -0400
-Received: from [127.0.0.1] (j069218.ppp.asahi-net.or.jp [61.213.69.218])
-	by www346.sakura.ne.jp (8.12.11-p1/8.12.11) with ESMTP id
-	k760qGRg012167 for <linux-mtd@lists.infradead.org>;
-	Sun, 6 Aug 2006 09:52:17 +0900 (JST)
-	(envelope-from kaigai@kaigai.gr.jp)
-Message-ID: <44D53DAE.5020803@kaigai.gr.jp>
-Date: Sun, 06 Aug 2006 09:54:06 +0900
-From: KaiGai Kohei <kaigai@kaigai.gr.jp>
-MIME-Version: 1.0
+Received: from fitch1.uni2.net ([130.227.52.101])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GA0Kn-0003lD-Aq
+	for linux-mtd@lists.infradead.org; Mon, 07 Aug 2006 04:19:41 -0400
+Received: from [130.228.251.10] (unknown [130.228.251.10])
+	by fitch1.uni2.net (Postfix) with SMTP id 7EC521291526
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  7 Aug 2006 09:56:25 +0200 (CEST)
+From: KimM <kmnet1@gmail.com>
+Subject: JFFS2 Garbage collector on 2.6.16
+Date: Mon, 07 Aug 2006 09:56:25 +0200
+Message-Id: <pan.2006.08.07.07.56.24.475480@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Add the latest xattr support on mtd-utils
-Content-Type: multipart/mixed; boundary="------------000601000403020303070303"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,52 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------000601000403020303070303
-Content-Type: text/plain; charset=ISO-2022-JP
-Content-Transfer-Encoding: 7bit
+Hi all
 
-Hi,
+I have a question regarding the JFFS2 garbage collector.
 
-This patch enables to pack xattr informations for _recent_ xattr
-implementation.
+On my AT91RM9200 system I have a 22 MB JFFS2 RW partition. The mount time
+is OK, but the problem is that the garbage collector starts to run and
+locks down the system for additional 60-120 seconds!
 
-When I posted a patch which enables to operate xattr on NAND
-flash by using delete marker at Jun, the format of xref node
-was a bit changed.
-As 'xseqno' was added into struct jffs2_raw_xref, I ought to
-post a patch to modify it. But I left for posting.
+What happens is:
 
-Please apply it, Thanks.
--- 
-KaiGai Kohei <kaigai@kaigai.gr.jp>
+The System boots
+busybox init rcS runs
+/ is remounted RW
+I get a login prompt
+The garbage collector starts/continues to runs I type in login and
+password
+The system stalls until the garbage collector finishes.
+ 
+Now, I traced the problem and found that the long runtime of the garbage
+collector is causes by a few large files on my system (~6MB). While the GC
+process the inodes of any single file, the FS is locked, which is why my
+user apps stalls. More specifically, JFFS2 spends it's time in:
 
---------------000601000403020303070303
-Content-Type: text/plain;
-	name="jffs2-xattr-v6.2-04-add-xseqno-on-mtdutils.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
-	filename="jffs2-xattr-v6.2-04-add-xseqno-on-mtdutils.patch"
+jffs2_do_read_inode_internal()
 
-ZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvamZmczIuaCBiL2luY2x1ZGUvbGludXgvamZm
-czIuaAppbmRleCAyY2FjNjBlLi44ZmM5OWU1IDEwMDY0NAotLS0gYS9pbmNsdWRlL2xpbnV4
-L2pmZnMyLmgKKysrIGIvaW5jbHVkZS9saW51eC9qZmZzMi5oCkBAIC0xODYsNiArMTg2LDcg
-QEAgc3RydWN0IGpmZnMyX3Jhd194cmVmCiAJamludDMyX3QgaGRyX2NyYzsKIAlqaW50MzJf
-dCBpbm87CQkvKiBpbm9kZSBudW1iZXIgKi8KIAlqaW50MzJfdCB4aWQ7CQkvKiBYQVRUUiBp
-ZGVudGlmaWVyIG51bWJlciAqLworCWppbnQzMl90IHhzZXFubzsJLyogeHJlZiBzZXF1ZW5j
-aWFsIG51bWJlciAqLwogCWppbnQzMl90IG5vZGVfY3JjOwogfSBfX2F0dHJpYnV0ZV9fKChw
-YWNrZWQpKTsKIApkaWZmIC0tZ2l0IGEvbWtmcy5qZmZzMi5jIGIvbWtmcy5qZmZzMi5jCmlu
-ZGV4IGZhNGE1ZjMuLmM0NjBhN2IgMTAwNjQ0Ci0tLSBhL21rZnMuamZmczIuYworKysgYi9t
-a2ZzLmpmZnMyLmMKQEAgLTEwMzgsNiArMTAzOCw3IEBAIHR5cGVkZWYgc3RydWN0IHhhdHRy
-X2VudHJ5IHsKICNkZWZpbmUgWEFUVFJfQlVGRkVSX1NJWkUJCSg2NCAqIDEwMjQpCS8qIDY0
-S0IgKi8KIHN0YXRpYyB1aW50MzJfdCBlbmFibGVfeGF0dHIgPSAwOwogc3RhdGljIHVpbnQz
-Ml90IGhpZ2hlc3RfeGlkID0gMDsKK3N0YXRpYyB1aW50MzJfdCBoaWdoZXN0X3hzZXFubyA9
-IDA7CiAKIHN0YXRpYyBzdHJ1Y3QgewogCWludCB4cHJlZml4OwpAQCAtMTI0NCw2ICsxMjQ1
-LDcgQEAgc3RhdGljIHZvaWQgd3JpdGVfeGF0dHJfZW50cnkoc3RydWN0IGZpbAogCQlyZWYu
-aGRyX2NyYyA9IGNwdV90b19qZTMyKGNyYzMyKDAsICZyZWYsIHNpemVvZihzdHJ1Y3QgamZm
-czJfdW5rbm93bl9ub2RlKSAtIDQpKTsKIAkJcmVmLmlubyA9IGNwdV90b19qZTMyKGUtPnNi
-LnN0X2lubyk7CiAJCXJlZi54aWQgPSBjcHVfdG9famUzMih4ZS0+eGlkKTsKKwkJcmVmLnhz
-ZXFubyA9IGNwdV90b19qZTMyKGhpZ2hlc3RfeHNlcW5vICs9IDIpOwogCQlyZWYubm9kZV9j
-cmMgPSBjcHVfdG9famUzMihjcmMzMigwLCAmcmVmLCBzaXplb2YocmVmKSAtIDQpKTsKIAog
-CQlwYWRfYmxvY2tfaWZfbGVzc190aGFuKHNpemVvZihyZWYpKTsK
---------------000601000403020303070303--
+which is called from:
+jjffs2_garbage_collect_pass() ->
+ffs2_do_crccheck_inode() ->
+jffs2_do_read_inode_internal()
+
+Reading the README.Locking explains the GC locking, but I was wondering if
+this is really desired behaviour, and if there is anything I can do to
+speed up things. I am not brave enough to just change the locking
+mechanism...;-)
+
+I should mention that I get the same behaviour on 2.6.17.6...
+
+BTW: what is the correct mail list for strictly JFFS2 related topics? I
+tried jffs-dev@axis.com & linux.file-systems.jffs@gmane.org without
+success...
+
+BR
+Kim
