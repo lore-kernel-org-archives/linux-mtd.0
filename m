@@ -1,18 +1,18 @@
-Received: from tim.rpsys.net ([194.106.48.114])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GAUbB-0003hi-8X
-	for linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 12:38:36 -0400
-Subject: Re: JFFS2 file address space  operation
-From: Richard Purdie <rpurdie@rpsys.net>
-To: Amit Kumar Sharma <sharma.amit@samsung.com>
-In-Reply-To: <001d01c6bad2$928c8920$3d92340c@dsn.sec.samsung.com>
-References: <001d01c6bad2$928c8920$3d92340c@dsn.sec.samsung.com>
-Content-Type: text/plain
-Date: Tue, 08 Aug 2006 17:38:28 +0100
-Message-Id: <1155055108.5541.16.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GAUlq-0003xY-JE
+	for linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 12:49:38 -0400
+Message-ID: <44D8C0E0.9070800@ru.mvista.com>
+Date: Tue, 08 Aug 2006 20:50:40 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org, tglx@linutronix.de
+Subject: Re: [MTD] NAND: Fix ams-delta after core conversion
+References: <20060808153944.GA8126@earth.li>
+In-Reply-To: <20060808153944.GA8126@earth.li>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,12 +22,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-08-08 at 19:08 +0900, Amit Kumar Sharma wrote:
-> I find mmap operation for file failed in JFFS2, I find Jffs2 does not
-> support writepage in JFFS2 file address operation .I would like to know
-> reason for not supporting writepage operation for file address operation.
+Hello.
 
-JFFS2 supports compression so there often isn't anything you can mmap
-directly.
+Jonathan McDowell wrote:
 
-Richard
+> The recent hwctrl core conversion for MTD NAND devices broke the Amstrad
+> Delta driver. This fixes it up and uses the existing control line
+> defines rather than unclear magic numbers.
+
+    Ugh, au1550nd.c also looks broken by this change. No time to fix now though...
+
+WBR, Sergei
