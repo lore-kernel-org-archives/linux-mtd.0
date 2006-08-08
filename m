@@ -1,24 +1,16 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GAOVN-0000ar-UA
-	for linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 06:08:18 -0400
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J3O007D9C5EXW@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 19:08:03 +0900 (KST)
-Received: from sharmaami ([12.52.146.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPSA id <0J3O00M5NC5E4K@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 19:08:02 +0900 (KST)
-Date: Tue, 08 Aug 2006 19:08:18 +0900
-From: Amit Kumar Sharma <sharma.amit@samsung.com>
-Subject: JFFS2 file address space  operation
+Received: from the.earth.li ([193.201.200.66])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GAUHB-0003Nq-9Q
+	for linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 12:18:00 -0400
+Date: Tue, 8 Aug 2006 16:39:44 +0100
+From: Jonathan McDowell <noodles@earth.li>
 To: linux-mtd@lists.infradead.org
-Message-id: <001d01c6bad2$928c8920$3d92340c@dsn.sec.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
+Subject: [MTD] NAND: Fix ams-delta after core conversion
+Message-ID: <20060808153944.GA8126@earth.li>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +20,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
+The recent hwctrl core conversion for MTD NAND devices broke the Amstrad
+Delta driver. This fixes it up and uses the existing control line
+defines rather than unclear magic numbers.
 
-I find mmap operation for file failed in JFFS2, I find Jffs2 does not
-support writepage in JFFS2 file address operation .I would like to know
-reason for not supporting writepage operation for file address operation.
-,
-struct address_space_operations jffs2_file_address_operations =
-{
-        .readpage =     jffs2_readpage,
-        .prepare_write =jffs2_prepare_write,
-        .commit_write = jffs2_commit_write
-};
+Signed-Off-By: Jonathan McDowell <noodles@earth.li>
 
+-----
+diff --git a/drivers/mtd/nand/ams-delta.c b/drivers/mtd/nand/ams-delta.c
+index d7897dc..a0ba07c 100644
+--- a/drivers/mtd/nand/ams-delta.c
++++ b/drivers/mtd/nand/ams-delta.c
+@@ -130,11 +130,13 @@ static void ams_delta_hwcontrol(struct m
+ 	if (ctrl & NAND_CTRL_CHANGE) {
+ 		unsigned long bits;
+ 
+-		bits = (~ctrl & NAND_NCE) << 2;
+-		bits |= (ctrl & NAND_CLE) << 7;
+-		bits |= (ctrl & NAND_ALE) << 6;
++		bits = (~ctrl & NAND_NCE) ? AMS_DELTA_LATCH2_NAND_NCE : 0;
++		bits |= (ctrl & NAND_CLE) ? AMS_DELTA_LATCH2_NAND_CLE : 0;
++		bits |= (ctrl & NAND_ALE) ? AMS_DELTA_LATCH2_NAND_ALE : 0;
+ 
+-		ams_delta_latch2_write(0xC2, bits);
++		ams_delta_latch2_write(AMS_DELTA_LATCH2_NAND_CLE |
++				AMS_DELTA_LATCH2_NAND_ALE |
++				AMS_DELTA_LATCH2_NAND_NCE, bits);
+ 	}
+ 
+ 	if (cmd != NAND_CMD_NONE)
+-----
 
-Thanks
-Amit
+J.
+
+-- 
+] http://www.earth.li/~noodles/ []     "Hand me that solar-powered     [
+]  PGP/GPG Key @ the.earth.li   []           flashlight..."            [
+] via keyserver, web or email.  []                                     [
+] RSA: 4DC4E7FD / DSA: 5B430367 []                                     [
