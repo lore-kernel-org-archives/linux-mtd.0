@@ -1,18 +1,23 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+Received: from mailreg.nctu.edu.tw ([211.76.241.6])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GAUvK-0004DK-7d
-	for linux-mtd@lists.infradead.org; Tue, 08 Aug 2006 12:59:28 -0400
-Message-ID: <44D8C331.8080800@ru.mvista.com>
-Date: Tue, 08 Aug 2006 21:00:33 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+	id 1GAhKx-0001mc-93
+	for linux-mtd@lists.infradead.org; Wed, 09 Aug 2006 02:14:43 -0400
+Received: from ClareHuang (pc15163.cn.nctu.edu.tw [140.113.151.63])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by mailreg.nctu.edu.tw (Postfix) with ESMTP id 260D37E81E
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  9 Aug 2006 14:26:27 +0800 (CST)
+Message-ID: <031701c6bb7b$5a7d2400$c9010165@ClareHuang>
+From: "Clare Huang" <sky.9367548@nctu.edu.tw>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 support LZO/LZMA compression ???
+Date: Wed, 9 Aug 2006 14:16:27 +0800
 MIME-Version: 1.0
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>, tglx@linutronix.de
-Subject: Re: [MTD] NAND: Fix ams-delta after core conversion
-References: <20060808153944.GA8126@earth.li> <44D8C0E0.9070800@ru.mvista.com>
-In-Reply-To: <44D8C0E0.9070800@ru.mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="big5"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: Clare Huang <sky.9367548@nctu.edu.tw>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Dear all,
 
-Sergei Shtylyov wrote:
+I am a newbie of this community~
+According to the http://www.inf.u-szeged.hu/jffs2/compression.php, I know 
+BBC could let jffs2 support LZO compression.
+But the kernel version I used is 2.6.14.....
+How could I patch the kernel or update the mtd driver to support LZO or LZMA 
+compression ?
 
->>The recent hwctrl core conversion for MTD NAND devices broke the Amstrad
->>Delta driver. This fixes it up and uses the existing control line
->>defines rather than unclear magic numbers.
+I try to use CVS or git to get the latest mtd driver.....
+But I still don't know where to enable the LZO/LZMA support of jffs2 ???
 
->     Ugh, au1550nd.c also looks broken by this change. No time to fix now though...
+Could anyone help about this ?
+or which website I could get more information about this question ?
 
-   OTOH, it was too hasty conclusion. This driver overrides both select_chip 
-and cmdfunc, so probably not. I'll try it somewhat later for real...
-
-WBR, Sergei
+Thanks and Best Regards,
+Clare 
