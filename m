@@ -1,24 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from fitch2.uni2.net ([130.227.52.102])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GB5vI-000734-FO
-	for linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 04:29:56 -0400
-Received: from ep_mmp2 (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J3R00600WXGY2@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 17:29:40 +0900 (KST)
-Received: from sharmaami ([12.52.146.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPSA id <0J3R00F23WXGIM@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 17:29:40 +0900 (KST)
-Date: Thu, 10 Aug 2006 17:29:57 +0900
-From: Amit Kumar Sharma <sharma.amit@samsung.com>
-Subject: JFFS2 problem
+	id 1GB65N-0007JK-Qn
+	for linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 04:40:20 -0400
+Received: from [130.228.251.10] (unknown [130.228.251.10])
+	by fitch2.uni2.net (Postfix) with SMTP id 5C014128B39E
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 10 Aug 2006 10:12:55 +0200 (CEST)
+From: KimM <kmnet1@gmail.com>
+Subject: Dynamic MTD partition tables in Linux
+Date: Thu, 10 Aug 2006 10:12:55 +0200
+Message-Id: <pan.2006.08.10.08.12.54.851351@gmail.com>
 To: linux-mtd@lists.infradead.org
-Message-id: <003d01c6bc57$29ba2700$3d92340c@dsn.sec.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,15 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi 
+Hi all
 
-I am looking for JFFS2 stable version for kernel 2.4, Can u help me because
-I am facing strange problem. My device size is 187M and JFFS2 creating 2G
-file on my device. But when I checked same device partition on 2.6 kernel it
-also show file size 2G "it can not be possible because MTD partition is 187M
-" SO I run same test program on 2.6 kernel. it stops after creating 187M
-file size. SO I wonder may it is a problem of JFFS2 version I am using with
-mvl 2.4.20 kernel.
+I need support for dynamic MTD partition tables in Linux. Currently there's four
+ways of doing this: cmdlineparsing, Redboot, ARM way or my own way. 
 
-Rgs
-Amit
+For various reasons I won't use the cmdline, so it's either Redboot or ARM, in which
+case my preference is Redboot since I assume that it's more likely to be maintained in
+the future. Unfortunately I do not use Redboot, but u-boot, so I have to develop
+my own tool for writing the partition tables.
+
+Of course, there are several ways to go about this, but I prefer a generic Linux
+tool which can create/modify the partition table. This way I can run the tool
+on both my host and target and create partitions as images or at runtime.
+
+But before I go ahead, I want to get some opinions whether to use the Redboot 
+or ARM tables. And of course, I would very must like to know if a 
+tool already exists...:)
+
+Thanks
+KimM
