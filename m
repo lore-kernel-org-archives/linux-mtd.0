@@ -1,19 +1,18 @@
-Received: from fitch2.uni2.net ([130.227.52.102])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GB65N-0007JK-Qn
-	for linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 04:40:20 -0400
-Received: from [130.228.251.10] (unknown [130.228.251.10])
-	by fitch2.uni2.net (Postfix) with SMTP id 5C014128B39E
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 Aug 2006 10:12:55 +0200 (CEST)
-From: KimM <kmnet1@gmail.com>
-Subject: Dynamic MTD partition tables in Linux
-Date: Thu, 10 Aug 2006 10:12:55 +0200
-Message-Id: <pan.2006.08.10.08.12.54.851351@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GB6oT-0007pC-O9
+	for linux-mtd@lists.infradead.org; Thu, 10 Aug 2006 05:26:57 -0400
+Message-ID: <44DAFB9B.1040902@yandex.ru>
+Date: Thu, 10 Aug 2006 13:25:47 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+To: KimM <kmnet1@gmail.com>
+Subject: Re: Dynamic MTD partition tables in Linux
+References: <pan.2006.08.10.08.12.54.851351@gmail.com>
+In-Reply-To: <pan.2006.08.10.08.12.54.851351@gmail.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all
+Hello KimM,
 
-I need support for dynamic MTD partition tables in Linux. Currently there's four
-ways of doing this: cmdlineparsing, Redboot, ARM way or my own way. 
+KimM wrote:
+> I need support for dynamic MTD partition tables in Linux. Currently there's four
+> ways of doing this: cmdlineparsing, Redboot, ARM way or my own way. 
+> 
 
-For various reasons I won't use the cmdline, so it's either Redboot or ARM, in which
-case my preference is Redboot since I assume that it's more likely to be maintained in
-the future. Unfortunately I do not use Redboot, but u-boot, so I have to develop
-my own tool for writing the partition tables.
+Please, pay your attention to UBI:
 
-Of course, there are several ways to go about this, but I prefer a generic Linux
-tool which can create/modify the partition table. This way I can run the tool
-on both my host and target and create partitions as images or at runtime.
+http://www.linux-mtd.infradead.org/doc/ubi.html
+http://www.linux-mtd.infradead.org/faq/ubi.html
 
-But before I go ahead, I want to get some opinions whether to use the Redboot 
-or ARM tables. And of course, I would very must like to know if a 
-tool already exists...:)
+This is a new technology, so no barand boot-loaders support it yet. But 
+it is completely "dynamic".
 
-Thanks
-KimM
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
