@@ -1,22 +1,22 @@
-Received: from mail-in-07.arcor-online.net ([151.189.21.47])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GBtp9-0007kr-7c
-	for linux-mtd@lists.infradead.org; Sat, 12 Aug 2006 14:46:49 +0100
-In-Reply-To: <1155347601.3108.7.camel@vader.jdub.homelinux.org>
-References: <20060614213643.137680b8@vitb.ru.mvista.com>
-	<20060709001435.7a94294e@localhost.localdomain>
-	<44DCA2BF.1030002@ru.mvista.com> <200608112310.41110.arnd@arndb.de>
-	<1155347601.3108.7.camel@vader.jdub.homelinux.org>
-Mime-Version: 1.0 (Apple Message framework v750)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Message-Id: <001C3287-87E7-4DF9-AB4E-E1448EC20518@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GBwBx-0000yv-5t
+	for linux-mtd@lists.infradead.org; Sat, 12 Aug 2006 12:18:32 -0400
+Message-ID: <44DDFF94.3090402@ru.mvista.com>
+Date: Sat, 12 Aug 2006 20:19:32 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: Segher Boessenkool <segher@kernel.crashing.org>
 Subject: Re: [RFC] Adding MTD to device tree
-Date: Sat, 12 Aug 2006 11:58:01 +0200
-To: Josh Boyer <jwboyer@jdub.homelinux.org>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Arnd Bergmann <arnd@arndb.de>, linuxppc-embedded@ozlabs.org
+References: <20060614213643.137680b8@vitb.ru.mvista.com>	<20060709001435.7a94294e@localhost.localdomain>	<44DCA2BF.1030002@ru.mvista.com>
+	<200608112310.41110.arnd@arndb.de>	<1155347601.3108.7.camel@vader.jdub.homelinux.org>
+	<001C3287-87E7-4DF9-AB4E-E1448EC20518@kernel.crashing.org>
+In-Reply-To: <001C3287-87E7-4DF9-AB4E-E1448EC20518@kernel.crashing.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, Josh Boyer <jwboyer@jdub.homelinux.org>,
+	linux-mtd@lists.infradead.org, Arnd Bergmann <arnd@arndb.de>,
+	linuxppc-embedded@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +26,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>    Required properties:
->>     - device_type : one of "nand-flash", "nor-flash", or "rom".
->
-> There are more than just those kinds of MTDs.  There's dataflash,
-> AG-AND, NVRAM, ioremappable DRAM, etc.  I'd prefer it to just be  
-> called
-> "flash".  See more below.
+Hello.
 
-Existing firmwares call it "rom", "nvram", "flash".  All of those
-are easy; and I have really no opinion how all the weirdo nand-flash
-etc. interfaces should be handled.
+Segher Boessenkool wrote:
 
-device_type communicates to the device-tree consumer what other
-properties to expect in this node -- it does not indicate the exact
-programming model of the device itself.
+>>>   Required properties:
+>>>    - device_type : one of "nand-flash", "nor-flash", or "rom".
 
-I suspect for most nand-flash you can get away with a device_type
-of "nand-flash"; for some you might have to specify something more
-detailed.
+    I thought about having the separate device types initially, then I decided 
+that all the differences can be handled on the driver level...
 
->>     - model : an identifier for the actual controller chip used.
->
-> Meaning what exactly?  Lots of NOR flash doesn't have a "controller".
+>>There are more than just those kinds of MTDs.  There's dataflash,
+>>AG-AND, NVRAM, ioremappable DRAM, etc.  I'd prefer it to just be  
+>>called "flash".  See more below.
 
-Lots of those chips from different vendors are pin-compatible as well,
-so you cannot really hardcode one specific model number.  I don't see
-this information being very useful anyway.  Instead, in most cases, the
-information you're really after is the programming interface for the
-device.  And that goes...
+> Existing firmwares call it "rom", "nvram", "flash".  All of those
+> are easy; and I have really no opinion how all the weirdo nand-flash
+> etc. interfaces should be handled.
 
->>     - compatible : Should be the name of the MTD driver. For
->>       type "rom", this is most likely "physmap".
->
-> This I agree with, but Sergei already had this.  And since you're
-> specifying the name of the MTD driver, that typically already knows  
-> what
-> type of chip it's talking to.
+> device_type communicates to the device-tree consumer what other
+> properties to expect in this node -- it does not indicate the exact
+> programming model of the device itself.
 
-"compatible" contains a list, most specific first.  So for example
-for a NOR-flash it could be "jedec-flash,nor-flash,flash" or whatnot.
-(Btw: no comma's, but 0-chars in the actual properties!)
+    Erm, IIUC the exact set of properties is defined by the node name (or the 
+"compatible" property). The device type defines some mandatory set of 
+properties/methods but there may be some specific...
 
+> I suspect for most nand-flash you can get away with a device_type
+> of "nand-flash"; for some you might have to specify something more
+> detailed.
 
-Segher
+    Hm, not sure that you need to be so much detailed with the device type.
+The original OF spec. had device type "block" signifying any kind of blocked 
+storage device.
+
+>>>    - model : an identifier for the actual controller chip used.
+
+>>Meaning what exactly?  Lots of NOR flash doesn't have a "controller".
+
+> Lots of those chips from different vendors are pin-compatible as well,
+> so you cannot really hardcode one specific model number.  I don't see
+> this information being very useful anyway.  Instead, in most cases, the
+> information you're really after is the programming interface for the
+> device.  And that goes...
+
+    This property might be marked optional still.
+
+>>>    - compatible : Should be the name of the MTD driver. For
+>>>      type "rom", this is most likely "physmap".
+
+>>This I agree with, but Sergei already had this.  And since you're
+>>specifying the name of the MTD driver, that typically already knows  
+>>what
+>>type of chip it's talking to.
+
+> "compatible" contains a list, most specific first.  So for example
+> for a NOR-flash it could be "jedec-flash,nor-flash,flash" or whatnot.
+> (Btw: no comma's, but 0-chars in the actual properties!)
+
+    The "compatible" prop (as well as "name") should define which driver to 
+select according to spec. (the Generic Names spec. delegates this role solely 
+to the "compatible" prop). While specifying the flash interface (JEDEC in this 
+case) is indeed useful (however, the current 'platform_device' based 'physmap' 
+implementation doesn't allow to pass the probe type to the driver), the prop 
+in the form suggested doesn't really help with selecting the MTD map driver 
+(without which you can't support a NOR flash). A reference to 'physmap' should 
+still be present in the node in one or another form...
+
+WBR, Sergei
