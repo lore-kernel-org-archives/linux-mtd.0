@@ -1,11 +1,16 @@
-Message-ID: <37261.165.228.131.12.1155646912.squirrel@65.98.16.106>
-Date: Tue, 15 Aug 2006 13:01:52 -0000 (GMT)
-Subject: Job Representative Offer
-From: "Dr. Wayne Davis" <wayendavis1tt@yahoo.com.hk>
+Received: from [66.207.118.118] (helo=MAILSRVR.ositech.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GCjI3-0007k5-Es
+	for linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 16:44:08 -0400
+Subject: write-protected 
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: wayendavis1s@yahoo.ie
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C6BFE2.5FA56D20"
+Date: Mon, 14 Aug 2006 16:44:01 -0400
+Content-class: urn:content-classes:message
+Message-ID: <007020085773234AAACE3B66E13C18E8D71CB3@MAILSRVR.ositech.com>
+From: "Katey Yu" <katey.Yu@ositech.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,109 +20,147 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This is a multi-part message in MIME format.
+
+------_=_NextPart_001_01C6BFE2.5FA56D20
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+When I mount /dev/mtdblock3 in flash I get  block " block device
+/dev/mtdblock3 is write-protected, mounting read-only". I should get
+mtdblock_open?
+
+Could somebody tell me what's wrong?
+
+=20
+
+=20
+
+mount -t jffs2  /dev/mtdblock3 /var/tmp
+
+mount: block device /dev/mtdblock3 is write-protected, mounting
+read-only
+
+=20
+
+=20
+
+Katey
+
+=20
 
 
+------_=_NextPart_001_01C6BFE2.5FA56D20
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Dr. Wayne Davis
-Agricultural Research Institute of Northern Ireland
-Hillsborough,
-Ireland BT26 6DR
-Tel: +447011121587
+<html xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns=3D"http://www.w3.org/TR/REC-html40">
 
+<head>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii">
+<meta name=3DGenerator content=3D"Microsoft Word 11 (filtered medium)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+@font-face
+	{font-family:SimSun;
+	panose-1:2 1 6 0 3 1 1 1 1 1;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:Arial;
+	color:windowtext;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+-->
+</style>
 
+</head>
 
-Dear Sir/Madam,
+<body lang=3DEN-US link=3Dblue vlink=3Dpurple>
 
+<div class=3DSection1>
 
-How are you doing. I came across your email address and your brief profile
-through an email listing affiliated with the Australian Chamber of
-Commerce. I would be very interested in offering you a part-time paying
-job in which you could earn alot.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Hello,<o:p></o:p></span></font></p>
 
-My names are Dr. Wayne Davis and I am 58 years of age. I just resigned my
-job as a research scientist for ARINI(Agricultural Research Institute of
-Northern Ireland and I now work as a freelance consultant for the
-instistute which gives me very much time to do my own work which is
-basically being a freelance researcher who could be employed by research
-institutes to do research projects anywhere in the world.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>When I mount /dev/mtdblock3 in flash I get =
+&nbsp;block
+&#8220; block device /dev/mtdblock3 is write-protected, mounting
+read-only&#8221;. I should get =
+mtdblock_open?<o:p></o:p></span></font></p>
 
-Presently, I have just been granted a funding to head a research project
-in the tropical regions of  Asia regarding rare and vulnerable plant
-species and this would be commencing very soon. This research program will
-be funded and sponsored by some of my Australian counterparts and
-Associates. But the only set back is that my Australian counterparts want
-to make payments for the research in form of bank transfer only to any of
-the Australian banks. Getting an accountant in Australian or opening an
-account would have been my best choice but I have a deadline to meet and
-taking any of those choices would cost me time and a whole lot of other
-requirements which I am not ready to deal with. This is where I need to
-employ your assistance and service.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Could somebody tell me what's =
+wrong?<o:p></o:p></span></font></p>
 
-WHAT I NEED YOU FOR?
-At this point, I will be glad if you could work with me as my
-representative in Australia. You will be working as my payment assistant
-incharge of collecting the payments from my Associates. Since they will be
-making the payment in bank transfers made payable only to you in
-Australia, you will be collecting this payments and cashing them on my
-behalf. On agreement to been my representative, you will receive a
-commission of 10% of whatever amount of payment you receive from my
-associates.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-JOB DESCRIPTION?
-1. Recieve payments from My Clients/Associates through bank transfers into
-your bank account.
-2. Cash the Payments at your Bank.
-3. Deduct 10% which will be your commission/percentage on Payment processed.
-4. You are to remit the balance via Money Gram or Western Union Money
-Transfer according to my instruction.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-HOW MUCH WILL YOU EARN?
-10% from each transaction! For instance: On receiving 6000 Dollars on my
-behalf, you will cash the payment and keep 10% to yourself before
-remitting the balance! At the beginning your commission will equal 10%,
-though later it will increase up to 12%! For the research, I am expecting
-about the sum of $95,000 in total from the clients(though the money will
-be sent in installmentally due to the progress of my research). You could
-make over $9,500 for the little time we will be working together.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>mount -t jffs2 &nbsp;/dev/mtdblock3 =
+/var/tmp<o:p></o:p></span></font></p>
 
-ADVANTAGES?
-You dont have to go out of your present daily activity inorder to engage
-in this Job(i.e. you can do this Work easily without leaving or affecting
-your present Job).You will work as an independent contractor right from
-your home /office. Your job is absolutely legal. You do not need any
-capital to start(non of your personal funds is needed).
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>mount: block device /dev/mtdblock3 is =
+write-protected,
+mounting read-only<o:p></o:p></span></font></p>
 
-REQUIREMENTS?
-i) 18 years or older.
-ii) Legally capable.
-iii) Responsible, Reliable and Trustworthy.
-iv) Ready to work 3-4 hours per week.
-v) Able to check and respond to emails often.
-vi) Easy telephone access.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-IS THIS LEGAL?
-Yes it is.As a matter of fact,my lawyer checked all legal provisions to
-know if there is any dosmestic or international law against businesses or
-deals in this manner.And he said its allowed by all LAWS.So know that
-doing this work is safe and legitimate.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-I hope all is well understood. I would be glad if you accept my proposal
-and I intend to commence as soon as you are ready. Please, to facilitate
-the conclusion of this transaction if accepted, do send promptly by email
-the following details below, to indicate your interest.
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'>Katey<o:p></o:p></span></font></p>
 
-NAME:
-ADDRESS:
-PHONE NUMBER:
-AGE:
-SEX:
-NAME OF BANK:
-ACCOUNT NAME:
-ACCOUNT NUMBER:
-B.S.B NUMBER:
+<p class=3DMsoNormal><font size=3D2 face=3DArial><span =
+style=3D'font-size:10.0pt;
+font-family:Arial'><o:p>&nbsp;</o:p></span></font></p>
 
-Once these information has been received from you, it would be forwarded
-to my Australian associates so they could commence the bank transfer to
-you.
+</div>
 
-ALL REPLIES TO BE SENT TO : wayendavis1s@yahoo.ie
+</body>
+
+</html>
+
+------_=_NextPart_001_01C6BFE2.5FA56D20--
