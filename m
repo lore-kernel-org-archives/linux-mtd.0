@@ -1,27 +1,19 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GCQuj-0005uJ-Ka
-	for linux-mtd@lists.infradead.org; Sun, 13 Aug 2006 21:06:55 -0400
-Received: from ep_mmp1 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J3Y00A29R35ND@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 10:06:41 +0900 (KST)
-Received: from sharmaami ([12.52.146.61])
-	by mmp1.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTPSA id <0J3Y00HBJR34J6@mmp1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 10:06:41 +0900 (KST)
-Date: Mon, 14 Aug 2006 10:06:58 +0900
-From: Amit Kumar Sharma <sharma.amit@samsung.com>
-Subject: Re: OneNAND - Cannot mount jffs2 partition (Amit kumar Sharma)
-To: linux-mtd@lists.infradead.org
-Message-id: <001b01c6bf3d$f12b39d0$3d92340c@dsn.sec.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=euc-kr
-Content-transfer-encoding: 7BIT
-Cc: =?euc-kr?B?J8GkvcLB+C9GbGFzaLHiyLmx17fsIFwouN648LiuXCkgL0U1IFwo?=,
-	=?euc-kr?B?J7Hov7Ww7yc=?= <younggon.kim@samsung.com>,
-	=?euc-kr?B?w6XA01wpIC+777y6wPzA2ic=?= <seungjin.jung@samsung.com>
+Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GCdzc-00051r-71
+	for linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 11:04:52 -0400
+Message-ID: <44E090C8.9040400@yandex.ru>
+Date: Mon, 14 Aug 2006 19:03:36 +0400
+From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+MIME-Version: 1.0
+To: Catherine Smith <catherine@arrows.demon.co.uk>
+Subject: Re: OneNAND - Cannot mount jffs2 partition
+References: <Pine.LNX.4.33.0608131059220.32638-100000@arrows.demon.co.uk>	<44DF16CC.3070708@yandex.ru>
+	<000e01c6bf00$3acdd130$c9fea8c0@Catherine>
+In-Reply-To: <000e01c6bf00$3acdd130$c9fea8c0@Catherine>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: John <john@arrows.demon.co.uk>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +23,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Catherine,
 
-Hi John 
+Catherine Smith wrote:
+> If I don't use the -j, it seems to work, though with a few warnings.
+> For example:
+>   $ flash_eraseall /dev/mtd5
+>   Eraseing 64 Kibyte @ 7f0000 -- 99 % complete
+>   $ mount -t jffs2 /dev/mtdblock5 /mnt/onenand
+>   Eep. no valid nodes for ino #1
+That's harmless.
 
-For creating JFFS2 on One nand image use these options 
+-j option means to put so-called clean marker at each etaseblock. The 
+cleanmarker just means that the eraseblock is clean ant it is safe to 
+write data at it. This is needed to guaranty data consistency - it is 
+not enough to just check that the eraseblock contains only 0xFF bytes. 
+For example, due to unclean reboots which may interrupt an erase 
+operation, some bits may become unstable and be read sometimes as 1, and 
+sometimes as 0.
 
-./flasheraseall -j /dev/mtd partition
+If you don't use -j option, JFFS2 will re-erase empty eraseblocks 
+itself, and put the clean marker. It may also complain about absence of 
+the root inode (which isn't a brilliant idea), but it creates the root 
+node automatically.
 
-./mkfs.jffs2 --pad=0x3e80000 (ur mtd onenand partition size) -s 2KiB -m
-none -e 128KiB(block size) --root=empty/(source directory for image ) -o
-jffs2.image(output file)
+> Then I can create files in /mnt/onenand, and copy them around or calculate a 
+> few signatures. All is well.
+> Once, when I tried to mount after a power cycle, it said:
+>   jffs2_get_inode_nodes(): CRC failed on node at 0x002dd7c8: Read 
+> 0xffffffff, calculated 0x20f0e445
+Did you unmount it cleanly? Or just pushed reset? If you didn't unmount 
+- it may be harmless.
 
-Use nandwrite from mtd utils for image writing 
+> Are these warnings, the Eep and the CRC failure, typical and harmless,
+> or should I take a keen interest?
 
-Thanks	
-Amit
+If you didn't cleanly unmount, you could have been interrupted a delayed 
+wbuf flush and just lost some last-written data. This could cause CRC 
+failure. And as JFFS2 cannot distinguish between real corruption and 
+corruptions due to unclean reboots - it issued a warning.
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
