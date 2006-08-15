@@ -1,19 +1,24 @@
-Received: from [82.179.117.26] (helo=shelob.oktetlabs.ru)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GCdzc-00051r-71
-	for linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 11:04:52 -0400
-Message-ID: <44E090C8.9040400@yandex.ru>
-Date: Mon, 14 Aug 2006 19:03:36 +0400
-From: "Artem B. Bityutskiy" <dedekind@yandex.ru>
+Received: from ug-out-1314.google.com ([66.249.92.168])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GCn7N-00011q-PB
+	for linux-mtd@lists.infradead.org; Mon, 14 Aug 2006 20:49:22 -0400
+Received: by ug-out-1314.google.com with SMTP id u40so243336ugc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Aug 2006 17:49:14 -0700 (PDT)
+Message-ID: <625fc13d0608141749h1ffd3147m419bd3eab51f1950@mail.gmail.com>
+Date: Mon, 14 Aug 2006 19:49:14 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "takasi-y@ops.dti.ne.jp" <takasi-y@ops.dti.ne.jp>
+Subject: Re: [PATCH] Mcronix MX29F040 support.
+In-Reply-To: <20060804072500.a0ad58a6.takasi-y@ops.dti.ne.jp>
 MIME-Version: 1.0
-To: Catherine Smith <catherine@arrows.demon.co.uk>
-Subject: Re: OneNAND - Cannot mount jffs2 partition
-References: <Pine.LNX.4.33.0608131059220.32638-100000@arrows.demon.co.uk>	<44DF16CC.3070708@yandex.ru>
-	<000e01c6bf00$3acdd130$c9fea8c0@Catherine>
-In-Reply-To: <000e01c6bf00$3acdd130$c9fea8c0@Catherine>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: John <john@arrows.demon.co.uk>, linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <20060803223936.87040059.takasi-y@ops.dti.ne.jp>
+	<625fc13d0608030713u299085f4l60dbc9169e61b968@mail.gmail.com>
+	<20060804072500.a0ad58a6.takasi-y@ops.dti.ne.jp>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,47 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Catherine,
+On 8/3/06, takasi-y@ops.dti.ne.jp <takasi-y@ops.dti.ne.jp> wrote:
+> Thank you, josh.
+> I'd missunderstood thet the line is added certified(?) people.
+> /yoshii
+>
+> Signed-off-by: Takashi YOSHII <takasi-y@ops.dti.ne.jp>
 
-Catherine Smith wrote:
-> If I don't use the -j, it seems to work, though with a few warnings.
-> For example:
->   $ flash_eraseall /dev/mtd5
->   Eraseing 64 Kibyte @ 7f0000 -- 99 % complete
->   $ mount -t jffs2 /dev/mtdblock5 /mnt/onenand
->   Eep. no valid nodes for ino #1
-That's harmless.
+This has been applied to my tree.  I'll push to the master MTD tree soon.
 
--j option means to put so-called clean marker at each etaseblock. The 
-cleanmarker just means that the eraseblock is clean ant it is safe to 
-write data at it. This is needed to guaranty data consistency - it is 
-not enough to just check that the eraseblock contains only 0xFF bytes. 
-For example, due to unclean reboots which may interrupt an erase 
-operation, some bits may become unstable and be read sometimes as 1, and 
-sometimes as 0.
-
-If you don't use -j option, JFFS2 will re-erase empty eraseblocks 
-itself, and put the clean marker. It may also complain about absence of 
-the root inode (which isn't a brilliant idea), but it creates the root 
-node automatically.
-
-> Then I can create files in /mnt/onenand, and copy them around or calculate a 
-> few signatures. All is well.
-> Once, when I tried to mount after a power cycle, it said:
->   jffs2_get_inode_nodes(): CRC failed on node at 0x002dd7c8: Read 
-> 0xffffffff, calculated 0x20f0e445
-Did you unmount it cleanly? Or just pushed reset? If you didn't unmount 
-- it may be harmless.
-
-> Are these warnings, the Eep and the CRC failure, typical and harmless,
-> or should I take a keen interest?
-
-If you didn't cleanly unmount, you could have been interrupted a delayed 
-wbuf flush and just lost some last-written data. This could cause CRC 
-failure. And as JFFS2 cannot distinguish between real corruption and 
-corruptions due to unclean reboots - it issued a warning.
-
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+thx,
+josh
