@@ -1,25 +1,18 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GDu5T-00058s-W7
-	for linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 03:27:57 +0100
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J46005EW9HAPQ@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 11:27:10 +0900 (KST)
-Received: from sharmaami ([12.52.146.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPSA id <0J4600IIR9H9DI@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 11:27:10 +0900 (KST)
-Date: Fri, 18 Aug 2006 11:27:27 +0900
-From: Amit Kumar Sharma <sharma.amit@samsung.com>
-Subject: RE: JFFS2 problem(amit Kumar sharma)
-In-reply-to: <44E2D85B.6030303@yandex.ru>
-To: "'Artem B. Bityutskiy'" <dedekind@yandex.ru>
-Message-id: <007e01c6c26d$d9629c20$3d92340c@dsn.sec.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
+Received: from tim.rpsys.net ([194.106.48.114])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GD7SV-0004tY-CP
+	for linux-mtd@lists.infradead.org; Tue, 15 Aug 2006 23:32:30 +0100
+Subject: Re: 2.6.18-rc4 jffs2 problems
+From: Richard Purdie <rpurdie@rpsys.net>
+To: Jonathan McDowell <noodles@earth.li>
+In-Reply-To: <20060810060409.GH27094@earth.li>
+References: <1154976111.17725.8.camel@localhost.localdomain>
+	<20060809093419.GA14187@earth.li>  <20060810060409.GH27094@earth.li>
+Content-Type: text/plain
+Date: Tue, 15 Aug 2006 23:29:11 +0100
+Message-Id: <1155680951.5542.19.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,68 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem
+On Thu, 2006-08-10 at 07:04 +0100, Jonathan McDowell wrote:
+> A "git bisect" is flagging up 8593fbc68b0df1168995de76d1af38eb62fd6b62
+> as the problem commit:
+> 
+> commit 8593fbc68b0df1168995de76d1af38eb62fd6b62
+> Author: Thomas Gleixner <tglx@cruncher.tec.linutronix.de>
+> Date:   Mon May 29 03:26:58 2006 +0200
+> 
+>     [MTD] Rework the out of band handling completely
 
-I am able to solve this problem .I have one more. I lost data after reboot
-but without reboot, I try mount, umount and then mount so I did not lost any
-data. I find JFFS2 erase my all blocks, as it did not find any valid clean
-marker in OOB area. 
+I found time to do some testing myself and can confirm this is the
+problem patch for sharpsl as well. I don't see the problem with recent
+git kernels if I apply:
 
-I am getting these debug messages.
+http://www.rpsys.net/openzaurus/patches/mtd_revert_oob-r0.patch
 
+which is a hack reverting the above change (only on the bits of the
+kernel which sharpsl needs). I'll see if I can trim the diff down and
+find the problem...
 
-Unknown but compatible feature node (0x2005) found at offset 0x00380000
-jffs2_check_nand_cleanmarker(): Clean marker node not detected in block at
-003a00
-OOB at 003a0000 was ff ff 85 19 05 ff ff ff a6 9a a9 3f ff ff ff ff ff ff ff
-ff
-jffs_check_nand_cleanmarker returned 1
-Unknown but compatible feature node (0x2005) found at offset 0x003a0000
-jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block at
-003c00
-OOB at 003c0000 was ff ff 85 19 05 ff ff ff aa 95 55 3f ff ff ff ff ff ff ff
-ff
-jffs_check_nand_cleanmarker returned 1
-Unknown but compatible feature node (0x2005) found at offset 0x003c0000
-jffs_check_nand_cleanmarker returned 0
-jffs2_check_oob_empty returned 1
-JFFS2: Erase block at 0x003e0000 is not formatted. It will be erased
-jffs_check_nand_cleanmarker returned 0
-jffs2_check_oob_empty returned 1
-JFFS2: Erase block at 0x00400000 is not formatted. It will be erased
-jffs_check_nand_cleanmarker returned 0
-jffs2_check_oob_empty returned 1
-JFFS2: Erase block at 0x00420000 is not formatted. It will be erased
-jffs_check_nand_cleanmarker returned 0
-
-
-
-
-Thanks
-Amit
-
------Original Message-----
-From: Artem B. Bityutskiy [mailto:dedekind@yandex.ru] 
-Sent: Wednesday, August 16, 2006 5:34 PM
-To: Amit Kumar Sharma
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 problem(amit Kumar sharma)
-
-Amit Kumar Sharma wrote:
-> I have one problem related to JFFS2 partition ,My partition size is  20MB
-> but I am able to copy more then 20 MB in this partition and strange is
-after
-> rebooting file exist with out any problem ,Can u tell me ,how JFFS2
-maintain
-> partition size information during copy or file write command.In which area
-I
-> must check in JFFS2 or mtd.
-
-JFFS2 compresses the data so ir is possible that you fit more then 
-20MiB. Try to copy mp3 files - you'll you fit less then 20MiB. WRT to 
-your question, I'm not sure what to answer - it's too general.
-
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+Richard
