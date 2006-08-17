@@ -1,18 +1,19 @@
-Received: from colibri.its.uu.se ([130.238.4.154])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GD0yX-0000gw-UM
-	for linux-mtd@lists.infradead.org; Tue, 15 Aug 2006 11:37:09 -0400
-Date: Tue, 15 Aug 2006 17:36:49 +0200
-To: Katey Yu <katey.Yu@ositech.com>
-Subject: Re: write-protected
-Message-ID: <20060815153649.GF3622@Update.UU.SE>
-References: <007020085773234AAACE3B66E13C18E8D71CB3@MAILSRVR.ositech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <007020085773234AAACE3B66E13C18E8D71CB3@MAILSRVR.ositech.com>
-From: samuel@Update.UU.SE (Samuel ]slund)
-Cc: linux-mtd@lists.infradead.org
+Received: from tim.rpsys.net ([194.106.48.114])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GDq6u-00030c-7K
+	for linux-mtd@lists.infradead.org; Thu, 17 Aug 2006 23:13:09 +0100
+Subject: Re: 2.6.18-rc4 jffs2 problems
+From: Richard Purdie <rpurdie@rpsys.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <1154976111.17725.8.camel@localhost.localdomain>
+References: <1154976111.17725.8.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Thu, 17 Aug 2006 23:09:47 +0100
+Message-Id: <1155852587.5530.30.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,37 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, Aug 14, 2006 at 04:44:01PM -0400, Katey Yu wrote:
-> Hello,
-> 
-> When I mount /dev/mtdblock3 in flash I get  block " block device
-> /dev/mtdblock3 is write-protected, mounting read-only". I should get
-> mtdblock_open?
-> 
-> Could somebody tell me what's wrong?
-> 
->  
-> 
->  
-> 
-> mount -t jffs2  /dev/mtdblock3 /var/tmp
-> 
-> mount: block device /dev/mtdblock3 is write-protected, mounting
-> read-only
+Read the return value before we release the nand device otherwise the
+value can become corrupted by another user of chip->ops, ultimately
+resulting in filesystem corruption.
 
-You do not give very much information about your system...
-Ok, assuming you have set up the block device correctly.
+Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 
-I had a similar problem that boiled down to that the driver
-from the manufacturer hardcoded the partition to be read-only.
+---
 
-in my case the apropriate file was:
-linux/arch/arm/mach-ks8695/ks8695_mm.c
+This fixes the jffs2 errors and filesystem corruption I reported. It
+should be applied for 2.6.18.
 
-The partition had been set read-only by adding:
-  .mask_flags = MTD_WRITABLE
+ drivers/mtd/nand/nand_base.c |    6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-to the partition struct.
-
-HTH
-//Samuel
+Index: git/drivers/mtd/nand/nand_base.c
+===================================================================
+--- git.orig/drivers/mtd/nand/nand_base.c	2006-08-17 22:46:19.000000000 +0100
++++ git/drivers/mtd/nand/nand_base.c	2006-08-17 22:47:27.000000000 +0100
+@@ -1093,9 +1093,10 @@ static int nand_read(struct mtd_info *mt
+ 
+ 	ret = nand_do_read_ops(mtd, from, &chip->ops);
+ 
++	*retlen = chip->ops.retlen;
++
+ 	nand_release_device(mtd);
+ 
+-	*retlen = chip->ops.retlen;
+ 	return ret;
+ }
+ 
+@@ -1691,9 +1692,10 @@ static int nand_write(struct mtd_info *m
+ 
+ 	ret = nand_do_write_ops(mtd, to, &chip->ops);
+ 
++	*retlen = chip->ops.retlen;
++
+ 	nand_release_device(mtd);
+ 
+-	*retlen = chip->ops.retlen;
+ 	return ret;
+ }
+ 
