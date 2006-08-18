@@ -1,17 +1,25 @@
-Received: from colibri.its.uu.se ([130.238.4.154])
+Received: from mailout2.samsung.com ([203.254.224.25])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GD6bc-0005Uj-ET
-	for linux-mtd@lists.infradead.org; Tue, 15 Aug 2006 22:37:49 +0100
-Date: Tue, 15 Aug 2006 23:34:49 +0200
-To: Katey Yu <katey.Yu@ositech.com>
-Subject: Re: write-protected
-Message-ID: <20060815213449.GG3622@Update.UU.SE>
-References: <007020085773234AAACE3B66E13C18E8D71D08@MAILSRVR.ositech.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <007020085773234AAACE3B66E13C18E8D71D08@MAILSRVR.ositech.com>
-From: samuel@Update.UU.SE (Samuel ]slund)
+	id 1GDu5T-00058s-W7
+	for linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 03:27:57 +0100
+Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J46005EW9HAPQ@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 11:27:10 +0900 (KST)
+Received: from sharmaami ([12.52.146.61])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
+	Jun 23 2003)) with ESMTPSA id <0J4600IIR9H9DI@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 18 Aug 2006 11:27:10 +0900 (KST)
+Date: Fri, 18 Aug 2006 11:27:27 +0900
+From: Amit Kumar Sharma <sharma.amit@samsung.com>
+Subject: RE: JFFS2 problem(amit Kumar sharma)
+In-reply-to: <44E2D85B.6030303@yandex.ru>
+To: "'Artem B. Bityutskiy'" <dedekind@yandex.ru>
+Message-id: <007e01c6c26d$d9629c20$3d92340c@dsn.sec.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,104 +30,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Katey,
+Hi Artem
 
-If I read that right you should be able to write to all partitions 
-_except_ the fourth (mtd3 / mtdblock3) .
+I am able to solve this problem .I have one more. I lost data after reboot
+but without reboot, I try mount, umount and then mount so I did not lost any
+data. I find JFFS2 erase my all blocks, as it did not find any valid clean
+marker in OOB area. 
 
-HTH
-//Samuel
+I am getting these debug messages.
 
-On Tue, Aug 15, 2006 at 04:08:47PM -0400, Katey Yu wrote:
-> Hi Samuel,
-> 
-> This is mtd partition.
-> static struct mtd_partition partition_info[]= {
-> 
-> 	{
-> 		name: "bootloader",
-> ///dev/mtdblock0
-> 		size: 64 * 1024,
-> 		offset: 0,
-> //		mask_flags: MTD_WRITEABLE
-> 		mask_flags: 0 
-> 	},
-> 	{
-> 		name: "kernel",                         ///dev/mtdblock1
-> 
-> 		size: 640 * 1024,
-> 		offset: MTDPART_OFS_APPEND,
-> //		mask_flags: MTD_WRITEABLE
-> 		mask_flags: 0
-> 	},
-> 	{
-> 		name: "filesystem",                     ///dev/mtdblock2
-> 		size: 1300 * 1024,
-> 		offset: MTDPART_OFS_APPEND,
-> //		mask_flags: MTD_WRITEABLE
-> 		mask_flags: 0
-> 	},
-> 	{
-> 		name: "config",
-> ////dev/mtdblock3      
-> 		size: 16 * 1024,
-> 		offset: MTDPART_OFS_APPEND,
-> //		offset: 0x4000,
-> 		mask_flags: MTD_WRITEABLE
-> //		mask_flags: 0
-> 	}
-> 	{
-> 		name: "complete flash",
-> ///dev/mtdblock4
-> 		size: 2048 * 1024,
-> 		offset: 0,
-> 		mask_flags: 0
-> //		mask_flags: MTD_WRITEABLE
-> 	}
-> };
-> 
-> Katey
-> -----Original Message-----
-> From: Samuel ]slund [mailto:samuel@Update.UU.SE] 
-> Sent: Tuesday, August 15, 2006 11:37 AM
-> To: Katey Yu
-> Cc: linux-mtd@lists.infradead.org
-> Subject: Re: write-protected
-> 
-> On Mon, Aug 14, 2006 at 04:44:01PM -0400, Katey Yu wrote:
-> > Hello,
-> > 
-> > When I mount /dev/mtdblock3 in flash I get  block " block device
-> > /dev/mtdblock3 is write-protected, mounting read-only". I should get
-> > mtdblock_open?
-> > 
-> > Could somebody tell me what's wrong?
-> > 
-> >  
-> > 
-> >  
-> > 
-> > mount -t jffs2  /dev/mtdblock3 /var/tmp
-> > 
-> > mount: block device /dev/mtdblock3 is write-protected, mounting
-> > read-only
-> 
-> You do not give very much information about your system...
-> Ok, assuming you have set up the block device correctly.
-> 
-> I had a similar problem that boiled down to that the driver
-> from the manufacturer hardcoded the partition to be read-only.
-> 
-> in my case the apropriate file was:
-> linux/arch/arm/mach-ks8695/ks8695_mm.c
-> 
-> The partition had been set read-only by adding:
->   .mask_flags = MTD_WRITABLE
-> 
-> to the partition struct.
-> 
-> HTH
-> //Samuel
-> 
-> 
-> 
+
+Unknown but compatible feature node (0x2005) found at offset 0x00380000
+jffs2_check_nand_cleanmarker(): Clean marker node not detected in block at
+003a00
+OOB at 003a0000 was ff ff 85 19 05 ff ff ff a6 9a a9 3f ff ff ff ff ff ff ff
+ff
+jffs_check_nand_cleanmarker returned 1
+Unknown but compatible feature node (0x2005) found at offset 0x003a0000
+jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block at
+003c00
+OOB at 003c0000 was ff ff 85 19 05 ff ff ff aa 95 55 3f ff ff ff ff ff ff ff
+ff
+jffs_check_nand_cleanmarker returned 1
+Unknown but compatible feature node (0x2005) found at offset 0x003c0000
+jffs_check_nand_cleanmarker returned 0
+jffs2_check_oob_empty returned 1
+JFFS2: Erase block at 0x003e0000 is not formatted. It will be erased
+jffs_check_nand_cleanmarker returned 0
+jffs2_check_oob_empty returned 1
+JFFS2: Erase block at 0x00400000 is not formatted. It will be erased
+jffs_check_nand_cleanmarker returned 0
+jffs2_check_oob_empty returned 1
+JFFS2: Erase block at 0x00420000 is not formatted. It will be erased
+jffs_check_nand_cleanmarker returned 0
+
+
+
+
+Thanks
+Amit
+
+-----Original Message-----
+From: Artem B. Bityutskiy [mailto:dedekind@yandex.ru] 
+Sent: Wednesday, August 16, 2006 5:34 PM
+To: Amit Kumar Sharma
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 problem(amit Kumar sharma)
+
+Amit Kumar Sharma wrote:
+> I have one problem related to JFFS2 partition ,My partition size is  20MB
+> but I am able to copy more then 20 MB in this partition and strange is
+after
+> rebooting file exist with out any problem ,Can u tell me ,how JFFS2
+maintain
+> partition size information during copy or file write command.In which area
+I
+> must check in JFFS2 or mtd.
+
+JFFS2 compresses the data so ir is possible that you fit more then 
+20MiB. Try to copy mp3 files - you'll you fit less then 20MiB. WRT to 
+your question, I'm not sure what to answer - it's too general.
+
+-- 
+Best Regards,
+Artem B. Bityutskiy,
+St.-Petersburg, Russia.
