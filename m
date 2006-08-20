@@ -1,26 +1,26 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from ug-out-1314.google.com ([66.249.92.172])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GDCns-0000s0-Ms
-	for linux-mtd@lists.infradead.org; Wed, 16 Aug 2006 05:14:53 +0100
-Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J4200EC9P43WP@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 16 Aug 2006 13:14:27 +0900 (KST)
-Received: from sharmaami ([12.52.146.61])
-	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
-	Jun 23 2003)) with ESMTPSA id <0J4200M0FP41DV@mmp2.samsung.com> for
-	linux-mtd@lists.infradead.org; Wed, 16 Aug 2006 13:14:26 +0900 (KST)
-Date: Wed, 16 Aug 2006 13:14:43 +0900
-From: Amit Kumar Sharma <sharma.amit@samsung.com>
-Subject: RE: JFFS2 problem(amit Kumar sharma)
-In-reply-to: <44DAFD33.4060104@yandex.ru>
-To: "'Artem B. Bityutskiy'" <dedekind@yandex.ru>
-Message-id: <003101c6c0ea$80b147e0$3d92340c@dsn.sec.samsung.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Cc: linux-mtd@lists.infradead.org
+	id 1GEcE6-0004GL-Vj
+	for linux-mtd@lists.infradead.org; Sun, 20 Aug 2006 02:35:48 +0100
+Received: by ug-out-1314.google.com with SMTP id u40so1237013ugc
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 19 Aug 2006 18:34:46 -0700 (PDT)
+Message-ID: <625fc13d0608191834r19ce12e5raccbae011d67c25e@mail.gmail.com>
+Date: Sat, 19 Aug 2006 20:34:46 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Richard Purdie" <rpurdie@rpsys.net>
+Subject: Re: 2.6.18-rc4 jffs2 problems
+In-Reply-To: <1155852587.5530.30.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <1154976111.17725.8.camel@localhost.localdomain>
+	<1155852587.5530.30.camel@localhost.localdomain>
+Cc: Greg KH <greg@kroah.com>, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,44 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem 
+On 8/17/06, Richard Purdie <rpurdie@rpsys.net> wrote:
+> Read the return value before we release the nand device otherwise the
+> value can become corrupted by another user of chip->ops, ultimately
+> resulting in filesystem corruption.
+>
 
-I have one problem related to JFFS2 partition ,My partition size is  20MB
-but I am able to copy more then 20 MB in this partition and strange is after
-rebooting file exist with out any problem ,Can u tell me ,how JFFS2 maintain
-partition size information during copy or file write command.In which area I
-must check in JFFS2 or mtd.
+We have multiple confirmations that this patch fixes the issue
+reported.  I agree it should go in 2.6.18.
+
+Greg, can you add this to your tree?
 
 
-Thanks
-Amit
+> Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 
------Original Message-----
-From: Artem B. Bityutskiy [mailto:dedekind@yandex.ru] 
-Sent: Thursday, August 10, 2006 6:33 PM
-To: Amit Kumar Sharma
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 problem
+Acked-by: Josh Boyer <jwboyer@gmail.com>
 
-Hello Amit,
-
-Amit Kumar Sharma wrote:
-> I am looking for JFFS2 stable version for kernel 2.4, Can u help me
-because
-> I am facing strange problem. My device size is 187M and JFFS2 creating 2G
-> file on my device. But when I checked same device partition on 2.6 kernel
-it
-> also show file size 2G "it can not be possible because MTD partition is
-187M
-> " SO I run same test program on 2.6 kernel. it stops after creating 187M
-> file size. SO I wonder may it is a problem of JFFS2 version I am using
-with
-> mvl 2.4.20 kernel.
-
-I'd suggest you to contact MV instead. MTD community is mostly not 
-interested in 2.4, so you probably won't get any help here.
-
--- 
-Best Regards,
-Artem B. Bityutskiy,
-St.-Petersburg, Russia.
+josh
