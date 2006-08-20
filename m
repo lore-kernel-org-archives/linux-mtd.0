@@ -1,15 +1,17 @@
-Subject: Re: [PATCH] CORE: Allow kernel access to struct mtd_part and
-	PART() for axfs
-From: David Woodhouse <dwmw2@infradead.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce0608180223g4591c1beja5be00f57d5173f4@mail.gmail.com>
-References: <6934efce0608180223g4591c1beja5be00f57d5173f4@mail.gmail.com>
-Content-Type: text/plain
-Date: Sun, 20 Aug 2006 09:17:31 +0100
-Message-Id: <1156061852.22871.239.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from dns.vivotek.com ([211.21.25.250] helo=vivotek2.vivotek.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GElfR-0004Wz-Pf
+	for linux-mtd@lists.infradead.org; Sun, 20 Aug 2006 12:40:39 +0100
+Received: from [127.0.0.1] ([192.168.2.227]) (authenticated bits=0)
+	by vivotek2.vivotek.com (8.13.1/8.13.1) with ESMTP id k6LAPuVE016941
+	for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2006 18:25:56 +0800
+Message-ID: <44C0AC2D.9090408@csie.nctu.edu.tw>
+From: Rey Cheng <rhjeng@csie.nctu.edu.tw>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: ALLFF blocks seems to be added to erase pending list at booting-time
+Content-Type: text/plain; charset=Big5
 Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +20,38 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Sun, 20 Aug 2006 11:40:41 -0000
 
-On Fri, 2006-08-18 at 02:23 -0700, Jared Hulbert wrote:
-> This is best way we could figure out to get access to the physical
-> address of a given partition.  We _need_ the physical address to use
-> remap_pfn_range().
+Hi all,
 
-If it's going to be public information I'd prefer to just add it to the
-struct mtd_info rather than exposing more private structures just
-because they happen to contain it at the moment.
+I have two machine.
 
-But really, you need to be able to coordinate with the flash driver so
-that you can read from it _only_ when it's in read mode. This kind of
-thing is what point() is for. The whole point()/unpoint() thing is
-probably misdesigned, so feel free to make suggestions for changing it,
-if it doesn't do what you want.
+In machine #1,
+I use mkfs.jffs2 to create its flash file system image.
+# mkfs.jffs2 -r /mnt/flash -o jffs2.img
 
-How do you handle tearing down a mapping when the data moves from one
-place on the flash to another? Or does that not happen? 
+To burn the image on machine #2,
+I erase machine #2's flash file system.
+And write the image on machine #2.
 
--- 
-dwmw2
+I use mtd_debug to erase the flash, the flash is 1MB and the image is
+about 700K.
+# mtd_debug erase /dev/mtd1 0 0x100000
+# mtd_debug write /dev/mtd1 0 705136 ./jffs2.img
+
+Then I reboot the system.
+Because I erased the entire flash memory, and only 700K bytes were written.
+The "ALLFF" blocks are added to erase pending list, and jffs2 tries to
+mark the blocks clean at boot time.
+But I put the system init scripts in the flash file system.
+Therefore the "erasing" and "reading" occurs in the same time.
+Looks like a race condition.
+
+I solve the problem by umount and mount the flash file system after
+witting image on machine #2.
+Then the "ALLFF" blocks will be erased before rebooting the system.
+
+Is there any other solution?
+Thank you.
+
+Rey.
