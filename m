@@ -1,17 +1,22 @@
-Received: from dns.vivotek.com ([211.21.25.250] helo=vivotek2.vivotek.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GElfR-0004Wz-Pf
-	for linux-mtd@lists.infradead.org; Sun, 20 Aug 2006 12:40:39 +0100
-Received: from [127.0.0.1] ([192.168.2.227]) (authenticated bits=0)
-	by vivotek2.vivotek.com (8.13.1/8.13.1) with ESMTP id k6LAPuVE016941
-	for <linux-mtd@lists.infradead.org>; Fri, 21 Jul 2006 18:25:56 +0800
-Message-ID: <44C0AC2D.9090408@csie.nctu.edu.tw>
-From: Rey Cheng <rhjeng@csie.nctu.edu.tw>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: ALLFF blocks seems to be added to erase pending list at booting-time
-Content-Type: text/plain; charset=Big5
-Content-Transfer-Encoding: 7bit
+Received: from mail.kroah.org ([69.55.234.183] helo=perch.kroah.org)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GEyky-00075N-Ff
+	for linux-mtd@lists.infradead.org; Mon, 21 Aug 2006 02:39:15 +0100
+Date: Sun, 20 Aug 2006 18:35:45 -0700
+From: Greg KH <greg@kroah.com>
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: 2.6.18-rc4 jffs2 problems
+Message-ID: <20060821013545.GA21012@kroah.com>
+References: <1154976111.17725.8.camel@localhost.localdomain>
+	<1155852587.5530.30.camel@localhost.localdomain>
+	<625fc13d0608191834r19ce12e5raccbae011d67c25e@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <625fc13d0608191834r19ce12e5raccbae011d67c25e@mail.gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,38 +25,21 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sun, 20 Aug 2006 11:40:41 -0000
 
-Hi all,
+On Sat, Aug 19, 2006 at 08:34:46PM -0500, Josh Boyer wrote:
+> On 8/17/06, Richard Purdie <rpurdie@rpsys.net> wrote:
+> >Read the return value before we release the nand device otherwise the
+> >value can become corrupted by another user of chip->ops, ultimately
+> >resulting in filesystem corruption.
+> >
+> 
+> We have multiple confirmations that this patch fixes the issue
+> reported.  I agree it should go in 2.6.18.
+> 
+> Greg, can you add this to your tree?
 
-I have two machine.
+Add what to what tree?  I need things to be a bit more specific here :)
 
-In machine #1,
-I use mkfs.jffs2 to create its flash file system image.
-# mkfs.jffs2 -r /mnt/flash -o jffs2.img
+thanks,
 
-To burn the image on machine #2,
-I erase machine #2's flash file system.
-And write the image on machine #2.
-
-I use mtd_debug to erase the flash, the flash is 1MB and the image is
-about 700K.
-# mtd_debug erase /dev/mtd1 0 0x100000
-# mtd_debug write /dev/mtd1 0 705136 ./jffs2.img
-
-Then I reboot the system.
-Because I erased the entire flash memory, and only 700K bytes were written.
-The "ALLFF" blocks are added to erase pending list, and jffs2 tries to
-mark the blocks clean at boot time.
-But I put the system init scripts in the flash file system.
-Therefore the "erasing" and "reading" occurs in the same time.
-Looks like a race condition.
-
-I solve the problem by umount and mount the flash file system after
-witting image on machine #2.
-Then the "ALLFF" blocks will be erased before rebooting the system.
-
-Is there any other solution?
-Thank you.
-
-Rey.
+greg k-h
