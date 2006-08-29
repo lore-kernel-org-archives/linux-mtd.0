@@ -1,21 +1,19 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GHOJe-0000sv-OU
-	for linux-mtd@lists.infradead.org; Sun, 27 Aug 2006 18:20:59 +0100
-Date: Sun, 27 Aug 2006 19:17:28 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Ian Lindsay <iml@formicary.org>
-Subject: Re: LogFS
-Message-ID: <20060827171728.GB3502@wohnheim.fh-wedel.de>
-References: <20060824134430.GB17132@wohnheim.fh-wedel.de>
-	<20060827053245.GA15747@gen.formicary.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20060827053245.GA15747@gen.formicary.org>
-Cc: fsdevel@wohnheim.fh-wedel.de, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Received: from mail.smartlink.ee ([213.180.16.242])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GI2ad-0000mE-MK
+	for linux-mtd@lists.infradead.org; Tue, 29 Aug 2006 13:21:12 +0100
+Message-ID: <44F430F4.9040906@colleduc.ee>
+Date: Tue, 29 Aug 2006 15:20:04 +0300
+From: Kalev Lember <kalev@colleduc.ee>
+MIME-Version: 1.0
+To: Husam <husamsenussi@gmail.com>
+Subject: Re: DiskOn Chip Millennium Plus 32MB + INFTL
+References: <4488665D.5010908@kalikstein.com>	<200606101321.37502.husamsenussi@gmail.com>	<1149977115.18635.158.camel@shinybook.infradead.org>
+	<200606261917.45429.husamsenussi@gmail.com>
+In-Reply-To: <200606261917.45429.husamsenussi@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,19 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 August 2006 01:32:45 -0400, Ian Lindsay wrote:
-> 
->  +/* FIXME: This should really be somewhere in the 64bit area. */
->  +#define LOGFS_LINK_MAX (2^30)
-> 
-> Interesting choice of constant.
+Husam wrote:
+> I have manage to get the driver work with 32MiB, so now I need to see if I can 
+> get it to work with 64 MiB.
+>   
 
-Yes.  I didn't spend a long time thinking about whether it should be
-2^31 or 2^31-1 or 2^31-2.  It will be a while before it becomes an
-issue in real life anyway. :)
+Hello,
 
-Jörn
+Did you manage to get the driver to work with all Diskonchip Millennium 
+Plus devices?
+Can you please send your latest patch.
+
 
 -- 
-It's not whether you win or lose, it's how you place the blame.
--- unknown
+Best regards,
+Kalev Lember
