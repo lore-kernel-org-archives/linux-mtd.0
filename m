@@ -1,27 +1,19 @@
-Received: from mail128.messagelabs.com ([216.82.250.131])
-	by pentafluge.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GI1wg-00022y-4M
-	for linux-mtd@lists.infradead.org; Tue, 29 Aug 2006 12:39:55 +0100
-Received: from az33exr02.mot.com ([10.64.251.232])
-	by motgate7.mot.com (8.12.11/Motorola) with ESMTP id k7TBRBmf004154
+Received: from nz-out-0102.google.com ([64.233.162.207])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GHvTN-0006el-8t
+	for linux-mtd@lists.infradead.org; Tue, 29 Aug 2006 05:45:14 +0100
+Received: by nz-out-0102.google.com with SMTP id s1so2331652nze
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Aug 2006 04:27:11 -0700 (MST)
-Received: from ZMY16EXM67.ds.mot.com (zmy16exm67.ap.mot.com [10.179.4.27])
-	by az33exr02.mot.com (8.13.1/8.13.0) with ESMTP id k7TBR9SO015913
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Aug 2006 06:27:10 -0500 (CDT)
-Content-class: urn:content-classes:message
+	Mon, 28 Aug 2006 21:44:11 -0700 (PDT)
+Message-ID: <6934efce0608282144ge2250dbv1635377c005a9f74@mail.gmail.com>
+Date: Mon, 28 Aug 2006 21:44:11 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH] CORE: adding mtd_get_partition_physaddr()
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: Linux Kernel booting the root file system compiled for another
-	processor
-Date: Tue, 29 Aug 2006 19:27:07 +0800
-Message-ID: <B7803DC652E2F9458758AEBB6A5FD60F011E4B0D@ZMY16EXM67.ds.mot.com>
-In-Reply-To: <200608231745406401974@gmail.com>
-From: "M Sudharshana-A18475" <sudharshana@motorola.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,18 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+This is to allow axfs to get the physical address on the flash of it's
+partition.
 
-Was unsure this question could be raised in this forum. Please ignore if
-it shouldn't be this forum.
+Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
 
-I have scenario where, I have options to compile the ROOT file system
-for either ARM or another processor, with a raider, Linux Kernel is
-compiled for ARM only. Assuming, "CramFS" is used for both the
-processor's image.
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 06a9303..37aed8a 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -40,6 +40,17 @@ struct mtd_part {
+  */
+ #define PART(x)  ((struct mtd_part *)(x))
 
-In such a case, Can Linux Kernel mount root file system that is compiled
-for another processor? Is there any such dependency or nothing at all?
++/*
++ * Allow other modules to get the physical address of a given partition
++ */
++void * mtd_get_partition_physaddr (struct mtd_info *mtd)
++{
++	struct mtd_part *part = PART(mtd);
++	struct map_info *map = part->master->priv;
++
++	return (void *)(map->phys + part->offset);
++}
++EXPORT_SYMBOL_GPL(mtd_get_partition_physaddr);
 
-Thanks
-Sudharshana
+ /*
+  * MTD methods which simply translate the effective address and pass through
+diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
+index da6b3d6..adf6207 100644
+--- a/include/linux/mtd/partitions.h
++++ b/include/linux/mtd/partitions.h
+@@ -68,6 +68,7 @@ extern int register_mtd_parser(struct mt
+ extern int deregister_mtd_parser(struct mtd_part_parser *parser);
+ extern int parse_mtd_partitions(struct mtd_info *master, const char **types,
+ 				struct mtd_partition **pparts, unsigned long origin);
++extern void * mtd_get_partition_physaddr(struct mtd_info *mtd);
+
+ #define put_partition_parser(p) do { module_put((p)->owner); } while(0)
