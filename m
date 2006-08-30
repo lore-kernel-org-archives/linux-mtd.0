@@ -1,30 +1,24 @@
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GI7Bv-0004DZ-RL
-	for linux-mtd@lists.infradead.org; Tue, 29 Aug 2006 18:16:01 +0100
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e34.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id k7THClqW013836
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Aug 2006 13:12:47 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	k7THClXe355074
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Aug 2006 11:12:47 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k7THCkFM013773
-	for <linux-mtd@lists.infradead.org>; Tue, 29 Aug 2006 11:12:46 -0600
-Subject: Re: [PATCH] CORE: adding mtd_get_partition_physaddr()
-From: Josh Boyer <jdub@us.ibm.com>
-To: Jared Hulbert <jaredeh@gmail.com>
-In-Reply-To: <6934efce0608282144ge2250dbv1635377c005a9f74@mail.gmail.com>
-References: <6934efce0608282144ge2250dbv1635377c005a9f74@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 29 Aug 2006 12:13:47 -0500
-Message-Id: <1156871627.2003.15.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GIDYH-0004Yn-Ve
+	for linux-mtd@lists.infradead.org; Wed, 30 Aug 2006 01:03:33 +0100
+Received: from ep_mmp2 (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J4S00B8QASNIX@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 30 Aug 2006 09:02:47 +0900 (KST)
+Received: from sharmaami ([12.52.146.61])
+	by mmp2.samsung.com (iPlanet Messaging Server 5.2 HotFix 1.17 (built
+	Jun 23 2003)) with ESMTPSA id <0J4S0002EASMVC@mmp2.samsung.com> for
+	linux-mtd@lists.infradead.org; Wed, 30 Aug 2006 09:02:47 +0900 (KST)
+Date: Wed, 30 Aug 2006 09:03:06 +0900
+From: Amit Kumar Sharma <sharma.amit@samsung.com>
+Subject: JFFS2 message after fsstress test
+To: linux-mtd@lists.infradead.org
+Message-id: <003401c6cbc7$ac095120$3d92340c@dsn.sec.samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=us-ascii
+Content-transfer-encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,39 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-08-28 at 21:44 -0700, Jared Hulbert wrote:
-> This is to allow axfs to get the physical address on the flash of it's
-> partition.
-> 
-> Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
-> 
-> diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-> index 06a9303..37aed8a 100644
-> --- a/drivers/mtd/mtdpart.c
-> +++ b/drivers/mtd/mtdpart.c
-> @@ -40,6 +40,17 @@ struct mtd_part {
->   */
->  #define PART(x)  ((struct mtd_part *)(x))
-> 
-> +/*
-> + * Allow other modules to get the physical address of a given partition
-> + */
-> +void * mtd_get_partition_physaddr (struct mtd_info *mtd)
 
-Nit: No space between the paren and the function name please.
+Hi 
 
->  /*
->   * MTD methods which simply translate the effective address and pass through
-> diff --git a/include/linux/mtd/partitions.h b/include/linux/mtd/partitions.h
-> index da6b3d6..adf6207 100644
-> --- a/include/linux/mtd/partitions.h
-> +++ b/include/linux/mtd/partitions.h
-> @@ -68,6 +68,7 @@ extern int register_mtd_parser(struct mt
->  extern int deregister_mtd_parser(struct mtd_part_parser *parser);
->  extern int parse_mtd_partitions(struct mtd_info *master, const char **types,
->  				struct mtd_partition **pparts, unsigned long origin);
-> +extern void * mtd_get_partition_physaddr(struct mtd_info *mtd);
+I am using JFFS2 on oneNand mtd ,After mount I run fsstress test 
+./fsstress -d mount point -n 50 -c 
 
-Couldn't this be a proper prototype instead of an extern?
+After test complete I restart my target and remount my partition during boot
+time ,I got following message from JFFS2 ,Can some one tell me why JFFs2
+giving these messages.
 
-josh
+
+
+Mounting local filesystems...
+Eep. Child "f8" (ino #16572) of dir ino #16571 doesn't exist!
+Eep. Child "fb" (ino #16594) of dir ino #16592 doesn't exist!
+Inode #16645 was a directory with children - removing those too...
+Inode #16646 was a directory with children - removing those too...
+Inode #16574 was a directory with children - removing those too...
+Inode #16576 was a directory with children - removing those too...
+/dev/mtdblock5 on /tmp type jffs2 (rw)
+Cleaning: /etc/network/ifstate.
+Setting up IP spoofing protection: rp_filter.
+Disable TCP/IP Explicit Congestion Notification: done.
+Configuring network interfaces: done.
+Starting portmap daemon: portmap.
+Cleaning: /tmp jffs2_do_read_inode() on nonexistent ino 16594
+find: ./p0/d4/fb: Input/output error
+jffs2_do_read_inode() on nonexistent ino 16572
+find: ./p0/d7/f8: Input/output error
+JFFS2 compression type 0x06 not available.
+Error: jffs2_decompress returned -5
+JFFS2 compression type 0x06 not available.
+Error: jffs2_decompress returned -5
+/var/lock /var/run.
+
+
+Rgs
+Amit
