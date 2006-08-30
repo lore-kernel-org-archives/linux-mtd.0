@@ -1,31 +1,19 @@
-Received: from mail.imc-berlin.de ([217.110.46.186])
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GIRcr-0004WY-Tu
-	for linux-mtd@lists.infradead.org; Wed, 30 Aug 2006 16:05:12 +0100
-Received: from mailserver.berlin.imc-berlin.de
-	(mailserver.berlin.imc-berlin.de [10.0.0.19])
-	by mail.imc-berlin.de (Postfix) with ESMTP id BB2622F028
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Aug 2006 17:58:53 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id AAEA0AA9B
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Aug 2006 17:04:36 +0200 (CEST)
-Received: from [10.0.2.10] (scholz.berlin.imc-berlin.de [10.0.2.10])
-	by mailserver.berlin.imc-berlin.de (Postfix) with ESMTP id CA8D3AA6E
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Aug 2006 17:04:35 +0200 (CEST)
-Message-ID: <44F5A903.1050104@imc-berlin.de>
-Date: Wed, 30 Aug 2006 17:04:35 +0200
-From: Steven Scholz <steven.scholz@imc-berlin.de>
-MIME-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: PM for physmap.c ?
-References: <44EC6F2F.7070508@imc-berlin.de>
-	<20060830140421.GK19179@xi.wantstofly.org>
-In-Reply-To: <20060830140421.GK19179@xi.wantstofly.org>
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1GIT1l-0005wz-9S
+	for linux-mtd@lists.infradead.org; Wed, 30 Aug 2006 17:34:58 +0100
+Subject: Re: Issue with h/w ecc based NAND driver.
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Han Chang <posaune@hotmail.com>
+In-Reply-To: <BAY110-F48855559EABB206C5E9E4BC470@phx.gbl>
+References: <BAY110-F48855559EABB206C5E9E4BC470@phx.gbl>
+Content-Type: text/plain
+Date: Wed, 30 Aug 2006 18:37:57 +0200
+Message-Id: <1156955877.29250.186.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,47 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Lennert,
-
->> for quite some time physmap.c uses platform_{device,driver}.
->>
->> I wonder why it does not contain any (generic) code for power management
->> yet, i.e. .suspend/.resume functions.
->>
->> Is it correct that all I would need to survive a suspend/resume cycle is
->> something like
->>
->> int physmap_flash_suspend(struct platform_device *dev, pm_message_t state)
->> {
->> 	struct sa_info *info = platform_get_drvdata(dev);
->> 	int ret = 0;
->> 	if (info)
->> 		ret = info->mtd->suspend(info->mtd);
->> 	return ret;
->> }
->>
->> int physmap_flash_resume(struct platform_device *dev)
->> {
->> 	struct sa_info *info = platform_get_drvdata(dev);
->> 	if (info)
->> 		info->mtd->resume(info->mtd);
->> 	return 0;
->> }
->>
->> as stolen from sa1100-flash.c?
+On Wed, 2006-08-23 at 11:12 -0700, Han Chang wrote:
+> Hi there,
 > 
-> Looks OK to me, but that doesn't say much.
+> I'm using a NAND with h/w ecc. When a block is erased, both main data and 
+> oob are set to 0xff, and if the driver read the main data in the page with 
+> hardware enabled ecc, the 0xff in the oob is not the right ecc code, so the 
+> ecc mechanism in the h/w try to recover the error and trash the content in 
+> the main data area.
+> 
+> I tried to set the right ecc code in the oob for every page whenever a block 
+> is erased. But then the problem is with page programming. When write a page, 
+> the h/w ecc controller generates the ecc code and write it to the oob, since 
+> the oob is already written once during erase, the 2nd write to the oob is 
+> not taken well. So when read back the same page, it causes ecc error again.
+> 
+> I would appreciate very much if someone can shed some light on this kind of 
+> delimma.
 
-;-) Thanks for your reply anyway. Thought I am getting ignored for asking
-stupid things...
+That's a know problem with braindead hardware. One solution is to apply
+cluesticks (i.e. baseball bats) on the hardware designer. This only
+helps for your well-being and does not solve the problem itself.
 
-However could one of the MTD gurus please state on the following:
-- Would the above be enough?
-- Is it needed at all? For normal NOR flash (that's what physmap.c is for?).
-- What could happen without proper PM handling?
-- Is it worth it to provide a proper patch?
+Look into drivers/mtd/nand/diskonchip.c doc200x_correct_data(). There is
+an approach to tackle exactly the same problem.
 
-Thanks a million!
-
---
-Steven
+	tglx
