@@ -1,18 +1,19 @@
-Received: from www.kernelconcepts.de ([212.60.202.195]
-	helo=mail.kernelconcepts.de)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GJyWB-0000JY-NE
-	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 21:24:36 +0100
-Message-ID: <44FB3931.6040605@kernelconcepts.de>
-Date: Sun, 03 Sep 2006 22:21:05 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
+Received: from dsl-210-15-203-90-static.qld.netspace.net.au ([210.15.203.90]
+	helo=mars.redfish-group.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GJzbQ-0006ey-M3
+	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 22:34:06 +0100
+Message-ID: <44FB4A1F.4040806@redfish-group.com>
+Date: Mon, 04 Sep 2006 07:33:19 +1000
+From: Justin Clacherty <justin@redfish-group.com>
 MIME-Version: 1.0
-To: Justin Clacherty <justin@redfish-group.com>
+To: Nils Faerber <nils.faerber@kernelconcepts.de>
 Subject: Re: Problem with strata flash in 2 x 16bit config
 References: <44F81C58.1030203@kernelconcepts.de>
 	<44F85663.7090401@redfish-group.com>
-In-Reply-To: <44F85663.7090401@redfish-group.com>
-Content-Type: text/plain; charset=ISO-8859-1
+	<44FB3931.6040605@kernelconcepts.de>
+In-Reply-To: <44FB3931.6040605@kernelconcepts.de>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -24,28 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Justin Clacherty schrieb:
-> Nils Faerber wrote:
->> Node CRC 00800080 != calculated CRC 4bf2ff8d for node at 000d4704
->> -sh: dmesg: Input/output error
-> Is it P30 flash?  I've seen something similar if you don't unlock the flash.
+Nils Faerber wrote:
+> But I would expect that BLOB has already unlocked the complete 16MB for
+> writing the image.
+>   
+Not sure how blob works with this, I'm using u-boot.
+> And even if some are still locked, how do I unlock them?
+>   
+This would need to be done in blob so that it's available to the kernel 
+for mounting.
 
-Yes, that's correct!
-The board has two P30 flashes.
+When I get in to work this morning I'll try mounting flash with it 
+locked to see if that is the error I was receiving.
 
-The BLOB bootloader flashes the complete 16MB root partition first.
-After that, if I try to write to root using Linux-MTD, I get those errors.
-But I would expect that BLOB has already unlocked the complete 16MB for
-writing the image.
-
-And even if some are still locked, how do I unlock them?
-
-> Justin.
-Cheers
-  nils faerber
-
--- 
-kernel concepts GbR      Tel: +49-271-771091-12
-Dreisbachstr. 24         Fax: +49-271-771091-19
-D-57250 Netphen          Mob: +49-176-21024535
---
+Justin.
