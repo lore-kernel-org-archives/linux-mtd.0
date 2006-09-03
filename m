@@ -1,19 +1,14 @@
-Received: from dsl-210-15-203-90-static.qld.netspace.net.au ([210.15.203.90]
-	helo=mars.redfish-group.com)
+Received: from rekin14.go2.pl ([193.17.41.35])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GJBGx-00033w-3m
-	for linux-mtd@lists.infradead.org; Fri, 01 Sep 2006 16:49:38 +0100
-Message-ID: <44F85663.7090401@redfish-group.com>
-Date: Sat, 02 Sep 2006 01:48:51 +1000
-From: Justin Clacherty <justin@redfish-group.com>
-MIME-Version: 1.0
-To: Nils Faerber <nils.faerber@kernelconcepts.de>
-Subject: Re: Problem with strata flash in 2 x 16bit config
-References: <44F81C58.1030203@kernelconcepts.de>
-In-Reply-To: <44F81C58.1030203@kernelconcepts.de>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1GJgDZ-0006Th-LI
+	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 01:52:10 +0100
+From: davidsk13@o2.pl
+To: inux-nvidia@lists.surfsouth.com
+Subject: =?iso-8859-2?Q?Good_day!Can_we_meet=3F?=
+Date: Sun, 03 Sep 2006 02:51:13 +0200
+Content-Type: text/plain; charset="iso-8859-2";
+Content-Transfer-Encoding: 8bit
+Message-Id: <20060903005113.D3262214010@rekin14.go2.pl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nils Faerber wrote:
-> Node CRC 00800080 != calculated CRC 4bf2ff8d for node at 000d4704
-> -sh: dmesg: Input/output error
-Is it P30 flash?  I've seen something similar if you don't unlock the flash.
+GOOD DAY Sir/madam, 
 
-Justin.
+I got your contact during my search on the Internet. My name is Mr.Kelvin Davids. I am a manager ofan Internationally reputable bank here in Uk . I am a Jamaican by birth married with two kids. I am writing to solicit your assistance in the transfer of USD 10,550.000.00 equivalent. 
+
+This fund is the excess of what my branch in which I am the manger made as profit during the last year. I have already submitted an approved End of the Year report for the year 2005 to my Head Office and they will never know of this Excess. I have since then, placed this amount of USD 10,550.000.00 on a SUSPENCE ACCOUNT without a beneficiary. 
+
+As an officer of the bank, I cannot be directly connected to this money thus I am impelled to request for your assistance to receive this money into your bank account. I intend to part 30% of this fund to you while 70% shall be for me. I do need to stress that there are practically no risk involved in this. The transaction is going to be d! one within the law of the land. All I need from you is to stand as the original depositor of this fund. If you accept this offer, I will appreciate your timely response to this private email address including your telephone number/s. With regards, 
+
+Mr Kelvin Davids.
