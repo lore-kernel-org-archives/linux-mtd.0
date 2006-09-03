@@ -1,20 +1,20 @@
-Received: from dsl-210-15-203-90-static.qld.netspace.net.au ([210.15.203.90]
-	helo=mars.redfish-group.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GJjTg-0002vM-UP
-	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 05:21:03 +0100
-Received: from [127.0.0.1] (unknown [192.168.1.2])
-	by mars.redfish-group.com (Postfix) with ESMTP id 2A16D1900C4
-	for <linux-mtd@lists.infradead.org>;
-	Sun,  3 Sep 2006 14:19:30 +1000 (EST)
-Message-ID: <44FA57FD.8070003@redfish-group.com>
-Date: Sun, 03 Sep 2006 14:20:13 +1000
-From: Justin Clacherty <justin@redfish-group.com>
+Received: from www.kernelconcepts.de ([212.60.202.195]
+	helo=mail.kernelconcepts.de)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GJyWB-0000JY-NE
+	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 21:24:36 +0100
+Message-ID: <44FB3931.6040605@kernelconcepts.de>
+Date: Sun, 03 Sep 2006 22:21:05 +0200
+From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Static partitions
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Justin Clacherty <justin@redfish-group.com>
+Subject: Re: Problem with strata flash in 2 x 16bit config
+References: <44F81C58.1030203@kernelconcepts.de>
+	<44F85663.7090401@redfish-group.com>
+In-Reply-To: <44F85663.7090401@redfish-group.com>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Justin Clacherty schrieb:
+> Nils Faerber wrote:
+>> Node CRC 00800080 != calculated CRC 4bf2ff8d for node at 000d4704
+>> -sh: dmesg: Input/output error
+> Is it P30 flash?  I've seen something similar if you don't unlock the flash.
 
-I've managed to get mtd working on my PXA270 board.  I've used the 
-mainstone port as a template for my board port and was wondering why the 
-static partitions need to be defined twice.  Mainstone has it defined in 
-arch/arm/mach-pxa/mainstone.c and in drivers/mt d/maps/mainstone-flash.c.
+Yes, that's correct!
+The board has two P30 flashes.
 
-Regards,
-Justin.
+The BLOB bootloader flashes the complete 16MB root partition first.
+After that, if I try to write to root using Linux-MTD, I get those errors.
+But I would expect that BLOB has already unlocked the complete 16MB for
+writing the image.
+
+And even if some are still locked, how do I unlock them?
+
+> Justin.
+Cheers
+  nils faerber
+
+-- 
+kernel concepts GbR      Tel: +49-271-771091-12
+Dreisbachstr. 24         Fax: +49-271-771091-19
+D-57250 Netphen          Mob: +49-176-21024535
+--
