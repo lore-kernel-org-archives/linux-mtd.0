@@ -1,14 +1,20 @@
-Received: from rekin22.go2.pl ([193.17.41.11])
+Received: from dsl-210-15-203-90-static.qld.netspace.net.au ([210.15.203.90]
+	helo=mars.redfish-group.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GJiDW-00055Y-Sa
-	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 04:00:15 +0100
-From: davidsk32@o2.pl
-To: linux-mips@linux-mips.org 
-Subject: =?iso-8859-2?Q?Good_day!Can_we_meet=3F?=
-Date: Sun, 03 Sep 2006 04:59:38 +0200
-Content-Type: text/plain; charset="iso-8859-2";
-Content-Transfer-Encoding: 8bit
-Message-Id: <20060903025938.D042E45C06D@rekin22.go2.pl>
+	id 1GJjTg-0002vM-UP
+	for linux-mtd@lists.infradead.org; Sun, 03 Sep 2006 05:21:03 +0100
+Received: from [127.0.0.1] (unknown [192.168.1.2])
+	by mars.redfish-group.com (Postfix) with ESMTP id 2A16D1900C4
+	for <linux-mtd@lists.infradead.org>;
+	Sun,  3 Sep 2006 14:19:30 +1000 (EST)
+Message-ID: <44FA57FD.8070003@redfish-group.com>
+Date: Sun, 03 Sep 2006 14:20:13 +1000
+From: Justin Clacherty <justin@redfish-group.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Static partitions
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,13 +24,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-GOOD DAY Sir/madam, 
+Hi,
 
-I got your contact during my search on the Internet. My name is Mr.Kelvin Davids. I am a manager ofan Internationally reputable bank here in Uk . 
+I've managed to get mtd working on my PXA270 board.  I've used the 
+mainstone port as a template for my board port and was wondering why the 
+static partitions need to be defined twice.  Mainstone has it defined in 
+arch/arm/mach-pxa/mainstone.c and in drivers/mt d/maps/mainstone-flash.c.
 
-I am a Jamaican by birth married with two kids. I am writing to solicit your assistance in the transfer of USD 10,550.000.00 equivalent. This fund is the excess of what my branch in which I am the manger made as profit during the last year. I have already submitted an approved End of the Year report for the year 2005 to my Head Office and they will never know of this Excess. I have since then, placed this amount of USD 10,550.000.00 on a SUSPENCE ACCOUNT without a beneficiary. 
-
-As an officer of the bank, I cannot be directly connected to this money thus I am impelled to request for your assistance to receive this money into your bank account. I intend to part 30% of this fund to you while 70% shall be for me. I do need to stress that there are practically no risk involved in this. The transaction is going to be d! one within the law of the land. All I need from you is to stand as the original depositor of this fund. If you accept this offer, I will appreciate your timely response to this private email address including your telephone number/s. 
-
-With regards, 
-Mr Kelvin Davids.
+Regards,
+Justin.
