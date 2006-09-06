@@ -1,25 +1,23 @@
 Received: from relais.videotron.ca ([24.201.245.36])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GKzJw-0004gR-Ah
-	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 16:28:09 +0100
-Received: from xanadu.home ([74.56.106.175]) by VL-MO-MR002.ip.videotron.ca
+	id 1GL0aH-0001Ti-1E
+	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 17:49:09 +0100
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
 	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J5600AJ5G4IWV50@VL-MO-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 11:24:18 -0400 (EDT)
-Date: Wed, 06 Sep 2006 11:24:18 -0400 (EDT)
+	with ESMTP id <0J56006PUJVDJKO6@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 12:45:14 -0400 (EDT)
+Date: Wed, 06 Sep 2006 12:45:13 -0400 (EDT)
 From: Nicolas Pitre <nico@cam.org>
-Subject: Re: Intel P30, locked sectors?
-In-reply-to: <44FEE692.9020900@redfish-group.com>
+Subject: Re: Static partitions
+In-reply-to: <44FEE74B.3040907@redfish-group.com>
 To: Justin Clacherty <justin@redfish-group.com>
-Message-id: <Pine.LNX.4.64.0609061122510.18635@xanadu.home>
+Message-id: <Pine.LNX.4.64.0609061238340.18635@xanadu.home>
 MIME-version: 1.0
 Content-type: TEXT/PLAIN; charset=US-ASCII
 Content-transfer-encoding: 7BIT
-References: <44FED214.7090309@kernelconcepts.de>
-	<Pine.LNX.4.64.0609061024300.18635@xanadu.home>
-	<44FEE692.9020900@redfish-group.com>
-Cc: Nils Faerber <nils.faerber@kernelconcepts.de>,
-	linux-mtd@lists.infradead.org
+References: <44FA57FD.8070003@redfish-group.com>
+	<44FEE74B.3040907@redfish-group.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,19 +29,29 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 On Thu, 7 Sep 2006, Justin Clacherty wrote:
 
-> Nicolas Pitre wrote:
-> > Before the first write attempt you need to run flash-unlock on the
-> > corresponding flash partition.
+> Justin Clacherty wrote:
+> > Hi,
+> >
+> > I've managed to get mtd working on my PXA270 board.  I've used the 
+> > mainstone port as a template for my board port and was wondering why the 
+> > static partitions need to be defined twice.  Mainstone has it defined in 
+> > arch/arm/mach-pxa/mainstone.c and in drivers/mt d/maps/mainstone-flash.c.
+> >
+> > Regards,
+> > Justin.
 > >   
-> Will this work if it's your rootfs?  ie. it will need to be mounted and 
-> possibly written to before you get to the point where you can run 
-> flash-unlock. 
+> 
+> Asking again due to lack of interest :)
+> 
+> Nicolas, you wouldn't happen to know the answer to this would you?
 
-Up to you to manage for flash-unlock to be executed before writes.
+There was a patch in the CVS to remove any partition definitions from 
+mainstone-flash.c and lubbock-flash.c, merge those two into a generic 
+pxa-flash.c and have it get the partition information in a generic way 
+from each board specific file.
 
-> I guess if you mount ro then there won't be any writes.
-
-Yes, And then you can remount rw.
+The board specific file part is in mainline now.  Somehow the other part 
+hasn't been carried over to the MTD GIT tree yet.
 
 
 Nicolas
