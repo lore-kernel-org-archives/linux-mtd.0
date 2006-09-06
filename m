@@ -1,23 +1,24 @@
-Received: from nf-out-0910.google.com ([64.233.182.185])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GKlmt-0005Rh-St
-	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 02:01:08 +0100
-Received: by nf-out-0910.google.com with SMTP id l37so122053nfc
+Received: from outbound.mailhop.org ([63.208.196.171])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GKsxK-000263-P7
+	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 09:40:23 +0100
+Received: from 84-216-44-250.sprayadsl.telenor.se ([84.216.44.250]
+	helo=arbetsmyra.dyndns.org)
+	by outbound.mailhop.org with esmtpa (Exim 4.51) id 1GKsw2-000NoB-UN
+	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 04:39:03 -0400
+Received: from there (sol-int [10.0.2.1])
+	by arbetsmyra.dyndns.org (Postfix) with SMTP id B4DE55E7
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Sep 2006 18:00:07 -0700 (PDT)
-Message-ID: <625fc13d0609051800w5d4b114cp5e2517ca683708ee@mail.gmail.com>
-Date: Tue, 5 Sep 2006 20:00:06 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "David Howells" <dhowells@redhat.com>
-Subject: Re: [PATCH] Make MTD chardev mmap available under some circumstances
-In-Reply-To: <24712.1157483886@warthog.cambridge.redhat.com>
+	Wed,  6 Sep 2006 10:38:58 +0200 (CEST)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+From: Ronny L Nilsson <rln-mtd@arbetsmyra.dyndns.org>
+To: linux-mtd@lists.infradead.org
+Subject: Is NAND MTD preemption safe?
+Date: Wed, 6 Sep 2006 10:37:58 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <24712.1157483886@warthog.cambridge.redhat.com>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Message-Id: <20060906083858.B4DE55E7@arbetsmyra.dyndns.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,77 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/5/06, David Howells <dhowells@redhat.com> wrote:
->
-> Make it possible to mmap MTD chardevs directly or by copy on a NOMMU system.
 
-Why would you want to do this?  I'm just curious.
+Hi
+I have a question about MTD, NAND and race conditions. Basically I'm 
+wondering if the NAND support in MTD is preemption safe?
 
+Scenario:
+1) A NAND chip is splited in multiple partitions.
 
-> +/*
-> + * Allow NOMMU mmap() to directly map the device (if not NULL)
-> + * - return the address to which the offset maps
-> + * - return -ENOSYS to indicate refusal to do the mapping
+2) On each partition (/dev/mtdblockX) is a filesystem.
 
-Where do you actually do the -ENOSYS part?  I think that comment
-belongs to the actual mtd_get_unmapped_area call in mtdchar.c, no?
-
-> +/*
-> + * try to determine where a shared mapping can be made
-> + * - only supported for NOMMU at the moment (MMU can't doesn't copy private
-> + *   mappings)
-> + */
-> +#ifndef CONFIG_MMU
-> +static unsigned long mtd_get_unmapped_area(struct file *file,
-> +                                          unsigned long addr,
-> +                                          unsigned long len,
-> +                                          unsigned long pgoff,
-> +                                          unsigned long flags)
-> +{
-> +       struct mtd_file_info *mfi = file->private_data;
-> +       struct mtd_info *mtd = mfi->mtd;
-> +
-> +       if (mtd->get_unmapped_area) {
-> +               unsigned long offset;
-> +
-> +               if (addr != 0)
-> +                       return (unsigned long) -EINVAL;
-> +
-> +               if (len > mtd->size || pgoff >= (mtd->size >> PAGE_SHIFT))
-> +                       return (unsigned long) -EINVAL;
-> +
-> +               offset = pgoff << PAGE_SHIFT;
-> +               if (offset > mtd->size - len)
-> +                       return (unsigned long) -EINVAL;
-> +
-> +               return mtd->get_unmapped_area(mtd, len, offset, flags);
-> +       }
-> +
-> +       /* can't map directly */
-> +       return (unsigned long) -ENOSYS;
-> +}
-> +#endif
-
-Could we do something like:
-
-#else
-#define mtd_get_unmapped_area (NULL);
-
-which would prevent the ugly ifdef in the mtd_fops structure?
-
->  static struct file_operations mtd_fops = {
->         .owner          = THIS_MODULE,
->         .llseek         = mtd_lseek,
-> @@ -771,6 +864,10 @@ static struct file_operations mtd_fops =
->         .ioctl          = mtd_ioctl,
->         .open           = mtd_open,
->         .release        = mtd_close,
-> +       .mmap           = mtd_mmap,
-> +#ifndef CONFIG_MMU
-> +       .get_unmapped_area = mtd_get_unmapped_area,
-> +#endif
-
-See above.
+3) If one filesystem performs a write in the NAND chip, will the other 
+filesystems temporarily be lock out? If preemption is enabled in the 
+kernel I suspect races might otherwise occur (since addressing and 
+command cycles of NANDS are quite lengthy).
 
 
-josh
+Regards
+/Ronny Nilsson
