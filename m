@@ -1,19 +1,21 @@
-Received: from www.kernelconcepts.de ([212.60.202.195]
-	helo=mail.kernelconcepts.de)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GKyFE-0005cr-AI
-	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 15:19:13 +0100
-Message-ID: <44FED8D4.6080505@kernelconcepts.de>
-Date: Wed, 06 Sep 2006 16:19:00 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
-MIME-Version: 1.0
-To: Justin Clacherty <justin@redfish-group.com>
+Received: from relais.videotron.ca ([24.201.245.36])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GKyPO-0003Tc-72
+	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 15:29:43 +0100
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
+	with ESMTP id <0J56003L2DF4VVB0@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 10:25:52 -0400 (EDT)
+Date: Wed, 06 Sep 2006 10:25:52 -0400 (EDT)
+From: Nicolas Pitre <nico@cam.org>
 Subject: Re: Intel P30, locked sectors?
+In-reply-to: <44FED214.7090309@kernelconcepts.de>
+To: Nils Faerber <nils.faerber@kernelconcepts.de>
+Message-id: <Pine.LNX.4.64.0609061024300.18635@xanadu.home>
+MIME-version: 1.0
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Content-transfer-encoding: 7BIT
 References: <44FED214.7090309@kernelconcepts.de>
-	<44FED831.60704@redfish-group.com>
-In-Reply-To: <44FED831.60704@redfish-group.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,32 +26,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Justin Clacherty schrieb:
-> Nils Faerber wrote:
->> I had hoped that the P30 chips would be supported now, but it seems they
->> are not fully. How can I unlock the sectors, if that is really the issue
->> here.
-> P30 flash is supported in that it supports CFI.  You can read and write
-> to it as long as it's unlocked.  CFI does not support automatic
-> unlocking, it assumes if it's locked, it's locked for a reason.  The
-> bootloader has to ensure that the sectors occupied by the rootfs are
-> unlocked before mounting the filesystem.  We're using P30 here without
-> problems.
+On Wed, 6 Sep 2006, Nils Faerber wrote:
 
-Hmm... OK.
-Just in theory, can one write to a locked sector?
+> Hi!
+> I now did a kernel update (in fact, I started over with a new kernel)
+> and am now using 2.6.18-RC6 from kernel.org.
+> 
+> I have read access to the flash, rootfs is mounted correctly but at
+> first write attempt I get:
+> 
+> [42949375.150000] Freeing init memory: 96K
+> [42949376.480000] Erase at 0x00cc0000 failed immediately: -EROFS. Is the
+> sector locked?
 
-I ask because I flashed the very same rootfs to the chip using the
-bootloader. The bootloader, which is BLOB BTW, seems to be able to write
-to the chips and the contents written also seems to be OK (since I can
-boot and mount the rootfs).
+Before the first write attempt you need to run flash-unlock on the 
+corresponding flash partition.
 
-> Justin.
-Cheers
-  nils faerber
 
--- 
-kernel concepts GbR      Tel: +49-271-771091-12
-Dreisbachstr. 24         Fax: +49-271-771091-19
-D-57250 Netphen          Mob: +49-176-21024535
---
+Nicolas
