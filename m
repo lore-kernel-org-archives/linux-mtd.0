@@ -1,23 +1,15 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GL0aH-0001Ti-1E
-	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 17:49:09 +0100
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0J56006PUJVDJKO6@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 12:45:14 -0400 (EDT)
-Date: Wed, 06 Sep 2006 12:45:13 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: Static partitions
-In-reply-to: <44FEE74B.3040907@redfish-group.com>
-To: Justin Clacherty <justin@redfish-group.com>
-Message-id: <Pine.LNX.4.64.0609061238340.18635@xanadu.home>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <44FA57FD.8070003@redfish-group.com>
-	<44FEE74B.3040907@redfish-group.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from web30415.mail.mud.yahoo.com ([68.142.201.238])
+	by pentafluge.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GL4ZH-0006X2-CT
+	for linux-mtd@lists.infradead.org; Wed, 06 Sep 2006 22:04:20 +0100
+Message-ID: <20060906205635.66530.qmail@web30415.mail.mud.yahoo.com>
+Date: Wed, 6 Sep 2006 13:56:35 -0700 (PDT)
+From: Weiguang Shi <wgshizz@yahoo.com>
+Subject: flash_to_file() and file_to_flash() in mtd_debug.c
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,31 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 7 Sep 2006, Justin Clacherty wrote:
+Hi,
 
-> Justin Clacherty wrote:
-> > Hi,
-> >
-> > I've managed to get mtd working on my PXA270 board.  I've used the 
-> > mainstone port as a template for my board port and was wondering why the 
-> > static partitions need to be defined twice.  Mainstone has it defined in 
-> > arch/arm/mach-pxa/mainstone.c and in drivers/mt d/maps/mainstone-flash.c.
-> >
-> > Regards,
-> > Justin.
-> >   
-> 
-> Asking again due to lack of interest :)
-> 
-> Nicolas, you wouldn't happen to know the answer to this would you?
+I couldn't connect to the mail archive. So please forgive me if this
+has been asked before. 
 
-There was a patch in the CVS to remove any partition definitions from 
-mainstone-flash.c and lubbock-flash.c, merge those two into a generic 
-pxa-flash.c and have it get the partition information in a generic way 
-from each board specific file.
+Why the two functions flash_to_file() and file_to_flash() in
+mtd_debug.c?
+I mean is it possible to do the flash device read/write using dd?
 
-The board specific file part is in mainline now.  Somehow the other part 
-hasn't been carried over to the MTD GIT tree yet.
+Thank you.
+Wei
 
-
-Nicolas
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
