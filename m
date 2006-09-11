@@ -1,19 +1,23 @@
-Received: from wohnheim.fh-wedel.de ([213.39.233.138])
+Received: from webmail12.mail.yandex.net ([213.180.223.102])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GMXT5-0005NE-Is
-	for linux-mtd@lists.infradead.org; Sun, 10 Sep 2006 23:08:00 +0100
-Date: Mon, 11 Sep 2006 00:04:42 +0200
-From: =?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
-To: Felix Joussein <felix@joussein.com>
-Subject: Re: Overrun end of disk in cache redahead
-Message-ID: <20060910220442.GA10482@wohnheim.fh-wedel.de>
-References: <45012439.5090001@joussein.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <45012439.5090001@joussein.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1GMf4i-0002Dl-Tk
+	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 07:15:22 +0100
+Date: Mon, 11 Sep 2006 10:11:18 +0400 (MSD)
+From: "dedekind" <dedekind@yandex.ru>
+Sender: dedekind@yandex.ru
+Message-Id: <4504FE06.000003.08700@webmail12.yandex.ru>
+MIME-Version: 1.0
+Errors-To: dedekind@yandex.ru
+To: dwmw2@infradead.org
+Subject: Re: State of UBI
+In-Reply-To: <1157910273.2977.175.camel@pmac.infradead.org>
+References: <625fc13d0609091922m42a1caeagfa4e87bc18f2a8d6@mail.gmail.com>
+	<1157910273.2977.175.camel@pmac.infradead.org>
+Content-Type: text/plain;
+  charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+Cc: dedekind@yandex.ru, jwboyer@gmail.com, linux-mtd@lists.infradead.org
+Reply-To: dedekind@yandex.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,115 +27,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 8 September 2006 10:05:13 +0200, Felix Joussein wrote:
+>On Sun, 2006-09-10 at 21:00 +0400, dedekind wrote:
+>> Full analogy with LVM. It'd be strange not to follow this model.
 >
-> [...]
-> Then I get 3 times "Overrun end of disk in cache redahead"
-> [...]
-> What am I doing wrong?
+>Show me the changes that were made to ext3 to make it capable of
+>mounting these new "LVM devices" where previously it could only do block
+>devices.
 
-Nothing, in principle.  Looks like the readahead code is causing only
-trouble for questionable gains.  Can you try the patch below?
+I love your tricky questions :-)
 
-Jörn
+Ok, the analogy is indeed not full and stops here. LVM does not change
+semantics - you still have block devices with 2 operation - read and write.
+I noted this already.
 
--- 
-If you're willing to restrict the flexibility of your approach,
-you can almost always do something better.
--- John Carmack
+In case of UBI we do have meny semantical changes.
 
-Remove readahead from block2mtd.
+* UBI volumes are bad block free even if the underlying flash may have them
+  (like NAND). UBI hides this completely.
+* UBI volumes wear are free, i.e., you may use the same eraseblock as much as
+  you want and the wear will anyway be distributed over whole flash.
+* erase is always asynchronous, i.e., you call erase and it is scheduled for
+  erasure in context of the UBI background task.
+* we have eraseblock type hints which are useful to let UBI know which
+  eraseblock it should pick (with low erase couter, or high, or medium).
+  This is not present in MTD.
+* UBI maintains volume update operation. This is absent in MTD.
+* UBI maintains GC hints. They are useful for a file system to to avoid
+  moving eraseblock which are going to be GCed anyway. This is not present
+  in MTD. And this is not implemented yet. But is planned.
+* UBI maintains atomic eraseblock change operation. This means you may
+  change the contents of a LEB atomically. MTD is devoid of this nice
+  property which is extremely useful for FSes (e.g., you may garbage
+  collect without having a spare logical eraseblock). This is not yet
+  implemented but it is easy to implement and it is panned.
+* UBI volumes may be dynamically created, deleted and resized. MTD
+  assumes only static stuff.
 
-Signed-off-by: Jörn Engel <joern@wohnheim.fh-wedel.de>
----
+I believe the list is not full. New UBI-oriented software will certainly
+make use of these properties and won't work on top of MTD.
 
- drivers/mtd/devices/block2mtd.c |   55 ++--------------------------------------
- 1 file changed, 4 insertions(+), 51 deletions(-)
+For example, JFFS3 assumes that it does not have to think about
+wear-levelling. And it makes no sense to use it on top of MTD. It is
+UBI-oriented. And it needs only native UBI interface.
 
---- slab/drivers/mtd/devices/block2mtd.c~block2mtd	2006-08-11 13:03:22.000000000 +0200
-+++ slab/drivers/mtd/devices/block2mtd.c	2006-09-11 00:00:26.000000000 +0200
-@@ -39,56 +39,9 @@ struct block2mtd_dev {
- static LIST_HEAD(blkmtd_device_list);
- 
- 
--#define PAGE_READAHEAD 64
--static void cache_readahead(struct address_space *mapping, int index)
--{
--	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
--	int i, pagei;
--	unsigned ret = 0;
--	unsigned long end_index;
--	struct page *page;
--	LIST_HEAD(page_pool);
--	struct inode *inode = mapping->host;
--	loff_t isize = i_size_read(inode);
--
--	if (!isize) {
--		INFO("iSize=0 in cache_readahead\n");
--		return;
--	}
--
--	end_index = ((isize - 1) >> PAGE_CACHE_SHIFT);
--
--	read_lock_irq(&mapping->tree_lock);
--	for (i = 0; i < PAGE_READAHEAD; i++) {
--		pagei = index + i;
--		if (pagei > end_index) {
--			INFO("Overrun end of disk in cache readahead\n");
--			break;
--		}
--		page = radix_tree_lookup(&mapping->page_tree, pagei);
--		if (page && (!i))
--			break;
--		if (page)
--			continue;
--		read_unlock_irq(&mapping->tree_lock);
--		page = page_cache_alloc_cold(mapping);
--		read_lock_irq(&mapping->tree_lock);
--		if (!page)
--			break;
--		page->index = pagei;
--		list_add(&page->lru, &page_pool);
--		ret++;
--	}
--	read_unlock_irq(&mapping->tree_lock);
--	if (ret)
--		read_cache_pages(mapping, &page_pool, filler, NULL);
--}
--
--
--static struct page* page_readahead(struct address_space *mapping, int index)
-+static struct page *readpage(struct address_space *mapping, int index)
- {
- 	filler_t *filler = (filler_t*)mapping->a_ops->readpage;
--	cache_readahead(mapping, index);
- 	return read_cache_page(mapping, index, filler, NULL);
- }
- 
-@@ -104,7 +57,7 @@ static int _block2mtd_erase(struct block
- 	u_long *max;
- 
- 	while (pages) {
--		page = page_readahead(mapping, index);
-+		page = readpage(mapping, index);
- 		if (!page)
- 			return -ENOMEM;
- 		if (IS_ERR(page))
-@@ -174,7 +127,7 @@ static int block2mtd_read(struct mtd_inf
- 		len = len - cpylen;
- 
- 		//      Get page
--		page = page_readahead(dev->blkdev->bd_inode->i_mapping, index);
-+		page = readpage(dev->blkdev->bd_inode->i_mapping, index);
- 		if (!page)
- 			return -ENOMEM;
- 		if (IS_ERR(page))
-@@ -213,7 +166,7 @@ static int _block2mtd_write(struct block
- 		len = len - cpylen;
- 
- 		//	Get page
--		page = page_readahead(mapping, index);
-+		page = readpage(mapping, index);
- 		if (!page)
- 			return -ENOMEM;
- 		if (IS_ERR(page))
+Nevertheless, having MTD interface is not a big geal. We may make gluebi
+a part of UBI. Then you'll have native interface and MTD-like interfave for
+legacy software.
+
+
+VS. my changes in JFFS2 which make it usable on top of UBI. As soon as we
+have gluebi we can forget about it.
+
+Artem.
