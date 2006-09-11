@@ -1,16 +1,18 @@
 Received: from www.kernelconcepts.de ([212.60.202.195]
 	helo=mail.kernelconcepts.de)
 	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GMipP-0007jL-3e
-	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 11:15:48 +0100
-Message-ID: <45053680.1060206@kernelconcepts.de>
-Date: Mon, 11 Sep 2006 12:12:16 +0200
+	id 1GMjEU-00065x-UW
+	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 11:41:43 +0100
+Message-ID: <45053D5C.5020005@kernelconcepts.de>
+Date: Mon, 11 Sep 2006 12:41:32 +0200
 From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
 To: Felix Joussein <felix@joussein.com>
 Subject: Re: howto jffs2 + mtd
 References: <450534E0.2000405@joussein.com>
-In-Reply-To: <450534E0.2000405@joussein.com>
+	<45053680.1060206@kernelconcepts.de>
+	<45053A19.5050801@joussein.com>
+In-Reply-To: <45053A19.5050801@joussein.com>
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -24,40 +26,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Felix Joussein schrieb:
-> Hello list,
-> 
-> I would like to create a jffs2 filesystem on to an ordinary fresh- out 
-> of the box 512 Kingston Datatraveller USB Stick.
-> As I later want to boot from it, I performed the following steps:
-> 
-> fdisk /dev/sda
-> create 2 partitions
-> sda1, sda2
-> 
-> syslinux /dev/sda1
-> mount /dev/sda1 /mnt
-> cp $allYouNeedToBoot /dev/sda1
-> umount /mnt
-> 
-> Here now the mtd part:
-> modprobe block2mtd
-> echo "/dev/sda2" > /sys/module/block2mtd/parameters/block2mtd
-> cat /proc/mtd
-> mtd0: 0f480000 00001000 "block2mtd: /dev/sda2"
-> 
-> now I read in the internet 2 different commands:
-> either flash_eraseall -j /dev/mtd0
-> or flash_erase /dev/mtd0 0 00001000
+>> You do not need that on the mtdblock device. This is only useful on real
+>> flash devices, i.e. physicall mapped flash devices, not USB sticks or CF
+>> cards.
+> So, how else do I get a jffs2 filesystem on my usb or cf?
 
-You do not need that on the mtdblock device. This is only useful on real
-flash devices, i.e. physicall mapped flash devices, not USB sticks or CF
-cards.
+Oh, sorry, I should have been more precise.
+You do not need the flash_erase or flash_erase_all. The rest of the
+process is the same.
 
-[...]
-> I would be very thankfull, if anybody could help me with this.
+> As I understand any other filesystem would shredder my usb-stick after a
+> approx. 1 mio writes?
 
-> Thanks,
-> Felix Joussein
+But anyway, JFFS2 is not a very good idea on a USB stick. The problem is
+that the stick's flash controller already does wear levelling and error
+correction for you, transparantly.
+With JFFS2 you might end up with doing the process twice which might
+result in even worse performance than with a "normal" filesystem, like EXT2.
+You should be pretty safe with an ext2 if you mount it with "noatime"
+option and if possible, read-only.
+
+> Thanks again,
+> Felix
 Cheers
   nils
 
