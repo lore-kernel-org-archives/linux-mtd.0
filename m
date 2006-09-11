@@ -1,21 +1,24 @@
-Received: from www.kernelconcepts.de ([212.60.202.195]
-	helo=mail.kernelconcepts.de)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GMjEU-00065x-UW
-	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 11:41:43 +0100
-Message-ID: <45053D5C.5020005@kernelconcepts.de>
-Date: Mon, 11 Sep 2006 12:41:32 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
+Received: from nf-out-0910.google.com ([64.233.182.187])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GMlkU-0007Oo-Gf
+	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 14:22:57 +0100
+Received: by nf-out-0910.google.com with SMTP id l37so1325058nfc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 11 Sep 2006 06:21:47 -0700 (PDT)
+Message-ID: <625fc13d0609110621p7df16005ua223628f961ad9ab@mail.gmail.com>
+Date: Mon, 11 Sep 2006 08:21:35 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: dedekind@yandex.ru
+Subject: Re: State of UBI
+In-Reply-To: <45052A2E.000002.26611@webmail9.yandex.ru>
 MIME-Version: 1.0
-To: Felix Joussein <felix@joussein.com>
-Subject: Re: howto jffs2 + mtd
-References: <450534E0.2000405@joussein.com>
-	<45053680.1060206@kernelconcepts.de>
-	<45053A19.5050801@joussein.com>
-In-Reply-To: <45053A19.5050801@joussein.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <625fc13d0609091922m42a1caeagfa4e87bc18f2a8d6@mail.gmail.com>
+	<1157962298.2977.193.camel@pmac.infradead.org>
+	<45052A2E.000002.26611@webmail9.yandex.ru>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,34 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Felix Joussein schrieb:
->> You do not need that on the mtdblock device. This is only useful on real
->> flash devices, i.e. physicall mapped flash devices, not USB sticks or CF
->> cards.
-> So, how else do I get a jffs2 filesystem on my usb or cf?
+On 9/11/06, dedekind <dedekind@yandex.ru> wrote:
+> >"A handful of bytes" ought to fit into the spare area, and not take real
+> >data pages at all.
+>
+> It was actually a design decision not to use OOB area and make UBI
+> flash-independent. OBB area size varies, tends to be ECC-only in
+> new NANDs, not large enough for UBI VID header.
 
-Oh, sorry, I should have been more precise.
-You do not need the flash_erase or flash_erase_all. The rest of the
-process is the same.
+Yes, what Artem said.  It's more than a handful of bytes.  The EC
+header and VID headers are both 64 bytes.
 
-> As I understand any other filesystem would shredder my usb-stick after a
-> approx. 1 mio writes?
-
-But anyway, JFFS2 is not a very good idea on a USB stick. The problem is
-that the stick's flash controller already does wear levelling and error
-correction for you, transparantly.
-With JFFS2 you might end up with doing the process twice which might
-result in even worse performance than with a "normal" filesystem, like EXT2.
-You should be pretty safe with an ext2 if you mount it with "noatime"
-option and if possible, read-only.
-
-> Thanks again,
-> Felix
-Cheers
-  nils
-
--- 
-kernel concepts GbR      Tel: +49-271-771091-12
-Dreisbachstr. 24         Fax: +49-271-771091-19
-D-57250 Netphen          Mob: +49-176-21024535
---
+josh
