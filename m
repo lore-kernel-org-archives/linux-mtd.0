@@ -1,16 +1,23 @@
+Received: from webmail9.mail.yandex.net ([213.180.223.100])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GMi11-00026S-0m
+	for linux-mtd@lists.infradead.org; Mon, 11 Sep 2006 10:23:43 +0100
+Date: Mon, 11 Sep 2006 13:19:42 +0400 (MSD)
+From: "dedekind" <dedekind@yandex.ru>
+Sender: dedekind@yandex.ru
+Message-Id: <45052A2E.000002.26611@webmail9.yandex.ru>
+MIME-Version: 1.0
+Errors-To: dedekind@yandex.ru
+To: dwmw2@infradead.org
 Subject: Re: State of UBI
-From: David Woodhouse <dwmw2@infradead.org>
-To: Josh Boyer <jwboyer@gmail.com>
-In-Reply-To: <625fc13d0609100532n58933486l3f66715c38172cd5@mail.gmail.com>
+In-Reply-To: <1157962298.2977.193.camel@pmac.infradead.org>
 References: <625fc13d0609091922m42a1caeagfa4e87bc18f2a8d6@mail.gmail.com>
-	<4503D10E.000001.07116@webmail12.yandex.ru>
-	<625fc13d0609100532n58933486l3f66715c38172cd5@mail.gmail.com>
-Content-Type: text/plain
-Date: Mon, 11 Sep 2006 09:11:38 +0100
-Message-Id: <1157962298.2977.193.camel@pmac.infradead.org>
-Mime-Version: 1.0
+	<1157962298.2977.193.camel@pmac.infradead.org>
+Content-Type: text/plain;
+  charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org
+Cc: jwboyer@gmail.com, linux-mtd@lists.infradead.org
+Reply-To: dedekind@yandex.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +27,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-09-10 at 07:32 -0500, Josh Boyer wrote:
-> I'll politely disagree here.  UBI _does_ need this on NAND to be
-> really usable.  Otherwise you eat 2 pages per block for UBI metadata,
-> and that is quite a bit of overhead for a handful of bytes in the
-> structures.
+>"A handful of bytes" ought to fit into the spare area, and not take real
+>data pages at all.
 
-"A handful of bytes" ought to fit into the spare area, and not take real
-data pages at all.
+It was actually a design decision not to use OOB area and make UBI
+flash-independent. OBB area size varies, tends to be ECC-only in
+new NANDs, not large enough for UBI VID header.
 
--- 
-dwmw2
+Artem.
