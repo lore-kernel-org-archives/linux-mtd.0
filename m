@@ -1,16 +1,16 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GNspE-0005a6-DK
-	for linux-mtd@lists.infradead.org; Thu, 14 Sep 2006 16:08:25 +0100
-Date: Thu, 14 Sep 2006 16:29:26 +0200
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: Andrew Morton <akpm@osdl.org>
-Subject: [-mm patch 0/4] AVR32 MTD: Introduction
-Message-ID: <20060914162926.6c117b36@cad-250-152.norway.atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from web30505.mail.mud.yahoo.com ([68.142.200.118])
+	by pentafluge.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GNu9V-0008B8-Kj
+	for linux-mtd@lists.infradead.org; Thu, 14 Sep 2006 17:33:26 +0100
+Message-ID: <20060914163219.74505.qmail@web30505.mail.mud.yahoo.com>
+Date: Thu, 14 Sep 2006 09:32:19 -0700 (PDT)
+From: Justin Treon <justin_treon@yahoo.com>
+Subject: Re: JFFS2 ECC options
+To: Davide CASCONE <davide.cascone@st.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <000f01c6d0e8$145e1ce0$d204960a@nap.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +20,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Andrew and MTD people,
 
-This patchset adds the necessary drivers and infrastructure to access
-the external flash on the ATSTK1000 board through the MTD subsystem.
+> I'm working with JFFS2 on a NAND device. In order to
+> disable the software ECC is it enough to set the mtd
+> field "nand.eccmode" to "NAND_ECC_NONE"? 
+> If I do this, I have some CRC errors if JFFS2 file
+> system includes a bad block. Is it right? Does the
+> CRC check depend on the ECC options?
+> 
+> In order to use the summary support, is it enough to
+> set the macro "CONFIG_JFFS2_SUMMARY" in the file
+> ".config"? Do I have to re-make the file system
+> image (that I create using the mkfs.jffs2 utility)
+> in order to use it with the summary support?
+> 
 
-With this stuff in place, it will be possible to use a jffs2
-filesystem stored in the external flash as a root filesystem. It might
-also be possible to update the boot loader if you drop the write
-protection of partition 0.
+I have no idea about your first question.  You may
+want to ask it again.  
 
-Andrew, can you apply this to -mm? They probably don't make sense for
-the MTD tree until the rest of the AVR32 patches are merged into
-mainline, but I'd really appreciate if someone could have a quick look
-to see if I did something stupid.
+Regarding summary support I have never been able to
+make a jffs2 filing system that used summary support
+with the mkfs.jffs2 tool that worked.  I create the
+filing system with summary support on an empty chip
+and then transfer the files. Please let me knhwo if
+you get it to work with the mkfs.jffs2 tool.
 
-This also needs two patches I've submitted earlier (included in
-git-mtd.patch) in order to work, but it should still apply without
-them. For the record, these are:
-  MTD: Add lock/unlock operations for Atmel AT49BV6416
-  MTD: Convert Atmel PRI information to AMD format
-
-This patchset includes the following patches:
-
-  AVR32 MTD: Static Memory Controller driver
-  AVR32 MTD: Define struct flash_platform_data
-  AVR32 MTD: Mapping driver for the ATSTK1000 board
-  AVR32 MTD: AT49BV6416 platform device for atstk1000
-
-And the combined diffstat looks like this:
-
- arch/avr32/boards/atstk1000/atstk1002.c |   46 ++++++++
- arch/avr32/mach-at32ap/Makefile         |    2 
- arch/avr32/mach-at32ap/at32ap7000.c     |   10 +
- arch/avr32/mach-at32ap/hsmc.c           |  164 +++++++++++++++++++++++++++++
- arch/avr32/mach-at32ap/hsmc.h           |  169 ++++++++++++++++++++++++++++++
- drivers/mtd/maps/Kconfig                |   10 +
- drivers/mtd/maps/Makefile               |    1 
- drivers/mtd/maps/atstk1000.c            |  179 ++++++++++++++++++++++++++++++++
- include/asm-avr32/arch-at32ap/board.h   |    7 +
- include/asm-avr32/arch-at32ap/smc.h     |   60 ++++++++++
- 10 files changed, 647 insertions(+), 1 deletion(-)
-
-Best regards,
-Haavard
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
