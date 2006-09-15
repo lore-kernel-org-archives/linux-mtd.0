@@ -1,16 +1,17 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GOFTG-0007Xx-El
-	for linux-mtd@lists.infradead.org; Fri, 15 Sep 2006 16:19:15 +0100
-Date: Fri, 15 Sep 2006 17:19:31 +0200
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: Fix bug in fixup_convert_atmel_pri
-Message-ID: <20060915171931.2f38bca6@cad-250-152.norway.atmel.com>
+Subject: Re: [-mm patch 2/3] AVR32 MTD: Unlock flash if necessary (try 2)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Haavard Skinnemoen <hskinnemoen@atmel.com>
+In-Reply-To: <20060915163711.10d19763@cad-250-152.norway.atmel.com>
+References: <20060915163102.73bf171d@cad-250-152.norway.atmel.com>
+	<20060915163554.4f326bf6@cad-250-152.norway.atmel.com>
+	<20060915163711.10d19763@cad-250-152.norway.atmel.com>
+Content-Type: text/plain
+Date: Fri, 15 Sep 2006 16:32:26 +0100
+Message-Id: <1158334346.24527.94.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Josh Boyer <jwboyer@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The memset() in fixup_convert_atmel_pri is supposed to zero out
-everything except the first 5 bytes in *extp, but it ends up zeroing
-out something way outside the struct instead. Fix this potentially
-dangerous code by casting the pointer to char * before doing
-arithmetic.
+On Fri, 2006-09-15 at 16:37 +0200, Haavard Skinnemoen wrote:
+> If a cfi_cmdset_0002 fixup installs an unlock() operation, use it
+> to unlock the whole flash after the erase regions have been set up.
 
-Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
----
- drivers/mtd/chips/cfi_cmdset_0002.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There are cmdset_0001 chips which have this affliction too. I was
+thinking of having a flag MTD_STUPID_LOCK which you set when you
+determine that it's one of these chips, then add_mtd_device() can do the
+unlocking... or add_mtd_partitions() can do it but _only_ for writable
+partitions.
 
-Index: linux-2.6.18-rc6-mm2/drivers/mtd/chips/cfi_cmdset_0002.c
-===================================================================
---- linux-2.6.18-rc6-mm2.orig/drivers/mtd/chips/cfi_cmdset_0002.c	2006-09-15 14:39:22.000000000 +0200
-+++ linux-2.6.18-rc6-mm2/drivers/mtd/chips/cfi_cmdset_0002.c	2006-09-15 14:39:40.000000000 +0200
-@@ -175,7 +175,7 @@ static void fixup_convert_atmel_pri(stru
- 	struct cfi_pri_atmel atmel_pri;
- 
- 	memcpy(&atmel_pri, extp, sizeof(atmel_pri));
--	memset(extp + 5, 0, sizeof(*extp) - 5);
-+	memset((char *)extp + 5, 0, sizeof(*extp) - 5);
- 
- 	if (atmel_pri.Features & 0x02)
- 		extp->EraseSuspend = 2;
+-- 
+dwmw2
