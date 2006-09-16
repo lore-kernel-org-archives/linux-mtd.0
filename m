@@ -1,17 +1,17 @@
-Received: from pool-72-70-203-176.sctnpa.east.verizon.net ([72.70.203.176]
-	helo=MILLER)
+Received: from mx1.myoutlookonline.com ([69.25.74.59])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GOUFq-0007z4-8C
-	for linux-mtd@lists.infradead.org; Sat, 16 Sep 2006 08:06:23 +0100
-Message-ID: <72183717141622.7C0C13E7E9@W3SXLT>
-From: "Carla" <Vaughncortical@rothaarsteig-marathon.de>
+	id 1GOaFd-0008MD-Ax
+	for linux-mtd@lists.infradead.org; Sat, 16 Sep 2006 14:30:33 +0100
+From: "Ajay Jain" <ajain@neomagic.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Just stop envying your neighbor - you can get cred it, too!
-Date: Sat, 16 Sep 2006 03:07:17 -0400
+Subject: OOB Location
+Date: Sat, 16 Sep 2006 18:56:11 +0530
+Message-ID: <077501c6d993$ae99e920$561fa8c0@pcajain>
 MIME-Version: 1.0
 Content-Type: text/plain;
-        charset="Windows-1252"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Reply-To: ajain@neomagic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,4 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is something you always wanted to do, but did not know how. There may be hundreds of things you may want to bu y, but your options are limited by the m oney you have. Or are they?Greatest cre dit deals, low interest, easy application.We got customer satisfaction rate up to 95%!Our valued customers enjoy a fuller, more enjoyable living - with the things they always wanted! http://AVFU.awilit.com/?ncache=1038331
+Hi All, 
+
+I have one question regarding JFFS2 on NAND flash. My hardware has a
+NAND flash controller, which does automatic error correction. It needs
+10 bytes for this, which it stores in the OOB area of each page. JFFS2
+also stores some information in this area, from locations 8-15 for a 512
+page-size NAND flash. Now the issue is that the storage locations as
+used by our hardware and JFFS2 clash. My first hunch is that its a
+quirky hardware. My questions is:
+Is it possible to use some other location for storing file-system
+information. Is there an option, so that JFFS2 can store this
+information in some other area? If yes, how to use this. I saw the
+'mkfs.jffs2' help, it does not expose any such option. 
+
+Thanks.
+Ajay 
+
+ 
