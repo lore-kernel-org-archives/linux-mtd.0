@@ -1,17 +1,17 @@
-Subject: Re: [-mm patch 2/3] AVR32 MTD: Unlock flash if necessary (try 2)
-From: David Woodhouse <dwmw2@infradead.org>
-To: Haavard Skinnemoen <hskinnemoen@atmel.com>
-In-Reply-To: <20060915163711.10d19763@cad-250-152.norway.atmel.com>
-References: <20060915163102.73bf171d@cad-250-152.norway.atmel.com>
-	<20060915163554.4f326bf6@cad-250-152.norway.atmel.com>
-	<20060915163711.10d19763@cad-250-152.norway.atmel.com>
-Content-Type: text/plain
-Date: Fri, 15 Sep 2006 16:32:26 +0100
-Message-Id: <1158334346.24527.94.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from pool-72-70-203-176.sctnpa.east.verizon.net ([72.70.203.176]
+	helo=MILLER)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GOUFq-0007z4-8C
+	for linux-mtd@lists.infradead.org; Sat, 16 Sep 2006 08:06:23 +0100
+Message-ID: <72183717141622.7C0C13E7E9@W3SXLT>
+From: "Carla" <Vaughncortical@rothaarsteig-marathon.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: Just stop envying your neighbor - you can get cred it, too!
+Date: Sat, 16 Sep 2006 03:07:17 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +21,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-09-15 at 16:37 +0200, Haavard Skinnemoen wrote:
-> If a cfi_cmdset_0002 fixup installs an unlock() operation, use it
-> to unlock the whole flash after the erase regions have been set up.
-
-There are cmdset_0001 chips which have this affliction too. I was
-thinking of having a flag MTD_STUPID_LOCK which you set when you
-determine that it's one of these chips, then add_mtd_device() can do the
-unlocking... or add_mtd_partitions() can do it but _only_ for writable
-partitions.
-
--- 
-dwmw2
+There is something you always wanted to do, but did not know how. There may be hundreds of things you may want to bu y, but your options are limited by the m oney you have. Or are they?Greatest cre dit deals, low interest, easy application.We got customer satisfaction rate up to 95%!Our valued customers enjoy a fuller, more enjoyable living - with the things they always wanted! http://AVFU.awilit.com/?ncache=1038331
