@@ -1,17 +1,14 @@
-Received: from pool-71-120-137-53.gdrpmi.dsl-w.verizon.net ([71.120.137.53]
-	helo=D9VBR451)
+Received: from av1.karneval.cz ([81.27.192.123])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GPH3V-0007Xe-9Z
-	for linux-mtd@lists.infradead.org; Mon, 18 Sep 2006 12:12:54 +0100
-Message-ID: <93022245679578.B2633D02B4@U9OFV>
-From: "abrade" <bespeakbotanic@rostar.sk>
-To: <linux-mtd@lists.infradead.org>
-Subject: Huge alert for smart buyers
-Date: Mon, 18 Sep 2006 07:17:15 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+	id 1GPSGp-0003S1-66
+	for linux-mtd@lists.infradead.org; Tue, 19 Sep 2006 00:11:23 +0100
+Message-id: <91292349121291221@karneval.cz>
+Subject: [PATCH 3/4] pmc551 use kzalloc
+From: Jiri Slaby <jirislaby@gmail.com>
+To: Andrew Morton <akpm@osdl.org>
+Date: Tue, 19 Sep 2006 00:47:34 +0200 (CEST)
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Mark Ferrell <mferrell@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,36 +18,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-St ock allert is on!! Tarde date: Monday September 18, 2006 
-Possible breakout coming? Huge news are coming on A UNI!
-This one showing real resilience, real strength. watch AU NI on Monday 
-September 18!
+pmc551 use kzalloc
 
-Americcan Unityy Invvestments, Inc. 
-Smybol: AU NI
-Current Priice: $1.55
-Target Prcie: $3.50
-Markeet CCap: 224.86M
+Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
 
-T ip T op Equit ies September Issue:
+---
+commit 912ff3e53f760cb166988fcd46fc173f8e4c22e7
+tree 8dbed23771076f4cb714ffe9115849150791f13a
+parent f562d858f77d4a83f55cf7fa962cd4dbef3eb0d6
+author Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 00:32:53 +0200
+committer Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 00:32:53 +0200
 
-Make no mistake: Our mission at T ip To p E quities is to sift through the thousands of underperforming companies out there to find the golden needle in the haystack.  The micro-cap diamond that can make you a fortune.  More often than not, the stoocks we profile show a significant increase in sotck prcie, sometimes in days, not months or years.  We have come across what we feel is one of those rare deals that the public has not heard about yet.
+ drivers/mtd/devices/pmc551.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
 
-Introducing: A UNI. Recommenda tion: "s trong b uy" starting on Monday,September 18, 2006.
-
-Own the right sotcks, in the right space, and you could reap a handful of monney-doublers. But if you own the wrong inevstment, you could easly lose 25%-35% or more! 
-
-When this stocck moves - watch out! This is your chance to get in the low. Big watch in play this Monday morning! Place A UNI on your radar's now and reap the benfeits early.
-
-All signs show that AUN I is going to explode! Watch for the news on Monday. AUN I will explode!!!
-
-Conclusion:
-The examples above show the awesome, earning potential of little known companies that explode onto investtor's radar screens; Many of you are already familiar with this. 
-
-Is A UNI poised and positioned to do that for you? Then you may feel the time has come to act... And please watch this one tarde on Monday!
-
-Imagine if the top blew off and the stoock went through the roof...
-
-Watch AUN I like a hawk monday at the open!!
-
-Trdae smart and win with AU NI!!! Go A UNI!!
+diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+index 0ee22ca..5f5de9c 100644
+--- a/drivers/mtd/devices/pmc551.c
++++ b/drivers/mtd/devices/pmc551.c
+@@ -725,23 +725,20 @@ static int __init init_pmc551(void)
+ 		} else
+ 			msize = length;
+ 
+-		mtd = kmalloc(sizeof(struct mtd_info), GFP_KERNEL);
++		mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
+ 		if (!mtd) {
+ 			printk(KERN_NOTICE "pmc551: Cannot allocate new MTD "
+ 				"device.\n");
+ 			break;
+ 		}
+ 
+-		memset(mtd, 0, sizeof(struct mtd_info));
+-
+-		priv = kmalloc(sizeof(struct mypriv), GFP_KERNEL);
++		priv = kzalloc(sizeof(struct mypriv), GFP_KERNEL);
+ 		if (!priv) {
+ 			printk(KERN_NOTICE "pmc551: Cannot allocate new MTD "
+ 				"device.\n");
+ 			kfree(mtd);
+ 			break;
+ 		}
+-		memset(priv, 0, sizeof(*priv));
+ 		mtd->priv = priv;
+ 		priv->dev = PCI_Device;
+ 
