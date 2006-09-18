@@ -1,12 +1,22 @@
-Message-ID: <18888556335263.A210B630FF@A8LPHB>
-From: "abscissae" <ammanberea@rovict.nl>
-To: <linux-parport@lists.infradead.org>
-Subject: bluebird
-Date: Sun, 17 Sep 2006 16:47:13 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1252"
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GPEEL-0001Sv-Ny
+	for linux-mtd@lists.infradead.org; Mon, 18 Sep 2006 09:11:54 +0100
+Date: Mon, 18 Sep 2006 10:12:24 +0200
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [-mm patch 2/3] AVR32 MTD: Unlock flash if necessary (try 2)
+Message-ID: <20060918101224.12508491@cad-250-152.norway.atmel.com>
+In-Reply-To: <1158334346.24527.94.camel@pmac.infradead.org>
+References: <20060915163102.73bf171d@cad-250-152.norway.atmel.com>
+	<20060915163554.4f326bf6@cad-250-152.norway.atmel.com>
+	<20060915163711.10d19763@cad-250-152.norway.atmel.com>
+	<1158334346.24527.94.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,38 +26,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-St ock allert is on!! Tarde date: Monday September 18, 2006 
-Possible breakout coming? Huge news are coming on AUN I!
-This one showing real resilience, real strength. watch AU NI on Monday 
-September 18!
+On Fri, 15 Sep 2006 16:32:26 +0100
+David Woodhouse <dwmw2@infradead.org> wrote:
 
-Ti p To p Eq uities September Issue:
+> On Fri, 2006-09-15 at 16:37 +0200, Haavard Skinnemoen wrote:
+> > If a cfi_cmdset_0002 fixup installs an unlock() operation, use it
+> > to unlock the whole flash after the erase regions have been set up.
+> 
+> There are cmdset_0001 chips which have this affliction too. I was
+> thinking of having a flag MTD_STUPID_LOCK which you set when you
+> determine that it's one of these chips, then add_mtd_device() can do
+> the unlocking... or add_mtd_partitions() can do it but _only_ for
+> writable partitions.
 
-Make no mistake: Our mission at T ip T op Equi ties is to sift through the thousands of underperforming companies out there to find the golden needle in the haystack.  The micro-cap diamond that can make you a fortune.  More often than not, the sttocks we profile show a significant increase in stcok pirce, sometimes in days, not months or years.  We have come across what we feel is one of those rare deals that the public has not heard about yet.
+Ok, so how about something like this? Which other chips should be marked?
 
-Introducing: A UNI. Recommendation: "str ong b uy" starting on Monday,September 18, 2006. 
+---
 
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Subject: [-mm patch 2/3] AVR32 MTD: Unlock flash if necessary
 
-Ammerican UUnity Invesstments, Inc. 
-Sybmol: AUN I
-Current Priice: $1.55
-Target Prcie: $3.50
-Markett CCap: 224.86M
+Introduce the MTD_STUPID_LOCK flag which indicates that the flash chip
+is always locked after power-up, so all sectors need to be unlocked
+before it is usable.
 
+If this flag is set, and the chip provides an unlock() operation,
+mtd_add_device will unlock the whole MTD device if it's writeable. This
+means that non-writeable partitions will stay locked.
 
-Own the right stokcs, in the right space, and you could reap a handful of moneey-doublers. But if you own the wrong invetsment, you could easly lose 25%-35% or more! 
+Set MTD_STUPID_LOCK in fixup_use_atmel_lock() so that these chips will
+work as expected.
 
-When this stoock moves - watch out! This is your chance to get in the low. Big watch in play this Monday morning! Place A UNI on your radar's now and reap the bneefits early.
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ drivers/mtd/chips/cfi_cmdset_0002.c |    1 +
+ drivers/mtd/mtdcore.c               |   10 ++++++++++
+ include/mtd/mtd-abi.h               |    1 +
+ 3 files changed, 12 insertions(+)
 
-All signs show that A UNI is going to explode! Watch for the news on Monday. AU NI will explode!!!
-
-Conclusion:
-The examples above show the awesome, earning potential of little known companies that explode onto invvestor's radar screens; Many of you are already familiar with this. 
-
-Is AU NI poised and positioned to do that for you? Then you may feel the time has come to act... And please watch this one trdae on Monday!
-
-Imagine if the top blew off and the stockk went through the roof...
-
-Watch AU NI like a hawk monday at the open!!
-
-Tarde smart and win with AUN I!!! Go AUN I!!
+Index: linux-2.6.18-rc6-mm2/drivers/mtd/chips/cfi_cmdset_0002.c
+===================================================================
+--- linux-2.6.18-rc6-mm2.orig/drivers/mtd/chips/cfi_cmdset_0002.c	2006-09-18 09:43:02.000000000 +0200
++++ linux-2.6.18-rc6-mm2/drivers/mtd/chips/cfi_cmdset_0002.c	2006-09-18 10:02:31.000000000 +0200
+@@ -212,6 +212,7 @@ static void fixup_use_atmel_lock(struct 
+ {
+ 	mtd->lock = cfi_atmel_lock;
+ 	mtd->unlock = cfi_atmel_unlock;
++	mtd->flags |= MTD_STUPID_LOCK;
+ }
+ 
+ static struct cfi_fixup cfi_fixup_table[] = {
+Index: linux-2.6.18-rc6-mm2/drivers/mtd/mtdcore.c
+===================================================================
+--- linux-2.6.18-rc6-mm2.orig/drivers/mtd/mtdcore.c	2006-09-18 09:36:56.000000000 +0200
++++ linux-2.6.18-rc6-mm2/drivers/mtd/mtdcore.c	2006-09-18 10:03:24.000000000 +0200
+@@ -57,6 +57,16 @@ int add_mtd_device(struct mtd_info *mtd)
+ 			mtd->index = i;
+ 			mtd->usecount = 0;
+ 
++			/* Some chips always power up locked. Unlock them now */
++			if ((mtd->flags & MTD_WRITEABLE)
++			    && (mtd->flags & MTD_STUPID_LOCK) && mtd->unlock) {
++				if (mtd->unlock(mtd, 0, mtd->size))
++					printk(KERN_WARNING
++					       "%s: unlock failed, "
++					       "writes may not work\n",
++					       mtd->name);
++			}
++
+ 			DEBUG(0, "mtd: Giving out device %d to %s\n",i, mtd->name);
+ 			/* No need to get a refcount on the module containing
+ 			   the notifier, since we hold the mtd_table_mutex */
+Index: linux-2.6.18-rc6-mm2/include/mtd/mtd-abi.h
+===================================================================
+--- linux-2.6.18-rc6-mm2.orig/include/mtd/mtd-abi.h	2006-09-18 09:34:14.000000000 +0200
++++ linux-2.6.18-rc6-mm2/include/mtd/mtd-abi.h	2006-09-18 09:35:27.000000000 +0200
+@@ -34,6 +34,7 @@ struct mtd_oob_buf {
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
++#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
+ 
+ // Some common devices / combinations of capabilities
+ #define MTD_CAP_ROM		0
