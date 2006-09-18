@@ -1,12 +1,12 @@
-Received: from av2.karneval.cz ([81.27.192.122])
+Received: from av1.karneval.cz ([81.27.192.123])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GPSNm-0003ll-Pw
-	for linux-mtd@lists.infradead.org; Tue, 19 Sep 2006 00:18:41 +0100
-Message-id: <91292933121291221@karneval.cz>
-Subject: [PATCH 1/4] pmc551 whitespace cleanup
+	id 1GPSWv-0004aK-SO
+	for linux-mtd@lists.infradead.org; Tue, 19 Sep 2006 00:28:08 +0100
+Message-id: <91aaa292933121291221@karneval.cz>
+Subject: [PATCH 1/4 corrected] pmc551 whitespace cleanup
 From: Jiri Slaby <jirislaby@gmail.com>
 To: Andrew Morton <akpm@osdl.org>
-Date: Tue, 19 Sep 2006 00:47:10 +0200 (CEST)
+Date: Tue, 19 Sep 2006 00:55:08 +0200 (CEST)
 Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
 	Mark Ferrell <mferrell@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -17,6 +17,8 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Please apply this one, instead of previous 1/4 patch:
 
 pmc551 whitespace cleanup
 
@@ -36,7 +38,7 @@ committer Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 00:30:55 +0200
  1 files changed, 589 insertions(+), 560 deletions(-)
 
 diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index 2c01497..6d4d5a4 100644
+index 2c01497..12c833e 100644
 --- a/drivers/mtd/devices/pmc551.c
 +++ b/drivers/mtd/devices/pmc551.c
 @@ -4,82 +4,82 @@
@@ -1256,8 +1258,8 @@ index 2c01497..6d4d5a4 100644
 +		priv->dev = PCI_Device;
 +
 +		if (asize > length) {
-+			printk(KERN_NOTICE "pmc551: reducing aperture size to
-+				fit %dM\n", length >> 20);
++			printk(KERN_NOTICE "pmc551: reducing aperture size to "
++				"fit %dM\n", length >> 20);
  			priv->asize = asize = length;
  		} else if (asize == 0 || asize == length) {
 -			printk(KERN_NOTICE "pmc551: Using existing aperture size %dM\n", length>>20);
