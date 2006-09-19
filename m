@@ -1,20 +1,20 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GTC6H-0001R7-1O
-	for linux-mtd@lists.infradead.org; Fri, 29 Sep 2006 07:43:57 +0100
-Message-ID: <451CC098.7050805@transmode.se>
-Date: Fri, 29 Sep 2006 08:43:36 +0200
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Received: from mail.sf-mail.de ([62.27.20.61])
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GPZTu-00027P-9S
+	for linux-mtd@lists.infradead.org; Tue, 19 Sep 2006 07:53:23 +0100
+From: Rolf Eike Beer <eike-kernel@sf-tec.de>
+To: Jiri Slaby <jirislaby@gmail.com>
+Subject: Re: [PATCH 4/4] pmc551 pci cleanup
+Date: Tue, 19 Sep 2006 08:50:15 +0200
+References: <91292449121291221@karneval.cz>
+In-Reply-To: <91292449121291221@karneval.cz>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: Different erase block sizes in a JFFS2 partion.
-References: <01de01c6e348$c94e7330$1267a8c0@Jocke>
-	<625fc13d0609281607l5d2ad581k9615afa8d4f3caa@mail.gmail.com>
-In-Reply-To: <625fc13d0609281607l5d2ad581k9615afa8d4f3caa@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: multipart/signed; boundary="nextPart2135272.YWNQ9TQiSA";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200609190850.20778.eike-kernel@sf-tec.de>
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Mark Ferrell <mferrell@mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +24,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On 9/28/06, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:
->> Got multiple NOR chips with top and bottom boot blocks with diffrent EB size
->> then the rest of the blocks.
-> 
-> Intel P30?  IIRC, the MTD driver maps those into a set of larger
-> virtual eraseblocks.  You might not be able to even distinguish that
-> they exist.
+--nextPart2135272.YWNQ9TQiSA
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-yes, Intel P30.
-The cfi_cmdset_0001 driver maps them like this:
-0: offset=0x0,size=0x8000,blocks=4
-1: offset=0x20000,size=0x20000,blocks=255
-2: offset=0x2000000,size=0x8000,blocks=4
-3: offset=0x2020000,size=0x20000,blocks=255
+Am Dienstag, 19. September 2006 00:47 schrieb Jiri Slaby:
+> pmc551 pci cleanup
+>
+> use pci_get_device -- refcounting, release it by pci_dev_put. Use
+> pci_resource_start for getting start of regions.
+>
+> Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
+>
+> ---
+> commit 6fe18c54c93d38eec34ca0776da60fc355968f6b
+> tree 5bf3cf8fe213de770c7c7a1279eafb3937f4c386
+> parent 912ff3e53f760cb166988fcd46fc173f8e4c22e7
+> author Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 00:39:08
+> +0200 committer Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006
+> 00:39:08 +0200
 
-First, this map is wrong. 2: and 3: should be swapped, that is,
-the small blocks should be at the end of the device.
+You should change your .git/config and add a user section to get the mail=20
+address correct I think.
 
-the small blocks fits into a larger one so I should have no problem reading/writing
-to such virtual block, but I don't think erase will work as JFFS2 will
-only erase one of the small blocks instead of all 4. Maybe I am missing something?
+>  drivers/mtd/devices/pmc551.c |   21 +++++++++++++--------
+>  1 files changed, 13 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
+> index 5f5de9c..d1ba4b9 100644
+> --- a/drivers/mtd/devices/pmc551.c
+> +++ b/drivers/mtd/devices/pmc551.c
+> @@ -563,7 +563,7 @@ #ifdef CONFIG_MTD_PMC551_DEBUG
+>  		size >> 10 : size >> 20,
+>  		(size < 1024) ? 'B' : (size < 1048576) ? 'K' : 'M', size,
+>  		((dcmd & (0x1 << 3)) =3D=3D 0) ? "non-" : "",
+> -		(unsigned long long)((dev->resource[0].start) &
+> +		(unsigned long long)(pci_resource_start(dev, 0) &
+>  				    PCI_BASE_ADDRESS_MEM_MASK));
+>
+>  	/*
+
+The last part is unneeded in both versions, when resource[n].start is set t=
+he=20
+PCI core already does the masking.
+
+> @@ -755,14 +758,14 @@ static int __init init_pmc551(void)
+>  				"size %dM\n", asize >> 20);
+>  			priv->asize =3D asize;
+>  		}
+> -		priv->start =3D ioremap(((PCI_Device->resource[0].start)
+> -					& PCI_BASE_ADDRESS_MEM_MASK),
+> -				      priv->asize);
+> +		priv->start =3D ioremap(pci_resource_start(PCI_Device, 0) &
+> +				PCI_BASE_ADDRESS_MEM_MASK, priv->asize);
+
+pci_iomap(PCI_Device, 0, priv->asize);
+
+Eike
+
+--nextPart2135272.YWNQ9TQiSA
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.2 (GNU/Linux)
+
+iD8DBQBFD5MsXKSJPmm5/E4RAtNsAJ9Pq/lJ+fzcCDqZxlJWSf4PFLV67gCgidwZ
+iF3+wiVTfv0cCmqrfLRIk/E=
+=k4im
+-----END PGP SIGNATURE-----
+
+--nextPart2135272.YWNQ9TQiSA--
