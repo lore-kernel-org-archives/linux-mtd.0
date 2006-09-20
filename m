@@ -1,14 +1,18 @@
-Received: from av1.karneval.cz ([81.27.192.123])
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GPlhI-0007gY-WA
-	for linux-mtd@lists.infradead.org; Tue, 19 Sep 2006 20:56:01 +0100
-Message-id: <91292new449121291221@karneval.cz>
-Subject: [PATCH 3/3] pmc551 pci cleanup
-From: Jiri Slaby <jirislaby@gmail.com>
-To: Andrew Morton <akpm@osdl.org>
-Date: Tue, 19 Sep 2006 21:55:28 +0200 (CEST)
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Mark Ferrell <mferrell@mvista.com>
+	id 1GPydI-0002sD-4t
+	for linux-mtd@lists.infradead.org; Wed, 20 Sep 2006 10:44:44 +0100
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2 appears to "freeze" during erase
+Date: Wed, 20 Sep 2006 11:30:41 +0200
+Message-ID: <F6AD7E21CDF4E145A44F61F43EE6D9399B42C8@tmnt04.transmode.se>
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,72 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-pmc551 pci cleanup
+Hi list
 
-Use pci_resource_start for getting start of regions and pci_iomap to not
-doing this directly by using dev->resource... (Thanks to Rolf Eike Beer)
+We have been using JFFS2 since around 2001 on linux 2.4 and it has
+worked well
+for us. Now we are upgrading to 2.6 and and I see a problem that was
+solved=20
+long time ago in our JFFS2 tree:=20
 
-Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
+When JFFS2 is starts on a fresh FS without clean markers or if I remove
+a large file,
+futher FS operations hangs as if all pending erase operations has to be
+completed
+before futher activity is allowed.
 
----
-commit f168fc8e075580212def9c838b21824faf516cf4
-tree 41bdcab4eb268c8022d6eb370aed06688a599d5e
-parent eb0edd8068cde9b5e6afaf09065a94cb83c10efd
-author Jiri Slaby <jirislaby@gmail.com> Tue, 19 Sep 2006 21:48:40 +0200
-committer Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 21:48:40 +0200
+Is this the expected behaviour today or a bug? I see this
+on linux 2.6.11 and 2.6.17 on powerpc.
+Flash: Intel Strata P30 family.
 
- drivers/mtd/devices/pmc551.c |   13 +++++--------
- 1 files changed, 5 insertions(+), 8 deletions(-)
+ Jocke
 
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index 62a9188..354e165 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -568,8 +568,7 @@ #ifdef CONFIG_MTD_PMC551_DEBUG
- 		size >> 10 : size >> 20,
- 		(size < 1024) ? 'B' : (size < 1048576) ? 'K' : 'M', size,
- 		((dcmd & (0x1 << 3)) == 0) ? "non-" : "",
--		(unsigned long long)((dev->resource[0].start) &
--				    PCI_BASE_ADDRESS_MEM_MASK));
-+		(unsigned long long)pci_resource_start(dev, 0));
- 
- 	/*
- 	 * Check to see the state of the memory
-@@ -705,7 +704,7 @@ static int __init init_pmc551(void)
- 		}
- 
- 		printk(KERN_NOTICE "pmc551: Found PCI V370PDC at 0x%llx\n",
--			(unsigned long long)PCI_Device->resource[0].start);
-+			(unsigned long long)pci_resource_start(PCI_Device, 0));
- 
- 		/*
- 		 * The PMC551 device acts VERY weird if you don't init it
-@@ -762,9 +761,7 @@ static int __init init_pmc551(void)
- 				"size %dM\n", asize >> 20);
- 			priv->asize = asize;
- 		}
--		priv->start = ioremap(((PCI_Device->resource[0].start)
--					& PCI_BASE_ADDRESS_MEM_MASK),
--				      priv->asize);
-+		priv->start = pci_iomap(PCI_Device, 0, priv->asize);
- 
- 		if (!priv->start) {
- 			printk(KERN_NOTICE "pmc551: Unable to map IO space\n");
-@@ -805,7 +802,7 @@ #endif
- 		if (add_mtd_device(mtd)) {
- 			printk(KERN_NOTICE "pmc551: Failed to register new "
- 				"device\n");
--			iounmap(priv->start);
-+			pci_iounmap(PCI_Device, priv->start);
- 			kfree(mtd->priv);
- 			kfree(mtd);
- 			break;
-@@ -856,7 +853,7 @@ static void __exit cleanup_pmc551(void)
- 		if (priv->start) {
- 			printk(KERN_DEBUG "pmc551: unmapping %dM starting at "
- 				"0x%p\n", priv->asize >> 20, priv->start);
--			iounmap(priv->start);
-+			pci_iounmap(priv->dev, priv->start);
- 		}
- 		pci_dev_put(priv->dev);
- 
+PS.
+    http://lists.infradead.org/ seems dead.
