@@ -1,15 +1,15 @@
-Subject: Re: [PATCH] cmx270-nand: Make CMDLINE_PARTS usable
-From: David Woodhouse <dwmw2@infradead.org>
-To: Raphael Assenat <raph@8d.com>
-In-Reply-To: <4513F01D.80608@8d.com>
-References: <4507FE99.3030106@8d.com>
-	<1158917790.24527.664.camel@pmac.infradead.org> <4513F01D.80608@8d.com>
-Content-Type: text/plain
-Date: Fri, 22 Sep 2006 15:44:00 +0100
-Message-Id: <1158936240.24527.733.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from web54407.mail.yahoo.com ([206.190.49.137])
+	by pentafluge.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GQme2-0007ck-Kl
+	for linux-mtd@lists.infradead.org; Fri, 22 Sep 2006 16:08:51 +0100
+Message-ID: <20060922150744.30960.qmail@web54407.mail.yahoo.com>
+Date: Fri, 22 Sep 2006 08:07:44 -0700 (PDT)
+From: David Anders <dave123_aml@yahoo.com>
+Subject: patch to leave cfi in read-array on suspend
+To: linux-mtd <linux-mtd@lists.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-09-22 at 10:15 -0400, Raphael Assenat wrote:
-> Oh, sorry. My patch applies over the patch Mike Rapoport sent to the list on July 18
-> ([PATCH] [MTD] CM-x270 NAND flash support), which I thought was already accepted. Was 
-> there anything wrong with it? Maybe you just missed it...
-> 
-> I also sent a patch to the list on July 21 which added NAND flash support for the cm-x255 
-> boards ([PATCH] Add support for NAND flash on cm-x255) but received no feedback. I can 
-> resend it if you wish.
+greetings,
 
-July and August weren't really a good time for sending stuff that you
-expect me to pay attention to; sorry. Yes -- please retest and resend.
+during some testing with several samsung s3c24xx based
+devices it was discovered that often the
+cfi_cmdset_0001.c would not leave the chip in
+read-array mode on suspend. this is an issue if the
+same flash chip is used for the bootloader that needs
+to read on resume. attached is a patch generated
+against the 2.6.18 kernel and has been tested with
+several s3c24xx based devices as well as several sharp
+lh79520 devices. your feedback would be appreciated.
 
-Can you explain how these two boards differ, and why they need two
-separate drivers?
+Signed-off-by: David Anders <danders@amltd.com>
 
-> (BTW, every time I send to the linux-mtd list my message is held for moderator approval 
-> for reason 'Message has a suspicious header'. Who should I contact for more information? 
-> I'd like to know exactly what header(s) is/are 'suspicious' and fix them if possible).
+--- linux-2.6.18/drivers/mtd/chips/cfi_cmdset_0001.c    2006-09-19 23:42:06.000000000 -0400
++++ linux-2.6.18-m5900/drivers/mtd/chips/cfi_cmdset_0001.c      2006-09-22 09:16:21.000000000
+-0400
+@@ -2224,6 +2224,8 @@
+                case FL_CFI_QUERY:
+                case FL_JEDEC_QUERY:
+                        if (chip->oldstate == FL_READY) {
++                               /* place the chip in a known state before suspend */
++                               map_write(map, CMD(0xFF), cfi->chips[i].start);
+                                chip->oldstate = chip->state;
+                                chip->state = FL_PM_SUSPENDED;
+                                /* No need to wake_up() on this state change -
 
-It just doesn't like attachments. Send patches inline and they shouldn't
-get trapped.
 
--- 
-dwmw2
+
+__________________________________________________
+Do You Yahoo!?
+Tired of spam?  Yahoo! Mail has the best spam protection around 
+http://mail.yahoo.com 
