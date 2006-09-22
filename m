@@ -1,17 +1,17 @@
-Received: from mx1.myoutlookonline.com ([69.25.74.59])
+Received: from pool-72-65-13-127.bflony.east.verizon.net ([72.65.13.127]
+	helo=NERI)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GQn83-000068-6q
-	for linux-mtd@lists.infradead.org; Fri, 22 Sep 2006 16:39:51 +0100
-From: "Ajay Jain" <ajain@neomagic.com>
+	id 1GQpAy-0004E6-Dd
+	for linux-mtd@lists.infradead.org; Fri, 22 Sep 2006 18:51:00 +0100
+Message-ID: <96602002377294.0E0A91AC3B@8AWQWJ>
+From: "Rose" <cheesycuff@rpp.tie.cl>
 To: <linux-mtd@lists.infradead.org>
-Subject: Nand Flash write fails
-Date: Fri, 22 Sep 2006 21:09:20 +0530
-Message-ID: <04c001c6de5d$46f73a10$561fa8c0@pcajain>
+Subject: Fresh stuff More earning power
+Date: Fri, 22 Sep 2006 12:50:57 -0500
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+        charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-Reply-To: ajain@neomagic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +21,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, 
+Degre e - advancement
 
-I have set up a JFFS2 partition on my NAND flash. The board driver in
-question is my own. I can successfully 'mkfs' & 'mount' that partition.
-However when I start copying any file to it, it gives the following
-error.
+A Genui ne Un iversity Degre e in 4-6 weeks!
 
-nand_write_ecc: vectored attempt to write not page aligned data: to =
-20b9e4, total_len =       44
-Write of 68 bytes at 0x0000b9e4 failed. returned -22, retlen 0
-Not marking the space at 0x0000b9e4 as dirty because the flash driver
-returned retlen zero
+Have yo u ever thought that the only thing st opping you from a great jo b and bette r p ay was a few let  ters behind you name?
+W ell now you can get them!
 
-I was looking up the code of the mtd nand layer. I see that in case the
-data is not alligned on the page boundary, it returns back giving this
-error. Therefore my question is that is it the responsibility of the
-"jffs2 layer" or "mtd" layer to issue writes that are aligned to page
-boundary. 
-ANY suggestions are welcome.
+BA BSc MA MSc M BA Ph D
 
-Thanks.
+Within 4-6 weeks!
+No Study Required!
+100% Verifiable!
+
+These  ar e rea l, genuine deg rees that include B achelors, Masters, M BA and Doct orate D egrees. They are fully verifiable and certif ied transcripts are also available.
+
+Just call the num ber below.
+You thank me later
+
+Please call:
+ 1-206-984 -2185 
+Calls returned promptly
+
+
+
+It will all come out in the wash One man's meat is another man's poison.. The Best Wine Comes Out of an Old Vessel Poor men seek meat for their stomach; rich men stomach for their meat Turn the other cheek Laughter is the best medicine. Many hands make light work
