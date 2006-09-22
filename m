@@ -1,15 +1,17 @@
-Received: from web54407.mail.yahoo.com ([206.190.49.137])
-	by pentafluge.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GQme2-0007ck-Kl
-	for linux-mtd@lists.infradead.org; Fri, 22 Sep 2006 16:08:51 +0100
-Message-ID: <20060922150744.30960.qmail@web54407.mail.yahoo.com>
-Date: Fri, 22 Sep 2006 08:07:44 -0700 (PDT)
-From: David Anders <dave123_aml@yahoo.com>
-Subject: patch to leave cfi in read-array on suspend
-To: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from mx1.myoutlookonline.com ([69.25.74.59])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GQn83-000068-6q
+	for linux-mtd@lists.infradead.org; Fri, 22 Sep 2006 16:39:51 +0100
+From: "Ajay Jain" <ajain@neomagic.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Nand Flash write fails
+Date: Fri, 22 Sep 2006 21:09:20 +0530
+Message-ID: <04c001c6de5d$46f73a10$561fa8c0@pcajain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Reply-To: ajain@neomagic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,36 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-greetings,
+Hi, 
 
-during some testing with several samsung s3c24xx based
-devices it was discovered that often the
-cfi_cmdset_0001.c would not leave the chip in
-read-array mode on suspend. this is an issue if the
-same flash chip is used for the bootloader that needs
-to read on resume. attached is a patch generated
-against the 2.6.18 kernel and has been tested with
-several s3c24xx based devices as well as several sharp
-lh79520 devices. your feedback would be appreciated.
+I have set up a JFFS2 partition on my NAND flash. The board driver in
+question is my own. I can successfully 'mkfs' & 'mount' that partition.
+However when I start copying any file to it, it gives the following
+error.
 
-Signed-off-by: David Anders <danders@amltd.com>
+nand_write_ecc: vectored attempt to write not page aligned data: to =
+20b9e4, total_len =       44
+Write of 68 bytes at 0x0000b9e4 failed. returned -22, retlen 0
+Not marking the space at 0x0000b9e4 as dirty because the flash driver
+returned retlen zero
 
---- linux-2.6.18/drivers/mtd/chips/cfi_cmdset_0001.c    2006-09-19 23:42:06.000000000 -0400
-+++ linux-2.6.18-m5900/drivers/mtd/chips/cfi_cmdset_0001.c      2006-09-22 09:16:21.000000000
--0400
-@@ -2224,6 +2224,8 @@
-                case FL_CFI_QUERY:
-                case FL_JEDEC_QUERY:
-                        if (chip->oldstate == FL_READY) {
-+                               /* place the chip in a known state before suspend */
-+                               map_write(map, CMD(0xFF), cfi->chips[i].start);
-                                chip->oldstate = chip->state;
-                                chip->state = FL_PM_SUSPENDED;
-                                /* No need to wake_up() on this state change -
+I was looking up the code of the mtd nand layer. I see that in case the
+data is not alligned on the page boundary, it returns back giving this
+error. Therefore my question is that is it the responsibility of the
+"jffs2 layer" or "mtd" layer to issue writes that are aligned to page
+boundary. 
+ANY suggestions are welcome.
 
-
-
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+Thanks.
