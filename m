@@ -1,15 +1,14 @@
-Subject: Re: 2.6.19 -mm merge plans
+Subject: Re: [PATCH 1/3 -repost] pmc551 whitespace cleanup
 From: David Woodhouse <dwmw2@infradead.org>
-To: Andrew Morton <akpm@osdl.org>
-In-Reply-To: <1158917046.24527.662.camel@pmac.infradead.org>
-References: <20060920135438.d7dd362b.akpm@osdl.org>
-	<1158917046.24527.662.camel@pmac.infradead.org>
+To: Jiri Slaby <jirislaby@gmail.com>
+In-Reply-To: <91anewaa2929331212a91221@wsc.cz>
+References: <91anewaa2929331212a91221@wsc.cz>
 Content-Type: text/plain
-Date: Sat, 23 Sep 2006 11:44:27 +0100
-Message-Id: <1159008267.24527.908.camel@pmac.infradead.org>
+Date: Sat, 23 Sep 2006 23:44:36 +0100
+Message-Id: <1159051476.24527.939.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Rongkai.Zhan" <rongkai.zhan@windriver.com>, linux-mtd@lists.infradead.org,
+Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,16 +19,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-09-22 at 10:24 +0100, David Woodhouse wrote:
-> Merged, with the exception of the unlock addr one which I'm still not
-> sure about -- about to investigate harder. 
+On Sat, 2006-09-23 at 12:54 -0400, Jiri Slaby wrote:
+> pmc551 whitespace cleanup
+> 
+> Spaces were used for indent, there was more than 80 columns per line.
+> Get
+> rid of that stuff.
+> 
+> Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
 
-Please drop it (fix-the-unlock-addr-lookup-bug-in-mtd-jedec-probe.patch).
-
-Returning the first value in the array is intentional -- it should be
-automatically shifted to make it work if it's a x16 chip, and the right
-thing should happen. If _that_ isn't working, give details and we'll
-work out a proper fix.
+These are already applied.
 
 -- 
 dwmw2
