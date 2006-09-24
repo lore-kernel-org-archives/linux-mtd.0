@@ -1,13 +1,12 @@
-Received: from 81-202-34-127.user.ono.com ([81.202.34.127]
-	helo=4548F359F26741B)
+Received: from c-24-15-97-219.hsd1.il.comcast.net ([24.15.97.219] helo=JAGMAN)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GRTiR-0000Qo-6T
-	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 14:08:15 +0100
-Message-ID: <47291887922797.7E08AA74C8@E0NM7E>
-From: "Grubbs" <deependialysis@route66guitars.com>
+	id 1GRTt4-0000xi-BD
+	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 14:19:14 +0100
+Message-ID: <38307782159675.DF8477E872@PXWCA>
+From: "Gamble" <decibelasparagus@rrmodelcraftsman.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: {PRE_SUBJ} New and hot Would you like to have stronger ejaculation? 
-Date: Sun, 24 Sep 2006 15:12:45 +0200
+Subject: {PRE_SUBJ} Recently added  Do you wish to become multi-orgasmic?
+Date: Sun, 24 Sep 2006 06:23:50 -0700
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="Windows-1252"
@@ -21,4 +20,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello It is possible today with excellent formula Have you some doubt? But without any results… Now it’s possible to do with magic tab Do you wish to increase your volume by up to 500%? Just take a look: http://galicoor.com/gal/gsm/
+Greetings Show your girl a huge explosion as I used to do Increase your volume in just days I am sure it was Just take a look: http://frosder.com/gal/gsm/ Don’t trust me? Would you like to have stronger ejaculation? 
