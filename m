@@ -1,12 +1,17 @@
-Received: from orion.profiwh.com ([85.93.165.28])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GRGTi-0001Ya-RC
-	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 00:00:12 +0100
-Message-id: <91newa49121291221@wsc.cz>
-Subject: [PATCH 2/3 -repost] pmc551 use kzalloc
-From: Jiri Slaby <jirislaby@gmail.com>
-To: Andrew Morton <akpm@osdl.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from 81-202-34-127.user.ono.com ([81.202.34.127]
+	helo=4548F359F26741B)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GRTiR-0000Qo-6T
+	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 14:08:15 +0100
+Message-ID: <47291887922797.7E08AA74C8@E0NM7E>
+From: "Grubbs" <deependialysis@route66guitars.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: {PRE_SUBJ} New and hot Would you like to have stronger ejaculation? 
+Date: Sun, 24 Sep 2006 15:12:45 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,51 +20,5 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sat, 23 Sep 2006 23:00:20 -0000
 
-pmc551 use kzalloc
-
-Use kzalloc instad of kmalloc+memset(0).
-
-Signed-off-by: Jiri Slaby <jirislaby@gmail.com>
-
----
-commit eb0edd8068cde9b5e6afaf09065a94cb83c10efd
-tree a2f56ac7c0f5cb8e0e3dba707faa68cc8d5c9952
-parent 22f07f42debab2cc3b6ab895d2fa2c34d192c25c
-author Jiri Slaby <jirislaby@gmail.com> Tue, 19 Sep 2006 21:33:07 +0200
-committer Jiri Slaby <xslaby@anemoi.localdomain> Tue, 19 Sep 2006 21:33:07 +0200
-
- drivers/mtd/devices/pmc551.c |    7 ++-----
- 1 files changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/devices/pmc551.c b/drivers/mtd/devices/pmc551.c
-index 4d40236..62a9188 100644
---- a/drivers/mtd/devices/pmc551.c
-+++ b/drivers/mtd/devices/pmc551.c
-@@ -732,23 +732,20 @@ static int __init init_pmc551(void)
- 			msize = length;
- 		}
- 
--		mtd = kmalloc(sizeof(struct mtd_info), GFP_KERNEL);
-+		mtd = kzalloc(sizeof(struct mtd_info), GFP_KERNEL);
- 		if (!mtd) {
- 			printk(KERN_NOTICE "pmc551: Cannot allocate new MTD "
- 				"device.\n");
- 			break;
- 		}
- 
--		memset(mtd, 0, sizeof(struct mtd_info));
--
--		priv = kmalloc(sizeof(struct mypriv), GFP_KERNEL);
-+		priv = kzalloc(sizeof(struct mypriv), GFP_KERNEL);
- 		if (!priv) {
- 			printk(KERN_NOTICE "pmc551: Cannot allocate new MTD "
- 				"device.\n");
- 			kfree(mtd);
- 			break;
- 		}
--		memset(priv, 0, sizeof(*priv));
- 		mtd->priv = priv;
- 		priv->dev = PCI_Device;
- 
+Hello It is possible today with excellent formula Have you some doubt? But without any results… Now it’s possible to do with magic tab Do you wish to increase your volume by up to 500%? Just take a look: http://galicoor.com/gal/gsm/
