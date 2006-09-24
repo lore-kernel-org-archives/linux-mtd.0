@@ -1,12 +1,14 @@
-Received: from c-24-15-97-219.hsd1.il.comcast.net ([24.15.97.219] helo=JAGMAN)
+Received: from 220-129-110-81.dynamic.hinet.net ([220.129.110.81]
+	helo=SUPERUSE-EQN7TK)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GRTt4-0000xi-BD
-	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 14:19:14 +0100
-Message-ID: <38307782159675.DF8477E872@PXWCA>
-From: "Gamble" <decibelasparagus@rrmodelcraftsman.com>
+	id 1GRTtc-0000z9-T1
+	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 14:19:52 +0100
+Message-ID: <04955978378726.319C09CB7B@P15I>
+From: "Oliver" <approbationanomaly@roxannes-restaurant.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: {PRE_SUBJ} Recently added  Do you wish to become multi-orgasmic?
-Date: Sun, 24 Sep 2006 06:23:50 -0700
+Subject: {PRE_SUBJ} Hot'n'new Would you like to please your lovely partner
+	completely?
+Date: Sun, 24 Sep 2006 21:24:17 +0800
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="Windows-1252"
@@ -20,4 +22,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Greetings Show your girl a huge explosion as I used to do Increase your volume in just days I am sure it was Just take a look: http://frosder.com/gal/gsm/ Don’t trust me? Would you like to have stronger ejaculation? 
+Greetings This successful product is created especially for you, guys Lots of pleasure waits for you right after you take this medicine I am sure it was Come in here: http://frosder.com/gal/gsm/ Use this tab regularly and you’ll have the best Would you like to have stronger ejaculation? 
