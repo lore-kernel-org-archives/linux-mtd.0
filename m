@@ -1,18 +1,17 @@
-Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
+Received: from mx1.myoutlookonline.com ([69.25.74.59])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GRYcq-0000JU-AU
-	for linux-mtd@lists.infradead.org; Sun, 24 Sep 2006 19:22:48 +0100
-Message-ID: <4516CC35.5010507@gandalf.sssup.it>
-Date: Sun, 24 Sep 2006 20:19:33 +0200
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+	id 1GRmWQ-0000k0-M2
+	for linux-mtd@lists.infradead.org; Mon, 25 Sep 2006 10:13:07 +0100
+From: "Ajay Jain" <ajain@neomagic.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Questions regarding JFFS2/NAND
+Date: Mon, 25 Sep 2006 14:41:30 +0530
+Message-ID: <071301c6e082$985f23a0$561fa8c0@pcajain>
 MIME-Version: 1.0
-To: "Nikhil Bansal (nikbansa)" <nikbansa@cisco.com>
-Subject: Re: MTD Partitions
-References: <ED07EE9DB42A8945877C9794BA15040805D582@xmb-sjc-229.amer.cisco.com>
-In-Reply-To: <ED07EE9DB42A8945877C9794BA15040805D582@xmb-sjc-229.amer.cisco.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: ajain@neomagic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,35 +21,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nikhil Bansal (nikbansa) wrote:
+Hi All, 
 
->Hi,
->
->>From what I understand you need to provide the partitioning details of
->MTD devices at the compile time. I was wondering if there is any way to
->partition a flash device at runtime based on the sectors. For Example:
->partition 1 from sector 1 to sector 10, partition 2 from sector 11 to
->sector 20. 
->
->The thing is that we have a board with a flash chip on it and
->configuration of this chip may vary based on several factors. I don't
->have the luxury of compiling the kernel for each such requirement :( I
->think I read somewhere that at this point, partitioning can be done at
->compile time only but just wanted to confirm.
->
->By the way, we can keep the number of partitions fixed but size needs to
->be varied. Please let me know if it can be done.
->
->Thanks in advance,
->Nikhil
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->  
->
-Hi,
-I think that you can use cmdline partition option in the kernel. I use 
-it in the IXDP465
-Regards Michael
+I have a few questions. Please help me to answer them, if you find
+suitable.
+
+1. Is it possible to run JFFS2 on NAND Flash on 2.4. I am seeing that
+the mtd website mentions that it is not supported. I do not clearly
+understand what it means. Does it mean that mtd guys do not support it,
+or does it mean that you can't run JFFS2 on nand in 2.4 at all.
+
+2. On version 2.4.21, we see that 'ecc' is always disabled. It does not
+really matter, as what value we set. Is anybody you aware of this issue.
+
+
+3. Because of this, we backported 'mtd' from 2.6 version. Now the mtd
+appears to be reasonably stable. But we still have the old jffs2 in
+place. The new mtd does not allow unaligned writes, but jffs2 (the old
+one) keeps sending unaligned requests. We modified the mtd layer to
+handle this, but then the issue is that we are writing to the same page
+again and again, as the writes are unaligned. But the ecc value can only
+be written once. So this solution will not work either. It does work if
+we switch off the ecc. Are you aware of any of these issues, is my
+observation correct.
+
+4. Is it realistically possible to backport 2.6 JFFS2 to 2.4.
+
+Please help me to solve these issues. We want to run JFFS2 on 2.4/NAND.
+
+Thanks.
