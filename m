@@ -1,27 +1,22 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GS0H0-0003FY-9h
-	for linux-mtd@lists.infradead.org; Tue, 26 Sep 2006 00:54:07 +0100
-Received: from ep_ms12_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J66007RHADGGX@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 26 Sep 2006 08:53:40 +0900 (KST)
-Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0J66009I0ADG5J@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 26 Sep 2006 08:53:40 +0900 (KST)
-Content-return: prohibited
-Date: Mon, 25 Sep 2006 23:53:28 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH] OneNAND: fix OneNAND probe
+Received: from [82.160.254.233] (helo=traperpl.eu)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GS2Eq-0006gJ-7o
+	for linux-mtd@lists.infradead.org; Tue, 26 Sep 2006 03:00:00 +0100
+Received: from traperpl by traperpl.eu with local (Exim 4.50)
+	id 1GS283-0007Rn-SD
+	for linux-mtd@lists.infradead.org; Tue, 26 Sep 2006 03:52:59 +0200
 To: linux-mtd@lists.infradead.org
-Message-id: <27051608.13531159228419864.JavaMail.weblogic@ep_ml12>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Subject: Traper Gniezno - Greetings from Poland Content-type: text/html <html>
+	<head> <title>Traper Gniezno</title> </head> <body>
+	<font face="Arial"> <div aling="center"> <center>
+	<h1>Greetings from Poland</h1><br>
+	<a href="http://www.traperpl.eu"><img
+	src="http://traperpl.eu/bocian.jpg"></a>
+	<p><a href="http://www.traperpl.eu">www.traperpl.eu</a></p> </center>
+	</div> </font> </body> </html>
+Message-Id: <E1GS283-0007Rn-SD@traperpl.eu>
+From: =?UTF-8?Q?Wojciech_Krzywa=F1ski?= <traperpl@traperpl.eu>
+Date: Tue, 26 Sep 2006 03:52:59 +0200
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,39 +26,3 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkNCg0KSGVyZSdzIGEgcGF0Y2ggb2YgT25lTkFORCBwcm9iaW5nLg0KU29tZXRpbWUgc29tZSBi
-b2FyZCBkb24ndCBwcm9iZSBPbmVOQU5EIGJlY2F1c2Ugb2Ygbm90IGVub3VnaCB0aW1lIGFmdGVy
-IHJlc2V0LiBBbmQgaXQgd2lsbCByZWFkIHN5c3RlbSBjb25maWd1cmF0aW9uIHJlZ3MgKmFsd2F5
-cyogd2l0aCBhc3luYy4gbW9kZS4NCg0KUGxlYXNlIGFwcGx5IHRoaXMgcGF0Y2guDQoNClRoYW5r
-IHlvdSwNCkt5dW5nbWluIFBhcmsNCg0KLS0NCg0KW01URCBPTkVOQU5EXSBGaXggT25lTkFORCBw
-cm9iZQ0KDQogICAgICAgIC0gZml4IE9uZU5BTkQgcHJvYmUgd2hldGhlciBPbmVOQU5EIFN5bmMu
-IEJ1cnN0IHJlYWQgbW9kZSBvciBub3QNCiAgICAgICAgLSBmaXggT25lTkFORCByZXNldCB3YWl0
-IHByb2JsZW0NCg0KU2lnbmVkLW9mZi1ieTogS3l1bmdtaW4gUGFyayA8a3l1bmdtaW4ucGFya0Bz
-YW1zdW5nLmNvbT4NCi0tLQ0KDQotLS0gYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFz
-ZS5jDQorKysgYi9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQpAQCAtMTYyOCw2
-ICsxNjI4LDEyIEBAIHN0YXRpYyBpbnQgb25lbmFuZF9wcm9iZShzdHJ1Y3QgbXRkX2luZm8NCiAJ
-aW50IGJyYW1fbWFmX2lkLCBicmFtX2Rldl9pZCwgbWFmX2lkLCBkZXZfaWQ7DQogCWludCB2ZXJz
-aW9uX2lkOw0KIAlpbnQgZGVuc2l0eTsNCisJaW50IHN5c2NmZzsNCisNCisJLyogU2F2ZSBzeXN0
-ZW0gY29uZmlndXJhdGlvbiAxICovDQorCXN5c2NmZyA9IHRoaXMtPnJlYWRfd29yZCh0aGlzLT5i
-YXNlICsgT05FTkFORF9SRUdfU1lTX0NGRzEpOw0KKwkvKiBDbGVhciBTeW5jLiBCdXJzdCBSZWFk
-IG1vZGUgdG8gcmVhZCBCb290UkFNICovDQorCXRoaXMtPndyaXRlX3dvcmQoKHN5c2NmZyAmIH5P
-TkVOQU5EX1NZU19DRkcxX1NZTkNfUkVBRCksIHRoaXMtPmJhc2UgKyBPTkVOQU5EX1JFR19TWVNf
-Q0ZHMSk7DQogDQogCS8qIFNlbmQgdGhlIGNvbW1hbmQgZm9yIHJlYWRpbmcgZGV2aWNlIElEIGZy
-b20gQm9vdFJBTSAqLw0KIAl0aGlzLT53cml0ZV93b3JkKE9ORU5BTkRfQ01EX1JFQURJRCwgdGhp
-cy0+YmFzZSArIE9ORU5BTkRfQk9PVFJBTSk7DQpAQCAtMTYzNiwxMyArMTY0MiwxOCBAQCBzdGF0
-aWMgaW50IG9uZW5hbmRfcHJvYmUoc3RydWN0IG10ZF9pbmZvDQogCWJyYW1fbWFmX2lkID0gdGhp
-cy0+cmVhZF93b3JkKHRoaXMtPmJhc2UgKyBPTkVOQU5EX0JPT1RSQU0gKyAweDApOw0KIAlicmFt
-X2Rldl9pZCA9IHRoaXMtPnJlYWRfd29yZCh0aGlzLT5iYXNlICsgT05FTkFORF9CT09UUkFNICsg
-MHgyKTsNCiANCisJLyogUmVzZXQgT25lTkFORCB0byByZWFkIGRlZmF1bHQgcmVnaXN0ZXIgdmFs
-dWVzICovDQorCXRoaXMtPndyaXRlX3dvcmQoT05FTkFORF9DTURfUkVTRVQsIHRoaXMtPmJhc2Ug
-KyBPTkVOQU5EX0JPT1RSQU0pOw0KKwkvKiBXYWl0IHJlc2V0ICovDQorCXRoaXMtPndhaXQobXRk
-LCBGTF9SRVNFVElORyk7DQorDQorCS8qIFJlc3RvcmUgc3lzdGVtIGNvbmZpZ3VyYXRpb24gMSAq
-Lw0KKwl0aGlzLT53cml0ZV93b3JkKHN5c2NmZywgdGhpcy0+YmFzZSArIE9ORU5BTkRfUkVHX1NZ
-U19DRkcxKTsNCisNCiAJLyogQ2hlY2sgbWFudWZhY3R1cmVyIElEICovDQogCWlmIChvbmVuYW5k
-X2NoZWNrX21hZihicmFtX21hZl9pZCkpDQogCQlyZXR1cm4gLUVOWElPOw0KIA0KLQkvKiBSZXNl
-dCBPbmVOQU5EIHRvIHJlYWQgZGVmYXVsdCByZWdpc3RlciB2YWx1ZXMgKi8NCi0JdGhpcy0+d3Jp
-dGVfd29yZChPTkVOQU5EX0NNRF9SRVNFVCwgdGhpcy0+YmFzZSArIE9ORU5BTkRfQk9PVFJBTSk7
-DQotDQogCS8qIFJlYWQgbWFudWZhY3R1cmVyIGFuZCBkZXZpY2UgSURzIGZyb20gUmVnaXN0ZXIg
-Ki8NCiAJbWFmX2lkID0gdGhpcy0+cmVhZF93b3JkKHRoaXMtPmJhc2UgKyBPTkVOQU5EX1JFR19N
-QU5VRkFDVFVSRVJfSUQpOw0KIAlkZXZfaWQgPSB0aGlzLT5yZWFkX3dvcmQodGhpcy0+YmFzZSAr
-IE9ORU5BTkRfUkVHX0RFVklDRV9JRCk7DQo=
