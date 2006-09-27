@@ -1,22 +1,19 @@
-Received: from nf-out-0910.google.com ([64.233.182.189])
+Received: from nf-out-0910.google.com ([64.233.182.184])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GSNCO-0007ta-8n
-	for linux-mtd@lists.infradead.org; Wed, 27 Sep 2006 01:22:52 +0100
-Received: by nf-out-0910.google.com with SMTP id l37so348010nfc
+	id 1GSRkQ-0000Fg-Nc
+	for linux-mtd@lists.infradead.org; Wed, 27 Sep 2006 06:14:19 +0100
+Received: by nf-out-0910.google.com with SMTP id l37so401718nfc
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Sep 2006 17:21:47 -0700 (PDT)
-Message-ID: <625fc13d0609261721g715010e1nc07ab887f909b19c@mail.gmail.com>
-Date: Tue, 26 Sep 2006 19:21:47 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Wedepohl, Martin" <Martin.Wedepohl@gdcanada.com>
-Subject: Re: JFFS2 problem with filename length > 7
-In-Reply-To: <2142BCFA1F7F0D468F8EE6C8DE719E6801C23A6A@CGYSVW100.gdcan.com>
+	Tue, 26 Sep 2006 22:13:18 -0700 (PDT)
+Message-ID: <67f0a57c0609262213j56993210h654450841dcac92f@mail.gmail.com>
+Date: Tue, 26 Sep 2006 23:13:17 -0600
+From: "Martin Wedepohl" <martinatgd@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 problem with filename length > 7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <2142BCFA1F7F0D468F8EE6C8DE719E6801C23A6A@CGYSVW100.gdcan.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +23,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/26/06, Wedepohl, Martin <Martin.Wedepohl@gdcanada.com> wrote:
-> The information contained in this e-mail message is PRIVATE. It may contain confidential information and may be legally privileged. It is intended for the exclusive use of the addressee(s). If you are not the intended recipient, you are hereby notified that any dissemination, distribution or reproduction of this communication is strictly prohibited. If the intended recipient(s) cannot be reached or if a transmission problem has occurred, please notify the sender immediately by return e-mail and destroy all copies of this message.
+I'm running into a problem with filename lengths greater than 7 characters.
+Everything is fine until I unmount and then remount the device.
 
-Mailing lists are public domain.  I'm assuming, based on this notice,
-that I cannot comment on the information in your email, and I'm
-notifying you that I have destroyed all copies of this email.
+I'm running Linux 2.6.17 on a PowerPC 5200.
 
-In the future, do not post to a mailing list with such a disclaimer.
+Any help would be greatly appreciated
 
-josh
+bash-3.00# uname -r
+2.6.17-g4e21eb5f-dirty
+bash-3.00# eraseall /dev/mtd7
+Erased 2048 Kibyte @ 0 -- 100% complete.
+bash-3.00# mount -t jffs2 /dev/mtdblock7 /mnt
+bash-3.00# touch /mnt/1
+bash-3.00# touch /mnt/22
+bash-3.00# touch /mnt/333
+bash-3.00# touch /mnt/4444
+bash-3.00# touch /mnt/55555
+bash-3.00# touch /mnt/666666
+bash-3.00# touch /mnt/7777777
+bash-3.00# touch /mnt/88888888
+bash-3.00# touch /mnt/999999999
+bash-3.00# touch /mnt/aaaaaaaaaa
+bash-3.00# ls -al /mnt
+total 4
+drwxr-xr-x   3 root root    0 Jan  1 01:01 .
+drwxr-xr-x  15 7099  500 4096 Sep 26  2006 ..
+-rw-r--r--   1 root root    0 Jan  1 01:01 1
+-rw-r--r--   1 root root    0 Jan  1 01:01 22
+-rw-r--r--   1 root root    0 Jan  1 01:01 333
+-rw-r--r--   1 root root    0 Jan  1 01:01 4444
+-rw-r--r--   1 root root    0 Jan  1 01:01 55555
+-rw-r--r--   1 root root    0 Jan  1 01:01 666666
+-rw-r--r--   1 root root    0 Jan  1 01:01 7777777
+-rw-r--r--   1 root root    0 Jan  1 01:01 88888888
+-rw-r--r--   1 root root    0 Jan  1 01:01 999999999
+-rw-r--r--   1 root root    0 Jan  1 01:01 aaaaaaaaaa
+bash-3.00# umount /dev/mtdblock7
+bash-3.00# mount -t jffs2 /dev/mtdblock7 /mnt
+bash-3.00# ls -al /mnt
+ls: /mnt/8888: No such file or directory
+ls: /mnt/9999: No such file or directory
+ls: /mnt/aaaa: No such file or directory
+total 4
+drwxr-xr-x   3 root root    0 Jan  1 01:00 .
+drwxr-xr-x  15 7099  500 4096 Sep 26  2006 ..
+-rw-r--r--   1 root root    0 Jan  1 01:01 1
+-rw-r--r--   1 root root    0 Jan  1 01:01 22
+-rw-r--r--   1 root root    0 Jan  1 01:01 333
+-rw-r--r--   1 root root    0 Jan  1 01:01 4444
+-rw-r--r--   1 root root    0 Jan  1 01:01 55555
+-rw-r--r--   1 root root    0 Jan  1 01:01 666666
+-rw-r--r--   1 root root    0 Jan  1 01:01 7777777
+bash-3.00#
