@@ -1,14 +1,16 @@
-Subject: Re: JFFS2 problem with filename length > 7
-From: David Woodhouse <dwmw2@infradead.org>
-To: Martin Wedepohl <martinatgd@gmail.com>
-In-Reply-To: <67f0a57c0609262213j56993210h654450841dcac92f@mail.gmail.com>
-References: <67f0a57c0609262213j56993210h654450841dcac92f@mail.gmail.com>
-Content-Type: text/plain
-Date: Wed, 27 Sep 2006 07:12:44 +0100
-Message-Id: <1159337564.3309.91.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GSVfJ-0007i7-Sp
+	for linux-mtd@lists.infradead.org; Wed, 27 Sep 2006 10:25:18 +0100
+Message-ID: <451A4280.5090801@inf.u-szeged.hu>
+Date: Wed, 27 Sep 2006 11:21:04 +0200
+From: Ferenc Havasi <havasi@inf.u-szeged.hu>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: JFFS3 plan extension and user space prototype
+Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dedekind@yandex.ru, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,18 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-09-26 at 23:13 -0600, Martin Wedepohl wrote:
-> bash-3.00# ls -al /mnt
-> ls: /mnt/8888: No such file or directory
-> ls: /mnt/9999: No such file or directory
-> ls: /mnt/aaaa: No such file or directory
+Dear All!
 
-Weird. Please reproduce with CONFIG_JFFS2_FS_DEBUG=1 and show the
-(KERN_DEBUG) messages -- preferably by capturing them (without loss)
-over a serial port. Please also take a snapshot of the offending image
-from the flash.
+We've updated our JFFS3 plan extension with many details, and mesurements.
 
-I suspect a hardware driver or wiring problem.
+We've also released a JFFS3 user space prototype. The goal of it was to
+impelement it in a kernel-friendly way (make it relatively easy to use
+this code later in kernel, too), and make possible to make performance
+measurements.
 
--- 
-dwmw2
+Both of the can be downloaded from our website:
+
+http://www.inf.u-szeged.hu/jffs2/jffs3.php
+
+Any comments are welcome.
+
+Ferenc
