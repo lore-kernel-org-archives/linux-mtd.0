@@ -1,18 +1,17 @@
-Subject: Re: JFFS2 problem with filename length > 7
-From: David Woodhouse <dwmw2@infradead.org>
-To: Martin Wedepohl <martinatgd@gmail.com>
-In-Reply-To: <67f0a57c0609281100y6b049febo69340c157b858ea4@mail.gmail.com>
-References: <67f0a57c0609262213j56993210h654450841dcac92f@mail.gmail.com>
-	<1159337564.3309.91.camel@pmac.infradead.org>
-	<67f0a57c0609271418q61d32478jff09b9a15d29e4be@mail.gmail.com>
-	<1159392902.3309.159.camel@pmac.infradead.org>
-	<67f0a57c0609281100y6b049febo69340c157b858ea4@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 28 Sep 2006 21:26:37 +0100
-Message-Id: <1159475197.3309.336.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GT3tA-000220-E0
+	for linux-mtd@lists.infradead.org; Thu, 28 Sep 2006 22:57:53 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: <linux-mtd@lists.infradead.org>
+Subject: Different erase block sizes in a JFFS2 partion.
+Date: Thu, 28 Sep 2006 23:55:17 +0200
+Message-ID: <01de01c6e348$c94e7330$1267a8c0@Jocke>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +21,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-09-28 at 12:00 -0600, Martin Wedepohl wrote:
-> JFFS2 error: (872) read_direntry: already:  0: read:  9: rd->nsize:  9:
->             ref_offset(ref): 0x00000600: fd->name: 9999
-> JFFS2 error: (872) read_direntry: already:  0: read:  8: rd->nsize:  8:
->             ref_offset(ref): 0x00000548: fd->name: 8888 
+Got multiple NOR chips with top and bottom boot blocks with diffrent EB size
+then the rest of the blocks. 
+I want to put a JFFS2 FS spanning over several chips which makes the FS
+cross top/bottom boot blocks.
+Since(last I looked) JFFS2 can't deal with diffrent EB sizes on the same
+partition I need do something about it.
+I want to use point()/unpoint() and a cached memory mapping for burst access
+and I don't know how to do that yet and I would like some ideas.
 
-Ok, it already seems truncated by this point -- but can you hexdump the
-buffer which was actually read from the flash?
+One idea I have is to reserve the boot blocks with a new type of JFFS2
+node(similar to JFFS2_FEATURE_ROCOMPAT) that spans the whole boot block.
+JFFS2 should not try to move or delete nodes of this type. Not sure
+if thats a good idea or if its hard to impl. yet.
 
--- 
-dwmw2
+Better ideas anyone?
