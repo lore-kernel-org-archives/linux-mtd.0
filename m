@@ -1,19 +1,14 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GSjc5-0003jj-N2
-	for linux-mtd@lists.infradead.org; Thu, 28 Sep 2006 01:18:54 +0100
-Subject: Re: Nand Flash write fails
-From: Thomas Gleixner <tglx@linutronix.de>
-To: ajain@neomagic.com
-In-Reply-To: <04c001c6de5d$46f73a10$561fa8c0@pcajain>
-References: <04c001c6de5d$46f73a10$561fa8c0@pcajain>
+Subject: Re: Exporting jffs2 by nfs with kernel 2.6
+From: David Woodhouse <dwmw2@infradead.org>
+To: Gregory CLEMENT <gclement00@gmail.com>
+In-Reply-To: <305035a40609270731n150513b4obe4249b461a3d1bc@mail.gmail.com>
+References: <305035a40609270731n150513b4obe4249b461a3d1bc@mail.gmail.com>
 Content-Type: text/plain
-Date: Thu, 28 Sep 2006 02:20:07 +0200
-Message-Id: <1159402808.9326.615.camel@localhost.localdomain>
+Date: Thu, 28 Sep 2006 07:43:19 +0100
+Message-Id: <1159425799.3309.168.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Cc: linux-mtd@lists.infradead.org, neilb@cse.unsw.edu.au
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-09-22 at 21:09 +0530, Ajay Jain wrote:
-> Hi, 
+On Wed, 2006-09-27 at 16:31 +0200, Gregory CLEMENT wrote:
+> Hi all,
 > 
-> I have set up a JFFS2 partition on my NAND flash. The board driver in
-> question is my own. I can successfully 'mkfs' & 'mount' that partition.
-> However when I start copying any file to it, it gives the following
-> error.
-> 
-> nand_write_ecc: vectored attempt to write not page aligned data: to =
-> 20b9e4, total_len =       44
-> Write of 68 bytes at 0x0000b9e4 failed. returned -22, retlen 0
-> Not marking the space at 0x0000b9e4 as dirty because the flash driver
-> returned retlen zero
-> 
-> I was looking up the code of the mtd nand layer. I see that in case the
-> data is not alligned on the page boundary, it returns back giving this
-> error. Therefore my question is that is it the responsibility of the
-> "jffs2 layer" or "mtd" layer to issue writes that are aligned to page
-> boundary. 
-> ANY suggestions are welcome.
+> On 2.4.18 we managed to export a jffs2 filesystem by nfs.
+> Now on 2.6.16 we can't.
+> I found 2 problems for it:
+> First, changed was made in nfs, and now they test if
+> s_export_op is not a void pointer. By dding a pointer on
+> this structure (even this structure is void) makes nfs happy.
 
-Update to a recent kernel.
+> If the structure is void nfs use generic function, so for this part
+> I think it's ok
 
-	tglx
+Hm, OK. What are the implications of providing _none_ of our own
+functions and just using the defaults? Shouldn't we provide at least a
+get_parent() function?
+
+By do we need that anyway? I thought we used to just have disconnected
+dentries until we happen to find their place in the tree, at which point
+we connect them.
+
+> Second, nfs need to identify the filesystem to export. It is done
+> either by the device of the filesystem or by a "fsid". I didfn't see any
+> filesystem use a "fsid" and I don't know how to use it. So identification
+> is made if FS_REQUIRES_DEV is set. The problem was in kernel 2.5.7,
+> this flag was removed because "We never really used the block device anyway".
+> Do you mind setting this flag again? Or have you a better idea?
+
+I suspect that we should add another export_ops function for get_fsid().
+
+-- 
+dwmw2
