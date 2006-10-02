@@ -1,19 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
+Received: from pool-71-124-220-156.bstnma.east.verizon.net ([71.124.220.156]
+	helo=YOUR-05C516D783)
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GUQoM-0005WP-P7
-	for linux-mtd@lists.infradead.org; Mon, 02 Oct 2006 17:38:35 +0100
-Received: by py-out-1112.google.com with SMTP id c31so2197037pyd
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 Oct 2006 09:37:31 -0700 (PDT)
-Message-ID: <79d2b1a00610020937o7bee138eg22406e60070f7b80@mail.gmail.com>
-Date: Mon, 2 Oct 2006 20:37:30 +0400
-From: "Taradov Alexander" <taradov@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: DoC Millenium plus 32MB support
+	id 1GUS0K-0008Pe-9a
+	for linux-mtd@lists.infradead.org; Mon, 02 Oct 2006 18:55:00 +0100
+Message-ID: <26911710331035.3955D97867@FFVY1H>
+From: "Israel" <carastm@rpresearch.de>
+To: <linux-mtd@lists.infradead.org>
+Subject: Feel Pleasure from This costs much less than a luxury car - but makes
+	you a lot more confident and attractive.
+Date: Mon, 2 Oct 2006 13:53:22 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+        charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +22,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Is there any progress on Disk-on-chip Millenium Plus 32MB Linux
-Support? Anyone working on it?
+Discover the latest
 
-Or may be there is full documentation on this devices?
+ You are just a click away from something which will eliminate your most distressing trouble. Bigger, stronger and eventually better - this is what you will have in just a couple of months.
 
-I really need to run linux on one device with this chip.
+ You certainly understand what is the main quality of a man in relationships. You'll be dazzled to last for hours and hours with your new stronger, longer bed tool. Just take a look: http://keenechad.com/gal/ms/ 
+You won't increase your most important muscle in gyms - so this is what you have to try!
 
-Thanks.
+ Facts are stubborn things Absence makes the heart go wander. Necessity is the mother of invention A drowning man will clutch at straws.
