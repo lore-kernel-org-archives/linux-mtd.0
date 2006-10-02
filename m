@@ -1,18 +1,24 @@
-Received: from pool-71-124-220-156.bstnma.east.verizon.net ([71.124.220.156]
-	helo=YOUR-05C516D783)
+Received: from ftp.linux-mips.org ([194.74.144.162])
 	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GUS0K-0008Pe-9a
-	for linux-mtd@lists.infradead.org; Mon, 02 Oct 2006 18:55:00 +0100
-Message-ID: <26911710331035.3955D97867@FFVY1H>
-From: "Israel" <carastm@rpresearch.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: Feel Pleasure from This costs much less than a luxury car - but makes
-	you a lot more confident and attractive.
-Date: Mon, 2 Oct 2006 13:53:22 -0400
-MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+	id 1GUXMA-0002M6-7y
+	for linux-mtd@lists.infradead.org; Tue, 03 Oct 2006 00:37:54 +0100
+Received: from localhost.localdomain ([127.0.0.1]:57546 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20037865AbWJBXel (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
+	Tue, 3 Oct 2006 00:34:41 +0100
+Date: Mon, 2 Oct 2006 16:26:18 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Subject: Re: [PATCH 2/2] remove  Momentum Ocelot,
+	Ocelot C and Ocelot G MTD support
+Message-ID: <20061002152618.GC25180@linux-mips.org>
+References: <20061003001659.688e113c.yoichi_yuasa@tripeaks.co.jp>
+	<20061003002015.404330ea.yoichi_yuasa@tripeaks.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20061003002015.404330ea.yoichi_yuasa@tripeaks.co.jp>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Discover the latest
+On Tue, Oct 03, 2006 at 12:20:15AM +0900, Yoichi Yuasa wrote:
 
- You are just a click away from something which will eliminate your most distressing trouble. Bigger, stronger and eventually better - this is what you will have in just a couple of months.
+> This patch has removed Momentum Ocelot, Ocelot C and Ocelot G MTD support.
+> It is listed in feature-removal-schedule.txt .
 
- You certainly understand what is the main quality of a man in relationships. You'll be dazzled to last for hours and hours with your new stronger, longer bed tool. Just take a look: http://keenechad.com/gal/ms/ 
-You won't increase your most important muscle in gyms - so this is what you have to try!
+NAK as well, I won't remove these systems for now.
 
- Facts are stubborn things Absence makes the heart go wander. Necessity is the mother of invention A drowning man will clutch at straws.
+  Ralf
