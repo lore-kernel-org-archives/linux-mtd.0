@@ -1,20 +1,18 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
-	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GV4Pk-0003wj-5v
-	for linux-mtd@lists.infradead.org; Wed, 04 Oct 2006 11:55:48 +0100
-Subject: Re: UBI fixes
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Frank Haverkamp <f.haverkamp@web.de>
-In-Reply-To: <1159956864.13696.25.camel@sauron>
-References: <1159888850.13696.13.camel@sauron>
-	<1159956864.13696.25.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 04 Oct 2006 13:52:32 +0300
-Message-Id: <1159959153.13696.28.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from zoot.lnxi.com ([63.145.151.20])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GVFzh-0001tk-3Q
+	for linux-mtd@lists.infradead.org; Wed, 04 Oct 2006 19:17:43 -0400
+Received: from rjackson by hactar.lnxi.com with local (Exim 4.63)
+	(envelope-from <rjackson@lnxi.com>) id 1GVFzC-00011G-SW
+	for linux-mtd@lists.infradead.org; Wed, 04 Oct 2006 17:17:10 -0600
+Date: Wed, 4 Oct 2006 17:17:10 -0600
+From: Ryan Jackson <rjackson@lnxi.com>
+To: linux-mtd@lists.infradead.org
+Subject: Patch policy
+Message-ID: <20061004231710.GE3345@localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-10-04 at 13:14 +0300, Artem Bityutskiy wrote:
-> ubi.mtd_devs=3D0,"storage","NOR_flash",6
+I have some patches that I'd like to submit.  Is it preferable to submit
+them directly to this list or to linux-kernel?
 
-Err, sorry, no quotes:
-
-ubi.mtd_devs=3D0,storage,NOR_flash,6
-
---=20
-Best Regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks.
