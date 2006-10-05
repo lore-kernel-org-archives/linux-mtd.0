@@ -1,15 +1,19 @@
-Received: from web205.biz.mail.re2.yahoo.com ([68.142.224.167])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GVY3i-0007Qb-5j
-	for linux-mtd@lists.infradead.org; Thu, 05 Oct 2006 14:35:07 -0400
-Message-ID: <20061005183500.69337.qmail@web205.biz.mail.re2.yahoo.com>
-Date: Thu, 5 Oct 2006 11:35:00 -0700 (PDT)
-From: z l <zql@glomationinc.com>
-Subject: Problem with developing Samsung K9F1G08U0A MTD driver
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GVaqc-0008H7-FK
+	for linux-mtd@lists.infradead.org; Thu, 05 Oct 2006 17:33:46 -0400
+Subject: Re: Problem with developing Samsung K9F1G08U0A MTD driver
+From: Thomas Gleixner <tglx@linutronix.de>
+To: z l <zql@glomationinc.com>
+In-Reply-To: <20061005183500.69337.qmail@web205.biz.mail.re2.yahoo.com>
+References: <20061005183500.69337.qmail@web205.biz.mail.re2.yahoo.com>
+Content-Type: text/plain
+Date: Thu, 05 Oct 2006 23:38:30 +0200
+Message-Id: <1160084310.9060.129.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,35 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We have ARM (Cirrus Logic EP93XX) based systems
-running Linux 2.6.8.1.  We are trying to add NAND
-driver for Samsung K9F1G08U0A chip on the board.  We
-are able to have the driver read the MTD and register
-the device.  However writing to the chip using
-nandwrite seem to write some bytes in the OOB area and
-mark the block bad.  Checking with mtd_debug program,
-the information returned as following,
+On Thu, 2006-10-05 at 11:35 -0700, z l wrote:
+> We have ARM (Cirrus Logic EP93XX) based systems
+> running Linux 2.6.8.1.
 
-mtd.type = NAND FLASH
-mtd.flags = MTD_CLEAR_BITS | MTD_ERASEABLE | MTD_OOB |
-MTD_ECC
-mtd.size = 134217728 (128M)
-mtd.erasesize = 131072 (128K)
-mtd.oobblock = 2048 (2K)
-mtd.oobsize = 64 
-mtd.ecctype = MTD_ECC_NONE
-regions = 0
+You omitted: ", based on Cirrus Logic release 1.0.7."
 
-The mtd.flags shows the MTD_ECC is set but the
-mtd.ecctype is set to MTD_ECC_NONE.  We have the
-following line in the driver code,
+Do not try to trick me! 
 
-this->eccmode = NAND_ECC_SOFT;
+http://www.linux-mtd.infradead.org/source.html#kernelversions
 
-Does this set the mtd.flags or set the mtd.ecctype?
+still applies.
 
-What should be the right setting for the Samsung chip?
+Pester Cirrus with problems about their kernel.
 
-Thanks in advance.
+Use an up to date kernel from the community and you get community
+support.
 
-ZL
+	tglx
