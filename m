@@ -1,19 +1,17 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GVc2d-0000Zc-GM
-	for linux-mtd@lists.infradead.org; Thu, 05 Oct 2006 18:50:17 -0400
+Received: from web215.biz.mail.re2.yahoo.com ([68.142.225.202])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GVcdV-0000pQ-8E
+	for linux-mtd@lists.infradead.org; Thu, 05 Oct 2006 19:28:21 -0400
+Message-ID: <20061005232816.40455.qmail@web215.biz.mail.re2.yahoo.com>
+Date: Thu, 5 Oct 2006 16:28:15 -0700 (PDT)
+From: z l <zql@glomationinc.com>
 Subject: Re: Problem with developing Samsung K9F1G08U0A MTD driver
-From: Thomas Gleixner <tglx@linutronix.de>
-To: z l <zql@glomationinc.com>
-In-Reply-To: <20061005220807.86730.qmail@web212.biz.mail.re2.yahoo.com>
-References: <20061005220807.86730.qmail@web212.biz.mail.re2.yahoo.com>
-Content-Type: text/plain
-Date: Fri, 06 Oct 2006 00:55:06 +0200
-Message-Id: <1160088907.9060.165.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+To: tglx@linutronix.de
+In-Reply-To: <1160088907.9060.165.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,73 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-10-05 at 15:08 -0700, z l wrote:
-> > You omitted: ", based on Cirrus Logic release
-> > 1.0.7."
-> > 
-> > Do not try to trick me! 
-> > 
-> Maybe it is an important piece of information, but it
-> was not intentionally left out.
 
-It _IS_ an important piece of information. Go, read and _UNDERSTAND_
-http://www.linux-mtd.infradead.org/source.html#kernelversions
-
-It was in your previous offlist mail to my _BUSINESS_ mail address, when
-you tried to get _FREE_ help from me. I pointed you to that URL in my
-answer:
-
-> Please use a community supported up to date kernel. See also
+> It was in your previous offlist mail to my
+> _BUSINESS_ mail address, when
+> you tried to get _FREE_ help from me. I pointed you
+> to that URL in my
+> answer:
 > 
-> http://www.linux-mtd.infradead.org/source.html#kernelversions
+If I was able to subsribe to the mailing list I would
+never write to you directly.  I already explained to
+you about it in my e-mail.  My main objective in that
+e-mail was to find out how I can subsrible with the
+web page not available and my previous attempts of
+subsribing by e-mail all failed.
+
+> Ah, if the community is ready to please your
+> expectations you are
+> willing to use a community kernel.
+It has nothing to do with pleasing or not.  Would you
+use something that is broken?
+
 > 
->         tglx
-> 
+> Go and blame Cirrus for their unwillingness to work
+> with the community.
+Maybe they are not actively involved in the
+development of latest kernel, but their code is open
+and available for anyone to pick and use.
 
-It was not longer there in your mail to the mailing list. And I'm not
-believing for a second that it was not intentional.
+> Guess who put support for their CPU's into mainline:
+> community people
+> without _ANY_ help from Cirrus.
+I have great respect for people putting their effort
+to make this happen.
 
-> > Use an up to date kernel from the community and you
-> > get community
-> > support.
-> > 
-> We would love to have the latest kernel, but this is
-> the one we can find that has all the device drivers
-> working for our board.  If there is a later version
-> available that has all the drivers we would jump in
-> without any hesitation.
+> This code was written by people with a trust in the
+> "Do ut des" basics
+> of Open Source and you sit there and wait until we
+> have done all the
+> work, so you can have your benefit ?
+If there is something I can contribute I would love
+to. If I know half of what you know about Linux, I
+would be here coding day and night.  
 
-Ah, if the community is ready to please your expectations you are
-willing to use a community kernel.
+> Should I really take your "unintentional" excuse
+> serious ? No way, you
+> just disguised yourself.
+I do not need to disguise anything.
 
-Go and blame Cirrus for their unwillingness to work with the community.
+> If the commmunity supported kernel lacks support of
+> device drivers you
+> are interested in, then you can add it. You are
+> welcome and you will get
+> all the help we can provide.
+Again, if I can of any help, I would.
 
-Guess who put support for their CPU's into mainline: community people
-without _ANY_ help from Cirrus.
+> You use code, which I can not look into and I'm not
+> interested to give
+> witchcraft debugging aid.
+The Cirrus Logic release is open source.  You can
+download it from arm.cirrus.com if you care to take a
+look.
 
-This code was written by people with a trust in the "Do ut des" basics
-of Open Source and you sit there and wait until we have done all the
-work, so you can have your benefit ?
-
-Should I really take your "unintentional" excuse serious ? No way, you
-just disguised yourself.
-
-If the commmunity supported kernel lacks support of device drivers you
-are interested in, then you can add it. You are welcome and you will get
-all the help we can provide.
-
-If you are more pleased by the Cirrus kernel hackery, use it and seek
-help from them.
-
-Open Source is not a self service store without a cashpoint. 
-
-> Now onto our NAND FLASH problems.
-
-I don't care at all.
-
-> Any idea what it might be?
-
-You use code, which I can not look into and I'm not interested to give
-witchcraft debugging aid.
-
-	tglx
+zl
