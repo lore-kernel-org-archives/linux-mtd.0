@@ -1,15 +1,16 @@
-Received: from mgw-ext12.nokia.com ([131.228.20.171])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GVjRp-00028I-Ck
-	for linux-mtd@lists.infradead.org; Fri, 06 Oct 2006 02:44:46 -0400
-Subject: Re: [PATCH 0/2] NAND: nandsim sector-wise allocation
+	id 1GVjWM-0002FZ-VJ
+	for linux-mtd@lists.infradead.org; Fri, 06 Oct 2006 02:49:41 -0400
+Subject: Re: [PATCH 1/2] NAND: nandsim sector-wise allocation
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Vijay Kumar <vijaykumar@bravegnu.org>
-In-Reply-To: <17701.14724.377713.929566@vaishnavi.localdomain>
+In-Reply-To: <17701.15123.205461.480037@vaishnavi.localdomain>
 References: <17701.14724.377713.929566@vaishnavi.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 06 Oct 2006 09:44:34 +0300
-Message-Id: <1160117074.13696.33.camel@sauron>
+	<17701.15123.205461.480037@vaishnavi.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 06 Oct 2006 09:49:17 +0300
+Message-Id: <1160117357.13696.37.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,24 +24,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Vijay,
+On Thu, 2006-10-05 at 22:34 +0530, Vijay Kumar wrote:
+> The existing config options related to chip mapping and chip-wise
+> allocation are moved to kernel configuration system.
 
-On Thu, 2006-10-05 at 22:27 +0530, Vijay Kumar wrote:
-> The present nandsim allocates memory equal to the size of the NAND
-> flash during initialization in one shot. Thus it is impossible to
-> simulate a 256MB NAND flash on a system with 128MB RAM.=20
+BTW, it is a nice idea to add Signed-off-by, just a note for future
+patches :-)
 
-Right, I've been bearing a plan to fix this since long, I was even
-thinking to re-implement it and make it able to work with HDD to emulate
-really huge NANDs. But, time, time ...
-
-> For most testing purposes, only a part of the the NAND memory
-> allocated in the simulator is used. This patch set modifies the
-> simulator so as to allocate a NAND page when it is written to, and
-> deallocates the page when it is erased. With this it is possible to
-> simulate large NAND flash devices on computers with less RAM.
-
-Well, the idea sounds nice.
+>=20
+> Index: linux-2.6-mtd-quilt/drivers/mtd/nand/Kconfig
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> --- linux-2.6-mtd-quilt.orig/drivers/mtd/nand/Kconfig	2006-10-01 18:56:35=
+.000000000 +0530
+> +++ linux-2.6-mtd-quilt/drivers/mtd/nand/Kconfig	2006-10-01 20:35:47.0000=
+00000 +0530
+> @@ -239,4 +239,28 @@
+>  	  The simulator may simulate various NAND flash chips for the
+>  	  MTD nand layer.
+> =20
+> +choice=20
+> +	depends on MTD_NAND_NANDSIM
+> +	prompt "Mapping/allocation method"
+> +	default MTD_NAND_NANDSIM_CHIP_ALLOC
+> +
+> +config  MTD_NAND_NANDSIM_CHIP_MAP
+> +	bool "Mapped flash image"
+> +	help
+> +	  The flash data is stored in an image mapped to memory.
+Is this option really needed? I've never heard somebody using it. Do you
+use it? If no, will you mind to get rid of it at all? And then of course
+MTD_NAND_NANDSIM_CHIP_ALLOC won't be needed as well.
 
 --=20
 Best Regards,
