@@ -1,21 +1,19 @@
-Received: from py-out-1112.google.com ([64.233.166.178])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GVi1b-0001m7-R9
-	for linux-mtd@lists.infradead.org; Fri, 06 Oct 2006 01:13:36 -0400
-Received: by py-out-1112.google.com with SMTP id c59so1045265pyc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Oct 2006 22:13:30 -0700 (PDT)
-Message-ID: <4525E60D.1030006@gmail.com>
-Date: Fri, 06 Oct 2006 00:13:49 -0500
-From: Nishanth Menon <menon.nishanth@gmail.com>
-MIME-Version: 1.0
-To: z l <zql@glomationinc.com>
-Subject: Re: Problem with developing Samsung K9F1G08U0A MTD driver
-References: <20061005220807.86730.qmail@web212.biz.mail.re2.yahoo.com>
-In-Reply-To: <20061005220807.86730.qmail@web212.biz.mail.re2.yahoo.com>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
+Received: from mgw-ext12.nokia.com ([131.228.20.171])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GVjRp-00028I-Ck
+	for linux-mtd@lists.infradead.org; Fri, 06 Oct 2006 02:44:46 -0400
+Subject: Re: [PATCH 0/2] NAND: nandsim sector-wise allocation
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vijay Kumar <vijaykumar@bravegnu.org>
+In-Reply-To: <17701.14724.377713.929566@vaishnavi.localdomain>
+References: <17701.14724.377713.929566@vaishnavi.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 06 Oct 2006 09:44:34 +0300
+Message-Id: <1160117074.13696.33.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,46 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-z l stated on 10/5/2006 1:35 PM:
-> driver for Samsung K9F1G08U0A chip on the board.  We
-<snip>
->
-> mtd.type = NAND FLASH
-> mtd.flags = MTD_CLEAR_BITS | MTD_ERASEABLE | MTD_OOB |
-> MTD_ECC
-> mtd.size = 134217728 (128M)
-> mtd.erasesize = 131072 (128K)
-> mtd.oobblock = 2048 (2K)
-> mtd.oobsize = 64
-> mtd.ecctype = MTD_ECC_NONE
-> regions = 0
->
-z l stated on 10/5/2006 5:08 PM:
-<snip>
-> http://lists.infradead.org/pipermail/linux-mtd/2006-July/016159.html.
-> and interesting enough it fixed one of our problems. 
-> So it was the nandwriite that was doing the bad thing
-> by writing things where "not suppose to" and made good
-> blocks into "bad".  After applying the fix, at least
-> we can write to the NAND without making lots of new
-I have hardly looked at the nand mtd code, but maybe the data sheet
-(http://www.samsung.com/Products/Semiconductor/NANDFlash/SLC_LargeBlock/1Gbit/K9F1G08U0A/ds_k9f1g08x0a_rev10.pdf#search=%22K9F1G08U0A%20%20data%20sheet%22)
-might help, on the R1 device is 128M, the U device is 256M(so am not too
-sure abt ur mtd.size param), on this device, page1,page2 offset 0 had
-badblock info, so am not sure if mtd is putting ecc over there..
+Hello Vijay,
 
-> "bad" blocks.  And the JFFS2 copied over is somewhat
-> working.  Still got lot's of "nand_read_ecc: Failed
-> ECC read, page 0xXXXXXXXXX" when doing normal file
-> access.  So we are looking into that to see what is
-> the cause of this problem.
-mebbe u can try this: (dunno if it works): flash_eraseall mtd and mount
-and umount the same, let jffs2 maintain the bad blocks - remount should
-not show any jffs2 errors.
-another issue is possibly that ur host based mkfs.jffs2 might not have
-been given the right params..
+On Thu, 2006-10-05 at 22:27 +0530, Vijay Kumar wrote:
+> The present nandsim allocates memory equal to the size of the NAND
+> flash during initialization in one shot. Thus it is impossible to
+> simulate a 256MB NAND flash on a system with 128MB RAM.=20
 
-Just my guesses.. but then.. I can be completely wrong...
+Right, I've been bearing a plan to fix this since long, I was even
+thinking to re-implement it and make it able to work with HDD to emulate
+really huge NANDs. But, time, time ...
 
-Regards,
-Nishanth Menon
+> For most testing purposes, only a part of the the NAND memory
+> allocated in the simulator is used. This patch set modifies the
+> simulator so as to allocate a NAND page when it is written to, and
+> deallocates the page when it is erased. With this it is possible to
+> simulate large NAND flash devices on computers with less RAM.
+
+Well, the idea sounds nice.
+
+--=20
+Best Regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
