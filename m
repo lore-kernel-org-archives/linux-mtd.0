@@ -1,19 +1,28 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GWjn3-0007co-C3
-	for linux-mtd@lists.infradead.org; Sun, 08 Oct 2006 21:18:51 -0400
-Date: Mon, 9 Oct 2006 01:16:38 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: dwmw2@infradead.org
-Subject: [2.6 patch] SSFDC must depend on BLOCK
-Message-ID: <20061008231638.GS6755@stusta.de>
+Received: from krt.tmd.ns.ac.yu ([147.91.177.65] helo=krt.neobee.net)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GXDDS-0007FG-EU
+	for linux-mtd@lists.infradead.org; Tue, 10 Oct 2006 04:44:04 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by krt.neobee.net (Postfix) with ESMTP id 6888880822
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 10 Oct 2006 10:43:52 +0200 (CEST)
+Received: from krt.neobee.net ([127.0.0.1])
+	by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id 29772-05 for <linux-mtd@lists.infradead.org>;
+	Tue, 10 Oct 2006 10:43:50 +0200 (CEST)
+Received: from had (unknown [192.168.0.92])
+	by krt.neobee.net (Postfix) with ESMTP id 795101646C
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 10 Oct 2006 10:43:50 +0200 (CEST)
+From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: MTDRAM and CONFIG_MTDRAM_ABS_POS
+Date: Tue, 10 Oct 2006 10:45:47 +0200
+Message-ID: <00d901c6ec48$7b2ac9c0$5c00a8c0@niit.micronasnit.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: Jesper Juhl <jesper.juhl@gmail.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,37 +32,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes the following compile error with 
-CONFIG_SSFDC=m, CONFIG_BLOCK=n:
+Hello all,
+I have question regarding selecting MTDRAM device. I would like to set
+absolute 
+position for MTDRAM device but it seems that this functionality is gone.
 
-<--  snip  -->
+I tried with google and I found that this behavioure exist earlier but in 
+current MTD this functionality is gone.
 
-...
-  CC [M]  drivers/mtd/mtd_blkdevs.o
-/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtd_blkdevs.c:40: warning: ‘struct request’ declared inside parameter list
-/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtd_blkdevs.c:40: warning: its scope is only this definition or declaration, which is probably not what you want
-/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtd_blkdevs.c: In function ‘do_blktrans_request’:
-/home/bunk/linux/kernel-2.6/git/linux-2.6/drivers/mtd/mtd_blkdevs.c:45: error: dereferencing pointer to incomplete type
-...
-make[3]: *** [drivers/mtd/mtd_blkdevs.o] Error 1
+What is Your suggestion regarding CONFIG_MTDRAM_ABS_POS?
 
-<--  snip  -->
-
-Bug report by Jesper Juhl.
-
-This patch also removes a pointless "default n" from the SSFDC option.
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
---- linux-2.6/drivers/mtd/Kconfig.old	2006-10-09 00:56:29.000000000 +0200
-+++ linux-2.6/drivers/mtd/Kconfig	2006-10-09 00:57:18.000000000 +0200
-@@ -265,8 +265,7 @@
- 
- config SSFDC
- 	tristate "NAND SSFDC (SmartMedia) read only translation layer"
--	depends on MTD
--	default n
-+	depends on MTD && BLOCK
- 	help
- 	  This enables read only access to SmartMedia formatted NAND
- 	  flash. You can mount it with FAT file system.
+Best regards Mile
