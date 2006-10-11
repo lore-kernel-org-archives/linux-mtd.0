@@ -1,28 +1,19 @@
-Received: from krt.tmd.ns.ac.yu ([147.91.177.65] helo=krt.neobee.net)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GXDDS-0007FG-EU
-	for linux-mtd@lists.infradead.org; Tue, 10 Oct 2006 04:44:04 -0400
-Received: from localhost (localhost [127.0.0.1])
-	by krt.neobee.net (Postfix) with ESMTP id 6888880822
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Oct 2006 10:43:52 +0200 (CEST)
-Received: from krt.neobee.net ([127.0.0.1])
-	by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 29772-05 for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Oct 2006 10:43:50 +0200 (CEST)
-Received: from had (unknown [192.168.0.92])
-	by krt.neobee.net (Postfix) with ESMTP id 795101646C
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Oct 2006 10:43:50 +0200 (CEST)
-From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: MTDRAM and CONFIG_MTDRAM_ABS_POS
-Date: Tue, 10 Oct 2006 10:45:47 +0200
-Message-ID: <00d901c6ec48$7b2ac9c0$5c00a8c0@niit.micronasnit.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GXdsL-0000ob-P5
+	for linux-mtd@lists.infradead.org; Wed, 11 Oct 2006 09:12:01 -0400
+Subject: Re: [PATCH 2/2] NAND: updated nandsim page-wise allocation
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <17705.10271.142759.155513@vaishnavi.localdomain>
+References: <17705.10271.142759.155513@vaishnavi.localdomain>
+Content-Type: text/plain
+Date: Wed, 11 Oct 2006 16:11:24 +0300
+Message-Id: <1160572284.3260.3.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: Vijay Kumar <vijaykumar@bravegnu.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,14 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello all,
-I have question regarding selecting MTDRAM device. I would like to set
-absolute 
-position for MTDRAM device but it seems that this functionality is gone.
+David,
 
-I tried with google and I found that this behavioure exist earlier but in 
-current MTD this functionality is gone.
+please, pull Vijay's nandsim patches from
+git://git.infradead.org/~dedekind/public_git/dedekind-mtd-2.6.git.
 
-What is Your suggestion regarding CONFIG_MTDRAM_ABS_POS?
+Vijay, thank you!
 
-Best regards Mile
+-- 
+Artem Bityutskiy
