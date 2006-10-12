@@ -1,28 +1,21 @@
-Received: from lvs2.netcore.co.in ([202.162.240.2])
+Received: from mta04.mail.t-online.hu ([195.228.240.57]
+	helo=mta01.mail.t-online.hu)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GXwgn-0002g4-Ir
-	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 05:17:22 -0400
-Received: from uucp3.netcore.co.in (uucp3.netcore.co.in [202.162.229.13])
-	by lvs2.netcore.co.in (Postfix) with ESMTP id 3DFE3B7AAD
+	id 1GXxbC-0003Ha-PN
+	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 06:15:41 -0400
+Received: from [192.168.1.11] (dsl51B696AD.pool.t-online.hu [81.182.150.173])
+	(Authenticated sender: takacs.aron@infracont.hu)
+	by mail.t-online.hu (Postfix) with ESMTP
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Oct 2006 14:47:01 +0530 (IST)
-Received: from uucp1.netcore.co.in (unknown [192.168.2.1])
-	by uucp3.netcore.co.in (Postfix) with ESMTP id 8A8D53B9FD
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Oct 2006 14:47:00 +0530 (IST)
-Received: from thick.localnova.com (unknown [10.7.138.16])
-	by chennai.novatium.com (Postfix) with ESMTP id 16AC87C004D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Oct 2006 15:16:16 +0530 (IST)
-Subject: Problem in Erase/Writing the flash device
-From: harishkumar <harishkumar@novatium.com>
+	Thu, 12 Oct 2006 12:15:33 +0200 (CEST)
+Message-ID: <452E15C6.4000303@infracont.hu>
+Date: Thu, 12 Oct 2006 12:15:34 +0200
+From: =?ISO-8859-2?Q?Tak=E1cs_=C1ron?= <takacs.aron@infracont.hu>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Thu, 12 Oct 2006 14:39:40 +0530
-Message-Id: <1160644180.11204.18.camel@thick.localnova.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Reply-To: harishkumar@novatium.com
+Subject: jffs2 summary problem
+Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +26,39 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
-	I am new to flash devices. I am writing AM29LV256MH 16MB flash map
-driver using MTD for my ARM board.
-I used jedec_probe. The flash is 16 bit.
-I mapped my partitions for the flash.
 
-Iam using 2.6.15 kernel.
-When the kernel loads, it succesfully detects the flash.
-i gave starting address as 0x02000000 & length as 0x01000000 & width as
-2.
+I have to shorten the mount time of a jffs2 filesystem. I am working on 
+a PXA270 based board witha 2.6.18 kernel. I have the jffs2 filesystem in 
+the fourth partition of the flash  (dev/mtdblock3), its size is about 
+10Mb. The mount time is about 1.5sec. I am doing the followings:
 
-after booting up the kernel, cat /proc/mtd displayed the following
-thing,
-dev:	size		erasesize	name
-mtd0:	01000000	00010000	Entire flash
-mtd1:	00050000	00010000	Bootloader
-mtd2:	00200000	00010000	Kernel
-mtd3:	00c00000	00010000	Filesystem
-mtd4:	001b0000	00010000	Reserved
+My kernel config looks likde this:
+
+CONFIG_JFFS2_FS=y
+CONFIG_JFFS2_FS_DEBUG=0
+CONFIG_JFFS2_FS_WRITEBUFFER=y
+CONFIG_JFFS2_SUMMARY=y
+
+Now I create the jffs2 image:
+
+mkfs.jffs2 -r rootfs/adatok -o colibri.jffs2 -e 0x40000 --pad=0xa40000
+Result: colibri.jffs2 10,2Mb
+
+After that I am running sumtool:
+
+sumtool -e 0x40000 -p 0xa40000 -v -icolibri.jffs2 -ocolibri_sum.jffs2
+Result: colibri_sum.jffs2 256kb
+
+Now I copy the file (from filesystem on nfs) to the flash:
+
+dd if=/colibri_sum.jffs2 of=/dev/mtdblock3 bs=256k
+
+After all I have the following situation:
+Mount time is the same. After mounting the first "ls" takes a long time. 
+On the serial console I can se a lot of characters.
+What I am doing wrong?
+Thanks for your help!
 
 
-All this seems to be ok, but normal read/write/erase operation on flash
-device not happening.
-I tried to read from the device /dev/mtd0 & dumped into file, the file
-displayed only zeros.
-Normally when no contents is there, it should display only ffff's but is
-strange it is displaying zeros.
-
-Then i tried to erase the flash using mtd-utils,
-i got MEMERASE: input/output error.
-
-
-Somebody help me............ please............
-
-Harish
+Best regards:
+Áron Takács
