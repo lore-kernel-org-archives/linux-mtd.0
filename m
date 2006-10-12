@@ -1,17 +1,17 @@
-Received: from hskim.ucsd.edu ([132.239.95.11])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GXeOE-0001F0-3X
-	for linux-mtd@lists.infradead.org; Wed, 11 Oct 2006 09:45:33 -0400
-Resent-Message-ID: <20061011134400.GA26666@pooky.senux.com>
-Date: Wed, 11 Oct 2006 09:03:58 +0900
-From: Seongsu Lee <senux@senux.com>
-To: linux-mtd@lists.infradead.org
-Subject: mounting yaffs2 on mtdconcat-ed partition
-Message-ID: <20061011000358.GA21321@pooky.senux.com>
+Received: from mo30.po.2iij.net ([210.128.50.53])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GXw5U-00060B-Oh
+	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 09:38:46 +0100
+Date: Thu, 12 Oct 2006 17:38:15 +0900
+From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+To: dwmw2@infradead.org
+Subject: [PATCH] remove ITE 8172G and Globespan IVR MTD support
+Message-Id: <20061012173815.519af844.yoichi_yuasa@tripeaks.co.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: cgan@iders.ca
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, Ralf Baechle <ralf@linux-mips.org>,
+	yoichi_yuasa@tripeaks.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,128 +21,180 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-The test machine is a small embedded box, 
-labeled xhyper270a-nand6ea from HyBus, Korea. 
-The version of Linux kernel that I used in the test is 
-2.6.11.
+This patch has removed ITE 8172G and Globespan IVR MTD support.
+These boards support have already been removed.
 
-I created two concatenated partition as the follow. 
+Yoichi
 
-[dmesg]
-Concatenating MTD devices:
-(0): "xhyper27x_Nand_Flash_A_128K"
-(1): "xhyper27x_Nand_Flash_B_128K"
-into device "posllayer0"
-Concatenating MTD devices:
-(0): "xhyper27x_Nand_Flash_C_128K"
-into device "posllayer1"
+Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Acked-by: Ralf Baechle <ralf@linux-mips.org>
 
-[root@hybus tmp]# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00040000 00040000 "boot"
-mtd1: 00180000 00040000 "kernel"
-mtd2: 01e40000 00040000 "rootfs"
-mtd3: 08000000 00020000 "xhyper27x_Nand_Flash_A_128K"
-mtd4: 08000000 00020000 "xhyper27x_Nand_Flash_B_128K"
-mtd5: 08000000 00020000 "xhyper27x_Nand_Flash_C_128K"
-mtd6: 08000000 00020000 "xhyper27x_Nand_Flash_D_128K"
-mtd7: 10000000 00020000 "posllayer0"
-mtd8: 08000000 00020000 "posllayer1"
-
-The problem is that I can't mount yaffs2 filesystem on
-a partition that is concatenated by mtdconcat.c. Follow is
-the message in mount command. (permission error was occured)
-
-[root@hybus mnt]# eraseall /dev/mtd6
-Erasing 128 Kibyte @ 0 --  0 % complete.
-eraseall: /dev/mtd6: MTD Erase failure: Input/output error
-Erasing 128 Kibyte @ c000000 -- 11 % complete.
-eraseall: /dev/mtd6: MTD Erase failure: Input/output error
-Erasing 128 Kibyte @ ffe0000 --  3 % complete.
-[root@hybus mnt]# mount -t yaffs2 /dev/mtdblock6 /mnt/data6
-mount: permission denied. (are you root?)
-
-So, I looked the source code of yaffs2 and mtd. I found that
-there is not bad block management support in mtdconcat. 
-Am I right? I made follow simple patch for mtdconcat.c and 
-it works. (mounting)
-
-Index: mtdconcat.c
-===================================================================
-RCS file: /***/linux/drivers/mtd/mtdconcat.c,v
-retrieving revision 1.1.1.1
-diff -r1.1.1.1 mtdconcat.c
-639a640,687
-> static int concat_block_isbad(struct mtd_info *mtd, loff_t ofs) {
->        struct mtd_concat *concat = CONCAT(mtd);
->        int i;
->        int err = 0;
->
->        if (ofs > mtd->size) {
->                return -EINVAL;
->        }
->
->        for (i = 0; i < concat->num_subdev; i++) {
->                struct mtd_info *subdev = concat->subdev[i];
->
->                if (ofs >= subdev->size) {
->                        ofs -= subdev->size;
->                        continue;
->                }
->
->                err = subdev->block_isbad(subdev, ofs);
->                break;
->        }
->
->        return err;
-> }
->
-> static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs) {
->        struct mtd_concat *concat = CONCAT(mtd);
->        int i;
->        int err = 0;
->
->        if (ofs > mtd->size) {
->                return -EINVAL;
->        }
->
->        for (i = 0; i < concat->num_subdev; i++) {
->                struct mtd_info *subdev = concat->subdev[i];
->
->                if (ofs >= subdev->size) {
->                        ofs -= subdev->size;
->                        continue;
->                }
->
->                err = subdev->block_isbad(subdev, ofs);
->                break;
->        }
->
->        return err;
-> }
->
-754a803,806
->       /* bad block management */
->       concat->mtd.block_isbad   = concat_block_isbad;
->       concat->mtd.block_markbad = concat_block_markbad;
->
-
-The result of mount test after patching mtdconcat.c.
-
-[root@hybus mnt]# mount -t yaffs2 /dev/mtdblock7 /mnt/data7
-[root@hybus mnt]# df -h
-Filesystem                Size      Used Available Use% Mounted on
-/dev/rom2                30.3M     15.3M     15.0M  51% /
-/dev/mtdblock7          256.0M      1.0M    255.0M   0% /mnt/data7
-
-I think bad block management is not supported in mtdconcat.
-Is it right? If so, could you somebody add the support?
-
-Let me know if something wrong in my posting. 
-I am waiting for help.
-
--- 
-Seongsu Lee - http://www.senux.com/
-"World domination. Fast" (By Linus Torvalds)
+diff -pruN -X generic/Documentation/dontdiff generic-orig/drivers/mtd/maps/cstm_mips_ixx.c generic/drivers/mtd/maps/cstm_mips_ixx.c
+--- generic-orig/drivers/mtd/maps/cstm_mips_ixx.c	2006-09-23 23:12:11.971148000 +0900
++++ generic/drivers/mtd/maps/cstm_mips_ixx.c	2006-09-24 00:03:39.219567750 +0900
+@@ -40,62 +40,6 @@
+ #include <linux/mtd/partitions.h>
+ #include <linux/delay.h>
+ 
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-#define CC_GCR             0xB4013818
+-#define CC_GPBCR           0xB401380A
+-#define CC_GPBDR           0xB4013808
+-#define CC_M68K_DEVICE     1
+-#define CC_M68K_FUNCTION   6
+-#define CC_CONFADDR        0xB8004000
+-#define CC_CONFDATA        0xB8004004
+-#define CC_FC_FCR          0xB8002004
+-#define CC_FC_DCR          0xB8002008
+-#define CC_GPACR           0xB4013802
+-#define CC_GPAICR          0xB4013804
+-#endif /* defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR) */
+-
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-void cstm_mips_ixx_set_vpp(struct map_info *map,int vpp)
+-{
+-	static DEFINE_SPINLOCK(vpp_lock);
+-	static int vpp_count = 0;
+-	unsigned long flags;
+-
+-	spin_lock_irqsave(&vpp_lock, flags);
+-
+-	if (vpp) {
+-		if (!vpp_count++) {
+-			__u16	data;
+-			__u8	data1;
+-			static u8 first = 1;
+-
+-			// Set GPIO port B pin3 to high
+-			data = *(__u16 *)(CC_GPBCR);
+-			data = (data & 0xff0f) | 0x0040;
+-			*(__u16 *)CC_GPBCR = data;
+-			*(__u8 *)CC_GPBDR = (*(__u8*)CC_GPBDR) | 0x08;
+-			if (first) {
+-				first = 0;
+-				/* need to have this delay for first
+-				   enabling vpp after powerup */
+-				udelay(40);
+-			}
+-		}
+-	} else {
+-		if (!--vpp_count) {
+-			__u16	data;
+-
+-			// Set GPIO port B pin3 to high
+-			data = *(__u16 *)(CC_GPBCR);
+-			data = (data & 0xff3f) | 0x0040;
+-			*(__u16 *)CC_GPBCR = data;
+-			*(__u8 *)CC_GPBDR = (*(__u8*)CC_GPBDR) & 0xf7;
+-		}
+-	}
+-	spin_unlock_irqrestore(&vpp_lock, flags);
+-}
+-#endif
+-
+ /* board and partition description */
+ 
+ #define MAX_PHYSMAP_PARTITIONS    8
+@@ -107,29 +51,6 @@ struct cstm_mips_ixx_info {
+ 	int num_partitions;
+ };
+ 
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-#define PHYSMAP_NUMBER  1  // number of board desc structs needed, one per contiguous flash type
+-const struct cstm_mips_ixx_info cstm_mips_ixx_board_desc[PHYSMAP_NUMBER] =
+-{
+-    {   // 28F128J3A in 2x16 configuration
+-        "big flash",     // name
+-	0x08000000,      // window_addr
+-	0x02000000,      // window_size
+-        4,               // bankwidth
+-	1,               // num_partitions
+-    }
+-
+-};
+-static struct mtd_partition cstm_mips_ixx_partitions[PHYSMAP_NUMBER][MAX_PHYSMAP_PARTITIONS] = {
+-{   // 28F128J3A in 2x16 configuration
+-	{
+-		.name = "main partition ",
+-		.size = 0x02000000, // 128 x 2 x 128k byte sectors
+-		.offset = 0,
+-	},
+-},
+-};
+-#else /* defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR) */
+ #define PHYSMAP_NUMBER  1  // number of board desc structs needed, one per contiguous flash type
+ const struct cstm_mips_ixx_info cstm_mips_ixx_board_desc[PHYSMAP_NUMBER] =
+ {
+@@ -151,7 +72,6 @@ static struct mtd_partition cstm_mips_ix
+ 	},
+ },
+ };
+-#endif /* defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR) */
+ 
+ struct map_info cstm_mips_ixx_map[PHYSMAP_NUMBER];
+ 
+@@ -184,17 +104,10 @@ int __init init_cstm_mips_ixx(void)
+ 		cstm_mips_ixx_map[i].name = cstm_mips_ixx_board_desc[i].name;
+ 		cstm_mips_ixx_map[i].size = cstm_mips_ixx_board_desc[i].window_size;
+ 		cstm_mips_ixx_map[i].bankwidth = cstm_mips_ixx_board_desc[i].bankwidth;
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-                cstm_mips_ixx_map[i].set_vpp = cstm_mips_ixx_set_vpp;
+-#endif
+ 		simple_map_init(&cstm_mips_ixx_map[i]);
+ 		//printk(KERN_NOTICE "cstm_mips_ixx: ioremap is %x\n",(unsigned int)(cstm_mips_ixx_map[i].virt));
+ 	}
+ 
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-        setup_ITE_IVR_flash();
+-#endif /* defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR) */
+-
+ 	for (i=0;i<PHYSMAP_NUMBER;i++) {
+                 parts = &cstm_mips_ixx_partitions[i][0];
+ 		jedec = 0;
+@@ -241,38 +154,6 @@ static void __exit cleanup_cstm_mips_ixx
+ 		}
+ 	}
+ }
+-#if defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR)
+-void PCISetULongByOffset(__u32 DevNumber, __u32 FuncNumber, __u32 Offset, __u32 data)
+-{
+-	__u32	offset;
+-
+-	offset = ( unsigned long )( 0x80000000 | ( DevNumber << 11 ) + ( FuncNumber << 8 ) + Offset) ;
+-
+-	*(__u32 *)CC_CONFADDR = offset;
+-	*(__u32 *)CC_CONFDATA = data;
+-}
+-void setup_ITE_IVR_flash()
+-{
+-		__u32	size, base;
+-
+-		size = 0x0e000000;		// 32MiB
+-		base = (0x08000000) >> 8 >>1; // Bug: we must shift one more bit
+-
+-		/* need to set ITE flash to 32 bits instead of default 8 */
+-#ifdef CONFIG_MIPS_IVR
+-		*(__u32 *)CC_FC_FCR = 0x55;
+-		*(__u32 *)CC_GPACR = 0xfffc;
+-#else
+-		*(__u32 *)CC_FC_FCR = 0x77;
+-#endif
+-		/* turn bursting off */
+-		*(__u32 *)CC_FC_DCR = 0x0;
+-
+-		/* setup for one chip 4 byte PCI access */
+-		PCISetULongByOffset(CC_M68K_DEVICE, CC_M68K_FUNCTION, 0x60, size | base);
+-		PCISetULongByOffset(CC_M68K_DEVICE, CC_M68K_FUNCTION, 0x64, 0x02);
+-}
+-#endif /* defined(CONFIG_MIPS_ITE8172) || defined(CONFIG_MIPS_IVR) */
+ 
+ module_init(init_cstm_mips_ixx);
+ module_exit(cleanup_cstm_mips_ixx);
+@@ -280,4 +161,4 @@ module_exit(cleanup_cstm_mips_ixx);
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Alice Hennessy <ahennessy@mvista.com>");
+-MODULE_DESCRIPTION("MTD map driver for ITE 8172G and Globespan IVR boards");
++MODULE_DESCRIPTION("MTD map driver for MIPS boards");
