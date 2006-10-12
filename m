@@ -1,30 +1,20 @@
-Received: from e36.co.us.ibm.com ([32.97.110.154])
+Received: from mail.emacinc.com ([63.245.244.68])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GY1Yd-0005ko-3v
-	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 10:29:21 -0400
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e36.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id k9CET8os001277
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Oct 2006 10:29:08 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	k9CET8dJ295224
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Oct 2006 08:29:08 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	k9CET8Cs019058
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Oct 2006 08:29:08 -0600
-Subject: Re: Slow JFFS2 as root file system
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: z l <zql@glomationinc.com>
-In-Reply-To: <20061012141726.19158.qmail@web202.biz.mail.re2.yahoo.com>
-References: <20061012141726.19158.qmail@web202.biz.mail.re2.yahoo.com>
-Content-Type: text/plain
-Date: Thu, 12 Oct 2006 09:33:06 -0500
-Message-Id: <1160663586.4043.18.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1GY1nG-00064N-0I
+	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 10:44:25 -0400
+Received: from [63.245.244.67] (helo=eng011.emacinc.com)
+	by mail.emacinc.com with esmtp (Exim 4.50) id 1GY1mx-0008BW-EL
+	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 09:44:05 -0500
+From: NZG <ngustavson@emacinc.com>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 12 Oct 2006 09:43:13 -0500
+MIME-Version: 1.0
+Content-Disposition: inline
+Message-Id: <200610120943.13429.ngustavson@emacinc.com>
+Subject: inftl broken?
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,15 +24,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-10-12 at 07:17 -0700, z l wrote:
-> Linux 2.6.18 running on EP9302 ARM processor based
-> board booting with JFFS2 128MB NAND FLASH as root file
-> system takes 3 - 4 minutes to get root file system
-> mounted.  Is this typical for JFFS2?  Anyway to
-> shorten the time?
+I've been going throught the mailing lists and haven't been able to come to=
+ a=20
+clear conclusion as to the functionality of inftl. I see a lot of questions=
+,=20
+but I have yet to find a conclusive answer.
 
-Perhaps take a look at the CONFIG_JFFS2_SUMMARY option in the kernel,
-and the corresponding sumtool in mtd-utils.  That will help speed up
-mount times at least.
+When I attempt to use it, it appears to be broken.
 
-josh
+I have build a vanilla 2.6.14.7 kernel, installed it on a debian system, an=
+d=20
+installed mtd-tools.
+
+=46rom the target I:
+modprobe inftl
+modprobe diskonchip
+
+This correctly detects the diskon chip and creates a partition inftla
+
+I create a secondary partition inftla1 with fdisk.
+then:
+mke2fs /dev/inftla1
+mount /dev/inftla1 /mnt
+cd /mnt
+touch test
+cd /
+umount /mnt
+
+I then reboot the system
+
+modprobe inftl
+modprobe diskonchip
+mount /dev/inftla1 /mnt
+
+and my test file is gone.
+
+I have also attempted to use 2.6.18. It also fails, but differently.
+It completely replaces the bad block chain every time the diskonchip driver=
+=20
+mounts.
+
+Now, I'm flexible in how this is to be used, but I need a working system.
+
+My question is:
+***********Is anyone using inftl successfully in any way?*************
+
+Please include details, i.e. filesystem, kernel, utils, etc...
+If it' s proprietary and you can't share, then at least say "yes".
+
+If this doesn't work under any circumstances, please consider removing it f=
+rom=20
+the kernel, or at least officially calling it broken.
+
+I asked this same question on the IRC last night and no-one seemed to know.
+
+NZG
