@@ -1,19 +1,16 @@
-Received: from py-out-1112.google.com ([64.233.166.181])
+Received: from [82.194.46.27] (helo=REFGFI01.BAH.BAPCO.INT)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GY9Wu-0001ud-SF
-	for linux-mtd@lists.infradead.org; Thu, 12 Oct 2006 19:00:01 -0400
-Received: by py-out-1112.google.com with SMTP id c31so850146pyd
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Oct 2006 15:59:54 -0700 (PDT)
-Message-ID: <6934efce0610121559o3f38754bmc0a768fd71041378@mail.gmail.com>
-Date: Thu, 12 Oct 2006 15:59:54 -0700
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Couple ideas for custom jffs2 build
+	id 1GYEEd-0004JY-BE
+	for linux-mtd@lists.infradead.org; Fri, 13 Oct 2006 00:01:26 -0400
+From: esafe@bapco.net
+To: linux-mtd@lists.infradead.org
+Subject: Alert from eSafe: Text.com   Infected with Win32.Mydoom.bf
+Date: Sun, 13 Oct 2006 06:57:00 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <REFGFI01R77bieLYCT400010dbf@REFGFI01.BAH.BAPCO.INT>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,16 +20,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are attempting to reduce RAM consumption of jffs2 for a specific
-customer with a specific use case in mind.  One idea is to hack it to
-merge jffs2_full_dnode and jffs3_node_frag.  From a high level I can
-see this would make every write a full dnode replace.  But for
-multimedia file storage this is not so bad.  I'm assume this _could_
-be done without _too_ much effort, it feels naive to me though.  How
-bad is this?
+======================================================
 
-The second issue is a 20s delay in open()ing a 30MB file.  We believe,
-having looked at /proc/slabinfo, this is caused by  the system having
-to read in all the jffs2_node_frags.  Wouldn't it be _easy_ to put a
-blocks raw jffs2_node_frags in the eraseblock summary and sort through
-them at boot?
+Bapco detected hostile or unwanted content in this message.
+If you believe this is in error, please resend the whole message to:
+
+bapcoitd@gmail.com
+
+Please make sure that you specify the recipient email address(es) in
+your message.
+
+Your email will be manually inspected and if found to be safe and in
+accordance with Bapco's email policy, itwill be forwarded to the 
+intended recipient.
+
+======================================================
+
+
+Time: 13 Oct 2006 06:57:00
+Scan result: Mail modified to remove malicious content
+Protocol: SMTP in
+File Name\Mail Subject:  Message could not be delivered
+Source: 68.222.4.227
+Destination: 
+Mail Sender: linux-mtd@lists.infradead.org
+Mail Recipients: hassan_alwazeer@bapco.net
+Details: Text.com   Infected with Win32.Mydoom.bf (Non-Removable) , Blocked 
