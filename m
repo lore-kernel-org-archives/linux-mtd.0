@@ -1,12 +1,20 @@
-From: "Elbert Arroyo" <nyiefjl@arborimage.com>
-To: <linux-afs@lists.infradead.org>
-Subject: Serious note. You should to read.
-Date: Fri, 13 Oct 2006 08:56:42 -0060
-Message-ID: <01c6eea5$80f740e0$6c822ecf@nyiefjl>
+Received: from mail1.bizmail.net.au ([202.162.77.164])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GYXNY-0006U5-Ro
+	for linux-mtd@lists.infradead.org; Fri, 13 Oct 2006 20:27:58 -0400
+Received: from [127.0.0.1] (unknown [60.246.249.234])
+	by mail1.bizmail.net.au (Postfix) with ESMTP id A96F8CDC071
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 14 Oct 2006 10:39:27 +1000 (EST)
+Message-ID: <45302F20.8030904@bizmail.com.au>
+Date: Sat, 14 Oct 2006 10:28:16 +1000
+From: yh@bizmail.com.au
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+To: linux-mtd@lists.infradead.org
+Subject: Failed to build mkfs.jffs2
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Reply-To: yh@bizmail.com.au
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,28 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Please check that note attentively. Here you will find the inside news about CYHD. Please check this news. 
-This info will be released on October 16. It is your chance to buy CYHD for the best price. CYHD going to rock the market and break it. GO CYHD NOW !!!
+Hi,
 
-Recomendation: Read to the end and think after.
+I am using the version mtd-20050122 for a linux arm system, I can build 
+mtd under arm-linux-gcc, but failed to build a host tool mkfs.jffs2 by 
+"make CC=cc" in util directory on FC5. Please see following error 
+messages. Is there any way to fix it, rather than to change a new version?
 
-Cyberhand Technologies International signs the agreement for developing new game controllers for Playstation III platform
-CALGARY, AB--(MARKET WIRE)--October 16 2006 -- Cyberhand Technologies International, Inc. (Other OTC:CYHD.PK - News), a leading computer peripheral design company specializing in innovative wireless ergonomic products for potential military & private purposes, publish that it signed the agreement for with Logitech International SA , a leading manufacture of keyboards and computer controllers. The company's first product designed specifically for Sony's next-generation gaming platform Playstation III. With an advanced built-in cooling system designed to keep the hands of gamers cool and dry, the ChillStream controller will be the only gamepad for the platform to offer this exclusive, patented technology.
-Cyberhand will upgrade its development lab to add game development sequences & full USB control programming in-house. It is anticipated that once the new equipment arrives and is installed that all tactical, sequential & functionality drivers will be created internally. This gives Cyberhand complete control over its product evolution a long with the ability to add upgrades & respond quickly for the newest gaming environment that demand complex programmable tactical sequence routines. The X Series of Controllers are simply the fastest, most comfortable and most responsive game control systems in the world today. The X series will be used in Playstation 3 platform under the brand of Logitech. By that agreement Cyberhand Technologies International is going to receive 50 000 000 $ from Logitech International SA for developing that incredible game controller for Playstation 3.
-Mr. Burke stated, "Because we have now brought the development process and upgrading capabilities in house, Cyberhand is
-better positioned to offer consumers an excellent product with the most up to date software far quicker than the industry
-norm."
+compr_zlib.c:65: error: ‘z_stream’ has no member named ‘zalloc'
+compr_zlib.c:66: error: ‘z_stream’ has no member named ‘zfree’
 
- 
+Thanks.
 
-About Cyberhand Technologies International, Inc.
-
-Cyberhand Technologies International, Inc. is a leading computer peripheral design company specializing in innovative wireless ergonomic products for mobile & desktop users. The company manufactures, designs, markets and sells leading edge consumer electronics devices that feature innovative ergonomic designs, advanced software development and  technologies that are far superior to other products in the market. Cyberhand is focused on developing products that allow computer, Personal Digital Assistant (PDA) and Smartphone users the ultimate in mobility, productivity, performance and comfort. The company's initial products include:
-+  Wireless Keyboards for Smartphones and PDA
---  Related Software Upgrades and other Peripherals such as Keyboards, Cameras and Scanners
-+  Computer Game Controllers that are 40% more responsive than competing products
---  Ergonomic Computer Mouse Products that eliminate computer-related repetitive stress injuries
-
-
-P.S We will push that st0ck till the end of the year and the price probability go up .
-People will buy it and they will earn big cash. Don't miss that and buy it now cause the price is low. After the 16 October the price will grow up to 1000%. Take it now!!
+Jim
