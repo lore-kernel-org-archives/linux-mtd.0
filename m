@@ -1,18 +1,20 @@
-Received: from ms01.sssup.it ([193.205.80.99] helo=sssup.it)
+Received: from ug-out-1314.google.com ([66.249.92.168])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZT0k-00006g-9o
-	for linux-mtd@lists.infradead.org; Mon, 16 Oct 2006 10:00:20 -0400
-Message-ID: <4533905D.1090103@gandalf.sssup.it>
-Date: Mon, 16 Oct 2006 15:59:57 +0200
-From: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+	id 1GZYfk-0003Tr-RU
+	for linux-mtd@lists.infradead.org; Mon, 16 Oct 2006 16:02:58 -0400
+Received: by ug-out-1314.google.com with SMTP id p37so782894ugc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Oct 2006 13:02:50 -0700 (PDT)
+Message-ID: <ecb4efd10610161302t5dafcfcfnb70ad31a2b9abe02@mail.gmail.com>
+Date: Mon, 16 Oct 2006 16:02:49 -0400
+From: "Clem Taylor" <clem.taylor@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: flushing buffer cache on mtd device: is the verify in flashcp
+	actually reading back from the flash chip or the cache?
 MIME-Version: 1.0
-To: yh@bizmail.com.au
-Subject: Re: Failed to build mkfs.jffs2
-References: <45302F20.8030904@bizmail.com.au>
-In-Reply-To: <45302F20.8030904@bizmail.com.au>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,28 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-yh@bizmail.com.au wrote:
+Hi,
 
->Hi,
->
->I am using the version mtd-20050122 for a linux arm system, I can build 
->mtd under arm-linux-gcc, but failed to build a host tool mkfs.jffs2 by 
->"make CC=cc" in util directory on FC5. Please see following error 
->messages. Is there any way to fix it, rather than to change a new version?
->
->compr_zlib.c:65: error: ‘z_stream’ has no member named ‘zalloc'
->compr_zlib.c:66: error: ‘z_stream’ has no member named ‘zfree’
->
->Thanks.
->
->Jim
->
->______________________________________________________
->Linux MTD discussion mailing list
->http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->  
->
-Have you a zlib compiled for your target?
+Recently a question came up as to where we were really verifying that
+the data was correctly being written to the flash. We are using
+flashcp from a 2006.05.04 mtd snapshot to program the flash. Looking
+at the code, after the write, it just does a lseek() back to the
+beginning of the device and then starts reading. It is opening the
+device with O_SYNC, but I thought that only effects writes, not reads.
+Without doing something special, wouldn't this data just come from the
+buffer cache instead of the physical device?
 
-Regards Michael
+Is there something else doing on under the hood that would force a
+read from physical device after a flash write?
+
+                             Thanks,
+                             Clem
