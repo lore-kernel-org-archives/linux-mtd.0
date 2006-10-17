@@ -1,19 +1,21 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZr80-0001wK-7Z
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 11:45:23 -0400
-Subject: Re: [PATCH] [MTD] [CORE]: Fix MEMGETOOBSEL and ECCGETLAYOUT ioctls
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0610171720200.25906@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.0610171720200.25906@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 17 Oct 2006 18:45:11 +0300
-Message-Id: <1161099911.3260.97.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from wmi.com ([209.137.163.242] helo=mail.wmi.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GZsrU-0004Oq-HI
+	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 13:36:29 -0400
+Received: from cac0.wmi.com (cac0.wmi.com [209.137.163.252])
+	by mail.wmi.com (8.13.8/8.13.8) with ESMTP id k9HHaIPB030472
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2006 13:36:18 -0400
+Received: from [127.0.0.1] (satchmo.wmi.com [192.168.1.194])
+	by cac0.wmi.com (8.13.7/8.13.7) with ESMTP id k9HHaH1A010815
+	for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2006 13:36:18 -0400
+Message-ID: <45351491.7070207@wmi.com>
+Date: Tue, 17 Oct 2006 17:36:17 +0000
+From: Joel Coltoff <joel@wmi.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Question on configuring for a MIPS processor
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +25,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ricard,
+Hi,
 
-On Tue, 2006-10-17 at 17:27 +0200, Ricard Wanderlof wrote:
-> Hi,
->=20
-> This is my first patch submission, so please correct me if I've done=20
-> anything stupid or just plain wrong. :-)
->=20
->=20
-> 1. The ECCGETLAYOUT ioctl copy_to_user() call has a superfluous '&'=20
-> causing the resulting information to be garbage rather than the intended=20
-> mtd->ecclayout.
->=20
-> 2. The MEMGETOOBSEL misses copying mtd->ecclayout->eccbytes so the
-> resulting field of the returned structure contains garbage.
+First let me apologize if this is in the archive. I've checked
+a bit and didn't see it. I'm a bit surprised that it isn't.
 
-the patch looks OK, but it does not apply to the mtd git kernel. Will
-you mind to send a patch against mtd-2.6.git please?
+We are running, for the moment, a bit of a hack. We are using
+a 2.4.18 kernel that has been updated to support a subset of
+the intel 28F256P30 strataflash. It seems to be working. In
+the meantime, work goes on doing a board support package for
+2.6.17.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+The problem we are facing is that our flash runs from
+0x1f000000 - 0x21000000. Since we are running on a MIPS we've
+got boot code at 0x1fc000000 which sort of gets in the way. There's
+other stuff that fills memory up to 0x20000000. I've got no problem
+having /dev/mtdb0 use the space from the start of flash up to
+0x1fc00000. What I'd like to be able to do is use the rest of
+the flash. I'm reasonable certain it would be foolish to treat the
+memory as 2 devices. Should I use fdisk to create my flash drives?
+Is there another way to handle this?
+
+If I do use fdisk what make sense for heads/sectors/cylinders?
+In theory, fdisk seems like the best way to go. What I mean
+by that is do I want my sector size to be 128K. I really don't
+know how the code works when only part of a sector gets updated.
+
+Thanks for your help,
+  - Joel
