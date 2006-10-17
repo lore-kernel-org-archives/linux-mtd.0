@@ -1,14 +1,19 @@
+Received: from amanaus.varma-el.com ([195.144.240.154])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GZvMw-0007iZ-48
+	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 16:17:03 -0400
+Message-ID: <45353A3A.9060609@varma-el.com>
+Date: Wed, 18 Oct 2006 00:16:58 +0400
+From: Andrey Volkov <avolkov@varma-el.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: JFFS2 on Lite5200
-From: David Woodhouse <dwmw2@infradead.org>
-To: Andrey Volkov <avolkov@varma-el.com>
-In-Reply-To: <4534E078.9030301@varma-el.com>
-References: <1161081183.22948.58.camel@localhost.localdomain>
-	<4534D8A5.7060206@varma-el.com> <1161092193.3260.61.camel@sauron>
+References: <1161081183.22948.58.camel@localhost.localdomain>	
+	<4534D8A5.7060206@varma-el.com> <1161092193.3260.61.camel@sauron>	
 	<4534E078.9030301@varma-el.com>
-Content-Type: text/plain
-Date: Tue, 17 Oct 2006 18:37:10 +0100
-Message-Id: <1161106630.23666.109.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
+	<1161106630.23666.109.camel@hades.cambridge.redhat.com>
+In-Reply-To: <1161106630.23666.109.camel@hades.cambridge.redhat.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: Andrea Galbusera <andrea.galbusera@teamware.it>,
 	linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
@@ -21,27 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-10-17 at 17:54 +0400, Andrey Volkov wrote:
-> No, MPC5200 could write any size chunks, but it must be aligned (same
-> restrictions as in SH4), and this restriction applied only to LPB, but
-> not SDRAM.
+David Woodhouse wrote:
+> On Tue, 2006-10-17 at 17:54 +0400, Andrey Volkov wrote:
+>> No, MPC5200 could write any size chunks, but it must be aligned (same
+>> restrictions as in SH4), and this restriction applied only to LPB, but
+>> not SDRAM.
+>>
+>> Also, I've in view that jffs2(jffs3 ?) read/write stuff already used
+>> functions which MTD drivers exported, but jffs2_scan_dirent_node and
+>> friends - doesn't.
 > 
-> Also, I've in view that jffs2(jffs3 ?) read/write stuff already used
-> functions which MTD drivers exported, but jffs2_scan_dirent_node and
-> friends - doesn't.
+> There are two modes of operation for JFFS2 scan. Either it can use the
+> MTD device's read() function to read from the flash into memory and scan
+> from there, or -- IF the flash can be accessed as if it were normal
+> memory -- it can use the point() method and skip the read() call by
+> using a pointer directly into the flash.
+> 
+> In your case, the flash cannot be accessed directly as if it were normal
+> memory. So your map driver probably shouldn't be allowing point() to
+> succeed.
+> 
+> Having said that, I'm not entirely sure we have the code set up so that
+> 'simple' map drivers _can_ prevent point(). We may need to fix that.
+David, thanks for an explanations (Artem already pointed me to this
+jffs2 behavior).
 
-There are two modes of operation for JFFS2 scan. Either it can use the
-MTD device's read() function to read from the flash into memory and scan
-from there, or -- IF the flash can be accessed as if it were normal
-memory -- it can use the point() method and skip the read() call by
-using a pointer directly into the flash.
-
-In your case, the flash cannot be accessed directly as if it were normal
-memory. So your map driver probably shouldn't be allowing point() to
-succeed.
-
-Having said that, I'm not entirely sure we have the code set up so that
-'simple' map drivers _can_ prevent point(). We may need to fix that.
-
--- 
-dwmw2
+--
+Regards
+Andrey
