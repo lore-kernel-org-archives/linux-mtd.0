@@ -1,18 +1,19 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from mgw-ext14.nokia.com ([131.228.20.173])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZpjd-0007hN-H2
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 10:16:10 -0400
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.12.9/8.12.9/Debian-5local0.1) with ESMTP
-	id k9HEFvP1015933
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2006 16:15:57 +0200
-Date: Tue, 17 Oct 2006 16:17:11 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: mtd-utils/nandwrite: what if write fails?
-Message-ID: <Pine.LNX.4.64.0610171609400.25906@lnxricardw.se.axis.com>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="218815243-790689146-1161094631=:25906"
+	id 1GZq3z-0008KI-SQ
+	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 10:37:12 -0400
+Subject: Re: mtd-utils/nandwrite: what if write fails?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.0610171609400.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610171609400.25906@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 17 Oct 2006 17:36:59 +0300
+Message-Id: <1161095820.3260.84.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,39 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi Richard,
 
---218815243-790689146-1161094631=:25906
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-
-
-I have a question regarding writes to NAND flash; for instance, in=20
-mtd-utils/nandwrite.c, prior to writing to a block, it is checked so that=
+On Tue, 2006-10-17 at 16:17 +0200, Ricard Wanderlof wrote:
+> I have a question regarding writes to NAND flash; for instance, in=20
+> mtd-utils/nandwrite.c, prior to writing to a block, it is checked so that=
 =20
-it isn't bad (using the MEMGETBADBLOCK ioctl). However, what happens if=20
-the block goes bad during write? If the pwrite() call which writes out the=
-=20
-page data fails, the application says perror() and exits. Shouldn't it=20
-mark the block as bad, and re-write the data so far written to the block=20
-to the next good block? As I understand it, mtd doesn't mark a block bad,=
-=20
-it is up to the application or overlying file system (e.g. JFFS2). So it=20
-won't even help to run nandwrite again as the block has not been marked=20
-bad.
+> it isn't bad (using the MEMGETBADBLOCK ioctl). However, what happens if=20
+> the block goes bad during write? If the pwrite() call which writes out th=
+e=20
+> page data fails, the application says perror() and exits. Shouldn't it=20
+> mark the block as bad, and re-write the data so far written to the block=20
+> to the next good block?=20
 
-Or have I missed something here?
+If we are talking about nandwrite - I would prefer it not to do this. Or
+do this if an this was specified via an explicit option ...
 
-(Or is it simply that normally nandwrite is only used during testing, or=20
-writing an initial filesystem, and the likelyhood of a block failing at=20
-precisely this time is rather small, compared to the rest of the lifetime=
+> As I understand it, mtd doesn't mark a block bad,
+
+Yes, MTD provides you mechanisms to do this, but it is up to you (MTD
+user) to do this or not.
+
+> it is up to the application or overlying file system (e.g. JFFS2).
+
+Yes, not only JFFS2, just any software which works on top of MTD and
+knows what it does. For example, UBI can do this. Or some user-space
+tools.
+
+>  So it=20
+> won't even help to run nandwrite again as the block has not been marked=20
+> bad.
+
+Not sure, put probably yes. You may explore fix this adding a
+corresponding option to nandwrite. Or you may write an utility which
+does flash torturing and identifies bad eraseblocks, e.g., flash_check.
+
+> (Or is it simply that normally nandwrite is only used during testing, or=20
+> writing an initial filesystem, and the likelyhood of a block failing at=20
+> precisely this time is rather small, compared to the rest of the lifetime=
 =20
-of the memory (i.e. repeated JFFS2 accesses)?)
+> of the memory (i.e. repeated JFFS2 accesses)?)
+Not sure, but I personally used it only for debugging purposes.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
---218815243-790689146-1161094631=:25906--
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
