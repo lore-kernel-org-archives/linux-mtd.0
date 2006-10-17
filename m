@@ -1,21 +1,17 @@
-Received: from wmi.com ([209.137.163.242] helo=mail.wmi.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZsrU-0004Oq-HI
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 13:36:29 -0400
-Received: from cac0.wmi.com (cac0.wmi.com [209.137.163.252])
-	by mail.wmi.com (8.13.8/8.13.8) with ESMTP id k9HHaIPB030472
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2006 13:36:18 -0400
-Received: from [127.0.0.1] (satchmo.wmi.com [192.168.1.194])
-	by cac0.wmi.com (8.13.7/8.13.7) with ESMTP id k9HHaH1A010815
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Oct 2006 13:36:18 -0400
-Message-ID: <45351491.7070207@wmi.com>
-Date: Tue, 17 Oct 2006 17:36:17 +0000
-From: Joel Coltoff <joel@wmi.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Question on configuring for a MIPS processor
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: JFFS2 on Lite5200
+From: David Woodhouse <dwmw2@infradead.org>
+To: Andrey Volkov <avolkov@varma-el.com>
+In-Reply-To: <4534E078.9030301@varma-el.com>
+References: <1161081183.22948.58.camel@localhost.localdomain>
+	<4534D8A5.7060206@varma-el.com> <1161092193.3260.61.camel@sauron>
+	<4534E078.9030301@varma-el.com>
+Content-Type: text/plain
+Date: Tue, 17 Oct 2006 18:37:10 +0100
+Message-Id: <1161106630.23666.109.camel@hades.cambridge.redhat.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: Andrea Galbusera <andrea.galbusera@teamware.it>,
+	linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,31 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Tue, 2006-10-17 at 17:54 +0400, Andrey Volkov wrote:
+> No, MPC5200 could write any size chunks, but it must be aligned (same
+> restrictions as in SH4), and this restriction applied only to LPB, but
+> not SDRAM.
+> 
+> Also, I've in view that jffs2(jffs3 ?) read/write stuff already used
+> functions which MTD drivers exported, but jffs2_scan_dirent_node and
+> friends - doesn't.
 
-First let me apologize if this is in the archive. I've checked
-a bit and didn't see it. I'm a bit surprised that it isn't.
+There are two modes of operation for JFFS2 scan. Either it can use the
+MTD device's read() function to read from the flash into memory and scan
+from there, or -- IF the flash can be accessed as if it were normal
+memory -- it can use the point() method and skip the read() call by
+using a pointer directly into the flash.
 
-We are running, for the moment, a bit of a hack. We are using
-a 2.4.18 kernel that has been updated to support a subset of
-the intel 28F256P30 strataflash. It seems to be working. In
-the meantime, work goes on doing a board support package for
-2.6.17.
+In your case, the flash cannot be accessed directly as if it were normal
+memory. So your map driver probably shouldn't be allowing point() to
+succeed.
 
-The problem we are facing is that our flash runs from
-0x1f000000 - 0x21000000. Since we are running on a MIPS we've
-got boot code at 0x1fc000000 which sort of gets in the way. There's
-other stuff that fills memory up to 0x20000000. I've got no problem
-having /dev/mtdb0 use the space from the start of flash up to
-0x1fc00000. What I'd like to be able to do is use the rest of
-the flash. I'm reasonable certain it would be foolish to treat the
-memory as 2 devices. Should I use fdisk to create my flash drives?
-Is there another way to handle this?
+Having said that, I'm not entirely sure we have the code set up so that
+'simple' map drivers _can_ prevent point(). We may need to fix that.
 
-If I do use fdisk what make sense for heads/sectors/cylinders?
-In theory, fdisk seems like the best way to go. What I mean
-by that is do I want my sector size to be 128K. I really don't
-know how the code works when only part of a sector gets updated.
-
-Thanks for your help,
-  - Joel
+-- 
+dwmw2
