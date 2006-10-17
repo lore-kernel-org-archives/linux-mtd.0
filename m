@@ -1,20 +1,21 @@
-Received: from amanaus.varma-el.com ([195.144.240.154])
+Received: from mgw-ext14.nokia.com ([131.228.20.173])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZpOP-000793-Pc
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 09:54:10 -0400
-Message-ID: <4534E078.9030301@varma-el.com>
-Date: Tue, 17 Oct 2006 17:54:00 +0400
-From: Andrey Volkov <avolkov@varma-el.com>
-MIME-Version: 1.0
-To: dedekind@infradead.org
+	id 1GZpmM-0007it-Mw
+	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 10:19:01 -0400
 Subject: Re: JFFS2 on Lite5200
-References: <1161081183.22948.58.camel@localhost.localdomain>	
-	<4534D8A5.7060206@varma-el.com> <1161092193.3260.61.camel@sauron>
-In-Reply-To: <1161092193.3260.61.camel@sauron>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Andrey Volkov <avolkov@varma-el.com>
+In-Reply-To: <4534D8A5.7060206@varma-el.com>
+References: <1161081183.22948.58.camel@localhost.localdomain>
+	<4534D8A5.7060206@varma-el.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Date: Tue, 17 Oct 2006 17:18:44 +0300
+Message-Id: <1161094725.3260.76.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: Andrea Galbusera <andrea.galbusera@teamware.it>,
 	linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Tue, 2006-10-17 at 17:20 +0400, Andrey Volkov wrote:
->> P.S. Artem, I repeat, I sent this patch _HALF_YEAR_AGO_
->> how about to fix scan.c?
-> 
-> Andrey,
-> 
-> I am not JFFS2 maintainer, David Woodhouse is.
-Ok, I'll keep it in mind.
+On Tue, 2006-10-17 at 17:20 +0400, Andrey Volkov wrote:
+> Andrea, check ml archive, I already sent patch half-year ago
+> (http://ozlabs.org/pipermail/linuxppc-embedded/2006-April/022566.html)
+> Problem is in alignment/memcpy: JFFS2 code assumed that memory at
+> unaligned addresses could be touched, but access to an external MMIO
+> on MPC5200 _must_ be aligned (i.e. you could not read u32 from odd addres=
+s).
+>=20
+> P.S. Artem, I repeat, I sent this patch _HALF_YEAR_AGO_
+> how about to fix scan.c?
 
-> 
-> Just looked into your patch. I agree that it may make sense to teach
-> JFFS2 to use only aligned addresses, but your patch changes
-> include/asm-ppc/io.h which is probably not MTD's business. 
-> It probably
-> makes sense to submit these changes to a PPC maintainer separately.
-> 
-> A question - does this mean that one can write only 4-byte chunks to
-> this NOR (?) flash?
-> 
-No, MPC5200 could write any size chunks, but it must be aligned (same
-restrictions as in SH4), and this restriction applied only to LPB, but
-not SDRAM.
+Just talked to David. Please, find the result of our discussion in my
+edition below.
 
-Also, I've in view that jffs2(jffs3 ?) read/write stuff already used
-functions which MTD drivers exported, but jffs2_scan_dirent_node and
-friends - doesn't.
+Strictly speaking, JFFS2 *does not* do anything wrong, so it should not
+be fixed. Indeed, JFFS2 does have full right to use memcpy() for that.
 
-Andrey
+The question is: does memcpy() make sense for flash adresses at your
+board? Is it a valid operation for flash addresses at your board?
+
+If the answer is yes - then please fix memcpy() for your platform.
+
+If no - then please, do not pretend that your flash may be treated as
+memory and fix your platform MTD driver. Namely, set point()/unpoint()
+to NULL in your mapping driver - JFFS2 should work then.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
