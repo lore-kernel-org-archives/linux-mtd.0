@@ -1,16 +1,19 @@
-Received: from 62.193.203.162 (HELO mx1.arotel.com)
-	by lists.infradead.org with esmtp (8YC9XWH2N8KI WHCY0W)
-	id PG1L6E-XUXG35-PR
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 10:49:42 -0060
-From: "Lina Forbes" <aivsk@arotel.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: The shooting of the Texhoma Energy 
-Date: Tue, 17 Oct 2006 10:49:42 -0060
-Message-ID: <01c6f1d9$f3e70a40$6c822ecf@aivsk>
+Received: from amanaus.varma-el.com ([195.144.240.154])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GZos7-0006Rc-Kn
+	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 09:20:50 -0400
+Message-ID: <4534D8A5.7060206@varma-el.com>
+Date: Tue, 17 Oct 2006 17:20:37 +0400
+From: Andrey Volkov <avolkov@varma-el.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-2"
+To: Andrea Galbusera <andrea.galbusera@teamware.it>
+Subject: Re: JFFS2 on Lite5200
+References: <1161081183.22948.58.camel@localhost.localdomain>
+In-Reply-To: <1161081183.22948.58.camel@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Cc: dedekind@yandex.ru, linux-mtd@lists.infradead.org,
+	linuxppc-embedded@ozlabs.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,26 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Piece of news of discovery of oil to send TXHE flying!!!
+Hello Andrea,
 
-firm: Texhoma Energy
-Ticker:  TXHE
-last price :     $0.08
-Target Price:      $O.27
+Andrea Galbusera wrote:
+> Hello.
+> 
+> I'm currently using linux-2.6.16 from denx on a Lite5200 V2.0. I need to
+> access a JFFS2 filesystem on the onboard flash ( 16MB Am29L652D ).
+> 
+> I see the flash using physmap driver and cmdline partitions.
+> I experience a problem when creating files on JFFS2 with filename longer
+> than a few characters. They appear to be created correctly with the
+> content I want, but, after unmounting and remounting the filesystem they
+> result unreadable and ls complains with "no such file or
+> directory" (short-named files are ok).
+--snip--
 
+OMG, again same question,
 
-You can see a brand new doorway into the Red Hot energy sphere.
-Texhoma's business model projected benefits with oil at $30
-a barrel.  What do you think the profit-and-loss account is going
-to exhibit with oil at its last price ?  We call them HUGE profits!  But it's the statement of this warm oil-field discovery
-that is really going to execute this one take off!!!
+Andrea, check ml archive, I already sent patch half-year ago
+(http://ozlabs.org/pipermail/linuxppc-embedded/2006-April/022566.html)
+Problem is in alignment/memcpy: JFFS2 code assumed that memory at
+unaligned addresses could be touched, but access to an external MMIO
+on MPC5200 _must_ be aligned (i.e. you could not read u32 from odd address).
 
-With a conjunction of staid, proven management, Extremely
-Lucrative business sector, and INCREDIBLE Novelty, this stock
-is going to rocket on Tuesday!!!
+P.S. Artem, I repeat, I sent this patch _HALF_YEAR_AGO_
+how about to fix scan.c?
 
-
-Partners should take up TXHE as early as possible on Tuesday.
-This Breeze is going to send it off the charts!  We all know
-that in the oil business it's the important information that
-make these stocks detonate!!!
+--
+Regards
+Andrey
