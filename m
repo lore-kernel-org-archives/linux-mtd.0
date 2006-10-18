@@ -1,22 +1,21 @@
-Received: from amanaus.varma-el.com ([195.144.240.154])
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GZvMw-0007iZ-48
-	for linux-mtd@lists.infradead.org; Tue, 17 Oct 2006 16:17:03 -0400
-Message-ID: <45353A3A.9060609@varma-el.com>
-Date: Wed, 18 Oct 2006 00:16:58 +0400
-From: Andrey Volkov <avolkov@varma-el.com>
+	id 1Ga5PR-0005XU-AB
+	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 03:00:24 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.12.9/8.12.9/Debian-5local0.1) with ESMTP
+	id k9I708P1000858
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2006 09:00:08 +0200
+Date: Wed, 18 Oct 2006 09:01:24 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] [MTD] [CORE]: Fix MEMGETOOBSEL and ECCGETLAYOUT ioctls
+In-Reply-To: <1161099911.3260.97.camel@sauron>
+Message-ID: <Pine.LNX.4.64.0610180859020.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610171720200.25906@lnxricardw.se.axis.com>
+	<1161099911.3260.97.camel@sauron>
 MIME-Version: 1.0
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: JFFS2 on Lite5200
-References: <1161081183.22948.58.camel@localhost.localdomain>	
-	<4534D8A5.7060206@varma-el.com> <1161092193.3260.61.camel@sauron>	
-	<4534E078.9030301@varma-el.com>
-	<1161106630.23666.109.camel@hades.cambridge.redhat.com>
-In-Reply-To: <1161106630.23666.109.camel@hades.cambridge.redhat.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Andrea Galbusera <andrea.galbusera@teamware.it>,
-	linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="218815243-402437620-1161154884=:25906"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse wrote:
-> On Tue, 2006-10-17 at 17:54 +0400, Andrey Volkov wrote:
->> No, MPC5200 could write any size chunks, but it must be aligned (same
->> restrictions as in SH4), and this restriction applied only to LPB, but
->> not SDRAM.
->>
->> Also, I've in view that jffs2(jffs3 ?) read/write stuff already used
->> functions which MTD drivers exported, but jffs2_scan_dirent_node and
->> friends - doesn't.
-> 
-> There are two modes of operation for JFFS2 scan. Either it can use the
-> MTD device's read() function to read from the flash into memory and scan
-> from there, or -- IF the flash can be accessed as if it were normal
-> memory -- it can use the point() method and skip the read() call by
-> using a pointer directly into the flash.
-> 
-> In your case, the flash cannot be accessed directly as if it were normal
-> memory. So your map driver probably shouldn't be allowing point() to
-> succeed.
-> 
-> Having said that, I'm not entirely sure we have the code set up so that
-> 'simple' map drivers _can_ prevent point(). We may need to fix that.
-David, thanks for an explanations (Artem already pointed me to this
-jffs2 behavior).
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--218815243-402437620-1161154884=:25906
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+
+On Tue, 17 Oct 2006, Artem Bityutskiy wrote:
+
+> the patch looks OK, but it does not apply to the mtd git kernel. Will
+> you mind to send a patch against mtd-2.6.git please?
+
+That's what I thought I did ... checked again today, yep it is based=20
+against the latest mtdchar.c from mtd-2.6.git tree (dated 2006-09-17).
+
+However, it looks like the patch in the body of the email might have had=20
+its whitespace mangled. I did send the patch as an attachement too, did=20
+you try that?
+
+/Ricard
 --
-Regards
-Andrey
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--218815243-402437620-1161154884=:25906--
