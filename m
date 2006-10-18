@@ -1,20 +1,19 @@
-Received: from mail1.bizmail.net.au ([202.162.77.164])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ga8qK-0000u2-0P
-	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 06:40:24 -0400
-Message-ID: <453604A2.5030000@bizmail.com.au>
-Date: Wed, 18 Oct 2006 20:40:34 +1000
-From: yh@bizmail.com.au
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Ga9UE-0001UU-2t
+	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 07:21:36 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.12.9/8.12.9/Debian-5local0.1) with ESMTP
+	id k9IBLMP1022246
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2006 13:21:22 +0200
+Date: Wed, 18 Oct 2006 13:22:38 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Reading less than page size from NAND ok?
+Message-ID: <Pine.LNX.4.64.0610181315170.25906@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
-Subject: Re: Failed to build mkfs.jffs2
-References: <45302F20.8030904@bizmail.com.au>
-	<4533905D.1090103@gandalf.sssup.it>
-In-Reply-To: <4533905D.1090103@gandalf.sssup.it>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: yh@bizmail.com.au
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-I've just realized you may be talking about to config mtd to enable 
-ZLIB, is it correct? If yes, could you please explain how to config MTD, 
-I saw Kconfig in fs directory, but I could not find mtd.config file?
+In the NAND boot code for U-Boot 1.4.4 (which use MTD (albeit an old=20
+version)), there is a note that when reading from NAND flash via the mtd=20
+layer (i.e. eventually ending up in nand_do_read_ecc()), one should start=
+=20
+reading on a page boundary and read at least one page of data, in order to=
+=20
+get proper ECC behavior.
 
-Thank you.
+However, when looking at the latest mtd code, it appears that this no=20
+longer is the case - when reading bursts of data less than one page, the=20
+data is internally buffered and a complete page read so that ECC is always=
+=20
+applied properly. Is this in fact the case, or have I missed something=20
+vital here? (Was there such a limitation once?)
 
-Jim
-
-Michael Trimarchi wrote:
-
-> yh@bizmail.com.au wrote:
-> 
-> 
->>Hi,
->>
->>I am using the version mtd-20050122 for a linux arm system, I can build 
->>mtd under arm-linux-gcc, but failed to build a host tool mkfs.jffs2 by 
->>"make CC=cc" in util directory on FC5. Please see following error 
->>messages. Is there any way to fix it, rather than to change a new version?
->>
->>compr_zlib.c:65: error: ‘z_stream’ has no member named ‘zalloc'
->>compr_zlib.c:66: error: ‘z_stream’ has no member named ‘zfree’
->>
->>Thanks.
->>
->>Jim
->>
->>______________________________________________________
->>Linux MTD discussion mailing list
->>http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>
->> 
->>
-> 
-> Have you a zlib compiled for your target?
-> 
-> Regards Michael
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
