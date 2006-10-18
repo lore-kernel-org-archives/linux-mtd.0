@@ -1,21 +1,21 @@
-Received: from mgw-ext11.nokia.com ([131.228.20.170])
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ga7LR-0007z8-6N
-	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 05:04:29 -0400
-Subject: Re: [PATCH] [MTD] [CORE]: Fix MEMGETOOBSEL and ECCGETLAYOUT ioctls
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0610180859020.25906@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.0610171720200.25906@lnxricardw.se.axis.com>
-	<1161099911.3260.97.camel@sauron>
-	<Pine.LNX.4.64.0610180859020.25906@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 18 Oct 2006 12:04:08 +0300
-Message-Id: <1161162248.3260.112.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1Ga7UZ-0008ET-CY
+	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 05:13:54 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.12.9/8.12.9/Debian-5local0.1) with ESMTP
+	id k9I9DaP1030616
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2006 11:13:36 +0200
+Date: Wed, 18 Oct 2006 11:14:51 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: jffs2_flash_writev(): Non-contiguous write to
+In-Reply-To: <4535EDD2.8060407@psolv.hu>
+Message-ID: <Pine.LNX.4.64.0610181112180.25906@lnxricardw.se.axis.com>
+References: <4535EDD2.8060407@psolv.hu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,14 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-10-18 at 09:01 +0200, Ricard Wanderlof wrote:
-> That's what I thought I did ... checked again today, yep it is based=20
-> against the latest mtdchar.c from mtd-2.6.git tree (dated 2006-09-17).
 
-Richard, apologies, the patch indeed applies smoothly. I have committed
-it into my git tree and will ask David to get it into mtd-2.6.git.
+On Wed, 18 Oct 2006, D=E9mi Zsolt wrote:
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> at91rm9200 based -own designed- board with 2.6.18 linux kernel. I have
+> patched it from mtd csv (http://sourceware.org/jffs2/), and I'm using
+> mtd-utils 1.0.0 (http://www.linux-mtd.infradead.org/) and compiled with
+
+While I don't think this is the solution to your problem, note that there=
+=20
+there now is an mtd-utils 1.0.1 from the same place. I know at least some=
+=20
+of the applications in 1.0.0 don't work properly with 2.6.18 due to mtd=20
+changes.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
