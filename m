@@ -1,20 +1,20 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ga8nL-0000hv-WA
-	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 06:37:14 -0400
-Date: Wed, 18 Oct 2006 12:38:19 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?ISO-8859-2?Q?D=E9mi_Zsolt?= <zsdemi@psolv.hu>
-Subject: Re: jffs2_flash_writev(): Non-contiguous write to
-In-Reply-To: <4535FCC3.2090201@psolv.hu>
-Message-ID: <Pine.LNX.4.64.0610181233570.25906@lnxricardw.se.axis.com>
-References: <4535EDD2.8060407@psolv.hu>
-	<Pine.LNX.4.64.0610181112180.25906@lnxricardw.se.axis.com>
-	<4535FCC3.2090201@psolv.hu>
+Received: from mail1.bizmail.net.au ([202.162.77.164])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Ga8qK-0000u2-0P
+	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 06:40:24 -0400
+Message-ID: <453604A2.5030000@bizmail.com.au>
+Date: Wed, 18 Oct 2006 20:40:34 +1000
+From: yh@bizmail.com.au
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+To: Michael Trimarchi <trimarchi@gandalf.sssup.it>
+Subject: Re: Failed to build mkfs.jffs2
+References: <45302F20.8030904@bizmail.com.au>
+	<4533905D.1090103@gandalf.sssup.it>
+In-Reply-To: <4533905D.1090103@gandalf.sssup.it>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: yh@bizmail.com.au
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,38 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Wed, 18 Oct 2006, D=E9mi Zsolt wrote:
+I've just realized you may be talking about to config mtd to enable 
+ZLIB, is it correct? If yes, could you please explain how to config MTD, 
+I saw Kconfig in fs directory, but I could not find mtd.config file?
 
->> While I don't think this is the solution to your problem, note that=20
->> there there now is an mtd-utils 1.0.1 from the same place. I know at=20
->> least some of the applications in 1.0.0 don't work properly with 2.6.18=
-=20
->> due to mtd changes.
->>=20
-> Thanks, but I don't see any changes in the produced jffs2 image file...
+Thank you.
 
-Well I didn't really think it was a solution, just a longshot since there=
-=20
-was an updated version available.
+Jim
 
-> the problem is in wbuf.c in the kernel jffs2 file system driver... I'm=20
-> using the mtd-utils only for erasing the flash (I have tested and it's=20
-> fill the hole section with 0xff) , copying the image into flash (I have=
-=20
-> tested, the image correctly copied into flash), and producing image file=
-=20
-> containing jffs2 file system.
+Michael Trimarchi wrote:
 
-Sounds ok so far.
-
-> The jffs2 file system driver is the part of the mtd?
-
-Yes, in the sense that it is developed by the group of people, but it=20
-lives in fs/jffs2 in the kernel tree rather than in drivers/mtd .
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> yh@bizmail.com.au wrote:
+> 
+> 
+>>Hi,
+>>
+>>I am using the version mtd-20050122 for a linux arm system, I can build 
+>>mtd under arm-linux-gcc, but failed to build a host tool mkfs.jffs2 by 
+>>"make CC=cc" in util directory on FC5. Please see following error 
+>>messages. Is there any way to fix it, rather than to change a new version?
+>>
+>>compr_zlib.c:65: error: ‘z_stream’ has no member named ‘zalloc'
+>>compr_zlib.c:66: error: ‘z_stream’ has no member named ‘zfree’
+>>
+>>Thanks.
+>>
+>>Jim
+>>
+>>______________________________________________________
+>>Linux MTD discussion mailing list
+>>http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>>
+>> 
+>>
+> 
+> Have you a zlib compiled for your target?
+> 
+> Regards Michael
+> 
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
