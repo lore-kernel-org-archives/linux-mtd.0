@@ -1,21 +1,22 @@
 Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ga5PR-0005XU-AB
-	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 03:00:24 -0400
+	id 1Ga6cH-0007F0-6P
+	for linux-mtd@lists.infradead.org; Wed, 18 Oct 2006 04:17:42 -0400
 Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
 	by miranda.se.axis.com (8.12.9/8.12.9/Debian-5local0.1) with ESMTP
-	id k9I708P1000858
-	for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2006 09:00:08 +0200
-Date: Wed, 18 Oct 2006 09:01:24 +0200 (CEST)
+	id k9I8HTP1017177
+	for <linux-mtd@lists.infradead.org>; Wed, 18 Oct 2006 10:17:29 +0200
+Date: Wed, 18 Oct 2006 10:18:45 +0200 (CEST)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH] [MTD] [CORE]: Fix MEMGETOOBSEL and ECCGETLAYOUT ioctls
-In-Reply-To: <1161099911.3260.97.camel@sauron>
-Message-ID: <Pine.LNX.4.64.0610180859020.25906@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.0610171720200.25906@lnxricardw.se.axis.com>
-	<1161099911.3260.97.camel@sauron>
+Subject: Re: mtd-utils/nandwrite: what if write fails?
+In-Reply-To: <1161099240.2975.3.camel@zod.rchland.ibm.com>
+Message-ID: <Pine.LNX.4.64.0610181004040.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610171609400.25906@lnxricardw.se.axis.com>
+	<1161099240.2975.3.camel@zod.rchland.ibm.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="218815243-402437620-1161154884=:25906"
+Content-Type: MULTIPART/MIXED; BOUNDARY="218815243-17548172-1161158861=:25906"
+Content-ID: <Pine.LNX.4.64.0610181007440.25906@lnxricardw.se.axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +29,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
---218815243-402437620-1161154884=:25906
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+--218815243-17548172-1161158861=:25906
+Content-Type: TEXT/PLAIN; CHARSET=ISO-8859-1; FORMAT=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-ID: <Pine.LNX.4.64.0610181007441.25906@lnxricardw.se.axis.com>
 
 
-On Tue, 17 Oct 2006, Artem Bityutskiy wrote:
+On Tue, 17 Oct 2006, Josh Boyer wrote:
 
-> the patch looks OK, but it does not apply to the mtd git kernel. Will
-> you mind to send a patch against mtd-2.6.git please?
+> On Tue, 2006-10-17 at 16:17 +0200, Ricard Wanderlof wrote:
+>> ...
+>> it isn't bad (using the MEMGETBADBLOCK ioctl). However, what happens if
+>> the block goes bad during write? If the pwrite() call which writes out t=
+he
+>> page data fails, the application says perror() and exits. Shouldn't it
+>> mark the block as bad, and re-write the data so far written to the block
+>> to the next good block?
+>> ..
+>
+> pwrite can fail because of a transient error.  NAND can get soft bit
+> flips that can be cleared by erasing the block.  So to mark a block bad
+> without at least trying to write to it a couple of times seems a bit
+> drastic.
 
-That's what I thought I did ... checked again today, yep it is based=20
-against the latest mtdchar.c from mtd-2.6.git tree (dated 2006-09-17).
+I see. Well, then in that case, a course of action would be to erase the=20
+block, try to rewrite, and then mark it bad should pwrite still fail=20
+after the second attempt?
 
-However, it looks like the patch in the body of the email might have had=20
-its whitespace mangled. I did send the patch as an attachement too, did=20
-you try that?
+Would another option be to erase each block immediately prior to writing=20
+However, this wouldn't make it possible to write only part of a block, so=
+=20
+again, should not be the default behavior.
+
+I'm curious about the 'soft bit flipping' though. I suppose both the case=
+=20
+of a bit going from 1->0 as well as 0->1 are possible? That would mean=20
+that a previously erased block could contain random 0's, resulting in the=
+=20
+potential need for re-erase before writing.
+
+Does anyone have a reference to more info on this subject? I've scanned=20
+the 'net, but most of the hard-core information I've found to be in=20
+application notes from various chip manufacturers. While informative, they=
+=20
+tend to be a bit restrictive on practical aspects of NAND flash=20
+management.
 
 /Ricard
 --
 Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
 Axis Communications AB, Lund, Sweden            www.axis.com
 Phone +46 46 272 2016                           Fax +46 46 13 61 30
---218815243-402437620-1161154884=:25906--
+--218815243-17548172-1161158861=:25906--
