@@ -1,8 +1,12 @@
-Message-ID: <59317454498638.EB00966036@SKET>
-From: "Glen barfly" <bimonthlychargeable@royalgardenhotel.info>
-To: <linux-parport@lists.infradead.org>
-Subject: Using this will be a rocking success, 76% increase in 4 days
-Date: Thu, 19 Oct 2006 19:34:04 -0600
+Received: from dzl93.neoplus.adsl.tpnet.pl ([83.22.149.93] helo=D0N1C7)
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gavlx-0006VM-76
+	for linux-mtd@lists.infradead.org; Fri, 20 Oct 2006 15:54:57 +0100
+Message-ID: <58785191776472.F1CAE3299B@XC9MO>
+From: "Fritz" <bromineantietam@royal-mas.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: This tonic tab was created to help your pennis! 
+Date: Fri, 20 Oct 2006 16:54:46 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="Windows-1252"
@@ -16,29 +20,4 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Distributed Systems Department in the Computational Research Division..England's backroom staff had a somewhat cobwebbed look in Germany, with the
-* * * * * * * * * * * * * * * *
-TJSS Continues To Rocket, Volume Climbs 175% 
-And Price Climbed Another 33.3% Today ALONE!
-
-Company: TAJ Systems
-Symbol: TJSS
-Price: $0.30
-Short Term Estimate: $1.50
-Note: Urgent Buy. Price Climbing Hard as Tournament Approaches
-* * * * * * * * * * * * * * * *
-We have seen this company rocket from $0.17 to $0.30 in just 4 days
-
-Congrats to all those who got in already, many have made over 76% 
-increase on their investments.
-
-The price should increase 5 times more before the tournament begings!
-
-GET IN NOW AND DON'T FORGET TO CHECK NEWS
-
-The partnership brings together two advanced networks which have a combined 30.
-Grid Protocol Architecture Research Group..
-direct red card in a World Cup encounter. Portugal have seen an opposing player sent.
-captaincy, something he would surely have done after the Real Madrid star's lame World Cup performances.
-
-announced agreement with Level 3 Communications.
+Dear client. Every day thousands of guys have this problem. You can stand out from the crowd. Extra-Time is ready to contribute to your durability, confidence and happiness. Want to make your intercourse lasting and rewarding than ever before? You may find what you need here: http://ucaboac.com/gall/get/ You will become her best partner ever - she just won't be able to leave! No anguish, just adoration.
