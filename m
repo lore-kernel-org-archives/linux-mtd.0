@@ -1,20 +1,12 @@
-Received: from mgw-ext12.nokia.com ([131.228.20.171])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GabLL-0002lm-LB
-	for linux-mtd@lists.infradead.org; Thu, 19 Oct 2006 13:06:47 -0400
-Subject: Re: [PATCH] [MTD] NAND: AT91 NAND driver
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Andrew Victor <andrew@sanpeople.com>
-In-Reply-To: <1161277474.3260.138.camel@sauron>
-References: <1161275075.10090.77.camel@fuzzie.sanpeople.com>
-	<1161277474.3260.138.camel@sauron>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 19 Oct 2006 20:06:00 +0300
-Message-Id: <1161277560.3260.140.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: tglx@linutronix.de, savin@epico.si, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Message-ID: <59317454498638.EB00966036@SKET>
+From: "Glen barfly" <bimonthlychargeable@royalgardenhotel.info>
+To: <linux-parport@lists.infradead.org>
+Subject: Using this will be a rocking success, 76% increase in 4 days
+Date: Thu, 19 Oct 2006 19:34:04 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="Windows-1252"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +16,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-10-19 at 20:04 +0300, Artem Bityutskiy wrote:
-> Hello Victor,
-Sorry, Andrew :-))
+Distributed Systems Department in the Computational Research Division..England's backroom staff had a somewhat cobwebbed look in Germany, with the
+* * * * * * * * * * * * * * * *
+TJSS Continues To Rocket, Volume Climbs 175% 
+And Price Climbed Another 33.3% Today ALONE!
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Company: TAJ Systems
+Symbol: TJSS
+Price: $0.30
+Short Term Estimate: $1.50
+Note: Urgent Buy. Price Climbing Hard as Tournament Approaches
+* * * * * * * * * * * * * * * *
+We have seen this company rocket from $0.17 to $0.30 in just 4 days
+
+Congrats to all those who got in already, many have made over 76% 
+increase on their investments.
+
+The price should increase 5 times more before the tournament begings!
+
+GET IN NOW AND DON'T FORGET TO CHECK NEWS
+
+The partnership brings together two advanced networks which have a combined 30.
+Grid Protocol Architecture Research Group..
+direct red card in a World Cup encounter. Portugal have seen an opposing player sent.
+captaincy, something he would surely have done after the Real Madrid star's lame World Cup performances.
+
+announced agreement with Level 3 Communications.
