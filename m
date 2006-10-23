@@ -1,18 +1,25 @@
-Received: from red.fback.net ([80.53.236.154])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gc5mT-0007ul-MY
-	for linux-mtd@lists.infradead.org; Mon, 23 Oct 2006 15:48:24 -0400
-Received: from red (fback@localhost [127.0.0.1])
-	by red.fback.net (8.13.8/8.13.8/Debian-2) with SMTP id k9NJm7V7032504
-	for <linux-mtd@lists.infradead.org>; Mon, 23 Oct 2006 21:48:07 +0200
-Date: Mon, 23 Oct 2006 21:48:07 +0200
-From: =?iso-8859-2?Q?Bart=B3omiej?= Ochman <fback@home.fback.net>
+Received: from static-72-72-77-140.bstnma.east.verizon.net ([72.72.77.140]
+	helo=superhub.daknet.net)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gc68Z-0008GP-EW
+	for linux-mtd@lists.infradead.org; Mon, 23 Oct 2006 16:11:10 -0400
+Received: from SUPERVOICEHUB ([192.168.10.20])
+	by superhub.daknet.net (JAMES SMTP Server 2.2.0) with SMTP ID 628
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Oct 2006 15:41:01 -0400 (EDT)
+Received: from firewall ([192.168.10.1] helo=ARCHANGEL)
+	by supervoicehub.daknet.net with esmtpsa (TLSv1:RC4-MD5:128)
+	(Exim 4.54) id 1Gc5a9-0003Dl-JB
+	for linux-mtd@lists.infradead.org; Mon, 23 Oct 2006 15:35:33 -0400
+Date: Mon, 23 Oct 2006 15:40:56 -0400 (EDT)
+From: femi@firstmilesolutions.com
 To: linux-mtd@lists.infradead.org
-Subject: Patch to support (some?) flash chips from Samsung.
-Message-ID: <20061023194806.GA32351@red.fback.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+Message-ID: <14970641.101161632456658.JavaMail.kingpin@ARCHANGEL>
+Subject: MTD/Compact flash question
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Reply-To: femi@firstmilesolutions.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,53 +29,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+I'm looking for some information about using MTD with a commercial Compact Flash card. I've been supporting a deployed solution that uses a linux single board computer running off a 256 MB commercial compact flash card for the last 3 years or so, and we recently (within the last 4 months) switched to using MTD and JFFS2. The system is configured with 2 read only partitions (89 MB and 1MB, both using the ext2 filesystem) and a 156 MB read/write data partition (JFFS2 on top of MTD).
 
-following patch brings back support to (some?) flash chips from Samsung.
-This applies cleanly against linux-2.6.17, for 2.6.18 requires only
-trivial change.
+Recently, we've observed a number of DriveReady/DriveSeek/DriveWrite errors from the JFFS2 partition when we try to erase, format and mount it. The flash_erase call hangs, and spits out a series of DriveWrite errors. When we cancel the erase, the mkfs.jffs2 call to format the partition completes without reporting any errors, but the attempt to mount throws a "bad superblock" error.
 
-The bad news is, that mtd doesn't work for these chips. It was working
-with 2.4.30, under 2.4.32 it doesn't anymore. I try to investigate why,
-maybe that is because -Os switch with gcc-3.4.x. What's interesting,
-programming single bytes (words?) seems to work perfectly, changes to
-a filesystem on a flash are valid -- files have proper contents, there
-are no problems with filesystem consistency, etc). I hope tomorrow I will
-have JTAG cable to see what went wrong with programming with mtd util.
+As far as I can understand, this is using MTD on top of the IDE layer. My questions are:
+1. If using a commercial Compact Flash card (through the IDE interface), is the MTD/JFFS2 layer necessary? It was deployed as a means of getting wear levelling done, but from reading through the list archives it looks like the wear levelling is typically already done by the Compact Flash card and we might as well just make the last partition ext2, mount it with the noatime option and call it a day.
+2. Does this depend on the Compact Flash card in use?
+3. Is there any way to get more information about the state of the compact flash card, so my application code can tell when the CF card has reached the end of its useful life (as opposed to now, when I simply wait until the entire computer starts throwing errors).
 
-Regards,
-BO
+If this isn't the right forum to ask CF questions, I'd appreciate pointers as to where best to go to get those answered.
 
---- cfi_cmdset_0002.c	2006-10-23 21:14:11.618024794 +0200
-+++ cfi_cmdset_0002.c.new	2006-10-23 21:01:22.970876922 +0200
-@@ -49,6 +49,7 @@
- #define MANUFACTURER_SST	0x00BF
- #define SST49LF004B	        0x0060
- #define SST49LF008A		0x005a
-+#define MANUFACTURER_SAMSUNG	0x00ec
- 
- static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
-@@ -253,7 +254,21 @@
- 			return NULL;
- 		}
- 
--		if (extp->MajorVersion != '1' ||
-+		if (cfi->mfr == MANUFACTURER_SAMSUNG) {
-+		    printk(KERN_NOTICE "  Samsung flash chip detected, should "
-+		           "be compatibile with Amd/Fujitsu.\n");
-+		    /* according to the specs, version should always be 3.3 */
-+		    if (extp->MajorVersion != '3' || 
-+		        extp->MinorVersion != '3') {
-+		            printk(KERN_ERR "  Unknown Samsung Extended Query "
-+			           "version %c.%c.\n", extp->MajorVersion,
-+			           extp->MinorVersion);
-+			    kfree(extp);
-+			    kfree(mtd);
-+			    return NULL;
-+	            }
-+		} /* this added support to (some?) Samsung flashes */
-+		else if (extp->MajorVersion != '1' ||
- 		    (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
- 			printk(KERN_ERR "  Unknown Amd/Fujitsu Extended Query "
- 			       "version %c.%c.\n",  extp->MajorVersion,
+Thank you,
+Femi.
