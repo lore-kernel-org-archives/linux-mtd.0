@@ -1,16 +1,19 @@
-Received: from agminet01.oracle.com ([141.146.126.228])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcECv-0003tp-UE
-	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 00:48:11 -0400
-Date: Mon, 23 Oct 2006 21:48:26 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: fix printk format warning
-Message-Id: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
+	id 1GcIWD-0007FI-4q
+	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 05:24:23 -0400
+Subject: Re: [PATCH] MTD: fix printk format warning
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+In-Reply-To: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
+References: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 24 Oct 2006 12:24:10 +0300
+Message-Id: <1161681850.3260.167.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: akpm <akpm@osdl.org>, dwmw2@infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: akpm <akpm@osdl.org>, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+On Mon, 2006-10-23 at 21:48 -0700, Randy Dunlap wrote:
+> (may be a gcc phenomenon)
+> Fix printk format warning:
+> drivers/mtd/maps/physmap.c:93: warning: long long unsigned int format, lo=
+ng unsigned int arg (arg 2)
+>=20
+> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
 
-(may be a gcc phenomenon)
-Fix printk format warning:
-drivers/mtd/maps/physmap.c:93: warning: long long unsigned int format, long unsigned int arg (arg 2)
+... snip ...
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
----
+>       	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8ll=
+x\n",
+> -	    (unsigned long long)dev->resource->end - dev->resource->start + 1,
+> +	    (unsigned long long)(dev->resource->end - dev->resource->start + 1)=
+,
+>  	    (unsigned long long)dev->resource->start);
 
- drivers/mtd/maps/physmap.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
+Hmm, AFAIK
 
---- linux-2619-rc3-pv.orig/drivers/mtd/maps/physmap.c
-+++ linux-2619-rc3-pv/drivers/mtd/maps/physmap.c
-@@ -89,7 +89,7 @@ static int physmap_flash_probe(struct pl
- 		return -ENODEV;
- 
-        	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
--	    (unsigned long long)dev->resource->end - dev->resource->start + 1,
-+	    (unsigned long long)(dev->resource->end - dev->resource->start + 1),
- 	    (unsigned long long)dev->resource->start);
- 
- 	info = kmalloc(sizeof(struct physmap_flash_info), GFP_KERNEL);
+"(unsigned long) dev->resource->end - dev->resource->start + 1" should=20
 
+end up with unsigned long, so why not to fix gcc instead?
 
----
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
