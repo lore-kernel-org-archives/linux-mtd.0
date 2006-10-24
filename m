@@ -1,21 +1,20 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcJR4-00086q-Pn
-	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 06:23:14 -0400
-Date: Tue, 24 Oct 2006 11:02:45 +0100
-From: Ben Dooks <ben@fluff.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH] MTD: fix printk format warning
-Message-ID: <20061024100245.GA21695@home.fluff.org>
-References: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
-	<1161681850.3260.167.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1161681850.3260.167.camel@sauron>
-Sender: Ben Dooks <ben@fluff.org.uk>
-Cc: Randy Dunlap <randy.dunlap@oracle.com>, akpm <akpm@osdl.org>,
-	dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GcKkZ-0000Yq-S0
+	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 07:47:27 -0400
+Subject: Re: [PATCH] [MTD] MAPS: Support for BIOS flash chips on the nvidia
+	ck804 southbridge
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ryan Jackson <rjackson@lnxi.com>
+In-Reply-To: <20061023213550.GC21009@localdomain>
+References: <20061023213550.GC21009@localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 24 Oct 2006 14:47:13 +0300
+Message-Id: <1161690433.3260.174.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Oct 24, 2006 at 12:24:10PM +0300, Artem Bityutskiy wrote:
-> On Mon, 2006-10-23 at 21:48 -0700, Randy Dunlap wrote:
-> > (may be a gcc phenomenon)
-> > Fix printk format warning:
-> > drivers/mtd/maps/physmap.c:93: warning: long long unsigned int format, long unsigned int arg (arg 2)
-> > 
-> > Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
-> 
-> ... snip ...
-> 
-> >       	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
-> > -	    (unsigned long long)dev->resource->end - dev->resource->start + 1,
-> > +	    (unsigned long long)(dev->resource->end - dev->resource->start + 1),
-> >  	    (unsigned long long)dev->resource->start);
-> 
-> Hmm, AFAIK
-> 
-> "(unsigned long) dev->resource->end - dev->resource->start + 1" should 
+On Mon, 2006-10-23 at 15:35 -0600, Ryan Jackson wrote:
+> From: Dave Olsen <dolsen@lnxi.com>
+>=20
+> Add support for accessing BIOS flash chips connected to the NVIDIA ck804 =
+southbridge.
+>=20
+> Signed-off-by: Ryan Jackson <rjackson@lnxi.com>
+> ---
+Hi, I failed to apply this patch to mtd-2.6.git:
 
-I thought that 'z' was the modifier to %x for resources?
+fatal: corrupt patch at line 12
+Patch failed at 0001.
+When you have resolved this problem run "git-am --resolved".
+If you would prefer to skip this patch, instead run "git-am --skip".
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
