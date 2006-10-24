@@ -1,20 +1,23 @@
-Received: from agminet01.oracle.com ([141.146.126.228])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcOCm-0002rF-AT
-	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 11:28:54 -0400
-Message-ID: <453E315B.8090801@oracle.com>
-Date: Tue, 24 Oct 2006 08:29:31 -0700
-From: "Randy.Dunlap" <randy.dunlap@oracle.com>
-MIME-Version: 1.0
-To: Ben Dooks <ben@fluff.org>
+	id 1GcPag-0003lV-2K
+	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 12:57:37 -0400
 Subject: Re: [PATCH] MTD: fix printk format warning
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: "Randy.Dunlap" <randy.dunlap@oracle.com>
+In-Reply-To: <453E315B.8090801@oracle.com>
 References: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
 	<1161681850.3260.167.camel@sauron>
 	<20061024100245.GA21695@home.fluff.org>
-In-Reply-To: <20061024100245.GA21695@home.fluff.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: akpm <akpm@osdl.org>, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+	<453E315B.8090801@oracle.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 24 Oct 2006 19:57:13 +0300
+Message-Id: <1161709033.3260.188.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: akpm <akpm@osdl.org>, Ben Dooks <ben@fluff.org>, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,42 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Dooks wrote:
-> On Tue, Oct 24, 2006 at 12:24:10PM +0300, Artem Bityutskiy wrote:
->> On Mon, 2006-10-23 at 21:48 -0700, Randy Dunlap wrote:
->>> (may be a gcc phenomenon)
->>> Fix printk format warning:
->>> drivers/mtd/maps/physmap.c:93: warning: long long unsigned int format, long unsigned int arg (arg 2)
->>>
->>> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
->> ... snip ...
->>
->>>       	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8llx\n",
->>> -	    (unsigned long long)dev->resource->end - dev->resource->start + 1,
->>> +	    (unsigned long long)(dev->resource->end - dev->resource->start + 1),
->>>  	    (unsigned long long)dev->resource->start);
->> Hmm, AFAIK
->>
->> "(unsigned long) dev->resource->end - dev->resource->start + 1" should 
-> 
-> I thought that 'z' was the modifier to %x for resources?
+On Tue, 2006-10-24 at 08:29 -0700, Randy.Dunlap wrote:
+> which I suppose is what Artem missed.  I.e., it's not always unsigned lon=
+g.
+> However, I won't deny that gcc seems odd here.
 
-Maybe you are thinking of 'z' for use with size_t ?  From the C99 spec:
+I just wanted to say that (unsigned long)a - b + 1 has "unsigned long"
+type even if "a" and "b" are u32 or u64. I would have understood you if
+you had said that you cut "a" because of the u64->unsigned long casting,
+but I understood that the rationale for the change was to fix print
+format warning...
 
-z  Specifies that a following d, i, o, u, x, or X conversion specifier applies to a
-size_t or the corresponding signed integer type argument; or that a
-following n conversion specifier applies to a pointer to a signed integer type
-corresponding to size_t argument.  But a resource_size_t is not a size_t.
-Depending on CONFIG, it's either:
-
-#ifdef CONFIG_RESOURCES_64BIT
-typedef u64 resource_size_t;
-#else
-typedef u32 resource_size_t;
-#endif
-
-which I suppose is what Artem missed.  I.e., it's not always unsigned long.
-However, I won't deny that gcc seems odd here.
-
--- 
-~Randy
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
