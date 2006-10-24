@@ -1,19 +1,21 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcIWD-0007FI-4q
-	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 05:24:23 -0400
-Subject: Re: [PATCH] MTD: fix printk format warning
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Randy Dunlap <randy.dunlap@oracle.com>
-In-Reply-To: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
-References: <20061023214826.d54fc7c6.randy.dunlap@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 24 Oct 2006 12:24:10 +0300
-Message-Id: <1161681850.3260.167.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: akpm <akpm@osdl.org>, dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GcIhE-0007Xw-B4
+	for linux-mtd@lists.infradead.org; Tue, 24 Oct 2006 05:35:52 -0400
+Message-ID: <453DDE6C.2070304@ru.mvista.com>
+Date: Tue, 24 Oct 2006 13:35:40 +0400
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] [MTD] [NAND]: nand_default_mark_blockbad() doesn't	work
+	when flash-based bbt not enabled (fwd)
+References: <Pine.LNX.4.64.0610230928360.25906@lnxricardw.se.axis.com>
+	<1161597141.19446.276.camel@pmac.infradead.org>
+In-Reply-To: <1161597141.19446.276.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-10-23 at 21:48 -0700, Randy Dunlap wrote:
-> (may be a gcc phenomenon)
-> Fix printk format warning:
-> drivers/mtd/maps/physmap.c:93: warning: long long unsigned int format, lo=
-ng unsigned int arg (arg 2)
->=20
-> Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+David Woodhouse wrote:
+> On Mon, 2006-10-23 at 09:33 +0200, Ricard Wanderlof wrote:
+>   
+>> (As note, it seems to be that logically, it shouldn't be necessary to set 
+>> both length variables, as one appears to be for the main buffer, and 
+>> one for the oob buffer, but this is how it is done in several places, 
+>> including the code for the mtd character device MEMWRITEOOB and MEMREADOOB
+>> ioctls. I'm not sure if this is a temporary solution during some rework of 
+>> the mtd infrastructure, or whether there is a deeper thought here.)
+>>     
+>
+> Hm. That seems wrong to me. If we don't want to read or write the main
+> area, we should set ops.len to zero. And if that doesn't work, it should
+> probably be fixed.
+>
+> I'd rather see a patch which fixes that.
+>
+>   
+We discussed that w/ tglx some time ago and we couldn't find a 5 minute 
+solution :)
 
-... snip ...
-
->       	printk(KERN_NOTICE "physmap platform flash device: %.8llx at %.8ll=
-x\n",
-> -	    (unsigned long long)dev->resource->end - dev->resource->start + 1,
-> +	    (unsigned long long)(dev->resource->end - dev->resource->start + 1)=
-,
->  	    (unsigned long long)dev->resource->start);
-
-Hmm, AFAIK
-
-"(unsigned long) dev->resource->end - dev->resource->start + 1" should=20
-
-end up with unsigned long, so why not to fix gcc instead?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Vitaly
