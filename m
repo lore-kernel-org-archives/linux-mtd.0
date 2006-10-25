@@ -1,19 +1,20 @@
-Received: from wx-out-0506.google.com ([66.249.82.237])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcmVA-000154-G8
-	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 13:25:22 -0400
-Received: by wx-out-0506.google.com with SMTP id t11so209837wxc
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Oct 2006 10:25:15 -0700 (PDT)
-Message-ID: <aaebafb0610251018h1f04efb8m307a896aca6a3432@mail.gmail.com>
-Date: Wed, 25 Oct 2006 22:48:35 +0530
-From: "Babla Bunty" <babla.bunty@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Jffs2 Magic bitmask problem
+Received: from zoot.lnxi.com ([63.145.151.20])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GcmgU-0001Lg-9r
+	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 13:37:02 -0400
+Date: Wed, 25 Oct 2006 11:36:55 -0600
+From: Ryan Jackson <rjackson@lnxi.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] [PATCH] [MTD] MAPS: Support for BIOS flash chips on the
+	nvidia ck804 southbridge
+Message-ID: <20061025173654.GF25530@localdomain>
+References: <20061024174606.GE21009@localdomain>
+	<1161779958.27622.94.camel@shinybook.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <1161779958.27622.94.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+* David Woodhouse <dwmw2@infradead.org> [061025 06:39]:
+> This is very reminiscent of the changes you made recently to the
+> amd76xrom driver. Can they be merged?
 
-I always get following warning while mounting mtd partition:
+Technically yes, but I'm not totally convinced that makes sense.  They
+are two completely different southbridges and the registers for each are
+different.
 
-Reading data from NAND FLASH without ECC is not recommended
-Empty flash at 0x001f85b8 ends at 0x001f85f0
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85f0:
-0xffff instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85f4:
-0x0219 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85fc:
-0xaf8c instead
+The code that loops over the window checking for chips is definitely
+generic.  The amd76xrom, esb2rom, and the ck804xrom drivers all use it.
+Perhaps that bit and anything related could be shared.
 
-Following is the output of cat /proc/mtd:
-dev:    size   erasesize  name
-mtd0: 00030000 00004000 "NAND partition 0 : Bootloader"
-mtd1: 001d0000 00004000 "NAND partition 1 : Kernel"
-mtd2: 00200000 00004000 "NAND partition 2 : NAND Root"
-mtd3: 07c00000 00004000 "NAND partition 3 : Romfs partition"
+> Please fix 'KB' to 'KiB' and 'MB' to 'MiB' if you really mean powers of
+> two and not powers of ten.
 
->From the above output,it is clear that erase size is 16K.
-And i have erase the the mtd2 with following command:
+Okay, I'll change that.
 
-flash_eraseall -j /dev/mtd/2
+Thanks.
 
-As jffs2 expects magic bitmask in first page of block.It seems jffs2
-is trying to find magic bitmask in wrong page.
-I am using 2.6.17 linux kernel .
-Could somebody help ???
-Regards,
-Babla.
+-- 
+Ryan Jackson
+Linux Networx
