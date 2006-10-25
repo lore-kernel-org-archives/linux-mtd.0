@@ -1,16 +1,19 @@
-Received: from mo30.po.2iij.net ([210.128.50.53])
-	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GcjlY-0001sl-M5
-	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 15:30:01 +0100
-Date: Wed, 25 Oct 2006 23:29:17 +0900
-From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-To: dwmw2@infradead.org
-Subject: [PATCH] fix map probe name for cstm_mips_ixx
-Message-Id: <20061025232917.466b18ee.yoichi_yuasa@tripeaks.co.jp>
+Received: from mgw-ext14.nokia.com ([131.228.20.173])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gck8Z-0007ic-09
+	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 10:53:58 -0400
+Subject: Re: [PATCH] fix map probe name for cstm_mips_ixx
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+In-Reply-To: <20061025232917.466b18ee.yoichi_yuasa@tripeaks.co.jp>
+References: <20061025232917.466b18ee.yoichi_yuasa@tripeaks.co.jp>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 25 Oct 2006 17:38:03 +0300
+Message-Id: <1161787083.3260.204.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, yoichi_yuasa@tripeaks.co.jp
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +25,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-This patch has fixed name of map probe for cstm_mips_ixx.c .
+On Wed, 2006-10-25 at 23:29 +0900, Yoichi Yuasa wrote:
+> -			mymtd =3D (struct mtd_info *)do_map_probe("jedec", &cstm_mips_ixx_map=
+[i]);
+> +			mymtd =3D (struct mtd_info *)do_map_probe("jedec_probe", &cstm_mips_i=
+xx_map[i]);
 
-Yoichi
+Looks OK.
 
-Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-
-diff -pruN -X mtd/Documentation/dontdiff mtd-orig/drivers/mtd/maps/cstm_mips_ixx.c mtd/drivers/mtd/maps/cstm_mips_ixx.c
---- mtd-orig/drivers/mtd/maps/cstm_mips_ixx.c	2006-10-25 10:35:03.616951250 +0900
-+++ mtd/drivers/mtd/maps/cstm_mips_ixx.c	2006-10-25 10:37:19.973473000 +0900
-@@ -115,7 +115,7 @@ int __init init_cstm_mips_ixx(void)
- 		//printk(KERN_NOTICE "phymap %d cfi_probe: mymtd is %x\n",i,(unsigned int)mymtd);
- 		if (!mymtd) {
- 			jedec = 1;
--			mymtd = (struct mtd_info *)do_map_probe("jedec", &cstm_mips_ixx_map[i]);
-+			mymtd = (struct mtd_info *)do_map_probe("jedec_probe", &cstm_mips_ixx_map[i]);
- 		        printk(KERN_NOTICE "cstm_mips_ixx %d jedec: mymtd is %x\n",i,(unsigned int)mymtd);
- 		}
- 		if (mymtd) {
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
