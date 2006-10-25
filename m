@@ -1,12 +1,12 @@
-Subject: Re: [PATCH] [PATCH] [MTD] MAPS: Support for BIOS flash chips on
-	the nvidia ck804 southbridge
+Subject: Re: flushing buffer cache on mtd device: is the verify in flashcp
+	actually reading back from the flash chip or the cache?
 From: David Woodhouse <dwmw2@infradead.org>
-To: Ryan Jackson <rjackson@lnxi.com>
-In-Reply-To: <20061024174606.GE21009@localdomain>
-References: <20061024174606.GE21009@localdomain>
+To: Clem Taylor <clem.taylor@gmail.com>
+In-Reply-To: <ecb4efd10610161302t5dafcfcfnb70ad31a2b9abe02@mail.gmail.com>
+References: <ecb4efd10610161302t5dafcfcfnb70ad31a2b9abe02@mail.gmail.com>
 Content-Type: text/plain
-Date: Wed, 25 Oct 2006 15:39:18 +0300
-Message-Id: <1161779958.27622.94.camel@shinybook.infradead.org>
+Date: Wed, 25 Oct 2006 15:41:18 +0300
+Message-Id: <1161780078.27622.96.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -19,16 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-10-24 at 11:46 -0600, Ryan Jackson wrote:
-> From: Dave Olsen <dolsen@lnxi.com>
+On Mon, 2006-10-16 at 16:02 -0400, Clem Taylor wrote:
 > 
-> Add support for accessing BIOS flash chips connected to the NVIDIA ck804 southbridge.
+> Recently a question came up as to where we were really verifying that
+> the data was correctly being written to the flash. We are using
+> flashcp from a 2006.05.04 mtd snapshot to program the flash. Looking
+> at the code, after the write, it just does a lseek() back to the
+> beginning of the device and then starts reading. It is opening the
+> device with O_SYNC, but I thought that only effects writes, not reads.
 
-This is very reminiscent of the changes you made recently to the
-amd76xrom driver. Can they be merged?
+s/effect/affect/
 
-Please fix 'KB' to 'KiB' and 'MB' to 'MiB' if you really mean powers of
-two and not powers of ten.
+> Without doing something special, wouldn't this data just come from the
+> buffer cache instead of the physical device?
+> 
+> Is there something else doing on under the hood that would force a
+> read from physical device after a flash write? 
+
+Access to character devices doesn't go through the buffer cache.
 
 -- 
 dwmw2
