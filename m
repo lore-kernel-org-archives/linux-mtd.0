@@ -1,19 +1,16 @@
-Received: from wx-out-0506.google.com ([66.249.82.230])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gcinq-0006fv-1Z
-	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 09:28:23 -0400
-Received: by wx-out-0506.google.com with SMTP id t11so135710wxc
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 25 Oct 2006 06:28:16 -0700 (PDT)
-Message-ID: <aaebafb0610250621h1de9b06bg2b869149e13f0862@mail.gmail.com>
-Date: Wed, 25 Oct 2006 18:51:00 +0530
-From: "Babla Bunty" <babla.bunty@gmail.com>
-To: jffs-dev@axis.com, linux-mtd@lists.infradead.org
-Subject: Jffs2 Magic bitmask problem
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from mo30.po.2iij.net ([210.128.50.53])
+	by pentafluge.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GcjlY-0001sl-M5
+	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 15:30:01 +0100
+Date: Wed, 25 Oct 2006 23:29:17 +0900
+From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+To: dwmw2@infradead.org
+Subject: [PATCH] fix map probe name for cstm_mips_ixx
+Message-Id: <20061025232917.466b18ee.yoichi_yuasa@tripeaks.co.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org, yoichi_yuasa@tripeaks.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-I always get following warning while mounting mtd partition:
+This patch has fixed name of map probe for cstm_mips_ixx.c .
 
-Reading data from NAND FLASH without ECC is not recommended
-Empty flash at 0x001f85b8 ends at 0x001f85f0
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85f0:
-0xffff instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85f4:
-0x0219 instead
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f85fc:
-0xaf8c instead
+Yoichi
 
-Following is the output of cat /proc/mtd:
-dev:    size   erasesize  name
-mtd0: 00030000 00004000 "NAND partition 0 : Bootloader"
-mtd1: 001d0000 00004000 "NAND partition 1 : Kernel"
-mtd2: 00200000 00004000 "NAND partition 2 : NAND Root"
-mtd3: 07c00000 00004000 "NAND partition 3 : Romfs partition"
+Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
 
->From the above output,it is clear that erase size is 16K.
-And i have erase the the mtd2 with following command:
-
-flash_eraseall -j /dev/mtd/2
-
-As jffs2 expects magic bitmask in first page of block.It seems jffs2
-is trying to find magic bitmask in wrong page.
-I am using 2.6.17 linux kernel .
-Could somebody help ???
-Regards,
-Babla.
+diff -pruN -X mtd/Documentation/dontdiff mtd-orig/drivers/mtd/maps/cstm_mips_ixx.c mtd/drivers/mtd/maps/cstm_mips_ixx.c
+--- mtd-orig/drivers/mtd/maps/cstm_mips_ixx.c	2006-10-25 10:35:03.616951250 +0900
++++ mtd/drivers/mtd/maps/cstm_mips_ixx.c	2006-10-25 10:37:19.973473000 +0900
+@@ -115,7 +115,7 @@ int __init init_cstm_mips_ixx(void)
+ 		//printk(KERN_NOTICE "phymap %d cfi_probe: mymtd is %x\n",i,(unsigned int)mymtd);
+ 		if (!mymtd) {
+ 			jedec = 1;
+-			mymtd = (struct mtd_info *)do_map_probe("jedec", &cstm_mips_ixx_map[i]);
++			mymtd = (struct mtd_info *)do_map_probe("jedec_probe", &cstm_mips_ixx_map[i]);
+ 		        printk(KERN_NOTICE "cstm_mips_ixx %d jedec: mymtd is %x\n",i,(unsigned int)mymtd);
+ 		}
+ 		if (mymtd) {
