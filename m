@@ -1,28 +1,24 @@
-Received: from lvs3.netcore.co.in ([202.162.240.3] helo=lvs2.netcore.co.in)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gcv12-00065A-JO
-	for linux-mtd@lists.infradead.org; Wed, 25 Oct 2006 22:30:52 -0400
-Received: from uucp3.netcore.co.in (uucp3.netcore.co.in [202.162.229.13])
-	by lvs2.netcore.co.in (Postfix) with ESMTP id A81EC352186
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Oct 2006 08:00:29 +0530 (IST)
-Received: from uucp1.netcore.co.in (unknown [192.168.2.1])
-	by uucp3.netcore.co.in (Postfix) with ESMTP id EB9333B88D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Oct 2006 08:00:28 +0530 (IST)
-Received: from thick.localnova.com (unknown [10.7.138.16])
-	by chennai.novatium.com (Postfix) with ESMTP id 287DD7C004D
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Oct 2006 08:33:32 +0530 (IST)
-Subject: MTD:do_write_buffer():software timeout
-From: harishkumar <harishkumar@novatium.com>
-To: MTD <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Thu, 26 Oct 2006 07:55:06 +0530
-Message-Id: <1161829506.31433.3.camel@thick.localnova.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Reply-To: harishkumar@novatium.com
+Received: from nic2.axis.se ([193.13.178.10] helo=krynn.se.axis.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gd0wz-0007B3-7C
+	for linux-mtd@lists.infradead.org; Thu, 26 Oct 2006 09:50:57 +0100
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by krynn.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	k9Q8oWGm024343
+	for <linux-mtd@lists.infradead.org>; Thu, 26 Oct 2006 10:50:32 +0200
+Date: Thu, 26 Oct 2006 10:52:04 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [PATCH] [MTD] [NAND]: nand_default_mark_blockbad() doesn't work
+	when flash-based bbt not enabled
+In-Reply-To: <453DDE6C.2070304@ru.mvista.com>
+Message-ID: <Pine.LNX.4.64.0610250851290.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610230928360.25906@lnxricardw.se.axis.com>
+	<1161597141.19446.276.camel@pmac.infradead.org>
+	<453DDE6C.2070304@ru.mvista.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +28,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am using linux-2.6.10 kernel & mounted a jffs2 filesystem.
-I used NOR flash.
-During erasing my filesystem partition, iam getting
-MTD:do_write_buffer():software timeout repeatedly.
 
-I enabled write-buffer method in kernel during compiling jffs2.
+On Tue, 24 Oct 2006, Vitaly Wool wrote:
 
-Is there any fix or patch for this...
-Please help guys...
+>> Hm. That seems wrong to me. If we don't want to read or write the main
+>> area, we should set ops.len to zero. And if that doesn't work, it should
+>> probably be fixed.
+>>
+>> I'd rather see a patch which fixes that.
+>>
+>>
+> We discussed that w/ tglx some time ago and we couldn't find a 5 minute
+> solution :)
 
-harish
+Was there a discussion on the mtd list? I scanned the archives back to=20
+April and couldn't find anything.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
