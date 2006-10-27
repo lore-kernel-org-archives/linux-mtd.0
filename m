@@ -1,15 +1,15 @@
 Received: from nic2.axis.se ([193.13.178.10] helo=krynn.se.axis.com)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GdREY-0003eD-7j
-	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 13:54:51 +0100
-Date: Fri, 27 Oct 2006 14:56:15 +0200 (CEST)
+	id 1GdRPV-00042x-DV
+	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 14:06:10 +0100
+Date: Fri, 27 Oct 2006 15:07:26 +0200 (CEST)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: mtd-utils/flash_erase modifications
-In-Reply-To: <1161952796.3080.8.camel@sauron>
-Message-ID: <Pine.LNX.4.64.0610271446220.25906@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.0610261052070.25906@lnxricardw.se.axis.com>
-	<1161952796.3080.8.camel@sauron>
+Subject: Re: mtd-utils/nandwrite: what if write fails?
+In-Reply-To: <1161095820.3260.84.camel@sauron>
+Message-ID: <Pine.LNX.4.64.0610271500310.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610171609400.25906@lnxricardw.se.axis.com>
+	<1161095820.3260.84.camel@sauron>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -24,54 +24,71 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Fri, 27 Oct 2006, Artem Bityutskiy wrote:
+On Tue, 17 Oct 2006, Artem Bityutskiy wrote:
 
->> 2.
->> Furthermore, it would be nice to be able to disable the output of the
->> program. As it stands, it outputs a line for each block/sector it erases=
-=2E
->> I would suggest a --verbose or -v option in order to enable this output.
+>On Tue, 2006-10-17 at 16:17 +0200, Ricard Wanderlof wrote:
+>> I have a question regarding writes to NAND flash; for instance, in=20
+>> mtd-utils/nandwrite.c, prior to writing to a block, it is checked so tha=
+t=20
+>> it isn't bad (using the MEMGETBADBLOCK ioctl). However, what happens if=
+=20
+>> the block goes bad during write? If the pwrite() call which writes out t=
+he=20
+>> page data fails, the application says perror() and exits. Shouldn't it=
+=20
+>> mark the block as bad, and re-write the data so far written to the block=
+=20
+>> to the next good block?=20
 >
-> Err, are you talking about flash_erase?
-
-Yes ... ?
-
->> 3.
->> And finally, by default, the program only erases the first block, unless
->> some options are given. If one wants to erase a whole mtd device or
->> ...
-> There is flash_eraseall utility for this, isn't it? Although it may be
-> reasonable to have all this functionality in one utility/
-
-I'll have to admit, I totally forgot about flash_eraseall, because in my=20
-initial application, I needed to erase only parts of the flash, and when=20
-the need for badblock managament turned up, I'd forgotten about=20
-flash_eraseall, so I have been using various patched variants of=20
-flash_erase.
-
-You are right of course, flash_eraseall erases a whole flash, and looking=
+> If we are talking about nandwrite - I would prefer it not to do this. Or=
 =20
-more closely, also has badblock management. Nice.
+> do this if an this was specified via an explicit option ...
 
-It doesn't seem to be able to handle erasure of only part of a partition=20
-though (naturally, given its name).
+I could live with an option.
 
-I think it would be nice to have all the functionality in the same=20
-utility. After all, the functionality is really the same.
+>> As I understand it, mtd doesn't mark a block bad,
+>> it is up to the application or overlying file system (e.g. JFFS2).
+>
+> Yes, not only JFFS2, just any software which works on top of MTD and=20
+> knows what it does. For example, UBI can do this. Or some user-space=20
+> tools.
 
-What would be best here:
-1. flash_eraseall has the option to erase only parts of a partition ?
-    - illogical, given its name
-2. modify flash_eraseall to handle partial erases, change name to
-    flash_erase (and throw out the old flash_erase).
-3. retain both utilities, but basically with same functionality, except
-    for the ability for partial erases.
-
-I could understand that some folks would like to keep the old flash_erase=
+I assume that the mtd block devices don't provide any bad block management=
 =20
-simply because they are used to the syntax ... ? Or perhaps hardly anyone=
+either? (Hm, one could imagine a device which when written to simply=20
+skipped bad blocks ... ?)
+
+>> So it won't even help to run nandwrite again as the block has not been=
 =20
-uses it?
+>> marked bad.
+>
+> Not sure, put probably yes. You may explore fix this adding a=20
+> corresponding option to nandwrite. Or you may write an utility which=20
+> does flash torturing and identifies bad eraseblocks, e.g., flash_check.=
+=20
+> [...] but I personally used it only for debugging purposes.
+
+I would like to use it for writing filesystem images to nand flash, i.e. a=
+=20
+more production-oriented environment. Either during initial production, or=
+=20
+during upgrades. So some form of (perhaps option-controlled) bad block=20
+management would be nice.
+
+A torture test would be nice too, but it's not really the same thing.=20
+Blocks can go bad with time, and when one actually does go bad, it has to=
+=20
+be handled at that time.
+
+Another option would be to integrate erasure into nandwrite, so that it=20
+could erase blocks prior to writing them, to give a completely integrated=
+=20
+utility. Writing to a non-erased (nand) flash is rather pointless anyway=20
+isn't it? Naturally, one would want to set limits for the erasure so that=
+=20
+not the whole flash would have to be erased just to write a small image.
+
+One would still have to handle the case of erase or write failing though.
 
 /Ricard
 --
