@@ -1,11 +1,11 @@
-Subject: Re: [PATCH] Allow variable block sizes in mtd_blkdevs
+Subject: Re: /proc/mtd and flash information
 From: David Woodhouse <dwmw2@infradead.org>
-To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1161936573.5019.55.camel@localhost.localdomain>
-References: <1161936573.5019.55.camel@localhost.localdomain>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.0610271433390.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610271433390.25906@lnxricardw.se.axis.com>
 Content-Type: text/plain
-Date: Fri, 27 Oct 2006 16:22:34 +0300
-Message-Id: <1161955354.7638.55.camel@shinybook.infradead.org>
+Date: Fri, 27 Oct 2006 16:23:16 +0300
+Message-Id: <1161955396.7638.57.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: Linux mtd <linux-mtd@lists.infradead.org>
@@ -18,12 +18,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-10-27 at 09:09 +0100, Richard Purdie wrote:
-> Currently, mtd_blkdevs enforces a block size of 512, even if the drivers
-> can seemingly request a different size. This patch fixes mtd_blkdevs so
-> block sizes other than 512 work correctly. 
+On Fri, 2006-10-27 at 14:44 +0200, Ricard Wanderlof wrote:
+> It seems to me that /proc/mtd is a little short on information.
+> 
+> It would be nice to see the type of media (NOR, NAND etc), write and oob 
+> size (for NAND), perhaps a couple of other things for NAND such as the 
+> number of bad blocks within a partition. 
 
-Could/did you test this with FTL on mtdram?
+Sensible idea, but do it with class_devices in sysfs.
 
 -- 
 dwmw2
