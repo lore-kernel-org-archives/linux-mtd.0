@@ -1,19 +1,19 @@
 Received: from nic2.axis.se ([193.13.178.10] helo=krynn.se.axis.com)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GdR2u-0003Ho-DH
-	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 13:42:49 +0100
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by krynn.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	k9RCglCO020272
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Oct 2006 14:42:47 +0200
-Date: Fri, 27 Oct 2006 14:44:21 +0200 (CEST)
+	id 1GdREY-0003eD-7j
+	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 13:54:51 +0100
+Date: Fri, 27 Oct 2006 14:56:15 +0200 (CEST)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: /proc/mtd and flash information
-Message-ID: <Pine.LNX.4.64.0610271433390.25906@lnxricardw.se.axis.com>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: mtd-utils/flash_erase modifications
+In-Reply-To: <1161952796.3080.8.camel@sauron>
+Message-ID: <Pine.LNX.4.64.0610271446220.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610261052070.25906@lnxricardw.se.axis.com>
+	<1161952796.3080.8.camel@sauron>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +24,54 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
+On Fri, 27 Oct 2006, Artem Bityutskiy wrote:
 
-It seems to me that /proc/mtd is a little short on information.
+>> 2.
+>> Furthermore, it would be nice to be able to disable the output of the
+>> program. As it stands, it outputs a line for each block/sector it erases=
+=2E
+>> I would suggest a --verbose or -v option in order to enable this output.
+>
+> Err, are you talking about flash_erase?
 
-It would be nice to see the type of media (NOR, NAND etc), write and oob=20
-size (for NAND), perhaps a couple of other things for NAND such as the=20
-number of bad blocks within a partition.
+Yes ... ?
 
-Perhaps having a /proc/mtdX file for each device, giving much the same=20
-information that otherwise has to be fetched using ioctls like MEMGETINFO,=
+>> 3.
+>> And finally, by default, the program only erases the first block, unless
+>> some options are given. If one wants to erase a whole mtd device or
+>> ...
+> There is flash_eraseall utility for this, isn't it? Although it may be
+> reasonable to have all this functionality in one utility/
+
+I'll have to admit, I totally forgot about flash_eraseall, because in my=20
+initial application, I needed to erase only parts of the flash, and when=20
+the need for badblock managament turned up, I'd forgotten about=20
+flash_eraseall, so I have been using various patched variants of=20
+flash_erase.
+
+You are right of course, flash_eraseall erases a whole flash, and looking=
 =20
-ECCGETLAYOUT, ECCGETSTATS etc. Or would that be considered useless, given=
-=20
-that the same information can actually be obtained from userspace using an=
-=20
-application using those ioctls?
+more closely, also has badblock management. Nice.
 
-I see there is an application called flash_info which would seem to=20
-display information, but which actually only displays info gathered from=20
-MEMGETREGIONCOUNT. Perhaps it would be an idea to augment this application=
-=20
-so that it outputs as much information as can be read using ioctls?
+It doesn't seem to be able to handle erasure of only part of a partition=20
+though (naturally, given its name).
 
-Don't mind working on this, but would like some input first.
+I think it would be nice to have all the functionality in the same=20
+utility. After all, the functionality is really the same.
+
+What would be best here:
+1. flash_eraseall has the option to erase only parts of a partition ?
+    - illogical, given its name
+2. modify flash_eraseall to handle partial erases, change name to
+    flash_erase (and throw out the old flash_erase).
+3. retain both utilities, but basically with same functionality, except
+    for the ability for partial erases.
+
+I could understand that some folks would like to keep the old flash_erase=
+=20
+simply because they are used to the syntax ... ? Or perhaps hardly anyone=
+=20
+uses it?
 
 /Ricard
 --
