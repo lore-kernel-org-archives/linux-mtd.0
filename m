@@ -1,16 +1,17 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
+Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GdRvD-0002eZ-N4
-	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 09:39:04 -0400
-Subject: Re: /proc/mtd and flash information
+	id 1GdSG3-00035N-Rj
+	for linux-mtd@lists.infradead.org; Fri, 27 Oct 2006 10:00:33 -0400
+Subject: Re: mtd-utils/flash_erase modifications
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <1161955396.7638.57.camel@shinybook.infradead.org>
-References: <Pine.LNX.4.64.0610271433390.25906@lnxricardw.se.axis.com>
-	<1161955396.7638.57.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 27 Oct 2006 16:38:50 +0300
-Message-Id: <1161956330.3080.11.camel@sauron>
+In-Reply-To: <Pine.LNX.4.64.0610271446220.25906@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0610261052070.25906@lnxricardw.se.axis.com>
+	<1161952796.3080.8.camel@sauron>
+	<Pine.LNX.4.64.0610271446220.25906@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 27 Oct 2006 16:59:44 +0300
+Message-Id: <1161957584.3080.19.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: Linux mtd <linux-mtd@lists.infradead.org>
@@ -24,18 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-10-27 at 16:23 +0300, David Woodhouse wrote:
-> On Fri, 2006-10-27 at 14:44 +0200, Ricard Wanderlof wrote:
-> > It seems to me that /proc/mtd is a little short on information.
-> >=20
-> > It would be nice to see the type of media (NOR, NAND etc), write and oo=
-b=20
-> > size (for NAND), perhaps a couple of other things for NAND such as the=20
-> > number of bad blocks within a partition.=20
+On Fri, 2006-10-27 at 14:56 +0200, Ricard Wanderlof wrote:
+> > Err, are you talking about flash_erase?
 >=20
-> Sensible idea, but do it with class_devices in sysfs.
+> Yes ... ?
 
-Yeah, definitely. /proc is not the right place for this.
+I just thought that it works only with one eraseblock.
+
+> I think it would be nice to have all the functionality in the same=20
+> utility. After all, the functionality is really the same.
+
+I personally fully agree with you oat this point. Would be nice to have
+Josh's comment as he mostly cares about the user-space utilities.
+
+> 2. modify flash_eraseall to handle partial erases, change name to
+>     flash_erase (and throw out the old flash_erase).
+I would be happier with this.
 
 --=20
 Best regards,
