@@ -1,19 +1,19 @@
-Received: from o-hand.com ([70.86.75.186])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gea91-0000pl-1o
-	for linux-mtd@lists.infradead.org; Mon, 30 Oct 2006 11:37:58 -0500
-Subject: Re: [PATCH] Allow variable block sizes in mtd_blkdevs
-From: Richard Purdie <richard@openedhand.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1161955354.7638.55.camel@shinybook.infradead.org>
-References: <1161936573.5019.55.camel@localhost.localdomain>
-	<1161955354.7638.55.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Date: Mon, 30 Oct 2006 16:37:33 +0000
-Message-Id: <1162226254.6962.15.camel@localhost.localdomain>
+Received: from wx-out-0506.google.com ([66.249.82.236])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gepn8-0001EC-W4
+	for linux-mtd@lists.infradead.org; Tue, 31 Oct 2006 04:20:24 -0500
+Received: by wx-out-0506.google.com with SMTP id t11so1925548wxc
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Oct 2006 01:20:17 -0800 (PST)
+Date: Tue, 31 Oct 2006 17:13:04 +0800
+From: "sixuerain" <sixuerain@gmail.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: help:increase nand flash speed on k9f4g08u0a ?
+Message-ID: <200610311713006097843@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-10-27 at 16:22 +0300, David Woodhouse wrote:
-> On Fri, 2006-10-27 at 09:09 +0100, Richard Purdie wrote:
-> > Currently, mtd_blkdevs enforces a block size of 512, even if the drivers
-> > can seemingly request a different size. This patch fixes mtd_blkdevs so
-> > block sizes other than 512 work correctly. 
->
-> Could/did you test this with FTL on mtdram?
-
-I'd tested with mtdblock and I just tested with FTL on mtdram and that
-seems to work fine too (I could write, umount, mount and read back with
-the correct checksums).
-
-Regards,
-
-Richard
+bGludXgtbXRko6zE+rrDo6ENCg0KCSAgICAgSSBhbSB3b3JraW5nIG9uIG5hbmQgZmxhc2ggazlm
+NGcwOHUwYSB0byBzdHJvcmUgbGFyZ2UgZmlsZSBvbiBsaW51eCAyLjQuMTguDQogICAgICAgICBt
+eSBib2FyZCBpcyBmcmVlc2NhbGUgbXgyMWFkcyAsd2hpY2ggaGFzIG5hbmQgZmxhc2ggY29udHJv
+bGxlci4NCiAgICAgICAgIHRoZSBuYW5kIGZsYXNoIHNwZWVkIEkgdGVzdGVkIGlzICAgIA0KIyB0
+aW1lIGNwIDE5LnJtIHRlc3Qucm0gICAgICAgKGZyb20gL2Rldi9tdGRibG9jay80IHRvIC9kZXYv
+bXRkYmxvY2svNCAsdGhlIGZpbGUgc2l6ZSBpcyAgODYwOTA1ODlCeXRlcykNCnJlYWwgICAgMm0g
+OC4wNHMNCnVzZXIgICAgMG0gMC4wMHMNCnN5cyAgICAgMG0gMTcuMDBzDQoNCgkJSXQncyB0b28g
+c2xvdy4NCiAgICAgICAgSSBmaW5kIHRoZSB0d28tcGxhbmUtcHJvZ3JhbSBmZWF0dXJlIGluIGs5
+ZjRnMDh1MGEgZGF0YXNoZWV0ICxzbyBJIHdhbnQgdG8gbW9kaWZ5IHRoZSAvZHJpdmVycy9tdGQv
+bmFuZC9uYW5kX2Jhc2UuYyANCgkJZm9yIHR3by1wbGFuZS1wcm9ncmFtICxpcyBpdCBhIGdvb2Qg
+bWV0aG9kPw0KICAgICAgICBjYW4gYW55b25lIHRlbGwgbWUgaG93IHRvIGluY3JlYXNlIHRoZSBu
+YW5kIGZsYXNoIHNwZWVkPw0KoaGhoQkgIHdoYXQncyB0aGUgbWF4IHRoZW9yZXRpY2FsIHJlYWQv
+d3JpdGUgc3BlZWQgZm9yIGs5ZjRnMDh1MGEgbmFuZCBmbGFzaD8NCg0KICAgICAgICB0aGFuayB5
+b3V+IaGhoaGhoaGhoaENCgkJ1sINCsDxo6ENCiAJCQkJDQoNCqGhoaGhoaGhoaGhoaGhoaFzaXh1
+ZXJhaW4NCqGhoaGhoaGhoaGhoaGhoaFzaXh1ZXJhaW5AZ21haWwuY29tDQqhoaGhoaGhoaGhoaGh
+oaGhoaGhoTIwMDYtMTAtMzENCg==
