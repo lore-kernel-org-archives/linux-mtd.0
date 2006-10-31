@@ -1,19 +1,18 @@
-Received: from wx-out-0506.google.com ([66.249.82.236])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gepn8-0001EC-W4
-	for linux-mtd@lists.infradead.org; Tue, 31 Oct 2006 04:20:24 -0500
-Received: by wx-out-0506.google.com with SMTP id t11so1925548wxc
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 31 Oct 2006 01:20:17 -0800 (PST)
-Date: Tue, 31 Oct 2006 17:13:04 +0800
-From: "sixuerain" <sixuerain@gmail.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: help:increase nand flash speed on k9f4g08u0a ?
-Message-ID: <200610311713006097843@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from nic2.axis.se ([193.13.178.10] helo=krynn.se.axis.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GesEh-0008Bj-5p
+	for linux-mtd@lists.infradead.org; Tue, 31 Oct 2006 11:56:57 +0000
+Date: Tue, 31 Oct 2006 12:58:22 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Vitaly Wool <vwool@ru.mvista.com>
+Subject: Re: [PATCH/RFC] remove len/ooblen confusion in MTD/NAND code
+In-Reply-To: <20061030145105.84f953e7.vwool@ru.mvista.com>
+Message-ID: <Pine.LNX.4.64.0610311249420.25906@lnxricardw.se.axis.com>
+References: <20061030145105.84f953e7.vwool@ru.mvista.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-bGludXgtbXRko6zE+rrDo6ENCg0KCSAgICAgSSBhbSB3b3JraW5nIG9uIG5hbmQgZmxhc2ggazlm
-NGcwOHUwYSB0byBzdHJvcmUgbGFyZ2UgZmlsZSBvbiBsaW51eCAyLjQuMTguDQogICAgICAgICBt
-eSBib2FyZCBpcyBmcmVlc2NhbGUgbXgyMWFkcyAsd2hpY2ggaGFzIG5hbmQgZmxhc2ggY29udHJv
-bGxlci4NCiAgICAgICAgIHRoZSBuYW5kIGZsYXNoIHNwZWVkIEkgdGVzdGVkIGlzICAgIA0KIyB0
-aW1lIGNwIDE5LnJtIHRlc3Qucm0gICAgICAgKGZyb20gL2Rldi9tdGRibG9jay80IHRvIC9kZXYv
-bXRkYmxvY2svNCAsdGhlIGZpbGUgc2l6ZSBpcyAgODYwOTA1ODlCeXRlcykNCnJlYWwgICAgMm0g
-OC4wNHMNCnVzZXIgICAgMG0gMC4wMHMNCnN5cyAgICAgMG0gMTcuMDBzDQoNCgkJSXQncyB0b28g
-c2xvdy4NCiAgICAgICAgSSBmaW5kIHRoZSB0d28tcGxhbmUtcHJvZ3JhbSBmZWF0dXJlIGluIGs5
-ZjRnMDh1MGEgZGF0YXNoZWV0ICxzbyBJIHdhbnQgdG8gbW9kaWZ5IHRoZSAvZHJpdmVycy9tdGQv
-bmFuZC9uYW5kX2Jhc2UuYyANCgkJZm9yIHR3by1wbGFuZS1wcm9ncmFtICxpcyBpdCBhIGdvb2Qg
-bWV0aG9kPw0KICAgICAgICBjYW4gYW55b25lIHRlbGwgbWUgaG93IHRvIGluY3JlYXNlIHRoZSBu
-YW5kIGZsYXNoIHNwZWVkPw0KoaGhoQkgIHdoYXQncyB0aGUgbWF4IHRoZW9yZXRpY2FsIHJlYWQv
-d3JpdGUgc3BlZWQgZm9yIGs5ZjRnMDh1MGEgbmFuZCBmbGFzaD8NCg0KICAgICAgICB0aGFuayB5
-b3V+IaGhoaGhoaGhoaENCgkJ1sINCsDxo6ENCiAJCQkJDQoNCqGhoaGhoaGhoaGhoaGhoaFzaXh1
-ZXJhaW4NCqGhoaGhoaGhoaGhoaGhoaFzaXh1ZXJhaW5AZ21haWwuY29tDQqhoaGhoaGhoaGhoaGh
-oaGhoaGhoTIwMDYtMTAtMzENCg==
+
+On Mon, 30 Oct 2006, Vitaly Wool wrote:
+
+> The patch inlined below makes an attempt to change the interface to more=
+=20
+> intuitive, ie when ops.datbuf is NULL, ops.len is ignored, and=20
+> ops.ooblen is used throughout to specify the full OOB read/write length.
+
+My only comment at this stage is a trivial one: many of the debug texts do=
+=20
+not match the function they are placed in. Doesn't really have anything to=
+=20
+do with the reason for the patch though, but makes for confusing debug=20
+output.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
