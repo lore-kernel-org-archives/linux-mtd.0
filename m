@@ -1,14 +1,16 @@
-Received: from mail87.messagelabs.com ([216.82.250.19])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gf7DU-00013C-LY
-	for linux-mtd@lists.infradead.org; Tue, 31 Oct 2006 22:56:46 -0500
-Message-ID: <4548195D.80505@magellan-technology.com>
-Date: Wed, 01 Nov 2006 14:49:49 +1100
-From: Aras Vaichas <arasv@magellan-technology.com>
-MIME-Version: 1.0
-To: Andrew Victor <andrew@sanpeople.com>
-Subject: NOR Flash on at91rm9200 status?
-Content-Type: text/plain; charset=UTF-8
+Received: from za-gw.sanpeople.com ([196.211.225.226])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gf9rm-0002LV-KO
+	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 01:46:29 -0500
+Subject: Re: NOR Flash on at91rm9200 status?
+From: Andrew Victor <andrew@sanpeople.com>
+To: Aras Vaichas <arasv@magellan-technology.com>
+In-Reply-To: <4548195D.80505@magellan-technology.com>
+References: <4548195D.80505@magellan-technology.com>
+Content-Type: text/plain
+Message-Id: <1162363021.16797.4.camel@fuzzie.sanpeople.com>
+Mime-Version: 1.0
+Date: 01 Nov 2006 08:37:02 +0200
 Content-Transfer-Encoding: 7bit
 Cc: MTD-LIST <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,24 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew,
+hi Aras,
 
-looking at your Linux-2.6-at91 patch status page it shows:
-"NOR Flash  	 unknown  	 ?"
+> looking at your Linux-2.6-at91 patch status page it shows:
+> "NOR Flash  	 unknown  	 ?"
+> 
+> Is this still accurate? I understand that the Cogent boards use NOR Flash with
+> the at91rm9200. Does that mean the NOR Flash drivers are all working fine, or
+> do they only work with the Strataflash parts?
 
-Is this still accurate? I understand that the Cogent boards use NOR Flash with
-the at91rm9200. Does that mean the NOR Flash drivers are all working fine, or
-do they only work with the Strataflash parts?
+The only AT91RM9200-based board I have with NOR flash is an
+AT91RM9200-DK.  On that board the flash chips (Atmel AT49BV1614) is not
+detected properly - worked fine in 2.4 though.
 
-I was thinking of a design that used the Toshiba TC58FVM7T5 16MBx8 NOR Flash.
-Will I be able to use this part with the Linux kernel?
+I haven't had any other reports of NOR flash not working, so I assume it
+is something particular with the DK board and/or the AT49BV1614.
 
 
-regards,
-
-Aras Vaichas
-
-______________________________________________________________________
-This email has been scanned by the MessageLabs Email Security System.
-For more information please visit http://www.messagelabs.com/email 
-______________________________________________________________________
+Regards,
+  Andrew Victor
