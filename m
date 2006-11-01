@@ -1,15 +1,16 @@
 Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GfHH9-0007oX-HD
-	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 09:41:13 -0500
-Subject: Re: [PATCH/RFC] remove len/ooblen confusion in MTD/NAND code
+	id 1GfJJj-0000T5-Eg
+	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 11:52:01 -0500
+Subject: Re: [PATCH] [MTD] MAPS: Support for BIOS flash chips on the nvidia
+	ck804 southbridge
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <20061030145105.84f953e7.vwool@ru.mvista.com>
-References: <20061030145105.84f953e7.vwool@ru.mvista.com>
+To: Ryan Jackson <rjackson@lnxi.com>
+In-Reply-To: <20061031235646.GE5968@localdomain>
+References: <20061031235646.GE5968@localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 01 Nov 2006 16:41:02 +0200
-Message-Id: <1162392062.7527.11.camel@sauron>
+Date: Wed, 01 Nov 2006 18:51:48 +0200
+Message-Id: <1162399908.15435.16.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,21 +24,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Vitaly,
+Hello Rayan,
 
-the patch looks logical for me, please find my comments below.
+I have few questions (may be silly) and comments.
 
-1. You did not change comments above the 'struct mtd_oob_ops' structure
-declaration.
+On Tue, 2006-10-31 at 16:56 -0700, Ryan Jackson wrote:
+> +static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
+> +	const struct pci_device_id *ent)
 
-On Mon, 2006-10-30 at 14:51 +0300, Vitaly Wool wrote:
->  		if (devops.datbuf)
->  			devops.datbuf +=3D devops.retlen;
->  		if (devops.oobbuf)
-> -			devops.oobbuf +=3D devops.ooblen;
-> +			devops.oobbuf +=3D subdev->oobsize;
+I wonder why do you use __devinit here, not __init? AFAIK, __devinit is
+used for hotplug-able devices, is this the case for a video card?
 
-Is this is an independent bug-fix?
+> +{
+> +	static char *rom_probe_types[] =3D { "cfi_probe", "jedec_probe", NULL }=
+;
+
+So the interface may really be JEDEC and CFI?
+> phys;
+> +		map->map.virt =3D (void __iomem *)
+> +			(((unsigned long)(window->virt)) + offset);
+map->map.virt is 'void *', so=20
+
+map->map.virt =3D window->virt + offset * sizeof(long);
+
+could be used instead and it looks neater. In gcc sizeof(void) is 1 and
+is is widely used in the kernel.
+
+> +static int __init init_ck804xrom(void)
+> +{
+> +	struct pci_dev *pdev;
+> +	struct pci_device_id *id;
+> +	int retVal;
+> +	pdev =3D NULL;
+> +
+> +	for(id =3D ck804xrom_pci_tbl; id->vendor; id++) {
+> +		pdev =3D pci_find_device(id->vendor, id->device, NULL);
+> +		if (pdev)
+> +			break;
+> +	}
+> +	if (pdev) {
+> +		retVal =3D ck804xrom_init_one(pdev, &ck804xrom_pci_tbl[0]);
+> +		pci_dev_put(pdev);
+> +		return retVal;
+> +	}
+> +	return -ENXIO;
+> +#if 0
+> +	return pci_module_init(&ck804xrom_driver);
+> +#endif
+
+Why you commented out pci_module_init() and the related stuff? Why you
+do not use this standard mechanism?
 
 --=20
 Best regards,
