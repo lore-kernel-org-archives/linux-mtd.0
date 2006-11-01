@@ -1,20 +1,26 @@
-Received: from mgw-ext11.nokia.com ([131.228.20.170])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GfJJj-0000T5-Eg
-	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 11:52:01 -0500
-Subject: Re: [PATCH] [MTD] MAPS: Support for BIOS flash chips on the nvidia
-	ck804 southbridge
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ryan Jackson <rjackson@lnxi.com>
-In-Reply-To: <20061031235646.GE5968@localdomain>
-References: <20061031235646.GE5968@localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 01 Nov 2006 18:51:48 +0200
-Message-Id: <1162399908.15435.16.camel@sauron>
-Mime-Version: 1.0
+Received: from smtp19.orange.fr ([80.12.242.1])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GfKZC-0002sI-U0
+	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 18:12:03 +0000
+Received: from smtp-msa-out19.orange.fr (mwinf1907 [172.22.129.35])
+	by mwinf1905.orange.fr (SMTP Server) with ESMTP id 907D05C06FCC
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  1 Nov 2006 19:11:41 +0100 (CET)
+Received: from will.lan (ALille-205-1-3-75.w217-128.abo.wanadoo.fr
+	[217.128.82.75])
+	by mwinf1907.orange.fr (SMTP Server) with ESMTP id 262591C00064
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  1 Nov 2006 19:11:20 +0100 (CET)
+From: Guillaume FORTAINE <guillaume.fortaine@wanadoo.fr>
+To: linux-mtd@lists.infradead.org
+Subject: LBA-NAND - i.MX27
+Date: Wed, 1 Nov 2006 19:11:34 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Disposition: inline
+Message-Id: <200611011911.34132.guillaume.fortaine@wanadoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +30,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Rayan,
+Hello,
 
-I have few questions (may be silly) and comments.
+=A0I am French Engineer in Informatics and I would want to build a start
+=A0up to sell Portable media players. I am currently in discussion with
+=A0investors.
 
-On Tue, 2006-10-31 at 16:56 -0700, Ryan Jackson wrote:
-> +static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
-> +	const struct pci_device_id *ent)
+We would want to use this module :
 
-I wonder why do you use __devinit here, not __init? AFAIK, __devinit is
-used for hotplug-able devices, is this the case for a video card?
+LBA-NAND 8 GB
 
-> +{
-> +	static char *rom_probe_types[] =3D { "cfi_probe", "jedec_probe", NULL }=
-;
+http://www.toshiba.com/taec/news/press_releases/2006/memy_06_337.jsp
 
-So the interface may really be JEDEC and CFI?
-> phys;
-> +		map->map.virt =3D (void __iomem *)
-> +			(((unsigned long)(window->virt)) + offset);
-map->map.virt is 'void *', so=20
+Around this processor :
 
-map->map.virt =3D window->virt + offset * sizeof(long);
+i.MX27
 
-could be used instead and it looks neater. In gcc sizeof(void) is 1 and
-is is widely used in the kernel.
+http://www.freescale.com/webapp/sps/site/prod_summary.jsp?code=3Di.MX27&nod=
+eId=3D02XPgQ82172973ZrDR
 
-> +static int __init init_ck804xrom(void)
-> +{
-> +	struct pci_dev *pdev;
-> +	struct pci_device_id *id;
-> +	int retVal;
-> +	pdev =3D NULL;
-> +
-> +	for(id =3D ck804xrom_pci_tbl; id->vendor; id++) {
-> +		pdev =3D pci_find_device(id->vendor, id->device, NULL);
-> +		if (pdev)
-> +			break;
-> +	}
-> +	if (pdev) {
-> +		retVal =3D ck804xrom_init_one(pdev, &ck804xrom_pci_tbl[0]);
-> +		pci_dev_put(pdev);
-> +		return retVal;
-> +	}
-> +	return -ENXIO;
-> +#if 0
-> +	return pci_module_init(&ck804xrom_driver);
-> +#endif
 
-Why you commented out pci_module_init() and the related stuff? Why you
-do not use this standard mechanism?
+Does the CPU pose any problems ?
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+We look forward to your answer,
+
+Best Regards,
+
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0Guillaume
