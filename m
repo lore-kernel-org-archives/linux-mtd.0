@@ -1,18 +1,19 @@
-Received: from server37.tchmachines.com ([69.50.193.27])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GfRmK-00054h-PV
-	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 20:54:04 -0500
-Received: from archite by server37.tchmachines.com with local (Exim 4.52)
-	id 1GfRGL-0001I2-Hp
-	for linux-mtd@lists.infradead.org; Wed, 01 Nov 2006 20:20:57 -0500
-Message-ID: <15208.69.30.123.186.1162430457.squirrel@www.architechnical.net>
-Date: Wed, 1 Nov 2006 20:20:57 -0500 (EST)
-Subject: Clarification on PLACE -vs- AUTO with JFFS2 cleanmarkers.
-From: linux@architechnical.net
-To: linux-mtd@lists.infradead.org
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GfWal-0007Pt-SI
+	for linux-mtd@lists.infradead.org; Thu, 02 Nov 2006 02:02:31 -0500
+Message-ID: <45499801.7030800@ru.mvista.com>
+Date: Thu, 02 Nov 2006 10:02:25 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: dedekind@infradead.org
+Subject: Re: [PATCH/RFC] remove len/ooblen confusion in MTD/NAND code
+References: <20061030145105.84f953e7.vwool@ru.mvista.com>
+	<1162392062.7527.11.camel@sauron>
+In-Reply-To: <1162392062.7527.11.camel@sauron>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,18 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Artem,
 
-I've written a custom driver for the ST 512R3A 8-bit NAND under 2.6.16 and
-ported it to 2.6.18.  Because of some chip and system peculiarities I was
-unable to use the NAND framework and wrote it using solely MTD (except for
-software ECC).  The problem occurs when mounting a JFFS2 file system: the
-cleanmarker is written to bytes 0-7 (ECC, bad block marker) instead of
-8-15 of the OOB, as instructed by the write_ops call with ooboffs=0,
-ooblen=8, and mode=MTD_OOB_PLACE.  My understanding is that MTD_OOB_AUTO
-should be used to put the cleanmarker into the the free bytes; am I
-mistaken?  I've corrected what we thought were other problems with len and
-ooblen in wbuf.c but it looks like that patch came out Monday.
+Artem Bityutskiy wrote:
+> Hello Vitaly,
+>
+> the patch looks logical for me, please find my comments below.
+>
+> 1. You did not change comments above the 'struct mtd_oob_ops' structure
+> declaration.
+>   
+Oh right, thanks. I'll come up shortly with a new one.
+> On Mon, 2006-10-30 at 14:51 +0300, Vitaly Wool wrote:
+>   
+>>  		if (devops.datbuf)
+>>  			devops.datbuf += devops.retlen;
+>>  		if (devops.oobbuf)
+>> -			devops.oobbuf += devops.ooblen;
+>> +			devops.oobbuf += subdev->oobsize;
+>>     
+>
+> Is this is an independent bug-fix?
+>
+>   
+No. The point here is that devops.ooblen is no more the OOB size, so we 
+have to obtain OOB size from somewhere else. I. e. for the old version 
+this would have been an equivalent change.
 
-Thanks for any clarification,
-Pete MacKay
+Vitaly
