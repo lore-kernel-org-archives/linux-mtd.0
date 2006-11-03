@@ -1,15 +1,15 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
+Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GfvAC-0005sE-Vr
-	for linux-mtd@lists.infradead.org; Fri, 03 Nov 2006 04:16:46 -0500
-Subject: Re: [PATCH/RFC] remove len/ooblen confusion in MTD/NAND code: respin
+	id 1GfvKW-0006C2-UJ
+	for linux-mtd@lists.infradead.org; Fri, 03 Nov 2006 04:27:32 -0500
+Subject: Re: Clarification on PLACE -vs- AUTO with JFFS2 cleanmarkers.
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Vitaly Wool <vwool@ru.mvista.com>
-In-Reply-To: <20061102100659.f223d094.vwool@ru.mvista.com>
-References: <20061102100659.f223d094.vwool@ru.mvista.com>
+To: Pete MacKay <linux@architechnical.net>
+In-Reply-To: <45924.69.30.123.186.1162491027.squirrel@www.architechnical.net>
+References: <45924.69.30.123.186.1162491027.squirrel@www.architechnical.net>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 03 Nov 2006 11:16:17 +0200
-Message-Id: <1162545377.15435.35.camel@sauron>
+Date: Fri, 03 Nov 2006 11:26:45 +0200
+Message-Id: <1162546005.15435.37.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,93 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-11-02 at 10:06 +0300, Vitaly Wool wrote:
-> Hello folks,
+On Thu, 2006-11-02 at 13:10 -0500, Pete MacKay wrote:
+> I've written a custom driver for the ST 512R3A 8-bit NAND under 2.6.16 an=
+d
+> ported it to 2.6.18.  Because of some chip and system peculiarities I was
+> unable to use the NAND framework and wrote it using solely MTD (except fo=
+r
+> software ECC).  The problem occurs when mounting a JFFS2 file system: the
+> cleanmarker is written to bytes 0-7 (ECC, bad block marker) instead of
+> 8-15 of the OOB, as instructed by the write_ops call with ooboffs=3D0,
+> ooblen=3D8, and mode=3DMTD_OOB_PLACE.  My understanding is that MTD_OOB_A=
+UTO
+> should be used to put the cleanmarker into the the free bytes; am I
+> mistaken?  I've corrected what we thought were other problems with len an=
+d
+> ooblen in wbuf.c but it looks like that patch came out Monday.
 
-snip
+In my opinion you have hit a bug which seems to be introduced at May
+2006 by commit 8593fbc68b0df1168995de76d1af38eb62fd6b62.
 
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> --- linux-2.6.orig/drivers/mtd/mtdconcat.c
-> +++ linux-2.6/drivers/mtd/mtdconcat.c
-> @@ -278,14 +278,14 @@ concat_read_oob(struct mtd_info *mtd, lo
->  				return err;
->  		}
-> =20
-> -		devops.len =3D ops->len - ops->retlen;
-> -		if (!devops.len)
-> +		devops.ooblen =3D ops->ooblen - ops->retlen;
-> +		if (!devops.ooblen)
->  			return ret;
-
-May you please explain this code. If ops->databuf !=3D NULL,
-mtd->read_oob() stores the number of read _data_ bytes. Then we
-substract number of _data_ bytes from number of _OOB_ bytes
-(devops.ooblen)? Looks confusing.
-
-'struct mtd_oob_ops' is still a bit confusing. This is how it looks
-after your patch:
-
-
-/**
- * struct mtd_oob_ops - oob operation operands
- * @mode:       operation mode
- *
- * @len:        number of data bytes to write/read
- *
- * @retlen:     number of bytes written/read. When a data buffer is
-given
- *              (datbuf !=3D NULL) this is the number of data bytes. When
- *              no data buffer is available this is the number of oob
-bytes.
- *
- * @ooblen:     number of oob bytes to write/read
- * @ooboffs:    offset of oob data in the oob area (only relevant when
- *              mode =3D MTD_OOB_PLACE)
- * @datbuf:     data buffer - if NULL only oob data are read/written
- * @oobbuf:     oob data buffer
- */
-
-struct mtd_oob_ops {
-        mtd_oob_mode_t  mode;
-        size_t          len;
-        size_t          retlen;
-        size_t          ooblen;
-        uint32_t        ooboffs;
-        uint8_t         *datbuf;
-        uint8_t         *oobbuf;
-};
-
-The fact that retlen depends on whether datbuf is NULL is not nice. I
-would prefer go further and make it like this:
-
-/**
- * struct mtd_oob_ops - OOB operation operands
- * @mode:       operation mode
- * @len:        number of data bytes to write/read
- * @ooblen:     number of OOB bytes to write/read
- * @retlen:     number of data bytes written/read
- * @oobretlen:  number of OOB bytes written/read
- * @ooboffs:    offset of OOB data in the OOB area (only relevant when
- *              mode =3D MTD_OOB_PLACE)
- * @datbuf:     data buffer - if NULL only OOB data are read/written
- * @oobbuf:     OOB data buffer - cnnot not be NULL
- */
-struct mtd_oob_ops {
-        mtd_oob_mode_t  mode;
-        size_t          len;
-        size_t          ooblen;
-        size_t          retlen;
-        size_t          oobretlen;
-        uint32_t        ooboffs;
-        uint8_t         *datbuf;
-        uint8_t         *oobbuf;
-};
-
-If we say "A" why not to say "B"?
-
-Comments?
+I think it assumed to be MTD_OOB_AUTO.
 
 --=20
 Best regards,
