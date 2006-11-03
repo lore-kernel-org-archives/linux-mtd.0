@@ -1,27 +1,29 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gfmph-0000G0-P7
-	for linux-mtd@lists.infradead.org; Thu, 02 Nov 2006 19:23:01 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J8400D6IP0RFF@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 03 Nov 2006 09:22:03 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0J8400FDMP0RS1@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 03 Nov 2006 09:22:03 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 03 Nov 2006 00:21:44 +0000 (GMT)
-From: =?euc-kr?B?udqw5rnO?= <kyungmin.park@samsung.com>
-Subject: [PATCH] OneNAND: interrupt based wait support
-To: linux-mtd@lists.infradead.org
-Message-id: <5140638.14681162513323363.JavaMail.weblogic@ep_ml21>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=euc-kr
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GfoK9-00017U-D0
+	for linux-mtd@lists.infradead.org; Thu, 02 Nov 2006 20:58:32 -0500
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e3.ny.us.ibm.com (8.13.8/8.12.11) with ESMTP id kA31wKaR024074
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Nov 2006 20:58:20 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay02.pok.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
+	kA31wKtu284188
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Nov 2006 20:58:20 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	kA31wJXN005495
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Nov 2006 20:58:19 -0500
+Subject: Re: [PATCH] OneNAND: interrupt based wait support
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: kyungmin.park@samsung.com
+In-Reply-To: <5140638.14681162513323363.JavaMail.weblogic@ep_ml21>
+References: <5140638.14681162513323363.JavaMail.weblogic@ep_ml21>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 02 Nov 2006 19:59:13 -0600
+Message-Id: <1162519153.23288.9.camel@crusty.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,98 +33,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-TVREOiBPbmVOQU5EOiBpbnRlcnJ1cHQgYmFzZWQgd2FpdCBzdXBwb3J0DQoNCiAgV2UgY2FuIHVz
-ZSB0aGUgdHdvIG1ldGhvZHMgdG8gd2FpdC4NCiAgMS4gcG9sbGluZzogcmVhZCBpbnRlcnJ1cHQg
-c3RhdHVzIHJlZ2lzdGVyDQogIDIuIGludGVycnVwdDogdXNlIGtlcm5lbCBpbmV0ZXJydXB0IG1l
-Y2hhbmlzbQ0KDQogIFRvIHVzZSBpbnRlcnJ1cHQgbWV0aG9kLCB5b3UgZmlyc3QgY29ubmVjdCBv
-bmVuYW5kIGludGVycnVwdCBwaW4gdG8geW91ciBwbGF0Zm9ybSBhbmQgY29uZmlndXJlIGludGVy
-cnVwdCBwcm9wZXJseQ0KDQpTaWduZWQtb2ZmLWJ5OiBLeXVuZ21pbiBQYXJrIDxreXVuZ21pbi5w
-YXJrQHNhbXN1bmcuY29tPg0KDQotLQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvb25lbmFu
-ZC9nZW5lcmljLmMgYi9kcml2ZXJzL210ZC9vbmVuYW5kL2dlbmVyaWMuYw0KaW5kZXggYWYwNmE4
-MC4uY2RmODBjNiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL29uZW5hbmQvZ2VuZXJpYy5jDQor
-KysgYi9kcml2ZXJzL210ZC9vbmVuYW5kL2dlbmVyaWMuYw0KQEAgLTYzLDYgKzYzLDcgQEAgc3Rh
-dGljIGludCBfX2RldmluaXQgZ2VuZXJpY19vbmVuYW5kX3Bybw0KIAl9DQogDQogCWluZm8tPm9u
-ZW5hbmQubW1jb250cm9sID0gcGRhdGEtPm1tY29udHJvbDsNCisJaW5mby0+b25lbmFuZC5pcnEg
-PSBwbGF0Zm9ybV9nZXRfaXJxKHBkZXYsIDApOw0KIA0KIAlpbmZvLT5tdGQubmFtZSA9IHBkZXYt
-PmRldi5idXNfaWQ7DQogCWluZm8tPm10ZC5wcml2ID0gJmluZm8tPm9uZW5hbmQ7DQpkaWZmIC0t
-Z2l0IGEvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL29u
-ZW5hbmQvb25lbmFuZF9iYXNlLmMNCmluZGV4IDhlZDY4YjIuLmFlYTEzYTMgMTAwNjQ0DQotLS0g
-YS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQorKysgYi9kcml2ZXJzL210ZC9v
-bmVuYW5kL29uZW5hbmRfYmFzZS5jDQpAQCAtMTMsNiArMTMsNyBAQCAjaW5jbHVkZSA8bGludXgv
-a2VybmVsLmg+DQogI2luY2x1ZGUgPGxpbnV4L21vZHVsZS5oPg0KICNpbmNsdWRlIDxsaW51eC9p
-bml0Lmg+DQogI2luY2x1ZGUgPGxpbnV4L3NjaGVkLmg+DQorI2luY2x1ZGUgPGxpbnV4L2ludGVy
-cnVwdC5oPg0KICNpbmNsdWRlIDxsaW51eC9qaWZmaWVzLmg+DQogI2luY2x1ZGUgPGxpbnV4L210
-ZC9tdGQuaD4NCiAjaW5jbHVkZSA8bGludXgvbXRkL29uZW5hbmQuaD4NCkBAIC0zMzksNiArMzQw
-LDExMSBAQCBzdGF0aWMgaW50IG9uZW5hbmRfd2FpdChzdHJ1Y3QgbXRkX2luZm8gDQogCXJldHVy
-biAwOw0KIH0NCiANCisvKg0KKyAqIG9uZW5hbmRfaW50ZXJydXB0IC0gW0RFRkFVTFRdIG9uZW5h
-bmQgaW50ZXJydXB0IGhhbmRsZXINCisgKiBAcGFyYW0gaXJxCQlvbmVuYW5kIGludGVycnVwdCBu
-dW1iZXINCisgKiBAcGFyYW0gZGV2X2lkCWludGVycnVwdCBkYXRhDQorICoNCisgKiBjb21wbGV0
-ZSB0aGUgd29yaw0KKyAqLw0KK3N0YXRpYyBpcnFyZXR1cm5fdCBvbmVuYW5kX2ludGVycnVwdChp
-bnQgaXJxLCB2b2lkICpkYXRhKQ0KK3sNCisJc3RydWN0IG9uZW5hbmRfY2hpcCAqdGhpcyA9IChz
-dHJ1Y3Qgb25lbmFuZF9jaGlwICopIGRhdGE7DQorDQorCS8qIFRvIGhhbmRsZSBzaGFyZWQgaW50
-ZXJydXB0ICovDQorCWlmICghdGhpcy0+Y29tcGxldGUuZG9uZSkNCisJCWNvbXBsZXRlKCZ0aGlz
-LT5jb21wbGV0ZSk7DQorDQorCXJldHVybiBJUlFfSEFORExFRDsNCit9DQorDQorLyoNCisgKiBv
-bmVuYW5kX2ludGVycnVwdF93YWl0IC0gW0RFRkFVTFRdIHdhaXQgdW50aWwgdGhlIGNvbW1hbmQg
-aXMgZG9uZQ0KKyAqIEBwYXJhbSBtdGQJCU1URCBkZXZpY2Ugc3RydWN0dXJlDQorICogQHBhcmFt
-IHN0YXRlCQlzdGF0ZSB0byBzZWxlY3QgdGhlIG1heC4gdGltZW91dCB2YWx1ZQ0KKyAqDQorICog
-V2FpdCBmb3IgY29tbWFuZCBkb25lLg0KKyAqLw0KK3N0YXRpYyBpbnQgb25lbmFuZF9pbnRlcnJ1
-cHRfd2FpdChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaW50IHN0YXRlKQ0KK3sNCisJc3RydWN0IG9u
-ZW5hbmRfY2hpcCAqdGhpcyA9IG10ZC0+cHJpdjsNCisNCisJLyogVG8gcHJldmVudCBzb2Z0IGxv
-Y2t1cCAqLw0KKwl0b3VjaF9zb2Z0bG9ja3VwX3dhdGNoZG9nKCk7DQorDQorCXdhaXRfZm9yX2Nv
-bXBsZXRpb24oJnRoaXMtPmNvbXBsZXRlKTsNCisNCisJcmV0dXJuIG9uZW5hbmRfd2FpdChtdGQs
-IHN0YXRlKTsNCit9DQorDQorLyoNCisgKiBvbmVuYW5kX3RyeV9pbnRlcnJ1cHRfd2FpdCAtIFtE
-RUZBVUxUXSB0cnkgaW50ZXJydXB0IHdhaXQNCisgKiBAcGFyYW0gbXRkCQlNVEQgZGV2aWNlIHN0
-cnVjdHVyZQ0KKyAqIEBwYXJhbSBzdGF0ZQkJc3RhdGUgdG8gc2VsZWN0IHRoZSBtYXguIHRpbWVv
-dXQgdmFsdWUNCisgKg0KKyAqIFRyeSBpbnRlcnJ1cHQgYmFzZWQgd2FpdCAoSXQgaXMgdXNlZCBv
-bmUtdGltZSkNCisgKi8NCitzdGF0aWMgaW50IG9uZW5hbmRfdHJ5X2ludGVycnVwdF93YWl0KHN0
-cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc3RhdGUpDQorew0KKwlzdHJ1Y3Qgb25lbmFuZF9jaGlw
-ICp0aGlzID0gbXRkLT5wcml2Ow0KKwl1bnNpZ25lZCBsb25nIHJlbWFpbiwgdGltZW91dDsNCisN
-CisJLyogV2UgdXNlIGludGVycnVwdCB3YWl0IGZpcnN0ICovDQorCXRoaXMtPndhaXQgPSBvbmVu
-YW5kX2ludGVycnVwdF93YWl0Ow0KKw0KKwkvKiBUbyBwcmV2ZW50IHNvZnQgbG9ja3VwICovDQor
-CXRvdWNoX3NvZnRsb2NrdXBfd2F0Y2hkb2coKTsNCisNCisJdGltZW91dCA9IG1zZWNzX3RvX2pp
-ZmZpZXMoMTAwKTsNCisJcmVtYWluID0gd2FpdF9mb3JfY29tcGxldGlvbl90aW1lb3V0KCZ0aGlz
-LT5jb21wbGV0ZSwgdGltZW91dCk7DQorCWlmICghcmVtYWluKSB7DQorCQlwcmludGsoS0VSTl9J
-TkZPICJPbmVOQU5EOiBUaGVyZSdzIG5vIGludGVycnVwdC4gIg0KKwkJCQkiV2UgdXNlIHRoZSBu
-b3JtYWwgd2FpdFxuIik7DQorDQorCQkvKiBSZWxlYXNlIHRoZSBpcnEgKi8NCisJCWZyZWVfaXJx
-KHRoaXMtPmlycSwgdGhpcyk7DQorCQkNCisJCXRoaXMtPndhaXQgPSBvbmVuYW5kX3dhaXQ7DQor
-CX0NCisNCisJcmV0dXJuIG9uZW5hbmRfd2FpdChtdGQsIHN0YXRlKTsNCit9DQorDQorLyoNCisg
-KiBvbmVuYW5kX3NldHVwX3dhaXQgLSBbT25lTkFORCBJbnRlcmZhY2VdIHNldHVwIG9uZW5hbmQg
-d2FpdCBtZXRob2QNCisgKiBAcGFyYW0gbXRkCQlNVEQgZGV2aWNlIHN0cnVjdHVyZQ0KKyAqDQor
-ICogVGhlcmUncyB0d28gbWV0aG9kIHRvIHdhaXQgb25lbmFuZCB3b3JrDQorICogMS4gcG9sbGlu
-ZyAtIHJlYWQgaW50ZXJydXB0IHN0YXR1cyByZWdpc3Rlcg0KKyAqIDIuIGludGVycnVwdCAtIHVz
-ZSB0aGUga2VybmVsIGludGVycnVwdCBtZXRob2QNCisgKi8NCitzdGF0aWMgdm9pZCBvbmVuYW5k
-X3NldHVwX3dhaXQoc3RydWN0IG10ZF9pbmZvICptdGQpDQorew0KKwlzdHJ1Y3Qgb25lbmFuZF9j
-aGlwICp0aGlzID0gbXRkLT5wcml2Ow0KKwlpbnQgc3lzY2ZnOw0KKw0KKwlpbml0X2NvbXBsZXRp
-b24oJnRoaXMtPmNvbXBsZXRlKTsNCisNCisJaWYgKHRoaXMtPmlycSA8PSAwKSB7DQorCQl0aGlz
-LT53YWl0ID0gb25lbmFuZF93YWl0Ow0KKwkJcmV0dXJuOw0KKwl9DQorDQorCWlmIChyZXF1ZXN0
-X2lycSh0aGlzLT5pcnEsICZvbmVuYW5kX2ludGVycnVwdCwNCisJCQkJSVJRRl9TSEFSRUQsICJv
-bmVuYW5kIiwgdGhpcykpIHsNCisJCS8qIElmIHdlIGNhbid0IGdldCBpcnEsIHVzZSB0aGUgbm9y
-bWFsIHdhaXQgKi8NCisJCXRoaXMtPndhaXQgPSBvbmVuYW5kX3dhaXQ7DQorCQlyZXR1cm47DQor
-CX0NCisNCisJLyogRW5hYmxlIGludGVycnVwdCAqLw0KKwlzeXNjZmcgPSB0aGlzLT5yZWFkX3dv
-cmQodGhpcy0+YmFzZSArIE9ORU5BTkRfUkVHX1NZU19DRkcxKTsNCisJc3lzY2ZnIHw9IE9ORU5B
-TkRfU1lTX0NGRzFfSU9CRTsNCisJdGhpcy0+d3JpdGVfd29yZChzeXNjZmcsIHRoaXMtPmJhc2Ug
-KyBPTkVOQU5EX1JFR19TWVNfQ0ZHMSk7DQorDQorCXRoaXMtPndhaXQgPSBvbmVuYW5kX3RyeV9p
-bnRlcnJ1cHRfd2FpdDsNCit9DQorDQogLyoqDQogICogb25lbmFuZF9idWZmZXJyYW1fb2Zmc2V0
-IC0gW0RFRkFVTFRdIEJ1ZmZlclJBTSBvZmZzZXQNCiAgKiBAcGFyYW0gbXRkCQlNVEQgZGF0YSBz
-dHJ1Y3R1cmUNCkBAIC0xMTI5LDcgKzEyMzUsNiBAQCBzdGF0aWMgdm9pZCBvbmVuYW5kX3N5bmMo
-c3RydWN0IG10ZF9pbmZvDQogCW9uZW5hbmRfcmVsZWFzZV9kZXZpY2UobXRkKTsNCiB9DQogDQot
-DQogLyoqDQogICogb25lbmFuZF9ibG9ja19pc2JhZCAtIFtNVEQgSW50ZXJmYWNlXSBDaGVjayB3
-aGV0aGVyIHRoZSBibG9jayBhdCB0aGUgZ2l2ZW4gb2Zmc2V0IGlzIGJhZA0KICAqIEBwYXJhbSBt
-dGQJCU1URCBkZXZpY2Ugc3RydWN0dXJlDQpAQCAtMTg0Niw3ICsxOTUxLDcgQEAgaW50IG9uZW5h
-bmRfc2NhbihzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgaQ0KIAlpZiAoIXRoaXMtPmNvbW1hbmQpDQog
-CQl0aGlzLT5jb21tYW5kID0gb25lbmFuZF9jb21tYW5kOw0KIAlpZiAoIXRoaXMtPndhaXQpDQot
-CQl0aGlzLT53YWl0ID0gb25lbmFuZF93YWl0Ow0KKwkJb25lbmFuZF9zZXR1cF93YWl0KG10ZCk7
-DQogDQogCWlmICghdGhpcy0+cmVhZF9idWZmZXJyYW0pDQogCQl0aGlzLT5yZWFkX2J1ZmZlcnJh
-bSA9IG9uZW5hbmRfcmVhZF9idWZmZXJyYW07DQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9t
-dGQvb25lbmFuZC5oIGIvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQppbmRleCA2ZjA0NWI1
-Li5kZjk2M2YxIDEwMDY0NA0KLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQorKysg
-Yi9pbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5kLmgNCkBAIC0xMyw2ICsxMyw3IEBAICNpZm5kZWYg
-X19MSU5VWF9NVERfT05FTkFORF9IDQogI2RlZmluZSBfX0xJTlVYX01URF9PTkVOQU5EX0gNCiAN
-CiAjaW5jbHVkZSA8bGludXgvc3BpbmxvY2suaD4NCisjaW5jbHVkZSA8bGludXgvY29tcGxldGlv
-bi5oPg0KICNpbmNsdWRlIDxsaW51eC9tdGQvb25lbmFuZF9yZWdzLmg+DQogI2luY2x1ZGUgPGxp
-bnV4L210ZC9iYm0uaD4NCiANCkBAIC0xMjAsNiArMTIxLDkgQEAgc3RydWN0IG9uZW5hbmRfY2hp
-cCB7DQogCWludCAoKmJsb2NrX21hcmtiYWQpKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3Qg
-b2ZzKTsNCiAJaW50ICgqc2Nhbl9iYnQpKHN0cnVjdCBtdGRfaW5mbyAqbXRkKTsNCiANCisJc3Ry
-dWN0IGNvbXBsZXRpb24JY29tcGxldGU7DQorCWludAkJCWlycTsNCisNCiAJc3BpbmxvY2tfdAkJ
-Y2hpcF9sb2NrOw0KIAl3YWl0X3F1ZXVlX2hlYWRfdAl3cTsNCiAJb25lbmFuZF9zdGF0ZV90CQlz
-dGF0ZTs=
+On Fri, 2006-11-03 at 00:21 +0000, 박경민 wrote:
+> MTD: OneNAND: interrupt based wait support
+> 
+>   We can use the two methods to wait.
+>   1. polling: read interrupt status register
+>   2. interrupt: use kernel ineterrupt mechanism
+> 
+>   To use interrupt method, you first connect onenand interrupt pin to your platform and configure interrupt properly
+
+Just curious, but do you have an example platform you've tested this on?
+It would be good to get the platform code for that as an example if
+possible.
+
+josh
