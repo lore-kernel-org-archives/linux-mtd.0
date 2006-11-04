@@ -1,14 +1,17 @@
-Received: from arrows.demon.co.uk ([83.105.72.193])
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GgIKt-0002h2-S1
-	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 05:01:17 -0500
-Date: Sat, 4 Nov 2006 08:22:56 +0000 (GMT)
-From: John <john@arrows.demon.co.uk>
-To: <linux-mtd@lists.infradead.org>
-Subject: UBI and OneNand
-Message-ID: <Pine.LNX.4.33.0611040819560.26940-100000@arrows.demon.co.uk>
+Received: from darwaza.gdatech.com ([66.237.41.98])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GgOPj-0005ZL-Ao
+	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 11:30:43 -0500
+Message-ID: <000801c7002e$88114fc0$99c8a8c0@jrakeshsw>
+From: "Jagota Rakesh" <jrakesh@gdatech.com>
+To: <s.balamurugan@gdatech.co.in>, <linux-mtd@lists.infradead.org>
+References: <26116.202.144.30.226.1162630659.squirrel@mail.gdatech.co.in>
+Subject: Re: doubts in creating jffs2 image
+Date: Sat, 4 Nov 2006 08:30:25 -0800
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,49 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Helo bala,
 
-I have a board with a MIPS core and a OneNAND flash.  I plan to split
-the OneNAND into a small partition for the boot loader, and a big
-partition for the rest. The big partition will be split using UBI into:
-  a partition for the Kernel
-  a partition for a readonly root file system (squashfs?)
-  a read/write JFFS2 partition for persistant data
-  a partition for the root file system for use when the box boots next
-time
-  etc....
-The concepts of UBI seem just right.
+To create a jffs2 image for NAND flash,
 
-I have made the kernel from ubi-2.6.git run on my board. Now I would be
-grateful for answers to some questions to help me get UBI going.
+mkfs.jffs2 -l   //if u wanty to create for little -indian , it should 'b' if 
+its  big-endian
+                  -e 0x20000        //erase block size ..let us sectore size 
+is 128Kb,
+                  -no-cleanmarkers  //do not add clean markers to every 
+erased block
+                  -p 0x500000    //let us say u want to creat a total size 
+of 5MB , ifur directory structure contains 3.3MB then rest of the thing is 
+going to pad with 0xff
+                 -r  /home/roots    //root file syte.m.here /home/rootfs 
+contians the complete file system structure.......like use,bin,sbin,lib,etc, 
+dev..etc..whatever u needed create a directory structure and put under 
+rootfs.
+                 -o image.jffs2      //this is the output hffs2 image with 
+the name as image.jffs2
 
-  1. Should I expect UBI to run on OneNAND without change, or should I
-     expect to have to write or adapt some code?
+That should be sufficient. To get mkfs.jffs2 utility, u can download the mtd 
+utils from net and compile it with x86 system, as you need to run the 
+mkfs.jffs2 utility in x86 machine to create a jffs2 image.
 
-  2. Which git provides the best mtd-utils? Should I get mtd-tools and
-     ubi-tools from different gits?
+Andto create a directory structure as shown as /home/rootfs, you neeed to 
+put the lib for custom processor if its required, same way you should have 
+all the bin. sbin files compiled with custom processor. And if the NAND 
+flash is only to store some data  then you can have single directory under 
+rootfs folder. In that case you wont need any lib, bin, sbin, lib, etc. dev 
+folder etc.
 
-  3. My attempt to build the ubi tools from the git
-     users/haver/mtd-utils.git failed.  The tools use the argp
-     functions to parse command line args, but my root file system
-     based on uclibc doesn't support argp. I propose to collect argp
-     sources following instructions in
-     http://savannah.gnu.org/cvs/?group=gnulib and try again. Any
-     better suggestions?
+        Best of luck!
 
-  4. The UBI faq
-     http://www.linux-mtd.infradead.org/faq/ubi.html#L_run_ubi says
-     that when UBI is compiled into the Kernel, you should call
-     ubi_attach_mtd_dev() to launch the UBI code.  But
-     ubi_attach_mtd_dev() is now declared static, so I guess the
-     advice is out of date.  How should UBI be started when compiled
-     into the kernel?
+Regards,
+Rakesh Jagota
 
-  5. What is the way to get jffs2 running on an UBI partition?  Should
-     I still be aiming to use gluebi to provide an MTD partition on
-     top of a UBI partition (whatever that means)? Cook book
-     instructions would be very helpful.
 
-Thanks to all for MTD,
 
-John Smith
+
+
+Regards,
+Rakesh Jagota
+----- Original Message ----- 
+From: <s.balamurugan@gdatech.co.in>
+To: <linux-mtd@lists.infradead.org>
+Sent: Saturday, November 04, 2006 12:57 AM
+Subject: doubts in creating jffs2 image
+
+
+>
+> Hello gurus,
+>
+>            I want to know what are the options to be specified when
+> creating the jffs2 image for nand flash.
+>
+>            by
+> bala
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
