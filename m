@@ -1,22 +1,27 @@
-Received: from smtp19.orange.fr ([80.12.242.18] helo=smtp-msa-out19.orange.fr)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gg42u-0002zi-Iv
-	for linux-mtd@lists.infradead.org; Fri, 03 Nov 2006 18:45:43 +0000
-Received: from will.lan (ALille-205-1-3-75.w217-128.abo.wanadoo.fr
-	[217.128.82.75])
-	by mwinf1918.orange.fr (SMTP Server) with ESMTP id 43BB21C0005D
+Received: from mail.gdatech.co.in ([202.144.30.226] helo=gdatech.co.in)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GgHHS-0001sk-NG
+	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 03:53:38 -0500
+Received: from [192.168.0.2] (localhost.localdomain [127.0.0.1])
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id B6BD38780BE
 	for <linux-mtd@lists.infradead.org>;
-	Fri,  3 Nov 2006 19:45:25 +0100 (CET)
-From: Guillaume FORTAINE <guillaume.fortaine@wanadoo.fr>
+	Sat,  4 Nov 2006 00:52:57 -0800 (PST)
+Received: from gdatech.co.in ([192.168.0.3])
+	by [127.0.0.1] ([127.0.0.1]) (port 7027) (Abaca EPG outproxy filter
+	1.3.4.5154-maint13 $Rev: 5154 $) id r6b4005257-00-2
+	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 00:52:57 -0800
+Received: from mail.gdatech.co.in (unknown [192.168.0.1])
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id 3BBF78780D4
+	for <linux-mtd@lists.infradead.org>;
+	Sat,  4 Nov 2006 00:52:57 -0800 (PST)
+Message-ID: <26116.202.144.30.226.1162630659.squirrel@mail.gdatech.co.in>
+Date: Sat, 4 Nov 2006 14:27:39 +0530 (IST)
+Subject: doubts in creating jffs2 image
+From: s.balamurugan@gdatech.co.in
 To: linux-mtd@lists.infradead.org
-Subject: PowerPC / FLASH / PSRAM
-Date: Fri, 3 Nov 2006 19:45:43 +0100
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200611031945.43245.guillaume.fortaine@wanadoo.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,33 +31,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
 
-Let me introduce myself : Guillaume FORTAINE, French engineer in informatic=
-s.
-I would want to build a start up to sell mobile phones ( OEM Level ). I am=
-=20
-currently in discussions with investors.
+Hello gurus,
 
-=A0We are currently searching people with a strong background in =A0Hardwar=
-e=20
-Design and SystemC/ SystemC AMS.
+            I want to know what are the options to be specified when
+creating the jffs2 image for nand flash.
 
-Our business model is in its early stage, but we would be interested into a=
-=20
-break oppposite to the legacy one of our competitors who are nearly all=20
-ARM based. Our choice is to use the PowerPC =A0architecture : all the chall=
-enge=20
-is here, that's why we need people with a strong background... =A0 This is =
-a=20
-very big project.
-
-We are ready to sign a contract with people who will be able able to develo=
-p a=20
-controller for PowerPC to manage LBA-NAND and PSRAM.
-=A0
-=A0We look forward to your answer,
-
-=A0Best Regards,
-
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0Guillaume
+            by
+bala
