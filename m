@@ -1,27 +1,14 @@
-Received: from mail.gdatech.co.in ([202.144.30.226] helo=gdatech.co.in)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GgHHS-0001sk-NG
-	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 03:53:38 -0500
-Received: from [192.168.0.2] (localhost.localdomain [127.0.0.1])
-	by predator.gdatech.co.in (Postfix-out) with ESMTP id B6BD38780BE
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  4 Nov 2006 00:52:57 -0800 (PST)
-Received: from gdatech.co.in ([192.168.0.3])
-	by [127.0.0.1] ([127.0.0.1]) (port 7027) (Abaca EPG outproxy filter
-	1.3.4.5154-maint13 $Rev: 5154 $) id r6b4005257-00-2
-	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 00:52:57 -0800
-Received: from mail.gdatech.co.in (unknown [192.168.0.1])
-	by predator.gdatech.co.in (Postfix-out) with ESMTP id 3BBF78780D4
-	for <linux-mtd@lists.infradead.org>;
-	Sat,  4 Nov 2006 00:52:57 -0800 (PST)
-Message-ID: <26116.202.144.30.226.1162630659.squirrel@mail.gdatech.co.in>
-Date: Sat, 4 Nov 2006 14:27:39 +0530 (IST)
-Subject: doubts in creating jffs2 image
-From: s.balamurugan@gdatech.co.in
-To: linux-mtd@lists.infradead.org
+Received: from arrows.demon.co.uk ([83.105.72.193])
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GgIKt-0002h2-S1
+	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 05:01:17 -0500
+Date: Sat, 4 Nov 2006 08:22:56 +0000 (GMT)
+From: John <john@arrows.demon.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Subject: UBI and OneNand
+Message-ID: <Pine.LNX.4.33.0611040819560.26940-100000@arrows.demon.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +18,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-Hello gurus,
+I have a board with a MIPS core and a OneNAND flash.  I plan to split
+the OneNAND into a small partition for the boot loader, and a big
+partition for the rest. The big partition will be split using UBI into:
+  a partition for the Kernel
+  a partition for a readonly root file system (squashfs?)
+  a read/write JFFS2 partition for persistant data
+  a partition for the root file system for use when the box boots next
+time
+  etc....
+The concepts of UBI seem just right.
 
-            I want to know what are the options to be specified when
-creating the jffs2 image for nand flash.
+I have made the kernel from ubi-2.6.git run on my board. Now I would be
+grateful for answers to some questions to help me get UBI going.
 
-            by
-bala
+  1. Should I expect UBI to run on OneNAND without change, or should I
+     expect to have to write or adapt some code?
+
+  2. Which git provides the best mtd-utils? Should I get mtd-tools and
+     ubi-tools from different gits?
+
+  3. My attempt to build the ubi tools from the git
+     users/haver/mtd-utils.git failed.  The tools use the argp
+     functions to parse command line args, but my root file system
+     based on uclibc doesn't support argp. I propose to collect argp
+     sources following instructions in
+     http://savannah.gnu.org/cvs/?group=gnulib and try again. Any
+     better suggestions?
+
+  4. The UBI faq
+     http://www.linux-mtd.infradead.org/faq/ubi.html#L_run_ubi says
+     that when UBI is compiled into the Kernel, you should call
+     ubi_attach_mtd_dev() to launch the UBI code.  But
+     ubi_attach_mtd_dev() is now declared static, so I guess the
+     advice is out of date.  How should UBI be started when compiled
+     into the kernel?
+
+  5. What is the way to get jffs2 running on an UBI partition?  Should
+     I still be aiming to use gluebi to provide an MTD partition on
+     top of a UBI partition (whatever that means)? Cook book
+     instructions would be very helpful.
+
+Thanks to all for MTD,
+
+John Smith
