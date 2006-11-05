@@ -1,21 +1,19 @@
-Received: from mx1.mandriva.com ([212.85.150.183])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ggl6J-000341-3i
-	for linux-mtd@lists.infradead.org; Sun, 05 Nov 2006 16:44:05 +0000
-Date: Sun, 5 Nov 2006 14:43:45 -0200
-From: Arnaldo Carvalho de Melo <acme@mandriva.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Fw: Top 100 inline functions (make allyesconfig) was Re:
-	[ANNOUNCE] pahole and other DWARF2 utilities
-Message-ID: <20061105164344.GB3363@mandriva.com>
-References: <20061104132050.4950866b.akpm@osdl.org>
-	<1162708337.3374.21.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Received: from nf-out-0910.google.com ([64.233.182.189])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Ggq9c-0006uz-Ve
+	for linux-mtd@lists.infradead.org; Sun, 05 Nov 2006 17:07:53 -0500
+Received: by nf-out-0910.google.com with SMTP id n28so2099963nfc
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 05 Nov 2006 14:07:45 -0800 (PST)
+Message-ID: <625fc13d0611051407h47678f07y8129a7966ffec509@mail.gmail.com>
+Date: Sun, 5 Nov 2006 16:07:45 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] UBI: Fix make headers_install
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1162708337.3374.21.camel@shinybook.infradead.org>
-Cc: Andrew Morton <akpm@osdl.org>, lwn@lwn.net, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,26 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Nov 05, 2006 at 02:32:17PM +0800, David Woodhouse wrote:
-> On Sat, 2006-11-04 at 13:20 -0800, Andrew Morton wrote:
-> > cfi_build_cmd() is nutty. 
-> 
-> Damn right it's nutty. Imagine the number of ways you can wire up 1-8
-> flash chips in either 8-bit or 16-bit mode to a bus which is between 8
-> and 64 bits wide. Deal with it in software, with a "chip driver"
-> abstraction which knows what data to put at which address on each
-> _chip_, and which needs to calculate the corresponding bus data/address.
-> 
-> In the sensible case where you build in support for what you have -- one
-> interleave, one mode, one bus size -- it's simple. And that's why it's
-> inline. This is one of the cases where 'allyesconfig' just doesn't make
-> much sense.
-> 
-> I'm not entirely averse to taking it out-of-line, but show me data on
-> the interesting case rather than the allyesconfig case.
+Fix make headers_install
 
-See my Answer to Adrian, it was just extreme testing the tools, I'll use
-config files shipped by distros to get even more interesting and down to
-earth results.
+Signed-off-by: Josh Boyer <jwboyer@gmail.com>
 
-- Arnaldo
+diff --git a/include/mtd/Kbuild b/include/mtd/Kbuild
+index f3f424e..4d46b3b 100644
+--- a/include/mtd/Kbuild
++++ b/include/mtd/Kbuild
+@@ -3,4 +3,5 @@ header-y += jffs2-user.h
+ header-y += mtd-abi.h
+ header-y += mtd-user.h
+ header-y += nftl-user.h
+-header-y += ubi.h
++header-y += ubi-header.h
++header-y += ubi-user.h
