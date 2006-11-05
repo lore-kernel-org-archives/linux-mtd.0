@@ -1,17 +1,16 @@
-Received: from darwaza.gdatech.com ([66.237.41.98])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GgOPj-0005ZL-Ao
-	for linux-mtd@lists.infradead.org; Sat, 04 Nov 2006 11:30:43 -0500
-Message-ID: <000801c7002e$88114fc0$99c8a8c0@jrakeshsw>
-From: "Jagota Rakesh" <jrakesh@gdatech.com>
-To: <s.balamurugan@gdatech.co.in>, <linux-mtd@lists.infradead.org>
-References: <26116.202.144.30.226.1162630659.squirrel@mail.gdatech.co.in>
-Subject: Re: doubts in creating jffs2 image
-Date: Sat, 4 Nov 2006 08:30:25 -0800
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+Subject: Re: Fw: Top 100 inline functions (make allyesconfig) was Re:
+	[ANNOUNCE] pahole and other DWARF2 utilities
+From: David Woodhouse <dwmw2@infradead.org>
+To: Andrew Morton <akpm@osdl.org>
+In-Reply-To: <20061104132050.4950866b.akpm@osdl.org>
+References: <20061104132050.4950866b.akpm@osdl.org>
+Content-Type: text/plain
+Date: Sun, 05 Nov 2006 14:32:17 +0800
+Message-Id: <1162708337.3374.21.camel@shinybook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: lwn@lwn.net, linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Arnaldo Carvalho de Melo <acme@mandriva.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,65 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Helo bala,
+On Sat, 2006-11-04 at 13:20 -0800, Andrew Morton wrote:
+> cfi_build_cmd() is nutty. 
 
-To create a jffs2 image for NAND flash,
+Damn right it's nutty. Imagine the number of ways you can wire up 1-8
+flash chips in either 8-bit or 16-bit mode to a bus which is between 8
+and 64 bits wide. Deal with it in software, with a "chip driver"
+abstraction which knows what data to put at which address on each
+_chip_, and which needs to calculate the corresponding bus data/address.
 
-mkfs.jffs2 -l   //if u wanty to create for little -indian , it should 'b' if 
-its  big-endian
-                  -e 0x20000        //erase block size ..let us sectore size 
-is 128Kb,
-                  -no-cleanmarkers  //do not add clean markers to every 
-erased block
-                  -p 0x500000    //let us say u want to creat a total size 
-of 5MB , ifur directory structure contains 3.3MB then rest of the thing is 
-going to pad with 0xff
-                 -r  /home/roots    //root file syte.m.here /home/rootfs 
-contians the complete file system structure.......like use,bin,sbin,lib,etc, 
-dev..etc..whatever u needed create a directory structure and put under 
-rootfs.
-                 -o image.jffs2      //this is the output hffs2 image with 
-the name as image.jffs2
+In the sensible case where you build in support for what you have -- one
+interleave, one mode, one bus size -- it's simple. And that's why it's
+inline. This is one of the cases where 'allyesconfig' just doesn't make
+much sense.
 
-That should be sufficient. To get mkfs.jffs2 utility, u can download the mtd 
-utils from net and compile it with x86 system, as you need to run the 
-mkfs.jffs2 utility in x86 machine to create a jffs2 image.
+I'm not entirely averse to taking it out-of-line, but show me data on
+the interesting case rather than the allyesconfig case.
 
-Andto create a directory structure as shown as /home/rootfs, you neeed to 
-put the lib for custom processor if its required, same way you should have 
-all the bin. sbin files compiled with custom processor. And if the NAND 
-flash is only to store some data  then you can have single directory under 
-rootfs folder. In that case you wont need any lib, bin, sbin, lib, etc. dev 
-folder etc.
+And tell me about it in about two weeks' time when the sky stops falling
+on my head and I get to go home. :)
 
-        Best of luck!
-
-Regards,
-Rakesh Jagota
-
-
-
-
-
-Regards,
-Rakesh Jagota
------ Original Message ----- 
-From: <s.balamurugan@gdatech.co.in>
-To: <linux-mtd@lists.infradead.org>
-Sent: Saturday, November 04, 2006 12:57 AM
-Subject: doubts in creating jffs2 image
-
-
->
-> Hello gurus,
->
->            I want to know what are the options to be specified when
-> creating the jffs2 image for nand flash.
->
->            by
-> bala
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+-- 
+dwmw2
