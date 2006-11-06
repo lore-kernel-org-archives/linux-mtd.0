@@ -1,28 +1,20 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GhBBW-0002rt-25
-	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 20:35:13 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1GhBBO-00023z-JO
-	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 21:35:02 +0100
-Received: from arrows.demon.co.uk ([83.105.72.193])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2006 21:35:02 +0100
-Received: from John.Smith by arrows.demon.co.uk with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 06 Nov 2006 21:35:02 +0100
-To: linux-mtd@lists.infradead.org
-From: John Smith <John.Smith@arrows.demon.co.uk>
-Subject: Re: UBI and OneNand
-Date: Mon, 6 Nov 2006 20:16:59 +0000 (UTC)
-Message-ID: <loom.20061106T205324-87@post.gmane.org>
-References: <Pine.LNX.4.33.0611040819560.26940-100000@arrows.demon.co.uk>
-	<1162806360.5636.19.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from zoot.lnxi.com ([63.145.151.20])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GhDxp-0004tL-GB
+	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 18:33:19 -0500
+Date: Mon, 6 Nov 2006 16:32:52 -0700
+From: Ryan Jackson <rjackson@lnxi.com>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH] [MTD] MAPS: Support for BIOS flash chips on the nvidia
+	ck804 southbridge
+Message-ID: <20061106233252.GD8198@localdomain>
+References: <20061031235646.GE5968@localdomain>
+	<1162399908.15435.16.camel@sauron>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1162399908.15435.16.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,70 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Frank Haverkamp <haver <at> vnet.ibm.com> writes:
+* Artem Bityutskiy <dedekind@infradead.org> [061101 09:52]:
+> I have few questions (may be silly) and comments.
 
+Thanks for the feedback.  Sorry to take so long to reply.
+
+> > +static int __devinit ck804xrom_init_one (struct pci_dev *pdev,
+> > +	const struct pci_device_id *ent)
+> I wonder why do you use __devinit here, not __init? AFAIK, __devinit is
+> used for hotplug-able devices, is this the case for a video card?
+
+Habit, I guess.  Technically the device isn't hotpluggable (unless you
+consider ripping the chip off the board hot-plugging).  Some of the
+other drivers seem to use __devinit as well, such as scb2_rom.
+
+> > +	static char *rom_probe_types[] = { "cfi_probe", "jedec_probe", NULL };
+> So the interface may really be JEDEC and CFI?
+
+I haven't seen any chips used with this southbridge that are detected by
+cfi_probe, but the probe is there in case one is used.
+
+> map->map.virt is 'void *', so 
 > 
-> Hi John,
+> map->map.virt = window->virt + offset * sizeof(long);
 > 
-> On Sat, 2006-11-04 at 08:22 +0000, John wrote:
-> > I have a board with a MIPS core and a OneNAND flash.  ...
-> > 
-> > I have made the kernel from ubi-2.6.git run on my board. Now I would be
-> > grateful for answers to some questions to help me get UBI going.
-> > 
-> >   1. Should I expect UBI to run on OneNAND without change, or should I
-> >      expect to have to write or adapt some code?
-> 
-> UBI should run on mostly any mtd device. I tried it on NAND as well as
-> NOR mtds.
+> could be used instead and it looks neater. In gcc sizeof(void) is 1 and
+> is is widely used in the kernel.
 
-I have now tried it. It does run. 
+Actually, I get an oops in jedec_probe_chip if I use this.
 
-> 
-> > 
-> >   3. My attempt to build the ubi tools from the git
-> >      users/haver/mtd-utils.git failed.  The tools use the argp
-> >      functions to parse command line args, but my root file system
-> >      based on uclibc doesn't support argp. I propose to collect argp
-> >      sources following instructions in
-> >      http://savannah.gnu.org/cvs/?group=gnulib and try again. Any
-> >      better suggestions?
-> 
-> Mhm, I wonder if we should remove the argp parsing again and replace it
-> by more portable code. I am not sure about this yet.
+> Why you commented out pci_module_init() and the related stuff? Why you
+> do not use this standard mechanism?
 
-I did get the ubi-tools to compile with argp code from gnulib.
-There is probably an elegant solution using automake and friends 
-and the sources from gnulib. But I just hacked a Makefile and a config.h 
-together, and changed the names of two functions from getopt.h 
-to avoid clashes with my uclibc implementation.
+After talking with the original author, the reason pci_module_init (or
+rather pci_register_driver) isn't called is simply a side-effect of
+cut-and-paste from an another, earlier driver.  In that driver, it was
+not called because A) the mtd code barely touches the device and B)
+there was some other driver that wanted to use that device for something
+else.
 
-In the ubi-tools directory there is a script "ubi_test.sh". 
-This script appeared to run successfully as well.
+I've changed the code to register and unregister the driver and it seems
+to work fine.  I'll re-submit it.
 
-> 
-> > 
-> >   5. What is the way to get jffs2 running on an UBI partition?  Should
-> >      I still be aiming to use gluebi to provide an MTD partition on
-> >      top of a UBI partition (whatever that means)? Cook book
-> >      instructions would be very helpful.
-> 
-> Yes, gluebi is used to create the MTD which can be used by JFFS2. We had
-> some iterations over the code, and finally came up with the code
-> available in our ubi-2.6.git. The original from Joern was reworked by
-> Artem, the currently available solution has only very few changes to
-> JFFS2.
-> 
+Thanks.
 
-I think the following commands just worked:
-
-  mkdir /mnt/nvm
-  flash_eraseall /dev/mtd6
-  mount -t jffs2 /dev/mtdblock6 /mnt/nvm 
-
-
-I wonder whether this is the first attempt to run a kernel using
-jffs2 and ubi and mtd and onenand and mips? First or not, it seems to work. 
-
-Thanks,
-John Smith
+-- 
+Ryan Jackson
+Linux Networx
