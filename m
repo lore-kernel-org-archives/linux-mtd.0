@@ -1,20 +1,20 @@
-Received: from nf-out-0910.google.com ([64.233.182.191])
+Received: from ug-out-1314.google.com ([66.249.92.172])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GgyUw-0002fO-HG
-	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 02:02:36 -0500
-Received: by nf-out-0910.google.com with SMTP id n28so2237647nfc
+	id 1GgyX9-0002mc-G3
+	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 02:06:49 -0500
+Received: by ug-out-1314.google.com with SMTP id m2so772030uge
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 05 Nov 2006 23:02:20 -0800 (PST)
-Message-ID: <1d7842330611052302w3d1b8269o19dbf2c7a1292191@mail.gmail.com>
-Date: Mon, 6 Nov 2006 08:02:19 +0100
+	Sun, 05 Nov 2006 23:04:37 -0800 (PST)
+Message-ID: <1d7842330611052304r2cd9fb6cxca658b7dc4388cb2@mail.gmail.com>
+Date: Mon, 6 Nov 2006 08:04:36 +0100
 From: "Over Stock" <overstock@gmail.com>
-To: "wikita-l@Wikipedia.org" <wikita-l@wikipedia.org>
+To: linux-mtd@lists.infradead.org
 Subject: Private Label Diapers and wholesale diapers
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Cc: linux@linux.cz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
