@@ -1,19 +1,19 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhSH6-0007vR-Ee
-	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 09:50:17 -0500
-Message-ID: <01bf01c7027b$fc0334d0$5ef5180a@ent.ti.com>
-From: "Anand Patil" <anandpatil@ti.com>
-To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-References: <000e01c7021f$d436ee80$5ef5180a@ent.ti.com>
-	<1162899909.19697.13.camel@crusty.rchland.ibm.com>
-Subject: Re: region_info_user and otp_info
-Date: Tue, 7 Nov 2006 20:19:50 +0530
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="Windows-1252";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+	id 1GhThF-0000Mx-7Q
+	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 11:21:13 -0500
+Subject: Re: [PATCH/RFC] remove len/ooblen confusion in MTD/NAND code: respin
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vitaly Wool <vwool@ru.mvista.com>
+In-Reply-To: <20061103182038.f528d960.vwool@ru.mvista.com>
+References: <20061103182038.f528d960.vwool@ru.mvista.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 07 Nov 2006 18:20:53 +0200
+Message-Id: <1162916453.5628.2.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh,
-           I got a AMD NOR Flash AM29LV256M,
-           It supports a feature called as Secured Silicon Sector (i.e. a 
-256 byte region which can be programmed only once)
-           To access the above feature a particular command sequence has to 
-be issued
-            How can I  know whether the above feature is already 
-incorporated in the MTD release OR
-            else we need to support it at the driver layer?
+Hello Vitaly,
+On Fri, 2006-11-03 at 18:20 +0300, Vitaly Wool wrote:
+> Hello folks,
+>=20
+> as was discussed between Ricard Wanderlof, David Woodhouse, Artem Bityuts=
+kiy and me, the current API for reading/writing OOB is confusing. The thing=
+ that introduces confusion is the need to specify ops.len together with ops=
+.ooblen for reads/writes that concern only OOB not data area. So, ops.len i=
+s overloaded: when ops.datbuf !=3D NULL it serves to specify the length of =
+the data read, and when ops.datbuf =3D=3D NULL, it serves to specify the fu=
+ll OOB read length.
+> The patch inlined below is the slightly updated version of the previous p=
+atch serving the same purpose, but with the new Artem's comments taken into=
+ account.
+> Artem, BTW, thanks a lot for your valuable input!
 
+this patch does not apply to mtd-2.6.git:
 
-Warm Regards,
-Anand Patil
------ Original Message ----- 
-From: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-To: "Anand Patil" <anandpatil@ti.com>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Tuesday, November 07, 2006 5:15 PM
-Subject: Re: region_info_user and otp_info
+patching file drivers/mtd/inftlcore.c
+patching file drivers/mtd/nand/nand_base.c
+Hunk #2 succeeded at 1006 (offset -1 lines).
+Hunk #4 succeeded at 1260 (offset -1 lines).
+Hunk #5 succeeded at 1282 (offset -2 lines).
+Hunk #6 succeeded at 1300 (offset -1 lines).
+Hunk #7 succeeded at 1321 (offset -2 lines).
+Hunk #8 succeeded at 1343 (offset -1 lines).
+Hunk #9 FAILED at 1665.
+Hunk #10 succeeded at 1724 (offset -3 lines).
+Hunk #11 succeeded at 1765 (offset -2 lines).
+Hunk #12 succeeded at 1784 (offset -3 lines).
+1 out of 12 hunks FAILED -- saving rejects to file
+drivers/mtd/nand/nand_base.c.rej
+patching file drivers/mtd/mtdchar.c
+patching file drivers/mtd/mtdconcat.c
+patching file drivers/mtd/nand/nand_bbt.c
+patching file drivers/mtd/nftlcore.c
+patching file drivers/mtd/ssfdc.c
+patching file fs/jffs2/wbuf.c
+patching file drivers/mtd/mtdpart.c
+patching file include/linux/mtd/mtd.h
 
-
-> On Tue, 2006-11-07 at 09:20 +0530, Anand Patil wrote:
->> Hi,
->>        I am new bee to MTD user land,
->>
->>       1)  Iam not getting what region information refers to in MTD?
->
-> Some chips have multiple erase regions.  These regions can have
-> eraseblocks of different size than the rest of the chip.  That is what
-> the structure is reporting.
->
->
->>     2) I did'nt get the purpose of the below strucuture defined and its
->> usage ?
->
-> OTP stands for One Time Programmable.  Some chips have an area that is
-> only writable once.  It can be used to store serial numbers, or whatever
-> you'd like to store as long as you only need to write that information a
-> single time.  That is what this structure is referring to.
->
-> josh
->
-> 
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
