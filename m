@@ -1,35 +1,25 @@
-Received: from e32.co.us.ibm.com ([32.97.110.150])
+Received: from mgw-ext14.nokia.com ([131.228.20.173])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhRs7-0007O1-Nv
-	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 09:24:23 -0500
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id kA7EOAhd029196
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 09:24:10 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kA7EOAXL317738
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 07:24:10 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kA7EO99H012081
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 07:24:09 -0700
+	id 1GhS8i-0007ge-Ko
+	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 09:41:31 -0500
 Subject: Re: UBI and OneNAND
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: dedekind@infradead.org
-In-Reply-To: <1162908637.31636.23.camel@sauron>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+In-Reply-To: <1162909455.3092.14.camel@zod.rchland.ibm.com>
 References: <32544906.187201162866905328.JavaMail.weblogic@ep_ml06>
 	<1162889433.5606.15.camel@localhost.localdomain>
 	<loom.20061107T110704-786@post.gmane.org>
 	<1162899578.31636.19.camel@sauron>
 	<1162900051.19697.16.camel@crusty.rchland.ibm.com>
 	<1162908637.31636.23.camel@sauron>
-Content-Type: text/plain
-Date: Tue, 07 Nov 2006 08:24:15 -0600
-Message-Id: <1162909455.3092.14.camel@zod.rchland.ibm.com>
+	<1162909455.3092.14.camel@zod.rchland.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 07 Nov 2006 16:39:54 +0200
+Message-Id: <1162910394.31636.29.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: John Smith <john.smith@arrows.demon.co.uk>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -39,25 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-11-07 at 16:10 +0200, Artem Bityutskiy wrote:
-> On Tue, 2006-11-07 at 05:47 -0600, Josh Boyer wrote:
-> > It's the default.  I think it's too low of a default.  Others disagreed
-> > with me.
-> > 
-> > Telling every new UBI user "may be it makes sense to reserve more" will
-> > get old quick.  Perhaps the default should be bumped to 5 or so?
-> 
-> Actually with 128MiB flash the default ends up with something like
-> 32EBs, which looks even too large, so I do not know...
+On Tue, 2006-11-07 at 08:24 -0600, Josh Boyer wrote:
+> What are you talking about?
+>=20
+> (128MiB/128KiB) * .01 =3D 10.24
+>=20
+> So you'd end up with 10EB.
 
-What are you talking about?
+Yeah, but somebody showed me UBI on 128 MiB flashes with 32 or 64 KiB
+eraseblocks. Probably EB size should be taken into account.
 
-(128MiB/128KiB) * .01 = 10.24
+> Perhaps we should change MTD_UBI_BEB_RESERVE to be an actual number of
+> eraseblocks instead of a percent of the device.  So
+> MTD_UBI_BEB_RESERVE=3D1 would mean 1 EB, =3D10 would mean 10.
 
-So you'd end up with 10EB.
+My concern is a dumb user who may not realize what to enter there.
 
-Perhaps we should change MTD_UBI_BEB_RESERVE to be an actual number of
-eraseblocks instead of a percent of the device.  So
-MTD_UBI_BEB_RESERVE=1 would mean 1 EB, =10 would mean 10.
+But may be you are right... If user does not set the number of reserved
+PEBs explicitly, we could use some percentage as a default value.
 
-josh
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
