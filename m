@@ -1,21 +1,29 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
+Received: from e3.ny.us.ibm.com ([32.97.182.143])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhPJ9-0005Ao-1C
-	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 06:40:21 -0500
-Subject: Re: UBI and OneNAND
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: John Smith <john.smith@arrows.demon.co.uk>
-In-Reply-To: <loom.20061107T110704-786@post.gmane.org>
-References: <32544906.187201162866905328.JavaMail.weblogic@ep_ml06>
-	<1162889433.5606.15.camel@localhost.localdomain>
-	<loom.20061107T110704-786@post.gmane.org>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 07 Nov 2006 13:39:38 +0200
-Message-Id: <1162899578.31636.19.camel@sauron>
+	id 1GhPNJ-0005QE-7x
+	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 06:44:49 -0500
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e3.ny.us.ibm.com (8.13.8/8.12.11) with ESMTP id kA7BiAEZ011526
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 06:44:10 -0500
+Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
+	by d01relay04.pok.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
+	kA7Bi5m7110648
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 06:44:05 -0500
+Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
+	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	kA7Bi4c0027633
+	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 06:44:04 -0500
+Subject: Re: region_info_user and otp_info
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Anand Patil <anandpatil@ti.com>
+In-Reply-To: <000e01c7021f$d436ee80$5ef5180a@ent.ti.com>
+References: <000e01c7021f$d436ee80$5ef5180a@ent.ti.com>
+Content-Type: text/plain
+Date: Tue, 07 Nov 2006 05:45:09 -0600
+Message-Id: <1162899909.19697.13.camel@crusty.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,55 +33,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, few notes:
+On Tue, 2006-11-07 at 09:20 +0530, Anand Patil wrote:
+> Hi,
+>        I am new bee to MTD user land,
+> 
+>       1)  Iam not getting what region information refers to in MTD?
 
-On Tue, 2006-11-07 at 10:20 +0000, John Smith wrote:
-> UBI: data offset:                2048
-> UBI: max. allowed volumes:       128
-> UBI: wear-levelling threshold:   4096
-> UBI: number of internal volumes: 2
-> UBI: number of user volumes:     1
-> UBI: available PEBs:             49
-> UBI: total number of reserved PEBs: 126
-> UBI: number of PEBs reserved for bad PEB handling: 1
-Hmm, only one PEB is reserved, may be it makes sense to reserve more -
-there is a corresponding option.
+Some chips have multiple erase regions.  These regions can have
+eraseblocks of different size than the rest of the chip.  That is what
+the structure is reporting.
 
->=20
->=20
-> ##
-> ## Then with the busybox shell I can list the MTD partitions
-> ##
->=20
-> / # cat /proc/mtd
-> dev:    size   erasesize  name
-> mtd0: 00c00000 00020000 "BootLoader"    <<< Nor Flash
-> mtd1: 00400000 00020000 "OldCFE"        <<< Nor Flash
-> mtd2: 00100000 00010000 "CFE"           <<< OneNAND Flash
-> mtd3: 00400000 00010000 "Kernel"        <<< OneNAND Flash
-> mtd4: 00af0000 00010000 "rootfs"        <<< OneNAND Flash
-> mtd5: 00010000 00010000 "CFE-NVM"       <<< OneNAND Flash
-> mtd6: 00753800 0000f800 "Kernel"        <<< UBI Partition on mtd4:
-I would recommend you to use unique names for MTD partitions. You have
-two "kernel" partitions.
 
-> ##
-> ## Look at existing devices
-> ##
-> / # ls -l /dev/mtdblock?
-> brw-r-----    1 0        0         31,   0 Jan  1 00:00 /dev/mtdblock0
-> brw-r-----    1 0        0         31,   1 Jan  1 00:00 /dev/mtdblock1
-> brw-r-----    1 0        0         31,   2 Jan  1 00:00 /dev/mtdblock2
-> brw-r-----    1 0        0         31,   3 Jan  1 00:00 /dev/mtdblock3
-Yo do not need mtdblock devices to mount JFFS2 at all. JFFS2 anyway
-works with MTD devices directly and this is just an old way to mount
-JFFS2. /dev/mtdX are character devices and you cannot feed the mount
-utility by character devices, so this is why fake block devices were
-used. Nowadays there is device-less mount support and you may use:
+>     2) I did'nt get the purpose of the below strucuture defined and its 
+> usage ?
 
-mount mtd7 /mnt/nvm
+OTP stands for One Time Programmable.  Some chips have an area that is
+only writable once.  It can be used to store serial numbers, or whatever
+you'd like to store as long as you only need to write that information a
+single time.  That is what this structure is referring to.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+josh
