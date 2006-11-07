@@ -1,33 +1,29 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhPPY-0005Vd-7j
-	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 06:47:07 -0500
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e35.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id kA7BkRbF022247
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 06:46:27 -0500
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by westrelay02.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kA7BkRdh463716
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 04:46:27 -0700
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kA7BkQCA026001
-	for <linux-mtd@lists.infradead.org>; Tue, 7 Nov 2006 04:46:26 -0700
-Subject: Re: UBI and OneNAND
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: dedekind@infradead.org
-In-Reply-To: <1162899578.31636.19.camel@sauron>
-References: <32544906.187201162866905328.JavaMail.weblogic@ep_ml06>
-	<1162889433.5606.15.camel@localhost.localdomain>
-	<loom.20061107T110704-786@post.gmane.org>
-	<1162899578.31636.19.camel@sauron>
-Content-Type: text/plain
-Date: Tue, 07 Nov 2006 05:47:31 -0600
-Message-Id: <1162900051.19697.16.camel@crusty.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: John Smith <john.smith@arrows.demon.co.uk>, linux-mtd@lists.infradead.org
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GhQRe-0006Ja-V5
+	for linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 07:52:54 -0500
+Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J8D00HMK2FZA0@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 21:52:47 +0900 (KST)
+Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0J8D001Q32FZNB@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 21:52:47 +0900 (KST)
+Content-return: prohibited
+Date: Tue, 07 Nov 2006 12:52:39 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: UBI and OneNAND
+To: Artem Bityutskiy <dedekind@infradead.org>
+Message-id: <32333290.224521162903965840.JavaMail.weblogic@ep_ml06>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: base64
+Cc: John Smith <john.smith@arrows.demon.co.uk>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,25 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-11-07 at 13:39 +0200, Artem Bityutskiy wrote:
-> Hi, few notes:
-> 
-> On Tue, 2006-11-07 at 10:20 +0000, John Smith wrote:
-> > UBI: data offset:                2048
-> > UBI: max. allowed volumes:       128
-> > UBI: wear-levelling threshold:   4096
-> > UBI: number of internal volumes: 2
-> > UBI: number of user volumes:     1
-> > UBI: available PEBs:             49
-> > UBI: total number of reserved PEBs: 126
-> > UBI: number of PEBs reserved for bad PEB handling: 1
-> Hmm, only one PEB is reserved, may be it makes sense to reserve more -
-> there is a corresponding option.
-
-It's the default.  I think it's too low of a default.  Others disagreed
-with me.
-
-Telling every new UBI user "may be it makes sense to reserve more" will
-get old quick.  Perhaps the default should be bumped to 5 or so?
-
-josh
+SGksDQoNCj4gPiAjIw0KPiA+ICMjIExvb2sgYXQgZXhpc3RpbmcgZGV2aWNlcw0KPiA+ICMjDQo+
+ID4gLyAjIGxzIC1sIC9kZXYvbXRkYmxvY2s/DQo+ID4gYnJ3LXItLS0tLSAgICAxIDAgICAgICAg
+IDAgICAgICAgICAzMSwgICAwIEphbiAgMSAwMDowMCAvZGV2L210ZGJsb2NrMA0KPiA+IGJydy1y
+LS0tLS0gICAgMSAwICAgICAgICAwICAgICAgICAgMzEsICAgMSBKYW4gIDEgMDA6MDAgL2Rldi9t
+dGRibG9jazENCj4gPiBicnctci0tLS0tICAgIDEgMCAgICAgICAgMCAgICAgICAgIDMxLCAgIDIg
+SmFuICAxIDAwOjAwIC9kZXYvbXRkYmxvY2syDQo+ID4gYnJ3LXItLS0tLSAgICAxIDAgICAgICAg
+IDAgICAgICAgICAzMSwgICAzIEphbiAgMSAwMDowMCAvZGV2L210ZGJsb2NrMw0KPiBZbyBkbyBu
+b3QgbmVlZCBtdGRibG9jayBkZXZpY2VzIHRvIG1vdW50IEpGRlMyIGF0IGFsbC4gSkZGUzIgYW55
+d2F5DQo+IHdvcmtzIHdpdGggTVREIGRldmljZXMgZGlyZWN0bHkgYW5kIHRoaXMgaXMganVzdCBh
+biBvbGQgd2F5IHRvIG1vdW50DQo+IEpGRlMyLiAvZGV2L210ZFggYXJlIGNoYXJhY3RlciBkZXZp
+Y2VzIGFuZCB5b3UgY2Fubm90IGZlZWQgdGhlIG1vdW50DQo+IHV0aWxpdHkgYnkgY2hhcmFjdGVy
+IGRldmljZXMsIHNvIHRoaXMgaXMgd2h5IGZha2UgYmxvY2sgZGV2aWNlcyB3ZXJlDQo+IHVzZWQu
+IE5vd2FkYXlzIHRoZXJlIGlzIGRldmljZS1sZXNzIG1vdW50IHN1cHBvcnQgYW5kIHlvdSBtYXkg
+dXNlOg0KDQo+IG1vdW50IG10ZDcgL21udC9udm0NCg0KWWVzLCBJIGNhbiBtb3VudCB1Ymkgd2l0
+aCBhdm9iZSBtZXRob2QuIA0KDQpJIGNhbid0IG1vdW50IHdpdGggbmFtZSBidXQgSXQncyBwb3Nz
+aWJsZSB3aXRoIG5ldyBtdGRibG9jayBub2RlDQoNCm10ZCA9IDMgLT4gbXRkID4gNw0KIyBtb3Vu
+dCAtdCBqZmZzMiAvZGV2L210ZGJsb2NrNyAvbW50DQoNCkkgd2lsbCBzZW5kIG1vcmUgZGV0YWls
+ZWQgZGVzY3JpcHRpb24gdG9tb3Jyb3cuDQoNClRoYW5rIHlvdSwNCkt5dW5nbWluIFBhcms=
