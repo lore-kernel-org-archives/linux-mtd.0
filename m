@@ -1,31 +1,27 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhFTK-0005yj-Pj
-	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 20:09:53 -0500
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.13.8/8.12.11) with ESMTP id kA71A3h3006998
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Nov 2006 20:10:03 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kA719jJL117034
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Nov 2006 20:09:45 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kA719jFn014898
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Nov 2006 20:09:45 -0500
-Subject: Re: UBI and OneNand
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: John Smith <John.Smith@arrows.demon.co.uk>
-In-Reply-To: <loom.20061106T205324-87@post.gmane.org>
-References: <Pine.LNX.4.33.0611040819560.26940-100000@arrows.demon.co.uk>
-	<1162806360.5636.19.camel@localhost.localdomain>
-	<loom.20061106T205324-87@post.gmane.org>
-Content-Type: text/plain
-Date: Mon, 06 Nov 2006 14:54:51 -0600
-Message-Id: <1162846491.31460.15.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GhGoQ-0006wp-0M
+	for linux-mtd@lists.infradead.org; Mon, 06 Nov 2006 21:36:06 -0500
+Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J8C00H7H9UITS@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 11:35:06 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0J8C00FDU9UIG6@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Tue, 07 Nov 2006 11:35:06 +0900 (KST)
+Content-return: prohibited
+Date: Tue, 07 Nov 2006 02:35:03 +0000 (GMT)
+From: =?euc-kr?B?udqw5rnO?= <kyungmin.park@samsung.com>
+Subject: UBI and OneNAND
+To: linux-mtd@lists.infradead.org
+Message-id: <32544906.187201162866905328.JavaMail.weblogic@ep_ml06>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=euc-kr
+Content-transfer-encoding: base64
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,56 +31,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-11-06 at 20:16 +0000, John Smith wrote:
-> Frank Haverkamp <haver <at> vnet.ibm.com> writes:
-> 
-> > 
-> > Hi John,
-> > 
-> > On Sat, 2006-11-04 at 08:22 +0000, John wrote:
-> > > I have a board with a MIPS core and a OneNAND flash.  ...
-> > > 
-> > > I have made the kernel from ubi-2.6.git run on my board. Now I would be
-> > > grateful for answers to some questions to help me get UBI going.
-> > > 
-> > >   1. Should I expect UBI to run on OneNAND without change, or should I
-> > >      expect to have to write or adapt some code?
-> > 
-> > UBI should run on mostly any mtd device. I tried it on NAND as well as
-> > NOR mtds.
-> 
-> I have now tried it. It does run. 
-
-Excellent news!
-
-> > Mhm, I wonder if we should remove the argp parsing again and replace it
-> > by more portable code. I am not sure about this yet.
-> 
-> I did get the ubi-tools to compile with argp code from gnulib.
-> There is probably an elegant solution using automake and friends 
-> and the sources from gnulib. But I just hacked a Makefile and a config.h 
-> together, and changed the names of two functions from getopt.h 
-> to avoid clashes with my uclibc implementation.
-
-The tools might get a little rip up and rewrite eventually.  We can look
-at removing the argp stuff then.  I personally don't like it much, but
-never found it to be too big of an issue.
-
-As for automake and friends... we tend to avoid those like the plague.
-
-> I think the following commands just worked:
-> 
->   mkdir /mnt/nvm
->   flash_eraseall /dev/mtd6
->   mount -t jffs2 /dev/mtdblock6 /mnt/nvm 
-> 
-> 
-> I wonder whether this is the first attempt to run a kernel using
-> jffs2 and ubi and mtd and onenand and mips? First or not, it seems to work. 
-
-Yes, it is.  For both onenand and MIPS.  That is good news.  Thanks for
-testing!
-
-If you find any issues, feel free to email the list.
-
-josh
+SGksDQoNClNvcnJ5IGZvciBjaGFuZ2luZyBzdWJqZWN0LiBNeSBtYWlsIHByb2dyYW0gaGFzIHNv
+bWUgcHJvYmxlbS4NCg0KPiA+IEkgdGhpbmsgdGhlIGZvbGxvd2luZyBjb21tYW5kcyBqdXN0IHdv
+cmtlZDoNCj4gPiANCj4gPiAgIG1rZGlyIC9tbnQvbnZtDQo+ID4gICBmbGFzaF9lcmFzZWFsbCAv
+ZGV2L210ZDYNCj4gPiAgIG1vdW50IC10IGpmZnMyIC9kZXYvbXRkYmxvY2s2IC9tbnQvbnZtIA0K
+PiA+IA0KPiA+IA0KPiA+IEkgd29uZGVyIHdoZXRoZXIgdGhpcyBpcyB0aGUgZmlyc3QgYXR0ZW1w
+dCB0byBydW4gYSBrZXJuZWwgdXNpbmcNCj4gPiBqZmZzMiBhbmQgdWJpIGFuZCBtdGQgYW5kIG9u
+ZW5hbmQgYW5kIG1pcHM/IEZpcnN0IG9yIG5vdCwgaXQgc2VlbXMgdG8gd29yay4gDQoNCj4gWWVz
+LCBpdCBpcy4gIEZvciBib3RoIG9uZW5hbmQgYW5kIE1JUFMuICBUaGF0IGlzIGdvb2QgbmV3cy4g
+IFRoYW5rcyBmb3INCj4gdGVzdGluZyENCg0KVW1tLiBJIHRoaW5rICdKb2huJyBqdXN0IG1vdW50
+cyBqZmZzMiB3aXRob3V0IFVCSS4NCg0KSSBhbHNvIHRyaWVkIGJ1dCBJIGNhbid0IG1vdW50IGpm
+ZnMyDQoNCkl0IGlzIG15IHNlcXVlbmNlLg0KDQojIG1rZGlyIC1wIC9tbnQNCiMgaW5zbW9kIHVi
+aS5rbyBtdGQ9Mw0KDQpVQkk6IGF0dGFjaGVkIG10ZDMgdG8gdWJpMA0KVUJJOiBNVEQgZGV2aWNl
+IG5hbWU6ICAgICAgICAgICAgInJvb3RmcyINClVCSTogTVREIGRldmljZSBzaXplOiAgICAgICAg
+ICAgIDE2IE1CDQpVQkk6IHBoeXNpY2FsIGVyYXNlYmxvY2sgc2l6ZTogICAxMzEwNzIgYnl0ZXMg
+KDEyOCBLQikNClVCSTogbG9naWNhbCBlcmFzZWJsb2NrIHNpemU6ICAgIDEyNjk3NiBieXRlcw0K
+VUJJOiBudW1iZXIgb2YgZ29vZCBQRUJzOiAgICAgICAgMTI3DQpVQkk6IG51bWJlciBvZiBiYWQg
+UEVCczogICAgICAgICAxDQpVQkk6IHNtYWxsZXN0IGZsYXNoIEkvTyB1bml0OiAgICAyMDQ4DQpV
+Qkk6IFZJRCBoZWFkZXIgb2Zmc2V0OiAgICAgICAgICAyMDQ4IChhbGlnbmVkIDIwNDgpDQpVQkk6
+IGRhdGEgb2Zmc2V0OiAgICAgICAgICAgICAgICA0MDk2DQpVQkk6IG1heC4gYWxsb3dlZCB2b2x1
+bWVzOiAgICAgICAxMjQNClVCSTogd2Vhci1sZXZlbGxpbmcgdGhyZXNob2xkOiAgIDQwOTYNClVC
+STogbnVtYmVyIG9mIGludGVybmFsIHZvbHVtZXM6IDINClVCSTogbnVtYmVyIG9mIHVzZXIgdm9s
+dW1lczogICAgIDANClVCSTogYXZhaWxhYmxlIFBFQnM6ICAgICAgICAgICAgIDEyMg0KVUJJOiB0
+b3RhbCBudW1iZXIgb2YgcmVzZXJ2ZWQgUEVCczogNQ0KVUJJOiBudW1iZXIgb2YgUEVCcyByZXNl
+cnZlZCBmb3IgYmFkIFBFQiBoYW5kbGluZzogMQ0KDQojIG1vdW50IC10IGpmZnMyIC9kZXYvbXRk
+YmxvY2szIC9tbnQNCg0KLyAjIG1vdW50IC10IGpmZnMyIC9kZXYvbXRkYmxvY2szIC90bXANCmpm
+ZnMyX3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNrIDB4MTk4NSBub3QgZm91bmQgYXQg
+MHgwMDAwMDAwMDogMHg0MjU1IGlkDQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0
+bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDAwMDQ6IDB4MDAwMSBpZA0KamZmczJfc2Nh
+bl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAwMDAw
+MDNjOiAweGNlZGMgaWQNCmpmZnMyX3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNrIDB4
+MTk4NSBub3QgZm91bmQgYXQgMHgwMDAwMDgwMDogMHg0MjU1IGlkDQpqZmZzMl9zY2FuX2VyYXNl
+YmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5kIGF0IDB4MDAwMDA4MDQ6IDB4
+MDEwMSBpZA0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2ljIGJpdG1hc2sgMHgxOTg1IG5v
+dCBmb3VuZCBhdCAweDAwMDAwODA4OiAweGZmN2YgaWQNCmpmZnMyX3NjYW5fZXJhc2VibG9jaygp
+OiBNYWdpYyBiaXRtYXNrIDB4MTk4NSBub3QgZm91bmQgYXQgMHgwMDAwMDgzYzogMHgyNWI4IGlk
+DQpqZmZzMl9zY2FuX2VyYXNlYmxvY2soKTogTWFnaWMgYml0bWFzayAweDE5ODUgbm90IGZvdW5k
+IGF0IDB4MDAwMDEwYTg6IDB4MTZmMSBpZA0KamZmczJfc2Nhbl9lcmFzZWJsb2NrKCk6IE1hZ2lj
+IGJpdG1hc2sgMHgxOTg1IG5vdCBmb3VuZCBhdCAweDAwMDAxMTU0OiAweDE2ZjEgaWQNCmpmZnMy
+X3NjYW5fZXJhc2VibG9jaygpOiBNYWdpYyBiaXRtYXNrIDB4MTk4NSBub3QgZm91bmQgYXQgMHgw
+MDAwMTIwMDogMHgxNmYxIGlkDQouLi4NCkNvd2FyZGx5IHJlZnVzaW5nIHRvIGVyYXNlIGJsb2Nr
+cyBvbiBmaWxlc3lzdGVtIHdpdGggbm8gdmFsaWQgSkZGUzIgbm9kZXMNCmVtcHR5X2Jsb2NrcyAw
+LCBiYWRfYmxvY2tzIDEsIGMtPm5yX2Jsb2NrcyAxMjgNCm1vdW50OiBNb3VudGluZyAvZGV2L210
+ZGJsb2NrMyBvbiAvdG1wIGZhaWxlZDogSW5wdXQvb3V0cHV0IGVycm9yDQoNCklzIGl0IHJpZ2h0
+Pw0KDQpPZiBjb3Vyc2UuIEpGRlMyIG1vdW50IHdpdGhvdXQgVUJJIHdvcmtpbmcgd2VsbC4NCg0K
+VGhhbmsgeW91LA0KS3l1bmdtaW4gUGFyaw0K
