@@ -1,20 +1,18 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
+Received: from server37.tchmachines.com ([69.50.193.27])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GhpzV-0004M1-4g
-	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 11:09:33 -0500
-Subject: Re: UBI and OneNAND
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <32333290.224521162903965840.JavaMail.weblogic@ep_ml06>
-References: <32333290.224521162903965840.JavaMail.weblogic@ep_ml06>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 08 Nov 2006 18:09:20 +0200
-Message-Id: <1163002160.3800.8.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: John Smith <john.smith@arrows.demon.co.uk>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1GhrTQ-0005P1-BG
+	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 12:44:32 -0500
+Received: from archite by server37.tchmachines.com with local (Exim 4.52)
+	id 1GhrTZ-0000Gf-Ub
+	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 12:44:37 -0500
+Message-ID: <44194.69.30.123.186.1163007877.squirrel@www.architechnical.net>
+Date: Wed, 8 Nov 2006 12:44:37 -0500 (EST)
+Subject: OneNAND on PXA-270?
+From: "Pete MacKay" <linux@architechnical.net>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,=20
+Hi,
 
-On Tue, 2006-11-07 at 12:52 +0000, Kyungmin Park wrote:
-> > Yo do not need mtdblock devices to mount JFFS2 at all. JFFS2 anyway
-> > works with MTD devices directly and this is just an old way to mount
-> > JFFS2. /dev/mtdX are character devices and you cannot feed the mount
-> > utility by character devices, so this is why fake block devices were
-> > used. Nowadays there is device-less mount support and you may use:
->=20
-> > mount mtd7 /mnt/nvm
->=20
-> Yes, I can mount ubi with avobe method.
+We're evaluating the Samsung OneNAND to replace the NAND and NOR chips in
+our PXA-270-based device.  We're using 2.6.18 and it looks like the MTD
+drivers are there, and we understand a little about x-loader and u-boot
+sharing the first 128K block.  Does anyone have experience booting Linux
+from the OneNAND on a PXA machine?  Specifically, we're interested in:
 
-The device-less mount I described is a feature of *JFFS2*. It does not
-depend on if there is UBI or not.
+1) flashing the OneNAND over JTAG (we use Abatron bdi-2000)
+2) how to modify u-boot, if needed, to be entered by x-load
+3) JFFS2 performance, funky mkfs parameters/caveats
 
-You are just trying to do an incorrect thing.
+The version of x-load that I found online has support for three OMAP
+boards and no cpu/pxa folder (which I assume is taken straight from
+u-boot).  Can someone send source for x-load adopted to their pxa machine?
 
-It is similar to LVM - you feed hard drives to LVM, then create LVM
-volumes, then mount those LVM volumes, not the hard drives. Similar in
-case of UBI. You feed mtd3 to UBI, then you create UBI volumes which are
-also accessible as emulated MTD devices, and you mount _those_ MTD
-devices.
+Please let me know your experiences with this part and what we can expect
+as we evaluate a board turn.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks Much,
+Pete MacKay
