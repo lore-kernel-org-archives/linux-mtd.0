@@ -1,20 +1,27 @@
-Received: from [69.90.147.196] (helo=mail.kenati.com)
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ghsn4-0006Ck-VX
-	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 14:08:56 -0500
-Received: from [192.168.1.67] (adsl-71-130-109-177.dsl.snfc21.pacbell.net
-	[71.130.109.177])
-	by mail.kenati.com (Postfix) with ESMTP id B1707E4052
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  8 Nov 2006 12:08:52 -0800 (PST)
-Message-ID: <4552272B.1010500@kenati.com>
-Date: Wed, 08 Nov 2006 10:51:23 -0800
-From: Carlos Munoz <carlos@kenati.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Can't get SST 39VF3201 flash device to work
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Ghx5l-0008S3-Rc
+	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 18:44:33 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J8F00GV8R9YOX@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 09 Nov 2006 08:44:23 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0J8F001COR9Y09@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 09 Nov 2006 08:44:22 +0900 (KST)
+Content-return: prohibited
+Date: Wed, 08 Nov 2006 23:44:13 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: OneNAND on PXA-270?
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-id: <13165051.297441163029462867.JavaMail.weblogic@ep_ml25>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,93 +31,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm working on an custom embedded board (kernel 2.6.14) with a SST 
-39VF3201 flash chip. I have tried all configurations I can think off and 
-still can't get the kernel to successfully access the flash (jffs2 
-filesystem). With the following configuration in the jedec_probe.c file 
-I get the best results:
-
-.mfr_id         = MANUFACTURER_SST,     /* should be CFI */
-.dev_id         = SST39VF3201,
-.name           = "SST 39VF3201",
-.uaddr          = {
-        [0] = MTD_UADDR_0x5555_0x2AAA,  /* x8 */
-        [1] = MTD_UADDR_0x5555_0x2AAA   /* x16 */
-},
-.DevSize        = SIZE_4MiB,
-.CmdSet         = P_ID_AMD_STD,
-.NumEraseRegions= 1,
-.regions        = {
-        ERASEINFO(0x10000,64)
-}
-
-Has anyone been able to use this device under linux ? If so, how did you 
-configure the kernel/mtd subsystem to get it to work ?
-
-I'm including the boot log in case it helps:
-
-Linux version 2.6.14.6 (carlos@whitetip) (gcc version 3.4.3) #46 PREEMPT 
-Tue Nov 7 19:48:32 PST 2006
-CPU: ARM926EJ-Sid(wb) [41069260] revision 0 (ARMv5TEJ)
-Machine: MV88W8518
-Using U-Boot passing parameters structure - U-Boot release 1.1.1.18
-Memory policy: ECC disabled, Data cache writeback
-CPU0: D VIVT write-back cache
-CPU0: I cache: 32768 bytes, associativity 1, 32 byte lines, 1024 sets
-CPU0: D cache: 32768 bytes, associativity 4, 32 byte lines, 256 sets
-Built 1 zonelists
-Kernel command line: root=/dev/mtdblock0 rw rootfstype=jffs2 
-console=ttyS0,38400 init=/bin/sh
-PID hash table entries: 128 (order: 7, 2048 bytes)
-Dentry cache hash table entries: 4096 (order: 2, 16384 bytes)
-Inode-cache hash table entries: 2048 (order: 1, 8192 bytes)
-Memory: 16MB = 16MB total
-Memory: 14080KB available (1715K code, 303K data, 72K init)
-Mount-cache hash table entries: 512
-CPU: Testing write buffer coherency: ok
-NET: Registered protocol family 16
-JFFS2 version 2.2. (NAND) (C) 2001-2003 Red Hat, Inc.
-Serial: 8250/16550 driver $Revision: 1.1.2.9 $ 2 ports, IRQ sharing enabled
-ttyS0 at MMIO 0xf800c840 (irq = 11) is a 16550A
-io scheduler noop registered
-io scheduler deadline registered
-PHY found at addr 16,  ID 1410c87,  mii_status 7849
-eth0: mv88w8xx8 FEC @ 80008000, 00:09:11:22:33:45 irq 9
-PPP generic driver version 2.4.2
-PPP Deflate Compression module registered
-PPP BSD Compression module registered
-Found: SST 39VF3201
-MV88W8XX8 flash memory: Found 1 x16 devices at 0x0 in 16-bit bank
-number of JEDEC chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-MV88W8XX8 flash map (size->0x400000 mem->0xFFC00000)
-Creating 3 MTD partitions on "MV88W8XX8 flash memory":
-0x00000000-0x00250000 : "Rootfs"
-0x00250000-0x00260000 : "U-Boot environment"
-0x00260000-0x00400000 : "U-Boot"
-u32 classifier
-    OLD policer on
-NET: Registered protocol family 2
-IP route cache hash table entries: 256 (order: -2, 1024 bytes)
-TCP established hash table entries: 1024 (order: 0, 4096 bytes)
-TCP bind hash table entries: 1024 (order: 0, 4096 bytes)
-TCP: Hash tables configured (established 1024 bind 1024)
-TCP reno registered
-ip_conntrack version 2.3 (128 buckets, 1024 max) - 228 bytes per conntrack
-ip_tables: (C) 2000-2002 Netfilter core team
-TCP bic registered
-NET: Registered protocol family 1
-NET: Registered protocol family 17
-flash_size=250000 used_size=0 dirty_size=0 wasted_size=0 
-free_size=250000 erasing_size=0 bad_size=0 sector_size=10000 
-unchecked_size=0
-Eep. Child "sh" (ino #55) of dir ino #2 doesn't exist!
-VFS: Mounted root (jffs2 filesystem).
-Freeing init memory: 72K
-Failed to execute /bin/sh.  Attempting defaults...
-
-
-Thanks,
-
-
-Carlos
+SGksDQoNCj4gV2UncmUgZXZhbHVhdGluZyB0aGUgU2Ftc3VuZyBPbmVOQU5EIHRvIHJlcGxhY2Ug
+dGhlIE5BTkQgYW5kIE5PUiBjaGlwcyBpbg0KPiBvdXIgUFhBLTI3MC1iYXNlZCBkZXZpY2UuICBX
+ZSdyZSB1c2luZyAyLjYuMTggYW5kIGl0IGxvb2tzIGxpa2UgdGhlIE1URA0KPiBkcml2ZXJzIGFy
+ZSB0aGVyZSwgYW5kIHdlIHVuZGVyc3RhbmQgYSBsaXR0bGUgYWJvdXQgeC1sb2FkZXIgYW5kIHUt
+Ym9vdA0KPiBzaGFyaW5nIHRoZSBmaXJzdCAxMjhLIGJsb2NrLiAgRG9lcyBhbnlvbmUgaGF2ZSBl
+eHBlcmllbmNlIGJvb3RpbmcgTGludXgNCj4gZnJvbSB0aGUgT25lTkFORCBvbiBhIFBYQSBtYWNo
+aW5lPyAgU3BlY2lmaWNhbGx5LCB3ZSdyZSBpbnRlcmVzdGVkIGluOg0KDQo+IDEpIGZsYXNoaW5n
+IHRoZSBPbmVOQU5EIG92ZXIgSlRBRyAod2UgdXNlIEFiYXRyb24gYmRpLTIwMDApDQoNCkFzIEkg
+a25vdywgYmRpIGNhbid0IHByb2dyYW0gb25lbmFuZCBkaXJlY3RseS4NCg0KPiAyKSBob3cgdG8g
+bW9kaWZ5IHUtYm9vdCwgaWYgbmVlZGVkLCB0byBiZSBlbnRlcmVkIGJ5IHgtbG9hZA0KDQpKdXN0
+IHVzZSB5b3VyIHUtYm9vdCwgd2Ugb25seSBuZWVkIGEgeGxvYWRlcg0KDQpBZnRlciBidWlsZCB4
+bG9hZGVyLCBqdXN0IG1lcmdlIHR3byBpbWFnZSB4bG9hZGVyICsgdWJvb3QuDQpPZiBjb3Vyc2Us
+IHlvdSBjYW4gZmluZCBtZXJnZSBzY3JpcHQgaW4geGxvYWRlciBzY3JpcHRzIGRpcmVjdG9yeS4N
+Cg0KPiAzKSBKRkZTMiBwZXJmb3JtYW5jZSwgZnVua3kgbWtmcyBwYXJhbWV0ZXJzL2NhdmVhdHMN
+Cg0KSW4gb3VyIHRlc3QgZW52aXJvbm1lbnQsIGFwb2xsb24gYmFzZWQgb24gb21hcDI0MjAgd2l0
+aCBsYXRlc3QgbXRkIHRyZWUNCg0Kd2FybmluZzogcHJvY2VzcyBgaW96b25lJyB1c2VkIHRoZSBy
+ZW1vdmVkIHN5c2N0bCBzeXN0ZW0gY2FsbA0KICAgICAgICBJb3pvbmU6IFBlcmZvcm1hbmNlIFRl
+c3Qgb2YgRmlsZSBJL08NCiAgICAgICAgICAgICAgICBWZXJzaW9uICRSZXZpc2lvbjogMy4yNjAg
+JA0KICAgICAgICAgICAgICAgIENvbXBpbGVkIGZvciAzMiBiaXQgbW9kZS4NCiAgICAgICAgICAg
+ICAgICBCdWlsZDogbGludXgtYXJtDQoNCiAgICAgICAgUnVuIGJlZ2FuOiBUaHUgTm92ICA5IDA4
+OjMxOjM3IDIwMDYNCg0KICAgICAgICBBdXRvIE1vZGUgMi4gVGhpcyBvcHRpb24gaXMgb2Jzb2xl
+dGUuIFVzZSAtYXogLWkwIC1pMQ0KICAgICAgICBGaWxlIHNpemUgc2V0IHRvIDMwNzIwIEtCDQog
+ICAgICAgIENvbW1hbmQgbGluZSB1c2VkOiBpb3pvbmUgLUEgLXMgMzBtIC1VIC9qZmZzMiAtZiAv
+amZmczIvdGVzdA0KICAgICAgICBPdXRwdXQgaXMgaW4gS2J5dGVzL3NlYw0KICAgICAgICBUaW1l
+IFJlc29sdXRpb24gPSAwLjAwMDAzMCBzZWNvbmRzLg0KICAgICAgICBQcm9jZXNzb3IgY2FjaGUg
+c2l6ZSBzZXQgdG8gMTAyNCBLYnl0ZXMuDQogICAgICAgIFByb2Nlc3NvciBjYWNoZSBsaW5lIHNp
+emUgc2V0IHRvIDMyIGJ5dGVzLg0KICAgICAgICBGaWxlIHN0cmlkZSBzaXplIHNldCB0byAxNyAq
+IHJlY29yZCBzaXplLg0KDQogICAgICAgICAgICAgIEtCICByZWNsZW4gICB3cml0ZSByZXdyaXRl
+ICAgIHJlYWQgICAgcmVyZWFkDQogICAgICAgICAgIDMwNzIwICAgICAgIDQgICAgNDczOCAgICA0
+Nzg3ICAgICA4NTM1ICAgIDE1NTc3DQogICAgICAgICAgIDMwNzIwICAgICAgIDggICAgNTQxNCAg
+ICA0NzcxICAgIDE1Nzc2ICAgIDE1NzA2DQogICAgICAgICAgIDMwNzIwICAgICAgMTYgICAgNDgw
+MyAgICA2MDA5ICAgIDE1ODMyICAgIDE1ODQ0DQogICAgICAgICAgIDMwNzIwICAgICAgMzIgICAg
+NDc5MyAgICA0ODA1ICAgICA4NjIzICAgIDE1OTEzDQogICAgICAgICAgIDMwNzIwICAgICAgNjQg
+ICAgNTQzOCAgICA0ODEwICAgIDE2MDUwICAgIDE2MDExDQogICAgICAgICAgIDMwNzIwICAgICAx
+MjggICAgNDg1NiAgICA2MjA0ICAgIDE2MTk1ICAgIDE2MTc0DQogICAgICAgICAgIDMwNzIwICAg
+ICAyNTYgICAgNDgzOCAgICA0ODgxICAgICA4NjU3ICAgIDE2MjUzDQoNCj4gVGhlIHZlcnNpb24g
+b2YgeC1sb2FkIHRoYXQgSSBmb3VuZCBvbmxpbmUgaGFzIHN1cHBvcnQgZm9yIHRocmVlIE9NQVAN
+Cj4gYm9hcmRzIGFuZCBubyBjcHUvcHhhIGZvbGRlciAod2hpY2ggSSBhc3N1bWUgaXMgdGFrZW4g
+c3RyYWlnaHQgZnJvbQ0KPiB1LWJvb3QpLiAgQ2FuIHNvbWVvbmUgc2VuZCBzb3VyY2UgZm9yIHgt
+bG9hZCBhZG9wdGVkIHRvIHRoZWlyIHB4YSBtYWNoaW5lPw0KDQp5b3UgY2FuIGZpbmQgcHhhIHN1
+cHBvcnQgaGVyZS4NCg0KaHR0cDovL3NvdXJjZS5tdmlzdGEuY29tL2dpdC9naXR3ZWIuY2dpP3A9
+eGxvYWRlci5naXQ7YT1sb2cNCg0KcmVmZXIgdG8gaTU4MCBib2FyZCB3aGljaCBpcyBiYXNlZCBv
+biBweGEyNzAuDQoNClRoYW5rIHlvdSwNCkt5dW5nbWluIFBhcms=
