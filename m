@@ -1,19 +1,34 @@
-Received: from ug-out-1314.google.com ([66.249.92.175])
+Received: from gatekeeper.tait.co.nz ([202.37.96.11])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Ghxwx-0000aW-2C
-	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 19:39:29 -0500
-Received: by ug-out-1314.google.com with SMTP id m2so72088uge
+	id 1Ghygb-000161-NG
+	for linux-mtd@lists.infradead.org; Wed, 08 Nov 2006 20:26:37 -0500
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by localhost.tait.co.nz (Postfix) with ESMTP id 0F952467D7
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Nov 2006 16:39:20 -0800 (PST)
-Message-ID: <9c9fda240611081639t663c5ce3xec172d1284c3aa8b@mail.gmail.com>
-Date: Thu, 9 Nov 2006 09:39:19 +0900
-From: "Kyungmin Park" <kyungmin78@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: OneNAND UBI
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+	Thu,  9 Nov 2006 14:26:26 +1300 (NZDT)
+Received: from sunstrike.tait.co.nz (sunstrike [172.25.40.92])
+	by gatekeeper.tait.co.nz (Postfix) with ESMTP id EB42A467D2
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  9 Nov 2006 14:26:25 +1300 (NZDT)
+Received: from conversion-daemon.sunstrike.tait.co.nz by sunstrike.tait.co.nz
+	(Sun Java System Messaging Server 6.1 (built Apr 28 2004))
+	id <0J8F00A01U8UCD00@sunstrike.tait.co.nz>
+	(original mail from robin.gilks@tait.co.nz) for
+	linux-mtd@lists.infradead.org;
+	Thu, 09 Nov 2006 14:26:25 +1300 (NZDT)
+Received: from [172.25.140.15] by sunstrike.tait.co.nz
+	(Sun Java System Messaging Server 6.1 (built Apr 28 2004))
+	with ESMTP id <0J8F00AGRW00BE00@sunstrike.tait.co.nz> for
+	linux-mtd@lists.infradead.org; Thu, 09 Nov 2006 14:26:25 +1300 (NZDT)
+Date: Thu, 09 Nov 2006 14:26:12 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+Subject: Command line partition support in 2.6
+To: MTD mail list <linux-mtd@lists.infradead.org>
+Message-id: <455283B4.20300@tait.co.nz>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+Reply-To: robin.gilks@tait.co.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,162 +38,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Greetings
 
-Here's full sequences of UBI on OneNAND.
+I'm just moving from a 2.4 to 2.6 kernel and am trying to make sense of 
+the command line partition support. In 2.4 I added a definition in 
+maps/physmap.c
 
-1. onenand partitions
 
-Muxed OneNAND 128MB 1.8V 16-bit (0x30)
-Scanning device for bad blocks
-Bad eraseblock 4 at 0x00080000
-Bad eraseblock 32 at 0x00400000
-Bad eraseblock 1008 at 0x07e00000
-Creating 6 MTD partitions on "onenand":
-0x00000000-0x00020000 : "X-Loader + U-Boot"
-0x00020000-0x00040000 : "params"
-0x00040000-0x00240000 : "kernel"
-0x00240000-0x01240000 : "rootfs"
-0x01240000-0x03240000 : "filesystem00"
-0x03240000-0x08000000 : "filesystem01"
+struct map_info physmap_map = {
+	.name = "asif",
+	.size = CONFIG_MTD_PHYSMAP_LEN,
+	.buswidth = CONFIG_MTD_PHYSMAP_BUSWIDTH,
+	.phys = CONFIG_MTD_PHYSMAP_START,
+};
 
-/ # /mtd-utils/eraseall /dev/mtd3
-Erasing onenand_erase: attempt to erase a bad block at addr 0x00400000
-Erasing 128 Kibyte @ 1c0000 -- 10 % complete.
-MTD Erase failure: Input/output error
-Erasing 128 Kibyte @ fe0000 -- 99 % complete.
+and used a kernel command line of the form:
+      mtdparts=asif:64K(param),3008K(jffs),256K(u-boot),-(kernel)
 
-There's one initial bad block, so we can't use this partition as block
-device such as cramfs
+to partition the flash.
 
-2. Load ubi module
+What is the equivalent procedure now? All the documentation seems to 
+skim over NOR straight into NAND and all the example maps I've looked at 
+use a fixed partition map rather than a command line one.
 
-/ # insmod /mtd-utils/ubi.ko mtd=3
-Using /mtd-utils/ubi.ko
-UBI: background thread "ubi_bgt0d" started, PID 192
-UBI: empty MTD device detected
-UBI: create volume table (copy #1)
-UBI: create volume table (copy #2)
-UBI: mean erase counter:         0
-UBI: attached mtd3 to ubi0
-UBI: MTD device name:            "rootfs"
-UBI: MTD device size:            16 MB
-UBI: physical eraseblock size:   131072 bytes (128 KB)
-UBI: logical eraseblock size:    126976 bytes
-UBI: number of good PEBs:        127
-UBI: number of bad PEBs:         1
-UBI: smallest flash I/O unit:    2048
-UBI: VID header offset:          2048 (aligned 2048)
-UBI: data offset:                4096
-UBI: max. allowed volumes:       124
-UBI: wear-levelling threshold:   4096
-UBI: number of internal volumes: 2
-UBI: number of user volumes:     0
-UBI: available PEBs:             122
-UBI: total number of reserved PEBs: 5
-UBI: number of PEBs reserved for bad PEB handling: 1
+I'm sure its really simple but it beats me at the moment!!
 
-3. Create ubi volume
+Cheers
 
-/ # /mtd-utils/ubimkvol -s 10485760 -N rootfs-cramfs -d 0
+-- 
+Robin
 
-/ # cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "X-Loader + U-Boot"
-mtd1: 00020000 00020000 "params"
-mtd2: 00200000 00020000 "kernel"
-mtd3: 01000000 00020000 "rootfs"
-mtd4: 02000000 00020000 "filesystem00"
-mtd5: 04dc0000 00020000 "filesystem01"
-mtd6: 00a0d000 0001f000 "rootfs-cramfs" <= ubi partition
 
-ubi parition, mtd6 is created.
-
-4. copy cramfs image to ubi partition
-
-/ # cp cramfs.img /dev/mtdblock6
-
-5. mount cramfs and test
-
-/ # mount -t cramfs /dev/mtdblock6 /tmp
-
-/ # cd /tmp
-/tmp # ls
-bin     dev     lib     proc    tmp     var
-cramfs  etc     mnt     sbin    usr
-/tmp # mount
-/dev/mtdblock6 on /tmp type cramfs (ro)
-
-6. create jffs2 ubi partition
-
-/ # /mtd-utils/ubimkvol -s 4194304 -N rootfs-jffs2 -d 0
-
-/ # cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "X-Loader + U-Boot"
-mtd1: 00020000 00020000 "params"
-mtd2: 00200000 00020000 "kernel"
-mtd3: 01000000 00020000 "rootfs"
-mtd4: 02000000 00020000 "filesystem00"
-mtd5: 04dc0000 00020000 "filesystem01"
-mtd6: 00a0d000 0001f000 "rootfs-cramfs"
-mtd7: 0041e000 0001f000 "rootfs-jffs2"
-
-ubi partition, mtd7 is created.
-
-7. mount jffs2 and test
-
-/ # mount -t jffs2 /dev/mtdblock7 /mnt
-JFFS2 write-buffering enabled buffer (2048) erasesize (126976)
-/ # mount
-/dev/mtdblock6 on /tmp type cramfs (ro)
-/dev/mtdblock7 on /mnt type jffs2 (rw)
-
-/ # cd /mnt
-/mnt # cat /proc/filesystems > filesystem
-/mnt # cat filesystem
-nodev   sysfs
-nodev   rootfs
-nodev   bdev
-nodev   proc
-nodev   binfmt_misc
-nodev   debugfs
-nodev   sockfs
-nodev   pipefs
-nodev   futexfs
-nodev   tmpfs
-nodev   inotifyfs
-nodev   eventpollfs
-nodev   devpts
-        cramfs
-nodev   ramfs
-nodev   nfs
-nodev   jffs2
-nodev   rpc_pipefs
-/mnt # cd ..
-/ # umount /mnt
-/ # mount -t jffs2 /dev/mtdblock7 /mnt
-JFFS2 write-buffering enabled buffer (2048) erasesize (126976)
-/ # cd /mnt
-/mnt # cat filesystem
-nodev   sysfs
-nodev   rootfs
-nodev   bdev
-nodev   proc
-nodev   binfmt_misc
-nodev   debugfs
-nodev   sockfs
-nodev   pipefs
-nodev   futexfs
-nodev   tmpfs
-nodev   inotifyfs
-nodev   eventpollfs
-nodev   devpts
-        cramfs
-nodev   ramfs
-nodev   nfs
-nodev   jffs2
-nodev   rpc_pipefs
-
-Thank you,
-Kyungmin Park
+=======================================================================
+This email, including any attachments, is only for the intended
+addressee.  It is subject to copyright, is confidential and may be
+the subject of legal or other privilege, none of which is waived or
+lost by reason of this transmission.
+If the receiver is not the intended addressee, please accept our
+apologies, notify us by return, delete all copies and perform no
+other act on the email.
+Unfortunately, we cannot warrant that the email has not been
+ altered or corrupted during transmission.
+=======================================================================
