@@ -1,18 +1,19 @@
-Received: from mailout.airspan.com ([62.189.116.5])
+Received: from www.sohosted5.com ([193.138.249.49] helo=server5.sohosted.com)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GiSw1-0002pL-Tn
-	for linux-mtd@lists.infradead.org; Fri, 10 Nov 2006 04:44:35 -0500
-Content-class: urn:content-classes:message
+	id 1GiUPw-0003m3-Go
+	for linux-mtd@lists.infradead.org; Fri, 10 Nov 2006 06:19:33 -0500
+From: Stefan Roese <ml@stefan-roese.de>
+To: MTD mail list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] NAND: Fix endianess bug in ndfc.c
+Date: Fri, 10 Nov 2006 12:19:32 +0100
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: mtdconcat +jffs2 +NAND
-Date: Fri, 10 Nov 2006 09:44:32 -0000
-Message-ID: <31FE7326559B534EA6C03ACF19B25A315FFC26@fs5.airspan.com>
-In-Reply-To: <31FE7326559B534EA6C03ACF19B25A315FFC24@fs5.airspan.com>
-From: "Neil Wilson" <NWilson@Airspan.com>
-To: <linux-mtd@lists.infradead.org>
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200611101219.33579.ml@stefan-roese.de>
+Cc: Josh Boyer <jwboyer@gmail.com>, Frank Haverkamp <haver@vnet.ibm.com>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->Is anyone using mtdconcat with JFFS2 + NAND who would be willing to
-help me understand if I am attempting to use it correctly ?
->I have a ppc board with 4 * 64MB NAND that I would like to expose as 2
-* 128MB filesystems.
->Thanks.
+[PATCH] [MTD] NAND: Fix endianess bug in ndfc.c
 
-Sorry, forgot to mention that I am using a 2.6.18 kernel and that I can
-mount & currently use the NAND devices individually under JFFS2 but
-cannot seem to get the mtdconcat right.
+The writel() call accidentally clears all bits in the NDFC_CCR
+register (endianess problem). Now __raw_writel() is used instead.
 
-Neil
+Tested on Bamboo with NAND on chip select 0 and chip select 1.
+
+Signed-off-by: Stefan Roese <sr@denx.de>
+
+---
+commit 0330ccb7b7c1cdb0b9b24a305c456590184e08ca
+tree 0b82605a0620160b49ce61621ee0fda76cdd9678
+parent a52e107be42f85bdd2931bf8d3676cfbde418226
+author Stefan Roese <sr@denx.de> Thu, 09 Nov 2006 16:50:54 +0100
+committer Stefan Roese <sr@denx.de> Thu, 09 Nov 2006 16:50:54 +0100
+
+ drivers/mtd/nand/ndfc.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
+index 039c759..fd7a8d5 100644
+--- a/drivers/mtd/nand/ndfc.c
++++ b/drivers/mtd/nand/ndfc.c
+@@ -56,7 +56,7 @@ static void ndfc_select_chip(struct mtd_
+ 		ccr |= NDFC_CCR_BS(chip + pchip->chip_offset);
+ 	} else
+ 		ccr |= NDFC_CCR_RESET_CE;
+-	writel(ccr, ndfc->ndfcbase + NDFC_CCR);
++	__raw_writel(ccr, ndfc->ndfcbase + NDFC_CCR);
+ }
+ 
+ static void ndfc_hwcontrol(struct mtd_info *mtd, int cmd, unsigned int ctrl)
