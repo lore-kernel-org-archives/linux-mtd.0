@@ -1,18 +1,19 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GjWUM-0003WO-V7
-	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 02:44:30 -0500
-Subject: Re: OneNAND: interrupt based wait support (for reference)
+	id 1GjWX1-0003i4-FW
+	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 02:47:25 -0500
+Subject: Re: jffs2_flash_writev(): Non-contiguous write to 00825300 with
+	mtd_dataflash
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <9737167.495191163379347461.JavaMail.weblogic@ep_ml28>
-References: <9737167.495191163379347461.JavaMail.weblogic@ep_ml28>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 13 Nov 2006 09:43:55 +0200
-Message-Id: <1163403835.3925.23.camel@sauron>
+To: Haavard Skinnemoen <hskinnemoen@atmel.com>
+In-Reply-To: <20061101115252.26000d78@cad-250-152.norway.atmel.com>
+References: <20061101115252.26000d78@cad-250-152.norway.atmel.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 13 Nov 2006 09:46:49 +0200
+Message-Id: <1163404009.3925.26.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,13 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-11-13 at 00:55 +0000, Kyungmin Park wrote:
-> So the previous or this one? :-)
->=20
-> Please apply this one
->=20
+Hello Haavard,
 
-Yeah, it is waiting for dwmw2's review in my git tree.
+On Wed, 2006-11-01 at 11:52 +0100, Haavard Skinnemoen wrote:
+> I've seen a couple of other people reporting this bug before, so I'm
+> just going to offer some observations I've made when trying to debug
+> this (I'm not a filesystem developer, so I don't fully understand the
+> code).
+>=20
+> I can successfully mount a jffs2 filesystem on a freshly erased
+> AT45DB642x DataFlash chip through the mtd_dataflash driver. However,
+> when trying to write something to a file on that filesystem, I get a
+> BUG and the messages
+>=20
+> jffs2_flash_writev(): Non-contiguous write to 00825300
+> wbuf was previously 00825300-008253b8
+>=20
+> Just creating a file without trying to write anything to it works fine.
+>=20
+> I've inserted a call to dump_stack() and a few debugging printks in
+> jffs2_flash_writev() to see what's going on, and I see the following:
+
+So all it seems that you need to to make jffs2_can_mark_obsokete()
+return 0 in case of dataflash.
 
 --=20
 Best regards,
