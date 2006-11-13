@@ -1,20 +1,26 @@
-Received: from mgw-ext12.nokia.com ([131.228.20.171])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GjYWq-00062I-Ch
-	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 04:55:08 -0500
-Subject: Re: Kernel oops in jffs2 mount - any ideas?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: robin.gilks@tait.co.nz
-In-Reply-To: <4557E56F.8070100@tait.co.nz>
-References: <4553C6CB.2040207@tait.co.nz> <1163146170.3925.7.camel@sauron>
-	<4557E56F.8070100@tait.co.nz>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 13 Nov 2006 11:54:43 +0200
-Message-Id: <1163411683.3925.31.camel@sauron>
-Mime-Version: 1.0
+Received: from mout2.freenet.de ([194.97.50.155])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GjYiG-0008Hw-9H
+	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 10:06:52 +0000
+Received: from [194.97.50.144] (helo=mx1.freenet.de)
+	by mout2.freenet.de with esmtpa (Exim 4.62)
+	(envelope-from <hermes33@freenet.de>) id 1GjYhW-0002NW-D5
+	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 11:06:02 +0100
+Received: from www8.emo.freenet-rz.de ([194.97.107.211]:45699)
+	by mx1.freenet.de with esmtp (port 25) (Exim 4.62 #12)
+	id 1GjYhW-00010z-7g
+	for linux-mtd@lists.infradead.org; Mon, 13 Nov 2006 11:06:02 +0100
+Received: from www-data by www8.emo.freenet-rz.de with local (Exim 4.60 1
+	(Panther_1)) id 1GjYhU-00007r-PL
+	for <linux-mtd@lists.infradead.org>; Mon, 13 Nov 2006 11:06:00 +0100
+To: linux-mtd@lists.infradead.org
+From: hermes33@freenet.de
+Subject: number mtd partitions on 16 limits?
+MIME-Version: 1.0
+Content-Type: text/plain; charset="ISO-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Cc: MTD mail list <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Message-Id: <E1GjYhU-00007r-PL@www8.emo.freenet-rz.de>
+Date: Mon, 13 Nov 2006 11:06:00 +0100
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,44 +30,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Dear all,
 
-On Mon, 2006-11-13 at 16:24 +1300, Robin Gilks wrote:
+I need more than 16 mtd partitions on a omap1610 (arm) with kernel 2.4.20.=
+=20
+I create 16 partitions. All ok, 'cat /proc/mtd' show mtd0 to mtd15.=20
+I create 17 partitions. 'cat /proc/mtd' show only mtd0 to mtd15.=20
+It seems to give a limit with 16 partitions.=20
+Where can I change that? can someone help me?
 
-> [   13.488115] jffs2_scan_eraseblock(): Node at 0x0004aff8 {0x1985,=20
-> 0xe001, 0x0000002d) has invalid CRC 0xd7218112 (calculated 0x05000000)
-> [   13.514180] jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found=20
-> at 0x0004b000: 0xd721 instead
+Best regards
 
-This means you are trying to feed trash to JFFS2. How do you copy JFFS2
-image to your flash? Do you erase the partition beforehand?
-
-But nevertheless, JFFS2 should not crash because of this and probably
-this is not the reason of the crash.
-
-> [   23.751790] JFFS2: Erase block at 0x00290000 is not formatted. It=20
-> will be erased
-> [   24.009046] Oops: kernel access of bad area, sig: 11 [#1]
-> [   24.019240] NIP: C01136A0 LR: C0114294 CTR: C01136A0
-> [   24.029096] REGS: c3cabcd0 TRAP: 0300   Not tainted  (2.6.18-buildroot=
-)
-> [   24.042200] MSR: 00009032 <EE,ME,IR,DR>  CR: 22008028  XER: 0000005F
-> [   24.054824] DAR: FF80101B, DSISR: C0000000
-> [   24.062957] TASK =3D c036a7c0[280] 'jffs2_gcd_mtd1' THREAD: c3caa000
-> [   24.074859] GPR00: 00000000 C3CABD80 C036A7C0 FF800FFF C3C26678=20
-> 00000000 C034CA44 F82DD7B0
-> [   24.091445] GPR08: 0005CEE4 C01AD99C FF800FFF C01136A0 22008024=20
-> 00000000 C3CABE38 00000000
-> [   24.108034] GPR16: C3CABE24 C01C0000 C3CABDA8 00000000 C3CABE28=20
-> C3C26640 C034CA20 00000000
-> [   24.124624] GPR24: 0005CEE4 C3C26640 00000028 00000000 0005CEE4=20
-> C3C26678 C03F6C14 C3C26678
-> [   24.141559] NIP [C01136A0] put_chip+0xa0/0x2e8
-
-So the crash is somewhere in the CFI code. You should try to dig it and
-realize why it oopses.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Robert
+=0A=0A=0A=0A=0A=0A=0A=0A
