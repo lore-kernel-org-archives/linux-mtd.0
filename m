@@ -1,29 +1,35 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gk4Ue-0002qI-Fe
-	for linux-mtd@lists.infradead.org; Tue, 14 Nov 2006 15:02:55 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Gk4UO-0001FZ-PI
-	for linux-mtd@lists.infradead.org; Tue, 14 Nov 2006 21:02:36 +0100
-Received: from 0x503e0864.albnxx8.adsl-dhcp.tele.dk ([80.62.8.100])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Nov 2006 21:02:36 +0100
-Received: from martin by 0x503e0864.albnxx8.adsl-dhcp.tele.dk with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 14 Nov 2006 21:02:36 +0100
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Subject: Re: Access to NOR from Linux - what is required?
-Date: Tue, 14 Nov 2006 21:02:11 +0100
-Message-ID: <ejd7c4$jua$1@sea.gmane.org>
-References: <ejck96$7qf$1@sea.gmane.org>
-	<f96d234e0611140947n36d1269ao8235f7cbec4fd920@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <f96d234e0611140947n36d1269ao8235f7cbec4fd920@mail.gmail.com>
-Sender: news <news@sea.gmane.org>
+Received: from gatekeeper.tait.co.nz ([202.37.96.11])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gk5f4-0003cu-QB
+	for linux-mtd@lists.infradead.org; Tue, 14 Nov 2006 16:17:47 -0500
+Received: from gatekeeper.tait.co.nz (localhost.localdomain [127.0.0.1])
+	by localhost.tait.co.nz (Postfix) with ESMTP id 1F537467D8
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Nov 2006 10:17:37 +1300 (NZDT)
+Received: from sunstrike.tait.co.nz (sunstrike [172.25.40.92])
+	by gatekeeper.tait.co.nz (Postfix) with ESMTP id DEA3846755
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Nov 2006 10:17:36 +1300 (NZDT)
+Received: from conversion-daemon.sunstrike.tait.co.nz by sunstrike.tait.co.nz
+	(Sun Java System Messaging Server 6.1 (built Apr 28 2004))
+	id <0J8Q00001L2KLM00@sunstrike.tait.co.nz>
+	(original mail from robin.gilks@tait.co.nz) for
+	linux-mtd@lists.infradead.org;
+	Wed, 15 Nov 2006 10:17:35 +1300 (NZDT)
+Date: Wed, 15 Nov 2006 10:17:25 +1300
+From: Robin Gilks <robin.gilks@tait.co.nz>
+Subject: Re: Kernel oops in jffs2 mount - any ideas?
+In-reply-to: <4559775D.8030009@transmode.se>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Message-id: <455A3265.7060408@tait.co.nz>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+References: <4553C6CB.2040207@tait.co.nz> <1163146170.3925.7.camel@sauron>
+	<4557E56F.8070100@tait.co.nz> <1163411683.3925.31.camel@sauron>
+	<4559412C.8080102@tait.co.nz> <4559775D.8030009@transmode.se>
+Cc: MTD mail list <linux-mtd@lists.infradead.org>
+Reply-To: robin.gilks@tait.co.nz
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,26 +39,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Cliff Brake wrote:
->>I know this is a rather vague question, but how do I gain access to the
->>NOR flash on my board?
-
-=== 8< 8< 8< ===
-
-> You can often just map in your NOR device using the kernel command
-> line without any kernel changes.  Something like:
+Joakim Tjernlund wrote:
+> Robin Gilks wrote:
+>> Artem Bityutskiy wrote:
+>>
+>>   
+>>> So the crash is somewhere in the CFI code. You should try to dig it and
+>>> realize why it oopses.
+>>>     
+>> Pretty much at the same point except now its the garbage collector 
+>> crashing and leaving a lock on an inode so the kernel stalls.
+>>
+>> No clues as to what is going on though :-(
+>>
+>>
+>> HELP!
+>>
+>>   
+> You should apply the bug fix I sent the other day(Re: cfi_cmd0001.c
+> broken w.r.t Erase Suspend solved, patch included).
+> This closes nasty bug that I think should be applied to linus tree ASAP.
 > 
-> CONFIG_MTD_PARTITIONS=y
-> CONFIG_MTD_CMDLINE_PARTS=y
-> CONFIG_CMDLINE="mtdparts=phys_mapped_flash:256k(boot)ro,0x1C0000(kernel),-(root)"
-> CONFIG_MTD_PHYSMAP=y
-> CONFIG_MTD_PHYSMAP_START=0x0000000
-> CONFIG_MTD_PHYSMAP_LEN=0x4000000
-> CONFIG_MTD_PHYSMAP_BANKWIDTH=4
-> 
-> There is documentation on mtdparts in:
-> drivers/mtd/cmdlinepart.c
+>  Jocke
 
-Super, I'll try this in the morning and let you know! Thanks for now...
+Patch already applied a couple of days ago - I've been grasping at 
+straws for 4 days now!! I think I might be getting further with my 
+bdi2000 to get better debug info anyway.
 
-// Martin
+Thanks
+
+-- 
+Robin
+
+
+=======================================================================
+This email, including any attachments, is only for the intended
+addressee.  It is subject to copyright, is confidential and may be
+the subject of legal or other privilege, none of which is waived or
+lost by reason of this transmission.
+If the receiver is not the intended addressee, please accept our
+apologies, notify us by return, delete all copies and perform no
+other act on the email.
+Unfortunately, we cannot warrant that the email has not been
+ altered or corrupted during transmission.
+=======================================================================
