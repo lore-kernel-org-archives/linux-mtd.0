@@ -1,26 +1,19 @@
-Received: from ug-out-1314.google.com ([66.249.92.174])
+Received: from py-out-1112.google.com ([64.233.166.182])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GkKgA-0005U7-JO
-	for linux-mtd@lists.infradead.org; Wed, 15 Nov 2006 08:19:59 -0500
-Received: by ug-out-1314.google.com with SMTP id m2so122412uge
+	id 1GkKq2-0005mb-Mg
+	for linux-mtd@lists.infradead.org; Wed, 15 Nov 2006 08:30:16 -0500
+Received: by py-out-1112.google.com with SMTP id h31so130840pyc
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Nov 2006 05:19:45 -0800 (PST)
-Message-ID: <625fc13d0611150519i20da920aub90ce4a69f61a507@mail.gmail.com>
-Date: Wed, 15 Nov 2006 07:19:44 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>
-Subject: Re: Mkfs.jffs2.c:68:21: sys/acl.h: No such file or directory
-In-Reply-To: <Pine.LNX.4.64.0611151119350.5230@lnxricardw.se.axis.com>
+	Wed, 15 Nov 2006 05:29:58 -0800 (PST)
+Message-ID: <3aad55d90611150529v4ad67c51gf5ae36280c727005@mail.gmail.com>
+Date: Wed, 15 Nov 2006 15:29:57 +0200
+From: Elias <dilu666@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 tools
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <5049F8BE55F36348A315EFBE6CF34386980112@sinse301.ap.infineon.com>
-	<Pine.LNX.4.64.0611150853370.5230@lnxricardw.se.axis.com>
-	<455AE636.20806@ak.jp.nec.com>
-	<Pine.LNX.4.64.0611151119350.5230@lnxricardw.se.axis.com>
-Cc: Linux mtd <linux-mtd@lists.infradead.org>,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,16 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 11/15/06, Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
-> > The attached patch enable mkfs.jffs2 to be configurable without any
-> > modification of source code.
->
-> After I submitted the patch I too was thinking about extending
-> configuration to the Makefile.
->
-> Your patch is obviously much better. I think it would be nice if it were
-> included in the mtd-utils tree.
+Hello,
 
-It has been committed as is.  The patch looked quite good.
+I wonder if there are any tools for the jffs2 that can report various
+information about the file system and flash chip that it resides on,
+such as the structure of the dirty,clean and free blocks, the total
+data structure of the flash chip, as well as the physical allocation
+of data on the chip. Are there any?
 
-josh
+Thanks in advance,
+-- 
+elias a.k.a. diluted
