@@ -1,15 +1,15 @@
 Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GkiiP-0003DR-IX
-	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 09:59:51 -0500
-Subject: Re: Problem with copying more than 2kb file into the flash
+	id 1Gkiou-0003R2-Up
+	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 10:06:35 -0500
+Subject: Re: cfi_cmd0001.c broken w.r.t Erase Suspend solved, patch included
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: "s.balamurugan" <s.balamurugan@gdatech.co.in>
-In-Reply-To: <455C7650.2000705@gdatech.co.in>
-References: <455C7650.2000705@gdatech.co.in>
+To: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+In-Reply-To: <45585ECD.3090108@transmode.se>
+References: <45574BB5.5010601@transmode.se>  <45585ECD.3090108@transmode.se>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 16 Nov 2006 16:38:49 +0200
-Message-Id: <1163687929.5597.18.camel@sauron>
+Date: Thu, 16 Nov 2006 16:46:29 +0200
+Message-Id: <1163688389.5597.23.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,20 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-11-16 at 20:01 +0530, s.balamurugan wrote:
-> Upon remounting, the file is lost or showing a size of 0.  Upon scanning =
-the
-> flash at mount I will always get "jffs2_get_inode_nodes(): Data CRC faile=
-d
-> on node at ..." =20
->=20
->             I don't know where is the problem either in my nand driver or=
- jffs2 code
->=20
-> Has anyone experienced this and have any ideas?  Any help would be much
-> appreciated.
+On Mon, 2006-11-13 at 13:02 +0100, Joakim Tjernlund wrote:
+> JFFS2 error: (1) jffs2_link_node_ref: Adding new ref c7a5b830 at
+> (0x05ea06f8-0x05ea076c) not immediately after previous
+> (0x05ea06f8-0x05ea076c
+> )
+> kernel BUG in jffs2_link_node_ref at fs/jffs2/nodelist.c:1098!
+> Oops: Exception in kernel mode, sig: 5 [#1]
 
-I would start from making sure the that your flash driver is all right.
+I is difficult to help without being able to reproduce this. I would
+suggest you to add prints at jffs2_link_node_ref() and realize what's
+going on.
 
 --=20
 Best regards,
