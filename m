@@ -1,25 +1,25 @@
 Received: from mail.gdatech.co.in ([202.144.30.226] helo=gdatech.co.in)
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GkaZn-0006BN-Jk
-	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 01:18:24 -0500
+	id 1GkiH8-0002oV-FK
+	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 09:31:42 -0500
 Received: from [192.168.0.2] (localhost.localdomain [127.0.0.1])
-	by predator.gdatech.co.in (Postfix-out) with ESMTP id E72A9878761
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id 58C81878115
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Nov 2006 22:17:42 -0800 (PST)
+	Thu, 16 Nov 2006 06:31:11 -0800 (PST)
 Received: from gdatech.co.in ([192.168.0.3])
 	by [127.0.0.1] ([127.0.0.1]) (port 7027) (Abaca EPG outproxy filter
-	1.3.4.5154-maint13 $Rev: 5154 $) id r6bf221742-00-2
-	for linux-mtd@lists.infradead.org; Wed, 15 Nov 2006 22:17:42 -0800
+	1.3.4.5154-maint13 $Rev: 5154 $) id r6bg063111-00-2
+	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 06:31:11 -0800
 Received: from mail.gdatech.co.in (unknown [192.168.0.1])
-	by predator.gdatech.co.in (Postfix-out) with ESMTP id B3D8F878760
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id 26E68878113
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 15 Nov 2006 22:17:42 -0800 (PST)
-Message-ID: <455C02BC.60801@gdatech.co.in>
-Date: Thu, 16 Nov 2006 11:48:36 +0530
+	Thu, 16 Nov 2006 06:31:11 -0800 (PST)
+Message-ID: <455C7650.2000705@gdatech.co.in>
+Date: Thu, 16 Nov 2006 20:01:44 +0530
 From: "s.balamurugan" <s.balamurugan@gdatech.co.in>
 MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: problem in writting more than 2k to nand flash
+Subject: Problem with copying more than 2kb file into the flash
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -31,32 +31,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello gurus,
- Nand flash size : 256Mb (samsung K9F2G08U0M)
-Page size: 2k
-Block size:128k.
-File system :jffs2        
+Hello all,
 
-                  
-I have the following problem.
-1. after mounting the nand flash, first i have try to copy the  2kb size 
-file it was copied. There was no error
-2. if i try to copy above 2kb size means it will give  the following errors
-                1. mtd-read returned ecc error
-               2. Data CRC failed error.
-My nand flash size : 256Mb (samsung K9F2G08U0M)
-page size: 2k
-block size:128k.
-File system :jffs2                              Then i have verify my 
-dirver, i think there is  no problem in my driver.
-                   If i try to wirte 4k file means the nand_write_page() 
-was called only once. i don't know where is the problem .
-                             Then is start to trace jffs2 coding i that 
-i have following problem.
-                  1. jffs2_full_dode () : give worng file size.
-                  2.__jffs2_flush_wbuf() : buffer size is very low.
+I am using Samsung 256mb nand flash.
+page size : 2kb
+block size:128kb
 
-            If any one know where is the problem means ,give some idea 
-to overcome it        
-     by
-balamurugan
+I have the following prolbem:
+
+I have a situation here where I mount JFFS2 on top of my NAND device and
+certain files will fail to copy over.  Small text files are fine.  The
+problem is with large binary files.  I copy to my mounted dir and ls -l
+shows the file is entirely there.  
+
+Upon remounting, the file is lost or showing a size of 0.  Upon scanning the
+flash at mount I will always get "jffs2_get_inode_nodes(): Data CRC failed
+on node at ..."  
+
+            I don't know where is the problem either in my nand driver or jffs2 code
+
+Has anyone experienced this and have any ideas?  Any help would be much
+appreciated.
