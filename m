@@ -1,19 +1,27 @@
-Received: from mgw-ext11.nokia.com ([131.228.20.170])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GkQRH-00011X-El
-	for linux-mtd@lists.infradead.org; Wed, 15 Nov 2006 14:28:57 -0500
-Subject: Re: 2.6 Kernel not mounting JFFS2 partition.
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Glen Johnson <gjohnson@valcom.com>
-In-Reply-To: <455B3857.50405@valcom.com>
-References: <455B3857.50405@valcom.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 15 Nov 2006 21:27:44 +0200
-Message-Id: <1163618864.5597.7.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail.gdatech.co.in ([202.144.30.226] helo=gdatech.co.in)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GkaZn-0006BN-Jk
+	for linux-mtd@lists.infradead.org; Thu, 16 Nov 2006 01:18:24 -0500
+Received: from [192.168.0.2] (localhost.localdomain [127.0.0.1])
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id E72A9878761
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Nov 2006 22:17:42 -0800 (PST)
+Received: from gdatech.co.in ([192.168.0.3])
+	by [127.0.0.1] ([127.0.0.1]) (port 7027) (Abaca EPG outproxy filter
+	1.3.4.5154-maint13 $Rev: 5154 $) id r6bf221742-00-2
+	for linux-mtd@lists.infradead.org; Wed, 15 Nov 2006 22:17:42 -0800
+Received: from mail.gdatech.co.in (unknown [192.168.0.1])
+	by predator.gdatech.co.in (Postfix-out) with ESMTP id B3D8F878760
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 15 Nov 2006 22:17:42 -0800 (PST)
+Message-ID: <455C02BC.60801@gdatech.co.in>
+Date: Thu, 16 Nov 2006 11:48:36 +0530
+From: "s.balamurugan" <s.balamurugan@gdatech.co.in>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: problem in writting more than 2k to nand flash
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +31,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Glen,
+Hello gurus,
+ Nand flash size : 256Mb (samsung K9F2G08U0M)
+Page size: 2k
+Block size:128k.
+File system :jffs2        
 
-On Wed, 2006-11-15 at 10:55 -0500, Glen Johnson wrote:
-> jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000:
-> 0x9b9a instead
+                  
+I have the following problem.
+1. after mounting the nand flash, first i have try to copy the  2kb size 
+file it was copied. There was no error
+2. if i try to copy above 2kb size means it will give  the following errors
+                1. mtd-read returned ecc error
+               2. Data CRC failed error.
+My nand flash size : 256Mb (samsung K9F2G08U0M)
+page size: 2k
+block size:128k.
+File system :jffs2                              Then i have verify my 
+dirver, i think there is  no problem in my driver.
+                   If i try to wirte 4k file means the nand_write_page() 
+was called only once. i don't know where is the problem .
+                             Then is start to trace jffs2 coding i that 
+i have following problem.
+                  1. jffs2_full_dode () : give worng file size.
+                  2.__jffs2_flush_wbuf() : buffer size is very low.
 
-Your problem is quite common so you inspired me to add a FAQ entry about
-it. Please, read
-
-http://www.linux-mtd.infradead.org/faq/jffs2.html#L_magicnfound
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+            If any one know where is the problem means ,give some idea 
+to overcome it        
+     by
+balamurugan
