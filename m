@@ -1,15 +1,16 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
+Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gl3VP-0000MJ-Qy
-	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 08:11:49 -0500
+	id 1Gl4bX-00014g-6v
+	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 09:22:13 -0500
 Subject: Re: 2.6 Kernel not mounting JFFS2 partition
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Glen Johnson <gjohnson@valcom.com>
-In-Reply-To: <455CC35B.5080705@valcom.com>
-References: <455CC35B.5080705@valcom.com>
+In-Reply-To: <455DC28D.30507@valcom.com>
+References: <455CC35B.5080705@valcom.com> <1163766854.5597.39.camel@sauron>
+	<455DC28D.30507@valcom.com>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 17 Nov 2006 14:34:14 +0200
-Message-Id: <1163766854.5597.39.camel@sauron>
+Date: Fri, 17 Nov 2006 16:21:48 +0200
+Message-Id: <1163773308.5597.44.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,20 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2006-11-17 at 09:09 -0500, Glen Johnson wrote:
+> I am using uClinux so I may be moving out of the realm of linux-mtd.
+> I went to the Red Hat JFFS2 web
+> site, and used cvs to download the source for the "latest JFFS2
+> source".  How do I get this code to=20
+> compile with the uClinux way of doing things.  I tried the script and
+> it seems to patch the code for a=20
+> normal Linux distro.  Advice on this would be most helpful.
 
-On Thu, 2006-11-16 at 15:00 -0500, Glen Johnson wrote:
-> 1. "eraseall /dev/mtd2" which ended with "Erased 2048 Kibyte @ 0 -- 100%
-> complete."
-At this point it is nice to make sure if the erase functionality works.
-Try to read /dev/mtd2 and make sure it contains only 0xFFs.
+We moved to GIT. The utilities are available via
 
-> 8. mount -t jffs2 mtd2 /mnt/ Once again many error messages/info
-> messages. Finally it died with these last lines:
-> You cannot use older JFFS2 filesystems with newer kernels
+git-clone git://git.infradead.org/mtd-utils.git mtd-utils.git
 
-Download newer JFFS2 utilities and use newer mkfs.jffs2. It will
-probably solve your problems.
+command. Also see http://www.linux-mtd.infradead.org/doc/git.html
 
 --=20
 Best regards,
