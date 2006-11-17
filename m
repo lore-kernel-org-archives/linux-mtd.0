@@ -1,18 +1,19 @@
-Received: from smtp3.infineon.com ([203.126.106.229])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gl0FZ-00073i-UB
-	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 04:43:21 -0500
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Received: from mgw-ext14.nokia.com ([131.228.20.173])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gl3VP-0000MJ-Qy
+	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 08:11:49 -0500
+Subject: Re: 2.6 Kernel not mounting JFFS2 partition
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Glen Johnson <gjohnson@valcom.com>
+In-Reply-To: <455CC35B.5080705@valcom.com>
+References: <455CC35B.5080705@valcom.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 17 Nov 2006 14:34:14 +0200
+Message-Id: <1163766854.5597.39.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: Linux-atm-2.4.1 build error
-Date: Fri, 17 Nov 2006 17:43:06 +0800
-Message-ID: <5049F8BE55F36348A315EFBE6CF34386A14E15@sinse301.ap.infineon.com>
-In-Reply-To: <5049F8BE55F36348A315EFBE6CF34386A14DA7@sinse301.ap.infineon.com>
-From: <KokHow.Teh@infineon.com>
-To: <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,85 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi;
-	Sorry. I sent to the wrong list.
+Hi,
 
-Best Regards,
-KH=20
+On Thu, 2006-11-16 at 15:00 -0500, Glen Johnson wrote:
+> 1. "eraseall /dev/mtd2" which ended with "Erased 2048 Kibyte @ 0 -- 100%
+> complete."
+At this point it is nice to make sure if the erase functionality works.
+Try to read /dev/mtd2 and make sure it contains only 0xFFs.
 
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Teh Kok How
-(IFAP DC COM SD)
-Sent: Friday, November 17, 2006 5:29 PM
-To: linux-mtd@lists.infradead.org
-Subject: Linux-atm-2.4.1 build error
+> 8. mount -t jffs2 mtd2 /mnt/ Once again many error messages/info
+> messages. Finally it died with these last lines:
+> You cannot use older JFFS2 filesystems with newer kernels
 
-Hi;
-	I am trying to build linux-atm-2.4.1 with a mips cross compiler
-and I stumble into `make` error below:
+Download newer JFFS2 utilities and use newer mkfs.jffs2. It will
+probably solve your problems.
 
-<snip>
-Making all in qgen
-make[3]: Entering directory `/misc/tehkok/linux-atm-2.4.1/src/qgen'
-/opt/uclibc-toolchain/ifx-lxdb-1-1/gcc-3.3.6/toolchain-mips/bin/mips-lin
-ux-cc -E -DHAVE_CONFIG_H -I.
- -I. -I../.. - <msg.fmt | ./qgen -D
-<stdin>:93:54: pasting "}" and "fw_pcr_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_pcr_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "fw_pcr_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_pcr_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "fw_scr_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_scr_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "fw_scr_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_scr_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "fw_mbs_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_mbs_0" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "fw_mbs_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "bw_mbs_01" does not give a valid
-preprocessing token
-<stdin>:93:54: pasting "}" and "best_effort" does not give a valid
-preprocessing token
-<stdin>:138:3: invalid preprocessing directive #Note
-<stdin>:139:9: invalid preprocessing directive #to
-/bin/sh: line 1: ./qgen: cannot execute binary file
-make[3]: *** [qd.dump.c] Error 126
-make[3]: Leaving directory `/misc/tehkok/linux-atm-2.4.1/src/qgen'
-make[2]: *** [all-recursive] Error 1
-make[2]: Leaving directory `/misc/tehkok/linux-atm-2.4.1/src'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/misc/tehkok/linux-atm-2.4.1'
-make: *** [all-recursive-am] Error 2
-[tehkok@linux01 linux-atm-2.4.1 3]$
-
-	I run `configure` with options as follows:
-
-./configure  --target=3Dmips-linux --host=3Di386-redhat-linux
---build=3Di386-pc-linux-gnu
---prefix=3D/misc/tehkok/danube_build/root_filesystem
---exec-prefix=3D/misc/tehkok/danube_build/root_filesystem --no-create
---no-recursion
-
-	The problem is that the build process tries to execute qgen in
-src/qgen which has been compiled with the cross-compiler and therefore,
-it is for MIPS arch and not executable on my host. What's wrong with my
-build process?
-	Any insight is appreciated.
-
-Thanks & Regards,
-KH
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
