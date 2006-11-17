@@ -1,15 +1,16 @@
 Received: from smtp3.infineon.com ([203.126.106.229])
 	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gl01o-0006m5-On
-	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 04:29:02 -0500
+	id 1Gl0FZ-00073i-UB
+	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 04:43:21 -0500
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
-Subject: Linux-atm-2.4.1 build error
-Date: Fri, 17 Nov 2006 17:28:50 +0800
-Message-ID: <5049F8BE55F36348A315EFBE6CF34386A14DA7@sinse301.ap.infineon.com>
+Subject: RE: Linux-atm-2.4.1 build error
+Date: Fri, 17 Nov 2006 17:43:06 +0800
+Message-ID: <5049F8BE55F36348A315EFBE6CF34386A14E15@sinse301.ap.infineon.com>
+In-Reply-To: <5049F8BE55F36348A315EFBE6CF34386A14DA7@sinse301.ap.infineon.com>
 From: <KokHow.Teh@infineon.com>
 To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,6 +21,20 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+Hi;
+	Sorry. I sent to the wrong list.
+
+Best Regards,
+KH=20
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Teh Kok How
+(IFAP DC COM SD)
+Sent: Friday, November 17, 2006 5:29 PM
+To: linux-mtd@lists.infradead.org
+Subject: Linux-atm-2.4.1 build error
 
 Hi;
 	I am trying to build linux-atm-2.4.1 with a mips cross compiler
@@ -85,3 +100,7 @@ build process?
 
 Thanks & Regards,
 KH
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
