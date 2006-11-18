@@ -1,15 +1,15 @@
 Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GlPi0-0005S3-VV
-	for linux-mtd@lists.infradead.org; Sat, 18 Nov 2006 07:54:22 -0500
-Subject: Re: starter!
+	id 1GlQ3J-0005pK-Sa
+	for linux-mtd@lists.infradead.org; Sat, 18 Nov 2006 08:16:19 -0500
+Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: darshak@elitecore.com
-In-Reply-To: <2785.192.168.15.61.1163841555.squirrel@newwebmail.elitecore.com>
-References: <2785.192.168.15.61.1163841555.squirrel@newwebmail.elitecore.com>
+To: kbaidarov <kbaidarov@dev.rtsoft.ru>
+In-Reply-To: <20061117184055.569da7ad@localhost.localdomain>
+References: <20061117184055.569da7ad@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Sat, 18 Nov 2006 14:51:50 +0200
-Message-Id: <1163854310.5597.62.camel@sauron>
+Date: Sat, 18 Nov 2006 15:15:13 +0200
+Message-Id: <1163855713.5597.70.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,36 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello Konstantin,
 
-On Sat, 2006-11-18 at 14:49 +0530, darshak@elitecore.com wrote:
-> Hi All
-> I want to involve in JFFs3 development.
-> Please tell me what is required docs/knowledge for that.
-> How can I proceed for that ?
+On Fri, 2006-11-17 at 18:40 +0300, kbaidarov wrote:
+> Description:
+> The following patch adds readonly block device layer over mtd
+> that allows to use any filesystem on this device in RO mode and
+> thus gain faster mount times and better throughput rates.
 
-I guess you may start from the JFFS3 docs available at
-http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf
+This is very ambition claim. In comparison with what?
 
-It is quite old and we changed our minds about several things.
+> How it works:
+> Blocks translation routine was added to read sector function. Assuming
+> that bad block won't appear during MTD reading and BBT is correct, bad
+> block is skipped and requested block is lazily mapped to good one.
+> Block driver based on the mtd readonly device driver mtdblock_ro.c and
+> translation routine was taken from the patch of Pantelis Antoniou
+> (which can be found at
+> http://lists.infradead.org/pipermail/linux-mtd/2004-May/009672.html).
+>=20
 
-You may also read Szeged guys docs at
-http://www.inf.u-szeged.hu/jffs2/jffs3.php
-
-But the last plan is to base JFFS3 on top of UBI which is a new
-promising piece of software. Look at
-
-http://www.linux-mtd.infradead.org/doc/ubi.html
-http://www.linux-mtd.infradead.org/faq/ubi.html
-
-So, to put it differently, there is no cool and clean documentation.
-There is some code and prototypes but they are far from something usable
-yet. But if you are eager enough you withstand this :-)
-
-Alternatively, there is a LogFS project, see
-http://www.linux-mtd.infradead.org/doc/logfs.html
-
-I do not follow it but there is some code exist. You may be interested.
+So basically this is bad eraseblock-aware mtdblock_ro? But why you
+created a new driver and with so weird name :-) ? Why didn't you just
+changed mtdblock_ro? IOW, why you didn't adapt Pantelis' patch instead
+and re-send it? (I have no idea why this patch isn't im MTD still,
 
 --=20
 Best regards,
