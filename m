@@ -1,15 +1,15 @@
 Received: from mgw-ext11.nokia.com ([131.228.20.170])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GlPZ3-0005Co-7L
-	for linux-mtd@lists.infradead.org; Sat, 18 Nov 2006 07:45:02 -0500
-Subject: Re: compression tests in jffs2
+	id 1GlPi0-0005S3-VV
+	for linux-mtd@lists.infradead.org; Sat, 18 Nov 2006 07:54:22 -0500
+Subject: Re: starter!
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: =?ISO-8859-1?Q?Mat=EDas_Zabalj=E1uregui?= <matiasz@info.unlp.edu.ar>
-In-Reply-To: <20061117190637.2fgiinwlz4wswso0@ada.info.unlp.edu.ar>
-References: <20061117190637.2fgiinwlz4wswso0@ada.info.unlp.edu.ar>
+To: darshak@elitecore.com
+In-Reply-To: <2785.192.168.15.61.1163841555.squirrel@newwebmail.elitecore.com>
+References: <2785.192.168.15.61.1163841555.squirrel@newwebmail.elitecore.com>
 Content-Type: text/plain; charset=utf-8
-Date: Sat, 18 Nov 2006 14:44:39 +0200
-Message-Id: <1163853879.5597.54.camel@sauron>
+Date: Sat, 18 Nov 2006 14:51:50 +0200
+Message-Id: <1163854310.5597.62.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,25 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Mat=C3=ADas,
+Hi,
 
-On Fri, 2006-11-17 at 19:06 -0300, Mat=C3=ADas Zabalj=C3=A1uregui wrote:
-> Hello, I'm interested in doing some tests on jffs2 compression =20
-> algorithms (CPU, RAM, and compression ratio), and I've two questions:
+On Sat, 2006-11-18 at 14:49 +0530, darshak@elitecore.com wrote:
+> Hi All
+> I want to involve in JFFs3 development.
+> Please tell me what is required docs/knowledge for that.
+> How can I proceed for that ?
 
-sounds promising!
+I guess you may start from the JFFS3 docs available at
+http://www.linux-mtd.infradead.org/tech/JFFS3design.pdf
 
-> - recompiling the jffs2 module is the only way to reconfigure the =20
-> compression behaviour?
+It is quite old and we changed our minds about several things.
 
-Yes at the moment. But adding dynamic and per-file compression so would
-cool.
+You may also read Szeged guys docs at
+http://www.inf.u-szeged.hu/jffs2/jffs3.php
 
-> - Is there any documentation about using comprtest.c ?
+But the last plan is to base JFFS3 on top of UBI which is a new
+promising piece of software. Look at
 
-Unfortunately no. There are not a lot of JFFS2 documentation. You'll
-need to dig the sources which are somewhat not very easy to dig. Feel
-free to ask questions.
+http://www.linux-mtd.infradead.org/doc/ubi.html
+http://www.linux-mtd.infradead.org/faq/ubi.html
+
+So, to put it differently, there is no cool and clean documentation.
+There is some code and prototypes but they are far from something usable
+yet. But if you are eager enough you withstand this :-)
+
+Alternatively, there is a LogFS project, see
+http://www.linux-mtd.infradead.org/doc/logfs.html
+
+I do not follow it but there is some code exist. You may be interested.
 
 --=20
 Best regards,
