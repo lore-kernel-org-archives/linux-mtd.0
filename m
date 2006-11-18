@@ -1,23 +1,19 @@
-Received: from ada.info.unlp.edu.ar ([163.10.5.66])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GlBrI-0005ix-0W
-	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 17:06:58 -0500
-Received: from www-data by ada.info.unlp.edu.ar with local (Exim 4.50)
-	id 1GlBr3-0002L9-K0
-	for linux-mtd@lists.infradead.org; Fri, 17 Nov 2006 19:06:37 -0300
-Message-ID: <20061117190637.2fgiinwlz4wswso0@ada.info.unlp.edu.ar>
-Date: Fri, 17 Nov 2006 19:06:37 -0300
-From: =?iso-8859-1?b?TWF07WFzIA==?= =?iso-8859-1?b?WmFiYWxq4XVyZWd1aQ==?=
-	<matiasz@info.unlp.edu.ar>
+Received: from mailhost.elitecore.com ([203.88.135.194] helo=elitecore.com)
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GlMO6-0003aT-R0
+	for linux-mtd@lists.infradead.org; Sat, 18 Nov 2006 04:21:31 -0500
+Received: from unknown (HELO newwebmail.elitecore.com) ([127.0.0.1])
+	(envelope-sender <darshak@elitecore.com>)
+	by elitecore.com (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 18 Nov 2006 09:19:15 -0000
+Message-ID: <2785.192.168.15.61.1163841555.squirrel@newwebmail.elitecore.com>
+Date: Sat, 18 Nov 2006 14:49:15 +0530 (IST)
+Subject: starter!
+From: darshak@elitecore.com
 To: linux-mtd@lists.infradead.org
-Subject: compression tests in jffs2
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello, I'm interested in doing some tests on jffs2 compression =20
-algorithms (CPU, RAM, and compression ratio), and I've two questions:
+Hi All
+I want to involve in JFFs3 development.
+Please tell me what is required docs/knowledge for that.
+How can I proceed for that ?
 
-- recompiling the jffs2 module is the only way to reconfigure the =20
-compression behaviour?
-
-- Is there any documentation about using comprtest.c ?
-
-thank you in advance
-
-----------------------------------------------------------------------------=
-------
-Mat=EDas Zabalj=E1uregui
-http://linux.linti.unlp.edu.ar
-
-
-
-
-
-
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+Thanxs
+Darshak
