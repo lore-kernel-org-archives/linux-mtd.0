@@ -1,19 +1,18 @@
-Received: from mailhost.elitecore.com ([203.88.135.194] helo=elitecore.com)
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gm54r-00017k-CW
-	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 04:04:42 -0500
-Message-ID: <001f01c70c82$88a699d0$3d0fa8c0@elitecore1561>
-From: "Darshak" <darshak@elitecore.com>
-To: <dedekind@infradead.org>
-References: <6AD9F6A5F6E096408F0B703773355A07016BBA00@CHN-SNR-MBX01.wipro.com>
-	<006501c70c62$0a8d4ff0$3d0fa8c0@elitecore1561>
-	<1164008928.5597.84.camel@sauron>
-Subject: Re: starter!
-Date: Mon, 20 Nov 2006 14:31:57 +0530
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gm7uD-00039S-Sb
+	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 07:05:52 -0500
+Message-ID: <45619A14.1010001@ru.mvista.com>
+Date: Mon, 20 Nov 2006 15:05:40 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="utf-8"; reply-type=original
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, srideep.devireddy@wipro.com
+To: kbaidarov <kbaidarov@dev.rtsoft.ru>
+Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
+References: <20061117184055.569da7ad@localhost.localdomain>
+In-Reply-To: <20061117184055.569da7ad@localhost.localdomain>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-:(
-I just need guidance & direction  :((
+kbaidarov wrote:
+> Description:
+> The following patch adds readonly block device layer over mtd
+> that allows to use any filesystem on this device in RO mode and
+> thus gain faster mount times and better throughput rates.
+>
+> How it works:
+> Blocks translation routine was added to read sector function. Assuming
+> that bad block won't appear during MTD reading and BBT is correct, bad
+> block is skipped and requested block is lazily mapped to good one.
+> Block driver based on the mtd readonly device driver mtdblock_ro.c and
+> translation routine was taken from the patch of Pantelis Antoniou
+> (which can be found at
+> http://lists.infradead.org/pipermail/linux-mtd/2004-May/009672.html).
+>
+> Large major 258 has already been assigned by LANANA.
+>
+> Signed-off-by: Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
+>   
 
-
------ Original Message ----- 
-From: "Artem Bityutskiy" <dedekind@infradead.org>
-To: "Darshak" <darshak@elitecore.com>
-Cc: <srideep.devireddy@wipro.com>; <linux-mtd@lists.infradead.org>
-Sent: Monday, November 20, 2006 1:18 PM
-Subject: Re: starter!
-
-
-On Mon, 2006-11-20 at 10:39 +0530, Darshak wrote:
-> Thanxs! man
->     But I m at very basic steps .I have some questions?
-> 1> Is the kernel 2.6 comes with JFFS2 support ? And how do i 
-> enable/compile
-> with JFFS2.
-> 2> After that How will I partition MY flash so its JFFS2? Any tool ot
-> specific method of that ?
-3. Do my work for me.
-
--- 
-Best regards,
-Artem Bityutskiy (Битюцкий Артём)
+Acked-by: Vitaly Wool <vwool@ru.mvista.com> ;-)
