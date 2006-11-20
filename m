@@ -1,34 +1,20 @@
-Received: from lon-del-01.spheriq.net ([195.46.50.97])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GmWyF-0002zl-Iz
-	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 09:51:40 -0500
-Received: from lon-out-03.spheriq.net ([195.46.50.131])
-	by lon-del-01.spheriq.net with ESMTP id kALEpO6Y022884
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:24 GMT
-Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
-	by lon-out-03.spheriq.net with ESMTP id kALEpN0M025050
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:23 GMT
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-	by lon-cus-01.spheriq.net with ESMTP id kALEpJGt014003
-	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:21 GMT
-Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3498EDB2A
+Received: from pasmtpb.tele.dk ([80.160.77.98])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GmFxg-00084b-2t
+	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 20:41:55 +0000
+Received: from tuxedo.home.lan (0x535c82dc.virnxx18.adsl-dhcp.tele.dk
+	[83.92.130.220])
+	by pasmtpB.tele.dk (Postfix) with ESMTP id 3EE27E31101
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Nov 2006 14:49:01 +0000 (GMT)
-Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BC01F47551
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 21 Nov 2006 14:25:38 +0000 (GMT)
-From: Davide CASCONE <davide.cascone@st.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Info NFTL
-Date: Tue, 21 Nov 2006 15:25:27 +0100
-Message-ID: <000c01c70d78$ea006700$d204960a@nap.st.com>
+	Mon, 20 Nov 2006 21:41:31 +0100 (CET)
+Date: Mon, 20 Nov 2006 21:41:30 +0100
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] do_write_oneword and do_erase_oneblock I/O problems
+Message-ID: <20061120204130.GA30829@tuxedo.home.lan>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Disposition: inline
+From: lars@segv.dk (Lars Munch)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,10 +24,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
-Hi All,
 
-Is it possible to use NFTL with a standard NAND device and with the MTD =
-drivers?
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thank you.
+Hi All
+
+I have searched the archives but I could not find an answer to my
+problems so here goes:
+
+I am using an SST39VF6401B flash, and hence cfi_cmdset_0002.c on
+linux-2.6.19-rc5. Whenever I try to erase or write to the flash I get
+I/O errors.
+
+What happens is, first the command is written to the flash, then the
+function enters an for(;;) loop waiting chip_ready, immediately after
+chip_ready succeeds the chip_good test fails:
+
+        /* Did we succeed? */
+        if (!chip_good(map, adr, map_word_ff(map))) {
+
+If I add a small delay after the for(;;) loop and just before the
+!chip_good test in do_write_oneword and do_erase_oneblock problems
+disappear??  Should we wait here or is there a better way to fix this?
+
+Please see attached patch. Comments?
+
+Thanks
+Lars Munch
+
+--OXfL5xGRrasGEqWY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="add_delay.patch"
+
+--- linux-2.6.19-rc5/drivers/mtd/chips/cfi_cmdset_0002.c	2006-11-08 03:24:20.000000000 +0100
++++ linux-2.6.19-rc5-ks8695/drivers/mtd/chips/cfi_cmdset_0002.c	2006-11-20 20:01:54.000000000 +0100
+@@ -1064,6 +1064,9 @@
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1);
+ 	}
++
++        UDELAY(map, chip, adr, 1000000/HZ);
++
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, datum)) {
+ 		/* reset on all failures. */
+@@ -1588,6 +1591,9 @@
+ 		/* Latency issues. Drop the lock, wait a while and retry */
+ 		UDELAY(map, chip, adr, 1000000/HZ);
+ 	}
++
++	UDELAY(map, chip, adr, 1000000/HZ);
++
+ 	/* Did we succeed? */
+ 	if (!chip_good(map, adr, map_word_ff(map))) {
+ 		/* reset on all failures. */
+
+--OXfL5xGRrasGEqWY--
