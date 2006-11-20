@@ -1,18 +1,19 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
+Received: from mgw-ext13.nokia.com ([131.228.20.172])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gm47V-0007M4-TY
-	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 03:03:19 -0500
-Subject: Re: [PATCH] MTD-UBI config settings for verbose debug
+	id 1Gm4G7-0000Fu-3n
+	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 03:12:12 -0500
+Subject: Re: starter!
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: John <john@arrows.demon.co.uk>
-In-Reply-To: <Pine.LNX.4.33.0611190927260.4505-100000@arrows.demon.co.uk>
-References: <Pine.LNX.4.33.0611190927260.4505-100000@arrows.demon.co.uk>
+To: Darshak <darshak@elitecore.com>
+In-Reply-To: <006501c70c62$0a8d4ff0$3d0fa8c0@elitecore1561>
+References: <6AD9F6A5F6E096408F0B703773355A07016BBA00@CHN-SNR-MBX01.wipro.com>
+	<006501c70c62$0a8d4ff0$3d0fa8c0@elitecore1561>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 20 Nov 2006 09:40:55 +0200
-Message-Id: <1164008455.5597.82.camel@sauron>
+Date: Mon, 20 Nov 2006 09:48:48 +0200
+Message-Id: <1164008928.5597.84.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, srideep.devireddy@wipro.com
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,12 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-11-19 at 09:42 +0000, John wrote:
-> [PATCH] MTD-UBI config settings for verbose debug
-
-Thanks.
-
-P.S.: the patch didn't apply, so I had to do the change manually.
+On Mon, 2006-11-20 at 10:39 +0530, Darshak wrote:
+> Thanxs! man
+>     But I m at very basic steps .I have some questions?
+> 1> Is the kernel 2.6 comes with JFFS2 support ? And how do i enable/compi=
+le=20
+> with JFFS2.
+> 2> After that How will I partition MY flash so its JFFS2? Any tool ot=20
+> specific method of that ?
+3. Do my work for me.
 
 --=20
 Best regards,
