@@ -1,30 +1,28 @@
-Received: from e31.co.us.ibm.com ([32.97.110.149])
+Received: from ada.info.unlp.edu.ar ([163.10.5.66])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GmAW3-0006AJ-HY
-	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 09:53:07 -0500
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e31.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id kAKEqYja012966
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Nov 2006 09:52:34 -0500
-Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
-	by d03relay04.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kAKEqYgP332744
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Nov 2006 07:52:34 -0700
-Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kAKEqYas018203
-	for <linux-mtd@lists.infradead.org>; Mon, 20 Nov 2006 07:52:34 -0700
-Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: kbaidarov <kbaidarov@dev.rtsoft.ru>
-In-Reply-To: <20061117184055.569da7ad@localhost.localdomain>
-References: <20061117184055.569da7ad@localhost.localdomain>
-Content-Type: text/plain
-Date: Mon, 20 Nov 2006 08:52:44 -0600
-Message-Id: <1164034364.3574.6.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1GmF2o-0000WB-31
+	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 14:43:13 -0500
+Received: from www-data by ada.info.unlp.edu.ar with local (Exim 4.50)
+	id 1GmF2T-0002Fc-HC
+	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 16:42:45 -0300
+Message-ID: <20061120164245.hmcfrgcbcc0kwk4w@ada.info.unlp.edu.ar>
+Date: Mon, 20 Nov 2006 16:42:45 -0300
+From: =?iso-8859-1?b?TWF07WFzIA==?= =?iso-8859-1?b?WmFiYWxq4XVyZWd1aQ==?=
+	<matiasz@info.unlp.edu.ar>
+To: linux-mtd@lists.infradead.org
+Subject: Re: compression tests in jffs2
+References: <20061117190637.2fgiinwlz4wswso0@ada.info.unlp.edu.ar>
+	<1163853879.5597.54.camel@sauron>
+	<20061118133527.8kxy5bxog0084w88@ada.info.unlp.edu.ar>
+	<1163889770.20835.6.camel@zod.rchland.ibm.com>
+In-Reply-To: <1163889770.20835.6.camel@zod.rchland.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,67 +32,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-11-17 at 18:40 +0300, kbaidarov wrote:
-> +	/* scan for bad block up to where we want */
-> +	while (block >= block_scantop) {
-> +		/* find a non bad block */
-> +		for (i = block_map[block_scantop] + 1; i < block_top; i++)
-> +			if ((*mtd->block_isbad)(mtd, i * mtd->erasesize) == 0)
-> +				break;
-> +
-> +		/* exchausted ? */
+yes, I know... thank you for the advice.
 
-exhausted
-
-> +static struct mtd_blktrans_ops mtdblock_tr = {
-> +	.name		= "mtdblock",
-> +	.major		= 258,
-> +	.part_bits	= 0,
-> +	.readsect	= mtdblock_readsect,
-> +	.writesect	= mtdblock_writesect,
-> +	.add_mtd	= mtdblock_add_mtd,
-> +	.remove_dev	= mtdblock_remove_dev,
-> +	.owner		= THIS_MODULE,
-> +};
-
-You went to the trouble of getting a new major number assigned... why
-not call it something other than mtdblock?
-
-> Index: mips-kernel-2.6/drivers/mtd/Makefile
-> ===================================================================
-> --- mips-kernel-2.6.orig/drivers/mtd/Makefile
-> +++ mips-kernel-2.6/drivers/mtd/Makefile
-> @@ -17,6 +17,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
->  obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
->  obj-$(CONFIG_MTD_BLOCK)		+= mtdblock.o mtd_blkdevs.o
->  obj-$(CONFIG_MTD_BLOCK_RO)	+= mtdblock_ro.o mtd_blkdevs.o
-> +obj-$(CONFIG_MTD_BLOCK_RO_BBFREE)	+= mtdblock_ro_bbfree.o mtd_blkdevs.o
->  obj-$(CONFIG_FTL)		+= ftl.o mtd_blkdevs.o
->  obj-$(CONFIG_NFTL)		+= nftl.o mtd_blkdevs.o
->  obj-$(CONFIG_INFTL)		+= inftl.o mtd_blkdevs.o
-
-All these mtd_blkdevs.o are starting to get ugly.  Why don't we
-introduce a CONFIG_MTDBLKDEVS that can be selected by the other Kconfig
-options.
+In compr.c file, I can see some "stats" and "compression-mode" getters =20
+and setters, between  CONFIG_JFFS2_PROC  #ifdef and #endif... Do you =20
+think it is posible to reuse this code for implementing a sysfs =20
+interface?
 
 
-> Index: mips-kernel-2.6/drivers/mtd/Kconfig
-> ===================================================================
-> --- mips-kernel-2.6.orig/drivers/mtd/Kconfig
-> +++ mips-kernel-2.6/drivers/mtd/Kconfig
-> @@ -197,6 +197,13 @@ config MTD_BLOCK_RO
->  	  You do not need this option for use with the DiskOnChip devices. For
->  	  those, enable NFTL support (CONFIG_NFTL) instead.
-> 
-> +config MTD_BLOCK_RO_BBFREE
-> +	tristate "Readonly bad block free block device access to MTD devices"
-> +	depends on MTD_BLOCK!=y && MTD && MTD_BLOCK_RO!=y
-> +	help
-> +	  Same as readonly block driver, but this allow you to mount read-only file
-> +	  systems from an MTD device, containing bad blocks.
-> +
+----------------------------------------------------------------------------=
+------
+Mat=EDas Zabalj=E1uregui
+http://linux.linti.unlp.edu.ar
 
-This part seems hacky to me...  why can't use use mtdblock or
-mtdblock_ro when this is enabled?  And what happens in the module case?
 
-josh
+
+Quoting Josh Boyer <jwboyer@linux.vnet.ibm.com>:
+
+> On Sat, 2006-11-18 at 13:35 -0300, Mat=EDas Zabalj=E1uregui wrote:
+>> OK! Thank you for your answer
+>>
+>> >
+>> >> - recompiling the jffs2 module is the only way to reconfigure the
+>> >> compression behaviour?
+>> >
+>> > Yes at the moment. But adding dynamic and per-file compression so would
+>> > cool.
+>> >
+>>
+>> Do you think a /proc entry is a suitable mecanism for runtime
+>> compression configuration?
+>
+> Please avoid /proc for anything.  The compression type has nothing to do
+> with processes, so it doesn't belong in /proc.
+>
+> I would suggest either using a mount option if you want to make the
+> whole filesystem use a particular type of compression, or use xattrs to
+> specify compression type on a per file basis.  A third option would be
+> to use a sysfs entry similar to how you would use /proc.
+>
+> josh
+>
+>
+>
+
+
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
