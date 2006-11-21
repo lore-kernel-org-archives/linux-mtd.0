@@ -1,20 +1,19 @@
-Received: from pasmtpb.tele.dk ([80.160.77.98])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GmFxg-00084b-2t
-	for linux-mtd@lists.infradead.org; Mon, 20 Nov 2006 20:41:55 +0000
-Received: from tuxedo.home.lan (0x535c82dc.virnxx18.adsl-dhcp.tele.dk
-	[83.92.130.220])
-	by pasmtpB.tele.dk (Postfix) with ESMTP id 3EE27E31101
+Received: from nz-out-0102.google.com ([64.233.162.197])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GmYRu-00045R-2v
+	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 11:26:21 -0500
+Received: by nz-out-0102.google.com with SMTP id i11so2039420nzi
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 20 Nov 2006 21:41:31 +0100 (CET)
-Date: Mon, 20 Nov 2006 21:41:30 +0100
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] do_write_oneword and do_erase_oneblock I/O problems
-Message-ID: <20061120204130.GA30829@tuxedo.home.lan>
+	Tue, 21 Nov 2006 08:26:13 -0800 (PST)
+Message-ID: <79ac09b60611210826j33b6b2aeh95d9259ddd3f0481@mail.gmail.com>
+Date: Tue, 21 Nov 2006 10:26:11 -0600
+From: Duke <ezbonites@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: mtd_debug usage
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="OXfL5xGRrasGEqWY"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-From: lars@segv.dk (Lars Munch)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,61 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi All,
+I'm having a bit of trouble understanding the usage to mtd_debug.
 
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+With the usage format below, why would I need <offset> and <len> if
+the mtdblock sizes are already known? (i.e at boot)
+I always thought if I write "mtd_debug erase /dev/mtdblock2" it will
+erase the entire /dev/mtdblock2 device. not so?
+If not, do I specify "mtd_debug erase /dev/mtdblock2 0x0 0x600000" for
+mtdblock2 where 0x0 indicated the start of the block?
 
-Hi All
+When I do a write "mtd_debug write /dev/mtdblock2 0x0 0x600000 myfs.cramfs"
+would it do just this?
 
-I have searched the archives but I could not find an answer to my
-problems so here goes:
+I've seen usage where /dev/mtd2 is used instead of /dev/mtdblock2,
+what is the difference here? which should it be. It seems to me that
+/dev/mtd2 simply gives the node info (mtd_debug info )and
+/dev/mtdblock2 is really what you want to used. Do I have this
+correct?
 
-I am using an SST39VF6401B flash, and hence cfi_cmdset_0002.c on
-linux-2.6.19-rc5. Whenever I try to erase or write to the flash I get
-I/O errors.
+usage: mtd_debug info <device>
+       mtd_debug read <device> <offset> <len> <dest-filename>
+       mtd_debug write <device> <offset> <len> <source-filename>
+       mtd_debug erase <device> <offset> <len>
 
-What happens is, first the command is written to the flash, then the
-function enters an for(;;) loop waiting chip_ready, immediately after
-chip_ready succeeds the chip_good test fails:
-
-        /* Did we succeed? */
-        if (!chip_good(map, adr, map_word_ff(map))) {
-
-If I add a small delay after the for(;;) loop and just before the
-!chip_good test in do_write_oneword and do_erase_oneblock problems
-disappear??  Should we wait here or is there a better way to fix this?
-
-Please see attached patch. Comments?
-
-Thanks
-Lars Munch
-
---OXfL5xGRrasGEqWY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="add_delay.patch"
-
---- linux-2.6.19-rc5/drivers/mtd/chips/cfi_cmdset_0002.c	2006-11-08 03:24:20.000000000 +0100
-+++ linux-2.6.19-rc5-ks8695/drivers/mtd/chips/cfi_cmdset_0002.c	2006-11-20 20:01:54.000000000 +0100
-@@ -1064,6 +1064,9 @@
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1);
- 	}
-+
-+        UDELAY(map, chip, adr, 1000000/HZ);
-+
- 	/* Did we succeed? */
- 	if (!chip_good(map, adr, datum)) {
- 		/* reset on all failures. */
-@@ -1588,6 +1591,9 @@
- 		/* Latency issues. Drop the lock, wait a while and retry */
- 		UDELAY(map, chip, adr, 1000000/HZ);
- 	}
-+
-+	UDELAY(map, chip, adr, 1000000/HZ);
-+
- 	/* Did we succeed? */
- 	if (!chip_good(map, adr, map_word_ff(map))) {
- 		/* reset on all failures. */
-
---OXfL5xGRrasGEqWY--
+Thanks.
