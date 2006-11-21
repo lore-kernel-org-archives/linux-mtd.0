@@ -1,24 +1,19 @@
-Received: from mail.dsa-ac.de ([62.112.80.99])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GmQR5-0006B1-7n
-	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 02:53:02 -0500
-Date: Tue, 21 Nov 2006 08:52:46 +0100 (CET)
-From: Guennadi Liakhovetski <gl@dsa-ac.de>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Subject: Re: pxa2xx-flash again, please?
-In-Reply-To: <20060609001606.GC26509@xi.wantstofly.org>
-Message-ID: <Pine.LNX.4.63.0611210851420.1891@pcgl.dsa-ac.de>
-References: <Pine.LNX.4.63.0606080916491.1760@pcgl.dsa-ac.de>
-	<20060608073632.GA12338@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0606080955050.1760@pcgl.dsa-ac.de>
-	<20060608115208.GA4155@wohnheim.fh-wedel.de>
-	<Pine.LNX.4.63.0606081356100.1760@pcgl.dsa-ac.de>
-	<44887D8C.2040806@gmail.com> <20060609001606.GC26509@xi.wantstofly.org>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GmStR-00009L-CD
+	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 05:30:26 -0500
+Message-ID: <4562D537.5080908@ru.mvista.com>
+Date: Tue, 21 Nov 2006 13:30:15 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: tpoynor@infradead.org, Todd Poynor <toddpoynor@gmail.com>,
-	linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@wohnheim.fh-wedel.de>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
+References: <20061117184055.569da7ad@localhost.localdomain>
+	<1164034364.3574.6.camel@zod.rchland.ibm.com>
+In-Reply-To: <1164034364.3574.6.camel@zod.rchland.ibm.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, kbaidarov <kbaidarov@dev.rtsoft.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,45 +23,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 Jun 2006, Lennert Buytenhek wrote:
+Josh Boyer wrote:
 
-> On Thu, Jun 08, 2006 at 12:42:04PM -0700, Todd Poynor wrote:
+<snip>
+>> +static struct mtd_blktrans_ops mtdblock_tr = {
+>> +	.name		= "mtdblock",
+>> +	.major		= 258,
+>> +	.part_bits	= 0,
+>> +	.readsect	= mtdblock_readsect,
+>> +	.writesect	= mtdblock_writesect,
+>> +	.add_mtd	= mtdblock_add_mtd,
+>> +	.remove_dev	= mtdblock_remove_dev,
+>> +	.owner		= THIS_MODULE,
+>> +};
+>>     
 >
->>>>> Sorry. This patch has been committed to mtd CVS (I think so, as it
->>>>> appeared on mtd-cvs ML:
->>>>> http://lists.infradead.org/pipermail/linux-mtd-cvs/2005-December/005252.html)
->>>>>
->>>>> and I asked this question already a few weeks ago, so, I thought it
->>>>> might
->>>>> ring the bell... The problem is - the patch has been submitted last
->>>>> December still it is not in stock kernel nor in 2 mtd git-trees on
->>>>> kernel.org/git, so...
->>>>
->>>> Well, the cvs has basically been abandoned.  There was some effort to
->>>> pull the important patches from cvs into git, but as you noticed,
->>>> things were lost.
->>>>
->>>> Not sure whether the patch makes sense or not.  Maybe Todd can comment
->>>> that.
->>>
->>> I think it does. It makes one file per (pxa) platform fewer.
+> You went to the trouble of getting a new major number assigned... why
+> not call it something other than mtdblock?
+>   
+Agree.
+>   
+>> Index: mips-kernel-2.6/drivers/mtd/Kconfig
+>> ===================================================================
+>> --- mips-kernel-2.6.orig/drivers/mtd/Kconfig
+>> +++ mips-kernel-2.6/drivers/mtd/Kconfig
+>> @@ -197,6 +197,13 @@ config MTD_BLOCK_RO
+>>  	  You do not need this option for use with the DiskOnChip devices. For
+>>  	  those, enable NFTL support (CONFIG_NFTL) instead.
 >>
->> When I last checked the patch was a good thing, collapsing two
->> practically identical XScale PXA2xx mapping drivers into one and
->> converting to platform devices.
+>> +config MTD_BLOCK_RO_BBFREE
+>> +	tristate "Readonly bad block free block device access to MTD devices"
+>> +	depends on MTD_BLOCK!=y && MTD && MTD_BLOCK_RO!=y
+>> +	help
+>> +	  Same as readonly block driver, but this allow you to mount read-only file
+>> +	  systems from an MTD device, containing bad blocks.
+>> +
+>>     
 >
-> I'd also like to see the unified pxa2xx flash mapping driver go in, so
-> that it can be used by the LogicPD PXA270 board support code (merged in
-> 2.6.17) too, instead of making Yet Another copy of mainstone-flash.c.
+> This part seems hacky to me...  why can't use use mtdblock or
+> mtdblock_ro when this is enabled?  And what happens in the module case?
+>   
+I guess this line is borrowed from MTD_BLOCK_RO:
 
-This patch is still not upstream, as far as I can see. Can we please push 
-it up?
+config MTD_BLOCK_RO
+        tristate "Readonly block device access to MTD devices"
+        depends on MTD_BLOCK!=y && MTD && BLOCK
 
-Thanks
-Guennadi
----------------------------------
-Guennadi Liakhovetski, Ph.D.
-DSA Daten- und Systemtechnik GmbH
-Pascalstr. 28
-D-52076 Aachen
-Germany
+I think though that these limitations are redundant at least for 
+MTD_BLOCK_RO_BBFREE b/c there might be the cases where there're both 
+NAND and NOR chips in the system so MTD_BLOCK_RO and MTD_BLOCK_RO_BBFREE 
+might be needed to be present in the system at the same time.
+
+Vitaly
