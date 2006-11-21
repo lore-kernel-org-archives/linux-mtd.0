@@ -1,19 +1,34 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GmStR-00009L-CD
-	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 05:30:26 -0500
-Message-ID: <4562D537.5080908@ru.mvista.com>
-Date: Tue, 21 Nov 2006 13:30:15 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
+Received: from lon-del-01.spheriq.net ([195.46.50.97])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GmWyF-0002zl-Iz
+	for linux-mtd@lists.infradead.org; Tue, 21 Nov 2006 09:51:40 -0500
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-01.spheriq.net with ESMTP id kALEpO6Y022884
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:24 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-03.spheriq.net with ESMTP id kALEpN0M025050
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:23 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by lon-cus-01.spheriq.net with ESMTP id kALEpJGt014003
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Tue, 21 Nov 2006 14:51:21 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3498EDB2A
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 21 Nov 2006 14:49:01 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id BC01F47551
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 21 Nov 2006 14:25:38 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Info NFTL
+Date: Tue, 21 Nov 2006 15:25:27 +0100
+Message-ID: <000c01c70d78$ea006700$d204960a@nap.st.com>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
-References: <20061117184055.569da7ad@localhost.localdomain>
-	<1164034364.3574.6.camel@zod.rchland.ibm.com>
-In-Reply-To: <1164034364.3574.6.camel@zod.rchland.ibm.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kbaidarov <kbaidarov@dev.rtsoft.ru>
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,55 +38,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
+=20
+Hi All,
 
-<snip>
->> +static struct mtd_blktrans_ops mtdblock_tr = {
->> +	.name		= "mtdblock",
->> +	.major		= 258,
->> +	.part_bits	= 0,
->> +	.readsect	= mtdblock_readsect,
->> +	.writesect	= mtdblock_writesect,
->> +	.add_mtd	= mtdblock_add_mtd,
->> +	.remove_dev	= mtdblock_remove_dev,
->> +	.owner		= THIS_MODULE,
->> +};
->>     
->
-> You went to the trouble of getting a new major number assigned... why
-> not call it something other than mtdblock?
->   
-Agree.
->   
->> Index: mips-kernel-2.6/drivers/mtd/Kconfig
->> ===================================================================
->> --- mips-kernel-2.6.orig/drivers/mtd/Kconfig
->> +++ mips-kernel-2.6/drivers/mtd/Kconfig
->> @@ -197,6 +197,13 @@ config MTD_BLOCK_RO
->>  	  You do not need this option for use with the DiskOnChip devices. For
->>  	  those, enable NFTL support (CONFIG_NFTL) instead.
->>
->> +config MTD_BLOCK_RO_BBFREE
->> +	tristate "Readonly bad block free block device access to MTD devices"
->> +	depends on MTD_BLOCK!=y && MTD && MTD_BLOCK_RO!=y
->> +	help
->> +	  Same as readonly block driver, but this allow you to mount read-only file
->> +	  systems from an MTD device, containing bad blocks.
->> +
->>     
->
-> This part seems hacky to me...  why can't use use mtdblock or
-> mtdblock_ro when this is enabled?  And what happens in the module case?
->   
-I guess this line is borrowed from MTD_BLOCK_RO:
+Is it possible to use NFTL with a standard NAND device and with the MTD =
+drivers?
 
-config MTD_BLOCK_RO
-        tristate "Readonly block device access to MTD devices"
-        depends on MTD_BLOCK!=y && MTD && BLOCK
-
-I think though that these limitations are redundant at least for 
-MTD_BLOCK_RO_BBFREE b/c there might be the cases where there're both 
-NAND and NOR chips in the system so MTD_BLOCK_RO and MTD_BLOCK_RO_BBFREE 
-might be needed to be present in the system at the same time.
-
-Vitaly
+Thank you.
