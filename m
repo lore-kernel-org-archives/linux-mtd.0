@@ -1,23 +1,20 @@
-Received: from mgw-ext14.nokia.com ([131.228.20.173])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gmtdi-0000iv-M2
-	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 10:04:00 -0500
-Subject: Re: mtd_debug usage
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0611221544030.18210@lnxricardw.se.axis.com>
-References: <79ac09b60611210826j33b6b2aeh95d9259ddd3f0481@mail.gmail.com>
-	<79ac09b60611211505h6682e31ay46ecc5b8fe160b0@mail.gmail.com>
-	<Pine.LNX.4.64.0611220832300.3738@lnxricardw.se.axis.com>
-	<79ac09b60611220623l48d5d3b0k152a196f512fc82a@mail.gmail.com>
-	<Pine.LNX.4.64.0611221544030.18210@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 22 Nov 2006 17:03:11 +0200
-Message-Id: <1164207791.19298.15.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, Duke <ezbonites@gmail.com>
-Reply-To: dedekind@infradead.org
+Received: from smtprelay01.ispgateway.de ([80.67.18.13])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gmu9Z-0001Gu-Bv
+	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 10:37:02 -0500
+Received: from unknown (HELO [213.235.233.178]) (301615@[213.235.233.178])
+	(envelope-sender <iliev@ronetix.at>)
+	by smtprelay01.ispgateway.de (qmail-ldap-1.03) with AES256-SHA
+	encrypted SMTP
+	for <linux-mtd@lists.infradead.org>; 22 Nov 2006 15:36:44 -0000
+Message-ID: <45646E70.1020703@ronetix.at>
+Date: Wed, 22 Nov 2006 16:36:16 +0100
+From: Ilko Iliev <iliev@ronetix.at>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: NAND Flashing over JTAG
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-11-22 at 15:46 +0100, Ricard Wanderlof wrote:
-> The minor numbers for /dev/mtdX are wrong. /dev/mtd0 should have a minor=20
-> no. of 0, /dev/mtd1 should have 2, /dev/mtd2 should have 4 etc. The=20
-> odd-numbered minor numbers are intended for read-only devices.
+Hi,
 
-There is MKDEVS scripts an mtd-utils which can create these.
+I am Ilko Iliev from Austrian company RONETIX (www.ronetix.at).
+We produce the JTAG Emulator and Flash Programmer PEEDI.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+One week ago we added a JFFS2 support to our PEEDI JTAG Flash Programmer 
+- www.ronetix.at
+It enables the programming of a jffs2 image to a NAND Flash without 
+having any bootloader.
+Supported are NAND chips with 512 and 2048 bytes pages.
+
+I would like to ask the MTD community if there are some suggestions and 
+comments to the JFFS2 support.
+
+Regards,
+Ilko Iliev
