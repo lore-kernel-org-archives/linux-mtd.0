@@ -1,22 +1,28 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
-	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gmvlg-0002xs-LZ
-	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 12:20:23 -0500
-Subject: Re: jffs2_truncate_fragtree does not handle NULL return from
-	jffs2_lookup_node_frag
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Dragan Marinkovic <marinkovic.dragan@gmail.com>
-In-Reply-To: <d33135570611220849o7775a594o151d02583df9c1e5@mail.gmail.com>
-References: <d33135570611212335p76f32b82k13c3a8a0671d4e24@mail.gmail.com>
-	<1164212824.19298.21.camel@sauron>
-	<d33135570611220849o7775a594o151d02583df9c1e5@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 22 Nov 2006 19:19:01 +0200
-Message-Id: <1164215941.19298.29.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wr-out-0506.google.com ([64.233.184.232])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1Gmvrj-0003CJ-HG
+	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 12:26:41 -0500
+Received: by wr-out-0506.google.com with SMTP id i11so69141wra
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Nov 2006 09:26:28 -0800 (PST)
+Message-ID: <79ac09b60611220926p6b8439a4l62c6037b0d6f67d1@mail.gmail.com>
+Date: Wed, 22 Nov 2006 11:26:27 -0600
+From: Duke <ezbonites@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: mtd_debug usage
+In-Reply-To: <1164207791.19298.15.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <79ac09b60611210826j33b6b2aeh95d9259ddd3f0481@mail.gmail.com>
+	<79ac09b60611211505h6682e31ay46ecc5b8fe160b0@mail.gmail.com>
+	<Pine.LNX.4.64.0611220832300.3738@lnxricardw.se.axis.com>
+	<79ac09b60611220623l48d5d3b0k152a196f512fc82a@mail.gmail.com>
+	<Pine.LNX.4.64.0611221544030.18210@lnxricardw.se.axis.com>
+	<1164207791.19298.15.camel@sauron>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +32,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-11-22 at 08:49 -0800, Dragan Marinkovic wrote:
-> The erase block size on the JFFS2 partition is set to 128K (131072
-> bytes) . I can post USB stick and kernel config specific details if
-> needed.
+On 11/22/06, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> On Wed, 2006-11-22 at 15:46 +0100, Ricard Wanderlof wrote:
+> > The minor numbers for /dev/mtdX are wrong. /dev/mtd0 should have a minor
+> > no. of 0, /dev/mtd1 should have 2, /dev/mtd2 should have 4 etc. The
+> > odd-numbered minor numbers are intended for read-only devices.
+>
+> There is MKDEVS scripts an mtd-utils which can create these.
+>
 
-This encouraged me to write this FAQ entry. If you use JFFS2 on top of
-an USB stick, please read it.
+Thanks all,
+I got it right now and it does show the correct info.
 
-file:///home/dedekind/opensource/git/mtd-www.git/faq/jffs2.html#L_stick_jff=
-s2
+However, What does the following mean?
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+#mtd_debug write /dev/mtd2 0x0 0x600000 testfs_cramfs
+file_to_flash: fread, size 0x600000, n 0x600000
+fread(): Success
+
+Does that mean it will write to mtd2 which starts at physical address
+0x200000 (to 0x800000) or does it actually start at physical address
+0x0?
+ what does the n means?
+I'm not writing to flash correctly so maybe I'm missing something.
+
+Thanks.
