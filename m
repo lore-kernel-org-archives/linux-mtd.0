@@ -1,20 +1,24 @@
-Received: from mgw-ext12.nokia.com ([131.228.20.171])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GmuwZ-0004Jw-TZ
-	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 16:27:32 +0000
+Received: from nf-out-0910.google.com ([64.233.182.188])
+	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
+	id 1GmvHb-0002J3-Ak
+	for linux-mtd@lists.infradead.org; Wed, 22 Nov 2006 11:49:18 -0500
+Received: by nf-out-0910.google.com with SMTP id i2so565643nfe
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 22 Nov 2006 08:49:08 -0800 (PST)
+Message-ID: <d33135570611220849o7775a594o151d02583df9c1e5@mail.gmail.com>
+Date: Wed, 22 Nov 2006 08:49:08 -0800
+From: "Dragan Marinkovic" <marinkovic.dragan@gmail.com>
+To: dedekind@infradead.org
 Subject: Re: jffs2_truncate_fragtree does not handle NULL return from
 	jffs2_lookup_node_frag
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Dragan Marinkovic <marinkovic.dragan@gmail.com>
-In-Reply-To: <d33135570611212335p76f32b82k13c3a8a0671d4e24@mail.gmail.com>
+In-Reply-To: <1164212824.19298.21.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 References: <d33135570611212335p76f32b82k13c3a8a0671d4e24@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 22 Nov 2006 18:27:04 +0200
-Message-Id: <1164212824.19298.21.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	<1164212824.19298.21.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +28,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-11-21 at 23:35 -0800, Dragan Marinkovic wrote:
-> Digging a bit deeper, I found that jffs2_truncate_fragtree is not
-> handling the NULL as a return value from jffs2_lookup_node_frag . It look=
-s
-> like that NULL return is perfectly legal. The patch to fix this is attach=
-ed.
-> I'm not really sure if this is the right place to fix this problem but
-> it should be OK from the correctness prospective (can't use NULL
-> pointers).
-
-The NULL is legal, but JFFS2 does handle it. Look at the latest git
-version. Please, point which particular C operation in the
-jffs2_truncate_fragtree() function causes the oops.
-
-> More to it, I've noticed that if I remove the system power while file
-> on JFFS2 partition is being updated (it takes a bit of time to hit the
-> right moment), I'll completely lose the file (it just disappears). Any
-> ideas?
-
-What does "JFFS2 partition is being updated" mean?
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+VGhhbmtzIEFydGVtLCBJJ2xsIHRha2UgYSBsb29rLgoKIkpGRlMyIHBhcnRpdGlvbiBpcyBiZWlu
+ZyB1cGRhdGVkIiBtZWFucyB0aGF0IHRoZSBmaWxlIGhhcyBiZWVuCndyaXR0ZW4gdG8gYXQgdGhl
+IG1vbWVudCBvZiB0aGUgcG93ZXIgbG9zcy4gV2hhdCdzIGludGVyZXN0aW5nIGlzIHRoYXQKaWYg
+SSdtIHdyaXRpbmcgMU1CIGZpbGUgdG8gdGhlIEpGRlMyIHBhcnRpdGlvbiAod2hpY2ggZ2l2ZXMg
+bWUgZW5vdWdoCnRpbWUgdG8gcmVsaWFibHkgcHVsbCB0aGUgcGx1ZyBkdXJpbmcgd3JpdGUgb3Bl
+cmF0aW9uKSB0aGUgcG93ZXIgbG9zcwppcyBhbHdheXMgaGFuZGxlZCBwcm9wZXJseTogdGhlIG9s
+ZCB2ZXJzaW9uIG9mIHRoZSBmaWxlIGlzIGFsd2F5cwp0aGVyZSB3aGVuIHRoZSBwb3dlciBpcyBi
+YWNrIG9uLgoKVG8gYmUgbW9yZSBwcmVjaXNlLCBJIGhhdmUgdHJvdWJsZSB3aXRoIHRoZSBmaWxl
+IHNpemUgb2YgYWJvdXQgMTFLCih0aGlzIHJlYWxseSBpc24ndCBhbnkgbWFnaWMgbnVtYmVyLCBi
+YXNpY2FsbHkgc21hbGxlciBmaWxlcykuIEkgaGF2ZQovdG1wIGRpci4gb24gdG1wZnMgLiBJJ20g
+bW92aW5nIHRoZSBmaWxlIHRoZXJlLCBkb2luZyBzb21lCm1hbmlwdWxhdGlvbiBvbiBpdCAoc2Vk
+LCBjYXQsIGV0Yy4pIGFuZCBjb3B5IHRoZSBmaWxlIGJhY2sgdG8gaXRzCm9yaWdpbmFsIGxvY2F0
+aW9uIChKRkZTMiBmcykuIElmIEkgZXhwZXJpZW5jZSB0aGUgcG93ZXIgbG9zcyBhdCB0aGUKbW9t
+ZW50IG9mIHRoZSBmaWxlIGNvcHkgb3BlcmF0aW9uLCB0aGUgZmlsZSBqdXN0IHZhbmlzaGVzLiBU
+aGUgc2FtZSBpcwp0cnVlIGlmIHRoZSBmaWxlIGlzIG1hbmlwdWxhdGVkIGRpcmVjdGx5IG9uIHRo
+ZSBKRkZTMiBwYXJ0aXRpb24uIEkndmUKdHJpZWQgJ212JywgJ2NhdCcgYW5kICdjcCcgLS0gYWxs
+IHdpdGggdGhlIHNhbWUgcmVzdWx0LgoKVGhlIGVyYXNlIGJsb2NrIHNpemUgb24gdGhlIEpGRlMy
+IHBhcnRpdGlvbiBpcyBzZXQgdG8gMTI4SyAoMTMxMDcyCmJ5dGVzKSAuIEkgY2FuIHBvc3QgVVNC
+IHN0aWNrIGFuZCBrZXJuZWwgY29uZmlnIHNwZWNpZmljIGRldGFpbHMgaWYKbmVlZGVkLgoKVGhh
+bmtzIGFnYWluLApEcmFnYW4KCk9uIDExLzIyLzA2LCBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2lu
+ZEBpbmZyYWRlYWQub3JnPiB3cm90ZToKPiBPbiBUdWUsIDIwMDYtMTEtMjEgYXQgMjM6MzUgLTA4
+MDAsIERyYWdhbiBNYXJpbmtvdmljIHdyb3RlOgo+ID4gRGlnZ2luZyBhIGJpdCBkZWVwZXIsIEkg
+Zm91bmQgdGhhdCBqZmZzMl90cnVuY2F0ZV9mcmFndHJlZSBpcyBub3QKPiA+IGhhbmRsaW5nIHRo
+ZSBOVUxMIGFzIGEgcmV0dXJuIHZhbHVlIGZyb20gamZmczJfbG9va3VwX25vZGVfZnJhZyAuIEl0
+IGxvb2tzCj4gPiBsaWtlIHRoYXQgTlVMTCByZXR1cm4gaXMgcGVyZmVjdGx5IGxlZ2FsLiBUaGUg
+cGF0Y2ggdG8gZml4IHRoaXMgaXMgYXR0YWNoZWQuCj4gPiBJJ20gbm90IHJlYWxseSBzdXJlIGlm
+IHRoaXMgaXMgdGhlIHJpZ2h0IHBsYWNlIHRvIGZpeCB0aGlzIHByb2JsZW0gYnV0Cj4gPiBpdCBz
+aG91bGQgYmUgT0sgZnJvbSB0aGUgY29ycmVjdG5lc3MgcHJvc3BlY3RpdmUgKGNhbid0IHVzZSBO
+VUxMCj4gPiBwb2ludGVycykuCj4KPiBUaGUgTlVMTCBpcyBsZWdhbCwgYnV0IEpGRlMyIGRvZXMg
+aGFuZGxlIGl0LiBMb29rIGF0IHRoZSBsYXRlc3QgZ2l0Cj4gdmVyc2lvbi4gUGxlYXNlLCBwb2lu
+dCB3aGljaCBwYXJ0aWN1bGFyIEMgb3BlcmF0aW9uIGluIHRoZQo+IGpmZnMyX3RydW5jYXRlX2Zy
+YWd0cmVlKCkgZnVuY3Rpb24gY2F1c2VzIHRoZSBvb3BzLgo+Cj4gPiBNb3JlIHRvIGl0LCBJJ3Zl
+IG5vdGljZWQgdGhhdCBpZiBJIHJlbW92ZSB0aGUgc3lzdGVtIHBvd2VyIHdoaWxlIGZpbGUKPiA+
+IG9uIEpGRlMyIHBhcnRpdGlvbiBpcyBiZWluZyB1cGRhdGVkIChpdCB0YWtlcyBhIGJpdCBvZiB0
+aW1lIHRvIGhpdCB0aGUKPiA+IHJpZ2h0IG1vbWVudCksIEknbGwgY29tcGxldGVseSBsb3NlIHRo
+ZSBmaWxlIChpdCBqdXN0IGRpc2FwcGVhcnMpLiBBbnkKPiA+IGlkZWFzPwo+Cj4gV2hhdCBkb2Vz
+ICJKRkZTMiBwYXJ0aXRpb24gaXMgYmVpbmcgdXBkYXRlZCIgbWVhbj8KPgo+IC0tCj4gQmVzdCBy
+ZWdhcmRzLAo+IEFydGVtIEJpdHl1dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+Cj4K
