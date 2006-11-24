@@ -1,15 +1,15 @@
-Received: from mgw-ext13.nokia.com ([131.228.20.172])
+Received: from mgw-ext12.nokia.com ([131.228.20.171])
 	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
-	id 1GnahL-0000A0-G3
-	for linux-mtd@lists.infradead.org; Fri, 24 Nov 2006 08:02:44 -0500
+	id 1Gnam8-0000Np-4i
+	for linux-mtd@lists.infradead.org; Fri, 24 Nov 2006 08:07:37 -0500
 Subject: Re: [PATCH] [MTD] NAND: Lazily BBT construction
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
 In-Reply-To: <20061124154210.6303c9fe@localhost.localdomain>
 References: <20061124154210.6303c9fe@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 24 Nov 2006 15:01:39 +0200
-Message-Id: <1164373299.576.11.camel@sauron>
+Date: Fri, 24 Nov 2006 15:05:50 +0200
+Message-Id: <1164373550.576.13.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -36,17 +36,10 @@ On Fri, 2006-11-24 at 15:42 +0300, Konstantin Baydarov wrote:
 > construction NAND_LAZY_BBT bit should be set in options field of
 > structure nand_chip.=20
 
-The idea looks nice. But I still have 2 questions.
+Also, the 3rd question.
 
-1. Why don't you instead spawn a scanning kernel thread and do not build
-BBT in background. After the flash is scanned you just kill the thread.
-Also you block any task which accesses an unscanned eraseblock till the
-scanning thread scanned this eraseblock.
-
-2. nand_base.c looks quite complex now. I wonder if it makes sense to do
-lazy BBT building always, I mean not to introduce this option but make
-it the only and default way? Well, it may make boot time a bit longer in
-case of small flashes, but I am not sure we should care.
+3. Why don't you use on-flash BBT if you are not satisfied with in-RAM
+BBT?
 
 --=20
 Best regards,
