@@ -1,19 +1,21 @@
-Received: from nz-out-0102.google.com ([64.233.162.192])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Gnbpa-0001Tq-Pu
-	for linux-mtd@lists.infradead.org; Fri, 24 Nov 2006 09:15:13 -0500
-Received: by nz-out-0102.google.com with SMTP id i11so701385nzi
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 24 Nov 2006 06:15:04 -0800 (PST)
-Message-ID: <ff05f3d00611240615h4943c5a7i2440b48599d40696@mail.gmail.com>
-Date: Fri, 24 Nov 2006 22:15:04 +0800
-From: "Edward Shao" <laface.tw@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: ichxrom for ICH6
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from mgw-ext12.nokia.com ([131.228.20.171])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GndhV-0002iu-Jp
+	for linux-mtd@lists.infradead.org; Fri, 24 Nov 2006 11:15:17 -0500
+Subject: Re: [PATCH] [MTD] NAND: Lazily BBT construction
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
+In-Reply-To: <20061124165618.44418a5e@localhost.localdomain>
+References: <20061124154210.6303c9fe@localhost.localdomain>
+	<1164373550.576.13.camel@sauron>
+	<20061124165618.44418a5e@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 24 Nov 2006 17:45:38 +0200
+Message-Id: <1164383138.576.21.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi folks,
-I am interested in ichxrom map driver.
-I have a motherboard with ICH6 and firmware hub chip is SST49LF008A.
-I check ichxrom in kernel 2.6.18 that only support for ICH 2/3/4/5.
+On Fri, 2006-11-24 at 16:56 +0300, Konstantin Baydarov wrote:
+> Patch covers the case when there is no on-flash BBT and on-flash
+> BBT wasn't requested
+Right. So the idea was if your flash is small enough and you are
+satisfied with scanning, you use scanning. If not, you use on-flash BBT.
 
-I would like to modify the driver for my motherboard.
-Can some body give some direction?
-BTW, does the driver support two or more FWH devices in the same bus?
+>  How can I use it?=20
+I haven't actually used it. There is some flag you have to set in your
+chip structure.
 
-Thanks in advanced.
+> Also when we have on-flash BBT we
+> don't need to scan chip so we don't need lazily BBT.
 
--- 
-Best Regards,
-Edward
+Yes, I did not say this. I meant why don't you just switch to on-media
+BBT instead of implementing this lazy scan stuff. Just curious.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
