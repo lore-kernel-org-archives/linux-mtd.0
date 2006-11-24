@@ -1,31 +1,24 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1GnHrp-0006JJ-1z
-	for linux-mtd@lists.infradead.org; Thu, 23 Nov 2006 11:56:13 -0500
-Received: from localhost ([127.0.0.1] helo=eos.fwall.u-szeged.hu)
-	by eos.fwall.u-szeged.hu with smtp (Exim 4.51) id 1GnHrj-0001q6-Ot
-	for linux-mtd@lists.infradead.org; Thu, 23 Nov 2006 17:55:59 +0100
-Received: from eos.fwall.u-szeged.hu ([127.0.0.1])
-	by eos.fwall.u-szeged.hu (SMSSMTP 4.1.11.41) with SMTP id
-	M2006112317555909264
-	for <linux-mtd@lists.infradead.org>; Thu, 23 Nov 2006 17:55:59 +0100
-Received: from mail.inf.u-szeged.hu ([160.114.37.227])
-	by eos.fwall.u-szeged.hu with esmtp (Exim 4.51) id 1GnHrj-0001r6-DD
-	for linux-mtd@lists.infradead.org; Thu, 23 Nov 2006 17:55:59 +0100
-Received: from [160.114.37.115] (osl01.inf.u-szeged.hu [160.114.37.115])
-	by mail.inf.u-szeged.hu (Postfix) with ESMTP id 29C466480D1
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Nov 2006 17:55:59 +0100 (CET)
-Message-ID: <4565D264.4060403@inf.u-szeged.hu>
-Date: Thu, 23 Nov 2006 17:55:00 +0100
-From: Zoltan Sogor <weth@inf.u-szeged.hu>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.62 #1 (Red Hat Linux))
+	id 1GnXpe-0006XU-Vw
+	for linux-mtd@lists.infradead.org; Fri, 24 Nov 2006 04:59:01 -0500
+Date: Fri, 24 Nov 2006 10:57:02 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Duke <ezbonites@gmail.com>
+Subject: Re: mtd_debug usage
+In-Reply-To: <79ac09b60611220926p6b8439a4l62c6037b0d6f67d1@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0611241016200.18210@lnxricardw.se.axis.com>
+References: <79ac09b60611210826j33b6b2aeh95d9259ddd3f0481@mail.gmail.com>
+	<79ac09b60611211505h6682e31ay46ecc5b8fe160b0@mail.gmail.com>
+	<Pine.LNX.4.64.0611220832300.3738@lnxricardw.se.axis.com>
+	<79ac09b60611220623l48d5d3b0k152a196f512fc82a@mail.gmail.com>
+	<Pine.LNX.4.64.0611221544030.18210@lnxricardw.se.axis.com>
+	<1164207791.19298.15.camel@sauron>
+	<79ac09b60611220926p6b8439a4l62c6037b0d6f67d1@mail.gmail.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Problems with sumtool with linux-mtd 1.0
-References: <4565C738.30800@gfplab.com>
-In-Reply-To: <4565C738.30800@gfplab.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,50 +28,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Paolo!
 
-I think there is no problem with sumtool.
+On Wed, 22 Nov 2006, Duke wrote:
 
-If you run sumtool with --pad parameter then it pads the OUTPUT file with
-0xFF to the end of the last used eraseblock.
+> However, What does the following mean?
+>
+> #mtd_debug write /dev/mtd2 0x0 0x600000 testfs_cramfs
+> file_to_flash: fread, size 0x600000, n 0x600000
+> fread(): Success
+>
+> Does that mean it will write to mtd2 which starts at physical address
+> 0x200000 (to 0x800000) or does it actually start at physical address
+> 0x0?
+> what does the n means?
+> I'm not writing to flash correctly so maybe I'm missing something.
 
-If you have empty eraseblocks at the end of your INPUT image then the 
-sumtool
-skips those.
+Your mtd2 partition starts at physical 0x200000, which means that when=20
+writing to offset 0 of that partition, you write to physical address=20
+0x200000.
 
-Zoltan
+The output from mtd_debug is not terribly lucid. It is after all more of a=
+=20
+debugging tool. When it says 'file_to_flash:...' it means it didn't think=
+=20
+the file was read properly. How big is your file (testfs_cramfs)? If you=20
+specify a size of 0x600000 then mtd_debug write will try to read 0x600000=
+=20
+bytes from the file, and fail like it does above if it cannot find it all.=
+=20
+The 'fread(): Success' line indicates that the read actually went well,=20
+but bumped into an end-of-file before all data could be read.
 
-Paolo Scaffardi wrote:
-> Hi there!
-> I'm developing for a arm cirrus ep9302-based board target. The build
-> system was based on an older mtd version. I upgraded to version 1.0.
-> Now, it seems i have a problem using sumtool (that was never used before
-> by build system after creating jffs2).
->
-> I correctly made my jffs2 filesystem for my on-board flash (intel, NOR
-> type, 128Kb x 128 blocks) with this cmd:
->
-> mkfs.jffs2 --pad=$((8*1024*1024)) --eraseblock=$((128*1024)) -d
-> /opt/mydir -o image.jffs2
->
-> Then i called sumtool with:
->
-> sumtool --pad --eraseblock=$((128*1024)) --input=image.jffs2
-> --output=image2.jffs2
->
-> The problem is that the second images was really smaller than the first
-> one (384Kb).
->
-> Why that?
-> Sumtool dont give me any error!
->
-> Bye,
-> Paolo Scaffardi
-> GFP Lab s.r.l.
-> http://www.gfplab.com
-> fax 178 2258454
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->   
+I would suggest using the flash_eraseall tool to first erase the=20
+partition, e.g. flash_eraseall /dev/mtd2, followed by a simple cat or dd=20
+of the image file to the device, e.g. cat testfs_cramfs > /dev/mtd2 .
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
