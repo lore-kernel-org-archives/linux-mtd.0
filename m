@@ -1,18 +1,17 @@
-Received: from emailhub.stusta.mhn.de ([141.84.69.5]
-	helo=mailout.stusta.mhn.de)
-	by canuck.infradead.org with smtp (Exim 4.62 #1 (Red Hat Linux))
-	id 1Go302-0007nP-2X
-	for linux-mtd@lists.infradead.org; Sat, 25 Nov 2006 14:15:55 -0500
-Date: Sat, 25 Nov 2006 20:15:41 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>
-Subject: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
-Message-ID: <20061125191541.GH3702@stusta.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Subject: Re: [RFC: 2.6 patch] remove the broken MTD_PCMCIA driver
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20061125191521.GD3702@stusta.de>
+References: <20061125191521.GD3702@stusta.de>
+Content-Type: text/plain; charset=utf-8
+Date: Sun, 26 Nov 2006 11:40:13 +0200
+Message-Id: <1164534013.576.24.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Andrew Morton <akpm@osdl.org>, Simon Evans <spse@secret.org.uk>,
+	linux-pcmcia@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the needlessly global mtdpart_setup() static.
+On Sat, 2006-11-25 at 20:15 +0100, Adrian Bunk wrote:
+> The MTD_PCMCIA driver has:
+> - already been marked as BROKEN in 2.6.0 three years ago and
+> - is still marked as BROKEN.
+>=20
+> Drivers that had been marked as BROKEN for such a long time seem to be
+> unlikely to be revived in the forseeable future.
+>=20
+> But if anyone wants to ever revive this driver, the code is still
+> present in the older kernel releases.
+>=20
+> Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+I've committed both patches to my git trees so David won't miss them.
 
----
+http://git.infradead.org/?p=3Dusers/dedekind/dedekind-mtd-2.6.git;a=3Dsumma=
+ry
 
-This patch was already sent on:
-- 27 Jun 2006
 
---- linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c.old	2006-06-26 23:18:39.000000000 +0200
-+++ linux-2.6.17-mm2-full/drivers/mtd/cmdlinepart.c	2006-06-26 23:18:51.000000000 +0200
-@@ -346,7 +346,7 @@
-  *
-  * This function needs to be visible for bootloaders.
-  */
--int mtdpart_setup(char *s)
-+static int mtdpart_setup(char *s)
- {
- 	cmdline = s;
- 	return 1;
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
