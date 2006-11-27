@@ -1,31 +1,20 @@
-Received: from mtagate6.de.ibm.com ([195.212.29.155])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gofnp-0007ga-P5
-	for linux-mtd@lists.infradead.org; Mon, 27 Nov 2006 12:41:46 +0000
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate6.de.ibm.com (8.13.8/8.13.8) with ESMTP id kARCZpFO255680
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2006 12:35:51 GMT
-Received: from d12av04.megacenter.de.ibm.com (d12av04.megacenter.de.ibm.com
-	[9.149.165.229])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with
-	ESMTP id kARCdQ1i3268828
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2006 13:39:26 +0100
-Received: from d12av04.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av04.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id kARCZo5j019196
-	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2006 13:35:51 +0100
-From: Timo Lindhorst <lindhors@vnet.ibm.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] NAND: fix ifdef option in nand_ecc.c
+Received: from imf16aec.mail.bellsouth.net ([205.152.59.64])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GoeEL-00040p-GO
+	for linux-mtd@lists.infradead.org; Mon, 27 Nov 2006 11:01:02 +0000
+Received: from ibm58aec.bellsouth.net ([192.168.16.253])
+	by imf16aec.mail.bellsouth.net with ESMTP id
+	<20061127110043.GWTF17046.imf16aec.mail.bellsouth.net@ibm58aec.bellsouth.net>
+	for <linux-mtd@lists.infradead.org>; Mon, 27 Nov 2006 06:00:43 -0500
+From: NATIONAL LOTTERY <camelotpromo@bellsouth.net>
+To: <Azaozmanian@yahoo.com>
+Subject: Batch: 074/05/ZY369Ref: UK/9420X2/68
+Date: Mon, 27 Nov 2006 6:00:42 -0500
 MIME-Version: 1.0
-Content-Disposition: inline
-Date: Mon, 27 Nov 2006 13:35:49 +0100
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200611271335.49226.lindhors@linux.vnet.ibm.com>
-Cc: tglx@linutronix.de
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20061127110043.EVWR15332.ibm58aec.bellsouth.net@mail.bellsouth.net>
+Reply-To: agentvivica22@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,31 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix up the config option in the #ifdef statements in nand_ecc.c
+The National Lottery
+P O Box 1010
+Liverpool, L70 1NL 
+UNITED KINGDOM
+(Customer Services)
+Ref: UK/9420X2/68
+Batch: 074/05/ZY369
 
-From: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
-Signed-off-by: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
----
- drivers/mtd/nand/nand_ecc.c |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Dear Winner
+We are pleased to inform you of the final announcement today, 7TH of 
+November, 2006 of winners of the UK NATIONAL LOTTERY ONLINE PROMO 
+PROGRAMME, held on the 14TH of October, 2006.You have therefore been approved to claim a total sum of 
+£100,983.00 in cash credited to KTU/9023118308/03. 
 
---- ubi-2.6.orig/drivers/mtd/nand/nand_ecc.c
-+++ ubi-2.6/drivers/mtd/nand/nand_ecc.c
-@@ -112,7 +112,7 @@ int nand_calculate_ecc(struct mtd_info *
- 	tmp2 |= (reg2 & 0x01) << 0; /* B7 -> B0 */
- 
- 	/* Calculate final ECC code */
--#ifdef CONFIG_NAND_ECC_SMC
-+#ifdef CONFIG_MTD_NAND_ECC_SMC
- 	ecc_code[0] = ~tmp2;
- 	ecc_code[1] = ~tmp1;
- #else
-@@ -148,7 +148,7 @@ int nand_correct_data(struct mtd_info *m
- {
- 	uint8_t s0, s1, s2;
- 
--#ifdef CONFIG_NAND_ECC_SMC
-+#ifdef CONFIG_MTD_NAND_ECC_SMC
- 	s0 = calc_ecc[0] ^ read_ecc[0];
- 	s1 = calc_ecc[1] ^ read_ecc[1];
- 	s2 = calc_ecc[2] ^ read_ecc[2];
+PROCEDURES FOR CLAIMS
+NON UK RESIDENT WINNERS ARE HOWEVER REQUESTED TO CONTACT THE
+FIDUCIARY AGENT ATTACHED TO DRAW ASAP UK LOTTERY{CLAIMS DEPT}
+FIDUCIARY AGENT:MRS VIVICA LEWIS
+EMAIL: agentvivica22@yahoo.co.uk
+
+FILL THE CLAIMS VERIFICATION FORM
+FULL NAME...............................................
+WINNING E-MAIL ADDRESS..................................
+FULL ADDRESS:...........................................
+SEX:................................
+AGE...................................
+OCCUPATION.............................
+AMOUNT WON...........................
+ANNUAL INCOME.......................
+TEL.......................MOBILE................
+COUNTRY................................
+
+
+Congratulations once more from all members and staffs of this program. 
+Thank you for being part of our online promotional lottery program.     
+Yours Truly, 
+Sir Steven Smith.
+Co-ordinator(Online Promo Programme)
