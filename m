@@ -1,16 +1,15 @@
-Subject: Re: [-mm patch] drivers/mtd/nand/rtc_from4.c: use lib/bitrev.c
+Subject: Re: [RFC: 2.6 patch] remove the broken MTD_PCMCIA driver
 From: David Woodhouse <dwmw2@infradead.org>
 To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20061122043811.GG5200@stusta.de>
-References: <20061114014125.dd315fff.akpm@osdl.org>
-	<20061122043811.GG5200@stusta.de>
+In-Reply-To: <20061118214056.GB31879@stusta.de>
+References: <20061118214056.GB31879@stusta.de>
 Content-Type: text/plain
-Date: Tue, 28 Nov 2006 22:19:36 +0000
-Message-Id: <1164752376.14595.22.camel@pmac.infradead.org>
+Date: Tue, 28 Nov 2006 22:16:27 +0000
+Message-Id: <1164752187.14595.20.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Akinobu Mita <akinobu.mita@gmail.com>
+Cc: Simon Evans <spse@secret.org.uk>, linux-pcmcia@lists.infradead.org,
+	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,13 +19,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-11-22 at 05:38 +0100, Adrian Bunk wrote:
-> This patch converts drivers/mtd/nand/rtc_from4.c to use the new 
-> lib/bitrev.c
+On Sat, 2006-11-18 at 22:40 +0100, Adrian Bunk wrote:
+> The MTD_PCMCIA driver has:
+> - already been marked as BROKEN in 2.6.0 three years ago and
+> - is still marked as BROKEN.
 > 
-> Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> Drivers that had been marked as BROKEN for such a long time seem to be
+> unlikely to be revived in the forseeable future.
 
-Applied; thanks.
+Actually, there's hardware currently on its way to me, and I plan to fix
+this driver fairly soon.
+
+> But if anyone wants to ever revive this driver, the code is still
+> present in the older kernel releases.
+
+I'm unconvinced by that argument in the general case. People don't go
+looking back through git history, do they? Drivers such as this don't
+really do any harm as they are, and they're _much_ easier to find when
+someone does want to fix them up.
 
 -- 
 dwmw2
