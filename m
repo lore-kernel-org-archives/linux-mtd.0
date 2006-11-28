@@ -1,15 +1,20 @@
-Subject: Re: [RFC: 2.6 patch] remove the broken MTD_PCMCIA driver
-From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20061118214056.GB31879@stusta.de>
-References: <20061118214056.GB31879@stusta.de>
-Content-Type: text/plain
-Date: Tue, 28 Nov 2006 22:16:27 +0000
-Message-Id: <1164752187.14595.20.camel@pmac.infradead.org>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gp1ce-0004BE-4p
+	for linux-mtd@lists.infradead.org; Tue, 28 Nov 2006 11:59:38 +0000
+Date: Tue, 28 Nov 2006 12:58:10 +0100
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+To: dedekind@infradead.org
+Subject: Re: jffs2_flash_writev(): Non-contiguous write to 00825300 with
+	mtd_dataflash
+Message-ID: <20061128125810.306e7d54@dhcp-252-105.norway.atmel.com>
+In-Reply-To: <1163404009.3925.26.camel@sauron>
+References: <20061101115252.26000d78@cad-250-152.norway.atmel.com>
+	<1163404009.3925.26.camel@sauron>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Simon Evans <spse@secret.org.uk>, linux-pcmcia@lists.infradead.org,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,24 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2006-11-18 at 22:40 +0100, Adrian Bunk wrote:
-> The MTD_PCMCIA driver has:
-> - already been marked as BROKEN in 2.6.0 three years ago and
-> - is still marked as BROKEN.
-> 
-> Drivers that had been marked as BROKEN for such a long time seem to be
-> unlikely to be revived in the forseeable future.
+On Mon, 13 Nov 2006 09:46:49 +0200
+Artem Bityutskiy <dedekind@infradead.org> wrote:
 
-Actually, there's hardware currently on its way to me, and I plan to fix
-this driver fairly soon.
+> On Wed, 2006-11-01 at 11:52 +0100, Haavard Skinnemoen wrote:
+> > jffs2_flash_writev(): Non-contiguous write to 00825300
+> > wbuf was previously 00825300-008253b8
+>
+> So all it seems that you need to to make jffs2_can_mark_obsokete()
+> return 0 in case of dataflash.
 
-> But if anyone wants to ever revive this driver, the code is still
-> present in the older kernel releases.
+That seems to work. Thanks, and sorry for taking so long to respond to
+this.
+---
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+Subject: [PATCH] MTD: jffs2_can_mark_obsolete() should return 0 for dataflash
 
-I'm unconvinced by that argument in the general case. People don't go
-looking back through git history, do they? Drivers such as this don't
-really do any harm as they are, and they're _much_ easier to find when
-someone does want to fix them up.
+Attempting to write something to a file on a jffs2 filesystem using
+mtd_dataflash often results in the following BUG:
 
+jffs2_flash_writev(): Non-contiguous write to 00825720
+wbuf was previously 00825300-0082530c
+kernel BUG at /home/hskinnemoen/git/linux-devel/fs/jffs2/wbuf.c:786!
+
+Fix this by returning 0 from jffs2_can_mark_obsolete() when running
+on top of dataflash.
+
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+ fs/jffs2/os-linux.h |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+index 9f41fc0..a037fa4 100644
+--- a/fs/jffs2/os-linux.h
++++ b/fs/jffs2/os-linux.h
+@@ -106,7 +106,8 @@ static inline void jffs2_init_inode_info
+ #ifdef CONFIG_JFFS2_SUMMARY
+ #define jffs2_can_mark_obsolete(c) (0)
+ #else
+-#define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE))
++#define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE)	\
++				    && !jffs2_dataflash(c))
+ #endif
+ 
+ #define jffs2_cleanmarker_oob(c) (c->mtd->type == MTD_NANDFLASH)
 -- 
-dwmw2
+1.4.3.3
