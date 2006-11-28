@@ -1,15 +1,21 @@
-Received: from mail.valcom.com ([151.199.82.35])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gp3eY-0002PT-Lb
-	for linux-mtd@lists.infradead.org; Tue, 28 Nov 2006 14:09:45 +0000
-Message-ID: <456C4306.8070205@valcom.com>
-Date: Tue, 28 Nov 2006 09:09:10 -0500
-From: Glen Johnson <gjohnson@valcom.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Upgrading mtd-utils in uClinux.
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from smtp.osdl.org ([65.172.181.25])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GpBlc-0001bJ-4j
+	for linux-mtd@lists.infradead.org; Tue, 28 Nov 2006 17:49:37 -0500
+Date: Tue, 28 Nov 2006 14:49:07 -0800
+From: Andrew Morton <akpm@osdl.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [-mm patch] drivers/mtd/nand/rtc_from4.c: use lib/bitrev.c
+Message-Id: <20061128144907.a9f4bb21.akpm@osdl.org>
+In-Reply-To: <1164752376.14595.22.camel@pmac.infradead.org>
+References: <20061114014125.dd315fff.akpm@osdl.org>
+	<20061122043811.GG5200@stusta.de>
+	<1164752376.14595.22.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Akinobu Mita <akinobu.mita@gmail.com>, Adrian Bunk <bunk@stusta.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,10 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linux-mtd,
-I am attempting to compile the latest mtd-utils into uClinux's distribution dated 2006-08-03.  After some unsuccessful attempts I found the new mtd-utils needed an updated zlib.  I successfully upgraded to zlib version 1.2.3 inside uClinux-dist/lib/zlib.  I now have that compiling and still am not getting anywhere with compiling the mtd-utils.  
-I dropped the latest mtd-utils code into the directory uClinux-dist/user/mtd-utils.  I have observed the Makefiles between the new updated mtd-utils and the old uClinux-dist/user/mtd-utils/Makefile are VERY different.  I tried to use the old Makefile as a template to build the new code and it still is not compiling.
-What is the correct method of upgrading mtd-utils?  It shouldn't be as difficult to upgrade some code in user space as I am making it.  I feel like I must be going about this the wrong way.  Are there any pointers, tips, or recommendations to get me going in the right direction?
+On Tue, 28 Nov 2006 22:19:36 +0000
+David Woodhouse <dwmw2@infradead.org> wrote:
 
-Thanks,
-Glen Johnson
+> On Wed, 2006-11-22 at 05:38 +0100, Adrian Bunk wrote:
+> > This patch converts drivers/mtd/nand/rtc_from4.c to use the new 
+> > lib/bitrev.c
+> > 
+> > Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> 
+> Applied; thanks.
+> 
+
+Won't compile - you don't have the bitrev library patches.
+
+I'll take that as an ack and shall merge this once
+crc32-replace-bitreverse-by-bitrev32.patch is merged ;)
