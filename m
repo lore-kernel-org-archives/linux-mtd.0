@@ -1,22 +1,15 @@
-Received: from mgw-ext12.nokia.com ([131.228.20.171])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gp4LD-0003qk-Uq
-	for linux-mtd@lists.infradead.org; Tue, 28 Nov 2006 14:53:51 +0000
-Subject: Re: jffs2_flash_writev(): Non-contiguous write to 00825300 with
-	mtd_dataflash
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Haavard Skinnemoen <hskinnemoen@atmel.com>
-In-Reply-To: <20061128125810.306e7d54@dhcp-252-105.norway.atmel.com>
-References: <20061101115252.26000d78@cad-250-152.norway.atmel.com>
-	<1163404009.3925.26.camel@sauron>
-	<20061128125810.306e7d54@dhcp-252-105.norway.atmel.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 28 Nov 2006 14:36:17 +0200
-Message-Id: <1164717377.576.29.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail.valcom.com ([151.199.82.35])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gp3eY-0002PT-Lb
+	for linux-mtd@lists.infradead.org; Tue, 28 Nov 2006 14:09:45 +0000
+Message-ID: <456C4306.8070205@valcom.com>
+Date: Tue, 28 Nov 2006 09:09:10 -0500
+From: Glen Johnson <gjohnson@valcom.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Upgrading mtd-utils in uClinux.
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +19,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-11-28 at 12:58 +0100, Haavard Skinnemoen wrote:
-> +#define jffs2_can_mark_obsolete(c) (c->mtd->flags & (MTD_BIT_WRITEABLE)	=
-\
-> +				    && !jffs2_dataflash(c))
+Linux-mtd,
+I am attempting to compile the latest mtd-utils into uClinux's distribution dated 2006-08-03.  After some unsuccessful attempts I found the new mtd-utils needed an updated zlib.  I successfully upgraded to zlib version 1.2.3 inside uClinux-dist/lib/zlib.  I now have that compiling and still am not getting anywhere with compiling the mtd-utils.  
+I dropped the latest mtd-utils code into the directory uClinux-dist/user/mtd-utils.  I have observed the Makefiles between the new updated mtd-utils and the old uClinux-dist/user/mtd-utils/Makefile are VERY different.  I tried to use the old Makefile as a template to build the new code and it still is not compiling.
+What is the correct method of upgrading mtd-utils?  It shouldn't be as difficult to upgrade some code in user space as I am making it.  I feel like I must be going about this the wrong way.  Are there any pointers, tips, or recommendations to get me going in the right direction?
 
-Please, make sure the DataFlash driver does has MTD_BIT_WRITEABLE bit
-set at c->mtd->flags instead
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks,
+Glen Johnson
