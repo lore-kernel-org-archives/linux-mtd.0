@@ -1,5 +1,9 @@
-Message-ID: <1029.82.128.12.48.1164830409.TlMUQmxATEh4Sw==.squirrel@82.128.12.48>
-Date: Wed, 29 Nov 2006 20:00:09 -0000 (GMT)
+Received: from smtp-out2.blueyonder.co.uk ([195.188.213.5])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GpVq7-0007qN-H2
+	for linux-mtd@lists.infradead.org; Wed, 29 Nov 2006 20:15:34 +0000
+Message-ID: <1030.82.128.12.48.1164830792.TlMUQmxATEh4Sw==.squirrel@82.128.12.48>
+Date: Wed, 29 Nov 2006 20:06:32 -0000 (GMT)
 Subject: African Development Bank
 From: "African Development Bank" <peters_u3@yahoo.ca>
 MIME-Version: 1.0
