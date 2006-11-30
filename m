@@ -1,20 +1,26 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GpRP8-0002Zy-Bg
-	for linux-mtd@lists.infradead.org; Wed, 29 Nov 2006 10:31:26 -0500
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: linux-2.6.19-rc6-g1275361c build #142 failed
-Date: Wed, 29 Nov 2006 16:31:17 +0100
-References: <200611291547.21354.toralf.foerster@gmx.de>
-	<1164812111.14595.71.camel@pmac.infradead.org>
-In-Reply-To: <1164812111.14595.71.camel@pmac.infradead.org>
+Received: from de01egw02.freescale.net ([192.88.165.103])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gplle-0001dz-Hm
+	for linux-mtd@lists.infradead.org; Thu, 30 Nov 2006 08:16:47 -0500
+Received: from de01smr01.freescale.net (de01smr01.freescale.net [10.208.0.31])
+	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
+	kAUDUEFw025995 for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Nov 2006 06:30:14 -0700 (MST)
+Received: from zin33exm21.fsl.freescale.net (zin33exm21.ap.freescale.net
+	[10.232.192.8])
+	by de01smr01.freescale.net (8.13.1/8.13.0) with ESMTP id kAUDFsMD004971
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Nov 2006 07:15:56 -0600 (CST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1720546.Zhb7K5RPsp";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200611291631.20184.toralf.foerster@gmx.de>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: NOR read/write beyond end of flash partition
+Date: Thu, 30 Nov 2006 18:45:53 +0530
+Message-ID: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD891559A@zin33exm21.fsl.freescale.net>
+From: "Tigadi Kiran-r10350c" <R10350C@freescale.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,47 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1720546.Zhb7K5RPsp
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi,
 
-Am Mittwoch, 29. November 2006 15:55 schrieb David Woodhouse:
-> On Wed, 2006-11-29 at 15:47 +0100, Toralf F=C3=B6rster wrote:
-> > WARNING: "cfi_cmdset_0002" [drivers/mtd/chips/gen_probe.ko]
-> > undefined!
->
-> I don't understand -- isn't cfi_cmdset_0002 in your kernel and exported?
-> It should be, if CONFIG_MTD_CFI_AMDSTD is set.
+>From linux-2.6.10/drivers/mtd/mtdchar.c file mtd_write routine is
+implemented to check MTD size (if (*ppos =3D=3D mtd->size) and it will
+return ENOSPC if you try to read beyond NOR MTD partition.
 
-tfoerste@n22 ~/devel $ grep -i cfi results/config.rnd.142
-CONFIG_MTD_CFI=3Dm
-# CONFIG_MTD_CFI_ADV_OPTIONS is not set
-CONFIG_MTD_CFI_I1=3Dy
-CONFIG_MTD_CFI_I2=3Dy
-# CONFIG_MTD_CFI_I4 is not set
-# CONFIG_MTD_CFI_I8 is not set
-# CONFIG_MTD_CFI_INTELEXT is not set
-CONFIG_MTD_CFI_AMDSTD=3Dy
-# CONFIG_MTD_CFI_STAA is not set
-CONFIG_MTD_CFI_UTIL=3Dm
+But mtd_read routine implemented in the same file does not have this
+check. So when I try to read beyond end of NOR MTD partition it is
+returning 0.=20
 
-Hhm, might be a Kconfig depend/select problem ?
-=2D-=20
-MfG/Sincerely
+Please let me know if any code updates are required.
 
-Toralf F=C3=B6rster
 
---nextPart1720546.Zhb7K5RPsp
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBFbafIhyrlCH22naMRAgvlAKC9k44o+B0Nv0m955vlo/ND88hHKQCgvggI
-zoHzksgmAlFtS9DS+ml8cqo=
-=S98I
------END PGP SIGNATURE-----
-
---nextPart1720546.Zhb7K5RPsp--
+Regards,
+Kiran
