@@ -1,5 +1,5 @@
-Message-ID: <1027.82.128.12.220.1164885254.TlMUQmxATEh4Sw==.squirrel@82.128.12.220>
-Date: Thu, 30 Nov 2006 11:14:14 -0000 (GMT)
+Message-ID: <1026.82.128.12.220.1164885110.TlMUQmxATEh4Sw==.squirrel@82.128.12.220>
+Date: Thu, 30 Nov 2006 11:11:50 -0000 (GMT)
 Subject: PLEASE BE MY PARTNER
 From: "KABU & T LIMITED" <ka_tony1@yahoo.ca>
 MIME-Version: 1.0
