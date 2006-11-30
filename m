@@ -1,22 +1,26 @@
-Received: from straum.hexapodia.org ([64.81.70.185])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gpqv7-0003q9-33
-	for linux-mtd@lists.infradead.org; Thu, 30 Nov 2006 13:46:07 -0500
-Date: Thu, 30 Nov 2006 10:45:56 -0800
-From: Andy Isaacson <adi@hexapodia.org>
-To: Adrian Bunk <bunk@stusta.de>, David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
-Message-ID: <20061130184556.GA23293@hexapodia.org>
-References: <20061125191541.GH3702@stusta.de>
-	<1164752386.14595.24.camel@pmac.infradead.org>
-	<20061125191541.GH3702@stusta.de>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GprKX-00047c-Sw
+	for linux-mtd@lists.infradead.org; Thu, 30 Nov 2006 14:12:25 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1GprKC-0000L7-Ii
+	for linux-mtd@lists.infradead.org; Thu, 30 Nov 2006 20:12:00 +0100
+Received: from bas17-toronto12-1096795652.dsl.bell.ca ([65.95.198.4])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2006 20:12:00 +0100
+Received: from fmandarino by bas17-toronto12-1096795652.dsl.bell.ca with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 30 Nov 2006 20:12:00 +0100
+To: linux-mtd@lists.infradead.org
+From: Frank Mandarino <fmandarino@endrelia.com>
+Subject: [PATCH] at91_nand CMDLINE_PARTS support
+Date: Thu, 30 Nov 2006 14:11:30 -0500
+Message-ID: <eknad3$uen$1@sea.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1164752386.14595.24.camel@pmac.infradead.org>
-	<20061125191541.GH3702@stusta.de>
-Cc: Andrew Morton <akpm@osdl.org>, Jarkko Lavinen <jarkko.lavinen@nokia.com>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +30,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Nov 25, 2006 at 08:15:41PM +0100, Adrian Bunk wrote:
-> This patch makes the needlessly global mtdpart_setup() static.
-> 
-> @@ -346,7 +346,7 @@
->   *
->   * This function needs to be visible for bootloaders.
->   */
-> -int mtdpart_setup(char *s)
-> +static int mtdpart_setup(char *s)
->  {
->  	cmdline = s;
->  	return 1;
+Hi,
 
-Jarkko,
+The following patch allows you to specify at91_nand partitions on the
+kernel command line using the mtdparts variable, if
+CONFIG_MTD_CMDLINE_PARTS is set.
 
-You're recorded as submitting the original patch to make this
-non-static:
-http://linux.bkbits.net:8080/linux-2.6/diffs/drivers/mtd/cmdlinepart.c@1.11?nav=index.html|src/|src/drivers|src/drivers/mtd|hist/drivers/mtd/cmdlinepart.c
+Regards,
+../fam
+--
+Frank Mandarino                                fmandarino(a)endrelia.com
+Endrelia Technologies Inc.
+Toronto, Ontario, Canada
 
-Is this change correct?
 
-If so, it should also delete the "needs to be visible" comment.
+[PATCH] [MTD] at91_nand.c: CMDLINE_PARTS support
 
--andy
+This patch allows you to specify at91_nand partitions on the
+kernel command line using the mtdparts variable, if
+CONFIG_MTD_CMDLINE_PARTS is set.
+
+Signed-off-by: Frank Mandarino <fmandarino@endrelia.com>
+
+
+diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
+index a58ed37..0d18fed 100644
+--- a/drivers/mtd/nand/at91_nand.c
++++ b/drivers/mtd/nand/at91_nand.c
+@@ -82,6 +82,12 @@ static void at91_nand_disable(struct at9
+ 		at91_set_gpio_value(host->board->enable_pin, 1);
+ }
+
++#ifdef CONFIG_MTD_PARTITIONS
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++const char *part_probes[] = { "cmdlinepart", NULL };
++#endif
++#endif
++
+ /*
+  * Probe for the NAND device.
+  */
+@@ -148,6 +154,12 @@ #endif
+ #ifdef CONFIG_MTD_PARTITIONS
+ 	if (host->board->partition_info)
+ 		partitions = host->board->partition_info(mtd->size, &num_partitions);
++#ifdef CONFIG_MTD_CMDLINE_PARTS
++	else {
++		mtd->name = "at91_nand";
++		num_partitions = parse_mtd_partitions(mtd, part_probes, &partitions, 0);
++	}
++#endif
+
+ 	if ((!partitions) || (num_partitions == 0)) {
+ 		printk(KERN_ERR "at91_nand: No parititions defined, or unsupported
+device.\n");
