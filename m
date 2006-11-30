@@ -1,5 +1,9 @@
-Message-ID: <1026.82.128.12.220.1164885110.TlMUQmxATEh4Sw==.squirrel@82.128.12.220>
-Date: Thu, 30 Nov 2006 11:11:50 -0000 (GMT)
+Received: from smtp-out5.blueyonder.co.uk ([195.188.213.8])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gpk56-0005BD-0t
+	for linux-mtd@lists.infradead.org; Thu, 30 Nov 2006 11:28:00 +0000
+Message-ID: <1030.82.128.12.220.1164885319.TlMUQmxATEh4Sw==.squirrel@82.128.12.220>
+Date: Thu, 30 Nov 2006 11:15:19 -0000 (GMT)
 Subject: PLEASE BE MY PARTNER
 From: "KABU & T LIMITED" <ka_tony1@yahoo.ca>
 MIME-Version: 1.0
