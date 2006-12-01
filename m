@@ -1,16 +1,11 @@
-Received: from outmx010.isp.belgacom.be ([195.238.5.233])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GqFOh-00056L-1a
-	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 20:54:19 +0000
-Received: from outmx010.isp.belgacom.be (localhost [127.0.0.1])
-	by outmx010.isp.belgacom.be (8.12.11.20060308/8.12.11/Skynet-OUT-2.22)
-	with ESMTP id kB1Ks2V7011094
-	for <linux-mtd@lists.infradead.org>; Fri, 1 Dec 2006 21:54:04 +0100
-	(envelope-from <valent.r.michailin@list.ru>)
-Message-Id: <200612012053.kB1Krjk5010906@outmx010.isp.belgacom.be>
-From: "Valentin" <valent.r.michailin@list.ru>
-Subject: Ask for help from Russia
-Date: Fri, 01 Dec 2006 18:54:03 +0300
+Received: from contrabass.corbina.net ([85.21.78.5])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GqFhd-0000Wf-0Y
+	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 16:13:53 -0500
+From: "Valentin" <valen.l.michailin@list.ru>
+Subject: Letter from a student from Russia
+Date: Fri, 01 Dec 2006 20:43:08 +0300
+Message-ID: <auto-000435761735@corbina.ru>
 To: undisclosed-recipients:;
 Reply-To: valem@nextmail.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -70,18 +65,4 @@ Tired of spam?  Yahoo! Mail has the best spam
 protection around 
 http://mail.yahoo.com 
 
-Dah mouth dat man tek fuh court woman, ah de same mouth he ah tek an put she ah door.
-
-
-
-______________________________________________________________________
-This email has been scanned by the MessageLabs Email Security System.
-For more information please visit http://www.messagelabs.com/email 
-______________________________________________________________________
-
-
-
-______________________________________________________________________
-This email has been scanned by the MessageLabs Email Security System.
-For more information please visit http://www.messagelabs.com/email 
-______________________________________________________________________
+If trousers say massah teef, yuh can't doubt am.
