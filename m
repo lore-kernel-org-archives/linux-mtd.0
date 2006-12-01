@@ -1,19 +1,24 @@
-Received: from mailhost.elitecore.com ([203.88.135.194] helo=elitecore.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gq8cg-0004L4-Qe
-	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 08:40:18 -0500
-Message-ID: <000601c7154d$cc2c2a20$3d0fa8c0@elitecore1561>
-From: "Darshak" <darshak@elitecore.com>
-To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-References: <000901c71549$4d730d10$3d0fa8c0@elitecore1561>
-	<1164979668.13143.14.camel@zod.rchland.ibm.com>
-Subject: Re: mkfs.jffs
-Date: Fri, 1 Dec 2006 19:07:08 +0530
+Received: from [131.228.20.173] (helo=mgw-ext14.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gq8gX-00082o-HR
+	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 13:44:15 +0000
+Date: Fri, 1 Dec 2006 15:41:57 +0200
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Andy Isaacson <adi@hexapodia.org>
+Subject: Re: [2.6 patch] make drivers/mtd/cmdlinepart.c:mtdpart_setup() static
+Message-ID: <20061201134157.GA31225@angel.research.nokia.com>
+References: <20061125191541.GH3702@stusta.de>
+	<1164752386.14595.24.camel@pmac.infradead.org>
+	<20061125191541.GH3702@stusta.de>
+	<20061130184556.GA23293@hexapodia.org>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20061130184556.GA23293@hexapodia.org>
+Cc: Andrew Morton <akpm@osdl.org>, Juha Yrjola <juha.yrjola@solidboot.com>,
+	linux-kernel@vger.kernel.org, Adrian Bunk <bunk@stusta.de>,
+	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +28,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-thanxs a lot josh.!
-Thanxs & Rgds
-Darshak Modi
-Elitecore Tech. Ltd.
-Ph: +91-79-26405600 Ex: 276
-email: darshak@elitecore.com
------ Original Message ----- 
-From: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-To: "Darshak" <darshak@elitecore.com>
-Cc: <linux-mtd@lists.infradead.org>
-Sent: Friday, December 01, 2006 6:57 PM
-Subject: Re: mkfs.jffs
+Our bootloader once used mtdpart_setup() for passing mtd partitions to 
+kernel. We do not do that any more and instead use the kernel command line 
+for passing the information.
 
+Jarkko Lavinen
 
-> On Fri, 2006-12-01 at 18:34 +0530, Darshak wrote:
->> 
->> 
->> 
->> Hi ,
->> I have compiled kernel [ 2.4.33 ] with jffs support.But I am not able to
->> find command mkfs.jffs/2 how could i enable this ?
+On Thu, Nov 30, 2006 at 10:45:56AM -0800, ext Andy Isaacson wrote:
+> On Sat, Nov 25, 2006 at 08:15:41PM +0100, Adrian Bunk wrote:
+> > This patch makes the needlessly global mtdpart_setup() static.
+> > 
+> > @@ -346,7 +346,7 @@
+> >   *
+> >   * This function needs to be visible for bootloaders.
+> >   */
+> > -int mtdpart_setup(char *s)
+> > +static int mtdpart_setup(char *s)
+> >  {
+> >  	cmdline = s;
+> >  	return 1;
 > 
-> It's part of the mtd-utils package.  Most Linux distributions have this
-> already packaged.  If not, it's available at:
+> Jarkko,
 > 
-> ftp://ftp.infradead.org/pub/mtd-utils/
+> You're recorded as submitting the original patch to make this
+> non-static:
+> http://linux.bkbits.net:8080/linux-2.6/diffs/drivers/mtd/cmdlinepart.c@1.11?nav=index.html|src/|src/drivers|src/drivers/mtd|hist/drivers/mtd/cmdlinepart.c
 > 
-> josh
+> Is this change correct?
 > 
+> If so, it should also delete the "needs to be visible" comment.
 > 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
->
+> -andy
