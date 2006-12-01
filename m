@@ -1,19 +1,17 @@
-Received: from mgw-ext04.nokia.com ([131.228.20.96])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gq5B4-0001WJ-2x
-	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 04:59:33 -0500
-Subject: RE: NOR read/write beyond end of flash partition
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Tigadi Kiran-r10350c <R10350C@freescale.com>
-In-Reply-To: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD89156A1@zin33exm21.fsl.freescale.net>
-References: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD89156A1@zin33exm21.fsl.freescale.net>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 01 Dec 2006 11:59:20 +0200
-Message-Id: <1164967160.20337.8.camel@sauron>
+Subject: Re: Upgrading mtd-utils in uClinux.
+From: David Woodhouse <dwmw2@infradead.org>
+To: Glen Johnson <gjohnson@valcom.com>
+In-Reply-To: <456ED562.5080307@valcom.com>
+References: <456C4306.8070205@valcom.com>
+	<Pine.LNX.4.64.0611290842530.5328@lnxricardw.se.axis.com>
+	<456ED562.5080307@valcom.com>
+Content-Type: text/plain
+Date: Fri, 01 Dec 2006 11:21:22 +0000
+Message-Id: <1164972082.5063.59.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: Linux mtd <linux-mtd@lists.infradead.org>,
+	Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2006-12-01 at 15:18 +0530, Tigadi Kiran-r10350c wrote:
-> Hi Artem,
->=20
-> As write routine implementation has -ENOSPC, I created patch with read ro=
-utine returning same value.
->=20
-> So, please let me know which patch is valid?
+On Thu, 2006-11-30 at 07:58 -0500, Glen Johnson wrote:
+> Ricard Wanderlof wrote:
+> > Unless someone here has had this specific problem, some form of output
+> > from the compilation indicating what is going wrong would be helpful.
+> >
+> >   
+> Yes, of course.  I have a couple more direct question. First, I found
+> the mtd-utils code is not properly using zlib. 
+> 
+> m68k-elf-gcc -Wl,--fatal-warnings -Wl,-elf2flt -Wl,-move-rodata
+> -msep-data -o mkfs.jffs2 crc32.o compr_rtime.o mkfs.jffs2.o compr_zlib.o
+> compr.o -L/home/glen/src/c/linux/uClinux-dist-20060803/lib/zlib
 
-Pardon? I think there is no need in a patch and mtd_read() is ok as it
-is.
+No '-lz' on this command line -- you're not actually asking it to link
+against zlib. Thus is doesn't find any of zlib's symbols.
 
+> warning: .rodata section contains relocations
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+I've no idea what this is about. Perhaps the function pointers in the
+jffs2_zlib_comp compressor structure?
+
+mkfs.jffs2 builds fine for me for FR-V uClinux, although that's
+ELF-FDPIC not flat. Are the relocations in .rodata actually a problem?
+Doesn't m68k have ELF-FDPIC yet?
+
+> Secondly, once I get the code to compile it appears I still need to add
+> a section to the Makefile to install the files into the romfs image. 
+> Can I just pull this out of the old mtd-utils/Makefile or what? 
+> Suggestion's/recommendations?
+
+Something wrong with 'make DESTDIR=/foo install' ?
+
+--  
+dwmw2
