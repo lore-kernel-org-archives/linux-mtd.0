@@ -1,22 +1,18 @@
-Received: from [131.228.20.171] (helo=mgw-ext12.nokia.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gq3eF-0005F6-TA
-	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 08:21:34 +0000
-Subject: Re: jffs2_flash_writev(): Non-contiguous write to 00825300 with
-	mtd_dataflash
+Received: from mgw-ext03.nokia.com ([131.228.20.95])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gq3fh-0008NJ-6i
+	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 03:23:18 -0500
+Subject: Re: Finding flash type...
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200611290921.02293.david-b@pacbell.net>
-References: <20061101115252.26000d78@cad-250-152.norway.atmel.com>
-	<1164717377.576.29.camel@sauron>
-	<20061129142607.7546cbad@dhcp-252-105.norway.atmel.com>
-	<200611290921.02293.david-b@pacbell.net>
+To: Siddharth Choudhuri <siddh_c@yahoo.com>
+In-Reply-To: <20061129185335.89361.qmail@web30205.mail.mud.yahoo.com>
+References: <20061129185335.89361.qmail@web30205.mail.mud.yahoo.com>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 01 Dec 2006 10:21:15 +0200
-Message-Id: <1164961275.576.81.camel@sauron>
+Date: Fri, 01 Dec 2006 10:22:31 +0200
+Message-Id: <1164961351.576.84.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Haavard Skinnemoen <hskinnemoen@atmel.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,15 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-11-29 at 09:21 -0800, David Brownell wrote:
-> > -	device->flags =3D MTD_CAP_NORFLASH;
-> > +	device->flags =3D MTD_WRITEABLE;
+On Wed, 2006-11-29 at 10:53 -0800, Siddharth Choudhuri wrote:
+> Hi,
 >=20
-> That "NORFLASH" flag always seemed bogus to me, but it was at the
-> time the only way to make the MTD core behave.
+> Is it possible to know what kind of flash (NOR type or
+> NAND type) is installed on a system ? (may be using
+> lsmod -or- cat /proc/ksyms | grep ? )=20
 
-I personally not fond of adding capabilities bits to the mtd_info
-structure at all...
+It would be ideal if somebody added sysfs support to MTD. Then you could
+just look at sysfs and find it out. Now you should use ioctl's.
 
 --=20
 Best regards,
