@@ -1,15 +1,15 @@
-Received: from mgw-ext03.nokia.com ([131.228.20.95])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gq3fh-0008NJ-6i
-	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 03:23:18 -0500
-Subject: Re: Finding flash type...
+Received: from [131.228.20.171] (helo=mgw-ext12.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gq3pp-0005Zt-Fq
+	for linux-mtd@lists.infradead.org; Fri, 01 Dec 2006 08:33:31 +0000
+Subject: RE: NOR read/write beyond end of flash partition
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Siddharth Choudhuri <siddh_c@yahoo.com>
-In-Reply-To: <20061129185335.89361.qmail@web30205.mail.mud.yahoo.com>
-References: <20061129185335.89361.qmail@web30205.mail.mud.yahoo.com>
+To: Tigadi Kiran-r10350c <R10350C@freescale.com>
+In-Reply-To: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD89155AB@zin33exm21.fsl.freescale.net>
+References: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD89155AB@zin33exm21.fsl.freescale.net>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 01 Dec 2006 10:22:31 +0200
-Message-Id: <1164961351.576.84.camel@sauron>
+Date: Fri, 01 Dec 2006 10:33:20 +0200
+Message-Id: <1164962000.20337.0.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,15 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-11-29 at 10:53 -0800, Siddharth Choudhuri wrote:
-> Hi,
->=20
-> Is it possible to know what kind of flash (NOR type or
-> NAND type) is installed on a system ? (may be using
-> lsmod -or- cat /proc/ksyms | grep ? )=20
+On Thu, 2006-11-30 at 21:23 +0530, Tigadi Kiran-r10350c wrote:
+> Please find attached patch for drivers/mtd/mtdchar.c file to fix NOR read=
+ beyond flash. Let me know whether it is valid fix.
 
-It would be ideal if somebody added sysfs support to MTD. Then you could
-just look at sysfs and find it out. Now you should use ioctl's.
+Thanks.
 
 --=20
 Best regards,
