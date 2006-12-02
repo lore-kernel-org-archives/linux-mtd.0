@@ -1,21 +1,35 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GqXql-0001Vz-3A
-	for linux-mtd@lists.infradead.org; Sat, 02 Dec 2006 11:36:30 -0500
-Date: Sat, 2 Dec 2006 19:41:03 +0300
-From: Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
-To: Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
-Subject: Re: [PATCH] [MTD] BLOCK_RO: Readonly Block Device Layer Over MTD
-Message-ID: <20061202194103.28f04a93@localhost.localdomain>
-In-Reply-To: <20061122195633.0719c264@localhost.localdomain>
-References: <20061117184055.569da7ad@localhost.localdomain>
-	<1164034364.3574.6.camel@zod.rchland.ibm.com>
-	<4562D537.5080908@ru.mvista.com>
-	<20061122195633.0719c264@localhost.localdomain>
+Received: from outfbmx009.isp.belgacom.be ([195.238.4.198])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GqeE5-0004pb-9A
+	for linux-mtd@lists.infradead.org; Sat, 02 Dec 2006 18:25:02 -0500
+Received: from outmx002.isp.belgacom.be (outmx002.isp.belgacom.be
+	[195.238.5.52])
+	by outfbmx009.isp.belgacom.be (Postfix) with ESMTP id 04B6AEC8F0
+	for <linux-mtd@lists.infradead.org>;
+	Sun,  3 Dec 2006 00:06:16 +0100 (CET)
+Received: from outmx002.isp.belgacom.be (localhost [127.0.0.1])
+	by outmx002.isp.belgacom.be (8.12.11.20060308/8.12.11/Skynet-OUT-2.22)
+	with ESMTP id kB2N4tCV017604
+	for <linux-mtd@lists.infradead.org>; Sun, 3 Dec 2006 00:04:55 +0100
+	(envelope-from <p2@mind.be>)
+Received: from ione.intern.mind.be (140.79-246-81.adsl-static.isp.belgacom.be
+	[81.246.79.140])
+	by outmx002.isp.belgacom.be (8.12.11.20060308/8.12.11/Skynet-OUT-2.22)
+	with ESMTP id kB2N4raC017581
+	for <linux-mtd@lists.infradead.org>; Sun, 3 Dec 2006 00:04:53 +0100
+	(envelope-from <p2@mind.be>)
+Received: from eros.intern.mind.be ([10.42.0.56] helo=NAT.office.mind.be)
+	by ione.intern.mind.be with esmtp (Exim 3.35 #1 (Debian))
+	id 1Gqdpd-0008CM-00
+	for <linux-mtd@lists.infradead.org>; Sat, 02 Dec 2006 22:59:41 +0000
+From: p2@mind.be
+Date: Sun, 3 Dec 2006 00:04:55 +0100
+To: linux-mtd@lists.infradead.org
+Subject: CALL FOR PAPERS for the 5th EMBEDDED track at FOSDEM 2007
+Message-ID: <20061202230455.GH5216@eros.intern.mind.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Vitaly Wool <vwool@ru.mvista.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,217 +39,92 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 22 Nov 2006 19:56:33 +0300
-Konstantin Baydarov <kbaidarov@dev.rtsoft.ru> wrote:
-> 
-> Corrected typo, renamed driver, got rid from redundant dependency.
-> Also I've tested mtdblock_ro_bbfree as module - ok.
+CALL FOR PAPERS for the 5th EMBEDDED track at FOSDEM 2007
+=========================================================
 
-Renamed driver to 'romblock'. Every entry of 'mtdblock' was replaced.
-Debug level in DEBUG macros was replaced by corresponding macros.
+sat 24 - sun 25 February 2007, Brussels
 
- drivers/mtd/Kconfig    |    7 ++
- drivers/mtd/Makefile   |    1 
- drivers/mtd/romblock.c |  165 +++++++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 173 insertions(+)
+Call for papers
+----------------
 
-Index: mtd-2.6/drivers/mtd/romblock.c
-===================================================================
---- /dev/null
-+++ mtd-2.6/drivers/mtd/romblock.c
-@@ -0,0 +1,165 @@
-+/*
-+ *  Readonly Block Device Layer Over MTD
-+ *
-+ *  (C) 2006 Baydarov Konstantin <kbaidarov@dev.rtsoft.ru>
-+ *           Pantelis Antoniou <panto@intracom.gr>
-+ *           David Woodhouse <dwmw2@infradead.org>
-+ *
-+ *  It allows to use any filesystem on this device in
-+ *  RO mode and thus gain faster mount times and better
-+ *  throughput rates.
-+ *
-+ */
-+
-+#include <linux/init.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/blktrans.h>
-+
-+struct romblock_map {
-+	struct mtd_blktrans_dev dev;
-+	/* block map for RO */
-+	int32_t *block_map;
-+	int32_t block_top;
-+	int32_t block_scantop;
-+};
-+
-+static loff_t map_over_bad_blocks(struct mtd_blktrans_dev* dev, loff_t from)
-+{
-+	int i, block;
-+	struct mtd_info *mtd = dev->mtd;
-+	struct romblock_map* dev_cont = container_of(dev, struct romblock_map, dev);
-+	int32_t *block_map = dev_cont->block_map;
-+	int32_t block_top = dev_cont->block_top;
-+	int32_t block_scantop = dev_cont->block_scantop;
-+
-+	/* if no bad block checking is possible bail out */
-+	if (mtd->block_isbad == NULL)
-+		return from;
-+
-+	/* first time in */
-+	if (block_map == NULL) {
-+		block_top = mtd->size / mtd->erasesize;
-+		block_map = kmalloc(sizeof(*block_map) * block_top, GFP_KERNEL);
-+		if (block_map == NULL) {
-+			printk (KERN_ERR "map_over_bad_blocks(): unable to allocate block map\n");
-+			return -ENOMEM;
-+		}
-+		for (i = 0; i < block_top; i++)
-+			block_map[i] = -1;
-+
-+		for (i = 0; i < block_top; i++)
-+			if ((*mtd->block_isbad)(mtd, i * mtd->erasesize) == 0)
-+				break;
-+
-+		if (i >= block_top) {
-+			printk (KERN_WARNING "map_over_bad_blocks(): all blocks bad!\n");
-+			return -EIO;
-+		}
-+		block_scantop = 0;
-+		block_map[0] = i;
-+
-+		DEBUG(MTD_DEBUG_LEVEL0, "mtd: map %d -> %d\n", block_scantop, block_map[block_scantop]);
-+	}
-+
-+	block = ((int)from / mtd->erasesize);
-+	if (block >= block_top)
-+		return (loff_t)-1;
-+
-+	/* scan for bad block up to where we want */
-+	while (block >= block_scantop) {
-+		/* find a non bad block */
-+		for (i = block_map[block_scantop] + 1; i < block_top; i++)
-+			if ((*mtd->block_isbad)(mtd, i * mtd->erasesize) == 0)
-+				break;
-+
-+		/* exhausted ? */
-+		if (i >= block_top) {
-+			printk (KERN_WARNING "map_over_bad_blocks(): no more good blocks!\n");
-+			return (loff_t)-1;
-+		}
-+
-+		block_map[++block_scantop] = i;
-+		DEBUG(MTD_DEBUG_LEVEL0, "mtd: map %d -> %d\n", block_scantop, block_map[block_scantop]);
-+	}
-+
-+	block = block_map[(int)from / mtd->erasesize];
-+	from = (block * mtd->erasesize) | ((int)from & (mtd->erasesize - 1));
-+	return from;
-+}
-+
-+static int romblock_readsect(struct mtd_blktrans_dev *dev,
-+			      unsigned long block, char *buf)
-+{
-+	size_t retlen;
-+	unsigned long from;
-+
-+	from = map_over_bad_blocks(dev, block<<9);
-+
-+	if (dev->mtd->read(dev->mtd, from, 512, &retlen, buf))
-+		return 1;
-+	return 0;
-+}
-+
-+static int romblock_writesect(struct mtd_blktrans_dev *dev,
-+			      unsigned long block, char *buf)
-+{
-+	size_t retlen;
-+
-+	if (dev->mtd->write(dev->mtd, (block * 512), 512, &retlen, buf))
-+		return 1;
-+	return 0;
-+}
-+
-+static void romblock_add_mtd(struct mtd_blktrans_ops *tr, struct mtd_info *mtd)
-+{
-+	struct romblock_map *dev_cont = kmalloc(sizeof(*dev_cont), GFP_KERNEL);
-+
-+	if (!dev_cont)
-+		return;
-+
-+	memset(dev_cont, 0, sizeof(*dev_cont));
-+
-+	dev_cont->dev.mtd = mtd;
-+	dev_cont->dev.devnum = mtd->index;
-+	dev_cont->dev.blksize = 512;
-+	dev_cont->dev.size = mtd->size >> 9;
-+	dev_cont->dev.tr = tr;
-+	dev_cont->dev.readonly = 1;
-+
-+	add_mtd_blktrans_dev(&(dev_cont->dev));
-+}
-+
-+static void romblock_remove_dev(struct mtd_blktrans_dev *dev)
-+{
-+	del_mtd_blktrans_dev(dev);
-+	kfree(dev);
-+}
-+
-+static struct mtd_blktrans_ops romblock_tr = {
-+	.name		= "romblock",
-+	.major		= 258,
-+	.part_bits	= 0,
-+	.readsect	= romblock_readsect,
-+	.writesect	= romblock_writesect,
-+	.add_mtd	= romblock_add_mtd,
-+	.remove_dev	= romblock_remove_dev,
-+	.owner		= THIS_MODULE,
-+};
-+
-+static int __init romblock_init(void)
-+{
-+	return register_mtd_blktrans(&romblock_tr);
-+}
-+
-+static void __exit romblock_exit(void)
-+{
-+	deregister_mtd_blktrans(&romblock_tr);
-+}
-+
-+module_init(romblock_init);
-+module_exit(romblock_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Baydarov Konstantin <kbaidarov@dev.rtsoft.ru>");
-+MODULE_DESCRIPTION("Readonly Block Device Layer Over MTD");
-Index: mtd-2.6/drivers/mtd/Makefile
-===================================================================
---- mtd-2.6.orig/drivers/mtd/Makefile
-+++ mtd-2.6/drivers/mtd/Makefile
-@@ -17,6 +17,7 @@ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
- obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
- obj-$(CONFIG_MTD_BLOCK)		+= mtdblock.o mtd_blkdevs.o
- obj-$(CONFIG_MTD_BLOCK_RO)	+= mtdblock_ro.o mtd_blkdevs.o
-+obj-$(CONFIG_MTD_BLOCK_ROMBLOCK)	+= romblock.o mtd_blkdevs.o
- obj-$(CONFIG_FTL)		+= ftl.o mtd_blkdevs.o
- obj-$(CONFIG_NFTL)		+= nftl.o mtd_blkdevs.o
- obj-$(CONFIG_INFTL)		+= inftl.o mtd_blkdevs.o
-Index: mtd-2.6/drivers/mtd/Kconfig
-===================================================================
---- mtd-2.6.orig/drivers/mtd/Kconfig
-+++ mtd-2.6/drivers/mtd/Kconfig
-@@ -197,6 +197,13 @@ config MTD_BLOCK_RO
- 	  You do not need this option for use with the DiskOnChip devices. For
- 	  those, enable NFTL support (CONFIG_NFTL) instead.
+The 2007 edition of FOSDEM (Free and Open Source Developers' European
+Meeting; http://www.fosdem.org) will take place in Brussels, Belgium 
+on 24 and 25 February 2007. For the fifth time, a track on Embedded 
+Systems and Operating Systems will be organized. The fourth edition 
+was quite succesful and attracted up to 150 attendants for certain
+topics.
+
+For last year's program see:
+http://www.embedded-kernel-track.org/2006/papers.html
+
+The use of Free Software in the infrastructure of Embedded Systems 
+is booming, e.g. by the use of Linux, uClinux, eCos, RedBoot, RTEMS 
+and many other Free Software components. More companies are supporting
+Embedded Free Software every day because of the reliability and cheap
+licensing. This can be confirmed from looking at some high profile
+releases of embedded GNU/Linux systems. Some examples are the Nokia 770,
+some models of Motorola's smartphones and Archos media players. Not to 
+forget the popular TomTom navigation system, the numerous SOHO routers 
+and NAS devices based on linux.
+
+Operating System development has always been a very important topic in
+Free Software.
+As embedded and real-time systems typically have special OS
+requirements, we organise this Free Embedded and OS development track at
+FOSDEM to give people the opportunity to present their (or their teams)
+achievements.
+
+This track at FOSDEM provides a remarkable opportunity to present and
+discuss the ongoing work in these areas, and we invite developers to 
+present their current projects. Technical topics of the conference 
+include but are not limited to :
+
+* OS Development : kernel architecture and implementation, libraries, power 
+   management, TIPC, boot time and memory usage optimizations
+  (e.g. Linux, BSD, uClinux, uClibc, newlib, slob allocator,...)
+
+* Practical experiences in implementing Free Software in embedded
+systems  (e.g. reverse engineering, porting  to (and adapting of)
+commercial devices like the Ipaq, linksys WRT54G, nlsu2 .... )
+
+* Toolchain, performance testing and build environment 
+  (e.g. crosstool, emdebian, openembedded, PTX dist, packaging,
+scratchbox, Eclipse, Valgrind,...)
+
+* GUIs for embedded systems
+  (Gtk, Qt-(embedded), GPE, Qtopia, UI design with touchscreen, 
+   Hildon GUI extensions, OpenMoko, OpenGL ES, ...)
+
+* Multimedia applications for embedded systems
+  (e.g. integer only decoders, Opieplayer, gstreamer... )
+
+* Real-time extensions, nanokernels and hardware virtualization software
+  (e.g. RTAI, Adeos, KURT, L4, Qemu, User Mode Linux, VirtualLogix,
+   high resolution timers, ...)
  
-+config MTD_BLOCK_ROMBLOCK
-+	tristate "Readonly Block Device Layer Over MTD"
-+	depends on MTD_BLOCK!=y && MTD
-+	help
-+	  Same as readonly block driver, but this allow you to mount read-only file
-+	  systems from an MTD device, containing bad blocks.
-+
- config FTL
- 	tristate "FTL (Flash Translation Layer) support"
- 	depends on MTD && BLOCK
+* Hard real-time OS's
+  (eCos, RTEMS, Real Time Linux,...)
+
+* Open hardware, DSP, softcores and general hardware management
+  (e.g opencores.org, OpenRISC, leonSparc, FPGA's, specific design
+restrictions for free systems, DSP, Power management...)
+
+* Safety and security certifications applied to Free software
+   (e.g. security measures in Embedded systems, TPM, SELinux
+    for embedded, TrustZone, ...)
+
+* Tools and techniques for programming multicore systems
+
+* Free software licenses and embedded systems
+
+Authors that wish to present a topic are requested to submit their
+abstracts online to embedded@fosdem.org before 14/01/2007. Notification
+of receipt will be sent within 48 hours. Authors wishing to submit a
+full paper (between 6 and 12 A4 pages), can do so in PS or PDF format.
+
+The Program Committee will evaluate the abstracts and consists of:
+
+* Geert Uytterhoeven, Sony NSCE, Belgium
+* Peter De Schrijver (p2), Essensium, Belgium
+* Philippe De Swert, Nokia (OSSO), Finland
+* Klaas van Gend, MontaVista Software, The Netherlands
