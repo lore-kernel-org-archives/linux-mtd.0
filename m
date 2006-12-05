@@ -1,19 +1,15 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
+Received: from mail.oconline.net ([216.171.161.100])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GreOS-0001dZ-Pt
-	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 12:47:51 -0500
-Received: by py-out-1112.google.com with SMTP id p76so76370pyb
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Dec 2006 09:47:43 -0800 (PST)
-Message-ID: <79ac09b60612050947x5072acfay9df3554fd4e1fbfe@mail.gmail.com>
-Date: Tue, 5 Dec 2006 11:47:42 -0600
-From: Duke <ezbonites@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: write verify
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1Gref7-0001wY-AZ
+	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 13:05:05 -0500
+Mime-Version: 1.0 (Apple Message framework v624)
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-Id: <fb088a1db743546bf466829c5e7b2656@onz.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+To: Linux MTD <linux-mtd@lists.infradead.org>
+From: Allen Curtis <acurtis@onz.com>
+Subject: nandwrite v1.0.1 seg faults
+Date: Tue, 5 Dec 2006 10:04:35 -0800
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +19,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-How do I verify flash have been written to? Do I read it back in a
-file and then compare it to the original? That's using double the
-memory so I assuming there is another way, perhaps to compare the
-original directly in flash. Is there?
-Thanks.
+Hello,
+
+I have compiled mtdutils-1.0.1 for the ARM, with the ACL patch provided 
+on this mailing list. When I run this I get a segmentation fault. 
+Version 1.0.0 of the nandwrite utility works fine.
+
+Has anyone found and fixed this problem?
+
+Suggestions?
+
+TIA
+- Allen
