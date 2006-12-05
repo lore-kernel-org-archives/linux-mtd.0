@@ -1,28 +1,18 @@
-Received: from de01egw02.freescale.net ([192.88.165.103])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GrSYv-0002ak-TS
-	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 00:09:55 -0500
-Received: from de01smr02.am.mot.com (de01smr02.freescale.net [10.208.0.151])
-	by de01egw02.freescale.net (8.12.11/de01egw02) with ESMTP id
-	kB55O7XQ009931 for <linux-mtd@lists.infradead.org>;
-	Mon, 4 Dec 2006 22:24:07 -0700 (MST)
-Received: from zin33exm21.fsl.freescale.net (zin33exm21.ap.freescale.net
-	[10.232.192.8])
-	by de01smr02.am.mot.com (8.13.1/8.13.0) with ESMTP id kB559dGW016260
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 4 Dec 2006 23:09:41 -0600 (CST)
-Content-class: urn:content-classes:message
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GrUCA-0003DJ-Ei
+	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 01:54:29 -0500
+Date: Tue, 5 Dec 2006 07:53:40 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Allen Curtis <acurtis@onz.com>
+Subject: Re: NAND dump utility?
+In-Reply-To: <4a23dd190bc7a153976d88702d6cf3c0@onz.com>
+Message-ID: <Pine.LNX.4.64.0612050750400.29536@lnxricardw.se.axis.com>
+References: <4a23dd190bc7a153976d88702d6cf3c0@onz.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="koi8-r"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: NOR read/write beyond end of flash partition
-Date: Tue, 5 Dec 2006 10:39:37 +0530
-Message-ID: <A4F93E6F2F2D4E4D8F6AF6C7562DDBD891589C@zin33exm21.fsl.freescale.net>
-In-Reply-To: <1164967160.20337.8.camel@sauron>
-From: "Tigadi Kiran-r10350c" <R10350C@freescale.com>
-To: <dedekind@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux MTD <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +22,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
 
-Could you please give the exact reason why this is NOT a bug?
+On Mon, 4 Dec 2006, Allen Curtis wrote:
 
-Regards,
-Kiran
+> Hello,
+>
+> Is there a NAND dump utility which will create a binary image suitable=20
+> to replication for production? When you create an image with DD you do=20
+> not get the ECC information.
 
------Original Message-----
-From: Artem Bityutskiy [mailto:dedekind@infradead.org]=20
-Sent: Friday, December 01, 2006 3:29 PM
-To: Tigadi Kiran-r10350c
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: NOR read/write beyond end of flash partition
+In the mtd-utils package there is a utility called nanddump which can dump=
+=20
+nand flashes with or without ecc.
 
-On Fri, 2006-12-01 at 15:18 +0530, Tigadi Kiran-r10350c wrote:
-> Hi Artem,
->=20
-> As write routine implementation has -ENOSPC, I created patch with read =
-routine returning same value.
->=20
-> So, please let me know which patch is valid?
+(mtd-utils can be obtained from=20
+ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.0.1.tar.gz)
 
-Pardon? I think there is no need in a patch and mtd_read() is ok as it
-is.
-
-
---=20
-Best regards,
-Artem Bityutskiy (=E2=C9=D4=C0=C3=CB=C9=CA =E1=D2=D4=A3=CD)
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
