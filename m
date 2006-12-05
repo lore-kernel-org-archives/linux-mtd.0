@@ -1,20 +1,35 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GrV9g-0003fE-KW
-	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 02:56:00 -0500
-Received: from malvek.artecdesign.ee ([62.65.32.4] helo=liivakast)
-	by postikukk.artecdesign.ee with smtp (Exim 4.50) id 1GrV9P-0000ls-B0
-	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 09:55:48 +0200
-From: =?iso-8859-4?B?SvxyaSBQ9WxkcmU=?= <Jyri.Poldre@artecdesign.ee>
-To: <linux-mtd@lists.infradead.org>
-Subject: Jffs2 for sram filesystem
-Date: Tue, 5 Dec 2006 09:55:52 +0200
-Message-ID: <JJEGJLLALGANNBPNAIMMIEPJDNAA.Jyri.Poldre@artecdesign.ee>
+Received: from mtagate6.uk.ibm.com ([195.212.29.139])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GrVwh-0007d8-BQ
+	for linux-mtd@lists.infradead.org; Tue, 05 Dec 2006 08:46:39 +0000
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate6.uk.ibm.com (8.13.8/8.13.8) with ESMTP id kB58kDAB258568
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Dec 2006 08:46:13 GMT
+Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
+	[9.149.37.216])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with
+	ESMTP id kB58kCBF2949366
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Dec 2006 08:46:12 GMT
+Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id kB58kC8Y007518
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Dec 2006 08:46:12 GMT
+Received: from dyn-9-152-251-65.boeblingen.de.ibm.com
+	(dyn-9-152-251-65.boeblingen.de.ibm.com [9.152.251.65])
+	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.12.11) with ESMTP
+	id kB58kCJh007515
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Dec 2006 08:46:12 GMT
+From: Timo Lindhorst <lindhors@vnet.ibm.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD-UTILS] nanddump.c: fix up long_options
 MIME-Version: 1.0
+Content-Disposition: inline
+Date: Tue, 5 Dec 2006 09:46:11 +0100
 Content-Type: text/plain;
-	charset="iso-8859-4"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Reply-To: Jyri.Poldre@artecdesign.ee
+Message-Id: <200612050946.11666.lindhors@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +39,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Add the missing long option '--file'.
 
+From: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
+Signed-off-by: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
+---
+ nanddump.c |    1 +
+ 1 file changed, 1 insertion(+)
 
-Arm CPU based system running 2.6.15 kernel is using 128 Kbytes accumulator
-backed up sram for storing keying material. If system is powered off for
-more
-than 2 days accumulator discharges and file system gets corrupt. At boot the
-mount command gives lots of errors but most of the time succeeds even though
-file contents can be corrupt or files missing.
-
-My question is:  Is jffs2 filesystem suitable for sram where fault model is
-different than flash?
-
-It is ok to erase SRAM, main issue is to keep it from coming up with corrupt
-data.
-
-
-Sincerely,
-
-Jyri Poldre,
-Artec Design.
+--- mtd-utils.git.orig/nanddump.c
++++ mtd-utils.git/nanddump.c
+@@ -91,6 +91,7 @@ void process_options (int argc, char *ar
+ 		static const struct option long_options[] = {
+ 			{"help", no_argument, 0, 0},
+ 			{"version", no_argument, 0, 0},
++			{"file", required_argument, 0, 'f'},
+ 			{"ignoreerrors", no_argument, 0, 'i'},
+ 			{"prettyprint", no_argument, 0, 'p'},
+ 			{"omitoob", no_argument, 0, 'o'},
