@@ -1,15 +1,21 @@
-Received: from mail.valcom.com ([151.199.82.35])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GrxG9-0003Re-B0
-	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 08:56:31 -0500
-Message-ID: <4576CC07.2000107@valcom.com>
-Date: Wed, 06 Dec 2006 08:56:23 -0500
-From: Glen Johnson <gjohnson@valcom.com>
-MIME-Version: 1.0
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GrxN4-0003fy-U0
+	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 09:03:49 -0500
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	kB6E3Uve018492
+	for <linux-mtd@lists.infradead.org>; Wed, 6 Dec 2006 15:03:30 +0100
+Date: Wed, 6 Dec 2006 15:02:58 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: mkfs.jffs2 not compiling, which acl.h?
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Subject: Re: mkfs.jffs2 not compiling, which acl.h?
+In-Reply-To: <4576CC07.2000107@valcom.com>
+Message-ID: <Pine.LNX.4.64.0612061502000.29536@lnxricardw.se.axis.com>
+References: <4576CC07.2000107@valcom.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +25,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linux-mtd,
-First off I am using uClinux-dist 2006-08-03 source code with the
-m68k-uclinux-tools-20060615 cross compiler.  What I am trying to do is
-compile the latest version of the mtd-utils.  I used git to retrieve the
-latest version of the mtd-utils and put those files into
-uClinux-dist/user/mtd-utils directory.  When I run make the compile
-stops complaining that it can't find <sys/acl.h> and then gives errors
-like listed below.
-mkfs.jffs2.c:1093: error: 'ACL_MASK' undeclared (first use in this function)
-mkfs.jffs2.c:1094: error: 'ACL_OTHER' undeclared (first use in this
-function)
-mkfs.jffs2.c:1100: error: 'ACL_USER' undeclared (first use in this function)
-mkfs.jffs2.c:1101: error: 'ACL_GROUP' undeclared (first use in this
-function)
 
-I ran find uClinux-dist/ -name acl.h and got this list of files.
-./linux-2.6.x/include/config/fs/posix/acl.h
-./linux-2.6.x/fs/ext3/acl.h
-./linux-2.6.x/fs/ext2/acl.h
-./user/asterisk/include/asterisk/acl.h
-./user/bind/lib/dns/include/dns/acl.h
+On Wed, 6 Dec 2006, Glen Johnson wrote:
 
-After checking each of these files I found that ACL_* were not defined
-in any of them.  I then ran grep -r ACL_MASK ./ and found ACL_MASK was
-defined in the header file <linux/posix_acl.h> .  I tried #include
-<linux/posix_acl.h> in place of <sys/acl.h> and got warnings about not
-other info.  If I #include <asm-m68knommu/atomic.h> all the warnings and
-errors dissappear.
+> <linux/posix_acl.h> in place of <sys/acl.h>?  By the way I never found
+> sys/acl.h anywhere in uClinux-dist.  What is the proper way to handle thi=
+s?
 
-Do I really have to include both <asm-m68knommu/atomic.h> and
-<linux/posix_acl.h> in place of <sys/acl.h>?  By the way I never found
-sys/acl.h anywhere in uClinux-dist.  What is the proper way to handle this?
-Thank you,
-Glen Johnson
+There was a patch posted a week or two ago on this list which enables you=
+=20
+to compile mkfs.jffs2 on systems where acl.h (and the features it=20
+supports) are missing. Check the archives.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
