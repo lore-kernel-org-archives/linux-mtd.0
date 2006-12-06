@@ -1,20 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Grvhn-0002cR-FS
-	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 07:16:56 -0500
-Subject: Re: Finding flash type...
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Siddharth Choudhuri <siddh_c@yahoo.com>
-In-Reply-To: <1165370753.2679.5.camel@crusty.rchland.ibm.com>
-References: <20061206014432.56808.qmail@web30201.mail.mud.yahoo.com>
-	<1165370753.2679.5.camel@crusty.rchland.ibm.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 06 Dec 2006 13:57:52 +0200
-Message-Id: <1165406272.20337.46.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mail.valcom.com ([151.199.82.35])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GrxG9-0003Re-B0
+	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 08:56:31 -0500
+Message-ID: <4576CC07.2000107@valcom.com>
+Date: Wed, 06 Dec 2006 08:56:23 -0500
+From: Glen Johnson <gjohnson@valcom.com>
+MIME-Version: 1.0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: mkfs.jffs2 not compiling, which acl.h?
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-12-05 at 20:05 -0600, Josh Boyer wrote:
-> > 1. Should the information be exported in the
-> > /sys/block/mtd* directory ? The other place would be
-> > /sys/class/mtd*.
->=20
+Linux-mtd,
+First off I am using uClinux-dist 2006-08-03 source code with the
+m68k-uclinux-tools-20060615 cross compiler.  What I am trying to do is
+compile the latest version of the mtd-utils.  I used git to retrieve the
+latest version of the mtd-utils and put those files into
+uClinux-dist/user/mtd-utils directory.  When I run make the compile
+stops complaining that it can't find <sys/acl.h> and then gives errors
+like listed below.
+mkfs.jffs2.c:1093: error: 'ACL_MASK' undeclared (first use in this function)
+mkfs.jffs2.c:1094: error: 'ACL_OTHER' undeclared (first use in this
+function)
+mkfs.jffs2.c:1100: error: 'ACL_USER' undeclared (first use in this function)
+mkfs.jffs2.c:1101: error: 'ACL_GROUP' undeclared (first use in this
+function)
 
-I am unsure it is /sys/class/. For MTD devices we should probably have
-full device/driver/bus support so it'll go
-at /sys/devices, /sys/drivers/, /sys/bus. In case of MTD the bus is so
-called "platform" bus. Please, refer to linux device drivers v3.
+I ran find uClinux-dist/ -name acl.h and got this list of files.
+./linux-2.6.x/include/config/fs/posix/acl.h
+./linux-2.6.x/fs/ext3/acl.h
+./linux-2.6.x/fs/ext2/acl.h
+./user/asterisk/include/asterisk/acl.h
+./user/bind/lib/dns/include/dns/acl.h
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+After checking each of these files I found that ACL_* were not defined
+in any of them.  I then ran grep -r ACL_MASK ./ and found ACL_MASK was
+defined in the header file <linux/posix_acl.h> .  I tried #include
+<linux/posix_acl.h> in place of <sys/acl.h> and got warnings about not
+other info.  If I #include <asm-m68knommu/atomic.h> all the warnings and
+errors dissappear.
+
+Do I really have to include both <asm-m68knommu/atomic.h> and
+<linux/posix_acl.h> in place of <sys/acl.h>?  By the way I never found
+sys/acl.h anywhere in uClinux-dist.  What is the proper way to handle this?
+Thank you,
+Glen Johnson
