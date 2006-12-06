@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GrvQl-0002KA-7L
-	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 06:59:21 -0500
+	id 1Grvhn-0002cR-FS
+	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 07:16:56 -0500
 Subject: Re: Finding flash type...
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0612060929280.29536@lnxricardw.se.axis.com>
+To: Siddharth Choudhuri <siddh_c@yahoo.com>
+In-Reply-To: <1165370753.2679.5.camel@crusty.rchland.ibm.com>
 References: <20061206014432.56808.qmail@web30201.mail.mud.yahoo.com>
 	<1165370753.2679.5.camel@crusty.rchland.ibm.com>
-	<Pine.LNX.4.64.0612060929280.29536@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 06 Dec 2006 13:58:59 +0200
-Message-Id: <1165406340.20337.48.camel@sauron>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 06 Dec 2006 13:57:52 +0200
+Message-Id: <1165406272.20337.46.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,12 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-12-06 at 09:31 +0100, Ricard Wanderlof wrote:
-> For NAND flash chips I think it would also be nice to get a list of bad=20
-> blocks. This can be most useful when debugging.
+On Tue, 2006-12-05 at 20:05 -0600, Josh Boyer wrote:
+> > 1. Should the information be exported in the
+> > /sys/block/mtd* directory ? The other place would be
+> > /sys/class/mtd*.
+>=20
 
-Yeah. Once sysfs support is there we could export many useful
-information without need to call these syscalls.
+I am unsure it is /sys/class/. For MTD devices we should probably have
+full device/driver/bus support so it'll go
+at /sys/devices, /sys/drivers/, /sys/bus. In case of MTD the bus is so
+called "platform" bus. Please, refer to linux device drivers v3.
 
 --=20
 Best regards,
