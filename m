@@ -1,21 +1,19 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GrxN4-0003fy-U0
-	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 09:03:49 -0500
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	kB6E3Uve018492
-	for <linux-mtd@lists.infradead.org>; Wed, 6 Dec 2006 15:03:30 +0100
-Date: Wed, 6 Dec 2006 15:02:58 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: mkfs.jffs2 not compiling, which acl.h?
-In-Reply-To: <4576CC07.2000107@valcom.com>
-Message-ID: <Pine.LNX.4.64.0612061502000.29536@lnxricardw.se.axis.com>
-References: <4576CC07.2000107@valcom.com>
+Received: from mail.valcom.com ([151.199.82.35])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Grxyy-00048d-Io
+	for linux-mtd@lists.infradead.org; Wed, 06 Dec 2006 09:42:51 -0500
+Message-ID: <4576D6E3.2060908@valcom.com>
+Date: Wed, 06 Dec 2006 09:42:43 -0500
+From: Glen Johnson <gjohnson@valcom.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: mkfs.jffs2 not compiling, which acl.h?
+References: <4576CC07.2000107@valcom.com>
+	<Pine.LNX.4.64.0612061502000.29536@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.0612061502000.29536@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Ricard Wanderlof wrote:
+> There was a patch posted a week or two ago on this list which enables you 
+> to compile mkfs.jffs2 on systems where acl.h (and the features it 
+> supports) are missing. Check the archives.
+>   
+Mr Wanderlof,
+You are absolutely right.  I did find the patch just as you stated.  I
+downloaded the patch and to my surprise my code already had the patch in
+it.  I did see along with the patch that I am to cd mtd-utils/ and then
+make WITHOUT_XATTR=1.  This works great however, when I cd into
+uClinux-dist/ and run make, WITHOUT_XATTR=1 never gets passed to the
+makefile in the mtd-utils directory. 
+1. Do I need to change something in the uClinux-dist/user/Makefile so
+that it will pass WITHOUT_XATTR=1 to the mtd-utils/makefile?
 
-On Wed, 6 Dec 2006, Glen Johnson wrote:
+2. Do I need to add something to a config file under the vendors directory?
 
-> <linux/posix_acl.h> in place of <sys/acl.h>?  By the way I never found
-> sys/acl.h anywhere in uClinux-dist.  What is the proper way to handle thi=
-s?
-
-There was a patch posted a week or two ago on this list which enables you=
-=20
-to compile mkfs.jffs2 on systems where acl.h (and the features it=20
-supports) are missing. Check the archives.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Thank you,
+Glen Johnson
