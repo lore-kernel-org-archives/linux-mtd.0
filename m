@@ -1,28 +1,20 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GsV2S-0005x9-Px
-	for linux-mtd@lists.infradead.org; Thu, 07 Dec 2006 21:00:41 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0J9X00AWTMWOQC@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 11:00:24 +0900 (KST)
-Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0J9X00IIXMWN2G@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 11:00:24 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 08 Dec 2006 02:00:11 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Eraseblocks torture: OneNAND results
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: kyungmin.park@samsung.com
+Received: from mail.gmx.net ([213.165.64.20])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GsMAW-0000Fv-U1
+	for linux-mtd@lists.infradead.org; Thu, 07 Dec 2006 11:32:29 -0500
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Subject: Re: linux-2.6.19-g620034c8 build #163 failed
+Date: Thu, 7 Dec 2006 17:32:11 +0100
+References: <200612071141.35086.toralf.foerster@gmx.de>
+	<1165503148.24220.10.camel@zod.rchland.ibm.com>
+In-Reply-To: <1165503148.24220.10.camel@zod.rchland.ibm.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart1837635.vFPJcxfG5f";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200612071732.14114.toralf.foerster@gmx.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,67 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQXJ0ZW0sDQoNCk9rYXksIEkgYWxzbyB0cnkgdG8gdGVzdCBhdHRhY2hlZCBwcm9ncmFtIGZv
-ciB0aGlzIHdlZWtlbmQuDQoNCkhvd2V2ZXIsIEkgaGF2ZSBhIHF1ZXN0aW9uDQpUaGVyZSdzIHNv
-bWUgc3RyYW5nZSBwYXR0ZXJuIGluIGxvZy4NCkluIGFueSBjYXNlLiBpdCBjYW4ndCBvY2N1ciBm
-cm9tIDB4YWEoMGIxMDEwKSB0byAweDU1KDBiMDEwMSkgc2luY2UgaXQncyBpbXBvc3NpYmxlIHRv
-IGNoYW5nZSBmcm9tIDAgdG8gMSBldmVuIHRob3VnaCBpdCdzIHBvc3NpYmxlIGZyb20gMSB0byAw
-DQoNCkFueXdheSwgSSBhbHNvIGFzayB0aGUgaGFyZHdhcmUgdGVhbSB0byBjaGVjayB0aGlzIHBy
-b2JsZW0uDQoNCkFuZCBhbHNvIGNvdWxkIHlvdSBzZW5kIHRoZSBjaGlwIGR1bXAgZGF0YSB0byBt
-ZT8gc2luY2UgaXQgdGFrZXMgYSBsb25nIHRpbWUgdG8gd29ybi1vdXQuIEkgZmlyc3QgYW5hbHl6
-ZSB0aGUgd29ybi1vdXQgY2hpcCBkYXRhLg0KDQpJZiB5b3UgaGF2ZSBhbnkgaXNzdWVzIG9yIHVw
-ZGF0ZWQgbmV3cy4gcGxlYXNlIGxldCBtZSBrbm93LiANCg0KVGhhbmsgeW91LA0KS3l1bmdtaW4g
-UGFyaw0KDQotLS0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0tLQ0KU2VuZGVyIDogQXJ0ZW0g
-Qml0eXV0c2tpeTxkZWRla2luZEBpbmZyYWRlYWQub3JnPiANCkRhdGUgICA6IERlYyAwNywgMjAw
-NiAyMzozMA0KVGl0bGUgIDogRXJhc2VibG9ja3MgdG9ydHVyZTogT25lTkFORCByZXN1bHRzDQoN
-CkhlbGxvIEt5dW5nbWluLA0KDQpXZSBoYXZlIGEgdGVzdCBib2FyZCB3aXRoIEtGTjJHMTZRMk0g
-MjU2TWlCIE9uZU5BTkQuIFdlIGRlY2lkZWQgdG8gd3JpdGUNCmEgdG9ydHVyZSB0ZXN0IHdoaWNo
-IHdpbGwgdG9ydHVyZSBmZXcgZXJhc2VibG9ja3MganVzdCBpbiBvcmRlciB0byBzZWUNCndoYXQg
-aGFwcGVucy4NCg0KV2Ugd3JvdGUgYSBzbWFsbCB0ZXN0IHByb2dyYW0gd2hpY2ggYmFzaWNhbGx5
-IGVyYXNlcyBzZXZlcmFsIGVyYXNlYmxvY2tzDQppbiBhIGN5Y2xlIHRpbGwgaXQgZ2V0cyBhbiBl
-cnJvci4gVGhlIHRlc3QgcHJvZ3JhbSBpcyBhdHRhY2hlZA0KKHRvcnR1cmUuZ2l0LnRhci5iejIp
-LCBhbmQgaXQgaXMgYWxzbyBhdmFpbGFibGUgYXQNCmdpdDovL2dpdC5pbmZyYWRlYWQub3JnL35k
-ZWRla2luZC90b3J0dXJlLmdpdC4NCg0KQnkgZGVmYXVsdCB0aGUgcHJvZ3JhbSBkb2VzIHRoZSBm
-b2xsb3dpbmc6DQoNCjEuIEVyYXNlcyBhbiBlcmFzZWJsb2NrLiBSZWFkcyBpdCBiYWNrIGFuZCBt
-YWtlcyBzdXJlIHRoZXJlIGFyZSBvbmx5DQoweEZGIGJ5dGVzLg0KMi4gV3JpdGVzIDB4NTUvMHhB
-QSBwYXR0ZXJuLiBJbiBjYXNlIG9mIE5BTkQgd2Ugc3RvcmUgMHg1NSBhdCBvbmUgcGFnZSwNCjB4
-QUEgYXQgdGhlIG5leHQgYW5kIHNvIG9uLiBFYWNoIG5leHQgZXJhc2Ugd2Ugc3dpdGNoIDB4NTUg
-YW5kIDB4QUENCmJ5dGVzLg0KMy4gUmVhZCB0aGUgZXJhc2VibG9jayBiYWNrIGFuZCBtYWtlIHN1
-cmUgd2UgcmVhZCB0aGUgc2FtZSBkYXRhLg0KDQpBbmQgc28gb24gdGlsbCBhbiBlcnJvciBvY2N1
-cnMuIE9mIGNvdXJzZSB3ZSBjaGVjayByZXR1cm4gY29kZXMuDQoNClRoZSByZWFzb24gZm9yIHRo
-aXMgdGVzdCBpcyBqdXN0IGJlY2F1c2Ugd2UgYXJlIGN1cmlvdXMgaG93IG91ciBPbmVOQU5EDQpz
-ZXR1cCBiZWhhdmVzIGluIGNhc2Ugb2Ygd29ybi1vdXQgZXJhc2VibG9ja3MuDQoNCldlIGhhdmUg
-Z290IGtpbmQgb2Ygc3RyYW5nZSByZXN1bHQuIFdoYXQgd2UgaGF2ZSBpcyB0aGF0IGFmdGVyIHNl
-dmVyYWwNCm1pbGxpb24gZXJhc2UgY3ljbGVzIHdlIHN0YXJ0IHJlYWRpbmcgaW5jb3JyZWN0IGRh
-dGEgYmFjay4gU29tZXRpbWVzDQp0aGVyZSBhcmUgb25lLWJpdCBlcnJvcnMsIHNvbWV0aW1lcyBt
-YW55LWJ5dGUgZXJyb3JzLiBXZSBkbyBub3QgZ2V0IGFueQ0KZXJyb3IgY29kZSBmcm9tIG10ZC0+
-cmVhZCgpLiBXZSBkbyBub3Qgc2VlIHNpbmdsZS1iaXQgZXJyb3JzIGNvcnJlY3RlZC4NCm10ZC0+
-d3JpdGUoKSBhbmQgbXRkLT5lcmFzZSgpIGZ1bmN0aW9ucyBkbyBub3QgcmV0dXJuIGFueSBlcnJv
-ciBhcyB3ZWxsLg0KDQpLeXVuZ21pbiwgZGlkIHlvdSBkbyBhbnkga2luZCBvZiB0ZXN0cyBsaWtl
-IHRoaXM/IEkgb2ZmZXIgeW91IHRvIHRyeSBvdXINCnRlc3QgdG9vLg0KDQpPdGhlciBwZW9wbGUg
-bWF5IGFsc28gdHJ5IHRvIHdlYXItb3V0IGZldyBlcmFzZWJsb2NrcyBvbiB0aGVpciBkZXZpY2Vz
-DQphbmQgc2VlIHdoYXQgaGFwcGVucy4gVGhlbiBmb3IgZXhhbXBsZSwgbW91bnQgSkZGUzIgYW5k
-IHNlZSB3aGF0IGl0DQpzYXlzL2RvZXMuDQoNCkJ1dCBwbGVhc2UsIGJld2FyZSwgdGhlIHRlc3Qg
-bWF5IGRhbWFnZSB5b3VyIHN5c3RlbSBzbyBydW4gaXQgb25seSBpZg0KeW91IGtub3cgZXhhY3Rs
-eSB3aGF0IHlvdSBkby4gQXV0aG9ycyBhcmUgbm90IHJlc3BvbnNpYmxlIGZvciBhbnkNCmRhbWFn
-ZWQgY2F1c2VkIGJ5IHRoaXMgdGVzdC4NCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KWzU0NTkyLjc2NzcwMF0gRUIgdG9y
-dHVyZTogUGFnZSAwIGhhcyA0IGJ5dGVzLzE2IGJpdHMgZmFpbGluZyB2ZXJpZnksDQpzdGFydGlu
-ZyBhdCBvZmZzZXQgMHgxYw0KWzU0NTkyLjc3NjIxNF0gT2Zmc2V0ICAgICAgICAgICBSZWFkICAg
-ICAgICAgICAgICAgICAgIFdyaXR0ZW4NCls1NDU5Mi43ODE4NjBdIDB4MDE4OiAgYWEgYWEgYWEg
-YWEgMDAgMDAgMDAgMDAgICoqKiAgIGFhIGFhIGFhIGFhIGFhIGFhDQphYSBhYQ0KWzU0NTkyLjc4
-OTEyM10gMHgwMjA6ICBhYSBhYSBhYSBhYSBhYSBhYSBhYSBhYSAgICAgICAgYWEgYWEgYWEgYWEg
-YWEgYWENCmFhIGFhDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQpbOTAwNzMuOTI2MDU1XSBFQiB0b3J0dXJlOiBQYWdlIDAg
-aGFzIDIwIGJ5dGVzLzE2MCBiaXRzIGZhaWxpbmcgdmVyaWZ5LA0Kc3RhcnRpbmcgYXQgb2Zmc2V0
-IDB4Yw0KWzkwMDczLjkzNDY2MV0gT2Zmc2V0ICAgICAgICAgICBSZWFkICAgICAgICAgICAgICAg
-ICAgIFdyaXR0ZW4NCls5MDA3My45NDA0OTBdIDB4MDA4OiAgNTUgNTUgNTUgNTUgYWEgYWEgYWEg
-YWEgICoqKiAgIDU1IDU1IDU1IDU1IDU1IDU1DQo1NSA1NQ0KWzkwMDczLjk0Nzc4NF0gMHgwMTA6
-ICBhYSBhYSBhYSBhYSBhYSBhYSBhYSBhYSAgKioqICAgNTUgNTUgNTUgNTUgNTUgNTUNCjU1IDU1
-DQpbOTAwNzMuOTU0ODk1XSAweDAxODogIGFhIGFhIGFhIGFhIGFhIGFhIGFhIGFhICAqKiogICA1
-NSA1NSA1NSA1NSA1NSA1NQ0KNTUgNTUNCls5MDA3My45NjIxNThdIDB4MDIwOiAgNTUgNTUgNTUg
-NTUgNTUgNTUgNTUgNTUgICAgICAgIDU1IDU1IDU1IDU1IDU1IDU1DQo1NSA1NQ0KLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0K
-DQoNCkJlbG93IGdvIHNvbWUgZXhhbXBsZXMgb2YgdGVzdCBmYWlsdXJlcy4NCg0KLS0gDQpCZXN0
-IHJlZ2FyZHMsDQpBcnRlbSBCaXR5dXRza2l5ICjQkdC40YLRjtGG0LrQuNC5INCQ0YDRgtGR0Lwp
-DQo=
+--nextPart1837635.vFPJcxfG5f
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+
+Am Donnerstag, 7. Dezember 2006 15:52 schrieb Josh Boyer:
+
+> You have genprobe as a module (as well as core MTD), but AMDSTD compiled
+> in.  That seems very odd.  Try setting CONFIG_MTD_CFI_AMDSTD=3Dm
+>=20
+Hi,
+
+because I used "make oldconfig" I'd assume that teh resulting config file i=
+s valid.
+Problems like this are often related to Kconfig oddities, isn't it ?
+
+=2D-=20
+MfG/Sincerely
+
+Toralf F=C3=B6rster
+
+--nextPart1837635.vFPJcxfG5f
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQBFeEIOhyrlCH22naMRAh6yAJoCe7Q5p5CCZWt+fNsj10DL0NhFxwCgyBs7
+SlLScj/c3soyhKbrvamtW4s=
+=4BV9
+-----END PGP SIGNATURE-----
+
+--nextPart1837635.vFPJcxfG5f--
