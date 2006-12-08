@@ -1,19 +1,28 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GsZ5J-0007ty-7j
-	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 01:19:53 -0500
-Subject: Re: Eraseblocks torture: OneNAND results
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
-References: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 08 Dec 2006 08:19:43 +0200
-Message-Id: <1165558783.20337.112.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GsaNW-0000BZ-PT
+	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 02:42:46 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J9Y00MXS2R3EL@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 16:42:39 +0900 (KST)
+Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0J9Y006ZG2R3UR@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 16:42:39 +0900 (KST)
+Content-return: prohibited
+Date: Fri, 08 Dec 2006 07:42:25 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Eraseblocks torture: OneNAND results
+To: Artem Bityutskiy <dedekind@infradead.org>
+Message-id: <6640129.409201165563759259.JavaMail.weblogic@ep_ml20>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: base64
 Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,49 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin,
-
-On Fri, 2006-12-08 at 02:00 +0000, Kyungmin Park wrote:
-> Okay, I also try to test attached program for this weekend.
-If you use it (which would _very_ be nice!), please, take the latest
-version from git. Also, take into account the following notes:
-
-1. Although the documented eraseblock lifetime is about 100000, we
-started getting errors after about 6 million erase cycles. May be
-because our test is not torturous enough.
-
-2. There is a "check" module option which is enabled by default. It
-slows the test down considerably. So I recommend to disable checking at
-first, run the test for, say 4 million erase cycles, then re-run it with
-checking enabled. So that you first screw up the eraseblocks, then you
-start checking data. There is a handy "cycles_count" option.
-
-3. By default the test tortures 32 eraseblocks. You may configure this
-via a module parameter. Just glance inside of the torture.c.
-
-> However, I have a question
-> There's some strange pattern in log.
-> In any case. it can't occur from 0xaa(0b1010) to 0x55(0b0101) since it's =
-impossible to change from 0 to 1 even though it's possible from 1 to 0
-Yeah, no idea. We didn't check that eraseblock contains all 0xFF bytes
-after erase. May be erase operation left some garbage? In the newer
-version we do check this.
-
-> Anyway, I also ask the hardware team to check this problem.
-Would be cool!
-
-> And also could you send the chip dump data to me? since it takes a long t=
-ime to worn-out. I first analyze the worn-out chip data.
-I will send you more data.
-
-> If you have any issues or updated news. please let me know.=20
-Sure.
-
-P.S.: Test git: git://git.infradead.org/~dedekind/torture.git
-Web snout for the Git tree:=20
-http://git.infradead.org/?p=3Dusers/dedekind/torture.git;a=3Dsummary
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+SGkgQXJ0ZW0sDQoNCj4gMi4gVGhlcmUgaXMgYSAiY2hlY2siIG1vZHVsZSBvcHRpb24gd2hpY2gg
+aXMgZW5hYmxlZCBieSBkZWZhdWx0LiBJdA0KPiBzbG93cyB0aGUgdGVzdCBkb3duIGNvbnNpZGVy
+YWJseS4gU28gSSByZWNvbW1lbmQgdG8gZGlzYWJsZSBjaGVja2luZyBhdA0KPiBmaXJzdCwgcnVu
+IHRoZSB0ZXN0IGZvciwgc2F5IDQgbWlsbGlvbiBlcmFzZSBjeWNsZXMsIHRoZW4gcmUtcnVuIGl0
+IHdpdGgNCj4gY2hlY2tpbmcgZW5hYmxlZC4gU28gdGhhdCB5b3UgZmlyc3Qgc2NyZXcgdXAgdGhl
+IGVyYXNlYmxvY2tzLCB0aGVuIHlvdQ0KPiBzdGFydCBjaGVja2luZyBkYXRhLiBUaGVyZSBpcyBh
+IGhhbmR5ICJjeWNsZXNfY291bnQiIG9wdGlvbi4NCj4NCj4gMy4gQnkgZGVmYXVsdCB0aGUgdGVz
+dCB0b3J0dXJlcyAzMiBlcmFzZWJsb2Nrcy4gWW91IG1heSBjb25maWd1cmUgdGhpcw0KPiB2aWEg
+YSBtb2R1bGUgcGFyYW1ldGVyLiBKdXN0IGdsYW5jZSBpbnNpZGUgb2YgdGhlIHRvcnR1cmUuYy4N
+Cg0KWWVzIEkgYWxyZWFkeSBtb2RpZmllZCB0aGUgc291cmNlIGZvciBteSBlbnZpcm9ubWVudC4g
+YW5kIGFsc28gYWRkIGNoZWNrIGluaXRpYWwgYmFkIGJsb2NrLg0KDQppbiB0b3J0X2luaXQoKQ0K
+DQogICAgICAgd2hpbGUgKDEpIHsNCiAgICAgICAgICAgICAgICBpbnQgaTsNCg0KICAgICAgICAg
+ICAgICAgIGZvcihpID0gZWI7IGkgPCBlYiArIGViY250OyBpKyspIHsNCiAgICAgICAgICAgICAg
+ICAgICAgICAgIGVyciA9IGVidGVzdChpKTsNCiAgICAgICAgICAgICAgICAgICAgICAgIC8qIFNr
+aXAgaW5pdGlhbCBiYWQgYmxvY2sgKi8NCiAgICAgICAgICAgICAgICAgICAgICAgIGlmIChlcnIg
+PT0gLUVGQVVMVCkNCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgY29udGludWU7DQog
+ICAgICAgICAgICAgICAgICAgICAgICBpZiAoZXJyKQ0KICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBicmVhazsNCiAgICAgICAgICAgICAgICB9DQoNCmluIGVidGVzdCgpDQoNCiAgICAg
+ICAgZXJyID0gbXRkLT5lcmFzZShtdGQsICZlaSk7DQogICAgICAgIGlmICh1bmxpa2VseShlcnIp
+KSB7DQogICAgICAgICAgICAgICAgcHJpbnRrKFBSSU5UX1BSRUYgImVycm9yICVkIHdoaWxlIGVy
+YXNpbmcgRUIgJWRcbiIsIGVyciwgZWJudW0pOw0KICAgICAgICAgICAgICAgIC8qIEluaXRpYWwg
+YmFkIGJsb2NrIGNhc2UgKi8NCiAgICAgICAgICAgICAgICBpZiAoZXJyID09IC1FSU8pDQogICAg
+ICAgICAgICAgICAgICAgICAgICBlcnIgPSAtRUZBVUxUOw0KICAgICAgICAgICAgICAgIHJldHVy
+biBlcnI7DQogICAgICAgIH0NCg0KPiBQLlMuOiBUZXN0IGdpdDogZ2l0Oi8vZ2l0LmluZnJhZGVh
+ZC5vcmcvfmRlZGVraW5kL3RvcnR1cmUuZ2l0DQoNCkkgYWxyZWFkeSBkb3dubG9hZGVkIGl0Lg0K
+DQpBZnRlciB3ZWVrZW5kIHRlc3QuIEkgd2lsbCBzZW5kIHRoZSByZXN1bHRzLg0KDQoNClRoYW5r
+IHlvdSwNCkt5dW5nbWluIFBhcms=
