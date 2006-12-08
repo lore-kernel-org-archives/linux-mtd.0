@@ -1,19 +1,21 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from rubidium.solidboot.com ([81.22.244.175] helo=mail.solidboot.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gsams-0001QE-O9
-	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 03:08:57 -0500
-Subject: Re: Eraseblocks torture: OneNAND results
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <6640129.409201165563759259.JavaMail.weblogic@ep_ml20>
-References: <6640129.409201165563759259.JavaMail.weblogic@ep_ml20>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 08 Dec 2006 10:08:48 +0200
-Message-Id: <1165565328.20337.115.camel@sauron>
+	id 1GsbM4-0001r7-R5
+	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 03:45:20 -0500
+Date: Fri, 8 Dec 2006 10:43:39 +0200
+From: Timo Teras <timo.teras@solidboot.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: OneNAND: Update OOB free table
+Message-ID: <20061208084339.GA20013@mail.solidboot.com>
+References: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
+Sender: timo.teras@solidboot.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Timo Teras <timo.teras@solidboot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,19 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin,
+Hi,
 
-On Fri, 2006-12-08 at 07:42 +0000, Kyungmin Park wrote:
-> Yes I already modified the source for my environment. and also add check =
-initial bad block.
+On Fri, Dec 08, 2006 at 12:11:06AM +0000, Kyungmin Park wrote:
+> Yes, The OneNAND Spec. says these bytes are manged by internal ecc logic.
+> Acutually it means that when we write some data in this area. The ecc logic generates the ecc bytes automatically.
+> So even though we write 3 bytes. the OneNAND is written by 5 bytes (3 data bytes, 2 space ecc bytes).
+> 
+> I think we consider the whole spare area. if we don't use this area. we only have 8 bytes of 64 bytes in spare area.
+> If it makes misbehavior of JFFS2, we have alternative method turn off ecc logic when write oob area.
 
-Ah, indeed, thanks. I will add bad block checking. Also, I am
-re-structuring the test now to make it baster and more torturous. I am
-going to do erase/write/operations with the whole group, not with each
-eraseblock separately. HW guys think it should cause more trouble for
-flash. I will notify you when to update.
+Yes. The original problem was that when we wrote JFFS2 clean marker, the ECC
+bytes changed which caused JFFS2 code to think the block unclean
+effectively considering all clean and empty blocks as dirty at each boot.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> % original
+> 
+>  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff 30 ff ff ff ff
+> 
+> % after patch
+> 
+>  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff ff ff ff ff ff
+> 
+> Pleaes test this patch
+
+I suppose this fixes the JFFS2 problem as well. 8 bytes of OOB data in a
+page should be enough, but having more free OOB space is always a good thing.
+
+Cheers,
+  Timo
