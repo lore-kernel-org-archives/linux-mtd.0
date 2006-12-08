@@ -1,32 +1,29 @@
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GsML0-0005Sd-77
-	for linux-mtd@lists.infradead.org; Thu, 07 Dec 2006 16:43:19 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id kB7GgFOF016550
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Dec 2006 11:42:15 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kB7GgFXj509860
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Dec 2006 09:42:15 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kB7GgEPu017856
-	for <linux-mtd@lists.infradead.org>; Thu, 7 Dec 2006 09:42:15 -0700
-Subject: Re: linux-2.6.19-g620034c8 build #163 failed
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Toralf =?ISO-8859-1?Q?F=F6rster?= <toralf.foerster@gmx.de>
-In-Reply-To: <200612071732.14114.toralf.foerster@gmx.de>
-References: <200612071141.35086.toralf.foerster@gmx.de>
-	<1165503148.24220.10.camel@zod.rchland.ibm.com>
-	<200612071732.14114.toralf.foerster@gmx.de>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 07 Dec 2006 10:42:26 -0600
-Message-Id: <1165509746.24220.19.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GsTKl-00046s-2s
+	for linux-mtd@lists.infradead.org; Thu, 07 Dec 2006 19:11:26 -0500
+Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0J9X00CXQHUTI3@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 09:11:17 +0900 (KST)
+Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0J9X000B8HUTZY@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 09:11:17 +0900 (KST)
+Content-return: prohibited
+Date: Fri, 08 Dec 2006 00:11:06 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: OneNAND: Update OOB free table
+To: Timo Teras <timo.teras@solidboot.com>
+Message-id: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,19 +33,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2006-12-07 at 17:32 +0100, Toralf Förster wrote:
-> Am Donnerstag, 7. Dezember 2006 15:52 schrieb Josh Boyer:
-> 
-> > You have genprobe as a module (as well as core MTD), but AMDSTD compiled
-> > in.  That seems very odd.  Try setting CONFIG_MTD_CFI_AMDSTD=m
-> > 
-> Hi,
-> 
-> because I used "make oldconfig" I'd assume that teh resulting config file is valid.
-> Problems like this are often related to Kconfig oddities, isn't it ?
-
-Typically, yeah.  I'm surprised oldconfig generated that as a result.
-If I get a chance, I'll try and recreate that.  Don't wait on me
-though :)
-
-josh
+SGkgVGltbyBUZXJhcywNCg0KWWVzLCBUaGUgT25lTkFORCBTcGVjLiBzYXlzIHRoZXNlIGJ5dGVz
+IGFyZSBtYW5nZWQgYnkgaW50ZXJuYWwgZWNjIGxvZ2ljLg0KQWN1dHVhbGx5IGl0IG1lYW5zIHRo
+YXQgd2hlbiB3ZSB3cml0ZSBzb21lIGRhdGEgaW4gdGhpcyBhcmVhLiBUaGUgZWNjIGxvZ2ljIGdl
+bmVyYXRlcyB0aGUgZWNjIGJ5dGVzIGF1dG9tYXRpY2FsbHkuDQpTbyBldmVuIHRob3VnaCB3ZSB3
+cml0ZSAzIGJ5dGVzLiB0aGUgT25lTkFORCBpcyB3cml0dGVuIGJ5IDUgYnl0ZXMgKDMgZGF0YSBi
+eXRlcywgMiBzcGFjZSBlY2MgYnl0ZXMpLg0KDQpJIHRoaW5rIHdlIGNvbnNpZGVyIHRoZSB3aG9s
+ZSBzcGFyZSBhcmVhLiBpZiB3ZSBkb24ndCB1c2UgdGhpcyBhcmVhLiB3ZSBvbmx5IGhhdmUgOCBi
+eXRlcyBvZiA2NCBieXRlcyBpbiBzcGFyZSBhcmVhLg0KSWYgaXQgbWFrZXMgbWlzYmVoYXZpb3Ig
+b2YgSkZGUzIsIHdlIGhhdmUgYWx0ZXJuYXRpdmUgbWV0aG9kIHR1cm4gb2ZmIGVjYyBsb2dpYyB3
+aGVuIHdyaXRlIG9vYiBhcmVhLg0KDQolIG9yaWdpbmFsDQoNCiBPT0IgRGF0YTogZmYgZmYgODUg
+MTkgMDMgZmYgZmYgZmYgZmYgZmYgZmYgMzAgZmYgZmYgZmYgZmYNCg0KJSBhZnRlciBwYXRjaA0K
+DQogT09CIERhdGE6IGZmIGZmIDg1IDE5IDAzIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZmIGZm
+IGZmDQoNClBsZWFlcyB0ZXN0IHRoaXMgcGF0Y2gNCg0KVGhhbmsgeW91LA0KS3l1bmdtaW4gUGFy
+aw0KDQotLQ0KDQpJbmRleDogZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYw0KPT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PQ0KUkNTIGZpbGU6IC9jdnNyb290L2xpbnV4LTIuNi4xOC1vbWFwL2RyaXZlcnMvbXRk
+L29uZW5hbmQvb25lbmFuZF9iYXNlLmMsdg0KcmV0cmlldmluZyByZXZpc2lvbiAxLjINCmRpZmYg
+LXUgLXAgLXIxLjIgb25lbmFuZF9iYXNlLmMNCi0tLSBkcml2ZXJzL210ZC9vbmVuYW5kL29uZW5h
+bmRfYmFzZS5jCTEyIE9jdCAyMDA2IDA2OjU5OjI3IC0wMDAwCTEuMg0KKysrIGRyaXZlcnMvbXRk
+L29uZW5hbmQvb25lbmFuZF9iYXNlLmMJNyBEZWMgMjAwNiAyMzo1MTowMSAtMDAwMA0KQEAgLTky
+NCw2ICs5MjQsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfZG9fd3JpdGVfb29iKHN0cnVjdCBtDQog
+CXN0cnVjdCBvbmVuYW5kX2NoaXAgKnRoaXMgPSBtdGQtPnByaXY7DQogCWludCBjb2x1bW4sIHJl
+dCA9IDA7DQogCWludCB3cml0dGVuID0gMDsNCisJaW50IHN5c2NmZzsNCiANCiAJREVCVUcoTVRE
+X0RFQlVHX0xFVkVMMywgIm9uZW5hbmRfd3JpdGVfb29iOiB0byA9IDB4JTA4eCwgbGVuID0gJWlc
+biIsICh1bnNpZ25lZCBpbnQpIHRvLCAoaW50KSBsZW4pOw0KIA0KQEAgLTkzOSw2ICs5NDAsMTAg
+QEAgc3RhdGljIGludCBvbmVuYW5kX2RvX3dyaXRlX29vYihzdHJ1Y3QgbQ0KIAkvKiBHcmFiIHRo
+ZSBsb2NrIGFuZCBzZWUgaWYgdGhlIGRldmljZSBpcyBhdmFpbGFibGUgKi8NCiAJb25lbmFuZF9n
+ZXRfZGV2aWNlKG10ZCwgRkxfV1JJVElORyk7DQogDQorCS8qIFR1cm4gb2ZmIHRoZSBFQ0MgbG9n
+aWMgZm9yIHNwYXJlIGFyZWEgKi8NCisJc3lzY2ZnID0gdGhpcy0+cmVhZF93b3JkKHRoaXMtPmJh
+c2UgKyBPTkVOQU5EX1JFR19TWVNfQ0ZHMSk7DQorCXRoaXMtPndyaXRlX3dvcmQoc3lzY2ZnIHwg
+T05FTkFORF9TWVNfQ0ZHMV9OT19FQ0MsIHRoaXMtPmJhc2UgKyBPTkVOQU5EX1JFR19TWVNfQ0ZH
+MSk7DQorDQogCS8qIExvb3AgdW50aWwgYWxsIGRhdGEgd3JpdGUgKi8NCiAJd2hpbGUgKHdyaXR0
+ZW4gPCBsZW4pIHsNCiAJCWludCB0aGlzbGVuID0gbWluX3QoaW50LCBtdGQtPm9vYnNpemUsIGxl
+biAtIHdyaXR0ZW4pOw0KQEAgLTk3OSw2ICs5ODQsOCBAQCBzdGF0aWMgaW50IG9uZW5hbmRfZG9f
+d3JpdGVfb29iKHN0cnVjdCBtDQogCX0NCiANCiBvdXQ6DQorCS8qIFJlc3RvcmUgcHJldmlvdXMg
+c2V0dGluZ3MgKi8NCisJdGhpcy0+d3JpdGVfd29yZChzeXNjZmcsIHRoaXMtPmJhc2UgKyBPTkVO
+QU5EX1JFR19TWVNfQ0ZHMSk7DQogCS8qIERlc2VsZWN0IGFuZCB3YWtlIHVwIGFueW9uZSB3YWl0
+aW5nIG9uIHRoZSBkZXZpY2UgKi8NCiAJb25lbmFuZF9yZWxlYXNlX2RldmljZShtdGQpOw0KIA0K
+DQoNCg0KLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0NClNlbmRlciA6IFRpbW8gVGVy
+YXM8dGltby50ZXJhc0Bzb2xpZGJvb3QuY29tPiANCkRhdGUgICA6IERlYyAwNywgMjAwNiAxOTox
+Mw0KVGl0bGUgIDogW1BBVENIXSBPbmVOQU5EOiBVcGRhdGUgT09CIGZyZWUgdGFibGUNCg0KRG8g
+bm90IHVzZSBieXRlcyBtYW5hZ2VkIGJ5IE9uZU5BTkQgRUNDIGxvZ2ljIGZvciBMb2dpY2FsIFNl
+Y3RvciBOdW1iZXINCmRhdGEuDQoNClNpZ25lZC1vZmYtYnk6IFRpbW8gVGVyYXMgPHRpbW8udGVy
+YXNAc29saWRib290LmNvbT4NCi0tLQ0KVGhlIE9uZU5BTkQgc3BlY2lmaWNhdGlvbiBzYXlzIHRo
+YXQgdGhlIHRocmVlIGJ5dGVzIGF0IG9mZnNldHMgMiwgMTgsIDM0DQphbmQgNTAgYXJlIG1hbmFn
+ZWQgYnkgaW50ZXJuYWwgZWNjIGxvZ2ljLiBUaGUgZWZmZWN0IGlzIG9idmlvdXMgYXMNCm1vZGlm
+eWluZyB0aGVzZSBieXRlcywgaXQgYWxzbyBtb2RpZmllcyBFQ0MgY29kZSBmb3Igc3BhcmUgYXJl
+YS4NCg0KDQo=
