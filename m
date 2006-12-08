@@ -1,20 +1,19 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GsMAW-0000Fv-U1
-	for linux-mtd@lists.infradead.org; Thu, 07 Dec 2006 11:32:29 -0500
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-Subject: Re: linux-2.6.19-g620034c8 build #163 failed
-Date: Thu, 7 Dec 2006 17:32:11 +0100
-References: <200612071141.35086.toralf.foerster@gmx.de>
-	<1165503148.24220.10.camel@zod.rchland.ibm.com>
-In-Reply-To: <1165503148.24220.10.camel@zod.rchland.ibm.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1837635.vFPJcxfG5f";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200612071732.14114.toralf.foerster@gmx.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GsZ5J-0007ty-7j
+	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 01:19:53 -0500
+Subject: Re: Eraseblocks torture: OneNAND results
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kyungmin.park@samsung.com
+In-Reply-To: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
+References: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 08 Dec 2006 08:19:43 +0200
+Message-Id: <1165558783.20337.112.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart1837635.vFPJcxfG5f
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Kyungmin,
 
-Am Donnerstag, 7. Dezember 2006 15:52 schrieb Josh Boyer:
+On Fri, 2006-12-08 at 02:00 +0000, Kyungmin Park wrote:
+> Okay, I also try to test attached program for this weekend.
+If you use it (which would _very_ be nice!), please, take the latest
+version from git. Also, take into account the following notes:
 
-> You have genprobe as a module (as well as core MTD), but AMDSTD compiled
-> in.  That seems very odd.  Try setting CONFIG_MTD_CFI_AMDSTD=3Dm
->=20
-Hi,
+1. Although the documented eraseblock lifetime is about 100000, we
+started getting errors after about 6 million erase cycles. May be
+because our test is not torturous enough.
 
-because I used "make oldconfig" I'd assume that teh resulting config file i=
-s valid.
-Problems like this are often related to Kconfig oddities, isn't it ?
+2. There is a "check" module option which is enabled by default. It
+slows the test down considerably. So I recommend to disable checking at
+first, run the test for, say 4 million erase cycles, then re-run it with
+checking enabled. So that you first screw up the eraseblocks, then you
+start checking data. There is a handy "cycles_count" option.
 
-=2D-=20
-MfG/Sincerely
+3. By default the test tortures 32 eraseblocks. You may configure this
+via a module parameter. Just glance inside of the torture.c.
 
-Toralf F=C3=B6rster
+> However, I have a question
+> There's some strange pattern in log.
+> In any case. it can't occur from 0xaa(0b1010) to 0x55(0b0101) since it's =
+impossible to change from 0 to 1 even though it's possible from 1 to 0
+Yeah, no idea. We didn't check that eraseblock contains all 0xFF bytes
+after erase. May be erase operation left some garbage? In the newer
+version we do check this.
 
---nextPart1837635.vFPJcxfG5f
-Content-Type: application/pgp-signature
+> Anyway, I also ask the hardware team to check this problem.
+Would be cool!
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+> And also could you send the chip dump data to me? since it takes a long t=
+ime to worn-out. I first analyze the worn-out chip data.
+I will send you more data.
 
-iD8DBQBFeEIOhyrlCH22naMRAh6yAJoCe7Q5p5CCZWt+fNsj10DL0NhFxwCgyBs7
-SlLScj/c3soyhKbrvamtW4s=
-=4BV9
------END PGP SIGNATURE-----
+> If you have any issues or updated news. please let me know.=20
+Sure.
 
---nextPart1837635.vFPJcxfG5f--
+P.S.: Test git: git://git.infradead.org/~dedekind/torture.git
+Web snout for the Git tree:=20
+http://git.infradead.org/?p=3Dusers/dedekind/torture.git;a=3Dsummary
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
