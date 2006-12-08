@@ -1,21 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GsgA1-000570-Fv
-	for linux-mtd@lists.infradead.org; Fri, 08 Dec 2006 08:53:15 -0500
-Subject: Re: Eraseblocks torture: OneNAND results
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-In-Reply-To: <Pine.LNX.4.64.0612081405270.22217@lnxricardw.se.axis.com>
-References: <19898399.377451165543227681.JavaMail.weblogic@ep_ml03>
-	<1165558783.20337.112.camel@sauron>
-	<Pine.LNX.4.64.0612081405270.22217@lnxricardw.se.axis.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 08 Dec 2006 15:52:30 +0200
-Message-Id: <1165585950.3975.15.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from 129.71.2.107 (HELO helen.wvnet.edu)
+	by lists.infradead.org with esmtp (+LU)*SK*S 3GEI))
+	id )88799-Z).;G'-W(
+	for linux-mtd@lists.infradead.org; Fri, 8 Dec 2006 16:34:26 -0060
+From: "Delbert Pierce" <brickscruelties@access.k12.wv.us>
+To: <linux-mtd@lists.infradead.org>
+Subject: Greetings Delbert
+Date: Fri, 8 Dec 2006 16:34:26 -0060
+Message-ID: <01c71ae6$b9ddce70$6c822ecf@brickscruelties>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ricard,
+LOOK AT OUR RECENT NEWS! ASK YOUR BROKER NOW!
+INVESTORS ALERT! Friday, Dec 8, DTGP
 
-On Fri, 2006-12-08 at 14:43 +0100, Ricard Wanderlof wrote:
-> Isn't 100000 a figure quoted by the flash manufacturer to be the _minimum=
-_=20
-> number of erase cycles, a specification which all devices must meet, even=
-=20
-> at extreme operating conditions (e.g. high temperature and extreme supply=
-=20
-> voltages)? That would imply that during more ordinary conditions, a rando=
-m=20
-> sample of flash chip would very likely be erasable many more times.
+Company: Doll Technology Group (OTCBB:DTGP)
+Symbol: DTGP
+Current Price: $0.016 (Trading at a Discount!)
+3-day Target: $0.07 
 
-Probably. Not sure. Need to carefully look to the manual. Do not have it
-now handy. But probably you are right. Also HW guys say that such a very
-frequent erase may matter.
+Friday, Dec 8, will bring big trading for DTGP, which will mean it goes up!
+Ladies and gentlemen, this one is incredible. 
+This company is currently preparing to introduce their stock DTGP to brokers
+across the country.
+Look at their recent news and see what they are doing, and have been doing
+in the past few Month.
 
-> Another thing: Why implement it as a kernel module? Speed I would assume?
-Yeah, wanted to make it quicker.
+About DTGP:
+Doll Technology Group (OTCBB:DTGP)  diversified company formed to develop and commercialize products and technologies that address Aircraft Safety, Water Conservation, Fire Protection, Rust and Corrosion, and Construction, among others.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+CALL YOUR BROKER NOW!
