@@ -1,16 +1,17 @@
-Received: from 217.89.42.246 (HELO mail.aachener-gesellschaften.de)
-	by lists.infradead.org with esmtp (9S8(Z9AN:2.L XW8I1)
-	id O+?8X4-AOR-.'-7@
-	for linux-mtd@lists.infradead.org; Sun, 10 Dec 2006 08:12:35 -0060
-From: "Carmen Waller" <hilltopsbladed@aachener-swg.de>
-To: <linux-mtd@lists.infradead.org>
-Subject: Waller advice
-Date: Sun, 10 Dec 2006 08:12:35 -0060
-Message-ID: <01c71c32$f3304d40$6c822ecf@hilltopsbladed>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="windows-1250"
+Subject: Re: mkfs.jffs2 not compiling, which acl.h?
+From: David Woodhouse <dwmw2@infradead.org>
+To: KaiGai Kohei <kaigai@kaigai.gr.jp>
+In-Reply-To: <457AE718.1090707@kaigai.gr.jp>
+References: <4576CC07.2000107@valcom.com>
+	<1165505164.5253.370.camel@pmac.infradead.org>
+	<457AE718.1090707@kaigai.gr.jp>
+Content-Type: text/plain
+Date: Sun, 10 Dec 2006 11:53:21 +0000
+Message-Id: <1165751601.5253.486.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Glen Johnson <gjohnson@valcom.com>, KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,28 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Looking to put some spring in your step?  Ready for your big break?
-Look no further.
+On Sun, 2006-12-10 at 01:40 +0900, KaiGai Kohei wrote:
+> The common format is defined as a leading 'posix_acl_xattr_header' and
+> an array of 'posix_acl_xattr_entry'. All of them are represented in
+> little-endian ordering.
+> 
+> Thus, we can assume the same format as ext3 (and any filesystem) uses.
+> Is it OK? 
 
-Wild Brush Energy
-Symbol: WBRS
+That's fine then -- I just wanted to check. Thanks.
 
-Current Price:  Around   $0.05
-Short Term Target:         $0.12
-Long Term Target:         $0.40
-
-The energy sector is THE place to be, with some energy companies seeing 
-appreciation of 400% or more this year alone!  WBRS is involved in some 
-of the most exciting gas plays in North America.  It's a proven winner in a 
-red hot market.
-
-But that's just the beginning.  Rumor has it that there may soon be a 
-merger between WBRS and another major energy player with close ties to 
-the company.  In fact this major player's stock was up 50% Friday on 
-strong volume as insiders took positions.
-
-We believe that WBRS is looking at the same rapid appreciation.  Once 
-the merger is announced there will be a scramble to get in.  Play it smart.  
-Take a position BEFORE the announcement and ride this one all the way 
-to the bank!
-Tell to everyone about this message.Post it on the forum.
+-- 
+dwmw2
