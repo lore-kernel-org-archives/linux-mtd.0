@@ -1,17 +1,14 @@
-Subject: Re: mkfs.jffs2 not compiling, which acl.h?
+Subject: Re: reboot problem with jffs2
 From: David Woodhouse <dwmw2@infradead.org>
-To: KaiGai Kohei <kaigai@kaigai.gr.jp>
-In-Reply-To: <457AE718.1090707@kaigai.gr.jp>
-References: <4576CC07.2000107@valcom.com>
-	<1165505164.5253.370.camel@pmac.infradead.org>
-	<457AE718.1090707@kaigai.gr.jp>
+To: Jianlin Zeng <jianlinz_2000@yahoo.com>
+In-Reply-To: <319457.62342.qm@web56706.mail.re3.yahoo.com>
+References: <319457.62342.qm@web56706.mail.re3.yahoo.com>
 Content-Type: text/plain
-Date: Sun, 10 Dec 2006 11:53:21 +0000
-Message-Id: <1165751601.5253.486.camel@pmac.infradead.org>
+Date: Sun, 10 Dec 2006 11:54:42 +0000
+Message-Id: <1165751682.5253.488.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	Glen Johnson <gjohnson@valcom.com>, KaiGai Kohei <kaigai@ak.jp.nec.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +18,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2006-12-10 at 01:40 +0900, KaiGai Kohei wrote:
-> The common format is defined as a leading 'posix_acl_xattr_header' and
-> an array of 'posix_acl_xattr_entry'. All of them are represented in
-> little-endian ordering.
-> 
-> Thus, we can assume the same format as ext3 (and any filesystem) uses.
-> Is it OK? 
+On Fri, 2006-12-08 at 16:24 -0800, Jianlin Zeng wrote:
+> I have a MPC8248 based board running linux 2.6.11. I
+> mounted jffs2 FS on a NOR flash partition. The jffs2
+> FS works fine. But if I modify any files in the jffs2
+> FS and then soft reboot the board, the reboot hangs.
+> If I don't modify any files in jffs2 FS and just do
+> flashcp to a MTD char device, the soft reboot works
+> fine. 
 
-That's fine then -- I just wanted to check. Thanks.
+Check you hardware. I suspect the flash chip isn't being properly reset
+when the CPU restarts.
 
 -- 
 dwmw2
