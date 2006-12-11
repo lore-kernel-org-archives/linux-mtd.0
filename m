@@ -1,21 +1,17 @@
-Received: from rubidium.solidboot.com ([81.22.244.175] helo=mail.solidboot.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gtk8r-00006G-EA
-	for linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 07:20:24 -0500
-Date: Mon, 11 Dec 2006 14:20:01 +0200
-From: Timo Teras <timo.teras@solidboot.com>
-To: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: OneNAND: Update OOB free table
-Message-ID: <20061211122001.GA28125@mail.solidboot.com>
-References: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
-Sender: timo.teras@solidboot.com
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Timo Teras <timo.teras@solidboot.com>
+Received: from web56701.mail.re3.yahoo.com ([66.196.97.60])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GtqND-0003Si-UX
+	for linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 13:59:40 -0500
+Date: Mon, 11 Dec 2006 10:52:32 -0800 (PST)
+From: Jianlin Zeng <jianlinz_2000@yahoo.com>
+Subject: Re: reboot problem with jffs2
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1165751682.5253.488.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <753100.94917.qm@web56701.mail.re3.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +21,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 08, 2006 at 12:11:06AM +0000, Kyungmin Park wrote:
-> I think we consider the whole spare area. if we don't use this area. we
-> only have 8 bytes of 64 bytes in spare area. If it makes misbehavior of
-> JFFS2, we have alternative method turn off ecc logic when write oob area.
-> 
-> % original
-> 
->  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff 30 ff ff ff ff
-> 
-> % after patch
-> 
->  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff ff ff ff ff ff
-> 
-> Pleaes test this patch
+Hi Dave,
 
-Tested. This breaks reading OOB area and the clean marker from there. After
-OOB has been written without ECC it must be read without ECC too or
-we start to get ECC errors.
+Thanks for your information! It appears that I need to
+set all flash sectors to read mode before reboot,
+otherwise the CPU won't be able to read any boot code
+from the flash after reboot. Don't know the reason
+behind it but once I did that the reboot works fine.
 
-Cheers,
-  Timo
+Regards,
+Jianlin
+
+
+--- David Woodhouse <dwmw2@infradead.org> wrote:
+
+> On Fri, 2006-12-08 at 16:24 -0800, Jianlin Zeng
+> wrote:
+> > I have a MPC8248 based board running linux 2.6.11.
+> I
+> > mounted jffs2 FS on a NOR flash partition. The
+> jffs2
+> > FS works fine. But if I modify any files in the
+> jffs2
+> > FS and then soft reboot the board, the reboot
+> hangs.
+> > If I don't modify any files in jffs2 FS and just
+> do
+> > flashcp to a MTD char device, the soft reboot
+> works
+> > fine. 
+> 
+> Check you hardware. I suspect the flash chip isn't
+> being properly reset
+> when the CPU restarts.
+> 
+> -- 
+> dwmw2
+> 
+> 
+
+
+
+ 
+____________________________________________________________________________________
+Need a quick answer? Get one in minutes from people who know.
+Ask your question on www.Answers.yahoo.com
