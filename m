@@ -1,11 +1,27 @@
-From: <postmail1@bellsouth.net>
-To: <Info@Chancery.co.uk>
-Subject: Notification of Bequest
-Date: Mon, 11 Dec 2006 1:55:15 -0500
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Message-Id: <20061211065515.GPEB3733.ibm63aec.bellsouth.net@mail.bellsouth.net>
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GtgZH-0006Yp-CD
+	for linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 03:31:26 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JA3003IUP09YV@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 17:31:22 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JA3008B8P09GL@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 17:31:21 +0900 (KST)
+Content-return: prohibited
+Date: Mon, 11 Dec 2006 08:31:14 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Eraseblocks torture: OneNAND results
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Message-id: <5054449.505281165825887228.JavaMail.weblogic@ep_ml03>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: base64
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,54 +31,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Barristers' Chambers:
-TEDDY WILLIAMS & ASSOCIATES 
-Tel:+44-704-0105-655
-Fax:+44-700-5800-955
-E-mail: teddywilliamsassociates1@yahoo.co.uk
-Address: 33 Bedford Row, London WC1R 4JH, England 
-
-PARTNER MANAGING
-TEDDY WILLIAMS & ASSOCIATES
-LONDON - UK.
-Notification of Bequest
-Date: 11th December, 2006
-
-Attention: Beneficiary
-On behalf of the Trustees and Executor of the estate of Late Engr.
-Jürgen Krügger. I once again try to notify you as my earlier letter 
-was returned undelivered. I hereby attempt to reach you again by this 
-same
-email address on the WILL. 
-I wish to notify you that late Engr. 
-Jürgen Krügger made you a beneficiary to his WILL. He left the sum of 
-Thirty
-Million, One Hundred Thousand Dollars (USD$30, 100.000.00) to you in
-the Condicile and last testament to his WILL.
-
-This may sound strange and unbelievable to you, but it is real and
-true. Being a widely traveled man, he must have been in contact with
-you in the past or simply you were nominated to him by one of his 
-numerous friends abroad who wished you good. Engr. Jürgen Krügger 
-until his death was a member of the Helicopter Society and the 
-Institute of 
-Electronic & Electrical Engineers. He was a very dedicated Christian 
-who loved to give out. His great philanthropy earned him numerous 
-awards during 
-his
-life time. Late Engr. Jürgen Krügger died on the 13th day of 
-December, 2004 at the age of 80 years, and his WILL is now ready for 
-execution.
-
-According to him this money is to support your humanitarian activities
-and to help the poor and the needy in our society. Please if I reach
-you as I am hopeful, endeavor to get back to me as soon as possible to
-enable me conclude my job. I hope to hear from you in no distant time.
-Note: You are advise to contact me with my personal email address:
-teddywilliamsassociates1@yahoo.co.uk
-Tel:+44-704-0105-655
-Fax:+44-700-5800-955
-
-I await your prompt response.
-Yours in Service,
-BARRISTER TEDDY WILLIAMS ESQ.
+SGksDQoNCkZvciBub3csIHRoZXJlJ3Mgbm8gc3BlY2lhbCB0aGluZ3MuDQoNCkN1cnJlbnRseSBJ
+IHVzZWQgdGhlIGxhdGVzdCB0b3J0dXJlIHRlc3QgZmlsZS4NCg0KSSB0aGluayBJIG5lZWQgdGhl
+IG1vcmUgdGltZSB0byBtYWtlIGEgYmxvY2sgd29ybi1vdXQuDQoNClRoYW5rIHlvdSwNCkt5dW5n
+bWluIFBhcms=
