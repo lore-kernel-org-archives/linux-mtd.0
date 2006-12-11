@@ -1,27 +1,11 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gta3v-0002bu-2Q
-	for linux-mtd@lists.infradead.org; Sun, 10 Dec 2006 20:34:38 -0500
-Received: from ep_ms12_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JA300B775PIB5@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 10:34:30 +0900 (KST)
-Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JA300B5U5PIWV@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 10:34:30 +0900 (KST)
-Content-return: prohibited
-Date: Mon, 11 Dec 2006 01:34:23 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [MTD] OneNAND: fix oob handling in recent oob patch
-To: linux-mtd@lists.infradead.org
-Message-id: <6618222.25151165800869993.JavaMail.weblogic@ep_ml29>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+From: <postmail1@bellsouth.net>
+To: <Info@Chancery.co.uk>
+Subject: Notification of Bequest
+Date: Mon, 11 Dec 2006 1:55:15 -0500
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20061211065515.GPEB3733.ibm63aec.bellsouth.net@mail.bellsouth.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +15,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-W01URF0gT25lTkFORDogZml4IG9vYiBoYW5kbGluZyBpbiByZWNlbnQgb29iIHBhdGNoDQoNClRo
-ZXJlIGFyZSBtaXNzaW5nIHBsYWNlIGluIHJlY2VudCBNVEQgb29iIHBhdGNoDQoNCmh0dHA6Ly9n
-aXQuaW5mcmFkZWFkLm9yZy8/cD1tdGQtMi42LmdpdDthPWNvbW1pdGRpZmY7aD03MDE0NTY4YmFk
-NTVjMjBiN2VlNGY0MzlkNzhjOWU4NzU5MTJkNTFmDQoNClNpZ25lZC1vZmYtYnk6IEt5dW5nbWlu
-IFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3VuZy5jb20+DQoNCmRpZmYgLS1naXQgYS9kcml2ZXJz
-L210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5k
-X2Jhc2UuYw0KaW5kZXggYzQ4YWE3OS4uNjNjYTYxYiAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRk
-L29uZW5hbmQvb25lbmFuZF9iYXNlLmMNCisrKyBiL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFu
-ZF9iYXNlLmMNCkBAIC04NzEsOCArODcxLDggQEAgc3RhdGljIGludCBvbmVuYW5kX3JlYWRfb29i
-KHN0cnVjdCBtdGRfaQ0KIHsNCiAJQlVHX09OKG9wcy0+bW9kZSAhPSBNVERfT09CX1BMQUNFKTsN
-CiANCi0JcmV0dXJuIG9uZW5hbmRfZG9fcmVhZF9vb2IobXRkLCBmcm9tICsgb3BzLT5vb2JvZmZz
-LCBvcHMtPmxlbiwNCi0JCQkJICAgJm9wcy0+cmV0bGVuLCBvcHMtPm9vYmJ1Zik7DQorCXJldHVy
-biBvbmVuYW5kX2RvX3JlYWRfb29iKG10ZCwgZnJvbSArIG9wcy0+b29ib2Zmcywgb3BzLT5vb2Js
-ZW4sDQorCQkJCSAgICZvcHMtPm9vYnJldGxlbiwgb3BzLT5vb2JidWYpOw0KIH0NCiANCiAjaWZk
-ZWYgQ09ORklHX01URF9PTkVOQU5EX1ZFUklGWV9XUklURQ0KQEAgLTExMTQsOCArMTExNCw4IEBA
-IHN0YXRpYyBpbnQgb25lbmFuZF93cml0ZV9vb2Ioc3RydWN0IG10ZF8NCiB7DQogCUJVR19PTihv
-cHMtPm1vZGUgIT0gTVREX09PQl9QTEFDRSk7DQogDQotCXJldHVybiBvbmVuYW5kX2RvX3dyaXRl
-X29vYihtdGQsIHRvICsgb3BzLT5vb2JvZmZzLCBvcHMtPmxlbiwNCi0JCQkJICAgICZvcHMtPnJl
-dGxlbiwgb3BzLT5vb2JidWYpOw0KKwlyZXR1cm4gb25lbmFuZF9kb193cml0ZV9vb2IobXRkLCB0
-byArIG9wcy0+b29ib2Zmcywgb3BzLT5vb2JsZW4sDQorCQkJCSAgICAmb3BzLT5vb2JyZXRsZW4s
-IG9wcy0+b29iYnVmKTsNCiB9DQogDQogLyoqDQo=
+Barristers' Chambers:
+TEDDY WILLIAMS & ASSOCIATES 
+Tel:+44-704-0105-655
+Fax:+44-700-5800-955
+E-mail: teddywilliamsassociates1@yahoo.co.uk
+Address: 33 Bedford Row, London WC1R 4JH, England 
+
+PARTNER MANAGING
+TEDDY WILLIAMS & ASSOCIATES
+LONDON - UK.
+Notification of Bequest
+Date: 11th December, 2006
+
+Attention: Beneficiary
+On behalf of the Trustees and Executor of the estate of Late Engr.
+Jürgen Krügger. I once again try to notify you as my earlier letter 
+was returned undelivered. I hereby attempt to reach you again by this 
+same
+email address on the WILL. 
+I wish to notify you that late Engr. 
+Jürgen Krügger made you a beneficiary to his WILL. He left the sum of 
+Thirty
+Million, One Hundred Thousand Dollars (USD$30, 100.000.00) to you in
+the Condicile and last testament to his WILL.
+
+This may sound strange and unbelievable to you, but it is real and
+true. Being a widely traveled man, he must have been in contact with
+you in the past or simply you were nominated to him by one of his 
+numerous friends abroad who wished you good. Engr. Jürgen Krügger 
+until his death was a member of the Helicopter Society and the 
+Institute of 
+Electronic & Electrical Engineers. He was a very dedicated Christian 
+who loved to give out. His great philanthropy earned him numerous 
+awards during 
+his
+life time. Late Engr. Jürgen Krügger died on the 13th day of 
+December, 2004 at the age of 80 years, and his WILL is now ready for 
+execution.
+
+According to him this money is to support your humanitarian activities
+and to help the poor and the needy in our society. Please if I reach
+you as I am hopeful, endeavor to get back to me as soon as possible to
+enable me conclude my job. I hope to hear from you in no distant time.
+Note: You are advise to contact me with my personal email address:
+teddywilliamsassociates1@yahoo.co.uk
+Tel:+44-704-0105-655
+Fax:+44-700-5800-955
+
+I await your prompt response.
+Yours in Service,
+BARRISTER TEDDY WILLIAMS ESQ.
