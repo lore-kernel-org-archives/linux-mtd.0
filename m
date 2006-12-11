@@ -1,27 +1,21 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GtgZH-0006Yp-CD
-	for linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 03:31:26 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JA3003IUP09YV@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 17:31:22 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JA3008B8P09GL@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 17:31:21 +0900 (KST)
-Content-return: prohibited
-Date: Mon, 11 Dec 2006 08:31:14 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Eraseblocks torture: OneNAND results
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Message-id: <5054449.505281165825887228.JavaMail.weblogic@ep_ml03>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from rubidium.solidboot.com ([81.22.244.175] helo=mail.solidboot.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gtk8r-00006G-EA
+	for linux-mtd@lists.infradead.org; Mon, 11 Dec 2006 07:20:24 -0500
+Date: Mon, 11 Dec 2006 14:20:01 +0200
+From: Timo Teras <timo.teras@solidboot.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: OneNAND: Update OOB free table
+Message-ID: <20061211122001.GA28125@mail.solidboot.com>
+References: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1216089.366391165536680515.JavaMail.weblogic@ep_ml03>
+Sender: timo.teras@solidboot.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Timo Teras <timo.teras@solidboot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,7 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkZvciBub3csIHRoZXJlJ3Mgbm8gc3BlY2lhbCB0aGluZ3MuDQoNCkN1cnJlbnRseSBJ
-IHVzZWQgdGhlIGxhdGVzdCB0b3J0dXJlIHRlc3QgZmlsZS4NCg0KSSB0aGluayBJIG5lZWQgdGhl
-IG1vcmUgdGltZSB0byBtYWtlIGEgYmxvY2sgd29ybi1vdXQuDQoNClRoYW5rIHlvdSwNCkt5dW5n
-bWluIFBhcms=
+On Fri, Dec 08, 2006 at 12:11:06AM +0000, Kyungmin Park wrote:
+> I think we consider the whole spare area. if we don't use this area. we
+> only have 8 bytes of 64 bytes in spare area. If it makes misbehavior of
+> JFFS2, we have alternative method turn off ecc logic when write oob area.
+> 
+> % original
+> 
+>  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff 30 ff ff ff ff
+> 
+> % after patch
+> 
+>  OOB Data: ff ff 85 19 03 ff ff ff ff ff ff ff ff ff ff ff
+> 
+> Pleaes test this patch
+
+Tested. This breaks reading OOB area and the clean marker from there. After
+OOB has been written without ECC it must be read without ECC too or
+we start to get ECC errors.
+
+Cheers,
+  Timo
