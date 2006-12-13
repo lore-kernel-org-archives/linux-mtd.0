@@ -1,29 +1,14 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GuJ1j-0008Aj-El
-	for linux-mtd@lists.infradead.org; Wed, 13 Dec 2006 01:35:23 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e6.ny.us.ibm.com (8.13.8/8.12.11) with ESMTP id kBD1T9XA008844
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2006 20:29:09 -0500
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
-	kBD1SgIa282340
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2006 20:28:42 -0500
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	kBD1SfUp009662
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Dec 2006 20:28:42 -0500
-Subject: Re: intel p30, unlocking before loading driver, again
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Daniel Robinson <danielgrobinson@gmail.com>
-In-Reply-To: <90e974410612121501x67c7650aq9549b3d508bcf939@mail.gmail.com>
-References: <90e974410612121501x67c7650aq9549b3d508bcf939@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 12 Dec 2006 19:31:12 -0600
-Message-Id: <1165973472.2505.4.camel@crusty.rchland.ibm.com>
+Received: from bay0-omc2-s12.bay0.hotmail.com ([65.54.246.148])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1GuQXu-0007eO-UT
+	for linux-mtd@lists.infradead.org; Wed, 13 Dec 2006 09:37:10 +0000
+Message-ID: <BAY20-F68D041081ABC327FF435DA2D60@phx.gbl>
+From: "li jie" <cqdxlijie@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: copy data to nandflash problem with jffs2 filesystem 
+Date: Wed, 13 Dec 2006 17:36:47 +0800
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=gb2312; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +18,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2006-12-12 at 15:01 -0800, Daniel Robinson wrote:
-> I have a board with a P30 part on it and here are the knowns:
-> 
-> 1) the P30 powers up with all blocks locked.
 
-Yes.
+ Hello,
 
-> 
-> 2) if the driver gets loaded with the blocks locked, mode is 0660
-> (rw-rw----), which allows me to open the device in O_RDWR mode, will
-> let me do ioctl() calls to unlock blocks, but won't let me write to
-> the device.  The ioctl() returns without error, but writing fails
-> because it is a read only file system.
-> 
-> 3) In an attempt to increase robustness for a system that will be
-> embedded, I want to limit the amount of the part that is unlocked and
-> available for writing.  Ideally, I would like to control that
-> parametrically.
-> 
-> I can't find the place in the flash device is checked for being
-> unlocked and the bits are set that indicate that it is a read-only
-> device.
+	I have mips board au1200 with a Samsung K9D1208V 64MB NAND flash which
+is 528bytes/page and nor flash with 31M. 
+	i have established a jffs2 filesystem as root filesystem in nor flash with 
+31M ,
+my sytem is ok if only use nor flash . now i plan to mount nand flash under 
+jffs2 filesystem .
+ 
+ ¡ø1. start my board using jffs2 filesystem as root filesystem 
+	# cat /proc/mtd 
+	dev:    size   erasesize  name
+	mtd0: 03c00000 00020000 "User11 FS"
+	mtd1: 00100000 00020000 "YAMON"
+	mtd2: 002c0000 00020000 "raw kernel"
+	mtd3: 00800000 00004000 "NAND FSa 0"
+	mtd4: 03800000 00004000 "NAND FSa 1"
 
-There are commands you can send to the chip to query this status.  See
-the datasheet for the flash chip.
+ ¡ø2. using the tools "flash_eraseall -j /dev/mtd6 " //,passed
+ 
+ ¡ø3. # mount -tjffs2 /dev/mtdblock3 /mnt/ ,         // passed   
+      
+    # mount -tjffs2 /dev/mtdblock4 /mnt4/          //warning 
+     jffs2: Erase block size too small (16KiB). Using virtual blocks size 
+(32KiB) instead
+    
+    when i copy data to /mn4 or /mnt ,   I got the error messagesat the 
+end:
+     
+============================================================================================
 
-You can partition up your device and unlock partitions as needed.  Or
-you can do it from within a board driver if you need it at boot time for
-things like a root filesystem.
+	/mnt1 # cp /usr/flash_eraseall* .
+	jffs2_flush_wbuf(): Write failed with -5
+	Write of 1733 bytes at 0x00e3c01c failed. returned -5, retlen 0
+	Not marking the space at 0x00e3c01c as dirty because the flash 
+	driver returned retlen zero
+	jffs2_flush_wbuf(): Write failed with -5
+	Write of 1733 bytes at 0x00e30038 failed. returned -5, retlen 0
+	Not marking the space at 0x00e30038 as dirty because the flash 
+	driver returned retlen zero
+	cp: Write Error: Input/output error
+	jffs2_flush_wbuf(): Write failed with -5
+	Recovery of wbuf failed due to a second write error
+	Write of 2054 bytes at 0x00e2e608 failed. returned -5, retlen 0
+	Not marking the space at 0x00e2e608 as dirty because the flash 
+	driver returned retlen zero
+	jffs2_flush_wbuf(): Write failed with -5
+	Recovery of wbuf failed due to a second write error
+	Write of 2054 bytes at 0x00e20000 failed. returned -5, retlen 0
+	Not marking the space at 0x00e20000 as dirty because the flash 
+	driver returned retlen zero
+	cp: Write Error: Input/output error
+	/mnt # Erase at 0x00e30000 failed immediately: errno -5
+	jffs2_flush_wbuf(): Write failed with -5
+	CPU 0 Unable to handle kernel paging request at virtual address 
+	00200200, epc == 801f3350, ra == 801f3568
+	Oops in arch/mips/mm/fault.c::do_page_fault, line 167[#1]:
+	Cpu 0
+	$ 0   : 00000000 1000fc00 00100100 00200200
+	$ 4   : 00100100 00200200 0000612a 804688f8
+	$ 8   : 0000000a 00004001 00000000 00000000
+	$12   : fffffffa ffffffff 0000000a 00000000
+	$16   : 8d3054f0 8f63a000 8f63a000 8d3054f0
+	$20   : 00e20000 00000000 00000000 00000002
+	$24   : 8055bab0 804688eb                  
+	$28   : 8055a000 8055bb20 ffffffff 801f3568
+	Hi    : 00006600
+	Lo    : 000001c5
+	epc   : 801f3350 jffs2_block_refile+0x38/0x1e8     Not tainted
+	ra    : 801f3568 jffs2_wbuf_recover+0x68/0x828
+	Status: 1000fc03    KERNEL EXL IE 
+	Cause : 0080000c
+	BadVA : 00200200
+	PrId  : 04030200
+	Modules linked in:
+	Process pdflush (pid: 9, threadinfo=8055a000, task=80526be8)
+	Stack : 0000612a 80123760 ffffffff 00000002 00000400 8055bbbc 1000fc01 
+ffffffa0
+	        1000fc01 0000000a fffffffb 8f63a000 801f3568 8f63a400 00000020 
+00000000
+	        80468518 00000001 80123b8c 801239f8 00e20000 00000000 00000000 
+00000002
+	        fffffffb 8f63a000 00000001 8f63a000 fffffffb 8f63a000 00000001 
+8f63a000
+	        00e20000 00000000 00000000 00000002 ffffffff 801f3ec4 00000000 
+fffffffb
+	        ...
+	Call Trace:
+	 [<80123760>] call_console_drivers+0x88/0x170
+	 [<801f3568>] jffs2_wbuf_recover+0x68/0x828
+	 [<80123b8c>] vprintk+0x200/0x248
+	 [<801239f8>] vprintk+0x6c/0x248
+	 [<801f3ec4>] __jffs2_flush_wbuf+0x19c/0x4c8
+	 [<801f4b00>] jffs2_flash_writev+0x568/0x624
+	 [<801e9660>] jffs2_write_dnode+0x144/0x6d8
+	 [<801e9d74>] jffs2_write_dirent+0x180/0x6a4
+	 [<801ef4bc>] jffs2_garbage_collect_dnode+0x2a8/0x55c
+	 [<801e72ac>] jffs2_reserve_space_gc+0x4c/0x74
+	 [<801ee954>] jffs2_garbage_collect_dirent+0x1ac/0x1ec
+	 [<8018b224>] iget_locked+0x7c/0x10c
+	 [<8011f0d4>] __wake_up_common+0x68/0xc0
+	 [<801ede0c>] jffs2_garbage_collect_live+0x310/0x384
+	 [<8011f16c>] __wake_up+0x40/0x7c
+	 [<80123760>] call_console_drivers+0x88/0x170
+	 [<801ed740>] jffs2_garbage_collect_pass+0x3b0/0x76c
+	 [<8011f16c>] __wake_up+0x40/0x7c
+	 [<801239f8>] vprintk+0x6c/0x248
+	 [<801f05f4>] jffs2_erase_failed+0x98/0x11c
+	 [<80123980>] printk+0x1c/0x28
+	 [<8011f16c>] __wake_up+0x40/0x7c
+	 [<801f0240>] jffs2_erase_block+0x160/0x1b8
+	 [<801f01a8>] jffs2_erase_block+0xc8/0x1b8
+	 [<801f4388>] jffs2_flush_wbuf_gc+0x198/0x358
+	 [<801f44ec>] jffs2_flush_wbuf_gc+0x2fc/0x358
+	 [<801f2094>] jffs2_write_super+0x50/0x58
+	 [<801f2088>] jffs2_write_super+0x44/0x58
+	 [<80172718>] sync_supers+0x164/0x17c
+	 [<8014ce50>] wb_kupdate+0x54/0x180
+	 [<8014dfb0>] __pdflush+0x130/0x26c
+	 [<8014df60>] __pdflush+0xe0/0x26c
+	 [<8014e0ec>] pdflush+0x0/0x28
+	 [<8014e108>] pdflush+0x1c/0x28
+	 [<8014cdfc>] wb_kupdate+0x0/0x180
+	 [<8013c334>] kthread+0xdc/0xe4
+	 [<8013c2d0>] kthread+0x78/0xe4
+	 [<801056c0>] kernel_thread_helper+0x10/0x18
+	 [<801056b0>] kernel_thread_helper+0x0/0x18
+	Code: 3c030020  34420100  34630200 <aca40000> ac850004  ae020000  ae030004 
+ 8e020024  10400056 
+	
+	why ... 
+	what is somthing wrong ?
 
-josh
+please help me out ..
+
+_________________________________________________________________
+Ãâ·ÑÏÂÔØ MSN Explorer:   http://explorer.msn.com/lccn/  
