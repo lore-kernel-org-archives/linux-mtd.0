@@ -1,16 +1,16 @@
 Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GuTPD-0006vl-RY
-	for linux-mtd@lists.infradead.org; Wed, 13 Dec 2006 07:40:18 -0500
-Subject: Re: 2.6.19-mm1: missing MTD_UBI* help texts
+	id 1GuTPD-0006vm-RW
+	for linux-mtd@lists.infradead.org; Wed, 13 Dec 2006 07:40:20 -0500
+Subject: Re: 2.6.19-mm1: drivers/mtd/ubi/debug.c: unused variable
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Adrian Bunk <bunk@stusta.de>
-In-Reply-To: <20061211164225.GO10351@stusta.de>
+In-Reply-To: <20061211204616.GJ28443@stusta.de>
 References: <20061211005807.f220b81c.akpm@osdl.org>
-	<20061211164225.GO10351@stusta.de>
+	<20061211204616.GJ28443@stusta.de>
 Content-Type: text/plain; charset=UTF-8
-Date: Wed, 13 Dec 2006 14:37:56 +0200
-Message-Id: <1166013476.16396.17.camel@sauron>
+Date: Wed, 13 Dec 2006 14:36:51 +0200
+Message-Id: <1166013411.16396.15.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: Andrew Morton <akpm@osdl.org>, linux-mtd@lists.infradead.org,
@@ -25,8 +25,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2006-12-11 at 17:42 +0100, Adrian Bunk wrote:
-> The MTD_UBI and the MTD_UBI_DEBUG_PARANOID_* options lack help texts.
+On Mon, 2006-12-11 at 21:46 +0100, Adrian Bunk wrote:
+> It doesn't seem to be intended that in ubi_dbg_vprint_nolock() the=20
+> variable "caller" is never assigned any value different from 0.
+> =20
 
 thanks, fixed in our GIT tree.
 
