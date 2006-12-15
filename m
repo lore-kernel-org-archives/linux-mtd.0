@@ -1,17 +1,21 @@
-Received: from deck1210.hostdeck.com ([212.39.12.10])
+Received: from rubidium.solidboot.com ([81.22.244.175] helo=mail.solidboot.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gv7uj-0007CC-PM
-	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 02:55:34 -0500
-Message-ID: <458254B0.6020802@fatti.com>
-Date: Fri, 15 Dec 2006 08:54:24 +0100
-From: Enrico Migliore <enrico.migliore@fatti.com>
-MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Eraseblocks torture: OneNAND results
-References: <24414989.16841166158970543.JavaMail.weblogic@ep_ml08>
-In-Reply-To: <24414989.16841166158970543.JavaMail.weblogic@ep_ml08>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1Gv8W5-0008H8-77
+	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 03:34:07 -0500
+Date: Fri, 15 Dec 2006 10:33:11 +0200
+From: Timo Teras <timo.teras@solidboot.com>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: OneNAND: Update OOB free table
+Message-ID: <20061215083311.GA5793@mail.solidboot.com>
+References: <3761211.13011166150326518.JavaMail.weblogic@ep_ml08>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3761211.13011166150326518.JavaMail.weblogic@ep_ml08>
+Sender: timo.teras@solidboot.com
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Timo Teras <timo.teras@solidboot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,32 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Dec 15, 2006 at 02:38:17AM +0000, Kyungmin Park wrote:
+> > Tested. This breaks reading OOB area and the clean marker from there. After
+> > OOB has been written without ECC it must be read without ECC too or
+> >we start to get ECC errors.
+> 
+> Yes, you're right. and the current code don't check the read error.
+> It's similay problem in onenand_wait which can't report the read/write/erase error.
+> 
+> I think I need to change the logic.
+> 
+> First, fix the onenand_wait error report
+> Second, check the read error.
+> 
+> Anyway come back to main topic
+> 
+> How about the the change the JFFS2 logic to skip the eccpos in cleanmark check.
+> In onenand_oob_64, it describes the eccpos. So the JFFS2 skip the eccpos
+> 
+> Is it possible?
 
->> FYI: now I see that the tortured eraseblocks do not contain all 0xFFs
->> after erase which is strange - the driver must have returned an error.
->> But mtd->erase is totally silent about this. Most probably it is a bug
->> in the OneNAND driver.
->>
->> May you please take a look at onenand_wait() from
->> drivers/mtd/onenand/onenand_base.c in mtd-2.6.git. I see the following
->> code there:
->>
->>     
-Hi,
+I suppose it's worth asking from JFFS2 people. The free OOB usage seems to be
+a bit broken in JFFS2 (it only uses the first pos/len pair of the OOB free
+table. 
 
-my name is Enrico, I'm new to this list and I've been reading the 
-messages since the end of November.
-
-I've recently read  the Micron's "TN-29-16 Boot from NAND..."  technical 
-note and got puzzled by the following:
-
-"Avoid excessive reads to the area of the NAND Flash where code is 
-stored. When
-repeated accesses are required, the code should be copied to the DRAM. 
-This minimizes
-the probability of read-disturb errors in the NAND Flash device."
-
-Does that mean that excessive readings might compromise the integrity of 
-NAND cells?
-
-Enrico
+Cheers,
+  Timo
