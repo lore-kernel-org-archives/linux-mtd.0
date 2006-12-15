@@ -1,18 +1,18 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GvDMr-0001j2-Pv
-	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 08:44:56 -0500
-Subject: Re: [UBI] Issues while running UBI on 64 Bit Turion machine
+	id 1GvDPn-0001v2-2o
+	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 08:47:57 -0500
+Subject: Re: [PATCH] [UBI] Resize of static volumes
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: K G Srivastava <kg.srivastava@gmail.com>
-In-Reply-To: <15756b990612150528w4a75a606g9b46f260e082b9d2@mail.gmail.com>
-References: <15756b990612150528w4a75a606g9b46f260e082b9d2@mail.gmail.com>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <45829D2E.4060008@linux.vnet.ibm.com>
+References: <45829D2E.4060008@linux.vnet.ibm.com>
 Content-Type: text/plain; charset=UTF-8
-Date: Fri, 15 Dec 2006 15:44:25 +0200
-Message-Id: <1166190265.18628.60.camel@sauron>
+Date: Fri, 15 Dec 2006 15:41:47 +0200
+Message-Id: <1166190107.18628.56.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,23 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hello Alexander,
 
-On Fri, 2006-12-15 at 18:58 +0530, K G Srivastava wrote:
-> Hi,
->   I am trying to setup UBI over mtdram/nandsim on a AMD 64-bit (1.66
-> MHz) Turion Dual core machine. The MTD device is of size 128 MB and
-> the UBI volume is of size 111 MB. I have tried it on Intel P-4 CPU
-> 2.66GHz and it works fine. But as soon as i do a modprobe for ubi
-> module, the kernel gives an oops. Can you please tell me if UBI works
-> fine on 64-bit architecture or if there are any known issues and if
-> there are any fixes available. The trace of the same is as follows -
+On Fri, 2006-12-15 at 14:03 +0100, Alexander Schmidt wrote:
+> I noticed that after resizing static volumes, the used_bytes value in the
+> data table record is set to the new size of the volume. This is correct
+> for dynamic volumes, but for static volumes, this value should not be
+> changed.
 
-I have never tried it on 64-bit machines. But theoretically it should
-work. There must be some bug there.
-
-To start off, may you please try mount JFFS2 over nandsim on your 64-bit
-machine and check if JFFS2/MTD are fine with 64-bit?
+Thanks for the patch!
 
 --=20
 Best regards,
