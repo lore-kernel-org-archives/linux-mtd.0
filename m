@@ -1,21 +1,19 @@
-Received: from rubidium.solidboot.com ([81.22.244.175] helo=mail.solidboot.com)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gv8W5-0008H8-77
-	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 03:34:07 -0500
-Date: Fri, 15 Dec 2006 10:33:11 +0200
-From: Timo Teras <timo.teras@solidboot.com>
-To: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: OneNAND: Update OOB free table
-Message-ID: <20061215083311.GA5793@mail.solidboot.com>
-References: <3761211.13011166150326518.JavaMail.weblogic@ep_ml08>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3761211.13011166150326518.JavaMail.weblogic@ep_ml08>
-Sender: timo.teras@solidboot.com
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Timo Teras <timo.teras@solidboot.com>
+	id 1Gv8hm-0008TV-6v
+	for linux-mtd@lists.infradead.org; Fri, 15 Dec 2006 03:46:13 -0500
+Date: Fri, 15 Dec 2006 09:44:57 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Enrico Migliore <enrico.migliore@fatti.com>
+Subject: Re: Eraseblocks torture: OneNAND results
+In-Reply-To: <458254B0.6020802@fatti.com>
+Message-ID: <Pine.LNX.4.64.0612150940580.11369@lnxricardw.se.axis.com>
+References: <24414989.16841166158970543.JavaMail.weblogic@ep_ml08>
+	<458254B0.6020802@fatti.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 15, 2006 at 02:38:17AM +0000, Kyungmin Park wrote:
-> > Tested. This breaks reading OOB area and the clean marker from there. After
-> > OOB has been written without ECC it must be read without ECC too or
-> >we start to get ECC errors.
-> 
-> Yes, you're right. and the current code don't check the read error.
-> It's similay problem in onenand_wait which can't report the read/write/erase error.
-> 
-> I think I need to change the logic.
-> 
-> First, fix the onenand_wait error report
-> Second, check the read error.
-> 
-> Anyway come back to main topic
-> 
-> How about the the change the JFFS2 logic to skip the eccpos in cleanmark check.
-> In onenand_oob_64, it describes the eccpos. So the JFFS2 skip the eccpos
-> 
-> Is it possible?
 
-I suppose it's worth asking from JFFS2 people. The free OOB usage seems to be
-a bit broken in JFFS2 (it only uses the first pos/len pair of the OOB free
-table. 
+On Fri, 15 Dec 2006, Enrico Migliore wrote:
 
-Cheers,
-  Timo
+> I've recently read  the Micron's "TN-29-16 Boot from NAND..."  technical
+> note and got puzzled by the following:
+>
+> "Avoid excessive reads to the area of the NAND Flash where code is
+> stored. When
+> repeated accesses are required, the code should be copied to the DRAM.
+> This minimizes
+> the probability of read-disturb errors in the NAND Flash device."
+>
+> Does that mean that excessive readings might compromise the integrity of
+> NAND cells?
+
+That's the way I would interpret it too. (BTW, the paragraph wasn't there=
+=20
+in the first edition of the document, rev.A from March this year...).
+
+Although I'm also somewhat puzzled at the conclusion. I always thought=20
+read errors could occur at any time, the probability of which could be=20
+increased by reading or even more writing to the device. But not that it=20
+was localized to the area which you are reading. Although it makes sense I=
+=20
+guess; accessing a bit cell requires some activity in the vicinity of the=
+=20
+cell in order to read the bit, which I guess would increase the=20
+probability of failure.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
