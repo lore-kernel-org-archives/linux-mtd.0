@@ -1,27 +1,31 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GwFvQ-0005SG-CH
-	for linux-mtd@lists.infradead.org; Mon, 18 Dec 2006 05:40:56 -0500
-Received: from ep_ms12_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JAG006TQTO0I4@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 18 Dec 2006 19:40:48 +0900 (KST)
-Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JAG00BBITO0BZ@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 18 Dec 2006 19:40:48 +0900 (KST)
-Content-return: prohibited
-Date: Mon, 18 Dec 2006 10:39:57 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [RFC/PATCH] OneNAND: add subpage write support
-To: linux-mtd@lists.infradead.org
-Message-id: <27033363.228511166438448628.JavaMail.weblogic@ep_ml21>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from mtagate1.de.ibm.com ([195.212.29.150])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GwI3z-0006Jz-Gj
+	for linux-mtd@lists.infradead.org; Mon, 18 Dec 2006 12:57:55 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate1.de.ibm.com (8.13.8/8.13.8) with ESMTP id kBICvgKC195818
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Dec 2006 12:57:42 GMT
+Received: from d12av01.megacenter.de.ibm.com (d12av01.megacenter.de.ibm.com
+	[9.149.165.212])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with
+	ESMTP id kBICvg8Y2867350
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Dec 2006 13:57:42 +0100
+Received: from d12av01.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av01.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id kBICvfan022983
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Dec 2006 13:57:42 +0100
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: "Artem, " <dedekind@infradead.org>
+Subject: [PATCH] UBI: fix errorhandling in ioctl
+Date: Mon, 18 Dec 2006 13:57:35 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200612181357.35365.alexs@linux.vnet.ibm.com>
+Cc: "linux-mtd@lists.infradead.org, " <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,92 +35,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-W01URF0gT25lTkFORDogYWRkIHN1YnBhZ2Ugd3JpdGUgc3VwcG9ydA0KT25lTkFORCBzdXBwb3J0
-cyB1cCB0byA0IHdyaXRlcyBhdCBvbmUgTkFORCBwYWdlLiBBZGQgc3VwcG9ydCBvZiB0aGlzIGZl
-YXR1cmUuDQoNCkFueSBjb21tZW50cyBhcmUgd2VsY29tZS4NCg0KVGhhbmsgeW91LA0KS3l1bmdt
-aW4gUGFyaw0KDQotLQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5k
-X2Jhc2UuYyBiL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMNCmluZGV4IDYzY2E2
-MWIuLjU2ZmYyMGYgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFz
-ZS5jDQorKysgYi9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQpAQCAtOTE5LDYg
-KzkxOSwxMCBAQCBzdGF0aWMgaW50IG9uZW5hbmRfdmVyaWZ5X3BhZ2Uoc3RydWN0IG10ZF9pbmZv
-ICptdGQsIHVfY2hhciAqYnVmLCBsb2ZmX3QgYWRkcikNCiAJdm9pZCBfX2lvbWVtICpkYXRhcmFt
-MCwgKmRhdGFyYW0xOw0KIAlpbnQgcmV0ID0gMDsNCiANCisJLyogSW4gcGFydGlhbCBwYWdlIHdy
-aXRlLCBqdXN0IHNraXAgaXQgKi8NCisJaWYgKChhZGRyICYgKG10ZC0+d3JpdGVzaXplIC0gMSkp
-ICE9IDApDQorCQlyZXR1cm4gMDsNCisNCiAJdGhpcy0+Y29tbWFuZChtdGQsIE9ORU5BTkRfQ01E
-X1JFQUQsIGFkZHIsIG10ZC0+d3JpdGVzaXplKTsNCiANCiAJcmV0ID0gdGhpcy0+d2FpdChtdGQs
-IEZMX1JFQURJTkcpOw0KQEAgLTk0MSw3ICs5NDUsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfdmVy
-aWZ5X3BhZ2Uoc3RydWN0IG10ZF9pbmZvICptdGQsIHVfY2hhciAqYnVmLCBsb2ZmX3QgYWRkcikN
-CiAjZGVmaW5lIG9uZW5hbmRfdmVyaWZ5X29vYiguLi4pCQkoMCkNCiAjZW5kaWYNCiANCi0jZGVm
-aW5lIE5PVEFMSUdORUQoeCkJKCh4ICYgKG10ZC0+d3JpdGVzaXplIC0gMSkpICE9IDApDQorI2Rl
-ZmluZSBOT1RBTElHTkVEKHgpCSgoeCAmICh0aGlzLT5zdWJwYWdlc2l6ZSAtIDEpKSAhPSAwKQ0K
-IA0KIC8qKg0KICAqIG9uZW5hbmRfd3JpdGUgLSBbTVREIEludGVyZmFjZV0gd3JpdGUgYnVmZmVy
-IHRvIEZMQVNIDQpAQCAtOTU5LDYgKzk2Myw3IEBAIHN0YXRpYyBpbnQgb25lbmFuZF93cml0ZShz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRvLCBzaXplX3QgbGVuLA0KIAlzdHJ1Y3Qgb25l
-bmFuZF9jaGlwICp0aGlzID0gbXRkLT5wcml2Ow0KIAlpbnQgd3JpdHRlbiA9IDA7DQogCWludCBy
-ZXQgPSAwOw0KKwlpbnQgY29sdW1uLCBzdWJwYWdlOw0KIA0KIAlERUJVRyhNVERfREVCVUdfTEVW
-RUwzLCAib25lbmFuZF93cml0ZTogdG8gPSAweCUwOHgsIGxlbiA9ICVpXG4iLCAodW5zaWduZWQg
-aW50KSB0bywgKGludCkgbGVuKTsNCiANCkBAIC05NzcsMjEgKzk4MiwzNyBAQCBzdGF0aWMgaW50
-IG9uZW5hbmRfd3JpdGUoc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCB0bywgc2l6ZV90IGxl
-biwNCiAgICAgICAgICAgICAgICAgcmV0dXJuIC1FSU5WQUw7DQogICAgICAgICB9DQogDQorCWNv
-bHVtbiA9IHRvICYgKG10ZC0+d3JpdGVzaXplIC0gMSk7DQorCXN1YnBhZ2UgPSBjb2x1bW4gfHwg
-KGxlbiAmIChtdGQtPndyaXRlc2l6ZSAtIDEpKTsNCisNCiAJLyogR3JhYiB0aGUgbG9jayBhbmQg
-c2VlIGlmIHRoZSBkZXZpY2UgaXMgYXZhaWxhYmxlICovDQogCW9uZW5hbmRfZ2V0X2RldmljZSht
-dGQsIEZMX1dSSVRJTkcpOw0KIA0KIAkvKiBMb29wIHVudGlsIGFsbCBkYXRhIHdyaXRlICovDQog
-CXdoaWxlICh3cml0dGVuIDwgbGVuKSB7DQotCQlpbnQgdGhpc2xlbiA9IG1pbl90KGludCwgbXRk
-LT53cml0ZXNpemUsIGxlbiAtIHdyaXR0ZW4pOw0KLQ0KLQkJdGhpcy0+Y29tbWFuZChtdGQsIE9O
-RU5BTkRfQ01EX0JVRkZFUlJBTSwgdG8sIG10ZC0+d3JpdGVzaXplKTsNCisJCWludCBieXRlcyA9
-IG10ZC0+d3JpdGVzaXplOw0KKwkJaW50IHRoaXNsZW4gPSBtaW5fdChpbnQsIGJ5dGVzLCBsZW4g
-LSB3cml0dGVuKTsNCisJCXVfY2hhciAqd2J1ZiA9ICh1X2NoYXIgKikgYnVmOw0KKw0KKwkJdGhp
-cy0+Y29tbWFuZChtdGQsIE9ORU5BTkRfQ01EX0JVRkZFUlJBTSwgdG8sIGJ5dGVzKTsNCisNCisJ
-CS8qIFBhcnRpYWwgcGFnZSB3cml0ZSAqLw0KKwkJaWYgKGNvbHVtbiB8fCBsZW4gPCAobXRkLT53
-cml0ZXNpemUgLSAxKSkgew0KKwkJCWJ5dGVzID0gbWluX3QoaW50LCBieXRlcyAtIGNvbHVtbiwg
-KGludCkgbGVuKTsNCisJCQltZW1zZXQodGhpcy0+cGFnZV9idWYsIDB4ZmYsIG10ZC0+d3JpdGVz
-aXplKTsNCisJCQltZW1jcHkodGhpcy0+cGFnZV9idWYgKyBjb2x1bW4sIGJ1ZiwgYnl0ZXMpOw0K
-KwkJCXdidWYgPSB0aGlzLT5wYWdlX2J1ZjsNCisJCQkvKiBFdmVuIHRob3VnaCBwYXJ0aWFsIHdy
-aXRlLCB3ZSBuZWVkIHBhZ2VzaXplICovDQorCQkJdGhpc2xlbiA9IG10ZC0+d3JpdGVzaXplOw0K
-KwkJfQ0KIA0KLQkJdGhpcy0+d3JpdGVfYnVmZmVycmFtKG10ZCwgT05FTkFORF9EQVRBUkFNLCBi
-dWYsIDAsIHRoaXNsZW4pOw0KKwkJdGhpcy0+d3JpdGVfYnVmZmVycmFtKG10ZCwgT05FTkFORF9E
-QVRBUkFNLCB3YnVmLCAwLCB0aGlzbGVuKTsNCiAJCXRoaXMtPndyaXRlX2J1ZmZlcnJhbShtdGQs
-IE9ORU5BTkRfU1BBUkVSQU0sIGZmY2hhcnMsIDAsIG10ZC0+b29ic2l6ZSk7DQogDQogCQl0aGlz
-LT5jb21tYW5kKG10ZCwgT05FTkFORF9DTURfUFJPRywgdG8sIG10ZC0+d3JpdGVzaXplKTsNCiAN
-Ci0JCW9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbShtdGQsIHRvLCAxKTsNCisJCS8qIEluIHBhcnRp
-YWwgcGFnZSB3cml0ZSB3ZSBkb24ndCB1cGRhdGUgYnVmZmVycmFtICovDQorCQlvbmVuYW5kX3Vw
-ZGF0ZV9idWZmZXJyYW0obXRkLCB0bywgIXN1YnBhZ2UpOw0KIA0KIAkJcmV0ID0gdGhpcy0+d2Fp
-dChtdGQsIEZMX1dSSVRJTkcpOw0KIAkJaWYgKHJldCkgew0KQEAgLTEwMDIsNyArMTAyMyw3IEBA
-IHN0YXRpYyBpbnQgb25lbmFuZF93cml0ZShzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IHRv
-LCBzaXplX3QgbGVuLA0KIAkJd3JpdHRlbiArPSB0aGlzbGVuOw0KIA0KIAkJLyogT25seSBjaGVj
-ayB2ZXJpZnkgd3JpdGUgdHVybiBvbiAqLw0KLQkJcmV0ID0gb25lbmFuZF92ZXJpZnlfcGFnZSht
-dGQsICh1X2NoYXIgKikgYnVmLCB0byk7DQorCQlyZXQgPSBvbmVuYW5kX3ZlcmlmeV9wYWdlKG10
-ZCwgKHVfY2hhciAqKSB3YnVmLCB0byk7DQogCQlpZiAocmV0KSB7DQogCQkJREVCVUcoTVREX0RF
-QlVHX0xFVkVMMCwgIm9uZW5hbmRfd3JpdGU6IHZlcmlmeSBmYWlsZWQgJWRcbiIsIHJldCk7DQog
-CQkJZ290byBvdXQ7DQpAQCAtMTAxMSw2ICsxMDMyLDcgQEAgc3RhdGljIGludCBvbmVuYW5kX3dy
-aXRlKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBsb2ZmX3QgdG8sIHNpemVfdCBsZW4sDQogCQlpZiAo
-d3JpdHRlbiA9PSBsZW4pDQogCQkJYnJlYWs7DQogDQorCQljb2x1bW4gPSAwOw0KIAkJdG8gKz0g
-dGhpc2xlbjsNCiAJCWJ1ZiArPSB0aGlzbGVuOw0KIAl9DQpAQCAtMjAyOSwyMyArMjA1MSwzMCBA
-QCBpbnQgb25lbmFuZF9zY2FuKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgbWF4Y2hpcHMpDQog
-CWluaXRfd2FpdHF1ZXVlX2hlYWQoJnRoaXMtPndxKTsNCiAJc3Bpbl9sb2NrX2luaXQoJnRoaXMt
-PmNoaXBfbG9jayk7DQogDQorCS8qDQorCSAqIEFsbG93IHN1YnBhZ2Ugd3JpdGVzIHVwIHRvIG9v
-YnNpemUuDQorCSAqLw0KIAlzd2l0Y2ggKG10ZC0+b29ic2l6ZSkgew0KIAljYXNlIDY0Og0KIAkJ
-dGhpcy0+ZWNjbGF5b3V0ID0gJm9uZW5hbmRfb29iXzY0Ow0KKwkJbXRkLT5zdWJwYWdlX3NmdCA9
-IDI7DQogCQlicmVhazsNCiANCiAJY2FzZSAzMjoNCiAJCXRoaXMtPmVjY2xheW91dCA9ICZvbmVu
-YW5kX29vYl8zMjsNCisJCW10ZC0+c3VicGFnZV9zZnQgPSAxOw0KIAkJYnJlYWs7DQogDQogCWRl
-ZmF1bHQ6DQogCQlwcmludGsoS0VSTl9XQVJOSU5HICJObyBPT0Igc2NoZW1lIGRlZmluZWQgZm9y
-IG9vYnNpemUgJWRcbiIsDQogCQkJbXRkLT5vb2JzaXplKTsNCisJCW10ZC0+c3VicGFnZV9zZnQg
-PSAwOw0KIAkJLyogVG8gcHJldmVudCBrZXJuZWwgb29wcyAqLw0KIAkJdGhpcy0+ZWNjbGF5b3V0
-ID0gJm9uZW5hbmRfb29iXzMyOw0KIAkJYnJlYWs7DQogCX0NCiANCisJdGhpcy0+c3VicGFnZXNp
-emUgPSBtdGQtPndyaXRlc2l6ZSA+PiBtdGQtPnN1YnBhZ2Vfc2Z0Ow0KIAltdGQtPmVjY2xheW91
-dCA9IHRoaXMtPmVjY2xheW91dDsNCiANCiAJLyogRmlsbCBpbiByZW1haW5pbmcgTVREIGRyaXZl
-ciBkYXRhICovDQpkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oIGIvaW5j
-bHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQppbmRleCA2MmNhMGY0Li5mZTM1MDBkIDEwMDY0NA0K
-LS0tIGEvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQorKysgYi9pbmNsdWRlL2xpbnV4L210
-ZC9vbmVuYW5kLmgNCkBAIC04OCw2ICs4OCw3IEBAIHN0cnVjdCBvbmVuYW5kX2J1ZmZlcnJhbSB7
-DQogICoJCQlvcGVyYXRpb24gaXMgaW4gcHJvZ3Jlc3MNCiAgKiBAc3RhdGU6CQlbSU5URVJOXSB0
-aGUgY3VycmVudCBzdGF0ZSBvZiB0aGUgT25lTkFORCBkZXZpY2UNCiAgKiBAcGFnZV9idWY6CQlk
-YXRhIGJ1ZmZlcg0KKyAqIEBzdWJwYWdlc2l6ZToJW0lOVEVSTl0gaG9sZHMgdGhlIHN1YnBhZ2Vz
-aXplDQogICogQGVjY2xheW91dDoJCVtSRVBMQUNFQUJMRV0gdGhlIGRlZmF1bHQgZWNjIHBsYWNl
-bWVudCBzY2hlbWUNCiAgKiBAYmJtOgkJW1JFUExBQ0VBQkxFXSBwb2ludGVyIHRvIEJhZCBCbG9j
-ayBNYW5hZ2VtZW50DQogICogQHByaXY6CQlbT1BUSU9OQUxdIHBvaW50ZXIgdG8gcHJpdmF0ZSBj
-aGlwIGRhdGUNCkBAIC0xMjgsNiArMTI5LDcgQEAgc3RydWN0IG9uZW5hbmRfY2hpcCB7DQogCW9u
-ZW5hbmRfc3RhdGVfdAkJc3RhdGU7DQogCXVuc2lnbmVkIGNoYXIJCSpwYWdlX2J1ZjsNCiANCisJ
-aW50CQkJc3VicGFnZXNpemU7DQogCXN0cnVjdCBuYW5kX2VjY2xheW91dAkqZWNjbGF5b3V0Ow0K
-IA0KIAl2b2lkCQkJKmJibTs=
+Hi,
+
+the double declaration of "int err" makes the ioctl() for resizing volumes
+always return 0, even if errors occured during the resizing procedure.
+
+I hope the patch applies this time, i double checked it...
+
+Kind regards,
+Alexander Schmidt
+
+Signed-off-by: Alexander Schmidt, <alexs@linux.vnet.ibm.com>
+---
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 469cc47..be304dc 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -824,7 +824,7 @@ out_free:
+ 	/* Re-size volume command */
+ 	case UBI_IOCRSVOL:
+ 	{
+-		int err, rem, pebs;
++		int rem, pebs;
+ 		uint64_t tmp;
+ 		const struct ubi_vtbl_vtr *vtr;
+ 		struct ubi_rsvol_req req;
