@@ -1,22 +1,19 @@
-Received: from nf-out-0910.google.com ([64.233.182.191])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gx1Yu-0001VC-J6
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 08:32:49 -0500
-Received: by nf-out-0910.google.com with SMTP id i2so1286435nfe
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Dec 2006 05:32:46 -0800 (PST)
-Message-ID: <625fc13d0612200532i56913012oceed9c217327c051@mail.gmail.com>
-Date: Wed, 20 Dec 2006 07:32:45 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: Darshak <darshak@elitecore.com>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gx1dO-0001hy-67
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 08:37:27 -0500
 Subject: Re: Intel flash
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Darshak <darshak@elitecore.com>
 In-Reply-To: <4589385B.00000B.01208@ELITECORE1561>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 References: <4589385B.00000B.01208@ELITECORE1561>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 20 Dec 2006 15:36:52 +0200
+Message-Id: <1166621812.3939.26.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/20/06, Darshak <darshak@elitecore.com> wrote:
+On Wed, 2006-12-20 at 18:49 +0530, Darshak wrote:
 > Hi,
->
+>=20
 > I have read that INTEL has strataflash.
-
-Yes.  Read their website on flash chips.
-
+>=20
 > Is it bare NAND/nor file system?what is its basic use in Linksys?
-
-It's a type of NOR flash chip.  We have no idea what it's usage is in
-Linksys.  Especially given that Linksys is a company, so it could be
-used for a variety of things.
-
+>=20
+> =20
+>=20
 > What file system does it use? Can we have JFFS2 for that ?
-
-Strataflash can be used with several filesystems, including JFFS2,
-assuming there is an underlying device driver in MTD that can talk to
-it.
-
+>=20
+> =20
+>=20
 > What is difference in CF flash/DOC flash and this INTEL flash .?
+>=20
+> =20
+>=20
+>=20
+>=20
+> Thanxs!
+>=20
+> =20
+>=20
+>=20
+> ______________________________________________________
 
-CF flash doesn't show up as real flash.  It shows up as an IDE device.
- Intel flash is a raw flash chip and it's up to a board designer to
-determine how it is addressed.
+I see you use some progressive formula for number of line brakes at the
+end of each line. But I cannot figure out which one.
 
-josh
+If number of brakes is y, while the number of line is x, we have the
+following data for y(x):
+
+y(0) =3D 2
+y(1) =3D 2
+y(2) =3D 4
+y(3) =3D 4
+y(5) =3D 6
+y(6) =3D 5
+
+What's the formula?
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
