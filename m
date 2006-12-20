@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gx1dO-0001hy-67
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 08:37:27 -0500
-Subject: Re: Intel flash
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Darshak <darshak@elitecore.com>
-In-Reply-To: <4589385B.00000B.01208@ELITECORE1561>
-References: <4589385B.00000B.01208@ELITECORE1561>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 20 Dec 2006 15:36:52 +0200
-Message-Id: <1166621812.3939.26.camel@sauron>
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gx2mm-0002TG-NF
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 09:51:14 -0500
+Subject: Re: help for implimentation
+From: Thomas Gleixner <tglx@linutronix.de>
+To: samir.rawal@tokheimkaizen.com
+In-Reply-To: <MAILapMHi0SYNIPukg300000464@mail.tokheimkaizen.com>
+References: <MAILapMHi0SYNIPukg300000464@mail.tokheimkaizen.com>
+Content-Type: text/plain
+Date: Wed, 20 Dec 2006 15:55:24 +0100
+Message-Id: <1166626524.29505.578.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2006-12-20 at 18:49 +0530, Darshak wrote:
-> Hi,
->=20
-> I have read that INTEL has strataflash.
->=20
-> Is it bare NAND/nor file system?what is its basic use in Linksys?
->=20
-> =20
->=20
-> What file system does it use? Can we have JFFS2 for that ?
->=20
-> =20
->=20
-> What is difference in CF flash/DOC flash and this INTEL flash .?
->=20
-> =20
->=20
->=20
->=20
-> Thanxs!
->=20
-> =20
->=20
->=20
-> ______________________________________________________
+On Wed, 2006-12-20 at 18:01 +0530, Samir wrote:
+>
 
-I see you use some progressive formula for number of line brakes at the
-end of each line. But I cannot figure out which one.
+Please read http://www.infradead.org/~dwmw2/email.html _AND_ comply with
+it.
 
-If number of brakes is y, while the number of line is x, we have the
-following data for y(x):
+> Please provide the MTD+Jffs2 Document.
 
-y(0) =3D 2
-y(1) =3D 2
-y(2) =3D 4
-y(3) =3D 4
-y(5) =3D 6
-y(6) =3D 5
+This is not a webshop without a cashpoint, where one can order free
+services. We provide help on a voluntary basis. You can ask technical
+questions, but we are not here to do your homework.
 
-What's the formula?
+> You must know your password to change your options (including changing
+> the password, itself) or to unsubscribe.  It is:
+> 
+>   bisenecu
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks for sending your personal password information along. This makes
+it simpler to unsubscribe you.
+
+	tglx
