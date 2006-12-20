@@ -1,18 +1,20 @@
-Received: from mail.tokheimkaizen.com ([220.225.73.142])
+Received: from mailhost.elitecore.com ([203.88.135.194] helo=elitecore.com)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gx0bm-0000fl-Iq
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 07:31:46 -0500
-From: "Samir" <samir.rawal@tokheimkaizen.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: help for implimentation
-Date: Wed, 20 Dec 2006 18:01:39 +0530
+	id 1Gx1PX-0001H4-KV
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 08:23:09 -0500
+Received: from unknown (HELO elitecore1561) ([192.168.15.61])
+	(envelope-sender <darshak@elitecore.com>)
+	by elitecore.com (qmail-ldap-1.03) with SMTP
+	for <linux-mtd@lists.infradead.org>; 20 Dec 2006 13:17:00 -0000
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Message-Id: <4589385B.00000B.01208@ELITECORE1561>
+Date: Wed, 20 Dec 2006 18:49:23 +0530
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+From: "Darshak" <darshak@elitecore.com>
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <mailman.50.1166617588.2157.linux-mtd@lists.infradead.org>
-Message-ID: <MAILapMHi0SYNIPukg300000464@mail.tokheimkaizen.com>
-Reply-To: samir.rawal@tokheimkaizen.com
+To: <linux-mtd@lists.infradead.org>
+Subject: Intel flash
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,51 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+I have read that INTEL has strataflash.
 
-Please provide the MTD+Jffs2 Document.
-
------Original Message-----
-From: linux-mtd-bounces+samir.rawal=tokheimkaizen.com@lists.infradead.org
-[mailto:linux-mtd-bounces+samir.rawal=tokheimkaizen.com@lists.infradead.org]
-On Behalf Of linux-mtd-request@lists.infradead.org
-Sent: Wednesday, December 20, 2006 5:56 PM
-To: samir.rawal@tokheimkaizen.com
-Subject: Welcome to the "linux-mtd" mailing list
-
-Welcome to the linux-mtd@lists.infradead.org mailing list!
-
-To post to this list, send your email to:
-
-  linux-mtd@lists.infradead.org
-
-General information about the mailing list is at:
-
-  http://lists.infradead.org/mailman/listinfo/linux-mtd
-
-If you ever want to unsubscribe or change your options (eg, switch to
-or from digest mode, change your password, etc.), visit your
-subscription page at:
+Is it bare NAND/nor file system?what is its basic use in Linksys?
 
  
-http://lists.infradead.org/mailman/options/linux-mtd/samir.rawal%40tokheimka
-izen.com
 
+What file system does it use? Can we have JFFS2 for that ?
 
-You can also make such adjustments via email by sending a message to:
+ 
 
-  linux-mtd-request@lists.infradead.org
+What is difference in CF flash/DOC flash and this INTEL flash .?
 
-with the word `help' in the subject or body (don't include the
-quotes), and you will get back a message with instructions.
+ 
 
-You must know your password to change your options (including changing
-the password, itself) or to unsubscribe.  It is:
+ 
 
-  bisenecu
+Thanxs!
 
-Normally, Mailman will remind you of your lists.infradead.org mailing
-list passwords once every month, although you can disable this if you
-prefer.  This reminder will also include instructions on how to
-unsubscribe or change your account options.  There is also a button on
-your options page that will email your current password to you.
+ 
