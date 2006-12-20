@@ -1,20 +1,18 @@
-Received: from mailhost.elitecore.com ([203.88.135.194] helo=elitecore.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GwuPC-0004Me-Ia
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 00:54:22 -0500
-Received: from unknown (HELO elitecore1561) ([192.168.15.61])
-	(envelope-sender <darshak@elitecore.com>)
-	by elitecore.com (qmail-ldap-1.03) with SMTP
-	for <linux-mtd@lists.infradead.org>; 20 Dec 2006 05:48:06 -0000
+Received: from deck1210.hostdeck.com ([212.39.12.10])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gwvhk-0004uT-Aw
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 02:17:37 -0500
+Message-ID: <4588E35F.8000806@fatti.com>
+Date: Wed, 20 Dec 2006 08:16:47 +0100
+From: Enrico Migliore <enrico.migliore@fatti.com>
 MIME-Version: 1.0
-Message-Id: <4588CF26.00000C.00336@ELITECORE1561>
-Date: Wed, 20 Dec 2006 11:20:30 +0530
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-From: "Darshak" <darshak@elitecore.com>
-Content-Transfer-Encoding: 7bit
-To: <linux-mtd@lists.infradead.org>
-Subject: Flash file system selection
+To: Michel LECONTE <michel.leconte@sacet.com>
+Subject: Re: Reduce boot time with jffs2 and CM-X255
+References: <45881281.8060001@sacet.com>
+In-Reply-To: <45881281.8060001@sacet.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +22,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi Michel,
 
-    
+ could you be more specific?
+ The boot time, in a production environment, is the time that elapses 
+from the board reset to the login prompt.
+ How long is that time on your cm-x255?
 
- 
-
-How should I decide which file system to use for flash.?
-
-    Like : Type of flash say Compact IDE flash,DiskOnChip,USB. Etc..
-
- What are the parameters that decide the use of flash file system?
-
-    e.g size of flash. Etc...
-
-Which are famous file system for that .
-
-  e.g JFFS2 ,YAFFFS [ I m not aware of others? ]
-
-    And how are they comparable ?
-
- 
-
- 
-
-Thanxs!
-
-Darshak
+ Enrico
+> Hi,
+>
+> I use a cm-x255 compulab card and I boot on the NAND flash with jffs2
+> filesystem.
+>
+> My problem is the boot is too long.
+>
+> My method to boot on the NAND flash is :
+>
+> 1) I boot on the cm-x225 via nfs.
+>
+> 2) I format the flash:
+>
+> flash_eraseall -j /dev/mtd1
+>
+> 3) I mount the flash :
+>
+> mount -t jffs2 /dev/mtdblock1 /mountpoint
+>
+> 4) I put the distribution of my system on the flash:
+>
+> cp -r /Distribution/* /mountpoint
+>
+> 5) I unmount the flash :
+>
+> umount /mountpoint
+>
+> 6) Finally, I boot on the cm-x255 board with the 2.6.18 kernel and
+> options are :
+>
+> - Boot options : root=/dev/mtdblock1 rootfstype=jffs2
+> ip=192.168.82.70:::255.255.255.0:arm:eth0
+>
+> - Miscellaneous filesystems : Journalling Flash File System v2 (JFFS2)
+> support
+>
+> JFFS2 debugging verbosity à 0
+>
+> JFFS2 write-buffering support
+>
+> JFFS2 summary support (EXPERIMENTAL)
+>
+>
+> I would like to know what I'm missing or what I have to do to decrease
+> boot time ?
+>
+>
+> Thanks for any suggestion or help.
+>
+> Michel
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>   
