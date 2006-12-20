@@ -1,24 +1,19 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gwy1p-0007hu-4a
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 04:46:27 -0500
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	kBK9kHnP005010
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Dec 2006 10:46:17 +0100
-Date: Wed, 20 Dec 2006 10:46:14 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gx0MW-0000NT-LG
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 07:15:59 -0500
+Message-ID: <45892981.7070203@ru.mvista.com>
+Date: Wed, 20 Dec 2006 15:16:01 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
+To: Michel LECONTE <michel.leconte@sacet.com>
 Subject: Re: Reduce boot time with jffs2 and CM-X255
-In-Reply-To: <1166607669.3939.18.camel@sauron>
-Message-ID: <Pine.LNX.4.64.0612201043390.11369@lnxricardw.se.axis.com>
 References: <45881281.8060001@sacet.com> <4588E35F.8000806@fatti.com>
 	<4588F67A.6080602@sacet.com>
-	<Pine.LNX.4.64.0612201007240.11369@lnxricardw.se.axis.com>
-	<1166607669.3939.18.camel@sauron>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+In-Reply-To: <4588F67A.6080602@sacet.com>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: Enrico Migliore <enrico.migliore@fatti.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello Michel,
 
-On Wed, 20 Dec 2006, Artem Bityutskiy wrote:
+Michel LECONTE wrote:
+> I use a CM-X255 with a NAND Flash of 512 Mo
+> where roughly 250 Mo are used (90 Mo for the native distribution
+> provided by Compulab and 160 Mo for specific applications).
+>   
+I think that first of all this is a design problem. If you want smaller 
+boot time, you need to figure out what exactly you need during the boot 
+time and create minimalistic partitions. Anything else can be mounted 
+later on.
+Moreover, for the stuff that is effectively read-only I would recommend 
+using read-only filesystem such as cramfs with a read-only translation 
+layer, like this one: 
+http://lists.infradead.org/pipermail/linux-mtd/2006-December/016973.html.
 
->> I don't know what the solution is - one idea is that a program like
->> nandwrite could be instructed to write cleanmarkers to the OOB of unused
->> parts of a partition. Currently there is no support for this but it coul=
-d
->> be added.
->
-> nandwrite -o ?
+Well, that all doesn't mean you shouldn't use SUMMARY for your JFFS2 
+filesystem. :)
 
-Yes, but that assumes the image contains the cleanmarkers. Can mkfs.jffs2=
-=20
-create images with cleanmarkers in the oob? And wouldn't that conflict=20
-with mtd ecc usage, i.e. doesn't ecc information then also have to be in=20
-the image?
-
->>
->> Hm, sidetracking here a bit, I'm thinking a general erase + write image
->> utility for NAND flash would be useful, given that bad block management
->> ...
-> I would recommend to improve/re-work/upgrade nandwrite instead of a new
-> tool.
-
-Yes I think that's probably the best route. I've been thinking about this=
-=20
-for some time, but haven't really come to a conclusion about exactly what=
-=20
-to include in such an upgrade. (I know I've posted some ideas earlier on=20
-the list; thanks for the responses btw).
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Vitaly
