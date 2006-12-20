@@ -1,19 +1,18 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gx0MW-0000NT-LG
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 07:15:59 -0500
-Message-ID: <45892981.7070203@ru.mvista.com>
-Date: Wed, 20 Dec 2006 15:16:01 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
+Received: from mail.tokheimkaizen.com ([220.225.73.142])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Gx0bm-0000fl-Iq
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 07:31:46 -0500
+From: "Samir" <samir.rawal@tokheimkaizen.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: help for implimentation
+Date: Wed, 20 Dec 2006 18:01:39 +0530
 MIME-Version: 1.0
-To: Michel LECONTE <michel.leconte@sacet.com>
-Subject: Re: Reduce boot time with jffs2 and CM-X255
-References: <45881281.8060001@sacet.com> <4588E35F.8000806@fatti.com>
-	<4588F67A.6080602@sacet.com>
-In-Reply-To: <4588F67A.6080602@sacet.com>
-Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: Enrico Migliore <enrico.migliore@fatti.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <mailman.50.1166617588.2157.linux-mtd@lists.infradead.org>
+Message-ID: <MAILapMHi0SYNIPukg300000464@mail.tokheimkaizen.com>
+Reply-To: samir.rawal@tokheimkaizen.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Michel,
 
-Michel LECONTE wrote:
-> I use a CM-X255 with a NAND Flash of 512 Mo
-> where roughly 250 Mo are used (90 Mo for the native distribution
-> provided by Compulab and 160 Mo for specific applications).
->   
-I think that first of all this is a design problem. If you want smaller 
-boot time, you need to figure out what exactly you need during the boot 
-time and create minimalistic partitions. Anything else can be mounted 
-later on.
-Moreover, for the stuff that is effectively read-only I would recommend 
-using read-only filesystem such as cramfs with a read-only translation 
-layer, like this one: 
-http://lists.infradead.org/pipermail/linux-mtd/2006-December/016973.html.
 
-Well, that all doesn't mean you shouldn't use SUMMARY for your JFFS2 
-filesystem. :)
+Please provide the MTD+Jffs2 Document.
 
-Vitaly
+-----Original Message-----
+From: linux-mtd-bounces+samir.rawal=tokheimkaizen.com@lists.infradead.org
+[mailto:linux-mtd-bounces+samir.rawal=tokheimkaizen.com@lists.infradead.org]
+On Behalf Of linux-mtd-request@lists.infradead.org
+Sent: Wednesday, December 20, 2006 5:56 PM
+To: samir.rawal@tokheimkaizen.com
+Subject: Welcome to the "linux-mtd" mailing list
+
+Welcome to the linux-mtd@lists.infradead.org mailing list!
+
+To post to this list, send your email to:
+
+  linux-mtd@lists.infradead.org
+
+General information about the mailing list is at:
+
+  http://lists.infradead.org/mailman/listinfo/linux-mtd
+
+If you ever want to unsubscribe or change your options (eg, switch to
+or from digest mode, change your password, etc.), visit your
+subscription page at:
+
+ 
+http://lists.infradead.org/mailman/options/linux-mtd/samir.rawal%40tokheimka
+izen.com
+
+
+You can also make such adjustments via email by sending a message to:
+
+  linux-mtd-request@lists.infradead.org
+
+with the word `help' in the subject or body (don't include the
+quotes), and you will get back a message with instructions.
+
+You must know your password to change your options (including changing
+the password, itself) or to unsubscribe.  It is:
+
+  bisenecu
+
+Normally, Mailman will remind you of your lists.infradead.org mailing
+list passwords once every month, although you can disable this if you
+prefer.  This reminder will also include instructions on how to
+unsubscribe or change your account options.  There is also a button on
+your options page that will email your current password to you.
