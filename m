@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from lst-amand-152-33-17-184.w82-127.abo.wanadoo.fr ([82.127.60.184]
+	helo=polaris.sacet.fr)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GwwmA-0005v6-71
-	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 03:26:14 -0500
-Subject: Re: Flash file system selection
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Darshak <darshak@elitecore.com>
-In-Reply-To: <4588CF26.00000C.00336@ELITECORE1561>
-References: <4588CF26.00000C.00336@ELITECORE1561>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 20 Dec 2006 10:24:59 +0200
-Message-Id: <1166603099.3939.5.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	id 1Gwx3x-00068d-7I
+	for linux-mtd@lists.infradead.org; Wed, 20 Dec 2006 03:44:35 -0500
+Message-ID: <4588F67A.6080602@sacet.com>
+Date: Wed, 20 Dec 2006 09:38:18 +0100
+From: Michel LECONTE <michel.leconte@sacet.com>
+MIME-Version: 1.0
+To: Enrico Migliore <enrico.migliore@fatti.com>
+Subject: Re: Reduce boot time with jffs2 and CM-X255
+References: <45881281.8060001@sacet.com> <4588E35F.8000806@fatti.com>
+In-Reply-To: <4588E35F.8000806@fatti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Excuse me for the lack of informations.
 
-On Wed, 2006-12-20 at 11:20 +0530, Darshak wrote:
-> Hi all,
->=20
->    =20
->=20
-> =20
->=20
-No real need to write such sparse messages.
+I use a CM-X255 with a NAND Flash of 512 Mo
+where roughly 250 Mo are used (90 Mo for the native distribution
+provided by Compulab and 160 Mo for specific applications).
 
-> How should I decide which file system to use for flash.?
->     Like : Type of flash say Compact IDE flash,DiskOnChip,USB. Etc..
-> Which are famous file system for that .
->   e.g JFFS2 ,YAFFFS [ I m not aware of others? ]
+At the boot, there's a scanning of the MTD1 (4096 blocks) corresponding 
+to the NAND Flash.
+This scanning takes 1mn20s. The full boot time, from a reset to the 
+login prompt, takes 4mn.
+ 
+I hope that these precisions can be useful.
 
-Read this
-http://www.linux-mtd.infradead.org/faq/jffs2.html#L_stick_jffs2 and this
-may resolve some of your questions.
+Thanks for any help or suggestion.
 
->     And how are they comparable ?
-No.
 
-And there is no need to duplicate messages. Just send once.
+Michel
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+
+Enrico Migliore a écrit :
+> Hi Michel,
+>
+> could you be more specific?
+> The boot time, in a production environment, is the time that elapses 
+> from the board reset to the login prompt.
+> How long is that time on your cm-x255?
+>
+> Enrico
+>
+>
