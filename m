@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GxLtL-0002vM-1G
-	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2006 06:15:20 -0500
-Subject: Re: OneNAND: Update OOB free table
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com, Timo Teras <timo.teras@solidboot.com>
-In-Reply-To: <14053092.180201166415887159.JavaMail.weblogic@ep_ml21>
-References: <14053092.180201166415887159.JavaMail.weblogic@ep_ml21>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Dec 2006 13:15:03 +0200
-Message-Id: <1166699703.3939.37.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, Vitaly Wool <vwool@ru.mvista.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1GxMLd-0003FZ-PC
+	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2006 06:44:35 -0500
+Received: from malvek.artecdesign.ee ([62.65.32.4] helo=[192.168.100.183])
+	by postikukk.artecdesign.ee with esmtp (Exim 4.50)
+	id 1GxMNA-0001su-U1
+	for linux-mtd@lists.infradead.org; Thu, 21 Dec 2006 13:46:20 +0200
+Message-ID: <458A73AF.2040307@artecdesign.ee>
+Date: Thu, 21 Dec 2006 13:44:47 +0200
+From: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Transfer rates with NAND
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Hi,
 
-On Mon, 2006-12-18 at 04:24 +0000, Kyungmin Park wrote:
-> How about the this patch?
-> It skips the ecc position which is defined in ecc layout in mtd drivers.
+I am wondering which NAND transfer rates are seen in embedded Linux 
+projects. What to expect from the whole hardware/software subsystem?
+I have one Geode LX design with CS5536 companion chip which by using 
+built-in 8-bit Flash controller on PCI bus gives me slightly over 2MB/s. 
+It's almost the same with Linux MTD driver and with a self-made basic 
+driver. Is the speed here the matter of flash controller only? Which is 
+the fastest flash controller out there? :)
 
-Here is my understanding of the problem.
-
-Nowadays MTD supports nicer interface to work with OOB. This is the
-MTD_OOB_AUTO command. Currently JFFS2 uses old MTD_OOB_PLACE command.
-
-The idea behind the MTD_OOB_AUTO command is that user provides buffer
-with his data, and MTD takes care about how to put it to the OOB area,
-MTD knows which OOB bytes may be used. Similar for reading OOB - MTD
-automatically reads data bytes, skips ECC, and returns the data.
-
-So what we should do is to teach JFFS2 using MTD_OOB_AUTO instead of
-MTD_OOB_PLACE.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+thanks in advance,
+Indrek
