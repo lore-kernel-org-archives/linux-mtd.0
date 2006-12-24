@@ -1,18 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1GxgXE-000502-Ks
-	for linux-mtd@lists.infradead.org; Fri, 22 Dec 2006 04:17:51 -0500
-Subject: Re: OneNAND: Update OOB free table
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <31196440.367141166752320332.JavaMail.weblogic@ep_ml29>
-References: <31196440.367141166752320332.JavaMail.weblogic@ep_ml29>
-Content-Type: multipart/mixed; boundary="=-LrcHu31NxCMI8XAjwHft"
-Date: Fri, 22 Dec 2006 11:17:25 +0200
-Message-Id: <1166779045.3939.58.camel@sauron>
-Mime-Version: 1.0
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from [208.101.48.4] (helo=chtn01.999servers.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GyVJw-0006mL-69
+	for linux-mtd@lists.infradead.org; Sun, 24 Dec 2006 15:31:28 +0000
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Message-ID: <17806.31709.360587.895943@vaishnavi.localdomain>
+Date: Sun, 24 Dec 2006 18:38:45 +0530
+To: dedekind@infradead.org
+Subject: [PATCH] NAND: nandsim bad block injection
+From: Vijay Kumar <vijaykumar@bravegnu.org>
+MIME-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,145 +20,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Adds support for bad block creation on block erase and page program,
+by returning erase/program failed in the status byte. The probability
+of fault occurrence can be specified through module parameters.
 
---=-LrcHu31NxCMI8XAjwHft
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Vijay Kumar <vijaykumar@bravegnu.org>
 
-On Fri, 2006-12-22 at 01:52 +0000, Kyungmin Park wrote:
-> Okay, I understand the MTD_OOB_AUTO concept. but now JFFS2 only use the M=
-TD_OOB_PLACE.=20
-> so JFFS2 skip the ecc position for backward compatibility.
-...
->=20
-> Now OneNAND don't support MTD_OOB_AUTO, but if the jffs2 supports the thi=
-s one. I will support it.
-> I think it's more reasonable to handle oob in driver level instead of fil=
-esystem.
-
-I take care about this in JFFS, you take care in OneNAND, OK?
-
-> Actually, I'm not sure where's the right place. But if we don't touch the=
- watchdong.
-> it will soft lockup when mounting the JFFS2 with big partition. (I just b=
-orrowed it from nand.)
-
-Anyway, you should not touch watchdog. You problem is fixed by adding
-cond_resched() at the right places. What you did - you shut up watchdog
-which screamed about a real error, instead of solving the error.
-
-I have prepared a patch - it is in my dedekind-mtd-2.6.git GIT tree. It
-is also attached.
-
-> No, I used it in infradead.org. but I just used for commit.
-
-Cool.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
-
---=-LrcHu31NxCMI8XAjwHft
-Content-Disposition: attachment; filename=onenand-sched.diff
-Content-Type: application/mbox; name=onenand-sched.diff
-Content-Transfer-Encoding: 7bit
-
->From 6adeda7bf64b72a210c6ed518f3aaf3525d8d740 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <dedekind@infradead.org>
-Date: Fri, 22 Dec 2006 11:13:40 +0200
-Subject: [PATCH] [MTD] OneNAND: release CPU in cycles
-
-This patch teaches OneNAND to release processor in
-read/write/erase cycles and let other processes proceed.
-Also, remove buggi touch watchdog call which only hides
-the problem instead of solving it.
-
-Signed-off-by: Artem Bityutskiy <dedekind@infradead.org>
----
- drivers/mtd/onenand/onenand_base.c |   17 +++++++++--------
- 1 files changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 63ca61b..fbdc865 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -310,7 +310,6 @@ static int onenand_wait(struct mtd_info *mtd, int state)
+diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
+index c3bca95..ee71357 100644
+--- a/drivers/mtd/nand/nandsim.c
++++ b/drivers/mtd/nand/nandsim.c
+@@ -37,6 +37,7 @@
+ #include <linux/mtd/nand.h>
+ #include <linux/mtd/partitions.h>
+ #include <linux/delay.h>
++#include <linux/random.h>
  
- 		if (state != FL_READING)
- 			cond_resched();
--		touch_softlockup_watchdog();
- 	}
- 	/* To get correct interrupt status in timeout case */
- 	interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
-@@ -372,11 +371,7 @@ static int onenand_interrupt_wait(struct mtd_info *mtd, int state)
- {
- 	struct onenand_chip *this = mtd->priv;
+ /* Default simulator parameters values */
+ #if !defined(CONFIG_NANDSIM_FIRST_ID_BYTE)  || \
+@@ -70,6 +71,12 @@
+ #ifndef CONFIG_NANDSIM_DO_DELAYS
+ #define CONFIG_NANDSIM_DO_DELAYS  0
+ #endif
++#ifndef CONFIG_NANDSIM_ERASE_FAIL_PROB
++#define CONFIG_NANDSIM_ERASE_FAIL_PROB 0
++#endif
++#ifndef CONFIG_NANDSIM_PROG_FAIL_PROB
++#define CONFIG_NANDSIM_PROG_FAIL_PROB 0
++#endif
+ #ifndef CONFIG_NANDSIM_LOG
+ #define CONFIG_NANDSIM_LOG        0
+ #endif
+@@ -77,6 +84,9 @@
+ #define CONFIG_NANDSIM_DBG        0
+ #endif
  
--	/* To prevent soft lockup */
--	touch_softlockup_watchdog();
--
- 	wait_for_completion(&this->complete);
--
- 	return onenand_wait(mtd, state);
++#define PROB_SCALE_FACTOR         1000
++#define PROB_SCALE_FACTOR_STR     "1000"
++
+ static uint first_id_byte  = CONFIG_NANDSIM_FIRST_ID_BYTE;
+ static uint second_id_byte = CONFIG_NANDSIM_SECOND_ID_BYTE;
+ static uint third_id_byte  = CONFIG_NANDSIM_THIRD_ID_BYTE;
+@@ -88,6 +98,8 @@ static uint output_cycle   = CONFIG_NAND
+ static uint input_cycle    = CONFIG_NANDSIM_INPUT_CYCLE;
+ static uint bus_width      = CONFIG_NANDSIM_BUS_WIDTH;
+ static uint do_delays      = CONFIG_NANDSIM_DO_DELAYS;
++static uint erase_fail_prob = CONFIG_NANDSIM_ERASE_FAIL_PROB;
++static uint prog_fail_prob = CONFIG_NANDSIM_PROG_FAIL_PROB;
+ static uint log            = CONFIG_NANDSIM_LOG;
+ static uint dbg            = CONFIG_NANDSIM_DBG;
+ 
+@@ -102,6 +114,8 @@ module_param(output_cycle,   uint, 0400)
+ module_param(input_cycle,    uint, 0400);
+ module_param(bus_width,      uint, 0400);
+ module_param(do_delays,      uint, 0400);
++module_param(erase_fail_prob, uint, 0400);
++module_param(prog_fail_prob, uint, 0400);
+ module_param(log,            uint, 0400);
+ module_param(dbg,            uint, 0400);
+ 
+@@ -116,6 +130,8 @@ MODULE_PARM_DESC(output_cycle,   "Word o
+ MODULE_PARM_DESC(input_cycle,    "Word input (to flash) time (nanodeconds)");
+ MODULE_PARM_DESC(bus_width,      "Chip's bus width (8- or 16-bit)");
+ MODULE_PARM_DESC(do_delays,      "Simulate NAND delays using busy-waits if not zero");
++MODULE_PARM_DESC(erase_fail_prob, "Probability (scaled by " PROB_SCALE_FACTOR_STR ") of erase failing, default 0");
++MODULE_PARM_DESC(prog_fail_prob, "Probability (scaled by " PROB_SCALE_FACTOR_STR ") of program failing, default 0");
+ MODULE_PARM_DESC(log,            "Perform logging if not zero");
+ MODULE_PARM_DESC(dbg,            "Output debug information if not zero");
+ 
+@@ -875,6 +891,37 @@ static int prog_page(struct nandsim *ns,
  }
  
-@@ -395,9 +390,6 @@ static int onenand_try_interrupt_wait(struct mtd_info *mtd, int state)
- 	/* We use interrupt wait first */
- 	this->wait = onenand_interrupt_wait;
- 
--	/* To prevent soft lockup */
--	touch_softlockup_watchdog();
--
- 	timeout = msecs_to_jiffies(100);
- 	remain = wait_for_completion_timeout(&this->complete, timeout);
- 	if (!remain) {
-@@ -739,6 +731,8 @@ static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
- 
- 	stats = mtd->ecc_stats;
- 	while (read < len) {
-+		cond_resched();
+ /*
++ * Given the probability (scaled by PROB_SCALE_FACTOR) 'prob', the
++ * function determines whether fault has to be injected. 'prob' is
++ * specified in the range 0 - PROB_SCALE_FACTOR. Probability is
++ * calculated as 'prob'/PROB_SCALE_FACTOR.
++ *
++ * RETURNS: 1 if fault should be injected, 0 if fault should not be
++ * injected.
++ */
++static int inject_fault_with_prob(int prob)
++{
++	int rnd;
 +
- 		thislen = min_t(int, mtd->writesize, len - read);
- 
- 		column = from & (mtd->writesize - 1);
-@@ -820,6 +814,8 @@ int onenand_do_read_oob(struct mtd_info *mtd, loff_t from, size_t len,
- 	column = from & (mtd->oobsize - 1);
- 
- 	while (read < len) {
-+		cond_resched();
++	rnd = random32() % PROB_SCALE_FACTOR;
 +
- 		thislen = mtd->oobsize - column;
- 		thislen = min_t(int, thislen, len);
- 
-@@ -984,6 +980,8 @@ static int onenand_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	while (written < len) {
- 		int thislen = min_t(int, mtd->writesize, len - written);
- 
-+		cond_resched();
++	if (rnd < prob)
++		return 1;
++	else
++		return 0;
++}
 +
- 		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, mtd->writesize);
- 
- 		this->write_bufferram(mtd, ONENAND_DATARAM, buf, 0, thislen);
-@@ -1059,6 +1057,8 @@ static int onenand_do_write_oob(struct mtd_info *mtd, loff_t to, size_t len,
- 	while (written < len) {
- 		int thislen = min_t(int, mtd->oobsize, len - written);
- 
-+		cond_resched();
++static inline int inject_erase_fault(void)
++{
++	return inject_fault_with_prob(erase_fail_prob);
++}
 +
- 		column = to & (mtd->oobsize - 1);
++static inline int inject_prog_fault(void)
++{
++	return inject_fault_with_prob(prog_fail_prob);
++}
++
++/*
+  * If state has any action bit, perform this action.
+  *
+  * RETURNS: 0 if success, -1 if error.
+@@ -948,6 +995,16 @@ static int do_state_action(struct nandsi
  
- 		this->command(mtd, ONENAND_CMD_BUFFERRAM, to, mtd->oobsize);
-@@ -1186,6 +1186,7 @@ static int onenand_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	instr->state = MTD_ERASING;
+ 		erase_sector(ns);
  
- 	while (len) {
-+		cond_resched();
++		/* 
++		 * Injecting fault after erasing the sector, saves
++		 * memory since the memory used by the bad block is
++		 * freed.
++		 */
++		if (inject_erase_fault()) {
++			NS_DBG("do_state_action: injecting erase fault\n");
++			return -1;
++		}
++
+ 		NS_MDELAY(erase_delay);
  
- 		/* Check if we have a bad block, we do not erase bad blocks */
- 		if (onenand_block_checkbad(mtd, addr, 0, 0)) {
--- 
-1.4.4.2
-
-
---=-LrcHu31NxCMI8XAjwHft--
+ 		break;
+@@ -969,6 +1026,15 @@ static int do_state_action(struct nandsi
+ 			return -1;
+ 		}
+ 
++		/* 
++		 * Injecting fault before programming the sector,
++		 * helps to save memory.
++		 */
++		if (inject_prog_fault()) {
++			NS_DBG("do_state_action: injecting page prog fault\n");
++			return -1;
++		}
++
+ 		if (prog_page(ns, num) == -1)
+ 			return -1;
+ 
