@@ -1,28 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Gz6X4-0004Qz-Ho
-	for linux-mtd@lists.infradead.org; Tue, 26 Dec 2006 02:15:34 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JAV00J9TDHO23@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 26 Dec 2006 16:15:24 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JAV00E79DHOKJ@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 26 Dec 2006 16:15:24 +0900 (KST)
-Content-return: prohibited
-Date: Tue, 26 Dec 2006 07:15:24 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: Update OOB free table
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <13713069.585721167117324099.JavaMail.weblogic@ep_ml29>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: kyungmin.park@samsung.com
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1GzWvp-0006NS-8X
+	for linux-mtd@lists.infradead.org; Wed, 27 Dec 2006 06:26:51 -0500
+Subject: Re: [PATCH] NAND: nandsim bad block injection
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vijay Kumar <vijaykumar@bravegnu.org>
+In-Reply-To: <17806.31709.360587.895943@vaishnavi.localdomain>
+References: <17806.31709.360587.895943@vaishnavi.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 27 Dec 2006 13:26:10 +0200
+Message-Id: <1167218770.4217.12.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQo+ID4gTm93IE9uZU5BTkQgZG9uJ3Qgc3VwcG9ydCBNVERfT09CX0FVVE8sIGJ1dCBpZiB0aGUg
-amZmczIgc3VwcG9ydHMgdGhlIHRoaXMgb25lLiBJIHdpbGwgc3VwcG9ydCBpdC4NCj4gPiBJIHRo
-aW5rIGl0J3MgbW9yZSByZWFzb25hYmxlIHRvIGhhbmRsZSBvb2IgaW4gZHJpdmVyIGxldmVsIGlu
-c3RlYWQgb2YgZmlsZXN5c3RlbS4NCg0KPiBJIHRha2UgY2FyZSBhYm91dCB0aGlzIGluIEpGRlMs
-IHlvdSB0YWtlIGNhcmUgaW4gT25lTkFORCwgT0s/DQoNCk5vIHByb2JsZW0uIEkgd2lsbCBzdXBw
-b3J0IGl0Lg0KDQo+ID4gQWN0dWFsbHksIEknbSBub3Qgc3VyZSB3aGVyZSdzIHRoZSByaWdodCBw
-bGFjZS4gQnV0IGlmIHdlIGRvbid0IHRvdWNoIHRoZSB3YXRjaGRvbmcuDQo+ID4gaXQgd2lsbCBz
-b2Z0IGxvY2t1cCB3aGVuIG1vdW50aW5nIHRoZSBKRkZTMiB3aXRoIGJpZyBwYXJ0aXRpb24uIChJ
-IGp1c3QgYm9ycm93ZWQgaXQgZnJvbSBuYW5kLikNCg0KPiBBbnl3YXksIHlvdSBzaG91bGQgbm90
-IHRvdWNoIHdhdGNoZG9nLiBZb3UgcHJvYmxlbSBpcyBmaXhlZCBieSBhZGRpbmcNCj4gY29uZF9y
-ZXNjaGVkKCkgYXQgdGhlIHJpZ2h0IHBsYWNlcy4gV2hhdCB5b3UgZGlkIC0geW91IHNodXQgdXAg
-d2F0Y2hkb2cNCj4gd2hpY2ggc2NyZWFtZWQgYWJvdXQgYSByZWFsIGVycm9yLCBpbnN0ZWFkIG9m
-IHNvbHZpbmcgdGhlIGVycm9yLg0KDQpJdCBsb29rcyBnb29kLiBhbmQgYWxzbyBpdCB3b3JrcyB3
-ZWxsLiBJIHdpbGwgY29tbWl0IGl0Lg0KDQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJr
+Hello Vijay,
+
+On Sun, 2006-12-24 at 18:38 +0530, Vijay Kumar wrote:
+> Adds support for bad block creation on block erase and page program,
+> by returning erase/program failed in the status byte. The probability
+> of fault occurrence can be specified through module parameters.
+>=20
+> Signed-off-by: Vijay Kumar <vijaykumar@bravegnu.org>
+
+Looks useful.
+=20
+> +#define PROB_SCALE_FACTOR         1000
+> +#define PROB_SCALE_FACTOR_STR     "1000"
+Use __stringify(PROB_SCALE_FACTOR) instead.
+
+> +static int inject_fault_with_prob(int prob)
+> +{
+> +	int rnd;
+> +
+> +	rnd =3D random32() % PROB_SCALE_FACTOR;
+> +
+> +	if (rnd < prob)
+> +		return 1;
+> +	else
+> +		return 0;
+> +}
+> +
+> +static inline int inject_erase_fault(void)
+> +{
+> +	return inject_fault_with_prob(erase_fail_prob);
+> +}
+I think there is no need in having 'inject_fault_with_prob()' function
+at all. Just use
+
+int rnd =3D random32() % PROB_SCALE_FACTOR;
+return rnd < prob;
+
+> +
+> +static inline int inject_prog_fault(void)
+> +{
+> +	return inject_fault_with_prob(prog_fail_prob);
+> +}
+Ditto.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
