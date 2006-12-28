@@ -1,28 +1,20 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from wx-out-0506.google.com ([66.249.82.228])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1GzkMb-0003Z1-9l
-	for linux-mtd@lists.infradead.org; Wed, 27 Dec 2006 20:47:26 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JAY006CLNMSMO@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 10:47:16 +0900 (KST)
-Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JAY001NWNMSR1@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 10:47:16 +0900 (KST)
-Content-return: prohibited
-Date: Thu, 28 Dec 2006 01:47:16 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: soft lockup
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <3032008.882331167270436184.JavaMail.weblogic@ep_ml22>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: kyungmin.park@samsung.com
+	id 1GzrY1-0007BP-WE
+	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 04:27:47 -0500
+Received: by wx-out-0506.google.com with SMTP id h30so4555722wxd
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Dec 2006 01:27:35 -0800 (PST)
+Message-ID: <740e30f50612280127y1ff931a2q5ac27fd67340ff1b@mail.gmail.com>
+Date: Thu, 28 Dec 2006 11:27:34 +0200
+From: "Adrian Hunter" <hunter.programmer@gmail.com>
+To: "Kyungmin Park" <kyungmin.park@samsung.com>
+Subject: onenand_wait and onenane_read
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,64 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4gPiA+IEFjdHVhbGx5LCBJJ20gbm90IHN1cmUgd2hlcmUncyB0aGUgcmlnaHQgcGxh
-Y2UuIEJ1dCBpZiB3ZSBkb24ndCB0b3VjaCB0aGUgd2F0Y2hkb25nLg0KPiA+ID4gaXQgd2lsbCBz
-b2Z0IGxvY2t1cCB3aGVuIG1vdW50aW5nIHRoZSBKRkZTMiB3aXRoIGJpZyBwYXJ0aXRpb24uIChJ
-IGp1c3QgYm9ycm93ZWQgaXQgZnJvbSBuYW5kLikNCj4gPg0KPiA+IEFueXdheSwgeW91IHNob3Vs
-ZCBub3QgdG91Y2ggd2F0Y2hkb2cuIFlvdSBwcm9ibGVtIGlzIGZpeGVkIGJ5IGFkZGluZw0KPiA+
-IGNvbmRfcmVzY2hlZCgpIGF0IHRoZSByaWdodCBwbGFjZXMuIFdoYXQgeW91IGRpZCAtIHlvdSBz
-aHV0IHVwIHdhdGNoZG9nDQo+ID4gd2hpY2ggc2NyZWFtZWQgYWJvdXQgYSByZWFsIGVycm9yLCBp
-bnN0ZWFkIG9mIHNvbHZpbmcgdGhlIGVycm9yLg0KPg0KPiBJdCBsb29rcyBnb29kLiBhbmQgYWxz
-byBpdCB3b3JrcyB3ZWxsLiBJIHdpbGwgY29tbWl0IGl0Lg0KDQpobW0sIGFmdGVyIHBhdGNoLCBp
-dCBoYXMgYSBwcm9ibGVtLg0KSG93IGNhbiBJIGZpbmQgdGhlIHNvZnQgbG9ja3VwPw0KDQovICMg
-bW91bnQgLXQgamZmczIgL2Rldi9tdGRibG9jazUgL3RtcA0KQlVHOiBzb2Z0IGxvY2t1cCBkZXRl
-Y3RlZCBvbiBDUFUjMCENCls8YzAwMjRlMTA+XSAoZHVtcF9zdGFjaysweDAvMHgxNCkgZnJvbSBb
-PGMwMDVkMTM4Pl0gKHNvZnRsb2NrdXBfdGljaysweGFjLzB4ZDgpDQpbPGMwMDVkMDhjPl0gKHNv
-ZnRsb2NrdXBfdGljaysweDAvMHhkOCkgZnJvbSBbPGMwMDQ0YmMwPl0gKHJ1bl9sb2NhbF90aW1l
-cnMrMHgxKQ0KIHI3ID0gQzAyMkI1NzggIHI2ID0gMDAwMDAwMDAgIHI1ID0gMDAwMDAwMDAgIHI0
-ID0gQzA2MUZDMDANCls8YzAwNDRiYTg+XSAocnVuX2xvY2FsX3RpbWVycysweDAvMHgxYykgZnJv
-bSBbPGMwMDQ0YzE0Pl0gKHVwZGF0ZV9wcm9jZXNzX3RpbWUpDQpbPGMwMDQ0YmM0Pl0gKHVwZGF0
-ZV9wcm9jZXNzX3RpbWVzKzB4MC8weDdjKSBmcm9tIFs8YzAwMjRhYjg+XSAodGltZXJfdGljaysw
-eGM4KQ0KIHI2ID0gQzAyNkRFMjAgIHI1ID0gMDAwMDAxOTMgIHI0ID0gMDAxMTNEM0YNCls8YzAw
-MjQ5ZjA+XSAodGltZXJfdGljaysweDAvMHhlOCkgZnJvbSBbPGMwMDM1MTE4Pl0gKG9tYXBfMzJr
-X3RpbWVyX2ludGVycnVwdCspDQogcjUgPSAwMDAwMDE5MyAgcjQgPSAwMDExM0QzRg0KWzxjMDAz
-NTBhND5dIChvbWFwXzMya190aW1lcl9pbnRlcnJ1cHQrMHgwLzB4ZTQpIGZyb20gWzxjMDA1ZDZl
-OD5dIChoYW5kbGVfSVJRXykNCiByNyA9IEMwMjFFOUM4ICByNiA9IDAwMDAwMDI1ICByNSA9IEMw
-MjJBMkI4ICByNCA9IEMwMjFFOUEwDQpbPGMwMDVkNjNjPl0gKGhhbmRsZV9JUlFfZXZlbnQrMHgw
-LzB4ZWMpIGZyb20gWzxjMDA1ZWE5MD5dIChoYW5kbGVfbGV2ZWxfaXJxKzB4KQ0KWzxjMDA1ZTlj
-ND5dIChoYW5kbGVfbGV2ZWxfaXJxKzB4MC8weDEzNCkgZnJvbSBbPGMwMDIxNzE0Pl0gKGFzbV9k
-b19JUlErMHg0OC8weCkNCiByNyA9IDAwMDAwMDAwICByNiA9IEMwMjgwOUM4ICByNSA9IDAwMDAw
-MDI1ICByNCA9IEMwMjFFOUEwDQpbPGMwMDIxNmNjPl0gKGFzbV9kb19JUlErMHgwLzB4NjApIGZy
-b20gWzxjMDAyMDlmOD5dIChfX2lycV9zdmMrMHgzOC8weDc4KQ0KIHI3ID0gMDAwMDAwMDIgIHI2
-ID0gMDAwMTdBQTkgIHI1ID0gRDgwRkUwMDAgIHI0ID0gRkZGRkZGRkYNCls8YzAwZTFhNDQ+XSAo
-amZmczJfZ2V0X2lub19jYWNoZSsweDAvMHg0OCkgZnJvbSBbPGMwMGU2ZjVjPl0gKGpmZnMyX3Nj
-YW5fbWFrZV8pDQpbPGMwMGU2ZjQ0Pl0gKGpmZnMyX3NjYW5fbWFrZV9pbm9fY2FjaGUrMHgwLzB4
-ODQpIGZyb20gWzxjMDBmMDVlMD5dIChqZmZzMl9zdW1fKQ0KIHI2ID0gMDAwMDAwMDAgIHI1ID0g
-MDAwMDAwMDAgIHI0ID0gMDAwMTdBQTkNCls8YzAwZjAyMzA+XSAoamZmczJfc3VtX3NjYW5fc3Vt
-bm9kZSsweDAvMHg4NDQpIGZyb20gWzxjMDBlNzJmND5dIChqZmZzMl9zY2FuX20pDQpbPGMwMGU2
-ZmM4Pl0gKGpmZnMyX3NjYW5fbWVkaXVtKzB4MC8weDExNDQpIGZyb20gWzxjMDBlYTQ1ND5dIChq
-ZmZzMl9kb19tb3VudF9mKQ0KWzxjMDBlYTJiOD5dIChqZmZzMl9kb19tb3VudF9mcysweDAvMHg2
-NGMpIGZyb20gWzxjMDBlYzhmMD5dIChqZmZzMl9kb19maWxsX3N1cCkNCls8YzAwZWM3YjA+XSAo
-amZmczJfZG9fZmlsbF9zdXBlcisweDAvMHgyNjQpIGZyb20gWzxjMDBlY2U0MD5dIChqZmZzMl9n
-ZXRfc2JfbXQpDQogcjggPSBDMDZFNTdDMCAgcjcgPSAwMDAwMDAwMSAgcjYgPSAwMDAwMDAwMCAg
-cjUgPSBDMDczN0UwMA0KIHI0ID0gQzA3MzdDMDANCls8YzAwZWNkMWM+XSAoamZmczJfZ2V0X3Ni
-X210ZCsweDAvMHgxYTApIGZyb20gWzxjMDBlY2YxOD5dIChqZmZzMl9nZXRfc2JfbXRkbnIpDQpb
-PGMwMGVjZWJjPl0gKGpmZnMyX2dldF9zYl9tdGRucisweDAvMHg2YykgZnJvbSBbPGMwMGVkMGFj
-Pl0gKGpmZnMyX2dldF9zYisweDE4KQ0KIHI3ID0gQzdENDdENDAgIHI2ID0gMDAwMDAwMDUgIHI1
-ID0gQzA1RjAwMDAgIHI0ID0gRkZGRkZGRUENCls8YzAwZWNmMjg+XSAoamZmczJfZ2V0X3NiKzB4
-MC8weDFjOCkgZnJvbSBbPGMwMDgzNTU0Pl0gKHZmc19rZXJuX21vdW50KzB4NjAvMHgpDQpbPGMw
-MDgzNGY0Pl0gKHZmc19rZXJuX21vdW50KzB4MC8weGEwKSBmcm9tIFs8YzAwODM1ZDA+XSAoZG9f
-a2Vybl9tb3VudCsweDNjLzB4KQ0KIHI4ID0gMDAwMDAwMDAgIHI3ID0gQzAyMzBENDQgIHI2ID0g
-QzA1RjEwMDAgIHI1ID0gQzA1RjAwMDANCiByNCA9IDAwMDAwMDAwDQpbPGMwMDgzNTk0Pl0gKGRv
-X2tlcm5fbW91bnQrMHgwLzB4NTQpIGZyb20gWzxjMDA5OTk3Yz5dIChkb19tb3VudCsweDVlNC8w
-eDYyMCkNCiByNyA9IDAwMDAwMDAwICByNiA9IEM3RDUzMDAwICByNSA9IEMwNUYwMDAwICByNCA9
-IDAwMDAwMDAwDQpbPGMwMDk5Mzk4Pl0gKGRvX21vdW50KzB4MC8weDYyMCkgZnJvbSBbPGMwMDk5
-ZDI4Pl0gKHN5c19tb3VudCsweGE4LzB4ZjQpDQpbPGMwMDk5YzgwPl0gKHN5c19tb3VudCsweDAv
-MHhmNCkgZnJvbSBbPGMwMDIwZTAwPl0gKHJldF9mYXN0X3N5c2NhbGwrMHgwLzB4MmMpDQogcjcg
-PSAwMDAwMDAxNSAgcjYgPSAwMDAwMDAwMCAgcjUgPSBDMEVEMDAwMCAgcjQgPSAwMDA4NDA1MA0K
-DQovICMgY2F0IC9wcm9jL210ZA0KZGV2OiAgICBzaXplICAgZXJhc2VzaXplICBuYW1lDQptdGQw
-OiAwMDAyMDAwMCAwMDAyMDAwMCAiWC1Mb2FkZXIgKyBVLUJvb3QiDQptdGQxOiAwMDAyMDAwMCAw
-MDAyMDAwMCAicGFyYW1zIg0KbXRkMjogMDAyMDAwMDAgMDAwMjAwMDAgImtlcm5lbCINCm10ZDM6
-IDAxMDAwMDAwIDAwMDIwMDAwICJyb290ZnMiDQptdGQ0OiAwMjAwMDAwMCAwMDAyMDAwMCAiZmls
-ZXN5c3RlbTAwIg0KbXRkNTogMDRkYzAwMDAgMDAwMjAwMDAgImZpbGVzeXN0ZW0wMSINCg0KDQpU
-aGFuayB5b3UsDQpLeXVuZ21pbiBQYXJr
+Hi
+
+onenand_wait does not return an error if there is an ecc failure i.e.
+
+ecc & ONENAND_ECC_2BIT_ALL
+
+but onenand_read still marks the bufferRAM as valid i.e.
+
+ret = this->wait(mtd, FL_READING);
+/* First copy data and check return value for ECC handling */
+onenand_update_bufferram(mtd, from, !ret);
+
+This looks wrong to me.  I think onenand_wait should return an error
+if there is an ecc failure.
+
+Can you comment on this?
+
+Regards
+Adrian
