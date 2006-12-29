@@ -1,27 +1,27 @@
-Received: from mailout2.samsung.com ([203.254.224.25])
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H080H-0007Q5-RM
-	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 22:01:59 -0500
-Received: from ep_ms12_bk (mailout2.samsung.com [203.254.224.25])
-	by mailout2.samsung.com
+	id 1H08HU-0007kS-FE
+	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 22:19:44 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
 	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JB0002STLQZBP@mailout2.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:01:47 +0900 (KST)
-Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
+	with ESMTP id <0JB000A2KMKPB7@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:19:37 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
 	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JB000BNQLQZLV@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:01:47 +0900 (KST)
+	2004)) with ESMTP id <0JB000M82MKPEJ@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:19:37 +0900 (KST)
 Content-return: prohibited
-Date: Fri, 29 Dec 2006 03:01:47 +0000 (GMT)
+Date: Fri, 29 Dec 2006 03:19:37 +0000 (GMT)
 From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: soft lockup
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <18608410.865841167361307433.JavaMail.weblogic@ep_ml28>
+Subject: onenand_wait and onenane_read
+To: Adrian Hunter <hunter.programmer@gmail.com>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Message-id: <31762214.867031167362377345.JavaMail.weblogic@ep_ml28>
 MIME-version: 1.0
 MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
+Content-type: text/plain; charset=windows-1252
 Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,20 +32,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCj4gPiBobW0sIGFmdGVyIHBhdGNoLCBpdCBoYXMgYSBwcm9ibGVtLg0KPiA+IEhvdyBj
-YW4gSSBmaW5kIHRoZSBzb2Z0IGxvY2t1cD8NCj4gDQo+IFdlbGwsIGl0J3MgYWJvdXQgY2FsbGlu
-ZyBjb25kX3Jlc2NoZWQoKSBpbiBKRkZTMidzIGxvb3BzLiBQbGVhc2UsIHRyeQ0KPiB0aGlzIHBh
-dGNoLg0KDQpZZXMgaXQncyB3b3JraW5nLiBJIHdpbGwgdHJ5IHRvIHRlc3QgdGhpcyBvbmUgZHVy
-aW5nIHRoaXMgd2Vla2VuZC4NCg0KPiBQLlMuIFBsZWFzZSwgY29uc2lkZXIgdG8gdXNlIGdpdC1h
-bSAoLWkgLXMgb3B0aW9ucyBhcmUgdXNlZnVsKSB3aGVuDQo+IGFwcGx5aW5nIHBhdGNoZXMsIGlu
-IHRoaXMgY2FzZSB5b3Ugd2lsbCBlbmQgdXAgd2l0aCBjb3JyZWN0IHBhdGNoDQo+IGF1dGhvci4g
-Rm9yIGV4YW1wbGUsIHRoZSBhdXRob3Igb2YgdGhpcyBwYXRjaCBpcyBpbmNvcnJlY3QgYXQgeW91
-ciB0cmVlOg0KPiBodHRwOi8vZ2l0LmluZnJhZGVhZC5vcmcvP3A9dXNlcnMva21wYXJrL29uZW5h
-bmQtbXRkLTIuNi5naXQ7YT1jb21taXQ7aD1mZDlkNDJmMTZmMWQ5ODg1MmEzODZjMDIwZGNkNDVk
-OGMyMDdkMTBkDQo+IA0KPiBGb3IgZXhhbXBsZSwgd2l0aCB0aGUgYXR0YWNoZWQgcGF0Y2ggeW91
-IGNhbiBkbzoNCj4gDQo+IGdpdC1hbSAtaSAtcyByZXNjaGVkdWxlLWluLWxvb3BzLmRpZmYNCj4g
-DQo+IFRoZW4gcHJlc3MgZSwgZWRpdCB0aGUgY29tbWl0IG1lc3NhZ2UsIGFuZCBwcmVzcyB5LiBW
-ZXJ5IGhhbmR5IHRvb2wuDQo+IEFsc28sIGdpdC1mb3JtYXQtcGF0Y2ggYWxsb3dzIHlvdSB0byBn
-ZW5lcmF0ZSBwYXRjaGVzIGxpa2UgdGhhdCAod2l0aA0KPiBGcm9tOiBhbmQgU3ViamVjdDogbGlu
-ZXMpLg0KDQpHb29kLiBJIGRvbid0IGtub3cgdGhpcyBjb21tYW5kLiBUaGFuayB5b3UgZm9yIHRo
-aXMgaW5mby4NCg0KQmVzdCByZWdhcmRzLA0KS3l1bmdtaW4gUGFyaw==
+DQpIaSwNCg0KPiBvbmVuYW5kX3dhaXQgZG9lcyBub3QgcmV0dXJuIGFuIGVycm9yIGlmIHRoZXJl
+IGlzIGFuIGVjYyBmYWlsdXJlIGkuZS4NCj4gDQo+IGVjYyAmIE9ORU5BTkRfRUNDXzJCSVRfQUxM
+DQo+IA0KPiBidXQgb25lbmFuZF9yZWFkIHN0aWxsIG1hcmtzIHRoZSBidWZmZXJSQU0gYXMgdmFs
+aWQgaS5lLg0KPiANCj4gcmV0ID0gdGhpcy0+d2FpdChtdGQsIEZMX1JFQURJTkcpOw0KPiAvKiBG
+aXJzdCBjb3B5IGRhdGEgYW5kIGNoZWNrIHJldHVybiB2YWx1ZSBmb3IgRUNDIGhhbmRsaW5nICov
+DQo+IG9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbShtdGQsIGZyb20sICFyZXQpOw0KPiANCj4gVGhp
+cyBsb29rcyB3cm9uZyB0byBtZS4gIEkgdGhpbmsgb25lbmFuZF93YWl0IHNob3VsZCByZXR1cm4g
+YW4gZXJyb3INCj4gaWYgdGhlcmUgaXMgYW4gZWNjIGZhaWx1cmUuDQoNClllcyB5b3UncmUgcmln
+aHQuDQoNCkV2ZW4gdGhvdWdoIHVwcGVyIGxheWVyIChKRkZTMikgcmVjZWl2ZSB0aGUgLUVCQURN
+U0cgb3IgLUVVQ0xFQU4sIE9uZU5BTkQgZHJpdmVyIGNhbiB0aGluayBpdCBpcyB2YWxpZCBkYXRh
+Lg0KDQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJrDQoNCkZyb20gOTIzNWRhMjg1MTI0MmI5NmE5
+MzhkNDM1ODNiZjg4NDI3ZWQxNDA0NCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCkZyb206IEt5
+dW5nbWluIFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3VuZy5jb20+DQpEYXRlOiBGcmksIDI5IERl
+YyAyMDA2IDExOjUxOjQwICswOTAwDQpTdWJqZWN0OiBbUEFUQ0hdIFtNVERdIE9uZU5BTkQ6IGZp
+eCBvbmVuYW5kX3dhaXQgYnVnIGluIHJlYWQgZWNjIGVycm9yDQoNCkV2ZW4gdGhvdWdoIHRoZXJl
+IGlzIEVDQyBlcnJvci4gT25lTkFORCBkcml2ZXIgdXBkYXRlcyB0aGUgYnVmZmVycmFtIGFzIHZh
+bGlkDQoNClNpZ25lZC1vZmYtYnk6IEt5dW5nbWluIFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3Vu
+Zy5jb20+DQotLS0NCiBkcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIHwgICAgNSAr
+KystLQ0KIDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0K
+DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYyBiL2RyaXZl
+cnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMNCmluZGV4IDAwMzdjZWUuLmU4MDg1N2IgMTAw
+NjQ0DQotLS0gYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQorKysgYi9kcml2
+ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQpAQCAtMjk4LDcgKzI5OCw3IEBAIHN0YXRp
+YyBpbnQgb25lbmFuZF93YWl0KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc3RhdGUpDQogCXVu
+c2lnbmVkIGxvbmcgdGltZW91dDsNCiAJdW5zaWduZWQgaW50IGZsYWdzID0gT05FTkFORF9JTlRf
+TUFTVEVSOw0KIAl1bnNpZ25lZCBpbnQgaW50ZXJydXB0ID0gMDsNCi0JdW5zaWduZWQgaW50IGN0
+cmwsIGVjYzsNCisJdW5zaWduZWQgaW50IGN0cmw7DQogDQogCS8qIFRoZSAyMCBtc2VjIGlzIGVu
+b3VnaCAqLw0KIAl0aW1lb3V0ID0gamlmZmllcyArIG1zZWNzX3RvX2ppZmZpZXMoMjApOw0KQEAg
+LTMyNCw3ICszMjQsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfd2FpdChzdHJ1Y3QgbXRkX2luZm8g
+Km10ZCwgaW50IHN0YXRlKQ0KIAl9DQogDQogCWlmIChpbnRlcnJ1cHQgJiBPTkVOQU5EX0lOVF9S
+RUFEKSB7DQotCQllY2MgPSB0aGlzLT5yZWFkX3dvcmQodGhpcy0+YmFzZSArIE9ORU5BTkRfUkVH
+X0VDQ19TVEFUVVMpOw0KKwkJaW50IGVjYyA9IHRoaXMtPnJlYWRfd29yZCh0aGlzLT5iYXNlICsg
+T05FTkFORF9SRUdfRUNDX1NUQVRVUyk7DQogCQlpZiAoZWNjKSB7DQogCQkJREVCVUcoTVREX0RF
+QlVHX0xFVkVMMCwgIm9uZW5hbmRfd2FpdDogRUNDIGVycm9yID0gMHglMDR4XG4iLCBlY2MpOw0K
+IAkJCWlmIChlY2MgJiBPTkVOQU5EX0VDQ18yQklUX0FMTCkNCkBAIC0zMzIsNiArMzMyLDcgQEAg
+c3RhdGljIGludCBvbmVuYW5kX3dhaXQoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzdGF0ZSkN
+CiAJCQllbHNlIGlmIChlY2MgJiBPTkVOQU5EX0VDQ18xQklUX0FMTCkNCiAJCQkJbXRkLT5lY2Nf
+c3RhdHMuY29ycmVjdGVkKys7DQogCQl9DQorCQlyZXR1cm4gZWNjOw0KIAl9DQogDQogCXJldHVy
+biAwOw0KLS0gDQoxLjQuNC4yDQoNCg==
