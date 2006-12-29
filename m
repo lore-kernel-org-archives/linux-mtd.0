@@ -1,28 +1,19 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H08HU-0007kS-FE
-	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 22:19:44 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JB000A2KMKPB7@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:19:37 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JB000M82MKPEJ@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 29 Dec 2006 12:19:37 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 29 Dec 2006 03:19:37 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: onenand_wait and onenane_read
-To: Adrian Hunter <hunter.programmer@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Message-id: <31762214.867031167362377345.JavaMail.weblogic@ep_ml28>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from mailout.stusta.mhn.de ([141.84.69.5])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H07EY-000774-8U
+	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 21:12:37 -0500
+Date: Fri, 29 Dec 2006 03:10:27 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: Andrew Morton <akpm@osdl.org>,
+	Artem Bityutskiy <dedekind@infradead.org>, dwmw2@infradead.org
+Subject: [-mm patch] drivers/mtd/ubi/vtbl.c: make 2 functions static
+Message-ID: <20061229021027.GP20714@stusta.de>
+References: <20061228024237.375a482f.akpm@osdl.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20061228024237.375a482f.akpm@osdl.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,42 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DQpIaSwNCg0KPiBvbmVuYW5kX3dhaXQgZG9lcyBub3QgcmV0dXJuIGFuIGVycm9yIGlmIHRoZXJl
-IGlzIGFuIGVjYyBmYWlsdXJlIGkuZS4NCj4gDQo+IGVjYyAmIE9ORU5BTkRfRUNDXzJCSVRfQUxM
-DQo+IA0KPiBidXQgb25lbmFuZF9yZWFkIHN0aWxsIG1hcmtzIHRoZSBidWZmZXJSQU0gYXMgdmFs
-aWQgaS5lLg0KPiANCj4gcmV0ID0gdGhpcy0+d2FpdChtdGQsIEZMX1JFQURJTkcpOw0KPiAvKiBG
-aXJzdCBjb3B5IGRhdGEgYW5kIGNoZWNrIHJldHVybiB2YWx1ZSBmb3IgRUNDIGhhbmRsaW5nICov
-DQo+IG9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbShtdGQsIGZyb20sICFyZXQpOw0KPiANCj4gVGhp
-cyBsb29rcyB3cm9uZyB0byBtZS4gIEkgdGhpbmsgb25lbmFuZF93YWl0IHNob3VsZCByZXR1cm4g
-YW4gZXJyb3INCj4gaWYgdGhlcmUgaXMgYW4gZWNjIGZhaWx1cmUuDQoNClllcyB5b3UncmUgcmln
-aHQuDQoNCkV2ZW4gdGhvdWdoIHVwcGVyIGxheWVyIChKRkZTMikgcmVjZWl2ZSB0aGUgLUVCQURN
-U0cgb3IgLUVVQ0xFQU4sIE9uZU5BTkQgZHJpdmVyIGNhbiB0aGluayBpdCBpcyB2YWxpZCBkYXRh
-Lg0KDQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJrDQoNCkZyb20gOTIzNWRhMjg1MTI0MmI5NmE5
-MzhkNDM1ODNiZjg4NDI3ZWQxNDA0NCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDENCkZyb206IEt5
-dW5nbWluIFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3VuZy5jb20+DQpEYXRlOiBGcmksIDI5IERl
-YyAyMDA2IDExOjUxOjQwICswOTAwDQpTdWJqZWN0OiBbUEFUQ0hdIFtNVERdIE9uZU5BTkQ6IGZp
-eCBvbmVuYW5kX3dhaXQgYnVnIGluIHJlYWQgZWNjIGVycm9yDQoNCkV2ZW4gdGhvdWdoIHRoZXJl
-IGlzIEVDQyBlcnJvci4gT25lTkFORCBkcml2ZXIgdXBkYXRlcyB0aGUgYnVmZmVycmFtIGFzIHZh
-bGlkDQoNClNpZ25lZC1vZmYtYnk6IEt5dW5nbWluIFBhcmsgPGt5dW5nbWluLnBhcmtAc2Ftc3Vu
-Zy5jb20+DQotLS0NCiBkcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jIHwgICAgNSAr
-KystLQ0KIDEgZmlsZXMgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0K
-DQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYyBiL2RyaXZl
-cnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMNCmluZGV4IDAwMzdjZWUuLmU4MDg1N2IgMTAw
-NjQ0DQotLS0gYS9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQorKysgYi9kcml2
-ZXJzL210ZC9vbmVuYW5kL29uZW5hbmRfYmFzZS5jDQpAQCAtMjk4LDcgKzI5OCw3IEBAIHN0YXRp
-YyBpbnQgb25lbmFuZF93YWl0KHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgc3RhdGUpDQogCXVu
-c2lnbmVkIGxvbmcgdGltZW91dDsNCiAJdW5zaWduZWQgaW50IGZsYWdzID0gT05FTkFORF9JTlRf
-TUFTVEVSOw0KIAl1bnNpZ25lZCBpbnQgaW50ZXJydXB0ID0gMDsNCi0JdW5zaWduZWQgaW50IGN0
-cmwsIGVjYzsNCisJdW5zaWduZWQgaW50IGN0cmw7DQogDQogCS8qIFRoZSAyMCBtc2VjIGlzIGVu
-b3VnaCAqLw0KIAl0aW1lb3V0ID0gamlmZmllcyArIG1zZWNzX3RvX2ppZmZpZXMoMjApOw0KQEAg
-LTMyNCw3ICszMjQsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfd2FpdChzdHJ1Y3QgbXRkX2luZm8g
-Km10ZCwgaW50IHN0YXRlKQ0KIAl9DQogDQogCWlmIChpbnRlcnJ1cHQgJiBPTkVOQU5EX0lOVF9S
-RUFEKSB7DQotCQllY2MgPSB0aGlzLT5yZWFkX3dvcmQodGhpcy0+YmFzZSArIE9ORU5BTkRfUkVH
-X0VDQ19TVEFUVVMpOw0KKwkJaW50IGVjYyA9IHRoaXMtPnJlYWRfd29yZCh0aGlzLT5iYXNlICsg
-T05FTkFORF9SRUdfRUNDX1NUQVRVUyk7DQogCQlpZiAoZWNjKSB7DQogCQkJREVCVUcoTVREX0RF
-QlVHX0xFVkVMMCwgIm9uZW5hbmRfd2FpdDogRUNDIGVycm9yID0gMHglMDR4XG4iLCBlY2MpOw0K
-IAkJCWlmIChlY2MgJiBPTkVOQU5EX0VDQ18yQklUX0FMTCkNCkBAIC0zMzIsNiArMzMyLDcgQEAg
-c3RhdGljIGludCBvbmVuYW5kX3dhaXQoc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBzdGF0ZSkN
-CiAJCQllbHNlIGlmIChlY2MgJiBPTkVOQU5EX0VDQ18xQklUX0FMTCkNCiAJCQkJbXRkLT5lY2Nf
-c3RhdHMuY29ycmVjdGVkKys7DQogCQl9DQorCQlyZXR1cm4gZWNjOw0KIAl9DQogDQogCXJldHVy
-biAwOw0KLS0gDQoxLjQuNC4yDQoNCg==
+On Thu, Dec 28, 2006 at 02:42:37AM -0800, Andrew Morton wrote:
+>...
+> Changes since 2.6.20-rc1-mm1:
+>...
+>  git-ubi.patch
+>...
+>  git trees
+>...
+
+This patch makes two needlessly global functions static.
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+---
+
+ drivers/mtd/ubi/vtbl.c |   12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+--- linux-2.6.20-rc2-mm1/drivers/mtd/ubi/vtbl.c.old	2006-12-29 01:52:47.000000000 +0100
++++ linux-2.6.20-rc2-mm1/drivers/mtd/ubi/vtbl.c	2006-12-29 01:53:30.000000000 +0100
+@@ -178,8 +178,8 @@
+ 	return 0;
+ }
+ 
+-const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
+-					    int vol_id);
++static const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
++					       int vol_id);
+ 
+ const struct ubi_vtbl_vtr *ubi_vtbl_get_vtr(const struct ubi_info *ubi,
+ 					    int vol_id)
+@@ -237,7 +237,7 @@
+ 
+ static void __exit free_volume_info(const struct ubi_info *ubi);
+ 
+-void __init init_ivols(struct ubi_info *ubi);
++static void __init init_ivols(struct ubi_info *ubi);
+ 
+ int __init ubi_vtbl_init_scan(struct ubi_info *ubi, struct ubi_scan_info *si)
+ {
+@@ -778,7 +778,7 @@
+  * This function initializes information about internal UBI volumes. This
+  * information is not stored on flash but instead, is kept only in RAM.
+  */
+-void __init init_ivols(struct ubi_info *ubi)
++static void __init init_ivols(struct ubi_info *ubi)
+ {
+ 	struct ubi_vtbl_vtr *vtr;
+ 	struct ubi_vtbl_info *vtbl = ubi->vtbl;
+@@ -818,8 +818,8 @@
+  * This function returns a pointer to the volume tabe record. The @vol_id must
+  * be correct.
+  */
+-const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
+-					    int vol_id)
++static const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
++					       int vol_id)
+ {
+ 	ubi_assert(ubi_is_ivol(vol_id));
+ 	return &ubi->vtbl->ivol_vtrs[vol_id - UBI_INTERNAL_VOL_START];
