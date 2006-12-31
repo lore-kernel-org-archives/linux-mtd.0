@@ -1,19 +1,19 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H07EY-000774-8U
-	for linux-mtd@lists.infradead.org; Thu, 28 Dec 2006 21:12:37 -0500
-Date: Fri, 29 Dec 2006 03:10:27 +0100
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@osdl.org>,
-	Artem Bityutskiy <dedekind@infradead.org>, dwmw2@infradead.org
-Subject: [-mm patch] drivers/mtd/ubi/vtbl.c: make 2 functions static
-Message-ID: <20061229021027.GP20714@stusta.de>
-References: <20061228024237.375a482f.akpm@osdl.org>
+Received: from 85.8.24.16.se.wasadata.net ([85.8.24.16] helo=smtp.drzeus.cx)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H0zrR-0008L0-TN
+	for linux-mtd@lists.infradead.org; Sun, 31 Dec 2006 07:32:26 -0500
+Message-ID: <4597ADD2.90700@drzeus.cx>
+Date: Sun, 31 Dec 2006 13:32:18 +0100
+From: Pierre Ossman <drzeus-mmc@drzeus.cx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20061228024237.375a482f.akpm@osdl.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC] MTD driver for MMC cards
+References: <200612281418.20643.arnd@arndb.de>
+In-Reply-To: <200612281418.20643.arnd@arndb.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +23,128 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 28, 2006 at 02:42:37AM -0800, Andrew Morton wrote:
->...
-> Changes since 2.6.20-rc1-mm1:
->...
->  git-ubi.patch
->...
->  git trees
->...
+Arnd Bergmann wrote:
+> This is an experiment on how an SD/MMC card could be used in the MTD layer.
+> I don't currently have a system set up to test this, so this driver is
+> completely _untested_ and therefore you should consider it _broken_.
+> 
+> You can get similar functionality by using the mmc_block driver together
+> with block2mtd, so you may wonder what the point of another driver is.
+> IMHO, there are two separate advantages from using a special driver:
+> 
+> * better use of low-level interfaces: the MTD driver can detect the
+>   erase block size of the card and erase sectors in advance instead of
+>   blocking in the write path. The MTD file systems also expect the
+>   underlying interface to be synchronous, so there is little point
+>   in using extra kernel threads to operate on the card in the background.
+> 
 
-This patch makes two needlessly global functions static.
+I'm a complete MTD noob, but what uses does the MTD layer have besides JFFS2. If it's none, than this advantage isn't that big of a deal.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+> * It becomes possible to use MMC cards with jffs2 even with CONFIG_BLOCK
+>   disabled, which can save a significant amount of kernel memory on
+>   small machines that have an MMC slot but no other block device.
+> 
 
----
+>From what I've heard, JFFS2 is close to unusuable on the sizes of modern SD/MMC cards. So I'd like to see some more use cases before I'm ready to let this in.
 
- drivers/mtd/ubi/vtbl.c |   12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+> I still want to be sure that I'm on the right track with this driver
+> and did not make a conceptual mistake.
+> 
 
---- linux-2.6.20-rc2-mm1/drivers/mtd/ubi/vtbl.c.old	2006-12-29 01:52:47.000000000 +0100
-+++ linux-2.6.20-rc2-mm1/drivers/mtd/ubi/vtbl.c	2006-12-29 01:53:30.000000000 +0100
-@@ -178,8 +178,8 @@
- 	return 0;
- }
- 
--const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
--					    int vol_id);
-+static const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
-+					       int vol_id);
- 
- const struct ubi_vtbl_vtr *ubi_vtbl_get_vtr(const struct ubi_info *ubi,
- 					    int vol_id)
-@@ -237,7 +237,7 @@
- 
- static void __exit free_volume_info(const struct ubi_info *ubi);
- 
--void __init init_ivols(struct ubi_info *ubi);
-+static void __init init_ivols(struct ubi_info *ubi);
- 
- int __init ubi_vtbl_init_scan(struct ubi_info *ubi, struct ubi_scan_info *si)
- {
-@@ -778,7 +778,7 @@
-  * This function initializes information about internal UBI volumes. This
-  * information is not stored on flash but instead, is kept only in RAM.
-  */
--void __init init_ivols(struct ubi_info *ubi)
-+static void __init init_ivols(struct ubi_info *ubi)
- {
- 	struct ubi_vtbl_vtr *vtr;
- 	struct ubi_vtbl_info *vtbl = ubi->vtbl;
-@@ -818,8 +818,8 @@
-  * This function returns a pointer to the volume tabe record. The @vol_id must
-  * be correct.
-  */
--const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
--					    int vol_id)
-+static const struct ubi_vtbl_vtr *get_ivol_vtr(const struct ubi_info *ubi,
-+					       int vol_id)
- {
- 	ubi_assert(ubi_is_ivol(vol_id));
- 	return &ubi->vtbl->ivol_vtrs[vol_id - UBI_INTERNAL_VOL_START];
+I can comment it from a MMC perspective, but the MTD stuff I will have to assume is correct.
+
+> @@ -616,6 +616,8 @@ static void mmc_decode_csd(struct mmc_ca
+>  		csd->r2w_factor = UNSTUFF_BITS(resp, 26, 3);
+>  		csd->write_blkbits = UNSTUFF_BITS(resp, 22, 4);
+>  		csd->write_partial = UNSTUFF_BITS(resp, 21, 1);
+> +		csd->erase_blksize = (UNSTUFF_BITS(resp, 37, 5) + 1) *
+> +					(UNSTUFF_BITS(resp, 42, 5) + 1);
+>  	} else {
+>  		/*
+>  		 * We only understand CSD structure v1.1 and v1.2.
+
+NAK. SD uses another format for erase blocks. See the simplified physical spec.
+
+> +/*
+> + * transfer a block to/from the card. The block needs to be aligned
+> + * to mtd->writesize. If we want to implement an mtd_writev method,
+> + * this needs to use stream operations with an appropriate stop
+> + * command as well.
+> + */
+> +static int mmc_mtd_transfer_low(struct mmc_card *card, loff_t off, size_t len,
+> +			size_t *retlen, u_char *buf, int write)
+> +{
+> +	struct scatterlist sg;
+> +	struct mmc_data data = {
+> +		.blksz = 1 << card->csd.read_blkbits,
+> +		.blocks = len >> card->csd.read_blkbits,
+
+First of all, you cannot assume that read_blkbits is a valid block size when doing writes.
+
+Secondly, the cards default in a block size of 512 bytes, so you need to tell the card your desired block size during probe.
+
+> +		.flags = write ? MMC_DATA_WRITE : MMC_DATA_READ,
+> +		.sg = &sg,
+> +		.sg_len = 1,
+> +	};
+> +	struct mmc_command cmd = {
+> +		.arg = off,
+> +		.data = &data,
+> +		.flags = MMC_RSP_R1 | MMC_CMD_ADTC,
+> +		.opcode = write ? MMC_WRITE_BLOCK : MMC_READ_SINGLE_BLOCK,
+
+You set .blocks above, so I have to assume it can be more than 1. So you need to change the opcodes accordingly.
+
+> +	};
+> +	struct mmc_request mrq = {
+> +		.cmd = &cmd,
+> +		.data = &data,
+> +	};
+
+And it also means you need a stop command.
+
+> +
+> +	/* copied from the block driver, don't understand why this is needed */
+
+Now this gives me a bad feeling. Have you read any spec about the MMC protocol or are you just winging it?
+
+It is needed because the card goes into programming state after a write, where it is very unresponsive to other commands.
+
+> +
+> +	ret = mmc_card_claim_host(card);
+> +	if (ret) {
+> +		dev_warn(&card->dev, "%s: mmc_card_claim_host returned %d\n",
+> +			__FUNCTION__, ret);
+> +		ret = -EIO;
+> +		goto error;
+> +	}
+
+mmc_card_claim_host() is currently very stupid in that it requires you to call mmc_card_release_host() on error. I intend to fix that some time in the future.
+
+> +/*
+> + * Initialize an mmc card. We create a new MTD device for each
+> + * MMC card we find. The operations are rather straightforward,
+> + * so we don't even need our own data structure to contain the
+> + * mtd_info.
+> + */
+> +static int mmc_mtd_probe(struct mmc_card *card)
+> +{
+> +	struct mtd_info *mtd;
+> +	int ret;
+> +
+> +	if (!(card->csd.cmdclass & CCC_ERASE))
+> +		return -ENODEV;
+> +
+
+You should probably check for CCC_BLOCK_READ here.
+
+And your driver needs to check if the card support writes (both by mmc_card_readonly() and CCC_BLOCK_WRITE).
+
+Rgds
+-- 
+     -- Pierre Ossman
+
+  Linux kernel, MMC maintainer        http://www.kernel.org
+  PulseAudio, core developer          http://pulseaudio.org
+  rdesktop, core developer          http://www.rdesktop.org
