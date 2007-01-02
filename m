@@ -1,20 +1,31 @@
-Received: from wx-out-0506.google.com ([66.249.82.228])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H1jTj-0008SG-7N
-	for linux-mtd@lists.infradead.org; Tue, 02 Jan 2007 08:14:57 -0500
-Received: by wx-out-0506.google.com with SMTP id i31so5339310wxd
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 02 Jan 2007 05:14:53 -0800 (PST)
-Message-ID: <c93f20960701020514r56d6bde9w303cf2d2c6bba0ae@mail.gmail.com>
-Date: Tue, 2 Jan 2007 05:14:53 -0800
-From: "Nathan Edson" <nedson@nedson.org>
-Sender: nedson@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: DiskOnChip
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from e31.co.us.ibm.com ([32.97.110.149])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H1kHD-0003Ru-H3
+	for linux-mtd@lists.infradead.org; Tue, 02 Jan 2007 14:06:07 +0000
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e31.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id l02E5VFt017439
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Jan 2007 09:05:31 -0500
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by westrelay02.boulder.ibm.com (8.13.6/8.13.6/NCO v8.1.1) with ESMTP id
+	l02E5Vr2166160
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Jan 2007 07:05:31 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l02E5VTa027568
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Jan 2007 07:05:31 -0700
+Subject: Re: OneNAND
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: dedekind@infradead.org
+In-Reply-To: <1167730677.20245.14.camel@sauron>
+References: <1167730677.20245.14.camel@sauron>
+Content-Type: text/plain
+Date: Tue, 02 Jan 2007 08:05:52 -0600
+Message-Id: <1167746752.3836.2.camel@zod.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <hunter.programmer@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +35,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+On Tue, 2007-01-02 at 11:37 +0200, Artem Bityutskiy wrote:
+> Hello Kyungmin,
+> 
+> I do not agree with this patch on your OneNAND tree:
+> 564bdb30743e5a85ede4b9fd0cdb24228d902c37
+> 
+> Also this patch is not good in my opinion:
+> a75603c07553fdcf87f8c658ccdf0508f3b591cd
 
-I'm trying to get a diskonchip2000 mounted and
-working...
+Explaining why you don't like them would help
 
-I have a couple Wyse Winterm thin clients with
-96mb DOC's.  I'm booting them off the network
-using Knoppix.  They don't have any other drives.
-So far, I've tried:
-
-modprobe doc2000
-modprboe docprobe
-
-After doing docprobe I get an error that the device
-is temporarily unvailable.  When I dmesg I see
-that the device has been identified.  I've tried mknod
-and then mounting the chips with no success.
-
-The knoppix disc I'm using uses kernel 2.6.17.
-
-
-Any ideas?  Thanks in advance!
-
-Nathan
+josh
