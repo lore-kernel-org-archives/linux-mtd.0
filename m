@@ -1,21 +1,19 @@
-Received: from 85.8.24.16.se.wasadata.net ([85.8.24.16] helo=smtp.drzeus.cx)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H2NFh-0008HQ-S9
-	for linux-mtd@lists.infradead.org; Thu, 04 Jan 2007 02:43:11 -0500
-Message-ID: <459CB001.4010800@drzeus.cx>
-Date: Thu, 04 Jan 2007 08:42:57 +0100
-From: Pierre Ossman <drzeus-mmc@drzeus.cx>
+Received: from wx-out-0506.google.com ([66.249.82.236])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H2ONo-0000d1-8Y
+	for linux-mtd@lists.infradead.org; Thu, 04 Jan 2007 03:55:34 -0500
+Received: by wx-out-0506.google.com with SMTP id h30so6700530wxd
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 04 Jan 2007 00:55:30 -0800 (PST)
+Message-ID: <740e30f50701040055r4d8d8472m299d697b51bd6120@mail.gmail.com>
+Date: Thu, 4 Jan 2007 10:55:30 +0200
+From: "Adrian Hunter" <hunter.programmer@gmail.com>
+To: kyungmin.park@samsung.com
+Subject: OneNAND: read-while-load
 MIME-Version: 1.0
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC] MTD driver for MMC cards
-References: <200612281418.20643.arnd@arndb.de> <4597ADD2.90700@drzeus.cx>
-	<200701012322.14735.arnd@arndb.de>
-In-Reply-To: <200701012322.14735.arnd@arndb.de>
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
+Content-Type: multipart/mixed;
+	boundary="----=_Part_2830_4368930.1167900930296"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,80 +23,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Arnd Bergmann wrote:
-> 
-> One promising effort for a replacement is Jörn's logfs
-> (http://wiki.laptop.org/go/Logfs), which should scale well to many
-> gigabytes. A driver based on MMC would be a nice development tool
-> for that, since it enables regular PCs as a debugging machine
-> instead of having to load test kernels onto an actual embedded
-> machine.
-> 
+------=_Part_2830_4368930.1167900930296
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-A bit of a niche area, but as long as this driver doesn't look like high maintenance then it could be enough.
+Hi
 
-> Another thing I have been thinking about was an MTD version of
-> fat16/fat32. There are a number of optimizations that you can
-> do for flash media, including:
-> 
-> - limiting the number of writes to the FAT
-> - erasing blocks when they are freed in the FS
-> - always writing full erase blocks if the erase block
->   size matches the cluster size
-> - optimize for wear leveling instead of avoiding
->   fragmentation
-> 
+Here is a patch that implements read-while-load for OneNAND.  My
+testing shows that it gives a measurable performance improvement for
+large reads.
 
-These sound like they would be nicer in the block layer, to cover other devices where you know there is flash at the bottom.
+Sorry the patch is in an attachment, but I have email problems.
 
-> I read that the SD cards have some restrictions of how
-> the fat fs needs to be laid out on them, presumably to
-> make sure clusters are aligned with erase blocks.
-> Do you have any specific information on what SD actually
-> requires?
-> 
+Regards
+Adrian
 
-No, as we don't give a rats ass about them. I don't know why they stuck a FAT requirement into the spec. Perhaps Microsoft wanted a chance at the extortio^Wlicense money for any patent issues.
+------=_Part_2830_4368930.1167900930296
+Content-Type: text/plain; name="0001-MTD-OneNand-Implement-read-while-load.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="0001-MTD-OneNand-Implement-read-while-load.txt"
+X-Attachment-Id: f_ewixqpbp
 
-> 
-> ok, I'll have a look. I keep having trouble identifying the right
-> specifications (physical spec sounded like it was only about wiring
-> and electric properties, so I did not look at that). Maybe it would
+RnJvbTogQWRyaWFuIEh1bnRlciA8aHVudGVyLnByb2dyYW1tZXJAZ21haWwuY29tPgpEYXRlOiBU
+aHUsIDQgSmFuIDIwMDcgMDk6NTE6MjYgKzAyMDAKU3ViamVjdDogW01URF0gT25lTmFuZDogSW1w
+bGVtZW50IHJlYWQtd2hpbGUtbG9hZAoKUmVhZC13aGlsZS1sb2FkIGVuYWJsZXMgaGlnaGVyIHBl
+cmZvcm1hbmNlIHJlYWQgb3BlcmF0aW9ucy4KClNpZ25lZC1vZmYtYnk6IEFkcmlhbiBIdW50ZXIg
+PGh1bnRlci5wcm9ncmFtbWVyQGdtYWlsLmNvbT4KLS0tCiBkcml2ZXJzL210ZC9vbmVuYW5kL29u
+ZW5hbmRfYmFzZS5jIHwgICA0NiArKysrKysrKysrKysrKysrKysrKysrLS0tLS0tLS0tLS0tLS0K
+IGluY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaCAgICAgICAgfCAgICAxICsKIDIgZmlsZXMgY2hh
+bmdlZCwgMjkgaW5zZXJ0aW9ucygrKSwgMTggZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvZHJp
+dmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYyBiL2RyaXZlcnMvbXRkL29uZW5hbmQvb25l
+bmFuZF9iYXNlLmMKaW5kZXggZTEyMWJjYy4uMTFkYTc5NiAxMDA2NDQKLS0tIGEvZHJpdmVycy9t
+dGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYworKysgYi9kcml2ZXJzL210ZC9vbmVuYW5kL29uZW5h
+bmRfYmFzZS5jCkBAIC03MjcsMzggKzcyNyw0NSBAQCBzdGF0aWMgaW50IG9uZW5hbmRfcmVhZChz
+dHJ1Y3QgbXRkX2luZm8gCiAJLyogVE9ETyBoYW5kbGluZyBvb2IgKi8KIAogCXN0YXRzID0gbXRk
+LT5lY2Nfc3RhdHM7Ci0Jd2hpbGUgKHJlYWQgPCBsZW4pIHsKLQkJdGhpc2xlbiA9IG1pbl90KGlu
+dCwgbXRkLT53cml0ZXNpemUsIGxlbiAtIHJlYWQpOwogCi0JCWNvbHVtbiA9IGZyb20gJiAobXRk
+LT53cml0ZXNpemUgLSAxKTsKLQkJaWYgKGNvbHVtbiArIHRoaXNsZW4gPiBtdGQtPndyaXRlc2l6
+ZSkKLQkJCXRoaXNsZW4gPSBtdGQtPndyaXRlc2l6ZSAtIGNvbHVtbjsKKwkvKiBSZWFkLXdoaWxl
+LWxvYWQgbWV0aG9kICovCiAKKwkvKiBEbyBmaXJzdCBsb2FkIHRvIGJ1ZmZlclJBTSAqLworCWlm
+IChyZWFkIDwgbGVuKSB7CiAJCWlmICghb25lbmFuZF9jaGVja19idWZmZXJyYW0obXRkLCBmcm9t
+KSkgewogCQkJdGhpcy0+Y29tbWFuZChtdGQsIE9ORU5BTkRfQ01EX1JFQUQsIGZyb20sIG10ZC0+
+d3JpdGVzaXplKTsKLQogCQkJcmV0ID0gdGhpcy0+d2FpdChtdGQsIEZMX1JFQURJTkcpOwotCQkJ
+LyogRmlyc3QgY29weSBkYXRhIGFuZCBjaGVjayByZXR1cm4gdmFsdWUgZm9yIEVDQyBoYW5kbGlu
+ZyAqLwogCQkJb25lbmFuZF91cGRhdGVfYnVmZmVycmFtKG10ZCwgZnJvbSwgIXJldCk7CiAJCX0K
+LQotCQl0aGlzLT5yZWFkX2J1ZmZlcnJhbShtdGQsIE9ORU5BTkRfREFUQVJBTSwgYnVmLCBjb2x1
+bW4sIHRoaXNsZW4pOwotCi0JCWlmIChyZXQpIHsKLQkJCURFQlVHKE1URF9ERUJVR19MRVZFTDAs
+ICJvbmVuYW5kX3JlYWQ6IHJlYWQgZmFpbGVkID0gJWRcbiIsIHJldCk7Ci0JCQlnb3RvIG91dDsK
+Kwl9CisJdGhpc2xlbiA9IG1pbl90KGludCwgbXRkLT53cml0ZXNpemUsIGxlbiAtIHJlYWQpOwor
+CWNvbHVtbiA9IGZyb20gJiAobXRkLT53cml0ZXNpemUgLSAxKTsKKwlpZiAoY29sdW1uICsgdGhp
+c2xlbiA+IG10ZC0+d3JpdGVzaXplKQorCQl0aGlzbGVuID0gbXRkLT53cml0ZXNpemUgLSBjb2x1
+bW47CisJd2hpbGUgKCFyZXQpIHsKKwkJLyogSWYgdGhlcmUgaXMgbW9yZSB0byBsb2FkIHRoZW4g
+c3RhcnQgbmV4dCBsb2FkICovCisJCWZyb20gKz0gdGhpc2xlbjsKKwkJaWYgKHJlYWQgKyB0aGlz
+bGVuIDwgbGVuKSB7CisJCQl0aGlzLT5jb21tYW5kKG10ZCwgT05FTkFORF9DTURfUkVBRCwgZnJv
+bSwgbXRkLT53cml0ZXNpemUpOworCQkJT05FTkFORF9TRVRfUFJFVl9CVUZGRVJSQU0odGhpcyk7
+CiAJCX0KLQorCQkvKiBXaGlsZSBsb2FkIGlzIGdvaW5nLCByZWFkIGZyb20gbGFzdCBidWZmZXJS
+QU0gKi8KKwkJdGhpcy0+cmVhZF9idWZmZXJyYW0obXRkLCBPTkVOQU5EX0RBVEFSQU0sIGJ1Ziwg
+Y29sdW1uLCB0aGlzbGVuKTsKKwkJLyogU2VlIGlmIHdlIGFyZSBkb25lICovCiAJCXJlYWQgKz0g
+dGhpc2xlbjsKLQogCQlpZiAocmVhZCA9PSBsZW4pCiAJCQlicmVhazsKLQotCQlmcm9tICs9IHRo
+aXNsZW47CisJCS8qIFNldCB1cCBmb3IgbmV4dCByZWFkIGZyb20gYnVmZmVyUkFNICovCisJCU9O
+RU5BTkRfU0VUX05FWFRfQlVGRkVSUkFNKHRoaXMpOwogCQlidWYgKz0gdGhpc2xlbjsKKwkJdGhp
+c2xlbiA9IG1pbl90KGludCwgbXRkLT53cml0ZXNpemUsIGxlbiAtIHJlYWQpOworCQljb2x1bW4g
+PSAwOworCQljb25kX3Jlc2NoZWQoKTsKKwkJLyogTm93IHdhaXQgZm9yIGxvYWQgKi8KKwkJcmV0
+ID0gdGhpcy0+d2FpdChtdGQsIEZMX1JFQURJTkcpOworCQlvbmVuYW5kX3VwZGF0ZV9idWZmZXJy
+YW0obXRkLCBmcm9tLCAhcmV0KTsKIAl9CiAKLW91dDoKIAkvKiBEZXNlbGVjdCBhbmQgd2FrZSB1
+cCBhbnlvbmUgd2FpdGluZyBvbiB0aGUgZGV2aWNlICovCiAJb25lbmFuZF9yZWxlYXNlX2Rldmlj
+ZShtdGQpOwogCkBAIC03NzIsNiArNzc5LDkgQEAgb3V0OgogCWlmIChtdGQtPmVjY19zdGF0cy5m
+YWlsZWQgLSBzdGF0cy5mYWlsZWQpCiAJCXJldHVybiAtRUJBRE1TRzsKIAorCWlmIChyZXQpCisJ
+CXJldHVybiByZXQ7CisKIAlyZXR1cm4gbXRkLT5lY2Nfc3RhdHMuY29ycmVjdGVkIC0gc3RhdHMu
+Y29ycmVjdGVkID8gLUVVQ0xFQU4gOiAwOwogfQogCmRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4
+L210ZC9vbmVuYW5kLmggYi9pbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5kLmgKaW5kZXggZmUzNTAw
+ZC4uZjc3NWE3YSAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oCisrKyBi
+L2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaApAQCAtMTQzLDYgKzE0Myw3IEBAIHN0cnVjdCBv
+bmVuYW5kX2NoaXAgewogI2RlZmluZSBPTkVOQU5EX0NVUlJFTlRfQlVGRkVSUkFNKHRoaXMpCQko
+dGhpcy0+YnVmZmVycmFtX2luZGV4KQogI2RlZmluZSBPTkVOQU5EX05FWFRfQlVGRkVSUkFNKHRo
+aXMpCQkodGhpcy0+YnVmZmVycmFtX2luZGV4IF4gMSkKICNkZWZpbmUgT05FTkFORF9TRVRfTkVY
+VF9CVUZGRVJSQU0odGhpcykJKHRoaXMtPmJ1ZmZlcnJhbV9pbmRleCBePSAxKQorI2RlZmluZSBP
+TkVOQU5EX1NFVF9QUkVWX0JVRkZFUlJBTSh0aGlzKQkodGhpcy0+YnVmZmVycmFtX2luZGV4IF49
+IDEpCiAKICNkZWZpbmUgT05FTkFORF9HRVRfU1lTX0NGRzEodGhpcykJCQkJCVwKIAkodGhpcy0+
+cmVhZF93b3JkKHRoaXMtPmJhc2UgKyBPTkVOQU5EX1JFR19TWVNfQ0ZHMSkpCi0tIAoxLjQuMwoK
 
-That had me fooled for quite a while as well.
-
-> be good if you could put pointers to the relevant documents into
-> your Wiki?
-
-Probably. I haven't really put that much time into the wiki lately. It turned out to be a one man show, so I'm doubting its usefulness.
-
->> First of all, you cannot assume that read_blkbits is a valid block
->> size when doing writes. 
-> 
-> Right, I see. I introduced that bug when I merged parts of the read and
-> write paths.
-> 
-> Is it fair to assume that write_blkbits is always bigger than
-> read_blkbits, so that one can be used in both cases?
-> 
-
-There is some relation, yes, but I don't remember the details right now. More important is that the card can only be set to one block size at any given time (both read and write). So unless you want
-terrible latency by switching block size back and forth I'd suggest selecting one size and sticking with it.
-
-As the newer cards only support a block size of 512 bytes, the most future proof would be to use that.
-
-> 
-> I tried to do multiple block access at first, but then took it out again.
-> If it turns out valuable to have these, I'll implement it properly later.
-> Does it make a difference performance-wise to do larger accesses?
-> 
-
-Yes. On my rather slow ISA device, the speedup was over 100% for writes.
-
-Rgds
--- 
-     -- Pierre Ossman
-
-  Linux kernel, MMC maintainer        http://www.kernel.org
-  PulseAudio, core developer          http://pulseaudio.org
-  rdesktop, core developer          http://www.rdesktop.org
+------=_Part_2830_4368930.1167900930296--
