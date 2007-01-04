@@ -1,20 +1,21 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from 85.8.24.16.se.wasadata.net ([85.8.24.16] helo=smtp.drzeus.cx)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H29pu-0005Zw-Vr
-	for linux-mtd@lists.infradead.org; Wed, 03 Jan 2007 12:23:37 -0500
-Subject: Re: UBI error on 64bit Machine
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Shiner Chen <shiner.chen@gmail.com>,
-	K G Srivastava <kg.srivastava@gmail.com>
-In-Reply-To: <f9fe74a60612150559x4bcb9eedlfe9675b6be70682@mail.gmail.com>
-References: <f9fe74a60612150559x4bcb9eedlfe9675b6be70682@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 03 Jan 2007 19:18:13 +0200
-Message-Id: <1167844693.20245.18.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1H2NFh-0008HQ-S9
+	for linux-mtd@lists.infradead.org; Thu, 04 Jan 2007 02:43:11 -0500
+Message-ID: <459CB001.4010800@drzeus.cx>
+Date: Thu, 04 Jan 2007 08:42:57 +0100
+From: Pierre Ossman <drzeus-mmc@drzeus.cx>
+MIME-Version: 1.0
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [RFC] MTD driver for MMC cards
+References: <200612281418.20643.arnd@arndb.de> <4597ADD2.90700@drzeus.cx>
+	<200701012322.14735.arnd@arndb.de>
+In-Reply-To: <200701012322.14735.arnd@arndb.de>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@wohnheim.fh-wedel.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +25,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Arnd Bergmann wrote:
+> 
+> One promising effort for a replacement is Jörn's logfs
+> (http://wiki.laptop.org/go/Logfs), which should scale well to many
+> gigabytes. A driver based on MMC would be a nice development tool
+> for that, since it enables regular PCs as a debugging machine
+> instead of having to load test kernels onto an actual embedded
+> machine.
+> 
 
-On Fri, 2006-12-15 at 21:59 +0800, Shiner Chen wrote:
-> Dear all,
->=20
-> Recently, I get the source code on the ubi-2.6.git tree. I compiled
-> the kernel on x86-32 arch and erverything is ok,but on x86-64,I met
-> some problems as follows
-> Environment
-> operation system:Red hat Enterprise Server 4.3(kernel 2.6.19 including
-> the UBI,gcc 3.5)
-> hardware:x86-64
+A bit of a niche area, but as long as this driver doesn't look like high maintenance then it could be enough.
 
-On Fri, 2006-12-15 at 18:58 +0530, K G Srivastava wrote:=20
-> Hi,
->   I am trying to setup UBI over mtdram/nandsim on a AMD 64-bit (1.66
-> MHz) Turion Dual core machine. The MTD device is of size 128 MB and
-> the UBI volume is of size 111 MB. I have tried it on Intel P-4 CPU
-> 2.66GHz and it works fine. But as soon as i do a modprobe for ubi
-> module, the kernel gives an oops. Can you please tell me if UBI works
-> fine on 64-bit architecture or if there are any known issues and if
-> there are any fixes available. The trace of the same is as follows -
+> Another thing I have been thinking about was an MTD version of
+> fat16/fat32. There are a number of optimizations that you can
+> do for flash media, including:
+> 
+> - limiting the number of writes to the FAT
+> - erasing blocks when they are freed in the FS
+> - always writing full erase blocks if the erase block
+>   size matches the cluster size
+> - optimize for wear leveling instead of avoiding
+>   fragmentation
+> 
 
-May you please try the newest UBI? There is a chance that it will work
-better on 64-bit machines now.
+These sound like they would be nicer in the block layer, to cover other devices where you know there is flash at the bottom.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> I read that the SD cards have some restrictions of how
+> the fat fs needs to be laid out on them, presumably to
+> make sure clusters are aligned with erase blocks.
+> Do you have any specific information on what SD actually
+> requires?
+> 
+
+No, as we don't give a rats ass about them. I don't know why they stuck a FAT requirement into the spec. Perhaps Microsoft wanted a chance at the extortio^Wlicense money for any patent issues.
+
+> 
+> ok, I'll have a look. I keep having trouble identifying the right
+> specifications (physical spec sounded like it was only about wiring
+> and electric properties, so I did not look at that). Maybe it would
+
+That had me fooled for quite a while as well.
+
+> be good if you could put pointers to the relevant documents into
+> your Wiki?
+
+Probably. I haven't really put that much time into the wiki lately. It turned out to be a one man show, so I'm doubting its usefulness.
+
+>> First of all, you cannot assume that read_blkbits is a valid block
+>> size when doing writes. 
+> 
+> Right, I see. I introduced that bug when I merged parts of the read and
+> write paths.
+> 
+> Is it fair to assume that write_blkbits is always bigger than
+> read_blkbits, so that one can be used in both cases?
+> 
+
+There is some relation, yes, but I don't remember the details right now. More important is that the card can only be set to one block size at any given time (both read and write). So unless you want
+terrible latency by switching block size back and forth I'd suggest selecting one size and sticking with it.
+
+As the newer cards only support a block size of 512 bytes, the most future proof would be to use that.
+
+> 
+> I tried to do multiple block access at first, but then took it out again.
+> If it turns out valuable to have these, I'll implement it properly later.
+> Does it make a difference performance-wise to do larger accesses?
+> 
+
+Yes. On my rather slow ISA device, the speedup was over 100% for writes.
+
+Rgds
+-- 
+     -- Pierre Ossman
+
+  Linux kernel, MMC maintainer        http://www.kernel.org
+  PulseAudio, core developer          http://pulseaudio.org
+  rdesktop, core developer          http://www.rdesktop.org
