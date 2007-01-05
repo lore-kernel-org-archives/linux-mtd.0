@@ -1,27 +1,20 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H2ly5-0008Ai-0v
-	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 05:06:36 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JBE005OD42BSA@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 19:06:11 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JBE0066Q42B1O@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 19:06:11 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 05 Jan 2007 10:06:11 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Question: SWAP on MTD
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-id: <14181696.114741167991570473.JavaMail.weblogic@ep_ml22>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H2mj2-00004v-DA
+	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 05:55:09 -0500
+Subject: Re: OneNAND: read-while-load
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kyungmin.park@samsung.com
+In-Reply-To: <3488442.114061167991102401.JavaMail.weblogic@ep_ml22>
+References: <3488442.114061167991102401.JavaMail.weblogic@ep_ml22>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 05 Jan 2007 12:54:58 +0200
+Message-Id: <1167994498.3683.12.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <hunter.programmer@gmail.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,9 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCk5vd2FkYXkgSSdtIGludGVyZXN0ZWQgaW4gc3dhcCBkZXZpY2UuIEFuZCB3ZSBjYW4g
-dXNlIHRoZSBtdGRibG9jayBhcyBzd2FwIGRldmljZS4NCk9mIGNvdXJzZSwgaXQgY2FuJ3QgaGFu
-ZGxlIGluaXRpYWwgYmFkIGJsb2NrIGFuZCBydW50aW1lIGJhZCBibG9jay4gDQpJbiB0aGlzIHBv
-aW50LiB3ZSBkb24ndCBjYXJlIHRoZSBiYWQgYmxvY2sgbWFuYWdlbWVudC4NCg0KSSB3b25kZXIg
-dGhhdCBpcyB0aGVyZSBhbnlvbmUgd2hvIHVzZXMgdGhlIG10ZGJsb2NrIGFzIHN3YXAgZGV2aWNl
-Pw0KDQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJrDQoNCg==
+On Fri, 2007-01-05 at 09:58 +0000, Kyungmin Park wrote:
+> Yes, We already knew read-while-loading has better performance than norma=
+l read.
+> Internally we called it 'MRead' (refer another OneNAND open source in sam=
+sung web site)
+
+It is true that JFFS2 is currently the main user. But it may be changed
+in the future. Also one day one can teach JFFS2 to maintain larger nodes
+with, say 16K or more bytes of data. And BTW, UBI reads whole
+eraseblocks when making wear-leveling, so it would also benefit.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
