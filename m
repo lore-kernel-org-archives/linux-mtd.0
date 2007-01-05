@@ -1,23 +1,20 @@
-Received: from wx-out-0506.google.com ([66.249.82.234])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H2ke1-0006wi-EM
-	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 03:41:47 -0500
-Received: by wx-out-0506.google.com with SMTP id h30so7035332wxd
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 05 Jan 2007 00:41:44 -0800 (PST)
-Message-ID: <740e30f50701050041x1f6f0a9t50e0eae07afd305b@mail.gmail.com>
-Date: Fri, 5 Jan 2007 10:41:44 +0200
-From: "Adrian Hunter" <hunter.programmer@gmail.com>
-To: kyungmin.park@samsung.com
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H2kxO-0007BM-Km
+	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 04:01:49 -0500
 Subject: Re: OneNAND: read-while-load
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kyungmin.park@samsung.com
 In-Reply-To: <30559532.90311167981321931.JavaMail.weblogic@ep_ml22>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
 References: <30559532.90311167981321931.JavaMail.weblogic@ep_ml22>
-Cc: Josh Boyer <jwboyer@gmail.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Fri, 05 Jan 2007 11:01:40 +0200
+Message-Id: <1167987700.3683.9.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Adrian Hunter <hunter.programmer@gmail.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1/5/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
-> Hi,
->
-> it looks good to me. except one
->
-> > +     /* Read-while-load method */
-> >
-> > +     /* Do first load to bufferRAM */
-> > +     if (read < len) {
->
-> I think it is alway true. Is there any case that sends zero 'len' from upper layer?
->
+Kyungmin, Adrian,
 
-I don't know if the upper layer sends zero as 'len', but I would not
-trust it not to.  I do not see any harm in the statement.
+On Fri, 2007-01-05 at 07:15 +0000, Kyungmin Park wrote:
+> I will run regression test with this one during this weekend.
+>=20
+> And which program (JFFS2 or UBI) do you use.
+>=20
+> I can't find any performance increase in JFFS2
+
+It depends how you tested it. Surely you notice some performance gain
+only if JFFS2 reads more then 2K bytes of data. And this only happens
+when you read files's contents, especially if this file's pages were not
+compressed to less then 2K.
+
+So a test like:
+
+dd if=3D/dev/udandom of=3D/mnt/jffs2/file bs=3D4K
+time dd if=3D/mnt/jffs2/file of=3D/dev/null
+
+would be roughly OK.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
