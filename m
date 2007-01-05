@@ -1,25 +1,28 @@
-Received: from nz-out-0506.google.com ([64.233.162.230])
+Received: from mailout3.samsung.com ([203.254.224.33])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H2jR7-0005hv-FK
-	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 02:24:26 -0500
-Received: by nz-out-0506.google.com with SMTP id i11so5132679nzi
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 04 Jan 2007 23:24:18 -0800 (PST)
-Received: from pooky.senux.com (localhost.localdomain [127.0.0.1])
-	by pooky.senux.com (8.13.7/8.13.7) with ESMTP id l057TfUp025856
-	(version=TLSv1/SSLv3 cipher=DHE-DSS-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Fri, 5 Jan 2007 16:29:41 +0900
-Received: (from senux@localhost)
-	by pooky.senux.com (8.13.7/8.13.7/Submit) id l057Tfej025855
-	for linux-mtd@lists.infradead.org; Fri, 5 Jan 2007 16:29:41 +0900
-Date: Fri, 5 Jan 2007 16:29:41 +0900
-From: Seongsu Lee <senux@senux.com>
-To: linux-mtd@lists.infradead.org
-Subject: max size of MTD?
-Message-ID: <20070105072941.GA25342@pooky.senux.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+	id 1H2jMg-0005eV-PR
+	for linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 02:20:16 -0500
+Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JBD000VHWBA4P@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 16:18:46 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JBD0074GWBACA@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 05 Jan 2007 16:18:46 +0900 (KST)
+Content-return: prohibited
+Date: Fri, 05 Jan 2007 07:18:46 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: onenand_wait and onenane_read
+To: Adrian Hunter <hunter.programmer@gmail.com>
+Message-id: <23075422.90991167981526516.JavaMail.weblogic@ep_ml22>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,19 +32,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-What is the max size of a partition that can be used in MTD?
-I found that the u_int32_t is used for the variable size 
-in mtd_info. Then, I think 4GB is currently the max size. 
-Am I right? 
-
-I want to use 6GB flash memory with a partition. How can I 
-fix it for using more than 4GB? I changed u_int32_t into
-u_int64_t but it does not work. (kernel oops)
-
-
--- 
-Seongsu's blog - http://www.senux.com/
-"Besides, I think [Slackware] sounds better than
-'Microsoft,' don't you?" (By Patrick Volkerding)
+SGksDQoNCj4gTm90ZSB0aGF0IGFmdGVyIHRoZSBwYXRjaCwgb25lbmFuZV93YWl0IHNlZW1zIHRv
+IHJldHVybiBub24temVybyBldmVuDQo+IHdoZW4gdGhlIGVycm9yIGlzIGNvcnJlY3RlZCBieSBl
+Y2MuICBTaG91bGRuJ3QgaXQgcmV0dXJuIHplcm8gaW4gdGhhdA0KPiBjYXNlPw0KDQpBZnRlciBl
+Y2MgcGF0Y2gsIEkgdGhpbmsgaXMgaXQgcmVhbGx5IG5lZWQgdG8gcmV0dXJuIGVycm9yIGNvZGUg
+d2hlbiAxIGJpdCBlY2MuDQpFdmVuIHRob3VnaCB0aGVyZSdzIDEtYml0IGVjYyB0aGUgYnVmZmVy
+cmFtIGhhcyB2YWxpZCBkYXRhLiBzaW5jZSBlY2MgbG9naWMgYWxyZWFkeSBjb3JyZWN0cyBpdC4N
+Cg0KSSB0aGluayB3ZSBkb24ndCBuZWVkIHRvIHJldHVybiBlY2MgZXJyb3Igd2hlbiAxLWJpdCBl
+Y2MuIFdlIG9ubHkgcmV0dXJuIGVycm9yIGNvZGUgd2hlbiAyLWJpdCBlY2MgZXJyb3INCg0KQEAg
+LTMyNywxMiArMzI3LDEyIEBAIHN0YXRpYyBpbnQgb25lbmFuZF93YWl0KHN0cnVjdCBtdGRfaW5m
+byAqbXRkLCBpbnQgc3RhdGUpDQogICAgICAgICAgICAgICAgaW50IGVjYyA9IHRoaXMtPnJlYWRf
+d29yZCh0aGlzLT5iYXNlICsgT05FTkFORF9SRUdfRUNDX1NUQVRVUyk7DQogICAgICAgICAgICAg
+ICAgaWYgKGVjYykgew0KICAgICAgICAgICAgICAgICAgICAgICAgREVCVUcoTVREX0RFQlVHX0xF
+VkVMMCwgIm9uZW5hbmRfd2FpdDogRUNDIGVycm9yID0gMHglMDR4XG4iLCBlY2MpOw0KLSAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKGVjYyAmIE9ORU5BTkRfRUNDXzJCSVRfQUxMKQ0KKyAgICAg
+ICAgICAgICAgICAgICAgICAgaWYgKGVjYyAmIE9ORU5BTkRfRUNDXzJCSVRfQUxMKSB7DQogICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIG10ZC0+ZWNjX3N0YXRzLmZhaWxlZCsrOw0KLSAg
+ICAgICAgICAgICAgICAgICAgICAgZWxzZSBpZiAoZWNjICYgT05FTkFORF9FQ0NfMUJJVF9BTEwp
+DQorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJldHVybiBlY2M7DQorICAgICAgICAg
+ICAgICAgICAgICAgICB9IGVsc2UgaWYgKGVjYyAmIE9ORU5BTkRfRUNDXzFCSVRfQUxMKQ0KICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBtdGQtPmVjY19zdGF0cy5jb3JyZWN0ZWQrKzsN
+CiAgICAgICAgICAgICAgICB9DQotICAgICAgICAgICAgICAgcmV0dXJuIGVjYzsNCiAgICAgICAg
+fQ0KDQogICAgICAgIHJldHVybiAwOw0KDQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJrDQoNCg==
