@@ -1,18 +1,17 @@
-Received: from mo-p07-ob.rzone.de ([81.169.146.190])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H39nj-0004UZ-7r
-	for linux-mtd@lists.infradead.org; Sat, 06 Jan 2007 06:33:30 -0500
-Date: Sat, 6 Jan 2007 12:27:39 +0100 (MET)
-From: Stefan Roese <ml@stefan-roese.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [MTD] NAND: Fix erpn usage in ndfc driver
+Received: from 35.9.233.220.exetel.com.au ([220.233.9.35] helo=mail.twotoe.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H3hCL-0002vS-Dx
+	for linux-mtd@lists.infradead.org; Sun, 07 Jan 2007 18:13:08 -0500
+Message-ID: <1ba401c732b1$5c65bcc0$7305a8c0@twotoe.com>
+From: "marks twotoe.com" <marks@twotoe.com>
+To: <linux-mtd@lists.infradead.org>, <openbios@lists.openbios.org>,
+	<jffs@axis.com>
+Subject: Cisco Content Engine ce507 Flash bios and boot
+Date: Mon, 8 Jan 2007 10:12:54 +1100
 MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200701061228.26136.ml@stefan-roese.de>
-Content-Type: text/plain;  charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: Timo Lindhorst <lindhors@vnet.ibm.com>, Josh Boyer <jwboyer@gmail.com>,
-	Frank Haverkamp <haver@vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,34 +21,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] [MTD]: NAND: Fix erpn usage in ndfc driver
+There are a lot of Cisco ce507 content engines going very cheap on the big 
+auction at the moment.
 
-Since 440EPx uses erpn != 0 this patch fixes the usage of erpn passing
-via platform_devices.
+You can even pick one up on ebay for as low as ~$10AU if you are dillegent 
+enough watching the auctions.
 
-Signed-off-by: Stefan Roese <sr@denx.de>
+Although they are obsolete for there intended purpose the hardware is very 
+cool.
 
----
-commit 8ff908ce0b12fc6fbfb73cc95eaf5be4d793e66f
-tree d00ab09cd4adddca0fbdefc2cc08069eff3079f0
-parent 05a8057bb38bc803682f3e0af305c258b4566285
-author Stefan Roese <sr@denx.de> Sat, 06 Jan 2007 12:25:24 +0100
-committer Stefan Roese <sr@denx.de> Sat, 06 Jan 2007 12:25:24 +0100
+The ce507 contain:
+P3/600 cpu
+256 meg ram
+symbios 83C895 with 18gig deathstar drive
+asiliant 69000 video chip,
+1 IDE port
+Floppy port
+i8042 kb/mous interface
+2 standard comports.
+2 intel e100 (82559) network interfaces.
 
- drivers/mtd/nand/ndfc.c |    3 ++-
- 1 files changed, 2 insertions(+), 1 deletions(-)
+The chipset is 443BX with a PIIX4E.
 
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index 039c759..fd8e910 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -228,7 +228,8 @@ static int ndfc_nand_probe(struct platform_device *pdev)
- 	struct ndfc_controller_settings *settings = nc->priv;
- 	struct resource *res = pdev->resource;
- 	struct ndfc_controller *ndfc = &ndfc_ctrl;
--	unsigned long long phys = settings->ndfc_erpn | res->start;
-+	unsigned long long phys = ((unsigned long long)settings->ndfc_erpn << 32)
-+		| res->start;
- 
- 	ndfc->ndfcbase = ioremap64(phys, res->end - res->start + 1);
- 	if (!ndfc->ndfcbase) {
+The bios is a general software job, possibly with video/mouse/keyboard 
+handling removed.
+
+All video goes out the console port (com1) at 9600, as does the input from 
+the kb/mouse.
+
+The video and keyboard/mouse ports are availible via headers.
+
+Although the kernel detects the i8042 and the asiliant video, I am unable to 
+get any video besides a cursor and no input from the kb/mouse happening.
+
+The flash chips are 82F128J and a 82F400B and there is an altera EPM7032 
+sitting between them.
+
+One of the flash chips is for the bios, the second is for the boot.
+
+There is also a 93C46 1K microwire eeprom onboard.
+
+If you access the bios at post and set the boot device to other than flash 
+you can boot floppy/ide/scsi.
+
+In this way I have slack up and running on sda.
+
+I also have zeroshell and ubuntu pyramid running off a cf card plugged into 
+ide0.
+
+I used a boot floppy and scsi cd to install slack.
+
+After that long winded background my 2 questions are:
+
+Has anyone managed to put openbios on one of these or similar boards?
+
+Has anyone managed to access the boot flash on one of these or similar 
+boards?
+
+If so, what is the proceedure?
+
+
+Best regards,
+Marks  < m a r k s @ t w o t o e . c o m >
