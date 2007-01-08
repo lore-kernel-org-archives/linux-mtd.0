@@ -1,22 +1,28 @@
-Received: from wx-out-0506.google.com ([66.249.82.237])
+Received: from mailout1.samsung.com ([203.254.224.24])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H3pEP-0004Bi-Rg
-	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 02:47:48 -0500
-Received: by wx-out-0506.google.com with SMTP id h30so7935706wxd
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 07 Jan 2007 23:47:38 -0800 (PST)
-Message-ID: <740e30f50701072347h4c2969e0kffa5bb46ed46603@mail.gmail.com>
-Date: Mon, 8 Jan 2007 09:47:38 +0200
-From: "Adrian Hunter" <hunter.programmer@gmail.com>
-To: kyungmin.park@samsung.com
-Subject: Re: OneNAND: read-while-load (known problem)
-In-Reply-To: <7302633.455711168227442976.JavaMail.weblogic@ep_ml21>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <7302633.455711168227442976.JavaMail.weblogic@ep_ml21>
-Cc: linux-mtd@lists.infradead.org
+	id 1H3pdN-0004ri-Dq
+	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 03:13:37 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JBJ00DOHIUH4L@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 17:13:29 +0900 (KST)
+Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JBJ00180IUHSA@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 17:13:29 +0900 (KST)
+Content-return: prohibited
+Date: Mon, 08 Jan 2007 08:13:29 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: OneNAND: read-while-load (known problem)
+To: Adrian Hunter <hunter.programmer@gmail.com>
+Message-id: <702140.499381168244009661.JavaMail.weblogic@ep_ml21>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +32,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 1/8/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
-> Hi,
->
-> FYI: read-while-load known problem in DDP.
->
-> Of course it's rare case in MTD. and please don't program like this in upper layer.
->
-> If you are using OneNAND DDP (Dual Densidy Package) and you want to read data between chip boundary. you maybe failed to read.
->
-> For example, 2Gbit OneNAND DDP has following address
->
-> Chip 0: 0x0000 0000 ~ 0x0800 0000 - 1
-> Chip 1: 0x0800 0000 ~ 0x1000 0000 - 1
->
-> If you want to read from 0x07ff f800 to 0x8000 0800 (4KB). it will be failed since each chip has its own bufferram
-> So it don't support read-while-loading between each chip.
->
-> [Chip 0] onenand_update_bufferram: 1 addr 0x7ffe000, valid = 1
-> [Chip 0] onenand_update_bufferram: 0 addr 0x7ffe800, valid = 1
-> [Chip 0] onenand_update_bufferram: 1 addr 0x7fff000, valid = 1
-> [Chip 0] onenand_update_bufferram: 0 addr 0x7fff800, valid = 1
->   -> Send next page read, but next page is in chip 1
-> [Chip 1] onenand_update_bufferram: 1 addr 0x8000000, valid = 1 => Actually it's invalid
-> [Chip 1] onenand_update_bufferram: 0 addr 0x8000800, valid = 1
-> [Chip 1] onenand_update_bufferram: 1 addr 0x8001000, valid = 1
->
-> Thank you,
-> Kyungmin Park
-
-I think I see what you mean.  It occurs to me that maybe
-onenand_check_bufferram has the same problem i.e. a different chip is
-selected to the one that we want to read from.  Do you think there
-could be a problem with onenand_check_bufferram also?
+SGkgQWRyaWFuLCANCg0KPiBEbyB5b3UgdGhpbmsgdGhlcmUgY291bGQgYmUgYSBwcm9ibGVtIHdp
+dGggb25lbmFuZF9jaGVja19idWZmZXJyYW0gYWxzbz8NCg0KTm8sIG9uZW5hbmRfY2hlY2tfYnVm
+ZmVycmFtICYgb25lbmFuZF91cGRhdGVfYnVmZmVycmFtIGlzIHJpZ2h0Lg0KDQpJbiBERFAsIGFj
+dHVhbGx5IHRoZXJlJ3MgNCBidWZmZXJyYW1zDQoNCkNoaXAgMDogMCwgMQ0KQ2hpcCAxOiAwLCAx
+DQoNCkluIGNhc2UgcmVhZCBmcm9tIGNoaXAgMCB0byBjaGlwIDEsIGZpcnN0IHNlbmQgY29tbWFu
+ZCBhdCBjaGlwIDA6IDAgb3IgMSwgbmV4dCB3ZSBhbHNvIHNlbmQgY29tbWFuZCBhdCBjaGlwIDE6
+IDEgb3IgMCwgcmVwZWN0aXZlbHksDQppbiB0aGF0IGNhc2UuIHNlY29uZCBjb21tYW5kIHdpbGwg
+YmUgZmFpbGVkLiANClRvIGZpeCB0aGlzIHByb2JsZW0sIHdlIGFkZCBzb21lIGNvZGUgdG8gY2hl
+Y2sgY2hpcCBib3VuZGFyeSBjb25kaXRpb24gaW4gRERQLiBidXQgaXQncyBvdmVyaGVhZCBzaW5j
+ZSB0aGVyZSdzIG5vIHVzYWdlIGluIGN1cnJlbnQgTVREDQoNCkkgdGhpbmsgaXQgaXMgYmVzdCB3
+YXkgd2Ugc2VuZCB0aGUgcmVhZCBidWZmZXIgd2l0aCBibG9jayBhbGlnbmVkLg0KDQpUaGFuayB5
+b3UsDQpLeXVuZ21pbiBQYXJrDQoNCg0KLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdlIC0tLS0tLS0N
+ClNlbmRlciA6IEFkcmlhbiBIdW50ZXI8aHVudGVyLnByb2dyYW1tZXJAZ21haWwuY29tPiANCkRh
+dGUgICA6IEphbiAwOCwgMjAwNyAxNjo0Nw0KVGl0bGUgIDogUmU6IE9uZU5BTkQ6IHJlYWQtd2hp
+bGUtbG9hZCAoa25vd24gcHJvYmxlbSkNCg0KT24gMS84LzA3LCBLeXVuZ21pbiBQYXJrIDxreXVu
+Z21pbi5wYXJrQHNhbXN1bmcuY29tPiB3cm90ZToNCj4gSGksDQo+DQo+IEZZSTogcmVhZC13aGls
+ZS1sb2FkIGtub3duIHByb2JsZW0gaW4gRERQLg0KPg0KPiBPZiBjb3Vyc2UgaXQncyByYXJlIGNh
+c2UgaW4gTVRELiBhbmQgcGxlYXNlIGRvbid0IHByb2dyYW0gbGlrZSB0aGlzIGluIHVwcGVyIGxh
+eWVyLg0KPg0KPiBJZiB5b3UgYXJlIHVzaW5nIE9uZU5BTkQgRERQIChEdWFsIERlbnNpZHkgUGFj
+a2FnZSkgYW5kIHlvdSB3YW50IHRvIHJlYWQgZGF0YSBiZXR3ZWVuIGNoaXAgYm91bmRhcnkuIHlv
+dSBtYXliZSBmYWlsZWQgdG8gcmVhZC4NCj4NCj4gRm9yIGV4YW1wbGUsIDJHYml0IE9uZU5BTkQg
+RERQIGhhcyBmb2xsb3dpbmcgYWRkcmVzcw0KPg0KPiBDaGlwIDA6IDB4MDAwMCAwMDAwIH4gMHgw
+ODAwIDAwMDAgLSAxDQo+IENoaXAgMTogMHgwODAwIDAwMDAgfiAweDEwMDAgMDAwMCAtIDENCj4N
+Cj4gSWYgeW91IHdhbnQgdG8gcmVhZCBmcm9tIDB4MDdmZiBmODAwIHRvIDB4ODAwMCAwODAwICg0
+S0IpLiBpdCB3aWxsIGJlIGZhaWxlZCBzaW5jZSBlYWNoIGNoaXAgaGFzIGl0cyBvd24gYnVmZmVy
+cmFtDQo+IFNvIGl0IGRvbid0IHN1cHBvcnQgcmVhZC13aGlsZS1sb2FkaW5nIGJldHdlZW4gZWFj
+aCBjaGlwLg0KPg0KPiBbQ2hpcCAwXSBvbmVuYW5kX3VwZGF0ZV9idWZmZXJyYW06IDEgYWRkciAw
+eDdmZmUwMDAsIHZhbGlkID0gMQ0KPiBbQ2hpcCAwXSBvbmVuYW5kX3VwZGF0ZV9idWZmZXJyYW06
+IDAgYWRkciAweDdmZmU4MDAsIHZhbGlkID0gMQ0KPiBbQ2hpcCAwXSBvbmVuYW5kX3VwZGF0ZV9i
+dWZmZXJyYW06IDEgYWRkciAweDdmZmYwMDAsIHZhbGlkID0gMQ0KPiBbQ2hpcCAwXSBvbmVuYW5k
+X3VwZGF0ZV9idWZmZXJyYW06IDAgYWRkciAweDdmZmY4MDAsIHZhbGlkID0gMQ0KPiAgIC0+IFNl
+bmQgbmV4dCBwYWdlIHJlYWQsIGJ1dCBuZXh0IHBhZ2UgaXMgaW4gY2hpcCAxDQo+IFtDaGlwIDFd
+IG9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbTogMSBhZGRyIDB4ODAwMDAwMCwgdmFsaWQgPSAxID0+
+IEFjdHVhbGx5IGl0J3MgaW52YWxpZA0KPiBbQ2hpcCAxXSBvbmVuYW5kX3VwZGF0ZV9idWZmZXJy
+YW06IDAgYWRkciAweDgwMDA4MDAsIHZhbGlkID0gMQ0KPiBbQ2hpcCAxXSBvbmVuYW5kX3VwZGF0
+ZV9idWZmZXJyYW06IDEgYWRkciAweDgwMDEwMDAsIHZhbGlkID0gMQ0KPg0KPiBUaGFuayB5b3Us
+DQo+IEt5dW5nbWluIFBhcmsNCg0KSSB0aGluayBJIHNlZSB3aGF0IHlvdSBtZWFuLiAgSXQgb2Nj
+dXJzIHRvIG1lIHRoYXQgbWF5YmUNCm9uZW5hbmRfY2hlY2tfYnVmZmVycmFtIGhhcyB0aGUgc2Ft
+ZSBwcm9ibGVtIGkuZS4gYSBkaWZmZXJlbnQgY2hpcCBpcw0Kc2VsZWN0ZWQgdG8gdGhlIG9uZSB0
+aGF0IHdlIHdhbnQgdG8gcmVhZCBmcm9tLiAgRG8geW91IHRoaW5rIHRoZXJlDQpjb3VsZCBiZSBh
+IHByb2JsZW0gd2l0aCBvbmVuYW5kX2NoZWNrX2J1ZmZlcnJhbSBhbHNvPw0KDQoNCg==
