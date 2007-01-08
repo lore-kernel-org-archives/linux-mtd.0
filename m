@@ -1,22 +1,28 @@
-Received: from mta1.siol.net ([193.189.160.88])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H3seo-0005rp-4k
-	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 06:27:18 -0500
-Received: from edge2.siol.net ([10.10.10.211]) by mta1.siol.net with ESMTP
-	id <20070108112635.YXAL25969.mta1.siol.net@edge2.siol.net>
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Jan 2007 12:26:35 +0100
-Received: from pc002 ([193.77.157.20]) by edge2.siol.net with SMTP
-	id <20070108112632.JKHY28515.edge2.siol.net@pc002>
-	for <linux-mtd@lists.infradead.org>; Mon, 8 Jan 2007 12:26:32 +0100
-Message-ID: <00a901c73317$a2918a60$3500a8c0@ISKRAMEDICAL.SI>
-From: "Klemen Medical" <klemen@iskramedical.si>
+Received: from inbox2.nyi.net ([64.147.100.114])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H3t1U-00066Z-DI
+	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 06:50:47 -0500
+Received: from imss.calsofthq.com (imss.calsofthq.com [172.16.0.44])
+	by mail.calsofthq.com (8.13.6/8.13.6) with ESMTP id l08BnmMA001260
+	for <linux-mtd@lists.infradead.org>; Mon, 8 Jan 2007 17:20:33 +0530
+Received: from imss.calsofthq.com (localhost.localdomain [127.0.0.1])
+	by localhost.calsofthq.com (Postfix) with ESMTP id 8CB74179CA4
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  8 Jan 2007 17:19:48 +0530 (IST)
+Received: from mail.calsofthq.com (mail.calsofthq.com [172.16.0.7])by
+	imss.calsofthq.com (Postfix) with ESMTP id 80DCA179C9Ffor
+	<linux-mtd@lists.infradead.org>; Mon,  8 Jan 2007 17:19:48 +0530 (IST)
+Message-Id: <200701081149.l08BnQn5001183@mail.calsofthq.com>
+From: "Vinit Agnihotri" <vinit.agnihotri@calsoftinc.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: Node totlen on flash
-Date: Mon, 8 Jan 2007 12:24:51 +0100
+Subject: RE: max size of MTD?
+Date: Mon, 8 Jan 2007 17:19:25 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-2";
-	reply-type=original
+Content-Type: text/plain;
+	charset=us-ascii
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <20070106085957.GA32684@pooky.senux.com>
+Cc: 'Seongsu Lee' <senux@senux.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Everyone!
+U have mentioned of creating 1 MTD device of 6GB by mtdconcat. However I am
+curious to know how many mtd devices u've concatenated to make 6GB 
+possible??? I am using mtdramm as test device but I am not able to allocate
+memory over 1GB. So no question of having even more devices to make it above
+5GB. Can you focus on the same question & help me. How can I allocate more
+memory than 4GB??? Or how can I create 6GB MTD device.
+My current test machine is AMD 64bit opteron with 1GB memory.
 
-I am using kernel 2.6.17 and mtd 1.0.0. PXA255 and intel flash 16MB.
-Everything works fine, but when I start my custom application I get warning 
-or error:
-Node totlen on flash (0xffffffff != totlen from node ref (0x00000044)
+Thanks in advance.
+Vinit.
 
-Is this serious problem ? if yes, what could I do ?
-I also get warning when I write file larger than 4kB:
-Node CRC c369fc78 != calculated CRC 41c8679c for node at 00aa3b58
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Seongsu Lee
+Sent: Saturday, January 06, 2007 2:30 PM
+To: linux-mtd@lists.infradead.org
+Subject: Re: max size of MTD?
 
-But I don't see, that would be something wrong with any file !
+On Fri, Jan 05, 2007 at 04:29:41PM +0900, Seongsu Lee wrote:
+> Hi,
+> 
+> What is the max size of a partition that can be used in MTD?
+> I found that the u_int32_t is used for the variable size 
+> in mtd_info. Then, I think 4GB is currently the max size. 
+> Am I right? 
+> 
+> I want to use 6GB flash memory with a partition. How can I 
+> fix it for using more than 4GB? I changed u_int32_t into
+> u_int64_t but it does not work. (kernel oops)
 
-Thanks for advice!
-regards
-Klemen 
+Hi,
+
+I changed the type of variable size in structure mtd_info 
+from u_int32_t to u_int64_t. Some code such as printk is
+modified after the change. It works. I tested that 
+mtdconcat can create 6GB MTD device as one device.
+
+-- 
+Seongsu's blog - http://www.senux.com/
+The aim of a joke is not to degrade the human being
+but to remind him that he is already degraded. --
+George Orwell
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
