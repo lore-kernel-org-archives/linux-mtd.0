@@ -1,29 +1,22 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
+Received: from wx-out-0506.google.com ([66.249.82.237])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H3lL2-0003Y3-4T
-	for linux-mtd@lists.infradead.org; Sun, 07 Jan 2007 22:38:23 -0500
-Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JBJ00ETC62BKT@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 12:37:23 +0900 (KST)
-Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JBJ00H1K62B3E@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 12:37:23 +0900 (KST)
-Content-return: prohibited
-Date: Mon, 08 Jan 2007 03:37:23 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: read-while-load (known problem)
-To: Artem Bityutskiy <dedekind@infradead.org>
-Message-id: <7302633.455711168227442976.JavaMail.weblogic@ep_ml21>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	Adrian Hunter <hunter.programmer@gmail.com>
-Reply-To: kyungmin.park@samsung.com
+	id 1H3pEP-0004Bi-Rg
+	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 02:47:48 -0500
+Received: by wx-out-0506.google.com with SMTP id h30so7935706wxd
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 07 Jan 2007 23:47:38 -0800 (PST)
+Message-ID: <740e30f50701072347h4c2969e0kffa5bb46ed46603@mail.gmail.com>
+Date: Mon, 8 Jan 2007 09:47:38 +0200
+From: "Adrian Hunter" <hunter.programmer@gmail.com>
+To: kyungmin.park@samsung.com
+Subject: Re: OneNAND: read-while-load (known problem)
+In-Reply-To: <7302633.455711168227442976.JavaMail.weblogic@ep_ml21>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <7302633.455711168227442976.JavaMail.weblogic@ep_ml21>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,37 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCkZZSTogcmVhZC13aGlsZS1sb2FkIGtub3duIHByb2JsZW0gaW4gRERQLg0KDQpPZiBj
-b3Vyc2UgaXQncyByYXJlIGNhc2UgaW4gTVRELiBhbmQgcGxlYXNlIGRvbid0IHByb2dyYW0gbGlr
-ZSB0aGlzIGluIHVwcGVyIGxheWVyLg0KDQpJZiB5b3UgYXJlIHVzaW5nIE9uZU5BTkQgRERQIChE
-dWFsIERlbnNpZHkgUGFja2FnZSkgYW5kIHlvdSB3YW50IHRvIHJlYWQgZGF0YSBiZXR3ZWVuIGNo
-aXAgYm91bmRhcnkuIHlvdSBtYXliZSBmYWlsZWQgdG8gcmVhZC4NCg0KRm9yIGV4YW1wbGUsIDJH
-Yml0IE9uZU5BTkQgRERQIGhhcyBmb2xsb3dpbmcgYWRkcmVzcw0KDQpDaGlwIDA6IDB4MDAwMCAw
-MDAwIH4gMHgwODAwIDAwMDAgLSAxDQpDaGlwIDE6IDB4MDgwMCAwMDAwIH4gMHgxMDAwIDAwMDAg
-LSAxDQoNCklmIHlvdSB3YW50IHRvIHJlYWQgZnJvbSAweDA3ZmYgZjgwMCB0byAweDgwMDAgMDgw
-MCAoNEtCKS4gaXQgd2lsbCBiZSBmYWlsZWQgc2luY2UgZWFjaCBjaGlwIGhhcyBpdHMgb3duIGJ1
-ZmZlcnJhbQ0KU28gaXQgZG9uJ3Qgc3VwcG9ydCByZWFkLXdoaWxlLWxvYWRpbmcgYmV0d2VlbiBl
-YWNoIGNoaXAuIA0KDQpbQ2hpcCAwXSBvbmVuYW5kX3VwZGF0ZV9idWZmZXJyYW06IDEgYWRkciAw
-eDdmZmUwMDAsIHZhbGlkID0gMQ0KW0NoaXAgMF0gb25lbmFuZF91cGRhdGVfYnVmZmVycmFtOiAw
-IGFkZHIgMHg3ZmZlODAwLCB2YWxpZCA9IDENCltDaGlwIDBdIG9uZW5hbmRfdXBkYXRlX2J1ZmZl
-cnJhbTogMSBhZGRyIDB4N2ZmZjAwMCwgdmFsaWQgPSAxDQpbQ2hpcCAwXSBvbmVuYW5kX3VwZGF0
-ZV9idWZmZXJyYW06IDAgYWRkciAweDdmZmY4MDAsIHZhbGlkID0gMQ0KICAtPiBTZW5kIG5leHQg
-cGFnZSByZWFkLCBidXQgbmV4dCBwYWdlIGlzIGluIGNoaXAgMQ0KW0NoaXAgMV0gb25lbmFuZF91
-cGRhdGVfYnVmZmVycmFtOiAxIGFkZHIgMHg4MDAwMDAwLCB2YWxpZCA9IDEgPT4gQWN0dWFsbHkg
-aXQncyBpbnZhbGlkIA0KW0NoaXAgMV0gb25lbmFuZF91cGRhdGVfYnVmZmVycmFtOiAwIGFkZHIg
-MHg4MDAwODAwLCB2YWxpZCA9IDENCltDaGlwIDFdIG9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbTog
-MSBhZGRyIDB4ODAwMTAwMCwgdmFsaWQgPSAxDQoNClRoYW5rIHlvdSwNCkt5dW5nbWluIFBhcmsN
-Cg0KDQotLS0tLS0tIE9yaWdpbmFsIE1lc3NhZ2UgLS0tLS0tLQ0KU2VuZGVyIDogQXJ0ZW0gQml0
-eXV0c2tpeTxkZWRla2luZEBpbmZyYWRlYWQub3JnPiANCkRhdGUgICA6IEphbiAwNSwgMjAwNyAx
-OTo1NA0KVGl0bGUgIDogUmU6IE9uZU5BTkQ6IHJlYWQtd2hpbGUtbG9hZA0KDQpPbiBGcmksIDIw
-MDctMDEtMDUgYXQgMDk6NTggKzAwMDAsIEt5dW5nbWluIFBhcmsgd3JvdGU6DQo+IFllcywgV2Ug
-YWxyZWFkeSBrbmV3IHJlYWQtd2hpbGUtbG9hZGluZyBoYXMgYmV0dGVyIHBlcmZvcm1hbmNlIHRo
-YW4gbm9ybWFsIHJlYWQuDQo+IEludGVybmFsbHkgd2UgY2FsbGVkIGl0ICdNUmVhZCcgKHJlZmVy
-IGFub3RoZXIgT25lTkFORCBvcGVuIHNvdXJjZSBpbiBzYW1zdW5nIHdlYiBzaXRlKQ0KDQpJdCBp
-cyB0cnVlIHRoYXQgSkZGUzIgaXMgY3VycmVudGx5IHRoZSBtYWluIHVzZXIuIEJ1dCBpdCBtYXkg
-YmUgY2hhbmdlZA0KaW4gdGhlIGZ1dHVyZS4gQWxzbyBvbmUgZGF5IG9uZSBjYW4gdGVhY2ggSkZG
-UzIgdG8gbWFpbnRhaW4gbGFyZ2VyIG5vZGVzDQp3aXRoLCBzYXkgMTZLIG9yIG1vcmUgYnl0ZXMg
-b2YgZGF0YS4gQW5kIEJUVywgVUJJIHJlYWRzIHdob2xlDQplcmFzZWJsb2NrcyB3aGVuIG1ha2lu
-ZyB3ZWFyLWxldmVsaW5nLCBzbyBpdCB3b3VsZCBhbHNvIGJlbmVmaXQuDQoNCi0tIA0KQmVzdCBy
-ZWdhcmRzLA0KQXJ0ZW0gQml0eXV0c2tpeSAo0JHQuNGC0Y7RhtC60LjQuSDQkNGA0YLRkdC8KQ0K
-DQoNCg0K
+On 1/8/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
+> Hi,
+>
+> FYI: read-while-load known problem in DDP.
+>
+> Of course it's rare case in MTD. and please don't program like this in upper layer.
+>
+> If you are using OneNAND DDP (Dual Densidy Package) and you want to read data between chip boundary. you maybe failed to read.
+>
+> For example, 2Gbit OneNAND DDP has following address
+>
+> Chip 0: 0x0000 0000 ~ 0x0800 0000 - 1
+> Chip 1: 0x0800 0000 ~ 0x1000 0000 - 1
+>
+> If you want to read from 0x07ff f800 to 0x8000 0800 (4KB). it will be failed since each chip has its own bufferram
+> So it don't support read-while-loading between each chip.
+>
+> [Chip 0] onenand_update_bufferram: 1 addr 0x7ffe000, valid = 1
+> [Chip 0] onenand_update_bufferram: 0 addr 0x7ffe800, valid = 1
+> [Chip 0] onenand_update_bufferram: 1 addr 0x7fff000, valid = 1
+> [Chip 0] onenand_update_bufferram: 0 addr 0x7fff800, valid = 1
+>   -> Send next page read, but next page is in chip 1
+> [Chip 1] onenand_update_bufferram: 1 addr 0x8000000, valid = 1 => Actually it's invalid
+> [Chip 1] onenand_update_bufferram: 0 addr 0x8000800, valid = 1
+> [Chip 1] onenand_update_bufferram: 1 addr 0x8001000, valid = 1
+>
+> Thank you,
+> Kyungmin Park
+
+I think I see what you mean.  It occurs to me that maybe
+onenand_check_bufferram has the same problem i.e. a different chip is
+selected to the one that we want to read from.  Do you think there
+could be a problem with onenand_check_bufferram also?
