@@ -1,17 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4G24-0007Lq-IE
-	for linux-mtd@lists.infradead.org; Tue, 09 Jan 2007 07:24:51 -0500
-Subject: OneNAND git
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 09 Jan 2007 14:24:40 +0200
-Message-Id: <1168345480.3963.3.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from an-out-0708.google.com ([209.85.132.247])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H4KiE-0000qk-N0
+	for linux-mtd@lists.infradead.org; Tue, 09 Jan 2007 12:24:41 -0500
+Received: by an-out-0708.google.com with SMTP id b28so2760359ana
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 09 Jan 2007 09:24:37 -0800 (PST)
+Message-ID: <7b5da6b00701090924t7f70ced0w31da301c7e079121@mail.gmail.com>
+Date: Tue, 9 Jan 2007 09:24:36 -0800
+From: "Y Yang" <yyang702@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Q: Support for Disk-On-Chip Millennium Plus 32-MB chip?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,16 +23,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Kyungmin,
+Some work has been done on this driver (see
+http://lists.infradead.org/pipermail/linux-mtd/2006-June/015992.html).
 
-please, look at my OneNAND tree here:
-http://git.infradead.org/?p=3Dusers/dedekind/dedekind-onenand-mtd-2.6.git;a=
-=3Dsummary
+However, where can I find the "final" patch?
 
-I do not have several of your patches there, but I excluded the ones I
-think should not sit in this tree.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Your input is very much appreciated.
