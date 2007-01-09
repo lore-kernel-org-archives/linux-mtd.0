@@ -1,27 +1,34 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H46RM-00032P-AK
-	for linux-mtd@lists.infradead.org; Mon, 08 Jan 2007 21:10:20 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JBK009OYWP0YR@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 09 Jan 2007 11:10:12 +0900 (KST)
-Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JBK00B5WWP0Y8@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Tue, 09 Jan 2007 11:10:12 +0900 (KST)
-Content-return: prohibited
-Date: Tue, 09 Jan 2007 02:10:12 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH] OneNAND: Use address instead block, page in bufferram
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Message-id: <32289320.317881168308612503.JavaMail.weblogic@ep_ml29>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Reply-To: kyungmin.park@samsung.com
+Received: from lon-del-02.spheriq.net ([195.46.50.98])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H4CwB-00063s-FU
+	for linux-mtd@lists.infradead.org; Tue, 09 Jan 2007 04:06:40 -0500
+Received: from lon-out-03.spheriq.net ([195.46.50.131])
+	by lon-del-02.spheriq.net with ESMTP id l0996Hhr031908
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Jan 2007 09:06:17 GMT
+Received: from lon-cus-01.spheriq.net (lon-cus-01.spheriq.net [195.46.50.37])
+	by lon-out-03.spheriq.net with ESMTP id l0996Gi0000389
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Jan 2007 09:06:16 GMT
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+	by lon-cus-01.spheriq.net with ESMTP id l0996CWA031197
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Tue, 9 Jan 2007 09:06:16 GMT
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id CC9FCDA69
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  9 Jan 2007 09:05:19 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 6E7BE472F9
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  9 Jan 2007 09:05:19 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Paging demand
+Date: Tue, 9 Jan 2007 10:05:08 +0100
+Message-ID: <001801c733cd$48e296b0$d204960a@nap.st.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,43 +38,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-W1BBVENIXSBPbmVOQU5EOiBVc2UgYWRkcmVzcyBpbnN0ZWFkIG9mIGJsb2NrLCBwYWdlIGluIGJ1
-ZmZlcnJhbQ0KDQp3ZSB1c2UgdGhlIGFkZHJlc3MgaXRzZWxmIGluc3RlYWQgb2YgYmxvY2ssIHBh
-Z2UgaW4gYnVmZmVyYW0uDQoNClNpZ25lZC1vZmYtYnk6IEt5dW5nbWluIFBhcmsgPGt5dW5nbWlu
-LnBhcmtAc2Ftc3VuZy5jb20+DQotLQ0KDQoNCkBAIC01ODcsMTkgKzYwMSwxOCBAQCBzdGF0aWMg
-aW50IG9uZW5hbmRfd3JpdGVfYnVmZmVycmFtKHN0cnVjdCBtdGRfaW5mbyAqbXRkLCBpbnQgYXJl
-YSwNCiBzdGF0aWMgaW50IG9uZW5hbmRfY2hlY2tfYnVmZmVycmFtKHN0cnVjdCBtdGRfaW5mbyAq
-bXRkLCBsb2ZmX3QgYWRkcikNCiB7DQogCXN0cnVjdCBvbmVuYW5kX2NoaXAgKnRoaXMgPSBtdGQt
-PnByaXY7DQotCWludCBibG9jaywgcGFnZTsNCiAJaW50IGk7DQorI2lmZGVmIERFQlVHX0JVRkZF
-UlJBTQ0KKwlpbnQgYmxvY2ssIHBhZ2U7DQogDQogCWJsb2NrID0gKGludCkgKGFkZHIgPj4gdGhp
-cy0+ZXJhc2Vfc2hpZnQpOw0KLQlwYWdlID0gKGludCkgKGFkZHIgPj4gdGhpcy0+cGFnZV9zaGlm
-dCk7DQotCXBhZ2UgJj0gdGhpcy0+cGFnZV9tYXNrOw0KKwlwYWdlID0gKGludCkgKGFkZHIgPj4g
-dGhpcy0+cGFnZV9zaGlmdCkgJiB0aGlzLT5wYWdlX21hc2s7DQorI2VuZGlmDQogDQogCWkgPSBP
-TkVOQU5EX0NVUlJFTlRfQlVGRkVSUkFNKHRoaXMpOw0KIA0KIAkvKiBJcyB0aGVyZSB2YWxpZCBk
-YXRhPyAqLw0KLQlpZiAodGhpcy0+YnVmZmVycmFtW2ldLmJsb2NrID09IGJsb2NrICYmDQotCSAg
-ICB0aGlzLT5idWZmZXJyYW1baV0ucGFnZSA9PSBwYWdlICYmDQotCSAgICB0aGlzLT5idWZmZXJy
-YW1baV0udmFsaWQpDQorCWlmICh0aGlzLT5idWZmZXJyYW1baV0uYWRkciA9PSBhZGRyICYmIHRo
-aXMtPmJ1ZmZlcnJhbVtpXS52YWxpZCkNCiAJCXJldHVybiAxOw0KIA0KIAlyZXR1cm4gMDsNCkBA
-IC02MTcsMjQgKzYzMCwyNSBAQCBzdGF0aWMgaW50IG9uZW5hbmRfdXBkYXRlX2J1ZmZlcnJhbShz
-dHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGFkZHIsDQogCQlpbnQgdmFsaWQpDQogew0KIAlz
-dHJ1Y3Qgb25lbmFuZF9jaGlwICp0aGlzID0gbXRkLT5wcml2Ow0KLQlpbnQgYmxvY2ssIHBhZ2U7
-DQogCWludCBpOw0KKyNpZmRlZiBERUJVR19CVUZGRVJSQU0NCisJaW50IGJsb2NrLCBwYWdlOw0K
-IA0KIAlibG9jayA9IChpbnQpIChhZGRyID4+IHRoaXMtPmVyYXNlX3NoaWZ0KTsNCi0JcGFnZSA9
-IChpbnQpIChhZGRyID4+IHRoaXMtPnBhZ2Vfc2hpZnQpOw0KLQlwYWdlICY9IHRoaXMtPnBhZ2Vf
-bWFzazsNCisJcGFnZSA9IChpbnQpIChhZGRyID4+IHRoaXMtPnBhZ2Vfc2hpZnQpICYgdGhpcy0+
-cGFnZV9tYXNrOw0KKyNlbmRpZg0KIA0KIAkvKiBJbnZhbGlkYXRlIEJ1ZmZlclJBTSAqLw0KIAlm
-b3IgKGkgPSAwOyBpIDwgTUFYX0JVRkZFUlJBTTsgaSsrKSB7DQotCQlpZiAodGhpcy0+YnVmZmVy
-cmFtW2ldLmJsb2NrID09IGJsb2NrICYmDQotCQkgICAgdGhpcy0+YnVmZmVycmFtW2ldLnBhZ2Ug
-PT0gcGFnZSkNCisJCWlmICh0aGlzLT5idWZmZXJyYW1baV0uYWRkciA9PSBhZGRyKSB7DQogCQkJ
-dGhpcy0+YnVmZmVycmFtW2ldLnZhbGlkID0gMDsNCisJCQlicmVhazsNCisJCX0NCiAJfQ0KIA0K
-IAkvKiBVcGRhdGUgQnVmZmVyUkFNICovDQogCWkgPSBPTkVOQU5EX0NVUlJFTlRfQlVGRkVSUkFN
-KHRoaXMpOw0KLQl0aGlzLT5idWZmZXJyYW1baV0uYmxvY2sgPSBibG9jazsNCi0JdGhpcy0+YnVm
-ZmVycmFtW2ldLnBhZ2UgPSBwYWdlOw0KKwl0aGlzLT5idWZmZXJyYW1baV0uYWRkciA9IGFkZHI7
-DQogCXRoaXMtPmJ1ZmZlcnJhbVtpXS52YWxpZCA9IHZhbGlkOw0KIA0KIAlyZXR1cm4gMDsNCmRp
-ZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L210ZC9vbmVuYW5kLmggYi9pbmNsdWRlL2xpbnV4L210
-ZC9vbmVuYW5kLmgNCmluZGV4IGY3NzVhN2EuLjQ2ZTA1MmYgMTAwNjQ0DQotLS0gYS9pbmNsdWRl
-L2xpbnV4L210ZC9vbmVuYW5kLmgNCisrKyBiL2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaA0K
-QEAgLTQ3LDkgKzQ3LDggQEAgdHlwZWRlZiBlbnVtIHsNCiAgKiBAdmFsaWQ6CQl2YWxpZCBmbGFn
-DQogICovDQogc3RydWN0IG9uZW5hbmRfYnVmZmVycmFtIHsNCi0JaW50IGJsb2NrOw0KLQlpbnQg
-cGFnZTsNCi0JaW50IHZhbGlkOw0KKwlsb2ZmX3QJCWFkZHI7DQorCWludAkJdmFsaWQ7DQogfTsN
-CiANCiAvKioNCg0K
+Hi,
+
+I have read some documents that talk about CRAMFS as the only file =
+system that supports the paging demand. But I think that the paging =
+demand only depends on the Operating System. So I think that Linux also =
+uses the paging demand with JFFS2. Is it right?
+
+Best regards,
+Davide
