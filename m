@@ -1,18 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4dFH-0000Zq-EW
-	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 08:12:02 -0500
-Message-ID: <45A4E5E8.1050108@nokia.com>
-Date: Wed, 10 Jan 2007 15:11:04 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
+	id 1H4dLW-0000qR-Qi
+	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 08:18:30 -0500
+Subject: Re: OneNAND git
+From: Artem Bityutskiy <dedekind@infradead.org>
 To: kyungmin.park@samsung.com
-Subject: Re: [PATCH] OneNAND: Use address instead block, page in bufferram
-References: <32289320.317881168308612503.JavaMail.weblogic@ep_ml29>
-In-Reply-To: <32289320.317881168308612503.JavaMail.weblogic@ep_ml29>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <846526.522131168389817787.JavaMail.weblogic@ep_ml20>
+References: <846526.522131168389817787.JavaMail.weblogic@ep_ml20>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 10 Jan 2007 15:18:18 +0200
+Message-Id: <1168435098.26936.25.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,103 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Kyungmin Park wrote:
-> [PATCH] OneNAND: Use address instead of block, page in bufferram
->
-> we use the address itself instead of block, page in bufferam.
->
-> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
-> --
->
->
-> @@ -587,19 +601,18 @@ static int onenand_write_bufferram(struct mtd_info *mtd, int area,
->  static int onenand_check_bufferram(struct mtd_info *mtd, loff_t addr)
->  {
->  	struct onenand_chip *this = mtd->priv;
-> -	int block, page;
->  	int i;
-> +#ifdef DEBUG_BUFFERRAM
-> +	int block, page;
->  
->  	block = (int) (addr >> this->erase_shift);
-> -	page = (int) (addr >> this->page_shift);
-> -	page &= this->page_mask;
-> +	page = (int) (addr >> this->page_shift) & this->page_mask;
-> +#endif
->  
->  	i = ONENAND_CURRENT_BUFFERRAM(this);
->  
->  	/* Is there valid data? */
-> -	if (this->bufferram[i].block == block &&
-> -	    this->bufferram[i].page == page &&
-> -	    this->bufferram[i].valid)
-> +	if (this->bufferram[i].addr == addr && this->bufferram[i].valid)
->  		return 1;
->  
->  	return 0;
-> @@ -617,24 +630,25 @@ static int onenand_update_bufferram(struct mtd_info *mtd, loff_t addr,
->  		int valid)
->  {
->  	struct onenand_chip *this = mtd->priv;
-> -	int block, page;
->  	int i;
-> +#ifdef DEBUG_BUFFERRAM
-> +	int block, page;
->  
->  	block = (int) (addr >> this->erase_shift);
-> -	page = (int) (addr >> this->page_shift);
-> -	page &= this->page_mask;
-> +	page = (int) (addr >> this->page_shift) & this->page_mask;
-> +#endif
->  
->  	/* Invalidate BufferRAM */
->  	for (i = 0; i < MAX_BUFFERRAM; i++) {
-> -		if (this->bufferram[i].block == block &&
-> -		    this->bufferram[i].page == page)
-> +		if (this->bufferram[i].addr == addr) {
->  			this->bufferram[i].valid = 0;
-> +			break;
-> +		}
->  	}
->  
->  	/* Update BufferRAM */
->  	i = ONENAND_CURRENT_BUFFERRAM(this);
-> -	this->bufferram[i].block = block;
-> -	this->bufferram[i].page = page;
-> +	this->bufferram[i].addr = addr;
->  	this->bufferram[i].valid = valid;
->  
->  	return 0;
-> diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-> index f775a7a..46e052f 100644
-> --- a/include/linux/mtd/onenand.h
-> +++ b/include/linux/mtd/onenand.h
-> @@ -47,9 +47,8 @@ typedef enum {
->   * @valid:		valid flag
->   */
->  struct onenand_bufferram {
-> -	int block;
-> -	int page;
-> -	int valid;
-> +	loff_t		addr;
-> +	int		valid;
->  };
->  
->  /**
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->   
-It seems to me that this patch would cause un-necessary loads.  For example:
+Hi Kyungmin,
 
-first read at address 0x00000000
-then read at address 0x00000010
+On Wed, 2007-01-10 at 00:43 +0000, Kyungmin Park wrote:
+> I saw your tree. and please append the last patch, read-while-load in DDP=
+ handling.
+> also we have to add "[MTD] OneNAND: fix onenand_wait bug".
+Yeah, they are there.
 
-The second read would load to bufferRAM because the address is different,
-even though the page is already there because of the first read.
+> Then what's your opinion of JFFS2 patch?
+>=20
+>     [JFFS2] Skip ECC position in NAND family flash
+>=20
+>     In OneNAND it updates the spare ecc area automatically when write the
+>     cleanmark in spare area
 
-I am not sure this patch is needed.
+I think the problem should be fixed by means of MTD_OOB_AUTO option
+instead.
 
-Regards
-Adrian
+> The remaing patches are following.
+>=20
+> 1. [MTD] OneNAND: add subpage write support
+
+It is cool to support this of course. I just forgot about it.
+
+BTW, here is the idea how to test this. Just report mtd->writesize =3D 512
+instead of 2048 temporarily. Then run some JFFS2 tests. O course, this
+is just a hack for testing and you should report 2048 in mtd->writesize.
+
+> 2. [JFFS2] fix wrong ref-flash_offset usage.
+
+I think it is not OneNAND-related. I've put it to my
+dedekind-mtd-2.6.git tree - will bug dwmw2 to pull from it. OK?
+
+
+> I think thres's no problem of the removal of cond_resched in OneNAND driv=
+er.
+> If you don't agree this one, I can revert it.
+
+Revert a revert? :-)
+
+Yes, I do not agree. Having large loops with no cond_resched() is not
+nice. For example, MTD may be asked to read 64MiB of data at one go. And
+we do this without releasing CPU and cause huge delays. This is bad.
+
+Now I have all the patches in place in my tree. I offer you to consider
+to clone my tee and maintain it instead. I do not actually wish to be a
+OneNAND maintainer, just collected all the patches and made a bit neater
+git tree. Some of them didn't apply cleanly, so I did some hand work.
+
+Also, I change the author of my patch to me instead of you. :-)
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
