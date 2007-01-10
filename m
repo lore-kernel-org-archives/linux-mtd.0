@@ -1,19 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4dLW-0000qR-Qi
-	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 08:18:30 -0500
-Subject: Re: OneNAND git
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kyungmin.park@samsung.com
-In-Reply-To: <846526.522131168389817787.JavaMail.weblogic@ep_ml20>
-References: <846526.522131168389817787.JavaMail.weblogic@ep_ml20>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 10 Jan 2007 15:18:18 +0200
-Message-Id: <1168435098.26936.25.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	id 1H4eL3-0001RE-H4
+	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 09:22:05 -0500
+Message-ID: <45A4F65B.2060805@nokia.com>
+Date: Wed, 10 Jan 2007 16:21:15 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: ext Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] [MTD] OneNAND: Always print error messages
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,58 +20,163 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kyungmin,
+Change important error messages to always print rather than
+being dependent on MTD debug settings.
 
-On Wed, 2007-01-10 at 00:43 +0000, Kyungmin Park wrote:
-> I saw your tree. and please append the last patch, read-while-load in DDP=
- handling.
-> also we have to add "[MTD] OneNAND: fix onenand_wait bug".
-Yeah, they are there.
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   36 +++++++++++++++++++-----------------
+ 1 files changed, 19 insertions(+), 17 deletions(-)
 
-> Then what's your opinion of JFFS2 patch?
->=20
->     [JFFS2] Skip ECC position in NAND family flash
->=20
->     In OneNAND it updates the spare ecc area automatically when write the
->     cleanmark in spare area
-
-I think the problem should be fixed by means of MTD_OOB_AUTO option
-instead.
-
-> The remaing patches are following.
->=20
-> 1. [MTD] OneNAND: add subpage write support
-
-It is cool to support this of course. I just forgot about it.
-
-BTW, here is the idea how to test this. Just report mtd->writesize =3D 512
-instead of 2048 temporarily. Then run some JFFS2 tests. O course, this
-is just a hack for testing and you should report 2048 in mtd->writesize.
-
-> 2. [JFFS2] fix wrong ref-flash_offset usage.
-
-I think it is not OneNAND-related. I've put it to my
-dedekind-mtd-2.6.git tree - will bug dwmw2 to pull from it. OK?
-
-
-> I think thres's no problem of the removal of cond_resched in OneNAND driv=
-er.
-> If you don't agree this one, I can revert it.
-
-Revert a revert? :-)
-
-Yes, I do not agree. Having large loops with no cond_resched() is not
-nice. For example, MTD may be asked to read 64MiB of data at one go. And
-we do this without releasing CPU and cause huge delays. This is bad.
-
-Now I have all the patches in place in my tree. I offer you to consider
-to clone my tee and maintain it instead. I do not actually wish to be a
-OneNAND maintainer, just collected all the patches and made a bit neater
-git tree. Some of them didn't apply cleanly, so I did some hand work.
-
-Also, I change the author of my patch to me instead of you. :-)
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index 7480776..02ad959 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -317,16 +317,16 @@ static int onenand_wait(struct mtd_info 
+ 	ctrl = this->read_word(this->base + ONENAND_REG_CTRL_STATUS);
+ 
+ 	if (ctrl & ONENAND_CTRL_ERROR) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: controller error = 0x%04x\n", ctrl);
++		printk(KERN_ERR "onenand_wait: controller error = 0x%04x\n", ctrl);
+ 		if (ctrl & ONENAND_CTRL_LOCK)
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: it's locked error.\n");
++			printk(KERN_ERR "onenand_wait: it's locked error.\n");
+ 		return ctrl;
+ 	}
+ 
+ 	if (interrupt & ONENAND_INT_READ) {
+ 		int ecc = this->read_word(this->base + ONENAND_REG_ECC_STATUS);
+ 		if (ecc) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_wait: ECC error = 0x%04x\n", ecc);
++			printk(KERN_ERR "onenand_wait: ECC error = 0x%04x\n", ecc);
+ 			if (ecc & ONENAND_ECC_2BIT_ALL) {
+ 				mtd->ecc_stats.failed++;
+ 				return ecc;
+@@ -716,7 +716,7 @@ static int onenand_read(struct mtd_info 
+ 
+ 	/* Do not allow reads past end of device */
+ 	if ((from + len) > mtd->size) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_read: Attempt read beyond end of device\n");
++		printk(KERN_ERR "onenand_read: Attempt read beyond end of device\n");
+ 		*retlen = 0;
+ 		return -EINVAL;
+ 	}
+@@ -778,6 +778,8 @@ static int onenand_read(struct mtd_info 
+ 		ret = this->wait(mtd, FL_READING);
+ 		onenand_update_bufferram(mtd, from, !ret);
+ 	}
++	if (ret)
++		printk(KERN_ERR "onenand_read: read failed = %d\n", ret);
+ 
+ 	/* Deselect and wake up anyone waiting on the device */
+ 	onenand_release_device(mtd);
+@@ -822,7 +824,7 @@ int onenand_do_read_oob(struct mtd_info 
+ 
+ 	/* Do not allow reads past end of device */
+ 	if (unlikely((from + len) > mtd->size)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_read_oob: Attempt read beyond end of device\n");
++		printk(KERN_ERR "onenand_read_oob: Attempt read beyond end of device\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -845,7 +847,7 @@ int onenand_do_read_oob(struct mtd_info 
+ 		this->read_bufferram(mtd, ONENAND_SPARERAM, buf, column, thislen);
+ 
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_read_oob: read failed = 0x%x\n", ret);
++			printk(KERN_ERR "onenand_read_oob: read failed = 0x%x\n", ret);
+ 			goto out;
+ 		}
+ 
+@@ -984,13 +986,13 @@ static int onenand_write(struct mtd_info
+ 
+ 	/* Do not allow writes past end of device */
+ 	if (unlikely((to + len) > mtd->size)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_write: Attempt write to past end of device\n");
++		printk(KERN_ERR "onenand_write: Attempt write to past end of device\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* Reject writes, which are not page aligned */
+         if (unlikely(NOTALIGNED(to)) || unlikely(NOTALIGNED(len))) {
+-                DEBUG(MTD_DEBUG_LEVEL0, "onenand_write: Attempt to write not page aligned data\n");
++                printk(KERN_ERR "onenand_write: Attempt to write not page aligned data\n");
+                 return -EINVAL;
+         }
+ 
+@@ -1028,14 +1030,14 @@ static int onenand_write(struct mtd_info
+ 
+ 		ret = this->wait(mtd, FL_WRITING);
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write: write filaed %d\n", ret);
++			printk(KERN_ERR "onenand_write: write filaed %d\n", ret);
+ 			break;
+ 		}
+ 
+ 		/* Only check verify write turn on */
+ 		ret = onenand_verify_page(mtd, (u_char *) wbuf, to);
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write: verify failed %d\n", ret);
++			printk(KERN_ERR "onenand_write: verify failed %d\n", ret);
+ 			break;
+ 		}
+ 
+@@ -1081,7 +1083,7 @@ static int onenand_do_write_oob(struct m
+ 
+ 	/* Do not allow writes past end of device */
+ 	if (unlikely((to + len) > mtd->size)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: Attempt write to past end of device\n");
++		printk(KERN_ERR "onenand_write_oob: Attempt write to past end of device\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1108,13 +1110,13 @@ static int onenand_do_write_oob(struct m
+ 
+ 		ret = this->wait(mtd, FL_WRITING);
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: write filaed %d\n", ret);
++			printk(KERN_ERR "onenand_write_oob: write failed %d\n", ret);
+ 			goto out;
+ 		}
+ 
+ 		ret = onenand_verify_oob(mtd, buf, to, thislen);
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: verify failed %d\n", ret);
++			printk(KERN_ERR "onenand_write_oob: verify failed %d\n", ret);
+ 			goto out;
+ 		}
+ 
+@@ -1191,19 +1193,19 @@ static int onenand_erase(struct mtd_info
+ 
+ 	/* Start address must align on block boundary */
+ 	if (unlikely(instr->addr & (block_size - 1))) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_erase: Unaligned address\n");
++		printk(KERN_ERR "onenand_erase: Unaligned address\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* Length must align on block boundary */
+ 	if (unlikely(instr->len & (block_size - 1))) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_erase: Length not block aligned\n");
++		printk(KERN_ERR "onenand_erase: Length not block aligned\n");
+ 		return -EINVAL;
+ 	}
+ 
+ 	/* Do not allow erase past end of device */
+ 	if (unlikely((instr->len + instr->addr) > mtd->size)) {
+-		DEBUG(MTD_DEBUG_LEVEL0, "onenand_erase: Erase past end of device\n");
++		printk(KERN_ERR "onenand_erase: Erase past end of device\n");
+ 		return -EINVAL;
+ 	}
+ 
+@@ -1231,7 +1233,7 @@ static int onenand_erase(struct mtd_info
+ 		ret = this->wait(mtd, FL_ERASING);
+ 		/* Check, if it is write protected */
+ 		if (ret) {
+-			DEBUG(MTD_DEBUG_LEVEL0, "onenand_erase: Failed erase, block %d\n", (unsigned) (addr >> this->erase_shift));
++			printk(KERN_ERR "onenand_erase: Failed erase, block %d\n", (unsigned) (addr >> this->erase_shift));
+ 			instr->state = MTD_ERASE_FAILED;
+ 			instr->fail_addr = addr;
+ 			goto erase_exit;
+-- 
+1.4.3
