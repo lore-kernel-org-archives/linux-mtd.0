@@ -1,21 +1,23 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4yCR-0005AF-91
-	for linux-mtd@lists.infradead.org; Thu, 11 Jan 2007 06:34:30 -0500
-Subject: Re: max_ec value is shown as 1
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Sandeep Kumar <sandeepksinha@gmail.com>
-In-Reply-To: <37d33d830701110322x5f60ec88r17b0cdd562ec8d4b@mail.gmail.com>
-References: <37d33d830701110244m58afec33hcf77323e4dc550f3@mail.gmail.com>
-	<1168512581.26936.33.camel@sauron>
-	<37d33d830701110322x5f60ec88r17b0cdd562ec8d4b@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 11 Jan 2007 13:34:08 +0200
-Message-Id: <1168515248.26936.36.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1H4zRs-00062a-6t
+	for linux-mtd@lists.infradead.org; Thu, 11 Jan 2007 07:54:30 -0500
+Received: from dbdp30.itg.ti.com ([172.24.170.39])
+	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id l0BCs7q0003910
+	for <linux-mtd@lists.infradead.org>; Thu, 11 Jan 2007 06:54:18 -0600
+Received: from x0019732 (localhost [127.0.0.1])
+	by dbdp30.itg.ti.com (8.12.11/8.12.11) with SMTP id l0BCs4oq024821
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 11 Jan 2007 18:24:06 +0530 (IST)
+Message-ID: <010101c7357f$93feda60$5af5180a@ent.ti.com>
+From: "Anand Patil" <anandpatil@ti.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: ECC Recovery in JFFS2 and YAFFS
+Date: Thu, 11 Jan 2007 18:24:03 +0530
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-01-11 at 16:52 +0530, Sandeep Kumar wrote:
-> I got it, I think. I mistook this value as the maximum erase count for
-> a leb on that device. And thats why I was surprised.
+Hi,
+        I want to know how a ECC failiure is handled by JFFS2 and YAFFS?
 
-Maximum LEB EC is 0x7FFFFFFF (31 bit) in current implementation.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+        What i understand from the below code ment to check ECC error is
+        a Device reset is issued on the NAND device.
+
+In Nand_base.c
+In Function nand_verify_pages()
+------------------------------------------------------------------------------------------------
+ /*
+  * Terminate the read command. We come here in case of an error
+  * So we must issue a reset command.
+  */
+out:
+ this->cmdfunc (mtd, NAND_CMD_RESET, -1, -1);
+ return res;
+
+------------------------------------------------------------------------------------------------
+
+
+Warm Regards,
+Anand Patil
+Wipro TI ODC
+Ph :- 080-28520408
+Ext 4386 
