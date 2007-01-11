@@ -1,16 +1,28 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4fJl-0001yp-B5
-	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 10:24:48 -0500
-Message-ID: <45A5050D.4010400@nokia.com>
-Date: Wed, 10 Jan 2007 17:23:57 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: ext Kyungmin Park <kyungmin.park@samsung.com>
-Subject: [PATCH] [MTD] OneNAND: Return an error if a read timeout occurs
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from mailout3.samsung.com ([203.254.224.33])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H4pYR-000871-71
+	for linux-mtd@lists.infradead.org; Wed, 10 Jan 2007 21:20:39 -0500
+Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
+	by mailout3.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JBO00LXPMI5DK@mailout3.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jan 2007 11:20:29 +0900 (KST)
+Received: from ep_spt03 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JBO00BZYMI5FV@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 11 Jan 2007 11:20:29 +0900 (KST)
+Content-return: prohibited
+Date: Thu, 11 Jan 2007 02:20:29 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] OneNAND: Use address instead block, page in bufferram
+To: "ext-adrian.hunter@nokia.com" <ext-adrian.hunter@nokia.com>
+Message-id: <3767549.556241168482029768.JavaMail.weblogic@ep_ml19>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
 Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +32,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-If OneNAND is operating within specification, all operations
-should easily be completed within the 20 millisecond timeout.
-This patch faithlessly adds a check for the timeout and returns
-an error in that case.
-
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- drivers/mtd/onenand/onenand_base.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 02ad959..ff85a4f 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -333,6 +333,9 @@ static int onenand_wait(struct mtd_info 
- 			} else if (ecc & ONENAND_ECC_1BIT_ALL)
- 				mtd->ecc_stats.corrected++;
- 		}
-+	} else if (state == FL_READING) {
-+		printk(KERN_ERR "onenand_wait: read timeout! ctrl=0x%04x intr=0x%04x\n", ctrl, interrupt);
-+		return -EIO;
- 	}
- 
- 	return 0;
--- 
-1.4.3
+QWgsIHllcywgeW91J3JlIHJpZ2h0Lg0KDQpJIGZvcmdvdCB0aGUgSkZGUzIgYmVoYXZpb3IuIGFu
+ZCBmaXJzdCBpbXBsZW1lbnRhdGlvbiBzY2hlbWUuDQpTb21ldGltZXMgSkZGUzIgcmVxdWVzdHMg
+c21hbGwgY2h1bmtzIHNlcXVlbmNpYWxseSBpbiB0aGUgc2FtZSBwYWdlLiBzbyB3ZSBoYXZlIHRv
+IGNoZWNrIGJsb2NrICYgcGFnZSBzY2hlbWUuDQoNClNvcnJ5LCBwbGVhc2UgaWdub3JlIGl0Lg0K
+DQpUaGFuayB5b3UsDQpLeXVuZ21pbiBQYXJrDQoNCg0KLS0tLS0tLSBPcmlnaW5hbCBNZXNzYWdl
+IC0tLS0tLS0NClNlbmRlciA6IGV4dC1hZHJpYW4uaHVudGVyQG5va2lhLmNvbTxleHQtYWRyaWFu
+Lmh1bnRlckBub2tpYS5jb20+IA0KRGF0ZSAgIDogSmFuIDEwLCAyMDA3IDIxOjM0DQpUaXRsZSAg
+OiBSRTogW1BBVENIXSBPbmVOQU5EOiBVc2UgYWRkcmVzcyBpbnN0ZWFkIGJsb2NrLCBwYWdlIGlu
+IGJ1ZmZlcnJhbQ0KDQpJdCBzZWVtcyB0byBtZSB0aGF0IHRoaXMgcGF0Y2ggd291bGQgY2F1c2Ug
+dW4tbmVjZXNzYXJ5IGxvYWRzLiAgRm9yIGV4YW1wbGU6DQoNCmZpcnN0IHJlYWQgYXQgYWRkcmVz
+cyAweDAwMDAwMDAwDQp0aGVuIHJlYWQgYXQgYWRkcmVzcyAweDAwMDAwMDEwDQoNClRoZSBzZWNv
+bmQgcmVhZCB3b3VsZCBsb2FkIHRvIGJ1ZmZlclJBTSBiZWNhdXNlIHRoZSBhZGRyZXNzIGlzIGRp
+ZmZlcmVudCwNCmV2ZW4gdGhvdWdoIHRoZSBwYWdlIGlzIGFscmVhZHkgdGhlcmUgYmVjYXVzZSBv
+ZiB0aGUgZmlyc3QgcmVhZC4NCg0KSSBhbSBub3Qgc3VyZSB0aGlzIHBhdGNoIGlzIG5lZWRlZC4N
+Cg0KUmVnYXJkcw0KQWRyaWFuDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206
+IGxpbnV4LW10ZC1ib3VuY2VzQGxpc3RzLmluZnJhZGVhZC5vcmcgb24gYmVoYWxmIG9mIGV4dCBL
+eXVuZ21pbiBQYXJrDQpTZW50OiBUdWUgMS85LzIwMDcgNDoxMCBBTQ0KVG86IGxpbnV4LW10ZEBs
+aXN0cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBbUEFUQ0hdIE9uZU5BTkQ6IFVzZSBhZGRyZXNz
+IGluc3RlYWQgYmxvY2ssIHBhZ2UgaW4gYnVmZmVycmFtDQogDQpbUEFUQ0hdIE9uZU5BTkQ6IFVz
+ZSBhZGRyZXNzIGluc3RlYWQgb2YgYmxvY2ssIHBhZ2UgaW4gYnVmZmVycmFtDQoNCndlIHVzZSB0
+aGUgYWRkcmVzcyBpdHNlbGYgaW5zdGVhZCBvZiBibG9jaywgcGFnZSBpbiBidWZmZXJhbS4NCg0K
+U2lnbmVkLW9mZi1ieTogS3l1bmdtaW4gUGFyayA8a3l1bmdtaW4ucGFya0BzYW1zdW5nLmNvbT4N
+Ci0tDQoNCg0KQEAgLTU4NywxOSArNjAxLDE4IEBAIHN0YXRpYyBpbnQgb25lbmFuZF93cml0ZV9i
+dWZmZXJyYW0oc3RydWN0IG10ZF9pbmZvICptdGQsIGludCBhcmVhLA0KIHN0YXRpYyBpbnQgb25l
+bmFuZF9jaGVja19idWZmZXJyYW0oc3RydWN0IG10ZF9pbmZvICptdGQsIGxvZmZfdCBhZGRyKQ0K
+IHsNCiAJc3RydWN0IG9uZW5hbmRfY2hpcCAqdGhpcyA9IG10ZC0+cHJpdjsNCi0JaW50IGJsb2Nr
+LCBwYWdlOw0KIAlpbnQgaTsNCisjaWZkZWYgREVCVUdfQlVGRkVSUkFNDQorCWludCBibG9jaywg
+cGFnZTsNCiANCiAJYmxvY2sgPSAoaW50KSAoYWRkciA+PiB0aGlzLT5lcmFzZV9zaGlmdCk7DQot
+CXBhZ2UgPSAoaW50KSAoYWRkciA+PiB0aGlzLT5wYWdlX3NoaWZ0KTsNCi0JcGFnZSAmPSB0aGlz
+LT5wYWdlX21hc2s7DQorCXBhZ2UgPSAoaW50KSAoYWRkciA+PiB0aGlzLT5wYWdlX3NoaWZ0KSAm
+IHRoaXMtPnBhZ2VfbWFzazsNCisjZW5kaWYNCiANCiAJaSA9IE9ORU5BTkRfQ1VSUkVOVF9CVUZG
+RVJSQU0odGhpcyk7DQogDQogCS8qIElzIHRoZXJlIHZhbGlkIGRhdGE/ICovDQotCWlmICh0aGlz
+LT5idWZmZXJyYW1baV0uYmxvY2sgPT0gYmxvY2sgJiYNCi0JICAgIHRoaXMtPmJ1ZmZlcnJhbVtp
+XS5wYWdlID09IHBhZ2UgJiYNCi0JICAgIHRoaXMtPmJ1ZmZlcnJhbVtpXS52YWxpZCkNCisJaWYg
+KHRoaXMtPmJ1ZmZlcnJhbVtpXS5hZGRyID09IGFkZHIgJiYgdGhpcy0+YnVmZmVycmFtW2ldLnZh
+bGlkKQ0KIAkJcmV0dXJuIDE7DQogDQogCXJldHVybiAwOw0KQEAgLTYxNywyNCArNjMwLDI1IEBA
+IHN0YXRpYyBpbnQgb25lbmFuZF91cGRhdGVfYnVmZmVycmFtKHN0cnVjdCBtdGRfaW5mbyAqbXRk
+LCBsb2ZmX3QgYWRkciwNCiAJCWludCB2YWxpZCkNCiB7DQogCXN0cnVjdCBvbmVuYW5kX2NoaXAg
+KnRoaXMgPSBtdGQtPnByaXY7DQotCWludCBibG9jaywgcGFnZTsNCiAJaW50IGk7DQorI2lmZGVm
+IERFQlVHX0JVRkZFUlJBTQ0KKwlpbnQgYmxvY2ssIHBhZ2U7DQogDQogCWJsb2NrID0gKGludCkg
+KGFkZHIgPj4gdGhpcy0+ZXJhc2Vfc2hpZnQpOw0KLQlwYWdlID0gKGludCkgKGFkZHIgPj4gdGhp
+cy0+cGFnZV9zaGlmdCk7DQotCXBhZ2UgJj0gdGhpcy0+cGFnZV9tYXNrOw0KKwlwYWdlID0gKGlu
+dCkgKGFkZHIgPj4gdGhpcy0+cGFnZV9zaGlmdCkgJiB0aGlzLT5wYWdlX21hc2s7DQorI2VuZGlm
+DQogDQogCS8qIEludmFsaWRhdGUgQnVmZmVyUkFNICovDQogCWZvciAoaSA9IDA7IGkgPCBNQVhf
+QlVGRkVSUkFNOyBpKyspIHsNCi0JCWlmICh0aGlzLT5idWZmZXJyYW1baV0uYmxvY2sgPT0gYmxv
+Y2sgJiYNCi0JCSAgICB0aGlzLT5idWZmZXJyYW1baV0ucGFnZSA9PSBwYWdlKQ0KKwkJaWYgKHRo
+aXMtPmJ1ZmZlcnJhbVtpXS5hZGRyID09IGFkZHIpIHsNCiAJCQl0aGlzLT5idWZmZXJyYW1baV0u
+dmFsaWQgPSAwOw0KKwkJCWJyZWFrOw0KKwkJfQ0KIAl9DQogDQogCS8qIFVwZGF0ZSBCdWZmZXJS
+QU0gKi8NCiAJaSA9IE9ORU5BTkRfQ1VSUkVOVF9CVUZGRVJSQU0odGhpcyk7DQotCXRoaXMtPmJ1
+ZmZlcnJhbVtpXS5ibG9jayA9IGJsb2NrOw0KLQl0aGlzLT5idWZmZXJyYW1baV0ucGFnZSA9IHBh
+Z2U7DQorCXRoaXMtPmJ1ZmZlcnJhbVtpXS5hZGRyID0gYWRkcjsNCiAJdGhpcy0+YnVmZmVycmFt
+W2ldLnZhbGlkID0gdmFsaWQ7DQogDQogCXJldHVybiAwOw0KZGlmZiAtLWdpdCBhL2luY2x1ZGUv
+bGludXgvbXRkL29uZW5hbmQuaCBiL2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaA0KaW5kZXgg
+Zjc3NWE3YS4uNDZlMDUyZiAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQu
+aA0KKysrIGIvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQpAQCAtNDcsOSArNDcsOCBAQCB0
+eXBlZGVmIGVudW0gew0KICAqIEB2YWxpZDoJCXZhbGlkIGZsYWcNCiAgKi8NCiBzdHJ1Y3Qgb25l
+bmFuZF9idWZmZXJyYW0gew0KLQlpbnQgYmxvY2s7DQotCWludCBwYWdlOw0KLQlpbnQgdmFsaWQ7
+DQorCWxvZmZfdAkJYWRkcjsNCisJaW50CQl2YWxpZDsNCiB9Ow0KIA0KIC8qKg0KDQpfX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCkxpbnV4IE1U
+RCBkaXNjdXNzaW9uIG1haWxpbmcgbGlzdA0KaHR0cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFp
+bG1hbi9saXN0aW5mby9saW51eC1tdGQvDQoNCg==
