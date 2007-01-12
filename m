@@ -1,28 +1,20 @@
-Received: from mailout3.samsung.com ([203.254.224.33])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H5GDi-0004xf-K6
-	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 01:49:02 -0500
-Received: from ep_ms12_bk (mailout3.samsung.com [203.254.224.33])
-	by mailout3.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JBQ008MXTLI09@mailout3.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:48:55 +0900 (KST)
-Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JBQ00FAZTLI3T@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:48:54 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 12 Jan 2007 06:48:54 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: Always print error messages
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Message-id: <929664.73441168584534274.JavaMail.weblogic@ep_ml28>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: kyungmin.park@samsung.com
+Received: from safelistgirls.com ([65.98.58.242] helo=magick.safelistgirls.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1H5TMa-0003fh-JK
+	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:51:04 -0500
+Received: from nobody by magick.safelistgirls.com with local (Exim 4.63)
+	(envelope-from <nobody@magick.safelistgirls.com>) id 1H5PqX-0000uw-Dw
+	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 10:05:41 -0700
+To: linux-mtd@lists.infradead.org
+Subject: Hello,
+From: Lady Peggy Morrison.  <lpm101@yahoo.dk>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1H5PqX-0000uw-Dw@magick.safelistgirls.com>
+Sender: Nobody <nobody@magick.safelistgirls.com>
+Date: Fri, 12 Jan 2007 10:05:41 -0700
+Reply-To: ladypeggymorrison@yahoo.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,11 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkgQWRyaWFuLA0KDQpJIHRoaW5rIGl0J3MgdG9vIHZlcmJvc2UuDQoNCkFzIHlvdSBrbm93LCBu
-YW5kIGZsYXNoIGhhcyBzZXZlcmFsIGluaXRpYWwgYmFkIGJsb2Nrcy4NCk1heWJlIG1hbnkgdXNl
-cyBkb24ndCBsaWtlIHRvIHNlZSB0aGUgc29tZSBlcnJvciBtZXNzYWdlIGF0IGJvb3QgdGltZS4N
-Cg0KQXQgbGVhc3QsIG9uZW5hbmRfd2FpdCgpLCBvbmVuYW5kX2RvX3JlYWRfb29iKCkgaGF2ZSB0
-byBjaGFuZ2UgZnJvbSBLRVJOX0VSUiB0byBLRVJOX0RFQlVHDQpJJ20gbm90IHN1cmUgaG93IHRv
-IGhhbmRsZSBlcnJvciBtZXNzYWdlLCBlc3BlY2lsbGF5IGF0IG9uZW5hbmRfd2FpdCgpLg0KY29u
-dHJvbGxlciBlcnJvciBpcyB2ZXJ5IGltcG9ydGFudCBidXQgaXQncyB0b28gdmVyYm9zZSBhdCBi
-b290IHRpbWUuDQoNClRoYW5rIHlvdSwNCkt5dW5nbWluIFBhcmsNCg0K
+From: Lady Peggy Morrison,
+4 Old Church Street,
+Chelsea, SW3, England.
+ 
+Here writes  Lady Peggy Morrison, suffering from cancerous ailment. I  am married to Engineer Richard Morrison an Englishman who is dead. My  husband was into private practice all his life before his death.  Our life together as man and wife lasted for three decades without child. My husband died after a protracted illness. My husband and  I made a vow to uplift the down-trodden and the less-privileged  individuals as he had passion for persons who cannot help themselves due to physical disability or financial predicament. I can adduce this to the fact that he needed a Child from this relationship,which never came.
+  
+ When my late husband was alive he deposited the sum of 20Million ( 20Million Great Britain Pounds Sterling) which were  derived from his vast estates a nd investment in capital market  with his bank here in UK. Presently, this money is still with the  Bank.  Recently, my Doctor told me that I have limited days to live  due to the cancerous problems I am suffering from.  
+ 
+Though what bothers me most is the stroke that I have in addition  to the cancer. With this hard reality that has befallen my family,  and me I have decided to donate this fund to you and want you to  use this gift which comes from my husbands effortto fund the  upkeep of widows, widowers, orphans, destitute, the down-trodden,physically challenged children, barren-women and persons who prove  to be genuinely handicapped financially.
+ 
+It is often said that blessed is the hand that giveth. I took this  decision because I do not have any child that will inherit this  money and my husband relatives are bourgeois and very wealthy  persons and I do not want my husbands hard earned money to be  misused or invested into ill perceived ventures. I do not want a  situation where this money will be used in an ungodly manner,hence the reason for taking this bold decision. I am not afraid of  death henceI know where I am going. I know that I am going to be with the Almighty  when Ieventually pass on. The Almighty will  fight my case and I shall hold my peace.
+ 
+I do not need any  telephone communication in this regard due to my
+deteriorating  health and because of the presence of my husbands relatives around me. I do not want them to know about this development. With God all things are possible.
+ 
+As soon as I receive your reply I shall give you the contact of  the bank in UK. I will also issue you a Letter of Authority that  will empower you as the original beneficiary of this fund via my Lawyer. My  happiness is that I lived a life worthy of emulation. Please  always be prayerful all t hrough your life. Please assure me that  you will act just as I have stated herein. Hope to hear from you  soon and God bless you and members of your family.you can contact me through my private email address:
+ 
+Lady Peggy Morrison. 
+ladypeggymorrison@yahoo.dk
+4 Old Church Street,
+Chelsea, SW3, England.
