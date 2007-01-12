@@ -1,13 +1,13 @@
 Received: from gateway-1237.mvista.com ([63.81.120.158])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H5VTr-0004vo-Sv
-	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 18:06:42 -0500
-Subject: [PATCH] [MTD] CHIPS: fix CFI point method for discontiguous maps
+	id 1H5VU5-0004wA-6t
+	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 18:06:55 -0500
+Subject: [PATCH] [JFFS2] fix unpoint length
 From: Andy Lowe <alowe@mvista.com>
 To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Fri, 12 Jan 2007 17:05:10 -0600
-Message-Id: <1168643110.15116.20.camel@alowe-desktop.mvista.com>
+Date: Fri, 12 Jan 2007 17:05:24 -0600
+Message-Id: <1168643124.15116.21.camel@alowe-desktop.mvista.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -19,67 +19,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] [MTD] CHIPS: fix CFI point method for discontiguous maps
+[PATCH] [JFFS2] fix unpoint length
 
-The CFI probe routine is capable of detecting flash banks consisting of
-identical chips mapped to physically discontiguous addresses.  (One
-common way this can occur is if a flash bank is populated with chips of
-less capacity than the hardware was designed to support.)  The CFI
-point() routine currently ignores any such gaps.  This patch fixes
-the CFI point() routine so that it truncates any request that would
-span a gap.
+Fix a couple of instances in JFFS2 where the unpoint() routine is
+being called with the wrong length in cases where the point() routine
+truncated a request.
 
 Signed-off-by: Andy Lowe <alowe@mvista.com>
-Signed-off-by: Nicolas Pitre <nico@cam.org>
 
-Index: linux-2.6.19/drivers/mtd/chips/cfi_cmdset_0001.c
+Index: linux-2.6.19/fs/jffs2/nodelist.c
 ===================================================================
---- linux-2.6.19.orig/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ linux-2.6.19/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -1140,28 +1140,34 @@ static int cfi_intelext_point (struct mt
- {
- 	struct map_info *map = mtd->priv;
- 	struct cfi_private *cfi = map->fldrv_priv;
--	unsigned long ofs;
-+	unsigned long ofs, last_end = 0;
- 	int chipnum;
- 	int ret = 0;
- 
- 	if (!map->virt || (from + len > mtd->size))
- 		return -EINVAL;
- 
--	*mtdbuf = (void *)map->virt + from;
--	*retlen = 0;
--
- 	/* Now lock the chip(s) to POINT state */
- 
- 	/* ofs: offset within the first chip that the first read should start */
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum << cfi->chipshift);
- 
-+	*mtdbuf = (void *)map->virt + cfi->chips[chipnum].start + ofs;
-+	*retlen = 0;
-+
- 	while (len) {
- 		unsigned long thislen;
- 
- 		if (chipnum >= cfi->numchips)
- 			break;
- 
-+		/* We cannot point across chips that are virtually disjoint */
-+		if (!last_end)
-+			last_end = cfi->chips[chipnum].start;
-+		else if (cfi->chips[chipnum].start != last_end)
-+			break;
-+
- 		if ((len + ofs -1) >> cfi->chipshift)
- 			thislen = (1<<cfi->chipshift) - ofs;
+--- linux-2.6.19.orig/fs/jffs2/nodelist.c
++++ linux-2.6.19/fs/jffs2/nodelist.c
+@@ -443,7 +443,7 @@ static int check_node_data(struct jffs2_
+ 		err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
+ 		if (!err && retlen < tn->csize) {
+ 			JFFS2_WARNING("MTD point returned len too short: %zu instead of %u.\n", retlen, tn->csize);
+-			c->mtd->unpoint(c->mtd, buffer, ofs, len);
++			c->mtd->unpoint(c->mtd, buffer, ofs, retlen);
+ 		} else if (err)
+ 			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
  		else
-@@ -1175,6 +1181,7 @@ static int cfi_intelext_point (struct mt
- 		len -= thislen;
- 
- 		ofs = 0;
-+		last_end += 1 << cfi->chipshift;
- 		chipnum++;
- 	}
- 	return 0;
+Index: linux-2.6.19/fs/jffs2/scan.c
+===================================================================
+--- linux-2.6.19.orig/fs/jffs2/scan.c
++++ linux-2.6.19/fs/jffs2/scan.c
+@@ -102,7 +102,7 @@ int jffs2_scan_medium(struct jffs2_sb_in
+ 		if (!ret && pointlen < c->mtd->size) {
+ 			/* Don't muck about if it won't let us point to the whole flash */
+ 			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
+-			c->mtd->unpoint(c->mtd, flashbuf, 0, c->mtd->size);
++			c->mtd->unpoint(c->mtd, flashbuf, 0, pointlen);
+ 			flashbuf = NULL;
+ 		}
+ 		if (ret)
