@@ -1,20 +1,15 @@
-Received: from safelistgirls.com ([65.98.58.242] helo=magick.safelistgirls.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H5TMa-0003fh-JK
-	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:51:04 -0500
-Received: from nobody by magick.safelistgirls.com with local (Exim 4.63)
-	(envelope-from <nobody@magick.safelistgirls.com>) id 1H5PqX-0000uw-Dw
-	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 10:05:41 -0700
+Received: from gateway-1237.mvista.com ([63.81.120.158])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H5VTr-0004vo-Sv
+	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 18:06:42 -0500
+Subject: [PATCH] [MTD] CHIPS: fix CFI point method for discontiguous maps
+From: Andy Lowe <alowe@mvista.com>
 To: linux-mtd@lists.infradead.org
-Subject: Hello,
-From: Lady Peggy Morrison.  <lpm101@yahoo.dk>
-MIME-Version: 1.0
 Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Message-Id: <E1H5PqX-0000uw-Dw@magick.safelistgirls.com>
-Sender: Nobody <nobody@magick.safelistgirls.com>
-Date: Fri, 12 Jan 2007 10:05:41 -0700
-Reply-To: ladypeggymorrison@yahoo.dk
+Date: Fri, 12 Jan 2007 17:05:10 -0600
+Message-Id: <1168643110.15116.20.camel@alowe-desktop.mvista.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +19,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Lady Peggy Morrison,
-4 Old Church Street,
-Chelsea, SW3, England.
+[PATCH] [MTD] CHIPS: fix CFI point method for discontiguous maps
+
+The CFI probe routine is capable of detecting flash banks consisting of
+identical chips mapped to physically discontiguous addresses.  (One
+common way this can occur is if a flash bank is populated with chips of
+less capacity than the hardware was designed to support.)  The CFI
+point() routine currently ignores any such gaps.  This patch fixes
+the CFI point() routine so that it truncates any request that would
+span a gap.
+
+Signed-off-by: Andy Lowe <alowe@mvista.com>
+Signed-off-by: Nicolas Pitre <nico@cam.org>
+
+Index: linux-2.6.19/drivers/mtd/chips/cfi_cmdset_0001.c
+===================================================================
+--- linux-2.6.19.orig/drivers/mtd/chips/cfi_cmdset_0001.c
++++ linux-2.6.19/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -1140,28 +1140,34 @@ static int cfi_intelext_point (struct mt
+ {
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	unsigned long ofs;
++	unsigned long ofs, last_end = 0;
+ 	int chipnum;
+ 	int ret = 0;
  
-Here writes  Lady Peggy Morrison, suffering from cancerous ailment. I  am married to Engineer Richard Morrison an Englishman who is dead. My  husband was into private practice all his life before his death.  Our life together as man and wife lasted for three decades without child. My husband died after a protracted illness. My husband and  I made a vow to uplift the down-trodden and the less-privileged  individuals as he had passion for persons who cannot help themselves due to physical disability or financial predicament. I can adduce this to the fact that he needed a Child from this relationship,which never came.
-  
- When my late husband was alive he deposited the sum of 20Million ( 20Million Great Britain Pounds Sterling) which were  derived from his vast estates a nd investment in capital market  with his bank here in UK. Presently, this money is still with the  Bank.  Recently, my Doctor told me that I have limited days to live  due to the cancerous problems I am suffering from.  
+ 	if (!map->virt || (from + len > mtd->size))
+ 		return -EINVAL;
  
-Though what bothers me most is the stroke that I have in addition  to the cancer. With this hard reality that has befallen my family,  and me I have decided to donate this fund to you and want you to  use this gift which comes from my husbands effortto fund the  upkeep of widows, widowers, orphans, destitute, the down-trodden,physically challenged children, barren-women and persons who prove  to be genuinely handicapped financially.
+-	*mtdbuf = (void *)map->virt + from;
+-	*retlen = 0;
+-
+ 	/* Now lock the chip(s) to POINT state */
  
-It is often said that blessed is the hand that giveth. I took this  decision because I do not have any child that will inherit this  money and my husband relatives are bourgeois and very wealthy  persons and I do not want my husbands hard earned money to be  misused or invested into ill perceived ventures. I do not want a  situation where this money will be used in an ungodly manner,hence the reason for taking this bold decision. I am not afraid of  death henceI know where I am going. I know that I am going to be with the Almighty  when Ieventually pass on. The Almighty will  fight my case and I shall hold my peace.
+ 	/* ofs: offset within the first chip that the first read should start */
+ 	chipnum = (from >> cfi->chipshift);
+ 	ofs = from - (chipnum << cfi->chipshift);
  
-I do not need any  telephone communication in this regard due to my
-deteriorating  health and because of the presence of my husbands relatives around me. I do not want them to know about this development. With God all things are possible.
++	*mtdbuf = (void *)map->virt + cfi->chips[chipnum].start + ofs;
++	*retlen = 0;
++
+ 	while (len) {
+ 		unsigned long thislen;
  
-As soon as I receive your reply I shall give you the contact of  the bank in UK. I will also issue you a Letter of Authority that  will empower you as the original beneficiary of this fund via my Lawyer. My  happiness is that I lived a life worthy of emulation. Please  always be prayerful all t hrough your life. Please assure me that  you will act just as I have stated herein. Hope to hear from you  soon and God bless you and members of your family.you can contact me through my private email address:
+ 		if (chipnum >= cfi->numchips)
+ 			break;
  
-Lady Peggy Morrison. 
-ladypeggymorrison@yahoo.dk
-4 Old Church Street,
-Chelsea, SW3, England.
++		/* We cannot point across chips that are virtually disjoint */
++		if (!last_end)
++			last_end = cfi->chips[chipnum].start;
++		else if (cfi->chips[chipnum].start != last_end)
++			break;
++
+ 		if ((len + ofs -1) >> cfi->chipshift)
+ 			thislen = (1<<cfi->chipshift) - ofs;
+ 		else
+@@ -1175,6 +1181,7 @@ static int cfi_intelext_point (struct mt
+ 		len -= thislen;
+ 
+ 		ofs = 0;
++		last_end += 1 << cfi->chipshift;
+ 		chipnum++;
+ 	}
+ 	return 0;
