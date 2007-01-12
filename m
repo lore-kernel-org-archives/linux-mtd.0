@@ -1,23 +1,28 @@
-Received: from bear.ext.ti.com ([192.94.94.41])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H4zRs-00062a-6t
-	for linux-mtd@lists.infradead.org; Thu, 11 Jan 2007 07:54:30 -0500
-Received: from dbdp30.itg.ti.com ([172.24.170.39])
-	by bear.ext.ti.com (8.13.7/8.13.7) with ESMTP id l0BCs7q0003910
-	for <linux-mtd@lists.infradead.org>; Thu, 11 Jan 2007 06:54:18 -0600
-Received: from x0019732 (localhost [127.0.0.1])
-	by dbdp30.itg.ti.com (8.12.11/8.12.11) with SMTP id l0BCs4oq024821
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 11 Jan 2007 18:24:06 +0530 (IST)
-Message-ID: <010101c7357f$93feda60$5af5180a@ent.ti.com>
-From: "Anand Patil" <anandpatil@ti.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: ECC Recovery in JFFS2 and YAFFS
-Date: Thu, 11 Jan 2007 18:24:03 +0530
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+Received: from mailout2.samsung.com ([203.254.224.25])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H5Ft1-0004ez-2M
+	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 01:27:38 -0500
+Received: from ep_ms12_bk (mailout2.samsung.com [203.254.224.25])
+	by mailout2.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JBQ00J6QSLURD@mailout2.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:27:30 +0900 (KST)
+Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JBQ00MPZSLUVP@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 15:27:30 +0900 (KST)
+Content-return: prohibited
+Date: Fri, 12 Jan 2007 06:27:30 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] OneNAND: Reduce OneNAND Double Density Package (DDP)
+	operations
+To: linux-mtd@lists.infradead.org, ext-adrian.hunter@nokia.com
+Message-id: <29992530.70301168583250509.JavaMail.weblogic@ep_ml28>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-transfer-encoding: base64
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,29 +32,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-        I want to know how a ECC failiure is handled by JFFS2 and YAFFS?
-
-
-        What i understand from the below code ment to check ECC error is
-        a Device reset is issued on the NAND device.
-
-In Nand_base.c
-In Function nand_verify_pages()
-------------------------------------------------------------------------------------------------
- /*
-  * Terminate the read command. We come here in case of an error
-  * So we must issue a reset command.
-  */
-out:
- this->cmdfunc (mtd, NAND_CMD_RESET, -1, -1);
- return res;
-
-------------------------------------------------------------------------------------------------
-
-
-Warm Regards,
-Anand Patil
-Wipro TI ODC
-Ph :- 080-28520408
-Ext 4386 
+W1BBVENIXSBPbmVOQU5EOiBSZWR1Y2UgT25lTkFORCBERFAgb3BlcmF0aW9ucw0KDQotIEREUCBj
+b2RlIGNsZWFuLXVwDQotIFJlZHVjZSBibG9jayAmIGJ1ZmZlcnJhbSBvcGVyYXRpb25zDQoNCklm
+IHRoZXJlJ3Mgbm8gb2JqZWN0aW9uLCBJIHdpbGwgY29tbWl0IGl0Lg0KDQpUaGFuayB5b3UsDQpL
+eXVuZ21pbiBQYXJrDQoNCi0tDQoNCmRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC9vbmVuYW5kL29u
+ZW5hbmRfYmFzZS5jIGIvZHJpdmVycy9tdGQvb25lbmFuZC9vbmVuYW5kX2Jhc2UuYw0KaW5kZXgg
+ZDBmMzExOC4uZGZlY2NmYyAxMDA2NDQNCi0tLSBhL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFu
+ZF9iYXNlLmMNCisrKyBiL2RyaXZlcnMvbXRkL29uZW5hbmQvb25lbmFuZF9iYXNlLmMNCkBAIC05
+NCwxNiArOTQsOSBAQCBzdGF0aWMgdm9pZCBvbmVuYW5kX3dyaXRldyh1bnNpZ25lZCBzaG9ydCB2
+YWx1ZSwgdm9pZCBfX2lvbWVtICphZGRyKQ0KICAqLw0KIHN0YXRpYyBpbnQgb25lbmFuZF9ibG9j
+a19hZGRyZXNzKHN0cnVjdCBvbmVuYW5kX2NoaXAgKnRoaXMsIGludCBibG9jaykNCiB7DQotCWlm
+ICh0aGlzLT5kZXZpY2VfaWQgJiBPTkVOQU5EX0RFVklDRV9JU19ERFApIHsNCi0JCS8qIERldmlj
+ZSBGbGFzaCBDb3JlIHNlbGVjdCwgTkFORCBGbGFzaCBCbG9jayBBZGRyZXNzICovDQotCQlpbnQg
+ZGZzID0gMDsNCi0NCi0JCWlmIChibG9jayAmIHRoaXMtPmRlbnNpdHlfbWFzaykNCi0JCQlkZnMg
+PSAxOw0KLQ0KLQkJcmV0dXJuIChkZnMgPDwgT05FTkFORF9ERFBfU0hJRlQpIHwNCi0JCQkoYmxv
+Y2sgJiAodGhpcy0+ZGVuc2l0eV9tYXNrIC0gMSkpOw0KLQl9DQorCS8qIERldmljZSBGbGFzaCBD
+b3JlIHNlbGVjdCwgTkFORCBGbGFzaCBCbG9jayBBZGRyZXNzICovDQorCWlmIChibG9jayAmIHRo
+aXMtPmRlbnNpdHlfbWFzaykNCisJCXJldHVybiBPTkVOQU5EX0REUF9DSElQMSB8IChibG9jayBe
+IHRoaXMtPmRlbnNpdHlfbWFzayk7DQogDQogCXJldHVybiBibG9jazsNCiB9DQpAQCAtMTE4LDE3
+ICsxMTEsMTEgQEAgc3RhdGljIGludCBvbmVuYW5kX2Jsb2NrX2FkZHJlc3Moc3RydWN0IG9uZW5h
+bmRfY2hpcCAqdGhpcywgaW50IGJsb2NrKQ0KICAqLw0KIHN0YXRpYyBpbnQgb25lbmFuZF9idWZm
+ZXJyYW1fYWRkcmVzcyhzdHJ1Y3Qgb25lbmFuZF9jaGlwICp0aGlzLCBpbnQgYmxvY2spDQogew0K
+LQlpZiAodGhpcy0+ZGV2aWNlX2lkICYgT05FTkFORF9ERVZJQ0VfSVNfRERQKSB7DQotCQkvKiBE
+ZXZpY2UgQnVmZmVyUkFNIFNlbGVjdCAqLw0KLQkJaW50IGRicyA9IDA7DQotDQotCQlpZiAoYmxv
+Y2sgJiB0aGlzLT5kZW5zaXR5X21hc2spDQotCQkJZGJzID0gMTsNCisJLyogRGV2aWNlIEJ1ZmZl
+clJBTSBTZWxlY3QgKi8NCisJaWYgKGJsb2NrICYgdGhpcy0+ZGVuc2l0eV9tYXNrKQ0KKwkJcmV0
+dXJuIE9ORU5BTkRfRERQX0NISVAxOw0KIA0KLQkJcmV0dXJuIChkYnMgPDwgT05FTkFORF9ERFBf
+U0hJRlQpOw0KLQl9DQotDQotCXJldHVybiAwOw0KKwlyZXR1cm4gT05FTkFORF9ERFBfQ0hJUDA7
+DQogfQ0KIA0KIC8qKg0KQEAgLTc1NCw5ICs3NDEsOSBAQCBzdGF0aWMgaW50IG9uZW5hbmRfcmVh
+ZChzdHJ1Y3QgbXRkX2luZm8gKm10ZCwgbG9mZl90IGZyb20sIHNpemVfdCBsZW4sDQogIAkJCSAq
+IE5vdyB3ZSBpc3N1ZWQgY2hpcCAxIHJlYWQgYW5kIHBvaW50ZWQgY2hpcCAxDQogIAkJCSAqIGJ1
+ZmZlcmFtIHNvIHdlIGhhdmUgdG8gcG9pbnQgY2hpcCAwIGJ1ZmZlcmFtLg0KICAJCQkgKi8NCi0g
+CQkJaWYgKHRoaXMtPmRldmljZV9pZCAmIE9ORU5BTkRfREVWSUNFX0lTX0REUCAmJg0KLSAJCQkJ
+CXVubGlrZWx5KGZyb20gPT0gKHRoaXMtPmNoaXBzaXplID4+IDEpKSkgew0KLSAJCQkJdGhpcy0+
+d3JpdGVfd29yZCgwLCB0aGlzLT5iYXNlICsgT05FTkFORF9SRUdfU1RBUlRfQUREUkVTUzIpOw0K
+KyAJCQlpZiAoT05FTkFORF9JU19ERFAodGhpcykgJiYNCisJCQkgICAgdW5saWtlbHkoZnJvbSA9
+PSAodGhpcy0+Y2hpcHNpemUgPj4gMSkpKSB7DQorIAkJCQl0aGlzLT53cml0ZV93b3JkKE9ORU5B
+TkRfRERQX0NISVAwLCB0aGlzLT5iYXNlICsgT05FTkFORF9SRUdfU1RBUlRfQUREUkVTUzIpOw0K
+ICAJCQkJYm91bmRhcnkgPSAxOw0KICAJCQl9IGVsc2UNCiAgCQkJCWJvdW5kYXJ5ID0gMDsNCkBA
+IC03NzAsNyArNzU3LDcgQEAgc3RhdGljIGludCBvbmVuYW5kX3JlYWQoc3RydWN0IG10ZF9pbmZv
+ICptdGQsIGxvZmZfdCBmcm9tLCBzaXplX3QgbGVuLA0KICAJCQlicmVhazsNCiAgCQkvKiBTZXQg
+dXAgZm9yIG5leHQgcmVhZCBmcm9tIGJ1ZmZlclJBTSAqLw0KICAJCWlmICh1bmxpa2VseShib3Vu
+ZGFyeSkpDQotIAkJCXRoaXMtPndyaXRlX3dvcmQoMHg4MDAwLCB0aGlzLT5iYXNlICsgT05FTkFO
+RF9SRUdfU1RBUlRfQUREUkVTUzIpOw0KKyAJCQl0aGlzLT53cml0ZV93b3JkKE9ORU5BTkRfRERQ
+X0NISVAxLCB0aGlzLT5iYXNlICsgT05FTkFORF9SRUdfU1RBUlRfQUREUkVTUzIpOw0KICAJCU9O
+RU5BTkRfU0VUX05FWFRfQlVGRkVSUkFNKHRoaXMpOw0KICAJCWJ1ZiArPSB0aGlzbGVuOw0KICAJ
+CXRoaXNsZW4gPSBtaW5fdChpbnQsIG10ZC0+d3JpdGVzaXplLCBsZW4gLSByZWFkKTsNCkBAIC0x
+NTA1LDcgKzE0OTIsNyBAQCBzdGF0aWMgaW50IG9uZW5hbmRfdW5sb2NrX2FsbChzdHJ1Y3QgbXRk
+X2luZm8gKm10ZCkNCiAJCQljb250aW51ZTsNCiANCiAJCS8qIFdvcmthcm91bmQgZm9yIGFsbCBi
+bG9jayB1bmxvY2sgaW4gRERQICovDQotCQlpZiAodGhpcy0+ZGV2aWNlX2lkICYgT05FTkFORF9E
+RVZJQ0VfSVNfRERQKSB7DQorCQlpZiAoT05FTkFORF9JU19ERFAodGhpcykpIHsNCiAJCQkvKiAx
+c3QgYmxvY2sgb24gYW5vdGhlciBjaGlwICovDQogCQkJbG9mZl90IG9mcyA9IHRoaXMtPmNoaXBz
+aXplID4+IDE7DQogCQkJc2l6ZV90IGxlbiA9IG10ZC0+ZXJhc2VzaXplOw0KZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQuaCBiL2luY2x1ZGUvbGludXgvbXRkL29uZW5hbmQu
+aA0KaW5kZXggZjc3NWE3YS4uYTk5YjI5NCAxMDA2NDQNCi0tLSBhL2luY2x1ZGUvbGludXgvbXRk
+L29uZW5hbmQuaA0KKysrIGIvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZC5oDQpAQCAtMTUwLDYg
+KzE1MCw5IEBAIHN0cnVjdCBvbmVuYW5kX2NoaXAgew0KICNkZWZpbmUgT05FTkFORF9TRVRfU1lT
+X0NGRzEodiwgdGhpcykJCQkJCVwNCiAJKHRoaXMtPndyaXRlX3dvcmQodiwgdGhpcy0+YmFzZSAr
+IE9ORU5BTkRfUkVHX1NZU19DRkcxKSkNCiANCisjZGVmaW5lIE9ORU5BTkRfSVNfRERQKHRoaXMp
+CQkJCQkJXA0KKwkodGhpcy0+ZGV2aWNlX2lkICYgT05FTkFORF9ERVZJQ0VfSVNfRERQKQ0KKw0K
+IC8qIENoZWNrIGJ5dGUgYWNjZXNzIGluIE9uZU5BTkQgKi8NCiAjZGVmaW5lIE9ORU5BTkRfQ0hF
+Q0tfQllURV9BQ0NFU1MoYWRkcikJCShhZGRyICYgMHgxKQ0KIA0KZGlmZiAtLWdpdCBhL2luY2x1
+ZGUvbGludXgvbXRkL29uZW5hbmRfcmVncy5oIGIvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZF9y
+ZWdzLmgNCmluZGV4IGUzMWM4ZjUuLjViNDZjYjUgMTAwNjQ0DQotLS0gYS9pbmNsdWRlL2xpbnV4
+L210ZC9vbmVuYW5kX3JlZ3MuaA0KKysrIGIvaW5jbHVkZS9saW51eC9tdGQvb25lbmFuZF9yZWdz
+LmgNCkBAIC04MCw5ICs4MCwxMSBAQA0KICNkZWZpbmUgT05FTkFORF9WRVJTSU9OX1BST0NFU1Nf
+U0hJRlQJKDgpDQogDQogLyoNCi0gKiBTdGFydCBBZGRyZXNzIDEgRjEwMGggKFIvVykNCisgKiBT
+dGFydCBBZGRyZXNzIDEgRjEwMGggKFIvVykgJiBTdGFydCBBZGRyZXNzIDIgRjEwMWggKFIvVykN
+CiAgKi8NCiAjZGVmaW5lIE9ORU5BTkRfRERQX1NISUZUCQkoMTUpDQorI2RlZmluZSBPTkVOQU5E
+X0REUF9DSElQMAkJKDApDQorI2RlZmluZSBPTkVOQU5EX0REUF9DSElQMQkJKDEgPDwgT05FTkFO
+RF9ERFBfU0hJRlQpDQogDQogLyoNCiAgKiBTdGFydCBBZGRyZXNzIDggRjEwN2ggKFIvVyk=
