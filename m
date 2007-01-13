@@ -1,15 +1,25 @@
-Received: from gateway-1237.mvista.com ([63.81.120.158])
+Received: from an-out-0708.google.com ([209.85.132.241])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H5VU5-0004wA-6t
-	for linux-mtd@lists.infradead.org; Fri, 12 Jan 2007 18:06:55 -0500
-Subject: [PATCH] [JFFS2] fix unpoint length
-From: Andy Lowe <alowe@mvista.com>
+	id 1H5cV1-0000K9-ST
+	for linux-mtd@lists.infradead.org; Sat, 13 Jan 2007 01:36:23 -0500
+Received: by an-out-0708.google.com with SMTP id d40so1139194and
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 12 Jan 2007 22:36:18 -0800 (PST)
+Received: from pooky.senux.com (localhost.localdomain [127.0.0.1])
+	by pooky.senux.com (8.13.7/8.13.7) with ESMTP id l0D6aTTB013321
+	(version=TLSv1/SSLv3 cipher=DHE-DSS-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Sat, 13 Jan 2007 15:36:29 +0900
+Received: (from senux@localhost)
+	by pooky.senux.com (8.13.7/8.13.7/Submit) id l0D6aT5d013320
+	for linux-mtd@lists.infradead.org; Sat, 13 Jan 2007 15:36:29 +0900
+Date: Sat, 13 Jan 2007 15:36:29 +0900
+From: Seongsu Lee <senux@senux.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Fri, 12 Jan 2007 17:05:24 -0600
-Message-Id: <1168643124.15116.21.camel@alowe-desktop.mvista.com>
+Subject: What is ANAND header?
+Message-ID: <20070113063629.GA13015@pooky.senux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +29,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] [JFFS2] fix unpoint length
+Hello,
 
-Fix a couple of instances in JFFS2 where the unpoint() routine is
-being called with the wrong length in cases where the point() routine
-truncated a request.
+I've a embedded board with 1GB NAND flash memory from Samsung.
+(The model number of the flash memory is
+ SAMSUNG 640, K9K8G08U0A)
+I want to use NFTL to mount the flash memory by FAT filesystem.
 
-Signed-off-by: Andy Lowe <alowe@mvista.com>
+But NFTL does not work for me. I found that MTD failed to
+find boot record in nftlmount.c source.
 
-Index: linux-2.6.19/fs/jffs2/nodelist.c
-===================================================================
---- linux-2.6.19.orig/fs/jffs2/nodelist.c
-+++ linux-2.6.19/fs/jffs2/nodelist.c
-@@ -443,7 +443,7 @@ static int check_node_data(struct jffs2_
- 		err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
- 		if (!err && retlen < tn->csize) {
- 			JFFS2_WARNING("MTD point returned len too short: %zu instead of %u.\n", retlen, tn->csize);
--			c->mtd->unpoint(c->mtd, buffer, ofs, len);
-+			c->mtd->unpoint(c->mtd, buffer, ofs, retlen);
- 		} else if (err)
- 			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
- 		else
-Index: linux-2.6.19/fs/jffs2/scan.c
-===================================================================
---- linux-2.6.19.orig/fs/jffs2/scan.c
-+++ linux-2.6.19/fs/jffs2/scan.c
-@@ -102,7 +102,7 @@ int jffs2_scan_medium(struct jffs2_sb_in
- 		if (!ret && pointlen < c->mtd->size) {
- 			/* Don't muck about if it won't let us point to the whole flash */
- 			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", pointlen));
--			c->mtd->unpoint(c->mtd, flashbuf, 0, c->mtd->size);
-+			c->mtd->unpoint(c->mtd, flashbuf, 0, pointlen);
- 			flashbuf = NULL;
- 		}
- 		if (ret)
+It try to find out ANAND header from the MTD device. But it fails
+to find out. 
+
+	if (retlen < 6 || memcmp(buf, "ANAND", 6)) {
+		continue;
+	}
+
+What is ANAND header?
+
+Is it possible to use NFTL for mounting FAT on MTD device in my
+environment?
+
+Thank you in advance!
+
+-- 
+Seongsu's blog - http://www.senux.com/
+Some people have parts that are so private they
+themselves have no knowledge of them.
