@@ -1,19 +1,15 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H68j1-0003XZ-Ip
-	for linux-mtd@lists.infradead.org; Sun, 14 Jan 2007 12:00:58 -0500
-Subject: Re: What is ANAND header?
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Seongsu Lee <senux@senux.com>
-In-Reply-To: <20070113063629.GA13015@pooky.senux.com>
-References: <20070113063629.GA13015@pooky.senux.com>
-Content-Type: text/plain
-Date: Sun, 14 Jan 2007 18:07:00 +0100
-Message-Id: <1168794421.2941.70.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Received: from bay0-omc2-s7.bay0.hotmail.com ([65.54.246.143])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H6i2C-0007XS-Pa
+	for linux-mtd@lists.infradead.org; Tue, 16 Jan 2007 06:43:09 +0000
+Message-ID: <BAY115-W662D176F1CAC9AB6A4F538BB40@phx.gbl>
+From: Chandrasekhar Nagaraj <chandrasekhar_n@hotmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Flash Endianess
+Date: Tue, 16 Jan 2007 12:11:59 +0530
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-01-13 at 15:36 +0900, Seongsu Lee wrote:
-> I want to use NFTL to mount the flash memory by FAT filesystem.
-> 
-> But NFTL does not work for me. I found that MTD failed to
-> find boot record in nftlmount.c source.
 
-NFTL is only for M-Systems DiskOnChip devices. It can not be used on
-bare NAND chips.
+Hi,
 
-	tglx
+I have the following questions with regard to flash endianness. I=20
+have a big endian processor based board; so I want to make=20
+sure that I have the processor-flash interface with respect to=20
+endianness correct before I start on the actual work.
+
+1) Does a flash chip by itself have any endianness? If so what is=20
+the endian mode of Intel/flash chips?
+
+2) Also does CFI have anything to say about flash endian?
+
+3) Is there any documentation on the endian support inside MTD=20
+code?(with respect to CFI queries and actual data)
+
+Also any things I need to watch out on the board schematics with=20
+respect to endianness?
+
+Thanks and Regards
+Chandrasekhar
+_________________________________________________________________
+Call friends with PC-to-PC calling -- FREE
+http://get.live.com/messenger/overview=
