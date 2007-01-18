@@ -1,14 +1,15 @@
-Date: Thu, 18 Jan 2007 18:56:37 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: [PATCH/RFC] CFI XIP support on chip with RWW
-In-Reply-To: <Pine.LNX.4.64.0612211400470.18171@xanadu.home>
-Message-ID: <Pine.LNX.4.64.0701181841560.11000@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0612211514580.18123@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0612211400470.18171@xanadu.home>
+Received: from mtao03.charter.net ([209.225.8.188])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H7gh4-0002tE-4r
+	for linux-mtd@lists.infradead.org; Thu, 18 Jan 2007 18:29:27 -0500
+Message-ID: <1130649271.1169162318036.JavaMail.root@fepweb04>
+Date: Thu, 18 Jan 2007 15:18:37 -0800
+From: "Mrs. Rose Wood" <tvella44@charter.net>
+Subject: CONTACT CUSTOMER CARE DEPARTMENT***REV.COLE SMITH*** CONGRATULATION
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: revcoleclaimsdept@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,277 +19,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Nicolas,
+BRITISH LOTTERY
+The Lottery Company
+P.O Box 789
+Harrogate HG1 2YR
+*********************
+Ref: UKLT/245512568021/05
+Batch: 074/05/ZY369
+*********************
+Our Dear Winner,
 
->> The XIP awareness feature in MTD provides a safe way to use XIP but it
->> introduces some significant issues too,
->> The issues are following:
->>
->> 1.	Large interrupt latency
->> 2.	Lower write/erase performance (due to suspend/resume) 3.	~100%
->> CPU load during write or erase operations with flash
->>
->> In other hands if chip with Read While Write feature (or several chips) are
->> used it is possible to avoid all these XIP related issues.
->
-> Yep.
->
->> To provide it from s/w it is necessary to separate wait procedures for RWW
->> partitions with XIP and without XIP. Idea is simple user specify memory region
->> planned for XIP - according to this data, the code marks XIP flag for some RWW
->> partitions. RWW partitions with XIP flag are handled by wait procedures with
->> XIP awareness. All other RWW partitions are handled by default wait
->> procedures. Please see the code below. Your comments are welcom
->
-> There are small coding style issues, like "if ( foo )" instead of
-> "if (foo)", please see Documentation/CodingStyle).
->
-> Also wouldn't it be better to identify the XIP-able area(s) with new MTD
-> partition flags instead?
+We happily announce to you the draw (#909) of the UK BRITISH NATIONAL=20
+PROGRAMME, online Sweepstakes international program=20
+held on the 17th Jan 2007.Your e-mail address attached to e-ticket=20
+number: 56475600545 188 with Serial number 5368/02 drew=20
+the lucky (lotto) numbers: 04-12-14-20-46-49-{24}. All participants for=20
+the online version were selected randomly from World=20
+Wide Web sites through computer draw system and extracted from over=20
+100,000 unions, associations, and corporate bodies that=20
+are listed online.You have just won the sum of =C2=A32,500,000.00=20
+(TWO MILLION FIVE HURNDRED THOUSAND GREAT BRITISH POUNDS=20
+on our 2007 new year charity bonanza.
 
-Yes, it is possible to identify XIP able areas using special flag. I fixed the minor issues in the code. Is it Ok now? Please find the patch below.
+You are therefore requested to immediately contact our Claims=20
+Department below .
 
+Contact Person: Rev Cole Smith
+Email:  revcoleclaimsdept@yahoo.co.uk
+Email:  ukclaimsprocessor@hushmail.com=20
+PHONE : +44-701-115-3035
+          =20
+                      VERIFICATION FORM
+1.FULL NAMES:__________________________________
+2.ADDRESS:_____________________________________
+3.SEX:__________
+4.AGE:__________
+5.MARITAL STATUS:___________________
+6.OCCUPATION:_______________________
+7.E-MAIL ADDRESS:_____________________________
+8.TELEPHONE NUMBER:__________________________
+9.LOTTO NUMBER:____________________=20
+10.TICKET NUMBER:___________________
+11.SERIAL NUMBER:__________________
+12.AMOUNT WON:______________________
+13.COUNTRY________________________________
 
-------------------
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index 72e6d73..68619c5 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -285,5 +285,46 @@ config MTD_XIP
-  	  used for XIP purposes.  If you're not sure what this is all about
-  	  then say N.
+Congratulations once again.
 
-+config MTD_XIP_REGIONS
-+	bool "Specify regions for XIP aware support"
-+	depends on MTD_XIP
-+	help
-+	  This allows MTD to use XIP awarennes support for specified regions only.
-+	  This option make sence when multipartitioned NOR chips are used.
-+	  If you're not sure what this is all about
-+	  then say N.
-+
-+config MTD_XIPREG_1_START
-+	hex "Physical start address of first XIP region"
-+	depends on MTD_XIP_REGIONS
-+	default "0x0"
-+	help
-+	  This is the physical start address of first memory region which is used 
-+	  for application or kernel XIP. 
-+
-+config MTD_XIPREG_1_LEN
-+	hex "Physical length of first XIP region"
-+	depends on MTD_XIP_REGIONS
-+	default "0x0"
-+	help
-+	  This is the length of first memory region which is used 
-+	  for application or kernel XIP. 
-+
-+config MTD_XIPREG_2_START
-+	hex "Physical start address of second XIP region"
-+	depends on MTD_XIP_REGIONS
-+	default "0x0"
-+	help
-+	  This is the physical start address of second memory region which is used 
-+	  for application or kernel XIP. 
-+
-+config MTD_XIPREG_2_LEN
-+	hex "Physical length of second XIP region"
-+	depends on MTD_XIP_REGIONS
-+	default "0x0"
-+	help
-+	  This is the length of first memory region which is used 
-+	  for application or kernel XIP. 
-+
-  endmenu
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index f69184a..56751f4 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -595,6 +595,9 @@ static int cfi_intelext_partition_fixup(
-  				init_waitqueue_head(&chip->wq);
-  				spin_lock_init(&chip->_spinlock);
-  				chip->mutex = &chip->_spinlock;
-+				chip->flags = 0x0;
-+				if (xip_partition(map->phys, chip->start, 1<<partshift))
-+					chip->flags |= FL_CHIP_XIPMODE;
-  				chip++;
-  			}
-  		}
-@@ -874,7 +877,9 @@ #ifdef CONFIG_MTD_XIP
-  static void xip_disable(struct map_info *map, struct flchip *chip,
-  			unsigned long adr)
-  {
--	/* TODO: chips with no XIP use should ignore and return */
-+	/* Check if this particular chip requires XIP awareness */
-+	if (chip->flags & FL_CHIP_XIPMODE)
-+	    return;
-  	(void) map_read(map, adr); /* ensure mmu mapping is up to date */
-  	local_irq_disable();
-  }
-@@ -883,6 +888,9 @@ static void __xipram xip_enable(struct m
-  				unsigned long adr)
-  {
-  	struct cfi_private *cfi = map->fldrv_priv;
-+	if (chip->flags & FL_CHIP_XIPMODE)
-+	    return;
-+
-  	if (chip->state != FL_POINT && chip->state != FL_READY) {
-  		map_write(map, CMD(0xff), adr);
-  		chip->state = FL_READY;
-@@ -1023,11 +1031,19 @@ static int __xipram xip_wait_for_operati
-   * a XIP setup so do it before the actual flash operation in this case
-   * and stub it out from INVAL_CACHE_AND_WAIT.
-   */
--#define XIP_INVAL_CACHED_RANGE(map, from, size)  \
--	INVALIDATE_CACHED_RANGE(map, from, size)
--
--#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec) \
--	xip_wait_for_operation(map, chip, cmd_adr, usec)
-+#define XIP_INVAL_CACHED_RANGE(map, chip, from, size)		\
-+	do {							\
-+		if ((chip)->flags & FL_CHIP_XIPMODE) {		\
-+    		    INVALIDATE_CACHED_RANGE(map, from, size);	\
-+		}						\
-+	} while (0)
-+
-+#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec)	\
-+	( ((chip)->flags & FL_CHIP_XIPMODE) ?					\
-+		xip_wait_for_operation(map, chip, cmd_adr, usec) 	        \
-+	    :     								\
-+		inval_cache_and_wait_for_operation(map, chip, cmd_adr, 		\
-+					inval_adr, inval_len, usec)  )
-
-  #else
-
-@@ -1036,6 +1052,11 @@ #define xip_enable(map, chip, adr)
-  #define XIP_INVAL_CACHED_RANGE(x...)
-  #define INVAL_CACHE_AND_WAIT inval_cache_and_wait_for_operation
-
-+#endif /* CONFIG_MTD_XIP */
-+
-+#define WAIT_TIMEOUT(map, chip, adr, udelay) \
-+	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
-+
-  static int inval_cache_and_wait_for_operation(
-  		struct map_info *map, struct flchip *chip,
-  		unsigned long cmd_adr, unsigned long inval_adr, int inval_len,
-@@ -1103,11 +1124,6 @@ static int inval_cache_and_wait_for_oper
-  	return 0;
-  }
-
--#endif
--
--#define WAIT_TIMEOUT(map, chip, adr, udelay) \
--	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
--
-
-  static int do_point_onechip (struct map_info *map, struct flchip *chip, loff_t adr, size_t len)
-  {
-@@ -1321,7 +1337,7 @@ static int __xipram do_write_oneword(str
-  		return ret;
-  	}
-
--	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
-+	XIP_INVAL_CACHED_RANGE(map, chip, adr, map_bankwidth(map));
-  	ENABLE_VPP(map);
-  	xip_disable(map, chip, adr);
-  	map_write(map, write_cmd, adr);
-@@ -1475,7 +1491,7 @@ static int __xipram do_write_buffer(stru
-  		return ret;
-  	}
-
--	XIP_INVAL_CACHED_RANGE(map, adr, len);
-+	XIP_INVAL_CACHED_RANGE(map, chip, adr, len);
-  	ENABLE_VPP(map);
-  	xip_disable(map, chip, cmd_adr);
-
-@@ -1687,7 +1703,7 @@ static int __xipram do_erase_oneblock(st
-  		return ret;
-  	}
-
--	XIP_INVAL_CACHED_RANGE(map, adr, len);
-+	XIP_INVAL_CACHED_RANGE(map, chip, adr, len);
-  	ENABLE_VPP(map);
-  	xip_disable(map, chip, adr);
-
-diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
-index a293a3b..9e9c184 100644
---- a/include/linux/mtd/flashchip.h
-+++ b/include/linux/mtd/flashchip.h
-@@ -49,6 +49,10 @@ typedef enum {
-     if they're interleaved.  This can even refer to individual partitions on
-     the same physical chip when present. */
-
-+/* Flag values to identify flash chip features */
-+#define FL_CHIP_XIPMODE 0x01 /* Defines need we XIP awareness for the chip or not */
-+
-+
-  struct flchip {
-  	unsigned long start; /* Offset within the map */
-  	//	unsigned long len;
-@@ -74,6 +78,7 @@ struct flchip {
-  	int word_write_time;
-  	int buffer_write_time;
-  	int erase_time;
-+	int flags; /* Flag values to identify flash chip features */
-
-  	void *priv;
-  };
-diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
-index e9d40bd..05ef270 100644
---- a/include/linux/mtd/xip.h
-+++ b/include/linux/mtd/xip.h
-@@ -18,7 +18,6 @@
-  #ifndef __LINUX_MTD_XIP_H__
-  #define __LINUX_MTD_XIP_H__
-
--
-  #ifdef CONFIG_MTD_XIP
-
-  /*
-@@ -92,9 +91,38 @@ #ifndef xip_cpu_idle
-  #define xip_cpu_idle()  do { } while (0)
-  #endif
-
-+#ifdef CONFIG_MTD_XIP_REGIONS
-+
-+static int xipreg_intersection( unsigned long phys_adr, unsigned long chip_start, unsigned long chip_len )
-+{
-+
-+	if ( CONFIG_MTD_XIPREG_1_LEN && 
-+	     (CONFIG_MTD_XIPREG_1_START + CONFIG_MTD_XIPREG_1_LEN > phys_adr + chip_start ) && 
-+	     (CONFIG_MTD_XIPREG_1_START < phys_adr + chip_start + chip_len) ) {
-+	    return 1; 
-+ 
-+	}
-+	if ( CONFIG_MTD_XIPREG_2_LEN && 
-+	     (CONFIG_MTD_XIPREG_2_START + CONFIG_MTD_XIPREG_2_LEN > phys_adr + chip_start ) && 
-+	     (CONFIG_MTD_XIPREG_2_START < phys_adr + chip_start + chip_len) ) {
-+	    return 1; 
-+ 
-+	}
-+	return 0; 
-+}
-+#define xip_partition(phys_adr, chip_start, chip_len) xipreg_intersection(phys_adr, chip_start, chip_len)
-+
-+
-+#else
-+
-+#define xip_partition(phys_adr, chip_start, chip_len) (1)
-+
-+#endif /* CONFIG_MTD_XIP_REGIONS */
-+
-  #else
-
-  #define __xipram
-+#define xip_partition(phys_adr, chip_start, chip_len) (0)
-
-  #endif /* CONFIG_MTD_XIP */
-
----------------------------
-Thanks,
-Alexey
-
-P/S 
-I'm sorry for delay in answer I was on vacations and wasn't able to answer you.
+Regards,
+Mrs Rose Wood,
+Online coordinator for UK NATIONAL LOTTERY
+Sweepstakes International Program.
