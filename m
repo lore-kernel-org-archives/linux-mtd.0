@@ -1,20 +1,14 @@
-Received: from mo-p07-ob.rzone.de ([81.169.146.188])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H7bLF-0001bo-Qy
-	for linux-mtd@lists.infradead.org; Thu, 18 Jan 2007 12:46:29 -0500
-Date: Thu, 18 Jan 2007 18:46:03 +0100 (MET)
-From: Stefan Roese <ml@stefan-roese.de>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Subject: Re: [PATCH] [MTD] physmap: Add support for 64 bit resources on PPC44x
-References: <200701181808.11143.ml@stefan-roese.de>
-	<45AFAD41.4030801@ru.mvista.com>
-In-Reply-To: <45AFAD41.4030801@ru.mvista.com>
+Date: Thu, 18 Jan 2007 18:56:37 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Nicolas Pitre <nico@cam.org>
+Subject: Re: [PATCH/RFC] CFI XIP support on chip with RWW
+In-Reply-To: <Pine.LNX.4.64.0612211400470.18171@xanadu.home>
+Message-ID: <Pine.LNX.4.64.0701181841560.11000@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0612211514580.18123@pentafluge.infradead.org>
+	<Pine.LNX.4.64.0612211400470.18171@xanadu.home>
 MIME-Version: 1.0
-Content-Type: text/plain;  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200701181846.21776.ml@stefan-roese.de>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,74 +18,277 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Sergei,
+Hi Nicolas,
 
-On Thursday 18 January 2007 18:24, Sergei Shtylyov wrote:
-> > This patch adds support for 64 bit resources and can be used on
-> > PPC440 platforms to pass the complete 64 bit address from the
-> > platform file to the physmap driver. This is first used on the
-> > AMCC Taishan 440GX evaluation board.
+>> The XIP awareness feature in MTD provides a safe way to use XIP but it
+>> introduces some significant issues too,
+>> The issues are following:
+>>
+>> 1.	Large interrupt latency
+>> 2.	Lower write/erase performance (due to suspend/resume) 3.	~100%
+>> CPU load during write or erase operations with flash
+>>
+>> In other hands if chip with Read While Write feature (or several chips) are
+>> used it is possible to avoid all these XIP related issues.
 >
->     Is this board support in arch/ppc/ or arch/powerpc/?
-
-Not yet in the kernel.org repository. It's right now in the denx repository 
-but I plan to sent the board support patches to the lists, even if I know, 
-that it most likely won't get included right now, because of the ppc->powerpc 
-merge.
-
-And yes, it's still an "arch->ppc" port.
-
-> > Signed-off-by: Stefan Roese <sr@denx.de>
-> >
-> > ---
-> > commit 428858620a600f991662969be6d6b3e3720da1ac
-> > tree cf3c861fbdddd841401a1e66f441623f0b3fb83c
-> > parent d637c5644df789f15dfe06550fab1dddb87083ca
-> > author Stefan Roese <sr@denx.de> Thu, 18 Jan 2007 14:40:53 +0100
-> > committer Stefan Roese <sr@denx.de> Thu, 18 Jan 2007 14:40:53 +0100
-> >
-> >  drivers/mtd/maps/physmap.c |    7 +++++++
-> >  1 files changed, 7 insertions(+), 0 deletions(-)
-> >
-> > diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
-> > index d171776..23072e3 100644
-> > --- a/drivers/mtd/maps/physmap.c
-> > +++ b/drivers/mtd/maps/physmap.c
-> > @@ -116,7 +116,14 @@ static int physmap_flash_probe(struct
-> > platform_device *dev)
+> Yep.
 >
->     And what do you assign to info->map.phys, a meaninglessly truncated
-> 64-bit address?
->     I think that 'phys' field's type should be changed to a more
-> appropriate one, like resource_size_t, instead...
-
-Yes, this makes sense.
-
-> >  	info->map.bankwidth = physmap_data->width;
-> >  	info->map.set_vpp = physmap_data->set_vpp;
-> >
-> > +#ifdef CONFIG_44x
+>> To provide it from s/w it is necessary to separate wait procedures for RWW
+>> partitions with XIP and without XIP. Idea is simple user specify memory region
+>> planned for XIP - according to this data, the code marks XIP flag for some RWW
+>> partitions. RWW partitions with XIP flag are handled by wait procedures with
+>> XIP awareness. All other RWW partitions are handled by default wait
+>> procedures. Please see the code below. Your comments are welcom
 >
->     Don't think we need this #ifdef at all.
+> There are small coding style issues, like "if ( foo )" instead of
+> "if (foo)", please see Documentation/CodingStyle).
 >
-> > +	if (sizeof(dev->resource->start) == 4)
-> > +		info->map.virt = ioremap(info->map.phys, info->map.size);
->
->     This line is meaningless duplication of the existing one (below #else).
->
-> > +	else
-> > +		info->map.virt = ioremap64(dev->resource->start, info->map.size);
->
->     I see -- this is arch/ppc/... :-)
->     Wait, ioremap() takes phys_addr_t which should be 64-bit in your case.
-> Is there the need to call ioremap64()?
+> Also wouldn't it be better to identify the XIP-able area(s) with new MTD
+> partition flags instead?
 
-Yes, but ioremap() first call fixup_bigphys_addr() and this unfortunately 
-corrupts my addresses.
+Yes, it is possible to identify XIP able areas using special flag. I fixed the minor issues in the code. Is it Ok now? Please find the patch below.
 
-I know this patch is far from perfect, so any suggestions are very welcome.
 
-Thanks.
+------------------
+diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+index 72e6d73..68619c5 100644
+--- a/drivers/mtd/chips/Kconfig
++++ b/drivers/mtd/chips/Kconfig
+@@ -285,5 +285,46 @@ config MTD_XIP
+  	  used for XIP purposes.  If you're not sure what this is all about
+  	  then say N.
 
-Best regards,
-Stefan
++config MTD_XIP_REGIONS
++	bool "Specify regions for XIP aware support"
++	depends on MTD_XIP
++	help
++	  This allows MTD to use XIP awarennes support for specified regions only.
++	  This option make sence when multipartitioned NOR chips are used.
++	  If you're not sure what this is all about
++	  then say N.
++
++config MTD_XIPREG_1_START
++	hex "Physical start address of first XIP region"
++	depends on MTD_XIP_REGIONS
++	default "0x0"
++	help
++	  This is the physical start address of first memory region which is used 
++	  for application or kernel XIP. 
++
++config MTD_XIPREG_1_LEN
++	hex "Physical length of first XIP region"
++	depends on MTD_XIP_REGIONS
++	default "0x0"
++	help
++	  This is the length of first memory region which is used 
++	  for application or kernel XIP. 
++
++config MTD_XIPREG_2_START
++	hex "Physical start address of second XIP region"
++	depends on MTD_XIP_REGIONS
++	default "0x0"
++	help
++	  This is the physical start address of second memory region which is used 
++	  for application or kernel XIP. 
++
++config MTD_XIPREG_2_LEN
++	hex "Physical length of second XIP region"
++	depends on MTD_XIP_REGIONS
++	default "0x0"
++	help
++	  This is the length of first memory region which is used 
++	  for application or kernel XIP. 
++
+  endmenu
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index f69184a..56751f4 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -595,6 +595,9 @@ static int cfi_intelext_partition_fixup(
+  				init_waitqueue_head(&chip->wq);
+  				spin_lock_init(&chip->_spinlock);
+  				chip->mutex = &chip->_spinlock;
++				chip->flags = 0x0;
++				if (xip_partition(map->phys, chip->start, 1<<partshift))
++					chip->flags |= FL_CHIP_XIPMODE;
+  				chip++;
+  			}
+  		}
+@@ -874,7 +877,9 @@ #ifdef CONFIG_MTD_XIP
+  static void xip_disable(struct map_info *map, struct flchip *chip,
+  			unsigned long adr)
+  {
+-	/* TODO: chips with no XIP use should ignore and return */
++	/* Check if this particular chip requires XIP awareness */
++	if (chip->flags & FL_CHIP_XIPMODE)
++	    return;
+  	(void) map_read(map, adr); /* ensure mmu mapping is up to date */
+  	local_irq_disable();
+  }
+@@ -883,6 +888,9 @@ static void __xipram xip_enable(struct m
+  				unsigned long adr)
+  {
+  	struct cfi_private *cfi = map->fldrv_priv;
++	if (chip->flags & FL_CHIP_XIPMODE)
++	    return;
++
+  	if (chip->state != FL_POINT && chip->state != FL_READY) {
+  		map_write(map, CMD(0xff), adr);
+  		chip->state = FL_READY;
+@@ -1023,11 +1031,19 @@ static int __xipram xip_wait_for_operati
+   * a XIP setup so do it before the actual flash operation in this case
+   * and stub it out from INVAL_CACHE_AND_WAIT.
+   */
+-#define XIP_INVAL_CACHED_RANGE(map, from, size)  \
+-	INVALIDATE_CACHED_RANGE(map, from, size)
+-
+-#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec) \
+-	xip_wait_for_operation(map, chip, cmd_adr, usec)
++#define XIP_INVAL_CACHED_RANGE(map, chip, from, size)		\
++	do {							\
++		if ((chip)->flags & FL_CHIP_XIPMODE) {		\
++    		    INVALIDATE_CACHED_RANGE(map, from, size);	\
++		}						\
++	} while (0)
++
++#define INVAL_CACHE_AND_WAIT(map, chip, cmd_adr, inval_adr, inval_len, usec)	\
++	( ((chip)->flags & FL_CHIP_XIPMODE) ?					\
++		xip_wait_for_operation(map, chip, cmd_adr, usec) 	        \
++	    :     								\
++		inval_cache_and_wait_for_operation(map, chip, cmd_adr, 		\
++					inval_adr, inval_len, usec)  )
+
+  #else
+
+@@ -1036,6 +1052,11 @@ #define xip_enable(map, chip, adr)
+  #define XIP_INVAL_CACHED_RANGE(x...)
+  #define INVAL_CACHE_AND_WAIT inval_cache_and_wait_for_operation
+
++#endif /* CONFIG_MTD_XIP */
++
++#define WAIT_TIMEOUT(map, chip, adr, udelay) \
++	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
++
+  static int inval_cache_and_wait_for_operation(
+  		struct map_info *map, struct flchip *chip,
+  		unsigned long cmd_adr, unsigned long inval_adr, int inval_len,
+@@ -1103,11 +1124,6 @@ static int inval_cache_and_wait_for_oper
+  	return 0;
+  }
+
+-#endif
+-
+-#define WAIT_TIMEOUT(map, chip, adr, udelay) \
+-	INVAL_CACHE_AND_WAIT(map, chip, adr, 0, 0, udelay);
+-
+
+  static int do_point_onechip (struct map_info *map, struct flchip *chip, loff_t adr, size_t len)
+  {
+@@ -1321,7 +1337,7 @@ static int __xipram do_write_oneword(str
+  		return ret;
+  	}
+
+-	XIP_INVAL_CACHED_RANGE(map, adr, map_bankwidth(map));
++	XIP_INVAL_CACHED_RANGE(map, chip, adr, map_bankwidth(map));
+  	ENABLE_VPP(map);
+  	xip_disable(map, chip, adr);
+  	map_write(map, write_cmd, adr);
+@@ -1475,7 +1491,7 @@ static int __xipram do_write_buffer(stru
+  		return ret;
+  	}
+
+-	XIP_INVAL_CACHED_RANGE(map, adr, len);
++	XIP_INVAL_CACHED_RANGE(map, chip, adr, len);
+  	ENABLE_VPP(map);
+  	xip_disable(map, chip, cmd_adr);
+
+@@ -1687,7 +1703,7 @@ static int __xipram do_erase_oneblock(st
+  		return ret;
+  	}
+
+-	XIP_INVAL_CACHED_RANGE(map, adr, len);
++	XIP_INVAL_CACHED_RANGE(map, chip, adr, len);
+  	ENABLE_VPP(map);
+  	xip_disable(map, chip, adr);
+
+diff --git a/include/linux/mtd/flashchip.h b/include/linux/mtd/flashchip.h
+index a293a3b..9e9c184 100644
+--- a/include/linux/mtd/flashchip.h
++++ b/include/linux/mtd/flashchip.h
+@@ -49,6 +49,10 @@ typedef enum {
+     if they're interleaved.  This can even refer to individual partitions on
+     the same physical chip when present. */
+
++/* Flag values to identify flash chip features */
++#define FL_CHIP_XIPMODE 0x01 /* Defines need we XIP awareness for the chip or not */
++
++
+  struct flchip {
+  	unsigned long start; /* Offset within the map */
+  	//	unsigned long len;
+@@ -74,6 +78,7 @@ struct flchip {
+  	int word_write_time;
+  	int buffer_write_time;
+  	int erase_time;
++	int flags; /* Flag values to identify flash chip features */
+
+  	void *priv;
+  };
+diff --git a/include/linux/mtd/xip.h b/include/linux/mtd/xip.h
+index e9d40bd..05ef270 100644
+--- a/include/linux/mtd/xip.h
++++ b/include/linux/mtd/xip.h
+@@ -18,7 +18,6 @@
+  #ifndef __LINUX_MTD_XIP_H__
+  #define __LINUX_MTD_XIP_H__
+
+-
+  #ifdef CONFIG_MTD_XIP
+
+  /*
+@@ -92,9 +91,38 @@ #ifndef xip_cpu_idle
+  #define xip_cpu_idle()  do { } while (0)
+  #endif
+
++#ifdef CONFIG_MTD_XIP_REGIONS
++
++static int xipreg_intersection( unsigned long phys_adr, unsigned long chip_start, unsigned long chip_len )
++{
++
++	if ( CONFIG_MTD_XIPREG_1_LEN && 
++	     (CONFIG_MTD_XIPREG_1_START + CONFIG_MTD_XIPREG_1_LEN > phys_adr + chip_start ) && 
++	     (CONFIG_MTD_XIPREG_1_START < phys_adr + chip_start + chip_len) ) {
++	    return 1; 
++ 
++	}
++	if ( CONFIG_MTD_XIPREG_2_LEN && 
++	     (CONFIG_MTD_XIPREG_2_START + CONFIG_MTD_XIPREG_2_LEN > phys_adr + chip_start ) && 
++	     (CONFIG_MTD_XIPREG_2_START < phys_adr + chip_start + chip_len) ) {
++	    return 1; 
++ 
++	}
++	return 0; 
++}
++#define xip_partition(phys_adr, chip_start, chip_len) xipreg_intersection(phys_adr, chip_start, chip_len)
++
++
++#else
++
++#define xip_partition(phys_adr, chip_start, chip_len) (1)
++
++#endif /* CONFIG_MTD_XIP_REGIONS */
++
+  #else
+
+  #define __xipram
++#define xip_partition(phys_adr, chip_start, chip_len) (0)
+
+  #endif /* CONFIG_MTD_XIP */
+
+---------------------------
+Thanks,
+Alexey
+
+P/S 
+I'm sorry for delay in answer I was on vacations and wasn't able to answer you.
