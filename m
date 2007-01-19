@@ -1,28 +1,21 @@
-Received: from mailout1.samsung.com ([203.254.224.24])
+Received: from mo-p07-ob.rzone.de ([81.169.146.188])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H7o5F-00047m-M0
-	for linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 02:22:49 -0500
-Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
-	by mailout1.samsung.com
-	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
-	with ESMTP id <0JC300351TGSY2@mailout1.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 16:14:52 +0900 (KST)
-Received: from ep_spt02 (ms12.samsung.com [203.254.225.99])
-	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
-	2004)) with ESMTP id <0JC30046ATGSWO@ms12.samsung.com> for
-	linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 16:14:52 +0900 (KST)
-Content-return: prohibited
-Date: Fri, 19 Jan 2007 07:14:52 +0000 (GMT)
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: OneNAND: Always print error messages
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Message-id: <28919711.82641169190892414.JavaMail.weblogic@ep_ml26>
-MIME-version: 1.0
-MIME-version: 1.0
-Content-type: text/plain; charset=windows-1252
-Content-transfer-encoding: base64
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: kyungmin.park@samsung.com
+	id 1H7oHl-0004OR-BE
+	for linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 02:35:45 -0500
+Date: Fri, 19 Jan 2007 08:35:18 +0100 (MET)
+From: Stefan Roese <ml@stefan-roese.de>
+To: "Josh Boyer" <jwboyer@gmail.com>
+Subject: Re: [PATCH] [MTD] physmap: Add support for 64 bit resources on PPC44x
+References: <200701181808.11143.ml@stefan-roese.de>
+	<20070118235900.GA23974@xi.wantstofly.org>
+	<625fc13d0701181729u1a2b25cbwe3310a965ce4c297@mail.gmail.com>
+In-Reply-To: <625fc13d0701181729u1a2b25cbwe3310a965ce4c297@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200701190835.40327.ml@stefan-roese.de>
+Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,15 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksDQoNCg0KPiA+IFllcywgc2ltcGxlIHNvbHV0aW9uIGlzIHNlcGFyYXRlIHJlYWQgb29iIGZy
-b20gbm9ybWFsIGFuZCBzY2FubmluZy4NCj4gPiBJIHRoaW5rIGlzIGlzIGVhc3kgYmVjYXVzZSB3
-ZSBjYW4gdXNlIHN0YXRlIHZhcmlhYmxlLCBGTF9TQ0FOTklORyBpbnN0ZWFkIG9mIEZMX1JFQURJ
-TkcgaW4gYmJ0Lg0KDQo+IEFsc28gdGhlcmUgYXJlIHRoZSBpc3N1ZXMgb2YgYSBsb2FkIGVycm9y
-IG9yIEVDQyBlcnJvciB3aGVuIHNjYW5uaW5nIGZvciBiYWQgYmxvY2tzOg0KDQo+IElzIGl0IHBv
-c3NpYmxlIHRvIGdldCBhbiBFQ0MgZXJyb3Igd2hlbiBzY2FubmluZyBhIGJhZCBibG9jaz8NCg0K
-VGhlb3JldGljYWwgaXQncyBwb3NzaWJsZSBidXQgSSBuZXZlciBzZWUgaXQuDQoNCj4gSWYgYSBs
-b2FkIGVycm9yIG9jY3VycyB3aGVuIHNjYW5uaW5nIGEgYmFkIGJsb2NrLCBkb2VzIHRoYXQgbWVh
-biB0aGUgZGF0YVJBTQ0KPiBoYXMgYmVlbiB1cGRhdGVkIG9yIG5vdD8NCg0Kc2Nhbm5pbmcgYSBi
-YWQgYmxvY2sgbWVhbnMgcmVhZCBvb2Igc28gd2UgZG9uJ3QgdXBkYXRlIGRhdGFSQU0uIEluIG9u
-ZW5hbmQgaW1wbGVtZW50YXRpb24uIHdlIGFsd2F5cyBpbnZhbGlkIGRhdGFSQU0gaW4gb29iIGNh
-c2UuDQoNClRoYW5rIHlvdSwNCkt5dW5nbWluIFBhcmsNCg0KDQo=
+Hi Josh,
+
+On Friday 19 January 2007 02:29, Josh Boyer wrote:
+> On 1/18/07, Lennert Buytenhek <buytenh@wantstofly.org> wrote:
+> > Why can't you fix ioremap() to take >= 4G addresses instead?
+>
+> That might be something worth looking at.  We could fix it to not do
+> the big address fixup if CONFIG_RESOURCES_64BIT is enabled.
+
+Yes, good idea. I'll send a patch to the ppc list.
+
+The only change needed now is 64bit support in the 'phys' field's. I'll send 
+another path for this.
+
+So please drop this patch completely.
+
+Best regards,
+Stefan
