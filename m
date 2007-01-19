@@ -1,21 +1,15 @@
-Received: from mo-p07-ob.rzone.de ([81.169.146.188])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H7oHl-0004OR-BE
-	for linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 02:35:45 -0500
-Date: Fri, 19 Jan 2007 08:35:18 +0100 (MET)
-From: Stefan Roese <ml@stefan-roese.de>
-To: "Josh Boyer" <jwboyer@gmail.com>
-Subject: Re: [PATCH] [MTD] physmap: Add support for 64 bit resources on PPC44x
-References: <200701181808.11143.ml@stefan-roese.de>
-	<20070118235900.GA23974@xi.wantstofly.org>
-	<625fc13d0701181729u1a2b25cbwe3310a965ce4c297@mail.gmail.com>
-In-Reply-To: <625fc13d0701181729u1a2b25cbwe3310a965ce4c297@mail.gmail.com>
+Received: from web30403.mail.mud.yahoo.com ([68.142.200.106])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H7oJk-0004ZI-8F
+	for linux-mtd@lists.infradead.org; Fri, 19 Jan 2007 02:37:57 -0500
+Date: Thu, 18 Jan 2007 23:30:41 -0800 (PST)
+From: Weiguang Shi <wgshizz@yahoo.com>
+Subject: cat zImage >/dev/mtd1 does not work
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200701190835.40327.ml@stefan-roese.de>
-Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <893459.85516.qm@web30403.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,21 +19,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Josh,
+Hi, 
 
-On Friday 19 January 2007 02:29, Josh Boyer wrote:
-> On 1/18/07, Lennert Buytenhek <buytenh@wantstofly.org> wrote:
-> > Why can't you fix ioremap() to take >= 4G addresses instead?
->
-> That might be something worth looking at.  We could fix it to not do
-> the big address fixup if CONFIG_RESOURCES_64BIT is enabled.
+I'm running snapgear-3.4.0 on an IXDP425 board with RedBoot as 
+the bootloader and I want to
+be able to upgrade my kernel and filesystem, i.e., zImage and 
+ramdisk.gz on the flash, under Linux.
 
-Yes, good idea. I'll send a patch to the ppc list.
+So I shipped the zImage and ramdisk.gz onto the running system
+and did
+    # cat zImage >/dev/mtd1
+    # cat ramdisk.gz >/dev/mtd2
 
-The only change needed now is 64bit support in the 'phys' field's. I'll send 
-another path for this.
+after eraseall the two partitions. To my surprise, when I reboot,
+RedBoot gave 
+                        RedBoot> fis load ramdisk                             
+                        ** Warning - checksum failure.  stored: 0x33dbe19b, computed:
+                        0xc9d7dfef                                            
+                        RedBoot> fis load kernel                              
+                        ** Warning - checksum failure.  stored: 0xfb99dd45, computed:
+                        0x788bb713                                            
+                        RedBoot> exec -c "console=ttyS0,115200 root=/dev/ram0 
+                        initrd=0x00800000,6M mem=32M@0x00000000" 0x01600000   
+                        Can't execute Linux - invalid entry address           
+and refused to boot.
 
-So please drop this patch completely.
+I understand here the newly flashed images (as it was not done in RedBoot but in the OS) may
+not have the same checksum as RedBoot calculated for the earlier images. And this caused the
+problem.
 
-Best regards,
-Stefan
+Any help is appreciated.
+
+Weiguang
+
+
+BTW, my MTD partition layout looks like
+
+# cat /proc/mtd 
+dev:    size   erasesize  name
+mtd0: 00080000 00020000 "RedBoot"
+mtd1: 00100000 00020000 "kernel"
+mtd2: 00200000 00020000 "ramdisk"
+mtd3: 00020000 00020000 "vendor_config"
+mtd4: 0001f000 00020000 "FIS directory"
+mtd5: 00001000 00020000 "RedBoot config"
+
+
+ 
+____________________________________________________________________________________
+Don't get soaked.  Take a quick peak at the forecast
+with the Yahoo! Search weather shortcut.
+http://tools.search.yahoo.com/shortcuts/#loc_weather
