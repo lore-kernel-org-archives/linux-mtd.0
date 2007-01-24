@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H9l3F-0002Te-3y
-	for linux-mtd@lists.infradead.org; Wed, 24 Jan 2007 11:32:47 -0500
-Subject: Re: [PATCH][UBI] remove __exit on functions referenced in '.text'
-	or '.init.text'
+	id 1H9l3w-0002W3-F5
+	for linux-mtd@lists.infradead.org; Wed, 24 Jan 2007 11:34:11 -0500
+Subject: Re: [PATCH] [MTD] UBI: fix argument order of dbg_err() call
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Benedikt Spranger <b.spranger@linutronix.de>
-In-Reply-To: <20070122230954.1b7f77e6.b.spranger@linutronix.de>
-References: <20070122230954.1b7f77e6.b.spranger@linutronix.de>
+To: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
+In-Reply-To: <200701231900.13218.lindhors@linux.vnet.ibm.com>
+References: <200701231900.13218.lindhors@linux.vnet.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 25 Jan 2007 03:30:29 +1100
-Message-Id: <1169656229.3609.4.camel@sauron>
+Date: Thu, 25 Jan 2007 03:30:51 +1100
+Message-Id: <1169656252.3609.6.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: MTD list <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,19 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Benedikt,
-
-On Mon, 2007-01-22 at 23:09 +0100, Benedikt Spranger wrote:
-> Hello,
+On Tue, 2007-01-23 at 19:00 +0100, Timo Lindhorst wrote:
+> [UBI DBG error] (pid:16998) vol_cdev_read: -74 bytes were read, but with =
+error 2048
 >=20
-> linking the current ubi-2.6 git tree results in tons of "`.exit.text'
-> referenced in section `.text'" or ".init.text". Solution is simple:
-> remove all __exit in referenced function.
 
-Yeah, I was actually planning to do the same and get rid of most
-__init/__exit. But still out of curiosity, may you please elaborate on
-the problem?
-
+Thanks!
 
 --=20
 Best regards,
