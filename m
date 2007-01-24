@@ -1,28 +1,21 @@
-Received: from mtagate2.de.ibm.com ([195.212.29.151])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H9Q8V-0006E5-Q0
-	for linux-mtd@lists.infradead.org; Tue, 23 Jan 2007 18:12:52 +0000
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate2.de.ibm.com (8.13.8/8.13.8) with ESMTP id l0NI2t1m049824
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2007 18:02:55 GMT
-Received: from d12av04.megacenter.de.ibm.com (d12av04.megacenter.de.ibm.com
-	[9.149.165.229])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.2) with
-	ESMTP id l0NI2tGF2936832
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2007 19:02:55 +0100
-Received: from d12av04.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av04.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l0NI2svC020647
-	for <linux-mtd@lists.infradead.org>; Tue, 23 Jan 2007 19:02:54 +0100
-From: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
-Subject: [PATCH] [MTD] UBI: fix argument order of dbg_err() call
-To: MTD list <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
+Received: from nz-out-0506.google.com ([64.233.162.227])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H9ayc-0005rY-Uf
+	for linux-mtd@lists.infradead.org; Wed, 24 Jan 2007 00:47:22 -0500
+Received: by nz-out-0506.google.com with SMTP id i11so136553nzi
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 23 Jan 2007 21:46:58 -0800 (PST)
+Date: Wed, 24 Jan 2007 14:47:31 +0900
+From: Seongsu Lee <senux@senux.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: What is ANAND header?
+Message-ID: <20070124054731.GA31267@pooky.senux.com>
+References: <20070113063629.GA13015@pooky.senux.com>
+	<1168794421.2941.70.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Date: Tue, 23 Jan 2007 19:00:13 +0100
-Content-Transfer-Encoding: 7bit
-Message-Id: <200701231900.13218.lindhors@linux.vnet.ibm.com>
+In-Reply-To: <1168794421.2941.70.camel@localhost.localdomain>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,25 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[UBI DBG error] (pid:16998) vol_cdev_read: -74 bytes were read, but with error 2048
+On Sun, Jan 14, 2007 at 06:07:00PM +0100, Thomas Gleixner wrote:
+> On Sat, 2007-01-13 at 15:36 +0900, Seongsu Lee wrote:
+> > I want to use NFTL to mount the flash memory by FAT filesystem.
+> > 
+> > But NFTL does not work for me. I found that MTD failed to
+> > find boot record in nftlmount.c source.
+> 
+> NFTL is only for M-Systems DiskOnChip devices. It can not be used on
+> bare NAND chips.
 
-Signed-off-by: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
----
- drivers/mtd/ubi/cdev.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Ok, I see.
 
-diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
-index 2bbcbba..6ec311a 100644
---- a/drivers/mtd/ubi/cdev.c
-+++ b/drivers/mtd/ubi/cdev.c
-@@ -371,7 +371,7 @@ static ssize_t vol_cdev_read(struct file
- 			}
- 
- 			dbg_err("%d bytes were read, but with error %d",
--				 err, read);
-+				read, err);
- 			count -= read;
- 			*offp += read;
- 			break;
+Then, is there any sub module, like NFTL, that serves as
+translation layer on NAND flash memory?
+
+How can I mount 'conventional filesystem' such as FAT, EXT{2,3}
+on NAND flash memory instead of mouting on mtdblock because of
+its poor functionality. (no wear-leveling)
+
+What I want to do in a final is to mount FAT filesystem on bare
+NAND flash memories without performance degradation.
+
+Thank you very much in advance.
+
 -- 
-1.4.1
+Seongsu's blog - http://www.senux.com/
+LILO, you've got me on my knees! (from David Black,
+dblack@pilot.njin.net, with apologies to Derek and the
+Dominos, and Werner Almsberger)
