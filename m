@@ -1,21 +1,11 @@
-Received: from nz-out-0506.google.com ([64.233.162.227])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1H9ayc-0005rY-Uf
-	for linux-mtd@lists.infradead.org; Wed, 24 Jan 2007 00:47:22 -0500
-Received: by nz-out-0506.google.com with SMTP id i11so136553nzi
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 23 Jan 2007 21:46:58 -0800 (PST)
-Date: Wed, 24 Jan 2007 14:47:31 +0900
-From: Seongsu Lee <senux@senux.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: What is ANAND header?
-Message-ID: <20070124054731.GA31267@pooky.senux.com>
-References: <20070113063629.GA13015@pooky.senux.com>
-	<1168794421.2941.70.camel@localhost.localdomain>
+Message-ID: <6864195.1169627587421.JavaMail.Administrator@2fd9f289359f4a2>
+Date: Wed, 24 Jan 2007 16:33:07 +0800 (CST)
+From: Linda Su <sulin@minigui.org>
+Subject: A Professional GUI
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1168794421.2941.70.camel@localhost.localdomain>
+Content-Transfer-Encoding: 7bit
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +15,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Jan 14, 2007 at 06:07:00PM +0100, Thomas Gleixner wrote:
-> On Sat, 2007-01-13 at 15:36 +0900, Seongsu Lee wrote:
-> > I want to use NFTL to mount the flash memory by FAT filesystem.
-> > 
-> > But NFTL does not work for me. I found that MTD failed to
-> > find boot record in nftlmount.c source.
-> 
-> NFTL is only for M-Systems DiskOnChip devices. It can not be used on
-> bare NAND chips.
+Dear Sir/Madam,
 
-Ok, I see.
+Are you developing a product such as mobile phone, Set-top box, PMP, videophone, 
+IPTV or other product with a GUI? 
 
-Then, is there any sub module, like NFTL, that serves as
-translation layer on NAND flash memory?
+If you are just looking for a good GUI for a embedded device, MiniGUI must be your 
+best choice! 
+ 
+MiniGUI, which is "a cross-operating-system graphics user interface support system 
+for embedded devices", and "an embedded graphics middleware", developed by 
+China Beijing Feynman Software Technology Co. Ltd.
 
-How can I mount 'conventional filesystem' such as FAT, EXT{2,3}
-on NAND flash memory instead of mouting on mtdblock because of
-its poor functionality. (no wear-leveling)
+MiniGUI has become a cross-operating-system GUI system; it can run on Linux/uClinux, 
+eCos, VxWorks, pSOS, ThreadX, Nucleus, and even uC/OS-II, even on the Win32 platform;
+The hardware platforms tested include Intel x86, ARM (ARM7/ARM9/StrongARM/xScale), 
+PowerPC, MIPS, and M68k (DragonBall/ColdFire). 
 
-What I want to do in a final is to mount FAT filesystem on bare
-NAND flash memories without performance degradation.
+MiniGUI has been widely adopted and applied by the leading manufacturers in the following 
+fields: telecommunication (hand-held terminals, digital-media devices and STBs), industry 
+instrument, medical equipment, and military industry.
 
-Thank you very much in advance.
+MiniGUI, make your devices vivid!
 
--- 
-Seongsu's blog - http://www.senux.com/
-LILO, you've got me on my knees! (from David Black,
-dblack@pilot.njin.net, with apologies to Derek and the
-Dominos, and Werner Almsberger)
+go to http://www.minigui.com/  to know more information about our products and company.
+If you have any interest or question, please feel free to contact with us: sulin@minigui.org  
+ 
+Best Regards,
+Linda Su
+
+Beijing Feynman Software Technology Co., Ltd.
+An Embedded Software Tech., Solutions & Dev. Tools Provider.
+Website: http://www.minigui.com
+Tel: +8610-82652611\2652 ext.816
+Email: sulin@minigui.org
