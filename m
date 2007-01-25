@@ -1,26 +1,18 @@
 Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HA8Rf-00058y-4B
-	for linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 12:31:33 -0500
-Subject: Re: What is ANAND header?
+	id 1HA9pl-0005p2-1m
+	for linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 14:00:32 -0500
+Subject: Re: [MTD] UBI: Per volume update marker
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1169744138.3593.114.camel@shinybook.infradead.org>
-References: <20070124054731.GA31267@pooky.senux.com>
-	<BFECAF9E178F144FAEF2BF4CE739C66803EAB0BB@exmail1.se.axis.com>
-	<20070125064937.GA5712@pooky.senux.com>
-	<1169716358.3609.12.camel@sauron>
-	<1169739059.3593.84.camel@shinybook.infradead.org>
-	<1169740653.3721.10.camel@sauron>
-	<1169741859.3593.102.camel@shinybook.infradead.org>
-	<1169743487.9477.4.camel@sauron>
-	<1169744138.3593.114.camel@shinybook.infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200701241019.27470.alexs@linux.vnet.ibm.com>
+References: <200701241019.27470.alexs@linux.vnet.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 25 Jan 2007 19:31:12 +0200
-Message-Id: <1169746272.9477.7.camel@sauron>
+Date: Thu, 25 Jan 2007 20:16:34 +0200
+Message-Id: <1169748994.9477.15.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Seongsu Lee <senux@senux.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -31,15 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-01-26 at 00:55 +0800, David Woodhouse wrote:
-> > Agree, an FS is a much more interesting problem. Although a good FTL is
-> > is something which would be nice to have.
->=20
-> Not really. If we had a well-maintained FTL then people would only use
-> it. :)
+Hi Alexander,
 
-Heh, users are morons and they would use inefficient FTL instead of
-JFFS2, so having an FTL is bad - good point :-)
+On Wed, 2007-01-24 at 10:19 +0100, Alexander Schmidt wrote:
+> I am currently implementing a per volume update marker for UBI.
+> It would be nice to know if you are interested in this feature and if you
+> have remarks about my concept.
+>=20
+> The main reason I see for implementing this feature is that the current u=
+pdate
+> marker blocks updates to all volumes if the update marker is pending. So =
+the
+> user needs to interfere after an update has been interrupted. We saw this
+> problem for example when mirroring volumes at boot time. Another point is
+> that pending update markers on removed volumes are avoided. While reprodu=
+cing
+> this error case, i got some kernel panics from the current kernel.
+>=20
+> My suggestion to solve these problems is to include a per volume update m=
+arker
+> in the volume table (both in ram and on flash), and to let the user perfo=
+rm
+> updates on all volumes, while still marking volumes with pending update
+> markers as corrupted to avoid reading of corrupted/incomplete data. In my
+> first implementation, I used a free (marked as "padding") byte in the vol=
+ume
+> table and added the function "ubi_vmt_updvol()" to volmgmt.c. This functi=
+on
+> gets called by the functions for starting and finishing updates with the
+> appropriate flags and sets or removes the update marker from the volume
+> table.
+
+
+The patch in general (did not look closely to the details) looks good
+for me. But are you sure you want this patch? It was a requirement from
+your team to implement the update marker. Note, your patch means that
+the boot-loader needs to read and interpret the volume table which
+increases its size.
 
 --=20
 Best regards,
