@@ -1,19 +1,28 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1H9l3w-0002W3-F5
-	for linux-mtd@lists.infradead.org; Wed, 24 Jan 2007 11:34:11 -0500
-Subject: Re: [PATCH] [MTD] UBI: fix argument order of dbg_err() call
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
-In-Reply-To: <200701231900.13218.lindhors@linux.vnet.ibm.com>
-References: <200701231900.13218.lindhors@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 25 Jan 2007 03:30:51 +1100
-Message-Id: <1169656252.3609.6.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: MTD list <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1H9x36-0006o1-JK
+	for linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 00:21:29 -0500
+Received: from ep_ms12_bk (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JCE00GLXS6CPP@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 14:20:36 +0900 (KST)
+Received: from ep_spt01 (ms12.samsung.com [203.254.225.99])
+	by ms12.samsung.com (iPlanet Messaging Server 5.2 Patch 2 (built Jul 14
+	2004)) with ESMTP id <0JCE00GKKS6C38@ms12.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 14:20:36 +0900 (KST)
+Content-return: prohibited
+Date: Thu, 25 Jan 2007 05:20:36 +0000 (GMT)
+From: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: [PATCH] [MTD] OneNAND: Amend write-verify to compare to original
+	buffer
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-id: <28810309.81531169702436300.JavaMail.weblogic@ep_ml28>
+MIME-version: 1.0
+MIME-version: 1.0
+Content-type: text/plain; charset=windows-1252
+Content-transfer-encoding: base64
+Reply-To: kyungmin.park@samsung.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +32,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-01-23 at 19:00 +0100, Timo Lindhorst wrote:
-> [UBI DBG error] (pid:16998) vol_cdev_read: -74 bytes were read, but with =
-error 2048
->=20
-
-Thanks!
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+SGkgQWRyaWFuLA0KDQo+IFdoZW4gd3JpdGUtdmVyaWZ5IGlzIGVuYWJsZWQgKENPTkZJR19NVERf
+T05FTkFORF9WRVJJRllfV1JJVEUpLA0KPiB0aGUgZGF0YSB3cml0dGVuIGlzIHJlYWQgYmFjayBh
+bmQgY29tcGFyZWQuICBUaGUgY29tcGFyaXNvbg0KPiB3YXMgYmVpbmcgbWFkZSBiZXR3ZWVuIGRh
+dGFSQU0gYnVmZmVycywgYnV0IHRoaXMgZG9lcyBub3QNCj4gdmVyaWZ5IHRoYXQgdGhlIGRhdGEg
+bWFkZSBpdCB0byB0aGUgZGF0YVJBTSBjb3JyZWN0bHkgaW4NCj4gdGhlIGZpcnN0IHBsYWNlLiAg
+VGhpcyBwYXRjaCBhbWVuZHMgd3JpdGUtdmVyaWZ5IHRvDQo+IGNvbXBhcmUgYmFjayB0byB0aGUg
+b3JpZ2luYWwgYnVmZmVyLiAgSXQgYWxzbyBub3cgdmVyaWZpZXMNCj4gc3ViLXBhZ2Ugd3JpdGVz
+Lg0KDQpJJ2xsIHB1c2ggaXQNCg0KVGhhbmsgeW91LA0KS3l1bmdtaW4gUGFyaw0K
