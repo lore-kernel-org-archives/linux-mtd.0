@@ -1,20 +1,19 @@
-Received: from 61-58-44-30.askey.com.tw ([61.58.44.30] helo=dns.askey.com.tw)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HALAw-0001MM-6f
-	for linux-mtd@lists.infradead.org; Fri, 26 Jan 2007 02:07:10 -0500
-Received: from mailgw1.askey.com.tw ([10.1.1.46])
-	by dns.askey.com.tw (8.11.7p1+Sun/8.11.6) with ESMTP id l0Q76p423448
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Jan 2007 15:06:51 +0800 (CST)
-From: =?big5?B?p/Wrwr5f?= <weichen.lee@askey.com.tw>
-To: <linux-mtd@lists.infradead.org>
-Subject: Timing issue when we use SPANSION 8MB Flash
-Date: Fri, 26 Jan 2007 15:09:01 +0800
-Message-ID: <LOEOIDPHBMFMKKJMADKMCEELCBAA.weichen.lee@askey.com.tw>
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Type: text/plain;
-	charset="big5"
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HAMH6-0002N3-Ao
+	for linux-mtd@lists.infradead.org; Fri, 26 Jan 2007 03:17:35 -0500
+Subject: Re: [MTD] UBI: Per volume update marker
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200701241019.27470.alexs@linux.vnet.ibm.com>
+References: <200701241019.27470.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 26 Jan 2007 10:04:24 +0200
+Message-Id: <1169798664.9477.21.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,15 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-aGksDQpJIGZpbmQgdGhlIGRpc2N1c3Npb24gd2l0aCB0aGUgc2FtZSBzdWJqZWN0IGluIHRoZSBw
-YXN0LA0KaHR0cDovL3d3dy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAwNS1P
-Y3RvYmVyLzAxMzk5Ni5odG1sDQpidXQgaXQncyB3aXRob3V0IHdvcnRoIHN1Z2dlc3Rpb24uDQpO
-b3cgd2UgaGF2ZSBtb3JlIHRoZSBzYW1lIHNpdHVhdGlvbi4NCldlIHVzZSBsaW51eCBrZXJuZWwg
-Mi40LjE5LXJtazQtMi4xNyB3aGljaCBpcyBjaGlwc2V0IHZlbmRvciBwcm92aWRlZC4NClRoZSB0
-YXJnZXQgYm9hcmQgYXJjaCBpcyBhcm05MjB0LiBUaGVyZSBpcyAgU1BBTlNJT04gOE1CIE5vciBG
-bGFzaA0KKFMyOUdMMDY0QTkwVEZJUjcpIG9uIHRoZSBib2FyZC4NCndlIHVzZSByb290IGZpbGUg
-c3lzdGVtIHdpdGggamZmczIgZm9ybWF0IG9uIHRoZSBub3IgZmxhc2guDQpUaGUgcHJvYmxlbSBp
-cyBjb3B5aW5nIHRoZSBmaWxlIHRvIC9kZXYvbXRkIyBvciB0aGUgZmlsZSBzeXN0ZW0gd2lsbCB0
-YWtlIA0KdmVyeSBsb25nIHRpbWUoYXJvdW5kIDE1IG1pbiBmb3IgNC41IE1CKS4gDQphbnkgc3Vn
-Z2VzdGlvbiBmb3IgdGhpcyBpdXNzdWU/DQoNCkJlc3QgUmVnYXJkcw0Kd2VpY2hlbi5sZWUNCkUt
-bWFpbDp3ZWljaGVuLmxlZUBhc2tleS5jb20udHcg
+Alexander,
+
+On Wed, 2007-01-24 at 10:19 +0100, Alexander Schmidt wrote:
+> I am currently implementing a per volume update marker for UBI.
+> It would be nice to know if you are interested in this feature and if you
+> have remarks about my concept.
+
+One remark about the patch: you did not update commentaries. For
+example, the header commentary in upd.h. Let's keep commentaries
+up-to-date please.
+
+I'd suggest you to grep for "update" and "marker", carefully look at the
+results, and fix/update if needed.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
