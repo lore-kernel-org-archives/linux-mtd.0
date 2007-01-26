@@ -1,32 +1,20 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HAA9J-0000Fu-Nw
-	for linux-mtd@lists.infradead.org; Thu, 25 Jan 2007 19:20:47 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.13.8/8.12.11) with ESMTP id l0PJIa8P024110
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2007 14:18:36 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l0PJIatr536442
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2007 12:18:36 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l0PJIZsl006767
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Jan 2007 12:18:35 -0700
-Subject: Re: [MTD] UBI: Per volume update marker
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: dedekind@infradead.org
-In-Reply-To: <1169748994.9477.15.camel@sauron>
-References: <200701241019.27470.alexs@linux.vnet.ibm.com>
-	<1169748994.9477.15.camel@sauron>
-Content-Type: text/plain
-Date: Thu, 25 Jan 2007 13:19:36 -0600
-Message-Id: <1169752776.7011.120.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Received: from 61-58-44-30.askey.com.tw ([61.58.44.30] helo=dns.askey.com.tw)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HALAw-0001MM-6f
+	for linux-mtd@lists.infradead.org; Fri, 26 Jan 2007 02:07:10 -0500
+Received: from mailgw1.askey.com.tw ([10.1.1.46])
+	by dns.askey.com.tw (8.11.7p1+Sun/8.11.6) with ESMTP id l0Q76p423448
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 26 Jan 2007 15:06:51 +0800 (CST)
+From: =?big5?B?p/Wrwr5f?= <weichen.lee@askey.com.tw>
+To: <linux-mtd@lists.infradead.org>
+Subject: Timing issue when we use SPANSION 8MB Flash
+Date: Fri, 26 Jan 2007 15:09:01 +0800
+Message-ID: <LOEOIDPHBMFMKKJMADKMCEELCBAA.weichen.lee@askey.com.tw>
+MIME-Version: 1.0
+Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+	charset="big5"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,21 +24,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-01-25 at 20:16 +0200, Artem Bityutskiy wrote:
-> Hi Alexander,
-> 
-> 
-> The patch in general (did not look closely to the details) looks good
-> for me. But are you sure you want this patch? It was a requirement from
-> your team to implement the update marker. Note, your patch means that
-> the boot-loader needs to read and interpret the volume table which
-> increases its size.
-
-Small thing to remember.  Requirements change and patch submissions may
-or may not reflect the current code base used in a product.  They may
-not even reflect back to a product at all.
-
-And since this is open source, no single team has control over it
-anyway.
-
-josh
+aGksDQpJIGZpbmQgdGhlIGRpc2N1c3Npb24gd2l0aCB0aGUgc2FtZSBzdWJqZWN0IGluIHRoZSBw
+YXN0LA0KaHR0cDovL3d3dy5pbmZyYWRlYWQub3JnL3BpcGVybWFpbC9saW51eC1tdGQvMjAwNS1P
+Y3RvYmVyLzAxMzk5Ni5odG1sDQpidXQgaXQncyB3aXRob3V0IHdvcnRoIHN1Z2dlc3Rpb24uDQpO
+b3cgd2UgaGF2ZSBtb3JlIHRoZSBzYW1lIHNpdHVhdGlvbi4NCldlIHVzZSBsaW51eCBrZXJuZWwg
+Mi40LjE5LXJtazQtMi4xNyB3aGljaCBpcyBjaGlwc2V0IHZlbmRvciBwcm92aWRlZC4NClRoZSB0
+YXJnZXQgYm9hcmQgYXJjaCBpcyBhcm05MjB0LiBUaGVyZSBpcyAgU1BBTlNJT04gOE1CIE5vciBG
+bGFzaA0KKFMyOUdMMDY0QTkwVEZJUjcpIG9uIHRoZSBib2FyZC4NCndlIHVzZSByb290IGZpbGUg
+c3lzdGVtIHdpdGggamZmczIgZm9ybWF0IG9uIHRoZSBub3IgZmxhc2guDQpUaGUgcHJvYmxlbSBp
+cyBjb3B5aW5nIHRoZSBmaWxlIHRvIC9kZXYvbXRkIyBvciB0aGUgZmlsZSBzeXN0ZW0gd2lsbCB0
+YWtlIA0KdmVyeSBsb25nIHRpbWUoYXJvdW5kIDE1IG1pbiBmb3IgNC41IE1CKS4gDQphbnkgc3Vn
+Z2VzdGlvbiBmb3IgdGhpcyBpdXNzdWU/DQoNCkJlc3QgUmVnYXJkcw0Kd2VpY2hlbi5sZWUNCkUt
+bWFpbDp3ZWljaGVuLmxlZUBhc2tleS5jb20udHcg
