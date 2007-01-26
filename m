@@ -1,22 +1,22 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HAQmo-0004yG-Bs
-	for linux-mtd@lists.infradead.org; Fri, 26 Jan 2007 08:06:41 -0500
-Message-ID: <63525.212.184.22.162.1169816792.squirrel@www.tglx.de>
-In-Reply-To: <1169811593.4198.1.camel@zod.rchland.ibm.com>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HARDM-0005Hk-AN
+	for linux-mtd@lists.infradead.org; Fri, 26 Jan 2007 08:34:04 -0500
+Subject: Re: [PATCH][UBI] remove __exit on functions referenced in '.text'
+	or '.init.text'
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: bene@linutronix.de
+In-Reply-To: <39678.212.184.22.162.1169809215.squirrel@www.tglx.de>
 References: <20070122230954.1b7f77e6.b.spranger@linutronix.de>
 	<1169656229.3609.4.camel@sauron>
 	<39678.212.184.22.162.1169809215.squirrel@www.tglx.de>
-	<1169811593.4198.1.camel@zod.rchland.ibm.com>
-Date: Fri, 26 Jan 2007 14:06:32 +0100 (CET)
-Subject: Re: [PATCH][UBI] remove __exit on functions referenced in '.text'
-	or '.init.text'
-From: bene@linutronix.de
-To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, bene@linutronix.de
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 26 Jan 2007 15:33:41 +0200
+Message-Id: <1169818421.9477.30.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Benedikt Spranger <b.spranger@linutronix.de>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +26,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> On Fri, 2007-01-26 at 12:00 +0100, bene@linutronix.de wrote:
-> What version of GCC is this with?
-It is a ARM-Toolchain:
-arm-unknown-linux-gnu-gcc (GCC) 3.4.3 (release) (CodeSourcery ARM Q3cvs 2004)
-GNU ld version 2.16.91 20050627
+On Fri, 2007-01-26 at 12:00 +0100, bene@linutronix.de wrote:
+> `ubi_sysfs_vol_close' referenced in section `.text' of drivers/built-in.o=
+:
+> defined in discarded section `.exit.text' of
+> drivers/built-in.o`ubi_sysfs_vol_close' referenced in section `.text' of
+> drivers/built-in.o: defined in discarded section `.exit.text' of
+> drivers/built-in.o`ubi_sysfs_vol_close' referenced in section `.text' of
+> drivers/built-in.o: defined in discarded section `.exit.text' of
+> drivers/built-in.o`ubi_sysfs_close' referenced in section `.text' of
+> drivers/built-in.o: defined in discarded section `.exit.text' of
+> drivers/built-in.o`ubi_sysfs_close' referenced in section `.init.text' of
+> drivers/built-in.o: defined in discarded section `.exit.text' of
+> drivers/built-in.o
 
-> And do you have UBI debug enabled?
-No.
+Hmm...
 
-#
-# UBI - Unsorted block images
-#
-CONFIG_MTD_UBI=y
-CONFIG_MTD_UBI_WL_THRESHOLD=4096
-CONFIG_MTD_UBI_BEB_RESERVE=1
-CONFIG_MTD_UBI_GLUEBI=y
+'ubi_sysfs_vol_close()' has nor __init/__exit prefix so it has to be
+in .text.
 
-#
-# UBI debugging options
-#
-# CONFIG_MTD_UBI_DEBUG is not set
+But it is called from the 'delete_volumes()' function which has __exit
+attribute.
 
-Bene
+So we reference 'ubi_sysfs_vol_close' which is in .text from .exit.text.
+But why is this a problem?
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
