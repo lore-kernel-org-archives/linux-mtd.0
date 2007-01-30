@@ -1,18 +1,21 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HBrO4-00075m-Lg
-	for linux-mtd@lists.infradead.org; Tue, 30 Jan 2007 06:42:59 -0500
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-ext12.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l0UBeYtd007978
-	for <linux-mtd@lists.infradead.org>; Tue, 30 Jan 2007 13:40:57 +0200
-Subject: [PATCH] [MTD] remove unused fields
+	id 1HBsvb-0007zm-Cm
+	for linux-mtd@lists.infradead.org; Tue, 30 Jan 2007 08:21:41 -0500
+Subject: Re: [MTD] UBI: Per volume update marker
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-YLHBBrZdLA+y2fg6W4Ek"
-Date: Tue, 30 Jan 2007 13:42:26 +0200
-Message-Id: <1170157346.9477.81.camel@sauron>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200701291736.01006.alexs@linux.vnet.ibm.com>
+References: <200701241019.27470.alexs@linux.vnet.ibm.com>
+	<200701291147.10111.alexs@linux.vnet.ibm.com>
+	<1170075745.9477.73.camel@sauron>
+	<200701291736.01006.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 30 Jan 2007 15:01:16 +0200
+Message-Id: <1170162076.9477.123.camel@sauron>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,198 +26,182 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Alexander,
 
---=-YLHBBrZdLA+y2fg6W4Ek
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+thank you for the patch, please, find my mostly minor comments below.
 
-DQotLSANCkJlc3QgcmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC40Lkg
-0JDRgNGC0ZHQvCkNCg==
+On Mon, 2007-01-29 at 17:36 +0100, Alexander Schmidt wrote:
+> - * Also, in this UBI implementation we make use of so called update mark=
+er when
+> - * updating volumes. The update marker is global. This may cause quite
+> - * unpleasant UBI usability problems. What we could do is to implement
+> - * many-updates-at-a-time support by adding a per-volume "corrupted" fla=
+g to the
+> - * volume table. This flag would be set before update and cleared after =
+update.
+> + * The volume table record also contains a so called update marker, whic=
+h
+> + * indicates whether a volume is under update or not. The update marker =
+is
+> + * set and stored on flash on the beginning of an update and deleted aft=
+erwards.
+> + * This makes UBI recognize aborted updates, which may happen because of
+> + * power-offs during updates. Read operations on volumes with pending up=
+date
+> + * markers get rejected.
+>   */
+[minor] it may also happen if the updating process was killed
 
+>  /*
+> + * Volume updating constants used in volume table records.
+> + *
+> + * @UBI_VOL_NOUPD: volume is not being updated
+> + * @UBI_VOL_UPD: volume is being updated
+> + */
 
---=-YLHBBrZdLA+y2fg6W4Ek
-Content-Disposition: attachment; filename=remove-unused-fields.patch
-Content-Type: application/mbox; name=remove-unused-fields.patch
-Content-Transfer-Encoding: 7bit
+[minor] I would better say "volume update started" instead of "volume is
+being updated" becaus the marker may be there if the volume is not
+really being updated, the update was just interrupted.
 
->From 82877512297dcd9dcc6a37b3adec1c2a2349aac5 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Tue, 30 Jan 2007 10:50:43 +0200
-Subject: [PATCH] [MTD] remove unused fields
+> +static ssize_t vol_updating_show(struct class_device *dev, char *buf);
 
-Remove unused and broken mtd->ecctype and mtd->eccsize fields
-from struct mtd_info. Do not remove them from userspace API
-data structures (don't want to breake userspace) but mark them
-as obsolete by a comment. Any userspace program which uses them
-should be half-broken anyway, so this is more about saving
-data structure size.
+[minor] As we started using "update marker", lets be consistent and name
+this, say, 'vol_upd_marker_show()'
 
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/devices/doc2000.c      |    1 -
- drivers/mtd/devices/doc2001.c      |    1 -
- drivers/mtd/devices/doc2001plus.c  |    1 -
- drivers/mtd/mtdchar.c              |    5 +++--
- drivers/mtd/mtdconcat.c            |    4 ----
- drivers/mtd/mtdpart.c              |    2 --
- drivers/mtd/nand/nand_base.c       |    1 -
- drivers/mtd/onenand/onenand_base.c |    1 -
- include/linux/mtd/mtd.h            |    2 --
- include/mtd/mtd-abi.h              |    8 ++------
- 10 files changed, 5 insertions(+), 21 deletions(-)
+>  /*
+>   * Class device attributes corresponding to files in
+> @@ -224,6 +225,8 @@ static struct class_device_attribute vol
+>  	__ATTR(usable_eb_size, S_IRUGO, vol_usable_eb_size_show, NULL);
+>  static struct class_device_attribute vol_data_bytes =3D
+>  	__ATTR(data_bytes, S_IRUGO, vol_data_bytes_show, NULL);
+> +static struct class_device_attribute vol_updating =3D
+> +	__ATTR(updating, S_IRUGO, vol_updating_show, NULL);
 
-diff --git a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
-index 603a795..8a0c4de 100644
---- a/drivers/mtd/devices/doc2000.c
-+++ b/drivers/mtd/devices/doc2000.c
-@@ -569,7 +569,6 @@ void DoC2k_init(struct mtd_info *mtd)
- 
- 	mtd->type = MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
--	mtd->ecctype = MTD_ECC_RS_DiskOnChip;
- 	mtd->size = 0;
- 	mtd->erasesize = 0;
- 	mtd->writesize = 512;
-diff --git a/drivers/mtd/devices/doc2001.c b/drivers/mtd/devices/doc2001.c
-index 0e2a932..22a3b9e 100644
---- a/drivers/mtd/devices/doc2001.c
-+++ b/drivers/mtd/devices/doc2001.c
-@@ -349,7 +349,6 @@ void DoCMil_init(struct mtd_info *mtd)
- 
- 	mtd->type = MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
--	mtd->ecctype = MTD_ECC_RS_DiskOnChip;
- 	mtd->size = 0;
- 
- 	/* FIXME: erase size is not always 8KiB */
-diff --git a/drivers/mtd/devices/doc2001plus.c b/drivers/mtd/devices/doc2001plus.c
-index 92dbb47..0118559 100644
---- a/drivers/mtd/devices/doc2001plus.c
-+++ b/drivers/mtd/devices/doc2001plus.c
-@@ -473,7 +473,6 @@ void DoCMilPlus_init(struct mtd_info *mtd)
- 
- 	mtd->type = MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
--	mtd->ecctype = MTD_ECC_RS_DiskOnChip;
- 	mtd->size = 0;
- 
- 	mtd->erasesize = 0;
-diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
-index 3013d08..3731523 100644
---- a/drivers/mtd/mtdchar.c
-+++ b/drivers/mtd/mtdchar.c
-@@ -419,8 +419,9 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
- 		info.erasesize	= mtd->erasesize;
- 		info.writesize	= mtd->writesize;
- 		info.oobsize	= mtd->oobsize;
--		info.ecctype	= mtd->ecctype;
--		info.eccsize	= mtd->eccsize;
-+		/* The below fields are obsolete */
-+		info.ecctype	= -1;
-+		info.eccsize	= 0;
- 		if (copy_to_user(argp, &info, sizeof(struct mtd_info_user)))
- 			return -EFAULT;
- 		break;
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 0690268..880580c 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -727,8 +727,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.erasesize = subdev[0]->erasesize;
- 	concat->mtd.writesize = subdev[0]->writesize;
- 	concat->mtd.oobsize = subdev[0]->oobsize;
--	concat->mtd.ecctype = subdev[0]->ecctype;
--	concat->mtd.eccsize = subdev[0]->eccsize;
- 	if (subdev[0]->writev)
- 		concat->mtd.writev = concat_writev;
- 	if (subdev[0]->read_oob)
-@@ -774,8 +772,6 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 		if (concat->mtd.writesize   !=  subdev[i]->writesize ||
- 		    concat->mtd.subpage_sft != subdev[i]->subpage_sft ||
- 		    concat->mtd.oobsize    !=  subdev[i]->oobsize ||
--		    concat->mtd.ecctype    !=  subdev[i]->ecctype ||
--		    concat->mtd.eccsize    !=  subdev[i]->eccsize ||
- 		    !concat->mtd.read_oob  != !subdev[i]->read_oob ||
- 		    !concat->mtd.write_oob != !subdev[i]->write_oob) {
- 			kfree(concat);
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index bafd2fb..633def3 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -338,8 +338,6 @@ int add_mtd_partitions(struct mtd_info *master,
- 		slave->mtd.size = parts[i].size;
- 		slave->mtd.writesize = master->writesize;
- 		slave->mtd.oobsize = master->oobsize;
--		slave->mtd.ecctype = master->ecctype;
--		slave->mtd.eccsize = master->eccsize;
- 		slave->mtd.subpage_sft = master->subpage_sft;
- 
- 		slave->mtd.name = parts[i].name;
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index dfe56e0..00ea1fd 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2530,7 +2530,6 @@ int nand_scan_tail(struct mtd_info *mtd)
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
--	mtd->ecctype = MTD_ECC_SW;
- 	mtd->erase = nand_erase;
- 	mtd->point = NULL;
- 	mtd->unpoint = NULL;
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 2da6bb2..00e61c3 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -2097,7 +2097,6 @@ int onenand_scan(struct mtd_info *mtd, int maxchips)
- 	/* Fill in remaining MTD driver data */
- 	mtd->type = MTD_NANDFLASH;
- 	mtd->flags = MTD_CAP_NANDFLASH;
--	mtd->ecctype = MTD_ECC_SW;
- 	mtd->erase = onenand_erase;
- 	mtd->point = NULL;
- 	mtd->unpoint = NULL;
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index afab253..8a2e8bf 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -117,8 +117,6 @@ struct mtd_info {
- 	u_int32_t writesize;
- 
- 	u_int32_t oobsize;   // Amount of OOB data per block (e.g. 16)
--	u_int32_t ecctype;
--	u_int32_t eccsize;
- 
- 	// Kernel-only stuff starts here.
- 	char *name;
-diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-index f913c30..8e501a7 100644
---- a/include/mtd/mtd-abi.h
-+++ b/include/mtd/mtd-abi.h
-@@ -36,12 +36,6 @@ struct mtd_oob_buf {
- #define MTD_CAP_NORFLASH	(MTD_WRITEABLE | MTD_BIT_WRITEABLE)
- #define MTD_CAP_NANDFLASH	(MTD_WRITEABLE)
- 
--
--// Types of automatic ECC/Checksum available
--#define MTD_ECC_NONE		0 	// No automatic ECC available
--#define MTD_ECC_RS_DiskOnChip	1	// Automatic ECC on DiskOnChip
--#define MTD_ECC_SW		2	// SW ECC for Toshiba & Samsung devices
--
- /* ECC byte placement */
- #define MTD_NANDECC_OFF		0	// Switch off ECC (Not recommended)
- #define MTD_NANDECC_PLACE	1	// Use the given placement in the structure (YAFFS1 legacy mode)
-@@ -61,6 +55,8 @@ struct mtd_info_user {
- 	uint32_t erasesize;
- 	uint32_t writesize;
- 	uint32_t oobsize;   // Amount of OOB data per block (e.g. 16)
-+	/* The below two fields are obsolete and broken, do not use them
-+	 * (TODO: remove at some point) */
- 	uint32_t ecctype;
- 	uint32_t eccsize;
- };
--- 
-1.4.4.2
+The sysfs file will be named "updating". Probably it is less confusing
+and more strict to expose the "update marker" term to the outer world
+too.
 
+I'd propose
 
---=-YLHBBrZdLA+y2fg6W4Ek--
+static struct class_device_attribute vol_upd_marker =3D
+	__ATTR(upd_marker, S_IRUGO, vol_upd_marker_show, NULL);
+
+instead.
+=20
+> 			dbg_upd("volume %d is being updated, update marker "
+> +	if (upd->updating && upd->vol_id !=3D vol_id) {
+> +		dbg_upd("volume %d is being updated, update marker "
+>  				"busy", upd->vol_id);
+
+[minor] Just to make coding style consistent:
+
+dbg_upd("volume %d is being updated, update marker "
+	"busy", upd->vol_id);
+
+(aligned) or better
+
+dbg_upd("volume %d is being updated, update marker busy", upd->vol_id);
+
+as there are less then 80 characters per line.
+
+> +
+> +	mutex_lock(&vtbl->mutex);
+> +	vtr->corrupted =3D 0;
+> +	mutex_unlock(&vtbl->mutex);
+
+vtbl->mutex is a private field and only vtbl unit can touch it. Please,
+do ot use it outside of vtbl unit.
+
+See 'struct ubi_vtbl_info' definition - each field is commented as
+private/public.
+
+Please, just do not touch the 'corrupted' flag, and do not call
+'ubi_vtbl_set_corrupted()' in 'ubi_upd_start()'.
+
+The 'corrupted' flag seems to be half-working, I will fix this after we
+commit your patch.
+
+> +
+>  	upd->vol_id =3D -1;
+>  	return 0;
+>  }
+> --- ubi-2.6.orig/drivers/mtd/ubi/vtbl.c
+> +++ ubi-2.6/drivers/mtd/ubi/vtbl.c
+> @@ -160,6 +160,44 @@ int ubi_vtbl_set_data_len(const struct u
+>  	return 0;
+>  }
+> =20
+> +int ubi_vtbl_updvol(const struct ubi_info *ubi, int vol_id, int upd_mark=
+er)
+> +{
+> +	int err;
+> +	struct ubi_vtbl_vtr tmp_vtr;
+> +	struct ubi_vtbl_vtr *vtr;
+> +	struct ubi_vtbl_info *vtbl =3D ubi->vtbl;
+> +
+> +	ubi_assert(vol_id >=3D 0 && vol_id < vtbl->vt_slots);
+> +	ubi_assert(upd_marker =3D=3D UBI_VOL_NOUPD || upd_marker =3D=3D UBI_VOL=
+_UPD);
+> +	ubi_assert(!ubi_is_ivol(vol_id));
+> +
+> +	dbg_vtbl("set update marker for volume %d to %d", vol_id, upd_marker);
+> +
+> +	/* Ensure that this volume exists */
+> +	vtr =3D ubi_vtbl_get_vtr(ubi, vol_id);
+> +	if (IS_ERR(vtr)) {
+> +		return PTR_ERR(vtr);
+> +	}
+
+[minor] No need to do this. We just stand that the volume must exist and
+it is the job of the caller to make sure of this. Just add debugging
+check
+
+ubi_assert(ubi->vtbl->vt[vol_id].reserved_pebs =3D=3D 0);
+
+as other similar functions of the vtbl unit do.
+=20
+> -		vtr->corrupted =3D 0;
+> +		if (vtr->upd_marker) {
+> +			ubi_warn("volume %d update was interrupted", i);
+> +			vtr->corrupted =3D 1;
+> +		}
+> +		else
+> +			vtr->corrupted =3D 0;
+
+Please, remove these changes. I (or we) will correct the corrupted flag.
+
+It makes much more sense to distinguish between "(physically) corrupted"
+and "update-interrupted". So we have an update-interrupted volume. We
+will prohibit reading from it because it simply makes no sense. Reading
+from a corrupted volume will make sense because the user (e.g. FS) could
+be able to recover some data. Also, "corrupted" will only applicable to
+static volumes because we do not care about dynamic volumes' contents.
+
+Makes sense?
+
+> -	int i, reserved_pebs, alignment, data_pad, vol_type, name_len;
+> +	int i, reserved_pebs, alignment, data_pad, vol_type, name_len,
+> +	    upd_marker;
+[minor]
+
++	int i, reserved_pebs, alignment, data_pad, vol_type, name_len;
++	int upd_marker;
+=20
+> +	if (unlikely(vtr->updating !=3D UBI_VOL_NOUPD &&
+> +		     vtr->updating !=3D UBI_VOL_UPD)) {
+> +		ubi_err("bad update marker");
+> +		goto bad;
+> +	}
+
+We renamed this field. I'd suggest you to test your code with paranoid
+checks enabled - this may help to catch bugs you do not even think
+about.
+
+Side note: hmm, anyway, 'this paranoid_check_vtr()' function should not
+exist in vmt unit - it's not vmt's business. Will need to remove it -
+but thats a distinct patch, do not bother please.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
