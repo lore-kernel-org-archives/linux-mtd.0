@@ -1,18 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HCC6K-0007J6-Tf
-	for linux-mtd@lists.infradead.org; Wed, 31 Jan 2007 04:50:03 -0500
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-ext11.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l0V9l6vx013812
-	for <linux-mtd@lists.infradead.org>; Wed, 31 Jan 2007 11:47:08 +0200
-Subject: [PATCH] [MTD] clarify interface
+	id 1HCDdc-0007yr-VA
+	for linux-mtd@lists.infradead.org; Wed, 31 Jan 2007 06:28:32 -0500
+Subject: [RFC] [PATCH] JFFS2: use MTD_OOB_AUTO
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-mtd@lists.infradead.org
-Content-Type: multipart/mixed; boundary="=-sU/L2u65dx3mC40VvUYo"
-Date: Wed, 31 Jan 2007 11:49:37 +0200
-Message-Id: <1170236977.3635.3.camel@sauron>
+Content-Type: multipart/mixed; boundary="=-kgpGw+o7vnglKhtt0zgb"
+Date: Wed, 31 Jan 2007 13:28:12 +0200
+Message-Id: <1170242892.3635.13.camel@sauron>
 Mime-Version: 1.0
+Cc: David Woodhouse <dwmw2@infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,50 +21,407 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-sU/L2u65dx3mC40VvUYo
+--=-kgpGw+o7vnglKhtt0zgb
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 
-DQotLSANCkJlc3QgcmVnYXJkcywNCkFydGVtIEJpdHl1dHNraXkgKNCR0LjRgtGO0YbQutC40Lkg
-0JDRgNGC0ZHQvCkNCg==
+Here is a patch which teaches JFFS2 to use MTD_OOB_AUTO option which
+makes much more sense then using MTD_OOB_PLACE. The original motivation
+was that JFFS2 does not work on OneNAND which has tricky location of
+free bytes at OOB.
 
+The patch was not well tested yet, just a brief test with nandsim. So it
+is just an RFC now.
 
---=-sU/L2u65dx3mC40VvUYo
-Content-Disposition: attachment; filename=add-if-comments.diff
-Content-Type: message/rfc822; name=add-if-comments.diff
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
+
+--=-kgpGw+o7vnglKhtt0zgb
+Content-Disposition: attachment; filename=jffs2-oob-auto.diff
+Content-Type: message/rfc822; name=jffs2-oob-auto.diff
 
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Wed, 31 Jan 2007 11:43:13 +0200
-Subject: [PATCH] [MTD] clarify interface
-Message-Id: <1170236977.3635.4.camel@sauron>
+Date: Wed, 31 Jan 2007 11:38:53 +0200
+Subject: [PATCH] JFFS2: use MTD_OOB_AUTO
+Message-Id: <1170242873.3635.12.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-Add more comment to OOB I/O interface. Read/write are not
-symmetric which is confusing and should be documented.
+Nowadays MTD supports an MTD_OOB_AUTO option which allows users
+to access free bytes in NAND's OOB as a contiguous buffer, although
+it may be highly discontinuous.
+
+This patch teaches JFFS2 to use this nice feature instead of the
+old MTD_OOB_PLACE option. This for example caused problems with
+OneNAND. Now JFFS2 does not care how are the free bytes situated.
+
+This may change position of the clean marker on some flashes,
+but this is not a problem. JFFS2 will just re-erase the empty
+eraseblocks and write the new (correct) clean marker.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- include/linux/mtd/mtd.h |    4 ++++
- 1 files changed, 4 insertions(+), 0 deletions(-)
+ fs/jffs2/jffs2_fs_sb.h |   12 +--
+ fs/jffs2/scan.c        |   10 ++-
+ fs/jffs2/wbuf.c        |  206 +++++++++++++++++-------------------------------
+ 3 files changed, 84 insertions(+), 144 deletions(-)
 
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 8a2e8bf..6a8570b 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -85,6 +85,10 @@ typedef enum {
-  *		mode = MTD_OOB_PLACE)
-  * @datbuf:	data buffer - if NULL only oob data are read/written
-  * @oobbuf:	oob data buffer
-+ *
-+ * Note, it is allowed to read more then one OOB area at one go, but not write.
-+ * The interface assumes that the OOB write requests program only one page's
-+ * OOB area.
+Index: dedekind-mtd-2.6.git/fs/jffs2/jffs2_fs_sb.h
+===================================================================
+--- dedekind-mtd-2.6.git.orig/fs/jffs2/jffs2_fs_sb.h
++++ dedekind-mtd-2.6.git/fs/jffs2/jffs2_fs_sb.h
+@@ -98,20 +98,14 @@ struct jffs2_sb_info {
+ 	uint32_t wbuf_pagesize; /* 0 for NOR and other flashes with no wbuf */
+ 
+ #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+-	/* Write-behind buffer for NAND flash */
+-	unsigned char *wbuf;
+-	unsigned char *oobbuf;
++	unsigned char *wbuf; /* Write-behind buffer for NAND flash */
+ 	uint32_t wbuf_ofs;
+ 	uint32_t wbuf_len;
+ 	struct jffs2_inodirty *wbuf_inodes;
+-
+ 	struct rw_semaphore wbuf_sem;	/* Protects the write buffer */
+ 
+-	/* Information about out-of-band area usage... */
+-	struct nand_ecclayout *ecclayout;
+-	uint32_t badblock_pos;
+-	uint32_t fsdata_pos;
+-	uint32_t fsdata_len;
++	unsigned char *oobbuf;
++	int oobavail; /* How many bytes are available for JFFS2 in OOB */
+ #endif
+ 
+ 	struct jffs2_summary *summary;		/* Summary information */
+Index: dedekind-mtd-2.6.git/fs/jffs2/scan.c
+===================================================================
+--- dedekind-mtd-2.6.git.orig/fs/jffs2/scan.c
++++ dedekind-mtd-2.6.git/fs/jffs2/scan.c
+@@ -450,16 +450,20 @@ static int jffs2_scan_eraseblock (struct
+ 
+ #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
+ 	if (jffs2_cleanmarker_oob(c)) {
+-		int ret = jffs2_check_nand_cleanmarker(c, jeb);
++		int ret;
++
++		if (c->mtd->block_isbad(c->mtd, jeb->offset))
++			return BLK_STATE_BADBLOCK;
++
++		ret = jffs2_check_nand_cleanmarker(c, jeb);
+ 		D2(printk(KERN_NOTICE "jffs_check_nand_cleanmarker returned %d\n",ret));
++
+ 		/* Even if it's not found, we still scan to see
+ 		   if the block is empty. We use this information
+ 		   to decide whether to erase it or not. */
+ 		switch (ret) {
+ 		case 0:		cleanmarkerfound = 1; break;
+ 		case 1: 	break;
+-		case 2: 	return BLK_STATE_BADBLOCK;
+-		case 3:		return BLK_STATE_ALLDIRTY; /* Block has failed to erase min. once */
+ 		default: 	return ret;
+ 		}
+ 	}
+Index: dedekind-mtd-2.6.git/fs/jffs2/wbuf.c
+===================================================================
+--- dedekind-mtd-2.6.git.orig/fs/jffs2/wbuf.c
++++ dedekind-mtd-2.6.git/fs/jffs2/wbuf.c
+@@ -957,43 +957,40 @@ exit:
+ 	return ret;
+ }
+ 
+-#define NR_OOB_SCAN_PAGES	4
++#define NR_OOB_SCAN_PAGES 4
++
++static struct jffs2_unknown_node oob_cleanmarker;
+ 
+ /*
+- * Check, if the out of band area is empty
++ * Check, if the out of band area is empty. This function knows about the clean
++ * marker and if it is present in OOB, treats the OOB as empty anyway.
   */
- struct mtd_oob_ops {
- 	mtd_oob_mode_t	mode;
--- 
-1.4.4.2
+ int jffs2_check_oob_empty(struct jffs2_sb_info *c,
+ 			  struct jffs2_eraseblock *jeb, int mode)
+ {
+-	int i, page, ret;
+-	int oobsize = c->mtd->oobsize;
++	int i, ret;
++	int cmlen = min_t(int, c->oobavail, sizeof(struct jffs2_unknown_node));
+ 	struct mtd_oob_ops ops;
+ 
+-	ops.ooblen = NR_OOB_SCAN_PAGES * oobsize;
++	ops.mode = MTD_OOB_AUTO;
++	ops.ooblen = NR_OOB_SCAN_PAGES * c->oobavail;
+ 	ops.oobbuf = c->oobbuf;
+-	ops.ooboffs = 0;
++	ops.len = ops.ooboffs = ops.retlen = ops.oobretlen = 0;
+ 	ops.datbuf = NULL;
+-	ops.mode = MTD_OOB_PLACE;
+ 
+ 	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
+-	if (ret) {
+-		D1(printk(KERN_WARNING "jffs2_check_oob_empty(): Read OOB "
+-			  "failed %d for block at %08x\n", ret, jeb->offset));
++	if (ret || ops.oobretlen != ops.ooblen) {
++		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
++				"bytes, read %d bytes, error %d\n", jeb->offset,
++				ops.ooblen, ops.oobretlen, ret);
++		if (!ret)
++			ret = -EIO;
+ 		return ret;
+ 	}
+ 
+-	if (ops.oobretlen < ops.ooblen) {
+-		D1(printk(KERN_WARNING "jffs2_check_oob_empty(): Read OOB "
+-			  "returned short read (%zd bytes not %d) for block "
+-			  "at %08x\n", ops.oobretlen, ops.ooblen, jeb->offset));
+-		return -EIO;
+-	}
+-
+-	/* Special check for first page */
+-	for(i = 0; i < oobsize ; i++) {
+-		/* Yeah, we know about the cleanmarker. */
+-		if (mode && i >= c->fsdata_pos &&
+-		    i < c->fsdata_pos + c->fsdata_len)
++	for(i = 0; i < ops.ooblen; i++) {
++		if (mode && i < cmlen)
++			/* Yeah, we know about the cleanmarker */
+ 			continue;
+ 
+ 		if (ops.oobbuf[i] != 0xFF) {
+@@ -1003,111 +1000,74 @@ int jffs2_check_oob_empty(struct jffs2_s
+ 		}
+ 	}
+ 
+-	/* we know, we are aligned :) */
+-	for (page = oobsize; page < ops.ooblen; page += sizeof(long)) {
+-		long dat = *(long *)(&ops.oobbuf[page]);
+-		if(dat != -1)
+-			return 1;
+-	}
+ 	return 0;
+ }
+ 
+ /*
+- * Scan for a valid cleanmarker and for bad blocks
++ * Check for a valid cleanmarker.
++ * Returns: 0 if a valid cleanmarker was found
++ *          1 if no cleanmarker was found
++ *          negative error code if an error occurred
+  */
+-int jffs2_check_nand_cleanmarker (struct jffs2_sb_info *c,
+-				  struct jffs2_eraseblock *jeb)
++int jffs2_check_nand_cleanmarker(struct jffs2_sb_info *c,
++				 struct jffs2_eraseblock *jeb)
+ {
+-	struct jffs2_unknown_node n;
+-	struct mtd_oob_ops ops;
+-	int oobsize = c->mtd->oobsize;
+-	unsigned char *p,*b;
+ 	int i, ret;
+-	size_t offset = jeb->offset;
+-
+-	/* Check first if the block is bad. */
+-	if (c->mtd->block_isbad(c->mtd, offset)) {
+-		D1 (printk(KERN_WARNING "jffs2_check_nand_cleanmarker()"
+-			   ": Bad block at %08x\n", jeb->offset));
+-		return 2;
+-	}
++	unsigned char *p,*b;
++	struct mtd_oob_ops ops;
++	int cmlen = min_t(int, c->oobavail, sizeof(struct jffs2_unknown_node));
+ 
+-	ops.ooblen = oobsize;
++	ops.mode = MTD_OOB_AUTO;
++	ops.ooblen = cmlen;
+ 	ops.oobbuf = c->oobbuf;
+-	ops.ooboffs = 0;
++	ops.len = ops.ooboffs = ops.retlen = ops.oobretlen = 0;
+ 	ops.datbuf = NULL;
+-	ops.mode = MTD_OOB_PLACE;
+ 
+-	ret = c->mtd->read_oob(c->mtd, offset, &ops);
+-	if (ret) {
+-		D1 (printk(KERN_WARNING "jffs2_check_nand_cleanmarker(): "
+-			   "Read OOB failed %d for block at %08x\n",
+-			   ret, jeb->offset));
++	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
++	if (ret || ops.oobretlen != ops.ooblen) {
++		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
++				"bytes, read %d bytes, error %d\n", jeb->offset,
++				ops.ooblen, ops.oobretlen, ret);
++		if (!ret)
++			ret = -EIO;
+ 		return ret;
+ 	}
+ 
+-	if (ops.oobretlen < ops.ooblen) {
+-		D1 (printk (KERN_WARNING "jffs2_check_nand_cleanmarker(): "
+-			    "Read OOB return short read (%zd bytes not %d) "
+-			    "for block at %08x\n", ops.oobretlen, ops.ooblen,
+-			    jeb->offset));
+-		return -EIO;
+-	}
+-
+-	n.magic = cpu_to_je16 (JFFS2_MAGIC_BITMASK);
+-	n.nodetype = cpu_to_je16 (JFFS2_NODETYPE_CLEANMARKER);
+-	n.totlen = cpu_to_je32 (8);
+-	p = (unsigned char *) &n;
+-	b = c->oobbuf + c->fsdata_pos;
++	p = (unsigned char *)&oob_cleanmarker;
++	b = c->oobbuf;
+ 
+-	for (i = c->fsdata_len; i; i--) {
+-		if (*b++ != *p++)
++	for (i = 0; i < cmlen; i++)
++		if (*b++ != *p++) {
+ 			ret = 1;
+-	}
++			break;
++		}
+ 
+-	D1(if (ret == 1) {
+-		printk(KERN_WARNING "jffs2_check_nand_cleanmarker(): "
+-		       "Cleanmarker node not detected in block at %08x\n",
+-		       offset);
+-		printk(KERN_WARNING "OOB at %08zx was ", offset);
+-		for (i=0; i < oobsize; i++)
+-			printk("%02x ", c->oobbuf[i]);
+-		printk("\n");
+-	});
+ 	return ret;
+ }
+ 
+ int jffs2_write_nand_cleanmarker(struct jffs2_sb_info *c,
+ 				 struct jffs2_eraseblock *jeb)
+ {
+-	struct jffs2_unknown_node n;
+-	int	ret;
++	int ret;
+ 	struct mtd_oob_ops ops;
++	int cmlen = min_t(int, c->oobavail, sizeof(struct jffs2_unknown_node));
+ 
+-	n.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
+-	n.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER);
+-	n.totlen = cpu_to_je32(8);
+-
+-	ops.ooblen = c->fsdata_len;
+-	ops.oobbuf = (uint8_t *)&n;
+-	ops.ooboffs = c->fsdata_pos;
++	ops.mode = MTD_OOB_AUTO;
++	ops.ooblen = cmlen;
++	ops.oobbuf = (uint8_t *)&oob_cleanmarker;
++	ops.len = ops.ooboffs = ops.retlen = ops.oobretlen = 0;
+ 	ops.datbuf = NULL;
+-	ops.mode = MTD_OOB_PLACE;
+ 
+ 	ret = c->mtd->write_oob(c->mtd, jeb->offset, &ops);
+-
+-	if (ret) {
+-		D1(printk(KERN_WARNING "jffs2_write_nand_cleanmarker(): "
+-			  "Write failed for block at %08x: error %d\n",
+-			  jeb->offset, ret));
++	if (ret || ops.oobretlen != ops.ooblen) {
++		printk(KERN_ERR "cannot write OOB for EB at %08x, requested %d "
++				"bytes, read %d bytes, error %d\n", jeb->offset,
++				ops.ooblen, ops.oobretlen, ret);
++		if (!ret)
++			ret = -EIO;
+ 		return ret;
+ 	}
+-	if (ops.oobretlen != ops.ooblen) {
+-		D1(printk(KERN_WARNING "jffs2_write_nand_cleanmarker(): "
+-			  "Short write for block at %08x: %zd not %d\n",
+-			  jeb->offset, ops.oobretlen, ops.ooblen));
+-		return -EIO;
+-	}
++
+ 	return 0;
+ }
+ 
+@@ -1140,41 +1100,25 @@ int jffs2_write_nand_badblock(struct jff
+ 	return 1;
+ }
+ 
+-static int jffs2_nand_set_oobinfo(struct jffs2_sb_info *c)
++int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
+ {
++	uint32_t crc;
+ 	struct nand_ecclayout *oinfo = c->mtd->ecclayout;
+ 
+-	/* Do this only, if we have an oob buffer */
+ 	if (!c->mtd->oobsize)
+ 		return 0;
+ 
+ 	/* Cleanmarker is out-of-band, so inline size zero */
+ 	c->cleanmarker_size = 0;
+ 
+-	/* Should we use autoplacement ? */
+-	if (!oinfo) {
+-		D1(printk(KERN_DEBUG "JFFS2 on NAND. No autoplacment info found\n"));
++	if (!oinfo || oinfo->oobavail == 0) {
++		printk(KERN_ERR "inconsistent device description\n");
+ 		return -EINVAL;
+ 	}
+ 
+-	D1(printk(KERN_DEBUG "JFFS2 using autoplace on NAND\n"));
+-	/* Get the position of the free bytes */
+-	if (!oinfo->oobfree[0].length) {
+-		printk (KERN_WARNING "jffs2_nand_set_oobinfo(): Eeep."
+-			" Autoplacement selected and no empty space in oob\n");
+-		return -ENOSPC;
+-	}
+-	c->fsdata_pos = oinfo->oobfree[0].offset;
+-	c->fsdata_len = oinfo->oobfree[0].length;
+-	if (c->fsdata_len > 8)
+-		c->fsdata_len = 8;
+-
+-	return 0;
+-}
++	D1(printk(KERN_DEBUG "JFFS2 using OOB on NAND\n"));
+ 
+-int jffs2_nand_flash_setup(struct jffs2_sb_info *c)
+-{
+-	int res;
++	c->oobavail = oinfo->oobavail;
+ 
+ 	/* Initialise write buffer */
+ 	init_rwsem(&c->wbuf_sem);
+@@ -1185,22 +1129,20 @@ int jffs2_nand_flash_setup(struct jffs2_
+ 	if (!c->wbuf)
+ 		return -ENOMEM;
+ 
+-	c->oobbuf = kmalloc(NR_OOB_SCAN_PAGES * c->mtd->oobsize, GFP_KERNEL);
+-	if (!c->oobbuf)
+-		return -ENOMEM;
+-
+-	res = jffs2_nand_set_oobinfo(c);
+-
+-#ifdef BREAKME
+-	if (!brokenbuf)
+-		brokenbuf = kmalloc(c->wbuf_pagesize, GFP_KERNEL);
+-	if (!brokenbuf) {
++	c->oobbuf = kmalloc(NR_OOB_SCAN_PAGES * c->oobavail, GFP_KERNEL);
++	if (!c->oobbuf) {
+ 		kfree(c->wbuf);
+ 		return -ENOMEM;
+ 	}
+-	memset(brokenbuf, 0xdb, c->wbuf_pagesize);
+-#endif
+-	return res;
++
++	/* Initialize the OOB cleanmarker pattern */
++	oob_cleanmarker.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK);
++	oob_cleanmarker.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER);
++	oob_cleanmarker.totlen = cpu_to_je32(8);
++	crc = crc32(0, &oob_cleanmarker, sizeof(struct jffs2_unknown_node)-4);
++	oob_cleanmarker.hdr_crc = cpu_to_je32(crc);
++
++	return 0;
+ }
+ 
+ void jffs2_nand_flash_cleanup(struct jffs2_sb_info *c)
 
-
---=-sU/L2u65dx3mC40VvUYo--
+--=-kgpGw+o7vnglKhtt0zgb--
