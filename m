@@ -1,7 +1,7 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HCbuP-0007Mu-4l
-	for linux-mtd@lists.infradead.org; Thu, 01 Feb 2007 08:23:27 -0500
+	id 1HCc4d-0007dH-Pw
+	for linux-mtd@lists.infradead.org; Thu, 01 Feb 2007 08:34:02 -0500
 Subject: Re: [RFC] [PATCH 1/1] [MTD] UBI: implement per-volume update
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: tglx@linutronix.de
@@ -10,8 +10,8 @@ References: <20070201102105.15629.61206.sendpatchset@localhost.localdomain>
 	<20070201102111.15629.24289.sendpatchset@localhost.localdomain>
 	<1170335439.29240.277.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 01 Feb 2007 15:22:18 +0200
-Message-Id: <1170336138.3628.1.camel@sauron>
+Date: Thu, 01 Feb 2007 15:26:56 +0200
+Message-Id: <1170336416.3628.3.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: Alexander Schmidt <alexs@linux.vnet.ibm.com>, linux-mtd@lists.infradead.org
@@ -36,7 +36,8 @@ On Thu, 2007-02-01 at 14:10 +0100, Thomas Gleixner wrote:
 > Uuurgh. Incompatible in what way ? Does this mean you cannot boot from
 > an existing image anymore ?
 
-Right - it will reject it. Does it hurt you much?
+Err, actually only those which have update marker on flash. If you do
+not have it - it should be fine.
 
 --=20
 Best regards,
