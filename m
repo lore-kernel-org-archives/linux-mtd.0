@@ -1,16 +1,20 @@
-Received: from [210.94.41.89] (helo=july7)
-	by pentafluge.infradead.org with esmtpsa (Exim 4.63 #1 (Red Hat Linux))
-	id 1HCR57-0007w2-GC
-	for linux-mtd@lists.infradead.org; Thu, 01 Feb 2007 01:49:46 +0000
 From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] OneNAND: Reduce internal bufferram operation
-Date: Thu, 1 Feb 2007 10:49:39 +0900
-Message-ID: <005501c745a3$3fea1640$c7a3580a@swcenter.sec.samsung.co.kr>
+To: "'Adrian Hunter'" <ext-adrian.hunter@nokia.com>,
+	<linux-mtd@lists.infradead.org>
+References: <45BA1A9D.60301@nokia.com> <45BA21E6.60301@nokia.com>
+	<000101c7436b$14370420$c7a3580a@swcenter.sec.samsung.co.kr>
+	<45BDACBA.2080503@nokia.com> <45BE1480.1060506@nokia.com>
+	<003701c74435$0b1f61f0$c7a3580a@swcenter.sec.samsung.co.kr>
+	<45C0B8D4.2000807@nokia.com>
+Subject: RE: [PATCH] [MTD] OneNAND: Add support
+	for	auto-placementofout-of-banddata
+Date: Thu, 1 Feb 2007 11:26:03 +0900
+Message-ID: <005601c745a8$55787b50$c7a3580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: 7bit
+In-reply-to: <45C0B8D4.2000807@nokia.com>
 Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -21,121 +25,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] OneNAND: Reduce internal bufferram operation
+I'll push it.
 
-It use blockpage instead of a pair (block, page). It can also cover a small
-chunk access. 0x00, 0x20, 0x40 and so on.
+But with JFFS2 patch, there's one bug (see below)
 
-And in JFFS2 behavior, sometimes it reads two pages alternatively.
-e.g., It first reads A page, B page and A page.
-So we check another bufferram to find requested page.
-
-Any comments are welcome.
+I'l fix it and commit it.
 
 Thank you,
 Kyungmin Park
 
---
+> +static int onenand_fill_auto_oob(struct mtd_info *mtd, 
+> u_char *oob_buf,
+> +				  const u_char *buf, int 
+> column, int thislen) {
+> +	struct onenand_chip *this = mtd->priv;
+> +	struct nand_oobfree *free;
+> +	int writecol = column;
+> +	int writeend = column + thislen;
+> +	int lastgap = 0;
+> +
+> +	for (free = this->ecclayout->oobfree; free->length; ++free) {
+> +		if (writecol >= lastgap)
+> +			writecol += free->offset - lastgap;
+> +		if (writeend >= lastgap)
+> +			writeend += free->offset - lastgap;
+> +		lastgap = free->offset + free->length;
+> +	}
 
-diff --git a/drivers/mtd/onenand/onenand_base.c
-b/drivers/mtd/onenand/onenand_base.c
-index 67efbc7..5c0d55f 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -577,19 +577,22 @@ static int onenand_write_bufferram(struct mtd_info
-*mtd, int area,
- static int onenand_check_bufferram(struct mtd_info *mtd, loff_t addr)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int block, page;
--	int i;
-+	int blockpage;
-+	unsigned int i;
- 
--	block = (int) (addr >> this->erase_shift);
--	page = (int) (addr >> this->page_shift) & this->page_mask;
-+	blockpage = (int) (addr >> this->page_shift);
- 
-+	/* Is there valid data? */
- 	i = ONENAND_CURRENT_BUFFERRAM(this);
-+	if (this->bufferram[i].blockpage == blockpage)
-+		return 1;
- 
--	/* Is there valid data? */
--	if (this->bufferram[i].block == block &&
--	    this->bufferram[i].page == page &&
--	    this->bufferram[i].valid)
-+	/* Check another BufferRAM */
-+	i = ONENAND_NEXT_BUFFERRAM(this);
-+	if (this->bufferram[i].blockpage == blockpage) {
-+		ONENAND_SET_NEXT_BUFFERRAM(this);
- 		return 1;
-+	}
- 
- 	return 0;
- }
-@@ -602,30 +605,26 @@ static int onenand_check_bufferram(struct mtd_info
-*mtd, loff_t addr)
-  *
-  * Update BufferRAM information
-  */
--static int onenand_update_bufferram(struct mtd_info *mtd, loff_t addr,
-+static void onenand_update_bufferram(struct mtd_info *mtd, loff_t addr,
- 		int valid)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int block, page;
--	int i;
-+	int blockpage;
-+	unsigned int i;
- 
--	block = (int) (addr >> this->erase_shift);
--	page = (int) (addr >> this->page_shift) & this->page_mask;
-+	blockpage = (int) (addr >> this->page_shift);
- 
--	/* Invalidate BufferRAM */
--	for (i = 0; i < MAX_BUFFERRAM; i++) {
--		if (this->bufferram[i].block == block &&
--		    this->bufferram[i].page == page)
--			this->bufferram[i].valid = 0;
--	}
-+	/* Invalidate another BufferRAM */
-+	i = ONENAND_NEXT_BUFFERRAM(this);
-+	if (this->bufferram[i].blockpage == blockpage)
-+		this->bufferram[i].blockpage = -1;
- 
- 	/* Update BufferRAM */
- 	i = ONENAND_CURRENT_BUFFERRAM(this);
--	this->bufferram[i].block = block;
--	this->bufferram[i].page = page;
--	this->bufferram[i].valid = valid;
--
--	return 0;
-+	if (valid)
-+		this->bufferram[i].blockpage = blockpage;
-+	else
-+		this->bufferram[i].blockpage = -1;
- }
- 
- /**
-diff --git a/include/linux/mtd/onenand.h b/include/linux/mtd/onenand.h
-index a5e6c4b..543fa20 100644
---- a/include/linux/mtd/onenand.h
-+++ b/include/linux/mtd/onenand.h
-@@ -42,14 +42,10 @@ typedef enum {
- 
- /**
-  * struct onenand_bufferram - OneNAND BufferRAM Data
-- * @block:		block address in BufferRAM
-- * @page:		page address in BufferRAM
-- * @valid:		valid flag
-+ * @blockpage:		block & page address in BufferRAM
-  */
- struct onenand_bufferram {
--	int block;
--	int page;
--	int valid;
-+	int		blockpage;
- };
- 
- /**
+> +	writeend = mtd->oobsize;
+
+We don't re-assign the 'writeend'. It cause the block is not clean. Since
+JFFS2 send only 12 bytes but onenand writes until oobsize, actually 20
+bytes with zero.
+So this statement will be removed.
+
+> +	for (free = this->ecclayout->oobfree; free->length; ++free) {
+> +		int free_end = free->offset + free->length;
+> +		if (free->offset < writeend && free_end > writecol) {
+> +			int st = max_t(int,free->offset,writecol);
+> +			int ed = min_t(int,free_end,writeend);
+> +			int n = ed - st;
+> +			memcpy(oob_buf + st, buf, n);
+> +			buf += n;
+> +		}
+> +	}
+> +	return 0;
+
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org 
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
+> Adrian Hunter
+> Sent: Thursday, February 01, 2007 12:42 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH] [MTD] OneNAND: Add support for 
+> auto-placementofout-of-banddata
+> 
+> Just noticed another bug.  Here is better version.
+> 
+> 
+> >From f93c480e9ccd6a72abbc3fed1ab71dc4244b0229 Mon Sep 17 
+> 00:00:00 2001
+> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Date: Wed, 31 Jan 2007 17:19:28 +0200
+> Subject: [MTD] OneNAND: Add support for auto-placement of 
+> out-of-band data
+> 
+> Enable the use of oob operation mode MTD_OOB_AUTO with OneNAND.
+> Note that MTD_OOB_RAW is still not supported.
+> 
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> ---
