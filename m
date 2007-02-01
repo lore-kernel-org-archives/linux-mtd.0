@@ -1,27 +1,20 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HCWcO-00014w-2t
-	for linux-mtd@lists.infradead.org; Thu, 01 Feb 2007 02:44:30 -0500
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
-	by mgw-ext13.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l117gD9b013321
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Feb 2007 09:42:16 +0200
-Message-ID: <45C19A1F.4020201@nokia.com>
-Date: Thu, 01 Feb 2007 09:43:27 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] OneNAND: Add support
-	for	auto-placementofout-of-banddata
-References: <45BA1A9D.60301@nokia.com> <45BA21E6.60301@nokia.com>
-	<000101c7436b$14370420$c7a3580a@swcenter.sec.samsung.co.kr>
-	<45BDACBA.2080503@nokia.com> <45BE1480.1060506@nokia.com>
-	<003701c74435$0b1f61f0$c7a3580a@swcenter.sec.samsung.co.kr>
-	<45C0B8D4.2000807@nokia.com>
-	<005601c745a8$55787b50$c7a3580a@swcenter.sec.samsung.co.kr>
-In-Reply-To: <005601c745a8$55787b50$c7a3580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=EUC-KR
-Content-Transfer-Encoding: 7bit
+	id 1HCWoN-0001LJ-AA
+	for linux-mtd@lists.infradead.org; Thu, 01 Feb 2007 02:56:53 -0500
+Subject: RE: [RFC] [PATCH] JFFS2: use MTD_OOB_AUTO
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <005801c745bf$feeccb70$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <1170242892.3635.13.camel@sauron>
+	<005801c745bf$feeccb70$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 01 Feb 2007 09:56:24 +0200
+Message-Id: <1170316584.6275.20.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: 'David Woodhouse' <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,13 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Kyungmin Park wrote:
->> +	writeend = mtd->oobsize;
-> 
-> We don't re-assign the 'writeend'. It cause the block is not clean. Since
-> JFFS2 send only 12 bytes but onenand writes until oobsize, actually 20
-> bytes with zero.
-> So this statement will be removed.
+Hi Kyungmin,
 
-Yes, that was a typo.  The line should have been deleted when the previous
-line was deleted.
+On Thu, 2007-02-01 at 14:15 +0900, Kyungmin Park wrote:
+> After a minor MTD_OOB_AUTO in OneNAND, it's running.
+> I'll check and test it more.=20
+Thank you.
+
+> I think that it changes the previous jffs2 format. it means it brakes the
+> jffs2 backward compatibility.
+Yes, but I suspect this should not be a problem. The worst thing that
+should happen is that JFFS2 will just re-erase empty eraseblocks once.
+We will test this.
+
+> And one more.
+> Please re-place the 'oob_cleanmarker' initialization like this. It's almo=
+st
+> constant variable.
+> We don't need to re-init at every jffs2 mount time.
+Good point, thanks. I'll re-send the patch.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
