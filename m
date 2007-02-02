@@ -1,21 +1,16 @@
-Received: from sorrow.cyrius.com ([65.19.161.204])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HD2w4-0005mO-BR
-	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 13:14:57 -0500
-Date: Fri, 2 Feb 2007 19:14:41 +0100
-From: Martin Michlmayr <tbm@cyrius.com>
-To: "Williams, Dan J" <dan.j.williams@intel.com>
-Subject: Re: Oops parsing empty RedBoot partition with 2.6.20-rc7
-Message-ID: <20070202181441.GA2034@deprecation.cyrius.com>
-References: <20070202155607.GA31304@deprecation.cyrius.com>
-	<0C7297FA1D2D244A9C7F6959C0BF1E520148F6A0@azsmsx413.amr.corp.intel.com>
-	<20070202175755.GG24587@deprecation.cyrius.com>
+Received: from cpe.atm2-0-71355.0x535a1b8e.virnxx16.customer.tele.dk
+	([83.90.27.142] helo=bes01.blokken.lan)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HD0rW-0003X0-Oc
+	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 11:02:11 -0500
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070202175755.GG24587@deprecation.cyrius.com>
-Cc: linux-mtd@lists.infradead.org, Yoshinori Sato <ysato@users.sourceforge.jp>,
-	buytenh@wantstofly.org
+Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C746E3.AE024DFF"
+Subject: chip_ready patch for SST39VF640xB
+Date: Fri, 2 Feb 2007 17:03:29 +0100
+Message-ID: <4F576438CB468649B9FD55650B93FA238DB4A1@bes01.blokken.lan>
+From: "Niels Gram Jeppesen" <ngj@danelec-marine.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,32 +20,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-* Martin Michlmayr <tbm@cyrius.com> [2007-02-02 18:57]:
-> It was caused by:
-> 
->     [MTD] redboot partition combined fis / config problem
+This is a multi-part message in MIME format.
 
-And this fixes it for me:
+------_=_NextPart_001_01C746E3.AE024DFF
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-[MTD] Don't oops when the RedBoot partition table is empty
 
-This fixes a regression with the RedBoot parsing code introduced by
-commit 0b47d654089c5ce3f2ea26a4485db9bcead1e515
+Hi,
 
-Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
+In cfi_cmdset_0002.c, chip_ready seems to be unreliable on the =
+SST39VF640xB chip. The attached patch add two extra reads to chip_ready =
+in accordance with the chip data sheet (page 3, "Write Operation Status =
+Detection"). This seems to make the write cycle completion detection =
+reliable. I have not tested the patch on any other chips but I would =
+think that it would be harmless on chips that do not need the extra =
+reads.
 
---- a/drivers/mtd/redboot.c
-+++ b/drivers/mtd/redboot.c
-@@ -122,7 +122,7 @@ static int parse_redboot_partitions(struct mtd_info *master,
- 				}
- 			}
- 			break;
--		} else {
-+		} else if (buf[i].size != -1) {
- 			/* re-calculate of real numslots */
- 			numslots = buf[i].size / sizeof(struct fis_image_desc);
- 		}
+Best regards; hope this helps,
 
--- 
-Martin Michlmayr
-http://www.cyrius.com/
+Niels
+
+
+
+------_=_NextPart_001_01C746E3.AE024DFF
+Content-Type: application/octet-stream;
+	name="cfi_cmdset_0002.c.patch"
+Content-Transfer-Encoding: base64
+Content-Description: cfi_cmdset_0002.c.patch
+Content-Disposition: attachment;
+	filename="cfi_cmdset_0002.c.patch"
+
+LS0tIGRvd25sb2FkL2xpbnV4LTIuNi4xOS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAw
+MDIuYwkyMDA2LTExLTI5IDIyOjU3OjM3LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi42LjE5
+LWtzODY5NS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwkyMDA3LTAyLTAyIDE2
+OjI2OjU1LjAwMDAwMDAwMCArMDEwMApAQCAtNDUyLDYgKzQ1MiwxNCBAQAogCWQgPSBtYXBfcmVh
+ZChtYXAsIGFkZHIpOwogCXQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOwogCisJLyogRG8gdHdvIGV4
+dHJhIHJlYWRzIHRvIGVuc3VyZSB0aGF0IHN0YXR1cyBkZXRlY3Rpb24gd29ya3MKKwkgKiBvbiB0
+aGUgU1NUMzlWRjY0MHhCCisJICovCisJaWYgKG1hcF93b3JkX2VxdWFsKG1hcCwgZCwgdCkpCisJ
+ICB0ID0gbWFwX3JlYWQobWFwLCBhZGRyKTsKKwlpZiAobWFwX3dvcmRfZXF1YWwobWFwLCBkLCB0
+KSkKKwkgIHQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOworCiAJcmV0dXJuIG1hcF93b3JkX2VxdWFs
+KG1hcCwgZCwgdCk7CiB9Cg==
+
+------_=_NextPart_001_01C746E3.AE024DFF--
