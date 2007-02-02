@@ -1,22 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HCyqi-00027C-Si
-	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 08:53:12 -0500
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-ext12.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l12Dob31004696
-	for <linux-mtd@lists.infradead.org>; Fri, 2 Feb 2007 15:50:57 +0200
-Message-ID: <45C341FC.50805@nokia.com>
-Date: Fri, 02 Feb 2007 15:51:56 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HCzRf-0002Wf-DU
+	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 09:31:22 -0500
+Date: Fri, 2 Feb 2007 15:29:19 +0100
+From: Adrian Bunk <bunk@stusta.de>
+To: dwmw2@infradead.org
+Subject: [2.6 patch] drivers/mtd/nand/cafe_ecc.c: fix an off-by-one in a BUG_ON
+Message-ID: <20070202142919.GE3754@stusta.de>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: [RFC PATCH] [MTD] OneNAND: Error message printing and bad block
-	scan	errors
-References: <45B0F546.8030406@nokia.com>
-In-Reply-To: <45B0F546.8030406@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,4 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What is the status of this?
+err_pos_lut[4096] of an array with 4096 elements is a bug.
+
+Spotted by the Coverity checker.
+
+While I was at it, I also converted it to ARRAY_SIZE().
+
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
+
+--- linux-2.6.20-rc6-mm3/drivers/mtd/nand/cafe_ecc.c.old	2007-02-02 14:45:13.000000000 +0100
++++ linux-2.6.20-rc6-mm3/drivers/mtd/nand/cafe_ecc.c	2007-02-02 14:45:42.000000000 +0100
+@@ -1045,7 +1045,7 @@
+ 
+ static unsigned short err_pos(unsigned short din)
+ {
+-	BUG_ON(din > 4096);
++	BUG_ON(din >= ARRAY_SIZE(err_pos_lut));
+ 	return err_pos_lut[din];
+ }
+ static int chk_no_err_only(unsigned short *chk_syndrome_list, unsigned short *err_info)
