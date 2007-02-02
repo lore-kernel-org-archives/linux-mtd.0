@@ -1,14 +1,20 @@
-Subject: Re: NAND diskonchip driver broken with NFTL DOC 2000
-From: David Woodhouse <dwmw2@infradead.org>
-To: Michael Marineau <mike@marineau.org>
-In-Reply-To: <c0526ddf0701291710o65b9f786ifd1e579b75412cc2@mail.gmail.com>
-References: <c0526ddf0701291710o65b9f786ifd1e579b75412cc2@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 02 Feb 2007 17:12:22 +0000
-Message-Id: <1170436342.29759.555.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from mga02.intel.com ([134.134.136.20])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HD26s-0004yA-NE
+	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 12:22:05 -0500
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Oops parsing empty RedBoot partition with 2.6.20-rc7
+Date: Fri, 2 Feb 2007 10:22:01 -0700
+Message-ID: <0C7297FA1D2D244A9C7F6959C0BF1E520148F6A0@azsmsx413.amr.corp.intel.com>
+In-Reply-To: <20070202155607.GA31304@deprecation.cyrius.com>
+From: "Williams, Dan J" <dan.j.williams@intel.com>
+To: "Martin Michlmayr" <tbm@cyrius.com>,
+	<linux-mtd@lists.infradead.org>
+Cc: buytenh@wantstofly.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-01-29 at 17:10 -0800, Michael Marineau wrote:
-> I have been having a bit of an adventure trying to get a DiskOnChip
-> 2000 (NFTL model) working properly with nandwrite/nanddump utilities
-> and jffs2.  With the current version in 2.6.20-rc6 nandwrite/nanddump
-> can properly read and write the main data area but writes to the oob
-> area didn't do anything and reads just got garbage.  jffs2 was
-> similar, generally working but could never find clearmarkes.
-> 
-> If I use the generic nand_read/write_oob_std functions from
-> nand_base.c instead of nand_read/write_syndrome then
-> nandwrite/nanddump operates perfectly for both the data area and oob.
-> Unfortunatly with those oob functions swapped jffs2 is unhappy,
-> throwing ecc errors constantly.  I didn't check if jffs2 was able to
-> read the clearmarkers from oob. 
+> With current git (2.6.20-rc7) I get the following oops when it's
+> trying to parse the RedBoot partition.  This is on an IOP13xx based
+> board (Intel iq81340mc).  I guess the problm happens because I don't
+> have any RedBoot partitions.  Note that 2.6.19 work fine.
+>=20
+I am seeing this as well.  After a 'fis init' it starts working, but our
+customer reference boards normally ship without a partition table.  As
+you said this works fine on 2.6.19.  You may be able to do a 'git
+bisect' if iop13xx support was added before this regression...
 
-Does Artem's patch to use MTD_OOB_AUTO fix this?
-
--- 
-dwmw2
+Dan
