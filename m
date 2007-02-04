@@ -1,16 +1,18 @@
-Received: from cpe.atm2-0-71355.0x535a1b8e.virnxx16.customer.tele.dk
-	([83.90.27.142] helo=bes01.blokken.lan)
+Received: from py-out-1112.google.com ([64.233.166.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HD0rW-0003X0-Oc
-	for linux-mtd@lists.infradead.org; Fri, 02 Feb 2007 11:02:11 -0500
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="----_=_NextPart_001_01C746E3.AE024DFF"
-Subject: chip_ready patch for SST39VF640xB
-Date: Fri, 2 Feb 2007 17:03:29 +0100
-Message-ID: <4F576438CB468649B9FD55650B93FA238DB4A1@bes01.blokken.lan>
-From: "Niels Gram Jeppesen" <ngj@danelec-marine.com>
-To: <linux-mtd@lists.infradead.org>
+	id 1HDbrb-0008NA-QW
+	for linux-mtd@lists.infradead.org; Sun, 04 Feb 2007 02:32:44 -0500
+Received: by py-out-1112.google.com with SMTP id p76so696512pyb
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 03 Feb 2007 23:32:38 -0800 (PST)
+Date: Sun, 4 Feb 2007 15:32:37 +0800
+From: "xun.global" <xun.global@gmail.com>
+To: "linux-mtd" <linux-mtd@lists.infradead.org>
+Subject: jffs2, program can't run
+Message-ID: <200702041532333435388@gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="=====003_Dragon717257037035_====="
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,47 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+
 This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C746E3.AE024DFF
+--=====003_Dragon717257037035_=====
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	charset="gb2312"
+Content-Transfer-Encoding: 7bit
 
-
-Hi,
-
-In cfi_cmdset_0002.c, chip_ready seems to be unreliable on the =
-SST39VF640xB chip. The attached patch add two extra reads to chip_ready =
-in accordance with the chip data sheet (page 3, "Write Operation Status =
-Detection"). This seems to make the write cycle completion detection =
-reliable. I have not tested the patch on any other chips but I would =
-think that it would be harmless on chips that do not need the extra =
-reads.
-
-Best regards; hope this helps,
-
-Niels
+    I use jffs2 on my at91rm9200 board with dataflash, but i find sometimes the program (auto run after mount the filesystem) dies when it open a file on dataflash, even if i reboot the system. But when the program dies, it can run by hand start it. 
+    Could someone can help me. Thank you.
 
 
 
-------_=_NextPart_001_01C746E3.AE024DFF
-Content-Type: application/octet-stream;
-	name="cfi_cmdset_0002.c.patch"
-Content-Transfer-Encoding: base64
-Content-Description: cfi_cmdset_0002.c.patch
-Content-Disposition: attachment;
-	filename="cfi_cmdset_0002.c.patch"
 
-LS0tIGRvd25sb2FkL2xpbnV4LTIuNi4xOS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAw
-MDIuYwkyMDA2LTExLTI5IDIyOjU3OjM3LjAwMDAwMDAwMCArMDEwMAorKysgbGludXgtMi42LjE5
-LWtzODY5NS9kcml2ZXJzL210ZC9jaGlwcy9jZmlfY21kc2V0XzAwMDIuYwkyMDA3LTAyLTAyIDE2
-OjI2OjU1LjAwMDAwMDAwMCArMDEwMApAQCAtNDUyLDYgKzQ1MiwxNCBAQAogCWQgPSBtYXBfcmVh
-ZChtYXAsIGFkZHIpOwogCXQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOwogCisJLyogRG8gdHdvIGV4
-dHJhIHJlYWRzIHRvIGVuc3VyZSB0aGF0IHN0YXR1cyBkZXRlY3Rpb24gd29ya3MKKwkgKiBvbiB0
-aGUgU1NUMzlWRjY0MHhCCisJICovCisJaWYgKG1hcF93b3JkX2VxdWFsKG1hcCwgZCwgdCkpCisJ
-ICB0ID0gbWFwX3JlYWQobWFwLCBhZGRyKTsKKwlpZiAobWFwX3dvcmRfZXF1YWwobWFwLCBkLCB0
-KSkKKwkgIHQgPSBtYXBfcmVhZChtYXAsIGFkZHIpOworCiAJcmV0dXJuIG1hcF93b3JkX2VxdWFs
-KG1hcCwgZCwgdCk7CiB9Cg==
+xun.global
+2007-02-04
 
-------_=_NextPart_001_01C746E3.AE024DFF--
+--=====003_Dragon717257037035_=====
+Content-Type: text/html;
+	charset="gb2312"
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=Content-Type content="text/html; charset=gb2312">
+<META content="MSHTML 6.00.2900.2180" name=GENERATOR></HEAD>
+<BODY>
+<DIV><FONT face=Verdana><FONT size=2>&nbsp;&nbsp;&nbsp; I use jffs2 on my 
+at91rm9200 board with dataflash, but i find sometimes the program&nbsp;(auto run 
+after mount the filesystem) dies when it open a file on dataflash, even if i 
+reboot the system. But when the program dies, it can run by hand start it. 
+</FONT></FONT></DIV>
+<DIV><FONT face=Verdana><FONT size=2>&nbsp;&nbsp;&nbsp; Could someone can help 
+me. Thank you.</FONT></DIV>
+<DIV><FONT size=2></FONT>&nbsp;</DIV>
+<DIV align=left><FONT size=2>
+<HR style="WIDTH: 122px; HEIGHT: 2px" SIZE=2>
+</FONT></DIV>
+<DIV><FONT color=#c0c0c0><FONT size=2>xun.global</FONT></DIV>
+<DIV><FONT size=2>2007-02-04</FONT></FONT></DIV></FONT></BODY></HTML>
+
+--=====003_Dragon717257037035_=====--
