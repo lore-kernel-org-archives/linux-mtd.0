@@ -1,19 +1,16 @@
-Received: from py-out-1112.google.com ([64.233.166.178])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HDe8E-0002Gx-UI
-	for linux-mtd@lists.infradead.org; Sun, 04 Feb 2007 04:58:02 -0500
-Received: by py-out-1112.google.com with SMTP id p76so711255pyb
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 04 Feb 2007 01:57:58 -0800 (PST)
-Date: Sun, 4 Feb 2007 17:57:57 +0800
-From: "xun" <xun.global@gmail.com>
-To: "linux-mtd" <linux-mtd@lists.infradead.org>
-Subject: jffs2, program can't run
-Message-ID: <200702041757546096857@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="gb2312"
-Content-Transfer-Encoding: base64
+Received: from web51908.mail.yahoo.com ([206.190.48.71])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HDhNw-0003oC-KD
+	for linux-mtd@lists.infradead.org; Sun, 04 Feb 2007 08:26:28 -0500
+Date: Sun, 4 Feb 2007 05:26:21 -0800 (PST)
+From: Doug Kehn <rdkehn@yahoo.com>
+Subject: Re: jffs2, program can't run
+To: linux-mtd <linux-mtd@lists.infradead.org>
+In-Reply-To: <200702041532333435388@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <116087.21586.qm@web51908.mail.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,9 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG+jug0KCSBJIHVzZSBqZmZzMiBvbiBteSBhdDkxcm05MjAwIGJvYXJkIHdpdGggZGF0YWZs
-YXNoLCBidXQgaSBmaW5kIHNvbWV0aW1lcyB0aGUgcHJvZ3JhbSAoYXV0byBydW4gYWZ0ZXIgbW91
-bnQgdGhlIGZpbGVzeXN0ZW0pIGRpZXMgd2hlbiBpdCBvcGVuIGEgZmlsZSBvbiBkYXRhZmxhc2gs
-IGV2ZW4gaWYgaSByZWJvb3QgdGhlIHN5c3RlbS4gQnV0IHdoZW4gdGhlIHByb2dyYW0gZGllcywg
-aXQgY2FuIHJ1biBieSBoYW5kIHN0YXJ0IGl0LiANCiAgICBDb3VsZCBzb21lb25lIGNhbiBoZWxw
-IG1lLiBUaGFuayB5b3UuDQogCQkJCQ0KLS0tLS0tLS0tLS0tLS0NCnh1bg0KMjAwNy0wMi0wNA0K
+Hi,
+
+--- "xun.global" <xun.global@gmail.com> wrote:
+
+>     I use jffs2 on my at91rm9200 board with
+> dataflash, but i find sometimes the program (auto
+> run after mount the filesystem) dies when it open a
+> file on dataflash, even if i reboot the system. But
+> when the program dies, it can run by hand start it. 
+>     Could someone can help me. Thank you.
+> 
+
+How does the program die?  Segment Fault or failure to
+load a library needed by the program?
+
+What kernel version are you using?
+
+Are your observations similar to those reported in:
+
+http://lists.infradead.org/pipermail/linux-mtd/2007-January/017252.html
+
+Regards,
+...doug
+
+
+
+ 
+____________________________________________________________________________________
+TV dinner still cooling? 
+Check out "Tonight's Picks" on Yahoo! TV.
+http://tv.yahoo.com/
