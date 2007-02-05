@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HDz7s-0006Ta-GI
-	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:23:03 -0500
-Subject: Re: Do not understand use of oobfree
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Philip Rakity <prakity@yahoo.com>
-In-Reply-To: <872380.68552.qm@web58702.mail.re1.yahoo.com>
-References: <872380.68552.qm@web58702.mail.re1.yahoo.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 05 Feb 2007 10:22:42 +0200
-Message-Id: <1170663762.3628.56.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: <dedekind@infradead.org>,
+	<kmpark@infradead.org>
+References: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
+	<003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
+	<1170663136.3628.45.camel@sauron>
+Subject: RE: [PATCH] [JFFS2] use MTD_OOB_AUTO
+Date: Mon, 5 Feb 2007 17:27:45 +0900
+Message-ID: <003e01c748ff$8822c970$c7a3580a@swcenter.sec.samsung.co.kr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <1170663136.3628.45.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,33 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2007-02-04 at 19:58 -0800, Philip Rakity wrote:
-> I am asking because if I have a flash device that does not map per the
-> standard includes do I have to touch jffs2 to get things to work.=20
 
-I've just submitted a patch which teaches UBI to use MTD_OOB_AUTO
-option. Please, make sure your driver supports it and try the patch.
 
-The idea is that it is not application's business to know details of OOB
-- where ECC bytes ate stored, BB marker, etc. This is all legacy stuff,
-conceptually wrong. We now (thankfully) have the MTD_OOB_AUTO and it
-should be used instead. It represents free OOB bytes as a contiguous
-buffer and allows you read to it and write from it.
+> > const static => static const
+> 
+> You keep me busy :-)
+> 
+> const is "type qualifier", static is "storage class 
+> specifier" (C99, 6.7). The order may be arbitrary.
+> 
 
-The patches are not in Mainline, not even in mtd-2.6.git yet. They are
-at
-git://git.infradead.org/~dedekind/dedekind-mtd-2.6.git.
+Yes, I know it. In fact. it's minor issue.
+I just saw the some works convert from "const static" to "static const" in
+LKML.
 
-Or web
-http://git.infradead.org/?p=3Dusers/dedekind/dedekind-mtd-2.6.git;a=3Dsumma=
-ry
+Ah, there are some "const static"s :)
 
-Try this and send us your success story or the complaint.
+$ grep "const static" -R *
+arch/powerpc/kernel/rtas.c:     const static int *row_width;
+arch/sh/kernel/cpu/sh2a/clock-sh7206.c:const static int pll1rate[]={1,2,3,4,
+6,8};
+arch/sh/kernel/cpu/sh2a/clock-sh7206.c:const static int pfc_divisors[]={1,2,
+3,4,6,8,12};
+arch/sh/kernel/cpu/sh2/clock-sh7619.c:const static int pll1rate[]={1,2};
+arch/sh/kernel/cpu/sh2/clock-sh7619.c:const static int
+pfc_divisors[]={1,2,0,4};
+drivers/input/serio/libps2.c:   const static char keyboard_ids[] = {
+drivers/ieee1394/ohci1394.c:const static size_t hdr_sizes[] = {
+drivers/media/video/pvrusb2/pvrusb2-video-v4l.c:const static struct
+pvr2_i2c_handler_functions hfuncs = {
+drivers/media/video/pvrusb2/pvrusb2-wm8775.c:const static struct
+pvr2_i2c_handler_functions hfuncs = {
+drivers/media/video/pvrusb2/pvrusb2-tuner.c:const static struct
+pvr2_i2c_handler_functions tuner_funcs = {
+drivers/media/video/pvrusb2/pvrusb2-audio.c:const static struct
+pvr2_i2c_handler_functions msp3400_funcs = {
+drivers/media/video/pvrusb2/pvrusb2-std.c:const static struct std_name
+std_groups[] = {
+drivers/media/video/pvrusb2/pvrusb2-std.c:const static struct std_name
+std_items[] = {
+drivers/media/video/pvrusb2/pvrusb2-cx2584x-v4l.c:const static struct
+pvr2_i2c_handler_functions hfuncs = {
+fs/cifs/cifssmb.c:const static struct cifs_sid sid_everyone =
+fs/cifs/cifssmb.c:const static struct cifs_sid sid_user =
 
-P.S. I don't know why we don't remove the legacy OOB-related stuff - but
-I am all for it.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thank you,
+Kyungmin Park
