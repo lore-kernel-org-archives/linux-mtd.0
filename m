@@ -1,15 +1,16 @@
-Received: from web58702.mail.re1.yahoo.com ([66.196.100.124])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HDv6N-0002fa-Lr
-	for linux-mtd@lists.infradead.org; Sun, 04 Feb 2007 23:05:17 -0500
-Date: Sun, 4 Feb 2007 19:58:29 -0800 (PST)
-From: Philip Rakity <prakity@yahoo.com>
-Subject: Do not understand use of oobfree
-To: linux-mtd@lists.infradead.org
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: "'Adrian Hunter'" <ext-adrian.hunter@nokia.com>,
+	<linux-mtd@lists.infradead.org>
+References: <45C2EE39.7050909@nokia.com>
+Subject: RE: [PATCH] [MTD] OneNAND: Do not allow oob write past end of page
+Date: Mon, 5 Feb 2007 15:38:32 +0900
+Message-ID: <003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <872380.68552.qm@web58702.mail.re1.yahoo.com>
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <45C2EE39.7050909@nokia.com>
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +20,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Adrian
 
-When reading the documentation for nand flash I realized that there was
-an out of band area of some size following each page.  This size could
-be say 8, 16 or 64 bytes.  Inside this oob area is stored a bad block
-marker.  There may also be stored ecc bytes.  And there is of course
-some area not used.
+Umm Why is it required in OneNAND? Even though OneNAND is based on NAND. We
+regard it as NOR
+So we don't need this patch.
 
-Some Questions:
+Thank you,
+Kyungmin Park
 
-a) the location and size of the ecc bytes are determined by what ?
-.useecc = MTD_NANDECC_AUTOPLACE,
-
-the flash chip -
-the nand controller on the flash chip ?
-both ??  
-
-b) the oobfree area is specified as a {offset, length) pair.  When this
-gets to say the jffs2 file system what does it see.  For example
-	.oobfree = { {8, 8} }
-
-it would see 8 bytes starting at offset 8 OR 8 bytes starting at offset
-0 and the mtd driver would do the mapping.
-
-more complex example
-	.oobfree = { {3, 2}, {6, 2} }
-
-would jffs2 see 4 bytes at offset 0. or 2 sets of data at offset 3 and
-offset 6.
-
-I am asking because if I have a flash device that does not map per the
-standard includes do I have to touch jffs2 to get things to work. 
-
-regards,
-
-Philip
-
-
-
- 
-____________________________________________________________________________________
-Now that's room service!  Choose from over 150,000 hotels
-in 45,000 destinations on Yahoo! Travel to find your fit.
-http://farechase.yahoo.com/promo-generic-14795097
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org 
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
+> Adrian Hunter
+> Sent: Friday, February 02, 2007 4:55 PM
+> To: linux-mtd@lists.infradead.org
+> Subject: [PATCH] [MTD] OneNAND: Do not allow oob write past 
+> end of page
+> 
+> >From ba01b89188f21ca9a982e33452217e5c6874fd0b Mon Sep 17 
+> 00:00:00 2001
+> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Date: Thu, 1 Feb 2007 16:04:50 +0200
+> Subject: [MTD] OneNAND: Do not allow oob write past end of page
+> 
+> OneNAND can write oob to successive pages, but NAND does not 
+> do that.  For compatibility, disallow OneNAND from writing 
+> past the end of the page.
+> 
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> ---
+>  drivers/mtd/onenand/onenand_base.c |    7 +++++++
+>  1 files changed, 7 insertions(+), 0 deletions(-)
+> 
+> diff --git a/drivers/mtd/onenand/onenand_base.c 
+> b/drivers/mtd/onenand/onenand_base.c
+> index 9ec28bb..b7da84a 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -1191,6 +1191,13 @@ static int onenand_do_write_oob(struct m
+>  		return -EINVAL;
+>  	}
+>  
+> +	/* For compatibility with NAND: Do not allow write past 
+> end of page */
+> +	if (column + len > oobsize) {
+> +		DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: "
+> +		      "Attempt to write past end of page\n");
+> +		return -EINVAL;
+> +	}
+> +
+>  	/* Do not allow reads past end of device */
+>  	if (unlikely(to >= mtd->size ||
+>  		     column + len > ((mtd->size >> this->page_shift) -
+> --
+> 1.4.3
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
