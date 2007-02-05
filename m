@@ -1,18 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HDzRz-0007U0-LP
-	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:43:50 -0500
-Subject: RE: [PATCH] [JFFS2] use MTD_OOB_AUTO
+	id 1HDzTn-0007eD-0Q
+	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:45:58 -0500
+Subject: Re: Failed to mount jffs2 on mtd device
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <003e01c748ff$8822c970$c7a3580a@swcenter.sec.samsung.co.kr>
-References: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
-	<003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
-	<1170663136.3628.45.camel@sauron>
-	<003e01c748ff$8822c970$c7a3580a@swcenter.sec.samsung.co.kr>
+To: axel.lin@mitac-mtc.com.tw
+In-Reply-To: <427d64720702041910o2cc7c5d2q32e467be6a1ae5fd@mail.gmail.com>
+References: <427d64720702041910o2cc7c5d2q32e467be6a1ae5fd@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 05 Feb 2007 10:43:38 +0200
-Message-Id: <1170665018.3628.77.camel@sauron>
+Date: Mon, 05 Feb 2007 10:45:22 +0200
+Message-Id: <1170665122.3628.80.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -26,24 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-02-05 at 17:27 +0900, Kyungmin Park wrote:
->=20
-> > > const static =3D> static const
-> >=20
-> > You keep me busy :-)
-> >=20
-> > const is "type qualifier", static is "storage class=20
-> > specifier" (C99, 6.7). The order may be arbitrary.
-> >=20
->=20
-> Yes, I know it. In fact. it's minor issue.
-> I just saw the some works convert from "const static" to "static const" i=
-n
-> LKML.
+On Mon, 2007-02-05 at 11:10 +0800, axel lin wrote:
+> Uncompressing Linux......................................................=
+...................................................
+> done, booting the kernel.
+> Linux version 2.6.14-intc1 (axel@kdc.example.com) (gcc version 3.4.3)
 
-Kyungmin,
+Quite old kernel...
 
-if you kindly pointed me the LKML posts, I would be grateful!
+> Relocation table recognized, totally 57 block relocated
+> Block 0x1 relocate to Block 0x:3ff
+> Block 0x2 relocate to Block 0x:3fe
+
+Hmm, interesting, what is this relocation table? You relocate bad
+blocks?
+
+> jffs2_check_nand_cleanmarker(): Cleanmarker node not detected in block
+> at 00000000
+> OOB at 00000000 was ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+> e3 6b a8 ad 4f 0f fd 21 3f 2a 9d 0a dc 89 e5 88 9d 06 0d a3 70 c3 28
+> 0c
+
+Something unknown in OOB instead of a clean marker - JFFS2 yells but it
+is harmless. How do you flash your image on the device?
+
+> JFFS2: Erase block at 0x00fe0000 is not formatted. It will be erased
+> VFS: Mounted root (jffs2 filesystem).
+
+So you mounted it, everything is OK.
+> nand_erase: Device is write protected!!!
+> Erase at 0x008c0000 failed immediately: errno -5
+
+This is your problem. Realize why your device is read-only. I guess this
+relocation stuff is something simple and RO.
+
+You seems to have standard flash but use some strange drivers which make
+it RO. I am not sure, just guess. If so, use standard drivers and be
+happy!
 
 --=20
 Best regards,
