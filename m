@@ -1,18 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HDzFe-0006tE-H8
-	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:31:07 -0500
-Subject: RE: [PATCH] [MTD] OneNAND: Do not allow oob write past end of page
+	id 1HDzKT-00079G-Kf
+	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:36:06 -0500
+Subject: RE: [RFC PATCH] [MTD] OneNAND: Error message printing and bad
+	blockscan	errors
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: kmpark@infradead.org
-In-Reply-To: <003d01c748f9$705677c0$c7a3580a@swcenter.sec.samsung.co.kr>
-References: <45C2EE39.7050909@nokia.com>
-	<003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
-	<45C6DB35.3040106@nokia.com>
-	<003d01c748f9$705677c0$c7a3580a@swcenter.sec.samsung.co.kr>
+In-Reply-To: <003c01c748f8$5ded23a0$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <45B0F546.8030406@nokia.com> <45C341FC.50805@nokia.com>
+	<003c01c748f8$5ded23a0$c7a3580a@swcenter.sec.samsung.co.kr>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 05 Feb 2007 10:30:39 +0200
-Message-Id: <1170664239.3628.64.camel@sauron>
+Date: Mon, 05 Feb 2007 10:35:48 +0200
+Message-Id: <1170664548.3628.69.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org,
@@ -27,24 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-02-05 at 16:44 +0900, Kyungmin Park wrote:
-> I mean that in the view point of software OnenNAND is NAND, but the one o=
-f
-> hardware it is NOR.
-> So we don't need to work it as NAND. I think we don't need to restrict th=
-e
-> OneNAND
+Hello Kyungmin,
 
-OneNAND stuff which we have now is _part of MTD_. MTD has its interface,
-its model of the device. As long as we are part of this infrastructure,
-we have to obey MTD's interface, rules and restrictions.
+On Mon, 2007-02-05 at 16:36 +0900, Kyungmin Park wrote:
+> > What is the status of this?
+>=20
+> I'm not determine how to handle this one.
+> As your opinion, It is one approach which separate the wait function for
+> normal and bbt.
+> Basically, you want to see what is happen when error occurs. however it's
+> not useless for normal users
+>=20
+> Another approaches are adding new ioctl as "ERRORGETSTATS" or sysfs
+> interface.
+> The former is more simple and latter needs more works.
 
-The whole idea of MTD is to make upper layers to access flashes in a
-uniform layer. MTD achieves this at certain extent. There are flaws, but
-anyway. So basically OneNAND implements more then NAND in this OOB
-handling stuff. And it is bad. It encourages other people to write
-OneNAND-only software, incompatible with NAND, which is totally
-unreasonable in this case.
+All we wanted is not to be silent in case of sever errors. We hit this
+in practice, so the demand in the patch is quite practical.
+
+If you do not want to print errors on scanning phase, looks fair enough,
+just add an if there. But Adrian found out that there are more
+difference between the wait functions in case of scanning and normal
+operations - at least because they react on errors differently. It is a
+good reason to have 2 separate function, what he did.
 
 --=20
 Best regards,
