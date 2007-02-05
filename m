@@ -1,15 +1,15 @@
 From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Adrian Hunter'" <ext-adrian.hunter@nokia.com>,
+To: "'Artem Bityutskiy'" <dedekind@infradead.org>,
 	<linux-mtd@lists.infradead.org>
-References: <45C2EE39.7050909@nokia.com>
-Subject: RE: [PATCH] [MTD] OneNAND: Do not allow oob write past end of page
-Date: Mon, 5 Feb 2007 15:38:32 +0900
-Message-ID: <003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
+Subject: RE: [PATCH] [JFFS2] use MTD_OOB_AUTO
+Date: Mon, 5 Feb 2007 16:14:48 +0900
+Message-ID: <003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: 7bit
-In-reply-to: <45C2EE39.7050909@nokia.com>
+In-reply-to: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
 Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,65 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Adrian
+Hi,
 
-Umm Why is it required in OneNAND? Even though OneNAND is based on NAND. We
-regard it as NOR
-So we don't need this patch.
+To David Woodhouse
+
+Before commit this patch, please first merge the OneNAND tree. Since
+current mtd tree don't have MTD_OOB_AUTO support in OneNAND.
+I think It's right merge sequence.
+
+> May you please try it on NAND and confirm it is OK?
+
+Sorry, I don't have NAND chip.
+
+> +
+> +/* For historical reasons we use only 12 bytes for OOB clean 
+> marker */ 
+> +#define OOB_CM_SIZE 12
+> +
+> +const static struct jffs2_unknown_node oob_cleanmarker = {
+> +	.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK),
+> +	.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER),
+> +	.totlen = cpu_to_je32(8)
+> +};
+>  
+
+const static => static const
 
 Thank you,
 Kyungmin Park
-
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org 
-> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
-> Adrian Hunter
-> Sent: Friday, February 02, 2007 4:55 PM
-> To: linux-mtd@lists.infradead.org
-> Subject: [PATCH] [MTD] OneNAND: Do not allow oob write past 
-> end of page
-> 
-> >From ba01b89188f21ca9a982e33452217e5c6874fd0b Mon Sep 17 
-> 00:00:00 2001
-> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> Date: Thu, 1 Feb 2007 16:04:50 +0200
-> Subject: [MTD] OneNAND: Do not allow oob write past end of page
-> 
-> OneNAND can write oob to successive pages, but NAND does not 
-> do that.  For compatibility, disallow OneNAND from writing 
-> past the end of the page.
-> 
-> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> ---
->  drivers/mtd/onenand/onenand_base.c |    7 +++++++
->  1 files changed, 7 insertions(+), 0 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/onenand_base.c 
-> b/drivers/mtd/onenand/onenand_base.c
-> index 9ec28bb..b7da84a 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -1191,6 +1191,13 @@ static int onenand_do_write_oob(struct m
->  		return -EINVAL;
->  	}
->  
-> +	/* For compatibility with NAND: Do not allow write past 
-> end of page */
-> +	if (column + len > oobsize) {
-> +		DEBUG(MTD_DEBUG_LEVEL0, "onenand_write_oob: "
-> +		      "Attempt to write past end of page\n");
-> +		return -EINVAL;
-> +	}
-> +
->  	/* Do not allow reads past end of device */
->  	if (unlikely(to >= mtd->size ||
->  		     column + len > ((mtd->size >> this->page_shift) -
-> --
-> 1.4.3
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
