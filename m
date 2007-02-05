@@ -1,16 +1,22 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Artem Bityutskiy'" <dedekind@infradead.org>,
-	<linux-mtd@lists.infradead.org>
-References: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
-Subject: RE: [PATCH] [JFFS2] use MTD_OOB_AUTO
-Date: Mon, 5 Feb 2007 16:14:48 +0900
-Message-ID: <003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HDyDx-0004g3-IT
+	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 02:25:16 -0500
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-ext12.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l157L8jF005775
+	for <linux-mtd@lists.infradead.org>; Mon, 5 Feb 2007 09:21:26 +0200
+Message-ID: <45C6DB35.3040106@nokia.com>
+Date: Mon, 05 Feb 2007 09:22:29 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [MTD] OneNAND: Do not allow oob write past end of page
+References: <45C2EE39.7050909@nokia.com>
+	<003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
+In-Reply-To: <003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-reply-to: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
-Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,31 +26,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+ext Kyungmin Park wrote:
+> Umm Why is it required in OneNAND? Even though OneNAND is based on NAND. We
+> regard it as NOR
 
-To David Woodhouse
+I am not sure what you mean.  In onenand_base.c it has:
 
-Before commit this patch, please first merge the OneNAND tree. Since
-current mtd tree don't have MTD_OOB_AUTO support in OneNAND.
-I think It's right merge sequence.
+	mtd->type = MTD_NANDFLASH;
 
-> May you please try it on NAND and confirm it is OK?
-
-Sorry, I don't have NAND chip.
-
-> +
-> +/* For historical reasons we use only 12 bytes for OOB clean 
-> marker */ 
-> +#define OOB_CM_SIZE 12
-> +
-> +const static struct jffs2_unknown_node oob_cleanmarker = {
-> +	.magic = cpu_to_je16(JFFS2_MAGIC_BITMASK),
-> +	.nodetype = cpu_to_je16(JFFS2_NODETYPE_CLEANMARKER),
-> +	.totlen = cpu_to_je32(8)
-> +};
->  
-
-const static => static const
-
-Thank you,
-Kyungmin Park
+So mtd sees it as NAND.
