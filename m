@@ -1,18 +1,20 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Adrian Hunter'" <ext-adrian.hunter@nokia.com>,
-	<linux-mtd@lists.infradead.org>
-References: <45C2EE39.7050909@nokia.com>
-	<003a01c748f0$48530620$c7a3580a@swcenter.sec.samsung.co.kr>
-	<45C6DB35.3040106@nokia.com>
-Subject: RE: [PATCH] [MTD] OneNAND: Do not allow oob write past end of page
-Date: Mon, 5 Feb 2007 16:44:11 +0900
-Message-ID: <003d01c748f9$705677c0$c7a3580a@swcenter.sec.samsung.co.kr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <45C6DB35.3040106@nokia.com>
-Reply-To: kmpark@infradead.org
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HDyxm-0006Ep-M9
+	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 03:12:37 -0500
+Subject: RE: [PATCH] [JFFS2] use MTD_OOB_AUTO
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <20070202164729.11475.8623.sendpatchset@localhost.localdomain>
+	<003b01c748f5$55ae1d50$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 05 Feb 2007 10:12:16 +0200
+Message-Id: <1170663136.3628.45.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2007-02-05 at 16:14 +0900, Kyungmin Park wrote:
+> const static =3D> static const
 
-> ext Kyungmin Park wrote:
-> > Umm Why is it required in OneNAND? Even though OneNAND is based on 
-> > NAND. We regard it as NOR
-> 
-> I am not sure what you mean.  In onenand_base.c it has:
-> 
-> 	mtd->type = MTD_NANDFLASH;
-> 
-> So mtd sees it as NAND.
+You keep me busy :-)
 
-I mean that in the view point of software OnenNAND is NAND, but the one of
-hardware it is NOR.
-So we don't need to work it as NAND. I think we don't need to restrict the
-OneNAND
+const is "type qualifier", static is "storage class specifier" (C99,
+6.7). The order may be arbitrary.
 
-Thank you,
-Kyungmin Park
+:-)
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
