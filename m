@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HE3Fk-0001yb-Q6
-	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 07:47:27 -0500
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-ext14.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l15Chtha031376
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Feb 2007 14:44:21 +0200
-Message-ID: <45C72721.90302@nokia.com>
-Date: Mon, 05 Feb 2007 14:46:25 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Do not understand use of oobfree
-References: <872380.68552.qm@web58702.mail.re1.yahoo.com>
-In-Reply-To: <872380.68552.qm@web58702.mail.re1.yahoo.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1HE3ML-0002C6-FG
+	for linux-mtd@lists.infradead.org; Mon, 05 Feb 2007 07:54:18 -0500
+Subject: Re: [PATCH] [JFFS2] use MTD_OOB_AUTO - About "static const"
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <000001c74911$788740b0$06100a3b@user001b2c71e3>
+References: <000001c74911$788740b0$06100a3b@user001b2c71e3>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 05 Feb 2007 14:53:50 +0200
+Message-Id: <1170680030.3628.91.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Philip Rakity wrote:
-> b) the oobfree area is specified as a {offset, length) pair.  When this
-> gets to say the jffs2 file system what does it see.  For example
-> 	.oobfree = { {8, 8} }
+Hi Kyungmin,
 
-8 free bytes at offset 8
+On Mon, 2007-02-05 at 19:36 +0900, Kyungmin Park wrote:
+> About to send a new patch to make that 'static const' instead :)=E2=80=9D
+> Finally, re-send the patch with =E2=80=9Cstatic const=E2=80=9D[3]
+> 5. http://lkml.org/lkml/2005/11/13/125
 
-> 
-> it would see 8 bytes starting at offset 8 OR 8 bytes starting at offset
-> 0 and the mtd driver would do the mapping.
-> 
-> more complex example
-> 	.oobfree = { {3, 2}, {6, 2} }
-> 
-> would jffs2 see 4 bytes at offset 0. or 2 sets of data at offset 3 and
-> offset 6.
+I am convinced. Will fix. I won't re-send it because the fix is too
+trivial - the fixed version will be at my git.
 
-2 free bytes at offset 3
-2 free bytes at offset 6
+Thanks you!
 
-Note that the total free bytes for a page is stored in oobavail.
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
