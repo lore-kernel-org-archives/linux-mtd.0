@@ -1,13 +1,27 @@
-Subject: Re: re-formatting a Disk-on-Chip without going to DOS
-From: David Woodhouse <dwmw2@infradead.org>
-To: Christopher E Piggott <cepasp@rit.edu>
-In-Reply-To: <06CCEA2EB1B80A4A937ED59005FA855101199C07@svits26.main.ad.rit.edu>
-References: <06CCEA2EB1B80A4A937ED59005FA855101199C07@svits26.main.ad.rit.edu>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 07 Feb 2007 10:32:31 +0000
-Message-Id: <1170844351.29759.1121.camel@pmac.infradead.org>
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HEo8g-0001Wl-FP
+	for linux-mtd@lists.infradead.org; Wed, 07 Feb 2007 14:51:19 +0000
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l17Emxe4004536
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Feb 2007 09:48:59 -0500
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
+	l17Emx0N502052
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Feb 2007 07:48:59 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l17EmwY4006295
+	for <linux-mtd@lists.infradead.org>; Wed, 7 Feb 2007 07:48:58 -0700
+Subject: [PATCH] [MTD] UBI: Remove ubi_ro_mode
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: dedekind@infradead.org
+Content-Type: text/plain
+Date: Wed, 07 Feb 2007 08:50:00 -0600
+Message-Id: <1170859801.4884.38.camel@zod.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,55 +32,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-02-06 at 15:49 -0500, Christopher E Piggott wrote:
-> I did something with a bit too much haste, and I erased my DOC2000-D08
-> chip.  
->  
-> Before I did this, I attempted to save something that I could use later
-> as an backup:
->  
->     dd if=/dev/mtd0 of=backup.img bs=8k
->  
-> The file I got makes sense, at least in that it has the ANAND in it at
-> offsets 0xC000 and 0xE000... which makes me think I saved my bad block
-> map.
->  
-> My trick now is how to put it back.  Linux sees the chip, but not as a
-> DoC:
->  
->     Using configured DiskOnChip probe address 0xd0000
->     DiskOnChip found at 0xd0000
->     NAND device: Manufacturer ID: 0x98, Chip ID: 0xe6 (Toshiba NAND 8MiB
-> 3,3V 8-bit)
->     ECC error scanning DOC at 0xc000
->     ECC error scanning DOC at 0xe000
->     DiskOnChip ANAND Media Header not found.
-> 
-> This means that there is no /dev/mtd0 to put it back.
->  
-> Is it even possible to do this without going back to DOS?  That is a
-> problem for me as the systems I have with DoC sockets don't have the
-> ability to boot off of a FreeDOS floppy or CD-ROM.  It MAY be possible
-> to do something using an external hard drive, putting freedos on that,
-> and going on from there ... but life would be much simpler for me if
-> there were a way to do this entirely from linux, considering that I
-> saved the image before I started.
->  
-> Any ideas or tricks?
+commit 021b3d2fdf21ce241c8cb65d0887a6c72513c7b4
+Author: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Date:   Wed Feb 7 08:46:20 2007 -0600
 
-Hack drivers/mtd/nand/diskonchip.c to register the raw device even if it
-doesn't find the Media Header. At about line 1349, in the function
-nftl_scan_bbt() where the call to nftl_partscan() fails, make it jump to
-the add_mtd_device(mtd); at the end instead of bailing out. You may also
-want to set nand->options = NAND_SKIP_BBTSCAN at about line 1666 instead
-of its current value.
+    [MTD] UBI: Remove ubi_ro_mode
+    
+    Remove a completely unused function
+    
+    Signed-off-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
 
-Then write the original table back using nandwrite.
-
-We really ought to do something about how we expose devices to userspace
--- present a 'raw device' as well as the one mapped with the BBT and
-partitions. For the CAFÉ driver I've implemented a 'skipbbt' module
-option, but it's something we need to fix in generic code.
-
--- 
-dwmw2
+diff --git a/drivers/mtd/ubi/misc.c b/drivers/mtd/ubi/misc.c
+index 1a80fc2..6cf76cc 100644
+--- a/drivers/mtd/ubi/misc.c
++++ b/drivers/mtd/ubi/misc.c
+@@ -102,13 +102,6 @@ int ubi_calc_data_len(const struct ubi_info *ubi, const uint8_t *buf,
+ 	return length;
+ }
+ 
+-void ubi_ro_mode(const struct ubi_info *ubi)
+-{
+-	ubi_bgt_disable(ubi);
+-	ubi->io->ro_mode = 1;
+-	ubi_warn("switched to read-only mode");
+-}
+-
+ int check_volume(const struct ubi_info *ubi, int vol_id)
+ {
+ 	void *buf;
+diff --git a/drivers/mtd/ubi/misc.h b/drivers/mtd/ubi/misc.h
+index f6f2ced..831a0d2 100644
+--- a/drivers/mtd/ubi/misc.h
++++ b/drivers/mtd/ubi/misc.h
+@@ -112,13 +112,6 @@ int ubi_calc_data_len(const struct ubi_info *ubi, const uint8_t *buf,
+ 		      size_t length);
+ 
+ /**
+- * ubi_ro_mode - switch UBI to read-only mode.
+- *
+- * @ubi: the UBI device description object
+- */
+-void ubi_ro_mode(const struct ubi_info *ubi);
+-
+-/**
+  * check_volume - check the contents of a static volume.
+  *
+  * @ubi: the UBI device description object
