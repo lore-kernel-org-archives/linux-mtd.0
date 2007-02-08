@@ -1,31 +1,20 @@
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HF9ec-0006Ak-M7
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 13:49:43 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.12.11.20060308/8.13.8) with ESMTP id
-	l18Dn5QJ010736
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 08:49:05 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l18DnQQY489116
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 06:49:26 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l18DnQKf026151
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 06:49:26 -0700
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HF9zP-0002EW-TP
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 09:11:11 -0500
 Subject: Re: [PATCH] eXcite nand flash driver
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+From: Artem Bityutskiy <dedekind@infradead.org>
 To: Thomas Koeller <thomas.koeller@baslerweb.com>
-In-Reply-To: <200702080157.25432.thomas.koeller@baslerweb.com>
+In-Reply-To: <1170942627.4884.89.camel@zod.rchland.ibm.com>
 References: <200702080157.25432.thomas.koeller@baslerweb.com>
-Content-Type: text/plain
-Date: Thu, 08 Feb 2007 07:50:27 -0600
-Message-Id: <1170942627.4884.89.camel@zod.rchland.ibm.com>
+	<1170942627.4884.89.camel@zod.rchland.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Thu, 08 Feb 2007 15:55:40 +0200
+Message-Id: <1170942940.7984.5.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,101 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-02-08 at 01:57 +0100, Thomas Koeller wrote:
-> 
-> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-> index 358f55a..5b50396 100644
-> --- a/drivers/mtd/nand/Kconfig
-> +++ b/drivers/mtd/nand/Kconfig
-> @@ -216,10 +216,26 @@ config MTD_NAND_DISKONCHIP_BBTWRITE
->  	  Even if you leave this disabled, you can enable BBT writes at module
->  	  load time (assuming you build diskonchip as a module) with the module
->  	  parameter "inftl_bbt_write=1".
-> -
-> +	  
->  config MTD_NAND_SHARPSL
->  	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
->  	depends on MTD_NAND && ARCH_PXA
-> + 
-> +config MTD_NAND_BASLER_EXCITE
-> +	tristate  "Support for NAND Flash on Basler eXcite"
-> +	depends on MTD_NAND && BASLER_EXCITE
-> +	help
-> +          This enables the driver for the NAND flash device found on the
-> +          Basler eXcite Smart Camera. If built as a module, the driver
-> +	  will be named "excite_nandflash.ko".
-> +
-> +config MTD_NAND_BASLER_EXCITE
-> +	tristate  "Support for NAND Flash on Basler eXcite"
-> +	depends on MTD_NAND && BASLER_EXCITE
-> +	help
-> +          This enables the driver for the NAND flash device found on the
-> +          Basler eXcite Smart Camera. If built as a module, the driver
-> +	  will be named "excite_nandflash.ko".
+On Thu, 2007-02-08 at 07:50 -0600, Josh Boyer wrote:
+> > +	/* free the common resources */
+> > +	if (likely(this->regs)) {
+> > +		iounmap(this->regs);
+> > +		this->regs =3D NULL;
+> > +	}
+>=20
+> Same likely usage comment as above.
 
-You have the same config option twice...  Cut and paste error?
+I agree, this function will be called one or very few times, so  this
+hint is not reasonable in this case.
 
-> diff --git a/drivers/mtd/nand/excite_nandflash.c 
-> b/drivers/mtd/nand/excite_nandflash.c
-> new file mode 100644
-> index 0000000..d683659
-> --- /dev/null
-> +++ b/drivers/mtd/nand/excite_nandflash.c
-
-<snip>
-
-> +
-> +#define io_readb(__a__)		__raw_readb((__a__))
-> +#define io_writeb(__v__, __a__)	__raw_writeb((__v__), (__a__))
-
-Do you really need these defines?  Why can't you call
-__raw_{readb,writeb} directly?
-
-> +
-> +typedef void __iomem *io_reg_t;
-
-Ugh... typdef?
-
-<snip>
-
-> +static inline io_reg_t
-> +excite_nand_map_regs(struct platform_device *d, const char *basename)
-> +{
-> +	void *result = NULL;
-> +	const struct resource *const r =
-> +	    excite_nand_get_resource(d, IORESOURCE_MEM, basename);
-> +	if (likely(r))
-> +		result = ioremap_nocache(r->start, r->end + 1 - r->start);
-
-Does this likely really buy you anything?  I would think doing the
-converse (if any sort of *likely at all) would be better.
-
-<snip>
-
-> + */
-> +static int __exit excite_nand_remove(struct device *dev)
-> +{
-> +	struct excite_nand_drvdata * const this = dev_get_drvdata(dev);
-> +
-> +	dev_set_drvdata(dev, NULL);
-> +
-> +	if (unlikely(!this)) {
-> +		printk(KERN_ERR "%s: called %s without private data!!",
-> +		       module_id, __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* first thing we need to do is release our mtd
-> +	 * then go through freeing the resource used
-> +	 */
-> +	nand_release(&this->board_mtd);
-> +
-> +	/* free the common resources */
-> +	if (likely(this->regs)) {
-> +		iounmap(this->regs);
-> +		this->regs = NULL;
-> +	}
-
-Same likely usage comment as above.
-
-josh
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
