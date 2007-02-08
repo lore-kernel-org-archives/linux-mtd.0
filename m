@@ -1,24 +1,31 @@
-Received: from nf-out-0910.google.com ([64.233.182.190])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HF7uj-0001Po-JZ
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 06:58:12 -0500
-Received: by nf-out-0910.google.com with SMTP id a4so794976nfc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Feb 2007 03:58:08 -0800 (PST)
-Message-ID: <625fc13d0702080358t7bbe2d26jd42f5e61e9d5bf2d@mail.gmail.com>
-Date: Thu, 8 Feb 2007 05:58:07 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: kmpark@infradead.org
-Subject: Re: [PATCH] [MTD] Utils: Add 1KB page & 32 bytes spare NAND
-In-Reply-To: <625fc13d0702080351w74beb50eu655cbb264813c47d@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from e32.co.us.ibm.com ([32.97.110.150])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HF9ec-0006Ak-M7
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 13:49:43 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e32.co.us.ibm.com (8.12.11.20060308/8.13.8) with ESMTP id
+	l18Dn5QJ010736
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 08:49:05 -0500
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
+	l18DnQQY489116
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 06:49:26 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l18DnQKf026151
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 06:49:26 -0700
+Subject: Re: [PATCH] eXcite nand flash driver
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Thomas Koeller <thomas.koeller@baslerweb.com>
+In-Reply-To: <200702080157.25432.thomas.koeller@baslerweb.com>
+References: <200702080157.25432.thomas.koeller@baslerweb.com>
+Content-Type: text/plain
+Date: Thu, 08 Feb 2007 07:50:27 -0600
+Message-Id: <1170942627.4884.89.camel@zod.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <003301c74b58$0422c020$c7a3580a@swcenter.sec.samsung.co.kr>
-	<625fc13d0702080346y661a4e9fo531b7832c218e741@mail.gmail.com>
-	<625fc13d0702080351w74beb50eu655cbb264813c47d@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,20 +35,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2/8/07, Josh Boyer <jwboyer@gmail.com> wrote:
-> On 2/8/07, Josh Boyer <jwboyer@gmail.com> wrote:
->
-> > This doesn't apply because the whitespace is different.  I'll commit a
-> > fixed up version shortly.
->
-> Ok, fixed and pushed out:
->
+On Thu, 2007-02-08 at 01:57 +0100, Thomas Koeller wrote:
+> 
+> diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+> index 358f55a..5b50396 100644
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -216,10 +216,26 @@ config MTD_NAND_DISKONCHIP_BBTWRITE
+>  	  Even if you leave this disabled, you can enable BBT writes at module
+>  	  load time (assuming you build diskonchip as a module) with the module
+>  	  parameter "inftl_bbt_write=1".
+> -
+> +	  
+>  config MTD_NAND_SHARPSL
+>  	tristate "Support for NAND Flash on Sharp SL Series (C7xx + others)"
+>  	depends on MTD_NAND && ARCH_PXA
+> + 
+> +config MTD_NAND_BASLER_EXCITE
+> +	tristate  "Support for NAND Flash on Basler eXcite"
+> +	depends on MTD_NAND && BASLER_EXCITE
+> +	help
+> +          This enables the driver for the NAND flash device found on the
+> +          Basler eXcite Smart Camera. If built as a module, the driver
+> +	  will be named "excite_nandflash.ko".
+> +
+> +config MTD_NAND_BASLER_EXCITE
+> +	tristate  "Support for NAND Flash on Basler eXcite"
+> +	depends on MTD_NAND && BASLER_EXCITE
+> +	help
+> +          This enables the driver for the NAND flash device found on the
+> +          Basler eXcite Smart Camera. If built as a module, the driver
+> +	  will be named "excite_nandflash.ko".
 
-Sigh.  It's too early in the morning for me to be committin things.
-I've fixed it now so that it shows you as the Author:
+You have the same config option twice...  Cut and paste error?
 
-http://git.infradead.org/?p=mtd-utils.git;a=commit;h=79ebda3c02f72883de83e64c9f608e24ce148c0c
+> diff --git a/drivers/mtd/nand/excite_nandflash.c 
+> b/drivers/mtd/nand/excite_nandflash.c
+> new file mode 100644
+> index 0000000..d683659
+> --- /dev/null
+> +++ b/drivers/mtd/nand/excite_nandflash.c
 
-Sorry about that.
+<snip>
+
+> +
+> +#define io_readb(__a__)		__raw_readb((__a__))
+> +#define io_writeb(__v__, __a__)	__raw_writeb((__v__), (__a__))
+
+Do you really need these defines?  Why can't you call
+__raw_{readb,writeb} directly?
+
+> +
+> +typedef void __iomem *io_reg_t;
+
+Ugh... typdef?
+
+<snip>
+
+> +static inline io_reg_t
+> +excite_nand_map_regs(struct platform_device *d, const char *basename)
+> +{
+> +	void *result = NULL;
+> +	const struct resource *const r =
+> +	    excite_nand_get_resource(d, IORESOURCE_MEM, basename);
+> +	if (likely(r))
+> +		result = ioremap_nocache(r->start, r->end + 1 - r->start);
+
+Does this likely really buy you anything?  I would think doing the
+converse (if any sort of *likely at all) would be better.
+
+<snip>
+
+> + */
+> +static int __exit excite_nand_remove(struct device *dev)
+> +{
+> +	struct excite_nand_drvdata * const this = dev_get_drvdata(dev);
+> +
+> +	dev_set_drvdata(dev, NULL);
+> +
+> +	if (unlikely(!this)) {
+> +		printk(KERN_ERR "%s: called %s without private data!!",
+> +		       module_id, __func__);
+> +		return -EINVAL;
+> +	}
+> +
+> +	/* first thing we need to do is release our mtd
+> +	 * then go through freeing the resource used
+> +	 */
+> +	nand_release(&this->board_mtd);
+> +
+> +	/* free the common resources */
+> +	if (likely(this->regs)) {
+> +		iounmap(this->regs);
+> +		this->regs = NULL;
+> +	}
+
+Same likely usage comment as above.
 
 josh
