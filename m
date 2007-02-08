@@ -1,18 +1,25 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HFBVy-0003Cu-QQ
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 10:48:54 -0500
-Subject: Re: [PATCH] eXcite nand flash driver
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Thomas Koeller <thomas.koeller@baslerweb.com>
-In-Reply-To: <200702080157.25432.thomas.koeller@baslerweb.com>
-References: <200702080157.25432.thomas.koeller@baslerweb.com>
-Content-Type: text/plain
-Date: Thu, 08 Feb 2007 16:48:57 +0100
-Message-Id: <1170949737.3646.29.camel@chaos>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org
+Received: from mail127.messagelabs.com ([216.82.250.115])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HFBgu-0003Qt-OI
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 11:00:12 -0500
+Received: from az33exr04.mot.com (az33exr04.mot.com [10.64.251.234])
+	by motgate.mot.com (8.12.11/Motorola) with ESMTP id l18G1XkJ015598
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 8 Feb 2007 09:01:34 -0700 (MST)
+Received: from de01exm63.ds.mot.com (de01exm63.am.mot.com [10.176.8.108])
+	by az33exr04.mot.com (8.13.1/8.13.0) with ESMTP id l18FrPE2017854
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 8 Feb 2007 09:53:25 -0600 (CST)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Calculation of JFFS2 free space
+Date: Thu, 8 Feb 2007 10:53:24 -0500
+Message-ID: <F269680FD7CE404788EFB7B2A4DBC9CA02AFB464@de01exm63.ds.mot.com>
+From: "Sohn Chung-MCG31424" <ChungSohn@motorola.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,110 +29,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-02-08 at 01:57 +0100, Thomas Koeller wrote:
 
-> +static inline const struct resource *excite_nand_get_resource
-> +    (struct platform_device *d, unsigned long flags, const char *basename) {
+Hello,
+I am using JFFS2 (Linux 2.6.10) on the Large Page NAND flash.
+The size of JFFS2 partition is 7M. While applications were holding some
+files,
+I copied over an 8M file to this partition to make the filesystem full.
+After I got the out of space message, I issued the 'df' command.
 
-Move curly bracket to new line.
+The output of df was:
+# df /jffs2
+/dev/mtdblock/3    7168   7023   136   98% /jffs2
 
-> +	const char fmt[] = "%s_%u";
+# cd /jffs2
+# touch foo
+touch: foo: No space left on device
 
-Please move the format into the snprintf
+The jffs2_statfs returned 136K as the available space.
+After the filesystem is full, how the application program can figure out
+the real available space on JFFS2 before write?
 
-> +	char buf[80];
-> +
-> +	if (unlikely
-> +	    (snprintf(buf, sizeof buf, fmt, basename, d->id) >= sizeof buf))
-> +		return NULL;
-
-Useless unlikely
-
-> +	return platform_get_resource_byname(d, flags, buf);
-> +}
-> +
-> +static inline io_reg_t
-> +excite_nand_map_regs(struct platform_device *d, const char *basename)
-> +{
-> +	void *result = NULL;
-> +	const struct resource *const r =
-> +	    excite_nand_get_resource(d, IORESOURCE_MEM, basename);
-
-Blank line between variable declaration and code.
-
-> +	if (likely(r))
-> +		result = ioremap_nocache(r->start, r->end + 1 - r->start);
-
-Useless likely
-
-> +	return result;
-> +}
-
-
-> +/* command and control functions */
-> +static void excite_nand_control(struct mtd_info *mtd, int cmd,
-> +				       unsigned int ctrl)
-> +{
-> +	io_reg_t regs =
-> +	    container_of(mtd, struct excite_nand_drvdata, board_mtd)->regs;
-> +	static void __iomem *tgt = NULL;
-> +
-> +	switch (ctrl) {
-> +	case NAND_CTRL_CHANGE | NAND_CTRL_CLE:
-> +		tgt = regs + EXCITE_NANDFLASH_CMD_BYTE;
-> +		break;
-> +	case NAND_CTRL_CHANGE | NAND_CTRL_ALE:
-> +		tgt = regs + EXCITE_NANDFLASH_ADDR_BYTE;
-> +		break;
-> +	case NAND_CTRL_CHANGE | NAND_NCE:
-> +		tgt = regs + EXCITE_NANDFLASH_DATA_BYTE;
-> +		break;
-> +	}
-
-Err, did this ever work ? I doubt it. From nand_base.c:
-
-                chip->cmd_ctrl(mtd, page_addr, ctrl);                                                                                                        
-                ctrl &= ~NAND_CTRL_CHANGE;                                                                                                                   
-                chip->cmd_ctrl(mtd, page_addr >> 8, ctrl);  
-
-So I expect an OOPS happens on a regular base.
-
-> +static int excite_nand_devready(struct mtd_info *mtd)
-> +{
-> +	struct excite_nand_drvdata * const drvdata =
-> +	    container_of(mtd, struct excite_nand_drvdata, board_mtd);
-
-Blank line missing
-
-> +	return io_readb(drvdata->regs + EXCITE_NANDFLASH_STATUS_BYTE);
-> +}
-> +
-> +/* excite_nand_remove
-> + *
-> + * called by device layer to remove the driver
-> + * the binding to the mtd and all allocated
-> + * resources are released
-> + */
-> +static int __exit excite_nand_remove(struct device *dev)
-> +{
-> +	struct excite_nand_drvdata * const this = dev_get_drvdata(dev);
-> +
-> +	dev_set_drvdata(dev, NULL);
-> +
-> +	if (unlikely(!this)) {
-> +		printk(KERN_ERR "%s: called %s without private data!!",
-> +		       module_id, __func__);
-> +		return -EINVAL;
-> +	}
-> +
-> +	/* first thing we need to do is release our mtd
-> +	 * then go through freeing the resource used
-> +	 */
-> +	nand_release(&this->board_mtd);
-> +
-> +	/* free the common resources */
-> +	if (likely(this->regs)) {
-
-Why should you ever come here with no mapping ?
-
-	tglx
+Thanks in advance.
+Chung
