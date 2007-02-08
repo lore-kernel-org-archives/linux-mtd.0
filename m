@@ -1,17 +1,19 @@
-Received: from [210.94.41.89] (helo=july7)
-	by canuck.infradead.org with esmtpsa (Exim 4.63 #1 (Red Hat Linux))
-	id 1HF4IO-0007sw-0j
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 03:06:20 -0500
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [MTD] Utils: Add 1KB page & 32 bytes spare NAND
-Date: Thu, 8 Feb 2007 17:06:12 +0900
-Message-ID: <003301c74b58$0422c020$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HF69Y-0008PW-QI
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 05:05:23 -0500
+Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	by mgw-ext14.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l18A1MYX001725
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 12:01:45 +0200
+Message-ID: <45CAF583.8000709@nokia.com>
+Date: Thu, 08 Feb 2007 12:03:47 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] OneNAND: Invalidate bufferRAM after erase
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +23,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 8d5c48ee5369203fed3df8b6b58967d0e63e43a5 Mon Sep 17 00:00:00 2001
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Date: Thu, 8 Feb 2007 17:04:54 +0900
-Subject: [PATCH] [MTD] Utils: Add 1KB page & 32 bytes spare NAND
+>From df9f430fa8198c7d60acdcf0c237a34916b5ac5b Mon Sep 17 00:00:00 2001
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Wed, 7 Feb 2007 13:55:19 +0200
+Subject: [MTD] OneNAND: Invalidate bufferRAM after erase
 
-Some OneNAND chips use this spec.
+OneNAND has internal bufferRAMs.  The driver keeps track of
+what is in the bufferRAM to save having to load from the
+NAND core.  After an erase operation, the driver must
+mark bufferRAM invalid if it refers to the erased block.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
 ---
- nanddump.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
 
-diff --git a/nanddump.c b/nanddump.c
-index b2323f6..a8cb378 100644
---- a/nanddump.c
-+++ b/nanddump.c
-@@ -196,6 +196,7 @@ int main(int argc, char **argv)
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index f690c19..cf66c93 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -628,6 +628,29 @@ static void onenand_update_bufferram(str
+ }
  
- 	/* Make sure device page sizes are valid */
- 	if (!(meminfo.oobsize == 64 && meminfo.writesize == 2048) &&
-+	    !(meminfo.oobsize == 32 && meminfo.writesize == 1024) &&
- 	    !(meminfo.oobsize == 16 && meminfo.writesize == 512) &&
- 	    !(meminfo.oobsize == 8 && meminfo.writesize == 256)) {
- 		fprintf(stderr, "Unknown flash (not normal NAND)\n");
+ /**
++ * onenand_invalidate_bufferram_range - [GENERIC] Invalidate BufferRAM information
++ * @param mtd		MTD data structure
++ * @param addr		start address to invalidate
++ * @param len		length to invalidate
++ *
++ * Invalidate BufferRAM information
++ */
++static void onenand_invalidate_bufferram_range(struct mtd_info *mtd, loff_t addr,
++		unsigned int len)
++{
++	struct onenand_chip *this = mtd->priv;
++	int i;
++	loff_t end_addr = addr + len;
++
++	/* Invalidate BufferRAM */
++	for (i = 0; i < MAX_BUFFERRAM; i++) {
++		loff_t buf_addr = this->bufferram[i].blockpage << this->page_shift;
++		if (buf_addr >= addr && buf_addr < end_addr)
++			this->bufferram[i].blockpage = -1;
++	}
++}
++
++/**
+  * onenand_get_device - [GENERIC] Get chip for selected access
+  * @param mtd		MTD device structure
+  * @param new_state	the state which is requested
+@@ -1466,6 +1489,8 @@ static int onenand_erase(struct mtd_info
+ 			goto erase_exit;
+ 		}
+ 
++		onenand_invalidate_bufferram_range(mtd, addr, block_size);
++
+ 		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
+ 
+ 		ret = this->wait(mtd, FL_ERASING);
 -- 
-1.4.4.2
+1.4.3
