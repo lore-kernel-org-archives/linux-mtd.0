@@ -1,21 +1,23 @@
-Received: from nf-out-0910.google.com ([64.233.182.184])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HFBmA-0003qf-C0
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 11:05:46 -0500
-Received: by nf-out-0910.google.com with SMTP id a4so854577nfc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Feb 2007 08:05:30 -0800 (PST)
-Message-ID: <625fc13d0702080805t2b1431dxc2f6821bd3d3a56@mail.gmail.com>
-Date: Thu, 8 Feb 2007 10:05:30 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Linux mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: New git server on kernel.org?
-In-Reply-To: <625fc13d0702080803h52eb1ce9i4bb0176b741b89b8@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <625fc13d0702080803h52eb1ce9i4bb0176b741b89b8@mail.gmail.com>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HFDZw-0004OW-FM
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 13:01:07 -0500
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-ext13.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l18HwGhf017402
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Feb 2007 19:58:36 +0200
+Subject: Re: OneNAND test modules
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+In-Reply-To: <45CB3F4C.8080001@nokia.com>
+References: <45CB3F4C.8080001@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 08 Feb 2007 20:00:59 +0200
+Message-Id: <1170957660.10670.4.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,13 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 2/8/07, Josh Boyer <jwboyer@gmail.com> wrote:
-> Hi All,
->
-> Did the migration of the git stuff to a new dedicated server on
-> kernel.org ever happen?  IIRC, it was supposed to happen the 5th of
-> Feb. or so.
+On Thu, 2007-02-08 at 17:18 +0200, Adrian Hunter wrote:
+> There are 4 test modules in users/ahunter/nand-tests.git
+> that I have found useful for testing OneNAND.  They are:
+>=20
+> oobtest		Test reading and writing oob with auto-placement
+> pagetest	Test reading and writing some pages
+> subpagetest	Test reading and writing some sub-pages
+> torture		Artem's torture test (here at Artem's request)
 
-Ignore this.  gmail sucks.
+Err, surely they are not OneNAND-only and may be used to test NAND stuff
+as well?
 
-josh
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
