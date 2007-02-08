@@ -1,11 +1,11 @@
 Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HF7eE-0000Z8-SX
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 06:41:09 -0500
+	id 1HF7eK-0000ZE-KV
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 06:41:15 -0500
 From: Bityutskiy Artem <Artem.Bityutskiy@nokia.com>
 To: Kyungmin Park <kmpark@infradead.org>
-Date: Thu, 08 Feb 2007 13:39:31 +0200
-Message-Id: <20070208113931.9630.71458.sendpatchset@localhost.localdomain>
+Date: Thu, 08 Feb 2007 13:38:51 +0200
+Message-Id: <20070208113851.9628.6111.sendpatchset@localhost.localdomain>
 Subject: [PATCH] [MTD] OneNAND: add Nokia Copyright and a credit
 Cc: Bityutskiy Artem <Artem.Bityutskiy@nokia.com>,
 	A strange mailing list <linux-mtd@lists.infradead.org>,
