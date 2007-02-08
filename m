@@ -1,22 +1,23 @@
-Received: from nf-out-0910.google.com ([64.233.182.187])
+Received: from nf-out-0910.google.com ([64.233.182.190])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HF7o7-0001BQ-Ng
-	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 06:51:22 -0500
-Received: by nf-out-0910.google.com with SMTP id a4so793486nfc
+	id 1HF7uj-0001Po-JZ
+	for linux-mtd@lists.infradead.org; Thu, 08 Feb 2007 06:58:12 -0500
+Received: by nf-out-0910.google.com with SMTP id a4so794976nfc
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Feb 2007 03:51:18 -0800 (PST)
-Message-ID: <625fc13d0702080351w74beb50eu655cbb264813c47d@mail.gmail.com>
-Date: Thu, 8 Feb 2007 05:51:17 -0600
+	Thu, 08 Feb 2007 03:58:08 -0800 (PST)
+Message-ID: <625fc13d0702080358t7bbe2d26jd42f5e61e9d5bf2d@mail.gmail.com>
+Date: Thu, 8 Feb 2007 05:58:07 -0600
 From: "Josh Boyer" <jwboyer@gmail.com>
 To: kmpark@infradead.org
 Subject: Re: [PATCH] [MTD] Utils: Add 1KB page & 32 bytes spare NAND
-In-Reply-To: <625fc13d0702080346y661a4e9fo531b7832c218e741@mail.gmail.com>
+In-Reply-To: <625fc13d0702080351w74beb50eu655cbb264813c47d@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 References: <003301c74b58$0422c020$c7a3580a@swcenter.sec.samsung.co.kr>
 	<625fc13d0702080346y661a4e9fo531b7832c218e741@mail.gmail.com>
+	<625fc13d0702080351w74beb50eu655cbb264813c47d@mail.gmail.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -28,12 +29,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On 2/8/07, Josh Boyer <jwboyer@gmail.com> wrote:
+> On 2/8/07, Josh Boyer <jwboyer@gmail.com> wrote:
+>
+> > This doesn't apply because the whitespace is different.  I'll commit a
+> > fixed up version shortly.
+>
+> Ok, fixed and pushed out:
+>
 
-> This doesn't apply because the whitespace is different.  I'll commit a
-> fixed up version shortly.
+Sigh.  It's too early in the morning for me to be committin things.
+I've fixed it now so that it shows you as the Author:
 
-Ok, fixed and pushed out:
+http://git.infradead.org/?p=mtd-utils.git;a=commit;h=79ebda3c02f72883de83e64c9f608e24ce148c0c
 
-http://git.infradead.org/?p=mtd-utils.git;a=commit;h=874515162786f44d5b419e520d7e0e4143dfb6cb
+Sorry about that.
 
 josh
