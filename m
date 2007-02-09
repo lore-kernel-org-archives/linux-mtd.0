@@ -1,12 +1,11 @@
-Subject: Re: [PATCH] [MTD] cs553x_nand.c: support partitions,
-	cs553x_cleanup() fix (take 2)
+Subject: Re: Paging demand
 From: David Woodhouse <dwmw2@infradead.org>
-To: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-In-Reply-To: <20070104194114.53490a0d.indrek.kruusa@artecdesign.ee>
-References: <20070104194114.53490a0d.indrek.kruusa@artecdesign.ee>
+To: Davide CASCONE <davide.cascone@st.com>
+In-Reply-To: <001801c733cd$48e296b0$d204960a@nap.st.com>
+References: <001801c733cd$48e296b0$d204960a@nap.st.com>
 Content-Type: text/plain
-Date: Fri, 09 Feb 2007 14:14:28 +0000
-Message-Id: <1171030468.29713.30.camel@pmac.infradead.org>
+Date: Fri, 09 Feb 2007 14:15:24 +0000
+Message-Id: <1171030524.29713.32.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -19,29 +18,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-01-04 at 19:41 +0200, Indrek Kruusa wrote:
-> @@ -186,6 +189,7 @@
->         int err = 0;
->         struct nand_chip *this;
->         struct mtd_info *new_mtd;
-> +       char mtd_name[16] = "cs553x_nand_csX\0";
->  
->         printk(KERN_NOTICE "Probing CS553x NAND controller CS#%d at %sIO 0x%08lx\n", cs, mmio?"MM":"P", adr);
->  
-> @@ -245,6 +249,9 @@
->                 goto out_ior;
->         }
->  
-> +       mtd_name[14] = (char)(48 + cs);
-> +       new_mtd->name = (char*)mtd_name;
-> +
->         cs553x_mtd[cs] = new_mtd;
->         goto out;
->  
-> @@ -273,12 +280,21 @@ 
+On Tue, 2007-01-09 at 10:05 +0100, Davide CASCONE wrote:
+> 
+> I have read some documents that talk about CRAMFS as the only file
+> system that supports the paging demand. But I think that the paging
+> demand only depends on the Operating System. So I think that Linux
+> also uses the paging demand with JFFS2. Is it right?
 
-Then they just end up all pointing to the same original memory. Don't
-you need to allocate and strcpy?
+Yes.
 
 -- 
 dwmw2
