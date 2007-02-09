@@ -1,20 +1,22 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HFS37-0001Fu-5f
-	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 04:28:12 -0500
-Subject: Re: [PATCH] UBI: introduce sequential counter
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <1170972968.4884.140.camel@zod.rchland.ibm.com>
-References: <20070208200247.11853.36338.sendpatchset@localhost.localdomain>
-	<1170972968.4884.140.camel@zod.rchland.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 09 Feb 2007 11:12:19 +0200
-Message-Id: <1171012339.10670.33.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: MTDML <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+	id 1HFSN6-0001Sp-DF
+	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 04:48:51 -0500
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-ext13.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l199jqWG014157
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Feb 2007 11:46:19 +0200
+Message-ID: <45CC4341.8080803@nokia.com>
+Date: Fri, 09 Feb 2007 11:47:45 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] [MTD] OneNAND: Invalidate bufferRAM after erase
+References: <45CAF583.8000709@nokia.com>
+	<002f01c74bdf$98098760$c7a3580a@swcenter.sec.samsung.co.kr>
+In-Reply-To: <002f01c74bdf$98098760$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=EUC-KR
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,89 +26,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Josh,
+>From df9f430fa8198c7d60acdcf0c237a34916b5ac5b Mon Sep 17 00:00:00 2001
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Wed, 7 Feb 2007 13:55:19 +0200
+Subject: [MTD] OneNAND: Invalidate bufferRAM after erase
 
-On Thu, 2007-02-08 at 16:16 -0600, Josh Boyer wrote:
-> Do image creation tools now how to understand how to increment the
-> counter for each block in a binary image that would be flashed onto the
-> card raw?  Or do you leave the counter in all the VID headers as 0 for
-> such images?
+OneNAND has internal bufferRAMs.  The driver keeps track of
+what is in the bufferRAM to save having to load from the
+NAND core.  After an erase operation, the driver must
+mark bufferRAM invalid if it refers to the erased block.
 
-They don't and they should be updated. But yes, they write zeroes to the
-sqnum and UBI is happy.
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   25 +++++++++++++++++++++++++
+ 1 files changed, 25 insertions(+), 0 deletions(-)
 
-> If a new kernel is run with an older UBI image, will it automatically
-> start using the field and increment the counter values?  (If yes, that
-> makes my first question go away I think.)
-
-Yes. Both are used, incremented, etc.
-
-> No you can't.  You cannot determine time and rate from a simple counter
-> number.  All you can determine is that LEB N is older than LEB M.  It
-> could be older by 40 seconds, or older by 5 years.
-
-Here is an example:
-
-I know the number of PEBs on the media N and I may introduce an
-empirical criteria of oldness M =3D F(N). For example, M=3DkN, k is a
-natural number. Its a subject for an investigation.
-
-I know the highest sqnum (=3D the current global sequence counter) H, and
-any LEB with sqnum=3DS is treated it as old if S < H-M, and as "fresh"
-otherwise.
-
-When I move a PEB with low EC, and I need to pick the target PEB (T),
-where I move the data to. I pick T with the highest EC if the data is
-old, and I pick T with an average EC if the data is fresh.
-
->=20
-> >    is close to the current one, it was written recently. This provides =
-us
-> >    an opportunity to distinguish between LEBs with static data vs. LEBs
-> >    with not really static data (e.g., we have just recently taken a LEB
-> >    with low erase counter and wrote data there). This is useful for WL.
->=20
-> Yes, this might help wear-leveling.  But if the data is used, I would
-> recommend being very conservative about using the counter value to
-> distinguish between "static" and "non-static" data.
-
-Yes, this has to be carefully thought of.
-
-> > + * eraseblocks P and P1. But P1 has greater sequence number, so UBI pi=
-ck P1.
->=20
-> "... so UBI picks P1"
-
-Yup, Tx.
-
-> > + * which PEB is the original (obviously P will have lower @ts) and the=
- copy.
->=20
-> What is @ts?
-
-I first wanted to call it "time stamp", but store sequence number.
-Leftovers, tx.
-
-
-> > + * Note, there is an obsolete @leb_ver field which was used instead of=
- @ts in
->=20
-> Again with @ts... I think you mean @seqnum?
-
-Yup, tx.
-
-> >  	ubi32_t data_crc;
-> > -	uint8_t padding1[24];
-> > +	uint8_t padding1[4];
-> > +	ubi64_t sqnum;
-> > +	uint8_t padding2[12];
->=20
-> Can't you add the field at the bottom before hdr_crc so you don't have
-> split padding like that?
-
-No, it is 64-bit and I want it to be aligned.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index f690c19..cf66c93 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -628,6 +628,29 @@ static void onenand_update_bufferram(str
+ }
+ 
+ /**
++ * onenand_invalidate_bufferram - [GENERIC] Invalidate BufferRAM information
++ * @param mtd		MTD data structure
++ * @param addr		start address to invalidate
++ * @param len		length to invalidate
++ *
++ * Invalidate BufferRAM information
++ */
++static void onenand_invalidate_bufferram(struct mtd_info *mtd, loff_t addr,
++		unsigned int len)
++{
++	struct onenand_chip *this = mtd->priv;
++	int i;
++	loff_t end_addr = addr + len;
++
++	/* Invalidate BufferRAM */
++	for (i = 0; i < MAX_BUFFERRAM; i++) {
++		loff_t buf_addr = this->bufferram[i].blockpage << this->page_shift;
++		if (buf_addr >= addr && buf_addr < end_addr)
++			this->bufferram[i].blockpage = -1;
++	}
++}
++
++/**
+  * onenand_get_device - [GENERIC] Get chip for selected access
+  * @param mtd		MTD device structure
+  * @param new_state	the state which is requested
+@@ -1466,6 +1489,8 @@ static int onenand_erase(struct mtd_info
+ 
+ 		this->command(mtd, ONENAND_CMD_ERASE, addr, block_size);
+ 
++		onenand_invalidate_bufferram(mtd, addr, block_size);
++
+ 		ret = this->wait(mtd, FL_ERASING);
+ 		/* Check, if it is write protected */
+ 		if (ret) {
+-- 
+1.4.3
