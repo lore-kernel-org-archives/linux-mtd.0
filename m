@@ -1,16 +1,15 @@
-Subject: Re: [PATCH] [MTD] OneNAND: Invalidate bufferRAM after erase
+Subject: Re: [2.6 patch] drivers/mtd/nand/cafe_ecc.c: fix an off-by-one in
+	a BUG_ON
 From: David Woodhouse <dwmw2@infradead.org>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-In-Reply-To: <45CC4341.8080803@nokia.com>
-References: <45CAF583.8000709@nokia.com>
-	<002f01c74bdf$98098760$c7a3580a@swcenter.sec.samsung.co.kr>
-	<45CC4341.8080803@nokia.com>
+To: Adrian Bunk <bunk@stusta.de>
+In-Reply-To: <20070202142919.GE3754@stusta.de>
+References: <20070202142919.GE3754@stusta.de>
 Content-Type: text/plain
-Date: Fri, 09 Feb 2007 15:17:39 +0000
-Message-Id: <1171034259.29713.53.camel@pmac.infradead.org>
+Date: Fri, 09 Feb 2007 15:06:17 +0000
+Message-Id: <1171033577.29713.47.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Kyungmin Park <kmpark@infradead.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,15 +19,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-02-09 at 11:47 +0200, Adrian Hunter wrote:
-> OneNAND has internal bufferRAMs.  The driver keeps track of
-> what is in the bufferRAM to save having to load from the
-> NAND core.  After an erase operation, the driver must
-> mark bufferRAM invalid if it refers to the erased block.
+On Fri, 2007-02-02 at 15:29 +0100, Adrian Bunk wrote:
+> err_pos_lut[4096] of an array with 4096 elements is a bug.
 > 
-> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com> 
+> Spotted by the Coverity checker.
+> 
+> While I was at it, I also converted it to ARRAY_SIZE(). 
 
-I've pulled from the onenand git tree and applied this extra patch.
+Applied; thanks.
 
 -- 
 dwmw2
