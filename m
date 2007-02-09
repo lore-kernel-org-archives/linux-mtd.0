@@ -1,27 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HFXr7-0005hT-Fs
-	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 10:40:14 -0500
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1HFXr0-0001So-Gl
-	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 16:40:02 +0100
-Received: from 40.107.210.62.te-dns.org ([62.210.107.40])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Feb 2007 16:40:02 +0100
-Received: from matthieu.castet by 40.107.210.62.te-dns.org with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Fri, 09 Feb 2007 16:40:02 +0100
-To: linux-mtd@lists.infradead.org
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-Subject: 2.6.20 : BUG in =?utf-8?b?bmFuZF9kb19yZWFkX29vYg==?= with
-	=?utf-8?b?TVREX09PQl9QTEFDRQ==?= ?
-Date: Fri, 9 Feb 2007 15:09:59 +0000 (UTC)
-Message-ID: <loom.20070209T155657-545@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Received: from cpe.atm2-0-71355.0x535a1b8e.virnxx16.customer.tele.dk
+	([83.90.27.142] helo=bes01.blokken.lan)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HFYHq-0006Nh-Rh
+	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 11:07:49 -0500
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Chip_ready for SST39VF640xB flash
+Date: Fri, 9 Feb 2007 17:09:20 +0100
+Message-ID: <4F576438CB468649B9FD55650B93FA238DB4B5@bes01.blokken.lan>
+From: "Niels Gram Jeppesen" <ngj@danelec-marine.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,41 +24,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-2.6.20 nand mtd seems to read wrongly oob in MTD_OOB_PLACE.
-If I dump a page with uboot I get [1] and if I dump it with nanddump I get [2].
-As you could can see OOB doesn't match. Moreover the 2 snd 8 bytes OOB data
-given by nanddump are the 1st 8 bytes OOB of the next page.
+I am trying to get the chip_ready function in cfi_cmdset_0002.c to work =
+with the SST39VF640xB flash. What I see is that the current chip_ready =
+report that the chip is ready before it is ready during block erase. =
+Last week I thought that I had fixed the problem but it turned out that =
+the fix did not reliably solve the problem. I have modified chip_ready =
+to gain more knowledge about what is going wrong and call chip_ready =
+right after the block erase command has been issued. The modified =
+chip_ready does a busy wait polling DQ 10000000 times. If DQ change from =
+last poll, the new value and the poll number is stored. At the end of =
+the busy wait, the stored data is printed out. This is a typical =
+printout (i is poll number and "data" is DQ):
 
-If we look in nand_base.c, we saw that in case of MTD_OOB_PLACE, the len of oob
-is set to chip->ecc.layout->oobavail. This seems wrong as user expect to be
-mtd->oobsize.
+i =3D 0, read: 0000FF5F
+i =3D 1, read: 0000FF1B
+i =3D 2, read: 0000FF5F
+i =3D 3295, read: 0000FF1B
+i =3D 8782, read: 0000FF5F
+i =3D 14332, read: 0000FF1B
+i =3D 19884, read: 0000FF5F
+i =3D 25168, read: 0000FF1B
+i =3D 25170, read: 0000FF5F
+i =3D 25431, read: 0000FF1B
+i =3D 30968, read: 0000FF5F
+i =3D 42071, read: 0000FF1B
+i =3D 47623, read: 0000FF5F
+i =3D 65067, read: 0000FF1B
+i =3D 105299, read: 0000FFFF
+i =3D 9999999, read: 0000FFFF
 
-Does this bug is know ?
+So contrary to what is documented in the SST data sheet and also to what =
+appear to be the normal operation of an AMD compatible flash, the toggle =
+bits only toggle on consecutive reads a few times and then toggle far =
+less frequently. Does anyone know what is going on ? Is this a faulty =
+chip ? Any help would be appreciated.
 
-It seems quite critical as it impact on jffs2 (at least
-jffs2_check_nand_cleanmarker).
+Best regards,
 
-
-Matthieu
-
-[1]
-        3f 00 57 00 0c 00 00 48  10 00 00 48 13 03 00 00                       
-                                              
-        00 40 00 30 00 00 70 30  74 01 00 40 03 20 c2 e3                       
-                                              
-        02 20 80 e0 02 00 50 e1  00 30 a0 e1 0e f0 a0 01                       
-                                              
-OOB:                                                                           
-                                              
-        96 a5 96 9a 05 ff c0 43                                                
-                                              
-        05 00 18 36 05 00 ff 0f
-[2]
-[....]
-0x000001d0: 3f 00 57 00 0c 00 00 48 10 00 00 48 13 03 00 00                    
-                                              
-0x000001e0: 00 40 00 30 00 00 70 30 74 01 00 40 03 20 c2 e3                    
-                                              
-0x000001f0: 02 20 80 e0 02 00 50 e1 00 30 a0 e1 0e f0 a0 01                    
-                                              
-  OOB Data: 96 a5 96 9a 05 ff c0 43 fc 03 00 9a 05 ff c0 43
+Niels Gram
