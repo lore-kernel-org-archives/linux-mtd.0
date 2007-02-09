@@ -1,14 +1,16 @@
-Subject: Re: [PATCH] Don't include linux/mtd/map.h from linux/mtd/physmap.h
+Subject: Re: [PATCH] [MTD] OneNAND: Invalidate bufferRAM after erase
 From: David Woodhouse <dwmw2@infradead.org>
-To: Haavard Skinnemoen <hskinnemoen@atmel.com>
-In-Reply-To: <20070209153029.1ffe2420@dhcp-252-105.norway.atmel.com>
-References: <20070209153029.1ffe2420@dhcp-252-105.norway.atmel.com>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+In-Reply-To: <45CC4341.8080803@nokia.com>
+References: <45CAF583.8000709@nokia.com>
+	<002f01c74bdf$98098760$c7a3580a@swcenter.sec.samsung.co.kr>
+	<45CC4341.8080803@nokia.com>
 Content-Type: text/plain
-Date: Fri, 09 Feb 2007 15:07:50 +0000
-Message-Id: <1171033670.29713.51.camel@pmac.infradead.org>
+Date: Fri, 09 Feb 2007 15:17:39 +0000
+Message-Id: <1171034259.29713.53.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: Kyungmin Park <kmpark@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,14 +20,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-02-09 at 15:30 +0100, Haavard Skinnemoen wrote:
-> Replace the inclusion of linux/mtd/map.h with a forward-declaration
-> of struct map_info. This allows linux/mtd/physmap.h to be included by
-> e.g. board code even if the MTD subsystem is disabled.
+On Fri, 2007-02-09 at 11:47 +0200, Adrian Hunter wrote:
+> OneNAND has internal bufferRAMs.  The driver keeps track of
+> what is in the bufferRAM to save having to load from the
+> NAND core.  After an erase operation, the driver must
+> mark bufferRAM invalid if it refers to the erased block.
 > 
-> Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com> 
+> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com> 
 
-Applied; thanks.
+I've pulled from the onenand git tree and applied this extra patch.
 
 -- 
 dwmw2
