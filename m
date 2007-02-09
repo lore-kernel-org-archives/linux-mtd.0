@@ -1,18 +1,14 @@
-Subject: Re: Oops parsing empty RedBoot partition with 2.6.20-rc7
+Subject: Re: [PATCH] Don't include linux/mtd/map.h from linux/mtd/physmap.h
 From: David Woodhouse <dwmw2@infradead.org>
-To: Martin Michlmayr <tbm@cyrius.com>
-In-Reply-To: <20070202181441.GA2034@deprecation.cyrius.com>
-References: <20070202155607.GA31304@deprecation.cyrius.com>
-	<0C7297FA1D2D244A9C7F6959C0BF1E520148F6A0@azsmsx413.amr.corp.intel.com>
-	<20070202175755.GG24587@deprecation.cyrius.com>
-	<20070202181441.GA2034@deprecation.cyrius.com>
+To: Haavard Skinnemoen <hskinnemoen@atmel.com>
+In-Reply-To: <20070209153029.1ffe2420@dhcp-252-105.norway.atmel.com>
+References: <20070209153029.1ffe2420@dhcp-252-105.norway.atmel.com>
 Content-Type: text/plain
-Date: Fri, 09 Feb 2007 15:07:02 +0000
-Message-Id: <1171033622.29713.49.camel@pmac.infradead.org>
+Date: Fri, 09 Feb 2007 15:07:50 +0000
+Message-Id: <1171033670.29713.51.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: "Williams, Dan J" <dan.j.williams@intel.com>, linux-mtd@lists.infradead.org,
-	buytenh@wantstofly.org, Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: linux-mtd@lists.infradead.org, Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +18,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-02-02 at 19:14 +0100, Martin Michlmayr wrote:
+On Fri, 2007-02-09 at 15:30 +0100, Haavard Skinnemoen wrote:
+> Replace the inclusion of linux/mtd/map.h with a forward-declaration
+> of struct map_info. This allows linux/mtd/physmap.h to be included by
+> e.g. board code even if the MTD subsystem is disabled.
 > 
-> 
-> [MTD] Don't oops when the RedBoot partition table is empty
-> 
-> This fixes a regression with the RedBoot parsing code introduced by
-> commit 0b47d654089c5ce3f2ea26a4485db9bcead1e515
-> 
-> Signed-off-by: Martin Michlmayr <tbm@cyrius.com>
+> Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com> 
 
 Applied; thanks.
 
