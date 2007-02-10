@@ -1,18 +1,21 @@
-Received: from cpe.atm2-0-71355.0x535a1b8e.virnxx16.customer.tele.dk
-	([83.90.27.142] helo=bes01.blokken.lan)
+Received: from mail02.hansenet.de ([213.191.73.62] helo=webmail.hansenet.de)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HFYHq-0006Nh-Rh
-	for linux-mtd@lists.infradead.org; Fri, 09 Feb 2007 11:07:49 -0500
-Content-class: urn:content-classes:message
+	id 1HFpRG-0003xr-US
+	for linux-mtd@lists.infradead.org; Sat, 10 Feb 2007 05:26:42 -0500
+From: Thomas Koeller <thomas.koeller@baslerweb.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] eXcite nand flash driver
+Date: Sat, 10 Feb 2007 11:22:04 +0100
+References: <200702080157.25432.thomas.koeller@baslerweb.com>
+	<1170949737.3646.29.camel@chaos>
+In-Reply-To: <1170949737.3646.29.camel@chaos>
 MIME-Version: 1.0
+Content-Disposition: inline
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Chip_ready for SST39VF640xB flash
-Date: Fri, 9 Feb 2007 17:09:20 +0100
-Message-ID: <4F576438CB468649B9FD55650B93FA238DB4B5@bes01.blokken.lan>
-From: "Niels Gram Jeppesen" <ngj@danelec-marine.com>
-To: <linux-mtd@lists.infradead.org>
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200702101122.05049.thomas.koeller@baslerweb.com>
+Cc: linux-mips@linux-mips.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,43 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Donnerstag, 8. Februar 2007, Thomas Gleixner wrote:
+> > +/* command and control functions */
+> > +static void excite_nand_control(struct mtd_info *mtd, int cmd,
+> > +				       unsigned int ctrl)
+> > +{
+> > +	io_reg_t regs =
+> > +	    container_of(mtd, struct excite_nand_drvdata, board_mtd)->regs;
+> > +	static void __iomem *tgt = NULL;
+> > +
+> > +	switch (ctrl) {
+> > +	case NAND_CTRL_CHANGE | NAND_CTRL_CLE:
+> > +		tgt = regs + EXCITE_NANDFLASH_CMD_BYTE;
+> > +		break;
+> > +	case NAND_CTRL_CHANGE | NAND_CTRL_ALE:
+> > +		tgt = regs + EXCITE_NANDFLASH_ADDR_BYTE;
+> > +		break;
+> > +	case NAND_CTRL_CHANGE | NAND_NCE:
+> > +		tgt = regs + EXCITE_NANDFLASH_DATA_BYTE;
+> > +		break;
+> > +	}
+>
+> Err, did this ever work ? I doubt it. From nand_base.c:
+>
+>                 chip->cmd_ctrl(mtd, page_addr, ctrl);
+>                 ctrl &= ~NAND_CTRL_CHANGE;
+>                 chip->cmd_ctrl(mtd, page_addr >> 8, ctrl);
+>
+> So I expect an OOPS happens on a regular base.
+>
 
-I am trying to get the chip_ready function in cfi_cmdset_0002.c to work =
-with the SST39VF640xB flash. What I see is that the current chip_ready =
-report that the chip is ready before it is ready during block erase. =
-Last week I thought that I had fixed the problem but it turned out that =
-the fix did not reliably solve the problem. I have modified chip_ready =
-to gain more knowledge about what is going wrong and call chip_ready =
-right after the block erase command has been issued. The modified =
-chip_ready does a busy wait polling DQ 10000000 times. If DQ change from =
-last poll, the new value and the poll number is stored. At the end of =
-the busy wait, the stored data is printed out. This is a typical =
-printout (i is poll number and "data" is DQ):
+I guess it is the 'static void __iomem *tgt = NULL' part that worries
+you? Think about it, that value is never used.
 
-i =3D 0, read: 0000FF5F
-i =3D 1, read: 0000FF1B
-i =3D 2, read: 0000FF5F
-i =3D 3295, read: 0000FF1B
-i =3D 8782, read: 0000FF5F
-i =3D 14332, read: 0000FF1B
-i =3D 19884, read: 0000FF5F
-i =3D 25168, read: 0000FF1B
-i =3D 25170, read: 0000FF5F
-i =3D 25431, read: 0000FF1B
-i =3D 30968, read: 0000FF5F
-i =3D 42071, read: 0000FF1B
-i =3D 47623, read: 0000FF5F
-i =3D 65067, read: 0000FF1B
-i =3D 105299, read: 0000FFFF
-i =3D 9999999, read: 0000FFFF
+However, I admit it is somewhat unclean, and therefore I am changing
+it. Updated patch follows.
 
-So contrary to what is documented in the SST data sheet and also to what =
-appear to be the normal operation of an AMD compatible flash, the toggle =
-bits only toggle on consecutive reads a few times and then toggle far =
-less frequently. Does anyone know what is going on ? Is this a faulty =
-chip ? Any help would be appreciated.
-
-Best regards,
-
-Niels Gram
+tk
