@@ -1,20 +1,18 @@
-Received: from nf-out-0910.google.com ([64.233.182.185])
+Received: from ug-out-1314.google.com ([66.249.92.169])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGnnv-0007hP-QC
-	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 21:54:06 -0500
-Received: by nf-out-0910.google.com with SMTP id a4so95528nfc
+	id 1HGgwD-0004sB-F3
+	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 14:34:11 -0500
+Received: by ug-out-1314.google.com with SMTP id m2so37315uge
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Feb 2007 18:54:00 -0800 (PST)
-Message-ID: <625fc13d0702121853q4cc72f3fm709f1bb6592d1810@mail.gmail.com>
-Date: Mon, 12 Feb 2007 20:53:56 -0600
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Linux mtd" <linux-mtd@lists.infradead.org>,
-	"Frank Haverkamp" <haver@vnet.ibm.com>
-Subject: ubi branch in mtd-utils repo
+	Mon, 12 Feb 2007 11:34:05 -0800 (PST)
+Message-ID: <f383264b0702121134w4d3fcaf9ted6a5ffba38cff5a@mail.gmail.com>
+Date: Mon, 12 Feb 2007 11:34:05 -0800
+From: "Matt Reimer" <mattjreimer@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: PATCH: only round s3c2410 NAND timing values when necessary
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: multipart/mixed;
+	boundary="----=_Part_88301_2201890.1171308845148"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,19 +22,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+------=_Part_88301_2201890.1171308845148
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-I've added a ubi branch to the mtd-utils repo to give users a
-"preview" of the ubi utilities.  This was created from Frank
-Haverkamp's repo and the great work he and his team have done.  It
-also contains a handful of fixes for 64 bit issues that I just fixed
-today.
+When calculating NAND timing values, only round up when necessary.
 
-I intend for this branch to be the main repo for the utilities until
-UBI is in the upstream kernel.  At that point, I'll merge the branch
-to master and include them with the rest of the MTD utils.
+Signed-off-by: Matt Reimer <mreimer@vpop.net>
 
-If anyone has issues with this plan, please let me know.
+------=_Part_88301_2201890.1171308845148
+Content-Type: application/octet-stream; name="calc-rate.patch"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="calc-rate.patch"
+X-Attachment-Id: f_ey3b18hv
 
-thx,
-josh
+LS0tIGEvZHJpdmVycy9tdGQvbmFuZC9zM2MyNDEwLmMJVHVlIEphbiAzMCAxMjoxNTowOCAyMDA3
+CisrKyBiL2RyaXZlcnMvbXRkL25hbmQvczNjMjQxMC5jLnBhdGNoZWQJVHVlIEphbiAzMCAxMjox
+NTowOCAyMDA3CkBAIC0xNTksNyArMTU5LDggQEAgc3RhdGljIGludCBzM2NfbmFuZF9jYWxjX3Jh
+dGUoaW50IHdhbnRlZAogCWludCByZXN1bHQ7CiAKIAlyZXN1bHQgPSAod2FudGVkICogY2xrKSAv
+IE5TX0lOX0tIWjsKLQlyZXN1bHQrKzsKKwlpZiAoKCh3YW50ZWQgKiBjbGspICUgTlNfSU5fS0ha
+KSAhPSAwKQorCQlyZXN1bHQrKzsKIAogCXByX2RlYnVnKCJyZXN1bHQgJWQgZnJvbSAlbGQsICVk
+XG4iLCByZXN1bHQsIGNsaywgd2FudGVkKTsKIAo=
+------=_Part_88301_2201890.1171308845148--
