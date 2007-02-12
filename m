@@ -1,19 +1,35 @@
-Received: from fmmailgate04.web.de ([217.72.192.242])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGWKw-0006d7-Cp
-	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 03:15:02 -0500
-Received: from web.de
-	by fmmailgate04.web.de (Postfix) with SMTP id BB3A270E77B
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Feb 2007 09:14:56 +0100 (CET)
-Date: Mon, 12 Feb 2007 09:14:56 +0100
-Message-Id: <1390363360@web.de>
+Received: from mtagate6.uk.ibm.com ([195.212.29.139])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HGXLo-0007hM-WE
+	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 09:20:01 +0000
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate6.uk.ibm.com (8.13.8/8.13.8) with ESMTP id l1C9H1uu188668
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Feb 2007 09:17:01 GMT
+Received: from d06av01.portsmouth.uk.ibm.com (d06av01.portsmouth.uk.ibm.com
+	[9.149.37.212])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v8.2) with
+	ESMTP id l1C9H1qi610552
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Feb 2007 09:17:01 GMT
+Received: from d06av01.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av01.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l1C9H1De022851
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Feb 2007 09:17:01 GMT
+Received: from dyn-9-152-251-65.boeblingen.de.ibm.com
+	(dyn-9-152-251-65.boeblingen.de.ibm.com [9.152.251.65])
+	by d06av01.portsmouth.uk.ibm.com (8.12.11.20060308/8.12.11) with ESMTP
+	id l1C9H1tx022845
+	for <linux-mtd@lists.infradead.org>; Mon, 12 Feb 2007 09:17:01 GMT
+From: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
+To: MTD list <linux-mtd@lists.infradead.org>
+Subject: [PATCH] [MTD] UBI: fix parameter description of mtd_read
 MIME-Version: 1.0
-From: Tobias Arp <tobiasarp@web.de>
-To: linux-mtd@lists.infradead.org
-Subject: fsync problem with mtd device and jffs2
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Date: Mon, 12 Feb 2007 10:15:37 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Message-Id: <200702121015.37415.lindhors@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +39,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Fix the parameter description of mtd_read in io.c
 
-am using linux-2.6.13-ep93xx-gao66 on my edb9315 board and i am using
-jffs2 on a mtd device (AT49BV322DT flash). Sometimes when i copy a file
-to this device it is not completly written although i have made fsync or
-sync. But when i decrease the dirty=5Fwriteback=5Fcentisecs time it is
-always completely written.
-Why does fsync or sync not work=3F Is it a good way to solve the problem
-by decreasing dirty=5Fwriteback=5Fcentisecs time or do i have to decrease
-the dirty=5Fexpire=5Fcentisecs time too=3F Normally it is only written to this
-device during my firmware updates. So its nor really often accessed.
-Sorry for posting this message agin on this list, but i thought it would
-be the better place for it.
-Regards
+Signed-off-by: Timo Lindhorst <lindhors@linux.vnet.ibm.com>
+---
+ drivers/mtd/ubi/io.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Tobias
-=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
-Viren-Scan f=FCr Ihren PC! Jetzt f=FCr jeden. Sofort, online und kostenlos.
-Gleich testen! http://www.pc-sicherheit.web.de/freescan/=3Fmc=3D022222
+--- ubi-2.6.git.orig/drivers/mtd/ubi/io.c
++++ ubi-2.6.git/drivers/mtd/ubi/io.c
+@@ -66,7 +66,7 @@ static int paranoid_check_all_ff(const s
+ /**
+  * mtd_read - read data from flash.
+  *
+- * @ubi: the UBI device description object
++ * @io: I/O unit description object
+  * @buf: a buffer where to store the read data
+  * @pnum: physical eraseblock number to read from
+  * @offset: offset to read from
