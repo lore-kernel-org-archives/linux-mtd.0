@@ -1,19 +1,19 @@
-Received: from [210.94.41.89] (helo=july7)
-	by canuck.infradead.org with esmtpsa (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGTrc-0004mw-Kl
-	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 00:36:33 -0500
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-References: <007101c74e4c$bdb8bbb0$c7a3580a@swcenter.sec.samsung.co.kr>
-Subject: RE: [PATCH] [MTD] Make ecclayout static const
-Date: Mon, 12 Feb 2007 14:36:28 +0900
-Message-ID: <007201c74e67$c0d94150$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from fmmailgate04.web.de ([217.72.192.242])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HGWKw-0006d7-Cp
+	for linux-mtd@lists.infradead.org; Mon, 12 Feb 2007 03:15:02 -0500
+Received: from web.de
+	by fmmailgate04.web.de (Postfix) with SMTP id BB3A270E77B
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 12 Feb 2007 09:14:56 +0100 (CET)
+Date: Mon, 12 Feb 2007 09:14:56 +0100
+Message-Id: <1390363360@web.de>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <007101c74e4c$bdb8bbb0$c7a3580a@swcenter.sec.samsung.co.kr>
-Reply-To: kmpark@infradead.org
+From: Tobias Arp <tobiasarp@web.de>
+To: linux-mtd@lists.infradead.org
+Subject: fsync problem with mtd device and jffs2
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,39 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There's missing one in OneNAND.
+Hi,
 
->  
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); 
-> i++, free++) {
+am using linux-2.6.13-ep93xx-gao66 on my edb9315 board and i am using
+jffs2 on a mtd device (AT49BV322DT flash). Sometimes when i copy a file
+to this device it is not completly written although i have made fsync or
+sync. But when i decrease the dirty=5Fwriteback=5Fcentisecs time it is
+always completely written.
+Why does fsync or sync not work=3F Is it a good way to solve the problem
+by decreasing dirty=5Fwriteback=5Fcentisecs time or do i have to decrease
+the dirty=5Fexpire=5Fcentisecs time too=3F Normally it is only written to this
+device during my firmware updates. So its nor really often accessed.
+Sorry for posting this message agin on this list, but i thought it would
+be the better place for it.
+Regards
 
-After changint "static const" If we only check the free->length, it can
-point beyond the ecclayout->oobfree. Since it casts the free pointer and
-only check length.
-If we only check the array_size, it mis-calculate the readcol & readend in
-1KB page OneNAND
-So we have to check both array_size and free->length.
-
-for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree) && free->length; i++,
-free++)
-
->  
-> @@ -1270,19 +1277,22 @@ static int 
-> onenand_fill_auto_oob(struct mtd_info *mtd, u_char *oob_buf,
->  				  const u_char *buf, int column, int
-> thislen)
->  {
->  
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); 
-> i++, free++) {
-
-Same as above
-
-After previous mail comments. I will post it again.
-
-Thank you,
-Kyungmin Park
+Tobias
+=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F=5F
+Viren-Scan f=FCr Ihren PC! Jetzt f=FCr jeden. Sofort, online und kostenlos.
+Gleich testen! http://www.pc-sicherheit.web.de/freescan/=3Fmc=3D022222
