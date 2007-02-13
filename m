@@ -1,24 +1,23 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HH06c-00076o-CA
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 11:02:13 -0500
-Subject: Re: [PATCH] UBI: introduce sequential counter
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: haver@vnet.ibm.com
-In-Reply-To: <1171379484.4094.5.camel@localhost.localdomain>
-References: <20070208200247.11853.36338.sendpatchset@localhost.localdomain>
-	<1170972968.4884.140.camel@zod.rchland.ibm.com>
-	<1171012339.10670.33.camel@sauron>
-	<1171026729.4884.177.camel@zod.rchland.ibm.com>
-	<1171032000.17314.4.camel@sauron>
-	<1171379484.4094.5.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 13 Feb 2007 17:40:01 +0200
-Message-Id: <1171381201.17314.60.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: MTDML <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Received: from ug-out-1314.google.com ([66.249.92.168])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HH2gg-0008Po-I1
+	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 13:47:37 -0500
+Received: by ug-out-1314.google.com with SMTP id m2so391604uge
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Feb 2007 10:47:28 -0800 (PST)
+Message-ID: <f383264b0702131047r19254b52nf6f38882164ce588@mail.gmail.com>
+Date: Tue, 13 Feb 2007 10:47:27 -0800
+From: "Matt Reimer" <mattjreimer@gmail.com>
+To: "Matthieu CASTET" <matthieu.castet@parrot.fr>
+Subject: Re: [PATCH] S3C2412 TACLS rate calculation fix
+In-Reply-To: <loom.20070213T122031-705@post.gmane.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <20070213111204.GC2211@fluff.org.uk>
+	<loom.20070213T122031-705@post.gmane.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,19 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-02-13 at 16:11 +0100, Frank Haverkamp wrote:
-> The 64bit nature could complicate the compare code a little, and
-> we are limited to those 4KiB as you know. Mhm. It should be than
-> a comparission of a 64bit value instead of a 32bit one.
+On 2/13/07, Matthieu CASTET <matthieu.castet@parrot.fr> wrote:
+> Ben Dooks <ben <at> fluff.org.uk> writes:
+>
+> >
+> > The TALCs value on the S3C2412 value does not have
+> > an +1 adjustment unlike the S3C2410 and S3C2440.
+> >
+> > The TALCs value on the S3C2440 is only 2 bits instead
+> > of three, so change it to a maximum of 4.
+> >
+> > Re-work of an patch by Matt Reimer <mreimer <at> vpop.net>
+> >
+> Doesn't we lose the part that allow tacls to be 0 ?
 
-With current 32 bit versions you have to take care of overflow. For
-example, version 1 is newer then version 0xFFFFFFFA. I doubt comparing 2
-64-bit variable with _no_ need to look it overflow is more difficult and
-takes more code.
+Yes, we need that so 2410 can use 0 (which translates to 10 ns).
 
-These 32 bit overflowing counters really introduce mess.
+Also, I sent another patch that seems to have gotten hung up by the ml:
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+--- a/drivers/mtd/nand/s3c2410.c        Tue Jan 30 12:15:08 2007
++++ b/drivers/mtd/nand/s3c2410.c.patched        Tue Jan 30 12:15:08 2007
+@@ -159,7 +159,8 @@ static int s3c_nand_calc_rate(int wanted
+        int result;
+
+        result = (wanted * clk) / NS_IN_KHZ;
+-       result++;
++       if (((wanted * clk) % NS_IN_KHZ) != 0)
++               result++;
+
+        pr_debug("result %d from %ld, %d\n", result, clk, wanted);
+
+(Thanks the in-line clue Ben.)
+
+Matt
