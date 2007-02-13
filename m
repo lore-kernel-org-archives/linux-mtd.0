@@ -1,18 +1,16 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGw6H-0004ey-Pf
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 06:45:37 -0500
-Date: Tue, 13 Feb 2007 11:45:25 +0000
-From: Ben Dooks <ben@fluff.org.uk>
-To: Matthieu CASTET <matthieu.castet@parrot.fr>
-Subject: Re: [PATCH] S3C2412 fix hw ecc
-Message-ID: <20070213114525.GD2211@fluff.org.uk>
-References: <45D1A15E.5030109@parrot.fr>
+Received: from web52016.mail.yahoo.com ([206.190.49.248])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HGwYI-00055O-Gy
+	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 07:14:32 -0500
+Message-ID: <20070213120749.48556.qmail@web52016.mail.yahoo.com>
+Date: Tue, 13 Feb 2007 04:07:49 -0800 (PST)
+From: Doug Kehn <rdkehn@yahoo.com>
+Subject: Re: JFFS2 Root Filesystem and Linux 2.6.19
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <53943.37121.qm@web51903.mail.yahoo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <45D1A15E.5030109@parrot.fr>
-Cc: linux-mtd@lists.infradead.org, Ben Dooks <ben-fbdev@fluff.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,75 +20,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Feb 13, 2007 at 12:30:38PM +0100, Matthieu CASTET wrote:
-> Hi,
-> 
-> S3C2412 use differents registers than s3c2440 for hw ecc handling.
-> 
-> Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.fr>
-Acked-by: Ben Dooks <ben-linux@fluff.org>
+Hi All,
 
+The problem I was observing has resolved itself with
+the release of 2.6.20 (???).
 
-> Index: linux-2.6.20/drivers/mtd/nand/s3c2410.c
-> ===================================================================
-> --- linux-2.6.20.orig/drivers/mtd/nand/s3c2410.c	2007-02-13 10:17:54.000000000 +0100
-> +++ linux-2.6.20/drivers/mtd/nand/s3c2410.c	2007-02-13 12:07:10.000000000 +0100
-> @@ -419,6 +419,15 @@
->  	writel(ctrl, info->regs + S3C2410_NFCONF);
->  }
->  
-> +static void s3c2412_nand_enable_hwecc(struct mtd_info *mtd, int mode)
-> +{
-> +	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> +	unsigned long ctrl;
-> +
-> +	ctrl = readl(info->regs + S3C2440_NFCONT);
-> +	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC, info->regs + S3C2440_NFCONT);
-> +}
-> +
->  static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
->  {
->  	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> @@ -442,6 +451,20 @@
->  	return 0;
->  }
->  
-> +static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
-> +{
-> +	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> +	unsigned long ecc = readl(info->regs + S3C2412_NFMECC0);
-> +
-> +	ecc_code[0] = ecc;
-> +	ecc_code[1] = ecc >> 8;
-> +	ecc_code[2] = ecc >> 16;
-> +
-> +	pr_debug("calculate_ecc: returning ecc %02x,%02x,%02x\n", ecc_code[0], ecc_code[1], ecc_code[2]);
-> +
-> +	return 0;
-> +}
-> +
->  static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
->  {
->  	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-> @@ -619,6 +642,10 @@
->  			break;
->  
->  		case TYPE_S3C2412:
-> +  			chip->ecc.hwctl     = s3c2412_nand_enable_hwecc;
-> +  			chip->ecc.calculate = s3c2412_nand_calculate_ecc;
-> +			break;
-> +
->  		case TYPE_S3C2440:
->    			chip->ecc.hwctl     = s3c2440_nand_enable_hwecc;
->    			chip->ecc.calculate = s3c2440_nand_calculate_ecc;
+...doug
+
+--- Doug Kehn wrote:
+
+> Hi All,
 > 
-
-> ______________________________________________________
+> Some additional information/clarification.
+> 
+> > --- Doug Kehn wrote:
+> > 
+> > > Hi All,
+> > > 
+> > > Target: ADI Coyote, Intel XScale IXP-425,
+> > bigendian
+> > > Source: uClinux-dist-test-20070108
+> > >            Linux 2.6.19
+> > >            uClibc 0.9.27
+> > >            Busybox 1.0.0
+> > > Toolchain: arm-linux-tools-20061213
+> > >               binutils-2.16
+> > >               gcc-3.4.4
+> > >               glibc-2.3.3
+> > >               glibc-linuxthreads-2.3.3
+> > > 
+> > > When the kernel is configured for a jffs2
+> rootfs,
+> > > some
+> > > apps fail to load with either a Segment Fault or
+> > > "'/lib' is not an ELF file" the first time they
+> > are
+> > > executed.  The second and subsequent executions
+> of
+> > > the
+> > > same app work properly.  Attached is a sample
+> boot
+> > > log.  MTD and JFFS2 debugging information has
+> been
+> > > enabled.
+> > > 
+> > > If, on the other hand, the kernel is configured
+> > for
+> > > an
+> > > initrd and the jffs2 partition is mounted with
+> > > 'mount'
+> > > after boot, this error does not occur.
+> > > 
+>  
+> I should have said if the rootfs is a ramdisk,
+> sorry. 
+> The stock kernel command line for ADI Coyote in
+> uClinux is:
+>  
+> CONFIG_CMDLINE="console=ttyS0,115200 root=/dev/ram0
+> initrd=0x00800000,8M mem=64M@0x00000000"
+>  
+> Then from the shell:
+>  
+> # mount -n -t jffs2 -o rw,noatime /dev/mtdblock2
+> /mnt/jffs2
+>  
+> Then running /mnt/jffs2/bin/<app> does not produce
+> the error.
+> 
+> I then tried an initrd with a kernel command line of
+>  
+> CONFIG_CMDLINE="console=ttyS0,115200 root=/dev/ram0
+> init=/linuxrc rw initrd=0x03E00000,1M
+> mem=64M@0x00000000"
+>  
+> and a linuxrc of
+>  
+> #!/bin/sh
+> echo"initrd: mounting jffs2 rootfs
+> mkdir /jffs2
+> mount -n -t jffs2 -o rw,noatime /dev/mtdblock2
+> /jffs2
+> echo "initrd: starting rootfs"
+> cd /jffs2
+> [ -d initrd ] || mkdir initrd
+> pivot_root . initrd
+> exec chroot . /sbin/init <dev/console >dev/console
+> 2>&1
+>  
+> The error still occurs with this scheme.
+>  
+> > > I've posted to the uClibc group and the uClinux
+> > > group.
+> > >  My posts to these groups contain additional
+> > detail
+> > > as
+> > > well as additional traces (included as
+> > attachments).
+> > > 
+> > > I thought it easier to provide links (see below)
+> > > than
+> > > to include all the information here.  If this is
+> > not
+> > > the case, I'll compile all the information in to
+> > one
+> > > big post here.
+> > > 
+> > > The uClibc thread is -- Bummer: could not find!
+> > >
+> >
+>
+http://www.uclibc.org/lists/uclibc/2007-January/017086.html
+> > > 
+> > > The uClinux thread is --
+> > uClinux-dist-test-20070108:
+> > > Problems with jffs2 rootfs
+> > >
+> >
+>
+http://mailman.uclinux.org/pipermail/uclinux-dev/2007-January/041699.html
+> > > 
+> > > Any assistance will be appreciated.
+> > > 
+> > > Thanks,
+> > > ...doug
+> > > 
+> > 
+> > 
+> > 
+> >  
+> > 
+> 
+> 
+>  
+>
+____________________________________________________________________________________
+> Food fight? Enjoy some healthy debate 
+> in the Yahoo! Answers Food & Drink Q&A.
+>
+http://answers.yahoo.com/dir/?link=list&sid=396545367
+> 
+>
+______________________________________________________
 > Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
 
-  'a smiley only costs 4 bytes'
+ 
+____________________________________________________________________________________
+We won't tell. Get more on shows you hate to love 
+(and love to hate): Yahoo! TV's Guilty Pleasures list.
+http://tv.yahoo.com/collections/265 
