@@ -1,27 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGvT4-0003ph-36
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 11:05:06 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HGvBT-0001Cn-MW
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 11:46:51 +0100
-Received: from 40.107.210.62.te-dns.org ([62.210.107.40])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Feb 2007 11:46:51 +0100
-Received: from matthieu.castet by 40.107.210.62.te-dns.org with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Feb 2007 11:46:51 +0100
-To: linux-mtd@lists.infradead.org
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
+Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HGvXJ-0003ce-GD
+	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 06:09:41 -0500
+Date: Tue, 13 Feb 2007 11:09:21 +0000
+From: Ben Dooks <ben@fluff.org.uk>
+To: Matt Reimer <mattjreimer@gmail.com>
 Subject: Re: PATCH: calculate s3c2410 NAND timing values more accurately
-Date: Tue, 13 Feb 2007 10:46:40 +0000 (UTC)
-Message-ID: <loom.20070213T114255-129@post.gmane.org>
+Message-ID: <20070213110921.GB2211@fluff.org.uk>
 References: <f383264b0702121139w7b5dc50ds8bdd96b708c1336d@mail.gmail.com>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <f383264b0702121139w7b5dc50ds8bdd96b708c1336d@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,11 +22,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Matt Reimer <mattjreimer <at> gmail.com> writes:
-
-> 
+On Mon, Feb 12, 2007 at 11:39:55AM -0800, Matt Reimer wrote:
 > Calculate NAND timing values more accurately on S3C2410, 2412, and
 > 2440, whose registers differ slightly:
 > 
@@ -43,9 +30,80 @@ Matt Reimer <mattjreimer <at> gmail.com> writes:
 > 
 > Also, make it possible to specify a value of 0 on 2412/2440.
 > 
+> Signed-off-by: Matt Reimer <mreimer@vpop.net>
 
-If you remove the "if (result < 1) result = 1;" check in s3c_nand_calc_rate, I
-believe you should check for twrph0 or twrph1 equal 0 in s3c2410_nand_inithw (ie
-if (tacls < 0 || twrph0 <= 0 || twrph1 <= 0) { return error).
+Please in-line your patches next time, this makes it much easier
+to make comments, like this:
 
-Matthieu
+--- a/drivers/mtd/nand/s3c2410.c	Tue Jan 30 12:54:43 2007
++++ b/drivers/mtd/nand/s3c2410.c	Tue Jan 30 12:54:43 2007
+@@ -168,9 +169,6 @@ static int s3c_nand_calc_rate(int wanted
+ 		return -1;
+ 	}
+ 
+-	if (result < 1)
+-		result = 1;
+-
+
+ 	return result;
+ }
+ 
+@@ -183,7 +181,7 @@ static int s3c2410_nand_inithw(struct s3
+ {
+ 	struct s3c2410_platform_nand *plat = to_nand_plat(pdev);
+ 	unsigned long clkrate = clk_get_rate(info->clk);
+-	int tacls_max = (info->cpu_type == TYPE_S3C2412) ? 8 : 4;
++	int tacls_max = (info->cpu_type == TYPE_S3C2440) ? 4 : 8;
+ 	int tacls, twrph0, twrph1;
+ 	unsigned long cfg = 0;
+ 
+@@ -207,26 +205,34 @@ static int s3c2410_nand_inithw(struct s3
+ 		return -EINVAL;
+ 	}
+ 
+-	dev_info(info->device, "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
+-	       tacls, to_ns(tacls, clkrate), twrph0, to_ns(twrph0, clkrate), twrph1, to_ns(twrph1, clkrate));
+-
+  	switch (info->cpu_type) {
+  	case TYPE_S3C2410:
+ 		cfg = S3C2410_NFCONF_EN;
+ 		cfg |= S3C2410_NFCONF_TACLS(tacls - 1);
+ 		cfg |= S3C2410_NFCONF_TWRPH0(twrph0 - 1);
+ 		cfg |= S3C2410_NFCONF_TWRPH1(twrph1 - 1);
++
++		dev_info(info->device, "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
++			 tacls - 1, to_ns(tacls, clkrate),
++			 twrph0 - 1, to_ns(twrph0, clkrate),
++			 twrph1 - 1, to_ns(twrph1, clkrate));
++
+ 		break;
+ 
+  	case TYPE_S3C2440:
+  	case TYPE_S3C2412:
+-		cfg = S3C2440_NFCONF_TACLS(tacls - 1);
++		cfg = S3C2440_NFCONF_TACLS(tacls);
+ 		cfg |= S3C2440_NFCONF_TWRPH0(twrph0 - 1);
+ 		cfg |= S3C2440_NFCONF_TWRPH1(twrph1 - 1);
+
+According to the S3C2440A datasheet, the duration is defined
+as `HCLK * (TACLS+1)` unlike the S3C2412 which defines it as
+`HCLK * TALCS`.
+ 
+ 		/* enable the controller and de-assert nFCE */
+ 
+ 		writel(S3C2440_NFCONT_ENABLE, info->regs + S3C2440_NFCONT);
++
++		dev_info(info->device, "Tacls=%d, %dns Twrph0=%d %dns, Twrph1=%d %dns\n",
++			 tacls, to_ns(tacls, clkrate),
++			 twrph0 - 1, to_ns(twrph0, clkrate),
++			 twrph1 - 1, to_ns(twrph1, clkrate));
+ 	}
+ 
+ 	dev_dbg(info->device, "NF_CONF is 0x%lx\n", cfg);
+
+I'll post the patch I've done
+
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
