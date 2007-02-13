@@ -1,28 +1,15 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from smtp.parrot.fr ([213.41.120.202])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HGvkS-00045W-Du
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 06:23:04 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HGvkF-0006Xa-52
-	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 12:22:47 +0100
-Received: from ASt-Lambert-152-1-70-213.w86-217.abo.wanadoo.fr
-	([86.217.64.213]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Feb 2007 12:22:47 +0100
-Received: from matthieu.castet by
-	ASt-Lambert-152-1-70-213.w86-217.abo.wanadoo.fr with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 13 Feb 2007 12:22:47 +0100
-To: linux-mtd@lists.infradead.org
+	id 1HGvrR-0004LO-Ae
+	for linux-mtd@lists.infradead.org; Tue, 13 Feb 2007 06:30:16 -0500
+Message-ID: <45D1A15E.5030109@parrot.fr>
+Date: Tue, 13 Feb 2007 12:30:38 +0100
 From: Matthieu CASTET <matthieu.castet@parrot.fr>
-Subject: Re: [PATCH] S3C2412 TACLS rate calculation fix
-Date: Tue, 13 Feb 2007 11:22:32 +0000 (UTC)
-Message-ID: <loom.20070213T122031-705@post.gmane.org>
-References: <20070213111204.GC2211@fluff.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] S3C2412 fix hw ecc
+Content-Type: multipart/mixed; boundary="------------040403010702070700030002"
+Cc: Ben Dooks <ben-fbdev@fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,17 +19,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Dooks <ben <at> fluff.org.uk> writes:
+This is a multi-part message in MIME format.
+--------------040403010702070700030002
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> 
-> The TALCs value on the S3C2412 value does not have
-> an +1 adjustment unlike the S3C2410 and S3C2440.
-> 
-> The TALCs value on the S3C2440 is only 2 bits instead
-> of three, so change it to a maximum of 4.
-> 
-> Re-work of an patch by Matt Reimer <mreimer <at> vpop.net>
-> 
-Doesn't we lose the part that allow tacls to be 0 ?
+Hi,
 
-Matthieu
+S3C2412 use differents registers than s3c2440 for hw ecc handling.
+
+Signed-off-by: Matthieu CASTET <matthieu.castet@parrot.fr>
+
+
+
+
+--------------040403010702070700030002
+Content-Type: text/plain;
+ name="2412_ecc"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="2412_ecc"
+
+Index: linux-2.6.20/drivers/mtd/nand/s3c2410.c
+===================================================================
+--- linux-2.6.20.orig/drivers/mtd/nand/s3c2410.c	2007-02-13 10:17:54.000000000 +0100
++++ linux-2.6.20/drivers/mtd/nand/s3c2410.c	2007-02-13 12:07:10.000000000 +0100
+@@ -419,6 +419,15 @@
+ 	writel(ctrl, info->regs + S3C2410_NFCONF);
+ }
+ 
++static void s3c2412_nand_enable_hwecc(struct mtd_info *mtd, int mode)
++{
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
++	unsigned long ctrl;
++
++	ctrl = readl(info->regs + S3C2440_NFCONT);
++	writel(ctrl | S3C2412_NFCONT_INIT_MAIN_ECC, info->regs + S3C2440_NFCONT);
++}
++
+ static void s3c2440_nand_enable_hwecc(struct mtd_info *mtd, int mode)
+ {
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+@@ -442,6 +451,20 @@
+ 	return 0;
+ }
+ 
++static int s3c2412_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
++{
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
++	unsigned long ecc = readl(info->regs + S3C2412_NFMECC0);
++
++	ecc_code[0] = ecc;
++	ecc_code[1] = ecc >> 8;
++	ecc_code[2] = ecc >> 16;
++
++	pr_debug("calculate_ecc: returning ecc %02x,%02x,%02x\n", ecc_code[0], ecc_code[1], ecc_code[2]);
++
++	return 0;
++}
++
+ static int s3c2440_nand_calculate_ecc(struct mtd_info *mtd, const u_char *dat, u_char *ecc_code)
+ {
+ 	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
+@@ -619,6 +642,10 @@
+ 			break;
+ 
+ 		case TYPE_S3C2412:
++  			chip->ecc.hwctl     = s3c2412_nand_enable_hwecc;
++  			chip->ecc.calculate = s3c2412_nand_calculate_ecc;
++			break;
++
+ 		case TYPE_S3C2440:
+   			chip->ecc.hwctl     = s3c2440_nand_enable_hwecc;
+   			chip->ecc.calculate = s3c2440_nand_calculate_ecc;
+
+
+--------------040403010702070700030002--
