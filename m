@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHGTu-0007lq-U4
-	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 04:31:32 -0500
-Subject: Re: UBI bad block Management
+	id 1HHHBx-0008LI-5Y
+	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 05:16:51 -0500
+Subject: Re: [PATCH] UBI: fix typo and wrong comments
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
-References: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
+To: kmpark@infradead.org
+In-Reply-To: <005101c75017$52f55c30$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <005101c75017$52f55c30$c7a3580a@swcenter.sec.samsung.co.kr>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 14 Feb 2007 11:31:10 +0200
-Message-Id: <1171445470.8268.2.camel@sauron>
+Date: Wed, 14 Feb 2007 12:16:22 +0200
+Message-Id: <1171448182.8593.2.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,15 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Kyungmin,
 
-On Wed, 2007-02-14 at 14:58 +0530, Brijesh Singh wrote:
->    The flash devices are getting of bigger in Size.The Init Scan time
-> will increase with bigger Size flash.How long are we going to rely on
-> MTD for Bad block Management.
+On Wed, 2007-02-14 at 18:05 +0900, Kyungmin Park wrote:
+> Hi,
+>=20
+> Here's some fix of typo and wrong comments.
 
-I hope forever. It is MTD's and only MTD's business to manage bad
-blocks. Do not want MTD to do scanning? - Use on-flash BBT.
+Thanks for patches, they look good but they are corrupted and I cannot
+apply them. If you use evolution, select "Preformat" instead of Normal,
+then Insert->Text file to insert your patch, then it is not corrupted.
+
+Also, please, add Signed-off-by.
 
 --=20
 Best regards,
