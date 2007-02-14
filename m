@@ -1,19 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHJcL-000123-2v
-	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 07:52:18 -0500
-Subject: Re: UBI bad block Management
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
-References: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 14 Feb 2007 14:51:58 +0200
-Message-Id: <1171457518.8593.6.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from alnrmhc12.comcast.net ([206.18.177.52])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HHPF6-0003Yd-0D
+	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 13:52:39 -0500
+Message-ID: <45D35A6F.3060203@ringle.org>
+Date: Wed, 14 Feb 2007 13:52:31 -0500
+From: Jon Ringle <jon@ringle.org>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: P30 flash left in read status mode after a write
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +21,87 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-On Wed, 2007-02-14 at 14:58 +0530, Brijesh Singh wrote:
-> Hi,
->    The flash devices are getting of bigger in Size.The Init Scan time
-> will increase with bigger Size flash.How long are we going to rely on
-> MTD for Bad block Management.Even MTD doesn't maintain List but calls
-> the hardware, if hardware supports it.
-> This can be done in two ways,
-> 1:) Straight right the bitmap,and if changed erase it.We can do it in
-> One reserved block.
->            If allowed bad blocks are 20%,it will be erased 20% times
-> of total PEB count.
-> 2:)Keep a Queue in Scan of Bad blocks.Ec header contains one field
-> called last bad block.Which is PEb no.So if block is found bad,next
-> block to be written first will have Bad block no in EC.So it is
-> maintained across reboots.
-> 3:)Keep a Log in reserved Block.When it is getting full,create bitmap
-> and write it on the block.This will reduce the erasing of that block.
->=20
-> So we can maintain Bad block Map in UBI if it is necessary.
+We have a hardware architecture with a IXP455 processor that allows read 
+access to a P30 flash attached to the IXP's expansion bus from a Pentium 
+M that does it's access via the PCI bus. The flash has 4 partitions: 
+Redboot, jffs2, fconfig, fis. I am running Linux 2.6.16.29 and I've 
+found that whenever a write is done to the jffs2 filesystem that flash 
+is left in read status mode and anything trying to do a read of flash 
+directly reads only 0x0080. Reading from an mtd device seems to fix the 
+problem. I modified the mapper utility from LDD3 so I could read flash 
+directly from linux which illustrates the problem:
 
-I really tried to realize what you mean, but failed, sorry. I do not
-understand at all what are you about. May you re-phrase?
+[root@rsc4 ~]# mapper /dev/mem 0x51fa0000 0x100 1|hexdump -C
+mapped "/dev/mem" from 1375338496 (0x51fa0000) to 1375338752 (0x51fa0100)
+00000000  00 00 10 00 0b ad fa ce  01 0c 01 00 62 6f 6f 74  
+|............boot|
+00000010  5f 73 63 72 69 70 74 00  00 00 00 01 04 11 01 0c  
+|_script.........|
+00000020  62 6f 6f 74 5f 73 63 72  69 70 74 5f 64 61 74 61  
+|boot_script_data|
+00000030  00 62 6f 6f 74 5f 73 63  72 69 70 74 00 25 7b 73  
+|.boot_script.%{s|
+00000040  6e 69 66 66 7d 0a 25 7b  67 6f 7d 0a 25 7b 66 69  
+|niff}.%{go}.%{fi|
+00000050  78 5f 7a 49 6d 61 67 65  7d 0a 00 00 00 00 00 00  
+|x_zImage}.......|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  
+|................|
+*
+00000100
+[root@rsc4 ~]# touch xyz
+[root@rsc4 ~]# mapper /dev/mem 0x51fa0000 0x100 1|hexdump -C
+mapped "/dev/mem" from 1375338496 (0x51fa0000) to 1375338752 (0x51fa0100)
+00000000  00 80 00 80 00 80 00 80  00 80 00 80 00 80 00 80  
+|................|
+*
+00000100
+[root@rsc4 ~]# cat /dev/mtd2 > /dev/null
+[root@rsc4 ~]# mapper /dev/mem 0x51fa0000 0x100 1|hexdump -C
+mapped "/dev/mem" from 1375338496 (0x51fa0000) to 1375338752 (0x51fa0100)
+00000000  00 00 10 00 0b ad fa ce  01 0c 01 00 62 6f 6f 74  
+|............boot|
+00000010  5f 73 63 72 69 70 74 00  00 00 00 01 04 11 01 0c  
+|_script.........|
+00000020  62 6f 6f 74 5f 73 63 72  69 70 74 5f 64 61 74 61  
+|boot_script_data|
+00000030  00 62 6f 6f 74 5f 73 63  72 69 70 74 00 25 7b 73  
+|.boot_script.%{s|
+00000040  6e 69 66 66 7d 0a 25 7b  67 6f 7d 0a 25 7b 66 69  
+|niff}.%{go}.%{fi|
+00000050  78 5f 7a 49 6d 61 67 65  7d 0a 00 00 00 00 00 00  
+|x_zImage}.......|
+00000060  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  
+|................|
+*
+00000100
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+It appears that the MTD_XIP code has what I need to get flash out of 
+read status mode after a write, however, since I'm not actually doing 
+execute in place, it's overkill for my purposes. It seems that writing a 
+xip_enable() function that puts flash in ready mode and leaving the 
+other xip_* functions defined as nothing was a quick way to fix the 
+problem in my case:
+
+static void __xipram xip_enable(struct map_info *map, struct flchip *chip,
+                unsigned long adr)
+{
+    struct cfi_private *cfi = map->fldrv_priv;
+    if (chip->state != FL_POINT && chip->state != FL_READY) {
+        map_write(map, CMD(0xff), adr);
+        chip->state = FL_READY;
+    }
+    (void) map_read(map, adr);
+}
+
+This did indeed seem to fix the problem, but I'm not sure if I might 
+inadvertently be causing some side effect. I believe that I might be 
+taking a slight performance hit to consecutive jffs2 write operations 
+because now each write operation will need to spend more cycles putting 
+the flash in to a write mode.
+
+Any advice would be appreciated.
+
+Thanks,
+
+Jon
