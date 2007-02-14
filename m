@@ -1,18 +1,20 @@
-Received: from [210.94.41.89] (helo=july7)
-	by pentafluge.infradead.org with esmtpsa (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHFVX-0007yU-Lj
-	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 08:28:56 +0000
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-Subject: UBI: What's the correct assert condition in write_leb function in
-	upd.c
-Date: Wed, 14 Feb 2007 17:28:47 +0900
-Message-ID: <005001c75012$2ab0ed20$c7a3580a@swcenter.sec.samsung.co.kr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-Reply-To: kmpark@infradead.org
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HHFzI-0006u0-BY
+	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 03:59:43 -0500
+Subject: Re: UBI: What's the correct assert condition in write_leb function
+	in upd.c
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <005001c75012$2ab0ed20$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <005001c75012$2ab0ed20$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 14 Feb 2007 10:55:17 +0200
+Message-Id: <1171443317.17314.89.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2007-02-14 at 17:28 +0900, Kyungmin Park wrote:
+> I think it's wrong assert condition in write_leb function in upd.c
+> What's the correct assert condition?
 
-I think it's wrong assert condition in write_leb function in upd.c
-What's the correct assert condition?
+Sure, thanks!
 
-Thank you,
-Kyungmin Park
-
-diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
-index 1359ca4..09e394a 100644
---- a/drivers/mtd/ubi/upd.c
-+++ b/drivers/mtd/ubi/upd.c
-@@ -364,7 +364,7 @@ static int write_leb(const struct ubi_info *ubi, int
-vol_id, int lnum,
- 	if (vtr->vol_type == UBI_DYNAMIC_VOLUME) {
- 		size_t l;
- 
--		ubi_assert(len = vtr->usable_leb_size);
-+		ubi_assert(len == vtr->usable_leb_size);
- 
- 		/* This is dynamic volume - skip the ending 0xFFs */
- 		l = ubi_calc_data_len(ubi, buf, len);
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
