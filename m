@@ -1,19 +1,19 @@
-Received: from ug-out-1314.google.com ([66.249.92.174])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHGQn-0007Zo-Gr
-	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 04:28:10 -0500
-Received: by ug-out-1314.google.com with SMTP id m2so121568uge
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 14 Feb 2007 01:28:03 -0800 (PST)
-Message-ID: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
-Date: Wed, 14 Feb 2007 14:58:02 +0530
-From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: UBI bad block Management
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HHGTu-0007lq-U4
+	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 04:31:32 -0500
+Subject: Re: UBI bad block Management
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Brijesh Singh <brijesh.s.singh@gmail.com>
+In-Reply-To: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
+References: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 14 Feb 2007 11:31:10 +0200
+Message-Id: <1171445470.8268.2.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +24,16 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Hi,
-   The flash devices are getting of bigger in Size.The Init Scan time
-will increase with bigger Size flash.How long are we going to rely on
-MTD for Bad block Management.Even MTD doesn't maintain List but calls
-the hardware, if hardware supports it.
-This can be done in two ways,
-1:) Straight right the bitmap,and if changed erase it.We can do it in
-One reserved block.
-           If allowed bad blocks are 20%,it will be erased 20% times
-of total PEB count.
-2:)Keep a Queue in Scan of Bad blocks.Ec header contains one field
-called last bad block.Which is PEb no.So if block is found bad,next
-block to be written first will have Bad block no in EC.So it is
-maintained across reboots.
-3:)Keep a Log in reserved Block.When it is getting full,create bitmap
-and write it on the block.This will reduce the erasing of that block.
 
-So we can maintain Bad block Map in UBI if it is necessary.
+On Wed, 2007-02-14 at 14:58 +0530, Brijesh Singh wrote:
+>    The flash devices are getting of bigger in Size.The Init Scan time
+> will increase with bigger Size flash.How long are we going to rely on
+> MTD for Bad block Management.
+
+I hope forever. It is MTD's and only MTD's business to manage bad
+blocks. Do not want MTD to do scanning? - Use on-flash BBT.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
