@@ -1,29 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHigV-0003E4-CS
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:38:15 -0500
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HHigP-0003Gw-8u
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 16:38:05 +0100
-Received: from ASt-Lambert-152-1-42-242.w82-124.abo.wanadoo.fr
-	([82.124.168.242]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 16:38:05 +0100
-Received: from matthieu.castet by
-	ASt-Lambert-152-1-42-242.w82-124.abo.wanadoo.fr with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 16:38:05 +0100
-To: linux-mtd@lists.infradead.org
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-Subject: Re: 2.6.20 : BUG in =?utf-8?b?bmFuZF9kb19yZWFkX29vYg==?=
-	=?utf-8?b?d2l0aAlNVERfT09CX1BMQUNF?= ?
-Date: Thu, 15 Feb 2007 15:37:54 +0000 (UTC)
-Message-ID: <loom.20070215T163517-47@post.gmane.org>
-References: <loom.20070209T155657-545@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+	id 1HHnwD-0005pG-OS
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 16:14:47 -0500
+Date: Thu, 15 Feb 2007 22:16:32 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Jitendra Jain <jitendra.jain@einfochips.com>
+Subject: Re: Compare 'cp' and 'nandwrite'
+In-Reply-To: <00cc01c750e3$9378bc30$fd09a8c0@jitendrajain>
+Message-ID: <Pine.LNX.4.64.0702152215240.29846@lnxricardw.se.axis.com>
+References: <00cc01c750e3$9378bc30$fd09a8c0@jitendrajain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,30 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Matthieu CASTET <matthieu.castet <at> parrot.fr> writes:
 
-> 
-> Hi,
-> 
-> 2.6.20 nand mtd seems to read wrongly oob in MTD_OOB_PLACE.
-> If I dump a page with uboot I get [1] and if I dump it with nanddump I get [2].
-> As you could can see OOB doesn't match. Moreover the 2 snd 8 bytes OOB data
-> given by nanddump are the 1st 8 bytes OOB of the next page.
-> 
-> If we look in nand_base.c, we saw that in case of MTD_OOB_PLACE, the len of oob
-> is set to chip->ecc.layout->oobavail. This seems wrong as user expect to be
-> mtd->oobsize.
-> 
-> Does this bug is know ?
-> 
-Any news on that ?
+On Thu, 15 Feb 2007, Jitendra Jain wrote:
 
-I needed to patch nand_do_read_oob to use jffs2 with 2.6.20 [1].
+> Hi all,
+>
+> Can anyone explains me the difference between using nandwrite and cp
+> command for flashing JFFS2 filesystem?
 
+Nandwrite skips bad blocks in a nand flash when writing, whereas cp will=20
+stop with a write error as soon as it encounters one. If you don't have=20
+any bad blocks in the flash (or at least not where you want to write your=
+=20
+image), there should be no practical difference.
 
-Matthieu
-[1]
-if (ops->mode == MTD_OOB_RAW || ops->mode == MTD_OOB_PLACE)
-                len = mtd->oobsize;
-        else
-                len = chip->ecc.layout->oobavail;
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
