@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.parrot.fr ([213.41.120.202])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHiCv-0002fy-0C
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:07:39 -0500
-Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
-	by mgw-ext12.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l1FF5CYh010832
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 17:05:18 +0200
-Message-ID: <45D476F9.5020804@nokia.com>
-Date: Thu, 15 Feb 2007 17:06:33 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1HHiYd-0002zf-Vq
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:30:07 -0500
+Received: from [172.20.2.179] (40.107.210.62.te-dns.org [62.210.107.40])
+	by smtp.parrot.fr (Postfix) with ESMTP id 72F835C30
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Feb 2007 16:31:01 +0100 (CET)
+Message-ID: <45D47C92.8080908@parrot.fr>
+Date: Thu, 15 Feb 2007 16:30:26 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.fr>
 MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Re: OneNAND: Unexpected zero blocks
-References: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
-In-Reply-To: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2 Erase Block Summary overhead
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,17 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Julianne C. wrote:
-> Is this a known problem with the onenand parts or the driver?
+Hi,
 
-Not one that I know of.
+after doing some test on a 64MB nand flash, we see that only 50 MB can 
+be stored on the filesystem [1]. The extra 10 MB are taken by jffs2 summary.
+If we disable jffs2 sumary in the kernel, the 10MB become available.
 
-> Where can one obtain a copy of the latest driver
->    (without having to use git since we can't access git archives
-> behind our firewall)
+Is there a way to reduce this overhead ?
+20 % seems really big.
 
-I guess you could grab the files from gitweb:
+May be Centralized Summary [3] give better result ?
+What is its status ?
 
-http://git.infradead.org/?p=users/kmpark/onenand-mtd-2.6.git
+Matthieu
 
-Look in the tree at drivers/mtd/onenand
+[1]
+# time mount /dev/mtdblock3 -t jffs2 /tmp/mnt/ ; time cat 
+/tmp/mnt/root/file.1 > /dev/null ; du -sh /tmp/mnt; df
+real    0m 3.05s
+user    0m 0.00s
+sys     0m 3.05s
+real    0m 0.34s
+user    0m 0.01s
+sys     0m 0.33s
+50.6M   /tmp/mnt
+Filesystem                Size      Used Available Use% Mounted on
+/dev/mtdblock3           61.5M     60.7M    832.0k  99% /tmp/mnt
+
+[2]
+# time mount /dev/mtdblock3 -t jffs2 /tmp/mnt/ ; time cat 
+/tmp/mnt/root/file.1 > /dev/null ; du -sh /tmp/mnt; df
+real    0m 11.30s
+user    0m 0.01s
+sys     0m 11.28s
+real    0m 0.35s
+user    0m 0.00s
+sys     0m 0.33s
+50.6M   /tmp/mnt
+/dev/mtdblock3           61.5M     51.2M     10.3M  83% /tmp/mnt
+
+[3]
+http://www.inf.u-szeged.hu/jffs2/mount.php
