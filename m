@@ -1,17 +1,23 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <dedekind@infradead.org>
-References: <005101c75017$52f55c30$c7a3580a@swcenter.sec.samsung.co.kr>
-	<1171448182.8593.2.camel@sauron>
-Subject: RE: [PATCH] UBI: fix typo and wrong comments
-Date: Thu, 15 Feb 2007 10:05:30 +0900
-Message-ID: <001e01c7509d$6970dbc0$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from ug-out-1314.google.com ([66.249.92.169])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HHZLs-0005RZ-7M
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 00:40:21 -0500
+Received: by ug-out-1314.google.com with SMTP id m2so44907uge
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 14 Feb 2007 21:40:13 -0800 (PST)
+Message-ID: <6b5362aa0702142140g7dbff110y5dcdeb1d01141046@mail.gmail.com>
+Date: Thu, 15 Feb 2007 11:10:13 +0530
+From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: UBI bad block Management
+In-Reply-To: <1171457518.8593.6.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <1171448182.8593.2.camel@sauron>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <6b5362aa0702140128h69cc8f11k48bec5b739640ded@mail.gmail.com>
+	<1171457518.8593.6.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,79 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 116743c0db0bfaac73d1d5b302a67bbb2231f8a1 Mon Sep 17 00:00:00 2001
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Date: Thu, 15 Feb 2007 10:00:42 +0900
-Subject: [PATCH] UBI: fix typo & wrong comments
-
-fix typo & wrong comments
-
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
- drivers/mtd/ubi/gluebi.c |    3 +--
- drivers/mtd/ubi/scan.c   |    2 +-
- drivers/mtd/ubi/uif.c    |    2 +-
- drivers/mtd/ubi/vtbl.c   |    2 +-
- 4 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/ubi/gluebi.c b/drivers/mtd/ubi/gluebi.c
-index 63def5d..d396c59 100644
---- a/drivers/mtd/ubi/gluebi.c
-+++ b/drivers/mtd/ubi/gluebi.c
-@@ -168,8 +168,7 @@ static int gluebi_get_device(struct mtd_info *mtd)
-  *
-  * @mtd: the MTD device description object
-  *
-- * This function is called every time the MTD device is being put. Returns
-- * zero in case of success and a negative error code in case of failure.
-+ * This function is called every time the MTD device is being put.
-  */
- static void gluebi_put_device(struct mtd_info *mtd)
- {
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index c695b81..9e77a3a 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -767,7 +767,7 @@ static struct ubi_scan_volume  *add_volume(const struct
-ubi_info *ubi,
-  *     o bit 1 is cleared: no bit-flips were detected in the newer PEB;
-  *     o bit 1 is set: bit-flips were detected in the newer PEB;
-  *     o bit 2 is cleared: the older PEB is not corrupted;
-- *     o bit 2 is set: the older PEB is not corrupted.
-+ *     o bit 2 is set: the older PEB is corrupted.
-  */
- static int compare_lebs(const struct ubi_info *ubi,
- 			const struct ubi_scan_leb *seb, int pnum,
-diff --git a/drivers/mtd/ubi/uif.c b/drivers/mtd/ubi/uif.c
-index bdce784..65b6865 100644
---- a/drivers/mtd/ubi/uif.c
-+++ b/drivers/mtd/ubi/uif.c
-@@ -508,7 +508,7 @@ int ubi_eraseblock_unmap(struct ubi_vol_desc *udesc,
-int lnum)
- 	const struct ubi_info *ubi = desc->vol->ubi;
- 	int err, vol_id = desc->vol->vol_id;
- 
--	dbg_uif("erase LEB %d:%d", vol_id, lnum);
-+	dbg_uif("unmap LEB %d:%d", vol_id, lnum);
- 	vtr = ubi_vtbl_get_vtr(ubi, vol_id);
- 	ubi_assert(!IS_ERR(vtr));
- 
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index ac48c7d..9d9d98d 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -645,7 +645,7 @@ static struct ubi_vol_tbl_record *process_lvol(const
-struct ubi_info *ubi,
- 	 * recent information.
- 	 *
- 	 * So the plan is to first check LEB 0. Then
--	 * a. if LEB 0 is OK, it contains the most resent data; then we
-+	 * a. if LEB 0 is OK, it contains the most recent data; then we
- 	 * compare its contents with LEB 1, and if they are different, we
-copy
- 	 * LEB 0 to LEB 1.
- 	 * b. if LEB 0 is corrupted, but LEB 1 is OK, we copy LEB 1 to LEB
-0.
--- 
-1.4.4.2
-> 
+SGksCiAgSSBhbSBzYXRpc2ZpZWQgYnkgeW91ciBsYXN0IHJlcGx5IEFydGVtLlNlZW1zIExvZ2lj
+YWwuIkl0IGlzIE1URCdzCmFuZCBvbmx5IE1URCdzIGJ1c2luZXNzIHRvIG1hbmFnZSBiYWQgYmxv
+Y2tzLiIKICBJIGhhZCBzdWdnZXN0ZWQgdGhyZWUgd2F5cyB0aGF0IHdvdWxkIGhlbHAgVUJJIHRv
+IG1haW50YWluIGEgQml0bWFwCm9mIEJhZCBCbG9ja3MuVGhpcyB3b3VsZCBoZWxwIHNwZWVkIHVw
+IEluaXRpYWxpemF0aW9uIHByb2Nlc3MuU28gaWYgd2UKZG9uJ3QgaGF2ZSBvbi1mbGFzaCBCQlQs
+bWFpbnRhaW5pbmcgYSBCaXRtYXAgd2lsbCBiZSBhbiBhZHZhbnRhZ2UuCgoKT24gMi8xNC8wNywg
+QXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6Cj4gSGksCj4K
+PiBPbiBXZWQsIDIwMDctMDItMTQgYXQgMTQ6NTggKzA1MzAsIEJyaWplc2ggU2luZ2ggd3JvdGU6
+Cj4gPiBIaSwKPiA+ICAgIFRoZSBmbGFzaCBkZXZpY2VzIGFyZSBnZXR0aW5nIG9mIGJpZ2dlciBp
+biBTaXplLlRoZSBJbml0IFNjYW4gdGltZQo+ID4gd2lsbCBpbmNyZWFzZSB3aXRoIGJpZ2dlciBT
+aXplIGZsYXNoLkhvdyBsb25nIGFyZSB3ZSBnb2luZyB0byByZWx5IG9uCj4gPiBNVEQgZm9yIEJh
+ZCBibG9jayBNYW5hZ2VtZW50LkV2ZW4gTVREIGRvZXNuJ3QgbWFpbnRhaW4gTGlzdCBidXQgY2Fs
+bHMKPiA+IHRoZSBoYXJkd2FyZSwgaWYgaGFyZHdhcmUgc3VwcG9ydHMgaXQuCj4gPiBUaGlzIGNh
+biBiZSBkb25lIGluIHR3byB3YXlzLAo+ID4gMTopIFN0cmFpZ2h0IHJpZ2h0IHRoZSBiaXRtYXAs
+YW5kIGlmIGNoYW5nZWQgZXJhc2UgaXQuV2UgY2FuIGRvIGl0IGluCj4gPiBPbmUgcmVzZXJ2ZWQg
+YmxvY2suCj4gPiAgICAgICAgICAgIElmIGFsbG93ZWQgYmFkIGJsb2NrcyBhcmUgMjAlLGl0IHdp
+bGwgYmUgZXJhc2VkIDIwJSB0aW1lcwo+ID4gb2YgdG90YWwgUEVCIGNvdW50Lgo+ID4gMjopS2Vl
+cCBhIFF1ZXVlIGluIFNjYW4gb2YgQmFkIGJsb2Nrcy5FYyBoZWFkZXIgY29udGFpbnMgb25lIGZp
+ZWxkCj4gPiBjYWxsZWQgbGFzdCBiYWQgYmxvY2suV2hpY2ggaXMgUEViIG5vLlNvIGlmIGJsb2Nr
+IGlzIGZvdW5kIGJhZCxuZXh0Cj4gPiBibG9jayB0byBiZSB3cml0dGVuIGZpcnN0IHdpbGwgaGF2
+ZSBCYWQgYmxvY2sgbm8gaW4gRUMuU28gaXQgaXMKPiA+IG1haW50YWluZWQgYWNyb3NzIHJlYm9v
+dHMuCj4gPiAzOilLZWVwIGEgTG9nIGluIHJlc2VydmVkIEJsb2NrLldoZW4gaXQgaXMgZ2V0dGlu
+ZyBmdWxsLGNyZWF0ZSBiaXRtYXAKPiA+IGFuZCB3cml0ZSBpdCBvbiB0aGUgYmxvY2suVGhpcyB3
+aWxsIHJlZHVjZSB0aGUgZXJhc2luZyBvZiB0aGF0IGJsb2NrLgo+ID4KPiA+IFNvIHdlIGNhbiBt
+YWludGFpbiBCYWQgYmxvY2sgTWFwIGluIFVCSSBpZiBpdCBpcyBuZWNlc3NhcnkuCj4KPiBJIHJl
+YWxseSB0cmllZCB0byByZWFsaXplIHdoYXQgeW91IG1lYW4sIGJ1dCBmYWlsZWQsIHNvcnJ5LiBJ
+IGRvIG5vdAo+IHVuZGVyc3RhbmQgYXQgYWxsIHdoYXQgYXJlIHlvdSBhYm91dC4gTWF5IHlvdSBy
+ZS1waHJhc2U/Cj4KPiAtLQo+IEJlc3QgcmVnYXJkcywKPiBBcnRlbSBCaXR5dXRza2l5ICjiydTA
+w8vJyiDh0tSjzSkKPgo+Cg==
