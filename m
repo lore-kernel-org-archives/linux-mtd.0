@@ -1,18 +1,16 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHnwD-0005pG-OS
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 16:14:47 -0500
-Date: Thu, 15 Feb 2007 22:16:32 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Jitendra Jain <jitendra.jain@einfochips.com>
-Subject: Re: Compare 'cp' and 'nandwrite'
-In-Reply-To: <00cc01c750e3$9378bc30$fd09a8c0@jitendrajain>
-Message-ID: <Pine.LNX.4.64.0702152215240.29846@lnxricardw.se.axis.com>
-References: <00cc01c750e3$9378bc30$fd09a8c0@jitendrajain>
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: "'Julianne C.'" <juliannerc@gmail.com>,
+	"'linux-mtd'" <linux-mtd@lists.infradead.org>
+References: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
+Subject: RE: OneNAND: Unexpected zero blocks
+Date: Fri, 16 Feb 2007 08:46:34 +0900
+Message-ID: <005e01c7515b$8b416120$c7a3580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +20,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
-On Thu, 15 Feb 2007, Jitendra Jain wrote:
+> 
+> 3) copy the rootfs (about 2 MB) to the new fs on /mnt
+> 
+> When the fs is unmounted, and remounted again, we see some 
+> files in which two to four blocks of zeros occur (0x2000), or 
+> blocks with some initial data filled in 20 to 40 bytes and 
+> the rest zeros.
 
-> Hi all,
->
-> Can anyone explains me the difference between using nandwrite and cp
-> command for flashing JFFS2 filesystem?
+Umm, I  have no idea.
 
-Nandwrite skips bad blocks in a nand flash when writing, whereas cp will=20
-stop with a write error as soon as it encounters one. If you don't have=20
-any bad blocks in the flash (or at least not where you want to write your=
-=20
-image), there should be no practical difference.
+please use this script. In my board, it is passed both kernel
+1. omap tree
+2. onenand mtd tree
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+# note you have to add onenand partition to /etc/fstab
+e.g., 
+/dev/mtdblock4  /jffs2          jffs2   defaults                1       1
+
+#!/bin/sh -x
+
+DIRS="usr etc bin lib"
+
+for dir in $DIRS; do
+        echo "Testing $dir ..."
+        time mount /jffs2
+        rm -rf /jffs2/*
+        mkdir -p /jffs2/$dir
+        cp -ar /$dir/* /jffs2/$dir
+        diff -Nur /$dir /jffs2/$dir
+        umount /jffs2
+
+        time mount /jffs2
+        diff -Nur /$dir /jffs2/$dir
+        umount /jffs2
+done
+
+Thank you,
+Kyungmin Park
