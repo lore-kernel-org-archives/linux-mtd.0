@@ -1,19 +1,29 @@
-Received: from smtp.parrot.fr ([213.41.120.202])
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHiYd-0002zf-Vq
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:30:07 -0500
-Received: from [172.20.2.179] (40.107.210.62.te-dns.org [62.210.107.40])
-	by smtp.parrot.fr (Postfix) with ESMTP id 72F835C30
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Feb 2007 16:31:01 +0100 (CET)
-Message-ID: <45D47C92.8080908@parrot.fr>
-Date: Thu, 15 Feb 2007 16:30:26 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-MIME-Version: 1.0
+	id 1HHigV-0003E4-CS
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:38:15 -0500
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HHigP-0003Gw-8u
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 16:38:05 +0100
+Received: from ASt-Lambert-152-1-42-242.w82-124.abo.wanadoo.fr
+	([82.124.168.242]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 16:38:05 +0100
+Received: from matthieu.castet by
+	ASt-Lambert-152-1-42-242.w82-124.abo.wanadoo.fr with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 16:38:05 +0100
 To: linux-mtd@lists.infradead.org
-Subject: jffs2 Erase Block Summary overhead
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: Matthieu CASTET <matthieu.castet@parrot.fr>
+Subject: Re: 2.6.20 : BUG in =?utf-8?b?bmFuZF9kb19yZWFkX29vYg==?=
+	=?utf-8?b?d2l0aAlNVERfT09CX1BMQUNF?= ?
+Date: Thu, 15 Feb 2007 15:37:54 +0000 (UTC)
+Message-ID: <loom.20070215T163517-47@post.gmane.org>
+References: <loom.20070209T155657-545@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,44 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Matthieu CASTET <matthieu.castet <at> parrot.fr> writes:
 
-after doing some test on a 64MB nand flash, we see that only 50 MB can 
-be stored on the filesystem [1]. The extra 10 MB are taken by jffs2 summary.
-If we disable jffs2 sumary in the kernel, the 10MB become available.
+> 
+> Hi,
+> 
+> 2.6.20 nand mtd seems to read wrongly oob in MTD_OOB_PLACE.
+> If I dump a page with uboot I get [1] and if I dump it with nanddump I get [2].
+> As you could can see OOB doesn't match. Moreover the 2 snd 8 bytes OOB data
+> given by nanddump are the 1st 8 bytes OOB of the next page.
+> 
+> If we look in nand_base.c, we saw that in case of MTD_OOB_PLACE, the len of oob
+> is set to chip->ecc.layout->oobavail. This seems wrong as user expect to be
+> mtd->oobsize.
+> 
+> Does this bug is know ?
+> 
+Any news on that ?
 
-Is there a way to reduce this overhead ?
-20 % seems really big.
+I needed to patch nand_do_read_oob to use jffs2 with 2.6.20 [1].
 
-May be Centralized Summary [3] give better result ?
-What is its status ?
 
 Matthieu
-
 [1]
-# time mount /dev/mtdblock3 -t jffs2 /tmp/mnt/ ; time cat 
-/tmp/mnt/root/file.1 > /dev/null ; du -sh /tmp/mnt; df
-real    0m 3.05s
-user    0m 0.00s
-sys     0m 3.05s
-real    0m 0.34s
-user    0m 0.01s
-sys     0m 0.33s
-50.6M   /tmp/mnt
-Filesystem                Size      Used Available Use% Mounted on
-/dev/mtdblock3           61.5M     60.7M    832.0k  99% /tmp/mnt
-
-[2]
-# time mount /dev/mtdblock3 -t jffs2 /tmp/mnt/ ; time cat 
-/tmp/mnt/root/file.1 > /dev/null ; du -sh /tmp/mnt; df
-real    0m 11.30s
-user    0m 0.01s
-sys     0m 11.28s
-real    0m 0.35s
-user    0m 0.00s
-sys     0m 0.33s
-50.6M   /tmp/mnt
-/dev/mtdblock3           61.5M     51.2M     10.3M  83% /tmp/mnt
-
-[3]
-http://www.inf.u-szeged.hu/jffs2/mount.php
+if (ops->mode == MTD_OOB_RAW || ops->mode == MTD_OOB_PLACE)
+                len = mtd->oobsize;
+        else
+                len = chip->ecc.layout->oobavail;
