@@ -1,21 +1,21 @@
 Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHhto-0002Nm-58
-	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 09:47:54 -0500
-Subject: RE: [PATCH] UBI: fix typo and wrong comments
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <001e01c7509d$6970dbc0$c7a3580a@swcenter.sec.samsung.co.kr>
-References: <005101c75017$52f55c30$c7a3580a@swcenter.sec.samsung.co.kr>
-	<1171448182.8593.2.camel@sauron>
-	<001e01c7509d$6970dbc0$c7a3580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 15 Feb 2007 16:47:21 +0200
-Message-Id: <1171550841.24259.0.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+	id 1HHiCv-0002fy-0C
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 10:07:39 -0500
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-ext12.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l1FF5CYh010832
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Feb 2007 17:05:18 +0200
+Message-ID: <45D476F9.5020804@nokia.com>
+Date: Thu, 15 Feb 2007 17:06:33 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: OneNAND: Unexpected zero blocks
+References: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
+In-Reply-To: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,20 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-02-15 at 10:05 +0900, Kyungmin Park wrote:
-> >From 116743c0db0bfaac73d1d5b302a67bbb2231f8a1 Mon Sep 17 00:00:00 2001
-> From: Kyungmin Park <kyungmin.park@samsung.com>
-> Date: Thu, 15 Feb 2007 10:00:42 +0900
-> Subject: [PATCH] UBI: fix typo & wrong comments
+ext Julianne C. wrote:
+> Is this a known problem with the onenand parts or the driver?
 
-Applying 'UBI: fix typo & wrong comments'
+Not one that I know of.
 
-fatal: corrupt patch at line 27
-Patch failed at 0001.
-When you have resolved this problem run "git-am -i --resolved".
-If you would prefer to skip this patch, instead run "git-am -i --skip".
+> Where can one obtain a copy of the latest driver
+>    (without having to use git since we can't access git archives
+> behind our firewall)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+I guess you could grab the files from gitweb:
+
+http://git.infradead.org/?p=users/kmpark/onenand-mtd-2.6.git
+
+Look in the tree at drivers/mtd/onenand
