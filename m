@@ -1,23 +1,16 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HHRlt-0002Kq-1E
-	for linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 16:34:40 -0500
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0JDH00CEP2LN9U30@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 14 Feb 2007 16:34:36 -0500 (EST)
-Date: Wed, 14 Feb 2007 16:34:35 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: [SPAM]  Re: P30 flash left in read status mode after a write
-In-reply-to: <45D37D96.4010501@ringle.org>
-To: Jon Ringle <jon@ringle.org>
-Message-id: <Pine.LNX.4.64.0702141632470.1757@xanadu.home>
-MIME-version: 1.0
-Content-type: multipart/mixed; boundary="Boundary_(ID_tH45bYubgREaXxsDLb84pA)"
-References: <45D35A6F.3060203@ringle.org>
-	<20070214205601.GB20486@lazybastard.org> <45D37D96.4010501@ringle.org>
-Cc: linux-mtd@lists.infradead.org,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@lazybastard.org>
+Received: from india.einfochips.com ([203.88.139.151])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HHcue-000891-Mn
+	for linux-mtd@lists.infradead.org; Thu, 15 Feb 2007 04:28:28 -0500
+From: "Jitendra Jain" <jitendra.jain@einfochips.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Compare 'cp' and 'nandwrite'
+Date: Thu, 15 Feb 2007 14:57:56 +0530
+Message-ID: <00cc01c750e3$9378bc30$fd09a8c0@jitendrajain>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,39 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hi all,
 
---Boundary_(ID_tH45bYubgREaXxsDLb84pA)
-Content-type: TEXT/PLAIN; charset=utf-8
-Content-transfer-encoding: 8BIT
+Can anyone explains me the difference between using nandwrite and cp
+command for flashing JFFS2 filesystem?
 
-On Wed, 14 Feb 2007, Jon Ringle wrote:
+Thanks in advance.
 
-> Jörn Engel wrote:
-> > On Wed, 14 February 2007 13:52:31 -0500, Jon Ringle wrote:
-> >   
-> >> This did indeed seem to fix the problem, but I'm not sure if I might 
-> >> inadvertently be causing some side effect. I believe that I might be 
-> >> taking a slight performance hit to consecutive jffs2 write operations 
-> >> because now each write operation will need to spend more cycles putting 
-> >> the flash in to a write mode.
-> >>     
-> >
-> > If the performance hit concerns you, you could set a timer instead of
-> > changing the chip state.  Only if the timer expires - which means that
-> > consecutive writes are a non-issue - do you change the chip state.
-> >
-> >   
-> Using a timer sounds like a good idea. I'll keep it in mind. I'm not 
-> sure yet whether I'm concerned about the performance hit as I haven't 
-> profiled the impact yet. Has anyone got any data that shows what kind of 
-> improvement jffs2 write operations get with this optimization in place 
-> to leave flash in read status mode?
-
-It should be fairly minimal.  Probably less than 5% difference.
+Regards
+Jitendra Jain,
 
 
-Nicolas
 
---Boundary_(ID_tH45bYubgREaXxsDLb84pA)--
+
+
+eInfochips Business Disclaimer:
+This message may contain confidential, proprietary or legally Privileged information. In case you are not the original intended Recipient of the message, you must not, directly or indirectly, use, Disclose, distribute, print, or copy any part of this message and you are requested to delete it and inform the sender. Any views expressed in this message are those of the individual sender unless otherwise stated. Nothing contained in this message shall be construed as an offer or acceptance of any offer by eInfochips Limited and/or eInfochips Inc("eInfochips") unless sent with that express intent and with due authority of eInfochips. eInfochips has taken enough precautions to prevent the spread of viruses. However the company accepts no liability for any damage caused by any virus transmitted by this email.
