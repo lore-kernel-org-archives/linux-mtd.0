@@ -1,16 +1,15 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Julianne C.'" <juliannerc@gmail.com>,
-	"'linux-mtd'" <linux-mtd@lists.infradead.org>
-References: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
-Subject: RE: OneNAND: Unexpected zero blocks
-Date: Fri, 16 Feb 2007 08:46:34 +0900
-Message-ID: <005e01c7515b$8b416120$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from mail.valcom.com ([151.199.82.35])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HI2LN-0004EN-Ge
+	for linux-mtd@lists.infradead.org; Fri, 16 Feb 2007 07:37:44 -0500
+Message-ID: <45D5A58C.3070304@valcom.com>
+Date: Fri, 16 Feb 2007 07:37:32 -0500
+From: Glen Johnson <gjohnson@valcom.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Linux fs/JFFS2 question.
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-reply-to: <e167438e0702150620t4291198dxd627d102cba6519f@mail.gmail.com>
-Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,43 +19,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Linux-mtd,
+I need some help understanding some code under linux-2.6.x/fs/jffs2. 
+After trying to mount a JFFS2 file system, by typing mount mtd:JFFS2
+/mnt, without success.  I did some digging in the code, and I found if I
+change a line in  linux-2.6.x/fs/jffs2/scan.c mount works!  Listed below
+is the one change I made in function jffs2_scan_medium().
 
-> 
-> 3) copy the rootfs (about 2 MB) to the new fs on /mnt
-> 
-> When the fs is unmounted, and remounted again, we see some 
-> files in which two to four blocks of zeros occur (0x2000), or 
-> blocks with some initial data filled in 20 to 40 bytes and 
-> the rest zeros.
+ if (!ret && pointlen < c->mtd->size) {      OLD code
 
-Umm, I  have no idea.
+ if (!ret && pointlen <= c->mtd->size) {    NEW code
 
-please use this script. In my board, it is passed both kernel
-1. omap tree
-2. onenand mtd tree
 
-# note you have to add onenand partition to /etc/fstab
-e.g., 
-/dev/mtdblock4  /jffs2          jffs2   defaults                1       1
+Later in the function the side effect of this if() statement is an
+altered value for buf_size, not 0.  This value is then passed to the
+function jffs2_scan_eraseblock() where buf_size is tested.  Here is
+where my understanding of things falls apart. 
 
-#!/bin/sh -x
+if (!buf_size) {
+           /* Do stuff, but do NOT read anything from the flash. */
+           ...
+} else {
+          ...
+          jffs2_fill_scan_buf( ...);
+}
 
-DIRS="usr etc bin lib"
+It appears to me if buf_size is prevented from being set back in
+jffs2_scan_medium() then an actual read from the flash does occur, which
+allows mount to read valid data and have success.  Otherwise there
+appears to me that the read never made, creating a guaranteed failure every time.
+Why is this the case? 
+I can't find where or how the driver ever reads real data otherwise. 
+Help me see the bigger picture here. 
+I first sent this to uClinux-devel mailing list so I provided the following info to help describe the context in which I am working.  
+uClinux source: uClinux-dist-20060803
+tool chain:  m68k-uclinux-tools-20060615.sh
+processor: COLDFIRE M5272
 
-for dir in $DIRS; do
-        echo "Testing $dir ..."
-        time mount /jffs2
-        rm -rf /jffs2/*
-        mkdir -p /jffs2/$dir
-        cp -ar /$dir/* /jffs2/$dir
-        diff -Nur /$dir /jffs2/$dir
-        umount /jffs2
-
-        time mount /jffs2
-        diff -Nur /$dir /jffs2/$dir
-        umount /jffs2
-done
-
-Thank you,
-Kyungmin Park
+Looking forward to being enlightened,
+Glen Johnson
