@@ -1,15 +1,33 @@
-Received: from mail.valcom.com ([151.199.82.35])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HI2LN-0004EN-Ge
-	for linux-mtd@lists.infradead.org; Fri, 16 Feb 2007 07:37:44 -0500
-Message-ID: <45D5A58C.3070304@valcom.com>
-Date: Fri, 16 Feb 2007 07:37:32 -0500
-From: Glen Johnson <gjohnson@valcom.com>
-MIME-Version: 1.0
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Linux fs/JFFS2 question.
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from over.ny.us.ibm.com ([32.97.182.150])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HI65S-0005rU-EA
+	for linux-mtd@lists.infradead.org; Fri, 16 Feb 2007 11:37:36 -0500
+Received: from e31.co.us.ibm.com (e31.co.us.ibm.com [32.97.110.149])
+	by pokfb.esmtp.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
+	l1GGDPYb007781
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 11:13:25 -0500
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e31.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1GG4qHg024350
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 11:04:52 -0500
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
+	l1GG4qqH413532
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 09:04:52 -0700
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l1GG4qNS012630
+	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 09:04:52 -0700
+Subject: [PATCH] [JFFS2] fix compile warnings
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: dwmw2@infradead.org
+Content-Type: text/plain
+Date: Fri, 16 Feb 2007 10:05:44 -0600
+Message-Id: <1171641944.4003.206.camel@zod.rchland.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +37,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Linux-mtd,
-I need some help understanding some code under linux-2.6.x/fs/jffs2. 
-After trying to mount a JFFS2 file system, by typing mount mtd:JFFS2
-/mnt, without success.  I did some digging in the code, and I found if I
-change a line in  linux-2.6.x/fs/jffs2/scan.c mount works!  Listed below
-is the one change I made in function jffs2_scan_medium().
+Fix a handful of warnings when compiling for 64 bit
 
- if (!ret && pointlen < c->mtd->size) {      OLD code
+fs/jffs2/wbuf.c: In function 'jffs2_check_oob_empty':
+fs/jffs2/wbuf.c:993: warning: format '%d' expects type 'int', but
+argument 3 has type 'size_t'
 
- if (!ret && pointlen <= c->mtd->size) {    NEW code
+Signed-off-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
 
 
-Later in the function the side effect of this if() statement is an
-altered value for buf_size, not 0.  This value is then passed to the
-function jffs2_scan_eraseblock() where buf_size is tested.  Here is
-where my understanding of things falls apart. 
-
-if (!buf_size) {
-           /* Do stuff, but do NOT read anything from the flash. */
-           ...
-} else {
-          ...
-          jffs2_fill_scan_buf( ...);
-}
-
-It appears to me if buf_size is prevented from being set back in
-jffs2_scan_medium() then an actual read from the flash does occur, which
-allows mount to read valid data and have success.  Otherwise there
-appears to me that the read never made, creating a guaranteed failure every time.
-Why is this the case? 
-I can't find where or how the driver ever reads real data otherwise. 
-Help me see the bigger picture here. 
-I first sent this to uClinux-devel mailing list so I provided the following info to help describe the context in which I am working.  
-uClinux source: uClinux-dist-20060803
-tool chain:  m68k-uclinux-tools-20060615.sh
-processor: COLDFIRE M5272
-
-Looking forward to being enlightened,
-Glen Johnson
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 58cb77b..922bfc9 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -988,8 +988,8 @@ int jffs2_check_oob_empty(struct jffs2_sb_info *c,
+ 
+ 	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
+ 	if (ret || ops.oobretlen != ops.ooblen) {
+-		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
+-				"bytes, read %d bytes, error %d\n", jeb->offset,
++		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %zd "
++				"bytes, read %zd bytes, error %d\n", jeb->offset,
+ 				ops.ooblen, ops.oobretlen, ret);
+ 		if (!ret)
+ 			ret = -EIO;
+@@ -1031,8 +1031,8 @@ int jffs2_check_nand_cleanmarker(struct jffs2_sb_info *c,
+ 
+ 	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
+ 	if (ret || ops.oobretlen != ops.ooblen) {
+-		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
+-				"bytes, read %d bytes, error %d\n", jeb->offset,
++		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %zd "
++				"bytes, read %zd bytes, error %d\n", jeb->offset,
+ 				ops.ooblen, ops.oobretlen, ret);
+ 		if (!ret)
+ 			ret = -EIO;
+@@ -1057,8 +1057,8 @@ int jffs2_write_nand_cleanmarker(struct jffs2_sb_info *c,
+ 
+ 	ret = c->mtd->write_oob(c->mtd, jeb->offset, &ops);
+ 	if (ret || ops.oobretlen != ops.ooblen) {
+-		printk(KERN_ERR "cannot write OOB for EB at %08x, requested %d "
+-				"bytes, read %d bytes, error %d\n", jeb->offset,
++		printk(KERN_ERR "cannot write OOB for EB at %08x, requested %zd "
++				"bytes, read %zd bytes, error %d\n", jeb->offset,
+ 				ops.ooblen, ops.oobretlen, ret);
+ 		if (!ret)
+ 			ret = -EIO;
