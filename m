@@ -1,33 +1,12 @@
-Received: from over.ny.us.ibm.com ([32.97.182.150])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HI65S-0005rU-EA
-	for linux-mtd@lists.infradead.org; Fri, 16 Feb 2007 11:37:36 -0500
-Received: from e31.co.us.ibm.com (e31.co.us.ibm.com [32.97.110.149])
-	by pokfb.esmtp.ibm.com (8.12.11.20060308/8.12.11) with ESMTP id
-	l1GGDPYb007781
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 11:13:25 -0500
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e31.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1GG4qHg024350
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 11:04:52 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l1GG4qqH413532
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 09:04:52 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l1GG4qNS012630
-	for <linux-mtd@lists.infradead.org>; Fri, 16 Feb 2007 09:04:52 -0700
-Subject: [PATCH] [JFFS2] fix compile warnings
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: dwmw2@infradead.org
-Content-Type: text/plain
-Date: Fri, 16 Feb 2007 10:05:44 -0600
-Message-Id: <1171641944.4003.206.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
+To: kelvinroland121@myway.com
+Subject: YOUR BANK DRAFT IS READY
+From: "Kelvin Roland"<kelvinroland121@myway.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <20070219074835.34DE567688@mprdmxin.myway.com>
+Date: Mon, 19 Feb 2007 02:48:35 -0500 (EST)
+Reply-To: peterlouise@excite.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,49 +16,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix a handful of warnings when compiling for 64 bit
-
-fs/jffs2/wbuf.c: In function 'jffs2_check_oob_empty':
-fs/jffs2/wbuf.c:993: warning: format '%d' expects type 'int', but
-argument 3 has type 'size_t'
-
-Signed-off-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
 
 
-diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-index 58cb77b..922bfc9 100644
---- a/fs/jffs2/wbuf.c
-+++ b/fs/jffs2/wbuf.c
-@@ -988,8 +988,8 @@ int jffs2_check_oob_empty(struct jffs2_sb_info *c,
- 
- 	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
- 	if (ret || ops.oobretlen != ops.ooblen) {
--		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
--				"bytes, read %d bytes, error %d\n", jeb->offset,
-+		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %zd "
-+				"bytes, read %zd bytes, error %d\n", jeb->offset,
- 				ops.ooblen, ops.oobretlen, ret);
- 		if (!ret)
- 			ret = -EIO;
-@@ -1031,8 +1031,8 @@ int jffs2_check_nand_cleanmarker(struct jffs2_sb_info *c,
- 
- 	ret = c->mtd->read_oob(c->mtd, jeb->offset, &ops);
- 	if (ret || ops.oobretlen != ops.ooblen) {
--		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %d "
--				"bytes, read %d bytes, error %d\n", jeb->offset,
-+		printk(KERN_ERR "cannot read OOB for EB at %08x, requested %zd "
-+				"bytes, read %zd bytes, error %d\n", jeb->offset,
- 				ops.ooblen, ops.oobretlen, ret);
- 		if (!ret)
- 			ret = -EIO;
-@@ -1057,8 +1057,8 @@ int jffs2_write_nand_cleanmarker(struct jffs2_sb_info *c,
- 
- 	ret = c->mtd->write_oob(c->mtd, jeb->offset, &ops);
- 	if (ret || ops.oobretlen != ops.ooblen) {
--		printk(KERN_ERR "cannot write OOB for EB at %08x, requested %d "
--				"bytes, read %d bytes, error %d\n", jeb->offset,
-+		printk(KERN_ERR "cannot write OOB for EB at %08x, requested %zd "
-+				"bytes, read %zd bytes, error %d\n", jeb->offset,
- 				ops.ooblen, ops.oobretlen, ret);
- 		if (!ret)
- 			ret = -EIO;
+
+
+
+
+
+Compliment ,
+
+
+
+How are you doing today, Hope you have not forgotten me? I am .Mr Kelvin Roland, the man from Nigeria who contacted you some time ago to assist me secure the release of some money accrued from the over Invoicing of a contract/ inheritance that was awarded by my Government) some time ago during the military regime.
+
+
+
+Though you were not able to assist me conclude the transaction, I'm happy to inform you about my success in getting those funds transffered under the assistance and co-operation of a new partner from Brazile.Presently i'm in Netherlands for investment projects with my own share of 
+
+the total sum.meanwhile, i didn't forget your past efforts and attempts to assit me in transffering those funds, I made sure you are not left out the benefit of the transaction hence I kept aside for you the sum of Five Hundred Thousand United States Dollars.($500,000.00) Draft, the compensation also go for the good work of God meaning for the orphans and 
+
+disable in your country Please take good care of them and the poor in needs also.
+
+
+
+I and my new partner agreed to compensate you with that amount for all your past efforts and attempts to assist me in this matter. I ppreciate your efforts at that time very much, so feel free and get in touch with my secretary Mr.peter Louise, and instruct him on how to send the Bank draft to you.
+
+
+
+Please do let me know immediately you receive the Draft so that we can share the joy together after all the sufferness at that time. In the moment, i'm very busy here because of the investment projects which me and my partner are having at hands, finally, remember that i had left instruction to my secretary so as soon as you contact him, he will send the Draft to you,so feel free to get in touch with MY SECRETARY NOW.
+
+
+
+Below is the contact of my secretary:
+
+
+
+Mr.Peter Louise.
+
+Phone Number:234-8036059255
+
+E-mail:peterlouise@excite.com
+
+With Best Regards,
+
+Mr. Peter louise
+
+_______________________________________________
+No banners. No pop-ups. No kidding.
+Make My Way  your home on the Web - http://www.myway.com
