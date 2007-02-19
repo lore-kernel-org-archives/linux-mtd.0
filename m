@@ -1,20 +1,20 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from cl-1816.ham-01.de.sixxs.net ([2001:6f8:900:717::2]
+	helo=ds10.mine.nu)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJ8Gx-00044N-D3
-	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 08:09:43 -0500
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
-	by mgw-ext13.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l1JD6dcX024102
-	for <linux-mtd@lists.infradead.org>; Mon, 19 Feb 2007 15:06:45 +0200
-Message-ID: <45D9A141.3040300@nokia.com>
-Date: Mon, 19 Feb 2007 15:08:17 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
+	id 1HJGcz-0007xh-PX
+	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 17:05:00 -0500
+Received: from e177163028.adsl.alicedsl.de ([85.177.163.28]
+	helo=[192.168.16.246])
+	by ds10.mine.nu with esmtpsa (TLS-1.0:RSA_ARCFOUR_MD5:16) (Exim 4.50)
+	id 1HJG4x-00041F-AB
+	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 22:29:47 +0100
+Subject: [PATCH] block2mtd oops in erase function.
+From: Felix Fietkau <nbd@openwrt.org>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] Make ecclayout static const
-References: <007101c74e4c$bdb8bbb0$c7a3580a@swcenter.sec.samsung.co.kr>
-In-Reply-To: <007101c74e4c$bdb8bbb0$c7a3580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
+Date: Mon, 19 Feb 2007 22:29:39 +0100
+Message-Id: <1171920579.4996.8.camel@celeron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,65 +25,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Kyungmin Park wrote:
-> @@ -827,13 +829,15 @@ static int onenand_transfer_auto_oob(struct mtd_info
-> *mtd, uint8_t *buf, int col
->  				int thislen)
->  {
->  	struct onenand_chip *this = mtd->priv;
->  	struct nand_oobfree *free;
->  	int readcol = column;
->  	int readend = column + thislen;
->  	int lastgap = 0;
->  	uint8_t *oob_buf = this->page_buf + mtd->writesize;
-> +	int i;
->  
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); i++, free++) {
->  		if (readcol >= lastgap)
->  			readcol += free->offset - lastgap;
->  		if (readend >= lastgap)
-> @@ -841,7 +845,8 @@ static int onenand_transfer_auto_oob(struct mtd_info
-> *mtd, uint8_t *buf, int col
->  		lastgap = free->offset + free->length;
->  	}
->  	this->read_bufferram(mtd, ONENAND_SPARERAM, oob_buf, 0, mtd-
->> oobsize);
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); i++, free++) {
->  		int free_end = free->offset + free->length;
->  		if (free->offset < readend && free_end > readcol) {
->  			int st = max_t(int,free->offset,readcol);
-> @@ -1270,19 +1277,22 @@ static int onenand_fill_auto_oob(struct mtd_info
-> *mtd, u_char *oob_buf,
->  				  const u_char *buf, int column, int
-> thislen)
->  {
->  	struct onenand_chip *this = mtd->priv;
->  	struct nand_oobfree *free;
->  	int writecol = column;
->  	int writeend = column + thislen;
->  	int lastgap = 0;
-> +	int i;
->  
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); i++, free++) {
->  		if (writecol >= lastgap)
->  			writecol += free->offset - lastgap;
->  		if (writeend >= lastgap)
->  			writeend += free->offset - lastgap;
->  		lastgap = free->offset + free->length;
->  	}
-> -	for (free = this->ecclayout->oobfree; free->length; ++free) {
-> +	free = this->ecclayout->oobfree;
-> +	for (i = 0; i < ARRAY_SIZE(this->ecclayout->oobfree); i++, free++) {
->  		int free_end = free->offset + free->length;
->  		if (free->offset < writeend && free_end > writecol) {
->  			int st = max_t(int,free->offset,writecol);
+Hi, I have a small fix for a crash that happened when I was using jffs2
+in combination with block2mtd.c
 
-Isn't this still needed?
+In the erase function when checking the block to see if it's already
+erased, the limit is to be set to the page_address(page) + PAGE_SIZE,
+but because the variable has the type (ulong *), it gets set to
+PAGE_SIZE*sizeof(ulong), which makes the kernel oops when the page is
+very close to the end of RAM.
 
-Note you could use MTD_MAX_OOBFREE_ENTRIES instead of ARRAY_SIZE
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+
+--- linux.dev/drivers/mtd/devices/block2mtd.c.old	2007-02-18 14:08:59.519952312 +0100
++++ linux.dev/drivers/mtd/devices/block2mtd.c	2007-02-18 14:09:04.219237912 +0100
+@@ -111,7 +111,7 @@
+ 		if (IS_ERR(page))
+ 			return PTR_ERR(page);
+ 
+-		max = (u_long*)page_address(page) + PAGE_SIZE;
++		max = (u_long*) ((u8 *) page_address(page) + PAGE_SIZE);
+ 		for (p=(u_long*)page_address(page); p<max; p++)
+ 			if (*p != -1UL) {
+ 				lock_page(page);
