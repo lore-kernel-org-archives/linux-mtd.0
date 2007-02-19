@@ -1,13 +1,18 @@
+Received: from smtp.parrot.fr ([213.41.120.202])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJ6ES-0002by-Rn
+	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 05:59:00 -0500
+Message-ID: <45D982F2.6050804@parrot.fr>
+Date: Mon, 19 Feb 2007 11:58:58 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.fr>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: jffs2 Erase Block Summary overhead
-From: David Woodhouse <dwmw2@infradead.org>
-To: Matthieu CASTET <matthieu.castet@parrot.fr>
-In-Reply-To: <45D47C92.8080908@parrot.fr>
 References: <45D47C92.8080908@parrot.fr>
-Content-Type: text/plain
-Date: Mon, 19 Feb 2007 10:05:37 +0000
-Message-Id: <1171879537.7600.5.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1171879537.7600.5.camel@pmac.infradead.org>
+In-Reply-To: <1171879537.7600.5.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -18,17 +23,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-02-15 at 16:30 +0100, Matthieu CASTET wrote:
-> after doing some test on a 64MB nand flash, we see that only 50 MB can 
-> be stored on the filesystem [1]. The extra 10 MB are taken by jffs2 summary.
-> If we disable jffs2 sumary in the kernel, the 10MB become available.
+Hi,
+
+David Woodhouse a écrit :
 > 
-> Is there a way to reduce this overhead ?
-> 20 % seems really big.
+> There's a lot of redundant information in the summary; I think we could
+> halve it fairly easily.
+That would be great :)
 
-There's a lot of redundant information in the summary; I think we could
-halve it fairly easily. I don't believe your 20% figure though -- that's
-too high. You really can't rely on the output of df.
+> I don't believe your 20% figure though -- that's
+> too high. You really can't rely on the output of df.
+> 
+But the jffs2 layer say "no space left on device", so the it is really full.
 
--- 
-dwmw2
+For more information on the test procedure, I fill the jffs2 filesystem 
+with someting like :
+"i=0; while true; do dd if=/dev/urandom of=file.$i count=1024; 
+i=$(($i+1));done"
+And I can create only 93 complete files, a incomplete file of 430 KB 
+(and there should be 4 MB taken file others files).
+
+
+May be I am on a worse test case ?
+
+If I remove "Erase Block Summary", I can really fill the jffs2 up to 
+60MB [1] instead of 51MB.
+
+Thanks,
+
+Matthieu
+
+
+[1]
+
+# time mount /dev/mtdblock3 -t jffs2 /tmp/mnt/ ; time cat 
+/tmp/mnt/root/file.1 > /dev/null ; du -sh /tmp/mnt; df
+real    0m 11.91s
+user    0m 0.00s
+sys     0m 11.91s
+real    0m 0.36s
+user    0m 0.01s
+sys     0m 0.35s
+59.8M   /tmp/mnt
+Filesystem                Size      Used Available Use% Mounted on
+/dev/ram0                 4.4M      4.4M         0 100% /
+none                      7.0M     16.0k      7.0M   0% /tmp
+none                      7.0M     16.0k      7.0M   0% /tmp
+tmpfs                     7.0M     16.0k      7.0M   0% /tmp
+/dev/mtdblock3           61.5M     60.9M    640.0k  99% /tmp/mnt
