@@ -1,24 +1,18 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJd1P-0005Qz-C4
-	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 16:59:42 -0500
-Date: Tue, 20 Feb 2007 21:55:13 +0000
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Jason Lunz <lunz@falooley.org>
-Subject: Re: [PATCH] block2mtd oops in erase function.
-Message-ID: <20070220215513.GA13493@lazybastard.org>
-References: <1171920579.4996.8.camel@celeron>
-	<20070219222041.GE7813@lazybastard.org>
-	<20070219223023.GF7813@lazybastard.org>
-	<1171938429.2859.2.camel@NF.local>
-	<20070220105306.GC10455@lazybastard.org>
-	<20070220213528.GA7764@metaxa.reflex>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070220213528.GA7764@metaxa.reflex>
-Cc: Felix Fietkau <nbd@openwrt.org>, linux-mtd@lists.infradead.org
+Received: from alias1.ihug.co.nz ([203.96.222.11])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJd9n-0000qi-8b
+	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 22:08:23 +0000
+From: "Gavin Lambert" <gavinl@compacsort.com>
+To: <tglx@linutronix.de>
+Subject: RE: Why is PEB not erased before writing???
+Date: Wed, 21 Feb 2007 10:48:51 +1300
+Message-ID: <037a01c75538$eb2a3590$0502a8c0@gavinlpc>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1171970271.30834.231.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +22,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 February 2007 16:35:29 -0500, Jason Lunz wrote:
+Quoth Thomas Gleixner [tglx@linutronix.de]:
+> On Tue, 2007-02-20 at 16:41 +0530, Brijesh Singh wrote:
+>> Yes I did enable this CONFIG_MTD_UBI_USERSPACE_IO  option.We can't
+>> write the device if this flag is not enabled.UBI treats the device as
+>> readonly. This  is the usual way to write UBI device,I guess.
 > 
-> I'm using jffs2 on block2mtd. I'd be happy to test any patches you have.
+> No. It is not. It is a _DEBUG_ option. UBI has an update mechanism.
+> See documentation. 
 
-Is it ok if I just pass this URL?
-http://kernel.org/git/?p=linux/kernel/git/joern/misc.git
-
-The top three patches are test-worthy.
-
-> The readahead-disable one in particular is interesting - i ended up
-> patching the source to get rid of the warning about readahead past
-> end-of-disk. And mounting jffs2-on-block2mtd-on-ide-flash is quite slow.
-
-If it works for you and improves mount time, that would be good results.
-
-Jörn
-
--- 
-I've never met a human being who would want to read 17,000 pages of
-documentation, and if there was, I'd kill him to get him out of the
-gene pool.
--- Joseph Costello
+Perhaps it needs to be named better then :)
