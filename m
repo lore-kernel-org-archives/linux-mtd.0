@@ -1,19 +1,19 @@
-Received: from smtp.parrot.fr ([213.41.120.202])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJQcg-00062z-2u
-	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 03:45:21 -0500
-Message-ID: <45DAB517.70502@parrot.fr>
-Date: Tue, 20 Feb 2007 09:45:11 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-MIME-Version: 1.0
-To: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-Subject: Re: jffs2 Erase Block Summary overhead
-References: <45D47C92.8080908@parrot.fr>
-	<200702191310.12647.indrek.kruusa@artecdesign.ee>
-In-Reply-To: <200702191310.12647.indrek.kruusa@artecdesign.ee>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJRJp-0006ej-GG
+	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 04:30:01 -0500
+Subject: Re: Why is PEB not erased before writing???
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Brijesh Singh <brijesh.s.singh@gmail.com>
+In-Reply-To: <6b5362aa0702192237o69e7efe9wf5844bfaff91e2ff@mail.gmail.com>
+References: <6b5362aa0702192237o69e7efe9wf5844bfaff91e2ff@mail.gmail.com>
+Content-Type: text/plain
+Date: Tue, 20 Feb 2007 10:34:28 +0100
+Message-Id: <1171964069.30834.220.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Indrek Kruusa a écrit :
-> Ühel kenal päeval (neljapäev 15 veebruar 2007 5:30 pm) kirjutas Matthieu 
-> CASTET:
->> Hi,
->>
->> after doing some test on a 64MB nand flash, we see that only 50 MB can
->> be stored on the filesystem [1]. The extra 10 MB are taken by jffs2
->> summary. If we disable jffs2 sumary in the kernel, the 10MB become
->> available.
+On Tue, 2007-02-20 at 12:07 +0530, Brijesh Singh wrote:
+> I tried to overwrite same block.
+> Ubi should call erase before overwriting the data block.But it didn't.
+> UBI simply wrote the block again.That will write garbage for a flash.
+> So who will call erase??Is it the application's responsibility to call
+> erase before writing at same  location???
 > 
-> This is interesting. I have a Puppy Linux build within 52MB (ps 512B/ebs 16KB) 
-> and sumtool grows it to 57MB.
-> JFFS2/device with ps of 2048B/ebs 128KB has much much better compression level 
-> and sum adds ca. 3-4% for this case.
-Mine is a ps 512B/ebs 4KB.
+> I am stuck here because my concept was,
+> ubi will check if we are re-writing the same PEB.
+> If yes,UBI will erase the block and then write the same block.
 
-> You can play with "dry" mkfs.jffs2 and different page;block sizes/file 
-> counts/file types to get the whole picture.
-I don't get the same result with image generated with mkfs.jffs2 and on
-the fly written file :
-- with mkfs.jffs2 + sumtool give me only 7 % overhead
-- on the fly write give me 15 % overhead
+Applications and UBI kernel users have no access to physical erase
+blocks. They look at logical erase blocks. UBI manages the translation
+of logical to physical blocks. If you write to the same logical erase
+block again UBI will just write to a different physical erase block and
+erase the previous PEB later on. The internal management guarantees that
+the application looks only at the newest written block and not at the
+older one.
 
-
-Matthieu
+	tglx
