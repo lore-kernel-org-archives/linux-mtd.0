@@ -1,23 +1,22 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJSvV-0008SE-IE
-	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 06:13:31 -0500
-Subject: Re: Why is PEB not erased before writing???
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <6b5362aa0702200311k6e063b46ia6e659277c082434@mail.gmail.com>
-References: <6b5362aa0702192237o69e7efe9wf5844bfaff91e2ff@mail.gmail.com>
-	<1171964069.30834.220.camel@localhost.localdomain>
-	<44602.172.16.0.34.1171964998.squirrel@webmail.calsoftinc.com>
-	<1171968259.30834.229.camel@localhost.localdomain>
-	<6b5362aa0702200311k6e063b46ia6e659277c082434@mail.gmail.com>
-Content-Type: text/plain
-Date: Tue, 20 Feb 2007 12:17:50 +0100
-Message-Id: <1171970271.30834.231.camel@localhost.localdomain>
+	id 1HJTYn-0000ZM-NH
+	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 06:53:32 -0500
+Date: Tue, 20 Feb 2007 10:53:07 +0000
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Felix Fietkau <nbd@openwrt.org>
+Subject: Re: [PATCH] block2mtd oops in erase function.
+Message-ID: <20070220105306.GC10455@lazybastard.org>
+References: <1171920579.4996.8.camel@celeron>
+	<20070219222041.GE7813@lazybastard.org>
+	<20070219223023.GF7813@lazybastard.org>
+	<1171938429.2859.2.camel@NF.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, brijesh.singh@calsoftinc.com
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1171938429.2859.2.camel@NF.local>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,17 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-02-20 at 16:41 +0530, Brijesh Singh wrote:
-> > Did you enable CONFIG_MTD_USERSPACE_IO ? If yes, then the behaviour is
-> > clear. This is a _DEBUG_ option and bypasses the normal update
-> > procedure.
->
-> Yes I did enable this CONFIG_MTD_UBI_USERSPACE_IO  option.We can't
-> write the device if this flag is not enabled.UBI treats the device as
-> readonly.
-> This  is the usual way to write UBI device,I guess.
+On Tue, 20 February 2007 03:27:09 +0100, Felix Fietkau wrote:
+> On Mon, 2007-02-19 at 22:30 +0000, Jörn Engel wrote:
+> > On December 21st 2004 by none other than me.  How embarrassing!
+> > http://lists.infradead.org/pipermail/linux-mtd/2004-December/011236.html
+> > 
+> > Can you test this patch?
+> > 
+> > diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+> > [...]
+> 
+> Works :)
 
-No. It is not. It is a _DEBUG_ option. UBI has an update mechanism. See
-documentation.
+Cool!  Would you mind also trying two more patches?  One of them just
+removes a compile warning if CONFIG_MODULE=n, the other rips out the
+readahead code, which should give a nice performance boost on USB
+sticks, MMC/SD, etc.  Mounting JFFS2 in particular should be faster.
 
-	tglx
+Jörn
+
+-- 
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
