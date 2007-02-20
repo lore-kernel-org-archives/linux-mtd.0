@@ -1,12 +1,12 @@
-Received: from ug-out-1314.google.com ([66.249.92.170])
+Received: from ug-out-1314.google.com ([66.249.92.174])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJSrF-00081z-PM
-	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 06:08:33 -0500
-Received: by ug-out-1314.google.com with SMTP id m2so711510uge
+	id 1HJStr-0008Fd-55
+	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 06:11:14 -0500
+Received: by ug-out-1314.google.com with SMTP id m2so712015uge
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 20 Feb 2007 03:08:25 -0800 (PST)
-Message-ID: <6b5362aa0702200308o1a95173fh75fac4c3a7ffe056@mail.gmail.com>
-Date: Tue, 20 Feb 2007 16:38:24 +0530
+	Tue, 20 Feb 2007 03:11:08 -0800 (PST)
+Message-ID: <6b5362aa0702200311k6e063b46ia6e659277c082434@mail.gmail.com>
+Date: Tue, 20 Feb 2007 16:41:08 +0530
 From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
 To: tglx@linutronix.de
 Subject: Re: Why is PEB not erased before writing???
@@ -77,17 +77,17 @@ not a mainline check
 The call hirerchy of write is,
 cdev- write
 eba-write
-     if mapped
-                io_write_data               <------ here if I am
-over-writing the sub-block(NOT 0xFF),
-                                                            UBI should
-                                                            copy
-block,get a free PEB,write this block without
-     else                                                  old
-sub-block and write new sub-block
-               map LEB-PEB
+    if mapped
                io_write_data
+ <------ here if I am over-writing the sub-block(NOT 0xFF),
+                                               UBI should copy
+block,get a free PEB,write this block without  old sub-block and write
+new sub-block
+---->
+else
+              map LEB-PEB
+              io_write_data
 io-write
-   call mtd-write
+  call mtd-write
 
 So whose job is to check block is not empty,so erase it then write it.
