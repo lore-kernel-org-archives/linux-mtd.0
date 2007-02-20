@@ -1,19 +1,21 @@
-Received: from py-out-1112.google.com ([64.233.166.180])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJHew-0000gC-Br
-	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 18:11:05 -0500
-Received: by py-out-1112.google.com with SMTP id p76so967836pyb
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 19 Feb 2007 15:10:58 -0800 (PST)
-Message-ID: <e167438e0702191510v2f68036bt20af6f6db6d13bed@mail.gmail.com>
-Date: Mon, 19 Feb 2007 17:10:58 -0600
-From: "Julianne C." <juliannerc@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: OneNAND: Enabling ECC in main area
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from cl-1816.ham-01.de.sixxs.net ([2001:6f8:900:717::2]
+	helo=ds10.mine.nu)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJKin-0001ya-K6
+	for linux-mtd@lists.infradead.org; Mon, 19 Feb 2007 21:27:16 -0500
+Subject: Re: [PATCH] block2mtd oops in erase function.
+From: Felix Fietkau <nbd@openwrt.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
+In-Reply-To: <20070219223023.GF7813@lazybastard.org>
+References: <1171920579.4996.8.camel@celeron>
+	<20070219222041.GE7813@lazybastard.org>
+	<20070219223023.GF7813@lazybastard.org>
+Content-Type: text/plain; charset=iso-8859-15
+Date: Tue, 20 Feb 2007 03:27:09 +0100
+Message-Id: <1171938429.2859.2.camel@NF.local>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,66 +25,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a continuation of the "unexpected zero" problem reported
-earlier.  With further experimentation and investigation, we observe
-the following behavior:
+On Mon, 2007-02-19 at 22:30 +0000, J=F6rn Engel wrote:
+> On December 21st 2004 by none other than me.  How embarrassing!
+> http://lists.infradead.org/pipermail/linux-mtd/2004-December/011236.html
+>=20
+> Can you test this patch?
+>=20
+> diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2=
+mtd.c
+> [...]
 
-The bootloader on the board we use (LogicPD PXA270) does not have ECC
-enabled during its operation.  Hence, we need to enable it sometime
-during the OneNAND device driver setup.
-This is the code that is inserted in the onenand_probe function, just
-after the first wait call.
+Works :)
 
-    // Contains old value of sysconfig register from bootloader
-    syscfg = syscfg & 0xfeff; // ~0x0100;
-
-    this->write_word (syscfg,
-                             this->base + ONENAND_REG_SYS_CFG1);
-
-
-    // Reset the command after enabling the ECC.
-    this->write_word (ONENAND_CMD_RESET,
-                             this->base + ONENAND_BOOTRAM);
-
-    // Wait reset.
-    this->wait (mtd,
-                    FL_RESETING);
-
-Using the utility mtd_debug 'write' mode, a file with a known pattern
-is written to a partition on the OneNAND device:
-
-mtd_debug write /dev/mtd3 0 0x10000 test_64k.bin
-
-When we inspect the area using nanddump:
-
-nanddump -p -l 0x2000 /dev/mtd3
-
-we see the expected pattern in the main area of the partition, but the
-spare OOB area is still completely untouched (all FF).
-
-We created a modified version of the mtd_debug program that writes
-only to the OOB area using the ioctl command
-
-        err = ioctl (fd,
-                        MEMWRITEOOB,
-                        &oob);
-
-where the oob structure contains a count sequence leaving out the 5
-spare bytes reserved for ECC in each 16 bytes of OOB.  On inspection
-using nanddump again, we see that all of the OOB data has been written
-successfully, including the 2 spare area ECC bytes.
-
-It is my understanding (please correct me if I am wrong) that setting
-the 'ECC enable' bit in system config 1 register (bit 8) to zero (as
-in the enable described above), should enable ECC for both the main
-and OOB areas.
-
-Is there something we are missing in getting the ECC to work with the main area?
-
-Also, if the ECC is working correctly, should we see non FF bytes in
-the spare area in bytes 8 to 10 of each 16 byte portion of the OOB
-when we do a dump of the data?
-
-Regards,
-
-Julianne C.
+- Felix
