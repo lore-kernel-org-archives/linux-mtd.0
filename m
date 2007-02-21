@@ -1,25 +1,27 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from crown.reflexsecurity.com ([72.54.139.163])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJsoT-0004pH-Rn
-	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 09:53:34 -0500
-Date: Wed, 21 Feb 2007 14:47:54 +0000
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Jason Lunz <lunz@falooley.org>
+	id 1HJy3I-0000tx-KA
+	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 15:27:03 -0500
+Date: Wed, 21 Feb 2007 15:26:51 -0500
+From: Jason Lunz <lunz@falooley.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
 Subject: Re: [PATCH] block2mtd oops in erase function.
-Message-ID: <20070221144754.GC464@lazybastard.org>
-References: <1171920579.4996.8.camel@celeron>
-	<20070219222041.GE7813@lazybastard.org>
+Message-ID: <20070221202650.GC7764@metaxa.reflex>
+References: <20070219222041.GE7813@lazybastard.org>
 	<20070219223023.GF7813@lazybastard.org>
 	<1171938429.2859.2.camel@NF.local>
 	<20070220105306.GC10455@lazybastard.org>
 	<20070220213528.GA7764@metaxa.reflex>
 	<20070220215513.GA13493@lazybastard.org>
 	<20070221030254.GA11044@avocado.homenet>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+	<20070221144754.GC464@lazybastard.org>
+	<20070221154249.GB7764@metaxa.reflex>
+	<20070221160217.GA2650@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070221030254.GA11044@avocado.homenet>
+In-Reply-To: <20070221160217.GA2650@lazybastard.org>
 Cc: Felix Fietkau <nbd@openwrt.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -30,52 +32,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 20 February 2007 22:02:54 -0500, Jason Lunz wrote:
-> On Tue, Feb 20, 2007 at 09:55:13PM +0000, Jörn Engel wrote:
-> > Is it ok if I just pass this URL?
-> > http://kernel.org/git/?p=linux/kernel/git/joern/misc.git
-> > 
-> > The top three patches are test-worthy.
-> 
-> I'm running with all three. everything seems fine.
+On Wed, Feb 21, 2007 at 04:02:18PM +0000, J�rn Engel wrote:
+> If you enable CONFIG_JFFS2_SUMMARY, it should work for you.  Of course,
+> your filesystem needs the summary, so you either have to do the
+> backup&restore procedure or apply sumtool (is that its name?) to your
+> images.
 
-Great!
+I thought I'd enabled CONFIG_JFFS2_SUMMARY, but it turns out not.
+I've enabled it now, but I still don't seem to see any speedup.
 
-> Mount time of a ~56M jffs2 partition went from ~72s to ~54s.
+I'm unclear on how to make the filesystem use it. I create the jffs2
+filesystem by simply doing:
 
-Ouch!  While this is a significant improvement, 54s is still quite bad.
-The 512MiB partition on the OLPC is mounting in ~3.4s with JFFS2 and
-~60ms with LogFS.  Imo 3.4s is already bad, and 54s is way beyond.
+	flash_eraseall -j /dev/mtd0
+	mount -t jffs2 mtd0 /state
 
-Now where is time lost?  One candidate is erase block summary, enabling
-it usually gives roughly a 6x performance improvement.  That would get
-you down to ~9s.
+Will this create a summary automatically, or is there an extra step I
+need to take? 
 
-Another next thing I suspect is the erase size.  The default is 4KiB,
-which is rather small.  Can you try setting it to 64KiB or maybe even
-128KiB?
+...ah, it seems removing the -j does the trick. If I don't use it, mount
+goes from >50s to <4s.
 
-Instead of passing "block2mtd=/dev/foo", you can pass
-"block2mtd=/dev/foo,64KiB" if my memory doesn't fail me.
+thanks!
 
-Changing the erase size to a multiple of the previous erase size should
-be fine with JFFS2 (a smaller erase size could lead to data loss), but
-you likely won't get better performance unless you recreate the
-filesystem.  Maybe something like
-
-$ mount /dev/mtdX /mnt -t jffs2
-$ (cd /mnt && tar cvpf /tmp/foo.tgz .)
-$ umount /mnt
-$ flash_eraseall /dev/mtdX
-$ mount /dev/mtdX /mnt -t jffs2
-$ (cd /mnt && tar vpf /tmp/foo.tgz)
-$ umount /dev/mtdX
-
-Unless you are happy with the current mount time, of course.  Noone is
-forcing you to change anything.
-
-Jörn
-
--- 
-Do not stop an army on its way home.
--- Sun Tzu
+Jason
