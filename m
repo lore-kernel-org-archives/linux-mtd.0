@@ -1,30 +1,28 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJtuZ-0003Gi-Mf
-	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 16:01:48 +0000
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1LG1W85032703
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 11:01:32 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l1LG1W53548942
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:01:32 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l1LG1WCK013850
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:01:32 -0700
-Subject: RE: Typical bad block counts
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Dave Kelly <dkelly@eoncc.com>
-In-Reply-To: <B569801144262942AF60C398F8520878E66CF6@ken-exchange.EONCC.COM>
-References: <B569801144262942AF60C398F8520878E66CF6@ken-exchange.EONCC.COM>
-Content-Type: text/plain
-Date: Wed, 21 Feb 2007 10:02:34 -0600
-Message-Id: <1172073754.24204.175.camel@zod.rchland.ibm.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJty7-0006rY-H2
+	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 11:05:28 -0500
+Date: Wed, 21 Feb 2007 16:02:18 +0000
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Jason Lunz <lunz@falooley.org>
+Subject: Re: [PATCH] block2mtd oops in erase function.
+Message-ID: <20070221160217.GA2650@lazybastard.org>
+References: <1171920579.4996.8.camel@celeron>
+	<20070219222041.GE7813@lazybastard.org>
+	<20070219223023.GF7813@lazybastard.org>
+	<1171938429.2859.2.camel@NF.local>
+	<20070220105306.GC10455@lazybastard.org>
+	<20070220213528.GA7764@metaxa.reflex>
+	<20070220215513.GA13493@lazybastard.org>
+	<20070221030254.GA11044@avocado.homenet>
+	<20070221144754.GC464@lazybastard.org>
+	<20070221154249.GB7764@metaxa.reflex>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070221154249.GB7764@metaxa.reflex>
+Cc: Felix Fietkau <nbd@openwrt.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,21 +32,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-21 at 10:44 -0500, Dave Kelly wrote:
-> >The datasheet for those chips says up to 20 blocks can be bad.  That
-> >includes both Bad blocks at MFG time, and bad blocks that can develop
-> >later on.
+On Wed, 21 February 2007 10:42:49 -0500, Jason Lunz wrote:
 > 
-> No, this is the small block devices for which the max number
-> of bad blocks is 160, per the datasheet (NAND01G-A).
+> A raw read of the underlying block device takes 54s, so jffs2 isn't
+> adding any significant overhead anymore. It was when readahead was
+> in use.
 
-Ah, sorry.  Was looking at the large block datasheet.
+That is a bit surprising.  JFFS2 has some optimizations to skip empty
+blocks after some bytes.  This is where readahead really hurt - JFFS2
+would skip and readahead would read the skipped data anyway.  Now I can
+see that JFFS2 has some overhead over plain reading the device, but it
+is unusual that overhead and optimizations cancel each other out so
+perfectly.
 
-> My question though is the typical number of initial bad blocks,
-> not the max. allowed. No MFG seams to discuss this.
+> The only way to increase performance at this point is to make it so that
+> jffs2 doesn't need to read the entire device at mount time. Is this what
+> erase block summaries do?
 
-Probably because 1) there isn't a typical number as it varies from
-product lot to product lot and 2) nobody has bothered to try and track
-it anywhere for the devices they've received.
+Yes.  The idea is to only read the summary at the end of an erase block.
+If the summary does not exist, it will fall back to linear scanning of
+the block, afaik.
 
-josh
+If you enable CONFIG_JFFS2_SUMMARY, it should work for you.  Of course,
+your filesystem needs the summary, so you either have to do the
+backup&restore procedure or apply sumtool (is that its name?) to your
+images.
+
+Jörn
+
+-- 
+Joern's library part 3:
+http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
