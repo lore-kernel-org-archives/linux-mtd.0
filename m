@@ -1,12 +1,12 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJty7-0006rY-H2
-	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 11:05:28 -0500
-Date: Wed, 21 Feb 2007 16:02:18 +0000
+	id 1HJsoT-0004pH-Rn
+	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 09:53:34 -0500
+Date: Wed, 21 Feb 2007 14:47:54 +0000
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
 To: Jason Lunz <lunz@falooley.org>
 Subject: Re: [PATCH] block2mtd oops in erase function.
-Message-ID: <20070221160217.GA2650@lazybastard.org>
+Message-ID: <20070221144754.GC464@lazybastard.org>
 References: <1171920579.4996.8.camel@celeron>
 	<20070219222041.GE7813@lazybastard.org>
 	<20070219223023.GF7813@lazybastard.org>
@@ -15,13 +15,11 @@ References: <1171920579.4996.8.camel@celeron>
 	<20070220213528.GA7764@metaxa.reflex>
 	<20070220215513.GA13493@lazybastard.org>
 	<20070221030254.GA11044@avocado.homenet>
-	<20070221144754.GC464@lazybastard.org>
-	<20070221154249.GB7764@metaxa.reflex>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070221154249.GB7764@metaxa.reflex>
+In-Reply-To: <20070221030254.GA11044@avocado.homenet>
 Cc: Felix Fietkau <nbd@openwrt.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,34 +30,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 February 2007 10:42:49 -0500, Jason Lunz wrote:
+On Tue, 20 February 2007 22:02:54 -0500, Jason Lunz wrote:
+> On Tue, Feb 20, 2007 at 09:55:13PM +0000, Jörn Engel wrote:
+> > Is it ok if I just pass this URL?
+> > http://kernel.org/git/?p=linux/kernel/git/joern/misc.git
+> > 
+> > The top three patches are test-worthy.
 > 
-> A raw read of the underlying block device takes 54s, so jffs2 isn't
-> adding any significant overhead anymore. It was when readahead was
-> in use.
+> I'm running with all three. everything seems fine.
 
-That is a bit surprising.  JFFS2 has some optimizations to skip empty
-blocks after some bytes.  This is where readahead really hurt - JFFS2
-would skip and readahead would read the skipped data anyway.  Now I can
-see that JFFS2 has some overhead over plain reading the device, but it
-is unusual that overhead and optimizations cancel each other out so
-perfectly.
+Great!
 
-> The only way to increase performance at this point is to make it so that
-> jffs2 doesn't need to read the entire device at mount time. Is this what
-> erase block summaries do?
+> Mount time of a ~56M jffs2 partition went from ~72s to ~54s.
 
-Yes.  The idea is to only read the summary at the end of an erase block.
-If the summary does not exist, it will fall back to linear scanning of
-the block, afaik.
+Ouch!  While this is a significant improvement, 54s is still quite bad.
+The 512MiB partition on the OLPC is mounting in ~3.4s with JFFS2 and
+~60ms with LogFS.  Imo 3.4s is already bad, and 54s is way beyond.
 
-If you enable CONFIG_JFFS2_SUMMARY, it should work for you.  Of course,
-your filesystem needs the summary, so you either have to do the
-backup&restore procedure or apply sumtool (is that its name?) to your
-images.
+Now where is time lost?  One candidate is erase block summary, enabling
+it usually gives roughly a 6x performance improvement.  That would get
+you down to ~9s.
+
+Another next thing I suspect is the erase size.  The default is 4KiB,
+which is rather small.  Can you try setting it to 64KiB or maybe even
+128KiB?
+
+Instead of passing "block2mtd=/dev/foo", you can pass
+"block2mtd=/dev/foo,64KiB" if my memory doesn't fail me.
+
+Changing the erase size to a multiple of the previous erase size should
+be fine with JFFS2 (a smaller erase size could lead to data loss), but
+you likely won't get better performance unless you recreate the
+filesystem.  Maybe something like
+
+$ mount /dev/mtdX /mnt -t jffs2
+$ (cd /mnt && tar cvpf /tmp/foo.tgz .)
+$ umount /mnt
+$ flash_eraseall /dev/mtdX
+$ mount /dev/mtdX /mnt -t jffs2
+$ (cd /mnt && tar vpf /tmp/foo.tgz)
+$ umount /dev/mtdX
+
+Unless you are happy with the current mount time, of course.  Noone is
+forcing you to change anything.
 
 Jörn
 
 -- 
-Joern's library part 3:
-http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
+Do not stop an army on its way home.
+-- Sun Tzu
