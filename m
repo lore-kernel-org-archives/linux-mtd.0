@@ -1,32 +1,30 @@
-Received: from e36.co.us.ibm.com ([32.97.110.154])
+Received: from e35.co.us.ibm.com ([32.97.110.153])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJtEG-0001ct-Hn
-	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 15:18:05 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e36.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1LFHd4n005514
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 10:17:39 -0500
+	id 1HJtuZ-0003Gi-Mf
+	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 16:01:48 +0000
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
+	[9.17.195.11])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1LG1W85032703
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 11:01:32 -0500
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l1LFHc7W512592
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 08:17:38 -0700
+	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
+	l1LG1W53548942
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:01:32 -0700
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l1LFHcND012254
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 08:17:38 -0700
-Subject: Re: [PATCH] [MTD] CHIPS: oops in cfi_amdstd_sync
+	l1LG1WCK013850
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:01:32 -0700
+Subject: RE: Typical bad block counts
 From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
-In-Reply-To: <20070221145420.GD464@lazybastard.org>
-References: <758a2bbf0702201746p3959235ele3db9b600a9f8104@mail.gmail.com>
-	<20070221145420.GD464@lazybastard.org>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 21 Feb 2007 09:18:40 -0600
-Message-Id: <1172071120.24204.167.camel@zod.rchland.ibm.com>
+To: Dave Kelly <dkelly@eoncc.com>
+In-Reply-To: <B569801144262942AF60C398F8520878E66CF6@ken-exchange.EONCC.COM>
+References: <B569801144262942AF60C398F8520878E66CF6@ken-exchange.EONCC.COM>
+Content-Type: text/plain
+Date: Wed, 21 Feb 2007 10:02:34 -0600
+Message-Id: <1172073754.24204.175.camel@zod.rchland.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Vijay Sampath <vsampath@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,19 +34,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-21 at 14:54 +0000, Jörn Engel wrote:
-> On Tue, 20 February 2007 17:46:13 -0800, Vijay Sampath wrote:
-> > 
-> > The files cfi_cmdset_0002.c and cfi_cmdset_0020.c do not initialize
-> > their wait queues like is done in cfi_cmdset_0001.c. This causes an
-> > oops when the wait queue is accessed. I have copied the code from
-> > cfi_cmdset_0001.c that is pertinent to initialization of the wait
-> > queue.
+On Wed, 2007-02-21 at 10:44 -0500, Dave Kelly wrote:
+> >The datasheet for those chips says up to 20 blocks can be bad.  That
+> >includes both Bad blocks at MFG time, and bad blocks that can develop
+> >later on.
 > 
-> Patch looks good, but I can no longer test it.  Josh may still have
-> access to some commandset 20 chips.  Josh, any objections?
+> No, this is the small block devices for which the max number
+> of bad blocks is 160, per the datasheet (NAND01G-A).
 
-The patch looks good to me as well.  No access to those chips anymore,
-but I have no objections.
+Ah, sorry.  Was looking at the large block datasheet.
+
+> My question though is the typical number of initial bad blocks,
+> not the max. allowed. No MFG seams to discuss this.
+
+Probably because 1) there isn't a typical number as it varies from
+product lot to product lot and 2) nobody has bothered to try and track
+it anywhere for the devices they've received.
 
 josh
