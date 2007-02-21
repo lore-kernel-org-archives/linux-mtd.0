@@ -1,32 +1,31 @@
 Received: from mx1.redhat.com ([66.187.233.31])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJsCA-00049u-Bu
-	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 09:11:58 -0500
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HJsH6-00081R-3P
+	for linux-mtd@lists.infradead.org; Wed, 21 Feb 2007 14:16:56 +0000
 Received: from int-mx1.corp.redhat.com (int-mx1.corp.redhat.com
 	[172.16.52.254])
-	by mx1.redhat.com (8.13.1/8.13.1) with ESMTP id l1LEBjKU031676
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:11:45 -0500
+	by mx1.redhat.com (8.13.1/8.13.1) with ESMTP id l1LEBohE031785
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:11:50 -0500
 Received: from warthog.cambridge.redhat.com (warthog.cambridge.redhat.com
 	[172.16.18.73])
-	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id l1LEBdrg016256
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:11:40 -0500
+	by int-mx1.corp.redhat.com (8.13.1/8.13.1) with ESMTP id l1LEBm80016313
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 09:11:49 -0500
 Received: from redhat.com (localhost.localdomain [127.0.0.1])
 	by warthog.cambridge.redhat.com (8.13.8/8.13.8) with ESMTP id
-	l1LEBdHG011790
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 14:11:39 GMT
+	l1LEBmPB011807
+	for <linux-mtd@lists.infradead.org>; Wed, 21 Feb 2007 14:11:48 GMT
 From: David Howells <dhowells@redhat.com>
-Subject: [PATCH 2/4] NOMMU: Add support for direct mapping through mtdconcat
-	if possible
+Subject: [PATCH 3/4] NOMMU: Generalise the handling of MTD-specific superblocks
 To: torvalds@osdl.org, akpm@osdl.org, dwmw2@infradead.org
-Date: Wed, 21 Feb 2007 12:56:27 +0000
-Message-ID: <20070221125627.10141.14354.stgit@warthog.cambridge.redhat.com>
+Date: Wed, 21 Feb 2007 12:56:33 +0000
+Message-ID: <20070221125632.10141.39794.stgit@warthog.cambridge.redhat.com>
 In-Reply-To: <20070221125620.10141.71409.stgit@warthog.cambridge.redhat.com>
 References: <20070221125620.10141.71409.stgit@warthog.cambridge.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Sender: linux-kernel-owner@vger.kernel.org
-Resent-Message-ID: <11789.1172067099@redhat.com>
+Resent-Message-ID: <11806.1172067108@redhat.com>
 Cc: dhowells@redhat.com, linux-mtd@lists.infradead.org,
 	linux-kernel@vger.kernel.org, uclinux-dev@uclinux.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -40,108 +39,558 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: David Howells <dhowells@redhat.com>
 
-Add support for direct mapping through mtdconcat, if possible, by attaching the
-samebacking_dev_info structure to the master.
+Generalise the handling of MTD-specific superblocks so that JFFS2 and ROMFS can
+both share it.
 
-It has some restrictions:
-
- (1) It won't permit direct mapping of concatenated devices that have differing
-     BDIs.
-
- (2) It doesn't support maps that span the 'gap' between devices, although it
-     possibly could if the devices spanned across return compatible
-     (ie. contiguous) addresses from their get_unmapped_area() ops.
-
-Signed-off-by: Gavin Lambert <gavinl@compacsort.com>
 Signed-Off-By: David Howells <dhowells@redhat.com>
 ---
 
- drivers/mtd/mtdconcat.c |   47 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 files changed, 47 insertions(+), 0 deletions(-)
+ drivers/mtd/Makefile      |    2 
+ drivers/mtd/mtdsuper.c    |  231 +++++++++++++++++++++++++++++++++++++++++++++
+ fs/jffs2/super.c          |  194 ++++----------------------------------
+ include/linux/fs.h        |    1 
+ include/linux/mtd/super.h |   30 ++++++
+ 5 files changed, 282 insertions(+), 176 deletions(-)
 
-diff --git a/drivers/mtd/mtdconcat.c b/drivers/mtd/mtdconcat.c
-index 880580c..730689b 100644
---- a/drivers/mtd/mtdconcat.c
-+++ b/drivers/mtd/mtdconcat.c
-@@ -15,6 +15,7 @@
- #include <linux/slab.h>
- #include <linux/sched.h>
- #include <linux/types.h>
-+#include <linux/backing-dev.h>
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index a75b82a..f9f0ffd 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -4,7 +4,7 @@
+ # $Id: Makefile.common,v 1.7 2005/07/11 10:39:27 gleixner Exp $
  
- #include <linux/mtd/mtd.h>
- #include <linux/mtd/concat.h>
-@@ -686,6 +687,40 @@ static int concat_block_markbad(struct mtd_info *mtd, loff_t ofs)
- }
+ # Core functionality.
+-mtd-y				:= mtdcore.o mtdbdi.o
++mtd-y				:= mtdcore.o mtdbdi.o mtdsuper.o
+ mtd-$(CONFIG_MTD_PARTITIONS)	+= mtdpart.o
+ obj-$(CONFIG_MTD)		+= $(mtd-y)
  
- /*
-+ * try to support NOMMU mmaps on concatenated devices
-+ * - we don't support subdev spanning as we can't guarantee it'll work
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+new file mode 100644
+index 0000000..7ffab96
+--- /dev/null
++++ b/drivers/mtd/mtdsuper.c
+@@ -0,0 +1,231 @@
++/* MTD-based superblock management
++ *
++ * Copyright (C) 2006 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
 + */
-+static unsigned long concat_get_unmapped_area(struct mtd_info *mtd,
-+					      unsigned long len,
-+					      unsigned long offset,
-+					      unsigned long flags)
++
++#include <linux/mtd/super.h>
++#include <linux/namei.h>
++#include <linux/ctype.h>
++
++/*
++ * compare superblocks to see if they're equivalent
++ * - they are if the underlying MTD device is the same
++ */
++static int get_sb_mtd_compare(struct super_block *sb, void *_mtd)
 +{
-+	struct mtd_concat *concat = CONCAT(mtd);
-+	int i;
++	struct mtd_info *mtd = _mtd;
 +
-+	for (i = 0; i < concat->num_subdev; i++) {
-+		struct mtd_info *subdev = concat->subdev[i];
-+
-+		if (offset >= subdev->size) {
-+			offset -= subdev->size;
-+			continue;
-+		}
-+
-+		/* we've found the subdev over which the mapping will reside */
-+		if (offset + len > subdev->size)
-+			return (unsigned long) -EINVAL;
-+
-+		if (subdev->get_unmapped_area)
-+			return subdev->get_unmapped_area(subdev, len, offset,
-+							 flags);
-+
-+		break;
++	if (sb->s_mtd == mtd) {
++		DEBUG(2, "MTDSB: Match on device %d (\"%s\")\n",
++		      mtd->index, mtd->name);
++		return 1;
 +	}
 +
-+	return (unsigned long) -ENOSYS;
++	DEBUG(2, "MTDSB: No match, device %d (\"%s\"), device %d (\"%s\")\n",
++	      sb->s_mtd->index, sb->s_mtd->name, mtd->index, mtd->name);
++	return 0;
 +}
 +
 +/*
-  * This function constructs a virtual MTD device by concatenating
-  * num_devs MTD devices. A pointer to the new device object is
-  * stored to *new_dev upon success. This function does _not_
-@@ -740,6 +775,8 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 
- 	concat->mtd.ecc_stats.badblocks = subdev[0]->ecc_stats.badblocks;
- 
-+	concat->mtd.backing_dev_info = subdev[0]->backing_dev_info;
++ * mark the superblock by the MTD device it is using
++ * - set the device number to be the correct MTD block device for pesuperstence
++ *   of NFS exports
++ */
++static int get_sb_mtd_set(struct super_block *sb, void *_mtd)
++{
++	struct mtd_info *mtd = _mtd;
 +
- 	concat->subdev[0] = subdev[0];
- 
- 	for (i = 1; i < num_devs; i++) {
-@@ -766,6 +803,15 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 				concat->mtd.flags |=
- 				    subdev[i]->flags & MTD_WRITEABLE;
- 		}
++	sb->s_mtd = mtd;
++	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, mtd->index);
++	return 0;
++}
 +
-+		/* only permit direct mapping if the BDIs are all the same
-+		 * - copy-mapping is still permitted
-+		 */
-+		if (concat->mtd.backing_dev_info !=
-+		    subdev[i]->backing_dev_info)
-+			concat->mtd.backing_dev_info =
-+				&default_backing_dev_info;
++/*
++ * get a superblock on an MTD-backed filesystem
++ */
++static int get_sb_mtd_aux(struct file_system_type *fs_type, int flags,
++			  const char *dev_name, void *data,
++			  struct mtd_info *mtd,
++			  int (*fill_super)(struct super_block *, void *, int),
++			  struct vfsmount *mnt)
++{
++	struct super_block *sb;
++	int ret;
 +
- 		concat->mtd.size += subdev[i]->size;
- 		concat->mtd.ecc_stats.badblocks +=
- 			subdev[i]->ecc_stats.badblocks;
-@@ -796,6 +842,7 @@ struct mtd_info *mtd_concat_create(struct mtd_info *subdev[],	/* subdevices to c
- 	concat->mtd.unlock = concat_unlock;
- 	concat->mtd.suspend = concat_suspend;
- 	concat->mtd.resume = concat_resume;
-+	concat->mtd.get_unmapped_area = concat_get_unmapped_area;
++	sb = sget(fs_type, get_sb_mtd_compare, get_sb_mtd_set, mtd);
++	if (IS_ERR(sb))
++		goto out_error;
++
++	if (sb->s_root)
++		goto already_mounted;
++
++	/* fresh new superblock */
++	DEBUG(1, "MTDSB: New superblock for device %d (\"%s\")\n",
++	      mtd->index, mtd->name);
++
++	ret = fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
++	if (ret < 0) {
++		up_write(&sb->s_umount);
++		deactivate_super(sb);
++		return ret;
++	}
++
++	/* go */
++	sb->s_flags |= MS_ACTIVE;
++	return simple_set_mnt(mnt, sb);
++
++	/* new mountpoint for an already mounted superblock */
++already_mounted:
++	DEBUG(1, "MTDSB: Device %d (\"%s\") is already mounted\n",
++	      mtd->index, mtd->name);
++	ret = simple_set_mnt(mnt, sb);
++	goto out_put;
++
++out_error:
++	ret = PTR_ERR(sb);
++out_put:
++	put_mtd_device(mtd);
++	return ret;
++}
++
++/*
++ * get a superblock on an MTD-backed filesystem by MTD device number
++ */
++static int get_sb_mtd_nr(struct file_system_type *fs_type, int flags,
++			 const char *dev_name, void *data, int mtdnr,
++			 int (*fill_super)(struct super_block *, void *, int),
++			 struct vfsmount *mnt)
++{
++	struct mtd_info *mtd;
++
++	mtd = get_mtd_device(NULL, mtdnr);
++	if (!mtd) {
++		DEBUG(0, "MTDSB: Device #%u doesn't appear to exist\n", mtdnr);
++		return -EINVAL;
++	}
++
++	return get_sb_mtd_aux(fs_type, flags, dev_name, data, mtd, fill_super,
++			      mnt);
++}
++
++/*
++ * set up an MTD-based superblock
++ */
++int get_sb_mtd(struct file_system_type *fs_type, int flags,
++	       const char *dev_name, void *data,
++	       int (*fill_super)(struct super_block *, void *, int),
++	       struct vfsmount *mnt)
++{
++	struct nameidata nd;
++	int mtdnr, ret;
++
++	if (!dev_name)
++		return -EINVAL;
++
++	DEBUG(2, "MTDSB: dev_name \"%s\"\n", dev_name);
++
++	/* the preferred way of mounting in future; especially when
++	 * CONFIG_BLOCK=n - we specify the underlying MTD device by number or
++	 * by name, so that we don't require block device support to be present
++	 * in the kernel. */
++	if (dev_name[0] == 'm' && dev_name[1] == 't' && dev_name[2] == 'd') {
++		if (dev_name[3] == ':') {
++			struct mtd_info *mtd;
++
++			/* mount by MTD device name */
++			DEBUG(1, "MTDSB: mtd:%%s, name \"%s\"\n",
++			      dev_name + 4);
++
++			for (mtdnr = 0; mtdnr < MAX_MTD_DEVICES; mtdnr++) {
++				mtd = get_mtd_device(NULL, mtdnr);
++				if (mtd) {
++					if (!strcmp(mtd->name, dev_name + 4))
++						return get_sb_mtd_aux(
++							fs_type, flags,
++							dev_name, data, mtd,
++							fill_super, mnt);
++
++					put_mtd_device(mtd);
++				}
++			}
++
++			printk(KERN_NOTICE "MTD:"
++			       " MTD device with name \"%s\" not found.\n",
++			       dev_name + 4);
++
++		} else if (isdigit(dev_name[3])) {
++			/* mount by MTD device number name */
++			char *endptr;
++
++			mtdnr = simple_strtoul(dev_name + 3, &endptr, 0);
++			if (!*endptr) {
++				/* It was a valid number */
++				DEBUG(1, "MTDSB: mtd%%d, mtdnr %d\n",
++				      mtdnr);
++				return get_sb_mtd_nr(fs_type, flags,
++						     dev_name, data,
++						     mtdnr, fill_super, mnt);
++			}
++		}
++	}
++
++	/* try the old way - the hack where we allowed users to mount
++	 * /dev/mtdblock$(n) but didn't actually _use_ the blockdev
++	 */
++	ret = path_lookup(dev_name, LOOKUP_FOLLOW, &nd);
++
++	DEBUG(1, "MTDSB: path_lookup() returned %d, inode %p\n",
++	      ret, nd.dentry ? nd.dentry->d_inode : NULL);
++
++	if (ret)
++		return ret;
++
++	ret = -EINVAL;
++
++	if (!S_ISBLK(nd.dentry->d_inode->i_mode))
++		goto out;
++
++	if (nd.mnt->mnt_flags & MNT_NODEV) {
++		ret = -EACCES;
++		goto out;
++	}
++
++	if (imajor(nd.dentry->d_inode) != MTD_BLOCK_MAJOR)
++		goto not_an_MTD_device;
++
++	mtdnr = iminor(nd.dentry->d_inode);
++	path_release(&nd);
++
++	return get_sb_mtd_nr(fs_type, flags, dev_name, data, mtdnr, fill_super,
++			     mnt);
++
++not_an_MTD_device:
++	if (!(flags & MS_SILENT))
++		printk(KERN_NOTICE
++		       "MTD: Attempt to mount non-MTD device \"%s\"\n",
++		       dev_name);
++out:
++	path_release(&nd);
++	return ret;
++
++}
++
++EXPORT_SYMBOL_GPL(get_sb_mtd);
++
++/*
++ * destroy an MTD-based superblock
++ */
++void kill_mtd_super(struct super_block *sb)
++{
++	generic_shutdown_super(sb);
++	put_mtd_device(sb->s_mtd);
++	sb->s_mtd = NULL;
++}
++
++EXPORT_SYMBOL_GPL(kill_mtd_super);
+diff --git a/fs/jffs2/super.c b/fs/jffs2/super.c
+index cc7e8e7..f5e4068 100644
+--- a/fs/jffs2/super.c
++++ b/fs/jffs2/super.c
+@@ -21,7 +21,7 @@
+ #include <linux/mount.h>
+ #include <linux/jffs2.h>
+ #include <linux/pagemap.h>
+-#include <linux/mtd/mtd.h>
++#include <linux/mtd/super.h>
+ #include <linux/ctype.h>
+ #include <linux/namei.h>
+ #include "compr.h"
+@@ -80,69 +80,27 @@ static const struct super_operations jffs2_super_operations =
+ 	.sync_fs =	jffs2_sync_fs,
+ };
  
- 	/*
- 	 * Combine the erase block size info of the subdevices:
+-static int jffs2_sb_compare(struct super_block *sb, void *data)
+-{
+-	struct jffs2_sb_info *p = data;
+-	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+-
+-	/* The superblocks are considered to be equivalent if the underlying MTD
+-	   device is the same one */
+-	if (c->mtd == p->mtd) {
+-		D1(printk(KERN_DEBUG "jffs2_sb_compare: match on device %d (\"%s\")\n", p->mtd->index, p->mtd->name));
+-		return 1;
+-	} else {
+-		D1(printk(KERN_DEBUG "jffs2_sb_compare: No match, device %d (\"%s\"), device %d (\"%s\")\n",
+-			  c->mtd->index, c->mtd->name, p->mtd->index, p->mtd->name));
+-		return 0;
+-	}
+-}
+-
+-static int jffs2_sb_set(struct super_block *sb, void *data)
+-{
+-	struct jffs2_sb_info *p = data;
+-
+-	/* For persistence of NFS exports etc. we use the same s_dev
+-	   each time we mount the device, don't just use an anonymous
+-	   device */
+-	sb->s_fs_info = p;
+-	p->os_priv = sb;
+-	sb->s_dev = MKDEV(MTD_BLOCK_MAJOR, p->mtd->index);
+-
+-	return 0;
+-}
+-
+-static int jffs2_get_sb_mtd(struct file_system_type *fs_type,
+-			    int flags, const char *dev_name,
+-			    void *data, struct mtd_info *mtd,
+-			    struct vfsmount *mnt)
++/*
++ * fill in the superblock
++ */
++static int jffs2_fill_super(struct super_block *sb, void *data, int silent)
+ {
+-	struct super_block *sb;
+ 	struct jffs2_sb_info *c;
+-	int ret;
++
++	D1(printk(KERN_DEBUG "jffs2_get_sb_mtd():"
++		  " New superblock for device %d (\"%s\")\n",
++		  sb->s_mtd->index, sb->s_mtd->name));
+ 
+ 	c = kzalloc(sizeof(*c), GFP_KERNEL);
+ 	if (!c)
+ 		return -ENOMEM;
+-	c->mtd = mtd;
+-
+-	sb = sget(fs_type, jffs2_sb_compare, jffs2_sb_set, c);
+-
+-	if (IS_ERR(sb))
+-		goto out_error;
+-
+-	if (sb->s_root) {
+-		/* New mountpoint for JFFS2 which is already mounted */
+-		D1(printk(KERN_DEBUG "jffs2_get_sb_mtd(): Device %d (\"%s\") is already mounted\n",
+-			  mtd->index, mtd->name));
+-		ret = simple_set_mnt(mnt, sb);
+-		goto out_put;
+-	}
+ 
+-	D1(printk(KERN_DEBUG "jffs2_get_sb_mtd(): New superblock for device %d (\"%s\")\n",
+-		  mtd->index, mtd->name));
++	c->mtd = sb->s_mtd;
++	c->os_priv = sb;
++	sb->s_fs_info = c;
+ 
+-	/* Initialize JFFS2 superblock locks, the further initialization will be
+-	 * done later */
++	/* Initialize JFFS2 superblock locks, the further initialization will
++	 * be done later */
+ 	init_MUTEX(&c->alloc_sem);
+ 	init_MUTEX(&c->erase_free_sem);
+ 	init_waitqueue_head(&c->erase_wait);
+@@ -151,133 +109,20 @@ static int jffs2_get_sb_mtd(struct file_system_type *fs_type,
+ 	spin_lock_init(&c->inocache_lock);
+ 
+ 	sb->s_op = &jffs2_super_operations;
+-	sb->s_flags = flags | MS_NOATIME;
++	sb->s_flags = sb->s_flags | MS_NOATIME;
+ 	sb->s_xattr = jffs2_xattr_handlers;
+ #ifdef CONFIG_JFFS2_FS_POSIX_ACL
+ 	sb->s_flags |= MS_POSIXACL;
+ #endif
+-	ret = jffs2_do_fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
+-
+-	if (ret) {
+-		/* Failure case... */
+-		up_write(&sb->s_umount);
+-		deactivate_super(sb);
+-		return ret;
+-	}
+-
+-	sb->s_flags |= MS_ACTIVE;
+-	return simple_set_mnt(mnt, sb);
+-
+-out_error:
+-	ret = PTR_ERR(sb);
+- out_put:
+-	kfree(c);
+-	put_mtd_device(mtd);
+-
+-	return ret;
+-}
+-
+-static int jffs2_get_sb_mtdnr(struct file_system_type *fs_type,
+-			      int flags, const char *dev_name,
+-			      void *data, int mtdnr,
+-			      struct vfsmount *mnt)
+-{
+-	struct mtd_info *mtd;
+-
+-	mtd = get_mtd_device(NULL, mtdnr);
+-	if (IS_ERR(mtd)) {
+-		D1(printk(KERN_DEBUG "jffs2: MTD device #%u doesn't appear to exist\n", mtdnr));
+-		return PTR_ERR(mtd);
+-	}
+-
+-	return jffs2_get_sb_mtd(fs_type, flags, dev_name, data, mtd, mnt);
++	return jffs2_do_fill_super(sb, data, silent);
+ }
+ 
+ static int jffs2_get_sb(struct file_system_type *fs_type,
+ 			int flags, const char *dev_name,
+ 			void *data, struct vfsmount *mnt)
+ {
+-	int err;
+-	struct nameidata nd;
+-	int mtdnr;
+-
+-	if (!dev_name)
+-		return -EINVAL;
+-
+-	D1(printk(KERN_DEBUG "jffs2_get_sb(): dev_name \"%s\"\n", dev_name));
+-
+-	/* The preferred way of mounting in future; especially when
+-	   CONFIG_BLK_DEV is implemented - we specify the underlying
+-	   MTD device by number or by name, so that we don't require
+-	   block device support to be present in the kernel. */
+-
+-	/* FIXME: How to do the root fs this way? */
+-
+-	if (dev_name[0] == 'm' && dev_name[1] == 't' && dev_name[2] == 'd') {
+-		/* Probably mounting without the blkdev crap */
+-		if (dev_name[3] == ':') {
+-			struct mtd_info *mtd;
+-
+-			/* Mount by MTD device name */
+-			D1(printk(KERN_DEBUG "jffs2_get_sb(): mtd:%%s, name \"%s\"\n", dev_name+4));
+-			for (mtdnr = 0; mtdnr < MAX_MTD_DEVICES; mtdnr++) {
+-				mtd = get_mtd_device(NULL, mtdnr);
+-				if (!IS_ERR(mtd)) {
+-					if (!strcmp(mtd->name, dev_name+4))
+-						return jffs2_get_sb_mtd(fs_type, flags, dev_name, data, mtd, mnt);
+-					put_mtd_device(mtd);
+-				}
+-			}
+-			printk(KERN_NOTICE "jffs2_get_sb(): MTD device with name \"%s\" not found.\n", dev_name+4);
+-		} else if (isdigit(dev_name[3])) {
+-			/* Mount by MTD device number name */
+-			char *endptr;
+-
+-			mtdnr = simple_strtoul(dev_name+3, &endptr, 0);
+-			if (!*endptr) {
+-				/* It was a valid number */
+-				D1(printk(KERN_DEBUG "jffs2_get_sb(): mtd%%d, mtdnr %d\n", mtdnr));
+-				return jffs2_get_sb_mtdnr(fs_type, flags, dev_name, data, mtdnr, mnt);
+-			}
+-		}
+-	}
+-
+-	/* Try the old way - the hack where we allowed users to mount
+-	   /dev/mtdblock$(n) but didn't actually _use_ the blkdev */
+-
+-	err = path_lookup(dev_name, LOOKUP_FOLLOW, &nd);
+-
+-	D1(printk(KERN_DEBUG "jffs2_get_sb(): path_lookup() returned %d, inode %p\n",
+-		  err, nd.dentry->d_inode));
+-
+-	if (err)
+-		return err;
+-
+-	err = -EINVAL;
+-
+-	if (!S_ISBLK(nd.dentry->d_inode->i_mode))
+-		goto out;
+-
+-	if (nd.mnt->mnt_flags & MNT_NODEV) {
+-		err = -EACCES;
+-		goto out;
+-	}
+-
+-	if (imajor(nd.dentry->d_inode) != MTD_BLOCK_MAJOR) {
+-		if (!(flags & MS_SILENT))
+-			printk(KERN_NOTICE "Attempt to mount non-MTD device \"%s\" as JFFS2\n",
+-			       dev_name);
+-		goto out;
+-	}
+-
+-	mtdnr = iminor(nd.dentry->d_inode);
+-	path_release(&nd);
+-
+-	return jffs2_get_sb_mtdnr(fs_type, flags, dev_name, data, mtdnr, mnt);
+-
+-out:
+-	path_release(&nd);
+-	return err;
++	return get_sb_mtd(fs_type, flags, dev_name, data, jffs2_fill_super,
++			  mnt);
+ }
+ 
+ static void jffs2_put_super (struct super_block *sb)
+@@ -312,8 +157,7 @@ static void jffs2_kill_sb(struct super_block *sb)
+ 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
+ 	if (!(sb->s_flags & MS_RDONLY))
+ 		jffs2_stop_garbage_collect_thread(c);
+-	generic_shutdown_super(sb);
+-	put_mtd_device(c->mtd);
++	kill_mtd_super(sb);
+ 	kfree(c);
+ }
+ 
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 86ec3f4..1b589f2 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -932,6 +932,7 @@ struct super_block {
+ 	struct list_head	s_files;
+ 
+ 	struct block_device	*s_bdev;
++	struct mtd_info		*s_mtd;
+ 	struct list_head	s_instances;
+ 	struct quota_info	s_dquot;	/* Diskquota specific options */
+ 
+diff --git a/include/linux/mtd/super.h b/include/linux/mtd/super.h
+new file mode 100644
+index 0000000..8fcdbdf
+--- /dev/null
++++ b/include/linux/mtd/super.h
+@@ -0,0 +1,30 @@
++/* MTD-based superblock handling
++ *
++ * Copyright (C) 2006 Red Hat, Inc. All Rights Reserved.
++ * Written by David Howells (dhowells@redhat.com)
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * as published by the Free Software Foundation; either version
++ * 2 of the License, or (at your option) any later version.
++ */
++
++#ifndef __MTD_SUPER_H__
++#define __MTD_SUPER_H__
++
++#ifdef __KERNEL__
++
++#include <linux/mtd/mtd.h>
++#include <linux/fs.h>
++#include <linux/mount.h>
++
++extern int get_sb_mtd(struct file_system_type *fs_type, int flags,
++		      const char *dev_name, void *data,
++		      int (*fill_super)(struct super_block *, void *, int),
++		      struct vfsmount *mnt);
++extern void kill_mtd_super(struct super_block *sb);
++
++
++#endif /* __KERNEL__ */
++
++#endif /* __MTD_SUPER_H__ */
