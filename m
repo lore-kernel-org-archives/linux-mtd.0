@@ -1,19 +1,20 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+Received: from wr-out-0506.google.com ([64.233.184.238])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HJdPU-0005vj-9R
-	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 17:24:48 -0500
-Subject: RE: Why is PEB not erased before writing???
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Gavin Lambert <gavinl@compacsort.com>
-In-Reply-To: <037a01c75538$eb2a3590$0502a8c0@gavinlpc>
-References: <037a01c75538$eb2a3590$0502a8c0@gavinlpc>
-Content-Type: text/plain
-Date: Tue, 20 Feb 2007 23:29:21 +0100
-Message-Id: <1172010561.25076.11.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1HJgYl-0007Hr-IJ
+	for linux-mtd@lists.infradead.org; Tue, 20 Feb 2007 20:46:22 -0500
+Received: by wr-out-0506.google.com with SMTP id i4so2314091wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 20 Feb 2007 17:46:13 -0800 (PST)
+Message-ID: <758a2bbf0702201746p3959235ele3db9b600a9f8104@mail.gmail.com>
+Date: Tue, 20 Feb 2007 17:46:13 -0800
+From: "Vijay Sampath" <vsampath@gmail.com>
+To: joern@wh.fh-wedel.de, linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] CHIPS: oops in cfi_amdstd_sync
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Content-Disposition: inline
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +24,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-21 at 10:48 +1300, Gavin Lambert wrote:
-> Quoth Thomas Gleixner [tglx@linutronix.de]:
-> > On Tue, 2007-02-20 at 16:41 +0530, Brijesh Singh wrote:
-> >> Yes I did enable this CONFIG_MTD_UBI_USERSPACE_IO  option.We can't
-> >> write the device if this flag is not enabled.UBI treats the device as
-> >> readonly. This  is the usual way to write UBI device,I guess.
-> > 
-> > No. It is not. It is a _DEBUG_ option. UBI has an update mechanism.
-> > See documentation. 
-> 
-> Perhaps it needs to be named better then :)
+From: Vijay Sampath <vsampath@gmail.com>
 
-1. It is only available, when you enable CONFIG_MTD_UBI_DEBUG
+The files cfi_cmdset_0002.c and cfi_cmdset_0020.c do not initialize
+their wait queues like is done in cfi_cmdset_0001.c. This causes an
+oops when the wait queue is accessed. I have copied the code from
+cfi_cmdset_0001.c that is pertinent to initialization of the wait
+queue.
 
-2. From the help text of CONFIG_MTD_UBI_USERSPACE_IO:
-"By default, users cannot directly write and erase individual
-eraseblocks of dynamic volumes (the update operation must be used
-instead). This option enables this capability - this is often useful for
-debugging."
+Signed-off-by: Vijay Sampath <vsampath@gmail.com>
+---
 
-Better names are not really preventing PEBKAC scenarios.
+diff -uprN -X linux-2.6.20.1-vanilla/Documentation/dontdiff
+linux-2.6.20.1-vanilla/drivers/mtd/chips/cfi_cmdset_0002.c
+linux-2.6/drivers/mtd/chips/cfi_cmdset_0002.c
+--- linux-2.6.20.1-vanilla/drivers/mtd/chips/cfi_cmdset_0002.c	2007-02-20
+17:01:57.000000000 -0800
++++ linux-2.6/drivers/mtd/chips/cfi_cmdset_0002.c	2007-02-20
+17:05:23.000000000 -0800
+@@ -359,6 +359,8 @@ struct mtd_info *cfi_cmdset_0002(struct
+ 		cfi->chips[i].word_write_time = 1<<cfi->cfiq->WordWriteTimeoutTyp;
+ 		cfi->chips[i].buffer_write_time = 1<<cfi->cfiq->BufWriteTimeoutTyp;
+ 		cfi->chips[i].erase_time = 1<<cfi->cfiq->BlockEraseTimeoutTyp;
++		cfi->chips[i].ref_point_counter = 0;
++		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
 
-	tglx
+ 	map->fldrv = &cfi_amdstd_chipdrv;
+diff -uprN -X linux-2.6.20.1-vanilla/Documentation/dontdiff
+linux-2.6.20.1-vanilla/drivers/mtd/chips/cfi_cmdset_0020.c
+linux-2.6/drivers/mtd/chips/cfi_cmdset_0020.c
+--- linux-2.6.20.1-vanilla/drivers/mtd/chips/cfi_cmdset_0020.c	2007-02-20
+17:01:57.000000000 -0800
++++ linux-2.6/drivers/mtd/chips/cfi_cmdset_0020.c	2007-02-20
+17:06:14.000000000 -0800
+@@ -158,6 +158,8 @@ struct mtd_info *cfi_cmdset_0020(struct
+ 		cfi->chips[i].word_write_time = 128;
+ 		cfi->chips[i].buffer_write_time = 128;
+ 		cfi->chips[i].erase_time = 1024;
++		cfi->chips[i].ref_point_counter = 0;
++		init_waitqueue_head(&(cfi->chips[i].wq));
+ 	}
+
+ 	return cfi_staa_setup(map);
