@@ -1,21 +1,19 @@
-Received: from mx1.redhat.com ([66.187.233.31])
+Received: from py-out-1112.google.com ([64.233.166.177])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HKCMF-0007ZQ-CT
-	for linux-mtd@lists.infradead.org; Thu, 22 Feb 2007 06:43:33 -0500
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <20070221163839.b4f5e3b5.akpm@linux-foundation.org> 
-References: <20070221163839.b4f5e3b5.akpm@linux-foundation.org>
-	<20070220195049.26186.69393.stgit@warthog.cambridge.redhat.com>
-	<20070220195106.26186.41931.stgit@warthog.cambridge.redhat.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 4/4] NOMMU: Make it possible for RomFS to use MTD devices
-	directly
-Date: Thu, 22 Feb 2007 11:43:00 +0000
-Message-ID: <32148.1172144580@redhat.com>
-Sender: dhowells@redhat.com
-Cc: dwmw2@infradead.org, torvalds@linux-foundation.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	uclinux-dev@uclinux.org
+	id 1HKGvR-0000u3-Jo
+	for linux-mtd@lists.infradead.org; Thu, 22 Feb 2007 11:36:12 -0500
+Received: by py-out-1112.google.com with SMTP id p76so115034pyb
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 22 Feb 2007 08:36:07 -0800 (PST)
+Message-ID: <e167438e0702220835gbc5562fl4dc0bc4bd879f649@mail.gmail.com>
+Date: Thu, 22 Feb 2007 10:35:35 -0600
+From: "Julianne C." <juliannerc@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: OneNAND: Rate of write errors
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +23,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Andrew Morton <akpm@linux-foundation.org> wrote:
+Further thought about the numerous write errors to the OneNAND part
+got me thinking about the symptoms, i.e., when we see the -EBADMSG
+error return, there is no corresponding fault reported in the ECC
+status register.  Consequently, we concluded that the bufferram may be
+getting corrupted before the data is ever committed to the NAND array.
 
-> > +		brelse(bh);
-> 
-> A little fyi: brelse() is rather old-fashioned, and has a usually unneeded
-> test for non-null bh in it.  In situations where we know that the pointer is 
-> valid, let's please use put_bh().
+Hence, we rewrote the code for the setup as follows in the
+onenand_write procedure:
 
-That's what was in the old romfs.  I can make the change, though.
+        do
+        {
+            this->write_bufferram (mtd,
+                                   ONENAND_DATARAM,
+                                   wbuf,
+                                   0,
+                                   mtd->writesize);
 
-Hmmm... brelse() isn't quite equivalent to put_bh(), but the difference seems
-just to be the message you get if you over-release a buffer head - and the
-resulting refcount on the BH if that happens.
+            ret = onenand_do_check_bufferram (mtd,
+                                              ONENAND_DATARAM,
+                                              wbuf,
+                                              0,
+                                              mtd->writesize);
 
-> Anyway, I'll assume that dwmw2 will be handling this patch series.
+            if (ret != 0) // then
+            {
+                retrys = retrys + 1;
 
-I assume so.
+                printk (KERN_WARNING
+                        "onenandwrite: bad buffer ram, retrying (%d)\n",
+                        retrys);
+            } // end if
+        } while (ret != 0 &&
+                 retrys < max_retrys);
 
-David
+        if (retrys >= max_retrys) // then
+        {
+            ret = -EBADMSG;
+
+            break;
+        } // end if
+
+With max_retrys set to three (we have seen double attempts) to make
+this work all the time.  There are no more errors reported back to the
+JFFS2 system, and the file system cleanly mounts and unmounts.
+
+This does verify the suspicion that the buffer was corrupted before it
+was committed.  Does anyone have any idea how or why the data in the
+bufferram might be corrupted?
+
+Julianne C.
