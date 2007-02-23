@@ -1,31 +1,21 @@
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HKKeC-0002nC-Pf
-	for linux-mtd@lists.infradead.org; Thu, 22 Feb 2007 20:34:41 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e32.co.us.ibm.com (8.12.11.20060308/8.13.8) with ESMTP id
-	l1MKRVhV023795
-	for <linux-mtd@lists.infradead.org>; Thu, 22 Feb 2007 15:27:31 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l1MKSLQF378254
-	for <linux-mtd@lists.infradead.org>; Thu, 22 Feb 2007 13:28:21 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l1MKSLw5020207
-	for <linux-mtd@lists.infradead.org>; Thu, 22 Feb 2007 13:28:21 -0700
-Subject: Re: nand with pcmcia interface
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: girish@picopeta.com
-In-Reply-To: <45DDE566.6040206@picopeta.com>
-References: <45DDE566.6040206@picopeta.com>
-Content-Type: text/plain
-Date: Thu, 22 Feb 2007 14:29:23 -0600
-Message-Id: <1172176163.24204.204.camel@zod.rchland.ibm.com>
-Mime-Version: 1.0
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HKVQl-00008F-Fd
+	for linux-mtd@lists.infradead.org; Fri, 23 Feb 2007 03:05:30 -0500
+Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
+	by mgw-ext14.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l1N818OM031109
+	for <linux-mtd@lists.infradead.org>; Fri, 23 Feb 2007 10:01:35 +0200
+Message-ID: <45DEA001.9060202@nokia.com>
+Date: Fri, 23 Feb 2007 10:04:17 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Re: OneNAND: Rate of write errors
+References: <e167438e0702220835gbc5562fl4dc0bc4bd879f649@mail.gmail.com>
+In-Reply-To: <e167438e0702220835gbc5562fl4dc0bc4bd879f649@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,18 +25,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-02-23 at 00:18 +0530, Girish wrote:
-> Hi all ,
->     I am writing a driver for 256MB Micron Nand flash On PXA270 board 
-> through PCMCIA interface as decribed in 
-> "http://download.intel.com/design/pca/applicationsprocessors/applnots/28014402.pdf". 
-> So I am trying it out in u-boot first. I wrote a u-boot command called 
-> mynand which writes the command at 0x30000000 (socket1 of pcmcia), data 
-> at 0x20000000(socket0 of pcmcia) and address at 0x20000040(i.e 
-> Address6=ALE). But u-boot hangs whenever I try to access pcmcia socket 
-> addresses i.e. 0x20000000 or 0x30000000. And I did "md 0x20000000" It too hangs the u-boot. 
-> Please suggest me how to go on further.
+ext Julianne C. wrote:
+> This does verify the suspicion that the buffer was corrupted before it
+> was committed.  Does anyone have any idea how or why the data in the
+> bufferram might be corrupted?
 
-You should ask about this on the u-boot mailing list.
-
-josh
+This is outside my experience but as far as I know there is little that
+OneNAND can control aside from latency and size of synchronous burst
+reads/writes.  The rest is controlled by other hardware
+e.g. a memory controller of some sort
