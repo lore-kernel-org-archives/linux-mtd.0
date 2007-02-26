@@ -1,19 +1,23 @@
-Received: from mga03.intel.com ([143.182.124.21])
+Received: from nf-out-0910.google.com ([64.233.182.186])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HLp13-0005Xe-Iw
-	for linux-mtd@lists.infradead.org; Mon, 26 Feb 2007 18:12:24 -0500
-Content-class: urn:content-classes:message
+	id 1HLpLT-0005qJ-0o
+	for linux-mtd@lists.infradead.org; Mon, 26 Feb 2007 18:33:29 -0500
+Received: by nf-out-0910.google.com with SMTP id a4so1961526nfc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 26 Feb 2007 15:33:24 -0800 (PST)
+Message-ID: <625fc13d0702261533u67a81fd7s22ece07b292913fb@mail.gmail.com>
+Date: Mon, 26 Feb 2007 17:33:24 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Johnson, Charles F" <charles.f.johnson@intel.com>
+Subject: Re: Maturity of JFFS2 + MTD NAND Flash Support?
+In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F17845E93644@orsmsx413.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Maturity of JFFS2 + MTD NAND Flash Support?
-Date: Mon, 26 Feb 2007 15:12:17 -0800
-Message-ID: <B1EDF20A6EAAD74EA65E46F774F17845E93644@orsmsx413.amr.corp.intel.com>
-In-Reply-To: <625fc13d0702261421w32be087el4f0a23efef3fa4ad@mail.gmail.com>
-From: "Johnson, Charles F" <charles.f.johnson@intel.com>
-To: "Josh Boyer" <jwboyer@gmail.com>, "David Woodhouse" <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <625fc13d0702261421w32be087el4f0a23efef3fa4ad@mail.gmail.com>
+	<B1EDF20A6EAAD74EA65E46F774F17845E93644@orsmsx413.amr.corp.intel.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Of the ONFI 1.0 spec, section 5, page 39 describes the command set.  I
-assume you'd need a MTD driver to implement this command set ?=20
+On 2/26/07, Johnson, Charles F <charles.f.johnson@intel.com> wrote:
+> Of the ONFI 1.0 spec, section 5, page 39 describes the command set.  I
+> assume you'd need a MTD driver to implement this command set ?
 
-
-Charles Johnson
-Ultra-Mobility Group
-Platform Software Engineering
-Intel Corporation
-charles.f.johnson@intel.com
-503-712-5181
-
------Original Message-----
-From: Josh Boyer [mailto:jwboyer@gmail.com]=20
-Sent: Monday, February 26, 2007 2:22 PM
-To: David Woodhouse
-Cc: Johnson, Charles F; linux-mtd@lists.infradead.org
-Subject: Re: Maturity of JFFS2 + MTD NAND Flash Support?
-
-On 2/26/07, David Woodhouse <dwmw2@infradead.org> wrote:
-> > Any support yet in MTD for ONFI 1.0 ??  (I couldn't find anything in
-> > the 2.6.20rc6 kernel I was browsing.)
->
-> I've not heard of ONFI. What's that?
-
-I assume this:
-
-http://www.onfi.org/
-
-But that looks more like a hardware interface than software.  Which
-means MTD has nothing to do with it.
+Yes, MTD would need to use those opcodes to talk to an ONFI compliant
+chip.  But that is
+still more of a HW detail.  It's really no different than supporting
+any other chip.  And from
+what I can tell, most of those opcodes are already used in MTD.  So
+basically, someone
+would have to try and use MTD on an OFNI compliant chip and see what's lacking.
 
 josh
