@@ -1,14 +1,24 @@
+Received: from nf-out-0910.google.com ([64.233.182.184])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HLoEI-00050c-7P
+	for linux-mtd@lists.infradead.org; Mon, 26 Feb 2007 17:22:01 -0500
+Received: by nf-out-0910.google.com with SMTP id a4so1942950nfc
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 26 Feb 2007 14:21:56 -0800 (PST)
+Message-ID: <625fc13d0702261421w32be087el4f0a23efef3fa4ad@mail.gmail.com>
+Date: Mon, 26 Feb 2007 16:21:55 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
 Subject: Re: Maturity of JFFS2 + MTD NAND Flash Support?
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F17845E9329B@orsmsx413.amr.corp.intel.com>
-References: <B1EDF20A6EAAD74EA65E46F774F17845E9329B@orsmsx413.amr.corp.intel.com>
-Content-Type: text/plain
-Date: Mon, 26 Feb 2007 17:17:54 -0500
-Message-Id: <1172528274.3560.5.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+In-Reply-To: <1172528274.3560.5.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <B1EDF20A6EAAD74EA65E46F774F17845E9329B@orsmsx413.amr.corp.intel.com>
+	<1172528274.3560.5.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, "Johnson,
+	Charles F" <charles.f.johnson@intel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +28,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-02-26 at 12:07 -0800, Johnson, Charles F wrote:
-> I've been browsing the mailing list archives and trying to determine
-> maturity of JFFS2 + MTD NAND Flash support.  Particularlly with the
-> latest 2.6.x Linux kernels.  (I think 2.6.x is the only kernel where
-> NAND is supported, correct ?) 
+On 2/26/07, David Woodhouse <dwmw2@infradead.org> wrote:
+> > Any support yet in MTD for ONFI 1.0 ??  (I couldn't find anything in
+> > the 2.6.20rc6 kernel I was browsing.)
+>
+> I've not heard of ONFI. What's that?
 
-Effectively, yes.
+I assume this:
 
->  Does anyone have a list of comercial products known to be shipping
-> with this ?? 
+http://www.onfi.org/
 
-The Nokia 770 and 800 are using it, certainly. And the $100 laptop.
-Not sure what else.
+But that looks more like a hardware interface than software.  Which
+means MTD has nothing to do with it.
 
-> Any support yet in MTD for ONFI 1.0 ??  (I couldn't find anything in
-> the 2.6.20rc6 kernel I was browsing.) 
-
-I've not heard of ONFI. What's that?
-
--- 
-dwmw2
+josh
