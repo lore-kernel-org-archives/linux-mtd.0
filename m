@@ -1,16 +1,16 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Julianne C.'" <juliannerc@gmail.com>,
-	"'linux-mtd'" <linux-mtd@lists.infradead.org>
-References: <e167438e0702220835gbc5562fl4dc0bc4bd879f649@mail.gmail.com>
-Subject: RE: OneNAND: Rate of write errors
-Date: Mon, 26 Feb 2007 09:41:21 +0900
-Message-ID: <016401c7593e$d88fb6d0$c7a3580a@swcenter.sec.samsung.co.kr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HLiPv-0001hW-34
+	for linux-mtd@lists.infradead.org; Mon, 26 Feb 2007 11:09:37 -0500
+Subject: [PATCH] JFFS2: Fix writebuffer recovery in the first page of a block
+From: Thomas Gleixner <tglx@linutronix.de>
+To: 'linux-mtd' <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Mon, 26 Feb 2007 17:09:09 +0100
+Message-Id: <1172506149.32606.8.camel@chaos>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-reply-to: <e167438e0702220835gbc5562fl4dc0bc4bd879f649@mail.gmail.com>
-Reply-To: kmpark@infradead.org
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,87 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, 
+From: Vitaly Wool <vwool@ru.mvista.com>
 
-> 
-> Further thought about the numerous write errors to the 
-> OneNAND part got me thinking about the symptoms, i.e., when 
-> we see the -EBADMSG error return, there is no corresponding 
-> fault reported in the ECC status register.  Consequently, we 
-> concluded that the bufferram may be getting corrupted before 
-> the data is ever committed to the NAND array.
-> 
-> Hence, we rewrote the code for the setup as follows in the 
-> onenand_write procedure:
-> 
->         do
->         {
->             this->write_bufferram (mtd,
->                                    ONENAND_DATARAM,
->                                    wbuf,
->                                    0,
->                                    mtd->writesize);
+For the case when nand_write_page fail with -EIO for the first page in an
+eraseblock, jffs2_wbuf_recover ends up producing a BUG in jffs2_block_refile
+as jeb->first_node is not yet set up (it's set up later in jffs2_wbuf_recover).
+This BUG is not really a bug; it's just jffs2_wbuf_recover calling
+jffs2_block_refile with the wrong second parameter.
+This patch takes care of this situation.
 
-write_bufferram does just copy data from host to internal bufferram (SRAM).
+ fs/jffs2/wbuf.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletion(-)
 
-> 
->             ret = onenand_do_check_bufferram (mtd,
->                                               ONENAND_DATARAM,
->                                               wbuf,
->                                               0,
->                                               mtd->writesize);
+Signed-off-by: Vitaly Wool <vwool@ru.mvista.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
-So I think it's just delay function. 
-
-> 
->             if (ret != 0) // then
->             {
->                 retrys = retrys + 1;
-> 
->                 printk (KERN_WARNING
->                         "onenandwrite: bad buffer ram, 
-> retrying (%d)\n",
->                         retrys);
->             } // end if
->         } while (ret != 0 &&
->                  retrys < max_retrys);
-> 
->         if (retrys >= max_retrys) // then
->         {
->             ret = -EBADMSG;
-> 
->             break;
->         } // end if
-> 
-> With max_retrys set to three (we have seen double attempts) 
-> to make this work all the time.  There are no more errors 
-> reported back to the
-> JFFS2 system, and the file system cleanly mounts and unmounts.
-> 
-> This does verify the suspicion that the buffer was corrupted 
-> before it was committed.  Does anyone have any idea how or 
-> why the data in the bufferram might be corrupted?
-> 
-
-Then we can assume that 
-
-Case 1: the interrnal buffer ram is corrupted because of some reasons. such
-as memory timings, or hardware failure.
-In my experiences, if some onenand pin is connected wrongly. it's possible,
-but it's rare.
-As you know internal bufferram is SRAM. it's means it's not changed if the
-power is connected.
-
-Case 2: verify failure. since we have too short write time.
-Because of too short write time the write is failed without error report.
-The write verify function acts like this.
-1. write data
-2. read written data to another buffer ram
-3. verify two data
-It means even though write is passed, the verification can be failed.
-
-So I would recommend that
-First check the interrnal bufferram changes then check write data.
-
-Thank you,
-Kyungmin Park
+Index: linux-2.6/fs/jffs2/wbuf.c
+===================================================================
+--- linux-2.6.orig/fs/jffs2/wbuf.c	2006-11-28 17:08:25.000000000 +0300
++++ linux-2.6/fs/jffs2/wbuf.c	2007-02-26 18:29:58.000000000 +0300
+@@ -237,7 +237,10 @@
+ 	jeb = &c->blocks[c->wbuf_ofs / c->sector_size];
+ 
+ 	spin_lock(&c->erase_completion_lock);
+-	jffs2_block_refile(c, jeb, REFILE_NOTEMPTY);
++	if (c->wbuf_ofs % c->mtd->erasesize)
++		jffs2_block_refile(c, jeb, REFILE_NOTEMPTY);
++	else
++		jffs2_block_refile(c, jeb, REFILE_ANYWAY);
+ 	spin_unlock(&c->erase_completion_lock);
+ 
+ 	BUG_ON(!ref_obsolete(jeb->last_node));
