@@ -1,24 +1,31 @@
-Received: from sp604001mt.neufgp.fr ([84.96.92.60] helo=Smtp.neuf.fr)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HLxRK-0001Az-Gr
-	for linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 03:12:07 -0500
-Received: from [172.20.2.179] ([88.138.62.111]) by sp604001mt.gpm.neuf.ld
-	(Sun Java System Messaging Server 6.2-5.05 (built Feb 16 2006))
-	with ESMTP id <0JE400JU93XAFQ00@sp604001mt.gpm.neuf.ld> for
-	linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 09:07:59 +0100 (CET)
-Date: Tue, 27 Feb 2007 09:07:47 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-Subject: Re: Maturity of JFFS2 + MTD NAND Flash Support?
-In-reply-to: <1172528274.3560.5.camel@shinybook.infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Message-id: <45E3E6D3.8090701@parrot.fr>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1; format=flowed
-Content-transfer-encoding: 8BIT
-References: <B1EDF20A6EAAD74EA65E46F774F17845E9329B@orsmsx413.amr.corp.intel.com>
-	<1172528274.3560.5.camel@shinybook.infradead.org>
-Cc: linux-mtd@lists.infradead.org, "Johnson,
-	Charles F" <charles.f.johnson@intel.com>
+Received: from mtagate6.uk.ibm.com ([195.212.29.139])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HM2Zr-00068F-1X
+	for linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 13:41:16 +0000
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate6.uk.ibm.com (8.13.8/8.13.8) with ESMTP id l1RDYXvD103656
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Feb 2007 13:34:33 GMT
+Received: from d06av01.portsmouth.uk.ibm.com (d06av01.portsmouth.uk.ibm.com
+	[9.149.37.212])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v8.2) with
+	ESMTP id l1RDYXOP1224706
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Feb 2007 13:34:33 GMT
+Received: from d06av01.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av01.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l1RDYX9M018986
+	for <linux-mtd@lists.infradead.org>; Tue, 27 Feb 2007 13:34:33 GMT
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: Artem <dedekind@infradead.org>
+Subject: [PATCH] [MTD] UBI: fix background thread define
+Date: Tue, 27 Feb 2007 14:34:28 +0100
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200702271434.28774.alexs@linux.vnet.ibm.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +35,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David Woodhouse a écrit :
-> On Mon, 2007-02-26 at 12:07 -0800, Johnson, Charles F wrote:
->> I've been browsing the mailing list archives and trying to determine
->> maturity of JFFS2 + MTD NAND Flash support.  Particularlly with the
->> latest 2.6.x Linux kernels.  (I think 2.6.x is the only kernel where
->> NAND is supported, correct ?) 
-> 
-> Effectively, yes.
+Hi Artem,
 
-AFAIK, jffs2 doesn't handle correctly bit flip on read : it won't try to 
-  copy the data on another block while the data can still be recovered 
-by ecc.
+This patch renames DBG_ENABLE_BGT to DBG_DISABLE_BGT, which makes it more
+obvious that the background thread should be enabled by default. The name
+corresponds to the kernel config option now.
 
-I believe it could be a big issue for commercial product where no 
-corruption should happen.
+I also fixed the semantics on intialisation (bgt now gets enabled when
+DBG_DISABLE_BGT == 0), and compilation with debugging disabled works again.
 
+Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+---
+ drivers/mtd/ubi/build.c |    2 +-
+ drivers/mtd/ubi/debug.h |    6 ++++--
+ 2 files changed, 5 insertions(+), 3 deletions(-)
 
-Matthieu
+--- dedekind-ubi-2.6.orig/drivers/mtd/ubi/build.c
++++ dedekind-ubi-2.6/drivers/mtd/ubi/build.c
+@@ -266,7 +266,7 @@ static int attach_mtd_dev(const char *mt
+ 	ubi_msg("number of PEBs reserved for bad PEB handling: %d",
+ 		ubi->beb.reserved_pebs);
+ 
+-	if (!DBG_ENABLE_BGT && !ubi->io.ro_mode)
++	if (!DBG_DISABLE_BGT && !ubi->io.ro_mode)
+ 		ubi_bgt_enable(ubi);
+ 
+ 	return 0;
+--- dedekind-ubi-2.6.orig/drivers/mtd/ubi/debug.h
++++ dedekind-ubi-2.6/drivers/mtd/ubi/debug.h
+@@ -30,9 +30,9 @@
+ #ifdef CONFIG_MTD_UBI_DEBUG
+ 
+ #ifdef CONFIG_MTD_UBI_DEBUG_DISABLE_BGT
+-#define DBG_ENABLE_BGT 0
++#define DBG_DISABLE_BGT 1
+ #else
+-#define DBG_ENABLE_BGT 1
++#define DBG_DISABLE_BGT 0
+ #endif
+ #define UBI_DEBUG 1
+ 
+@@ -142,6 +142,8 @@ void __exit ubi_dbg_close(void);
+ 
+ #define UBI_DEBUG 0
+ 
++#define DBG_DISABLE_BGT 0
++
+ #define ubi_assert(expr)    ({})
+ 
+ #define dbg_err(fmt, ...)    ({})
