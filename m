@@ -1,23 +1,14 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HM6oF-0007EG-6i
-	for linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 13:12:22 -0500
-Subject: Re: [RFC] [PATCH] UBI: convert to kthread API
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <1172599497.3885.2.camel@zod.rchland.ibm.com>
-References: <200702271450.41167.alexs@linux.vnet.ibm.com>
-	<1172598460.17031.4.camel@sauron>
-	<1172599497.3885.2.camel@zod.rchland.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 27 Feb 2007 20:11:29 +0200
-Message-Id: <1172599889.17031.9.camel@sauron>
+Received: from bay0-omc1-s15.bay0.hotmail.com ([65.54.246.87])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HM8Pf-0002MV-NY
+	for linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 19:55:08 +0000
+Message-ID: <BAY107-F19A82530DA0DA9C1AAA51EEF820@phx.gbl>
+From: "sam nathan" <sam-natha@hotmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: MTD driver for ATMEL AT49BV642D flash chip
+Date: Tue, 27 Feb 2007 13:54:52 -0600
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +18,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-02-27 at 12:04 -0600, Josh Boyer wrote:
-> On Tue, 2007-02-27 at 19:47 +0200, Artem Bityutskiy wrote:
-> > Hello Alexander,
-> >=20
-> > On Tue, 2007-02-27 at 14:50 +0100, Alexander Schmidt wrote:
-> > > UBI should use the kthread API, which makes completions and signal
-> > > handling go away.
-> >=20
-> > how feasible and possible is to get rid of this UBI unit altogether?
->=20
-> Depends I suppose.  Is it going to make a large runtime functionality or
-> performance impact if a background thread isn't running?
+MTD driver for ATMEL AT49BV642D flash chip
 
-Sorry for vagueness, I do not mean to remove th background _process_, we
-really need it. I meant to remove the UBI unit source-wise and use the
-kthread calls directly. I am busy with other stuff right now and wanted
-Alexander to check how much ugliness or niceness we would introduce with
-that change.
+I am working with a board based on ATMEL AT91RM9200 micro.
+This board uses the ATMEL flash part AT49BV642D [8MByte,
+16 bit wide flash]. I am using the linux distribution
+2.4.27-vrs1.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+I'm relatively new to MTD in Linux and  I am trying to
+build a jffs2 file system on AT49BV642D flash.
+
+I have the following questions:
+
+1. Is there any matching MTD driver for Atmel AT49BV642D
+parallel flash?
+
+2. I learn from ATMEL's datasheet that this chip supports
+CFI. Does CFI detection  work for Atmel AT49BV642D?
+Has anyone  been able to make the CFI detection working for
+AT49BV642D using 2.4.27-vrs1? If so, can you provide some
+insight into this?
+
+I would appreciate any help on this.
+
+Thanks,
+S.
+
+_________________________________________________________________
+Refi Now: Rates near 39yr lows!  $430,000 Mortgage for $1,399/mo - Calculate 
+new payment 
+http://www.lowermybills.com/lre/index.jsp?sourceid=lmb-9632-17727&moid=7581
