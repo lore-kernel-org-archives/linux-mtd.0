@@ -1,16 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMUfD-0005yI-U2
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 14:40:38 -0500
-Subject: Re: [PATCH 5/5] jffs2: Allow selection of compression mode via a
-	sysfs attribute
+	id 1HMUj7-0006F6-Qq
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 14:44:42 -0500
+Subject: Re: [PATCH 0/5] Add LZO Compression
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1172690034.16062.144.camel@localhost.localdomain>
-References: <1172690034.16062.144.camel@localhost.localdomain>
+In-Reply-To: <1172689998.16062.135.camel@localhost.localdomain>
+References: <1172689998.16062.135.camel@localhost.localdomain>
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 28 Feb 2007 21:39:43 +0200
-Message-Id: <1172691583.17031.35.camel@sauron>
+Date: Wed, 28 Feb 2007 21:43:46 +0200
+Message-Id: <1172691826.17031.37.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -26,14 +25,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
-
 On Wed, 2007-02-28 at 19:13 +0000, Richard Purdie wrote:
-> +/* gives us jffs2_subsys */
-> +static decl_subsys(jffs2, NULL, NULL);
+> The following patch series adds LZO compression support to the kernel
+> and exposes it in a variety of places (jffs2, crypto).
+>=20
+> This is particularly useful for jffs2 where significant boot time
+> speedups (~10%) and file read speed improvements (~40%) are seen when
+> its used with only a slight drop in file compression ratio.
 
-There is actually a file-system subsys - look up for fs_subsys. It is
-declared at fs/namespace.c.
+Providing the digits are accurate, this is very good stuff.
 
 --=20
 Best regards,
