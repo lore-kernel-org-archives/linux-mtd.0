@@ -1,19 +1,22 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMUFX-00054A-SU
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 14:14:25 -0500
-Subject: [PATCH 5/5] jffs2: Allow selection of compression mode via a sysfs
-	attribute
-From: Richard Purdie <rpurdie@openedhand.com>
-To: LKML <linux-kernel@vger.kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>, herbert@gondor.apana.org.au
-Content-Type: text/plain
-Date: Wed, 28 Feb 2007 19:13:54 +0000
-Message-Id: <1172690034.16062.144.camel@localhost.localdomain>
+	id 1HMUfD-0005yI-U2
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 14:40:38 -0500
+Subject: Re: [PATCH 5/5] jffs2: Allow selection of compression mode via a
+	sysfs attribute
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Richard Purdie <rpurdie@openedhand.com>
+In-Reply-To: <1172690034.16062.144.camel@localhost.localdomain>
+References: <1172690034.16062.144.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 28 Feb 2007 21:39:43 +0200
+Message-Id: <1172691583.17031.35.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-crypto@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,190 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Allow selection of the compression mode for jffs2 via a sysfs 
-attribute. This establishes a sysfs presence for jffs2 through
-which other compression options could easily be exported too.
+Hi Richard,
 
-Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
+On Wed, 2007-02-28 at 19:13 +0000, Richard Purdie wrote:
+> +/* gives us jffs2_subsys */
+> +static decl_subsys(jffs2, NULL, NULL);
 
----
- fs/jffs2/compr.c |  131 +++++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 94 insertions(+), 37 deletions(-)
+There is actually a file-system subsys - look up for fs_subsys. It is
+declared at fs/namespace.c.
 
-Index: linux/fs/jffs2/compr.c
-===================================================================
---- linux.orig/fs/jffs2/compr.c	2007-02-28 18:12:33.000000000 +0000
-+++ linux/fs/jffs2/compr.c	2007-02-28 18:12:33.000000000 +0000
-@@ -13,6 +13,7 @@
-  *
-  */
- 
-+#include <linux/kobject.h>
- #include "compr.h"
- 
- static DEFINE_SPINLOCK(jffs2_compressor_list_lock);
-@@ -298,6 +299,43 @@ int jffs2_unregister_compressor(struct j
-         return 0;
- }
- 
-+char *jffs2_get_compression_mode_name(void)
-+{
-+        switch (jffs2_compression_mode) {
-+        case JFFS2_COMPR_MODE_NONE:
-+                return "none";
-+        case JFFS2_COMPR_MODE_PRIORITY:
-+                return "priority";
-+        case JFFS2_COMPR_MODE_SIZE:
-+                return "size";
-+	case JFFS2_COMPR_MODE_FAVOURLZO:
-+		return "favourlzo";
-+        }
-+        return "unkown";
-+}
-+
-+int jffs2_set_compression_mode_name(const char *name)
-+{
-+        if (!strncmp("none", name, 4)) {
-+                jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-+                return 0;
-+        }
-+        if (!strncmp("priority", name, 8)) {
-+                jffs2_compression_mode = JFFS2_COMPR_MODE_PRIORITY;
-+                return 0;
-+        }
-+        if (!strncmp("size", name, 4)) {
-+                jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
-+                return 0;
-+        }
-+	if (!strncmp("favourlzo", name, 9)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-+		return 0;
-+	}
-+        return -EINVAL;
-+}
-+
-+
- #ifdef CONFIG_JFFS2_PROC
- 
- #define JFFS2_STAT_BUF_SIZE 16000
-@@ -347,42 +385,6 @@ char *jffs2_stats(void)
-         return buf;
- }
- 
--char *jffs2_get_compression_mode_name(void)
--{
--        switch (jffs2_compression_mode) {
--        case JFFS2_COMPR_MODE_NONE:
--                return "none";
--        case JFFS2_COMPR_MODE_PRIORITY:
--                return "priority";
--        case JFFS2_COMPR_MODE_SIZE:
--                return "size";
--        case JFFS2_COMPR_MODE_FAVOURLZO:
--                return "favourlzo";
--        }
--        return "unkown";
--}
--
--int jffs2_set_compression_mode_name(const char *name)
--{
--        if (!strcmp("none",name)) {
--                jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
--                return 0;
--        }
--        if (!strcmp("priority",name)) {
--                jffs2_compression_mode = JFFS2_COMPR_MODE_PRIORITY;
--                return 0;
--        }
--        if (!strcmp("size",name)) {
--                jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
--                return 0;
--        }
--        if (!strncmp("favourlzo", name, 9)) {
--                jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
--                return 0;
--        }
--        return 1;
--}
--
- static int jffs2_compressor_Xable(const char *name, int disabled)
- {
-         struct jffs2_compressor *this;
-@@ -448,8 +450,54 @@ void jffs2_free_comprbuf(unsigned char *
-                 kfree(comprbuf);
- }
- 
-+static struct attribute jffs2_attr_mode = {
-+	.name = "mode",
-+	.mode = S_IRUGO | S_IWUSR,
-+};
-+
-+static struct attribute *jffs2_attrs[] = {
-+	&jffs2_attr_mode,
-+	NULL,
-+};
-+
-+static ssize_t jffs2_attr_show(struct kobject *kobj, struct attribute *attr,
-+		char *page)
-+{
-+	if (!strcmp("mode", attr->name))
-+		return sprintf(page, "%s\n", jffs2_get_compression_mode_name());
-+	return 0;
-+}
-+
-+static ssize_t jffs2_attr_store(struct kobject *kobj, struct attribute *attr,
-+		const char *page, size_t count)
-+{
-+	int ret = -EINVAL;
-+
-+	if (!strcmp("mode", attr->name)) {
-+		ret = jffs2_set_compression_mode_name(page);
-+		if (ret >= 0)
-+			return count;
-+	}
-+	return ret;
-+}
-+
-+static struct sysfs_ops jffs2_sysfs_ops = {
-+	.show	=	jffs2_attr_show,
-+	.store	=	jffs2_attr_store,
-+};
-+
-+static struct kobj_type jffs2_subsys_type = {
-+	.default_attrs	= jffs2_attrs,
-+	.sysfs_ops	= &jffs2_sysfs_ops,
-+};
-+
-+/* gives us jffs2_subsys */
-+static decl_subsys(jffs2, NULL, NULL);
-+
- int __init jffs2_compressors_init(void)
- {
-+	int ret;
-+
- /* Registering compressors */
- #ifdef CONFIG_JFFS2_ZLIB
-         jffs2_zlib_init();
-@@ -481,12 +529,21 @@ int __init jffs2_compressors_init(void)
- #endif
- #endif
- #endif
-+	/* Errors here are not fatal */
-+	kset_set_kset_s(&jffs2_subsys, fs_subsys);
-+	jffs2_subsys.kset.kobj.ktype = &jffs2_subsys_type;
-+	ret = subsystem_register(&jffs2_subsys);
-+	if (ret)
-+		printk(KERN_WARNING "Error registering JFFS2 sysfs attributes\n");
-+
-         return 0;
- }
- 
- int jffs2_compressors_exit(void)
- {
--/* Unregistering compressors */
-+	subsystem_unregister(&jffs2_subsys);
-+
-+	/* Unregistering compressors */
- #ifdef CONFIG_JFFS2_LZO
-         jffs2_lzo_exit();
- #endif
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
