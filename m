@@ -1,22 +1,18 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMRur-0003p4-S7
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 11:44:37 -0500
-From: Indrek Kruusa <indrek.kruusa@artecdesign.ee>
-To: "J. Doo" <doodiexx@gmail.com>
-Subject: Re: NAND flash mounting problem
-Date: Wed, 28 Feb 2007 18:44:18 +0200
-References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-	<200702281041.49203.indrek.kruusa@artecdesign.ee>
-	<87f18bad0702280718h527c931eyddabff5ef4622a76@mail.gmail.com>
-In-Reply-To: <87f18bad0702280718h527c931eyddabff5ef4622a76@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200702281844.18908.indrek.kruusa@artecdesign.ee>
-Cc: linux-mtd@lists.infradead.org
+	id 1HMUF3-00053k-K6
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 14:13:37 -0500
+Subject: [PATCH 0/5] Add LZO Compression
+From: Richard Purdie <rpurdie@openedhand.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>, herbert@gondor.apana.org.au
+Content-Type: text/plain
+Date: Wed, 28 Feb 2007 19:13:18 +0000
+Message-Id: <1172689998.16062.135.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-crypto@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=DChel kenal p=E4eval (kolmap=E4ev 28 veebruar 2007 5:18 pm) kirjutas J. Do=
-o:
-> > Is it busybox? The error message is not too verbose. I suppose you miss=
-ed
-> > -t jffs2 here. This and other nice hints can be found:
->
-> And forgot to answer your first question,
-> yes it's busybox 1.4.1
+The following patch series adds LZO compression support to the kernel
+and exposes it in a variety of places (jffs2, crypto).
 
-My bad - it was explained already in your first post.
+This is particularly useful for jffs2 where significant boot time
+speedups (~10%) and file read speed improvements (~40%) are seen when
+its used with only a slight drop in file compression ratio.
 
-Have you tried with "normal" mount binary?
+It also adds a favourlzo mode to jffs2 which is similar to the existing
+size mode but lets lzo compression win if the lzo compressed size is
+"similar" to but not the best compression ratio. This means we can keep
+zlib compression where it makes a significant difference to compressed
+file size.
 
-cheers,
-Indrek
+The final jffs2 patch which starts adding sysfs support is something I
+have around from testing and I'm including it for comments to see if its
+desirable upstream. It could be extended further to allow greater
+control of jffs2 at runtime.
 
-
-
->
-> BR,
-> J.Doo
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+Richard
