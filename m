@@ -1,18 +1,33 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMKSH-0006Fc-Hb
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 03:46:36 -0500
-Date: Wed, 28 Feb 2007 09:46:31 +0100
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: "doodiexx doodiexx" <doodiexx@gmail.com>
-Subject: Re: NAND flash mounting problem
-Message-ID: <20070228094631.2e8f7b45@dhcp-252-105.norway.atmel.com>
-In-Reply-To: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mtagate2.de.ibm.com ([195.212.29.151])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HML8F-0005AT-LB
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 09:30:01 +0000
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate2.de.ibm.com (8.13.8/8.13.8) with ESMTP id l1S9TeDr046930
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 09:29:40 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.2) with
+	ESMTP id l1S9TdmO2175176
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 10:29:39 +0100
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l1S9TdID003905
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 10:29:39 +0100
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: linux-mtd@lists.infradead.org, John Smith <john@arrows.demon.co.uk>
+Subject: Re: UBI Tools - problem with multiple ubi devices.
+Date: Wed, 28 Feb 2007 10:29:34 +0100
+References: <Pine.LNX.4.33.0702272101240.7726-100000@arrows.demon.co.uk>
+In-Reply-To: <Pine.LNX.4.33.0702272101240.7726-100000@arrows.demon.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200702281029.34799.alexs@linux.vnet.ibm.com>
+Cc: Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,59 +37,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 Feb 2007 09:52:21 +0200
-"doodiexx doodiexx" <doodiexx@gmail.com> wrote:
-
-> Hi,
+On Tuesday 27 February 2007, John Smith wrote:
+> In
+> GIT:      users/haver/mtd-utils.git
+> File:     ubi-utils/src/libubi.c
+> Function: get_ubi_info
 > 
-> We are using Atmel's AT32AP7000 processor and ST 512Mbit NAND Flash
-> and having problems in creating a JFFS2 fs.
-
-Interesting :-)
-
-> The mtd system detects the flash and I think everything is fine with
-> the kernel startup:
+> The code counts the number of UBI volumes by looking for files called
 > 
-> NAND device: Manufacturer ID: 0x20, Chip ID: 0x76 (ST Micro NAND 64MiB
-> 3,3V 8-bit)
-> Scanning device for bad blocks
-> Bad eraseblock 2995 at 0x02ecc000
-> Bad eraseblock 4078 at 0x03fb8000
-> Creating 1 MTD partitions on "NAND 64MiB 3,3V 8-bit":
-> 0x00000000-0x04000000 : "rootfs"
+>   /sys/class/ubi0, /sys/class/ubi1, ...
 > 
-> I try to flash_eraseall -j and it completes without any error, but
-> when I try to mount it I get :
-> # mount /dev/mtd1 /mnt/nand
-> mount: mounting /dev/mtd1 on /mnt/nand failed
+> but the files are actually
 > 
-> nanddump gives:
+>   /sys/class/ubi/ubi0, ...
 > 
-> # ./nanddump -l 512 -p /dev/mtd1
-> Block size 16384, page size 512, OOB size 16
-> Dumping data starting at 0x00000000 and ending at 0x00000200...
-> 0x00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> <skipping.., all values are ff >
-> 0x000001f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->   OOB Data: ff ff ff ff ff ff ff ff 19 85 20 03 00 00 00 08
-> 
-> The 1985 and 2003 parts seem to be wrong endian ??
+> The count starts from 1 (probably also wrong), so is usable if there is a
+> single UBI device. But if there is more than one UBI device, tools like
+> ubimkvol fail.
 
-What are the expected values?
+Hi John,
 
-> Any ideas to solve the problem ?
+thanks for pointing this out.
 
-I suspect there may be something funny going on with the avr32 I/O
-accessors, although I don't know the mtd nand code well enough to know
-more specifically what the problem might be in this case...
+Frank, please review and commit.
 
-Did you write the NAND setup code yourself? If so, could you send me a
-patch so that I know how things are set up?
+Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+---
+ ubi-utils/src/libubi.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
 
-> The processor is big endian,
-> kernel version 2.6.18
-
-Did you apply the Atmel BSP patches or something else? AVR32 isn't
-supported in plain 2.6.18.
-
-Haavard
+--- mtd-utils.orig/ubi-utils/src/libubi.c
++++ mtd-utils/ubi-utils/src/libubi.c
+@@ -138,7 +138,7 @@ static int
+ get_ubi_info(ubi_lib_t desc, struct ubi_info *ubi)
+ {
+ 	int err;
+-	int n = 1;
++	int dev_count = 0;
+ 	char *path;
+ 	struct stat stat;
+ 
+@@ -147,31 +147,31 @@ get_ubi_info(ubi_lib_t desc, struct ubi_
+ 		return -1;
+ 
+ 	/* Calculate number of UBI devices */
+-	do {
++	while (!err) {
+ 		char dir[20];
+ 
+-		sprintf(&dir[0], "ubi%d", n);
+-		path = mkpath(desc->sysfs_root, dir);
++		sprintf(&dir[0], "ubi%d", dev_count);
++		path = mkpath(desc->ubi_root, dir);
+ 		if (!path)
+ 			return ENOMEM;
+ 
+ 		err = lstat(path, &stat);
+ 		if (err == 0)
+-			n += 1;
++			dev_count += 1;
+ 		free(path);
+-	} while (err == 0);
++	}
+ 
+ 	if (errno != ENOENT)
+ 		return -1;
+ 
+-	if (n == 0) {
++	if (dev_count == 0) {
+ 		ubi_err("no UBI devices found");
+ 		errno = EINVAL;
+ 		return -1;
+ 	}
+ 
+ 	errno = 0;
+-	ubi->dev_count = n;
++	ubi->dev_count = dev_count;
+ 	return 0;
+ }
+ 
