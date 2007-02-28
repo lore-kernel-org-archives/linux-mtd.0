@@ -1,22 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMM2P-0007UL-41
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 05:27:59 -0500
-Subject: Re: [RFC] [PATCH] UBI: convert to kthread API
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-In-Reply-To: <200702280915.26914.alexs@linux.vnet.ibm.com>
-References: <200702271450.41167.alexs@linux.vnet.ibm.com>
-	<1172599497.3885.2.camel@zod.rchland.ibm.com>
-	<1172599889.17031.9.camel@sauron>
-	<200702280915.26914.alexs@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 28 Feb 2007 12:04:13 +0200
-Message-Id: <1172657053.17031.20.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from nexta2.nexta.com ([213.140.5.234] helo=webmail.nexta.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMNMr-00018h-G9
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 11:53:12 +0000
+From: mothertheresasmith@stile.it
+Subject: Beloved In Christ,
+Date: Wed, 28 Feb 2007 12:27:56 +0100
+Message-Id: <20070228112659.M38016@stile.it>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=iso-8859-1
+To: undisclosed-recipients:;
+Reply-To: mothertheresasmith22@boltblue.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,49 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-28 at 09:15 +0100, Alexander Schmidt wrote:
-> Basically, with using the kthread api, it is still neccessary to have the
-> following functions:
->=20
-> 1) start the thread with kthread_create()
-> 2) a main loop for the thread
-> 3) enqueue work in the pending work list
-> 4) kill/stop the thread
->=20
-> As 3) is only done by the wear leveling unit, the code could be moved
-> there, IMO. Starting and stoping the thread could also be done in the
-> wl init and close functions, so it seems sensible to move everything to
-> the wear leveling unit.
->=20
-> A point that causes complexity in the code is that we have two ways of
-> stopping the thread:
->=20
-> 1) If ubi goes into read only mode or if the thread is disabled via sysfs=
-,
-> the thread is put to sleep, pending works are not finished
-> 2) If ubi is shut down, the thread finishes all pending works and then
-> exits.
->=20
-> An enhancement here would be to remove the sysfs functionality, and make
-> the thread exit when going in ro_mode, while still not finishing the
-> pending work (it is not possible to leave ro_mode during runtime, right?)
+Beloved In Christ,
 
-My unsorted points:
+Dearest one .Calvary greetings in the name ofourLord
+Jesus Christ, I am Mrs Theresa Smith.I am 65years
+old,amsuffering from long time liver problem.From all
+indications,mycondition is serious and according to
+mydoctor it is quite obviousthatI may not survive the
+sickness,although as a christain,I beleiveGod,and I
+know that I will not die,I will leave to declare the
+glory ofGod.My late Husband and my only son was killed
+during the Ogoni Crisisand Iam presently Leaving
+alone.Our Lord Jesus Christ is mycomforter.
 
-A. Well, at the moment we switch to RO mode if we hit an error and do
-not know how to handle it. And yes, at the moment it is forever, but
-later we may want to add a sysfs entry to leave the RO mode, for example
-jwb already wants it.
+Mylate Husband was very wealthy we have a lot
+ofproperties includingshares and houses.After the death
+of my Husband,Imade up my mind totravel abroad to leave
+the rest of my life andcontinue to do the workof God as
+a missionary.I called our lawyer and Iinstructed him to
+sellall my Husband properties and shares to enable
+meraise some money toconitue my mission. The lawyer
+sold the Shares andsome of theproperties and I was able
+to raise the sum of($10.300,000.00(TenMillion Three
+Hundred Thousand US Dollars)The fund isin cash,for
+thesafety of the fund till am able to travel out,I
+packagedthe fund inconsignments deposited it with a
+SecurityCompany.Presently,all thedocuments concerning
+the consignments are withmy lawyer.
 
-B. Also, at the moment UBI does not work if the bgt is killed, but this
-is not nice and will be fixed at some point - we should be able to do
-everything if the thread is killed.
+Now thatmy sickness has gone to this stage,I am
+scaredand I want the fund to beused for the work of God
+all over the world. Ihave prayed and I toldGod to
+direct me to an honest person who willreceive this fund
+andutilise it for things that will glorify the name
+ofGod After myprayers,I searched the internet,I found
+your email addressand I decidedto contact you.Please if
+you are interested in using thisfund for thework
+ofGod,please send to me your private phone and
+faxnumber fullnames and address to enable me give it to
+my lawyer forimmediatearrangement with the Security
+company on how the consignmentsthatcontained the fund
+will be delivered to you.I await your urgentreply
 
-C. The stuff which stops the thread is _debugging_ stuff and you may
-remove it if it causes troubles. I will add something like "do not spawn
-the thread" debugging option later when I need it.
+Thanks and God bless you.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Regards,
+Mrs Theresa Smith
+
+___________________________________
+Scegli anche tu la WebMail @stile.it su http://www.stile.it: e' gratis!
