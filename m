@@ -1,14 +1,19 @@
-Received: from arrows.demon.co.uk ([83.105.72.193])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMA8H-0000YH-7U
-	for linux-mtd@lists.infradead.org; Tue, 27 Feb 2007 16:45:15 -0500
-Date: Tue, 27 Feb 2007 21:12:31 +0000 (GMT)
-From: John Smith <john@arrows.demon.co.uk>
-To: <linux-mtd@lists.infradead.org>
-Subject: UBI Tools - problem with multiple ubi devices. 
-Message-ID: <Pine.LNX.4.33.0702272101240.7726-100000@arrows.demon.co.uk>
+Received: from wr-out-0506.google.com ([64.233.184.238])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMJbs-0004Mz-RC
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 02:52:27 -0500
+Received: by wr-out-0506.google.com with SMTP id i20so90064wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Feb 2007 23:52:23 -0800 (PST)
+Message-ID: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
+Date: Wed, 28 Feb 2007 09:52:21 +0200
+From: "doodiexx doodiexx" <doodiexx@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: NAND flash mounting problem
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,21 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In
-GIT:      users/haver/mtd-utils.git
-File:     ubi-utils/src/libubi.c
-Function: get_ubi_info
+Hi,
 
-The code counts the number of UBI volumes by looking for files called
+We are using Atmel's AT32AP7000 processor and ST 512Mbit NAND Flash
+and having problems in creating a JFFS2 fs.
 
-  /sys/class/ubi0, /sys/class/ubi1, ...
+The mtd system detects the flash and I think everything is fine with
+the kernel startup:
 
-but the files are actually
+NAND device: Manufacturer ID: 0x20, Chip ID: 0x76 (ST Micro NAND 64MiB
+3,3V 8-bit)
+Scanning device for bad blocks
+Bad eraseblock 2995 at 0x02ecc000
+Bad eraseblock 4078 at 0x03fb8000
+Creating 1 MTD partitions on "NAND 64MiB 3,3V 8-bit":
+0x00000000-0x04000000 : "rootfs"
 
-  /sys/class/ubi/ubi0, ...
+I try to flash_eraseall -j and it completes without any error, but
+when I try to mount it I get :
+# mount /dev/mtd1 /mnt/nand
+mount: mounting /dev/mtd1 on /mnt/nand failed
 
-The count starts from 1 (probably also wrong), so is usable if there is a
-single UBI device. But if there is more than one UBI device, tools like
-ubimkvol fail.
+nanddump gives:
 
-John
+# ./nanddump -l 512 -p /dev/mtd1
+Block size 16384, page size 512, OOB size 16
+Dumping data starting at 0x00000000 and ending at 0x00000200...
+0x00000000: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+<skipping.., all values are ff >
+0x000001f0: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+  OOB Data: ff ff ff ff ff ff ff ff 19 85 20 03 00 00 00 08
+
+The 1985 and 2003 parts seem to be wrong endian ??
+
+Any ideas to solve the problem ?
+
+The processor is big endian,
+kernel version 2.6.18
+flash_eraseall is from the git repo at git.infradead.org/mtd-utils.git
+busybox version is the latest (1.4.1)
+
+BR,
+J.Doo
