@@ -1,22 +1,24 @@
-Received: from nz-out-0506.google.com ([64.233.162.237])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMQZO-0002AY-OK
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 10:19:35 -0500
-Received: by nz-out-0506.google.com with SMTP id i11so238530nzi
+Received: from beta.dmz-eu.st.com ([164.129.1.35])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMQvc-0002de-SR
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 10:41:20 -0500
+Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 06D46DB19
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Feb 2007 07:18:16 -0800 (PST)
-Message-ID: <87f18bad0702280718h527c931eyddabff5ef4622a76@mail.gmail.com>
-Date: Wed, 28 Feb 2007 17:18:15 +0200
-From: "J. Doo" <doodiexx@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: NAND flash mounting problem
-In-Reply-To: <200702281041.49203.indrek.kruusa@artecdesign.ee>
+	Wed, 28 Feb 2007 15:41:03 +0000 (GMT)
+Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id ABF77474E6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 28 Feb 2007 15:41:03 +0000 (GMT)
+From: Davide CASCONE <davide.cascone@st.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: JFFS2 recovery strategy
+Date: Wed, 28 Feb 2007 16:41:14 +0100
+Message-ID: <002e01c75b4e$e1596f60$d204960a@nap.st.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-	<200702281041.49203.indrek.kruusa@artecdesign.ee>
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,11 +28,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Is it busybox? The error message is not too verbose. I suppose you missed -t
-> jffs2 here. This and other nice hints can be found:
 
-And forgot to answer your first question,
-yes it's busybox 1.4.1
+I'm using JFFS2 with Sibley device. During a file writing (for instance =
+the copy of a file of 10KB), what happens when a single buffer program =
+fails? It seams that JFFS2 tries to recovery the file. In which way does =
+it work? I suppose that JFFS2 tries to write the remaining bytes on =
+another flash block. Is it right? Please, could you summarize the JFFS2 =
+recovery strategy?
 
-BR,
-J.Doo
+Thanks in advance for your support.
+Best regards,
+Davide
