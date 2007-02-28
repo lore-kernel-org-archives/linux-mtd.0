@@ -1,30 +1,32 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMWN3-0004mM-Gq
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 21:30:02 +0000
-Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com
-	[9.17.195.11])
-	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1SLTbdq006801
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 16:29:37 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by westrelay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
-	l1SLTbvt513576
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 14:29:37 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l1SLTbA1004856
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 14:29:37 -0700
-Subject: Re: JFFS2 Max Flash Size?
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F17845EFDA5B@orsmsx413.amr.corp.intel.com>
-References: <B1EDF20A6EAAD74EA65E46F774F17845EFDA5B@orsmsx413.amr.corp.intel.com>
+	id 1HMWzC-0006kX-MG
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 22:09:27 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l1SM92Wf004172
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 17:09:02 -0500
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.2) with ESMTP id
+	l1SM8seR125076
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 17:08:54 -0500
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l1SM8rbM014853
+	for <linux-mtd@lists.infradead.org>; Wed, 28 Feb 2007 17:08:54 -0500
+Subject: Re: UBI Tools - problem with multiple ubi devices.
+From: Frank Haverkamp <haver@vnet.ibm.com>
+To: Alexander Schmidt <alexs@linux.ibm.com>
+In-Reply-To: <200702281029.34799.alexs@linux.vnet.ibm.com>
+References: <Pine.LNX.4.33.0702272101240.7726-100000@arrows.demon.co.uk>
+	<200702281029.34799.alexs@linux.vnet.ibm.com>
 Content-Type: text/plain
-Date: Wed, 28 Feb 2007 15:29:36 -0600
-Message-Id: <1172698176.17795.4.camel@zod.rchland.ibm.com>
+Date: Wed, 28 Feb 2007 23:08:52 +0100
+Message-Id: <1172700532.3904.5.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: John Smith <john@arrows.demon.co.uk>, linux-mtd@lists.infradead.org,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,15 +36,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-28 at 13:17 -0800, Johnson, Charles F wrote:
-> I've heard there is scalability issues with JFFS2 with large flash
-> sizes.   So my question on this list is for a NAND flash design, is
-> there a maximum size that JFFS2 can handle ??  4GB, 8GB, ????
+Hi Alex & John,
 
-4GiB is the maximum that JFFS2 can address given that it uses uint32_t
-variables for offsets, etc.
+thanks for taking care. I included it in my git. I also reworked my git
+to be based on the mtd-utils.git again. I will start there now to use
+the ubi branch for the changes we want to try out before Josh can take
+them into the offical mtd-utils.git/ubi.
 
-You'll likely hit scaling issues long before that though.  Depending on
-various factors, a 1GiB image can be slow.
+On Wed, 2007-02-28 at 10:29 +0100, Alexander Schmidt wrote:
+> On Tuesday 27 February 2007, John Smith wrote:
+> > In
+> > GIT:      users/haver/mtd-utils.git
+> > File:     ubi-utils/src/libubi.c
+> > Function: get_ubi_info
+> > 
+> > The code counts the number of UBI volumes by looking for files called
+> > 
+> >   /sys/class/ubi0, /sys/class/ubi1, ...
+> > 
+> > but the files are actually
+> > 
+> >   /sys/class/ubi/ubi0, ...
+> > 
+> > The count starts from 1 (probably also wrong), so is usable if there is a
+> > single UBI device. But if there is more than one UBI device, tools like
+> > ubimkvol fail.
 
-josh
+John, thanks for pointing this out. Feel free to send us a patch in
+addition to your bug-report. If it works we can immediately include it.
+Pleaes let us know if it works for you now.
+
+> 
+> Hi John,
+> 
+> thanks for pointing this out.
+
+> Frank, please review and commit.
+> 
+Thanks, looks good to me, included.
+
+Frank
