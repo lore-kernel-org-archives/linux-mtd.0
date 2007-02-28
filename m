@@ -1,23 +1,17 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMVrJ-0007F5-DC
-	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 15:57:12 -0500
-Subject: Re: [PATCH 5/5] jffs2: Allow selection of compression mode via a
-	sysfs attribute
-From: Richard Purdie <rpurdie@openedhand.com>
-To: dedekind@infradead.org
-In-Reply-To: <1172691583.17031.35.camel@sauron>
-References: <1172690034.16062.144.camel@localhost.localdomain>
-	<1172691583.17031.35.camel@sauron>
-Content-Type: text/plain
-Date: Wed, 28 Feb 2007 20:56:56 +0000
-Message-Id: <1172696216.16062.147.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
+Received: from mga02.intel.com ([134.134.136.20])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMWC8-0007Xv-JJ
+	for linux-mtd@lists.infradead.org; Wed, 28 Feb 2007 16:18:42 -0500
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: JFFS2 Max Flash Size?
+Date: Wed, 28 Feb 2007 13:17:55 -0800
+Message-ID: <B1EDF20A6EAAD74EA65E46F774F17845EFDA5B@orsmsx413.amr.corp.intel.com>
+From: "Johnson, Charles F" <charles.f.johnson@intel.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-28 at 21:39 +0200, Artem Bityutskiy wrote:
-> On Wed, 2007-02-28 at 19:13 +0000, Richard Purdie wrote:
-> > +/* gives us jffs2_subsys */
-> > +static decl_subsys(jffs2, NULL, NULL);
-> 
-> There is actually a file-system subsys - look up for fs_subsys. It is
-> declared at fs/namespace.c.
+I've heard there is scalability issues with JFFS2 with large flash
+sizes.   So my question on this list is for a NAND flash design, is
+there a maximum size that JFFS2 can handle ??  4GB, 8GB, ????
 
-Further down the patch you'll see:
 
-+	kset_set_kset_s(&jffs2_subsys, fs_subsys);
-
-There was a reason for doing that instead using fs_subsys in the above
-although I can't remember why offhand. I did try it and it didn't work
-as expected...
-
-Regards,
-
-Richard
+Charles Johnson
+Ultra-Mobility Group
+Platform Software Engineering
+Intel Corporation
+charles.f.johnson@intel.com
+503-712-5181
