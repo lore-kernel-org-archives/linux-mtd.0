@@ -1,20 +1,20 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMk5C-0006oW-BJ
-	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 07:08:32 -0500
-Received: from max.rpnet.com (tim.rpsys.net [194.106.48.114])
+Received: from resonance.org ([12.165.58.239] helo=earth.resonance.org)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMpJ9-00012R-NM
+	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 12:43:14 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
 	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
 	(No client certificate requested)
-	by pug.o-hand.com (Postfix) with ESMTP id BCE9810CD8C9
+	by earth.resonance.org (Postfix) with ESMTP id B77CEE597
 	for <linux-mtd@lists.infradead.org>;
-	Thu,  1 Mar 2007 07:28:32 -0500 (EST)
-Subject: [mtd-utils patch 2/2] Add favourlzo compression mode
-From: Richard Purdie <rpurdie@openedhand.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
+	Thu,  1 Mar 2007 09:43:08 -0800 (PST)
+Subject: JFFS2 file system slowly filling up for unknown reason ~20 seconds
+	after mount
+From: Josh Green <josh@resonance.org>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Date: Thu, 01 Mar 2007 12:08:10 +0000
-Message-Id: <1172750890.19220.59.camel@localhost.localdomain>
+Date: Thu, 01 Mar 2007 18:41:53 +0000
+Message-Id: <1172774513.20708.40.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,139 +26,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a favourlzo compression mode to mtd-utils
+I'm currently working on a Linux project with a Philips LPC3180 based
+system.  The Linux support for this board seems to be under development
+by Philips and is not yet in the main Linux tree (we received support as
+a patch).  So this problem could very well be related to the drivers we
+received for this platform, but I wanted to check if anyone else has
+experienced similar behavior or have any pointers as to the cause.
 
-This allows lzo compression to be used in the cases where the
-compression ratio isn't quite as good zlib. This can make sense in
-certain use cases because LZO decompression is much faster than zlib.
+Description of problem:
 
-Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
+After mounting jffs2 file system it gradually goes from 45% full to 100%
+in the matter of ~20 seconds (as reported by df).  Doing a du on the top
+directory of the file system shows the same amount of data as when it is
+first mounted.  Unmounting and remounting still shows 100% usage, and no
+files can be written (device full).  Rebooting and then remounting the
+file system, then goes through the 45% to 100% gradual fill up again.
+No kernel error messages are received when mounting or unmounting.  The
+actual jffs2 image file which gets flashed is ~3MB and contains ~6MB of
+data (which gets zlib compressed as shown by mkfs.jffs2 -v).  The flash
+partition is ~10MB.
 
----
- compr.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++++---
- compr.h |    1 +
- 2 files changed, 50 insertions(+), 3 deletions(-)
+I was able to successfully flash other parts of the flash memory (the
+first partition) with kernel, uboot, etc.  So I'm pretty sure that is
+working correctly, and the files in the jffs2 file system are indeed
+there after mounting.
 
-Index: git/compr.c
-===================================================================
---- git.orig/compr.c	2007-03-01 11:58:01.000000000 +0000
-+++ git/compr.c	2007-03-01 11:58:09.000000000 +0000
-@@ -16,6 +16,8 @@
- #include <stdlib.h>
- #include <linux/jffs2.h>
- 
-+#define FAVOUR_LZO_PERCENT 80
-+
- extern int page_size;
- 
- /* LIST IMPLEMENTATION (from linux/list.h) */
-@@ -166,6 +168,33 @@ static void jffs2_decompression_test(str
- 	}
- }
- 
-+/*
-+ * Return 1 to use this compression
-+ */
-+static int jffs2_is_best_compression(struct jffs2_compressor *this,
-+		struct jffs2_compressor *best, uint32_t size, uint32_t bestsize)
-+{
-+	switch (jffs2_compression_mode) {
-+		case JFFS2_COMPR_MODE_SIZE:
-+			if (bestsize > size)
-+				return 1;
-+			return 0;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
-+			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > size))
-+				return 1;
-+			if ((best->compr != JFFS2_COMPR_LZO) && (bestsize > size))
-+				return 1;
-+			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > (size * FAVOUR_LZO_PERCENT / 100)))
-+				return 1;
-+			if ((bestsize * FAVOUR_LZO_PERCENT / 100) > size)
-+				return 1;
-+
-+			return 0;
-+	}
-+	/* Shouldn't happen */
-+	return 0;
-+}
-+
- /* jffs2_compress:
-  * @data: Pointer to uncompressed data
-  * @cdata: Pointer to returned pointer to buffer for compressed data
-@@ -231,21 +260,29 @@ uint16_t jffs2_compress( unsigned char *
- 			}
- 			if (ret == JFFS2_COMPR_NONE) free(output_buf);
- 			break;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
- 		case JFFS2_COMPR_MODE_SIZE:
- 			orig_slen = *datalen;
- 			orig_dlen = *cdatalen;
- 			list_for_each_entry(this, &jffs2_compressor_list, list) {
-+				uint32_t needed_buf_size;
-+
-+				if (jffs2_compression_mode == JFFS2_COMPR_MODE_FAVOURLZO)
-+					needed_buf_size = orig_slen+jffs2_compression_check;
-+				else
-+					needed_buf_size = orig_dlen+jffs2_compression_check;
-+
- 				/* Skip decompress-only backwards-compatibility and disabled modules */
- 				if ((!this->compress)||(this->disabled))
- 					continue;
- 				/* Allocating memory for output buffer if necessary */
--				if ((this->compr_buf_size<orig_dlen+jffs2_compression_check)&&(this->compr_buf)) {
-+				if ((this->compr_buf_size < needed_buf_size) && (this->compr_buf)) {
- 					free(this->compr_buf);
- 					this->compr_buf_size=0;
- 					this->compr_buf=NULL;
- 				}
- 				if (!this->compr_buf) {
--					tmp_buf = malloc(orig_dlen+jffs2_compression_check);
-+					tmp_buf = malloc(needed_buf_size);
- 					if (!tmp_buf) {
- 						fprintf(stderr,"mkfs.jffs2: No memory for compressor allocation. (%d bytes)\n",orig_dlen);
- 						continue;
-@@ -265,7 +302,8 @@ uint16_t jffs2_compress( unsigned char *
- 				if (!compr_ret) {
- 					if (jffs2_compression_check)
- 						jffs2_decompression_test(this, data_in, this->compr_buf, *cdatalen, *datalen, this->compr_buf_size);
--					if ((!best_dlen)||(best_dlen>*cdatalen)) {
-+					if (((!best_dlen) || jffs2_is_best_compression(this, best, *cdatalen, best_dlen))
-+								&& (*cdatalen < *datalen)) {
- 						best_dlen = *cdatalen;
- 						best_slen = *datalen;
- 						best = this;
-@@ -377,6 +415,9 @@ char *jffs2_stats(void)
- 		case JFFS2_COMPR_MODE_SIZE:
- 			act_buf += sprintf(act_buf,"size");
- 			break;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
-+			act_buf += sprintf(act_buf,"favourlzo");
-+			break;
- 		default:
- 			act_buf += sprintf(act_buf,"unkown");
- 			break;
-@@ -413,6 +454,11 @@ int jffs2_set_compression_mode_name(cons
- 		jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
- 		return 0;
- 	}
-+	if (!strcmp("favourlzo", name)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-+		return 0;
-+	}
-+
- 	return 1;
- }
- 
-Index: git/compr.h
-===================================================================
---- git.orig/compr.h	2007-03-01 11:58:01.000000000 +0000
-+++ git/compr.h	2007-03-01 11:58:09.000000000 +0000
-@@ -32,6 +32,7 @@
- #define JFFS2_COMPR_MODE_NONE       0
- #define JFFS2_COMPR_MODE_PRIORITY   1
- #define JFFS2_COMPR_MODE_SIZE       2
-+#define JFFS2_COMPR_MODE_FAVOURLZO  3
- 
- #define kmalloc(a,b)                malloc(a)
- #define kfree(a)                    free(a)
+
+Details of system:
+
+Linux kernel 2.6.10 with patch from Philips
+Cross compiler gcc 3.4.2 using scratchbox
+Flash is an ST Micro NAND256R3A 32MB chip with 8 bit bus
+
+MTD messages on boot, showing the 2 partitions I created.  The erase
+block size is 0x4000 (16KiB), as reported by /proc/mtd.
+
+NAND device: Manufacturer ID: 0x20, Chip ID: 0x35 (ST Micro NAND 32MiB 1,8V 8-bit)
+Scanning device for bad blocks
+Creating 2 MTD partitions on "NAND 32MiB 1,8V 8-bit":
+0x00008000-0x00c00000 : "rootfs-kernel-uboot"
+0x00c00000-0x01640000 : "jffs2"
+
+jffs2 file system created with the following command:
+mkfs.jffs2 -n -e 16384 -o rootfs_jffs2.img -r target
+
+Flashed with the following commands on the target:
+flash_erase /dev/mtdchar1 0 656
+nandwrite -p -s 0 /dev/mtdchar1 rootfs_jffs2.img
+
+df immediately after mount and ~20 seconds later (going gradually
+upwards).
+
+Filesystem           1k-blocks      Used Available Use% Mounted on              
+/dev/mtdblock1           10496      4672      5824  45% /mnt/disk               
+
+Filesystem           1k-blocks      Used Available Use% Mounted on              
+/dev/mtdblock1           10496     10496         0 100% /mnt/disk               
+
+
+If anyone has any helpful information they could share in regards to
+this problem, I would appreciate it.  This could very well be a jffs2
+specific problem, but the jffs list seems rather dead, and there is a
+lot related to jffs2 on this list.  Please let me know if I'm posting to
+the wrong list though.
+
+Best regards,
+	Josh Green
