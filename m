@@ -1,22 +1,28 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from tim.rpsys.net ([194.106.48.114])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMiic-0005yV-0i
-	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 05:41:04 -0500
-Date: Thu, 1 Mar 2007 11:40:52 +0100
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: "J. Doo" <doodiexx@gmail.com>
-Subject: Re: NAND flash mounting problem
-Message-ID: <20070301114052.16cf258c@dhcp-252-105.norway.atmel.com>
-In-Reply-To: <87f18bad0702280824w7c35a320u8f4f44621ba4efdb@mail.gmail.com>
-References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-	<20070228094631.2e8f7b45@dhcp-252-105.norway.atmel.com>
-	<87f18bad0702280717k6d50b712j9f166eb29f2ca734@mail.gmail.com>
-	<20070228170648.34bd4118@dhcp-252-105.norway.atmel.com>
-	<87f18bad0702280824w7c35a320u8f4f44621ba4efdb@mail.gmail.com>
+	id 1HMk4x-0006o1-PJ
+	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 07:08:15 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by tim.rpsys.net (8.13.6/8.13.8) with ESMTP id l21C87GS007929
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Mar 2007 12:08:07 GMT
+Received: from tim.rpsys.net ([127.0.0.1])
+	by localhost (tim.rpsys.net [127.0.0.1]) (amavisd-new,
+	port 10024) with LMTP
+	id 07346-06 for <linux-mtd@lists.infradead.org>;
+	Thu,  1 Mar 2007 12:08:05 +0000 (GMT)
+Received: from max.rpnet.com (max.rpnet.com [192.168.1.15])
+	(authenticated bits=0)
+	by tim.rpsys.net (8.13.6/8.13.8) with ESMTP id l21C84hJ007920
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Thu, 1 Mar 2007 12:08:04 GMT
+Subject: [mtd-utils patch 1/2] Add lzo support to mtd-utils
+From: Richard Purdie <rpurdie@rpsys.net>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Date: Thu, 01 Mar 2007 12:08:03 +0000
+Message-Id: <1172750884.19220.58.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,60 +32,223 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 28 Feb 2007 18:24:31 +0200
-"J. Doo" <doodiexx@gmail.com> wrote:
+Add LZO support to mtd-utils to generate LZO compressed jffs2 images
 
-> > > According to the second table in
-> > > http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_bootloader
-> > > It should be 85 19 03 20 ...
-> >
-> > I had a look inside flash_eraseall, and it seems like it converts
-> > the 16-bit magic values to target_endian, which is by default the CPU's
-> > native endian. So 0x1985 becomes 0x19, 0x85 and 0x2003 becomes 0x20,
-> > 0x03 on a big endian CPU. The values you read are therefore correct as
-> > far as I can tell, but of course, I could be missing something...
-> 
-> In include/mtd/jffs2-user.h, cpu_to_je16 swaps bytes if target_endian
-> is not equal to __BYTE_ORDER. But this is always false since it's
-> value is set to __BYTE_ORDER in flash_eraseall. Does that make sense ?
+Unlike the kernel version, the standard lzo userspace library is used
+along with lzo1x_999_compress rather than the lzo1x_1_compress version
+since better compression ratios can be obtained (at no significant cost
+to decompression time).
 
-Yes. 0x1985 is stored as 0x19, 0x85 on a big endian CPU. Since
-cpu_to_je16 doesn't swap the bytes, this is how it will end up being
-stored on the flash.
+Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
 
-> > It's a bit strange that you don't get any error messages from the
-> > kernel before the mount fails though. Enabling MTD debugging might help
-> > of course. Btw, did you check dmesg? If the loglevel is set too low,
-> > you might not see the error messages on the console.
-> 
-> I thought I checked that, but now I see a message in dmesg when I try to mount:
-> 
-> jffs2_get_sb(): dev_name "/dev/mtd1"
+---
+ Makefile              |    3 -
+ compr.c               |    6 ++
+ compr.h               |    6 ++
+ compr_lzo.c           |  120 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/jffs2.h |    1 
+ 5 files changed, 135 insertions(+), 1 deletion(-)
 
-Ah, this should be /dev/mtdblock1, not /dev/mtd1. JFFS2 actually checks
-if the device is a block device before continuing.
-
-So I suggest you try this command:
-
-mount -tjffs2 /dev/mtdblock1 /mnt/nand
-
-Or, I guess the new way of doing things is either
-
-mount -tjffs2 mtd1 /mnt/nand
-or
-mount -tjffs2 mtd:rootfs /mnt/nand
-
-Although I've never actually tried that, so I could be wrong.
-
-> jffs2_get_sb(): path_lookup() returned 0, inode 93db1254
-> 
-> mtd debug level is at max (3), jffs2 debug is also set to max (2), but
-> that's all I see.
-> 
-> I've read somewhere that mount complains if the magic number were
-> wrong, but I don't see that either.
-
-I think it gives up very early, so it won't even attempt to read the
-flash.
-
-Haavard
+Index: git/Makefile
+===================================================================
+--- git.orig/Makefile	2007-03-01 11:57:58.000000000 +0000
++++ git/Makefile	2007-03-01 11:58:01.000000000 +0000
+@@ -58,8 +58,9 @@ $(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc3
+ 			$(BUILDDIR)/compr_rtime.o \
+ 			$(BUILDDIR)/mkfs.jffs2.o \
+ 			$(BUILDDIR)/compr_zlib.o \
++			$(BUILDDIR)/compr_lzo.o \
+ 			$(BUILDDIR)/compr.o
+-	$(CC) $(LDFLAGS) -o $@ $^ -lz
++	$(CC) $(LDFLAGS) -o $@ $^ -lz -llzo
+ 
+ $(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
+ 	$(CC) $(LDFLAGS) -o $@ $^
+Index: git/compr.c
+===================================================================
+--- git.orig/compr.c	2007-03-01 11:57:58.000000000 +0000
++++ git/compr.c	2007-03-01 11:58:01.000000000 +0000
+@@ -474,6 +474,9 @@ int jffs2_compressors_init(void)
+ #ifdef CONFIG_JFFS2_RTIME
+ 	jffs2_rtime_init();
+ #endif
++#ifdef CONFIG_JFFS2_LZO
++        jffs2_lzo_init();
++#endif
+ 	return 0;
+ }
+ 
+@@ -485,5 +488,8 @@ int jffs2_compressors_exit(void)
+ #ifdef CONFIG_JFFS2_ZLIB
+ 	jffs2_zlib_exit();
+ #endif
++#ifdef CONFIG_JFFS2_LZO
++        jffs2_lzo_exit();
++#endif
+ 	return 0;
+ }
+Index: git/compr.h
+===================================================================
+--- git.orig/compr.h	2007-03-01 11:57:58.000000000 +0000
++++ git/compr.h	2007-03-01 11:58:01.000000000 +0000
+@@ -21,11 +21,13 @@
+ 
+ #define CONFIG_JFFS2_ZLIB
+ #define CONFIG_JFFS2_RTIME
++#define CONFIG_JFFS2_LZO
+ 
+ #define JFFS2_RUBINMIPS_PRIORITY 10
+ #define JFFS2_DYNRUBIN_PRIORITY  20
+ #define JFFS2_RTIME_PRIORITY     50
+ #define JFFS2_ZLIB_PRIORITY      60
++#define JFFS2_LZO_PRIORITY       80
+ 
+ #define JFFS2_COMPR_MODE_NONE       0
+ #define JFFS2_COMPR_MODE_PRIORITY   1
+@@ -111,5 +113,9 @@ void jffs2_zlib_exit(void);
+ int jffs2_rtime_init(void);
+ void jffs2_rtime_exit(void);
+ #endif
++#ifdef CONFIG_JFFS2_LZO
++int jffs2_lzo_init(void);
++void jffs2_lzo_exit(void);
++#endif
+ 
+ #endif /* __JFFS2_COMPR_H__ */
+Index: git/compr_lzo.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ git/compr_lzo.c	2007-03-01 11:58:01.000000000 +0000
+@@ -0,0 +1,120 @@
++/*
++ * JFFS2 LZO Compression Interface.
++ *
++ * Copyright (C) 2007 Nokia Corporation. All rights reserved.
++ *
++ * Author: Richard Purdie <rpurdie@openedhand.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
++ */
++
++#include <stdint.h>
++#include <stdio.h>
++#include <string.h>
++#include <asm/types.h>
++#include <linux/jffs2.h>
++#include <lzo1x.h>
++#include "compr.h"
++
++extern int page_size;
++
++static void *lzo_mem;
++static void *lzo_compress_buf;
++
++/*
++ * Note about LZO compression.
++ *
++ * We want to use the _999_ compression routine which gives better compression
++ * rates at the expense of time. Decompression time is unaffected. We might as
++ * well use the standard lzo library routines for this but they will overflow
++ * the destination buffer since they don't check the destination size.
++ *
++ * We therefore compress to a temporary buffer and copy if it will fit.
++ *
++ */
++static int jffs2_lzo_cmpr(unsigned char *data_in, unsigned char *cpage_out,
++			  uint32_t *sourcelen, uint32_t *dstlen, void *model)
++{
++	uint32_t compress_size;
++	int ret;
++
++	ret = lzo1x_999_compress(data_in, *sourcelen, lzo_compress_buf, &compress_size, lzo_mem);
++
++	if (ret != LZO_E_OK)
++		return -1;
++
++	if (compress_size > *dstlen)
++		return -1;
++
++	memcpy(cpage_out, lzo_compress_buf, compress_size);
++	*dstlen = compress_size;
++
++	return 0;
++}
++
++static int jffs2_lzo_decompress(unsigned char *data_in, unsigned char *cpage_out,
++				 uint32_t srclen, uint32_t destlen, void *model)
++{
++	int ret;
++	uint32_t dl;
++
++	ret = lzo1x_decompress_safe(data_in,srclen,cpage_out,&dl,NULL);
++
++	if (ret != LZO_E_OK || dl != destlen)
++		return -1;
++
++	return 0;
++}
++
++static struct jffs2_compressor jffs2_lzo_comp = {
++	.priority = JFFS2_LZO_PRIORITY,
++	.name = "lzo",
++	.compr = JFFS2_COMPR_LZO,
++	.compress = &jffs2_lzo_cmpr,
++	.decompress = &jffs2_lzo_decompress,
++	.disabled = 0,
++};
++
++int jffs2_lzo_init(void)
++{
++	int ret;
++
++	lzo_mem = malloc(LZO1X_999_MEM_COMPRESS);
++	if (!lzo_mem)
++		return -1;
++
++	/* Worse case LZO compression size from their FAQ */
++	lzo_compress_buf = malloc(page_size + (page_size / 64) + 16 + 3);
++	if (!lzo_compress_buf) {
++		free(lzo_mem);
++		return -1;
++	}
++
++	ret = jffs2_register_compressor(&jffs2_lzo_comp);
++	if (ret < 0) {
++		free(lzo_compress_buf);
++		free(lzo_mem);
++	}
++
++	return ret;
++}
++
++void jffs2_lzo_exit(void)
++{
++	jffs2_unregister_compressor(&jffs2_lzo_comp);
++	free(lzo_compress_buf);
++	free(lzo_mem);
++}
+Index: git/include/linux/jffs2.h
+===================================================================
+--- git.orig/include/linux/jffs2.h	2007-03-01 11:57:58.000000000 +0000
++++ git/include/linux/jffs2.h	2007-03-01 11:58:01.000000000 +0000
+@@ -46,6 +46,7 @@
+ #define JFFS2_COMPR_COPY	0x04
+ #define JFFS2_COMPR_DYNRUBIN	0x05
+ #define JFFS2_COMPR_ZLIB	0x06
++#define JFFS2_COMPR_LZO		0x07
+ /* Compatibility flags. */
+ #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
+ #define JFFS2_NODE_ACCURATE 0x2000
