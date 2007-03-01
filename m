@@ -1,26 +1,20 @@
-Received: from tim.rpsys.net ([194.106.48.114])
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMk4x-0006o1-PJ
-	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 07:08:15 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by tim.rpsys.net (8.13.6/8.13.8) with ESMTP id l21C87GS007929
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Mar 2007 12:08:07 GMT
-Received: from tim.rpsys.net ([127.0.0.1])
-	by localhost (tim.rpsys.net [127.0.0.1]) (amavisd-new,
-	port 10024) with LMTP
-	id 07346-06 for <linux-mtd@lists.infradead.org>;
-	Thu,  1 Mar 2007 12:08:05 +0000 (GMT)
-Received: from max.rpnet.com (max.rpnet.com [192.168.1.15])
-	(authenticated bits=0)
-	by tim.rpsys.net (8.13.6/8.13.8) with ESMTP id l21C84hJ007920
-	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Thu, 1 Mar 2007 12:08:04 GMT
-Subject: [mtd-utils patch 1/2] Add lzo support to mtd-utils
-From: Richard Purdie <rpurdie@rpsys.net>
+	id 1HMk5C-0006oW-BJ
+	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 07:08:32 -0500
+Received: from max.rpnet.com (tim.rpsys.net [194.106.48.114])
+	(using TLSv1 with cipher RC4-MD5 (128/128 bits))
+	(No client certificate requested)
+	by pug.o-hand.com (Postfix) with ESMTP id BCE9810CD8C9
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  1 Mar 2007 07:28:32 -0500 (EST)
+Subject: [mtd-utils patch 2/2] Add favourlzo compression mode
+From: Richard Purdie <rpurdie@openedhand.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Thu, 01 Mar 2007 12:08:03 +0000
-Message-Id: <1172750884.19220.58.camel@localhost.localdomain>
+Date: Thu, 01 Mar 2007 12:08:10 +0000
+Message-Id: <1172750890.19220.59.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,223 +26,139 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add LZO support to mtd-utils to generate LZO compressed jffs2 images
+Add a favourlzo compression mode to mtd-utils
 
-Unlike the kernel version, the standard lzo userspace library is used
-along with lzo1x_999_compress rather than the lzo1x_1_compress version
-since better compression ratios can be obtained (at no significant cost
-to decompression time).
+This allows lzo compression to be used in the cases where the
+compression ratio isn't quite as good zlib. This can make sense in
+certain use cases because LZO decompression is much faster than zlib.
 
 Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
 
 ---
- Makefile              |    3 -
- compr.c               |    6 ++
- compr.h               |    6 ++
- compr_lzo.c           |  120 ++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/jffs2.h |    1 
- 5 files changed, 135 insertions(+), 1 deletion(-)
+ compr.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++++---
+ compr.h |    1 +
+ 2 files changed, 50 insertions(+), 3 deletions(-)
 
-Index: git/Makefile
-===================================================================
---- git.orig/Makefile	2007-03-01 11:57:58.000000000 +0000
-+++ git/Makefile	2007-03-01 11:58:01.000000000 +0000
-@@ -58,8 +58,9 @@ $(BUILDDIR)/mkfs.jffs2: $(BUILDDIR)/crc3
- 			$(BUILDDIR)/compr_rtime.o \
- 			$(BUILDDIR)/mkfs.jffs2.o \
- 			$(BUILDDIR)/compr_zlib.o \
-+			$(BUILDDIR)/compr_lzo.o \
- 			$(BUILDDIR)/compr.o
--	$(CC) $(LDFLAGS) -o $@ $^ -lz
-+	$(CC) $(LDFLAGS) -o $@ $^ -lz -llzo
- 
- $(BUILDDIR)/flash_eraseall: $(BUILDDIR)/crc32.o $(BUILDDIR)/flash_eraseall.o
- 	$(CC) $(LDFLAGS) -o $@ $^
 Index: git/compr.c
 ===================================================================
---- git.orig/compr.c	2007-03-01 11:57:58.000000000 +0000
-+++ git/compr.c	2007-03-01 11:58:01.000000000 +0000
-@@ -474,6 +474,9 @@ int jffs2_compressors_init(void)
- #ifdef CONFIG_JFFS2_RTIME
- 	jffs2_rtime_init();
- #endif
-+#ifdef CONFIG_JFFS2_LZO
-+        jffs2_lzo_init();
-+#endif
- 	return 0;
+--- git.orig/compr.c	2007-03-01 11:58:01.000000000 +0000
++++ git/compr.c	2007-03-01 11:58:09.000000000 +0000
+@@ -16,6 +16,8 @@
+ #include <stdlib.h>
+ #include <linux/jffs2.h>
+ 
++#define FAVOUR_LZO_PERCENT 80
++
+ extern int page_size;
+ 
+ /* LIST IMPLEMENTATION (from linux/list.h) */
+@@ -166,6 +168,33 @@ static void jffs2_decompression_test(str
+ 	}
  }
  
-@@ -485,5 +488,8 @@ int jffs2_compressors_exit(void)
- #ifdef CONFIG_JFFS2_ZLIB
- 	jffs2_zlib_exit();
- #endif
-+#ifdef CONFIG_JFFS2_LZO
-+        jffs2_lzo_exit();
-+#endif
- 	return 0;
++/*
++ * Return 1 to use this compression
++ */
++static int jffs2_is_best_compression(struct jffs2_compressor *this,
++		struct jffs2_compressor *best, uint32_t size, uint32_t bestsize)
++{
++	switch (jffs2_compression_mode) {
++		case JFFS2_COMPR_MODE_SIZE:
++			if (bestsize > size)
++				return 1;
++			return 0;
++		case JFFS2_COMPR_MODE_FAVOURLZO:
++			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > size))
++				return 1;
++			if ((best->compr != JFFS2_COMPR_LZO) && (bestsize > size))
++				return 1;
++			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > (size * FAVOUR_LZO_PERCENT / 100)))
++				return 1;
++			if ((bestsize * FAVOUR_LZO_PERCENT / 100) > size)
++				return 1;
++
++			return 0;
++	}
++	/* Shouldn't happen */
++	return 0;
++}
++
+ /* jffs2_compress:
+  * @data: Pointer to uncompressed data
+  * @cdata: Pointer to returned pointer to buffer for compressed data
+@@ -231,21 +260,29 @@ uint16_t jffs2_compress( unsigned char *
+ 			}
+ 			if (ret == JFFS2_COMPR_NONE) free(output_buf);
+ 			break;
++		case JFFS2_COMPR_MODE_FAVOURLZO:
+ 		case JFFS2_COMPR_MODE_SIZE:
+ 			orig_slen = *datalen;
+ 			orig_dlen = *cdatalen;
+ 			list_for_each_entry(this, &jffs2_compressor_list, list) {
++				uint32_t needed_buf_size;
++
++				if (jffs2_compression_mode == JFFS2_COMPR_MODE_FAVOURLZO)
++					needed_buf_size = orig_slen+jffs2_compression_check;
++				else
++					needed_buf_size = orig_dlen+jffs2_compression_check;
++
+ 				/* Skip decompress-only backwards-compatibility and disabled modules */
+ 				if ((!this->compress)||(this->disabled))
+ 					continue;
+ 				/* Allocating memory for output buffer if necessary */
+-				if ((this->compr_buf_size<orig_dlen+jffs2_compression_check)&&(this->compr_buf)) {
++				if ((this->compr_buf_size < needed_buf_size) && (this->compr_buf)) {
+ 					free(this->compr_buf);
+ 					this->compr_buf_size=0;
+ 					this->compr_buf=NULL;
+ 				}
+ 				if (!this->compr_buf) {
+-					tmp_buf = malloc(orig_dlen+jffs2_compression_check);
++					tmp_buf = malloc(needed_buf_size);
+ 					if (!tmp_buf) {
+ 						fprintf(stderr,"mkfs.jffs2: No memory for compressor allocation. (%d bytes)\n",orig_dlen);
+ 						continue;
+@@ -265,7 +302,8 @@ uint16_t jffs2_compress( unsigned char *
+ 				if (!compr_ret) {
+ 					if (jffs2_compression_check)
+ 						jffs2_decompression_test(this, data_in, this->compr_buf, *cdatalen, *datalen, this->compr_buf_size);
+-					if ((!best_dlen)||(best_dlen>*cdatalen)) {
++					if (((!best_dlen) || jffs2_is_best_compression(this, best, *cdatalen, best_dlen))
++								&& (*cdatalen < *datalen)) {
+ 						best_dlen = *cdatalen;
+ 						best_slen = *datalen;
+ 						best = this;
+@@ -377,6 +415,9 @@ char *jffs2_stats(void)
+ 		case JFFS2_COMPR_MODE_SIZE:
+ 			act_buf += sprintf(act_buf,"size");
+ 			break;
++		case JFFS2_COMPR_MODE_FAVOURLZO:
++			act_buf += sprintf(act_buf,"favourlzo");
++			break;
+ 		default:
+ 			act_buf += sprintf(act_buf,"unkown");
+ 			break;
+@@ -413,6 +454,11 @@ int jffs2_set_compression_mode_name(cons
+ 		jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
+ 		return 0;
+ 	}
++	if (!strcmp("favourlzo", name)) {
++		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
++		return 0;
++	}
++
+ 	return 1;
  }
+ 
 Index: git/compr.h
 ===================================================================
---- git.orig/compr.h	2007-03-01 11:57:58.000000000 +0000
-+++ git/compr.h	2007-03-01 11:58:01.000000000 +0000
-@@ -21,11 +21,13 @@
- 
- #define CONFIG_JFFS2_ZLIB
- #define CONFIG_JFFS2_RTIME
-+#define CONFIG_JFFS2_LZO
- 
- #define JFFS2_RUBINMIPS_PRIORITY 10
- #define JFFS2_DYNRUBIN_PRIORITY  20
- #define JFFS2_RTIME_PRIORITY     50
- #define JFFS2_ZLIB_PRIORITY      60
-+#define JFFS2_LZO_PRIORITY       80
- 
+--- git.orig/compr.h	2007-03-01 11:58:01.000000000 +0000
++++ git/compr.h	2007-03-01 11:58:09.000000000 +0000
+@@ -32,6 +32,7 @@
  #define JFFS2_COMPR_MODE_NONE       0
  #define JFFS2_COMPR_MODE_PRIORITY   1
-@@ -111,5 +113,9 @@ void jffs2_zlib_exit(void);
- int jffs2_rtime_init(void);
- void jffs2_rtime_exit(void);
- #endif
-+#ifdef CONFIG_JFFS2_LZO
-+int jffs2_lzo_init(void);
-+void jffs2_lzo_exit(void);
-+#endif
+ #define JFFS2_COMPR_MODE_SIZE       2
++#define JFFS2_COMPR_MODE_FAVOURLZO  3
  
- #endif /* __JFFS2_COMPR_H__ */
-Index: git/compr_lzo.c
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ git/compr_lzo.c	2007-03-01 11:58:01.000000000 +0000
-@@ -0,0 +1,120 @@
-+/*
-+ * JFFS2 LZO Compression Interface.
-+ *
-+ * Copyright (C) 2007 Nokia Corporation. All rights reserved.
-+ *
-+ * Author: Richard Purdie <rpurdie@openedhand.com>
-+ *
-+ * This program is free software; you can redistribute it and/or
-+ * modify it under the terms of the GNU General Public License
-+ * version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful, but
-+ * WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-+ * General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-+ * 02110-1301 USA
-+ *
-+ */
-+
-+#include <stdint.h>
-+#include <stdio.h>
-+#include <string.h>
-+#include <asm/types.h>
-+#include <linux/jffs2.h>
-+#include <lzo1x.h>
-+#include "compr.h"
-+
-+extern int page_size;
-+
-+static void *lzo_mem;
-+static void *lzo_compress_buf;
-+
-+/*
-+ * Note about LZO compression.
-+ *
-+ * We want to use the _999_ compression routine which gives better compression
-+ * rates at the expense of time. Decompression time is unaffected. We might as
-+ * well use the standard lzo library routines for this but they will overflow
-+ * the destination buffer since they don't check the destination size.
-+ *
-+ * We therefore compress to a temporary buffer and copy if it will fit.
-+ *
-+ */
-+static int jffs2_lzo_cmpr(unsigned char *data_in, unsigned char *cpage_out,
-+			  uint32_t *sourcelen, uint32_t *dstlen, void *model)
-+{
-+	uint32_t compress_size;
-+	int ret;
-+
-+	ret = lzo1x_999_compress(data_in, *sourcelen, lzo_compress_buf, &compress_size, lzo_mem);
-+
-+	if (ret != LZO_E_OK)
-+		return -1;
-+
-+	if (compress_size > *dstlen)
-+		return -1;
-+
-+	memcpy(cpage_out, lzo_compress_buf, compress_size);
-+	*dstlen = compress_size;
-+
-+	return 0;
-+}
-+
-+static int jffs2_lzo_decompress(unsigned char *data_in, unsigned char *cpage_out,
-+				 uint32_t srclen, uint32_t destlen, void *model)
-+{
-+	int ret;
-+	uint32_t dl;
-+
-+	ret = lzo1x_decompress_safe(data_in,srclen,cpage_out,&dl,NULL);
-+
-+	if (ret != LZO_E_OK || dl != destlen)
-+		return -1;
-+
-+	return 0;
-+}
-+
-+static struct jffs2_compressor jffs2_lzo_comp = {
-+	.priority = JFFS2_LZO_PRIORITY,
-+	.name = "lzo",
-+	.compr = JFFS2_COMPR_LZO,
-+	.compress = &jffs2_lzo_cmpr,
-+	.decompress = &jffs2_lzo_decompress,
-+	.disabled = 0,
-+};
-+
-+int jffs2_lzo_init(void)
-+{
-+	int ret;
-+
-+	lzo_mem = malloc(LZO1X_999_MEM_COMPRESS);
-+	if (!lzo_mem)
-+		return -1;
-+
-+	/* Worse case LZO compression size from their FAQ */
-+	lzo_compress_buf = malloc(page_size + (page_size / 64) + 16 + 3);
-+	if (!lzo_compress_buf) {
-+		free(lzo_mem);
-+		return -1;
-+	}
-+
-+	ret = jffs2_register_compressor(&jffs2_lzo_comp);
-+	if (ret < 0) {
-+		free(lzo_compress_buf);
-+		free(lzo_mem);
-+	}
-+
-+	return ret;
-+}
-+
-+void jffs2_lzo_exit(void)
-+{
-+	jffs2_unregister_compressor(&jffs2_lzo_comp);
-+	free(lzo_compress_buf);
-+	free(lzo_mem);
-+}
-Index: git/include/linux/jffs2.h
-===================================================================
---- git.orig/include/linux/jffs2.h	2007-03-01 11:57:58.000000000 +0000
-+++ git/include/linux/jffs2.h	2007-03-01 11:58:01.000000000 +0000
-@@ -46,6 +46,7 @@
- #define JFFS2_COMPR_COPY	0x04
- #define JFFS2_COMPR_DYNRUBIN	0x05
- #define JFFS2_COMPR_ZLIB	0x06
-+#define JFFS2_COMPR_LZO		0x07
- /* Compatibility flags. */
- #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
- #define JFFS2_NODE_ACCURATE 0x2000
+ #define kmalloc(a,b)                malloc(a)
+ #define kfree(a)                    free(a)
