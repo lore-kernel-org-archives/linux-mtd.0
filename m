@@ -1,26 +1,20 @@
-Received: from wr-out-0506.google.com ([64.233.184.238])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMrDD-0002Ht-90
-	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 14:45:14 -0500
-Received: by wr-out-0506.google.com with SMTP id 69so843659wra
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 01 Mar 2007 11:45:09 -0800 (PST)
-Message-ID: <87f18bad0703011145j224074e7t6473b9c865a24d96@mail.gmail.com>
-Date: Thu, 1 Mar 2007 21:45:01 +0200
-From: "J. Doo" <doodiexx@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: NAND flash mounting problem
-In-Reply-To: <20070301114052.16cf258c@dhcp-252-105.norway.atmel.com>
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMrEx-0002TB-7b
+	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 14:47:03 -0500
+Message-ID: <45E72C1F.4050308@ru.mvista.com>
+Date: Thu, 01 Mar 2007 22:40:15 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: dedekind@infradead.org
+Subject: Re: JFFS2 file system slowly filling up for unknown reason ~20	seconds
+	after mount
+References: <1172774513.20708.40.camel@localhost>
+	<1172773269.17031.42.camel@sauron>
+In-Reply-To: <1172773269.17031.42.camel@sauron>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
-	<20070228094631.2e8f7b45@dhcp-252-105.norway.atmel.com>
-	<87f18bad0702280717k6d50b712j9f166eb29f2ca734@mail.gmail.com>
-	<20070228170648.34bd4118@dhcp-252-105.norway.atmel.com>
-	<87f18bad0702280824w7c35a320u8f4f44621ba4efdb@mail.gmail.com>
-	<20070301114052.16cf258c@dhcp-252-105.norway.atmel.com>
+Cc: Josh Green <josh@resonance.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,14 +24,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > jffs2_get_sb(): dev_name "/dev/mtd1"
+Artem Bityutskiy wrote:
+
+>>Linux kernel 2.6.10 with patch from Philips
+>>    
+>>
 >
-> Ah, this should be /dev/mtdblock1, not /dev/mtd1. JFFS2 actually checks
+>Ancient kernel, not a lot of people are interested in digging it.
+>  
+>
+Absolutely, especially given the possible side effects of the "patch
+from Philips" no one here has actually seen ;-)
+What I'd suggest is to try quickporting the board support and flash
+driver to the latest community kernel and reproducing the problem with
+this new setup.
 
-Yep, that was the problem.
-Supplying /dev/mtdblock1 solved it.
-
-I had a few crashes with JFFS2, but it seems working. I have to do
-some more tests.
-
-Thanks,
+Vitaly
