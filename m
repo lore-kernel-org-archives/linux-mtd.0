@@ -1,20 +1,26 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HMpuB-0001Re-GQ
-	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 13:21:30 -0500
-Subject: Re: JFFS2 file system slowly filling up for unknown reason ~20
-	seconds after mount
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Josh Green <josh@resonance.org>
-In-Reply-To: <1172774513.20708.40.camel@localhost>
-References: <1172774513.20708.40.camel@localhost>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 01 Mar 2007 20:21:09 +0200
-Message-Id: <1172773269.17031.42.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wr-out-0506.google.com ([64.233.184.238])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HMrDD-0002Ht-90
+	for linux-mtd@lists.infradead.org; Thu, 01 Mar 2007 14:45:14 -0500
+Received: by wr-out-0506.google.com with SMTP id 69so843659wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 01 Mar 2007 11:45:09 -0800 (PST)
+Message-ID: <87f18bad0703011145j224074e7t6473b9c865a24d96@mail.gmail.com>
+Date: Thu, 1 Mar 2007 21:45:01 +0200
+From: "J. Doo" <doodiexx@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: NAND flash mounting problem
+In-Reply-To: <20070301114052.16cf258c@dhcp-252-105.norway.atmel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <87f18bad0702272352v44058e20x17390c10b9373930@mail.gmail.com>
+	<20070228094631.2e8f7b45@dhcp-252-105.norway.atmel.com>
+	<87f18bad0702280717k6d50b712j9f166eb29f2ca734@mail.gmail.com>
+	<20070228170648.34bd4118@dhcp-252-105.norway.atmel.com>
+	<87f18bad0702280824w7c35a320u8f4f44621ba4efdb@mail.gmail.com>
+	<20070301114052.16cf258c@dhcp-252-105.norway.atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +30,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+> > jffs2_get_sb(): dev_name "/dev/mtd1"
+>
+> Ah, this should be /dev/mtdblock1, not /dev/mtd1. JFFS2 actually checks
 
-On Thu, 2007-03-01 at 18:41 +0000, Josh Green wrote:
-> I'm currently working on a Linux project with a Philips LPC3180 based
-> system.  The Linux support for this board seems to be under development
-> by Philips and is not yet in the main Linux tree (we received support as
-> a patch).  So this problem could very well be related to the drivers we
-> received for this platform, but I wanted to check if anyone else has
-> experienced similar behavior or have any pointers as to the cause.
+Yep, that was the problem.
+Supplying /dev/mtdblock1 solved it.
 
-I have never heard of such a really weird problem.
+I had a few crashes with JFFS2, but it seems working. I have to do
+some more tests.
 
-> Linux kernel 2.6.10 with patch from Philips
-
-Ancient kernel, not a lot of people are interested in digging it.
-
-> If anyone has any helpful information they could share in regards to
-> this problem, I would appreciate it.  This could very well be a jffs2
-> specific problem, but the jffs list seems rather dead, and there is a
-> lot related to jffs2 on this list.  Please let me know if I'm posting to
-> the wrong list though.
-
-It's the right list.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks,
