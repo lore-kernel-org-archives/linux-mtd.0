@@ -1,21 +1,19 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HNB1m-0007m1-FL
-	for linux-mtd@lists.infradead.org; Fri, 02 Mar 2007 11:54:47 -0500
-Subject: Re: [PATCH 4/9] swap: Simplify shmem_unuse() usage [optional]
-From: Richard Purdie <rpurdie@openedhand.com>
-To: Hugh Dickins <hugh@veritas.com>
-In-Reply-To: <Pine.LNX.4.64.0703021631470.11135@blonde.wat.veritas.com>
-References: <1172850884.11149.124.camel@localhost.localdomain>
-	<Pine.LNX.4.64.0703021631470.11135@blonde.wat.veritas.com>
+Received: from resonance.org ([12.165.58.239] helo=earth.resonance.org)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HNBFe-0008Uz-2d
+	for linux-mtd@lists.infradead.org; Fri, 02 Mar 2007 12:09:04 -0500
+Subject: Re: JFFS2 file system slowly filling up for unknown reason ~20
+	seconds after mount
+From: Josh Green <josh@resonance.org>
+To: Pete MacKay <linux@architechnical.net>
+In-Reply-To: <48818.69.30.123.186.1172794036.squirrel@www.architechnical.net>
+References: <48818.69.30.123.186.1172794036.squirrel@www.architechnical.net>
 Content-Type: text/plain
-Date: Fri, 02 Mar 2007 16:54:35 +0000
-Message-Id: <1172854476.11149.147.camel@localhost.localdomain>
+Date: Fri, 02 Mar 2007 18:07:47 +0000
+Message-Id: <1172858867.12314.9.camel@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Nick Piggin <nickpiggin@yahoo.com.au>, dwmw2@infradead.org,
-	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-03-02 at 16:44 +0000, Hugh Dickins wrote:
-> Definite NAK to this one from me: I'm sorry the optimization confuses
-> you, but it's well commented at both ends, and speeds up shmem swapoff
-> very significantly e.g. minutes down to seconds.  There may well be a
-> less confusing way of achieving the same effect, with another return
-> code from shmem_unuse, and some gotos, but I'm not all that keen.
+On Thu, 2007-03-01 at 19:07 -0500, Pete MacKay wrote:
+> I tried getting this part to work with 2.6.18 and saw similar behavior
+> at one point, but we've since changed hardware to use OneNAND.  One
+> thought I have is to try padding the file system to use the full
+> partition, so you'd add "--pad=0xa40000" to the mkfs.jffs2 command line,
+> and make sure you're using a version of mtd-utils that correctly writes
+> the OOB on that device (another problem we had).  BTW, the mkfs.jffs2 we
+> use has a bug where it doesn't parse the '-p' option properly but does
+> with '--pad='.  Good luck!
+> 
 
-Currently there is only one site its used in but with the changes, you
-end up with two. My concern is that the behaviour of that function is
-not obvious to anyone new to the code and I suspect something will get
-broken at some point due to that, even if comments are there.
+I tried the pad option before with stranger results (lots of error
+output during mount).  Thanks for the tips on the mtd-utils and the OOB
+stuff, in fact I suspect that could very well be what I'm experiencing.
+Something wrong with the way the OOB stuff is being written.  I turned
+on verbose errors for the MTD sub system and I get a load of these
+messages after mounting, which continue until the partition indicates
+that it is full (gee if that isn't suspicious I don't know what is).
+There were also messages related to the garbage collector interspersed
+with these when I turned up the verbosity of error reporting.
 
-I'd have no problem with a different return code and some gotos and/or
-improved logic. The changes these patches make might even make that
-easier to implement. I'll take another look at it and see if I can find
-a nicer patch.
+nand_write_oob: Attempt to write past end of page
+nand_write_oob: Attempt to write past end of page
+...
 
-> Your other patches, well, as ever I hope I'll get to look at them,
-> but there are so many people, all much quicker than me, playing in
-> mm these days...
+> P.S. If I had it to do all over again I'd have made maps of the factory
+> marked bad blocks, as I had to 'nuke' the chip by marking them all good
+> again (U-boot lets you do this with a conditional, but created the need
+> for it in the first place by writing the cleanmarker in the wrong place
+> in the OOB - namely the bad block marker!).
+> 
 
-I'm open to offers... :)
+Fortunately with the device I have I don't believe there are any bad
+blocks (at least there were none reported when I got it, although that
+could also be a bad thing).
 
-Cheers,
+Thanks go as well to the others who responded.  I'm well aware that this
+kernel is outdated.  Unfortunately its what we have to work with for
+now.  I'll be quite happy when this platform is supported in the main
+kernel tree.
 
-Richard
+Best regards,
+	Josh Green
