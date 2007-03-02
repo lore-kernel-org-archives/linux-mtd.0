@@ -1,16 +1,17 @@
 Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
 	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HNA6D-0005Mx-A7
-	for linux-mtd@lists.infradead.org; Fri, 02 Mar 2007 10:55:47 -0500
-Subject: [PATCH 4/9] swap: Simplify shmem_unuse() usage [optional]
+	id 1HNA6J-0005N0-4m
+	for linux-mtd@lists.infradead.org; Fri, 02 Mar 2007 10:56:32 -0500
+Subject: [PATCH 6/9] mtd: Add a 'block unused' ioctl call to provide hints
+	to block drivers
 From: Richard Purdie <rpurdie@openedhand.com>
 To: Nick Piggin <nickpiggin@yahoo.com.au>, Hugh Dickins <hugh@veritas.com>,
 	kernel list <linux-kernel@vger.kernel.org>,
 	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 Content-Type: text/plain
-Date: Fri, 02 Mar 2007 15:54:44 +0000
-Message-Id: <1172850884.11149.124.camel@localhost.localdomain>
+Date: Fri, 02 Mar 2007 15:54:54 +0000
+Message-Id: <1172850894.11149.126.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,100 +23,107 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Simplify shmem_unuse_inode() removing a confusing optimisation which
-requires the caller to call swap_duplicate if the shmem_unuse() call
-doesn't succeed.
+Knowing that the data in a given block is now unused is a useful
+feature that some block drivers can take advantage of, especially 
+when dealing with devices like flash.
 
-Based on a patch by Nick Piggin and some of my own changes as discussed
-on LKML. 
+This adds an ioctl which allows such hints to be passed to the
+block driver. Its shouldn't provide false positives but doesn't
+have to provide the signal in all cases - its intended as a hint.
+
+Support for the ioctl is added to the swap subsystem when the swap
+header indicates such notification would be useful though an added
+flags bitfield. The swaponflash driver takes advantage of this
+functionality.
 
 Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
 
 ---
- mm/shmem.c    |   12 +++++-------
- mm/swapfile.c |   23 ++---------------------
- 2 files changed, 7 insertions(+), 28 deletions(-)
+ block/ioctl.c        |    4 ++++
+ include/linux/fs.h   |    1 +
+ include/linux/swap.h |    5 ++++-
+ mm/swapfile.c        |    7 ++++++-
+ 4 files changed, 15 insertions(+), 2 deletions(-)
 
-Index: linux/mm/shmem.c
+Index: linux/include/linux/fs.h
 ===================================================================
---- linux.orig/mm/shmem.c	2007-02-28 18:12:34.000000000 +0000
-+++ linux/mm/shmem.c	2007-02-28 18:12:46.000000000 +0000
-@@ -734,7 +734,7 @@ static int shmem_unuse_inode(struct shme
- 	struct page **dir;
- 	struct page *subdir;
- 	swp_entry_t *ptr;
--	int offset;
-+	int offset, moved;
+--- linux.orig/include/linux/fs.h	2007-02-28 18:16:52.000000000 +0000
++++ linux/include/linux/fs.h	2007-03-02 14:46:34.000000000 +0000
+@@ -214,6 +214,7 @@ extern int dir_notify_enable;
+ #define BLKTRACESTART _IO(0x12,116)
+ #define BLKTRACESTOP _IO(0x12,117)
+ #define BLKTRACETEARDOWN _IO(0x12,118)
++#define BLKSWAPMARKUNUSED _IOW(0x12, 1197, int)
  
- 	idx = 0;
- 	ptr = info->i_direct;
-@@ -792,17 +792,15 @@ lost2:
- found:
- 	idx += offset;
- 	inode = &info->vfs_inode;
--	if (move_from_swap_cache(page, idx, inode->i_mapping) == 0) {
-+	moved = (move_from_swap_cache(page, idx, inode->i_mapping) == 0);
-+	if (moved) {
- 		info->flags |= SHMEM_PAGEIN;
- 		shmem_swp_set(info, ptr + offset, 0);
- 	}
- 	shmem_swp_unmap(ptr);
- 	spin_unlock(&info->lock);
--	/*
--	 * Decrement swap count even when the entry is left behind:
--	 * try_to_unuse will skip over mms, then reincrement count.
--	 */
--	swap_free(entry, page);
-+	if (moved)
-+		swap_free(entry, page);
- 	return 1;
- }
- 
+ #define BMAP_IOCTL 1		/* obsolete - kept for compatibility */
+ #define FIBMAP	   _IO(0x00,1)	/* bmap access */
+Index: linux/include/linux/swap.h
+===================================================================
+--- linux.orig/include/linux/swap.h	2007-03-02 14:35:02.000000000 +0000
++++ linux/include/linux/swap.h	2007-03-02 14:46:34.000000000 +0000
+@@ -65,7 +65,9 @@ union swap_header {
+ 		__u32		nr_badpages;
+ 		unsigned char	sws_uuid[16];
+ 		unsigned char	sws_volume[16];
+-		__u32		padding[117];
++		__u32		flags;
++#define SWAPFLAG_UNUSED_IOCTL (1 << 0)
++		__u32		padding[113];
+ 		__u32		badpages[1];
+ 	} info;
+ };
+@@ -119,6 +121,7 @@ enum {
+ 	SWP_USED	= (1 << 0),	/* is slot in swap_info[] used? */
+ 	SWP_WRITEOK	= (1 << 1),	/* ok to write to this swap?	*/
+ 	SWP_ACTIVE	= (SWP_USED | SWP_WRITEOK),
++	SWP_UNUSED_IOCTL = (1 << 2),
+ 					/* add others here before... */
+ 	SWP_SCANNING	= (1 << 8),	/* refcount in scan_swap_map */
+ };
 Index: linux/mm/swapfile.c
 ===================================================================
---- linux.orig/mm/swapfile.c	2007-02-28 18:12:41.000000000 +0000
-+++ linux/mm/swapfile.c	2007-02-28 18:13:04.000000000 +0000
-@@ -689,15 +689,6 @@ void try_to_unuse_page_entry(struct page
- 	if (!shmem_unuse(entry, page)) {
- 		try_to_unuse_anon(entry, page);
- 		delete_from_swap_cache(page);
--	} else if (PageSwapCache(page)) {
--		/*
--		 * shmem_unuse deleted a swappage from the swap cache, but the
--		 * move to filepage failed so it left swappage in cache and
--		 * lowered its swap count to pass quickly through the loops in
--		 * try_to_unuse(). We must reincrement the count to try again
--		 * later (ick).
--		 */
--		swap_duplicate(entry);
- 	}
- }
- 
-@@ -922,12 +913,6 @@ static int try_to_unuse(unsigned int typ
- 		 * read from disk into another page.  Splitting into two
- 		 * pages would be incorrect if swap supported "shared
- 		 * private" pages, but they are handled by tmpfs files.
--		 *
--		 * Note shmem_unuse already deleted a swappage from
--		 * the swap cache, unless the move to filepage failed:
--		 * in which case it left swappage in cache, lowered its
--		 * swap count to pass quickly through the loops above,
--		 * and now we must reincrement count to try again later.
- 		 */
- 		if ((*swap_map > 1) && PageDirty(page) && PageSwapCache(page)) {
- 			struct writeback_control wbc = {
-@@ -938,12 +923,8 @@ static int try_to_unuse(unsigned int typ
- 			lock_page(page);
- 			wait_on_page_writeback(page);
+--- linux.orig/mm/swapfile.c	2007-03-02 14:35:04.000000000 +0000
++++ linux/mm/swapfile.c	2007-03-02 14:46:34.000000000 +0000
+@@ -284,6 +284,8 @@ static int swap_entry_free(struct swap_i
+ 				swap_list.next = p - swap_info;
+ 			nr_swap_pages++;
+ 			p->inuse_pages--;
++			if (p->flags & SWP_UNUSED_IOCTL)
++				blkdev_ioctl(p->swap_file->f_mapping->host, p->swap_file, BLKSWAPMARKUNUSED, offset);
  		}
--		if (PageSwapCache(page)) {
--			if (shmem)
--				swap_duplicate(entry);
--			else
--				delete_from_swap_cache(page);
--		}
-+		if (PageSwapCache(page) && !shmem)
-+			delete_from_swap_cache(page);
+ 	}
+ 	return count;
+@@ -1649,6 +1651,9 @@ asmlinkage long sys_swapon(const char __
+ 			goto bad_swap;
+ 		}
  
- 		/*
- 		 * So we could skip searching mms once swap count went
++		if (swap_header->info.flags & SWAPFLAG_UNUSED_IOCTL)
++			p->flags |= SWP_UNUSED_IOCTL;
++
+ 		error = 0;
+ 		memset(p->swap_map, 0, maxpages * sizeof(short));
+ 		for (i = 0; i < swap_header->info.nr_badpages; i++) {
+@@ -1684,7 +1689,7 @@ asmlinkage long sys_swapon(const char __
+ 
+ 	mutex_lock(&swapon_mutex);
+ 	spin_lock(&swap_lock);
+-	p->flags = SWP_ACTIVE;
++	p->flags |= SWP_ACTIVE;
+ 	nr_swap_pages += nr_good_pages;
+ 	total_swap_pages += nr_good_pages;
+ 
+Index: linux/block/ioctl.c
+===================================================================
+--- linux.orig/block/ioctl.c	2007-02-28 18:16:52.000000000 +0000
++++ linux/block/ioctl.c	2007-03-02 14:46:34.000000000 +0000
+@@ -274,6 +274,10 @@ int blkdev_ioctl(struct inode *inode, st
+ 			return -EFAULT;
+ 		return 0;
+ 	}
++	case BLKSWAPMARKUNUSED:
++		if (!capable(CAP_SYS_ADMIN))
++			return -EACCES;
++		return blkdev_driver_ioctl(inode, file, disk, cmd, arg);
+ 	}
+ 
+ 	lock_kernel();
