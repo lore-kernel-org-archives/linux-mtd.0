@@ -1,19 +1,29 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HO8oV-0005yY-8T
-	for linux-mtd@lists.infradead.org; Mon, 05 Mar 2007 03:45:00 -0500
-Received: from esebh108.NOE.Nokia.com (esebh108.ntc.nokia.com [172.21.143.145])
-	by mgw-ext11.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	l258imVv014578
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Mar 2007 10:44:53 +0200
-Message-ID: <45EBD82E.4030000@nokia.com>
-Date: Mon, 05 Mar 2007 10:43:26 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from krt.tmd.ns.ac.yu ([147.91.177.65] helo=krt.neobee.net)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HODbP-0008Q3-9q
+	for linux-mtd@lists.infradead.org; Mon, 05 Mar 2007 08:51:49 -0500
+Received: from localhost (localhost [127.0.0.1])
+	by krt.neobee.net (Postfix) with ESMTP id 87393CDD9D
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  5 Mar 2007 14:51:43 +0100 (CET)
+Received: from krt.neobee.net ([127.0.0.1])
+	by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
+	with LMTP id xFf7oQFOzYny for <linux-mtd@lists.infradead.org>;
+	Mon,  5 Mar 2007 14:51:42 +0100 (CET)
+Received: from had (unknown [192.168.193.88])
+	by krt.neobee.net (Postfix) with ESMTP id 19210CD733
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  5 Mar 2007 14:51:41 +0100 (CET)
+From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: MTD and crypt
+Date: Mon, 5 Mar 2007 14:54:42 +0100
+Message-ID: <06be01c75f2d$d3526d30$79f74790$@Davidovic@micronasnit.com>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Some JFFS2 test programs
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Content-Language: sr
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,11 +33,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello to all,
+What is best way for encrypting user space FS, I know for dm-crypt and it seems
+that could be good choice, but I am not sure that this combination can work with
+MTD devices? 
 
-I have put some JFFS2 test programs here:
+Do You have any remarks or hints?
 
-
-http://git.infradead.org/?p=users/ahunter/fs-tests.git;a=summary
-
-
-They are mostly stress tests, plus a test to check integrity across unmounts / remounts.
+Thanks in advice
+Mile
