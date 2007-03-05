@@ -1,29 +1,20 @@
-Received: from krt.tmd.ns.ac.yu ([147.91.177.65] helo=krt.neobee.net)
+Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=spitz.ucw.cz)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HODbP-0008Q3-9q
-	for linux-mtd@lists.infradead.org; Mon, 05 Mar 2007 08:51:49 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by krt.neobee.net (Postfix) with ESMTP id 87393CDD9D
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Mar 2007 14:51:43 +0100 (CET)
-Received: from krt.neobee.net ([127.0.0.1])
-	by localhost (krt.neobee.net [127.0.0.1]) (amavisd-new, port 10024)
-	with LMTP id xFf7oQFOzYny for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Mar 2007 14:51:42 +0100 (CET)
-Received: from had (unknown [192.168.193.88])
-	by krt.neobee.net (Postfix) with ESMTP id 19210CD733
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Mar 2007 14:51:41 +0100 (CET)
-From: "Mile Davidovic" <Mile.Davidovic@micronasnit.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: MTD and crypt
-Date: Mon, 5 Mar 2007 14:54:42 +0100
-Message-ID: <06be01c75f2d$d3526d30$79f74790$@Davidovic@micronasnit.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Language: sr
+	id 1HOKtC-0003CP-LX
+	for linux-mtd@lists.infradead.org; Mon, 05 Mar 2007 16:38:53 -0500
+From: Pavel Machek <pavel@ucw.cz>
+To: Richard Purdie <rpurdie@openedhand.com>
+Subject: Re: [PATCH 6/9] mtd: Add a 'block unused' ioctl call to provide hints
+	to block drivers
+Message-ID: <20020101041253.GC4106@ucw.cz>
+References: <1172850894.11149.126.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1172850894.11149.126.camel@localhost.localdomain>
+Cc: Nick Piggin <nickpiggin@yahoo.com.au>, dwmw2@infradead.org,
+	linux-mtd@lists.infradead.org, kernel list <linux-kernel@vger.kernel.org>,
+	Hugh Dickins <hugh@veritas.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,13 +23,19 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Mon, 05 Mar 2007 21:38:55 -0000
 
-Hello to all,
-What is best way for encrypting user space FS, I know for dm-crypt and it seems
-that could be good choice, but I am not sure that this combination can work with
-MTD devices? 
+Hi!
 
-Do You have any remarks or hints?
+> Knowing that the data in a given block is now unused is a useful
+> feature that some block drivers can take advantage of, especially 
+> when dealing with devices like flash.
+> 
+> This adds an ioctl which allows such hints to be passed to the
 
-Thanks in advice
-Mile
+Maybe Documentation/ piece would be nice if this can be called from
+userspace....
+
+-- 
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
