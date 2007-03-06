@@ -1,13 +1,19 @@
-Date: Tue, 06 Mar 2007 17:37:29 +0100
-From: NATIONAL LOTTERY <Shalazar@shaw.ca>
-Subject: MICROSOFT LOTTERY 2007
-Message-id: <f31de49893e2.45eda6d9@shaw.ca>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: en
-Content-transfer-encoding: 7bit
-Content-disposition: inline
-Reply-To: anthonywalker_claimsagent@yahoo.com
+Received: from n7.sivit.org ([194.146.224.110])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HOfax-00085F-0q
+	for linux-mtd@lists.infradead.org; Tue, 06 Mar 2007 19:45:20 +0000
+Received: from n7.sivit.org (mail.one.net.au [127.0.0.1])
+	by n7.sivit.org (8.12.8/8.12.8) with ESMTP id l26Jj2vs002002
+	for <linux-mtd@lists.infradead.org>; Tue, 6 Mar 2007 20:45:02 +0100
+Date: Tue, 6 Mar 2007 20:45:02 +0100
+Message-Id: <200703061945.l26Jj2h1002000@n7.sivit.org>
+To: linux-mtd@lists.infradead.org
+Subject: IN HIS LOVE/GET BACK TO ME
+From: Mrs Felicia Hines <feliciahines1903@yahoo.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Reply-To: feliciahines1903@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dearly Beloved,
 
+My name is Felicia Hines,My husband died after a protracted  illness.My  
+husband and I made a vow  touplift the own-trodden and the 
+less-privileged individuals as  he had  passion for persons who can not help 
+themselves due to physical  disability or financial 
+predicament.
 
-We are pleased to inform you of the announcement today of our end of 
-year winners of the MSW MEGA JACKPOT LOTTO WINNINGS PROGRAMS held on 
-25TH JANUARY 2007.
+When my late husband was alive he deposited the sum of  Ten  Million 
+Great Britain Pounds Sterling, which were derived from his vast estates  
+and investment in capital market with his Financial House in Europe.
 
-Your company or your personal e-mail address, is attached to winning 
-number 25-12MAR-2007-02MSW, with serial number S/N-00168 drew the lucky 
-numbers 887-13-865-37-10-83, and consequently won in the first lottery 
-category. You have therefore been approved for a lump sum pay out of 
-500,000.00 GBP ( FIVE HUNDRED THOUSAND POUNDS STERLING) credited to file 
-REF NO: MSW-L/200-26937. This is from total prize money of GBP 
-2,500,000.00 POUNDS, shared among the Five (5)international winners in this 
-category.
+Recently, my Doctor told me that I have limited months to live  due to 
+the cancerous problems I am suffering from. Though what bothers   me 
+most  is the stroke that I have in addition to the cancer. 
 
-To claim your winning prize, you must first contact the claims 
-department by email.The claims officer contact email is: 
+With this hard  reality that has befallen my family, and me I have 
+decided to  Give out  this fund to you and want you to use this Fund which 
+comes from  my  husbands effort to fundthe upkeep of widows, 
+widowers,orphans,   destitute, the  down-trodden,physically challenged 
+children,barren-women and  persons  who prove to be genuinely handicapped 
+financially.
 
-Name: MR.ANTHONY WALKER
-E-mail:anthonywalker_claimsagent@yahoo.com
+In line with the above, if you know that you will be use of God  to 
+administer this fund honestly and wisely , then do urgently   contact me 
+first through this mail and I will furnish with details  on  how you 
+will be   able  to receive the fund.
 
-Sincerely,
-Mr.Anthony Walker
+Your prompt response will be highly appreciated.
+
+Be Blessed.
+Your Sister
+Mrs Felicia Hines
