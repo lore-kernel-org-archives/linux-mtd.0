@@ -1,22 +1,19 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HP0un-00017H-DY
-	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 13:31:08 -0500
-Subject: RE: JFFS2 Support for Large Flash Designs
-From: Thomas Gleixner <tglx@linutronix.de>
-To: ian@brightstareng.com
-In-Reply-To: <200703071317.38907.ian@brightstareng.com>
-References: <mailman.311.1173272465.2275.linux-mtd@lists.infradead.org>
-	<200703071223.07485.ian@brightstareng.com>
-	<1173289687.24738.654.camel@localhost.localdomain>
-	<200703071317.38907.ian@brightstareng.com>
-Content-Type: text/plain
-Date: Wed, 07 Mar 2007 19:37:14 +0100
-Message-Id: <1173292634.24738.663.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from server37.tchmachines.com ([69.50.193.27])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HP2Bk-0001v7-Pd
+	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 14:52:45 -0500
+Received: from vpn.vernier.com ([69.30.123.186] helo=[192.168.254.67])
+	by server37.tchmachines.com with esmtpa (Exim 4.63)
+	(envelope-from <linux@architechnical.net>) id 1HP2BW-0001a3-Pd
+	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 14:52:26 -0500
+Message-ID: <45EF17ED.8000908@architechnical.net>
+Date: Wed, 07 Mar 2007 11:52:13 -0800
+From: Pete MacKay <linux@architechnical.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: mtd-utils-1.0.1 for arm-linux?
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,24 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-03-07 at 13:17 -0500, ian@brightstareng.com wrote:
-> On Wednesday 07 March 2007 12:48, Thomas Gleixner wrote:
-> > SoC devices out of tree are a seperate steaming pile of ... I
-> > have seen too many chip vendor kernels explode when you just
-> > try to do anything else than run "hello world" on them.
-> 
-> I agree that this is far from ideal -- I have to deal with this 
-> all the time.  But I also appreciate that some vendors do 
-> actually bother to contribute some base code to support their 
-> designs, even if I have to go in and fix it.
-> 
-> The vendors need to do better job at establishing a framework to 
-> solicit fixes, improvements and new code from their customers, 
-> integrate it, and feed it up the tree into the mainline. It is 
-> clearly to their benefit.
+I've been unable to build this release (or the git code) with 
+arm-linux-gcc 3.4.4 due to header problems and am desperately seeking 
+binaries I can use with a OneNAND under 2.6.18 on a PXA-270.  (I didn't 
+have these problems building mtd-utils-1.0.0 but get an oops writing a 
+jffs2 image to a OneNAND partition with nandwrite).  Long story short we 
+release in 6 days so I'm just seeking a newer nandwrite to try.
 
-As well as it would be for out of tree drivers and such. The time people
-spend to catch up with mainline to maintain their #ifdef mess would be
-much more useful spent when the stuff would be in tree.
-
-	tglx
+Thanks Much!
