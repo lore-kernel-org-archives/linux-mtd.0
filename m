@@ -1,20 +1,20 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HP09N-0008QH-WC
-	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 12:42:08 -0500
-Subject: RE: JFFS2 Support for Large Flash Designs
-From: Thomas Gleixner <tglx@linutronix.de>
-To: ian@brightstareng.com
-In-Reply-To: <200703071223.07485.ian@brightstareng.com>
+	id 1HP0LN-0000En-Fc
+	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 12:54:32 -0500
+Date: Wed, 7 Mar 2007 18:54:24 +0100
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: JFFS2 Support for Large Flash Designs
+Message-ID: <20070307175424.GA6245@xi.wantstofly.org>
 References: <mailman.311.1173272465.2275.linux-mtd@lists.infradead.org>
 	<200703071223.07485.ian@brightstareng.com>
-Content-Type: text/plain
-Date: Wed, 07 Mar 2007 18:48:07 +0100
-Message-Id: <1173289687.24738.654.camel@localhost.localdomain>
+	<1173289687.24738.654.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1173289687.24738.654.camel@localhost.localdomain>
+Cc: linux-mtd@lists.infradead.org, ian@brightstareng.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,25 +24,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-03-07 at 12:23 -0500, ian@brightstareng.com wrote:
-> Some random programs I build that know about the kernel 
-> internals: busybox, e2fsprogs, genext2fs, Glibc, net-tools, 
-> pthreads, uClibc, util-linux, wireless_tools the list goes on, 
-> with plenty of drivers/modules too.
+On Wed, Mar 07, 2007 at 06:48:07PM +0100, Thomas Gleixner wrote:
 
-There is an important difference between userland tools which have
-kernel knowledge and drivers:
+> SoC devices out of tree are a seperate steaming pile of ... I have
+> seen too many chip vendor kernels explode when you just try to do
+> anything else than run "hello world" on them.
 
-The user space interface is _STABLE_ - the kernel interfaces are _NOT_
-
-That's the reason why out of tree drivers, filesystems ... are often out
-of sync and contain more #ifdefs than code to cope with the dozens of
-kernel versions.
-
-SoC devices out of tree are a seperate steaming pile of ... I have seen
-too many chip vendor kernels explode when you just try to do anything
-else than run "hello world" on them.
-
-I share Joerns distrust fully.
-
-	tglx
+Having spent quite some time looking at ARM SoC vendor ports, I'd
+fully agree with Thomas here.  It's usually better to throw all the
+crap they made away and start over from scratch, than to try to make
+something useful out of what is there.
