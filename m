@@ -1,14 +1,22 @@
-Subject: Re: A query about the solution for NFS to mount jffs2 file system
-From: David Woodhouse <dwmw2@infradead.org>
-To: xin zheng <xin.zheng@alliedtelesis.co.nz>
-In-Reply-To: <45EED1C8.540D.00D5.0@alliedtelesis.co.nz>
-References: <45EED1C8.540D.00D5.0@alliedtelesis.co.nz>
-Content-Type: text/plain
-Date: Wed, 07 Mar 2007 13:00:46 +0000
-Message-Id: <1173272446.3461.355.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from nf-out-0910.google.com ([64.233.182.185])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HOvn2-0005IZ-O7
+	for linux-mtd@lists.infradead.org; Wed, 07 Mar 2007 08:03:23 -0500
+Received: by nf-out-0910.google.com with SMTP id a4so169833nfc
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Mar 2007 05:02:43 -0800 (PST)
+Message-ID: <625fc13d0703070502s339396v2f35934c888cb9c9@mail.gmail.com>
+Date: Wed, 7 Mar 2007 07:02:42 -0600
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: Some JFFS2 test programs
+In-Reply-To: <45EBD82E.4030000@nokia.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <45EBD82E.4030000@nokia.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-03-07 at 14:52 +1300, xin zheng wrote:
-> NOTICE: This message contains privileged and confidential
-> information intended only for the use of the addressee
-> named above. If you are not the intended recipient of
-> this message you are hereby notified that you must not
-> disseminate, copy or take any action in reliance on it.
-> If you have received this message in error please
-> notify Allied Telesis Labs Ltd immediately.
-> Any views expressed in this message are those of the
-> individual sender, except where the sender has the
-> authority to issue and specifically states them to
-> be the views of Allied Telesis Labs. 
+On 3/5/07, Adrian Hunter <ext-adrian.hunter@nokia.com> wrote:
+>
+> I have put some JFFS2 test programs here:
+>
+>
+> http://git.infradead.org/?p=users/ahunter/fs-tests.git;a=summary
 
-I was going to attempt to help, but then I noticed the disclaimer.
+I intend to include these in mtd-utils as soon as I get time and
+figure out the best way to bring them in.
 
-Do not ever post here again with a disclaimer like this.
-
--- 
-dwmw2
+josh
