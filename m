@@ -1,18 +1,15 @@
-Received: from lst-amand-152-33-17-184.w82-127.abo.wanadoo.fr ([82.127.60.184]
-	helo=polaris.sacet.fr)
+Received: from mx.dave-tech.it ([85.38.203.46])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPFDx-0000Q3-IE
-	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 04:47:51 -0500
-Received: from [127.0.0.1] (mimosa.sacet.fr [192.168.82.19])
-	by polaris.sacet.fr (8.12.11/8.12.11) with ESMTP id l289md8u018956
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Mar 2007 10:48:39 +0100
-Message-ID: <45EFDA0C.9030401@sacet.com>
-Date: Thu, 08 Mar 2007 10:40:28 +0100
-From: Michel LECONTE <michel.leconte@sacet.com>
+	id 1HPFFF-0000ZG-6w
+	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 04:49:29 -0500
+Message-ID: <45EFDC0D.4090409@dave-tech.it>
+Date: Thu, 08 Mar 2007 10:49:01 +0100
+From: R&D4 <r&d4@dave-tech.it>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Nand flash and jffs2 image problem
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: mtd_mailinglist <linux-mtd@lists.infradead.org>
+Subject: JFFS2 as transactional FS (in other words: how to be sure that data
+	have been writtent correctly from userspace)
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,72 +20,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi everybody,
 
-I'm using a compulab cm-x255 card with the 2.6.18-rc2 kernel.
-I have some problems with the NAND flash (512MB) and jffs2 image.
-Here is what I have done :
+Hi all MTD developers,
 
-First I verify the mtd devices:
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00400000 00010000 "physmap-flash.0"
-mtd1: 20000000 00020000 "rootfs"
+we are currently using an MTD partition on a NAND device, of course with
+JFFS2 on it ;-) , for transaction logging purpose.
+This transacion is mission critical and we cannot afford to lose data
+(or, even worse, have corrupted data!)
 
-Then I erased flash with :
-# ./flash_eraseall -j /dev/mtd1
-Erasing 128 Kibyte @ 360000 --  0 % complete. Cleanmarker written at 360000.
-Skipping bad block at 0x00380000
-Erasing 128 Kibyte @ 4ec0000 -- 15 % complete. Cleanmarker written at
-4ec0000.
-Skipping bad block at 0x04ee0000
-Erasing 128 Kibyte @ e360000 -- 44 % complete. Cleanmarker written at
-e360000.
-Skipping bad block at 0x0e380000
-Erasing 128 Kibyte @ 12a60000 -- 58 % complete. Cleanmarker written at
-12a60000.
-Skipping bad block at 0x12a80000
-Erasing 128 Kibyte @ 12cc0000 -- 58 % complete. Cleanmarker written at
-12cc0000.
-Skipping bad block at 0x12ce0000
-Erasing 128 Kibyte @ 17de0000 -- 74 % complete. Cleanmarker written at
-17de0000.
-Skipping bad block at 0x17e00000
-Erasing 128 Kibyte @ 181a0000 -- 75 % complete. Cleanmarker written at
-181a0000.
-Skipping bad block at 0x181c0000
-Erasing 128 Kibyte @ 18860000 -- 76 % complete. Cleanmarker written at
-18860000.
-Skipping bad block at 0x18880000
-Erasing 128 Kibyte @ 1ffe0000 -- 99 % complete. Cleanmarker written at
-1ffe0000.
+For this reason we also use a battery-backed SRAM as temporary storage
+for the transaction state machine. After the transacion has been
+completed we flush the content of the SRAM to a file and (after the
+written is completed) we can overwrite the temporary storage with new data.
+Of course the machine can be interrupted in any moment without notice
+(e.g. watchdog, power failure). Only the content of the SRAM is
+guaranteed to be valid at any time.
 
-I make an jffs2 image with :
-# mkfs.jffs2 -l --pad=0x20000000 --eraseblock=0x20000 -d /opt/Debian_Ref
--o jffs2.img
+The "main" problem, of course, is to know "when" we can say "ok the data
+has been _completely_ written to the final storage".
 
-I copy the image on flash :
-# dd if=/opt/jffs2.img of=/dev/mtdblock1
+By reading back on this mailing list, "goooogling" on internet and
+reading JFFS2 FAQ
+(http://www.linux-mtd.infradead.org/faq/jffs2.html#L_writewell) I think
+I have found some kind of solution (I'm currently running some test on
+it) depending on the storage medium (NOR vs NAND):
 
-dd: writing to `/dev/mtdblock1': Input/output error
+- on *NOR*: in our understanding, we can just use a simple fwrite()
+followed by fsync() or sync(). After the sync() return the control to
+the user's program, we can be sure that the data has been written on the
+device. So
 
-7169+0 records in
-7168+0 records out
-3670016 bytes (3.7 MB) copied, 9.50543 seconds, 386 kB/s
+file = fopen(file_on_jffs2_nor)
+while(isneeded) {
+	while (space_available(SRAM)) {
+		fill(SRAM);
+	}
 
-I tried also :
-# mkfs.jffs2 -d /opt/Debian_Ref -o jffs2.img
-# mkfs.jffs2 -l --eraseblock=0x20000 -d /opt/Debian_Ref -o jffs2.img
-and
-# sdd instead of dd
-but all without result.
+	fread(buffer, SRAM);
+	fwrite(buffer, file);
+	fsync(file);
+	invalidate_SDRAM();
+}
+fclose(file)
 
-I would like to know what I'm missing ?
-Is it the good method ?
-Can I just copy files with "cp" from an ext2 disk to the jffs2 flash or
-I have to create an jffs2 image like what I have done ?
+(Of course I have intetionally omitted the code for resuming from a warm
+reset.)
 
-Thanks for your help.
+QUESTION: Is this pseudo code correct? Is fsync() needed? (O_SYNC is not
+supported by JFFS2, AFAIK) or data has been _completely_ written right
+before the fwrite() return (so no sync() required)?
 
 
-Michel.
+- on *NAND*: things are a bit tricky ;-). Even if you call fsync() data
+may not have been written to storage, due the fact that "it's better to
+fill a NAND page before commit"
+For this reason only after "a while" the (dirty) page is written to
+storage even if it's not full. In the FAQ you say that this "a while" is
+controlled by the standard kernel vm functions by setting
+/proc/sys/vm/dirty_writeback_centisecs.
+
+By reading this I think about use this code:
+
+at system startup:
+`echo smallvalue > /proc/sys/vm/dirty_writeback_centisecs`
+
+file = fopen(file_on_jffs2_nand)
+while(isneeded) {
+	while (space_available(SRAM)) {
+		fill(SRAM);
+	}
+
+	fread(buffer, SRAM);
+	fwrite(buffer, file);
+	fsync(file);
+	sleep(smallvalue+anothervalue)
+	invalidate_SDRAM();
+}
+fclose(file)
+
+'smallvalue' should be something less that the standard 5 secs but
+something that will not waste to much CPU or NAND storage (by using
+not-completely-filled pages, correct me if I'm wrong about this point).
+I was thinking about 500 millis.
+
+'anothervalue' should be something '>>smallvalue' and it should be used
+(IMHO) because Linux is not an RTOS, so timing are not tightly guaranteed.
+
+Is this approach correct or the something better that can be done??
+
+Of course you can still flush buffers and dirty pages but umounting the
+partition but.. this is too long for our needs
+
+BTW I have seen, in my current test, that, without the sleep(), sometime
+my  "last" data is not written correctly.
+
+Hope this (long ;-) ) email can lead to a useful discussion about this
+problem! :-)
+
+Best Regards,
+
+Andrea
