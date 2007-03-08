@@ -1,22 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPNeK-00015X-FI
-	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 13:47:38 -0500
 Subject: Re: JFFS2 OOPS in 2.6.20
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: joakim.tjernlund@transmode.se
 In-Reply-To: <1173379047.3461.482.camel@pmac.infradead.org>
 References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
 	<1173375204.26465.8.camel@gentoo-jocke.transmode.se>
 	<1173375879.26465.13.camel@gentoo-jocke.transmode.se>
 	<1173379047.3461.482.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 08 Mar 2007 20:46:59 +0200
-Message-Id: <1173379619.5493.15.camel@sauron>
+Content-Type: text/plain
+Date: Thu, 08 Mar 2007 18:51:06 +0000
+Message-Id: <1173379866.3461.485.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, joakim.tjernlund@transmode.se
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,14 +22,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2007-03-08 at 18:37 +0000, David Woodhouse wrote:
-> Then reproduce with CONFIG_JFFS2_FS_DEBUG=3D1 and show me the full
-> output.
+> Can you make it print the flash offset of the offending node, and the
+> header contents (like the 0040,4001,00000044,00000000 above) before
+> dying? Then reproduce with CONFIG_JFFS2_FS_DEBUG=1 and show me the
+> full output.
 
-/me is trying to recall ho many times he have heard this part :-) I need
-to add a FAQ entry for this, since you do not seem to be like doing
-this :-)
+We've seen something very similar to this before.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+http://lists.infradead.org/pipermail/linux-mtd/2006-June/015878.html
+http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=3877f0b6c9f54d43e55e532404a935b90393b635
+
+-- 
+dwmw2
