@@ -1,17 +1,19 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPMC6-0007tA-Lf
-	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 12:14:25 -0500
-Subject: JFFS2 OOPS in 2.6.20
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Received: from lst-amand-152-33-17-184.w82-127.abo.wanadoo.fr ([82.127.60.184]
+	helo=polaris.sacet.fr)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HPMRx-0008Bz-6Y
+	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 12:30:47 -0500
+Received: from [127.0.0.1] (mimosa.sacet.fr [192.168.82.19])
+	by polaris.sacet.fr (8.12.11/8.12.11) with ESMTP id l28HVYj0019814
+	for <linux-mtd@lists.infradead.org>; Thu, 8 Mar 2007 18:31:34 +0100
+Message-ID: <45F0468C.5020306@sacet.com>
+Date: Thu, 08 Mar 2007 18:23:24 +0100
+From: Michel LECONTE <michel.leconte@sacet.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+Subject: NAND Flash FTL
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Thu, 08 Mar 2007 18:14:19 +0100
-Message-Id: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Got a board with that has been powercycle tested while writing to JFFS2
-FS with the following OOPS:
-IP-Config: Complete:
-      device=eth1, addr=192.168.101.172, mask=255.255.255.0,
-gw=192.168.101.1,
-     host=L_172_Node, domain=, nis-domain=(none),
-     bootserver=192.168.1.63, rootserver=192.168.1.63, rootpath=
-eth0: PHY is Generic MII (ffffffff)
-------------[ cut here ]------------
-Kernel BUG at c00d0a38 [verbose debug info unavailable]
-Oops: Exception in kernel mode, sig: 5 [#1]
+Thanks David it works now.
 
-NIP: C00D0A38 LR: C00D09F8 CTR: 00000000
-REGS: cfe8bd60 TRAP: 0700   Not tainted  (2.6.20)
-MSR: 00029032 <EE,ME,IR,DR>  CR: 28028048  XER: 20000000
-TASK = cff107f0[137] 'jffs2_gcd_mtd6' THREAD: cfe8a000
-GPR00: 00000001 CFE8BE10 CFF107F0 00000000 C07EA6C8 00000000 00000000
-00000000 
-GPR08: C01CF678 01383E70 00000000 00000000 28028084 FC038F43 CFE8BE38
-CFE8BE2C 
-GPR16: CFE8BE38 C01D0000 00000000 C0733E70 CFE8BE24 CFE8BE20 CFF29A0C
-00000000 
-GPR24: 00000754 CFE8BEA0 CFF29A00 CFF48000 C0733E88 00000001 C07EA6C0
-00000000 
-NIP [C00D0A38] jffs2_do_read_inode_internal+0x134/0xfe8
-LR [C00D09F8] jffs2_do_read_inode_internal+0xf4/0xfe8
-Call Trace:
-[CFE8BE10] [C00D09D4] jffs2_do_read_inode_internal+0xd0/0xfe8
-(unreliable)
-[CFE8BE90] [C00D1944] jffs2_do_crccheck_inode+0x58/0xb4
-[CFE8BF00] [C00D58C8] jffs2_garbage_collect_pass+0x174/0x6c4
-[CFE8BF50] [C00D70F4] jffs2_garbage_collect_thread+0xa0/0x11c
-[CFE8BFF0] [C000FF70] kernel_thread+0x44/0x60
-Instruction dump:
-38000000 6000e001 7f860000 419e03ec 38000000 6000e002 7f860000 419e05f0 
-813c0004 71200003 7c000026 54001ffe <0f000000> 60c92000 b13e0002
-a0de0002 
- VFS: Mounted root (jffs2 filesystem).
-Freeing unused kernel memory: 128k init
+The problem now is it's too long to be mount.
+I think my filesystem is too big.
+I've try another way with FTL and ext2.
+First I did some partition :
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00010000 "physmap-flash.0"
+mtd1: 04000000 00020000 "Linux"
+mtd2: 0e000000 00020000 "Apps"
+mtd3: 10000000 00020000 "Data"
 
-If someone can make an guess whats wrong, I would be a happy man
+Then I used nftl_format :
+# ./nftl_format /dev/mtd1
+$Id: nftl_format.c,v 1.24 2005/11/07 11:15:13 gleixner Exp $
+Unrecognized Erase size, 0x20000 - I'm confused
 
- Jocke
+And ftl_format :
+cm-debian:/opt# ./ftl_format /dev/mtd1
+Partition size = 64 mb, erase unit size = 128 kb, 1 transfer units
+Reserved 5%, formatted size = 62883328 bytes
+Erasing all blocks...
++++
+block erase failed: Input/output error
+format failed.
+
+ftl_chek :
+cm-debian:/opt# ./ftl_check /dev/mtd1
+Memory region info:
+  Region size = 64 mb  Erase block size = 128 kb
+
+No valid erase unit headers!
+
+What's wrong ?
+Can I use FTL with my NAND Flash ?
+ftl_format is it just for PMCIA and nftl_format for Disk On Chip or not ?
