@@ -1,29 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPJtx-0005tD-Ra
-	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 09:47:31 -0500
-Date: Thu, 8 Mar 2007 15:43:52 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-Subject: Re: JFFS2 as transactional FS (in other words: how to be sure that
-	data have been writtent correctly from userspace)
-Message-ID: <20070308144350.GF23216@lazybastard.org>
-References: <45EFDC0D.4090409@dave-tech.it>
-	<1173351098.3461.414.camel@pmac.infradead.org>
-	<20070308125416.GB23216@lazybastard.org>
-	<1173359044.3461.433.camel@pmac.infradead.org>
-	<20070308131257.GD23216@lazybastard.org>
-	<1173360167.3461.438.camel@pmac.infradead.org>
-	<1173361473.4861.12.camel@zod.rchland.ibm.com>
-	<1173362305.3461.447.camel@pmac.infradead.org>
-	<1173364518.4861.14.camel@zod.rchland.ibm.com>
+Subject: Re: The NFS mounting jffs2 filesystem with errors, solution need
+From: David Woodhouse <dwmw2@infradead.org>
+To: zheng xin <zhx821223@hotmail.com>
+In-Reply-To: <BAY129-F38DCF83FC0B3A84A14DF91AD7A0@phx.gbl>
+References: <BAY129-F38DCF83FC0B3A84A14DF91AD7A0@phx.gbl>
+Content-Type: text/plain
+Date: Thu, 08 Mar 2007 15:08:11 +0000
+Message-Id: <1173366491.3461.464.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1173364518.4861.14.camel@zod.rchland.ibm.com>
-Cc: R&D4 <r&d4@dave-tech.it>, David Woodhouse <dwmw2@infradead.org>,
-	mtd_mailinglist <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: Neil Brown <neilb@suse.de>, Gregory CLEMENT <gclement00@gmail.com>,
+	linux-mtd@lists.infradead.org, hch@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,34 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 March 2007 08:35:17 -0600, Josh Boyer wrote:
-> On Thu, 2007-03-08 at 13:58 +0000, David Woodhouse wrote:
-> > On Thu, 2007-03-08 at 07:44 -0600, Josh Boyer wrote:
-> > > Wait... why?  Rejecting mount -o sync seems sane, but why can't O_SYNC
-> > > support be handled?  If users want to open their files like that and it
-> > > causes JFFS2 to flush a bunch of padding out, well they asked for it. 
-> > 
-> > Users ask for shared writable mmap too. That isn't a good idea either.
-> > 
-> > Contemplate what Linus always says about using 'volatile' vs. proper
-> > barriers. Now consider it for O_SYNC vs. fsync(). And factor in the fact
-> > that O_SYNC is going to be massively suboptimal if it causes syncs when
-> > they otherwise didn't need to happen.
+On Wed, 2007-03-07 at 22:32 +0000, zheng xin wrote:
+> I saw some discussions about this kind of problem on the following link:
 > 
-> Ok, good point.  You've convinced me.
+> http://www.infradead.org/pipermail/linux-mtd/2006-September/016496.html
+> 
+> Then I did the fixes given there:
 
-I can imagine cases when O_SYNC makes sense.  Logfiles, basically.
-When debugging it is useful to have as much information in them as
-possible, especially right before the crash.  O_SYNC is a useful
-relaxation here on system where fsync() is identical to sync() - O_SYNC
-will not flush every other file in the system.
+Those are insufficient. We should also implement get_parent(). Which
+means we need some way to _find_ the parent of a directory. We can abuse
+ic->nlink for that -- there's a first attempt at
+http://david.woodhou.se/jffs2-nfs-export.patch
 
-Whether any applications actually do this is anyone's guess, though.
+> It DO mount successfully. BUT, when I try to access the mounted directory:
+> >ls /mnt
+> 
+> It is just dead, no output, can not be killed.
 
-Jörn
+Can you use SysRq-T (or echo t > /proc/sysrq-trigger) on the machine
+from which you exported the file system? Does it look something like
+this?
+
+nfsd          D 0000000000000000 12064 15028      1         15029 15027 (L-TLB)
+Call Trace:
+[C00000000A5C30D0] [C00000000A5C3160] 0xc00000000a5c3160 (unreliable)
+[C00000000A5C32A0] [C0000000000110AC] .__switch_to+0x12c/0x160
+[C00000000A5C3330] [C0000000003EFC50] .schedule+0x8e0/0xa3c
+[C00000000A5C3430] [C0000000003EF1BC] .__down+0x6c/0xf0
+[C00000000A5C34F0] [D0000000009B99A8] .jffs2_lookup+0x88/0x218 [jffs2]
+[C00000000A5C35A0] [C0000000001056F4] .__lookup_hash+0x18c/0x1d4
+[C00000000A5C3640] [C000000000105E0C] .lookup_one_len+0x74/0x8c
+[C00000000A5C36D0] [D000000000AD0B6C] .compose_entry_fh+0x12c/0x1bc [nfsd]
+[C00000000A5C3780] [D000000000AD0EBC] .encode_entry+0x1dc/0x444 [nfsd]
+[C00000000A5C3AA0] [D0000000009B9CF0] .jffs2_readdir+0x1b8/0x24c [jffs2]
+[C00000000A5C3B60] [C00000000010AE10] .vfs_readdir+0xdc/0x13c
+[C00000000A5C3C10] [D000000000AC5BEC] .nfsd_readdir+0x90/0x118 [nfsd]
+[C00000000A5C3CC0] [D000000000ACFBA0] .nfsd3_proc_readdirplus+0x104/0x250 [nfsd]
+[C00000000A5C3D70] [D000000000AC0380] .nfsd_dispatch+0x134/0x274 [nfsd]
+[C00000000A5C3E10] [D000000000566E94] .svc_process+0x550/0x968 [sunrpc]
+[C00000000A5C3EF0] [D000000000AC0C68] .nfsd+0x1e0/0x360 [nfsd]
+[C00000000A5C3F90] [C000000000029110] .kernel_thread+0x4c/0x68
+
+It seems to have deadlocked on the directory's f->sem semaphore, because
+jffs2_lookup() is being called from _inside_ jffs2_readdir() for the
+same directory. I wasn't aware that was possible.
 
 -- 
-Write programs that do one thing and do it well. Write programs to work
-together. Write programs to handle text streams, because that is a
-universal interface.
--- Doug MacIlroy
+dwmw2
