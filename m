@@ -1,26 +1,27 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPewt-0005RF-O9
-	for linux-mtd@lists.infradead.org; Fri, 09 Mar 2007 08:15:58 -0500
-Date: Fri, 9 Mar 2007 14:11:45 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HPfYZ-0005wY-Tp
+	for linux-mtd@lists.infradead.org; Fri, 09 Mar 2007 08:54:54 -0500
 Subject: Re: JFFS2 OOPS in 2.6.20
-Message-ID: <20070309131144.GC4897@lazybastard.org>
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1173438908.26465.54.camel@gentoo-jocke.transmode.se>
 References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
 	<1173375204.26465.8.camel@gentoo-jocke.transmode.se>
 	<1173375879.26465.13.camel@gentoo-jocke.transmode.se>
 	<1173379047.3461.482.camel@pmac.infradead.org>
 	<1173430972.26465.20.camel@gentoo-jocke.transmode.se>
-	<1173432976.26465.31.camel@gentoo-jocke.transmode.se>
-	<1173433611.3461.566.camel@pmac.infradead.org>
-	<1173437780.26465.47.camel@gentoo-jocke.transmode.se>
+	<1173432194.3461.562.camel@pmac.infradead.org>
+	<1173437173.26465.37.camel@gentoo-jocke.transmode.se>
+	<1173438908.26465.54.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Fri, 09 Mar 2007 14:54:50 +0100
+Message-Id: <1173448490.26465.69.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1173437780.26465.47.camel@gentoo-jocke.transmode.se>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +31,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 9 March 2007 11:56:20 +0100, Joakim Tjernlund wrote:
+On Fri, 2007-03-09 at 12:15 +0100, Joakim Tjernlund wrote:
+> On Fri, 2007-03-09 at 11:46 +0100, Joakim Tjernlund wrote:
+> > On Fri, 2007-03-09 at 09:23 +0000, David Woodhouse wrote:
+> > > On Fri, 2007-03-09 at 10:02 +0100, Joakim Tjernlund wrote:
+> > > > JFFS2 notice: (137) read_unknown:  ref_flags(ref) == REF_UNCHECKED at 0x3aa6c6c.
+> > > >  {0000,0000,00000000,00000000} 
+> > > 
+> > > Ouch. That CRC is actually "correct". It's why we should have used
+> > > crc32(-1, buf, len) instead of crc32(0, buf, len) from the start.
+> > > 
+> > > Do you have any idea how you managed to get those zeroes on the flash?
+> > 
+> > Not much, our system test did power cycle testing while doing SW
+> > upgrade(lots of writing of files).
+> > 
+> > Tested your patch and now it boots again with this :)
+> > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa87a0. 
+> > {0040,4001,00000044,00000000}
+> > JFFS2 error: (137) read_unknown: REF_UNCHECKED but unknown node at 0x3aa6c6c
+> > JFFS2 error: (137) read_unknown: Node is {0000,0000,00000000,00000000}. Please report this error.
+> > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa517c. 
+> > {0400,4001,00000000,00000004}
+> > JFFS2 error: (137) read_unknown: REF_UNCHECKED but unknown node at 0x3aa28fc
+> > JFFS2 error: (137) read_unknown: Node is {0000,0000,00000000,00000000}. Please report this error.
+> > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa1ef8. 
+> > {0000,0000,00000000,00100400}
+> > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa1438. 
+> > {0000,4000,00000000,00000000}
+> > JFFS2 error: (137) read_unknown: REF_UNCHECKED but unknown node at 0x3aa0a44
+> > JFFS2 error: (137) read_unknown: Node is {0000,0000,00000000,00000000}. Please report this error.
+> > JFFS2 error: (137) read_unknown: REF_UNCHECKED but unknown node at 0x3aa3e84
+> > JFFS2 error: (137) read_unknown: Node is {0000,0000,00000000,00000000}. Please report this error.
+> > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa3d80. 
+> > {0040,4000,00000000,01000005}
+> > JFFS2 error: (137) read_unknown: REF_UNCHECKED but unknown node at 0x3aa33c8
+> > JFFS2 error: (137) read_unknown: Node is {0000,0000,00000000,00000000}. Please report this error.
+> > VFS: Mounted root (jffs2 filesystem).
 > 
-> Yeah, but I figured that changing seed was less intrusive. Not 
-> sure how good Alder32 is but if we make an incompatible change we
-> could change it to something else than crc32. We should measure if 
-> how much faster Adler32 is first though.
+> This does not look right, none of the "All zero node header" checks has triggered.
 > 
-> You think such a change is worthwhile?
+> hmm,
+> je32_to_cpu(node->u.totlen) should be !je32_to_cpu(node->u.totlen)
+> 
+> also I think this check should be before the real crc32 check.
+> After that I get:
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa87a0. 
+> {0040,4001,00000044,00000000}
+> JFFS2 notice: (137) jffs2_get_inode_nodes: All zero node header at 0x3aa6c6c.
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa517c. 
+> {0400,4001,00000000,00000004}
+> JFFS2 notice: (137) jffs2_get_inode_nodes: All zero node header at 0x3aa28fc.
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa1ef8. 
+> {0000,0000,00000000,00100400}
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa1438. 
+> {0000,4000,00000000,00000000}
+> JFFS2 notice: (137) jffs2_get_inode_nodes: All zero node header at 0x3aa0a44.
+> JFFS2 notice: (137) jffs2_get_inode_nodes: All zero node header at 0x3aa3e84.
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa3d80. 
+> {0040,4000,00000000,01000005}
+> JFFS2 notice: (137) jffs2_get_inode_nodes: All zero node header at 0x3aa33c8.
+> VFS: Mounted root (jffs2 filesystem).
+> 
 
-Last time we discussed this, crc32 looked better.  It may be a bit
-slower (not much, iirc), but it will catch _all_ 1-bit, 2-bit and 3-bit
-errors and has a 1:2^32 change of missing n-bit errors with n>3.
+The check in scan is rendundant. You will never reach it due to two
+earlier checks:
+	if (je16_to_cpu(node->magic) != JFFS2_MAGIC_BITMASK) {
+and
+	crcnode.nodetype = cpu_to_je16( je16_to_cpu(node->nodetype) | JFFS2_NODE_ACCURATE);
 
-Adler, if memory serves, can only guarantee all 1-bit errors and a
-1:2^30 or so chance for n-bit errors, if the buffer is long enough.
-"Long enough" is ~1000 bytes.  Below that, chances of getting false
-positives are getting higher.
+I wonder if JFFS2_NODE_ACCURATE mask bit could be used in readinode.c as well?
 
-You can check the archives for this.  It might have been 2004 as well.
-
-Jörn
-
--- 
-There are two ways of constructing a software design: one way is to make
-it so simple that there are obviously no deficiencies, and the other is
-to make it so complicated that there are no obvious deficiencies.
--- C. A. R. Hoare
+ Jocke
