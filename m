@@ -1,6 +1,11 @@
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HPbWM-0001y4-J9
+	for linux-mtd@lists.infradead.org; Fri, 09 Mar 2007 04:36:21 -0500
 Subject: Re: JFFS2 OOPS in 2.6.20
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@transmode.se
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <1173430972.26465.20.camel@gentoo-jocke.transmode.se>
 References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
 	<1173375204.26465.8.camel@gentoo-jocke.transmode.se>
@@ -8,11 +13,12 @@ References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
 	<1173379047.3461.482.camel@pmac.infradead.org>
 	<1173430972.26465.20.camel@gentoo-jocke.transmode.se>
 Content-Type: text/plain
-Date: Fri, 09 Mar 2007 09:23:14 +0000
-Message-Id: <1173432194.3461.562.camel@pmac.infradead.org>
-Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Date: Fri, 09 Mar 2007 10:36:16 +0100
+Message-Id: <1173432976.26465.31.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,69 +29,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Fri, 2007-03-09 at 10:02 +0100, Joakim Tjernlund wrote:
+> On Thu, 2007-03-08 at 18:37 +0000, David Woodhouse wrote:
+> > On Thu, 2007-03-08 at 18:44 +0100, Joakim Tjernlund wrote:
+> > > Got another board too that has an identical OOPS, but prints 
+> > > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa87a0. 
+> > > {0040,4001,00000044,00000000}
+> > > Just before the OOPS, here is the full OOPS:
+> > > JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa87a0. 
+> > > {0040,4001,00000044,00000000}
+> > > ------------[ cut here ]------------
+> > > kernel BUG at fs/jffs2/readinode.c:376! 
+> > 
+> > Can you make it print the flash offset of the offending node, and the
+> > header contents (like the 0040,4001,00000044,00000000 above) before
+> > dying? Then reproduce with CONFIG_JFFS2_FS_DEBUG=1 and show me the full
+> > output.
+> > 
+> 
+> Added this:
+> static inline int read_unknown(struct jffs2_sb_info *c, struct jffs2_raw_node_ref *ref, struct jffs2_unknown_node *un)
+> {
+> +	if (ref_flags(ref) == REF_UNCHECKED) {
+> +		JFFS2_NOTICE(" ref_flags(ref) == REF_UNCHECKED at %#08x. {%04x,%04x,%08x,%08x}\n",
+> +			     ref_offset(ref), je16_to_cpu(un->magic),
+> +			     je16_to_cpu(un->nodetype),
+> +			     je32_to_cpu(un->totlen),
+> +			     je32_to_cpu(un->hdr_crc));
+> +	}
+> 	/* We don't mark unknown nodes as REF_UNCHECKED */
+> 	BUG_ON(ref_flags(ref) == REF_UNCHECKED);
+> and CONFIG_JFFS2_FS_DEBUG=1
+> 
+> Got this trace:
+> JFFS2 notice: (137) jffs2_get_inode_nodes: Node header CRC failed at 0x3aa87a0. 
+> {0040,4001,00000044,00000000}
+> JFFS2 error: (137) __jffs2_dbg_dump_node: wrong common header CRC.
 > JFFS2 notice: (137) read_unknown:  ref_flags(ref) == REF_UNCHECKED at 0x3aa6c6c.
->  {0000,0000,00000000,00000000} 
+>  {0000,0000,00000000,00000000}
+> ------------[ cut here ]------------
+> kernel BUG at fs/jffs2/readinode.c:383!
+> Oops: Exception in kernel mode, sig: 5 [#1]
+> 
+> NIP: C00D149C LR: C00D1670 CTR: C00FAB00
+> REGS: cfec7d50 TRAP: 0700   Not tainted  (2.6.20)
+> MSR: 00029032 <EE,ME,IR,DR>  CR: 22028022  XER: 00000000
+> TASK = cff32090[137] 'jffs2_gcd_mtd6' THREAD: cfec6000
+> GPR00: 00000001 CFEC7E00 CFF32090 00000072 0210EBCC FFFFFFFF C0113E14 C024211C 
+> GPR08: 00000000 00000000 00000000 C0240000 22028042 C0A89688 C01D0000 C01D0000 
+> GPR16: C01D0000 00000000 C01D0000 CFE2BC24 CFEC7E14 CFEC7E10 CFF66A0C 00000000 
+> GPR24: 000009B0 CFEC7EA0 CFF66A00 CFF13000 CFE2BC3C 00000001 00000000 C07EA6C0 
+> NIP [C00D149C] jffs2_do_read_inode_internal+0x1a0/0x1198
+> LR [C00D1670] jffs2_do_read_inode_internal+0x374/0x1198
+> Call Trace:
+> [CFEC7E00] [C00D1670] jffs2_do_read_inode_internal+0x374/0x1198 (unreliable)
+> [CFEC7E90] [C00D24EC] jffs2_do_crccheck_inode+0x58/0xb4
+> [CFEC7F00] [C00D6BD4] jffs2_garbage_collect_pass+0x1a8/0x880
+> [CFEC7F50] [C00D89A8] jffs2_garbage_collect_thread+0xa8/0x178
+> [CFEC7FF0] [C000FF70] kernel_thread+0x44/0x60
+> Instruction dump:
+> 7f880000 419e04b0 38000000 6000e002 7f880000 419e06b0 801c0004 70090003 
+> 418201c4 70090003 7c000026 54001ffe <0f000000> 61092000 b13f0002 a11f0002 
+>  VFS: Mounted root (jffs2 filesystem).
+> Freeing unused kernel memory: 128k init
+> jffs2_lookup()
+> jffs2_read_inode(): inode->i_ino == 3
+> [JFFS2 DBG] (1) jffs2_do_read_inode: read inode #3
+> [JFFS2 DBG] (1) jffs2_do_read_inode_internal: ino #3 nlink is 1
+> [JFFS2 DBG] (1) jffs2_get_inode_nodes: ino #3
+> 
+> [SNIP] alot of output
 
-Ouch. That CRC is actually "correct". It's why we should have used
-crc32(-1, buf, len) instead of crc32(0, buf, len) from the start.
+I am starting to think that this error is due to an old design mistake
+in JFFS2 I pointed out years ago: crc32 sums are seeded with zero instead of -1
 
-Do you have any idea how you managed to get those zeroes on the flash?
+Zero seed makes an zeroed JFFS2 header match its crc32 and that is what I think
+is happening here, readinode.c:576 should reject this node but doesn't due to this flaw)
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 58a0b91..ef6522e 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -373,7 +373,14 @@ free_out:
- static inline int read_unknown(struct jffs2_sb_info *c, struct jffs2_raw_node_ref *ref, struct jffs2_unknown_node *un)
- {
- 	/* We don't mark unknown nodes as REF_UNCHECKED */
--	BUG_ON(ref_flags(ref) == REF_UNCHECKED);
-+	if (ref_flags(ref) == REF_UNCHECKED) {
-+		JFFS2_ERROR("REF_UNCHECKED but unknown node at %#08x\n",
-+			    ref_offset(ref));
-+		JFFS2_ERROR("Node is {%04x,%04x,%08x,%08x}. Please report this error.\n",
-+                            je16_to_cpu(un->magic), je16_to_cpu(un->nodetype),
-+                            je32_to_cpu(un->totlen), je32_to_cpu(un->hdr_crc));
-+		return 1;
-+	}
- 
- 	un->nodetype = cpu_to_je16(JFFS2_NODE_ACCURATE | je16_to_cpu(un->nodetype));
- 
-@@ -576,6 +583,13 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
- 			jffs2_mark_node_obsolete(c, ref);
- 			goto cont;
- 		}
-+		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
-+		if (!je32_to_cpu(node->u.hdr_crc) && !je16_to_cpu(node->u.nodetype) &&
-+		    !je16_to_cpu(node->u.magic) && je32_to_cpu(node->u.totlen)) {
-+			JFFS2_NOTICE("All zero node header at %#08x.\n", ref_offset(ref));
-+			jffs2_mark_node_obsolete(c, ref);
-+			goto cont;
-+		}
- 
- 		switch (je16_to_cpu(node->u.nodetype)) {
- 
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 31c1475..e482081 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -734,6 +734,16 @@ scan_more:
- 			ofs += 4;
- 			continue;
- 		}
-+		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
-+		if (!je32_to_cpu(node->hdr_crc) && !je16_to_cpu(node->nodetype) &&
-+		    !je16_to_cpu(node->magic) && je32_to_cpu(node->totlen)) {
-+			noisy_printk(&noise, "jffs2_scan_eraseblock(): All zero node header at 0x%08x.\n", ofs);
-+		       
-+			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
-+				return err;
-+			ofs += 4;
-+			continue;
-+		}
- 
- 		if (ofs + je32_to_cpu(node->totlen) >
- 		    jeb->offset + c->sector_size) {
+What to do:
+1) Add extra checks for zeroed headers?
+2) Add an config option where one can change the crc32 seed to -1?
 
--- 
-dwmw2
+ Jocke
