@@ -1,22 +1,22 @@
-Received: from nf-out-0910.google.com ([64.233.182.188])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HPUe4-0005PM-Do
-	for linux-mtd@lists.infradead.org; Thu, 08 Mar 2007 21:15:51 -0500
-Received: by nf-out-0910.google.com with SMTP id a4so860973nfc
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Mar 2007 18:15:45 -0800 (PST)
-Message-ID: <49eab5c80703081815m195d2315s79cf21ef86913622@mail.gmail.com>
-Date: Fri, 9 Mar 2007 10:15:45 +0800
-From: "falls huang" <falls.huang@gmail.com>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HPaBk-0008WR-Fe
+	for linux-mtd@lists.infradead.org; Fri, 09 Mar 2007 03:10:59 -0500
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-ext11.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l298AlWY004503
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Mar 2007 10:10:52 +0200
+Message-ID: <45F11641.1010507@nokia.com>
+Date: Fri, 09 Mar 2007 10:09:37 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
 Subject: Re: Does mtd support two-plane page program for nand flash?
-In-Reply-To: <20070307143414.GA16439@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
 References: <49eab5c80703062257m7b26d09cha8c996aa2c8d5e07@mail.gmail.com>
 	<20070307143414.GA16439@lazybastard.org>
+In-Reply-To: <20070307143414.GA16439@lazybastard.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +26,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8hCgpZb3UgY2FuIGRvd25sb2FkIGl0cyBkYXRhc2hlZXQgZnJvbSBoZXJlOgpmdHA6Ly8y
-MTguMjIuNDUuNS9taXNjL0Jvb2tzL0s5TEFHMDhVME1fMC43LnBkZgoKSzlMQUcwOFUwTS9LOUhC
-RzA4VTFNIGFyZSBNTEMgbmFuZCBmbGFzaCAsCk1MQyBOQU5EIGZsYXNoIGlzIGJlY29taW5nIG1v
-cmUgYW5kIG1vcmUgcG9wdWxhciBmb3IgaXRzIGNoZWFwIHByaWNlLgpJIHRoaW5rIEl0J2xsIG1h
-a2UgYSBzZW5zZSBpZiBtdGQvamZmczMgY2FuIHN1cHBvcnQgdHdvLXBsYW5lIHBhZ2UKcHJvZ3Jh
-bS4KCjIwMDcvMy83LCBKw7ZybiBFbmdlbCA8am9lcm5AbGF6eWJhc3RhcmQub3JnPjoKPiBPbiBX
-ZWQsIDcgTWFyY2ggMjAwNyAxNDo1NzowMiArMDgwMCwgZmFsbHMgaHVhbmcgd3JvdGU6Cj4gPgo+
-ID4gICAgIEFGQUlLICwgdGhlIHNhbXN1bmcncyBuYW5kIGZsYXNoIEs5TEFHMDhVME0vSzlIQkcw
-OFUxTS9LOU1DRzA4VTVNCj4gPiBzdXBwb3J0IHR3by1wbGFuZSBwYWdlIHByb2dyYW0uIEZvciBl
-eGFtcGxlOiBUaGUgSzlMQUcwOFUwTSBpcwo+ID4gYXJyYW5nZWQgaW4gZm91ciA0R2IgbWVtb3J5
-IHBsYW5lcy5FYWNoIHBsYW5lIGNvbnRhaW5zIDIsMDQ4IGJsb2Nrcwo+ID4gYW5kIDIxMTIgYnl0
-ZSBwYWdlIHJlZ2lzdGVycy4gVGhpcyBhbGxvd3MgaXQgdG8gcGVyZm9ybSBzaW11bHRhbmVvdXMK
-PiA+IHBhZ2UgcHJvZ3JhbSBhbmQgYmxvY2sgZXJhc2UgYnkgc2VsZWN0aW5nIG9uZSBwYWdlIG9y
-IGJsb2NrIGZyb20gZWFjaAo+ID4gcGxhbmUuICggcmVmZXIgdG8gdGhlIGRhdGFzaGVldCBvZiBL
-OUxBRzA4VTBNKQo+Cj4gSW50ZXJlc3RpbmcuICBJIHdhcyB3b25kZXJpbmcgd2hlbiBkZXZpY2Vz
-IGxpa2UgdGhpcyB3b3VsZCBzaG93IHVwLgo+IERvIHlvdSBoYXZlIGEgc3BlYyBmb3IgdGhvc2Ug
-Y2hpcHM/Cj4KCgoKLS0gClJlZ2FyZHMKRmFsbHMgSHVhbmcK
+ext Jörn Engel wrote:
+> On Wed, 7 March 2007 14:57:02 +0800, falls huang wrote:
+>>     AFAIK , the samsung's nand flash K9LAG08U0M/K9HBG08U1M/K9MCG08U5M
+>> support two-plane page program. For example: The K9LAG08U0M is
+>> arranged in four 4Gb memory planes.Each plane contains 2,048 blocks
+>> and 2112 byte page registers. This allows it to perform simultaneous
+>> page program and block erase by selecting one page or block from each
+>> plane. ( refer to the datasheet of K9LAG08U0M)
+> 
+> Interesting.  I was wondering when devices like this would show up.
+> Do you have a spec for those chips?
+
+OneNAND DDP does this too (google: onenand "2x program")
+
+I presume the possibility exists to have the driver pretend that the
+page size is twice as large and there are half as many erase blocks.
+It would have to map the addressses accordingly - and everything
+else would have to be willing to accept a 4KiB page with 8
+subpages and 128 bytes of oob.
