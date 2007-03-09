@@ -1,15 +1,16 @@
-Subject: Re: (sorted, thanks David) Re: The NFS mounting jffs2 filesystem
-	with errors
-From: David Woodhouse <dwmw2@infradead.org>
-To: zheng xin <zhx821223@hotmail.com>
-In-Reply-To: <BAY129-F1855E44FF857C578CBC023AD790@phx.gbl>
-References: <BAY129-F1855E44FF857C578CBC023AD790@phx.gbl>
-Content-Type: text/plain
-Date: Fri, 09 Mar 2007 00:00:36 +0000
-Message-Id: <1173398436.3461.533.camel@pmac.infradead.org>
-Mime-Version: 1.0
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: "'Andrew Li'" <ALi@evertz.com>
+References: <0474A5584072DA1197F50007E90E6B11052998A8@PORTIA>
+Subject: RE: OneNand driver
+Date: Fri, 9 Mar 2007 10:34:51 +0900
+Message-ID: <006f01c761eb$2470f5a0$c7a3580a@swcenter.sec.samsung.co.kr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
 Content-Transfer-Encoding: 7bit
+In-reply-to: <0474A5584072DA1197F50007E90E6B11052998A8@PORTIA>
 Cc: linux-mtd@lists.infradead.org
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,22 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-03-08 at 23:50 +0000, zheng xin wrote:
-> Thanks a lot David. I applied the two patches you gave and my NFS mounting 
-> is currently working properly now. 
+Hi Andrew,
 
-Bear in mind that the get_parent() bit is entirely untested. If you're
-going to use it in anger, you should test it by unmounting and
-remounting the JFFS2 file system (to force the inode cache to be
-cleared) while it's mounted by a remote machine, then accessing
-subdirectories, etc. Maybe put some printk into get_parent() to make
-sure you see when it's being called and check it's returning the right
-thing.
+> 
+> 1. Thank you very much for your help. Now my Linux OneNAND 
+> driver works for me. I can read and write OneNAND correctly. 
+> What is interesting here is that we don't need any special 
+> tool to write/read OneNAND. I do it this way:
+> 
+> cp x_load_Uboot.bin /dev/mtdblock0
+> cp  /dev/mtdblock0 b0.bin
 
-You'll need to unexport the filesystem before you unmount it, of course,
-and re-export it after you remount it. But you mustn't unmount or
-remount on the NFS client -- the whole point is that it stays mounted on
-the _client_ while the server loses its cache.
+Yes. you can write block 0 directly useing mtdblock0 in kernel
 
--- 
-dwmw2
+> 
+> 2.
+> I am trying to make the X-load work. I have problem when 
+> reading. It always read the first 4 sectors, no matter what 
+> page/sectors address I set. 
+
+OneNAND has 1KB BootRAM (2 sectors). it is filled automatically from page0,
+block0 in OneNAND
+
+> 
+> I noticed that Linux driver does the reading a little bit 
+> diffirently, It writes to ONENAND_REG_START_BUFFER with 
+> 0x0800 and 0x0c00 alternatively. I also tried this method. 
+> but it doesn't work.
+
+xloader has size limitation. so I implemented it using just one bufferram.
+and it just read 128KB - 2KB from block0
+So I think there's no big performance improvement. But if you want it. try
+it.
+But you have to know that xloader don't exceed the 1KB size limitation.
+
+You can refer following URL
+http://source.mvista.com/git/gitweb.cgi?p=xloader.git;a=log
+
+Thank you,
+Kyungmin Park
