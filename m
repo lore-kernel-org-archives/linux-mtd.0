@@ -1,29 +1,20 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
+Received: from ftp.linux-mips.org ([194.74.144.162])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HQ47p-0001SP-4U
-	for linux-mtd@lists.infradead.org; Sat, 10 Mar 2007 11:08:55 -0500
-Subject: Re: JFFS2 OOPS in 2.6.20
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1173451756.26465.76.camel@gentoo-jocke.transmode.se>
-References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
-	<1173375204.26465.8.camel@gentoo-jocke.transmode.se>
-	<1173375879.26465.13.camel@gentoo-jocke.transmode.se>
-	<1173379047.3461.482.camel@pmac.infradead.org>
-	<1173430972.26465.20.camel@gentoo-jocke.transmode.se>
-	<1173432194.3461.562.camel@pmac.infradead.org>
-	<1173437173.26465.37.camel@gentoo-jocke.transmode.se>
-	<1173438908.26465.54.camel@gentoo-jocke.transmode.se>
-	<1173448490.26465.69.camel@gentoo-jocke.transmode.se>
-	<1173451756.26465.76.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Sat, 10 Mar 2007 17:08:44 +0100
-Message-Id: <1173542924.26465.81.camel@gentoo-jocke.transmode.se>
+	id 1HQAmG-0004Hd-Jy
+	for linux-mtd@lists.infradead.org; Sat, 10 Mar 2007 18:15:08 -0500
+Received: from localhost.localdomain ([127.0.0.1]:3018 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20021967AbXCJXMx (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
+	Sat, 10 Mar 2007 23:12:53 +0000
+Date: Sat, 10 Mar 2007 23:10:50 +0000
+From: Ralf Baechle <ralf@linux-mips.org>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [MTD] Fix dependencies for MIPS MTD drivers
+Message-ID: <20070310231050.GA28085@linux-mips.org>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,83 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+ o A dependency on the processor architecture does not make sense,
+   delete it.
+ o The Alchemy and MTX drivers requires MTD_PARTITIONS and MTD_CFI to work,
+   make those dependencies.
 
-> > 
-> > The check in scan is rendundant. You will never reach it due to two
-> > earlier checks:
-> > 	if (je16_to_cpu(node->magic) != JFFS2_MAGIC_BITMASK) {
-> > and
-> > 	crcnode.nodetype = cpu_to_je16( je16_to_cpu(node->nodetype) | JFFS2_NODE_ACCURATE);
-> > 
-> > I wonder if JFFS2_NODE_ACCURATE mask bit could be used in readinode.c as well?
-> > 
-> >  Jocke
-> 
-> probably better to remove the zero crc32 check and add a:
->    if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK)
-> 
-> to make sure it is a JFFS2 node with the added benefit that this will work
-> when ->point is added too.
-> 
->  Jocke
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-How about this fix instead:
-
->From 4421fa227585b205f52e90966683c0a57737547b Mon Sep 17 00:00:00 2001
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Date: Sat, 10 Mar 2007 16:59:03 +0100
-Subject: [PATCH] Better fix for all-zero node headers
-No need to check for all-zero header since the header cannot
-be zero due to other checks.
-Replace the all-zero header check in readinode.c with a
-check for the magic word.
-
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/readinode.c |    8 ++++----
- fs/jffs2/scan.c      |   11 -----------
- 2 files changed, 4 insertions(+), 15 deletions(-)
-
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 7f7618c..9f6885b 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -572,10 +572,10 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
+index bbf0553..5922888 100644
+--- a/drivers/mtd/maps/Kconfig
++++ b/drivers/mtd/maps/Kconfig
+@@ -240,13 +240,13 @@ config MTD_NETtel
  
- 		node = (union jffs2_node_union *)bufstart;
+ config MTD_ALCHEMY
+ 	tristate "AMD Alchemy Pb1xxx/Db1xxx/RDK MTD support"
+-	depends on SOC_AU1X00
++	depends on SOC_AU1X00 && MTD_PARTITIONS && MTD_CFI
+ 	help
+ 	  Flash memory access on AMD Alchemy Pb/Db/RDK Reference Boards
  
--		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
--		if (!je32_to_cpu(node->u.hdr_crc) && !je16_to_cpu(node->u.nodetype) &&
--		    !je16_to_cpu(node->u.magic) && !je32_to_cpu(node->u.totlen)) {
--			JFFS2_NOTICE("All zero node header at %#08x.\n", ref_offset(ref));
-+		if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK) {
-+			/* Not a JFFS2 node, whinge and move on */
-+			JFFS2_NOTICE("Wrong magic bitmask 0x%04x in node header at %#08x.\n", je16_to_cpu(node->u.magic),
-+				     ref_offset(ref));
- 			jffs2_mark_node_obsolete(c, ref);
- 			goto cont;
- 		}
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index b98661a..3af746e 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -718,17 +718,6 @@ scan_more:
- 		crcnode.totlen = node->totlen;
- 		hdr_crc = crc32(0, &crcnode, sizeof(crcnode)-4);
+ config MTD_MTX1
+ 	tristate "4G Systems MTX-1 Flash device"
+-	depends on MIPS && MIPS_MTX1
++	depends on MIPS_MTX1 && MTD_CFI
+ 	help
+ 	  Flash memory access on 4G Systems MTX-1 Board. If you have one of
+ 	  these boards and would like to use the flash chips on it, say 'Y'.
+@@ -384,7 +384,7 @@ config MTD_TQM834x
  
--		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
--		if (!je32_to_cpu(node->hdr_crc) && !je16_to_cpu(node->nodetype) &&
--		    !je16_to_cpu(node->magic) && !je32_to_cpu(node->totlen)) {
--			noisy_printk(&noise, "jffs2_scan_eraseblock(): All zero node header at 0x%08x.\n", ofs);
--		       
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
--			ofs += 4;
--			continue;
--		}
--
- 		if (hdr_crc != je32_to_cpu(node->hdr_crc)) {
- 			noisy_printk(&noise, "jffs2_scan_eraseblock(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
- 				     ofs, je16_to_cpu(node->magic),
--- 
-1.4.4.4
+ config MTD_OCELOT
+ 	tristate "Momenco Ocelot boot flash device"
+-	depends on MIPS && MOMENCO_OCELOT
++	depends on MOMENCO_OCELOT
+ 	help
+ 	  This enables access routines for the boot flash device and for the
+ 	  NVRAM on the Momenco Ocelot board. If you have one of these boards
