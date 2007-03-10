@@ -1,10 +1,29 @@
-From: STAATSLOTERIJN.NL.(LOTERIJ CO-ORDINATOR)<Staatclaimsinfo@aim.com>
-Subject: LOTTERY WINNING NOTIFICATION!!CONGRATULATIONS
-Date: Sat, 10 Mar 2007 05:40:18 +0200
-Message-ID: <web-65475913@bk1.webmaillogin.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
-Content-Transfer-Encoding: 8bit
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HQ47p-0001SP-4U
+	for linux-mtd@lists.infradead.org; Sat, 10 Mar 2007 11:08:55 -0500
+Subject: Re: JFFS2 OOPS in 2.6.20
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1173451756.26465.76.camel@gentoo-jocke.transmode.se>
+References: <1173374059.26465.4.camel@gentoo-jocke.transmode.se>
+	<1173375204.26465.8.camel@gentoo-jocke.transmode.se>
+	<1173375879.26465.13.camel@gentoo-jocke.transmode.se>
+	<1173379047.3461.482.camel@pmac.infradead.org>
+	<1173430972.26465.20.camel@gentoo-jocke.transmode.se>
+	<1173432194.3461.562.camel@pmac.infradead.org>
+	<1173437173.26465.37.camel@gentoo-jocke.transmode.se>
+	<1173438908.26465.54.camel@gentoo-jocke.transmode.se>
+	<1173448490.26465.69.camel@gentoo-jocke.transmode.se>
+	<1173451756.26465.76.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Sat, 10 Mar 2007 17:08:44 +0100
+Message-Id: <1173542924.26465.81.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,87 +34,82 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-THE PROMOTION DIRECTOR
-RESULTS FOR THE FIRST CATEGORY DREW
-INTERNATIONAL PROMOTIONS DEPT STAATSLOTERIJ NL.
-REF: PEK/12748/TSP
-BATCH: TATS/2333/ST
+> > 
+> > The check in scan is rendundant. You will never reach it due to two
+> > earlier checks:
+> > 	if (je16_to_cpu(node->magic) != JFFS2_MAGIC_BITMASK) {
+> > and
+> > 	crcnode.nodetype = cpu_to_je16( je16_to_cpu(node->nodetype) | JFFS2_NODE_ACCURATE);
+> > 
+> > I wonder if JFFS2_NODE_ACCURATE mask bit could be used in readinode.c as well?
+> > 
+> >  Jocke
+> 
+> probably better to remove the zero crc32 check and add a:
+>    if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK)
+> 
+> to make sure it is a JFFS2 node with the added benefit that this will work
+> when ->point is added too.
+> 
+>  Jocke
 
+How about this fix instead:
 
+>From 4421fa227585b205f52e90966683c0a57737547b Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Sat, 10 Mar 2007 16:59:03 +0100
+Subject: [PATCH] Better fix for all-zero node headers
+No need to check for all-zero header since the header cannot
+be zero due to other checks.
+Replace the all-zero header check in readinode.c with a
+check for the magic word.
 
-ATTN;WINNER,
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/readinode.c |    8 ++++----
+ fs/jffs2/scan.c      |   11 -----------
+ 2 files changed, 4 insertions(+), 15 deletions(-)
 
-
-
-We are pleased to inform you of the release, of the long
-awaited  results of the STAATSLOTERIJ/INTERNATIONAL
-PROMOTION PROGRAMES NL held on 1st of March 2007.
-Reference Number:   PEK/12748/TSP, and Batch number :
-TATS/2333/ST.
-
-
-
-Your email address attached to the ticket
-number:TK/4693659BV that drew the lucky winning number,
-which consequently won the loterij in the  second category
-in four parts. You have been approved for a payment of
-1,000,000.00 Euro (ONE MILLION EURO) in cash credited to
-file reference number:HPL/4247159609/WP1. This is from a
-total cash prize of TEN  MILLION EUROS Shared among the
-ten international winners that won the first categories.
-
-
-
-Congratulations!!!
-
-
-
-All participants were selected through a computer ballot
-system drawn from 40,000 company email addresses and
-20,000,000 individual email  addresses from across the
-Globe as part of International Promotional Program, which
-is conducted annually. .Due to mixed up of some names and
-addresses, we ask that you keep this award personal, till
-your claims has been processed and your funds remitted to
-you.
-
-
-
-This is part of our security measures to avoid double
-claiming or unwarranted taking advantage of the situation
-by other participants or impersonators.To begin your
-claim, do file for the release of your  winning by
-contacting our accredited agent:
-
-
-
-Mr.Otto Bruderer.
-Remittance Director/Claims Coordinator
-Tel:  +31 619-255-410
-Fax: +31 847-300-758
-Email:Staatclaimsinfo@aim.com
-
-
-
-Please note in order to avoid unnecessary delays and
-complications please remember to quote your reference
-number and batch numbers in all correspondence.They are
-your agent, and responsible for the processing and
-transfer of your winnings fund to you.
-
-
-
-YOUR SECURITY FILE NUMBER IS 78/23432/KB (keep personal)
-Remember, your winning must be claimed not later than
-(30-3-2007) After this date, funds might be returned to
-the unclaimed. Furthermore, should there be any change in
-your address, do inform your claims agent as soon as
-  possible.
-
-
-
-Yours truly,
-Mrs. Serena Vlutglaan
-STAATSLOTERIJ. NL
-THE PROMOTION DIRECTOR.
-INTERNATIONAL PROGRAM (NL).
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 7f7618c..9f6885b 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -572,10 +572,10 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
+ 
+ 		node = (union jffs2_node_union *)bufstart;
+ 
+-		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
+-		if (!je32_to_cpu(node->u.hdr_crc) && !je16_to_cpu(node->u.nodetype) &&
+-		    !je16_to_cpu(node->u.magic) && !je32_to_cpu(node->u.totlen)) {
+-			JFFS2_NOTICE("All zero node header at %#08x.\n", ref_offset(ref));
++		if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK) {
++			/* Not a JFFS2 node, whinge and move on */
++			JFFS2_NOTICE("Wrong magic bitmask 0x%04x in node header at %#08x.\n", je16_to_cpu(node->u.magic),
++				     ref_offset(ref));
+ 			jffs2_mark_node_obsolete(c, ref);
+ 			goto cont;
+ 		}
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index b98661a..3af746e 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -718,17 +718,6 @@ scan_more:
+ 		crcnode.totlen = node->totlen;
+ 		hdr_crc = crc32(0, &crcnode, sizeof(crcnode)-4);
+ 
+-		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
+-		if (!je32_to_cpu(node->hdr_crc) && !je16_to_cpu(node->nodetype) &&
+-		    !je16_to_cpu(node->magic) && !je32_to_cpu(node->totlen)) {
+-			noisy_printk(&noise, "jffs2_scan_eraseblock(): All zero node header at 0x%08x.\n", ofs);
+-		       
+-			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
+-				return err;
+-			ofs += 4;
+-			continue;
+-		}
+-
+ 		if (hdr_crc != je32_to_cpu(node->hdr_crc)) {
+ 			noisy_printk(&noise, "jffs2_scan_eraseblock(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
+ 				     ofs, je16_to_cpu(node->magic),
+-- 
+1.4.4.4
