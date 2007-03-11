@@ -1,20 +1,11 @@
-Received: from ftp.linux-mips.org ([194.74.144.162])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HQAnR-0004Hd-4Y
-	for linux-mtd@lists.infradead.org; Sat, 10 Mar 2007 18:16:56 -0500
-Received: from localhost.localdomain ([127.0.0.1]:7882 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20021974AbXCJXQN (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
-	Sat, 10 Mar 2007 23:16:13 +0000
-Date: Sat, 10 Mar 2007 23:14:12 +0000
-From: Ralf Baechle <ralf@linux-mips.org>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>
-Subject: [MTD] Alchemy cleanups
-Message-ID: <20070310231412.GA28308@linux-mips.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <4346387.1173578356115.JavaMail.root@sf1435>
+Date: Sun, 11 Mar 2007 14:59:16 +1300
+From: Joanne Chandler <j.cha@xtra.co.nz>
+Subject: !!!CONGRATULATIONS***YOU ARE A WINNER
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: ukclaimsagent_01@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +15,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Delete RCS $Id string and unused debug code.
+NATIONAL LOTTERY
+PROMOTIONS/ PRIZE AWARD DEPARTMENT.
+79 BOVILL ROAD
+LONDON. SE23 1EL.
+>>>>>>>>>>>>>>>>>>>>>>
+Ref: EGS/2251256003/02
+Batch: 14/0017/1PD
+>>>>>>>>>>>>>>>>>>>>>>
 
-Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-diff --git a/drivers/mtd/maps/alchemy-flash.c b/drivers/mtd/maps/alchemy-flash.c
-index 7fc8097..84fbe0e 100644
---- a/drivers/mtd/maps/alchemy-flash.c
-+++ b/drivers/mtd/maps/alchemy-flash.c
-@@ -1,10 +1,7 @@
- /*
-  * Flash memory access on AMD Alchemy evaluation boards
-  *
-- * $Id: alchemy-flash.c,v 1.2 2005/11/07 11:14:26 gleixner Exp $
-- *
-  * (C) 2003, 2004 Pete Popov <ppopov@embeddedalley.com>
-- *
-  */
- 
- #include <linux/init.h>
-@@ -18,12 +15,6 @@
- 
- #include <asm/io.h>
- 
--#ifdef 	DEBUG_RW
--#define	DBG(x...)	printk(x)
--#else
--#define	DBG(x...)
--#endif
--
- #ifdef CONFIG_MIPS_PB1000
- #define BOARD_MAP_NAME "Pb1000 Flash"
- #define BOARD_FLASH_SIZE 0x00800000 /* 8MB */
+                               WINNING NOTIFICATION
+                       >>>>>>>>>>>>>>>>>>>>>>>>>>>>
+Your email account have been picked as a winner of Six Hundred Thousand Pou=
+nds Sterling (=C2=A3600,000.00) in cash credited to file=20
+KTU/9023118308/03.This is from a total sum of Four Million, Two hundred Tho=
+usand Pounds Sterling (=C2=A34,200,000.00) shared amongst seven winners. Th=
+is results is now released to you on the 31st of January, 2007 and your ema=
+il address
+attached to ticket number: 56475600545 188 with Serial number 5368/02.parti=
+cipants were selected through a computer ballot system=20
+drawn from Microsoft users from company and individual email address.
+
+Anybody under the age of 17 and members of the affiliate agencies are autom=
+atically not allowed to participate in this program.
+
+1. Full name and address.
+2. Country.
+3. Tel and fax number.
+4. Occupation.
+6. Languages Spoken.
+7. Age:
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Foreign Service Manager
+Mr. Adams Richards,
+DIRECT TELEPHONE:     +44 701 702 6043
+Fax:                             +44-871-715-6044
+Email:claimsagent_adamsrichard0@yahoo.co.uk
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+Yours Sincerely,
+Mrs.Ann Roberts,
+Executive (International Sweepstakes).
