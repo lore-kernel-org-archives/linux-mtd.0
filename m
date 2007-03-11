@@ -1,20 +1,16 @@
-Received: from pasmtpb.tele.dk ([80.160.77.98])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HQVGu-0005Cl-2U
-	for linux-mtd@lists.infradead.org; Sun, 11 Mar 2007 17:08:05 -0400
-Date: Sun, 11 Mar 2007 22:08:35 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
-Subject: Re: MTD_PHRAM - what filesystem to use?
-Message-ID: <20070311210835.GA3794@uranus.ravnborg.org>
-References: <20070311200508.GA3362@uranus.ravnborg.org>
-	<20070311203122.GB17463@lazybastard.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070311203122.GB17463@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
+	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HQXQO-0006Mw-E4
+	for linux-mtd@lists.infradead.org; Sun, 11 Mar 2007 19:26:02 -0400
+Date: Sun, 11 Mar 2007 18:23:22 -0500 (CDT)
+From: Kumar Gala <galak@kernel.crashing.org>
+To: linux-mtd@lists.infradead.org
+Subject: how to handle Atmel fixup -- swapping erase regions
+Message-ID: <Pine.LNX.4.64.0703111815330.12995@gate.crashing.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,76 +20,79 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Mar 11, 2007 at 09:31:22PM +0100, Jörn Engel wrote:
-> On Sun, 11 March 2007 21:05:08 +0100, Sam Ravnborg wrote:
-> > 
-> > At my new job we are planning to start usign a ARM9 based
-> > design where we need to store data persistently.
-> > 
-> > Since the data are updated several times / minute the FLASH
-> > devices are not suitable and therefore alternative solutions
-> > are being looked at.
-> > 
-> > The most promising solutions semms to use battery
-> > backed-up RAM.
-> > >From Linux we could memorymap this area but using a filesystem
-> > gives all sorts of extra bonusses so this is preferred.
-> > 
-> > I looked shortly at PRAMFS that seems to do the trick but PRMFS
-> > seems unmaintained and not merged.
-> > Then I stumbled over PHRAM.
-> > I and pretty clear upon the basic parts lettign the RAM look
-> > like any other FLASH device.
-> > But then the question popped up.
-> > 
-> > What is the best filesystem to use on top of a PHRAM based
-> > MTD device?
-> > My first two ideas were to use either JFFS2 or ext2
-> > (the latter with the blocklayer emulation).
-> > But reading the documentation both looks like overkill.
-> > 
-> > The requirement so far is to gain maximum bebefit of the
-> > avalable 100 kbytes of RAM.
-> > There will be a limited number of files (< 500).
-> 
-> If you decide on battery-backed RAM, the PHRAM/JFFS2 combo would be the
-> best existing solution.  Alternatively you could write a custom
-> filesystem.
+I'm working with a Atmel AT49BV162A and it appears that the device reports
+the order of erase sectors incorrectly:
 
-Thanks.
-It could be a nice challenge to write my own filesystem
-just for this - on the other hand JFFS2 despite the overhead
-should fulfill my demand so I will most probarly stay with that.
+Number of Erase Block Regions: 2
+  Erase Region #0: BlockSize 0x10000 bytes, 31 blocks
+  Erase Region #1: BlockSize 0x2000 bytes, 8 blocks
 
+Amd/Fujitsu Extended Query Table at 0x0041
+  Silicon revision: 0
+  Address sensitive unlock: Required
+  Erase Suspend: Read/write
+  Block protection: Not supported
+  Temporary block unprotect: Not supported
+  Block protect/unprotect scheme: 0
+  Number of simultaneous operations: 0
+  Burst mode: Not supported
+  Page mode: Not supported
+  Vpp Supply Minimum Program/Erase Voltage: 0.0 V
+  Vpp Supply Maximum Program/Erase Voltage: 0.0 V
+  Top/Bottom Boot Block: Bottom boot
 
-> With JFFS2 you should carefully decide on a suitable erasesize.  The
-> JFFS2 overhead can be minimized by tuning this number.  Most likely
-> something small, 4KiB or 8KiB is optimal.
-> 
-> Yet another alternative would be to use flash.  The math is quite
-> simple.  Example calculation:
-> Update interval: 10s
-> Updated data size: 10kB
-> Required device lifetime: 10a
-> JFFS2 overhead: 10%
-> Flash durability: 100k erases
-> 
-> Write rate is 10kB / 10s * 1.1 = 1.1kB/s.
-> Total written data in 10a is: 1.1kB/s * 31536000s/a * 10a = 346GB
-> Required flash size: 346GB / 100k = 3468kB
-> 
-> So with the example numbers, you would only need a 4MiB flash chip.
-> Those should be rather cheap.  But it remains your duty to redo the
-> calculation with correct numbers and check for any mistakes I may have
-> made.
-> 
-> Also make sure that your supplier guarantees 100k erases on the flash.
-> At 10k erases, you would need a device 10x bigger.  1M erases, if
-> available, are even better.
-Thanks again.
-When I have more exact numbers I will try to redo your math.
+When the devices are 'Bottom boot' region 0 should be 8/8k blocks, and
+region 1 should be 31/64k blocks.
 
-I assume that from a performance point-of-view the FLASH based version
-suffer more than the RAM one - since it is simple to 'erase' RAM.
+I'm not sure how many other Atmel devices this effects.  I was wondering
+what the best way to implement the fixup was.  Something like:
 
-	Sam
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 702ae4c..9b47f2b 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -50,6 +50,7 @@
+ #define SST49LF004B	        0x0060
+ #define SST49LF008A		0x005a
+ #define AT49BV6416		0x00d6
++#define AT49BV162		0x00c0
+
+ static int cfi_amdstd_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+ static int cfi_amdstd_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+@@ -215,6 +216,27 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
+ 	mtd->flags |= MTD_STUPID_LOCK;
+ }
+
++static void fixup_swap_atmel(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
++	unsigned char bootloc = extp->TopBottom;
++
++	if (bootloc == 2 && cfi->cfiq->NumEraseRegions > 1) {
++		int i;
++
++		for (i=0; i<cfi->cfiq->NumEraseRegions / 2; i++) {
++			int j = (cfi->cfiq->NumEraseRegions-1)-i;
++			__u32 swap;
++
++			swap = cfi->cfiq->EraseRegionInfo[i];
++			cfi->cfiq->EraseRegionInfo[i] = cfi->cfiq->EraseRegionInfo[j];
++			cfi->cfiq->EraseRegionInfo[j] = swap;
++		}
++	}
++}
++
+ static struct cfi_fixup cfi_fixup_table[] = {
+ #ifdef AMD_BOOTLOC_BUG
+ 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
+@@ -245,6 +267,7 @@ static struct cfi_fixup fixup_table[] = {
+ 	 */
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_erase_chip, NULL },
+ 	{ CFI_MFR_ATMEL, AT49BV6416, fixup_use_atmel_lock, NULL },
++	{ CFI_MFR_ATMEL, AT49BV162, fixup_swap_atmel, NULL },
+ 	{ 0, 0, NULL, NULL }
+ };
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
