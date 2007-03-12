@@ -1,19 +1,22 @@
-Received: from lst-amand-152-33-17-184.w82-127.abo.wanadoo.fr ([82.127.60.184]
-	helo=polaris.sacet.fr)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HQiGD-0003RV-0O
-	for linux-mtd@lists.infradead.org; Mon, 12 Mar 2007 07:00:17 -0400
-Received: from [127.0.0.1] (mimosa.sacet.fr [192.168.82.19])
-	by polaris.sacet.fr (8.12.11/8.12.11) with ESMTP id l2CB0wEa013207
-	for <linux-mtd@lists.infradead.org>; Mon, 12 Mar 2007 12:00:58 +0100
-Message-ID: <45F530FE.4070105@sacet.com>
-Date: Mon, 12 Mar 2007 11:52:46 +0100
-From: Michel LECONTE <michel.leconte@sacet.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Pb with NAND flash and ftl_format
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HQifi-0003mq-I8
+	for linux-mtd@lists.infradead.org; Mon, 12 Mar 2007 07:26:39 -0400
+Date: Mon, 12 Mar 2007 11:58:54 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Charles Manning <manningc2@actrix.gen.nz>
+Subject: Re: Does mtd support two-plane page program for nand flash?
+Message-ID: <20070312105853.GA19574@lazybastard.org>
+References: <49eab5c80703062257m7b26d09cha8c996aa2c8d5e07@mail.gmail.com>
+	<20070309114246.GA4897@lazybastard.org>
+	<91b24a870703112149ucba512ahc8976d0f10a6e625@mail.gmail.com>
+	<200703121953.58185.manningc2@actrix.gen.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200703121953.58185.manningc2@actrix.gen.nz>
+Cc: linux-mtd@lists.infradead.org, Marteo Tim <tim.marteo@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,50 +26,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Mon, 12 March 2007 19:53:58 +1300, Charles Manning wrote:
+> On Monday 12 March 2007 17:49, Marteo Tim wrote:
+> > MLC NAND Flash has already become the mainstream flash for
+> > large-capacity on the market. But due to its low writting speed, there
+> > will be introduced more parallel writting features such as multi-bank,
+> > interleave, etc. So I think it is very necessary to modify MTD
+> > structure to support multi-plane & interleave feature for speed
+> > issure.
 
-I work with a nand flash with 4 partitions.
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00400000 00010000 "physmap-flash.0"
-mtd1: 04200000 00020000 "Linux"
-mtd2: 09c00100 00020000 "Apps"
-mtd3: 10000000 00020000 "Data"
+Flash will evolve much like hard disks and RAM does.  Size and bandwidth
+will scale up, while latency remains roughly unchanged.  And just like
+hard disks and RAM, much effort will be spent, trying to reduce the
+effect of latency.
 
-When I try to format /dev/mtd1 with an ftl_format it gives me :
-# ./ftl_format /dev/mtd1
-Partition size = 66 mb, erase unit size = 128 kb, 1 transfer units
-Reserved 5%, formatted size = 64853504 bytes
-Erasing all blocks...
-+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*++
-Writing erase unit headers...
-write failed: Invalid argument
-format failed.
+In case you don't remember: increasing bandwidth is trivial.  Reducing
+latency is the real challange.
 
-And dmesg :
-# dmesg
-nand_write: Attempt to write not page aligned data
+> > It is a good method to shield the details of flash type by composing
+> > two or more page as a large page. 
+> This approach works, but also forces you to have more bad blocks than you'd 
+> have otherwise. MLC will tend to have more bad blocks than SLC.
 
-I 'm not sure to understand what it means.
-I suppose that the problem comes with a difference between
-the adressing of the data and the size of the data but I don't
-know how to do ?
+And it will increase latency instead of reducing it.  Instead of sending
+multiple independent commands to multiple planes, a single command is
+sent to all planes.  Not only is the slowest of all planes dominating
+the latency now, but the remaining independent commands still need to
+run.
 
+It is possible to reduce the number of commands somewhat by writing
+larger amount of data in one go.  But that has disadvantages of its own
+is not always possible.
 
-Here is my mtd_debug info :
-# ./mtd_debug info /dev/mtd1
-mtd.type = MTD_NANDFLASH
-mtd.flags =
-mtd.size = 69206016 (66M)
-mtd.erasesize = 131072 (128K)
-mtd.oobblock = 2048 (2K)
-mtd.oobsize = 64
-mtd.ecctype = MTD_ECC_SW
-regions = 0
+> > Although it will be more slower for 
+> > small segment data read/write. But for large-capacity flash,
+> > continuate writting speed maybe is more concerned.
 
-as somebody has an idea to fix my problem ?
+Again, increasing bandwidth is trivial, as you just showed.  Latency is
+the real killer.
 
-Thank you.
+> I think anyone really wanting speed probably writes their own drivers anyway 
+> (well that's what people woho are most interested in speed tell me 
+> anyway :-)).
 
+Absolutely.  Going down the easy route coupling all planes may be a
+simple first step to get bandwidth up.  But supporting independent
+operations is the interesting route to follow.
 
-Michel
+Jörn
+
+-- 
+"[One] doesn't need to know [...] how to cause a headache in order
+to take an aspirin."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
