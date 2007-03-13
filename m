@@ -1,26 +1,21 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HRn8W-0008PQ-Lb
-	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 10:24:47 +0000
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HRn8S-0000Ks-CY
-	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 11:24:40 +0100
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2007 11:24:40 +0100
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2007 11:24:40 +0100
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Journalling (?) single-block parameter storage
-Date: Thu, 15 Mar 2007 10:24:28 +0000 (UTC)
-Message-ID: <loom.20070315T111554-92@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+	id 1HRAJO-0004z7-Pv
+	for linux-mtd@lists.infradead.org; Tue, 13 Mar 2007 16:57:25 +0000
+Message-ID: <45F6D46C.8030100@nokia.com>
+Date: Tue, 13 Mar 2007 18:42:20 +0200
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+MIME-Version: 1.0
+To: ext Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [RFC] [PATCH] UBI: rewrite of sysfs.c
+References: <200703131610.20161.alexs@linux.vnet.ibm.com>
+In-Reply-To: <200703131610.20161.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +25,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Any prior art ?
+Alexander Schmidt wrote:
+> Hi,
+> 
+> I rewrote the sysfs interface to use struct device instead of struct
+> class_device. This implies an interface change, as sysfs files are now
+> ordered in a different manner:
+> 
+> /sys/class/ubi/ubiX/ for device files
+> /sys/class/ubi/ubiX_Y/ for volumes
+> 
+> Before we had
+> 
+> /sys/class/ubi/ubiX/ for device files
+> /sys/class/ubi/ubiX/Y/ for volumes
+> 
+> Please let me know if you got any objections on this or if you have
+> proposals for a better implementation.
+> 
+> Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
 
-I have a single eraseblock available, and the need to store an
-updateable (small, 20-30 bytes) parameter block which is fixed in size.
+It seems we cannot preserve old sysfs structure...
 
-Although I can easily come up with a sequential block-invalidating storage
-scheme, eventually erasing the block when the end is reached, I wondered
-whether anyone knew of an existing library package which would achieve
-these ends.
+It is fine with me. You and Thomas are the main users, so if it is ok
+with you - lets' apply this.
 
-Searching brings up lots of stuff on flash filesystems, but nothing on
-such a simplified requirement.
+Thomas?
 
-Regards,
-MikeW
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
