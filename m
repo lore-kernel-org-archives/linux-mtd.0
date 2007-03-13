@@ -1,19 +1,21 @@
-Received: from wr-out-0506.google.com ([64.233.184.226])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HRFDT-0007fH-P8
-	for linux-mtd@lists.infradead.org; Tue, 13 Mar 2007 22:11:38 +0000
-Received: by wr-out-0506.google.com with SMTP id i11so2654501wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Mar 2007 15:01:30 -0700 (PDT)
-Message-ID: <79ac09b60703131451t2cfff54ckb3663057e282fe5f@mail.gmail.com>
-Date: Tue, 13 Mar 2007 16:51:26 -0500
-From: Duke <ezbonites@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: mounting jffs2 on NOR flash
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HRA71-0004RJ-JX
+	for linux-mtd@lists.infradead.org; Tue, 13 Mar 2007 16:44:38 +0000
+Message-ID: <45F6D39D.6050605@nokia.com>
+Date: Tue, 13 Mar 2007 18:38:53 +0200
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [RFC] [PATCH] UBI: rewrite of sysfs.c
+References: <200703131610.20161.alexs@linux.vnet.ibm.com>
+In-Reply-To: <200703131610.20161.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Alexander Schmidt wrote:
+> Hi,
+> 
+> I rewrote the sysfs interface to use struct device instead of struct
+> class_device. This implies an interface change, as sysfs files are now
+> ordered in a different manner:
+> 
+> /sys/class/ubi/ubiX/ for device files
+> /sys/class/ubi/ubiX_Y/ for volumes
 
-The easiest way I found to create a jffs2 on my NOR flash is to first
-mount my rootfs as NFS, then I created a jffs2 fs using
+It seems this is something we have 
 
-flash_eraseall /dev/mtd3
-mkfs.jffs2 -e 256KiB -o /dev/mtd3
-
-Then I added the line "/dev/mtdblock3 /var jffs2 rw 0 0" to my fstab
-(NFS root) and reboot.
-An ls after this shows that my /var shows the / fs. How is that possible?
-
-This is my /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00040000 00040000 "boot"
-mtd1: 00180000 00040000 "kernel"
-mtd2: 00640000 00040000 "root"
-mtd3: 00400000 00040000 "var"
-mtd4: 00400000 00040000 "str"
-
-Am I doing something incorretly?
-
-I did the same thing but booting from mtd2 rootfs and the same thing,
-everything in /var gone and /var is the same as /.
-
-I need help.
-Thanks.
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
