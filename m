@@ -1,23 +1,26 @@
-Received: from ug-out-1314.google.com ([66.249.92.172])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HRqdd-0000eu-F9
-	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 14:09:07 +0000
-Received: by ug-out-1314.google.com with SMTP id m2so312480uge
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Mar 2007 06:59:01 -0700 (PDT)
-Message-ID: <625fc13d0703150648w1cb89d7bga2bd3f0337695a37@mail.gmail.com>
-Date: Thu, 15 Mar 2007 08:48:59 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Re: Some JFFS2 test programs
-In-Reply-To: <625fc13d0703070502s339396v2f35934c888cb9c9@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HRn8W-0008PQ-Lb
+	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 10:24:47 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HRn8S-0000Ks-CY
+	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 11:24:40 +0100
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2007 11:24:40 +0100
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 15 Mar 2007 11:24:40 +0100
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Journalling (?) single-block parameter storage
+Date: Thu, 15 Mar 2007 10:24:28 +0000 (UTC)
+Message-ID: <loom.20070315T111554-92@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <45EBD82E.4030000@nokia.com>
-	<625fc13d0703070502s339396v2f35934c888cb9c9@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/7/07, Josh Boyer <jwboyer@gmail.com> wrote:
-> On 3/5/07, Adrian Hunter <ext-adrian.hunter@nokia.com> wrote:
-> >
-> > I have put some JFFS2 test programs here:
-> >
-> >
-> > http://git.infradead.org/?p=users/ahunter/fs-tests.git;a=summary
->
-> I intend to include these in mtd-utils as soon as I get time and
-> figure out the best way to bring them in.
+Any prior art ?
 
-Ok, I've added these under tests/fs-tests/ in the mtd-utils package.
-Tests are always welcome, so thanks for submitting these.
+I have a single eraseblock available, and the need to store an
+updateable (small, 20-30 bytes) parameter block which is fixed in size.
 
-josh
+Although I can easily come up with a sequential block-invalidating storage
+scheme, eventually erasing the block when the end is reached, I wondered
+whether anyone knew of an existing library package which would achieve
+these ends.
+
+Searching brings up lots of stuff on flash filesystems, but nothing on
+such a simplified requirement.
+
+Regards,
+MikeW
