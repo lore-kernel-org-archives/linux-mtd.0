@@ -1,17 +1,23 @@
-Received: from [210.94.41.89] (helo=july7)
-	by pentafluge.infradead.org with esmtpsa (Exim 4.63 #1 (Red Hat Linux))
-	id 1HRfT2-0007Xx-GD
-	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 02:13:25 +0000
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [MTD] Add get_mtd_blktrans_rq() for getting request queue
-Date: Thu, 15 Mar 2007 11:13:20 +0900
-Message-ID: <002e01c766a7$8304a600$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from ug-out-1314.google.com ([66.249.92.172])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HRqdd-0000eu-F9
+	for linux-mtd@lists.infradead.org; Thu, 15 Mar 2007 14:09:07 +0000
+Received: by ug-out-1314.google.com with SMTP id m2so312480uge
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Mar 2007 06:59:01 -0700 (PDT)
+Message-ID: <625fc13d0703150648w1cb89d7bga2bd3f0337695a37@mail.gmail.com>
+Date: Thu, 15 Mar 2007 08:48:59 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: Some JFFS2 test programs
+In-Reply-To: <625fc13d0703070502s339396v2f35934c888cb9c9@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Reply-To: kmpark@infradead.org
+Content-Disposition: inline
+References: <45EBD82E.4030000@nokia.com>
+	<625fc13d0703070502s339396v2f35934c888cb9c9@mail.gmail.com>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,115 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 0abe5e2ab91f2fb92891c3edf8b408c0dd94d83e Mon Sep 17 00:00:00 2001
-From: Kyungmin Park <kyungmin.park@samsung.com>
-Date: Tue, 13 Mar 2007 10:52:11 +0900
-Subject: [PATCH] [MTD] Add get_mtd_blktrans_rq() for getting request queue
+On 3/7/07, Josh Boyer <jwboyer@gmail.com> wrote:
+> On 3/5/07, Adrian Hunter <ext-adrian.hunter@nokia.com> wrote:
+> >
+> > I have put some JFFS2 test programs here:
+> >
+> >
+> > http://git.infradead.org/?p=users/ahunter/fs-tests.git;a=summary
+>
+> I intend to include these in mtd-utils as soon as I get time and
+> figure out the best way to bring them in.
 
-This exports block request queue for block tracing in MTD.
-As you know the block trace data are stored at request queue.
-Now JFFS2 calls mtd functions directly. So we can't trace JFFS2 behaviors
+Ok, I've added these under tests/fs-tests/ in the mtd-utils package.
+Tests are always welcome, so thanks for submitting these.
 
-If we use the JFFS2 on some mtd partition. Usually we don't use the
-mtdblock.
-Then we can map the block trace data at mtdblock requeust queue.
-
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
- drivers/mtd/mtd_blkdevs.c    |   30 ++++++++++++++++++++++++++++++
- include/linux/mtd/blktrans.h |    2 ++
- 2 files changed, 32 insertions(+), 0 deletions(-)
-
-diff --git a/drivers/mtd/mtd_blkdevs.c b/drivers/mtd/mtd_blkdevs.c
-index b879a66..690b4ab 100644
---- a/drivers/mtd/mtd_blkdevs.c
-+++ b/drivers/mtd/mtd_blkdevs.c
-@@ -23,6 +23,7 @@
- #include <asm/uaccess.h>
- 
- static LIST_HEAD(blktrans_majors);
-+static LIST_HEAD(bt_header);
- 
- extern struct mutex mtd_table_mutex;
- extern struct mtd_info *mtd_table[];
-@@ -309,6 +310,9 @@ int add_mtd_blktrans_dev(struct mtd_blktrans_dev *new)
- 
- 	add_disk(gd);
- 
-+	INIT_LIST_HEAD(&new->bt_list);
-+	list_add_tail(&new->bt_list, &bt_header);
-+
- 	return 0;
- }
- 
-@@ -319,6 +323,7 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 		BUG();
- 	}
- 
-+	list_del(&old->bt_list);
- 	list_del(&old->list);
- 
- 	del_gendisk(old->blkcore_priv);
-@@ -327,6 +332,30 @@ int del_mtd_blktrans_dev(struct mtd_blktrans_dev *old)
- 	return 0;
- }
- 
-+struct request_queue *get_mtd_blktrans_rq(struct mtd_info *mtd, int major)
-+{
-+	struct mtd_blktrans_dev *dev = NULL;
-+	struct mtd_blktrans_ops *tr = NULL;
-+	struct list_head *this;
-+	int found = 0;
-+
-+	mutex_lock(&mtd_table_mutex);
-+	list_for_each(this, &bt_header) {
-+		dev = list_entry(this, struct mtd_blktrans_dev, bt_list);
-+		tr = dev->tr;
-+		if (dev->devnum == mtd->index && tr->major == major) {
-+			found = 1;
-+			break;
-+		}
-+	}
-+	mutex_unlock(&mtd_table_mutex);
-+
-+	if (found)
-+		return tr->blkcore_priv->rq;
-+
-+	return NULL;
-+}
-+
- static void blktrans_notify_remove(struct mtd_info *mtd)
- {
- 	struct list_head *this, *this2, *next;
-@@ -469,6 +498,7 @@ EXPORT_SYMBOL_GPL(register_mtd_blktrans);
- EXPORT_SYMBOL_GPL(deregister_mtd_blktrans);
- EXPORT_SYMBOL_GPL(add_mtd_blktrans_dev);
- EXPORT_SYMBOL_GPL(del_mtd_blktrans_dev);
-+EXPORT_SYMBOL_GPL(get_mtd_blktrans_rq);
- 
- MODULE_AUTHOR("David Woodhouse <dwmw2@infradead.org>");
- MODULE_LICENSE("GPL");
-diff --git a/include/linux/mtd/blktrans.h b/include/linux/mtd/blktrans.h
-index 9a6e2f9..cc1b530 100644
---- a/include/linux/mtd/blktrans.h
-+++ b/include/linux/mtd/blktrans.h
-@@ -21,6 +21,7 @@ struct inode;
- struct mtd_blktrans_dev {
- 	struct mtd_blktrans_ops *tr;
- 	struct list_head list;
-+	struct list_head bt_list;
- 	struct mtd_info *mtd;
- 	struct mutex lock;
- 	int devnum;
-@@ -68,6 +69,7 @@ extern int register_mtd_blktrans(struct mtd_blktrans_ops
-*tr);
- extern int deregister_mtd_blktrans(struct mtd_blktrans_ops *tr);
- extern int add_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
- extern int del_mtd_blktrans_dev(struct mtd_blktrans_dev *dev);
-+extern struct request_queue *get_mtd_blktrans_rq(struct mtd_info *mtd, int
-major);
- 
- 
- #endif /* __MTD_TRANS_H__ */
--- 
-1.4.4.2
+josh
