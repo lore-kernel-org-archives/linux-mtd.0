@@ -1,19 +1,19 @@
 Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
 	helo=tmnt04.transmode.se)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HSF47-0006Vs-0E
-	for linux-mtd@lists.infradead.org; Fri, 16 Mar 2007 16:14:05 +0000
-Subject: Re: [PATCH] Obsolete nodes that are unlinked when possible
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <1174059907.26465.228.camel@gentoo-jocke.transmode.se>
-References: <1174059907.26465.228.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
+	id 1HSFrD-0008TG-Su
+	for linux-mtd@lists.infradead.org; Fri, 16 Mar 2007 17:04:51 +0000
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: <dedekind@infradead.org>
+Subject: RE: [PATCH] Obsolete nodes that are unlinked when possible
+Date: Fri, 16 Mar 2007 18:04:42 +0100
+Message-ID: <006e01c767ed$30828a40$0667a8c0@Jocke>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date: Fri, 16 Mar 2007 17:14:00 +0100
-Message-Id: <1174061640.26465.235.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+In-Reply-To: <1174062429.11160.10.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-03-16 at 16:45 +0100, Joakim Tjernlund wrote:
-> >From d3e51689869fae928f6289307452a698359302ff Mon Sep 17 00:00:00 2001
-> From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> Date: Fri, 16 Mar 2007 16:15:45 +0100
-> Subject: [PATCH] Obsolete nodes that are unlinked when possible.
-> 
-> 
-> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> ---
->  fs/jffs2/write.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
-> index 6717679..57a79a6 100644
-> --- a/fs/jffs2/write.c
-> +++ b/fs/jffs2/write.c
-> @@ -507,8 +507,7 @@ int jffs2_do_unlink(struct jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
->  	uint32_t alloclen;
->  	int ret;
->  
-> -	if (1 /* alternative branch needs testing */ ||
-> -	    !jffs2_can_mark_obsolete(c)) {
-> +	if (!jffs2_can_mark_obsolete(c)) {
->  		/* We can't mark stuff obsolete on the medium. We need to write a deletion dirent */
->  
->  		rd = jffs2_alloc_raw_dirent();
+ 
 
-Ouch, I just discovered that JFFS2_SUMMARY disables
-jffs2_can_mark_obsolete(c). Is this really needed for all
-obsolete cases?
+> -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
+> Sent: den 16 mars 2007 17:27
+> To: joakim.tjernlund@transmode.se
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Re: [PATCH] Obsolete nodes that are unlinked when possible
+> 
+> Hi Joakim,
+> 
+> On Fri, 2007-03-16 at 17:14 +0100, Joakim Tjernlund wrote:
+> > Ouch, I just discovered that JFFS2_SUMMARY disables
+> > jffs2_can_mark_obsolete(c). Is this really needed for all
+> > obsolete cases?
+> > 
+> > SUMMARY really implies that a better automatic GC is needed, since
+> > your
+> > fs will be littered with deletion entries. 
+> 
+> I am not the author of this stuff, so I probably not the right person
+> for CC :-)
 
-SUMMARY really implies that a better automatic GC is needed, since your
-fs will be littered with deletion entries.
+Oh, I took your name from memory. Obviously my memory
+can't be trusted anymore :) 
+
+> But it is understandable why they did this - because 
+> otherwise it would
+> need marking corresponding entries in summary as obsolete, 
+> and here you
+> have a problem of an unclean reboot between marking the node and the
+> summary entry obsolete.
+
+Would bad things happen if an unclean reboot happens or will
+you just loose some performance?
 
  Jocke
+
+PS.
+   Do you know whats wrong with the list? Havn't got any mail from
+   it for a week.
