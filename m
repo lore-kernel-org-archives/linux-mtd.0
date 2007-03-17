@@ -1,22 +1,20 @@
-Received: from nf-out-0910.google.com ([64.233.182.184])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HSYEo-0007iY-DD
-	for linux-mtd@lists.infradead.org; Sat, 17 Mar 2007 08:42:25 -0400
-Received: by nf-out-0910.google.com with SMTP id h2so496220nfe
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 17 Mar 2007 05:42:20 -0700 (PDT)
-Message-ID: <625fc13d0703170542t2ccd0db4p71c62760874d7829@mail.gmail.com>
-Date: Sat, 17 Mar 2007 07:42:20 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Tian Jin" <tad2k@msn.com>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HSYqB-0008Dl-6O
+	for linux-mtd@lists.infradead.org; Sat, 17 Mar 2007 09:21:02 -0400
 Subject: Re: how can I use MTD partition with large size ( >= 4G bytes)?
-In-Reply-To: <BAY107-F20DDEF29A5BA389380A768ED700@phx.gbl>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Josh Boyer <jwboyer@gmail.com>
+In-Reply-To: <625fc13d0703170542t2ccd0db4p71c62760874d7829@mail.gmail.com>
 References: <BAY107-F20DDEF29A5BA389380A768ED700@phx.gbl>
-Cc: linux-mtd@lists.infradead.org
+	<625fc13d0703170542t2ccd0db4p71c62760874d7829@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 17 Mar 2007 15:20:53 +0200
+Message-Id: <1174137653.11927.18.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Tian Jin <tad2k@msn.com>, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 3/17/07, Tian Jin <tad2k@msn.com> wrote:
-> Hi, I want to use NAND flash chips to storage large audio data, the max
-> storage size will be 3.6G bytes=A3=A8may be 7G bytes in the future=A3(c),=
- so I have
-> to use four 1GB NAND flash chips to make up a single 4GB MTD partition, b=
+On Sat, 2007-03-17 at 07:42 -0500, Josh Boyer wrote:
+> > I've tried to modify the data type of mtd->size to usinged long long, b=
 ut
-> mtd->size was defined as 32bit integer in MTD driver(linux-2.6.20-rc1), s=
-o
-> mtd->size just overflowed in function nand_scan_ident():
->
-> /* Store the number of chips and calc total size for mtd */
-> chip->numchips =3D i;
-> mtd->size =3D i * chip->chipsize; // 4 * 40000000 =3D 0x100000000 =3D 0xF=
-FFFFFFF +
-> 0x01
->
-> I've tried to modify the data type of mtd->size to usinged long long, but
-> kernel can not be compiled successfully=A3=ACIs there any solution for th=
-is?
+> > kernel can not be compiled successfully=C2=A3=C2=ACIs there any solutio=
+n for this?
+>=20
+> Not at the moment.  MTD doesn't support things greater than 4GiB.
+Yeah.
 
-Not at the moment.  MTD doesn't support things greater than 4GiB.
+We should re-work whole MTD and make it use (eraseblock number):(offset
+withing eraseblock) addresses, instead of absolute offsets. This implies
+changing interfaces. For the in-kernel ones it is not a problem. For the
+userspace ones it is. I guess we should just invent new userspace API,
+while preserving the old one. This is a great opportunity to dispose of
+ancient junk at once.
 
-josh
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
