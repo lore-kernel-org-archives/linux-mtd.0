@@ -1,19 +1,22 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HSWT6-0006j7-SI
-	for linux-mtd@lists.infradead.org; Sat, 17 Mar 2007 06:49:03 -0400
-Subject: Re: [PATCH] JFFS2: fix deadlock on error path
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1173788365.5493.31.camel@sauron>
-References: <1173788365.5493.31.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Sat, 17 Mar 2007 12:48:50 +0200
-Message-Id: <1174128530.11927.13.camel@sauron>
-Mime-Version: 1.0
+Received: from nf-out-0910.google.com ([64.233.182.184])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HSYEo-0007iY-DD
+	for linux-mtd@lists.infradead.org; Sat, 17 Mar 2007 08:42:25 -0400
+Received: by nf-out-0910.google.com with SMTP id h2so496220nfe
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 17 Mar 2007 05:42:20 -0700 (PDT)
+Message-ID: <625fc13d0703170542t2ccd0db4p71c62760874d7829@mail.gmail.com>
+Date: Sat, 17 Mar 2007 07:42:20 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Tian Jin" <tad2k@msn.com>
+Subject: Re: how can I use MTD partition with large size ( >= 4G bytes)?
+In-Reply-To: <BAY107-F20DDEF29A5BA389380A768ED700@phx.gbl>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <BAY107-F20DDEF29A5BA389380A768ED700@phx.gbl>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-03-13 at 14:19 +0200, Artem Bityutskiy wrote:
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Subject: [PATCH] JFFS2: fix deadlock on error path
->=20
-> When the MTD driver returns write failure, the following deadlock
-> occures:
->=20
-> We are in __jffs2_flush_wbuf(), we hold &c->wbuf_sem. Write failure.
-> jffs2_wbuf_recover()->jffs2_reserve_space_gc()->jffs2_do_reserve_space()
-> ->jffs2_erase_pending_blocks()->jffs2_flash_read()
->=20
-> and it tries to lock &c->wbuf_sem again. Deadlock.
->=20
-> Reported-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+On 3/17/07, Tian Jin <tad2k@msn.com> wrote:
+> Hi, I want to use NAND flash chips to storage large audio data, the max
+> storage size will be 3.6G bytes=A3=A8may be 7G bytes in the future=A3(c),=
+ so I have
+> to use four 1GB NAND flash chips to make up a single 4GB MTD partition, b=
+ut
+> mtd->size was defined as 32bit integer in MTD driver(linux-2.6.20-rc1), s=
+o
+> mtd->size just overflowed in function nand_scan_ident():
+>
+> /* Store the number of chips and calc total size for mtd */
+> chip->numchips =3D i;
+> mtd->size =3D i * chip->chipsize; // 4 * 40000000 =3D 0x100000000 =3D 0xF=
+FFFFFFF +
+> 0x01
+>
+> I've tried to modify the data type of mtd->size to usinged long long, but
+> kernel can not be compiled successfully=A3=ACIs there any solution for th=
+is?
 
-David,
+Not at the moment.  MTD doesn't support things greater than 4GiB.
 
-please, send this patch to Linus as it is critical enough.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+josh
