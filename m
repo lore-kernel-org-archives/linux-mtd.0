@@ -1,18 +1,23 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HTFWp-0007b0-1S
-	for linux-mtd@lists.infradead.org; Mon, 19 Mar 2007 06:55:59 -0400
-Message-ID: <45FE6C2D.40509@inf.u-szeged.hu>
-Date: Mon, 19 Mar 2007 11:55:41 +0100
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Subject: Re: [PATCH] Obsolete nodes that are unlinked when possible
-References: <006e01c767ed$30828a40$0667a8c0@Jocke>
-In-Reply-To: <006e01c767ed$30828a40$0667a8c0@Jocke>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HTGEX-0008Lb-FD
+	for linux-mtd@lists.infradead.org; Mon, 19 Mar 2007 07:41:04 -0400
+Received: from esebh107.NOE.Nokia.com (esebh107.ntc.nokia.com [172.21.143.143])
+	by mgw-ext11.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l2JBdgZU009211
+	for <linux-mtd@lists.infradead.org>; Mon, 19 Mar 2007 13:40:58 +0200
+Subject: Re: [PATCH] [MTD] NAND: Enhance nandsim to allow arbitrary NAND size
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+In-Reply-To: <45FE6AA7.7000200@nokia.com>
+References: <45FE6AA7.7000200@nokia.com>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 19 Mar 2007 13:40:14 +0200
+Message-Id: <1174304414.17249.11.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim Tjernlund =EDrta:
-> Would bad things happen if an unclean reboot happens or will
-> you just loose some performance?
->  =20
-There were many reason to set jffs2_can_mark_obsolete(c) to 0.
+On Mon, 2007-03-19 at 12:49 +0200, Adrian Hunter wrote:
+> A new module parameter has been added called 'overridesize',
+> which overrides the size that would be determined by the
+> ID bytes. 'overridesize' is specified in erase blocks and
+> as the exponent of a power of two e.g. 5 means a size of
+> 32 erase blocks.
 
-As Artem wrote if we would like to enable we have to mark not only the=20
-node as obsolete but also the summary entry.
+All four patches look good for me, thanks.
 
-It is not too easy because of the followings:
-- If you would like to modify the summary node on the flash it breaks=20
-the CRC of the summary node. A solutions can be: the ACCURATE bit should=20
-not included in the CRC. An other (worse) solution can be: when we=20
-obsolate a node we overwrite the summary magic with 0, and at the next=20
-mount the system will scan the erase block instead of using the summary=20
-(peformance penalty).
-- We also have to take care about not only the already written out=20
-summary. The summary is written out when the jffs2 close an erase block.=20
-If you want to mark obsolete a node in the unclosed eraseblock=20
-(nextblock) you should obsolate it in the collected summary, too.=20
-However it is not a big task, but also needs code modification and testin=
-g.
-
-Ferenc
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
