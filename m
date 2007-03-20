@@ -1,20 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HTiek-00018L-KS
-	for linux-mtd@lists.infradead.org; Tue, 20 Mar 2007 14:02:00 -0400
-Subject: Re: JFFS2: BUG: sleeping function called from invalid context
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-In-Reply-To: <45FFBCC6.8010800@nokia.com>
-References: <45FFBCC6.8010800@nokia.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 20 Mar 2007 20:01:37 +0200
-Message-Id: <1174413697.17249.126.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Date: Wed, 21 Mar 2007 00:02:39 +0300
+From: Igor Marnat <marny@rambler.ru>
+Message-ID: <1014706625.20070321000239@rambler.ru>
+To: linux-mtd-bounces@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: jffs2_gcd_mtd0 invoked oom-killer
+In-Reply-To: <1174323006.13341.504.camel@localhost.localdomain>
+References: <16125243125.20070312152801@rambler.ru>
+	<1173705053.5493.28.camel@sauron> <41978953.20070319084552@rambler.ru>
+	<1174288746.13341.490.camel@localhost.localdomain>
+	<9323738734.20070319144832@rambler.ru>
+	<1174323006.13341.504.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: Igor Marnat <marny@rambler.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,51 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-03-20 at 12:51 +0200, Adrian Hunter wrote:
-> BUG: sleeping function called from invalid context at include/linux/write=
-back.h:76
-> in_atomic():1, irqs_disabled():0
-> 2 locks held by jffs2_gcd_mtd0/5710:
->  #0:  (&c->wbuf_sem){----}, at: [<f8b09814>] jffs2_flash_writev+0x67/0x5c=
-0 [jffs2]
->  #1:  (&c->erase_completion_lock){--..}, at: [<f8b085f8>] jffs2_wbuf_reco=
-ver+0xb03/0x11f1 [jffs2]
->  [<c01040df>] show_trace_log_lvl+0x1a/0x30
->  [<c0104806>] show_trace+0x12/0x14
->  [<c01048aa>] dump_stack+0x16/0x18
->  [<c011cee4>] __might_sleep+0xb8/0xcb
->  [<c0181ed9>] ifind_fast+0x48/0x86
->  [<c01821d9>] iget_locked+0x2a/0x133
->  [<f8b06713>] jffs2_gc_fetch_inode+0x18e/0x229 [jffs2]
->  [<f8b08853>] jffs2_wbuf_recover+0xd5e/0x11f1 [jffs2]
->  [<f8b0909c>] __jffs2_flush_wbuf+0x3b6/0x791 [jffs2]
->  [<f8b09b14>] jffs2_flash_writev+0x367/0x5c0 [jffs2]
->  [<f8afb59f>] jffs2_write_dnode+0x180/0x403 [jffs2]
->  [<f8b02626>] jffs2_garbage_collect_dnode+0x7d3/0x8cd [jffs2]
->  [<f8b004b8>] jffs2_garbage_collect_live+0x242/0x31e [jffs2]
->  [<f8b00148>] jffs2_garbage_collect_pass+0x99b/0xac9 [jffs2]
->  [<f8b04ad7>] jffs2_garbage_collect_thread+0x341/0x396 [jffs2]
->  [<c0103d53>] kernel_thread_helper+0x7/0x14
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Hello Thomas,
 
-This function seems to be completely broken. JFF2 calls iget() while
-holding c->erase_completion_lock spinlock. This is one problem. Iget can
-sleep.
+TG>  Invalid Inode      node at 0x000253ec, totlen 0x00000130, #ino   1807, version 106033, isize 428154883, csize     4597, dsize     4597, offset 37875712
+TG>  Invalid Inode      node at 0x00025a14, totlen 0x00000046, #ino   8620, version 470658, isize 1019416371, csize     3596, dsize     3596, offset  5997846
+TG>  Invalid Inode      node at 0x00025e20, totlen 0x00000091, #ino   8620, version 470663, isize  5997941, csize 3438493594, dsize 4294927703, offset  5997864
 
-The other one is that JFFS2 calls jffs2_gc_fetch_inode() while holding
-c->alloc_sem and c->wbuf_sem semaphores. What happens if JFFS2 races
-with pdflush, and pdflush wins, clears inode, then VFS calls
-read_inode() to satisfy JFFS2's iget() request. It is a _deadlock_
-because the in read_inode JFFS2 will try to lock the above semaphores
-again.
+TG> Interrestingly enough are the node CRCs of some of the nodes intact, so
+TG> the corruption must have happened before writing to flash.
 
-The wbuf recovery function has to be re-worked or just disabled -
-because returning error is better then fall into a deadlock.
+TG> Does the patch below help ?
 
-David,
-comments, ideas?
+Unfortunately no, it still crashes in the same way.
 
---=20
+Should I attach any debug output or something?
+
+-- 
 Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Igor Marnat
+mailto:marny@rambler.ru
