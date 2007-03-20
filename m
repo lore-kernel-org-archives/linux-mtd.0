@@ -1,18 +1,16 @@
-Received: from server37.tchmachines.com ([69.50.193.27])
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HTUNb-0001Ld-05
-	for linux-mtd@lists.infradead.org; Mon, 19 Mar 2007 22:47:20 -0400
-Received: from archite by server37.tchmachines.com with local (Exim 4.63)
-	(envelope-from <linux@architechnical.net>) id 1HTUNW-0006qn-P8
-	for linux-mtd@lists.infradead.org; Mon, 19 Mar 2007 22:47:14 -0400
-Message-ID: <62764.69.30.123.186.1174358834.squirrel@www.architechnical.net>
-Date: Mon, 19 Mar 2007 19:47:14 -0700 (PDT)
-Subject: ST NAND flash + u-boot + linux
-From: "Pete MacKay" <linux@architechnical.net>
-To: linux-mtd@lists.infradead.org
+	id 1HTbxr-0005CC-28
+	for linux-mtd@lists.infradead.org; Tue, 20 Mar 2007 06:53:17 -0400
+Message-ID: <45FFBCC6.8010800@nokia.com>
+Date: Tue, 20 Mar 2007 12:51:50 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2: BUG: sleeping function called from invalid context
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +20,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've seen two posts in the past month pertaining to problems with these
-8-bit NANDs, and I can sympathize after trying to get root to mount on a
-512R3A myself.  The first problem seemed to be a non-standard OOB layout
-causing the block to be marked bad when formatted for or loaded with
-jffs2.  We still battled with mounting a rootfs taking far too long to
-mount after writing two custom drivers, and the design was spun to the
-16-bit OneNAND that we're debugging now.
+When testing how JFFS2 handles write errors, the following message appears:
 
-I'd love to hear from people who have been successful with the ST NANDs if
-they had to write custom drivers?  Did you customize a software ECC layout
-too?
+BUG: sleeping function called from invalid context at include/linux/writeback.h:76
 
-Mete, if there's a way you can boot and mount a non-root jffs2 image on
-this, first check to see if your file system has no space left after the
-clean-marker scan.  Even without Linux you can use u-boot to check the OOB
-data in the partition to see if the blocks are being marked bad (I think
-it was byte 5, if I remember?  0xFF = good).
+Here is the terminal output:
 
-Good Luck!
+
+
+# uname -a
+Linux ahunter-desktop 2.6.20ded11 #13 SMP PREEMPT Mon Mar 19 16:20:42 EET 2007 i686 GNU/Linux
+# insmod $NANDSIM weakpages=444
+NAND device: Manufacturer ID: 0x98, Chip ID: 0x39 (Toshiba NAND 8MiB 1,8V 8-bit)
+flash size: 8 MiB
+page size: 512 bytes
+OOB area size: 16 bytes
+sector size: 8 KiB
+pages number: 16384
+pages per sector: 16
+bus width: 8
+bits in sector size: 13
+bits in page size: 9
+bits in OOB size: 4
+flash size with OOB: 8448 KiB
+page address bytes: 3
+sector address bytes: 2
+options: 0x62
+Scanning device for bad blocks
+Creating 1 MTD partitions on "NAND 8MiB 1,8V 8-bit":
+0x00000000-0x00800000 : "NAND simulator partition 0"
+# mount -t jffs2 mtd0 /mnt/test_file_system
+JFFS2 version 2.2. (NAND) (SUMMARY)  (C) 2001-2006 Red Hat, Inc.
+# pwd
+/home/git/fs-tests/integrity
+# ./integck -n0
+[nandsim] warning: simulating write failure in page 444
+jffs2_flush_wbuf(): Write failed with -5
+In jffs2_wbuf_recover
+Skipping node at 0x00036000(3)-0x000361c0 which is either before 0x00037800 or obsolete
+Skipping node at 0x000361c0(3)-0x00036204 which is either before 0x00037800 or obsolete
+Skipping node at 0x00036204(3)-0x00036f14 which is either before 0x00037800 or obsolete
+First node to be recovered is at 0x00036f14(3)-0x00037828
+wbuf recover 00036f14-000378fc (2536 bytes in 3 nodes)
+Write 0x800 bytes at 0x007a2000 in wbuf recover
+Recovery of wbuf succeeded to 007a2000
+Refiling block of 00000914 at 00036f14(3) to 007a2000
+calling jffs2_gc_fetch_inode
+BUG: sleeping function called from invalid context at include/linux/writeback.h:76
+in_atomic():1, irqs_disabled():0
+2 locks held by jffs2_gcd_mtd0/5710:
+ #0:  (&c->wbuf_sem){----}, at: [<f8b09814>] jffs2_flash_writev+0x67/0x5c0 [jffs2]
+ #1:  (&c->erase_completion_lock){--..}, at: [<f8b085f8>] jffs2_wbuf_recover+0xb03/0x11f1 [jffs2]
+ [<c01040df>] show_trace_log_lvl+0x1a/0x30
+ [<c0104806>] show_trace+0x12/0x14
+ [<c01048aa>] dump_stack+0x16/0x18
+ [<c011cee4>] __might_sleep+0xb8/0xcb
+ [<c0181ed9>] ifind_fast+0x48/0x86
+ [<c01821d9>] iget_locked+0x2a/0x133
+ [<f8b06713>] jffs2_gc_fetch_inode+0x18e/0x229 [jffs2]
+ [<f8b08853>] jffs2_wbuf_recover+0xd5e/0x11f1 [jffs2]
+ [<f8b0909c>] __jffs2_flush_wbuf+0x3b6/0x791 [jffs2]
+ [<f8b09b14>] jffs2_flash_writev+0x367/0x5c0 [jffs2]
+ [<f8afb59f>] jffs2_write_dnode+0x180/0x403 [jffs2]
+ [<f8b02626>] jffs2_garbage_collect_dnode+0x7d3/0x8cd [jffs2]
+ [<f8b004b8>] jffs2_garbage_collect_live+0x242/0x31e [jffs2]
+ [<f8b00148>] jffs2_garbage_collect_pass+0x99b/0xac9 [jffs2]
+ [<f8b04ad7>] jffs2_garbage_collect_thread+0x341/0x396 [jffs2]
+ [<c0103d53>] kernel_thread_helper+0x7/0x14
+ =======================
+Refiling block of 0000008c at 00037828(3) to 007a2914
+calling jffs2_gc_fetch_inode
+Refiling block of 00000048 at 000378b4(2) to 007a29a0
+calling jffs2_gc_fetch_inode
+wbuf recovery completed OK. wbuf_ofs 0x007a2800, len 0x1e8
