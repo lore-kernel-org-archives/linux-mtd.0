@@ -1,16 +1,26 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HTbxr-0005CC-28
-	for linux-mtd@lists.infradead.org; Tue, 20 Mar 2007 06:53:17 -0400
-Message-ID: <45FFBCC6.8010800@nokia.com>
-Date: Tue, 20 Mar 2007 12:51:50 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HTdKL-0008Rr-Ey
+	for linux-mtd@lists.infradead.org; Tue, 20 Mar 2007 12:20:35 +0000
+Received: from root by ciao.gmane.org with local (Exim 4.43)
+	id 1HTdJr-0001Cj-Fr
+	for linux-mtd@lists.infradead.org; Tue, 20 Mar 2007 13:20:03 +0100
+Received: from obelix.objectxp.com ([62.2.156.213])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2007 13:20:03 +0100
+Received: from mma by obelix.objectxp.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 20 Mar 2007 13:20:03 +0100
 To: linux-mtd@lists.infradead.org
-Subject: JFFS2: BUG: sleeping function called from invalid context
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+From: Michel Marti <mma@objectxp.com>
+Subject: JFFS2: Filesystem corruption after umount/mount
+Date: Tue, 20 Mar 2007 13:15:56 +0100
+Message-ID: <etoj9s$b84$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-kernel@vger.kernel.org
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,76 +30,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When testing how JFFS2 handles write errors, the following message appears:
+Hello,
 
-BUG: sleeping function called from invalid context at include/linux/writeback.h:76
+I'm experiencing a strange problem with JFFS2 using Linux 2.6.21-rc4-g78157a82 from
+denx.de on PowerPC. After unmounting and remounting the filesystem, some directory entries
+are corrupt. See the transcript below.
 
-Here is the terminal output:
+Flash in use is a Spansion S29GL256N. I'm using the physmap driver and pass the MTD
+partition layout on the kernel command line.
+
+# eraseall /dev/mtd3
+# mount -t jffs2 /dev/mtdblock3 /mnt
+# touch /mnt/printf /mnt/printenv
+# ls -l /mnt
+-rw-r--r--    1 root     root            0 Jan  1 00:37 printenv
+-rw-r--r--    1 root     root            0 Jan  1 00:37 printf
+
+# umount /mnt
+# mount -t jffs2 /dev/mtdblock3 /mnt
+# ls -l /mnt
+ls: /mnt/prin: No such file or directory
+-rw-r--r--    1 root     root            0 Jan  1 00:37 printf
 
 
+# umount /mnt
+# eraseall /dev/mtd3
+# mount -t jffs2 /dev/mtdblock3 /mnt
+# for I in `seq 0 9`; do F=$F$I; touch /mnt/$F; done
+# ls -l /mnt
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0
+-rw-r--r--    1 root     root            0 Jan  1 00:50 01
+-rw-r--r--    1 root     root            0 Jan  1 00:50 012
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123
+-rw-r--r--    1 root     root            0 Jan  1 00:50 01234
+-rw-r--r--    1 root     root            0 Jan  1 00:50 012345
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123456
+-rw-r--r--    1 root     root            0 Jan  1 00:50 01234567
+-rw-r--r--    1 root     root            0 Jan  1 00:50 012345678
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123456789
 
-# uname -a
-Linux ahunter-desktop 2.6.20ded11 #13 SMP PREEMPT Mon Mar 19 16:20:42 EET 2007 i686 GNU/Linux
-# insmod $NANDSIM weakpages=444
-NAND device: Manufacturer ID: 0x98, Chip ID: 0x39 (Toshiba NAND 8MiB 1,8V 8-bit)
-flash size: 8 MiB
-page size: 512 bytes
-OOB area size: 16 bytes
-sector size: 8 KiB
-pages number: 16384
-pages per sector: 16
-bus width: 8
-bits in sector size: 13
-bits in page size: 9
-bits in OOB size: 4
-flash size with OOB: 8448 KiB
-page address bytes: 3
-sector address bytes: 2
-options: 0x62
-Scanning device for bad blocks
-Creating 1 MTD partitions on "NAND 8MiB 1,8V 8-bit":
-0x00000000-0x00800000 : "NAND simulator partition 0"
-# mount -t jffs2 mtd0 /mnt/test_file_system
-JFFS2 version 2.2. (NAND) (SUMMARY)  (C) 2001-2006 Red Hat, Inc.
-# pwd
-/home/git/fs-tests/integrity
-# ./integck -n0
-[nandsim] warning: simulating write failure in page 444
-jffs2_flush_wbuf(): Write failed with -5
-In jffs2_wbuf_recover
-Skipping node at 0x00036000(3)-0x000361c0 which is either before 0x00037800 or obsolete
-Skipping node at 0x000361c0(3)-0x00036204 which is either before 0x00037800 or obsolete
-Skipping node at 0x00036204(3)-0x00036f14 which is either before 0x00037800 or obsolete
-First node to be recovered is at 0x00036f14(3)-0x00037828
-wbuf recover 00036f14-000378fc (2536 bytes in 3 nodes)
-Write 0x800 bytes at 0x007a2000 in wbuf recover
-Recovery of wbuf succeeded to 007a2000
-Refiling block of 00000914 at 00036f14(3) to 007a2000
-calling jffs2_gc_fetch_inode
-BUG: sleeping function called from invalid context at include/linux/writeback.h:76
-in_atomic():1, irqs_disabled():0
-2 locks held by jffs2_gcd_mtd0/5710:
- #0:  (&c->wbuf_sem){----}, at: [<f8b09814>] jffs2_flash_writev+0x67/0x5c0 [jffs2]
- #1:  (&c->erase_completion_lock){--..}, at: [<f8b085f8>] jffs2_wbuf_recover+0xb03/0x11f1 [jffs2]
- [<c01040df>] show_trace_log_lvl+0x1a/0x30
- [<c0104806>] show_trace+0x12/0x14
- [<c01048aa>] dump_stack+0x16/0x18
- [<c011cee4>] __might_sleep+0xb8/0xcb
- [<c0181ed9>] ifind_fast+0x48/0x86
- [<c01821d9>] iget_locked+0x2a/0x133
- [<f8b06713>] jffs2_gc_fetch_inode+0x18e/0x229 [jffs2]
- [<f8b08853>] jffs2_wbuf_recover+0xd5e/0x11f1 [jffs2]
- [<f8b0909c>] __jffs2_flush_wbuf+0x3b6/0x791 [jffs2]
- [<f8b09b14>] jffs2_flash_writev+0x367/0x5c0 [jffs2]
- [<f8afb59f>] jffs2_write_dnode+0x180/0x403 [jffs2]
- [<f8b02626>] jffs2_garbage_collect_dnode+0x7d3/0x8cd [jffs2]
- [<f8b004b8>] jffs2_garbage_collect_live+0x242/0x31e [jffs2]
- [<f8b00148>] jffs2_garbage_collect_pass+0x99b/0xac9 [jffs2]
- [<f8b04ad7>] jffs2_garbage_collect_thread+0x341/0x396 [jffs2]
- [<c0103d53>] kernel_thread_helper+0x7/0x14
- =======================
-Refiling block of 0000008c at 00037828(3) to 007a2914
-calling jffs2_gc_fetch_inode
-Refiling block of 00000048 at 000378b4(2) to 007a29a0
-calling jffs2_gc_fetch_inode
-wbuf recovery completed OK. wbuf_ofs 0x007a2800, len 0x1e8
+# umount /mnt
+# mount -t jffs2 /dev/mtdblock3 /mnt
+# ls -l /mnt
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0
+-rw-r--r--    1 root     root            0 Jan  1 00:50 01
+-rw-r--r--    1 root     root            0 Jan  1 00:50 012
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123
+-rw-r--r--    1 root     root            0 Jan  1 00:50 01234
+-rw-r--r--    1 root     root            0 Jan  1 00:50 012345
+-rw-r--r--    1 root     root            0 Jan  1 00:50 0123456
+
+
+I also read back the mtd device after erasing it and it contains 0xFF bytes only.
+Additionally, I copied a jffs2 image to the device, read it back and compared it to the
+image and there was no difference.
+
+(relevant) Output from kernel on startup:
+
+physmap platform flash device: 02000000 at fc000000
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
+ Amd/Fujitsu Extended Query Table at 0x0040
+physmap-flash.0: CFI does not contain boot bank location. Assuming top.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
+4 cmdlinepart partitions found on MTD device physmap-flash.0
+Adding 4 parsed mtd-partitions...
+Creating 4 MTD partitions on "physmap-flash.0":
+0x00000000-0x00040000 : "U"
+0x00060000-0x00160000 : "K"
+0x00160000-0x01f00000 : "R"
+0x01f00000-0x02000000 : "C"
+
+
+Any Hints?
+
+--Michel
+
+
+PS: I posted this to the jffs-dev list first, but somehow my post seems to have got
+lost... In case it unexpectedly pops up there too: Sorry for the double posting.
