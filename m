@@ -1,7 +1,11 @@
-Date: Wed, 21 Mar 2007 00:02:39 +0300
+Received: from ns.tz.ru ([194.149.234.1])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HTvxq-0007xL-Kv
+	for linux-mtd@lists.infradead.org; Wed, 21 Mar 2007 04:14:35 -0400
+Date: Wed, 21 Mar 2007 11:14:28 +0300
 From: Igor Marnat <marny@rambler.ru>
-Message-ID: <1014706625.20070321000239@rambler.ru>
-To: linux-mtd-bounces@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>
+Message-ID: <1055017593.20070321111428@rambler.ru>
+To: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: jffs2_gcd_mtd0 invoked oom-killer
 In-Reply-To: <1174323006.13341.504.camel@localhost.localdomain>
 References: <16125243125.20070312152801@rambler.ru>
@@ -25,18 +29,15 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hello Thomas,
 
-TG>  Invalid Inode      node at 0x000253ec, totlen 0x00000130, #ino   1807, version 106033, isize 428154883, csize     4597, dsize     4597, offset 37875712
-TG>  Invalid Inode      node at 0x00025a14, totlen 0x00000046, #ino   8620, version 470658, isize 1019416371, csize     3596, dsize     3596, offset  5997846
-TG>  Invalid Inode      node at 0x00025e20, totlen 0x00000091, #ino   8620, version 470663, isize  5997941, csize 3438493594, dsize 4294927703, offset  5997864
-
 TG> Interrestingly enough are the node CRCs of some of the nodes intact, so
 TG> the corruption must have happened before writing to flash.
 
-TG> Does the patch below help ?
+Loop "while (valid_ref)" (those that become infinite) in jffs2_get_inode_nodes also contains crc
+checking of nodes. They are checked in order of proceeding.
 
-Unfortunately no, it still crashes in the same way.
-
-Should I attach any debug output or something?
+It doesn't complain about nodes' crc, so it seems
+that crc are ok. So I don't think that crc checking of chain of nodes
+helps here.
 
 -- 
 Best regards,
