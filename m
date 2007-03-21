@@ -1,20 +1,19 @@
-Received: from [202.38.127.182] (helo=opentech.lzu.edu.cn)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HU1yR-0006Na-OG
-	for linux-mtd@lists.infradead.org; Wed, 21 Mar 2007 14:39:39 +0000
-Received: from localhost ([127.0.0.1] helo=localhost.localdomain ident=list)
-	by opentech.lzu.edu.cn with esmtp (Exim 4.50) id 1HU1sM-0003OF-0z
-	for linux-mtd@lists.infradead.org; Wed, 21 Mar 2007 22:33:18 +0800
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HU2LX-00041X-7E
+	for linux-mtd@lists.infradead.org; Wed, 21 Mar 2007 11:03:28 -0400
+Subject: Re: [PATCH] [MTD] NAND: Adding Micron MFR Id
+From: Thomas Gleixner <tglx@linutronix.de>
+To: sshahrom@micron.com
+In-Reply-To: <809D758398CC1F49AA8E493528AD4A27014DF5FB@ntxsjombx02.micron.com>
+References: <809D758398CC1F49AA8E493528AD4A27014DF5FB@ntxsjombx02.micron.com>
+Content-Type: text/plain
+Date: Wed, 21 Mar 2007 16:10:38 +0100
+Message-Id: <1174489838.10840.94.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Subject: You have been unsubscribed from the Dslab-programming mailing list
-From: dslab-programming-bounces@opentech.lzu.edu.cn
-To: linux-mtd@lists.infradead.org
-Message-ID: <mailman.3.1174487494.18697.dslab-programming@opentech.lzu.edu.cn>
-Date: Wed, 21 Mar 2007 22:31:34 +0800
-Sender: dslab-programming-bounces@opentech.lzu.edu.cn
-Errors-To: dslab-programming-bounces@opentech.lzu.edu.cn
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,3 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2007-03-19 at 09:30 -0700, sshahrom@micron.com wrote:
+> Hello,
+> Adding Micron manufacturing ID.
+> 
+> Signed-off-by: Shahrom Sharif <sshahrom@micron.com>
+
+patching file drivers/mtd/nand/nand_ids.c
+Hunk #1 FAILED at 137.
+1 out of 1 hunk FAILED -- saving rejects to file drivers/mtd/nand/nand_ids.c.rej
+patching file include/linux/mtd/nand.h
+Hunk #1 FAILED at 431.
+1 out of 1 hunk FAILED -- saving rejects to file include/linux/mtd/nand.h.rej
+
+Your patch is whitespace damaged, please fix your mail client or your editor.
+
+	tglx	
