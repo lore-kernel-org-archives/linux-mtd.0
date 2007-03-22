@@ -1,13 +1,20 @@
-Date: Thu, 22 Mar 2007 14:52:31 +0100
-From: Hajime Bada <highland4x4@shaw.ca>
-Subject: MICROSOFT LOTTERY 2007
-Message-id: <cf7cf50735458.4602982f@shaw.ca>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: en
-Content-transfer-encoding: 7bit
-Content-disposition: inline
-Reply-To: microsoftclaimsagent5@yahoo.com.ar
+Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUNkJ-0003AN-Dj
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 09:54:45 -0400
+Message-ID: <46028A97.1010703@ru.mvista.com>
+Date: Thu, 22 Mar 2007 16:54:31 +0300
+From: Vitaly Wool <vwool@ru.mvista.com>
+MIME-Version: 1.0
+To: joakim.tjernlund@transmode.se
+Subject: Re: JFFS2 SUMMARY nodes aren't working
+References: <1174569321.26465.308.camel@gentoo-jocke.transmode.se>	
+	<46028675.30200@ru.mvista.com>
+	<1174571529.26465.311.camel@gentoo-jocke.transmode.se>
+In-Reply-To: <1174571529.26465.311.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,26 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Joakim Tjernlund wrote:
 
+>On Thu, 2007-03-22 at 16:36 +0300, Vitaly Wool wrote:
+>  
+>
+>>Joakim Tjernlund wrote:
+>>
+>>    
+>>
+>>>On a fresh JFFS2 root FS image with summary nodes there is no
+>>>difference in mount time when enabling summary support in kernel(2.6.20,
+>>>powerpc).
+>>> 
+>>>
+>>>      
+>>>
+>>Can you please elaborate on how you got the image with summary nodes?
+>>    
+>>
+>
+>>From my JFFS2 build script:
+>mkfs.jffs2 -e 0x20000 -b -d jffs2root -o "${JFFS2FILE}.tmp" || exit
+>sumtool -e 0x20000 -b -i "${JFFS2FILE}.tmp" -o "${JFFS2FILE}" || exit
+>  
+>
+Ok, can you try starting from a bare filesystem? I.e. erase the
+partition, copy the files, unmount, mount and see how much time it takes?
 
-We are pleased to inform you of the announcement today of our end of 
-year winners of the MSW MEGA JACKPOT LOTTO WINNINGS PROGRAMS held on 
-27th of February.
-
-Your company or your personal e-mail address, is attached to winning 
-number 8-21-JUN-2007-02MSW, with serial number S/N-00168 drew the lucky 
-numbers 887-13-865-37-10-83, and consequently won in the first lottery 
-category. You have therefore been approved for a lump sum pay out of 
-500,000.00 GBP ( FIVE HUNDRED THOUSAND POUNDS STERLING) credited to file 
-REF NO: MSW-L/200-26937. This is from total prize money of GBP 
-2,500,000.00 POUNDS, shared among the Five (5)international winners in this 
-category.
-
-To claim your winning prize, you must first contact the claims 
-department by email.The claims officer contact email is: 
-
-Name: MR.ANTHONY WALKER
-E-mail:microsoftclaimsagent5@yahoo.com.ar
-
-Sincerely,
-Mr.Anthony Walker.
+Vitaly
