@@ -1,15 +1,19 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HUJj1-0007DH-Di
-	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 05:36:53 -0400
-Message-ID: <46024E33.10406@ru.mvista.com>
-Date: Thu, 22 Mar 2007 12:36:51 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: bug in drivers/mtd/onenand/onenand_base.c?
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUKcs-0007w6-Lj
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 06:34:35 -0400
+Subject: Re: bug in drivers/mtd/onenand/onenand_base.c?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vitaly Wool <vwool@ru.mvista.com>
+In-Reply-To: <46024E33.10406@ru.mvista.com>
+References: <46024E33.10406@ru.mvista.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 22 Mar 2007 12:34:29 +0200
+Message-Id: <1174559669.17249.223.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,40 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Thu, 2007-03-22 at 12:36 +0300, Vitaly Wool wrote:
+> The problem is, the entry of oobfree past the last valid=20
+> one should have length 0.
+>=20
+> Here it's not the case: all the entries are occupied by=20
+> OOB chunks. Therefore, once we get into a loop like
+>=20
+>         for (free =3D this->ecclayout->oobfree; free->length; ++free) {
+>=20
+> we might end up scanning past the real oobfree array.
 
-the piece of code below, though looking harmless, might cause side effects:
+We have this fixed in OneNAND.
 
-/**
- * onenand_oob_64 - oob info for large (2KB) page
- */
-static struct nand_ecclayout onenand_oob_64 = {
-        .eccbytes       = 20,
-        .eccpos         = {
-                8, 9, 10, 11, 12,
-                24, 25, 26, 27, 28,
-                40, 41, 42, 43, 44,
-                56, 57, 58, 59, 60,
-                },
-        .oobfree        = {
-                {2, 3}, {14, 2}, {18, 3}, {30, 2},
-                {34, 3}, {46, 2}, {50, 3}, {62, 2}
-        }
-};
-
-The problem is, the entry of oobfree past the last valid 
-one should have length 0.
-
-Here it's not the case: all the entries are occupied by 
-OOB chunks. Therefore, once we get into a loop like
-
-        for (free = this->ecclayout->oobfree; free->length; ++free) {
-
-we might end up scanning past the real oobfree array.
-
-Probably the best way out, as the same thing might happen for common NAND 
-as well, is to check index against MTD_MAX_OOBFREE_ENTRIES.
-
-Comments?
-
-Vitaly
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
