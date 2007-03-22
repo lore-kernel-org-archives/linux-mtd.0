@@ -1,20 +1,28 @@
-Received: from [85.21.88.2] (helo=mail.dev.rtsoft.ru)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HUNkJ-0003AN-Dj
-	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 09:54:45 -0400
-Message-ID: <46028A97.1010703@ru.mvista.com>
-Date: Thu, 22 Mar 2007 16:54:31 +0300
-From: Vitaly Wool <vwool@ru.mvista.com>
-MIME-Version: 1.0
-To: joakim.tjernlund@transmode.se
-Subject: Re: JFFS2 SUMMARY nodes aren't working
-References: <1174569321.26465.308.camel@gentoo-jocke.transmode.se>	
-	<46028675.30200@ru.mvista.com>
-	<1174571529.26465.311.camel@gentoo-jocke.transmode.se>
-In-Reply-To: <1174571529.26465.311.camel@gentoo-jocke.transmode.se>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUOQO-0002Lf-Bs
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 14:37:58 +0000
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HUOQG-0003Yv-3w
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 15:37:48 +0100
+Received: from obelix.objectxp.com ([62.2.156.213])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Mar 2007 15:37:48 +0100
+Received: from mma by obelix.objectxp.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 22 Mar 2007 15:37:48 +0100
+To: linux-mtd@lists.infradead.org
+From: Michel Marti <mma@objectxp.com>
+Subject: Re: JFFS2: Filesystem corruption after umount/mount
+Date: Thu, 22 Mar 2007 15:37:27 +0100
+Message-ID: <etu4b7$idd$1@sea.gmane.org>
+References: <etoj9s$b84$1@sea.gmane.org>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+In-Reply-To: <etoj9s$b84$1@sea.gmane.org>
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +32,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Joakim Tjernlund wrote:
+on 03/20/2007 01:15 PM Michel Marti said the following:
+> I'm experiencing a strange problem with JFFS2 using Linux 2.6.21-rc4-g78157a82 from
+> denx.de on PowerPC. After unmounting and remounting the filesystem, some directory entries
+> are corrupt. See the transcript below.
+> 
+> Flash in use is a Spansion S29GL256N. I'm using the physmap driver and pass the MTD
+> partition layout on the kernel command line.
 
->On Thu, 2007-03-22 at 16:36 +0300, Vitaly Wool wrote:
->  
->
->>Joakim Tjernlund wrote:
->>
->>    
->>
->>>On a fresh JFFS2 root FS image with summary nodes there is no
->>>difference in mount time when enabling summary support in kernel(2.6.20,
->>>powerpc).
->>> 
->>>
->>>      
->>>
->>Can you please elaborate on how you got the image with summary nodes?
->>    
->>
->
->>From my JFFS2 build script:
->mkfs.jffs2 -e 0x20000 -b -d jffs2root -o "${JFFS2FILE}.tmp" || exit
->sumtool -e 0x20000 -b -i "${JFFS2FILE}.tmp" -o "${JFFS2FILE}" || exit
->  
->
-Ok, can you try starting from a bare filesystem? I.e. erase the
-partition, copy the files, unmount, mount and see how much time it takes?
+FYI, applying the patch attached to
 
-Vitaly
+  http://ozlabs.org/pipermail/linuxppc-embedded/2006-April/022558.html
+
+fixes the problem.
+
+
+--Michel
