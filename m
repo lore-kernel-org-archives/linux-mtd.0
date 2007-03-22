@@ -1,7 +1,19 @@
-From: info.webbb2@comcast.net (Web Info)
-Subject: THE COCA COLA COMPANY
-Date: Thu, 22 Mar 2007 09:04:03 +0000
-Message-Id: <032220070904.28439.46024682000A518900006F172216551406CD0D0D0D0A99D201000207@comcast.net>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUJbo-0006xi-40
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 05:29:29 -0400
+Subject: Re: [PATCH/RFC] OneNAND simulator support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <00bf01c76c1c$36997820$c7a3580a@swcenter.sec.samsung.co.kr>
+References: <00bf01c76c1c$36997820$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 22 Mar 2007 11:28:54 +0200
+Message-Id: <1174555734.17249.218.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -11,60 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-COCA COLA COMPANY OFFICIAL PRIZE NOTIFICATION
+On Thu, 2007-03-22 at 09:51 +0900, Kyungmin Park wrote:
+> Hi,
+>=20
+> This patch simulate various OneNAND flash chips for the MTD onenand layer=
+.
+> It's simple implementation, only basic operations.
+> It don't support the recent changes in NANDSIM such as lazy block allocat=
+ion,
+> bitflip, and so on.
+>=20
+> Any comments are welcome.
 
+Did you run our nand-tests to make sure it is OK?
 
-Ref: PBL/CN/6654/CP.
-Coupon No.PBL2348974321
-
-We are pl eased to inform you of the result of the just concluded
-annual final draws held on the  10h Of March 2007 by Coca-Cola
-company
-in
-conjunction with the British American Tobacco Worldwide Promotion.
-Your email was among the 4 Lucky winners who won a lump sum of FIVE
-HUNDRED THOUSAND BRITISH POUNDS STERLINGS (£500,000.000 ) each on THE
-COCA COLA
-COMPANY PROMOTIONS.However the results were released on the 22th of
-March 2007 and your
-email was attached to ticket number (CC/7PWYZ2006) and ballot number
-(CC/BT:12052006/20) The online draws was conducted by a random
-selection
-of email addresses from an exclusive list of 29,031 E-mail addresses of
-individuals and corporate bodies picked by an advanced automated random
-computer search from the internet.
-However,no tickets were sold but all email addresses were assigned to
-different ticket numbers for representation and privacy. The selection
-process
-was carried out through random selection in our computerized e mail
-selection machine
-(TOPAZ) fro m a database of over 250,000 email addresses drawn from all
-the continents of the world This Lottery is approved by the British
-Gaming Board and also Licensed by  the
-International Association of Gaming Regulators (IAGR).
-In other to claim your  prize winning, you are required to fill out the
-Claims Verification form below and send it to the Fiduciary Agent Of 
-THE COCA
-COLA COMPANY for verification and claim processing
-NAME:....................................
-AGE:.......................................    
-SEX:......................................
-ADDRESS:..............................
-EMAIL:....................................
-PHONE:.................................
-OCCUPATION:.........................
-COMPANY:..............................
-COUNTRY:..............................
-Prize Ref No............................
-Lottery Claims Officer:
-Name:Advocate james willies                                                            
-E mail;james.willies@yahoo.co.uk
-Tel : +44 7031 914049
-Congratulations once again On Behalf of the staff And Members Of the
-COCA COLA COMPANIES and therefore advised you to keep your winning
-information
-confidential and restrict from third Party to avoid double or false
-claims of your winning.
-
- Wilford smith,
-(Lottery Coordinator)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
