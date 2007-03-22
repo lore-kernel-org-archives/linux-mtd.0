@@ -1,18 +1,7 @@
-Received: from mail1004.centrum.cz ([213.29.7.171])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HUIdN-00063m-Tu
-	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 04:26:59 -0400
-Received: by mail1004.centrum.cz id S4801248AbXCVI02 (ORCPT
-	<rfc822;linux-mtd@lists.infradead.org>);
-	Thu, 22 Mar 2007 09:26:28 +0100
-Date: Thu, 22 Mar 2007 09:26:28 +0100
-From: "Jakub  =?iso-8859-2?Q?=20Bedn=E1=F8?=" <bednar.jakub@centrum.cz>
-To: <linux-mtd@lists.infradead.org>
-MIME-Version: 1.0
-Message-ID: <200703220926.22574@centrum.cz>
-Subject: NAND flash file system and JFFS2 problem
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+From: info.webbb2@comcast.net (Web Info)
+Subject: THE COCA COLA COMPANY
+Date: Thu, 22 Mar 2007 09:04:03 +0000
+Message-Id: <032220070904.28439.46024682000A518900006F172216551406CD0D0D0D0A99D201000207@comcast.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,32 +11,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-      I've spent long time reading all about mtd devices and I'd like 
-to check if I understood correctly.
+COCA COLA COMPANY OFFICIAL PRIZE NOTIFICATION
 
-1.) The NFTL is usable ONLY for DOC, not for normal NAND flashes.
-      Thats why nftl_format prints unrecognized erase size 0x20000
 
-2.) FTL is usable ONLY with NOR flashes, that's why the ftl_format
-       ends with an error on trying to erase bad block on NAND in dmesg.
+Ref: PBL/CN/6654/CP.
+Coupon No.PBL2348974321
 
-3.) So there should be used JFFS2 on NAND, there is no good and reliable
-       way to run ext2 on NAND.
+We are pl eased to inform you of the result of the just concluded
+annual final draws held on the  10h Of March 2007 by Coca-Cola
+company
+in
+conjunction with the British American Tobacco Worldwide Promotion.
+Your email was among the 4 Lucky winners who won a lump sum of FIVE
+HUNDRED THOUSAND BRITISH POUNDS STERLINGS (£500,000.000 ) each on THE
+COCA COLA
+COMPANY PROMOTIONS.However the results were released on the 22th of
+March 2007 and your
+email was attached to ticket number (CC/7PWYZ2006) and ballot number
+(CC/BT:12052006/20) The online draws was conducted by a random
+selection
+of email addresses from an exclusive list of 29,031 E-mail addresses of
+individuals and corporate bodies picked by an advanced automated random
+computer search from the internet.
+However,no tickets were sold but all email addresses were assigned to
+different ticket numbers for representation and privacy. The selection
+process
+was carried out through random selection in our computerized e mail
+selection machine
+(TOPAZ) fro m a database of over 250,000 email addresses drawn from all
+the continents of the world This Lottery is approved by the British
+Gaming Board and also Licensed by  the
+International Association of Gaming Regulators (IAGR).
+In other to claim your  prize winning, you are required to fill out the
+Claims Verification form below and send it to the Fiduciary Agent Of 
+THE COCA
+COLA COMPANY for verification and claim processing
+NAME:....................................
+AGE:.......................................    
+SEX:......................................
+ADDRESS:..............................
+EMAIL:....................................
+PHONE:.................................
+OCCUPATION:.........................
+COMPANY:..............................
+COUNTRY:..............................
+Prize Ref No............................
+Lottery Claims Officer:
+Name:Advocate james willies                                                            
+E mail;james.willies@yahoo.co.uk
+Tel : +44 7031 914049
+Congratulations once again On Behalf of the staff And Members Of the
+COCA COLA COMPANIES and therefore advised you to keep your winning
+information
+confidential and restrict from third Party to avoid double or false
+claims of your winning.
 
-I've also encountered a problem.
-        I'm using kernel 2.6.16.20 from buildroot on DBAu1550 like board.
-        When running destroy test on Samsung NAND where I had ext2, 
-        I was using programs from busybox placed on NOR flash (jffs2) /dev/mtdblock0. 
-        Links like dd, cp, md5sum.
-
-        NAND was mounted on /mnt/. After creating a 45MB file /mnt/file0 with dd
-        from /dev/zero  and running md5sum, something got wrong and all the links
-        from NOR jffs2 stopped working with lot's of errors in CRC codes. I wasnt writting
-        to the NOR jffs2 but I have it mounted rw.  After rebooting the NOR jffs2 is ok again!
-
-        So maybe it mess up in RAM???  What can couse this trouble?
-
-Thanks a lot for Your answer
-
-Jakub
+ Wilford smith,
+(Lottery Coordinator)
