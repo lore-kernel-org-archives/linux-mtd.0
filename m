@@ -1,21 +1,18 @@
-Received: from masquerade.micron.com ([137.201.242.130])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HUCPS-0007B2-KC
-	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 01:48:13 +0000
-Received: from ntxsjombx02.micron.com (ntxsjombx02.micron.com [10.50.198.3])
-	by masquerade.micron.com (8.13.6/8.13.6) with ESMTP id l2M1m285031928
-	for <linux-mtd@lists.infradead.org>; Wed, 21 Mar 2007 19:48:02 -0600
-From: sshahrom@micron.com
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] [MTD] NAND: Adding Micron MFR ID
-Date: Wed, 21 Mar 2007 18:48:02 -0700
-Message-ID: <809D758398CC1F49AA8E493528AD4A27014DF5FF@ntxsjombx02.micron.com>
+Received: from mail1004.centrum.cz ([213.29.7.171])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUIdN-00063m-Tu
+	for linux-mtd@lists.infradead.org; Thu, 22 Mar 2007 04:26:59 -0400
+Received: by mail1004.centrum.cz id S4801248AbXCVI02 (ORCPT
+	<rfc822;linux-mtd@lists.infradead.org>);
+	Thu, 22 Mar 2007 09:26:28 +0100
+Date: Thu, 22 Mar 2007 09:26:28 +0100
+From: "Jakub  =?iso-8859-2?Q?=20Bedn=E1=F8?=" <bednar.jakub@centrum.cz>
 To: <linux-mtd@lists.infradead.org>
-Cc: sshahrom@micron.com
+MIME-Version: 1.0
+Message-ID: <200703220926.22574@centrum.cz>
+Subject: NAND flash file system and JFFS2 problem
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +22,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+      I've spent long time reading all about mtd devices and I'd like 
+to check if I understood correctly.
 
-Hi,=20
-Sorry for confusion, cleaned up from white space. Added Micron
-Manufacturing ID.
+1.) The NFTL is usable ONLY for DOC, not for normal NAND flashes.
+      Thats why nftl_format prints unrecognized erase size 0x20000
 
-Signed-off-by: Shahrom Sharif <sshahrom@micron.com>
----
-:100644 100644 2e2cdf2... 0000000... M	drivers/mtd/nand/nand_ids.c
-:100644 100644 9752388... 0000000... M	include/linux/mtd/nand.h
+2.) FTL is usable ONLY with NOR flashes, that's why the ftl_format
+       ends with an error on trying to erase bad block on NAND in dmesg.
 
-diff --git a/drivers/mtd/nand/nand_ids.c b/drivers/mtd/nand/nand_ids.c
-index 2e2cdf2..9002077 100644
---- a/drivers/mtd/nand/nand_ids.c
-+++ b/drivers/mtd/nand/nand_ids.c
-@@ -137,6 +137,7 @@ struct nand_manufacturers nand_manuf_ids
- 	{NAND_MFR_RENESAS, "Renesas"},
- 	{NAND_MFR_STMICRO, "ST Micro"},
- 	{NAND_MFR_HYNIX, "Hynix"},
-+	{NAND_MFR_MICRON, "Micron"},
- 	{0x0, "Unknown"}
- };
-=20
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index 9752388..cf197ad 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -431,6 +431,7 @@ struct nand_chip {
- #define NAND_MFR_RENESAS	0x07
- #define NAND_MFR_STMICRO	0x20
- #define NAND_MFR_HYNIX		0xad
-+#define NAND_MFR_MICRON		0x2c
-=20
- /**
-  * struct nand_flash_dev - NAND Flash Device ID Structure
+3.) So there should be used JFFS2 on NAND, there is no good and reliable
+       way to run ext2 on NAND.
+
+I've also encountered a problem.
+        I'm using kernel 2.6.16.20 from buildroot on DBAu1550 like board.
+        When running destroy test on Samsung NAND where I had ext2, 
+        I was using programs from busybox placed on NOR flash (jffs2) /dev/mtdblock0. 
+        Links like dd, cp, md5sum.
+
+        NAND was mounted on /mnt/. After creating a 45MB file /mnt/file0 with dd
+        from /dev/zero  and running md5sum, something got wrong and all the links
+        from NOR jffs2 stopped working with lot's of errors in CRC codes. I wasnt writting
+        to the NOR jffs2 but I have it mounted rw.  After rebooting the NOR jffs2 is ok again!
+
+        So maybe it mess up in RAM???  What can couse this trouble?
+
+Thanks a lot for Your answer
+
+Jakub
