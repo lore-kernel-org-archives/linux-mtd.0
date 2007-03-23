@@ -1,18 +1,20 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Vitaly Wool'" <vwool@ru.mvista.com>
-References: <000001c76c77$80f44a70$06100a3b@user001b2c71e3>
-	<46028A4F.9010907@ru.mvista.com>
-Subject: RE: Onenand and yaffs [was: Re: bug in
-	drivers/mtd/onenand/onenand_base.c?]
-Date: Fri, 23 Mar 2007 11:11:45 +0900
-Message-ID: <00fa01c76cf0$9ddfa8e0$c7a3580a@swcenter.sec.samsung.co.kr>
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HUegj-0005Xu-G2
+	for linux-mtd@lists.infradead.org; Fri, 23 Mar 2007 03:59:56 -0400
+Message-ID: <46038887.6040301@nokia.com>
+Date: Fri, 23 Mar 2007 09:57:59 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ks_c_5601-1987"
+To: kmpark@infradead.org
+Subject: Re: [PATCH/RFC] OneNAND simulator support
+References: <00bf01c76c1c$36997820$c7a3580a@swcenter.sec.samsung.co.kr>
+	<1174555734.17249.218.camel@sauron>
+	<00f801c76cdd$164a9fb0$c7a3580a@swcenter.sec.samsung.co.kr>
+In-Reply-To: <00f801c76cdd$164a9fb0$c7a3580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=ks_c_5601-1987; format=flowed
 Content-Transfer-Encoding: 7bit
-In-reply-to: <46028A4F.9010907@ru.mvista.com>
-Cc: linux-mtd@lists.infradead.org, yaffs@stoneboat.aleph1.co.uk
-Reply-To: kmpark@infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +24,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
+ext Kyungmin Park wrote:
+> To Adrian,
 > 
-> Kyungmin Park wrote:
+> After patch http://git.infradead.org/?p=mtd-
+> 2.6.git;a=commitdiff;h=5bc399e9ef430efd5725b66aa2ad7ad2d81e372b;hp=81280d5879761
+> f90b3a341d52371d03998730d8e
 > 
-> >I saw your mtd git tree related with yaffs. I tested the 
-> yaffs on onenand
-> >before. But as you know it failed.
-> >Now with your patch how many bytes are needed in yaffs if 
-> ecc provided?
-> >  
-> >
-> Not sure if I understood you right here. YAFFS2 generally needs 28 OOB
-> bytes, and 16 without ECCOther.
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -854,7 +854,8 @@ static int onenand_transfer_auto_oob(str
+>  			int n = ed - st;
+>  			memcpy(buf, oob_buf + st, n);
+>  			buf += n;
+> -		}
+> +		} else
+> +			break;
+>  	}
+>  	return 0;
+>  }
+> @@ -1295,7 +1296,8 @@ static int onenand_fill_auto_oob(struct 
+>  			int n = ed - st;
+>  			memcpy(oob_buf + st, buf, n);
+>  			buf += n;
+> -		}
+> +		} else
+> +			break;
+>  	}
+>  	return 0;
+>  }
+> 
+> It don't pass the oobtest since I assume oob passed at first, but oobtest don't
+> do that.
+> Basically I optimizeed it for JFFS2. 
+> Do I revert it or do nothing? please give your opinion.
 
-Oh, Good!
-16 bytes enough for 2KB page OneNAND. and Maybe we can run 1KB page OneNAND
-with minor patch.
 
-Note: It's out of Spec. So it's used for development only.
+How about this: (NB I haven't tried it but maybe it works ;-)
 
-/**
- * onenand_oob_32 - oob info for middle (1KB) page
- */
-static struct nand_ecclayout onenand_oob_32 = {
-        .eccbytes       = 10,
-        .eccpos         = {
-                8, 9, 10, 11, 12,
-                24, 25, 26, 27, 28,
-                },
-#ifdef ONENAND_FOR_YAFFS
-        .oobfree        = { {2, 6}, {14, 2}, {18, 6}, {30, 2} }	
-#else
-        .oobfree        = { {2, 3}, {14, 2}, {18, 3}, {30, 2} }
-#endif
-};
 
-Thank you,
-Kyungmin Park
+
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -854,7 +854,8 @@ static int onenand_transfer_auto_oob(str
+ 			int n = ed - st;
+ 			memcpy(buf, oob_buf + st, n);
+ 			buf += n;
+-		}
++		} else if (column == 0)
++			break;
+ 	}
+ 	return 0;
+ }
+@@ -1295,7 +1296,8 @@ static int onenand_fill_auto_oob(struct 
+ 			int n = ed - st;
+ 			memcpy(oob_buf + st, buf, n);
+ 			buf += n;
+-		}
++		} else if (column == 0)
++			break;
+ 	}
+ 	return 0;
+ }
