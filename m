@@ -1,20 +1,17 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HVaBe-00039F-UL
-	for linux-mtd@lists.infradead.org; Sun, 25 Mar 2007 17:23:39 -0400
-Date: Sun, 25 Mar 2007 22:40:26 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Adrian Bunk <bunk@stusta.de>
-Subject: Re: [2.6 patch] block2mtd_paramline[] mustn't be __initdata
-Message-ID: <20070325204026.GB19691@lazybastard.org>
-References: <20070325145805.GH16477@stusta.de>
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HVlo1-0000E0-El
+	for linux-mtd@lists.infradead.org; Mon, 26 Mar 2007 05:48:02 -0400
+Subject: Excessive scanning of empty space due to point/unpoint methods
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Mon, 26 Mar 2007 11:47:53 +0200
+Message-Id: <1174902473.26465.383.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070325145805.GH16477@stusta.de>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +21,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 25 March 2007 16:58:05 +0200, Adrian Bunk wrote:
-> 
-> block2mtd_paramline[] is used in the non-__init block2mtd_setup()
-> 
-> Signed-off-by: Adrian Bunk <bunk@stusta.de>
-Acked-By: Jörn Engel <joern@lazybastard.org>
+I have noticed that the point/unpoint methods used by default by
+cfi_cmdset_0001.c causes excessive scanning of empty flash space.
+My mount time goes down from ~15 seconds to <1 second if I
+remove the extra scanning.
 
-Adrian, can you put me on Cc: next time?
+point/unpoint sets buf_size to 0 in jffs2_scan_medium and that
+makes jffs2_scan_eraseblock assume a scan length equal to
+sector size:
+	if (!buf_size) {
+		/* This is the XIP case -- we're reading _directly_ from the flash chip */
+		buf_len = c->sector_size;
+	} else {
+		buf_len = EMPTY_SCAN_SIZE(c->sector_size);
+		err = jffs2_fill_scan_buf(c, buf, buf_ofs, buf_len);
+		if (err)
+			return err;
+	}
+This apperently has something to do with XIP but I don't know much
+about the requierments of XIP so could someone comment why XIP
+needs to scan the whole flash?
 
-> ---
-> --- linux-2.6.21-rc4-mm1/drivers/mtd/devices/block2mtd.c.old	2007-03-25 15:56:10.000000000 +0200
-> +++ linux-2.6.21-rc4-mm1/drivers/mtd/devices/block2mtd.c	2007-03-25 15:56:31.000000000 +0200
-> @@ -423,7 +423,7 @@
->  
->  #ifndef MODULE
->  static int block2mtd_init_called = 0;
-> -static __initdata char block2mtd_paramline[80 + 12]; /* 80 for device, 12 for erase size */
-> +static char block2mtd_paramline[80 + 12]; /* 80 for device, 12 for erase size */
->  #endif
-
-Jörn
-
--- 
-Das Aufregende am Schreiben ist es, eine Ordnung zu schaffen, wo
-vorher keine existiert hat.
--- Doris Lessing
+ Jocke
