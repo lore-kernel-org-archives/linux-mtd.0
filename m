@@ -1,17 +1,19 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HVlo1-0000E0-El
-	for linux-mtd@lists.infradead.org; Mon, 26 Mar 2007 05:48:02 -0400
-Subject: Excessive scanning of empty space due to point/unpoint methods
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HVnns-0001Si-Bp
+	for linux-mtd@lists.infradead.org; Mon, 26 Mar 2007 07:56:02 -0400
+Message-ID: <4607B47D.5080009@nokia.com>
+Date: Mon, 26 Mar 2007 14:54:37 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: ext David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2: BUG: sleeping function called from invalid context
+References: <45FFBCC6.8010800@nokia.com> <4603E105.3090803@nokia.com>
+	<1174661337.20505.165.camel@pmac.infradead.org>
+In-Reply-To: <1174661337.20505.165.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 26 Mar 2007 11:47:53 +0200
-Message-Id: <1174902473.26465.383.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,25 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have noticed that the point/unpoint methods used by default by
-cfi_cmdset_0001.c causes excessive scanning of empty flash space.
-My mount time goes down from ~15 seconds to <1 second if I
-remove the extra scanning.
+ext David Woodhouse wrote:
+> Can you show that again with a full CONFIG_JFFS2_FS_DEBUG=1 log for the
+> period in question?
 
-point/unpoint sets buf_size to 0 in jffs2_scan_medium and that
-makes jffs2_scan_eraseblock assume a scan length equal to
-sector size:
-	if (!buf_size) {
-		/* This is the XIP case -- we're reading _directly_ from the flash chip */
-		buf_len = c->sector_size;
-	} else {
-		buf_len = EMPTY_SCAN_SIZE(c->sector_size);
-		err = jffs2_fill_scan_buf(c, buf, buf_ofs, buf_len);
-		if (err)
-			return err;
-	}
-This apperently has something to do with XIP but I don't know much
-about the requierments of XIP so could someone comment why XIP
-needs to scan the whole flash?
+I re-ran it but got a different error.  I have put the output in
 
- Jocke
+/home/ahunter/jffs2-soft-lockup.txt
+
+on git.infradead.org
+
+NB it is 47 Meg - please delete it when/if you don't need it anymore
+
+I will reproduce the original error and post it too.
