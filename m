@@ -1,26 +1,21 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HW76E-0001mR-MN
-	for linux-mtd@lists.infradead.org; Tue, 27 Mar 2007 09:32:15 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HW76F-00084A-5j
-	for linux-mtd@lists.infradead.org; Tue, 27 Mar 2007 10:32:15 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2007 10:32:15 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 27 Mar 2007 10:32:15 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: What is recommended way to partition mtdram device
-Date: Tue, 27 Mar 2007 08:32:08 +0000 (UTC)
-Message-ID: <loom.20070327T102458-920@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Received: from 61-58-44-30.askey.com.tw ([61.58.44.30] helo=dns.askey.com.tw)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HW7Fp-0003mN-1h
+	for linux-mtd@lists.infradead.org; Tue, 27 Mar 2007 04:42:12 -0400
+Received: from mailgw2.askey.com.tw ([10.1.1.47])
+	by dns.askey.com.tw (8.11.7p1+Sun/8.11.6) with ESMTP id l2R8fJn09091
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 27 Mar 2007 16:41:19 +0800 (CST)
+From: =?utf-8?B?5p2O5aiB6ZyH?= <weichen.lee@askey.com.tw>
+To: <linux-mtd@lists.infradead.org>
+Subject: RE: [Solved]Timing issue when we use SPANSION 8MB Flash
+Date: Tue, 27 Mar 2007 16:42:40 +0800
+Message-ID: <LOEOIDPHBMFMKKJMADKMIEFJCCAA.weichen.lee@askey.com.tw>
+MIME-Version: 1.0
+In-Reply-To: <20070126154834.CFC03531@mail.tataelxsi.co.in>
+Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+	charset="utf-8"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,18 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I require a partitioned mtdram device for system emulation purposes.
-
-The documentation says that the ways to partition an MTD device are:
-1) boot cmd line
-2) table of data in device
-3) create a map driver
-
-If mtdram is to be loaded with modprobe (desktop Linux), that rules out 1).
-
-So can I create partitions by dd-ing a partition table at the start of the
-device ?
-Can I create a map driver for the device to describe the partitions ?
-
-Thanks,
-MikeW
+RGVhciBhbGw6DQpJIGZpbmQgYSBwYXRjaCBmb3IgbXRkIGRyaXZlciAoZHJpdmVycy9tdGQvY2hp
+cHMvY2ZpX2NtZHNldF8wMDAyLmMpIG9mIGxpbnV4LTIuNC4yMg0KaHR0cDovL21haWxtYW4udWNs
+aW51eC5vcmcvcGlwZXJtYWlsL3VjbGludXgtZGV2LzIwMDQtTWF5LzAyNjQzMy5odG1sDQp3aGlj
+aCBhZGQgIndyaXRlX2J1ZmZlciIgZnVuY3Rpb24gZm9yIGFtZCBmbGFzaC4NCkl0IHNvbHZlZCBt
+eSBwcm9ibGVtLg0KVGhpcyBmZWF0dXJlIGlzIGFscmVhZHkgaW4gbXRkIGRyaXZlciBvZiBsaW51
+eC0yLjYuDQpCdXQgZm9yIHNvbWUgcmVhc29uLCB3ZSBzdGlsbCB1c2UgY3VzdG9taXplZCBsaW51
+eC0yLjQga2VybmVsLg0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogQm9ieSBT
+IFB1bGxhbWtvdHR1IFttYWlsdG86Ym9ieXNAdGF0YWVseHNpLmNvLmluXQ0KU2VudDogRnJpZGF5
+LCBKYW51YXJ5IDI2LCAyMDA3IDY6MTkgUE0NClRvOiDmnY7lqIHpnIc7IGxpbnV4LW10ZEBsaXN0
+cy5pbmZyYWRlYWQub3JnDQpTdWJqZWN0OiBSZTogVGltaW5nIGlzc3VlIHdoZW4gd2UgdXNlIFNQ
+QU5TSU9OIDhNQiBGbGFzaA0KDQoNCkhlbGxvLA0KSSBndWVzcyB0aGlzIGlzIGJlY2F1c2Ugb2Yg
+Z2FyYmFnZSBjb2xsZWN0b3IgdGhyZWFkLiBTaW5jZSB0aGUgc2VjdG9yIHNpemUgaXMgMTI4S0Is
+IHlvdSBoYXZlIG9ubHkgZmV3IHNlY3RvcnMgbGVmdCBmcmVlICh1bnVzZWQpIHdoaWxlIGNvcHlp
+bmcgNC41IE1CIGZpbGUuVGhpcyB0cmlnZ2VycyBnYXJiYWdlIGNvbGxlY3RvciB0aHJlYWQgdG8g
+cnVuIGNvbnRpbnVvdXNseSB0byBtYWtlIGZyZWUgc2VjdG9ycy4NCg0KT25seSB3YXkgaXMgdG8g
+aGF2ZSBtb3JlIGZsYXNoIHNpemUgb3IgaGF2ZSByb290IGZpbGUgc3lzdGVtIHdpdGggbW9yZSBm
+cmVlIHNwYWNlLiAoS2VlcGluZyBvbmx5IHJlcXVpcmVkIGJpbmFyaWVzIGFuZCBmaWxlcyBpbiB0
+aGUgcm9vdCBGUyBnaXZlcyBtb3JlIGZyZWUgc3BhY2UgYW5kIHRoaXMgcHJldmVudCBnYXJiYWdl
+IGNvbGxlY3Rpb24gaW4gdGhlIHZlcnkgYmVnaW5uaW5nKS4NCg0KDQotLS0tIE9yaWdpbmFsIG1l
+c3NhZ2UgLS0tLQ0KPkRhdGU6IEZyaSwgMjYgSmFuIDIwMDcgMTU6MDk6MDEgKzA4MDANCj5Gcm9t
+OiDmnY7lqIHpnIcgPHdlaWNoZW4ubGVlQGFza2V5LmNvbS50dz4gIA0KPlN1YmplY3Q6IFRpbWlu
+ZyBpc3N1ZSB3aGVuIHdlIHVzZSBTUEFOU0lPTiA4TUIgRmxhc2ggIA0KPlRvOiA8bGludXgtbXRk
+QGxpc3RzLmluZnJhZGVhZC5vcmc+DQo+DQo+aGksDQo+SSBmaW5kIHRoZSBkaXNjdXNzaW9uIHdp
+dGggdGhlIHNhbWUgc3ViamVjdCBpbiB0aGUgcGFzdCwNCj5odHRwOi8vd3d3LmluZnJhZGVhZC5v
+cmcvcGlwZXJtYWlsL2xpbnV4LW10ZC8yMDA1LU9jdG9iZXIvMDEzOTk2Lmh0bWwNCj5idXQgaXQn
+cyB3aXRob3V0IHdvcnRoIHN1Z2dlc3Rpb24uDQo+Tm93IHdlIGhhdmUgbW9yZSB0aGUgc2FtZSBz
+aXR1YXRpb24uDQo+V2UgdXNlIGxpbnV4IGtlcm5lbCAyLjQuMTktcm1rNC0yLjE3IHdoaWNoIGlz
+IGNoaXBzZXQgdmVuZG9yIHByb3ZpZGVkLg0KPlRoZSB0YXJnZXQgYm9hcmQgYXJjaCBpcyBhcm05
+MjB0LiBUaGVyZSBpcyAgU1BBTlNJT04gOE1CIE5vciBGbGFzaA0KPihTMjlHTDA2NEE5MFRGSVI3
+KSBvbiB0aGUgYm9hcmQuDQo+d2UgdXNlIHJvb3QgZmlsZSBzeXN0ZW0gd2l0aCBqZmZzMiBmb3Jt
+YXQgb24gdGhlIG5vciBmbGFzaC4NCj5UaGUgcHJvYmxlbSBpcyBjb3B5aW5nIHRoZSBmaWxlIHRv
+IC9kZXYvbXRkIyBvciB0aGUgZmlsZSBzeXN0ZW0gd2lsbCB0YWtlIA0KPnZlcnkgbG9uZyB0aW1l
+KGFyb3VuZCAxNSBtaW4gZm9yIDQuNSBNQikuIA0KPmFueSBzdWdnZXN0aW9uIGZvciB0aGlzIGl1
+c3N1ZT8NCj4NCj5CZXN0IFJlZ2FyZHMNCj53ZWljaGVuLmxlZQ0KPkUtbWFpbDp3ZWljaGVuLmxl
+ZUBhc2tleS5jb20udHcgDQo+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fDQo+TGludXggTVREIGRpc2N1c3Npb24gbWFpbGluZyBsaXN0DQo+aHR0
+cDovL2xpc3RzLmluZnJhZGVhZC5vcmcvbWFpbG1hbi9saXN0aW5mby9saW51eC1tdGQvDQo=
