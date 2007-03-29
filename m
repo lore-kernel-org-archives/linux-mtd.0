@@ -1,29 +1,19 @@
-Received: from brmea-mail-4.sun.com ([192.18.98.36])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HWh4B-0004qj-JA
-	for linux-mtd@lists.infradead.org; Wed, 28 Mar 2007 18:56:32 -0400
-Received: from fe-amer-04.sun.com ([192.18.108.178])
-	by brmea-mail-4.sun.com (8.13.6+Sun/8.12.9) with ESMTP id
-	l2SMuT3c002498
-	for <linux-mtd@lists.infradead.org>; Wed, 28 Mar 2007 22:56:29 GMT
-Received: from conversion-daemon.mail-amer.sun.com by mail-amer.sun.com
-	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	id <0JFM00701YD35900@mail-amer.sun.com> (original mail from
-	shashi@sun.com)
-	for linux-mtd@lists.infradead.org; Wed, 28 Mar 2007 16:56:29 -0600 (MDT)
-Received: from [129.146.53.50] by mail-amer.sun.com
-	(Sun Java System Messaging Server 6.2-6.01 (built Apr  3 2006))
-	with ESMTPSA id <0JFM0080PYE4ZA67@mail-amer.sun.com> for
-	linux-mtd@lists.infradead.org; Wed, 28 Mar 2007 16:56:29 -0600 (MDT)
-Date: Wed, 28 Mar 2007 15:56:28 -0700
-From: Shashi Rao <shashi@sun.com>
-Subject: [PATCH] [MTD] fix fwh_lock locking
-Sender: Shashikant.Rao@sun.com
-To: linux-mtd@lists.infradead.org, Shashi Rao <shashi@sun.com>
-Message-id: <460AF29C.4090409@sun.com>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 7BIT
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HWpaM-0000KA-8S
+	for linux-mtd@lists.infradead.org; Thu, 29 Mar 2007 04:02:21 -0400
+Received: from esebh108.NOE.Nokia.com (esebh108.ntc.nokia.com [172.21.143.145])
+	by mgw-ext14.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l2T81wfM018528
+	for <linux-mtd@lists.infradead.org>; Thu, 29 Mar 2007 11:02:10 +0300
+Message-ID: <460B722F.9020604@nokia.com>
+Date: Thu, 29 Mar 2007 11:00:47 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [JFFS2] Prevent list corruption when handling write errors
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,33 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+If a write error occurs, the affected block is placed on the
+bad_used_list.  In the case that the write error occured
+when writing summary data the block was also being placed on
+the dirty_list, which caused list corruption and ultimately
+a soft lockup in jffs2_mark_node_obsolete. This fixes that.
 
-This is on a custom board with a mapping driver access to an ST
-M50LPW080 chip. This chip is probed successfully with
-do_map_probe("jedec_probe",...). If I use the mtdchar interface to
-perform unlock->erase->program->lock on any of the 16 eraseblocks in the
-chip, the chip is left in FL_STATUS mode while the data structures
-believe that the chip is in FL_READY mode. Hence, any subsequent reads
-to any flash byte results in 0x80 being read.
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ fs/jffs2/nodemgmt.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-Thanks.
-
-Signed-off-by: Shashi Rao <shashi at sun.com>
-
---- linux-2.6.20.3.orig/drivers/mtd/chips/fwh_lock.h
-+++ linux-2.6.20.3/drivers/mtd/chips/fwh_lock.h
-@@ -65,11 +65,12 @@
- 		return ret;
- 	}
-
-+	chip->oldstate = chip->state;
- 	chip->state = xxlt->state;
- 	map_write(map, CMD(xxlt->val), adr);
-
- 	/* Done and happy. */
--	chip->state = FL_READY;
-+	chip->state = chip->oldstate;
- 	put_chip(map, chip, adr);
- 	spin_unlock(chip->mutex);
- 	return 0;
+diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+index d883769..c8b50de 100644
+--- a/fs/jffs2/nodemgmt.c
++++ b/fs/jffs2/nodemgmt.c
+@@ -172,6 +172,11 @@ int jffs2_reserve_space_gc(struct jffs2_
+ static void jffs2_close_nextblock(struct jffs2_sb_info *c, struct jffs2_eraseblock *jeb)
+ {
+ 
++	if (c->nextblock == NULL) {
++		D1(printk(KERN_DEBUG "jffs2_close_nextblock: Erase block at 0x%08x has already been placed in a list\n",
++		  jeb->offset));
++		return;
++	}
+ 	/* Check, if we have a dirty block now, or if it was dirty already */
+ 	if (ISDIRTY (jeb->wasted_size + jeb->dirty_size)) {
+ 		c->dirty_size += jeb->wasted_size;
+-- 
+1.4.3
