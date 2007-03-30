@@ -1,18 +1,18 @@
 Received: from [194.149.231.137] (helo=imail4.gazeta.pl)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HXFWr-0004w1-6m
-	for linux-mtd@lists.infradead.org; Fri, 30 Mar 2007 07:44:26 -0400
+	id 1HXFjO-0005Bj-O9
+	for linux-mtd@lists.infradead.org; Fri, 30 Mar 2007 07:57:23 -0400
 Received: from poczta.gazeta.pl (unverified [172.20.25.75])
-	by  (imail4.gazeta.pl) with ESMTP id 22924344-1945724
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:12:40 +0200
+	by  (imail4.gazeta.pl) with ESMTP id 22924381-1945724
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:13:37 +0200
 Received: from ew6 (unverified [172.20.26.236])
-	by av.gazeta.pl (av.gazeta.pl) with ESMTP id 32371-1945724
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:12:18 +0200
-Message-ID: <9694708.11151175253142026.JavaMail.webadm@ew6>
-Date: Fri, 30 Mar 2007 13:12:16 +0200 (CEST)
+	by av.gazeta.pl (av.gazeta.pl) with ESMTP id 32449-1945724
+	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:13:33 +0200
+Message-ID: <9452915.11171175253217414.JavaMail.webadm@ew6>
+Date: Fri, 30 Mar 2007 13:13:37 +0200 (CEST)
 From: <pan.kierownik@gazeta.pl>
 To: linux-mtd@lists.infradead.org
-Subject: [JFFS2]
+Subject: [JFFS2] check_node_data: MTD point returned len too short warnings
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-2
 Content-Transfer-Encoding: 8bit
