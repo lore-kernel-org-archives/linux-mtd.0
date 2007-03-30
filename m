@@ -1,21 +1,21 @@
-Received: from [194.149.231.137] (helo=imail4.gazeta.pl)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HXFjO-0005Bj-O9
-	for linux-mtd@lists.infradead.org; Fri, 30 Mar 2007 07:57:23 -0400
-Received: from poczta.gazeta.pl (unverified [172.20.25.75])
-	by  (imail4.gazeta.pl) with ESMTP id 22924381-1945724
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:13:37 +0200
-Received: from ew6 (unverified [172.20.26.236])
-	by av.gazeta.pl (av.gazeta.pl) with ESMTP id 32449-1945724
-	for <linux-mtd@lists.infradead.org>; Fri, 30 Mar 2007 13:13:33 +0200
-Message-ID: <9452915.11171175253217414.JavaMail.webadm@ew6>
-Date: Fri, 30 Mar 2007 13:13:37 +0200 (CEST)
-From: <pan.kierownik@gazeta.pl>
-To: linux-mtd@lists.infradead.org
-Subject: [JFFS2] check_node_data: MTD point returned len too short warnings
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HXG9e-0005Z9-Je
+	for linux-mtd@lists.infradead.org; Fri, 30 Mar 2007 08:24:31 -0400
+Message-ID: <460D015F.6080305@nokia.com>
+Date: Fri, 30 Mar 2007 15:23:59 +0300
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [RFC] [PATCH] UBI: refine wear leveling logic
+References: <200703281547.18851.alexs@linux.vnet.ibm.com>
+	<1175164591.19966.20.camel@sauron>
+	<200703291359.25593.alexs@linux.vnet.ibm.com>
+In-Reply-To: <200703291359.25593.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,42 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Alexander Schmidt wrote:
+> While writing this i assumed that erase and WL procedures are performed
+> sequentially (either by the background thread or, if the bgt is disabled,
+> by the produce_free_peb() function). Thank to your comment below I now
+> realised that erase/wl procedures could happen concurrently if the free
+> tree is empty and there are pending works (this is the only way that
+> could lead to your error scenario, right?).
 
-I'm currently trying to use jffs2 on mtd device on our ARM926EJ-S
-development board. We have here Intel Sibley 512Mb flash memory,
-uClinux with kernel 2.6.19-uc1 and following problem:
+Yes, kind of.
 
-    /> unlock /dev/mtd3
-    /> eraseall /dev/mtd3
-    Erasing 256 Kibyte @ fc0000 -- 98 % complete.
-    /> mount -t jffs2 -o noatime /dev/mtdblock3 /mnt
-    /> cp -r /bin /mnt
-    /> sync
-    /> umount /mnt
-    /> mount -t jffs2 -o noatime /dev/mtdblock3 /mnt
-    <4>JFFS2 warning: (176) check_node_data: MTD point returned len
-too short: 1573 instead of 2577.
-    <4>JFFS2 warning: (176) check_node_data: MTD point returned len
-too short: 1998 instead of 2394.
-    ... and so on - message repeated hundreds of time
+> If so then i propose to make get_peb() wait until the bgt produces a free
+> peb and not mix synchronous/asynchronous operations, as this would make
+> the code easier, IMO.
 
-After mounting file system I can run programs from that partition
-without any problem.
+It already does this AFAIK.
 
-I've tried to create jffs2 using mkfs.jffs2 (v1.43) on host:
-    mkfs.jffs2 -p -rromfs -e262144 -offs.bin -c1024 -s1024
-and then write directly to the flash where mtd3 partition is
-located. The same warnings are displayed.
-
-I tried to place jffs2 root file system in flash and start kernel
-with following parameters:
-    root=/dev/mtdblock3 rw rootfstype=jffs2 noinitrd init=/bin/init
-console=ttyJ0 rootflags=noatime
-
-When it comes to mount rootfs, the same check_node_data warnings
-occurs and kernel panics. But for now, I just would like to get rid
-of these warnings.
-
-Best regards,
-Krzysztof
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
