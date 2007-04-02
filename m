@@ -1,17 +1,22 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HYJLS-0000f8-Pv
-	for linux-mtd@lists.infradead.org; Mon, 02 Apr 2007 06:01:04 -0400
-Subject: [Resend: [PATCH] Speed up mount for cfi_cmdset_0001 users]
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Mon, 02 Apr 2007 12:00:48 +0200
-Message-Id: <1175508048.12080.2.camel@gentoo-jocke.transmode.se>
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HYKFD-0001Fp-AG
+	for linux-mtd@lists.infradead.org; Mon, 02 Apr 2007 06:58:41 -0400
+Subject: Re: [RFC] [PATCH] UBI: refine wear leveling logic
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200703301640.07170.alexs@linux.vnet.ibm.com>
+References: <200703281547.18851.alexs@linux.vnet.ibm.com>
+	<200703291359.25593.alexs@linux.vnet.ibm.com>
+	<460D015F.6080305@nokia.com>
+	<200703301640.07170.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 02 Apr 2007 13:53:25 +0300
+Message-Id: <1175511205.19966.42.camel@sauron>
 Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+Content-Transfer-Encoding: quoted-printable
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,80 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Resending.
+On Fri, 2007-03-30 at 16:40 +0200, Alexander Schmidt wrote:
+> In the current code, wl_get_peb() calls produce_free_peb() if the
+> free tree is empty and thereby performs a synchronous work (even if the
+> bgt is enabled). This is what I meant with "mixing" sync/async.
 
- Jocke 
--------- Forwarded Message --------
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Reply-To: joakim.tjernlund@transmode.se
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Speed up mount for cfi_cmdset_0001 users
-Date: Tue, 27 Mar 2007 13:44:01 +0200
+OK, what's wring with this? We do not have eraseblocks, we produce them
+synchronously.
 
-This will speed up mount greatly for users of point/unpoint method
-like cfi_cmdset_0001. Please Apply.
+We cannot rely on the thread - what if it was killed or its priority is
+too low, but the requesting task needs eraseblocks ASAP.
 
- Jocke
+> So I think making the user thread wait for the wl thread to free a peb
+> (e.g. by sleeping while waiting for a semaphore) could lead to a better
+> performance as the wl thread will likely finish its work before the user
+> thread has performed a whole work.
 
->From bcd1aa987ab786c526e225269775a557a1bcbe1f Mon Sep 17 00:00:00 2001
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Date: Tue, 27 Mar 2007 13:32:09 +0200
-Subject: [PATCH] Speed up mount for cfi_cmdset_0001 users
-Remove excessive scanning of empty flash after a clean
-marker for users of the point/unpoint method. cfi_cmdset_0001
-uses point/unpoint by default iff flash mapping is linear.
-The speedup is several orders of magnitude if FS is less than
-half full.
+Not necessarily. The current approach is safer.
 
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/scan.c |   15 +++++++++++----
- 1 files changed, 11 insertions(+), 4 deletions(-)
-
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index b98661a..4679abe 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -632,16 +632,17 @@ scan_more:
- 
- 		if (*(uint32_t *)(&buf[ofs-buf_ofs]) == 0xffffffff) {
- 			uint32_t inbuf_ofs;
--			uint32_t empty_start;
-+			uint32_t empty_start, scan_end;
- 
- 			empty_start = ofs;
- 			ofs += 4;
-+			scan_end = min_t(uint32_t, EMPTY_SCAN_SIZE(c->sector_size)/8, buf_len);
- 
- 			D1(printk(KERN_DEBUG "Found empty flash at 0x%08x\n", ofs));
- 		more_empty:
- 			inbuf_ofs = ofs - buf_ofs;
--			while (inbuf_ofs < buf_len) {
--				if (*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff) {
-+			while (inbuf_ofs < scan_end) {
-+				if (unlikely(*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff)) {
- 					printk(KERN_WARNING "Empty flash at 0x%08x ends at 0x%08x\n",
- 					       empty_start, ofs);
- 					if ((err = jffs2_scan_dirty_space(c, jeb, ofs-empty_start)))
-@@ -662,7 +663,11 @@ scan_more:
- 				D1(printk(KERN_DEBUG "%d bytes at start of block seems clean... assuming all clean\n", EMPTY_SCAN_SIZE(c->sector_size)));
- 				return BLK_STATE_CLEANMARKER;
- 			}
--
-+			if (!buf_size && (scan_end != buf_len)) {/* XIP/point case */
-+				scan_end = buf_len;
-+				goto more_empty;
-+			}
-+			
- 			/* See how much more there is to read in this eraseblock... */
- 			buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
- 			if (!buf_len) {
-@@ -672,6 +677,8 @@ scan_more:
- 					  empty_start));
- 				break;
- 			}
-+			/* point never reaches here */
-+			scan_end = buf_len;
- 			D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", buf_len, ofs));
- 			err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
- 			if (err)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
