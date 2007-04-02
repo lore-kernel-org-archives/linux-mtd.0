@@ -1,16 +1,17 @@
-Received: from gum.itee.uq.edu.au ([130.102.66.1])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HYBoI-0005D1-5G
-	for linux-mtd@lists.infradead.org; Sun, 01 Apr 2007 21:58:20 -0400
-Message-ID: <461057B4.8030209@itee.uq.edu.au>
-Date: Mon, 02 Apr 2007 11:09:08 +1000
-From: John Williams <jwilliams@itee.uq.edu.au>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,
-	uClinux development list <uclinux-dev@uclinux.org>
-Subject: ENOENT creating /dev/root on MTD RAM partition
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HYJLS-0000f8-Pv
+	for linux-mtd@lists.infradead.org; Mon, 02 Apr 2007 06:01:04 -0400
+Subject: [Resend: [PATCH] Speed up mount for cfi_cmdset_0001 users]
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Date: Mon, 02 Apr 2007 12:00:48 +0200
+Message-Id: <1175508048.12080.2.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,77 +21,80 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+Resending.
 
-I'm working on the 2.6 kernel for MicroBlaze (embedded, NOMMU) arch. 
-Like some other nommu archs, we typically mount root on an MTD RAM 
-partition (either CRAMFS or ROMFS).
+ Jocke 
+-------- Forwarded Message --------
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Reply-To: joakim.tjernlund@transmode.se
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] Speed up mount for cfi_cmdset_0001 users
+Date: Tue, 27 Mar 2007 13:44:01 +0200
 
-All of this is working fine on 2.6.19 plus SnapGear 2.6.19-uc0-bigpatch 
-NOMMU patchset.
+This will speed up mount greatly for users of point/unpoint method
+like cfi_cmdset_0001. Please Apply.
 
-However, since coming forward to 2.6.20 (plus equiv. SnapGear patchset) 
-mount_root is failing.
+ Jocke
 
-Details follow, but basically create_dev(/dev/root, ROOT_DEV) is 
-returning -ENOENT.  ROOT_DEV points to a valid MTD RAM partition, with a 
-valid ROMFS (or CRAMFS, doesn't matter which) image. I've dumped the 
-memory, the image is good.
+>From bcd1aa987ab786c526e225269775a557a1bcbe1f Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Tue, 27 Mar 2007 13:32:09 +0200
+Subject: [PATCH] Speed up mount for cfi_cmdset_0001 users
+Remove excessive scanning of empty flash after a clean
+marker for users of the point/unpoint method. cfi_cmdset_0001
+uses point/unpoint by default iff flash mapping is linear.
+The speedup is several orders of magnitude if FS is less than
+half full.
 
-Googling the various archives finds one or two past references to 
-create_dev or do_mount_root returning -ENOENT on MTD RAM partitions, but 
-I found no followups or solutions posted.
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/scan.c |   15 +++++++++++----
+ 1 files changed, 11 insertions(+), 4 deletions(-)
 
- From my bootlog:
-
-uclinux[mtd]: RAM probe address=0x22182cc8 size=0x21d000
-Creating 1 MTD partitions on "RAM":
-0x00000000-0x0021d000 : "ROMfs"
-mtd: Giving out device 5 to ROMfs
-uclinux[mtd]: set ROMfs to be root filesystem index=5
-
-...
-
-((my debug output in namei.c))
-hello from __link_walk_path(/dev/root)
-__link_walk_path says -ENOENT
-next:0x23ff4694
-next.dentry:0x23e12d08
-
-...
-
-Kernel panic - not syncing: VFS: Unable to mount root fs on 
-unknown-block(31,5)
-  <0>Rebooting in 120 seconds..Machine restart...
-
-I traced down into fs/namei.c - it's a fragment in 
-__link_path_walk("/dev/root"):
-
-line 892:
-                 /* This does the actual lookups.. */
-                 err = do_lookup(nd, &this, &next);
-                 if (err)
-                         break;
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index b98661a..4679abe 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -632,16 +632,17 @@ scan_more:
  
+ 		if (*(uint32_t *)(&buf[ofs-buf_ofs]) == 0xffffffff) {
+ 			uint32_t inbuf_ofs;
+-			uint32_t empty_start;
++			uint32_t empty_start, scan_end;
  
-
-                 err = -ENOENT;
-                 inode = next.dentry->d_inode;
-                 if (!inode) {
----> we are hitting this error path
-                         goto out_dput;
-
-                 }
-
-So, it seems that do_lookup is returning a dentry with no inode.
-
-I've tried this with both ROMFS and CRAMFS types, with the same result. 
-      If it was a random memory corruption event I'd expect to see 
-different failure modes for the two filesystem types.
-
-Any comments or suggestions on a possible cause or approach to track it 
-down would be greatly appreciated.
-
-Thanks,
-
-John
+ 			empty_start = ofs;
+ 			ofs += 4;
++			scan_end = min_t(uint32_t, EMPTY_SCAN_SIZE(c->sector_size)/8, buf_len);
+ 
+ 			D1(printk(KERN_DEBUG "Found empty flash at 0x%08x\n", ofs));
+ 		more_empty:
+ 			inbuf_ofs = ofs - buf_ofs;
+-			while (inbuf_ofs < buf_len) {
+-				if (*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff) {
++			while (inbuf_ofs < scan_end) {
++				if (unlikely(*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff)) {
+ 					printk(KERN_WARNING "Empty flash at 0x%08x ends at 0x%08x\n",
+ 					       empty_start, ofs);
+ 					if ((err = jffs2_scan_dirty_space(c, jeb, ofs-empty_start)))
+@@ -662,7 +663,11 @@ scan_more:
+ 				D1(printk(KERN_DEBUG "%d bytes at start of block seems clean... assuming all clean\n", EMPTY_SCAN_SIZE(c->sector_size)));
+ 				return BLK_STATE_CLEANMARKER;
+ 			}
+-
++			if (!buf_size && (scan_end != buf_len)) {/* XIP/point case */
++				scan_end = buf_len;
++				goto more_empty;
++			}
++			
+ 			/* See how much more there is to read in this eraseblock... */
+ 			buf_len = min_t(uint32_t, buf_size, jeb->offset + c->sector_size - ofs);
+ 			if (!buf_len) {
+@@ -672,6 +677,8 @@ scan_more:
+ 					  empty_start));
+ 				break;
+ 			}
++			/* point never reaches here */
++			scan_end = buf_len;
+ 			D1(printk(KERN_DEBUG "Reading another 0x%x at 0x%08x\n", buf_len, ofs));
+ 			err = jffs2_fill_scan_buf(c, buf, ofs, buf_len);
+ 			if (err)
