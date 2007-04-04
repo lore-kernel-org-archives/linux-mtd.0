@@ -1,28 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HZ0FF-0001sz-7K
-	for linux-mtd@lists.infradead.org; Wed, 04 Apr 2007 08:49:32 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HZ0F2-0002zz-Nm
-	for linux-mtd@lists.infradead.org; Wed, 04 Apr 2007 09:49:16 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2007 09:49:16 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 04 Apr 2007 09:49:16 +0200
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HZ33x-0005ff-9r
+	for linux-mtd@lists.infradead.org; Wed, 04 Apr 2007 06:50:02 -0400
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-ext14.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
+	l34AnrQH003618
+	for <linux-mtd@lists.infradead.org>; Wed, 4 Apr 2007 13:49:55 +0300
+Message-ID: <46138259.30305@nokia.com>
+Date: Wed, 04 Apr 2007 13:47:53 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: MEMGETREGIONCOUNT ioctl
-Date: Wed, 4 Apr 2007 07:49:05 +0000 (UTC)
-Message-ID: <loom.20070404T094706-969@post.gmane.org>
-References: <00b401c77683$d0be6340$fd09a8c0@jitendrajain>
-	<004501c77688$88c0b930$74fbfea9@gavinlpc>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Subject: [PATCH] [JFFS2] Disable summary after wbuf recovery
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Gavin Lambert <gavinl <at> compacsort.com> writes:
+After a write error, any data in the write buffer must
+be relocated.  This is handled by the jffs2_wbuf_recover
+function.  This function does not fix up the erase block
+summary information that is collected for writing at the
+end of the block, which results in an incorrect summary
+(or BUG if the summary was found to be empty).
 
-> 
-> I'm a bit of an MTD newbie myself, so I could be wrong about some of
-> this, but:
-> 
-> Quoth Jitendra Jain [jitendra.jain <at> einfochips.com]:
-> > As per the driver, the MEMGETREGIONCOUNT returns the
-> > parameter numeraseregions, which is meant to signify if the
-> > flash erase size is same throughout or whether it has
-> > variable sized sectors (which is found on NOR flash devices).
-> > Why does the util denote that number as number of erase regions ??
-> 
-> Because that's sort of what it is.  If your driver doesn't support the
-> ioctl at all then callers assume the erase size is constant as given in
-> the erasesize field of MEMGETINFO.  If it does support the ioctl, then
-> callers expect it to return the number of erase block size-change
-> thresholds (since a region can cover multiple erase blocks, provided
-> they're contiguous and of the same size).
+As the summary is not essential (it is an optimisation),
+it may be disabled for the current erase block when this
+situation arises.  This patch does that.
 
-Perhaps this suggests that the ioctl documentation could be made
-clearer or more explicit in this area ...
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ fs/jffs2/wbuf.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
 
-Regards,
-MikeW
-
-
-
-=gmane-pad==gmane-pad==gmane-pad==gmane-pad==gmane-pad==gmane-pad=
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index 4fac6dd..f9da0e7 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -345,6 +345,9 @@ static void jffs2_wbuf_recover(struct jf
+ 		return;
+ 	}
+ 
++	/* The summary is not recovered, so it must be disabled for this erase block */
++	jffs2_sum_disable_collecting(c->summary);
++
+ 	ret = jffs2_prealloc_raw_node_refs(c, c->nextblock, nr_refile);
+ 	if (ret) {
+ 		printk(KERN_WARNING "Failed to allocate node refs for wbuf recovery. Data loss ensues.\n");
+-- 
+1.4.3
