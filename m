@@ -1,17 +1,19 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
+Received: from ug-out-1314.google.com ([66.249.92.168])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HZ7MH-0007qa-91
-	for linux-mtd@lists.infradead.org; Wed, 04 Apr 2007 11:25:14 -0400
-Subject: Strange flash errors starting to appear
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+	id 1HZVTK-0001vX-3X
+	for linux-mtd@lists.infradead.org; Thu, 05 Apr 2007 13:10:07 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so981992uge
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Apr 2007 10:10:03 -0700 (PDT)
+Message-ID: <e81bc78a0704051010sbd13f7as3512eec13bef5f0e@mail.gmail.com>
+Date: Thu, 5 Apr 2007 12:10:03 -0500
+From: "Kevin Zhang" <kzhang01mail@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+Subject: Is there a minimal size requirement for oobfree area?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Wed, 04 Apr 2007 17:25:07 +0200
-Message-Id: <1175700307.12080.67.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +23,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Just got this on two boards(lots of them):
-TMCU Flash Map Info: Waiting for chip to be ready timed out. Status c320
-Write of 52 bytes at 0x0771392c failed. returned -5, retlen 0
-Not marking the space at 0x0771392c as dirty because the flash driver returned retlen zero
+Hi,
 
-Status c320 varies between boots. Seen
-7574, 3034 and 5f32
+I am trying to understand if there is a size requirement for the
+oobfree area. For the 512-byte nand flash, does the oobfree area have
+to be at least 8 bytes?
 
-Kernel 2.6.20, no summary, Powerpc, cfi_cmdset_0001(Intel P30, 16 bits wide)
-I have removed SUMMARY support from my kernel recently.
-
- Ideas?
+Thanks a lot,
+Kevin
