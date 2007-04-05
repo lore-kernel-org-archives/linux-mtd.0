@@ -1,17 +1,20 @@
-Received: from web37703.mail.mud.yahoo.com ([209.191.87.101])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HZY2j-0003FI-JL
-	for linux-mtd@lists.infradead.org; Thu, 05 Apr 2007 15:54:52 -0400
-Message-ID: <20070405194445.30981.qmail@web37703.mail.mud.yahoo.com>
-Date: Thu, 5 Apr 2007 12:44:45 -0700 (PDT)
-From: Iyer <maseriyer@yahoo.com>
-Subject: Magic bitmask 0x1985 messages,
+Received: from postoffice1.connactivity.com ([66.112.160.14]
+	helo=connactivity.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HZZxX-0004Bw-Up
+	for linux-mtd@lists.infradead.org; Thu, 05 Apr 2007 17:57:37 -0400
+From: "Jeff Fellin" <jeff.fellin@coredgenetworks.com>
+To: "'Iyer'" <maseriyer@yahoo.com>,
+	<linux-mtd@lists.infradead.org>
+Subject: RE: Magic bitmask 0x1985 messages,
 	while attempting to mount a JFFS2 filesystem on dataflash
-To: Iyer <maseriyer@yahoo.com>, linux-mtd@lists.infradead.org
-In-Reply-To: <753449.74572.qm@web37714.mail.mud.yahoo.com>
+Date: Thu, 5 Apr 2007 17:57:25 -0400
+Message-ID: <005601c777cd$65287620$0b00a8c0@CoreEdgeNJ4>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: AAAAAFqDkgWWH8tCh1oLEmaFdVXkOSEA
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,6 +23,16 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+
+
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Iyer
+Sent: Thursday, April 05, 2007 3:45 PM
+To: Iyer; linux-mtd@lists.infradead.org
+Subject: Magic bitmask 0x1985 messages,while attempting to mount a JFFS2
+filesystem on dataflash
 
 Hi Folks,
 
@@ -34,6 +47,9 @@ done anything wrong. The same JFFS2 image was mounting
 well on the NAND flash (with the corresponding
 mkfs.jffs2 -e and --pad options set for the NAND
 flash), but not on the data flash.
+
+>> Are you sure you entered the correct erase block size and padding options
+for the dataflash? 
 
 The kernel was compiled with the MTD relevant options
 for having the kernel, RFS and bootloader on the
@@ -141,7 +157,12 @@ iyer
 
 
  
-____________________________________________________________________________________
+____________________________________________________________________________
+________
 Need Mail bonding?
 Go to the Yahoo! Mail Q&A for great tips from Yahoo! Answers users.
 http://answers.yahoo.com/dir/?link=list&sid=396546091
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
