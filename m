@@ -1,19 +1,17 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HZv0l-0006WI-0f
-	for linux-mtd@lists.infradead.org; Fri, 06 Apr 2007 16:26:21 -0400
-Subject: Re: Is there a minimal size requirement for oobfree area?
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Kevin Zhang <kzhang01mail@gmail.com>
-In-Reply-To: <e81bc78a0704051010sbd13f7as3512eec13bef5f0e@mail.gmail.com>
-References: <e81bc78a0704051010sbd13f7as3512eec13bef5f0e@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 06 Apr 2007 22:26:46 +0200
-Message-Id: <1175891206.28263.476.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HZvH5-0006qt-HP
+	for linux-mtd@lists.infradead.org; Fri, 06 Apr 2007 16:43:12 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: mtd_info/mtd_info_user>size wrong type
+Date: Sat, 7 Apr 2007 08:49:37 +1200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Content-Disposition: inline
+Message-Id: <200704070849.38048.manningc2@actrix.gen.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-05 at 12:10 -0500, Kevin Zhang wrote:
-> Hi,
-> 
-> I am trying to understand if there is a size requirement for the
-> oobfree area. For the 512-byte nand flash, does the oobfree area have
-> to be at least 8 bytes?
+Folks
+As people are starting to use larger NAND partitions (4GB+), an inconsistency 
+in the size field has become apparent.
 
-No, there is no real requirement. The oob area is not mandatory for
-JFFS2. If you want to use YAFFS, it is AFAIK.
+This is a unint32_t which is clearly too small for modern NAND arrays.
 
-	tglx
+The read/write funcions use loff_t which is correct.
 
+It would seem that size needs to be increated to loff_t too.
 
-	
+-- Charles
