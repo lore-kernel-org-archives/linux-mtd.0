@@ -1,10 +1,21 @@
-Message-ID: <BAY120-F10545FE4BF7719F4C077F9815B0@phx.gbl>
-From: "ms joy" <ms_joy06@hotmail.fr>
-Subject: Hi, 
-Date: Sat, 07 Apr 2007 16:59:20 +0000
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1; format=flowed
-Reply-To: ms_joy10@yahoo.fr
+Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HaJWI-0002V7-R2
+	for linux-mtd@lists.infradead.org; Sat, 07 Apr 2007 18:36:32 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Re: mtd_info/mtd_info_user>size wrong type
+Date: Sun, 8 Apr 2007 10:42:56 +1200
+References: <200704070849.38048.manningc2@actrix.gen.nz>
+	<625fc13d0704061826o6abfc33pd4c11173121561d5@mail.gmail.com>
+In-Reply-To: <625fc13d0704061826o6abfc33pd4c11173121561d5@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200704081042.57089.manningc2@actrix.gen.nz>
+Cc: Josh Boyer <jwboyer@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,39 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-How are you today? I know that my letter will meet you as a surprise.
+On Saturday 07 April 2007 13:26, Josh Boyer wrote:
+> On 4/6/07, Charles Manning <manningc2@actrix.gen.nz> wrote:
+> > Folks
+> > As people are starting to use larger NAND partitions (4GB+), an
+> > inconsistency in the size field has become apparent.
+> >
+> > This is a unint32_t which is clearly too small for modern NAND arrays.
+>
+> Yes, known issue.
+>
+> > The read/write funcions use loff_t which is correct.
+> >
+> > It would seem that size needs to be increated to loff_t too.
+>
+> Have you tried doing that?  I seem to recall hearing that it was a bit
+> more involved than just changing the size member to be 64 bit.
 
-I am Joy Moses, i am 19,  My mother was an African American while my father 
-was from the french speaking colony of Cote D' Ivoire, i was living with my 
-mother not too far from Charleston building, 601 57th Street, Charleston 
-West Virginia USA. And i attended Charleston senior High School, 1201 
-Washington Street E, Charleston, WV. I lost my mother sometimes ago and 
-after her death i came to meet my father for the very first time in Cote d' 
-Ivoire West Africa, though he was also living in the state before he 
-relocated back to Cote d' Ivoire to set up a business.
+I have not tried this though someone is aty present. I do know that someone 
+has used YAFFS with Linux on a 6G or so partition.However they wanted a 
+really fast nand driver and wrote a custom nand driver.
 
-Exactely two months and one week after i came to meet my father with the 
-help of US consulates he died, he was very sick when i came to meet him. But 
-before his death there were some document he gave to me and he told me that 
-everything he worked for in his life time is in the document when i 
-crosscheck the document i discovered that my late father deposited $ 10.5 
-Million dollars in a bank here, Ten million five hundred thousand US 
-dollars.
-The reason he deposited the money  was because of there political problem in 
-this country.While I am telling you is that i am just a girl and there is 
-little or nothing i could do on my own and again if my late father relative 
-find out that my late father left this kind of money in my care i don't know 
-what they might do to me, so i need you to help me contact the bank for 
-transfer  the money into your own bank account , and take me along with you. 
-If you do this for me apart from the love i will also offer you 20% of the 
-total money for helping me.
+There definitely are some downstream problems too. It is not just a matter of 
+changing the type.
 
-Please i requested for your trust and understanding because it might sound 
-unbeleivable but it is the truth, Please get back as soon as posible.
-Sincerely,
-Miss Joy Moses.
+eg using do_div() instead of divides and making sure that the right values 
+flow through the whole  mtd subsystem fron nand_base..c right through 
+mtdpart, mtdcat, the tools etc.
 
-_________________________________________________________________
-Personnalisez votre Messenger avec Live.com 
-http://www.windowslive.fr/livecom/
+-- Charles
