@@ -1,16 +1,19 @@
-Received: from mga09.intel.com ([134.134.136.24])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbJbV-0004si-Tf
-	for linux-mtd@lists.infradead.org; Tue, 10 Apr 2007 12:54:03 -0400
-Message-ID: <461BC120.2080507@intel.com>
-Date: Tue, 10 Apr 2007 20:53:52 +0400
-From: akorolev <alexey.korolev@intel.com>
-MIME-Version: 1.0
-To: havasi@inf.u-szeged.hu
-Subject: Centralized summary as a way to speed up "ls" time
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HbK5M-0005I1-01
+	for linux-mtd@lists.infradead.org; Tue, 10 Apr 2007 13:24:54 -0400
+Subject: Re: Centralized summary as a way to speed up "ls" time
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: akorolev <alexey.korolev@intel.com>
+In-Reply-To: <461BC120.2080507@intel.com>
+References: <461BC120.2080507@intel.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 10 Apr 2007 20:24:28 +0300
+Message-Id: <1176225868.19966.66.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Ferenc,
+On Tue, 2007-04-10 at 20:53 +0400, akorolev wrote:
+> Hello Ferenc,
+>=20
+> While using JFFS2 on NAND devices with large size and many files I faced=20
+> the problem of very slow "ls" performance.
+> On folder which contains ~40 files and ~80MB ls could take ~25sec!
 
-While using JFFS2 on NAND devices with large size and many files I faced 
-the problem of very slow "ls" performance.
-On folder which contains ~40 files and ~80MB ls could take ~25sec!
+One way could be to introduce an aggregated dentry node which would
+store several, say 32 direntries together, instead of having
+per-direntry node.
 
-I'm thinking of the way to resolve somehow this issue.
-Reasons of the very slow performance are more or less clean - JFFS2 
-scans NAND to fill jffs2_node_frag and jffs2_full_dnode structures.
-After first call of ls on some dir this data will be filled and next 
-call will work fast.
-If we have few RAM cache may be released and next ls will take long.
-
-The question I have will it be possible to extend a little bit 
-functionality of Centralized Summary to story these nodes as well.
-Do you see any technical issues here?
-
-IMHO if it is possible it make sense, because it will load node info 
-into RAM for the most used data. So for most used data we will have 
-preloaded node info fast  "ls" just after mount.
-
-Do you have any updates of CS? Is the last version of CS placed here 
-www.inf.u-szeged.hu/jffs2/mount.php?
-
-Thanks,
-Alexey
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
