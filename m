@@ -1,29 +1,18 @@
-Received: from mail119.messagelabs.com ([216.82.241.179])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbfpL-0007Y2-8h
-	for linux-mtd@lists.infradead.org; Wed, 11 Apr 2007 12:37:50 -0400
-Received: from il06exr04.mot.com (il06exr04.mot.com [129.188.137.134])
-	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id l3BGbjOW016772
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Apr 2007 09:37:45 -0700 (MST)
-Received: from il06vts01.mot.com (il06vts01.mot.com [129.188.137.141])
-	by il06exr04.mot.com (8.13.1/Vontu) with SMTP id l3BGbiGW013514
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Apr 2007 11:37:44 -0500 (CDT)
-Received: from zuk35exm60.ds.mot.com (zuk35exm60.ea.mot.com [10.178.1.39])
-	by il06exr04.mot.com (8.13.1/8.13.0) with ESMTP id l3BGbhbi013495
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 11 Apr 2007 11:37:44 -0500 (CDT)
-Content-class: urn:content-classes:message
+Received: from server37.tchmachines.com ([69.50.193.27])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HbmaG-0002Hs-2K
+	for linux-mtd@lists.infradead.org; Wed, 11 Apr 2007 19:50:41 -0400
+Received: from archite by server37.tchmachines.com with local (Exim 4.63)
+	(envelope-from <linux@architechnical.net>) id 1HbmZy-0004Yh-Qi
+	for linux-mtd@lists.infradead.org; Wed, 11 Apr 2007 19:50:22 -0400
+Message-ID: <35297.69.30.123.186.1176335422.squirrel@architechnical.net>
+Date: Wed, 11 Apr 2007 16:50:22 -0700 (PDT)
+Subject: "OneNAND oobfree" revisited
+From: "Pete MacKay" <linux@architechnical.net>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: Problem booting from MTD partition of  NAND device
-Date: Wed, 11 Apr 2007 17:37:42 +0100
-Message-ID: <67194FEE6056B947B4EF756C9E497A2E01774A0D@zuk35exm60.ds.mot.com>
-From: "Demke Torsten-atd012" <torsten.demke@motorola.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,43 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+In this conversation between Adrian and Kyungmin it's stated that the
+OneNAND driver optimizes memcpy for 32-bit transfers:
 
-I have a PPC system that consists of several MTD partitions on a mix of
-NOR and NAND flashes.
-MTD partition layout in my system:
-dev:    size   erasesize  name
-mtd0: 00020000 00020000 "enviroment-flash1"
-mtd1: 00500000 00020000 "kernel-flash1"
-mtd2: 01a60000 00020000 "empty-flash1"
-mtd3: 00080000 00020000 "uboot-flash1"
-mtd4: 02000000 00020000 "boot-flash1"
-mtd5: 00020000 00020000 "enviroment-flash2"
-mtd6: 00500000 00020000 "kernel-flash2"
-mtd7: 01a60000 00020000 "empty-flash2"
-mtd8: 00080000 00020000 "uboot-flash2"
-mtd9: 02000000 00020000 "boot-flash2"
-mtd10: 80000000 00020000 "NAND Flash"
+http://lists.infradead.org/pipermail/linux-mtd/2007-January/017201.html
 
-Partition 4 is the merge of partitions 0..3
-Partition 9 is the merge of partition 5..8
-0..4 and 5..9 are independent NOR flash devices (Intel Strataflash)
-Partition 10 is located on a NAND flash device and is formated with
-jffs2.
+While this might work on some platforms, it seems to cause bus errors on
+our PXA-270-based machine.  So I replace memcpy, memset, and memcmp with
+local routines optimized for 16-bit access and the crashes go away.  I
+also tried overriding the optimization with "EXTRA_CFLAGS += -O0" in the
+Makefile but I doubt it has any effect.
 
-Whenever I try to boot from the NAND flash (root=3D/dev/mtdblock10)  I =
-get
-following error:
-  VFS: Mount ROOT_DEV 0 - mtdblock10		<< some additional debug
-output
-  Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(0,0)
-
-When I disable all NOR flashes in the kernel (2.6.14) I can boot
-(root=3D/dev/mtdblock0)=20
-my board without a problem.
-Any hints or comments?
-
-Thanks for your help.
-Regards,
-Torsten
+My issue with this is that I'd have to patch onenand_base.c, or I could
+put conditionals in, but either way I'm wondering if there's a cleaner way
+to fix this.  Any ideas?
