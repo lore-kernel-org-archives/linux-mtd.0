@@ -1,19 +1,16 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbK5M-0005I1-01
-	for linux-mtd@lists.infradead.org; Tue, 10 Apr 2007 13:24:54 -0400
-Subject: Re: Centralized summary as a way to speed up "ls" time
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: akorolev <alexey.korolev@intel.com>
-In-Reply-To: <461BC120.2080507@intel.com>
-References: <461BC120.2080507@intel.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 10 Apr 2007 20:24:28 +0300
-Message-Id: <1176225868.19966.66.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from 203-96-159-182.paradise.net.nz ([203.96.159.182]
+	helo=hayes.bluewaternz.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HbTHx-0001Ao-6L
+	for linux-mtd@lists.infradead.org; Tue, 10 Apr 2007 23:14:30 -0400
+Message-ID: <461C5290.6090202@bluewatersys.com>
+Date: Wed, 11 Apr 2007 15:14:24 +1200
+From: Andre Renaud <andre@bluewatersys.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] Casting bug in nand_default_block_markbad
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +20,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-04-10 at 20:53 +0400, akorolev wrote:
-> Hello Ferenc,
->=20
-> While using JFFS2 on NAND devices with large size and many files I faced=20
-> the problem of very slow "ls" performance.
-> On folder which contains ~40 files and ~80MB ls could take ~25sec!
+There is a slight bug in nand_default_block_markbad, where the offset is
+cast to an integer, prior to being shifted. This means that on large
+offsets, it is incorrectly doing a signed shift & losing bits. Fixed
+this by doing the cast after the shift (as is done elsewhere in the code).
 
-One way could be to introduce an aggregated dentry node which would
-store several, say 32 direntries together, instead of having
-per-direntry node.
+Signed-off-by: Andre Renaud <andre@bluewatersys.com>
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Index: drivers/mtd/nand/nand_base.c
+===================================================================
+--- drivers/mtd/nand/nand_base.c        (revision 957)
++++ drivers/mtd/nand/nand_base.c        (working copy)
+@@ -355,7 +355,7 @@
+        int block, ret;
+
+        /* Get block number */
+-       block = ((int)ofs) >> chip->bbt_erase_shift;
++       block = (int)(ofs >> chip->bbt_erase_shift);
+        if (chip->bbt)
+                chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
+
+-- 
+Bluewater Systems Ltd - ARM Technology Solutions Centre
+
+       Andre Renaud                             Bluewater Systems Ltd
+Phone: +64 3 3779127 (Aus 1 800 148 751)        Level 17, 119 Armagh St
+Fax:   +64 3 3779135                            PO Box 13889
+Email: arenaud@bluewatersys.com                 Christchurch
+Web:   http://www.bluewatersys.com              New Zealand
