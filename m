@@ -1,25 +1,22 @@
-Received: from wx-out-0506.google.com ([66.249.82.233])
+Received: from mu-out-0910.google.com ([209.85.134.185])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbzdE-0001ou-Kg
-	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 09:46:40 -0400
-Received: by wx-out-0506.google.com with SMTP id t8so164902wxc
+	id 1Hbzls-00023F-Bp
+	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 09:55:34 -0400
+Received: by mu-out-0910.google.com with SMTP id w1so597892mue
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Apr 2007 06:46:33 -0700 (PDT)
-Received: from pooky.senux.com (localhost.localdomain [127.0.0.1])
-	by pooky.senux.com (8.13.7/8.13.7) with ESMTP id l3CDfbCQ025910
-	(version=TLSv1/SSLv3 cipher=DHE-DSS-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Thu, 12 Apr 2007 22:41:37 +0900
-Received: (from senux@localhost)
-	by pooky.senux.com (8.13.7/8.13.7/Submit) id l3CDfb8Z025909
-	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 22:41:37 +0900
-Date: Thu, 12 Apr 2007 22:41:37 +0900
-From: Seongsu Lee <senux@senux.com>
-To: linux-mtd@lists.infradead.org
-Subject: FAT file system on NAND flash memory
-Message-ID: <20070412134137.GA25860@pooky.senux.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Thu, 12 Apr 2007 06:55:29 -0700 (PDT)
+Message-ID: <625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+Date: Thu, 12 Apr 2007 08:55:23 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Seongsu Lee" <senux@senux.com>
+Subject: Re: FAT file system on NAND flash memory
+In-Reply-To: <20070412134137.GA25860@pooky.senux.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <20070412134137.GA25860@pooky.senux.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 4/12/07, Seongsu Lee <senux@senux.com> wrote:
+> Hi,
+>
+> In my knowledge, mtdblock.c must be used to use
+> FAT filesystem on bare NAND flash memories
+> because NFTL is made only for a specific hardware,
+> DiskOnChip.
+>
+> (Layer 0) VFS
+> (Layer 1) FAT (or EXT2, EXT3)
+> (Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
+> (Layer 3) NAND flash memory driver (vendor specific)
+> (Layer 4) Physical NAND flash memory
+>
+> Please let me know if it is wrong.
 
-In my knowledge, mtdblock.c must be used to use 
-FAT filesystem on bare NAND flash memories 
-because NFTL is made only for a specific hardware, 
-DiskOnChip.
+That layering is correct, but your results will be bad.  mtdblock
+doesn't handle bad blocks.  So if you have one in the middle of your
+filesystem, it will break things.  You need some kind of translation
+layer if you're going to use NAND.
 
-(Layer 0) VFS
-(Layer 1) FAT (or EXT2, EXT3)
-(Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
-(Layer 3) NAND flash memory driver (vendor specific)
-(Layer 4) Physical NAND flash memory
-
-Please let me know if it is wrong.
-
--- 
-Seongsu's personal blog - http://www.senux.com/
-LILO, you've got me on my knees! (from David Black,
-dblack@pilot.njin.net, with apologies to Derek and the
-Dominos, and Werner Almsberger)
+josh
