@@ -1,27 +1,27 @@
-Received: from mail128.messagelabs.com ([216.82.250.131])
+Received: from mail153.messagelabs.com ([216.82.253.51])
 	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbtTR-0006FT-AD
-	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 03:12:08 -0400
-Received: from il06exr02.mot.com (il06exr02.mot.com [129.188.137.132])
-	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id l3C7C0YE016694
+	id 1Hbte9-0006XE-Ex
+	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 03:23:11 -0400
+Received: from az33exr01.mot.com ([10.64.251.231])
+	by ftpbox.mot.com (8.12.11/Motorola) with ESMTP id l3C7N6xp015956
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Apr 2007 00:12:00 -0700 (MST)
-Received: from il06vts01.mot.com (il06vts01.mot.com [129.188.137.141])
-	by il06exr02.mot.com (8.13.1/Vontu) with SMTP id l3C7C01h015750
+	Thu, 12 Apr 2007 02:23:06 -0500 (CDT)
+Received: from az10vts01 (az10vts01.mot.com [10.64.251.242])
+	by az33exr01.mot.com (8.13.1/Vontu) with SMTP id l3C7N54c021805
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Apr 2007 02:12:00 -0500 (CDT)
+	Thu, 12 Apr 2007 02:23:05 -0500 (CDT)
 Received: from zuk35exm60.ds.mot.com (zuk35exm60.ea.mot.com [10.178.1.39])
-	by il06exr02.mot.com (8.13.1/8.13.0) with ESMTP id l3C7BvqO015706
+	by az33exr01.mot.com (8.13.1/8.13.0) with ESMTP id l3C7N3Zh021788
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Apr 2007 02:12:00 -0500 (CDT)
+	Thu, 12 Apr 2007 02:23:04 -0500 (CDT)
 Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="US-ASCII"
 Content-Transfer-Encoding: quoted-printable
 Subject: RE: Problem booting from MTD partition of NAND device
-Date: Thu, 12 Apr 2007 08:11:56 +0100
-Message-ID: <67194FEE6056B947B4EF756C9E497A2E017A42CD@zuk35exm60.ds.mot.com>
+Date: Thu, 12 Apr 2007 08:23:02 +0100
+Message-ID: <67194FEE6056B947B4EF756C9E497A2E017A42DA@zuk35exm60.ds.mot.com>
 In-Reply-To: <37587.69.30.123.186.1176338248.squirrel@architechnical.net>
 References: <37587.69.30.123.186.1176338248.squirrel@architechnical.net>
 From: "Demke Torsten-atd012" <torsten.demke@motorola.com>
@@ -36,21 +36,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pete,
+Some additional info:
 
+With both NOR and NAND flashes enabled, I tried to boot from a NOR
+partition
+e.g. (root=3D/dev/mtdblock9). The partition is detected correctly (but
+fails later
+because there is no jffs2 filesystem).=20
+...
+VFS: Mount ROOT_DEV 32505865 - mtdblock9
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00000000:
+0x7436 instead
+...
+Cowardly refusing to erase blocks on filesystem with no valid JFFS2
+nodes
+empty_blocks 252, bad_blocks 0, c->nr_blocks 256
+VFS: Cannot open root device "mtdblock9" or unknown-block(31,9)
+Please append a correct "root=3D" boot option
+Kernel panic - not syncing: VFS: Unable to mount root fs on
+unknown-block(31,9)
+ <0>Rebooting in 180 seconds..
+
+
+Regards,
+Torsten
+> -----Original Message-----
+> From: Pete MacKay [mailto:linux@architechnical.net]=20
+> Sent: Donnerstag, 12. April 2007 02:37
+> To: Demke Torsten-atd012
+> Cc: linux-mtd@lists.infradead.org
+> Subject: Problem booting from MTD partition of NAND device
+>=20
 > Not sure if you've done this, but make sure you specify=20
 > "rootfstype=3Djffs2"
 > in the kernel parameters.
-Yes, I do.
-
 >=20
 > Additionally, make sure the NOR driver doesn't specify the=20
 > root file system using code.  Look for "ROOT_DEV =3D=20
 > MKDEV(MTD_BLOCK_MAJOR, 0);", or the inclusion of "<linux/root_dev.h>".
-I didn't changed the NOR driver, just added a new *_map.c file.
-
-Regards,
-Torsten
 >=20
 > Torsten Demke writes:
 >=20
