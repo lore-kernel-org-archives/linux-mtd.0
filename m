@@ -1,22 +1,20 @@
-Received: from mu-out-0910.google.com ([209.85.134.185])
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hbzls-00023F-Bp
-	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 09:55:34 -0400
-Received: by mu-out-0910.google.com with SMTP id w1so597892mue
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Apr 2007 06:55:29 -0700 (PDT)
-Message-ID: <625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
-Date: Thu, 12 Apr 2007 08:55:23 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Seongsu Lee" <senux@senux.com>
-Subject: Re: FAT file system on NAND flash memory
-In-Reply-To: <20070412134137.GA25860@pooky.senux.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1Hc0x6-0002rQ-RE
+	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 11:11:14 -0400
+Subject: Re: Strange flash errors starting to appear, SOLVED
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+In-Reply-To: <1176365807.12080.112.camel@gentoo-jocke.transmode.se>
+References: <1175700307.12080.67.camel@gentoo-jocke.transmode.se>
+	<1176365807.12080.112.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20070412134137.GA25860@pooky.senux.com>
-Cc: linux-mtd@lists.infradead.org
+Date: Thu, 12 Apr 2007 17:11:05 +0200
+Message-Id: <1176390665.12080.118.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +24,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/12/07, Seongsu Lee <senux@senux.com> wrote:
-> Hi,
->
-> In my knowledge, mtdblock.c must be used to use
-> FAT filesystem on bare NAND flash memories
-> because NFTL is made only for a specific hardware,
-> DiskOnChip.
->
-> (Layer 0) VFS
-> (Layer 1) FAT (or EXT2, EXT3)
-> (Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
-> (Layer 3) NAND flash memory driver (vendor specific)
-> (Layer 4) Physical NAND flash memory
->
-> Please let me know if it is wrong.
+On Thu, 2007-04-12 at 10:16 +0200, Joakim Tjernlund wrote:
+> On Wed, 2007-04-04 at 17:25 +0200, Joakim Tjernlund wrote:
+> > Just got this on two boards(lots of them):
+> > TMCU Flash Map Info: Waiting for chip to be ready timed out. Status c320
+> > Write of 52 bytes at 0x0771392c failed. returned -5, retlen 0
+> > Not marking the space at 0x0771392c as dirty because the flash driver returned retlen zero
+> > 
+> > Status c320 varies between boots. Seen
+> > 7574, 3034 and 5f32
+> > 
+> > Kernel 2.6.20, no summary, Powerpc, cfi_cmdset_0001(Intel P30, 16 bits wide)
+> > I have removed SUMMARY support from my kernel recently.
+> > 
+> >  Ideas?
+> 
+> Got some more info about this problem now.
+> get_chip() in cfi_cmdset_0001 thinks the flash is in FL_STATUS and
+> keeps querying the chip for status and eventually times out. Looking
+> closer at the the chip I found that the real state is READY so  
+> status = map_read(map, adr); actually reads flash contents instead.
+> If I force the flash into status mode inside the timeout code, it
+> recovers:
+> 	if (time_after(jiffies, timeo)) {
+> 				printk(KERN_ERR "%s: Waiting for chip to be ready timed out. Status %lx\n",
+> 				       map->name, status.x[0]);
+> 				map_write(map, CMD(0x70), adr); /* force into status */
+> 				status = map_read(map, adr);
+> 				if (map_word_andequal(map, status, status_OK, status_OK)) {
+> 					printk(KERN_ERR "Status(%lx) OK for adr:%lx\n", status.x[0], adr);
+> 					//BUG();
+> 					break;
+> 				}
+> 				return -EIO;
+> 			}
+> 
+> 
+> uncommenting the BUG(), I get these traces which shows that the error
+> appers in do_write_buffer() as it calls get_chip()
+> 
+> All this makes me think there is a race somewhere that puts the flash 
+> into READY mode, but I am unable to find the cause. I really need some
+> help one this one.
 
-That layering is correct, but your results will be bad.  mtdblock
-doesn't handle bad blocks.  So if you have one in the middle of your
-filesystem, it will break things.  You need some kind of translation
-layer if you're going to use NAND.
+OK, this turned out to be an error in the userspace app which did a
+direct access to the flash and thereby confusing the driver.
 
-josh
+   Jocke
