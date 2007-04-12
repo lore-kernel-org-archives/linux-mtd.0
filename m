@@ -1,18 +1,25 @@
-Received: from eos.fwall.u-szeged.hu ([160.114.120.248])
+Received: from wx-out-0506.google.com ([66.249.82.233])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HbyE6-0000yb-Qb
-	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 08:16:38 -0400
-Message-ID: <461E231F.9000404@inf.u-szeged.hu>
-Date: Thu, 12 Apr 2007 14:16:31 +0200
-From: Ferenc Havasi <havasi@inf.u-szeged.hu>
-MIME-Version: 1.0
-To: akorolev <alexey.korolev@intel.com>
-Subject: Re: Centralized summary as a way to speed up "ls" time
-References: <461BC120.2080507@intel.com>
-In-Reply-To: <461BC120.2080507@intel.com>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1HbzdE-0001ou-Kg
+	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 09:46:40 -0400
+Received: by wx-out-0506.google.com with SMTP id t8so164902wxc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Apr 2007 06:46:33 -0700 (PDT)
+Received: from pooky.senux.com (localhost.localdomain [127.0.0.1])
+	by pooky.senux.com (8.13.7/8.13.7) with ESMTP id l3CDfbCQ025910
+	(version=TLSv1/SSLv3 cipher=DHE-DSS-AES256-SHA bits=256 verify=NO)
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Apr 2007 22:41:37 +0900
+Received: (from senux@localhost)
+	by pooky.senux.com (8.13.7/8.13.7/Submit) id l3CDfb8Z025909
+	for linux-mtd@lists.infradead.org; Thu, 12 Apr 2007 22:41:37 +0900
+Date: Thu, 12 Apr 2007 22:41:37 +0900
+From: Seongsu Lee <senux@senux.com>
+To: linux-mtd@lists.infradead.org
+Subject: FAT file system on NAND flash memory
+Message-ID: <20070412134137.GA25860@pooky.senux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,30 +29,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Alexey,
+Hi,
 
-akorolev wrote:
-> While using JFFS2 on NAND devices with large size and many files I faced 
-> the problem of very slow "ls" performance.
-> On folder which contains ~40 files and ~80MB ls could take ~25sec!
-> 
-> The question I have will it be possible to extend a little bit 
-> functionality of Centralized Summary to story these nodes as well.
-> Do you see any technical issues here?
+In my knowledge, mtdblock.c must be used to use 
+FAT filesystem on bare NAND flash memories 
+because NFTL is made only for a specific hardware, 
+DiskOnChip.
 
-Now we have thought it over, and there is no big technical problem in 
-extending Centralized Summary for storing these (frag tree) nodes as well.
+(Layer 0) VFS
+(Layer 1) FAT (or EXT2, EXT3)
+(Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
+(Layer 3) NAND flash memory driver (vendor specific)
+(Layer 4) Physical NAND flash memory
 
-We see two technical things:
-- it is not sure that after an "ls" the these trees are staying in 
-memory for ever - so saving only the exiting trees may not cause always 
-speedup
-- it can increase the summary information by (in worst case) about 100%.
+Please let me know if it is wrong.
 
-> Do you have any updates of CS? Is the last version of CS placed here 
-> www.inf.u-szeged.hu/jffs2/mount.php?
-
-Yes, this is the last version. To update this for the latest MTD version 
-can be a little bit big effort - many thing has been changed.
-
-Ferenc
+-- 
+Seongsu's personal blog - http://www.senux.com/
+LILO, you've got me on my knees! (from David Black,
+dblack@pilot.njin.net, with apologies to Derek and the
+Dominos, and Werner Almsberger)
