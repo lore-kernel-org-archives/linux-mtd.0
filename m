@@ -1,11 +1,19 @@
-Message-ID: <24405799.1176421836998.JavaMail.root@wolfsbane.centurytel.net>
-Date: Thu, 12 Apr 2007 18:50:36 -0500 (CDT)
-From: bubba1234@centurytel.net
-To: uklottery@yahoo.co.uk
-Subject: YOU ARE A **** WINNER
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HceyI-0005D4-RX
+	for linux-mtd@lists.infradead.org; Sat, 14 Apr 2007 05:55:07 -0400
+Subject: Re: [PATCH] [MTD] Casting bug in nand_default_block_markbad
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Andre Renaud <andre@bluewatersys.com>
+In-Reply-To: <461C5290.6090202@bluewatersys.com>
+References: <461C5290.6090202@bluewatersys.com>
+Content-Type: text/plain
+Date: Sat, 14 Apr 2007 11:56:03 +0200
+Message-Id: <1176544564.3387.56.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,54 +23,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2007-04-11 at 15:14 +1200, Andre Renaud wrote:
+> There is a slight bug in nand_default_block_markbad, where the offset is
+> cast to an integer, prior to being shifted. This means that on large
+> offsets, it is incorrectly doing a signed shift & losing bits. Fixed
+> this by doing the cast after the shift (as is done elsewhere in the code).
+> 
+> Signed-off-by: Andre Renaud <andre@bluewatersys.com>
+> 
+> Index: drivers/mtd/nand/nand_base.c
+> ===================================================================
+> --- drivers/mtd/nand/nand_base.c        (revision 957)
+> +++ drivers/mtd/nand/nand_base.c        (working copy)
 
+Please provide patches which can be applied with -p1, i.e. do the diff
+one directory level up
 
-UK NATIONAL LOTTERY HEADQUARTERS: 
- P O Box 1010 Liverpool, 
- L70 1NL UNITED KINGDOM 
-(Customer Services)
+> @@ -355,7 +355,7 @@
+>         int block, ret;
+> 
+>         /* Get block number */
+> -       block = ((int)ofs) >> chip->bbt_erase_shift;
+> +       block = (int)(ofs >> chip->bbt_erase_shift);
+>         if (chip->bbt)
+>                 chip->bbt[block >> 2] |= 0x01 << ((block & 0x03) << 1);
 
-Dear Lucky Winner, 
+Also your patch is whitespace damaged and does not apply.
+There is some HOWTO submit patches with Thunderbird somewhere in the
+net.
 
-We are pleased to inform you of the result of the just concluded annual final draws of UNITED KINGDOM NATIONAL LOTTERY international Lottery programs. The online cyber lotto draws was conducted from an exclusive list of 21,000 e-mail addresses of individual and corporate bodies picked by an advanced automated random computer search from the internet, no tickets were sold. After this automated computer ballot, your e-mail address emerged as one of two winners in the category \\\"A\\\" You are therefore been approve to caim the sum of 1,000,000 (One Million Pounds 
-Sterling) with the information below:
+I fix that up manually.
 
-REF No: UKNL-L/200-26937 
-BATCH No: 2005MJL-01 
-TICKET No: 20511465463-7644 
-SERIAL No: S/N-00168 
-LUCKY No: 887-13-865-37-10-83 
- 
-To file for your claim fill the form below and send it to our ayment 
-Parastatal: 
- 
-Contact Person:Martin James 
-Telephone: +44 (0) 701 113 0527 
-E-mail:info.lotterydept@yahoo.co.uk
+Thanks,
 
- 
-PAYMENT PROCESSING FORM
-
-(1.) FULL NAME 
-(2.) FULL ADDRESS 
-(3).NATIONALITY. 
-(4) DATE OF BIRTH
-(5) OCCUPATION
-(6 )WINNING EMAIL
-(7 )TELEPHONE NUMBER
-(8) DATE OF WINNING NOTIFICATION
-(9) SEX
-(10) TOTAL AMOUNT WON
-(11) MARITAL STATUE 
-  
-Congratulations once more from our members of staff and thank you or 
-being part of our promotional program. 
- 
-Sincerely, 
-Mrs. Caroline bryan
-for UK NATIONAL LOTTERY. 
-			
- 			
-			
-			
-		
+	tglx
