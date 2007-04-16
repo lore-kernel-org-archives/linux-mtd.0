@@ -1,22 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HdFCY-000481-EB
-	for linux-mtd@lists.infradead.org; Sun, 15 Apr 2007 20:36:15 -0400
-Date: Mon, 16 Apr 2007 02:31:48 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [RFC] MTD driver for MMC cards
-Message-ID: <20070416003148.GA23559@lazybastard.org>
-References: <200612281418.20643.arnd@arndb.de>
-	<200701012322.14735.arnd@arndb.de> <459CB001.4010800@drzeus.cx>
-	<200704160133.18597.arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200704160133.18597.arnd@arndb.de>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Pierre Ossman <drzeus-mmc@drzeus.cx>
+Received: from pc125.solomon-systech.com ([202.76.106.125]
+	helo=virus-gateway.solomon-systech.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HdOjD-0000IG-0D
+	for linux-mtd@lists.infradead.org; Mon, 16 Apr 2007 06:46:36 -0400
+Received: from SSLEXCHANGE.solomonsystech.com
+	(cluster_server1.solomonsystech.com) by
+	sweeper_server.solomonsystech.com
+	(Content Technologies SMTPRS 4.3.6) with ESMTP id
+	<T7f07e600b2ac100003aac@sweeper_server.solomonsystech.com> for
+	<linux-mtd@lists.infradead.org>; Mon, 16 Apr 2007 17:42:40 +0800
+Content-Class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: NAND device ID 0xd5 appears twice in nand_ids.c table
+Date: Mon, 16 Apr 2007 17:41:21 +0800
+Message-ID: <6334E09627481B4AA5C8DE1E69E19D3B06BF96E0@SSLEXCHANGE.solomonsystech.com>
+From: <sasin@solomon-systech.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +28,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 16 April 2007 01:33:17 +0200, Arnd Bergmann wrote:
-> 
-> There is also still some need for performance testing. Jörn
-> brought up the point that if a specific card can't have multiple
-> open erase block simulateously, it's rather pointless for
-> logfs. It might still be useful to use jffs2 on those cards,
-> because IFAIK that only writes to one erase block at any
-> time.
+NAND device ID 0xd5 appears for a 4MiB device as well as for a 2GiB
+device.  So when the new 2GiB device is used, it is detected as the
+older 4MiB device.  Should other ID bytes perhaps be used to
+differentiate between the two?  This problem will continue as older
+device IDs are reused in newer devices.
 
-This appears to be a problem for practically all consumer-available
-flash media.  They spend a lot of effort trying to hide any flash
-properties from their users.  And while this is a decent strategy for
-FAT, ext3, ntfs and similar, it is actually very inefficient for a flash
-filesystem.
-
-After talking to several manufacturers, most seemed to be fairly
-open-minded towards supporting an alternate interface with raw flash
-access.  So much for the good news.  Bad news is that such an elternate
-interface still needs to be defined.
-
-Jörn
-
--- 
-Courage is not the absence of fear, but rather the judgement that
-something else is more important than fear.
--- Ambrose Redmoon
+Best regards,
+Sasi
