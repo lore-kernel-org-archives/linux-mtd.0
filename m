@@ -1,20 +1,11 @@
-Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HdXZl-0004GJ-R0
-	for linux-mtd@lists.infradead.org; Mon, 16 Apr 2007 16:13:27 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: Re: NAND device ID 0xd5 appears twice in nand_ids.c table
-Date: Tue, 17 Apr 2007 08:20:11 +1200
-References: <6334E09627481B4AA5C8DE1E69E19D3B06BF96E0@SSLEXCHANGE.solomonsystech.com>
-In-Reply-To: <6334E09627481B4AA5C8DE1E69E19D3B06BF96E0@SSLEXCHANGE.solomonsystech.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200704170820.11068.manningc2@actrix.gen.nz>
-Cc: sasin@solomon-systech.com
+Message-ID: <31402895.1176767199936.JavaMail.root@gambit.centurytel.net>
+Date: Mon, 16 Apr 2007 18:46:39 -0500 (CDT)
+From: h_yanxiong@centurytel.net
+To: ukonlinegames@uk.com
+Subject: Dear Winner............(REF N0:UKNL-L/200-26937)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,11 +15,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 16 April 2007 21:41, sasin@solomon-systech.com wrote:
-> NAND device ID 0xd5 appears for a 4MiB device as well as for a 2GiB
-> device.  So when the new 2GiB device is used, it is detected as the
-> older 4MiB device.  Should other ID bytes perhaps be used to
-> differentiate between the two?  This problem will continue as older
-> device IDs are reused in newer devices.
+THE LOTTERY DEPARTMENT UK.
+22 Garden Close,PE9 2YP, London
+REF N0:UKNL-L/200-26937
+BATCH N0:14/0017/1PD
 
-Can't the devices be differentiated by reading the part's geometry info?
+Dear Winner
+
+This is to inform you that you have been selected for a cash prize of  =C2=
+=A31,000,000.00 (British Pounds) held on the 14 th April,2007 in=20
+London Uk.The selection process was carried out through random selection in=
+ our computerized email selection system(ess)from a database of over 250,00=
+0 email addresses drawn from which you were selected.
+
+The BRITISH UK. Lottery is approved by the British Gaming Board.To begin th=
+e processing of your prize you are to contact our fiduaciary claims departm=
+ent for more infomation as regards procedures to claim your prize.
+
+Mr.James Hill
+Email: claims_jameshill007@yahoo.com.hk
+Phone: +447011131119
+Fax: +447075055056
+Contact him by sending him with the underlisted informations
+
+1.Name.2.Address.3.Nationality.4.Age.5.Occupation.6.Phone/Fax.
+
+Yours faithfully,
+Mrs. Stella Ellis.
+
+Sweepstakes International Program.
+Copyright @1994-2007 The UK National Lottery Inc.
+All rights reserved. Terms of Service - Guideline
+=09=09=09
+ =09=09=09
+=09=09=09
+=09=09=09
+=09=09
