@@ -1,11 +1,19 @@
-Message-ID: <31402895.1176767199936.JavaMail.root@gambit.centurytel.net>
-Date: Mon, 16 Apr 2007 18:46:39 -0500 (CDT)
-From: h_yanxiong@centurytel.net
-To: ukonlinegames@uk.com
-Subject: Dear Winner............(REF N0:UKNL-L/200-26937)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hdldm-0002El-Qc
+	for linux-mtd@lists.infradead.org; Tue, 17 Apr 2007 07:14:31 -0400
+Received: by an-out-0708.google.com with SMTP id d40so1512502and
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Apr 2007 04:14:29 -0700 (PDT)
+Message-ID: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
+Date: Tue, 17 Apr 2007 15:14:29 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,39 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-THE LOTTERY DEPARTMENT UK.
-22 Garden Close,PE9 2YP, London
-REF N0:UKNL-L/200-26937
-BATCH N0:14/0017/1PD
+Yes, the bug still exists. The patch fixes JFFS2 non-contiguous write
+error on Sibley.
 
-Dear Winner
+Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
+---
+diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+--- a/fs/jffs2/wbuf.c	2007-03-23 22:52:51.000000000 +0300
++++ b/fs/jffs2/wbuf.c	2007-04-06 14:06:16.000000000 +0400
+@@ -755,6 +755,13 @@
+ 		memset(c->wbuf,0xff,c->wbuf_pagesize);
+ 	}
 
-This is to inform you that you have been selected for a cash prize of  =C2=
-=A31,000,000.00 (British Pounds) held on the 14 th April,2007 in=20
-London Uk.The selection process was carried out through random selection in=
- our computerized email selection system(ess)from a database of over 250,00=
-0 email addresses drawn from which you were selected.
-
-The BRITISH UK. Lottery is approved by the British Gaming Board.To begin th=
-e processing of your prize you are to contact our fiduaciary claims departm=
-ent for more infomation as regards procedures to claim your prize.
-
-Mr.James Hill
-Email: claims_jameshill007@yahoo.com.hk
-Phone: +447011131119
-Fax: +447075055056
-Contact him by sending him with the underlisted informations
-
-1.Name.2.Address.3.Nationality.4.Age.5.Occupation.6.Phone/Fax.
-
-Yours faithfully,
-Mrs. Stella Ellis.
-
-Sweepstakes International Program.
-Copyright @1994-2007 The UK National Lottery Inc.
-All rights reserved. Terms of Service - Guideline
-=09=09=09
- =09=09=09
-=09=09=09
-=09=09=09
-=09=09
++	/* Fixup the wbuf if we are moving to a new eraseblock */
++	if (((c->wbuf_ofs % c->sector_size) == 0) && !c->wbuf_len) {
++		c->wbuf_ofs = PAGE_DIV(to);
++		c->wbuf_len = PAGE_MOD(to);
++		memset(c->wbuf,0xff,c->wbuf_pagesize);
++	}
++
+ 	/*
+ 	 * Sanity checks on target address.  It's permitted to write
+ 	 * at PAD(c->wbuf_len+c->wbuf_ofs), and it's permitted to
