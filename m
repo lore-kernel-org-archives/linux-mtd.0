@@ -1,19 +1,14 @@
-Received: from an-out-0708.google.com ([209.85.132.243])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hdldm-0002El-Qc
-	for linux-mtd@lists.infradead.org; Tue, 17 Apr 2007 07:14:31 -0400
-Received: by an-out-0708.google.com with SMTP id d40so1512502and
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 17 Apr 2007 04:14:29 -0700 (PDT)
-Message-ID: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
-Date: Tue, 17 Apr 2007 15:14:29 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: Re: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+In-Reply-To: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
+References: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 18 Apr 2007 10:06:44 -0500
+Message-Id: <1176908804.21611.37.camel@shinybook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +18,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yes, the bug still exists. The patch fixes JFFS2 non-contiguous write
-error on Sibley.
+On Tue, 2007-04-17 at 15:14 +0400, Alexander Belyakov wrote:
+> Yes, the bug still exists. The patch fixes JFFS2 non-contiguous write
+> error on Sibley.
 
-Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
----
-diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
---- a/fs/jffs2/wbuf.c	2007-03-23 22:52:51.000000000 +0300
-+++ b/fs/jffs2/wbuf.c	2007-04-06 14:06:16.000000000 +0400
-@@ -755,6 +755,13 @@
- 		memset(c->wbuf,0xff,c->wbuf_pagesize);
- 	}
+Sorry, I missed (or have forgotten) this. Can you explain in a little
+more detail?
 
-+	/* Fixup the wbuf if we are moving to a new eraseblock */
-+	if (((c->wbuf_ofs % c->sector_size) == 0) && !c->wbuf_len) {
-+		c->wbuf_ofs = PAGE_DIV(to);
-+		c->wbuf_len = PAGE_MOD(to);
-+		memset(c->wbuf,0xff,c->wbuf_pagesize);
-+	}
-+
- 	/*
- 	 * Sanity checks on target address.  It's permitted to write
- 	 * at PAD(c->wbuf_len+c->wbuf_ofs), and it's permitted to
+The following condition (SECTOR_ADDR(to) != SECTOR_ADDR(wbuf_ofs)) is
+supposed to handle this, surely? In what circumstances is it
+insufficient?
+
+As far as I can tell, your new check allows us to write anywhere _after_
+writing the first wbuf-load in a new eraseblock.
+
+Hm, is this because the cleanmarker size in Sibley is also the wbuf
+size? So you were hitting the BUG() after writing the cleanmarker to a
+newly-erased block (hence setting wbuf_ofs to point there), but then
+moving on to actually _write_ elsewhere?
+
+If that's the case, perhaps the code which writes the cleanmarker
+shouldn't be using jffs2_flash_writev() to write it -- perhaps it should
+be bypassing the wbuf handling altogether?
+
+-- 
+dwmw2
