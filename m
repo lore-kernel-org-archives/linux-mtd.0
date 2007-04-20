@@ -1,18 +1,24 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HecOq-0003o1-1M
-	for linux-mtd@lists.infradead.org; Thu, 19 Apr 2007 15:34:39 -0400
-From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
-To: <linux-mtd@lists.infradead.org>
-Subject: RE: [PATCH] Obsolete nodes that are unlinked when possible
-Date: Thu, 19 Apr 2007 21:34:06 +0200
-Message-ID: <006f01c782b9$b23ecfd0$020120ac@Jocke>
+Received: from pc125.solomon-systech.com ([202.76.106.125]
+	helo=virus-gateway.solomon-systech.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HemX1-0000DX-L0
+	for linux-mtd@lists.infradead.org; Fri, 20 Apr 2007 02:23:47 -0400
+Received: from SSLEXCHANGE.solomonsystech.com
+	(cluster_server1.solomonsystech.com) by
+	sweeper_server.solomonsystech.com
+	(Content Technologies SMTPRS 4.3.6) with ESMTP id
+	<T7f1bca2adfac100003aac@sweeper_server.solomonsystech.com> for
+	<linux-mtd@lists.infradead.org>; Fri, 20 Apr 2007 14:24:40 +0800
+Content-Class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1174059907.26465.228.camel@gentoo-jocke.transmode.se>
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: NAND device ID 0xd5 appears twice in nand_ids.c table
+Date: Fri, 20 Apr 2007 14:23:22 +0800
+Message-ID: <6334E09627481B4AA5C8DE1E69E19D3B06BF9703@SSLEXCHANGE.solomonsystech.com>
+From: <sasin@solomon-systech.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,52 +28,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ping.
-
-> -----Original Message-----
-> From: linux-mtd-bounces@lists.infradead.org 
-> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
-> Joakim Tjernlund
-> Sent: den 16 mars 2007 16:45
-> To: linux-mtd@lists.infradead.org
-> Subject: [PATCH] Obsolete nodes that are unlinked when possible
-> 
-> >From d3e51689869fae928f6289307452a698359302ff Mon Sep 17 
-> 00:00:00 2001
-> From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> Date: Fri, 16 Mar 2007 16:15:45 +0100
-> Subject: [PATCH] Obsolete nodes that are unlinked when possible.
-> 
-> 
-> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> ---
->  fs/jffs2/write.c |    3 +--
->  1 files changed, 1 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
-> index 6717679..57a79a6 100644
-> --- a/fs/jffs2/write.c
-> +++ b/fs/jffs2/write.c
-> @@ -507,8 +507,7 @@ int jffs2_do_unlink(struct jffs2_sb_info 
-> *c, struct jffs2_inode_info *dir_f,
->  	uint32_t alloclen;
->  	int ret;
->  
-> -	if (1 /* alternative branch needs testing */ ||
-> -	    !jffs2_can_mark_obsolete(c)) {
-> +	if (!jffs2_can_mark_obsolete(c)) {
->  		/* We can't mark stuff obsolete on the medium. 
-> We need to write a deletion dirent */
->  
->  		rd = jffs2_alloc_raw_dirent();
-> -- 
-> 1.4.4.4
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
-> 
+[resending w/o "Re:", apparently a "suspicious header"]
+The problem is that there is no geometry information in the ID bytes for
+the older parts with page size 512 bytes and below, which is the case
+for the 4MiB part.  Unsure if anyone has compiled a dump of ID bytes for
+the older parts so that there is some fixed pattern to rely upon to
+differentiate.
