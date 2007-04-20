@@ -1,15 +1,11 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hf0A0-0000bm-0P
-	for linux-mtd@lists.infradead.org; Fri, 20 Apr 2007 16:56:53 -0400
-Subject: Re: NAND device ID 0xd5 appears twice in nand_ids.c table
-From: Thomas Gleixner <tglx@linutronix.de>
-To: sasin@solomon-systech.com
-In-Reply-To: <6334E09627481B4AA5C8DE1E69E19D3B06BF9703@SSLEXCHANGE.solomonsystech.com>
-References: <6334E09627481B4AA5C8DE1E69E19D3B06BF9703@SSLEXCHANGE.solomonsystech.com>
+Subject: RE: [PATCH] Obsolete nodes that are unlinked when possible
+From: David Woodhouse <dwmw2@infradead.org>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <006f01c782b9$b23ecfd0$020120ac@Jocke>
+References: <006f01c782b9$b23ecfd0$020120ac@Jocke>
 Content-Type: text/plain
-Date: Fri, 20 Apr 2007 22:57:06 +0200
-Message-Id: <1177102626.22861.1.camel@chaos>
+Date: Fri, 20 Apr 2007 17:13:51 -0400
+Message-Id: <1177103631.30621.35.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -22,17 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-04-20 at 14:23 +0800, sasin@solomon-systech.com wrote:
-> [resending w/o "Re:", apparently a "suspicious header"]
-> The problem is that there is no geometry information in the ID bytes for
-> the older parts with page size 512 bytes and below, which is the case
-> for the 4MiB part.  Unsure if anyone has compiled a dump of ID bytes for
-> the older parts so that there is some fixed pattern to rely upon to
-> differentiate.
+On Thu, 2007-04-19 at 21:34 +0200, Joakim Tjernlund wrote:
+> Ping. 
 
-I just merged a patch, that excludes the old obsolete ID's from the
-table.
+Sorry for taking so long to look at this. Did you test this without
+SUMMARY support? 
 
-http://git.infradead.org/?p=mtd-2.6.git;a=commit;h=1cf9827b6852d5d81130efbf2e777e50b7126d23
+I agree that we ought to make the summary code _not_ imply
+!jffs2_can_mark_obsolete(). There's a few things I want to change about
+the summary code -- the nodes are currently about twice as large as they
+need to be, too. I'll look at that soon.
 
-	tglx
+-- 
+dwmw2
