@@ -1,14 +1,18 @@
-Subject: RE: [PATCH] Obsolete nodes that are unlinked when possible
-From: David Woodhouse <dwmw2@infradead.org>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <006f01c782b9$b23ecfd0$020120ac@Jocke>
-References: <006f01c782b9$b23ecfd0$020120ac@Jocke>
-Content-Type: text/plain
-Date: Fri, 20 Apr 2007 17:13:51 -0400
-Message-Id: <1177103631.30621.35.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from nz-out-0506.google.com ([64.233.162.233])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hf80J-00045v-8u
+	for linux-mtd@lists.infradead.org; Sat, 21 Apr 2007 01:19:24 -0400
+Received: by nz-out-0506.google.com with SMTP id i11so2185679nzi
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 20 Apr 2007 22:19:21 -0700 (PDT)
+Message-ID: <002301c783d4$92653480$800101df@WILSONSAMSUNG>
+From: "Wilson" <callwilson@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: MTD in a 44B0X borad 
+Date: Sat, 21 Apr 2007 13:18:57 +0800
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="big5"; reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,16 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-19 at 21:34 +0200, Joakim Tjernlund wrote:
-> Ping. 
+Hi all,
+Please give me a hand.. I need to get it done ASAP... Thanks.
 
-Sorry for taking so long to look at this. Did you test this without
-SUMMARY support? 
+I would like to enable MTD in S3C44B0X with NOR flash SST 39VF160.
 
-I agree that we ought to make the summary code _not_ imply
-!jffs2_can_mark_obsolete(). There's a few things I want to change about
-the summary code -- the nodes are currently about twice as large as they
-need to be, too. I'll look at that soon.
+When I erase mtd1, I got the following error messages:
+/> eraseall /dev/mtd1
+MTD_open
+MTD_ioctl
+Erasing 4 KibyteMTD_ioctl
+ @ 0 --  0 % compInternal error: Oops: f9f4e
+CPU: 0
+pc : [<00028f9c>]    lr : [<0c7e0ac8>]    Not tainted
+sp : 0c7ffc70  ip : 0c7ffbd8  fp : 00000000
+r10: 0c7f0e84  r9 : 00000001  r8 : 0c7f0adc
+r7 : 00000000  r6 : 00000023  r5 : 00000002  r4 : 0000096c
+r3 : 000000ff  r2 : 00000014  r1 : 0c7ffc80  r0 : 00000023
+Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  Segment user
+Control: 0
+Process sh (pid: 30, stackpage=0c3af000)
+Stack:
+0c3affe0:
 
--- 
-dwmw2
+1) Do I need to modify the lock address 5555/2AAA in jedec_probe.c?
+2) Do I need to modify the interrupt table(seems like an interrupt error)?
+
+P.S The boot up message of uClinux: (It looks good to me)
+s3c4510b flash device: 200000 at 1000000
+Found: SST 39LF160/VF160
+number of JEDEC chips: 1
+Creating 2 MTD partitions on "SST39LF160 flash":
+0x00000000-0x00160000 : "Reserved for bootloader and kernel (1408kB)"
+mtd: Giving out device 0 to Reserved for bootloader and kernel (1408kB)
+0x00170000-0x001b0000 : "user partition (256K)"
+mtd: Giving out device 1 to user partition (256K)
+init_mtdchar: allocated major number 90.
+init_mtdblock: allocated major number 30.
+
+Any other things I missed here?
+
+Many Thanks,
+Wilson 
