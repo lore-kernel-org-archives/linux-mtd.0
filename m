@@ -1,7 +1,7 @@
-Date: Sun, 22 Apr 2007 10:18:50 -0700
+Date: Sun, 22 Apr 2007 09:47:54 -0700
 From: online22@planet.nl
 Subject: YOU HAVE WON THE NATIONAL LOTTERY/ CONTACT BAR.DAVID GREEN FOR CLAIMS
-Message-id: <10ded5ff10dee905.10dee90510ded5ff@planet.nl>
+Message-id: <10da3bd410da7560.10da756010da3bd4@planet.nl>
 MIME-version: 1.0
 Content-type: text/plain; charset=iso-8859-1
 Content-language: nl
