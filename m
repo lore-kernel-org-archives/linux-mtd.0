@@ -1,17 +1,21 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
+Received: from nz-out-0506.google.com ([64.233.162.224])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HfxmU-00053Q-RK
-	for linux-mtd@lists.infradead.org; Mon, 23 Apr 2007 08:36:36 -0400
-Subject: [Fwd: Re: JFFS2 OOPS in 2.6.20]
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+	id 1Hg2mU-0007kV-3W
+	for linux-mtd@lists.infradead.org; Mon, 23 Apr 2007 13:56:55 -0400
+Received: by nz-out-0506.google.com with SMTP id i11so3106980nzi
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 23 Apr 2007 10:56:52 -0700 (PDT)
+Message-ID: <000a01c785d0$b8ce7b60$800101df@WILSONSAMSUNG>
+From: "Wilson" <callwilson@gmail.com>
+To: <linux-mtd@lists.infradead.org>
+References: <002301c783d4$92653480$800101df@WILSONSAMSUNG>
+	<625fc13d0704211153w4d9abb2q40aaa05a2e1a536c@mail.gmail.com>
+Subject: Re: MTD in a 44B0X borad
+Date: Tue, 24 Apr 2007 01:56:25 +0800
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="ISO-8859-1";
+	reply-type=response
 Content-Transfer-Encoding: 7bit
-Date: Mon, 23 Apr 2007 14:36:31 +0200
-Message-Id: <1177331791.4388.7.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,92 +25,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-David, I think you have forgotten this one.
+Hi Josh,
 
- Jocke
+I use kernel 2.4.20 on uClinux 20030522.  And the mtd-utils version is 
+default on uClinux 20030522.
 
--------- Forwarded Message --------
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-Reply-To: joakim.tjernlund@transmode.se
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: JFFS2 OOPS in 2.6.20
-Date: Sat, 10 Mar 2007 17:08:44 +0100
+Thanks,
+Wilson
 
-> > 
-> > The check in scan is rendundant. You will never reach it due to two
-> > earlier checks:
-> > 	if (je16_to_cpu(node->magic) != JFFS2_MAGIC_BITMASK) {
-> > and
-> > 	crcnode.nodetype = cpu_to_je16( je16_to_cpu(node->nodetype) | JFFS2_NODE_ACCURATE);
-> > 
-> > I wonder if JFFS2_NODE_ACCURATE mask bit could be used in readinode.c as well?
-> > 
-> >  Jocke
-> 
-> probably better to remove the zero crc32 check and add a:
->    if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK)
-> 
-> to make sure it is a JFFS2 node with the added benefit that this will work
-> when ->point is added too.
-> 
->  Jocke
+----- Original Message ----- 
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: "Wilson" <callwilson@gmail.com>
+Cc: <linux-mtd@lists.infradead.org>
+Sent: Sunday, April 22, 2007 2:53 AM
+Subject: Re: MTD in a 44B0X borad
 
-How about this fix instead:
 
->From 4421fa227585b205f52e90966683c0a57737547b Mon Sep 17 00:00:00 2001
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Date: Sat, 10 Mar 2007 16:59:03 +0100
-Subject: [PATCH] Better fix for all-zero node headers
-No need to check for all-zero header since the header cannot
-be zero due to other checks.
-Replace the all-zero header check in readinode.c with a
-check for the magic word.
-
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/readinode.c |    8 ++++----
- fs/jffs2/scan.c      |   11 -----------
- 2 files changed, 4 insertions(+), 15 deletions(-)
-
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 7f7618c..9f6885b 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -572,10 +572,10 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info *c, struct jffs2_inode_inf
- 
- 		node = (union jffs2_node_union *)bufstart;
- 
--		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
--		if (!je32_to_cpu(node->u.hdr_crc) && !je16_to_cpu(node->u.nodetype) &&
--		    !je16_to_cpu(node->u.magic) && !je32_to_cpu(node->u.totlen)) {
--			JFFS2_NOTICE("All zero node header at %#08x.\n", ref_offset(ref));
-+		if (je16_to_cpu(node->u.magic) != JFFS2_MAGIC_BITMASK) {
-+			/* Not a JFFS2 node, whinge and move on */
-+			JFFS2_NOTICE("Wrong magic bitmask 0x%04x in node header at %#08x.\n", je16_to_cpu(node->u.magic),
-+				     ref_offset(ref));
- 			jffs2_mark_node_obsolete(c, ref);
- 			goto cont;
- 		}
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index b98661a..3af746e 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -718,17 +718,6 @@ scan_more:
- 		crcnode.totlen = node->totlen;
- 		hdr_crc = crc32(0, &crcnode, sizeof(crcnode)-4);
- 
--		/* Due to poor choice of crc32 seed, an all-zero node will have a correct CRC */
--		if (!je32_to_cpu(node->hdr_crc) && !je16_to_cpu(node->nodetype) &&
--		    !je16_to_cpu(node->magic) && !je32_to_cpu(node->totlen)) {
--			noisy_printk(&noise, "jffs2_scan_eraseblock(): All zero node header at 0x%08x.\n", ofs);
--		       
--			if ((err = jffs2_scan_dirty_space(c, jeb, 4)))
--				return err;
--			ofs += 4;
--			continue;
--		}
--
- 		if (hdr_crc != je32_to_cpu(node->hdr_crc)) {
- 			noisy_printk(&noise, "jffs2_scan_eraseblock(): Node at 0x%08x {0x%04x, 0x%04x, 0x%08x) has invalid CRC 0x%08x (calculated 0x%08x)\n",
- 				     ofs, je16_to_cpu(node->magic),
+> On 4/21/07, Wilson <callwilson@gmail.com> wrote:
+>> Hi all,
+>> Please give me a hand.. I need to get it done ASAP... Thanks.
+>>
+>> I would like to enable MTD in S3C44B0X with NOR flash SST 39VF160.
+>>
+>> When I erase mtd1, I got the following error messages:
+>> /> eraseall /dev/mtd1
+>> MTD_open
+>> MTD_ioctl
+>> Erasing 4 KibyteMTD_ioctl
+>>  @ 0 --  0 % compInternal error: Oops: f9f4e
+>> CPU: 0
+>> pc : [<00028f9c>]    lr : [<0c7e0ac8>]    Not tainted
+>> sp : 0c7ffc70  ip : 0c7ffbd8  fp : 00000000
+>> r10: 0c7f0e84  r9 : 00000001  r8 : 0c7f0adc
+>> r7 : 00000000  r6 : 00000023  r5 : 00000002  r4 : 0000096c
+>> r3 : 000000ff  r2 : 00000014  r1 : 0c7ffc80  r0 : 00000023
+>> Flags: nZcv  IRQs off  FIQs on  Mode SVC_32  Segment user
+>> Control: 0
+>> Process sh (pid: 30, stackpage=0c3af000)
+>> Stack:
+>> 0c3affe0:
+>>
+>> 1) Do I need to modify the lock address 5555/2AAA in jedec_probe.c?
+>> 2) Do I need to modify the interrupt table(seems like an interrupt 
+>> error)?
+>>
+>> P.S The boot up message of uClinux: (It looks good to me)
+>> s3c4510b flash device: 200000 at 1000000
+>> Found: SST 39LF160/VF160
+>> number of JEDEC chips: 1
+>> Creating 2 MTD partitions on "SST39LF160 flash":
+>> 0x00000000-0x00160000 : "Reserved for bootloader and kernel (1408kB)"
+>> mtd: Giving out device 0 to Reserved for bootloader and kernel (1408kB)
+>> 0x00170000-0x001b0000 : "user partition (256K)"
+>> mtd: Giving out device 1 to user partition (256K)
+>> init_mtdchar: allocated major number 90.
+>> init_mtdblock: allocated major number 30.
+>>
+>> Any other things I missed here?
+>
+> Which kernel and mtd-utils versions are these?
+>
+> josh 
