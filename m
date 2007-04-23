@@ -1,13 +1,27 @@
-Date: Sun, 22 Apr 2007 09:47:54 -0700
-From: online22@planet.nl
-Subject: YOU HAVE WON THE NATIONAL LOTTERY/ CONTACT BAR.DAVID GREEN FOR CLAIMS
-Message-id: <10da3bd410da7560.10da756010da3bd4@planet.nl>
-MIME-version: 1.0
-Content-type: text/plain; charset=iso-8859-1
-Content-language: nl
-Content-transfer-encoding: quoted-printable
-Content-disposition: inline
-Reply-To: online22@planet.nl
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HfweW-0005ug-VO
+	for linux-mtd@lists.infradead.org; Mon, 23 Apr 2007 12:24:18 +0100
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HfweI-0006uz-8S
+	for linux-mtd@lists.infradead.org; Mon, 23 Apr 2007 13:24:02 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2007 13:24:02 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 23 Apr 2007 13:24:02 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: What is recommended way to partition mtdram device - workaround
+Date: Mon, 23 Apr 2007 11:23:50 +0000 (UTC)
+Message-ID: <loom.20070423T131831-161@post.gmane.org>
+References: <loom.20070327T102458-920@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,74 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-National Lottery Commission=2C
-2 Monck Street=2C London SW1P 2BQ
-United Kingdom=2E
-Ref =3A UK/776090X2/23
-Batch=3A 013/05/8394369
-National Draw=3A21-4-2007
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-CHECK YOUR WINNING NUMBER=3A http=3A//www=2Elottery=2Eco=2Euk/res/
-WINNING DRAW NUMBER=3A 14=2C 20=2C 21=2C 30=2C 41=2C 46=2C 6
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-WINNING NOTIFICATION=3A
+MikeW <mw_phil <at> yahoo.co.uk> writes:
 
-  We happily announce to you the Draw (=23942) of the UK NATIONAL
-LOTTERY=2Conline UK National Lottery program held on Wednesday 21 April =
+> 
+> I require a partitioned mtdram device for system emulation purposes.
+> 
+> The documentation says that the ways to partition an MTD device are:
+> 1) boot cmd line
+> 2) table of data in device
+> 3) create a map driver
+> 
+> If mtdram is to be loaded with modprobe (desktop Linux), that rules out 1).
+> 
+> So can I create partitions by dd-ing a partition table at the start of the
+> device ?
+> Can I create a map driver for the device to describe the partitions ?
+> 
+> Thanks,
+> MikeW
 
-2007=2E
-Your e-mail address attached to Ticket Number=3A8603775966738
-with Serial number 5368/02 drew the Winning Numbers=3A =
+Finally used '--bind' mount option to remount different parts
+of the current filesystem ('/opt/mtdblock0...n').
 
-14=2C 20=2C 21=2C 30=2C 41=2C 46 (bonus=2E6)=2Cwhich subsequently won you=
- the lottery
-in the 2nd category i=2Ee match 3plus bonus=2E
-  You are therefore been approved to claim total sum of =A31=2C628=2C360=2E=
-00
-(One Million Six Hundred And Twenty Eight Thousand Three Hundred
-And Sixty Million Pounds) in cash credited to file=2EThis is from a
-total cash prize of =A320=2C350=2C000=2E00 pounds=2Cshared amongst the Wi=
-nners
-with different amount won in this category i=2Ee Match 3 plus bonus=2E
-All participants for the online version were selected randomly from
-World Wide Web sites through computer draw system and extracted from
-over 100=2C000 unions=2Cassociations=2C and corporate bodies that are
-listed online=2E
-  This promotion takes place weekly=2E
+Allowed initial testing of the filesystem mounting and partition
+allocation.
 
-Please contact our Fiduciary Agent for VALIDATION=2E
-*******************************************************************
-Barrister David Green=2E
-Foreign Services Manager=2C Payment and Release order
-Department=2CCLAIMS PROCESSING LOTTERY AGENT=2E
-TRANS-ATLANTIC S=2EA LONDON=2C UNITED KINGDOM
-Tel Phone=3A +44 701 113 6365
-E-mail=3Apayoutukclaimsagent111=40yahoo=2Eco=2Euk =
+Just a simple compile-time #define to switch between
+/opt/mtdblockN -> /dev/mtdblockN
+flags=MS_BIND -> 0
+fstype="" -> "JFFS2"
 
-********************************************************************
-  Endeavour to email him your full names=2Cwinning numbers=2Cemail
-address=2Ctelephone and fax numbers immediately=2E
-Congratulations from me and members of staff of THE UK NATIONAL
-LOTTERY=2E
+Good luck.
 
-Mrs=2E Rose Wood=2C
-Winning Department=2C
-CordinatorUK National Lottery=2E
-www=2Elottery=2Eco=2Euk
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-Material Copyright =A9 2007 The Lottery Co=2E Ltd=2E
-The Lottery Company and lottery=2Eco=2Euk is in no way affiliated with=2C=
- =
-
-associated with or approved or endorsed by Camelot Group plc or The =
-
-National Lottery Commission=2E
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
+MikeW
