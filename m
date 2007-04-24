@@ -1,19 +1,23 @@
-Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hg3aU-0008LT-Oa
-	for linux-mtd@lists.infradead.org; Mon, 23 Apr 2007 14:48:36 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Wanted - simple NOR Flash filing system
-Date: Tue, 24 Apr 2007 06:55:37 +1200
-References: <loom.20070423T132454-397@post.gmane.org>
-In-Reply-To: <loom.20070423T132454-397@post.gmane.org>
+Received: from wx-out-0506.google.com ([66.249.82.227])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HgFLX-00060b-Ua
+	for linux-mtd@lists.infradead.org; Tue, 24 Apr 2007 03:21:58 -0400
+Received: by wx-out-0506.google.com with SMTP id t8so2155359wxc
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Apr 2007 00:21:52 -0700 (PDT)
+Message-ID: <acd2a5930704240021y7badb098ybc2b5b04f5b7daeb@mail.gmail.com>
+Date: Tue, 24 Apr 2007 11:21:52 +0400
+From: "Vitaly Wool" <vitalywool@gmail.com>
+To: "Ruslan V. Sushko" <rsushko@ru.mvista.com>
+Subject: Re: [PATCH] NAND Flash support for Intel IXP4xx platform
+In-Reply-To: <4628CB3A.3000701@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200704240655.37619.manningc2@actrix.gen.nz>
+References: <46274486.9030609@ru.mvista.com> <462878F9.2090603@ru.mvista.com>
+	<4628CB3A.3000701@ru.mvista.com>
+Cc: linux-mtd@lists.infradead.org, Vitaly Wool <vwool@ru.mvista.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +27,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Monday 23 April 2007 23:34, MikeW wrote:
-> For storing a few tens/hundreds of bytes of configuration data,
-> in a handful of files (no subdirs), read access 99.99%,
-> write/update once or twice in life of the system.
-> Fits into single erase block ideally, so might need to hold data in RAM
-> pending erase - if ever filled the block !
->
-> Any suggestions ?
+> > What the initialization to {0, NULL} is for?
+> just through habit. What's wrong here?
+It's just useless.
 
-It is far too grand to call this a file system. 
-This is a bit more like a linear file store, or even more proimitive than 
-that.
+> >> +
+> >> +    /* Register the partitions */
+> >> +    err = add_mtd_partitions(ixp4xx_mtd, ixp4xx_nand_parts,
+> >> nb_of_parts);
+> >> +    if (err)  {
+> >> +        printk(KERN_ERR "Failed to add MTD partitions\n");
+> >> +        if ( ixp4xx_nand_parts != plat->parts )
+> >> +        kfree(ixp4xx_nand_parts);
+> >>
+> > Wrong indentation.
+> > Moreover, if the number of partitions obtained by parse_mtd_partitions
+> > is the same as the one provided by platform data, you'll get leakage
+> > here.
+> how this can happens? Please describe.
 
-I agree with the basic principle: if you don't need a full fs, then why use 
-one? You don't need a chainsaw to cut butter!
+Suppose that the number of partitions obtained by parse_mtd_partitions
+is the same as configured statically. If add_mtd_partitions fails,
+ixp4xx_nand_parts != plat->parts is false and kfree won't be called.
 
-I have done stuff like this numerous times, but don't have any OSS code to 
-release.
-
-The last time I did this, I used a pretty simple system that just used records 
-of the form:
-
-Header byte
-2 byte Length
-Validity byte (0xFF not set up, 0x0F= in use, 0x03 = deleted
-Name
-data (length - (strlen(name) + 1 + 1 + 1))
-
-With this mechanism you could only write a whole "file". No append/overwrite 
-etc. Just rewrite the whole record.
-
-To delete a file you just set the validity byte accordingly.
-
-I had two blocks and when the one got full I would do "garbage collection", 
-copying the valid "files" through to the new block. With one block you could 
-store the stuff in RAM.
-
--- CHarles
+Vitaly
