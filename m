@@ -1,28 +1,29 @@
-Received: from wx-out-0506.google.com ([66.249.82.234])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HgJ51-0001sV-SE
-	for linux-mtd@lists.infradead.org; Tue, 24 Apr 2007 07:21:09 -0400
-Received: by wx-out-0506.google.com with SMTP id t8so2214679wxc
+Received: from mail128.messagelabs.com ([216.82.250.131])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HgKXu-0003Bj-M1
+	for linux-mtd@lists.infradead.org; Tue, 24 Apr 2007 08:55:04 -0400
+Received: from il06exr01.mot.com (il06exr01.mot.com [129.188.137.131])
+	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id l3OCsxcO009693
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 24 Apr 2007 04:21:06 -0700 (PDT)
-Message-ID: <acd2a5930704240421n2d4cb852l2df8ee33d847efa8@mail.gmail.com>
-Date: Tue, 24 Apr 2007 15:21:06 +0400
-From: "Vitaly Wool" <vitalywool@gmail.com>
-To: "Lennert Buytenhek" <buytenh@wantstofly.org>
-Subject: Re: [PATCH] NAND Flash support for Intel IXP4xx platform
-In-Reply-To: <20070424110139.GE1748@xi.wantstofly.org>
+	Tue, 24 Apr 2007 05:54:59 -0700 (MST)
+Received: from il06vts03.mot.com (il06vts03.mot.com [129.188.137.143])
+	by il06exr01.mot.com (8.13.5/Vontu) with SMTP id l3OCsxCb023805
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Apr 2007 07:54:59 -0500 (CDT)
+Received: from zuk35exm60.ds.mot.com (zuk35exm60.ea.mot.com [10.178.1.39])
+	by il06exr01.mot.com (8.13.5/8.13.0) with ESMTP id l3OCswGB023793
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Apr 2007 07:54:59 -0500 (CDT)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <46274486.9030609@ru.mvista.com> <462878F9.2090603@ru.mvista.com>
-	<462DDD04.5020405@ru.mvista.com>
-	<20070424103827.GC1748@xi.wantstofly.org>
-	<462DDFEF.4070604@ru.mvista.com>
-	<20070424104930.GD1748@xi.wantstofly.org>
-	<acd2a5930704240353w58ac0cb5m8d7c2af35b7badc7@mail.gmail.com>
-	<20070424110139.GE1748@xi.wantstofly.org>
-Cc: linux-mtd@lists.infradead.org, "Ruslan V. Sushko" <rsushko@ru.mvista.com>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: MTD partitions and sysfs
+Date: Tue, 24 Apr 2007 13:54:53 +0100
+Message-ID: <67194FEE6056B947B4EF756C9E497A2E017D7003@zuk35exm60.ds.mot.com>
+From: "Demke Torsten-atd012" <torsten.demke@motorola.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,20 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 4/24/07, Lennert Buytenhek <buytenh@wantstofly.org> wrote:
-> > >For that matter, I wonder how much sense it makes to submit a
-> > >separate NAND driver for every ARM SoC.  For NOR flashes we have
-> > >physmap, we should have something similar for NAND.
-> >
-> > It won't do for all the cases, but for the drivers where only cmd_ctrl
-> > differs that might really make sense.
->
-> Yes, exactly.  For a unified NAND driver, you can just assume that the
-> data register will be memory-mapped.  This is probably true in 99% of
-> the cases.  In cases where this isn't true, people can still write their
-> own driver.
+Hi all,
 
-Yes, but the "write your own" case will also be applicable to the
-cases where the controller has HW ECC capabilities, for instance.
+I have a PPC system that running 2.6.14+ with several MTD partitions
+0..11
+I was struggeling to boot from a partition root=3D/dev/mtdblock10 =
+because
+the name_to_dev_t function in do_mounts.c could not find mtdblock10 in
+sysfs.
+After some debuging I found, that in sysfs the device is called
+"sys/block/mtdblock:"
+(where ":" is the next ASCII character after "9"). That means I have to
+use
+root=3D/dev/mtdblock: within the bootloader...
 
-Vitaly
+Any hints or comments?
+
+Regards,
+Torsten
