@@ -1,15 +1,18 @@
-Subject: Re: [PATCH 2/5] jffs2: Add LZO compression support to jffs2
-From: David Woodhouse <dwmw2@infradead.org>
-To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1172690012.16062.138.camel@localhost.localdomain>
-References: <1172690012.16062.138.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Wed, 25 Apr 2007 13:35:57 +0100
-Message-Id: <1177504557.2755.216.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from mga03.intel.com ([143.182.124.21])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HgijC-0001bc-6A
+	for linux-mtd@lists.infradead.org; Wed, 25 Apr 2007 10:44:23 -0400
+Message-ID: <462F6938.90903@intel.com>
+Date: Wed, 25 Apr 2007 18:44:08 +0400
+From: akorolev <alexey.korolev@intel.com>
+MIME-Version: 1.0
+To: Semih Hazar <semih.hazar@indefia.com>
+Subject: Re: Slow NAND + JFFS2
+References: <462F45B1.8020007@indefia.com>
+In-Reply-To: <462F45B1.8020007@indefia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,44 +22,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-02-28 at 19:13 +0000, Richard Purdie wrote:
-> Add LZO1X compression/decompression support to jffs2.
-> 
-> LZO's interface doesn't entirely match that required by jffs2 so a 
-> buffer and memcpy is unavoidable.
-> 
-> Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
+Hi,
 
-> Index: linux/fs/jffs2/compr_lzo.c
-> ===================================================================
-> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-> +++ linux/fs/jffs2/compr_lzo.c	2007-02-28 18:12:31.000000000 +0000
-> @@ -0,0 +1,120 @@
-> +/*
-> + * JFFS2 LZO Compression Interface
-> + *
-> + * Copyright (C) 2007 Nokia Corporation. All rights reserved.
-> + *
-> + * Author: Richard Purdie <rpurdie@openedhand.com>
-> + *
-> + * This program is free software; you can redistribute it and/or
-> + * modify it under the terms of the GNU General Public License
-> + * version 2 as published by the Free Software Foundation.
-> + *
-> + * This program is distributed in the hope that it will be useful, but
-> + * WITHOUT ANY WARRANTY; without even the implied warranty of
-> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-> + * General Public License for more details.
-> + *
-> + * You should have received a copy of the GNU General Public License
-> + * along with this program; if not, write to the Free Software
-> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-> + * 02110-1301 USA
-> + *
-> + */
-
-Please use the same licence, and the same boilerplate, as the rest of
-the JFFS2 code.
-
--- 
-dwmw2
+You may try to clarify if compression is off.
+> Hi,
+>
+> I'm using a 256 MiB NAND Flash from ST -> Manufacturer ID: 0x20, Chip 
+> ID: 0xda (ST Micro NAND 256MiB 3,3V 8-bit) with JFFS2. The filesystem is 
+> mounted as rootfs and the size is around 60 megs.
+>
+> Filesystem operations seem very slow to me. Such as:
+>
+> It takes almost 1 and a half minutes to copy a 30 meg file.
+> Mounting the filesystem takes around 1 minute.
+>
+> # ls -lh
+> -rw-r--r--    1 root     root        30.3M Jan  1 00:05 gcc.tgz
+> # time cp gcc.tgz 1
+> real    1m 22.37s
+> user    0m 0.09s
+> sys     1m 22.22s
+> #
+>
+>
+> This seemed really slow to me, but I don't have any other benchmarks. 
+> Can someone comment on these values ?
+>
+> The processor is at32ap7000 from Atmel, running at 160 MHz.
+> I'm running kernel 2.6.20.1 with cpu related patches from Atmel and our 
+> own nand patches which are almost the replica of at91_nand.c (I can send 
+> it if you need)
+>
+> I also changed the read enable and write enable pulse timings according 
+> to the minimum values stated in NAND flash's datasheet.
+>
+> If this copy/mount time are really slow as I think, where should I check 
+> ? Is this a JFFS2 related issue or should I try to find some problems in 
+> our nand driver or ... ?
+>
+> Best regards,
+> Semih Hazar
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
+>   
