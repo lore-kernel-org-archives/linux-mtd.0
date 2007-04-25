@@ -1,19 +1,14 @@
-Received: from 42.242.232.72.static.reverse.layeredtech.com ([72.232.242.42]
-	helo=secure.poehali.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HgNuM-0005p3-HZ
-	for linux-mtd@lists.infradead.org; Tue, 24 Apr 2007 12:30:30 -0400
-Received: from localhost ([127.0.0.1]:60988 helo=newbox)
-	by secure.poehali.org with esmtpa (Exim 4.63)
-	(envelope-from <ivan.kuten@promwad.com>) id 1HgNuL-0001An-0T
-	for linux-mtd@lists.infradead.org; Tue, 24 Apr 2007 19:30:25 +0300
-Date: Sat, 14 Apr 2007 16:38:53 +0300
-From: Ivan Kuten <ivan.kuten@promwad.com>
+Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HggMR-0007lt-I3
+	for linux-mtd@lists.infradead.org; Wed, 25 Apr 2007 08:12:42 -0400
+Message-ID: <462F45B1.8020007@indefia.com>
+Date: Wed, 25 Apr 2007 15:12:33 +0300
+From: Semih Hazar <semih.hazar@indefia.com>
+MIME-Version: 1.0
 To: linux-mtd@lists.infradead.org
-Subject: JFFS2 and Dataflash write support - data corruption
-Message-ID: <20070414163853.41153ddb@newbox>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Slow NAND + JFFS2
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,37 +19,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+Hi,
 
-I use JFFS2 on r/w partition on Atmel Dataflash AT45DB642 with the following kernel config options enabled:
-------- snip ----------
-CONFIG_JFFS2_FS=y
-CONFIG_JFFS2_FS_DEBUG=0
-CONFIG_JFFS2_FS_WRITEBUFFER=y
-# CONFIG_JFFS2_SUMMARY is not set
-# CONFIG_JFFS2_FS_XATTR is not set
-# CONFIG_JFFS2_COMPRESSION_OPTIONS is not set
-CONFIG_JFFS2_ZLIB=y
-CONFIG_JFFS2_RTIME=y
-# CONFIG_JFFS2_RUBIN is not set
---------snip-------------
+I'm using a 256 MiB NAND Flash from ST -> Manufacturer ID: 0x20, Chip 
+ID: 0xda (ST Micro NAND 256MiB 3,3V 8-bit) with JFFS2. The filesystem is 
+mounted as rootfs and the size is around 60 megs.
 
-Linux kernel is 2.6.20 + 2.6.20-at91.patch from http://maxim.org.za/at91_26.html
+Filesystem operations seem very slow to me. Such as:
 
-JFFS2 is created with:
-mkfs.jffs2 -r . -o jffs2.img -s 1056 -e 8448 -n -p
+It takes almost 1 and a half minutes to copy a 30 meg file.
+Mounting the filesystem takes around 1 minute.
 
-I'm observing occasional data corruption (md5sums are different) when my apps which also reside on that r/w partition do writes on dataflash.
-
-"Occasional" means the following:
-- 3 apps doing 1Kb writes once 2-3 seconds
-- md5sums for those 3 apps are calculated and compared to original
-- once 5 mins hardware reset is performed
-- after several hours of work md5sums don't match
+# ls -lh
+-rw-r--r--    1 root     root        30.3M Jan  1 00:05 gcc.tgz
+# time cp gcc.tgz 1
+real    1m 22.37s
+user    0m 0.09s
+sys     1m 22.22s
+#
 
 
-Can anybody confirm that JFFS2 writes + Dataflash are reliable?
+This seemed really slow to me, but I don't have any other benchmarks. 
+Can someone comment on these values ?
 
-Thank you.
+The processor is at32ap7000 from Atmel, running at 160 MHz.
+I'm running kernel 2.6.20.1 with cpu related patches from Atmel and our 
+own nand patches which are almost the replica of at91_nand.c (I can send 
+it if you need)
 
-Ivan
+I also changed the read enable and write enable pulse timings according 
+to the minimum values stated in NAND flash's datasheet.
+
+If this copy/mount time are really slow as I think, where should I check 
+? Is this a JFFS2 related issue or should I try to find some problems in 
+our nand driver or ... ?
+
+Best regards,
+Semih Hazar
