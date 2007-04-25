@@ -1,12 +1,11 @@
-Subject: Re: [PATCH 5/5] jffs2: Allow selection of compression mode via a
-	sysfs attribute
+Subject: Re: [PATCH 2/5] jffs2: Add LZO compression support to jffs2
 From: David Woodhouse <dwmw2@infradead.org>
 To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1172690034.16062.144.camel@localhost.localdomain>
-References: <1172690034.16062.144.camel@localhost.localdomain>
+In-Reply-To: <1172690012.16062.138.camel@localhost.localdomain>
+References: <1172690012.16062.138.camel@localhost.localdomain>
 Content-Type: text/plain
-Date: Wed, 25 Apr 2007 13:31:20 +0100
-Message-Id: <1177504280.2755.212.camel@pmac.infradead.org>
+Date: Wed, 25 Apr 2007 13:35:57 +0100
+Message-Id: <1177504557.2755.216.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
@@ -21,13 +20,43 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Wed, 2007-02-28 at 19:13 +0000, Richard Purdie wrote:
-> Allow selection of the compression mode for jffs2 via a sysfs 
-> attribute. This establishes a sysfs presence for jffs2 through
-> which other compression options could easily be exported too. 
+> Add LZO1X compression/decompression support to jffs2.
+> 
+> LZO's interface doesn't entirely match that required by jffs2 so a 
+> buffer and memcpy is unavoidable.
+> 
+> Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
 
-And other options like GC threshold and other allocation things. So
-perhaps put the sysfs subsystem_register() and other core bits into a
-generic (and Linux-specific) file?
+> Index: linux/fs/jffs2/compr_lzo.c
+> ===================================================================
+> --- /dev/null	1970-01-01 00:00:00.000000000 +0000
+> +++ linux/fs/jffs2/compr_lzo.c	2007-02-28 18:12:31.000000000 +0000
+> @@ -0,0 +1,120 @@
+> +/*
+> + * JFFS2 LZO Compression Interface
+> + *
+> + * Copyright (C) 2007 Nokia Corporation. All rights reserved.
+> + *
+> + * Author: Richard Purdie <rpurdie@openedhand.com>
+> + *
+> + * This program is free software; you can redistribute it and/or
+> + * modify it under the terms of the GNU General Public License
+> + * version 2 as published by the Free Software Foundation.
+> + *
+> + * This program is distributed in the hope that it will be useful, but
+> + * WITHOUT ANY WARRANTY; without even the implied warranty of
+> + * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+> + * General Public License for more details.
+> + *
+> + * You should have received a copy of the GNU General Public License
+> + * along with this program; if not, write to the Free Software
+> + * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+> + * 02110-1301 USA
+> + *
+> + */
+
+Please use the same licence, and the same boilerplate, as the rest of
+the JFFS2 code.
 
 -- 
 dwmw2
