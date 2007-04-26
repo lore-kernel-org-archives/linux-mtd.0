@@ -1,28 +1,38 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh4fZ-0007za-Ed
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 15:10:02 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1Hh4f8-0007GR-Sp
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 16:09:34 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2007 16:09:34 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2007 16:09:34 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: Wanted - simple NOR Flash filing system - JFFS2 ?
-Date: Thu, 26 Apr 2007 14:09:08 +0000 (UTC)
-Message-ID: <loom.20070426T155948-242@post.gmane.org>
-References: <loom.20070423T132454-397@post.gmane.org>
-	<200704240655.37619.manningc2@actrix.gen.nz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hh56D-0008Uv-Ep
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 10:37:35 -0400
+Subject: Re: OOPS at mount
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1177595818.2755.411.camel@pmac.infradead.org>
+References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
+	<1177514597.2755.251.camel@pmac.infradead.org>
+	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
+	<1177515855.2755.252.camel@pmac.infradead.org>
+	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
+	<1177517258.2755.261.camel@pmac.infradead.org>
+	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
+	<1177587937.8841.13.camel@gentoo-jocke.transmode.se>
+	<1177590673.2755.369.camel@pmac.infradead.org>
+	<1177591404.8841.18.camel@gentoo-jocke.transmode.se>
+	<1177591781.2755.373.camel@pmac.infradead.org>
+	<1177592422.8841.24.camel@gentoo-jocke.transmode.se>
+	<1177592932.2755.383.camel@pmac.infradead.org>
+	<1177593184.8841.29.camel@gentoo-jocke.transmode.se>
+	<1177593359.2755.386.camel@pmac.infradead.org>
+	<1177594798.8841.37.camel@gentoo-jocke.transmode.se>
+	<1177595075.2755.400.camel@pmac.infradead.org>
+	<1177595567.8841.41.camel@gentoo-jocke.transmode.se>
+	<1177595818.2755.411.camel@pmac.infradead.org>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Date: Thu, 26 Apr 2007 16:37:32 +0200
+Message-Id: <1177598252.8841.49.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,32 +42,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Charles Manning <manningc2 <at> actrix.gen.nz> writes:
-
->  
-> It is far too grand to call this a file system. 
-> This is a bit more like a linear file store, or even more proimitive than 
-> that.
+On Thu, 2007-04-26 at 14:56 +0100, David Woodhouse wrote:
+> On Thu, 2007-04-26 at 15:52 +0200, Joakim Tjernlund wrote:
+> > Asked the lab again and it is unlikly that any files were deleted in the
+> > /tftpboot/download dir. A few RPMs were created as they were downloaded
+> > to that dir before extraction/installation.
 > 
-> I agree with the basic principle: if you don't need a full fs, then why use 
-> one? You don't need a chainsaw to cut butter!
-...snip...
+> Hm. So those RPM files should have still been present and complete on
+> the flash?
 > 
 
-I note from an earlier newsgroup thread 
-http://thread.gmane.org/gmane.linux.drivers.mtd/3255/focus=3271
+Most pkg files seems OK, 
+pkg --list /tftpboot/download/cuappl02a-r8a-070425_2.powerpc.pkg
+is OK 
+but pkg --list cuappl02a-r8a-070221_10.powerpc.pkg 
+isn't, but thats an old file that could have been damaged earlier.
 
-that it would be possible to wind down the min blocks requirement
-for a JFFS2 filesystem, after all with the usage pattern I described,
-who cares about garbage collection or spare blocks ?
+I don't get any CRC errors on the restored image
 
-It would be very nice if you could somehow set this minimalist option
-when doing a mk.jffs2, such that the driver would then be happy (on
-that particular filesystem partition) with even a single eraseblock,
-but obviously if the block ever filled up you could hardly expect
-the driver to handle it for you.
-
-Comments from dwmw2 ?!
-
-Regards,
-MikeW
+ Jocke
