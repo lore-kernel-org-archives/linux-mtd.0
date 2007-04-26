@@ -1,24 +1,15 @@
-Received: from thoth.sbs.de ([192.35.17.2])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh63Z-0002XR-MZ
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 11:38:55 -0400
-Received: from mail3.siemens.de (localhost [127.0.0.1])
-	by thoth.sbs.de (8.12.6/8.12.6) with ESMTP id l3QFcEgu026934
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2007 17:38:14 +0200
-Received: from mchp771a.ww002.siemens.net (mchp771a.ww002.siemens.net
-	[139.25.131.189])
-	by mail3.siemens.de (8.12.6/8.12.6) with ESMTP id l3QFcEYA031119
-	for <linux-mtd@lists.infradead.org>; Thu, 26 Apr 2007 17:38:14 +0200
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: NAND bad block checking when no memory based BBT is available
-Date: Thu, 26 Apr 2007 17:38:13 +0200
-Message-ID: <2EDADF4ED023F04BAD4D7A4131ECEB930105514A@mchp7rfa.ww002.siemens.net>
-From: "Knobloch, Thomas" <knobloch@siemens.com>
-To: <linux-mtd@lists.infradead.org>
+Subject: Re: corruption of JFFS2 filesystem, csize is set to 0 after moving
+	a block
+From: David Woodhouse <dwmw2@infradead.org>
+To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+In-Reply-To: <1177599259.18969.111.camel@localhost.localdomain>
+References: <1177599259.18969.111.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Thu, 26 Apr 2007 16:43:57 +0100
+Message-Id: <1177602237.2755.414.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,96 +19,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Thu, 2007-04-26 at 16:54 +0200, Hans-Christian Egtvedt wrote:
+> Hello,
+> 
+> When I stress the JFFS2 filesystem by copying files around on the root
+> (/) I end up with a corrupted filesystem after a reboot. The system just
+> hangs after the kernel is done booting:
+> Freeing init memory: 56K (90000000 - 9000e000)
+> 
+> Where I should get:
+> init started:  BusyBox v1.4.2 (2007-04-17 15:34:55 CEST) multi-call
+> binary
+> etc...
+> 
+> I copy and remove files until I reach "cp: write error: No space left on
+> device"
+> 
+> I extracted the filesystem from my flash device (Atmel AT49BV642D) and
+> did a dump. Here I can see that some of the nodes have a csize set to 0
+> for vital files such as libdl-0.9.28.so.
 
-I'm using the MTD code as part of the u-boot Bootloader. I implemented
-a NAND device that is not generating a bad block table at all. The
-reason for that this decreases boot time of our device. So every
-time the code checks for a bad block it actually reads the OOB data
-from the device directly.
+There's not necessarily anything wrong with that.
 
-This is done in function nand_block_checkbad() in file
-drivers/mtd/nand/nand_base.c:
+> Any pointers to where I should start debugging, what can go wrong?
+> 
+> I can provide jffs2dump's, logs or images if needed.
 
-static int nand_block_checkbad(struct mtd_info *mtd, loff_t ofs, int
-getchip,
-			       int allowbbt)
-{
-	struct nand_chip *chip =3D mtd->priv;
+Take a copy of the image, then work out where the kernel is stuck. Use
+SysRq-P and/or SysRq-T, and if it's in JFFS2 try running with
+CONFIG_JFFS2_FS_DEBUG=1 (and with 'verbose' on the command line), and
+capture all the output on a serial console.
 
-	if (!chip->bbt)
-		return chip->block_bad(mtd, ofs, getchip);
-
-	/* Return info from the table */
-	return nand_isbad_bbt(mtd, ofs, allowbbt);
-}
-
-
-
-If no BBT is available (as in our implementation) the function will
-call chip->bad_block() whose default implementation is
-nand_block_bad() in nand_base.c:
-
-static int nand_block_bad(struct mtd_info *mtd, loff_t ofs, int getchip)
-{
-	int page, chipnr, res =3D 0;
-	struct nand_chip *chip =3D mtd->priv;
-	u16 bad;
-
-	if (getchip) {
-		page =3D (int)(ofs >> chip->page_shift);
-		chipnr =3D (int)(ofs >> chip->chip_shift);
-
-		nand_get_device(chip, mtd, FL_READING);
-
-		/* Select the NAND device */
-		chip->select_chip(mtd, chipnr);
-	} else
-		page =3D (int)ofs;
-
-
-	...
-
-}
-
-
-The interesting thing is that the page number is calculated
-differently depending on the parameter getchip. With getchip set to
-one it will shift the offset to get the page number. With getchip set
-to zero it will not. This really leads to the situation where the page
-number is calculated wrong. Function nand_erase_nand() in nand_base.c
-calls nand_block_bad() with getchip=3D0. However it also shifts the page
-number to the left before calling this function:
-
-int nand_erase_nand(struct mtd_info *mtd, struct erase_info *instr,
-		    int allowbbt)
-{
-	...
-
-		/*
-		 * heck if we have a bad block, we do not erase bad
-blocks !
-		 */
-		if (nand_block_checkbad(mtd, ((loff_t) page) <<
-					chip->page_shift, 0, allowbbt))
-{
-			printk(KERN_WARNING "nand_erase: attempt to
-erase a "
-			       "bad block at page 0x%08x\n", page);
-			...
-		}
-
-	...
-}
-
-
-By doing so the code will check for the wrong page number as the offset
-is not shifted back to the right in nand_block_bad(). I clearly
-see that our bootloader will check the wrong page number/offset in
-the case that the NAND driver does not generate a BBT.
-
-Do you think there is some problem with this code or am I missing some
-point.
-
-Thanks & regards,
-Thomas
+-- 
+dwmw2
