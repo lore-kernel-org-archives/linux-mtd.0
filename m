@@ -1,38 +1,21 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh56D-0008Uv-Ep
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 10:37:35 -0400
-Subject: Re: OOPS at mount
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1177595818.2755.411.camel@pmac.infradead.org>
-References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
-	<1177514597.2755.251.camel@pmac.infradead.org>
-	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
-	<1177515855.2755.252.camel@pmac.infradead.org>
-	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
-	<1177517258.2755.261.camel@pmac.infradead.org>
-	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
-	<1177587937.8841.13.camel@gentoo-jocke.transmode.se>
-	<1177590673.2755.369.camel@pmac.infradead.org>
-	<1177591404.8841.18.camel@gentoo-jocke.transmode.se>
-	<1177591781.2755.373.camel@pmac.infradead.org>
-	<1177592422.8841.24.camel@gentoo-jocke.transmode.se>
-	<1177592932.2755.383.camel@pmac.infradead.org>
-	<1177593184.8841.29.camel@gentoo-jocke.transmode.se>
-	<1177593359.2755.386.camel@pmac.infradead.org>
-	<1177594798.8841.37.camel@gentoo-jocke.transmode.se>
-	<1177595075.2755.400.camel@pmac.infradead.org>
-	<1177595567.8841.41.camel@gentoo-jocke.transmode.se>
-	<1177595818.2755.411.camel@pmac.infradead.org>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hh5Mi-0000XL-7U
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 10:54:37 -0400
+Received: from [10.191.255.159] (dhcp-255-159.norway.atmel.com
+	[10.191.255.159])
+	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id l3QEsWsR032294
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 26 Apr 2007 16:54:32 +0200 (CEST)
+	(envelope-from hcegtvedt@norway.atmel.com)
+Subject: corruption of JFFS2 filesystem, csize is set to 0 after moving a block
+From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+To: linux-mtd@lists.infradead.org
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Thu, 26 Apr 2007 16:37:32 +0200
-Message-Id: <1177598252.8841.49.camel@gentoo-jocke.transmode.se>
+Date: Thu, 26 Apr 2007 16:54:19 +0200
+Message-Id: <1177599259.18969.111.camel@localhost.localdomain>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,22 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-26 at 14:56 +0100, David Woodhouse wrote:
-> On Thu, 2007-04-26 at 15:52 +0200, Joakim Tjernlund wrote:
-> > Asked the lab again and it is unlikly that any files were deleted in the
-> > /tftpboot/download dir. A few RPMs were created as they were downloaded
-> > to that dir before extraction/installation.
-> 
-> Hm. So those RPM files should have still been present and complete on
-> the flash?
-> 
+Hello,
 
-Most pkg files seems OK, 
-pkg --list /tftpboot/download/cuappl02a-r8a-070425_2.powerpc.pkg
-is OK 
-but pkg --list cuappl02a-r8a-070221_10.powerpc.pkg 
-isn't, but thats an old file that could have been damaged earlier.
+When I stress the JFFS2 filesystem by copying files around on the root
+(/) I end up with a corrupted filesystem after a reboot. The system just
+hangs after the kernel is done booting:
+Freeing init memory: 56K (90000000 - 9000e000)
 
-I don't get any CRC errors on the restored image
+Where I should get:
+init started:  BusyBox v1.4.2 (2007-04-17 15:34:55 CEST) multi-call
+binary
+etc...
 
- Jocke
+I copy and remove files until I reach "cp: write error: No space left on
+device"
+
+I extracted the filesystem from my flash device (Atmel AT49BV642D) and
+did a dump. Here I can see that some of the nodes have a csize set to 0
+for vital files such as libdl-0.9.28.so.
+
+Any pointers to where I should start debugging, what can go wrong?
+
+I can provide jffs2dump's, logs or images if needed.
+
+-- 
+Best regards
+Hans-Christian Egtvedt
