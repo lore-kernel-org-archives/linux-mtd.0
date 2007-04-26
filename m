@@ -1,20 +1,19 @@
-Subject: Re: OOPS at mount
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@transmode.se
-In-Reply-To: <1177522774.28488.4.camel@gentoo-jocke.transmode.se>
-References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
-	<1177514597.2755.251.camel@pmac.infradead.org>
-	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
-	<1177515855.2755.252.camel@pmac.infradead.org>
-	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
-	<1177517258.2755.261.camel@pmac.infradead.org>
-	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Date: Thu, 26 Apr 2007 07:32:57 +0100
-Message-Id: <1177569177.2755.274.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HgyHL-0002iw-Pd
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 03:20:41 -0400
+Subject: Re: [PATCH] OneNAND 2x program support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
+References: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 26 Apr 2007 10:19:58 +0300
+Message-Id: <1177571998.18889.14.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-04-25 at 19:39 +0200, Joakim Tjernlund wrote:
-> On Wed, 2007-04-25 at 17:07 +0100, David Woodhouse wrote:
-> > I've just committed something to the git tree which should fix the
-> > symptoms --and I think it should apply OK to 2.6.20 which predates other
-> > improvements in read_inode(). 
-> > 
-> > We should still work out the _cause_ though. Once you've confirmed that
-> > this patch avoids the crash, you'll know the inode number (because it'll
-> > bitch about it). If you don't want to wait for a full
-> > CONFIG_JFFS2_FS_DEBUG=1 run, can you enable all the output in
-> > jffs2_get_inode_nodes() _just_ for that inode, and show me what nodes
-> > are found?
-> 
-> Seems to work, at least I can boot now but I get a few compliants:
+Hi Kyungmin,
 
-Hm, so you've lost a _lot_ of data. I don't suppose there's any chance
-they've been putting new images at the start of the flash without
-actually _erasing_ the remainder of the space?
+On Thu, 2007-04-26 at 11:16 +0900, Kyungmin Park wrote:
+> Here's new feature of OneNAND, 2X program.
 
-Are you getting lots of messages about bad CRCs?
+Nice.
 
-This is with JFFS2 from 2.6.20, right? Not a bug in the read_inode code
-I just committed a couple of days ago?
+Am I right that in this mode we end up with a 4KiB page size?
 
-> Wonder how the lab manged to get that many corrupted nodes?
-> One thing that is rather new in our system is that we trigger GC by
-> sending HUP to the GC thread from a script in user space at startup
-> and then every 24 hours.
+> Note: this features is supported with the recent OneNAND chips. please do=
+n't try
+> to use previous chips.
 
-That shouldn't make any difference. 
+It would be nice to note this in 'config MTD_ONENAND_2X_PROGRAM' and to
+specify OneNAND revision starting from which it is safe to use this
+mode.
 
--- 
-dwmw2
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
