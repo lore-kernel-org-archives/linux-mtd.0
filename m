@@ -1,12 +1,7 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh2Pq-00014H-CD
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 07:45:40 -0400
 Subject: Re: OOPS at mount
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1177522774.28488.4.camel@gentoo-jocke.transmode.se>
+From: David Woodhouse <dwmw2@infradead.org>
+To: joakim.tjernlund@transmode.se
+In-Reply-To: <1177587937.8841.13.camel@gentoo-jocke.transmode.se>
 References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177514597.2755.251.camel@pmac.infradead.org>
 	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
@@ -14,13 +9,13 @@ References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
 	<1177517258.2755.261.camel@pmac.infradead.org>
 	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
+	<1177587937.8841.13.camel@gentoo-jocke.transmode.se>
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Thu, 26 Apr 2007 13:45:37 +0200
-Message-Id: <1177587937.8841.13.camel@gentoo-jocke.transmode.se>
+Date: Thu, 26 Apr 2007 12:57:34 +0100
+Message-Id: <1177588654.2755.360.camel@pmac.infradead.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,77 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-04-25 at 19:39 +0200, Joakim Tjernlund wrote:
-> On Wed, 2007-04-25 at 17:07 +0100, David Woodhouse wrote:
-> > I've just committed something to the git tree which should fix the
-> > symptoms --and I think it should apply OK to 2.6.20 which predates other
-> > improvements in read_inode(). 
-> > 
-> > We should still work out the _cause_ though. Once you've confirmed that
-> > this patch avoids the crash, you'll know the inode number (because it'll
-> > bitch about it). If you don't want to wait for a full
-> > CONFIG_JFFS2_FS_DEBUG=1 run, can you enable all the output in
-> > jffs2_get_inode_nodes() _just_ for that inode, and show me what nodes
-> > are found?
+On Thu, 2007-04-26 at 13:45 +0200, Joakim Tjernlund wrote:
+> searched for the inode's reported above and found:
+> ~/jffs2 # find . -inum 9947 -print
+> ./tftpboot/download/osappl02a-r8a-070207_1.powerpc.pkg
+> ~/jffs2 # find . -inum 9049 -print
+> ./tftpboot/download/cuboot01a-r8a-070129_1.ppc_8xx.rpm
+> ~/jffs2 # find . -inum 9943 -print
+> ./tftpboot/download/tuappl01a-r8a-070207_1.ppc_8xx.rpm
+> ~/jffs2 # find . -inum 10580 -print
+> ./tftpboot/download/cuappl01a-r8a-070213_10.ppc_8xx.rpm
+> ~/jffs2 # find . -inum 11246 -print
+> ./tftpboot/download/cuappl02a-r8a-070221_10.powerpc.pkg
+> ~/jffs2 # find . -inum 6537 -print 
+> ./tftpboot/download/osappl01a-r3b-1.ppc_8xx.rpm
 > 
-> Seems to work, at least I can boot now but I get a few compliants:
-> Starting services: te_server JFFS2 warning: (144) jffs2_do_read_inode_internal: 
-> Truncating ino #6537 to 160109 bytes failed because it only had 138184 bytes to 
-> start with!
-> JFFS2 warning: (144) jffs2_do_read_inode_internal: Truncating ino #9049 to 70747
->  bytes failed because it only had 65536 bytes to start with!
-> JFFS2 warning: (144) jffs2_do_read_inode_internal: Truncating ino #9943 to 46278
-> 29 bytes failed because it only had 16384 bytes to start with!
-> JFFS2 warning: (144) jffs2_do_read_inode_internal: Truncating ino #9947 to 10240
->  bytes failed because it only had 0 bytes to start with!
-> JFFS2 warning: (144) jffs2_do_read_inode_internal: Truncating ino #10580 to 4800
-> 712 bytes failed because it only had 4788600 bytes to start with!
-> JFFS2 warning: (144) jffs2_do_read_inode_internal: Truncating ino #11246 to 4925
-> 440 bytes failed because it only had 1717152 bytes to start with!
-> te_log te ntpd alib_psupd icn_server cp_cm ne_rc -initshm cp_cop cp_pbh eq_bh_su
-> pv eq_bh voa_main alib_swusd mgmt_named mgmt_invd eq_rh mgmt_pmd mgmt_backupd mg
-> mt_backup_tftpd ne_db_mgr mgmt_alarmd tosv_server tosv_supv Remove /var/net-snmp
-> /snmpd.conf snmpd -f -c /etc/lumentis/cuappl02a-r8a-070425_2/snmpd.conf -l /tmp/
-> snmpd.log  zebra ospfd sys_sysconfd sys_ipconfd aux_mgrd eq_tm_mgr eq_tgtm_mgr e
-> q_tgltm_mgr eq_mxm_mgr eq_gbem_mgr eq_fcm_mgr eq_qm_mgr eq_oam_mgr eq_xm_mgr eq_
-> fxm_mgr eq_ram_mgr eq_cpm_mgr eq_gxpm_mgr eq_qxpm_mgr eq_dtgm_mgr eq_xgbm_mgr eq
-> _voam_mgr eq_pbm_mgr eq_bm_mgr eq_topm_mgr eq_spfm_mgr eq_pm_mgr eq_ppp_mgr ne_s
-> wumd alib_memsupd ne_rc ne_rc_load ne_rc_supv pppd httpd JFFS2 warning: (316) jf
-> fs2_do_read_inode_internal: Truncating ino #10580 to 4800712 bytes failed becaus
-> e it only had 4788600 bytes to start with!
-> rsvpd gmpls dropbear JFFS2 warning: (316) jffs2_do_read_inode_internal: Truncati
-> ng ino #11246 to 4925440 bytes failed because it only had 1717152 bytes to start
->  with!
-> JFFS2 warning: (316) jffs2_do_read_inode_internal: Truncating ino #9049 to 70747
->  bytes failed because it only had 65536 bytes to start with!
-> Key is a DSS key
-> Wrote key to '/opt/appl/cuappl02a-r8a-070425_2/etc/dropbear_dss_host_key'
-> JFFS2 warning: (316) jffs2_do_read_inode_internal: Truncating ino #6537 to 16010
-> 9 bytes failed because it only had 138184 bytes to start with!
-> JFFS2 warning: (316) jffs2_do_read_inode_internal: Truncating ino #9947 to 10240
->  bytes failed because it only had 0 bytes to start with!
-> JFFS2 warning: (316) jffs2_do_read_inode_internal: Truncating ino #9943 to 46278
-> 29 bytes failed because it only had 16384 bytes to start with!
-> Key is a RSA key
-> Wrote key to '/opt/appl/cuappl02a-r8a-070425_2/etc/dropbear_rsa_host_key'
-> GC .
-> Done.
+> These all old rpms of ours apps that has been downloaded and installed
+> earlier.
 
-searched for the inode's reported above and found:
-~/jffs2 # find . -inum 9947 -print
-./tftpboot/download/osappl02a-r8a-070207_1.powerpc.pkg
-~/jffs2 # find . -inum 9049 -print
-./tftpboot/download/cuboot01a-r8a-070129_1.ppc_8xx.rpm
-~/jffs2 # find . -inum 9943 -print
-./tftpboot/download/tuappl01a-r8a-070207_1.ppc_8xx.rpm
-~/jffs2 # find . -inum 10580 -print
-./tftpboot/download/cuappl01a-r8a-070213_10.ppc_8xx.rpm
-~/jffs2 # find . -inum 11246 -print
-./tftpboot/download/cuappl02a-r8a-070221_10.powerpc.pkg
-~/jffs2 # find . -inum 6537 -print 
-./tftpboot/download/osappl01a-r3b-1.ppc_8xx.rpm
+Yeah, I'm seeing those.
 
-These all old rpms of ours apps that has been downloaded and installed
-earlier. 
+I'm confused by the node CRC failure. Those nodes shouldn't even end up
+in the lists because they should be discarded at scan time -- the reason
+the CRC fails is because the 'JFFS2_NODE_ACCURATE' bit has been cleared.
+They're obsolete nodes.
 
- Jocke
+Oh. You're not using SUMMARY any more, are you? So you've been writing
+to this with a mixture of jffs2_can_mark_obsolete() and 
+!jffs2_can_mark_obsolete().  Which means that when I mount with summary
+enabled, I expect those nodes to be valid. And you've since obsoleted
+them with summaries disabled, and they're not.
+
+I wonder if that's the root cause of the problem you were seeing too?
+I'll build without summary and see...
+
+-- 
+dwmw2
