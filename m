@@ -1,6 +1,11 @@
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hh4CV-0006HT-AR
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 09:40:00 -0400
 Subject: Re: OOPS at mount
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@transmode.se
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <1177593359.2755.386.camel@pmac.infradead.org>
 References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177514597.2755.251.camel@pmac.infradead.org>
@@ -18,11 +23,12 @@ References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177593184.8841.29.camel@gentoo-jocke.transmode.se>
 	<1177593359.2755.386.camel@pmac.infradead.org>
 Content-Type: text/plain
-Date: Thu, 26 Apr 2007 14:31:15 +0100
-Message-Id: <1177594275.2755.398.camel@pmac.infradead.org>
-Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Date: Thu, 26 Apr 2007 15:39:57 +0200
+Message-Id: <1177594798.8841.37.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
 Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,57 +39,30 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2007-04-26 at 14:15 +0100, David Woodhouse wrote:
+> On Thu, 2007-04-26 at 15:13 +0200, Joakim Tjernlund wrote:
+> > On Thu, 2007-04-26 at 14:08 +0100, David Woodhouse wrote:
+> > > On Thu, 2007-04-26 at 15:00 +0200, Joakim Tjernlund wrote:
+> > > > No, its gone. Is yours still there?
+> > > 
+> > > Nope. I think the offending node got marked obsolete after we fixed the
+> > > kernel not to crash when it saw it.
+> > 
+> > Yes, thats what I am thinking too. I can restore to the image I sent you
+> > and see if the errors return. Will that help in any way?
+> 
+> Only in that it'll confuse the hell out of me if they do. But go on, if
+> it's not much trouble :)
+
+restoring now, but its slow.
+
+> 
 > I haven't _quite_ placed my finger on a sequence of events which leads
-> to you having a few older nodes of this inode and a later metadata
-> node.
+> to you having a few older nodes of this inode and a later metadata node.
 > 
 > Had it been deleted while you were still using summary?
 
-If it had, that could explain it.
-
-You start off with this file starting in some eraseblock, with its
-dirent, then filling a few more eraseblocks...
-
- ( D for dirent, I for data node ), [...] is an eraseblock.
-
-1 [......DIIIIIIII]
-2 [IIIIIIIIIIIIIII]
-3 [IIIIIIIIIIIIIII]
-4 [IIII...........]
-
-You seem to have something which will 'touch' these files
-in /tftpboot/download when you boot -- which is why I think we aren't
-seeing the problem in the image you took. Note the change time on ino
-#9943 is yesterday. So somewhere entirely different on the flash you'll
-have one mode metadata node for the inode in question.
-
-5 [.......I.......]
-
-Now, you delete the file. You can immediately erase eraseblock #2 and
-#3, but because you're using SUMMARY, you don't mark the nodes in the
-other eraseblocks as obsolete. You delete the file you downloaded
-immediately after the one we oopsed on too, so you erase eraseblock #4.
-
-You do write out a deletion dirent, but I suspect that got erased
-somehow later (perhaps when you weren't using SUMMARY?) 
-
-So you're left with this on the medium.
-1 [......DIIIIIIII]
- ...
-5 [.......I.......]
-
-And that's what caused the crash.
-
-I've handwaved a bit about the deletion dirent going missing, so I'm
-still not 100% convinced but I'm fairly sure it's disabling summary
-which was the problem.
-
-I wonder if we should seek out obsolete nodes and mark them as such, if
-we're mounted on a filesystem with summary nodes when summary support is
-deleted.
-
-Then again, why in hell is !jffs2_can_mark_obsolete() when we have
-summary support anyway?
-
--- 
-dwmw2
+Talked to the lab and they THINK that they upgraded both
+app and kernel at the same time after which they rebooted to
+activate both kernel and app.
+The old kernel had SUMMARY on, but the new one didn't.
+ 
