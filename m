@@ -1,11 +1,28 @@
-Subject: Re: [JFFS2] kernel BUG at fs/jffs2/gc.c:516!
+Subject: Re: OOPS at mount
 From: David Woodhouse <dwmw2@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <000e01c787b7$d96f1850$e1ac580a@swcenter.sec.samsung.co.kr>
-References: <000e01c787b7$d96f1850$e1ac580a@swcenter.sec.samsung.co.kr>
+To: joakim.tjernlund@transmode.se
+In-Reply-To: <1177595567.8841.41.camel@gentoo-jocke.transmode.se>
+References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
+	<1177514597.2755.251.camel@pmac.infradead.org>
+	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
+	<1177515855.2755.252.camel@pmac.infradead.org>
+	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
+	<1177517258.2755.261.camel@pmac.infradead.org>
+	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
+	<1177587937.8841.13.camel@gentoo-jocke.transmode.se>
+	<1177590673.2755.369.camel@pmac.infradead.org>
+	<1177591404.8841.18.camel@gentoo-jocke.transmode.se>
+	<1177591781.2755.373.camel@pmac.infradead.org>
+	<1177592422.8841.24.camel@gentoo-jocke.transmode.se>
+	<1177592932.2755.383.camel@pmac.infradead.org>
+	<1177593184.8841.29.camel@gentoo-jocke.transmode.se>
+	<1177593359.2755.386.camel@pmac.infradead.org>
+	<1177594798.8841.37.camel@gentoo-jocke.transmode.se>
+	<1177595075.2755.400.camel@pmac.infradead.org>
+	<1177595567.8841.41.camel@gentoo-jocke.transmode.se>
 Content-Type: text/plain
-Date: Thu, 26 Apr 2007 14:55:22 +0100
-Message-Id: <1177595722.2755.408.camel@pmac.infradead.org>
+Date: Thu, 26 Apr 2007 14:56:58 +0100
+Message-Id: <1177595818.2755.411.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -18,28 +35,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-26 at 13:03 +0900, Kyungmin Park wrote:
-> When the JFFS2 is tested with fsstress, I delete the several open files forcely.
-> The goal of this test is that it is robust and handles it well when disk is
-> full. But JFFS2 doesn't, it is died rarely with below message.
-> 
-> In POSIX Spec., it is possible to delete the open file, but I think JFFS2 don't
-> handle this one well. This problem is occured at every kernel version.
-> 
-> My queustion is that Is it the expected behavior of JFFS2 or we missed the
-> handling of this case? please give some clues.
+On Thu, 2007-04-26 at 15:52 +0200, Joakim Tjernlund wrote:
+> Asked the lab again and it is unlikly that any files were deleted in the
+> /tftpboot/download dir. A few RPMs were created as they were downloaded
+> to that dir before extraction/installation.
 
-I suspect the problem is not related to deleting open files -- that's a
-case which we should handle just fine.
-
-I suspect a locking issue, which leads to this node being absent from
-the node lists even though it's not marked obsolete. Do you have an
-image of the flash when this has happened? I'd like to see the _full_
-set of nodes for this file.
-
-If you can reproduce, then logs of CONFIG_JFFS2_FS_DEBUG=1 while you do
-so would be enlightening -- we need to see what's happening to that node
-at 0x00540000 when it was dropped from the lists.
+Hm. So those RPM files should have still been present and complete on
+the flash?
 
 -- 
 dwmw2
