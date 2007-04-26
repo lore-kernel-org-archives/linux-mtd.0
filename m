@@ -1,19 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HgyHL-0002iw-Pd
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 03:20:41 -0400
-Subject: Re: [PATCH] OneNAND 2x program support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: <dedekind@infradead.org>
 References: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 26 Apr 2007 10:19:58 +0300
-Message-Id: <1177571998.18889.14.camel@sauron>
-Mime-Version: 1.0
+	<1177571998.18889.14.camel@sauron>
+Subject: RE: [PATCH] OneNAND 2x program support
+Date: Thu, 26 Apr 2007 16:39:17 +0900
+Message-ID: <001001c787d6$0139ba20$e1ac580a@swcenter.sec.samsung.co.kr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
+In-reply-to: <1177571998.18889.14.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,24 +21,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Kyungmin,
 
-On Thu, 2007-04-26 at 11:16 +0900, Kyungmin Park wrote:
-> Here's new feature of OneNAND, 2X program.
+>=20
+> Hi Kyungmin,
+>=20
+> On Thu, 2007-04-26 at 11:16 +0900, Kyungmin Park wrote:
+> > Here's new feature of OneNAND, 2X program.
+>=20
+> Nice.
+>=20
+> Am I right that in this mode we end up with a 4KiB page size?
 
-Nice.
+Since 2x program use the same page in block even, and block odd such as =
+block 0, block 1
 
-Am I right that in this mode we end up with a 4KiB page size?
+In the previous one, the page is end up with 2KB
 
-> Note: this features is supported with the recent OneNAND chips. please do=
-n't try
-> to use previous chips.
+Note: (block, page)
 
-It would be nice to note this in 'config MTD_ONENAND_2X_PROGRAM' and to
-specify OneNAND revision starting from which it is safe to use this
-mode.
+(0, 0) (0, 1) (0, 2) ... (0, 63)
+--------
+2KB
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+But 2x mode it will be changed, (0, 0) (1, 0) is a pair.
+
+(0, 0) (0, 1) (0, 2)
+    |       |        |
+   V      V      V
+(1, 0) (1, 1) (1, 2)
+--------
+4KB
+
+>=20
+> > Note: this features is supported with the recent OneNAND=20
+> chips. please don't try
+> > to use previous chips.
+>=20
+> It would be nice to note this in 'config=20
+> MTD_ONENAND_2X_PROGRAM' and to
+> specify OneNAND revision starting from which it is safe to use this
+> mode.
+
+OK, I will add the chip number.
+
+Actually there's no method to find a which feature are supported on this =
+chip.
+Now I try to find the features from density and process. It's just =
+guess.
+
+Now only 2 chips support this one. 4Gb and 2Gb (no DDP).
+
++	switch (density) {
++	case ONENAND_DEVICE_DENSITY_4Gb:
++		this->options |=3D ONENAND_HAS_2PLANE;
++
++	case ONENAND_DEVICE_DENSITY_2Gb:
++		/* 2Gb DDP don't have 2 plane */
++		if (!ONENAND_IS_DDP(this))
++			this->options |=3D ONENAND_HAS_2PLANE;
+
+I will try to find a more fancy method.
+
+Thank you,
+Kyungmin Park
