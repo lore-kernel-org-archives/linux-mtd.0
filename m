@@ -1,21 +1,30 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh1eC-0007a3-6b
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 06:56:25 -0400
-Subject: RE: [PATCH] OneNAND 2x program support
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <001001c787d6$0139ba20$e1ac580a@swcenter.sec.samsung.co.kr>
-References: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
-	<1177571998.18889.14.camel@sauron>
-	<001001c787d6$0139ba20$e1ac580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 26 Apr 2007 13:56:12 +0300
-Message-Id: <1177584972.18889.19.camel@sauron>
+Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
+	helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hh27G-0008Ps-08
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 07:26:27 -0400
+Subject: Re: OOPS at mount
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1177578263.28861.7.camel@gentoo-jocke.transmode.se>
+References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
+	<1177514597.2755.251.camel@pmac.infradead.org>
+	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
+	<1177515855.2755.252.camel@pmac.infradead.org>
+	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
+	<1177517258.2755.261.camel@pmac.infradead.org>
+	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
+	<1177569177.2755.274.camel@pmac.infradead.org>
+	<1177575617.28488.17.camel@gentoo-jocke.transmode.se>
+	<1177576195.2755.286.camel@pmac.infradead.org>
+	<1177578263.28861.7.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Thu, 26 Apr 2007 13:26:24 +0200
+Message-Id: <1177586784.8841.3.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +34,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-26 at 16:39 +0900, Kyungmin Park wrote:
-> OK, I will add the chip number.
+On Thu, 2007-04-26 at 11:04 +0200, Joakim Tjernlund wrote:
+> On Thu, 2007-04-26 at 09:29 +0100, David Woodhouse wrote:
+> > On Thu, 2007-04-26 at 10:20 +0200, Joakim Tjernlund wrote:
+> > > No this is a matter of installing a number of new execuables/libs in
+> > > the FS and moving a few symlinks. Then a reboot.
+> > > I suspect that the it is only one of these printout that actually
+> > > makes the system crash, the other ones has problaby been there for a
+> > > while. Does that make sense?
+> > 
+> > Yes. Only one of those was a complaint with "but the old size was 0",
+> > which will have led to a NULL frag_last() since there were no frags.
+> > 
+> > > No, none acutally.
+> > 
+> > Hmmm.
+> > 
+> > > > 
+> > > > This is with JFFS2 from 2.6.20, right? Not a bug in the read_inode code
+> > > > I just committed a couple of days ago?
+> > > 
+> > > Plain 2.6.20 with my optimized scan you just commited.
+> > 
+> > By 'optimised scan' you just mean the fix to make it not crash, right?
+> 
+> No, sorry to be a bit unclear. I mean 
+>   "[JFFS2] Speed up mount for directly-mapped NOR flash"
+> and then the patch you did yesterday:
+>   "[JFFS2] Handle inodes with only a single metadata node with non-zero isize"
+> Had to apply than one by hand, but it was easy.
 
-Also, in the menuconfig description I suggest to note the following
-facts:
+Actually I forgot these:
+[JFFS2] Use yield() between GC passes in background thread.
+[JFFS2] Check for all-zero node headers
 
-1. Page size becomes 4KiB
-2. Eraseblock size becomes 256KiB
-3. I/O throughput becomes 2x faster, i.e., 4KiB NAND page in 2x mode is
-flashed as fast as 2KiB NAND page in non-2x mode.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Should be harmless though.
