@@ -1,24 +1,21 @@
-Subject: Re: OOPS at mount
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@transmode.se
-In-Reply-To: <1177578263.28861.7.camel@gentoo-jocke.transmode.se>
-References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
-	<1177514597.2755.251.camel@pmac.infradead.org>
-	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
-	<1177515855.2755.252.camel@pmac.infradead.org>
-	<1177516583.5073.22.camel@gentoo-jocke.transmode.se>
-	<1177517258.2755.261.camel@pmac.infradead.org>
-	<1177522774.28488.4.camel@gentoo-jocke.transmode.se>
-	<1177569177.2755.274.camel@pmac.infradead.org>
-	<1177575617.28488.17.camel@gentoo-jocke.transmode.se>
-	<1177576195.2755.286.camel@pmac.infradead.org>
-	<1177578263.28861.7.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Date: Thu, 26 Apr 2007 10:21:29 +0100
-Message-Id: <1177579289.2755.313.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hh1eC-0007a3-6b
+	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 06:56:25 -0400
+Subject: RE: [PATCH] OneNAND 2x program support
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: kmpark@infradead.org
+In-Reply-To: <001001c787d6$0139ba20$e1ac580a@swcenter.sec.samsung.co.kr>
+References: <000701c787a8$f968a9f0$e1ac580a@swcenter.sec.samsung.co.kr>
+	<1177571998.18889.14.camel@sauron>
+	<001001c787d6$0139ba20$e1ac580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 26 Apr 2007 13:56:12 +0300
+Message-Id: <1177584972.18889.19.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,11 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-26 at 11:04 +0200, Joakim Tjernlund wrote:
-> Since I can't reproduce how it happened we are stuck with the image we
-> have, would a full CONFIG_JFFS2_FS_DEBUG=1 help now?
+On Thu, 2007-04-26 at 16:39 +0900, Kyungmin Park wrote:
+> OK, I will add the chip number.
 
-Might be enlightening. And/or a copy of the image if you can?
+Also, in the menuconfig description I suggest to note the following
+facts:
 
--- 
-dwmw2
+1. Page size becomes 4KiB
+2. Eraseblock size becomes 256KiB
+3. I/O throughput becomes 2x faster, i.e., 4KiB NAND page in 2x mode is
+flashed as fast as 2KiB NAND page in non-2x mode.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
