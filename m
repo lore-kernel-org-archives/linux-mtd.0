@@ -4,8 +4,8 @@ To: "Knobloch, Thomas" <knobloch@siemens.com>
 In-Reply-To: <2EDADF4ED023F04BAD4D7A4131ECEB930105514A@mchp7rfa.ww002.siemens.net>
 References: <2EDADF4ED023F04BAD4D7A4131ECEB930105514A@mchp7rfa.ww002.siemens.net>
 Content-Type: text/plain
-Date: Thu, 26 Apr 2007 17:31:08 +0100
-Message-Id: <1177605068.2755.416.camel@pmac.infradead.org>
+Date: Thu, 26 Apr 2007 17:40:43 +0100
+Message-Id: <1177605643.2755.420.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -19,10 +19,19 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Thu, 2007-04-26 at 17:38 +0200, Knobloch, Thomas wrote:
-> Do you think there is some problem with this code or am I missing some
-> point. 
+>         if (getchip) {
+>                 page = (int)(ofs >> chip->page_shift);
+>                 chipnr = (int)(ofs >> chip->chip_shift);
+> 
+>                 nand_get_device(chip, mtd, FL_READING);
+> 
+>                 /* Select the NAND device */
+>                 chip->select_chip(mtd, chipnr);
+>         } else
+>                 page = (int)ofs; 
 
-Looks entirely screwed in the head to me. Thomas?
+I think we'll accept a patch which makes that last line also shift right
+by chip->page_shift.
 
 -- 
 dwmw2
