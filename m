@@ -1,12 +1,7 @@
-Received: from 147.175.241.83.in-addr.dgcsystems.net ([83.241.175.147]
-	helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hh3aC-0003uC-5Z
-	for linux-mtd@lists.infradead.org; Thu, 26 Apr 2007 09:00:25 -0400
 Subject: Re: OOPS at mount
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1177591781.2755.373.camel@pmac.infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: joakim.tjernlund@transmode.se
+In-Reply-To: <1177592422.8841.24.camel@gentoo-jocke.transmode.se>
 References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177514597.2755.251.camel@pmac.infradead.org>
 	<1177515648.5073.14.camel@gentoo-jocke.transmode.se>
@@ -18,13 +13,13 @@ References: <1177513779.5073.9.camel@gentoo-jocke.transmode.se>
 	<1177590673.2755.369.camel@pmac.infradead.org>
 	<1177591404.8841.18.camel@gentoo-jocke.transmode.se>
 	<1177591781.2755.373.camel@pmac.infradead.org>
+	<1177592422.8841.24.camel@gentoo-jocke.transmode.se>
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Thu, 26 Apr 2007 15:00:22 +0200
-Message-Id: <1177592422.8841.24.camel@gentoo-jocke.transmode.se>
+Date: Thu, 26 Apr 2007 14:08:52 +0100
+Message-Id: <1177592932.2755.383.camel@pmac.infradead.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,16 +29,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-04-26 at 13:49 +0100, David Woodhouse wrote:
-> On Thu, 2007-04-26 at 14:43 +0200, Joakim Tjernlund wrote:
-> > I get this:
-> > Node at 20830232 is ino #26d7, version 2. Range 0x0-0x1000, isize 4096
-> > Node at 20832264 is ino #26d7, version 3. Range 0x1000-0x2000, isize 8192
-> > Node at 20833744 is ino #26d7, version 4. Range 0x2000-0x3000, isize 12288
-> > Node at 20834972 is ino #26d7, version 5. Range 0x3000-0x4000, isize 16384
-> > Node at 46094176 is ino #26d7, version 1172. Range 0x0-0x0, isize 16384 
-> 
-> Right.... and do you still get that complaint about truncation?
-> 
+On Thu, 2007-04-26 at 15:00 +0200, Joakim Tjernlund wrote:
+> No, its gone. Is yours still there?
 
-No, its gone. Is yours still there?
+Nope. I think the offending node got marked obsolete after we fixed the
+kernel not to crash when it saw it.
+
+I strongly suspect that the root cause here is the fact that you turned
+SUMMARY off -- in particular the way that affected the setting of
+jffs2_can_mark_obsolete().
+
+That will have meant that _some_ nodes were actually marked obsolete on
+the medium, while other nodes weren't. I'm trying to construct a
+detailed scenario in which that leads to the error we saw, so I can
+convince myself 100% that this was the problem....
+
+-- 
+dwmw2
