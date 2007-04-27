@@ -1,25 +1,22 @@
-Received: from goliath.siemens.de ([192.35.17.28])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HhOUG-0005va-10
-	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 07:19:41 -0400
-Received: from mail2.siemens.de (localhost [127.0.0.1])
-	by goliath.siemens.de (8.12.6/8.12.6) with ESMTP id l3RBJcfF010071
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2007 13:19:38 +0200
-Received: from mchp7wta.ww002.siemens.net (mchp7wta.ww002.siemens.net
-	[139.25.131.193])
-	by mail2.siemens.de (8.12.6/8.12.6) with ESMTP id l3RBJbZ6014802
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Apr 2007 13:19:37 +0200
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: [PATCH] [MTD] NAND: Wrong calculation of page number in
-	nand_block_bad()
-Date: Fri, 27 Apr 2007 13:19:36 +0200
-Message-ID: <2EDADF4ED023F04BAD4D7A4131ECEB930105527C@mchp7rfa.ww002.siemens.net>
-From: "Knobloch, Thomas" <knobloch@siemens.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HhP09-0006mJ-P0
+	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 07:52:40 -0400
+Subject: Re: corruption of JFFS2 filesystem, csize is set to 0 after moving
+	a block
+From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1177667175.2755.476.camel@pmac.infradead.org>
+References: <1177599259.18969.111.camel@localhost.localdomain>
+	<1177602237.2755.414.camel@pmac.infradead.org>
+	<1177665229.18969.143.camel@localhost.localdomain>
+	<1177667175.2755.476.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Fri, 27 Apr 2007 13:52:21 +0200
+Message-Id: <1177674741.18969.150.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 2007-04-27 at 10:46 +0100, David Woodhouse wrote:
+> On Fri, 2007-04-27 at 11:13 +0200, Hans-Christian Egtvedt wrote:
 
-In case that there is no memory based bad block table available the
-function nand_block_checkbad() in drivers/mtd/nand/nand_base.c will call
-nand_block_bad() directly. When parameter 'getchip' is set to zero,
-nand_block_bad() will not right shift the offset to calculate the
-correct page number.
+<cut jffs2dump initial image>
 
-Signed-off-by: Thomas Knobloch <knobloch@siemens.com>
+> Those are suspect. Why 4092 bytes not 4096? The node with version 2
+> claims to be 4092 bytes starting from 4092, which is invalid because it
+> crosses a page boundary.
 
-diff -uNr a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
---- a/drivers/mtd/nand/nand_base.c	2007-04-27 12:44:23.345198284
-+0200
-+++ b/drivers/mtd/nand/nand_base.c	2007-04-27 12:46:57.916226928
-+0200
-@@ -312,7 +312,7 @@
- 		/* Select the NAND device */
- 		chip->select_chip(mtd, chipnr);
- 	} else
--		page =3D (int)ofs;
-+		page =3D (int)(ofs >> chip->page_shift);
-=20
- 	if (chip->options & NAND_BUSWIDTH_16) {
- 		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos &
-0xFE,
+Let me quote Homer Jay Simpson, "DOH!".
+
+<cut jffs2dump corrupted image>
+
+> Ok, in that case I agree that a csize of zero also looks suspicious.
+> Matches the node 'totlen' though. What's the compression type.
+> 
+> Did you use 'mkfs.jffs2 -s 4092'?
+
+I have no idea how I turned up with this number, but rebuilding the
+image with pagesize=4096 gives a fully working image.
+
+Many thanks for your help.
+
+-- 
+Best regards
+Hans-Christian Egtvedt
