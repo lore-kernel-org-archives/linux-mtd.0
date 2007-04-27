@@ -1,20 +1,15 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HhTpS-0005Iq-D5
-	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 13:01:55 -0400
-Subject: Re: [PATCH] [MTD] NAND: Wrong calculation of page number in
-	nand_block_bad()
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Knobloch, Thomas" <knobloch@siemens.com>
-In-Reply-To: <2EDADF4ED023F04BAD4D7A4131ECEB930105527C@mchp7rfa.ww002.siemens.net>
-References: <2EDADF4ED023F04BAD4D7A4131ECEB930105527C@mchp7rfa.ww002.siemens.net>
-Content-Type: text/plain
-Date: Fri, 27 Apr 2007 19:03:51 +0200
-Message-Id: <1177693431.25960.123.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HhTw9-0005WK-3B
+	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 13:08:51 -0400
+Message-ID: <46322E19.7020409@indefia.com>
+Date: Fri, 27 Apr 2007 20:08:41 +0300
+From: Semih Hazar <semih.hazar@indefia.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Strange JFFS2 Cleanmarker on NAND
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,31 +19,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-04-27 at 13:19 +0200, Knobloch, Thomas wrote:
-> In case that there is no memory based bad block table available the
-> function nand_block_checkbad() in drivers/mtd/nand/nand_base.c will call
-> nand_block_bad() directly. When parameter 'getchip' is set to zero,
-> nand_block_bad() will not right shift the offset to calculate the
-> correct page number.
-> 
-> Signed-off-by: Thomas Knobloch <knobloch@siemens.com>
->
-> diff -uNr a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-> --- a/drivers/mtd/nand/nand_base.c	2007-04-27 12:44:23.345198284
-> +0200
-> +++ b/drivers/mtd/nand/nand_base.c	2007-04-27 12:46:57.916226928
-> +0200
-> @@ -312,7 +312,7 @@
->  		/* Select the NAND device */
->  		chip->select_chip(mtd, chipnr);
->  	} else
-> -		page = (int)ofs;
-> +		page = (int)(ofs >> chip->page_shift);
+Hi,
 
-Can you please make this outside the else path, so we can remove same
-code in the if (getchip) path.
+After testing JFFS2+NAND for a while, I wanted to try summary and some 
+other stuff, decided to start from scratch.
+So I did a flash_eraseall -j and tried to mount it.
+But it didn't mount and complained that there wasn't a cleanmaker. So i 
+did nanddump and saw that there were correct cleanmarkers at the 
+beginning of the flash, but was some other values beginning from 0x00a80000.
 
-Please also apply the pagemask right there so we don't have it in both
-cmdfunc() calls.
+at the beginning:
+# nanddump /dev/mtd0 | hexdump -C
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x10000000...
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00000800  ff ff 19 85 20 03 00 00  00 08 ff ff ff ff ff ff  |.... 
+...........|
+00000810  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00020fe0  ff ff ff ff ff ff ff ff  19 85 20 03 00 00 00 08  |.......... 
+.....|
+00020ff0  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00021800  ff ff 19 85 20 03 00 00  00 08 ff ff ff ff ff ff  |.... 
+...........|
+00021810  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
 
-	tglx
+after 0x00a80000, cleanmarker part was like that:
+ff ff 19 85 20 05 00 00  00 18 65 fa fd 45 00 00  |.... .....e..E..|
+00 00 00 00 00 00 00 00  00 00 ff ff ff ff ff ff  |................|
+
+ff ff ff ff ff ff ff ff  19 85 20 05 00 00 00 18  |.......... .....|
+65 fa fd 45 00 00 00 00  00 00 00 00 00 00 00 00  |e..E............|
+
+I didn't know if this was something meaningful or not, and looked inside 
+flash_eraseall and didn't see it writing something like that to flash. I 
+did a flash_eraseall again without -j and did a nanddump everything was 
+0xff as it should be.
+Then did flash_eraseall -j once again, and this time the whole flash was 
+like that:
+
+Block size 131072, page size 2048, OOB size 64
+Dumping data starting at 0x00000000 and ending at 0x10000000...
+00000000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00000800  ff ff 19 85 20 05 00 00  00 18 65 fa fd 45 00 00  |.... 
+.....e..E..|
+00000810  00 00 00 00 00 00 00 00  00 00 ff ff ff ff ff ff  
+|................|
+00000820  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00020fe0  ff ff ff ff ff ff ff ff  19 85 20 05 00 00 00 18  |.......... 
+.....|
+00020ff0  65 fa fd 45 00 00 00 00  00 00 00 00 00 00 00 00  
+|e..E............|
+00021000  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+*
+00021800  ff ff 19 85 20 05 00 00  00 18 65 fa fd 45 00 00  |.... 
+.....e..E..|
+00021810  00 00 00 00 00 00 00 00  00 00 ff ff ff ff ff ff  
+|................|
+00021820  ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff  
+|................|
+
+I re-run the above step (without -j and with -j) and now cleanmarkers 
+are ok and I can mount it.
+
+Does anyone have any idea what's going on ?
+
+CPU: Atmel AT32AP7000, kernel 2.6.20.
+mtd-utils: latest from svn.
+
+Best Regards,
+Semih Hazar
