@@ -1,22 +1,19 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from smtp.parrot.fr ([213.41.120.202])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HhP09-0006mJ-P0
-	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 07:52:40 -0400
-Subject: Re: corruption of JFFS2 filesystem, csize is set to 0 after moving
-	a block
-From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1177667175.2755.476.camel@pmac.infradead.org>
-References: <1177599259.18969.111.camel@localhost.localdomain>
-	<1177602237.2755.414.camel@pmac.infradead.org>
-	<1177665229.18969.143.camel@localhost.localdomain>
-	<1177667175.2755.476.camel@pmac.infradead.org>
-Content-Type: text/plain
-Date: Fri, 27 Apr 2007 13:52:21 +0200
-Message-Id: <1177674741.18969.150.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1HhPx9-0008Do-TT
+	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 08:53:37 -0400
+Message-ID: <4631F17B.3080204@parrot.fr>
+Date: Fri, 27 Apr 2007 14:50:03 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.fr>
+MIME-Version: 1.0
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: FAT file system on NAND flash memory
+References: <20070412134137.GA25860@pooky.senux.com>
+	<625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+In-Reply-To: <625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, Seongsu Lee <senux@senux.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,29 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-04-27 at 10:46 +0100, David Woodhouse wrote:
-> On Fri, 2007-04-27 at 11:13 +0200, Hans-Christian Egtvedt wrote:
+Hi,
 
-<cut jffs2dump initial image>
-
-> Those are suspect. Why 4092 bytes not 4096? The node with version 2
-> claims to be 4092 bytes starting from 4092, which is invalid because it
-> crosses a page boundary.
-
-Let me quote Homer Jay Simpson, "DOH!".
-
-<cut jffs2dump corrupted image>
-
-> Ok, in that case I agree that a csize of zero also looks suspicious.
-> Matches the node 'totlen' though. What's the compression type.
+Josh Boyer a écrit :
+> On 4/12/07, Seongsu Lee <senux@senux.com> wrote:
+>> Hi,
+>>
+>> In my knowledge, mtdblock.c must be used to use
+>> FAT filesystem on bare NAND flash memories
+>> because NFTL is made only for a specific hardware,
+>> DiskOnChip.
+>>
+>> (Layer 0) VFS
+>> (Layer 1) FAT (or EXT2, EXT3)
+>> (Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
+>> (Layer 3) NAND flash memory driver (vendor specific)
+>> (Layer 4) Physical NAND flash memory
+>>
+>> Please let me know if it is wrong.
 > 
-> Did you use 'mkfs.jffs2 -s 4092'?
+> That layering is correct, but your results will be bad.  mtdblock
+> doesn't handle bad blocks.  So if you have one in the middle of your
+> filesystem, it will break things.  You need some kind of translation
+> layer if you're going to use NAND.
+> 
+But UBI could be used between nand and mtdblock ?
 
-I have no idea how I turned up with this number, but rebuilding the
-image with pagesize=4096 gives a fully working image.
 
-Many thanks for your help.
-
--- 
-Best regards
-Hans-Christian Egtvedt
+Matthieu
