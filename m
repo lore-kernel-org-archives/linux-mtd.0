@@ -1,21 +1,17 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HhMnw-0002qc-W2
-	for linux-mtd@lists.infradead.org; Fri, 27 Apr 2007 05:31:54 -0400
-Date: Fri, 27 Apr 2007 11:31:44 +0200
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
 Subject: Re: corruption of JFFS2 filesystem, csize is set to 0 after moving
 	a block
-Message-ID: <20070427113144.2f338d26@dhcp-252-105.norway.atmel.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
 In-Reply-To: <1177665229.18969.143.camel@localhost.localdomain>
 References: <1177599259.18969.111.camel@localhost.localdomain>
 	<1177602237.2755.414.camel@pmac.infradead.org>
 	<1177665229.18969.143.camel@localhost.localdomain>
+Content-Type: text/plain
+Date: Fri, 27 Apr 2007 10:46:15 +0100
+Message-Id: <1177667175.2755.476.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +21,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 27 Apr 2007 11:13:49 +0200
-Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com> wrote:
+On Fri, 2007-04-27 at 11:13 +0200, Hans-Christian Egtvedt wrote:
+> 
+> Some filesystem dump from before:
+>          Dirent     node at 0x0013c7e0, totlen 0x0000003b, #pino     7, version   148, #ino       150, nsize       19, name ld-uClibc-0.9.28.so
+>          Inode      node at 0x0013c81c, totlen 0x00000a14, #ino    150, version     1, isize    13108, csize     2512, dsize     4092, offset        0
+>          Inode      node at 0x0013d230, totlen 0x00000c57, #ino    150, version     2, isize    13108, csize     3091, dsize     4092, offset     4092
+>          Inode      node at 0x0013de88, totlen 0x00000b21, #ino    150, version     3, isize    13108, csize     2781, dsize     4092, offset     8184
+>          Inode      node at 0x0013e9ac, totlen 0x000001e0, #ino    150, version     4, isize    13108, csize      412, dsize      832, offset    12276
 
-> The system is in do_signal, which is most likely a sign of the init
-> process has received an unexpected signal. I assume it is due to one of
-> the core libraries being corrupted.
+Those are suspect. Why 4092 bytes not 4096? The node with version 2
+claims to be 4092 bytes starting from 4092, which is invalid because it
+crosses a page boundary.
 
-FWIW, the avr32 update I'm about to push out will change the behaviour
-of the exception handling code to panic when this happens instead of
-trying to deliver the signal forever. I can try to backport it to
-whatever version you're running, but I'm pretty sure your analysis is
-correct (more specifically, I think init got a SIGBUS signal it didn't
-want.)
+> After:
+>          Dirent     node at 0x006c7bf0, totlen 0x0000003b, #pino     7, version   171, #ino       150, nsize       19, name ld-uClibc-0.9.28.so
+>          Inode      node at 0x006c7c2c, totlen 0x00000a14, #ino    150, version     5, isize    13108, csize     2512, dsize     4092, offset        0
+>          Inode      node at 0x006c8640, totlen 0x00000044, #ino    150, version     6, isize    13108, csize        0, dsize     4092, offset     4092
+>          Inode      node at 0x006c8684, totlen 0x00000044, #ino    150, version     7, isize    13108, csize        0, dsize     4092, offset     8184
+>          Inode      node at 0x006c86c8, totlen 0x00000044, #ino    150, version     8, isize    13108, csize        0, dsize      832, offset    12276 
 
-Haavard
+Ok, in that case I agree that a csize of zero also looks suspicious.
+Matches the node 'totlen' though. What's the compression type.
+
+Did you use 'mkfs.jffs2 -s 4092'?
+
+-- 
+dwmw2
