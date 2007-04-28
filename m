@@ -1,17 +1,19 @@
-Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HhmV6-0000PS-9f
-	for linux-mtd@lists.infradead.org; Sat, 28 Apr 2007 08:58:10 -0400
-Message-ID: <463344D7.2060503@indefia.com>
-Date: Sat, 28 Apr 2007 15:57:59 +0300
-From: Semih Hazar <semih.hazar@indefia.com>
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hhn2a-00012S-Lz
+	for linux-mtd@lists.infradead.org; Sat, 28 Apr 2007 09:32:45 -0400
+Message-ID: <46334CFA.4060805@ru.mvista.com>
+Date: Sat, 28 Apr 2007 17:32:42 +0400
+From: "Ruslan V. Sushko" <rsushko@ru.mvista.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Strange JFFS2 Cleanmarker on NAND
-References: <46322E19.7020409@indefia.com>
-In-Reply-To: <46322E19.7020409@indefia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATH] NAND Flash support for Intel IXP4xx platform
+References: <463332F9.9040105@ru.mvista.com>
+	<1177763600.2755.699.camel@pmac.infradead.org>
+In-Reply-To: <1177763600.2755.699.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=KOI8-R; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Semih Hazar wrote:
-> I re-run the above step (without -j and with -j) and now cleanmarkers 
-> are ok and I can mount it.
+David,
+I'm really sorry. I don't know but thunderbird change all tabs to 
+spaces. I'm already prepare new patch in accordance with Tomas Gleixner 
+suggestion,  which I've already tested as you suggest in E-Mail 
+etiquette. Should I send the patch in this thread?
+
+Sorry for inconvenient.
+Ruslan
+
+David Woodhouse wrote:
+> On Sat, 2007-04-28 at 15:41 +0400, Ruslan V. Sushko wrote:
 >   
-Well It seems that this behavior is totally random. I did these steps 
-lots of times, and sometimes the cleanmarker is written as:
-ff ff 19 85 20 05 00 00  00 18 65 fa fd 45 00 00
-00 00 00 00 00 00 00 00  00 00 ff ff ff ff ff ff
-ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
-
-and sometimes written as:
-ff ff 19 85 20 03 00 00 00 08 ff ff ff ff ff ff
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-
-Does the first one have any meaning or is it some messed up data ?
+>> The patch adds glue logic to support MTD for NAND flash devices on
+>> Intel IXP4xx platform
+>>     
+>
+> http://david.woodhou.se/email.html#test-patches
+>
+> Why did you send me something you hadn't tested for yourself?
+>
+>   
