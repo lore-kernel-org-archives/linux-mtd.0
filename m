@@ -1,19 +1,17 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hhm7I-0008GD-Pz
-	for linux-mtd@lists.infradead.org; Sat, 28 Apr 2007 08:34:15 -0400
-Subject: Re: [PATH] NAND Flash support for Intel IXP4xx platform
-From: Thomas Gleixner <tglx@linutronix.de>
-To: "Ruslan V. Sushko" <rsushko@ru.mvista.com>
-In-Reply-To: <463332F9.9040105@ru.mvista.com>
-References: <463332F9.9040105@ru.mvista.com>
-Content-Type: text/plain
-Date: Sat, 28 Apr 2007 14:35:36 +0200
-Message-Id: <1177763736.7646.149.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HhmV6-0000PS-9f
+	for linux-mtd@lists.infradead.org; Sat, 28 Apr 2007 08:58:10 -0400
+Message-ID: <463344D7.2060503@indefia.com>
+Date: Sat, 28 Apr 2007 15:57:59 +0300
+From: Semih Hazar <semih.hazar@indefia.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: Strange JFFS2 Cleanmarker on NAND
+References: <46322E19.7020409@indefia.com>
+In-Reply-To: <46322E19.7020409@indefia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-04-28 at 15:41 +0400, Ruslan V. Sushko wrote:
-> +static void ixp_write_buf(struct mtd_info *mtd, const u_char * buf, int 
-> len)
-> +{
-> +       int i;
-> +       struct nand_chip *this = mtd->priv;
-> +
-> +       for (i = 0; i < len; i++)
-> +               writeb(buf[i], this->IO_ADDR_W);
-> +}
+Semih Hazar wrote:
+> I re-run the above step (without -j and with -j) and now cleanmarkers 
+> are ok and I can mount it.
+>   
+Well It seems that this behavior is totally random. I did these steps 
+lots of times, and sometimes the cleanmarker is written as:
+ff ff 19 85 20 05 00 00  00 18 65 fa fd 45 00 00
+00 00 00 00 00 00 00 00  00 00 ff ff ff ff ff ff
+ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
+ff ff ff ff ff ff ff ff  ff ff ff ff ff ff ff ff
 
-How excatly is this functionally different from the generic write_buf
-function in nand_base.c ?
+and sometimes written as:
+ff ff 19 85 20 03 00 00 00 08 ff ff ff ff ff ff
+ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
+ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
 
-static void nand_write_buf(struct mtd_info *mtd, const uint8_t *buf, int len)
-{
-        int i;
-        struct nand_chip *chip = mtd->priv;
-
-        for (i = 0; i < len; i++)
-                writeb(buf[i], chip->IO_ADDR_W);
-}
-
-> +static void ixp4xx_hwcontrol(struct mtd_info *mtd, int cmd, unsigned 
-> int ctrl)
-> +{
-> +       struct nand_chip *this = mtd->priv;
-> +       struct ixp4xx_faddr_info_t *addr_info = this->priv;
-
-Newline between variables and code !
-
-> +       if (ctrl & NAND_CTRL_CHANGE) {
-> +               addr_info->offset = (ctrl & NAND_CLE) ? IXP4XX_NAND_CLE : 0;
-> +               addr_info->offset |= (ctrl & NAND_ALE) ? IXP4XX_NAND_ALE 
-> : 0;
-
-Your patch is word wrapped !
-
-> +               if (addr_info->chip_select)
-> +                       addr_info->chip_select(ctrl);
-> +       }
-> +
-> +       if (cmd != NAND_CMD_NONE)
-> +               writeb(cmd, this->IO_ADDR_W + addr_info->offset);
-> +}
-
-Aside of that I agree with Lennert, that we really need to get around
-and make this real platform code.
-
-	tglx
+Does the first one have any meaning or is it some messed up data ?
