@@ -1,19 +1,23 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+Received: from smtp-ext.int-evry.fr ([157.159.11.17])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HiSFi-0002Oy-PM
-	for linux-mtd@lists.infradead.org; Mon, 30 Apr 2007 05:33:04 -0400
-Subject: Re: [PATCH] nand: add cmd_ctrl to platform_nand_chip
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Vitaly Wool <vitalywool@gmail.com>
-In-Reply-To: <4635B58D.9020709@gmail.com>
-References: <4635B58D.9020709@gmail.com>
-Content-Type: text/plain
-Date: Mon, 30 Apr 2007 11:35:14 +0200
-Message-Id: <1177925714.5791.192.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1Hhl71-0007L4-8y
+	for linux-mtd@lists.infradead.org; Sat, 28 Apr 2007 07:29:13 -0400
+Received: from mini.int.alphacore.net (florian.maisel.int-evry.fr
+	[157.159.41.36])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by smtp-ext.int-evry.fr (Postfix) with ESMTP id 769DE8D169C
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 28 Apr 2007 13:27:52 +0200 (CEST)
+From: Florian Fainelli <florian.fainelli@telecomint.eu>
+To: linux-mtd@lists.infradead.org
+Subject: Finding ERASE_INFO from a Flash datasheet
+Date: Sat, 28 Apr 2007 13:24:49 +0200
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="nextPart6495452.p9haGUtxyf";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
-Reply-To: tglx@linutronix.de
+Message-Id: <200704281324.50082.florian.fainelli@telecomint.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +27,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-04-30 at 13:23 +0400, Vitaly Wool wrote:
-> Hello Thomas,
-> 
-> please find the patch that extends struct platform_nand_chip with 
-> cmd_ctrl field.
+--nextPart6495452.p9haGUtxyf
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Looks good. Can you please resend with a useful changelog ?
+Hello all,
 
-Thanks,
+I am using a box which has a SST 39VF6402B flash [1] driven by jedec. This=
+=20
+flash is not yet referenced in the Linux kernel, and once I got the right=20
+erase informations, I will submit a patch to add it.
 
-	tglx
+=46or the moment, I have defined 4 strictly identical erase informations :
+ERASE_INFO(0x2000, 256), which makes me avoid this message "Sum of regions=
+=20
+(400000) !=3D total size of set of interleaved chips (800000)". I am pretty=
+=20
+sure these informations are completely wrong.
 
->  include/linux/mtd/nand.h |    4 ++++
->  1 files changed, 4 insertions(+)
-> 
-> Signed-off-by: Vitaly Wool <vitalywool@gmail.com>
-> 
-> Index: linux-2.6/include/linux/mtd/nand.h
-> ===================================================================
-> --- linux-2.6.orig/include/linux/mtd/nand.h
-> +++ linux-2.6/include/linux/mtd/nand.h
-> @@ -577,6 +577,8 @@ struct platform_nand_chip {
->   * @hwcontrol:		platform specific hardware control structure
->   * @dev_ready:		platform specific function to read ready/busy pin
->   * @select_chip:	platform specific chip select function
-> + * @cmd_ctrl:		platform specific function for controlling
-> + *			ALE/CLE/nCE. Also used to write command and address
->   * @priv:		private data to transport driver specific settings
->   *
->   * All fields are optional and depend on the hardware driver requirements
-> @@ -585,6 +587,8 @@ struct platform_nand_ctrl {
->  	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
->  	int		(*dev_ready)(struct mtd_info *mtd);
->  	void		(*select_chip)(struct mtd_info *mtd, int chip);
-> +	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
-> +				    unsigned int ctrl);
->  	void		*priv;
->  };
->  
-> 
+If anyone has some clues about this, I will be glad finishing my patch ;)
+
+Thank you very much in advance.
+
+[1] : http://www.sst.com/downloads/datasheet/S71288.pdf
+=2D-=20
+Cordialement, Florian Fainelli
+=2D--------------------------------------------
+
+--nextPart6495452.p9haGUtxyf
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.3 (GNU/Linux)
+
+iD8DBQBGMy8Cmx9n1G/316sRAv0wAJ9LnYJjAdllrUtOgci1vEHqe1C8sQCeLxF/
+MzdR0h0UGSHPSGDa+x9nfHc=
+=yLwk
+-----END PGP SIGNATURE-----
+
+--nextPart6495452.p9haGUtxyf--
