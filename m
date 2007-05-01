@@ -1,20 +1,18 @@
-Received: from mo-p00-ob.rzone.de ([81.169.146.162])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HitAG-0005tD-LD
-	for linux-mtd@lists.infradead.org; Tue, 01 May 2007 10:17:13 -0400
-From: Stefan Roese <ml@stefan-roese.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [patch] generic nand driver for SoCs
-Date: Tue, 1 May 2007 16:17:21 +0200
-References: <46373163.7060603@gmail.com>
-In-Reply-To: <46373163.7060603@gmail.com>
-MIME-Version: 1.0
-Content-Disposition: inline
-Message-Id: <200705011617.21532.ml@stefan-roese.de>
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hitcu-0006QD-Us
+	for linux-mtd@lists.infradead.org; Tue, 01 May 2007 10:46:52 -0400
+Subject: [PATCH 0/5] Add LZO Compression
+From: Richard Purdie <rpurdie@openedhand.com>
+To: LKML <linux-kernel@vger.kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>, herbert@gondor.apana.org.au
+Content-Type: text/plain
+Date: Tue, 01 May 2007 15:46:34 +0100
+Message-Id: <1178030794.5883.50.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Vitaly Wool <vitalywool@gmail.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>, linux-crypto@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +22,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 01 May 2007 14:24, Vitaly Wool wrote:
-> Index: linux-2.6/drivers/mtd/nand/Kconfig
-> ===================================================================
-> --- linux-2.6.orig/drivers/mtd/nand/Kconfig
-> +++ linux-2.6/drivers/mtd/nand/Kconfig
-> @@ -277,4 +277,16 @@ config MTD_NAND_PLATFORM
->  	help
->  	  This driver enables support for common on-SoC NAND devices.
->
-> +config MTD_NAND_PLATFORM
-> +	tristate "Support for generic NAND driver"
-> +	depends on MTD_NAND
-> +	help
-> +	  This driver enables support for common on-SoC NAND devices.
-> +
-> +config MTD_NAND_PLATFORM
-> +	tristate "Support for generic NAND driver"
-> +	depends on MTD_NAND
-> +	help
-> +	  This driver enables support for common on-SoC NAND devices.
-> +
+The following patch series adds LZO compression support to the kernel
+and exposes it in a variety of places (jffs2, crypto).
 
-One "config MTD_NAND_PLATFORM" should be enough, don't you think? ;-)
+Its a resend of a previous posted series, rediffed against recent
+kernels with the couple of minors issues raised by David Woodhouse
+addressed.
 
-Best regards,
-Stefan
+This patch series is also available as:
+git://git.o-hand.com/linux-rpurdie linux-rpurdie-lzo
+(http://git.o-hand.com/?p=linux-rpurdie;a=shortlog;h=linux-rpurdie-lzo)
+
+LZO compression is particularly useful for jffs2 where significant boot
+time speedups (~10%) and file read speed improvements (~40%) are seen
+when its used with only a slight drop in file compression ratio.
+
+It also adds a favourlzo mode to jffs2 which is similar to the existing
+size mode but lets lzo compression win if the lzo compressed size is
+"similar" to but not the best compression ratio. This means we can keep
+zlib compression where it makes a significant difference to compressed
+file size.
+
+The final jffs2 patch which starts adding sysfs support for control of
+jffs2 options at runtime that are currently available only at boottime.
+There are several other controls which it may be desirable to add to the
+basic framework this patch creates in due course.
+
+Richard
