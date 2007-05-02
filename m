@@ -1,21 +1,17 @@
-Received: from rgminet01.oracle.com ([148.87.113.118])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HiycJ-0002MS-Fo
-	for linux-mtd@lists.infradead.org; Tue, 01 May 2007 16:06:35 -0400
-Date: Tue, 1 May 2007 13:08:11 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: Richard Purdie <rpurdie@openedhand.com>
-Subject: Re: [PATCH 4/5] jffs2: Allow selection of compression mode via a
-	sysfs attribute
-Message-Id: <20070501130811.5c9c9f7d.randy.dunlap@oracle.com>
-In-Reply-To: <1178030839.5883.56.camel@localhost.localdomain>
-References: <1178030839.5883.56.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
+Received: from mail2.metocean.com ([142.176.129.151] helo=metocean.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hj5if-00058n-O5
+	for linux-mtd@lists.infradead.org; Tue, 01 May 2007 23:41:34 -0400
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: How to create BDTL partition on DOC2000 using docfdisk
+Date: Wed, 2 May 2007 00:40:41 -0300
+Message-ID: <5269FB0A43484A4AA1B7EE047BCBFAAD01BC8815@juno.MetoceanData.local>
+From: "Charles Mao" <CMao@metocean.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,92 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 01 May 2007 15:47:19 +0100 Richard Purdie wrote:
+Hi there,
+=20
+Is it possible to create BDTL partitions on DOC2000 using docfdisk? If
+yes, how? Thanks.
 
-> Allow selection of the compression mode for jffs2 via a sysfs
-> attribute. This establishes a sysfs presence for jffs2 through
-> which other compression options could easily be exported too.
-> 
-> Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
-> ---
->  fs/Kconfig       |    9 ++++++++
->  fs/jffs2/compr.c |   41 ++++++++++++++++++++++++++++++++++++
->  fs/jffs2/compr.h |    6 +++++
->  fs/jffs2/super.c |   61 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 117 insertions(+), 0 deletions(-)
-> 
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index 328a62f..9da136b 100644
-> diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-> index fdb0efd..8c57dc7 100644
-> --- a/fs/jffs2/compr.c
-> +++ b/fs/jffs2/compr.c
-> @@ -11,6 +11,7 @@
->   *
->   */
->  
-> +#include <linux/kobject.h>
+The reason I want create BDTL partition is because INFTL module looking
+for BDTL partition when I load the module.
 
-is that used/needed in this source file?
+Dmesg showing below:
 
->  #include "compr.h"
->  
->  static DEFINE_SPINLOCK(jffs2_compressor_list_lock);
-> @@ -296,6 +297,46 @@ int jffs2_unregister_compressor(struct jffs2_compressor *comp)
->          return 0;
->  }
->  
-> +#ifdef CONFIG_JFFS2_SYSFS
-> +
-> +char *jffs2_get_compression_mode_name(void)
-> +{
-> +        switch (jffs2_compression_mode) {
-> +        case JFFS2_COMPR_MODE_NONE:
-> +                return "none";
-> +        case JFFS2_COMPR_MODE_PRIORITY:
-> +                return "priority";
-> +        case JFFS2_COMPR_MODE_SIZE:
-> +                return "size";
-> +	case JFFS2_COMPR_MODE_FAVOURLZO:
-> +		return "favourlzo";
-> +        }
-> +        return "unkown";
-
-Lots of whitespace damage above (needs tabs).
-
-> +}
-> +
-> +int jffs2_set_compression_mode_name(const char *name)
-> +{
-> +        if (!strncmp("none", name, 4)) {
-> +                jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-> +                return 0;
-> +        }
-> +        if (!strncmp("priority", name, 8)) {
-> +                jffs2_compression_mode = JFFS2_COMPR_MODE_PRIORITY;
-> +                return 0;
-> +        }
-> +        if (!strncmp("size", name, 4)) {
-> +                jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
-> +                return 0;
-> +        }
-> +	if (!strncmp("favourlzo", name, 9)) {
-> +		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-> +		return 0;
-> +	}
-> +        return -EINVAL;
-
-Lots of tabs needed above also.
-
-> +}
-> +
-> +#endif
-> +
->  void jffs2_free_comprbuf(unsigned char *comprbuf, unsigned char *orig)
->  {
->          if (orig != comprbuf)
-
-
----
-~Randy
-*** Remember to use Documentation/SubmitChecklist when testing your code ***
+INFTL: inftlcore.c $Revision: 1.19 $, inftlmount.c $Revision: 1.18 $
+INFTL: Media Header sanity check failed: NoOfBDTLPartitions (0) =3D=3D =
+0,
+must be at least 1
+INFTL: could not find valid boot record?
+INFTL: could not mount device=20
