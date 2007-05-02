@@ -1,19 +1,19 @@
-Received: from wr-out-0506.google.com ([64.233.184.235])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjEEB-0002oZ-GS
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 08:46:41 -0400
-Received: by wr-out-0506.google.com with SMTP id 55so116407wri
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 May 2007 05:46:36 -0700 (PDT)
-Message-ID: <e4ef6e860705020546t77a8350ds6a9eda7c66d4cc46@mail.gmail.com>
-Date: Wed, 2 May 2007 18:16:32 +0530
-From: MarkUrs <mark.urs@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Erase suspend operation for S29GL256N
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HjEXH-00037i-Iv
+	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 09:06:25 -0400
+Message-ID: <46388BF9.4060807@nokia.com>
+Date: Wed, 02 May 2007 16:02:49 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
+To: ext David Woodhouse <dwmw2@infradead.org>
+Subject: Re: JFFS2 wrong data CRC message
+References: <46385786.5020804@nokia.com>
+	<1178108604.2875.182.camel@pmac.infradead.org>
+In-Reply-To: <1178108604.2875.182.camel@pmac.infradead.org>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+ext David Woodhouse wrote:
+> On Wed, 2007-05-02 at 12:19 +0300, Adrian Hunter wrote:
+>> Can someone explain why this message is not an error?
+>>
+>> JFFS2 notice: (17573) read_dnode: wrong data CRC in data node at
+>> 0x07e85800: read 0x86c6656c, calculated 0xaf4f2bc5. 
+> 
+> Because it's almost certainly harmless. It usually just means that you
+> rebooted or reset without cleanly unmounting -- and thus without the
+> writebuffer getting flushed to finish the node it was writing at the
+> time. So the data CRC fails, and the node is ignored.
+> 
+Unfortunately I started with an empty flash and have not rebooted at all.
 
-I'm working on S29GL256N on a MIPS 4Kec board on Linux 2.6.10, with
-JFFS2 on the flash as root FS.
-The flash is not working with the normal driver, but we have to do the
-dq7 data checking for it work. With that  we are getting CRC error on
-the FS
-mount (first pass only) and on debugging the cause of the issue seems
-to be the chip_ready() functionality in the get_chip function in
-FL_ERASE state and for FL_READY mode.
+I've been running stress tests constantly for about a week, and this is
+the only JFFS2 message.  The tests do unmount and remount, but there are
+no error messages.
 
-
-2_6_10-tip/drivers/mtd/chips/cfi_cmdset_0002.c
-<SNIPPED>
-
-      case FL_ERASING:
-              if (mode == FL_WRITING) /* FIXME: Erase-suspend-program
-appears broken. */
-                      goto sleep;
-
-              if (!(mode == FL_READY || mode == FL_POINT
-                    || !cfip
-                    || (mode == FL_WRITING && (cfip->EraseSuspend & 0x2))
-                    || (mode == FL_WRITING && (cfip->EraseSuspend & 0x1))))
-                      goto sleep;
-
-              /* We could check to see if we're trying to access the sector
-               * that is currently being erased. However, no user will try
-               * anything like that so we just wait for the timeout. */
-
-              /* Erase suspend */
-              /* It's harmless to issue the Erase-Suspend and Erase-Resume
-               * commands when the erase algorithm isn't in progress. */
-              map_write(map, CMD(0xB0), chip->in_progress_block_addr);
-              chip->oldstate = FL_ERASING;
-              chip->state = FL_ERASE_SUSPENDING;
-              chip->erase_suspended = 1;
-              for (;;) {
-                      if (chip_ready(map, adr))
-                              break;
-<SNIPPED>
-
-
-It seems the issue is with the erase suspend mode checking is buggy
-and will cause wrong data to read. So we are looking for a erase
-suspend mode check with the Dq7, 5,2 data polling. Request if anybody
-has tried this to share their experience.
-
-
-
-
--- 
-
-
-Thanks and regards,
-Mark
+So unless you can offer an alternative explanation I am going to have to
+assume it is an error.
