@@ -1,25 +1,22 @@
-Received: from an-out-0708.google.com ([209.85.132.240])
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjGCo-0005IS-NA
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 10:53:25 -0400
-Received: by an-out-0708.google.com with SMTP id d40so330515and
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 May 2007 07:53:22 -0700 (PDT)
-Message-ID: <fe810cf0705020753k22193b4eqa8a177aaae10f040@mail.gmail.com>
-Date: Wed, 2 May 2007 18:53:21 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
-In-Reply-To: <1178114314.11120.12.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1HjGYh-0005dX-DX
+	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 11:16:00 -0400
+Subject: Re: AW: [PATCH] [MTD] NAND: Wrong calculation of page number
+	innand_block_bad()
+From: Thomas Gleixner <tglx@linutronix.de>
+To: "Knobloch, Thomas" <knobloch@siemens.com>
+In-Reply-To: <2EDADF4ED023F04BAD4D7A4131ECEB93010554E3@mchp7rfa.ww002.siemens.net>
+References: <2EDADF4ED023F04BAD4D7A4131ECEB930105527C@mchp7rfa.ww002.siemens.net>
+	<1177693431.25960.123.camel@localhost.localdomain>
+	<2EDADF4ED023F04BAD4D7A4131ECEB93010554E3@mchp7rfa.ww002.siemens.net>
+Content-Type: text/plain
+Date: Wed, 02 May 2007 17:18:14 +0200
+Message-Id: <1178119094.25504.1.camel@localhost.localdomain>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
-	<1176908804.21611.37.camel@shinybook.infradead.org>
-	<fe810cf0705020649t730abfb6t6da54e1b0701785c@mail.gmail.com>
-	<1178114314.11120.12.camel@pmac.infradead.org>
 Cc: linux-mtd@lists.infradead.org
+Reply-To: tglx@linutronix.de
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,27 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/2/07, David Woodhouse <dwmw2@infradead.org> wrote:
->
-> Can you add something like a WARN_ON(!(c->wbuf_ofs % c->sector_size))
-> whereever we set c->wbuf_ofs, and see where it's happening?
->
+On Wed, 2007-05-02 at 14:14 +0200, Knobloch, Thomas wrote:
+> On Fri, 2007-04-27 at 19:04, Thomas Gleixner wrote:
+> > Can you please make this outside the else path, so we can remove same
+> > code in the if (getchip) path.
+> > 
+> > Please also apply the pagemask right there so we don't have it in both
+> > cmdfunc() calls.
+> 
+> I added the requested code cleanup to the original patch:
 
-Done. It seems __jffs2_flush_wbuf() sets 'wbuf_ofs' to the first page in block.
-
-BUG: at fs/jffs2/wbuf.c:639 __jffs2_flush_wbuf()
-jffs2_flash_writev(): Non-contiguous write to 008c0400
-kernel BUG at fs/jffs2/wbuf.c:790!
-
-'wbuf_ofs' is set to the first page in block quite often in
-__jffs2_flush_wbuf(), but this doesn't always lead to
-jffs2_flash_writev() failure. If 'to' is pointing to the different
-block, condition (SECTOR_ADDR(to) != SECTOR_ADDR(wbuf_ofs)) works fine
-and we don't hit BUG() despite 'wbuf_ofs' points to the first page in
-block.
-
-Probably we should put additional 'wbuf_ofs' adjustment to the
-__jffs2_flush_wbuf() checking if we're moving to the new erseblock.
+If you now manage to send a non line wrapped patch with the log message
+and your Signed-off-by, then I can apply it right from the mail.
 
 Thanks,
-Alexander
+
+	tglx
+
+>  	if (chip->options & NAND_BUSWIDTH_16) {
+>  		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos &
+> 0xFE,
+> +		chip->cmdfunc(mtd, NAND_CMD_READOOB, chip->badblockpos,
+> page);
+>  		if (chip->read_byte(mtd) != 0xff)
+>  			res = 1;
+>  	}
