@@ -1,18 +1,25 @@
-Subject: Re: JFFS2 wrong data CRC message
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
-In-Reply-To: <20070502135133.GC20776@lazybastard.org>
-References: <46385786.5020804@nokia.com>
-	<1178108604.2875.182.camel@pmac.infradead.org>
-	<46388BF9.4060807@nokia.com>
-	<1178111184.2875.185.camel@pmac.infradead.org>
-	<20070502135133.GC20776@lazybastard.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 02 May 2007 15:00:02 +0100
-Message-Id: <1178114402.11120.15.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from an-out-0708.google.com ([209.85.132.240])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HjGCo-0005IS-NA
+	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 10:53:25 -0400
+Received: by an-out-0708.google.com with SMTP id d40so330515and
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 02 May 2007 07:53:22 -0700 (PDT)
+Message-ID: <fe810cf0705020753k22193b4eqa8a177aaae10f040@mail.gmail.com>
+Date: Wed, 2 May 2007 18:53:21 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
+In-Reply-To: <1178114314.11120.12.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
+	<1176908804.21611.37.camel@shinybook.infradead.org>
+	<fe810cf0705020649t730abfb6t6da54e1b0701785c@mail.gmail.com>
+	<1178114314.11120.12.camel@pmac.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,20 +29,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-05-02 at 15:51 +0200, Jörn Engel wrote:
-> You could add a new node type to mark "safe" crc errors.  Something
-> roughly like this:
-> - Print error for crc errors, unless the next node in eraseblock is a
->   "known crc error" node.
-> - Write "known crc error" node on mount for any node that is the last in
->   an eraseblock if there still is enough room to write further data.
-> 
-> That should be able to eliminate most false positive.  If you care.
+On 5/2/07, David Woodhouse <dwmw2@infradead.org> wrote:
+>
+> Can you add something like a WARN_ON(!(c->wbuf_ofs % c->sector_size))
+> whereever we set c->wbuf_ofs, and see where it's happening?
+>
 
-I'm not sure we even need to go that far. If the data CRC fails and the
-last data bytes are 0xFF rather than anything else, then it's almost
-certain it's an unfinished write. I just don't care -- I'm happy enough
-seeing the warning. 
+Done. It seems __jffs2_flush_wbuf() sets 'wbuf_ofs' to the first page in block.
 
--- 
-dwmw2                       09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0
+BUG: at fs/jffs2/wbuf.c:639 __jffs2_flush_wbuf()
+jffs2_flash_writev(): Non-contiguous write to 008c0400
+kernel BUG at fs/jffs2/wbuf.c:790!
+
+'wbuf_ofs' is set to the first page in block quite often in
+__jffs2_flush_wbuf(), but this doesn't always lead to
+jffs2_flash_writev() failure. If 'to' is pointing to the different
+block, condition (SECTOR_ADDR(to) != SECTOR_ADDR(wbuf_ofs)) works fine
+and we don't hit BUG() despite 'wbuf_ofs' points to the first page in
+block.
+
+Probably we should put additional 'wbuf_ofs' adjustment to the
+__jffs2_flush_wbuf() checking if we're moving to the new erseblock.
+
+Thanks,
+Alexander
