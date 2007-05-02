@@ -1,23 +1,18 @@
-Received: from sccrmhc13.comcast.net ([204.127.200.83])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjIEm-0006t5-Q1
-	for linux-mtd@lists.infradead.org; Wed, 02 May 2007 13:03:34 -0400
-Date: Wed, 2 May 2007 09:03:59 -0700
-From: Deepak Saxena <dsaxena@plexity.net>
-To: "Ruslan V. Sushko" <rsushko@ru.mvista.com>
-Subject: Re: [PATH] NAND Flash support for Intel IXP4xx platform
-Message-ID: <20070502160359.GA21292@plexity.net>
-References: <463332F9.9040105@ru.mvista.com>
-	<1177763736.7646.149.camel@localhost.localdomain>
-	<46334F28.70506@ru.mvista.com>
-	<1177794151.7646.312.camel@localhost.localdomain>
-	<46359C8A.4040306@ru.mvista.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46359C8A.4040306@ru.mvista.com>
-Cc: tglx@linutronix.de, linux-mtd@lists.infradead.org
-Reply-To: dsaxena@plexity.net
+Subject: Re: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+In-Reply-To: <fe810cf0705020753k22193b4eqa8a177aaae10f040@mail.gmail.com>
+References: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
+	<1176908804.21611.37.camel@shinybook.infradead.org>
+	<fe810cf0705020649t730abfb6t6da54e1b0701785c@mail.gmail.com>
+	<1178114314.11120.12.camel@pmac.infradead.org>
+	<fe810cf0705020753k22193b4eqa8a177aaae10f040@mail.gmail.com>
+Content-Type: text/plain
+Date: Wed, 02 May 2007 18:10:04 +0100
+Message-Id: <1178125804.11120.67.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Apr 30 2007, at 11:36, Ruslan V. Sushko was caught saying:
-> Thomas,
+On Wed, 2007-05-02 at 18:53 +0400, Alexander Belyakov wrote:
+> 'wbuf_ofs' is set to the first page in block quite often in
+> __jffs2_flush_wbuf(), but this doesn't always lead to
+> jffs2_flash_writev() failure. If 'to' is pointing to the different
+> block, condition (SECTOR_ADDR(to) != SECTOR_ADDR(wbuf_ofs)) works fine
+> and we don't hit BUG() despite 'wbuf_ofs' points to the first page in
+> block.
 > 
-> I have tried to fit driver's functionality into common platform 
-> structures. Unfortunately the device hasn't NAND controller and some 
-> signals (ALE/CLE(pins on data bus) and CS(gpio)) are driven in custom 
-> way. Current platform structures have not enough fields to carry 
-> platform dependent data for this driver without hack (I guess use fields 
-> not used in driver but designed for other things is not good idea). 
-> Additionally due to device haven't NAND controller future version of 
-> board may change the way which is used to drive CS signal, So I move 
-> this functionality completely to hardware dependent part of driver (sent 
-> to LAKML)
+> Probably we should put additional 'wbuf_ofs' adjustment to the
+> __jffs2_flush_wbuf() checking if we're moving to the new erseblock. 
 
-Can't that extra functionality be stuffed into a structure that you
-point to via the priv member of platform_nand_chip?
+Ah, I understand. So this should fix it?
 
-
-~Deepak
+diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+index c556e85..91d1d0f 100644
+--- a/fs/jffs2/wbuf.c
++++ b/fs/jffs2/wbuf.c
+@@ -637,7 +637,10 @@ static int __jffs2_flush_wbuf(struct jffs2_sb_info *c, int pad)
+ 
+ 	memset(c->wbuf,0xff,c->wbuf_pagesize);
+ 	/* adjust write buffer offset, else we get a non contiguous write bug */
+-	c->wbuf_ofs += c->wbuf_pagesize;
++	if (SECTOR_ADDR(c->wbuf_ofs) == SECTOR_ADDR(c->wbuf_ofs+c->wbuf_pagesize))
++		c->wbuf_ofs += c->wbuf_pagesize;
++	else
++		c->wbuf_ofs = 0xffffffff;
+ 	c->wbuf_len = 0;
+ 	return 0;
+ }
 
 -- 
-Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net
-
-In the end, they will not say, "those were dark times,"  they will ask
-"why were their poets silent?" - Bertolt Brecht
+dwmw2                       09 F9 11 02 9D 74 E3 5B D8 41 56 C5 63 56 88 C0
