@@ -1,19 +1,20 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjY2v-00089A-9J
-	for linux-mtd@lists.infradead.org; Thu, 03 May 2007 05:56:23 -0400
-Subject: Re: RO jffs2 implementation for bootloader
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <loom.20070503T102421-36@post.gmane.org>
-References: <loom.20070503T102421-36@post.gmane.org>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 03 May 2007 12:56:03 +0300
-Message-Id: <1178186163.7539.62.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wx-out-0506.google.com ([66.249.82.233])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hjdgs-0002LL-28
+	for linux-mtd@lists.infradead.org; Thu, 03 May 2007 11:57:59 -0400
+Received: by wx-out-0506.google.com with SMTP id t8so500122wxc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 03 May 2007 08:57:56 -0700 (PDT)
+Message-ID: <463A04A5.5030103@gmail.com>
+Date: Thu, 03 May 2007 11:49:57 -0400
+From: Florin Malita <fmalita@gmail.com>
+MIME-Version: 1.0
+To: dedekind@infradead.org
+Subject: [PATCH] UBI: dereference after kfree in create_vtbl
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +24,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-03 at 08:40 +0000, Matthieu CASTET wrote:
-> I need to mount a jffs2 partition in a bootloader. I tried u-boot that su=
-pport
-> jffs2, but it is very slow (2 minutes for mounting a 64MB partition).
-> Do you know if there are other (fast) implemenation of jffs2 suitable for=
- a
-> bootloader ?
+Coverity (CID 1614) spotted new_seb being dereferenced after kfree() in 
+create_vtbl's write_error path.
 
-Not sure about any existing "fast" implementation, but mounting a JFFS2
-partition is about scanning whole partition. You may optimize some
-thing, but you have to scan anyway.
 
-> I want to avoid to use raw partition on NAND :
-> - because the bootloader need to access several files (kernel, boot data,=
- rescue
-> images, some configuration).
-> - nand scrubbing (on read) is not possible to handle (jffs2 don't handle =
-it
-> either if it is a read only partition)
+Signed-off-by: Florin Malita <fmalita@gmail.com>
+---
 
-I would suggest to create a small JFFS2 partition with kernel so that it
-is mounted quickly by the bootloader. Then you could mount it to /boot
-of your "main" partition.
+ vtbl.c |   11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index b6fd6bb..91e3619 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -317,14 +317,13 @@ retry:
+ 	return err;
+ 
+ write_error:
+-	kfree(new_seb);
+-	/* May be this physical eraseblock went bad, try to pick another one */
+-	if (++tries <= 5) {
++	/* Maybe this physical eraseblock went bad, try to pick another one */
++	if (++tries <= 5)
+ 		err = ubi_scan_add_to_list(si, new_seb->pnum, new_seb->ec,
+ 					   &si->corr);
+-		if (!err)
+-			goto retry;
+-	}
++	kfree(new_seb);	
++	if (!err)
++		goto retry;
+ out_free:
+ 	ubi_free_vid_hdr(ubi, vid_hdr);
+ 	return err;
