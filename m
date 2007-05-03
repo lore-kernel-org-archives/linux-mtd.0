@@ -1,27 +1,19 @@
-Received: from an-out-0708.google.com ([209.85.132.248])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjXf4-0007pH-5Z
-	for linux-mtd@lists.infradead.org; Thu, 03 May 2007 05:31:46 -0400
-Received: by an-out-0708.google.com with SMTP id d40so1080046and
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 03 May 2007 02:31:36 -0700 (PDT)
-Message-ID: <fe810cf0705030231g790cb2fdh50b8d8d00ed45d8a@mail.gmail.com>
-Date: Thu, 3 May 2007 13:31:35 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: [PATCH] [JFFS2] Non-contiguous write bug fix (Sibley)
-In-Reply-To: <1178125804.11120.67.camel@pmac.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <fe810cf0704170414r59900903rc8ed2e52d22eb833@mail.gmail.com>
-	<1176908804.21611.37.camel@shinybook.infradead.org>
-	<fe810cf0705020649t730abfb6t6da54e1b0701785c@mail.gmail.com>
-	<1178114314.11120.12.camel@pmac.infradead.org>
-	<fe810cf0705020753k22193b4eqa8a177aaae10f040@mail.gmail.com>
-	<1178125804.11120.67.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HjY2v-00089A-9J
+	for linux-mtd@lists.infradead.org; Thu, 03 May 2007 05:56:23 -0400
+Subject: Re: RO jffs2 implementation for bootloader
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <loom.20070503T102421-36@post.gmane.org>
+References: <loom.20070503T102421-36@post.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 03 May 2007 12:56:03 +0300
+Message-Id: <1178186163.7539.62.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/2/07, David Woodhouse <dwmw2@infradead.org> wrote:
->
-> Ah, I understand. So this should fix it?
->
-> diff --git a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-> index c556e85..91d1d0f 100644
-> --- a/fs/jffs2/wbuf.c
-> +++ b/fs/jffs2/wbuf.c
-> @@ -637,7 +637,10 @@ static int __jffs2_flush_wbuf(struct jffs2_sb_info *c, int pad)
->
->         memset(c->wbuf,0xff,c->wbuf_pagesize);
->         /* adjust write buffer offset, else we get a non contiguous write bug */
-> -       c->wbuf_ofs += c->wbuf_pagesize;
-> +       if (SECTOR_ADDR(c->wbuf_ofs) == SECTOR_ADDR(c->wbuf_ofs+c->wbuf_pagesize))
-> +               c->wbuf_ofs += c->wbuf_pagesize;
-> +       else
-> +               c->wbuf_ofs = 0xffffffff;
->         c->wbuf_len = 0;
->         return 0;
->  }
->
+On Thu, 2007-05-03 at 08:40 +0000, Matthieu CASTET wrote:
+> I need to mount a jffs2 partition in a bootloader. I tried u-boot that su=
+pport
+> jffs2, but it is very slow (2 minutes for mounting a 64MB partition).
+> Do you know if there are other (fast) implemenation of jffs2 suitable for=
+ a
+> bootloader ?
 
-Yes, it helps.
+Not sure about any existing "fast" implementation, but mounting a JFFS2
+partition is about scanning whole partition. You may optimize some
+thing, but you have to scan anyway.
 
-Thanks,
-Alexander
+> I want to avoid to use raw partition on NAND :
+> - because the bootloader need to access several files (kernel, boot data,=
+ rescue
+> images, some configuration).
+> - nand scrubbing (on read) is not possible to handle (jffs2 don't handle =
+it
+> either if it is a read only partition)
+
+I would suggest to create a small JFFS2 partition with kernel so that it
+is mounted quickly by the bootloader. Then you could mount it to /boot
+of your "main" partition.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
