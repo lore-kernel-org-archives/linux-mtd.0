@@ -1,11 +1,11 @@
-Message-ID: <1867734050.1178209601451.JavaMail.root@fepweb08>
-Date: Thu, 3 May 2007 9:26:41 -0700
-From: UK NATIONAL LOTTERY <jboo620@charter.net>
-Subject: Congratulations! Your Have Won,Check Your Email For Details
+Message-ID: <4970.81.199.179.2.1178223794.squirrel@leveldonchange.250meg.com>
+Date: Thu, 3 May 2007 15:23:14 -0500 (CDT)
+Subject: Euro Million Loteria Award !!!
+From: "EUROMILLIONLOTTERY" <loteria27@yahoo.es>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: intprize@excite.com
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: robertoluis1980@aim.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,21 +15,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Winner
 
-We are pleased to inform you of the final announcement that you are one=20
-of our end of year winners of the UNITED KINGDOM FREE LOTTERY ONLINE=20
-PROMO PROGRAMMER, Ticket Number :4156189324Agent Id Number:110 held on=20
-the 2nd of May, 2007. You have therefore been approved to claim a=20
-total sum of =C2=A31,750,000.00 POUNDS STERLING. Please contact fiduciary=
-=20
-agent for your claims.
 
-To file for your claim, Please contact our Fiduciary Agent for=20
-VALIDATION.
 
-Mr Anthony Flowers
-Foreign Service Manager,
-Claims and Release Order Department,
-Email:claimsdepartment_uk@yahoo.co.uk
-Tel:+4407204096859
+Euro Million Loteria Award
+Paseo De La Castellana 15-89,
+28008 Madrid, Spain Branch.
+Ref. Nº: ES/007/05/12/MAD.
+Batch. Nº: GHT/2907/333/05.
+www.loteria.com
+
+Prize And Award Notification
+
+                   YOUR E-MAIL ADDRESS WON THE LOTTERY.
+
+We wish to congratulate you over your email success in our computer
+BALLOTING SWEEPSTAKE held on April 28th,2007. This is a millennium
+scientific computer game in which email addresses were used. It is a
+promotional program aimed at encouraging internet users; therefore you do
+not need to buy ticket to enter for it.
+
+Your email address attached to ticket star number (9901-0148-790-691) drew
+the EUROMILLION lucky numbers 3-19-26-49-50 which consequently won the
+draw in the Second category.
+
+You have been approve for the star prize of EUR  787,248.26. (Seven
+Hundred And Eighty Seven thousand, Two Hundred And Fourty Eight Euros,
+Twenty Six Cents)
+
+CONGRATULATIONS !!!
+You are advised to keep this winning very confidential until you receive
+your lump prize in your account or optional cheque issuance to you. This
+is a protective measure to avoid double claiming by people you may tell as
+we have had cases like this before. You are required to provide the
+information below:
+
+Name, Telephone Number, Fax Number, Wining Ticket Number, Reference Number
+and Amount Won.
+This information For processing of your winning fund should be sent to our
+registered claim agent in address below.
+
+Guarantee Trust Agency.
+Mr.Luis Roberto.
+Address: Sin Numero Madrid Spain.
+Telephone: 0034636287740.
+E-mail: robertoluis1980@aim.com
+
+Remember, all winning must be claimed not later than May 26th, 2007.
+Please note, in order to avoid unnecessary delays and complications,
+remember to quote your reference number and batch number in all
+correspondence. Furthermore, should there be any change of address do
+inform our agent as soon as possible.
+
+ONCE AGAIN CONGRATULATION.
+
+Best Regard,
+Mrs. Emily Simon,
+Lottery Co-ordinator.
+
+The information transmitted is intended only for the person or entity to
+whom or which it is addressed. Unauthorised use, disclosure or copying is
+strictly prohibited. The sender accepts no liability for the improper
+transmission of this communication nor for any delay in its receipt.
