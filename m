@@ -1,24 +1,19 @@
-Received: from wr-out-0506.google.com ([64.233.184.237])
+Received: from [149.6.83.202] (helo=toronto.xi-lite.net)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hjtk2-0004By-Jp
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 05:06:21 -0400
-Received: by wr-out-0506.google.com with SMTP id 55so847046wri
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 May 2007 02:06:17 -0700 (PDT)
-Message-ID: <a781481a0705040206jee1c4a7s9822960a7a18d56f@mail.gmail.com>
-Date: Fri, 4 May 2007 14:36:16 +0530
-From: "Satyam Sharma" <satyam.sharma@gmail.com>
-To: "Richard Purdie" <rpurdie@openedhand.com>
-Subject: Re: [PATCH 2/5] jffs2: Add LZO compression support to jffs2
-In-Reply-To: <1178030823.5883.54.camel@localhost.localdomain>
+	id 1HjuvQ-0005BY-5p
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 06:22:09 -0400
+Message-ID: <463B02F5.6060503@parrot.com>
+Date: Fri, 04 May 2007 11:55:01 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1178030823.5883.54.camel@localhost.localdomain>
-Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
+To: dedekind@infradead.org
+Subject: Re: RO jffs2 implementation for bootloader
+References: <loom.20070503T102421-36@post.gmane.org>
+	<1178186163.7539.62.camel@sauron>
+In-Reply-To: <1178186163.7539.62.camel@sauron>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,62 +23,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Richard,
+Hi Artem,
 
-On 5/1/07, Richard Purdie <rpurdie@openedhand.com> wrote:
-> Add LZO1X compression/decompression support to jffs2.
->
-> LZO's interface doesn't entirely match that required by jffs2 so a
-> buffer and memcpy is unavoidable.
->
-> Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
-> ---
-> [...]
-> +++ b/fs/jffs2/compr_lzo.c
-> [...]
-> +static void *lzo_mem;
-> +static void *lzo_compress_buf;
-> +static DEFINE_MUTEX(deflate_mutex);
-> +
-> +static void free_workspace(void)
-> +{
-> +       vfree(lzo_mem);
-> +       vfree(lzo_compress_buf);
-> +}
-> +
-> +static int __init alloc_workspace(void)
-> +{
-> +       lzo_mem = vmalloc(LZO1X_MEM_COMPRESS);
-> +       lzo_compress_buf = vmalloc(lzo1x_worst_compress(PAGE_SIZE));
-> +
-> +       if (!lzo_mem || !lzo_compress_buf) {
-> +               printk(KERN_WARNING "Failed to allocate lzo deflate workspace\n");
-> +               free_workspace();
-> +               return -ENOMEM;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int jffs2_lzo_compress(unsigned char *data_in, unsigned char *cpage_out,
-> +                             uint32_t *sourcelen, uint32_t *dstlen, void *model)
-> +{
-> +       unsigned long compress_size;
-> +       int ret;
-> +
-> +       mutex_lock(&deflate_mutex);
-> +       ret = lzo1x_1_compress(data_in, *sourcelen, lzo_compress_buf, &compress_size, lzo_mem);
-> +       mutex_unlock(&deflate_mutex);
+Artem Bityutskiy a écrit :
+> On Thu, 2007-05-03 at 08:40 +0000, Matthieu CASTET wrote:
+>> I need to mount a jffs2 partition in a bootloader. I tried u-boot that support
+>> jffs2, but it is very slow (2 minutes for mounting a 64MB partition).
+>> Do you know if there are other (fast) implemenation of jffs2 suitable for a
+>> bootloader ?
+> 
+> Not sure about any existing "fast" implementation, but mounting a JFFS2
+> partition is about scanning whole partition. You may optimize some
+> thing, but you have to scan anyway.
+> 
+Well u-boot implementation is very slow. For 64MB partition : 2 minutes 
+for u-boot and 11 s for linux (3s with summary).
 
-Considering we do have to memcpy() the entire compressed result to the
-destination output buffer later anyway (note that
-fs/jffs2/compr_zlib.c doesn't need to do that), do we really gain much
-by avoiding vmalloc() and vfree() in jffs2_lzo_compress() itself and
-keeping the workspace buffers pre-allocated? I ask because I always
-found these global static workspace buffers ugly, and all the
-associated code + mutex could go away if we make them local to
-jffs2_lzo_compress() -- as long as it doesn't hurt performance
-terribly, of course.
+
+>> I want to avoid to use raw partition on NAND :
+>> - because the bootloader need to access several files (kernel, boot data, rescue
+>> images, some configuration).
+>> - nand scrubbing (on read) is not possible to handle (jffs2 don't handle it
+>> either if it is a read only partition)
+> 
+> I would suggest to create a small JFFS2 partition with kernel so that it
+> is mounted quickly by the bootloader. Then you could mount it to /boot
+> of your "main" partition.
+> 
+Even with small partition, u-boot implementation is very slow, that's 
+why I asks for other implementations.
+
+
+While I am at it, is there some code of UBI (RO static partition) suited 
+for integration in bootloaders ?
+
 
 Thanks,
-Satyam
+
+Matthieu
