@@ -1,21 +1,21 @@
-Received: from smtp.parrot.fr ([213.41.120.202])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hjwfq-0000ix-VP
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:15:04 -0400
-Message-ID: <463B22BB.1030801@parrot.fr>
-Date: Fri, 04 May 2007 14:10:35 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.fr>
-MIME-Version: 1.0
-To: Stefan Roese <sr@denx.de>
-Subject: Re: RO jffs2 implementation for bootloader
+Received: from mo-p07-ob.rzone.de ([81.169.146.188])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hjwoj-0001Hk-O6
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:23:23 -0400
+From: Stefan Roese <sr@denx.de>
+To: u-boot-users@lists.sourceforge.net
+Subject: Re: [U-Boot-Users] RO jffs2 implementation for bootloader
+Date: Fri, 4 May 2007 14:23:48 +0200
 References: <loom.20070503T102421-36@post.gmane.org>
-	<1178186163.7539.62.camel@sauron> <463B02F5.6060503@parrot.com>
-	<200705041353.43372.sr@denx.de>
-In-Reply-To: <200705041353.43372.sr@denx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: u-boot-users@lists.sourceforge.net, linux-mtd@lists.infradead.org,
-	Dan Merillat <harik.attar@gmail.com>
+	<200705041353.43372.sr@denx.de> <463B22BB.1030801@parrot.fr>
+In-Reply-To: <463B22BB.1030801@parrot.fr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200705041423.49187.sr@denx.de>
+Cc: Matthieu CASTET <matthieu.castet@parrot.fr>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,58 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Stefan,
+On Friday 04 May 2007 14:10, Matthieu CASTET wrote:
+> > Did you think about improving the performance in U-Boot? If so, please
+> > let's move this discussion to the u-boot-users mailing list.
+>
+> Somebody already try something for u-boot jffs2 [1], but is doesn't seem
+> to work (don't compile).
+> He didn't receive any report, so u-boot jffs2 code seems unmaintained.
 
-Stefan Roese a écrit :
-> Hi Matthieu,
-> 
-> On Friday 04 May 2007 11:55, Matthieu CASTET wrote:
->>> On Thu, 2007-05-03 at 08:40 +0000, Matthieu CASTET wrote:
->>>> I need to mount a jffs2 partition in a bootloader. I tried u-boot that
->>>> support jffs2, but it is very slow (2 minutes for mounting a 64MB
->>>> partition). Do you know if there are other (fast) implemenation of jffs2
->>>> suitable for a bootloader ?
->>> Not sure about any existing "fast" implementation, but mounting a JFFS2
->>> partition is about scanning whole partition. You may optimize some
->>> thing, but you have to scan anyway.
->> Well u-boot implementation is very slow. For 64MB partition : 2 minutes
->> for u-boot
-> 
-> This really is slow. 64MB isn't that big and shouldn't take that long to 
-> mount.
-> 
->> and 11 s for linux (3s with summary). 
-> 
-> So it can be done better.
-> 
-> Did you think about improving the performance in U-Boot? If so, please let's 
-> move this discussion to the u-boot-users mailing list.
+I am willing to work with you on this issue. And will help to get it included.
 
-Somebody already try something for u-boot jffs2 [1], but is doesn't seem
-to work (don't compile).
-He didn't receive any report, so u-boot jffs2 code seems unmaintained.
+Could you perhaps work on the patch (looks promising) mentioned below to get 
+it working in the current U-Boot version? This would help. I'll give it a try 
+on some of my systems too then.
 
-> 
-> Thanks.
-> 
-> BTW: What cpu at what speed are you using?
-an arm9 @240 Mhz.
+> http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/25780/focus=25808
 
-Matthieu
-
-
-[1] http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/25780/focus=25808
-
-
-
--- 
-Matthieu Castet
-Ingénieur Développement Logiciel
-Parrot SA
-174 Quai de Jemmapes
-75010 Paris, France
-
-Tél: +33 (0) 1 48 03 74 78
-Fax: +33 (0) 1 48 03 06 66
-Email: matthieu.castet@parrot.fr
-http://www.parrot.biz
+Best regards,
+Stefan
