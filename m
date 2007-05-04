@@ -1,20 +1,25 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hjs2Y-0002WO-A8
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 03:17:20 -0400
-Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Florin Malita <fmalita@gmail.com>
-In-Reply-To: <463A04A5.5030103@gmail.com>
-References: <463A04A5.5030103@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 04 May 2007 10:17:10 +0300
-Message-Id: <1178263030.3659.15.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Reply-To: dedekind@infradead.org
+Received: from wr-out-0506.google.com ([64.233.184.230])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hjsqw-0003F0-Hg
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 04:09:23 -0400
+Received: by wr-out-0506.google.com with SMTP id 55so835729wri
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 04 May 2007 01:09:21 -0700 (PDT)
+Message-ID: <a781481a0705040109r45cbf472i4094dd2ebf7841e8@mail.gmail.com>
+Date: Fri, 4 May 2007 13:39:20 +0530
+From: "Satyam Sharma" <satyam.sharma@gmail.com>
+To: "Richard Purdie" <rpurdie@openedhand.com>
+Subject: Re: [PATCH 5/5] crypto: Add LZO compression support to the crypto
+	interface
+In-Reply-To: <1178030843.5883.57.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <1178030843.5883.57.camel@localhost.localdomain>
+Cc: linux-crypto@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>, herbert@gondor.apana.org.au
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-03 at 11:49 -0400, Florin Malita wrote:
-> Coverity (CID 1614) spotted new_seb being dereferenced after kfree() in=20
-> create_vtbl's write_error path.
+On 5/1/07, Richard Purdie <rpurdie@openedhand.com> wrote:
+> +static int lzo_init(struct crypto_tfm *tfm)
+> +{
+> +       struct lzo_ctx *ctx = crypto_tfm_ctx(tfm);
+> +
+> +       ctx->lzo_mem = vmalloc(LZO1X_MEM_COMPRESS);
+> +
+> +       if (!ctx->lzo_mem) {
+> +               vfree(ctx->lzo_mem);
 
-Applied with minor trailing white-space cleanup, thanks.
+Heh. What's (why's) this? You _can_ {k, v}free NULL but doing so after
+explicitly checking for it is ... ... insane!
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+> +               return -ENOMEM;
+
+Yeah. Just return -ENOMEM; and be done with it.
