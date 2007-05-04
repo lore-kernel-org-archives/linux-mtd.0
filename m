@@ -1,17 +1,19 @@
-Subject: Re: [PATCH 2/5] jffs2: Add LZO compression support to jffs2
-From: David Woodhouse <dwmw2@infradead.org>
-To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1178278255.5839.47.camel@localhost.localdomain>
-References: <1178278255.5839.47.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Fri, 04 May 2007 12:35:32 +0100
-Message-Id: <1178278532.11120.274.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from an-out-0708.google.com ([209.85.132.247])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hjw4g-0006xF-DS
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 07:36:03 -0400
+Received: by an-out-0708.google.com with SMTP id d40so2038686and
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 04 May 2007 04:35:42 -0700 (PDT)
+Message-ID: <a1e50e4b0705040435k12c33746h8cd996141a7b0420@mail.gmail.com>
+Date: Fri, 4 May 2007 17:05:42 +0530
+From: "Sudeep K N" <sudeep.holla@gmail.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: Need info on spare area usage in JFFS2
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Randy Dunlap <randy.dunlap@oracle.com>,
-	Satyam Sharma <satyam.sharma@gmail.com>,
-	linux-mtd <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-05-04 at 12:30 +0100, Richard Purdie wrote:
-> +config JFFS2_LZO
-> +       bool "JFFS2 LZO compression support" if JFFS2_COMPRESSION_OPTIONS
-> +       select LZO 
+Hello,
 
-Please make it _depend_ on LZO instead. If you do that, I can merge the
-JFFS2 bits in anticipation of the core LZO code going upstream.
+Can i know spare area usage and the typical sequence of spare area
+access from JFFS2 perspective
 
--- 
-dwmw2
+regards,
+sudeep
