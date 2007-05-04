@@ -1,10 +1,10 @@
 Received: from smtp.parrot.fr ([213.41.120.202])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HjwdD-0000V2-BS
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:12:28 -0400
-Message-ID: <463B2219.3050802@parrot.com>
-Date: Fri, 04 May 2007 14:07:53 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	id 1Hjwfq-0000ix-VP
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:15:04 -0400
+Message-ID: <463B22BB.1030801@parrot.fr>
+Date: Fri, 04 May 2007 14:10:35 +0200
+From: Matthieu CASTET <matthieu.castet@parrot.fr>
 MIME-Version: 1.0
 To: Stefan Roese <sr@denx.de>
 Subject: Re: RO jffs2 implementation for bootloader
@@ -66,3 +66,17 @@ Matthieu
 
 
 [1] http://thread.gmane.org/gmane.comp.boot-loaders.u-boot/25780/focus=25808
+
+
+
+-- 
+Matthieu Castet
+Ingénieur Développement Logiciel
+Parrot SA
+174 Quai de Jemmapes
+75010 Paris, France
+
+Tél: +33 (0) 1 48 03 74 78
+Fax: +33 (0) 1 48 03 06 66
+Email: matthieu.castet@parrot.fr
+http://www.parrot.biz
