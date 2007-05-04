@@ -1,11 +1,14 @@
-Message-ID: <4970.81.199.179.2.1178223794.squirrel@leveldonchange.250meg.com>
-Date: Thu, 3 May 2007 15:23:14 -0500 (CDT)
-Subject: Euro Million Loteria Award !!!
-From: "EUROMILLIONLOTTERY" <loteria27@yahoo.es>
+Received: from fr7.webmaillogin.com ([216.40.35.71] helo=webmaillogin.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HjnOc-0007Uv-5G
+	for linux-mtd@lists.infradead.org; Thu, 03 May 2007 22:19:47 -0400
+From: BMW  LOTTERY  DEPARTMENT <mail_bmwlotterydeptss@yahoo.co.uk>
+Subject: BMW  LOTTERY  DEPARTMENT {WINNING  NOTIFICATION}
+Date: Thu, 03 May 2007 22:19:42 -0400
+Message-ID: <web-70481325@bk2.webmaillogin.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset="ISO-8859-1"; format="flowed"
 Content-Transfer-Encoding: 8bit
-Reply-To: robertoluis1980@aim.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,64 +19,60 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+THE LOTTERY DEPARTMENT BMW
+22 Garden Close,PE9 2YP, London.
 
+Dear Winner
 
-Euro Million Loteria Award
-Paseo De La Castellana 15-89,
-28008 Madrid, Spain Branch.
-Ref. Nº: ES/007/05/12/MAD.
-Batch. Nº: GHT/2907/333/05.
-www.loteria.com
+This is to inform you that you have been selected
+for a cash prize of 450,000.00 (British Pounds)
+from International programs held on the 1st May
+2007 in London Uk.
+   
+The selection process was carried out through random selection in our 
+computerized email selection system
+(ess) from a database of over 250,000 email addresses
+drawn from all the continents of the world which you
+were selected.The BMW Lottery is approved by the
+British Gaming Board.
 
-Prize And Award Notification
+To begin the processing of your prize you are to
+contact our fiduaciary claims department :
 
-                   YOUR E-MAIL ADDRESS WON THE LOTTERY.
+Kelvin Richards
+Email: mail_bmwlotterydeptss@yahoo.co.uk
+Fax:  +44 709288 2173
+Tel:  +44 701113 2973
+       +44 702403 2741
 
-We wish to congratulate you over your email success in our computer
-BALLOTING SWEEPSTAKE held on April 28th,2007. This is a millennium
-scientific computer game in which email addresses were used. It is a
-promotional program aimed at encouraging internet users; therefore you do
-not need to buy ticket to enter for it.
+Contact him with the following details:
 
-Your email address attached to ticket star number (9901-0148-790-691) drew
-the EUROMILLION lucky numbers 3-19-26-49-50 which consequently won the
-draw in the Second category.
+Reference Number:BMW/2551256003/23
+Secret Pin Code: x7pwyz2007
 
-You have been approve for the star prize of EUR  787,248.26. (Seven
-Hundred And Eighty Seven thousand, Two Hundred And Fourty Eight Euros,
-Twenty Six Cents)
+For more infomation as regards procedures to
+claim your prize.Contact him by sending him with
+the under listed informations, contact him with
+the following details:
 
-CONGRATULATIONS !!!
-You are advised to keep this winning very confidential until you receive
-your lump prize in your account or optional cheque issuance to you. This
-is a protective measure to avoid double claiming by people you may tell as
-we have had cases like this before. You are required to provide the
-information below:
+1, Names in Full.........................................
+2, Winning e-mail address...........................
+3, Contact phone numbers............................
+4, Country/City.....................................
+5, Age..............................................
+6, Sex..............................................
+7, Amount won.......................................
+8, Secret pin code..................................
+9, Refference numbers...............................
+10,, Occupation.....................................
+11,Next of Kin......................................
 
-Name, Telephone Number, Fax Number, Wining Ticket Number, Reference Number
-and Amount Won.
-This information For processing of your winning fund should be sent to our
-registered claim agent in address below.
+You are required to choose an option ie the way you
+want your winnings to be given to you, from the option
+given to you below;
 
-Guarantee Trust Agency.
-Mr.Luis Roberto.
-Address: Sin Numero Madrid Spain.
-Telephone: 0034636287740.
-E-mail: robertoluis1980@aim.com
+1,Diplomatic Courier Delivery
+2,Swift Bank Transfer
 
-Remember, all winning must be claimed not later than May 26th, 2007.
-Please note, in order to avoid unnecessary delays and complications,
-remember to quote your reference number and batch number in all
-correspondence. Furthermore, should there be any change of address do
-inform our agent as soon as possible.
-
-ONCE AGAIN CONGRATULATION.
-
-Best Regard,
-Mrs. Emily Simon,
-Lottery Co-ordinator.
-
-The information transmitted is intended only for the person or entity to
-whom or which it is addressed. Unauthorised use, disclosure or copying is
-strictly prohibited. The sender accepts no liability for the improper
-transmission of this communication nor for any delay in its receipt.
+Mr. Chris Blee
+Online co-ordinator.
