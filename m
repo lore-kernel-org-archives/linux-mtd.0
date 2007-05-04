@@ -1,9 +1,9 @@
-Received: from [149.6.83.202] (helo=toronto.xi-lite.net)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hjwbe-0000Ke-9H
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:09:56 -0400
-Message-ID: <463B21B7.5070303@parrot.com>
-Date: Fri, 04 May 2007 14:06:15 +0200
+Received: from smtp.parrot.fr ([213.41.120.202])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HjwdD-0000V2-BS
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 08:12:28 -0400
+Message-ID: <463B2219.3050802@parrot.com>
+Date: Fri, 04 May 2007 14:07:53 +0200
 From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
 To: Stefan Roese <sr@denx.de>
@@ -52,7 +52,7 @@ Stefan Roese a écrit :
 > Did you think about improving the performance in U-Boot? If so, please let's 
 > move this discussion to the u-boot-users mailing list.
 
-Somebody already try something for u-boot jffs2 [1], but is doesn't seem 
+Somebody already try something for u-boot jffs2 [1], but is doesn't seem
 to work (don't compile).
 He didn't receive any report, so u-boot jffs2 code seems unmaintained.
 
