@@ -1,23 +1,20 @@
-Received: from an-out-0708.google.com ([209.85.132.247])
+Received: from imf22aec.mail.bellsouth.net ([205.152.59.70])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hk77K-0007ln-6w
-	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 19:23:20 -0400
-Received: by an-out-0708.google.com with SMTP id d40so2573836and
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 04 May 2007 16:23:12 -0700 (PDT)
-Message-ID: <463BC019.40305@gmail.com>
-Date: Fri, 04 May 2007 19:22:01 -0400
-From: Florin Malita <fmalita@gmail.com>
+	id 1HkApL-0004Wu-Gh
+	for linux-mtd@lists.infradead.org; Fri, 04 May 2007 23:21:04 -0400
+Received: from ibm67aec.bellsouth.net ([192.168.16.253])
+	by imf22aec.mail.bellsouth.net with ESMTP id
+	<20070505032053.XTSN5447.imf22aec.mail.bellsouth.net@ibm67aec.bellsouth.net>
+	for <linux-mtd@lists.infradead.org>; Fri, 4 May 2007 23:20:53 -0400
+From: Microsoft Award Team <mgredden@bellsouth.net>
+To: <info@com>
+Subject: Microsoft Award Promo
+Date: Fri, 4 May 2007 22:20:53 -0500
 MIME-Version: 1.0
-To: Satyam Sharma <satyam.sharma@gmail.com>
-Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
-References: <463A04A5.5030103@gmail.com>
-	<a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
-In-Reply-To: <a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20070505032053.PFFX1041.ibm67aec.bellsouth.net@mail.bellsouth.net>
+Reply-To: claimsagent_carpenter07@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,65 +24,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Satyam,
+Microsoft Award Promo
+43 Wilson Ave, Harlesden London NW10 United Kingdom,
+Ref: BTD/876/03
+Batch: 653978E
 
-Satyam Sharma wrote:
-> Eeks ... no, wait. You found a (two, actually) bug alright, but fixed
-> it wrong. When we fail a write, we *must* add it to the corrupted list
-> and _then_ attempt to retry. So, the "if (++tries <= 5)" applies to
-> "if (!err) goto retry;" and not to the ubi_scan_add_to_list(). The
-> difference is quite subtle here ...
+Dear Winner,
+The prestigious Microsoft and AOL has set out and successfully
+organised a Sweepstakes marking this year 2007 anniversary we rolled out over
+£10,000.000.00 (Ten million Great Britain Pounds) for this year Anniversary Draws.
+The selection was made randomly from World Wide Web site through a computer draw system extracted from over 100,000 individuals and companies,
+attaching email addresses to ticket numbers.
+Your email address as indicated was drawn and attached to ticket number
+005493262748 with serial numbers BTD/890578302/04 and drew the lucky
+numbers 15-22-27-38-40-47(20) which subsequently wonyou £1,000,000.00
+(One Million Great Britain Pounds) as one of the 10 jackpot winners in this draw.
+contact your agent on how to claim your prize 
+Name: MR. DAVID CARPENTER
+Email :claimsagent_carpenter07@yahoo.co.uk 
 
-Not being familiar with the code, I was specifically trying to preserve 
-the old semantics and only address the use-after-free issue. So if there 
-was another bug... well, I guess I succeeded at preserving it ;)
-
-> The correct fix should actually be as follows: (Artem, this is diffed
-> on the original vtbl.c)
-[snip]
-> +    err = ubi_scan_add_to_list(si, new_seb->pnum, new_seb->ec, 
-> &si->corr);
-> +    kfree(new_seb);
-> +    if (++tries <= 5)
->         if (!err)
->             goto retry;
-
-There's a side effect to this change: by unconditionally overwriting err 
-we lose the original error code. Then if we're exceeding the number of 
-retries we'll end up returning 0 which is probably not what you want.
-
-Return code aside, it seems the only thing ubi_scan_add_to_list() is 
-doing is allocate a new struct ubi_scan_leb, initialize some fields with 
-values passed from new_seb and then add it to the desired list. But 
-copying new_seb to a newly allocated structure and then immediately 
-freeing the old one seems redundant - why not just add new_seb to the 
-corrupted list and be done? Then we don't have to deal with allocation 
-failures in an error path anymore - something like this (diff against 
-the original code):
-
-Signed-off-by: Florin Malita <fmalita@gmail.com>
----
-
-diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
-index b6fd6bb..2ad2d59 100644
---- a/drivers/mtd/ubi/vtbl.c
-+++ b/drivers/mtd/ubi/vtbl.c
-@@ -317,14 +317,10 @@ retry:
- 	return err;
- 
- write_error:
--	kfree(new_seb);
--	/* May be this physical eraseblock went bad, try to pick another one */
--	if (++tries <= 5) {
--		err = ubi_scan_add_to_list(si, new_seb->pnum, new_seb->ec,
--					   &si->corr);
--		if (!err)
--			goto retry;
--	}
-+	/* Maybe this physical eraseblock went bad, try to pick another one */
-+	list_add_tail(&new_seb->u.list, &si->corr);
-+	if (++tries <= 5)
-+		goto retry;
- out_free:
- 	ubi_free_vid_hdr(ubi, vid_hdr);
- 	return err;
+Sincerely,
+Mrs Susan Miller
+Microsoft Promotion Team
