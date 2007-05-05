@@ -1,28 +1,20 @@
-Received: from wr-out-0506.google.com ([64.233.184.234])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkKNT-0003TV-5Q
-	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 09:32:49 -0400
-Received: by wr-out-0506.google.com with SMTP id 55so1186749wri
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 05 May 2007 06:32:45 -0700 (PDT)
-Message-ID: <a781481a0705050632y6ffa11a3qeb89f5e6e92da681@mail.gmail.com>
-Date: Sat, 5 May 2007 19:02:44 +0530
-From: "Satyam Sharma" <satyam.sharma@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
-In-Reply-To: <1178366959.3659.95.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <463A04A5.5030103@gmail.com>
-	<a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
-	<463BC019.40305@gmail.com>
-	<a781481a0705042055u5e9ba060w95da83b0fbeff76a@mail.gmail.com>
-	<1178366959.3659.95.camel@sauron>
-Cc: Florin Malita <fmalita@gmail.com>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HkKV1-0003ol-BJ
+	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 09:40:38 -0400
+Subject: Re: UBI: Cannot create static volumes when FTL is enabled
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: John Smith <john@arrows.demon.co.uk>
+In-Reply-To: <1178366098.3659.93.camel@sauron>
+References: <Pine.LNX.4.33.0705042249130.30496-100000@arrows.demon.co.uk>
+	<1178365169.3659.76.camel@sauron>  <1178366098.3659.93.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 05 May 2007 16:40:30 +0300
+Message-Id: <1178372430.3659.124.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,119 +24,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/5/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> [...]
-> I've put the fix here:
-> http://git.infradead.org/?p=users/dedekind/ubi-2.6.git;a=commit;h=5125237efb6a3309fbf5b9a7a21aaf716787f2a2
+On Sat, 2007-05-05 at 14:54 +0300, Artem Bityutskiy wrote:
+> On Sat, 2007-05-05 at 14:39 +0300, Artem Bityutskiy wrote:
+> > So you see that dynamic volumes are mapped to the MTD device model quit=
+e
+> > nicely: mtd device size =3D volume size.
+> >=20
+> > Size of static volumes depends on how much data you put there. And sinc=
+e
+> > MTD infrastructure assumes that MTD device sizes are stable, there is n=
+o
+> > good and nice way to emulate MTD devices on top of static volumes,
+> > unless MTD subsystem is somehow re-designed.
+> >=20
+> > But anyway, you have found a bug. I am going to disable MTD device
+> > emulation for static volumes.
+>=20
+> Although it still would be nice to have MTD device emulation for static
+> volumes. May be we have the same semantics as dynamic volumes if they
+> are used via gluebi. It needs more thinking.
 
-> write_error:
-> 	if (err == -EIO && ++tries <= 5) {
-> 		/*
-> 		 * Probably this physical eraseblock went bad, try to pick
-> 		 * another one.
-> 		 */
-> 		list_add_tail(&new_seb->u.list, &si->corr);
-> 		goto retry;
-> 	}
-> 	kfree(new_seb);
-> out_free:
-> 	ubi_free_vid_hdr(ubi, vid_hdr);
-> 	return err;
+Well, after thinking more I have fixed this. Now we set emulated mtd
+device size to data size if the volume is static.
 
-Ummm ...
+I.e., when you create a static volume, its size is zero:
 
-1. "if (err == -EIO)" applies to adding new_seb to the corrupted list,
-and not to retrying. We wouldn't want _not_ to retry if there's some
-other error, or would we?
-2. "if (++tries <= 5)" applies to "goto retry" and not to adding
-new_seb to the corrupted list. If we hit write failure for the 5th
-time and err == -EIO, we should still be adding it to corrupted list,
-but not retry, of course. Otherwise we would add the first 4 write
-failure (with -EIO) eraseblocks to si->corr, but the 5th _similar_
-case is ... just freed?
+# ubimkvol -d0 -n0 -Nvol1 -s60MiB -t static
+# cat /sys/class/ubi/ubi0_0/data_bytes
+# 0
 
-So:
+# cat /proc/mtd
+# dev:    size   erasesize  name
+# mtd0: 08000000 00004000 "NAND simulator partition 0"
+# mtd1: 00000000 00003e00 "vol1"
 
-write_error:
-	/*
-	 * Probably this physical eraseblock went bad, add it to the
-	 * corrupted list. Else, just release it.
-	 */
-	if (err == -EIO)
-		/* list_add_tail(&new_seb->u.list, &si->corr); */
-		__ubi_scan_add_to_list(si, new_seb, &si->corr);
-	else
-		kfree(new_seb);
-	/* Try to pick another one */
-	if (++tries <= 5)
-		goto retry;
-out_free:
-	ubi_free_vid_hdr(ubi, vid_hdr);
-	return err;
+# ubiupdatevol -d 0 -n 0 small_file_72_bytes
+# cat /sys/class/ubi/ubi0_0/data_bytes
+# 72
 
-And in case you want to avoid the list_add_tail there, the following
-(I'm fine with whichever way, of course):
+# cat /proc/mtd
+# dev:    size   erasesize  name
+# mtd0: 08000000 00004000 "NAND simulator partition 0"
+# mtd1: 00000048 00003e00 "vol1"
 
-diff -ruNp a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
---- a/drivers/mtd/ubi/scan.c	2007-05-05 10:52:47.000000000 +0530
-+++ b/drivers/mtd/ubi/scan.c	2007-05-05 11:47:26.000000000 +0530
-@@ -55,29 +55,37 @@ static int paranoid_check_si(const struc
- static struct ubi_ec_hdr *ech;
- static struct ubi_vid_hdr *vidh;
+I've committed the fix to git://git.infradead.org/~dedekind/ubi-2.6.git.
+Or see
+http://git.infradead.org/?p=3Dusers/dedekind/ubi-2.6.git;a=3Dcommit;h=3D962=
+f24709f91fe0634b3faa3cac915c66357a239
 
--int ubi_scan_add_to_list(struct ubi_scan_info *si, int pnum, int ec,
--			 struct list_head *list)
-+void __ubi_scan_add_to_list(struct ubi_scan_info *si,
-+			    struct ubi_scan_leb *seb,
-+			    struct list_head *list)
- {
--	struct ubi_scan_leb *seb;
--
- 	if (list == &si->free)
--		dbg_bld("add to free: PEB %d, EC %d", pnum, ec);
-+		dbg_bld("add to free: PEB %d, EC %d", seb->pnum, seb->ec);
- 	else if (list == &si->erase)
--		dbg_bld("add to erase: PEB %d, EC %d", pnum, ec);
-+		dbg_bld("add to erase: PEB %d, EC %d", seb->pnum, seb->ec);
- 	else if (list == &si->corr)
--		dbg_bld("add to corrupted: PEB %d, EC %d", pnum, ec);
-+		dbg_bld("add to corrupted: PEB %d, EC %d", seb->pnum, seb->ec);
- 	else if (list == &si->alien)
--		dbg_bld("add to alien: PEB %d, EC %d", pnum, ec);
-+		dbg_bld("add to alien: PEB %d, EC %d", seb->pnum, seb->ec);
- 	else
- 		BUG();
-
-+	list_add_tail(&seb->u.list, list);
-+}
-+
-+int ubi_scan_add_to_list(struct ubi_scan_info *si, int pnum, int ec,
-+			 struct list_head *list)
-+{
-+	struct ubi_scan_leb *seb;
-+
- 	seb = kmalloc(sizeof(struct ubi_scan_leb), GFP_KERNEL);
- 	if (unlikely(!seb))
- 		return -ENOMEM;
-
- 	seb->pnum = pnum;
- 	seb->ec = ec;
--	list_add_tail(&seb->u.list, list);
-+	__ubi_scan_add_to_list(si, seb, list);
-+
- 	return 0;
- }
-
-diff -ruNp a/drivers/mtd/ubi/scan.h b/drivers/mtd/ubi/scan.h
---- a/drivers/mtd/ubi/scan.h	2007-05-05 10:55:24.000000000 +0530
-+++ b/drivers/mtd/ubi/scan.h	2007-05-05 10:55:01.000000000 +0530
-@@ -147,6 +147,9 @@ static inline void ubi_scan_move_to_list
- 		list_add_tail(&seb->u.list, list);
- }
-
-+void __ubi_scan_add_to_list(struct ubi_scan_info *si,
-+			    struct ubi_scan_leb *seb,
-+			    struct list_head *list);
- int ubi_scan_add_to_list(struct ubi_scan_info *si, int pnum, int ec,
- 			 struct list_head *list);
- int ubi_scan_add_used(const struct ubi_device *ubi, struct ubi_scan_info *si,
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
