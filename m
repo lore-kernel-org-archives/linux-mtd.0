@@ -1,20 +1,22 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkKcj-0004OF-4b
-	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 09:48:49 -0400
+	id 1HkKnp-00057J-GY
+	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 10:00:03 -0400
 Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Satyam Sharma <satyam.sharma@gmail.com>
-In-Reply-To: <a781481a0705050632y6ffa11a3qeb89f5e6e92da681@mail.gmail.com>
+In-Reply-To: <a781481a0705050648l19b316acyf3d52b0545e18344@mail.gmail.com>
 References: <463A04A5.5030103@gmail.com>
 	<a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
 	<463BC019.40305@gmail.com>
 	<a781481a0705042055u5e9ba060w95da83b0fbeff76a@mail.gmail.com>
-	<1178366959.3659.95.camel@sauron>
-	<a781481a0705050632y6ffa11a3qeb89f5e6e92da681@mail.gmail.com>
+	<1178351711.3659.54.camel@sauron>
+	<a781481a0705050526r13445d60j737a6c2015402dcc@mail.gmail.com>
+	<1178371103.3659.115.camel@sauron>
+	<a781481a0705050648l19b316acyf3d52b0545e18344@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Sat, 05 May 2007 16:48:21 +0300
-Message-Id: <1178372901.3659.132.camel@sauron>
+Date: Sat, 05 May 2007 16:59:22 +0300
+Message-Id: <1178373562.3659.144.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: Florin Malita <fmalita@gmail.com>, linux-mtd@lists.infradead.org,
@@ -30,48 +32,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-05-05 at 19:02 +0530, Satyam Sharma wrote:
-> > write_error:
-> > 	if (err =3D=3D -EIO && ++tries <=3D 5) {
-> > 		/*
-> > 		 * Probably this physical eraseblock went bad, try to pick
-> > 		 * another one.
-> > 		 */
-> > 		list_add_tail(&new_seb->u.list, &si->corr);
-> > 		goto retry;
-> > 	}
-> > 	kfree(new_seb);
-> > out_free:
-> > 	ubi_free_vid_hdr(ubi, vid_hdr);
-> > 	return err;
->=20
-> Ummm ...
->=20
-> 1. "if (err =3D=3D -EIO)" applies to adding new_seb to the corrupted list=
-,
-> and not to retrying. We wouldn't want _not_ to retry if there's some
-> other error, or would we?
+On Sat, 2007-05-05 at 19:18 +0530, Satyam Sharma wrote:
+> Well, you're developing / maintaining this right now, so it's your
+> call. Though I bet most people would find keeping that list_add_tail
+> local to scan.c more tasteful.
 
-In case of other error - no, we do not want to retry. Only in case of
--EIO because we just might have hit a new badblock, which is unlikely,
-but possible.
+I do not think so. If you are interested, try to find "UBI take 2"
+patches in lkml. Look how it looked liked. It consisted of many
+independent units and units could access other units _only_ via
+interfaces. I would do what you say there.
 
-If it is anything else then -EIO, then we just return an error and
-_refuse_ to attach this MTD device. In this case it does not matter
-where we add new_seb. We just drop it. We free all allocated data
-structures.
+Read Teo's comments - I actually now agree with them. And after I had
+changed UBI i got rid of several thousands lines of code, and the code
+became simpler.
 
-> 2. "if (++tries <=3D 5)" applies to "goto retry" and not to adding
-> new_seb to the corrupted list. If we hit write failure for the 5th
-> time and err =3D=3D -EIO, we should still be adding it to corrupted list,
-> but not retry, of course. Otherwise we would add the first 4 write
-> failure (with -EIO) eraseblocks to si->corr, but the 5th _similar_
-> case is ... just freed?
+So, my argument is:
+1. It makes no sense to introduce one more non-static function to _just_
+encapsulate list_add_tail and _just_ for one caller.
+2. It is _C_, it is _kernel_, and it is OK sometimes _not_ to follow
+computer since rules.
 
-If we hit -EIO more then five times, there is probably something _really
-bad_ with this MTD device and we _refuse_ attaching it. We return error,
-and every data structure is freed. It does not matter if we add new_seb
-anywhere or not. It is anyway just freed.
+> I wish you'd commented it better than "This function returns zero in
+> case of success and a negative error code in case of failure." in that
+> case :-)
+Agreed, I'll add more comments, thanks.
+
+> Again, you're developing and maintaining this right now, so it's your
+> call. Though it would be easier on you if you remove these exceptions
+> that could be quite easily removed, actually.
+I do not see any nice way to do this. If you suggest one, I will do.
 
 --=20
 Best regards,
