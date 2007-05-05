@@ -1,20 +1,11 @@
-Received: from an-out-0708.google.com ([209.85.132.240])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkMxg-00010K-NU
-	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 12:18:21 -0400
-Received: by an-out-0708.google.com with SMTP id d17so21465and
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 05 May 2007 09:18:19 -0700 (PDT)
-Message-ID: <a1e50e4b0705050918j73dfc01cnd9fdb667f19b31f1@mail.gmail.com>
-Date: Sat, 5 May 2007 21:48:18 +0530
-From: "Sudeep K N" <sudeep.holla@gmail.com>
-To: dwmw2@infradead.org, rpurdie@openedhand.com
-Subject: Spare area access information from JFFS2
+Message-ID: <3518.81.199.179.2.1178407185.squirrel@leveldonchange.250meg.com>
+Date: Sat, 5 May 2007 18:19:45 -0500 (CDT)
+Subject: Euro Million Loteria Award !!!
+From: "CO-ORDINATOR {Euromillionlottery}" <emilysimon009@yahoo.es>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: mrmelvinclinton@aim.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +15,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-       We are working on Nand Flash Controller which does not support
-       ECC protection during Spare_Only Operation, rather it supports
-       ECC protection for both Main_and_Spare area. In this regard,
-       before to implement any workaround in my nand driver we want to
-       know "Spare Area and Spare + Main area access sequence" from
-       JFFS2 filesystem perspective during any JFFS2 operation.
-
-       Proceeding further to observe JFFS2 Spare area access we found the
-       the following:
-
-       1. During Mount: scans the block, [erases], and writes "0x20031985"
-               into the spare area on start of every block followed by another
-               18 bytes which spans across multiple pages because free bytes in
-               spare area is only 4
-       2. Later during main page program operation our nand controller
-               updates spare area ECC bytes, during this sequence we are not
-               clear whether JFFS2 perform any spare operation to updates it
-               meta data.
-       3. Also, we want know, later the above sequence, does JFFS2 performs
-               any spare only program operations.
 
 
-Regards,
-Sudeep
+
+Euro Million Loteria Award
+Paseo De La Castellana
+15-89, 28008 Madrid,Spain Branch.
+Ref. Nº: ES/007/05/12/MAD.
+Batch. Nº: GHT/2907/333/05.
+www.loteria.com
+Prize And Award Notification
+
+                     YOUR E-MAIL ADDRESS WON THE LOTTERY.
+We wish to congratulate you over your email success in our computer
+BALLOTING SWEEPSTAKE held on May 5th,2007. This is a millennium scientific
+computer game in which email addresses were used. It is a promotional
+program aimed at encouraging internet users; therefore you do not need to
+buy ticket to enter for it.
+
+Your email address attached to ticket star number (9901-0148-790-691) drew
+the EUROMILLION lucky numbers 3-19-26-49-50 which consequently won the
+draw in the Second category.
+
+You have been approve for the star prize of EUR  787,248.26. (Seven
+Hundred And Eighty Seven housand, Two Hundred And Fourty Eight
+Euros,Twenty Six Cents)
+
+CONGRATULATIONS !!!
+You are advised to keep this winning very confidential until you receive
+your lump prize in your account or optional cheque issuance to you. This
+is a protective measure to avoid double claiming by people you may tell as
+we have had cases like this before. You are required to provide the
+information below:
+
+Name, Telephone Number, Fax Number, Wining Ticket Number, Reference Number
+and Amount Won.
+This information For processing of your winning fund should be sent to our
+registered claim agent in address below.
+
+Guarantee Trust Agency.
+Mr.Melvin Clinton.
+Address: Sin Numero Madrid Spain.
+Telephone: 0034636287740.
+E-mail: mrmelvinclinton@aim.com
+Remember, all winning must be claimed not later than May 31st, 2007.
+Please note, in order to avoid unnecessary delays and complications,
+remember to quote your reference number and batch number in all
+correspondence. Furthermore, should there be any change of address do
+inform our agent as soon as possible.
+
+ONCE AGAIN CONGRATULATIONS.
+
+Best Regard,
+Mrs. Emily Simon,
+Lottery Co-Odinator.
+
+The information transmitted is intended only for the person or entity to
+whom or which it is addressed. Unauthorised use, disclosure or copying is
+strictly prohibited. The sender accepts no liability for the improper
+transmission of this communication nor for any delay in its receipt.
