@@ -1,27 +1,18 @@
 Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkKnp-00057J-GY
-	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 10:00:03 -0400
-Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
+	id 1HkKwc-0005OX-Sr
+	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 10:09:15 -0400
+Subject: Re: UBI: Can I boot with an UBI volume holding a root file system?
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Satyam Sharma <satyam.sharma@gmail.com>
-In-Reply-To: <a781481a0705050648l19b316acyf3d52b0545e18344@mail.gmail.com>
-References: <463A04A5.5030103@gmail.com>
-	<a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
-	<463BC019.40305@gmail.com>
-	<a781481a0705042055u5e9ba060w95da83b0fbeff76a@mail.gmail.com>
-	<1178351711.3659.54.camel@sauron>
-	<a781481a0705050526r13445d60j737a6c2015402dcc@mail.gmail.com>
-	<1178371103.3659.115.camel@sauron>
-	<a781481a0705050648l19b316acyf3d52b0545e18344@mail.gmail.com>
+To: John Smith <john@arrows.demon.co.uk>
+In-Reply-To: <Pine.LNX.4.33.0705042323250.30567-100000@arrows.demon.co.uk>
+References: <Pine.LNX.4.33.0705042323250.30567-100000@arrows.demon.co.uk>
 Content-Type: text/plain; charset=utf-8
-Date: Sat, 05 May 2007 16:59:22 +0300
-Message-Id: <1178373562.3659.144.camel@sauron>
+Date: Sat, 05 May 2007 17:08:59 +0300
+Message-Id: <1178374139.3659.150.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: Florin Malita <fmalita@gmail.com>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -32,35 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-05-05 at 19:18 +0530, Satyam Sharma wrote:
-> Well, you're developing / maintaining this right now, so it's your
-> call. Though I bet most people would find keeping that list_add_tail
-> local to scan.c more tasteful.
+On Fri, 2007-05-04 at 23:42 +0100, John Smith wrote:
+> I am hoping to build a root file system and store it as a squashfs
+> image in a static UBI volume. What command line should I should pass
+> to the kernel at boot time?
+>=20
+> There are likely to be other UBI volumes in the UBI partition which
+> will each get mapped to a /dev/mtdblock device. Is it going to be
+> difficult to identify the major/minor numbers of the device which will
+> mapped to my squashfs image?
+>=20
+> I think that I need to add some initramfs logic, but I am very
+> uncertain of the details. I will be grateful for any ideas,
 
-I do not think so. If you are interested, try to find "UBI take 2"
-patches in lkml. Look how it looked liked. It consisted of many
-independent units and units could access other units _only_ via
-interfaces. I would do what you say there.
+I have never tried this and I guess nobody did. But you may try and send
+us a text to add to faq on MTD site :-)
 
-Read Teo's comments - I actually now agree with them. And after I had
-changed UBI i got rid of several thousands lines of code, and the code
-became simpler.
-
-So, my argument is:
-1. It makes no sense to introduce one more non-static function to _just_
-encapsulate list_add_tail and _just_ for one caller.
-2. It is _C_, it is _kernel_, and it is OK sometimes _not_ to follow
-computer since rules.
-
-> I wish you'd commented it better than "This function returns zero in
-> case of success and a negative error code in case of failure." in that
-> case :-)
-Agreed, I'll add more comments, thanks.
-
-> Again, you're developing and maintaining this right now, so it's your
-> call. Though it would be easier on you if you remove these exceptions
-> that could be quite easily removed, actually.
-I do not see any nice way to do this. If you suggest one, I will do.
+One thing for you to keep in mind: use proper volume alignment. I am not
+sure what is squashfs block size probably 512 bytes, then use alignment
+512. In this case you will end up with 512-byte aligned logical
+eraseblocks. this will make your life easier.
 
 --=20
 Best regards,
