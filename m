@@ -1,19 +1,32 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkKwc-0005OX-Sr
-	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 10:09:15 -0400
-Subject: Re: UBI: Can I boot with an UBI volume holding a root file system?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: John Smith <john@arrows.demon.co.uk>
-In-Reply-To: <Pine.LNX.4.33.0705042323250.30567-100000@arrows.demon.co.uk>
-References: <Pine.LNX.4.33.0705042323250.30567-100000@arrows.demon.co.uk>
-Content-Type: text/plain; charset=utf-8
-Date: Sat, 05 May 2007 17:08:59 +0300
-Message-Id: <1178374139.3659.150.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wr-out-0506.google.com ([64.233.184.234])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HkLkB-00078P-1A
+	for linux-mtd@lists.infradead.org; Sat, 05 May 2007 11:00:21 -0400
+Received: by wr-out-0506.google.com with SMTP id 55so1201309wri
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 05 May 2007 08:00:17 -0700 (PDT)
+Message-ID: <a781481a0705050800r5885f146i620021026698a613@mail.gmail.com>
+Date: Sat, 5 May 2007 20:30:16 +0530
+From: "Satyam Sharma" <satyam.sharma@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: [PATCH] UBI: dereference after kfree in create_vtbl
+In-Reply-To: <1178373562.3659.144.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <463A04A5.5030103@gmail.com>
+	<a781481a0705041442h37453fb6k26d04eb5356e9dc0@mail.gmail.com>
+	<463BC019.40305@gmail.com>
+	<a781481a0705042055u5e9ba060w95da83b0fbeff76a@mail.gmail.com>
+	<1178351711.3659.54.camel@sauron>
+	<a781481a0705050526r13445d60j737a6c2015402dcc@mail.gmail.com>
+	<1178371103.3659.115.camel@sauron>
+	<a781481a0705050648l19b316acyf3d52b0545e18344@mail.gmail.com>
+	<1178373562.3659.144.camel@sauron>
+Cc: Florin Malita <fmalita@gmail.com>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +36,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-05-04 at 23:42 +0100, John Smith wrote:
-> I am hoping to build a root file system and store it as a squashfs
-> image in a static UBI volume. What command line should I should pass
-> to the kernel at boot time?
->=20
-> There are likely to be other UBI volumes in the UBI partition which
-> will each get mapped to a /dev/mtdblock device. Is it going to be
-> difficult to identify the major/minor numbers of the device which will
-> mapped to my squashfs image?
->=20
-> I think that I need to add some initramfs logic, but I am very
-> uncertain of the details. I will be grateful for any ideas,
+On 5/5/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> On Sat, 2007-05-05 at 19:18 +0530, Satyam Sharma wrote:
+> > Well, you're developing / maintaining this right now, so it's your
+> > call. Though I bet most people would find keeping that list_add_tail
+> > local to scan.c more tasteful.
+>
+> I do not think so. If you are interested, try to find "UBI take 2"
+> patches in lkml. Look how it looked liked. It consisted of many
+> independent units and units could access other units _only_ via
+> interfaces. I would do what you say there.
 
-I have never tried this and I guess nobody did. But you may try and send
-us a text to add to faq on MTD site :-)
+But what you're doing now is *worse*, don't you see it? You _think_
+that you are not exporting any add_to_list function from scan.c
+because you removed the wrapper from scan.h, but then you open-code it
+anyway in create_vtbl (yes, that list_add _is_ the *only* meaningful
+code in add_to_list; it just so _happens_ that most of its callers
+till now also wanted to allocate a ubi_scan_leb too at that time so
+you pushed that too into add_to_list rather than do it in the callers
+-- via a separate alloc_leb, for example). Now that means there is an
+*undocumented* use of the "add to list" _functionality_ outside of
+scan.c anyway and which wouldn't even come up if someone tries to
+analyse / overhaul the code some day in the future. I know it's just
+_one_ exception, but still, I'm a heckler for style.
 
-One thing for you to keep in mind: use proper volume alignment. I am not
-sure what is squashfs block size probably 512 bytes, then use alignment
-512. In this case you will end up with 512-byte aligned logical
-eraseblocks. this will make your life easier.
+> Read Teo's comments - I actually now agree with them. And after I had
+> changed UBI i got rid of several thousands lines of code, and the code
+> became simpler.
+>
+> So, my argument is:
+> 1. It makes no sense to introduce one more non-static function to _just_
+> encapsulate list_add_tail and _just_ for one caller.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Well, introducing one more non-static function is *not* what I
+originally had in mind (it was proposed only as a temporary measure
+till all users of ubi_scan_add_to_list could be updated to use the
+other version, explained below).
+
+I actually planned to _replace_ ubi_scan_add_to_list with another
+version that does *not* allocate memory (the __ubi_scan_add_to_list I
+proposed above), and leave allocation up to its *callers* who
+therefore pass a valid ubi_scan_leb to it. But that is where I ran
+into ubi_scan_add_used().
+
+> 2. It is _C_, it is _kernel_, and it is OK sometimes _not_ to follow
+> computer since rules.
+
+Ah, well, forget it. It's all a matter of taste and maintainability. I
+guess in the end it needs to be fine with you.
