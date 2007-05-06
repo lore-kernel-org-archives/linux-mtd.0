@@ -1,16 +1,16 @@
-Received: from ug-out-1314.google.com ([66.249.92.169])
+Received: from ug-out-1314.google.com ([66.249.92.173])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hki1I-0000WN-9w
-	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 10:47:31 -0400
-Received: by ug-out-1314.google.com with SMTP id m2so762300uge
+	id 1Hki3m-0000iv-E5
+	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 10:50:21 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so762470uge
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 May 2007 07:47:26 -0700 (PDT)
-Message-ID: <463DEA61.2000609@gmail.com>
-Date: Sun, 06 May 2007 18:46:57 +0400
+	Sun, 06 May 2007 07:50:01 -0700 (PDT)
+Message-ID: <463DEB01.80309@gmail.com>
+Date: Sun, 06 May 2007 18:49:37 +0400
 From: Vitaly Wool <vitalywool@gmail.com>
 MIME-Version: 1.0
 To: tglx@linutronix.de
-Subject: [patch 1/2] platform NAND driver: update header
+Subject: [patch 2/2] platform NAND driver: add driver
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -23,61 +23,197 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch extends nand.h in order to enable platform NAND driver.
+This patch adds support for generic platform NAND driver.
 
- include/linux/mtd/nand.h |   16 ++++++++++++++++
- 1 files changed, 16 insertions(+)
+ drivers/mtd/nand/Kconfig     |    9 ++
+ drivers/mtd/nand/Makefile    |    1
+ drivers/mtd/nand/plat_nand.c |  149 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mtd/nand.h     |   16 ++++
+ 4 files changed, 175 insertions(+)
 
 Signed-off-by: Vitaly Wool <vitalywool@gmail.com>
 
-Index: linux-2.6/include/linux/mtd/nand.h
+Index: linux-2.6/drivers/mtd/nand/Kconfig
 ===================================================================
---- linux-2.6.orig/include/linux/mtd/nand.h
-+++ linux-2.6/include/linux/mtd/nand.h
-@@ -560,6 +560,7 @@ extern int nand_do_read(struct mtd_info 
-  * @chip_delay:		R/B delay value in us
-  * @options:		Option flags, e.g. 16bit buswidth
-  * @ecclayout:		ecc layout info structure
-+ * @part_probe_types:	NULL-terminated array of probe types
-  * @priv:		hardware controller specific settings
-  */
- struct platform_nand_chip {
-@@ -570,6 +571,7 @@ struct platform_nand_chip {
- 	struct nand_ecclayout	*ecclayout;
- 	int			chip_delay;
- 	unsigned int		options;
-+	const char		**part_probe_types;
- 	void			*priv;
- };
+--- linux-2.6.orig/drivers/mtd/nand/Kconfig
++++ linux-2.6/drivers/mtd/nand/Kconfig
+@@ -270,4 +270,13 @@ config MTD_NAND_NANDSIM
+ 	  The simulator may simulate various NAND flash chips for the
+ 	  MTD nand layer.
  
-@@ -578,6 +580,8 @@ struct platform_nand_chip {
-  * @hwcontrol:		platform specific hardware control structure
-  * @dev_ready:		platform specific function to read ready/busy pin
-  * @select_chip:	platform specific chip select function
-+ * @cmd_ctrl:		platform specific function for controlling
-+ *			ALE/CLE/nCE. Also used to write command and address
-  * @priv:		private data to transport driver specific settings
-  *
-  * All fields are optional and depend on the hardware driver requirements
-@@ -586,9 +590,21 @@ struct platform_nand_ctrl {
- 	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
- 	int		(*dev_ready)(struct mtd_info *mtd);
- 	void		(*select_chip)(struct mtd_info *mtd, int chip);
-+	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
-+				    unsigned int ctrl);
- 	void		*priv;
- };
++config MTD_NAND_PLATFORM
++	tristate "Support for generic platform NAND driver"
++	depends on MTD_NAND
++	help
++	  This implements a generic NAND driver for on-SOC platform
++	  devices. You will need to provide platform-specific functions
++	  via platform_data.
++
++
+ endif # MTD_NAND
+Index: linux-2.6/drivers/mtd/nand/Makefile
+===================================================================
+--- linux-2.6.orig/drivers/mtd/nand/Makefile
++++ linux-2.6/drivers/mtd/nand/Makefile
+@@ -26,6 +26,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
+ obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
+ obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
+ obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
++obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
  
-+/**
-+ * struct platform_nand_data - container structure for platform-specific data
-+ * @chip:		chip level chip structure
-+ * @ctrl:		controller level device structure
+ nand-objs := nand_base.o nand_bbt.o
+ cafe_nand-objs := cafe.o cafe_ecc.o
+Index: linux-2.6/drivers/mtd/nand/plat_nand.c
+===================================================================
+--- /dev/null
++++ linux-2.6/drivers/mtd/nand/plat_nand.c
+@@ -0,0 +1,149 @@
++/*
++ * Generic NAND driver
++ *
++ * Author: Vitaly Wool <vitalywool@gmail.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ *
 + */
-+struct platform_nand_data {
-+	struct platform_nand_chip	chip;
-+	struct platform_nand_ctrl	ctrl;
++
++#include <linux/io.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/partitions.h>
++
++struct plat_nand_data {
++	struct nand_chip	chip;
++	struct mtd_info		mtd;
++	void __iomem		*io_base;
++#ifdef CONFIG_MTD_PARTITIONS
++	int			nr_parts;
++	struct mtd_partition	*parts;
++#endif
 +};
 +
- /* Some helpers to access the data structures */
- static inline
- struct platform_nand_chip *get_platform_nandchip(struct mtd_info *mtd)
++/*
++ * Probe for the NAND device.
++ */
++static int __init plat_nand_probe(struct platform_device *pdev)
++{
++	struct platform_nand_data *pdata = pdev->dev.platform_data;
++	struct plat_nand_data *data;
++	int res = 0;
++
++	/* Allocate memory for the device structure (and zero it) */
++	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
++	if (!data) {
++		dev_err(&pdev->dev, "failed to allocate device structure.\n");
++		return -ENOMEM;
++	}
++
++	data->io_base = ioremap(pdev->resource[0].start,
++				pdev->resource[0].end - pdev->resource[0].start + 1);
++	if (data->io_base == NULL) {
++		dev_err(&pdev->dev, "ioremap failed\n");
++		kfree(data);
++		return -EIO;
++	}
++
++	data->chip.priv = &data;
++	data->mtd.priv = &data->chip;
++	data->mtd.owner = THIS_MODULE;
++
++	data->chip.IO_ADDR_R = data->io_base;
++	data->chip.IO_ADDR_W = data->io_base;
++	data->chip.cmd_ctrl = pdata->ctrl.cmd_ctrl;
++	data->chip.dev_ready = pdata->ctrl.dev_ready;
++	data->chip.select_chip = pdata->ctrl.select_chip;
++	data->chip.chip_delay = pdata->chip.chip_delay;
++	data->chip.options |= pdata->chip.options;
++
++	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
++	data->chip.ecc.layout = pdata->chip.ecclayout;
++	data->chip.ecc.mode = NAND_ECC_SOFT;
++
++	platform_set_drvdata(pdev, data);
++
++	/* Scan to find existance of the device */
++	if (nand_scan(&data->mtd, 1)) {
++		res = -ENXIO;
++		goto out;
++	}
++
++#ifdef CONFIG_MTD_PARTITIONS
++	if (pdata->chip.part_probe_types) {
++		res = parse_mtd_partitions(&data->mtd,
++					pdata->chip.part_probe_types,
++					&data->parts, 0);
++		if (res > 0) {
++			add_mtd_partitions(&data->mtd, data->parts, res);
++			return 0;
++		}
++	} else if (pdata->chip.partitions) {
++		data->parts = pdata->chip.partitions;
++		res = add_mtd_partitions(&data->mtd, data->parts,
++			pdata->chip.nr_partitions);
++	} else
++#endif
++	res = add_mtd_device(&data->mtd);
++
++	if (!res)
++		return res;
++
++	nand_release(&data->mtd);
++out:
++	platform_set_drvdata(pdev, NULL);
++	iounmap(data->io_base);
++	kfree(data);
++	return res;
++}
++
++/*
++ * Remove a NAND device.
++ */
++static int __devexit plat_nand_remove(struct platform_device *pdev)
++{
++	struct plat_nand_data *data = platform_get_drvdata(pdev);
++	struct platform_nand_data *pdata = pdev->dev.platform_data;
++
++	nand_release(&data->mtd);
++#ifdef CONFIG_MTD_PARTITIONS
++	if (data->parts && data->parts != pdata->chip.partitions)
++		kfree(data->parts);
++#endif
++	iounmap(data->io_base);
++	kfree(data);
++
++	return 0;
++}
++
++static struct platform_driver plat_nand_driver = {
++	.probe		= plat_nand_probe,
++	.remove		= plat_nand_remove,
++	.driver		= {
++		.name	= "gen_nand",
++		.owner	= THIS_MODULE,
++	},
++};
++
++static int __init plat_nand_init(void)
++{
++	return platform_driver_register(&plat_nand_driver);
++}
++
++static void __exit plat_nand_exit(void)
++{
++	platform_driver_unregister(&plat_nand_driver);
++}
++
++module_init(plat_nand_init);
++module_exit(plat_nand_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Vitaly Wool");
++MODULE_DESCRIPTION("Simple generic NAND driver");
