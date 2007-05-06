@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HkfL4-00055v-Gi
-	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 07:55:44 -0400
-Subject: Re: UBI: Can I boot with an UBI volume holding a root file system?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: John Smith <john.smith@arrows.demon.co.uk>
-In-Reply-To: <loom.20070506T124743-262@post.gmane.org>
-References: <Pine.LNX.4.33.0705042323250.30567-100000@arrows.demon.co.uk>
-	<1178374139.3659.150.camel@sauron>
-	<loom.20070506T124743-262@post.gmane.org>
-Content-Type: text/plain; charset=utf-8
-Date: Sun, 06 May 2007 14:55:35 +0300
-Message-Id: <1178452535.3708.3.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Received: from ug-out-1314.google.com ([66.249.92.169])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hki1I-0000WN-9w
+	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 10:47:31 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so762300uge
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 06 May 2007 07:47:26 -0700 (PDT)
+Message-ID: <463DEA61.2000609@gmail.com>
+Date: Sun, 06 May 2007 18:46:57 +0400
+From: Vitaly Wool <vitalywool@gmail.com>
+MIME-Version: 1.0
+To: tglx@linutronix.de
+Subject: [patch 1/2] platform NAND driver: update header
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +23,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2007-05-06 at 11:25 +0000, John Smith wrote:
-> I have not done anything explicit about alignment. Have I just been lucky=
-=20
-> because my NAND device works in pages of 512 bytes? The squashfs block si=
-ze is=20
-> currently 65536 bytes, though may be the word block is describing a diffe=
-rent=20
-> concept. Perhaps it would be best to make the squashfs block size the sam=
-e size=20
-> as the UBI logical erase block size.=20
+This patch extends nand.h in order to enable platform NAND driver.
 
-Yeah, you probably do not need alignment. mtdblock emulates 512-byte
-block device, and since you have NAND, you have 512-bytes-aligned
-logical eraseblocks, so everything is fine. But you would need to
-specify 512-byte alignment if you had NOR flash, for example.
+ include/linux/mtd/nand.h |   16 ++++++++++++++++
+ 1 files changed, 16 insertions(+)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Signed-off-by: Vitaly Wool <vitalywool@gmail.com>
+
+Index: linux-2.6/include/linux/mtd/nand.h
+===================================================================
+--- linux-2.6.orig/include/linux/mtd/nand.h
++++ linux-2.6/include/linux/mtd/nand.h
+@@ -560,6 +560,7 @@ extern int nand_do_read(struct mtd_info 
+  * @chip_delay:		R/B delay value in us
+  * @options:		Option flags, e.g. 16bit buswidth
+  * @ecclayout:		ecc layout info structure
++ * @part_probe_types:	NULL-terminated array of probe types
+  * @priv:		hardware controller specific settings
+  */
+ struct platform_nand_chip {
+@@ -570,6 +571,7 @@ struct platform_nand_chip {
+ 	struct nand_ecclayout	*ecclayout;
+ 	int			chip_delay;
+ 	unsigned int		options;
++	const char		**part_probe_types;
+ 	void			*priv;
+ };
+ 
+@@ -578,6 +580,8 @@ struct platform_nand_chip {
+  * @hwcontrol:		platform specific hardware control structure
+  * @dev_ready:		platform specific function to read ready/busy pin
+  * @select_chip:	platform specific chip select function
++ * @cmd_ctrl:		platform specific function for controlling
++ *			ALE/CLE/nCE. Also used to write command and address
+  * @priv:		private data to transport driver specific settings
+  *
+  * All fields are optional and depend on the hardware driver requirements
+@@ -586,9 +590,21 @@ struct platform_nand_ctrl {
+ 	void		(*hwcontrol)(struct mtd_info *mtd, int cmd);
+ 	int		(*dev_ready)(struct mtd_info *mtd);
+ 	void		(*select_chip)(struct mtd_info *mtd, int chip);
++	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
++				    unsigned int ctrl);
+ 	void		*priv;
+ };
+ 
++/**
++ * struct platform_nand_data - container structure for platform-specific data
++ * @chip:		chip level chip structure
++ * @ctrl:		controller level device structure
++ */
++struct platform_nand_data {
++	struct platform_nand_chip	chip;
++	struct platform_nand_ctrl	ctrl;
++};
++
+ /* Some helpers to access the data structures */
+ static inline
+ struct platform_nand_chip *get_platform_nandchip(struct mtd_info *mtd)
