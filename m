@@ -1,18 +1,14 @@
-Received: from ug-out-1314.google.com ([66.249.92.169])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hkihz-0001kO-VB
-	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 11:31:38 -0400
-Received: by ug-out-1314.google.com with SMTP id m2so765614uge
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 May 2007 08:31:34 -0700 (PDT)
-Message-ID: <463DF4C6.6020105@gmail.com>
-Date: Sun, 06 May 2007 19:31:18 +0400
-From: Vitaly Wool <vitalywool@gmail.com>
+Received: from arrows.demon.co.uk ([83.105.72.193])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hkogu-0001FL-9i
+	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 17:54:53 -0400
+Date: Sun, 6 May 2007 22:20:17 +0100 (BST)
+From: John Smith <john@arrows.demon.co.uk>
+To: <linux-mtd@lists.infradead.org>
+Subject: Mounting JFFS2 partitions as root file systems
+Message-ID: <Pine.LNX.4.33.0705062154410.5488-100000@arrows.demon.co.uk>
 MIME-Version: 1.0
-To: tglx@linutronix.de,  linux-mtd@lists.infradead.org
-Subject: [patch 2/2 respin] platform NAND driver: add driver   
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,198 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch adds support for generic platform NAND driver.
-Updated after tglx's review/discussion in IRC #mtd channel.
+Hello,
 
- drivers/mtd/nand/Kconfig     |    9 ++
- drivers/mtd/nand/Makefile    |    1
- drivers/mtd/nand/plat_nand.c |  150 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 160 insertions(+)
+I am slowly finding out how to use kernel command line parameters
+to specify an MTD partition holding a root file system.
 
-Signed-off-by: Vitaly Wool <vitalywool@gmail.com>
+When the JFFS2 FAQ answers the question
 
-Index: linux-2.6/drivers/mtd/nand/Kconfig
-===================================================================
---- linux-2.6.orig/drivers/mtd/nand/Kconfig
-+++ linux-2.6/drivers/mtd/nand/Kconfig
-@@ -270,4 +270,13 @@ config MTD_NAND_NANDSIM
- 	  The simulator may simulate various NAND flash chips for the
- 	  MTD nand layer.
- 
-+config MTD_NAND_PLATFORM
-+	tristate "Support for generic platform NAND driver"
-+	depends on MTD_NAND
-+	help
-+	  This implements a generic NAND driver for on-SOC platform
-+	  devices. You will need to provide platform-specific functions
-+	  via platform_data.
-+
-+
- endif # MTD_NAND
-Index: linux-2.6/drivers/mtd/nand/Makefile
-===================================================================
---- linux-2.6.orig/drivers/mtd/nand/Makefile
-+++ linux-2.6/drivers/mtd/nand/Makefile
-@@ -26,6 +26,7 @@ obj-$(CONFIG_MTD_NAND_NDFC)		+= ndfc.o
- obj-$(CONFIG_MTD_NAND_AT91)		+= at91_nand.o
- obj-$(CONFIG_MTD_NAND_CM_X270)		+= cmx270_nand.o
- obj-$(CONFIG_MTD_NAND_BASLER_EXCITE)	+= excite_nandflash.o
-+obj-$(CONFIG_MTD_NAND_PLATFORM)		+= plat_nand.o
- 
- nand-objs := nand_base.o nand_bbt.o
- cafe_nand-objs := cafe.o cafe_ecc.o
-Index: linux-2.6/drivers/mtd/nand/plat_nand.c
-===================================================================
---- /dev/null
-+++ linux-2.6/drivers/mtd/nand/plat_nand.c
-@@ -0,0 +1,150 @@
-+/*
-+ * Generic NAND driver
-+ *
-+ * Author: Vitaly Wool <vitalywool@gmail.com>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ *
-+ */
-+
-+#include <linux/io.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/nand.h>
-+#include <linux/mtd/partitions.h>
-+
-+struct plat_nand_data {
-+	struct nand_chip	chip;
-+	struct mtd_info		mtd;
-+	void __iomem		*io_base;
-+#ifdef CONFIG_MTD_PARTITIONS
-+	int			nr_parts;
-+	struct mtd_partition	*parts;
-+#endif
-+};
-+
-+/*
-+ * Probe for the NAND device.
-+ */
-+static int __init plat_nand_probe(struct platform_device *pdev)
-+{
-+	struct platform_nand_data *pdata = pdev->dev.platform_data;
-+	struct plat_nand_data *data;
-+	int res = 0;
-+
-+	/* Allocate memory for the device structure (and zero it) */
-+	data = kzalloc(sizeof(struct plat_nand_data), GFP_KERNEL);
-+	if (!data) {
-+		dev_err(&pdev->dev, "failed to allocate device structure.\n");
-+		return -ENOMEM;
-+	}
-+
-+	data->io_base = ioremap(pdev->resource[0].start,
-+				pdev->resource[0].end - pdev->resource[0].start + 1);
-+	if (data->io_base == NULL) {
-+		dev_err(&pdev->dev, "ioremap failed\n");
-+		kfree(data);
-+		return -EIO;
-+	}
-+
-+	data->chip.priv = &data;
-+	data->mtd.priv = &data->chip;
-+	data->mtd.owner = THIS_MODULE;
-+
-+	data->chip.IO_ADDR_R = data->io_base;
-+	data->chip.IO_ADDR_W = data->io_base;
-+	data->chip.cmd_ctrl = pdata->ctrl.cmd_ctrl;
-+	data->chip.dev_ready = pdata->ctrl.dev_ready;
-+	data->chip.select_chip = pdata->ctrl.select_chip;
-+	data->chip.chip_delay = pdata->chip.chip_delay;
-+	data->chip.options |= pdata->chip.options;
-+
-+	data->chip.ecc.hwctl = pdata->ctrl.hwcontrol;
-+	data->chip.ecc.layout = pdata->chip.ecclayout;
-+	data->chip.ecc.mode = NAND_ECC_SOFT;
-+
-+	platform_set_drvdata(pdev, data);
-+
-+	/* Scan to find existance of the device */
-+	if (nand_scan(&data->mtd, 1)) {
-+		res = -ENXIO;
-+		goto out;
-+	}
-+
-+#ifdef CONFIG_MTD_PARTITIONS
-+	if (pdata->chip.part_probe_types) {
-+		res = parse_mtd_partitions(&data->mtd,
-+					pdata->chip.part_probe_types,
-+					&data->parts, 0);
-+		if (res > 0) {
-+			add_mtd_partitions(&data->mtd, data->parts, res);
-+			return 0;
-+		}
-+	}
-+	if (pdata->chip.partitions) {
-+		data->parts = pdata->chip.partitions;
-+		res = add_mtd_partitions(&data->mtd, data->parts,
-+			pdata->chip.nr_partitions);
-+	} else
-+#endif
-+	res = add_mtd_device(&data->mtd);
-+
-+	if (!res)
-+		return res;
-+
-+	nand_release(&data->mtd);
-+out:
-+	platform_set_drvdata(pdev, NULL);
-+	iounmap(data->io_base);
-+	kfree(data);
-+	return res;
-+}
-+
-+/*
-+ * Remove a NAND device.
-+ */
-+static int __devexit plat_nand_remove(struct platform_device *pdev)
-+{
-+	struct plat_nand_data *data = platform_get_drvdata(pdev);
-+	struct platform_nand_data *pdata = pdev->dev.platform_data;
-+
-+	nand_release(&data->mtd);
-+#ifdef CONFIG_MTD_PARTITIONS
-+	if (data->parts && data->parts != pdata->chip.partitions)
-+		kfree(data->parts);
-+#endif
-+	iounmap(data->io_base);
-+	kfree(data);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver plat_nand_driver = {
-+	.probe		= plat_nand_probe,
-+	.remove		= plat_nand_remove,
-+	.driver		= {
-+		.name	= "gen_nand",
-+		.owner	= THIS_MODULE,
-+	},
-+};
-+
-+static int __init plat_nand_init(void)
-+{
-+	return platform_driver_register(&plat_nand_driver);
-+}
-+
-+static void __exit plat_nand_exit(void)
-+{
-+	platform_driver_unregister(&plat_nand_driver);
-+}
-+
-+module_init(plat_nand_init);
-+module_exit(plat_nand_exit);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Vitaly Wool");
-+MODULE_DESCRIPTION("Simple generic NAND driver");
+  "Do I need to use mtdblock to mount my JFFS2 filesystem?"
+
+it includes a remark
+
+ "when JFFS2 is used as a root filesystem ... this requires the mtdblock
+  device to be specified for root= on the kernel commandline."
+
+But I now think this restriction went away in Kernel 2.6.18, so that it is
+now possibly to put
+
+   root=mtd:jffs2_image  rootfstype=jffs2
+
+on the kernel command line to get the MTD partition "jffs2_image"
+mounted as a root file system.
+
+Similarly, the function jffs2_get_sb() includes the remark
+
+  /* FIXME: How to do the root fs this way? */
+
+which appears to have been fixed by the mtd logic in
+the function prepare_namespace() in do_mounts.c.
+
+Have I understood correctly?
+
+John
