@@ -1,19 +1,18 @@
-Received: from ug-out-1314.google.com ([66.249.92.173])
+Received: from ug-out-1314.google.com ([66.249.92.169])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hki3m-0000iv-E5
-	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 10:50:21 -0400
-Received: by ug-out-1314.google.com with SMTP id m2so762470uge
+	id 1Hkihz-0001kO-VB
+	for linux-mtd@lists.infradead.org; Sun, 06 May 2007 11:31:38 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so765614uge
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 06 May 2007 07:50:01 -0700 (PDT)
-Message-ID: <463DEB01.80309@gmail.com>
-Date: Sun, 06 May 2007 18:49:37 +0400
+	Sun, 06 May 2007 08:31:34 -0700 (PDT)
+Message-ID: <463DF4C6.6020105@gmail.com>
+Date: Sun, 06 May 2007 19:31:18 +0400
 From: Vitaly Wool <vitalywool@gmail.com>
 MIME-Version: 1.0
-To: tglx@linutronix.de
-Subject: [patch 2/2] platform NAND driver: add driver
+To: tglx@linutronix.de,  linux-mtd@lists.infradead.org
+Subject: [patch 2/2 respin] platform NAND driver: add driver   
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,12 +23,12 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This patch adds support for generic platform NAND driver.
+Updated after tglx's review/discussion in IRC #mtd channel.
 
  drivers/mtd/nand/Kconfig     |    9 ++
  drivers/mtd/nand/Makefile    |    1
- drivers/mtd/nand/plat_nand.c |  149 +++++++++++++++++++++++++++++++++++++++++++
- include/linux/mtd/nand.h     |   16 ++++
- 4 files changed, 175 insertions(+)
+ drivers/mtd/nand/plat_nand.c |  150 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 160 insertions(+)
 
 Signed-off-by: Vitaly Wool <vitalywool@gmail.com>
 
@@ -67,7 +66,7 @@ Index: linux-2.6/drivers/mtd/nand/plat_nand.c
 ===================================================================
 --- /dev/null
 +++ linux-2.6/drivers/mtd/nand/plat_nand.c
-@@ -0,0 +1,149 @@
+@@ -0,0 +1,150 @@
 +/*
 + * Generic NAND driver
 + *
@@ -154,7 +153,8 @@ Index: linux-2.6/drivers/mtd/nand/plat_nand.c
 +			add_mtd_partitions(&data->mtd, data->parts, res);
 +			return 0;
 +		}
-+	} else if (pdata->chip.partitions) {
++	}
++	if (pdata->chip.partitions) {
 +		data->parts = pdata->chip.partitions;
 +		res = add_mtd_partitions(&data->mtd, data->parts,
 +			pdata->chip.nr_partitions);
