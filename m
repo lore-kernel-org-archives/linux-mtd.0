@@ -1,18 +1,21 @@
-Received: from wip-ectls-mx1.wipro.com ([203.91.193.21])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HlLtA-0007IB-NK
-	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 05:21:47 -0400
-Content-class: urn:content-classes:message
+Received: from wx-out-0506.google.com ([66.249.82.236])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HlOC3-0001xS-85
+	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 07:49:24 -0400
+Received: by wx-out-0506.google.com with SMTP id t8so1748090wxc
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 May 2007 04:49:21 -0700 (PDT)
+Message-ID: <acd2a5930705080449q2930ad50n521b70263d1c2fdb@mail.gmail.com>
+Date: Tue, 8 May 2007 15:49:21 +0400
+From: "Vitaly Wool" <vitalywool@gmail.com>
+To: "=?ISO-8859-1?Q?Michael_K=F6nig?=" <Michael.Koenig@ipcas.de>
+Subject: Re: Problems with cfi_cmdset_0002 and Atmel AT49BV642D
+In-Reply-To: <D1CA5322EC0446D8F2053C9D@franken3>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: How to implement JFFS2 filesystem on NAND
-Date: Tue, 8 May 2007 14:51:39 +0530
-Message-ID: <42E999AD7A0E4647BF159F467EE4FBCB017B50F1@BLR-SGM-MSG01.wipro.com>
-In-Reply-To: <3B6D69C3A9EBCA4BA5DA60D913027429EAA69D@dlee13.ent.ti.com>
-From: <sathish.madhava@wipro.com>
-To: <r-woodruff2@ti.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <D1CA5322EC0446D8F2053C9D@franken3>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,77 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Michael,
+> cse0: Probing a 0x04000000 bytes large window at 0xe0000000.
+> cse0: Found 1 x16 devices at 0x0 in 16-bit bank
+> cse0: Found an alias at 0x800000 for the chip at 0x0
+> cse0: Found an alias at 0x1000000 for the chip at 0x0
+> cse0: Found an alias at 0x1800000 for the chip at 0x0
+> cse0: Found an alias at 0x2000000 for the chip at 0x0
+> cse0: Found an alias at 0x2800000 for the chip at 0x0
+> cse0: Found an alias at 0x3000000 for the chip at 0x0
+> cse0: Found an alias at 0x3800000 for the chip at 0x0
 
+that's b/c you're supplying too large a window, but that's harmless AFAICS.
 
-I changed my rootfs.
+> The system boots fine and reading isn't a problem either, but it seems that
+> no data is actually written to the Flash. When creating a new file on JFFS2
+> I get an error message like this:
+>
+> Node totlen on flash (0xffffffff) != totlen from node ref (0x00000044)
 
-But now I am getting the error message as below.
+I'd check if you have the right width set up first.
 
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++
-jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00088024:
-0xcf4e instead
-Further such events for this erase block will not be printed
-VFS: Mounted root (jffs2 filesystem).
-Freeing init memory: 124K
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-++++
-And it stops here.
-
-I have included console in my /dev.
-
-How to go about it now.
-
--sathish
-
-
------Original Message-----
-From: Woodruff, Richard [mailto:r-woodruff2@ti.com]=20
-Sent: Monday, May 07, 2007 5:31 PM
-To: Sathish kumar tekal Sethu madhava rao (WT01 - MCE-Mobile Devices);
-linux-omap-open-source@linux.omap.com
-Cc: linux-mtd@lists.infradead.org
-Subject: RE: How to implement JFFS2 filesystem on NAND
-
->=20
-> VFS: Mounted root (jffs2 filesystem).
->=20
-> Freeing init memory: 124K
->=20
-> Warning: unable to open an initial console.
->=20
-> /sbin/init exit code: -2
->=20
-> /etc/init exit code: -2
->=20
-> /bin/init exit code: -2
->=20
-> /bin/sh exit code: -2
->=20
-> Kernel panic - not syncing: No init found.  Try passing init=3D option
-to
-> kernel.
-
-Looks like your file system has no device nodes in /dev.
-
-For older kernels devfs would allow this to work.  On newer ones you
-need all your nodes, or a properly configured udev, and some hotplug
-support.
-
-Regards,
-Richard W.
-
-
-The information contained in this electronic message and any attachments to=
- this message are intended for the exclusive use of the addressee(s) and=
- may contain proprietary, confidential or privileged information. If you=
- are not the intended recipient, you should not disseminate, distribute or=
- copy this e-mail. Please notify the sender immediately and destroy all=
- copies of this message and any attachments.=20
-
-WARNING: Computer viruses can be transmitted via email. The recipient=
- should check this email and any attachments for the presence of viruses.=
- The company accepts no liability for any damage caused by any virus=
- transmitted by this email.
-=20
-www.wipro.com
+Vitaly
