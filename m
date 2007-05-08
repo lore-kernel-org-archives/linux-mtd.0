@@ -1,22 +1,33 @@
-Received: from kda-mailgw-02.mail.kongsberg.com ([193.71.180.105])
+Received: from mail.ipcas.de ([83.236.147.227])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HlLDf-0005oP-4e
-	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 04:38:53 -0400
-Received: from kda-beexc-06.kda.kongsberg.com (unverified [193.71.174.22]) by
-	kda-mailgw-02.mail.kongsberg.com
-	(Clearswift SMTPRS 5.2.9) with ESMTP id
-	<T7f77a48c12c147b469bfc@kda-mailgw-02.mail.kongsberg.com> for
-	<linux-mtd@lists.infradead.org>; Tue, 8 May 2007 10:28:39 +0200
-Content-class: urn:content-classes:message
+	id 1HlLIh-00064P-KM
+	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 04:44:15 -0400
+Received: from localhost (unknown [127.0.0.1])
+	by mail.ipcas.de (Postfix) with ESMTP id AA5DAA0403
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 May 2007 10:44:01 +0200 (CEST)
+Received: from mail.ipcas.de ([127.0.0.1])
+	by localhost (mail.ipcas.de [127.0.0.1]) (amavisd-new,
+	port 10024) with ESMTP
+	id 29357-05 for <linux-mtd@lists.infradead.org>;
+	Tue,  8 May 2007 10:43:59 +0200 (CEST)
+Received: from midgard.ipcas.de (firewall.ipcas.de [83.236.147.226])
+	by mail.ipcas.de (Postfix) with ESMTP id 22A51A03F2
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 May 2007 10:43:59 +0200 (CEST)
+Received: from franken3 (unknown [192.109.223.63])
+	by midgard.ipcas.de (Postfix) with ESMTP id 19F6876C103
+	for <linux-mtd@lists.infradead.org>;
+	Tue,  8 May 2007 10:43:59 +0200 (CEST)
+Date: Tue, 08 May 2007 10:44:01 +0200
+From: =?UTF-8?Q?Michael_K=C3=B6nig?= <Michael.Koenig@ipcas.de>
+To: linux-mtd@lists.infradead.org
+Subject: Problems with cfi_cmdset_0002 and Atmel AT49BV642D
+Message-ID: <D1CA5322EC0446D8F2053C9D@franken3>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-Subject: Wrong size at boot when loading partition
-Date: Tue, 8 May 2007 10:28:38 +0200
-Message-ID: <DFE4DC18931A1F46AD316DAF9ECFE50907906B@kda-beexc-03.kda.kongsberg.com>
-From: <Staale.Aakermann@kongsberg.com>
-To: <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,62 +37,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear All,
-I am trying to upgrade an Arcom Vulcan kernel from 2.6.11 to 2.6.21. The
-kernel is almost vanilla, except some pci-bridge issues. It is an IXP425
-based board with 16/32MB AMD MirrorBit flash. I'm newbie when it comes
-to MTD/JFFS2 so I am not sure what causes the wrong partition allocation
-on boot.=20
+Hello there,
 
-Could anybody help me on this issue?
+as a short introduction (I'll be more precise later):
+We built our own Linux device utilizing the ETRAX 100LX microcontroller and =
 
-I've posted the kernel boot messages below:
+using the SDK provided by Axis. As a Flash chip we chose the Atmel=20
+AT49BV642D.
 
-NET: Registered protocol family 2=20
-IP route cache hash table entries: 1024 (order: 0, 4096 bytes)=20
-TCP established hash table entries: 2048 (order: 2, 16384 bytes)=20
-TCP bind hash table entries: 2048 (order: 1, 8192 bytes)=20
-TCP: Hash tables configured (established 2048 bind 2048)=20
-TCP reno registered=20
-PCI: enabling device 0000:00:02.1 (0140 -> 0143)=20
-NetWinder Floating Point Emulator V0.97 (double precision)=20
-JFFS2 version 2.2. (NAND) (C) 2001-2006 Red Hat, Inc.=20
-io scheduler noop registered=20
-io scheduler cfq registered (default)=20
-Non-volatile memory driver v1.2=20
-Serial: 8250/16550 driver $Revision: 1.90 $ 8 ports, IRQ sharing enabled
+With the Linux 2.4 based SDK that includes cfi_cmdset_0002.c v1.62=20
+2003/01/24 the Flash worked fine although it wasn't correctly recognised by =
 
-serial8250.0: ttyS0 at MMIO 0xc8000000 (irq =3D 15) is a XScale=20
-serial8250.0: ttyS1 at MMIO 0x53000000 (irq =3D 21) is a 16550A=20
-serial8250.0: ttyS2 at MMIO 0x53000008 (irq =3D 21) is a 16550A=20
-loop: loaded (max 8 devices)=20
-MTD Sharp chip driver <ds@lineo.com>=20
-IXP4XX-Flash.0: Found 1 x16 devices at 0x0 in 16-bit bank=20
-Amd/Fujitsu Extended Query Table at 0x0040=20
-IXP4XX-Flash.0: CFI does not contain boot bank location. Assuming top.=20
-number of CFI chips: 1=20
+the CFI probe (the Atmel patches weren't there yet), but it seems that=20
+JEDEC seems to fix that up. Excerpt from dmesg on Linux 2.4:
+
+ Amd/Fujitsu Extended Query Table v1.0 at 0x0041
+cse0: JEDEC Device ID is 0xD6. Assuming broken CFI table.
+cse0: Swapping erase regions for broken CFI table.
+number of CFI chips: 1
+cfi_cmdset_0002: Disabling fast programming due to code brokenness.
+
+I'm not totally sure what the last line means exactly, but Flash operations =
+
+seem to work fine nontheless.
+
+
+The new SDK from Axis is based on Linux 2.6 and includes cfi_cmdset_0002.c=20
+v1.122 2005/11/07. In this case the Flash is correctly recognised thanks to =
+
+the Atmel patches (I also made sure that fixup_convert_atmel_pri() gets=20
+called and the AT49BV642D is identified as a bottom boot device):
+
+cse0: Probing a 0x04000000 bytes large window at 0xe0000000.
+cse0: Found 1 x16 devices at 0x0 in 16-bit bank
+cse0: Found an alias at 0x800000 for the chip at 0x0
+cse0: Found an alias at 0x1000000 for the chip at 0x0
+cse0: Found an alias at 0x1800000 for the chip at 0x0
+cse0: Found an alias at 0x2000000 for the chip at 0x0
+cse0: Found an alias at 0x2800000 for the chip at 0x0
+cse0: Found an alias at 0x3000000 for the chip at 0x0
+cse0: Found an alias at 0x3800000 for the chip at 0x0
+ Amd/Fujitsu Extended Query Table at 0x0041
+number of CFI chips: 1
 cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
 
-Searching for RedBoot partition table in IXP4XX-Flash.0 at offset
-0xff0000=20
-4 RedBoot partitions found on MTD device IXP4XX-Flash.0=20
-Creating 4 MTD partitions on "IXP4XX-Flash.0":=20
-0xb0000000-0xb0060000 : "RedBoot"=20
-mtd: partition "RedBoot" is out of reach -- disabled=20
-0xb0060000-0xb0ff0000 : "filesystem"=20
-mtd: partition "filesystem" is out of reach -- disabled=20
-0xb0ff0000-0xb0fff000 : "FIS directory"=20
-mtd: partition "FIS directory" is out of reach -- disabled=20
-0xb0fff000-0xb1000000 : "RedBoot config"=20
-mtd: partition "RedBoot config" is out of reach -- disabled=20
-TCP cubic registered=20
-NET: Registered protocol family 1=20
-XScale DSP coprocessor detected.=20
-drivers/rtc/hctosys.c: unable to open rtc device (rtc0)=20
-jffs2: Too few erase blocks (0)=20
-No filesystem could mount root, tried: jffs2=20
-Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(31,1)=20
 
+The system boots fine and reading isn't a problem either, but it seems that =
 
-Staale Aakermann
+no data is actually written to the Flash. When creating a new file on JFFS2 =
+
+I get an error message like this:
+
+Node totlen on flash (0xffffffff) !=3D totlen from node ref (0x00000044)
+
+I guess the magic number 0x1985 isn't checked, otherwise it might even fail =
+
+before checking the totlen.
+
+At first I thought that the problem is just with do_write_buffer(), but=20
+Axis have a bootblocktool that lets you write data to a specific partition=20
+that is classified as a mtdchar device. While I don't get error messages in =
+
+this case, the written data simply cannot be read back, so I guess there=20
+must be a problem with do_write_one_word() as well.
+
+I noticed that do_write_buffer() seems to use some kind of burst mode, but=20
+I wasn't able to find that command sequence (0xAA, 0x55, 0x25) in neither=20
+the documentation for the AT49BV642D nor an AMD one (Am29DL640D) I looked=20
+at for comparison.
+
+Since the AT49BV642D is a successor of the AT49BV6416 I tried activating=20
+fixup_use_atmel_lock() for it as well, but that didn't help either.
+
+All the tests were performed on the same device and once I switch from=20
+Linux 2.6 back to 2.4 everything works fine, so I doubt that there is a=20
+problem with the Flash itself.
+
+Does anybody have an idea what might be the cause of this problem?
+
+Thanks in advance!
+
+--=20
+Mit freundlichen Gr=C3=BC=C3=9Fen
+Best regards
+Michael K=C3=B6nig
+
+ipcas GmbH
+Wetterkreuz 17
+91058 Erlangen, Germany
+Tel.: +49 9131 7677-31
+Fax: +49 9131 7677-78
+mailto:Michael.Koenig@ipcas.de
+
+Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. S. Sutiono
+Sitz der Gesellschaft: Erlangen
+Registergericht: F=C3=BCrth, HBR 3676
+WEEE-Reg.-Nr. DE 77202473
+
+Hinweis: Diese E-Mail und etwaige Anlagen k=C3=B6nnen Betriebs- oder
+Gesch=C3=A4ftsgeheimnisse, dem Anwaltsgeheimnis unterliegen oder sonstige
+vertrauliche Informationen enthalten. Sollten Sie diese E-Mail
+irrt=C3=BCmlich erhalten haben, ist Ihnen der Status dieser E-Mail bekannt.
+Bitte benachrichtigen Sie uns in diesem Fall sofort durch Antwort-Mail
+und l=C3=B6schen Sie diese E-Mail nebst etwaigen Anlagen von Ihrem System.
+Ebenso d=C3=BCrfen Sie diese E-Mail oder seine Anlagen
+nicht kopieren oder an Dritte weitergeben. Vielen Dank.
