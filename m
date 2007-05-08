@@ -1,20 +1,15 @@
-Received: from mail.ipcas.de ([83.236.147.227])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HlPNA-0003DK-50
-	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 09:04:57 -0400
-Date: Tue, 08 May 2007 15:04:51 +0200
-From: =?UTF-8?Q?Michael_K=C3=B6nig?= <Michael.Koenig@ipcas.de>
-To: Vitaly Wool <vitalywool@gmail.com>
-Subject: Re: Problems with cfi_cmdset_0002 and Atmel AT49BV642D
-Message-ID: <D6B9D8921EDF6299768B8F76@franken3>
-In-Reply-To: <acd2a5930705080449q2930ad50n521b70263d1c2fdb@mail.gmail.com>
-References: <D1CA5322EC0446D8F2053C9D@franken3>
-	<acd2a5930705080449q2930ad50n521b70263d1c2fdb@mail.gmail.com>
+Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HlPRk-0003QN-Sm
+	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 09:09:42 -0400
+Message-ID: <4640768F.7060703@indefia.com>
+Date: Tue, 08 May 2007 16:09:35 +0300
+From: Semih Hazar <semih.hazar@indefia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mkfs.jffs2: Add support for entering the page size in KiB
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,58 +19,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Vitaly
+mkfs.jffs2 doesn't understand page size when given in KiB. This patch 
+fixes that so short forms are supported both in erase size and page size.
 
->> cse0: Probing a 0x04000000 bytes large window at 0xe0000000.
->
-> that's b/c you're supplying too large a window, but that's harmless
-> AFAICS.
+Signed-off-by: Semih Hazar <semih.hazar@indefia.com>
+---
+mkfs.jffs2.c |   56 +++++++++++++++++++++++++++++++++++---------------------
+1 files changed, 35 insertions(+), 21 deletions(-)
 
-Strange, I don't think I'm supplying that window size anywhere, so it must=20
-be some preset range by Axis. I just took a look at the output of a device=20
-with a smaller Flash and it was the same window.
+diff --git a/mkfs.jffs2.c b/mkfs.jffs2.c
+index bc9901e..0011817 100644
+--- a/mkfs.jffs2.c
++++ b/mkfs.jffs2.c
+@@ -168,6 +168,34 @@ static void perror_msg_and_die(const char *s, ...)
+	exit(EXIT_FAILURE);
+}
 
->> Node totlen on flash (0xffffffff) !=3D totlen from node ref (0x00000044)
->
-> I'd check if you have the right width set up first.
++int tobytes(const char* str)
++{
++	char *unit;
++	int mul;
++	int val = strtol(str, &unit, 0);
++
++	if (!val)
++		return val;
++
++	if (*unit) {
++		if (!strcmp(unit, "KiB")) {
++			mul = 1024;
++		} else if (!strcmp(unit, "MiB")) {
++			mul = 1024 * 1024;
++		} else {
++			return -1;
++		}
++	} else {
++		if (val < 0x1000) {
++			mul = 1024;
++		} else {
++			mul = 1;
++		}
++	}
++	
++	return val * mul;
++}
++
+#ifndef DMALLOC
+extern void *xmalloc(size_t size)
+{
+@@ -1641,7 +1669,10 @@ int main(int argc, char **argv)
+				break;
 
-Both kernelconfig files have the following settings for the Flash:
-CONFIG_ETRAX_FLASH_BUSWIDTH=3D2
-CONFIG_ETRAX_FLASH1_SIZE=3D8
+			case 's':
+-				page_size = strtol(optarg, NULL, 0);
++				page_size = tobytes(optarg);
++				if (page_size<0) {
++					error_msg_and_die("Unrecognisable page size\n");
++				}		  
+				break;
 
-The kernelconfig for Linux 2.6 also adds CONFIG_ETRAX_NANDFLASH_BUSWIDTH,=20
-which was set to 1. I didn't think it would matter, since we don't have=20
-NAND Flashes, just NOR ones. I set it to 2 as well, just to see what=20
-happens, but I still have the same behaviour.
+			case 'o':
+@@ -1684,28 +1715,11 @@ int main(int argc, char **argv)
+						(int) strlen(revtext) - 13, revtext + 11);
 
-To be totally sure, I changed the FLASH_BUSWIDTH to 1 and still have the=20
-same effects. It's a bit strange, I didn't expect it to work at all.
+			case 'e': {
+-						  char *next;
+-						  unsigned units = 0;
+-						  erase_block_size = strtol(optarg, &next, 0);
+-						  if (!erase_block_size)
++						  erase_block_size = tobytes(optarg);
++						  
++						  if (erase_block_size<0)
+							  error_msg_and_die("Unrecognisable erase size\n");
 
-It still bugs me that I cannot find the command sequence that is used in=20
-do_write_buffer() in my Atmel documentation.
-
---=20
-Mit freundlichen Gr=C3=BC=C3=9Fen
-Best regards
-Michael K=C3=B6nig
-
-ipcas GmbH
-Wetterkreuz 17
-91058 Erlangen, Germany
-Tel.: +49 9131 7677-31
-Fax: +49 9131 7677-78
-mailto:Michael.Koenig@ipcas.de
-
-Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. S. Sutiono
-Sitz der Gesellschaft: Erlangen
-Registergericht: F=C3=BCrth, HBR 3676
-WEEE-Reg.-Nr. DE 77202473
-
-Hinweis: Diese E-Mail und etwaige Anlagen k=C3=B6nnen Betriebs- oder
-Gesch=C3=A4ftsgeheimnisse, dem Anwaltsgeheimnis unterliegen oder sonstige
-vertrauliche Informationen enthalten. Sollten Sie diese E-Mail
-irrt=C3=BCmlich erhalten haben, ist Ihnen der Status dieser E-Mail bekannt.
-Bitte benachrichtigen Sie uns in diesem Fall sofort durch Antwort-Mail
-und l=C3=B6schen Sie diese E-Mail nebst etwaigen Anlagen von Ihrem System.
-Ebenso d=C3=BCrfen Sie diese E-Mail oder seine Anlagen
-nicht kopieren oder an Dritte weitergeben. Vielen Dank.
+-						  if (*next) {
+-							  if (!strcmp(next, "KiB")) {
+-								  units = 1024;
+-							  } else if (!strcmp(next, "MiB")) {
+-								  units = 1024 * 1024;
+-							  } else {
+-								  error_msg_and_die("Unknown units in erasesize\n");
+-							  }
+-						  } else {
+-							  if (erase_block_size < 0x1000)
+-								  units = 1024;
+-							  else
+-								  units = 1;
+-						  }
+-						  erase_block_size *= units;
+-
+						  /* If it's less than 8KiB, they're not allowed */
+						  if (erase_block_size < 0x2000) {
+							  fprintf(stderr, "Erase size 0x%x too small. Increasing to 8KiB minimum\n",
+-- 
+1.4.4.2
