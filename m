@@ -1,23 +1,12 @@
-Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HlXGy-0002Ua-LC
-	for linux-mtd@lists.infradead.org; Tue, 08 May 2007 17:31:06 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org,
- dedekind@infradead.org
-Subject: Re: MLC NAND support in JFFS2
-Date: Wed, 9 May 2007 09:38:45 +1200
-References: <dd2695e90705080020u576249aah71121e245f659bd3@mail.gmail.com>
-	<dd2695e90705080132h234b7389x37762c4884047cb0@mail.gmail.com>
-	<1178614097.3708.21.camel@sauron>
-In-Reply-To: <1178614097.3708.21.camel@sauron>
+From: Microsoft =?ISO-8859-1?B?rg==?= Award Team <infomicrosoft@bellsouth.net>
+To: <info@com>
+Subject: Microsoft Award Promo: BTD/890578302/04
+Date: Tue, 8 May 2007 22:55:34 -0400
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200705090938.45247.manningc2@actrix.gen.nz>
-Cc: Stanley Cai <stanley.w.cai@gmail.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20070509025534.TYZ11358.ibm57aec.bellsouth.net@mail.bellsouth.net>
+Reply-To: claimsagent_carpenter07@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +16,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 08 May 2007 20:48, Artem Bityutskiy wrote:
-> On Tue, 2007-05-08 at 16:32 +0800, Stanley Cai wrote:
-> > hi
-> >   I find that some vendor's MLC NAND such as Samsung require the user
-> > programs the pages in the same block in sequence from least
-> > significant page to most significant page. i think current JFSS2 can
-> > not do this now.
->
-> Please, no private mails.
->
-> This was a requirement for SLC flashes as well, at least Toshiba's data
-> sheets noted this. JFFS2 satisfies this requirement.
+Microsoft Award Promo
+43 Wilson Ave, Harlesden London NW10 United Kingdom,
+Ref: BTD/876/03
+Batch: 653978E
 
-I think the bigger issue is supporting multi-bit error correction via BCH. The 
-current 1-bit correcting Hamming code is inadequate for MLC.
+Dear Winner,
+The prestigious Microsoft and AOL has set out and successfully
+organised a Sweepstakes marking this year 2007 anniversary we rolled 
+out over
+£10,000.000.00 (Ten million Great Britain Pounds) for this year 
+Anniversary Draws.
+The selection was made randomly from World Wide Web site through a
+computer draw system extracted from over 100,000 individuals and 
+companies,
+attaching email addresses to ticket numbers.
+Your email address as indicated was drawn and attached to ticket number
+005493262748 with serial numbers BTD/890578302/04 and drew the lucky
+numbers 15-22-27-38-40-47(20) which subsequently won you £1,000,000.00
+(One Million Great Britain Pounds) as one of the 10 jackpot winners in 
+this draw.
+contact your agent on how to claim your prize 
+Name: MR. DAVID CARPENTER
+Email :claimsagent_carpenter07@yahoo.co.uk 
+
+Sincerely,
+Mrs Susan Miller
+Microsoft Promotion Team
