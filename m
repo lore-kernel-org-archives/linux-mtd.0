@@ -1,23 +1,19 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HmAcK-0001cY-Sq
-	for linux-mtd@lists.infradead.org; Thu, 10 May 2007 11:31:46 -0400
-Received: from [10.191.255.159] (dhcp-255-159.norway.atmel.com
-	[10.191.255.159])
-	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id l4AFVfqK097216
+Received: from an-out-0708.google.com ([209.85.132.243])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HmBzG-0002qz-O4
+	for linux-mtd@lists.infradead.org; Thu, 10 May 2007 12:59:31 -0400
+Received: by an-out-0708.google.com with SMTP id d17so159080and
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 May 2007 17:31:41 +0200 (CEST)
-	(envelope-from hcegtvedt@atmel.com)
-Subject: Re: [PATCH] fix Atmel NOR flash for command set 0002
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+	Thu, 10 May 2007 09:59:29 -0700 (PDT)
+Message-ID: <97c001730705100959n17412b71n9a691840d47593e7@mail.gmail.com>
+Date: Thu, 10 May 2007 11:59:28 -0500
+From: Meher <mail2meher@gmail.com>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <1178785968.11554.58.camel@localhost.localdomain>
-References: <1178785968.11554.58.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 10 May 2007 17:31:32 +0200
-Message-Id: <1178811092.11554.67.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Subject: BBT structure for NAND flash
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,20 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-10 at 10:32 +0200, Hans-Christian Egtvedt wrote:
-> Hello,
-> 
-> Trying to prod my co-worker backfired, so here is the patch with a
-> changelog.
+HI,
+      We have an ARM-9 based board with NAND flash. The ROM boot
+laoder will load the kernel loader from NAND and the kernel loader
+will load the kernel and pass the file system information to the
+kernel. To have a good bad block management scheme for the boot loader
+I am planning to use the BBT table generated using MTD API.
+   I would like to understand what will be the structure of the BBT
+table created using MTD layer? When I set the parameters to created
+user defined BBT table say at the end of the flash will the NAND
+driver in linux kernel actually create the BBT at the last two blocks
+of the physcial NAND block? Can I have my ROM bootlaoder read this BBT
+so that it can identify any non-factory bad blocks that arised due to
+upgrading of kernel loader.
 
-Oh, forgot to mention it is diffed against Linux 2.6.20, but as previous
-mentioned a similar patch is already applied to the repository. I guess
-Michael König ment the MTD repository.
 
-<cut changelog>
 
 -- 
-With kind regards,
-
-Hans-Christian Egtvedt, siv.ing. (M.Sc.)
-Applications Engineer - AVR32 System Solutions - Atmel Norway
+Regards,
+Meher
