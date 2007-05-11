@@ -1,22 +1,24 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HmPsr-0004RT-Ml
-	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 03:49:53 -0400
+Received: from ug-out-1314.google.com ([66.249.92.168])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HmVUt-0007S1-B8
+	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 09:49:29 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so620651uge
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 11 May 2007 06:49:24 -0700 (PDT)
+From: borasah@gmail.com
+To: linux-mtd@lists.infradead.org
 Subject: Re: NAND flash write goes wrong
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-In-Reply-To: <1178869349.3643.11.camel@sauron>
+Date: Fri, 11 May 2007 16:56:23 +0300
 References: <200705102150.31171.borasah@gmail.com>
 	<Pine.LNX.4.64.0705110825530.3951@lnxricardw.se.axis.com>
-	<1178866648.3643.7.camel@sauron>  <46441839.2020004@parrot.com>
-	<1178869349.3643.11.camel@sauron>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 11 May 2007 10:49:32 +0300
-Message-Id: <1178869772.3643.13.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
-Reply-To: dedekind@infradead.org
+In-Reply-To: <Pine.LNX.4.64.0705110825530.3951@lnxricardw.se.axis.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="Iso-8859-9"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200705111656.24216.borasah@gmail.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +28,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-05-11 at 10:42 +0300, Artem Bityutskiy wrote:
-> On Fri, 2007-05-11 at 09:16 +0200, Matthieu CASTET wrote:
-> > Could you give a link to your fix ?
->=20
-> http://git.infradead.org/?p=3Dmtd-2.6.git;a=3Dcommit;h=3D74641d7527593679=
-6d239f828b80cb030e9f9b0a
->=20
-> Although even with this fix JFFS2 does not survive I/O errors in many
-> cases, there were more error-path fixes. 2.6.20's JFFS2 is much better
-> in errors handling then older versions.
 
-Err, to make it clearer, _older_ JFFS2 will not survive I/O errors in
-many cases even with this fix.
+> > compiled them for both the host and the target. I am using "mkfs.jffs2
+> > command on the host" to generate a jffs2 image.
+> > 	./mkfs.jffs2 -p 0x3800000 -s 0x200 -e 0x4000 -r rootfs -o img -l
+>
+> I don't know if this is it but
+>
+> - I wouldn't pad the output image using -p <padsize>. Since there may be
+>    bad blocks in the flash, the image might not fit if padded to the
+>    whole partition size. Just skip the -p and its argument. As long as
+>    the whole partition into which the image is written has been erased
+>    beforehand, jffs2 will be able to make use of the unused space.
+>
+> - The -s <pagesize>  argument doesn't specify the page size of the
+>    flash chip, rather it should be the same as the 'page size' in the
+>    Linux system, normally 4096 for most architectures.
+>
+> - In nand flash, the cleanmarkers are normally not part of the image
+>    as they reside in the 'spare area' in the flash. The JFFS2 driver will
+>    automatically create cleanmarkers when it scans the chip at first boot,
+>    and having them in the image will confuse the issue, even if it normally
+>    works anway (but with lots of warnings at boot time).
+>    So, add -n to the list of arguments to inhibit cleanmarker
+>    generation by mkfs.jffs2.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks for the infos. OK, this means
+	./mkfs.jffs2 -e 0x4000 -r rootfs -o img -l -n
+or
+	./mkfs.jffs2 -s 0x1000 -e 0x4000 -r rootfs -o img -l -n
+right? I checked the target .config, it uses 4K as page size. But I gave
+
+	Input file is not page aligned
+	Data did not fit into device, due to bad blocks
+	: Success
+
+In fact, I tried without -p and with -n before. Without -p nandwrite gives the 
+above message. Then I put -p and nandwrite started to write...
+
+> > 	Erasing 16 Kibyte @ 24000 --  0 % complete. Cleanmarker written at
+> > 24000. Skipping bad block at 0x00028000
+> > 	...
+> > Is this normal? Then I do
+> > 	./nandwrite /dev/mtd2 img
+> > It writes by skipping bad blocks.
+> > 	...
+> > 	Writing data to block 189c000
+> > 	Bad block at 189c000, 1 block(s) from 189c000 will be skipped
+> > 	Writing data to block 18a0000
+> > 	...
+>
+> If there indeed are bad blocks it is correct to skip them both when
+> erasing and writing.
+
+OK. What I wanted to learn was different. In the begining there was no bad 
+sector but by the passage of time, when I tried different combinations, bad 
+sector numbers started to increase. Is this normal? Or are there some 
+fundamentally different things between kernel version and mtd-utils so these 
+marks them as bad?
+
+Thanks...
+
+--
+Bora SAHIN
