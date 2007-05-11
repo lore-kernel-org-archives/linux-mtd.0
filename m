@@ -1,19 +1,21 @@
-Received: from [149.6.83.202] (helo=toronto.xi-lite.net)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HmPPs-0003kZ-VF
-	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 03:19:55 -0400
-Message-ID: <46441839.2020004@parrot.com>
-Date: Fri, 11 May 2007 09:16:09 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: dedekind@infradead.org
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HmPm3-0004Bh-I0
+	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 03:42:52 -0400
 Subject: Re: NAND flash write goes wrong
-References: <200705102150.31171.borasah@gmail.com>	<Pine.LNX.4.64.0705110825530.3951@lnxricardw.se.axis.com>
-	<1178866648.3643.7.camel@sauron>
-In-Reply-To: <1178866648.3643.7.camel@sauron>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Matthieu CASTET <matthieu.castet@parrot.com>
+In-Reply-To: <46441839.2020004@parrot.com>
+References: <200705102150.31171.borasah@gmail.com>
+	<Pine.LNX.4.64.0705110825530.3951@lnxricardw.se.axis.com>
+	<1178866648.3643.7.camel@sauron>  <46441839.2020004@parrot.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 11 May 2007 10:42:29 +0300
+Message-Id: <1178869349.3643.11.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Artem,
+On Fri, 2007-05-11 at 09:16 +0200, Matthieu CASTET wrote:
+> Could you give a link to your fix ?
 
-Artem Bityutskiy a écrit :
-> Just FYI,
-> 
-> we have recently fixed a bug in MTD which caused JFFS2 to mark good
-> eraseblocks bad. It was caused by the mtdpart module. One had to have
-> partitions to trigger this bug. The bug was that when JFFS2 wanted to
-> mark eraseblock X within its partition as bad, mtdpart did not translate
-> correctly to the _absolute_ number, but marked _absolute_ eraseblock
-> number X as bad instead.
-> 
-> So basically, once one met a true bad eraseblock, JFFS2 started trying
-> to mark it as bad, but marked other eraseblock as bad instead.
-> 
-> I'd recommend everybody to backport this fix.
-> 
-Could you give a link to your fix ?
+http://git.infradead.org/?p=3Dmtd-2.6.git;a=3Dcommit;h=3D74641d75275936796d=
+239f828b80cb030e9f9b0a
 
+Although even with this fix JFFS2 does not survive I/O errors in many
+cases, there were more error-path fixes. 2.6.20's JFFS2 is much better
+in errors handling then older versions.
 
-Thanks
-
-Matthieu
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
