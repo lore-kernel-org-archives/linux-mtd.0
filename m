@@ -1,25 +1,21 @@
-Received: from ug-out-1314.google.com ([66.249.92.169])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HmHKS-0006o1-1l
-	for linux-mtd@lists.infradead.org; Thu, 10 May 2007 18:41:45 -0400
-Received: by ug-out-1314.google.com with SMTP id m2so530399uge
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 10 May 2007 15:41:42 -0700 (PDT)
-From: borasah@gmail.com
-To: tglx@linutronix.de
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HmOix-0002Du-An
+	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 02:35:32 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l4B6ZLW2006923
+	for <linux-mtd@lists.infradead.org>; Fri, 11 May 2007 08:35:21 +0200
+Date: Fri, 11 May 2007 08:36:28 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
 Subject: Re: NAND flash write goes wrong
-Date: Fri, 11 May 2007 01:42:05 +0300
+In-Reply-To: <200705102150.31171.borasah@gmail.com>
+Message-ID: <Pine.LNX.4.64.0705110825530.3951@lnxricardw.se.axis.com>
 References: <200705102150.31171.borasah@gmail.com>
-	<200705110037.08480.borasah@gmail.com>
-	<1178835314.22481.24.camel@localhost.localdomain>
-In-Reply-To: <1178835314.22481.24.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="Iso-8859-9"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200705110142.05663.borasah@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,24 +26,68 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
+On Thu, 10 May 2007, borasah@gmail.com wrote:
 
-> On Fri, 2007-05-11 at 00:37 +0300, borasah@gmail.com wrote:
-> > jffs2: Erase block size too small (16KiB). Using virtual blocks size
-> > (32KiB)
+> Hi,
 >
-> ---------------------------------------------------^^^^^^^
+> I have a MIPS based board and want to use its NAND flash for storage. NAN=
+D
+> chip is a Samsung part: K9F1208UDA. It has 16KB erase block size and 512 =
+byte
+> page size.
+> =09cat /proc/mtd
+> =09dev:    size   erasesize  name
+> =09mtd0: 02000000 00020000 "mtdram test device"
+> =09mtd1: 00800000 00004000 "NAND FS 0"
+> =09mtd2: 03800000 00004000 "NAND FS 1"
 >
-> The virtual block support was removed two years ago.
+> As you see there are two partitions on it. I want to use "NAND FS 1"(56MB=
+) for
+> rootFS storage. I obtained mtd-utils from the site and compiled them for =
+both
+> the host and the target. I am using "mkfs.jffs2 command on the host" to
+> generate a jffs2 image.
+> =09./mkfs.jffs2 -p 0x3800000 -s 0x200 -e 0x4000 -r rootfs -o img -l
 
-Oops...
+I don't know if this is it but
 
-> Please use an up to date kernel.
-> http://www.linux-mtd.infradead.org/source.html#kernelversions
+- I wouldn't pad the output image using -p <padsize>. Since there may be
+   bad blocks in the flash, the image might not fit if padded to the
+   whole partition size. Just skip the -p and its argument. As long as
+   the whole partition into which the image is written has been erased
+   beforehand, jffs2 will be able to make use of the unused space.
 
-I am using 2.6.11. Is this valid for it? 
+- The -s <pagesize>  argument doesn't specify the page size of the
+   flash chip, rather it should be the same as the 'page size' in the
+   Linux system, normally 4096 for most architectures.
 
-Or I can use older mtd-utils?
+- In nand flash, the cleanmarkers are normally not part of the image
+   as they reside in the 'spare area' in the flash. The JFFS2 driver will
+   automatically create cleanmarkers when it scans the chip at first boot,
+   and having them in the image will confuse the issue, even if it normally
+   works anway (but with lots of warnings at boot time).
+   So, add -n to the list of arguments to inhibit cleanmarker
+   generation by mkfs.jffs2.
 
+> ...
+> =09Erasing 16 Kibyte @ 24000 --  0 % complete. Cleanmarker written at 240=
+00.
+> =09Skipping bad block at 0x00028000
+> =09...
+> Is this normal? Then I do
+> =09./nandwrite /dev/mtd2 img
+> It writes by skipping bad blocks.
+> =09...
+> =09Writing data to block 189c000
+> =09Bad block at 189c000, 1 block(s) from 189c000 will be skipped
+> =09Writing data to block 18a0000
+> =09...
+
+If there indeed are bad blocks it is correct to skip them both when=20
+erasing and writing.
+
+/Ricard
 --
-Bora SAHIN
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
