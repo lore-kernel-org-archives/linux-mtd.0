@@ -1,25 +1,19 @@
-Received: from ug-out-1314.google.com ([66.249.92.174])
+Received: from an-out-0708.google.com ([209.85.132.241])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HmZGs-0001AT-4c
-	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 13:51:17 -0400
-Received: by ug-out-1314.google.com with SMTP id m2so657715uge
+	id 1HmdGa-00036d-Pc
+	for linux-mtd@lists.infradead.org; Fri, 11 May 2007 18:07:13 -0400
+Received: by an-out-0708.google.com with SMTP id d17so269241and
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 May 2007 10:51:12 -0700 (PDT)
-From: borasah@gmail.com
+	Fri, 11 May 2007 15:07:09 -0700 (PDT)
+Message-ID: <97c001730705111507q4a79c876j9f3a4e5f64df0a90@mail.gmail.com>
+Date: Fri, 11 May 2007 17:07:09 -0500
+From: Meher <mail2meher@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: NAND flash write goes wrong
-Date: Fri, 11 May 2007 20:58:14 +0300
-References: <200705102150.31171.borasah@gmail.com>
-	<200705111656.24216.borasah@gmail.com>
-	<Pine.LNX.4.64.0705111621430.3951@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.0705111621430.3951@lnxricardw.se.axis.com>
+Subject: BBT structure for NAND flash:updated
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="Iso-8859-9"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200705112058.14662.borasah@gmail.com>
-Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,71 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+  I havent received any reply so I am assuming either the information
+I provided did not make sense or I asked a asking that does not belong
+in thsi mailing list :( but I am providing some more info here so that
+some one can atleast point em to the right list for this:
 
-> > 	Input file is not page aligned
-> > 	Data did not fit into device, due to bad blocks
-> >
-> > 	: Success
-> >
-> > In fact, I tried without -p and with -n before. Without -p nandwrite
-> > gives the above message. Then I put -p and nandwrite started to write...
+ I am still looking at what is the format of the bad block table that
+is created by the MTD NAND layer when the nand_scan_bbt is called. If
+I select something like 2 bits per block then will the table be
+something like
+------------------------------------------------------------------------------------------------------------
+|   block num  |  block type  ||   block num  |  block type  |
+| 16-bits         |   2 bits        || 16-bits         |   2 bits        |
+|---------------------------------------------------------------------------------------------------------
+
+where first 2 bytes represent block num and 2 bits of next 1/2 bytes
+will be block type(good, bad, factory bad)?? I am not able to
+visualize this structure from the nand_scan_bbt code.. If I can know
+how this structure looks like then I can search for this and load it
+so that my bootloader is in sync with the bad blocks developed during
+updating process..
+
+
+On 5/10/07, Meher <mail2meher@gmail.com> wrote:
+> HI,
+>      We have an ARM-9 based board with NAND flash. The ROM boot
+> laoder will load the kernel loader from NAND and the kernel loader
+> will load the kernel and pass the file system information to the
+> kernel. To have a good bad block management scheme for the boot loader
+> I am planning to use the BBT table generated using MTD API.
+>   I would like to understand what will be the structure of the BBT
+> table created using MTD layer? When I set the parameters to created
+> user defined BBT table say at the end of the flash will the NAND
+> driver in linux kernel actually create the BBT at the last two blocks
+> of the physcial NAND block? Can I have my ROM bootlaoder read this BBT
+> so that it can identify any non-factory bad blocks that arised due to
+> upgrading of kernel loader.
 >
-> Sorry, I didn't get it completely right last time. It is good practice to
-> pad the image to a complete eraseblock size, but it shouldn't fill the
-> whole nand flash partition space available, in case there are bad blocks.
-
-Hmm, you say if the erase block size is 100, and the last part of the image is 
-64, the remaining 36 should be padded with 0xFF, but all the other free ones 
-can remain as is? 
-
-mkfs.jffs2 -p without SIZE does the above one or to the end of the NAND flash? 
-I think the first one...
-
-> So yes, it should be padded with -p, but not to the full size of the
-> partition, but a couple of eraseblocks less.
-
-You mean "NAND_size - erase_size * x"? 
-
-> -p specified to nandwrite should also work as it pads the image with 0xff.
-
-Hmm. You dont have to specify -p to the mkfs.jffs2, nandwrite can also do it 
-for you, right?
-
-> >> If there indeed are bad blocks it is correct to skip them both when
-> >> erasing and writing.
-> >
-> > OK. What I wanted to learn was different. In the begining there was no
-> > bad sector but by the passage of time, when I tried different
-> > combinations, bad sector numbers started to increase. Is this normal? Or
-> > are there some fundamentally different things between kernel version and
-> > mtd-utils so these marks them as bad?
 >
-> Blocks (nand flash terminology rejects the name 'sectors' in favor of
-> 'blocks' and 'pages') can go bad with time, but we're talking about
-> thousands if not tens of thousands of erase/write cycles here. So it seems
-> there's something wrong here.
+>
+> --
+> Regards,
+> Meher
+>
 
-Yes, I think too. Now ~140 bad sector is reported during the boot. I just did 
-at most 50 read/write...
 
-> There was a patch posted just a week or so ago here which fixed a problem
-> with bad block marking and recognition when not using a flash-based bad
-> block table.
-
-I'm new to the list. Is this Artem's patch? I applied it, but no success... 
-Maybe http://lists.infradead.org/pipermail/linux-mtd/2007-May/018087.html?
-
-> My (limited) experience is that when the jffs2 driver detects more and
-> more bad blocks over a short period of time, it is the result of a
-> hardware problem i.e. the communication with the nand flash doesn't work
-> properly, causing some reads, writes or erase operations to fail. (Case in
-> point: during debugging of one of our products I accidentally allocated a
-> network traffic indicator output pin to one of the nand flash signals,
-> which caused all sorts of weird nand flash problems if the flash was
-> accessed at the same time as the network. As long as the network was
-> silent, there were no problems whatsoever).
-
-Ricard, thanks for the the information...
-
---
-Bora SAHIN
+-- 
+Regards,
+Meher
