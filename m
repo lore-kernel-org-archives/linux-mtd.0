@@ -1,11 +1,24 @@
-Message-ID: <6624566.1179070941979.JavaMail.root@web32>
-Date: Sun, 13 May 2007 8:42:21 -0700
-From: EURO MILLIONS INTERNATIONAL  <woodwindguy@adelphia.net>
-Subject: ATTENTION YOUR E-MAIL WAS SELECTED
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HnUSf-0000rC-7n
+	for linux-mtd@lists.infradead.org; Mon, 14 May 2007 02:55:14 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l4E6t4FP032519
+	for <linux-mtd@lists.infradead.org>; Mon, 14 May 2007 08:55:04 +0200
+Date: Mon, 14 May 2007 08:56:18 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: NAND flash write goes wrong
+In-Reply-To: <200705112058.14662.borasah@gmail.com>
+Message-ID: <Pine.LNX.4.64.0705140852340.3951@lnxricardw.se.axis.com>
+References: <200705102150.31171.borasah@gmail.com>
+	<200705111656.24216.borasah@gmail.com>
+	<Pine.LNX.4.64.0705111621430.3951@lnxricardw.se.axis.com>
+	<200705112058.14662.borasah@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Reply-To: eumillions_verify@yahoo.co.uk
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,58 +28,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-175 WOODHILL ROAD, BULKYARD, LONDON,
-UNITED KINGDOM
-AWARD DEPARTMENT.
-BATCH: 24/00319/AL
-REF: ST/26510460037/AL
-Dear Winner,
-  
-Your ticket number: 023-0148-790-459 with 
 
-Serial number 5368/05 drew 
-The lucky number: 11
+On Fri, 11 May 2007, borasah@gmail.com wrote:
 
-Congratulations, you have just won yourself 
+>> Sorry, I didn't get it completely right last time. It is good practice t=
+o
+>> pad the image to a complete eraseblock size, but it shouldn't fill the
+>> whole nand flash partition space available, in case there are bad blocks=
+=2E
+>
+> Hmm, you say if the erase block size is 100, and the last part of the ima=
+ge is
+> 64, the remaining 36 should be padded with 0xFF, but all the other free o=
+nes
+> can remain as is?
 
--ONE MILLION FIVE HUNDRED 
-THOUSAND POUNDS ONLY in the satellite software 
+If the partition has been erased, all the other free ones will also be=20
+0xff.
 
-email lottery conducted 
-By EURO MILLIONS in which e-mail addresses are 
+> mkfs.jffs2 -p without SIZE does the above one or to the end of the NAND f=
+lash?
+> I think the first one...
 
-picked randomly by 
-Software powered by the Internet.Your email 
+Yes, it pads up to the next eraseblock. Again, if the partition was newly=
+=20
+erased, the rest of the partition will also contain 0xff.
 
-address was amongst those 
-chosen 
-this quarter and you are to contact our 
+>> So yes, it should be padded with -p, but not to the full size of the
+>> partition, but a couple of eraseblocks less.
+>
+> You mean "NAND_size - erase_size * x"?
 
-Promotions' Manager for 
-Clearance. 
+Yes.
 
-Here is the contact information:
+>> -p specified to nandwrite should also work as it pads the image with 0xf=
+f.
+>
+> Hmm. You dont have to specify -p to the mkfs.jffs2, nandwrite can also=20
+> do it for you, right?
 
-Promotion Manager:
-Mr. John Carrick
-Tel:{+44} 701 1148 523
-Fax:{+44} 870 4714 145
-Email:eumillions_verify@yahoo.co.uk
-   
-You are to forward the following details to enable us clear your file 
-for immediate payment:
-1. Full Names: 
-2. Address: 
-3. Age: 
-4. Sex: 
-5. Marital Status: 
-6. Occupation:
-7. Company Name.
-8. Phone numbers:
-9. Fax number: 
-10. Any Traveling Experience?
-11. Country:
+Yes.
 
-Yours faithfully,MRS. 
-CINDY. HOWARD  
-UNITED KINGDOM.
+>> Blocks (nand flash terminology rejects the name 'sectors' in favor of
+>> 'blocks' and 'pages') can go bad with time, but we're talking about
+>> thousands if not tens of thousands of erase/write cycles here. So it see=
+ms
+>> there's something wrong here.
+>
+> Yes, I think too. Now ~140 bad sector is reported during the boot. I just=
+ did
+> at most 50 read/write...
+
+You sound far from wearing the chip out. There must be another problem=20
+there somewhere.
+
+>> There was a patch posted just a week or so ago here which fixed a proble=
+m
+>> with bad block marking and recognition when not using a flash-based bad
+>> block table.
+>
+> I'm new to the list. Is this Artem's patch? I applied it, but no success.=
+=2E.
+> Maybe http://lists.infradead.org/pipermail/linux-mtd/2007-May/018087.html=
+?
+
+By Thomas Knobloch I believe, but yes, that's the patch I was thinking of.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
