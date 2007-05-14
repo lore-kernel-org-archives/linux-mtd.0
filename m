@@ -1,18 +1,21 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HnV8K-00025f-L3
-	for linux-mtd@lists.infradead.org; Mon, 14 May 2007 03:38:18 -0400
-Date: Mon, 14 May 2007 09:39:23 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: RE: NAND flash write goes wrong
-In-Reply-To: <42E999AD7A0E4647BF159F467EE4FBCB017B5155@BLR-SGM-MSG01.wipro.com>
-Message-ID: <Pine.LNX.4.64.0705140938250.3951@lnxricardw.se.axis.com>
-References: <42E999AD7A0E4647BF159F467EE4FBCB017B5155@BLR-SGM-MSG01.wipro.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: sathish.madhava@wipro.com
+	id 1HnWX1-00030Q-DV
+	for linux-mtd@lists.infradead.org; Mon, 14 May 2007 05:07:53 -0400
+Received: from [10.191.255.159] (dhcp-255-159.norway.atmel.com
+	[10.191.255.159])
+	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id l4E95eTZ055803
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 May 2007 11:05:40 +0200 (CEST)
+	(envelope-from hcegtvedt@norway.atmel.com)
+Subject: Mounting big endian jffs2 images on mtdram on a x86
+From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Mon, 14 May 2007 11:05:33 +0200
+Message-Id: <1179133533.21753.13.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,27 +25,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello,
 
-On Mon, 14 May 2007, sathish.madhava@wipro.com wrote:
+I am trying to mount an JFFS2 image made with mkfs.jffs2 on my x86
+laptop. The image is made with --big-endian set.
 
-> Dear Ricard
-> I have a small question on Yaffs.
-> Do we have any utility for creating a Yaffs image as we have it for
-> jffs2 ( mkfs.jffs2 from mtd-util2-1.0.0).
->
-> In some places I read that to create yaffs, I need to copy the source=20
-> files of yaffs into the kernel/fs/yaffs and then build to kernel to get=
-=20
-> mkyaffs and mkyaffsimage. Is it necessary ? or can I directly create a=20
-> yaffs image and then flash it to NAND and give the boot arguments so as=
-=20
-> to boot it using yaffs image.
+I do the following:
+modprobe mtdram total_size=8192 erase_size=64
+modprobe mtdchar
+modprobe mtdblock
+modprobe jffs2
+dd if=jffs2.image of=/dev/mtd0
+mount -t jffs2 /dev/mtdblock0 /some/mount/point
 
-I have no experiance of using yaffs. Try the yaffs home page at=20
-http://www.aleph1.co.uk/taxonomy/term/31/index.html .
+And I get:
+mount: /dev/mtdblock0: can't read superblock
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+AFAIK this is related to the image being big endian, while my computer
+is little endian. The JFFS2 image is valid when I program it into flash
+and mount it on my embedded system.
+
+Any hints, tips, how-to's or similar? I have tried google without much
+luck.
+
+-- 
+Best regards
+Hans-Christian Egtvedt
