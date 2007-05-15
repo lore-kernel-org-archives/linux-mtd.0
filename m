@@ -1,18 +1,24 @@
-Received: from [89.6.230.141] (helo=traven.no-ip.org)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HnWhu-0008IB-MX
-	for linux-mtd@lists.infradead.org; Mon, 14 May 2007 10:19:07 +0100
-Date: Mon, 14 May 2007 11:21:36 +0200
-From: Matthias Kaehlcke <matthias.kaehlcke@gmail.com>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH 5/5] Use mutex instead of semaphore in the MTD DataFlash driver
-Message-ID: <20070514092136.GK29206@traven>
-References: <20070514090256.GF29206@traven>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1Hnyww-0004f6-Pk
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 16:28:31 +0100
+Date: Tue, 15 May 2007 17:21:49 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: Review status (Re: [PATCH] LogFS take three)
+Message-ID: <20070515152149.GB32059@lazybastard.org>
+References: <20070515151919.GA32510@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20070514090256.GF29206@traven>
-Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070515151919.GA32510@lazybastard.org>
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,106 +28,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The MTD DataFlash driver uses a semaphore as mutex. Use the mutex API
-instead
-of the (binary) semaphore.
+Most of my homework is done.  There are six items left plus another five
+I believe should not get changed.
 
-Signed-off-by: Matthias Kaehlcke <matthias.kaehlcke@gmail.com>
 
---
-diff --git a/drivers/mtd/devices/mtd_dataflash.c b/drivers/mtd/devices/mtd_dataflash.c
-index a987e91..a5ed6d2 100644
---- a/drivers/mtd/devices/mtd_dataflash.c
-+++ b/drivers/mtd/devices/mtd_dataflash.c
-@@ -14,6 +14,7 @@
- #include <linux/slab.h>
- #include <linux/delay.h>
- #include <linux/device.h>
-+#include <linux/mutex.h>
- #include <linux/spi/spi.h>
- #include <linux/spi/flash.h>
- 
-@@ -89,7 +90,7 @@ struct dataflash {
- 	unsigned short		page_offset;	/* offset in flash address */
- 	unsigned int		page_size;	/* of bytes per page */
- 
--	struct semaphore	lock;
-+	struct mutex		lock;
- 	struct spi_device	*spi;
- 
- 	struct mtd_info		mtd;
-@@ -167,7 +168,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 	x.len = 4;
- 	spi_message_add_tail(&x, &msg);
- 
--	down(&priv->lock);
-+	mutex_lock(&priv->lock);
- 	while (instr->len > 0) {
- 		unsigned int	pageaddr;
- 		int		status;
-@@ -210,7 +211,7 @@ static int dataflash_erase(struct mtd_info *mtd, struct erase_info *instr)
- 			instr->len -= priv->page_size;
- 		}
- 	}
--	up(&priv->lock);
-+	mutex_unlock(&priv->lock);
- 
- 	/* Inform MTD subsystem that erase is complete */
- 	instr->state = MTD_ERASE_DONE;
-@@ -266,7 +267,7 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	x[1].len = len;
- 	spi_message_add_tail(&x[1], &msg);
- 
--	down(&priv->lock);
-+	mutex_lock(&priv->lock);
- 
- 	/* Continuous read, max clock = f(car) which may be less than
- 	 * the peak rate available.  Some chips support commands with
-@@ -279,7 +280,7 @@ static int dataflash_read(struct mtd_info *mtd, loff_t from, size_t len,
- 	/* plus 4 "don't care" bytes */
- 
- 	status = spi_sync(priv->spi, &msg);
--	up(&priv->lock);
-+	mutex_unlock(&priv->lock);
- 
- 	if (status >= 0) {
- 		*retlen = msg.actual_length - 8;
-@@ -336,7 +337,7 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 	else
- 		writelen = len;
- 
--	down(&priv->lock);
-+	mutex_lock(&priv->lock);
- 	while (remaining > 0) {
- 		DEBUG(MTD_DEBUG_LEVEL3, "write @ %i:%i len=%i\n",
- 			pageaddr, offset, writelen);
-@@ -441,7 +442,7 @@ static int dataflash_write(struct mtd_info *mtd, loff_t to, size_t len,
- 		else
- 			writelen = remaining;
- 	}
--	up(&priv->lock);
-+	mutex_unlock(&priv->lock);
- 
- 	return status;
- }
-@@ -463,7 +464,7 @@ add_dataflash(struct spi_device *spi, char *name,
- 	if (!priv)
- 		return -ENOMEM;
- 
--	init_MUTEX(&priv->lock);
-+	mutex_init(&priv->lock);
- 	priv->spi = spi;
- 	priv->page_size = pagesize;
- 	priv->page_offset = pageoffset;
+Changed:
+o Kconfig description updated
+o Spaces converted to tabs in Makefile
+o Sorted/seperated #includes
+o structures are __packed instead of packed, #define removed
+o removed TRACE()
+o 32bit magic is u instead of ull now
+o #defines aligned
+o Removed obsolete #defines, documented rest
+o LOGFS_SUPER and LOGFS_INODE are inline functions now
+o removed alloc_disk_sum and free_disk_sum
+o moved dir_callback up
+o removed pointless cast from max() parameter
+o moved LOGFS_LINK_MAX to header
+o license headers
+o removed logfs_writepage()
+o introduced and documented LOGFS_SEGMENT_RESERVE
+o documented completion dance in mtderase()
+o removed isbad() check from mtderase()
+o removed logfs_device_getpage() and logfs_cached_read()
+o resurrected code to pick correct device
+o removed beXX typedefs
+o removed safe_read()
+o removed wrapper in logfs_cleanup_gc()
+o device_read() returns error
+o renamed logfs_alloc_blocks() to match current implementation
+o kerneldoc comments for structures
+o removed logfs_compress_none and logfs_uncompress_none
+o Split header
+o move fsck behind debug option
+
+
+Changed many times (and I sincerely hope not to have missed any):
+o removed // comments, usually dead code
+o added newline between variable declarations and code
+o moved tail comments
+o minor code cleanups
+o changed comment style
+o added loglevels to printk
+
+
+Unchanged:
+o enum for OBJ_TOP_JOURNAL and friends
+  Afaics all the potential enums end up being converted through cpu_to_64XX,
+  I'll have to see if that causes more problems than the enums can hope to
+  solve.
+o generic function for logfs_type()
+o generic helper for logfs_prepare_write()
+o removed EOF
+o error handling
+o move rootdir generation back to mkfs
+
+
+Won't happen (unless I get convinced to do otherwise):
+o lowercase LOGFS_SUPER and LOGFS_INODE
+  These simply match the common pattern used is many Linux filesystems.
+o remove "extern"
+  For structures, this keyword actually serves a purpose and makes sense.
+  On the other hand, it is completely bogus for functions and I won't be
+  bullied into adding bogus crud either.
+o Move fs/logfs/Locking to Documentation/
+  At least JFFS2 has such documentation in its own directory as well.
+  I can see good arguments for either side and no strong consensus.  While
+  I ultimately just don't case, doing nothing is a good option in cases
+  of great uncertainty.
+o change (void*) to "proper" cast
+  Neither variant is much better than the other.  I'm open for suggestions
+  to completely remove the casts, though.
+o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
+  These are macros for very much the same reasons BUG() and BUG_ON() are.
+
+
+Jörn
 
 -- 
-Matthias Kaehlcke
-Linux Application Developer
-Barcelona
-
-            Nothing is more despicable than respect based on fear
-                              (Albert Camus)
-                                                                 .''`.
-    using free software / Debian GNU/Linux | http://debian.org  : :'  :
-                                                                `. `'`
-gpg --keyserver pgp.mit.edu --recv-keys 47D8E5D4                  `-
+To my face you have the audacity to advise me to become a thief - the worst
+kind of thief that is conceivable, a thief of spiritual things, a thief of
+ideas! It is insufferable, intolerable!
+-- M. Binet in Scarabouche
