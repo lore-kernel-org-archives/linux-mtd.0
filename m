@@ -1,17 +1,20 @@
-Subject: Re: Mounting big endian jffs2 images on mtdram on a x86
-From: David Woodhouse <dwmw2@infradead.org>
-To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
-In-Reply-To: <1179215126.21753.40.camel@localhost.localdomain>
-References: <1179133533.21753.13.camel@localhost.localdomain>
-	<1179138892.3642.5.camel@sauron>
-	<1179189724.3482.24.camel@shinybook.infradead.org>
-	<1179215126.21753.40.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Tue, 15 May 2007 15:51:10 +0800
-Message-Id: <1179215471.2859.139.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HnsRl-0007E0-3M
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 04:31:55 -0400
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Re: ECC on 2048 byte page size 8-bit NAND on Samsung S3C2440
+Date: Tue, 15 May 2007 20:39:56 +1200
+References: <20070515003039.GB32448@prithivi.gnumonks.org>
+In-Reply-To: <20070515003039.GB32448@prithivi.gnumonks.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200705152039.56206.manningc2@actrix.gen.nz>
+Cc: Harald Welte <laforge@openmoko.org>, Ben Dooks <ben@trinity.fluff.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,18 +24,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-15 at 09:45 +0200, Hans-Christian Egtvedt wrote:
-> What I would have liked was a possibility to choose which read/write
-> operations should be used when using my developing machine, but for
-> the kernel I boot my embedded target with I would like an optimized
-> jffs2 driver.
-> 
-> Use native endianess by default, but have a possibility to override at
-> runtime.
+On Tuesday 15 May 2007 12:30, Harald Welte wrote:
+> Hi!
+>
+> On openmoko's future mobile communications devices, we're using 2048
+> byte page sized NAND chips (x8 organization such as K9F8G08U0A).
+>
+> However, it seems to me that the ECC support for 2048byte page sized
+> NAND chips is not really implemented yet, neither by the NAND core, nor
+> by the S3C2440 NAND driver.
+>
+> As far as I understand it (I haven't worked with 2k page before), the
+> 2440 NAND controller can generate a 4-byte ECC for each 2048byte page (8
+> bytes in case of x16 organization, this seems somehow strange).
+>
+> In addition to ECC on the actual main data area, it also supports ECC on
+> the OOB data, too.  I haven't found any piece of code in any other NAND
+> driver in the kernel that uses this feature.
 
-I suppose I wouldn't be _entirely_ averse to a 'JFFS2_BI_ENDIAN' option
-which stores a flag in the jffs2_sb_info. It means we need an extra
-argument je32_to_cpu() et al., but that isn't particularly evil.
+You could use that if you use yaffs with the tags stored in oob, but most of 
+the time yaffs_ecc.c is used to do an ECC on tags calculation.
+Using yaffs_ecc.c to do ECC on a few bytes is very low cost.
 
--- 
-dwmw2
+>
+> Also, I don't see something like a standard ECC layout for the 2048byte
+> page deivces.  Is there one?
+
+I don't believe there is really such a thing as a standard, except for the 
+standards that ONFI are driving for. Scratch around on www.onfi.org.
+
+>
+> I can certainly spend my time hacking up some working code.  The
+> quesetion is if there is already some thought by one of the people
+> involved for some longer time with linux-mtd and/or the s3c2440.
+>
+> So if you have implementation thoughts / wishes / guidelines: THis is
+> the time to raise them, before I just doo what I deem appropriate ;)
+>
+> Cheers,
