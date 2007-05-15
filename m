@@ -1,14 +1,20 @@
-Subject: Re: ECC on 2048 byte page size 8-bit NAND on Samsung S3C2440
-From: David Woodhouse <dwmw2@infradead.org>
-To: Harald Welte <laforge@openmoko.org>
-In-Reply-To: <20070515003039.GB32448@prithivi.gnumonks.org>
-References: <20070515003039.GB32448@prithivi.gnumonks.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 15 May 2007 15:04:13 +0800
-Message-Id: <1179212653.2859.102.camel@shinybook.infradead.org>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hnrj4-0006CV-EL
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 03:45:47 -0400
+Subject: Re: Mounting big endian jffs2 images on mtdram on a x86
+From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1179189724.3482.24.camel@shinybook.infradead.org>
+References: <1179133533.21753.13.camel@localhost.localdomain>
+	<1179138892.3642.5.camel@sauron>
+	<1179189724.3482.24.camel@shinybook.infradead.org>
+Content-Type: text/plain
+Date: Tue, 15 May 2007 09:45:26 +0200
+Message-Id: <1179215126.21753.40.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Ben Dooks <ben@trinity.fluff.org>
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,47 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-15 at 08:30 +0800, Harald Welte wrote:
-> Hi!
+On Tue, 2007-05-15 at 08:42 +0800, David Woodhouse wrote:
+> On Mon, 2007-05-14 at 13:34 +0300, Artem Bityutskiy wrote:
+> > 
+> > > I am trying to mount an JFFS2 image made with mkfs.jffs2 on my x86
+> > > laptop. The image is made with --big-endian set.
+> > 
+> > I think you cannot do this without re-compiling JFFS2. I am not sure,
+> > just glance to the code (to je32_to_cpu and the like macros).
 > 
-> On openmoko's future mobile communications devices, we're using 2048
-> byte page sized NAND chips (x8 organization such as K9F8G08U0A).
-> of 
-> However, it seems to me that the ECC support for 2048byte page sized
-> NAND chips is not really implemented yet, neither by the NAND core, nor
-> by the S3C2440 NAND driver.
+> Edit fs/jffs2/nodelist.h and set JFFS2_BIG_ENDIAN instead of
+> JFFS2_NATIVE_ENDIAN.
 
-The NAND core shouldn't be a problem -- in development of both the
-CS553x and CAFÉ drivers for OLPC, we've used software ECC to start with,
-then later switched over to hardware ECC support.
+Ah, thanks for this hint.
 
-> As far as I understand it (I haven't worked with 2k page before), the
-> 2440 NAND controller can generate a 4-byte ECC for each 2048byte page (8
-> bytes in case of x16 organization, this seems somehow strange).
-> 
-> In addition to ECC on the actual main data area, it also supports ECC on
-> the OOB data, too.  I haven't found any piece of code in any other NAND
-> driver in the kernel that uses this feature.
+> The reason it's not a runtime option is because that would be quite
+> slow, and it's a very esoteric feature.
 
-Right. We haven't used ECC in the spare area. JFFS2 doesn't really need
-it, although I _suppose_ we could use it for the cleanmarker. 
+For development systems it would be a great feature, hence my original
+email. But for an embedded system this should not be present at all.
 
-Maybe there's something to be said for using it on the BBT too.
+> I'm sorry. I should have just made it either big- or little-endian right
+> from the very beginning and never made the mistake of letting it be
+> host-endian.
 
-> Also, I don't see something like a standard ECC layout for the 2048byte
-> page deivces.  Is there one?
+What I would have liked was a possibility to choose which read/write
+operations should be used when using my developing machine, but for the
+kernel I boot my embedded target with I would like an optimized jffs2
+driver.
 
-Basically, no.
+Use native endianess by default, but have a possibility to override at
+runtime.
 
-> I can certainly spend my time hacking up some working code.  The
-> quesetion is if there is already some thought by one of the people
-> involved for some longer time with linux-mtd and/or the s3c2440.
-
-Well, since I just got my Neo1973 working I need to make a ppc->arm
-cross-toolchain anyway. I suppose I could try it with one of the 512MiB
-or 1GiB chips I have lying around.
-
-Probably better just to see what Ben comes up with :)
+</thoughts>
 
 -- 
-dwmw2
+Best regards
+Hans-Christian Egtvedt
