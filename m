@@ -1,20 +1,22 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hnrj4-0006CV-EL
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 03:45:47 -0400
+	id 1HnroA-0006Ou-ON
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 03:51:06 -0400
 Subject: Re: Mounting big endian jffs2 images on mtdram on a x86
-From: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1179189724.3482.24.camel@shinybook.infradead.org>
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
+In-Reply-To: <1179215126.21753.40.camel@localhost.localdomain>
 References: <1179133533.21753.13.camel@localhost.localdomain>
 	<1179138892.3642.5.camel@sauron>
 	<1179189724.3482.24.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Date: Tue, 15 May 2007 09:45:26 +0200
-Message-Id: <1179215126.21753.40.camel@localhost.localdomain>
+	<1179215126.21753.40.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 15 May 2007 10:50:37 +0300
+Message-Id: <1179215437.3642.8.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +26,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-15 at 08:42 +0800, David Woodhouse wrote:
-> On Mon, 2007-05-14 at 13:34 +0300, Artem Bityutskiy wrote:
-> > 
-> > > I am trying to mount an JFFS2 image made with mkfs.jffs2 on my x86
-> > > laptop. The image is made with --big-endian set.
-> > 
-> > I think you cannot do this without re-compiling JFFS2. I am not sure,
-> > just glance to the code (to je32_to_cpu and the like macros).
-> 
-> Edit fs/jffs2/nodelist.h and set JFFS2_BIG_ENDIAN instead of
-> JFFS2_NATIVE_ENDIAN.
+On Tue, 2007-05-15 at 09:45 +0200, Hans-Christian Egtvedt wrote:
+> For development systems it would be a great feature, hence my original
+> email. But for an embedded system this should not be present at all.
 
-Ah, thanks for this hint.
+Sorry, I did not find an explanation what for do you need different
+endianess? Why not just to live with the default one?
 
-> The reason it's not a runtime option is because that would be quite
-> slow, and it's a very esoteric feature.
-
-For development systems it would be a great feature, hence my original
-email. But for an embedded system this should not be present at all.
-
-> I'm sorry. I should have just made it either big- or little-endian right
-> from the very beginning and never made the mistake of letting it be
-> host-endian.
-
-What I would have liked was a possibility to choose which read/write
-operations should be used when using my developing machine, but for the
-kernel I boot my embedded target with I would like an optimized jffs2
-driver.
-
-Use native endianess by default, but have a possibility to override at
-runtime.
-
-</thoughts>
-
--- 
-Best regards
-Hans-Christian Egtvedt
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
