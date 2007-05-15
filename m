@@ -1,19 +1,19 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ho2UK-0007EV-KN
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 15:15:15 -0400
-Date: Tue, 15 May 2007 21:10:46 +0200
+	id 1Ho2cj-0007aF-0K
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 15:23:56 -0400
+Date: Tue, 15 May 2007 21:19:26 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Sam Ravnborg <sam@ravnborg.org>
+To: John Stoffel <john@stoffel.org>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070515191046.GA1220@lazybastard.org>
+Message-ID: <20070515191926.GB1220@lazybastard.org>
 References: <20070515151919.GA32510@lazybastard.org>
-	<20070515183725.GA22003@uranus.ravnborg.org>
+	<17994.1241.436841.681216@stoffel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070515183725.GA22003@uranus.ravnborg.org>
+In-Reply-To: <17994.1241.436841.681216@stoffel.org>
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
 	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
 	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
@@ -29,51 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 May 2007 20:37:25 +0200, Sam Ravnborg wrote:
-> On Tue, May 15, 2007 at 05:19:20PM +0200, Jörn Engel wrote:
-> > [ I have put everyone that gave comments to the last patch on Cc:.  Hope
-> > that doesn't offend anyone. ]
-> > 
-> > 
-> > Add LogFS, a scalable flash filesystem.
+On Tue, 15 May 2007 15:07:05 -0400, John Stoffel wrote:
 > 
-> Have you run sparse on this code?
+> I've been semi watching this, and the only comment I really can give
+> is that I hate the name.  To me, logfs implies a filesystem for
+> logging purposes, not for Flash hardware with wear leveling issues to
+> be taken into account.
 
-Several thousand times. :)
+Yeah, well, ...
 
-> I do not recall if you have written something about it.
-> I do not see any obvious things sparse would catch (just browsing quickly)
-> but it's always a good thing to do.
+Two years ago when I started all this, I was looking for a good name.
+All I could come up with sounded stupid, so I picked "LogFS" as a code
+name.  As soon as I find a better name, the code name should get
+replaced.
 
-Absolutely! I added this line for sparse:
-+#define __CHECK_ENDIAN__ 
+By now I still don't have anything better.  All alternatives that were
+proposed are just as bad - with the added disadvantage of being new and
+not established yet.  My hope of ever finding a better name is nearly
+zero.
 
-Not sure how much of the kernel is endian-clean.  Logfs should be.
+> Also, having scanned through the code, I find the name "cookie" using
+> in logfs_inode(), logfs_iput(), logfs_iget() to be badly named.  It
+> should really be something like *cached_inode, which would seem to
+> give more natural semantics of
+> 
+> 	if (cached_inode)
+> 		do_cached_inode_ops(...)
+> 	else
+> 		do_inode_ops(...)
 
-> +++ linux-2.6.21logfs/fs/logfs/progs/fsck.c     2007-05-15 00:54:22.000000000 +0200
-> @@ -0,0 +1,332 @@
-> +/*
-> + * fs/logfs/prog/fsck.c        - filesystem check
-> + *
-> + * As should be obvious for Linux kernel code, license is GPLv2
-> + *
-> + * Copyright (c) 2005-2007 Joern Engel
-> + *
-> + * In principle this could get moved to userspace.  However it might still
-> + * make some sense to keep it in the kernel.  It is a pure checker and will
-> + * only report problems, not attempt to repair them.
-> + */
-> +#include "../logfs.h"
-> +
-> If potential userspace tools needs to include ../logfs.h then there is
-> something that ought to be moved to include/linux/logfs.h instead.
+Half-agreed.  For callers, the name "cookie" makes sense.  It is a
+transparent thing they should not tough and hand back unchanged.  For
+logfs_iget() and logfs_iput() something like "is_cached" would be
+better.
 
-There shouldn't be anything left in ../logfs.h that is needed for
-userspace.  But the kernel fsck is lame and calls into functions like
-iget(), which it pulls in from ../logfs.h.
+Will change.
 
 Jörn
 
 -- 
-The only real mistake is the one from which we learn nothing.
--- John Powell
+Linux [...] existed just for discussion between people who wanted
+to show off how geeky they were.
+-- Rob Enderle
