@@ -1,22 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HnroA-0006Ou-ON
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 03:51:06 -0400
 Subject: Re: Mounting big endian jffs2 images on mtdram on a x86
-From: Artem Bityutskiy <dedekind@infradead.org>
+From: David Woodhouse <dwmw2@infradead.org>
 To: Hans-Christian Egtvedt <hcegtvedt@norway.atmel.com>
 In-Reply-To: <1179215126.21753.40.camel@localhost.localdomain>
 References: <1179133533.21753.13.camel@localhost.localdomain>
 	<1179138892.3642.5.camel@sauron>
 	<1179189724.3482.24.camel@shinybook.infradead.org>
 	<1179215126.21753.40.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 15 May 2007 10:50:37 +0300
-Message-Id: <1179215437.3642.8.camel@sauron>
+Content-Type: text/plain
+Date: Tue, 15 May 2007 15:51:10 +0800
+Message-Id: <1179215471.2859.139.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
-Reply-To: dedekind@infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +22,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 On Tue, 2007-05-15 at 09:45 +0200, Hans-Christian Egtvedt wrote:
-> For development systems it would be a great feature, hence my original
-> email. But for an embedded system this should not be present at all.
+> What I would have liked was a possibility to choose which read/write
+> operations should be used when using my developing machine, but for
+> the kernel I boot my embedded target with I would like an optimized
+> jffs2 driver.
+> 
+> Use native endianess by default, but have a possibility to override at
+> runtime.
 
-Sorry, I did not find an explanation what for do you need different
-endianess? Why not just to live with the default one?
+I suppose I wouldn't be _entirely_ averse to a 'JFFS2_BI_ENDIAN' option
+which stores a flag in the jffs2_sb_info. It means we need an extra
+argument je32_to_cpu() et al., but that isn't particularly evil.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+-- 
+dwmw2
