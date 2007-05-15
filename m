@@ -1,20 +1,7 @@
-Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HnsRl-0007E0-3M
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 04:31:55 -0400
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: Re: ECC on 2048 byte page size 8-bit NAND on Samsung S3C2440
-Date: Tue, 15 May 2007 20:39:56 +1200
-References: <20070515003039.GB32448@prithivi.gnumonks.org>
-In-Reply-To: <20070515003039.GB32448@prithivi.gnumonks.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200705152039.56206.manningc2@actrix.gen.nz>
-Cc: Harald Welte <laforge@openmoko.org>, Ben Dooks <ben@trinity.fluff.org>
+From: PROMOCOMPANYCOCACOLAINFO4@comcast.net (COCACOLA INFO)
+Subject: THE COCA COLA COMPANY
+Date: Tue, 15 May 2007 08:39:46 +0000
+Message-Id: <051520070839.8320.464971CF000B28D2000020802206998499CBB1B0B2B7BEB4B1BCBEBCB1BCA7B2BEAFB3B1BCB1B3B1ADAF@comcast.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,41 +11,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tuesday 15 May 2007 12:30, Harald Welte wrote:
-> Hi!
->
-> On openmoko's future mobile communications devices, we're using 2048
-> byte page sized NAND chips (x8 organization such as K9F8G08U0A).
->
-> However, it seems to me that the ECC support for 2048byte page sized
-> NAND chips is not really implemented yet, neither by the NAND core, nor
-> by the S3C2440 NAND driver.
->
-> As far as I understand it (I haven't worked with 2k page before), the
-> 2440 NAND controller can generate a 4-byte ECC for each 2048byte page (8
-> bytes in case of x16 organization, this seems somehow strange).
->
-> In addition to ECC on the actual main data area, it also supports ECC on
-> the OOB data, too.  I haven't found any piece of code in any other NAND
-> driver in the kernel that uses this feature.
+THE COCA COLA COMPANY
+PROMOTION/PRIZE AWARD
+DEPTCOCA COLA AVENUE
+ STANFORD BRIDGE LONDON SW1V 3DW UNITED KINGDOM
 
-You could use that if you use yaffs with the tags stored in oob, but most of 
-the time yaffs_ecc.c is used to do an ECC on tags calculation.
-Using yaffs_ecc.c to do ECC on a few bytes is very low cost.
+THE COCA COLA COMPANY OFFICIAL PRIZE NOTIFICATION
+We are pleased to inform you of the result of the just concluded annual
+final draws held by Coca-Cola in conjunction with the. British American
+Tobacco Worldwide Promotion,
+your email was among the 20 Lucky winners who won a lump sum of One
+Million pound
+sterling (£1,000,000.00 ) each on THE COCA\\\'COLA COMPANY PROMOTIONS.
 
->
-> Also, I don't see something like a standard ECC layout for the 2048byte
-> page deivces.  Is there one?
+However your email was attached to ticket number (CC/7PWYZ2006) and
+ballot number
+(CC/BT:12052006/20) The online draws was conducted by a random
+selection of email addresses from an exclusive list of 29,031 E-mail
+addresses of
+individuals and corporate bodies picked by an advanced automated random
+computer search from the internet.
+However,no tickets were sold but all email addresses were assigned to
+different ticket numbers for representation and privacy.
+The selection process was carried out through random selection in our
+computerized email selection machine (TOPAZ) from a database of over
+250,000 email addresses drawn from all the continents of the world.
 
-I don't believe there is really such a thing as a standard, except for the 
-standards that ONFI are driving for. Scratch around on www.onfi.org.
+This Lottery is approved by the British Gaming Board and also Licensed
+by  the International Association of Gaming Regulators (IAGR).
+This lottery and it is the 3rd of its kind and we intend to sensitize
+the public.
 
->
-> I can certainly spend my time hacking up some working code.  The
-> quesetion is if there is already some thought by one of the people
-> involved for some longer time with linux-mtd and/or the s3c2440.
->
-> So if you have implementation thoughts / wishes / guidelines: THis is
-> the time to raise them, before I just doo what I deem appropriate ;)
->
-> Cheers,
+Above all,you are required  to fill out the Claims Verification form
+below and send it to the Fiduciary Agent Of THE COCA COLA COMPANY for
+verification and processing who is going to refer you on how to claims
+your winning.
+
+1.Name............................
+2.Address.........................
+3.Age...............................
+4.Sex...............................
+5.Occupation....................
+6.Country Of Resident.......
+7.Nationality......................
+8.Tel/Fax...........................
+
+
+Please you are adviced to complete the form and send it immediately to
+our
+Fudiciary Agent through email or fax for Verification and Remittance of
+your Winning To your designated Address.
+PAST WINNERS IN COCA-COLA ONLINE PROMOTIONS!!!
+
+You are therefore advised to contact our Fudiciary Agent for the
+Verification And Remittance Of Your Winning with Your Information and
+do
+remember to quote your Ticket Numbers And Ballot Numbers.
+Fudiciary Agent Max Raph
+DEPTCOCA COLA AVENUE
+STANFORD BRIDGE LONDON SW1V 3DW UNITED KINGDOM
+Email: companycocacolainfo@yahoo.co.uk
+Telephone: +44-7031949372 or  +44-7031894946
+
+Best wishes:
+mrs juliet marrow
+(Processing Manager)
+
+ On Behalf of the staff And Members Of the COCA COLA COMPANIES
+Congratulates and therefore advised you to keep your winning
+information
+confidential and restrict from third Party to avoid double or false
+claims of your winning.
