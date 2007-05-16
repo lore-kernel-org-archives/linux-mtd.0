@@ -1,24 +1,19 @@
-Received: from risingsoftware01.propagation.net ([66.221.33.65])
+Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.epico.si)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoKVP-0005ch-M7
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 10:30:35 -0400
-Received: from c220-237-181-46.eburwd3.vic.optusnet.com.au ([220.237.181.46]
-	helo=noddy.cloud.net.au)
-	by risingsoftware01.propagation.net with esmtpsa
-	(TLS-1.0:RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <hamish@cloud.net.au>) id 1HoKVK-0006Dw-Vx
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:29:27 -0500
-Received: from hamish by noddy.cloud.net.au with local (Exim 4.67)
-	(envelope-from <hamish@cloud.net.au>) id 1HoKVC-0001pk-0E
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 00:29:18 +1000
-Date: Thu, 17 May 2007 00:29:17 +1000
-From: Hamish Moffatt <hamish@cloud.net.au>
-To: linux-mtd@lists.infradead.org
-Subject: flash partitioning options
-Message-ID: <20070516142917.GB5725@cloud.net.au>
+	id 1HoKgJ-000646-DH
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 10:40:53 -0400
+Received: from [192.168.0.3] (telperion.ee.epico.si [192.168.0.3])
+	by lorien.ee.epico.si (8.12.11.20060308/8.12.11) with ESMTP id
+	l4GEeesf013932
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 16:40:40 +0200
+Message-ID: <464B17F3.9040804@users.sourceforge.net>
+Date: Wed, 16 May 2007 16:40:51 +0200
+From: Savin Zlobec <savinz@users.sourceforge.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+To: linux-mtd@lists.infradead.org
+Subject: Problems with ST NAND512W3A nand flash
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,28 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I'm working on a device which has two flash devices. It'll boot from NOR
-flash, which contains RedBoot and the kernel. Then the root file system
-and other volumes are in NAND flash.
+Hi All!
 
-The boot flash is partitioned with the RedBoot FIS. However I'm
-wondering what the best way to partition the other flash is?
-As I see it the options are;
+I am working on a AT91RM9200 based board with ST NAND512W3A2B flash.
+Kernel version is 2.6.19.7 with patches from maxim.org.za/at91_26.html.
+Everything works perfectly, except for boot time NAND chip
+identification which fails every once in a while. NAND signature
+is 0x20 0x76, but sometimes I get 0x20 0x20. My first guess was
+timing problems, but I've double checked everything and all signals
+are inside the specs. I've also tested the chip with shorter and
+longer setup, hold and pulse times for read and write, but without
+any success. Trying different kernels didn't help either.
 
-- RedBoot, but no tools to manipulate the layout from Linux?
-- AFS, but I can't find the tools for that either.
-- cmdlinepart, which means hard-coding the layout in the kernel image
-  or the boot loader. Probably OK but can't deal with a change in part
-  later very easily.
-- UBI.
-
-Is UBI overkill? My kernel is a bit old (~2.6.15) so I'm not even sure
-if it's feasible. I'm not particularly concerned about wear-leveling
-across the whole device (as per my last email it's mostly read-only) so
-I don't think I need it otherwise. (Opinions welcome.)
+Any ideas and/or comments would be very much appreciated.
 
 
-thanks,
-Hamish
--- 
-Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
+Thanks,
+savin
