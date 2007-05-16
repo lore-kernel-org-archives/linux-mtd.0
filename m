@@ -1,31 +1,29 @@
-Received: from relay.2ka.mipt.ru ([194.85.82.65] helo=2ka.mipt.ru)
+Received: from nz-out-0506.google.com ([64.233.162.237])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoIep-0006qA-AT
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:32:13 -0400
-Date: Wed, 16 May 2007 16:29:22 +0400
-From: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+	id 1HoIkI-0007Qw-Hg
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:36:59 -0400
+Received: by nz-out-0506.google.com with SMTP id i11so1262782nzi
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 16 May 2007 05:36:45 -0700 (PDT)
+Message-ID: <84144f020705160536i189f6206sffc964a145177da7@mail.gmail.com>
+Date: Wed, 16 May 2007 15:36:44 +0300
+From: "Pekka Enberg" <penberg@cs.helsinki.fi>
+Sender: penberg@gmail.com
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@lazybastard.org>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516122921.GA26297@2ka.mipt.ru>
-References: <20070515151919.GA32510@lazybastard.org>
-	<17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-	<1179291255.2859.195.camel@shinybook.infradead.org>
-	<20070516110933.GA5472@lazybastard.org>
-	<20070516113434.GC20482@mail.shareable.org>
-	<20070516115003.GD5472@lazybastard.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20070516122603.GE5472@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070516115003.GD5472@lazybastard.org>
-Cc: akpm@osdl.org, Albert Cahalan <acahalan@gmail.com>,
-	John Stoffel <john@stoffel.org>,
-	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+References: <20070515151919.GA32510@lazybastard.org>
+	<Pine.LNX.4.64.0705161319060.5152@sbz-30.cs.Helsinki.FI>
+	<20070516122603.GE5472@lazybastard.org>
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
 	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Greg KH <greg@kroah.com>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,18 +33,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 16, 2007 at 01:50:03PM +0200, Jörn Engel (joern@lazybastard.org) wrote:
-> On Wed, 16 May 2007 12:34:34 +0100, Jamie Lokier wrote:
-> > 
-> > But if akpm can't pronounce it, how about FFFS for faster flash
-> > filesystem.... ;-)
-> 
-> How many of you have worked for IBM before?  Vowels are not evil. ;)
+On 5/16/07, J=F6rn Engel <joern@lazybastard.org> wrote:
+> > > +/* FIXME: all this mess should get replaced by using the page cache =
+*/
+> > > +static void fixup_from_wbuf(struct super_block *sb, struct logfs_are=
+a
+> > *area,
+> > > +             void *read, u64 ofs, size_t readlen)
+> > > +{
+> >
+> > Indeed. And I think you're getting some more trouble because of this...
+>
+> More trouble?
 
-Do you think 'eieio' is a good set? IBM's work too...
+Forgot to add (see below). Seems logfs_segment_read would be simpler
+too if you fixed this.
 
-We do not get new filesystem each couple of month, so stealing so good
-name as 'logfs' is not that bad I think.
+> [ Objects are the units that get compressed.  Segments can contain both
+> compressed and uncompressed objects. ]
+>
+> It is a trade-off.  Each object has a 24 Byte header plus X Bytes of
+> data.  Whether the data is compressed or not is indicated in the header.
 
--- 
-	Evgeniy Polyakov
+Was my point really. Why do segments contain both compressed and
+uncompressed objects?
