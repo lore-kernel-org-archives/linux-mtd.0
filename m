@@ -1,17 +1,19 @@
-Received: from gprs189-60.eurotel.cz ([160.218.189.60] helo=spitz.ucw.cz)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoP2i-0000Ez-99
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 15:20:21 -0400
-Date: Wed, 16 May 2007 19:17:18 +0000
-From: Pavel Machek <pavel@ucw.cz>
-To: J Engel <joern@lazybastard.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoPAQ-0000RB-TA
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 15:28:41 -0400
+Date: Wed, 16 May 2007 21:23:32 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Pavel Machek <pavel@ucw.cz>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516191718.GB4577@ucw.cz>
+Message-ID: <20070516192329.GG8113@lazybastard.org>
 References: <20070515151919.GA32510@lazybastard.org>
+	<20070516191718.GB4577@ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20070515151919.GA32510@lazybastard.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070516191718.GB4577@ucw.cz>
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
 	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
 	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
@@ -27,56 +29,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+On Wed, 16 May 2007 19:17:18 +0000, Pavel Machek wrote:
+> 
+> In kernel fsck....
+> 
+> > --- /dev/null	2007-04-18 05:32:26.652341749 +0200
+> > +++ linux-2.6.21logfs/fs/logfs/progs/fsck.c	2007-05-15 00:54:22.000000000 +0200
+> > @@ -0,0 +1,332 @@
+> > +/*
+> > + * fs/logfs/prog/fsck.c	- filesystem check
+> > + *
+> > + * As should be obvious for Linux kernel code, license is GPLv2
+> > + *
+> > + * Copyright (c) 2005-2007 Joern Engel
+> > + *
+> > + * In principle this could get moved to userspace.  However it might still
+> > + * make some sense to keep it in the kernel.  It is a pure checker and will
+> > + * only report problems, not attempt to repair them.
+> > + */
+> 
+> Is there version that repairs?
 
-In kernel fsck....
+No.
 
-> --- /dev/null	2007-04-18 05:32:26.652341749 +0200
-> +++ linux-2.6.21logfs/fs/logfs/progs/fsck.c	2007-05-15 00:54:22.000000000 +0200
-> @@ -0,0 +1,332 @@
-> +/*
-> + * fs/logfs/prog/fsck.c	- filesystem check
-> + *
-> + * As should be obvious for Linux kernel code, license is GPLv2
-> + *
-> + * Copyright (c) 2005-2007 Joern Engel
-> + *
-> + * In principle this could get moved to userspace.  However it might still
-> + * make some sense to keep it in the kernel.  It is a pure checker and will
-> + * only report problems, not attempt to repair them.
-> + */
+> BUG is not right thing to do for media error.
 
-Is there version that repairs?
+I know.  Top 3 items of my todo list are:
+- Handle system crashes
+- Add second journal
+- Error handling
 
-> +	/* Some segments are reserved.  Just pretend they were all valid */
-> +	reserved = btree_lookup(&super->s_reserved_segments, segno);
-> +	if (reserved)
-> +		return 0;
-> +
-> +	err = wbuf_read(sb, dev_ofs(sb, segno, 0), sizeof(sh), &sh);
-> +	BUG_ON(err);
+> > +
+> > +#if 0
+> > +/* rootdir */
+> 
+> Please just delete it, not comment it out like this.
 
-BUG is not right thing to do for media error.
+That will get resurrected, even before the move to userspace.  I had to
+change the filesystem format for compression support and this is an
+artifact of the transition phase.
 
-> +/*
-> + * fs/logfs/prog/mkfs.c	- filesystem generation
-> + *
-> + * As should be obvious for Linux kernel code, license is GPLv2
-> + *
-> + * Copyright (c) 2005-2007 Joern Engel
-> + *
-> + * Should get moved to userspace.
-> + */
+Jörn
 
-Indeed. 
-
-> +
-> +#if 0
-> +/* rootdir */
-
-Please just delete it, not comment it out like this.
-
-							Pavel
 -- 
-(english) http://www.livejournal.com/~pavelmachek
-(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blog.html
+Ninety percent of everything is crap.
+-- Sturgeon's Law
