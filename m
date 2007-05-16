@@ -1,27 +1,32 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoJwN-0002ue-Kk
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:53:21 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HoJwC-0005Tx-Hq
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 15:53:08 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 15:53:08 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 15:53:08 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: Opening flash device for update - support for SPI device
-Date: Wed, 16 May 2007 13:52:47 +0000 (UTC)
-Message-ID: <loom.20070516T144905-293@post.gmane.org>
-References: <loom.20070516T111938-933@post.gmane.org>
+	id 1HoK0j-0003Fx-5s
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:58:03 -0400
+Date: Wed, 16 May 2007 15:53:19 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: John Stoffel <john@stoffel.org>
+Subject: Re: [PATCH] LogFS take three
+Message-ID: <20070516135318.GK5472@lazybastard.org>
+References: <20070515151919.GA32510@lazybastard.org>
+	<17994.1241.436841.681216@stoffel.org>
+	<20070515191926.GB1220@lazybastard.org>
+	<1179291255.2859.195.camel@shinybook.infradead.org>
+	<20070516110933.GA5472@lazybastard.org>
+	<20070516113434.GC20482@mail.shareable.org>
+	<20070516115003.GD5472@lazybastard.org>
+	<17995.2550.581854.8393@stoffel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <17995.2550.581854.8393@stoffel.org>
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,23 +36,54 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-MikeW <mw_phil <at> yahoo.co.uk> writes:
+On Wed, 16 May 2007 09:41:10 -0400, John Stoffel wrote:
+> JÃ¶rn> On Wed, 16 May 2007 12:34:34 +0100, Jamie Lokier wrote:
+> 
+> JÃ¶rn> How many of you have worked for IBM before?  Vowels are not
+> evil. ;)
+> 
+> Nope, they're not.  I just think that LogFS isn't descriptive enough,
+> or more accurately, is the *wrong* description of this filesystem.  
 
-> 
-> A utility program cannot open a /dev/mtd  in mode O_RDWR - permission denied
-> (/dev permission bits are OK)
-> 
-> Presumably this is because the device is locked.
-> 
-> OK, there is a MEMUNLOCK ioctl - hopefully this can be called
-> on a device that is only opened in O_RDONLY mode ?!
-> 
-> Regards,
-> MikeW
+That was the whole point.  JFFS2, the journaling flash filesystem, is a
+strictly log-structured filesystem.  LogFS has a journal.
 
-Having checked MEMINFO flags=0x04, type=0x0E, I now realise that this device
-(ST M25P32) may not be well-supported by MTD, and does not appear to be
-writeable using our current MTD driver.
+It is also the filesystem that tries to scale logarithmically, as Arnd
+has noted.  Maybe I should call it Log2 to emphesize this point.  Log1
+would be horrible scalability.
 
-Regards,
-MikeW
+> flashfs works for me.  It's longer, but hey, that's ok.  Even flshfs
+> might work.  Oh wait, flesh?  flash?  flush?  Too confusing... :-)   
+
+Maybe.  FFS or flash filesystem already exists.  And YAFFS, yet another
+flash filesystem, would be older than flashfs.
+
+My experience is that no matter which name I pick, people will complain
+anyway.  Previous suggestions included:
+jffs3
+jefs
+engelfs
+poofs
+crapfs
+sweetfs
+cutefs
+dynamic journaling fs - djofs
+tfsfkal - the file system formerly known as logfs
+
+Plus today:
+FFFS
+flashfs
+fredfs
+bob
+shizzle
+
+Imo they all suck.  LogFS also sucks, but it allows me to make a stupid
+joke and keep my logfs.org domain.
+
+Jörn
+
+-- 
+There are two ways of constructing a software design: one way is to make
+it so simple that there are obviously no deficiencies, and the other is
+to make it so complicated that there are no obvious deficiencies.
+-- C. A. R. Hoare
