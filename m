@@ -1,25 +1,21 @@
-Received: from sj-iport-3-in.cisco.com ([171.71.176.72]
-	helo=sj-iport-3.cisco.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ho9Ou-0007Ay-W0
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 22:38:07 -0400
-To: =?iso-8859-1?Q?J=C3=B6rn?= Engel <joern@lazybastard.org>
 Subject: Re: [PATCH] LogFS take three
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
+In-Reply-To: <20070515191926.GB1220@lazybastard.org>
 References: <20070515151919.GA32510@lazybastard.org>
-From: Roland Dreier <rdreier@cisco.com>
-Date: Tue, 15 May 2007 19:37:36 -0700
-In-Reply-To: <20070515151919.GA32510@lazybastard.org> (=?iso-8859-1?Q?J=C3?=
-	=?iso-8859-1?Q?=B6rn?= Engel's message of "Tue, 15 May 2007 17:19:20
-	+0200")
-Message-ID: <adar6pho5n3.fsf@cisco.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	<17994.1241.436841.681216@stoffel.org>
+	<20070515191926.GB1220@lazybastard.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Wed, 16 May 2007 12:54:14 +0800
+Message-Id: <1179291255.2859.195.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
 	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There are rather a lot of of FIXME comments, including scary stuff like
+On Tue, 2007-05-15 at 21:19 +0200, Jörn Engel wrote:
+> On Tue, 15 May 2007 15:07:05 -0400, John Stoffel wrote:
+> > 
+> > I've been semi watching this, and the only comment I really can give
+> > is that I hate the name.  To me, logfs implies a filesystem for
+> > logging purposes, not for Flash hardware with wear leveling issues to
+> > be taken into account.
+> 
+> Yeah, well, ...
+> 
+> Two years ago when I started all this, I was looking for a good name.
+> All I could come up with sounded stupid, so I picked "LogFS" as a code
+> name.  As soon as I find a better name, the code name should get
+> replaced.
+> 
+> By now I still don't have anything better.  All alternatives that were
+> proposed are just as bad - with the added disadvantage of being new and
+> not established yet.  My hope of ever finding a better name is nearly
+> zero. 
 
- > +	/*
- > +	 * FIXME: this cannot be right but it does "fix" a bug of i_count
- > +	 * dropping too low.  Needs more thought.
- > +	 */
- > +	atomic_inc(&old_dentry->d_inode->i_count);
+Personally I'd just go for 'JFFS3'. After all, it has a better claim to
+the name than either of its predecessors :)
 
-and
-
- > +int __logfs_write_inode(struct inode *inode)
- > +{
- > +	/*
- > +	 * FIXME: Those two inodes are 512 bytes in total.  Not good to
- > +	 * have on the stack.  Possibly the best solution would be to bite
- > +	 * the bullet and do another format change before release and
- > +	 * shrink the inodes.
- > +	 */
- > +	struct logfs_disk_inode old, new;
-
-are you going to change the format?  or fix this some other way?
-
-I think a sweep through the code searching for FIXME and at least
-rewriting all such comments to look like stuff that can be deferred
-would be warranted ;)
-
- - R.
+-- 
+dwmw2
