@@ -1,31 +1,27 @@
-Received: from mycroft.westnet.com ([216.187.52.7])
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoJlQ-0002GZ-6a
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:42:01 -0400
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Message-ID: <17995.2550.581854.8393@stoffel.org>
-Date: Wed, 16 May 2007 09:41:10 -0400
-From: "John Stoffel" <john@stoffel.org>
-To: Jörn Engel <joern@lazybastard.org>
-Subject: Re: [PATCH] LogFS take three
-In-Reply-To: <20070516115003.GD5472@lazybastard.org>
-References: <20070515151919.GA32510@lazybastard.org>
-	<17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-	<1179291255.2859.195.camel@shinybook.infradead.org>
-	<20070516110933.GA5472@lazybastard.org>
-	<20070516113434.GC20482@mail.shareable.org>
-	<20070516115003.GD5472@lazybastard.org>
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, John Stoffel <john@stoffel.org>,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>
+	id 1HoJwN-0002ue-Kk
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:53:21 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HoJwC-0005Tx-Hq
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 15:53:08 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 15:53:08 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 15:53:08 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: Opening flash device for update - support for SPI device
+Date: Wed, 16 May 2007 13:52:47 +0000 (UTC)
+Message-ID: <loom.20070516T144905-293@post.gmane.org>
+References: <loom.20070516T111938-933@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,21 +31,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+MikeW <mw_phil <at> yahoo.co.uk> writes:
 
-J=C3=B6rn> On Wed, 16 May 2007 12:34:34 +0100, Jamie Lokier wrote:
->>=20
->> But if akpm can't pronounce it, how about FFFS for faster flash
->> filesystem.... ;-)
+> 
+> A utility program cannot open a /dev/mtd  in mode O_RDWR - permission denied
+> (/dev permission bits are OK)
+> 
+> Presumably this is because the device is locked.
+> 
+> OK, there is a MEMUNLOCK ioctl - hopefully this can be called
+> on a device that is only opened in O_RDONLY mode ?!
+> 
+> Regards,
+> MikeW
 
-J=C3=B6rn> How many of you have worked for IBM before=3F  Vowels are no=
-t
-evil. ;)
+Having checked MEMINFO flags=0x04, type=0x0E, I now realise that this device
+(ST M25P32) may not be well-supported by MTD, and does not appear to be
+writeable using our current MTD driver.
 
-Nope, they're not.  I just think that LogFS isn't descriptive enough,
-or more accurately, is the *wrong* description of this filesystem. =20
-
-flashfs works for me.  It's longer, but hey, that's ok.  Even flshfs
-might work.  Oh wait, flesh=3F  flash=3F  flush=3F  Too confusing... :-=
-)  =20
-
-John
+Regards,
+MikeW
