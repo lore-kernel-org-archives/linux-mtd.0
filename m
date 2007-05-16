@@ -1,20 +1,21 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ho799-0004YP-El
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 20:13:43 -0400
-Date: Wed, 16 May 2007 02:09:05 +0200
+	id 1Ho93Z-0006jb-2K
+	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 22:16:02 -0400
+Date: Wed, 16 May 2007 04:11:39 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Albert Cahalan <acahalan@gmail.com>
+To: Andrew Morton <akpm@linux-foundation.org>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516000905.GE1220@lazybastard.org>
+Message-ID: <20070516021139.GA3175@lazybastard.org>
 References: <20070515151919.GA32510@lazybastard.org>
-	<787b0d920705151626x3a11b81csf0f3747a695131b0@mail.gmail.com>
+	<20070515133759.9ee434a2.akpm@linux-foundation.org>
+	<20070516000630.GD1220@lazybastard.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <787b0d920705151626x3a11b81csf0f3747a695131b0@mail.gmail.com>
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+In-Reply-To: <20070516000630.GD1220@lazybastard.org>
+Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
 	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
 	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
 	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
@@ -28,19 +29,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 May 2007 19:26:17 -0400, Albert Cahalan wrote:
+On Wed, 16 May 2007 02:06:31 +0200, Jörn Engel wrote:
+>
+> > > +
+> > > +	if (dest) {
+> > > +		/* symlink */
+> > > +		ret = logfs_inode_write(inode, dest, destlen, 0);
+> > > +	} else {
+> > > +		/* creat/mkdir/mknod */
+> > > +		ret = __logfs_write_inode(inode);
+> > > +	}
+> > > +	super->s_victim_ino = 0;
+> > > +	if (ret) {
+> > > +		if (!dest)
+> > > +			li->li_flags |= LOGFS_IF_STILLBORN;
+> > > +		/* FIXME: truncate symlink */
+> > > +		inode->i_nlink--;
+> > > +		iput(inode);
+> > > +		goto out;
+> > > +	}
+> > > +
+> > > +	if (inode->i_mode & S_IFDIR)
+> > > +		dir->i_nlink++;
+> > 
+> > You have helper functions for i_nlink++, which remember to do
+> > mark_inode_dirty()?
 > 
-> Please don't forget the immutable bit. ("man lsattr")
-> Having both, BSD-style, would be even better.
-> The immutable bit is important for working around
-> software bugs and "features" that damage files.
-> 
-> I also can't find xattr support.
+> I do.  Looks like I should use them here and in at least one other
+> place.  Will recheck them all.
 
-Not forgotten, just on a different list.  Bugs beat features. :)
+Actually, this code was correct.  New inodes get written immediatly to
+ensure catching -ENOSPC at a place where errors can get returned.  After
+leaving this function, the inode is not dirty.  Either it has been
+written or it is marked LOGFS_IF_STILLBORN never will be.
+
+Your intuition was still good.  Link() did need the change you
+indicated.
 
 Jörn
 
 -- 
-Data expands to fill the space available for storage.
--- Parkinson's Law
+Joern's library part 14:
+http://www.sandpile.org/
