@@ -1,27 +1,16 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoMiA-00035M-PY
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 12:51:08 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HoMhq-0004M1-J5
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 18:50:30 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 18:50:30 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 18:50:30 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: Problems with ST NAND512W3A nand flash
-Date: Wed, 16 May 2007 16:50:16 +0000 (UTC)
-Message-ID: <loom.20070516T184549-325@post.gmane.org>
-References: <464B17F3.9040804@users.sourceforge.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Received: from smtp2.int-evry.fr ([157.159.10.45])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoFAu-0007a9-SA
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 04:48:03 -0400
+From: Florian Fainelli <florian.fainelli@int-evry.fr>
+To: linux-mtd@lists.infradead.org,
+ dwmw2@infradead.org
+Subject: [PATCH] Add support for SST 39VF6402B flash
+Date: Wed, 16 May 2007 10:47:57 +0200
+MIME-Version: 1.0
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_9UsSGONv4nzsjZ8"
+Message-Id: <200705161047.57549.florian.fainelli@int-evry.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +20,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Savin Zlobec <savinz <at> users.sourceforge.net> writes:
+--Boundary-00=_9UsSGONv4nzsjZ8
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> 
-> Hi All!
-> 
-> I am working on a AT91RM9200 based board with ST NAND512W3A2B flash.
-> Kernel version is 2.6.19.7 with patches from maxim.org.za/at91_26.html.
-> Everything works perfectly, except for boot time NAND chip
-> identification which fails every once in a while. NAND signature
-> is 0x20 0x76, but sometimes I get 0x20 0x20. My first guess was
-> timing problems, but I've double checked everything and all signals
-> are inside the specs. I've also tested the chip with shorter and
-> longer setup, hold and pulse times for read and write, but without
-> any success. Trying different kernels didn't help either.
-> 
-> Any ideas and/or comments would be very much appreciated.
-> 
-> Thanks,
-> savin
+The SST 39VF6402B is currently not supported by the Linux kernel. This patch 
+adds it to the list of JEDEC command set compatible Flash chips, so that it 
+can be used in a flash map driver using "jedec_probe".
 
-a) power supply tolerance; psu noise ?
-b) is the second 0x20 a 'repeat' of the first ? in which case will an
-extra read give you the required 0x76 ? [if chipid==mfrid reread chipid]
-May be a chip problem - it does happen !
+Note that according to the datasheet this flash has two possible erase sizes : 
+64kb and 4kb. I prefer using 64Kb erase size since we do not have to change 
+the erase command from 0x50 (64Kb) to 0x30 (4Kb).
 
-MikeW
+The datasheet is available here : 
+http://www.sst.com/downloads/datasheet/S71288.pdf
+
+Signed-off-by: Florian Fainelli <florian.fainelli@int-evry.fr>
+--
+
+--Boundary-00=_9UsSGONv4nzsjZ8
+Content-Type: text/plain;
+  charset="us-ascii";
+  name="sst_39VF6402B.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="sst_39VF6402B.diff"
+
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 58e561e..22f1d5b 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -159,6 +159,7 @@
+ #define SST49LF030A	0x001C
+ #define SST49LF040A	0x0051
+ #define SST49LF080A	0x005B
++#define SST39VF6402B    0x236C
+ 
+ /* Toshiba */
+ #define TC58FVT160	0x00C2
+@@ -1509,7 +1510,20 @@ static const struct amd_flash_info jedec_table[] = {
+                        ERASEINFO(0x1000,256),
+                        ERASEINFO(0x1000,256)
+                }
+-
++	}, {
++		.mfr_id         = MANUFACTURER_SST,
++		.dev_id         = SST39VF6402B,
++		.name           = "SST 39VF6402B",
++		.uaddr          = {
++			[0] = MTD_UADDR_0x5555_0x2AAA,  /* x8 */
++			[1] = MTD_UADDR_0x5555_0x2AAA   /* x16 */
++		},
++		.DevSize        = SIZE_8MiB,
++		.CmdSet         = P_ID_AMD_STD,
++		.NumEraseRegions= 4,
++		.regions        = {
++			ERASEINFO(0x10000,128)
++		}
+        }, {
+ 		.mfr_id		= MANUFACTURER_ST,	/* FIXME - CFI device? */
+ 		.dev_id		= M29W800DT,
+
+--Boundary-00=_9UsSGONv4nzsjZ8--
