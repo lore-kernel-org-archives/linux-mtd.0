@@ -1,21 +1,26 @@
+Received: from 1wt.eu ([62.212.114.60])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoBzq-0001dw-GS
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 01:24:25 -0400
+Date: Wed, 16 May 2007 07:22:54 +0200
+From: Willy Tarreau <w@1wt.eu>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
 Subject: Re: [PATCH] LogFS take three
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
-In-Reply-To: <20070515191926.GB1220@lazybastard.org>
+Message-ID: <20070516052253.GI943@1wt.eu>
 References: <20070515151919.GA32510@lazybastard.org>
-	<17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Wed, 16 May 2007 12:54:14 +0800
-Message-Id: <1179291255.2859.195.camel@shinybook.infradead.org>
+	<20070515133759.9ee434a2.akpm@linux-foundation.org>
+	<20070516000630.GD1220@lazybastard.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+In-Reply-To: <20070516000630.GD1220@lazybastard.org>
+Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
+	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
 	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
 	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+	linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +30,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-15 at 21:19 +0200, JÃ¶rn Engel wrote:
-> On Tue, 15 May 2007 15:07:05 -0400, John Stoffel wrote:
-> > 
-> > I've been semi watching this, and the only comment I really can give
-> > is that I hate the name.  To me, logfs implies a filesystem for
-> > logging purposes, not for Flash hardware with wear leveling issues to
-> > be taken into account.
+On Wed, May 16, 2007 at 02:06:31AM +0200, Jörn Engel wrote:
+> On Tue, 15 May 2007 13:37:59 -0700, Andrew Morton wrote:
+> > It's strange and a bit regrettable that an fs would have dependency on MTD,
+> > really.
 > 
-> Yeah, well, ...
+> It is and changing this wouldn't be too hard.  All device access goes
+> through five functions (read, write, erase, is_bad and mark_bad).  As
+> soon as someone seriously cares I will add a struct logfs_device_ops and
+> have a second set of these functions for block devices.
 > 
-> Two years ago when I started all this, I was looking for a good name.
-> All I could come up with sounded stupid, so I picked "LogFS" as a code
-> name.  As soon as I find a better name, the code name should get
-> replaced.
-> 
-> By now I still don't have anything better.  All alternatives that were
-> proposed are just as bad - with the added disadvantage of being new and
-> not established yet.  My hope of ever finding a better name is nearly
-> zero. 
+> On hard disks it shouldn't make too much sense.  The filesystem will
+> fragment like a splinter bomb and be just as popular.
 
-Personally I'd just go for 'JFFS3'. After all, it has a better claim to
-the name than either of its predecessors :)
+On hard disks, yes, but as you suggested, there are lots of other flash
+devices interfaced as block devices. CompactFlash comes to mind, USB
+keys too. And on these ones, the most important is to reduce the number
+of writes and to support large sizes. I already see LogFS as an interesting
+alternative to JFFS2 on such devices, eventhough it does not (yet?) support
+compression.
 
--- 
-dwmw2
+Regards,
+Willy
