@@ -1,29 +1,25 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoGqZ-00058E-Nb
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 11:35:08 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HoGqU-0008PW-0H
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 12:35:02 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 12:35:01 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 12:35:01 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: When to use mtd.h or mtd-user.h
-Date: Wed, 16 May 2007 10:34:52 +0000 (UTC)
-Message-ID: <loom.20070516T122448-559@post.gmane.org>
-References: <loom.20070515T170629-855@post.gmane.org>
-	<loom.20070516T115003-521@post.gmane.org>
-	<1179310261.3642.15.camel@sauron>
+Received: from mail.shareable.org ([81.29.64.88])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoHXQ-00038O-FM
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 07:19:25 -0400
+Date: Wed, 16 May 2007 12:18:40 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Albert Cahalan <acahalan@gmail.com>
+Subject: Re: [PATCH] LogFS take three
+Message-ID: <20070516111840.GB20482@mail.shareable.org>
+References: <20070515151919.GA32510@lazybastard.org>
+	<787b0d920705151626x3a11b81csf0f3747a695131b0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Sender: news <news@sea.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <787b0d920705151626x3a11b81csf0f3747a695131b0@mail.gmail.com>
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Greg KH <greg@kroah.com>,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>,
+	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
+	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,27 +29,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy <dedekind <at> infradead.org> writes:
-
+Albert Cahalan wrote:
+> Please don't forget the immutable bit. ("man lsattr")
+> Having both, BSD-style, would be even better.
+> The immutable bit is important for working around
+> software bugs and "features" that damage files.
 > 
-> On Wed, 2007-05-16 at 09:54 +0000, MikeW wrote:
-> > Incidentally, I did actually realise which was the *correct* usage,
-> > but I wondered why anyone (especially uBoot) would use the other.
-> 
-> Because most people send questions but not patches  ?
-> 
+> I also can't find xattr support.
 
-Trouble is, the people with the questions do not usually consider
-themselves authoritative enough to send in a patch, since they
-feel (possibly correctly!) that they do not know the system
-well enough to be aware of implications of what on the face of
-it might be a simple 'correction'.
+Imho,
 
-In which case, those who *are* authoritative may, if they have the
-time and inclination, pick up on the issue and make the correction!
+Given that the filesystem is still 'experimental', I'd concentrate on
+getting it stable before worrying about immutable and xattrs unless
+they are easy.  (Immutable is easy).
 
-But I would submit patches if I felt sufficiently knowledgeable
-in the relevant area of code.
+In 13 years of using Linux in all sorts of ways I've never yet to use
+either feature.  They would be good to have, but stability in a
+filesystem is much more useful.
 
-Regards,
-MikeW (мАйк)
+I'm biased of course: if LogFS were stable and well tested, I'd be
+using it right now in my embedded thingy - and that doesn't even
+bother with uids :-)
+
+-- Jamie
