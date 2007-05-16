@@ -1,32 +1,32 @@
-Received: from nessie.weebeastie.net ([220.233.7.36]
-	helo=bunyip.lochness.weebeastie.net)
+Received: from mail.shareable.org ([81.29.64.88])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoISJ-0006D4-Mx
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:18:20 -0400
-Date: Wed, 16 May 2007 22:06:24 +1000
-From: CaT <cat@zip.com.au>
-To: J??rn Engel <joern@lazybastard.org>
+	id 1HoIb3-0006YQ-Mv
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:27:15 -0400
+Date: Wed, 16 May 2007 13:25:48 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516120624.GA18926@zip.com.au>
+Message-ID: <20070516122548.GA25239@mail.shareable.org>
 References: <20070515151919.GA32510@lazybastard.org>
 	<17994.1241.436841.681216@stoffel.org>
 	<20070515191926.GB1220@lazybastard.org>
 	<1179291255.2859.195.camel@shinybook.infradead.org>
 	<20070516110933.GA5472@lazybastard.org>
 	<20070516113434.GC20482@mail.shareable.org>
-	<20070516115003.GD5472@lazybastard.org>
+	<1179315498.3642.19.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20070516115003.GD5472@lazybastard.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1179315498.3642.19.camel@sauron>
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, John Stoffel <john@stoffel.org>,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>
+	Albert Cahalan <acahalan@gmail.com>, John Stoffel <john@stoffel.org>,
+	=?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>,
+	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
+	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Greg KH <greg@kroah.com>, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,25 +36,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, May 16, 2007 at 01:50:03PM +0200, J??rn Engel wrote:
-> On Wed, 16 May 2007 12:34:34 +0100, Jamie Lokier wrote:
+Artem Bityutskiy wrote:
+> On Wed, 2007-05-16 at 12:34 +0100, Jamie Lokier wrote:
+> > Jörn Engel wrote:
+> > > On Wed, 16 May 2007 12:54:14 +0800, David Woodhouse wrote:
+> > > > Personally I'd just go for 'JFFS3'. After all, it has a better claim to
+> > > > the name than either of its predecessors :)
+> > > 
+> > > Did you ever see akpm's facial expression when he tried to pronounce
+> > > "JFFS2"?  ;)
+> > 
+> > JFFS3 is a good, meaningful name to anyone familiar with JFFS2.
 > > 
 > > But if akpm can't pronounce it, how about FFFS for faster flash
 > > filesystem.... ;-)
 > 
-> How many of you have worked for IBM before?  Vowels are not evil. ;)
-> 
-> Grouping four or more consonants to name anything will cause similar
-> expressions on people's faces.  Numbers don't help much either.
-> 
-> Ext2 is a great name, because "ext" actually is a pronouncable syllable.
-> MinixFS, ChunkFS, TileFS are great too.  XFS and JFS are ok, at least
-> they only have three consonants.  But FFS exists, so I'd rather go for a
-> syllable.
+> The problem is that JFFS2 will always be faster in terms of I/O speed
+> anyway, just because it does not have to maintain on-flash indexing
+> data structures. But yes, it is slow in mount and in building big
+> inodes, so the "faster" is confusing.
 
-FlashFS?
+Is LogFS really slower than JFFS2 in practice?
 
--- 
-    "To the extent that we overreact, we proffer the terrorists the
-    greatest tribute."
-    	- High Court Judge Michael Kirby
+I would have guessed reads to be a similar speed, tree updates to be a
+similar speed  to journal  updates for sustained  non-fsyncing writes,
+and the difference unimportant for tiny individual commits whose index
+updates are not merged with any other.  I've not thought about it much
+though.
+
+-- Jamie
