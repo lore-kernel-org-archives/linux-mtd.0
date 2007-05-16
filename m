@@ -1,24 +1,30 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hnyww-0004f6-Pk
-	for linux-mtd@lists.infradead.org; Tue, 15 May 2007 16:28:31 +0100
-Date: Tue, 15 May 2007 17:21:49 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mtd@lists.infradead.org
-Subject: Review status (Re: [PATCH] LogFS take three)
-Message-ID: <20070515152149.GB32059@lazybastard.org>
-References: <20070515151919.GA32510@lazybastard.org>
+	id 1HoECN-0003yb-KW
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:45:28 +0100
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HoECE-0006Fi-Js
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 09:45:18 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 09:45:18 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 09:45:18 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: Mounting big endian jffs2 images on mtdram on a x86
+Date: Wed, 16 May 2007 07:45:03 +0000 (UTC)
+Message-ID: <loom.20070516T093928-915@post.gmane.org>
+References: <1179133533.21753.13.camel@localhost.localdomain>
+	<1179138892.3642.5.camel@sauron>
+	<1179189724.3482.24.camel@shinybook.infradead.org>
+	<1179215126.21753.40.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070515151919.GA32510@lazybastard.org>
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,86 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Most of my homework is done.  There are six items left plus another five
-I believe should not get changed.
+Hans-Christian Egtvedt <hcegtvedt <at> norway.atmel.com> writes:
 
+> 
+> Ah, thanks for this hint.
+> 
+> > The reason it's not a runtime option is because that would be quite
+> > slow, and it's a very esoteric feature.
+> 
+> For development systems it would be a great feature, hence my original
+> email. But for an embedded system this should not be present at all.
+> 
+> > I'm sorry. I should have just made it either big- or little-endian right
+> > from the very beginning and never made the mistake of letting it be
+> > host-endian.
+> 
+> What I would have liked was a possibility to choose which read/write
+> operations should be used when using my developing machine, but for the
+> kernel I boot my embedded target with I would like an optimized jffs2
+> driver.
+> 
+> Use native endianess by default, but have a possibility to override at
+> runtime.
+> 
+> </thoughts>
+> 
 
-Changed:
-o Kconfig description updated
-o Spaces converted to tabs in Makefile
-o Sorted/seperated #includes
-o structures are __packed instead of packed, #define removed
-o removed TRACE()
-o 32bit magic is u instead of ull now
-o #defines aligned
-o Removed obsolete #defines, documented rest
-o LOGFS_SUPER and LOGFS_INODE are inline functions now
-o removed alloc_disk_sum and free_disk_sum
-o moved dir_callback up
-o removed pointless cast from max() parameter
-o moved LOGFS_LINK_MAX to header
-o license headers
-o removed logfs_writepage()
-o introduced and documented LOGFS_SEGMENT_RESERVE
-o documented completion dance in mtderase()
-o removed isbad() check from mtderase()
-o removed logfs_device_getpage() and logfs_cached_read()
-o resurrected code to pick correct device
-o removed beXX typedefs
-o removed safe_read()
-o removed wrapper in logfs_cleanup_gc()
-o device_read() returns error
-o renamed logfs_alloc_blocks() to match current implementation
-o kerneldoc comments for structures
-o removed logfs_compress_none and logfs_uncompress_none
-o Split header
-o move fsck behind debug option
+(I guess you could have both be- and le- drivers present in your dev system
+as long as they had different naming, so you could  mount -t jffs2.be / .le
+as required.)
 
+Since this is a development-only requirement, there is no need to make
+a generic read-everything upgrade for JFFS2 which would then slug the
+performance of the standard build. Keep this option as a nonstandard
+recompile option, and let the native versions use their native byte ordering.
 
-Changed many times (and I sincerely hope not to have missed any):
-o removed // comments, usually dead code
-o added newline between variable declarations and code
-o moved tail comments
-o minor code cleanups
-o changed comment style
-o added loglevels to printk
-
-
-Unchanged:
-o enum for OBJ_TOP_JOURNAL and friends
-  Afaics all the potential enums end up being converted through cpu_to_64XX,
-  I'll have to see if that causes more problems than the enums can hope to
-  solve.
-o generic function for logfs_type()
-o generic helper for logfs_prepare_write()
-o removed EOF
-o error handling
-o move rootdir generation back to mkfs
-
-
-Won't happen (unless I get convinced to do otherwise):
-o lowercase LOGFS_SUPER and LOGFS_INODE
-  These simply match the common pattern used is many Linux filesystems.
-o remove "extern"
-  For structures, this keyword actually serves a purpose and makes sense.
-  On the other hand, it is completely bogus for functions and I won't be
-  bullied into adding bogus crud either.
-o Move fs/logfs/Locking to Documentation/
-  At least JFFS2 has such documentation in its own directory as well.
-  I can see good arguments for either side and no strong consensus.  While
-  I ultimately just don't case, doing nothing is a good option in cases
-  of great uncertainty.
-o change (void*) to "proper" cast
-  Neither variant is much better than the other.  I'm open for suggestions
-  to completely remove the casts, though.
-o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
-  These are macros for very much the same reasons BUG() and BUG_ON() are.
-
-
-Jörn
-
--- 
-To my face you have the audacity to advise me to become a thief - the worst
-kind of thief that is conceivable, a thief of spiritual things, a thief of
-ideas! It is insufferable, intolerable!
--- M. Binet in Scarabouche
+Regards,
+MikeW
