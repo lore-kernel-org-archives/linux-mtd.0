@@ -1,11 +1,21 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoKGp-0004XV-4e
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 10:14:28 -0400
+Received: from py-out-1112.google.com ([64.233.166.178])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoKL6-0007DI-IB
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 15:18:53 +0100
+Received: by py-out-1112.google.com with SMTP id p76so523921pyb
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 16 May 2007 07:17:15 -0700 (PDT)
+Message-ID: <11f674920705160717m3376779eqeb79e45ecef233e0@mail.gmail.com>
+Date: Wed, 16 May 2007 07:17:02 -0700
+From: "Kevin Bowling" <lkml@kev009.com>
+To: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
 Subject: Re: [PATCH] LogFS take three
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <1179324273.2859.230.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 References: <20070515151919.GA32510@lazybastard.org>
 	<17994.1241.436841.681216@stoffel.org>
 	<20070515191926.GB1220@lazybastard.org>
@@ -16,21 +26,6 @@ References: <20070515151919.GA32510@lazybastard.org>
 	<17995.2550.581854.8393@stoffel.org>
 	<20070516135318.GK5472@lazybastard.org>
 	<1179324273.2859.230.camel@shinybook.infradead.org>
-Content-Type: text/plain; charset=utf-8
-Date: Wed, 16 May 2007 17:13:39 +0300
-Message-Id: <1179324819.3642.30.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>,
-	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, John Stoffel <john@stoffel.org>,
-	Greg KH <greg@kroah.com>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,9 +35,9 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-05-16 at 22:04 +0800, David Woodhouse wrote:
-> On Wed, 2007-05-16 at 15:53 +0200, J=C3=B6rn Engel wrote:
-> >=20
+On 5/16/07, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Wed, 2007-05-16 at 15:53 +0200, J=F6rn Engel wrote:
+> >
 > > My experience is that no matter which name I pick, people will
 > > complain
 > > anyway.  Previous suggestions included:
@@ -55,12 +50,8 @@ On Wed, 2007-05-16 at 22:04 +0800, David Woodhouse wrote:
 > > cutefs
 > > dynamic journaling fs - djofs
 > > tfsfkal - the file system formerly known as logfs
->=20
-> Can we call it j=C3=B6rnfs? :)
+>
+> Can we call it j=F6rnfs? :)
 
-And it is essential to preserve "=C3=B6" and let Pavel enjoy :-)
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+However if J=F6rn is accused of murder, it will have little chance of
+being merged :-).
