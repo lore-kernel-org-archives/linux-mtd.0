@@ -1,28 +1,27 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoMdw-0002nA-73
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 12:46:29 -0400
-Date: Wed, 16 May 2007 18:41:59 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516164158.GB8113@lazybastard.org>
-References: <20070515151919.GA32510@lazybastard.org>
-	<20070515133759.9ee434a2.akpm@linux-foundation.org>
-	<1179317240.2859.222.camel@shinybook.infradead.org>
-	<20070516083408.dcd9dd78.akpm@linux-foundation.org>
-	<1179330596.2859.248.camel@shinybook.infradead.org>
+	id 1HoMiA-00035M-PY
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 12:51:08 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HoMhq-0004M1-J5
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 18:50:30 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 18:50:30 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 18:50:30 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: Problems with ST NAND512W3A nand flash
+Date: Wed, 16 May 2007 16:50:16 +0000 (UTC)
+Message-ID: <loom.20070516T184549-325@post.gmane.org>
+References: <464B17F3.9040804@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1179330596.2859.248.camel@shinybook.infradead.org>
-Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
-	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
-	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,16 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 16 May 2007 23:49:55 +0800, David Woodhouse wrote:
+Savin Zlobec <savinz <at> users.sourceforge.net> writes:
+
 > 
-> Utility is a factor of the underlying design -- a filesystem designed
-> for flash really isn't suited to block devices.
+> Hi All!
+> 
+> I am working on a AT91RM9200 based board with ST NAND512W3A2B flash.
+> Kernel version is 2.6.19.7 with patches from maxim.org.za/at91_26.html.
+> Everything works perfectly, except for boot time NAND chip
+> identification which fails every once in a while. NAND signature
+> is 0x20 0x76, but sometimes I get 0x20 0x20. My first guess was
+> timing problems, but I've double checked everything and all signals
+> are inside the specs. I've also tested the chip with shorter and
+> longer setup, hold and pulse times for read and write, but without
+> any success. Trying different kernels didn't help either.
+> 
+> Any ideas and/or comments would be very much appreciated.
+> 
+> Thanks,
+> savin
 
-I can think of at least three examples where LogFS would indeed make
-sense on block devices.
+a) power supply tolerance; psu noise ?
+b) is the second 0x20 a 'repeat' of the first ? in which case will an
+extra read give you the required 0x76 ? [if chipid==mfrid reread chipid]
+May be a chip problem - it does happen !
 
-Jörn
-
--- 
-Happiness isn't having what you want, it's wanting what you have.
--- unknown
+MikeW
