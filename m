@@ -1,22 +1,23 @@
 Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoFlf-0004j9-GX
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 10:26:00 +0100
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoGDF-0000RE-D0
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 05:54:31 -0400
 Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HoFl3-0000JK-RL
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 11:25:22 +0200
+	id 1HoGDD-00043y-BE
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 11:54:27 +0200
 Received: from office.ubiquisys.com ([88.96.204.222])
 	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 11:25:21 +0200
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 11:54:27 +0200
 Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
 	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 11:25:21 +0200
+	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 11:54:27 +0200
 To: linux-mtd@lists.infradead.org
 From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Opening flash device for update - locking
-Date: Wed, 16 May 2007 09:24:35 +0000 (UTC)
-Message-ID: <loom.20070516T111938-933@post.gmane.org>
+Subject: Re: When to use mtd.h or mtd-user.h
+Date: Wed, 16 May 2007 09:54:20 +0000 (UTC)
+Message-ID: <loom.20070516T115003-521@post.gmane.org>
+References: <loom.20070515T170629-855@post.gmane.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -30,13 +31,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-A utility program cannot open a /dev/mtd  in mode O_RDWR - permission denied
-(/dev permission bits are OK)
+MikeW <mw_phil <at> yahoo.co.uk> writes:
 
-Presumably this is because the device is locked.
+> 
+> I note some applications for running in userspace say:
+> #include <linux/mtd/mtd.h>
+> and some say
+> #include <mtd/mtd-user.h>
+> 
+> Which is the recommended usage, and why ?
+> 
+> Many thanks,
+> MikeW
 
-OK, there is a MEMUNLOCK ioctl - hopefully this can be called
-on a device that is only opened in O_RDONLY mode ?!
+Incidentally, I did actually realise which was the *correct* usage,
+but I wondered why anyone (especially uBoot) would use the other.
 
-Regards,
+Thanks for the comments,
 MikeW
