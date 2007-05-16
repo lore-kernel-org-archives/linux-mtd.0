@@ -1,32 +1,24 @@
-Received: from mail.shareable.org ([81.29.64.88])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoIb3-0006YQ-Mv
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:27:15 -0400
-Date: Wed, 16 May 2007 13:25:48 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: Artem Bityutskiy <dedekind@infradead.org>
+	id 1HoIeH-0006q4-G3
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 08:30:37 -0400
+Date: Wed, 16 May 2007 14:26:06 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Pekka J Enberg <penberg@cs.helsinki.fi>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070516122548.GA25239@mail.shareable.org>
+Message-ID: <20070516122603.GE5472@lazybastard.org>
 References: <20070515151919.GA32510@lazybastard.org>
-	<17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-	<1179291255.2859.195.camel@shinybook.infradead.org>
-	<20070516110933.GA5472@lazybastard.org>
-	<20070516113434.GC20482@mail.shareable.org>
-	<1179315498.3642.19.camel@sauron>
+	<Pine.LNX.4.64.0705161319060.5152@sbz-30.cs.Helsinki.FI>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1179315498.3642.19.camel@sauron>
+In-Reply-To: <Pine.LNX.4.64.0705161319060.5152@sbz-30.cs.Helsinki.FI>
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, John Stoffel <john@stoffel.org>,
-	=?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
 	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Greg KH <greg@kroah.com>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,32 +28,153 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Wed, 2007-05-16 at 12:34 +0100, Jamie Lokier wrote:
-> > Jörn Engel wrote:
-> > > On Wed, 16 May 2007 12:54:14 +0800, David Woodhouse wrote:
-> > > > Personally I'd just go for 'JFFS3'. After all, it has a better claim to
-> > > > the name than either of its predecessors :)
-> > > 
-> > > Did you ever see akpm's facial expression when he tried to pronounce
-> > > "JFFS2"?  ;)
-> > 
-> > JFFS3 is a good, meaningful name to anyone familiar with JFFS2.
-> > 
-> > But if akpm can't pronounce it, how about FFFS for faster flash
-> > filesystem.... ;-)
+On Wed, 16 May 2007 13:21:11 +0300, Pekka J Enberg wrote:
 > 
-> The problem is that JFFS2 will always be faster in terms of I/O speed
-> anyway, just because it does not have to maintain on-flash indexing
-> data structures. But yes, it is slow in mount and in building big
-> inodes, so the "faster" is confusing.
+> > +#define LOGFS_BUG(sb) do {           \
+> > +     struct super_block *__sb = sb;  \
+> > +     logfs_crash_dump(__sb);         \
+> > +     BUG();                          \
+> > +} while(0)
+> 
+> Note that BUG() can be a no-op so dumping something on disk might not make 
+> sense there. This seems useful, but you probably need to make this bit 
+> more generic so that using BUG() proper in your filesystem code does the 
+> right thing. Inventing your own wrapper should be avoided.
 
-Is LogFS really slower than JFFS2 in practice?
+Hmm.  I am not sure how this could be generic and still make sense.
 
-I would have guessed reads to be a similar speed, tree updates to be a
-similar speed  to journal  updates for sustained  non-fsyncing writes,
-and the difference unimportant for tiny individual commits whose index
-updates are not merged with any other.  I've not thought about it much
-though.
+LogFS has some unused write-once space in the superblock segment.
+Embedded people always have problems debugging and were suggesting using
+this to store debug information.  That allows me to ask for a filesystem
+image and get both the offending image plus a crash dump.  It also
+allows me to abort mounting if I ever see an existing crash dump (not
+implemented yet).  "First failure data capture" was an old IBM slogal
+and the "first" really makes a difference.
 
--- Jamie
+So how should I deal with BUG() as a no-op?  I _think_ it should not
+make a difference.  People choosing that option should know that their
+kernels will continue running with errors and can potentially do any
+kind of damage.  My wrapper doesn't seem to change that one way or
+another.
+
+What I _should_ do is make the filesystem read-only after this point.
+That would actually be quite simple.  Onto my list.
+
+> > +static inline struct logfs_super *LOGFS_SUPER(struct super_block *sb)
+> > +{
+> > +     return sb->s_fs_info;
+> > +}
+> > +
+> > +static inline struct logfs_inode *LOGFS_INODE(struct inode *inode)
+> > +{
+> > +     return container_of(inode, struct logfs_inode, vfs_inode);
+> > +}
+> 
+> No need for upper case in function names.
+
+Will change.
+
+> > +int logfs_memcpy(void *in, void *out, size_t inlen, size_t outlen)
+> > +{
+> > +     if (outlen < inlen)
+> > +             return -EIO;
+> > +     memcpy(out, in, inlen);
+> > +     return inlen;
+> > +}
+> 
+> Please drop this wrapper function. It's better to open-code the error
+> handling in the callers (there are total of three of them).
+
+Is it?  The advantage of having the wrapper is that the compression case
+and the non-compressed case look identical and the code just repeats the
+same pattern twice.
+
+I'll try to open-code it and see how it looks.
+
+> > +/* FIXME: combine with per-sb journal variant */
+> > +static unsigned char compressor_buf[LOGFS_MAX_OBJECTSIZE];
+> > +static DEFINE_MUTEX(compr_mutex);
+> 
+> This looks fishy. All reads and writes are serialized by compr_mutex 
+> because they share a scratch buffer for compression and uncompression?
+
+s/fishy/lame/
+
+Will move to superblock.
+
+> > +/* FIXME: all this mess should get replaced by using the page cache */
+> > +static void fixup_from_wbuf(struct super_block *sb, struct logfs_area 
+> *area,
+> > +             void *read, u64 ofs, size_t readlen)
+> > +{
+> 
+> Indeed. And I think you're getting some more trouble because of this... 
+
+More trouble?
+
+Sadly squeezing bugs out of that beast was easier than wrapping my brain
+around the proper solution.  And now it works and has moved to a less
+urgent position in my todo list.
+
+> > +int logfs_segment_read(struct super_block *sb, void *buf, u64 ofs)
+> > +{
+> > +     struct logfs_object_header *h;
+> > +     u16 len;
+> > +     int err, bs = sb->s_blocksize;
+> > +
+> > +     mutex_lock(&compr_mutex);
+> > +     err = wbuf_read(sb, ofs, bs + LOGFS_HEADERSIZE, compressor_buf);
+> > +     if (err)
+> > +             goto out;
+> > +     h = (void*)compressor_buf;
+> > +     len = be16_to_cpu(h->len);
+> > +
+> > +     switch (h->compr) {
+> > +     case COMPR_NONE:
+> > +             logfs_memcpy(compressor_buf + LOGFS_HEADERSIZE, buf, bs, 
+> bs);
+> > +             break;
+> 
+> Seems wasteful to first read the data in a scratch buffer and then 
+> memcpy() it immediately for the COMPR_NONE case. Any reason why we can't 
+> read a full struct page, for example, and simply use that if we don't need 
+> to uncompress anything?
+
+No technical reason.  Just a case of "make it work now and optimize
+later".
+
+> > +     case COMPR_ZLIB:
+> > +             err = logfs_uncompress(compressor_buf + LOGFS_HEADERSIZE, 
+> buf,
+> > +                             len, bs);
+> > +             BUG_ON(err);
+> > +             break;
+> 
+> Not claiming to undestand your on-disk format, but wouldn't it make more 
+> sense if we knew whether a given segment is compressed or not _before_ we 
+> actually read it?
+
+[ Objects are the units that get compressed.  Segments can contain both
+compressed and uncompressed objects. ]
+
+It is a trade-off.  Each object has a 24 Byte header plus X Bytes of
+data.  Whether the data is compressed or not is indicated in the header.
+So we have to do one of two things.  Either:
+- read the complete object, then either uncompress or memcpy, or
+- read just the header, then either read uncompressed data or read
+  compressed data and uncompress.
+
+The former does an unnecessary memcpy() in the uncompressed case.  The
+latter does an extra IO operation.  I haven't done any benchmarks to see
+which variant is faster on which hardware.
+
+An advantage of the second approach is that no buffer and no mutex is
+needed in the uncompressed case.  That could help read performance on an
+SMP system.  I'll put it on my list, just not at the top.  Ok?
+
+JÃ¶rn
+
+-- 
+When in doubt, punt.  When somebody actually complains, go back and fix it...
+The 90% solution is a good thing.
+-- Rob Landley
