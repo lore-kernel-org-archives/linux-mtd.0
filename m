@@ -1,19 +1,26 @@
-Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.epico.si)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoKgJ-000646-DH
-	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 10:40:53 -0400
-Received: from [192.168.0.3] (telperion.ee.epico.si [192.168.0.3])
-	by lorien.ee.epico.si (8.12.11.20060308/8.12.11) with ESMTP id
-	l4GEeesf013932
-	for <linux-mtd@lists.infradead.org>; Wed, 16 May 2007 16:40:40 +0200
-Message-ID: <464B17F3.9040804@users.sourceforge.net>
-Date: Wed, 16 May 2007 16:40:51 +0200
-From: Savin Zlobec <savinz@users.sourceforge.net>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Problems with ST NAND512W3A nand flash
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from [207.189.120.14] (helo=smtp2.linux-foundation.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HoLhu-0007y2-46
+	for linux-mtd@lists.infradead.org; Wed, 16 May 2007 16:46:31 +0100
+Date: Wed, 16 May 2007 08:34:08 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] LogFS take three
+Message-Id: <20070516083408.dcd9dd78.akpm@linux-foundation.org>
+In-Reply-To: <1179317240.2859.222.camel@shinybook.infradead.org>
+References: <20070515151919.GA32510@lazybastard.org>
+	<20070515133759.9ee434a2.akpm@linux-foundation.org>
+	<1179317240.2859.222.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Thomas,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	=?ISO-8859-1?B?SvZybg==?= Engel <joern@lazybastard.org>,
+	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
+	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +30,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All!
+On Wed, 16 May 2007 20:07:18 +0800 David Woodhouse <dwmw2@infradead.org> wrote:
 
-I am working on a AT91RM9200 based board with ST NAND512W3A2B flash.
-Kernel version is 2.6.19.7 with patches from maxim.org.za/at91_26.html.
-Everything works perfectly, except for boot time NAND chip
-identification which fails every once in a while. NAND signature
-is 0x20 0x76, but sometimes I get 0x20 0x20. My first guess was
-timing problems, but I've double checked everything and all signals
-are inside the specs. I've also tested the chip with shorter and
-longer setup, hold and pulse times for read and write, but without
-any success. Trying different kernels didn't help either.
+> > It's strange and a bit regrettable that an fs would have dependency on MTD,
+> > really.
+> 
+> Why? Other file systems has dependencies on BLOCK or on NET. It seems
+> entirely normal to me.
 
-Any ideas and/or comments would be very much appreciated.
-
-
-Thanks,
-savin
+Reduced testability, mainly. Also potentially reduced usefulness.
