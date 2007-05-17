@@ -1,22 +1,27 @@
-Received: from smtp-ext.int-evry.fr ([157.159.11.17])
+Received: from moutng.kundenserver.de ([212.227.126.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoeHV-0000cU-2h
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 07:36:32 -0400
-From: Florian Fainelli <florian.fainelli@int-evry.fr>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] Add support for SST 39VF6402B flash - block & sector
-	support ?
-Date: Thu, 17 May 2007 13:37:48 +0200
-References: <200705161047.57549.florian.fainelli@int-evry.fr>
-	<loom.20070517T093705-724@post.gmane.org>
-In-Reply-To: <loom.20070517T093705-724@post.gmane.org>
+	id 1HoeKb-0000oO-KX
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 07:39:48 -0400
+From: Arnd Bergmann <arnd@arndb.de>
+To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@lazybastard.org>
+Subject: Re: [PATCH] LogFS take three
+Date: Thu, 17 May 2007 13:39:15 +0200
+References: <20070515151919.GA32510@lazybastard.org>
+	<17994.1241.436841.681216@stoffel.org>
+	<20070515191926.GB1220@lazybastard.org>
+In-Reply-To: <20070515191926.GB1220@lazybastard.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200705171337.49203.florian.fainelli@int-evry.fr>
-Cc: MikeW <mw_phil@yahoo.co.uk>
+Message-Id: <200705171339.16806.arnd@arndb.de>
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,25 +31,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Mike,
+On Tuesday 15 May 2007, J=C3=B6rn Engel wrote:
+>=20
+> > I've been semi watching this, and the only comment I really can give
+> > is that I hate the name. =C2=A0To me, logfs implies a filesystem for
+> > logging purposes, not for Flash hardware with wear leveling issues to
+> > be taken into account.
+>=20
+> Yeah, well, ...
+>=20
+> Two years ago when I started all this, I was looking for a good name.
+> All I could come up with sounded stupid, so I picked "LogFS" as a code
+> name. =C2=A0As soon as I find a better name, the code name should get
+> replaced.
+>=20
 
-Yes this would be better. I will try to come up with a patch to the MTD=20
-subsystem that can handle this properly.
+When doing a google search on logfs, there are less than five results
+among the first 100 that don't refer to your work. The other two listed
+in there are also log-structured file systems: The inferno flash file
+system (http://inferno-os.googlecode.com/svn/trunk/liblogfs/) and the
+(discontinued) file system named lfs from the 2005 google summer of
+code.
 
-Le jeudi 17 mai 2007, MikeW a =E9crit=A0:
-> Florian Fainelli <florian.fainelli <at> int-evry.fr> writes:
-> > Note that according to the datasheet this flash has two possible erase
-> > sizes : 64kb and 4kb. I prefer using 64Kb erase size since we do not ha=
-ve
-> > to change the erase command from 0x50 (64Kb) to 0x30 (4Kb).
->
-> Or maybe the MTD model now needs to include support
-> for both 'block' and 'sector' erase ?
->
-> Regards,
-> MikeW
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I'd say the name should stay, changing it now can only add more confusion.
+
+	Arnd <><
