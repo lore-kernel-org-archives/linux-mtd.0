@@ -1,23 +1,26 @@
-Received: from an-out-0708.google.com ([209.85.132.242])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hoixr-0003gp-G0
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 12:36:32 -0400
-Received: by an-out-0708.google.com with SMTP id d17so146763and
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 May 2007 09:36:29 -0700 (PDT)
-Message-ID: <93840d070705170936o7188807do17f29422f7e31404@mail.gmail.com>
-Date: Thu, 17 May 2007 22:06:28 +0530
-From: "Sekhar Nori" <nori.sekhar@gmail.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Subject: Re: Priority inversion when using MTD
-In-Reply-To: <1179409930.2859.495.camel@shinybook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hoj20-0003tC-BD
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 12:41:01 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1Hoj0Q-0000JM-CF
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 18:39:10 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 18:39:10 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 18:39:10 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Optimum way to copy JFFS2 f-s to backup/restore mtd partition ?
+Date: Thu, 17 May 2007 16:37:11 +0000 (UTC)
+Message-ID: <loom.20070517T182222-432@post.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <93840d070705170620x4a61007ap537ce877acfab488@mail.gmail.com>
-	<1179409930.2859.495.camel@shinybook.infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 5/17/07, David Woodhouse <dwmw2@infradead.org> wrote:
-> On Thu, 2007-05-17 at 18:50 +0530, Sekhar Nori wrote:
-> > I have a high priority SCHED_FIFO task which runs out of a squashfs file system.
-> > When this process needs to fetch a page from the flash (due to demand paging),
-> > it is sometimes made to wait for another low priority SCHED_NORMAL
-> > task which is doing an erase on some other mtd partition.
->  ...
-> > Is there any way to avoid this scenario? Any help/pointers would be appreciated.
->
-> mlockall(2)
+OK, I can manually use the MTD ioctl()s or mtd-utils to erase,
+and then read()-write() or dd or cp(io) between the /dev/mtdX ... mtdY.
 
-But doing so for all SCHED_FIFO tasks would make the system run out of memory :(
+I was hoping there might be a mtd-util that would do repeated erase-copy sector,
+maybe using 'zero-copy' operations like sendfile(). Not yet !
 
--
-Sekhar Nori
+So, what might be the recommended 'best' way to achieve this transfer,
+based on experience of the underlying implementation ?
+
+And if just copying file-by-file into an empty partition, is there any benefit
+(space overhead; fragmentation) to be had by ordering the files being copied
+in any particular way ... by size; by directory; by frequency of use ?
+
+Best regards,
+Thx,
+MikeW
