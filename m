@@ -1,27 +1,19 @@
-Received: from relay.2ka.mipt.ru ([194.85.82.65] helo=2ka.mipt.ru)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hok4J-0005sR-G6
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:47:22 -0400
-Date: Thu, 17 May 2007 21:45:33 +0400
-From: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070517174532.GA26827@2ka.mipt.ru>
-References: <20070515151919.GA32510@lazybastard.org>
-	<20070515133759.9ee434a2.akpm@linux-foundation.org>
-	<20070516000630.GD1220@lazybastard.org>
-	<Pine.LNX.4.61.0705171920330.3231@yvahk01.tjqt.qr>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=koi8-r
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.61.0705171920330.3231@yvahk01.tjqt.qr>
-Cc: Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+Received: from belize.chezphil.org ([80.68.91.122])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HokO6-0006BD-2c
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 14:07:45 -0400
+Received: from localhost ([127.0.0.1] helo=chezphil.org)
+	by belize.chezphil.org with esmtp (Exim 4.50) id 1Hoouk-000691-7l
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 23:57:42 +0100
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 17 May 2007 19:07:32 +0100
+Subject: Re: alloc/free quesion in ixp4xx driver
+Message-ID: <1179425252983@dmwebmail.belize.chezphil.org>
+In-Reply-To: <loom.20070517T190229-463@post.gmane.org>
+References: <loom.20070517T190229-463@post.gmane.org>
+MIME-Version: 1.0
+Content-Type: text/plain; format="flowed"
+From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,20 +23,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 17, 2007 at 07:26:07PM +0200, Jan Engelhardt (jengelh@linux01.gwdg.de) wrote:
-> >My plan was to move this code to lib/ sooner or later.  If you consider
-> >it useful in its current state, I can do it immediatly.  And if someone
-> >else merged a superior btree library I'd happily remove mine and use the
-> >new one instead.
-> >
-> >Opinions?
-> 
-> Why would we need another btree, when there is lib/rbtree.c?
-> Or does yours do something fundamentally different?
+MikeW wrote:
+> Phil Endecott <spam_from_linux_mtd <at> chezphil.org> writes:
+>> - In ixp4xx_flash_probe(), a struct ixp4xx_flash_info in kalloc()ed.  
+>> Where is it freed?
+>> 
+>> - In ixp4xx_flash_remove() you have:
+>>        release_resource(info->res);
+>>        kfree(info->res);
+>>    In other places where release_resource() is called I do not see a 
+>> call to kfree().  Is this right?
 
-It is not red-black tree, it is b+ tree.
+> Don't think it should kfree(info->res), the release_resource() sorts
+> out the allocated mem region.
+>
+> But there should be a kfree(info) somewhere in the driver.
+>
+> My guess is that you have spotted a typo, and there should be a
+> kfree(info) next, just outside the if (info->res) block.
 
-> 	Jan
+Similar issues occur in integrator-flash.c, ixp2000.c, physmap.c and physmap_of.c.
 
--- 
-	Evgeniy Polyakov
+I don't have hardware where mtd can be modular; like probably 99% of 
+applications it's the root filesystem so it's hard to unload it.  But 
+not being able to test it hasn't stopped me from writing a patch, which 
+will follow shortly.  I hope that there's someone out there who can 
+test it!
+
+Phil.
