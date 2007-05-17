@@ -1,25 +1,27 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from mailer.gwdg.de ([134.76.10.26])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HojYx-0004cD-J9
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:15:06 -0400
-Date: Thu, 17 May 2007 19:10:19 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
-Subject: Re: Review status (Re: [PATCH] LogFS take three)
-Message-ID: <20070517171017.GB15676@lazybastard.org>
+	id 1Hojex-0004pu-KH
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:21:05 -0400
+Date: Thu, 17 May 2007 18:59:29 +0200 (MEST)
+From: Jan Engelhardt <jengelh@linux01.gwdg.de>
+To: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+Subject: Re: [PATCH] LogFS take three
+In-Reply-To: <20070516110933.GA5472@lazybastard.org>
+Message-ID: <Pine.LNX.4.61.0705171853120.3231@yvahk01.tjqt.qr>
 References: <20070515151919.GA32510@lazybastard.org>
-	<20070515152149.GB32059@lazybastard.org>
-	<20070517160308.GA26643@2ka.mipt.ru>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070517160308.GA26643@2ka.mipt.ru>
-Cc: akpm@osdl.org, Albert Cahalan <acahalan@gmail.com>,
-	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+	<17994.1241.436841.681216@stoffel.org>
+	<20070515191926.GB1220@lazybastard.org>
+	<1179291255.2859.195.camel@shinybook.infradead.org>
+	<20070516110933.GA5472@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
 	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,81 +31,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 17 May 2007 20:03:11 +0400, Evgeniy Polyakov wrote:
-> 
-> Is logfs 32bit fs or 674bit, since although you use 64bit values for
-> offsets, area management and strange converstions like described below 
-> from offset into segment number are performed in 32bit?
-> Is it enough for SSD for example to be 32bit only? Or if it is 64bit,
-> could you please explain logic behind area management?
 
-Ignoring bugs and signed return values for error handling, it is either
-64bit or 32+32bit.
+On May 16 2007 13:09, Jörn Engel wrote:
+>On Wed, 16 May 2007 12:54:14 +0800, David Woodhouse wrote:
+>> 
+>> Personally I'd just go for 'JFFS3'. After all, it has a better claim to
+>> the name than either of its predecessors :)
+>
+>Did you ever see akpm's facial expression when he tried to pronounce
+>"JFFS2"?  ;)
 
-Inode numbers and file positions are 64bit.  Offsets are 64bit as well.
-In a couple of places, offsets are also 32+32bit.  Basically the high
-bits contain the segment number, the lower bits the offset within a
-segment.
+Is there something special with [dʒeɪ ɛf ɛf ɛs tuː]?
 
-Side note: It would be nicer if the high 32bit were segment number.
-Instead the number of bits depends on segment size.  Guess I should
-change that while the format isn't fixed yet.
 
-An "area" is a segment that is currently being written.  Data is
-appended to this segment as it comes in, until the segment is full.  Any
-functions dealing with areas only need a 32bit offset, which is the
-offset within the area, not the absolute device offset.
-
-Writes within an area are also buffered.  New data first goes into the
-write buffer (wbuf) and only when this is full is it flushed to the
-device.  NAND flash and some NOR flashes require such buffering.  When
-writing to the device, the 32bit segno and the 32bit in-segment offset
-need to get converted back to a 64bit device offset.
-
-> I've found that you store segment numbers as 32bit values (for example
-> in prepare_write()), and convert requested 64bit offset into segment
-> number via superblock's s_segshift.
-
-Yes, as described above.
-
-> This conversation seems confusing to me in case of real 64bit offsets.
-> For example this one obtained via prepare_write:
-> 
-> 7  1 logfs_prepare_write    78  fs/logfs/file.c
-> 8  2 logfs_readpage_nolock    20  fs/logfs/file.c
-> 9  1 logfs_read_block   351  fs/logfs/readwrite.c
-> 10  1 logfs_read_loop   139  fs/logfs/readwrite.c
-> 11  2 logfs_segment_read   108  fs/logfs/readwrite.c
-> 12  1 wbuf_read         289 
-> 
-> u32 segno = ofs >> super->s_segshift;
-> 
-> ofs is originally obtained from inode's li_data array, which is filled
-> with raw segment numbers which can be 64bit (here is another issue,
-> since logfs_segment_write() returns signed, so essentially logfs is
-> 63bit filesystem).
-
-The filesystem format is 64bit.  The current code can only deal with
-63bit.  Eric Sandeen just fixed ext2 to actually deal with 32bit
-numbers and the same is possible for logfs.  If anyone ever cares...
-
-> But here I've came to area management in logfs, and found that it is
-> 32bit only, for example __logfs_segment_write()/__logfs_get_free_bytes() 
-> returns signed 32 bit value (so it is reduced to 31 bit), which is then 
-> placed into li_data as 64bit value. The latter
-> (__logfs_get_free_bytes()) truncates 64bit data value obtained via
-> dev_ofs() into signed 32 bit value.
-
-That indeed is a bug.  __logfs_get_free_bytes() should return s64
-instead of s32.  Will fix immediatly.
-
-If anyone can find similar bugs, the bounty is a beer or non-alcoholic
-beverage of choice. :)
-
-Jörn
-
+	Jan
 -- 
-To announce that there must be no criticism of the President, or that we
-are to stand by the President, right or wrong, is not only unpatriotic
-and servile, but is morally treasonable to the American public.
--- Theodore Roosevelt, Kansas City Star, 1918
