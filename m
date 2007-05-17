@@ -1,27 +1,21 @@
-Received: from moutng.kundenserver.de ([212.227.126.177])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hon6I-0000Am-I1
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 17:01:45 -0400
-From: Arnd Bergmann <arnd@arndb.de>
-To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@lazybastard.org>
-Subject: Re: [PATCH] LogFS take three
-Date: Thu, 17 May 2007 23:00:20 +0200
-References: <20070515151919.GA32510@lazybastard.org>
-	<200705171708.53038.arnd@arndb.de>
-	<20070517202139.GD15676@lazybastard.org>
-In-Reply-To: <20070517202139.GD15676@lazybastard.org>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HonA7-0000PM-6n
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 17:05:30 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l4HL5JHu018702
+	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 23:05:19 +0200
+Date: Thu, 17 May 2007 23:06:40 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: choice of flash file system for large read-only volume
+In-Reply-To: <20070516142238.GA5725@cloud.net.au>
+Message-ID: <Pine.LNX.4.64.0705172303500.1882@lnxricardw.se.axis.com>
+References: <20070516142238.GA5725@cloud.net.au>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200705172300.21694.arnd@arndb.de>
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,26 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday 17 May 2007, J=C3=B6rn Engel wrote:
->=20
-> > Why not just store 64 bit nanoseconds? that would avoid the problem
-> > with ns overflow and the year-2038 bug. OTOH, that would require
-> > a 64 bit integer division when reading the data, so it gets you
-> > a runtime overhead.
->=20
-> I like the idea. =C2=A0Do conversion function exist both way?
->=20
-> What I don't get is the year-2038 bug. =C2=A0Isn't that the 31bit limit,
-> while 32bit would last to 2106?
 
-You're right, you don't hit the 2038 bug here, because you use an
-unsigned variable. The bug exists elsewhere because time_t tv_sec
-is signed.
+On Thu, 17 May 2007, Hamish Moffatt wrote:
 
-Just using nanoseconds probably doesn't gain you much after all
-then. You could however just have separate 32 bit fields in the
-inode for seconds and nanoseconds, that will result in the exact
-same layout that you have right now, but won't require a conversion
-function.
+> What would be a good choice of file system for this application? Does it
+> come down to JFFS2 versus YAFFS, or are there other alternatives?
+>
+> I understand that JFFS2 mount times are proportional to the size; mount
+> time isn't critical to me but I would like the system to boot as quickly
+> as possible. Is YAFFS better in this regard?
 
-	Arnd <><
+One option you might consider if you have enough ram, is simply to make a=
+=20
+copy of a read-only file system such as cramfs in the flash, and upon=20
+boot, copy it from flash to ram (skipping bad blocks of course), and=20
+running it from there. Of course, you cannot write to cramfs, so that=20
+would not be a good idea during development.
+
+Since a straight copy from flash to ram can be reasonably fast, and=20
+accessing cramfs in ram is quite fast, boot time is shorter to or=20
+comparable to having the root partition directly in the flash as a jffs2=20
+partition, in my experience.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
