@@ -1,14 +1,21 @@
-Subject: Re: Priority inversion when using MTD
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sekhar Nori <nori.sekhar@gmail.com>
-In-Reply-To: <93840d070705170620x4a61007ap537ce877acfab488@mail.gmail.com>
-References: <93840d070705170620x4a61007ap537ce877acfab488@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 17 May 2007 21:52:09 +0800
-Message-Id: <1179409930.2859.495.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from nz-out-0506.google.com ([64.233.162.230])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hoh5n-0002Dl-QG
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 10:36:36 -0400
+Received: by nz-out-0506.google.com with SMTP id i11so968636nzi
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 17 May 2007 07:36:34 -0700 (PDT)
+Message-ID: <79ac09b60705170736u142fc9d1w3d88ea2a69d43173@mail.gmail.com>
+Date: Thu, 17 May 2007 09:36:33 -0500
+From: Duke <ezbonites@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: block erase error: (bad VPP)
+In-Reply-To: <79ac09b60705151507g63246e8dh76801456c0a68e78@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+References: <79ac09b60705151507g63246e8dh76801456c0a68e78@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +25,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-17 at 18:50 +0530, Sekhar Nori wrote:
-> I have a high priority SCHED_FIFO task which runs out of a squashfs file system.
-> When this process needs to fetch a page from the flash (due to demand paging),
-> it is sometimes made to wait for another low priority SCHED_NORMAL
-> task which is doing an erase on some other mtd partition.
- ...
-> Is there any way to avoid this scenario? Any help/pointers would be appreciated.
+Any takers on this request?
+Thanks.
 
-mlockall(2)
-
--- 
-dwmw2
+On 5/15/07, Duke <ezbonites@gmail.com> wrote:
+> Hi,
+> I've been getting these errors for a while now and I'm not sure why.
+> I get thess when I boot the system and It shouldn't be trying to erase anything.
+> I boot with
+> root=/dev/mtdblock2 rootfstype=cramfs
+> mtdparts=physmap-flash.0:0x40000(boot),0x180
+> 000(kernel),0x640000(root),0x400000(var),-(str)
+>
+> Can someone tell me why this happens?
+>
+>
+> physmap-flash.0: block erase error: (bad VPP)
+> Erase at 0x00180000 failed immediately: errno -5
+> physmap-flash.0: block erase error: (bad VPP)
+> Erase at 0x00140000 failed immediately: errno -5
+> physmap-flash.0: block erase error: (bad VPP)
+> Erase at 0x00100000 failed immediately: errno -5
+> physmap-flash.0: block erase error: (bad VPP)
+> Erase at 0x000c0000 failed immediately: errno -5
+> physmap-flash.0: block erase error: (bad VPP)
+> ...
+>
+> Thanks,
+> D.
+>
