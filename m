@@ -1,25 +1,19 @@
-Subject: Re: [PATCH] LogFS take three
-From: David Woodhouse <dwmw2@infradead.org>
-To: Pavel Machek <pavel@ucw.cz>
-In-Reply-To: <20070517091257.GC3975@ucw.cz>
-References: <17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-	<1179291255.2859.195.camel@shinybook.infradead.org>
-	<20070516110933.GA5472@lazybastard.org>
-	<20070516113434.GC20482@mail.shareable.org>
-	<20070516115003.GD5472@lazybastard.org>
-	<17995.2550.581854.8393@stoffel.org>
-	<20070516135318.GK5472@lazybastard.org>
-	<1179324273.2859.230.camel@shinybook.infradead.org>
-	<11f674920705160717m3376779eqeb79e45ecef233e0@mail.gmail.com>
-	<20070517091257.GC3975@ucw.cz>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 17 May 2007 17:52:00 +0800
-Message-Id: <1179395520.2859.459.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	Kevin Bowling <lkml@kev009.com>, linux-kernel@vger.kernel.org
+Received: from mail-out.m-online.net ([212.18.0.9])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hocvc-0000G7-H7
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 06:09:50 -0400
+To: MikeW <mw_phil@yahoo.co.uk>
+From: Wolfgang Denk <wd@denx.de>
+Subject: Re: When to use mtd.h or mtd-user.h 
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Tue, 15 May 2007 15:09:14 -0000."
+	<loom.20070515T170629-855@post.gmane.org>
+Date: Thu, 17 May 2007 12:09:52 +0200
+Sender: wd@denx.de
+Message-Id: <20070517100952.9ACCA3525D5@atlas.denx.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,15 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-17 at 09:12 +0000, Pavel Machek wrote:
-> Nah, it would lead to Jorn disappearing misteriously and _Pavel_
-> accused of murder ;-).
+In message <loom.20070515T170629-855@post.gmane.org> you wrote:
+> I note some applications for running in userspace say:
+> #include <linux/mtd/mtd.h>
+> and some say
+> #include <mtd/mtd-user.h>
+> 
+> Which is the recommended usage, and why ?
 
-Are you suggesting that you would murder Jörn (you misspelled his name)
-merely for the heinous crime of using his own name?
+<linux/mtd/mtd.h> used to be used on very old (2.4) kernel versions;
+<mtd/mtd-user.h> has to be used now.
 
-Your Luddism was already quite excessive, but now you really _are_
-taking it to extremes. :)
+
+Best regards,
+
+Wolfgang Denk
 
 -- 
-dwmw2
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+The biggest difference between time and space is that you can't reuse
+time.                                                 - Merrick Furst
