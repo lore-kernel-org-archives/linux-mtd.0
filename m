@@ -1,27 +1,25 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HojT6-0002EO-0E
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 18:08:49 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HojSv-0006El-KE
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 19:08:37 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 19:08:37 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 19:08:37 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: alloc/free quesion in ixp4xx driver
-Date: Thu, 17 May 2007 17:08:07 +0000 (UTC)
-Message-ID: <loom.20070517T190229-463@post.gmane.org>
-References: <1179417099816@dmwebmail.belize.chezphil.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HojYx-0004cD-J9
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:15:06 -0400
+Date: Thu, 17 May 2007 19:10:19 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+Subject: Re: Review status (Re: [PATCH] LogFS take three)
+Message-ID: <20070517171017.GB15676@lazybastard.org>
+References: <20070515151919.GA32510@lazybastard.org>
+	<20070515152149.GB32059@lazybastard.org>
+	<20070517160308.GA26643@2ka.mipt.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070517160308.GA26643@2ka.mipt.ru>
+Cc: akpm@osdl.org, Albert Cahalan <acahalan@gmail.com>,
+	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,57 +29,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Phil Endecott <spam_from_linux_mtd <at> chezphil.org> writes:
+On Thu, 17 May 2007 20:03:11 +0400, Evgeniy Polyakov wrote:
+> 
+> Is logfs 32bit fs or 674bit, since although you use 64bit values for
+> offsets, area management and strange converstions like described below 
+> from offset into segment number are performed in 32bit?
+> Is it enough for SSD for example to be 32bit only? Or if it is 64bit,
+> could you please explain logic behind area management?
 
-> 
-> Dear MTD experts,
-> 
-> I have been looking at the MTD ixp4xx driver 
-> (drivers/mtd/maps/ixp4xx.c), mainly as an example of something that 
-> uses the ixp4xx expansion bus, and I have a couple of questions.  I 
-> apologise for being a "newbie" on this subject, I have not written a 
-> lot of kernel code.
-> 
-> - In ixp4xx_flash_probe(), a struct ixp4xx_flash_info in kalloc()ed.  
-> Where is it freed?
-> 
-> - In ixp4xx_flash_remove() you have:
->        release_resource(info->res);
->        kfree(info->res);
->    In other places where release_resource() is called I do not see a 
-> call to kfree().  Is this right?
-> 
-> Most likely, this is all OK and I need to learn more about how these 
-> functions should be used.  But my thought on seeing this was that the 
-> kfree() should have been freeing info, not info->res.
-> 
-> I am also uncertain about release_resource() vs. release_mem_region().  
-> Are they interchangeable?
-> 
-> I have been looking at 2.6.21, but a quick check at
-> 
->
-http://git.infradead.org/?p=mtd-2.6.git;a=blob;
-f=drivers/mtd/maps/ixp4xx.c;h=7a828e3e6446d7f9254f083d3b02bb2e9e02e9e0;
-hb=HEAD
+Ignoring bugs and signed return values for error handling, it is either
+64bit or 32+32bit.
 
-> suggests that it is the same in your tree (if I have
- understood gitweb properly).
+Inode numbers and file positions are 64bit.  Offsets are 64bit as well.
+In a couple of places, offsets are also 32+32bit.  Basically the high
+bits contain the segment number, the lower bits the offset within a
+segment.
+
+Side note: It would be nicer if the high 32bit were segment number.
+Instead the number of bits depends on segment size.  Guess I should
+change that while the format isn't fixed yet.
+
+An "area" is a segment that is currently being written.  Data is
+appended to this segment as it comes in, until the segment is full.  Any
+functions dealing with areas only need a 32bit offset, which is the
+offset within the area, not the absolute device offset.
+
+Writes within an area are also buffered.  New data first goes into the
+write buffer (wbuf) and only when this is full is it flushed to the
+device.  NAND flash and some NOR flashes require such buffering.  When
+writing to the device, the 32bit segno and the 32bit in-segment offset
+need to get converted back to a 64bit device offset.
+
+> I've found that you store segment numbers as 32bit values (for example
+> in prepare_write()), and convert requested 64bit offset into segment
+> number via superblock's s_segshift.
+
+Yes, as described above.
+
+> This conversation seems confusing to me in case of real 64bit offsets.
+> For example this one obtained via prepare_write:
 > 
-> Many thanks,
+> 7  1 logfs_prepare_write    78  fs/logfs/file.c
+> 8  2 logfs_readpage_nolock    20  fs/logfs/file.c
+> 9  1 logfs_read_block   351  fs/logfs/readwrite.c
+> 10  1 logfs_read_loop   139  fs/logfs/readwrite.c
+> 11  2 logfs_segment_read   108  fs/logfs/readwrite.c
+> 12  1 wbuf_read         289 
 > 
-> Phil.
+> u32 segno = ofs >> super->s_segshift;
+> 
+> ofs is originally obtained from inode's li_data array, which is filled
+> with raw segment numbers which can be 64bit (here is another issue,
+> since logfs_segment_write() returns signed, so essentially logfs is
+> 63bit filesystem).
 
-Don't think it should kfree(info->res), the release_resource() sorts
-out the allocated mem region.
+The filesystem format is 64bit.  The current code can only deal with
+63bit.  Eric Sandeen just fixed ext2 to actually deal with 32bit
+numbers and the same is possible for logfs.  If anyone ever cares...
 
-But there should be a kfree(info) somewhere in the driver.
+> But here I've came to area management in logfs, and found that it is
+> 32bit only, for example __logfs_segment_write()/__logfs_get_free_bytes() 
+> returns signed 32 bit value (so it is reduced to 31 bit), which is then 
+> placed into li_data as 64bit value. The latter
+> (__logfs_get_free_bytes()) truncates 64bit data value obtained via
+> dev_ofs() into signed 32 bit value.
 
-My guess is that you have spotted a typo, and there should be a
-kfree(info) next, just outside the if (info->res) block.
+That indeed is a bug.  __logfs_get_free_bytes() should return s64
+instead of s32.  Will fix immediatly.
 
-The existing code would lead to a memory leak IMHO.
-Want to try out the patch !!??
+If anyone can find similar bugs, the bounty is a beer or non-alcoholic
+beverage of choice. :)
 
-Regards,
-MikeW
+Jörn
+
+-- 
+To announce that there must be no criticism of the President, or that we
+are to stand by the President, right or wrong, is not only unpatriotic
+and servile, but is morally treasonable to the American public.
+-- Theodore Roosevelt, Kansas City Star, 1918
