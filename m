@@ -1,22 +1,22 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from mail.shareable.org ([81.29.64.88])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HonwO-0001Xz-66
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 17:55:21 -0400
-Date: Thu, 17 May 2007 23:50:58 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Arnd Bergmann <arnd@arndb.de>
+	id 1Hop7U-0002G0-GA
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 19:10:53 -0400
+Date: Thu, 17 May 2007 23:01:44 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070517215057.GH15676@lazybastard.org>
+Message-ID: <20070517220144.GB10756@mail.shareable.org>
 References: <20070515151919.GA32510@lazybastard.org>
-	<20070516132035.GJ5472@lazybastard.org>
-	<464CC209.4060500@cs.helsinki.fi>
-	<200705172336.14552.arnd@arndb.de>
+	<200705171708.53038.arnd@arndb.de>
+	<20070517202139.GD15676@lazybastard.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200705172336.14552.arnd@arndb.de>
+In-Reply-To: <20070517202139.GD15676@lazybastard.org>
 Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Arnd Bergmann <arnd@arndb.de>,
 	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
 	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
 	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
@@ -31,37 +31,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 17 May 2007 23:36:13 +0200, Arnd Bergmann wrote:
-> On Thursday 17 May 2007, Pekka Enberg wrote:
-> > 
-> > So any sane way to enable compression is on per-inode basis which makes 
-> > me still wonder why you need per-object compression.
+Jörn Engel wrote:
+> > Almost all your static functions start with logfs_, why not this one?
 > 
-> 1. it doesn't require user interaction, the file system will do the right
-> thing most of the time.
-> 
-> 2. enlarging data is a very bad thing because it makes the behaviour
-> of the fs unpredictable. With uncompressed objects, you have a guaranteed
-> upper bound on the size.
+> Because after a while I discovered how silly it is to start every
+> function with logfs_.  That prefix doesn't add much unless the function
+> has global scope.  What I didn't do was remove the prefix from older
+> functions.
 
-Correct.  The compression decision is always per-object.  Per-inode is a
-hint from userspace that a compression attempt would be futile.
+It's handy when debugging or showing detailed backtraces.  Not that
+I'm advocating it (or not), just something I've noticed in other
+programs.
 
-A compression algorithm that compresses any data is provably impossible.
-Some data will always cause expansion instead of compression.  Some
-algorithms have a well-known upper bound on the expansion, others don't.
-So LogFS instead creates its own upper bound by reserving one byte in
-the header for the compression type.
-
-And while one bit would suffice as a compressed/uncompressed flag,
-having a byte allows to support more than one compression algorithm.
-LZO looks promising and is on its way into the kernel.  Others may come
-in the future.
-
-JÃ¶rn
-
--- 
-My second remark is that our intellectual powers are rather geared to
-master static relations and that our powers to visualize processes
-evolving in time are relatively poorly developed.
--- Edsger W. Dijkstra
+-- Jamie
