@@ -1,21 +1,18 @@
 Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HonA7-0000PM-6n
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 17:05:30 -0400
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	l4HL5JHu018702
-	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 23:05:19 +0200
-Date: Thu, 17 May 2007 23:06:40 +0200 (CEST)
+	id 1HonIL-0000bt-Pe
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 17:13:59 -0400
+Date: Thu, 17 May 2007 23:15:11 +0200 (CEST)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: choice of flash file system for large read-only volume
-In-Reply-To: <20070516142238.GA5725@cloud.net.au>
-Message-ID: <Pine.LNX.4.64.0705172303500.1882@lnxricardw.se.axis.com>
-References: <20070516142238.GA5725@cloud.net.au>
+To: Ram <vshrirama@gmail.com>
+Subject: Re: newbie queries
+In-Reply-To: <8bf247760705170746q272b90a4m90feba2be822647e@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0705172308590.1882@lnxricardw.se.axis.com>
+References: <8bf247760705170746q272b90a4m90feba2be822647e@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +23,37 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Thu, 17 May 2007, Hamish Moffatt wrote:
+On Thu, 17 May 2007, Ram wrote:
 
-> What would be a good choice of file system for this application? Does it
-> come down to JFFS2 versus YAFFS, or are there other alternatives?
+>   Im using a JFFS2 filesystem.
 >
-> I understand that JFFS2 mount times are proportional to the size; mount
-> time isn't critical to me but I would like the system to boot as quickly
-> as possible. Is YAFFS better in this regard?
+>   Regarding bad block management - What kind of bad block management does
+>   mtd and jffs2 use?.
+>   What happens when the filesystem detects that a block is bad?.
 
-One option you might consider if you have enough ram, is simply to make a=
+AFAICT, jffs2 bad block management is limited to respecting bad block=20
+markers already present on the chip, and marking blocks bad that fail to=20
+erase properly. There doesn't seem to be any consideration of blocks=20
+starting to go bad (ecc starts stepping in to correct errors, or fails=20
+altogether).
+
+Bit flips are supposed to be handled by checking the jffs2 node crc's, but=
 =20
-copy of a read-only file system such as cramfs in the flash, and upon=20
-boot, copy it from flash to ram (skipping bad blocks of course), and=20
-running it from there. Of course, you cannot write to cramfs, so that=20
-would not be a good idea during development.
+I can't really tell if this works seamlessly for the user, or you get I/O=
+=20
+errors on files which have bad bits in them.
 
-Since a straight copy from flash to ram can be reasonably fast, and=20
-accessing cramfs in ram is quite fast, boot time is shorter to or=20
-comparable to having the root partition directly in the flash as a jffs2=20
-partition, in my experience.
+>  Am using a large page. Each page is 2048 bytes. Does this include
+> the 64 bytes for the ECC?
+
+No, the 64 bytes are in a separate 'spare' area. BTW, the ecc algorithm=20
+that mtd uses is 3 bytes ecc per 256 bytes, so it ends up as 6 bytes per=20
+page for small-sector (512 bytes) chips, and consequently 48 bytes per=20
+page for large-sector (2048 bytes) chips, unless I'm mistaken.
+
+Of couse, you can supply your own ecc algorithm if you wish which can use=
+=20
+any number of bytes for ecc correction.
 
 /Ricard
 --
