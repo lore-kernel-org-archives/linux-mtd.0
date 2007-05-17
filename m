@@ -1,21 +1,17 @@
-Received: from lorien.elatec.si ([193.77.58.106] helo=lorien.ee.epico.si)
+Received: from belize.chezphil.org ([80.68.91.122])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HoiAN-0002wc-Mi
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 11:45:28 -0400
-Received: from [192.168.0.3] (telperion.ee.epico.si [192.168.0.3])
-	by lorien.ee.epico.si (8.12.11.20060308/8.12.11) with ESMTP id
-	l4HFjCcd016408
-	for <linux-mtd@lists.infradead.org>; Thu, 17 May 2007 17:45:13 +0200
-Message-ID: <464C788A.8020209@users.sourceforge.net>
-Date: Thu, 17 May 2007 17:45:14 +0200
-From: Savin Zlobec <savinz@users.sourceforge.net>
+	id 1HoiGc-00038q-Kh
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 11:51:52 -0400
+Received: from localhost ([127.0.0.1] helo=chezphil.org)
+	by belize.chezphil.org with esmtp (Exim 4.50) id 1HomnF-0005iM-0k
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 21:41:49 +0100
+From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
+To: <linux-mtd@lists.infradead.org>
+Date: Thu, 17 May 2007 16:51:39 +0100
+Subject: alloc/free quesion in ixp4xx driver
+Message-ID: <1179417099816@dmwebmail.belize.chezphil.org>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Re: Problems with ST NAND512W3A nand flash
-References: <464B17F3.9040804@users.sourceforge.net>
-In-Reply-To: <464B17F3.9040804@users.sourceforge.net>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format="flowed"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,29 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Savin Zlobec wrote:
-> Hi All!
-> 
-> I am working on a AT91RM9200 based board with ST NAND512W3A2B flash.
-> Kernel version is 2.6.19.7 with patches from maxim.org.za/at91_26.html.
-> Everything works perfectly, except for boot time NAND chip
-> identification which fails every once in a while. NAND signature
-> is 0x20 0x76, but sometimes I get 0x20 0x20. My first guess was
-> timing problems, but I've double checked everything and all signals
-> are inside the specs. I've also tested the chip with shorter and
-> longer setup, hold and pulse times for read and write, but without
-> any success. Trying different kernels didn't help either.
+Dear MTD experts,
 
-After some debugging I found what it looks like a silicon bug
-in ST NAND512W3A2B. It looks like this particular chip doesn't
-handle well the ALE and CLE transitions (no R or W) when in the
-middle of READID command - other commands seem not affected.
-I have the nand wired to AT91RM9200 according to the datasheet -
-ALE and CLE go to A21 and A22. AT91RM9200 errata #34 states that
-the address bus is continuously active, even if the address is
-an internal one - so A2[12] toggle often. Sometimes it happens
-that signature reading gets interrupted and if there is an
-transition on A2[12] ... BOOOM - No NAND device found!!!
+I have been looking at the MTD ixp4xx driver 
+(drivers/mtd/maps/ixp4xx.c), mainly as an example of something that 
+uses the ixp4xx expansion bus, and I have a couple of questions.  I 
+apologise for being a "newbie" on this subject, I have not written a 
+lot of kernel code.
 
-Regards,
-savin
+- In ixp4xx_flash_probe(), a struct ixp4xx_flash_info in kalloc()ed.  
+Where is it freed?
+
+- In ixp4xx_flash_remove() you have:
+       release_resource(info->res);
+       kfree(info->res);
+   In other places where release_resource() is called I do not see a 
+call to kfree().  Is this right?
+
+Most likely, this is all OK and I need to learn more about how these 
+functions should be used.  But my thought on seeing this was that the 
+kfree() should have been freeing info, not info->res.
+
+I am also uncertain about release_resource() vs. release_mem_region().  
+Are they interchangeable?
+
+I have been looking at 2.6.21, but a quick check at 
+http://git.infradead.org/?p=mtd-2.6.git;a=blob;f=drivers/mtd/maps/ixp4xx.c;h=7a828e3e6446d7f9254f083d3b02bb2e9e02e9e0;hb=HEAD 
+suggests that it is the same in your tree (if I have understood gitweb properly).
+
+
+Many thanks,
+
+Phil.
+
+P.S. I'm subscribed to the digest, so if you Cc: me in your reply I'll 
+see it sooner.
