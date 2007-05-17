@@ -1,32 +1,25 @@
 Received: from mailer.gwdg.de ([134.76.10.26])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hojws-0005RW-TG
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:39:36 -0400
-Date: Thu, 17 May 2007 19:14:47 +0200 (MEST)
+	id 1HojyQ-0005Wp-2a
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 13:42:33 -0400
+Date: Thu, 17 May 2007 19:26:07 +0200 (MEST)
 From: Jan Engelhardt <jengelh@linux01.gwdg.de>
 To: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
 Subject: Re: [PATCH] LogFS take three
-In-Reply-To: <20070516135318.GK5472@lazybastard.org>
-Message-ID: <Pine.LNX.4.61.0705171909310.3231@yvahk01.tjqt.qr>
+In-Reply-To: <20070516000630.GD1220@lazybastard.org>
+Message-ID: <Pine.LNX.4.61.0705171920330.3231@yvahk01.tjqt.qr>
 References: <20070515151919.GA32510@lazybastard.org>
-	<17994.1241.436841.681216@stoffel.org>
-	<20070515191926.GB1220@lazybastard.org>
-	<1179291255.2859.195.camel@shinybook.infradead.org>
-	<20070516110933.GA5472@lazybastard.org>
-	<20070516113434.GC20482@mail.shareable.org>
-	<20070516115003.GD5472@lazybastard.org>
-	<17995.2550.581854.8393@stoffel.org>
-	<20070516135318.GK5472@lazybastard.org>
+	<20070515133759.9ee434a2.akpm@linux-foundation.org>
+	<20070516000630.GD1220@lazybastard.org>
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=UTF-8
 Content-Transfer-Encoding: 8BIT
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Albert Cahalan <acahalan@gmail.com>, John Stoffel <john@stoffel.org>,
-	Jamie Lokier <jamie@shareable.org>, linux-kernel@vger.kernel.org,
+Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
+	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
 	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, Greg KH <greg@kroah.com>,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,26 +30,25 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On May 16 2007 15:53, Jörn Engel wrote:
+On May 16 2007 02:06, Jörn Engel wrote:
 >
->My experience is that no matter which name I pick, people will complain
->anyway.  Previous suggestions included:
-[...]
+>> > +/* memtree.c */
+>> > +void btree_init(struct btree_head *head);
+>> > +void *btree_lookup(struct btree_head *head, long val);
+>> > +int btree_insert(struct btree_head *head, long val, void *ptr);
+>> > +int btree_remove(struct btree_head *head, long val);
+>> 
+>> These names are too generic.  If we later add a btree library: blam.
 >
->Plus today:
->FFFS
->flashfs
->fredfs
->bob
->shizzle
+>My plan was to move this code to lib/ sooner or later.  If you consider
+>it useful in its current state, I can do it immediatly.  And if someone
+>else merged a superior btree library I'd happily remove mine and use the
+>new one instead.
 >
->Imo they all suck.  LogFS also sucks, but it allows me to make a stupid
->joke and keep my logfs.org domain.
+>Opinions?
 
-Try woodfs! (log - wood - get it?)
-But finding names can be so tiresome, just give it a Borg-style
-designation - "filesystem 125" or so. fs2007q1, being this
-quartal's new filesystem.
+Why would we need another btree, when there is lib/rbtree.c?
+Or does yours do something fundamentally different?
 
 
 	Jan
