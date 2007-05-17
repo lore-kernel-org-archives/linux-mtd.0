@@ -1,19 +1,22 @@
-Received: from mail-out.m-online.net ([212.18.0.9])
+Received: from smtp-ext.int-evry.fr ([157.159.11.17])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hocvc-0000G7-H7
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 06:09:50 -0400
-To: MikeW <mw_phil@yahoo.co.uk>
-From: Wolfgang Denk <wd@denx.de>
-Subject: Re: When to use mtd.h or mtd-user.h 
-Mime-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1
-Content-transfer-encoding: 8bit
-In-reply-to: Your message of "Tue, 15 May 2007 15:09:14 -0000."
-	<loom.20070515T170629-855@post.gmane.org>
-Date: Thu, 17 May 2007 12:09:52 +0200
-Sender: wd@denx.de
-Message-Id: <20070517100952.9ACCA3525D5@atlas.denx.de>
-Cc: linux-mtd@lists.infradead.org
+	id 1HoeHV-0000cU-2h
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 07:36:32 -0400
+From: Florian Fainelli <florian.fainelli@int-evry.fr>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] Add support for SST 39VF6402B flash - block & sector
+	support ?
+Date: Thu, 17 May 2007 13:37:48 +0200
+References: <200705161047.57549.florian.fainelli@int-evry.fr>
+	<loom.20070517T093705-724@post.gmane.org>
+In-Reply-To: <loom.20070517T093705-724@post.gmane.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200705171337.49203.florian.fainelli@int-evry.fr>
+Cc: MikeW <mw_phil@yahoo.co.uk>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +26,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <loom.20070515T170629-855@post.gmane.org> you wrote:
-> I note some applications for running in userspace say:
-> #include <linux/mtd/mtd.h>
-> and some say
-> #include <mtd/mtd-user.h>
-> 
-> Which is the recommended usage, and why ?
+Hello Mike,
 
-<linux/mtd/mtd.h> used to be used on very old (2.4) kernel versions;
-<mtd/mtd-user.h> has to be used now.
+Yes this would be better. I will try to come up with a patch to the MTD=20
+subsystem that can handle this properly.
 
-
-Best regards,
-
-Wolfgang Denk
-
--- 
-DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
-Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
-The biggest difference between time and space is that you can't reuse
-time.                                                 - Merrick Furst
+Le jeudi 17 mai 2007, MikeW a =E9crit=A0:
+> Florian Fainelli <florian.fainelli <at> int-evry.fr> writes:
+> > Note that according to the datasheet this flash has two possible erase
+> > sizes : 64kb and 4kb. I prefer using 64Kb erase size since we do not ha=
+ve
+> > to change the erase command from 0x50 (64Kb) to 0x30 (4Kb).
+>
+> Or maybe the MTD model now needs to include support
+> for both 'block' and 'sector' erase ?
+>
+> Regards,
+> MikeW
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
