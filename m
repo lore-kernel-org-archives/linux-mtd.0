@@ -1,27 +1,38 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hop7U-0002G0-GA
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 19:10:53 -0400
-Date: Thu, 17 May 2007 23:01:44 +0100
-From: Jamie Lokier <jamie@shareable.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
+Received: from py-out-1112.google.com ([64.233.166.181])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hopuo-0002ml-I7
+	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 20:01:51 -0400
+Received: by py-out-1112.google.com with SMTP id p76so1061110pyb
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 17 May 2007 17:01:49 -0700 (PDT)
+Message-ID: <7fe698080705171701w533767fdo6642bb772ed64273@mail.gmail.com>
+Date: Fri, 18 May 2007 09:01:48 +0900
+From: "Dongjun Shin" <djshin90@gmail.com>
+To: "Pavel Machek" <pavel@ucw.cz>
 Subject: Re: [PATCH] LogFS take three
-Message-ID: <20070517220144.GB10756@mail.shareable.org>
-References: <20070515151919.GA32510@lazybastard.org>
-	<200705171708.53038.arnd@arndb.de>
-	<20070517202139.GD15676@lazybastard.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+In-Reply-To: <20070517201847.GA5032@ucw.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20070517202139.GD15676@lazybastard.org>
-Cc: akpm@osdl.org, Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Albert Cahalan <acahalan@gmail.com>, Greg KH <greg@kroah.com>,
+References: <20070515151919.GA32510@lazybastard.org>
+	<20070515133759.9ee434a2.akpm@linux-foundation.org>
+	<1179317240.2859.222.camel@shinybook.infradead.org>
+	<20070516083408.dcd9dd78.akpm@linux-foundation.org>
+	<1179330596.2859.248.camel@shinybook.infradead.org>
+	<20070516164158.GB8113@lazybastard.org>
+	<7fe698080705162312t4e7ed90byd10ef8e664027b17@mail.gmail.com>
+	<1179383117.2859.416.camel@shinybook.infradead.org>
+	<7fe698080705170120w18fe5521oa685cf248a45e1c6@mail.gmail.com>
+	<20070517201847.GA5032@ucw.cz>
+Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
+	Greg KH <greg@kroah.com>,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@lazybastard.org>,
 	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
 	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
 	Jan Engelhardt <jengelh@linux01.gwdg.de>, linux-fsdevel@vger.kernel.org,
-	Thomas Gleixner <tglx@linutronix.de>
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +42,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> > Almost all your static functions start with logfs_, why not this one?
-> 
-> Because after a while I discovered how silly it is to start every
-> function with logfs_.  That prefix doesn't add much unless the function
-> has global scope.  What I didn't do was remove the prefix from older
-> functions.
+Hi,
 
-It's handy when debugging or showing detailed backtraces.  Not that
-I'm advocating it (or not), just something I've noticed in other
-programs.
+On 5/18/07, Pavel Machek <pavel@ucw.cz> wrote:
+> Hi!
+>
+>
+> Hmm.. so operating your camera on batteries should be against the
+> warranty, since batteries commonly run empty while storing pictures?
+>
+>
 
--- Jamie
+AFAIK, the camera stops writing to the flash card and automatically
+turns off when it's low on battery (before empty).
