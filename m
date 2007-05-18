@@ -1,16 +1,19 @@
-Received: from pop3.autostar.com.sg ([210.24.189.100])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HouH8-0004yS-3V
-	for linux-mtd@lists.infradead.org; Fri, 18 May 2007 00:41:24 -0400
-Message-ID: <005c01c79906$b0a6e690$f700a8c0@tzewanpc>
-From: "Foo Tze Wan" <twfoo@autostar.com.sg>
-To: <linux-mtd@lists.infradead.org>
-Subject: Unable to mount with jffs2
-Date: Fri, 18 May 2007 12:40:15 +0800
+Received: from mail.tokheimkaizen.com ([220.225.73.142])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HouaC-0005F8-Hj
+	for linux-mtd@lists.infradead.org; Fri, 18 May 2007 01:01:00 -0400
+From: "Samir" <samir.rawal@tokheimkaizen.com>
+To: "'Foo Tze Wan'" <twfoo@autostar.com.sg>
+Subject: RE: Unable to mount with jffs2
+Date: Fri, 18 May 2007 10:30:39 +0530
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="Windows-1252"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <005c01c79906$b0a6e690$f700a8c0@tzewanpc>
+Message-ID: <MAILt6x4n8zX0VRwIDB00000172@mail.tokheimkaizen.com>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: samir.rawal@tokheimkaizen.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,10 +23,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hello
+
+I am using the same AT91rm9200,SST39vf3201 with 2.4.27-vrs1 Kernel.
+
+I am able to mount the jffs2 on mtdblock0.
+I am not using the jffs2 image.
+I am getting message like below.
+But able to mount flash with same error
+
+# cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 00400000 00001000 "Physically mapped flash"
+# mount -t jffs2 /dev/mtdblock0 /mnt
+mtdblock_open
+ok
+jffs2_scan_inode_node(): CRC failed on node at 0x000cb4d0: Read 0xffffffff,
+calculated 0xb6b94fd2
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4d4:
+0x007d instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4d8:
+0x4c36 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4dc:
+0x000c instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4e0:
+0x0105 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4e4:
+0x81ed instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4ec:
+0xa000 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4f0:
+0x068a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4f4:
+0x068a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4f8:
+0x068a instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x000cb4fc:
+0x9000 instead
+Further such events for this erase block will not be printed
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Internal flash device timeout occured or write operation was performed while
+flash was erasing
+Newly-erased block contained word 0xff7fff7f at offset 0x000d2000
+# Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Internal flash device timeout occurred or write operation was performed
+while flash was programming.
+Newly-erased block contained word 0x20031985 at offset 0x003d1000
+ 
+
+#cd /mnt
+#ls
+#files in Flash drive
+
+Samir Raval
+(R&D Department)
+Tokheim Kaizen Pvt. Ltd.
+A-313,TTC Industrial Area,MIDC
+Mahape,Navi Mumbai - 400 710
+Maharashtra,INDIA
+Direct Line:67614140
+tel no:27783018/20  Ext:-140
+ 
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Foo Tze Wan
+Sent: Friday, May 18, 2007 10:10 AM
+To: linux-mtd@lists.infradead.org
+Subject: Unable to mount with jffs2
+
 Hi community,
 
 I am using a 2.6.17 kernel with patches from 
-http://maxim.org.za/at91_26.html on a AT91RM9200 board. I am facing problems 
+http://maxim.org.za/at91_26.html on a AT91RM9200 board. I am facing problems
+
 with mounting jffs2 on my flash. The reported errors are related to the 
 magic number 0x1985. I understand that the archive and linux-mtd FAQ has 
 similar problems with this magic number thing, but I'm afraid I'm still not 
@@ -95,7 +225,8 @@ jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00160000:
 Empty flash at 0x00160004 ends at 0x0016f000
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0016f000: 
 0xff52 instead
-jffs2_scan_eraseblock(): Node at 0x00170000 {0x1985, 0x2003, 0x0000000c) has 
+jffs2_scan_eraseblock(): Node at 0x00170000 {0x1985, 0x2003, 0x0000000c) has
+
 invalid CRC 0xffffb0b1 (calculated 0xe41eb0b1)
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00170004: 
 0x000c instead
@@ -107,13 +238,15 @@ jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x00177000:
 Empty flash at 0x00177004 ends at 0x0017c000
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x0017c000: 
 0xff52 instead
-jffs2_scan_eraseblock(): Node at 0x001d0000 {0x1985, 0x2003, 0x0000000c) has 
+jffs2_scan_eraseblock(): Node at 0x001d0000 {0x1985, 0x2003, 0x0000000c) has
+
 invalid CRC 0xffffb0b1 (calculated 0xe41eb0b1)
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001d0004: 
 0x000c instead
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001d0008: 
 0xb0b1 instead
-jffs2_scan_eraseblock(): Node at 0x001f0000 {0x1985, 0x2003, 0x0000000c) has 
+jffs2_scan_eraseblock(): Node at 0x001f0000 {0x1985, 0x2003, 0x0000000c) has
+
 invalid CRC 0xffffb0b1 (calculated 0xe41eb0b1)
 jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x001f0004: 
 0x000c instead
@@ -418,7 +551,8 @@ CLEANMARKER node found at 0x0037e000, not first node in block (0x00370000)
 Empty flash at 0x0037e00c ends at 0x0037f000
 CLEANMARKER node found at 0x0037f000, not first node in block (0x00370000)
 Empty flash at 0x0037f00c ends at 0x0037f400
-# JFFS2 error: (722) jffs2_do_read_inode_internal: CRC failed for read_inode 
+# JFFS2 error: (722) jffs2_do_read_inode_internal: CRC failed for read_inode
+
 of inode 2 at physical location 0x80048
 Returned error for crccheck of ino #2. Expect badness...
 Newly-erased block contained word 0x2003ffff at offset 0x002f0000
@@ -437,7 +571,8 @@ Newly-erased block contained word 0x2003ffff at offset 0x000c0000
 Newly-erased block contained word 0xfffdffff at offset 0x0007fea8
 Newly-erased block contained word 0xffffff89 at offset 0x000593a4
 
-5. After the last line, the system just stays there without returning to the 
+5. After the last line, the system just stays there without returning to the
+
 prompt until I intentionally hit the return key.
 
 6. Some other background info: I created the flash part entry in 
@@ -448,7 +583,8 @@ jedec_probe.c with the erase region of:
 This is also the reason why I think the JFFS2 image (created with the 
 mkfs.jffs2 tool) should be specfiied with the "-e 0x10000" erase block size.
 
-7. At the same time, I have modified the do_erase_oneblock( ...) function in 
+7. At the same time, I have modified the do_erase_oneblock( ...) function in
+
 cfi_cmdset_0002.c by changing:
 
    map_write(map, CMD(0x30), adr);
@@ -456,7 +592,8 @@ cfi_cmdset_0002.c by changing:
 to
    map_write(map, CMD(0x50), adr);
 
-I thought that this should be appropriate since 0x50 is used for block erase 
+I thought that this should be appropriate since 0x50 is used for block erase
+
 size of 64K, while 0x30 is used to indicate sector erase size of 4K. (Am I 
 doing the correct steps?)
 
@@ -482,3 +619,9 @@ Are there any steps I have missed out? Thanks in advance.
 
 Regards,
 Tze Wan
+
+
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
