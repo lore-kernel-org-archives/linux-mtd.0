@@ -1,38 +1,27 @@
-Received: from py-out-1112.google.com ([64.233.166.181])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hopuo-0002ml-I7
-	for linux-mtd@lists.infradead.org; Thu, 17 May 2007 20:01:51 -0400
-Received: by py-out-1112.google.com with SMTP id p76so1061110pyb
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 May 2007 17:01:49 -0700 (PDT)
-Message-ID: <7fe698080705171701w533767fdo6642bb772ed64273@mail.gmail.com>
-Date: Fri, 18 May 2007 09:01:48 +0900
-From: "Dongjun Shin" <djshin90@gmail.com>
-To: "Pavel Machek" <pavel@ucw.cz>
-Subject: Re: [PATCH] LogFS take three
-In-Reply-To: <20070517201847.GA5032@ucw.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtpout.mac.com ([17.250.248.185])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hoqrx-0006NR-1Q
+	for linux-mtd@lists.infradead.org; Fri, 18 May 2007 02:02:59 +0100
+In-Reply-To: <20070517174532.GA26827@2ka.mipt.ru>
 References: <20070515151919.GA32510@lazybastard.org>
 	<20070515133759.9ee434a2.akpm@linux-foundation.org>
-	<1179317240.2859.222.camel@shinybook.infradead.org>
-	<20070516083408.dcd9dd78.akpm@linux-foundation.org>
-	<1179330596.2859.248.camel@shinybook.infradead.org>
-	<20070516164158.GB8113@lazybastard.org>
-	<7fe698080705162312t4e7ed90byd10ef8e664027b17@mail.gmail.com>
-	<1179383117.2859.416.camel@shinybook.infradead.org>
-	<7fe698080705170120w18fe5521oa685cf248a45e1c6@mail.gmail.com>
-	<20070517201847.GA5032@ucw.cz>
+	<20070516000630.GD1220@lazybastard.org>
+	<Pine.LNX.4.61.0705171920330.3231@yvahk01.tjqt.qr>
+	<20070517174532.GA26827@2ka.mipt.ru>
+Mime-Version: 1.0 (Apple Message framework v752.2)
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+Message-Id: <D458F595-921F-4FC0-88FC-38EEF1DCC920@mac.com>
+Content-Transfer-Encoding: 7bit
+From: Kyle Moffett <mrmacman_g4@mac.com>
+Subject: Re: [PATCH] LogFS take three
+Date: Thu, 17 May 2007 21:00:44 -0400
+To: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@lazybastard.org>
 Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
-	Greg KH <greg@kroah.com>,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@lazybastard.org>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>, linux-mtd@lists.infradead.org,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+	Greg KH <greg@kroah.com>, LKML Kernel <linux-kernel@vger.kernel.org>,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>,
+	Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -42,16 +31,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On May 17, 2007, at 13:45:33, Evgeniy Polyakov wrote:
+> On Thu, May 17, 2007 at 07:26:07PM +0200, Jan Engelhardt  
+> (jengelh@linux01.gwdg.de) wrote:
+>>> My plan was to move this code to lib/ sooner or later.  If you  
+>>> consider it useful in its current state, I can do it immediatly.   
+>>> And if someone else merged a superior btree library I'd happily  
+>>> remove mine and use the new one instead.
+>>>
+>>> Opinions?
+>>
+>> Why would we need another btree, when there is lib/rbtree.c?  Or  
+>> does yours do something fundamentally different?
+>
+> It is not red-black tree, it is b+ tree.
 
-On 5/18/07, Pavel Machek <pavel@ucw.cz> wrote:
-> Hi!
->
->
-> Hmm.. so operating your camera on batteries should be against the
-> warranty, since batteries commonly run empty while storing pictures?
->
->
+It might be better to use the prefix "bptree" to help prevent  
+confusion.  A quick google search on "bp-tree" reveals only the perl B 
++-tree module "Tree::BPTree", a U-Maryland Java CS project on B+- 
+trees, and a news article about a "BP tree-top protest".
 
-AFAIK, the camera stops writing to the flash card and automatically
-turns off when it's low on battery (before empty).
+Cheers,
+Kyle Moffett
