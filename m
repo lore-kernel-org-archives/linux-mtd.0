@@ -1,26 +1,15 @@
-Received: from mailer.gwdg.de ([134.76.10.26])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HpLRo-0004JT-7j
-	for linux-mtd@lists.infradead.org; Sat, 19 May 2007 05:42:01 -0400
-Date: Sat, 19 May 2007 11:24:21 +0200 (MEST)
-From: Jan Engelhardt <jengelh@linux01.gwdg.de>
-To: Rob Landley <rob@landley.net>
-Subject: Re: [PATCH] LogFS take three
-In-Reply-To: <200705190215.36334.rob@landley.net>
-Message-ID: <Pine.LNX.4.61.0705191119330.9015@yvahk01.tjqt.qr>
-References: <20070515151919.GA32510@lazybastard.org>
-	<20070515133759.9ee434a2.akpm@linux-foundation.org>
-	<200705190215.36334.rob@landley.net>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
-	Greg KH <greg@kroah.com>,
-	=?iso-8859-1?q?J=F6rn_Engel?= <joern@lazybastard.org>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+Received: from [86.61.157.50] (helo=hnilux.racom.cz)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HpLlR-0004gv-Lr
+	for linux-mtd@lists.infradead.org; Sat, 19 May 2007 06:02:19 -0400
+Date: Sat, 19 May 2007 11:55:35 +0200
+From: Jakub Bednar <bednar@hnilux.racom.cz>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 softlinks problem
+Message-ID: <20070519115535.A8761@hnilux.racom.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,29 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi everybody, I have a trouble with JFFS2 and softlinks.
 
-On May 19 2007 02:15, Rob Landley wrote:
->> > +
->> > +static inline struct logfs_inode *LOGFS_INODE(struct inode *inode)
->> > +{
->> > +	return container_of(inode, struct logfs_inode, vfs_inode);
->> > +}
->> 
->> Do these need to be uppercase?
->
->I'm trying to keep it clear in my head...
->
->When do you need to say __always_inline and when can you get away with 
->just saying "static inline"?
+  I have a device with NOR and NAND flash.
+  On the NOR flash there are some partitions:
+      - kernel image
+      - cramfs initrd image
+      - JFFS2 rootfs with links into cramfs initrd
+         image (busybox and so on)
+         This partiotion is mounted read-only
+         and is created with flash_erase /dev/mtd3 0x00 48;
+	 mounted with mount -t jffs2 mtd0 /mnt;
+         and decompresing of rootfs from tarbal to /mnt;
 
-When using "static inline", the compiler may ignore the inline keyword 
-(it's just a hint), and leave the function as a standalone function.
+On the NAND flash there are other JFFS2 partitions created with
+flash_eraseall -j /dev/mtd4;
 
-When CONFIG_FORCED_INLINING is active, and it is by default, inline is 
-always substituted by __always_inline, to be on the safe side. Some code 
-needs to be always inline; but not all code has been checked whether it 
-is safe to go from __always_inline to inline.
+If I fill the NAND JFFS2 partition with data several times, the links from
+rootfs to cramfs and some folders in tmpfs got broken and lot of things
+stop working. After reboot  the links are OK again.
 
+How is it possible? Can something got wrong in RAM? Moving erase blocks
+can broke links?
 
-	Jan
--- 
+Thanks for Your help, really dont know where to start.
+Regards Jakub
