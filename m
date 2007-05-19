@@ -1,15 +1,14 @@
-Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hp1Mr-0002IQ-5u
-	for linux-mtd@lists.infradead.org; Fri, 18 May 2007 08:15:38 -0400
-Message-ID: <464D98DF.5020004@indefia.com>
-Date: Fri, 18 May 2007 15:15:27 +0300
-From: Semih Hazar <semih.hazar@indefia.com>
+Received: from [66.18.69.31] (helo=sentechsa.net)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HpGxj-0000r1-8D
+	for linux-mtd@lists.infradead.org; Sat, 19 May 2007 00:54:41 -0400
+Date: Sat, 19 May 2007 09:51:12 +0500
+From: "Garner huggins" <bibliography@aereps.net>
+To: vc@us.ibm.com
+Subject: almost 1 million American Physicians on file - arranged by specialty
+Message-ID: <EAA27EE3.7684.A815C2D5@localhost>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Generic Platform NAND Driver
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,46 +18,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
 
-In the new generic platforn NAND driver, line 54;
 
-	data->chip.priv = &data;
-	data->mtd.priv = &data->chip;
 
-mtd->priv->priv points to struct plat_nand_data which is defined in the 
-plat_nand.c and never used by it.
-Can we change it so that this priv points to a host specific data, and 
-the helper functions (board specific) can make use of it.
-Below is a suggested patch:
+As requested, here is the information on this year's medical professional databases:
 
-diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
-index d2365c8..256957b 100644
---- a/include/linux/mtd/nand.h
-+++ b/include/linux/mtd/nand.h
-@@ -599,10 +599,12 @@ struct platform_nand_ctrl {
-  * struct platform_nand_data - container structure for platform-specific data
-  * @chip:		chip level chip structure
-  * @ctrl:		controller level device structure
-+ * @host:		pointer to host specific data structure
-  */
- struct platform_nand_data {
- 	struct platform_nand_chip	chip;
- 	struct platform_nand_ctrl	ctrl;
-+	void				*host;
- };
- 
- /* Some helpers to access the data structures */
-diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
-index cd725fc..1e47ad3 100644
---- a/drivers/mtd/nand/plat_nand.c
-+++ b/drivers/mtd/nand/plat_nand.c
-@@ -51,7 +51,7 @@ static int __init plat_nand_probe(struct platform_device *pdev)
- 		return -EIO;
- 	}
- 
--	data->chip.priv = &data;
-+	data->chip.priv = pdata->host;
- 	data->mtd.priv = &data->chip;
+Database 1:	780,000 Physicians in the USA
+		Arranged by State
+		Sortable by First name, Last name, Title, Specialty, Address (city, state, zip,
+		county), Medical School Attended, Location of Residency Training, Phone, Fax,
+		Email, Website, Primary Specialty, Secondary Specialty, Graduation Year, Major
+		Activity, Hospital, Group Practice Abms Certification
+	
+		NEW PRICE: $249 (Reg $499 50% savings only until May 23)
 
- 	data->mtd.owner = THIS_MODULE;
+Database 2:	17,400 Physician Email Addresses
+		Arranged by State
+		Contains first & last name, email, postal address and
+		specialty
+		COST: $149 (Reg $299 50% savings only until May 23)
+
+Database 3:	23,000 Hospital Administrators
+		Featuring full data on CEO,CFO,CIO,COO,
+		Medical Directors,Nursing Directors,Senior Administrator
+		COST: $199 (Reg $399 50% savings only until May 23)
+
+Take all 3 databases above for just $399.
+
+All data above is in Excel format and was last updated in November 2006
+
+No risk offers - money refunded if you're not satisfied.
+
+Let me know if you need any more info or would like to order. You can
+contact me by email: databasesofdoctors@hotmail.com  or by phone: 206-202-4510
+
+NOTE: For faster service, please respond via email. 
+
+Should you not wish to be sent any additional correspondence from us
+please send an email with "cancel" in the subject line.
