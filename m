@@ -1,30 +1,21 @@
-Received: from static-71-162-243-5.phlapa.fios.verizon.net ([71.162.243.5]
-	helo=grelber.thyrsus.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HpSjA-0001Lf-4r
-	for linux-mtd@lists.infradead.org; Sat, 19 May 2007 13:28:25 -0400
-From: Rob Landley <rob@landley.net>
-To: Jan Engelhardt <jengelh@linux01.gwdg.de>
-Subject: Re: [PATCH] LogFS take three
-Date: Sat, 19 May 2007 13:26:30 -0400
-References: <20070515151919.GA32510@lazybastard.org>
-	<200705190215.36334.rob@landley.net>
-	<Pine.LNX.4.61.0705191119330.9015@yvahk01.tjqt.qr>
-In-Reply-To: <Pine.LNX.4.61.0705191119330.9015@yvahk01.tjqt.qr>
+Received: from mx3.mail.ru ([194.67.23.149])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hpahm-0006Bb-L2
+	for linux-mtd@lists.infradead.org; Sat, 19 May 2007 21:59:34 -0400
+Date: Sun, 20 May 2007 05:56:22 +0400
+From: Anton Vorontsov <cbou@mail.ru>
+To: linux-arm-kernel@lists.arm.linux.org.uk
+Subject: Re: consistent_sync on ioremap'ed area
+Message-ID: <20070520015622.GA29296@zarina>
+References: <20070519185638.GA7553@zarina>
+	<20070519223249.GA16143@flint.arm.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf8
 Content-Disposition: inline
-Message-Id: <200705191326.31932.rob@landley.net>
-Cc: Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Albert Cahalan <acahalan@gmail.com>,
-	Greg KH <greg@kroah.com>,
-	=?iso-8859-1?q?J=F6rn_Engel?= <joern@lazybastard.org>,
-	linux-kernel@vger.kernel.org, Ingo Oeser <ioe-lkml@rameria.de>,
-	Pekka Enberg <penberg@cs.helsinki.fi>,
-	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Thomas Gleixner <tglx@linutronix.de>
+In-Reply-To: <20070519223249.GA16143@flint.arm.linux.org.uk>
+Cc: "George G. Davis" <gdavis@mvista.com>, linux-mtd@lists.infradead.org,
+	Nicolas Pitre <nico@cam.org>, kernel-discuss@handhelds.org
+Reply-To: cbou@mail.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,36 +25,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday 19 May 2007 5:24 am, Jan Engelhardt wrote:
+On Sat, May 19, 2007 at 11:32:49PM +0100, Russell King - ARM Linux wrote:
+> On Sat, May 19, 2007 at 10:56:38PM +0400, Anton Vorontsov wrote:
+> > Hi all,
+> > 
+> > During 2.6.21 development BUG_ON() was added to consistent_sync
+> > function. Thus, I'm curious if it is correct.
 > 
-> On May 19 2007 02:15, Rob Landley wrote:
-> >> > +
-> >> > +static inline struct logfs_inode *LOGFS_INODE(struct inode *inode)
-> >> > +{
-> >> > +	return container_of(inode, struct logfs_inode, vfs_inode);
-> >> > +}
-> >> 
-> >> Do these need to be uppercase?
-> >
-> >I'm trying to keep it clear in my head...
-> >
-> >When do you need to say __always_inline and when can you get away with 
-> >just saying "static inline"?
+> consistent_sync() exists to provide the DMA mapping code with the
+> required functionality to ensure cache coherency in the system.
+> That is it's sole purpose.  That's why it's in a file to do with
+> DMA mapping and why it takes DMA-related arguments.
 > 
-> When using "static inline", the compiler may ignore the inline keyword 
-> (it's just a hint), and leave the function as a standalone function.
+> As the requirements for the DMA mapping code change with enhancements
+> in the ARM architecture, this function will continue to evolve to
+> ensure that it continues to forfill its purpose.
+
+I see...
+
+> > drivers/mtd/maps/mainstone-flash.c
+> > drivers/mtd/maps/lubbock-flash.c
 > 
-> When CONFIG_FORCED_INLINING is active, and it is by default, inline is 
-> always substituted by __always_inline, to be on the safe side. Some code 
-> needs to be always inline; but not all code has been checked whether it 
-> is safe to go from __always_inline to inline.
+> What this means is that improper usage will break at some point.
+> The two MTD map drivers that you have identified are the only two
+> abusers of this function.  They make assumptions about the behaviour
+> of this function which are no longer valid.
 
-I've seen patches go by using __always_inline directly.  Is there some 
-janitorial effort to examine each instance of the the inline keyword and 
-either replace it with "__always_inline" or remove it?
+The key words are "no longer". In time that drivers were written (and
+they were accepted) using that function was okay, I guess. I've run git
+blame on consistent.c, and seeing that comment regarding "no no, don't
+call it directly" appeard relatively recently (2006-11-21).
 
-Right now "inline" seems to be about as useful as the "register" keyword.  You 
-don't feed hints to a compiler like gcc, you hit it with a two-by-four and 
-thumbscrews if you want to get its' attention.
+I'm curious when exactly behaviour of this function became invalid in
+MTD usage context. Maybe we can apply some band-aid: copy older, still
+valid function under different name, with huge "TODO:" regarding
+generic API need?
 
-Rob
+> > So, is BUG_ON() inside consistent_sync really correct? If it is, then
+> > what is wrong?
+> 
+> Yes.  Whenever this function is called on behalf of the DMA code,
+> the requirements will be met - and these requirements are brought
+> on by the L2 cache support.
+> 
+> These two drivers need fixing, by inventing a new cache coherency
+> interface for the purpose that they're trying to implement - cache
+> flushing due to the backing data changing in an ioremapped cachable
+> region.
+> 
+> Carefully consider two points:
+> 
+> 1. if a PXA device became DMA coherent, consistent_sync() would become
+>    a no-op.  The above drivers break.
+> 
+> 2. what would be the implication if we were to continue to allow these
+>    MTD drivers to use this, and then a PXA platform came along which
+>    had L2 cache _and_ re-used the lubbock or mainstone flash driver.
+> 
+> It would be nice if these two map drivers could be fixed.  As I've
+> said on this list recently (and above), the right way forward is to
+> invent a new purpose-defined API to satisfy the MTD drivers.
+
+(1)
+
+Well.. speaking of me, it will take months to get into all mm stuff,
+and design new mm thing in correct/generic way..
+
+> Since my PXA hardware (lubbock) is quite a bit of hastle to get going
+> (I estimate at least a day's worth of fiddling around) it's not
+> something I'm able to look into.  Patches welcome.
+
+..and because of (1), you hardly can expect this patch from me
+in near future.
+
+Thus, it's better to ask help, loudly. Help! Anyone?
+(Nicolas Pitre, linux-mtd and kernel-discuss added to Cc)
+
+Thanks,
+
+-- 
+Anton Vorontsov
+email: cbou@mail.ru
+backup email: ya-cbou@yandex.ru
+irc://irc.freenode.org/bd2
