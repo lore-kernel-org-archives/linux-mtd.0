@@ -1,27 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from belize.chezphil.org ([80.68.91.122])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqACC-0004F8-2Q
-	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 11:53:48 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HqAC5-0008ND-AY
-	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 17:53:09 +0200
-Received: from office.ubiquisys.com ([88.96.204.222])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 May 2007 17:53:09 +0200
-Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 21 May 2007 17:53:09 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
+	id 1HqBOR-0005e5-Q2
+	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 13:10:02 -0400
+Received: from localhost ([127.0.0.1] helo=chezphil.org)
+	by belize.chezphil.org with esmtp (Exim 4.50) id 1HqFwg-0003Sr-Uo
+	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 23:01:39 +0100
+To: <linux-mtd@lists.infradead.org>
+Date: Mon, 21 May 2007 18:09:46 +0100
 Subject: Re: [PATCH] Fix kfree usage in various mtd map remove functions
-Date: Mon, 21 May 2007 15:53:01 +0000 (UTC)
-Message-ID: <loom.20070521T175126-701@post.gmane.org>
-References: <1179425894742@dmwebmail.belize.chezphil.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Message-ID: <1179767386547@dmwebmail.belize.chezphil.org>
+In-Reply-To: <loom.20070521T174147-996@post.gmane.org>
+References: <loom.20070521T174147-996@post.gmane.org>
+MIME-Version: 1.0
+Content-Type: text/plain; format="flowed"
+From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,17 +23,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Phil Endecott <spam_from_linux_mtd <at> chezphil.org> writes:
+The other issue that I noticed was the use of release_resource() 
+instead of release_mem_region().  I'm not at all sure what should be 
+going on here, but as far as I can see from kernel/resource.c these 
+functions are not equivalent, and the "Linux Device Drivers" book shows 
+release_mem_region() used to reverse the effect of 
+request_mem_region().  I think that release_resource() should be called 
+when (for example) a hotpluggable device is unplugged and the resource 
+goes away, whereas release_mem_region() should be called when a driver 
+no longer needs use of that area of memory.  It's complex to understand 
+the source because the same 'struct resource' is used to describe a 
+physical resource and also a reservation/allocation of a portion of a 
+physical resource to a driver.
 
-....
-> Since mtd drivers are rarely or never used as modules (they typically provide
-root filesystems) 
-> it is unlikely that these code paths have ever been exercised.  It also means
-that this patch 
-> has not been tested by the author.
-....
+I could submit a patch that replaces the release_resource() calls with 
+release_mem_region(), but I would not be happy doing so unless someone 
+with a bit more of a clue than me said it was the right thing to do.
 
-PS a little worrying that people are committing patches without
-testing them properly. Hope it's just an exception !
+Does anyone know of any documentation for any of these 'resource' functions?
 
-MikeW
+See for example:
+   drivers/mtd/maps/ixp4xx.c function int ixp4xx_flash_remove
+
+
+Phil.
