@@ -1,12 +1,25 @@
-Date: Mon, 21 May 2007 07:09:46 -0300
-From: "eggplant Stewart" <Alvarado_Gena@adi.pt>
-To: linux-mac68k-cvs-request@nl.linux.org, linux-mac68k-request@nl.linux.org,
-	linux-mm-www-request@nl.linux.org, linux-mm@kvack.org,
-	linux-mtd-cvs@lists.infradead.org, linux-mtd@lists.infradead.org
-Subject: Database of Naturopathic clinics
-Message-ID: <4A2A7EE3.7684.EF15C2D5@localhost>
+Received: from ug-out-1314.google.com ([66.249.92.170])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hq46j-0007sJ-NK
+	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 05:24:01 -0400
+Received: by ug-out-1314.google.com with SMTP id m2so845161uge
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 21 May 2007 02:23:07 -0700 (PDT)
+From: borasah@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: Re: NAND flash write goes wrong
+Date: Mon, 21 May 2007 12:30:12 +0300
+References: <200705102150.31171.borasah@gmail.com>
+	<200705112058.14662.borasah@gmail.com>
+	<Pine.LNX.4.64.0705140852340.3951@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.0705140852340.3951@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="Iso-8859-9"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200705211230.12829.borasah@gmail.com>
+Cc: Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,38 +30,44 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+Hi,
 
+[Snip]
 
-Brand new just finished extracting last night
+Thanks for the infos...
 
-ALTERNATIVE MEDICINE DATABASE
+> >> Blocks (nand flash terminology rejects the name 'sectors' in favor of
+> >> 'blocks' and 'pages') can go bad with time, but we're talking about
+> >> thousands if not tens of thousands of erase/write cycles here. So it
+> >> seems there's something wrong here.
+> >
+> > Yes, I think too. Now ~140 bad sector is reported during the boot. I just
+> > did at most 50 read/write...
+>
+> You sound far from wearing the chip out. There must be another problem
+> there somewhere.
 
-Over 1 million records and 72,000 emails in the following categories:
+Hmm...
 
-* Nutritionists
-* Naturopathy
-* Naturopathic Schools
-* Naturopathic Remedies
-* Naturopathic Physicians
-* Naturopathic Medicine
-* Naturopath Diet
-* Naturopath Clinics
-* Naturopath Cancer
-* Hollistic Therapy
-* Hollistic Massage
-* Hollistic Health Care
-* Hollistic Healing
-* Hollistic Cures
+> >> There was a patch posted just a week or so ago here which fixed a
+> >> problem with bad block marking and recognition when not using a
+> >> flash-based bad block table.
+> >
+> > I'm new to the list. Is this Artem's patch? I applied it, but no
+> > success... Maybe
+> > http://lists.infradead.org/pipermail/linux-mtd/2007-May/018087.html?
+>
+> By Thomas Knobloch I believe, but yes, that's the patch I was thinking of.
 
-Fields included for all data: Business/Practitioner Name, Postal Address, Phone, Fax, Email and Website 
+I applied it but no success...
 
-Special price until Wednesday May 23 - $399 (reg $599)
+------------
 
-For more info or to place an order please email: naturopathichollistic@hotmail.com
+I tried K9F1208U0A with linux-2.6.20 -> JFFS2 file system. I successfully used 
+the part. 
 
+Secondly, I tried yaffs with that part in the linux-2.6.11. It was successful 
+too.
 
-
-
-
-
-To be excluded from future mail please put "exclude" in the subject when replying.
+--
+Bora SAHIN
