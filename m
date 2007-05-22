@@ -1,23 +1,23 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqRuC-00018B-S6
-	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 06:47:56 -0400
-Received: from [10.191.255.159] (dhcp-255-159.norway.atmel.com
-	[10.191.255.159])
-	by relay.atmel.no (8.13.4/8.13.4) with ESMTP id l4MAll1S019490
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 May 2007 12:47:47 +0200 (CEST)
-	(envelope-from hcegtvedt@atmel.com)
-Subject: Re: Serial SPI flash
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <008301c79c56$eae6c020$81c8a8c0@cayenne>
-References: <008301c79c56$eae6c020$81c8a8c0@cayenne>
-Content-Type: text/plain
-Date: Tue, 22 May 2007 12:47:42 +0200
-Message-Id: <1179830862.3159.24.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	id 1HqS14-0001SW-Pm
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 06:55:03 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l4MAsoRE003198
+	for <linux-mtd@lists.infradead.org>; Tue, 22 May 2007 12:54:50 +0200
+Date: Tue, 22 May 2007 12:52:30 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Atmel Flash Fix: cfi_cmdset_0002.c (was: MTD problems)
+In-Reply-To: <F5987F30E184CEF5E0835CBD@franken3>
+Message-ID: <Pine.LNX.4.64.0705221250290.3966@lnxricardw.se.axis.com>
+References: <CC48EEBFC8DCA477AECA2CAE@franken3>
+	<6CE8DABE2FC06ACFDCE20EC2@franken3>
+	<F5987F30E184CEF5E0835CBD@franken3>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-22 at 15:22 +0530, jameesh wrote:
-> Hi,
-> 
-> Please help me.
-> Do MTD have serial SPI flash Support?
 
-Yes, MTD supports serial flash through the standard SPI framework in the
-kernel.
+On Thu, 10 May 2007, Michael K=F6nig wrote:
 
-Enable AT45xxx DataFlash support under:
-Device Drivers  --->
-Memory Technology Devices (MTD)  --->
-Self-contained MTD device drivers  --->
-<M/*> Support for AT45xxx DataFlash
+> On Atmel Flashes the do_write_buffer() function is not supposed to be cal=
+led,=20
+> and it seems that some patches to make sure of that weren't applied to th=
+e=20
+> code in the Linux kernel GIT.
+>
+> The following changes have to be applied to this file:=20
+> drivers/mtd/chips/cfi_cmdset_0002.c
 
-You must have a SPI driver before this option being available.
+Although Michael subsequently provided a proper patch, it does not seem to=
+=20
+have made it into the mtd repository. Were there any issues with the patch=
+=20
+that prevented it being committed?
 
-> Can  JFFS2 Flash File system be used on serial SPI flash?
-
-Yes.
-
-Enable JFFS2 under:
-File systems  --->
-Miscellaneous filesystems  --->
-<M/*> Journalling Flash File System v2 (JFFS2) support
-
-> I may be using SPI flash from ATMEL(M25P128) or ST 
-> Microelectronics(AT45DB642D). Is there any Patch available for the device.
-
-Atmel has a reference design running Linux and using a _ATMEL_
-AT45FB642D DataFlash for storage of applications and data. The kit is
-called ATNGW100.
-
-Sorry if referring to kits is outside the scope of this list.
-
--- 
-With kind regards,
-
-Hans-Christian Egtvedt, siv.ing. (M.Sc.)
-Applications Engineer - AVR32 System Solutions - Atmel Norway
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
