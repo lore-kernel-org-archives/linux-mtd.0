@@ -1,23 +1,18 @@
-Received: from smtp-vbr5.xs4all.nl ([194.109.24.25])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqPKW-0006YS-Id
-	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 04:02:56 -0400
-Received: from server01 (a80-126-23-145.adsl.xs4all.nl [80.126.23.145])
-	by smtp-vbr5.xs4all.nl (8.13.8/8.13.8) with ESMTP id l4M82iuj075658
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 22 May 2007 10:02:45 +0200 (CEST) (envelope-from teun@adesys.nl)
-Received: from 192.168.10.82 by server01 ([192.168.10.1] running VPOP3) with
-	SMTP for <linux-mtd@lists.infradead.org>;
-	Tue, 22 May 2007 10:02:44 +0200
-From: "Teun Grinwis" <teun@adesys.nl>
-To: "Mtd List" <linux-mtd@lists.infradead.org>
-Subject: RE: jffs2/mtd on flash Spansion S29GL064AR4
-Date: Tue, 22 May 2007 10:02:43 +0200
-Message-ID: <LOEGJDCFIFDBMCDIAOKDMEANCIAA.teun@adesys.nl>
+Received: from [67.18.166.194] (helo=warp.phpwebhosting.com)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HqQMQ-0007fU-P4
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 05:09:00 -0400
+Message-ID: <4652B321.90006@indefia.com>
+Date: Tue, 22 May 2007 12:08:49 +0300
+From: Semih Hazar <semih.hazar@indefia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+To: vitalywool@gmail.com
+Subject: Re: Generic Platform NAND Driver
+References: <464D98DF.5020004@indefia.com>
+In-Reply-To: <464D98DF.5020004@indefia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <LOEGJDCFIFDBMCDIAOKDGENPCHAA.teun@adesys.nl>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,170 +22,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello All,
+Hi Vitaly,
 
-After further investigation, the real problem is a NULL ptr function
-call in kernel/sched.c, see below:
+I couldn't get any replies from the list and I wonder if I'm missing a 
+point here.
 
-- in cfi_cmdset_0002.c, do_erase_oneblock
-		put_chip( map, chip, adr ); is called.
+struct plat_nand_data seems useless to users of this generic nand 
+driver, and there is no way of passing user data in mtd structures.
 
-- in cfi_cmdset_0002.c, put_chip
-		wake_up( &chip->wq ); is called
+Does that make sense, or am I missing something ?
 
-- in kernel/sched.c, __wake_up
-		__wake_up_common( q, mode, nr_exclusive, 0, key ) is called
+Also the priv members in platform_nand_chip and platform_nand_ctrl are 
+not used in any way. Maybe a better solution would be to utilize these ?
 
-- in kernel/sched.c, __wake_up_common, here ERROR, func == NULL
-
-static void __wake_up_common(wait_queue_head_t *q, unsigned int mode,
-			     int nr_exclusive, int sync, void *key)
-{
-	struct list_head *tmp, *next;
-
-	list_for_each_safe(tmp, next, &q->task_list) {
-		wait_queue_t *curr;;
-		unsigned flags;
-		curr = list_entry(tmp, wait_queue_t, task_list);
-		flags = curr->flags;
-		if (curr->func(curr, mode, sync, key) &&
-
-                ^^^^^^^^^^  ERROR, curr->func = NULL
-
-		    (flags & WQ_FLAG_EXCLUSIVE) &&
-		    !--nr_exclusive)
-			break;
-	}
-}
-------------------------------------------------
-Why is reason curr->func = NULL? I do not have knowledge about mtd.
-------------------------------------------------
-
-I tried a patch in kernel/sched.c, __wake_up_common:
-...
-        if( curr->func == NULL || (curr->func(curr, mode, sync, key) &&
-                                   (flags & WQ_FLAG_EXCLUSIVE) &&
-                                   !--nr_exclusive) ) {
-            break;
-        }
-...
-
-Now jffs2 can be initialized on our flash S29GL064AR4. Also a test file
-remains
-persistent after re-power our system.
-
-Is this patch right? My feeling is that something should be done in mtd!
-
-Thanks for your info,
-
-Regards
-
-Teun Grinwis
-> -----Oorspronkelijk bericht-----
-> Van: Teun Grinwis [mailto:teun@adesys.nl]
-> Verzonden: maandag 14 mei 2007 9:03
-> Aan: Mtd List
-> Onderwerp: jffs2/mtd on flash Spansion S29GL064AR4
+> Hi,
 >
+> In the new generic platforn NAND driver, line 54;
 >
-> Hello all,
+> 	data->chip.priv = &data;
+> 	data->mtd.priv = &data->chip;
 >
-> Can someone give hint where to start debug searching ??
+> mtd->priv->priv points to struct plat_nand_data which is defined in the 
+> plat_nand.c and never used by it.
+> Can we change it so that this priv points to a host specific data, and 
+> the helper functions (board specific) can make use of it.
+> Below is a suggested patch:
 >
-> I use uCLinux distribution 20060511 2.16.16-uc0 on custom MCF 5208 board.
-> With flash, Spansion S29GL064AR4. Debug for mtd, jffs2 set to noisy.
+> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+> index d2365c8..256957b 100644
+> --- a/include/linux/mtd/nand.h
+> +++ b/include/linux/mtd/nand.h
+> @@ -599,10 +599,12 @@ struct platform_nand_ctrl {
+>   * struct platform_nand_data - container structure for platform-specific data
+>   * @chip:		chip level chip structure
+>   * @ctrl:		controller level device structure
+> + * @host:		pointer to host specific data structure
+>   */
+>  struct platform_nand_data {
+>  	struct platform_nand_chip	chip;
+>  	struct platform_nand_ctrl	ctrl;
+> +	void				*host;
+>  };
+>  
+>  /* Some helpers to access the data structures */
+> diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+> index cd725fc..1e47ad3 100644
+> --- a/drivers/mtd/nand/plat_nand.c
+> +++ b/drivers/mtd/nand/plat_nand.c
+> @@ -51,7 +51,7 @@ static int __init plat_nand_probe(struct platform_device *pdev)
+>  		return -EIO;
+>  	}
+>  
+> -	data->chip.priv = &data;
+> +	data->chip.priv = pdata->host;
+>  	data->mtd.priv = &data->chip;
 >
-> When I mount a mtdblock on jffs2 I got the following error:
->
-> See below.
-> Command: mount -t jffs2 /dev/mtdblock3 /mnt
-> Command:
-> Command:
-> Execution Finished, Exiting
-> mtdblock: read on "Romfs" at 0x3d400, size 0x200
->
-> MTD do_erase_oneblock(): ERASE 0x000a0000
-> *** ILLEGAL INSTRUCTION ***   FORMAT=4
-> Current process id is 9
-> BAD KERNEL TRAP: 00000000
-> PC: [<00000000>]
-> SR: 2718  SP: 402cfcec  a2: 40281770
-> d0: 00002710    d1: 00000001    d2: 00000000    d3: 400140f4
-> ...........
->
-> I can run my image successful on Intec 5208EVB
->
-> My MTD partitions are as follows (btw i did not change flash name string):
->
-> ------------------------
-> Am29BDD160G 2.5v flash device (2MB): Found 1 x16 devices at 0x0
-> in 16-bit bank
->  Amd/Fujitsu Extended Query Table at 0x0040
-> cfi_send_gen_cmd():,40 cmd=98 addr=00000055 base=00000000 build
-> addr=000000aa cm
-> d_val=00000008
-> cfi_send_gen_cmd():,41 cmd=f0 addr=00000000 base=00000000 build
-> addr=00000000 cm
-> d_val=00000040
-> cfi_send_gen_cmd():,42 cmd=ff addr=00000000 base=00000000 build
-> addr=00000000 cm
-> d_val=00000040
-> Using buffer write method
-> number of CFI chips: 1
-> cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
->
-> Creating 3 MTD partitions on "Am29BDD160G 2.5v flash device (2MB)":
->
-> 0x00000000-0x00040000 : "dBUG (256K)"
-> mtd: Giving out device 2 to dBUG (256K)
->
-> 0x00040000-0x000c0000 : "User FS (512K)"
-> mtd: Giving out device 3 to User FS (512K)
->
-> 0x000c0000-0x00200000 : "Kernel + RootFS (1280K)"
-> mtd: Giving out device 4 to Kernel + RootFS (1280K)
-> m520xevb ram probe(0x40150020,de000,4): de000 at 40150020
->
-> m520xevb ram probe(0x40150020,de000,4): de000 at 40150020
-> do_map_probe(): name=map_ram <5>Creating 1 MTD partitions on "RAM":
-> 0x00000000-0x000de000 : "Romfs"
-> mtd: Giving out device 5 to Romfs
-> init_m520x: Root filesystem maj:31 mtdblock:5
-> ----------------------------
->
-> I mount jffs2 on "User FS", addresses 0x40000 - 0xc0000
->
-> I can run my image successful on the EVB see attached file
-> Log_uclinux_evb.
->
-> I started all from a clean flash, erase flash, program dBUG, dn
-> image.bin, exec image.
->
-> When starting on EVB, jffs2 is initializing "User FS" by MTD
-> do_erase_oneblock,
-> MTD do_write_oneword(s) 0x..0 - 0x..a for all sectors in "User
-> FS", startup successful.
->
-> When starting on custom board *** ILLEGAL INSTRUCTION *** occurs
-> after the first
-> MTD do_erase_oneblock(), see attached file Log_uclinux_ads4010,
-> startup unsuccessful.
->
-> It seems that the error has something todo with (erase) timing ??
-> since in call trace:
-> ...
-> BUG: pdflush/9, lock held at task exit time!
->  [403b6446] {alloc_super}
-> .. held by:           pdflush:    9 [402b2330, 115]
-> ... acquired at:
->
-> After further investigation it seems that in
-> cfi_cmdset_0002.c:do_erase_oneblock,
-> the code execution does not reach: spin_unlock(chip->mutex).
->
-> Any suggestions, to proceed ???
->
-> Thanks in advance,
->
-> Teun Grinwis
->
+>  	data->mtd.owner = THIS_MODULE;
+>   
