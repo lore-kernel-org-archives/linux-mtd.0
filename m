@@ -1,19 +1,27 @@
-Received: from belize.chezphil.org ([80.68.91.122])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqBOR-0005e5-Q2
-	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 13:10:02 -0400
-Received: from localhost ([127.0.0.1] helo=chezphil.org)
-	by belize.chezphil.org with esmtp (Exim 4.50) id 1HqFwg-0003Sr-Uo
-	for linux-mtd@lists.infradead.org; Mon, 21 May 2007 23:01:39 +0100
-To: <linux-mtd@lists.infradead.org>
-Date: Mon, 21 May 2007 18:09:46 +0100
-Subject: Re: [PATCH] Fix kfree usage in various mtd map remove functions
-Message-ID: <1179767386547@dmwebmail.belize.chezphil.org>
-In-Reply-To: <loom.20070521T174147-996@post.gmane.org>
-References: <loom.20070521T174147-996@post.gmane.org>
-MIME-Version: 1.0
-Content-Type: text/plain; format="flowed"
-From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HqP5S-000764-2B
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 08:47:19 +0100
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HqP5M-0007N8-4D
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 09:47:12 +0200
+Received: from office.ubiquisys.com ([88.96.204.222])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 22 May 2007 09:47:12 +0200
+Received: from mw_phil by office.ubiquisys.com with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Tue, 22 May 2007 09:47:12 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: leak in mtd/devices/phram.c
+Date: Tue, 22 May 2007 07:46:27 +0000 (UTC)
+Message-ID: <loom.20070522T094332-377@post.gmane.org>
+References: <20070520200936.GB22049@alice>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +31,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The other issue that I noticed was the use of release_resource() 
-instead of release_mem_region().  I'm not at all sure what should be 
-going on here, but as far as I can see from kernel/resource.c these 
-functions are not equivalent, and the "Linux Device Drivers" book shows 
-release_mem_region() used to reverse the effect of 
-request_mem_region().  I think that release_resource() should be called 
-when (for example) a hotpluggable device is unplugged and the resource 
-goes away, whereas release_mem_region() should be called when a driver 
-no longer needs use of that area of memory.  It's complex to understand 
-the source because the same 'struct resource' is used to describe a 
-physical resource and also a reservation/allocation of a portion of a 
-physical resource to a driver.
+Eric Sesterhenn / Snakebyte <snakebyte <at> gmx.de> writes:
 
-I could submit a patch that replaces the release_resource() calls with 
-release_mem_region(), but I would not be happy doing so unless someone 
-with a bit more of a clue than me said it was the right thing to do.
+> 
+> hi,
+> 
+> coverity spotted this leak in mtd/devices/phram.c (bug id #1512),
+> when register_device() fails, we dont kfree() name and leak it,
+> attached patch should fix this.
+> 
+> Signed-off-by: Eric Sesterhenn <snakebyte <at> gmx.de>
 
-Does anyone know of any documentation for any of these 'resource' functions?
+It's good that the drivers are now getting audited for kmalloc/kfree
+(see other recent kfree patch).
+Keep it up !! How about a driver memory leak reg-test ?!
 
-See for example:
-   drivers/mtd/maps/ixp4xx.c function int ixp4xx_flash_remove
-
-
-Phil.
+Regards,
+MikeW
