@@ -1,21 +1,18 @@
-Received: from mo-p07-ob.rzone.de ([81.169.146.189])
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqQam-0007xU-6z
-	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 05:23:49 -0400
-Received: from ubuntu (achn-4db4ad4e.pool.einsundeins.de [77.180.173.78])
-	by post.webmailer.de (klopstock mo43) (RZmta 6.5)
-	with ESMTP id D04749j4M8IIK3 for <linux-mtd@lists.infradead.org>;
-	Tue, 22 May 2007 11:23:41 +0200 (MEST)
-From: Stefan Roese <ml@stefan-roese.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] nand: Change NDFC driver to support 405 platforms too
-Date: Tue, 22 May 2007 11:23:45 +0200
+	id 1HqQyM-0008P8-61
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 05:48:23 -0400
+Message-ID: <4652BC51.9090009@ru.mvista.com>
+Date: Tue, 22 May 2007 13:48:01 +0400
+From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
+To: Semih Hazar <semih.hazar@indefia.com>
+Subject: Re: Generic Platform NAND Driver
+References: <464D98DF.5020004@indefia.com> <4652B321.90006@indefia.com>
+In-Reply-To: <4652B321.90006@indefia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200705221123.45953.ml@stefan-roese.de>
+Cc: linux-mtd@lists.infradead.org, vitalywool@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,67 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] nand: Change NDFC driver to support 405 platforms too
+Semih Hazar wrote:
+> Hi Vitaly,
+>
+> I couldn't get any replies from the list and I wonder if I'm missing a 
+> point here.
+>
+> struct plat_nand_data seems useless to users of this generic nand 
+> driver, and there is no way of passing user data in mtd structures.
+>
+> Does that make sense, or am I missing something ?
+>
+> Also the priv members in platform_nand_chip and platform_nand_ctrl are 
+> not used in any way. Maybe a better solution would be to utilize these ?
+>   
+That structures are for arch related code for NAND flashes that 
+registers are memory mapped but
+has special h/w control.
 
-This patch adds 405 platform support to the 440 NDFC driver. The new
-AMCC 405EZ PPC is equipped with the same NDFC core as the 440EP(x)
-and other will follow soon.
+You can look at the first (I guess) usage example here:
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=4385/2
 
-Signed-off-by: Stefan Roese <sr@denx.de>
-
----
-commit 5e3b364a50f6eb6b72e438f53cb168ffe738f01d
-tree afc35284cb993ff8f192db857a20b91b167ed08d
-parent 3f7d2457484763a4cdae4c2f94949cd94c37cd78
-author Stefan Roese <sr@denx.de> Tue, 22 May 2007 11:20:15 +0200
-committer Stefan Roese <sr@denx.de> Tue, 22 May 2007 11:20:15 +0200
-
- drivers/mtd/nand/Kconfig |    4 ++--
- drivers/mtd/nand/ndfc.c  |    8 ++++++++
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 1f7ac54..3c91b64 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -128,10 +128,10 @@ config MTD_NAND_S3C2410_HWECC
- 
- config MTD_NAND_NDFC
- 	tristate "NDFC NanD Flash Controller"
--	depends on MTD_NAND && 44x
-+	depends on MTD_NAND && 4xx
- 	select MTD_NAND_ECC_SMC
- 	help
--	 NDFC Nand Flash Controllers are integrated in EP44x SoCs
-+	 NDFC Nand Flash Controllers are integrated in IBM/AMCC's 4xx SoCs
- 
- config MTD_NAND_TQM8272
- 	tristate "NAND Flash support on TQ TQM8272 Board."
-diff --git a/drivers/mtd/nand/ndfc.c b/drivers/mtd/nand/ndfc.c
-index fd7a8d5..1c0e89f 100644
---- a/drivers/mtd/nand/ndfc.c
-+++ b/drivers/mtd/nand/ndfc.c
-@@ -24,7 +24,11 @@
- #include <linux/platform_device.h>
- 
- #include <asm/io.h>
-+#ifdef CONFIG_40x
-+#include <asm/ibm405.h>
-+#else
- #include <asm/ibm44x.h>
-+#endif
- 
- struct ndfc_nand_mtd {
- 	struct mtd_info			mtd;
-@@ -230,7 +234,11 @@ static int ndfc_nand_probe(struct platform_device *pdev)
- 	struct ndfc_controller *ndfc = &ndfc_ctrl;
- 	unsigned long long phys = settings->ndfc_erpn | res->start;
- 
-+#ifndef CONFIG_PHYS_64BIT
-+	ndfc->ndfcbase = ioremap((phys_addr_t)phys, res->end - res->start + 1);
-+#else
- 	ndfc->ndfcbase = ioremap64(phys, res->end - res->start + 1);
-+#endif
- 	if (!ndfc->ndfcbase) {
- 		printk(KERN_ERR "NDFC: ioremap failed\n");
- 		return -EIO;
+>   
+>> Hi,
+>>
+>> In the new generic platforn NAND driver, line 54;
+>>
+>> 	data->chip.priv = &data;
+>> 	data->mtd.priv = &data->chip;
+>>
+>> mtd->priv->priv points to struct plat_nand_data which is defined in the 
+>> plat_nand.c and never used by it.
+>> Can we change it so that this priv points to a host specific data, and 
+>> the helper functions (board specific) can make use of it.
+>> Below is a suggested patch:
+>>
+>> diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+>> index d2365c8..256957b 100644
+>> --- a/include/linux/mtd/nand.h
+>> +++ b/include/linux/mtd/nand.h
+>> @@ -599,10 +599,12 @@ struct platform_nand_ctrl {
+>>   * struct platform_nand_data - container structure for platform-specific data
+>>   * @chip:		chip level chip structure
+>>   * @ctrl:		controller level device structure
+>> + * @host:		pointer to host specific data structure
+>>   */
+>>  struct platform_nand_data {
+>>  	struct platform_nand_chip	chip;
+>>  	struct platform_nand_ctrl	ctrl;
+>> +	void				*host;
+>>  };
+>>  
+>>  /* Some helpers to access the data structures */
+>> diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+>> index cd725fc..1e47ad3 100644
+>> --- a/drivers/mtd/nand/plat_nand.c
+>> +++ b/drivers/mtd/nand/plat_nand.c
+>> @@ -51,7 +51,7 @@ static int __init plat_nand_probe(struct platform_device *pdev)
+>>  		return -EIO;
+>>  	}
+>>  
+>> -	data->chip.priv = &data;
+>> +	data->chip.priv = pdata->host;
+>>  	data->mtd.priv = &data->chip;
+>>
+>>  	data->mtd.owner = THIS_MODULE;
+>>   
+>>     
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>   
