@@ -1,23 +1,19 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqS14-0001SW-Pm
-	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 06:55:03 -0400
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	l4MAsoRE003198
-	for <linux-mtd@lists.infradead.org>; Tue, 22 May 2007 12:54:50 +0200
-Date: Tue, 22 May 2007 12:52:30 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Atmel Flash Fix: cfi_cmdset_0002.c (was: MTD problems)
-In-Reply-To: <F5987F30E184CEF5E0835CBD@franken3>
-Message-ID: <Pine.LNX.4.64.0705221250290.3966@lnxricardw.se.axis.com>
-References: <CC48EEBFC8DCA477AECA2CAE@franken3>
-	<6CE8DABE2FC06ACFDCE20EC2@franken3>
-	<F5987F30E184CEF5E0835CBD@franken3>
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HqSOx-00022I-9k
+	for linux-mtd@lists.infradead.org; Tue, 22 May 2007 07:19:42 -0400
+Message-ID: <4652D1C8.4050305@ru.mvista.com>
+Date: Tue, 22 May 2007 15:19:36 +0400
+From: "Vladimir A. Barinov" <vbarinov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+To: Semih Hazar <semih.hazar@indefia.com>
+Subject: Re: Generic Platform NAND Driver
+References: <464D98DF.5020004@indefia.com> <4652B321.90006@indefia.com>
+	<4652BC51.9090009@ru.mvista.com> <4652C5EB.7080007@indefia.com>
+In-Reply-To: <4652C5EB.7080007@indefia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, vitalywool@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,26 +23,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Semih,
 
-On Thu, 10 May 2007, Michael K=F6nig wrote:
-
-> On Atmel Flashes the do_write_buffer() function is not supposed to be cal=
-led,=20
-> and it seems that some patches to make sure of that weren't applied to th=
-e=20
-> code in the Linux kernel GIT.
+Semih Hazar wrote:
+> Vladimir A. Barinov wrote:
+>> You can look at the first (I guess) usage example here:
+>> http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=4385/2
+>>
+>>   
 >
-> The following changes have to be applied to this file:=20
-> drivers/mtd/chips/cfi_cmdset_0002.c
+> +ixdp425_flash_nand_cmd_ctrl(struct mtd_info *mtd, int cmd, unsigned 
+> int ctrl)
+> +{
+> +    struct nand_chip *this = mtd->priv;
+> +    int offset = (int)this->priv;
+>
+> Here offset is read from nand_chip->priv, which actually points to 
+> struct plat_nand_data of plat_nand.c
+>
+> Am I wrong ? 
+I agree with you.
+And you are right that all things work fine because the 
+mtd_info->priv->priv that points to plat_nand_data is not used.
 
-Although Michael subsequently provided a proper patch, it does not seem to=
-=20
-have made it into the mtd repository. Were there any issues with the patch=
-=20
-that prevented it being committed?
+I agree that the line 54 in plat_nand.c should be removed:
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-	data->chip.priv = &data;
+
+
+But does it really usefull to create void * host pointer if it could be 
+done in arch code like the above patch does?
+
+Vladimir
