@@ -1,27 +1,27 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HqqDa-0005J9-T7
-	for linux-mtd@lists.infradead.org; Wed, 23 May 2007 13:45:35 +0100
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HqqDQ-0000nR-OE
-	for linux-mtd@lists.infradead.org; Wed, 23 May 2007 14:45:20 +0200
-Received: from 82-69-61-204.dsl.in-addr.zen.co.uk ([82.69.61.204])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2007 14:45:20 +0200
-Received: from mw_phil by 82-69-61-204.dsl.in-addr.zen.co.uk with local
-	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 23 May 2007 14:45:20 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: JFFS2 softlinks problem - repost from email
-Date: Wed, 23 May 2007 12:45:07 +0000 (UTC)
-Message-ID: <loom.20070523T143527-245@post.gmane.org>
-References: <20070519115535.A8761@hnilux.racom.cz>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hqrno-0002c9-Vn
+	for linux-mtd@lists.infradead.org; Wed, 23 May 2007 10:27:02 -0400
+Date: Wed, 23 May 2007 14:58:41 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+Subject: Re: Review status (Re: [PATCH] LogFS take three)
+Message-ID: <20070523125840.GC24738@lazybastard.org>
+References: <20070515151919.GA32510@lazybastard.org>
+	<20070515152149.GB32059@lazybastard.org>
+	<20070517160308.GA26643@2ka.mipt.ru>
+	<20070517171017.GB15676@lazybastard.org>
+	<20070520173049.GA20907@2ka.mipt.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070520173049.GA20907@2ka.mipt.ru>
+Cc: akpm@osdl.org, Albert Cahalan <acahalan@gmail.com>,
+	Greg KH <greg@kroah.com>, linux-kernel@vger.kernel.org,
+	Ingo Oeser <ioe-lkml@rameria.de>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	linux-mtd@lists.infradead.org, Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,87 +31,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jakub Bednar <bednar <at> hnilux.racom.cz> writes:
-
->MikeW <mw_phil <at> yahoo.co.uk> writes:
+On Sun, 20 May 2007 21:30:52 +0400, Evgeniy Polyakov wrote:
 > 
-> What do you mean by,
-> "I fill the NAND JFFS2 partition with data several times ..." ?
+> In that case segment size must be more than 32 bits, or below
+> transformation will not be correct?
+
+Must it?  If segment size is just 20bit then the filesystem may only be
+52bit.  Or 51bit when using signed values.
+
+> segsize is long, but should be u64 I think.
+
+It could be s32 as well.
+
+> static void fixup_from_wbuf(struct super_block *sb, struct logfs_area
+> 	*area, void *read, u64 ofs, size_t readlen)
 > 
-> I presume the links you refer to are symbolic links (ln -s ...)
+> u32 read_start = ofs & (super->s_segsize - 1);
+> u32 read_end = read_start + readlen;
 > 
-> You should describe the procedure you use (including setting up the links,
-> and "filling the partition with data several times") and the problems you
-> observe, What exactly "stops working" - apart from access to files on the
-> affected partition(s) ?
+> And this can overflow, since readlen is size_t.
+
+Theoretically yes.  Practically readlen is bounded to sb->blocksize plus
+one header.  I'll start worrying about that when blocksize approaches
+32bit limit.
+
+> > If anyone can find similar bugs, the bounty is a beer or non-alcoholic
+> > beverage of choice. :)
 > 
-> Regards,
-> MikeW
-> 
+> Stop kiling your kidneys, your health and promote such antisocial style
+> of life, start drinking vodka instead.
 
-Jakub Bednar <bednar <at> hnilux.racom.cz> writes:
+I'm just a German.  Forgive me if I drink lesser beverages.
 
-Sorry, I'll try to be more clear.
+Jörn
 
-I have a board based on AMD DBAu1550 boards.
-I'm using buildroot from November 2006 with
-Linux 2.6.16.20.
-
-The cramfs initrd image is created with mkcramfs and
-concatenated with the kernel. At boottime, kernel
-finds CRAMFS_MAGIC and creates a mtd partition containing
-this image and boots it as first rootfs.
-
-JFFS2 partition is created from desired tree.
-In the tree there are soft links e.g. ln -sf /var/log /tmp/log;
-The tree is then compressed
-build machine: tar -zcf pkg.tgz tree/*
-build machine: cat pkg.tgz | ssh target_machine "cat - > /tmp/pkg.tgz"
-(tmpfs) 
-target machine: flash_erase mtd0 0x00 48;
-target machine: mount -t jffs2 /dev/mtd0 /mnt;
-target machine: tar -ztf /tmp/pkg.tgz; #cheks the tarbal ...
-target machine: tar -zxf /tmp/pkg.tgz -C /mnt/
-
-There are other checks (sync, remount mtd0 ro ...)
-target machine: pivot_root /mnt /mnt/rom
-
-Now the jffs2 become rootfs and /sbin and /bin are soft
-links to /rom/sbin and /rom/bin (the initrd). 
-The system now works OK. It's using some staff from 
-one of NAND partitions as well without any problems.
-
-Now the test on the NAND flash
-target machine: flash_eraseall -j /dev/mtd6
-target machine: mount -t jffs2 mtd6 /mnt2
-and runing script as follows:
-	while [ 1 ]; do 
-		cat /dev/urandom > /mnt2/file; # fills up the fs
-		rm /mnt2/file; #frees it again
-	done;
-(The script using dd with 512kB files causes the same error but it
-takes more time) The error sometimes occur in the first loop of
-this script after reboot, sometimes later.
-
-After a while many things goes wrong and each time goes wrong something
-else.
-
-1. cd /root/.ssh (which is in jffs2 NOR flash) 
-   return Input/Output Error
-2. disappears /var/log (which is a soft link in jffs2 NOR flash 
-   created with ln -s into /tmp - tmpfs ) 
-3. disappear all links from /usr/sbin (cramfs initrd image) 
-   to /usr/sbin/busybox
-
-The JFFS2 erase block size is set correctly and its using priority 
-compression. I know I'm not using the newest JFFS2 and I'm ready
-to work on Linux 2.6.20 to put it into buildroot and hopefully it
-will solve my trouble. But If You know what causes this problem and
-how to fix it. Or if You know that in 2.6.20 it will do the same.
-It will be really helpful to me.
-
-Thank You very mych.
-
-Regards,
-
-Jakub
+-- 
+Eighty percent of success is showing up.
+-- Woody Allen
