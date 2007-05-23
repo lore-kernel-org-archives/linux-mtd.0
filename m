@@ -1,29 +1,18 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from xerxes.tchmachines.com ([208.76.80.175])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ht7ar-0003lp-N9
-	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 15:43:01 -0400
-Subject: Re: Some issues with the AT91 dataflash driver...
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Ivan Kuten <ivan.kuten@promwad.com>
-In-Reply-To: <20070528212513.5086bfac@newbox>
-References: <465431DA.5030500@atmel.com>
-	<1179992308.13101.16.camel@fuzzie.sanpeople.com>
-	<46558893.1020802@comcast.net>
-	<1180010988.13101.103.camel@fuzzie.sanpeople.com>
-	<012d01c79e06$66823470$3204200a@head.local>
-	<20070524164654.3f106ead@newbox> <20070524181437.01550127@newbox>
-	<20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
-	<20070527211234.40777726@dhcp-255-175.norway.atmel.com>
-	<1180374280.3642.114.camel@sauron>  <20070528212513.5086bfac@newbox>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 29 May 2007 22:42:43 +0300
-Message-Id: <1180467763.3642.125.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: david-b@pacbell.net, linux-mtd@lists.infradead.org,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Vadim Yatsenko <Vadim.Yatsenko@malva.ua>
-Reply-To: dedekind@infradead.org
+	id 1HqkF6-0004xi-F0
+	for linux-mtd@lists.infradead.org; Wed, 23 May 2007 02:22:42 -0400
+Message-ID: <2453.69.30.123.186.1179897401.squirrel@architechnical.net>
+Date: Tue, 22 May 2007 22:16:41 -0700 (PDT)
+Subject: OneNAND alternative to X-Load
+From: "Pete MacKay" <linux@architechnical.net>
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+References: 
+In-Reply-To: 
+Cc: u-boot-users@lists.sourceforge.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,86 +22,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-05-28 at 21:25 +0300, Ivan Kuten wrote:
-> On Mon, 28 May 2007 20:44:40 +0300
-> Artem Bityutskiy wrote:
->=20
-> > On Sun, 2007-05-27 at 21:12 +0200, Haavard Skinnemoen wrote:
-> > > On Sun, 27 May 2007 20:08:53 +0200
-> > > Haavard Skinnemoen <hskinnemoen@atmel.com> wrote:
-> > >=20
-> > > > Now that I've got the CRC errors sorted out, I'll try bisecting it.
-> > >=20
-> > > Done. git-bisect blames this commit:
-> >=20
-> > Hi,
-> >=20
-> > whats mtd->writesize of the flash? Do you have the debugging output log=
-?
-> >=20
->=20
-> MTD_DEBUG=3D3 enabled:
+We're developing a PXA-270-based machine that will boot from OneNAND.  I
+wanted to share my ideas (and code) with anyone faced with this challenge,
+since this forum (esp. Kyungmin Park - thank you!!) was quite helpful.
+ I'll start off explaining my u-boot code, then when I get some time I'll
+submit my PXA-270 platform driver as a patch (currently works on 2.6.18).
 
-Sorry for long delay. I is not quite what I asked, but anyway, may you
-pleas apply the below patch, reproduce the problem and send me the
-result.
+We use a common approach: in lacking JTAG we have chip select jumpers that
+swap CS0/CS1 between NOR and OneNAND.  The OneNAND has a bottom-mapped 2K
+boot buffer of which 1K is valid, which is where the level 1 boot loader
+fits.  It uses two memory-mapped 'bufferrams' to ping-pong data out of the
+NAND pages, but you want to use BUFFERRAM1 only as writing BUFFERRAM0 can
+corrupt BOOTRAM0 on some revs of the chip.  (We're executing out of
+BOOTRAM0 so that's bad :).
 
-Please, do this faster if you can because I will need to disappear for
-about 2 weeks in a day. I will try to figure out what is going wrong,
-thanks.
+There is open-source code called "x-loader" that is a stripped-down u-boot
+for the level 1 boot loader.  What I did was integrate the level 1
+function into u-boot itself with a custom configuration and linker script.
+In the top u-boot Makefile I added this:
 
+myboard_config	:	unconfig
+	@./mkconfig $(@:_config=) arm pxa myboard
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 4884d5e..c629c54 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -761,7 +761,7 @@ static inline int read_dnode(struct jffs2_sb_info *c, s=
-truct jffs2_raw_node_ref
- 			len =3D min_t(uint32_t, rdlen - sizeof(*rd), csize);
- 			tn->partial_crc =3D crc32(0, buf, len);
-=20
--			dbg_readinode("Calculates CRC (%#08x) for %d bytes, csize %d\n", tn->pa=
-rtial_crc, len, csize);
-+printk("Calculates CRC (%#08x) for %d bytes, csize %d\n", tn->partial_crc,=
- len, csize);
-=20
- 			/* If we actually calculated the whole data CRC
- 			 * and it is wrong, drop the node. */
-@@ -780,7 +780,7 @@ static inline int read_dnode(struct jffs2_sb_info *c, s=
-truct jffs2_raw_node_ref
- 			 */
- 			struct jffs2_eraseblock *jeb;
-=20
--			dbg_readinode("the node has no data.\n");
-+printk("the node has no data.\n");
- 			jeb =3D &c->blocks[ref->flash_offset / c->sector_size];
- 			len =3D ref_totlen(c, jeb, ref);
-=20
-@@ -919,7 +919,7 @@ static int read_more(struct jffs2_sb_info *c, struct jf=
-fs2_raw_node_ref *ref,
- 	/* We need to read more data */
- 	offs =3D ref_offset(ref) + *rdlen;
-=20
--	dbg_readinode("read more %d bytes\n", to_read);
-+printk("read more %d bytes, needed_len %d\n", to_read, needed_len);
-=20
- 	err =3D jffs2_flash_read(c, offs, to_read, &retlen, buf + *rdlen);
- 	if (err) {
-@@ -1004,7 +1004,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info=
- *c, struct jffs2_inode_inf
- 			len =3D end - ref_offset(ref);
- 		}
-=20
--		dbg_readinode("read %d bytes at %#08x(%d).\n", len, ref_offset(ref), ref=
-_flags(ref));
-+printk("read %d bytes at %#08x(%d), wbuf sz %d\n", len, ref_offset(ref), r=
-ef_flags(ref), c->wbuf_pagesize);
-=20
- 		/* FIXME: point() */
- 		err =3D jffs2_flash_read(c, ref_offset(ref), len, &retlen, buf);
+myboard_onenand_config	:	unconfig
+	@./mkconfig $(@:_config=) arm pxa myboard
+	@echo "LDSCRIPT := $(TOPDIR)/board/myboard/u-boot.onenand.lds" >>
+include/config.mk
 
+In include/configs/myboard_onenand.h I simply define CONFIG_BOOT_ONENAND
+and then include myboard.h, with conditional switches inside for base
+address, etc (i.e. define CONFIG_IDENT_STRING as " from OneNAND" or " from
+NOR").
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+The linker script replaces cpu/pxa/start.S with oneboot.S and makes sure
+the C code to load the other pages positions there too.  Then it aligns
+the rest of u-boot at the 2K boundary (NAND page 1).  The oneboot.S code
+melds start.S with lowlevel_init but calls C code to read the rest of the
+block 0 pages into RAM.  I later optimized it to replace start.S entirely
+for the NOR version.
+
+BTW, I lacked originality and stole (liked) the name: oneboot is not to be
+confused with the script that merges x-load and u-boot into one binary
+image.
+
+This is the relevant portion of the u-boot linker script:
+
+	. = 0x00000000;
+
+	. = ALIGN(4);
+	.text :
+	{
+	  board/myboard/oneboot.o	(.text)
+	  board/myboard/onenand_boot.o	(.text)
+	  __oneboot_end = .;	/* must not exceed 0x400! */
+
+	  . = 0x800;		/* reposition to 2K page boundary */
+	  __page1_start = .;	/* OneNAND loading starts here */
+	  *				(.text)
+	}
+
+Look at System.map to make sure your level 1 code fits within 1K.  Also in
+oneboot.S I commented out labels and used relative branches to save symbol
+space and replaced ldr with mov wherever possible.  And with the 270
+optimizations in oneboot.S our system screams!
+
+The full code is at http://code.architechnical.net/onenand, including the
+2.6.18 pxa27x OneNAND driver.  Please don't laugh at my lame ancient web
+site.
