@@ -1,17 +1,17 @@
-Received: from havoc.gtf.org ([69.61.125.42])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HsGzZ-00082J-4m
-	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 07:32:58 -0400
-Date: Sun, 27 May 2007 07:32:54 -0400
-From: Jeff Garzik <jeff@garzik.org>
-To: Andrew Morton <akpm@linux-foundation.org>, dedekind@infradead.org
-Subject: [PATCH] mtd/ubi: silence gcc warning
-Message-ID: <20070527113254.GA11940@havoc.gtf.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Received: from belize.chezphil.org ([80.68.91.122])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HsIBt-0000GU-64
+	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 08:49:46 -0400
+Received: from localhost ([127.0.0.1] helo=chezphil.org)
+	by belize.chezphil.org with esmtp (Exim 4.50) id 1HsMmh-00025Z-Tk
+	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 18:44:03 +0100
+To: <linux-mtd@lists.infradead.org>
+Date: Sun, 27 May 2007 13:49:42 +0100
+Subject: [PATCH] Fix kfree usage in various mtd map remove functions (2nd go)
+Message-ID: <1180270182334@dmwebmail.belize.chezphil.org>
+MIME-Version: 1.0
+Content-Type: text/plain; format="flowed"
+From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,33 +21,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+The remove() functions in various mtd map drivers were failing to free 
+the *_flash_info
+structure.
 
-Silence the gcc warning
+Since mtd drivers are rarely or never used as modules (they typically 
+provide root filesystems)
+it is unlikely that these code paths have ever been exercised.  It also 
+means that this patch
+has not been tested by the author.
 
-drivers/mtd/ubi/eba.c: In function ‘ubi_eba_read_leb’:
-drivers/mtd/ubi/eba.c:371: warning: ‘crc’ may be used uninitialized in this function
+This patch is against 2.6.21, and supersedes the version that I posted 
+on 2007-05-17; that version made an additional incorrect change to the 
+usage of release_resource().
 
-This is an example of the uninit'd-var warnings emitted by gcc that
-can be proven to be bogus.
+Signed-off-by: Phil Endecott <spam_from_linux_mtd_patch <at> chezphil.org>
 
-Normally I would commit this to my git repository containing
-such verified cases, but with all the goto-driven control flow in
-ubi_eba_read_leb(), I feel that initializing the 'crc' variable is
-an easy way to both shut up gcc, and also make the code less fragile
-for the long term.
+diff -Nur drivers/mtd/maps.orig/ixp2000.c drivers/mtd/maps/ixp2000.c
+--- drivers/mtd/maps.orig/ixp2000.c	2007-05-17 18:56:10.000000000 +0100
++++ drivers/mtd/maps/ixp2000.c	2007-05-27 13:40:36.000000000 +0100
+@@ -134,6 +134,8 @@
+  		kfree(info->res);
+  	}
 
-Signed-off-by: Jeff Garzik <jeff@garzik.org>
++	kfree(info);
++
+  	if (plat->exit)
+  		plat->exit();
 
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 7400294..3fe1722 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -368,7 +368,7 @@ int ubi_eba_read_leb(struct ubi_device *ubi, int vol_id, int lnum, void *buf,
- 	int err, pnum, scrub = 0, idx = vol_id2idx(ubi, vol_id);
- 	struct ubi_vid_hdr *vid_hdr;
- 	struct ubi_volume *vol = ubi->volumes[idx];
--	uint32_t crc, crc1;
-+	uint32_t crc = 0, crc1;
- 
- 	err = leb_read_lock(ubi, vol_id, lnum);
- 	if (err)
+diff -Nur drivers/mtd/maps.orig/ixp4xx.c drivers/mtd/maps/ixp4xx.c
+--- drivers/mtd/maps.orig/ixp4xx.c	2007-05-17 18:56:10.000000000 +0100
++++ drivers/mtd/maps/ixp4xx.c	2007-05-27 13:41:12.000000000 +0100
+@@ -177,6 +177,8 @@
+  		kfree(info->res);
+  	}
+
++	kfree(info);
++
+  	if (plat->exit)
+  		plat->exit();
+
+diff -Nur drivers/mtd/maps.orig/physmap.c drivers/mtd/maps/physmap.c
+--- drivers/mtd/maps.orig/physmap.c	2007-05-17 18:56:10.000000000 +0100
++++ drivers/mtd/maps/physmap.c	2007-05-27 13:41:51.000000000 +0100
+@@ -69,6 +69,8 @@
+  		kfree(info->res);
+  	}
+
++	kfree(info);
++
+  	return 0;
+  }
+
+diff -Nur drivers/mtd/maps.orig/physmap_of.c drivers/mtd/maps/physmap_of.c
+--- drivers/mtd/maps.orig/physmap_of.c	2007-05-17 18:56:10.000000000 +0100
++++ drivers/mtd/maps/physmap_of.c	2007-05-27 13:42:35.000000000 +0100
+@@ -112,6 +112,8 @@
+  		kfree(info->res);
+  	}
+
++	kfree(info);
++
+  	return 0;
+  }
