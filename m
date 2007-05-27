@@ -1,17 +1,30 @@
-Received: from belize.chezphil.org ([80.68.91.122])
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HsIBt-0000GU-64
-	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 08:49:46 -0400
-Received: from localhost ([127.0.0.1] helo=chezphil.org)
-	by belize.chezphil.org with esmtp (Exim 4.50) id 1HsMmh-00025Z-Tk
-	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 18:44:03 +0100
-To: <linux-mtd@lists.infradead.org>
-Date: Sun, 27 May 2007 13:49:42 +0100
-Subject: [PATCH] Fix kfree usage in various mtd map remove functions (2nd go)
-Message-ID: <1180270182334@dmwebmail.belize.chezphil.org>
-MIME-Version: 1.0
-Content-Type: text/plain; format="flowed"
-From: "Phil Endecott" <spam_from_linux_mtd@chezphil.org>
+	id 1HsIBx-0000GW-68
+	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 08:50:28 -0400
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e4.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l4RCnkEq013683
+	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2007 08:49:46 -0400
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
+	l4RCnkRu519002
+	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2007 08:49:46 -0400
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l4RCnjXh007289
+	for <linux-mtd@lists.infradead.org>; Sun, 27 May 2007 08:49:46 -0400
+Subject: Re: [PATCH] mtd/ubi: silence gcc warning
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Jeff Garzik <jeff@garzik.org>
+In-Reply-To: <20070527113254.GA11940@havoc.gtf.org>
+References: <20070527113254.GA11940@havoc.gtf.org>
+Content-Type: text/plain; charset=utf-8
+Date: Sun, 27 May 2007 07:48:03 -0500
+Message-Id: <1180270083.3360.45.camel@zod.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,66 +34,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The remove() functions in various mtd map drivers were failing to free 
-the *_flash_info
-structure.
+On Sun, 2007-05-27 at 07:32 -0400, Jeff Garzik wrote:
+> Silence the gcc warning
+> 
+> drivers/mtd/ubi/eba.c: In function ‘ubi_eba_read_leb’:
+> drivers/mtd/ubi/eba.c:371: warning: ‘crc’ may be used uninitialized in this function
+> 
+> This is an example of the uninit'd-var warnings emitted by gcc that
+> can be proven to be bogus.
+> 
+> Normally I would commit this to my git repository containing
+> such verified cases, but with all the goto-driven control flow in
+> ubi_eba_read_leb(), I feel that initializing the 'crc' variable is
+> an easy way to both shut up gcc, and also make the code less fragile
+> for the long term.
+> 
+> Signed-off-by: Jeff Garzik <jeff@garzik.org>
 
-Since mtd drivers are rarely or never used as modules (they typically 
-provide root filesystems)
-it is unlikely that these code paths have ever been exercised.  It also 
-means that this patch
-has not been tested by the author.
-
-This patch is against 2.6.21, and supersedes the version that I posted 
-on 2007-05-17; that version made an additional incorrect change to the 
-usage of release_resource().
-
-Signed-off-by: Phil Endecott <spam_from_linux_mtd_patch <at> chezphil.org>
-
-diff -Nur drivers/mtd/maps.orig/ixp2000.c drivers/mtd/maps/ixp2000.c
---- drivers/mtd/maps.orig/ixp2000.c	2007-05-17 18:56:10.000000000 +0100
-+++ drivers/mtd/maps/ixp2000.c	2007-05-27 13:40:36.000000000 +0100
-@@ -134,6 +134,8 @@
-  		kfree(info->res);
-  	}
-
-+	kfree(info);
-+
-  	if (plat->exit)
-  		plat->exit();
-
-diff -Nur drivers/mtd/maps.orig/ixp4xx.c drivers/mtd/maps/ixp4xx.c
---- drivers/mtd/maps.orig/ixp4xx.c	2007-05-17 18:56:10.000000000 +0100
-+++ drivers/mtd/maps/ixp4xx.c	2007-05-27 13:41:12.000000000 +0100
-@@ -177,6 +177,8 @@
-  		kfree(info->res);
-  	}
-
-+	kfree(info);
-+
-  	if (plat->exit)
-  		plat->exit();
-
-diff -Nur drivers/mtd/maps.orig/physmap.c drivers/mtd/maps/physmap.c
---- drivers/mtd/maps.orig/physmap.c	2007-05-17 18:56:10.000000000 +0100
-+++ drivers/mtd/maps/physmap.c	2007-05-27 13:41:51.000000000 +0100
-@@ -69,6 +69,8 @@
-  		kfree(info->res);
-  	}
-
-+	kfree(info);
-+
-  	return 0;
-  }
-
-diff -Nur drivers/mtd/maps.orig/physmap_of.c drivers/mtd/maps/physmap_of.c
---- drivers/mtd/maps.orig/physmap_of.c	2007-05-17 18:56:10.000000000 +0100
-+++ drivers/mtd/maps/physmap_of.c	2007-05-27 13:42:35.000000000 +0100
-@@ -112,6 +112,8 @@
-  		kfree(info->res);
-  	}
-
-+	kfree(info);
-+
-  	return 0;
-  }
+Acked-by: Josh Boyer <jwboyer@linux.vnet.ibm.com>
