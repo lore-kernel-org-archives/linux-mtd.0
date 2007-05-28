@@ -1,26 +1,16 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HsOAR-0003xC-8r
-	for linux-mtd@lists.infradead.org; Sun, 27 May 2007 15:12:48 -0400
-Date: Sun, 27 May 2007 21:12:34 +0200
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: Haavard Skinnemoen <hskinnemoen@atmel.com>
-Subject: Re: Some issues with the AT91 dataflash driver...
-Message-ID: <20070527211234.40777726@dhcp-255-175.norway.atmel.com>
-In-Reply-To: <20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
-References: <465431DA.5030500@atmel.com>
-	<1179992308.13101.16.camel@fuzzie.sanpeople.com>
-	<46558893.1020802@comcast.net>
-	<1180010988.13101.103.camel@fuzzie.sanpeople.com>
-	<012d01c79e06$66823470$3204200a@head.local>
-	<20070524164654.3f106ead@newbox> <20070524181437.01550127@newbox>
-	<20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HsiDR-0005Tb-Eg
+	for linux-mtd@lists.infradead.org; Mon, 28 May 2007 12:37:07 -0400
+Subject: JFFS2 panic in 2.6.22-rc3
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Cc: david-b@pacbell.net, Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	linux-mtd@lists.infradead.org, Ivan Kuten <ivan.kuten@promwad.com>,
-	Vadim Yatsenko <Vadim.Yatsenko@malva.ua>
+Date: Mon, 28 May 2007 18:36:28 +0200
+Message-Id: <1180370188.1468.112.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,51 +20,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 27 May 2007 20:08:53 +0200
-Haavard Skinnemoen <hskinnemoen@atmel.com> wrote:
+Got this when booting with JFFS2 rootfs:
+jffs2_scan_eraseblock(): Node at 0x02bff96c {0x1985, 0xe002, 0x00000000) has invalid CRC 0x80024289 (calculated 0xd55ea7b7)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff974: 0x8002 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff98c: 0x4644 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff990: 0x4644 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff994: 0x4644 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff9a4: 0x0600 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff9a8: 0xea20 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff9ac: 0x4c21 instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff9b0: 0x785e instead
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x02bff9b4: 0x310a instead
+Further such events for this erase block will not be printed
+PHY: e0102320:1a - Link is Up - 100/Full
+VFS: Mounted root (jffs2 filesystem).
+Freeing unused kernel memory: 140k init
+PHY: e0102320:18 - Link is Up - 100/Full
+argh. node added in wrong place
+Unable to handle kernel paging request for data at address 0xffffffee
+Faulting instruction address: 0xc00d4fbc
+Oops: Kernel access of bad area, sig: 11 [#1]
+TMCUTU
+NIP: c00d4fbc LR: c00dca80 CTR: c0140b8c
+REGS: cfcf9d00 TRAP: 0300   Not tainted  (2.6.22-rc3)
+MSR: 00009032 <EE,ME,IR,DR>  CR: 84000428  XER: 20000000
+DAR: ffffffee, DSISR: 20000000
+TASK = c07d8be0[191] 'getty' THREAD: cfcf8000
+GPR00: c00dca80 cfcf9db0 c07d8be0 cff66400 ffffffea 06b55340 cfcf1f28 3872ddb1 
+GPR08: 00000000 00000000 00000000 465b1d21 00000000 10078b2c 0fffd100 007fff87 
+GPR16: 00000001 ffffffff 00000000 0fff79d8 00000000 c0250000 cfcf9e08 00000000 
+GPR24: cff66400 00000002 cfcf9ee0 cff54a38 c0230848 ffffffea cff66400 c024f4b4 
+NIP [c00d4fbc] jffs2_mark_node_obsolete+0x1c/0x508
+LR [c00dca80] jffs2_do_setattr+0x29c/0x654
+Call Trace:
+[cfcf9db0] [c07ec000] 0xc07ec000 (unreliable)
+[cfcf9e00] [c00dca80] jffs2_do_setattr+0x29c/0x654
+[cfcf9e40] [c00dce4c] jffs2_setattr+0x14/0x24
+[cfcf9e50] [c00738bc] notify_change+0x2b0/0x2f8
+[cfcf9e80] [c005ab80] sys_fchmodat+0xc0/0xdc
+[cfcf9f40] [c000f0e8] ret_from_syscall+0x0/0x38
+--- Exception: c01 at 0xff5e428
+    LR = 0x1003f584
+Instruction dump:
+38210020 7c0803a6 4e800020 4bf2f069 4bffffe8 9421ffb0 7c0802a6 bf61003c 
+7c9d2379 7c7e1b78 90010054 41820450 <809d0004> 548007be 2f800001 419e0364
 
-> Now that I've got the CRC errors sorted out, I'll try bisecting it.
+This don't happen on 2.6.20, the Magic bitmask 0x1985 not found at .. is printed but no panic.
+Don't know how I got the corruption in the first place.
 
-Done. git-bisect blames this commit:
-
-10731f83009e2556f98ffa5c7c2cbffe66dacfb3 is first bad commit
-commit 10731f83009e2556f98ffa5c7c2cbffe66dacfb3
-Author: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date:   Wed Apr 4 13:59:11 2007 +0300
-
-    [JFFS2] fix buffer sise calculations in jffs2_get_inode_nodes()
-
-    In read inode we have an optimization which prevents one
-    min. I/O unit (e.g. NAND page) to be read more then once.
-
-    Namely, at the beginning we do not know which node type we read,
-    so we read so we assume we read the directory entry, because it
-    has the smallest node header. When we read it, we read up to the
-    next min. I/O unit, just because if later we'll need to read more,
-    we already have this data.
-
-    If it turns out to be that the node is not directory entry, and
-    we need more data, and we did not read it because it sits in the
-    next min. I/O unit, we read the whole next (or several next)
-    min. I/O unit(s). And if it happens to be that we read a data node,
-    and we've read part of its data, we calculate partial CRC.
-    So if later we need to check data CRC, we'll only read the rest
-    of the data from further min. I/O units and continue CRC checking.
-
-    This code was a bit messy and buggy. The bug was that it assumed
-    relatively large min. I/O unit, so that the largest node header
-    could overlap only one min. I/O unit boundary.
-
-    This parch clean-ups the code a bit and fixes this bug.
-    The patch was not tested on flash with small min. I/O unit, like
-    NOR-ECC, nut it was tested on NAND with 512 bytes NAND page, so
-    it at least does not break NAND. It was also tested with mtdram
-    so it should not break NOR.
-
-    Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-    Signed-off-by: David Woodhouse <dwmw2@infradead.org>
-
-I don't have a clue what's wrong with it, but I'll of course help you
-debugging if you tell me what to do.
-
-Haavard
+ Jocke
