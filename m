@@ -1,22 +1,29 @@
-Received: from wr-out-0506.google.com ([64.233.184.234])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ht59N-0002QS-Rw
-	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 13:06:31 -0400
-Received: by wr-out-0506.google.com with SMTP id i22so711610wra
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 May 2007 10:06:17 -0700 (PDT)
-Date: Wed, 30 May 2007 02:09:26 +0900
-From: Seongsu Lee <senux@senux.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: FAT file system on NAND flash memory
-Message-ID: <20070529170925.GA11279@pooky.senux.com>
-References: <20070412134137.GA25860@pooky.senux.com>
-	<625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ht7ar-0003lp-N9
+	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 15:43:01 -0400
+Subject: Re: Some issues with the AT91 dataflash driver...
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ivan Kuten <ivan.kuten@promwad.com>
+In-Reply-To: <20070528212513.5086bfac@newbox>
+References: <465431DA.5030500@atmel.com>
+	<1179992308.13101.16.camel@fuzzie.sanpeople.com>
+	<46558893.1020802@comcast.net>
+	<1180010988.13101.103.camel@fuzzie.sanpeople.com>
+	<012d01c79e06$66823470$3204200a@head.local>
+	<20070524164654.3f106ead@newbox> <20070524181437.01550127@newbox>
+	<20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
+	<20070527211234.40777726@dhcp-255-175.norway.atmel.com>
+	<1180374280.3642.114.camel@sauron>  <20070528212513.5086bfac@newbox>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 29 May 2007 22:42:43 +0300
+Message-Id: <1180467763.3642.125.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
-Cc: alex@emcraft.com, Josh Boyer <jwboyer@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Cc: david-b@pacbell.net, linux-mtd@lists.infradead.org,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Vadim Yatsenko <Vadim.Yatsenko@malva.ua>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,97 +33,86 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Apr 12, 2007 at 08:55:23AM -0500, Josh Boyer wrote:
-> On 4/12/07, Seongsu Lee <senux@senux.com> wrote:
+On Mon, 2007-05-28 at 21:25 +0300, Ivan Kuten wrote:
+> On Mon, 28 May 2007 20:44:40 +0300
+> Artem Bityutskiy wrote:
+>=20
+> > On Sun, 2007-05-27 at 21:12 +0200, Haavard Skinnemoen wrote:
+> > > On Sun, 27 May 2007 20:08:53 +0200
+> > > Haavard Skinnemoen <hskinnemoen@atmel.com> wrote:
+> > >=20
+> > > > Now that I've got the CRC errors sorted out, I'll try bisecting it.
+> > >=20
+> > > Done. git-bisect blames this commit:
+> >=20
 > > Hi,
-> >
-> > In my knowledge, mtdblock.c must be used to use
-> > FAT filesystem on bare NAND flash memories
-> > because NFTL is made only for a specific hardware,
-> > DiskOnChip.
-> >
-> > (Layer 0) VFS
-> > (Layer 1) FAT (or EXT2, EXT3)
-> > (Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
-> > (Layer 3) NAND flash memory driver (vendor specific)
-> > (Layer 4) Physical NAND flash memory
-> >
-> > Please let me know if it is wrong.
-> 
-> That layering is correct, but your results will be bad.  mtdblock
-> doesn't handle bad blocks.  So if you have one in the middle of your
-> filesystem, it will break things.  You need some kind of translation
-> layer if you're going to use NAND.
-> 
-> josh
+> >=20
+> > whats mtd->writesize of the flash? Do you have the debugging output log=
+?
+> >=20
+>=20
+> MTD_DEBUG=3D3 enabled:
 
-I did not know that ftl.c is can be used also in 'Layer 2' instead
-of dummy mtdblock.c. It's working. I confirmed that the ftl.c can 
-be used on mtdram. I will test whether it works on a physical 
-bare-nand flash memory. (maybe tomorrow)
+Sorry for long delay. I is not quite what I asked, but anyway, may you
+pleas apply the below patch, reproduce the problem and send me the
+result.
 
-Follow is what I have tested for a mtdram (64MB).
+Please, do this faster if you can because I will need to disappear for
+about 2 weeks in a day. I will try to figure out what is going wrong,
+thanks.
 
-root@thermopylae:/mnt # modprobe mtdram
 
-root@thermopylae:/mnt # modprobe mtdchar
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 4884d5e..c629c54 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -761,7 +761,7 @@ static inline int read_dnode(struct jffs2_sb_info *c, s=
+truct jffs2_raw_node_ref
+ 			len =3D min_t(uint32_t, rdlen - sizeof(*rd), csize);
+ 			tn->partial_crc =3D crc32(0, buf, len);
+=20
+-			dbg_readinode("Calculates CRC (%#08x) for %d bytes, csize %d\n", tn->pa=
+rtial_crc, len, csize);
++printk("Calculates CRC (%#08x) for %d bytes, csize %d\n", tn->partial_crc,=
+ len, csize);
+=20
+ 			/* If we actually calculated the whole data CRC
+ 			 * and it is wrong, drop the node. */
+@@ -780,7 +780,7 @@ static inline int read_dnode(struct jffs2_sb_info *c, s=
+truct jffs2_raw_node_ref
+ 			 */
+ 			struct jffs2_eraseblock *jeb;
+=20
+-			dbg_readinode("the node has no data.\n");
++printk("the node has no data.\n");
+ 			jeb =3D &c->blocks[ref->flash_offset / c->sector_size];
+ 			len =3D ref_totlen(c, jeb, ref);
+=20
+@@ -919,7 +919,7 @@ static int read_more(struct jffs2_sb_info *c, struct jf=
+fs2_raw_node_ref *ref,
+ 	/* We need to read more data */
+ 	offs =3D ref_offset(ref) + *rdlen;
+=20
+-	dbg_readinode("read more %d bytes\n", to_read);
++printk("read more %d bytes, needed_len %d\n", to_read, needed_len);
+=20
+ 	err =3D jffs2_flash_read(c, offs, to_read, &retlen, buf + *rdlen);
+ 	if (err) {
+@@ -1004,7 +1004,7 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info=
+ *c, struct jffs2_inode_inf
+ 			len =3D end - ref_offset(ref);
+ 		}
+=20
+-		dbg_readinode("read %d bytes at %#08x(%d).\n", len, ref_offset(ref), ref=
+_flags(ref));
++printk("read %d bytes at %#08x(%d), wbuf sz %d\n", len, ref_offset(ref), r=
+ef_flags(ref), c->wbuf_pagesize);
+=20
+ 		/* FIXME: point() */
+ 		err =3D jffs2_flash_read(c, ref_offset(ref), len, &retlen, buf);
 
-root@thermopylae:/mnt # ftl_format /dev/mtd0
-Partition size = 64 mb, erase unit size = 128 kb, 1 transfer units
-Reserved 5%, formatted size = 62883328 bytes
-Erasing all blocks...
-+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*
-Writing erase unit headers...
-format successful.
 
-root@thermopylae:/mnt # modprobe ftl
-
-root@thermopylae:/mnt # lsmod
-Module                  Size  Used by
-ftl                    11404  0
-mtd_blkdevs            10368  1 ftl
-mtdchar                 9092  0
-mtdram                  3972  0
-mtdcore                 7172  6 mtd_blkdevs,mtdchar,mtdram
-autofs4                22788  1
-3c59x                  43560  0
-b44                    27276  0
-ext3                  122504  1
-jbd                    59048  1 ext3
-
-root@thermopylae:/mnt # mkfs.ext3 /dev/ftla
-mke2fs 1.38 (30-Jun-2005)
-Filesystem label=
-OS type: Linux
-Block size=1024 (log=0)
-Fragment size=1024 (log=0)
-15360 inodes, 61408 blocks
-3070 blocks (5.00%) reserved for the super user
-First data block=1
-Maximum filesystem blocks=62914560
-8 block groups
-8192 blocks per group, 8192 fragments per group
-1920 inodes per group
-Superblock backups stored on blocks:
-        8193, 24577, 40961, 57345
-
-Writing inode tables: done
-Creating journal (4096 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-This filesystem will be automatically checked every 39 mounts or
-180 days, whichever comes first.  Use tune2fs -c or -i to override.
-
-root@thermopylae:/mnt # mount /dev/ftla /mnt/data0
-
-root@thermopylae:/mnt # df -h
-Filesystem            Size  Used Avail Use% Mounted on
-/dev/hda1              29G  9.7G   18G  36% /
-tmpfs                 507M     0  507M   0% /dev/shm
-/dev/hdb1              95G  126M   90G   1% /mnt/data1
-/dev/ftla              59M  5.2M   50M  10% /mnt/data0
-
--- 
-Seongsu's personal blog - http://www.senux.com/
-lp1 on fire (One of the more obfuscated kernel
-messages)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
