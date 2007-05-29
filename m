@@ -1,25 +1,22 @@
-Received: from smtp102.sbc.mail.mud.yahoo.com ([68.142.198.201])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ht4RJ-0001uS-1Y
-	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 12:20:55 -0400
-From: David Brownell <david-b@pacbell.net>
-To: Haavard Skinnemoen <hskinnemoen@atmel.com>
-Subject: Re: Some issues with the AT91 dataflash driver...
-Date: Tue, 29 May 2007 09:20:47 -0700
-References: <465431DA.5030500@atmel.com>
-	<20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
-	<20070527211234.40777726@dhcp-255-175.norway.atmel.com>
-In-Reply-To: <20070527211234.40777726@dhcp-255-175.norway.atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Received: from wr-out-0506.google.com ([64.233.184.234])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ht59N-0002QS-Rw
+	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 13:06:31 -0400
+Received: by wr-out-0506.google.com with SMTP id i22so711610wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 May 2007 10:06:17 -0700 (PDT)
+Date: Wed, 30 May 2007 02:09:26 +0900
+From: Seongsu Lee <senux@senux.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: FAT file system on NAND flash memory
+Message-ID: <20070529170925.GA11279@pooky.senux.com>
+References: <20070412134137.GA25860@pooky.senux.com>
+	<625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200705290920.47808.david-b@pacbell.net>
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	Michal Piotrowski <michal.k.k.piotrowski@gmail.com>,
-	linux-mtd@lists.infradead.org, Ivan Kuten <ivan.kuten@promwad.com>,
-	Vadim Yatsenko <Vadim.Yatsenko@malva.ua>
+In-Reply-To: <625fc13d0704120655u2f452b12ge9315f47b951aa34@mail.gmail.com>
+Cc: alex@emcraft.com, Josh Boyer <jwboyer@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,69 +26,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 27 May 2007, Haavard Skinnemoen wrote:
-> On Sun, 27 May 2007 20:08:53 +0200
-> Haavard Skinnemoen <hskinnemoen@atmel.com> wrote:
+On Thu, Apr 12, 2007 at 08:55:23AM -0500, Josh Boyer wrote:
+> On 4/12/07, Seongsu Lee <senux@senux.com> wrote:
+> > Hi,
+> >
+> > In my knowledge, mtdblock.c must be used to use
+> > FAT filesystem on bare NAND flash memories
+> > because NFTL is made only for a specific hardware,
+> > DiskOnChip.
+> >
+> > (Layer 0) VFS
+> > (Layer 1) FAT (or EXT2, EXT3)
+> > (Layer 2) mtdblock.c (nftl.c can be used only with DiskOnChip)
+> > (Layer 3) NAND flash memory driver (vendor specific)
+> > (Layer 4) Physical NAND flash memory
+> >
+> > Please let me know if it is wrong.
 > 
-> > Now that I've got the CRC errors sorted out, I'll try bisecting it.
+> That layering is correct, but your results will be bad.  mtdblock
+> doesn't handle bad blocks.  So if you have one in the middle of your
+> filesystem, it will break things.  You need some kind of translation
+> layer if you're going to use NAND.
 > 
-> Done. git-bisect blames this commit:
-> 
-> 10731f83009e2556f98ffa5c7c2cbffe66dacfb3 is first bad commit
+> josh
 
-Reverting that patch made mtd_dataflash work again on
-my test rig.  So this is clearly a JFFS2 regression.
-(Tested on at45db642b, ~8MB, 1056 byte pages.) 
+I did not know that ftl.c is can be used also in 'Layer 2' instead
+of dummy mtdblock.c. It's working. I confirmed that the ftl.c can 
+be used on mtdram. I will test whether it works on a physical 
+bare-nand flash memory. (maybe tomorrow)
 
-Seems to me this should be added to the "known regressions"
-list for RC3 ... I've added Michal to the CC list, ISTR he
-is now tracking such regressions.
+Follow is what I have tested for a mtdram (64MB).
 
-I also added Andrew Victor to the CC, since he's the one
-who ISTR added Dataflash support to JFFS2 and thus might
-have quick insights to what this patch broke.
+root@thermopylae:/mnt # modprobe mtdram
 
-- Dave
+root@thermopylae:/mnt # modprobe mtdchar
 
+root@thermopylae:/mnt # ftl_format /dev/mtd0
+Partition size = 64 mb, erase unit size = 128 kb, 1 transfer units
+Reserved 5%, formatted size = 62883328 bytes
+Erasing all blocks...
++++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*+++++++*
+Writing erase unit headers...
+format successful.
 
-> commit 10731f83009e2556f98ffa5c7c2cbffe66dacfb3
-> Author: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Date:   Wed Apr 4 13:59:11 2007 +0300
-> 
->     [JFFS2] fix buffer sise calculations in jffs2_get_inode_nodes()
-> 
->     In read inode we have an optimization which prevents one
->     min. I/O unit (e.g. NAND page) to be read more then once.
-> 
->     Namely, at the beginning we do not know which node type we read,
->     so we read so we assume we read the directory entry, because it
->     has the smallest node header. When we read it, we read up to the
->     next min. I/O unit, just because if later we'll need to read more,
->     we already have this data.
-> 
->     If it turns out to be that the node is not directory entry, and
->     we need more data, and we did not read it because it sits in the
->     next min. I/O unit, we read the whole next (or several next)
->     min. I/O unit(s). And if it happens to be that we read a data node,
->     and we've read part of its data, we calculate partial CRC.
->     So if later we need to check data CRC, we'll only read the rest
->     of the data from further min. I/O units and continue CRC checking.
-> 
->     This code was a bit messy and buggy. The bug was that it assumed
->     relatively large min. I/O unit, so that the largest node header
->     could overlap only one min. I/O unit boundary.
-> 
->     This parch clean-ups the code a bit and fixes this bug.
->     The patch was not tested on flash with small min. I/O unit, like
->     NOR-ECC, nut it was tested on NAND with 512 bytes NAND page, so
->     it at least does not break NAND. It was also tested with mtdram
->     so it should not break NOR.
-> 
->     Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
->     Signed-off-by: David Woodhouse <dwmw2@infradead.org>
-> 
-> I don't have a clue what's wrong with it, but I'll of course help you
-> debugging if you tell me what to do.
-> 
-> Haavard
-> 
+root@thermopylae:/mnt # modprobe ftl
+
+root@thermopylae:/mnt # lsmod
+Module                  Size  Used by
+ftl                    11404  0
+mtd_blkdevs            10368  1 ftl
+mtdchar                 9092  0
+mtdram                  3972  0
+mtdcore                 7172  6 mtd_blkdevs,mtdchar,mtdram
+autofs4                22788  1
+3c59x                  43560  0
+b44                    27276  0
+ext3                  122504  1
+jbd                    59048  1 ext3
+
+root@thermopylae:/mnt # mkfs.ext3 /dev/ftla
+mke2fs 1.38 (30-Jun-2005)
+Filesystem label=
+OS type: Linux
+Block size=1024 (log=0)
+Fragment size=1024 (log=0)
+15360 inodes, 61408 blocks
+3070 blocks (5.00%) reserved for the super user
+First data block=1
+Maximum filesystem blocks=62914560
+8 block groups
+8192 blocks per group, 8192 fragments per group
+1920 inodes per group
+Superblock backups stored on blocks:
+        8193, 24577, 40961, 57345
+
+Writing inode tables: done
+Creating journal (4096 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+This filesystem will be automatically checked every 39 mounts or
+180 days, whichever comes first.  Use tune2fs -c or -i to override.
+
+root@thermopylae:/mnt # mount /dev/ftla /mnt/data0
+
+root@thermopylae:/mnt # df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/hda1              29G  9.7G   18G  36% /
+tmpfs                 507M     0  507M   0% /dev/shm
+/dev/hdb1              95G  126M   90G   1% /mnt/data1
+/dev/ftla              59M  5.2M   50M  10% /mnt/data0
+
+-- 
+Seongsu's personal blog - http://www.senux.com/
+lp1 on fire (One of the more obfuscated kernel
+messages)
