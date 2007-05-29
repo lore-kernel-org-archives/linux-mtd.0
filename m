@@ -1,19 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HpsPn-0000kf-BH
-	for linux-mtd@lists.infradead.org; Sun, 20 May 2007 16:54:08 -0400
-Date: Sun, 20 May 2007 22:49:34 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Eric Sesterhenn / Snakebyte <snakebyte@gmx.de>
-Subject: Re: leak in mtd/devices/phram.c
-Message-ID: <20070520204934.GA6347@lazybastard.org>
-References: <20070520200936.GB22049@alice>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="YZ5djTAD1cGYuMQK"
+Received: from pasmtpa.tele.dk ([80.160.77.114])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ht89t-0004s5-Qd
+	for linux-mtd@lists.infradead.org; Tue, 29 May 2007 16:19:16 -0400
+Received: from tuxedo.home.lan (0x535c82dc.virnxx18.adsl-dhcp.tele.dk
+	[83.92.130.220])
+	by pasmtpA.tele.dk (Postfix) with ESMTP id BC31E800D3E
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 29 May 2007 21:59:37 +0200 (CEST)
+Date: Tue, 29 May 2007 21:59:37 +0200
+To: linux-mtd@lists.infradead.org
+Subject: mDOC H3 support?
+Message-ID: <20070529195937.GA3491@tuxedo.home.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20070520200936.GB22049@alice>
-Cc: linux-mtd@lists.infradead.org, joern@wh.fh-wedel.de
+From: lars@segv.dk (Lars Munch)
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,57 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I have been searching for SanDisk mDOC H3 drivers (formerly Disk-on-Chip
+H3 from M-Systems) but I cannot find any information on it.
 
-On Sun, 20 May 2007 22:09:37 +0200, Eric Sesterhenn / Snakebyte wrote:
->=20
-> coverity spotted this leak in mtd/devices/phram.c (bug id #1512),
-> when register_device() fails, we dont kfree() name and leak it,
-> attached patch should fix this.
->=20
-> Signed-off-by: Eric Sesterhenn <snakebyte@gmx.de>
+This article seems to indicate that drivers are on the way:
 
-Acked-by: J=C3=B6rn Engel <joern@lazybastard.org>
+http://www.linuxdevices.com/news/NS9657944693.html
 
-> --- linux-2.6/drivers/mtd/devices/phram.c.orig	2007-05-20 22:04:24.000000=
-000 +0200
-> +++ linux-2.6/drivers/mtd/devices/phram.c	2007-05-20 22:06:12.000000000 +=
-0200
-> @@ -276,7 +276,9 @@ static int phram_setup(const char *val,=20
->  		parse_err("illegal device length\n");
->  	}
-> =20
-> -	register_device(name, start, len);
-> +	ret =3D register_device(name, start, len);
-> +	if (ret)
-> +		kfree(name);
-> =20
->  	return 0;
->  }
->=20
+Does anyone know what the status is? is someone on this list already
+working on it?
 
-J=C3=B6rn
-
---=20
-I can say that I spend most of my time fixing bugs even if I have lots
-of new features to implement in mind, but I give bugs more priority.
--- Andrea Arcangeli, 2000
-
---YZ5djTAD1cGYuMQK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFGULRdfbqVtkXfjukRAr2mAKCJrDtAB19MgAUx0HS4Vh/jJh6nPACfQW8V
-SJgF5PWXbrUR7bgO7ZrfxCU=
-=dmkV
------END PGP SIGNATURE-----
-
---YZ5djTAD1cGYuMQK--
+Thanks
+Lars Munch
