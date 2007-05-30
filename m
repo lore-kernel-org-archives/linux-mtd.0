@@ -1,16 +1,31 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Pete MacKay'" <linux@architechnical.net>, <linux-mtd@lists.infradead.org>
-References: <2453.69.30.123.186.1179897401.squirrel@architechnical.net>
-Subject: RE: OneNAND alternative to X-Load
-Date: Wed, 30 May 2007 10:27:42 +0900
-Message-ID: <001001c7a259$bd351470$e1ac580a@swcenter.sec.samsung.co.kr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <2453.69.30.123.186.1179897401.squirrel@architechnical.net>
-Cc: u-boot-users@lists.sourceforge.net
-Reply-To: kmpark@infradead.org
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HtINO-0002HZ-BT
+	for linux-mtd@lists.infradead.org; Wed, 30 May 2007 03:13:48 -0400
+Subject: Re: Some issues with the AT91 dataflash driver...
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Haavard Skinnemoen <hskinnemoen@atmel.com>
+In-Reply-To: <20070529222744.3e7a1489@dhcp-255-175.norway.atmel.com>
+References: <465431DA.5030500@atmel.com>
+	<1179992308.13101.16.camel@fuzzie.sanpeople.com>
+	<46558893.1020802@comcast.net>
+	<1180010988.13101.103.camel@fuzzie.sanpeople.com>
+	<012d01c79e06$66823470$3204200a@head.local>
+	<20070524164654.3f106ead@newbox> <20070524181437.01550127@newbox>
+	<20070527200853.3caf8206@dhcp-255-175.norway.atmel.com>
+	<20070527211234.40777726@dhcp-255-175.norway.atmel.com>
+	<1180374280.3642.114.camel@sauron> <20070528212513.5086bfac@newbox>
+	<1180467763.3642.125.camel@sauron>
+	<20070529222744.3e7a1489@dhcp-255-175.norway.atmel.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 30 May 2007 10:13:22 +0300
+Message-Id: <1180509202.3642.131.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: david-b@pacbell.net, linux-mtd@lists.infradead.org,
+	Ivan Kuten <ivan.kuten@promwad.com>,
+	Vadim Yatsenko <Vadim.Yatsenko@malva.ua>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,146 +35,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Pete Mackay,
+On Tue, 2007-05-29 at 22:27 +0200, Haavard Skinnemoen wrote:
+> On Tue, 29 May 2007 22:42:43 +0300
+> Artem Bityutskiy <dedekind@infradead.org> wrote:
+>=20
+> > Sorry for long delay. I is not quite what I asked, but anyway, may you
+> > pleas apply the below patch, reproduce the problem and send me the
+> > result.
+> >=20
+> > Please, do this faster if you can because I will need to disappear for
+> > about 2 weeks in a day. I will try to figure out what is going wrong,
+> > thanks.
+>=20
+> Here you go. I cut out a few bits that looked uninteresting as the
+> whole log ended up at almost 150K. I can send you the whole log in
+> private if you want it.
+>=20
 
-Before the main story, I explain the history of x-loader.
-First, it was designed for NAND boot from TI for their platforms. With simple
-code and similar structure of U-Boot, it's easy to modify for OneNAND.
-And at that time, we also considered another bootloader, of course, including
-U-Boot. So we released the X-loader for OneNAND as 1st bootloader.
+Haavard,
 
-Now you want to add the 1KB bootloader (1st bootloader) for OneNAND at U-Boot. I
-think there's no problem except the handling of code position at OneNAND.
+Thanks! Could you please try the below patch - it should help.
 
-The original handling of xloader is like this
-1. The xloader (less than 1KB) loads u-boot image to DRAM using BufferRAM0.
-2. Jump to DRAM address
-3. run u-boot at DRAM
 
-0x0000 (BootRAM0) __xloader_start                   --> load u-boot code to
-BufferRAM0
-0x03fff                     __xloader_end
-0x0400 (not valid)
-0x0800 (BufferRAM0) used for xloader buffer ram --> u-boot code
-0x0bff                
-0x0c00 (BufferRAM1) not used                           --> used for u-boot
-buffer ram
-0x0fff
+>From f84ae9eae2d0b12cff2e0f5a490a3d732458b381 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Wed, 30 May 2007 12:08:14 +0300
+Subject: [PATCH] JFFS2: fix readinode()
 
-But as you mentioned, you can make a u-boot.bin image with linker script
-handling. Overall structures are similar except that it's built with one time.
+If we have already read enough bytes, no need to call read_more().
 
-Also you can find the similar idea at
-http://linuxdevices.com/articles/AT2779754250.html
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ fs/jffs2/readinode.c |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
 
-And please see the below comment.
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 4884d5e..5663e8c 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -1044,7 +1044,8 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info=
+ *c, struct jffs2_inode_inf
+=20
+ 		case JFFS2_NODETYPE_DIRENT:
+=20
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent)) {
++			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_dirent) &&
++			    len < sizeof(struct jffs2_raw_dirent)) {
+ 				err =3D read_more(c, ref, sizeof(struct jffs2_raw_dirent), &len, buf);
+ 				if (unlikely(err))
+ 					goto free_out;
+@@ -1058,7 +1059,8 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info=
+ *c, struct jffs2_inode_inf
+=20
+ 		case JFFS2_NODETYPE_INODE:
+=20
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode)) {
++			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_raw_inode) &&
++			    len < sizeof(struct jffs2_raw_inode)) {
+ 				err =3D read_more(c, ref, sizeof(struct jffs2_raw_inode), &len, buf);
+ 				if (unlikely(err))
+ 					goto free_out;
+@@ -1071,7 +1073,8 @@ static int jffs2_get_inode_nodes(struct jffs2_sb_info=
+ *c, struct jffs2_inode_inf
+ 			break;
+=20
+ 		default:
+-			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node)) {
++			if (JFFS2_MIN_NODE_HEADER < sizeof(struct jffs2_unknown_node) &&
++			    len < sizeof(struct jffs2_unknown_node)) {
+ 				err =3D read_more(c, ref, sizeof(struct jffs2_unknown_node), &len, buf=
+);
+ 				if (unlikely(err))
+ 					goto free_out;
+--=20
+1.5.0.6
 
-Thank you,
-Kyungmin Park
-
-> 
-> We're developing a PXA-270-based machine that will boot from 
-> OneNAND.  I
-> wanted to share my ideas (and code) with anyone faced with 
-> this challenge,
-> since this forum (esp. Kyungmin Park - thank you!!) was quite helpful.
->  I'll start off explaining my u-boot code, then when I get 
-> some time I'll
-> submit my PXA-270 platform driver as a patch (currently works 
-> on 2.6.18).
-> 
-> We use a common approach: in lacking JTAG we have chip select 
-> jumpers that
-> swap CS0/CS1 between NOR and OneNAND.  The OneNAND has a 
-> bottom-mapped 2K
-> boot buffer of which 1K is valid, which is where the level 1 
-> boot loader
-> fits.  It uses two memory-mapped 'bufferrams' to ping-pong 
-> data out of the
-> NAND pages, but you want to use BUFFERRAM1 only as writing 
-> BUFFERRAM0 can
-> corrupt BOOTRAM0 on some revs of the chip.  (We're executing out of
-> BOOTRAM0 so that's bad :).
-> 
-> There is open-source code called "x-loader" that is a 
-> stripped-down u-boot
-> for the level 1 boot loader.  What I did was integrate the level 1
-> function into u-boot itself with a custom configuration and 
-> linker script.
-> In the top u-boot Makefile I added this:
-> 
-> myboard_config	:	unconfig
-> 	@./mkconfig $(@:_config=) arm pxa myboard
-> 
-> myboard_onenand_config	:	unconfig
-> 	@./mkconfig $(@:_config=) arm pxa myboard
-> 	@echo "LDSCRIPT := 
-> $(TOPDIR)/board/myboard/u-boot.onenand.lds" >>
-> include/config.mk
-> 
-> In include/configs/myboard_onenand.h I simply define 
-> CONFIG_BOOT_ONENAND
-> and then include myboard.h, with conditional switches inside for base
-> address, etc (i.e. define CONFIG_IDENT_STRING as " from 
-> OneNAND" or " from
-> NOR").
-> 
-> The linker script replaces cpu/pxa/start.S with oneboot.S and 
-> makes sure
-> the C code to load the other pages positions there too.  Then 
-> it aligns
-> the rest of u-boot at the 2K boundary (NAND page 1).  The 
-> oneboot.S code
-> melds start.S with lowlevel_init but calls C code to read the 
-> rest of the
-> block 0 pages into RAM.  I later optimized it to replace 
-> start.S entirely
-> for the NOR version.
-> 
-> BTW, I lacked originality and stole (liked) the name: oneboot 
-> is not to be
-> confused with the script that merges x-load and u-boot into one binary
-> image.
-> 
-> This is the relevant portion of the u-boot linker script:
-> 
-> 	. = 0x00000000;
-> 
-> 	. = ALIGN(4);
-> 	.text :
-> 	{
-> 	  board/myboard/oneboot.o	(.text)
-> 	  board/myboard/onenand_boot.o	(.text)
-
-The onenand_boot.c is common code for all platforms. I think it's located in
-drivers/onenand or onenand_spl as nand_spl in U-Boot.
-Yes I know the OneNAND patch for U-Boot is not merged yet. In this code,
-however, there's no problem to boot with OneNAND.
-
-> 	  __oneboot_end = .;	/* must not exceed 0x400! */
-> 
-> 	  . = 0x800;		/* reposition to 2K page boundary */
-> 	  __page1_start = .;	/* OneNAND loading starts here */
-> 	  *				(.text)
-> 	}
-> 
-> Look at System.map to make sure your level 1 code fits within 
-> 1K.  Also in
-> oneboot.S I commented out labels and used relative branches 
-> to save symbol
-> space and replaced ldr with mov wherever possible.  And with the 270
-> optimizations in oneboot.S our system screams!
-> 
-> The full code is at http://code.architechnical.net/onenand, 
-> including the
-> 2.6.18 pxa27x OneNAND driver.  Please don't laugh at my lame 
-> ancient web
-> site.
-> 
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
