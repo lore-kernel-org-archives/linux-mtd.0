@@ -1,14 +1,19 @@
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HtPCJ-0006Xa-Ss
+	for linux-mtd@lists.infradead.org; Wed, 30 May 2007 10:30:50 -0400
 Subject: Re: Open message to list moderator
-From: David Woodhouse <dwmw2@infradead.org>
+From: Artem Bityutskiy <dedekind@infradead.org>
 To: Phil Endecott <spam_from_linux_mtd@chezphil.org>
 In-Reply-To: <1180477810115@dmwebmail.belize.chezphil.org>
 References: <1180477810115@dmwebmail.belize.chezphil.org>
-Content-Type: text/plain
-Date: Wed, 30 May 2007 15:16:47 +0100
-Message-Id: <1180534607.26803.228.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 30 May 2007 17:30:37 +0300
+Message-Id: <1180535437.24399.6.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,49 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-05-29 at 23:30 +0100, Phil Endecott wrote:
-> Based on the delay and the wording, I take it that human intervention 
-> was involved in the production of this message.
+On Tue, 2007-05-29 at 23:30 +0100, Phil Endecott wrote:=20
+> Dear Moderator,
+>=20
+> You have just rejected a message that I sent on Sunday.  This message=20
+> provided background information to the patch that I sent at about the=20
+> same time (and which was accepted).
 
-Yes. That will have been Artem; when I moderate the list myself I tend
-to look into the _reasons_ why the rules were broken and I'm often more
-lenient. Sequences of '[PATCH 1/2]' '[PATCH 2/2]', for example, _should_
-be sent as a thread, but would get trapped for moderation -- and
-approved. 
+Phil, apologies, I had to look closer and noticed that this was the
+first message with this subject and do not select reject. It was late,
+there were many messages, I wanted to go home quicker, I was hungry,
+tired, and so on, you know :-)
 
-Artem _also_ seems to let things through occasionally but I've never
-seen a pattern to it.
+> Now, you have lost the explanation for the patch and have annoyed me=20
+> enough that I am unlikely to go out of my way to fix any further=20
+> problems that I spot in your code.  Was this really worth it just for a=20
+> missing header?
 
-> For your information, the headers were missing because I was replying 
-> to a message that I had sent myself, and my mailer gets confused when I 
-> do that.  (I wrote my own mailer.  It's called Decimail and it's 
-> open-source.  It does lots of cool things, but it's not perfect.)
+But this really is childish to be miffed like this. Take it easier.
 
-The 'Re: but no References:' rule is there to prevent broken mailers
-(usually Outlook) from breaking threading on the mailing list. Please
-consider it a bug report -- if you were replying to a previous message,
-whoever that message came from, then your reply should contain either
-References: or In-Reply-To: headers, or preferably both.
-
-> Now, you have lost the explanation for the patch and have annoyed me 
-> enough that I am unlikely to go out of my way to fix any further 
-> problems that I spot in your code. 
-
-You don't keep your own outgoing mail? Do you want a copy? I'm sure
-it'll be buried in my postmaster mailbox somewhere, from when I got the
-'message trapped for moderation' notice.
-
->  Was this really worth it just for a missing header?
-
-In general, yes. Forcing people to use non-buggy MUAs helps to keep the
-signal:noise ratio down. There are very occasional people who are so
-offended by it that they cannot manage to either fix their mailer or get
-a proper one -- but as a sweeping generalisation, they aren't much of a
-loss.
-
-I don't include you in that generalisation specifically -- I hope you'll
-reconsider. Although I haven't had time in the last couple of weeks to
-respond to your patches and apply them, they are very much appreciated.
-
--- 
-dwmw2
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
