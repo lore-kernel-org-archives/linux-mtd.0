@@ -1,20 +1,10 @@
-Received: from mx34.mail.ru ([194.67.23.200] helo=mx27.mail.ru)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Htsfj-0003hd-DM
-	for linux-mtd@lists.infradead.org; Thu, 31 May 2007 17:59:20 -0400
-Date: Fri, 1 Jun 2007 01:58:38 +0400
-From: Anton Vorontsov <cbou@mail.ru>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Subject: Re: [PATCH] physmap-concat map platform driver
-Message-ID: <20070531215838.GA1603@zarina>
-References: <20070526002925.GB801@zarina>
-	<20070531212749.GR26191@xi.wantstofly.org>
+Message-ID: <26990823.1180653872369.JavaMail.root@fed1wml06.mgt.cox.net>
+Date: Thu, 31 May 2007 19:24:31 -0400
+From: UK NATIONAL LOTTERY DEPARTMENT <mouse4420@cox.net>
+Subject: AWARD DEPT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
-Content-Disposition: inline
-In-Reply-To: <20070531212749.GR26191@xi.wantstofly.org>
-Cc: linux-mtd@lists.infradead.org, kernel-discuss@handhelds.org
-Reply-To: cbou@mail.ru
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,37 +14,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, May 31, 2007 at 11:27:49PM +0200, Lennert Buytenhek wrote:
-> On Sat, May 26, 2007 at 04:29:25AM +0400, Anton Vorontsov wrote:
-> 
-> > This is physmap-concat driver, which is plain sa1100-flash.c
-> > with factored out arch-specific code. This driver is essential for
-> > boards using multiple nonindentical chips on the board.
-> 
-> Doesn't physmap also support multiple nonidentical chips?
+Your ticket number: 56475600545 188 with Serial number 5368/05 drew the=20
+lucky number: 29 Congratulations, you have just won yourself =C2=A3500,000
+(Five Hundred Thousand Pounds Sterlings) in the satellite software=20
+email lottery conducted by UK NATIONAL LOTTERY in which e-mail=20
+addresses=20
+are picked randomly by software powered by the Internet.=20
+Your email address was amongst those chosen this quarter(no ticket was=20
+sold) and you are to contact our Financial Controller for Clearance.=20
+Here are the contact info:=20
 
-Nope. E.g. if I have two chips, 32M + 16M, second chip will be visible
-as 32M, which is wrong. As "workaround" I can register two physmap
-devices for each chip. But then I can't concat them, i.e. use two
-chips for one partition.
+CLAIMS AGENT=20
+Mrs Mary White
+Email:agentmarywhite_20@yahoo.ie
 
-> What physmap doesn't support is multiple discontiguous memory
-> regions.
+you are to forward the following details to enable us clear your file=20
+for immediate payment:=20
+1. Full Names: _______________________=20
+2. Address: __________________________=20
+3. Age: _____________________________=20
+4. Sex: __________________________=20
+5. Marital Status: _____________________=20
+6. Occupation: ________________________=20
+7. Phone numbers: ______________________=20
+8. Fax number: ________________________=20
+9. Country: ___________________________=20
 
-Yes, this is another disadvantage of current physmap.
+Yours faithfully,=20
+PAUL DAVID
 
-> Maybe it makes more sense to add that support to physmap
-> instead?
 
-Well.. more easier solution would be merging physmap-concat to physmap,
-trying make physmap-concat platform_data-compatible.
+Your ticket number: 56475600545 188 with Serial number 5368/05 drew the=20
+lucky number: 29 Congratulations, you have just won yourself =C2=A3500,000
+(Five Hundred Thousand Pounds Sterlings) in the satellite software=20
+email lottery conducted by UK NATIONAL LOTTERY in which e-mail=20
+addresses=20
+are picked randomly by software powered by the Internet.=20
+Your email address was amongst those chosen this quarter(no ticket was=20
+sold) and you are to contact our Financial Controller for Clearance.=20
+Here are the contact info:=20
 
-I can try implement that.
+CLAIMS AGENT=20
+Mrs Mary White
+Email:agentmarywhite_20@yahoo.ie
 
-Thanks,
+you are to forward the following details to enable us clear your file=20
+for immediate payment:=20
+1. Full Names: _______________________=20
+2. Address: __________________________=20
+3. Age: _____________________________=20
+4. Sex: __________________________=20
+5. Marital Status: _____________________=20
+6. Occupation: ________________________=20
+7. Phone numbers: ______________________=20
+8. Fax number: ________________________=20
+9. Country: ___________________________=20
 
--- 
-Anton Vorontsov
-email: cbou@mail.ru
-backup email: ya-cbou@yandex.ru
-irc://irc.freenode.org/bd2
+Yours faithfully,=20
+PAUL DAVID
