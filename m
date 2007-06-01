@@ -1,15 +1,19 @@
 Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hu74a-00035i-6j
-	for linux-mtd@lists.infradead.org; Fri, 01 Jun 2007 09:21:51 -0400
-Subject: [PATCH] Use point(), if available, to check newly erased blocks
+	id 1Hu7Cb-0003JM-7O
+	for linux-mtd@lists.infradead.org; Fri, 01 Jun 2007 09:30:04 -0400
+Subject: Re: GC starves write's in 2.6.20
 From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1180699899.26803.671.camel@pmac.infradead.org>
+References: <1180622517.1468.246.camel@gentoo-jocke.transmode.se>
+	<1180699899.26803.671.camel@pmac.infradead.org>
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Date: Fri, 01 Jun 2007 15:21:39 +0200
-Message-Id: <1180704100.1468.283.camel@gentoo-jocke.transmode.se>
+Date: Fri, 01 Jun 2007 15:29:59 +0200
+Message-Id: <1180704599.1468.287.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
 Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,59 +24,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This optimizes checking newly erased blocks. point() is available in
-cfi_cmdset_0001.
+On Fri, 2007-06-01 at 13:11 +0100, David Woodhouse wrote:
+> On Thu, 2007-05-31 at 16:41 +0200, Joakim Tjernlund wrote:
+> > We have noticed that deleting some 50 files, some a few MB big, in our
+> > JFFS2 FS and then directly start downloading a large rpm file sometimes
+> > stalls a write(2) call 10-15 secs, possibly more. The GC process is
+> > running and it appears to be blocking the write(2). However the FS is
+> > just 50-60% full so I don't think stalling writes for that long time is
+> > justified. These long delays causes a timeout in the tftp demon and
+> > the transmission is aborted. Any ideas? 
+> 
+> Hm. What's the GC process actually doing? If you kill it, does the file
+> system still run GC in the context of the processes which are writing?
+> 
+
+Sorry, that was bit premature. It was pdflush that was running most of
+the time. GC was running also but only for a short while. Then I
+remebered Radoslaw's patch and tried it and the problem was gone.
 
  Jocke
-
->From b89f30f31cfdd2e925f029154b5398027653cf8a Mon Sep 17 00:00:00 2001
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Date: Fri, 1 Jun 2007 15:14:09 +0200
-Subject: [PATCH] Use point(), if available, to check newly erased blocks.
-Faster and won't trash the D-cache.
-
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/erase.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
-
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index 6d4b7ce..5b5c291 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -324,6 +324,33 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
- 	size_t retlen;
- 	int ret = -EIO;
- 
-+	if (c->mtd->point) {
-+		unsigned long *wordebuf;
-+
-+		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size, &retlen, (unsigned char **)&ebuf);
-+		if (ret) {
-+			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
-+			goto do_flash_read;
-+		}
-+		if (retlen < c->sector_size) {
-+			/* Don't muck about if it won't let us point to the whole erase sector */
-+			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", retlen));
-+			c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
-+			goto do_flash_read;
-+		}
-+		wordebuf = ebuf-sizeof(*wordebuf);
-+		retlen /= sizeof(*wordebuf);
-+		do {
-+		   if (*++wordebuf != ~0)
-+			   break;
-+		} while(--retlen);
-+		c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
-+		if (retlen)
-+			printk(KERN_WARNING "Newly-erased block contained word 0x%lx at offset 0x%08x\n",
-+			       *wordebuf, jeb->offset + c->sector_size-retlen*sizeof(*wordebuf));
-+		return 0;
-+	}
-+ do_flash_read:
- 	ebuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
- 	if (!ebuf) {
- 		printk(KERN_WARNING "Failed to allocate page buffer for verifying erase at 0x%08x. Refiling\n", jeb->offset);
--- 
-1.5.1.3
