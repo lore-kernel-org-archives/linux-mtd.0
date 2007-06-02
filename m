@@ -1,15 +1,19 @@
-Subject: Re: [PATCH] JFFS2 appears to "freeze" during erase
-From: David Woodhouse <dwmw2@infradead.org>
-To: joakim.tjernlund@transmode.se
-In-Reply-To: <1180691482.1468.267.camel@gentoo-jocke.transmode.se>
-References: <1180691482.1468.267.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Date: Fri, 01 Jun 2007 19:04:57 +0100
-Message-Id: <1180721097.25232.43.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from an-out-0708.google.com ([209.85.132.251])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HuQ7f-0004i3-HU
+	for linux-mtd@lists.infradead.org; Sat, 02 Jun 2007 05:42:12 -0400
+Received: by an-out-0708.google.com with SMTP id c3so226475ana
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 02 Jun 2007 02:42:10 -0700 (PDT)
+Message-ID: <81885c0a0706020242w23a652e7q11539d4a1d038be3@mail.gmail.com>
+Date: Sat, 2 Jun 2007 15:12:09 +0530
+From: "Rajanikanth H.V" <rajanikanthhv@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Need info on JFFS2 Clean Marker bytes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: radbis@googlemail.com,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,17 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-06-01 at 11:51 +0200, Joakim Tjernlund wrote:
-> This is a old patch from Radoslaw Bisewski(see MTD list). The patch
-> fixes the long stalls I am seeing in "GC starves write's in 2.6.20" I
-> sent yesterday. Please apply.
+Hello,
 
-It seems to make sense; I need to convince myself that every other user
-of the erase_free_sem is actually OK with it. I think
-jffs2_g_c_deletion_dirent() should be OK, at first glance. I'm less
-convinced about jffs2_mark_node_obsolete(), where we currently hold the
-erase_free_sem while we actually mark the node obsolete. Will look into
-it...
+Can JFFS2 be made to work on NAND without CleanMarker and Magic Bitmask
+Values (0x20031985) which uses spare area free bytes.
 
--- 
-dwmw2
+As i understand cleanmarker bytes are used to validate block for its
+access, but in
+the controller i am working on, it does not provide ECC protection for Spare
+area.
+
+thanks,
+Raj
