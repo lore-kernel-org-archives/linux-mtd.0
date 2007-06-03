@@ -1,22 +1,30 @@
-Received: from mail-in-01.arcor-online.net ([151.189.21.41])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huv2s-0002RG-Ca
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:43:24 -0400
-In-Reply-To: <4663060C.2020906@ru.mvista.com>
-References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<4662FA67.3020107@ru.mvista.com>
-	<a5dde31321a50ed198cf4fc199e4af9c@kernel.crashing.org>
-	<4663060C.2020906@ru.mvista.com>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <c077dedaa90bf4fb3af1c5c8c4b39c85@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Sun, 3 Jun 2007 20:43:03 +0200
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>
+	id 1Huv3T-0002Ri-Tg
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:46:35 -0400
+Date: Sun, 3 Jun 2007 20:38:46 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: LogFS take four
+Message-ID: <20070603183845.GA8952@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>,
+	Kyle Moffett <mrmacman_g4@mac.com>, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Roland Dreier <rdreier@cisco.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>, John Stoffel <john@stoffel.org>,
+	Ondrej Zajicek <santiago@crfreenet.org>,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,108 +34,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>>> I think "direct-mapped" as compatible is a bit too broad or vague.
->
->>>     It's actually not -- it means simple 1:1 address mapping (w/o 
->>> explicit
->>> byte-swapping and such).
->
->> Which has nothing to do with "compatible"; instead,
->> it is implied by the parent node have a "ranges"
->
->    No! It doesn't have anything to do with "ranges" of parent (don't 
-> even know why it would). :-O
+This round the patch is split into file-sized hunks.  There actually
+seem to be kernel developers not manly enough to digest 6000+ lines of
+code at once.  An I thought I was the only wimp around.
 
-So learn about it please?  "ranges" means exactly that:
-child nodes' address space is direct mapped.
+Again, anyone giving comments in the last round is on Cc:.
 
->> property.  Or you can put some other property in
->> the flash node for all I care, if that seems
->> necessary for certain cases.
->
->    Erm... it's *certainly* necessary to mark this somewhere.
-
-Not if it's redundant information.
-
->>>> The compatible is supposed to be useable to find and match a driver
->>>> without regard to the name of the node.  Perhaps direct-mapped-rom?
->
->    That really depends on whether we choose to follow the Generic 
-> Names spec.
-
-No, it doesn't.  OF before the generic names recommended practice
-was different only in that it had "name" be the most specific
-of the device descriptions.
-
-Also, it has already been decided to follow this recommended
-practice.  It would have been foolish not to, it being collected
-wisdom by real-life implementations and all.
-
-> Even if we do, it does *not* preclude OS from using both props for the 
-> driver selection.
-
-An OS is *required* (erm, "supposed", if you like) to use
-first "name", and then "compatible".  An OS is not supposed
-to use "device_type" or any other properties for device
-matching.
-
->>>     Note that we're matching by both "device_type" and "compatible".
->
->> Which is wrong.
->
->    Why?
-
-Because that is a) not what you are supposed to do according
-to the standard (so it might very well not work with a
-"third-party" device tree that equally conforms to the standard);
-b) "device_type" describes some other information (namely, the
-OF programming model for the device node) that is completely
-unrelated to the process of driver matching; and c) it is wholly
-redundant to the information in "compatible" *ANYWAY*.
-
-> And why then it's allowed to match by "device_type"?
-
-Anything is allowed, this is a free world.  It is wrong though.
-Linux used to do this wrong, there are many remnants of that
-left.  You also might *need* to do this for certain imperfect
-device trees.  None of this is an argument to continue this
-"tradition".
-
-> And why you haven't complained at MPC5200 IDE driver
-
-Since no one paid me to review the code?  Please don't try
-that argument ever again, thank you very much.  I think I
-do quite enough work here already, I don't need people
-demanding stuff from me.
-
-> which does the same (well, maybe you have :-) or at PowerMac IDE 
-> driver which matches wither by "name" or "device_type"? Well, quite a 
-> lot of drivers are doing this...
-
-See before why that may be.  Short answer is "history".
-
->>>     This would serve no purpose, as the driver that would catches 
->>> all these is signle one, drivers/mtd/maps/physmap_of.c...
->
->> With the current kernel version, perhaps.  Did you check
->> out 2.6.28?  Does it work with that?
->
->    For the simply mapped flashes, physmap_of will suffice, for more 
-> complex cases, other driver will be needed.
-
-Ah, so you can predict the future of the Linux kernel!
-
->  If you're hinting at the possibility that MTD subsys will be 
-> substantially reworked -- I don't find that likely. If it will -- 
-> well, bad luck. :-)
-
-Which is not an acceptable outcome.
-
->    Anyway, reasonable suggestions on how to make MTD nodes more viable 
-> are always welcome. I just haven't seen reasonable enough yet. ;-)
-
-I suggest you read, and try to understand, some of the base
-device tree specifications first.
+I'll try to respond to comments but the next round of patches may take a
+while longer, due to other responsibilities.
 
 
-Segher
+Changed since take three:
+o one blank line between functions
+o depend on MTD
+o use LOGFS_BLOCKSHIFT in logfs_index
+o #define EOF to 512
+o moved BUILD_BUG_ON() into an inline function
+o declare completion futility on the stack
+o 64bit nanoseconds time format
+o created logfs_compare_inode()
+o created struct logfs_device_ops
+o truncate() to zero sets embedded flag
+o unwrap logfs_memcpy()
+o add FS_READONLY flag to superblock
+o create blockdev_device_ops
+  This one still needs some infrastructure and testing.
+o Fix data corruption bug.
+
+
+Unchanged:
+o convert #define's to enums.
+  Afaics one of those has to be cast to u8, the other has to go through
+  cpu_to_be64.  I don't see how enums are an advantage under such circumstances
+  and Thomas didn't seem to be sure either.
+o generic function for logfs_type()
+o generic helper for logfs_prepare_write()
+o removed EOF
+o error handling
+o move rootdir generation back to mkfs
+o replace kmap() with kmap_atomic()
+o document logfs_new_meta_inode()
+o Use KMEM_CACHE() helper for kmem_cache_create()
+o read object header first, then read or read&uncompress object data
+o shrink inodes to 200 bytes
+
+
+Won't happen (unless I get convinced to do otherwise):
+o lowercase LOGFS_SUPER and LOGFS_INODE
+  These simply match the common pattern used is many Linux filesystems.
+o remove "extern"
+  For structures, this keyword actually serves a purpose and makes sense.
+  On the other hand, it is completely bogus for functions and I won't be
+  bullied into adding bogus crud either.
+o Move fs/logfs/Locking to Documentation/
+  At least JFFS2 has such documentation in its own directory as well.
+  I can see good arguments for either side and no strong consensus.  While
+  I ultimately just don't case, doing nothing is a good option in cases
+  of great uncertainty.
+o change (void*) to "proper" cast
+  Neither variant is much better than the other.  I'm open for suggestions
+  to completely remove the casts, though.
+o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
+  These are macros for very much the same reasons BUG() and BUG_ON() are.
+
+Jörn
+
+-- 
+A victorious army first wins and then seeks battle.
+-- Sun Tzu
