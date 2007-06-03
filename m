@@ -1,21 +1,23 @@
-Received: from mail-in-11.arcor-online.net ([151.189.21.51])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huu6Y-0000uH-BW
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 13:43:04 -0400
-In-Reply-To: <4662EAA9.70104@ru.mvista.com>
-References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HuuOR-0001DS-QC
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:01:34 -0400
+Message-ID: <46630256.8050909@ru.mvista.com>
+Date: Sun, 03 Jun 2007 22:03:02 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: Segher Boessenkool <segher@kernel.crashing.org>
 Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Sun, 3 Jun 2007 19:40:57 +0200
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>
+References: <7fc919fce0761f861be3069a853d3169@bga.com>
+	<1180769992.14025.1.camel@localhost.localdomain>
+	<4662E7EA.70506@ru.mvista.com>
+	<d067769912d2ed5c9e1b4770b77303dd@kernel.crashing.org>
+In-Reply-To: <d067769912d2ed5c9e1b4770b77303dd@kernel.crashing.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	Milton Miller <miltonm@bga.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->>> I think "direct-mapped" as compatible is a bit too broad or vague.
->
->>> The compatible is supposed to be useable to find and match a driver
->>> without regard to the name of the node.  Perhaps direct-mapped-rom?
->>> (as opossed to a direct-mapped-ram, sram, or some width flash bank).
->
->> "actual-name-of-the-chip", "cfi-command-set-#", "cfi" seems
->> like a good start.
->
->    No, it doesn't -- since that info is almost *absolutely* useless 
-> (the only exception is "cfi") in the context of Linux MTD subsys.
->    Please, try to understand that knowing that chip is CFI compatible 
-> in itself doesn't yet guarantee that you can access the chip -- it all 
-> depends on its mapping to the real physical address range, therefore 
-> this group IMO cannot even constitute a valid "compatible" property.
+Hello.
 
-You obviously completely misunderstand the semantics
-of the "compatible" property.
+Segher Boessenkool wrote:
+>>> If it's a flash, compatible should be the chip type, and maybe as a
+>>> second entry, what type of flash protocol (amd, intel, cfi, ...) it's
+>>> compatible.
+>>     As I've already (and repatedly) stated before,
 
->> People here tried to create a generic "flash" device binding.
->> It didn't work out (part of the problem is its scope was way
->> too big; another problem is it was too Linux-mtd specific).
->
->    And that's why its worked, and the abstaractly "correct" scheme 
-> wouldn't have.
+> And you repeatedly got answers too, yet you choose
+> to rehash this whole discussion again.
 
-Ha.  Ha.  Ha.  Great joke :-)
+    Not I have started it. And I have my reasons, too. :-)
 
->> Now since the probing is done in platform-specific code here,
->> you don't *need* an "official" binding -- just get your
->> "compatible" prop right so you can correctly probe the device
->> node, and then maybe add some node-specific properties if you
->> need them.
->
->    I wonder what are you trying to get us to do: directly call stuff 
-> from drivers/mtd/ or what (that's especially starnge because we now 
-> have an OF driver for simply mapped NOR flashes)?
+>> this gets you *nothing* WRT
+>> selecting the proper driver in the current Linux MTD subsystem.
 
-I am pointing out how to do a flash node in a platform-
-specific way, in platform-specific code, since there is
-no working "generic" way yet (and very likely there will
-never be).
+> Which Linux driver to use is not something that should
+> be (directly) communicated in a device tree -- even if
 
+    Bah... what's "name" and "compatible" properties are for then. Nobody's 
+talking about the direct match but making the task of selecting a proper 
+driver more complex by specifying the details that don't help (if not hinder) 
+the correct selection is certainly not a way to go.
 
-Segher
+> you take the position the device tree is a nice big
+> configuration file for Linux, what if a new Linux flash
+> subsystem shows up (or even simply a driver got renamed,
+> etc.)
+
+    There is no direct match in *this* case (for an example of such, refer to 
+FSL "gianfar" nodes ;-).
+
+> -- the device tree on your board doesn't necessarily
+> change when your kernel version does.
+
+    Well, I'm not anticipating any changes either in this case...
+
+>> What it
+>> actually *needs* to know is flash mapping information,
+
+> It needs to know what kind of flash it is, and how it
+> is connected -- i.e., it needs to describe the hardware.
+> How Linux then decides to use it is its own game, but
+> at least the device tree puts all the information it
+> could possibly need out there.
+
+>> the CFI/JEDEC interface then can be deduced by probing
+
+> Most of the time, sure.  Not always.
+
+    That's the way the cookie crumbles in Linux MTD for now. It's *always* 
+detecting this by probing -- you only can say what [not] to probe.
+
+>> -- so, this property ("ptobe-type"), although specified in 
+>> Documentation/powerpc/booting-without-of.txt, is optional.
+
+> Who is talking about "probe-type"?  We are talking about "compatible". 
+
+    See my other mail where I've told why I don't consider your example of 
+this prop valid...
+
+> Segher
+
+WBR, Sergei
