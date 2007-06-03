@@ -1,20 +1,20 @@
-Received: from moutng.kundenserver.de ([212.227.126.187])
+Received: from moutng.kundenserver.de ([212.227.126.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huy7k-0007a9-85
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 18:00:51 -0400
+	id 1HuyFO-0007rj-W3
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 18:08:31 -0400
 From: Arnd Bergmann <arnd@arndb.de>
 To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@lazybastard.org>
-Subject: Re: [Patch 06/18] fs/logfs/compr.c
-Date: Sun, 3 Jun 2007 23:58:43 +0200
+Subject: Re: [Patch 09/18] fs/logfs/gc.c
+Date: Mon, 4 Jun 2007 00:07:36 +0200
 References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184355.GG8952@lazybastard.org>
-In-Reply-To: <20070603184355.GG8952@lazybastard.org>
+	<20070603184604.GJ8952@lazybastard.org>
+In-Reply-To: <20070603184604.GJ8952@lazybastard.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Content-Disposition: inline
-Message-Id: <200706032358.44870.arnd@arndb.de>
+Message-Id: <200706040007.38578.arnd@arndb.de>
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
 	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
 	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
@@ -37,17 +37,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 03 June 2007, J=C3=B6rn Engel wrote:
-> +#define COMPR_LEVEL 3
-> +
-> +static DEFINE_MUTEX(compr_mutex);
-> +static struct z_stream_s stream;
-
-Is there a particular reason to choose '3' as the only compression
-level? Should this perhaps be a per-superblock option instead?
-
-Also, I thought I saw discussion about making the mutex and
-stream per-superblock, but don't remember if the idea was discarded.
-If it was, you might want to add it to the won't-happen list.
-
-	Arnd <><=20
+T24gU3VuZGF5IDAzIEp1bmUgMjAwNywgSsO2cm4gRW5nZWwgd3JvdGU6Cj4gK3N0YXRpYyBsb25n
+IGRlY2F5KGxvbmcgdDAsIGxvbmcgdCwgbG9uZyB0aGV0YSkKPiArewo+ICvCoMKgwqDCoMKgwqDC
+oGxvbmcgc2hpZnQsIGZhYzsKPiArCj4gK8KgwqDCoMKgwqDCoMKgaWYgKHQgPj0gMzIqdGhldGEp
+Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ICsKPiArwqDCoMKg
+wqDCoMKgwqBzaGlmdCA9IHQvdGhldGE7Cj4gK8KgwqDCoMKgwqDCoMKgZmFjID0gdGhldGEgLSAo
+dCV0aGV0YSkvMjsKPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gKHQwID4+IHNoaWZ0KSAqIGZhYyAv
+IHRoZXRhOwo+ICt9CgpJIHRoaW5rIGl0J3MgY29uZnVzaW9uIHRvIHdvcmsgd2l0aCAnbG9uZycg
+YXJndW1lbnRzCmhlcmUuIElmIHlvdSBhY3R1YWxseSBhbGxvdyBsYXJnZXIgdGhhbiAzMiBiaXQg
+YXJndW1lbnRzLAp0aGF0IG1lYW5zIHRoYXQgdGhlIGdjIGxvZ2ljIGJlaGF2ZXMgZGlmZmVyZW50
+bHkgb24KMzIgYW5kIDY0IGJpdCBDUFVzLCB3aGljaCBJIGRvbid0IHRoaW5rIGlzIHdoYXQgeW91
+CmludGVuZGVkLgoKQWxzbywgY2FuIGFueSBvZiB0aGUgYXJndW1lbnRzIGJlIG5lZ2F0aXZlPyBI
+b3cgYWJvdXQKbWFraW5nIHRoZW0gYWxsIGV4cGxpY2l0IHUzMiBhbmQgdTY0IHZhcmlhYmxlcz8K
+CglBcm5kIDw+PAo=
