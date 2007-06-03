@@ -1,18 +1,30 @@
-Received: from www19.your-server.de ([213.133.104.19])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hy5wY-000070-QW
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 08:57:58 -0400
-Received: from [84.189.53.43] (helo=ulitu.handy-pc.constin-design.de)
-	by www19.your-server.de with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.50)
-	id 1Hy5wS-00047K-CC
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 14:57:48 +0200
-From: Uli Luckas <u.luckas@road.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
-MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_EbpbG8IM0o0jkvI"
-Message-Id: <200706121451.16904.u.luckas@road.de>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Huv6Y-0007FB-PL
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 19:47:07 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org
+Subject: [Patch 02/18] fs/Makefile
+Message-ID: <20070603184038.GC8952@lazybastard.org>
+References: <20070603183845.GA8952@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20070603183845.GA8952@lazybastard.org>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>,
+	Kyle Moffett <mrmacman_g4@mac.com>, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
+	Roland Dreier <rdreier@cisco.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>, John Stoffel <john@stoffel.org>,
+	Ondrej Zajicek <santiago@crfreenet.org>,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,94 +33,15 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Tue, 12 Jun 2007 12:58:02 -0000
+Date: Sun, 03 Jun 2007 18:49:18 -0000
 
---Boundary-00=_EbpbG8IM0o0jkvI
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-Hi
-We experience the following problem when our board tries to suspend:
-
-Jun  7 18:32:21 constin kernel: [ 2085.350000] Stopping tasks ... 
-Jun  7 18:32:21 constin kernel: [ 2105.410000] Stopping kernel threads timed 
-out after 20 seconds (1 tasks refusing to freeze):
-Jun  7 18:32:21 constin kernel: [ 2105.410000]  jffs2_gcd_mtd3
-Jun  7 18:32:21 constin kernel: [ 2105.410000] Restarting tasks ... <4> 
-Strange, jffs2_gcd_mtd3 not stopped
-Jun  7 18:32:21 constin kernel: [ 2105.440000] done.
-
-The problem seems to happen, when suspend kicks in, after the call to 
-try_to_freeze and before the while loop in jffs2_garbage_collect_thread.
-
-The pending freeze will cause signal_pending to return true until the 
-attempted suspend is over and thereby the while loop won't terminate until 
-the suspend times out.
-
-This patch will call try_to_freeze from within the while loop and adds an 
-extra check for jffs2_thread_should_wake before we actually do the GC to 
-avoid calling jffs2_garbage_collect_pass at every wakeup.
-
-If there are no objections, please apply and push to mainline.
-
-Signed-off-by: Uli Luckas <u.luckas@road.de>
--- 
-
-------- ROAD ...the handyPC Company - - -  ) ) )
-
-Uli Luckas
-Software Development
-
-ROAD GmbH
-Bennigsenstr. 14 | 12159 Berlin | Germany
-fon: +49 (30) 230069 - 64 | fax: +49 (30) 230069 - 69
-url: www.road.de
-
-Amtsgericht Charlottenburg: HRB 96688 B
-Managing directors: Hans-Peter Constien, Hubertus von Streit
-
---Boundary-00=_EbpbG8IM0o0jkvI
-Content-Type: text/x-csrc; charset="iso-8859-1"; name="freeze_gc_thread.c"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="freeze_gc_thread.c"
-
-diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
-index 888f236..43a2fc8 100644
-=2D-- a/fs/jffs2/background.c
-+++ b/fs/jffs2/background.c
-@@ -96,9 +96,6 @@ static int jffs2_garbage_collect_thread(void *_c)
- 			schedule();
- 		}
-=20
-=2D		if (try_to_freeze())
-=2D			continue;
-=2D
- 		/* This thread is purely an optimisation. But if it runs when
- 		   other things could be running, it actually makes things a
- 		   lot worse. Use yield() and put it at the back of the runqueue
-@@ -113,6 +110,9 @@ static int jffs2_garbage_collect_thread(void *_c)
- 			siginfo_t info;
- 			unsigned long signr;
-=20
-+			if (try_to_freeze())
-+				continue;
-+
- 			signr =3D dequeue_signal_lock(current, &current->blocked, &info);
-=20
- 			switch(signr) {
-@@ -137,7 +137,7 @@ static int jffs2_garbage_collect_thread(void *_c)
- 		disallow_signal(SIGHUP);
-=20
- 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
-=2D		if (jffs2_garbage_collect_pass(c) =3D=3D -ENOSPC) {
-+		if (jffs2_thread_should_wake(c) && jffs2_garbage_collect_pass(c) =3D=3D =
-=2DENOSPC) {
- 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread=
-\n");
- 			goto die;
- 		}
-
---Boundary-00=_EbpbG8IM0o0jkvI--
+--- linux-2.6.21logfs/fs/Makefile~logfs	2007-06-03 19:18:57.000000000 +0200
++++ linux-2.6.21logfs/fs/Makefile	2007-06-03 19:18:57.000000000 +0200
+@@ -95,6 +95,7 @@ obj-$(CONFIG_NTFS_FS)		+= ntfs/
+ obj-$(CONFIG_UFS_FS)		+= ufs/
+ obj-$(CONFIG_EFS_FS)		+= efs/
+ obj-$(CONFIG_JFFS2_FS)		+= jffs2/
++obj-$(CONFIG_LOGFS)		+= logfs/
+ obj-$(CONFIG_AFFS_FS)		+= affs/
+ obj-$(CONFIG_ROMFS_FS)		+= romfs/
+ obj-$(CONFIG_QNX4FS_FS)		+= qnx4/
