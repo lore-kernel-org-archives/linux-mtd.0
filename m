@@ -1,21 +1,24 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huudr-0001VC-8G
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:17:36 -0400
-Message-ID: <4663060C.2020906@ru.mvista.com>
-Date: Sun, 03 Jun 2007 22:18:52 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-MIME-Version: 1.0
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Received: from mail-in-12.arcor-online.net ([151.189.21.52])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HuumZ-0001jO-5h
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:26:35 -0400
+In-Reply-To: <46630256.8050909@ru.mvista.com>
 References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<4662FA67.3020107@ru.mvista.com>
-	<a5dde31321a50ed198cf4fc199e4af9c@kernel.crashing.org>
-In-Reply-To: <a5dde31321a50ed198cf4fc199e4af9c@kernel.crashing.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<1180769992.14025.1.camel@localhost.localdomain>
+	<4662E7EA.70506@ru.mvista.com>
+	<d067769912d2ed5c9e1b4770b77303dd@kernel.crashing.org>
+	<46630256.8050909@ru.mvista.com>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <daa1b6f2e18f06f053d538d28d3c046a@kernel.crashing.org>
 Content-Transfer-Encoding: 7bit
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Date: Sun, 3 Jun 2007 20:25:50 +0200
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>
+	Milton Miller <miltonm@bga.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,57 +28,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Segher Boessenkool wrote:
+>> Which Linux driver to use is not something that should
+>> be (directly) communicated in a device tree -- even if
+>
+>    Bah... what's "name" and "compatible" properties are for then.
 
->>> I think "direct-mapped" as compatible is a bit too broad or vague.
+They communicate to the kernel what exactly a certain device
+is.  Nothing more, nothing less.  The kernel is supposed to
+use this information to select what device driver to use for
+it.  Any extra information the kernel might need/want to drive
+the device is described in other properties (or, in some cases,
+in different device nodes, even).
 
->>     It's actually not -- it means simple 1:1 address mapping (w/o 
->> explicit
->> byte-swapping and such).
+> Nobody's talking about the direct match but making the task of 
+> selecting a proper driver more complex by specifying the details that 
+> don't help (if not hinder) the correct selection is certainly not a 
+> way to go.
 
-> Which has nothing to do with "compatible"; instead,
-> it is implied by the parent node have a "ranges"
+Nonsense.  If the kernel doesn't care about certain details,
+it can just ignore them.
 
-    No! It doesn't have anything to do with "ranges" of parent (don't even 
-know why it would). :-O
+>> -- the device tree on your board doesn't necessarily
+>> change when your kernel version does.
+>
+>    Well, I'm not anticipating any changes either in this case...
 
-> property.  Or you can put some other property in
-> the flash node for all I care, if that seems
-> necessary for certain cases.
+That's a problem then.
 
-    Erm... it's *certainly* necessary to mark this somewhere.
+>>> the CFI/JEDEC interface then can be deduced by probing
+>
+>> Most of the time, sure.  Not always.
+>
+>    That's the way the cookie crumbles in Linux MTD for now. It's 
+> *always* detecting this by probing -- you only can say what [not] to 
+> probe.
 
->>> The compatible is supposed to be useable to find and match a driver
->>> without regard to the name of the node.  Perhaps direct-mapped-rom?
+So go fix that :-)
 
-    That really depends on whether we choose to follow the Generic Names spec.
-Even if we do, it does *not* preclude OS from using both props for the driver 
-selection.
+>> Who is talking about "probe-type"?  We are talking about "compatible".
+>
+>    See my other mail where I've told why I don't consider your example 
+> of this prop valid...
 
->>> (as opossed to a direct-mapped-ram, sram, or some width flash bank).
+I haven't read that yet, but I can tell you now that I'm already
+very sceptical about the arguments.
 
->>     Note that we're matching by both "device_type" and "compatible".
 
-> Which is wrong.
-
-    Why? And why then it's allowed to match by "device_type"? And why you 
-haven't complained at MPC5200 IDE driver which does the same (well, maybe you 
-have :-) or at PowerMac IDE driver which matches wither by "name" or 
-"device_type"? Well, quite a lot of drivers are doing this...
-
->>     This would serve no purpose, as the driver that would catches all 
->> these is signle one, drivers/mtd/maps/physmap_of.c...
-
-> With the current kernel version, perhaps.  Did you check
-> out 2.6.28?  Does it work with that?
-
-    For the simply mapped flashes, physmap_of will suffice, for more complex 
-cases, other driver will be needed. If you're hinting at the possibility that 
-MTD subsys will be substantially reworked -- I don't find that likely. If it 
-will -- well, bad luck. :-)
-    Anyway, reasonable suggestions on how to make MTD nodes more viable are 
-always welcome. I just haven't seen reasonable enough yet. ;-)
-
-> Segher
-
-WBR, Sergei
+Segher
