@@ -1,23 +1,33 @@
-Received: from djurbala-pt.tunnel.tserv2.fmt.ipv6.he.net
-	([2001:470:1f01:ffff::eb] helo=gate.crashing.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HuxNa-00063K-60
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 17:13:35 -0400
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-From: Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-In-Reply-To: <4662EAA9.70104@ru.mvista.com>
-References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-Content-Type: text/plain
-Date: Mon, 04 Jun 2007 07:12:00 +1000
-Message-Id: <1180905120.31677.22.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>,
-	Segher Boessenkool <segher@kernel.crashing.org>
+Received: from moutng.kundenserver.de ([212.227.126.188])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Huxs4-0006WC-0d
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 17:44:29 -0400
+From: Arnd Bergmann <arnd@arndb.de>
+To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@lazybastard.org>
+Subject: Re: [Patch 04/18] include/linux/logfs.h
+Date: Sun, 3 Jun 2007 23:42:25 +0200
+References: <20070603183845.GA8952@lazybastard.org>
+	<20070603184205.GE8952@lazybastard.org>
+In-Reply-To: <20070603184205.GE8952@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200706032342.27252.arnd@arndb.de>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
+	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +37,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2007-06-03 at 20:22 +0400, Sergei Shtylyov wrote:
-> 
->     No, it doesn't -- since that info is almost *absolutely* useless
-> (the only 
-> exception is "cfi") in the context of Linux MTD subsys.
->     Please, try to understand that knowing that chip is CFI compatible
-> in 
-> itself doesn't yet guarantee that you can access the chip -- it all
-> depends on 
-> its mapping to the real physical address range, therefore this group
-> IMO 
-> cannot even constitute a valid "compatible" property.
+On Sunday 03 June 2007, J=C3=B6rn Engel wrote:
+> +struct logfs_je_spillout {
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0__be64=C2=A0=C2=A0so_segment[0=
+];
+> +}__packed;
 
-You make no sense to me. It's like saying that knowing that a 8250 chip
-on ISA cannot be accessed if you don't know it's IO ports so it
-shouldn't say "8250" in compatible property ?!?!?!?
+All the on-disk data structures you define in this file have naturally
+aligned members, so the __packed attribute is not needed.
 
-Also, whatever shortcomings of the linux MTD drivers are totally
-irrelevant to what is correct to have in a device-tree. While we do
-tailor our device-tree specification around linux needs in most cases,
-there are cases like this one where common sense should be enough to
-understand that it's not because the linux MTD subsystem, as of today,
-cannot be told what programming interface to use, that we shouldn't
-provide that information in the tree.
+However, I think it causes gcc to generate larger and slower code
+on some architectures, because now it has to assume that the data
+structure itself has no more than byte alignment.
 
-Regarding physical address ranges for the flash mapping, I suppose the
-best is to define a property for flash chips for it. 
+I'd simply remove all instances of __packed therefore. In order
+to verify that you got it right in all cases, build with
+'-Wpadded -Wpacked'.
+
+	Arnd <><
