@@ -1,22 +1,24 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HuvHC-0002Zq-3R
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 15:01:07 -0400
-Message-ID: <46630F8F.6080708@ru.mvista.com>
-Date: Sun, 03 Jun 2007 22:59:27 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-MIME-Version: 1.0
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Received: from mail-in-09.arcor-online.net ([151.189.21.49])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HuwBs-0003ym-Nt
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 15:57:17 -0400
+In-Reply-To: <466312C2.4090200@ru.mvista.com>
 References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<4662FA67.3020107@ru.mvista.com>
-	<a5dde31321a50ed198cf4fc199e4af9c@kernel.crashing.org>
-	<4663060C.2020906@ru.mvista.com>
-	<c077dedaa90bf4fb3af1c5c8c4b39c85@kernel.crashing.org>
-In-Reply-To: <c077dedaa90bf4fb3af1c5c8c4b39c85@kernel.crashing.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
+	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
+	<4662EAA9.70104@ru.mvista.com>
+	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
+	<466308F4.8050004@ru.mvista.com>
+	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
+	<466312C2.4090200@ru.mvista.com>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
 Content-Transfer-Encoding: 7bit
-Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Date: Sun, 3 Jun 2007 21:56:31 +0200
+To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	Milton Miller <miltonm@bga.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,106 +29,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Segher Boessenkool wrote:
->>>>> I think "direct-mapped" as compatible is a bit too broad or vague.
-
->>>>     It's actually not -- it means simple 1:1 address mapping (w/o 
->>>> explicit
->>>> byte-swapping and such).
-
->>> Which has nothing to do with "compatible"; instead,
->>> it is implied by the parent node have a "ranges"
-
->>    No! It doesn't have anything to do with "ranges" of parent (don't 
->> even know why it would). :-O
-
-> So learn about it please?  "ranges" means exactly that:
-> child nodes' address space is direct mapped.
-
-    Well, now we certainly need a parent node -- which would be static bus 
-controller? But those have multiple chips selects, so we should know which 
-range to use. Ugh...
-
->>> property.  Or you can put some other property in
->>> the flash node for all I care, if that seems
->>> necessary for certain cases.
-
->>    Erm... it's *certainly* necessary to mark this somewhere.
-
-> Not if it's redundant information.
-
->>>>     Note that we're matching by both "device_type" and "compatible".
-
->>> Which is wrong.
-
->>    Why?
-
-> Because that is a) not what you are supposed to do according
-> to the standard (so it might very well not work with a
-> "third-party" device tree that equally conforms to the standard);
-> b) "device_type" describes some other information (namely, the
-> OF programming model for the device node) that is completely
-> unrelated to the process of driver matching; and c) it is wholly
-> redundant to the information in "compatible" *ANYWAY*.
-
-    Hm, well. Than changing "compatible" prop would make sense.
-
->> And why then it's allowed to match by "device_type"?
-
-> Anything is allowed, this is a free world.  It is wrong though.
-> Linux used to do this wrong, there are many remnants of that
-> left.  You also might *need* to do this for certain imperfect
-> device trees.  None of this is an argument to continue this
-> "tradition".
-
->> And why you haven't complained at MPC5200 IDE driver
-
-> Since no one paid me to review the code?  Please don't try
-
-    Sigh, nobody pays me for that too. :-)
-
-> that argument ever again, thank you very much.  I think I
-> do quite enough work here already, I don't need people
-> demanding stuff from me.
-
-   I wasn't demanding anything. I just wanted to clear things out.
-
->> which does the same (well, maybe you have :-) or at PowerMac IDE 
->> driver which matches wither by "name" or "device_type"? Well, quite a 
->> lot of drivers are doing this...
-
-> See before why that may be.  Short answer is "history".
-
-    Well, at least that's cleared.
-
->>>>     This would serve no purpose, as the driver that would catches 
->>>> all these is signle one, drivers/mtd/maps/physmap_of.c...
-
->>> With the current kernel version, perhaps.  Did you check
->>> out 2.6.28?  Does it work with that?
+>>>> You obviously completely misunderstand the semantics
+>>>> of the "compatible" property.
 >
->>    For the simply mapped flashes, physmap_of will suffice, for more 
->> complex cases, other driver will be needed.
+>>>    Oh well, on the chip level, your "compatible" prop would be 
+>>> correct.
+>
+>> This has nothing to do with a "chip level", it is plain and
+>> simply the most basic device tree stuff.
+>
+>    If it was as "plain and simple" as you say, there would be nothing 
+> to argue about.
 
-> Ah, so you can predict the future of the Linux kernel!
+There isn't as far as I am concerned; the purpose and
+meaning of the "compatible" property, as well as of any
+other standard OF properties, is clear.
 
-    If I could, I'd have taken measures. :-)
+> What we ended up with is 2 or 3 level hierarchy of nodes which doesn't 
+> at all seem to be such simple (considering the fact that what's 
+> covered by a the simple "bank-width" property could be represented by 
+> several combinations of interleaved flash chips).
 
->>  If you're hinting at the possibility that MTD subsys will be 
->> substantially reworked -- I don't find that likely. If it will -- 
->> well, bad luck. :-)
+Yes, the more complex (and sometimes insane) ways that
+flash chips are connected to systems can be really hard
+to describe properly.  Which is why I don't even want
+to make a "binding" for it (yet).  It seems easy enough
+to do this for single flash chips (possibly direct-mapped)
+though.
 
-> Which is not an acceptable outcome.
+> So, what you wanted us to do was either substantially redesign Linux 
+> MTD subsys to fit it into that model
 
->>    Anyway, reasonable suggestions on how to make MTD nodes more viable 
->> are always welcome. I just haven't seen reasonable enough yet. ;-)
+Nah.  The current MTD model has some issues of course,
+but that is a separate problem.
 
-> I suggest you read, and try to understand, some of the base
-> device tree specifications first.
+>  (either that or over-engineer the physmap_of driver to gather that 
+> kind of information from the multiple "chip" subnodes).
 
-    Read them some months ago -- do you think I would have plunged into that 
-not reading anything first? :-/
+I would say it is overengineered already.  It shouldn't
+try to be a general solution for all possible cases since
+it has no hope of achieving that.  Get the simple cases
+(that actually are used in real life) right, first.
 
-> Segher
 
-WBR, Sergei
+Segher
