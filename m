@@ -1,12 +1,12 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huv6Y-0007FB-PL
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 19:47:07 +0100
+	id 1Huv69-0007Ef-20
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 19:46:41 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
 To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org
-Subject: [Patch 02/18] fs/Makefile
-Message-ID: <20070603184038.GC8952@lazybastard.org>
+Subject: [Patch 01/18] fs/Kconfig
+Message-ID: <20070603184002.GB8952@lazybastard.org>
 References: <20070603183845.GA8952@lazybastard.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
@@ -33,15 +33,40 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Sun, 03 Jun 2007 18:49:18 -0000
+Date: Sun, 03 Jun 2007 18:49:19 -0000
 
---- linux-2.6.21logfs/fs/Makefile~logfs	2007-06-03 19:18:57.000000000 +0200
-+++ linux-2.6.21logfs/fs/Makefile	2007-06-03 19:18:57.000000000 +0200
-@@ -95,6 +95,7 @@ obj-$(CONFIG_NTFS_FS)		+= ntfs/
- obj-$(CONFIG_UFS_FS)		+= ufs/
- obj-$(CONFIG_EFS_FS)		+= efs/
- obj-$(CONFIG_JFFS2_FS)		+= jffs2/
-+obj-$(CONFIG_LOGFS)		+= logfs/
- obj-$(CONFIG_AFFS_FS)		+= affs/
- obj-$(CONFIG_ROMFS_FS)		+= romfs/
- obj-$(CONFIG_QNX4FS_FS)		+= qnx4/
+--- linux-2.6.21logfs/fs/Kconfig~logfs	2007-06-03 19:18:57.000000000 +0200
++++ linux-2.6.21logfs/fs/Kconfig	2007-06-03 19:18:57.000000000 +0200
+@@ -1351,6 +1351,32 @@ config JFFS2_CMODE_SIZE
+ 
+ endchoice
+ 
++config LOGFS
++	tristate "Log Filesystem (EXPERIMENTAL)"
++	depends on MTD && EXPERIMENTAL
++	select ZLIB_INFLATE
++	select ZLIB_DEFLATE
++	help
++	  Flash filesystem aimed to scale efficiently to large devices.
++	  In comparison to JFFS2 it offers significantly faster mount
++	  times and potentially less RAM usage, although the latter has
++	  not been measured yet.
++
++	  In its current state it is still very experimental and should
++	  not be used for other than testing purposes.
++
++	  If unsure, say N.
++
++config LOGFS_FSCK
++	bool "Run LogFS fsck at mount time"
++	depends on LOGFS
++	help
++	  Run a full filesystem check on every mount.  If any errors are
++	  found, mounting the filesystem will fail.  This is a debug option
++	  for developers.
++
++	  If unsure, say N.
++
+ config CRAMFS
+ 	tristate "Compressed ROM file system support (cramfs)"
+ 	depends on BLOCK
