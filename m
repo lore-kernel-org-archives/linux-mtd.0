@@ -1,20 +1,19 @@
 Received: from moutng.kundenserver.de ([212.227.126.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HuyFO-0007rj-W3
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 18:08:31 -0400
+	id 1HuyPr-00089m-Pv
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 18:19:17 -0400
 From: Arnd Bergmann <arnd@arndb.de>
 To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@lazybastard.org>
-Subject: Re: [Patch 09/18] fs/logfs/gc.c
-Date: Mon, 4 Jun 2007 00:07:36 +0200
+Subject: Re: LogFS take four
+Date: Mon, 4 Jun 2007 00:18:21 +0200
 References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184604.GJ8952@lazybastard.org>
-In-Reply-To: <20070603184604.GJ8952@lazybastard.org>
+In-Reply-To: <20070603183845.GA8952@lazybastard.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
   charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200706040007.38578.arnd@arndb.de>
+Message-Id: <200706040018.23001.arnd@arndb.de>
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
 	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
 	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
@@ -37,16 +36,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-T24gU3VuZGF5IDAzIEp1bmUgMjAwNywgSsO2cm4gRW5nZWwgd3JvdGU6Cj4gK3N0YXRpYyBsb25n
-IGRlY2F5KGxvbmcgdDAsIGxvbmcgdCwgbG9uZyB0aGV0YSkKPiArewo+ICvCoMKgwqDCoMKgwqDC
-oGxvbmcgc2hpZnQsIGZhYzsKPiArCj4gK8KgwqDCoMKgwqDCoMKgaWYgKHQgPj0gMzIqdGhldGEp
-Cj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHJldHVybiAwOwo+ICsKPiArwqDCoMKg
-wqDCoMKgwqBzaGlmdCA9IHQvdGhldGE7Cj4gK8KgwqDCoMKgwqDCoMKgZmFjID0gdGhldGEgLSAo
-dCV0aGV0YSkvMjsKPiArwqDCoMKgwqDCoMKgwqByZXR1cm4gKHQwID4+IHNoaWZ0KSAqIGZhYyAv
-IHRoZXRhOwo+ICt9CgpJIHRoaW5rIGl0J3MgY29uZnVzaW9uIHRvIHdvcmsgd2l0aCAnbG9uZycg
-YXJndW1lbnRzCmhlcmUuIElmIHlvdSBhY3R1YWxseSBhbGxvdyBsYXJnZXIgdGhhbiAzMiBiaXQg
-YXJndW1lbnRzLAp0aGF0IG1lYW5zIHRoYXQgdGhlIGdjIGxvZ2ljIGJlaGF2ZXMgZGlmZmVyZW50
-bHkgb24KMzIgYW5kIDY0IGJpdCBDUFVzLCB3aGljaCBJIGRvbid0IHRoaW5rIGlzIHdoYXQgeW91
-CmludGVuZGVkLgoKQWxzbywgY2FuIGFueSBvZiB0aGUgYXJndW1lbnRzIGJlIG5lZ2F0aXZlPyBI
-b3cgYWJvdXQKbWFraW5nIHRoZW0gYWxsIGV4cGxpY2l0IHUzMiBhbmQgdTY0IHZhcmlhYmxlcz8K
-CglBcm5kIDw+PAo=
+On Sunday 03 June 2007, J=C3=B6rn Engel wrote:
+
+> Unchanged:
+> o error handling
+>=20
+=2E..
+> Won't happen (unless I get convinced to do otherwise):
+> o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
+>   These are macros for very much the same reasons BUG() and BUG_ON() are.
+
+I wonder how many of your LOGFS_BUG{,_ON} still remain after the
+error handling is in place to deal with broken file system contents.
+Ideally, I'd say the current LOGFS_BUG() should be replaced with
+a function that prints about the kind of error it has hit (rate-limited),
+potentially calls logfs_crash_dump(), and remounts the medium read-only,
+but _not_ call BUG().
+
+	Arnd <><
