@@ -1,22 +1,25 @@
 Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Huupn-0001vC-Fq
-	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:30:09 -0400
-Message-ID: <466308F4.8050004@ru.mvista.com>
-Date: Sun, 03 Jun 2007 22:31:16 +0400
+	id 1Huuuu-0002AS-QW
+	for linux-mtd@lists.infradead.org; Sun, 03 Jun 2007 14:35:29 -0400
+Message-ID: <46630A32.7000403@ru.mvista.com>
+Date: Sun, 03 Jun 2007 22:36:34 +0400
 From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
 To: Segher Boessenkool <segher@kernel.crashing.org>
 Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
 References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-In-Reply-To: <e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
+	<1180769992.14025.1.camel@localhost.localdomain>
+	<4662E7EA.70506@ru.mvista.com>
+	<d067769912d2ed5c9e1b4770b77303dd@kernel.crashing.org>
+	<46630256.8050909@ru.mvista.com>
+	<daa1b6f2e18f06f053d538d28d3c046a@kernel.crashing.org>
+In-Reply-To: <daa1b6f2e18f06f053d538d28d3c046a@kernel.crashing.org>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>
+Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	Milton Miller <miltonm@bga.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,64 +30,61 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 Segher Boessenkool wrote:
->>>> I think "direct-mapped" as compatible is a bit too broad or vague.
 
->>>> The compatible is supposed to be useable to find and match a driver
->>>> without regard to the name of the node.  Perhaps direct-mapped-rom?
->>>> (as opossed to a direct-mapped-ram, sram, or some width flash bank).
+>>> Which Linux driver to use is not something that should
+>>> be (directly) communicated in a device tree -- even if
 
->>> "actual-name-of-the-chip", "cfi-command-set-#", "cfi" seems
->>> like a good start.
+>>    Bah... what's "name" and "compatible" properties are for then.
 
->>    No, it doesn't -- since that info is almost *absolutely* useless 
->> (the only exception is "cfi") in the context of Linux MTD subsys.
->>    Please, try to understand that knowing that chip is CFI compatible 
->> in itself doesn't yet guarantee that you can access the chip -- it all 
->> depends on its mapping to the real physical address range, therefore 
->> this group IMO cannot even constitute a valid "compatible" property.
+> They communicate to the kernel what exactly a certain device
+> is.  Nothing more, nothing less.  The kernel is supposed to
+> use this information to select what device driver to use for
+> it.  Any extra information the kernel might need/want to drive
+> the device is described in other properties (or, in some cases,
+> in different device nodes, even).
 
-> You obviously completely misunderstand the semantics
-> of the "compatible" property.
+    Yeah, the different node sounds more like this case.
 
-    Oh well, on the chip level, your "compatible" prop would be correct. But 
-that only means we need another level representating the flash mapping for 
-which the chip node would be a child... That seems a viable representation but 
-it would certainly complicate things Linux-wise.
+>> Nobody's talking about the direct match but making the task of 
+>> selecting a proper driver more complex by specifying the details that 
+>> don't help (if not hinder) the correct selection is certainly not a 
+>> way to go.
 
->>> People here tried to create a generic "flash" device binding.
->>> It didn't work out (part of the problem is its scope was way
->>> too big; another problem is it was too Linux-mtd specific).
+> Nonsense.  If the kernel doesn't care about certain details,
+> it can just ignore them.
 
->>    And that's why its worked, and the abstaractly "correct" scheme 
->> wouldn't have.
+    That's OK, as long as it has the details it needs. Your suggestions on the 
+"compatible" devoided it of such.
 
-> Ha.  Ha.  Ha.  Great joke :-)
+>>> -- the device tree on your board doesn't necessarily
+>>> change when your kernel version does.
 
-/me bows
+>>    Well, I'm not anticipating any changes either in this case...
 
->>> Now since the probing is done in platform-specific code here,
->>> you don't *need* an "official" binding -- just get your
->>> "compatible" prop right so you can correctly probe the device
->>> node, and then maybe add some node-specific properties if you
->>> need them.
+> That's a problem then.
 
->>    I wonder what are you trying to get us to do: directly call stuff 
->> from drivers/mtd/ or what (that's especially starnge because we now 
->> have an OF driver for simply mapped NOR flashes)?
+    At least not in the direction that you wanted us to change the MTD device 
+node. :-)
 
-> I am pointing out how to do a flash node in a platform-
-> specific way, in platform-specific code, since there is
+>>>> the CFI/JEDEC interface then can be deduced by probing
 
-    I don't thing that confining the "bloody" MTD details into platform code 
-would be an acceptable solution.
+>>> Most of the time, sure.  Not always.
 
-> no working "generic" way yet (and very likely there will
-> never be).
+>>    That's the way the cookie crumbles in Linux MTD for now. It's 
+>> *always* detecting this by probing -- you only can say what [not] to 
+>> probe.
 
-    There is something working, at least Linux-generic.
-    However, the MTD device node was certainly misplaced my me, and probably 
-oversimplified too -- that's the cost one usually pays when he has to think 
-something up and to fit it into existing scheme in a limited time. :-<
+> So go fix that :-)
+
+    Wanna pay me for that? ;-)
+
+>>> Who is talking about "probe-type"?  We are talking about "compatible".
+
+>>    See my other mail where I've told why I don't consider your example 
+>> of this prop valid...
+
+> I haven't read that yet, but I can tell you now that I'm already
+> very sceptical about the arguments.
 
 > Segher
 
