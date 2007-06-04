@@ -1,21 +1,33 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvD6M-000531-MS
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:02:03 -0400
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	l54DxrEx009983
-	for <linux-mtd@lists.infradead.org>; Mon, 4 Jun 2007 15:59:53 +0200
-Date: Mon, 4 Jun 2007 15:58:01 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [Yaffs1] mkyaffs exits with "MTD Erase failure"
-In-Reply-To: <f412p4$b20$1@sea.gmane.org>
-Message-ID: <Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>
-References: <f412p4$b20$1@sea.gmane.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvDBG-0005EA-Pl
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:06:26 -0400
+Date: Mon, 4 Jun 2007 11:12:45 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [Patch 04/18] include/linux/logfs.h
+Message-ID: <20070604091245.GF14823@lazybastard.org>
+References: <20070603183845.GA8952@lazybastard.org>
+	<20070603184205.GE8952@lazybastard.org>
+	<200706032342.27252.arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200706032342.27252.arnd@arndb.de>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
+	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +37,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 3 June 2007 23:42:25 +0200, Arnd Bergmann wrote:
+> On Sunday 03 June 2007, Jörn Engel wrote:
+> > +struct logfs_je_spillout {
+> > +       __be64  so_segment[0];
+> > +}__packed;
+> 
+> All the on-disk data structures you define in this file have naturally
+> aligned members, so the __packed attribute is not needed.
 
-On Mon, 4 Jun 2007, Martin Egholm Nielsen wrote:
+Amen.  It is purely paranoia and I don't even know who is out to get me.
 
-> I have run into a problem: By "accident", we changed the die of our NAND
->  without paying attention to the new timing parameters.
-> Hence, the read-operation (with fixed timing!) reported ready before
-> data was actually ready on the NAND. Consequently, this caused checksum
-> errors, and several blocks was erroneously marked bad!
->
-> So, I fixed the timing in the kernel and tried erasing the flash again.
-> But with no luck - mkyaffs refuses to erase/program the flash:
+> However, I think it causes gcc to generate larger and slower code
+> on some architectures, because now it has to assume that the data
+> structure itself has no more than byte alignment.
+> 
+> I'd simply remove all instances of __packed therefore. In order
+> to verify that you got it right in all cases, build with
+> '-Wpadded -Wpacked'.
 
-Mtd refuses to erase blocks that have been marked bad. There is no=20
-workaround on a running kernel, but it is possible to patch the kernel to
-do this.
+Fine with me.  Will do.
 
-The patch depends on whether or not you have a flash-based bad block=20
-table. Most do, but my only experience has been without the flash-based=20
-BBT. In this case, you simply remove the if clause around=20
-nand_block_checkbad() in mtd/nand/nand_base:nand_erase_nand(), recompile,=
-=20
-and use that kernel to erase the blocks that have accidentally been marked=
-=20
-bad.
+Jörn
 
-If you're using a flash-based BBT you need to fiddle with the table to=20
-unmark the bad blocks. Probably not too difficult, but I've never done=20
-that myself. AFAIK, mtd doesn't mark the actual blocks as bad, so you=20
-don't need to erase the bad block markers in the offending blocks in this=
-=20
-case, only clear the blocks in the BBT.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+-- 
+Ninety percent of everything is crap.
+-- Sturgeon's Law
