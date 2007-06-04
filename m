@@ -1,14 +1,14 @@
-Subject: Re: [Patch 04/18] include/linux/logfs.h
+Subject: Re: [Patch 06/18] fs/logfs/compr.c
 From: David Woodhouse <dwmw2@infradead.org>
 To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
-In-Reply-To: <20070604091245.GF14823@lazybastard.org>
+In-Reply-To: <20070604085447.GA14823@lazybastard.org>
 References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184205.GE8952@lazybastard.org>
-	<200706032342.27252.arnd@arndb.de>
-	<20070604091245.GF14823@lazybastard.org>
+	<20070603184355.GG8952@lazybastard.org>
+	<200706032358.44870.arnd@arndb.de>
+	<20070604085447.GA14823@lazybastard.org>
 Content-Type: text/plain; charset=UTF-8
-Date: Mon, 04 Jun 2007 14:38:23 +0100
-Message-Id: <1180964303.25232.358.camel@pmac.infradead.org>
+Date: Mon, 04 Jun 2007 14:53:46 +0100
+Message-Id: <1180965226.25232.361.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
@@ -34,35 +34,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-06-04 at 11:12 +0200, Jörn Engel wrote:
-> On Sun, 3 June 2007 23:42:25 +0200, Arnd Bergmann wrote:
-> > On Sunday 03 June 2007, Jörn Engel wrote:
-> > > +struct logfs_je_spillout {
-> > > +       __be64  so_segment[0];
-> > > +}__packed;
-> > 
-> > All the on-disk data structures you define in this file have naturally
-> > aligned members, so the __packed attribute is not needed.
-> 
-> Amen.  It is purely paranoia and I don't even know who is out to get me.
+On Mon, 2007-06-04 at 10:54 +0200, Jörn Engel wrote:
+> There is no particular reason.  '3' should be a reasonable value for
+> most people.  If actual users want to change this value, I can make it
+> a mount option as well.  Right now I'm just lazy and doubt the merits.
 
-You can _never_ know who is out to get you, or what architecture we'll
-be ported to next week.
-
-The advice "don't tell the compiler what you want unless you _know_
-it'll do the wrong thing otherwise" runs counter to everything we've
-learned, slowly and painfully, over the last few years.
-
-We should never rely on compiler behaviour which is undocumented and
-unrequired. Even if you know that the ABI forces it to continue to do
-the right thing on the platforms you _currently_ care about, it might
-not do it on new platforms (or existing platforms you didn't manage to
-test).
-
-It would be better if GCC had a 'nopadding' attribute which gave us what
-we need without the _extra_ implications about alignment. In the absence
-of that, though, you should at _least_ have a check on the size of the
-structure if you're doing to drop the packed attribute.
+I think you probably made the right choice. If you're compressing small
+chunks at a time, increasing the amount of history which the compressor
+will keep really doesn't buy you much.
 
 -- 
 dwmw2
