@@ -1,36 +1,32 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvDDB-0005FA-Fb
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:08:54 -0400
-Date: Mon, 4 Jun 2007 16:02:13 +0200
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvDNh-0005hD-14
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:18:04 -0400
+Date: Mon, 4 Jun 2007 11:05:07 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [Patch 04/18] include/linux/logfs.h
-Message-ID: <20070604140212.GA15926@lazybastard.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: LogFS take four
+Message-ID: <20070604090507.GC14823@lazybastard.org>
 References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184205.GE8952@lazybastard.org>
-	<200706032342.27252.arnd@arndb.de>
-	<20070604091245.GF14823@lazybastard.org>
-	<1180964303.25232.358.camel@pmac.infradead.org>
+	<200706040018.23001.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1180964303.25232.358.camel@pmac.infradead.org>
+In-Reply-To: <200706040018.23001.arnd@arndb.de>
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
 	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
 	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
 	Sam Ravnborg <sam@ravnborg.org>,
 	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
-	Evgeniy Polyakov <johnpol@2ka.mipt.ru>,
-	Roland Dreier <rdreier@cisco.com>, Arnd Bergmann <arnd@arndb.de>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
 	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
 	Jan Engelhardt <jengelh@linux01.gwdg.de>,
 	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
 	Albert Cahalan <acahalan@gmail.com>,
 	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
-	Ondrej Zajicek <santiago@crfreenet.org>,
-	linux-fsdevel@vger.kernel.org, Willy Tarreau <w@1wt.eu>
+	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,43 +36,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 4 June 2007 14:38:23 +0100, David Woodhouse wrote:
-> On Mon, 2007-06-04 at 11:12 +0200, Jörn Engel wrote:
-> > On Sun, 3 June 2007 23:42:25 +0200, Arnd Bergmann wrote:
-> > > On Sunday 03 June 2007, Jörn Engel wrote:
-> > > > +struct logfs_je_spillout {
-> > > > +       __be64  so_segment[0];
-> > > > +}__packed;
-> > > 
-> > > All the on-disk data structures you define in this file have naturally
-> > > aligned members, so the __packed attribute is not needed.
+On Mon, 4 June 2007 00:18:21 +0200, Arnd Bergmann wrote:
+> On Sunday 03 June 2007, Jörn Engel wrote:
+> 
+> > Unchanged:
+> > o error handling
 > > 
-> > Amen.  It is purely paranoia and I don't even know who is out to get me.
+> ...
+> > Won't happen (unless I get convinced to do otherwise):
+> > o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
+> >   These are macros for very much the same reasons BUG() and BUG_ON() are.
 > 
-> You can _never_ know who is out to get you, or what architecture we'll
-> be ported to next week.
-> 
-> The advice "don't tell the compiler what you want unless you _know_
-> it'll do the wrong thing otherwise" runs counter to everything we've
-> learned, slowly and painfully, over the last few years.
-> 
-> We should never rely on compiler behaviour which is undocumented and
-> unrequired. Even if you know that the ABI forces it to continue to do
-> the right thing on the platforms you _currently_ care about, it might
-> not do it on new platforms (or existing platforms you didn't manage to
-> test).
-> 
-> It would be better if GCC had a 'nopadding' attribute which gave us what
-> we need without the _extra_ implications about alignment. In the absence
-> of that, though, you should at _least_ have a check on the size of the
-> structure if you're doing to drop the packed attribute.
+> I wonder how many of your LOGFS_BUG{,_ON} still remain after the
+> error handling is in place to deal with broken file system contents.
+> Ideally, I'd say the current LOGFS_BUG() should be replaced with
+> a function that prints about the kind of error it has hit (rate-limited),
+> potentially calls logfs_crash_dump(), and remounts the medium read-only,
+> but _not_ call BUG().
 
-Adding a size check is simple enough.  But given all this I'll put it to
-the very end of my todo list.  There are many other optimizations
-remaining.
+That sounds fairly useful, actually.  Do a WARN_ON(), call
+logfs_crash_dump(), remount read-only and finished.  Rate-limiting might
+be unnecessary as the read-only thing already limits the rate to 1.
+
+I like the idea.
 
 Jörn
 
 -- 
-Joern's library part 14:
-http://www.sandpile.org/
+Fools ignore complexity.  Pragmatists suffer it.
+Some can avoid it.  Geniuses remove it.
+-- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
