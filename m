@@ -1,33 +1,27 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvDn9-0006Yf-Ej
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:44:21 -0400
-Date: Mon, 4 Jun 2007 11:01:26 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [Patch 09/18] fs/logfs/gc.c
-Message-ID: <20070604090126.GB14823@lazybastard.org>
-References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184604.GJ8952@lazybastard.org>
-	<200706040007.38578.arnd@arndb.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200706040007.38578.arnd@arndb.de>
-Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
-	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
-	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
-	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
-	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
-	Albert Cahalan <acahalan@gmail.com>,
-	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
-	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+	id 1HvDr7-0006lg-3M
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:50:37 -0400
+Message-ID: <46642691.7070400@ru.mvista.com>
+Date: Mon, 04 Jun 2007 18:49:53 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+References: <7fc919fce0761f861be3069a853d3169@bga.com>	
+	<1180769992.14025.1.camel@localhost.localdomain>	
+	<4662E7EA.70506@ru.mvista.com>	
+	<d067769912d2ed5c9e1b4770b77303dd@kernel.crashing.org>	
+	<46630256.8050909@ru.mvista.com>
+	<1180904670.31677.18.camel@localhost.localdomain>
+	<466406BB.3070607@ru.mvista.com>
+	<879d8eb0b405619a9e457d137c27baa2@kernel.crashing.org>
+In-Reply-To: <879d8eb0b405619a9e457d137c27baa2@kernel.crashing.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: ppcdev <linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	Milton Miller <miltonm@bga.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,42 +31,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 4 June 2007 00:07:36 +0200, Arnd Bergmann wrote:
-> On Sunday 03 June 2007, Jörn Engel wrote:
-> > +static long decay(long t0, long t, long theta)
-> > +{
-> > +       long shift, fac;
-> > +
-> > +       if (t >= 32*theta)
-> > +               return 0;
-> > +
-> > +       shift = t/theta;
-> > +       fac = theta - (t%theta)/2;
-> > +       return (t0 >> shift) * fac / theta;
-> > +}
-> 
-> I think it's confusion to work with 'long' arguments
-> here. If you actually allow larger than 32 bit arguments,
-> that means that the gc logic behaves differently on
-> 32 and 64 bit CPUs, which I don't think is what you
-> intended.
+Segher Boessenkool wrote:
 
-Different behaviour would be fine.  This function will be used to pick
-good candidates for garbage collection.  If one segment will get chosen
-over another depending on BITS_PER_LONG, either one would have been a
-good candidate anyway.
+>>> So you are saying that because the current linux MTD stuff can only
+>>> probe (which doesn't always work), we should not put the proper chip
+>>> interface type in the device-tree ?
 
-Hmm.  Maybe I should s/32/BITS_PER_LONG/ in the function.
+>>    No. But if/when we put it, it'll only be able to influence 
+>> interface probing, but not "force" the interface.
 
-> Also, can any of the arguments be negative? How about
-> making them all explicit u32 and u64 variables?
+> Of course it can; that just means you have to fix MTD
 
-That would make sense, yes.
+    I wouldn't call this a fix, more like an additional feature. Probing has 
+worked well enough.
 
-Jörn
+> and/or the way your platform calls MTD.
 
--- 
-I've never met a human being who would want to read 17,000 pages of
-documentation, and if there was, I'd kill him to get him out of the
-gene pool.
--- Joseph Costello
+    The platform code is not supposed to call MTD *at all*. The only expeption
+so far are physmap_configure() and physmap_set_partitions() which are both 
+considered obsolete (in favor of platform device). Maybe linux-mtd people will 
+correct me though...
+
+>>    The money was not the only factor, you know, I was under the 
+>> pressure of schedules, and had a lot more things to do.
+
+> The bigger Linux community does not (and should not)
+> care about your corporate schedules.  Your patches
+> won't be merged upstream until they are deemed to be
+> of acceptable quality.  If that doesn't fit your
+> employer's schedule, well tough luck, they can maintain
+> their own kernel fork I'm sure?
+
+    But the driver have been nevertheless merged. Moreover, the it was one of 
+the MTD maintainers who expressed desire for partition info to be kept with 
+device node in the first place.
+
+> Segher
+
+WBR, Sergei
