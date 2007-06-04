@@ -1,23 +1,25 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvEGU-0007Pv-Dr
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 11:14:45 -0400
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	l54FEVZj019147
-	for <linux-mtd@lists.infradead.org>; Mon, 4 Jun 2007 17:14:31 +0200
-Date: Mon, 4 Jun 2007 17:12:40 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: [Yaffs1] mkyaffs exits with "MTD Erase failure"
-In-Reply-To: <f41817$vir$1@sea.gmane.org>
-Message-ID: <Pine.LNX.4.64.0706041709100.3966@lnxricardw.se.axis.com>
-References: <f412p4$b20$1@sea.gmane.org>
-	<Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>
-	<f41817$vir$1@sea.gmane.org>
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvErC-0008IP-FF
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 11:52:44 -0400
+Message-ID: <4664359B.8060109@ru.mvista.com>
+Date: Mon, 04 Jun 2007 19:54:03 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+References: <7fc919fce0761f861be3069a853d3169@bga.com>	
+	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>	
+	<4662EAA9.70104@ru.mvista.com>
+	<1180905120.31677.22.camel@localhost.localdomain>
+	<46640892.2030408@ru.mvista.com>
+	<f24cbe6245fb2a52d153edb9be678f5a@kernel.crashing.org>
+In-Reply-To: <f24cbe6245fb2a52d153edb9be678f5a@kernel.crashing.org>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	Milton Miller <miltonm@bga.com>,
+	Benjamin Herrenschmidt <benh@kernel.crashing.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,52 +29,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Segher Boessenkool wrote:
 
-On Mon, 4 Jun 2007, Martin Egholm Nielsen wrote:
+>>> You make no sense to me. It's like saying that knowing that a 8250 chip
+>>> on ISA cannot be accessed if you don't know it's IO ports so it
+>>> shouldn't say "8250" in compatible property ?!?!?!?
 
->>> So, I fixed the timing in the kernel and tried erasing the flash
->>> again. But with no luck - mkyaffs refuses to erase/program the
->>> flash:
->
->> Mtd refuses to erase blocks that have been marked bad. There is no
->> workaround on a running kernel, but it is possible to patch the
->> kernel to do this.
->
-> But as you see, flash_eraseall on the same device works perfectly fine:
->
-> flash_eraseall /dev/mtd0
-> ....
-> Skipping bad block at 0x0179c000
-> Erasing 16 Kibyte @ 1ffc000 -- 99 % complete.
+>>    No, it's a completely different case.  Base address and even flash 
+>> size are not the only things that matter.  There's bus width
 
-flash_eraseall skips bad blocks while erasing. I don't know how mkyaffs=20
-works though.
+> Bus width is an (inherent) property of the _parent_
+> node.  Device width is normally equal to that, and
+> if not, it is obvious from the device model.
 
->> The patch depends on whether or not you have a flash-based bad block
->> table. Most do, but my only experience has been without the
->> flash-based BBT. In this case, you simply remove the if clause around
->> nand_block_checkbad() in mtd/nand/nand_base:nand_erase_nand(),
->> recompile, and use that kernel to erase the blocks that have
->> accidentally been marked bad.
->
-> I have a kernel with this patch, yes - and it does work. However, then I=
-=20
-> remove the factory-marked ones, as well. Not a good idea!
+    Eh... obvious? From the bus controller node? Maybe and maybe not. Those 
+are seem to be generally multifuntional and so don't have their "chip selects" 
+fixed to some kind of interface, i.e. it's selectable, as well as the bus 
+width even... at least it's so in my case (and nevertheless, the board has 
+interleaved flash, so it's not a matter of a bus width fixed to 32 bits as you 
+can see).
 
-You can always re-mark the factory bad ones, given that you have written=20
-down which they were once... if you are using a flash-based BBT, erasing=20
-the BBT blocks would suffice, as the bad block management in jffs2 when=20
-using a flash-based BBT doesn't touch bad block markers. I would assume=20
-from your reasoning that you are not using a flash-based BBT?
+> Also, you need to know if the devices are byte-addressable
+> or only per natural unit; and even more importantly,
+> the same question for the flash bus.
 
-In a lab environment, erasing the factory-marked bad blocks will probably=
-=20
-work well enough not to cause a hassle, as long as you don't use the flash=
-=20
-for long-term storage.
+>> and interleave factors
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> Not a property of the flash chips really.
+
+    Who said it is?
+
+>> that influence the access (and possibly, byte-swapping too, although 
+>> this is unlikely to happen in PPC world).
+
+> Byte swapping?  1) This should _never_ be necessary,
+> just swap the data on the device itself, duh;
+
+    Oh, I'm afraid that's only wishful thinking after having some real life 
+experience in bi-endian world.  Luckily, the PPC world seems to be (at least 
+mostly) big-endian.
+
+> 2) more likely this would be determined by the flash bus, not
+> per flash device.
+
+    Indeed, by wiring the bus pins to flash pins. :-)
+
+> And, 3) why would you want to include this in the flash
+> binding while we don't yet have a reasonable overview
+> of in what circumstances byte swap is needed/used?
+
+    This was just a real world example. I do hope PPC would never have to deal 
+with it, though...
+
+>>> Also, whatever shortcomings of the linux MTD drivers are totally
+>>> irrelevant to what is correct to have in a device-tree. While we do
+>>> tailor our device-tree specification around linux needs in most cases,
+>>> there are cases like this one where common sense should be enough to
+>>> understand that it's not because the linux MTD subsystem, as of today,
+>>> cannot be told what programming interface to use, that we shouldn't
+>>> provide that information in the tree.
+
+>>    We did provide it, in the form of probing hints ("probe-type" prop).
+
+> Which is 103% redundant.  That same information (and
+> more!) is required in the "compatible" property, already.
+
+    Yeah, but then we would have needed more than one node -- which I avoided 
+back then... well, I have cheated and mistaken. :-)
+    Anyway, the "rom" device node as it appeared in booting-without-of.txt
+was based upon suggestions from Linux/MTD maintainer.
+
+> Segher
+
+WBR, Sergei
