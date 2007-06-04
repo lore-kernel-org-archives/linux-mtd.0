@@ -1,17 +1,21 @@
-Received: from 65-60-82-43.static-ip.telepacific.net ([65.60.82.43]
-	helo=tofasco.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvD2S-0004pk-Cg
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 09:57:28 -0400
-From: "Michael Wang" <michael.wang@nextar.com>
-To: linux-mtd@lists.infradead.org
-Date: Mon, 4 Jun 2007 21:43:12 +0800
-Subject: =?gb2312?b?u9i4tDpsaW51eC1tdGQgRGlnZXN0LCBWb2wgNTEsIElzc3VlIDg=?=
-Content-Type: text/plain;
-	charset=utf-8
-Content-Transfer-Encoding: base64
-Mime-Version: 1.0
-Message-ID: <EXCHANGEgYjzWhOuUaJ00007c3c@tofasco.com>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvD6M-000531-MS
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:02:03 -0400
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l54DxrEx009983
+	for <linux-mtd@lists.infradead.org>; Mon, 4 Jun 2007 15:59:53 +0200
+Date: Mon, 4 Jun 2007 15:58:01 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: [Yaffs1] mkyaffs exits with "MTD Erase failure"
+In-Reply-To: <f412p4$b20$1@sea.gmane.org>
+Message-ID: <Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>
+References: <f412p4$b20$1@sea.gmane.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,92 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-CgpTZW50IGJ5IG1vYmlsZSBwaG9uZS4KDQrljp/pgq7ku7YNCuiHqjpsaW51eC1tdGQtcmVxdWVz
-dEBsaXN0cy5pbmZyYWRlYWQub3JnDQrml6XmnJ86MDYvMDQvMjAwNyAyMTozMg0K6IezOmxpbnV4
-LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnDQrkuLvpopg6IGxpbnV4LW10ZCBEaWdlc3QsIFZvbCA1
-MSwgSXNzdWUgOA0KDQpTZW5kIGxpbnV4LW10ZCBtYWlsaW5nIGxpc3Qgc3VibWlzc2lvbnMgdG8N
-CglsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZw0KDQpUbyBzdWJzY3JpYmUgb3IgdW5zdWJz
-Y3JpYmUgdmlhIHRoZSBXb3JsZCBXaWRlIFdlYiwgdmlzaXQNCglodHRwOi8vbGlzdHMuaW5mcmFk
-ZWFkLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LW10ZA0Kb3IsIHZpYSBlbWFpbCwgc2VuZCBh
-IG1lc3NhZ2Ugd2l0aCBzdWJqZWN0IG9yIGJvZHkgJ2hlbHAnIHRvDQoJbGludXgtbXRkLXJlcXVl
-c3RAbGlzdHMuaW5mcmFkZWFkLm9yZw0KDQpZb3UgY2FuIHJlYWNoIHRoZSBwZXJzb24gbWFuYWdp
-bmcgdGhlIGxpc3QgYXQNCglsaW51eC1tdGQtb3duZXJAbGlzdHMuaW5mcmFkZWFkLm9yZw0KDQpX
-aGVuIHJlcGx5aW5nLCBwbGVhc2UgZWRpdCB5b3VyIFN1YmplY3QgbGluZSBzbyBpdCBpcyBtb3Jl
-IHNwZWNpZmljDQp0aGFuICJSZTogQ29udGVudHMgb2YgbGludXgtbXRkIGRpZ2VzdC4uLiINCg0K
-DQpUb2RheSdzIFRvcGljczoNCg0KICAgMS4gUmU6IFtQQVRDSF0gSkZGUzIgYXBwZWFycyB0byAi
-ZnJlZXplIiBkdXJpbmcgZXJhc2UNCiAgICAgIChKb2FraW0gVGplcm5sdW5kKQ0KICAgMi4gUmU6
-IFtQYXRjaCAwNS8xOF0gZnMvbG9nZnMvbG9nZnMuaCAoSmFuIEVuZ2VsaGFyZHQpDQogICAzLiBS
-ZTogW1BBVENIXSBKRkZTMiBhcHBlYXJzIHRvICJmcmVlemUiIGR1cmluZyBlcmFzZQ0KICAgICAg
-KEpvYWtpbSBUamVybmx1bmQpDQogICA0LiBSZTogW1BBVENIXSBwb3dlcnBjOiBDcmVhdGUgInJv
-bSIgKE1URCkgZGV2aWNlIHBycG1jMjgwMA0KICAgICAgKFNlcmdlaSBTaHR5bHlvdikNCiAgIDUu
-IFJlOiBbUEFUQ0hdIHBvd2VycGM6IENyZWF0ZSAicm9tIiAoTVREKSBkZXZpY2UgcHJwbWMyODAw
-DQogICAgICAoU2VyZ2VpIFNodHlseW92KQ0KICAgNi4gW1lhZmZzMV0gbWt5YWZmcyBleGl0cyB3
-aXRoICJNVEQgRXJhc2UgZmFpbHVyZSINCiAgICAgIChNYXJ0aW4gRWdob2xtIE5pZWxzZW4pDQog
-ICA3LiBSZTogW1BBVENIXSBwb3dlcnBjOiBDcmVhdGUgInJvbSIgKE1URCkgZGV2aWNlIHBycG1j
-MjgwMA0KICAgICAgKFNlcmdlaSBTaHR5bHlvdikNCiAgIDguIFJlOiBbUGF0Y2ggMDUvMThdIGZz
-L2xvZ2ZzL2xvZ2ZzLmggKEo/cm4gRW5nZWwpDQogICA5LiBSZTogW1BBVENIXSBwb3dlcnBjOiBD
-cmVhdGUgInJvbSIgKE1URCkgZGV2aWNlIHBycG1jMjgwMA0KICAgICAgKFNlcmdlaSBTaHR5bHlv
-dikNCg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCk1lc3NhZ2U6IDENCkRhdGU6IE1vbiwgMDQgSnVuIDIw
-MDcgMTE6MjA6MzcgKzAyMDANCkZyb206IEpvYWtpbSBUamVybmx1bmQgPGpvYWtpbS50amVybmx1
-bmRAdHJhbnNtb2RlLnNlPg0KU3ViamVjdDogUmU6IFtQQVRDSF0gSkZGUzIgYXBwZWFycyB0byAi
-ZnJlZXplIiBkdXJpbmcgZXJhc2UNClRvOiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVh
-ZC5vcmc+DQpDYzogcmFkYmlzQGdvb2dsZW1haWwuY29tLAlMaW51eCBNVEQgbWFpbGluZyBsaXN0
-DQoJPGxpbnV4LW10ZEBsaXN0cy5pbmZyYWRlYWQub3JnPg0KTWVzc2FnZS1JRDogPDExODA5NDg4
-MzcuMzA2NzAuMy5jYW1lbEBnZW50b28tam9ja2UudHJhbnNtb2RlLnNlPg0KQ29udGVudC1UeXBl
-OiB0ZXh0L3BsYWluDQoNCk9uIEZyaSwgMjAwNy0wNi0wMSBhdCAxOTowNCArMDEwMCwgRGF2aWQg
-V29vZGhvdXNlIHdyb3RlOg0KPiBPbiBGcmksIDIwMDctMDYtMDEgYXQgMTE6NTEgKzAyMDAsIEpv
-YWtpbSBUamVybmx1bmQgd3JvdGU6DQo+ID4gVGhpcyBpcyBhIG9sZCBwYXRjaCBmcm9tIFJhZG9z
-bGF3IEJpc2V3c2tpKHNlZSBNVEQgbGlzdCkuIFRoZSBwYXRjaA0KPiA+IGZpeGVzIHRoZSBsb25n
-IHN0YWxscyBJIGFtIHNlZWluZyBpbiAiR0Mgc3RhcnZlcyB3cml0ZSdzIGluIDIuNi4yMCIgSQ0K
-PiA+IHNlbnQgeWVzdGVyZGF5LiBQbGVhc2UgYXBwbHkuDQo+IA0KPiBJdCBzZWVtcyB0byBtYWtl
-IHNlbnNlOyBJIG5lZWQgdG8gY29udmluY2UgbXlzZWxmIHRoYXQgZXZlcnkgb3RoZXIgdXNlcg0K
-PiBvZiB0aGUgZXJhc2VfZnJlZV9zZW0gaXMgYWN0dWFsbHkgT0sgd2l0aCBpdC4gSSB0aGluaw0K
-PiBqZmZzMl9nX2NfZGVsZXRpb25fZGlyZW50KCkgc2hvdWxkIGJlIE9LLCBhdCBmaXJzdCBnbGFu
-Y2UuIEknbSBsZXNzDQo+IGNvbnZpbmNlZCBhYm91dCBqZmZzMl9tYXJrX25vZGVfb2Jzb2xldGUo
-KSwgd2hlcmUgd2UgY3VycmVudGx5IGhvbGQgdGhlDQo+IGVyYXNlX2ZyZWVfc2VtIHdoaWxlIHdl
-IGFjdHVhbGx5IG1hcmsgdGhlIG5vZGUgb2Jzb2xldGUuIFdpbGwgbG9vayBpbnRvDQo+IGl0Li4u
-DQo+IA0KDQpsb29rZWQgYSBsaXR0ZSBjbG9zZXIgb24gdGhlIG5ldyBsb2NraW5nIGluIGVyYXNl
-LmMgYW5kIHdvbmRlcg0Kd2h5IG5vdCBqZmZzMl9lcmFzZV9zdWNjZWVkZWQoKSBhbmQgamZmczJf
-ZXJhc2VfZmFpbGVkKCkgbmVlZHMNCnRvIHRha2UgZXJhc2VfZnJlZV9zZW0/DQoNCiBKb2NrZQ0K
-DQoNCg0KLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQoNCk1lc3NhZ2U6IDINCkRhdGU6
-IE1vbiwgNCBKdW4gMjAwNyAxMDoxNzo0NyArMDIwMCAoTUVTVCkNCkZyb206IEphbiBFbmdlbGhh
-cmR0IDxqZW5nZWxoQGxpbnV4MDEuZ3dkZy5kZT4NClN1YmplY3Q6IFJlOiBbUGF0Y2ggMDUvMThd
-IGZzL2xvZ2ZzL2xvZ2ZzLmgNClRvOiBBcm5kIEJlcmdtYW5uIDxhcm5kQGFybmRiLmRlPg0KQ2M6
-IGFrcG1Ab3NkbC5vcmcsIERhdmlkIFdlaW5laGFsbCA8dGFvQGFjYy51bXUuc2U+LAlEb25nanVu
-IFNoaW4NCgk8ZGpzaGluOTBAZ21haWwuY29tPiwgS3lsZSBNb2ZmZXR0IDxtcm1hY21hbl9nNEBt
-YWMuY29tPiwNCglsaW51eC1tdGRAbGlzdHMuaW5mcmFkZWFkLm9yZywgUGF2ZWwgTWFjaGVrIDxw
-YXZlbEB1Y3cuY3o+LAlTYW0NCglSYXZuYm9yZyA8c2FtQHJhdm5ib3JnLm9yZz4sCVVsaXNzZXMg
-RnVycXVpbSA8dWxpc3Nlc2ZAZ21haWwuY29tPiwgQ2FUDQoJPGNhdEB6aXAuY29tLmF1PiwJRXZn
-ZW5peSBQb2x5YWtvdiA8am9obnBvbEAya2EubWlwdC5ydT4sIFJvbGFuZA0KCURyZWllciA8cmRy
-ZWllckBjaXNjby5jb20+LCBKP3JuIEVuZ2VsIDxqb2VybkBsYXp5YmFzdGFyZC5vcmc+LAlKYW1p
-ZQ0KCUxva2llciA8amFtaWVAc2hhcmVhYmxlLm9yZz4sIFBla2thIEVuYmVyZyA8cGVuYmVyZ0Bj
-cy5oZWxzaW5raS5maT4sDQoJVGhvbWFzIEdsZWl4bmVyIDx0Z2x4QGxpbnV0cm9uaXguZGU+LCBC
-aWxsIERhdmlkc2VuDQoJPGRhdmlkc2VuQHRtci5jb20+LAlBbGJlcnQgQ2FoYWxhbiA8YWNhaGFs
-YW5AZ21haWwuY29tPiwJSm9obiBTdG9mZmVsDQoJPGpvaG5Ac3RvZmZlbC5vcmc+LCBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnLAlPbmRyZWogWmFqaWNlaw0KCTxzYW50aWFnb0BjcmZyZWVu
-ZXQub3JnPiwgbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5lbC5vcmcsCURhdmlkDQoJV29vZGhvdXNl
-IDxkd213MkBpbmZyYWRlYWQub3JnPiwgV2lsbHkgVGFycmVhdSA8d0Axd3QuZXU+DQpNZXNzYWdl
-LUlEOiA8UGluZS5MTlguNC42MS4wNzA2MDQxMDE3MjcwLjIwODI5QHl2YWhrMDEudGpxdC5xcj4N
-CkNvbnRlbnQtVHlwZTogVEVYVC9QTEFJTjsgY2hhcnNldD1VVEYtOA0KDQoNCj5PbiBTdW5kYXkg
-MDMgSnVuZSAyMDA3LCBKP3JuIEVuZ2VsIHdyb3RlOg0KPj4gKy8qKg0KPj4gKyAqIHN0cnVjdCBs
-b2dmc19kZXZpY2Vfb3BzIC0gZGV2aWNlIGFjY2VzcyBvcGVyYXRpb25zDQo+PiArICoNCj4+ICsg
-KiBAcmVhZDo/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/cmVhZCBmcm9tIHRoZSBkZXZpY2UNCj4+ICsg
-KiBAd3JpdGU6Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/d3JpdGUgdG8gdGhlIGRldmljZQ0KPj4gKyAq
-IEBlcmFzZTo/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz9lcmFzZSBwYXJ0IG9mIHRoZSBkZXZpY2UNCj4+
-ICsgKi8NCj4+ICtzdHJ1Y3QgbG9nZnNfZGV2aWNlX29wcyB7DQo+PiArPz8/Pz8/P2ludCAoKnJl
-YWQpKHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIGxvZmZfdCBvZnMsIHNpemVfdCBsZW4sIHZvaWQg
-KmJ1Zik7DQo+PiArPz8/Pz8/P2ludCAoKndyaXRlKShzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiLCBs
-b2ZmX3Qgb2ZzLCBzaXplX3QgbGVuLCB2b2lkICpidWYpOw0KPj4gKz8/Pz8/Pz9pbnQgKCplcmFz
-ZSkoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwgbG9mZl90IG9mcywgc2l6ZV90IGxlbik7DQo+PiAr
-fTsNCj4NCj5JIHdvbmRlciBpZiB0aGVyZSBpcyBhIHdheSB0byBkb2N1bWVudCB0aGUgcHJvdG90
-eXBlcyBvZiB0aGVzZSBmdW5jdGlvbg0KPnBvaW50ZXJzIHdpdGgga2VybmVsZG9jLCBvdGhlciB0
-aGFuIGhhdmluZyBhIHR5cGVkZWYgZm9yIGVhY2guDQo+DQo+V2hhdCBicm91Z2h0IG1lIHRvIHRo
-aXMgcG9pbnQgaXMgdGhhdCBJIGZpcnN0IGFzc3VtZWQgdGhleSB3b3VsZCByZXR1cm4NCj50aGUg
-bnVtYmVyIG9mIGJ5dGVzIHRyYW5zZmVycmVkLCBsaWtlIHJlYWQvd3JpdGUgZmlsZSBvcGVyYXRp
-b25zLCB3aGVyZQ0KPnlvdXIgZnVuY3Rpb25zIHJldHVybiB6ZXJvIG9uIHN1Y2Nlc3MuDQoNCnJl
-YWQvd3JpdGUgZnVuY3Rpb25zIHJldHVybmluZyBieXRlcyB3cml0dGVuIHdvdWxkIHJldHVybiBz
-c2l6ZV90LA0KanVzdCBhcyB2ZnNfcmVhZCBhbmQgdmZzX3dyaXRlIGRvLg0KDQoNCg0KCUphbg0K
-LS0gDQoNCg0KDQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0NCg0KTWVzc2FnZTogMw0K
-RGF0ZTogTW9uLCAwNCBKdW4gMjAwNyAxMTo0NDozMCArMDIwMA0KRnJvbTogSm9ha2ltIFRqZXJu
-bHVuZCA8am9ha2ltLnRqZXJubHVuZEB0cmFuc21vZGUuc2U+
+
+On Mon, 4 Jun 2007, Martin Egholm Nielsen wrote:
+
+> I have run into a problem: By "accident", we changed the die of our NAND
+>  without paying attention to the new timing parameters.
+> Hence, the read-operation (with fixed timing!) reported ready before
+> data was actually ready on the NAND. Consequently, this caused checksum
+> errors, and several blocks was erroneously marked bad!
+>
+> So, I fixed the timing in the kernel and tried erasing the flash again.
+> But with no luck - mkyaffs refuses to erase/program the flash:
+
+Mtd refuses to erase blocks that have been marked bad. There is no=20
+workaround on a running kernel, but it is possible to patch the kernel to
+do this.
+
+The patch depends on whether or not you have a flash-based bad block=20
+table. Most do, but my only experience has been without the flash-based=20
+BBT. In this case, you simply remove the if clause around=20
+nand_block_checkbad() in mtd/nand/nand_base:nand_erase_nand(), recompile,=
+=20
+and use that kernel to erase the blocks that have accidentally been marked=
+=20
+bad.
+
+If you're using a flash-based BBT you need to fiddle with the table to=20
+unmark the bad blocks. Probably not too difficult, but I've never done=20
+that myself. AFAIK, mtd doesn't mark the actual blocks as bad, so you=20
+don't need to erase the bad block markers in the offending blocks in this=
+=20
+case, only clear the blocks in the BBT.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
