@@ -1,24 +1,29 @@
-Received: from mail-in-10.arcor-online.net ([151.189.21.50])
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvDsY-0006mK-Qq
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:52:58 -0400
-In-Reply-To: <46640892.2030408@ru.mvista.com>
-References: <7fc919fce0761f861be3069a853d3169@bga.com>	
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>	
-	<4662EAA9.70104@ru.mvista.com>
-	<1180905120.31677.22.camel@localhost.localdomain>
-	<46640892.2030408@ru.mvista.com>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <f24cbe6245fb2a52d153edb9be678f5a@kernel.crashing.org>
+	id 1HvDu9-0006nA-LJ
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:52:56 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1HvDpJ-0003YE-7Q
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 16:46:33 +0200
+Received: from cpe.atm2-0-1021162.0x3ef28e62.banxx2.customer.tele.dk
+	([62.242.142.98]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Jun 2007 16:46:33 +0200
+Received: from martin by cpe.atm2-0-1021162.0x3ef28e62.banxx2.customer.tele.dk
+	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Mon, 04 Jun 2007 16:46:33 +0200
+To: linux-mtd@lists.infradead.org
+From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
+Subject: Re: [Yaffs1] mkyaffs exits with "MTD Erase failure"
+Date: Mon, 04 Jun 2007 16:36:23 +0200
+Message-ID: <f41817$vir$1@sea.gmane.org>
+References: <f412p4$b20$1@sea.gmane.org>
+	<Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Mon, 4 Jun 2007 16:49:32 +0200
-To: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>,
-	Benjamin Herrenschmidt <benh@kernel.crashing.org>
+In-Reply-To: <Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,50 +33,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> You make no sense to me. It's like saying that knowing that a 8250 
->> chip
->> on ISA cannot be accessed if you don't know it's IO ports so it
->> shouldn't say "8250" in compatible property ?!?!?!?
->
->    No, it's a completely different case.  Base address and even flash 
-> size are not the only things that matter.  There's bus width
+Hi,
 
-Bus width is an (inherent) property of the _parent_
-node.  Device width is normally equal to that, and
-if not, it is obvious from the device model.
+Ricard Wanderlof wrote:
+> On Mon, 4 Jun 2007, Martin Egholm Nielsen wrote:
+>> I have run into a problem: By "accident", we changed the die of our
+>> NAND without paying attention to the new timing parameters. Hence,
+>> the read-operation (with fixed timing!) reported ready before data
+>> was actually ready on the NAND. Consequently, this caused checksum 
+>> errors, and several blocks was erroneously marked bad!
+>> 
+>> So, I fixed the timing in the kernel and tried erasing the flash
+>> again. But with no luck - mkyaffs refuses to erase/program the
+>> flash:
 
-Also, you need to know if the devices are byte-addressable
-or only per natural unit; and even more importantly,
-the same question for the flash bus.
+> Mtd refuses to erase blocks that have been marked bad. There is no 
+> workaround on a running kernel, but it is possible to patch the
+> kernel to do this.
 
-> and interleave factors
+But as you see, flash_eraseall on the same device works perfectly fine:
 
-Not a property of the flash chips really.
-
-> that influence the access (and possibly, byte-swapping too, although 
-> this is unlikely to happen in PPC world).
-
-Byte swapping?  1) This should _never_ be necessary,
-just swap the data on the device itself, duh; 2) more
-likely this would be determined by the flash bus, not
-per flash device.
-
-And, 3) why would you want to include this in the flash
-binding while we don't yet have a reasonable overview
-of in what circumstances byte swap is needed/used?
-
->> Also, whatever shortcomings of the linux MTD drivers are totally
->> irrelevant to what is correct to have in a device-tree. While we do
->> tailor our device-tree specification around linux needs in most cases,
->> there are cases like this one where common sense should be enough to
->> understand that it's not because the linux MTD subsystem, as of today,
->> cannot be told what programming interface to use, that we shouldn't
->> provide that information in the tree.
->
->    We did provide it, in the form of probing hints ("probe-type" prop).
-
-Which is 103% redundant.  That same information (and
-more!) is required in the "compatible" property, already.
+flash_eraseall /dev/mtd0
+....
+Skipping bad block at 0x0179c000
+Erasing 16 Kibyte @ 1ffc000 -- 99 % complete.
 
 
-Segher
+> The patch depends on whether or not you have a flash-based bad block
+> table. Most do, but my only experience has been without the
+> flash-based BBT. In this case, you simply remove the if clause around
+> nand_block_checkbad() in mtd/nand/nand_base:nand_erase_nand(),
+> recompile, and use that kernel to erase the blocks that have
+> accidentally been marked bad.
+
+I have a kernel with this patch, yes - and it does work. However, then I 
+remove the factory-marked ones, as well. Not a good idea!
+
+
+// Egholm
