@@ -1,19 +1,21 @@
-Received: from ug-out-1314.google.com ([66.249.92.170])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hv63g-0005AM-JX
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 02:29:00 -0400
-Received: by ug-out-1314.google.com with SMTP id z36so658820uge
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 03 Jun 2007 23:28:50 -0700 (PDT)
-Message-ID: <646b5e90706032328i78c258f1ga27cd5ba92330b23@mail.gmail.com>
-Date: Mon, 4 Jun 2007 08:28:50 +0200
-From: "Hans Jorgensen" <hans.jorgensen.news@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2, AT45DB642D dataflash and power failure
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1Hv74q-0006LZ-V1
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 03:34:12 -0400
+Subject: Re: [PATCH] JFFS2 appears to "freeze" during erase
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1180721097.25232.43.camel@pmac.infradead.org>
+References: <1180691482.1468.267.camel@gentoo-jocke.transmode.se>
+	<1180721097.25232.43.camel@pmac.infradead.org>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Date: Mon, 04 Jun 2007 09:34:03 +0200
+Message-Id: <1180942443.26573.14.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: radbis@googlemail.com,
+	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +25,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Can JFFS2 handle that an entire flash page gets corrupted if a power
-failure occurs while calling at91_dataflash_write/dataflash_write? If
-not then there might be a problem with
-at91_dataflash.c/mtd_dataflash.c
+On Fri, 2007-06-01 at 19:04 +0100, David Woodhouse wrote:
+> On Fri, 2007-06-01 at 11:51 +0200, Joakim Tjernlund wrote:
+> > This is a old patch from Radoslaw Bisewski(see MTD list). The patch
+> > fixes the long stalls I am seeing in "GC starves write's in 2.6.20" I
+> > sent yesterday. Please apply.
+> 
+> It seems to make sense; I need to convince myself that every other user
+> of the erase_free_sem is actually OK with it. I think
+> jffs2_g_c_deletion_dirent() should be OK, at first glance. I'm less
+> convinced about jffs2_mark_node_obsolete(), where we currently hold the
+> erase_free_sem while we actually mark the node obsolete. Will look into
+> it...
+> 
 
-The story is as following:
-I am using Linux kernel 2.6.12 + patch 2.6.12 (20/06-2005) from
-maxim.org.za and trying to implement transaction based file access
-with rollback functionality in a user-space application.
+Had a look at my own 2.4 tree and that too has this problem altough I
+never noticed such long delays. Maybe thats because my FS is much
+smaller and EB is 2x bigger(2 chips in paralell).
 
-To prove that it would work during power failure I used a watchdog to
-activate reset of the CPU and flashes.  It did not work.
-
-As an attempt to make it work I modified at91_dataflash_write to use
-the flash commands.
-Buffer 1 Write + Buffer 1 to Main Memory Page Program without Built-in Erase
-instead of
-Main Memory Page Program Through Buffer 1 (which implicit includes an
-erase page functionality)
-
-Now it is working and that naturally leads to the question above.
-A nice side effect of this change is that writing speed is increased.
-
-Note: this change may not be a valid solution, as this is not the
-recommended way of using the dataflash. It would require further
-investigation before implementation.
-
-Hans
+ Jocke
