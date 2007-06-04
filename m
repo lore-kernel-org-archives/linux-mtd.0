@@ -1,24 +1,33 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvCOG-0003Oy-Cw
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 09:14:35 -0400
-Message-ID: <46641093.7080404@ru.mvista.com>
-Date: Mon, 04 Jun 2007 17:16:03 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
-MIME-Version: 1.0
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<1180905120.31677.22.camel@localhost.localdomain>
-	<03427692d8865878b0eb2a91e7f6969e@kernel.crashing.org>
-In-Reply-To: <03427692d8865878b0eb2a91e7f6969e@kernel.crashing.org>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-	linux-mtd@lists.infradead.org, Milton Miller <miltonm@bga.com>,
-	linuxppc-dev@ozlabs.org
+	id 1HvCTA-0003fC-6A
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 09:19:43 -0400
+Date: Mon, 4 Jun 2007 11:11:06 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [Patch 05/18] fs/logfs/logfs.h
+Message-ID: <20070604091106.GE14823@lazybastard.org>
+References: <20070603183845.GA8952@lazybastard.org>
+	<20070603184303.GF8952@lazybastard.org>
+	<200706032350.57556.arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200706032350.57556.arnd@arndb.de>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
+	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +37,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Sun, 3 June 2007 23:50:55 +0200, Arnd Bergmann wrote:
+> On Sunday 03 June 2007, Jörn Engel wrote:
+> > +/**
+> > + * struct logfs_device_ops - device access operations
+> > + *
+> > + * @read:                      read from the device
+> > + * @write:                     write to the device
+> > + * @erase:                     erase part of the device
+> > + */
+> > +struct logfs_device_ops {
+> > +       int (*read)(struct super_block *sb, loff_t ofs, size_t len, void *buf);
+> > +       int (*write)(struct super_block *sb, loff_t ofs, size_t len, void *buf);
+> > +       int (*erase)(struct super_block *sb, loff_t ofs, size_t len);
+> > +};
+> 
+> I wonder if there is a way to document the prototypes of these function
+> pointers with kerneldoc, other than having a typedef for each.
+> 
+> What brought me to this point is that I first assumed they would return
+> the number of bytes transferred, like read/write file operations, where
+> your functions return zero on success.
 
-Segher Boessenkool wrote:
+I can just add a comment about the return code in the struct
+documentation.  For the foreseeable future there will be exactly two
+instances of this structure.  It's not as if every driver would
+implement this.
 
->> Regarding physical address ranges for the flash mapping, I suppose the
->> best is to define a property for flash chips for it.
+Jörn
 
-> There is, namely "reg".  How to best describe flash chips
-> interleaved on the bus is still an open problem.  And things
-> like combining two sequential in address space flash chips
-> into a virtual one, or describing flash "partitions" doesn't
-> belong in the device tree at all; it is a policy thing, not
-> a hardware thing.
-
-    Gah, it's becoming worse and worse...
-    While I would agree with that argument, not having flash partition table 
-in the device tree makes things even more ugly -- as we *already* can't use 
-platform device to pass that info, we'll have to either force the user to 
-supply that via the kernel option, or add more kludgery to Linux/MTD. :-/
-
-> Segher
-
-WBR, Sergei
+-- 
+A defeated army first battles and then seeks victory.
+-- Sun Tzu
