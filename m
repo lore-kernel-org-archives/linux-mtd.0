@@ -1,19 +1,20 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvDNh-0005hD-14
-	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:18:04 -0400
-Date: Mon, 4 Jun 2007 11:05:07 +0200
+	id 1HvDS6-0005xQ-3w
+	for linux-mtd@lists.infradead.org; Mon, 04 Jun 2007 10:22:58 -0400
+Date: Mon, 4 Jun 2007 10:54:48 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
 To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: LogFS take four
-Message-ID: <20070604090507.GC14823@lazybastard.org>
+Subject: Re: [Patch 06/18] fs/logfs/compr.c
+Message-ID: <20070604085447.GA14823@lazybastard.org>
 References: <20070603183845.GA8952@lazybastard.org>
-	<200706040018.23001.arnd@arndb.de>
+	<20070603184355.GG8952@lazybastard.org>
+	<200706032358.44870.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200706040018.23001.arnd@arndb.de>
+In-Reply-To: <200706032358.44870.arnd@arndb.de>
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
 	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
 	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
@@ -36,33 +37,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 4 June 2007 00:18:21 +0200, Arnd Bergmann wrote:
+On Sun, 3 June 2007 23:58:43 +0200, Arnd Bergmann wrote:
 > On Sunday 03 June 2007, Jörn Engel wrote:
+> > +#define COMPR_LEVEL 3
+> > +
+> > +static DEFINE_MUTEX(compr_mutex);
+> > +static struct z_stream_s stream;
 > 
-> > Unchanged:
-> > o error handling
-> > 
-> ...
-> > Won't happen (unless I get convinced to do otherwise):
-> > o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
-> >   These are macros for very much the same reasons BUG() and BUG_ON() are.
-> 
-> I wonder how many of your LOGFS_BUG{,_ON} still remain after the
-> error handling is in place to deal with broken file system contents.
-> Ideally, I'd say the current LOGFS_BUG() should be replaced with
-> a function that prints about the kind of error it has hit (rate-limited),
-> potentially calls logfs_crash_dump(), and remounts the medium read-only,
-> but _not_ call BUG().
+> Is there a particular reason to choose '3' as the only compression
+> level? Should this perhaps be a per-superblock option instead?
 
-That sounds fairly useful, actually.  Do a WARN_ON(), call
-logfs_crash_dump(), remount read-only and finished.  Rate-limiting might
-be unnecessary as the read-only thing already limits the rate to 1.
+There is no particular reason.  '3' should be a reasonable value for
+most people.  If actual users want to change this value, I can make it a
+mount option as well.  Right now I'm just lazy and doubt the merits.
 
-I like the idea.
+> Also, I thought I saw discussion about making the mutex and
+> stream per-superblock, but don't remember if the idea was discarded.
+> If it was, you might want to add it to the won't-happen list.
+
+It was more or less discarded.  As long as the sweet spot for LogFS is
+small systems, saving memory is more important than multithreaded
+performance.  Will add it to the list.
 
 Jörn
 
 -- 
-Fools ignore complexity.  Pragmatists suffer it.
-Some can avoid it.  Geniuses remove it.
--- Perlis's Programming Proverb #58, SIGPLAN Notices, Sept.  1982
+Joern's library part 2:
+http://www.art.net/~hopkins/Don/unix-haters/tirix/embarrassing-memo.html
