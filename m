@@ -1,17 +1,33 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvUSJ-0003H9-9K
-	for linux-mtd@lists.infradead.org; Tue, 05 Jun 2007 04:31:58 -0400
-Subject: [PATCH] Use point(), if available, to check newly erased blocks,
-	version 2
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Tue, 05 Jun 2007 10:31:53 +0200
-Message-Id: <1181032313.30670.28.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+Received: from mail128.messagelabs.com ([216.82.250.131])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvZux-0006jO-Vw
+	for linux-mtd@lists.infradead.org; Tue, 05 Jun 2007 10:22:02 -0400
+Received: from il06exr03.mot.com (il06exr03.mot.com [129.188.137.133])
+	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id l55ELn6r005437
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 5 Jun 2007 07:21:49 -0700 (MST)
+Received: from il06vts03.mot.com (il06vts03.mot.com [129.188.137.143])
+	by il06exr03.mot.com (8.13.1/Vontu) with SMTP id l55ELmko018712
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 5 Jun 2007 09:21:49 -0500 (CDT)
+Received: from de01exm63.ds.mot.com (de01exm63.am.mot.com [10.176.8.108])
+	by il06exr03.mot.com (8.13.1/8.13.0) with ESMTP id l55ELmu9018703
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 5 Jun 2007 09:21:48 -0500 (CDT)
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: JFFS2 deadlock with alloc_sem
+Date: Tue, 5 Jun 2007 10:21:38 -0400
+Message-ID: <F0A7A3D5461CB54F878D218854074FCE02166502@de01exm63.ds.mot.com>
+In-Reply-To: <1180806125.25232.134.camel@pmac.infradead.org>
+References: <F0A7A3D5461CB54F878D218854074FCE01F7425F@de01exm63.ds.mot.com>
+	<1180806125.25232.134.camel@pmac.infradead.org>
+From: "Roberts Nathan-mcg31137" <Nathan.Roberts@motorola.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,58 +37,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Minor white space fixing
+> > Has anyone seen this deadlock before? It seems to be a classic=20
+> > deadlock situation so I'm not sure if maybe I'm misinterpreting
+things=20
+> > or the use case (several postmark tests running in parallel on a=20
+> > preemptible kernel) is especially vulnerable.
+>
+> I think Josh has spotted the real problem here. Does this help? If so,
+as better fix will be forthcoming....
 
- Jocke
+Thanks for the information. We tried the suggested modification and it
+actually makes it much easier to reproduce the problem (so on one hand
+it's a good thing.)
 
->From 98fc7cbbfc754ec8e0be0d66c7b975bf48196ae3 Mon Sep 17 00:00:00 2001
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-Date: Tue, 5 Jun 2007 10:28:09 +0200
-Subject: [PATCH] Use point(), if available, to check newly erased blocks.
-Faster and won't trash the D-cache.
+The steps we are using are:
+1) Start postmark tests (usually 1 copy is sufficient but it is a little
+easier to reproduce with multiple tests in parallel)
+2) Wait for filesystem to get around 90% full=20
+3) Kill postmark (simple CTRL-C)
+4) If filesystem is 100% full, delete postmark working directories
+4) Restart postmark
+5) goto 2
 
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
- fs/jffs2/erase.c |   27 +++++++++++++++++++++++++++
- 1 files changed, 27 insertions(+), 0 deletions(-)
-
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index 0506a3c..24a48e9 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -331,6 +331,33 @@ static int jffs2_block_check_erase(struct jffs2_sb_info *c, struct jffs2_erasebl
- 	size_t retlen;
- 	int ret = -EIO;
- 
-+	if (c->mtd->point) {
-+		unsigned long *wordebuf;
-+
-+		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size, &retlen, (unsigned char **)&ebuf);
-+		if (ret) {
-+			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
-+			goto do_flash_read;
-+		}
-+		if (retlen < c->sector_size) {
-+			/* Don't muck about if it won't let us point to the whole erase sector */
-+			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", retlen));
-+			c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
-+			goto do_flash_read;
-+		}
-+		wordebuf = ebuf-sizeof(*wordebuf);
-+		retlen /= sizeof(*wordebuf);
-+		do {
-+			if (*++wordebuf != ~0)
-+				break;
-+		} while(--retlen);
-+		c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
-+		if (retlen)
-+			printk(KERN_WARNING "Newly-erased block contained word 0x%lx at offset 0x%08x\n",
-+			       *wordebuf, jeb->offset + c->sector_size-retlen*sizeof(*wordebuf));
-+		return 0;
-+	}
-+ do_flash_read:
- 	ebuf = kmalloc(PAGE_SIZE, GFP_KERNEL);
- 	if (!ebuf) {
- 		printk(KERN_WARNING "Failed to allocate page buffer for verifying erase at 0x%08x. Refiling\n", jeb->offset);
--- 
-1.5.1.3
+Normally within just a few iterations, we hang.
