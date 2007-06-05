@@ -1,33 +1,23 @@
-Received: from mail128.messagelabs.com ([216.82.250.131])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvZux-0006jO-Vw
-	for linux-mtd@lists.infradead.org; Tue, 05 Jun 2007 10:22:02 -0400
-Received: from il06exr03.mot.com (il06exr03.mot.com [129.188.137.133])
-	by motgate8.mot.com (8.12.11/Motorola) with ESMTP id l55ELn6r005437
+Received: from mu-out-0910.google.com ([209.85.134.184])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hvaxd-0007XN-LD
+	for linux-mtd@lists.infradead.org; Tue, 05 Jun 2007 11:29:19 -0400
+Received: by mu-out-0910.google.com with SMTP id w1so1830285mue
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Jun 2007 07:21:49 -0700 (MST)
-Received: from il06vts03.mot.com (il06vts03.mot.com [129.188.137.143])
-	by il06exr03.mot.com (8.13.1/Vontu) with SMTP id l55ELmko018712
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Jun 2007 09:21:49 -0500 (CDT)
-Received: from de01exm63.ds.mot.com (de01exm63.am.mot.com [10.176.8.108])
-	by il06exr03.mot.com (8.13.1/8.13.0) with ESMTP id l55ELmu9018703
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 5 Jun 2007 09:21:48 -0500 (CDT)
-Content-class: urn:content-classes:message
+	Tue, 05 Jun 2007 08:28:33 -0700 (PDT)
+To: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2, AT45DB642D dataflash and power failure
+Date: Tue, 5 Jun 2007 17:28:18 +0200
+References: <646b5e90706032328i78c258f1ga27cd5ba92330b23@mail.gmail.com>
+	<20070604113806.397b9400@newbox>
+In-Reply-To: <20070604113806.397b9400@newbox>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: JFFS2 deadlock with alloc_sem
-Date: Tue, 5 Jun 2007 10:21:38 -0400
-Message-ID: <F0A7A3D5461CB54F878D218854074FCE02166502@de01exm63.ds.mot.com>
-In-Reply-To: <1180806125.25232.134.camel@pmac.infradead.org>
-References: <F0A7A3D5461CB54F878D218854074FCE01F7425F@de01exm63.ds.mot.com>
-	<1180806125.25232.134.camel@pmac.infradead.org>
-From: "Roberts Nathan-mcg31137" <Nathan.Roberts@motorola.com>
-To: "David Woodhouse" <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200706051728.18745.hans.jorgensen@email.dk>
+From: Hans Jorgensen <hans.jorgensen.news@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,26 +27,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > Has anyone seen this deadlock before? It seems to be a classic=20
-> > deadlock situation so I'm not sure if maybe I'm misinterpreting
-things=20
-> > or the use case (several postmark tests running in parallel on a=20
-> > preemptible kernel) is especially vulnerable.
->
-> I think Josh has spotted the real problem here. Does this help? If so,
-as better fix will be forthcoming....
+Hi Ivan,
 
-Thanks for the information. We tried the suggested modification and it
-actually makes it much easier to reproduce the problem (so on one hand
-it's a good thing.)
+> Could you please post your patch, so I could check if it works for me?
 
-The steps we are using are:
-1) Start postmark tests (usually 1 copy is sufficient but it is a little
-easier to reproduce with multiple tests in parallel)
-2) Wait for filesystem to get around 90% full=20
-3) Kill postmark (simple CTRL-C)
-4) If filesystem is 100% full, delete postmark working directories
-4) Restart postmark
-5) goto 2
+This patch is generated for Linux 2.6.12+ maxim.org.za patch, but i
+would suspect that Linux 2.6.21 without patches would have the same 
+issue, as linux-2.6.21.3/drivers/mtd/devices/mtd_dataflash.c also uses
+OP_PROGRAM_VIA_BUF1 for writing data.
 
-Normally within just a few iterations, we hang.
+Note this patch should only be used to identify if that is the
+problem, as there might be other problems associated with using it.
+Such as is it valid to reprogram 0 to 0 and 1 to 1 without erasing the
+flash first, and it may potentially break compatibility between mtd and
+other file systems.
+
+--- linux-2.6.12+at91/drivers/mtd/devices/at91_dataflash.c      2007-06-05 07:37:46.000000000 +0200
++++ current/drivers/mtd/devices/at91_dataflash.c        2007-06-05 08:51:16.000000000 +0200
+@@ -390,6 +390,37 @@
+                }
+ 
+                /* (2) Program via Buffer1 */
++              
++/*Start of modification
++  The following code is NOT A FIX OF A PROBLEM, but was applied to identify
++  a problem with power failure and the JFFS2 file system.
++ 
++  It was suspected that the original code could corrupt the entire data page even though
++  only a small part of the page needed updating. Because OP_PROGRAM_VIA_BUF1
++  instructs the internal state machine of the data chip to first erase the page and later
++  program it. If a power failure or reset of the flash happens during this period
++  the entire page could be corrupted. So the algorithm was modified to not use an
++  erase page.
++*/
++
++               /* (2a) Transfer data to buffer 1*/
++               addr = (pageaddr << priv->page_offset) + offset;
++               command[0] = 0x84;
++               command[1] = (addr & 0x00FF0000) >> 16;
++               command[2] = (addr & 0x0000FF00) >> 8;
++               command[3] = (addr & 0x000000FF);
++               do_spi_transfer(2, command, 4, command, 4, writebuf, writelen, tmpbuf, writelen);
++              
++               /* (2b) Write buffer 1 to Flash without built-in erase*/
++               addr = (pageaddr << priv->page_offset) + offset;
++               command[0] = 0x88;
++               command[1] = (addr & 0x00FF0000) >> 16;
++               command[2] = (addr & 0x0000FF00) >> 8;
++               command[3] = (addr & 0x000000FF);
++               do_spi_transfer(1, command, 4, command, 4, NULL, 0, NULL, 0);
++               at91_dataflash_waitready();
++
++        /* Original code
+                addr = (pageaddr << priv->page_offset) + offset;
+                command[0] = OP_PROGRAM_VIA_BUF1;
+                command[1] = (addr & 0x00FF0000) >> 16;
+@@ -400,6 +431,9 @@
+ #endif
+                do_spi_transfer(2, command, 4, command, 4, writebuf, writelen, tmpbuf, writelen);
+                at91_dataflash_waitready();
++        */
++       
++/*end of modification*/
+ 
+                /* (3) Compare to Buffer1 */
+                addr = pageaddr << priv->page_offset;
+
+
+Hans
