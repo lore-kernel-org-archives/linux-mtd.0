@@ -1,36 +1,22 @@
-Received: from moutng.kundenserver.de ([212.227.126.183])
+Received: from an-out-0708.google.com ([209.85.132.242])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvurF-0004J4-Vt
-	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 08:45:18 -0400
-From: Arnd Bergmann <arnd@arndb.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [Patch 04/18] include/linux/logfs.h
-Date: Wed, 6 Jun 2007 14:42:29 +0200
-References: <20070603183845.GA8952@lazybastard.org>
-	<db91817d295770e459727005108b05e2@kernel.crashing.org>
-	<1181119820.25232.434.camel@pmac.infradead.org>
-In-Reply-To: <1181119820.25232.434.camel@pmac.infradead.org>
+	id 1HvvuQ-0005CD-8D
+	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 09:50:47 -0400
+Received: by an-out-0708.google.com with SMTP id c3so30469ana
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 06 Jun 2007 06:50:45 -0700 (PDT)
+Message-ID: <fe810cf0706060650p48df811dw9f1dd90b2b9f145d@mail.gmail.com>
+Date: Wed, 6 Jun 2007 17:50:44 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@lazybastard.org>
+Subject: Re: LogFS take four
+In-Reply-To: <20070603183845.GA8952@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200706061442.31147.arnd@arndb.de>
-Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
-	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
-	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
-	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
-	Segher Boessenkool <segher@kernel.crashing.org>,
-	=?iso-8859-15?q?J=F6rn_Engel?= <joern@lazybastard.org>,
-	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
-	Albert Cahalan <acahalan@gmail.com>,
-	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
-	Ondrej Zajicek <santiago@crfreenet.org>,
-	linux-fsdevel@vger.kernel.org, Willy Tarreau <w@1wt.eu>
+References: <20070603183845.GA8952@lazybastard.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,27 +26,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 06 June 2007, David Woodhouse wrote:
-> And if I had something like this (which is admittedly contrived, but
-> hardware people _do_ do stupid things to us):
-> =A0 =A0{ uint32_t, uint8_t, uint16_t, uint8_t, uint32_t, uint32_t }
->=20
-> With the 'packed' attribute the compiler would assume arbitrary
-> alignment of all the 32-bit integers. But in reality it's only necessary
-> for the uint16_t in the middle. A 'nopadding' attribute would deal with
-> that correctly.
+On 6/3/07, J=F6rn Engel <joern@lazybastard.org> wrote:
+> This round the patch is split into file-sized hunks.  There actually
+> seem to be kernel developers not manly enough to digest 6000+ lines of
+> code at once.  An I thought I was the only wimp around.
+>
+> [...]
 
-I would argue that a newly invented 'nopadding' attribute should reject
-such a structure as invalid, because it should not let members be
-unaligned. Unfortunately, this also gets tricky if you consider
+Small question about compr.c. Sorry not posting in proper thread -
+just have no original message to reply to.
 
-struct {
-	uint32_t a;
-	uint64_t b;
-	uint32_t c;
-};
+Why do you use __exit macros with logfs_compr_exit()? You will get an
+build-time error if logfs is compiled as part of the kernel (not
+module) just because logfs_init() calls logfs_compr_exit().
 
-which does have an unaligned member by default in i386, but not on
-any modern platform.
-
-	Arnd <><
+Thanks,
+Alexander
