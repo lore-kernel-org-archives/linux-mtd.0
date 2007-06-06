@@ -1,22 +1,36 @@
-Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+Received: from moutng.kundenserver.de ([212.227.126.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvuoE-00047x-QX
-	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 08:40:24 -0400
-Message-ID: <4666AB89.1010206@ru.mvista.com>
-Date: Wed, 06 Jun 2007 16:41:45 +0400
-From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+	id 1HvurF-0004J4-Vt
+	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 08:45:18 -0400
+From: Arnd Bergmann <arnd@arndb.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [Patch 04/18] include/linux/logfs.h
+Date: Wed, 6 Jun 2007 14:42:29 +0200
+References: <20070603183845.GA8952@lazybastard.org>
+	<db91817d295770e459727005108b05e2@kernel.crashing.org>
+	<1181119820.25232.434.camel@pmac.infradead.org>
+In-Reply-To: <1181119820.25232.434.camel@pmac.infradead.org>
 MIME-Version: 1.0
-To: "Mark A. Greer" <mgreer@mvista.com>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-References: <20070601232022.GA21237@mag.az.mvista.com>
-	<20070604205646.GD10612@mag.az.mvista.com>
-	<4665C8F4.2090502@ru.mvista.com>
-	<20070605211114.GA17131@mag.az.mvista.com>
-In-Reply-To: <20070605211114.GA17131@mag.az.mvista.com>
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev <Linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
-	segher@kernel.crashing.org
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200706061442.31147.arnd@arndb.de>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
+	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
+	Segher Boessenkool <segher@kernel.crashing.org>,
+	=?iso-8859-15?q?J=F6rn_Engel?= <joern@lazybastard.org>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ondrej Zajicek <santiago@crfreenet.org>,
+	linux-fsdevel@vger.kernel.org, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +40,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+On Wednesday 06 June 2007, David Woodhouse wrote:
+> And if I had something like this (which is admittedly contrived, but
+> hardware people _do_ do stupid things to us):
+> =A0 =A0{ uint32_t, uint8_t, uint16_t, uint8_t, uint32_t, uint32_t }
+>=20
+> With the 'packed' attribute the compiler would assume arbitrary
+> alignment of all the 32-bit integers. But in reality it's only necessary
+> for the uint16_t in the middle. A 'nopadding' attribute would deal with
+> that correctly.
 
-Mark A. Greer wrote:
+I would argue that a newly invented 'nopadding' attribute should reject
+such a structure as invalid, because it should not let members be
+unaligned. Unfortunately, this also gets tricky if you consider
 
->>Mark A. Greer wrote:
+struct {
+	uint32_t a;
+	uint64_t b;
+	uint32_t c;
+};
 
->>>		flash@a0000000 {
->>>			device_type = "rom";
->>>			compatible = "direct-mapped";
->>>			reg = <a0000000 4000000>; /* Default (64MB) */
->>>			probe-type = "CFI";
->>>			bank-width = <4>;
->>>			partitions = <00000000 00100000 /* RO */
->>>				      00100000 00040001 /* RW */
->>>				      00140000 00400000 /* RO */
->>>				      00540000 039c0000 /* RO */
->>>				      03f00000 00100000>; /* RO */
+which does have an unaligned member by default in i386, but not on
+any modern platform.
 
->>   Hm, this should have been the other way around -- ones with odd size are 
->>RO, ones with even size are RW.
-
-> Yeah, that's what the comment says but the code says the opposite:
-
-> 	if (*part++ & 1) /* bit 0 set signifies read only partition */
-> 		(*parts)[i].mask_flags = MTD_WRITEABLE;
-
-> Doesn't that make it RW if bit 0 is set?
-
-    Contrarywise, though this may surprise you. ;-)
-    This is a question to MTD people...
-
-WBR, Sergei
+	Arnd <><
