@@ -1,29 +1,22 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HvuIU-0003ZU-Id
-	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 08:10:05 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1HvuIE-0008AS-Ct
-	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 14:07:14 +0200
-Received: from cpe.atm2-0-1021162.0x3ef28e62.banxx2.customer.tele.dk
-	([62.242.142.98]) by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2007 14:07:14 +0200
-Received: from martin by cpe.atm2-0-1021162.0x3ef28e62.banxx2.customer.tele.dk
-	with local (Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Wed, 06 Jun 2007 14:07:14 +0200
-To: linux-mtd@lists.infradead.org
-From: Martin Egholm Nielsen <martin@egholm-nielsen.dk>
-Subject: Re: [Yaffs1] mkyaffs exits with "MTD Erase failure"
-Date: Wed, 06 Jun 2007 14:06:31 +0200
-Message-ID: <f46807$6il$1@sea.gmane.org>
-References: <f412p4$b20$1@sea.gmane.org>	<Pine.LNX.4.64.0706041549010.3966@lnxricardw.se.axis.com>	<f41817$vir$1@sea.gmane.org>
-	<Pine.LNX.4.64.0706041709100.3966@lnxricardw.se.axis.com>
-Mime-Version: 1.0
+Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HvuoE-00047x-QX
+	for linux-mtd@lists.infradead.org; Wed, 06 Jun 2007 08:40:24 -0400
+Message-ID: <4666AB89.1010206@ru.mvista.com>
+Date: Wed, 06 Jun 2007 16:41:45 +0400
+From: Sergei Shtylyov <sshtylyov@ru.mvista.com>
+MIME-Version: 1.0
+To: "Mark A. Greer" <mgreer@mvista.com>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+References: <20070601232022.GA21237@mag.az.mvista.com>
+	<20070604205646.GD10612@mag.az.mvista.com>
+	<4665C8F4.2090502@ru.mvista.com>
+	<20070605211114.GA17131@mag.az.mvista.com>
+In-Reply-To: <20070605211114.GA17131@mag.az.mvista.com>
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.64.0706041709100.3966@lnxricardw.se.axis.com>
-Sender: news <news@sea.gmane.org>
+Cc: linuxppc-dev <Linuxppc-dev@ozlabs.org>, linux-mtd@lists.infradead.org,
+	segher@kernel.crashing.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,99 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello.
 
-Ricard Wanderlof wrote:
-> On Mon, 4 Jun 2007, Martin Egholm Nielsen wrote:
->>>>So, I fixed the timing in the kernel and tried erasing the flash
->>>>again. But with no luck - mkyaffs refuses to erase/program the
->>>>flash:
+Mark A. Greer wrote:
 
->>>Mtd refuses to erase blocks that have been marked bad. There is no
->>>workaround on a running kernel, but it is possible to patch the
->>>kernel to do this.
+>>Mark A. Greer wrote:
 
->>But as you see, flash_eraseall on the same device works perfectly fine:
->>flash_eraseall /dev/mtd0
->>....
->>Skipping bad block at 0x0179c000
->>Erasing 16 Kibyte @ 1ffc000 -- 99 % complete.
+>>>		flash@a0000000 {
+>>>			device_type = "rom";
+>>>			compatible = "direct-mapped";
+>>>			reg = <a0000000 4000000>; /* Default (64MB) */
+>>>			probe-type = "CFI";
+>>>			bank-width = <4>;
+>>>			partitions = <00000000 00100000 /* RO */
+>>>				      00100000 00040001 /* RW */
+>>>				      00140000 00400000 /* RO */
+>>>				      00540000 039c0000 /* RO */
+>>>				      03f00000 00100000>; /* RO */
 
-> flash_eraseall skips bad blocks while erasing. I don't know how mkyaffs 
-> works though.
+>>   Hm, this should have been the other way around -- ones with odd size are 
+>>RO, ones with even size are RW.
 
-Well, glancing at the code, it should be doing something like it:
+> Yeah, that's what the comment says but the code says the opposite:
 
-==== ORIGINAL mkyaffs.c ====
-for(addr = 0; addr < meminfo.size; addr += meminfo.erasesize)
-{
-   /* Read the OOB data to determine if the block is valid.
-    * If the block is damaged, then byte 5 of the OOB data will
-    * have at least 2 zero bits.
-    */
-   oob.start = addr;
-   oob.length = 16;
-   oob.ptr = oobbuf;
-   if (ioctl(fd, MEMREADOOB, &oob) != 0)
-   {
-     perror("ioctl(MEMREADOOB)");
-     close(fd);
-     exit(1);
-   }
+> 	if (*part++ & 1) /* bit 0 set signifies read only partition */
+> 		(*parts)[i].mask_flags = MTD_WRITEABLE;
 
-   if(countBits[oobbuf[5]] < 7)
-   {
-     printf("Block at 0x08%lx is damaged and is not being 
-formatted\n",addr);
-   }
-=======================
+> Doesn't that make it RW if bit 0 is set?
 
-However, it doesn't seem to do the trick. So I copied the check from 
-"flash_eraseall" and put in, as well:
+    Contrarywise, though this may surprise you. ;-)
+    This is a question to MTD people...
 
-==== NEW mkyaffs.c ====
-for(addr = 0; addr < meminfo.size; addr += meminfo.erasesize)
-{
-   /* MEN 2007-06-06 */
-   loff_t bah = addr;
-   int ret = ioctl(fd, MEMGETBADBLOCK, &bah);
-   if (ret > 0)
-   {
-     printf( "Block at 0x08%lx would have been ignored by 
-flash_eraseall!\n", addr );
-     continue;
-   } // if
-
-   // OLD CODE HERE
-=======================
-
-
-And now it seems to work:
-
-# mkyaffs-hacked-2007-06-06 -e /dev/mtd0
-argc 3 sh 0 optcnt 2
-Erasing and programming NAND
-Erasing block at 0x080
-Erasing block at 0x084000
-...
-Erasing block at 0x0898000
-Block at 0x089c000 would have been ignored by flash_eraseall!
-....
-
-
-So that's good!? Unless there is a reason why that check was not there 
-originally!
-Charles Manning, do you care for a comment?
-
-
-> You can always re-mark the factory bad ones, given that you have written 
-> down which they were once... if you are using a flash-based BBT, erasing 
-> the BBT blocks would suffice, as the bad block management in jffs2 when 
-> using a flash-based BBT doesn't touch bad block markers. I would assume 
-> from your reasoning that you are not using a flash-based BBT?
-
-I don't, no. And I didn't write down the factory ones...
-
-
-BR,
-  Martin
+WBR, Sergei
