@@ -1,22 +1,20 @@
-Received: from mx34.mail.ru ([194.67.23.200] helo=mx27.mail.ru)
+Received: from gutenberg.seattle.identitext.com ([207.114.238.3])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HwNHn-0005JE-SD
-	for linux-mtd@lists.infradead.org; Thu, 07 Jun 2007 15:04:48 -0400
-Date: Thu, 7 Jun 2007 23:04:18 +0400
-From: Anton Vorontsov <cbou@mail.ru>
-To: Lennert Buytenhek <buytenh@wantstofly.org>
-Subject: Re: [PATCH] physmap-concat map platform driver
-Message-ID: <20070607190418.GA1150@zarina>
-References: <20070526002925.GB801@zarina>
-	<20070531212749.GR26191@xi.wantstofly.org>
-	<20070531215838.GA1603@zarina>
-	<20070607120750.GN2079@xi.wantstofly.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
-Content-Disposition: inline
-In-Reply-To: <20070607120750.GN2079@xi.wantstofly.org>
-Cc: linux-mtd@lists.infradead.org, kernel-discuss@handhelds.org
-Reply-To: cbou@mail.ru
+	id 1HwP3f-0006NQ-JM
+	for linux-mtd@lists.infradead.org; Thu, 07 Jun 2007 16:58:24 -0400
+Received: from [10.20.12.236] (ip236.dhcp.seattle.identitext.com
+	[10.20.12.236])
+	by gutenberg.seattle.identitext.com (Postfix) with ESMTP id 52DB1AD695F
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  7 Jun 2007 13:58:14 -0700 (PDT)
+Mime-Version: 1.0 (Apple Message framework v752.3)
+Content-Transfer-Encoding: 7bit
+Message-Id: <79F7EE04-68BE-48FA-986D-77090A9D597B@exbiblio.com>
+Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+To: linux-mtd@lists.infradead.org
+From: Mathew Chasan <mathew@exbiblio.com>
+Subject: newbie needs help getting onenand to work...
+Date: Thu, 7 Jun 2007 13:58:09 -0700
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,47 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 07, 2007 at 02:07:51PM +0200, Lennert Buytenhek wrote:
-> On Fri, Jun 01, 2007 at 01:58:38AM +0400, Anton Vorontsov wrote:
-> 
-> > > > This is physmap-concat driver, which is plain sa1100-flash.c
-> > > > with factored out arch-specific code. This driver is essential for
-> > > > boards using multiple nonindentical chips on the board.
-> > > 
-> > > Doesn't physmap also support multiple nonidentical chips?
-> > 
-> > Nope. E.g. if I have two chips, 32M + 16M, second chip will be visible
-> > as 32M, which is wrong.
-> 
-> OK, why is that?  Is that easily fixable?
+Hi List,
 
-Don't know why, David said it's what expected in such setup, and that's
-indeed what I'm observing. I'm unsure that it needs any fixups though.
-For now I'm just registering two physmap devices, per each chip.
+I'm trying to get a Samsung KFH4G16Q2M Onenand to work with the  
+Freescale i.MX31.  I'm using a modified version of the 2.6.19.2 tree  
+available on the freescale website.
 
-> > > What physmap doesn't support is multiple discontiguous memory
-> > > regions.
-> > 
-> > Yes, this is another disadvantage of current physmap.
-> > 
-> > > Maybe it makes more sense to add that support to physmap
-> > > instead?
-> > 
-> > Well.. more easier solution would be merging physmap-concat to physmap,
-> > trying make physmap-concat platform_data-compatible.
-> 
-> Hmmm, isn't that more or less what I said?  What's the difference?
+Basically i have yet to get anywhere.  I've enabled the MTD and  
+OneNand drivers in the kernel  but thats about it.  Interestingly, i  
+don't see any sort of indication that the OneNand drivers are even  
+getting initialized in any way during kernel boot.
 
-That's exactly what you've said. I was in hurry and misread your
-initial message. Sorry.
+I know that i'm going to need to somehow explain to the kernel where  
+to look for my oneNand device, and what to look for, but i haven't  
+figured out how to do this.  There's quite a lot out there on NAND  
+and NOR devices of course, but i'm not clear on what needs to be the  
+same and different for a OneNand part.  I spent all day yesterday  
+searching for any sort of documentation either online or in the code,  
+and found very little talking about oneNand.  Today i'm looking  
+through the code trying to put together what i need to do, but was  
+hoping someone might be able to help me, either by pointing me to a  
+preexisting document, or by quickly telling me what steps i need to  
+take/what i need to define to get this to work.
 
-> thanks,
-> Lennert
+Any advice/help greatly appreciated.
 
-Thanks,
+thanks so much,
 
--- 
-Anton Vorontsov
-email: cbou@mail.ru
-backup email: ya-cbou@yandex.ru
-irc://irc.freenode.org/bd2
+mathew
