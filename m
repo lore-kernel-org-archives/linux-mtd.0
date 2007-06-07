@@ -1,30 +1,22 @@
-Received: from mail-in-07.arcor-online.net ([151.189.21.47])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HwL8L-0003wU-Do
-	for linux-mtd@lists.infradead.org; Thu, 07 Jun 2007 12:46:53 -0400
-In-Reply-To: <1181232358.2785.79.camel@pmac.infradead.org>
-References: <7fc919fce0761f861be3069a853d3169@bga.com>
-	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-	<466308F4.8050004@ru.mvista.com>
-	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-	<1181232358.2785.79.camel@pmac.infradead.org>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <04823a3fa3fc5d1e6c14ef896fabfdb0@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Thu, 7 Jun 2007 18:46:45 +0200
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, linuxppc-dev@ozlabs.org,
-	linux-mtd@lists.infradead.org, Milton Miller <miltonm@bga.com>
+Received: from mx34.mail.ru ([194.67.23.200] helo=mx27.mail.ru)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HwNHn-0005JE-SD
+	for linux-mtd@lists.infradead.org; Thu, 07 Jun 2007 15:04:48 -0400
+Date: Thu, 7 Jun 2007 23:04:18 +0400
+From: Anton Vorontsov <cbou@mail.ru>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
+Subject: Re: [PATCH] physmap-concat map platform driver
+Message-ID: <20070607190418.GA1150@zarina>
+References: <20070526002925.GB801@zarina>
+	<20070531212749.GR26191@xi.wantstofly.org>
+	<20070531215838.GA1603@zarina>
+	<20070607120750.GN2079@xi.wantstofly.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <20070607120750.GN2079@xi.wantstofly.org>
+Cc: linux-mtd@lists.infradead.org, kernel-discuss@handhelds.org
+Reply-To: cbou@mail.ru
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,63 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> So I think the best thing to have would be
->>
->> 	compatible      "cfi-flash"
->> 	bank-width      like you said
->> 	device-width    width of a single flash device
->> 	reg             complete address range of this thing
->>
->> and then the Linux OF CFI flash code / MTD code just keeps
->> on probing devices from that address range until it has it
->> filled.
->>
->> Sounds good / comments / anything I missed?
->
-> That seems reasonable. I would personally have used 'interleave' to 
-> give
-> the number of devices interleaved together into the specified
-> bank-width, rather than specifying device-width.
+On Thu, Jun 07, 2007 at 02:07:51PM +0200, Lennert Buytenhek wrote:
+> On Fri, Jun 01, 2007 at 01:58:38AM +0400, Anton Vorontsov wrote:
+> 
+> > > > This is physmap-concat driver, which is plain sa1100-flash.c
+> > > > with factored out arch-specific code. This driver is essential for
+> > > > boards using multiple nonindentical chips on the board.
+> > > 
+> > > Doesn't physmap also support multiple nonidentical chips?
+> > 
+> > Nope. E.g. if I have two chips, 32M + 16M, second chip will be visible
+> > as 32M, which is wrong.
+> 
+> OK, why is that?  Is that easily fixable?
 
-I think "device-width" is much clearer -- from the name
-"interleave" you cannot tell that it actually means
-"number-of-interleaved-devices-in-this-bank".
+Don't know why, David said it's what expected in such setup, and that's
+indeed what I'm observing. I'm unsure that it needs any fixups though.
+For now I'm just registering two physmap devices, per each chip.
 
-> People might get
-> confused by device-width because many devices can actually be _either_
-> x16 or x8.
+> > > What physmap doesn't support is multiple discontiguous memory
+> > > regions.
+> > 
+> > Yes, this is another disadvantage of current physmap.
+> > 
+> > > Maybe it makes more sense to add that support to physmap
+> > > instead?
+> > 
+> > Well.. more easier solution would be merging physmap-concat to physmap,
+> > trying make physmap-concat platform_data-compatible.
+> 
+> Hmmm, isn't that more or less what I said?  What's the difference?
 
-Well after it has been soldered down to the board, it's
-pretty much fixed what the device's bus width is ;-)
+That's exactly what you've said. I was in hurry and misread your
+initial message. Sorry.
 
-> But I don't care much. Linux will only be using the
-> bank-width anyway.
+> thanks,
+> Lennert
 
-So it can reliably detect interleaving itself?
+Thanks,
 
-I'd like "device-width" to be a required property still,
-for the benefit of non-Linux device tree users, or just
-in case.
-
-> The other thing that might be seen in the 'compatible' property would 
-> be
-> 'jedec-flash',
-
-I don't want to deal with that yet, one thing at a time,
-and CFI flash it is now.  JEDEC is a bit hairier.
-
-> and in that case perhaps we also want properties for the
-> manufacturer and device ident?
-
-Certainly, since they cannot be reliably probed.
-
-> Linux wouldn't necessarily care about
-> them, but other operating systems might.
->
-> And we also need partition information to get through somehow, in the
-> cases where the firmware knows it.
-
-A child node per partition I suppose, dunno.
-
-
-Segher
+-- 
+Anton Vorontsov
+email: cbou@mail.ru
+backup email: ya-cbou@yandex.ru
+irc://irc.freenode.org/bd2
