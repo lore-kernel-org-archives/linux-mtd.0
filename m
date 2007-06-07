@@ -1,7 +1,8 @@
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-From: David Woodhouse <dwmw2@infradead.org>
-To: Segher Boessenkool <segher@kernel.crashing.org>
-In-Reply-To: <18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
+Received: from mail-in-07.arcor-online.net ([151.189.21.47])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HwL8L-0003wU-Do
+	for linux-mtd@lists.infradead.org; Thu, 07 Jun 2007 12:46:53 -0400
+In-Reply-To: <1181232358.2785.79.camel@pmac.infradead.org>
 References: <7fc919fce0761f861be3069a853d3169@bga.com>
 	<bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
 	<4662EAA9.70104@ru.mvista.com>
@@ -13,11 +14,15 @@ References: <7fc919fce0761f861be3069a853d3169@bga.com>
 	<466323EF.5040807@ru.mvista.com>
 	<1181228442.2785.60.camel@pmac.infradead.org>
 	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-Content-Type: text/plain
-Date: Thu, 07 Jun 2007 17:05:58 +0100
-Message-Id: <1181232358.2785.79.camel@pmac.infradead.org>
-Mime-Version: 1.0
+	<1181232358.2785.79.camel@pmac.infradead.org>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <04823a3fa3fc5d1e6c14ef896fabfdb0@kernel.crashing.org>
 Content-Transfer-Encoding: 7bit
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Date: Thu, 7 Jun 2007 18:46:45 +0200
+To: David Woodhouse <dwmw2@infradead.org>
 Cc: Sergei Shtylyov <sshtylyov@ru.mvista.com>, linuxppc-dev@ozlabs.org,
 	linux-mtd@lists.infradead.org, Milton Miller <miltonm@bga.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,46 +34,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-06-07 at 17:55 +0200, Segher Boessenkool wrote:
-> > Any representation of flash devices in the device-tree should ideally
-> > have 'bus width' and 'interleave' properties to contain this
-> > information.
-> >
-> > The 'bus width' cannot necessarily be inferred, especially where a 
-> > given
-> > bus can be configured to allow multiple sizes of access. It's purely a
-> > function of how the flash chips are wired up. That's why we actually
-> > call it 'bank width', not 'bus width' in the Linux code.
-> 
-> Ah, "bank width" as in "bus width" per chip select.  I see.
-> 
-> So I think the best thing to have would be
-> 
-> 	compatible      "cfi-flash"
-> 	bank-width      like you said
-> 	device-width    width of a single flash device
-> 	reg             complete address range of this thing
-> 
-> and then the Linux OF CFI flash code / MTD code just keeps
-> on probing devices from that address range until it has it
-> filled.
-> 
-> Sounds good / comments / anything I missed?
+>> So I think the best thing to have would be
+>>
+>> 	compatible      "cfi-flash"
+>> 	bank-width      like you said
+>> 	device-width    width of a single flash device
+>> 	reg             complete address range of this thing
+>>
+>> and then the Linux OF CFI flash code / MTD code just keeps
+>> on probing devices from that address range until it has it
+>> filled.
+>>
+>> Sounds good / comments / anything I missed?
+>
+> That seems reasonable. I would personally have used 'interleave' to 
+> give
+> the number of devices interleaved together into the specified
+> bank-width, rather than specifying device-width.
 
-That seems reasonable. I would personally have used 'interleave' to give
-the number of devices interleaved together into the specified
-bank-width, rather than specifying device-width. People might get
-confused by device-width because many devices can actually be _either_
-x16 or x8. But I don't care much. Linux will only be using the
-bank-width anyway.
+I think "device-width" is much clearer -- from the name
+"interleave" you cannot tell that it actually means
+"number-of-interleaved-devices-in-this-bank".
 
-The other thing that might be seen in the 'compatible' property would be
-'jedec-flash', and in that case perhaps we also want properties for the
-manufacturer and device ident? Linux wouldn't necessarily care about
-them, but other operating systems might.
+> People might get
+> confused by device-width because many devices can actually be _either_
+> x16 or x8.
 
-And we also need partition information to get through somehow, in the
-cases where the firmware knows it.
+Well after it has been soldered down to the board, it's
+pretty much fixed what the device's bus width is ;-)
 
--- 
-dwmw2
+> But I don't care much. Linux will only be using the
+> bank-width anyway.
+
+So it can reliably detect interleaving itself?
+
+I'd like "device-width" to be a required property still,
+for the benefit of non-Linux device tree users, or just
+in case.
+
+> The other thing that might be seen in the 'compatible' property would 
+> be
+> 'jedec-flash',
+
+I don't want to deal with that yet, one thing at a time,
+and CFI flash it is now.  JEDEC is a bit hairier.
+
+> and in that case perhaps we also want properties for the
+> manufacturer and device ident?
+
+Certainly, since they cannot be reliably probed.
+
+> Linux wouldn't necessarily care about
+> them, but other operating systems might.
+>
+> And we also need partition information to get through somehow, in the
+> cases where the firmware knows it.
+
+A child node per partition I suppose, dunno.
+
+
+Segher
