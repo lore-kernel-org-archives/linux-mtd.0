@@ -1,19 +1,27 @@
-Received: from gutenberg.seattle.identitext.com ([207.114.238.3])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hwikg-0007yB-K6
-	for linux-mtd@lists.infradead.org; Fri, 08 Jun 2007 14:00:02 -0400
-In-Reply-To: <003b01c7a974$3091caf0$e1ac580a@swcenter.sec.samsung.co.kr>
-References: <79F7EE04-68BE-48FA-986D-77090A9D597B@exbiblio.com>
-	<003b01c7a974$3091caf0$e1ac580a@swcenter.sec.samsung.co.kr>
-Mime-Version: 1.0 (Apple Message framework v752.3)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Message-Id: <77CD666F-5162-4DBA-9DB0-B9E88FA7D435@exbiblio.com>
+Received: from e2.ny.us.ibm.com ([32.97.182.142])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hwk6J-0000Fn-Rd
+	for linux-mtd@lists.infradead.org; Fri, 08 Jun 2007 15:26:25 -0400
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e2.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l58JQ5tk016481
+	for <linux-mtd@lists.infradead.org>; Fri, 8 Jun 2007 15:26:05 -0400
+Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
+	l58JQ56u437648
+	for <linux-mtd@lists.infradead.org>; Fri, 8 Jun 2007 15:26:05 -0400
+Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
+	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l58JQ5Um005766
+	for <linux-mtd@lists.infradead.org>; Fri, 8 Jun 2007 15:26:05 -0400
+Subject: JFFS2 deadlock with alloc_sem
+From: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
+To: dwmw2@infradead.org
+Content-Type: text/plain
+Date: Fri, 08 Jun 2007 14:26:04 -0500
+Message-Id: <1181330764.10571.34.camel@kleikamp.austin.ibm.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-From: Mathew Chasan <mathew@exbiblio.com>
-Subject: Re: newbie needs help getting onenand to work...
-Date: Fri, 8 Jun 2007 10:59:49 -0700
-To: <kmpark@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Cc: Nathan.Roberts@motorola.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,83 +31,91 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thank You Kyungmin, that is very very helpful.  Hopefully onenand  
-will work before my day is over :-) !
+Forgive me for not following up properly, but I'm not on the mailing
+list, and I'm following up from the archives.
 
-*m
+> On Mon, 2007-04-30 at 15:41 -0400, Roberts Nathan-mcg31137 wrote:
+> > Has anyone seen this deadlock before? It seems to be a classic deadlock 
+> > situation so I'm not sure if maybe I'm misinterpreting things or 
+> > the use case (several postmark tests running in parallel on a
+> > preemptible kernel) is especially vulnerable. 
+> 
+> I think Josh has spotted the real problem here. Does this help? If so,
+> as better fix will be forthcoming....
+> 
+> diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
+> index 2d99e06..1066120 100644
+> --- a/fs/jffs2/gc.c
+> +++ b/fs/jffs2/gc.c
+> @@ -1218,7 +1218,9 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
+>  	 *    page OK. We'll actually write it out again in commit_write, which is a little
+>  	 *    suboptimal, but at least we're correct.
+>  	 */
+> +	up(&f->sem);
+>  	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
+> +	down(&f->sem);
+>  
+>  	if (IS_ERR(pg_ptr)) {
+>  		printk(KERN_WARNING "read_cache_page() returned error: %ld\n", PTR_ERR(pg_ptr));
 
-On Jun 7, 2007, at 7:24 PM, Kyungmin Park wrote:
+As you know, jffs2_gc_fetch_page() causes read_cache_page() to call
+jffs2_do_readpage_unlock().  jffs2_do_readpage_unlock() expects f->sem
+to be held, but in no longer is.  I think, with this change,
+jffs2_do_readpage_unlock() is the right place to take f->sem.  What do
+you think of this patch, and does it have any affect on Nathan's
+deadlock?
 
->>
->> Hi List,
->>
->> I'm trying to get a Samsung KFH4G16Q2M Onenand to work with the
->> Freescale i.MX31.  I'm using a modified version of the 2.6.19.2 tree
->> available on the freescale website.
->>
->> Basically i have yet to get anywhere.  I've enabled the MTD and
->> OneNand drivers in the kernel  but thats about it.  Interestingly, i
->> don't see any sort of indication that the OneNand drivers are even
->> getting initialized in any way during kernel boot.
->>
->> I know that i'm going to need to somehow explain to the kernel where
->> to look for my oneNand device, and what to look for, but i haven't
->> figured out how to do this.  There's quite a lot out there on NAND
->> and NOR devices of course, but i'm not clear on what needs to be the
->> same and different for a OneNand part.  I spent all day yesterday
->> searching for any sort of documentation either online or in the code,
->> and found very little talking about oneNand.  Today i'm looking
->> through the code trying to put together what i need to do, but was
->> hoping someone might be able to help me, either by pointing me to a
->> preexisting document, or by quickly telling me what steps i need to
->> take/what i need to define to get this to work.
->
-> Hi,
-> There's OneNAND reference board, Apollon.
-> linux/arch/arm/mach-omap2/board-apollon.c [1]
->
-> First, you define mtd partitions.
-> Second, define the OneNAND address at struct resource.
-> Third, register struct platform_device with namd "onenand"
->
-> static struct platform_device apollon_onenand_device = {
->         .name           = "onenand",
->         .id             = -1,
->         .dev            = {
->                 .platform_data  = &apollon_flash_data,
->         },
->         .num_resources  = ARRAY_SIZE(apollon_flash_resource),
->         .resource       = apollon_flash_resource,
-> };
->
-> Finally, you can see some message at boot.
->
-> Muxed OneNAND 256MB 1.8V 16-bit (0x40)
-> Scanning device for bad blocks
-> Bad eraseblock 411 at 0x03360000
-> Bad eraseblock 716 at 0x05980000
-> Bad eraseblock 1176 at 0x09300000
-> Creating 6 MTD partitions on "onenand":
-> 0x00000000-0x00020000 : "X-Loader + U-Boot"
-> 0x00020000-0x00040000 : "params"
-> 0x00040000-0x00240000 : "kernel"
-> 0x00240000-0x01240000 : "rootfs"
-> 0x01240000-0x03240000 : "filesystem00"
-> 0x03240000-0x10000000 : "filesystem01"
->
-> As Nishanth Menon wrote omap2430sdp for reference but it is OMAP2  
-> specific. It's
-> not work on other architectures. Also it's not yet merged mtd tree.
->
-> Thank you,
-> Kyungmin Park
->
-> 1.
-> http://source.mvista.com/git/gitweb.cgi?p=linux- 
-> omap-2.6.git;a=blob;h=16428f6290
-> 20b1d19516d75f54631e51fd13b84c;hb=e0e0c1591b129da1246eaa51b91f040f6dfb 
-> 2a2e;f=arc
-> h/arm/mach-omap2/board-apollon.c
->
->
->
+Note: If this works out, jffs2_readpage and jffs2_do_readpage_unlock can
+probably be collapsed into one function.
+
+diff -Nurp linux-2.6.22-rc4/fs/jffs2/file.c linux/fs/jffs2/file.c
+--- linux-2.6.22-rc4/fs/jffs2/file.c	2007-06-05 08:10:59.000000000 -0500
++++ linux/fs/jffs2/file.c	2007-06-08 13:18:18.000000000 -0500
+@@ -102,21 +102,20 @@ static int jffs2_do_readpage_nolock (str
+ 
+ int jffs2_do_readpage_unlock(struct inode *inode, struct page *pg)
+ {
+-	int ret = jffs2_do_readpage_nolock(inode, pg);
++	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
++	int ret;
++
++	down(&f->sem);
++	ret = jffs2_do_readpage_nolock(inode, pg);
+ 	unlock_page(pg);
++	up(&f->sem);
+ 	return ret;
+ }
+ 
+ 
+ static int jffs2_readpage (struct file *filp, struct page *pg)
+ {
+-	struct jffs2_inode_info *f = JFFS2_INODE_INFO(pg->mapping->host);
+-	int ret;
+-
+-	down(&f->sem);
+-	ret = jffs2_do_readpage_unlock(pg->mapping->host, pg);
+-	up(&f->sem);
+-	return ret;
++	return jffs2_do_readpage_unlock(pg->mapping->host, pg);
+ }
+ 
+ static int jffs2_prepare_write (struct file *filp, struct page *pg,
+diff -Nurp linux-2.6.22-rc4/fs/jffs2/gc.c linux/fs/jffs2/gc.c
+--- linux-2.6.22-rc4/fs/jffs2/gc.c	2007-06-05 08:10:59.000000000 -0500
++++ linux/fs/jffs2/gc.c	2007-06-08 13:16:29.000000000 -0500
+@@ -1218,7 +1218,9 @@ static int jffs2_garbage_collect_dnode(s
+ 	 *    page OK. We'll actually write it out again in commit_write, which is a little
+ 	 *    suboptimal, but at least we're correct.
+ 	 */
++	up(&f->sem);
+ 	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
++	down(&f->sem);
+ 
+ 	if (IS_ERR(pg_ptr)) {
+ 		printk(KERN_WARNING "read_cache_page() returned error: %ld\n", PTR_ERR(pg_ptr));
+
+Thanks,
+Shaggy
+-- 
+David Kleikamp
+IBM Linux Technology Center
