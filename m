@@ -1,33 +1,18 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HxT08-0003u0-A6
-	for linux-mtd@lists.infradead.org; Sun, 10 Jun 2007 15:24:42 -0400
-Date: Sun, 10 Jun 2007 19:40:11 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [Patch 10/18] fs/logfs/inode.c
-Message-ID: <20070610174011.GB32619@lazybastard.org>
-References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184636.GK8952@lazybastard.org>
-	<200706101924.29927.arnd@arndb.de>
+	id 1HxfMQ-00021x-V4
+	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2007 04:34:54 -0400
+Subject: Re: [PATCH] JFFS2 appears to "freeze" during erase, version 2
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+In-Reply-To: <1181029875.30670.23.camel@gentoo-jocke.transmode.se>
+References: <1181029875.30670.23.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Mon, 11 Jun 2007 10:34:06 +0200
+Message-Id: <1181550846.30670.139.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200706101924.29927.arnd@arndb.de>
-Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
-	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
-	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
-	Sam Ravnborg <sam@ravnborg.org>,
-	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
-	Evgeniy Polyakov <johnpol@2ka.mipt.ru>, Roland Dreier <rdreier@cisco.com>,
-	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
-	Jan Engelhardt <jengelh@linux01.gwdg.de>,
-	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
-	Albert Cahalan <acahalan@gmail.com>,
-	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
-	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
-	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,36 +22,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 10 June 2007 19:24:28 +0200, Arnd Bergmann wrote:
-> On Sunday 03 June 2007, Jörn Engel wrote:
-> > +struct inode *logfs_new_inode(struct inode *dir, int mode)
-> > +{
-> > +       struct super_block *sb = dir->i_sb;
-> > +       struct inode *inode;
-> > +
-> > +       inode = new_inode(sb);
-> > +       if (!inode)
-> > +               return ERR_PTR(-ENOMEM);
-> > +
-> > +       logfs_init_inode(inode);
-> > +
-> > +       inode->i_mode = mode;
-> > +       inode->i_ino = logfs_get_ino(sb);
-> > +
-> > +       insert_inode_hash(inode);
-> > +
-> > +       return inode;
-> > +}
+On Tue, 2007-06-05 at 09:51 +0200, Joakim Tjernlund wrote:
+> Here is an updated version that contains all everything in one patch. I hope
+> this one can be applied as is.
 > 
-> I think this is missing code that sets the initial i_uid/i_gid,
-> but there may be more missing. Changing the uid value works,
-> but creating files as non-root user doesn't.
+>  Jocke
+> 
+> >From 87cd93db5895e1506a6abb0dbc891587e96d8547 Mon Sep 17 00:00:00 2001
+> From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> Date: Tue, 5 Jun 2007 09:38:53 +0200
+> Subject: [PATCH] JFFS2 appears to "freeze" during erase
+> Radoslaw Bisewski <radbis@googlemail.com> writes:
+> With current desing erase_free_sem is locked every time the flash
+> block is being erased. For NOR flashes - ~1 second is needed to erase
+> single flash block. In the worst case scenario erase_free_sem may be
+> locked for a couple of seconds when the number of blocks is being
+> erased (e.g. after large file was removed). When erase_free_sem is
+> locked all read/write operations for given JFFS2 partition are locked
+> too - in effect from time to time access to the JFFS2 partition is
+> locked for a number of seconds. This fix makes critical section in
+> flash erasing procedure shorter - now erase_free_sem is locked around
+> erase_completion_lock spinlock only.
+> 
+> Additional bug fixes by me.
+> 
+> Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> ---
+[SNIP patch]
 
-Eek!  I'll have a look.
+After running our boards a few days with the above patch we have seen
+a new hang during SW upgrade of the board.
 
-Jörn
+A simple script that is run to do some validation of the new SW
+sometimes takes about 2 minutes to complete instead of 1 second.
 
--- 
-When in doubt, punt.  When somebody actually complains, go back and fix it...
-The 90% solution is a good thing.
--- Rob Landley
+FS I/O  part of that script is:
+  BOARD=`fw_printenv genBoardType | sed 's/^.*=//' | sed 's/^cu.*/cu/'`
+  TMP_FILE=/tmp/.swu_operations.log
+  echo "Some text 1" >> $TMP_FILE
+  echo "Some text 2" >> $TMP_FILE
+  echo `date` >> $TMP_FILE
+  echo "Some text 3" >> $TMP_FILE
+
+fw_printenv is an utility that accesses(reads) the u-boots environment
+via /dev/mtd.
+/tmp is mounted as a tmpfs:
+none            /tmp            tmpfs   defaults                        0 0
+
+This is on 2.6.20 with cfi_cmdset_0001 driver
+
+Any ideas what is going on is most welcome.
+
+ Jocke
