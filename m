@@ -1,20 +1,21 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HxtnZ-0000nd-LN
-	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2007 19:59:57 -0400
-Date: Tue, 12 Jun 2007 01:28:03 +0200
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HxtqQ-0000vo-A2
+	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2007 20:04:33 -0400
+Date: Tue, 12 Jun 2007 01:57:39 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
 To: Arnd Bergmann <arnd@arndb.de>
 Subject: Re: [Patch 10/18] fs/logfs/inode.c
-Message-ID: <20070611232803.GA5377@lazybastard.org>
+Message-ID: <20070611235739.GB5377@lazybastard.org>
 References: <20070603183845.GA8952@lazybastard.org>
-	<20070603184636.GK8952@lazybastard.org>
 	<200706101924.29927.arnd@arndb.de>
+	<20070611232803.GA5377@lazybastard.org>
+	<200706120151.36520.arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200706101924.29927.arnd@arndb.de>
+In-Reply-To: <200706120151.36520.arnd@arndb.de>
 Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
 	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
 	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
@@ -37,23 +38,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 10 June 2007 19:24:28 +0200, Arnd Bergmann wrote:
+On Tue, 12 June 2007 01:51:34 +0200, Arnd Bergmann wrote:
+> On Tuesday 12 June 2007, Jörn Engel wrote:
+> > The initial storm of review comments has calmed down.  I get the
+> > impression that people either lose interest or run out of simple things
+> > to point out.  Maybe I should wait a bit before resending?
 > 
-> I think this is missing code that sets the initial i_uid/i_gid,
-> but there may be more missing. Changing the uid value works,
-> but creating files as non-root user doesn't.
+> Your last series had a todo list of 11 items, plus more stuff
+> found in the review. How about you submit logfs for inclusion in -mm
+> when all easy stuff is gone from that list?
 
-Fixed in patch 557, see
-http://logfs.org/logfs/patches
-
-The initial storm of review comments has calmed down.  I get the
-impression that people either lose interest or run out of simple things
-to point out.  Maybe I should wait a bit before resending?
+I was hoping to get more comments still.  But maybe your are right.
+Half of your last comments looked more like test reports than code
+review.
 
 Jörn
 
 -- 
-The competent programmer is fully aware of the strictly limited size of
-his own skull; therefore he approaches the programming task in full
-humility, and among other things he avoids clever tricks like the plague.
--- Edsger W. Dijkstra
+Linux is more the core point of a concept that surrounds "open source"
+which, in turn, is based on a false concept. This concept is that
+people actually want to look at source code.
+-- Rob Enderle
