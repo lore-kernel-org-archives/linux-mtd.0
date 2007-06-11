@@ -1,19 +1,24 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from mtaout03-winn.ispmail.ntl.com ([81.103.221.49])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hxkg2-0004gX-BI
-	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2007 10:15:29 -0400
-Subject: Re: [PATCH] JFFS2 appears to "freeze" during erase, version 2
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-In-Reply-To: <1181550846.30670.139.camel@gentoo-jocke.transmode.se>
-References: <1181029875.30670.23.camel@gentoo-jocke.transmode.se>
-	<1181550846.30670.139.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
+	id 1HxmMv-0005eT-T5
+	for linux-mtd@lists.infradead.org; Mon, 11 Jun 2007 12:04:05 -0400
+Received: from aamtaout01-winn.ispmail.ntl.com ([81.103.221.35])
+	by mtaout03-winn.ispmail.ntl.com with ESMTP id
+	<20070611160330.QYBL13.mtaout03-winn.ispmail.ntl.com@aamtaout01-winn.ispmail.ntl.com>
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2007 17:03:30 +0100
+Received: from FRN2 ([86.1.174.206]) by aamtaout01-winn.ispmail.ntl.com
+	with SMTP
+	id <20070611160330.LGL219.aamtaout01-winn.ispmail.ntl.com@FRN2>
+	for <linux-mtd@lists.infradead.org>; Mon, 11 Jun 2007 17:03:30 +0100
+Message-ID: <009201c7ac42$0cee6ec0$3902a8c0@FRN2>
+From: "Kevin Morfitt" <kevin.morfitt@ntlworld.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: CLEANMARKER node found at 0x007a4000 has totlen 0xc != normal 0x0
+Date: Mon, 11 Jun 2007 17:03:26 +0100
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Date: Mon, 11 Jun 2007 16:15:19 +0200
-Message-Id: <1181571319.30670.169.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,67 +28,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-06-11 at 10:34 +0200, Joakim Tjernlund wrote:
-> On Tue, 2007-06-05 at 09:51 +0200, Joakim Tjernlund wrote:
-> > Here is an updated version that contains all everything in one patch. I hope
-> > this one can be applied as is.
-> > 
-> >  Jocke
-> > 
-> > >From 87cd93db5895e1506a6abb0dbc891587e96d8547 Mon Sep 17 00:00:00 2001
-> > From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> > Date: Tue, 5 Jun 2007 09:38:53 +0200
-> > Subject: [PATCH] JFFS2 appears to "freeze" during erase
-> > Radoslaw Bisewski <radbis@googlemail.com> writes:
-> > With current desing erase_free_sem is locked every time the flash
-> > block is being erased. For NOR flashes - ~1 second is needed to erase
-> > single flash block. In the worst case scenario erase_free_sem may be
-> > locked for a couple of seconds when the number of blocks is being
-> > erased (e.g. after large file was removed). When erase_free_sem is
-> > locked all read/write operations for given JFFS2 partition are locked
-> > too - in effect from time to time access to the JFFS2 partition is
-> > locked for a number of seconds. This fix makes critical section in
-> > flash erasing procedure shorter - now erase_free_sem is locked around
-> > erase_completion_lock spinlock only.
-> > 
-> > Additional bug fixes by me.
-> > 
-> > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-> > ---
-> [SNIP patch]
-> 
-> After running our boards a few days with the above patch we have seen
-> a new hang during SW upgrade of the board.
-> 
-> A simple script that is run to do some validation of the new SW
-> sometimes takes about 2 minutes to complete instead of 1 second.
-> 
-> FS I/O  part of that script is:
->   BOARD=`fw_printenv genBoardType | sed 's/^.*=//' | sed 's/^cu.*/cu/'`
->   TMP_FILE=/tmp/.swu_operations.log
->   echo "Some text 1" >> $TMP_FILE
->   echo "Some text 2" >> $TMP_FILE
->   echo `date` >> $TMP_FILE
->   echo "Some text 3" >> $TMP_FILE
-> 
-> fw_printenv is an utility that accesses(reads) the u-boots environment
-> via /dev/mtd.
-> /tmp is mounted as a tmpfs:
-> none            /tmp            tmpfs   defaults                        0 0
-> 
-> This is on 2.6.20 with cfi_cmdset_0001 driver
-> 
-> Any ideas what is going on is most welcome.
-> 
->  Jocke
+Hi
 
-looking into the /dev/mtd driver, mtdchar.c I wonder about something in
-mtd_close:
-	if (mtd->sync)
-		mtd->sync(mtd);
+I'm using mtd-utils-1.0.0 on a KB9202B with a 32M NAND flash. /dev/mtd0 is 
+mapped as one partition:
 
-Should the mtd->sync call be here? I think this might be the cause
-for the long stalls we see from time to time. If an long erase is on
-going, this calls won't return until all sectors are erased, me thinks.
+[root@KB9202B:~] cat /proc/mtd
+dev:    size   erasesize  name
+mtd0: 02000000 00004000 "nand_fs"
 
- Jocke
+I create my jffs image using:
+
+mkfs.jffs2 --pad=0x4000 --eraseblock=0x4000 -l --root=kb9202_nfsroot/target_fs 
+ -o full_fs.bin
+
+To program the NAND, when I'm mounted via NFS, I do:
+
+[root@KB9202B:~] flash_eraseall -j /dev/mtd0
+Erasing 16 Kibyte @ 1ffc000 -- 99 % complete. Cleanmarker written at 
+1ffc000.
+[root@KB9202B:~] nandwrite -f /dev/mtd0 /full_fs.bin
+
+When I re-boot from MTD I always get lots of messages like "CLEANMARKER node 
+found at 0x007a4000 has totlen 0xc != normal 0x0". The board still boots but 
+after a few re-boots I end up getting other messages like:
+
+Empty flash at 0x007de204 ends at 0x007de400
+JFFS2 notice: (187) check_node_data: wrong data CRC in data node at 
+0x007de800: read 0x95b49b87, calculated 0xc429c7e8.
+
+I've seen the other threads on this subjects and tried using '-n' in my 
+mkfs.jffs2 command but if I do that nandwrite fails with:
+
+[root@KB9202B:~] Input file is not page aligned
+[root@KB9202B:~] Data did not fit into device, due to bad blocks
+
+I've read somewhere else that the "wrong data CRC" message might mean my 
+erase size is wrong but I don't know what the erase size should be anyway.
+
+I'd appreciate any advice anyone could give.
+
+Thanks
+Kev 
