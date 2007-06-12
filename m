@@ -1,22 +1,17 @@
-Received: from xdsl-664.zgora.dialog.net.pl ([81.168.226.152] helo=tuxland.pl)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3fP5-00062h-2Y
-	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 22:50:24 +0100
-From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
-To: akpm@linux-foundation.org,
- David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] mtd: add module license to mtdbdi
-Date: Wed, 27 Jun 2007 23:50:04 +0200
-References: <200706271030.l5RAUgKE015163@imap1.linux-foundation.org>
-In-Reply-To: <200706271030.l5RAUgKE015163@imap1.linux-foundation.org>
+Received: from www19.your-server.de ([213.133.104.19])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hy5F3-0008E9-Tx
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 08:13:02 -0400
+Received: from [84.189.53.43] (helo=ulitu.handy-pc.constin-design.de)
+	by www19.your-server.de with esmtpa (Exim 4.50) id 1Hy5Ek-0004iB-9w
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 14:12:39 +0200
+From: Uli Luckas <u.luckas@road-gmbh.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-2"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200706272350.04975.m.kozlowski@tuxland.pl>
-Cc: David Howells <dhowells@redhat.com>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_12obG+VQ7mLAbca"
+Message-Id: <200706121412.37034.u.luckas@road-gmbh.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,84 +20,81 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Tue, 12 Jun 2007 12:13:07 -0000
 
-Hello,
+--Boundary-00=_12obG+VQ7mLAbca
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-	This seems to be a known issue [1] about Photron PNC-2000 module called
-pnc2000. To reproduce this just 'modprobe pnc2000'. The patch attached at least
-makes the kernel to be not tainted when mtdbdi gets loaded.
+Hi
+We experience the following problem when our board tries to suspend:
 
-Signed-off-by: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
+Jun  7 18:32:21 constin kernel: [ 2085.350000] Stopping tasks ... 
+Jun  7 18:32:21 constin kernel: [ 2105.410000] Stopping kernel threads timed 
+out after 20 seconds (1 tasks refusing to freeze):
+Jun  7 18:32:21 constin kernel: [ 2105.410000]  jffs2_gcd_mtd3
+Jun  7 18:32:21 constin kernel: [ 2105.410000] Restarting tasks ... <4> 
+Strange, jffs2_gcd_mtd3 not stopped
+Jun  7 18:32:21 constin kernel: [ 2105.440000] done.
 
- drivers/mtd/mtdbdi.c |    2 ++
- 1 file changed, 2 insertions(+)
+The problem seems to happen, when suspend kicks in, after the call to 
+try_to_freeze and before the while loop in jffs2_garbage_collect_thread.
 
---- linux-2.6.22-rc6-bo-a/drivers/mtd/mtdbdi.c	2007-06-27 22:05:34.000000000 +0200
-+++ linux-2.6.22-rc6-bo-b/drivers/mtd/mtdbdi.c	2007-06-27 23:20:57.000000000 +0200
-@@ -46,3 +46,5 @@ struct backing_dev_info mtd_bdi_rw_mappa
- 			   BDI_CAP_WRITE_MAP),
- };
- EXPORT_SYMBOL_GPL(mtd_bdi_rw_mappable);
+The pending freeze will cause signal_pending to return true until the 
+attempted suspend is over and thereby the while loop won't terminate until 
+the suspend times out.
+
+This patch will call try_to_freeze from within the while loop and adds an 
+extra check for jffs2_thread_should_wake before we actually do the GC to 
+avoid calling jffs2_garbage_collect_pass at every wakeup.
+
+If there are no objections, please apply and push to mainline.
+
+Signed-off-by: Uli Luckas <u.luckas@road.de>
+
+
+--Boundary-00=_12obG+VQ7mLAbca
+Content-Type: text/x-csrc; charset="iso-8859-1"; name="freeze_gc_thread.c"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="freeze_gc_thread.c"
+
+diff --git a/fs/jffs2/background.c b/fs/jffs2/background.c
+index 888f236..43a2fc8 100644
+=2D-- a/fs/jffs2/background.c
++++ b/fs/jffs2/background.c
+@@ -96,9 +96,6 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 			schedule();
+ 		}
+=20
+=2D		if (try_to_freeze())
+=2D			continue;
+=2D
+ 		/* This thread is purely an optimisation. But if it runs when
+ 		   other things could be running, it actually makes things a
+ 		   lot worse. Use yield() and put it at the back of the runqueue
+@@ -113,6 +110,9 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 			siginfo_t info;
+ 			unsigned long signr;
+=20
++			if (try_to_freeze())
++				continue;
 +
-+MODULE_LICENSE("GPL v2");
+ 			signr =3D dequeue_signal_lock(current, &current->blocked, &info);
+=20
+ 			switch(signr) {
+@@ -137,7 +137,7 @@ static int jffs2_garbage_collect_thread(void *_c)
+ 		disallow_signal(SIGHUP);
+=20
+ 		D1(printk(KERN_DEBUG "jffs2_garbage_collect_thread(): pass\n"));
+=2D		if (jffs2_garbage_collect_pass(c) =3D=3D -ENOSPC) {
++		if (jffs2_thread_should_wake(c) && jffs2_garbage_collect_pass(c) =3D=3D =
+=2DENOSPC) {
+ 			printk(KERN_NOTICE "No space for garbage collection. Aborting GC thread=
+\n");
+ 			goto die;
+ 		}
 
-
-
-Regards,
-
-	Mariusz
-
-[1] http://groups.google.pl/group/linux.kernel/browse_frm/thread/77d9f9273ab14382
-
-a.txt - unpatched
-b.txt - patched
-
---- a.txt       2007-06-27 23:32:48.000000000 +0200
-+++ b.txt       2007-06-27 23:33:33.000000000 +0200
-@@ -1,4 +1,3 @@
--mtdbdi: module license 'unspecified' taints kernel.
- Photron PNC-2000 flash mapping: 400000 at bf000000
- BUG: unable to handle kernel paging request at virtual address bf000000
-  printing eip:
-@@ -6,27 +5,29 @@ ded752ff
- *pde = 00000000
- Oops: 0002 [#1]
- PREEMPT
--Modules linked in: cfi_probe gen_probe pnc2000 mtdpart mtdcore mtdbdi(P) chipreg eeprom i2c_ali1535 rtc_cmos rtc_core rtc_lib i2c_ali15x3 8139too 8250_pci 8250 serial_core yenta_socket rsrc_nonstatic
-+Modules linked in: cfi_probe gen_probe pnc2000 mtdpart mtdcore mtdbdi chipreg eeprom i2c_ali1535 rtc_cmos rtc_core rtc_lib 8139too i2c_ali1
-+5x3 yenta_socket rsrc_nonstatic 8250_pci 8250 serial_core
- CPU:    0
--EIP:    0060:[<ded752ff>]    Tainted: P        VLI
-+EIP:    0060:[<ded752ff>]    Not tainted VLI
- EFLAGS: 00010286   (2.6.22-rc6-mm1 #2)
- EIP is at cfi_probe_chip+0xac/0xe61 [cfi_probe]
- eax: bf000000   ebx: 00000004   ecx: 00000010   edx: 00f000f0
--esi: ded564e0   edi: 00000002   ebp: c3511e14   esp: c3511db0
-+esi: ded574e0   edi: 00000002   ebp: c354de14   esp: c354ddb0
- ds: 007b   es: 007b   fs: 0000  gs: 0033  ss: 0068
--Process modprobe (pid: 6075, ti=c3510000 task=c1b70ac0 task.ti=c3510000)
--Stack: 00000000 00000000 c3511e2c c0126d84 00000000 c3511dd0 00000000 00000000
--       00000000 00000001 dead4ead ffffffff ffffffff c043cc58 00000000 00000046
--       c3511df0 c3511df0 00000000 00000001 dead4ead ffffffff ded75253 00000002
-+Process modprobe (pid: 6235, ti=c354c000 task=c263c030 task.ti=c354c000)
-+Stack: 00000000 00000000 c354de2c c0126d84 00000000 c354ddd0 00000000 00000000
-+       00000000 00000001 dead4ead ffffffff ffffffff c06aee70 00000000 c04f3d98
-+       c354ddf0 c354ddf0 00000000 00000001 dead4ead ffffffff ded75253 00000002
- Call Trace:
-- [<ded54131>] mtd_do_chip_probe+0x83/0x32a [gen_probe]
-+ [<ded55131>] mtd_do_chip_probe+0x83/0x32a [gen_probe]
-  [<ded75251>] cfi_probe+0xd/0xf [cfi_probe]
-- [<de872185>] do_map_probe+0x1c/0x61 [chipreg]
-- [<ded5c049>] init_pnc2000+0x49/0x76 [pnc2000]
-+ [<ded51185>] do_map_probe+0x1c/0x61 [chipreg]
-+ [<ded5d049>] init_pnc2000+0x49/0x76 [pnc2000]
-  [<c0137c50>] sys_init_module+0x11b/0x160b
-  [<c010401e>] sysenter_past_esp+0x5f/0x85
-  [<ffffe410>] 0xffffe410
-  =======================
- INFO: lockdep is turned off.
--Code: f0 8d 0c fd 00 00 00 00 89 c2 d3 e2 09 c2 83 fb 01 0f 84 af 0d 00 00 83 fb 02 0f 84 95 0d 00 00 83 fb 04 75 08 8b 45 b8 03 46 0c <89> 10 0f ae f0 89 f6 8b 5e 14 8b 55 08 8b 4a 08 89 d8 99 f7 f9
--EIP: [<ded752ff>] cfi_probe_chip+0xac/0xe61 [cfi_probe] SS:ESP 0068:c3511db0
-+Code: f0 8d 0c fd 00 00 00 00 89 c2 d3 e2 09 c2 83 fb 01 0f 84 af 0d 00 00 83 fb 02 0f 84 95 0d 00 00 83 fb 04 75 08 8b 45 b8 03 46 0c <89>
-+ 10 0f ae f0 89 f6 8b 5e 14 8b 55 08 8b 4a 08 89 d8 99 f7 f9
-+EIP: [<ded752ff>] cfi_probe_chip+0xac/0xe61 [cfi_probe] SS:ESP 0068:c354ddb0
+--Boundary-00=_12obG+VQ7mLAbca--
