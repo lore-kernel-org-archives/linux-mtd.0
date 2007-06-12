@@ -1,17 +1,18 @@
 Received: from www19.your-server.de ([213.133.104.19])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hy5F3-0008E9-Tx
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 08:13:02 -0400
+	id 1Hy5wY-000070-QW
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 08:57:58 -0400
 Received: from [84.189.53.43] (helo=ulitu.handy-pc.constin-design.de)
-	by www19.your-server.de with esmtpa (Exim 4.50) id 1Hy5Ek-0004iB-9w
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 14:12:39 +0200
-From: Uli Luckas <u.luckas@road-gmbh.de>
+	by www19.your-server.de with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.50)
+	id 1Hy5wS-00047K-CC
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 14:57:48 +0200
+From: Uli Luckas <u.luckas@road.de>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
 MIME-Version: 1.0
 Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_12obG+VQ7mLAbca"
-Message-Id: <200706121412.37034.u.luckas@road-gmbh.de>
+  boundary="Boundary-00=_EbpbG8IM0o0jkvI"
+Message-Id: <200706121451.16904.u.luckas@road.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,9 +21,9 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Tue, 12 Jun 2007 12:13:07 -0000
+Date: Tue, 12 Jun 2007 12:58:02 -0000
 
---Boundary-00=_12obG+VQ7mLAbca
+--Boundary-00=_EbpbG8IM0o0jkvI
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
@@ -53,9 +54,22 @@ avoid calling jffs2_garbage_collect_pass at every wakeup.
 If there are no objections, please apply and push to mainline.
 
 Signed-off-by: Uli Luckas <u.luckas@road.de>
+-- 
 
+------- ROAD ...the handyPC Company - - -  ) ) )
 
---Boundary-00=_12obG+VQ7mLAbca
+Uli Luckas
+Software Development
+
+ROAD GmbH
+Bennigsenstr. 14 | 12159 Berlin | Germany
+fon: +49 (30) 230069 - 64 | fax: +49 (30) 230069 - 69
+url: www.road.de
+
+Amtsgericht Charlottenburg: HRB 96688 B
+Managing directors: Hans-Peter Constien, Hubertus von Streit
+
+--Boundary-00=_EbpbG8IM0o0jkvI
 Content-Type: text/x-csrc; charset="iso-8859-1"; name="freeze_gc_thread.c"
 Content-Transfer-Encoding: quoted-printable
 Content-Disposition: attachment;
@@ -97,4 +111,4 @@ index 888f236..43a2fc8 100644
  			goto die;
  		}
 
---Boundary-00=_12obG+VQ7mLAbca--
+--Boundary-00=_EbpbG8IM0o0jkvI--
