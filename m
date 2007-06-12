@@ -1,28 +1,18 @@
-Received: from ozlabs.org ([203.10.76.45])
+Received: from wip-ectls-mx1.wipro.com ([203.91.193.21])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HxyFe-0003JX-Ti
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 00:45:09 -0400
-Date: Tue, 12 Jun 2007 14:44:59 +1000
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Message-ID: <20070612044459.GD4198@localhost.localdomain>
-References: <bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-	<466308F4.8050004@ru.mvista.com>
-	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-Cc: linuxppc-dev@ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
-	Milton Miller <miltonm@bga.com>, linux-mtd@lists.infradead.org
+	id 1HxyWD-0003cy-6n
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 01:02:18 -0400
+Subject: [PATCH]is_power_of_2-mtd/ubi/build.c
+From: vignesh babu <vignesh.babu@wipro.com>
+To: dwmw2@infradead.org, dedekind@infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Tue, 12 Jun 2007 10:31:05 +0530
+Message-Id: <1181624466.3109.23.camel@merlin.linuxcoe.com>
+Mime-Version: 1.0
+Cc: Kernel Janitors List <kernel-janitors@lists.osdl.org>,
+	linux-mtd@lists.infradead.org
+Reply-To: vignesh.babu@wipro.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,40 +22,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 07, 2007 at 05:55:44PM +0200, Segher Boessenkool wrote:
-> > Any representation of flash devices in the device-tree should ideally
-> > have 'bus width' and 'interleave' properties to contain this
-> > information.
-> >
-> > The 'bus width' cannot necessarily be inferred, especially where a 
-> > given
-> > bus can be configured to allow multiple sizes of access. It's purely a
-> > function of how the flash chips are wired up. That's why we actually
-> > call it 'bank width', not 'bus width' in the Linux code.
-> 
-> Ah, "bank width" as in "bus width" per chip select.  I see.
-> 
-> So I think the best thing to have would be
-> 
-> 	compatible      "cfi-flash"
-> 	bank-width      like you said
-> 	device-width    width of a single flash device
-> 	reg             complete address range of this thing
-> 
-> and then the Linux OF CFI flash code / MTD code just keeps
-> on probing devices from that address range until it has it
-> filled.
-> 
-> Sounds good / comments / anything I missed?
 
-Looks pretty sensible to me.  Presumably the compatible property could
-also have more specific entries for the particular chip type.
 
-Of course, Ebony has flash which is JEDEC rather than CFI probed, so I
-have an interest in a binding for that, too.
+Replacing (n & (n-1)) in the context of power of 2 checks
+with is_power_of_2
+
+Signed-off-by: vignesh babu <vignesh.babu@wipro.com>
+--- 
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 555d594..54e923f 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -33,6 +33,7 @@
+ #include <linux/moduleparam.h>
+ #include <linux/stringify.h>
+ #include <linux/stat.h>
++#include <linux/log2.h>
+ #include "ubi.h"
+ 
+ /* Maximum length of the 'mtd=' parameter */
+@@ -422,8 +423,7 @@ static int io_init(struct ubi_device *ubi)
+ 	ubi->hdrs_min_io_size = ubi->mtd->writesize >> ubi->mtd->subpage_sft;
+ 
+ 	/* Make sure minimal I/O unit is power of 2 */
+-	if (ubi->min_io_size == 0 ||
+-	    (ubi->min_io_size & (ubi->min_io_size - 1))) {
++	if (!is_power_of_2(ubi->min_io_size)) {
+ 		ubi_err("bad min. I/O unit");
+ 		return -EINVAL;
+ 	}
 
 -- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+Vignesh Babu BM 
+_____________________________________________________________ 
+"Why is it that every time I'm with you, makes me believe in magic?"
+
+
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments. 
+
+WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email.
+ 
+www.wipro.com
