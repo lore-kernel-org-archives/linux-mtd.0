@@ -1,29 +1,20 @@
-Received: from mail-in-05.arcor-online.net ([151.189.21.45])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hy40N-0007TV-Ad
-	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 06:53:45 -0400
-In-Reply-To: <20070612044459.GD4198@localhost.localdomain>
-References: <bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-	<466308F4.8050004@ru.mvista.com>
-	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-	<20070612044459.GD4198@localhost.localdomain>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <9e1a55ac71a2ecf5155d2fddf547025e@kernel.crashing.org>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hy71c-0000ct-4M
+	for linux-mtd@lists.infradead.org; Tue, 12 Jun 2007 10:07:18 -0400
+Subject: Re: [PATCH] JFFS2 appears to "freeze" during erase, version 2
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+In-Reply-To: <1181571319.30670.169.camel@gentoo-jocke.transmode.se>
+References: <1181029875.30670.23.camel@gentoo-jocke.transmode.se>
+	<1181550846.30670.139.camel@gentoo-jocke.transmode.se>
+	<1181571319.30670.169.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Tue, 12 Jun 2007 12:53:36 +0200
-To: David Gibson <david@gibson.dropbear.id.au>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Milton Miller <miltonm@bga.com>
+Date: Tue, 12 Jun 2007 16:07:05 +0200
+Message-Id: <1181657226.30670.218.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,35 +24,85 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> So I think the best thing to have would be
->>
->> 	compatible      "cfi-flash"
->> 	bank-width      like you said
->> 	device-width    width of a single flash device
->> 	reg             complete address range of this thing
->>
->> and then the Linux OF CFI flash code / MTD code just keeps
->> on probing devices from that address range until it has it
->> filled.
->>
->> Sounds good / comments / anything I missed?
->
-> Looks pretty sensible to me.
+On Mon, 2007-06-11 at 16:15 +0200, Joakim Tjernlund wrote:
+> On Mon, 2007-06-11 at 10:34 +0200, Joakim Tjernlund wrote:
+> > On Tue, 2007-06-05 at 09:51 +0200, Joakim Tjernlund wrote:
+> > > Here is an updated version that contains all everything in one patch. I hope
+> > > this one can be applied as is.
+> > > 
+> > >  Jocke
+> > > 
+> > > >From 87cd93db5895e1506a6abb0dbc891587e96d8547 Mon Sep 17 00:00:00 2001
+> > > From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> > > Date: Tue, 5 Jun 2007 09:38:53 +0200
+> > > Subject: [PATCH] JFFS2 appears to "freeze" during erase
+> > > Radoslaw Bisewski <radbis@googlemail.com> writes:
+> > > With current desing erase_free_sem is locked every time the flash
+> > > block is being erased. For NOR flashes - ~1 second is needed to erase
+> > > single flash block. In the worst case scenario erase_free_sem may be
+> > > locked for a couple of seconds when the number of blocks is being
+> > > erased (e.g. after large file was removed). When erase_free_sem is
+> > > locked all read/write operations for given JFFS2 partition are locked
+> > > too - in effect from time to time access to the JFFS2 partition is
+> > > locked for a number of seconds. This fix makes critical section in
+> > > flash erasing procedure shorter - now erase_free_sem is locked around
+> > > erase_completion_lock spinlock only.
+> > > 
+> > > Additional bug fixes by me.
+> > > 
+> > > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> > > ---
+> > [SNIP patch]
+> > 
+> > After running our boards a few days with the above patch we have seen
+> > a new hang during SW upgrade of the board.
+> > 
+> > A simple script that is run to do some validation of the new SW
+> > sometimes takes about 2 minutes to complete instead of 1 second.
+> > 
+> > FS I/O  part of that script is:
+> >   BOARD=`fw_printenv genBoardType | sed 's/^.*=//' | sed 's/^cu.*/cu/'`
+> >   TMP_FILE=/tmp/.swu_operations.log
+> >   echo "Some text 1" >> $TMP_FILE
+> >   echo "Some text 2" >> $TMP_FILE
+> >   echo `date` >> $TMP_FILE
+> >   echo "Some text 3" >> $TMP_FILE
+> > 
+> > fw_printenv is an utility that accesses(reads) the u-boots environment
+> > via /dev/mtd.
+> > /tmp is mounted as a tmpfs:
+> > none            /tmp            tmpfs   defaults                        0 0
+> > 
+> > This is on 2.6.20 with cfi_cmdset_0001 driver
+> > 
+> > Any ideas what is going on is most welcome.
+> > 
+> >  Jocke
+> 
+> looking into the /dev/mtd driver, mtdchar.c I wonder about something in
+> mtd_close:
+> 	if (mtd->sync)
+> 		mtd->sync(mtd);
+> 
+> Should the mtd->sync call be here? I think this might be the cause
+> for the long stalls we see from time to time. If an long erase is on
+> going, this calls won't return until all sectors are erased, me thinks.
+> 
+>  Jocke
 
-Great!
+Managed to get a strace -T when running fw_printenv and there I could
+see that the stalls came when closing a /dev/mtd device:
+open("/dev/mtd1", O_RDONLY)             = 3 <0.000143>
+lseek(3, 0, SEEK_SET)                   = 0 <0.000063>
+read(3, "\344\tU\214\0", 5)             = 5 <0.000086>
+read(3, "bootcmd=setenv bootargs root=/de"..., 8187) = 8187 <0.002510>
+close(3)                                = 0 <115.221334>
+open("/dev/mtd2", O_RDONLY)             = 3 <0.000124>
+lseek(3, 0, SEEK_SET)                   = 0 <0.000057>
+read(3, "X\226\255\325\1", 5)           = 5 <0.000078>
+read(3, "bootcmd=setenv bootargs root=/de"..., 8187) = 8187 <0.002502>
+close(3)                                = 0 <34.448065>
 
-> Presumably the compatible property could
-> also have more specific entries for the particular chip type.
+115 resp. 34 seconds to close a readonly device!
 
-Yes, of course.
-
-> Of course, Ebony has flash which is JEDEC rather than CFI probed, so I
-> have an interest in a binding for that, too.
-
-For JEDEC flash, you probably want extra properties
-for manufacturing ID and chip ID.  Also, you need
-to describe the block sizes in some way (on CFI, this
-can be probed; on JEDEC, not).  Anything else?
-
-
-Segher
+Whats going on?
