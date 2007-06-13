@@ -1,12 +1,8 @@
-Received: from ozlabs.org ([203.10.76.45])
+Received: from mail-in-13.arcor-online.net ([151.189.21.53])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HyM5I-0000wq-77
-	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 02:12:02 -0400
-Date: Wed, 13 Jun 2007 16:11:52 +1000
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Message-ID: <20070613061152.GF16148@localhost.localdomain>
+	id 1HyOsJ-0002tB-MB
+	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 05:10:50 -0400
+In-Reply-To: <20070613061152.GF16148@localhost.localdomain>
 References: <8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
 	<466312C2.4090200@ru.mvista.com>
 	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
@@ -17,10 +13,15 @@ References: <8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
 	<9e1a55ac71a2ecf5155d2fddf547025e@kernel.crashing.org>
 	<20070613031615.GC16148@localhost.localdomain>
 	<96f5b23c4f53e986e8caa2156f149cd8@kernel.crashing.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <96f5b23c4f53e986e8caa2156f149cd8@kernel.crashing.org>
+	<20070613061152.GF16148@localhost.localdomain>
+Mime-Version: 1.0 (Apple Message framework v623)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-Id: <40446e5131495e077da798bc54843b2a@kernel.crashing.org>
+Content-Transfer-Encoding: 7bit
+From: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Date: Wed, 13 Jun 2007 11:10:42 +0200
+To: David Gibson <david@gibson.dropbear.id.au>
 Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
 	David Woodhouse <dwmw2@infradead.org>, Milton Miller <miltonm@bga.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -32,32 +33,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 13, 2007 at 07:05:31AM +0200, Segher Boessenkool wrote:
-> >>> Of course, Ebony has flash which is JEDEC rather than CFI probed, so 
-> >>> I
-> >>> have an interest in a binding for that, too.
-> >>
-> >> For JEDEC flash, you probably want extra properties
-> >> for manufacturing ID and chip ID.  Also, you need
-> >> to describe the block sizes in some way (on CFI, this
-> >> can be probed; on JEDEC, not).  Anything else?
-> >
-> > Hrm.  At the moment it appears to work without supplying this
-> > information for the Ebony flash...  I wonder if there are defaults in
-> > the mtd layer or something.
-> 
-> MTD does a lot of heuristic probing.  It is pretty good,
-> but it would be nice if you could skip that and hand it
-> the exact values it needs.  Also, this information should
-> be in the device tree no matter what, even if Linux
-> doesn't use it yet ;-)
+>> MTD does a lot of heuristic probing.  It is pretty good,
+>> but it would be nice if you could skip that and hand it
+>> the exact values it needs.  Also, this information should
+>> be in the device tree no matter what, even if Linux
+>> doesn't use it yet ;-)
+>
+> I agree.  Of course, this means figuring out what the values actually
+> are for Ebony.  I presently have no idea, since the heuristic probing
+> appears to work without problem.
 
-I agree.  Of course, this means figuring out what the values actually
-are for Ebony.  I presently have no idea, since the heuristic probing
-appears to work without problem.
+Doesn't it show it in sysfs, or in the dmesg at least?
+Maybe some other important stuff is there, too.
 
--- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+
+Segher
