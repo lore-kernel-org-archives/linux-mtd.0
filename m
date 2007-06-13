@@ -1,21 +1,21 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HyRNK-0004eR-VG
-	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 07:52:29 -0400
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1HyRzj-0005T8-DJ
+	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 08:30:41 -0400
+Date: Wed, 13 Jun 2007 13:54:45 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 Subject: Re: [PATCH] Fix hanging close for /dev/mtd
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <1181735301.30670.277.camel@gentoo-jocke.transmode.se>
+Message-ID: <20070613115445.GA24502@lazybastard.org>
 References: <1181728411.30670.270.camel@gentoo-jocke.transmode.se>
 	<1181735052.7065.57.camel@zod.rchland.ibm.com>
 	<1181735301.30670.277.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Wed, 13 Jun 2007 13:50:53 +0200
-Message-Id: <1181735453.30670.279.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1181735301.30670.277.camel@gentoo-jocke.transmode.se>
 Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
-Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,7 +25,7 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-06-13 at 13:48 +0200, Joakim Tjernlund wrote:
+On Wed, 13 June 2007 13:48:21 +0200, Joakim Tjernlund wrote:
 > On Wed, 2007-06-13 at 06:44 -0500, Josh Boyer wrote:
 > > On Wed, 2007-06-13 at 11:53 +0200, Joakim Tjernlund wrote:
 > > > Figured I should send this on its own.
@@ -41,16 +41,18 @@ On Wed, 2007-06-13 at 13:48 +0200, Joakim Tjernlund wrote:
 > > > call sync for readonly mappings.
 > > 
 > > So were you going to submit a separate patch for those issues?
-> > 
-> > josh
 > 
 > Wow, someone is reading my mails :)
-> 
-> Just did for mtdchar, the others are a bit more complex
-> so I won't bother with them.
-> 
->  Jocke
 
-BTW, I don't think syncing is needed on NOR flashes at all.
+I read most of them.
 
- Jocke
+In this case you made me wonder.  What is the mtd->sync method supposed
+to accomplish anyway?  mtd->write is synchronous, mtd->erase de-facto
+also is.  So it cannot be a sync in the sense of "flush all dirty data
+to flash and don't return before you're finished".  Or can it?
+
+Jörn
+
+-- 
+The strong give up and move away, while the weak give up and stay.
+-- unknown
