@@ -1,29 +1,16 @@
-Received: from mail-in-13.arcor-online.net ([151.189.21.53])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HyOsJ-0002tB-MB
-	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 05:10:50 -0400
-In-Reply-To: <20070613061152.GF16148@localhost.localdomain>
-References: <8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-	<20070612044459.GD4198@localhost.localdomain>
-	<9e1a55ac71a2ecf5155d2fddf547025e@kernel.crashing.org>
-	<20070613031615.GC16148@localhost.localdomain>
-	<96f5b23c4f53e986e8caa2156f149cd8@kernel.crashing.org>
-	<20070613061152.GF16148@localhost.localdomain>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <40446e5131495e077da798bc54843b2a@kernel.crashing.org>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1HyPXh-0003OH-Qe
+	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 05:53:37 -0400
+Subject: [PATCH] Fix hanging close for /dev/mtd
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Wed, 13 Jun 2007 11:10:42 +0200
-To: David Gibson <david@gibson.dropbear.id.au>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	David Woodhouse <dwmw2@infradead.org>, Milton Miller <miltonm@bga.com>
+Date: Wed, 13 Jun 2007 11:53:31 +0200
+Message-Id: <1181728411.30670.270.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,18 +20,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> MTD does a lot of heuristic probing.  It is pretty good,
->> but it would be nice if you could skip that and hand it
->> the exact values it needs.  Also, this information should
->> be in the device tree no matter what, even if Linux
->> doesn't use it yet ;-)
->
-> I agree.  Of course, this means figuring out what the values actually
-> are for Ebony.  I presently have no idea, since the heuristic probing
-> appears to work without problem.
+Figured I should send this on its own.
 
-Doesn't it show it in sysfs, or in the dmesg at least?
-Maybe some other important stuff is there, too.
+Stracing a process using /dev/mtd shows that
+it sometimes hangs for a long time when pdflush is erasing
+sectors. /dev/mtd* close method calls the mtd->sync method
+which can hang for a long time(minutes).
 
+Futher, the sync method "syncs" all flash chips. It should
+only sync the chips that a /dev/mtd* spans.
+Also, the mtdchar/mtdblock drivers does not need to
+call sync for readonly mappings.
 
-Segher
+>From c39777d86aa1bef8e053c3f78a5df0981e3a45a9 Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Tue, 12 Jun 2007 19:25:56 +0200
+Subject: [PATCH] Fix hanging close for /dev/mtd
+When pdflush is erasing lots of sectors, drivers calling
+mtd->sync will hang until all blocks are erased.
+
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/erase.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index 24a48e9..33e5f13 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -150,7 +150,7 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+ 		}
+ 
+ 		/* Be nice */
+-		cond_resched();
++		yield();
+ 		down(&c->erase_free_sem);
+ 		spin_lock(&c->erase_completion_lock);
+ 	}
+-- 
+1.5.2.1
