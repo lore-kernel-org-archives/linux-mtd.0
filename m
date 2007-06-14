@@ -1,19 +1,11 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1HyZPl-0001T1-A1
-	for linux-mtd@lists.infradead.org; Wed, 13 Jun 2007 16:26:04 -0400
-From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
-To: "'Jörn Engel'" <joern@logfs.org>
-Subject: RE: [PATCH] Fix hanging close for /dev/mtd
-Date: Wed, 13 Jun 2007 22:25:54 +0200
-Message-ID: <018401c7adf9$0b396040$0e67a8c0@Jocke>
+Message-ID: <32331636.1181786883235.JavaMail.root@web37>
+Date: Wed, 13 Jun 2007 19:08:03 -0700
+From: MICROSOFT AWARD TEAM <info.promomsn04@adelphia.net>
+Subject: MAIL FROM MICROSOFT AWARD TEAM
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20070613175831.GC24502@lazybastard.org>
-Cc: 'David Woodhouse' <dwmw2@infradead.org>,
-	'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Reply-To: fiduciarymicrosoftclaimsdept010@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,80 +15,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
+Microsoft Award Team
+20 Craven Park, Harlesden London NW10,United Kingdom.
+Ref: BTD/978/06
+Batch: 416974E
+Dear Lucky winner,
+                           WINNING NOTIFICATION
+The prestigious Microsoft and AOL has set out and successfully organised a Sweepstakes marking the Annual anniversary,we rolled outover 100,000.000.00(One Hundred Million Great Britain Pounds) for our end of year 
+Anniversary Draws.Participants for the draws were randomly selected and drawn from a widerange of web hosts which we enjoy their patronage. 
+Your email address as indicated was drawn and attached to ticket number 008995727495 with serialnumbers sBTD/9080648302/06 and drew the lucky numbers 14-21-25-40-40-47(21)which subsequently won you 1,000,000.00 (One Million Great Britain Pounds).The draws registered as Draw number one was conducted in Brockley, London United Kingdom.
+These Draws are commemorative and as such special. Please be informed by this winning notification,To file for your claim, Please Contact your claims agent.
 
-> -----Original Message-----
-> From: J=F6rn Engel [mailto:joern@logfs.org]=20
-> Sent: den 13 juni 2007 19:59
-> To: Joakim Tjernlund
-> Cc: J=F6rn Engel; Linux MTD mailing list; David Woodhouse
-> Subject: Re: [PATCH] Fix hanging close for /dev/mtd
->=20
-> On Wed, 13 June 2007 19:16:31 +0200, Joakim Tjernlund wrote:
-> > >=20
-> > > I can see two sane alternatives.
-> > >=20
-> > > /*
-> > >  * An MTD driver may return from mtd->write() calls=20
-> before the data has
-> > >  * safely been written to the medium.  Any amount of=20
-> dirty data may be
-> > >  * cached by either the driver or the device.  If a=20
-> filesystem depends
-> > >  * on the data being safely on the medium, it has to=20
-> explicitly call
-> > >  * mtd->sync().
-> > >  */
-> > >=20
-> > > /*
-> > >  * Mtd->write() and mtd->erase() methods may only return=20
-> if the data has
-> > >  * been safely written to the device.  Special care needs=20
-> to be taken
-> > >  * for devices that support caching.
-> > >  */
-> > >=20
-> > > My tendency is to favor the first variant.=20
-> >=20
-> >    Me too.
-> >=20
-> > >  Block2mtd already implements
-> > > it.  And if we went for variant two, mtd->sync() would be=20
-> pointless and
-> > > should get removed.
-> > >=20
-> > > Now to the bug report:
-> > > JFFS2 must call mtd->sync() for its various sync=20
-> routines.  If mounted
-> > > with -o sync or for files opened with O_SYNC, it has to=20
-> call that after
-> > > every write.  If nothing else, it is currently broken on=20
-> block2mtd.
-> >=20
-> > Sure, but for NOR flash this sync can be a NOP, right?
->=20
-> Actually, no.  After dwmw2 explained things in irc, I finally=20
-> understand
-> the original meaning of that method.  It is supposed to wait until any
-> erase suspend (or program suspend) has finished.  You can view erase
-> suspend as a form of caching and erase as a form of writing.
+1.Full name............
+2.Country..............
+3.Contact Address........
+4.Telephone Number.......
+5.Marital Status.........
+6.Occupation.............
+7.Age....................
+8.Sex....................
+ 
+Mr.Steve Richard
+Microsoft Promotion Award Team
+Head Winning Claims Dept.
+Email:claims.department2007@hotmail.com
 
-Yes, I see that. Then it will enable writes/erases again.
+Sincerely,
+Dr.Mrs.Tracey Kelly (co-ordinator).
 
->=20
-> If we wanted to avoid the cost without paying in reliability, we could
-> add an argument to sync().  Sync(now) would have the current=20
-> semantics.
-> Sync(five minutes ago) would require that any writes/erases=20
-> started more
-> than five minutes ago must be safe.  It add quite a bit of complexity,
-> though.  Maybe not worth it.
 
-Still don't get what sync will do for you in mtdchar context. All
-mtd writes are synchronous and will be in flash without sync. So
-what extra function does it get you on NOR flashes?
 
-David, you are most welcome to explain this on the list also and
-comment on my latest patches.
+Microsoft Award Team
+20 Craven Park, Harlesden London NW10,United Kingdom.
+Ref: BTD/978/06
+Batch: 416974E
+Dear Lucky winner,
+                           WINNING NOTIFICATION
+The prestigious Microsoft and AOL has set out and successfully organised a Sweepstakes marking the Annual anniversary,we rolled outover 100,000.000.00(One Hundred Million Great Britain Pounds) for our end of year 
+Anniversary Draws.Participants for the draws were randomly selected and drawn from a widerange of web hosts which we enjoy their patronage. 
+Your email address as indicated was drawn and attached to ticket number 008995727495 with serialnumbers sBTD/9080648302/06 and drew the lucky numbers 14-21-25-40-40-47(21)which subsequently won you 1,000,000.00 (One Million Great Britain Pounds).The draws registered as Draw number one was conducted in Brockley, London United Kingdom.
+These Draws are commemorative and as such special. Please be informed by this winning notification,To file for your claim, Please Contact your claims agent.
 
- Jocke
+1.Full name............
+2.Country..............
+3.Contact Address........
+4.Telephone Number.......
+5.Marital Status.........
+6.Occupation.............
+7.Age....................
+8.Sex....................
+ 
+Mr.Steve Richard
+Microsoft Promotion Award Team
+Head Winning Claims Dept.
+Email:claims.department2007@hotmail.com
+
+Sincerely,
+Dr.Mrs.Tracey Kelly (co-ordinator).
