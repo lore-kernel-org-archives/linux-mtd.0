@@ -1,28 +1,19 @@
-Received: from ozlabs.org ([203.10.76.45])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hz3Ce-0001ul-By
-	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 00:15:15 -0400
-Date: Fri, 15 Jun 2007 14:14:23 +1000
-From: David Gibson <david@gibson.dropbear.id.au>
-To: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Message-ID: <20070615041423.GB30104@localhost.localdomain>
-References: <bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-	<466308F4.8050004@ru.mvista.com>
-	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
+Received: from [208.101.48.4] (helo=chtn01.999servers.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hz53Q-0002rO-HA
+	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 07:13:05 +0100
+Received: from bravegnu by chtn01.999servers.com with local (Exim 4.63)
+	(envelope-from <vijaykumar@bravegnu.org>) id 1Hz53K-00010K-0N
+	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 01:12:58 -0500
+Message-ID: <15361.202.144.30.226.1181887978.squirrel@www.bravegnu.org>
+Date: Fri, 15 Jun 2007 11:42:58 +0530 (IST)
+Subject: Read/Busy as Interrupt 
+From: "Vijay Kumar" <vijaykumar@bravegnu.org>
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-Cc: linuxppc-dev@ozlabs.org, David Woodhouse <dwmw2@infradead.org>,
-	Milton Miller <miltonm@bga.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: vijaykumar@bravegnu.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,37 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jun 07, 2007 at 05:55:44PM +0200, Segher Boessenkool wrote:
-> > Any representation of flash devices in the device-tree should ideally
-> > have 'bus width' and 'interleave' properties to contain this
-> > information.
-> >
-> > The 'bus width' cannot necessarily be inferred, especially where a 
-> > given
-> > bus can be configured to allow multiple sizes of access. It's purely a
-> > function of how the flash chips are wired up. That's why we actually
-> > call it 'bank width', not 'bus width' in the Linux code.
-> 
-> Ah, "bank width" as in "bus width" per chip select.  I see.
-> 
-> So I think the best thing to have would be
-> 
-> 	compatible      "cfi-flash"
-> 	bank-width      like you said
-> 	device-width    width of a single flash device
-> 	reg             complete address range of this thing
-> 
-> and then the Linux OF CFI flash code / MTD code just keeps
-> on probing devices from that address range until it has it
-> filled.
-> 
-> Sounds good / comments / anything I missed?
+Hi Everyone,
+we have a custom MPC8560 board with a Micron NAND flash (MT29F4G08AAA).
+The flash has the following specification with regards to the ready/busy
+pin.
 
-Slight revision suggestion.  Can we make 'device-width' optional, with
-the default value being equal to the bank-width?
+Block Erase - Max: 2ms, Typical: 1.5ms
+Page Prog - Max: 600us, Typical: 220us
 
--- 
-David Gibson			| I'll have my music baroque, and my code
-david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
-				| _way_ _around_!
-http://www.ozlabs.org/~dgibson
+The MPC8560 does not have a NAND flash controller, and the NAND flash is
+interfaced through the local bus controller (UPM).
+
+In a 2.6 linux kernel, is it better to implement a polling mechanism for
+the ready/busy pin or is it better to use interrupt (sleep/wake)
+mechanism.
+
+The block erase seems to be a good candidate for interrupt mechansim. But
+it is not very clear for the page prog operation. Please let us know your
+suggestions on this.
+
+Please let me know if further details are required.
+
+Thanks in advance.
+
+Regards,
+Vijay
