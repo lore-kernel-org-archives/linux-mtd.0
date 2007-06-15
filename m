@@ -1,21 +1,28 @@
-Received: from www19.your-server.de ([213.133.104.19])
+Received: from ozlabs.org ([203.10.76.45])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hyp5I-00046o-Jw
-	for linux-mtd@lists.infradead.org; Thu, 14 Jun 2007 09:09:58 -0400
-Received: from [84.189.20.167] (helo=ulitu.handy-pc.constin-design.de)
-	by www19.your-server.de with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.50)
-	id 1Hyp5G-0006aB-Qx
-	for linux-mtd@lists.infradead.org; Thu, 14 Jun 2007 15:09:55 +0200
-From: Uli Luckas <u.luckas@road.de>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
-Date: Thu, 14 Jun 2007 15:09:50 +0200
+	id 1Hz3At-0001mE-Oo
+	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 00:12:43 -0400
+Date: Fri, 15 Jun 2007 14:12:33 +1000
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
+Message-ID: <20070615041233.GA30104@localhost.localdomain>
+References: <548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
+	<466323EF.5040807@ru.mvista.com>
+	<1181228442.2785.60.camel@pmac.infradead.org>
+	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
+	<20070612044459.GD4198@localhost.localdomain>
+	<9e1a55ac71a2ecf5155d2fddf547025e@kernel.crashing.org>
+	<20070613031615.GC16148@localhost.localdomain>
+	<96f5b23c4f53e986e8caa2156f149cd8@kernel.crashing.org>
+	<20070613061152.GF16148@localhost.localdomain>
+	<40446e5131495e077da798bc54843b2a@kernel.crashing.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200706141509.50621.u.luckas@road.de>
+In-Reply-To: <40446e5131495e077da798bc54843b2a@kernel.crashing.org>
+Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>, Milton Miller <miltonm@bga.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,62 +32,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGkKV2UgZXhwZXJpZW5jZSB0aGUgZm9sbG93aW5nIHByb2JsZW0gd2hlbiBvdXIgYm9hcmQgdHJp
-ZXMgdG8gc3VzcGVuZDoKCkp1biDCoDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjA4NS4z
-NTAwMDBdIFN0b3BwaW5nIHRhc2tzIC4uLiAKSnVuIMKgNyAxODozMjoyMSBjb25zdGluIGtlcm5l
-bDogWyAyMTA1LjQxMDAwMF0gU3RvcHBpbmcga2VybmVsIHRocmVhZHMgdGltZWQgCm91dCBhZnRl
-ciAyMCBzZWNvbmRzICgxIHRhc2tzIHJlZnVzaW5nIHRvIGZyZWV6ZSk6Ckp1biDCoDcgMTg6MzI6
-MjEgY29uc3RpbiBrZXJuZWw6IFsgMjEwNS40MTAwMDBdIMKgamZmczJfZ2NkX210ZDMKSnVuIMKg
-NyAxODozMjoyMSBjb25zdGluIGtlcm5lbDogWyAyMTA1LjQxMDAwMF0gUmVzdGFydGluZyB0YXNr
-cyAuLi4gPDQ+IApTdHJhbmdlLCBqZmZzMl9nY2RfbXRkMyBub3Qgc3RvcHBlZApKdW4gwqA3IDE4
-OjMyOjIxIGNvbnN0aW4ga2VybmVsOiBbIDIxMDUuNDQwMDAwXSBkb25lLgoKVGhlIHByb2JsZW0g
-c2VlbXMgdG8gaGFwcGVuLCB3aGVuIHN1c3BlbmQga2lja3MgaW4sIGFmdGVyIHRoZSBjYWxsIHRv
-IAp0cnlfdG9fZnJlZXplIGFuZCBiZWZvcmUgdGhlIHdoaWxlIGxvb3AgaW4gamZmczJfZ2FyYmFn
-ZV9jb2xsZWN0X3RocmVhZC4KClRoZSBwZW5kaW5nIGZyZWV6ZSB3aWxsIGNhdXNlIHNpZ25hbF9w
-ZW5kaW5nIHRvIHJldHVybiB0cnVlIHVudGlsIHRoZSAKYXR0ZW1wdGVkIHN1c3BlbmQgaXMgb3Zl
-ciBhbmQgdGhlcmVieSB0aGUgd2hpbGUgbG9vcCB3b24ndCB0ZXJtaW5hdGUgdW50aWwgCnRoZSBz
-dXNwZW5kIHRpbWVzIG91dC4KClRoaXMgcGF0Y2ggd2lsbCBjYWxsIHRyeV90b19mcmVlemUgZnJv
-bSB3aXRoaW4gdGhlIHdoaWxlIGxvb3AgYW5kIGFkZHMgYW4gCmV4dHJhIGNoZWNrIGZvciBqZmZz
-Ml90aHJlYWRfc2hvdWxkX3dha2UgYmVmb3JlIHdlIGFjdHVhbGx5IGRvIHRoZSBHQyB0byAKYXZv
-aWQgY2FsbGluZyBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfcGFzcyBhdCBldmVyeSB3YWtldXAuCgpJ
-ZiB0aGVyZSBhcmUgbm8gb2JqZWN0aW9ucywgcGxlYXNlIGFwcGx5IGFuZCBwdXNoIHRvIG1haW5s
-aW5lLgoKU2lnbmVkLW9mZi1ieTogVWxpIEx1Y2thcyA8dS5sdWNrYXNAcm9hZC5kZT4KCmRpZmYg
-LS1naXQgYS9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMgYi9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMKaW5k
-ZXggODg4ZjIzNi4uZjk1MzgyNCAxMDA2NDQKLS0tIGEvZnMvamZmczIvYmFja2dyb3VuZC5jCisr
-KyBiL2ZzL2pmZnMyL2JhY2tncm91bmQuYwpAQCAtOTYsOSArOTYsNiBAQCBzdGF0aWMgaW50IGpm
-ZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJlYWQodm9pZCAqX2MpCsKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNjaGVkdWxlKCk7CsKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgfQrCoAotwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHRy
-eV90b19mcmVlemUoKSkKLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBjb250aW51ZTsKLQrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoC8qIFRoaXMg
-dGhyZWFkIGlzIHB1cmVseSBhbiBvcHRpbWlzYXRpb24uIEJ1dCBpZiBpdCBydW5zIHdoZW4KwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgwqAgb3RoZXIgdGhpbmdzIGNvdWxkIGJlIHJ1
-bm5pbmcsIGl0IGFjdHVhbGx5IG1ha2VzIHRoaW5ncyBhCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIMKgIGxvdCB3b3JzZS4gVXNlIHlpZWxkKCkgYW5kIHB1dCBpdCBhdCB0aGUgYmFj
-ayBvZiB0aGUgcnVucXVldWUKQEAgLTExMyw2ICsxMTAsOSBAQCBzdGF0aWMgaW50IGpmZnMyX2dh
-cmJhZ2VfY29sbGVjdF90aHJlYWQodm9pZCAqX2MpCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHNpZ2luZm9fdCBpbmZvOwrCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBsb25nIHNpZ25yOwrCoAorwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICh0cnlfdG9fZnJl
-ZXplKCkpCivCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoGNvbnRpbnVlOworCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoHNpZ25yID0gZGVxdWV1ZV9zaWduYWxfbG9jayhjdXJyZW50LCAmY3Vy
-cmVudC0+YmxvY2tlZCwgJmluZm8pOwrCoArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBzd2l0Y2goc2lnbnIpIHsKQEAgLTEzNyw3ICsxMzcsOCBAQCBzdGF0
-aWMgaW50IGpmZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJlYWQodm9pZCAqX2MpCsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgZGlzYWxsb3dfc2lnbmFsKFNJR0hVUCk7CsKgCsKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgRDEocHJpbnRrKEtFUk5fREVCVUcgImpmZnMyX2dhcmJh
-Z2VfY29sbGVjdF90aHJlYWQoKTogcGFzc1xuIikpOwotwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgaWYgKGpmZnMyX2dhcmJhZ2VfY29sbGVjdF9wYXNzKGMpID09IC1FTk9TUEMpIHsKK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGlmICggwqAgamZmczJfdGhyZWFkX3Nob3VsZF93
-YWtlKGMpIAorwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIMKgIMKgJiYgamZmczJfZ2Fy
-YmFnZV9jb2xsZWN0X3Bhc3MoYykgPT0gLUVOT1NQQykgewrCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBwcmludGsoS0VSTl9OT1RJQ0UgIk5vIHNwYWNlIGZv
-ciBnYXJiYWdlIGNvbGxlY3Rpb24uIEFib3J0aW5nIEdDIHRocmVhZFxuIik7CsKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGdvdG8gZGllOwrCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoH0KCi0tIAoKLS0tLS0tLSBST0FEIC4uLnRoZSBoYW5keVBD
-IENvbXBhbnkgLSAtIC0gICkgKSApCgpVbGkgTHVja2FzClNvZnR3YXJlIERldmVsb3BtZW50CgpS
-T0FEIEdtYkgKQmVubmlnc2Vuc3RyLiAxNCB8IDEyMTU5IEJlcmxpbiB8IEdlcm1hbnkKZm9uOiAr
-NDkgKDMwKSAyMzAwNjkgLSA2NCB8IGZheDogKzQ5ICgzMCkgMjMwMDY5IC0gNjkKdXJsOiB3d3cu
-cm9hZC5kZQoKQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmc6IEhSQiA5NjY4OCBCCk1hbmFnaW5n
-IGRpcmVjdG9yczogSGFucy1QZXRlciBDb25zdGllbiwgSHViZXJ0dXMgdm9uIFN0cmVpdAo=
+On Wed, Jun 13, 2007 at 11:10:42AM +0200, Segher Boessenkool wrote:
+> >> MTD does a lot of heuristic probing.  It is pretty good,
+> >> but it would be nice if you could skip that and hand it
+> >> the exact values it needs.  Also, this information should
+> >> be in the device tree no matter what, even if Linux
+> >> doesn't use it yet ;-)
+> >
+> > I agree.  Of course, this means figuring out what the values actually
+> > are for Ebony.  I presently have no idea, since the heuristic probing
+> > appears to work without problem.
+> 
+> Doesn't it show it in sysfs, or in the dmesg at least?
+> Maybe some other important stuff is there, too.
+
+Not as far as I can tell.  Only dmesg information I can see is:
+
+1ff800000.large-fla: Found 1 x8 devices at 0x0 in 8-bit bank
+1ff800000.large-fla: Found 1 x8 devices at 0x200000 in 8-bit bank
+number of JEDEC chips: 2
+cfi_cmdset_0002: Disabling erase-suspend-program due to code
+brokenness.
+
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
