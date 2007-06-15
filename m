@@ -1,31 +1,32 @@
-Received: from mail-in-07.arcor-online.net ([151.189.21.47])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hz7fC-0005EL-Nw
-	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 05:00:16 -0400
-In-Reply-To: <1181897276.25228.325.camel@pmac.infradead.org>
-References: <bd6ef296692e8cfb81118f2dc85189a5@kernel.crashing.org>
-	<4662EAA9.70104@ru.mvista.com>
-	<e4197fd2753f2b4d548d5dde9e3fd1d3@kernel.crashing.org>
-	<466308F4.8050004@ru.mvista.com>
-	<8ac5664208e0f59329b62ac2138bbc8c@kernel.crashing.org>
-	<466312C2.4090200@ru.mvista.com>
-	<548a7e11ffb577f6395b8f5a9c2fba2d@kernel.crashing.org>
-	<466323EF.5040807@ru.mvista.com>
-	<1181228442.2785.60.camel@pmac.infradead.org>
-	<18fbfbaf113ab76b602d279848d9b405@kernel.crashing.org>
-	<20070615041423.GB30104@localhost.localdomain>
-	<6dcf3b4c6c7fcd8060baccf5374316c5@kernel.crashing.org>
-	<1181897276.25228.325.camel@pmac.infradead.org>
-Mime-Version: 1.0 (Apple Message framework v623)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Message-Id: <1171d168bbf553153b0af6a9b7f8d27d@kernel.crashing.org>
-Content-Transfer-Encoding: 7bit
-From: Segher Boessenkool <segher@kernel.crashing.org>
-Subject: Re: [PATCH] powerpc: Create "rom" (MTD) device prpmc2800
-Date: Fri, 15 Jun 2007 10:59:58 +0200
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org,
-	Milton Miller <miltonm@bga.com>, David Gibson <david@gibson.dropbear.id.au>
+Received: from relay.2ka.mipt.ru ([194.85.82.65] helo=2ka.mipt.ru)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hz7kF-0005SK-8r
+	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 05:05:28 -0400
+Date: Fri, 15 Jun 2007 13:03:57 +0400
+From: Evgeniy Polyakov <johnpol@2ka.mipt.ru>
+To: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
+Subject: Re: [Patch 09/18] fs/logfs/gc.c
+Message-ID: <20070615090357.GC20361@2ka.mipt.ru>
+References: <20070603183845.GA8952@lazybastard.org>
+	<20070603184604.GJ8952@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20070603184604.GJ8952@lazybastard.org>
+Cc: akpm@osdl.org, David Weinehall <tao@acc.umu.se>,
+	Dongjun Shin <djshin90@gmail.com>, Kyle Moffett <mrmacman_g4@mac.com>,
+	linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Ulisses Furquim <ulissesf@gmail.com>, CaT <cat@zip.com.au>,
+	Roland Dreier <rdreier@cisco.com>, Arnd Bergmann <arnd@arndb.de>,
+	Jamie Lokier <jamie@shareable.org>, Pekka Enberg <penberg@cs.helsinki.fi>,
+	Jan Engelhardt <jengelh@linux01.gwdg.de>,
+	Thomas Gleixner <tglx@linutronix.de>, Bill Davidsen <davidsen@tmr.com>,
+	Albert Cahalan <acahalan@gmail.com>,
+	John Stoffel <john@stoffel.org>, linux-kernel@vger.kernel.org,
+	Ondrej Zajicek <santiago@crfreenet.org>, linux-fsdevel@vger.kernel.org,
+	David Woodhouse <dwmw2@infradead.org>, Willy Tarreau <w@1wt.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,17 +36,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> Yes, certainly.  Or, the other way around I like better
->> ("bank-width" optional).
->
-> No, we need bank-width. It's device-width which can be optional.
+On Sun, Jun 03, 2007 at 08:46:04PM +0200, Jörn Engel (joern@lazybastard.org) wrote:
+> --- /dev/null	2007-03-13 19:15:28.862769062 +0100
+> +++ linux-2.6.21logfs/fs/logfs/gc.c	2007-06-03 19:18:57.000000000 +0200
 
-One is defaulted to the other so it doesn't really
-matter _which_ you make optional, the OS device driver
-can always get both values.  For the device tree, it
-seems more natural to have "device-width" a required
-property.  Feel free to disagree but I'd like to hear
-arguments if so :-)
+Number of bugs in case of error looks quite sad...
 
-
-Segher
+-- 
+	Evgeniy Polyakov
