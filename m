@@ -1,18 +1,19 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Hz8OI-0005vb-F9
-	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 05:46:52 -0400
-Date: Fri, 15 Jun 2007 10:46:33 +0100
-From: Ben Dooks <ben@fluff.org>
-To: Vijay Kumar <vijaykumar@bravegnu.org>
-Subject: Re: Read/Busy as Interrupt
-Message-ID: <20070615094633.GA3732@fluff.org.uk>
-References: <15361.202.144.30.226.1181887978.squirrel@www.bravegnu.org>
+Received: from nz-out-0506.google.com ([64.233.162.232])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Hz8cO-0006Cu-H5
+	for linux-mtd@lists.infradead.org; Fri, 15 Jun 2007 06:01:25 -0400
+Received: by nz-out-0506.google.com with SMTP id s18so824008nze
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 15 Jun 2007 03:01:23 -0700 (PDT)
+Message-ID: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
+Date: Fri, 15 Jun 2007 15:31:22 +0530
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: ubi: Error freeing ubi->vtbl while unloading
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <15361.202.144.30.226.1181887978.squirrel@www.bravegnu.org>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,40 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jun 15, 2007 at 11:42:58AM +0530, Vijay Kumar wrote:
-> Hi Everyone,
-> we have a custom MPC8560 board with a Micron NAND flash (MT29F4G08AAA).
-> The flash has the following specification with regards to the ready/busy
-> pin.
-> 
-> Block Erase - Max: 2ms, Typical: 1.5ms
-> Page Prog - Max: 600us, Typical: 220us
+I downloaded latest git & backported ubi to make it work in linux
+kernel 2.6.18.3.
 
-You will also need to take into account the rise time (capacitance of
-the line, versus the pull-up resistance used). Typically, with a 10K
-resistor on a resonably complex board, it can add another 200-300uS
-to the time taken.
- 
-> The MPC8560 does not have a NAND flash controller, and the NAND flash is
-> interfaced through the local bus controller (UPM).
-> 
-> In a 2.6 linux kernel, is it better to implement a polling mechanism for
-> the ready/busy pin or is it better to use interrupt (sleep/wake)
-> mechanism.
-> 
-> The block erase seems to be a good candidate for interrupt mechansim. But
-> it is not very clear for the page prog operation. Please let us know your
-> suggestions on this.
+Machine details
+ AMD opteron 64bit SMP, linux kernel version 2.6.18.3
 
-This may be worth looking at for other controllers. I know the
-S3C2440 and later have the option for RnB change interrupt. Having
-the wait for ready function being passed an indication of what command
-it is waiting for may be a good idea.
+However while unloading ubi I discovered slab corruption. Ths problem
+is as follows.
 
-I'd say for anything in the sub ms region, you may end up using a
-quantity of time in the IRQ handling mechanisms.
+ubi->vtbl is allocated using vmalloc() in vtbl.c empty_create_lvol(),
+but it is freed in build.c with kfree()
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
+Heres a patch that makes a fix
 
-  'a smiley only costs 4 bytes'
+--- build.c	2007-06-07 14:54:49.000000000 +0530
++++ build.c	2007-06-15 15:22:32.000000000 +0530
+@@ -369,7 +369,7 @@
+ out_wl:
+ 	ubi_wl_close(ubi);
+ out_vtbl:
+-	kfree(ubi->vtbl);
++	vfree(ubi->vtbl);
+ out_si:
+ 	ubi_scan_destroy_si(si);
+ 	return err;
+@@ -629,7 +629,7 @@
+ out_detach:
+ 	ubi_eba_close(ubi);
+ 	ubi_wl_close(ubi);
+-	kfree(ubi->vtbl);
++	vfree(ubi->vtbl);
+ out_free:
+ 	kfree(ubi);
+ out_mtd:
+
+
+-- I feel free now
