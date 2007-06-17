@@ -1,18 +1,18 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HzsrG-000715-8f
-	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 07:23:51 -0400
-Subject: Re: Current status of UBI
+	id 1HzuCC-0007qB-NK
+	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 08:49:34 -0400
+Subject: Re: ubi: Error freeing ubi->vtbl while unloading
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Your Name <lamshuyin@yahoo.com>
-In-Reply-To: <200705311027.l4VARGmG023819@jesus.no-ip.org>
-References: <200705311027.l4VARGmG023819@jesus.no-ip.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
+References: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Sun, 17 Jun 2007 14:23:44 +0300
-Message-Id: <1182079424.4403.11.camel@sauron>
+Date: Sun, 17 Jun 2007 15:49:27 +0300
+Message-Id: <1182084567.4403.17.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Jacky Lam <faichai0@yahoo.com>
+Cc: linux-mtd@lists.infradead.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,15 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-05-31 at 18:27 +0800, Your Name wrote:
-> Hi,
+On Fri, 2007-06-15 at 15:31 +0530, Vinit Agnihotri wrote:
+> I downloaded latest git & backported ubi to make it work in linux
+> kernel 2.6.18.3.
 >=20
->     Sorry, I miss the 2.6.22-rc3 tree. Now I can see that. But it=20
-> doesn't contain ubifs. Is that mean ubifs is not stable enough to work=20
-> with?
+> Machine details
+>  AMD opteron 64bit SMP, linux kernel version 2.6.18.3
 >=20
+> However while unloading ubi I discovered slab corruption. Ths problem
+> is as follows.
+>=20
+> ubi->vtbl is allocated using vmalloc() in vtbl.c empty_create_lvol(),
+> but it is freed in build.c with kfree()
 
-Yes, ubifs is still being developed.
+Thanks, fixed the patch, added Signed-off-by and committed.=20
 
 --=20
 Best regards,
