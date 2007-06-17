@@ -1,20 +1,11 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HzuGX-00083k-Ve
-	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 08:54:04 -0400
-Subject: Re: [PATCH]is_power_of_2-mtd/ubi/build.c
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: vignesh.babu@wipro.com
-In-Reply-To: <1181624466.3109.23.camel@merlin.linuxcoe.com>
-References: <1181624466.3109.23.camel@merlin.linuxcoe.com>
+Message-ID: <22769713.1182099579548.JavaMail.root@web19>
+Date: Sun, 17 Jun 2007 9:59:39 -0700
+From: Yahoo! <yahoo_onlinelottery1@adelphia.net>
+Subject: Yahoo! Lucky Winner
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Sun, 17 Jun 2007 15:53:54 +0300
-Message-Id: <1182084834.4403.19.camel@sauron>
-Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	Kernel Janitors List <kernel-janitors@lists.osdl.org>
-Reply-To: dedekind@infradead.org
+Reply-To: email_anthonywalker@yahoo.dk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +15,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-06-12 at 10:31 +0530, vignesh babu wrote:
-> Replacing (n & (n-1)) in the context of power of 2 checks
-> with is_power_of_2
+Dear Esteemed Winner,
+We are pleased to inform you of the result of the YAHOO! International=20
+Promotions Program held on the 15th of April, 2007.Your e-mail address=20
+attached to ticket number 883734657492-5319 with serial number=20
+7263-267, batch number 8254297137 drew the lucky numbers=20
+14-22-28-37-40-44 which consequently won in the 1st category,you have=20
+therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
+e=20
+Hundred=20
+Thousand United Kingdom Pounds Sterling) in cash credited to file=20
+REF:YAHOO6/315116127/27. This is from total prize money of=20
+US$20,400,000.00 shared among the seventeen international winners in
+this category. To claim your kindly submit the completed form to your=20
+verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
+*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
+no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
+Name: Mr Anthony Walker
+E-mail:email_anthonywalker@yahoo.dk
+Yours Sincerely,
+Mrs. Amelia Hunts
 
-Committed to UBI git tree, thanks.
+Dear Esteemed Winner,
+We are pleased to inform you of the result of the YAHOO! International=20
+Promotions Program held on the 15th of April, 2007.Your e-mail address=20
+attached to ticket number 883734657492-5319 with serial number=20
+7263-267, batch number 8254297137 drew the lucky numbers=20
+14-22-28-37-40-44 which consequently won in the 1st category,you have=20
+therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
+e=20
+Hundred=20
+Thousand United Kingdom Pounds Sterling) in cash credited to file=20
+REF:YAHOO6/315116127/27. This is from total prize money of=20
+US$20,400,000.00 shared among the seventeen international winners in
+this category. To claim your kindly submit the completed form to your=20
+verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
+*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
+no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
+Name: Mr Anthony Walker
+E-mail:email_anthonywalker@yahoo.dk
+Yours Sincerely,
+Mrs. Amelia Hunts
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Dear Esteemed Winner,
+We are pleased to inform you of the result of the YAHOO! International=20
+Promotions Program held on the 15th of April, 2007.Your e-mail address=20
+attached to ticket number 883734657492-5319 with serial number=20
+7263-267, batch number 8254297137 drew the lucky numbers=20
+14-22-28-37-40-44 which consequently won in the 1st category,you have=20
+therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
+e=20
+Hundred=20
+Thousand United Kingdom Pounds Sterling) in cash credited to file=20
+REF:YAHOO6/315116127/27. This is from total prize money of=20
+US$20,400,000.00 shared among the seventeen international winners in
+this category. To claim your kindly submit the completed form to your=20
+verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
+*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
+no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
+Name: Mr Anthony Walker
+E-mail:email_anthonywalker@yahoo.dk
+Yours Sincerely,
+Mrs. Amelia Hunts
