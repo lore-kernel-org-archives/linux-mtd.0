@@ -1,18 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1HzuCC-0007qB-NK
-	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 08:49:34 -0400
-Subject: Re: ubi: Error freeing ubi->vtbl while unloading
+	id 1HzuGX-00083k-Ve
+	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 08:54:04 -0400
+Subject: Re: [PATCH]is_power_of_2-mtd/ubi/build.c
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
-In-Reply-To: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
-References: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
+To: vignesh.babu@wipro.com
+In-Reply-To: <1181624466.3109.23.camel@merlin.linuxcoe.com>
+References: <1181624466.3109.23.camel@merlin.linuxcoe.com>
 Content-Type: text/plain; charset=utf-8
-Date: Sun, 17 Jun 2007 15:49:27 +0300
-Message-Id: <1182084567.4403.17.camel@sauron>
+Date: Sun, 17 Jun 2007 15:53:54 +0300
+Message-Id: <1182084834.4403.19.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
+	Kernel Janitors List <kernel-janitors@lists.osdl.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,20 +24,11 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-06-15 at 15:31 +0530, Vinit Agnihotri wrote:
-> I downloaded latest git & backported ubi to make it work in linux
-> kernel 2.6.18.3.
->=20
-> Machine details
->  AMD opteron 64bit SMP, linux kernel version 2.6.18.3
->=20
-> However while unloading ubi I discovered slab corruption. Ths problem
-> is as follows.
->=20
-> ubi->vtbl is allocated using vmalloc() in vtbl.c empty_create_lvol(),
-> but it is freed in build.c with kfree()
+On Tue, 2007-06-12 at 10:31 +0530, vignesh babu wrote:
+> Replacing (n & (n-1)) in the context of power of 2 checks
+> with is_power_of_2
 
-Thanks, fixed the patch, added Signed-off-by and committed.=20
+Committed to UBI git tree, thanks.
 
 --=20
 Best regards,
