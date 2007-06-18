@@ -1,19 +1,19 @@
-Received: from an-out-0708.google.com ([209.85.132.242])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0DYM-0001me-0r
-	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 05:29:42 -0400
-Received: by an-out-0708.google.com with SMTP id c3so313127ana
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Jun 2007 02:29:40 -0700 (PDT)
-Message-ID: <fe810cf0706180229x3c9cd065kb22cc9983e2ed2ac@mail.gmail.com>
-Date: Mon, 18 Jun 2007 13:29:39 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: linux-mtd@lists.infradead.org
-Subject: PAGE READ CACHE MODE anyone?
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I0Dbu-0001zC-Pm
+	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 05:33:34 -0400
+Subject: Re: PAGE READ CACHE MODE anyone?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+In-Reply-To: <fe810cf0706180229x3c9cd065kb22cc9983e2ed2ac@mail.gmail.com>
+References: <fe810cf0706180229x3c9cd065kb22cc9983e2ed2ac@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 18 Jun 2007 12:33:10 +0300
+Message-Id: <1182159190.4403.25.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,25 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello!
+On Mon, 2007-06-18 at 13:29 +0400, Alexander Belyakov wrote:
+> My question is, what is the reason of this feature is still not
+> supported by Linux MTD? Just no one has sent a patch? Or there are
+> some special software limitations? Or I'm just missing something?
 
-As you may know some NAND chips have PAGE READ CACHE MODE operation
-that uses the cache register to read data. The basic idea is as
-follows, a page of data is transferred from the Flash array to the
-data register, then moved to the cache register when the PAGE READ
-CACHE MODE command is issued. After this command is issued, data can
-be clocked out of the cache register through the NAND Flash interface,
-while the next page of data is simultaneously moved from the Flash
-array to the data register.
+I guess nobody really bothered to implement the support.
 
-So _theoretically_ using PAGE READ CACHE MODE could save more than 30%
-of time to read each page. Pages must be sequentially read one by one
-without interruption. The more pages read sequentially, the more read
-performance improvement is (with saturation, of course).
-
-My question is, what is the reason of this feature is still not
-supported by Linux MTD? Just no one has sent a patch? Or there are
-some special software limitations? Or I'm just missing something?
-
-Thanks,
-Alexander
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
