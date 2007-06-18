@@ -1,21 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0Azi-00089P-E7
-	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 02:45:48 -0400
-Subject: Re: ubi: Error freeing ubi->vtbl while unloading
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Josh Boyer <jwboyer@gmail.com>
-In-Reply-To: <625fc13d0706171759q72a007d4m270deb2a8935c4df@mail.gmail.com>
-References: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
-	<1182084567.4403.17.camel@sauron>
-	<625fc13d0706171759q72a007d4m270deb2a8935c4df@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 18 Jun 2007 09:45:38 +0300
-Message-Id: <1182149138.4403.22.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, Vinit Agnihotri <vinit.agnihotri@gmail.com>
-Reply-To: dedekind@infradead.org
+Received: from an-out-0708.google.com ([209.85.132.242])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I0DYM-0001me-0r
+	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 05:29:42 -0400
+Received: by an-out-0708.google.com with SMTP id c3so313127ana
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 18 Jun 2007 02:29:40 -0700 (PDT)
+Message-ID: <fe810cf0706180229x3c9cd065kb22cc9983e2ed2ac@mail.gmail.com>
+Date: Mon, 18 Jun 2007 13:29:39 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: linux-mtd@lists.infradead.org
+Subject: PAGE READ CACHE MODE anyone?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,18 +23,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh,
+Hello!
 
-On Sun, 2007-06-17 at 19:59 -0500, Josh Boyer wrote:
-> You added Vinit's sign off, which was missing in the first place.  Not
-> that I really care, but you shouldn't do that for other people.  Since
-> you had to fix the patch anyway, you could have done a "Reported-By:"
-> or something similar and it wouldn't have raised my paranoia flags at
-> all.
+As you may know some NAND chips have PAGE READ CACHE MODE operation
+that uses the cache register to read data. The basic idea is as
+follows, a page of data is transferred from the Flash array to the
+data register, then moved to the cache register when the PAGE READ
+CACHE MODE command is issued. After this command is issued, data can
+be clocked out of the cache register through the NAND Flash interface,
+while the next page of data is simultaneously moved from the Flash
+array to the data register.
 
-fair point, I'll take this into account next time, thanks.
+So _theoretically_ using PAGE READ CACHE MODE could save more than 30%
+of time to read each page. Pages must be sequentially read one by one
+without interruption. The more pages read sequentially, the more read
+performance improvement is (with saturation, of course).
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+My question is, what is the reason of this feature is still not
+supported by Linux MTD? Just no one has sent a patch? Or there are
+some special software limitations? Or I'm just missing something?
+
+Thanks,
+Alexander
