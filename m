@@ -1,39 +1,23 @@
-Message-ID: <3388222.1182099706626.JavaMail.root@web19>
-Date: Sun, 17 Jun 2007 10:01:46 -0700
-From: Yahoo! <yahoo_onlinelottery1@adelphia.net>
-To: linux-audit@redhat.com, linux-cifs-client@lists.samba.org,
-	linux-crypto@vger.kernel.org,
-	linux-decnet-user@lists.sourceforge.net, linux-driver@qlogic.com,
-	linux-dvb@linuxtv.org, linux-eata@i-connect.net,
-	linux-fbdev-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, linux-hams@vger.kernel.org,
-	linux-hippi@sunsite.dk, linux-ia64@vger.ker,
-	linux-ia64@vger.kernel.org, linux-ide@vger.kernel.org,
-	linux-input@atrey.karlin.mff.cuni.cz,
-	linux-joystick@atrey.karlin.mff.cuni.cz,
-	linux-kernel@vger.kernel.org, linux-laptop@vger.kernel.org,
-	linux-m68k@lists.linux-m68k.org, linux-mac68k@mac.linux-m68k.org,
-	linux-mips@linux-mips.org, linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org, linux-ntfs-dev@lists.sourceforge.net,
-	linux-nvidia@lists.surfsouth.com, linux-parport@lists.infradead.org,
-	linux-pci@atrey.karlin.mff.cuni.cz, linux-pcmcia@lists.infradead.org,
-	linux-pm@osdl.org, linux-ppp@vger.kernel.org,
-	linux-raid@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-security-module@vger.kernel.org, linux-serial@vger.kernel.org,
-	linux-sound@vger.kernel.org, linux-tape@vger.kernel.org,
-	linux-tr@linuxtr.net, linux-usb-devel@lists.sourceforge.net,
-	linux-usb-users@lists.sourceforge.net,
-	linux-video@atrey.karlin.mff.cuni.cz, linux-visws-devel@lists.sf.net,
-	linux-x25@vger.kernel.org, linux1394-devel@lists.sourceforge.net,
-	linux390@de.ibm.com, linux@highpoint-tech.com,
-	linux@thorsten-knabe.de, linuxppc-dev@ozlabs.org,
-	linuxppc-embedded@ozlabs.org, linuxraid@amcc.com,
-	linuxsh-dev@lists.sourceforge.net
-Subject: Yahoo! Lucky Winner
+Received: from py-out-1112.google.com ([64.233.166.176])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I05aj-0005bh-Sv
+	for linux-mtd@lists.infradead.org; Sun, 17 Jun 2007 20:59:39 -0400
+Received: by py-out-1112.google.com with SMTP id u77so3157872pyb
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 17 Jun 2007 17:59:36 -0700 (PDT)
+Message-ID: <625fc13d0706171759q72a007d4m270deb2a8935c4df@mail.gmail.com>
+Date: Sun, 17 Jun 2007 19:59:35 -0500
+From: "Josh Boyer" <jwboyer@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: ubi: Error freeing ubi->vtbl while unloading
+In-Reply-To: <1182084567.4403.17.camel@sauron>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: email_anthonywalker@yahoo.dk
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <9b52d64c0706150301v33006e58h9a86c1f126437e32@mail.gmail.com>
+	<1182084567.4403.17.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, Vinit Agnihotri <vinit.agnihotri@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -43,65 +27,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Esteemed Winner,
-We are pleased to inform you of the result of the YAHOO! International=20
-Promotions Program held on the 15th of April, 2007.Your e-mail address=20
-attached to ticket number 883734657492-5319 with serial number=20
-7263-267, batch number 8254297137 drew the lucky numbers=20
-14-22-28-37-40-44 which consequently won in the 1st category,you have=20
-therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
-e=20
-Hundred=20
-Thousand United Kingdom Pounds Sterling) in cash credited to file=20
-REF:YAHOO6/315116127/27. This is from total prize money of=20
-US$20,400,000.00 shared among the seventeen international winners in
-this category. To claim your kindly submit the completed form to your=20
-verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
-*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
-no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
-Name: Mr Anthony Walker
-E-mail:email_anthonywalker@yahoo.dk
-Yours Sincerely,
-Mrs. Amelia Hunts
+On 6/17/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> On Fri, 2007-06-15 at 15:31 +0530, Vinit Agnihotri wrote:
+> > I downloaded latest git & backported ubi to make it work in linux
+> > kernel 2.6.18.3.
+> >
+> > Machine details
+> >  AMD opteron 64bit SMP, linux kernel version 2.6.18.3
+> >
+> > However while unloading ubi I discovered slab corruption. Ths problem
+> > is as follows.
+> >
+> > ubi->vtbl is allocated using vmalloc() in vtbl.c empty_create_lvol(),
+> > but it is freed in build.c with kfree()
+>
+> Thanks, fixed the patch, added Signed-off-by and committed.
 
-Dear Esteemed Winner,
-We are pleased to inform you of the result of the YAHOO! International=20
-Promotions Program held on the 15th of April, 2007.Your e-mail address=20
-attached to ticket number 883734657492-5319 with serial number=20
-7263-267, batch number 8254297137 drew the lucky numbers=20
-14-22-28-37-40-44 which consequently won in the 1st category,you have=20
-therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
-e=20
-Hundred=20
-Thousand United Kingdom Pounds Sterling) in cash credited to file=20
-REF:YAHOO6/315116127/27. This is from total prize money of=20
-US$20,400,000.00 shared among the seventeen international winners in
-this category. To claim your kindly submit the completed form to your=20
-verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
-*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
-no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
-Name: Mr Anthony Walker
-E-mail:email_anthonywalker@yahoo.dk
-Yours Sincerely,
-Mrs. Amelia Hunts
+You added Vinit's sign off, which was missing in the first place.  Not
+that I really care, but you shouldn't do that for other people.  Since
+you had to fix the patch anyway, you could have done a "Reported-By:"
+or something similar and it wouldn't have raised my paranoia flags at
+all.
 
-Dear Esteemed Winner,
-We are pleased to inform you of the result of the YAHOO! International=20
-Promotions Program held on the 15th of April, 2007.Your e-mail address=20
-attached to ticket number 883734657492-5319 with serial number=20
-7263-267, batch number 8254297137 drew the lucky numbers=20
-14-22-28-37-40-44 which consequently won in the 1st category,you have=20
-therefore been approved for a lump sum pay out of =C2=A3500,000.00 (i.e Fiv=
-e=20
-Hundred=20
-Thousand United Kingdom Pounds Sterling) in cash credited to file=20
-REF:YAHOO6/315116127/27. This is from total prize money of=20
-US$20,400,000.00 shared among the seventeen international winners in
-this category. To claim your kindly submit the completed form to your=20
-verification unit by email:VERIFICATION FORM BELOW: *Name of Winner:=20
-*Address:*City/State: *Nationlity:*Sex:*EmailAddress*Phone=20
-no:*Occupation:*Age:*Amount won:.The claims officer contact email is:=20
-Name: Mr Anthony Walker
-E-mail:email_anthonywalker@yahoo.dk
-Yours Sincerely,
-Mrs. Amelia Hunts
+josh
