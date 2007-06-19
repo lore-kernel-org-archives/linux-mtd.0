@@ -1,18 +1,11 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0O8t-0007LK-9x
-	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 16:48:08 -0400
-Received: from ben by aeryn.fluff.org.uk with local (Exim 4.63)
-	(envelope-from <ben@fluff.org.uk>) id 1I0O8j-0007vg-3P
-	for linux-mtd@lists.infradead.org; Mon, 18 Jun 2007 21:47:57 +0100
-Date: Mon, 18 Jun 2007 21:47:57 +0100
-From: Ben Dooks <ben@fluff.org>
-To: linux-mtd@lists.infradead.org
-Subject: Cleanup patches status (sent 28 May 2007)
-Message-ID: <20070618204757.GA30418@fluff.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Message-ID: <21719810.1182214403312.JavaMail.clxu@devbook189>
+Date: Tue, 19 Jun 2007 08:53:23 +0800 (CST)
+From: =?GBK?B?0Oy0usDX?= <clxu@minigui.org>
+Subject: =?GBK?B?t8nC/tbCuq8=?=
+Mime-Version: 1.0
+Content-Type: text/plain; charset=GBK
+Content-Transfer-Encoding: base64
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,15 +15,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I would like a status update on the set of cleanup patches I sent
-to the list on the 28th of last month. Is it possible that these
-could be queued for submission please?
-
-http://article.gmane.org/gmane.linux.drivers.mtd/18376
-http://article.gmane.org/gmane.linux.drivers.mtd/18375
-http://article.gmane.org/gmane.linux.drivers.mtd/18374
-http://article.gmane.org/gmane.linux.drivers.mtd/18373
-http://article.gmane.org/gmane.linux.drivers.mtd/18371
-
--- 
-Ben
+xPq6w6OhCtTauePHtmJic8nPxd3By7rcs6TKsbzkwcujrLj6tPO80sjPyra63Ljf0MujrL3xzOy3
+otXit+LTyrz+1vfSqsrH19TO0r3pydzSu8/Co6zI59PQtPLIxaOsx+vUrcHCo6EKztLKx7fJwv7I
+7bz+tcTP+srbvq3A7dDstLrA2aOsu7bTrcT6y+bKsdPrztLBqs+1o6zO0rXEwarPtbe9yr3I58/C
+o7oKCs/6ytu+rcDto7rQ7LS6wNkgCgrBqs+108q8/s6qo7pjbHh1QG1pbmlndWkub3JnCgrBqs+1
+tee7sKO6MDEwLTgyNjUyNjExIDgyNjUyNjUyLTgwNgoKyta7+qO6MTM5MTA5OTYwMjkKCk1TTqO6
+d2lsbGVyc3VuQGhvdG1haWwuY29tCgq5q8u+zfjVvqO6d3d3Lm1pbmlndWkuY29tCgoKx+vUytDt
+ztK4+MT61NrV4sDvvPK1pb3pydzSu8/CztLDx7mry766zc/gudiy+sa3o6y5qcT6ss6/vKGjIAoK
+t8nC/sjtvP7Ev8ewyse5+sTax7bI68q9IEdVSSDB7NPytcTB7LW8s6fJzKOs1vfSqsPmz/LHtsjr
+yr3J6LG4vK+zycnMu/LV39bG1OzJzMzhuanHtsjryr3NvNDO1tC85Lz+yO28/qGix7bI68q9udi8
+/NOm08PI7bz+vLDP4LnYv6q3ormkvt+y+sa3oaMK1Nq5+sTax7bI68q9wezT8r7f09DW2NKqtcTT
+sM/ssqLTtdPQ1tq24LXE08O7p6Os1Nq5+rzKyc/O0sPH0rLT0NK7tqi1xNaqw/u2yKGjCgpNaW5p
+R1VJo7rKx87Sw8e1xLrL0MSy+sa31q7Su6GjueO3utOm08PT2rv6tqW60KGiyta7+qGiUE1QoaLS
+vcHG0sfG96Giv8nK07Xnu7Chosr9v9i7+rSyoaLQxc+i1tW2y7rNuaTStb/Y1sa1yMHs0/Kho01p
+bmlHVUnKx9K7uPbHtsjryr3NvNDO1tAKvOS8/rL6xrejrMrH16jOqse2yOvKvbL6xrfJ6LzGtcSj
+rL7f09DVvNPD18rUtMnZoaLUy9DQ0KfCyrjfoaLUy9DQzsi2qKGiv+ey2df3z7XNs7XI1u624NPF
+teOho7b4x9K+rbn9tuDE6srQs6G6zcq1vMrP7sS/tcTR6dako6zS0bXDtb263Lbg0NDStbTzv80g
+CruntcTIz7/Jus3Wp7PWo6zI57uqzqqholRDTKGitPPMxtLGtq+hotOiu6q076Gi1tDQy82o0bah
+osGqz+uhosL1yPChornj1t3K/b/YoaK0q8rTyv3C66GiSW50ZWyhokZVSklUU1WholdpbmRSaXZl
+cqGiT1BFUkGhokFNRLywuqu5+qGiyNWxvqGiCsPAufqhorzTxMO086Giwu3AtM730ce1yLn6vNK1
+xL/Nu6ehowoKtvjH0rv509pNaW5pR1VJtcTTptPDsvrGt6OsyOfPwqO6CkZoYXOjusrHt8nC/sjt
+vP7D5s/y1sfE3NbVtsvTptPDwezT8szhuam1xNOm08PGvcyosvrGt6Os1vfSqsrK08PT2srWu/qh
+olBNULrNxuTL/MrWs9bJ6LG4o6zKx7fJwv65q8u+s/1NaW5pR1VJ1q7N4tPW0ru49tbY0qq1xLL6
+xrejrMrHu/nT2k1pbmlHVUkgCr+qt6K1xNOm08O8trL6xreho0ZoYXMgyrm1w7j31tbWx8Tcyeix
+uMnPtcTTptPDv6q3orHktcO/7MvZoaK439Cno6zIw7/Nu6fXqNei09qy+sa3tcS49tDUv6q3oqGj
+1vfSqtOm08PT0LXY1reyvqOssbjN/MK8o6y8x8rCsb6jrM28xqzkr8DAxvejrE1QM7Klt8XG97XI
+oaMKCm1TcGlkZXKjuiDKx9TL0NDU2se2yOvKvc280M7W0LzkvP4gTWluaUdVSSDWrsnPtcTH4cG/
+vLbkr8DAxveho21TcGlkZXIguabE3Me/tPOjrL7f09DEo7/pu6+jrL/JwKnVubXEveG5uaOsv8nS
+1Lj5vt2yu82stcTTsrz+zNi149LUvLC/zbuntcS49tDU0qrH87b4vfgK0NC2qNbGoaPNrMqxbVNw
+aWRlctXrttS7+ralutDB7NPytcTM2MriuabE3NDo0qqjusr919bBtL3ToaLV67bUtefK07XEyuSz
+9rbU19bM5b340NDX1Lavy/W3xaGi19bM5cLLsqi0psDtoaK/ucnBy7i1yL75zOG5qcHLwby6w9an
+s9ajrNXiyrm1w+SvwMDG99Tau/q2pbrQIArB7NPytcTKudPDuPy808jL0NS7r6GjCgptRWFnbGUg
+OsrHt8nC/sjtvP7V67bUx7bI68q9z7XNs7+qt6K1xLXYwO3Qxc+iz7XNs6OoR0lTo6nI7bz+o6zK
+x9K7u/nT2iBNaW5pR1VJILXEudi8/NOm08PI7bz+oaNtRWFnbGW/ydTL0NDU2rbg1tbHtsjryr2y
+2df3z7XNs9auyc8sIL7f09DBvLrDtcS/ydLG1rIK0NS6zbb+tM6/qrei0NSho8v8yrXP1sHLtdjA
+7dDFz6LPtc2z1NrHtsjryr3J6LG41tC1xLOjvPvTptPDo6yxyMjntefX07XYzbyy2df3o6jGvdLG
+oaK3xbTzoaLL9dChoaLQ/deqo6mhosK3vra4+tfZoaLS1Lywus1HUFPEo7/pvK+zybrzo6y/ydLU
+zOG5qUdQU7W8Crq9us22qM67uabE3LXIoaO3ycL+yO28/rbUIG1FYWdsZSC9+NDQwcvPuNbCtcTT
+xbuvyei8xqOsyrnG5L7f09DL2bbIv+yhotfK1LTP+7rE0KG1yNbutuDM2LXjoaNtRWFnbGXT68/I
+xtq1xG1HaXPP4LHIo6zW99Kqx/ix8NTa09rI7bz+vNy5udPr1MvQ0MvZtsi1xCAK08W7r6OszazK
+sdLg1Pa808HLyOe12M280P3XqqOs06XR27XI0MK5psTcoaMKCtK71rHS1MC0o6y3ycL+yO28/rH8
+s9AiyMPHtsjryr2/qreiuPzI3dLXIrXEt/7O8cDtxO6jrM6qv827p8zhuanN6snGtcSy+sa3oaLF
+4NG10tS8sLy8yvXWp7PWo6zC+tfjus3S/bW808O7p7XEtuDR+dDox/OjrLj40+jTw7unvOHKtbXE
+saPVz6Os1Nq31s/tv80Ku6e1xLPJuabT68jZ0/7NrMqx0rLM5c/Ws/bX1Ly6tsDM2LXEvNvWtaGj
+Cgqyu9aqtcC587mry74vtaXOu9b30qrX9tCpyrLDtLL6xrfE2KO/yseyu8rHx7bI68q9wezT8rXE
+o7+74dPDtb3NvNDOvefD5sLwo78KyOe5+8T6ttTO0sPHuNDQy8iko6zKx7fxt72x48H0z8LE+rXE
+z+rPuLXEwarPtdDFz6LE2KO/sPzAqNPKvMS12Na3o6zK1rv6usW1yKOsztLDx7vhuPm+3cT6xMex
+37XEz+7Ev8fpv/ajrLj4xOPM4bmpuPzP6s+4tcTXysHPo6yw/MCosvrGt9fUtq/R3cq+ueLFzKOs
+CtGnz7DXysHPtcihoyAKCsbatP3E+rXEu9i4tKOhCgo=
