@@ -1,27 +1,20 @@
-Received: from julia.math.ucla.edu ([128.97.4.5])
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0VOj-0002s9-Mq
-	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 00:33:01 -0400
-Received: from xena.cft.ca.us (pool-71-104-218-155.lsanca.dsl-w.verizon.net
-	[71.104.218.155])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(Client CN "Jim Carter",
-	Issuer "UCLA-Mathnet Root Certificate" (verified OK))
-	by julia.math.ucla.edu (Postfix) with ESMTP id A221C51B7D
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Jun 2007 21:32:54 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-	by xena.cft.ca.us (Postfix) with ESMTP id 090343BC79
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Jun 2007 21:32:53 -0700 (PDT)
-Date: Mon, 18 Jun 2007 21:32:53 -0700 (PDT)
-From: Jim Carter <jimc@math.ucla.edu>
-Sender: jimc@xena.cft.ca.us
-To: linux-mtd@lists.infradead.org
-Subject: Stomping bad block
-Message-ID: <Pine.LNX.4.64.0706182124410.5105@xena.cft.ca.us>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+	id 1I0YZJ-000559-Jb
+	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 03:56:07 -0400
+Subject: Re: [PATCH/RFC] oops and panic message logging to MTD
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Richard Purdie <rpurdie@openedhand.com>
+In-Reply-To: <1182184301.6074.62.camel@localhost.localdomain>
+References: <1182184301.6074.62.camel@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 19 Jun 2007 10:55:49 +0300
+Message-Id: <1182239749.4403.48.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,33 +24,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a Nokia 770 Internet Tablet with 128 Mb of NAND flash memory
-containing the root filesystem etc. as JFFS2.  It's using kernel 2.6.16
-for TI OMAP-1710 (ARM family).  I believe I have two adjacent bad bytes
-(16 bits): the symptom is that every few months a system file (e.g.
-/usr/lib/libopera.so) will turn up with an incorrect checksum from a
-tripwire-type program I wrote, and plausibly related buggy behavior will
-be seen (so far not fatal, cross fingers).  I use "od" on the desktop
-machine to compare the file from the flash image with the file currently
-on the Nokia 770, and I always find two adjacent bytes of 0.
+On Mon, 2007-06-18 at 17:31 +0100, Richard Purdie wrote:
+> +static int mtdoops_erase_block(struct mtd_info *mtd, int offset)
+> +{
+> +	struct erase_info erase;
+> +	DECLARE_WAITQUEUE(wait, current);
+> +	wait_queue_head_t wait_q;
+> +	int ret;
+> +
+> +	init_waitqueue_head(&wait_q);
+> +	erase.mtd =3D mtd;
+> +	erase.callback =3D mtdoops_erase_callback;
+> +	erase.addr =3D offset;
+> +	if (mtd->erasesize < OOPS_PAGE_SIZE)
+> +		erase.len =3D OOPS_PAGE_SIZE;
 
-At that point I use rsync -I to copy the image file to a temporary name
-on the device, and it then renames the new instance replacing the
-corrupt file, which then has no links and is removed (allocated blocks
-abandoned).  My understanding is that the garbage collector would sooner
-or later erase the abandoned erase blocks.  Then when new data was
-written, or when old data was churned for wear leveling, a read check
-would fail, and if this happened three times in succession, the block
-would be marked bad permanently.
-
-But the bad erase block is still in service.  My guess is that upon 
-rewriting it can be read-checked without errors, but after some time 
-passes, seconds to weeks, the bits return to zero.  How could I stomp this 
-block manually?  I think the answer will have two parts: how do I translate 
-an offset in a JFFS2 file to an erase block number, and what do I do once I 
-have this number (i.e. how do I alter the out of band byte 5)?
+It seems to me that your code won't work if mtd->erasesize <
+OOPS_PAGE_SIZE anyway, so this check should not be here I guess.
 
 
-James F. Carter          Voice 310 825 2897    FAX 310 206 6673
-UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA 90095-1555
-Email: jimc@math.ucla.edu  http://www.math.ucla.edu/~jimc (q.v. for PGP key)
+> +	ret =3D mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
+> +			&retlen, (u_char *) &count);
+> +	if ((retlen !=3D 4) || (ret < 0)) {
+> +		printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
+> +				", err %d.\n", cxt->nextpage * OOPS_PAGE_SIZE,
+> +				retlen, ret);
+> +		return 1;
+> +	}
+
+mtd->read() returns -EUCLEAN in case of a correctable bit-flip, ignore
+this error code here and elsewhere as well please.
+
+> +static void mtdoops_prepare(struct mtdoops_context *cxt)
+> +{
+> +	struct mtd_info *mtd =3D cxt->mtd;
+> +	int i =3D 0, j, ret, mod;
+> +
+> +	/* We were unregistered */
+> +	if (!mtd)
+> +		return;
+> +
+> +	mod =3D (cxt->nextpage * OOPS_PAGE_SIZE) % mtd->erasesize;
+> +	if (mod !=3D 0) {
+> +		cxt->nextpage =3D cxt->nextpage + ((mtd->erasesize - mod) / OOPS_PAGE_=
+SIZE);
+> +		if (cxt->nextpage > cxt->oops_pages)
+> +			cxt->nextpage =3D 0;
+> +	}
+> +
+> +	while (mtd->block_isbad &&
+> +			mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE)) {
+
+Well, mtd->block_isbad() may return error, unlikely, bu still. You also
+ignore the error at other places.
+
+> +badblock:
+> +		printk(KERN_WARNING "mtdoops: Bad block at %08x\n",
+> +				cxt->nextpage * OOPS_PAGE_SIZE);
+> +		i++;
+> +		cxt->nextpage =3D cxt->nextpage + (mtd->erasesize / OOPS_PAGE_SIZE);
+> +		if (cxt->nextpage > cxt->oops_pages)
+> +			cxt->nextpage =3D 0;
+> +		if (i =3D=3D (cxt->oops_pages / (mtd->erasesize / OOPS_PAGE_SIZE))) {
+> +			printk(KERN_ERR "mtdoops: All blocks bad!\n");
+> +			return;
+> +		}
+> +	}
+> +
+> +	for (j =3D 0, ret =3D -1; (j < 3) && (ret < 0); j++)
+> +		ret =3D mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+
+Ugh, why do you make it this difficult way instead of
+
+for (all EBs) {
+    ret =3D erase()
+    if (ret =3D=3D -EIO) {
+        markbad();
+    } else
+        return err;
+}
+
+> +
+> +	if (ret < 0) {
+> +		if (mtd->block_markbad)
+> +			mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+> +		goto badblock;
+
+Please, mark EB as bad only in case of -EIO. Also, do not ignore error
+code of mtd->block_markbad()
+
+
+Is it possible to re-structure the code and erase/check if EB is bad in
+_one_ cycle (thus avoiding this goto which is difficult to understand)?
+
+Surely all you want is to format the partition. So make a loop, skip bad
+EBs and erase good ones. In case of erase failure (-EIO) mark the EB as
+bad.
+
+> +static int find_next_position(struct mtdoops_context *cxt)
+> +{
+> +	struct mtd_info *mtd =3D cxt->mtd;
+> +	int page, maxpos =3D 0;
+> +	u32 count, maxcount =3D 0xffffffff;
+> +	size_t retlen;
+> +
+> +	for (page =3D 0; page < cxt->oops_pages; page++) {
+> +		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
+
+Please, check return code here.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
