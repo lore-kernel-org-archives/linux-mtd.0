@@ -1,23 +1,21 @@
-Received: from www19.your-server.de ([213.133.104.19])
+Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
+	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0aLa-0006Nh-MC
-	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 05:50:05 -0400
-Received: from [84.189.55.138] (helo=ulitu.handy-pc.constin-design.de)
-	by www19.your-server.de with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.50)
-	id 1I0aLT-0000Eg-9X
-	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 11:49:56 +0200
-From: Uli Luckas <u.luckas@road.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
-Date: Tue, 19 Jun 2007 11:49:43 +0200
-References: <200706141509.50621.u.luckas@road.de>
-In-Reply-To: <200706141509.50621.u.luckas@road.de>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-Message-Id: <200706191149.44820.u.luckas@road.de>
+	id 1I0aWR-0006dn-CZ
+	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 06:01:17 -0400
+Subject: Re: [PATCH/RFC] oops and panic message logging to MTD
+From: Richard Purdie <rpurdie@openedhand.com>
+To: dedekind@infradead.org
+In-Reply-To: <1182239749.4403.48.camel@sauron>
+References: <1182184301.6074.62.camel@localhost.localdomain>
+	<1182239749.4403.48.camel@sauron>
+Content-Type: text/plain
+Date: Tue, 19 Jun 2007 11:00:54 +0100
+Message-Id: <1182247254.5760.17.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,63 +25,141 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGksCmlzIHRoZXJlIGFueXRoaW5nIGluIHRoZSB3YXkgb2YgYXBsbHlpbmcgdGhpcyBwYXRjaD8K
-ClJlZ2FyZHMKVWxpCgoKT24gVGh1cnNkYXksIDE0LiBKdW5lIDIwMDcsIFVsaSBMdWNrYXMgd3Jv
-dGU6Cj4gSGkKPiBXZSBleHBlcmllbmNlIHRoZSBmb2xsb3dpbmcgcHJvYmxlbSB3aGVuIG91ciBi
-b2FyZCB0cmllcyB0byBzdXNwZW5kOgo+Cj4gSnVuIMKgNyAxODozMjoyMSBjb25zdGluIGtlcm5l
-bDogWyAyMDg1LjM1MDAwMF0gU3RvcHBpbmcgdGFza3MgLi4uCj4gSnVuIMKgNyAxODozMjoyMSBj
-b25zdGluIGtlcm5lbDogWyAyMTA1LjQxMDAwMF0gU3RvcHBpbmcga2VybmVsIHRocmVhZHMKPiB0
-aW1lZCBvdXQgYWZ0ZXIgMjAgc2Vjb25kcyAoMSB0YXNrcyByZWZ1c2luZyB0byBmcmVlemUpOgo+
-IEp1biDCoDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjEwNS40MTAwMDBdIMKgamZmczJf
-Z2NkX210ZDMKPiBKdW4gwqA3IDE4OjMyOjIxIGNvbnN0aW4ga2VybmVsOiBbIDIxMDUuNDEwMDAw
-XSBSZXN0YXJ0aW5nIHRhc2tzIC4uLiA8ND4KPiBTdHJhbmdlLCBqZmZzMl9nY2RfbXRkMyBub3Qg
-c3RvcHBlZAo+IEp1biDCoDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjEwNS40NDAwMDBd
-IGRvbmUuCj4KPiBUaGUgcHJvYmxlbSBzZWVtcyB0byBoYXBwZW4sIHdoZW4gc3VzcGVuZCBraWNr
-cyBpbiwgYWZ0ZXIgdGhlIGNhbGwgdG8KPiB0cnlfdG9fZnJlZXplIGFuZCBiZWZvcmUgdGhlIHdo
-aWxlIGxvb3AgaW4gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3RocmVhZC4KPgo+IFRoZSBwZW5kaW5n
-IGZyZWV6ZSB3aWxsIGNhdXNlIHNpZ25hbF9wZW5kaW5nIHRvIHJldHVybiB0cnVlIHVudGlsIHRo
-ZQo+IGF0dGVtcHRlZCBzdXNwZW5kIGlzIG92ZXIgYW5kIHRoZXJlYnkgdGhlIHdoaWxlIGxvb3Ag
-d29uJ3QgdGVybWluYXRlIHVudGlsCj4gdGhlIHN1c3BlbmQgdGltZXMgb3V0Lgo+Cj4gVGhpcyBw
-YXRjaCB3aWxsIGNhbGwgdHJ5X3RvX2ZyZWV6ZSBmcm9tIHdpdGhpbiB0aGUgd2hpbGUgbG9vcCBh
-bmQgYWRkcyBhbgo+IGV4dHJhIGNoZWNrIGZvciBqZmZzMl90aHJlYWRfc2hvdWxkX3dha2UgYmVm
-b3JlIHdlIGFjdHVhbGx5IGRvIHRoZSBHQyB0bwo+IGF2b2lkIGNhbGxpbmcgamZmczJfZ2FyYmFn
-ZV9jb2xsZWN0X3Bhc3MgYXQgZXZlcnkgd2FrZXVwLgo+Cj4gSWYgdGhlcmUgYXJlIG5vIG9iamVj
-dGlvbnMsIHBsZWFzZSBhcHBseSBhbmQgcHVzaCB0byBtYWlubGluZS4KPgo+IFNpZ25lZC1vZmYt
-Ynk6IFVsaSBMdWNrYXMgPHUubHVja2FzQHJvYWQuZGU+Cj4KPiBkaWZmIC0tZ2l0IGEvZnMvamZm
-czIvYmFja2dyb3VuZC5jIGIvZnMvamZmczIvYmFja2dyb3VuZC5jCj4gaW5kZXggODg4ZjIzNi4u
-Zjk1MzgyNCAxMDA2NDQKPiAtLS0gYS9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMKPiArKysgYi9mcy9q
-ZmZzMi9iYWNrZ3JvdW5kLmMKPiBAQCAtOTYsOSArOTYsNiBAQCBzdGF0aWMgaW50IGpmZnMyX2dh
-cmJhZ2VfY29sbGVjdF90aHJlYWQodm9pZCAqX2MpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2NoZWR1bGUoKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoH0KPiDCoAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAo
-dHJ5X3RvX2ZyZWV6ZSgpKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgY29udGludWU7Cj4gLQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-LyogVGhpcyB0aHJlYWQgaXMgcHVyZWx5IGFuIG9wdGltaXNhdGlvbi4gQnV0IGlmIGl0IHJ1bnMK
-PiB3aGVuIG90aGVyIHRoaW5ncyBjb3VsZCBiZSBydW5uaW5nLCBpdCBhY3R1YWxseSBtYWtlcyB0
-aGluZ3MgYSBsb3Qgd29yc2UuCj4gVXNlIHlpZWxkKCkgYW5kIHB1dCBpdCBhdCB0aGUgYmFjayBv
-ZiB0aGUgcnVucXVldWUgQEAgLTExMyw2ICsxMTAsOSBAQAo+IHN0YXRpYyBpbnQgamZmczJfZ2Fy
-YmFnZV9jb2xsZWN0X3RocmVhZCh2b2lkICpfYykgc2lnaW5mb190IGluZm87Cj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdW5zaWduZWQgbG9uZyBzaWdu
-cjsKPiDCoAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-aWYgKHRyeV90b19mcmVlemUoKSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb250aW51ZTsKPiArCj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2lnbnIgPSBkZXF1ZXVlX3NpZ25h
-bF9sb2NrKGN1cnJlbnQsCj4gJmN1cnJlbnQtPmJsb2NrZWQsICZpbmZvKTsgCj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3dpdGNoKHNpZ25yKSB7Cj4g
-QEAgLTEzNyw3ICsxMzcsOCBAQCBzdGF0aWMgaW50IGpmZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJl
-YWQodm9pZCAqX2MpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkaXNhbGxvd19z
-aWduYWwoU0lHSFVQKTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgRDEo
-cHJpbnRrKEtFUk5fREVCVUcgImpmZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJlYWQoKToKPiBwYXNz
-XG4iKSk7IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoamZmczJfZ2FyYmFnZV9j
-b2xsZWN0X3Bhc3MoYykgPT0gLUVOT1NQQykgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqBpZiAoIMKgIGpmZnMyX3RocmVhZF9zaG91bGRfd2FrZShjKQo+ICvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgwqAgwqAmJiBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfcGFzcyhjKSA9
-PSAtRU5PU1BDKSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgcHJpbnRrKEtFUk5fTk9USUNFICJObyBzcGFjZSBmb3IgZ2FyYmFnZQo+IGNvbGxlY3Rp
-b24uIEFib3J0aW5nIEdDIHRocmVhZFxuIik7IGdvdG8gZGllOwo+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgfQoKCgotLSAKCi0tLS0tLS0gUk9BRCAuLi50aGUgaGFuZHlQQyBDb21w
-YW55IC0gLSAtICApICkgKQoKVWxpIEx1Y2thcwpTb2Z0d2FyZSBEZXZlbG9wbWVudAoKUk9BRCBH
-bWJICkJlbm5pZ3NlbnN0ci4gMTQgfCAxMjE1OSBCZXJsaW4gfCBHZXJtYW55CmZvbjogKzQ5ICgz
-MCkgMjMwMDY5IC0gNjQgfCBmYXg6ICs0OSAoMzApIDIzMDA2OSAtIDY5CnVybDogd3d3LnJvYWQu
-ZGUKCkFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnOiBIUkIgOTY2ODggQgpNYW5hZ2luZyBkaXJl
-Y3RvcnM6IEhhbnMtUGV0ZXIgQ29uc3RpZW4sIEh1YmVydHVzIHZvbiBTdHJlaXQK
+On Tue, 2007-06-19 at 10:55 +0300, Artem Bityutskiy wrote:
+> On Mon, 2007-06-18 at 17:31 +0100, Richard Purdie wrote:
+> > +	if (mtd->erasesize < OOPS_PAGE_SIZE)
+> > +		erase.len = OOPS_PAGE_SIZE;
+> 
+> It seems to me that your code won't work if mtd->erasesize <
+> OOPS_PAGE_SIZE anyway, so this check should not be here I guess.
+
+Its just a sanity check...
+
+> > +	ret = mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
+> > +			&retlen, (u_char *) &count);
+> > +	if ((retlen != 4) || (ret < 0)) {
+> > +		printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
+> > +				", err %d.\n", cxt->nextpage * OOPS_PAGE_SIZE,
+> > +				retlen, ret);
+> > +		return 1;
+> > +	}
+> 
+> mtd->read() returns -EUCLEAN in case of a correctable bit-flip, ignore
+> this error code here and elsewhere as well please.
+
+ok.
+
+> > +static void mtdoops_prepare(struct mtdoops_context *cxt)
+> > +{
+> > +	struct mtd_info *mtd = cxt->mtd;
+> > +	int i = 0, j, ret, mod;
+> > +
+> > +	/* We were unregistered */
+> > +	if (!mtd)
+> > +		return;
+> > +
+> > +	mod = (cxt->nextpage * OOPS_PAGE_SIZE) % mtd->erasesize;
+> > +	if (mod != 0) {
+> > +		cxt->nextpage = cxt->nextpage + ((mtd->erasesize - mod) / OOPS_PAGE_SIZE);
+> > +		if (cxt->nextpage > cxt->oops_pages)
+> > +			cxt->nextpage = 0;
+> > +	}
+> > +
+> > +	while (mtd->block_isbad &&
+> > +			mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE)) {
+> 
+> Well, mtd->block_isbad() may return error, unlikely, bu still. You also
+> ignore the error at other places.
+
+Ignoring that is deliberate since it doesn't really matter if the block
+is bad or we can't read from it, the action is the same...
+
+> > +badblock:
+> > +		printk(KERN_WARNING "mtdoops: Bad block at %08x\n",
+> > +				cxt->nextpage * OOPS_PAGE_SIZE);
+> > +		i++;
+> > +		cxt->nextpage = cxt->nextpage + (mtd->erasesize / OOPS_PAGE_SIZE);
+> > +		if (cxt->nextpage > cxt->oops_pages)
+> > +			cxt->nextpage = 0;
+> > +		if (i == (cxt->oops_pages / (mtd->erasesize / OOPS_PAGE_SIZE))) {
+> > +			printk(KERN_ERR "mtdoops: All blocks bad!\n");
+> > +			return;
+> > +		}
+> > +	}
+> > +
+> > +	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
+> > +		ret = mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+> 
+> Ugh, why do you make it this difficult way instead of
+> 
+> for (all EBs) {
+>     ret = erase()
+>     if (ret == -EIO) {
+>         markbad();
+>     } else
+>         return err;
+> }
+
+See below.
+
+> > +
+> > +	if (ret < 0) {
+> > +		if (mtd->block_markbad)
+> > +			mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+> > +		goto badblock;
+> 
+> Please, mark EB as bad only in case of -EIO. 
+
+ok.
+
+> Also, do not ignore error code of mtd->block_markbad()
+
+All we can do is print a warning, the action will be the same...
+
+> Is it possible to re-structure the code and erase/check if EB is bad in
+> _one_ cycle (thus avoiding this goto which is difficult to understand)?
+> 
+> Surely all you want is to format the partition. So make a loop, skip bad
+> EBs and erase good ones. In case of erase failure (-EIO) mark the EB as
+> bad.
+
+Its not a case of formatting the whole partition. The whole point of
+this code is the following use case:
+
+1. Device crashes
+2. Device reboots
+3. mtdoops partition has a log of why it crashed
+
+If you erase the whole partition each time mtdoops loads, this won't
+work so the code only finds the next block to use and erases that. It
+keeps moving forwards until it finds that block.
+
+I usually hate goto statements but in this case it simplifies the code a
+lot (and it is on an error path). The alternative is a while loop with
+several new variables, I tried it and it was more ugly/confusing...
+
+> > +static int find_next_position(struct mtdoops_context *cxt)
+> > +{
+> > +	struct mtd_info *mtd = cxt->mtd;
+> > +	int page, maxpos = 0;
+> > +	u32 count, maxcount = 0xffffffff;
+> > +	size_t retlen;
+> > +
+> > +	for (page = 0; page < cxt->oops_pages; page++) {
+> > +		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
+> 
+> Please, check return code here.
+
+ok.
+
+> Also, could you please use wait_event_interruptible() instead of
+> set_current_state() which looks better (indeed, you have wait queue, 
+> so use wq calls).
+
+That piece of code is in keeping with the rest of the mtd erase handling
+code. Looking through the various wq macros, I don't see any which help
+particularly in this case...
+
+Cheers,
+
+Richard
