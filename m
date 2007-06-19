@@ -1,20 +1,23 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+Received: from www19.your-server.de ([213.133.104.19])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I0Ykp-0005Wt-CD
-	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 04:08:11 -0400
-Subject: Re: [PATCH/RFC] oops and panic message logging to MTD
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Richard Purdie <rpurdie@openedhand.com>
-In-Reply-To: <1182184301.6074.62.camel@localhost.localdomain>
-References: <1182184301.6074.62.camel@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 19 Jun 2007 11:07:35 +0300
-Message-Id: <1182240455.4403.52.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Reply-To: dedekind@infradead.org
+	id 1I0aLa-0006Nh-MC
+	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 05:50:05 -0400
+Received: from [84.189.55.138] (helo=ulitu.handy-pc.constin-design.de)
+	by www19.your-server.de with esmtpsa (TLSv1:RC4-SHA:128) (Exim 4.50)
+	id 1I0aLT-0000Eg-9X
+	for linux-mtd@lists.infradead.org; Tue, 19 Jun 2007 11:49:56 +0200
+From: Uli Luckas <u.luckas@road.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
+Date: Tue, 19 Jun 2007 11:49:43 +0200
+References: <200706141509.50621.u.luckas@road.de>
+In-Reply-To: <200706141509.50621.u.luckas@road.de>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Message-Id: <200706191149.44820.u.luckas@road.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,48 +27,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-06-18 at 17:31 +0100, Richard Purdie wrote:
-> +static int mtdoops_erase_block(struct mtd_info *mtd, int offset)
-> +{
-> +	struct erase_info erase;
-> +	DECLARE_WAITQUEUE(wait, current);
-> +	wait_queue_head_t wait_q;
-> +	int ret;
-> +
-> +	init_waitqueue_head(&wait_q);
-> +	erase.mtd =3D mtd;
-> +	erase.callback =3D mtdoops_erase_callback;
-> +	erase.addr =3D offset;
-> +	if (mtd->erasesize < OOPS_PAGE_SIZE)
-> +		erase.len =3D OOPS_PAGE_SIZE;
-> +	else
-> +		erase.len =3D mtd->erasesize;
-> +	erase.priv =3D (u_long)&wait_q;
-> +
-> +	set_current_state(TASK_INTERRUPTIBLE);
-> +	add_wait_queue(&wait_q, &wait);
-> +
-> +	ret =3D mtd->erase(mtd, &erase);
-> +	if (ret) {
-> +		set_current_state(TASK_RUNNING);
-> +		remove_wait_queue(&wait_q, &wait);
-> +		printk(KERN_WARNING "mtdoops: erase of region [0x%x, 0x%x] "
-> +				     "on \"%s\" failed\n",
-> +			erase.addr, erase.len, mtd->name);
-> +		return ret;
-> +	}
-> +
-> +	schedule();  /* Wait for erase to finish. */
-> +	remove_wait_queue(&wait_q, &wait);
-> +
-> +	return 0;
-> +}
-
-Also, could you please use wait_event_interruptible() instead of
-set_current_state() which looks better (indeed, you have wait queue, so
-use wq calls).
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+SGksCmlzIHRoZXJlIGFueXRoaW5nIGluIHRoZSB3YXkgb2YgYXBsbHlpbmcgdGhpcyBwYXRjaD8K
+ClJlZ2FyZHMKVWxpCgoKT24gVGh1cnNkYXksIDE0LiBKdW5lIDIwMDcsIFVsaSBMdWNrYXMgd3Jv
+dGU6Cj4gSGkKPiBXZSBleHBlcmllbmNlIHRoZSBmb2xsb3dpbmcgcHJvYmxlbSB3aGVuIG91ciBi
+b2FyZCB0cmllcyB0byBzdXNwZW5kOgo+Cj4gSnVuIMKgNyAxODozMjoyMSBjb25zdGluIGtlcm5l
+bDogWyAyMDg1LjM1MDAwMF0gU3RvcHBpbmcgdGFza3MgLi4uCj4gSnVuIMKgNyAxODozMjoyMSBj
+b25zdGluIGtlcm5lbDogWyAyMTA1LjQxMDAwMF0gU3RvcHBpbmcga2VybmVsIHRocmVhZHMKPiB0
+aW1lZCBvdXQgYWZ0ZXIgMjAgc2Vjb25kcyAoMSB0YXNrcyByZWZ1c2luZyB0byBmcmVlemUpOgo+
+IEp1biDCoDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjEwNS40MTAwMDBdIMKgamZmczJf
+Z2NkX210ZDMKPiBKdW4gwqA3IDE4OjMyOjIxIGNvbnN0aW4ga2VybmVsOiBbIDIxMDUuNDEwMDAw
+XSBSZXN0YXJ0aW5nIHRhc2tzIC4uLiA8ND4KPiBTdHJhbmdlLCBqZmZzMl9nY2RfbXRkMyBub3Qg
+c3RvcHBlZAo+IEp1biDCoDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjEwNS40NDAwMDBd
+IGRvbmUuCj4KPiBUaGUgcHJvYmxlbSBzZWVtcyB0byBoYXBwZW4sIHdoZW4gc3VzcGVuZCBraWNr
+cyBpbiwgYWZ0ZXIgdGhlIGNhbGwgdG8KPiB0cnlfdG9fZnJlZXplIGFuZCBiZWZvcmUgdGhlIHdo
+aWxlIGxvb3AgaW4gamZmczJfZ2FyYmFnZV9jb2xsZWN0X3RocmVhZC4KPgo+IFRoZSBwZW5kaW5n
+IGZyZWV6ZSB3aWxsIGNhdXNlIHNpZ25hbF9wZW5kaW5nIHRvIHJldHVybiB0cnVlIHVudGlsIHRo
+ZQo+IGF0dGVtcHRlZCBzdXNwZW5kIGlzIG92ZXIgYW5kIHRoZXJlYnkgdGhlIHdoaWxlIGxvb3Ag
+d29uJ3QgdGVybWluYXRlIHVudGlsCj4gdGhlIHN1c3BlbmQgdGltZXMgb3V0Lgo+Cj4gVGhpcyBw
+YXRjaCB3aWxsIGNhbGwgdHJ5X3RvX2ZyZWV6ZSBmcm9tIHdpdGhpbiB0aGUgd2hpbGUgbG9vcCBh
+bmQgYWRkcyBhbgo+IGV4dHJhIGNoZWNrIGZvciBqZmZzMl90aHJlYWRfc2hvdWxkX3dha2UgYmVm
+b3JlIHdlIGFjdHVhbGx5IGRvIHRoZSBHQyB0bwo+IGF2b2lkIGNhbGxpbmcgamZmczJfZ2FyYmFn
+ZV9jb2xsZWN0X3Bhc3MgYXQgZXZlcnkgd2FrZXVwLgo+Cj4gSWYgdGhlcmUgYXJlIG5vIG9iamVj
+dGlvbnMsIHBsZWFzZSBhcHBseSBhbmQgcHVzaCB0byBtYWlubGluZS4KPgo+IFNpZ25lZC1vZmYt
+Ynk6IFVsaSBMdWNrYXMgPHUubHVja2FzQHJvYWQuZGU+Cj4KPiBkaWZmIC0tZ2l0IGEvZnMvamZm
+czIvYmFja2dyb3VuZC5jIGIvZnMvamZmczIvYmFja2dyb3VuZC5jCj4gaW5kZXggODg4ZjIzNi4u
+Zjk1MzgyNCAxMDA2NDQKPiAtLS0gYS9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMKPiArKysgYi9mcy9q
+ZmZzMi9iYWNrZ3JvdW5kLmMKPiBAQCAtOTYsOSArOTYsNiBAQCBzdGF0aWMgaW50IGpmZnMyX2dh
+cmJhZ2VfY29sbGVjdF90aHJlYWQodm9pZCAqX2MpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2NoZWR1bGUoKTsKPiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoH0KPiDCoAo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAo
+dHJ5X3RvX2ZyZWV6ZSgpKQo+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgY29udGludWU7Cj4gLQo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+LyogVGhpcyB0aHJlYWQgaXMgcHVyZWx5IGFuIG9wdGltaXNhdGlvbi4gQnV0IGlmIGl0IHJ1bnMK
+PiB3aGVuIG90aGVyIHRoaW5ncyBjb3VsZCBiZSBydW5uaW5nLCBpdCBhY3R1YWxseSBtYWtlcyB0
+aGluZ3MgYSBsb3Qgd29yc2UuCj4gVXNlIHlpZWxkKCkgYW5kIHB1dCBpdCBhdCB0aGUgYmFjayBv
+ZiB0aGUgcnVucXVldWUgQEAgLTExMyw2ICsxMTAsOSBAQAo+IHN0YXRpYyBpbnQgamZmczJfZ2Fy
+YmFnZV9jb2xsZWN0X3RocmVhZCh2b2lkICpfYykgc2lnaW5mb190IGluZm87Cj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdW5zaWduZWQgbG9uZyBzaWdu
+cjsKPiDCoAo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+aWYgKHRyeV90b19mcmVlemUoKSkKPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb250aW51ZTsKPiArCj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2lnbnIgPSBkZXF1ZXVlX3NpZ25h
+bF9sb2NrKGN1cnJlbnQsCj4gJmN1cnJlbnQtPmJsb2NrZWQsICZpbmZvKTsgCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3dpdGNoKHNpZ25yKSB7Cj4g
+QEAgLTEzNyw3ICsxMzcsOCBAQCBzdGF0aWMgaW50IGpmZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJl
+YWQodm9pZCAqX2MpCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBkaXNhbGxvd19z
+aWduYWwoU0lHSFVQKTsKPiDCoAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgRDEo
+cHJpbnRrKEtFUk5fREVCVUcgImpmZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJlYWQoKToKPiBwYXNz
+XG4iKSk7IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAoamZmczJfZ2FyYmFnZV9j
+b2xsZWN0X3Bhc3MoYykgPT0gLUVOT1NQQykgewo+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBpZiAoIMKgIGpmZnMyX3RocmVhZF9zaG91bGRfd2FrZShjKQo+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgwqAgwqAmJiBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfcGFzcyhjKSA9
+PSAtRU5PU1BDKSB7Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgcHJpbnRrKEtFUk5fTk9USUNFICJObyBzcGFjZSBmb3IgZ2FyYmFnZQo+IGNvbGxlY3Rp
+b24uIEFib3J0aW5nIEdDIHRocmVhZFxuIik7IGdvdG8gZGllOwo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgfQoKCgotLSAKCi0tLS0tLS0gUk9BRCAuLi50aGUgaGFuZHlQQyBDb21w
+YW55IC0gLSAtICApICkgKQoKVWxpIEx1Y2thcwpTb2Z0d2FyZSBEZXZlbG9wbWVudAoKUk9BRCBH
+bWJICkJlbm5pZ3NlbnN0ci4gMTQgfCAxMjE1OSBCZXJsaW4gfCBHZXJtYW55CmZvbjogKzQ5ICgz
+MCkgMjMwMDY5IC0gNjQgfCBmYXg6ICs0OSAoMzApIDIzMDA2OSAtIDY5CnVybDogd3d3LnJvYWQu
+ZGUKCkFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnOiBIUkIgOTY2ODggQgpNYW5hZ2luZyBkaXJl
+Y3RvcnM6IEhhbnMtUGV0ZXIgQ29uc3RpZW4sIEh1YmVydHVzIHZvbiBTdHJlaXQK
