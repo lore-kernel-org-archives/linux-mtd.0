@@ -1,36 +1,15 @@
-Received: from e36.co.us.ibm.com ([32.97.110.154])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I13XR-0003R1-JZ
-	for linux-mtd@lists.infradead.org; Wed, 20 Jun 2007 18:00:14 +0100
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e36.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l5KGxjdJ003066
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Jun 2007 12:59:45 -0400
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
-	l5KGxixQ260196
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Jun 2007 10:59:44 -0600
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l5KGxhqL010892
-	for <linux-mtd@lists.infradead.org>; Wed, 20 Jun 2007 10:59:43 -0600
-Subject: Re: sync() takes minutes while erasing
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: joakim.tjernlund@transmode.se
-In-Reply-To: <1182357913.2969.145.camel@gentoo-jocke.transmode.se>
-References: <1182349303.2969.122.camel@gentoo-jocke.transmode.se>
-	<1182350992.2969.128.camel@gentoo-jocke.transmode.se>
-	<1182355744.14977.41.camel@weaponx.rchland.ibm.com>
-	<1182356796.2969.140.camel@gentoo-jocke.transmode.se>
-	<20070620162950.GB1789@lazybastard.org>
-	<1182357913.2969.145.camel@gentoo-jocke.transmode.se>
+Received: from mta15.mail.adelphia.net ([68.168.78.77] helo=mta15.adelphia.net)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I16lA-0000se-7q
+	for linux-mtd@lists.infradead.org; Wed, 20 Jun 2007 16:26:39 -0400
+Message-ID: <1849872.1182371194929.JavaMail.root@web36>
+Date: Wed, 20 Jun 2007 13:26:34 -0700
+From: EURO MILLIONS INTERNATIONAL <wroblewski@adelphia.net>
+Subject: YOU ARE A WINNER
+MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Date: Wed, 20 Jun 2007 11:59:43 -0500
-Message-Id: <1182358783.14977.52.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Transfer-Encoding: 7bit
+Reply-To: mail2johncarrick4@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,45 +19,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-06-20 at 18:45 +0200, Joakim Tjernlund wrote:
-> On Wed, 2007-06-20 at 18:29 +0200, Jörn Engel wrote:
-> > On Wed, 20 June 2007 18:26:36 +0200, Joakim Tjernlund wrote:
-> > > On Wed, 2007-06-20 at 11:09 -0500, Josh Boyer wrote:
-> > > > 
-> > > > jffs2_write_super is called during unmount.  If there are blocks pending
-> > > > on the erase list, it's better to erase those now before the unmount is
-> > > > completed.  Saves some time on the next mount.
-> > > 
-> > > No, not if the reboot/unmont is suspended for minutes just because jffs2
-> > > wants to finish erasing. It doesn't save you much, if anything, at
-> > > remount either.
-> > > 
-> > > The erasing in context is just something that needs to be done at some
-> > > point but it don't have to happen now.
-> > 
-> > In case you need an example:
-> > 
-> > $ flash_eraseall /dev/mtd0
-> > $ time mount mtd0 /mnt -t jffs2
-> > $ time umount /mnt
-> > 
-> > Depending on device size, this will take some seconds for mount and some
-> > minutes for umount.  Spending minutes to save some seconds on next mount
-> > hardly sounds sensible.
-> > 
-> > Jörn
-> 
-> Exactly, 
+AWARD DEPARTMENT.
 
-Ok, you've both convinced me.
+REF: 26510460037/02/VAL
+BATCH: 24/00319/VAL
 
-> David where are you? You havn't been active for a long time.
+Dear Winner,
 
-He's in China on business.
+Your ticket number: 023-0148-790-459 with Serial number 5368/05 drew The lucky number: 11
 
-> Is there any reason to keep as is?
+Congratulations, you have just won yourself -ONE MILLION FIVE 
+HUNDRED THOUSAND POUNDS ONLY in the satellite software email 
+lottery conducted By EURO MILLIONS in which e-mail addresses are 
+picked randomly by Software powered by the Internet.
 
-Maybe not.  We definitely want it to flush the write buffer and complete
-any block in the _middle_ of an erase though.
+Your email address was amongst those chosen this quarter and you 
+are to contact our Promotions' Manager for Clearance. Here is 
+the contact information:
 
-josh
+Promotion Manager:
+Mr. John Carrick
+Tel:{+44} 701 1148 523
+Fax:{+44} 870 4714 145
+Email:mail2johncarrick4@yahoo.co.uk
+
+You are to forward the following details to enable us clear your 
+file for immediate payment:
+
+1. Full Names: _______________________
+2. Address: __________________________
+3. Age: _____________________________
+4. Sex: ______________________________
+5. Marital Status: _____________________
+6. Occupation:________________________
+7. Company Name._____________________
+8. Phone numbers:______________________
+9. Fax number: ________________________
+10. Winning email address _____________
+11. Country: ___________________________
+
+Yours faithfully,
+MRS. CINDY HOWARD.
