@@ -1,23 +1,24 @@
-Received: from ug-out-1314.google.com ([66.249.92.169])
+Received: from wr-out-0506.google.com ([64.233.184.232])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1En3-0005qq-EY
-	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 01:01:10 -0400
-Received: by ug-out-1314.google.com with SMTP id t39so508095ugd
+	id 1I1GWU-0006lQ-Os
+	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 02:52:09 -0400
+Received: by wr-out-0506.google.com with SMTP id 58so141388wri
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jun 2007 22:01:01 -0700 (PDT)
-Message-ID: <4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
-Date: Thu, 21 Jun 2007 10:31:00 +0530
-From: "Midhun Agnihotram" <agnimidhun@gmail.com>
-To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-Subject: Re: /proc/mtd file does not show partitions
-In-Reply-To: <46791199.7020402@cetrtapot.si>
+	Wed, 20 Jun 2007 23:52:05 -0700 (PDT)
+Message-ID: <a781481a0706202352u1efed48fo5a101f8c015638d7@mail.gmail.com>
+Date: Thu, 21 Jun 2007 12:22:01 +0530
+From: "Satyam Sharma" <satyam.sharma@gmail.com>
+To: "Tom Spink" <tspink@gmail.com>
+Subject: build failure due to ROOT_DEV in mtd module (was Re:
+	linux-2.6.22-rc5-g7c8545e build #298 failed ...)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <4dde4acb0706192320n7ca4157q1219adfb68e50ce1@mail.gmail.com>
-	<46791199.7020402@cetrtapot.si>
-Cc: linux-mtd@lists.infradead.org
+Cc: =?ISO-8859-1?Q?Toralf_F=F6rster?= <toralf.foerster@gmx.de>,
+	Paolo Giarrusso <blaisorblade@yahoo.it>, linux-kernel@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>, linux-mtd@lists.infradead.org,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,73 +30,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-Update: We have now moved from Ramfs to JFFS2.
+[Added Christoph, Paolo, David and linux-mtd.]
 
-> > cat /proc/mtd, it says that the file does not exist. Who is supposed
-> > to create this file?
->
-> /usr/src/linux/drivers/mtd/mtdcore.c iff CONFIG_PROC_FS is enabled.
-> Silly question - do you have any files in /proc? Is procfs mounted?
->
+On 6/21/07, Tom Spink <tspink@gmail.com> wrote:
+> On 20/06/07, Tom Spink <tspink@gmail.com> wrote:
+> > On 20/06/07, Toralf F=F6rster <toralf.foerster@gmx.de> wrote:
+> > > Hello,
+> > >
+> > > the build with the attached .config failed, make ends with:
+> > [...]
+> > The build seems to fail because of:
+> > ERROR: "ROOT_DEV" [drivers/mtd/maps/nettel.ko] undefined!
+> >
+> > After taking a quick look at the code, I can't immediately see why
+> > this would be, since there is an include for linux/root_dev.h at the
+> > top, there.
+> >
+> > There's only one occurrence of ROOT_DEV (line 425), and after a quick
+> > look at the git history, it seems the include was originally missing,
+> > but was put back in, in commit
+> > 6cc449c7d0292cb9b993f0df84fd3225e3099492.
+> [...]
+> After further inspection, I *think* it's because nettel is being built
+> as a module, and it's trying to reference ROOT_DEV, which is not
+> exported.
 
-    CONFIG_PROC_FS is enabled in the kernel configuration. I do have
-/proc/mounts file.
-# cat /proc/mounts
-rootfs / rootfs rw 0 0
+You're right. Look at:
+commit a2d2b5cb8e5d8787f009eeb3bbca52687bd42a77
+[ http://lkml.org/lkml/2005/7/13/166 ]
 
-   I am sorry - I exactly do not know what you mean by whether procfs
-is mounted. I have /proc folder in the file system that I use. I do
-not exclusively mount it anywhere. So when the filesystem is mounted
-and the linux prompt comes up, the proc directory exists. Do I need to
-do  anything more?
+You could export ROOT_DEV to modules back again, or perhaps:
+http://www.infradead.org/pipermail/linux-mtd/2005-March/012290.html
+to get around the build error.
 
-  Also when I mount the JFFS2 file system (which is in my flash), I
-get the following errors.
+[ It might've been unexported for good reasons, of course, see:
+http://lkml.org/lkml/2005/3/30/179 ]
 
-Empty flash at 0x0000fffc ends at 0x00010000
-Empty flash at 0x0002fffc ends at 0x00030000
-Empty flash at 0x0004fffc ends at 0x00050000
-Empty flash at 0x0006fffc ends at 0x00070000
-Empty flash at 0x0008fffc ends at 0x00090000
-Empty flash at 0x000afffc ends at 0x000b0000
-Empty flash at 0x000cfffc ends at 0x000d0000
-Empty flash at 0x000efffc ends at 0x000f0000
-Empty flash at 0x0010fffc ends at 0x00110000
-Empty flash at 0x0012fffc ends at 0x00130000
-Empty flash at 0x0014fffc ends at 0x00150000
-Empty flash at 0x0016ffe8 ends at 0x00170000
-Empty flash at 0x0018fffc ends at 0x00190000
-Empty flash at 0x001afffc ends at 0x001b0000
-Empty flash at 0x001cfffc ends at 0x001d0000
-Empty flash at 0x001efffc ends at 0x001f0000
-VFS: Mounted root (jffs2 filesystem).
-Freeing init memory: 84K
-init: can't log to /dev/tty5
-starting pid 670, tty '/dev/ttyS0': '/bin/ash'
-
-
-BusyBox v1.6.0 (2007-06-15 12:34:28 IST) Built-in shell (ash)
-Enter 'help' for a list of built-in commands.
-
-# Erase at 0x003e0000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x003c0000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x003a0000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x00380000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x00360000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x00340000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x00320000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x00300000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x002e0000 failed immediately: -EROFS. Is the sector locked?
-Erase at 0x002c0000 failed immediately: -EROFS. Is the sector locked?
-
-  The JFFS2 file system is not writable (although we have mounted it
-in read write mode). It does not allow us to write or delete. The boot
-args are as follows:
-
-mem=48M console=ttyS0,115200 console=tty0 root=/dev/mtdblock4 rw
-rootfstype=jffs2 init=/sbin/init ip=on
-
-   What could be the problem??
-
-Thanks a lot for your help,
-Midhun.
+Satyam
