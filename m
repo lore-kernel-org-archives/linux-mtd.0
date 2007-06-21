@@ -1,22 +1,11 @@
-Received: from ug-out-1314.google.com ([66.249.92.171])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1Bx0-0004B7-Q9
-	for linux-mtd@lists.infradead.org; Wed, 20 Jun 2007 21:59:13 -0400
-Received: by ug-out-1314.google.com with SMTP id t39so483419ugd
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 20 Jun 2007 18:59:09 -0700 (PDT)
-Message-ID: <625fc13d0706201852g5348a209q82c5cc5b9dc42bf6@mail.gmail.com>
-Date: Wed, 20 Jun 2007 20:52:27 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Mark A. Greer" <mgreer@mvista.com>
-Subject: Re: [PATCH][MTD] Add COMPATIBLE_IOCTL() for MEMGETOOBSEL
-In-Reply-To: <20070620235245.GA12800@mag.az.mvista.com>
+From: LOTTERY BOARD <handyrh@bellsouth.net>
+To: <resultonlinegames@info.co.uk>
+Subject: Certified Winner
+Date: Wed, 20 Jun 2007 22:33:58 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20070620235245.GA12800@mag.az.mvista.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20070621033358.EXXK26350.ibm67aec.bellsouth.net@mail.bellsouth.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,27 +15,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/20/07, Mark A. Greer <mgreer@mvista.com> wrote:
-> The flash_eraseall MTD utility uses the MEMGETOOBSEL so add a
-> COMPATIBLE_IOCTL() entry for it.
->
-> Signed-off-by: Mark A. Greer <mgreer@mvista.com>
-> ---
-> I know MEMGETOOBSEL is supposed to be obsolete but flash_eraseall uses
-> it so...
->
-> Also, MEMSETOOBSEL is used by nandwrite.c but that ioctl doesn't appear
-> to be implemented so I didn't add it.  My util source is
-> http://ftp.linux.org.uk/pub/people/dwmw2/mtd/cvs/mtd/util/
-> in case I'm looking at old source.
+THE LOTTERY DEPARTMENT UK.
+22 Garden Close,PE9 2YP, London
+REF N0:UK NL-L/200-26937
+BATCH N0:14/0017/1PD
 
-You are.  But it's still the same in the current code:
+ THE BRITISH OFFICIAL PRIZE   NOTIFICATION   
 
-http://git.infradead.org/?p=mtd-utils.git;a=summary
+We are pleased to inform you of the result of the just concluded annual 
+final draws held on the (18th,June 2007) by THE UK LOTTERY DEPARTMENT  
+Worldwide Promotions, The selection process was carried out through 
+random selection in our computerized email,Your email was among the 5 
+Lucky winners who won 1,000,000.00 each on THE BRITISH LOTTERY 
+DEPARTMENT UK.
 
-And now that you've found MEMSETOOBSEL being used but not implemented,
-I'll have to go figure out what that's about.
+However the results were released on (20th,June 2007) And your email  
+was attached to ticket number (7PWYZ2007) and BATCH N0 (14/0017/1PD) In 
+other to claim your 1,000,000.00 prize winning,which has been deposited 
+in a designated bank. However,you will have to fill the form below and 
+send it to the Promotion manager of THE UK LOTTERY DEPARTMENT for 
+verification and then you will be directed to the bank where a cheque 
+of 1,000,000.00 has already  been deposited in your favour.
 
-Curse you Mark!  ;)
+NAME:.......................
+AGE:...........................
+SEX:.male.................
+ADDRESS:................
+EMAIL:........................
+PHONE:.....................
+OCCUPATION:.........
+COMPANY:................
+COUNTRY:................
+  
+(CONTACT PROMOTION MANAGER)
+Name: Thompson Fraser.
+Phone # :+447045702389 
+FAX # : +447075055658
+E MAIL: fiduciarylotterydept@yahoo.com.hk
 
-josh
+Accept my hearty congratulations once again! 
+
+Yours faithfully,
+Mrs. Stella Ellis.
+Sweepstakes International Program.
+Copyright © 1994-2007 The UK National Lottery Inc.All rights reserved. 
+Terms  of Service - Guideline.
