@@ -1,28 +1,19 @@
-Received: from wr-out-0506.google.com ([64.233.184.227])
+Received: from n1.cetrtapot.si ([89.212.80.162])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1Hms-00009k-Oc
-	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 04:13:24 -0400
-Received: by wr-out-0506.google.com with SMTP id 58so154513wri
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Jun 2007 01:13:05 -0700 (PDT)
-Message-ID: <a781481a0706210113s51078c55p239958c04112b93b@mail.gmail.com>
-Date: Thu, 21 Jun 2007 13:43:05 +0530
-From: "Satyam Sharma" <satyam.sharma@gmail.com>
-To: "Christoph Hellwig" <hch@infradead.org>,
-	"Satyam Sharma" <satyam.sharma@gmail.com>,
-	"Tom Spink" <tspink@gmail.com>,
-	"Toralf F?rster" <toralf.foerster@gmx.de>, linux-kernel@vger.kernel.org,
-	"Paolo Giarrusso" <blaisorblade@yahoo.it>,
-	"David Woodhouse" <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
-Subject: Re: build failure due to ROOT_DEV in mtd module (was Re:
-	linux-2.6.22-rc5-g7c8545e build #298 failed ...)
-In-Reply-To: <20070621065920.GA9792@infradead.org>
+	id 1I1I8s-0000W8-U2
+	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 04:35:54 -0400
+Message-ID: <467A3861.2050801@cetrtapot.si>
+Date: Thu, 21 Jun 2007 10:35:45 +0200
+From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <a781481a0706202352u1efed48fo5a101f8c015638d7@mail.gmail.com>
-	<20070621065920.GA9792@infradead.org>
+To: Midhun Agnihotram <agnimidhun@gmail.com>
+Subject: Re: /proc/mtd file does not show partitions
+References: <4dde4acb0706192320n7ca4157q1219adfb68e50ce1@mail.gmail.com>	<46791199.7020402@cetrtapot.si>
+	<4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
+In-Reply-To: <4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +23,101 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/21/07, Christoph Hellwig <hch@infradead.org> wrote:
-> On Thu, Jun 21, 2007 at 12:22:01PM +0530, Satyam Sharma wrote:
-> > >> The build seems to fail because of:
-> > >> ERROR: "ROOT_DEV" [drivers/mtd/maps/nettel.ko] undefined!
-> > >>
-> > >> After taking a quick look at the code, I can't immediately see why
-> > >> this would be, since there is an include for linux/root_dev.h at the
-> > >> top, there.
-> > >>
-> > >> There's only one occurrence of ROOT_DEV (line 425), and after a quick
-> > >> look at the git history, it seems the include was originally missing,
-> > >> but was put back in, in commit
-> > >> 6cc449c7d0292cb9b993f0df84fd3225e3099492.
->
-> Please just the reference to ROOT_DEV from this driver.  Just because
-> someone builds this driver there should be no change in the default root
-> device.
+Midhun Agnihotram wrote:
+> Hi,
+> 
+> Update: We have now moved from Ramfs to JFFS2.
+> 
+>>> cat /proc/mtd, it says that the file does not exist. Who is supposed
+>>> to create this file?
+>> /usr/src/linux/drivers/mtd/mtdcore.c iff CONFIG_PROC_FS is enabled.
+>> Silly question - do you have any files in /proc? Is procfs mounted?
+>>
+> 
+>     CONFIG_PROC_FS is enabled in the kernel configuration. I do have
+> /proc/mounts file.
 
-I agree, but this (drivers/mtd/maps/nettel.c) isn't the only modular driver
-referencing ROOT_DEV. We also have drivers/mtd/maps/pmcmsp-ramroot.c
-using ROOT_DEV (in fact the purpose of that driver seems to be precisely
-to special-case the root fs and do something with it ...) but considering
-that other driver's (tristate) Kconfig option depends on another symbol that
-is non-existent in the mainline tree, there is no way someone can build
-pmcmsp-ramroot and so we'll never actually  hit that problem even with an
-allmodconfig build.
+Is this the only file?!
 
-Anyway, I'll leave this up to David / linux-mtd to sort out. [ No other
-modular user of ROOT_DEV in the tree other than the two mtd drivers
-mentioned here. ]
+> # cat /proc/mounts
+> rootfs / rootfs rw 0 0
+> 
+>    I am sorry - I exactly do not know what you mean by whether procfs
+> is mounted. I have /proc folder in the file system that I use. I do
+> not exclusively mount it anywhere. So when the filesystem is mounted
+> and the linux prompt comes up, the proc directory exists. Do I need to
+> do  anything more?
+
+Probably add something like this to the /etc/fstab:
+proc /proc proc defaults 0 0
+
+... or for testing on the booted system run:
+mount -t proc proc /proc
+
+> 
+>   Also when I mount the JFFS2 file system (which is in my flash), I
+> get the following errors.
+> 
+> Empty flash at 0x0000fffc ends at 0x00010000
+> Empty flash at 0x0002fffc ends at 0x00030000
+> Empty flash at 0x0004fffc ends at 0x00050000
+> Empty flash at 0x0006fffc ends at 0x00070000
+> Empty flash at 0x0008fffc ends at 0x00090000
+> Empty flash at 0x000afffc ends at 0x000b0000
+> Empty flash at 0x000cfffc ends at 0x000d0000
+> Empty flash at 0x000efffc ends at 0x000f0000
+> Empty flash at 0x0010fffc ends at 0x00110000
+> Empty flash at 0x0012fffc ends at 0x00130000
+> Empty flash at 0x0014fffc ends at 0x00150000
+> Empty flash at 0x0016ffe8 ends at 0x00170000
+> Empty flash at 0x0018fffc ends at 0x00190000
+> Empty flash at 0x001afffc ends at 0x001b0000
+> Empty flash at 0x001cfffc ends at 0x001d0000
+> Empty flash at 0x001efffc ends at 0x001f0000
+> VFS: Mounted root (jffs2 filesystem).
+> Freeing init memory: 84K
+> init: can't log to /dev/tty5
+> starting pid 670, tty '/dev/ttyS0': '/bin/ash'
+> 
+> 
+> BusyBox v1.6.0 (2007-06-15 12:34:28 IST) Built-in shell (ash)
+> Enter 'help' for a list of built-in commands.
+> 
+> # Erase at 0x003e0000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x003c0000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x003a0000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x00380000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x00360000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x00340000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x00320000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x00300000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x002e0000 failed immediately: -EROFS. Is the sector locked?
+> Erase at 0x002c0000 failed immediately: -EROFS. Is the sector locked?
+> 
+>   The JFFS2 file system is not writable (although we have mounted it
+> in read write mode). It does not allow us to write or delete. The boot
+> args are as follows:
+> 
+> mem=48M console=ttyS0,115200 console=tty0 root=/dev/mtdblock4 rw
+> rootfstype=jffs2 init=/sbin/init ip=on
+> 
+>    What could be the problem??
+
+
+Please search the archives of the list for similar reports. As it seems 
+JFFS2 is not guilty of you not being able to write to flash - the 
+problem lies at a lower level...
+Maybe 
+http://www.infradead.org/pipermail/linux-mtd/2003-October/008643.html 
+will help.
+
+Best regards,
+hinko
+-- 
+ČETRTA POT, d.o.o., Kranj
+Planina 3
+4000 Kranj
+Slovenia, Europe
+Tel. +386 (0) 4 280 66 03
+E-mail: hinko.kocevar@cetrtapot.si
+Http: www.cetrtapot.si
