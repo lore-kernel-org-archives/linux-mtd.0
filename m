@@ -1,19 +1,17 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
+Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1I8s-0000W8-U2
-	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 04:35:54 -0400
-Message-ID: <467A3861.2050801@cetrtapot.si>
-Date: Thu, 21 Jun 2007 10:35:45 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+	id 1I1WTJ-0007m9-WE
+	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 19:53:56 -0400
+Date: Fri, 22 Jun 2007 01:52:08 +0200
+From: Adrian Bunk <bunk@stusta.de>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [2.6 patch] cafe_nand.c: the OLPC laptop is not available for $100
+Message-ID: <20070621235208.GG23017@stusta.de>
 MIME-Version: 1.0
-To: Midhun Agnihotram <agnimidhun@gmail.com>
-Subject: Re: /proc/mtd file does not show partitions
-References: <4dde4acb0706192320n7ca4157q1219adfb68e50ce1@mail.gmail.com>	<46791199.7020402@cetrtapot.si>
-	<4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
-In-Reply-To: <4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,101 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Midhun Agnihotram wrote:
-> Hi,
-> 
-> Update: We have now moved from Ramfs to JFFS2.
-> 
->>> cat /proc/mtd, it says that the file does not exist. Who is supposed
->>> to create this file?
->> /usr/src/linux/drivers/mtd/mtdcore.c iff CONFIG_PROC_FS is enabled.
->> Silly question - do you have any files in /proc? Is procfs mounted?
->>
-> 
->     CONFIG_PROC_FS is enabled in the kernel configuration. I do have
-> /proc/mounts file.
+The price might drop to $100 in a few years.
 
-Is this the only file?!
+But currently, a more reasonable name might be "$175 laptop".
 
-> # cat /proc/mounts
-> rootfs / rootfs rw 0 0
-> 
->    I am sorry - I exactly do not know what you mean by whether procfs
-> is mounted. I have /proc folder in the file system that I use. I do
-> not exclusively mount it anywhere. So when the filesystem is mounted
-> and the linux prompt comes up, the proc directory exists. Do I need to
-> do  anything more?
+Let's simply call it "OLPC laptop" without any price tag.
 
-Probably add something like this to the /etc/fstab:
-proc /proc proc defaults 0 0
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-... or for testing on the booted system run:
-mount -t proc proc /proc
-
-> 
->   Also when I mount the JFFS2 file system (which is in my flash), I
-> get the following errors.
-> 
-> Empty flash at 0x0000fffc ends at 0x00010000
-> Empty flash at 0x0002fffc ends at 0x00030000
-> Empty flash at 0x0004fffc ends at 0x00050000
-> Empty flash at 0x0006fffc ends at 0x00070000
-> Empty flash at 0x0008fffc ends at 0x00090000
-> Empty flash at 0x000afffc ends at 0x000b0000
-> Empty flash at 0x000cfffc ends at 0x000d0000
-> Empty flash at 0x000efffc ends at 0x000f0000
-> Empty flash at 0x0010fffc ends at 0x00110000
-> Empty flash at 0x0012fffc ends at 0x00130000
-> Empty flash at 0x0014fffc ends at 0x00150000
-> Empty flash at 0x0016ffe8 ends at 0x00170000
-> Empty flash at 0x0018fffc ends at 0x00190000
-> Empty flash at 0x001afffc ends at 0x001b0000
-> Empty flash at 0x001cfffc ends at 0x001d0000
-> Empty flash at 0x001efffc ends at 0x001f0000
-> VFS: Mounted root (jffs2 filesystem).
-> Freeing init memory: 84K
-> init: can't log to /dev/tty5
-> starting pid 670, tty '/dev/ttyS0': '/bin/ash'
-> 
-> 
-> BusyBox v1.6.0 (2007-06-15 12:34:28 IST) Built-in shell (ash)
-> Enter 'help' for a list of built-in commands.
-> 
-> # Erase at 0x003e0000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x003c0000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x003a0000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x00380000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x00360000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x00340000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x00320000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x00300000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x002e0000 failed immediately: -EROFS. Is the sector locked?
-> Erase at 0x002c0000 failed immediately: -EROFS. Is the sector locked?
-> 
->   The JFFS2 file system is not writable (although we have mounted it
-> in read write mode). It does not allow us to write or delete. The boot
-> args are as follows:
-> 
-> mem=48M console=ttyS0,115200 console=tty0 root=/dev/mtdblock4 rw
-> rootfstype=jffs2 init=/sbin/init ip=on
-> 
->    What could be the problem??
-
-
-Please search the archives of the list for similar reports. As it seems 
-JFFS2 is not guilty of you not being able to write to flash - the 
-problem lies at a lower level...
-Maybe 
-http://www.infradead.org/pipermail/linux-mtd/2003-October/008643.html 
-will help.
-
-Best regards,
-hinko
--- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+---
+--- linux-2.6.22-rc4-mm2/drivers/mtd/nand/Kconfig.old	2007-06-21 23:32:02.000000000 +0200
++++ linux-2.6.22-rc4-mm2/drivers/mtd/nand/Kconfig	2007-06-21 23:32:17.000000000 +0200
+@@ -234,13 +234,13 @@
+ config MTD_NAND_CAFE
+ 	tristate "NAND support for OLPC CAFÉ chip"
+ 	depends on PCI
+ 	select REED_SOLOMON
+ 	select REED_SOLOMON_DEC16
+ 	help
+-	  Use NAND flash attached to the CAFÉ chip designed for the $100
++	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
+ 	  laptop.
+ 
+ config MTD_NAND_CS553X
+ 	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
+ 	depends on X86_32 && (X86_PC || X86_GENERICARCH)
+ 	help
