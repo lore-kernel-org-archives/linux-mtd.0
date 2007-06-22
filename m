@@ -1,16 +1,26 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1hIn-0003Iw-Td
-	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 07:27:49 -0400
-From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
-To: "'Linux MTD mailing list'" <linux-mtd@lists.infradead.org>
-Subject: jffs2_mark_node_obsolete race w.r.t erase_free_sem?
-Date: Fri, 22 Jun 2007 13:27:30 +0200
-Message-ID: <005601c7b4c0$52207d90$0e67a8c0@Jocke>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I1hnx-0003uR-N5
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 08:00:01 -0400
+Date: Fri, 22 Jun 2007 13:54:55 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: Real-time flash simulator
+Message-ID: <20070622115455.GE17988@lazybastard.org>
+References: <467B77F7.2000007@informatik.tu-chemnitz.de>
+	<1182499773.4403.76.camel@sauron>
+	<467B952E.30308@informatik.tu-chemnitz.de>
+	<20070622093945.GC17988@lazybastard.org>
+	<467BA051.50202@informatik.tu-chemnitz.de>
+	<20070622102444.GD17988@lazybastard.org>
+	<1182509994.4403.81.camel@sauron>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1182509994.4403.81.camel@sauron>
+Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
+	Martin =?utf-8?Q?D=C3=A4umler?= <martin.daeumler@s2003.tu-chemnitz.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,19 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I belive this jffs2_mark_node_obsolete can race against
-jffs2_erase_pending_blocks(run in pdflush context).
+On Fri, 22 June 2007 13:59:54 +0300, Artem Bityutskiy wrote:
+> > 
+> > Sounds just like FAT on smartmedia.  Worst case latency is both
+> > deterministic and low.  Random writes of small blocks are also
+> > prohibitively slow.  Works great when writing few large files, like jpg
+> > images in digital cameras.
+> 
+> It is about EB mappings, not FTL.
 
-During jffs2_build_filesystem, the flag JFFS2_SB_FLAG_BUILDING is set and
-the erase_free_sem is NOT taken. There is nothing I can see that
-holds pdflush back from erasing blocks during this time.
-Confirmation would be great.
+EB mapping is all smartmedia does.
 
-Dunno what the fix should be. Gut feeling is to prevent pdflush
-from running until after build phase as erasing blocks is
-a background task that shouldn't interfere with other tasks if
-it can be helpt.
+Jörn
 
-I think this is the root cause to the OOPS:es I seen lately
-
- Jocke
+-- 
+Joern's library part 3:
+http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
