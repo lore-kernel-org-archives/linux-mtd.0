@@ -1,24 +1,16 @@
-Received: from lana.hrz.tu-chemnitz.de ([134.109.132.3])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1gxY-0002ua-M6
-	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 07:05:51 -0400
-Message-ID: <467BAD3C.8060707@informatik.tu-chemnitz.de>
-Date: Fri, 22 Jun 2007 13:06:36 +0200
-From: =?ISO-8859-15?Q?Martin_D=E4umler?= <martin.daeumler@s2003.tu-chemnitz.de>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I1hIn-0003Iw-Td
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 07:27:49 -0400
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: "'Linux MTD mailing list'" <linux-mtd@lists.infradead.org>
+Subject: jffs2_mark_node_obsolete race w.r.t erase_free_sem?
+Date: Fri, 22 Jun 2007 13:27:30 +0200
+Message-ID: <005601c7b4c0$52207d90$0e67a8c0@Jocke>
 MIME-Version: 1.0
-To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
-Subject: Re: Real-time flash simulator
-References: <467B77F7.2000007@informatik.tu-chemnitz.de>
-	<1182499773.4403.76.camel@sauron>
-	<467B952E.30308@informatik.tu-chemnitz.de>
-	<20070622093945.GC17988@lazybastard.org>
-	<467BA051.50202@informatik.tu-chemnitz.de>
-	<20070622102444.GD17988@lazybastard.org>
-In-Reply-To: <20070622102444.GD17988@lazybastard.org>
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	=?ISO-8859-15?Q?Martin_D=E4umler?= <martin.daeumler@s2003.tu-chemnitz.de>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +20,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Jörn,
+I belive this jffs2_mark_node_obsolete can race against
+jffs2_erase_pending_blocks(run in pdflush context).
 
-On Fri, 22 June 2007 12:24 +0200, Jörn Engel wrote:
-> 
-> I guess the first thing you need to do is define what real-time actually
-> means.  In particular you need to define the following:
-> 
-> [...]
-> 
-> Once you have this, it is possible to determine whether some storage
-> stack (filesystem, middle layers, hardware) can fulfill your
-> requirements, or how it would need to be changed to do so.
-> 
-> Alternatively you can go the other way and take a given storage stack,
-> trying to determine the characteristics of it.
+During jffs2_build_filesystem, the flag JFFS2_SB_FLAG_BUILDING is set and
+the erase_free_sem is NOT taken. There is nothing I can see that
+holds pdflush back from erasing blocks during this time.
+Confirmation would be great.
 
-that is what I do at the moment. The resulting flash file system should
-have low-fluctuating latencies. Of course, the overall performance
-should not be that bad (it has to be scaleable as well). But it seems I
-have to write a real-time capable flash simulator at first ;).
+Dunno what the fix should be. Gut feeling is to prevent pdflush
+from running until after build phase as erasing blocks is
+a background task that shouldn't interfere with other tasks if
+it can be helpt.
 
-Thank you for your help!
+I think this is the root cause to the OOPS:es I seen lately
 
-
-Regards,
-
-Martin
+ Jocke
