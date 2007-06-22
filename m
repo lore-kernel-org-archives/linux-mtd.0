@@ -1,20 +1,19 @@
-Received: from wx-out-0506.google.com ([66.249.82.234])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1g1u-0000yc-Ko
-	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 06:06:15 -0400
-Received: by wx-out-0506.google.com with SMTP id h26so814284wxd
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 22 Jun 2007 03:06:12 -0700 (PDT)
-Message-ID: <366f00c80706220306l1e0ebcek3c7cdc988c82de81@mail.gmail.com>
-Date: Fri, 22 Jun 2007 15:36:12 +0530
-From: "Sudeep K N" <sudeepholla.maillist@gmail.com>
-To: dedekind@infradead.org
-Subject: UBI - Nand bad block management details required
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I1g6H-0001Ci-Ui
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 06:10:47 -0400
+Subject: Re: UBI - Nand bad block management details required
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Sudeep K N <sudeepholla.maillist@gmail.com>
+In-Reply-To: <366f00c80706220306l1e0ebcek3c7cdc988c82de81@mail.gmail.com>
+References: <366f00c80706220306l1e0ebcek3c7cdc988c82de81@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 22 Jun 2007 13:10:30 +0300
+Message-Id: <1182507030.4403.80.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2007-06-22 at 15:36 +0530, Sudeep K N wrote:
+> Does the UBI depend on the bad block table(BBT) built by MTD?
 
-Does the UBI depend on the bad block table(BBT) built by MTD?
-In otherwords, can the complete chip scan during chip probe be avoided
-by enabling/setting NAND_SKIP_BBTSCAN in chip->options?
+Yes, it asks MTD if blocks are bad or not.
 
-Does UBI built BBT independent of the MTD built BBT?
+> In otherwords, can the complete chip scan during chip probe be avoided
+> by enabling/setting NAND_SKIP_BBTSCAN in chip->options?
 
-Regards,
-Sudeep
+No, UBI relies on MTD in this. MTD supports on-flash BBT tables, so if
+you do not want MTD level to do full chip scan you should use on-flash
+BBT.
+
+> Does UBI built BBT independent of the MTD built BBT?
+
+No, it relies on MTD.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
