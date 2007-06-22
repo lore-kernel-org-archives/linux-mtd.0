@@ -1,17 +1,26 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I1WTJ-0007m9-WE
-	for linux-mtd@lists.infradead.org; Thu, 21 Jun 2007 19:53:56 -0400
-Date: Fri, 22 Jun 2007 01:52:08 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [2.6 patch] cafe_nand.c: the OLPC laptop is not available for $100
-Message-ID: <20070621235208.GG23017@stusta.de>
+Received: from john.hrz.tu-chemnitz.de ([134.109.132.2])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I1e1g-0003se-Co
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 03:57:55 -0400
+Received: from galba.hrz.tu-chemnitz.de ([134.109.133.156]
+	helo=mailbox.hrz.tu-chemnitz.de)
+	by john.hrz.tu-chemnitz.de with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.66) (envelope-from <martin.daeumler@s2003.tu-chemnitz.de>)
+	id 1I1dPr-0007Sd-9W
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 09:18:47 +0200
+Received: from mdhd.csn.tu-chemnitz.de ([134.109.84.80])
+	by mailbox.hrz.tu-chemnitz.de with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.66) (envelope-from <martin.daeumler@s2003.tu-chemnitz.de>)
+	id 1I1dPr-0000mA-4y
+	for linux-mtd@lists.infradead.org; Fri, 22 Jun 2007 09:18:47 +0200
+Message-ID: <467B77F7.2000007@informatik.tu-chemnitz.de>
+Date: Fri, 22 Jun 2007 09:19:19 +0200
+From: =?ISO-8859-15?Q?Martin_D=E4umler?= <martin.daeumler@s2003.tu-chemnitz.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: linux-mtd@lists.infradead.org
+Subject: Real-time flash simulator
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +30,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The price might drop to $100 in a few years.
+Hello,
 
-But currently, a more reasonable name might be "$175 laptop".
 
-Let's simply call it "OLPC laptop" without any price tag.
+what is the current development status of a real-time capable flash
+simulator? I am searching for a flash simulator similar to nandsim, but
+with real-time garantuees.
+Has anybody developed such a simulator or is developing one?
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+Furthermore, there are some efforts to develop a (scaleable) real-time
+capable flash file system?
 
----
---- linux-2.6.22-rc4-mm2/drivers/mtd/nand/Kconfig.old	2007-06-21 23:32:02.000000000 +0200
-+++ linux-2.6.22-rc4-mm2/drivers/mtd/nand/Kconfig	2007-06-21 23:32:17.000000000 +0200
-@@ -234,13 +234,13 @@
- config MTD_NAND_CAFE
- 	tristate "NAND support for OLPC CAFÉ chip"
- 	depends on PCI
- 	select REED_SOLOMON
- 	select REED_SOLOMON_DEC16
- 	help
--	  Use NAND flash attached to the CAFÉ chip designed for the $100
-+	  Use NAND flash attached to the CAFÉ chip designed for the OLPC
- 	  laptop.
- 
- config MTD_NAND_CS553X
- 	tristate "NAND support for CS5535/CS5536 (AMD Geode companion chip)"
- 	depends on X86_32 && (X86_PC || X86_GENERICARCH)
- 	help
+
+Many thanks,
+
+Martin
