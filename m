@@ -1,13 +1,16 @@
-MIME-Version: 1.0
-Date: Sat, 23 Jun 2007 10:46:06 -0500
-Content-Type: text/plain;
-	charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Subject: From: Barrister Gareth Jones Mobile +44 703 184 4817
-From: "Barrister Gareth Jones" <info@bebemous.co.za>
-To: <info@bebemous.co.za>
-Message-ID: <9ff3dbdafc5e41458e77c0d87e111bde@bebemous.co.za>
-Reply-To: garethjones2@myway.com
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I2W4d-00028K-Bj
+	for linux-mtd@lists.infradead.org; Sun, 24 Jun 2007 13:40:32 -0400
+Subject: [PATCH] Prevent JFFS2 from OOPS:ing due to missing error checks.
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Sun, 24 Jun 2007 19:33:02 +0200
+Message-Id: <1182706382.7852.7.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,48 +20,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Barrister Gareth Jones=0D=0ATel: +44 703 184 4817=0D=0AFax: +44 870 4=
-79 8201=0D=0ADX: 77 LONDON CHANCERY LANE WC2=0D=0AEmail: barr.garethjones@f=
-smail.net=0D=0A=0D=0AAttn: Sir/Madam,=0D=0A=0D=0AMy name is Barrister Garet=
-h Jones, a lawyer in the Chambers of Nabarro Nathanson  (Legal Practitioner=
-s) in London. I am writing this letter to you to intimate you of a pending =
-transaction I want to execute with you privately. Anyway I got your contact=
- through one of the Internet Reference Directories in my Chambers. One of m=
-y valued clients - Mr. Antonio Montoya died together with his lovely wife L=
-ate Antonio Montoya died on the Flight 11, a Boeing 767-200, which was enro=
-ute to Los Angeles from Boston during the terrorist attack on America back =
-in 2001. =0D=0A=0D=0AI was his personal lawyer and the Executor of his Will=
-. There are no further traces of any of his next-of-kin in his native Count=
-ry. As his personal lawyer and Executor of his Will, I know late Antonio Mo=
-ntoya kept about GBP 9.2 million in the Vaults of a bank here in London.  T=
-his money had been taken to the bank late on the evening of his departure t=
-o USA; hence the money was only accepted and registered by the bank while i=
-t was kept in the Vault waiting for Montoya's return, which was never to be=
-.=0D=0A=0D=0A I have since confirmed with the bank that the money is still =
-in the bank's vault. Ever since 2001 this money has been in this account un=
-touched!    Now, how do you come in and what is your business with all this=
-?=0D=0AI am sure this is the question you would be asking me? =0D=0A=0D=0AS=
-imple, As the personal lawyer to late Antonio Montoya and since vital docum=
-ent relating to this money is kept with my Chambers, I decided that I intim=
-ate you of this development, with your co-operation, I can present you to b=
-ank as the Next-of-Kin to the late Antonio Montoya. =0D=0A=0D=0AAfter prope=
-r verification of this Claim by the bank this money will be transferred to =
-your bank account hence you come in as the Next-of-Kin to late Antonio Mont=
-oya. How do we do it?  The document showing that this money is kept in the =
-bank's vault is kept in my Law Chambers. =0D=0A=0D=0AI, as the lawyer and E=
-xecutor of late Antonio Montoya's Will/Last Testament will put your name in=
- this Will as the Beneficiary of this money kept in the bank's vault. =0D=
-=0A=0D=0AI will submit the Will/Last Testament to the Bank to contact you a=
-nd start processing transfer of this money to your bank account according t=
-o the last wishes of my Client - late Mr. Montoya for further administratio=
-n to other members of the family.=0D=0A=0D=0A I am the Executor of late Mon=
-toya's Will. All I need to do is to re-make the late Mr. Montoya's Will/Las=
-t Testament to include your name as the beneficiary and submit same to the =
-bank and introduce you, the bank writes you to confirm this, then transfer =
-process starts without delays.=0D=0A=0D=0AI am the Executor of this Will an=
-d the Bank knows it too. The mode of sharing this money will be discussed w=
-hen we agree to work together on this transaction. What do you think about =
-this?  While I look forward to hearing from you soon, absolute confidential=
-ity and secrecy remain very important in this transaction. =0D=0A=0D=0AThan=
-k you and God bless you.    =0D=0A=0D=0ABarrister Gareth Jones. =0D=0A=0D=
-=0A=0D=0A=0D=0A=0D=0A=0D=0A=0D=0A=0D=0A=0D=0A=0D=0A
+>From 474425d656766b6c6229312771be5f3e8d0a839f Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Sun, 24 Jun 2007 19:22:29 +0200
+Subject: [PATCH] Prevent JFFS2 from OOPS:ing due to missing error checks.
+
+
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+
+This will prevent the errors I am seeing(see earlier mails)
+to OOPS.
+Should go into 2.6.22.
+
+ Jocke
+
+ fs/jffs2/write.c |   12 ++++++++++++
+ 1 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
+index c9fe0ab..1406f2c 100644
+--- a/fs/jffs2/write.c
++++ b/fs/jffs2/write.c
+@@ -173,6 +173,12 @@ struct jffs2_full_dnode *jffs2_write_dnode(struct jffs2_sb_info *c, struct jffs2
+ 		flash_ofs |= REF_NORMAL;
+ 	}
+ 	fn->raw = jffs2_add_physical_node_ref(c, flash_ofs, PAD(sizeof(*ri)+datalen), f->inocache);
++	if (IS_ERR(fn->raw)) {
++		void *hold_err = fn->raw;
++		/* Release the full_dnode which is now useless, and return */
++		jffs2_free_full_dnode(fn);
++		return ERR_PTR(PTR_ERR(hold_err));
++	}
+ 	fn->ofs = je32_to_cpu(ri->offset);
+ 	fn->size = je32_to_cpu(ri->dsize);
+ 	fn->frags = 0;
+@@ -291,6 +297,12 @@ struct jffs2_full_dirent *jffs2_write_dirent(struct jffs2_sb_info *c, struct jff
+ 	}
+ 	/* Mark the space used */
+ 	fd->raw = jffs2_add_physical_node_ref(c, flash_ofs | REF_PRISTINE, PAD(sizeof(*rd)+namelen), f->inocache);
++	if (IS_ERR(fd->raw)) {
++		void *hold_err = fd->raw;
++		/* Release the full_dirent which is now useless, and return */
++		jffs2_free_full_dirent(fd);
++		return ERR_PTR(PTR_ERR(hold_err));
++	}
+ 
+ 	if (retried) {
+ 		jffs2_dbg_acct_sanity_check(c,NULL);
+-- 
+1.5.2.2
