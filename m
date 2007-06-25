@@ -1,25 +1,20 @@
-Received: from ug-out-1314.google.com ([66.249.92.173])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I2iBB-0008Ls-Ew
-	for linux-mtd@lists.infradead.org; Mon, 25 Jun 2007 02:36:06 -0400
-Received: by ug-out-1314.google.com with SMTP id t39so1213882ugd
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 24 Jun 2007 23:36:03 -0700 (PDT)
-Message-ID: <4dde4acb0706242336v5569a147l6a38bb146d417187@mail.gmail.com>
-Date: Mon, 25 Jun 2007 12:06:02 +0530
-From: "Midhun Agnihotram" <agnimidhun@gmail.com>
-To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-Subject: Re: /proc/mtd file does not show partitions
-In-Reply-To: <467A3861.2050801@cetrtapot.si>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1I2in7-00017G-HC
+	for linux-mtd@lists.infradead.org; Mon, 25 Jun 2007 03:15:18 -0400
+Subject: Re: [PATCH] Prevent JFFS2 from OOPS:ing due to missing error checks.
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Vitaly Wool <vitalywool@gmail.com>
+In-Reply-To: <acd2a5930706242130q13fe6837p696542d274bddec7@mail.gmail.com>
+References: <1182706382.7852.7.camel@gentoo-jocke.transmode.se>
+	<acd2a5930706242130q13fe6837p696542d274bddec7@mail.gmail.com>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <4dde4acb0706192320n7ca4157q1219adfb68e50ce1@mail.gmail.com>
-	<46791199.7020402@cetrtapot.si>
-	<4dde4acb0706202201y7369cc33kc438f15f7091c18c@mail.gmail.com>
-	<467A3861.2050801@cetrtapot.si>
-Cc: linux-mtd@lists.infradead.org
+Date: Mon, 25 Jun 2007 09:15:15 +0200
+Message-Id: <1182755715.12606.3.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,34 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2007-06-25 at 08:30 +0400, Vitaly Wool wrote:
+> On 6/24/07, Joakim Tjernlund <joakim.tjernlund@transmode.se> wrote:
+> > >From 474425d656766b6c6229312771be5f3e8d0a839f Mon Sep 17 00:00:00 2001
+> > From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> > Date: Sun, 24 Jun 2007 19:22:29 +0200
+> > Subject: [PATCH] Prevent JFFS2 from OOPS:ing due to missing error checks.
+> >
+> >
+> > Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+> 
+> +               return ERR_PTR(PTR_ERR(hold_err)); ?
+> 
 
-> Maybe
-> http://www.infradead.org/pipermail/linux-mtd/2003-October/008643.html
-> will help.
-
-   I have tried as per your suggestion. One of the errors is gone now
-(Empty flash at 0x0000fffc ends at 0x00010000..etc). But the second
-error still exists (Erase at 0x003e0000 failed immediately: -EROFS. Is
-the sector locked?.. etc..).
-
-  I am using the mtd-utils of Redhat. When I say
-
-# ./mkfs.jffs2  -l -o rootfs-jffs2.img -r rootfs  -e 0x20000 -p 0x400000
-
-   The rootfs image created is of 1MB, even though the pad option has
-been enabled to create an image size of 4MB.
-
-   When I create a directory on the target, it says as follows:
-
-# mkdir midhun
-mkdir: cannot create directory 'midhun': No space left on device
-
-
-   It seems like the pad option is not working or I made mistake in
-the syntax (It did not give any error though). I am not able to write
-as the file system is full.
-
-   Is it so ?? Or is it some other problem??
-
-Midhun.
+Yes, that is to get the types correct. Otherwise I need to do
+something like:
+unsigned long hold_err = (unsigned long) fn->raw;
+...
+return ERR_PTR(hold_err);
