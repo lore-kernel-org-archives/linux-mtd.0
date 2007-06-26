@@ -1,19 +1,19 @@
-Received: from gutenberg.seattle.identitext.com ([207.114.238.3])
+Received: from wx-out-0506.google.com ([66.249.82.235])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3DQs-00015z-Ou
-	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2007 11:58:23 -0400
-Received: from [10.6.12.156] (72-254-136-115.client.stsn.net [72.254.136.115])
-	by gutenberg.seattle.identitext.com (Postfix) with ESMTP id
-	7C0F3B1D00C for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jun 2007 08:58:20 -0700 (PDT)
-Mime-Version: 1.0 (Apple Message framework v752.3)
-Content-Transfer-Encoding: 7bit
-Message-Id: <BCD0E2EC-DABE-435C-8369-1D980774372E@exbiblio.com>
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
+	id 1I3G37-0002eG-RW
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2007 14:46:04 -0400
+Received: by wx-out-0506.google.com with SMTP id h26so1908446wxd
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 26 Jun 2007 11:46:00 -0700 (PDT)
+Message-ID: <4dde4acb0706261146s5906d8f3vb787d5aecb429116@mail.gmail.com>
+Date: Wed, 27 Jun 2007 00:16:00 +0530
+From: "Midhun Agnihotram" <agnimidhun@gmail.com>
 To: linux-mtd@lists.infradead.org
-From: Mathew Chasan <mathew@exbiblio.com>
-Subject: max write speed with onenand while running kernel drivers
-Date: Tue, 26 Jun 2007 11:58:17 -0400
+Subject: Mounting MMC card
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've been testing my maximum *sustained* write speeds with onenand  
-lately.  Without putting a filesystem over the device, using a /dev/ 
-mtd/ device (which as it turns out seems to return faster average  
-speeds than the block device for extremely large writes) i'm topping  
-out about 4.7 mebibytes a second.
+Hi All,
 
-I'm using an i.MX31 processor and the standard onenand drivers.  My  
-kernel is 2.16.19.2, although i have updated my MTD stack to a more  
-recent one.  I wrote a simple program that outputs a large memory  
-buffer directly to the flash and times the results, averaging the  
-results over many tests.
+   I am using Cogent CSB535FS board. The kernel has got MMC card
+support. So when I insert the card, it says :
 
-I believe i could probably increase the speed a fair bit by tuning my  
-hardware io ports to push the limits of the onenand- but i'm not sure  
-how much i can expect to get out it.  Does anyone have numbers on  
-what they think the max write speed should be on onenand?
+# imx-mmc imx-mmc.0: card inserted
 
-Also, i've noticed that the drivers are using asynchronous mode.   
-Synchronous mode is i believe, quite a bit faster.  Has anyone tried  
-to make a driver that works on onenand in synchronous mode?  I  
-haven't looked into this much yet... is such a task particularly  
-complicated?
+   So, the kernel has identified that MMC has been inserted. I have
+the following dev entries for mmc:
 
-much thanks in advance for any advice, help, etc.
+brwxrwxrwx    1 0        0        254,   0 Jun 26  2007 mmcblk0
+brwxrwxrwx    1 0        0        254,   1 Jun 26  2007 mmcblk0p0
+brwxrwxrwx    1 0        0        254,   2 Jun 26  2007 mmcblk0p1
+brwxrwxrwx    1 0        0        254,   3 Jun 26  2007 mmcblk0p2
+brwxrwxrwx    1 0        0        254,   4 Jun 26  2007 mmcblk0p3
 
-Mathew
+    How do I access the MMC card data now? If I try to mount it,
+busybox doesnot mount it.
+
+# mount /dev/mmcblk0p0 /mnt
+mount: mounting /dev/mmcblk0p0 on /mnt failed
+
+  How do I access the contents of MMC card? Is there any thing missing
+in my settings?
+
+Thanks,
+Midhun.
