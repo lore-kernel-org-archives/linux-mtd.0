@@ -1,12 +1,21 @@
-From: DAYZERS LOTTO. BV <14_info@bellsouth.net>
-To: <info@lotto.com>
-Subject: Ref No.: NLL/CN/6654/CP($1,000,000)
-Date: Mon, 25 Jun 2007 22:54:02 -0400
+Received: from www19.your-server.de ([213.133.104.19])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I3Akv-0007aa-FE
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2007 09:06:57 -0400
+From: Uli Luckas <u.luckas@road.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
+Date: Tue, 26 Jun 2007 15:06:27 +0200
+References: <200706141509.50621.u.luckas@road.de>
+	<200706191149.44820.u.luckas@road.de>
+In-Reply-To: <200706191149.44820.u.luckas@road.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Message-Id: <20070626025402.DDHE9132.ibm58aec.bellsouth.net@mail.bellsouth.net>
-Reply-To: smith_fudiciarydepts@myway.com
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+Message-Id: <200706261506.28737.u.luckas@road.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,25 +25,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-DAYZERS LOTTO. BV 
-DAYZERS-WHEEL E-GAME 2007 
-LONDON BRANCHOFFICE 
-Customer Service Department 
-28 TANFIELD ROAD, CROYDON.LONDON 
-www.dayzers.nl 
-We are pleased to inform you of the final announcement of the euro  millions international Lottery, in which your email address was choosen   from our database London Branch office. Prize Ref No.: 
-NLL/CN/6654/CP,Lottery Group: Consolation PrizeGroup,Prize   Drew a  price of US $1 Million Dollars Only you will recieve the sum ($1,000,000)from our authorised  claims officer. Provide him with the 
-information below: 
-1.Name: 
-2.Address 
-3.Occupation: 
-4.Age: 
-5.Sex: 
-6.Country Of Residence: 
-7.Telephone Number:  
-
- Mr.Smith Chuks
- Email:smith_fudiciarydepts@myway.com
-
-Yours truly,
-Mrs.Jessica Woods,
+T24gVHVlc2RheSwgMTkuIEp1bmUgMjAwNywgVWxpIEx1Y2thcyB3cm90ZToKPiBIaSwKPiBpcyB0
+aGVyZSBhbnl0aGluZyBpbiB0aGUgd2F5IG9mIGFwbGx5aW5nIHRoaXMgcGF0Y2g/Cj4KUGxlYXNl
+LCBjYW4gc29tZW9uZSB0ZWxsIG1lIHdoYXQgaXQgdGFrZXMgdG8gZ2V0IGEgamZmczIgYnVnIGZp
+eCBpbnRvIHRoZSAKa2VybmVsPyBPciBldmVuIHJldmlld2VkPyBUaGlzIHBhdGNoIHNob3VsZCBl
+dmVuIGdldCBpbnRvIDIuNi4yMi4gQW0gSSBkb2luZyAKc29tZXRoaW5nIHdyb25nIGhlcmU/CgpS
+ZWdhcmRzClVsaQoKPiBSZWdhcmRzCj4gVWxpCj4KPiBPbiBUaHVyc2RheSwgMTQuIEp1bmUgMjAw
+NywgVWxpIEx1Y2thcyB3cm90ZToKPiA+IEhpCj4gPiBXZSBleHBlcmllbmNlIHRoZSBmb2xsb3dp
+bmcgcHJvYmxlbSB3aGVuIG91ciBib2FyZCB0cmllcyB0byBzdXNwZW5kOgo+ID4KPiA+IEp1biDC
+oDcgMTg6MzI6MjEgY29uc3RpbiBrZXJuZWw6IFsgMjA4NS4zNTAwMDBdIFN0b3BwaW5nIHRhc2tz
+IC4uLgo+ID4gSnVuIMKgNyAxODozMjoyMSBjb25zdGluIGtlcm5lbDogWyAyMTA1LjQxMDAwMF0g
+U3RvcHBpbmcga2VybmVsIHRocmVhZHMKPiA+IHRpbWVkIG91dCBhZnRlciAyMCBzZWNvbmRzICgx
+IHRhc2tzIHJlZnVzaW5nIHRvIGZyZWV6ZSk6Cj4gPiBKdW4gwqA3IDE4OjMyOjIxIGNvbnN0aW4g
+a2VybmVsOiBbIDIxMDUuNDEwMDAwXSDCoGpmZnMyX2djZF9tdGQzCj4gPiBKdW4gwqA3IDE4OjMy
+OjIxIGNvbnN0aW4ga2VybmVsOiBbIDIxMDUuNDEwMDAwXSBSZXN0YXJ0aW5nIHRhc2tzIC4uLiA8
+ND4KPiA+IFN0cmFuZ2UsIGpmZnMyX2djZF9tdGQzIG5vdCBzdG9wcGVkCj4gPiBKdW4gwqA3IDE4
+OjMyOjIxIGNvbnN0aW4ga2VybmVsOiBbIDIxMDUuNDQwMDAwXSBkb25lLgo+ID4KPiA+IFRoZSBw
+cm9ibGVtIHNlZW1zIHRvIGhhcHBlbiwgd2hlbiBzdXNwZW5kIGtpY2tzIGluLCBhZnRlciB0aGUg
+Y2FsbCB0bwo+ID4gdHJ5X3RvX2ZyZWV6ZSBhbmQgYmVmb3JlIHRoZSB3aGlsZSBsb29wIGluIGpm
+ZnMyX2dhcmJhZ2VfY29sbGVjdF90aHJlYWQuCj4gPgo+ID4gVGhlIHBlbmRpbmcgZnJlZXplIHdp
+bGwgY2F1c2Ugc2lnbmFsX3BlbmRpbmcgdG8gcmV0dXJuIHRydWUgdW50aWwgdGhlCj4gPiBhdHRl
+bXB0ZWQgc3VzcGVuZCBpcyBvdmVyIGFuZCB0aGVyZWJ5IHRoZSB3aGlsZSBsb29wIHdvbid0IHRl
+cm1pbmF0ZQo+ID4gdW50aWwgdGhlIHN1c3BlbmQgdGltZXMgb3V0Lgo+ID4KPiA+IFRoaXMgcGF0
+Y2ggd2lsbCBjYWxsIHRyeV90b19mcmVlemUgZnJvbSB3aXRoaW4gdGhlIHdoaWxlIGxvb3AgYW5k
+IGFkZHMgYW4KPiA+IGV4dHJhIGNoZWNrIGZvciBqZmZzMl90aHJlYWRfc2hvdWxkX3dha2UgYmVm
+b3JlIHdlIGFjdHVhbGx5IGRvIHRoZSBHQyB0bwo+ID4gYXZvaWQgY2FsbGluZyBqZmZzMl9nYXJi
+YWdlX2NvbGxlY3RfcGFzcyBhdCBldmVyeSB3YWtldXAuCj4gPgo+ID4gSWYgdGhlcmUgYXJlIG5v
+IG9iamVjdGlvbnMsIHBsZWFzZSBhcHBseSBhbmQgcHVzaCB0byBtYWlubGluZS4KPiA+Cj4gPiBT
+aWduZWQtb2ZmLWJ5OiBVbGkgTHVja2FzIDx1Lmx1Y2thc0Byb2FkLmRlPgo+ID4KPiA+IGRpZmYg
+LS1naXQgYS9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMgYi9mcy9qZmZzMi9iYWNrZ3JvdW5kLmMKPiA+
+IGluZGV4IDg4OGYyMzYuLmY5NTM4MjQgMTAwNjQ0Cj4gPiAtLS0gYS9mcy9qZmZzMi9iYWNrZ3Jv
+dW5kLmMKPiA+ICsrKyBiL2ZzL2pmZnMyL2JhY2tncm91bmQuYwo+ID4gQEAgLTk2LDkgKzk2LDYg
+QEAgc3RhdGljIGludCBqZmZzMl9nYXJiYWdlX2NvbGxlY3RfdGhyZWFkKHZvaWQgKl9jKQo+ID4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2NoZWR1bGUo
+KTsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgfQo+ID4gwqAKPiA+IC3CoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBpZiAodHJ5X3RvX2ZyZWV6ZSgpKQo+ID4gLcKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqBjb250aW51ZTsKPiA+IC0K
+PiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgLyogVGhpcyB0aHJlYWQgaXMgcHVy
+ZWx5IGFuIG9wdGltaXNhdGlvbi4gQnV0IGlmIGl0IHJ1bnMKPiA+IHdoZW4gb3RoZXIgdGhpbmdz
+IGNvdWxkIGJlIHJ1bm5pbmcsIGl0IGFjdHVhbGx5IG1ha2VzIHRoaW5ncyBhIGxvdCB3b3JzZS4K
+PiA+IFVzZSB5aWVsZCgpIGFuZCBwdXQgaXQgYXQgdGhlIGJhY2sgb2YgdGhlIHJ1bnF1ZXVlIEBA
+IC0xMTMsNiArMTEwLDkgQEAKPiA+IHN0YXRpYyBpbnQgamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Ro
+cmVhZCh2b2lkICpfYykgc2lnaW5mb190IGluZm87Cj4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB1bnNpZ25lZCBsb25nIHNpZ25yOwo+ID4gwqAKPiA+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKHRyeV90
+b19mcmVlemUoKSkKPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvbnRpbnVlOwo+ID4gKwo+ID4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc2lnbnIgPSBkZXF1ZXVlX3NpZ25hbF9s
+b2NrKGN1cnJlbnQsCj4gPiAmY3VycmVudC0+YmxvY2tlZCwgJmluZm8pOwo+ID4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgc3dpdGNoKHNpZ25yKSB7Cj4g
+PiBAQCAtMTM3LDcgKzEzNyw4IEBAIHN0YXRpYyBpbnQgamZmczJfZ2FyYmFnZV9jb2xsZWN0X3Ro
+cmVhZCh2b2lkICpfYykKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgZGlzYWxs
+b3dfc2lnbmFsKFNJR0hVUCk7Cj4gPiDCoAo+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqBEMShwcmludGsoS0VSTl9ERUJVRyAiamZmczJfZ2FyYmFnZV9jb2xsZWN0X3RocmVhZCgp
+Ogo+ID4gcGFzc1xuIikpOyAtwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgaWYgKGpmZnMy
+X2dhcmJhZ2VfY29sbGVjdF9wYXNzKGMpID09IC1FTk9TUEMpCj4gPiB7ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqBpZiAoIMKgIGpmZnMyX3RocmVhZF9zaG91bGRfd2FrZShjKQo+ID4g
+K8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCDCoCDCoCYmIGpmZnMyX2dhcmJhZ2VfY29s
+bGVjdF9wYXNzKGMpID09IC1FTk9TUEMpIHsKPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoHByaW50ayhLRVJOX05PVElDRSAiTm8gc3BhY2UgZm9yIGdh
+cmJhZ2UKPiA+IGNvbGxlY3Rpb24uIEFib3J0aW5nIEdDIHRocmVhZFxuIik7IGdvdG8gZGllOwo+
+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB9CgoKCi0tIAoKLS0tLS0tLSBST0FE
+IC4uLnRoZSBoYW5keVBDIENvbXBhbnkgLSAtIC0gICkgKSApCgpVbGkgTHVja2FzClNvZnR3YXJl
+IERldmVsb3BtZW50CgpST0FEIEdtYkgKQmVubmlnc2Vuc3RyLiAxNCB8IDEyMTU5IEJlcmxpbiB8
+IEdlcm1hbnkKZm9uOiArNDkgKDMwKSAyMzAwNjkgLSA2NCB8IGZheDogKzQ5ICgzMCkgMjMwMDY5
+IC0gNjkKdXJsOiB3d3cucm9hZC5kZQoKQW10c2dlcmljaHQgQ2hhcmxvdHRlbmJ1cmc6IEhSQiA5
+NjY4OCBCCk1hbmFnaW5nIGRpcmVjdG9yczogSGFucy1QZXRlciBDb25zdGllbiwgSHViZXJ0dXMg
+dm9uIFN0cmVpdAo=
