@@ -1,19 +1,16 @@
-Received: from wx-out-0506.google.com ([66.249.82.235])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3G37-0002eG-RW
-	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2007 14:46:04 -0400
-Received: by wx-out-0506.google.com with SMTP id h26so1908446wxd
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 26 Jun 2007 11:46:00 -0700 (PDT)
-Message-ID: <4dde4acb0706261146s5906d8f3vb787d5aecb429116@mail.gmail.com>
-Date: Wed, 27 Jun 2007 00:16:00 +0530
-From: "Midhun Agnihotram" <agnimidhun@gmail.com>
+Received: from agminet01.oracle.com ([141.146.126.228])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I3JWU-0004MF-56
+	for linux-mtd@lists.infradead.org; Tue, 26 Jun 2007 18:28:35 -0400
+Date: Tue, 26 Jun 2007 15:30:27 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
 To: linux-mtd@lists.infradead.org
-Subject: Mounting MMC card
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: [PATCH -mm] UBI: one less BUG usage
+Message-Id: <20070626153027.cbe757f0.randy.dunlap@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: akpm <akpm@linux-foundation.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,30 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+From: Randy Dunlap <randy.dunlap@oracle.com>
 
-   I am using Cogent CSB535FS board. The kernel has got MMC card
-support. So when I insert the card, it says :
+Eliminate one BUG() usage.  The callers of major_to_device() already
+handle and report errors.  This is just another error to return.
 
-# imx-mmc imx-mmc.0: card inserted
+Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+---
+ drivers/mtd/ubi/cdev.c |    5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-   So, the kernel has identified that MMC has been inserted. I have
-the following dev entries for mmc:
-
-brwxrwxrwx    1 0        0        254,   0 Jun 26  2007 mmcblk0
-brwxrwxrwx    1 0        0        254,   1 Jun 26  2007 mmcblk0p0
-brwxrwxrwx    1 0        0        254,   2 Jun 26  2007 mmcblk0p1
-brwxrwxrwx    1 0        0        254,   3 Jun 26  2007 mmcblk0p2
-brwxrwxrwx    1 0        0        254,   4 Jun 26  2007 mmcblk0p3
-
-    How do I access the MMC card data now? If I try to mount it,
-busybox doesnot mount it.
-
-# mount /dev/mmcblk0p0 /mnt
-mount: mounting /dev/mmcblk0p0 on /mnt failed
-
-  How do I access the contents of MMC card? Is there any thing missing
-in my settings?
-
-Thanks,
-Midhun.
+--- linux-2622-rc4mm2.orig/drivers/mtd/ubi/cdev.c
++++ linux-2622-rc4mm2/drivers/mtd/ubi/cdev.c
+@@ -63,7 +63,7 @@ static struct ubi_device *major_to_devic
+ 	for (i = 0; i < ubi_devices_cnt; i++)
+ 		if (ubi_devices[i] && ubi_devices[i]->major == major)
+ 			return ubi_devices[i];
+-	BUG();
++	return ERR_PTR(-ENODEV);
+ }
+ 
+ /**
+@@ -127,6 +127,9 @@ static int vol_cdev_open(struct inode *i
+ 	int vol_id = iminor(inode) - 1;
+ 	int mode;
+ 
++	if (IS_ERR(ubi))
++		return PTR_ERR(ubi);
++
+ 	if (file->f_mode & FMODE_WRITE)
+ 		mode = UBI_READWRITE;
+ 	else
