@@ -1,19 +1,11 @@
-Received: from nz-out-0506.google.com ([64.233.162.232])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3W8I-0002b4-S1
-	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 07:56:29 -0400
-Received: by nz-out-0506.google.com with SMTP id s18so131561nze
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 27 Jun 2007 04:56:26 -0700 (PDT)
-Message-ID: <8bf247760706270456y7253b684n728c527627880bd2@mail.gmail.com>
-Date: Wed, 27 Jun 2007 17:26:25 +0530
-From: Ram <vshrirama@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Test utilities and Empty Flash at error messages
+Message-ID: <690511366.1182957866127.JavaMail.root@fepweb09>
+Date: Wed, 27 Jun 2007 8:24:24 -0700
+From: BRITISHWEBLOTTERY6/49 <paulvidrine@charter.net>
+Subject: ACKNOWLEDGE RECEIPT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: agentrichard_parker@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,35 +15,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-  Are there any test utilities available to test jffs2 filesystem?.
 
-  Can anyone provide me some pointers on that.
+BRITISH LOTTERY6/49
+12 Whitehall , London SW1A 2DY, United Kingdom.
+27th June 2007.
 
-  Right now, what im doing is im creating hundreds of files and reboot
-the system.
-
-  Im doing this in a loop and looking for jffs2 error messages at startup.
+Dear Recipient
 
 
-  I have a query which is completing different from the above one.
+We wish to congratulate you over your email success in our FREE BRITISH
+WEB LOTTERY computer balloting held on 26Th June, 2007. This=20
+is a Millennium Scientific Computer Game in which email addresses were
+used. It is our promotional lottery program aimed at encouraging internet=
+=20
+users; therefore you do not need to buy ticket to enter for it. You have
+been approved for the star prize of 1,006.168 GBP(One million six=20
+thousand one hundred and sixty-eight Pound Sterling)=20
 
-  I have flashed a jffs2 filesystem, I have stored some files and at
-first reboot.
+To claim your winning prize you are to contact the appointed agent as=20
+soon as possible for the immediate release of your winnings:=20
 
-  I get a message: Empty flash at 0x00b69e60 ends at 0x00b6a000
+Ticket no: 025-1146-1992-750
+Serial no:2113-05
+Lucky no: 13-15-22-37-39-43
+REF NO:BRLFGP2551256/03
+Amount won: =C2=A31,006,168.00
 
-  The address pertains to my filesystem. I have erased my filesystem using
-  flash_eraseall /dev/mtd8
+You are to contact: Mr. Richard Parker
+Email:agentrichard_parker@yahoo.co.uk
 
-  Using nandwrite utility in mtd utils i have flashed my jffs2 filesystem which
-  has been created with erase size 0x20000.
+You must contact the appointed agent with your Full Names, Contact=20
+Telephone Numbers (Home, Office and Mobile Number and also Fax Number)=20
+via email to process the immediate payment of your prize. The Validity=20
+period of the winnings is for 30 working days hence you are expected=20
+to make your claims immediately.=20
 
-  I dont know why i get that error.
+Once again congratulations!!!
 
 
-  Can anyone help me on this?.
-
-
-Regards,
-sriram
+Sincerely,
+Mr. George Scherrer
