@@ -1,11 +1,17 @@
-Message-ID: <690511366.1182957866127.JavaMail.root@fepweb09>
-Date: Wed, 27 Jun 2007 8:24:24 -0700
-From: BRITISHWEBLOTTERY6/49 <paulvidrine@charter.net>
-Subject: ACKNOWLEDGE RECEIPT
+Received: from simba.math.ucla.edu ([128.97.4.125])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I3aZg-0008Uc-9f
+	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 12:41:02 -0400
+Date: Wed, 27 Jun 2007 09:40:53 -0700 (PDT)
+From: Jim Carter <jimc@math.ucla.edu>
+To: Ram <vshrirama@gmail.com>
+Subject: Re: JFFS2 New bie queries.
+In-Reply-To: <8bf247760706270439t1b56157dy9671d903fb3aea8f@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0706270928080.561@simba.math.ucla.edu>
+References: <8bf247760706270439t1b56157dy9671d903fb3aea8f@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: agentrichard_parker@yahoo.co.uk
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,43 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 27 Jun 2007, Ram wrote:
 
-BRITISH LOTTERY6/49
-12 Whitehall , London SW1A 2DY, United Kingdom.
-27th June 2007.
+> When i do command 'du -sh' i get a size which is totally different
+> from command 'df' (disk free)
 
-Dear Recipient
+JFFS2 compresses the data.  I get about 2:1 comression with ARM executable 
+cdde; it looks like you got a little more, maybe because the content is 
+more predictable, e.g. contains some text.  Don't expect it to be effective 
+on already compressed files, e.g. MP3, JPEG, AVI.
 
+Now if I could only put JFFS3 on a 1 GB removeable MMC card, bypassing the 
+(on-chip?) disc emulation layer...  Sigh.  This is on a Nokia 770.
 
-We wish to congratulate you over your email success in our FREE BRITISH
-WEB LOTTERY computer balloting held on 26Th June, 2007. This=20
-is a Millennium Scientific Computer Game in which email addresses were
-used. It is our promotional lottery program aimed at encouraging internet=
-=20
-users; therefore you do not need to buy ticket to enter for it. You have
-been approved for the star prize of 1,006.168 GBP(One million six=20
-thousand one hundred and sixty-eight Pound Sterling)=20
-
-To claim your winning prize you are to contact the appointed agent as=20
-soon as possible for the immediate release of your winnings:=20
-
-Ticket no: 025-1146-1992-750
-Serial no:2113-05
-Lucky no: 13-15-22-37-39-43
-REF NO:BRLFGP2551256/03
-Amount won: =C2=A31,006,168.00
-
-You are to contact: Mr. Richard Parker
-Email:agentrichard_parker@yahoo.co.uk
-
-You must contact the appointed agent with your Full Names, Contact=20
-Telephone Numbers (Home, Office and Mobile Number and also Fax Number)=20
-via email to process the immediate payment of your prize. The Validity=20
-period of the winnings is for 30 working days hence you are expected=20
-to make your claims immediately.=20
-
-Once again congratulations!!!
-
-
-Sincerely,
-Mr. George Scherrer
+James F. Carter          Voice 310 825 2897    FAX 310 206 6673
+UCLA-Mathnet;  6115 MSA; 405 Hilgard Ave.; Los Angeles, CA, USA  90095-1555
+Email: jimc@math.ucla.edu    http://www.math.ucla.edu/~jimc (q.v. for PGP key)
