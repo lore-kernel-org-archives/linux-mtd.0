@@ -1,19 +1,19 @@
 Received: from imf20aec.mail.bellsouth.net ([205.152.59.68])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3k4e-0006ny-2M
-	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 22:49:37 -0400
+	id 1I3k4q-0006o4-VR
+	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 22:49:52 -0400
 Received: from ibm62aec.bellsouth.net ([192.168.16.253])
 	by imf20aec.mail.bellsouth.net with ESMTP id
-	<20070628024932.NJNL20455.imf20aec.mail.bellsouth.net@ibm62aec.bellsouth.net>
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2007 22:49:32 -0400
+	<20070628024939.NLIH20455.imf20aec.mail.bellsouth.net@ibm62aec.bellsouth.net>
+	for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2007 22:49:40 -0400
 From: LOTTERY BOARD <music526@bellsouth.net>
 To: <uklottery@uklotto.co.uk>
 Subject: You Are A Certified Winner!!!UKL/74-A0802742006 
-Date: Wed, 27 Jun 2007 21:49:32 -0500
+Date: Wed, 27 Jun 2007 21:49:38 -0500
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Message-Id: <20070628024932.ZQLM4057.ibm62aec.bellsouth.net@mail.bellsouth.net>
+Message-Id: <20070628024938.ZQNI4057.ibm62aec.bellsouth.net@mail.bellsouth.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
