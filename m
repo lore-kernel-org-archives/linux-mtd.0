@@ -1,17 +1,19 @@
-Received: from 42.242.232.72.static.reverse.layeredtech.com ([72.232.242.42]
-	helo=secure.poehali.org)
+Received: from mail3.deltamobile.com ([66.92.131.124])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3zPK-0002CW-IR
-	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 15:12:14 -0400
-Date: Thu, 28 Jun 2007 22:14:58 +0300
-From: Ivan Kuten <ivan.kuten@promwad.com>
-To: linux-mtd@lists.infradead.org
-Subject: PATCH: at91_nand rdy_pin fix
-Message-ID: <20070628221458.12ed8e96@newbox>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1I3zlW-00030c-A9
+	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 15:34:56 -0400
+Message-ID: <46840D5A.3050306@deltamobile.com>
+Date: Thu, 28 Jun 2007 14:34:50 -0500
+From: James Graves <jgraves@deltamobile.com>
+MIME-Version: 1.0
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: File system testing
+References: <46829827.20508@deltamobile.com>
+	<1183057642.1170.197.camel@pmac.infradead.org>
+In-Reply-To: <1183057642.1170.197.camel@pmac.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +24,33 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-Hi,
+Thanks for the reply David.
 
-Could you please apply a small fix for at91 nand driver in mtd-2.6.git. 
-I posted it some time before 
+Turns out to apparently be a hardware problem.
 
-http://article.gmane.org/gmane.linux.drivers.mtd/18354
+Data written to the last 512 of flash memory (of a 32Mbyte flash part) 
+sometimes doesn't work.  Sometimes, even though the programming 
+apparently worked, you'll just get back 0xff anyway.  The rest of the 
+flash memory works fine, and we were able to run our filesystem 
+exerciser for over 12 hours solid, with no errors, once we excluded that 
+part of the flash memory.
 
-but seems it get missed from patch queue.
+So, obviously, any block at the end of memory was getting corrupted.
 
-Best regards,
-Ivan
+I'm expecting there's some kind of memory mapping conflict, but that'll 
+take further investigation.
+
+----------------------------------------------------------------
+
+What's funny is that we'd previously done some informal testing of the 
+raw partition.  Reading and writing images to the /dev/mtdblock3 device 
+directly.
+
+And it seemed to be working fine.  But, as it turns out, we were only 
+testing approximately 32Mbytes... and not _exactly_ 32Mbytes.
+
+Let that be a lesson to you all!
+
+Thanks again,
+
+James Graves
