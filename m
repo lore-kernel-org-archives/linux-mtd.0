@@ -1,11 +1,13 @@
-Subject: Re: [PATCH] support zlib decompression in flashcp
+Subject: Re: File system testing
 From: David Woodhouse <dwmw2@infradead.org>
-To: Hamish Moffatt <hamish@cloud.net.au>
-In-Reply-To: <20070521074826.GA31844@cloud.net.au>
-References: <20070521074826.GA31844@cloud.net.au>
+To: James Graves <jgraves@deltamobile.com>
+In-Reply-To: <46840D5A.3050306@deltamobile.com>
+References: <46829827.20508@deltamobile.com>
+	<1183057642.1170.197.camel@pmac.infradead.org>
+	<46840D5A.3050306@deltamobile.com>
 Content-Type: text/plain
-Date: Thu, 28 Jun 2007 20:39:29 +0100
-Message-Id: <1183059569.1170.202.camel@pmac.infradead.org>
+Date: Thu, 28 Jun 2007 20:41:14 +0100
+Message-Id: <1183059674.1170.205.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
@@ -18,11 +20,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-05-21 at 17:48 +1000, Hamish Moffatt wrote:
-> I shouldn't really use <asm/byteorder.h>, but I need __le32_to_cpu
-> or an equivalent. Is there a better approach? 
+On Thu, 2007-06-28 at 14:34 -0500, James Graves wrote:
+> Thanks for the reply David.
+> 
+> Turns out to apparently be a hardware problem.
 
-See how mkfs.jffs2 does it.
+Good. I was hoping it might be :)
 
 -- 
 dwmw2
