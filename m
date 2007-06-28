@@ -1,17 +1,13 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3zDi-0001Op-UW
-	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 15:00:22 -0400
-From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
-To: "'David Woodhouse'" <dwmw2@infradead.org>
 Subject: RE: sync() takes minutes while erasing
-Date: Thu, 28 Jun 2007 20:59:51 +0200
-Message-ID: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+From: David Woodhouse <dwmw2@infradead.org>
+To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+Content-Type: text/plain
+Date: Thu, 28 Jun 2007 20:02:42 +0100
+Message-Id: <1183057362.1170.194.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1183056861.1170.191.camel@pmac.infradead.org>
 Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,30 +18,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> -----Original Message-----
-> From: David Woodhouse [mailto:dwmw2@infradead.org] 
-> Sent: den 28 juni 2007 20:54
-> To: joakim.tjernlund@transmode.se
-> Cc: Linux MTD mailing list
-> Subject: Re: sync() takes minutes while erasing
-> 
-> On Wed, 2007-06-20 at 16:49 +0200, Joakim Tjernlund wrote:
-> > Ok, found the cause:
-> >  jffs2_erase_pending_blocks(c, 0) is called from
-> >  jffs2_write_super() and it hangs until all
-> >  pending erases are complete.
-> > 
-> > Why do jffs2_write_super() need to call 
-> > jffs2_erase_pending_blocks(c, 0)? Seems like a bad idea to me. 
-> 
-> It's because pdflush is the best context I could find for 
-> actually doing
-> the erases we need. But now I think we can use pdflush_operation()
-> instead of having to do it from write_super(), so maybe we can fix the
-> thing that offends you.
+On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
+> Thanks, this stop the complaints from the test team. They
+> don't like to wait a few mins every time they delete an old install
+> and reboot.
 
-Thanks, this stop the complaints from the test team. They
-don't like to wait a few mins every time they delete an old install
-and reboot.
+This is what the rest of us use 'flash_eraseall -j' for, btw :)
 
-  Jocke
+But I'll look into it. If we can do the erases from some other context
+it would be nice. Although pdflush_operation() doesn't seem to give us
+any way to _stop_ a pending call if we unmount.
+
+-- 
+dwmw2
