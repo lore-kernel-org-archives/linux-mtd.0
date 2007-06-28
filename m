@@ -1,14 +1,15 @@
-Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
+Subject: Re: sync() takes minutes while erasing
 From: David Woodhouse <dwmw2@infradead.org>
-To: Uli Luckas <u.luckas@road.de>
-In-Reply-To: <200706141509.50621.u.luckas@road.de>
-References: <200706141509.50621.u.luckas@road.de>
+To: joakim.tjernlund@transmode.se
+In-Reply-To: <1182350992.2969.128.camel@gentoo-jocke.transmode.se>
+References: <1182349303.2969.122.camel@gentoo-jocke.transmode.se>
+	<1182350992.2969.128.camel@gentoo-jocke.transmode.se>
 Content-Type: text/plain
-Date: Thu, 28 Jun 2007 19:52:01 +0100
-Message-Id: <1183056721.1170.188.camel@pmac.infradead.org>
+Date: Thu, 28 Jun 2007 19:54:21 +0100
+Message-Id: <1183056861.1170.191.camel@pmac.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: Linux MTD mailing list <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-06-14 at 15:09 +0200, Uli Luckas wrote:
-> The problem seems to happen, when suspend kicks in, after the call to 
-> try_to_freeze and before the while loop in jffs2_garbage_collect_thread.
+On Wed, 2007-06-20 at 16:49 +0200, Joakim Tjernlund wrote:
+> Ok, found the cause:
+>  jffs2_erase_pending_blocks(c, 0) is called from
+>  jffs2_write_super() and it hangs until all
+>  pending erases are complete.
 > 
-> The pending freeze will cause signal_pending to return true until the 
-> attempted suspend is over and thereby the while loop won't terminate until 
-> the suspend times out.
-> 
-> This patch will call try_to_freeze from within the while loop and adds an 
-> extra check for jffs2_thread_should_wake before we actually do the GC to 
-> avoid calling jffs2_garbage_collect_pass at every wakeup.
+> Why do jffs2_write_super() need to call 
+> jffs2_erase_pending_blocks(c, 0)? Seems like a bad idea to me. 
 
-Thanks. I've committed a slightly simpler fix:
-http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=e716dd3644c2a79d6ffa4359bac06f57479dcb34
+It's because pdflush is the best context I could find for actually doing
+the erases we need. But now I think we can use pdflush_operation()
+instead of having to do it from write_super(), so maybe we can fix the
+thing that offends you.
 
 -- 
 dwmw2
