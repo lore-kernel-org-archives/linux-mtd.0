@@ -1,19 +1,19 @@
-Received: from mx1.redhat.com ([66.187.233.31])
+Received: from wx-out-0506.google.com ([66.249.82.235])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3oK6-0001kd-0v
-	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 03:21:52 -0400
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <200706272350.04975.m.kozlowski@tuxland.pl>
-References: <200706272350.04975.m.kozlowski@tuxland.pl>
-	<200706271030.l5RAUgKE015163@imap1.linux-foundation.org>
-To: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
-Subject: Re: [PATCH] mtd: add module license to mtdbdi
-Date: Thu, 28 Jun 2007 08:21:08 +0100
-Message-ID: <1224.1183015268@redhat.com>
-Sender: dhowells@redhat.com
-Cc: dhowells@redhat.com, linux-mtd@lists.infradead.org,
-	akpm@linux-foundation.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+	id 1I3r5k-0003Ot-C3
+	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 06:19:15 -0400
+Received: by wx-out-0506.google.com with SMTP id s7so132585wxc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 28 Jun 2007 03:19:11 -0700 (PDT)
+Message-ID: <38b44d590706280319y35bc00c0ree32d6e99b7918f5@mail.gmail.com>
+Date: Thu, 28 Jun 2007 15:49:11 +0530
+From: "Saiful Khan" <saiful.etc@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: fsload taking more time
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,15 +23,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Mariusz Kozlowski <m.kozlowski@tuxland.pl> wrote:
+Hello,
 
-> 	This seems to be a known issue [1] about Photron PNC-2000 module called
-> pnc2000. To reproduce this just 'modprobe pnc2000'. The patch attached at least
-> makes the kernel to be not tainted when mtdbdi gets loaded.
+I have booted kernel image from the jffs2 file system.
+The kernel image "uImage" is located in /boot directoy of jffs2 file
+system, to load uImage form /boot to RAM location 0=D7400000, "fsload
+0=D7400000 boot/uImage" command is used. Then this kernel image is
+booted from 0=D7400000 using " bootm 0=D7400000" command
 
-This is the wrong solution.  This file should not be its own module, but
-should rather be linked with mtdcore.
+But there is a issue that it is taking 5-6 sec (approx) more while
+doing fsload, comapred to loading uImage from raw flash location and
+booting it. Can anyone suggest me what to do to solve this isuue??
 
-There was a patch for this, but I don't know what happened to it.
-
-David
+thanks and regards
+Saiful
