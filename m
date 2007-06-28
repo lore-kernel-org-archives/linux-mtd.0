@@ -1,16 +1,15 @@
-Subject: Re: File system testing
-From: David Woodhouse <dwmw2@infradead.org>
-To: James Graves <jgraves@deltamobile.com>
-In-Reply-To: <46840D5A.3050306@deltamobile.com>
-References: <46829827.20508@deltamobile.com>
-	<1183057642.1170.197.camel@pmac.infradead.org>
-	<46840D5A.3050306@deltamobile.com>
-Content-Type: text/plain
-Date: Thu, 28 Jun 2007 20:41:14 +0100
-Message-Id: <1183059674.1170.205.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Date: Thu, 28 Jun 2007 20:01:01 +0100 (BST)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [PATCH] UBI-Utils: Cleanup of libubimirror
+In-Reply-To: <200706281849.32594.alexs@linux.vnet.ibm.com>
+Message-ID: <Pine.LNX.4.64.0706282000290.22157@pentafluge.infradead.org>
+References: <200706281849.32594.alexs@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,12 +19,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-06-28 at 14:34 -0500, James Graves wrote:
-> Thanks for the reply David.
-> 
-> Turns out to apparently be a hardware problem.
+On Thu, 28 Jun 2007, Alexander Schmidt wrote:
 
-Good. I was hoping it might be :)
+> libubimirror has several odd intendations and spacing errors.
+>
+> Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
 
--- 
-dwmw2
+Committed, thanks.
+
+Artem.
