@@ -1,18 +1,15 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3uAd-0005Ia-Pl
-	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 09:36:29 -0400
-Date: Thu, 28 Jun 2007 14:36:19 +0100
-From: Ben Dooks <ben@fluff.org>
-To: Midhun Agnihotram <agnimidhun@gmail.com>
-Subject: Re: Mounting MMC card
-Message-ID: <20070628133619.GB30418@fluff.org.uk>
-References: <4dde4acb0706261146s5906d8f3vb787d5aecb429116@mail.gmail.com>
+Date: Thu, 28 Jun 2007 17:36:34 +0100 (BST)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Randy Dunlap <randy.dunlap@oracle.com>
+Subject: Re: [PATCH -mm] UBI: one less BUG usage
+In-Reply-To: <4683437E.50109@oracle.com>
+Message-ID: <Pine.LNX.4.64.0706281734470.8495@pentafluge.infradead.org>
+References: <20070626153027.cbe757f0.randy.dunlap@oracle.com>
+	<Pine.LNX.4.64.0706272244470.22935@pentafluge.infradead.org>
+	<4683437E.50109@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4dde4acb0706261146s5906d8f3vb787d5aecb429116@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: akpm <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +19,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jun 27, 2007 at 12:16:00AM +0530, Midhun Agnihotram wrote:
-> Hi All,
-> 
->    I am using Cogent CSB535FS board. The kernel has got MMC card
-> support. So when I insert the card, it says :
+On Wed, 27 Jun 2007, Randy Dunlap wrote:
+> All my patch does is allow and handle error returns from major_to_device()
+> in vol_cdev_open().  vol_cdev_open() already handles errors by returning
+> the error to its caller.
 
-This is completely the wrong list for MMC related enquiries. The
-best place is to try linux-kernel, with a cc to the maintainer
-at drzeus-mmc@drzeus.cx
+Yes, I see the inconsistency, I'd prefer to remove that error check 
+instead.
 
--- 
-Ben (ben@fluff.org, http://www.fluff.org/)
-
-  'a smiley only costs 4 bytes'
+Artem.
