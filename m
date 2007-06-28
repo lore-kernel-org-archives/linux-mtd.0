@@ -1,14 +1,17 @@
-Subject: Re: [patch 2.6.22-rc3] MTD: m25p80 converted to mutex
-From: David Woodhouse <dwmw2@infradead.org>
-To: David Brownell <david-b@pacbell.net>
-In-Reply-To: <200706241509.14367.david-b@pacbell.net>
-References: <200706241509.14367.david-b@pacbell.net>
-Content-Type: text/plain
-Date: Thu, 28 Jun 2007 20:11:52 +0100
-Message-Id: <1183057912.1170.199.camel@pmac.infradead.org>
+Received: from 42.242.232.72.static.reverse.layeredtech.com ([72.232.242.42]
+	helo=secure.poehali.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I3zPK-0002CW-IR
+	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 15:12:14 -0400
+Date: Thu, 28 Jun 2007 22:14:58 +0300
+From: Ivan Kuten <ivan.kuten@promwad.com>
+To: linux-mtd@lists.infradead.org
+Subject: PATCH: at91_nand rdy_pin fix
+Message-ID: <20070628221458.12ed8e96@newbox>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,15 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2007-06-24 at 15:09 -0700, David Brownell wrote:
-> Convert semaphore usage in m25p80 driver to mutex; mention another kind of
-> SPI flash chip that should be able to use this driver (given minor tweaks).
-> 
-> Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
-> ---
-> [RESEND -- original was on 25-May, was neither merged nor acked ]
 
-Sorry, been very busy. Your patches both fail to apply though.
+Hi,
 
--- 
-dwmw2
+Could you please apply a small fix for at91 nand driver in mtd-2.6.git. 
+I posted it some time before 
+
+http://article.gmane.org/gmane.linux.drivers.mtd/18354
+
+but seems it get missed from patch queue.
+
+Best regards,
+Ivan
