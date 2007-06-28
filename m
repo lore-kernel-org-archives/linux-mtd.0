@@ -1,19 +1,19 @@
-Received: from imf20aec.mail.bellsouth.net ([205.152.59.68])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I3k4q-0006o4-VR
-	for linux-mtd@lists.infradead.org; Wed, 27 Jun 2007 22:49:52 -0400
-Received: from ibm62aec.bellsouth.net ([192.168.16.253])
-	by imf20aec.mail.bellsouth.net with ESMTP id
-	<20070628024939.NLIH20455.imf20aec.mail.bellsouth.net@ibm62aec.bellsouth.net>
-	for <linux-mtd@lists.infradead.org>; Wed, 27 Jun 2007 22:49:40 -0400
-From: LOTTERY BOARD <music526@bellsouth.net>
-To: <uklottery@uklotto.co.uk>
-Subject: You Are A Certified Winner!!!UKL/74-A0802742006 
-Date: Wed, 27 Jun 2007 21:49:38 -0500
+Received: from rgminet01.oracle.com ([148.87.113.118])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I3mIo-0008DA-Qp
+	for linux-mtd@lists.infradead.org; Thu, 28 Jun 2007 01:12:24 -0400
+Message-ID: <4683437E.50109@oracle.com>
+Date: Wed, 27 Jun 2007 22:13:34 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
-Message-Id: <20070628024938.ZQNI4057.ibm62aec.bellsouth.net@mail.bellsouth.net>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH -mm] UBI: one less BUG usage
+References: <20070626153027.cbe757f0.randy.dunlap@oracle.com>
+	<Pine.LNX.4.64.0706272244470.22935@pentafluge.infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0706272244470.22935@pentafluge.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: akpm <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The Camelot Group,:
-Operators of The National Lottery.
-3b Olympic Way, Sefton Business Park,
-Aintree, Liverpool , L30 1RD
-REF:UKL/74A0802742006
+Artem Bityutskiy wrote:
+> On Tue, 26 Jun 2007, Randy Dunlap wrote:
+> 
+>> From: Randy Dunlap <randy.dunlap@oracle.com>
+>>
+>> Eliminate one BUG() usage.  The callers of major_to_device() already
+>> handle and report errors.  This is just another error to return.
+> 
+> Why is this just an error? It must never happen unles there is a bug in 
+> the code. Or is there a campaign against BUG() calls?
+> 
+> Artem.
 
+There's always a campaign against unneeded BUG() calls.
+However, if you say this one is needed, then so be it.
 
-               BATCH:2006UKL-01
+However(2), ubi_cdev_ioctl() calls major_to_device() and allows it
+to return an error [although major_to_device() currently cannot
+return such an error]:
 
- We happily announce to you the uklottery draw of the Lottery
-International programs held in UK on the 26th of June,2007. Your e-mail
-address was attached to these lucky winning numbers below: 02 15
-21 37 43 46 36 which subsequently won you the lottery bonus
-draw.You have therefore been approved to claim a total sum of
-£891,934.00 pounds sterlings (Eight hundred and ninty-one thousand,
-nine hundred and thirty-four Great Britain pounds,in cash credited
-to file REF NO. REF: UKL/74-A0802742006. total prize
-money of GBP £4,459,670.00 shared among the FIVE (5) international
-winners in this category i.e Match 6 plus bonus.
-To file for your claim, please contact our fiduciary agent;
+	ubi = major_to_device(imajor(inode));
+	if (IS_ERR(ubi))
+		return PTR_ERR(ubi);
 
-MR.Brain Johnson.
-Customer Care
-Tell:+44-70457-07368
-Tell:+44-70240-24901
-Tell:+44-70457-07372
-Tell:+44-70240-24962
+so part of cdev.c allows and handles error returns from major_to_device().
 
-Official Email:contact_claimsofficer17@yahoo.co.uk
+All my patch does is allow and handle error returns from major_to_device()
+in vol_cdev_open().  vol_cdev_open() already handles errors by returning
+the error to its caller.
 
-Mrs Dianne Thompson
-Online Coordinator,
-CAMELOT GROUP,
-Operator of The National Lottery.
-
-VERIFICATION AND FUNDS RELEASE FORM
-
-1.FULL NAMES:....
-2.ADDRESS:........
-3.City:...........
-4.State:...........
-5.EmailAddress:.....
-6.Postcode:..........
-7.Country:............
-8.SEX:.................
-9.AGE:..................
-9.OCCUPATION:............
-10.TELEPHONE NUMBER:......
-
-Final Notification/REF Nº.: UKL/74-A0802742006
+-- 
+~Randy
+*** Remember to use Documentation/SubmitChecklist when testing your code ***
