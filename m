@@ -1,32 +1,25 @@
-Received: from mtagate1.de.ibm.com ([195.212.29.150])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I4Dzj-0004l0-81
-	for linux-mtd@lists.infradead.org; Fri, 29 Jun 2007 11:46:32 +0100
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate1.de.ibm.com (8.13.8/8.13.8) with ESMTP id l5TAkPFG091422
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2007 10:46:25 GMT
-Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
-	[9.149.165.213])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.3) with
-	ESMTP id l5TAkP9X2101260
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2007 12:46:25 +0200
-Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l5TAkOB2020752
-	for <linux-mtd@lists.infradead.org>; Fri, 29 Jun 2007 12:46:24 +0200
-From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] UBI-Utils: ubimirror discards returncode
-Date: Fri, 29 Jun 2007 12:46:11 +0200
+Received: from an-out-0708.google.com ([209.85.132.251])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I4Egy-0000fX-J4
+	for linux-mtd@lists.infradead.org; Fri, 29 Jun 2007 07:31:28 -0400
+Received: by an-out-0708.google.com with SMTP id c3so173664ana
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 29 Jun 2007 04:31:11 -0700 (PDT)
+Message-ID: <fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
+Date: Fri, 29 Jun 2007 15:31:11 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: kmpark@infradead.org
+Subject: Re: [PATCH] [JFFS2] Fix unreasonable jffs2_do_reserve_space() failure
+In-Reply-To: <001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200706291246.11487.alexs@linux.vnet.ibm.com>
-Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Frank Haverkamp <haver@linux.vnet.ibm.com>
+References: <fe810cf0706282325k536bf24ct6ad216f0c980e97c@mail.gmail.com>
+	<001201c7ba2c$aa54a5b0$e1ac580a@swcenter.sec.samsung.co.kr>
+	<fe810cf0706290231l473bfcf3s86b0db49c09d39f8@mail.gmail.com>
+	<001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,35 +29,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ubimirror compares volumes before they are mirrored, but discards the
-result of the comparison and alway copies volumes.
+On 6/29/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
+>
+> What's pre patch? Could you link the pre-patch?
+>
 
-I've tested this code with equal and unequal volumes and it seems to work
-fine now.
+I've just tried it with the latest stable kernel version 2.6.21.5. The
+bug I've mentioned does exist w/o patch and disappears after the patch
+is applied. I do not expect/observe any side effects.
 
-Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
----
- ubi-utils/src/libubimirror.c |   12 +++++++-----
- 1 files changed, 7 insertions(+), 5 deletions(-)
-
---- mtd-utils.orig/ubi-utils/src/libubimirror.c
-+++ mtd-utils/ubi-utils/src/libubimirror.c
-@@ -190,11 +190,13 @@ int ubimirror(uint32_t devno, int seqnum
- 		if (rc < 0) {
- 			EBUF("compare error volume %d and %d", src_id, ids[i]);
- 			goto err;
--		}
--		rc = copy_files(fd_in, fd_out);
--		if (rc != 0) {
--			EBUF("mirror error volume %d to %d", src_id, ids[i]);
--			goto err;
-+		} else if (rc == compare_different) {
-+			rc = copy_files(fd_in, fd_out);
-+			if (rc != 0) {
-+				EBUF("mirror error volume %d to %d", src_id,
-+						ids[i]);
-+				goto err;
-+			}
- 		}
- 		if ((rc = ubi_vol_close(fd_out)) == -1) {
- 			EBUF("close error volume %d", ids[i]);
+Thanks,
+Alexander
