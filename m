@@ -1,25 +1,15 @@
-Received: from an-out-0708.google.com ([209.85.132.251])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I4Egy-0000fX-J4
-	for linux-mtd@lists.infradead.org; Fri, 29 Jun 2007 07:31:28 -0400
-Received: by an-out-0708.google.com with SMTP id c3so173664ana
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 29 Jun 2007 04:31:11 -0700 (PDT)
-Message-ID: <fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
-Date: Fri, 29 Jun 2007 15:31:11 +0400
-From: "Alexander Belyakov" <abelyako@googlemail.com>
-To: kmpark@infradead.org
-Subject: Re: [PATCH] [JFFS2] Fix unreasonable jffs2_do_reserve_space() failure
-In-Reply-To: <001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
+Date: Fri, 29 Jun 2007 12:54:32 +0100 (BST)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+Subject: Re: [PATCH] UBI-Utils: ubimirror discards returncode
+In-Reply-To: <200706291246.11487.alexs@linux.vnet.ibm.com>
+Message-ID: <Pine.LNX.4.64.0706291249040.20045@pentafluge.infradead.org>
+References: <200706291246.11487.alexs@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <fe810cf0706282325k536bf24ct6ad216f0c980e97c@mail.gmail.com>
-	<001201c7ba2c$aa54a5b0$e1ac580a@swcenter.sec.samsung.co.kr>
-	<fe810cf0706290231l473bfcf3s86b0db49c09d39f8@mail.gmail.com>
-	<001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,14 +19,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 6/29/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
+On Fri, 29 Jun 2007, Alexander Schmidt wrote:
+> Ubimirror compares volumes before they are mirrored, but discards the
+> result of the comparison and alway copies volumes.
 >
-> What's pre patch? Could you link the pre-patch?
+> I've tested this code with equal and unequal volumes and it seems to work
+> fine now.
 >
+> Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
 
-I've just tried it with the latest stable kernel version 2.6.21.5. The
-bug I've mentioned does exist w/o patch and disappears after the patch
-is applied. I do not expect/observe any side effects.
-
-Thanks,
-Alexander
+Thanks.
