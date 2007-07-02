@@ -1,30 +1,22 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5LBJ-00066M-So
-	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 13:39:08 +0100
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l62CcxbF001730
-	for <linux-mtd@lists.infradead.org>; Mon, 2 Jul 2007 08:38:59 -0400
-Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
-	l62CcxEq256982
-	for <linux-mtd@lists.infradead.org>; Mon, 2 Jul 2007 06:38:59 -0600
-Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l62CcxQI005040
-	for <linux-mtd@lists.infradead.org>; Mon, 2 Jul 2007 06:38:59 -0600
-Subject: Re: NAND Driver in case of NAND Flash Controller
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: brraju@hyd.hellosoft.com
-In-Reply-To: <4688DC5D.3070909@hyd.hellosoft.com>
-References: <4688DC5D.3070909@hyd.hellosoft.com>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5LRT-0005r0-Qv
+	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 08:55:49 -0400
+Subject: Re: jffs2_mark_node_obsolete race w.r.t erase_free_sem?
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1183103595.1170.215.camel@pmac.infradead.org>
+References: <005601c7b4c0$52207d90$0e67a8c0@Jocke>
+	<1183055402.1170.186.camel@pmac.infradead.org>
+	<1183101617.20673.49.camel@gentoo-jocke.transmode.se>
+	<1183103595.1170.215.camel@pmac.infradead.org>
 Content-Type: text/plain
-Date: Mon, 02 Jul 2007 07:38:58 -0500
-Message-Id: <1183379938.13031.1.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Date: Mon, 02 Jul 2007 14:55:44 +0200
+Message-Id: <1183380944.20673.128.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,45 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-07-02 at 16:37 +0530, Ranga Raju B wrote:
-> Hi,
->     I need to write a Linux MTD NAND Driver for an SoC. It has NAND 
-> Flash Controller (ARASAN NAND Flash Controller) and I am using a 2Gb 
-> Micron NAND Flash. The MTD drivers I currently see in the Linux tree are 
-> basically having the NAND Flash connected directly to the processors 
-> using GPIO or Address Lines. In this case it is appropriate to write 
-> callback functions for
+On Fri, 2007-06-29 at 08:53 +0100, David Woodhouse wrote:
+> On Fri, 2007-06-29 at 09:20 +0200, Joakim Tjernlund wrote:
+> > Didn't manage to trig this printout, but earlier I managed to trig a
+> > WARN_ON(1) added next to the "argh. node added in wrong place" message:
+> > 
+> > Node totlen on flash (0x00000006) != totlen from node ref (0x00000048)
+> > argh. node added in wrong place
 > 
-> hwcontrol
-> dev_ready
-> write_byte
-> read_byte
-> verify_byte
-> write_buf
-> read_buf
-> verify_buf
+> Hm. It is always accompanied by the totlen discrepancy message? 
+> I committed something slightly more informative than just a WARN_ON()
+> last night -- can you reproduce with that?
+> http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=66bfaeaa90432a585d7e9e70605ee4df3ede9890
 > 
-> Since the IO data lines and control lines are controlled directly by the 
-> processor.
+> And with this too...
 > 
-> In case of NAND flash controller we don't have this controller. We need 
-> to program only the registers and we can get status only from the status 
-> registers. We have data ports
-> which can take only 512 bytes at a time. Has anyone written the Linux 
-> driver for this kind of situation?
+> diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
+> index 9c3a3bb..da37746 100644
+> --- a/fs/jffs2/nodemgmt.c
+> +++ b/fs/jffs2/nodemgmt.c
+> @@ -656,6 +656,7 @@ void jffs2_mark_node_obsolete(struct jffs2_sb_info *c, struct jffs2_raw_node_ref
+>  	}
+>  	if (PAD(je32_to_cpu(n.totlen)) != PAD(freed_len)) {
+>  		printk(KERN_WARNING "Node totlen on flash (0x%08x) != totlen from node ref (0x%08x)\n", je32_to_cpu(n.totlen), freed_len);
+> +		printk(KERN_WARNING "for node at 0x%08x(%d)\n", ref_offset(ref), ref_flags(ref));
+>  		goto out_erase_sem;
+>  	}
+>  	if (!(je16_to_cpu(n.nodetype) & JFFS2_NODE_ACCURATE)) {
 > 
-> I have control only at stage 1. Which are nothing but memory mapped 
-> interface.
+> If you can reproduce with CONFIG_JFFS2_FS_DEBUG=1 that would be massively useful.
 > 
->                 1                                             2
->    ARM  --->  NAND Flash Controller   ---> NAND Flash
-> 
-> I don't  know  where to start this driver. I intend to use JFFS2 over 
-> MTD partitions.
 
-Take a look at the NDFC driver in drivers/mtd/nand/.  It is a NAND
-controller found on some PowerPC 4xx chips and operates similar to what
-you've described.  You might find it helpful when writing a driver for
-your NAND controller.
-
-josh
+Been unable to reproduce this problem. Isn't that typical, when you want
+the problem to appear, it is impossible to get it :(
