@@ -1,19 +1,17 @@
 Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5LRT-0005r0-Qv
-	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 08:55:49 -0400
-Subject: Re: jffs2_mark_node_obsolete race w.r.t erase_free_sem?
+	id 1I5LTk-00063g-5Y
+	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 08:58:09 -0400
+Subject: RE: sync() takes minutes while erasing
 From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
 To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1183103595.1170.215.camel@pmac.infradead.org>
-References: <005601c7b4c0$52207d90$0e67a8c0@Jocke>
-	<1183055402.1170.186.camel@pmac.infradead.org>
-	<1183101617.20673.49.camel@gentoo-jocke.transmode.se>
-	<1183103595.1170.215.camel@pmac.infradead.org>
+In-Reply-To: <1183057362.1170.194.camel@pmac.infradead.org>
+References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+	<1183057362.1170.194.camel@pmac.infradead.org>
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Date: Mon, 02 Jul 2007 14:55:44 +0200
-Message-Id: <1183380944.20673.128.camel@gentoo-jocke.transmode.se>
+Date: Mon, 02 Jul 2007 14:58:06 +0200
+Message-Id: <1183381086.20673.132.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
 Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
 Reply-To: joakim.tjernlund@transmode.se
@@ -26,36 +24,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-06-29 at 08:53 +0100, David Woodhouse wrote:
-> On Fri, 2007-06-29 at 09:20 +0200, Joakim Tjernlund wrote:
-> > Didn't manage to trig this printout, but earlier I managed to trig a
-> > WARN_ON(1) added next to the "argh. node added in wrong place" message:
-> > 
-> > Node totlen on flash (0x00000006) != totlen from node ref (0x00000048)
-> > argh. node added in wrong place
+On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
+> On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
+> > Thanks, this stop the complaints from the test team. They
+> > don't like to wait a few mins every time they delete an old install
+> > and reboot.
 > 
-> Hm. It is always accompanied by the totlen discrepancy message? 
-> I committed something slightly more informative than just a WARN_ON()
-> last night -- can you reproduce with that?
-> http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=66bfaeaa90432a585d7e9e70605ee4df3ede9890
+> This is what the rest of us use 'flash_eraseall -j' for, btw :)
 > 
-> And with this too...
-> 
-> diff --git a/fs/jffs2/nodemgmt.c b/fs/jffs2/nodemgmt.c
-> index 9c3a3bb..da37746 100644
-> --- a/fs/jffs2/nodemgmt.c
-> +++ b/fs/jffs2/nodemgmt.c
-> @@ -656,6 +656,7 @@ void jffs2_mark_node_obsolete(struct jffs2_sb_info *c, struct jffs2_raw_node_ref
->  	}
->  	if (PAD(je32_to_cpu(n.totlen)) != PAD(freed_len)) {
->  		printk(KERN_WARNING "Node totlen on flash (0x%08x) != totlen from node ref (0x%08x)\n", je32_to_cpu(n.totlen), freed_len);
-> +		printk(KERN_WARNING "for node at 0x%08x(%d)\n", ref_offset(ref), ref_flags(ref));
->  		goto out_erase_sem;
->  	}
->  	if (!(je16_to_cpu(n.nodetype) & JFFS2_NODE_ACCURATE)) {
-> 
-> If you can reproduce with CONFIG_JFFS2_FS_DEBUG=1 that would be massively useful.
+> But I'll look into it. If we can do the erases from some other context
+> it would be nice. Although pdflush_operation() doesn't seem to give us
+> any way to _stop_ a pending call if we unmount.
 > 
 
-Been unable to reproduce this problem. Isn't that typical, when you want
-the problem to appear, it is impossible to get it :(
+hmm, can't you make so that pdflush_operation() just erases one
+block at a time? Then the longest you have to wait is just
+the time it takes to finish one EB.
+
+ Jocke
