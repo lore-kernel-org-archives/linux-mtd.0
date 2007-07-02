@@ -1,17 +1,23 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I55w9-000436-CA
-	for linux-mtd@lists.infradead.org; Sun, 01 Jul 2007 16:22:26 -0400
-Date: Sun, 1 Jul 2007 22:20:48 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [2.6 patch] remove dead MTD_PMC551_APERTURE_SIZE option
-Message-ID: <20070701202048.GF10869@stusta.de>
+Received: from smtp.hyd.hellosoft.com ([202.153.40.245]
+	helo=hyd.hyd.hellosoft.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5Jke-0004Y0-Md
+	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 07:07:31 -0400
+Received: from [192.168.2.243] (unknown [192.168.4.39])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by hyd.hyd.hellosoft.com (Postfix) with ESMTP id 0AE60F58031
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  2 Jul 2007 16:46:11 +0530 (IST)
+Message-ID: <4688DC5D.3070909@hyd.hellosoft.com>
+Date: Mon, 02 Jul 2007 16:37:09 +0530
+From: Ranga Raju B <brraju@hyd.hellosoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, Mark Ferrell <mferrell@mvista.com>
+To: linux-mtd@lists.infradead.org
+Subject: NAND Driver in case of NAND Flash Controller
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: brraju@hyd.hellosoft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,27 +27,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The CONFIG_MTD_PMC551_APERTURE_SIZE option seems to never have existed, 
-so there's no reason for carrying an #ifdef for it.
+Hi,
+    I need to write a Linux MTD NAND Driver for an SoC. It has NAND 
+Flash Controller (ARASAN NAND Flash Controller) and I am using a 2Gb 
+Micron NAND Flash. The MTD drivers I currently see in the Linux tree are 
+basically having the NAND Flash connected directly to the processors 
+using GPIO or Address Lines. In this case it is appropriate to write 
+callback functions for
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
+hwcontrol
+dev_ready
+write_byte
+read_byte
+verify_byte
+write_buf
+read_buf
+verify_buf
 
----
+Since the IO data lines and control lines are controlled directly by the 
+processor.
 
-This patch has been sent on:
-- 3 Jun 2007
+In case of NAND flash controller we don't have this controller. We need 
+to program only the registers and we can get status only from the status 
+registers. We have data ports
+which can take only 512 bytes at a time. Has anyone written the Linux 
+driver for this kind of situation?
 
---- linux-2.6.22-rc3-mm1/drivers/mtd/devices/pmc551.c.old	2007-06-03 19:16:00.000000000 +0200
-+++ linux-2.6.22-rc3-mm1/drivers/mtd/devices/pmc551.c	2007-06-03 19:16:50.000000000 +0200
-@@ -649,11 +649,7 @@
-  * Stuff these outside the ifdef so as to not bust compiled in driver support
-  */
- static int msize = 0;
--#if defined(CONFIG_MTD_PMC551_APERTURE_SIZE)
--static int asize = CONFIG_MTD_PMC551_APERTURE_SIZE;
--#else
- static int asize = 0;
--#endif
- 
- module_param(msize, int, 0);
- MODULE_PARM_DESC(msize, "memory size in Megabytes [1 - 1024]");
+I have control only at stage 1. Which are nothing but memory mapped 
+interface.
+
+                1                                             2
+   ARM  --->  NAND Flash Controller   ---> NAND Flash
+
+I don't  know  where to start this driver. I intend to use JFFS2 over 
+MTD partitions.
+
+Best regards
+Ranga Raju B
