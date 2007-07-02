@@ -1,20 +1,26 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from an-out-0708.google.com ([209.85.132.240])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5LTk-00063g-5Y
-	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 08:58:09 -0400
-Subject: RE: sync() takes minutes while erasing
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1183057362.1170.194.camel@pmac.infradead.org>
-References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
-	<1183057362.1170.194.camel@pmac.infradead.org>
-Content-Type: text/plain
+	id 1I5NVJ-0007Qm-4Y
+	for linux-mtd@lists.infradead.org; Mon, 02 Jul 2007 11:07:54 -0400
+Received: by an-out-0708.google.com with SMTP id c3so309929ana
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 02 Jul 2007 08:07:51 -0700 (PDT)
+Message-ID: <fe810cf0707020807j310c827esfbc3b717ced207d9@mail.gmail.com>
+Date: Mon, 2 Jul 2007 19:07:51 +0400
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: kmpark@infradead.org
+Subject: Re: [PATCH] [JFFS2] Fix unreasonable jffs2_do_reserve_space() failure
+In-Reply-To: <fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 02 Jul 2007 14:58:06 +0200
-Message-Id: <1183381086.20673.132.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
-Reply-To: joakim.tjernlund@transmode.se
+Content-Disposition: inline
+References: <fe810cf0706282325k536bf24ct6ad216f0c980e97c@mail.gmail.com>
+	<001201c7ba2c$aa54a5b0$e1ac580a@swcenter.sec.samsung.co.kr>
+	<fe810cf0706290231l473bfcf3s86b0db49c09d39f8@mail.gmail.com>
+	<001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
+	<fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +30,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
-> On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
-> > Thanks, this stop the complaints from the test team. They
-> > don't like to wait a few mins every time they delete an old install
-> > and reboot.
-> 
-> This is what the rest of us use 'flash_eraseall -j' for, btw :)
-> 
-> But I'll look into it. If we can do the erases from some other context
-> it would be nice. Although pdflush_operation() doesn't seem to give us
-> any way to _stop_ a pending call if we unmount.
-> 
+On 6/29/07, Alexander Belyakov <abelyako@googlemail.com> wrote:
+> On 6/29/07, Kyungmin Park <kyungmin.park@samsung.com> wrote:
+> >
+> > What's pre patch? Could you link the pre-patch?
+> >
+>
+> I've just tried it with the latest stable kernel version 2.6.21.5. The
+> bug I've mentioned does exist w/o patch and disappears after the patch
+> is applied. I do not expect/observe any side effects.
+>
 
-hmm, can't you make so that pdflush_operation() just erases one
-block at a time? Then the longest you have to wait is just
-the time it takes to finish one EB.
+Hi!
 
- Jocke
+Do you still feel this small patch brings troubles?
+
+If not, probably it is worth to include it, because bug does exist in
+current JFFS2 source anyway. I've described it in details in my first
+message.
+
+Thanks,
+Alexander
