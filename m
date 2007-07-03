@@ -1,26 +1,22 @@
-Received: from wa-out-1112.google.com ([209.85.146.182])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5cQT-00010I-8h
-	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 03:03:54 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so2317477wah
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 03 Jul 2007 00:03:50 -0700 (PDT)
-Message-ID: <9b52d64c0707030003r3853e66o6d9aa8fb4db504d4@mail.gmail.com>
-Date: Tue, 3 Jul 2007 12:33:49 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: What is subpage_sft??
-In-Reply-To: <1183445725.3531.23.camel@sauron>
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5f0H-00048q-06
+	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 05:49:02 -0400
+Date: Tue, 3 Jul 2007 12:47:02 +0300
+From: Jarkko Lavinen <jarkko.lavinen@nokia.com>
+To: Richard Purdie <rpurdie@openedhand.com>
+Subject: Re: [PATCH/RFC] oops and panic message logging to MTD
+Message-ID: <20070703094702.GA11992@angel.research.nokia.com>
+References: <1182184301.6074.62.camel@localhost.localdomain>
+	<1182239749.4403.48.camel@sauron>
+	<1182247254.5760.17.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <9b52d64c0707022228u1d47fa1awfef79a9f6574b0f@mail.gmail.com>
-	<000f01c7bd33$d71f6850$e1ac580a@swcenter.sec.samsung.co.kr>
-	<1183441583.3531.8.camel@sauron>
-	<9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
-	<9b52d64c0707022335h35d4d5ddpd8bdf9b7031bfa21@mail.gmail.com>
-	<1183445725.3531.23.camel@sauron>
+In-Reply-To: <1182247254.5760.17.camel@localhost.localdomain>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>,
+	LKML <linux-kernel@vger.kernel.org>
+Reply-To: Jarkko Lavinen <jarkko.lavinen@nokia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,58 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIEFydGVtLCBUaGF0IGNsZWFycyBhbG1vc3QgYWxsIGNvbmZ1c2lvbiBhYm91dCBtaW5f
-aW9fc2l6ZSwKaGRyc19taW5faW9fc2l6ZSAmIHdyaXRlc2l6ZS4KClJlZ2FyZHMsClZpbml0LgoK
-Ck9uIDcvMy8wNywgQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZz4gd3Jv
-dGU6Cj4gT24gVHVlLCAyMDA3LTA3LTAzIGF0IDEyOjA1ICswNTMwLCBWaW5pdCBBZ25paG90cmkg
-d3JvdGU6Cj4gPiBJIGFtIGxpdHRsZSBiaXQgY29uZnVzZWQgd2l0aCBmb2xsb3dpbmcgVUJJIGNv
-ZGUuCj4gPgo+ID4gTXkgaW5pdGlhbCB1bmRlcnN0YW5kaW5ncyBhcmUgYXMgZm9sbG93cywgcGxl
-YXNlIGNvcnJlY3QgbWUgaWYgSSBhbSB3cm9uZy4KPiA+IDEuIEEgZmxhc2ggZGV2aWNlIGhhcyAi
-biIgbm8uIG9mIGVyYXNlYmxvY2tzLgo+ID4gMi4gQSBlcmFzZWJsb2NrIGNvbnRhaW5zICJtIiBu
-by4gb2YgcGFnZXMuCj4gPiAzLiBBIHBhZ2UgY29udGFpbnMgImwiIG5vLiBvZiAgc3VicGFnZXMu
-Cj4gPiA0LiBTdWJwYWdlIHN1cHBvcnQgaXMgZGVwZW5kZW50IG9uIHVuZGVybHlpbmcgTkFORCwg
-c28gZXZlcnkgTkFORCBjYW50Cj4gPiBoYXZlIHN1YnBhZ2UgYWNjZXNzLgo+ID4gNS4gQ29uY2Vw
-dCBvZiBzdWJwYWdlcyBvbmx5IGV4aXN0cyBpbiBOQU5EIGZsYXNoIG5vdCBOT1IuCj4gUmlnaHQu
-Cj4KPiA+IFVCSSBjb2RlOgo+ID4gIHViaS0+bWluX2lvX3NpemUgPSB1YmktPm10ZC0+d3JpdGVz
-aXplOwo+IE5BTkQgcGFnZSBzaXplLgo+ID4gIHViaS0+aGRyc19taW5faW9fc2l6ZSA9dWJpLT5t
-dGQtPndyaXRlc2l6ZSA+PiB1YmktPm10ZC0+c3VicGFnZV9zZnQ7Cj4gU3ViLXBhZ2Ugc2l6ZS4K
-PiA+ICB1YmktPmVjX2hkcl9hbHNpemUgPSBBTElHTihVQklfRUNfSERSX1NJWkUsIHViaS0+aGRy
-c19taW5faW9fc2l6ZSk7Cj4gRUMgaGVhZGVyIHNpemUgYWxpZ25lZCB0byBzdWItcGFnZSBzaXpl
-Lgo+ID4gIHViaS0+dmlkX2hkcl9hbHNpemUgPSBBTElHTihVQklfVklEX0hEUl9TSVpFLCB1Ymkt
-PmhkcnNfbWluX2lvX3NpemUpOwo+IFZJRCBoZWFkZXIgc2l6ZSBhbGlnbmVkIHRvIHN1Yi1wYWdl
-IHNpemUKPgo+ID4gNi4gbWluX2lvX3NpemU6IGlzIG1pbmltYWwgaS9vIHRoYXQgY2FuIGJlIHBl
-cmZvcm1lZCBvbiBmbGFzaC4KPiBZZXMsIE5BTkQgcGFnZSBpbiBjYXNlIG9mIE5BTkQKPiA+IDcu
-IHdyaXRlc2l6ZTogaXMgaW5kZWVkIGEgcGFnZSBzaXplLgo+IFJpZ2h0Lgo+ID4gOC4gSWYgc3Vi
-cGFnZXMgYXJlIG5vdCBzdXBwb3J0ZWQgdGhlbiBoZHJzX21pbl9pb19zaXplID09IHdyaXRlc2l6
-ZQo+IFJpZ2h0LAo+ID4gOS4gU28gaWYgd3JpdGVzaXplIGlzIDIwNDggYnl0ZXMgJiBpZiBzdWJw
-YWdlX3NmdCBpcyAwLCB0aGVuIGVjICYgdmlkCj4gPiBoZWFkZXJzIHdpbGwgYmUgb2YgMSBOQU5E
-IHBhZ2UuIFNvIGhlcmUgaW4gdGhpcyBjYXNlOiBtaW5faW9fc2l6ZSA9PQo+ID4gd3JpdGVzaXpl
-ID09IGhkcnNfbWluX2lvX3NpemUuCj4gUmlnaHQuCj4gPiAxMC4gTm93IGlmIHN1YnBhZ2VzIGFy
-ZSBzdXBwb3J0ZWQsIHRoZW4gbWluX2lvX3NpemUgIT0KPiA+IGhkcnNfbWluX2lvX3NpemUuIE5v
-dyBpZiB3ZSBjYW4gd3JpdGUgaW4gYWxpZ25tZW50IG9mIGhkcnNfbWluX2lvX3NpemUKPiA+IHdo
-aWNoIGlzIGxlc3MgdGhhdCBtaW5faW9fc2l6ZSAsIHRoZW4gd2hhdCBpcyBzaWduaWZpY2FuY2Ug
-b2YKPiA+IG1pbl9pb19zaXplLgo+IFdlIHVzZSBzdWItcGFnZSBvbmx5IGZvciBFQyBhbmQgVklE
-IGhlYWRlcnMuIEZvciBVQkkgdXNlcnMgd2UgcmVwb3J0Cj4gbWluX2lvX3NpemUsIGkuZS4gdGhl
-eSBkbyBub3Qga25vdyBhYm91dCBzdWItcGFnZXMuIFVzZXJzIGhhdmUgdG8gc3VibWl0Cj4gb25s
-eSBtaW5faW9fc2l6ZS1hbGlnbmVkIHdyaXRlcy4gU3ViLXBhZ2UgaXMgdXNlZCBfb25seV8gYXMg
-YW4gaW50ZXJuYWwKPiBvcHRpbWl6YXRpb24uCj4KPiA+IGkuZS4KPiA+IElmIHdyaXRlc2l6ZSA9
-IDIwNDgKPiA+ICAgc3VicGFnZV9zZnQgPSAyCj4gPiAgIG1pbl9pb19zaXplID0gd3JpdGVzaXpl
-ID0gMjA0OAo+ID4gICBoZHJzX21pbl9pb19zaXplID0gd3JpdGVzaXplID4+IHN1YnBhZ2Vfc2Z0
-ID0gNTEyCj4gPiAgIGhkcnNfbWluX2lvX3NpemUgPCBtaW5faW9fc2l6ZQo+ID4KPiA+IE5vdyBp
-ZiB3ZSBjYW4gd3JpdGUgaGRyc19taW5faW9fc2l6ZSBvZiBkYXRhIHRvIGZsYXNoIHRoZW4gd2hh
-dCBpcwo+ID4gbm90aW9uIG9mIG1pbl9pb19zaXplPz8/Cj4KPiBTZWUgYWJvdmUuCj4KPiBUaGUg
-bWFpbiByZWFzb24gd2h5IHdlIGRvIG5vdCBtYWtlIG1pbl9pb19zaXplID0gc3ViLXBhZ2UsIGJ1
-dCBzdGlsbAo+IGV4cG9zZSB3aG9sZSBOQU5EIHBhZ2Ugc2l6ZSBhcyB0aGUgbWluaW1hbCBJbnB1
-dC9PdXRwdXQgdW5pdCBpcyBiZWNhdXNlCj4gc3ViLXBhZ2Ugc3R1ZmYgaXMga2luZGEgdHJpY2t5
-IGFuZCBoYWNreS4KPgo+IElmIHlvdSBnbGFuY2UgdG8gbmFuZF9iYXNlLmMgaG93IHN1Yi1wYWdl
-IHdyaXRlIGlzIGltcGxlbWVudGVkLCB5b3UnbGwKPiBub3RpY2UgdGhhdCBpZiB5b3Ugd2FubmEg
-d3JpdGUgYSBzdWItcGFnZSwgaXQgc3RpbGwgd3JpdGVzIHdob2xlIE5BTkQKPiBwYWdlLCBidXQg
-ZGF0YSBpbiB0aGUgc3ViLXBhZ2VzIG90aGVyIHRoZW4gdGhlIG9uZSB5b3UgYXJlIHdyaXRpbmcg
-dG8KPiBhcmUgc2V0IHRvIDB4RkYuIElPVywgc3ViLXBhZ2Ugd3JpdGUgdGFrZXMgYXMgbXVjaCB0
-aW1lIGFzIHdob2xlIHBhZ2UKPiB3cml0ZS4KPgo+IElmIHdlJ2QgZXhwb3NlIHN1Yi1wYWdlIGFz
-IG1pbmltYWwgSS9PIHVuaXQgKHdoaWNoIHdlIGFjdHVhbGx5IHVzZWQgdG8KPiBkbyEpLCBKRkZT
-MidkIGJlY29tZSBzbG93ZXIgKHdoZW4gaXQgaXMgdXNlZCBvbiB0b3Agb2YgVUJJKS4gSW5kZWVk
-LAo+IGNvbXBhcmUgNTEyYnl0ZXMgd2hpY2ggaXMgZmx1c2hlZCBhcyBzbG93IGFzIDJLaUIgd3Jp
-dGUtYnVmZmVyIC0gNHggSS9PCj4gc3BlZWQgcmVncmVzc2lvbi4KPgo+IC0tCj4gQmVzdCByZWdh
-cmRzLAo+IEFydGVtIEJpdHl1dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+Cj4KCgotLSAKSSBmZWVs
-IGZyZWUgbm93Cg==
+On Tue, Jun 19, 2007 at 11:00:54AM +0100, Richard Purdie wrote:
+> Its not a case of formatting the whole partition. The whole point of
+> this code is the following use case:
+> 
+> 1. Device crashes
+> 2. Device reboots
+> 3. mtdoops partition has a log of why it crashed
+
+The oops logger uses oops_in_progress variable to detect the begin and the 
+end of an oops.  The end is detected when the first non-oops line comes and
+oops_in_progress is false.
+
+This works if the kernel is still running after the oops and gemerates some 
+non-oops messages.  But if there is no non-oops line following an oops, no
+flushing will occur and there won't be a log on flash.
+
+Jarkko Lavinen
