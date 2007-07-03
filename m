@@ -1,23 +1,21 @@
-Received: from nz-out-0506.google.com ([64.233.162.228])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5bKy-0007bE-9N
-	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 01:54:12 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so1040272nzf
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 Jul 2007 22:54:07 -0700 (PDT)
-Message-ID: <9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
-Date: Tue, 3 Jul 2007 11:24:06 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: What is subpage_sft??
-In-Reply-To: <1183441583.3531.8.camel@sauron>
+From: "Kyungmin Park" <kyungmin.park@samsung.com>
+To: "'Alexander Belyakov'" <abelyako@googlemail.com>
+References: <fe810cf0706282325k536bf24ct6ad216f0c980e97c@mail.gmail.com>
+	<001201c7ba2c$aa54a5b0$e1ac580a@swcenter.sec.samsung.co.kr>
+	<fe810cf0706290231l473bfcf3s86b0db49c09d39f8@mail.gmail.com>
+	<001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
+	<fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
+	<fe810cf0707020807j310c827esfbc3b717ced207d9@mail.gmail.com>
+Subject: RE: [PATCH] [JFFS2] Fix unreasonable jffs2_do_reserve_space() failure
+Date: Tue, 3 Jul 2007 14:57:47 +0900
+Message-ID: <001001c7bd37$195c7890$e1ac580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <9b52d64c0707022228u1d47fa1awfef79a9f6574b0f@mail.gmail.com>
-	<000f01c7bd33$d71f6850$e1ac580a@swcenter.sec.samsung.co.kr>
-	<1183441583.3531.8.camel@sauron>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <fe810cf0707020807j310c827esfbc3b717ced207d9@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,12 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbmtzIGEgbG90IEFydGVtICYgS3l1bmdtaW4sIGZvciBpbW1lZGlhdGUgcmVwbGllcy4KSSBn
-dWVzcyBpdCBhbnN3ZXJzIGFsbCBteSBxdWVzdGlvbnMuCgpUaGFua3Mgb25jZSBhZ2Fpbi4KClJl
-Z2FyZHMsClZpbml0LgoKCk9uIDcvMy8wNywgQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmRAaW5m
-cmFkZWFkLm9yZz4gd3JvdGU6Cj4gT24gVHVlLCAyMDA3LTA3LTAzIGF0IDE0OjM0ICswOTAwLCBL
-eXVuZ21pbiBQYXJrIHdyb3RlOgo+ID4gSXQgaXMgdXNlZCBhdCBVQkkuCj4KPiBZZWFoLCBpdCBp
-cyB2ZXJ5IGJlbmVmaWNpYWwgZm9yIFVCSSBiZWNhdXNlIGl0IHdhc3RlcyB0d2ljZSBhcyBsZXNz
-IE5BTkQKPiBmbGFzaCBzcGFjZSBpZiB0aGVyZSBpcyBzdWItcGFnZSBhY2Nlc3MuCj4KPiAtLQo+
-IEJlc3QgcmVnYXJkcywKPiBBcnRlbSBCaXR5dXRza2l5ICjiydTAw8vJyiDh0tSjzSkKPgo+CgoK
-LS0gCkkgZmVlbCBmcmVlIG5vdwo=
+> > >
+> > > What's pre patch? Could you link the pre-patch?
+> > >
+> >
+> > I've just tried it with the latest stable kernel version 2.6.21.5. The
+> > bug I've mentioned does exist w/o patch and disappears after the patch
+> > is applied. I do not expect/observe any side effects.
+> >
+> 
+> Do you still feel this small patch brings troubles?
+> 
+> If not, probably it is worth to include it, because bug does exist in
+> current JFFS2 source anyway. I've described it in details in my first
+> message.
+
+The same situation happens without the patch.
+I think I try to find the reason.
+
+Thank you,
+Kyungmin Park
