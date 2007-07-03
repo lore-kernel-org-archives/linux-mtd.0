@@ -1,21 +1,24 @@
-From: "Kyungmin Park" <kyungmin.park@samsung.com>
-To: "'Alexander Belyakov'" <abelyako@googlemail.com>
-References: <fe810cf0706282325k536bf24ct6ad216f0c980e97c@mail.gmail.com>
-	<001201c7ba2c$aa54a5b0$e1ac580a@swcenter.sec.samsung.co.kr>
-	<fe810cf0706290231l473bfcf3s86b0db49c09d39f8@mail.gmail.com>
-	<001301c7ba31$c6da0810$e1ac580a@swcenter.sec.samsung.co.kr>
-	<fe810cf0706290431t7a86c151pf1e38d9837ece37d@mail.gmail.com>
-	<fe810cf0707020807j310c827esfbc3b717ced207d9@mail.gmail.com>
-Subject: RE: [PATCH] [JFFS2] Fix unreasonable jffs2_do_reserve_space() failure
-Date: Tue, 3 Jul 2007 14:57:47 +0900
-Message-ID: <001001c7bd37$195c7890$e1ac580a@swcenter.sec.samsung.co.kr>
+Received: from nz-out-0506.google.com ([64.233.162.235])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5byv-0008ST-1v
+	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 02:35:27 -0400
+Received: by nz-out-0506.google.com with SMTP id z3so1047212nzf
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 02 Jul 2007 23:35:24 -0700 (PDT)
+Message-ID: <9b52d64c0707022335h35d4d5ddpd8bdf9b7031bfa21@mail.gmail.com>
+Date: Tue, 3 Jul 2007 12:05:22 +0530
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: What is subpage_sft??
+In-Reply-To: <9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <fe810cf0707020807j310c827esfbc3b717ced207d9@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
-Reply-To: kmpark@infradead.org
+Content-Type: text/plain; charset=KOI8-R; format=flowed
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <9b52d64c0707022228u1d47fa1awfef79a9f6574b0f@mail.gmail.com>
+	<000f01c7bd33$d71f6850$e1ac580a@swcenter.sec.samsung.co.kr>
+	<1183441583.3531.8.camel@sauron>
+	<9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +28,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > >
-> > > What's pre patch? Could you link the pre-patch?
-> > >
-> >
-> > I've just tried it with the latest stable kernel version 2.6.21.5. The
-> > bug I've mentioned does exist w/o patch and disappears after the patch
-> > is applied. I do not expect/observe any side effects.
-> >
-> 
-> Do you still feel this small patch brings troubles?
-> 
-> If not, probably it is worth to include it, because bug does exist in
-> current JFFS2 source anyway. I've described it in details in my first
-> message.
-
-The same situation happens without the patch.
-I think I try to find the reason.
-
-Thank you,
-Kyungmin Park
+SSBhbSBsaXR0bGUgYml0IGNvbmZ1c2VkIHdpdGggZm9sbG93aW5nIFVCSSBjb2RlLgoKTXkgaW5p
+dGlhbCB1bmRlcnN0YW5kaW5ncyBhcmUgYXMgZm9sbG93cywgcGxlYXNlIGNvcnJlY3QgbWUgaWYg
+SSBhbSB3cm9uZy4KMS4gQSBmbGFzaCBkZXZpY2UgaGFzICJuIiBuby4gb2YgZXJhc2VibG9ja3Mu
+CjIuIEEgZXJhc2VibG9jayBjb250YWlucyAibSIgbm8uIG9mIHBhZ2VzLgozLiBBIHBhZ2UgY29u
+dGFpbnMgImwiIG5vLiBvZiAgc3VicGFnZXMuCjQuIFN1YnBhZ2Ugc3VwcG9ydCBpcyBkZXBlbmRl
+bnQgb24gdW5kZXJseWluZyBOQU5ELCBzbyBldmVyeSBOQU5EIGNhbnQKaGF2ZSBzdWJwYWdlIGFj
+Y2Vzcy4KNS4gQ29uY2VwdCBvZiBzdWJwYWdlcyBvbmx5IGV4aXN0cyBpbiBOQU5EIGZsYXNoIG5v
+dCBOT1IuCgpVQkkgY29kZToKIHViaS0+bWluX2lvX3NpemUgPSB1YmktPm10ZC0+d3JpdGVzaXpl
+OwogdWJpLT5oZHJzX21pbl9pb19zaXplID11YmktPm10ZC0+d3JpdGVzaXplID4+IHViaS0+bXRk
+LT5zdWJwYWdlX3NmdDsKIHViaS0+ZWNfaGRyX2Fsc2l6ZSA9IEFMSUdOKFVCSV9FQ19IRFJfU0la
+RSwgdWJpLT5oZHJzX21pbl9pb19zaXplKTsKIHViaS0+dmlkX2hkcl9hbHNpemUgPSBBTElHTihV
+QklfVklEX0hEUl9TSVpFLCB1YmktPmhkcnNfbWluX2lvX3NpemUpOwoKCjYuIG1pbl9pb19zaXpl
+OiBpcyBtaW5pbWFsIGkvbyB0aGF0IGNhbiBiZSBwZXJmb3JtZWQgb24gZmxhc2guCjcuIHdyaXRl
+c2l6ZTogaXMgaW5kZWVkIGEgcGFnZSBzaXplLgo4LiBJZiBzdWJwYWdlcyBhcmUgbm90IHN1cHBv
+cnRlZCB0aGVuIGhkcnNfbWluX2lvX3NpemUgPT0gd3JpdGVzaXplCjkuIFNvIGlmIHdyaXRlc2l6
+ZSBpcyAyMDQ4IGJ5dGVzICYgaWYgc3VicGFnZV9zZnQgaXMgMCwgdGhlbiBlYyAmIHZpZApoZWFk
+ZXJzIHdpbGwgYmUgb2YgMSBOQU5EIHBhZ2UuIFNvIGhlcmUgaW4gdGhpcyBjYXNlOiBtaW5faW9f
+c2l6ZSA9PQp3cml0ZXNpemUgPT0gaGRyc19taW5faW9fc2l6ZS4KMTAuIE5vdyBpZiBzdWJwYWdl
+cyBhcmUgc3VwcG9ydGVkLCB0aGVuIG1pbl9pb19zaXplICE9CmhkcnNfbWluX2lvX3NpemUuIE5v
+dyBpZiB3ZSBjYW4gd3JpdGUgaW4gYWxpZ25tZW50IG9mIGhkcnNfbWluX2lvX3NpemUKd2hpY2gg
+aXMgbGVzcyB0aGF0IG1pbl9pb19zaXplICwgdGhlbiB3aGF0IGlzIHNpZ25pZmljYW5jZSBvZgpt
+aW5faW9fc2l6ZS4KaS5lLgpJZiB3cml0ZXNpemUgPSAyMDQ4CiAgc3VicGFnZV9zZnQgPSAyCiAg
+bWluX2lvX3NpemUgPSB3cml0ZXNpemUgPSAyMDQ4CiAgaGRyc19taW5faW9fc2l6ZSA9IHdyaXRl
+c2l6ZSA+PiBzdWJwYWdlX3NmdCA9IDUxMgogIGhkcnNfbWluX2lvX3NpemUgPCBtaW5faW9fc2l6
+ZQoKTm93IGlmIHdlIGNhbiB3cml0ZSBoZHJzX21pbl9pb19zaXplIG9mIGRhdGEgdG8gZmxhc2gg
+dGhlbiB3aGF0IGlzCm5vdGlvbiBvZiBtaW5faW9fc2l6ZT8/PwoKClRoYW5rcyAmIFJlZ2FyZHMK
+VmluaXQuCgoKCgpPbiA3LzMvMDcsIFZpbml0IEFnbmlob3RyaSA8dmluaXQuYWduaWhvdHJpQGdt
+YWlsLmNvbT4gd3JvdGU6Cj4gVGhhbmtzIGEgbG90IEFydGVtICYgS3l1bmdtaW4sIGZvciBpbW1l
+ZGlhdGUgcmVwbGllcy4KPiBJIGd1ZXNzIGl0IGFuc3dlcnMgYWxsIG15IHF1ZXN0aW9ucy4KPgo+
+IFRoYW5rcyBvbmNlIGFnYWluLgo+Cj4gUmVnYXJkcywKPiBWaW5pdC4KPgo+Cj4gT24gNy8zLzA3
+LCBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2luZEBpbmZyYWRlYWQub3JnPiB3cm90ZToKPiA+IE9u
+IFR1ZSwgMjAwNy0wNy0wMyBhdCAxNDozNCArMDkwMCwgS3l1bmdtaW4gUGFyayB3cm90ZToKPiA+
+ID4gSXQgaXMgdXNlZCBhdCBVQkkuCj4gPgo+ID4gWWVhaCwgaXQgaXMgdmVyeSBiZW5lZmljaWFs
+IGZvciBVQkkgYmVjYXVzZSBpdCB3YXN0ZXMgdHdpY2UgYXMgbGVzcyBOQU5ECj4gPiBmbGFzaCBz
+cGFjZSBpZiB0aGVyZSBpcyBzdWItcGFnZSBhY2Nlc3MuCj4gPgo+ID4gLS0KPiA+IEJlc3QgcmVn
+YXJkcywKPiA+IEFydGVtIEJpdHl1dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+ID4KPiA+Cj4KPgo+
+IC0tCj4gSSBmZWVsIGZyZWUgbm93Cj4KCgotLSAKSSBmZWVsIGZyZWUgbm93Cg==
