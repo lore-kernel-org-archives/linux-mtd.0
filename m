@@ -1,24 +1,16 @@
-Received: from nz-out-0506.google.com ([64.233.162.235])
+Received: from elasmtp-galgo.atl.sa.earthlink.net ([209.86.89.61])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5byv-0008ST-1v
-	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 02:35:27 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so1047212nzf
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 02 Jul 2007 23:35:24 -0700 (PDT)
-Message-ID: <9b52d64c0707022335h35d4d5ddpd8bdf9b7031bfa21@mail.gmail.com>
-Date: Tue, 3 Jul 2007 12:05:22 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: What is subpage_sft??
-In-Reply-To: <9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
+	id 1I5cBq-0000N3-1k
+	for linux-mtd@lists.infradead.org; Tue, 03 Jul 2007 02:48:47 -0400
+Message-ID: <4689F10B.9040401@mindspring.com>
+Date: Tue, 03 Jul 2007 02:47:39 -0400
+From: Chuck Meade <chuckmeade@mindspring.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <9b52d64c0707022228u1d47fa1awfef79a9f6574b0f@mail.gmail.com>
-	<000f01c7bd33$d71f6850$e1ac580a@swcenter.sec.samsung.co.kr>
-	<1183441583.3531.8.camel@sauron>
-	<9b52d64c0707022254r36a69cega523eb0dfb8a05df@mail.gmail.com>
+To: linux-mtd@lists.infradead.org,
+	"Chuck Meade (mindspring)" <chuckmeade@mindspring.com>
+Subject: jffs2 eraseblock size, and actual flash device eraseblock size
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,40 +20,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SSBhbSBsaXR0bGUgYml0IGNvbmZ1c2VkIHdpdGggZm9sbG93aW5nIFVCSSBjb2RlLgoKTXkgaW5p
-dGlhbCB1bmRlcnN0YW5kaW5ncyBhcmUgYXMgZm9sbG93cywgcGxlYXNlIGNvcnJlY3QgbWUgaWYg
-SSBhbSB3cm9uZy4KMS4gQSBmbGFzaCBkZXZpY2UgaGFzICJuIiBuby4gb2YgZXJhc2VibG9ja3Mu
-CjIuIEEgZXJhc2VibG9jayBjb250YWlucyAibSIgbm8uIG9mIHBhZ2VzLgozLiBBIHBhZ2UgY29u
-dGFpbnMgImwiIG5vLiBvZiAgc3VicGFnZXMuCjQuIFN1YnBhZ2Ugc3VwcG9ydCBpcyBkZXBlbmRl
-bnQgb24gdW5kZXJseWluZyBOQU5ELCBzbyBldmVyeSBOQU5EIGNhbnQKaGF2ZSBzdWJwYWdlIGFj
-Y2Vzcy4KNS4gQ29uY2VwdCBvZiBzdWJwYWdlcyBvbmx5IGV4aXN0cyBpbiBOQU5EIGZsYXNoIG5v
-dCBOT1IuCgpVQkkgY29kZToKIHViaS0+bWluX2lvX3NpemUgPSB1YmktPm10ZC0+d3JpdGVzaXpl
-OwogdWJpLT5oZHJzX21pbl9pb19zaXplID11YmktPm10ZC0+d3JpdGVzaXplID4+IHViaS0+bXRk
-LT5zdWJwYWdlX3NmdDsKIHViaS0+ZWNfaGRyX2Fsc2l6ZSA9IEFMSUdOKFVCSV9FQ19IRFJfU0la
-RSwgdWJpLT5oZHJzX21pbl9pb19zaXplKTsKIHViaS0+dmlkX2hkcl9hbHNpemUgPSBBTElHTihV
-QklfVklEX0hEUl9TSVpFLCB1YmktPmhkcnNfbWluX2lvX3NpemUpOwoKCjYuIG1pbl9pb19zaXpl
-OiBpcyBtaW5pbWFsIGkvbyB0aGF0IGNhbiBiZSBwZXJmb3JtZWQgb24gZmxhc2guCjcuIHdyaXRl
-c2l6ZTogaXMgaW5kZWVkIGEgcGFnZSBzaXplLgo4LiBJZiBzdWJwYWdlcyBhcmUgbm90IHN1cHBv
-cnRlZCB0aGVuIGhkcnNfbWluX2lvX3NpemUgPT0gd3JpdGVzaXplCjkuIFNvIGlmIHdyaXRlc2l6
-ZSBpcyAyMDQ4IGJ5dGVzICYgaWYgc3VicGFnZV9zZnQgaXMgMCwgdGhlbiBlYyAmIHZpZApoZWFk
-ZXJzIHdpbGwgYmUgb2YgMSBOQU5EIHBhZ2UuIFNvIGhlcmUgaW4gdGhpcyBjYXNlOiBtaW5faW9f
-c2l6ZSA9PQp3cml0ZXNpemUgPT0gaGRyc19taW5faW9fc2l6ZS4KMTAuIE5vdyBpZiBzdWJwYWdl
-cyBhcmUgc3VwcG9ydGVkLCB0aGVuIG1pbl9pb19zaXplICE9CmhkcnNfbWluX2lvX3NpemUuIE5v
-dyBpZiB3ZSBjYW4gd3JpdGUgaW4gYWxpZ25tZW50IG9mIGhkcnNfbWluX2lvX3NpemUKd2hpY2gg
-aXMgbGVzcyB0aGF0IG1pbl9pb19zaXplICwgdGhlbiB3aGF0IGlzIHNpZ25pZmljYW5jZSBvZgpt
-aW5faW9fc2l6ZS4KaS5lLgpJZiB3cml0ZXNpemUgPSAyMDQ4CiAgc3VicGFnZV9zZnQgPSAyCiAg
-bWluX2lvX3NpemUgPSB3cml0ZXNpemUgPSAyMDQ4CiAgaGRyc19taW5faW9fc2l6ZSA9IHdyaXRl
-c2l6ZSA+PiBzdWJwYWdlX3NmdCA9IDUxMgogIGhkcnNfbWluX2lvX3NpemUgPCBtaW5faW9fc2l6
-ZQoKTm93IGlmIHdlIGNhbiB3cml0ZSBoZHJzX21pbl9pb19zaXplIG9mIGRhdGEgdG8gZmxhc2gg
-dGhlbiB3aGF0IGlzCm5vdGlvbiBvZiBtaW5faW9fc2l6ZT8/PwoKClRoYW5rcyAmIFJlZ2FyZHMK
-VmluaXQuCgoKCgpPbiA3LzMvMDcsIFZpbml0IEFnbmlob3RyaSA8dmluaXQuYWduaWhvdHJpQGdt
-YWlsLmNvbT4gd3JvdGU6Cj4gVGhhbmtzIGEgbG90IEFydGVtICYgS3l1bmdtaW4sIGZvciBpbW1l
-ZGlhdGUgcmVwbGllcy4KPiBJIGd1ZXNzIGl0IGFuc3dlcnMgYWxsIG15IHF1ZXN0aW9ucy4KPgo+
-IFRoYW5rcyBvbmNlIGFnYWluLgo+Cj4gUmVnYXJkcywKPiBWaW5pdC4KPgo+Cj4gT24gNy8zLzA3
-LCBBcnRlbSBCaXR5dXRza2l5IDxkZWRla2luZEBpbmZyYWRlYWQub3JnPiB3cm90ZToKPiA+IE9u
-IFR1ZSwgMjAwNy0wNy0wMyBhdCAxNDozNCArMDkwMCwgS3l1bmdtaW4gUGFyayB3cm90ZToKPiA+
-ID4gSXQgaXMgdXNlZCBhdCBVQkkuCj4gPgo+ID4gWWVhaCwgaXQgaXMgdmVyeSBiZW5lZmljaWFs
-IGZvciBVQkkgYmVjYXVzZSBpdCB3YXN0ZXMgdHdpY2UgYXMgbGVzcyBOQU5ECj4gPiBmbGFzaCBz
-cGFjZSBpZiB0aGVyZSBpcyBzdWItcGFnZSBhY2Nlc3MuCj4gPgo+ID4gLS0KPiA+IEJlc3QgcmVn
-YXJkcywKPiA+IEFydGVtIEJpdHl1dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+ID4KPiA+Cj4KPgo+
-IC0tCj4gSSBmZWVsIGZyZWUgbm93Cj4KCgotLSAKSSBmZWVsIGZyZWUgbm93Cg==
+Hello,
+
+I am generating a jffs2 image for a target that can have one of two
+different flash devices installed.  One of these flash devices has
+an eraseblock size of 0x20000 bytes, and one has an eraseblock size of
+0x10000 bytes.  The storage size of the flash devices is the same.
+It would be nice to be able to use the same jffs2 image on both target
+flash variants.
+
+I have read what I could find related to this, including the FAQ, such
+as here:  http://www.linux-mtd.infradead.org/doc/jffs2.html
+which states "creating an image with smaller eraseblock size than the
+actual hardware is harmless -- it just gives annoying messages".
+
+I would like to get your expert opinions on what would be the _best_
+approach here.  The possible approaches are to create an image with the
+eraseblock set to 0x10000, or to 0x20000.  The 0x10000 size would be
+smaller than the actual flash eraseblock size on the flash device with
+actual eraseblock size=0x20000.  And the opposite problem occurs if you
+create an image with eraseblock 0x20000 -- it is larger than the actual
+erase block size when using the flash device with eraseblock size 0x10000.
+
+What are the pros and cons here, with respect to efficiency?  Would
+both of the above choices even work?
+
+Thanks,
+Chuck
