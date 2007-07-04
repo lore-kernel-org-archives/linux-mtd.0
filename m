@@ -1,15 +1,15 @@
-Subject: Re: [PATCH] [2.6.23] nand_flash_dev - add manufacturer ID
-From: David Woodhouse <dwmw2@infradead.org>
-To: Egor Martovetsky <egor@pasemi.com>
-In-Reply-To: <200707032354.l63Ns7gh010492@escobita.pasemi.com>
-References: <200707032354.l63Ns7gh010492@escobita.pasemi.com>
-Content-Type: text/plain
-Date: Tue, 03 Jul 2007 20:03:44 -0400
-Message-Id: <1183507424.29081.73.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: olof@lixom.net, tglx@linutronix.de, c@pasemi.com,
-	linux-mtd@lists.infradead.org
+Received: from 90.213.36.72.static.reverse.layeredtech.com ([72.36.213.90]
+	helo=ia.hostingkraft.net)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5tB3-0000wc-Nv
+	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 01:57:06 +0100
+Message-ID: <1398.82.128.10.56.1181679190.squirrel@72.36.213.90>
+Subject: FROM  EDWARD  MOORE & ASSOCIATES
+From: "Edward Moore & Associates" <edward_moore22@yahoo.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: edward_moore20@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,33 +18,30 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
+Date: Wed, 04 Jul 2007 00:57:12 -0000
 
-On Tue, 2007-07-03 at 16:54 -0700, Egor Martovetsky wrote:
-> Patch for adding the manufacturer's ID to the nand_flash_dev
-> struct.  This is needed to avoid selecting wrong flash device,
-> when device ID happens to be the same for different devices.
-> This change was prompted by addition of Micron MT29F4G08BABWP,
-> whose device ID(0xDC), matches a device ID of a Samsung flash.
+Dear Friend,
 
-Hm. Please provide name and ICBM coordinates of the hardware engineers
-involved.
 
-On the other hand, it _is_ very similar to that Samsung flash.
+My name is Edward Moore QC.Principal partner Edward Moore & Associates
+London UK and I was compelled by my late client's request to contact you
+on a matter of great financial reward.My client late Hassan zahrul
+(Malaysian by Birth) ,an Industrialist and Real Estate Guru died recently
+leaving a vast wealth in your name as his "Next of Kin".
 
-+       {"NAND 512MiB 3,3V 8-bit", -1, 0xDC, 0, 512, 0, LP_OPTIONS},
+Do contact me immediately via my Direct Telephone:+44-7045705184 or better
+still send me an email to my direct email address as below stated for
+immediate action on this matter.
 
-+       /* Micron MT29F4G08BABWP 4 Gigabit device */
-+       {"NAND 512MiB 3,3V 8-bit", NAND_MFR_MICRON, 0xDC, 0, 512, 0,
-+        NAND_NO_AUTOINCR | NAND_CACHEPRG | NAND_NO_READRDY
+Email: edward_moore20@yahoo.co.uk
 
-The difference between LP_OPTIONS and the options you've set for the new
-chip is just NAND_NO_PADDING | NAND_COPYBACK, right? Neither of which we
-actually use right now _anyway_.
+I expect your immediate response and call and also let me have your direct
+telephone and mobile lines so i can call you as well.This matter demands
+urgent action and i urge you to make this possible.
 
-I wonder if we should do this differently, and mask certain features in
-or out according to the manufacturer, after identifying the chip.
+Awaiting your response.
 
-Thomas?
-
--- 
-dwmw2
+Edward Moore Q.C
+Principal Partner
+Edward Moore & Associates
+Direct Telephone:+44-7045705184
