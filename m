@@ -1,15 +1,20 @@
-Received: from 90.213.36.72.static.reverse.layeredtech.com ([72.36.213.90]
-	helo=ia.hostingkraft.net)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I5tB3-0000wc-Nv
-	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 01:57:06 +0100
-Message-ID: <1398.82.128.10.56.1181679190.squirrel@72.36.213.90>
-Subject: FROM  EDWARD  MOORE & ASSOCIATES
-From: "Edward Moore & Associates" <edward_moore22@yahoo.co.uk>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: edward_moore20@yahoo.co.uk
+Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I5xqr-00079z-0w
+	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 01:56:34 -0400
+Subject: Re: [PATCH] [2.6.23] nand_flash_dev - add manufacturer ID
+From: Thomas Gleixner <tglx@linutronix.de>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1183507424.29081.73.camel@shinybook.infradead.org>
+References: <200707032354.l63Ns7gh010492@escobita.pasemi.com>
+	<1183507424.29081.73.camel@shinybook.infradead.org>
+Content-Type: text/plain
+Date: Wed, 04 Jul 2007 07:55:54 +0200
+Message-Id: <1183528554.3291.60.camel@chaos>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: olof@lixom.net, linux-mtd@lists.infradead.org, c@pasemi.com,
+	Egor Martovetsky <egor@pasemi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,30 +23,23 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Wed, 04 Jul 2007 00:57:12 -0000
 
-Dear Friend,
+On Tue, 2007-07-03 at 20:03 -0400, David Woodhouse wrote:
+> The difference between LP_OPTIONS and the options you've set for the new
+> chip is just NAND_NO_PADDING | NAND_COPYBACK, right? Neither of which we
+> actually use right now _anyway_.
+> 
+> I wonder if we should do this differently, and mask certain features in
+> or out according to the manufacturer, after identifying the chip.
 
+We do that already:
 
-My name is Edward Moore QC.Principal partner Edward Moore & Associates
-London UK and I was compelled by my late client's request to contact you
-on a matter of great financial reward.My client late Hassan zahrul
-(Malaysian by Birth) ,an Industrialist and Real Estate Guru died recently
-leaving a vast wealth in your name as his "Next of Kin".
+        /* Check if chip is a not a samsung device. Do not clear the
+         * options for chips which are not having an extended id.
+         */
+        if (*maf_id != NAND_MFR_SAMSUNG && !type->pagesize)
+                chip->options &= ~NAND_SAMSUNG_LP_OPTIONS;
 
-Do contact me immediately via my Direct Telephone:+44-7045705184 or better
-still send me an email to my direct email address as below stated for
-immediate action on this matter.
+So we should do this for that one as well.
 
-Email: edward_moore20@yahoo.co.uk
-
-I expect your immediate response and call and also let me have your direct
-telephone and mobile lines so i can call you as well.This matter demands
-urgent action and i urge you to make this possible.
-
-Awaiting your response.
-
-Edward Moore Q.C
-Principal Partner
-Edward Moore & Associates
-Direct Telephone:+44-7045705184
+	tglx
