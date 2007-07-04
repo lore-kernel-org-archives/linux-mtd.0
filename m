@@ -1,19 +1,19 @@
-Received: from wa-out-1112.google.com ([209.85.146.182])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I61yB-0003Qz-7W
-	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 06:20:24 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so2822951wah
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 04 Jul 2007 03:20:21 -0700 (PDT)
-Message-ID: <9b52d64c0707040320h26d41c9bta5dab5bfce56dd45@mail.gmail.com>
-Date: Wed, 4 Jul 2007 15:50:20 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: bug in UBI
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I62Il-0003oH-Og
+	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 06:41:42 -0400
+Subject: Re: bug in UBI
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0707040320h26d41c9bta5dab5bfce56dd45@mail.gmail.com>
+References: <9b52d64c0707040320h26d41c9bta5dab5bfce56dd45@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 04 Jul 2007 13:41:19 +0300
+Message-Id: <1183545679.3531.31.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When attaching a UBI to a mtd device, UBI reports following mesage
-UBI: attached mtd0 to ubi1
+On Wed, 2007-07-04 at 15:50 +0530, Vinit Agnihotri wrote:
+> When attaching a UBI to a mtd device, UBI reports following mesage
+> UBI: attached mtd0 to ubi1
 
+Thank you for the catch!
 
-I use AMD 64Bit dual core processor with 2.6.18.3 kernel.
-heres my /proc/mtd output
-[root@localhost ~]# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 0000000008000000 0000000000400000 "mtd0"
+However, if you want your patch to be committed and you to be the author
+of the patch, send correctly made patch, with correct Signed-off-by.
+Make sure I can use git-am to commit your patch. Google for more
+information how to submit kernel patches.
 
-After insertion of UBI module, UBI displays message
-UBI: attached mtd0 to ubi1
+Or I cam fix the print problem this myself and add you at Reported-by:.
 
-However UBI creates device entry as /dev/ubi0, so message is incorrect.
-I looked into code & it requires some code lines to be ordered properly.
+I am fine with both.
 
-heres the patch:
+Thanks, Artem.
 
-signedoff by Vinit Agnihotri
---- build.c.orig	2007-07-04 15:49:44.000000000 +0530
-+++ build.c	2007-07-04 15:50:32.000000000 +0530
-@@ -593,7 +593,6 @@
- 	if (err)
- 		goto out_detach;
-
--	ubi_devices_cnt += 1;
-
- 	ubi_msg("attached mtd%d to ubi%d", ubi->mtd->index, ubi_devices_cnt);
- 	ubi_msg("MTD device name:            \"%s\"", ubi->mtd->name);
-@@ -624,6 +623,7 @@
- 		wake_up_process(ubi->bgt_thread);
- 	}
-
-+	ubi_devices_cnt += 1;
- 	return 0;
-
- out_detach:
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
