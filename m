@@ -1,24 +1,22 @@
-Received: from pc125.solomon-systech.com ([202.76.106.125]
-	helo=virus-gateway.solomon-systech.com)
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I605a-0001uR-Tm
-	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 04:20:02 -0400
-Received: from SSLEXCHANGE.solomonsystech.com
-	(cluster_server1.solomonsystech.com) by
-	sweeper_server.solomonsystech.com
-	(Content Technologies SMTPRS 4.3.6) with ESMTP id
-	<T809e7071b4ac10000383c@sweeper_server.solomonsystech.com> for
-	<linux-mtd@lists.infradead.org>; Wed, 4 Jul 2007 16:19:43 +0800
-Content-Class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: NAND FLASH 4KB page support
-Date: Wed, 4 Jul 2007 16:19:44 +0800
-Message-ID: <6334E09627481B4AA5C8DE1E69E19D3B06BF98A8@SSLEXCHANGE.solomonsystech.com>
-From: <sasin@solomon-systech.com>
-To: <linux-mtd@lists.infradead.org>
+Received: from tim.rpsys.net ([194.106.48.114])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I60d9-0002Qs-5W
+	for linux-mtd@lists.infradead.org; Wed, 04 Jul 2007 04:54:37 -0400
+Subject: Re: [PATCH/RFC] oops and panic message logging to MTD
+From: Richard Purdie <rpurdie@openedhand.com>
+To: Jarkko Lavinen <jarkko.lavinen@nokia.com>,
+	LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20070703094702.GA11992@angel.research.nokia.com>
+References: <1182184301.6074.62.camel@localhost.localdomain>
+	<1182239749.4403.48.camel@sauron>
+	<1182247254.5760.17.camel@localhost.localdomain>
+	<20070703094702.GA11992@angel.research.nokia.com>
+Content-Type: text/plain
+Date: Wed, 04 Jul 2007 09:54:21 +0100
+Message-Id: <1183539261.4538.14.camel@localhost.localdomain>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,17 +26,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry to resend (reply bounces) - Forgot to add, I'm using linux
-2.6.20.1 for ARM926.
+On Tue, 2007-07-03 at 12:47 +0300, Jarkko Lavinen wrote:
+> On Tue, Jun 19, 2007 at 11:00:54AM +0100, Richard Purdie wrote:
+> > Its not a case of formatting the whole partition. The whole point of
+> > this code is the following use case:
+> > 
+> > 1. Device crashes
+> > 2. Device reboots
+> > 3. mtdoops partition has a log of why it crashed
+> 
+> The oops logger uses oops_in_progress variable to detect the begin and the 
+> end of an oops.  The end is detected when the first non-oops line comes and
+> oops_in_progress is false.
+> 
+> This works if the kernel is still running after the oops and gemerates some 
+> non-oops messages.  But if there is no non-oops line following an oops, no
+> flushing will occur and there won't be a log on flash.
 
-Trying to boot off CRAMFS on a 4KB page NAND FLASH (new device), I ran
-into the "wrong magic" issue.  MTD's nand_read
-(drivers/mtd/nand/nand_base.c) is returning the right data.
-Cramfs_fill_supper call cramfs_read (fs/cramfs/inode.c) which reads 4
-pages and the 1st page of data gets corrupted.  If I set
-BLKS_PER_BUF_SHIFT in this file to 0 or 1 instead of 2, so that only 1
-or 2 pages are read, the data is uncorrupted and the magic value matches
-but it crashes later (comments say that this values should be 2 or
-higher, so this is not surprising).  So is 4KB page size supported by
-the rest of Linux outside MTD?  Is there some size limit in some inode
-related structure?
+There was a printk within bust_spinlocks which flushed the klogd queues
+and hence flushed the mtd_oops queue too.
+
+I've noticed this has recently been removed and replaced with a wait
+queue [1] and hence the problem mentioned above now exists (but didn't
+when the driver was developed).
+
+[1] http://git.o-hand.com/?p=linux-rpurdie;a=commitdiff;h=e3e8a75d2acfc61ebf25524666a0a2c6abb0620c
+
+This raises the question of how to known when the oops has completed.
+The neatest solution I can see would be to add some kind of optional
+sync function pointer to struct console. Would that be acceptable?
+
+Richard
