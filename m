@@ -1,20 +1,19 @@
-Received: from mail.macqel.be ([194.78.208.39])
+Received: from wa-out-1112.google.com ([209.85.146.179])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6aPO-0002mn-AY
-	for linux-mtd@lists.infradead.org; Thu, 05 Jul 2007 19:06:48 -0400
-Date: Fri, 6 Jul 2007 01:06:43 +0200
-From: Philippe De Muyter <phdm@macqel.be>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH] mtd : add FUJITSU MBM29F800BA and ST M29F800AB
-	descriptions
-Message-ID: <20070705230643.GA27320@ingate.macqel.be>
-References: <20070705150547.GA10281@muff.macqel.be>
-	<1183656196.2756.6.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1I6aoz-00038u-4p
+	for linux-mtd@lists.infradead.org; Thu, 05 Jul 2007 19:33:15 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so51997wah
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Jul 2007 16:33:10 -0700 (PDT)
+Message-ID: <8bf247760707051633u436e7d8bm6b38ae4e6e0b91e8@mail.gmail.com>
+Date: Fri, 6 Jul 2007 05:03:10 +0530
+From: Ram <vshrirama@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Lots of Empty Flash messages.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1183656196.2756.6.camel@shinybook.infradead.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Jul 05, 2007 at 01:23:16PM -0400, David Woodhouse wrote:
-> On Thu, 2007-07-05 at 17:05 +0200, Philippe De Muyter wrote:
-> > Add descriptions for Fujitsu MBM29F800BA and ST M29F800AB flash chips.
-> > Those chips are compatible (except for the ids) with the AMD
-> > AM29F800BB.
-> 
-> Aren't these CFI-compliant?
+Hi,
+   Have flashed a new filesystem onto my nand flash.
 
-No
+   I boot linux out of nand. I make a first file write from the filesystem.
 
-Philippe
+   When i reboot my system i see messages like:
+    Empty flash at 0x00b69e60 ends at 0x00b6a000
+
+   Sometimes, i get quite a way of them.
+
+
+   On some boots i get only a couple and the addresses keep on changing.
+
+   I have made my jffs2 filesystem with erase block size = 0x20000.
+
+   I dont know why i get these messages...
+
+
+   I also get messages such as bad erase block found at XXXX.
+
+
+  Could you please advice on why they appear how i can avoid such messages.
+
+
+
+Regards,
+sriram
