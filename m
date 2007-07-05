@@ -1,18 +1,19 @@
-Received: from inbox2.nyi.net ([64.147.100.114])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6NmY-0000IR-FS
-	for linux-mtd@lists.infradead.org; Thu, 05 Jul 2007 05:37:56 -0400
-Received: from webmail.calsoftinc.com (mail.calsofthq.com [172.16.0.7])
-	by mail.calsofthq.com (8.13.6/8.13.6) with ESMTP id l659bZ67016020
-	for <linux-mtd@lists.infradead.org>; Thu, 5 Jul 2007 15:07:35 +0530
-Message-ID: <41876.172.16.0.34.1183628255.squirrel@webmail.calsoftinc.com>
-Date: Thu, 5 Jul 2007 15:07:35 +0530 (IST)
-Subject: Signed Unsigned multiplication in io.c
-From: brijesh.singh@calsoftinc.com
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I6Oo4-00014q-BI
+	for linux-mtd@lists.infradead.org; Thu, 05 Jul 2007 06:43:31 -0400
+Subject: Re: Signed Unsigned multiplication in io.c
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: brijesh.singh@calsoftinc.com
+In-Reply-To: <41876.172.16.0.34.1183628255.squirrel@webmail.calsoftinc.com>
+References: <41876.172.16.0.34.1183628255.squirrel@webmail.calsoftinc.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 05 Jul 2007 13:42:23 +0300
+Message-Id: <1183632143.3531.42.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,22 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-There is signed multiplication assigned to unsigned ei.addr in io.c.
-This causes wrong addresses for big multiplication.This patch solves the
-problem.
+On Thu, 2007-07-05 at 15:07 +0530, brijesh.singh@calsoftinc.com wrote:
+> There is signed multiplication assigned to unsigned ei.addr in io.c.
+> This causes wrong addresses for big multiplication.This patch solves the
+> problem.
+>=20
+> Signed-off-by: Brijesh Singh <brijesh.s.singh@gmail.com>
 
-Signed-off-by: Brijesh Singh <brijesh.s.singh@gmail.com>
+Committed, thanks.
 
-Index: mtd-2.6/drivers/mtd/ubi/io.c
-===================================================================
---- mtd-2.6.orig/drivers/mtd/ubi/io.c	2007-07-05 13:53:21.000000000 +0530
-+++ mtd-2.6/drivers/mtd/ubi/io.c	2007-07-05 14:05:40.000000000 +0530
-@@ -298,7 +298,7 @@
- 	memset(&ei, 0, sizeof(struct erase_info));
-
- 	ei.mtd      = ubi->mtd;
--	ei.addr     = pnum * ubi->peb_size;
-+	ei.addr     = (loff_t)pnum * ubi->peb_size;
- 	ei.len      = ubi->peb_size;
- 	ei.callback = erase_callback;
- 	ei.priv     = (unsigned long)&wq;
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
