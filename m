@@ -1,21 +1,19 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
+Received: from nz-out-0506.google.com ([64.233.162.225])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6eny-0005Ff-PF
-	for linux-mtd@lists.infradead.org; Thu, 05 Jul 2007 23:48:31 -0400
-Received: from nwd2exm4.ad.analog.com (nwd2exm4.ad.analog.com [10.64.53.123])
-	by nwd2mhb2.analog.com (8.9.3 (PHNE_28810+JAGae91741)/8.9.3) with
-	ESMTP id XAA11310 for <linux-mtd@lists.infradead.org>;
-	Thu, 5 Jul 2007 23:37:27 -0400 (EDT)
-Subject: [Question] How to support large page (2K size) operation with only
-	256/512 page size operation Nand Flash Controller?
-From: Bryan Wu <bryan.wu@analog.com>
+	id 1I6f3d-0005ZV-Pe
+	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 00:04:40 -0400
+Received: by nz-out-0506.google.com with SMTP id z3so86390nzf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 05 Jul 2007 21:04:36 -0700 (PDT)
+Message-ID: <d843180a0707052104p488bdc03hea6f8ce32e5e9ea9@mail.gmail.com>
+Date: Fri, 6 Jul 2007 12:04:35 +0800
+From: "He Yong" <hoffer1127@gmail.com>
 To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
+Subject: [Questions] about NFTL
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Fri, 06 Jul 2007 11:40:34 +0800
-Message-Id: <1183693234.22501.12.camel@roc-desktop>
-Mime-Version: 1.0
-Reply-To: bryan.wu@analog.com
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,30 +23,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Folks,
+Hi,all
 
-This days I am developing a NAND Flash Controller driver in latest
-Blackfin BF54x processor.
+I am in trouble when I want mount different types of fs on mtd->nand
+devices' different partitions.
+I want use yaffs2 on partition-1,2 for application and FAT on
+partition-3 for data.
+in order to build FAT on NAND devices, I knew I need a Flash
+Translation Layer, then I found NFTL in kernel(2.6.20) MTD menu, but
+I saw the comments of the NFTL module, it says "it's for M-Systems
+DiskOnChip 2000 and Millennium". Does NFTL support normal NAND driver?
 
-The read/write buffer operation without DMA can work now. The NFC
-hardware supporting 256/512 page size operation, but my target NAND chip
-STMicro's NAND2G (256Mbytes) is 2048 large page size.
+I tried to use nftl in one of my Nand partitions, in init, the kernel shows:
+.....
+0x10000000-0x18000000 : "nftl"
+mtd: Giving out device 4 to nftl
+NFTL: add_mtd for nftl
+Could not find valid boot record
+NFTL: could not mount device
+.....
 
-After digging into the code (nand_base.c), I found is very difficult to
-support this in my driver:
+I found that the nftl partition needs to be formatted.
+but, in mtd-utils' nftl_format.c I found that it only supports erase
+size less than 0x8000( that is 32 KB), and 512B page size. does NFTL
+has a large (2KB) page version?  or I need chenge some codes to
+support 2KB Flash?
 
-I tried to replace read_page and write_page function with HW DMA
-supporting. But the page size is 2K not 256/512, I need split the whole
-large page operation to 8 or 4 steps. In every step, DMA will transfer
-256 or 512 bytes. 
+Thanks!
 
-Before start every HW DMA operation, a NAND_CMD_READ0 command should be
-sent to the chip following by a page address. But in my
-read_page/write_page function I can't get the page address for
-increasing 256/512 page size because of splitting DMA operation.
+--He Yong
 
-Any idea about this issue?
 
-Thanks
-Best Regards
-- Bryan Wu
+-- 
+Best Regards!
+
+He Yong
+
+School of Information Security,
+Shanghai Jiaotong University,
+Dong cuan Road #800,
+Minhang, Shanghai, P.R.China
