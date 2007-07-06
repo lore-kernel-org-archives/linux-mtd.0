@@ -1,19 +1,18 @@
-Received: from nz-out-0506.google.com ([64.233.162.225])
+Received: from relay01a.clb.oleane.net ([213.56.31.145])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6f3d-0005ZV-Pe
-	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 00:04:40 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so86390nzf
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 05 Jul 2007 21:04:36 -0700 (PDT)
-Message-ID: <d843180a0707052104p488bdc03hea6f8ce32e5e9ea9@mail.gmail.com>
-Date: Fri, 6 Jul 2007 12:04:35 +0800
-From: "He Yong" <hoffer1127@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [Questions] about NFTL
+	id 1I6jL1-0001Tt-EN
+	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 04:39:08 -0400
+Received: from srvexchange.antares.prod (mailhost.antares-so.com
+	[62.161.142.1])
+	by relay01a.clb.oleane.net with ESMTP id l668BT3G020441
+	for <linux-mtd@lists.infradead.org>; Fri, 6 Jul 2007 10:11:34 +0200
+Date: Fri, 06 Jul 2007 03:01:02 -0600
+From: "Jim M Spivak" <ykekbhctxplj@adb-enterprises.com>
+To: linux-mtd@lists.infradead.org, sam@samfelder.com, uam@mail.kubtelecom.ru
+Subject: american physician directories
+Message-ID: <7ACC7EE3.7684.AA15C2D5@localhost>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,43 +22,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,all
-
-I am in trouble when I want mount different types of fs on mtd->nand
-devices' different partitions.
-I want use yaffs2 on partition-1,2 for application and FAT on
-partition-3 for data.
-in order to build FAT on NAND devices, I knew I need a Flash
-Translation Layer, then I found NFTL in kernel(2.6.20) MTD menu, but
-I saw the comments of the NFTL module, it says "it's for M-Systems
-DiskOnChip 2000 and Millennium". Does NFTL support normal NAND driver?
-
-I tried to use nftl in one of my Nand partitions, in init, the kernel shows:
-.....
-0x10000000-0x18000000 : "nftl"
-mtd: Giving out device 4 to nftl
-NFTL: add_mtd for nftl
-Could not find valid boot record
-NFTL: could not mount device
-.....
-
-I found that the nftl partition needs to be formatted.
-but, in mtd-utils' nftl_format.c I found that it only supports erase
-size less than 0x8000( that is 32 KB), and 512B page size. does NFTL
-has a large (2KB) page version?  or I need chenge some codes to
-support 2KB Flash?
-
-Thanks!
-
---He Yong
 
 
--- 
-Best Regards!
 
-He Yong
+Here are the database package specials for this week:
 
-School of Information Security,
-Shanghai Jiaotong University,
-Dong cuan Road #800,
-Minhang, Shanghai, P.R.China
+Pack 1
+
+Medical Doctors in the USA 
+788k in total – 17k emails
+34 specialties – many sortable fields
+
+Hospital Administrator Database 
+23k Admins in more than 7k hospitals
+
+Dental Offices in the USA
+597k dentists and dental services
+
+$359
+(Includes all 3 above complete directories)
+
+===============================================================
+
+Pack 2
+
+Naturopathic Clinics and Practitioners
+Over 1 million total records – 72k emails
+
+Chiropractors Offices in the USA
+100K chiropractor’s offices in the USA
+
+American Massage Therapists
+76k total records
+
+American Physical Therapists
+125k total records 
+
+$379
+(Includes all 4 above complete directories)
+
+===============================================================
+
+These deals are only good until Monday Jul 9.  
+
+Contact me if you need more info or would like to order. 
+
+Regards,
+
+Jim Spivak
+Sales Associate
+206-339-6160
+medlists@hotmail.com
+
+
+
+
+BTW: If you did not C request this email and wish to be de-listed from the master list please reply with "delist" in the subject.
