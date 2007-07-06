@@ -1,15 +1,15 @@
 Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6k1Q-0003d7-3V
-	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 05:22:42 -0400
+	id 1I6kPN-0004KN-D3
+	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 05:47:28 -0400
 Subject: Re: UBI Patch: Max Sequence no not updated in scan.c
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: brijesh.singh@calsoftinc.com
 In-Reply-To: <31331.172.16.0.34.1183712408.squirrel@webmail.calsoftinc.com>
 References: <31331.172.16.0.34.1183712408.squirrel@webmail.calsoftinc.com>
-Content-Type: text/plain; charset=UTF-8
-Date: Fri, 06 Jul 2007 12:22:18 +0300
-Message-Id: <1183713738.3531.50.camel@sauron>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 06 Jul 2007 12:46:54 +0300
+Message-Id: <1183715214.3531.53.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,10 +23,6 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Brijesh,
-
-thanks for the catch.
-
 On Fri, 2007-07-06 at 14:30 +0530, brijesh.singh@calsoftinc.com wrote:
 > Hi,I came across problem of having two leb with same sequence no.This
 > happens when we continuously write one block again and again and reboot
@@ -37,41 +33,10 @@ e
 > the same seqnum.
 > This patch solves this problem.
 
-Yeah, bu you probably wanted to say "when we find two blocks with same
-volume ID and LEB number".
+I've committed your patch (modified) and one more fix, please, try.
 
-I would rather do the fix it other way - are you OK with that?
-
-Also, it seems I have found one more problem:
-What the haeck si->max_sqnum =3D 0; is doing in add_volume()?
-
-diff --git a/drivers/mtd/ubi/scan.c b/drivers/mtd/ubi/scan.c
-index 23e30ac..ce26b1b 100644
---- a/drivers/mtd/ubi/scan.c
-+++ b/drivers/mtd/ubi/scan.c
-@@ -437,6 +437,9 @@ int ubi_scan_add_used(const struct ubi_device *ubi, str=
-uct ubi_scan_info *si,
- 	if (IS_ERR(sv) < 0)
- 		return PTR_ERR(sv);
-=20
-+	if (si->max_sqnum < sqnum)
-+		si->max_sqnum =3D sqnum;
-+
- 	/*
- 	 * Walk the RB-tree of logical eraseblocks of volume @vol_id to look
- 	 * if this is the first instance of this logical eraseblock or not.
-@@ -563,9 +566,6 @@ int ubi_scan_add_used(const struct ubi_device *ubi, str=
-uct ubi_scan_info *si,
- 		sv->last_data_size =3D be32_to_cpu(vid_hdr->data_size);
- 	}
-=20
--	if (si->max_sqnum < sqnum)
--		si->max_sqnum =3D sqnum;
--
- 	sv->leb_count +=3D 1;
- 	rb_link_node(&seb->u.rb, parent, p);
- 	rb_insert_color(&seb->u.rb, &sv->root);
-
+Thanks,
+Artem.
 
 --=20
 Best regards,
