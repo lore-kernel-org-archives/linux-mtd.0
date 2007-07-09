@@ -1,19 +1,30 @@
-Received: from [61.38.129.101] (helo=svr2.hsl.co.kr)
+Received: from e35.co.us.ibm.com ([32.97.110.153])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I6suU-0007m6-3L
-	for linux-mtd@lists.infradead.org; Fri, 06 Jul 2007 19:52:08 +0100
-Received: from svr2.hsl.co.kr (svr184.hsl.co.kr [127.0.0.1])
-	by svr2.hsl.co.kr (8.12.8/8.12.8) with ESMTP id l66Iq0Q6004716
-	for <linux-mtd@lists.infradead.org>; Sat, 7 Jul 2007 03:52:00 +0900
-Date: Sat, 7 Jul 2007 03:51:58 +0900
-Message-Id: <200707061851.l66IpwUe004672@svr2.hsl.co.kr>
-To: linux-mtd@lists.infradead.org
-Subject: URGENT AND STRICTLY CONFIDENTIAL
-From: Arrington H Mixon <arringtonhmixon011@yahoo.co.uk>
-MIME-Version: 1.0
+	id 1I7tBF-0003AN-HW
+	for linux-mtd@lists.infradead.org; Mon, 09 Jul 2007 14:21:34 +0100
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l69DIu6h005709
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 09:18:56 -0400
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
+	l69DItgF194794
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 07:18:55 -0600
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l69DIt6E012359
+	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 07:18:55 -0600
+Subject: Re: write buffer for MTD devices?
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Seongsu Lee <senux@senux.com>
+In-Reply-To: <20070705043604.GA10478@pooky.senux.com>
+References: <20070705043604.GA10478@pooky.senux.com>
 Content-Type: text/plain
-Content-Transfer-Encoding: 8bit
-Reply-To: arringtonhmixon014@yahoo.no
+Date: Mon, 09 Jul 2007 08:18:54 -0500
+Message-Id: <1183987134.14824.4.camel@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,46 +34,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Attn:
- 
-I Am Arrington H. Mixon  ;an accredited vendor of Alliot Groups, a 
-subsidiary firm of Emirates International Holding (EIH); A private equity 
-funds holding company that focuses on hedge funds.
- 
-I have contacted you in the hope that you can be my associate to assume 
-the new recipient of a Fixed-Income deposit, valued at $25million. 
- 
-Once I file your details as the new recipient to the funds, the funds 
-will be approved through the AUTOMATED CLEARING HOUSE (ACH) - A facility 
-used by financial institutions to distribute electronic debit and 
-credit entries to bank accounts and settle such entries. Under the automated 
-clearing house system. 
- 
-Once your details is approved as the new recipient; a Credit advice 
-will be issued in your favor and the funds will clear your account within 
-three banking days.
+On Thu, 2007-07-05 at 13:36 +0900, Seongsu Lee wrote:
+> Hi,
+> 
+> You know that block devices such as hard disk has write buffer
+> in hard disk itself to speed up the write performance.
+> (The write buffer speed up when it works in write-back mode.)
+> 
+> My questions are: (only for NAND flash memory)
+> 
+> 1) Then, does MTD devices has write buffer in device itself?
 
-I am willing to give you 20% which is $5million as your commission out 
-of the $25million for your assistance in providing an account to clear 
-the funds.
+The mtdblock driver does.  It caches one eraseblock.  JFFS2 also has a
+write buffer.  Other than that, no.
 
-I am confident  you will be honest enough to adhere to our agreed 
-commissions in spite of the $25million coming through your account.
+> 2) If ret->mtd->write() returns OK, is the data sent by user
+>    successfully written on flash memory media? (not cache or
+>    buffer)
 
- 
-I will need you to forward me your legal names address and phone to 
-file your details on the fund as the new recipient in this second quarter 
-of the financial fiscal year 2007.
- 
-Looking forward to working with you.
+Depends.  If the write is being done to an mtdblock, then it is written
+to the cache.  If it's being done to a "real" device, then it should be
+written to flash.
 
-Arrington H. Mixon.
-Accredited vendor
-Alliot Groups
+> Any comments, related matrials or URLs are needed.
 
-PS
-Awaiting your legal names,address and telephone number.
+It's all in the code.
 
-
-
- 
+josh
