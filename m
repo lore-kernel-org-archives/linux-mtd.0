@@ -1,32 +1,17 @@
-Received: from mtagate6.de.ibm.com ([195.212.29.155])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I7yzg-0001yb-Bc
-	for linux-mtd@lists.infradead.org; Mon, 09 Jul 2007 15:34:04 -0400
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate6.de.ibm.com (8.13.8/8.13.8) with ESMTP id l69JWKf81602372
-	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 19:32:20 GMT
-Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
-	[9.149.165.228])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.3) with
-	ESMTP id l69JWJUi2171002
-	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 21:32:19 +0200
-Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av02.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l69JWJBO024405
-	for <linux-mtd@lists.infradead.org>; Mon, 9 Jul 2007 21:32:19 +0200
-From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [RFC/PATCH] Ubi-Utils: add compare feature
-Date: Mon, 9 Jul 2007 21:32:02 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+	id 1I81uB-0003zQ-7u
+	for linux-mtd@lists.infradead.org; Mon, 09 Jul 2007 18:40:34 -0400
+Date: Tue, 10 Jul 2007 00:37:04 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD driver for alauda chips
+Message-ID: <20070709223704.GC18501@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <200707092132.02839.alexs@linux.vnet.ibm.com>
-Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Content-Transfer-Encoding: 8bit
+Cc: Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,543 +21,524 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Here's a bone for people wanting raw flash access from their notebook.
+The Alauda-based SmartMedia and xD cardreaders are real dumb and leave
+all hard work to the device driver.  Alternatively the device driver can
+play dumb as well and present raw flash access, as shown below.
 
-this is a new feature for pfiflash, called "--compare". It allows the user
-to simulate a pfiflash session without actually changing the flash
-content. If the flash content is equal to the data in the pfif file,
-pfiflash returns zero. A positive value is returned when the flash
-content differs from the pfi file, which indicates that an update is
-necessary. This feature is useful when a controller mounts an NFS share
-during boot and has to determine if a pfi file stored on this share
-contains a code update. Modified PDD values are also registered by the
-compare feature.
+In its current state the driver can read, write and erase all in-band
+data.  It completely ignores OOB data, does not generate ECC or attempt
+error correction.
 
-The patch is already usable but does not contain a check for modified
-volume type, size or alignment yet. These values need to be read from
-sysfs and compared to the values in the pfi file. I'm sending this out
-to get comments/reviews on what I've done yet.
+People wanting to test this driver can buy a Olympus MAUSB-10 or a Fuji
+DPC-R1 from ebay for about five bucks plus some xD cards.
 
-So comments are appreciated!
+One day this should probably be turned into a decent NAND driver.  The
+current state is just the bare minimum I need to get an easy-to-use test
+device.  Feel free to keep hacking.
 
-Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
----
- ubi-utils/src/bootenv.c        |   48 ++++++++
- ubi-utils/src/bootenv.h        |   10 +
- ubi-utils/src/libpfiflash.c    |  234 ++++++++++++++++++++++++++++++++++++-----
- ubi-utils/src/pfiflash.c       |   24 ++--
- ubi-utils/src/pfiflash.h       |    3 
- ubi-utils/src/pfiflash_error.h |    8 +
- 6 files changed, 290 insertions(+), 37 deletions(-)
+Jörn
 
---- mtd-utils.orig/ubi-utils/src/pfiflash.c
-+++ mtd-utils/ubi-utils/src/pfiflash.c
-@@ -63,6 +63,9 @@ static const char *optionsstr =
- "                             'keep', 'merge' or 'overwrite'.\n"
- "  -r, --raw-flash=<dev>      Flash the raw data. Use the specified mtd device.\n"
- "  -s, --side=<seqnum>        Select the side which shall be updated.\n"
-+"  -x, --compare              Only compare on-flash and pfi data, print info if\n"
-+"                             an update is neccessary and return appropriate\n"
-+"                             error code.\n"
- "\n"
- "  -?, --help                 Give this help list\n"
- "      --usage                Give a short usage message\n"
-@@ -72,7 +75,7 @@ static const char *usage =
- "Usage: pfiflash [-cvC?V] [-l <file>] [-p <type>] [-r <dev>] [-s <seqnum>]\n"
- "            [--copyright] [--logfile=<file>] [--verbose] [--complete]\n"
- "            [--pdd-update=<type>] [--raw-flash=<dev>] [--side=<seqnum>]\n"
--"            [--help] [--usage] [--version] [pfifile]\n";
-+"            [--compare] [--help] [--usage] [--version] [pfifile]\n";
- 
- static const char copyright [] __attribute__((unused)) =
- 	"Copyright IBM Corp 2006";
-@@ -85,6 +88,7 @@ struct option long_options[] = {
- 	{ .name = "pdd-update", .has_arg = 1, .flag = NULL, .val = 'p' },
- 	{ .name = "raw-flash", .has_arg = 1, .flag = NULL, .val = 'r' },
- 	{ .name = "side", .has_arg = 1, .flag = NULL, .val = 's' },
-+	{ .name = "compare", .has_arg = 0, .flag = NULL, .val = 'x' },
- 	{ .name = "help", .has_arg = 0, .flag = NULL, .val = '?' },
- 	{ .name = "usage", .has_arg = 0, .flag = NULL, .val = 0 },
- 	{ .name = "version", .has_arg = 0, .flag = NULL, .val = 'V' },
-@@ -98,6 +102,7 @@ typedef struct myargs {
- 
- 	pdd_handling_t pdd_handling;
- 	int seqnum;
-+	int compare;
- 	int complete;
- 
- 	FILE* fp_in;
-@@ -180,6 +185,9 @@ parse_opt(int argc, char **argv, myargs 
- 						 "and '1'\n", optarg);
- 				}
- 				break;
-+			case 'x':
-+				args->compare = 1;
-+				break;
- 			case 'r':
- 				args->raw_dev = optarg;
- 				break;
-@@ -222,6 +230,7 @@ int main (int argc, char** argv)
- 	myargs args = {
- 		.verbose    = 0,
- 		.seqnum	    = -1,
-+		.compare    = 0,
- 		.complete   = 0,
- 		.logfile    = NULL, /* "/tmp/pfiflash.log", */
- 		.pdd_handling = PDD_KEEP,
-@@ -239,16 +248,9 @@ int main (int argc, char** argv)
- 		goto err;
- 	}
- 
--	if (!args.raw_dev) {
--		rc = pfiflash(args.fp_in, args.complete, args.seqnum,
--			      args.pdd_handling, err_buf,
--			      PFIFLASH_MAX_ERR_BUF_SIZE);
--	} else {
--		rc = pfiflash_with_raw(args.fp_in, args.complete, args.seqnum,
--			      args.pdd_handling, args.raw_dev, err_buf,
--			      PFIFLASH_MAX_ERR_BUF_SIZE);
--	}
--
-+	rc = pfiflash_with_options(args.fp_in, args.complete, args.seqnum,
-+			args.compare, args.pdd_handling, args.raw_dev, err_buf,
-+			PFIFLASH_MAX_ERR_BUF_SIZE);
- 	if (rc != 0) {
- 		goto err_fp;
- 	}
---- mtd-utils.orig/ubi-utils/src/libpfiflash.c
-+++ mtd-utils/ubi-utils/src/libpfiflash.c
-@@ -55,6 +55,8 @@
- 
- #define __unused __attribute__((unused))
- 
-+#define COMPARE_BUFFER_SIZE 1024
+-- 
+Everything should be made as simple as possible, but not simpler.
+-- Albert Einstein
+
+--- /dev/null	2007-07-09 15:54:23.610902586 +0200
++++ linux-2.6.21cow/drivers/mtd/devices/alauda.c	2007-07-09 23:57:26.000000000 +0200
+@@ -0,0 +1,474 @@
++/*
++ * MTD driver for Alauda chips
++ *
++ * Copyright (C) 2007 Joern Engel <joern@logfs.org>
++ *
++ * Based on drivers/usb/usb-skeleton.c which is:
++ * Copyright (C) 2001-2004 Greg Kroah-Hartman (greg@kroah.com)
++ * and on drivers/usb/storage/alauda.c, which is:
++ *   (c) 2005 Daniel Drake <dsd@gentoo.org>
++ *
++ * Idea and initial work by Arnd Bergmann <arnd@arndb.de>
++ */
 +
- static const char copyright [] __unused =
- 	"Copyright (c) International Business Machines Corp., 2006";
- 
-@@ -82,6 +84,7 @@ static pdd_func_t pdd_funcs[PDD_HANDLING
- typedef enum ubi_update_process_t {
- 	UBI_REMOVE = 0,
- 	UBI_WRITE,
-+	UBI_COMPARE,
- 
-+#define COMPARE_BUFFER_SIZE 1024
++#include <linux/kernel.h>
++#include <linux/errno.h>
++#include <linux/init.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/kref.h>
++#include <asm/uaccess.h>
++#include <linux/usb.h>
++#include <linux/mutex.h>
++#include <linux/mtd/mtd.h>
 +
- static const char copyright [] __unused =
- 	"Copyright (c) International Business Machines Corp., 2006";
- 
-@@ -82,6 +84,7 @@ static pdd_func_t pdd_funcs[PDD_HANDLING
- typedef enum ubi_update_process_t {
- 	UBI_REMOVE = 0,
- 	UBI_WRITE,
-+	UBI_COMPARE,
- } ubi_update_process_t;
- 
- 
-@@ -556,6 +559,170 @@ write_normal_volume(int devno, uint32_t 
- 	return rc;
- }
- 
-+static int compare_bootenv(FILE *fp_pfi, FILE **fp_flash, uint32_t ids_size,
-+		uint32_t data_size, pdd_func_t pdd_f, char *err_buf,
-+		size_t err_buf_size)
++/* Control commands */
++#define ALAUDA_GET_XD_MEDIA_STATUS	0x08
++#define ALAUDA_ACK_XD_MEDIA_CHANGE	0x0a
++#define ALAUDA_GET_XD_MEDIA_SIG		0x86
++
++/* Common prefix */
++#define ALAUDA_BULK_CMD			0x40
++
++/* We only care about xD port */
++#define ALAUDA_PORT_XD			0x00
++
++/* Bulk commands */
++#define ALAUDA_BULK_READ_PAGE		0x84
++#define ALAUDA_BULK_READ_BLOCK		0x94
++#define ALAUDA_BULK_ERASE_BLOCK		0xa3
++#define ALAUDA_BULK_WRITE_PAGE		0xa4
++#define ALAUDA_BULK_WRITE_BLOCK		0xb4
++#define ALAUDA_BULK_RESET_MEDIA		0xe0
++
++/* Address shifting */
++#define PBA_LO(pba) ((pba & 0xF) << 5)
++#define PBA_HI(pba) (pba >> 3)
++#define PBA_ZONE(pba) (pba >> 11)
++
++static struct usb_device_id alauda_table [] = {
++	{ USB_DEVICE(0x0584, 0x0008) },
++	{ }
++};
++MODULE_DEVICE_TABLE(usb, alauda_table);
++
++struct alauda_card {
++	u8	id;		/* id byte */
++	u8	chipshift;	/* 1<<chipshift total size */
++	u8	pageshift;	/* 1<<pageshift page size */
++	u8	blockshift;	/* 1<<blockshift block size */
++};
++
++struct alauda {
++	struct usb_device	*dev;
++	struct usb_interface	*interface;
++	struct mtd_info		*mtd;
++	struct alauda_card	*card;
++	u32			pagemask;
++	u32			bytemask;
++	u32			blockmask;
++	unsigned int		write_out;
++	unsigned int		bulk_in;
++	unsigned int		bulk_out;
++	struct kref		kref;
++};
++
++static struct usb_driver alauda_driver;
++
++static struct alauda_card alauda_card_ids[] = {
++	/* NAND flash */
++	{ 0x6e, 20, 8, 12},	/* 1 MB */
++	{ 0xe8, 20, 8, 12},	/* 1 MB */
++	{ 0xec, 20, 8, 12},	/* 1 MB */
++	{ 0x64, 21, 8, 12},	/* 2 MB */
++	{ 0xea, 21, 8, 12},	/* 2 MB */
++	{ 0x6b, 22, 9, 13},	/* 4 MB */
++	{ 0xe3, 22, 9, 13},	/* 4 MB */
++	{ 0xe5, 22, 9, 13},	/* 4 MB */
++	{ 0xe6, 23, 9, 13},	/* 8 MB */
++	{ 0x73, 24, 9, 14},	/* 16 MB */
++	{ 0x75, 25, 9, 14},	/* 32 MB */
++	{ 0x76, 26, 9, 14},	/* 64 MB */
++	{ 0x79, 27, 9, 14},	/* 128 MB */
++	{ 0x71, 28, 9, 14},	/* 256 MB */
++
++	/* MASK ROM */
++	{ 0x5d, 21, 9, 13},	/* 2 MB */
++	{ 0xd5, 22, 9, 13},	/* 4 MB */
++	{ 0xd6, 23, 9, 13},	/* 8 MB */
++	{ 0x57, 24, 9, 13},	/* 16 MB */
++	{ 0x58, 25, 9, 13},	/* 32 MB */
++	{ }
++};
++
++static struct alauda_card *get_card(u8 id)
 +{
-+	int rc, warnings = 0;
-+	unsigned int i;
-+	bootenv_t bootenv_pfi, bootenv_res = NULL, bootenv_flash = NULL;
++	struct alauda_card *card;
 +
-+	rc = bootenv_create(&bootenv_pfi);
-+	if (rc != 0) {
-+		rc = -PFIFLASH_ERR_BOOTENV_CREATE;
-+		goto err;
-+	}
-+
-+	rc = bootenv_create(&bootenv_res);
-+	if (rc != 0) {
-+		rc = -PFIFLASH_ERR_BOOTENV_CREATE;
-+		goto err;
-+	}
-+
-+	rc = bootenv_read(fp_pfi, bootenv_pfi, data_size);
-+	if (rc != 0) {
-+		rc = -PFIFLASH_ERR_BOOTENV_READ;
-+		goto err;
-+	}
-+
-+	for (i = 0; i < ids_size; i++) {
-+		rc = bootenv_create(&bootenv_flash);
-+		if (rc != 0) {
-+			rc = -PFIFLASH_ERR_BOOTENV_CREATE;
-+			goto err;
-+		}
-+
-+		rc = bootenv_read(fp_flash[i], bootenv_flash, BOOTENV_MAXSIZE);
-+		if (rc != 0) {
-+			rc = -PFIFLASH_ERR_BOOTENV_READ;
-+			goto err;
-+		}
-+
-+		rc = pdd_f(bootenv_flash, bootenv_pfi, &bootenv_res,
-+				&warnings, err_buf, err_buf_size);
-+		if (rc != 0) {
-+			rc = -PFIFLASH_ERR_PDD_UNKNOWN;
-+			goto err;
-+		}
-+
-+		rc = bootenv_compare(bootenv_flash, bootenv_res);
-+		if (rc > 0) {
-+			rc = -PFIFLASH_CMP_DIFF;
-+			goto err;
-+		} else if (rc < 0) {
-+			rc = -PFIFLASH_ERR_COMPARE;
-+			goto err;
-+		}
-+
-+		bootenv_destroy(&bootenv_flash);
-+		bootenv_flash = NULL;
-+	}
-+
-+err:
-+	if (bootenv_pfi)
-+		bootenv_destroy(&bootenv_pfi);
-+	if (bootenv_res)
-+		bootenv_destroy(&bootenv_res);
-+	if (bootenv_flash)
-+		bootenv_destroy(&bootenv_flash);
-+
-+	return rc;
++	for (card = alauda_card_ids; card->id; card++)
++		if (card->id == id)
++			return card;
++	return NULL;
 +}
 +
-+static int compare_data(FILE *fp_pfi, FILE **fp_flash, uint32_t ids_size,
-+		uint32_t bytes_left)
++static void alauda_delete(struct kref *kref)
 +{
-+	unsigned int i;
-+	size_t read_bytes, rc = 0;
-+	char buf_pfi[COMPARE_BUFFER_SIZE];
-+	char *buf_flash[ids_size];
++	struct alauda *al = container_of(kref, struct alauda, kref);
 +
-+	for (i = 0; i < ids_size; i++) {
-+		buf_flash[i] = malloc(COMPARE_BUFFER_SIZE);
-+		if (!buf_flash[i])
-+			return -PFIFLASH_ERR_COMPARE;
++	if (al->mtd) {
++		del_mtd_device(al->mtd);
++		kfree(al->mtd);
 +	}
-+
-+	while (bytes_left) {
-+		if (bytes_left > COMPARE_BUFFER_SIZE)
-+			read_bytes = COMPARE_BUFFER_SIZE;
-+		else
-+			read_bytes = bytes_left;
-+
-+		rc = fread(buf_pfi, 1, read_bytes, fp_pfi);
-+		if (rc != read_bytes) {
-+			rc = -PFIFLASH_ERR_COMPARE;
-+			goto err;
-+		}
-+
-+		for (i = 0; i < ids_size; i++) {
-+			rc = fread(buf_flash[i], 1, read_bytes, fp_flash[i]);
-+			if (rc != read_bytes) {
-+				rc = -PFIFLASH_CMP_DIFF;
-+				goto err;
-+			}
-+
-+			rc = memcmp(buf_pfi, buf_flash[i], read_bytes);
-+			if (rc != 0) {
-+				rc = -PFIFLASH_CMP_DIFF;
-+				goto err;
-+			}
-+		}
-+
-+		bytes_left -= read_bytes;
-+	}
-+
-+err:
-+	for (i = 0; i < ids_size; i++)
-+		free(buf_flash[i]);
-+
-+	return rc;
++	usb_put_dev(al->dev);
++	kfree(al);
 +}
 +
-+static int compare_volumes(int devno, pfi_ubi_t u, FILE *fp_pfi,
-+		pdd_func_t pdd_f, char *err_buf, size_t err_buf_size)
++static int alauda_get_media_status(struct alauda *al, void *buf)
 +{
-+	int rc, is_bootenv = 0;
-+	unsigned int i;
-+	ubi_lib_t ulib = NULL;
-+	FILE *fp_flash[u->ids_size];
-+
-+	rc = ubi_open(&ulib);
-+	if (rc != 0) {
-+		rc = -PFIFLASH_ERR_UBI_OPEN;
-+		goto err;
-+	}
-+
-+	for (i = 0; i < u->ids_size; i++) {
-+		if (u->ids[i] == EXAMPLE_BOOTENV_VOL_ID_1 ||
-+		    u->ids[i] == EXAMPLE_BOOTENV_VOL_ID_2)
-+			is_bootenv = 1;
-+
-+		fp_flash[i] = ubi_vol_fopen_read(ulib, devno, u->ids[i]);
-+		if (fp_flash[i] == NULL) {
-+			rc = -PFIFLASH_ERR_UBI_OPEN;
-+			goto err;
-+		}
-+	}
-+
-+	if (is_bootenv)
-+		rc = compare_bootenv(fp_pfi, fp_flash, u->ids_size,
-+				u->data_size, pdd_f, err_buf, err_buf_size);
-+	else
-+		rc = compare_data(fp_pfi, fp_flash, u->ids_size, u->data_size);
-+
-+err:
-+	if (rc < 0)
-+		EBUF(PFIFLASH_ERRSTR[-rc]);
-+
-+	for (i = 0; i < u->ids_size; i++)
-+		fclose(fp_flash[i]);
-+	if (ulib)
-+		ubi_close(&ulib);
-+
-+	return rc;
++	return usb_control_msg(al->dev, usb_rcvctrlpipe(al->dev, 0),
++			ALAUDA_GET_XD_MEDIA_STATUS, 0xc0, 0, 1, buf, 2, HZ);
 +}
 +
- static int
- erase_mtd_region(FILE* file_p, int start, int length)
- {
-@@ -865,6 +1032,15 @@ process_ubi_volumes(FILE* pfi, int seqnu
- 				goto err;
- 
- 			break;
-+		case UBI_COMPARE:
-+			rc = compare_volumes(EXAMPLE_UBI_DEVICE, u, pfi, pdd_f,
-+					err_buf, err_buf_size);
-+			if (rc != 0) {
-+				EBUF_PREPEND("compare volume");
-+				goto err;
-+			}
-+
-+			break;
- 		default:
- 			rc = -PFIFLASH_ERR_UBI_UNKNOWN;
- 			EBUF(PFIFLASH_ERRSTR[-rc]);
-@@ -949,10 +1125,11 @@ mirror_ubi_volumes(uint32_t devno, list_
- 
- 
- /**
-- * pfiflash_with_raw - exposed func to flash memory with a PFI file
-+ * pfiflash_with_options - exposed func to flash memory with a PFI file
-  * @pfi			PFI data file pointer
-  * @complete		flag to erase unmapped volumes
-  * @seqnum		sequence number
-+ * @compare		flag to compare
-  * @pdd_handling	method to handle pdd (keep, merge, overwrite...)
-  *
-  * Error handling:
-@@ -967,7 +1144,7 @@ mirror_ubi_volumes(uint32_t devno, list_
-  *	- passes rc, prepends err_buf with contextual aid
-  **/
- int
--pfiflash_with_raw(FILE* pfi, int complete, int seqnum,
-+pfiflash_with_options(FILE* pfi, int complete, int seqnum, int compare,
- 		  pdd_handling_t pdd_handling, const char* rawdev,
- 		  char *err_buf, size_t err_buf_size)
- {
-@@ -1001,7 +1178,7 @@ pfiflash_with_raw(FILE* pfi, int complet
- 		goto err;
- 	}
- 
--	if (rawdev == NULL)
-+	if (rawdev == NULL || compare)
- 		rc = skip_raw_volumes(pfi, pfi_raws, err_buf, err_buf_size);
- 	else
- 		rc = process_raw_volumes(pfi, pfi_raws, rawdev, err_buf,
-@@ -1011,7 +1188,7 @@ pfiflash_with_raw(FILE* pfi, int complet
- 		goto err;
- 	}
- 
--	if (complete) {
-+	if (complete && !compare) {
- 		rc = erase_unmapped_ubi_volumes(EXAMPLE_UBI_DEVICE, pfi_ubis,
- 						err_buf, err_buf_size);
- 		if (rc != 0) {
-@@ -1029,25 +1206,40 @@ pfiflash_with_raw(FILE* pfi, int complet
- 		goto err;
- 	}
- 
--	rc = process_ubi_volumes(pfi, curr_seqnum, pfi_ubis, bootenv, pdd_f,
--				 UBI_REMOVE, err_buf, err_buf_size);
--	if (rc != 0) {
--		EBUF_PREPEND("removing UBI volumes");
--		goto err;
--	}
-+	if (!compare) {
-+		rc = process_ubi_volumes(pfi, curr_seqnum, pfi_ubis, bootenv,
-+				pdd_f, UBI_REMOVE, err_buf, err_buf_size);
-+		if (rc != 0) {
-+			EBUF_PREPEND("removing UBI volumes");
-+			goto err;
-+		}
- 
--	rc = process_ubi_volumes(pfi, curr_seqnum, pfi_ubis, bootenv, pdd_f,
--				 UBI_WRITE, err_buf, err_buf_size);
--	if  (rc != 0) {
--		EBUF_PREPEND("writing UBI volumes");
--		goto err;
--	}
-+		rc = process_ubi_volumes(pfi, curr_seqnum, pfi_ubis, bootenv,
-+				pdd_f, UBI_WRITE, err_buf, err_buf_size);
-+		if  (rc != 0) {
-+			EBUF_PREPEND("writing UBI volumes");
-+			goto err;
-+		}
- 
--	if (seqnum < 0) { /* mirror redundant pairs */
--		rc = mirror_ubi_volumes(EXAMPLE_UBI_DEVICE, pfi_ubis,
-+		if (seqnum < 0) { /* mirror redundant pairs */
-+			rc = mirror_ubi_volumes(EXAMPLE_UBI_DEVICE, pfi_ubis,
- 					err_buf, err_buf_size);
--		if (rc != 0) {
--			EBUF_PREPEND("mirroring UBI volumes");
-+			if (rc != 0) {
-+				EBUF_PREPEND("mirroring UBI volumes");
-+				goto err;
-+			}
-+		}
-+	} else {
-+		/* only compare volumes, don't alter the content */
-+		rc = process_ubi_volumes(pfi, curr_seqnum, pfi_ubis, bootenv,
-+				pdd_f, UBI_COMPARE, err_buf, err_buf_size);
-+
-+		if (rc == -PFIFLASH_CMP_DIFF)
-+			/* update is necessary, return positive value */
-+			rc = 1;
-+
-+		if (rc < 0) {
-+			EBUF_PREPEND("comparing UBI volumes");
- 			goto err;
- 		}
- 	}
-@@ -1061,7 +1253,7 @@ pfiflash_with_raw(FILE* pfi, int complet
- 
- 
- /**
-- * pfiflash - passes to pfiflash_with_raw
-+ * pfiflash - passes to pfiflash_with_options
-  * @pfi			PFI data file pointer
-  * @complete		flag to erase unmapped volumes
-  * @seqnum		sequence number
-@@ -1069,8 +1261,8 @@ pfiflash_with_raw(FILE* pfi, int complet
-  **/
- int
- pfiflash(FILE* pfi, int complete, int seqnum, pdd_handling_t pdd_handling,
--	 char *err_buf, size_t err_buf_size)
-+		char *err_buf, size_t err_buf_size)
- {
--	return pfiflash_with_raw(pfi, complete, seqnum, pdd_handling,
-+	return pfiflash_with_options(pfi, complete, seqnum, 0, pdd_handling,
- 				 NULL, err_buf, err_buf_size);
- }
---- mtd-utils.orig/ubi-utils/src/pfiflash.h
-+++ mtd-utils/ubi-utils/src/pfiflash.h
-@@ -48,12 +48,13 @@ typedef enum pdd_handling_t
-  * @brief Flashes a PFI file to UBI Device 0.
-  * @param complete	[0|1] Do a complete system update.
-  * @param seqnum	Index in a redundant group.
-+ * @param compare	[0|1] Compare contents.
-  * @param pdd_handling	The PDD handling algorithm.
-  * @param rawdev	Device to use for raw flashing
-  * @param err_buf	An error buffer.
-  * @param err_buf_size	Size of the error buffer.
-  */
--int pfiflash_with_raw(FILE* pfi, int complete, int seqnum,
-+int pfiflash_with_options(FILE* pfi, int complete, int seqnum, int compare,
- 		pdd_handling_t pdd_handling, const char* rawdev,
- 		char *err_buf, size_t err_buf_size);
- 
---- mtd-utils.orig/ubi-utils/src/pfiflash_error.h
-+++ mtd-utils/ubi-utils/src/pfiflash_error.h
-@@ -42,7 +42,9 @@ enum pfiflash_err {
- 	PFIFLASH_ERR_MTD_OPEN,
- 	PFIFLASH_ERR_MTD_CLOSE,
- 	PFIFLASH_ERR_CRC_CHECK,
--	PFIFLASH_ERR_MTD_ERASE
-+	PFIFLASH_ERR_MTD_ERASE,
-+	PFIFLASH_ERR_COMPARE,
-+	PFIFLASH_CMP_DIFF
- };
- 
- const char *const PFIFLASH_ERRSTR[] = {
-@@ -65,7 +67,9 @@ const char *const PFIFLASH_ERRSTR[] = {
- 	"couldn't open MTD device %s",
- 	"couldn't close MTD device %s",
- 	"CRC check failed: given=0x%08x, calculated=0x%08x",
--	"couldn't erase raw mtd region"
-+	"couldn't erase raw mtd region",
-+	"couldn't compare volumes",
-+	"on-flash data differ from pfi data, update is neccessary"
- };
- 
- #endif /* __PFIFLASH_ERROR_H__ */
---- mtd-utils.orig/ubi-utils/src/bootenv.c
-+++ mtd-utils/ubi-utils/src/bootenv.c
-@@ -480,6 +480,54 @@ bootenv_write(FILE* fp, bootenv_t env)
- }
- 
- int
-+bootenv_compare(bootenv_t first, bootenv_t second)
++static int alauda_ack_media(struct alauda *al)
 +{
-+	int rc;
-+	size_t written_first, written_second;
-+	char *buf_first, *buf_second;
++	return usb_control_msg(al->dev, usb_sndctrlpipe(al->dev, 0),
++			ALAUDA_ACK_XD_MEDIA_CHANGE, 0x40, 0, 1, NULL, 0, HZ);
++}
 +
-+	if (first == NULL || second == NULL)
++
++static int alauda_get_media_signatures(struct alauda *al, void *buf)
++{
++	return usb_control_msg(al->dev, usb_rcvctrlpipe(al->dev, 0),
++			ALAUDA_GET_XD_MEDIA_SIG, 0xc0, 0, 0, buf, 4, HZ);
++}
++
++static void alauda_reset(struct alauda *al)
++{
++	u8 command[] = {
++		ALAUDA_BULK_CMD, ALAUDA_BULK_RESET_MEDIA, 0, 0,
++		0, 0, 0, 0, ALAUDA_PORT_XD
++	};
++	usb_bulk_msg(al->dev, al->bulk_out, command, 9, NULL, HZ);
++}
++
++static int alauda_read(struct mtd_info *mtd, loff_t from, size_t len,
++		size_t *retlen, u_char *buf)
++{
++	struct alauda *al = mtd->priv;
++	void *bounce_buf;
++	int err;
++
++	bounce_buf = kmalloc(mtd->writesize + 64, GFP_KERNEL);
++	if (!bounce_buf)
++		return -ENOMEM;
++
++	*retlen = len;
++	while (len) {
++		u32 pba = from >> al->card->blockshift;
++		u32 page = (from >> al->card->pageshift) & al->pagemask;
++		u32 byte = from & al->bytemask;
++		size_t cplen;
++		/* FIXME: test whether ALAUDA_BULK_READ_PAGE is faster */
++		u8 command[] = {
++			ALAUDA_BULK_CMD, ALAUDA_BULK_READ_BLOCK, PBA_HI(pba),
++			PBA_ZONE(pba), 0, PBA_LO(pba) + page, 1, 0,
++			ALAUDA_PORT_XD
++		};
++
++		err = usb_bulk_msg(al->dev, al->bulk_out, command, 9, NULL, HZ);
++		if (err < 0)
++			goto out;
++
++		err = usb_bulk_msg(al->dev, al->bulk_in, bounce_buf,
++				mtd->writesize + 64, NULL, HZ);
++		if (err < 0)
++			goto out;
++		cplen = min(len, mtd->writesize - byte);
++		memcpy(buf, bounce_buf + byte, cplen);
++		buf += cplen;
++		from += cplen;
++		len -= cplen;
++	}
++	err = 0;
++out:
++	kfree(bounce_buf);
++	return err;
++}
++
++static int alauda_write(struct mtd_info *mtd, loff_t to, size_t len,
++		size_t *retlen, const u_char *buf)
++{
++	struct alauda *al = mtd->priv;
++	void *bounce_buf;
++	int err;
++
++	bounce_buf = kmalloc(mtd->writesize + 64, GFP_KERNEL);
++	if (!bounce_buf)
++		return -ENOMEM;
++
++	if ((to & al->bytemask) || (len & al->bytemask))
 +		return -EINVAL;
 +
-+	buf_first = malloc(BOOTENV_MAXSIZE);
-+	if (!buf_first)
++	*retlen = len;
++	while (len) {
++		u32 pba = to >> al->card->blockshift;
++		u32 page = (to >> al->card->pageshift) & al->pagemask;
++		u8 command[] = {
++			ALAUDA_BULK_CMD, ALAUDA_BULK_WRITE_PAGE, PBA_HI(pba),
++			PBA_ZONE(pba), 0, PBA_LO(pba) + page, 32, 0,
++			ALAUDA_PORT_XD,
++		};
++
++		/* FIXME: add ECC and other OOB stuff */
++		memcpy(bounce_buf, buf, mtd->writesize);
++		err = usb_bulk_msg(al->dev, al->bulk_out, command, 9, NULL, HZ);
++		if (err < 0)
++			goto out;
++		err = usb_bulk_msg(al->dev, al->write_out, bounce_buf,
++				mtd->writesize + 64, NULL, HZ);
++		if (err < 0)
++			goto out;
++		buf += mtd->writesize;
++		to += mtd->writesize;
++		len -= mtd->writesize;
++	}
++	err = 0;
++out:
++	kfree(bounce_buf);
++	return err;
++}
++
++static int alauda_erase(struct mtd_info *mtd, struct erase_info *instr)
++{
++	struct alauda *al = mtd->priv;
++	u32 ofs = instr->addr;
++	u32 len = instr->len;
++	int err;
++
++	if ((ofs & al->blockmask) || (len & al->blockmask))
++		return -EINVAL;
++
++	while (len) {
++		u32 pba = ofs >> al->card->blockshift;
++		u8 command[] = {
++			ALAUDA_BULK_CMD, ALAUDA_BULK_ERASE_BLOCK, PBA_HI(pba),
++			PBA_ZONE(pba), 0, PBA_LO(pba), 0x02, 0, ALAUDA_PORT_XD
++		};
++		u8 buf[2];
++
++		err = usb_bulk_msg(al->dev, al->bulk_out, command, 9, NULL, HZ);
++		if (err < 0)
++			return err;
++
++		err = usb_bulk_msg(al->dev, al->bulk_in, buf, 2, NULL, 5*HZ);
++		if (err < 0)
++			return err;
++
++		ofs += mtd->erasesize;
++		len -= mtd->erasesize;
++	}
++
++	instr->state = MTD_ERASE_DONE;
++	mtd_erase_callback(instr);
++	return 0;
++}
++
++static int alauda_isbad(struct mtd_info *mtd, loff_t ofs)
++{
++	return 0;
++}
++
++static int alauda_init_media(struct alauda *al)
++{
++	u8 buf[4], *b0=buf, *b1=buf+1;
++	struct alauda_card *card;
++	struct mtd_info *mtd;
++	int err;
++
++	mtd = kzalloc(sizeof(*mtd), GFP_KERNEL);
++	if (!mtd)
 +		return -ENOMEM;
-+	buf_second = malloc(BOOTENV_MAXSIZE);
-+	if (!buf_second) {
-+		rc = -ENOMEM;
-+		goto err;
++
++	for (;;) {
++		err = alauda_get_media_status(al, buf);
++		if (err < 0)
++			goto error;
++		if (*b0 & 0x10)
++			break;
++		msleep(20);
 +	}
 +
-+	rc = fill_output_buffer(first, buf_first, BOOTENV_MAXSIZE,
-+			&written_first);
-+	if (rc < 0)
-+		goto err;
-+	rc = fill_output_buffer(second, buf_second, BOOTENV_MAXSIZE,
-+			&written_second);
-+	if (rc < 0)
-+		goto err;
++	err = alauda_ack_media(al);
++	if (err)
++		goto error;
 +
-+	if (written_first != written_second) {
-+		rc = 1;
-+		goto err;
++	msleep(10);
++
++	err = alauda_get_media_status(al, buf);
++	if (err < 0)
++		goto error;
++
++	if (*b0 != 0x14) {
++		/* media not ready */
++		err = -EIO;
++		goto error;
++	}
++	err = alauda_get_media_signatures(al, buf);
++	if (err < 0)
++		goto error;
++
++	card = get_card(*b1);
++	if (!card) {
++		printk(KERN_ERR"Alauda: unknown card id %02x\n", *b1);
++		err = -EIO;
++		goto error;
++	}
++	printk("pagesize=%x\nerasesize=%x\nsize=%xMiB\n", 1<<card->pageshift,
++			1<<card->blockshift, 1<<(card->chipshift-20));
++	al->card = card;
++	al->pagemask = (1 << (card->blockshift - card->pageshift)) - 1;
++	al->bytemask = (1 << card->pageshift) - 1;
++	al->blockmask = (1 << card->blockshift) - 1;
++
++	mtd->name = "alauda";
++	mtd->size = 1<<card->chipshift;
++	mtd->erasesize = 1<<card->blockshift;
++	mtd->writesize = 1<<card->pageshift;
++	mtd->type = MTD_NANDFLASH;
++	mtd->flags = MTD_CAP_NANDFLASH;
++	mtd->read = alauda_read;
++	mtd->write = alauda_write;
++	mtd->erase = alauda_erase;
++	mtd->block_isbad = alauda_isbad;
++	mtd->priv = al;
++	mtd->owner = THIS_MODULE;
++
++	err = add_mtd_device(mtd);
++	if (err) {
++		err = -ENFILE;
++		goto error;
 +	}
 +
-+	rc = memcmp(buf_first, buf_second, written_first);
-+	if (rc != 0) {
-+		rc = 2;
-+		goto err;
++	al->mtd = mtd;
++	alauda_reset(al); /* no clue whether this is necessary */
++	return 0;
++error:
++	kfree(mtd);
++	return err;
++}
++
++static int alauda_check_media(struct alauda *al)
++{
++	u8 buf[2], *b0 = buf, *b1 = buf+1;
++	int err;
++
++	err = alauda_get_media_status(al, buf);
++	if (err < 0)
++		return err;
++
++	if ((*b1 & 0x01) == 0) {
++		/* door open */
++		return -EIO;
 +	}
++	if ((*b0 & 0x80) || ((*b0 & 0x1F) == 0x10)) {
++		/* no media ? */
++		return -EIO;
++	}
++	if (*b0 & 0x08) {
++		/* media change ? */
++		return alauda_init_media(al);
++	}
++	return 0;
++}
 +
-+err:
-+	if (buf_first)
-+		free(buf_first);
-+	if (buf_second)
-+		free(buf_second);
++static int alauda_probe(struct usb_interface *interface,
++		const struct usb_device_id *id)
++{
++	struct alauda *al;
++	struct usb_host_interface *iface;
++	struct usb_endpoint_descriptor *ep,
++			*ep_in=NULL, *ep_out=NULL, *ep_wr=NULL;
++	int i, err = -ENOMEM;
 +
-+	return rc;
-+ * @return 0 if bootenvs are equal
-+ * @return < 0 if error
-+ * @return > 0 if unequal
-+ */
-+int bootenv_compare(bootenv_t first, bootenv_t second);
++	al = kzalloc(sizeof(*al), GFP_KERNEL);
++	if (!al)
++		goto error;
 +
-+/**
-  * @brief Prototype for a PDD handling funtion
-  */
++	kref_init(&al->kref);
++	usb_set_intfdata(interface, al);
++
++	al->dev = usb_get_dev(interface_to_usbdev(interface));
++	al->interface = interface;
++
++	iface = interface->cur_altsetting;
++	for (i = 0; i < iface->desc.bNumEndpoints; ++i) {
++		ep = &iface->endpoint[i].desc;
++
++		if (usb_endpoint_is_bulk_in(ep)) {
++			ep_in = ep;
++		} else if (usb_endpoint_is_bulk_out(ep)) {
++			if (i==0)
++				ep_wr = ep;
++			else
++				ep_out = ep;
++		}
++	}
++	err = -EIO;
++	if (!ep_wr || !ep_in || !ep_out)
++		goto error;
++
++	al->write_out = usb_sndbulkpipe(al->dev,
++			ep_wr->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
++	al->bulk_in = usb_rcvbulkpipe(al->dev,
++			ep_in->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
++	al->bulk_out = usb_sndbulkpipe(al->dev,
++			ep_out->bEndpointAddress & USB_ENDPOINT_NUMBER_MASK);
++
++	info("alauda probed");
++	alauda_check_media(al);
++
++	return 0;
++
++error:
++	if (al)
++		kref_put(&al->kref, alauda_delete);
++	return err;
++}
++
++static void alauda_disconnect(struct usb_interface *interface)
++{
++	struct alauda *al;
++
++	al = usb_get_intfdata(interface);
++	usb_set_intfdata(interface, NULL);
++
++	/* FIXME: prevent more I/O from starting */
++
++	/* decrement our usage count */
++	if (al)
++		kref_put(&al->kref, alauda_delete);
++
++	info("alauda gone");
++}
++
++static struct usb_driver alauda_driver = {
++	.name =		"alauda",
++	.probe =	alauda_probe,
++	.disconnect =	alauda_disconnect,
++	.id_table =	alauda_table,
++};
++
++static int __init alauda_init(void)
++{
++	return usb_register(&alauda_driver);
++}
++
++static void __exit alauda_exit(void)
++{
++	usb_deregister(&alauda_driver);
++}
++
++module_init(alauda_init);
++module_exit(alauda_exit);
++
++MODULE_LICENSE("GPL");
+--- linux-2.6.21cow/drivers/mtd/devices/Kconfig~alauda_mtd	2007-05-07 13:23:29.000000000 +0200
++++ linux-2.6.21cow/drivers/mtd/devices/Kconfig	2007-07-06 15:42:15.000000000 +0200
+@@ -146,6 +146,10 @@ config MTD_BLOCK2MTD
+ 	  Testing MTD users (eg JFFS2) on large media and media that might
+ 	  be removed during a write (using the floppy drive).
  
++config MTD_ALAUDA
++	tristate "MTD driver for Alauda chips"
++	depends on MTD && USB
++
+ comment "Disk-On-Chip Device Drivers"
+ 
+ config MTD_DOC2000
+--- linux-2.6.21cow/drivers/mtd/devices/Makefile~alauda_mtd	2007-05-07 13:23:29.000000000 +0200
++++ linux-2.6.21cow/drivers/mtd/devices/Makefile	2007-07-06 15:43:03.000000000 +0200
+@@ -15,5 +15,6 @@ obj-$(CONFIG_MTD_MS02NV)	+= ms02-nv.o
+ obj-$(CONFIG_MTD_MTDRAM)	+= mtdram.o
+ obj-$(CONFIG_MTD_LART)		+= lart.o
+ obj-$(CONFIG_MTD_BLOCK2MTD)	+= block2mtd.o
++obj-$(CONFIG_MTD_ALAUDA)	+= alauda.o
+ obj-$(CONFIG_MTD_DATAFLASH)	+= mtd_dataflash.o
+ obj-$(CONFIG_MTD_M25P80)	+= m25p80.o
