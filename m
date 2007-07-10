@@ -1,17 +1,34 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8Cfk-0006pi-UL
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 06:10:22 -0400
-Subject: mtd: Improve error handling in mtdoops
-From: Richard Purdie <rpurdie@openedhand.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Tue, 10 Jul 2007 11:10:09 +0100
-Message-Id: <1184062209.6435.39.camel@localhost.localdomain>
-Mime-Version: 1.0
+Received: from mtagate6.de.ibm.com ([195.212.29.155])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8CkY-000877-EG
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 11:15:19 +0100
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate6.de.ibm.com (8.13.8/8.13.8) with ESMTP id l6AAF7hM539578
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2007 10:15:07 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.3) with
+	ESMTP id l6AAF7bq1953978
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2007 12:15:07 +0200
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l6AAF75f008275
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2007 12:15:07 +0200
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: linux-mtd@lists.infradead.org, haver@ipnet.vnet.ibm.com
+Subject: Re: [RFC/PATCH] Ubi-Utils: add compare feature
+Date: Tue, 10 Jul 2007 12:14:50 +0200
+References: <200707092132.02839.alexs@linux.vnet.ibm.com>
+	<1184050337.5944.2.camel@august>
+In-Reply-To: <1184050337.5944.2.camel@august>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200707101214.50385.alexs@linux.vnet.ibm.com>
+Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,116 +38,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Improve the error handling in mtdoops driver after some feedback from
-Artem Bityutskiy.
+Hi Frank,
 
-Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
+> > +#define COMPARE_BUFFER_SIZE 1024
+> 
+> I think using the something like 2KiB or even the 128KiB would be nicer.
 
----
- drivers/mtd/mtdoops.c |   51 +++++++++++++++++++++++++++++++++++---------------
- 1 file changed, 36 insertions(+), 15 deletions(-)
+I've played around with several buffer sizes (1KiB, 2KiB, 4KiB and
+128KiB), and to my surprise, there was no performance impact.
+I've used a 11MiB pfi file and the comparison always takes 5.5 seconds.
+But I will change the value to 2KiB, it at least looks nicer.
+ 
+> > +
+> >  static const char copyright [] __unused =
+> >         "Copyright (c) International Business Machines Corp., 2006";
+> 2007
 
-Index: linux/drivers/mtd/mtdoops.c
-===================================================================
---- linux.orig/drivers/mtd/mtdoops.c	2007-07-10 10:59:24.000000000 +0100
-+++ linux/drivers/mtd/mtdoops.c	2007-07-10 11:01:32.000000000 +0100
-@@ -62,10 +62,7 @@ static int mtdoops_erase_block(struct mt
- 	erase.mtd = mtd;
- 	erase.callback = mtdoops_erase_callback;
- 	erase.addr = offset;
--	if (mtd->erasesize < OOPS_PAGE_SIZE)
--		erase.len = OOPS_PAGE_SIZE;
--	else
--		erase.len = mtd->erasesize;
-+	erase.len = mtd->erasesize;
- 	erase.priv = (u_long)&wait_q;
- 
- 	set_current_state(TASK_INTERRUPTIBLE);
-@@ -103,7 +100,7 @@ static int mtdoops_inc_counter(struct mt
- 
- 	ret = mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
- 			&retlen, (u_char *) &count);
--	if ((retlen != 4) || (ret < 0)) {
-+	if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
- 		printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
- 				", err %d.\n", cxt->nextpage * OOPS_PAGE_SIZE,
- 				retlen, ret);
-@@ -136,8 +133,14 @@ static void mtdoops_prepare(struct mtdoo
- 			cxt->nextpage = 0;
- 	}
- 
--	while (mtd->block_isbad &&
--			mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE)) {
-+	while (mtd->block_isbad) {
-+		ret = mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		if (!ret)
-+			break;
-+		if (ret < 0) {
-+			printk(KERN_ERR "mtdoops: block_isbad failed, aborting.\n");
-+			return;
-+		}
- badblock:
- 		printk(KERN_WARNING "mtdoops: Bad block at %08x\n",
- 				cxt->nextpage * OOPS_PAGE_SIZE);
-@@ -154,15 +157,21 @@ badblock:
- 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
- 		ret = mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
- 
--	if (ret < 0) {
--		if (mtd->block_markbad)
--			mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
--		goto badblock;
-+	if (ret >= 0) {
-+		printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
-+		cxt->ready = 1;
-+		return;
- 	}
- 
--	printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
- 
--	cxt->ready = 1;
-+	if (mtd->block_markbad && (ret == -EIO)) {
-+		ret = mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		if (ret < 0) {
-+			printk(KERN_ERR "mtdoops: block_markbad failed, aborting.\n");
-+			return;
-+		}
-+	}
-+	goto badblock;
- }
- 
- static void mtdoops_workfunc(struct work_struct *work)
-@@ -176,12 +185,18 @@ static void mtdoops_workfunc(struct work
- static int find_next_position(struct mtdoops_context *cxt)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	int page, maxpos = 0;
-+	int ret, page, maxpos = 0;
- 	u32 count, maxcount = 0xffffffff;
- 	size_t retlen;
- 
- 	for (page = 0; page < cxt->oops_pages; page++) {
--		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
-+		ret = mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
-+		if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
-+			printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
-+				", err %d.\n", page * OOPS_PAGE_SIZE, retlen, ret);
-+			continue;
-+		}
-+
- 		if (count == 0xffffffff)
- 			continue;
- 		if (maxcount == 0xffffffff) {
-@@ -229,6 +244,12 @@ static void mtdoops_notify_add(struct mt
- 		return;
- 	}
- 
-+	if (mtd->erasesize < OOPS_PAGE_SIZE) {
-+		printk(KERN_ERR "Eraseblock size of MTD partition %d too small\n",
-+				mtd->index);
-+		return;
-+	}
-+
- 	cxt->mtd = mtd;
- 	cxt->oops_pages = mtd->size / OOPS_PAGE_SIZE;
- 
+Done.
+
+Thanks for taking a look.
+Alex 
