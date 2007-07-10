@@ -1,15 +1,15 @@
 Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
 	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8BFI-0004GF-LQ
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 04:39:06 -0400
-Subject: [PATCH 2/3] jffs2: Add a "favourlzo" compression mode to jffs2
+	id 1I8BFI-0004GE-KM
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 04:39:03 -0400
+Subject: [PATCH 1/3] jffs2: Add LZO compression support to jffs2
 From: Richard Purdie <rpurdie@openedhand.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain
-Date: Tue, 10 Jul 2007 09:38:45 +0100
-Message-Id: <1184056725.6435.23.camel@localhost.localdomain>
+Date: Tue, 10 Jul 2007 09:38:39 +0100
+Message-Id: <1184056719.6435.22.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -21,150 +21,228 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a "favourlzo" compression mode to jffs2 which tries to
-optimise by size but gives lzo an advantage when comparing sizes.
-This means the faster lzo algorithm can be preferred when there
-isn't much difference in compressed size (the exact threshold can
-be changed).
+Add LZO1X compression/decompression support to jffs2.
+
+LZO's interface doesn't entirely match that required by jffs2 so a 
+buffer and memcpy is unavoidable.
 
 Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
----
- fs/Kconfig       |    7 +++++++
- fs/jffs2/compr.c |   45 ++++++++++++++++++++++++++++++++++++++++-----
- fs/jffs2/compr.h |    3 +++
- 3 files changed, 50 insertions(+), 5 deletions(-)
 
-diff --git a/fs/Kconfig b/fs/Kconfig
-index 1645dfa..328a62f 100644
---- a/fs/Kconfig
-+++ b/fs/Kconfig
-@@ -1359,6 +1359,13 @@ config JFFS2_CMODE_SIZE
-           Tries all compressors and chooses the one which has the smallest
-           result.
+---
+ fs/Kconfig            |   11 ++++
+ fs/jffs2/Makefile     |    1 
+ fs/jffs2/compr.c      |    6 ++
+ fs/jffs2/compr.h      |    3 -
+ fs/jffs2/compr_lzo.c  |  120 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/jffs2.h |    1 
+ 6 files changed, 141 insertions(+), 1 deletion(-)
+
+Index: linux-2.6.21/fs/Kconfig
+===================================================================
+--- linux-2.6.21.orig/fs/Kconfig	2007-07-01 18:20:47.000000000 +0100
++++ linux-2.6.21/fs/Kconfig	2007-07-01 18:25:31.000000000 +0100
+@@ -1306,6 +1306,17 @@ config JFFS2_ZLIB
  
-+config JFFS2_CMODE_FAVOURLZO
-+        bool "Favour LZO"
+           Say 'Y' if unsure.
+ 
++config JFFS2_LZO
++	bool "JFFS2 LZO compression support" if JFFS2_COMPRESSION_OPTIONS
++	select LZO_COMPRESS
++	select LZO_DECOMPRESS
++	depends on JFFS2_FS
++	default y
 +        help
-+          Tries all compressors and chooses the one which has the smallest
-+          result but gives some preference to LZO (which has faster
-+	  decompression) at the expense of size.
++          minilzo-based compression. Generally works better than Zlib.
 +
- endchoice
- 
- config CRAMFS
-diff --git a/fs/jffs2/compr.c b/fs/jffs2/compr.c
-index 6a23408..fdb0efd 100644
---- a/fs/jffs2/compr.c
-+++ b/fs/jffs2/compr.c
-@@ -24,6 +24,34 @@ static int jffs2_compression_mode = JFFS2_COMPR_MODE_PRIORITY;
- /* Statistics for blocks stored without compression */
- static uint32_t none_stat_compr_blocks=0,none_stat_decompr_blocks=0,none_stat_compr_size=0;
- 
++          Say 'Y' if unsure.
 +
+ config JFFS2_RTIME
+ 	bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
+ 	depends on JFFS2_FS
+Index: linux-2.6.21/fs/jffs2/Makefile
+===================================================================
+--- linux-2.6.21.orig/fs/jffs2/Makefile	2007-07-01 18:20:48.000000000 +0100
++++ linux-2.6.21/fs/jffs2/Makefile	2007-07-01 18:24:32.000000000 +0100
+@@ -17,4 +17,5 @@ jffs2-$(CONFIG_JFFS2_FS_POSIX_ACL)	+= ac
+ jffs2-$(CONFIG_JFFS2_RUBIN)	+= compr_rubin.o
+ jffs2-$(CONFIG_JFFS2_RTIME)	+= compr_rtime.o
+ jffs2-$(CONFIG_JFFS2_ZLIB)	+= compr_zlib.o
++jffs2-$(CONFIG_JFFS2_LZO)	+= compr_lzo.o
+ jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
+Index: linux-2.6.21/fs/jffs2/compr.c
+===================================================================
+--- linux-2.6.21.orig/fs/jffs2/compr.c	2007-07-01 18:20:48.000000000 +0100
++++ linux-2.6.21/fs/jffs2/compr.c	2007-07-01 18:24:32.000000000 +0100
+@@ -285,6 +285,9 @@ int __init jffs2_compressors_init(void)
+         jffs2_rubinmips_init();
+         jffs2_dynrubin_init();
+ #endif
++#ifdef CONFIG_JFFS2_LZO
++        jffs2_lzo_init();
++#endif
+ /* Setting default compression mode */
+ #ifdef CONFIG_JFFS2_CMODE_NONE
+         jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
+@@ -303,6 +306,9 @@ int __init jffs2_compressors_init(void)
+ int jffs2_compressors_exit(void)
+ {
+ /* Unregistering compressors */
++#ifdef CONFIG_JFFS2_LZO
++        jffs2_lzo_exit();
++#endif
+ #ifdef CONFIG_JFFS2_RUBIN
+         jffs2_dynrubin_exit();
+         jffs2_rubinmips_exit();
+Index: linux-2.6.21/fs/jffs2/compr_lzo.c
+===================================================================
+--- /dev/null	1970-01-01 00:00:00.000000000 +0000
++++ linux-2.6.21/fs/jffs2/compr_lzo.c	2007-07-01 18:24:32.000000000 +0100
+@@ -0,0 +1,120 @@
 +/*
-+ * Return 1 to use this compression
++ * JFFS2 LZO Compression Interface
++ *
++ * Copyright (C) 2007 Nokia Corporation. All rights reserved.
++ *
++ * Author: Richard Purdie <rpurdie@openedhand.com>
++ *
++ * This program is free software; you can redistribute it and/or
++ * modify it under the terms of the GNU General Public License
++ * version 2 as published by the Free Software Foundation.
++ *
++ * This program is distributed in the hope that it will be useful, but
++ * WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++ * General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
++ * 02110-1301 USA
++ *
 + */
-+static int jffs2_is_best_compression(struct jffs2_compressor *this,
-+		struct jffs2_compressor *best, uint32_t size, uint32_t bestsize)
-+{
-+	switch (jffs2_compression_mode) {
-+		case JFFS2_COMPR_MODE_SIZE:
-+			if (bestsize > size)
-+				return 1;
-+			return 0;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
-+			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > size))
-+				return 1;
-+			if ((best->compr != JFFS2_COMPR_LZO) && (bestsize > size))
-+				return 1;
-+			if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > (size * FAVOUR_LZO_PERCENT / 100)))
-+				return 1;
-+			if ((bestsize * FAVOUR_LZO_PERCENT / 100) > size)
-+				return 1;
 +
-+			return 0;
++#include <linux/kernel.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/vmalloc.h>
++#include <linux/init.h>
++#include <linux/lzo.h>
++#include "compr.h"
++
++static void *lzo_mem;
++static void *lzo_compress_buf;
++static DEFINE_MUTEX(deflate_mutex);
++
++static void free_workspace(void)
++{
++	vfree(lzo_mem);
++	vfree(lzo_compress_buf);
++}
++
++static int __init alloc_workspace(void)
++{
++	lzo_mem = vmalloc(LZO1X_MEM_COMPRESS);
++	lzo_compress_buf = vmalloc(lzo1x_worst_compress(PAGE_SIZE));
++
++	if (!lzo_mem || !lzo_compress_buf) {
++		printk(KERN_WARNING "Failed to allocate lzo deflate workspace\n");
++		free_workspace();
++		return -ENOMEM;
 +	}
-+	/* Shouldn't happen */
++
 +	return 0;
 +}
 +
- /* jffs2_compress:
-  * @data: Pointer to uncompressed data
-  * @cdata: Pointer to returned pointer to buffer for compressed data
-@@ -89,6 +117,7 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
-                 if (ret == JFFS2_COMPR_NONE) kfree(output_buf);
-                 break;
-         case JFFS2_COMPR_MODE_SIZE:
-+        case JFFS2_COMPR_MODE_FAVOURLZO:
-                 orig_slen = *datalen;
-                 orig_dlen = *cdatalen;
-                 spin_lock(&jffs2_compressor_list_lock);
-@@ -97,7 +126,7 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
-                         if ((!this->compress)||(this->disabled))
-                                 continue;
-                         /* Allocating memory for output buffer if necessary */
--                        if ((this->compr_buf_size<orig_dlen)&&(this->compr_buf)) {
-+                        if ((this->compr_buf_size<orig_slen)&&(this->compr_buf)) {
-                                 spin_unlock(&jffs2_compressor_list_lock);
-                                 kfree(this->compr_buf);
-                                 spin_lock(&jffs2_compressor_list_lock);
-@@ -106,15 +135,15 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
-                         }
-                         if (!this->compr_buf) {
-                                 spin_unlock(&jffs2_compressor_list_lock);
--                                tmp_buf = kmalloc(orig_dlen,GFP_KERNEL);
-+                                tmp_buf = kmalloc(orig_slen,GFP_KERNEL);
-                                 spin_lock(&jffs2_compressor_list_lock);
-                                 if (!tmp_buf) {
--                                        printk(KERN_WARNING "JFFS2: No memory for compressor allocation. (%d bytes)\n",orig_dlen);
-+                                        printk(KERN_WARNING "JFFS2: No memory for compressor allocation. (%d bytes)\n",orig_slen);
-                                         continue;
-                                 }
-                                 else {
-                                         this->compr_buf = tmp_buf;
--                                        this->compr_buf_size = orig_dlen;
-+                                        this->compr_buf_size = orig_slen;
-                                 }
-                         }
-                         this->usecount++;
-@@ -125,7 +154,8 @@ uint16_t jffs2_compress(struct jffs2_sb_info *c, struct jffs2_inode_info *f,
-                         spin_lock(&jffs2_compressor_list_lock);
-                         this->usecount--;
-                         if (!compr_ret) {
--                                if ((!best_dlen)||(best_dlen>*cdatalen)) {
-+				if (((!best_dlen) || jffs2_is_best_compression(this, best, *cdatalen, best_dlen))
-+						&& (*cdatalen < *datalen)) {
-                                         best_dlen = *cdatalen;
-                                         best_slen = *datalen;
-                                         best = this;
-@@ -297,9 +327,14 @@ int __init jffs2_compressors_init(void)
-         jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
-         D1(printk(KERN_INFO "JFFS2: default compression mode: size\n");)
- #else
-+#ifdef CONFIG_JFFS2_CMODE_FAVOURLZO
-+        jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-+        D1(printk(KERN_INFO "JFFS2: default compression mode: favourlzo\n");)
-+#else
-         D1(printk(KERN_INFO "JFFS2: default compression mode: priority\n");)
- #endif
- #endif
-+#endif
-         return 0;
- }
- 
-diff --git a/fs/jffs2/compr.h b/fs/jffs2/compr.h
-index 8c6b2af..2b66941 100644
---- a/fs/jffs2/compr.h
-+++ b/fs/jffs2/compr.h
-@@ -38,6 +38,9 @@
- #define JFFS2_COMPR_MODE_NONE       0
- #define JFFS2_COMPR_MODE_PRIORITY   1
- #define JFFS2_COMPR_MODE_SIZE       2
-+#define JFFS2_COMPR_MODE_FAVOURLZO  3
++static int jffs2_lzo_compress(unsigned char *data_in, unsigned char *cpage_out,
++			      uint32_t *sourcelen, uint32_t *dstlen, void *model)
++{
++	size_t compress_size;
++	int ret;
 +
-+#define FAVOUR_LZO_PERCENT 80
++	mutex_lock(&deflate_mutex);
++	ret = lzo1x_1_compress(data_in, *sourcelen, lzo_compress_buf, &compress_size, lzo_mem);
++	mutex_unlock(&deflate_mutex);
++
++	if (ret != LZO_E_OK)
++		return -1;
++
++	if (compress_size > *dstlen)
++		return -1;
++
++	memcpy(cpage_out, lzo_compress_buf, compress_size);
++	*dstlen = compress_size;
++
++	return 0;
++}
++
++static int jffs2_lzo_decompress(unsigned char *data_in, unsigned char *cpage_out,
++				 uint32_t srclen, uint32_t destlen, void *model)
++{
++	size_t dl = destlen;
++	int ret;
++
++	ret = lzo1x_decompress_safe(data_in, srclen, cpage_out, &dl);
++
++	if (ret != LZO_E_OK || dl != destlen)
++		return -1;
++
++	return 0;
++}
++
++static struct jffs2_compressor jffs2_lzo_comp = {
++	.priority = JFFS2_LZO_PRIORITY,
++	.name = "lzo",
++	.compr = JFFS2_COMPR_LZO,
++	.compress = &jffs2_lzo_compress,
++	.decompress = &jffs2_lzo_decompress,
++	.disabled = 0,
++};
++
++int __init jffs2_lzo_init(void)
++{
++	int ret;
++
++	ret = alloc_workspace();
++	if (ret < 0)
++		return ret;
++
++	ret = jffs2_register_compressor(&jffs2_lzo_comp);
++	if (ret)
++		free_workspace();
++
++	return ret;
++}
++
++void jffs2_lzo_exit(void)
++{
++	jffs2_unregister_compressor(&jffs2_lzo_comp);
++	free_workspace();
++}
+Index: linux-2.6.21/include/linux/jffs2.h
+===================================================================
+--- linux-2.6.21.orig/include/linux/jffs2.h	2007-07-01 18:15:10.000000000 +0100
++++ linux-2.6.21/include/linux/jffs2.h	2007-07-01 18:24:32.000000000 +0100
+@@ -46,6 +46,7 @@
+ #define JFFS2_COMPR_COPY	0x04
+ #define JFFS2_COMPR_DYNRUBIN	0x05
+ #define JFFS2_COMPR_ZLIB	0x06
++#define JFFS2_COMPR_LZO		0x07
+ /* Compatibility flags. */
+ #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
+ #define JFFS2_NODE_ACCURATE 0x2000
+Index: linux-2.6.21/fs/jffs2/compr.h
+===================================================================
+--- linux-2.6.21.orig/fs/jffs2/compr.h	2007-07-01 18:20:48.000000000 +0100
++++ linux-2.6.21/fs/jffs2/compr.h	2007-07-01 18:24:32.000000000 +0100
+@@ -27,9 +27,10 @@
+ #define JFFS2_RUBINMIPS_PRIORITY 10
+ #define JFFS2_DYNRUBIN_PRIORITY  20
+ #define JFFS2_LZARI_PRIORITY     30
+-#define JFFS2_LZO_PRIORITY       40
+ #define JFFS2_RTIME_PRIORITY     50
+ #define JFFS2_ZLIB_PRIORITY      60
++#define JFFS2_LZO_PRIORITY       80
++
  
- struct jffs2_compressor {
-         struct list_head list;
--- 
-1.4.4.2
+ #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
+ #define JFFS2_DYNRUBIN_DISABLED  /*        for decompression */
