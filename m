@@ -1,15 +1,15 @@
 Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
 	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8BFI-0004GE-KM
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 04:39:03 -0400
+	id 1I8C1d-0005aB-AP
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 05:28:55 -0400
 Subject: [PATCH 1/3] jffs2: Add LZO compression support to jffs2
 From: Richard Purdie <rpurdie@openedhand.com>
 To: linux-mtd <linux-mtd@lists.infradead.org>,
 	David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain
-Date: Tue, 10 Jul 2007 09:38:39 +0100
-Message-Id: <1184056719.6435.22.camel@localhost.localdomain>
+Date: Tue, 10 Jul 2007 10:28:36 +0100
+Message-Id: <1184059716.6435.29.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -37,13 +37,13 @@ Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
  include/linux/jffs2.h |    1 
  6 files changed, 141 insertions(+), 1 deletion(-)
 
-Index: linux-2.6.21/fs/Kconfig
+Index: linux/fs/Kconfig
 ===================================================================
---- linux-2.6.21.orig/fs/Kconfig	2007-07-01 18:20:47.000000000 +0100
-+++ linux-2.6.21/fs/Kconfig	2007-07-01 18:25:31.000000000 +0100
+--- linux.orig/fs/Kconfig	2007-07-10 10:07:27.000000000 +0100
++++ linux/fs/Kconfig	2007-07-10 10:15:53.000000000 +0100
 @@ -1306,6 +1306,17 @@ config JFFS2_ZLIB
  
-           Say 'Y' if unsure.
+ 	  Say 'Y' if unsure.
  
 +config JFFS2_LZO
 +	bool "JFFS2 LZO compression support" if JFFS2_COMPRESSION_OPTIONS
@@ -51,52 +51,52 @@ Index: linux-2.6.21/fs/Kconfig
 +	select LZO_DECOMPRESS
 +	depends on JFFS2_FS
 +	default y
-+        help
-+          minilzo-based compression. Generally works better than Zlib.
++	help
++	  minilzo-based compression. Generally works better than Zlib.
 +
-+          Say 'Y' if unsure.
++	  Say 'Y' if unsure.
 +
  config JFFS2_RTIME
  	bool "JFFS2 RTIME compression support" if JFFS2_COMPRESSION_OPTIONS
  	depends on JFFS2_FS
-Index: linux-2.6.21/fs/jffs2/Makefile
+Index: linux/fs/jffs2/Makefile
 ===================================================================
---- linux-2.6.21.orig/fs/jffs2/Makefile	2007-07-01 18:20:48.000000000 +0100
-+++ linux-2.6.21/fs/jffs2/Makefile	2007-07-01 18:24:32.000000000 +0100
+--- linux.orig/fs/jffs2/Makefile	2007-05-29 22:59:00.000000000 +0100
++++ linux/fs/jffs2/Makefile	2007-07-10 10:15:53.000000000 +0100
 @@ -17,4 +17,5 @@ jffs2-$(CONFIG_JFFS2_FS_POSIX_ACL)	+= ac
  jffs2-$(CONFIG_JFFS2_RUBIN)	+= compr_rubin.o
  jffs2-$(CONFIG_JFFS2_RTIME)	+= compr_rtime.o
  jffs2-$(CONFIG_JFFS2_ZLIB)	+= compr_zlib.o
 +jffs2-$(CONFIG_JFFS2_LZO)	+= compr_lzo.o
  jffs2-$(CONFIG_JFFS2_SUMMARY)   += summary.o
-Index: linux-2.6.21/fs/jffs2/compr.c
+Index: linux/fs/jffs2/compr.c
 ===================================================================
---- linux-2.6.21.orig/fs/jffs2/compr.c	2007-07-01 18:20:48.000000000 +0100
-+++ linux-2.6.21/fs/jffs2/compr.c	2007-07-01 18:24:32.000000000 +0100
-@@ -285,6 +285,9 @@ int __init jffs2_compressors_init(void)
-         jffs2_rubinmips_init();
-         jffs2_dynrubin_init();
+--- linux.orig/fs/jffs2/compr.c	2007-07-10 10:07:27.000000000 +0100
++++ linux/fs/jffs2/compr.c	2007-07-10 10:15:53.000000000 +0100
+@@ -286,6 +286,9 @@ int __init jffs2_compressors_init(void)
+ 	jffs2_rubinmips_init();
+ 	jffs2_dynrubin_init();
  #endif
 +#ifdef CONFIG_JFFS2_LZO
-+        jffs2_lzo_init();
++	jffs2_lzo_init();
 +#endif
  /* Setting default compression mode */
  #ifdef CONFIG_JFFS2_CMODE_NONE
-         jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-@@ -303,6 +306,9 @@ int __init jffs2_compressors_init(void)
+ 	jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
+@@ -304,6 +307,9 @@ int __init jffs2_compressors_init(void)
  int jffs2_compressors_exit(void)
  {
  /* Unregistering compressors */
 +#ifdef CONFIG_JFFS2_LZO
-+        jffs2_lzo_exit();
++	jffs2_lzo_exit();
 +#endif
  #ifdef CONFIG_JFFS2_RUBIN
-         jffs2_dynrubin_exit();
-         jffs2_rubinmips_exit();
-Index: linux-2.6.21/fs/jffs2/compr_lzo.c
+ 	jffs2_dynrubin_exit();
+ 	jffs2_rubinmips_exit();
+Index: linux/fs/jffs2/compr_lzo.c
 ===================================================================
 --- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21/fs/jffs2/compr_lzo.c	2007-07-01 18:24:32.000000000 +0100
++++ linux/fs/jffs2/compr_lzo.c	2007-07-10 10:15:53.000000000 +0100
 @@ -0,0 +1,120 @@
 +/*
 + * JFFS2 LZO Compression Interface
@@ -218,10 +218,10 @@ Index: linux-2.6.21/fs/jffs2/compr_lzo.c
 +	jffs2_unregister_compressor(&jffs2_lzo_comp);
 +	free_workspace();
 +}
-Index: linux-2.6.21/include/linux/jffs2.h
+Index: linux/include/linux/jffs2.h
 ===================================================================
---- linux-2.6.21.orig/include/linux/jffs2.h	2007-07-01 18:15:10.000000000 +0100
-+++ linux-2.6.21/include/linux/jffs2.h	2007-07-01 18:24:32.000000000 +0100
+--- linux.orig/include/linux/jffs2.h	2007-05-10 09:58:03.000000000 +0100
++++ linux/include/linux/jffs2.h	2007-07-10 10:15:53.000000000 +0100
 @@ -46,6 +46,7 @@
  #define JFFS2_COMPR_COPY	0x04
  #define JFFS2_COMPR_DYNRUBIN	0x05
@@ -230,10 +230,10 @@ Index: linux-2.6.21/include/linux/jffs2.h
  /* Compatibility flags. */
  #define JFFS2_COMPAT_MASK 0xc000      /* What do to if an unknown nodetype is found */
  #define JFFS2_NODE_ACCURATE 0x2000
-Index: linux-2.6.21/fs/jffs2/compr.h
+Index: linux/fs/jffs2/compr.h
 ===================================================================
---- linux-2.6.21.orig/fs/jffs2/compr.h	2007-07-01 18:20:48.000000000 +0100
-+++ linux-2.6.21/fs/jffs2/compr.h	2007-07-01 18:24:32.000000000 +0100
+--- linux.orig/fs/jffs2/compr.h	2007-07-10 10:07:27.000000000 +0100
++++ linux/fs/jffs2/compr.h	2007-07-10 10:15:53.000000000 +0100
 @@ -27,9 +27,10 @@
  #define JFFS2_RUBINMIPS_PRIORITY 10
  #define JFFS2_DYNRUBIN_PRIORITY  20
@@ -245,4 +245,4 @@ Index: linux-2.6.21/fs/jffs2/compr.h
 +
  
  #define JFFS2_RUBINMIPS_DISABLED /* RUBINs will be used only */
- #define JFFS2_DYNRUBIN_DISABLED  /*        for decompression */
+ #define JFFS2_DYNRUBIN_DISABLED  /*	   for decompression */
