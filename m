@@ -1,17 +1,19 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8HG1-00028m-FT
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 11:04:14 -0400
-Subject: [mtd-utils patch 2/2] Add favourlzo compression mode
-From: Richard Purdie <rpurdie@openedhand.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>,
-	Josh Boyer <jdub@us.ibm.com>
-Content-Type: text/plain
-Date: Tue, 10 Jul 2007 16:03:47 +0100
-Message-Id: <1184079827.6435.56.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Received: from imf20aec.mail.bellsouth.net ([205.152.59.68])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8HIr-0002LL-GV
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 11:07:15 -0400
+Received: from ibm62aec.bellsouth.net ([192.168.16.253])
+	by imf20aec.mail.bellsouth.net with ESMTP id
+	<20070710150656.WVKY17119.imf20aec.mail.bellsouth.net@ibm62aec.bellsouth.net>
+	for <linux-mtd@lists.infradead.org>; Tue, 10 Jul 2007 11:06:56 -0400
+From: LOTTERY BOARD <onlineaward1122@bellsouth.net>
+To: <play@winners>
+Subject: Confirm___Reciept__Dear__Winner
+Date: Tue, 10 Jul 2007 11:06:55 -0400
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+Message-Id: <20070710150655.PXLV20509.ibm62aec.bellsouth.net@mail.bellsouth.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,139 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add a favourlzo compression mode to mtd-utils
+British National Lottery
+PO Box 1010
+Liverpool L70 1NL, United Kingdom.
+Ref: L/200-26937 
+Batch: 2007MJL-01 
 
-This allows lzo compression to be used in the cases where the
-compression ratio isn't quite as good zlib. This can make sense in
-certain use cases because LZO decompression is much faster than zlib.
+WINNING NOTIFICATION
+We happily announce to you the draw (#1071) winner of the UK NATIONAL LOTTERY cash prize of £1,000,000 (one Million Pounds Sterling) held on monday 6th of July 2007 in London Uk.The selection process was carried out through random selection in our computerized email selection system(ess) from a database of over 21,000,000 email addresses drawn from which you were selected.so to claim your winnings you are to contact your claims agent with the below address.
 
-Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
 
----
- compr.c |   52 +++++++++++++++++++++++++++++++++++++++++++++++++---
- compr.h |    1 +
- 2 files changed, 50 insertions(+), 3 deletions(-)
+Agents Name: Mr Brown Hooper
+Email:claimsoffice_winnings05@yahoo.co.uk 
 
-Index: git/compr.c
-===================================================================
---- git.orig/compr.c	2007-03-01 11:58:01.000000000 +0000
-+++ git/compr.c	2007-03-01 11:58:09.000000000 +0000
-@@ -16,6 +16,8 @@
- #include <stdlib.h>
- #include <linux/jffs2.h>
- 
-+#define FAVOUR_LZO_PERCENT 80
-+
- extern int page_size;
- 
- /* LIST IMPLEMENTATION (from linux/list.h) */
-@@ -166,6 +168,33 @@ static void jffs2_decompression_test(str
- 	}
- }
- 
-+/*
-+ * Return 1 to use this compression
-+ */
-+static int jffs2_is_best_compression(struct jffs2_compressor *this,
-+		struct jffs2_compressor *best, uint32_t size, uint32_t bestsize)
-+{
-+	switch (jffs2_compression_mode) {
-+	case JFFS2_COMPR_MODE_SIZE:
-+		if (bestsize > size)
-+			return 1;
-+		return 0;
-+	case JFFS2_COMPR_MODE_FAVOURLZO:
-+		if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > size))
-+			return 1;
-+		if ((best->compr != JFFS2_COMPR_LZO) && (bestsize > size))
-+			return 1;
-+		if ((this->compr == JFFS2_COMPR_LZO) && (bestsize > (size * FAVOUR_LZO_PERCENT / 100)))
-+			return 1;
-+		if ((bestsize * FAVOUR_LZO_PERCENT / 100) > size)
-+			return 1;
-+
-+		return 0;
-+	}
-+	/* Shouldn't happen */
-+	return 0;
-+}
-+
- /* jffs2_compress:
-  * @data: Pointer to uncompressed data
-  * @cdata: Pointer to returned pointer to buffer for compressed data
-@@ -231,21 +260,29 @@ uint16_t jffs2_compress( unsigned char *
- 			}
- 			if (ret == JFFS2_COMPR_NONE) free(output_buf);
- 			break;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
- 		case JFFS2_COMPR_MODE_SIZE:
- 			orig_slen = *datalen;
- 			orig_dlen = *cdatalen;
- 			list_for_each_entry(this, &jffs2_compressor_list, list) {
-+				uint32_t needed_buf_size;
-+
-+				if (jffs2_compression_mode == JFFS2_COMPR_MODE_FAVOURLZO)
-+					needed_buf_size = orig_slen + jffs2_compression_check;
-+				else
-+					needed_buf_size = orig_dlen + jffs2_compression_check;
-+
- 				/* Skip decompress-only backwards-compatibility and disabled modules */
- 				if ((!this->compress)||(this->disabled))
- 					continue;
- 				/* Allocating memory for output buffer if necessary */
--				if ((this->compr_buf_size<orig_dlen+jffs2_compression_check)&&(this->compr_buf)) {
-+				if ((this->compr_buf_size < needed_buf_size) && (this->compr_buf)) {
- 					free(this->compr_buf);
- 					this->compr_buf_size=0;
- 					this->compr_buf=NULL;
- 				}
- 				if (!this->compr_buf) {
--					tmp_buf = malloc(orig_dlen+jffs2_compression_check);
-+					tmp_buf = malloc(needed_buf_size);
- 					if (!tmp_buf) {
- 						fprintf(stderr,"mkfs.jffs2: No memory for compressor allocation. (%d bytes)\n",orig_dlen);
- 						continue;
-@@ -265,7 +302,8 @@ uint16_t jffs2_compress( unsigned char *
- 				if (!compr_ret) {
- 					if (jffs2_compression_check)
- 						jffs2_decompression_test(this, data_in, this->compr_buf, *cdatalen, *datalen, this->compr_buf_size);
--					if ((!best_dlen)||(best_dlen>*cdatalen)) {
-+					if (((!best_dlen) || jffs2_is_best_compression(this, best, *cdatalen, best_dlen))
-+								&& (*cdatalen < *datalen)) {
- 						best_dlen = *cdatalen;
- 						best_slen = *datalen;
- 						best = this;
-@@ -377,6 +415,9 @@ char *jffs2_stats(void)
- 		case JFFS2_COMPR_MODE_SIZE:
- 			act_buf += sprintf(act_buf,"size");
- 			break;
-+		case JFFS2_COMPR_MODE_FAVOURLZO:
-+			act_buf += sprintf(act_buf, "favourlzo");
-+			break;
- 		default:
- 			act_buf += sprintf(act_buf,"unkown");
- 			break;
-@@ -413,6 +454,11 @@ int jffs2_set_compression_mode_name(cons
- 		jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
- 		return 0;
- 	}
-+	if (!strcmp("favourlzo", name)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-+		return 0;
-+	}
-+
- 	return 1;
- }
- 
-Index: git/compr.h
-===================================================================
---- git.orig/compr.h	2007-03-01 11:58:01.000000000 +0000
-+++ git/compr.h	2007-03-01 11:58:09.000000000 +0000
-@@ -32,6 +32,7 @@
- #define JFFS2_COMPR_MODE_NONE       0
- #define JFFS2_COMPR_MODE_PRIORITY   1
- #define JFFS2_COMPR_MODE_SIZE       2
-+#define JFFS2_COMPR_MODE_FAVOURLZO  3
- 
- #define kmalloc(a,b)                malloc(a)
- #define kfree(a)                    free(a)
+
+MODE OF PAYMENT{choose one}
+1:certified cheque issued in your name couriered to you
+2:Bank to Bank wire transfer
+
+
+VERIFICATION FORM:
+1.Name:
+2.Address:
+3.Nationality:
+4.Age:
+5.Sex:
+6.Occupation:
+7.Phone/Fax:
+8.COUNTRY;
+Congratulations once more,and have a great day.
+Rose Wood
+Online Co-ordinator
+U.K NATIONAL LOTTERY
+Sweepstakes International Program
