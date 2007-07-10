@@ -1,16 +1,15 @@
 Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
 	helo=pug.o-hand.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8C1l-0005aN-HT
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 05:29:08 -0400
-Subject: [PATCH 3/3] jffs2: Allow selection of compression mode via a sysfs
-	attribute
+	id 1I8Cfk-0006pi-UL
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 06:10:22 -0400
+Subject: mtd: Improve error handling in mtdoops
 From: Richard Purdie <rpurdie@openedhand.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Tue, 10 Jul 2007 10:28:46 +0100
-Message-Id: <1184059726.6435.31.camel@localhost.localdomain>
+Date: Tue, 10 Jul 2007 11:10:09 +0100
+Message-Id: <1184062209.6435.39.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -22,197 +21,116 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Allow selection of the compression mode for jffs2 via a sysfs
-attribute. This establishes a sysfs presence for jffs2 through
-which other compression options could easily be exported too.
+Improve the error handling in mtdoops driver after some feedback from
+Artem Bityutskiy.
 
 Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
----
- fs/Kconfig       |    9 ++++++++
- fs/jffs2/compr.c |   41 ++++++++++++++++++++++++++++++++++++
- fs/jffs2/compr.h |    6 +++++
- fs/jffs2/super.c |   61 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 4 files changed, 117 insertions(+)
 
-Index: linux/fs/Kconfig
+---
+ drivers/mtd/mtdoops.c |   51 +++++++++++++++++++++++++++++++++++---------------
+ 1 file changed, 36 insertions(+), 15 deletions(-)
+
+Index: linux/drivers/mtd/mtdoops.c
 ===================================================================
---- linux.orig/fs/Kconfig	2007-07-10 10:16:04.000000000 +0100
-+++ linux/fs/Kconfig	2007-07-10 10:16:08.000000000 +0100
-@@ -1279,6 +1279,15 @@ config JFFS2_FS_SECURITY
- 	  If you are not using a security module that requires using
- 	  extended attributes for file security labels, say N.
+--- linux.orig/drivers/mtd/mtdoops.c	2007-07-10 10:59:24.000000000 +0100
++++ linux/drivers/mtd/mtdoops.c	2007-07-10 11:01:32.000000000 +0100
+@@ -62,10 +62,7 @@ static int mtdoops_erase_block(struct mt
+ 	erase.mtd = mtd;
+ 	erase.callback = mtdoops_erase_callback;
+ 	erase.addr = offset;
+-	if (mtd->erasesize < OOPS_PAGE_SIZE)
+-		erase.len = OOPS_PAGE_SIZE;
+-	else
+-		erase.len = mtd->erasesize;
++	erase.len = mtd->erasesize;
+ 	erase.priv = (u_long)&wait_q;
  
-+config JFFS2_SYSFS
-+	bool "JFFS2 sysfs attributes"
-+	depends on JFFS2_FS
-+	default n
-+	help
-+	  Enable control of jffs2 features through sysfs.
-+
-+	  If unsure, say 'N'.
-+
- config JFFS2_COMPRESSION_OPTIONS
- 	bool "Advanced compression options for JFFS2"
- 	depends on JFFS2_FS
-Index: linux/fs/jffs2/compr.c
-===================================================================
---- linux.orig/fs/jffs2/compr.c	2007-07-10 10:16:04.000000000 +0100
-+++ linux/fs/jffs2/compr.c	2007-07-10 10:16:08.000000000 +0100
-@@ -11,6 +11,7 @@
-  *
-  */
+ 	set_current_state(TASK_INTERRUPTIBLE);
+@@ -103,7 +100,7 @@ static int mtdoops_inc_counter(struct mt
  
-+#include <linux/kobject.h>
- #include "compr.h"
+ 	ret = mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
+ 			&retlen, (u_char *) &count);
+-	if ((retlen != 4) || (ret < 0)) {
++	if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
+ 		printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
+ 				", err %d.\n", cxt->nextpage * OOPS_PAGE_SIZE,
+ 				retlen, ret);
+@@ -136,8 +133,14 @@ static void mtdoops_prepare(struct mtdoo
+ 			cxt->nextpage = 0;
+ 	}
  
- static DEFINE_SPINLOCK(jffs2_compressor_list_lock);
-@@ -297,6 +298,46 @@ int jffs2_unregister_compressor(struct j
- 	return 0;
+-	while (mtd->block_isbad &&
+-			mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE)) {
++	while (mtd->block_isbad) {
++		ret = mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
++		if (!ret)
++			break;
++		if (ret < 0) {
++			printk(KERN_ERR "mtdoops: block_isbad failed, aborting.\n");
++			return;
++		}
+ badblock:
+ 		printk(KERN_WARNING "mtdoops: Bad block at %08x\n",
+ 				cxt->nextpage * OOPS_PAGE_SIZE);
+@@ -154,15 +157,21 @@ badblock:
+ 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
+ 		ret = mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+ 
+-	if (ret < 0) {
+-		if (mtd->block_markbad)
+-			mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+-		goto badblock;
++	if (ret >= 0) {
++		printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
++		cxt->ready = 1;
++		return;
+ 	}
+ 
+-	printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
+ 
+-	cxt->ready = 1;
++	if (mtd->block_markbad && (ret == -EIO)) {
++		ret = mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
++		if (ret < 0) {
++			printk(KERN_ERR "mtdoops: block_markbad failed, aborting.\n");
++			return;
++		}
++	}
++	goto badblock;
  }
  
-+#ifdef CONFIG_JFFS2_SYSFS
-+
-+char *jffs2_get_compression_mode_name(void)
-+{
-+	switch (jffs2_compression_mode) {
-+	case JFFS2_COMPR_MODE_NONE:
-+		return "none";
-+	case JFFS2_COMPR_MODE_PRIORITY:
-+		return "priority";
-+	case JFFS2_COMPR_MODE_SIZE:
-+		return "size";
-+	case JFFS2_COMPR_MODE_FAVOURLZO:
-+		return "favourlzo";
-+	}
-+	return "unkown";
-+}
-+
-+int jffs2_set_compression_mode_name(const char *name)
-+{
-+	if (!strncmp("none", name, 4)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_NONE;
-+		return 0;
-+	}
-+	if (!strncmp("priority", name, 8)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_PRIORITY;
-+		return 0;
-+	}
-+	if (!strncmp("size", name, 4)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_SIZE;
-+		return 0;
-+	}
-+	if (!strncmp("favourlzo", name, 9)) {
-+		jffs2_compression_mode = JFFS2_COMPR_MODE_FAVOURLZO;
-+		return 0;
-+	}
-+	return -EINVAL;
-+}
-+
-+#endif
-+
- void jffs2_free_comprbuf(unsigned char *comprbuf, unsigned char *orig)
+ static void mtdoops_workfunc(struct work_struct *work)
+@@ -176,12 +185,18 @@ static void mtdoops_workfunc(struct work
+ static int find_next_position(struct mtdoops_context *cxt)
  {
- 	if (orig != comprbuf)
-Index: linux/fs/jffs2/compr.h
-===================================================================
---- linux.orig/fs/jffs2/compr.h	2007-07-10 10:16:04.000000000 +0100
-+++ linux/fs/jffs2/compr.h	2007-07-10 10:16:08.000000000 +0100
-@@ -77,6 +77,12 @@ int jffs2_decompress(struct jffs2_sb_inf
+ 	struct mtd_info *mtd = cxt->mtd;
+-	int page, maxpos = 0;
++	int ret, page, maxpos = 0;
+ 	u32 count, maxcount = 0xffffffff;
+ 	size_t retlen;
  
- void jffs2_free_comprbuf(unsigned char *comprbuf, unsigned char *orig);
- 
-+#ifdef CONFIG_JFFS2_SYSFS
-+int jffs2_set_compression_mode_name(const char *mode_name);
-+char *jffs2_get_compression_mode_name(void);
-+#endif
+ 	for (page = 0; page < cxt->oops_pages; page++) {
+-		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
++		ret = mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
++		if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
++			printk(KERN_ERR "mtdoops: Read failure at %d (%d of 4 read)"
++				", err %d.\n", page * OOPS_PAGE_SIZE, retlen, ret);
++			continue;
++		}
 +
-+
- /* Compressor modules */
- /* These functions will be called by jffs2_compressors_init/exit */
- 
-Index: linux/fs/jffs2/super.c
-===================================================================
---- linux.orig/fs/jffs2/super.c	2007-07-10 10:04:59.000000000 +0100
-+++ linux/fs/jffs2/super.c	2007-07-10 10:16:08.000000000 +0100
-@@ -163,6 +163,54 @@ static struct file_system_type jffs2_fs_
- 	.kill_sb =	jffs2_kill_sb,
- };
- 
-+#ifdef CONFIG_JFFS2_SYSFS
-+
-+static struct attribute jffs2_attr_mode = {
-+	.name = "compression_mode",
-+	.mode = S_IRUGO | S_IWUSR,
-+};
-+
-+static struct attribute *jffs2_attrs[] = {
-+	&jffs2_attr_mode,
-+	NULL,
-+};
-+
-+static ssize_t jffs2_attr_show(struct kobject *kobj, struct attribute *attr,
-+		char *page)
-+{
-+	if (!strcmp("compression_mode", attr->name))
-+		return sprintf(page, "%s\n", jffs2_get_compression_mode_name());
-+	return 0;
-+}
-+
-+static ssize_t jffs2_attr_store(struct kobject *kobj, struct attribute *attr,
-+		const char *page, size_t count)
-+{
-+	int ret = -EINVAL;
-+
-+	if (!strcmp("compression_mode", attr->name)) {
-+		ret = jffs2_set_compression_mode_name(page);
-+		if (ret >= 0)
-+			return count;
-+	}
-+	return ret;
-+}
-+
-+static struct sysfs_ops jffs2_sysfs_ops = {
-+	.show	=	jffs2_attr_show,
-+	.store	=	jffs2_attr_store,
-+};
-+
-+static struct kobj_type jffs2_subsys_type = {
-+	.default_attrs	= jffs2_attrs,
-+	.sysfs_ops	= &jffs2_sysfs_ops,
-+};
-+
-+/* gives us jffs2_subsys */
-+static decl_subsys(jffs2, NULL, NULL);
-+
-+#endif
-+
- static int __init init_jffs2_fs(void)
- {
- 	int ret;
-@@ -212,6 +260,16 @@ static int __init init_jffs2_fs(void)
- 		printk(KERN_ERR "JFFS2 error: Failed to register filesystem\n");
- 		goto out_slab;
+ 		if (count == 0xffffffff)
+ 			continue;
+ 		if (maxcount == 0xffffffff) {
+@@ -229,6 +244,12 @@ static void mtdoops_notify_add(struct mt
+ 		return;
  	}
-+
-+#ifdef CONFIG_JFFS2_SYSFS
-+	/* Errors here are not fatal */
-+	kset_set_kset_s(&jffs2_subsys, fs_subsys);
-+	jffs2_subsys.kset.kobj.ktype = &jffs2_subsys_type;
-+	ret = subsystem_register(&jffs2_subsys);
-+	if (ret)
-+		printk(KERN_WARNING "Error registering JFFS2 sysfs attributes\n");
-+#endif
-+
- 	return 0;
  
-  out_slab:
-@@ -225,6 +283,9 @@ static int __init init_jffs2_fs(void)
++	if (mtd->erasesize < OOPS_PAGE_SIZE) {
++		printk(KERN_ERR "Eraseblock size of MTD partition %d too small\n",
++				mtd->index);
++		return;
++	}
++
+ 	cxt->mtd = mtd;
+ 	cxt->oops_pages = mtd->size / OOPS_PAGE_SIZE;
  
- static void __exit exit_jffs2_fs(void)
- {
-+#ifdef CONFIG_JFFS2_SYSFS
-+	subsystem_unregister(&jffs2_subsys);
-+#endif
- 	unregister_filesystem(&jffs2_fs_type);
- 	jffs2_destroy_slab_caches();
- 	jffs2_compressors_exit();
