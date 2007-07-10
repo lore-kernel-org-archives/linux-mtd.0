@@ -1,14 +1,18 @@
-Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=aeryn.fluff.org.uk)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I82OY-0004cP-Eg
-	for linux-mtd@lists.infradead.org; Mon, 09 Jul 2007 19:11:57 -0400
-Date: Tue, 10 Jul 2007 00:11:47 +0100
-From: Ben Dooks <ben-linux@fluff.org>
+Received: from wa-out-1112.google.com ([209.85.146.183])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I88Pw-0008Lw-Nl
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 01:37:46 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so1505772wah
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 09 Jul 2007 22:37:43 -0700 (PDT)
+Message-ID: <9b52d64c0707092237x48c149cdy24b6eaf1d0baa184@mail.gmail.com>
+Date: Tue, 10 Jul 2007 11:07:42 +0530
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] S3C24XX large page NAND support
-Message-ID: <20070709231147.GA30072@fluff.org.uk>
+Subject: overflows while calculating volume->used_bytes
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,135 +23,93 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This adds support for using large page NAND devices
-with the S3C24XX NAND controllers. This also adds the 
-file Documentation/arm/Samsung-S3C24XX/NAND.txt to
-describe the differences.
+I was experiencing overflows in multiplications for
+volume->used_bytes in vmt.c & vtbl.c, while creating & resizing large volumes.
 
-The basic stratergy is to maintain 3 bytes of ECC for
-each 256 byte block read from the NAND which is similar
-to the default kernel layout (altough we are using the
-hardware ECC generator to make our ECC calculations).
+vol->used_bytes is long long however its 2 operands vol->used_ebs &
+vol->usable_leb_size
+are int. So their multiplication for larger values causes integer overflows.
+Typecasting them solves the problem.
 
-Signed-off-by: Ben Dooks <ben-linux@fluff.org>
+My machine & flash details:
 
-Index: linux-2.6.21-tmp/drivers/mtd/nand/s3c2410.c
-===================================================================
---- linux-2.6.21-tmp.orig/drivers/mtd/nand/s3c2410.c	2007-04-26 04:08:32.000000000 +0100
-+++ linux-2.6.21-tmp/drivers/mtd/nand/s3c2410.c	2007-05-22 12:26:49.000000000 +0100
-@@ -473,7 +473,7 @@ static int s3c2440_nand_calculate_ecc(st
- 	ecc_code[1] = ecc >> 8;
- 	ecc_code[2] = ecc >> 16;
- 
--	pr_debug("%s: returning ecc %06lx\n", __func__, ecc);
-+	pr_debug("%s: returning ecc %06lx\n", __func__, ecc & 0xffffff);
- 
- 	return 0;
- }
-@@ -630,9 +630,6 @@ static void s3c2410_nand_init_chip(struc
- 		chip->ecc.calculate = s3c2410_nand_calculate_ecc;
- 		chip->ecc.correct   = s3c2410_nand_correct_data;
- 		chip->ecc.mode	    = NAND_ECC_HW;
--		chip->ecc.size	    = 512;
--		chip->ecc.bytes	    = 3;
--		chip->ecc.layout    = &nand_hw_eccoob;
- 
- 		switch (info->cpu_type) {
- 		case TYPE_S3C2410:
-@@ -656,6 +653,34 @@ static void s3c2410_nand_init_chip(struc
+64Bit dual-core AMD opteron, 1 GB RAM, linux 2.6.18.3.
+mtd size = 6GB, volume size= 5GB, peb_size = 4MB.
+
+heres patch which does the fix.
+
+Signed-off-by: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+================================================================
+diff -ruN linux-2.6.18.3-vanila/drivers/mtd/ubi/vmt.c
+linux-2.6.18.3-mod/drivers/mtd/ubi/vmt.c
+--- linux-2.6.18.3-vanila/drivers/mtd/ubi/vmt.c	2007-07-09
+15:24:28.000000000 +0530
++++ linux-2.6.18.3-mod/drivers/mtd/ubi/vmt.c	2007-07-09 15:26:07.000000000 +0530
+@@ -280,7 +280,8 @@
+ 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 		vol->used_ebs = vol->reserved_pebs;
+ 		vol->last_eb_bytes = vol->usable_leb_size;
+-		vol->used_bytes = vol->used_ebs * vol->usable_leb_size;
++		vol->used_bytes = (long long)vol->used_ebs *
++							(long long)vol->usable_leb_size;
+ 	} else {
+ 		bytes = vol->used_bytes;
+ 		vol->last_eb_bytes = do_div(bytes, vol->usable_leb_size);
+@@ -538,7 +539,8 @@
+ 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 		vol->used_ebs = reserved_pebs;
+ 		vol->last_eb_bytes = vol->usable_leb_size;
+-		vol->used_bytes = vol->used_ebs * vol->usable_leb_size;
++		vol->used_bytes = (long long)vol->used_ebs *
++							(long long)vol->usable_leb_size;
  	}
- }
- 
-+/* s3c2410_nand_update_chip
-+ *
-+ * post-probe chip update, to change any items, such as the
-+ * layout for large page nand
-+ */
-+
-+static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
-+				     struct s3c2410_nand_mtd *nmtd)
-+{
-+	struct nand_chip *chip = &nmtd->chip;
-+
-+	printk("%s: chip %p: %d\n", __func__, chip, chip->page_shift);
-+
-+	if (hardware_ecc) {
-+		/* change the behaviour depending on wether we are using
-+		 * the large or small page nand device */
-+
-+		if (chip->page_shift > 10) {
-+			chip->ecc.size	    = 256;
-+			chip->ecc.bytes	    = 3;
-+		} else {
-+			chip->ecc.size	    = 512;
-+			chip->ecc.bytes	    = 3;
-+			chip->ecc.layout    = &nand_hw_eccoob;
-+		}
-+	}
-+}
-+
- /* s3c2410_nand_probe
-  *
-  * called by device layer when it finds a device matching
-@@ -762,9 +787,12 @@ static int s3c24xx_nand_probe(struct pla
- 
- 		s3c2410_nand_init_chip(info, nmtd, sets);
- 
--		nmtd->scan_res = nand_scan(&nmtd->mtd, (sets) ? sets->nr_chips : 1);
-+		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
-+						 (sets) ? sets->nr_chips : 1);
- 
- 		if (nmtd->scan_res == 0) {
-+			s3c2410_nand_update_chip(info, nmtd);
-+			nand_scan_tail(&nmtd->mtd);
- 			s3c2410_nand_add_partition(info, nmtd, sets);
+
+ 	paranoid_check_volumes(ubi);
+@@ -739,7 +741,7 @@
+ 		goto fail;
+ 	}
+
+-	n = vol->used_ebs * vol->usable_leb_size;
++	n = (long long)vol->used_ebs * (long long)vol->usable_leb_size;
+ 	if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 		if (vol->corrupted != 0) {
+ 			ubi_err("corrupted dynamic volume");
+diff -ruN linux-2.6.18.3-vanila/drivers/mtd/ubi/vtbl.c
+linux-2.6.18.3-mod/drivers/mtd/ubi/vtbl.c
+--- linux-2.6.18.3-vanila/drivers/mtd/ubi/vtbl.c	2007-07-09
+15:26:52.000000000 +0530
++++ linux-2.6.18.3-mod/drivers/mtd/ubi/vtbl.c	2007-07-09
+15:28:51.000000000 +0530
+@@ -531,7 +531,8 @@
+ 		if (vol->vol_type == UBI_DYNAMIC_VOLUME) {
+ 			vol->used_ebs = vol->reserved_pebs;
+ 			vol->last_eb_bytes = vol->usable_leb_size;
+-			vol->used_bytes = vol->used_ebs * vol->usable_leb_size;
++			vol->used_bytes = (unsigned long)vol->used_ebs *
++								(unsigned long)vol->usable_leb_size;
+ 			continue;
  		}
- 
-Index: linux-2.6.21-tmp/Documentation/arm/Samsung-S3C24XX/NAND.txt
-===================================================================
---- /dev/null	1970-01-01 00:00:00.000000000 +0000
-+++ linux-2.6.21-tmp/Documentation/arm/Samsung-S3C24XX/NAND.txt	2007-05-22 12:23:57.000000000 +0100
-@@ -0,0 +1,30 @@
-+			S3C24XX NAND Support
-+			====================
-+
-+Introduction
-+------------
-+
-+Small Page NAND
-+---------------
-+
-+The driver uses a 512 byte (1 page) ECC code for this setup. The
-+ECC code is not directly compatible with the default kernel ECC
-+code, so the driver enforces its own OOB layout and ECC parameters
-+
-+Large Page NAND
-+---------------
-+
-+The driver is capable of handling NAND flash with a 2KiB page
-+size, with support for hardware ECC generation and correction.
-+
-+Unlike the 512byte page mode, the driver generates ECC data for
-+each 256 byte block in an 2KiB page. This means that more than
-+one error in a page can be rectified. It also means that the
-+OOB layout remains the default kernel layout for these flashes.
-+
-+
-+Document Author
-+---------------
-+
-+Ben Dooks, Copyright 2007 Simtec Electronics
-+
-Index: linux-2.6.21-tmp/Documentation/arm/Samsung-S3C24XX/Overview.txt
-===================================================================
---- linux-2.6.21-tmp.orig/Documentation/arm/Samsung-S3C24XX/Overview.txt	2007-04-26 04:08:32.000000000 +0100
-+++ linux-2.6.21-tmp/Documentation/arm/Samsung-S3C24XX/Overview.txt	2007-05-22 12:23:57.000000000 +0100
-@@ -156,6 +156,8 @@ NAND
-   controller. If there are any problems the latest linux-mtd
-   code can be found from http://www.linux-mtd.infradead.org/
- 
-+  For more information see Documentation/arm/Samsung-S3C24XX/NAND.txt
-+
- 
- Serial
- ------
+
+@@ -561,7 +562,8 @@
+ 		}
+
+ 		vol->used_ebs = sv->used_ebs;
+-		vol->used_bytes = (vol->used_ebs - 1) * vol->usable_leb_size;
++		vol->used_bytes = (unsigned long)(vol->used_ebs - 1) *
++							(unsigned long)vol->usable_leb_size;
+ 		vol->used_bytes += sv->last_data_size;
+ 		vol->last_eb_bytes = sv->last_data_size;
+ 	}
+@@ -578,7 +580,8 @@
+ 	vol->usable_leb_size = ubi->leb_size;
+ 	vol->used_ebs = vol->reserved_pebs;
+ 	vol->last_eb_bytes = vol->reserved_pebs;
+-	vol->used_bytes = vol->used_ebs * (ubi->leb_size - vol->data_pad);
++	vol->used_bytes = (unsigned long)vol->used_ebs *
++						(unsigned long)(ubi->leb_size - vol->data_pad);
+ 	vol->vol_id = UBI_LAYOUT_VOL_ID;
+
+ 	ubi_assert(!ubi->volumes[i]);
+
+Thanks & Regards
+Vinit.
