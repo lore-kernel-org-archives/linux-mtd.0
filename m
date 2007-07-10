@@ -1,24 +1,22 @@
-Received: from wa-out-1112.google.com ([209.85.146.179])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8Abi-0003EX-BO
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 03:58:03 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so1541497wah
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 10 Jul 2007 00:58:00 -0700 (PDT)
-Message-ID: <9b52d64c0707100058m7730acdbv8fb8c3ca57eac2ac@mail.gmail.com>
-Date: Tue, 10 Jul 2007 13:28:00 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: dedekind@infradead.org
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8AsG-0003iO-MU
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 04:15:12 -0400
 Subject: Re: overflows while calculating volume->used_bytes
-In-Reply-To: <9b52d64c0707100047k604ca250g94a0657defc6eac3@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R; format=flowed
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0707100058m7730acdbv8fb8c3ca57eac2ac@mail.gmail.com>
 References: <9b52d64c0707092237x48c149cdy24b6eaf1d0baa184@mail.gmail.com>
 	<1184050868.3531.67.camel@sauron>
 	<9b52d64c0707100047k604ca250g94a0657defc6eac3@mail.gmail.com>
+	<9b52d64c0707100058m7730acdbv8fb8c3ca57eac2ac@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 10 Jul 2007 11:14:57 +0300
+Message-Id: <1184055297.3531.82.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,80 +26,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVyZXMgdGhlIG1vZGlmaWVkIHBhdGNoLgpOb3Qgc3BlY2lhbCBwdXJwb3NlIGFzIHN1Y2guIEl0
-cyBqdXN0IG15IGZsYXNoIGlzIGEgYml0IGxhcmdlIDopCgoKU2lnbmVkLW9mZi1ieTogVmluaXQg
-QWduaWhvdHJpIDx2aW5pdC5hZ25paG90cmlAZ21haWwuY29tPgo9PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CmRpZmYgLXJ1TiBs
-aW51eC0yLjYuMTguMy12YW5pbGEvZHJpdmVycy9tdGQvdWJpL3ZtdC5jCmxpbnV4LTIuNi4xOC4z
-LW1vZC9kcml2ZXJzL210ZC91Ymkvdm10LmMKLS0tIGxpbnV4LTIuNi4xOC4zLXZhbmlsYS9kcml2
-ZXJzL210ZC91Ymkvdm10LmMJMjAwNy0wNy0wOQoxNToyNDoyOC4wMDAwMDAwMDAgKzA1MzAKKysr
-IGxpbnV4LTIuNi4xOC4zLW1vZC9kcml2ZXJzL210ZC91Ymkvdm10LmMJMjAwNy0wNy0xMCAxMzoy
-NTo0MS4wMDAwMDAwMDAgKzA1MzAKQEAgLTI4MCw3ICsyODAsNyBAQAogCWlmICh2b2wtPnZvbF90
-eXBlID09IFVCSV9EWU5BTUlDX1ZPTFVNRSkgewogCQl2b2wtPnVzZWRfZWJzID0gdm9sLT5yZXNl
-cnZlZF9wZWJzOwogCQl2b2wtPmxhc3RfZWJfYnl0ZXMgPSB2b2wtPnVzYWJsZV9sZWJfc2l6ZTsK
-LQkJdm9sLT51c2VkX2J5dGVzID0gdm9sLT51c2VkX2VicyAqIHZvbC0+dXNhYmxlX2xlYl9zaXpl
-OworCQl2b2wtPnVzZWRfYnl0ZXMgPSAobG9uZyBsb25nKXZvbC0+dXNlZF9lYnMgKiB2b2wtPnVz
-YWJsZV9sZWJfc2l6ZTsKIAl9IGVsc2UgewogCQlieXRlcyA9IHZvbC0+dXNlZF9ieXRlczsKIAkJ
-dm9sLT5sYXN0X2ViX2J5dGVzID0gZG9fZGl2KGJ5dGVzLCB2b2wtPnVzYWJsZV9sZWJfc2l6ZSk7
-CkBAIC01MzgsNyArNTM4LDcgQEAKIAlpZiAodm9sLT52b2xfdHlwZSA9PSBVQklfRFlOQU1JQ19W
-T0xVTUUpIHsKIAkJdm9sLT51c2VkX2VicyA9IHJlc2VydmVkX3BlYnM7CiAJCXZvbC0+bGFzdF9l
-Yl9ieXRlcyA9IHZvbC0+dXNhYmxlX2xlYl9zaXplOwotCQl2b2wtPnVzZWRfYnl0ZXMgPSB2b2wt
-PnVzZWRfZWJzICogdm9sLT51c2FibGVfbGViX3NpemU7CisJCXZvbC0+dXNlZF9ieXRlcyA9IChs
-b25nIGxvbmcpdm9sLT51c2VkX2VicyAqIHZvbC0+dXNhYmxlX2xlYl9zaXplOwogCX0KCiAJcGFy
-YW5vaWRfY2hlY2tfdm9sdW1lcyh1YmkpOwpAQCAtNzM5LDcgKzczOSw3IEBACiAJCWdvdG8gZmFp
-bDsKIAl9CgotCW4gPSB2b2wtPnVzZWRfZWJzICogdm9sLT51c2FibGVfbGViX3NpemU7CisJbiA9
-IChsb25nIGxvbmcpdm9sLT51c2VkX2VicyAqIHZvbC0+dXNhYmxlX2xlYl9zaXplOwogCWlmICh2
-b2wtPnZvbF90eXBlID09IFVCSV9EWU5BTUlDX1ZPTFVNRSkgewogCQlpZiAodm9sLT5jb3JydXB0
-ZWQgIT0gMCkgewogCQkJdWJpX2VycigiY29ycnVwdGVkIGR5bmFtaWMgdm9sdW1lIik7CmRpZmYg
-LXJ1TiBsaW51eC0yLjYuMTguMy12YW5pbGEvZHJpdmVycy9tdGQvdWJpL3Z0YmwuYwpsaW51eC0y
-LjYuMTguMy1tb2QvZHJpdmVycy9tdGQvdWJpL3Z0YmwuYwotLS0gbGludXgtMi42LjE4LjMtdmFu
-aWxhL2RyaXZlcnMvbXRkL3ViaS92dGJsLmMJMjAwNy0wNy0wOQoxNToyNjo1Mi4wMDAwMDAwMDAg
-KzA1MzAKKysrIGxpbnV4LTIuNi4xOC4zLW1vZC9kcml2ZXJzL210ZC91YmkvdnRibC5jCTIwMDct
-MDctMTAKMTM6Mjc6MTguMDAwMDAwMDAwICswNTMwCkBAIC01MzEsNyArNTMxLDcgQEAKIAkJaWYg
-KHZvbC0+dm9sX3R5cGUgPT0gVUJJX0RZTkFNSUNfVk9MVU1FKSB7CiAJCQl2b2wtPnVzZWRfZWJz
-ID0gdm9sLT5yZXNlcnZlZF9wZWJzOwogCQkJdm9sLT5sYXN0X2ViX2J5dGVzID0gdm9sLT51c2Fi
-bGVfbGViX3NpemU7Ci0JCQl2b2wtPnVzZWRfYnl0ZXMgPSB2b2wtPnVzZWRfZWJzICogdm9sLT51
-c2FibGVfbGViX3NpemU7CisJCQl2b2wtPnVzZWRfYnl0ZXMgPSAodW5zaWduZWQgbG9uZyl2b2wt
-PnVzZWRfZWJzICogdm9sLT51c2FibGVfbGViX3NpemU7CiAJCQljb250aW51ZTsKIAkJfQoKQEAg
-LTU2MSw3ICs1NjEsOCBAQAogCQl9CgogCQl2b2wtPnVzZWRfZWJzID0gc3YtPnVzZWRfZWJzOwot
-CQl2b2wtPnVzZWRfYnl0ZXMgPSAodm9sLT51c2VkX2VicyAtIDEpICogdm9sLT51c2FibGVfbGVi
-X3NpemU7CisJCXZvbC0+dXNlZF9ieXRlcyA9ICh1bnNpZ25lZCBsb25nKSh2b2wtPnVzZWRfZWJz
-IC0gMSkgKgorCQkJCQkJCQkJCQkJdm9sLT51c2FibGVfbGViX3NpemU7CiAJCXZvbC0+dXNlZF9i
-eXRlcyArPSBzdi0+bGFzdF9kYXRhX3NpemU7CiAJCXZvbC0+bGFzdF9lYl9ieXRlcyA9IHN2LT5s
-YXN0X2RhdGFfc2l6ZTsKIAl9CkBAIC01NzgsNyArNTc5LDggQEAKIAl2b2wtPnVzYWJsZV9sZWJf
-c2l6ZSA9IHViaS0+bGViX3NpemU7CiAJdm9sLT51c2VkX2VicyA9IHZvbC0+cmVzZXJ2ZWRfcGVi
-czsKIAl2b2wtPmxhc3RfZWJfYnl0ZXMgPSB2b2wtPnJlc2VydmVkX3BlYnM7Ci0Jdm9sLT51c2Vk
-X2J5dGVzID0gdm9sLT51c2VkX2VicyAqICh1YmktPmxlYl9zaXplIC0gdm9sLT5kYXRhX3BhZCk7
-CisJdm9sLT51c2VkX2J5dGVzID0gKHVuc2lnbmVkIGxvbmcpdm9sLT51c2VkX2VicyAqCisJCQkJ
-CQkJCQkJCSh1YmktPmxlYl9zaXplIC0gdm9sLT5kYXRhX3BhZCk7CiAJdm9sLT52b2xfaWQgPSBV
-QklfTEFZT1VUX1ZPTF9JRDsKCiAJdWJpX2Fzc2VydCghdWJpLT52b2x1bWVzW2ldKTsKCgpPbiA3
-LzEwLzA3LCBWaW5pdCBBZ25paG90cmkgPHZpbml0LmFnbmlob3RyaUBnbWFpbC5jb20+IHdyb3Rl
-Ogo+IFllYWggaXRzIHRydWUKPiBXaGF0IEkgdGhvdWdodCB3YXMgaGF2aW5nIChsb25nIGxvbmcp
-IHRvIGJvdGggb3BlcmFuZHMgd2lsbCBtYWtlIHBhdGNoCj4gY29tcGlsZXIgaW5kZXBlbmRlbnQu
-Cj4KPiBCdXQgeWVhaCBJIG1vZGlmeSBwYXRjaCAmIHNlbmQgdSByaWdodCBhd2F5Lgo+Cj4gT24g
-Ny8xMC8wNywgQXJ0ZW0gQml0eXV0c2tpeSA8ZGVkZWtpbmRAaW5mcmFkZWFkLm9yZz4gd3JvdGU6
-Cj4gPiBWaW5pdCwKPiA+Cj4gPiBPbiBUdWUsIDIwMDctMDctMTAgYXQgMTE6MDcgKzA1MzAsIFZp
-bml0IEFnbmlob3RyaSB3cm90ZToKPiA+ID4gSSB3YXMgZXhwZXJpZW5jaW5nIG92ZXJmbG93cyBp
-biBtdWx0aXBsaWNhdGlvbnMgZm9yCj4gPiA+IHZvbHVtZS0+dXNlZF9ieXRlcyBpbiB2bXQuYyAm
-IHZ0YmwuYywgd2hpbGUgY3JlYXRpbmcgJiByZXNpemluZyBsYXJnZSB2b2x1bWVzLgo+ID4gPgo+
-ID4gPiB2b2wtPnVzZWRfYnl0ZXMgaXMgbG9uZyBsb25nIGhvd2V2ZXIgaXRzIDIgb3BlcmFuZHMg
-dm9sLT51c2VkX2VicyAmCj4gPiA+IHZvbC0+dXNhYmxlX2xlYl9zaXplCj4gPiA+IGFyZSBpbnQu
-IFNvIHRoZWlyIG11bHRpcGxpY2F0aW9uIGZvciBsYXJnZXIgdmFsdWVzIGNhdXNlcyBpbnRlZ2Vy
-IG92ZXJmbG93cy4KPiA+ID4gVHlwZWNhc3RpbmcgdGhlbSBzb2x2ZXMgdGhlIHByb2JsZW0uCj4g
-PiA+Cj4gPiA+IE15IG1hY2hpbmUgJiBmbGFzaCBkZXRhaWxzOgo+ID4gPgo+ID4gPiA2NEJpdCBk
-dWFsLWNvcmUgQU1EIG9wdGVyb24sIDEgR0IgUkFNLCBsaW51eCAyLjYuMTguMy4KPiA+ID4gbXRk
-IHNpemUgPSA2R0IsIHZvbHVtZSBzaXplPSA1R0IsIHBlYl9zaXplID0gNE1CLgo+ID4gPgo+ID4g
-PiBoZXJlcyBwYXRjaCB3aGljaCBkb2VzIHRoZSBmaXguCj4gPgo+ID4gVGhhbmtzIGZvciB0aGUg
-cGF0Y2guIEp1c3Qgb25lIG5vdGU6Cj4gPgo+ID4geW91IGNhbiBhZGQgb25seSBvbmUgKGxvbmcg
-bG9uZykgcHJlZml4IGJlZm9yZSB0aGUgZmlyc3Qgb3BlcmFuZCwgbm8KPiA+IG5lZWQgdG8gYWRk
-IGl0IHRvIHRoZSBzZWNvbmQgb25lIGFuZCBtYWtlIHRoZSBsaW5lIHRvbyBsb25nIHNvIHRoYXQK
-PiA+IHlvdSBuZWVkIHRvIHNwbGl0IGl0Lgo+ID4KPiA+ID4gKyAgICAgICAgICAgICB2b2wtPnVz
-ZWRfYnl0ZXMgPSAobG9uZyBsb25nKXZvbC0+dXNlZF9lYnMgKgo+ID4gPiArICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAobG9uZyBsb25nKXZvbC0+
-dXNhYmxlX2xlYl9zaXplOwo+ID4KPiA+IExpa2UgaGVyZSBpdCBjb3VsZCBiZQo+ID4gICsgICAg
-ICAgICAgICAgIHZvbC0+dXNlZF9ieXRlcyA9IChsb25nIGxvbmcpdm9sLT51c2VkX2VicyAqIHZv
-bC0+dXNhYmxlX2xlYl9zaXplOwo+ID4KPiA+IE90aGVyd2lzZSB0aGUgcGF0Y2ggbG9va3MgZ29v
-ZC4gV2lsbCB5b3UgcmVzZW5kIGl0IG9yIHlvdSBhcmUgZmluZSBpZiBJCj4gPiBhbWVuZCBpdCBt
-eXNlbGY/Cj4gPgo+ID4gLS0KPiA+IEJlc3QgcmVnYXJkcywKPiA+IEFydGVtIEJpdHl1dHNraXkg
-KOLJ1MDDy8nKIOHS1KPNKQo+ID4KPiA+Cj4KPgo+IC0tCj4gSSBmZWVsIGZyZWUgbm93Cj4KCgot
-LSAKSSBmZWVsIGZyZWUgbm93Cg==
+On Tue, 2007-07-10 at 13:28 +0530, Vinit Agnihotri wrote:
+> Heres the modified patch.
+> Not special purpose as such. Its just my flash is a bit large :)
+
+Committed the patch, thanks, although it did not apply cleanly and
+I did hand work. Thy to save your mail and use git-am -i -s as I do.
+
+P.S. It is so much easier to use git or quilt for preparing patches
+then dealing with diff.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
