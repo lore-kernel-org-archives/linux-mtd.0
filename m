@@ -1,18 +1,20 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I89iq-00013B-SI
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 03:01:23 -0400
-Subject: Re: overflows while calculating volume->used_bytes
+	id 1I89rH-0002Pi-Rg
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 03:10:05 -0400
+Subject: Re: [RFC/PATCH] Ubi-Utils: add compare feature
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
-In-Reply-To: <9b52d64c0707092237x48c149cdy24b6eaf1d0baa184@mail.gmail.com>
-References: <9b52d64c0707092237x48c149cdy24b6eaf1d0baa184@mail.gmail.com>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200707092132.02839.alexs@linux.vnet.ibm.com>
+References: <200707092132.02839.alexs@linux.vnet.ibm.com>
 Content-Type: text/plain; charset=utf-8
-Date: Tue, 10 Jul 2007 10:01:08 +0300
-Message-Id: <1184050868.3531.67.camel@sauron>
+Date: Tue, 10 Jul 2007 10:09:48 +0300
+Message-Id: <1184051388.3531.72.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,40 +25,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Vinit,
+Hi Alex,
 
-On Tue, 2007-07-10 at 11:07 +0530, Vinit Agnihotri wrote:
-> I was experiencing overflows in multiplications for
-> volume->used_bytes in vmt.c & vtbl.c, while creating & resizing large vol=
-umes.
+On Mon, 2007-07-09 at 21:32 +0200, Alexander Schmidt wrote:
+> this is a new feature for pfiflash, called "--compare". It allows the use=
+r
+> to simulate a pfiflash session without actually changing the flash
+> content. If the flash content is equal to the data in the pfif file,
+> pfiflash returns zero. A positive value is returned when the flash
+> content differs from the pfi file, which indicates that an update is
+> necessary. This feature is useful when a controller mounts an NFS share
+> during boot and has to determine if a pfi file stored on this share
+> contains a code update. Modified PDD values are also registered by the
+> compare feature.
 >=20
-> vol->used_bytes is long long however its 2 operands vol->used_ebs &
-> vol->usable_leb_size
-> are int. So their multiplication for larger values causes integer overflo=
-ws.
-> Typecasting them solves the problem.
->=20
-> My machine & flash details:
->=20
-> 64Bit dual-core AMD opteron, 1 GB RAM, linux 2.6.18.3.
-> mtd size =3D 6GB, volume size=3D 5GB, peb_size =3D 4MB.
->=20
-> heres patch which does the fix.
+> The patch is already usable but does not contain a check for modified
+> volume type, size or alignment yet. These values need to be read from
+> sysfs and compared to the values in the pfi file. I'm sending this out
+> to get comments/reviews on what I've done yet.
 
-Thanks for the patch. Just one note:
+since I do not use the pfi stuff and it is your team's child, and I
+really do not have time now to give it comments or reviews, I'll just
+blindly push your patch as soon as you send the final version.
 
-you can add only one (long long) prefix before the first operand, no
-need to add it to the second one and make the line too long so that
-you need to split it.
-
-> +		vol->used_bytes =3D (long long)vol->used_ebs *
-> +							(long long)vol->usable_leb_size;
-
-Like here it could be
- +		vol->used_bytes =3D (long long)vol->used_ebs * vol->usable_leb_size;
-
-Otherwise the patch looks good. Will you resend it or you are fine if I
-amend it myself?
+Thank you.
 
 --=20
 Best regards,
