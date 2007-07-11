@@ -1,19 +1,16 @@
-Received: from 3a.49.1343.static.theplanet.com ([67.19.73.58]
-	helo=pug.o-hand.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8LTN-0006Wm-JT
-	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 15:34:11 -0400
-Subject: [PATCH] mtd: Add sync/unblank function to mtdoops
-From: Richard Purdie <rpurdie@openedhand.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
-Date: Tue, 10 Jul 2007 20:33:54 +0100
-Message-Id: <1184096034.6435.82.camel@localhost.localdomain>
+Received: from mo31.po.2iij.net ([210.128.50.54])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8S5x-0001SE-1U
+	for linux-mtd@lists.infradead.org; Tue, 10 Jul 2007 22:38:26 -0400
+Date: Wed, 11 Jul 2007 11:36:56 +0900
+From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MTD: remove Ocelot G support
+Message-Id: <20070711113656.1e34cfda.yoichi_yuasa@tripeaks.co.jp>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: Jarkko Lavinen <jarkko.lavinen@nokia.com>,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: Ralf Baechle <ralf@linux-mips.org>, yoichi_yuasa@tripeaks.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,97 +20,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-mtdoops wasn't ensuring data was flushed to flash in crash situations
-after recent changes in mainline kernels as tracking the
-oops_in_progress variable was no longer enough. We can use the "unblank"
-console call as a sync call to tell us to write out the buffer though.
 
-Therefore add a sync function to mtdoops and call this when console
-unblank events occur.
+This patch has removed Ocelot G support from MTD.
+Ocelot G support has already removed since May 2007.
 
-Signed-off-by: Richard Purdie <rpurdie@openedhand.com>
+Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
 
-Index: linux/drivers/mtd/mtdoops.c
-===================================================================
---- linux.orig/drivers/mtd/mtdoops.c	2007-07-10 20:01:34.000000000 +0100
-+++ linux/drivers/mtd/mtdoops.c	2007-07-10 20:23:09.000000000 +0100
-@@ -271,40 +271,50 @@ static void mtdoops_notify_remove(struct
- 	flush_scheduled_work();
- }
- 
--
--static void
--mtdoops_console_write(struct console *co, const char *s, unsigned int count)
-+static void mtdoops_console_sync(void)
- {
--	struct mtdoops_context *cxt = co->data;
-+	struct mtdoops_context *cxt = &oops_cxt;
- 	struct mtd_info *mtd = cxt->mtd;
--	int i, ret;
-+	size_t retlen;
-+	int ret;
- 
- 	if (!cxt->ready || !mtd)
- 		return;
- 
--	if (!oops_in_progress && cxt->writecount != 0) {
--		size_t retlen;
--		if (cxt->writecount < OOPS_PAGE_SIZE)
--			memset(cxt->oops_buf + cxt->writecount, 0xff,
-+	if (cxt->writecount == 0)
-+		return;
-+
-+	if (cxt->writecount < OOPS_PAGE_SIZE)
-+		memset(cxt->oops_buf + cxt->writecount, 0xff,
- 					OOPS_PAGE_SIZE - cxt->writecount);
- 
--		ret = mtd->write(mtd, cxt->nextpage * OOPS_PAGE_SIZE,
-+	ret = mtd->write(mtd, cxt->nextpage * OOPS_PAGE_SIZE,
- 					OOPS_PAGE_SIZE, &retlen, cxt->oops_buf);
--		cxt->ready = 0;
--		cxt->writecount = 0;
-+	cxt->ready = 0;
-+	cxt->writecount = 0;
- 
--		if ((retlen != OOPS_PAGE_SIZE) || (ret < 0))
--			printk(KERN_ERR "mtdoops: Write failure at %d (%d of %d"
--				" written), err %d.\n",
--				cxt->nextpage * OOPS_PAGE_SIZE, retlen,
--				OOPS_PAGE_SIZE, ret);
-+	if ((retlen != OOPS_PAGE_SIZE) || (ret < 0))
-+		printk(KERN_ERR "mtdoops: Write failure at %d (%d of %d written), err %d.\n",
-+			cxt->nextpage * OOPS_PAGE_SIZE, retlen,	OOPS_PAGE_SIZE, ret);
- 
--		ret = mtdoops_inc_counter(cxt);
--		if (ret == 1)
--			schedule_work(&cxt->work);
-+	ret = mtdoops_inc_counter(cxt);
-+	if (ret == 1)
-+		schedule_work(&cxt->work);
-+}
-+
-+static void
-+mtdoops_console_write(struct console *co, const char *s, unsigned int count)
-+{
-+	struct mtdoops_context *cxt = co->data;
-+	struct mtd_info *mtd = cxt->mtd;
-+	int i;
-+
-+	if (!oops_in_progress) {
-+		mtdoops_console_sync();
-+		return;
- 	}
- 
--	if (!oops_in_progress)
-+	if (!cxt->ready || !mtd)
- 		return;
- 
- 	if (cxt->writecount == 0) {
-@@ -344,6 +354,7 @@ static struct console mtdoops_console = 
- 	.name		= "ttyMTD",
- 	.write		= mtdoops_console_write,
- 	.setup		= mtdoops_console_setup,
-+	.unblank	= mtdoops_console_sync,
- 	.flags		= CON_PRINTBUFFER,
- 	.index		= -1,
- 	.data		= &oops_cxt,
+---
+diff -pruN -X generic/Documentation/dontdiff generic-orig/drivers/mtd/devices/docprobe.c generic/drivers/mtd/devices/docprobe.c
+--- generic-orig/drivers/mtd/devices/docprobe.c	2007-07-11 10:56:21.860678500 +0900
++++ generic/drivers/mtd/devices/docprobe.c	2007-07-11 11:06:49.270809000 +0900
+@@ -84,8 +84,6 @@ static unsigned long __initdata doc_loca
+ #elif defined(CONFIG_MOMENCO_OCELOT)
+ 	0x2f000000,
+         0xff000000,
+-#elif defined(CONFIG_MOMENCO_OCELOT_G)
+-        0xff000000,
+ ##else
+ #warning Unknown architecture for DiskOnChip. No default probe locations defined
+ #endif
+diff -pruN -X generic/Documentation/dontdiff generic-orig/drivers/mtd/nand/diskonchip.c generic/drivers/mtd/nand/diskonchip.c
+--- generic-orig/drivers/mtd/nand/diskonchip.c	2007-07-11 10:56:26.096943250 +0900
++++ generic/drivers/mtd/nand/diskonchip.c	2007-07-11 11:06:15.204680000 +0900
+@@ -59,8 +59,6 @@ static unsigned long __initdata doc_loca
+ #elif defined(CONFIG_MOMENCO_OCELOT)
+ 	0x2f000000,
+ 	0xff000000,
+-#elif defined(CONFIG_MOMENCO_OCELOT_G)
+-	0xff000000,
+ #else
+ #warning Unknown architecture for DiskOnChip. No default probe locations defined
+ #endif
