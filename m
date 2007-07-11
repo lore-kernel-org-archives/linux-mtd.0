@@ -1,15 +1,18 @@
-Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8gei-0003c7-D8
-	for linux-mtd@lists.infradead.org; Wed, 11 Jul 2007 14:11:24 -0400
-Date: Wed, 11 Jul 2007 14:08:12 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] MTD: Remove support for dead HYDROGEN3.
-Message-ID: <Pine.LNX.4.64.0707111406100.10131@localhost.localdomain>
+Received: from elasmtp-scoter.atl.sa.earthlink.net ([209.86.89.67])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8hLg-0002ow-EB
+	for linux-mtd@lists.infradead.org; Wed, 11 Jul 2007 19:55:42 +0100
+Message-ID: <469527A3.7030203@mindspring.com>
+Date: Wed, 11 Jul 2007 14:55:31 -0400
+From: Chuck Meade <chuckmeade@mindspring.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Ralf Baechle <ralf@linux-mips.org>
+To: linux-mtd@lists.infradead.org,
+	"Chuck Meade (mindspring)" <chuckmeade@mindspring.com>
+Subject: Re: jffs2 eraseblock size, and actual flash device eraseblock size
+References: <4689F10B.9040401@mindspring.com>
+In-Reply-To: <4689F10B.9040401@mindspring.com>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,38 +22,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> I am generating a jffs2 image for a target that can have one of two
+> different flash devices installed.  One of these flash devices has
+> an eraseblock size of 0x20000 bytes, and one has an eraseblock size of
+> 0x10000 bytes.  The storage size of the flash devices is the same.
+> It would be nice to be able to use the same jffs2 image on both target
+> flash variants.
+> 
+> I have read what I could find related to this, including the FAQ, such
+> as here:  http://www.linux-mtd.infradead.org/doc/jffs2.html
+> which states "creating an image with smaller eraseblock size than the
+> actual hardware is harmless -- it just gives annoying messages".
+> 
+> I would like to get your expert opinions on what would be the _best_
+> approach here.  The possible approaches are to create an image with the
+> eraseblock set to 0x10000, or to 0x20000.  The 0x10000 size would be
+> smaller than the actual flash eraseblock size on the flash device with
+> actual eraseblock size=0x20000.  And the opposite problem occurs if you
+> create an image with eraseblock 0x20000 -- it is larger than the actual
+> erase block size when using the flash device with eraseblock size 0x10000.
+> 
+> What are the pros and cons here, with respect to efficiency?  Would
+> both of the above choices even work?
 
-Signed-off-by: Robert P. J. Day <rpjday@mindspring.com>
+Any ideas at all on this?  I am looking for input on the following:
+1. If it is a workable solution to have the same jffs2 image being used
+   on devices of two different erase block sizes.
+2. If so, which is the preferrable method, to generate the jffs2 image
+   specifying the smaller or the larger of the two erase block sizes,
+   and why?
 
----
-
-  i've Cc'ed ralf baechle so he can verify that HYDROGEN3 is dead.  (i
-don't *think* i've sent this patch in before.)
-
-
-diff --git a/drivers/mtd/maps/alchemy-flash.c b/drivers/mtd/maps/alchemy-flash.c
-index 84fbe0e..c557e53 100644
---- a/drivers/mtd/maps/alchemy-flash.c
-+++ b/drivers/mtd/maps/alchemy-flash.c
-@@ -75,13 +75,6 @@
- #define BOARD_FLASH_WIDTH 2 /* 16-bits */
- #endif
-
--#ifdef CONFIG_MIPS_HYDROGEN3
--#define BOARD_MAP_NAME "Hydrogen3 Flash"
--#define BOARD_FLASH_SIZE 0x02000000 /* 32MB */
--#define BOARD_FLASH_WIDTH 4 /* 32-bits */
--#define USE_LOCAL_ACCESSORS /* why? */
--#endif
--
- #ifdef CONFIG_MIPS_BOSPORUS
- #define BOARD_MAP_NAME "Bosporus Flash"
- #define BOARD_FLASH_SIZE 0x01000000 /* 16MB */
--- 
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry
-Waterloo, Ontario, CANADA
-
-http://fsdev.net/wiki/index.php?title=Main_Page
-========================================================================
+Thanks for any info you can provide regarding this,
+Chuck
