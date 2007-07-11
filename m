@@ -1,19 +1,22 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8iXl-0005Y4-Pr
-	for linux-mtd@lists.infradead.org; Wed, 11 Jul 2007 16:12:15 -0400
-Date: Wed, 11 Jul 2007 22:08:46 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Chuck Meade <chuckmeade@mindspring.com>
-Subject: Re: jffs2 eraseblock size, and actual flash device eraseblock size
-Message-ID: <20070711200846.GA837@lazybastard.org>
-References: <4689F10B.9040401@mindspring.com> <469527A3.7030203@mindspring.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from moutng.kundenserver.de ([212.227.126.183])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8j3a-00066p-ID
+	for linux-mtd@lists.infradead.org; Wed, 11 Jul 2007 16:45:08 -0400
+From: Arnd Bergmann <arnd@arndb.de>
+To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@logfs.org>
+Subject: Re: [PATCH Take 3] MTD driver for alauda chips
+Date: Wed, 11 Jul 2007 22:36:18 +0200
+References: <20070709223704.GC18501@lazybastard.org>
+	<200707112005.44089.arnd@arndb.de>
+	<20070711191741.GA708@lazybastard.org>
+In-Reply-To: <20070711191741.GA708@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <469527A3.7030203@mindspring.com>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200707112236.18990.arnd@arndb.de>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 11 July 2007 14:55:31 -0400, Chuck Meade wrote:
-> 
-> Any ideas at all on this?  I am looking for input on the following:
-> 1. If it is a workable solution to have the same jffs2 image being used
->    on devices of two different erase block sizes.
+On Wednesday 11 July 2007, J=C3=B6rn Engel wrote:
+> On Wed, 11 July 2007 20:05:43 +0200, Arnd Bergmann wrote:
 
-Unlikely.
+> > > +/* Address shifting */
+> > > +#define PBA_LO(pba) ((pba & 0xF) << 5)
+> > > +#define PBA_HI(pba) (pba >> 3)
+> > > +#define PBA_ZONE(pba) (pba >> 11)
+> >=20
+> > What is PBA?
+>=20
+> I guess it means "physical block address", as opposed to logical block
+> address.  Whatever it means, I didn't see a reason to change the name.
 
-> 2. If so, which is the preferrable method, to generate the jffs2 image
->    specifying the smaller or the larger of the two erase block sizes,
->    and why?
+I could have figured that out myself, the comment was more about the
+problem that the acronym is neither obvious nor explained in a comment ;-)
 
-If you choose the larger size you will have data loss.  The smaller size
-may or may not work.  I leave the required analysis to you.  I'd bet
-small coins against you, large notes if you have summary enabled on your
-image.
-
-Jörn
-
--- 
-When people work hard for you for a pat on the back, you've got
-to give them that pat.
--- Robert Heinlein
+	Arnd <><
