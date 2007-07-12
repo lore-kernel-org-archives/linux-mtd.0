@@ -1,24 +1,21 @@
-Received: from ftp.linux-mips.org ([194.74.144.162])
+Received: from wa-out-1112.google.com ([209.85.146.183])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8ya2-0002Ye-Vl
-	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 09:20:04 -0400
-Received: from localhost.localdomain ([127.0.0.1]:12707 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20022449AbXGLNTi (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
-	Thu, 12 Jul 2007 14:19:38 +0100
-Date: Thu, 12 Jul 2007 14:04:36 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: [PATCH] MTD:  Remove useless references to MIPS_HYDROGEN3 and
-	MIPS_MIRAGE_WHY.
-Message-ID: <20070712130436.GC11019@linux-mips.org>
-References: <Pine.LNX.4.64.0707111700370.19869@localhost.localdomain>
-MIME-Version: 1.0
+	id 1I90Ep-0003dW-15
+	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 11:05:52 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so202499wah
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jul 2007 08:05:50 -0700 (PDT)
+Date: Thu, 12 Jul 2007 23:01:35 +0800
+From: WANG Cong <xiyou.wangcong@gmail.com>
+To: kirk@hpc.ee.ntu.edu.tw, dwmw2@infradead.org
+Subject: [Patch] drivers/mtd/maps/tqm8xxl.c: Style cleanups
+Message-ID: <20070712150135.GA4102@localhost.localdomain>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.64.0707111700370.19869@localhost.localdomain>
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Cc: akpm@osdl.org, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
+Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +25,136 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 11, 2007 at 05:04:02PM -0400, Robert P. J. Day wrote:
 
-> 
-> Signed-off-by: Robert P. J. Day <rpjday@mindspring.com>
-> 
-> ---
-> 
->   this is a superset of the earlier patch.  this one removes *both*
-> apparently useless references from alchemy-flash.c.  ralf already
-> verified that the HYDROGEN3 reference is toast, perhaps he can verify
-> the second one as well.
+Change C++ style comments into K&R's.
+Cut long lines into pieces.
 
-Saw the other one first but anyway, same answer as to the other email.
-It's dead since a while, so:
+This patch is against 2.6.22.1, and can be also applied to
+the last -mm tree.
 
-Acked-by: Ralf Baechle <ralf@linux-mips.org>
+Signed-off-by: WANG Cong <xiyou.wangcong@gmail.com>
 
-There was also another fragment of Hydrogen 3 code left under arch/mips
-which I just deleted.
+---
 
-  Ralf
+ tqm8xxl.c |   41 +++++++++++++++++++++++++----------------
+ 1 file changed, 25 insertions(+), 16 deletions(-)
+
+Index: linux-2.6.22.1/drivers/mtd/maps/tqm8xxl.c
+===================================================================
+--- a/drivers/mtd/maps/tqm8xxl.c	2007-04-26 11:08:32.000000000 +0800
++++ b/drivers/mtd/maps/tqm8xxl.c	2007-07-05 00:16:16.000000000 +0800
+@@ -38,7 +38,7 @@
+ #define FLASH_SIZE 0x00800000
+ #define FLASH_BANK_MAX 4
+ 
+-// trivial struct to describe partition information
++/* trivial struct to describe partition information*/
+ struct mtd_part_def
+ {
+ 	int nums;
+@@ -46,7 +46,7 @@
+ 	struct mtd_partition* mtd_part;
+ };
+ 
+-//static struct mtd_info *mymtd;
++/*static struct mtd_info *mymtd;*/
+ static struct mtd_info* mtd_banks[FLASH_BANK_MAX];
+ static struct map_info* map_banks[FLASH_BANK_MAX];
+ static struct mtd_part_def part_banks[FLASH_BANK_MAX];
+@@ -106,7 +106,7 @@
+ 	  .name = "jffs",
+ 	  .offset = 0x00200000,
+ 	  .size = 0x00200000,
+-	  //.size = MTDPART_SIZ_FULL,
++	  /*.size = MTDPART_SIZ_FULL,*/
+ 	}
+ };
+ #endif
+@@ -121,10 +121,11 @@
+ 	flash_addr = bd->bi_flashstart;
+ 	flash_size = bd->bi_flashsize;
+ 
+-	//request maximum flash size address space
++	/*request maximum flash size address space*/
+ 	start_scan_addr = ioremap(flash_addr, flash_size);
+ 	if (!start_scan_addr) {
+-		printk(KERN_WARNING "%s:Failed to ioremap address:0x%x\n", __FUNCTION__, flash_addr);
++		printk(KERN_WARNING "%s:Failed to ioremap address:0x%x\n",
++			__FUNCTION__, flash_addr);
+ 		return -EIO;
+ 	}
+ 
+@@ -132,12 +133,14 @@
+ 		if(mtd_size >= flash_size)
+ 			break;
+ 
+-		printk(KERN_INFO "%s: chip probing count %d\n", __FUNCTION__, idx);
++		printk(KERN_INFO "%s: chip probing count %d\n", __FUNCTION__,
++			idx);
+ 
+ 		map_banks[idx] = kzalloc(sizeof(struct map_info), GFP_KERNEL);
+ 		if(map_banks[idx] == NULL) {
+ 			ret = -ENOMEM;
+-			/* FIXME: What if some MTD devices were probed already? */
++			/* FIXME: What if some MTD devices were probed
++			 already? */
+ 			goto error_mem;
+ 		}
+ 
+@@ -145,7 +148,8 @@
+ 
+ 		if (!map_banks[idx]->name) {
+ 			ret = -ENOMEM;
+-			/* FIXME: What if some MTD devices were probed already? */
++			/* FIXME: What if some MTD devices were probed
++			 already? */
+ 			goto error_mem;
+ 		}
+ 		sprintf(map_banks[idx]->name, "TQM8xxL%d", idx);
+@@ -170,7 +174,7 @@
+ 			map_banks[idx]->phys += mtd_banks[idx-1]->size;
+ 		}
+ 
+-		//start to probe flash chips
++		/*start to probe flash chips*/
+ 		mtd_banks[idx] = do_map_probe("cfi_probe", map_banks[idx]);
+ 
+ 		if (mtd_banks[idx]) {
+@@ -178,7 +182,8 @@
+ 			mtd_size += mtd_banks[idx]->size;
+ 			num_banks++;
+ 
+-			printk(KERN_INFO "%s: bank%d, name:%s, size:%dbytes \n", __FUNCTION__, num_banks,
++			printk(KERN_INFO "%s: bank%d, name:%s, size:%dbytes \n",
++				__FUNCTION__, num_banks,
+ 			mtd_banks[idx]->name, mtd_banks[idx]->size);
+ 		}
+ 	}
+@@ -204,17 +209,21 @@
+ 
+ 	for(idx = 0; idx < num_banks ; idx++) {
+ 		if (part_banks[idx].nums == 0) {
+-			printk(KERN_NOTICE "TQM flash%d: no partition info available, registering whole flash at once\n", idx);
++			printk(KERN_NOTICE "TQM flash%d: no partition info "
++				"available, registering whole flash at once\n",
++				idx);
+ 			add_mtd_device(mtd_banks[idx]);
+ 		} else {
+-			printk(KERN_NOTICE "TQM flash%d: Using %s partition definition\n",
+-					idx, part_banks[idx].type);
+-			add_mtd_partitions(mtd_banks[idx], part_banks[idx].mtd_part,
+-								part_banks[idx].nums);
++			printk(KERN_NOTICE "TQM flash%d: Using %s partition "
++				"definition\n",
++				idx, part_banks[idx].type);
++			add_mtd_partitions(mtd_banks[idx],
++				part_banks[idx].mtd_part, part_banks[idx].nums);
+ 		}
+ 	}
+ #else
+-	printk(KERN_NOTICE "TQM flash: registering %d whole flash banks at once\n", num_banks);
++	printk(KERN_NOTICE "TQM flash: registering %d whole flash banks at "
++		"once\n", num_banks);
+ 	for(idx = 0 ; idx < num_banks ; idx++)
+ 		add_mtd_device(mtd_banks[idx]);
+ #endif
