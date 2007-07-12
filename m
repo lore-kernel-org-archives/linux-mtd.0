@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8xnW-0001iW-QI
-	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 08:30:27 -0400
-Subject: Re: UBI: io_write_path
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: brijesh.singh@calsoftinc.com
-In-Reply-To: <33922.172.16.0.34.1184236297.squirrel@webmail.calsoftinc.com>
-References: <33922.172.16.0.34.1184236297.squirrel@webmail.calsoftinc.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 12 Jul 2007 15:28:58 +0300
-Message-Id: <1184243338.3531.116.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from wx-out-0506.google.com ([66.249.82.232])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8yV5-0002Ei-Tw
+	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 09:14:34 -0400
+Received: by wx-out-0506.google.com with SMTP id s7so140378wxc
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 12 Jul 2007 06:14:30 -0700 (PDT)
+Message-ID: <cc5198fe0707120608u303a9959pc33c1c0b7bba956d@mail.gmail.com>
+Date: Thu, 12 Jul 2007 16:08:10 +0300
+From: "Alex Landau" <landau.alex@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd-utils: flash_erase.c: Skip bad blocks a-la flash_eraseall
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,71 +23,202 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+flash_erase used to choke on the first bad block. This patch copies
+the logic used to skip bad blocks in flash_eraseall to flash_erase.
 
-On Thu, 2007-07-12 at 16:01 +0530, brijesh.singh@calsoftinc.com wrote:
-> Hi,
->    I walked through eba_write path.I found that,if EBUSY or EAGAIN is
-> returned as err code from ubi_io_write_vid_hdr or ubi_io_write_data
-> ,still the PEB is put back to wear-levelling.This is
-> unnecessary.Shouldn't it retry on same PEB again?
-
-AFAICS if any error except -EIO is returned, we just return it up (see
-below)
-
-Probably you are right, -EBUSY and -EAGAIN could be treated differently.
-We could put this LEB and try a new one. But we cannot try the same one
-I guess, at least it does not sound safe. Who knows, may be something
-was written? It is safer to take a new PEB. But yes, it is not
-necessarily to torture this LEB in case of -EBUSY and -EAGAIN.
-
-Feel free to send a patch. It would be also nice if you pointed when MTD
-could return these errors, because I doubt it is possible in current
-implementation. But anyways, handling those gracefully is good.
-
-
-> Code Snip:
-> -------------------------------------------------------------------------=
+Signed-off-by: Alex Landau <landau.alex@gmail.com>
 ---
-> retry:
-> 	pnum =3D ubi_wl_get_peb(ubi, dtype);
-> 	if (pnum < 0) {
-> 		ubi_free_vid_hdr(ubi, vid_hdr);
-> 		leb_write_unlock(ubi, vol_id, lnum);
-> 		return pnum;
-> 	}
->=20
-> 	err =3D ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
-> 	if (err) {
-> 		ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
-> 			 vol_id, lnum, pnum);
-> 		goto write_error;
-> 	}
->=20
-> 	err =3D ubi_io_write_data(ubi, buf, pnum, offset, len);
-> 	if (err) {
-> 		ubi_warn("failed to write %d bytes at offset %d of LEB %d:%d, " "PEB
-> %d", len, offset, vol_id, lnum, pnum);
-> 		goto write_error;
-> 	}
-> ...
->=20
-> write_error:
-> 	if (err !=3D -EIO || !ubi->bad_allowed) {
-> 		ubi_ro_mode(ubi);
-> 		leb_write_unlock(ubi, vol_id, lnum);
-> 		ubi_free_vid_hdr(ubi, vid_hdr);
-> 		return err;
-> 	}
 
-So here we switch to RO mode and return the error up. We could do
-better. Like -ENOMEM should not cause switching to RO mode. -EAGAIN and
--EBUSY - similarly.
+P.S. I tried to make sure gmail does not word wrap the patch,
+but I'm still not sure. Please be lenient.
 
-I bet there are other places where error handling could be smarter. Feel
-free to send patches.
+diff --git a/flash_erase.c b/flash_erase.c
+index fdf9918..a153cbf 100644
+--- a/flash_erase.c
++++ b/flash_erase.c
+@@ -3,6 +3,7 @@
+  */
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+ #include <unistd.h>
++#include <errno.h>
+ #include <stdlib.h>
+ #include <stdio.h>
+ #include <fcntl.h>
+@@ -14,8 +15,17 @@
+
+ int region_erase(int Fd, int start, int count, int unlock, int regcount)
+ {
+-    int i, j;
++    int i, j, isNAND;
+     region_info_t * reginfo;
++    mtd_info_t meminfo;
++    int bbtest = 1;
++
++    if (ioctl(Fd,MEMGETINFO,&meminfo) < 0) {
++        perror("Unable to get MTD device infos");
++        close(Fd);
++        return 8;
++    }
++    isNAND = meminfo.type == MTD_NANDFLASH ? 1 : 0;
+
+     reginfo = calloc(regcount, sizeof(region_info_t));
+
+@@ -52,30 +62,55 @@ int region_erase(int Fd, int start, int count, int
+unlock, int regcount)
+
+     for(j = 0; (j < count)&&(i < regcount); j++)
+     {
++        int skip = 0;
+         erase_info_t erase;
+         region_info_t * r = &(reginfo[i]);
+
+         erase.start = start;
+         erase.length = r->erasesize;
+
+-        if(unlock != 0)
+-        { //Unlock the sector first.
+-            if(ioctl(Fd, MEMUNLOCK, &erase) != 0)
++        if (bbtest) {
++            loff_t offset = erase.start;
++            int ret = ioctl(Fd, MEMGETBADBLOCK, &offset);
++            if (ret > 0) {
++                printf ("\nSkipping bad block at 0x%08x\n", erase.start);
++                skip = 1;
++            } else if (ret < 0) {
++                if (errno == EOPNOTSUPP) {
++                    bbtest = 0;
++                    if (isNAND) {
++                        perror("\nBad block check not available");
++                        close(Fd);
++                        return 8;
++                    }
++                } else {
++                    perror("\nMTD get bad block failed");
++                    close(Fd);
++                    return 8;
++                }
++            }
++        }
++
++        if (!skip) {
++            if(unlock != 0)
++            { //Unlock the sector first.
++                if(ioctl(Fd, MEMUNLOCK, &erase) != 0)
++                {
++                    perror("\nMTD Unlock failure");
++                    close(Fd);
++                    return 8;
++                }
++            }
++            printf("\rPerforming Flash Erase of length %u at offset 0x%x",
++                    erase.length, erase.start);
++            fflush(stdout);
++            if(ioctl(Fd, MEMERASE, &erase) != 0)
+             {
+-                perror("\nMTD Unlock failure");
++                perror("\nMTD Erase failure");
+                 close(Fd);
+                 return 8;
+             }
+         }
+-        printf("\rPerforming Flash Erase of length %u at offset 0x%x",
+-                erase.length, erase.start);
+-        fflush(stdout);
+-        if(ioctl(Fd, MEMERASE, &erase) != 0)
+-        {
+-            perror("\nMTD Erase failure");
+-            close(Fd);
+-            return 8;
+-        }
+
+
+         start += erase.length;
+@@ -94,42 +129,67 @@ int region_erase(int Fd, int start, int count,
+int unlock, int regcount)
+ int non_region_erase(int Fd, int start, int count, int unlock)
+ {
+     mtd_info_t meminfo;
++    erase_info_t erase;
++    int isNAND;
++    int bbtest = 1;
+
+-    if (ioctl(Fd,MEMGETINFO,&meminfo) == 0)
+-    {
+-        erase_info_t erase;
+-
+-        erase.start = start;
++    if (ioctl(Fd,MEMGETINFO,&meminfo) < 0) {
++        perror("Unable to get MTD device infos");
++        close(Fd);
++        return 8;
++    }
++    isNAND = meminfo.type == MTD_NANDFLASH ? 1 : 0;
+
+-        erase.length = meminfo.erasesize;
++    erase.start = start;
++    erase.length = meminfo.erasesize;
+
+-        for (; count > 0; count--) {
+-            printf("\rPerforming Flash Erase of length %u at offset 0x%x",
+-                    erase.length, erase.start);
+-            fflush(stdout);
++    for (; count > 0; count--, erase.start += meminfo.erasesize) {
++        printf("\rPerforming Flash Erase of length %u at offset 0x%x",
++                erase.length, erase.start);
++        fflush(stdout);
+
+-            if(unlock != 0)
+-            {
+-                //Unlock the sector first.
+-                printf("\rPerforming Flash unlock at offset 0x%x",erase.start);
+-                if(ioctl(Fd, MEMUNLOCK, &erase) != 0)
+-                {
+-                    perror("\nMTD Unlock failure");
++        if (bbtest) {
++            loff_t offset = erase.start;
++            int ret = ioctl(Fd, MEMGETBADBLOCK, &offset);
++            if (ret > 0) {
++                printf ("\nSkipping bad block at 0x%08x\n", erase.start);
++                continue;
++            } else if (ret < 0) {
++                if (errno == EOPNOTSUPP) {
++                    bbtest = 0;
++                    if (isNAND) {
++                        perror("\nBad block check not available");
++                        close(Fd);
++                        return 8;
++                    }
++                } else {
++                    perror("\nMTD get bad block failed");
+                     close(Fd);
+                     return 8;
+                 }
+             }
++        }
+
+-            if (ioctl(Fd,MEMERASE,&erase) != 0)
++        if(unlock != 0)
++        {
++            //Unlock the sector first.
++            printf("\rPerforming Flash unlock at offset 0x%x",erase.start);
++            if(ioctl(Fd, MEMUNLOCK, &erase) != 0)
+             {
+-                perror("\nMTD Erase failure");
++                perror("\nMTD Unlock failure");
+                 close(Fd);
+                 return 8;
+             }
+-            erase.start += meminfo.erasesize;
+         }
+-        printf(" done\n");
++
++        if (ioctl(Fd,MEMERASE,&erase) != 0)
++        {
++            perror("\nMTD Erase failure");
++            close(Fd);
++            return 8;
++        }
+     }
++    printf(" done\n");
+     return 0;
+ }
