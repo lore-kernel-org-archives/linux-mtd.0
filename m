@@ -1,18 +1,18 @@
-Received: from co202.xi-lite.net ([149.6.83.202] helo=toronto.xi-lite.net)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8vac-0008Ol-6s
-	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 06:08:04 -0400
-Message-ID: <4695FC93.7040800@parrot.com>
-Date: Thu, 12 Jul 2007 12:04:03 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from inbox2.nyi.net ([64.147.100.114])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I8vxY-0000J8-Qj
+	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 06:31:46 -0400
+Received: from webmail.calsoftinc.com (mail.calsofthq.com [172.16.0.7])
+	by mail.calsofthq.com (8.13.6/8.13.6) with ESMTP id l6CAVboq019693
+	for <linux-mtd@lists.infradead.org>; Thu, 12 Jul 2007 16:01:37 +0530
+Message-ID: <33922.172.16.0.34.1184236297.squirrel@webmail.calsoftinc.com>
+Date: Thu, 12 Jul 2007 16:01:37 +0530 (IST)
+Subject: UBI: io_write_path
+From: brijesh.singh@calsoftinc.com
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-To: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: [PATCH] S3C24XX large page NAND support
-References: <20070709231147.GA30072@fluff.org.uk>
-In-Reply-To: <20070709231147.GA30072@fluff.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,91 +22,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Dooks wrote:
-> This adds support for using large page NAND devices
-> with the S3C24XX NAND controllers. This also adds the 
-> file Documentation/arm/Samsung-S3C24XX/NAND.txt to
-> describe the differences.
-> 
-> The basic stratergy is to maintain 3 bytes of ECC for
-> each 256 byte block read from the NAND which is similar
-> to the default kernel layout (altough we are using the
-> hardware ECC generator to make our ECC calculations).
-> 
-> Signed-off-by: Ben Dooks <ben-linux@fluff.org>
-> 
-> Index: linux-2.6.21-tmp/drivers/mtd/nand/s3c2410.c
-> ===================================================================
-> --- linux-2.6.21-tmp.orig/drivers/mtd/nand/s3c2410.c	2007-04-26 04:08:32.000000000 +0100
-> +++ linux-2.6.21-tmp/drivers/mtd/nand/s3c2410.c	2007-05-22 12:26:49.000000000 +0100
-> @@ -473,7 +473,7 @@ static int s3c2440_nand_calculate_ecc(st
->  	ecc_code[1] = ecc >> 8;
->  	ecc_code[2] = ecc >> 16;
->  
-> -	pr_debug("%s: returning ecc %06lx\n", __func__, ecc);
-> +	pr_debug("%s: returning ecc %06lx\n", __func__, ecc & 0xffffff);
->  
->  	return 0;
->  }
-> @@ -630,9 +630,6 @@ static void s3c2410_nand_init_chip(struc
->  		chip->ecc.calculate = s3c2410_nand_calculate_ecc;
->  		chip->ecc.correct   = s3c2410_nand_correct_data;
->  		chip->ecc.mode	    = NAND_ECC_HW;
-> -		chip->ecc.size	    = 512;
-> -		chip->ecc.bytes	    = 3;
-> -		chip->ecc.layout    = &nand_hw_eccoob;
->  
->  		switch (info->cpu_type) {
->  		case TYPE_S3C2410:
-> @@ -656,6 +653,34 @@ static void s3c2410_nand_init_chip(struc
->  	}
->  }
->  
-> +/* s3c2410_nand_update_chip
-> + *
-> + * post-probe chip update, to change any items, such as the
-> + * layout for large page nand
-> + */
-> +
-> +static void s3c2410_nand_update_chip(struct s3c2410_nand_info *info,
-> +				     struct s3c2410_nand_mtd *nmtd)
-> +{
-> +	struct nand_chip *chip = &nmtd->chip;
-> +
-> +	printk("%s: chip %p: %d\n", __func__, chip, chip->page_shift);
-> +
-> +	if (hardware_ecc) {
-> +		/* change the behaviour depending on wether we are using
-> +		 * the large or small page nand device */
-> +
-> +		if (chip->page_shift > 10) {
-> +			chip->ecc.size	    = 256;
-> +			chip->ecc.bytes	    = 3;
-> +		} else {
-> +			chip->ecc.size	    = 512;
-> +			chip->ecc.bytes	    = 3;
-> +			chip->ecc.layout    = &nand_hw_eccoob;
-> +		}
-> +	}
-> +}
-> +
->  /* s3c2410_nand_probe
->   *
->   * called by device layer when it finds a device matching
-> @@ -762,9 +787,12 @@ static int s3c24xx_nand_probe(struct pla
->  
->  		s3c2410_nand_init_chip(info, nmtd, sets);
->  
-> -		nmtd->scan_res = nand_scan(&nmtd->mtd, (sets) ? sets->nr_chips : 1);
-> +		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
-> +						 (sets) ? sets->nr_chips : 1);
->  
->  		if (nmtd->scan_res == 0) {
-> +			s3c2410_nand_update_chip(info, nmtd);
-> +			nand_scan_tail(&nmtd->mtd);
->  			s3c2410_nand_add_partition(info, nmtd, sets);
->  		}
-Shouldn't nand_scan_ident and nand_scan_tail be used here ?
+Hi,
+   I walked through eba_write path.I found that,if EBUSY or EAGAIN is
+returned as err code from ubi_io_write_vid_hdr or ubi_io_write_data
+,still the PEB is put back to wear-levelling.This is
+unnecessary.Shouldn't it retry on same PEB again?
+Code Snip:
+----------------------------------------------------------------------------
+retry:
+	pnum = ubi_wl_get_peb(ubi, dtype);
+	if (pnum < 0) {
+		ubi_free_vid_hdr(ubi, vid_hdr);
+		leb_write_unlock(ubi, vol_id, lnum);
+		return pnum;
+	}
 
+	err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
+	if (err) {
+		ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
+			 vol_id, lnum, pnum);
+		goto write_error;
+	}
 
-Matthieu
+	err = ubi_io_write_data(ubi, buf, pnum, offset, len);
+	if (err) {
+		ubi_warn("failed to write %d bytes at offset %d of LEB %d:%d, " "PEB
+%d", len, offset, vol_id, lnum, pnum);
+		goto write_error;
+	}
+...
+
+write_error:
+	if (err != -EIO || !ubi->bad_allowed) {
+		ubi_ro_mode(ubi);
+		leb_write_unlock(ubi, vol_id, lnum);
+		ubi_free_vid_hdr(ubi, vid_hdr);
+		return err;
+	}
+
+	/*
+	 * Fortunately, this is the first write operation to this physical
+	 * eraseblock, so just put it and request a new one. We assume that if
+	 * this physical eraseblock went bad, the erase code will handle that.
+	 */
+	err = ubi_wl_put_peb(ubi, pnum, 1);
+	if (err || ++tries > UBI_IO_RETRIES) {
+		ubi_ro_mode(ubi);
+		leb_write_unlock(ubi, vol_id, lnum);
+		ubi_free_vid_hdr(ubi, vid_hdr);
+		return err;
+	}
+
+	vid_hdr->sqnum = cpu_to_be64(next_sqnum(ubi));
+	ubi_msg("try another PEB");
+	goto retry;
+
+-------------------------------------------------------------------------
+Regards,
+Brijesh
