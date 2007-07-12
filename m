@@ -1,22 +1,11 @@
-Received: from ftp.linux-mips.org ([194.74.144.162])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I8xR7-0001Aw-71
-	for linux-mtd@lists.infradead.org; Thu, 12 Jul 2007 08:06:22 -0400
-Received: from localhost.localdomain ([127.0.0.1]:14567 "EHLO
-	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
-	id S20022385AbXGLMGS (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
-	Thu, 12 Jul 2007 13:06:18 +0100
-Date: Thu, 12 Jul 2007 12:51:15 +0100
-From: Ralf Baechle <ralf@linux-mips.org>
-To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-Subject: Re: [PATCH] MTD: remove Ocelot G support
-Message-ID: <20070712115115.GA8775@linux-mips.org>
-References: <20070711113656.1e34cfda.yoichi_yuasa@tripeaks.co.jp>
+Message-ID: <511112830.1184243210105.JavaMail.root@fepweb13>
+Date: Thu, 12 Jul 2007 5:26:49 -0700
+From: "Mr.Ming Yang" <griessmeyer@charter.net>
+Subject: ASSISTANCE NEEDED CODE[AM-052]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070711113656.1e34cfda.yoichi_yuasa@tripeaks.co.jp>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Reply-To: yangmingmr1@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,13 +15,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 11, 2007 at 11:36:56AM +0900, Yoichi Yuasa wrote:
+Mr.Ming Yang
+12/07/2007
+I am Mr.Ming Yang,director of operations of the Hang Seng Bank Ltd,Sai
+Wan Ho Branch.I have a obscured business suggestion for you concerning
+one of our client. This propositon is that which demands utmost
+attention , committment and cooperation which would be used aggressively to pursueresults as we communicate along .This business proposal came as a
+result of a certain prominent client of Hang Seng Bank Ltd,Sai Wan Ho Branch
 
-> This patch has removed Ocelot G support from MTD.
-> Ocelot G support has already removed since May 2007.
-> 
-> Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+I am prepared to release further details to you based on your response and
+communications.If you are interested is assisting 
+me,I will give you more details.
 
-ACK.
+yangmingmr1@yahoo.com.hk
 
-  Ralf
+Awaiting your response.
+
+Sincerely,
+
+Mr.Ming Yang
+==========================================
+Mr.Ming Yang
+12/07/2007
+I am Mr.Ming Yang,director of operations of the Hang Seng Bank Ltd,Sai
+Wan Ho Branch.I have a obscured business suggestion for you concerning
+one of our client. This propositon is that which demands utmost
+attention ,committment and cooperation which would be used aggressively to pursueresults as we communicate along .This business proposal came as a
+result of a certain prominent client of Hang Seng Bank Ltd,Sai Wan Ho Branch
+
+I am prepared to release further details to you based on your response and
+communications.If you are interested is assisting 
+me,I will give you more details.
+
+yangmingmr1@yahoo.com.hk
+
+Awaiting your response.
+
+Sincerely,
+
+Mr.Ming Yang
