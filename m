@@ -1,15 +1,15 @@
-Received: from wa-out-1112.google.com ([209.85.146.183])
+Received: from py-out-1112.google.com ([64.233.166.179])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I9Mey-0001zC-W9
-	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 11:02:23 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so587922wah
+	id 1I9Mkz-0002EX-47
+	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 11:08:34 -0400
+Received: by py-out-1112.google.com with SMTP id a25so871219pyi
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jul 2007 08:02:17 -0700 (PDT)
-Date: Fri, 13 Jul 2007 23:05:03 +0800
+	Fri, 13 Jul 2007 08:08:31 -0700 (PDT)
+Date: Fri, 13 Jul 2007 23:11:06 +0800
 From: WANG Cong <xiyou.wangcong@gmail.com>
-To: Ralf Baechle <ralf@linux-mips.org>
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [Resend][Patch] drivers/mtd/maps/tqm8xxl.c: Do some cleanups
-Message-ID: <20070713150503.GA4023@localhost.localdomain>
+Message-ID: <20070713151106.GB4023@localhost.localdomain>
 References: <20070712150135.GA4102@localhost.localdomain>
 	<1184256718.32199.111.camel@weaponx.rchland.ibm.com>
 	<20070713034822.GA2370@localhost.localdomain>
@@ -17,12 +17,14 @@ References: <20070712150135.GA4102@localhost.localdomain>
 	<20070713131458.GA1997@localhost.localdomain>
 	<1184333884.8809.5.camel@hades.cambridge.redhat.com>
 	<20070713142442.GA8190@linux-mips.org>
+	<1184337089.8809.11.camel@hades.cambridge.redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20070713142442.GA8190@linux-mips.org>
-Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>, kirk@hpc.ee.ntu.edu.tw,
-	linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1184337089.8809.11.camel@hades.cambridge.redhat.com>
+Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>,
+	Ralf Baechle <ralf@linux-mips.org>, kirk@hpc.ee.ntu.edu.tw,
+	linux-mtd@lists.infradead.org
 Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -33,32 +35,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 13, 2007 at 03:24:43PM +0100, Ralf Baechle wrote:
->On Fri, Jul 13, 2007 at 02:38:03PM +0100, David Woodhouse wrote:
->
->> > drivers/mtd/maps/pmcmsp-flash.c:63: error: 'ELB_1PC_EN_REG' undeclared (first use in this function)
->> > drivers/mtd/maps/pmcmsp-flash.c:63: error: 'SINGLE_PCCARD' undeclared (first use in this function)
->> > 
->> > Did I miss something?
+On Fri, Jul 13, 2007 at 03:31:29PM +0100, David Woodhouse wrote:
+>On Fri, 2007-07-13 at 15:24 +0100, Ralf Baechle wrote:
+>> +config MTD_PMC_MSP_EVM
+>> +       tristate "CFI Flash device mapped on PMC-Sierra MSP"
+>> +       depends on PMC_MSP && MTD_CFI
+>> +       select MTD_PARTITIONS
 >> 
->> I think that map driver should probably depend on CONFIG_PMC_MSP. Ralf?
+>> drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PMC_MSP_EVM)   +=
+>> pmcmsp-flash.o
+>> 
+>> Is he trying to build something else than very recent kernel.org
+>> tree? 
 >
->*confused*
->
->68aa0fa87f6d4b2f5e8ad39ecaec8bba9137bb3d did add:
->
->+config MTD_PMC_MSP_EVM
->+       tristate "CFI Flash device mapped on PMC-Sierra MSP"
->+       depends on PMC_MSP && MTD_CFI
->+       select MTD_PARTITIONS
->
->drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
->
->Is he trying to build something else than very recent kernel.org tree?
+>Hm. His mail did say "Even when I use `make allyesconfig`, I still can't
+>compile some drivers. I should add the corresponding CONFIGs manually."
+>          
+>I wonder if he disabled the correct conditions and then tried building
+>it in an i386 kernel?
 >
 
-Yes. very recent, 2.6.22.1.
-
+Er, I first used 'make allyesconfig', then added CONFIG_MTD_PMC_MSP_EVM=y
+manually. And yes, I am on i386.
 
 -- 
 
