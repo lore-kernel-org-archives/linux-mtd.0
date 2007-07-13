@@ -1,30 +1,26 @@
-Received: from e33.co.us.ibm.com ([32.97.110.151])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1I9Kqa-0008IF-VM
-	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 09:06:14 -0400
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l6DD6ArN004710
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 09:06:10 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
-	l6DD6A0a211000
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 07:06:10 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l6DD69fP030424
-	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 07:06:09 -0600
-Subject: Re: UBI: Can we handle -EINTR differently in erase/write path???
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
-In-Reply-To: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
-References: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 13 Jul 2007 08:06:03 -0500
-Message-Id: <1184331963.6456.3.camel@weaponx.rchland.ibm.com>
+Received: from wa-out-1112.google.com ([209.85.146.180])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1I9Kwc-00005d-0z
+	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 09:12:27 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so552776wah
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 13 Jul 2007 06:12:24 -0700 (PDT)
+Date: Fri, 13 Jul 2007 21:14:58 +0800
+From: WANG Cong <xiyou.wangcong@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [Resend][Patch] drivers/mtd/maps/tqm8xxl.c: Do some cleanups
+Message-ID: <20070713131458.GA1997@localhost.localdomain>
+References: <20070712150135.GA4102@localhost.localdomain>
+	<1184256718.32199.111.camel@weaponx.rchland.ibm.com>
+	<20070713034822.GA2370@localhost.localdomain>
+	<1184320602.2785.18.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1184320602.2785.18.camel@shinybook.infradead.org>
+Cc: kirk@hpc.ee.ntu.edu.tw, akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org
+Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,29 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-07-13 at 11:37 +0530, Vinit Agnihotri wrote:
-> Hi heres few code snip from erase_worker(); from wl.c
-> if (err != -EIO) {
->         /*
->          * If this is not %-EIO, we have no idea what to do. Scheduling
->          * this physical eraseblock for erasure again would cause
->          * errors again and again. Well, lets switch to RO mode.
->          */
->         ubi_ro_mode(ubi);
->         return err;
->     }
-> 
-> Suppose while erasure in progress & someone pressed "Ctrl+C" then UBI
+On Fri, Jul 13, 2007 at 10:56:42AM +0100, David Woodhouse wrote:
+>On Fri, 2007-07-13 at 11:48 +0800, WANG Cong wrote:
+>>                 if(map_banks[idx] == NULL) {
+>>                         ret = -ENOMEM;
+>> -                       /* FIXME: What if some MTD devices were probed already? */
+>> +                       /* FIXME: What if some MTD devices were probed
+>> +                       already? */
+>>                         goto error_mem;
+>>                 } 
+>
+>
+>That's just horrid. Leave it as it was.
+>
 
-This is the kernel...  the erase_worker function is called from a kernel
-thread that doesn't allow signals.  How would it get a "Ctrl+C" event?
+Sorry, I can't fully understand you. You mean only the above change is horrid or
+the entire patch?
 
-> This is my initial understanding about handling -EINTR, however I
-> would like to know views of others. If all agrees I can post patch for
-> same.
+I have some questions about mtd/maps drivers. Even when I use `make allyesconfig`,
+I still can't compile some drivers. I should add the corresponding CONFIGs manually.
+Why this? And I still got some errors and warnings, such as:
 
-That is how you handle the EINTR errno in userspace.  I think you'd need
-to show how -EINTR could show up in this code path in the kernel before
-worrying about how to handle it.
+drivers/mtd/maps/pmcmsp-flash.c:40:22: error: msp_prom.h: No such file or directory
+drivers/mtd/maps/pmcmsp-flash.c:41:22: error: msp_regs.h: No such file or directory
+drivers/mtd/maps/pmcmsp-flash.c: In function 'init_msp_flash':
+drivers/mtd/maps/pmcmsp-flash.c:62: error: 'DEV_ID_REG' undeclared (first use in this function)
+drivers/mtd/maps/pmcmsp-flash.c:62: error: (Each undeclared identifier is reported only once
+drivers/mtd/maps/pmcmsp-flash.c:62: error: for each function it appears in.)
+drivers/mtd/maps/pmcmsp-flash.c:62: error: 'DEV_ID_SINGLE_PC' undeclared (first use in this function)
+drivers/mtd/maps/pmcmsp-flash.c:63: error: 'ELB_1PC_EN_REG' undeclared (first use in this function)
+drivers/mtd/maps/pmcmsp-flash.c:63: error: 'SINGLE_PCCARD' undeclared (first use in this function)
 
-josh
+Did I miss something?
+
+
+Thanks!
+
+-- 
+
+If loving computers is wrong, I don't want to be right.
