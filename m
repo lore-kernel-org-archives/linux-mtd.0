@@ -1,25 +1,28 @@
-Received: from mu-out-0910.google.com ([209.85.134.185])
+Received: from ftp.linux-mips.org ([194.74.144.162])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I9Lsj-00012k-Uk
-	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 10:12:32 -0400
-Received: by mu-out-0910.google.com with SMTP id w1so517338mue
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jul 2007 07:12:27 -0700 (PDT)
-Message-ID: <625fc13d0707130712y1ab1a83dja4df80d103ad1b1f@mail.gmail.com>
-Date: Fri, 13 Jul 2007 09:12:26 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: dsaxena@plexity.net
-Subject: Re: [PATCH][MTD] Add COMPATIBLE_IOCTL() for MEMGETOOBSEL
-In-Reply-To: <20070713063347.GA19047@plexity.net>
+	id 1I9M4h-0001Ja-So
+	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 10:24:53 -0400
+Received: from localhost.localdomain ([127.0.0.1]:42179 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20023687AbXGMOYs (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
+	Fri, 13 Jul 2007 15:24:48 +0100
+Date: Fri, 13 Jul 2007 15:24:43 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [Resend][Patch] drivers/mtd/maps/tqm8xxl.c: Do some cleanups
+Message-ID: <20070713142442.GA8190@linux-mips.org>
+References: <20070712150135.GA4102@localhost.localdomain>
+	<1184256718.32199.111.camel@weaponx.rchland.ibm.com>
+	<20070713034822.GA2370@localhost.localdomain>
+	<1184320602.2785.18.camel@shinybook.infradead.org>
+	<20070713131458.GA1997@localhost.localdomain>
+	<1184333884.8809.5.camel@hades.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <20070620235245.GA12800@mag.az.mvista.com>
-	<625fc13d0706201852g5348a209q82c5cc5b9dc42bf6@mail.gmail.com>
-	<20070713063347.GA19047@plexity.net>
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org,
-	"Mark A. Greer" <mgreer@mvista.com>
+In-Reply-To: <1184333884.8809.5.camel@hades.cambridge.redhat.com>
+Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>, kirk@hpc.ee.ntu.edu.tw,
+	linux-mtd@lists.infradead.org, WANG Cong <xiyou.wangcong@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,22 +32,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 7/13/07, Deepak Saxena <dsaxena@plexity.net> wrote:
+On Fri, Jul 13, 2007 at 02:38:03PM +0100, David Woodhouse wrote:
 
-> I'm merging Mark's patch into the MontaVista tree and will send out and
-> updated patch vs upstream but also wondering what the proper route is for
-> MEMSETOOBSEL? I've been out of the mtd loop for a while but looking at the
-> git log for mtd-abi.h and mtdchar.c, it looks like the ioctl() was removed
-> over a year ago (commit ff268fb8791cf18df536113355d7184007c269d9).  Do we
-> re-introduce it or can we update the tools?
+> > drivers/mtd/maps/pmcmsp-flash.c:63: error: 'ELB_1PC_EN_REG' undeclared (first use in this function)
+> > drivers/mtd/maps/pmcmsp-flash.c:63: error: 'SINGLE_PCCARD' undeclared (first use in this function)
+> > 
+> > Did I miss something?
+> 
+> I think that map driver should probably depend on CONFIG_PMC_MSP. Ralf?
 
-I'd prefer to update the tools.  The problem is, I haven't found time
-to really look at it yet and I'm not sure _how_ to update it.
+*confused*
 
-> Thomas, I'm including you b/c you made the original commit to remove
-> MEMSETOOBSEL but also made changes to nandwrite.c that use it a month
-> later. :) Should we put MEMSETOOBSEL back in?
+68aa0fa87f6d4b2f5e8ad39ecaec8bba9137bb3d did add:
 
-Yeah... Thomas?
++config MTD_PMC_MSP_EVM
++       tristate "CFI Flash device mapped on PMC-Sierra MSP"
++       depends on PMC_MSP && MTD_CFI
++       select MTD_PARTITIONS
 
-josh
+drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PMC_MSP_EVM)   += pmcmsp-flash.o
+
+Is he trying to build something else than very recent kernel.org tree?
+
+  Ralf
