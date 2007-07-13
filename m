@@ -1,19 +1,21 @@
-Received: from wa-out-1112.google.com ([209.85.146.180])
+Received: from sccrmhc12.comcast.net ([63.240.77.82])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I9EJu-0003Jc-Fj
-	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 02:08:03 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so447601wah
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 12 Jul 2007 23:07:54 -0700 (PDT)
-Message-ID: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
-Date: Fri, 13 Jul 2007 11:37:53 +0530
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: UBI: Can we handle -EINTR differently in erase/write path???
+	id 1I9Fev-0005JX-1k
+	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 03:33:51 -0400
+Date: Thu, 12 Jul 2007 23:33:47 -0700
+From: Deepak Saxena <dsaxena@plexity.net>
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: [PATCH][MTD] Add COMPATIBLE_IOCTL() for MEMGETOOBSEL
+Message-ID: <20070713063347.GA19047@plexity.net>
+References: <20070620235245.GA12800@mag.az.mvista.com>
+	<625fc13d0706201852g5348a209q82c5cc5b9dc42bf6@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <625fc13d0706201852g5348a209q82c5cc5b9dc42bf6@mail.gmail.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org,
+	"Mark A. Greer" <mgreer@mvista.com>
+Reply-To: dsaxena@plexity.net
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,48 +25,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi heres few code snip from erase_worker(); from wl.c
-if (err != -EIO) {
-        /*
-         * If this is not %-EIO, we have no idea what to do. Scheduling
-         * this physical eraseblock for erasure again would cause
-         * errors again and again. Well, lets switch to RO mode.
-         */
-        ubi_ro_mode(ubi);
-        return err;
-    }
+On Jun 20 2007, at 20:52, Josh Boyer was caught saying:
+> On 6/20/07, Mark A. Greer <mgreer@mvista.com> wrote:
+> > The flash_eraseall MTD utility uses the MEMGETOOBSEL so add a
+> > COMPATIBLE_IOCTL() entry for it.
+> >
+> > Signed-off-by: Mark A. Greer <mgreer@mvista.com>
+> > ---
+> > I know MEMGETOOBSEL is supposed to be obsolete but flash_eraseall uses
+> > it so...
+> >
+> > Also, MEMSETOOBSEL is used by nandwrite.c but that ioctl doesn't appear
+> > to be implemented so I didn't add it.  My util source is
+> > http://ftp.linux.org.uk/pub/people/dwmw2/mtd/cvs/mtd/util/
+> > in case I'm looking at old source.
+> 
+> You are.  But it's still the same in the current code:
+> 
+> http://git.infradead.org/?p=mtd-utils.git;a=summary
+> 
+> And now that you've found MEMSETOOBSEL being used but not implemented,
+> I'll have to go figure out what that's about.
 
-Suppose while erasure in progress & someone pressed "Ctrl+C" then UBI
-straight way marks entire device as Read only & its really painful
-because then you cant even delete that volume as UBI is read only.
-Which I guess its not good way. If use cases are considered it is
-highly likely that user can hit "Ctrl+c" , like he want to cancel
-erase at that time or something like that. So we can handle -EINTR
-differently by following way
+Josh,
 
-if (err != -EIO) {
-        /*
-         * If this is not %-EIO, we have no idea what to do. Scheduling
-         * this physical eraseblock for erasure again would cause
-         * errors again and again. Well, lets switch to RO mode.
-         */
-        if (err == -EINTR) {
-            schedule_erase(ubi, e, 0);
-            return err;
-        }
-        else {
-            ubi_ro_mode(ubi);
-            return err;
-        }
-    }
-i.e. we can again put that perticular peb to erase & can return
-without making ubi RO mode.
-same can be achieved in write path. If write as interrupted then we
-can return error to user & can put that peb back to erase  list.
+I'm merging Mark's patch into the MontaVista tree and will send out and
+updated patch vs upstream but also wondering what the proper route is for
+MEMSETOOBSEL? I've been out of the mtd loop for a while but looking at the 
+git log for mtd-abi.h and mtdchar.c, it looks like the ioctl() was removed 
+over a year ago (commit ff268fb8791cf18df536113355d7184007c269d9).  Do we 
+re-introduce it or can we update the tools?
 
-This is my initial understanding about handling -EINTR, however I
-would like to know views of others. If all agrees I can post patch for
-same.
+Thomas, I'm including you b/c you made the original commit to remove 
+MEMSETOOBSEL but also made changes to nandwrite.c that use it a month 
+later. :) Should we put MEMSETOOBSEL back in?
 
-Thanks & Regards
-Vinit.
+Tnx,
+~Deepak
+
+-- 
+Deepak Saxena - dsaxena@plexity.net - http://www.plexity.net 
+
+"Ever bigger machines, entailing ever bigger concentrations of economic
+power and exerting ever greater violence against the environment, do not
+represent progress: they are a denial of wisdom. Wisdom demands a new
+orientation of science and technology towards the organic, the gentle, the
+non-violent, the elegant and beautiful." - Small is Beautiful
