@@ -1,17 +1,30 @@
-Subject: Re: [Resend][Patch] drivers/mtd/maps/tqm8xxl.c: Do some cleanups
-From: David Woodhouse <dwmw2@infradead.org>
-To: WANG Cong <xiyou.wangcong@gmail.com>
-In-Reply-To: <20070713034822.GA2370@localhost.localdomain>
-References: <20070712150135.GA4102@localhost.localdomain>
-	<1184256718.32199.111.camel@weaponx.rchland.ibm.com>
-	<20070713034822.GA2370@localhost.localdomain>
+Received: from e33.co.us.ibm.com ([32.97.110.151])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1I9Kqa-0008IF-VM
+	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 09:06:14 -0400
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e33.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l6DD6ArN004710
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 09:06:10 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.3) with ESMTP id
+	l6DD6A0a211000
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 07:06:10 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l6DD69fP030424
+	for <linux-mtd@lists.infradead.org>; Fri, 13 Jul 2007 07:06:09 -0600
+Subject: Re: UBI: Can we handle -EINTR differently in erase/write path???
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+References: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
 Content-Type: text/plain
-Date: Fri, 13 Jul 2007 10:56:42 +0100
-Message-Id: <1184320602.2785.18.camel@shinybook.infradead.org>
+Date: Fri, 13 Jul 2007 08:06:03 -0500
+Message-Id: <1184331963.6456.3.camel@weaponx.rchland.ibm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: kirk@hpc.ee.ntu.edu.tw, akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,17 +34,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-07-13 at 11:48 +0800, WANG Cong wrote:
->                 if(map_banks[idx] == NULL) {
->                         ret = -ENOMEM;
-> -                       /* FIXME: What if some MTD devices were probed already? */
-> +                       /* FIXME: What if some MTD devices were probed
-> +                       already? */
->                         goto error_mem;
->                 } 
+On Fri, 2007-07-13 at 11:37 +0530, Vinit Agnihotri wrote:
+> Hi heres few code snip from erase_worker(); from wl.c
+> if (err != -EIO) {
+>         /*
+>          * If this is not %-EIO, we have no idea what to do. Scheduling
+>          * this physical eraseblock for erasure again would cause
+>          * errors again and again. Well, lets switch to RO mode.
+>          */
+>         ubi_ro_mode(ubi);
+>         return err;
+>     }
+> 
+> Suppose while erasure in progress & someone pressed "Ctrl+C" then UBI
 
+This is the kernel...  the erase_worker function is called from a kernel
+thread that doesn't allow signals.  How would it get a "Ctrl+C" event?
 
-That's just horrid. Leave it as it was.
+> This is my initial understanding about handling -EINTR, however I
+> would like to know views of others. If all agrees I can post patch for
+> same.
 
--- 
-dwmw2
+That is how you handle the EINTR errno in userspace.  I think you'd need
+to show how -EINTR could show up in this code path in the kernel before
+worrying about how to handle it.
+
+josh
