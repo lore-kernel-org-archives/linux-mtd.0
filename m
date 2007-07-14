@@ -1,31 +1,22 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
+Received: from wa-out-1112.google.com ([209.85.146.180])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1I9Mkz-0002EX-47
-	for linux-mtd@lists.infradead.org; Fri, 13 Jul 2007 11:08:34 -0400
-Received: by py-out-1112.google.com with SMTP id a25so871219pyi
+	id 1I9gHY-0004XE-A6
+	for linux-mtd@lists.infradead.org; Sat, 14 Jul 2007 07:59:29 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so895334wah
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 13 Jul 2007 08:08:31 -0700 (PDT)
-Date: Fri, 13 Jul 2007 23:11:06 +0800
-From: WANG Cong <xiyou.wangcong@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [Resend][Patch] drivers/mtd/maps/tqm8xxl.c: Do some cleanups
-Message-ID: <20070713151106.GB4023@localhost.localdomain>
-References: <20070712150135.GA4102@localhost.localdomain>
-	<1184256718.32199.111.camel@weaponx.rchland.ibm.com>
-	<20070713034822.GA2370@localhost.localdomain>
-	<1184320602.2785.18.camel@shinybook.infradead.org>
-	<20070713131458.GA1997@localhost.localdomain>
-	<1184333884.8809.5.camel@hades.cambridge.redhat.com>
-	<20070713142442.GA8190@linux-mips.org>
-	<1184337089.8809.11.camel@hades.cambridge.redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	Sat, 14 Jul 2007 04:59:26 -0700 (PDT)
+Message-ID: <9b52d64c0707140459t23fce988qc384ade21a1f5f42@mail.gmail.com>
+Date: Sat, 14 Jul 2007 17:29:26 +0530
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: UBI: Can we handle -EINTR differently in erase/write path???
+In-Reply-To: <1184331963.6456.3.camel@weaponx.rchland.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <1184337089.8809.11.camel@hades.cambridge.redhat.com>
-Cc: akpm@osdl.org, LKML <linux-kernel@vger.kernel.org>,
-	Ralf Baechle <ralf@linux-mips.org>, kirk@hpc.ee.ntu.edu.tw,
-	linux-mtd@lists.infradead.org
-Reply-To: WANG Cong <xiyou.wangcong@gmail.com>
+References: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+	<1184331963.6456.3.camel@weaponx.rchland.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,29 +26,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Jul 13, 2007 at 03:31:29PM +0100, David Woodhouse wrote:
->On Fri, 2007-07-13 at 15:24 +0100, Ralf Baechle wrote:
->> +config MTD_PMC_MSP_EVM
->> +       tristate "CFI Flash device mapped on PMC-Sierra MSP"
->> +       depends on PMC_MSP && MTD_CFI
->> +       select MTD_PARTITIONS
->> 
->> drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_PMC_MSP_EVM)   +=
->> pmcmsp-flash.o
->> 
->> Is he trying to build something else than very recent kernel.org
->> tree? 
+Ok the scenario is like this.
+1. User created a volume
+2. User issues raw writes on device by using "dd"
+3.UBI do not find any preerased block & so it tries to erase 1 block
+synchronously
+4.When sync_erase is invoked... it waits in wait_event_interruptible()
+5. At this moment if user presses ctrl+c & wait_event_interruptible()
+return -EINTR
+6. On error erase_worker() will mark ubi in Read-only mode.
+
+Soo we need to handle -EINTR differently, as I've faced this situation :)
+
+Thanks & Regards
+Vinit.
+
+
+/13/07, Josh Boyer <jwboyer@linux.vnet.ibm.com> wrote:
+> On Fri, 2007-07-13 at 11:37 +0530, Vinit Agnihotri wrote:
+> > Hi heres few code snip from erase_worker(); from wl.c
+> > if (err != -EIO) {
+> >         /*
+> >          * If this is not %-EIO, we have no idea what to do. Scheduling
+> >          * this physical eraseblock for erasure again would cause
+> >          * errors again and again. Well, lets switch to RO mode.
+> >          */
+> >         ubi_ro_mode(ubi);
+> >         return err;
+> >     }
+> >
+> > Suppose while erasure in progress & someone pressed "Ctrl+C" then UBI
 >
->Hm. His mail did say "Even when I use `make allyesconfig`, I still can't
->compile some drivers. I should add the corresponding CONFIGs manually."
->          
->I wonder if he disabled the correct conditions and then tried building
->it in an i386 kernel?
+> This is the kernel...  the erase_worker function is called from a kernel
+> thread that doesn't allow signals.  How would it get a "Ctrl+C" event?
+>
+> > This is my initial understanding about handling -EINTR, however I
+> > would like to know views of others. If all agrees I can post patch for
+> > same.
+>
+> That is how you handle the EINTR errno in userspace.  I think you'd need
+> to show how -EINTR could show up in this code path in the kernel before
+> worrying about how to handle it.
+>
+> josh
+>
 >
 
-Er, I first used 'make allyesconfig', then added CONFIG_MTD_PMC_MSP_EVM=y
-manually. And yes, I am on i386.
 
 -- 
-
-If loving computers is wrong, I don't want to be right.
+I feel free now
