@@ -1,31 +1,22 @@
-Received: from e32.co.us.ibm.com ([32.97.110.150])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAQkg-0008Dy-6C
-	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2007 14:36:39 +0100
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.12.11.20060308/8.13.8) with ESMTP id
-	l6GDUnwm003309
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2007 09:30:49 -0400
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
-	l6GDaPoD247356
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2007 07:36:26 -0600
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l6GDaCam017793
-	for <linux-mtd@lists.infradead.org>; Mon, 16 Jul 2007 07:36:12 -0600
-Subject: Re: MTD ABI
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: brraju@hyd.hellosoft.com
-In-Reply-To: <469B6E7F.6000704@hyd.hellosoft.com>
-References: <469B6E7F.6000704@hyd.hellosoft.com>
-Content-Type: text/plain
-Date: Mon, 16 Jul 2007 08:36:10 -0500
-Message-Id: <1184592970.9726.7.camel@weaponx.rchland.ibm.com>
-Mime-Version: 1.0
+Received: from [202.153.40.245] (helo=hyd.hyd.hellosoft.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IATEW-0007JK-AJ
+	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2007 12:15:39 -0400
+Received: from [192.168.2.243] (unknown [192.168.4.187])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by hyd.hyd.hellosoft.com (Postfix) with ESMTP id EE172F580FB
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Jul 2007 21:55:17 +0530 (IST)
+Message-ID: <469B9993.9020702@hyd.hellosoft.com>
+Date: Mon, 16 Jul 2007 21:45:15 +0530
+From: Ranga Raju B <brraju@hyd.hellosoft.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Doubts regarding MTD
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: brraju@hyd.hellosoft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,14 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-07-16 at 18:41 +0530, Ranga Raju B wrote:
-> Hi,
->     This question is for curiosity sake. What is MTD ABI? What is the 
-> expansion of ABI and what is it's significance in MTD. Could anyone give 
-> me a pointer to this?
+Hi,
+    We are using ARASAN NFC with Micron NAND Device. I am writing a 
+driver based on ndfc.c I have few problems here.
 
-ABI stands for 'application binary interface'.  MTD doesn't really have
-an ABI...  It does have an API, or application programming interface,
-which can be found on the MTD website.
+1. ARASAN NFC doesn't give me read or write access to spare area. I can 
+know a block is bad (Manufacture Bad Block) using a command and it gives 
+the status.
+2. NFC itself generates NAND_ECC_HW3_512, writes into the spare area 
+when we specify the Spare Area Address where the ECC to written or read 
+for a 512 byte. It never allows us to know what the ECC is as we can't 
+read the content of spare area.
+3. NFC handles the single bit errors if any but doesn't handle the multi 
+bit errors.
 
-josh
+I don't know how to handle this. I know that we need to return the value 
+of the ECC into the ECC buffer whenever a read/write is requested. What 
+is the placement scheme that is recommended for this situation. How do I 
+handle the ECC from MTD. Should I use Software ECC or shall I specify 
+ECC_NONE.
+
+Summary: How do handle the situation when NFC doesn't give access to the 
+spare area of the NAND Device.
+
+Regards
+Ranga
