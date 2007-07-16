@@ -1,20 +1,22 @@
-Received: from mail.dsa-ac.de ([62.112.80.99])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAQAR-0005BZ-9E
-	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2007 08:59:12 -0400
-Date: Mon, 16 Jul 2007 14:58:57 +0200 (CEST)
-From: Guennadi Liakhovetski <gl@dsa-ac.de>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: Bogus usage of HZ in cfi_cmdset_0001.c
-In-Reply-To: <alpine.LFD.0.999.0707051121090.26459@xanadu.home>
-Message-ID: <Pine.LNX.4.63.0707161457250.8578@pcgl.dsa-ac.de>
-References: <Pine.LNX.4.63.0707051445440.8578@pcgl.dsa-ac.de>
-	<alpine.LFD.0.999.0707050934570.26459@xanadu.home>
-	<Pine.LNX.4.63.0707051552270.8578@pcgl.dsa-ac.de>
-	<alpine.LFD.0.999.0707051121090.26459@xanadu.home>
+Received: from [202.153.40.245] (helo=hyd.hyd.hellosoft.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IAQMl-0005Sp-Rt
+	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2007 09:11:57 -0400
+Received: from [192.168.2.243] (unknown [192.168.4.187])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by hyd.hyd.hellosoft.com (Postfix) with ESMTP id F34B7F580B8
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 16 Jul 2007 18:51:28 +0530 (IST)
+Message-ID: <469B6E7F.6000704@hyd.hellosoft.com>
+Date: Mon, 16 Jul 2007 18:41:27 +0530
+From: Ranga Raju B <brraju@hyd.hellosoft.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: MTD ABI
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: brraju@hyd.hellosoft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,30 +26,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 5 Jul 2007, Nicolas Pitre wrote:
+Hi,
+    This question is for curiosity sake. What is MTD ABI? What is the 
+expansion of ABI and what is it's significance in MTD. Could anyone give 
+me a pointer to this?
 
-> Let's see.
-> 
-> drivers/mtd/chips/cfi_cmdset_0001.c from line 1029:
-> 
-> |                } else if (usec >= 1000000/HZ) {
-> |                        /*
-> |                         * Try to save on CPU power when waiting delay
-> |                         * is at least a system timer tick period.
-> |                         * No need to be extremely accurate here.
-> |                         */
-> |                        xip_cpu_idle();
-> 
-> The important clue here is: "at least a system timer tick period".
-
-[snip]
-
-Thanks for explaning, Nicolas.
-
-Guennadi
----------------------------------
-Guennadi Liakhovetski, Ph.D.
-DSA Daten- und Systemtechnik GmbH
-Pascalstr. 28
-D-52076 Aachen
-Germany
+Best regards
+Ranga
