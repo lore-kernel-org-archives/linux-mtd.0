@@ -1,20 +1,15 @@
-Received: from smtp1-g19.free.fr ([212.27.42.27])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAuZm-0006oS-8p
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 17:27:26 -0400
-Received: from [192.168.1.5] (tal33-2-82-228-175-43.fbx.proxad.net
-	[82.228.175.43])
-	by smtp1-g19.free.fr (Postfix) with ESMTP id 4B1451AB2E3
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 17 Jul 2007 23:27:08 +0200 (CEST)
-Message-ID: <469D3484.3020602@free.fr>
-Date: Tue, 17 Jul 2007 23:28:36 +0200
-From: Eric BENARD <ebenard@free.fr>
-MIME-Version: 1.0
+Received: from xerxes.tchmachines.com ([208.76.80.175])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IAwVj-0007qc-6D
+	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 19:31:22 -0400
+Message-ID: <1766.69.30.123.186.1184715072.squirrel@architechnical.net>
+Date: Tue, 17 Jul 2007 16:31:12 -0700 (PDT)
+Subject: jffs2 cleanmarker on OneNAND
+From: "Pete MacKay" <linux@architechnical.net>
 To: linux-mtd@lists.infradead.org
-Subject: JFFS2 doesn't mount read-only at boot in 2.6.22.1 anymore
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +19,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+We're using a hand-updated 2.6.18 kernel with a root partition on OneNAND.
+ We write a jffs2 image (mkfs.jffs2 version 1.50) with nandwrite -p.  If
+we use flash_eraseall -j to write the cleanmarkers to the OOB then
+jffs2_check_nand_cleanmarker comes back OK but jffs2_check_oob_empty
+returns a 1 because it sees 0x30 at location 0xB, which is part of the
+cleanmarker (it ignores ECC data properly).  This causes an unnecessary
+block erase.
 
-I'm testing Linux 2.6.22.1 on an AT91RM9200.
-Before, with 2.6.21-rc5-gce20269d-dirty, I was able to pass "ro" option
-on the boot command line and the rootfs was mounted readonly showing the
-following message :
-VFS: Mounted root (jffs2 filesystem) readonly.
+Does anyone know why that byte in the cleanmarker isn't being skipped in
+checking for 0xFF?
 
-Now, on 2.6.22.1, the "ro" option (same board, same rootfs), leads to
-this message :
-VFS: Mounted root (jffs2 filesystem).
+mtd-utils are latest from git cross-compiled to arm-linux with gcc-3.4.4
+running on a PXA-270.
 
-The command line is (same in both case) :
-root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200
-mtdparts=physmap-flash.0:256k(u-boot),1408k(kernel),-(rootfs) mem=32M ro
+Also, different topic: we get "Unknown but compatible feature node
+(0x2005)" messages at the beginning of each populated block.  Any ideas on
+that?  Mismatched MTD driver / mtd-utils versions maybe?
 
-The config file for 2.6.22.1 is taken from 2.6.21-rc5 + make oldconfig
-and default answer everywhere.
-
-Do you have any idea of what may be wrong in my configuration ?
-Is this an expected behaviour in 2.6.22.1 ?
-Do you have any idea of where to dig to fix this problem ?
-
-Thanks and best regards
-Eric
+Thanks Much,
+Pete MacKay
