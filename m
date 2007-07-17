@@ -1,22 +1,20 @@
-Received: from www.osadl.org ([213.239.205.134] helo=mail.tglx.de)
+Received: from smtp1-g19.free.fr ([212.27.42.27])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAtL7-00066Z-DI
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 16:08:12 -0400
-From: =?iso-8859-1?q?Hans-J=FCrgen_Koch?= <hjk@linutronix.de>
-To: David Brownell <david-b@pacbell.net>
-Subject: Re: [patch 2.6.22-rc3] MTD: m25p80 converted to mutex
-Date: Tue, 17 Jul 2007 22:07:30 +0200
-References: <200706241509.14367.david-b@pacbell.net>
-	<200706281545.37013.david-b@pacbell.net>
-	<200707171147.10337.david-b@pacbell.net>
-In-Reply-To: <200707171147.10337.david-b@pacbell.net>
+	id 1IAuZm-0006oS-8p
+	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 17:27:26 -0400
+Received: from [192.168.1.5] (tal33-2-82-228-175-43.fbx.proxad.net
+	[82.228.175.43])
+	by smtp1-g19.free.fr (Postfix) with ESMTP id 4B1451AB2E3
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Jul 2007 23:27:08 +0200 (CEST)
+Message-ID: <469D3484.3020602@free.fr>
+Date: Tue, 17 Jul 2007 23:28:36 +0200
+From: Eric BENARD <ebenard@free.fr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 doesn't mount read-only at boot in 2.6.22.1 anymore
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200707172207.30167.hjk@linutronix.de>
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,20 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am Dienstag 17 Juli 2007 20:47 schrieb David Brownell:
+Hi,
 
-> 
-> Oh, and by the way:  don't forget to revert
-> 
->   340ea370c2ce89d1c15fbf785460f2f74314ce58
-> 
-> It's not needed given the other m25p80 patch (which now handles
-> at26 "dataflash" as well as most other standard SPI flash chips),
-> and requires a controller driver that won't be merged upstream
-> (supplanted by drivers/spi/atmel_spi.c) ... the submitter of
-> that at91_dataflash26.c driver concurred.
+I'm testing Linux 2.6.22.1 on an AT91RM9200.
+Before, with 2.6.21-rc5-gce20269d-dirty, I was able to pass "ro" option
+on the boot command line and the rootfs was mounted readonly showing the
+following message :
+VFS: Mounted root (jffs2 filesystem) readonly.
 
-That's right.
+Now, on 2.6.22.1, the "ro" option (same board, same rootfs), leads to
+this message :
+VFS: Mounted root (jffs2 filesystem).
 
-Thanks,
-Hans
+The command line is (same in both case) :
+root=/dev/mtdblock2 rootfstype=jffs2 console=ttyS0,115200
+mtdparts=physmap-flash.0:256k(u-boot),1408k(kernel),-(rootfs) mem=32M ro
+
+The config file for 2.6.22.1 is taken from 2.6.21-rc5 + make oldconfig
+and default answer everywhere.
+
+Do you have any idea of what may be wrong in my configuration ?
+Is this an expected behaviour in 2.6.22.1 ?
+Do you have any idea of where to dig to fix this problem ?
+
+Thanks and best regards
+Eric
