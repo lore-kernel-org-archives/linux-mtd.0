@@ -1,31 +1,19 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAkrF-0004uC-MO
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 12:04:47 +0100
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l6HB5alZ023547
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2007 07:05:36 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
-	l6HB4M3K554598
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2007 07:04:22 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l6HB4MWh019672
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2007 07:04:22 -0400
-Date: Tue, 17 Jul 2007 06:16:14 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: MTD ABI
-Message-ID: <20070717111613.GN3925@crusty.rchland.ibm.com>
-References: <469B6E7F.6000704@hyd.hellosoft.com>
-	<1184592970.9726.7.camel@weaponx.rchland.ibm.com>
-	<loom.20070717T110348-642@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from wa-out-1112.google.com ([209.85.146.178])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IAlb3-0001iN-HS
+	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 07:52:06 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so1869077wah
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 17 Jul 2007 04:52:04 -0700 (PDT)
+Message-ID: <9b52d64c0707170452v6c8b8ae0vf2dcf7304947a0c0@mail.gmail.com>
+Date: Tue, 17 Jul 2007 17:22:03 +0530
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
+To: linux-mtd@lists.infradead.org, dedekind@infradead.org
+Subject: UBI: PATCH: -EINTR do not causes ubi to switch to read-only mode.
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <loom.20070717T110348-642@post.gmane.org>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,25 +23,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 17, 2007 at 09:05:35AM +0000, MikeW wrote:
-> Josh Boyer <jwboyer <at> linux.vnet.ibm.com> writes:
-> 
-> > 
-> > On Mon, 2007-07-16 at 18:41 +0530, Ranga Raju B wrote:
-> > > Hi,
-> > >     This question is for curiosity sake. What is MTD ABI? What is the 
-> > > expansion of ABI and what is it's significance in MTD. Could anyone give 
-> > > me a pointer to this?
-> > 
-> > ABI stands for 'application binary interface'.  MTD doesn't really have
-> > an ABI...  It does have an API, or application programming interface,
-> > which can be found on the MTD website.
-> > 
-> > josh
-> 
-> and can also be found summarised in <mtd/mtd-user.h> !!
+With reference to previous mails, I am posting patch to handle -EINTR
+separately.
+Now ubi wont switch to read-only mode on receiving -EINTR signal while
+writing or erasing.
 
-Well, for user<->kernel interaction, yes.  I was referring to the in-kernel
-used for new drivers, etc.
+patch is here:
 
-josh
+Signed-off-by: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+================================================================
+diff -ruN linux-2.6.18.3-vanila/drivers/mtd/ubi/eba.c
+linux-2.6.18.3-mod/drivers/mtd/ubi/eba.c
+--- linux-2.6.18.3-vanila/drivers/mtd/ubi/eba.c	2007-07-09
+14:28:28.000000000 +0530
++++ linux-2.6.18.3-mod/drivers/mtd/ubi/eba.c	2007-07-17 16:59:28.000000000 +0530
+@@ -616,6 +616,10 @@
+ 			ubi_warn("failed to write data to PEB %d", pnum);
+ 			if (err == -EIO && ubi->bad_allowed)
+ 				err = recover_peb(ubi, pnum, vol_id, lnum, buf, offset, len);
++			if (err == -EINTR) {
++				leb_write_unlock(ubi, vol_id, lnum);
++				return err;
++			}
+ 			if (err)
+ 				ubi_ro_mode(ubi);
+ 		}
+@@ -673,7 +677,18 @@
+
+ write_error:
+ 	if (err != -EIO || !ubi->bad_allowed) {
+-		ubi_ro_mode(ubi);
++		if (err == -EINTR) {
++			err = ubi_wl_put_peb(ubi, pnum, 1);		
++			if (err || ++tries > UBI_IO_RETRIES) {
++				ubi_ro_mode(ubi);
++				leb_write_unlock(ubi, vol_id, lnum);
++				ubi_free_vid_hdr(ubi, vid_hdr);
++				return err;
++			}
++			err = -EINTR;
++		}
++		else
++			ubi_ro_mode(ubi);
+ 		leb_write_unlock(ubi, vol_id, lnum);
+ 		ubi_free_vid_hdr(ubi, vid_hdr);
+ 		return err;
+@@ -799,7 +814,17 @@
+ 		 * something nasty and unexpected happened. Switch to read-only
+ 		 * mode just in case.
+ 		 */
+-		ubi_ro_mode(ubi);
++		if (err == -EINTR) {
++			err = ubi_wl_put_peb(ubi, pnum, 1);		
++			if (err || ++tries > UBI_IO_RETRIES) {
++				ubi_ro_mode(ubi);
++				leb_write_unlock(ubi, vol_id, lnum);
++				ubi_free_vid_hdr(ubi, vid_hdr);
++				return err;
++			}
++			err = -EINTR;
++		} else
++			ubi_ro_mode(ubi);
+ 		leb_write_unlock(ubi, vol_id, lnum);
+ 		ubi_free_vid_hdr(ubi, vid_hdr);
+ 		return err;
+diff -ruN linux-2.6.18.3-vanila/drivers/mtd/ubi/wl.c
+linux-2.6.18.3-mod/drivers/mtd/ubi/wl.c
+--- linux-2.6.18.3-vanila/drivers/mtd/ubi/wl.c	2007-07-09
+14:28:28.000000000 +0530
++++ linux-2.6.18.3-mod/drivers/mtd/ubi/wl.c	2007-07-17 16:37:44.000000000 +0530
+@@ -1103,6 +1103,10 @@
+ 		 * this physical eraseblock for erasure again would cause
+ 		 * errors again and again. Well, lets switch to RO mode.
+ 		 */
++		if (err == -EINTR) {
++			err = schedule_erase(ubi, e, 0);
++			return -EINTR;
++		}
+ 		ubi_ro_mode(ubi);
+ 		return err;
+ 	}
