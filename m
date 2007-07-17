@@ -1,28 +1,19 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAj0H-00088a-BA
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 05:06:00 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1IAj08-0005Lg-Ob
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 11:05:48 +0200
-Received: from 57.66.65.38 ([57.66.65.38])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2007 11:05:48 +0200
-Received: from mw_phil by 57.66.65.38 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 17 Jul 2007 11:05:48 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
-Subject: Re: MTD ABI
-Date: Tue, 17 Jul 2007 09:05:35 +0000 (UTC)
-Message-ID: <loom.20070717T110348-642@post.gmane.org>
-References: <469B6E7F.6000704@hyd.hellosoft.com>
-	<1184592970.9726.7.camel@weaponx.rchland.ibm.com>
+	id 1IAkQR-0000ag-Og
+	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 06:37:04 -0400
+Subject: Re: UBI: Can we handle -EINTR differently in erase/write path???
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+References: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 17 Jul 2007 13:36:47 +0300
+Message-Id: <1184668607.3531.144.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,22 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer <jwboyer <at> linux.vnet.ibm.com> writes:
+On Fri, 2007-07-13 at 11:37 +0530, Vinit Agnihotri wrote:
+> Hi heres few code snip from erase_worker(); from wl.c
+> if (err !=3D -EIO) {
+>         /*
+>          * If this is not %-EIO, we have no idea what to do. Scheduling
+>          * this physical eraseblock for erasure again would cause
+>          * errors again and again. Well, lets switch to RO mode.
+>          */
+>         ubi_ro_mode(ubi);
+>         return err;
+>     }
+> Suppose while erasure in progress & someone pressed "Ctrl+C" then UBI
+> straight way marks entire device as Read only & its really painful
+> because then you cant even delete that volume as UBI is read only.
+> Which I guess its not good way. If use cases are considered it is
+> highly likely that user can hit "Ctrl+c" , like he want to cancel
+> erase at that time or something like that. So we can handle -EINTR
+> differently by following way
 
-> 
-> On Mon, 2007-07-16 at 18:41 +0530, Ranga Raju B wrote:
-> > Hi,
-> >     This question is for curiosity sake. What is MTD ABI? What is the 
-> > expansion of ABI and what is it's significance in MTD. Could anyone give 
-> > me a pointer to this?
-> 
-> ABI stands for 'application binary interface'.  MTD doesn't really have
-> an ABI...  It does have an API, or application programming interface,
-> which can be found on the MTD website.
-> 
-> josh
+Please, feel free to ignore my silly question and just send the
+patch :-)
 
-and can also be found summarised in <mtd/mtd-user.h> !!
-
-Regards,
-MikeW
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
