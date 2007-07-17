@@ -1,22 +1,19 @@
-Received: from [202.153.40.245] (helo=hyd.hyd.hellosoft.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IATEW-0007JK-AJ
-	for linux-mtd@lists.infradead.org; Mon, 16 Jul 2007 12:15:39 -0400
-Received: from [192.168.2.243] (unknown [192.168.4.187])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by hyd.hyd.hellosoft.com (Postfix) with ESMTP id EE172F580FB
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 16 Jul 2007 21:55:17 +0530 (IST)
-Message-ID: <469B9993.9020702@hyd.hellosoft.com>
-Date: Mon, 16 Jul 2007 21:45:15 +0530
-From: Ranga Raju B <brraju@hyd.hellosoft.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Doubts regarding MTD
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Reply-To: brraju@hyd.hellosoft.com
+	id 1IAiET-0007LA-Uz
+	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 04:16:38 -0400
+Subject: Re: UBI: Can we handle -EINTR differently in erase/write path???
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+References: <9b52d64c0707122307j419d2d98xa771c2c09a280164@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 17 Jul 2007 11:16:15 +0300
+Message-Id: <1184660175.3531.130.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-    We are using ARASAN NFC with Micron NAND Device. I am writing a 
-driver based on ndfc.c I have few problems here.
+On Fri, 2007-07-13 at 11:37 +0530, Vinit Agnihotri wrote:
+> Hi heres few code snip from erase_worker(); from wl.c
+> if (err !=3D -EIO) {
+>         /*
+>          * If this is not %-EIO, we have no idea what to do. Scheduling
+>          * this physical eraseblock for erasure again would cause
+>          * errors again and again. Well, lets switch to RO mode.
+>          */
+>         ubi_ro_mode(ubi);
+>         return err;
+>     }
 
-1. ARASAN NFC doesn't give me read or write access to spare area. I can 
-know a block is bad (Manufacture Bad Block) using a command and it gives 
-the status.
-2. NFC itself generates NAND_ECC_HW3_512, writes into the spare area 
-when we specify the Spare Area Address where the ECC to written or read 
-for a 512 byte. It never allows us to know what the ECC is as we can't 
-read the content of spare area.
-3. NFC handles the single bit errors if any but doesn't handle the multi 
-bit errors.
+Yeah, you are right, feel free to send a patch. The only thing I am
+curious about where, at what point the task can be interrupted?
 
-I don't know how to handle this. I know that we need to return the value 
-of the ECC into the ECC buffer whenever a read/write is requested. What 
-is the placement scheme that is recommended for this situation. How do I 
-handle the ECC from MTD. Should I use Software ECC or shall I specify 
-ECC_NONE.
-
-Summary: How do handle the situation when NFC doesn't give access to the 
-spare area of the NAND Device.
-
-Regards
-Ranga
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
