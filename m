@@ -1,15 +1,22 @@
-Received: from xerxes.tchmachines.com ([208.76.80.175])
+Received: from [202.153.40.245] (helo=hyd.hyd.hellosoft.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IAwVj-0007qc-6D
-	for linux-mtd@lists.infradead.org; Tue, 17 Jul 2007 19:31:22 -0400
-Message-ID: <1766.69.30.123.186.1184715072.squirrel@architechnical.net>
-Date: Tue, 17 Jul 2007 16:31:12 -0700 (PDT)
-Subject: jffs2 cleanmarker on OneNAND
-From: "Pete MacKay" <linux@architechnical.net>
-To: linux-mtd@lists.infradead.org
+	id 1IB2Na-00025T-Iq
+	for linux-mtd@lists.infradead.org; Wed, 18 Jul 2007 01:47:19 -0400
+Received: from [192.168.2.243] (unknown [192.168.4.174])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by hyd.hyd.hellosoft.com (Postfix) with ESMTP id D9957F5802A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 18 Jul 2007 11:24:55 +0530 (IST)
+Message-ID: <469DA8CE.1000405@hyd.hellosoft.com>
+Date: Wed, 18 Jul 2007 11:14:46 +0530
+From: Ranga Raju B <brraju@hyd.hellosoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: linux-mtd@lists.infradead.org
+Subject: Controller which doesn't give spare area access
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Reply-To: brraju@hyd.hellosoft.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,23 +26,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We're using a hand-updated 2.6.18 kernel with a root partition on OneNAND.
- We write a jffs2 image (mkfs.jffs2 version 1.50) with nandwrite -p.  If
-we use flash_eraseall -j to write the cleanmarkers to the OOB then
-jffs2_check_nand_cleanmarker comes back OK but jffs2_check_oob_empty
-returns a 1 because it sees 0x30 at location 0xB, which is part of the
-cleanmarker (it ignores ECC data properly).  This causes an unnecessary
-block erase.
+Hi,
+   
+1. The NFC I am using doesn't give read/write access to spare area.
+2. I have to write 512 bytes at a time or read 512 bytes at a time.
+3. I don't have access to status, ready/busy pin.
 
-Does anyone know why that byte in the cleanmarker isn't being skipped in
-checking for 0xFF?
+Please tell me what auto placement strategy I need to adopt. What ECC 
+scheme I need to use. It has a HW ECC Generator but I don't have access 
+to the value of ECC.
+I only get an interrupt if there is a ECC mismatch.
 
-mtd-utils are latest from git cross-compiled to arm-linux with gcc-3.4.4
-running on a PXA-270.
-
-Also, different topic: we get "Unknown but compatible feature node
-(0x2005)" messages at the beginning of each populated block.  Any ideas on
-that?  Mismatched MTD driver / mtd-utils versions maybe?
-
-Thanks Much,
-Pete MacKay
+Best regards
+Ranga Raju B
