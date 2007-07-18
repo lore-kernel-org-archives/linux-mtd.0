@@ -1,15 +1,15 @@
-Received: from web30213.mail.mud.yahoo.com ([209.191.69.60])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IBEdY-0001Uc-H1
-	for linux-mtd@lists.infradead.org; Wed, 18 Jul 2007 14:52:38 -0400
-Date: Wed, 18 Jul 2007 11:45:54 -0700 (PDT)
-From: Siddharth Choudhuri <siddh_c@yahoo.com>
-Subject: [RFC] sysfs support for mtd
+Received: from xerxes.tchmachines.com ([208.76.80.175])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IBIwo-0003df-QK
+	for linux-mtd@lists.infradead.org; Wed, 18 Jul 2007 19:28:47 -0400
+Message-ID: <30183.69.30.123.186.1184801323.squirrel@architechnical.net>
+Date: Wed, 18 Jul 2007 16:28:43 -0700 (PDT)
+Subject: flash_eraseall -j / jffs2 oobfree / OneNAND
+From: "Pete MacKay" <linux@architechnical.net>
 To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Message-ID: <470958.35224.qm@web30213.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,85 +19,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Looking at the latest mtd-utils.git pull I see that flash_eraseall -j
+truncates the cleanmarker to the length in the first oobfree structure,
+which is a bug for a segmented OOB like the OneNAND.  (It has a 3 free
+bytes at offset 2 and another 2 at offset 14 so it has to truncate to 5
+anyway).  This causes unnecessary erase cycles on the scan when I mount a
+jffs2 file system.
 
-I have added a sysfs support for mtd. There was an
-earlier discussion some time back
-(http://lists.infradead.org/pipermail/linux-mtd/2006-December/016952.html)
-about adding sysfs support for mtd.
+Also in onenand_base.c:onenand_fill_auto_oob there may be a bug (overrun)
+in checking free->length for the onenand_oob_32 structure, which only has
+4 (< MTD_MAX_OOBFREE_ENTRIES) oobfree entries.
 
-Here's the design:
-o Each mtd partition appears as a directory under 
-/sys/devices/mtd/ 
-o The following fields from struct mtd_info are
-exported as files - eccsize, ecctype, erasesize,
-numeraseregions, oobsize, size, type, writesize. 
+Should I hack this locally, or am I seeing something that affects anyone
+else?
 
---------------
-Eg: 
-# ls -l /sys/devices/mtd
-drwxr-xr-x    2 root     root            0 Jan  1
-00:00 mtd0
-drwxr-xr-x    2 root     root            0 Jan  1
-00:00 mtd1
-drwxr-xr-x    2 root     root            0 Jan  1
-00:00 mtd2
-drwxr-xr-x    2 root     root            0 Jan  1
-00:00 mtd3
-# ls -l /sys/devices/mtd/mtd0/
--r--r--r--    1 root     root         4096 Jan  1
-00:00 bbt
--r--r--r--    1 root     root         4096 Jan  1
-00:00 eccsize
--r--r--r--    1 root     root         4096 Jan  1
-00:00 ecctype
--r--r--r--    1 root     root         4096 Jan  1
-00:00 erasesize
--r--r--r--    1 root     root         4096 Jan  1
-00:00 numeraseregions
--r--r--r--    1 root     root         4096 Jan  1
-00:00 oobsize
--r--r--r--    1 root     root         4096 Jan  1
-00:00 size
--r--r--r--    1 root     root         4096 Jan  1
-00:00 type
--r--r--r--    1 root     root         4096 Jan  1
-00:00  writesize
-# cat /sys/devices/mtd/mtd0/oobsize 
-64
------------
-
-I would like to get some suggestions from the group
-before sending out a patch:
-o Currently the fields type, ecctype are integers.
-Should these be converted into appropriate strings as
-per #defines from mtd-abi.h
-Eg: cat /sys/devices/mtd/mtd0/type 
-shows 4. Should this show MTD_NANDFLASH instead ? 
-
-o I am not sure where an additional link from bus to
-mtd should be added in the sysfs hierarchy. Should it
-be /sys/bus/platform/devices -> ../../../devices/mtd
--OR-
-/sys/bus/platform/ -> ../../devices/mtd 
-
-o Any other comments/suggestions. 
-
-thanks,
--sid
-
-
-
-
-
-
-
-
-
-
-
-
-       
-____________________________________________________________________________________
-Get the Yahoo! toolbar and be alerted to new email wherever you're surfing.
-http://new.toolbar.yahoo.com/toolbar/features/mail/index.php
+Thanks,
+Pete MacKay
