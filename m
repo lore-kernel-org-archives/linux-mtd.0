@@ -1,15 +1,15 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IBPvW-0007Pe-LG
-	for linux-mtd@lists.infradead.org; Thu, 19 Jul 2007 02:56:22 -0400
-Subject: Re: Query regarding JFFS2 init
+	id 1IBQ2Q-0007oM-M2
+	for linux-mtd@lists.infradead.org; Thu, 19 Jul 2007 03:03:05 -0400
+Subject: Re: [RFC] sysfs support for mtd
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Meeta Mishra <Meeta.Mishra@gnss.com>
-In-Reply-To: <9D98C51005D80D43A19A3DF329A61D6901A91C05@INDEXCH2003.gmi.domain>
-References: <9D98C51005D80D43A19A3DF329A61D6901A91C05@INDEXCH2003.gmi.domain>
+To: Siddharth Choudhuri <siddh_c@yahoo.com>
+In-Reply-To: <470958.35224.qm@web30213.mail.mud.yahoo.com>
+References: <470958.35224.qm@web30213.mail.mud.yahoo.com>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 19 Jul 2007 09:55:34 +0300
-Message-Id: <1184828134.3531.175.camel@sauron>
+Date: Thu, 19 Jul 2007 10:02:52 +0300
+Message-Id: <1184828572.3531.183.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -23,23 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-07-19 at 11:08 +0530, Meeta Mishra wrote:
-> Hi,
->=20
-> I want to know what actually happens when sbin/init is invoked in JFFS2.
->=20
->=20
-> I'm using small page Nand device with a 12MB JFFS2 partition (which has
-> 5.6 MB JFFS2 image). Kernel boots up from Nand flash and comes to
-> sbin/init; the total execution of sbin/init is taking 13 sec (which
-> seems huge to me).=20
->=20
-> I traced the read calls during sbin/init execution and found that approx
-> 13 MB of data is being read which is taking approx 7.8 sec (out of 13
-> sec).  Does anyone has any idea about the 13 MB data that's being read?
+On Wed, 2007-07-18 at 11:45 -0700, Siddharth Choudhuri wrote:
+> Here's the design:
+> o Each mtd partition appears as a directory under=20
+> /sys/devices/mtd/=20
+> o The following fields from struct mtd_info are
+> exported as files - eccsize, ecctype, erasesize,
+> numeraseregions, oobsize, size, type, writesize.
+I doubt OOB-related stuff has to be exposed. We see many new flash
+controllers which do not let you access OOB. It is better to avoid OOB
+usage altogether, so I would not even exposed that stuff in sysfs.
 
-13 Megs are read because of checking - JFFS2 has to check all data just
-after it has been mounted.
+
+> I would like to get some suggestions from the group
+> before sending out a patch:
+> o Currently the fields type, ecctype are integers.
+> Should these be converted into appropriate strings as
+> per #defines from mtd-abi.h
+> Eg: cat /sys/devices/mtd/mtd0/type=20
+> shows 4. Should this show MTD_NANDFLASH instead ?
+I think yes, it should be something like "NAND", "OneNAND", "NOR",
+"DataFlash", etc.
+
+> o I am not sure where an additional link from bus to
+> mtd should be added in the sysfs hierarchy. Should it
+> be /sys/bus/platform/devices -> ../../../devices/mtd
+> -OR-
+> /sys/bus/platform/ -> ../../devices/mtd=20
+No idea, but I've always thought sysfs core automatically puts these
+links. All you have to do is to define your bus object which is
+"platform" bus, and the stuff will appear. Although I am not sure.
 
 --=20
 Best regards,
