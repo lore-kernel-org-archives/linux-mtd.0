@@ -1,15 +1,20 @@
-From: "Kyungmin Park" <kyungmin.park@samsung.com>
-To: "'Pete MacKay'" <linux@architechnical.net>, <linux-mtd@lists.infradead.org>
-References: <30183.69.30.123.186.1184801323.squirrel@architechnical.net>
-Subject: RE: flash_eraseall -j / jffs2 oobfree / OneNAND
-Date: Thu, 19 Jul 2007 09:05:49 +0900
-Message-ID: <002201c7c998$98339dc0$e1ac580a@swcenter.sec.samsung.co.kr>
+Received: from mail.gnss.com ([209.47.22.10] helo=tormf01.gmi.domain)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IBOj5-0006W4-5R
+	for linux-mtd@lists.infradead.org; Thu, 19 Jul 2007 01:39:00 -0400
+Received: from tormf01.gmi.domain (127.0.0.1) by tormf01.gmi.domain (MlfMTA
+	v3.2r9) id hjrsf60171sn for <linux-mtd@lists.infradead.org>;
+	Thu, 19 Jul 2007 01:38:57 -0400 (envelope-from <Meeta.Mishra@gnss.com>)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <30183.69.30.123.186.1184801323.squirrel@architechnical.net>
-Reply-To: kmpark@infradead.org
+Content-Transfer-Encoding: quoted-printable
+Subject: Query regarding JFFS2 init
+Date: Thu, 19 Jul 2007 11:08:54 +0530
+Message-ID: <9D98C51005D80D43A19A3DF329A61D6901A91C05@INDEXCH2003.gmi.domain>
+From: "Meeta Mishra" <Meeta.Mishra@gnss.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+
 Hi,
 
-> 
-> Looking at the latest mtd-utils.git pull I see that flash_eraseall -j
-> truncates the cleanmarker to the length in the first oobfree structure,
-> which is a bug for a segmented OOB like the OneNAND.  (It has a 3 free
-> bytes at offset 2 and another 2 at offset 14 so it has to truncate to 5
-> anyway).  This causes unnecessary erase cycles on the scan when I mount a
-> jffs2 file system.
+I want to know what actually happens when sbin/init is invoked in JFFS2.
 
-I will check it soon.
 
-> 
-> Also in onenand_base.c:onenand_fill_auto_oob there may be a bug (overrun)
-> in checking free->length for the onenand_oob_32 structure, which only has
-> 4 (< MTD_MAX_OOBFREE_ENTRIES) oobfree entries.
+I'm using small page Nand device with a 12MB JFFS2 partition (which has
+5.6 MB JFFS2 image). Kernel boots up from Nand flash and comes to
+sbin/init; the total execution of sbin/init is taking 13 sec (which
+seems huge to me).=20
 
-No, it also checks free->length with MTX_MAX_OOBFREE_ENTRIES together. So it doesn't overrun. 
-E.g., The 'i' has 4, 4 < MTD_MAX_OOBFREE_ENTRIES is true, but free->length is false. So it exits the loop.
+I traced the read calls during sbin/init execution and found that approx
+13 MB of data is being read which is taking approx 7.8 sec (out of 13
+sec).  Does anyone has any idea about the 13 MB data that's being read?
 
-I checked it with onenand_sim. 
-
-Thank you,
-Kyungmin Park
+Regards,
+Meeta
