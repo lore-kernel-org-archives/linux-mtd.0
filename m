@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IBQ2Q-0007oM-M2
-	for linux-mtd@lists.infradead.org; Thu, 19 Jul 2007 03:03:05 -0400
-Subject: Re: [RFC] sysfs support for mtd
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Siddharth Choudhuri <siddh_c@yahoo.com>
-In-Reply-To: <470958.35224.qm@web30213.mail.mud.yahoo.com>
-References: <470958.35224.qm@web30213.mail.mud.yahoo.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 19 Jul 2007 10:02:52 +0300
-Message-Id: <1184828572.3531.183.camel@sauron>
+Received: from nwd2mail11.analog.com ([137.71.25.57])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IBQYN-00011Y-3O
+	for linux-mtd@lists.infradead.org; Thu, 19 Jul 2007 03:36:05 -0400
+Subject: Re: [PATCH] Add NAND manufacturer AMD.
+From: Bryan Wu <bryan.wu@analog.com>
+To: "Steven J. Hill" <sjhill@realitydiluted.com>
+In-Reply-To: <469EE8BA.6020506@realitydiluted.com>
+References: <469EE8BA.6020506@realitydiluted.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Thu, 19 Jul 2007 15:42:41 +0800
+Message-Id: <1184830961.24161.1.camel@roc-desktop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Reply-To: bryan.wu@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,38 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-07-18 at 11:45 -0700, Siddharth Choudhuri wrote:
-> Here's the design:
-> o Each mtd partition appears as a directory under=20
-> /sys/devices/mtd/=20
-> o The following fields from struct mtd_info are
-> exported as files - eccsize, ecctype, erasesize,
-> numeraseregions, oobsize, size, type, writesize.
-I doubt OOB-related stuff has to be exposed. We see many new flash
-controllers which do not let you access OOB. It is better to avoid OOB
-usage altogether, so I would not even exposed that stuff in sysfs.
+On Thu, 2007-07-19 at 12:29 +0800, Steven J. Hill wrote:
+> This patch adds the manufacturer ID for AMD flash.
+> 
+> Signed-off-by: Steven J. Hill <sjhill1@rockwellcollins.com>
+> 
+> 
 
+Please don't submit patches in attachment file and follow the 
+Documentation/SubmittingPatches to do it.
 
-> I would like to get some suggestions from the group
-> before sending out a patch:
-> o Currently the fields type, ecctype are integers.
-> Should these be converted into appropriate strings as
-> per #defines from mtd-abi.h
-> Eg: cat /sys/devices/mtd/mtd0/type=20
-> shows 4. Should this show MTD_NANDFLASH instead ?
-I think yes, it should be something like "NAND", "OneNAND", "NOR",
-"DataFlash", etc.
-
-> o I am not sure where an additional link from bus to
-> mtd should be added in the sysfs hierarchy. Should it
-> be /sys/bus/platform/devices -> ../../../devices/mtd
-> -OR-
-> /sys/bus/platform/ -> ../../devices/mtd=20
-No idea, but I've always thought sysfs core automatically puts these
-links. All you have to do is to define your bus object which is
-"platform" bus, and the stuff will appear. Although I am not sure.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+- Bryan Wu
+> plain text document attachment (ATT333278.txt), "ATT333278.txt"
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
