@@ -1,19 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202] helo=toronto.xi-lite.net)
+Received: from ftp.linux-mips.org ([194.74.144.162])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ICzTS-0000gt-MB
-	for linux-mtd@lists.infradead.org; Mon, 23 Jul 2007 11:05:29 -0400
-Message-ID: <46A4C2BE.3050108@parrot.com>
-Date: Mon, 23 Jul 2007 17:01:18 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	id 1ID2Ap-00029t-0d
+	for linux-mtd@lists.infradead.org; Mon, 23 Jul 2007 13:58:24 -0400
+Received: from localhost.localdomain ([127.0.0.1]:49867 "EHLO
+	dl5rb.ham-radio-op.net") by ftp.linux-mips.org with ESMTP
+	id S20022739AbXGWR4U (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
+	Mon, 23 Jul 2007 18:56:20 +0100
+Date: Mon, 23 Jul 2007 18:56:19 +0100
+From: Ralf Baechle <ralf@linux-mips.org>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [MTD] Fix C jewel
+Message-ID: <20070723175618.GA32262@linux-mips.org>
 MIME-Version: 1.0
-To: Ben Dooks <ben@fluff.org>
-Subject: Re: [PATCH] S3C24XX large page NAND support
-References: <20070709231147.GA30072@fluff.org.uk> <4695FC93.7040800@parrot.com>
-	<20070723134617.GA19071@fluff.org.uk>
-In-Reply-To: <20070723134617.GA19071@fluff.org.uk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,31 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Ben,
+No idea why gcc doesn't barf on a "##else".
 
-Ben Dooks wrote:
-> On Thu, Jul 12, 2007 at 12:04:03PM +0200, Matthieu CASTET wrote:
-> [snip]
->>>  
->>> -		nmtd->scan_res = nand_scan(&nmtd->mtd, (sets) ? sets->nr_chips : 1);
->>> +		nmtd->scan_res = nand_scan_ident(&nmtd->mtd,
->>> +						 (sets) ? sets->nr_chips : 1);
->>>  
->>>  		if (nmtd->scan_res == 0) {
->>> +			s3c2410_nand_update_chip(info, nmtd);
->>> +			nand_scan_tail(&nmtd->mtd);
->>>  			s3c2410_nand_add_partition(info, nmtd, sets);
->>>  		}
->> Shouldn't nand_scan_ident and nand_scan_tail be used here ?
-> 
-> Sorry, do you mean that they should be used here (and they are
-> being used in this code) or do you mean that you do not think
-> that these two are to be used here?
-> 
-Sorry for the noise, I misread the patch and was thinking nand_scan was 
-still used.
+Signed-off-by: Ralf Baechle <ralf@linux-mips.org>
 
-Again sorry.
-
-
-Matthieu
+diff --git a/drivers/mtd/devices/docprobe.c b/drivers/mtd/devices/docprobe.c
+index b96ac8e..5f895b3 100644
+--- a/drivers/mtd/devices/docprobe.c
++++ b/drivers/mtd/devices/docprobe.c
+@@ -86,7 +86,7 @@ static unsigned long __initdata doc_locations[] = {
+         0xff000000,
+ #elif defined(CONFIG_MOMENCO_OCELOT_G)
+         0xff000000,
+-##else
++#else
+ #warning Unknown architecture for DiskOnChip. No default probe locations defined
+ #endif
+ 	0xffffffff };
