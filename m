@@ -1,21 +1,16 @@
-Received: from www19.your-server.de ([213.133.104.19])
+Received: from 85.203-211-142.static.qala.com.sg ([203.211.142.85]
+	helo=bluefrog.flexihostings.net)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IDEwB-0000gW-HI
-	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 03:36:09 -0400
-From: Uli Luckas <u.luckas@road.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
-Date: Tue, 24 Jul 2007 09:35:23 +0200
-References: <200706141509.50621.u.luckas@road.de>
-	<1183056721.1170.188.camel@pmac.infradead.org>
-In-Reply-To: <1183056721.1170.188.camel@pmac.infradead.org>
+	id 1IDFvL-0001Z5-Cq
+	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 04:39:22 -0400
+Message-ID: <2006.82.128.10.131.1185263795.squirrel@bluefrog.flexihostings.net>
+Date: Tue, 24 Jul 2007 17:56:35 +1000 (EST)
+Subject: From: Edward Moore & Associates
+From: "Edward Moore & Associates" <edwardmoore99@yahoo.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="ansi_x3.4-1968"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200707240935.26116.u.luckas@road.de>
-Cc: David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: ed_moore99@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,40 +20,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, 28. June 2007, David Woodhouse wrote:
-> On Thu, 2007-06-14 at 15:09 +0200, Uli Luckas wrote:
-> > The problem seems to happen, when suspend kicks in, after the call to
-> > try_to_freeze and before the while loop in jffs2_garbage_collect_thread.
-> >
-> > The pending freeze will cause signal_pending to return true until the
-> > attempted suspend is over and thereby the while loop won't terminate
-> > until the suspend times out.
-> >
-> > This patch will call try_to_freeze from within the while loop and adds an
-> > extra check for jffs2_thread_should_wake before we actually do the GC to
-> > avoid calling jffs2_garbage_collect_pass at every wakeup.
->
-> Thanks. I've committed a slightly simpler fix:
-> http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=e716dd3644c2a79d6ffa
->4359bac06f57479dcb34
+Dear Friend,
 
-Hi David,
-could you please push this patch upstream?
+My name is Edward Moore QC.Principal partner Edward Moore & Associates
+London UK and i was compelled by my late client's request to contact you
+on a matter of great financial reward.My client late  Hassan zahrul 
+(Malaysian by Birth) ,an Industrialist and Real Estate Guru died recently
+leaving a vast wealth in your name as his "Next of Kin".
 
-regards,
-Uli
+Do contact me immediately via my Direct Telephone:+44-7045705184 or better
+still send me an email to my direct email address as below stated for
+immediate action on this matter:
 
--- 
+Email: moore.edward99@yahoo.co.uk
 
-------- ROAD ...the handyPC Company - - -  ) ) )
+I expect your immediate response and call and also let me have your direct
+telephone and mobile lines so i can call you as well.This matter demands
+urgent action and i urge you to make this possible.
 
-Uli Luckas
-Software Development
+Awaiting your response.
 
-ROAD GmbH
-Bennigsenstr. 14 | 12159 Berlin | Germany
-fon: +49 (30) 230069 - 64 | fax: +49 (30) 230069 - 69
-url: www.road.de
-
-Amtsgericht Charlottenburg: HRB 96688 B
-Managing directors: Hans-Peter Constien, Hubertus von Streit
+Edward Moore.
+Edward Moore & Associate
+London-UK
+Telephone:+44-7045705184
