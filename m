@@ -1,16 +1,20 @@
-Received: from 85.203-211-142.static.qala.com.sg ([203.211.142.85]
-	helo=bluefrog.flexihostings.net)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IDFvL-0001Z5-Cq
-	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 04:39:22 -0400
-Message-ID: <2006.82.128.10.131.1185263795.squirrel@bluefrog.flexihostings.net>
-Date: Tue, 24 Jul 2007 17:56:35 +1000 (EST)
-Subject: From: Edward Moore & Associates
-From: "Edward Moore & Associates" <edwardmoore99@yahoo.co.uk>
+Received: from wr-out-0506.google.com ([64.233.184.231])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IDJ3I-0003E3-6d
+	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 07:59:46 -0400
+Received: by wr-out-0506.google.com with SMTP id i22so1268820wra
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 24 Jul 2007 04:59:38 -0700 (PDT)
+Message-ID: <2f9409cb0707240459m9def03cy775b3f4dcf36b39b@mail.gmail.com>
+Date: Tue, 24 Jul 2007 12:59:37 +0100
+From: "Paul Wakeman" <prwakeman@yahoo.com>
+Sender: katalix@googlemail.com
+To: linux-mtd@lists.infradead.org
+Subject: jffs2: mount problems when XATTR is enabled
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: ed_moore99@yahoo.co.uk
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,27 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Friend,
+I'm seeing lots of jffs2 errors at boot when mounting filesystems. My
+kernel has XATTR enabled. If I build my kernel without
+CONFIG_JFFS2_FS_XATTR, the errors don't occur. What are the
+requirements for a working jffs2 with XATTR? Are there dependencies of
+userspace utilities - mount, mkfs.jffs2 etc?
 
-My name is Edward Moore QC.Principal partner Edward Moore & Associates
-London UK and i was compelled by my late client's request to contact you
-on a matter of great financial reward.My client late  Hassan zahrul 
-(Malaysian by Birth) ,an Industrialist and Real Estate Guru died recently
-leaving a vast wealth in your name as his "Next of Kin".
+Errors are of the form:-
 
-Do contact me immediately via my Direct Telephone:+44-7045705184 or better
-still send me an email to my direct email address as below stated for
-immediate action on this matter:
+Node totlen on flash (0xffffffff) != totlen from node ref (0x0000013c)
+at 0x00322d24
+Node totlen on flash (0xffffffff) != totlen from node ref (0x000007e0)
+at 0x00322544
 
-Email: moore.edward99@yahoo.co.uk
+The filesystem mounts but "ls" gives errors:
 
-I expect your immediate response and call and also let me have your direct
-telephone and mobile lines so i can call you as well.This matter demands
-urgent action and i urge you to make this possible.
+# ls /
+ls: Input/output error
 
-Awaiting your response.
+My board has NOR and NAND flash. The errors occur in NOR partitions.
 
-Edward Moore.
-Edward Moore & Associate
-London-UK
-Telephone:+44-7045705184
+System info:-
+Freescale MX31 CPU (ARM11 core)
+2.6.19 kernel
+mkfs.jffs2 version 1.50
+gcc 4.1.1 (glibc)
+busybox 1.1.3
+
+I tried patching my kernel with the MTD code from the latest 2.6.22
+kernel but it results in the same problems. I also tried the latest
+mkfs.jffs2 from git (which reports the same version number though I
+don't think it is...).
+
+Curiously, if I boot an NFS root and then mount the partition
+manually, the errors do not occur.
+
+Any ideas?
+
+Thanks
+
+Paul
