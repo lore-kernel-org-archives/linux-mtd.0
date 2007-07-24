@@ -1,16 +1,21 @@
-Received: from xerxes.tchmachines.com ([208.76.80.175])
+Received: from www19.your-server.de ([213.133.104.19])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ID6sR-0004Mu-K8
-	for linux-mtd@lists.infradead.org; Mon, 23 Jul 2007 18:59:45 -0400
-Message-ID: <8988.69.30.123.186.1185231577.squirrel@architechnical.net>
-Date: Mon, 23 Jul 2007 15:59:37 -0700 (PDT)
-Subject: MTD support for "Intel Strataflash P30"
-From: "Pete MacKay" <linux@architechnical.net>
-To: veerasena_b@yahoo.co.in
+	id 1IDEwB-0000gW-HI
+	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 03:36:09 -0400
+From: Uli Luckas <u.luckas@road.de>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] jffs2_gcd_mtd3, Stopping kernel threads timed out
+Date: Tue, 24 Jul 2007 09:35:23 +0200
+References: <200706141509.50621.u.luckas@road.de>
+	<1183056721.1170.188.camel@pmac.infradead.org>
+In-Reply-To: <1183056721.1170.188.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+  charset="ansi_x3.4-1968"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200707240935.26116.u.luckas@road.de>
+Cc: David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Yes, the P30 is supported through the Common Flash Interface (CFI) in
-2.6.18 and I believe in 2.6.12 too.  You have to write a mapping driver
-(see drivers/mtd/maps) and probe with the map_name "cfi_probe".  I wrote
-one for a PXA-270 device similar to the Intel Mainstone board so I started
-with drivers/mtd/maps/mainstone-flash.c and the platform resources in
-arch/arm/mach-pxa/mainstone.c as an example.  Good luck!
+On Thursday, 28. June 2007, David Woodhouse wrote:
+> On Thu, 2007-06-14 at 15:09 +0200, Uli Luckas wrote:
+> > The problem seems to happen, when suspend kicks in, after the call to
+> > try_to_freeze and before the while loop in jffs2_garbage_collect_thread.
+> >
+> > The pending freeze will cause signal_pending to return true until the
+> > attempted suspend is over and thereby the while loop won't terminate
+> > until the suspend times out.
+> >
+> > This patch will call try_to_freeze from within the while loop and adds an
+> > extra check for jffs2_thread_should_wake before we actually do the GC to
+> > avoid calling jffs2_garbage_collect_pass at every wakeup.
+>
+> Thanks. I've committed a slightly simpler fix:
+> http://git.infradead.org/?p=mtd-2.6.git;a=commitdiff;h=e716dd3644c2a79d6ffa
+>4359bac06f57479dcb34
 
-Also, if you're using u-boot beware that the chip ID for two of the Strata
-chips is wrong.  I've submitted a patch twice but somehow didn't follow
-some unwritten rules so the u-boot git still has the wrong IDs.  They
-should be (from my 1.1.4 source):
+Hi David,
+could you please push this patch upstream?
 
-#ifndef INTEL_ID_28F64P30T
-#define INTEL_ID_28F64P30T  0x8817	/*  64M =  32K x 255 + 32k x 4 */
-#define INTEL_ID_28F64P30B  0x881A	/*  64M =  32K x 255 + 32k x 4 */
-#define INTEL_ID_28F128P30T 0x8818	/* 128M =  64K x 255 + 32k x 4 */
-#define INTEL_ID_28F128P30B 0x881B	/* 128M =  64K x 255 + 32k x 4 */
-#define INTEL_ID_28F256P30T 0x8919	/* 256M = 128K x 255 + 32k x 4 */
-#define INTEL_ID_28F256P30B 0x891C	/* 256M = 128K x 255 + 32k x 4 */
-#endif
+regards,
+Uli
 
-Note the last two start with '0x89' and not '0x88', which are the
-(incorrect) values in the u-boot header include/flash.h (added in 1.1.5 or
-1.1.6 if I remember correctly).
+-- 
 
-veerasena reddy veerasena_b at yahoo.co.in wrote:
+------- ROAD ...the handyPC Company - - -  ) ) )
 
-Hi,
+Uli Luckas
+Software Development
 
-Does Linux-2.6.12 or linux-2.6.18 has MTD flash device
-support for "Intel Strataflash P30" device?
+ROAD GmbH
+Bennigsenstr. 14 | 12159 Berlin | Germany
+fon: +49 (30) 230069 - 64 | fax: +49 (30) 230069 - 69
+url: www.road.de
 
-I appreciate your early response.
-
-Thanks in Advance.
-
-Regards,
-Veerasena.
+Amtsgericht Charlottenburg: HRB 96688 B
+Managing directors: Hans-Peter Constien, Hubertus von Streit
