@@ -1,17 +1,16 @@
-Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IDWdC-00012K-Gi
-	for linux-mtd@lists.infradead.org; Tue, 24 Jul 2007 22:30:02 -0400
-Message-ID: <46A6B5F8.3090104@ak.jp.nec.com>
-Date: Wed, 25 Jul 2007 11:31:20 +0900
-From: KaiGai Kohei <kaigai@ak.jp.nec.com>
-MIME-Version: 1.0
-To: Paul Wakeman <prwakeman@yahoo.com>
+Received: from web57903.mail.re3.yahoo.com ([68.142.236.96])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IDcYt-00051R-Hj
+	for linux-mtd@lists.infradead.org; Wed, 25 Jul 2007 04:49:40 -0400
+Date: Wed, 25 Jul 2007 01:42:59 -0700 (PDT)
+From: Paul Wakeman <prwakeman@yahoo.com>
 Subject: Re: jffs2: mount problems when XATTR is enabled
-References: <2f9409cb0707240459m9def03cy775b3f4dcf36b39b@mail.gmail.com>
-In-Reply-To: <2f9409cb0707240459m9def03cy775b3f4dcf36b39b@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+To: KaiGai Kohei <kaigai@ak.jp.nec.com>
+In-Reply-To: <46A6B5F8.3090104@ak.jp.nec.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <300947.2701.qm@web57903.mail.re3.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,66 +21,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Paul,
+KaiGai Kohei <kaigai@ak.jp.nec.com> wrote:
 
-I like to confirm your situation at first.
+> Did you pack any xattr in the filesystem image?
 
-Did you pack any xattr in the filesystem image?
-If you didn't specify a xattr related option in mkfs.jffs2, any xattr
-on the host filesystem is not packed.
+No. The initial rootfs has no files with xattrs. Applications add
+attributes when the system operates. These errors occur before the
+first xattr is written.
 
-Paul Wakeman wrote:
-> I'm seeing lots of jffs2 errors at boot when mounting filesystems. My
-> kernel has XATTR enabled. If I build my kernel without
-> CONFIG_JFFS2_FS_XATTR, the errors don't occur. What are the
-> requirements for a working jffs2 with XATTR? Are there dependencies of
-> userspace utilities - mount, mkfs.jffs2 etc?
-> 
-> Errors are of the form:-
-> 
-> Node totlen on flash (0xffffffff) != totlen from node ref (0x0000013c)
-> at 0x00322d24
-> Node totlen on flash (0xffffffff) != totlen from node ref (0x000007e0)
-> at 0x00322544
+> is 0xffffff. In addition, 0x013c (316byte) and 0x07e0 (2016byte) are
+> too long, if these are xattr nodes.
 
-jffs2_mark_node_obsolete() generates above messages, when the length of
-node on the medium is differ from expected one.
-It seems to me jffs2 tries to access a cleared region because left hand
-is 0xffffff. In addition, 0x013c (316byte) and 0x07e0 (2016byte) are
-too long, if these are xattr nodes.
+I don't think they're xattr nodes. These errors happen on first boot
+when there are no xattrs.
 
-Is it possible to retry it using the kernel with debug messages.
-(See fs/jffs2/debug.h)
+> Is it possible to retry it using the kernel with debug messages.
+> (See fs/jffs2/debug.h)
 
-> The filesystem mounts but "ls" gives errors:
-> 
-> # ls /
-> ls: Input/output error
-> 
-> My board has NOR and NAND flash. The errors occur in NOR partitions.
-> 
-> System info:-
-> Freescale MX31 CPU (ARM11 core)
-> 2.6.19 kernel
-> mkfs.jffs2 version 1.50
-> gcc 4.1.1 (glibc)
-> busybox 1.1.3
-> 
-> I tried patching my kernel with the MTD code from the latest 2.6.22
-> kernel but it results in the same problems. I also tried the latest
-> mkfs.jffs2 from git (which reports the same version number though I
-> don't think it is...).
-> 
-> Curiously, if I boot an NFS root and then mount the partition
-> manually, the errors do not occur.
+Ok. I'll send the log later.
 
-Is it really same kernel, and same partition?
+> > Curiously, if I boot an NFS root and then mount the partition
+> > manually, the errors do not occur.
+> 
+> Is it really same kernel, and same partition?
 
-> Any ideas?
-> 
-> Thanks
-> 
-> Paul
--- 
-Open Source Software Promotion Center, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
+Yes. 
+
+I mount the partition using
+
+mount -t jffs2 /dev/mtdblock2 /mnt/tmp
+
+I can then modify files under /mnt/tmp and then umount without errors.
+There is a delay while I think jffs2 writes its clean markers to erased
+sectors within the partition. If I boot with root=/dev/mtdblock2, the
+errors occur and although the filesystem mounts, ls gives errors.
+
+I'm beginning to think this is a timing issue at boot, perhaps due to a
+bug in another driver. I'll investigate that.
+
+Thanks for your reply.
+
+Paul
+
+
+
+      ____________________________________________________________________________________
+Luggage? GPS? Comic books? 
+Check out fitting gifts for grads at Yahoo! Search
+http://search.yahoo.com/search?fr=oni_on_mail&p=graduation+gifts&cs=bz
