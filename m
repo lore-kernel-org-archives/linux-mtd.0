@@ -1,24 +1,18 @@
-Received: from 263.net.cn ([211.150.96.22] helo=smtp.263.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IDtEw-0001JY-13
-	for linux-mtd@lists.infradead.org; Thu, 26 Jul 2007 03:38:16 +0100
-Received: from smtp2.263.net (localhost [127.0.0.1])
-	by smtp2.263.net (Postfix) with ESMTP id 97FE93BEACF
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Jul 2007 10:37:28 +0800 (CST)
-Received: from mox89b9e5e1226 (localhost [127.0.0.1])
-	by smtp2.263.net (Postfix) with ESMTP id 51A5F16DDEC
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 26 Jul 2007 10:37:28 +0800 (CST)
-From: "Eric" <liuhxshanghai@263.net>
-To: <linux-mtd@lists.infradead.org>
-Subject: JFFS2 messages
-Date: Thu, 26 Jul 2007 10:36:12 +0800
+Received: from tyo202.gate.nec.co.jp ([202.32.8.206])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IDtH4-0005aS-N7
+	for linux-mtd@lists.infradead.org; Wed, 25 Jul 2007 22:40:53 -0400
+Message-ID: <46A80A01.6010108@ak.jp.nec.com>
+Date: Thu, 26 Jul 2007 11:42:09 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20070726023728.51A5F16DDEC@smtp2.263.net>
+To: Paul Wakeman <prwakeman@yahoo.com>
+Subject: Re: jffs2: mount problems when XATTR is enabled
+References: <369376.85924.qm@web57912.mail.re3.yahoo.com>
+In-Reply-To: <369376.85924.qm@web57912.mail.re3.yahoo.com>
+Content-Type: text/plain; charset=ISO-2022-JP
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +22,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Paul Wakeman wrote:
+>> I wonder why jffs2/xattr code gave an effect your flash device
+>> without any xattr node, because any xattr related implementation
+>> is invoked only when jffs2 found xattr nodes on the medium, or
+>> xattr related operations are done (like setfacl).
+> 
+> Maybe it causes timing differences just by it being compiled in?
 
-Hi, all:
+Is it means there are differences of kernels between flash case and
+NFS one? We can confirm it using binary hash such as md5sum.
 
-We are developing AT91RM9200-DK based device, 32M SDRAM, 8M Nor flash =
-for linux kernel image and INITRD, Nand flash for applications and =
-storage. Our application will frequently write something to the Nand.=20
+> My boot logs show calls to jffs_build_xattr_subsystem().
 
-Now we are performing critical test. The device may lose power at any =
-time and it will reboot after 10sec. Two days has gone.
-While rebooting and mounting Nand flash, Jffs2 gives many messages, =
-like:
----------------------------------------------------------------------
-Empty flash at 0x000cc738 ends at 0x000cc800
-....
+But it reports the partition contains no JFFS2_NODETYPE_XATTR and JFFS2_NODETYPE_XREF
+nodes. jffs_build_xattr_subsystem() did just an empty loop.
 
-jffs2_scan_eraseblock(): Node at 0x00ca0ffc {0x1985, 0xe002, 0xe0021985) =
-has invalid CRC 0x00000075 (calculated 0xd7cd6a7b)
-.....
+| JFFS2 notice: (1) jffs2_build_xattr_subsystem: complete building xattr subsystem
+| , 0 of xdatum (0 unchecked, 0 orphan) and 0 of xref (0 dead, 0 orphan) found.
 
-JFFS2 notice: (179) check_node_data: wrong data CRC in data node at =
-0x01b25a00: read 0x58d6423f, calculated 0xb3eebebd.
-JFFS2 notice: (179) read_dnode: node CRC failed on dnode at 0x1057bdc: =
-read 0xffffffff, calculated 0x32a8b981
-.......
----------------------------------------------------------------------
+>>>> Is it possible to retry it using the kernel with debug messages.
+>>>> (See fs/jffs2/debug.h)
+>>> Ok. I'll send the log later.
+>> I think Kconfig related to JFFS2 also helps us to understand the
+>> situation.
+> 
+> Attached are two compressed logs captured on the serial port.
+> 
+> jffs2-dbg-flashboot.log.gz
+> jffs2-dbg-nfsboot.log.gz
+> 
+> The logs show kernel boot messages and shell command output which will
+> hopefully show the symptoms. The same kernel was used in each case.
 
-Now these message becomes more and more.
+In the tail of jffs2-dbg-flashboot.log.gz, it shows you can execute 'df' and
+'ls' command, although 'ls' reported EIO.
+However, success of 'df' means it can open and read /etc/mtab, at least.
+Is it installed in /dev/mtdblock2 ?
 
-Another frustrating thing is that we find one log file (produced by our =
-application) is corrupted. Its size is over 800M and cannot cat it. =
-However, can rm it.
+Is it possible to send the following logs?
+- "ls /" after "dmesg -n 8"
+ It seems to me that some warnning or notice messages from kernel are filtered
+ due to log message level configuration.
+ Xattr implementation has a possibility to return -EIO, but I could not found
+ those messages in jffs2-dbg-flashboot.log.gz.
 
-I am wondering whether the device can survive the test, and JFFS2 is as =
-robust as the webpage =
-(http://www.denx.de/wiki/DULG/RootFileSystemOnAJFFS2FileSystem) says: =
-JFFS2 (Journalling Flash File System version 2) was specifically =
-designed for use on flash memory devices in embedded systems. It is a =
-log-structured file system which means that it is robust against loss of =
-power, crashes or other unorderly shutdowns of the system ("robust" =
-means that data that is just being written when the system goes down may =
-be lost, but the file system itself does not get corrupted and the =
-system can be rebootet without need for any kind of file system check).
+- "strace ls /"
+ It helps us to know what system call returns -EIO, and whether applications
+ actually use xattr features, or not.
 
-Thanks and Regards
-Eric
+> The root partition is in NOR flash (mtd2). Applications use xattr
+> features only in /mnt/userdata (also in NOR at mtd3). There are 3
+> partitions in NAND (mtd6-8).
+
+There is a possibility that applications use xattr features implicitly
+via library functions, I think.
+For example, the recent ls in busybox supports to display security context
+of SELinux. It calls fgetxattr(2) via libselinux.
+
+> At the end of the nfsboot log, there are shell commands that show that
+> manually mounting /dev/mtdblock2 (which gave all the errors in the
+> flash boot case) mounts cleanly.
+
+Hmm...
+Currently, I have no idea to explain your situation...
+
+--
+OSS Platform Development Division, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
