@@ -1,32 +1,23 @@
-Received: from e5.ny.us.ibm.com ([32.97.182.145])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IETlj-0006oh-En
-	for linux-mtd@lists.infradead.org; Fri, 27 Jul 2007 18:38:28 +0100
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e5.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l6RHcHmw018472
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 13:38:17 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
-	l6RHcHh5357840
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 13:38:17 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l6RHcHpY030041
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 13:38:17 -0400
-Subject: Re: JFFS2 deadlock with alloc_sem
-From: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
-To: ye janboe <janboe.ye@gmail.com>
-In-Reply-To: <af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
-References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
-	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
-	<1185543729.13873.10.camel@kleikamp.austin.ibm.com>
-	<af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
-Content-Type: text/plain
-Date: Fri, 27 Jul 2007 12:38:16 -0500
-Message-Id: <1185557896.22352.4.camel@kleikamp.austin.ibm.com>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IETvF-00080k-71
+	for linux-mtd@lists.infradead.org; Fri, 27 Jul 2007 13:48:22 -0400
+Date: Fri, 27 Jul 2007 19:44:31 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
+	address of partition
+Message-ID: <20070727174431.GB11189@lazybastard.org>
+References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
+	<20070727134825.GA9122@lazybastard.org>
+	<6934efce0707271005w2d8ba5cs4aa9ff66c69e9c2a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6934efce0707271005w2d8ba5cs4aa9ff66c69e9c2a@mail.gmail.com>
+Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,19 +27,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-07-28 at 00:35 +0800, ye janboe wrote:
-> David
+On Fri, 27 July 2007 10:05:22 -0700, Jared Hulbert wrote:
 > 
-> Thanks for you comments.
-> I still can not understand why there is comment in code say the dead
-> lock can not happen.
-> Could you give me some hints?
+> > Is there a reason you haven't used point() and unpoint()?
+> 
+> No.  In fact, I do use them.  They give me a virtual address and
+> protect the AXFS volume from the inevitable impolite rw filesystems on
+> the same chip.
 
-I could only speculate, since I really don't know the code.  I suspect
-the writer of the comment had some other deadlock scenario in mind and
-didn't foresee the one that was encountered.
+Protection makes sense.  Do you also need the virtual address?
 
-Shaggy
+> > What is wrong with those functions?
+> 
+> They don't get me the physical address.
+
+Might be an idea to extent point() to pass a physical address as well.
+Not sure.
+
+Jörn
+
 -- 
-David Kleikamp
-IBM Linux Technology Center
+Everything should be made as simple as possible, but not simpler.
+-- Albert Einstein
