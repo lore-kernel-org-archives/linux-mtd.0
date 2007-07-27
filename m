@@ -1,32 +1,19 @@
-Received: from mtagate5.de.ibm.com ([195.212.29.154])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IERgd-0005WB-AN
-	for linux-mtd@lists.infradead.org; Fri, 27 Jul 2007 16:25:04 +0100
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate5.de.ibm.com (8.13.8/8.13.8) with ESMTP id l6RFOq0D895246
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 15:24:52 GMT
-Received: from d12av04.megacenter.de.ibm.com (d12av04.megacenter.de.ibm.com
-	[9.149.165.229])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.4) with
-	ESMTP id l6RFOi6L2179086
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 17:24:52 +0200
-Received: from d12av04.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av04.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l6RFORSc013868
-	for <linux-mtd@lists.infradead.org>; Fri, 27 Jul 2007 17:24:28 +0200
-From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 0/5] ubi-utils: migrate to new libubi
-Date: Fri, 27 Jul 2007 17:23:38 +0200
+Received: from xdsl-664.zgora.dialog.net.pl ([81.168.226.152] helo=tuxland.pl)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IERl6-0004Bb-8Y
+	for linux-mtd@lists.infradead.org; Fri, 27 Jul 2007 11:30:00 -0400
+From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
+To: dwmw2@infradead.org, Vitaly Wool <vwool@ru.mvista.com>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [PATCH] mtd: remove redundant/dead code from physmap_of.c
+Date: Fri, 27 Jul 2007 17:29:32 +0200
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200707271723.38987.alexs@linux.vnet.ibm.com>
-Cc: Frank Haverkamp <haver@linux.vnet.ibm.com>,
-	Andreas Arnez <arnez@linux.vnet.ibm.com>
+Message-Id: <200707271729.33026.m.kozlowski@tuxland.pl>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,27 +23,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patchset migrates the remaining tools (pddcustomize, ubimirror and
-pfiflash) to the new libubi. It also introduces a new libubi_common.c
-file which contains some helper functions for the tools.
+Hello,
 
-I've tested the new version with the scripts in ubi-utils/scripts/ubi_*
-and everything works fine.
+	This patch removes redundant memset() and dead return line from
+of_physmap_probe(). No functional change.
 
- mtd-utils.orig/ubi-utils/inc/libubiold.h       |  310 ----------
- mtd-utils.orig/ubi-utils/src/libubiold.c       |  768 -------------------------
- mtd-utils.orig/ubi-utils/src/libubiold_int.h   |  119 ---
- mtd-utils.orig/ubi-utils/src/libubiold_sysfs.c |  232 -------
- mtd-utils.orig/ubi-utils/src/libubiold_sysfs.h |  109 ---
- mtd-utils/ubi-utils/src/libubi_common.c        |   93 +++
- mtd-utils/ubi-utils/src/libubi_common.h        |   78 ++
- ubi-utils/Makefile                             |    6
- ubi-utils/src/libpfiflash.c                    |  132 ++--
- ubi-utils/src/libubimirror.c                   |   21
- ubi-utils/src/pddcustomize.c                   |   44 -
- ubi-utils/src/pfiflash.c                       |    3
- ubi-utils/src/ubimirror.c                      |    3
- 13 files changed, 306 insertions(+), 1612 deletions(-)
+Signed-off-by: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
 
-Kind regards,
-Alexander Schmidt
+ drivers/mtd/maps/physmap_of.c | 6223 -> 6176 (-47 bytes)
+
+ drivers/mtd/maps/physmap_of.c |    5 -----
+ 1 file changed, 5 deletions(-)
+
+--- linux-2.6.23-rc1-mm1-a/drivers/mtd/maps/physmap_of.c	2007-07-26 13:07:41.000000000 +0200
++++ linux-2.6.23-rc1-mm1-b/drivers/mtd/maps/physmap_of.c	2007-07-27 17:06:15.000000000 +0200
+@@ -139,11 +139,10 @@ static int __devinit of_physmap_probe(st
+ 	info = kzalloc(sizeof(struct physmap_flash_info), GFP_KERNEL);
+ 	if (info == NULL) {
+ 		err = -ENOMEM;
+ 		goto err_out;
+ 	}
+-	memset(info, 0, sizeof(*info));
+
+ 	dev_set_drvdata(&dev->dev, info);
+
+ 	info->res = request_mem_region(res.start, res.end - res.start + 1,
+ 			dev->dev.bus_id);
+@@ -211,14 +210,10 @@ static int __devinit of_physmap_probe(st
+ 	return 0;
+
+ err_out:
+ 	of_physmap_remove(dev);
+ 	return err;
+-
+-	return 0;
+-
+-
+ }
+
+ static struct of_device_id of_physmap_match[] = {
+ 	{
+ 		.type		= "rom",
