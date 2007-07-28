@@ -1,20 +1,16 @@
-Received: from wx-out-0506.google.com ([66.249.82.235])
+Received: from baikonur.stro.at ([213.239.196.228])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IEhLG-00019G-RB
-	for linux-mtd@lists.infradead.org; Sat, 28 Jul 2007 04:08:03 -0400
-Received: by wx-out-0506.google.com with SMTP id s7so950619wxc
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 28 Jul 2007 01:08:01 -0700 (PDT)
-Message-ID: <e1d5030b0707280108v236cc522m454c58e1044f1996@mail.gmail.com>
-Date: Sat, 28 Jul 2007 13:38:01 +0530
-From: "Midhun A" <midhunagni@gmail.com>
-To: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.arm.linux.org.uk,
-	linux-mtd@lists.infradead.org
-Subject: Testing of CPRM on SD Card
+	id 1IEkBc-0003Gr-G2
+	for linux-mtd@lists.infradead.org; Sat, 28 Jul 2007 07:10:17 -0400
+Date: Sat, 28 Jul 2007 13:07:16 +0200
+From: maximilian attems <max@stro.at>
+To: dwmw2@infradead.org
+Subject: [patch] nand_base.c fix broken link
+Message-ID: <20070728110716.GA26191@stro.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,17 +20,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+replace with working link from nand Kconfig help text
+fixes bugzilla 7815
 
-    Our product development requires that we use the CPRM security
-feature of SD card for protecting our material. I have been searching
-the web for a SD host controller / Software which is CPRM capable, so
-that we can write/read an encrypted SD card with the testing keys
-provided by the 4C Entity) and test our prototype. But I could find
-none. There are IP cores but no manufactured chips.
+Signed-off-by: maximilian attems <max@stro.at>
 
-   Has anybody of you done similar stuff ? How do I go about testing
-the CPRM feature of the SD card on our prototype ?
+---
+ drivers/mtd/nand/nand_base.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
-Midhun.
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 7e68203..6ede757 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -7,7 +7,7 @@
+  *   Basic support for AG-AND chips is provided.
+  *
+  *	Additional technical information is available on
+- *	http://www.linux-mtd.infradead.org/tech/nand.html
++ *	http://www.linux-mtd.infradead.org/doc/nand.html
+  *
+  *  Copyright (C) 2000 Steven J. Hill (sjhill@realitydiluted.com)
+  *		  2002-2006 Thomas Gleixner (tglx@linutronix.de)
+ 
+--
+maks
