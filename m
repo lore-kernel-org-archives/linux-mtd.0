@@ -1,18 +1,18 @@
-Received: from nf-out-0910.google.com ([64.233.182.189])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFTa1-0001ay-VX
-	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 07:38:32 -0400
-Received: by nf-out-0910.google.com with SMTP id h3so143969nfh
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 30 Jul 2007 04:38:28 -0700 (PDT)
-Message-ID: <46ADCDAD.80200@googlemail.com>
-Date: Mon, 30 Jul 2007 13:38:21 +0200
-From: "benszau@googlemail.com" <benszau@googlemail.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Issues with flashcp
-Content-Type: text/plain; charset=ISO-8859-15
+Subject: Re: JFFS2 deadlock with alloc_sem
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
+In-Reply-To: <1185557896.22352.4.camel@kleikamp.austin.ibm.com>
+References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
+	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
+	<1185543729.13873.10.camel@kleikamp.austin.ibm.com>
+	<af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
+	<1185557896.22352.4.camel@kleikamp.austin.ibm.com>
+Content-Type: text/plain
+Date: Mon, 30 Jul 2007 13:45:08 +0100
+Message-Id: <1185799508.3083.20.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, ye janboe <janboe.ye@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,31 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In general flashing works well, but I have issues when flashing certain
-images. This problem is reproduceable:
+On Fri, 2007-07-27 at 12:38 -0500, Dave Kleikamp wrote:
+> I could only speculate, since I really don't know the code.  I suspect
+> the writer of the comment had some other deadlock scenario in mind and
+> didn't foresee the one that was encountered. 
 
-    * The target is a MPC5200-tiny board with 16MB of Intel Strata Flash
-      connected to a PPC processor.
-    * First I flash a large image via bootloader (u-Boot).
-    * Then I can boot the system.
-    * After system has booted, i transfer a smaller, second image to the
-      target /tmp folder via SCP.
-    * "flashcp /tmp/<image_small.img>" /dev/mtd2 -v
-    * The progess suggests, that everything went well, but when I reboot
-      i get inode errors like the following:
-      ...
-      JFFS2 error: (1) jffs2_build_inode_pass1: child dir "tc" (ino
-      #473) of dir ino #334 appears to be a hard link
-      VFS: Mounted root (jffs2 filesystem).
-      Freeing unused kernel memory: 92k init
-      JFFS2 error: (160) jffs2_do_read_inode_internal: Argh. Special
-      inode #467 with mode 0xa1ff had more than one node
-      Returned error for crccheck of ino #467. Expect badness...
-      ...
-    * Now i am curious what went wrong. The small image works well if i
-      flash using the bootloader, so it should not be an issue with the
-      image itself. May it be possible that i have found a bug? Any help
-      is appreciated.
+I'm still confused because we deliberately ensure the page is up to date
+in prepare_write -- so read_cache_page() should never have to lock it,
+and we should never deadlock.
 
-Kind regards,
-Simon
+Or did I miss something in your analysis (or elsewhere)?
+
+Why is read_cache_page() ever trying to lock this page in the first
+place? It should be up to date.
+
+-- 
+dwmw2
