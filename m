@@ -1,16 +1,18 @@
-Received: from e-post15.km.ru ([217.197.114.155] helo=e-post15)
+Received: from nf-out-0910.google.com ([64.233.182.189])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFRoD-0000Jp-LY
-	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 05:45:03 -0400
-From: <alex_khrist@km.ru>
-To: linux-mtd@lists.infradead.org
-Subject: mmap for JFFS2
-Date: Mon, 30 Jul 2007 13:35:30 +0400
-Message-Id: <46ADB0E2.00996E.05372@e-post15>
+	id 1IFTa1-0001ay-VX
+	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 07:38:32 -0400
+Received: by nf-out-0910.google.com with SMTP id h3so143969nfh
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 30 Jul 2007 04:38:28 -0700 (PDT)
+Message-ID: <46ADCDAD.80200@googlemail.com>
+Date: Mon, 30 Jul 2007 13:38:21 +0200
+From: "benszau@googlemail.com" <benszau@googlemail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: Text/Plain;
-  charset="windows-1251"
+To: linux-mtd@lists.infradead.org
+Subject: Issues with flashcp
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,14 +22,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-I use JFFS2 on NAND flash. Some apps require memory mapped file
-opened with MAP_SHARED for read/write. But 'mmap' returns EINVAL,
-since 'writepage'doesn't implemented for JFFS2 (even in 2.6.22 kernel).
-It seems what I have to do it by myself. But I have some doubts.
-Why it is not imlemented yet? What the troubles occur for JFFS2 developers?
-Does anybody know some workarounds?
-P.S. I can't change anything within given apps.
+In general flashing works well, but I have issues when flashing certain
+images. This problem is reproduceable:
 
-WBR, Alex Khristianovsky.
-__________________________________________________________________
+    * The target is a MPC5200-tiny board with 16MB of Intel Strata Flash
+      connected to a PPC processor.
+    * First I flash a large image via bootloader (u-Boot).
+    * Then I can boot the system.
+    * After system has booted, i transfer a smaller, second image to the
+      target /tmp folder via SCP.
+    * "flashcp /tmp/<image_small.img>" /dev/mtd2 -v
+    * The progess suggests, that everything went well, but when I reboot
+      i get inode errors like the following:
+      ...
+      JFFS2 error: (1) jffs2_build_inode_pass1: child dir "tc" (ino
+      #473) of dir ino #334 appears to be a hard link
+      VFS: Mounted root (jffs2 filesystem).
+      Freeing unused kernel memory: 92k init
+      JFFS2 error: (160) jffs2_do_read_inode_internal: Argh. Special
+      inode #467 with mode 0xa1ff had more than one node
+      Returned error for crccheck of ino #467. Expect badness...
+      ...
+    * Now i am curious what went wrong. The small image works well if i
+      flash using the bootloader, so it should not be an issue with the
+      image itself. May it be possible that i have found a bug? Any help
+      is appreciated.
+
+Kind regards,
+Simon
