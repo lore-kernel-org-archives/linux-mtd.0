@@ -1,18 +1,20 @@
-Subject: Re: JFFS2 deadlock with alloc_sem
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
-In-Reply-To: <1185557896.22352.4.camel@kleikamp.austin.ibm.com>
-References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
-	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
-	<1185543729.13873.10.camel@kleikamp.austin.ibm.com>
-	<af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
-	<1185557896.22352.4.camel@kleikamp.austin.ibm.com>
-Content-Type: text/plain
-Date: Mon, 30 Jul 2007 13:45:08 +0100
-Message-Id: <1185799508.3083.20.camel@pmac.infradead.org>
+Received: from [81.2.110.250] (helo=the-village.bc.nu)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IFUkR-0002fR-FJ
+	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 08:53:21 -0400
+Date: Mon, 30 Jul 2007 13:57:23 +0100
+From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+To: "Sriram, Kannan" <ksriram@ti.com>
+Subject: Re: Testing of CPRM on SD Card
+Message-ID: <20070730135723.4e5338b4@the-village.bc.nu>
+In-Reply-To: <0A50DBE80DD6674E94F7269DC964A7B6440EDA@dbde01.ent.ti.com>
+References: <e1d5030b0707280108v236cc522m454c58e1044f1996@mail.gmail.com>
+	<0A50DBE80DD6674E94F7269DC964A7B6440EDA@dbde01.ent.ti.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, ye janboe <janboe.ye@gmail.com>
+Cc: linux-arm-kernel@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Midhun A <midhunagni@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,19 +24,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-07-27 at 12:38 -0500, Dave Kleikamp wrote:
-> I could only speculate, since I really don't know the code.  I suspect
-> the writer of the comment had some other deadlock scenario in mind and
-> didn't foresee the one that was encountered. 
+On Mon, 30 Jul 2007 11:20:58 +0530
+"Sriram, Kannan" <ksriram@ti.com> wrote:
 
-I'm still confused because we deliberately ensure the page is up to date
-in prepare_write -- so read_cache_page() should never have to lock it,
-and we should never deadlock.
+> 
+> Midhun,
+> 
+>  There is no open-source implementation of CPRM (SD-Audio/ SD-Bind
+> standards). So first of all, you need to license keys from 4C (device
+> keys, media keys etc) and do your own implementation.
 
-Or did I miss something in your analysis (or elsewhere)?
-
-Why is read_cache_page() ever trying to lock this page in the first
-place? It should be up to date.
-
--- 
-dwmw2
+Also remember that if you do your own implementation in the kernel you
+will be required to publish the source code under the GPL and that will
+not be permitted with the CPRM licensing. Thus you will need to do all
+the work in user space.
