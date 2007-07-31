@@ -1,19 +1,23 @@
-Received: from mailout.stusta.mhn.de ([141.84.69.5] helo=mailhub.stusta.mhn.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFAG8-0005tK-FR
-	for linux-mtd@lists.infradead.org; Sun, 29 Jul 2007 11:00:42 -0400
-Date: Sun, 29 Jul 2007 16:58:12 +0200
-From: Adrian Bunk <bunk@stusta.de>
-To: Andrew Morton <akpm@linux-foundation.org>,
-	Kyungmin Park <kyungmin.park@samsung.com>, dwmw2@infradead.org
-Subject: [-mm patch] MTD onenand_sim.c: make struct info static
-Message-ID: <20070729145812.GW16817@stusta.de>
-References: <20070725040304.111550f4.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20070725040304.111550f4.akpm@linux-foundation.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: JFFS2 deadlock with alloc_sem
+From: David Woodhouse <dwmw2@infradead.org>
+To: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
+In-Reply-To: <1185888229.14534.13.camel@kleikamp.austin.ibm.com>
+References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
+	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
+	<1185543729.13873.10.camel@kleikamp.austin.ibm.com>
+	<af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
+	<1185557896.22352.4.camel@kleikamp.austin.ibm.com>
+	<1185799508.3083.20.camel@pmac.infradead.org>
+	<1185813909.9523.42.camel@kleikamp.austin.ibm.com>
+	<1185883827.3083.109.camel@pmac.infradead.org>
+	<1185888229.14534.13.camel@kleikamp.austin.ibm.com>
+Content-Type: text/plain
+Date: Tue, 31 Jul 2007 16:23:26 +0100
+Message-Id: <1185895406.3083.117.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Roberts Nathan-mcg31137 <Nathan.Roberts@motorola.com>,
+	linux-mtd@lists.infradead.org, ye janboe <janboe.ye@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,28 +27,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jul 25, 2007 at 04:03:04AM -0700, Andrew Morton wrote:
->...
-> Changes since 2.6.22-rc6-mm1:
->...
->  git-mtd.patch
->...
->  git trees
->...
+On Tue, 2007-07-31 at 08:23 -0500, Dave Kleikamp wrote:
+> We had tried a similar patch, attached here, but it caused problems.
+> Maybe our patch is missing something.
+> 
+> >From the bug report:
+> -----------------------------
+> Built and ran the 2nd patch (attachment 28493 [edit]).  Results are similar
+> as before, jffs2 runs for a little while, but soon complains there's 
+> already data at the point where it intends to write. 
+> 
+> ARGH. About to write node to 0x00140010 on flash, but there's data already 
+> there:
+> 0x00140010: 19 85 e0 02 00 00 00 ac 0a 3e 48 74 00 00 00 74 
 
-This patch makes the needlessly global struct info static.
+Hm, I think that's probably a _separate_ problem, which you happened to
+exacerbate. I don't see how it's related to f->sem locking.
 
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
----
---- linux-2.6.23-rc1-mm1/drivers/mtd/onenand/onenand_sim.c.old	2007-07-26 16:11:57.000000000 +0200
-+++ linux-2.6.23-rc1-mm1/drivers/mtd/onenand/onenand_sim.c	2007-07-26 16:12:19.000000000 +0200
-@@ -78,7 +78,7 @@
- 	struct onenand_flash	flash;
- };
- 
--struct onenand_info *info;
-+static struct onenand_info *info;
- 
- #define DPRINTK(format, args...)					\
- do {									\
+-- 
+dwmw2
