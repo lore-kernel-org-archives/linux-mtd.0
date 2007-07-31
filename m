@@ -1,27 +1,15 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFuWE-0005Fs-O1
-	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 12:25:48 -0400
-Received: from list by ciao.gmane.org with local (Exim 4.43)
-	id 1IFuW2-00071r-OF
-	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 18:24:11 +0200
-Received: from 57.66.65.38 ([57.66.65.38])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2007 18:24:10 +0200
-Received: from mw_phil by 57.66.65.38 with local (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2007 18:24:10 +0200
-To: linux-mtd@lists.infradead.org
-From: MikeW <mw_phil@yahoo.co.uk>
+Date: Tue, 31 Jul 2007 13:56:29 -0400
+From: Ralph Siemsen <ralphs@netwinder.org>
+To: Ben Dooks <ben-linux@fluff.org>
 Subject: Re: Unlocking with Intel J3 series flash
-Date: Tue, 31 Jul 2007 16:23:58 +0000 (UTC)
-Message-ID: <loom.20070731T181922-722@post.gmane.org>
+Message-ID: <20070731175629.GB25447@marvin.netwinder.org>
 References: <20070731153547.GA24705@marvin.netwinder.org>
-Mime-Version: 1.0
+	<20070731162331.GA31821@fluff.org.uk>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <20070731162331.GA31821@fluff.org.uk>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +19,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ralph Siemsen <ralphs <at> netwinder.org> writes:
+On Tue, Jul 31, 2007 at 05:23:31PM +0100, Ben Dooks wrote:
+ 
+> My solution, which I can post the patch for, is to check the lock
+> status of the page before trying to unlock the device.
 
-> 
-> Greetings,
-> 
-> When using Intel J3 flash, unlocking operations are horribly slow.
-> The reason for this is that the J3 has "Flexible Block-locking" feature
-> (to quote that data sheet) which "allows blocks to be individually
-> locked and simultaneously unlocked".
-> ...snip...
-> 
-> I am looking for ideas on how to deal with this.  One idea would be
-> to introduce a cousin to the existing MTD_STUPID_LOCK, perhaps one
-> called MTD_STUPID_UNLOCK, which would then be used to ensure that
-> unlocking does not iterate over all flash blocks.
-> 
-> -R
-> 
-> ____________________________
+In principle this sounds like a good idea, but we then trust the
+device to give us status... wherease prevously the unlock command
+would be issued regardless.  I wonder if there are any errata
+regarding device status... probably... here is one:
+http://download.intel.com/design/flcomp/applnots/30855503.pdf
+although your code looks like it will deal correctly with this.
 
-It would be nice to keep pejorative and uninformative naming
-out of the codebase - may I suggest MTD_POWERON_LOCK and MTD_CHIP_UNLOCK.
+> +	/* check to see if the block is actually in the right state */
+> +
+> +	map_write(map, CMD(0x90), adr + (2 * ofs_factor));
+> +	chip->state = FL_JEDEC_QUERY;
 
-But you get the idea - STUPID tells you nothing except the lack of
-patience of the originator ;)
+Ok.
 
-MikeW
+> +	status = map_read(map, adr + (2 * ofs_factor));
+
+Any reason you're not doing:
+	 status = cfi_read_query(map, adr+(2*ofs_factor));
+as is done in the do_printlockstatus_oneblock() function?
+
+> +	/* return the chip to a state */
+> +	map_write(map, CMD(0xf0), adr);
+> +	map_write(map, CMD(0xff), adr);
+> +
+> +	chip->state = FL_READY;
+
+That sequence worries me... I don't know enough about the state
+machines in the MTD code to know if it safe to do this here...
+
+The rest looks ok.
+
+I do wonder if this should be done in cfi_cmdset_0001, or should 
+it happen more globally?  Are there AMD chips with the same "feature"?
+
+-R
