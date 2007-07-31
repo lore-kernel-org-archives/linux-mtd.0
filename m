@@ -1,12 +1,12 @@
 Received: from xdsl-664.zgora.dialog.net.pl ([81.168.226.152] helo=tuxland.pl)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFw46-0007Bb-5q
-	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 19:03:29 +0100
+	id 1IFzAd-0000vN-0H
+	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 22:22:24 +0100
 From: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
 To: linux-kernel@vger.kernel.org
-Subject: PATCH 32] drivers/mtd/inftlmount.c: kmalloc + memset conversion to
-	kcalloc
-Date: Tue, 31 Jul 2007 20:03:14 +0200
+Subject: [PATCH 53] Documentation/DocBook/mtdnand.tmpl: kmalloc + memset
+	conversion to kzalloc
+Date: Tue, 31 Jul 2007 23:22:18 +0200
 References: <200707311845.48807.m.kozlowski@tuxland.pl>
 In-Reply-To: <200707311845.48807.m.kozlowski@tuxland.pl>
 MIME-Version: 1.0
@@ -14,7 +14,7 @@ Content-Type: text/plain;
   charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200707312003.15009.m.kozlowski@tuxland.pl>
+Message-Id: <200707312322.18508.m.kozlowski@tuxland.pl>
 Cc: dwmw2@infradead.org, Andrew Morton <akpm@linux-foundation.org>,
 	kernel-janitors@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -28,27 +28,26 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Signed-off-by: Mariusz Kozlowski <m.kozlowski@tuxland.pl>
 
- drivers/mtd/inftlmount.c | 23841 -> 23803 (-38 bytes)
- drivers/mtd/inftlmount.o | 47196 -> 46956 (-240 bytes)
+ Documentation/DocBook/mtdnand.tmpl |    5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
- drivers/mtd/inftlmount.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+--- linux-2.6.23-rc1-mm1-a/Documentation/DocBook/mtdnand.tmpl	2007-07-26 13:07:45.000000000 +0200
++++ linux-2.6.23-rc1-mm1-b/Documentation/DocBook/mtdnand.tmpl	2007-07-31 12:16:02.000000000 +0200
+@@ -275,16 +275,13 @@ int __init board_init (void)
+ 	int err = 0;
 
---- linux-2.6.23-rc1-mm1-a/drivers/mtd/inftlmount.c	2007-07-26 13:07:41.000000000 +0200
-+++ linux-2.6.23-rc1-mm1-b/drivers/mtd/inftlmount.c	2007-07-31 11:40:20.000000000 +0200
-@@ -580,14 +580,13 @@ int INFTL_mount(struct INFTLrecord *s)
- 	logical_block = block = BLOCK_NIL;
-
- 	/* Temporary buffer to store ANAC numbers. */
--	ANACtable = kmalloc(s->nb_blocks * sizeof(u8), GFP_KERNEL);
-+	ANACtable = kcalloc(s->nb_blocks, sizeof(u8), GFP_KERNEL);
- 	if (!ANACtable) {
- 		printk(KERN_WARNING "INFTL: allocation of ANACtable "
- 				"failed (%zd bytes)\n",
- 				s->nb_blocks * sizeof(u8));
- 		return -ENOMEM;
+ 	/* Allocate memory for MTD device structure and private data */
+-	board_mtd = kmalloc (sizeof(struct mtd_info) + sizeof (struct nand_chip), GFP_KERNEL);
++	board_mtd = kzalloc(sizeof(struct mtd_info) + sizeof(struct nand_chip), GFP_KERNEL);
+ 	if (!board_mtd) {
+ 		printk ("Unable to allocate NAND MTD device structure.\n");
+ 		err = -ENOMEM;
+ 		goto out;
  	}
--	memset(ANACtable, 0, s->nb_blocks);
 
- 	/*
- 	 * First pass is to explore each physical unit, and construct the
+-	/* Initialize structures */
+-	memset ((char *) board_mtd, 0, sizeof(struct mtd_info) + sizeof(struct nand_chip));
+-
+ 	/* map physical adress */
+ 	baseaddr = (unsigned long)ioremap(CHIP_PHYSICAL_ADDRESS, 1024);
+ 	if(!baseaddr){
