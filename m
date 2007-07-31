@@ -1,18 +1,20 @@
-Received: from zero.ics.uci.edu ([128.195.1.35])
+Received: from bear.ext.ti.com ([192.94.94.41])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IFYvV-0006F4-JT
-	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 13:21:05 -0400
-Date: Mon, 30 Jul 2007 10:12:00 -0700 (PDT)
-From: Siddharth Choudhuri <sid@egor.ics.uci.edu>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH][MTD] CORE: sysfs support for mtd
-In-Reply-To: <1185431180.3364.5.camel@sauron>
-Message-ID: <Pine.GSO.4.64.0707301007110.20826@egor.ics.uci.edu>
-References: <1676.216.31.211.11.1185386926.squirrel@webmail.ics.uci.edu>
-	<1185431180.3364.5.camel@sauron>
+	id 1IFgjT-0002bk-HH
+	for linux-mtd@lists.infradead.org; Mon, 30 Jul 2007 21:41:09 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Testing of CPRM on SD Card
+Date: Tue, 31 Jul 2007 07:10:14 +0530
+Message-ID: <0A50DBE80DD6674E94F7269DC964A7B6441418@dbde01.ent.ti.com>
+In-Reply-To: <20070730161114.053bef44@the-village.bc.nu>
+From: "Sriram, Kannan" <ksriram@ti.com>
+To: "Alan Cox" <alan@lxorguk.ukuu.org.uk>, "Midhun A" <midhunagni@gmail.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,17 +24,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->> It would be nice if the patch could be tested. I have tested it on a MIPS based board with NAND
->> flash. (Please bear with me if the patch does not appear correctly. This is my first patch to the
->> list and I have tested by sending the patch to myself as per the FAQs).
->>
->
-> Hi, sounds nice although I doubt you'll get much feedback in this list.
-> I'd suggest you to re-send it with CC to LKML because this is not just
-> MTD-related. Also, do not forget to add diffstat just before the patch.
->
-Sure, I'll add the diffstat next time. Also, if I send a patch to LKML, 
-doesn't it need to be approved by linux-mtd first ?
 
-thanks,
--sid
+
+> -----Original Message-----
+> From: Alan Cox [mailto:alan@lxorguk.ukuu.org.uk]
+> Sent: Tuesday, July 31, 2007 12:11 AM
+> To: Midhun A
+> Cc: Sriram, Kannan; linux-kernel@vger.kernel.org; linux-arm-
+> kernel@lists.arm.linux.org.uk; linux-mtd@lists.infradead.org
+> Subject: Re: Testing of CPRM on SD Card
+>=20
+> On Mon, 30 Jul 2007 20:23:42 +0530
+> "Midhun A" <midhunagni@gmail.com> wrote:
+>=20
+> > Hey All,
+> >
+> >     Thanks a lot for the replies. I have the development keys. But
+the
+> > algorithm and some intellectual property needs to be licenced from
+the
+> > 4C entity guys to implement it. As of now I just want to test the
+CPRM
+> > functionality. So licensing the algo for a prototype testing is a
+huge
+> > cost.
+>
+
+If you have the development keys, then you should typically have the
+dummy "secret constant" used in the C2 algorithm as well. Contrary to
+popular belief, the C2 algorithm by itself is not proprietary, just the
+256 byte secret constant used inside the C2 algorithm. Also, if you want
+to just "test" CPRM, you have all the stuff you need (not the real
+stuff, but stuff that you can validate using your development keys) in
+the name of dummy keys. Some sample input/ output data as well as
+related dummy keys and the C2 algorithms are all available at the 4C
+website for free download.
+
+I had once (long ago) validated CPRM purely using stuff downloaded from
+4C (free download). But my setup was not Linux; rather on a DSP
+simulator platform, and was "low level".
+
+But if you are looking for a quick test using a real SD-card, then like
+I said, your development keys won't help. You need a real set of valid
+"production keys" and these I bet are very hard to get!
+=20
+> Good good, the higher the better and the less this evil stuff gets
+used.
