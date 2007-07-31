@@ -1,6 +1,22 @@
+Received: from e36.co.us.ibm.com ([32.97.110.154])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IFrhi-0003q1-1s
+	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 14:24:03 +0100
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e36.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l6VDNrJm023703
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2007 09:23:53 -0400
+Received: from d03av03.boulder.ibm.com (d03av03.boulder.ibm.com [9.17.195.169])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
+	l6VDNqr9155750
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2007 07:23:52 -0600
+Received: from d03av03.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av03.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l6VDNpQT015479
+	for <linux-mtd@lists.infradead.org>; Tue, 31 Jul 2007 07:23:52 -0600
 Subject: Re: JFFS2 deadlock with alloc_sem
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
+From: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
+To: David Woodhouse <dwmw2@infradead.org>
 In-Reply-To: <1185883827.3083.109.camel@pmac.infradead.org>
 References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
 	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
@@ -10,11 +26,10 @@ References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
 	<1185799508.3083.20.camel@pmac.infradead.org>
 	<1185813909.9523.42.camel@kleikamp.austin.ibm.com>
 	<1185883827.3083.109.camel@pmac.infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 31 Jul 2007 13:40:27 +0100
-Message-Id: <1185885627.3083.113.camel@pmac.infradead.org>
+Content-Type: multipart/mixed; boundary="=-1WTuke/g+fOwq/TmX/l9"
+Date: Tue, 31 Jul 2007 08:23:49 -0500
+Message-Id: <1185888229.14534.13.camel@kleikamp.austin.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Cc: Roberts Nathan-mcg31137 <Nathan.Roberts@motorola.com>,
 	linux-mtd@lists.infradead.org, ye janboe <janboe.ye@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -26,109 +41,109 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+
+--=-1WTuke/g+fOwq/TmX/l9
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
+
 On Tue, 2007-07-31 at 13:10 +0100, David Woodhouse wrote:
+> On Mon, 2007-07-30 at 11:45 -0500, Dave Kleikamp wrote:
+> > Thus we conclude that the root cause of the problem is that jffs2 is not 
+> > conforming to the strict order of acquiring multiple locks, ie., all code 
+> > paths resulting in acquiring multiple locks must do so in the same order. 
+> > In this case, gc thread requests first the file lock, then the page lock, 
+> > however jffs2_readpage function requests the page lock first, then the file 
+> > lock. Another potential deadlock source is in jffs2_prepare_write, in which it 
+> > requests page lock, then the file lock. 
+> 
 > If that's the explanation, then the patch which Nathan tried (dropping
-> f->sem before jffs2_gc_fetch_page(), followed by your cleanupsÂ¹) ought
+> f->sem before jffs2_gc_fetch_page(), followed by your cleanups¹) ought
 > to have fixed the problem. And I'd be happier with that version rather
-> than introducing a new read_cache_page_async_trylock() solely for
-> JFFS2.
+> than introducing a new read_cache_page_async_trylock() solely for JFFS2.
+> 
+> It's actually OK to drop f->sem in jffs2_garbage_collect_dnode(). We
+> hold the alloc_sem anyway -- nobody's going to be _changing_ the file
+> under us. In fact, the garbage collector probably doesn't need to grab
+> f->sem until it's actually going to _change_ something.
 
-This is the tidied-up version of that patch...
+We had tried a similar patch, attached here, but it caused problems.
+Maybe our patch is missing something.
 
-diff --git a/fs/jffs2/README.Locking b/fs/jffs2/README.Locking
-index d14d5a4..5836de7 100644
---- a/fs/jffs2/README.Locking
-+++ b/fs/jffs2/README.Locking
-@@ -69,6 +69,8 @@ Ordering constraints:
- 	   any f->sem held.
- 	2. Never attempt to lock two file semaphores in one thread.
- 	   No ordering rules have been made for doing so.
-+(Linux)	3. f->sem must always be locked _after_ the page lock of
-+	   any page cache page belonging to the file in question.
- 
- 
- 	erase_completion_lock spinlock
-diff --git a/fs/jffs2/file.c b/fs/jffs2/file.c
-index c253019..4c09531 100644
---- a/fs/jffs2/file.c
-+++ b/fs/jffs2/file.c
-@@ -69,7 +69,7 @@ const struct address_space_operations jffs2_file_address_operations =
- 	.commit_write =	jffs2_commit_write
- };
- 
--static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
-+static int jffs2_do_readpage(struct inode *inode, struct page *pg)
- {
- 	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(inode->i_sb);
-@@ -83,8 +83,11 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
- 	pg_buf = kmap(pg);
- 	/* FIXME: Can kmap fail? */
- 
-+	down(&f->sem);
-+
- 	ret = jffs2_read_inode_range(c, f, pg_buf, pg->index << PAGE_CACHE_SHIFT, PAGE_CACHE_SIZE);
- 
-+	up(&f->sem);
- 	if (ret) {
- 		ClearPageUptodate(pg);
- 		SetPageError(pg);
-@@ -102,21 +105,14 @@ static int jffs2_do_readpage_nolock (struct inode *inode, struct page *pg)
+>From the bug report:
+-----------------------------
+Built and ran the 2nd patch (attachment 28493 [edit]).  Results are similar
+as before, jffs2 runs for a little while, but soon complains there's 
+already data at the point where it intends to write. 
+
+ARGH. About to write node to 0x00140010 on flash, but there's data already 
+there:
+0x00140010: 19 85 e0 02 00 00 00 ac 0a 3e 48 74 00 00 00 74
+argh. node added in wrong place
+Node totlen on flash (0x00000004) != totlen in node ref (0x000000ac)
+ARGH. About to write node to 0x00140010 on flash, but there's data already 
+there:
+0x00140010: 19 85 e0 02 00 00 00 04 08 34 00 74 00 00 00 74
+argh. node added in wrong place
+ARGH. About to write node to 0xc01a4600 on flash, but there's data already 
+there:
+0xc01a4600: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+Write of 324 bytes at 0xc01a4600 failed. returned 0, retlen 0
+Not marking the space at 0xc01a4600 as dirty because the flash driver returned 
+retlen zero
+
+It appeared to deadlock here, and after a few minutes the unit check timer 
+stepped in a rebooted the system. 
+-- 
+David Kleikamp
+IBM Linux Technology Center
+
+--=-1WTuke/g+fOwq/TmX/l9
+Content-Disposition: attachment; filename=up_down_3.patch
+Content-Type: text/x-patch; name=up_down_3.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
+
+diff -Nurp devel-2.4.18/fs/jffs2/file.c linux/fs/jffs2/file.c
+--- devel-2.4.18/fs/jffs2/file.c	2007-06-07 13:01:11.000000000 -0500
++++ linux/fs/jffs2/file.c	2007-06-08 10:12:54.000000000 -0500
+@@ -333,21 +333,19 @@ int jffs2_do_readpage_nolock (struct ino
  
  int jffs2_do_readpage_unlock(struct inode *inode, struct page *pg)
  {
--	int ret = jffs2_do_readpage_nolock(inode, pg);
-+	int ret = jffs2_do_readpage(inode, pg);
- 	unlock_page(pg);
++	struct jffs2_inode_info *f = JFFS2_INODE_INFO(inode);
++
++	down(&f->sem);
+ 	int ret = jffs2_do_readpage_nolock(inode, pg);
+ 	UnlockPage(pg);
++	up(&f->sem);
  	return ret;
  }
  
--
--static int jffs2_readpage (struct file *filp, struct page *pg)
-+static int jffs2_readpage(struct file *filp, struct page *pg)
+ 
+ int jffs2_readpage (struct file *filp, struct page *pg)
  {
--	struct jffs2_inode_info *f = JFFS2_INODE_INFO(pg->mapping->host);
+-	struct jffs2_inode_info *f = JFFS2_INODE_INFO(filp->f_dentry->d_inode);
 -	int ret;
--
+-	
 -	down(&f->sem);
--	ret = jffs2_do_readpage_unlock(pg->mapping->host, pg);
+-	ret = jffs2_do_readpage_unlock(filp->f_dentry->d_inode, pg);
 -	up(&f->sem);
 -	return ret;
-+	return jffs2_do_readpage_unlock(pg->mapping->host, pg);
++	return jffs2_do_readpage_unlock(filp->f_dentry->d_inode, pg);
  }
  
- static int jffs2_prepare_write (struct file *filp, struct page *pg,
-@@ -194,11 +190,9 @@ static int jffs2_prepare_write (struct file *filp, struct page *pg,
- 	}
- 
- 	/* Read in the page if it wasn't already present, unless it's a whole page */
--	if (!PageUptodate(pg) && (start || end < PAGE_CACHE_SIZE)) {
--		down(&f->sem);
--		ret = jffs2_do_readpage_nolock(inode, pg);
--		up(&f->sem);
--	}
-+	if (!PageUptodate(pg) && (start || end < PAGE_CACHE_SIZE))
-+		ret = jffs2_do_readpage(inode, pg);
-+
- 	D1(printk(KERN_DEBUG "end prepare_write(). pg->flags %lx\n", pg->flags));
- 	return ret;
- }
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-diff --git a/fs/jffs2/gc.c b/fs/jffs2/gc.c
-index eded819..51cb3d1 100644
---- a/fs/jffs2/gc.c
-+++ b/fs/jffs2/gc.c
-@@ -1218,7 +1218,9 @@ static int jffs2_garbage_collect_dnode(struct jffs2_sb_info *c, struct jffs2_era
+ int jffs2_prepare_write (struct file *filp, struct page *pg, unsigned start, unsigned end)
+diff -Nurp devel-2.4.18/fs/jffs2/gc.c linux/fs/jffs2/gc.c
+--- devel-2.4.18/fs/jffs2/gc.c	2007-06-07 13:01:09.000000000 -0500
++++ linux/fs/jffs2/gc.c	2007-06-08 10:12:54.000000000 -0500
+@@ -703,7 +703,9 @@ static int jffs2_garbage_collect_dnode(s
  	 *    page OK. We'll actually write it out again in commit_write, which is a little
  	 *    suboptimal, but at least we're correct.
  	 */
-+	up(&f->sem);
- 	pg_ptr = jffs2_gc_fetch_page(c, f, start, &pg);
-+	down(&f->sem);
++	up(f->sem);
+ 	pg = read_cache_page(inode->i_mapping, start >> PAGE_CACHE_SHIFT, (void *)jffs2_do_readpage_unlock, inode);
++	down(f->sem);
  
- 	if (IS_ERR(pg_ptr)) {
- 		printk(KERN_WARNING "read_cache_page() returned error: %ld\n", PTR_ERR(pg_ptr));
-diff --git a/fs/jffs2/os-linux.h b/fs/jffs2/os-linux.h
+ 	if (IS_ERR(pg)) {
+ 		printk(KERN_WARNING "read_cache_page() returned error: %ld\n", PTR_ERR(pg));
 
--- 
-dwmw2
+--=-1WTuke/g+fOwq/TmX/l9--
