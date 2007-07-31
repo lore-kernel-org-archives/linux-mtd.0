@@ -1,15 +1,26 @@
-Date: Tue, 31 Jul 2007 13:56:29 -0400
-From: Ralph Siemsen <ralphs@netwinder.org>
-To: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: Unlocking with Intel J3 series flash
-Message-ID: <20070731175629.GB25447@marvin.netwinder.org>
-References: <20070731153547.GA24705@marvin.netwinder.org>
-	<20070731162331.GA31821@fluff.org.uk>
+Received: from rv-out-0910.google.com ([209.85.198.190])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IFxoU-0008WG-6P
+	for linux-mtd@lists.infradead.org; Tue, 31 Jul 2007 15:55:27 -0400
+Received: by rv-out-0910.google.com with SMTP id g11so659492rvb
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 31 Jul 2007 12:55:23 -0700 (PDT)
+Message-ID: <6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
+Date: Tue, 31 Jul 2007 12:55:23 -0700
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
+	address of partition
+In-Reply-To: <1185882932.3083.98.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <20070731162331.GA31821@fluff.org.uk>
-Cc: linux-mtd@lists.infradead.org
+References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
+	<1185882932.3083.98.camel@pmac.infradead.org>
+Cc: dhowells <dhowells@redhat.com>, Carsten Otte <cotte@de.ibm.com>,
+	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 31, 2007 at 05:23:31PM +0100, Ben Dooks wrote:
- 
-> My solution, which I can post the patch for, is to check the lock
-> status of the page before trying to unlock the device.
+> The problem with this is that it expects the caller to 'know' that the
+> mtd device it's using is in fact a partition.
 
-In principle this sounds like a good idea, but we then trust the
-device to give us status... wherease prevously the unlock command
-would be issued regardless.  I wonder if there are any errata
-regarding device status... probably... here is one:
-http://download.intel.com/design/flcomp/applnots/30855503.pdf
-although your code looks like it will deal correctly with this.
+Oh I hadn't considered that a device could not be a partition and
+still have physaddr be relavant.  Can it?
 
-> +	/* check to see if the block is actually in the right state */
-> +
-> +	map_write(map, CMD(0x90), adr + (2 * ofs_factor));
-> +	chip->state = FL_JEDEC_QUERY;
+> If we have to do this, I'd
+> rather see it done generically.
 
-Ok.
+Okay.  Can you give me a little nudge in the right direction?
 
-> +	status = map_read(map, adr + (2 * ofs_factor));
+> J=F6rn is probably right that it should be
+> available from (whatever replaces) the point() method.
 
-Any reason you're not doing:
-	 status = cfi_read_query(map, adr+(2*ofs_factor));
-as is done in the do_printlockstatus_oneblock() function?
+Like what? :)  I'm all for the kinds of ideas that J=F6rn and others are
+tossing about as replacement for better XIP awareness in the MTD.  I'm
+just not catching the vision enough to start coding.
 
-> +	/* return the chip to a state */
-> +	map_write(map, CMD(0xf0), adr);
-> +	map_write(map, CMD(0xff), adr);
-> +
-> +	chip->state = FL_READY;
+One of the major problems with working on Flash based XIP stuff for
+the kernel is that there are no mergeable filesystems to use the any
+frameworks we develop.  The VM still doesn't handle this correctly,
+point() needs work.  There are a lot of fronts to attack.  What I was
+hoping for was to get the minimum requirements for me to get AXFS
+supported by the kernel, then to come back and provide more educated
+and correct interfaces in the vm and mtd layers.  That way we could
+have the example of how it is being done in AXFS to frame the
+discussion and give it more urgency.  I'm beginning to think this
+isn't the correct approach.
 
-That sequence worries me... I don't know enough about the state
-machines in the MTD code to know if it safe to do this here...
-
-The rest looks ok.
-
-I do wonder if this should be done in cfi_cmdset_0001, or should 
-it happen more globally?  Are there AMD chips with the same "feature"?
-
--R
+If that won't work then can I propose a face to face meeting with
+interested parties like a mini XIP summit or something.  There are
+those that are informed and interested enough to want this done right
+and have a definate opinion as to what is right and wrong here, but
+that don't have time to develop this.  I on the other hand have the
+ability to get this coded up but am more in the dark as to the
+'correct' way to do this.  If we could sit down and sketch out how to
+go about this I think it would be very productive.  Potential
+interested parties could include me, Woodhouse, Engel, and Otte.
+Anybody else come to mind?
