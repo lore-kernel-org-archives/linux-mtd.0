@@ -1,23 +1,11 @@
-Subject: Re: JFFS2 deadlock with alloc_sem
-From: David Woodhouse <dwmw2@infradead.org>
-To: Dave Kleikamp <shaggy@linux.vnet.ibm.com>
-In-Reply-To: <1185888229.14534.13.camel@kleikamp.austin.ibm.com>
-References: <af3ea28a0707262032h7ee22775t6ef54e364a9cd704@mail.gmail.com>
-	<af3ea28a0707262038i733d0a0rf6fda8e1fc82dd74@mail.gmail.com>
-	<1185543729.13873.10.camel@kleikamp.austin.ibm.com>
-	<af3ea28a0707270935v3a8191acl5f2dc5780c56a3d9@mail.gmail.com>
-	<1185557896.22352.4.camel@kleikamp.austin.ibm.com>
-	<1185799508.3083.20.camel@pmac.infradead.org>
-	<1185813909.9523.42.camel@kleikamp.austin.ibm.com>
-	<1185883827.3083.109.camel@pmac.infradead.org>
-	<1185888229.14534.13.camel@kleikamp.austin.ibm.com>
-Content-Type: text/plain
-Date: Tue, 31 Jul 2007 16:23:26 +0100
-Message-Id: <1185895406.3083.117.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Roberts Nathan-mcg31137 <Nathan.Roberts@motorola.com>,
-	linux-mtd@lists.infradead.org, ye janboe <janboe.ye@gmail.com>
+Date: Tue, 31 Jul 2007 11:35:47 -0400
+From: Ralph Siemsen <ralphs@netwinder.org>
+To: linux-mtd@lists.infradead.org
+Subject: Unlocking with Intel J3 series flash
+Message-ID: <20070731153547.GA24705@marvin.netwinder.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +15,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-07-31 at 08:23 -0500, Dave Kleikamp wrote:
-> We had tried a similar patch, attached here, but it caused problems.
-> Maybe our patch is missing something.
-> 
-> >From the bug report:
-> -----------------------------
-> Built and ran the 2nd patch (attachment 28493 [edit]).  Results are similar
-> as before, jffs2 runs for a little while, but soon complains there's 
-> already data at the point where it intends to write. 
-> 
-> ARGH. About to write node to 0x00140010 on flash, but there's data already 
-> there:
-> 0x00140010: 19 85 e0 02 00 00 00 ac 0a 3e 48 74 00 00 00 74 
+Greetings,
 
-Hm, I think that's probably a _separate_ problem, which you happened to
-exacerbate. I don't see how it's related to f->sem locking.
+When using Intel J3 flash, unlocking operations are horribly slow.
+The reason for this is that the J3 has "Flexible Block-locking" feature
+(to quote that data sheet) which "allows blocks to be individually
+locked and simultaneously unlocked".
 
--- 
-dwmw2
+Unlike other flash chips which power up either locked or unlocked,
+the J3 series stores lock status in the flash itself (non-volatile).
+Locking is reasonably fast (~64us) and can be done per-block, but
+unlocking is very slow (~0.5s) and does the whole chip at once.
+
+Current MTD code makes the situation much worse, because the
+unlock() operation goes via cfi_varsize_frob() and iterates over
+the block lists.  This is of course correct behaviour when the
+cells are indivudually un-lockable, however it results in minute-long
+delays and many needeless erase cycles for the J3 series.
+
+I am looking for ideas on how to deal with this.  One idea would be
+to introduce a cousin to the existing MTD_STUPID_LOCK, perhaps one
+called MTD_STUPID_UNLOCK, which would then be used to ensure that
+unlocking does not iterate over all flash blocks.
+
+-R
