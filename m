@@ -1,20 +1,7 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IG9ys-0001Pq-AV
-	for linux-mtd@lists.infradead.org; Wed, 01 Aug 2007 04:54:59 -0400
-Message-ID: <46B049B1.3000608@nokia.com>
-Date: Wed, 01 Aug 2007 11:52:01 +0300
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: kmpark@infradead.org
-Subject: Re: [RFC PATCH] [MTD] [OneNAND] Cache Read support
-References: <001501c7d3d1$bcf66b40$e1ac580a@swcenter.sec.samsung.co.kr>
-	<46B0272C.6040504@nokia.com>
-	<001c01c7d40a$e57aa4d0$e1ac580a@swcenter.sec.samsung.co.kr>
-In-Reply-To: <001c01c7d40a$e57aa4d0$e1ac580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+From: uklot@mchsi.com
+Subject: Congratulations Your E-mail Won
+Date: Wed, 01 Aug 2007 11:35:09 +0000
+Message-Id: <080120071135.16612.46B06FEC00028EFC000040E4219791336303010CD2079C080C03BF9B0104059A@mchsi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +11,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Kyungmin Park wrote:
->  
->> ext Kyungmin Park wrote:
->>> This patch supports the Cache Read feature in OneNAND.
->>> It's similar with read-while-loading except while read it does sensing the page buffer in NAND
->> core.
->>> So it's called Transfer-While-Sensing. you can find it in OneNAND Spec. in detail.
->>>
->>> Now there's no big performance gain in our test board, Apollon(OMAP2). But others are maybe
->> different.
->>> Any comments are welcome.
->> Cool!
->>
->> Presume you have run the NAND tests
-> 
-> Sure, it passed NAND tests.
-> 
-> Could you review the code?
+HOME OFFICE: 165 FULHAM PALACE RD. W6 8JB UNITED KINGDOM.
+(Customer Services)
+REFERENCE NUMBER:UK/839030X2/14
+BATCH NUMBER:065/088/XY24
+TICKET NUMBER:023-1111-790-458
+ 
+ 
+                             WINNING NOTIFICATIONWe are pleased to
+ inform you of the final announcement today, 1st of APRILE,2007 of winners of
+ the UK NATIONAL LOTTERY EMAIL PROMO PROGRAMME.
+ 
+Your ticket number 023-1111-790-458 attached with serial number 5073-12
+ drew the lucky numbers 05-11-12-16-17-45-42(bonus no.42),this lucky
+ number subsequently won you the lottery in the 2nd category.
+ 
+You have therefore been approved for a lump sum pay out of £552,000,00
+ (Five hundred and fifty-two thousand pounds sterling) in cash credited
+ to file XYL/26510460037/04. This is from a total cash prize of
+ £5,520,000,00(Five million, five hundred and twenty thousand pounds sterling)
+ shared amongst the first ten (10) lucky winners in this category i.e
+ Match 5 plus bonus.
+ 
+All participants of this online promotion programme were selected
+ randomly from numerous World Wide Web sites through computer draw system and
+ extracted from close to 125,000 unions, associations and corporate
+ bodies listed online. This promotion takes place Quarterly.
+ 
+To file for your claim, please contact our claims agent;Official:
+ Elizabeth Walter (MRS)
+Email:infoclaimsagent0@yahoo.co.uk
+Provide her with the information below:
+1.Full Name_______2.Full Address_______3.Marital 
+Status_______4.Occupation_______5.Age_______6.Sex_______7.Nationality_______8.C
+ountry
+ Of 
+Residence _______
+                      9.Telephone Numbe_______10.Fax 
+Number_______11.Ticket Number(above)_______12.Reference
+ Number(above)_______13.Batch 
+Number(above)
 
-I will try to find some time to look at it maybe this week.
-
-> I wonder why there's no performance gain. It's faster than read-while-loading in the Spec.
-> Software overhead? Or there's not many 2 or more pages read?
-
-How are you measuring performance?  I would suggest either dd (if you don't have bad blocks)
-or write your own program.
-
-As I see it, unless the read from dataRAM is faster than the sensing/transfer, there won't be
-a performance improvement.  So the faster the OneNAND frequency the better.  Ditto bus and
-CPU frequencies probably (for memcpy).
+For due processing and remittance of your prize money.
+ 
+Yours Truly,
+ 
+SIR RICHARD K. LIOYD.
+Co-ordinator(Online Promo Programme).
+ 
