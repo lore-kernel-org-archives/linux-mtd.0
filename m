@@ -1,14 +1,29 @@
-Date: Thu, 2 Aug 2007 08:03:49 -0400
-From: Ralph Siemsen <ralphs@netwinder.org>
-To: Ben Dooks <ben-linux@fluff.org>
-Subject: Re: Unlocking with Intel J3 series flash
-Message-ID: <20070802120349.GB1645@marvin.netwinder.org>
-References: <20070731153547.GA24705@marvin.netwinder.org>
-	<20070731162331.GA31821@fluff.org.uk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070731162331.GA31821@fluff.org.uk>
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IGaVA-0002Mm-Ds
+	for linux-mtd@lists.infradead.org; Thu, 02 Aug 2007 14:14:06 +0100
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l72DDPNm005482
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2007 09:13:25 -0400
+Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
+	l72DDPFH203180
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2007 07:13:25 -0600
+Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l72DDOi6019550
+	for <linux-mtd@lists.infradead.org>; Thu, 2 Aug 2007 07:13:24 -0600
+Date: Thu, 2 Aug 2007 08:13:23 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: "Pete MacKay" <linux@architechnical.net>
+Subject: Re: mkfs.jffs2 version broken
+Message-ID: <20070802081323.10e07fcd@weaponx.rchland.ibm.com>
+In-Reply-To: <8871.69.30.123.186.1185394199.squirrel@architechnical.net>
+References: <8871.69.30.123.186.1185394199.squirrel@architechnical.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,25 +34,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jul 31, 2007 at 05:23:31PM +0100, Ben Dooks wrote:
+On Wed, 25 Jul 2007 13:09:59 -0700 (PDT)
+"Pete MacKay" <linux@architechnical.net> wrote:
+
+> Paul Wakeman raised a valid issue in his XATTR email about the version
+> number reported in mkfs.jffs2.  We have two versions, both with
+> different behaviors and even option lists / help screens, and they
+> both report as version 1.50.  I pulled from the git last week and
+> this was still the case.
 > 
-> My solution, which I can post the patch for, is to check the lock
-> status of the page before trying to unlock the device.
-> 
-> | 2621-rc6-trizeps2-mtd-chip-unlock-check2.patch
+> Could someone who has access or responsibility for that code please
+> update it or replace it with a date?  (It caused us hours of
+> debugging and broke our build).
 
-I have tested this and it "works for me", thanks!
+Sure, I'll look at that soon.
 
-> | Note, we make the assumption that all flashes return the correct
-> | sector status, and that there is no need to force an lock or
-> | unlock if the status is the same as the chip is reporting.
-
-That is indeed a bit of departure from previous way that unlock/lock
-commands worked.  And I suspect its enough reason for this patch to
-not be accepted into mainline.  Then again, there are bound to be a
-whole lot of J3 flash parts out there.
-
-So, can this patch be merged, and if not, what needs to be done to
-make it acceptible?
-
--R
+josh
