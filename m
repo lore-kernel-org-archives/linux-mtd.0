@@ -1,31 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IH6EI-0003mi-Dp
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 19:06:48 -0400
-Date: Sat, 4 Aug 2007 01:02:48 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
-	address of partition
-Message-ID: <20070803230248.GA22021@lazybastard.org>
-References: <1185882932.3083.98.camel@pmac.infradead.org>
-	<6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
-	<20070801121800.GB2747@lazybastard.org> <46B083B3.80009@de.ibm.com>
-	<6934efce0708011337g32169212v329c778bb7700aea@mail.gmail.com>
-	<46B18D89.1010207@de.ibm.com>
-	<6934efce0708021455h29c9151aw7aab2245df0062e5@mail.gmail.com>
-	<1186146543.2931.82.camel@pmac.infradead.org>
-	<20070803131815.GG19344@lazybastard.org>
-	<6934efce0708031245j5f292b17w64de8bb75435ea98@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from fk-out-0910.google.com ([209.85.128.188])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IH6YL-0004A7-KT
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 19:27:33 -0400
+Received: by fk-out-0910.google.com with SMTP id 19so1496875fkr
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 03 Aug 2007 16:27:28 -0700 (PDT)
+From: Jesper Juhl <jesper.juhl@gmail.com>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: [PATCH] UBI: Don't use signed int as array index before testing if it
+	is negative
+Date: Sat, 4 Aug 2007 01:25:26 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6934efce0708031245j5f292b17w64de8bb75435ea98@mail.gmail.com>
-Cc: carsteno@de.ibm.com, dhowells <dhowells@redhat.com>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-Id: <200708040125.26861.jesper.juhl@gmail.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, Jesper Juhl <jesper.juhl@gmail.com>,
+	linux-mtd@lists.infradead.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,39 +28,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 3 August 2007 12:45:45 -0700, Jared Hulbert wrote:
-> 
-> > > Perhaps we want to set it up so that _if_ there is a process which can
-> > > continue, it'll do so. Only when there's nothing runnable in userspace
-> > > do we suspend an erase? In that case, perhaps we'd want some kind of
-> > > hook in the idle loop?
-> >
-> > Or we could just always suspend the erase and resume it the next time we
-> > enter the kernel, either via system call or interrupt.  Should allow the
-> > process to make some progress without starving the erase.  Would need
-> > hooks as well, just in different places.
-> 
-> Hmmm, we'd definitely benefit from having a hook in idle to trigger
-> the erase to resume.  Having hooks for entry into kernel space sounds
-> interesting, but if you leave it too quickly and suspend the erase you
-> don't make forward progress.  However, I'm not sure how you'd
-> determine whether a given process can continue without suspending the
-> erase.
+Hi,
 
-Does the system ever idle in a userspace process?  If not then you'd
-have to come by one of my hooks before going into idle.
+I can't find anything guaranteeing that 'ubi_num' cannot be <0 in 
+drivers/mtd/ubi/kapi.c::ubi_open_volume(), and in fact the code 
+even tests for that and errors out if so. Unfortunately the test 
+for "ubi_num < 0" happens after we've already used 'ubi_num' as 
+an array index - bad thing to do if it is negative.
+This patch moves the test earlier in the function and then moves 
+the indexing using that variable after the check. A bit safer :-) 
 
-Even better, if the process does a system call, or an interrupt happens,
-it will not access the XIP pages while the syscall/interrupt is
-processed.  So the erase may as well resume for the time being.  And
-potentially it can even run a little longer if no XIP faults happen.
 
-The big question is how such a scheme would perform.  It may turn out so
-bad that we should rather copy the data, hand out RAM and wait for
-memory pressure to remove those pages again.
+Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
 
-Jörn
+ drivers/mtd/ubi/kapi.c |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
 
--- 
-I don't understand it. Nobody does.
--- Richard P. Feynman
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 4a458e8..5130e54 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -99,16 +99,21 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ {
+ 	int err;
+ 	struct ubi_volume_desc *desc;
+-	struct ubi_device *ubi = ubi_devices[ubi_num];
++	struct ubi_device *ubi;
+ 	struct ubi_volume *vol;
+ 
+ 	dbg_msg("open device %d volume %d, mode %d", ubi_num, vol_id, mode);
+ 
+ 	err = -ENODEV;
++	if (ubi_num < 0)
++		return ERR_PTR(err);
++
++	ubi = ubi_devices[ubi_num];
++	
+ 	if (!try_module_get(THIS_MODULE))
+ 		return ERR_PTR(err);
+ 
+-	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES || !ubi)
++	if (ubi_num >= UBI_MAX_DEVICES || !ubi)
+ 		goto out_put;
+ 
+ 	err = -EINVAL;
