@@ -1,31 +1,23 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IGwn2-0004Z2-Mr
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 09:02:01 -0400
-Date: Fri, 3 Aug 2007 14:58:06 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: carsteno@de.ibm.com
 Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
 	address of partition
-Message-ID: <20070803125806.GE19344@lazybastard.org>
-References: <20070801121800.GB2747@lazybastard.org> <46B083B3.80009@de.ibm.com>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+In-Reply-To: <6934efce0708021455h29c9151aw7aab2245df0062e5@mail.gmail.com>
+References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
+	<1185882932.3083.98.camel@pmac.infradead.org>
+	<6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
+	<20070801121800.GB2747@lazybastard.org> <46B083B3.80009@de.ibm.com>
 	<6934efce0708011337g32169212v329c778bb7700aea@mail.gmail.com>
 	<46B18D89.1010207@de.ibm.com>
 	<6934efce0708021455h29c9151aw7aab2245df0062e5@mail.gmail.com>
-	<46B2E055.9010305@de.ibm.com>
-	<20070803091747.GA18735@lazybastard.org>
-	<46B30B95.4070706@de.ibm.com>
-	<20070803113134.GA19049@lazybastard.org>
-	<46B31DE2.3050804@de.ibm.com>
+Content-Type: text/plain
+Date: Fri, 03 Aug 2007 14:09:03 +0100
+Message-Id: <1186146543.2931.82.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <46B31DE2.3050804@de.ibm.com>
-Cc: dhowells <dhowells@redhat.com>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: carsteno@de.ibm.com, dhowells <dhowells@redhat.com>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,40 +27,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 3 August 2007 14:21:54 +0200, Carsten Otte wrote:
+On Thu, 2007-08-02 at 14:55 -0700, Jared Hulbert wrote:
+> > That does'nt work on smp machines, does it?
 > 
-> Hmm. At least this does'nt seem like something that the xip 
-> infrastructure should be concerned with: it will ask for 
-> get_xip_page() [or get_xip_pfn()], and return temporary references via 
-> put_xip_page/pfn(). The mtd layer has to decide when to pospone 
-> get_xip_page() calls and when to ask for references being returned. On 
-> the other hand, I think we should make sure get_xip_page() targets may 
-> call schedule() in case the page we ask for is currently unavailable 
-> while an erase operation is in progress.
+> Probably not.  That code is machine specific, and only implemented for
+> a couple of ARM targets.
+> 
+> > Sounds like a hack to me.
+> 
+> :)  Yes but it works where it needs to.  It's done a lot in the cellular world.
+> 
+> > How do you know a user app that has a valid pte to your flash media
+> > accesses it? Userspace may do so at any time it wants, and as far as I
+> > understand Joerns and Davids explanations on flash it will just see
+> > invalid data rather than raising a page fault.
+> 
+> Maybe I wasn't so clear.  Assuming the MTD is going to do an erase you would:
+> 
+> (a) zap all page affected by block erase
+> (b) identify all pte's mapped to the affected region
+> (c) modify these pte's so they now trigger a fault
+> (d) wait for completion of erase
+> (c) reestablish valid pte mappings
 
-Why schedule()?  I believe we should not wait but process the fault
-immediatly via one of the methods Jared mentioned:
+No need to reestablish them -- they'll fault when they need to, which
+means less work next time you erase. And it'll be a minor page fault,
+which is quite cheap -- it only needs to set up the pte and return.
 
->> If you get a fault it gets routed to the filesystem .fault or
->> something like that.  The .fault routine can:
->> (a) suspend the erase
->> (b) copy the page to RAM
->> (c) update the pte to point to RAM
->> (d) resume the erase
->> -or-
->> (a) suspend the erase
->> (b) reenable the pte
->> (c) wait a short time
->> (d) disable pte again
->> (e) resume the erase
+> If you get a fault it gets routed to the filesystem .fault or
+> something like that.  The .fault routine can:
+> (a) suspend the erase
+> (b) copy the page to RAM
+> (c) update the pte to point to RAM
+> (d) resume the erase
 
-The second variant could be a bit hairy.  How can one ensure that (c)
-only waits a short while and not much longer?  So I tend to prefer the
-first variant.
+This could lead to all your data pages ending up in RAM, which kind of
+defeats the object of XIP.
 
-Jörn
+> -or-
+> (a) suspend the erase
+> (b) reenable the pte
+> (c) wait a short time
+> (d) disable pte again
+> (e) resume the erase
+
+Alternatively, just wait for the chip to become available. Or increment
+a count of 'waiters' and only interrupt the erase when there are a
+certain number of people waiting.
+
+Perhaps we want to set it up so that _if_ there is a process which can
+continue, it'll do so. Only when there's nothing runnable in userspace
+do we suspend an erase? In that case, perhaps we'd want some kind of
+hook in the idle loop?
 
 -- 
-Courage is not the absence of fear, but rather the judgement that
-something else is more important than fear.
--- Ambrose Redmoon
+dwmw2
