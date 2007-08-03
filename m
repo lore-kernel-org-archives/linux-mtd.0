@@ -1,19 +1,19 @@
-Received: from nz-out-0506.google.com ([64.233.162.236])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IH1IU-0008Ht-1Y
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 13:50:53 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so345858nzf
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Aug 2007 10:50:42 -0700 (PDT)
-Message-ID: <625fc13d0708031050m792e0bc1hd250305f91a0e328@mail.gmail.com>
-Date: Fri, 3 Aug 2007 12:50:41 -0500
-From: "Josh Boyer" <jwboyer@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: mtd-utils v1.1.0 tagged
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IH1Xh-0000C6-Q4
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 14:06:32 -0400
+Date: Fri, 3 Aug 2007 11:06:14 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: =?UTF-8?Q?Rafa=C5=82?= Bilski <rafalbilski@interia.pl>
+Subject: Re: Problem with udev and block2mtd
+Message-Id: <20070803110614.9c06fe45.akpm@linux-foundation.org>
+In-Reply-To: <46B0D997.8030805@interia.pl>
+References: <46B0D997.8030805@interia.pl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,10 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi All,
+On Wed, 01 Aug 2007 21:05:59 +0200
+Rafał Bilski <rafalbilski@interia.pl> wrote:
 
-FYI, I tagged the current git repo as version 1.1.0 of mtd-utils.
-With the addition of UBI and the lzo support it was time to get
-another tag in place.
+> Hi!
+> 
+> I have changed static /dev to udev on my machine. It has 
+> a lot of RAM (94MB) so I was expecting that udev will not make 
+> things worse. Unfortunately udev isn't noticing that new mtd 
+> device was born.
 
-josh
+<tap, tap>  Is this thing turned on?
+
+> I was suspecting that this is my fault, but 
+> udev's /dev is populated and:
+> UEVENT[1185991604.930847] add@/module/mtdcore
+> UEVENT[1185991604.969089] add@/module/mtdpart
+> UEVENT[1185991605.005954] add@/module/block2mtd
+> UEVENT[1185991647.726551] add@/module/mtdsuper
+> UEVENT[1185991647.783396] add@/module/jffs2
+> UEVENT[1185991647.801242] add@/slab/jffs2_i
+> UDEV  [1185991647.815670] add@/slab/jffs2_i
+> UEVENT[1185991647.827608] add@/slab/:0000072
+> UDEV  [1185991647.842338] add@/slab/:0000072
+> I don't see nothing about new device.
+> 
+> Is this situation known? Or this is 2.6.23-rc1-git3 regression? 
+> Or is my udev misconfigured?
+> 
+
+Did 2.6.22 work OK with the same setup?  If so, yes, it's a regression!
