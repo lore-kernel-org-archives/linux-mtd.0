@@ -1,23 +1,19 @@
 Received: from nz-out-0506.google.com ([64.233.162.236])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IGxgG-0005yP-Fg
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 09:59:05 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so304378nzf
+	id 1IH1IU-0008Ht-1Y
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 13:50:53 -0400
+Received: by nz-out-0506.google.com with SMTP id z3so345858nzf
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Aug 2007 06:59:03 -0700 (PDT)
-Message-ID: <625fc13d0708030659m7379e8rfd0f777844b57a10@mail.gmail.com>
-Date: Fri, 3 Aug 2007 08:59:02 -0500
+	Fri, 03 Aug 2007 10:50:42 -0700 (PDT)
+Message-ID: <625fc13d0708031050m792e0bc1hd250305f91a0e328@mail.gmail.com>
+Date: Fri, 3 Aug 2007 12:50:41 -0500
 From: "Josh Boyer" <jwboyer@gmail.com>
-To: "Josh Boyer" <jwboyer@linux.vnet.ibm.com>
-Subject: Re: mkfs.jffs2 version broken
-In-Reply-To: <20070802081323.10e07fcd@weaponx.rchland.ibm.com>
+To: linux-mtd <linux-mtd@lists.infradead.org>
+Subject: mtd-utils v1.1.0 tagged
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <8871.69.30.123.186.1185394199.squirrel@architechnical.net>
-	<20070802081323.10e07fcd@weaponx.rchland.ibm.com>
-Cc: Pete MacKay <linux@architechnical.net>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +23,10 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/2/07, Josh Boyer <jwboyer@linux.vnet.ibm.com> wrote:
-> On Wed, 25 Jul 2007 13:09:59 -0700 (PDT)
-> "Pete MacKay" <linux@architechnical.net> wrote:
->
-> > Paul Wakeman raised a valid issue in his XATTR email about the version
-> > number reported in mkfs.jffs2.  We have two versions, both with
-> > different behaviors and even option lists / help screens, and they
-> > both report as version 1.50.  I pulled from the git last week and
-> > this was still the case.
-> >
-> > Could someone who has access or responsibility for that code please
-> > update it or replace it with a date?  (It caused us hours of
-> > debugging and broke our build).
->
-> Sure, I'll look at that soon.
+Hi All,
 
-I incremented the version number in the git tree this morning.
+FYI, I tagged the current git repo as version 1.1.0 of mtd-utils.
+With the addition of UBI and the lzo support it was time to get
+another tag in place.
 
 josh
