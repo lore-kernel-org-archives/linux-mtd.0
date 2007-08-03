@@ -1,15 +1,23 @@
-Received: from mail.unmikcustoms.org ([82.114.81.94]
-	helo=exchangesrv.ucs.unmikcustoms.org)
+Received: from rv-out-0910.google.com ([209.85.198.187])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IGrXp-00079l-N0
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 03:26:00 -0400
-Date: Fri, 03 Aug 2007 02:08:53 -0600
-From: "Tania halt" <GrimesBranden@gourmetfoodsinc.com>
-To: torsten.just@tiboerg-service.de
-Subject: physical therapists mailing list
-Message-ID: <879176n5cfi0$k2157ef0$0829u0u0@Delldim5150
+	id 1IGrZo-0007Ly-9v
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 03:28:15 -0400
+Received: by rv-out-0910.google.com with SMTP id g11so603825rvb
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 03 Aug 2007 00:27:58 -0700 (PDT)
+Message-ID: <a8e1da0708030027n38c18e34ld8bc18fc103179f8@mail.gmail.com>
+Date: Fri, 3 Aug 2007 07:27:58 +0000
+From: "Dave Young" <hidave.darkstar@gmail.com>
+To: dwmw2@infradead.org
+Subject: Re: MTD: pnc2000 iomem oops
+In-Reply-To: <a8e1da0708010135we34a17dl604d9f8c3eb630f8@mail.gmail.com>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <a8e1da0708010135we34a17dl604d9f8c3eb630f8@mail.gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,37 +27,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
-
-For the week ending Aug 3, you will receive a Database for Nursing Homes, Hospitals and Dentists without charge when you order the Physician Directory
-
-
-Licensed Physicians in the USA 
-
-788,075 in total – 17,400 emails
-
-Many popular specialties like Emergency Medicine, Plastic Surgery, OBGYN, Oncology, Pediatrics and more
-
-Many unique fields like 'medical school attended' and 'location of residency training'
-
-New Price: $355
-
-
-*** Get the 3 databases below as a bonus when you order the MD list above ***
-
-Hospitals in the USA
-more than 23k hospital administrators in over 7k hospitals [worth over $300 alone)
-
-Dentists in the USA
-A complete Database or dentists and related services (valued at $299)
-
-US Nursing Home Contact List
-Full data for CFO, Nursing Directors, Senior Admins [ worth $249 alone ]
-
-reply by email: medicaldata2007@hotmail.com 
-
-
-
-
-to disable mailing to you please send email with "disable" in the subject
+>On 8/1/07, Dave Young <hidave.darkstar@gmail.com> wrote:
+> Hi,
+> The pnc2000 probe function  cause oops. Possible reason is its iomem
+> region not being remaped.
+>
+> I searched lkml history, the oops was reported at 2006-06-14, but still there.
+> http://lkml.org/lkml/2006/6/14/59
+>
+> If the ioremap/iounmap can be added to it, is it the right fix?
+>
+Add the linux-mtd list as cc.
