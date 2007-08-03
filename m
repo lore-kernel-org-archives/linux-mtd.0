@@ -1,26 +1,29 @@
-Received: from smtp35.poczta.interia.pl ([80.48.65.35]
-	helo=smtp4.poczta.interia.pl)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IGsM7-0006Z0-AF
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 09:17:58 +0100
-Message-ID: <46B2E49E.6080103@interia.pl>
-Date: Fri, 03 Aug 2007 10:17:34 +0200
-From: =?ISO-8859-2?Q?Rafa=B3_Bilski?= <rafalbilski@interia.pl>
-MIME-Version: 1.0
-To: Satyam Sharma <satyam@infradead.org>
-Subject: Re: [PATCH] mtd: Makefile fix (was Re: [PATCH] mtdsuper: licensce
-	= GPL)
-References: <46B0D1F7.9090805@interia.pl>
-	<alpine.LFD.0.999.0708020318070.8258@enigma.security.iitk.ac.in>
-	<46B18551.2020809@interia.pl>
-	<alpine.LFD.0.999.0708021309430.8258@enigma.security.iitk.ac.in>
-	<46B1FFFB.6040209@interia.pl>
-	<alpine.LFD.0.999.0708030811330.23798@enigma.security.iitk.ac.in>
-In-Reply-To: <alpine.LFD.0.999.0708030811330.23798@enigma.security.iitk.ac.in>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IGu6B-0007VO-Of
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 11:09:36 +0100
+Date: Fri, 3 Aug 2007 11:21:40 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jared Hulbert <jaredeh@gmail.com>
+Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
+	address of partition
+Message-ID: <20070803092140.GB18735@lazybastard.org>
+References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
+	<1185882932.3083.98.camel@pmac.infradead.org>
+	<6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
+	<20070801115535.GA2747@lazybastard.org>
+	<6934efce0708021856r14a41f89v58f4f156db5e8d5d@mail.gmail.com>
+	<20070803030144.GA16512@lazybastard.org>
+	<6934efce0708022223w4e49264o29347d91e88d62f7@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+In-Reply-To: <6934efce0708022223w4e49264o29347d91e88d62f7@mail.gmail.com>
+Cc: dhowells <dhowells@redhat.com>, Carsten Otte <cotte@de.ibm.com>,
+	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,22 +33,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> [PATCH] mtd: Makefile fix
+On Thu, 2 August 2007 22:23:47 -0700, Jared Hulbert wrote:
 > 
-> We want drivers/mtd/{mtdcore, mtdsuper, mtdpart}.c to be built and linked
-> into the same mtd.ko module. Fix the Makefile to ensure this, and remove
-> duplicate MODULE_ declarations in mtdpart.c, as mtdcore.c already has them.
+> > Interestingly __iomem makes less sense for some RAM-based drivers.  So
+> > maybe that part should get removed.
 > 
-> Signed-off-by: Satyam Sharma <satyam@infradead.org>
+> (http://marc.info/?l=linux-arm-kernel&m=118193919321290&w=4)
+>   Russel King said:
+> -->
+> -->   const void *start = virt + offset;
+> -->
+> --> This will generate a sparse warning (since you haven't used sparse you
+> --> won't know about this.)  The __iomem annotation does nothing as far as
+> --> the C language goes, but sparse uses it to annotate variables as to
+> --> which address space they refer to, and issues warnings if you try to
+> --> cast between different address spaces.  However, it does allow code
+> --> which knows what it's doing to do such casts.
+> -->
+> -->   const void *start = (void __force *)virt + offset;
+> -->
+> --> MTD people may like to make a note that the 'cached' element of struct
+> --> map_info is assigned __iomem pointers (from ioremap_cached) but is
+> --> itself not marked with an __iomem pointer.  This will also produce
+> --> sparse warnings.
+> 
+> Now I think maybe it should be "void **virt" not "void __iomem **virt"
+> and then just __force virt.  Anybody know?
 
-Ok. I have mtd.ko now.
+Just remove it.  Even if the change made sense it should follow in a
+seperate patch.
 
-Thank You
-Rafa³
+> > The whole patch was just a quick hack to get an opinion.
+> 
+> Trying to move it forward...
 
+Great!
 
-----------------------------------------------------------------------
-Wszystko czego potrzebujesz latem: kremy do opalania, 
-stroje kapielowe, maly romans 
+JÃ¶rn
 
->>>http://link.interia.pl/f1b15
+-- 
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
