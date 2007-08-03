@@ -1,44 +1,27 @@
-Received: from mtagate1.de.ibm.com ([195.212.29.150])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IGwAP-0000Cp-QO
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 13:22:06 +0100
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate1.de.ibm.com (8.13.8/8.13.8) with ESMTP id l73CM0cW780100
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Aug 2007 12:22:00 GMT
-Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
-	[9.149.165.228])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.4) with
-	ESMTP id l73CLxkD1093650
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Aug 2007 14:21:59 +0200
-Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av02.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l73CLuOC004147
-	for <linux-mtd@lists.infradead.org>; Fri, 3 Aug 2007 14:21:56 +0200
-Message-ID: <46B31DE2.3050804@de.ibm.com>
-Date: Fri, 03 Aug 2007 14:21:54 +0200
-From: Carsten Otte <cotte@de.ibm.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IGwd2-0004FB-1I
+	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 08:51:41 -0400
+Date: Fri, 3 Aug 2007 14:47:45 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jared Hulbert <jaredeh@gmail.com>
 Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
 	address of partition
-References: <1185882932.3083.98.camel@pmac.infradead.org>
+Message-ID: <20070803124745.GD19344@lazybastard.org>
+References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
+	<1185882932.3083.98.camel@pmac.infradead.org>
 	<6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
-	<20070801121800.GB2747@lazybastard.org> <46B083B3.80009@de.ibm.com>
-	<6934efce0708011337g32169212v329c778bb7700aea@mail.gmail.com>
-	<46B18D89.1010207@de.ibm.com>
-	<6934efce0708021455h29c9151aw7aab2245df0062e5@mail.gmail.com>
-	<46B2E055.9010305@de.ibm.com>
-	<20070803091747.GA18735@lazybastard.org>
-	<46B30B95.4070706@de.ibm.com>
-	<20070803113134.GA19049@lazybastard.org>
-In-Reply-To: <20070803113134.GA19049@lazybastard.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Cc: carsteno@de.ibm.com, dhowells <dhowells@redhat.com>,
+	<20070801115535.GA2747@lazybastard.org>
+	<6934efce0708022342uf468acfjed3def4c119f2d8a@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6934efce0708022342uf468acfjed3def4c119f2d8a@mail.gmail.com>
+Cc: dhowells <dhowells@redhat.com>, Carsten Otte <cotte@de.ibm.com>,
+	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
 	David Woodhouse <dwmw2@infradead.org>,
 	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: carsteno@de.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -48,18 +31,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-J=C3=B6rn Engel wrote:
-> On Fri, 3 August 2007 13:03:49 +0200, Carsten Otte wrote:
->> I see. Trouble for "real time" applications ;-). But once we're=20
->> receiving a lot of page faults we end up suspending the erase forever.=
-=20
->> We need a deterministic end of the erase cycle as well, don't we?
-> Absolutely.
-Hmm. At least this does'nt seem like something that the xip=20
-infrastructure should be concerned with: it will ask for=20
-get_xip_page() [or get_xip_pfn()], and return temporary references via=20
-put_xip_page/pfn(). The mtd layer has to decide when to pospone=20
-get_xip_page() calls and when to ask for references being returned. On=20
-the other hand, I think we should make sure get_xip_page() targets may=20
-call schedule() in case the page we ask for is currently unavailable=20
-while an erase operation is in progress.
+On Thu, 2 August 2007 23:42:06 -0700, Jared Hulbert wrote:
+> 
+> > point() doesn't have to be replaced.  My completely untested and
+> > uncompiled patch below adds another parameter to point() to return the
+> > physical address in.  Parameter is optional and only cfi_cmdset_0001.c
+> > currently allows it.
+> 
+> Hey I just thought of a different approach.  What about something like:
+> 
+> int mtd_insert_mem(struct mtd_info *mtd, struct vm_area_struct *vma,
+> unsigned long addr, unsigned long offset)
+> {
+>      struct map_info *map = mtd->priv;
+>      unsigned long pfn;
+> 
+>      pfn = (map->phys + offset) >> PAGE_SHIFT;
+>      return vm_insert_pfn(vma, addr, pfn);
+> }
+> 
+> This way we don't need to export the physical address and we keep the
+> vm calls in the driver world.
+
+Hard to tell without looking at the AXFS code as well.  And it might
+trigger some janitor to remove this "completely unused function" shortly
+after introducing it.
+
+How impolite would it be to ask for AXFS again? :)
+
+Jörn
+
+-- 
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
