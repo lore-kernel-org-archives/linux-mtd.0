@@ -1,24 +1,23 @@
-Received: from fk-out-0910.google.com ([209.85.128.188])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IH6YL-0004A7-KT
-	for linux-mtd@lists.infradead.org; Fri, 03 Aug 2007 19:27:33 -0400
-Received: by fk-out-0910.google.com with SMTP id 19so1496875fkr
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 03 Aug 2007 16:27:28 -0700 (PDT)
-From: Jesper Juhl <jesper.juhl@gmail.com>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: [PATCH] UBI: Don't use signed int as array index before testing if it
-	is negative
-Date: Sat, 4 Aug 2007 01:25:26 +0200
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200708040125.26861.jesper.juhl@gmail.com>
-Cc: David Woodhouse <dwmw2@infradead.org>, Jesper Juhl <jesper.juhl@gmail.com>,
-	linux-mtd@lists.infradead.org,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IHFXr-0002MI-NQ
+	for linux-mtd@lists.infradead.org; Sat, 04 Aug 2007 05:03:37 -0400
+Subject: Re: [PATCH 1/5] ubi-utils: introduction of libubi_common
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200708021033.59483.alexs@linux.vnet.ibm.com>
+References: <200707271723.38987.alexs@linux.vnet.ibm.com>
+	<200707271728.48560.alexs@linux.vnet.ibm.com>
+	<1185627090.26902.18.camel@sauron>
+	<200708021033.59483.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 04 Aug 2007 12:03:15 +0300
+Message-Id: <1186218195.26902.42.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, Frank Haverkamp <haver@linux.vnet.ibm.com>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,48 +27,67 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi Alex,
 
-I can't find anything guaranteeing that 'ubi_num' cannot be <0 in 
-drivers/mtd/ubi/kapi.c::ubi_open_volume(), and in fact the code 
-even tests for that and errors out if so. Unfortunately the test 
-for "ubi_num < 0" happens after we've already used 'ubi_num' as 
-an array index - bad thing to do if it is negative.
-This patch moves the test earlier in the function and then moves 
-the indexing using that variable after the check. A bit safer :-) 
+On Thu, 2007-08-02 at 10:33 +0200, Alexander Schmidt wrote:
+> On Saturday 28 July 2007, Artem Bityutskiy wrote:
+> > Is it possible to make any patterns like this part of _utilities_?
+> > UBI devices may have any names and it is defined by udev. The
+> > library should not assume any UBI device name.
+> >=20
+> > Whole this file should be out of libubi,not part of it.
+>=20
+> I think this issue is caused by the command line interface we have at
+> the moment, where only device numbers are specified and a path
+> to a custom device cannot be specified.=20
 
+Right, and I think it is trivial to add one more parameter to the
+tools's cli - device node name.
 
-Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
----
+> So even if we move this
+> hardcoded path to the utils, the user is still not able to specify a
+> custom device path in _any_ of the utils.
 
- drivers/mtd/ubi/kapi.c |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+Just improve cli then or leave this hardcoded in the tools.
 
-diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
-index 4a458e8..5130e54 100644
---- a/drivers/mtd/ubi/kapi.c
-+++ b/drivers/mtd/ubi/kapi.c
-@@ -99,16 +99,21 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
- {
- 	int err;
- 	struct ubi_volume_desc *desc;
--	struct ubi_device *ubi = ubi_devices[ubi_num];
-+	struct ubi_device *ubi;
- 	struct ubi_volume *vol;
- 
- 	dbg_msg("open device %d volume %d, mode %d", ubi_num, vol_id, mode);
- 
- 	err = -ENODEV;
-+	if (ubi_num < 0)
-+		return ERR_PTR(err);
+> What we have to do to resolve this issue IMO is to change the cli
+> (while preserving the old one for legacy), which is a more intrusive
+
+There is nothing intrusive actually, it is just simple parameter
+addition. It is really easy.
+
+>  However, even this change seems easier to me
+> when the device path is hardcoded only in one place...
+
+Alex, it is not really easier. And it is actually silly. Look at this
+lububi_common.c, look at the functions. All functions are tiny wrappers
+over a libc call:
+
+Just look again at what you sent:
+
++int ubi_vol_open(int devn, int vol_id, int flags)
++{
++       char path[MAXPATH];
++       int fd;
 +
-+	ubi = ubi_devices[ubi_num];
-+	
- 	if (!try_module_get(THIS_MODULE))
- 		return ERR_PTR(err);
- 
--	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES || !ubi)
-+	if (ubi_num >= UBI_MAX_DEVICES || !ubi)
- 		goto out_put;
- 
- 	err = -EINVAL;
++       snprintf(path, MAXPATH, DEFAULT_VOL_PATTERN, devn, vol_id);
++
++       fd =3D open(path, flags);
++
++       return fd;
++}
++
++int ubi_vol_close(int vol_fd)
++{
++       return close(vol_fd);
++}
+
+And these are library calls. Users are able to call open() themselves.
+And close() too. No need to wrap that at all. It does not worth it
+to add library interfaces for these tiny things. Similar to other
+functions in that file.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
