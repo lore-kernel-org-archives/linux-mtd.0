@@ -1,45 +1,31 @@
-Received: from mtagate5.de.ibm.com ([195.212.29.154])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IHw7P-0002Xq-6Y
-	for linux-mtd@lists.infradead.org; Mon, 06 Aug 2007 07:31:08 +0100
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate5.de.ibm.com (8.13.8/8.13.8) with ESMTP id l766UqnK111424
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Aug 2007 06:30:52 GMT
-Received: from d12av02.megacenter.de.ibm.com (d12av02.megacenter.de.ibm.com
-	[9.149.165.228])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.4) with
-	ESMTP id l766UqUJ2220286
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Aug 2007 08:30:52 +0200
-Received: from d12av02.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av02.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l766UmWt012604
-	for <linux-mtd@lists.infradead.org>; Mon, 6 Aug 2007 08:30:49 +0200
-Message-ID: <46B6C011.4020503@de.ibm.com>
-Date: Mon, 06 Aug 2007 08:30:41 +0200
-From: Carsten Otte <cotte@de.ibm.com>
+Received: from bart.se.axis.com ([193.13.178.9])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1II2pI-0006at-Si
+	for linux-mtd@lists.infradead.org; Mon, 06 Aug 2007 09:40:55 -0400
+Received: from bart.se.axis.com (bart.se.axis.com [127.0.0.1])
+	by bart.se.axis.com (Postfix) with ESMTP id 0E9EE63FFC
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  6 Aug 2007 15:40:46 +0200 (CEST)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by bart.se.axis.com (Postfix) with ESMTP id EF37E63FB1
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  6 Aug 2007 15:40:45 +0200 (CEST)
+Date: Mon, 6 Aug 2007 15:41:08 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: Problems with cfi_cmdset_0002 and Atmel AT49BV642D
+In-Reply-To: <EA3F0F32C26AA132D54202A0@franken3>
+Message-ID: <Pine.LNX.4.64.0708061538220.9729@lnxricardw.se.axis.com>
+References: <D1CA5322EC0446D8F2053C9D@franken3>
+	<B2FC9E5F094119A0F71B96EF@franken3>
+	<1178718379.11554.34.camel@localhost.localdomain>
+	<AFDBC52C05E4EA53B68C61AD@franken3>
+	<1178781348.11554.52.camel@localhost.localdomain>
+	<20070510102703.04a398ee@dhcp-252-105.norway.atmel.com>
+	<EA3F0F32C26AA132D54202A0@franken3>
 MIME-Version: 1.0
-To: Jared Hulbert <jaredeh@gmail.com>
-Subject: Re: [PATCH][MTD] mtdpart.c: allow other drivers to get physical
-	address of partition
-References: <6934efce0707261704p5e46e238i5b7ee433fc4f5bda@mail.gmail.com>
-	<1185882932.3083.98.camel@pmac.infradead.org>
-	<6934efce0707311255k57b60d59y5a07d2812b37ca1a@mail.gmail.com>
-	<20070801121800.GB2747@lazybastard.org> <46B083B3.80009@de.ibm.com>
-	<6934efce0708011337g32169212v329c778bb7700aea@mail.gmail.com>
-	<46B18D89.1010207@de.ibm.com>
-	<6934efce0708021455h29c9151aw7aab2245df0062e5@mail.gmail.com>
-	<1186146543.2931.82.camel@pmac.infradead.org>
-	<20070803131815.GG19344@lazybastard.org>
-	<6934efce0708031245j5f292b17w64de8bb75435ea98@mail.gmail.com>
-In-Reply-To: <6934efce0708031245j5f292b17w64de8bb75435ea98@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: carsteno@de.ibm.com, dhowells <dhowells@redhat.com>,
-	=?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	"linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Reply-To: carsteno@de.ibm.com
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -49,13 +35,111 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jared Hulbert wrote:
-> Hmmm, we'd definitely benefit from having a hook in idle to trigger
-> the erase to resume.  Having hooks for entry into kernel space sounds
-> interesting, but if you leave it too quickly and suspend the erase you
-> don't make forward progress.  However, I'm not sure how you'd
-> determine whether a given process can continue without suspending the
-> erase.
 
-*shrug*. I'd rather want to go a path without hooks, like the one 
-David's suggesting. Hooks are known to be highly flammable on lkml.
+On Thu, 10 May 2007, Michael K=F6nig wrote:
+
+>> So if you have the patch available, now would probably be a good time
+>> to post it ;-)
+>
+> Unfortunately I don't have any experience with GIT and also don't have th=
+e=20
+> time to set it up right now, but I'm attaching a "diff -p" for the change=
+s to=20
+> the latest cfi_cmdset_0002.c in the repository.
+
+This was a long time ago, is there any reason the supplied patch was never=
+=20
+committed?
+
+/Ricard
+
+(for reference, since it was a while ago, the patch follows below)
+
+--------------8<------------------
+
+From=20Michael.Koenig@ipcas.de Thu May 10 10:44:49 2007
+Date: Thu, 10 May 2007 10:42:53 +0200
+From: "[UTF-8] Michael K=F6nig" <Michael.Koenig@ipcas.de>
+To: dev-etrax@axis.com
+Subject: Atmel Flash Fix: cfi_cmdset_0002.c (was: MTD problems)
+
+     [ The following text is in the "utf-8" character set. ]
+     [ Your display is set for the "ISO-8859-1" character set.  ]
+     [ Some characters may be displayed incorrectly. ]
+
+Hello again,
+
+with the help of Hans-Christian Egtvedt from Atmel (thanks!) I was able to
+track down my issues with the Atmel Flash.
+
+On Atmel Flashes the do_write_buffer() function is not supposed to be
+called, and it seems that some patches to make sure of that weren't applied
+to the code in the Linux kernel GIT.
+
+The following changes have to be applied to this file:
+drivers/mtd/chips/cfi_cmdset_0002.c
+
+
+Two lines (not counting the comment) are added to fixup_convert_atmel_pri()=
+:
+
+static void fixup_convert_atmel_pri(struct mtd_info *mtd, void *param)
+{
+ =09struct map_info *map =3D mtd->priv;
+ =09struct cfi_private *cfi =3D map->fldrv_priv;
+ =09struct cfi_pri_amdstd *extp =3D cfi->cmdset_priv;
+ =09struct cfi_pri_atmel atmel_pri;
+
+ =09memcpy(&atmel_pri, extp, sizeof(atmel_pri));
+ =09memset((char *)extp + 5, 0, sizeof(*extp) - 5);
+
+ =09if (atmel_pri.Features & 0x02)
+ =09=09extp->EraseSuspend =3D 2;
+
+ =09if (atmel_pri.BottomBoot)
+ =09=09extp->TopBottom =3D 2;
+ =09else
+ =09=09extp->TopBottom =3D 3;
+
+ =09/* burst write mode not supported */
+ =09cfi->cfiq->BufWriteTimeoutTyp =3D 0;
+ =09cfi->cfiq->BufWriteTimeoutMax =3D 0;
+}
+
+
+In the cfi_fixup_table[] "fixup_convert_atmel_pri" has to appear before
+"fixup_use_write_buffers":
+
+static struct cfi_fixup cfi_fixup_table[] =3D {
+#ifdef AMD_BOOTLOC_BUG
+ =09{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
+#endif
+ =09{ CFI_MFR_AMD, 0x0050, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_AMD, 0x0053, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_AMD, 0x0055, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_AMD, 0x0056, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_AMD, 0x005C, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_AMD, 0x005F, fixup_use_secsi, NULL, },
+ =09{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+#if !FORCE_WORD_WRITE
+ =09{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
+#endif
+ =09{ 0, 0, NULL, NULL }
+};
+
+
+Now Atmel Flash chips should work correctly with the latest SDK, at least m=
+y
+AT49BV642D does.
+
+--=20
+Mit freundlichen Gr=FC=DFen
+Best regards
+Michael K=F6nig
+
+-------------8<---------
+
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
