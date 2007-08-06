@@ -1,19 +1,21 @@
-Received: from rv-out-0910.google.com ([209.85.198.188])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1II56M-0008OL-7n
-	for linux-mtd@lists.infradead.org; Mon, 06 Aug 2007 12:06:39 -0400
-Received: by rv-out-0910.google.com with SMTP id g11so1133764rvb
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 06 Aug 2007 09:06:37 -0700 (PDT)
-Message-ID: <d7ca49770708060906x951ade9q2a4553714e62d86d@mail.gmail.com>
-Date: Mon, 6 Aug 2007 21:36:36 +0530
-From: "Manish Dusane" <manish2312@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 partitions on a part of Flash.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1II5Im-0000Kp-NL
+	for linux-mtd@lists.infradead.org; Mon, 06 Aug 2007 12:19:30 -0400
+Subject: RE: sync() takes minutes while erasing
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1183381086.20673.132.camel@gentoo-jocke.transmode.se>
+References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+	<1183057362.1170.194.camel@pmac.infradead.org>
+	<1183381086.20673.132.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Date: Mon, 06 Aug 2007 18:18:55 +0200
+Message-Id: <1186417135.27312.18.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Mon, 2007-07-02 at 14:58 +0200, Joakim Tjernlund wrote:
+> On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
+> > On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
+> > > Thanks, this stop the complaints from the test team. They
+> > > don't like to wait a few mins every time they delete an old install
+> > > and reboot.
+> > 
+> > This is what the rest of us use 'flash_eraseall -j' for, btw :)
+> > 
+> > But I'll look into it. If we can do the erases from some other context
+> > it would be nice. Although pdflush_operation() doesn't seem to give us
+> > any way to _stop_ a pending call if we unmount.
+> > 
+> 
+> hmm, can't you make so that pdflush_operation() just erases one
+> block at a time? Then the longest you have to wait is just
+> the time it takes to finish one EB.
+> 
+>  Jocke
 
-For my project, I am using only a part of flash (~50% of 8MB), with 4
-jffs2 partitions. I have made the necessary changes, but jffs2 mount fails.
+Hi David
 
-'jffs2_scan_medium' during scan the non-jffs2 erase-blocks and ignore
-(with ''Magic BitMask not found" errors). After that the scanning
-should proceed and the partitions should be get mounted correctly. I
-have taken care of return values, ensuring the scan-errors do not fail
-the mount.
+Had any time to think on the above?
 
-Has anyone tried this before ? Am i missing something here ?
-
-Would really appreciate any insights.
-
-TIA,
-- Manish
+   Jocke
