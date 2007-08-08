@@ -1,19 +1,21 @@
-Received: from nz-out-0506.google.com ([64.233.162.226])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIpfz-00026I-3L
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 13:50:36 -0400
-Received: by nz-out-0506.google.com with SMTP id z3so101242nzf
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Aug 2007 10:50:30 -0700 (PDT)
-Message-ID: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-Date: Wed, 8 Aug 2007 13:50:29 -0400
-From: "James Olin Oden" <james.oden@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: What is the correct way to make an mtdchar device available?
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IIoOC-00064U-EX
+	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 12:31:45 -0400
+Subject: Re: LogFS take five
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20070808161234.GB15319@lazybastard.org>
+References: <20070808161234.GB15319@lazybastard.org>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 08 Aug 2007 19:27:17 +0300
+Message-Id: <1186590437.19606.38.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: akpm@osdl.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have a system with the ST Micro M50FW080 firmware hub.  I have
-checked the source code and the jedec_probe module has detection code
-for that driver.  So I've done:
+Hi J=C3=B6rn,
 
-   modprobe jedec_probe
-   modprobe mtdchar
+On Wed, 2007-08-08 at 18:12 +0200, J=C3=B6rn Engel wrote:
+> It has been a while, mainly because I found a bunch of races and didn't
+> want to publish anything before those were fixed.  Patch is still
+> against 2.6.21 and just for review.
 
-Both modules load with no output going to the console.   No /dev/mtd#
-device appears (there are two firmware hubs so I would assume mtd0 and
-mtd1 would apprear).  If I do a mknod, the device is there but I
-cannot read from it.
+I'm very interested how do you account free/dirty space in LogFS:
 
-I have now tried this with both the Fedora Core 6 kernel and the RHEL
-5 kernel (all of which have mtd configured, and are using 2.6.18
-kernel (with RedHats legion of patches).
+* When you need to write new data, how do you select the place where to
+write?
+* When you run out of space, how do select find the segment to
+garbage-collect?
 
-What am I missing?  What is the correct way to bring up an mtdchar device?
+For any given segment (or eraseblock), how do you find amount of free
+and dirty space in it?
 
-Thanks...james
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
