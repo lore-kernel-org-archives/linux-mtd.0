@@ -1,23 +1,23 @@
-Received: from el-out-1112.google.com ([209.85.162.180])
+Received: from moutng.kundenserver.de ([212.227.126.171])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIrxb-0007Z7-R3
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 16:16:56 -0400
-Received: by el-out-1112.google.com with SMTP id y26so64143ele
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Aug 2007 13:16:50 -0700 (PDT)
-Message-ID: <ac921f990708081316j3c8abbf5t78b632f8ad3ae4d7@mail.gmail.com>
-Date: Wed, 8 Aug 2007 16:16:50 -0400
-From: "James Olin Oden" <james.oden@gmail.com>
-To: "Ralph Siemsen" <ralphs@netwinder.org>
-Subject: Re: What is the correct way to make an mtdchar device available?
-In-Reply-To: <20070808192832.GA21249@marvin.netwinder.org>
+	id 1IIuSz-0004Nf-Fl
+	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 18:57:26 -0400
+From: Arnd Bergmann <arnd@arndb.de>
+To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@logfs.org>
+Subject: Re: [Patch 02/18] include/linux/logfs.h
+Date: Thu, 9 Aug 2007 00:56:29 +0200
+References: <20070808161234.GB15319@lazybastard.org>
+	<20070808161428.GD15319@lazybastard.org>
+In-Reply-To: <20070808161428.GD15319@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-	<20070808192832.GA21249@marvin.netwinder.org>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200708090056.30350.arnd@arndb.de>
+Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/8/07, Ralph Siemsen <ralphs@netwinder.org> wrote:
-> On Wed, Aug 08, 2007 at 01:50:29PM -0400, James Olin Oden wrote:
->
-> > I have a system with the ST Micro M50FW080 firmware hub.  I have
-> > checked the source code and the jedec_probe module has detection code
-> > for that driver.  So I've done:
->
-> I'm not familiar with this device, but you appear to be missing a
-> mapping driver (see drivers/mtd/maps, the most common being "physmap").
-> You'll likely need to know the physical address and size of your flash
-> device.  Once addresses are known, then the xyz_probe routines will be
-> called to identify the device supposedly there.
->
-Yeah, I saw something about "physmap" in one web page.  The module was
-not available on my system, but it looks like its in the source code,
-which means RedHat did not have it configured to build.  I can work
-with that.
+On Wednesday 08 August 2007, J=C3=B6rn Engel wrote:
+> +++ linux-2.6.21logfs/include/linux/logfs.h=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+2007-08-08 02:57:37.000000000 +0200
+> @@ -0,0 +1,500 @@
+> +/*
+> + * fs/logfs/logfs.h
+> + *
 
-> I could be way off base, maybe the "firmware hub" works more magically.
-> My description is more for flash that is soldered on the board.
-No its just a flash chip soldered on the board, that they call a
-firmware hub, because the intent of the mother board manufacturer was
-to place BIOS in it.
+The comment does not match the file name. Better remove the file names
+entirely from introduction comments.
 
-Thank you...james
-
->
-> -R
->
+	Arnd <><
