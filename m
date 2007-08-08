@@ -1,22 +1,22 @@
-Received: from wa-out-1112.google.com ([209.85.146.179])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIowc-0007oX-E6
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 13:04:45 -0400
-Received: by wa-out-1112.google.com with SMTP id v33so241350wah
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 08 Aug 2007 10:03:32 -0700 (PDT)
-Message-ID: <4f6ba3b0708081003u28766bbdg1db917078fc4ad2b@mail.gmail.com>
-Date: Wed, 8 Aug 2007 13:03:29 -0400
-From: "Bob Beers" <bob.beers@gmail.com>
-To: "Andy Kennedy" <akennedy@techmoninc.com>
-Subject: Re: DiskOnChip 2000 (DOC 2000) woes.
-In-Reply-To: <46B9EE9B.7060805@techmoninc.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <46B76F31.6020507@techmoninc.com> <46B9EE9B.7060805@techmoninc.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IIp17-0008BR-JY
+	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 13:08:50 -0400
+Subject: Re: [Patch 05/18] fs/logfs/dir.c
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20070808161626.GG15319@lazybastard.org>
+References: <20070808161234.GB15319@lazybastard.org>
+	<20070808161626.GG15319@lazybastard.org>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 08 Aug 2007 20:07:34 +0300
+Message-Id: <1186592854.19606.49.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: akpm@osdl.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,21 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I can't address the stack dumps you're seeing,
- but I think you don't want ext3 or
- any journal file system on DoC.
-In fact if you do mount the file system rw, you'll
- want to specify the option "noatime" to prevent
- as much chip writing as possible.
+On Wed, 2007-08-08 at 18:16 +0200, J=C3=B6rn Engel wrote:
+> +static inline void logfs_inc_count(struct inode *inode)
+> +{
+> +	inode->i_nlink++;
+> +	mark_inode_dirty_sync(inode);
+> +}
+> +
+> +static inline void logfs_dec_count(struct inode *inode)
+> +{
+> +	inode->i_nlink--;
+> +	mark_inode_dirty_sync(inode);
+> +}
+include/linux/fs.h: inode_inc_link_count() inode_dec_link_count() do
+this. Although not sure they exist in the old kernel your patches are
+against.
 
-And, to give you some hope, I will tell you
- that I have done what you are trying.
-fdisk /dev/nftla (create a linux partition or two)
-mke2fs /dev/nftla1
-mount /dev/nftla1 /mnt/doc
-cp blahblahblah /mnt/doc/blahblah
-etc. ...
-end up with a bootable DoC on a SBC with no other drive.
-
-I hope this helps,
--Bob
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
