@@ -1,24 +1,22 @@
-Received: from mtaout3.barak.net.il ([212.150.49.173])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIjRe-0002Am-Er
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 07:11:22 -0400
-Received: from mail.linux-boards.com ([62.90.235.247])
-	by mtaout3.barak.net.il (Sun Java System Messaging Server 6.2-7.04
-	(built Aug
-	17 2006)) with ESMTP id <0JMG00GTJCEOLQ41@mtaout3.barak.net.il> for
-	linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 14:11:12 +0300 (IDT)
-Received: from [10.1.1.95] (. [10.1.1.95] (may be forged))
-	by mail.linux-boards.com (8.12.5/8.12.8) with ESMTP id
-	l78B6OtA004556	for
-	<linux-mtd@lists.infradead.org>; Wed, 08 Aug 2007 14:06:34 +0300
-Date: Wed, 08 Aug 2007 14:06:15 +0300
-From: Mike Rapoport <mike@compulab.co.il>
-Subject: unlock address for non-CFI chip
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Message-id: <46B9A3A7.9040305@compulab.co.il>
-MIME-version: 1.0
-Content-type: text/plain; charset=ISO-8859-1; format=flowed
-Content-transfer-encoding: 7bit
+	id 1IIlEv-0003Rh-31
+	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 09:06:19 -0400
+Subject: RE: sync() takes minutes while erasing
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1186417135.27312.18.camel@gentoo-jocke.transmode.se>
+References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+	<1183057362.1170.194.camel@pmac.infradead.org>
+	<1183381086.20673.132.camel@gentoo-jocke.transmode.se>
+	<1186417135.27312.18.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Wed, 08 Aug 2007 15:06:09 +0200
+Message-Id: <1186578369.8266.2.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,13 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-I'm trying to add Eon EN29SL800 chip to jedec_probe.c, and I don't quite 
-understand why in 'finfo_uaddr' the unlock address is always reset to the 
-8-bit-mode entry, and what should be the contents of 'uaddr' field in the 
-                 flash chip definition in the 'jedec_table'.
+On Mon, 2007-08-06 at 18:18 +0200, Joakim Tjernlund wrote:
+> On Mon, 2007-07-02 at 14:58 +0200, Joakim Tjernlund wrote:
+> > On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
+> > > On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
+> > > > Thanks, this stop the complaints from the test team. They
+> > > > don't like to wait a few mins every time they delete an old install
+> > > > and reboot.
+> > > 
+> > > This is what the rest of us use 'flash_eraseall -j' for, btw :)
+> > > 
+> > > But I'll look into it. If we can do the erases from some other context
+> > > it would be nice. Although pdflush_operation() doesn't seem to give us
+> > > any way to _stop_ a pending call if we unmount.
 
+hmm, can't jffs2_erase_pending_blocks() see if a unmount is in progress
+and if so, stop erasing blocks? 
 
--- 
-Sincerely yours,
-Mike.
+> > > 
+> > 
+> > hmm, can't you make so that pdflush_operation() just erases one
+> > block at a time? Then the longest you have to wait is just
+> > the time it takes to finish one EB.
+> > 
+> >  Jocke
+> 
+> Hi David
+> 
+> Had any time to think on the above?
+> 
+>    Jocke
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
