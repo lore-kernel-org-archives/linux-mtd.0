@@ -1,22 +1,19 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIlEv-0003Rh-31
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 09:06:19 -0400
-Subject: RE: sync() takes minutes while erasing
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1186417135.27312.18.camel@gentoo-jocke.transmode.se>
-References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
-	<1183057362.1170.194.camel@pmac.infradead.org>
-	<1183381086.20673.132.camel@gentoo-jocke.transmode.se>
-	<1186417135.27312.18.camel@gentoo-jocke.transmode.se>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Wed, 08 Aug 2007 15:06:09 +0200
-Message-Id: <1186578369.8266.2.camel@gentoo-jocke.transmode.se>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IIoD4-0005bd-V0
+	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 12:16:36 -0400
+Date: Wed, 8 Aug 2007 18:12:34 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, akpm@osdl.org,
+	David Woodhouse <dwmw2@infradead.org>,
+	Arnd Bergmann <arnd@arndb.de>, Thomas Gleixner <tglx@linutronix.de>
+Subject: LogFS take five
+Message-ID: <20070808161234.GB15319@lazybastard.org>
 Mime-Version: 1.0
-Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
-Reply-To: joakim.tjernlund@transmode.se
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,39 +23,137 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-08-06 at 18:18 +0200, Joakim Tjernlund wrote:
-> On Mon, 2007-07-02 at 14:58 +0200, Joakim Tjernlund wrote:
-> > On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
-> > > On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
-> > > > Thanks, this stop the complaints from the test team. They
-> > > > don't like to wait a few mins every time they delete an old install
-> > > > and reboot.
-> > > 
-> > > This is what the rest of us use 'flash_eraseall -j' for, btw :)
-> > > 
-> > > But I'll look into it. If we can do the erases from some other context
-> > > it would be nice. Although pdflush_operation() doesn't seem to give us
-> > > any way to _stop_ a pending call if we unmount.
+It has been a while, mainly because I found a bunch of races and didn't
+want to publish anything before those were fixed.  Patch is still
+against 2.6.21 and just for review.
 
-hmm, can't jffs2_erase_pending_blocks() see if a unmount is in progress
-and if so, stop erasing blocks? 
 
-> > > 
-> > 
-> > hmm, can't you make so that pdflush_operation() just erases one
-> > block at a time? Then the longest you have to wait is just
-> > the time it takes to finish one EB.
-> > 
-> >  Jocke
-> 
-> Hi David
-> 
-> Had any time to think on the above?
-> 
->    Jocke
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
-> 
+Add LogFS, a scalable flash filesystem.
+
+
+Motivation 1:
+
+Linux currently has 1-2 flash filesystems to choose from, JFFS2 and
+YAFFS.  The latter has never made a serious attempt of kernel
+integration, which may disqualify it to some.
+
+The two main problems of JFFS2 are memory consumption and mount time.
+Unlike most filesystems, there is no tree structure of any sorts on
+the medium, so the complete medium needs to be scanned at mount time
+and a tree structure kept in-memory while the filesystem is mounted.
+With bigger devices, both mount time and memory consumption increase
+linearly.
+
+JFFS2 has recently gained summary support, which helps reduce mount
+time by a constant factor.  Linear scalability remains.  YAFFS
+appears to be better by a constant factor, yet still scales linearly.
+
+LogFS has an on-medium tree, fairly similar to Ext2 in structure, so
+mount times are O(1).  In absolute terms, the OLPC system has mount
+times of ~3.3s for JFFS2 and ~60ms for LogFS.
+
+
+Motivation 2:
+
+Flash is becoming increasingly common in standard PC hardware.  Nearly
+a dozen different manufacturers have announced Solid State Disks
+(SSDs), the OLPC and the Intel Classmate no longer contain hard disks
+and ASUS announced a flash-only Laptop series for regular consumers.
+And that doesn't even mention the ubiquitous USB-Sticks, SD-Cards,
+etc.
+
+Flash behaves significantly different to hard disks.  In order to use
+flash, the current standard practice is to add an emulation layer and
+an old-fashioned hard disk filesystem.  As can be expected, this is
+eating up some of the benefits flash can offer over hard disks.
+
+In principle it is possible to achieve better performance with a flash
+filesystem than with the current emulated approach.  In practice our
+current flash filesystems are not even near that theoretical goal.
+LogFS in its current state is already closer.
+
+Signed-off-by: Jörn Engel <joern@logfs.org>
+ fs/Kconfig            |   26 +
+ fs/Makefile           |    1 
+ fs/logfs/Locking      |   48 ++
+ fs/logfs/Makefile     |   13 
+ fs/logfs/compr.c      |   95 ++++
+ fs/logfs/dir.c        |  761 ++++++++++++++++++++++++++++++++
+ fs/logfs/file.c       |  176 +++++++
+ fs/logfs/gc.c         |  404 +++++++++++++++++
+ fs/logfs/inode.c      |  514 +++++++++++++++++++++
+ fs/logfs/journal.c    |  737 +++++++++++++++++++++++++++++++
+ fs/logfs/logfs.h      |  445 ++++++++++++++++++
+ fs/logfs/memtree.c    |  258 ++++++++++
+ fs/logfs/progs/fsck.c |  318 +++++++++++++
+ fs/logfs/readwrite.c  | 1185 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/logfs/segment.c    |  602 +++++++++++++++++++++++++
+ fs/logfs/super.c      |  569 ++++++++++++++++++++++++
+ include/linux/Kbuild  |    1 
+ include/linux/logfs.h |  500 +++++++++++++++++++++
+ 18 files changed, 6653 insertions(+)
+
+
+Changed since Take 4:
+o depend on MTD
+o use LOGFS_BLOCKSHIFT in logfs_index
+o #define EOF to 512
+o moved BUILD_BUG_ON() into an inline function
+o declare completion futility on the stack
+o 64bit nanoseconds time format
+o created logfs_compare_inode()
+o created struct logfs_device_ops
+o truncate() to zero sets embedded flag
+o unwrap logfs_memcpy()
+o add FS_READONLY flag to superblock
+o create blockdev_device_ops
+  This one still needs some infrastructure and testing.
+o Fixed several data corruption bugs:
+  - races between creat/unlink/rename and file write
+  - logfs_is_valid ignoring on-disk state
+  - logfs_rewrite forgetting to write inode
+  All of them were harmless unless the system crashed at an inconvenient
+time.
+o Run one round of GC right after mount
+  Fixes a rare deadlock bug.
+o removed inode comparisions - they had 0% hit rate
+
+
+Unchanged:
+o convert #define's to enums.
+  Afaics one of those has to be cast to u8, the other has to go through
+  cpu_to_be64.  I don't see how enums are an advantage under such circumstances
+  and Thomas didn't seem to be sure either.
+o generic function for logfs_type()
+o generic helper for logfs_prepare_write()
+o removed EOF
+o error handling
+o move rootdir generation back to mkfs
+o replace kmap() with kmap_atomic()
+  Quite intrusive and I'm not happy with my current approach yet.
+o document logfs_new_meta_inode()
+o Use KMEM_CACHE() helper for kmem_cache_create()
+o read object header first, then read or read&uncompress object data
+o shrink inodes to 200 bytes
+o remove global mutex in segment.c
+o forbid file creation above mkfs limits
+o add ifile_levels and data_levels options to mkfs
+
+
+Won't happen (unless I get convinced to do otherwise):
+o lowercase LOGFS_SUPER and LOGFS_INODE
+  These simply match the common pattern used is many Linux filesystems.
+o remove "extern"
+  For structures, this keyword actually serves a purpose and makes sense.
+  On the other hand, it is completely bogus for functions and I won't be
+  bullied into adding bogus crud either.
+o Move fs/logfs/Locking to Documentation/
+  At least JFFS2 has such documentation in its own directory as well.
+  I can see good arguments for either side and no strong consensus.  While
+  I ultimately just don't case, doing nothing is a good option in cases
+  of great uncertainty.
+o change (void*) to "proper" cast
+  Neither variant is much better than the other.  I'm open for suggestions
+  to completely remove the casts, though.
+o Change LOGFS_BUG() and LOGFS_BUG_ON() to inline functions
+  These are macros for very much the same reasons BUG() and BUG_ON() are.
