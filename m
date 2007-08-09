@@ -1,29 +1,19 @@
-Received: from e6.ny.us.ibm.com ([32.97.182.146])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJB2N-0006Ne-7x
-	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 17:39:04 +0100
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e6.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l79GdlMp028748
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Aug 2007 12:39:47 -0400
-Received: from d01av04.pok.ibm.com (d01av04.pok.ibm.com [9.56.224.64])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.4) with ESMTP id
-	l79GcS9d558260
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Aug 2007 12:38:28 -0400
-Received: from d01av04.pok.ibm.com (loopback [127.0.0.1])
-	by d01av04.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l79GcSQE025648
-	for <linux-mtd@lists.infradead.org>; Thu, 9 Aug 2007 12:38:28 -0400
-Date: Thu, 9 Aug 2007 11:38:22 -0500
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: Re: mkfs.jffs2.c not compiling for arm
-Message-ID: <20070809113822.0bfbcbfc@zod.rchland.ibm.com>
-In-Reply-To: <200708091734.24054.schane@osmozis.com>
-References: <200708091734.24054.schane@osmozis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from smtpout10-04.prod.mesa1.secureserver.net ([64.202.165.238]
+	helo=smtpout10.prod.mesa1.secureserver.net)
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJBS4-0000Kh-My
+	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 13:05:40 -0400
+Message-ID: <46BB498D.9040707@techmoninc.com>
+Date: Thu, 09 Aug 2007 12:06:21 -0500
+From: Andy Kennedy <akennedy@techmoninc.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Re: DiskOnChip 2000 (DOC 2000) woes.
+References: <46B76F31.6020507@techmoninc.com> <46B9EE9B.7060805@techmoninc.com>
+	<46BB21F1.3060109@techmoninc.com>
+In-Reply-To: <46BB21F1.3060109@techmoninc.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,31 +23,58 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 9 Aug 2007 17:34:23 +0200
-Saravanan Chanemouganandam <schane@osmozis.com> wrote:
+More information:
 
-> Hello,
-> 
-> I am a newbie to use MTD tools. I have downloaded the latest version of the 
-> mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
-> platform, I am getting the following make error. 
-> 
-> sara:/home/sara/mtd-utils-1.0.0#make 
-> CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
-> ....
-> /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
-> -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
-> mkfs.jffs2.c:68:18: zlib.h : No such file or directory
-> make: *** [mkfs.jffs2.o] Error 1
-> rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
-> doc_loadbios.o
-> 
-> The host development machine has already installed with supporting Zlib 
-> libraries but still it couldn't find the file. 
-> 
-> Can anyone precise me, is there any missing build options ?
+An oops on my locale computer as I was attempting to make a jumpdrive 
+back to an vfat filesystem.  I needed to recreate the partition so I 
+typed the following:
 
-You need the zlib-devel package installed.  That puts zlib.h
-in /usr/include/
+root@Andy:/# fdisk /dev/sdb1
 
-josh
+Obliviously my mistake is just adding the partition number to the device 
+-- it happens.  I get the following error:
+
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF 
+disklabel
+Building a new DOS disklabel. Changes will remain in memory only,
+until you decide to write them. After that, of course, the previous
+content won't be recoverable.
+
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by 
+w(rite)
+
+
+I quit out of it but realize that this is the SAME error that I get on 
+the DiskOnChip.  So, to me it looks like I'm hitting the first partition 
+of the nftl in place of the device base.  This is the command I use:
+
+
+root@winsys:~# modprobe nftl
+root@winsys:~# fdisk /dev/nftla
+
+And here are the results:
+
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF 
+disklabel
+Building a new DOS disklabel. Changes will remain in memory only,
+until you decide to write them. After that, of course, the previous
+content won't be recoverable.
+
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by 
+w(rite)
+
+Command (m for help): q
+
+
+So, am I getting the wrong device from the driver?  I cannot update the 
+partition table on this unit -- it would make sense to me if I'm 
+attempting to put a partition on the device /dev/nftla1 in place of 
+/dev/nftla.  I created the block devices nftla{,1,2} using:
+mknod /dev/nftla b 93 0
+and I end up with a device:
+brw-rw---- 1 root disk 93, 0 2007-08-09 10:52 /dev/nftla
+So, am I seeing a driver error or am I the error?
+
+Any help would be greatly appreciated.
+
+Andy
