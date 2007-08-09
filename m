@@ -1,18 +1,24 @@
-Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJF9a-0003qN-2C
-	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 17:02:49 -0400
-Date: Thu, 9 Aug 2007 23:02:39 +0200
-From: Lennert Buytenhek <buytenh@wantstofly.org>
-To: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: Re: mkfs.jffs2.c not compiling for arm
-Message-ID: <20070809210239.GA20038@xi.wantstofly.org>
-References: <200708091734.24054.schane@osmozis.com>
+	id 1IJFPm-0004Ck-Ma
+	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 17:19:33 -0400
+Date: Thu, 9 Aug 2007 22:03:16 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [Patch 02/18] include/linux/logfs.h
+Message-ID: <20070809200315.GC9036@lazybastard.org>
+References: <20070808161234.GB15319@lazybastard.org>
+	<20070808161428.GD15319@lazybastard.org>
+	<200708090056.30350.arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <200708091734.24054.schane@osmozis.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200708090056.30350.arnd@arndb.de>
+Cc: akpm@osdl.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +28,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 09, 2007 at 05:34:23PM +0200, Saravanan Chanemouganandam wrote:
-
-> I am a newbie to use MTD tools. I have downloaded the latest version of the 
-> mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
-> platform, I am getting the following make error. 
+On Thu, 9 August 2007 00:56:29 +0200, Arnd Bergmann wrote:
+> On Wednesday 08 August 2007, Jörn Engel wrote:
+> > +++ linux-2.6.21logfs/include/linux/logfs.h     2007-08-08 02:57:37.000000000 +0200
+> > @@ -0,0 +1,500 @@
+> > +/*
+> > + * fs/logfs/logfs.h
+> > + *
 > 
-> sara:/home/sara/mtd-utils-1.0.0#make 
-> CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
-> ....
-> /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
-> -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
-> mkfs.jffs2.c:68:18: zlib.h : No such file or directory
-> make: *** [mkfs.jffs2.o] Error 1
-> rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
-> doc_loadbios.o
-> 
-> The host development machine has already installed with supporting Zlib 
-> libraries but still it couldn't find the file. 
+> The comment does not match the file name. Better remove the file names
+> entirely from introduction comments.
 
-Considering that you are cross-compiling, what you need is not a host
-version (e.g. i386 version) of zlib, but a target version (i.e. arm
-version) of zlib.
+Maybe.  This file needs to get moved again anyway.
+
+Jörn
+
+-- 
+Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it.
+-- Brian W. Kernighan
