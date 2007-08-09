@@ -1,22 +1,17 @@
-Received: from el-out-1112.google.com ([209.85.162.180])
+Received: from [2002:53a0:b870::1] (helo=xi.wantstofly.org)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJDHu-0002H6-7R
-	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 15:03:17 -0400
-Received: by el-out-1112.google.com with SMTP id y26so166408ele
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 09 Aug 2007 12:03:12 -0700 (PDT)
-Message-ID: <ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
-Date: Thu, 9 Aug 2007 15:03:12 -0400
-From: "James Olin Oden" <james.oden@gmail.com>
-To: "Ralph Siemsen" <ralphs@netwinder.org>
-Subject: Re: What is the correct way to make an mtdchar device available?
-In-Reply-To: <20070808192832.GA21249@marvin.netwinder.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+	id 1IJF9a-0003qN-2C
+	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 17:02:49 -0400
+Date: Thu, 9 Aug 2007 23:02:39 +0200
+From: Lennert Buytenhek <buytenh@wantstofly.org>
+To: Saravanan Chanemouganandam <schane@osmozis.com>
+Subject: Re: mkfs.jffs2.c not compiling for arm
+Message-ID: <20070809210239.GA20038@xi.wantstofly.org>
+References: <200708091734.24054.schane@osmozis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-	<20070808192832.GA21249@marvin.netwinder.org>
+In-Reply-To: <200708091734.24054.schane@osmozis.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,36 +22,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/8/07, Ralph Siemsen <ralphs@netwinder.org> wrote:
-> On Wed, Aug 08, 2007 at 01:50:29PM -0400, James Olin Oden wrote:
->
-> > I have a system with the ST Micro M50FW080 firmware hub.  I have
-> > checked the source code and the jedec_probe module has detection code
-> > for that driver.  So I've done:
->
-> I'm not familiar with this device, but you appear to be missing a
-> mapping driver (see drivers/mtd/maps, the most common being "physmap").
-> You'll likely need to know the physical address and size of your flash
-> device.  Once addresses are known, then the xyz_probe routines will be
-> called to identify the device supposedly there.
+On Thu, Aug 09, 2007 at 05:34:23PM +0200, Saravanan Chanemouganandam wrote:
 
-Is there any documentation anywhere that talks about the mapping
-driver, their uses and requriements?
+> I am a newbie to use MTD tools. I have downloaded the latest version of the 
+> mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
+> platform, I am getting the following make error. 
+> 
+> sara:/home/sara/mtd-utils-1.0.0#make 
+> CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
+> ....
+> /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
+> -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
+> mkfs.jffs2.c:68:18: zlib.h : No such file or directory
+> make: *** [mkfs.jffs2.o] Error 1
+> rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
+> doc_loadbios.o
+> 
+> The host development machine has already installed with supporting Zlib 
+> libraries but still it couldn't find the file. 
 
-I started looking into this and the config involves answering things
-like "physical start address of flash mapping".   I guess that would
-be the start adress of where the FWH maps itself into memory, but
-since there are two on the system setting this does not seem
-appropriate.
-
-Also, is there anything that explains what one might need to do in the
-context of simply making a flash chip available for reading and
-writing through mtdchar mtdblock?
-
-Thanks...james
->
-> I could be way off base, maybe the "firmware hub" works more magically.
-> My description is more for flash that is soldered on the board.
->
-> -R
->
+Considering that you are cross-compiling, what you need is not a host
+version (e.g. i386 version) of zlib, but a target version (i.e. arm
+version) of zlib.
