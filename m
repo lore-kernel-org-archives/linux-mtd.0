@@ -1,11 +1,23 @@
-Message-ID: <8167164.1186685777245.JavaMail.root@eastrmwml16.mgt.cox.net>
-Date: Thu, 9 Aug 2007 14:56:16 -0400
-From: =?utf-8?Q?British_Online_Lottery_=C2=AE_?= <msnlottery_winners@cox.net>
-Subject: Winner !
+Received: from el-out-1112.google.com ([209.85.162.180])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJDHu-0002H6-7R
+	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 15:03:17 -0400
+Received: by el-out-1112.google.com with SMTP id y26so166408ele
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 09 Aug 2007 12:03:12 -0700 (PDT)
+Message-ID: <ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
+Date: Thu, 9 Aug 2007 15:03:12 -0400
+From: "James Olin Oden" <james.oden@gmail.com>
+To: "Ralph Siemsen" <ralphs@netwinder.org>
+Subject: Re: What is the correct way to make an mtdchar device available?
+In-Reply-To: <20070808192832.GA21249@marvin.netwinder.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Reply-To: festus4wealth@yahoo.com
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
+	<20070808192832.GA21249@marvin.netwinder.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,23 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We happily announce to you the draw of the=20
+On 8/8/07, Ralph Siemsen <ralphs@netwinder.org> wrote:
+> On Wed, Aug 08, 2007 at 01:50:29PM -0400, James Olin Oden wrote:
+>
+> > I have a system with the ST Micro M50FW080 firmware hub.  I have
+> > checked the source code and the jedec_probe module has detection code
+> > for that driver.  So I've done:
+>
+> I'm not familiar with this device, but you appear to be missing a
+> mapping driver (see drivers/mtd/maps, the most common being "physmap").
+> You'll likely need to know the physical address and size of your flash
+> device.  Once addresses are known, then the xyz_probe routines will be
+> called to identify the device supposedly there.
 
+Is there any documentation anywhere that talks about the mapping
+driver, their uses and requriements?
 
+I started looking into this and the config involves answering things
+like "physical start address of flash mapping".   I guess that would
+be the start adress of where the FWH maps itself into memory, but
+since there are two on the system setting this does not seem
+appropriate.
 
+Also, is there anything that explains what one might need to do in the
+context of simply making a flash chip available for reading and
+writing through mtdchar mtdblock?
 
-International program held on 1st of AUGUST 2007.=20
-Your e-mail address attached to ticket number: 56475600545188 with
-Serial number 5368/02 drew the lucky=20
-numbers:07-10-22-24-34-44.
-You have therefore been approved to claim a total sum of =C2=A32,532,137=20
-obviously to be taken by you.=20
-To file for your claim, send your Full=20
-names......, Full Address......,Country.........,Sex:. Age:......=20
-phone/fax..........,Amount won:..........and Occupation:.......=20
-To the claims agent immediately via email or=20
-fax to the claims director
-
-
-Email:uklottoclaimsoffice300@yahoo.com.hk
-Phone:+447045720553
+Thanks...james
+>
+> I could be way off base, maybe the "firmware hub" works more magically.
+> My description is more for flash that is soldered on the board.
+>
+> -R
+>
