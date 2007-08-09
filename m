@@ -1,17 +1,22 @@
-Received: from smtpauth12.prod.mesa1.secureserver.net ([64.202.165.35])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJ8oa-00066C-Hc
-	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 10:16:41 -0400
-Message-ID: <46BB21F1.3060109@techmoninc.com>
-Date: Thu, 09 Aug 2007 09:17:21 -0500
-From: Andy Kennedy <akennedy@techmoninc.com>
-MIME-Version: 1.0
+Received: from mf00.sitadelle.com ([212.94.174.67] helo=smtp.cegetel.net)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJA1s-00072j-Dn
+	for linux-mtd@lists.infradead.org; Thu, 09 Aug 2007 11:34:52 -0400
+Received: from [10.1.111.252] (80-124-168-196.adslgp.cegetel.net
+	[80.124.168.196])
+	by smtp.cegetel.net (Postfix) with ESMTP id 4DB9B1A41B3
+	for <linux-mtd@lists.infradead.org>;
+	Thu,  9 Aug 2007 17:34:25 +0200 (CEST)
+From: Saravanan Chanemouganandam <schane@osmozis.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: DiskOnChip 2000 (DOC 2000) woes.
-References: <46B76F31.6020507@techmoninc.com> <46B9EE9B.7060805@techmoninc.com>
-In-Reply-To: <46B9EE9B.7060805@techmoninc.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Subject: mkfs.jffs2.c not compiling for arm
+Date: Thu, 9 Aug 2007 17:34:23 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200708091734.24054.schane@osmozis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,10 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The struggle continues.  This particular chip is the MD2202-D32-X.  Has
-anyone ever had any success with installing Linux on this chip?
+Hello,
 
-What is so different between this chip and others that would make it so
-I cannot get it to behave correctly?
+I am a newbie to use MTD tools. I have downloaded the latest version of the 
+mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
+platform, I am getting the following make error. 
 
-Andy
+sara:/home/sara/mtd-utils-1.0.0#make 
+CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
+....
+/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
+-O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
+mkfs.jffs2.c:68:18: zlib.h : No such file or directory
+make: *** [mkfs.jffs2.o] Error 1
+rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
+doc_loadbios.o
+
+The host development machine has already installed with supporting Zlib 
+libraries but still it couldn't find the file. 
+
+Can anyone precise me, is there any missing build options ?
+
+thanks
+Sara
+
+ 
