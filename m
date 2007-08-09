@@ -1,23 +1,17 @@
-Received: from moutng.kundenserver.de ([212.227.126.179])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IIuY3-0004ck-Hu
-	for linux-mtd@lists.infradead.org; Wed, 08 Aug 2007 19:02:48 -0400
-From: Arnd Bergmann <arnd@arndb.de>
-To: =?utf-8?q?J=C3=B6rn_Engel?= <joern@logfs.org>
-Subject: Re: [Patch 16/18] fs/Kconfig
-Date: Thu, 9 Aug 2007 01:01:26 +0200
+Date: Thu, 9 Aug 2007 01:19:13 +0100
+From: Christoph Hellwig <hch@infradead.org>
+To: J??rn Engel <joern@logfs.org>
+Subject: Re: [Patch 18/18] include/linux/Kbuild
+Message-ID: <20070809001913.GA10044@infradead.org>
 References: <20070808161234.GB15319@lazybastard.org>
-	<20070808162339.GR15319@lazybastard.org>
-In-Reply-To: <20070808162339.GR15319@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	<20070808162447.GT15319@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200708090101.27226.arnd@arndb.de>
-Cc: akpm@osdl.org, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-fsdevel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20070808162447.GT15319@lazybastard.org>
+Cc: akpm@osdl.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+	Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +21,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wednesday 08 August 2007, J=C3=B6rn Engel wrote:
-> +config LOGFS
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0bool "Log Filesystem (EXPERIME=
-NTAL)"
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0depends on MTD && BLOCK && EXP=
-ERIMENTAL
+On Wed, Aug 08, 2007 at 06:24:47PM +0200, J??rn Engel wrote:
+> --- linux-2.6.21logfs/include/linux/Kbuild~logfs	2007-08-08 02:57:37.000000000 +0200
+> +++ linux-2.6.21logfs/include/linux/Kbuild	2007-08-08 02:57:37.000000000 +0200
+> @@ -101,6 +101,7 @@ header-y += jffs2.h
+>  header-y += keyctl.h
+>  header-y += limits.h
+>  header-y += lock_dlm_plock.h
+> +header-y += logfs.h
 
-The dependency on MTD _and_ BLOCK looks correct for your code, but
-not necessary. How about making it=20
-
-	depends on (MTD || BLOCK) && EXPERIMENTAL
-
-and allowing to build without the mtd/bdev specific code?
-
-	Arnd <><
+That file doesn't define any kind of user<->kernel interface and thus should
+not be exported.
