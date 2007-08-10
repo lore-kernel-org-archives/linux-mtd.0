@@ -1,18 +1,16 @@
-Date: Fri, 3 Aug 2007 08:27:13 +0530 (IST)
-From: Satyam Sharma <satyam@infradead.org>
-To: =?UTF-8?Q?Rafa=C5=82_Bilski?= <rafalbilski@interia.pl>
-Subject: [PATCH] mtd: Makefile fix (was Re: [PATCH] mtdsuper: licensce = GPL)
-In-Reply-To: <46B1FFFB.6040209@interia.pl>
-Message-ID: <alpine.LFD.0.999.0708030811330.23798@enigma.security.iitk.ac.in>
-References: <46B0D1F7.9090805@interia.pl>
-	<alpine.LFD.0.999.0708020318070.8258@enigma.security.iitk.ac.in>
-	<46B18551.2020809@interia.pl>
-	<alpine.LFD.0.999.0708021309430.8258@enigma.security.iitk.ac.in>
-	<46B1FFFB.6040209@interia.pl>
+Date: Fri, 10 Aug 2007 09:45:27 -0400
+From: Ralph Siemsen <ralphs@netwinder.org>
+To: James Olin Oden <james.oden@gmail.com>
+Subject: Re: What is the correct way to make an mtdchar device available?
+Message-ID: <20070810134527.GA31564@marvin.netwinder.org>
+References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
+	<20070808192832.GA21249@marvin.netwinder.org>
+	<ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="464262402-329667458-1186109839=:23798"
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,89 +20,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---464262402-329667458-1186109839=:23798
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-
-Hi,
-
-
-On Thu, 2 Aug 2007, Rafał Bilski wrote:
-
-> [...]
->  CC      drivers/mtd/chips/chipreg.mod.o
->  LD [M]  drivers/mtd/chips/chipreg.ko
->  CC      drivers/mtd/devices/block2mtd.mod.o
->  LD [M]  drivers/mtd/devices/block2mtd.ko
->  CC      drivers/mtd/mtd_blkdevs.mod.o
->  LD [M]  drivers/mtd/mtd_blkdevs.ko
->  CC      drivers/mtd/mtdblock.mod.o
->  LD [M]  drivers/mtd/mtdblock.ko
->  CC      drivers/mtd/mtdchar.mod.o
->  LD [M]  drivers/mtd/mtdchar.ko
->  CC      drivers/mtd/mtdcore.mod.o
->  LD [M]  drivers/mtd/mtdcore.ko
->  CC      drivers/mtd/mtdsuper.mod.o
->  LD [M]  drivers/mtd/mtdsuper.ko
-> 
-> % ls *.ko
-> mtd_blkdevs.ko  mtdblock.ko  mtdchar.ko  mtdcore.ko  mtdsuper.ko
-
-Yup, I end up with the above situation myself. Please try the patch
-below.
-
-David, are mtdcore, mtdsuper, mtdpart (and I also noticed mtdbdi.c
-in -mm kernel) supposed to be linked into the same module or are they
-supposed to be built as separate modules?
-
-If separate, we need to apply Rafal's patch and ensure MODULE_LICENSE
-(at least) in all the above files.
-
-If the same module, then please consider applying the patch below.
-
-
-[PATCH] mtd: Makefile fix
-
-We want drivers/mtd/{mtdcore, mtdsuper, mtdpart}.c to be built and linked
-into the same mtd.ko module. Fix the Makefile to ensure this, and remove
-duplicate MODULE_ declarations in mtdpart.c, as mtdcore.c already has them.
-
-Signed-off-by: Satyam Sharma <satyam@infradead.org>
-
----
-
- drivers/mtd/Makefile  |    2 +-
- drivers/mtd/mtdpart.c |    4 ----
- 2 files changed, 1 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 451adcc..6d958a4 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -3,9 +3,9 @@
- #
+On Thu, Aug 09, 2007 at 03:03:12PM -0400, James Olin Oden wrote:
  
- # Core functionality.
-+obj-$(CONFIG_MTD)		+= mtd.o
- mtd-y				:= mtdcore.o mtdsuper.o
- mtd-$(CONFIG_MTD_PARTITIONS)	+= mtdpart.o
--obj-$(CONFIG_MTD)		+= $(mtd-y)
- 
- obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 9c62368..6174a97 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -560,7 +560,3 @@ int parse_mtd_partitions(struct mtd_info *master, const char **types,
- EXPORT_SYMBOL_GPL(parse_mtd_partitions);
- EXPORT_SYMBOL_GPL(register_mtd_parser);
- EXPORT_SYMBOL_GPL(deregister_mtd_parser);
--
--MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Nicolas Pitre <nico@cam.org>");
--MODULE_DESCRIPTION("Generic support for partitioning of MTD devices");
---464262402-329667458-1186109839=:23798--
+> Is there any documentation anywhere that talks about the mapping
+> driver, their uses and requriements?
+
+Not specifically, that I am aware of.  There is some documentation
+in Documentation/DocBook/mtdnand.tmpl althought it is geard towards
+NAND flash particulars.  I actually started writing a little HOWTO
+after I had figured it out, but it never got far enough to be useful.
+
+> I started looking into this and the config involves answering things
+> like "physical start address of flash mapping".   I guess that would
+> be the start adress of where the FWH maps itself into memory, but
+> since there are two on the system setting this does not seem
+> appropriate.
+
+When you have multiple chips arranged contiguously, then you just give
+it the beginning address of the block, and the total size.  The code 
+does multiple probes in this region to identify the individual flash
+chips.  Interleaved devices (eg. two x16 devices on a 32-bit bus)
+are also handled the same way.
+
+Flash is often physically located at the very top, or very bottom, of
+the memory map.  So if you have say 16MiB of flash, chances are that it
+is mapped at address 0xff000000 with a size of 0x01000000.
+
+In the drivers/mtd/maps directory you will see a large number of very
+similar mapping drivers for various boards.  They differ in how they
+get the address/size parameters-- some are hardcoded for specific boards,
+others read information dynamically from the bootloader, etc.  Many of
+them also handle partitioning of the flash -- splitting physical devices
+into multiple logical ones, much like you'd do on a hard disk.
+
+> Also, is there anything that explains what one might need to do in the
+> context of simply making a flash chip available for reading and
+> writing through mtdchar mtdblock?
+
+I presume you've see the FAQ and the general documention on the
+www.linux-mtd.infradead.org web site?  The general steps are to turn
+on MTD debug options in your kernel, enable the appropriate mapping 
+driver, and then look through the "dmesg" during boot-up, you should
+see your flash chip detected.  If not, check the mapping driver...
+You should see something along these lines:
+
+[...]
+Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
+ide: Assuming 50MHz system bus speed for PIO modes; override with idebus=xx
+ide-floppy driver 0.99.newide
+physmap platform flash device: 01000000 at ff000000
+physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
+ Intel/Sharp Extended Query Table at 0x0031
+Using buffer write method
+cfi_cmdset_0001: Erase suspend on write enabled
+erase region 0: offset=0x0,size=0x20000,blocks=128
+[...]
+
+Once the chip is detected, you can enable mtdblock/char drivers and
+then probably you want filesystem (JFFS2/YAFFS etc) on top of that.
+
+-R
