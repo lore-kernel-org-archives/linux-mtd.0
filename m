@@ -1,16 +1,27 @@
-Date: Fri, 10 Aug 2007 09:45:27 -0400
-From: Ralph Siemsen <ralphs@netwinder.org>
-To: James Olin Oden <james.oden@gmail.com>
-Subject: Re: What is the correct way to make an mtdchar device available?
-Message-ID: <20070810134527.GA31564@marvin.netwinder.org>
-References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-	<20070808192832.GA21249@marvin.netwinder.org>
-	<ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
-MIME-Version: 1.0
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJVCq-0008Dk-PS
+	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 10:11:17 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IJVCd-0000EK-3A
+	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 16:10:59 +0200
+Received: from 57.66.65.38 ([57.66.65.38])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2007 16:10:59 +0200
+Received: from mw_phil by 57.66.65.38 with local (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 10 Aug 2007 16:10:59 +0200
+To: linux-mtd@lists.infradead.org
+From: MikeW <mw_phil@yahoo.co.uk>
+Subject: Re: mkfs.jffs2.c not compiling for arm
+Date: Fri, 10 Aug 2007 14:10:48 +0000 (UTC)
+Message-ID: <loom.20070810T160837-882@post.gmane.org>
+References: <200708091734.24054.schane@osmozis.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,63 +31,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Aug 09, 2007 at 03:03:12PM -0400, James Olin Oden wrote:
- 
-> Is there any documentation anywhere that talks about the mapping
-> driver, their uses and requriements?
+Saravanan Chanemouganandam <schane <at> osmozis.com> writes:
 
-Not specifically, that I am aware of.  There is some documentation
-in Documentation/DocBook/mtdnand.tmpl althought it is geard towards
-NAND flash particulars.  I actually started writing a little HOWTO
-after I had figured it out, but it never got far enough to be useful.
+> 
+> Hello,
+> 
+> I am a newbie to use MTD tools. I have downloaded the latest version of the 
+> mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
+> platform, I am getting the following make error. 
+> 
+> sara:/home/sara/mtd-utils-1.0.0#make 
+> CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
+> ....
+> /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
+> -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
+> mkfs.jffs2.c:68:18: zlib.h : No such file or directory
+> make: *** [mkfs.jffs2.o] Error 1
+> rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
+> doc_loadbios.o
+> 
+> The host development machine has already installed with supporting Zlib 
+> libraries but still it couldn't find the file. 
+> 
+> Can anyone precise me, is there any missing build options ?
+> 
+> thanks
+> Sara
 
-> I started looking into this and the config involves answering things
-> like "physical start address of flash mapping".   I guess that would
-> be the start adress of where the FWH maps itself into memory, but
-> since there are two on the system setting this does not seem
-> appropriate.
+Your crosscompiler toolchain ought to have supplied this file
+in one of its include directories.
 
-When you have multiple chips arranged contiguously, then you just give
-it the beginning address of the block, and the total size.  The code 
-does multiple probes in this region to identify the individual flash
-chips.  Interleaved devices (eg. two x16 devices on a 32-bit bus)
-are also handled the same way.
+For example using ELDK/mips it's in /opt/eldk/mips_4KCle/usr/include .
 
-Flash is often physically located at the very top, or very bottom, of
-the memory map.  So if you have say 16MiB of flash, chances are that it
-is mapped at address 0xff000000 with a size of 0x01000000.
-
-In the drivers/mtd/maps directory you will see a large number of very
-similar mapping drivers for various boards.  They differ in how they
-get the address/size parameters-- some are hardcoded for specific boards,
-others read information dynamically from the bootloader, etc.  Many of
-them also handle partitioning of the flash -- splitting physical devices
-into multiple logical ones, much like you'd do on a hard disk.
-
-> Also, is there anything that explains what one might need to do in the
-> context of simply making a flash chip available for reading and
-> writing through mtdchar mtdblock?
-
-I presume you've see the FAQ and the general documention on the
-www.linux-mtd.infradead.org web site?  The general steps are to turn
-on MTD debug options in your kernel, enable the appropriate mapping 
-driver, and then look through the "dmesg" during boot-up, you should
-see your flash chip detected.  If not, check the mapping driver...
-You should see something along these lines:
-
-[...]
-Uniform Multi-Platform E-IDE driver Revision: 7.00alpha2
-ide: Assuming 50MHz system bus speed for PIO modes; override with idebus=xx
-ide-floppy driver 0.99.newide
-physmap platform flash device: 01000000 at ff000000
-physmap-flash.0: Found 1 x16 devices at 0x0 in 16-bit bank
- Intel/Sharp Extended Query Table at 0x0031
-Using buffer write method
-cfi_cmdset_0001: Erase suspend on write enabled
-erase region 0: offset=0x0,size=0x20000,blocks=128
-[...]
-
-Once the chip is detected, you can enable mtdblock/char drivers and
-then probably you want filesystem (JFFS2/YAFFS etc) on top of that.
-
--R
+Regards,
+MikeW
