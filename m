@@ -1,27 +1,28 @@
-Received: from wr-out-0506.google.com ([64.233.184.230])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJYlq-0003Eg-04
-	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 13:59:35 -0400
-Received: by wr-out-0506.google.com with SMTP id m59so116854wrm
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Aug 2007 10:59:30 -0700 (PDT)
-Message-ID: <ac921f990708101059g1fdc248bxde61df769d9ac81e@mail.gmail.com>
-Date: Fri, 10 Aug 2007 13:59:30 -0400
-From: "James Olin Oden" <james.oden@gmail.com>
-To: "Ralph Siemsen" <ralphs@netwinder.org>
-Subject: Re: What is the correct way to make an mtdchar device available?
-In-Reply-To: <20070810155353.GA4326@marvin.netwinder.org>
+Received: from smtpauth01.prod.mesa1.secureserver.net ([64.202.165.181])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJa5J-0004JP-Aa
+	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 15:23:53 -0400
+Message-ID: <46BCBB6F.7050406@techmoninc.com>
+Date: Fri, 10 Aug 2007 14:24:31 -0500
+From: Andy Kennedy <akennedy@techmoninc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+To: Donald Green <dgreen@mekinesis.com>,  linux-mtd@lists.infradead.org
+Subject: Re: [Fwd: M-Sys drivers]
+References: <46BA20BB.1040607@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC064310B0@MI8NYCMAIL01.Mi8.com>
+	<46BB764D.1000008@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC064310E8@MI8NYCMAIL01.Mi8.com>
+	<46BB79BC.5070708@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC06431118@MI8NYCMAIL01.Mi8.com>
+	<46BB80C8.1060803@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC0643112D@MI8NYCMAIL01.Mi8.com>
+	<46BC78BB.7020605@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC06431282@MI8NYCMAIL01.Mi8.com>
+	<46BC7CB7.7080002@techmoninc.com>
+	<87F8ED761B96574FA3397B6ADBC372AC064312AB@MI8NYCMAIL01.Mi8.com>
+In-Reply-To: <87F8ED761B96574FA3397B6ADBC372AC064312AB@MI8NYCMAIL01.Mi8.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-	<20070808192832.GA21249@marvin.netwinder.org>
-	<ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
-	<20070810134527.GA31564@marvin.netwinder.org>
-	<ac921f990708100720g77641a19t20d161f72f5ceb56@mail.gmail.com>
-	<20070810155353.GA4326@marvin.netwinder.org>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,72 +32,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 8/10/07, Ralph Siemsen <ralphs@netwinder.org> wrote:
-> On Fri, Aug 10, 2007 at 10:20:49AM -0400, James Olin Oden wrote:
-> >
-> > So is there a way to tell physmap this information when you load it,
-> > rather than have it hard coded in the kernel?  Or am I
-> > misunderstanding things?
->
-> Some of the physmap variants obtain the information from (say) the
-> BIOS or OpenFirmware.  It would be fairly trivial to make physmap
-> take module parameters that you pass at modprobe/insmod time.  The
-> reason this isn't done is because most users are trying to boot off
-> the flash chip (on embedded systems), so its too late... you have to
-> provide the address at compile time, or query the firmware.
-If I get it working with my test system then I'll likely generate said patch.
+Good theory.  The thing that gets me is that I see this same error when
+I fdisk a device like /dev/sda1 in place of /dev/sda.  Is it possible
+that the nftl driver is handing out the wrong partition information?  Is
+there a way that I can know for sure that the device was formatted
+correctly by the nftl driver?
 
-<snip>
-> So the kernel must be told where to go looking for flash chips.  It will
-> then use the code in jedec_probe (or cfi_probe for CFI-compliant chips)
-> to identify any chip at the specified address.  It will do so once at
-> the beginning of the address/size you specified.  If a device is found,
-> but is smaller than the size you specified, then the kernel will try to
-> probe a second time right after the first device ends.  This way it will
-> find numerous chips that are contiguous in the memory space.
->
-I understand now.
+I'm having this same problem with the MD-2800-D08 and MD-2202-D32-X.
 
-> > Yeah your presumption is correct.  I think what the FAQ needs is some
-> > question like:
-> >
-> >    I have flash device X used for BIOS, what do I need to do to update my BIOS?
-> >
-> > or even:
-> >
-> >   How do I update my BIOS with MTD?
->
-> I think this is (currently) a fairly uncommon situation.  Most of the
-> MTD users are working in embedded systems where the entire operating
-> system (kernel, userspace and all) lives in the flash.  They have to
-> get MTD running really early on in their development cycle, eg. as
-> part of bringing up the kernel on the board, while adjusting IRQs and
-> such things.  Relatively few people have a fully-working PC that boots
-> where they later decide they want to access some on-board flash.
-Presently, system manufacturers excpect you to update your BIOS from
-within windows or DOS, which too me is just kind of silly, not easily
-automated (which holds more weight than the fact that I think its kind
-of silly (-;).   As it turns out, MTD has support for some of the
-firmware hubs (flash chips) that are used by BIOS's, so theoretically
-it should be able to be used in this non-embeded environment way.
+If you development folks have any suggestions I'm game.  Please
+enlighten me!
 
+Donald Green wrote:
+> I've put the config put up. It is for a 2.6.20 kernel. I won't have a
+> chance to boot the image you made until sometime early next week but I'd
+> be happy to give it a try. It sounds like you had the same experience I
+> did. I loaded the nftl driver and it formatted the DOC. I was theorizing
+> that this creates an incorrect bad sector map and that that could be
+> corrected by using dformat. My process fails when I try to complete the
+> fdisk formatting operation by commiting the changes with the w command.
 >
-> I think you hit the nail on the hammer there.  I should probably mention
-> that commodity PC hardware may have some additional locking to prevent
-> users from accidentally erasing their BIOS.  It could come in the form of
-> a GPIO signal that has to be toggled, etc.  If such hardware is present,
-> it will likely be motherboard-specific, and it would need to be handled
-> in a customized variant of the mapping driver.  Another issue could be
-> the "window size", eg. you might only see 64kB of the flash chip even
-> when the device is larger due to how the southbridge is setup.
 >
-Bummer.  It sounds like they are going out of their way to make it
-hard to automate BIOS updates.   That explanation may explain why our
-current proprietary driver did not work on a system that had the same
-south bridge and firmware hub, but was not built by us.
-
-> I am guessing the LinuxBIOS folks have dealt with these sorts of issues,
-> perhaps worth a look to see what they've come up with.
-I will check that out.
-
-Thank you...james
+> -Don
+>
+> -----Original Message-----
+> From: Andy Kennedy [mailto:akennedy@techmoninc.com] 
+> Sent: Friday, August 10, 2007 10:57 AM
+> To: Donald Green
+> Subject: Re: [Fwd: M-Sys drivers]
+>
+> Donald Green wrote:
+>   
+>> Hi Andy:
+>>
+>>
+>>   The kernel I have in the iso I'm sending is built for a Geode and
+>>     
+> uses
+>   
+>> the natsemi Ethernet driver, will these settings work? If not let me
+>> know what processor and Ethernet driver your target has and I can
+>> rebuild it.
+>>
+>> -Don
+>>   
+>>     
+>
+> I'm sure that that will work. . . it isn't much different from the 
+> Pentium-MMX (they're all pretty much the same until you get to the PII 
+> anyways).  There would probably be some obscure functionality 
+> differences, but if I can get a good kernel config - hey, that's the 
+> price I'm willing to pay.  Can you also send me a config file and 
+> version of the kernel you have?
+>
+> If you'd be willing to try it, I'd like for you to attempt to load my 
+> floppy on your computer to see if you can mount the nftla1 -- one issue,
+>
+> however, is that when I load the nftl driver (I have it as a module in 
+> the initrd), it formats the DOC -- which may blow your system away. . . 
+> but if you are willing to take the risk I'd like to know if my 
+> configuration works.  It is kernel 2.6.22.1 without any patches and then
+>
+> there's BusyBox.  I don't know the BusyBox version but if you boot the 
+> disk, you'll see the version.  Booting the disk is harmless -- it is 
+> just loading that module that seems to really hose up everything.
+>
+> Thanks again for your help!
+> Andy
+>
+>
+>
+>   
