@@ -1,25 +1,18 @@
-Received: from mf00.sitadelle.com ([212.94.174.67] helo=smtp.cegetel.net)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJVar-0000Q6-6X
-	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 10:36:04 -0400
-Received: from [10.1.111.252] (80-124-168-196.adslgp.cegetel.net
-	[80.124.168.196])
-	by smtp.cegetel.net (Postfix) with ESMTP id B26821A41B1
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Aug 2007 16:35:58 +0200 (CEST)
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: mkfs.jffs2.c not compiling for arm
-Date: Fri, 10 Aug 2007 16:35:50 +0200
-References: <200708091734.24054.schane@osmozis.com>
-	<loom.20070810T160837-882@post.gmane.org>
-In-Reply-To: <loom.20070810T160837-882@post.gmane.org>
+Date: Fri, 10 Aug 2007 11:53:53 -0400
+From: Ralph Siemsen <ralphs@netwinder.org>
+To: James Olin Oden <james.oden@gmail.com>
+Subject: Re: What is the correct way to make an mtdchar device available?
+Message-ID: <20070810155353.GA4326@marvin.netwinder.org>
+References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
+	<20070808192832.GA21249@marvin.netwinder.org>
+	<ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
+	<20070810134527.GA31564@marvin.netwinder.org>
+	<ac921f990708100720g77641a19t20d161f72f5ceb56@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200708101635.51277.schane@osmozis.com>
+In-Reply-To: <ac921f990708100720g77641a19t20d161f72f5ceb56@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,69 +22,76 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Mike,
-
-On the x-86 host machine running linux, I have installed the scratchbox cro=
-ss=20
-compiler toolchain that includes the arm version of zlib.h under=20
-
-/scratchbox/host_shared/include/linux/zlib.h
-/scratchbox/host_shared/include/zlib.h
-/scratchbox/compilers/cs2005q3.2-glibc-arm/usr/include/linux/zlib.h
-/scratchbox/compilers/cs2005q3.2-glibc-arm/arm-none-linux-gnueabi/sys-inclu=
-de/linux/zlib.h
-
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/usr/include/linux/zlib.h =
-=A0 =A0
-
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/arm-linux/sys-include/linux=
-/zlib.h
-/scratchbox/users/sara/targets/COM-X270/usr/include/linux/zlib.h
-
-Still, it coudln't find zlib.h. Is there a way to specify the path of the=20
-usr/include/linux/zlib.h in the make option ?
-
-Thanks
-Sara
-
-
-
-Le Vendredi 10 Ao=FBt 2007 16:10, MikeW a =E9crit=A0:
-> Saravanan Chanemouganandam <schane <at> osmozis.com> writes:
-> > Hello,
-> >
-> > I am a newbie to use MTD tools. I have downloaded the latest version of
-> > the mtd tools and when I try to cross compile mtd-utils-1.0.0 for the
-> > Xscale platform, I am getting the following make error.
-> >
-> > sara:/home/sara/mtd-utils-1.0.0#make
-> > CROSS=3D/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
-> > ....
-> > /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc
-> > -I./include -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g
-> > -Wp,-MD,.mkfs.jffs2.c.dep mkfs.jffs2.c:68:18: zlib.h : No such file or
-> > directory
-> > make: *** [mkfs.jffs2.o] Error 1
-> > rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o
-> > doc_loadbios.o
-> >
-> > The host development machine has already installed with supporting Zlib
-> > libraries but still it couldn't find the file.
-> >
-> > Can anyone precise me, is there any missing build options ?
-> >
-> > thanks
-> > Sara
+On Fri, Aug 10, 2007 at 10:20:49AM -0400, James Olin Oden wrote:
 >
-> Your crosscompiler toolchain ought to have supplied this file
-> in one of its include directories.
->
-> For example using ELDK/mips it's in /opt/eldk/mips_4KCle/usr/include .
->
-> Regards,
-> MikeW
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> So is there a way to tell physmap this information when you load it,
+> rather than have it hard coded in the kernel?  Or am I
+> misunderstanding things?
+
+Some of the physmap variants obtain the information from (say) the
+BIOS or OpenFirmware.  It would be fairly trivial to make physmap
+take module parameters that you pass at modprobe/insmod time.  The
+reason this isn't done is because most users are trying to boot off
+the flash chip (on embedded systems), so its too late... you have to
+provide the address at compile time, or query the firmware.
+
+> Also, what roll then does the code in jedec_probe play in all this?
+> My simple fantasy was that since there was "probe" info for my two
+> flash devices (i.e. the two I needed to support) I should only need to
+> load jedec_probe and mtdchar.  But that was not the case...so where is
+> my thinking wrong?
+
+You've got an address space of 2^32 bytes, not counting larger 36/64 bit
+possibilities, extra memory spaces hiding behind bridges, etc.  It is 
+just not feasible to proble them all for flash devices.  And there is
+no other way to enumerate flash chips on a bus (unlike say PCI or USB,
+where you can walk through each device in turn).
+
+So the kernel must be told where to go looking for flash chips.  It will
+then use the code in jedec_probe (or cfi_probe for CFI-compliant chips)
+to identify any chip at the specified address.  It will do so once at
+the beginning of the address/size you specified.  If a device is found,
+but is smaller than the size you specified, then the kernel will try to
+probe a second time right after the first device ends.  This way it will
+find numerous chips that are contiguous in the memory space.
+
+> Yeah your presumption is correct.  I think what the FAQ needs is some
+> question like:
+> 
+>    I have flash device X used for BIOS, what do I need to do to update my BIOS?
+> 
+> or even:
+> 
+>   How do I update my BIOS with MTD?
+
+I think this is (currently) a fairly uncommon situation.  Most of the
+MTD users are working in embedded systems where the entire operating
+system (kernel, userspace and all) lives in the flash.  They have to
+get MTD running really early on in their development cycle, eg. as 
+part of bringing up the kernel on the board, while adjusting IRQs and
+such things.  Relatively few people have a fully-working PC that boots
+where they later decide they want to access some on-board flash.
+
+> The crazy part is once I get the thing detected and the mtdchar device
+> up its, a very simple process.  If I get this going at some point I am
+> definately willing to provide the text for that part of the FAQ.   I
+> think the issue I am having is that though I'm comfortable in the
+> kernel and with programing in linux, I'm not an embedded developer and
+> most of the docs are geared towards "so you want to put a filesystem
+> on this flash device" or "so you want to boot from this flash device",
+> but the subsystem at least as much as I can understand is clearly
+> suitable for the "so you want to update your bios" users.
+
+I think you hit the nail on the hammer there.  I should probably mention
+that commodity PC hardware may have some additional locking to prevent
+users from accidentally erasing their BIOS.  It could come in the form of
+a GPIO signal that has to be toggled, etc.  If such hardware is present,
+it will likely be motherboard-specific, and it would need to be handled
+in a customized variant of the mapping driver.  Another issue could be
+the "window size", eg. you might only see 64kB of the flash chip even
+when the device is larger due to how the southbridge is setup.
+
+I am guessing the LinuxBIOS folks have dealt with these sorts of issues,
+perhaps worth a look to see what they've come up with.
+
+-R
