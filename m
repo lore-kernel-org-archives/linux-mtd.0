@@ -1,25 +1,25 @@
-Received: from wx-out-0506.google.com ([66.249.82.226])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IJVMA-00005o-A0
-	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 10:20:51 -0400
-Received: by wx-out-0506.google.com with SMTP id s7so607222wxc
+Received: from mf00.sitadelle.com ([212.94.174.67] helo=smtp.cegetel.net)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IJVar-0000Q6-6X
+	for linux-mtd@lists.infradead.org; Fri, 10 Aug 2007 10:36:04 -0400
+Received: from [10.1.111.252] (80-124-168-196.adslgp.cegetel.net
+	[80.124.168.196])
+	by smtp.cegetel.net (Postfix) with ESMTP id B26821A41B1
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 10 Aug 2007 07:20:49 -0700 (PDT)
-Message-ID: <ac921f990708100720g77641a19t20d161f72f5ceb56@mail.gmail.com>
-Date: Fri, 10 Aug 2007 10:20:49 -0400
-From: "James Olin Oden" <james.oden@gmail.com>
-To: "Ralph Siemsen" <ralphs@netwinder.org>
-Subject: Re: What is the correct way to make an mtdchar device available?
-In-Reply-To: <20070810134527.GA31564@marvin.netwinder.org>
+	Fri, 10 Aug 2007 16:35:58 +0200 (CEST)
+From: Saravanan Chanemouganandam <schane@osmozis.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: mkfs.jffs2.c not compiling for arm
+Date: Fri, 10 Aug 2007 16:35:50 +0200
+References: <200708091734.24054.schane@osmozis.com>
+	<loom.20070810T160837-882@post.gmane.org>
+In-Reply-To: <loom.20070810T160837-882@post.gmane.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-References: <ac921f990708081050p3d71ea85kf30418f6aad88ce2@mail.gmail.com>
-	<20070808192832.GA21249@marvin.netwinder.org>
-	<ac921f990708091203s4199fc67w751bc0922f65be5c@mail.gmail.com>
-	<20070810134527.GA31564@marvin.netwinder.org>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200708101635.51277.schane@osmozis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,59 +29,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> When you have multiple chips arranged contiguously, then you just give
-> it the beginning address of the block, and the total size.  The code
-> does multiple probes in this region to identify the individual flash
-> chips.  Interleaved devices (eg. two x16 devices on a 32-bit bus)
-> are also handled the same way.
+Hello Mike,
+
+On the x-86 host machine running linux, I have installed the scratchbox cro=
+ss=20
+compiler toolchain that includes the arm version of zlib.h under=20
+
+/scratchbox/host_shared/include/linux/zlib.h
+/scratchbox/host_shared/include/zlib.h
+/scratchbox/compilers/cs2005q3.2-glibc-arm/usr/include/linux/zlib.h
+/scratchbox/compilers/cs2005q3.2-glibc-arm/arm-none-linux-gnueabi/sys-inclu=
+de/linux/zlib.h
+
+/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/usr/include/linux/zlib.h =
+=A0 =A0
+
+/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/arm-linux/sys-include/linux=
+/zlib.h
+/scratchbox/users/sara/targets/COM-X270/usr/include/linux/zlib.h
+
+Still, it coudln't find zlib.h. Is there a way to specify the path of the=20
+usr/include/linux/zlib.h in the make option ?
+
+Thanks
+Sara
+
+
+
+Le Vendredi 10 Ao=FBt 2007 16:10, MikeW a =E9crit=A0:
+> Saravanan Chanemouganandam <schane <at> osmozis.com> writes:
+> > Hello,
+> >
+> > I am a newbie to use MTD tools. I have downloaded the latest version of
+> > the mtd tools and when I try to cross compile mtd-utils-1.0.0 for the
+> > Xscale platform, I am getting the following make error.
+> >
+> > sara:/home/sara/mtd-utils-1.0.0#make
+> > CROSS=3D/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
+> > ....
+> > /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc
+> > -I./include -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g
+> > -Wp,-MD,.mkfs.jffs2.c.dep mkfs.jffs2.c:68:18: zlib.h : No such file or
+> > directory
+> > make: *** [mkfs.jffs2.o] Error 1
+> > rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o
+> > doc_loadbios.o
+> >
+> > The host development machine has already installed with supporting Zlib
+> > libraries but still it couldn't find the file.
+> >
+> > Can anyone precise me, is there any missing build options ?
+> >
+> > thanks
+> > Sara
 >
-> Flash is often physically located at the very top, or very bottom, of
-> the memory map.  So if you have say 16MiB of flash, chances are that it
-> is mapped at address 0xff000000 with a size of 0x01000000.
+> Your crosscompiler toolchain ought to have supplied this file
+> in one of its include directories.
 >
-So is there a way to tell physmap this information when you load it,
-rather than have it hard coded in the kernel?  Or am I
-misunderstanding things?
-
-> In the drivers/mtd/maps directory you will see a large number of very
-> similar mapping drivers for various boards.  They differ in how they
-> get the address/size parameters-- some are hardcoded for specific boards,
-> others read information dynamically from the bootloader, etc.  Many of
-> them also handle partitioning of the flash -- splitting physical devices
-> into multiple logical ones, much like you'd do on a hard disk.
-So does this mean I would need to create one of these drivers for each
-of my firmware hub types?
-
-Also, what roll then does the code in jedec_probe play in all this?
-My simple fantasy was that since there was "probe" info for my two
-flash devices (i.e. the two I needed to support) I should only need to
-load jedec_probe and mtdchar.  But that was not the case...so where is
-my thinking wrong?
-
+> For example using ELDK/mips it's in /opt/eldk/mips_4KCle/usr/include .
 >
-> > Also, is there anything that explains what one might need to do in the
-> > context of simply making a flash chip available for reading and
-> > writing through mtdchar mtdblock?
+> Regards,
+> MikeW
 >
-> I presume you've see the FAQ and the general documention on the
-> www.linux-mtd.infradead.org web site?
-Yeah your presumption is correct.  I think what the FAQ needs is some
-question like:
-
-   I have flash device X used for BIOS, what do I need to do to update my BIOS?
-
-or even:
-
-  How do I update my BIOS with MTD?
-
-The crazy part is once I get the thing detected and the mtdchar device
-up its, a very simple process.  If I get this going at some point I am
-definately willing to provide the text for that part of the FAQ.   I
-think the issue I am having is that though I'm comfortable in the
-kernel and with programing in linux, I'm not an embedded developer and
-most of the docs are geared towards "so you want to put a filesystem
-on this flash device" or "so you want to boot from this flash device",
-but the subsystem at least as much as I can understand is clearly
-suitable for the "so you want to update your bios" users.
-
-Thanks...james
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
