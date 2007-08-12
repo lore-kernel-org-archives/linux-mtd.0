@@ -1,12 +1,18 @@
-From: Christopher Louisa <lchristopher002@yandex.ru>
-Subject: =?KOI8-R?B?UmVwbHkgZm9yIGFzc2lzdGFuY2UuRnJvbSBMb3Vpc2Ev79TXxdTJ1NggzsEgYXNzaXN0YW5jZS5Gcm9t?=
-	=?KOI8-R?B?IOzVydrB?=
+Received: from mail.actcom.co.il ([192.114.47.66] helo=smtp4.actcom.co.il)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IK5r3-00017l-4N
+	for linux-mtd@lists.infradead.org; Sun, 12 Aug 2007 01:19:10 -0400
+Message-ID: <46BE971D.1050305@compulab.co.il>
+Date: Sun, 12 Aug 2007 08:14:05 +0300
+From: Mike Rapoport <mike@compulab.co.il>
 MIME-Version: 1.0
-Message-Id: <577881186862066@webmail28.yandex.ru>
-Date: Sat, 11 Aug 2007 23:54:26 +0400
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=KOI8-R
-To: unlisted-recipients:; (no To-header on input)
+To: Saravanan Chanemouganandam <schane@osmozis.com>
+Subject: Re: mkfs.jffs2.c not compiling for arm
+References: <200708091734.24054.schane@osmozis.com>
+In-Reply-To: <200708091734.24054.schane@osmozis.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,76 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Translate and Reply to lschristopher0@hotmail.com
+Saravanan Chanemouganandam wrote:
+> Hello,
+> 
+> I am a newbie to use MTD tools. I have downloaded the latest version of the 
+> mtd tools and when I try to cross compile mtd-utils-1.0.0 for the Xscale 
+> platform, I am getting the following make error. 
+> 
+> sara:/home/sara/mtd-utils-1.0.0#make 
+> CROSS=/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
+> ....
+> /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./include 
+> -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
+> mkfs.jffs2.c:68:18: zlib.h : No such file or directory
+> make: *** [mkfs.jffs2.o] Error 1
+> rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o 
+> doc_loadbios.o
+> 
+> The host development machine has already installed with supporting Zlib 
+> libraries but still it couldn't find the file. 
+> 
+> Can anyone precise me, is there any missing build options ?
+
+If you are using scratchbox, it might be better to compile the mtd-utils from 
+within the scratchbox environment.
+
+> thanks
+> Sara
+> 
+>  
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
 
-
-От : мисс Л. Б. КРИСТОФЕР миссионерских кругах A15 церкви дороге АККРА ГАНА. 
-
-
-
-
-
- 
-
-
-
-
-
-Приветствую Вас, Я считаю хорошим Вас сегодня я ознакомился с вашей добавить в Интернет зная тихой, что этот контакт будет довести прочные отношения. 
-
-
-
-
-
- 
-
-Что касается вашей репутации и сотрудничества верующего в Бога, который не разочарует меня, ни опровергнуть меня в вере Я направляю это письмо поможет Вам. Я мисс Луиза. Кристофер только дочь Mr.Christopher из Республики Зимбабве в желание получить кого-нибудь, кто будет защитить мое интерес, что моего младшего брата (Луи), и это money.Briefly, отца нашего Г-н Кристофер был Gold и какао торговца, который базируется в Ломе Того, Абиджан Кот д'Ивуар, и отделение здесь, в Ганы Аккре. Мой отец был богатым Золото / какао торгового бизнеса, который во многих странах Европы, Америки и Азии countries.
-
-
-
- 
-
-
-
-
-
-According моего отца, моей матери Умер, когда я был около шести лет, это означает, что я даже не знала моя мать очень well.The история о том, что мой отец был г-н Кристофер Отравлены до смерти его деловые партнеры, и он умер в частной больнице здесь в Аккре Гана. Но когда он уже был готов умереть, он призвал нас рядом со своим больным постели и сказал нам, что он депонировал сумму двадцать миллионов государство США (долл. США 20M), в местном банке здесь, в Аккре, экономической и административной столице Республики Гана. Эти деньги были сохранены для нас во имя Мое, его единственная дочь. 
-
-
-
- 
-
-
-
-
-
-Сейчас я первый год студент управления бизнесом в одной из университета here.My Единственная проблема сейчас , с момента моего отца были отравлены до смерти его деловые партнеры, Я даже не доверие любому другому лицу, в том числе и здесь отца моего братьев и сестер. 
-
-
-
-
-
- 
-
-Прямо сейчас, я хочу, чтобы вы помочь нам в следующих способов : 1) Я хочу вам представить личную / компании банковские счета, где эту сумму здесь (долл. США 20M) может быть перевод. 2) Вы собираетесь стать менеджером этого фонда, и также нашим личным опекуном, пока мы завершили нашу исследований. 3) Вы собираетесь приобрести признания нас продолжать наши исследования в одном из известных университетов в вашей страны. 4) Вы собираетесь получать 30% от общей суммы за счет этой передачи. 5) Вы должны подготовить немедленно принять рабочий визит в АККРА ГАНА здесь, так что мне и вам могут видеть друг друга, и мы сможем сделать передачу в то же время, и я пойду обратно с вами в вашей стране. Мы надеемся на получение вашего скорейшего ответа, так как она будет стимулировать нас, остановить налаживания новых контактов, как Он считает, что с этой темой вопросов, так что мы будем предоставлять Вам с частного телефона, где вы можете доехать до нас прямые, на получение положительного ответа. Для Вашего сведения, это место мы сейчас находиться дома церкви сестра, которая, увидев наши условия и решили дом для нас время. Этот бизнес весьма конфиденциальные, потому что никто из нашего покойного отца, братьев и сестер знает об этой сделке. Ожидание услышать от Вас в ближайшее время. Спасибо за понимание, мисс причиной Кристофер. 
-
-
-
-
-
- 
-
-
-
-
-
-В настоящее время я по-русски язык school.I нужна ваша помощь. 
-
-
-
-
-
- 
-
-Для меня читать вашу электронную почту, пожалуйста, ответьте на lschristopher0@hotmail.com по соображениям безопасности.
+-- 
+Sincerely yours,
+Mike.
