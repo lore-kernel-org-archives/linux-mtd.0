@@ -1,25 +1,17 @@
-Received: from mf01.sitadelle.com ([212.94.174.68] helo=smtp.cegetel.net)
+Received: from wip-ectls-mx3.wipro.com ([203.91.193.23])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IKVjX-0008Iu-IB
-	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 04:57:10 -0400
-Received: from [10.1.111.252] (80-124-168-196.adslgp.cegetel.net
-	[80.124.168.196])
-	by smtp.cegetel.net (Postfix) with ESMTP id 885D76A0133
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Aug 2007 10:57:03 +0200 (CEST)
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: mkfs.jffs2.c not compiling for arm
-Date: Mon, 13 Aug 2007 10:56:56 +0200
-References: <200708091734.24054.schane@osmozis.com>
-	<46BE971D.1050305@compulab.co.il>
-In-Reply-To: <46BE971D.1050305@compulab.co.il>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200708131056.57824.schane@osmozis.com>
+	id 1IKWW6-0000Zx-Ik
+	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 05:47:22 -0400
+Subject: [KJ] replacing kmalloc with kzalloc in drivers/mtd/chips/cfi_probe.c
+From: Surya Prabhakar N <surya.prabhakar@wipro.com>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Mon, 13 Aug 2007 15:16:47 +0530
+Message-Id: <1186998407.29518.2.camel@bluegenie>
+Mime-Version: 1.0
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>
+Reply-To: surya.prabhakar@wipro.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,114 +21,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Mike,
 
-I have tried to compile the mtd-utils from within the scratchbox environeme=
-nt.=20
-Still the problem exists with the Zlib.h file.
-
-[sbox-COM-X270: ~] > wget=20
-ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.0.0.tar.gz
-[sbox-COM-X270: ~] > tar -xvzf mtd-utils-1.0.0.tar.gz
-[sbox-COM-X270: ~] > cd mtd-utils-1.0.0
-
-[sbox-COM-X270: ~/mtd-utils-1.0.0] > make=20
-CROSS=3D/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
-
-Makefile:34: no file name for `-include'
-
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o ftl_format.o ftl_format.c -g -Wp,-MD,.ftl_format.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-ftl_format ftl_format.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o flash_erase.oflash_erase.c -g -Wp,-MD,.flash_erase.c.d=
-ep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-flash_erase flash_erase.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o crc32.o crc32.c -g -Wp,-MD,.crc32.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o flash_eraseall.o flash_eraseall.c -g=20
-=2DWp,-MD,.flash_eraseall.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -o=20
-flash_eraseall crc32.o flash_eraseall.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o nanddump.o nanddump.c -g -Wp,-MD,.nanddump.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-nanddump nanddump.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o doc_loadbios.o doc_loadbios.c -g=20
-=2DWp,-MD,.doc_loadbios.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-doc_loadbios doc_loadbios.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o mkfs.jffs.o mkfs.jffs.c -g -Wp,-MD,.mkfs.jffs.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-mkfs.jffs mkfs.jffs.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o ftl_check.o ftl_check.c -g -Wp,-MD,.ftl_check.c.dep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc  -g -o=20
-ftl_check ftl_check.o
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o compr_rtime.ocompr_rtime.c -g -Wp,-MD,.compr_rtime.c.d=
-ep
-/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc -I./inclu=
-de=20
-=2DO2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g -Wp,-MD,.mkfs.jffs2.c.dep
-mkfs.jffs2.c:68:18: zlib.h: No such file or directory
-make: *** [mkfs.jffs2.o] Error 1
-rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o=20
-doc_loadbios.o
-[sbox-COM-X270: ~/mtd-utils-1.0.0] >
+Hi,
+   Replacing kmalloc with kzalloc and cleaning up memset in 
+arch/i386/kernel/io_apic.c
 
 
-Thanks
-Sara
-Osmozis
+Signed-off-by: Surya Prabhakar <surya.prabhakar@wipro.com>
+---
+
+diff --git a/drivers/mtd/chips/cfi_probe.c b/drivers/mtd/chips/cfi_probe.c
+index 60e11a0..efb51f7 100644
+--- a/drivers/mtd/chips/cfi_probe.c
++++ b/drivers/mtd/chips/cfi_probe.c
+@@ -203,14 +203,12 @@ static int __xipram cfi_chip_setup(struct map_info *map,
+ 	if (!num_erase_regions)
+ 		return 0;
+ 
+-	cfi->cfiq = kmalloc(sizeof(struct cfi_ident) + num_erase_regions * 4, GFP_KERNEL);
++	cfi->cfiq = kzalloc(sizeof(struct cfi_ident) + num_erase_regions * 4, GFP_KERNEL);
+ 	if (!cfi->cfiq) {
+ 		printk(KERN_WARNING "%s: kmalloc failed for CFI ident structure\n", map->name);
+ 		return 0;
+ 	}
+ 
+-	memset(cfi->cfiq,0,sizeof(struct cfi_ident));
+-
+ 	cfi->cfi_mode = CFI_MODE_CFI;
+ 
+ 	/* Read the CFI info structure */
+
+--
+thanks 
+surya.
 
 
-Le Dimanche 12 Ao=FBt 2007 07:14, Mike Rapoport a =E9crit=A0:
-> Saravanan Chanemouganandam wrote:
-> > Hello,
-> >
-> > I am a newbie to use MTD tools. I have downloaded the latest version of
-> > the mtd tools and when I try to cross compile mtd-utils-1.0.0 for the
-> > Xscale platform, I am getting the following make error.
-> >
-> > sara:/home/sara/mtd-utils-1.0.0#make
-> > CROSS=3D/scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-
-> > ....
-> > /scratchbox/compilers/arm-gcc-3.3.4-glibc-2.3.2/bin/arm-linux-gcc
-> > -I./include -O2 -Wall -g -c -o mkfs.jffs2.o mkfs.jffs2.c -g
-> > -Wp,-MD,.mkfs.jffs2.c.dep mkfs.jffs2.c:68:18: zlib.h : No such file or
-> > directory
-> > make: *** [mkfs.jffs2.o] Error 1
-> > rm ftl_check.o mkfs.jffs.o flash_erase.o ftl_format.o nanddump.o
-> > doc_loadbios.o
-> >
-> > The host development machine has already installed with supporting Zlib
-> > libraries but still it couldn't find the file.
-> >
-> > Can anyone precise me, is there any missing build options ?
->
-> If you are using scratchbox, it might be better to compile the mtd-utils
-> from within the scratchbox environment.
->
-> > thanks
-> > Sara
-> >
-> >
-> >
-> > ______________________________________________________
-> > Linux MTD discussion mailing list
-> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments. 
+
+WARNING: Computer viruses can be transmitted via email. The recipient should check this email and any attachments for the presence of viruses. The company accepts no liability for any damage caused by any virus transmitted by this email.
+ 
+www.wipro.com
