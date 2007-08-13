@@ -1,16 +1,17 @@
 Received: from wip-ectls-mx3.wipro.com ([203.91.193.23])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IKWW6-0000Zx-Ik
-	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 05:47:22 -0400
-Subject: [KJ] replacing kmalloc with kzalloc in drivers/mtd/chips/cfi_probe.c
+	id 1IKWYj-0000mf-5A
+	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 05:50:19 -0400
+Subject: [KJ-resend]replacing kmalloc with kzalloc in
+	drivers/mtd/chips/cfi_probe.c
 From: Surya Prabhakar N <surya.prabhakar@wipro.com>
 To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Date: Mon, 13 Aug 2007 15:16:47 +0530
-Message-Id: <1186998407.29518.2.camel@bluegenie>
+Date: Mon, 13 Aug 2007 15:19:33 +0530
+Message-Id: <1186998573.29518.6.camel@bluegenie>
 Mime-Version: 1.0
-Cc: Linux Kernel <linux-kernel@vger.kernel.org>
+Cc: linux-kernel@vger.kernel.org
 Reply-To: surya.prabhakar@wipro.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,8 +25,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
    Replacing kmalloc with kzalloc and cleaning up memset in 
-arch/i386/kernel/io_apic.c
-
+drivers/mtd/chips/cfi_probe.c. Kindly ignore the previous similar patch.
 
 Signed-off-by: Surya Prabhakar <surya.prabhakar@wipro.com>
 ---
@@ -51,8 +51,7 @@ index 60e11a0..efb51f7 100644
  
  	/* Read the CFI info structure */
 
---
-thanks 
+thanks
 surya.
 
 
