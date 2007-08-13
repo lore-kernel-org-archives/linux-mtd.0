@@ -1,17 +1,17 @@
 Received: from dsl022.labridge.com ([206.117.136.22] helo=perches.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IKTUd-0005WB-TH
-	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 07:33:36 +0100
-Date: Sun, 12 Aug 2007 23:33:15 -0700
+	id 1IKTWF-0005a6-Vx
+	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 07:35:17 +0100
+Date: Sun, 12 Aug 2007 23:33:54 -0700
 From: joe@perches.com
 To: torvalds@linux-foundation.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kyungmin.park@samsung.com,
+	linux-kernel@vger.kernel.org, joern@wohnheim.fh-wedel.de,
 	akpm@linux-foundation.org
-Subject: [PATCH] [357/2many] MAINTAINERS - ONENAND FLASH DRIVER
-Message-ID: <46bffb2b.uRwhdNMmFUwGYeq3%joe@perches.com>
+Subject: [PATCH] [377/2many] MAINTAINERS - PHRAM MTD DRIVER
+Message-ID: <46bffb52.iWg07DXAXPcVIyVe%joe@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,15 +26,14 @@ Add file pattern to MAINTAINER entry
 Signed-off-by: Joe Perches <joe@perches.com>
 
 diff --git a/MAINTAINERS b/MAINTAINERS
-index dbe6a36..17970b0 100644
+index b81c8bc..e165480 100644
 --- a/MAINTAINERS
 +++ b/MAINTAINERS
-@@ -3432,6 +3432,8 @@ P:	Kyungmin Park
- M:	kyungmin.park@samsung.com
+@@ -3621,6 +3621,7 @@ P:	Jörn Engel
+ M:	joern@wh.fh-wedel.de
  L:	linux-mtd@lists.infradead.org
  S:	Maintained
-+F:	drivers/mtd/onenand/
-+F:	include/linux/mtd/onenand*.h
++F:	drivers/mtd/devices/phram.c
  
- ONSTREAM SCSI TAPE DRIVER
- P:	Willem Riede
+ PKTCDVD DRIVER
+ P:	Peter Osterlund
