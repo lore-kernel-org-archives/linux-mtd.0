@@ -1,30 +1,20 @@
-Received: from fk-out-0910.google.com ([209.85.128.190])
+Received: from emailhub.stusta.mhn.de ([141.84.69.5]
+	helo=mailhub.stusta.mhn.de)
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IKeKU-0007VC-Sw
-	for linux-mtd@lists.infradead.org; Mon, 13 Aug 2007 14:07:53 -0400
-Received: by fk-out-0910.google.com with SMTP id 19so2634468fkr
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 13 Aug 2007 11:07:49 -0700 (PDT)
-Message-ID: <46C09C23.8070906@googlemail.com>
-Date: Mon, 13 Aug 2007 20:00:03 +0200
+	id 1IL3rE-0000GC-54
+	for linux-mtd@lists.infradead.org; Tue, 14 Aug 2007 17:23:26 -0400
+Date: Tue, 14 Aug 2007 23:23:11 +0200
+From: Adrian Bunk <bunk@kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	David Howells <dhowells@redhat.com>, dwmw2@infradead.org
+Subject: [-mm patch] drivers/mtd/mtdbdi.c is no longer an own module
+Message-ID: <20070814212311.GL18945@stusta.de>
+References: <20070809015106.cd0bfc53.akpm@linux-foundation.org>
 MIME-Version: 1.0
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [2/2] 2.6.23-rc3: known regressions with patches
-References: <46C09B4D.6040907@googlemail.com>
-In-Reply-To: <46C09B4D.6040907@googlemail.com>
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: 7bit
-From: Michal Piotrowski <michal.k.k.piotrowski@gmail.com>
-Cc: Dan Zwell <dzwell@gmail.com>, Tony Luck <tony.luck@intel.com>,
-	Florian Lohoff <flo@rfc822.org>,
-	linux-usb-devel@lists.sourceforge.net, Greg KH <gregkh@suse.de>,
-	Jan Dittmer <jdi@l4x.org>, Ingo Molnar <mingo@elte.hu>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Netdev <netdev@vger.kernel.org>,
-	Alan Stern <stern@rowland.harvard.edu>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>, Thomas Renninger <trenn@suse.de>,
-	Stephen Hemminger <shemminger@osdl.org>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20070809015106.cd0bfc53.akpm@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,85 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+mtdbdi.c is now in the same module as mtdcore.c
 
-Here is a list of some known regressions in 2.6.23-rc3
-with patches available.
+Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
-Feel free to add new regressions/remove fixed etc.
-http://kernelnewbies.org/known_regressions
+---
 
-List of Aces
+BTW: I'd even suggest merging mtdbdi.c into mtdcore.c since it only
+     contains these 3 small structs.
 
-Name                    Regressions fixed since 21-Jun-2007
-Adrian Bunk                            9
-Andi Kleen                             5
-Linus Torvalds                         5
-Andrew Morton                          4
-Al Viro                                3
-Cornelia Huck                          3
-Jens Axboe                             3
-Tejun Heo                              3
+ drivers/mtd/mtdbdi.c |    4 ----
+ 1 file changed, 4 deletions(-)
 
-
-
-Modpost
-
-Subject         : modpost bug breaks ia64 cross compilation
-References      : http://lkml.org/lkml/2007/7/27/30
-                  http://lkml.org/lkml/2007/7/27/418
-Last known good : ?
-Submitter       : Jan Dittmer <jdi@l4x.org>
-Caused-By       : Thomas Renninger <trenn@suse.de>
-                  commit 29b71a1ca74491fab9fed09e9d835d840d042690
-Handled-By      : ?
-Patch           : http://lkml.org/lkml/2007/8/2/211
-Status          : patch was suggested
-
-
-
-MTD
-
-Subject         : error: implicit declaration of function 'cfi_interleave'
-References      : http://lkml.org/lkml/2007/8/6/272
-Last known good : ?
-Submitter       : Ingo Molnar <mingo@elte.hu>
-Caused-By       : ?
-Handled-By      : David Woodhouse <dwmw2@infradead.org>
-Patch           : http://lkml.org/lkml/2007/8/9/586
-Status          : patch available
-
-
-
-Networking
-
-Subject         : sky2 boot crash in sky2_mac_intr
-References      : http://lkml.org/lkml/2007/7/24/91
-Last known good : ?
-Submitter       : Florian Lohoff <flo@rfc822.org>
-Caused-By       : 
-Handled-By      : Stephen Hemminger <shemminger@osdl.org>
-Patch           : http://marc.info/?l=linux-netdev&m=118651402523966&w=2
-Status          : patch available
-
-
-
-USB
-
-Subject         : USB hard disk problem due to "usb-storage: implement autosuspend" patch
-References      : http://lkml.org/lkml/2007/8/9/329
-Last known good : ?
-Submitter       : Dan Zwell <dzwell@gmail.com>
-Caused-By       : Alan Stern <stern@rowland.harvard.edu>
-                  commit 8dfe4b14869fd185ca25ee88b02ada58a3005eaf
-Handled-By      : Alan Stern <stern@rowland.harvard.edu>
-Status          : patch available
-
-
-
-Regards,
-Michal
-
---
-LOG
-http://www.stardust.webpages.pl/log/
+12a09e985ee2fe258cecfef9b811f9202ec87c67 
+diff --git a/drivers/mtd/mtdbdi.c b/drivers/mtd/mtdbdi.c
+index f9f8eef..ae2c06c 100644
+--- a/drivers/mtd/mtdbdi.c
++++ b/drivers/mtd/mtdbdi.c
+@@ -22,7 +22,6 @@
+ struct backing_dev_info mtd_bdi_unmappable = {
+ 	.capabilities	= BDI_CAP_MAP_COPY,
+ };
+-EXPORT_SYMBOL_GPL(mtd_bdi_unmappable);
+ 
+ /*
+  * backing device capabilities for R/O mappable devices (such as ROM)
+@@ -33,7 +32,6 @@ struct backing_dev_info mtd_bdi_ro_mappable = {
+ 	.capabilities	= (BDI_CAP_MAP_COPY | BDI_CAP_MAP_DIRECT |
+ 			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP),
+ };
+-EXPORT_SYMBOL_GPL(mtd_bdi_ro_mappable);
+ 
+ /*
+  * backing device capabilities for writable mappable devices (such as RAM)
+@@ -45,6 +43,4 @@ struct backing_dev_info mtd_bdi_rw_mappable = {
+ 			   BDI_CAP_EXEC_MAP | BDI_CAP_READ_MAP |
+ 			   BDI_CAP_WRITE_MAP),
+ };
+-EXPORT_SYMBOL_GPL(mtd_bdi_rw_mappable);
+ 
+-MODULE_LICENSE("GPL v2");
