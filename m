@@ -1,16 +1,17 @@
-Received: from web25502.mail.ukl.yahoo.com ([217.12.10.148])
-	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ILSHG-000719-Ma
-	for linux-mtd@lists.infradead.org; Wed, 15 Aug 2007 19:27:52 -0400
-Date: Thu, 16 Aug 2007 01:21:09 +0200 (CEST)
-From: <mailthrottle-mtd@yahoo.it>
-Subject: Trying to use DOC2000 on Debian
-To: linux-mtd@lists.infradead.org
+Received: from mx1.myoutlookonline.com ([69.25.74.51])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1ILbqA-0005WJ-Sl
+	for linux-mtd@lists.infradead.org; Thu, 16 Aug 2007 05:40:33 -0400
+From: "Raj Kumar Yadav" <ryadav@neomagic.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: Handling badblock in MTD
+Date: Thu, 16 Aug 2007 15:10:28 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <485972.3949.qm@web25502.mail.ukl.yahoo.com>
-Reply-To: mailthrottle-mtd@yahoo.it
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Message-ID: <SMTP012FlmmlQ080Gxw00004743@Mx1.myOutLookonline.com>
+Reply-To: ryadav@neomagic.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +21,88 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello to the list.
-
-I'm sorry to ask here but I could not find the answers
-by myself.
-I have a "native" dos formatted DOC2000, my first goal
-is access it from Linux.
-I guessed I have to create the necessary device node
-first so I created some of them (it seems MAKEDEV
-script in debian only provides mtdX devices, I added
-these by hand):
-
-mknod /dev/ftla b 44 0
-mknod /dev/ftla1 b 44 1
-mknod /dev/ftla2 b 44 2
-mknod /dev/ftla3 b 44 3
-mknod /dev/ftla4 b 44 4
-mknod /dev/nftla b 93 0
-mknod /dev/nftla1 b 93 1
-mknod /dev/nftla2 b 93 2
-mknod /dev/nftla3 b 93 3
-mknod /dev/nftla4 b 93 4
-
-Then I tried "modprobe diskonchip" and I saw some
-messages from which I guess the system recognized a
-DiskOnChip device.
-I could be happy now but when I try to mount
-/dev/nftla1 or fdisk /dev/nftla the system delay a
-while then prints some messages saying it is
-formatting some blocks (I'm sorry I can't reproduce
-the exact messages now).
-After this I cannot access the device anymore and if I
-reboot with a dos floppy disk I can see dos cannot
-find any partition on DOC2000, I have to create it and
-format it again.
-Can you help me to understand what is happening?
-It is possible to read the DOC "native" format using
-mtd drivers?
-I learn there are different format nftl/inftl but
-can't say which one is really used by the device,
-shoul I try to access it as inftl?
-
-I'm using debian stable (Etch) kernel 2.6.18.
-
-Thanks.
-
-Alessandro.
+Hi All,
 
 
+I am using ARM9 based board with 512MB large page(2K page, 256K
+
+Block) nand flash. The linux kernel version is 2.6.14 with yaffs source on
+date July 12, 2007 from http://www.aleph1.co.uk/cgi-bin/viewcvs.cgi/yaffs2/.
+
+I am using the NAND controller present in the SoC, it broadly provide a
+interface over the NAND SMI interface. Instead of reading/writing through
+the SMI lines, we read/write to/from the FIFO buffer(length 512byte) of NAND
+Controller. 
+
+All the command/data transfer/status can be initiated/read from the NAND
+controller registers.
+
+Using NAND MTD Software ECC for data correction.
+
+MTD configuration
+
+#
+
+# NAND Flash Device Drivers
+
+#
+
+CONFIG_MTD_NAND=y
+
+CONFIG_MTD_NAND_VERIFY_WRITE=y
+
+CONFIG_MTD_NAND_MM6PLUS=y
+
+CONFIG_MTD_NAND_IDS=y
+
+# CONFIG_MTD_NAND_DISKONCHIP is not set
+
+# CONFIG_MTD_NAND_NANDSIM is not set
+
+In the nand flash, there are 5 partition with last partition as ~450MB. The
+kernel boots up from 2nd partition which have readonly yaffs2 image as
+rootfs. After bootup, we are mounting this ~450MB partition as yaffs2 and do
+read/write operation as needed.
+
+To ensure the successful completion of a page write, I am using MTD write
+verify.
 
 
-      ___________________________________ 
-L'email della prossima generazione? Puoi averla con la nuova Yahoo! Mail: http://it.docs.yahoo.com/nowyoucan.html
+Until now, all read/write/mount/unmount were working fine.
+
+Now on unmount the ~450MB partition, on one particular block the NAND verify
+failed, and It is found that the block is actually bad, as I am unable to
+erase/write on that _block_ using nand-utils or the custom bootloader
+commands.
+
+
+NAND Controller shows the status as success after each erase/write.
+
+
+But after the erase, all bytes on the 1st, 3rd, 5th, ... pages Are 0xFF. and
+all bytes on the 2nd, 4th, 6th,... page are 0x00.
+
+Similarily, writing whatsoever data pattern on any of the pages in that
+block have no effect on the page data.
+
+It seems, the block is bad to an extent that the erase also have no effect.
+This means that, I cannot mark the block bad, as the first page is all 0xff
+and write on the page has no effect on page data.
+
+So, ending up to a situation, where the block will never be marked bad, and
+the write will always fail (due to MTD NAND verify) on the block pages.
+
+Currently, we are using the first byte of the first page in the Block to
+detect/mark the block as bad.
+
+What is the standard solution for this, Should the second page also be used
+for detecting the bad block in MTD nand layer. But then how far we can go
+about adding the pages to detect/mark bad block. 
+
+Is there any better method/policy to deal with it?
+
+All suggestions are aesthetically welcome.
+
+Thanks,
+
+Raj Kumar Yadav
