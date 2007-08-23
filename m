@@ -1,24 +1,29 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
+Received: from hu-out-0506.google.com ([72.14.214.232])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IOBPh-0003cI-2B
-	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 08:04:04 -0400
-Message-ID: <46CD779E.9020902@cetrtapot.si>
-Date: Thu, 23 Aug 2007 14:03:42 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
-To: Tushar Kapse <tusharkapse@gmail.com>
+	id 1IODZR-0005BJ-69
+	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 10:22:02 -0400
+Received: by hu-out-0506.google.com with SMTP id 34so118265hui
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Aug 2007 07:21:57 -0700 (PDT)
+Message-ID: <3db60e760708230721k56b02922o74818747035ff783@mail.gmail.com>
+Date: Thu, 23 Aug 2007 19:51:55 +0530
+From: "Tushar Kapse" <tusharkapse@gmail.com>
+To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
 Subject: Re: MTD nand driver help
-References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>	
-	<3db60e760708222317o22392948g1f3cbf69e246eba6@mail.gmail.com>	
-	<Pine.LNX.4.64.0708230823000.8989@lnxricardw.se.axis.com>	
-	<3db60e760708222340g49294138w9ce3372ab5eb50bf@mail.gmail.com>	
-	<Pine.LNX.4.64.0708230841590.8989@lnxricardw.se.axis.com>	
-	<3db60e760708230211g27b99f93o67da774f64d7c556@mail.gmail.com>	
+In-Reply-To: <46CD779E.9020902@cetrtapot.si>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>
+	<3db60e760708222317o22392948g1f3cbf69e246eba6@mail.gmail.com>
+	<Pine.LNX.4.64.0708230823000.8989@lnxricardw.se.axis.com>
+	<3db60e760708222340g49294138w9ce3372ab5eb50bf@mail.gmail.com>
+	<Pine.LNX.4.64.0708230841590.8989@lnxricardw.se.axis.com>
+	<3db60e760708230211g27b99f93o67da774f64d7c556@mail.gmail.com>
 	<46CD5B75.2060105@cetrtapot.si>
 	<3db60e760708230439n5cde0461r8444f46664c570ba@mail.gmail.com>
-In-Reply-To: <3db60e760708230439n5cde0461r8444f46664c570ba@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
-Content-Transfer-Encoding: 8bit
+	<46CD779E.9020902@cetrtapot.si>
 Cc: linux-mtd@lists.infradead.org, Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,50 +34,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tushar Kapse wrote:
-> thanx for your valuable suggestion..
-> Here are the steps followed to create JFFS2 and dumped into the NAND
-> using Boot Loader utility for NAND:
-> 1) On the Host(x86) we have created a directory "Target" and copied
-> the minumum required file system into that directory.
-> 2)Then we have created a jffs2 image using the following command:
-> "#./mkfs.jffs2 --pad=0xa00000 --eraseblock=0x20000 --pagesize=2048 -l
-> -n --root=Target --output Target.jffs2"
->          Note: Here we want to create 10Mb image.
-> 3)Then we have copied Target.jffs2 into NAND device using Boot Loader
-> NAND utility which reside in the NOR.
->    Note:
->     1)We have copied Target.jffs2 from 0th Block, 0th Page onwards...
->     2)We dont have any partitions on NAND device. NAND formated using
-> utility of Bootloader.
-
-Can you check that the jffs2 image was indeed written on the NAND (by 
-using some bootloader commands)?
-By dumping and HEX comparing, lets say, first few bytes, kbytes...
-
-> 
-> If we have missed any steps kindly tell  us,
-> waiting for your reply
-> Best regards
-> tushar
-> 
-> Once we have followed above steps,and when i Boot the Linux we found
-> the error as follows:
-> "Kernel panic - not syncing: VFS: Unable to mount root fs on
-> unknown-block(31,0)"
-
-Are you sure that this NAND device (partition) is located on 
-/dev/mtdblk0 (as the error suggests)? If you have NOR flash also present 
-on your this might not be the case...
-
-Regards,
-Hinko
-
--- 
-ÈETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+VGhhbnguLi4uCndlIGhhdmUgdmVyaWZpZWQgdGhlIGpmZnMyIGltYWdlIGluIHRoZSBuYW5kIHdp
+dGggdGhlIGJvb3Rsb2FkZXIKdXRpbGl0eSBhbmQgaXQgaXMgY29ycmVjdC4KaG93IHRvIHZlcmlm
+eSB0aGF0IHRoaXMgTkFORCBkZXZpY2UgaXMgbG9jYXRlZCBvbiAvZGV2L210ZGJsazAgPwpzaW5j
+ZSB3ZSBkbyBub3QgaGF2ZSBhbnkgcGFydGlvbiBpbiB0aGUgbmFuZCwgaXMgaXQgbmVjZXNzYXJ5
+IHRvIGhhdmUKdGhlIHBhcnRpdGlvbiBpbiB0aGUgbmFuZD8KClJlZ2FyZHMsClR1c2hhcgoKT24g
+OC8yMy8wNywgaGlua28ua29jZXZhckBjZXRydGFwb3Quc2kgPGhpbmtvLmtvY2V2YXJAY2V0cnRh
+cG90LnNpPiB3cm90ZToKPiBUdXNoYXIgS2Fwc2Ugd3JvdGU6Cj4gPiB0aGFueCBmb3IgeW91ciB2
+YWx1YWJsZSBzdWdnZXN0aW9uLi4KPiA+IEhlcmUgYXJlIHRoZSBzdGVwcyBmb2xsb3dlZCB0byBj
+cmVhdGUgSkZGUzIgYW5kIGR1bXBlZCBpbnRvIHRoZSBOQU5ECj4gPiB1c2luZyBCb290IExvYWRl
+ciB1dGlsaXR5IGZvciBOQU5EOgo+ID4gMSkgT24gdGhlIEhvc3QoeDg2KSB3ZSBoYXZlIGNyZWF0
+ZWQgYSBkaXJlY3RvcnkgIlRhcmdldCIgYW5kIGNvcGllZAo+ID4gdGhlIG1pbnVtdW0gcmVxdWly
+ZWQgZmlsZSBzeXN0ZW0gaW50byB0aGF0IGRpcmVjdG9yeS4KPiA+IDIpVGhlbiB3ZSBoYXZlIGNy
+ZWF0ZWQgYSBqZmZzMiBpbWFnZSB1c2luZyB0aGUgZm9sbG93aW5nIGNvbW1hbmQ6Cj4gPiAiIy4v
+bWtmcy5qZmZzMiAtLXBhZD0weGEwMDAwMCAtLWVyYXNlYmxvY2s9MHgyMDAwMCAtLXBhZ2VzaXpl
+PTIwNDggLWwKPiA+IC1uIC0tcm9vdD1UYXJnZXQgLS1vdXRwdXQgVGFyZ2V0LmpmZnMyIgo+ID4g
+ICAgICAgICAgTm90ZTogSGVyZSB3ZSB3YW50IHRvIGNyZWF0ZSAxME1iIGltYWdlLgo+ID4gMylU
+aGVuIHdlIGhhdmUgY29waWVkIFRhcmdldC5qZmZzMiBpbnRvIE5BTkQgZGV2aWNlIHVzaW5nIEJv
+b3QgTG9hZGVyCj4gPiBOQU5EIHV0aWxpdHkgd2hpY2ggcmVzaWRlIGluIHRoZSBOT1IuCj4gPiAg
+ICBOb3RlOgo+ID4gICAgIDEpV2UgaGF2ZSBjb3BpZWQgVGFyZ2V0LmpmZnMyIGZyb20gMHRoIEJs
+b2NrLCAwdGggUGFnZSBvbndhcmRzLi4uCj4gPiAgICAgMilXZSBkb250IGhhdmUgYW55IHBhcnRp
+dGlvbnMgb24gTkFORCBkZXZpY2UuIE5BTkQgZm9ybWF0ZWQgdXNpbmcKPiA+IHV0aWxpdHkgb2Yg
+Qm9vdGxvYWRlci4KPgo+IENhbiB5b3UgY2hlY2sgdGhhdCB0aGUgamZmczIgaW1hZ2Ugd2FzIGlu
+ZGVlZCB3cml0dGVuIG9uIHRoZSBOQU5EIChieQo+IHVzaW5nIHNvbWUgYm9vdGxvYWRlciBjb21t
+YW5kcyk/Cj4gQnkgZHVtcGluZyBhbmQgSEVYIGNvbXBhcmluZywgbGV0cyBzYXksIGZpcnN0IGZl
+dyBieXRlcywga2J5dGVzLi4uCj4KPiA+Cj4gPiBJZiB3ZSBoYXZlIG1pc3NlZCBhbnkgc3RlcHMg
+a2luZGx5IHRlbGwgIHVzLAo+ID4gd2FpdGluZyBmb3IgeW91ciByZXBseQo+ID4gQmVzdCByZWdh
+cmRzCj4gPiB0dXNoYXIKPiA+Cj4gPiBPbmNlIHdlIGhhdmUgZm9sbG93ZWQgYWJvdmUgc3RlcHMs
+YW5kIHdoZW4gaSBCb290IHRoZSBMaW51eCB3ZSBmb3VuZAo+ID4gdGhlIGVycm9yIGFzIGZvbGxv
+d3M6Cj4gPiAiS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IFZGUzogVW5hYmxlIHRvIG1vdW50
+IHJvb3QgZnMgb24KPiA+IHVua25vd24tYmxvY2soMzEsMCkiCj4KPiBBcmUgeW91IHN1cmUgdGhh
+dCB0aGlzIE5BTkQgZGV2aWNlIChwYXJ0aXRpb24pIGlzIGxvY2F0ZWQgb24KPiAvZGV2L210ZGJs
+azAgKGFzIHRoZSBlcnJvciBzdWdnZXN0cyk/IElmIHlvdSBoYXZlIE5PUiBmbGFzaCBhbHNvIHBy
+ZXNlbnQKPiBvbiB5b3VyIHRoaXMgbWlnaHQgbm90IGJlIHRoZSBjYXNlLi4uCj4KPiBSZWdhcmRz
+LAo+IEhpbmtvCj4KPiAtLQo+IMhFVFJUQSBQT1QsIGQuby5vLiwgS3JhbmoKPiBQbGFuaW5hIDMK
+PiA0MDAwIEtyYW5qCj4gU2xvdmVuaWEsIEV1cm9wZQo+IFRlbC4gKzM4NiAoMCkgNCAyODAgNjYg
+MDMKPiBFLW1haWw6IGhpbmtvLmtvY2V2YXJAY2V0cnRhcG90LnNpCj4gSHR0cDogd3d3LmNldHJ0
+YXBvdC5zaQo+Cj4K
