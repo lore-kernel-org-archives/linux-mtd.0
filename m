@@ -1,20 +1,21 @@
-Received: from hu-out-0506.google.com ([72.14.214.232])
+Received: from bart.se.axis.com ([193.13.178.9])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IODZR-0005BJ-69
-	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 10:22:02 -0400
-Received: by hu-out-0506.google.com with SMTP id 34so118265hui
+	id 1IOE0e-0005eG-Dg
+	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 10:50:09 -0400
+Received: from bart.se.axis.com (bart.se.axis.com [127.0.0.1])
+	by bart.se.axis.com (Postfix) with ESMTP id 446DE64083
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 23 Aug 2007 07:21:57 -0700 (PDT)
-Message-ID: <3db60e760708230721k56b02922o74818747035ff783@mail.gmail.com>
-Date: Thu, 23 Aug 2007 19:51:55 +0530
-From: "Tushar Kapse" <tusharkapse@gmail.com>
-To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
+	Thu, 23 Aug 2007 16:50:04 +0200 (CEST)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by bart.se.axis.com (Postfix) with ESMTP id 36BB964079
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Aug 2007 16:50:04 +0200 (CEST)
+Date: Thu, 23 Aug 2007 16:49:58 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
 Subject: Re: MTD nand driver help
-In-Reply-To: <46CD779E.9020902@cetrtapot.si>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
+In-Reply-To: <3db60e760708230721k56b02922o74818747035ff783@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0708231647290.8989@lnxricardw.se.axis.com>
 References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>
 	<3db60e760708222317o22392948g1f3cbf69e246eba6@mail.gmail.com>
 	<Pine.LNX.4.64.0708230823000.8989@lnxricardw.se.axis.com>
@@ -24,7 +25,10 @@ References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>
 	<46CD5B75.2060105@cetrtapot.si>
 	<3db60e760708230439n5cde0461r8444f46664c570ba@mail.gmail.com>
 	<46CD779E.9020902@cetrtapot.si>
-Cc: linux-mtd@lists.infradead.org, Ricard Wanderlof <ricard.wanderlof@axis.com>
+	<3db60e760708230721k56b02922o74818747035ff783@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,40 +38,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VGhhbnguLi4uCndlIGhhdmUgdmVyaWZpZWQgdGhlIGpmZnMyIGltYWdlIGluIHRoZSBuYW5kIHdp
-dGggdGhlIGJvb3Rsb2FkZXIKdXRpbGl0eSBhbmQgaXQgaXMgY29ycmVjdC4KaG93IHRvIHZlcmlm
-eSB0aGF0IHRoaXMgTkFORCBkZXZpY2UgaXMgbG9jYXRlZCBvbiAvZGV2L210ZGJsazAgPwpzaW5j
-ZSB3ZSBkbyBub3QgaGF2ZSBhbnkgcGFydGlvbiBpbiB0aGUgbmFuZCwgaXMgaXQgbmVjZXNzYXJ5
-IHRvIGhhdmUKdGhlIHBhcnRpdGlvbiBpbiB0aGUgbmFuZD8KClJlZ2FyZHMsClR1c2hhcgoKT24g
-OC8yMy8wNywgaGlua28ua29jZXZhckBjZXRydGFwb3Quc2kgPGhpbmtvLmtvY2V2YXJAY2V0cnRh
-cG90LnNpPiB3cm90ZToKPiBUdXNoYXIgS2Fwc2Ugd3JvdGU6Cj4gPiB0aGFueCBmb3IgeW91ciB2
-YWx1YWJsZSBzdWdnZXN0aW9uLi4KPiA+IEhlcmUgYXJlIHRoZSBzdGVwcyBmb2xsb3dlZCB0byBj
-cmVhdGUgSkZGUzIgYW5kIGR1bXBlZCBpbnRvIHRoZSBOQU5ECj4gPiB1c2luZyBCb290IExvYWRl
-ciB1dGlsaXR5IGZvciBOQU5EOgo+ID4gMSkgT24gdGhlIEhvc3QoeDg2KSB3ZSBoYXZlIGNyZWF0
-ZWQgYSBkaXJlY3RvcnkgIlRhcmdldCIgYW5kIGNvcGllZAo+ID4gdGhlIG1pbnVtdW0gcmVxdWly
-ZWQgZmlsZSBzeXN0ZW0gaW50byB0aGF0IGRpcmVjdG9yeS4KPiA+IDIpVGhlbiB3ZSBoYXZlIGNy
-ZWF0ZWQgYSBqZmZzMiBpbWFnZSB1c2luZyB0aGUgZm9sbG93aW5nIGNvbW1hbmQ6Cj4gPiAiIy4v
-bWtmcy5qZmZzMiAtLXBhZD0weGEwMDAwMCAtLWVyYXNlYmxvY2s9MHgyMDAwMCAtLXBhZ2VzaXpl
-PTIwNDggLWwKPiA+IC1uIC0tcm9vdD1UYXJnZXQgLS1vdXRwdXQgVGFyZ2V0LmpmZnMyIgo+ID4g
-ICAgICAgICAgTm90ZTogSGVyZSB3ZSB3YW50IHRvIGNyZWF0ZSAxME1iIGltYWdlLgo+ID4gMylU
-aGVuIHdlIGhhdmUgY29waWVkIFRhcmdldC5qZmZzMiBpbnRvIE5BTkQgZGV2aWNlIHVzaW5nIEJv
-b3QgTG9hZGVyCj4gPiBOQU5EIHV0aWxpdHkgd2hpY2ggcmVzaWRlIGluIHRoZSBOT1IuCj4gPiAg
-ICBOb3RlOgo+ID4gICAgIDEpV2UgaGF2ZSBjb3BpZWQgVGFyZ2V0LmpmZnMyIGZyb20gMHRoIEJs
-b2NrLCAwdGggUGFnZSBvbndhcmRzLi4uCj4gPiAgICAgMilXZSBkb250IGhhdmUgYW55IHBhcnRp
-dGlvbnMgb24gTkFORCBkZXZpY2UuIE5BTkQgZm9ybWF0ZWQgdXNpbmcKPiA+IHV0aWxpdHkgb2Yg
-Qm9vdGxvYWRlci4KPgo+IENhbiB5b3UgY2hlY2sgdGhhdCB0aGUgamZmczIgaW1hZ2Ugd2FzIGlu
-ZGVlZCB3cml0dGVuIG9uIHRoZSBOQU5EIChieQo+IHVzaW5nIHNvbWUgYm9vdGxvYWRlciBjb21t
-YW5kcyk/Cj4gQnkgZHVtcGluZyBhbmQgSEVYIGNvbXBhcmluZywgbGV0cyBzYXksIGZpcnN0IGZl
-dyBieXRlcywga2J5dGVzLi4uCj4KPiA+Cj4gPiBJZiB3ZSBoYXZlIG1pc3NlZCBhbnkgc3RlcHMg
-a2luZGx5IHRlbGwgIHVzLAo+ID4gd2FpdGluZyBmb3IgeW91ciByZXBseQo+ID4gQmVzdCByZWdh
-cmRzCj4gPiB0dXNoYXIKPiA+Cj4gPiBPbmNlIHdlIGhhdmUgZm9sbG93ZWQgYWJvdmUgc3RlcHMs
-YW5kIHdoZW4gaSBCb290IHRoZSBMaW51eCB3ZSBmb3VuZAo+ID4gdGhlIGVycm9yIGFzIGZvbGxv
-d3M6Cj4gPiAiS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IFZGUzogVW5hYmxlIHRvIG1vdW50
-IHJvb3QgZnMgb24KPiA+IHVua25vd24tYmxvY2soMzEsMCkiCj4KPiBBcmUgeW91IHN1cmUgdGhh
-dCB0aGlzIE5BTkQgZGV2aWNlIChwYXJ0aXRpb24pIGlzIGxvY2F0ZWQgb24KPiAvZGV2L210ZGJs
-azAgKGFzIHRoZSBlcnJvciBzdWdnZXN0cyk/IElmIHlvdSBoYXZlIE5PUiBmbGFzaCBhbHNvIHBy
-ZXNlbnQKPiBvbiB5b3VyIHRoaXMgbWlnaHQgbm90IGJlIHRoZSBjYXNlLi4uCj4KPiBSZWdhcmRz
-LAo+IEhpbmtvCj4KPiAtLQo+IMhFVFJUQSBQT1QsIGQuby5vLiwgS3JhbmoKPiBQbGFuaW5hIDMK
-PiA0MDAwIEtyYW5qCj4gU2xvdmVuaWEsIEV1cm9wZQo+IFRlbC4gKzM4NiAoMCkgNCAyODAgNjYg
-MDMKPiBFLW1haWw6IGhpbmtvLmtvY2V2YXJAY2V0cnRhcG90LnNpCj4gSHR0cDogd3d3LmNldHJ0
-YXBvdC5zaQo+Cj4K
+
+On Thu, 23 Aug 2007, Tushar Kapse wrote:
+
+> Thanx....
+> we have verified the jffs2 image in the nand with the bootloader
+> utility and it is correct.
+> how to verify that this NAND device is located on /dev/mtdblk0 ?
+> since we do not have any partion in the nand, is it necessary to have
+> the partition in the nand?
+
+Even if you haven't partitioned your nand flash, you will probably find=20
+that for instance your nor flash is /dev/mtdblock0 and your nand flash=20
+then may be /dev/mtdblock1, assuming don't have any partitions in the nor=
+=20
+flash. I.e. even without partitioning, each flash chip has its own=20
+/dev/mtdblockn device. This is especially true when the devices are not=20
+the same type (nor vs. nand). If you have several nor devices of the same=
+=20
+type, depending on your mtd configuration, they can be concatenated to one=
+=20
+single /dev/mtdblockn device.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
