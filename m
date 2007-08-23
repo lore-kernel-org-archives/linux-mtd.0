@@ -1,18 +1,27 @@
-Received: from n1.cetrtapot.si ([89.212.80.162])
+Received: from hu-out-0506.google.com ([72.14.214.236])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IO9XP-0001eC-RF
-	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 06:03:45 -0400
-Message-ID: <46CD5B75.2060105@cetrtapot.si>
-Date: Thu, 23 Aug 2007 12:03:33 +0200
-From: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
-MIME-Version: 1.0
-To: Tushar Kapse <tusharkapse@gmail.com>
+	id 1IOB21-0002xb-A7
+	for linux-mtd@lists.infradead.org; Thu, 23 Aug 2007 07:39:23 -0400
+Received: by hu-out-0506.google.com with SMTP id 34so78648hui
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 23 Aug 2007 04:39:17 -0700 (PDT)
+Message-ID: <3db60e760708230439n5cde0461r8444f46664c570ba@mail.gmail.com>
+Date: Thu, 23 Aug 2007 17:09:15 +0530
+From: "Tushar Kapse" <tusharkapse@gmail.com>
+To: "hinko.kocevar@cetrtapot.si" <hinko.kocevar@cetrtapot.si>
 Subject: Re: MTD nand driver help
-References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>	<3db60e760708222317o22392948g1f3cbf69e246eba6@mail.gmail.com>	<Pine.LNX.4.64.0708230823000.8989@lnxricardw.se.axis.com>	<3db60e760708222340g49294138w9ce3372ab5eb50bf@mail.gmail.com>	<Pine.LNX.4.64.0708230841590.8989@lnxricardw.se.axis.com>
+In-Reply-To: <46CD5B75.2060105@cetrtapot.si>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-2
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <3db60e760708160941g3d2978f8i7e07c4d85a34685e@mail.gmail.com>
+	<3db60e760708222317o22392948g1f3cbf69e246eba6@mail.gmail.com>
+	<Pine.LNX.4.64.0708230823000.8989@lnxricardw.se.axis.com>
+	<3db60e760708222340g49294138w9ce3372ab5eb50bf@mail.gmail.com>
+	<Pine.LNX.4.64.0708230841590.8989@lnxricardw.se.axis.com>
 	<3db60e760708230211g27b99f93o67da774f64d7c556@mail.gmail.com>
-In-Reply-To: <3db60e760708230211g27b99f93o67da774f64d7c556@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+	<46CD5B75.2060105@cetrtapot.si>
 Cc: linux-mtd@lists.infradead.org, Ricard Wanderlof <ricard.wanderlof@axis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,37 +32,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Tushar Kapse wrote:
-> Thank you for your nice support..
-> here i will explain detail of my problem.
-> 1.I have PXA255 SBC board, and ported linux 2.6.12 on it without File System.
->      Linux Image : Resides in NOR Device ( 4Mb)
->      File System:  To be reside in NAND Device (128Mb). Still to be done .
-> 2.Now i want to put JFFS2 file system on NAND device.
-> 3. First I have created the Linux image with MTD support (also JFFS2
-> file system selected) and ported on NOR device. On power ON of SBC
-> board, Linux is booted and got error "Kernel panic - not syncing: VFS:
-> Unable to mount root fs on unknown-block(31,0)"
-> 4. As there is no JFFS2 File System on it we got this error.
-> 5. We have downloaded the MTD utilities on the host system (PC).
-> Kindly please tell me the procedure to put JFFS2 FS in the NAND device
-> for the first time.
-> Note that we don't have any filesystem on NAND device.
-
-If NAND device holds your boot partition you can
-a) upload the image to the NAND device from your bootloader (if one 
-exists on your machine and supports NAND flash) or
-b) boot from NFS rootfs for the first time and then use the nandwrite to 
-transfer the image to NAND device.
-
-HTH,
-Hinko
-
--- 
-ČETRTA POT, d.o.o., Kranj
-Planina 3
-4000 Kranj
-Slovenia, Europe
-Tel. +386 (0) 4 280 66 03
-E-mail: hinko.kocevar@cetrtapot.si
-Http: www.cetrtapot.si
+dGhhbnggZm9yIHlvdXIgdmFsdWFibGUgc3VnZ2VzdGlvbi4uCkhlcmUgYXJlIHRoZSBzdGVwcyBm
+b2xsb3dlZCB0byBjcmVhdGUgSkZGUzIgYW5kIGR1bXBlZCBpbnRvIHRoZSBOQU5ECnVzaW5nIEJv
+b3QgTG9hZGVyIHV0aWxpdHkgZm9yIE5BTkQ6CjEpIE9uIHRoZSBIb3N0KHg4Nikgd2UgaGF2ZSBj
+cmVhdGVkIGEgZGlyZWN0b3J5ICJUYXJnZXQiIGFuZCBjb3BpZWQKdGhlIG1pbnVtdW0gcmVxdWly
+ZWQgZmlsZSBzeXN0ZW0gaW50byB0aGF0IGRpcmVjdG9yeS4KMilUaGVuIHdlIGhhdmUgY3JlYXRl
+ZCBhIGpmZnMyIGltYWdlIHVzaW5nIHRoZSBmb2xsb3dpbmcgY29tbWFuZDoKIiMuL21rZnMuamZm
+czIgLS1wYWQ9MHhhMDAwMDAgLS1lcmFzZWJsb2NrPTB4MjAwMDAgLS1wYWdlc2l6ZT0yMDQ4IC1s
+Ci1uIC0tcm9vdD1UYXJnZXQgLS1vdXRwdXQgVGFyZ2V0LmpmZnMyIgogICAgICAgICBOb3RlOiBI
+ZXJlIHdlIHdhbnQgdG8gY3JlYXRlIDEwTWIgaW1hZ2UuCjMpVGhlbiB3ZSBoYXZlIGNvcGllZCBU
+YXJnZXQuamZmczIgaW50byBOQU5EIGRldmljZSB1c2luZyBCb290IExvYWRlcgpOQU5EIHV0aWxp
+dHkgd2hpY2ggcmVzaWRlIGluIHRoZSBOT1IuCiAgIE5vdGU6CiAgICAxKVdlIGhhdmUgY29waWVk
+IFRhcmdldC5qZmZzMiBmcm9tIDB0aCBCbG9jaywgMHRoIFBhZ2Ugb253YXJkcy4uLgogICAgMilX
+ZSBkb250IGhhdmUgYW55IHBhcnRpdGlvbnMgb24gTkFORCBkZXZpY2UuIE5BTkQgZm9ybWF0ZWQg
+dXNpbmcKdXRpbGl0eSBvZiBCb290bG9hZGVyLgoKSWYgd2UgaGF2ZSBtaXNzZWQgYW55IHN0ZXBz
+IGtpbmRseSB0ZWxsICB1cywKd2FpdGluZyBmb3IgeW91ciByZXBseQpCZXN0IHJlZ2FyZHMKdHVz
+aGFyCgpPbmNlIHdlIGhhdmUgZm9sbG93ZWQgYWJvdmUgc3RlcHMsYW5kIHdoZW4gaSBCb290IHRo
+ZSBMaW51eCB3ZSBmb3VuZAp0aGUgZXJyb3IgYXMgZm9sbG93czoKIktlcm5lbCBwYW5pYyAtIG5v
+dCBzeW5jaW5nOiBWRlM6IFVuYWJsZSB0byBtb3VudCByb290IGZzIG9uCnVua25vd24tYmxvY2so
+MzEsMCkiCgoKCk9uIDgvMjMvMDcsIGhpbmtvLmtvY2V2YXJAY2V0cnRhcG90LnNpIDxoaW5rby5r
+b2NldmFyQGNldHJ0YXBvdC5zaT4gd3JvdGU6Cj4gVHVzaGFyIEthcHNlIHdyb3RlOgo+ID4gVGhh
+bmsgeW91IGZvciB5b3VyIG5pY2Ugc3VwcG9ydC4uCj4gPiBoZXJlIGkgd2lsbCBleHBsYWluIGRl
+dGFpbCBvZiBteSBwcm9ibGVtLgo+ID4gMS5JIGhhdmUgUFhBMjU1IFNCQyBib2FyZCwgYW5kIHBv
+cnRlZCBsaW51eCAyLjYuMTIgb24gaXQgd2l0aG91dCBGaWxlIFN5c3RlbS4KPiA+ICAgICAgTGlu
+dXggSW1hZ2UgOiBSZXNpZGVzIGluIE5PUiBEZXZpY2UgKCA0TWIpCj4gPiAgICAgIEZpbGUgU3lz
+dGVtOiAgVG8gYmUgcmVzaWRlIGluIE5BTkQgRGV2aWNlICgxMjhNYikuIFN0aWxsIHRvIGJlIGRv
+bmUgLgo+ID4gMi5Ob3cgaSB3YW50IHRvIHB1dCBKRkZTMiBmaWxlIHN5c3RlbSBvbiBOQU5EIGRl
+dmljZS4KPiA+IDMuIEZpcnN0IEkgaGF2ZSBjcmVhdGVkIHRoZSBMaW51eCBpbWFnZSB3aXRoIE1U
+RCBzdXBwb3J0IChhbHNvIEpGRlMyCj4gPiBmaWxlIHN5c3RlbSBzZWxlY3RlZCkgYW5kIHBvcnRl
+ZCBvbiBOT1IgZGV2aWNlLiBPbiBwb3dlciBPTiBvZiBTQkMKPiA+IGJvYXJkLCBMaW51eCBpcyBi
+b290ZWQgYW5kIGdvdCBlcnJvciAiS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IFZGUzoKPiA+
+IFVuYWJsZSB0byBtb3VudCByb290IGZzIG9uIHVua25vd24tYmxvY2soMzEsMCkiCj4gPiA0LiBB
+cyB0aGVyZSBpcyBubyBKRkZTMiBGaWxlIFN5c3RlbSBvbiBpdCB3ZSBnb3QgdGhpcyBlcnJvci4K
+PiA+IDUuIFdlIGhhdmUgZG93bmxvYWRlZCB0aGUgTVREIHV0aWxpdGllcyBvbiB0aGUgaG9zdCBz
+eXN0ZW0gKFBDKS4KPiA+IEtpbmRseSBwbGVhc2UgdGVsbCBtZSB0aGUgcHJvY2VkdXJlIHRvIHB1
+dCBKRkZTMiBGUyBpbiB0aGUgTkFORCBkZXZpY2UKPiA+IGZvciB0aGUgZmlyc3QgdGltZS4KPiA+
+IE5vdGUgdGhhdCB3ZSBkb24ndCBoYXZlIGFueSBmaWxlc3lzdGVtIG9uIE5BTkQgZGV2aWNlLgo+
+Cj4gSWYgTkFORCBkZXZpY2UgaG9sZHMgeW91ciBib290IHBhcnRpdGlvbiB5b3UgY2FuCj4gYSkg
+dXBsb2FkIHRoZSBpbWFnZSB0byB0aGUgTkFORCBkZXZpY2UgZnJvbSB5b3VyIGJvb3Rsb2FkZXIg
+KGlmIG9uZQo+IGV4aXN0cyBvbiB5b3VyIG1hY2hpbmUgYW5kIHN1cHBvcnRzIE5BTkQgZmxhc2gp
+IG9yCj4gYikgYm9vdCBmcm9tIE5GUyByb290ZnMgZm9yIHRoZSBmaXJzdCB0aW1lIGFuZCB0aGVu
+IHVzZSB0aGUgbmFuZHdyaXRlIHRvCj4gdHJhbnNmZXIgdGhlIGltYWdlIHRvIE5BTkQgZGV2aWNl
+Lgo+Cj4gSFRILAo+IEhpbmtvCj4KPiAtLQo+IMhFVFJUQSBQT1QsIGQuby5vLiwgS3JhbmoKPiBQ
+bGFuaW5hIDMKPiA0MDAwIEtyYW5qCj4gU2xvdmVuaWEsIEV1cm9wZQo+IFRlbC4gKzM4NiAoMCkg
+NCAyODAgNjYgMDMKPiBFLW1haWw6IGhpbmtvLmtvY2V2YXJAY2V0cnRhcG90LnNpCj4gSHR0cDog
+d3d3LmNldHJ0YXBvdC5zaQo+Cj4K
