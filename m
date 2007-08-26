@@ -1,30 +1,23 @@
-Received: from smtpout.mac.com ([17.250.248.176])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IP7Ju-0003p6-Be
-	for linux-mtd@lists.infradead.org; Sun, 26 Aug 2007 02:53:45 +0100
-In-Reply-To: <9a8748490708251736k5b751998yee72abdc8c4c1b53@mail.gmail.com>
-References: <1554af80879a7ef2f78a4d654f23c248203500d9.1187912217.git.jesper.juhl@gmail.com>
-	<5ebfb93eca0dd43cf17876e643079cbcfeb3111c.1187912217.git.jesper.juhl@gmail.com>
-	<200708241141.06358.vda.linux@googlemail.com>
-	<Pine.LNX.4.64.0708240642500.18301@localhost.localdomain>
-	<9a8748490708251527n26cc2065n5b8716bd7f65e252@mail.gmail.com>
-	<Pine.LNX.4.64.0708251956380.29507@localhost.localdomain>
-	<9a8748490708251728h51d51092r11a3562ceb63b2f9@mail.gmail.com>
-	<Pine.LNX.4.64.0708252021070.8721@localhost.localdomain>
-	<9a8748490708251736k5b751998yee72abdc8c4c1b53@mail.gmail.com>
-Mime-Version: 1.0 (Apple Message framework v752.2)
-Content-Type: text/plain; charset=US-ASCII; delsp=yes; format=flowed
-Message-Id: <51189954-4301-4C83-91F2-26B376D0DDD7@mac.com>
+Received: from fk-out-0910.google.com ([209.85.128.189])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IP7Ld-00053Q-5Y
+	for linux-mtd@lists.infradead.org; Sat, 25 Aug 2007 21:56:27 -0400
+Received: by fk-out-0910.google.com with SMTP id 19so1844991fkr
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 25 Aug 2007 18:55:27 -0700 (PDT)
+From: Jesper Juhl <jesper.juhl@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 0/4] mtd: cleanups and small bug fixes for init_msp_flash()
+Date: Sun, 26 Aug 2007 03:52:33 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-From: Kyle Moffett <mrmacman_g4@mac.com>
-Subject: Re: [PATCH 09/30] mtd: Don't cast kmalloc() return value in
-	drivers/mtd/maps/pmcmsp-flash.c
-Date: Sat, 25 Aug 2007 21:52:51 -0400
-To: Jesper Juhl <jesper.juhl@gmail.com>
+Content-Disposition: inline
+Message-Id: <200708260352.33343.jesper.juhl@gmail.com>
 Cc: Denys Vlasenko <vda.linux@googlemail.com>,
-	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	"Robert P. J. Day" <rpjday@mindspring.com>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+	Marc St-Jean <stjeanma@pmc-sierra.com>, linux-mtd@lists.infradead.org,
+	"Robert P. J. Day" <rpjday@mindspring.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,27 +27,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Aug 25, 2007, at 20:36:32, Jesper Juhl wrote:
-> On 26/08/07, Robert P. J. Day <rpjday@mindspring.com> wrote:
->> technically, nothing.  but if you're not going to use kcalloc()  
->> when you're explicitly allocating an array of identical objects  
->> (that you want zero-filled, as a bonus), then what's the point of  
->> ever having defined a kcalloc() routine in the first place?
->>
-> I wonder a bit about that myself...
->
-> I have found some other issues in that function that I want to fix,  
-> so I'll be respinning the patch as a patch series instead - and why  
-> not; I'll just go with kcalloc() and see what the maintainers have  
-> to say, it's not like I personally care much one way or the other.
+Hi,
 
-I think the original reasoning behind kcalloc() was that it did some  
-extra input checking, so that if the product of the two numbers  
-overflowed, it would fail with NULL instead of allocating  
-insufficient space.  In the kernel it doesn't matter in practice  
-since you MUST have additional checking on the size of allocated  
-memory anyways, not even considering the fact that >PAGE_SIZE  
-allocations are probably going to fail with decent frequency regardless.
+Here's a small series of patches to do a little cleanup + bug fixing
+in drivers/mtd/maps/pmcmsp-flash.c::init_msp_flash().
 
-Cheers,
-Kyle Moffett
+The patches in this series are
+
+ [PATCH 1/4] mtd: Don't cast kmalloc() return value in drivers/mtd/maps/pmcmsp-flash.c
+ [PATCH 2/4] mtd: convert some kmalloc()+memset() calls to kcalloc() in drivers/mtd/maps/pmcmsp-flash.c
+ [PATCH 3/4] mtd: Fix a potential NULL ptr deref bug and mem leak in init_msp_flash()
+ [PATCH 4/4] mtd: Check for allocation failures and bail out appropriately in init_msp_flash()
+
+Some of the patches touch the same line of code multiple times, but 
+they are split this way to 
+ a) to keep logical changes seperate and 
+ b) to make the patch series 'git bisect' friendly 
+
+There's still more that could be done to this function, such as 
+rolling back mem allocations for devices already initialized in 
+case a subsequent one fails or similar, but that will have to wait.
+This is all I have time for at the moment.
+
+Please consider merging :-)
+
+
+Kind regards,
+  Jesper Juhl <jesper.juhl@gmail.com>
