@@ -1,23 +1,15 @@
-Received: from fk-out-0910.google.com ([209.85.128.189])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IP7Ld-00053Q-5Y
-	for linux-mtd@lists.infradead.org; Sat, 25 Aug 2007 21:56:27 -0400
-Received: by fk-out-0910.google.com with SMTP id 19so1844991fkr
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 25 Aug 2007 18:55:27 -0700 (PDT)
-From: Jesper Juhl <jesper.juhl@gmail.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH 0/4] mtd: cleanups and small bug fixes for init_msp_flash()
-Date: Sun, 26 Aug 2007 03:52:33 +0200
+Received: from ruby.srv2.com ([66.197.217.21])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IP8Jl-0005tY-C2
+	for linux-mtd@lists.infradead.org; Sat, 25 Aug 2007 22:57:41 -0400
+Message-ID: <50281.82.128.13.69.1188086907.squirrel@mowk.org>
+Date: Sat, 25 Aug 2007 20:08:27 -0400 (EDT)
+Subject: Contact us immediately
+From: "EU GRANTS FASCILITATORS COM.LTD." <eugrants@excite.es>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200708260352.33343.jesper.juhl@gmail.com>
-Cc: Denys Vlasenko <vda.linux@googlemail.com>,
-	Marc St-Jean <stjeanma@pmc-sierra.com>, linux-mtd@lists.infradead.org,
-	"Robert P. J. Day" <rpjday@mindspring.com>
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: eugrants@excite.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +19,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-Here's a small series of patches to do a little cleanup + bug fixing
-in drivers/mtd/maps/pmcmsp-flash.c::init_msp_flash().
-
-The patches in this series are
-
- [PATCH 1/4] mtd: Don't cast kmalloc() return value in drivers/mtd/maps/pmcmsp-flash.c
- [PATCH 2/4] mtd: convert some kmalloc()+memset() calls to kcalloc() in drivers/mtd/maps/pmcmsp-flash.c
- [PATCH 3/4] mtd: Fix a potential NULL ptr deref bug and mem leak in init_msp_flash()
- [PATCH 4/4] mtd: Check for allocation failures and bail out appropriately in init_msp_flash()
-
-Some of the patches touch the same line of code multiple times, but 
-they are split this way to 
- a) to keep logical changes seperate and 
- b) to make the patch series 'git bisect' friendly 
-
-There's still more that could be done to this function, such as 
-rolling back mem allocations for devices already initialized in 
-case a subsequent one fails or similar, but that will have to wait.
-This is all I have time for at the moment.
-
-Please consider merging :-)
 
 
-Kind regards,
-  Jesper Juhl <jesper.juhl@gmail.com>
+
+EU-GRANTS FASCILITATORS COM. LTD.
+EU-GRANTS 35 Aztec Row Berners Road
+London N1 0PW UK.
+Direct Telephone:+44-7045705184
+Dear Sir/Madam.
+                                            AWARD OF EU-GRANT OF
+US$2,200,000.00 oNLY
+i write to inform you that you have been chosen as one of the 10
+benefactors for this years EU-GRANT FASCILITY to the tune of US$2.2
+Million Dollars Only.This grant is aimed at enhancing the Welfare of
+unemployed in your locality by empowering you to set up SMEs that would
+employ people and make life meaningful to them.The EU Grants FASCILITY
+programme is a partnership led by EU COMPANIES AND GOVERNMENTS to help
+small and mid-size enterprises (SMEs) and local and regional governments
+of NON-EU nations, to better understand and use EU funding opportunities
+at the international, national, and regional level.
+To quickly have access to this funds,you are to immediately fill out the
+details as required for the release of the money to you as below stated
+and also send us a scanned copy of your ID/Internationa Passport as proof
+of ID:
+
+                       REQUIRED INFORMATION FOR PAYMENT APPROVAL
+
+1.FULL NAMES:.
+2.DATE OF BIRTH  B.AGE   C.SEX
+3.MARITAL STATUS  B.RELIGION
+4.NUMBER OF CHILDREN
+5.NAME OF SPOUSE   B.NEXT OF KIN
+6.PLACE OF WORK
+7.POSITION AT WORK
+8.DIRECT TELEPHONE NUMBER,MOBILE AND FAX LINES
+9.DIRECT EMAIL ADDRESS
+10.ANNUAL INCOME
+11.NUMBER OF STAFF.
+
+Note that you are to send an urgent letter on acceptance via email to the
+EU-GRANTS Coordinator in London Mr.Jones David via his direct email as
+below stated and also call him via his direct telephone line also below
+stated for further details on how to get the money approved sent to your
+account via Wire Transfer or via certified cheque.
+Name: Jones David
+Email:eugrants@excite.com
+Direct Telephone:+44-7045705184
+
+Expecting your immediate action.Congratulations ..
+
+Faithfully yours
+Elizabeth Peters
+Sec/Legal Adviser
+EU-GRANTS FASCILITATORS COM. LTD.
