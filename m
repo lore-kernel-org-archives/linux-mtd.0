@@ -1,29 +1,28 @@
-Received: from asia.telenet-ops.be ([195.130.137.74])
+Received: from wx-out-0506.google.com ([66.249.82.234])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IPFx0-0006Hj-RS
-	for linux-mtd@lists.infradead.org; Sun, 26 Aug 2007 07:06:48 -0400
-Date: Sun, 26 Aug 2007 13:06:31 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Sender: geert@linux-m68k.org
-To: Mike Frysinger <vapier.adi@gmail.com>
-Subject: Re: [PATCH] Prefix each line of multiline printk(KERN_<level>
-	"foo\nbar") with KERN_<level>
-In-Reply-To: <8bd0f97a0708260354xb4c8546od0cc19a590820f32@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0708261305020.31149@anakin>
-References: <1187999098.32738.179.camel@localhost>
-	<Pine.LNX.4.64.0708261028120.31149@anakin>
-	<8bd0f97a0708260354xb4c8546od0cc19a590820f32@mail.gmail.com>
+	id 1IPI1n-0007cE-Sg
+	for linux-mtd@lists.infradead.org; Sun, 26 Aug 2007 09:19:46 -0400
+Received: by wx-out-0506.google.com with SMTP id s7so1191680wxc
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 26 Aug 2007 06:19:43 -0700 (PDT)
+Message-ID: <9a8748490708260619x24d42a7w7618b3c7ce625fa@mail.gmail.com>
+Date: Sun, 26 Aug 2007 15:19:42 +0200
+From: "Jesper Juhl" <jesper.juhl@gmail.com>
+To: "Robert P. J. Day" <rpjday@mindspring.com>
+Subject: Re: [PATCH 1/4] mtd: Don't cast kmalloc() return value in
+	drivers/mtd/maps/pmcmsp-flash.c
+In-Reply-To: <Pine.LNX.4.64.0708260434160.6485@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-ide@vger.kernel.org, discuss@x86-64.org, linux-scsi@vger.kernel.org,
-	linux-acpi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org,
-	cluster-devel@redhat.com, blinux-list@redhat.com,
-	tpmdd-devel@lists.sourceforge.net, linux-mips@linux-mips.org,
-	jffs-dev@axis.com, mpt_linux_developer@lsi.com,
-	Joe Perches <joe@perches.com>, linux-mtd@lists.infradead.org,
-	osst-users@lists.sourceforge.net, linux-mm@kvack.org,
-	parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <200708260352.33343.jesper.juhl@gmail.com>
+	<200708260354.27928.jesper.juhl@gmail.com>
+	<Pine.LNX.4.64.0708260434160.6485@localhost.localdomain>
+Cc: Denys Vlasenko <vda.linux@googlemail.com>,
+	MTD mailing list <linux-mtd@lists.infradead.org>,
+	Marc St-Jean <stjeanma@pmc-sierra.com>,
+	David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,51 +32,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 26 Aug 2007, Mike Frysinger wrote:
-> On 8/26/07, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, 24 Aug 2007, Joe Perches wrote:
-> > > Corrected printk calls with multiple output lines which
-> > > did not correctly preface each line with KERN_<level>
-> > >
-> > > Fixed uses of some single lines with too many KERN_<level>
-> >
-> > > --- a/arch/arm/kernel/ecard.c
-> > > +++ b/arch/arm/kernel/ecard.c
-> > > @@ -547,7 +547,8 @@ static void ecard_check_lockup(struct irq_desc *desc)
-> > >       if (last == jiffies) {
-> > >               lockup += 1;
-> > >               if (lockup > 1000000) {
-> > > -                     printk(KERN_ERR "\nInterrupt lockup detected - "
-> > > +                     printk(KERN_ERR "\n"
-> > > +                            KERN_ERR "Interrupt lockup detected - "
-> > >                              "disabling all expansion card interrupts\n");
-> > >
-> > >                       desc->chip->mask(IRQ_EXPANSIONCARD);
-> >
-> > What's the purpose of having lines printed with e.g. `KERN_ERR "\n"' only?
-> > Shouldn't these just be removed?
-> >
-> > Usually lines starting with `\n' are continuations, but given some other
-> > module may call printk() in between, there's no guarantee continuations
-> > appear on the same line.
-> 
-> erm, i thought the prink lock was grabbed per-buffer, not per-line ...
-> so yes, if the function calls were like printk(KERN_ERR "\n");
-> printk(KERN_ERR "..."); things could be broken up, but this is on
-> function call, so it shouldnt ...
+On 26/08/07, Robert P. J. Day <rpjday@mindspring.com> wrote:
+> On Sun, 26 Aug 2007, Jesper Juhl wrote:
+>
+> > +     msp_maps = kmalloc(fcnt * sizeof(struct mtd_info), GFP_KERNEL);
+> >       memset(msp_maps, 0, fcnt * sizeof(struct mtd_info));
+>
+> ...
+>
+> > +             msp_parts[i] = kmalloc(pcnt * sizeof(struct mtd_partition),
+> > +                     GFP_KERNEL);
+> >               memset(msp_parts[i], 0, pcnt * sizeof(struct mtd_partition));
+>
+> again, both of the above could be done with a single call to kcalloc()
+> in each case.  why are you so philosophically opposed to doing it that
+> way?
+>
+Check the second patch in the series, please.
 
-Yes it is.
-
-What I mean is that probably there used to be a printk() call starting with
-`\n'. Then someone added a `KERN_ERR' in front of it.
-
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+-- 
+Jesper Juhl <jesper.juhl@gmail.com>
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+Plain text mails only, please      http://www.expita.com/nomime.html
