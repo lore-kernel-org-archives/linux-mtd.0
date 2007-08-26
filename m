@@ -1,15 +1,28 @@
-Received: from ruby.srv2.com ([66.197.217.21])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IP8Jl-0005tY-C2
-	for linux-mtd@lists.infradead.org; Sat, 25 Aug 2007 22:57:41 -0400
-Message-ID: <50281.82.128.13.69.1188086907.squirrel@mowk.org>
-Date: Sat, 25 Aug 2007 20:08:27 -0400 (EDT)
-Subject: Contact us immediately
-From: "EU GRANTS FASCILITATORS COM.LTD." <eugrants@excite.es>
+Received: from fk-out-0910.google.com ([209.85.128.189])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IP7UY-0005Nv-V9
+	for linux-mtd@lists.infradead.org; Sat, 25 Aug 2007 22:04:46 -0400
+Received: by fk-out-0910.google.com with SMTP id 19so1847684fkr
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 25 Aug 2007 19:04:41 -0700 (PDT)
+From: Jesper Juhl <jesper.juhl@gmail.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH 2/4] mtd: convert some kmalloc()+memset() calls to kcalloc()
+	in drivers/mtd/maps/pmcmsp-flash.c
+Date: Sun, 26 Aug 2007 03:55:20 +0200
+References: <200708260352.33343.jesper.juhl@gmail.com>
+	<200708260354.27928.jesper.juhl@gmail.com>
+In-Reply-To: <200708260354.27928.jesper.juhl@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: eugrants@excite.com
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200708260355.20916.jesper.juhl@gmail.com>
+Cc: Denys Vlasenko <vda.linux@googlemail.com>,
+	Jesper Juhl <jesper.juhl@gmail.com>,
+	Marc St-Jean <stjeanma@pmc-sierra.com>, linux-mtd@lists.infradead.org,
+	"Robert P. J. Day" <rpjday@mindspring.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,55 +33,38 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
+    mtd: convert some kmalloc()+memset() calls to kcalloc() in drivers/mtd/maps/pmcmsp-flash.c
+    
+    No point in doing kmalloc() followed by memset() when we have
+    kcalloc() at our disposal.
+    
+    Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
+---
+ drivers/mtd/maps/pmcmsp-flash.c |    6 ++----
+ 1 files changed, 2 insertions(+), 4 deletions(-)
 
-
-EU-GRANTS FASCILITATORS COM. LTD.
-EU-GRANTS 35 Aztec Row Berners Road
-London N1 0PW UK.
-Direct Telephone:+44-7045705184
-Dear Sir/Madam.
-                                            AWARD OF EU-GRANT OF
-US$2,200,000.00 oNLY
-i write to inform you that you have been chosen as one of the 10
-benefactors for this years EU-GRANT FASCILITY to the tune of US$2.2
-Million Dollars Only.This grant is aimed at enhancing the Welfare of
-unemployed in your locality by empowering you to set up SMEs that would
-employ people and make life meaningful to them.The EU Grants FASCILITY
-programme is a partnership led by EU COMPANIES AND GOVERNMENTS to help
-small and mid-size enterprises (SMEs) and local and regional governments
-of NON-EU nations, to better understand and use EU funding opportunities
-at the international, national, and regional level.
-To quickly have access to this funds,you are to immediately fill out the
-details as required for the release of the money to you as below stated
-and also send us a scanned copy of your ID/Internationa Passport as proof
-of ID:
-
-                       REQUIRED INFORMATION FOR PAYMENT APPROVAL
-
-1.FULL NAMES:.
-2.DATE OF BIRTH  B.AGE   C.SEX
-3.MARITAL STATUS  B.RELIGION
-4.NUMBER OF CHILDREN
-5.NAME OF SPOUSE   B.NEXT OF KIN
-6.PLACE OF WORK
-7.POSITION AT WORK
-8.DIRECT TELEPHONE NUMBER,MOBILE AND FAX LINES
-9.DIRECT EMAIL ADDRESS
-10.ANNUAL INCOME
-11.NUMBER OF STAFF.
-
-Note that you are to send an urgent letter on acceptance via email to the
-EU-GRANTS Coordinator in London Mr.Jones David via his direct email as
-below stated and also call him via his direct telephone line also below
-stated for further details on how to get the money approved sent to your
-account via Wire Transfer or via certified cheque.
-Name: Jones David
-Email:eugrants@excite.com
-Direct Telephone:+44-7045705184
-
-Expecting your immediate action.Congratulations ..
-
-Faithfully yours
-Elizabeth Peters
-Sec/Legal Adviser
-EU-GRANTS FASCILITATORS COM. LTD.
+diff --git a/drivers/mtd/maps/pmcmsp-flash.c b/drivers/mtd/maps/pmcmsp-flash.c
+index dfdb120..af72cdd 100644
+--- a/drivers/mtd/maps/pmcmsp-flash.c
++++ b/drivers/mtd/maps/pmcmsp-flash.c
+@@ -75,8 +75,7 @@ int __init init_msp_flash(void)
+ 	printk(KERN_NOTICE "Found %d PMC flash devices\n", fcnt);
+ 	msp_flash = kmalloc(fcnt * sizeof(struct map_info *), GFP_KERNEL);
+ 	msp_parts = kmalloc(fcnt * sizeof(struct mtd_partition *), GFP_KERNEL);
+-	msp_maps = kmalloc(fcnt * sizeof(struct mtd_info), GFP_KERNEL);
+-	memset(msp_maps, 0, fcnt * sizeof(struct mtd_info));
++	msp_maps = kcalloc(fcnt, sizeof(struct mtd_info), GFP_KERNEL);
+ 
+ 	/* loop over the flash devices, initializing each */
+ 	for (i = 0; i < fcnt; i++) {
+@@ -92,9 +91,8 @@ int __init init_msp_flash(void)
+ 			continue;
+ 		}
+ 
+-		msp_parts[i] = kmalloc(pcnt * sizeof(struct mtd_partition),
++		msp_parts[i] = kcalloc(pcnt, sizeof(struct mtd_partition),
+ 			GFP_KERNEL);
+-		memset(msp_parts[i], 0, pcnt * sizeof(struct mtd_partition));
+ 
+ 		/* now initialize the devices proper */
+ 		flash_name[5] = '0' + i;
