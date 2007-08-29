@@ -1,31 +1,17 @@
-Received: from cerber.ds.pg.gda.pl ([153.19.208.18])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQLnt-0005AE-12
-	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 07:33:54 -0400
-Date: Wed, 29 Aug 2007 12:22:41 +0100 (BST)
-From: "Maciej W. Rozycki" <macro@linux-mips.org>
-Sender: macro@blysk.ds.pg.gda.pl
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] Prefix each line of multiline printk(KERN_<level>
-	"foo\nbar") with KERN_<level>
-In-Reply-To: <Pine.LNX.4.64.0708261305020.31149@anakin>
-Message-ID: <Pine.LNX.4.64N.0708291205020.26167@blysk.ds.pg.gda.pl>
-References: <1187999098.32738.179.camel@localhost>
-	<Pine.LNX.4.64.0708261028120.31149@anakin>
-	<8bd0f97a0708260354xb4c8546od0cc19a590820f32@mail.gmail.com>
-	<Pine.LNX.4.64.0708261305020.31149@anakin>
+Received: from web54402.mail.yahoo.com ([206.190.49.132])
+	by canuck.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IQNpg-0006KH-U7
+	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 09:43:49 -0400
+Date: Wed, 29 Aug 2007 06:37:02 -0700 (PDT)
+From: David Anders <dave123_aml@yahoo.com>
+Subject: Re: Direct Access to flash chips
+To: "Jörn" Engel <joern@logfs.org>, John Klonatos <megaklon@gmail.com>
+In-Reply-To: <20070829103108.GD23020@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-ide@vger.kernel.org, discuss@x86-64.org, linux-scsi@vger.kernel.org,
-	Mike Frysinger <vapier.adi@gmail.com>,
-	linux-acpi@vger.kernel.org, netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org, uclinux-dist-devel@blackfin.uclinux.org,
-	cluster-devel@redhat.com, blinux-list@redhat.com,
-	tpmdd-devel@lists.sourceforge.net, linux-mips@linux-mips.org,
-	jffs-dev@axis.com, mpt_linux_developer@lsi.com,
-	Joe Perches <joe@perches.com>, linux-mtd@lists.infradead.org,
-	osst-users@lists.sourceforge.net, linux-mm@kvack.org,
-	parisc-linux@parisc-linux.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <154983.97140.qm@web54402.mail.yahoo.com>
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,28 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 26 Aug 2007, Geert Uytterhoeven wrote:
+Jörn,
 
-> What I mean is that probably there used to be a printk() call starting with
-> `\n'. Then someone added a `KERN_ERR' in front of it.
+the alauda based card readers are getting pretty hard to find. although they work, they aren't a
+long term solution for accessing raw NAND flash. by far the best solution i've run across is to
+use the FTDI FT2232 chip to bit bang NAND flash access. there are both an opensource library and
+proprietary library for the FT2232 usage under linux.(see projects like OpenOCD for example
+usage).
 
- I gather '\n' at the beginning is to assure the following line is output 
-on a separate line rather than as a continuation of another one which may 
-have been output without a trailing '\n'.  A situation where printk() is 
-called with a string containing no trailing '\n' may be discouraged, but 
-there are some more or less justified exceptions.  For example the SCSI 
-disk spin-up code is one.
+chip information:
+http://www.ftdichip.com/Products/FT2232C.htm
 
- Therefore it may be reasonable for more critical messages -- perhaps not 
-ones at KERN_ERR, but certainly KERN_CRIT and higher ones -- that may 
-potentially happen asynchronously to start with '\n'.  In this case a call 
-would look like this:
+prototype modules:
+http://www.dlpdesign.com/usb/2232m.shtml
 
-	printk("\n" KERN_CRIT "The actual message.\n");
+there are some other products that would work as well including the EZ-Usb products, however they
+do require custom firmware to properly access the NAND flash.
 
-Of course based on "console_loglevel" and "default_message_level" the 
-leading '\n' may still get swallowed from what gets printed to the console 
-terminal, but in reality I do not think that poses a problem, as these 
-both can be set by a system administrator according to the local policy.
+http://moin.elinux.org/wiki/EzUsb
 
-  Maciej
+there are several NAND flash vendors that have NAND flash evaluation kits that include a device
+for accessing NAND flash, but these are generally beyond the cost of most developers.
+
+Dave Anders
+
+
+
+> On Wed, 29 August 2007 11:30:46 +0300, John Klonatos wrote:
+> > 
+> >          I am new to flash technology. From what i understand so far
+> > in order to use the mtd layer, one must have direct access to the
+> > flash chip.
+> >          If this is correct in the first place, i would like to know
+> > how one can achieve this kind of direct connection. I have searched
+> > through the web and so far nothing. I know there are card flash
+> > readers (SmartMedia and Xd-Picture) but what the host system see is
+> > the usb interface.
+> >        So, is there a (free) platform available to make possible this
+> > type of direct connection. Or it is enough to use the usb
+> > interface/protocol.
+> 
+> Olympus MAUSB-10 and Fijufilm DPC-R1 allow raw access.  You can use this
+> driver:
+> http://logfs.org/~joern/patches/alauda_mtd.patch.26
+> 
+> David, any reason not to merge it?
+> 
+> Jörn
+> 
+> -- 
+> In America you can have either a flimsy box banged together out of two
+> by fours and drywall, or a McMansion -- a flimsy box banged together
+> out of two by fours and drywall, but larger, more dramatic-looking,
+> and full of expensive fittings.
+> -- Paul Graham
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+
+
+
+       
+____________________________________________________________________________________
+Be a better Globetrotter. Get better travel answers from someone who knows. Yahoo! Answers - Check it out.
+http://answers.yahoo.com/dir/?link=list&sid=396545469
