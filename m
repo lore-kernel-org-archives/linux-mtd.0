@@ -1,19 +1,19 @@
-Received: from co202.xi-lite.net ([149.6.83.202] helo=toronto.xi-lite.net)
+Received: from wx-out-0506.google.com ([66.249.82.239])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQIey-00032Q-Sp
-	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 04:12:25 -0400
-Message-ID: <46D52961.4080908@parrot.com>
-Date: Wed, 29 Aug 2007 10:08:01 +0200
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+	id 1IQIwq-0003Sz-BU
+	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 04:30:56 -0400
+Received: by wx-out-0506.google.com with SMTP id s7so123889wxc
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Aug 2007 01:30:46 -0700 (PDT)
+Message-ID: <637199e30708290130s2a533353s5dbcc481337bec4a@mail.gmail.com>
+Date: Wed, 29 Aug 2007 11:30:46 +0300
+From: "John Klonatos" <megaklon@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Direct Access to flash chips
 MIME-Version: 1.0
-To: He Yong <hoffer1127@gmail.com>
-Subject: Re: mtd->size overflow
-References: <d843180a0708282321v62662b56h63249d5459b3a3b5@mail.gmail.com>	<9b52d64c0708282351o4defa2edrdfc295488e20d6c4@mail.gmail.com>
-	<d843180a0708290011t64221292hb5d0dfc365fa78b9@mail.gmail.com>
-In-Reply-To: <d843180a0708290011t64221292hb5d0dfc365fa78b9@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Vinit Agnihotri <vinit.agnihotri@gmail.com>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Goodmorning,
 
-> 2007/8/29, Vinit Agnihotri <vinit.agnihotri@gmail.com>:
->> I had same problem,
->> I converted entire mtd sunsytem to work with 64-bit compatibility.
->> You have make fields from mtd_info, erase_info & 2 more structures to 64-bits
->> these fields are size, offset & similar ones...
-Or you could sift the size field, because I bet you never have 1B flash...
+         I am new to flash technology. From what i understand so far
+in order to use the mtd layer, one must have direct access to the
+flash chip.
+         If this is correct in the first place, i would like to know
+how one can achieve this kind of direct connection. I have searched
+through the web and so far nothing. I know there are card flash
+readers (SmartMedia and Xd-Picture) but what the host system see is
+the usb interface.
+       So, is there a (free) platform available to make possible this
+type of direct connection. Or it is enough to use the usb
+interface/protocol.
 
-
-Matthieu
+Thanks in advanced.
