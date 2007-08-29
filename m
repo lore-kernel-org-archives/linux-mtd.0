@@ -1,18 +1,25 @@
-Received: from smtp4-g19.free.fr ([212.27.42.30])
+Received: from bart.se.axis.com ([193.13.178.9])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQOaO-0007Fq-29
-	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 10:32:04 -0400
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-To: linux-mtd@lists.infradead.org
-Subject: jffs2 rootfs mount error
-Date: Wed, 29 Aug 2007 16:31:34 +0200
+	id 1IQOl7-0007VQ-Bj
+	for linux-mtd@lists.infradead.org; Wed, 29 Aug 2007 10:43:08 -0400
+Received: from bart.se.axis.com (bart.se.axis.com [127.0.0.1])
+	by bart.se.axis.com (Postfix) with ESMTP id 77413641D6
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Aug 2007 16:43:00 +0200 (CEST)
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by bart.se.axis.com (Postfix) with ESMTP id 6A92C6415F
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 29 Aug 2007 16:43:00 +0200 (CEST)
+Date: Wed, 29 Aug 2007 16:42:51 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: transfer jffs2 rootFS to Nand flash
+In-Reply-To: <200708291610.50617.schane@osmozis.com>
+Message-ID: <Pine.LNX.4.64.0708291639070.4036@lnxricardw.se.axis.com>
+References: <200708291610.50617.schane@osmozis.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200708291631.34801.schane@osmozis.com>
-Cc: linux-arm@lists.arm.linux.org.uk
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,14 +29,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
 
-What does the following error mean while mouting the jffs2 root file system 
-image flashed on the MTD nand device ?
+On Wed, 29 Aug 2007, Saravanan Chanemouganandam wrote:
 
-JFFS: Trying to mount a non-mtd device.
-Kernel panic - not syncing: VFS: Unable to mount root fs on 
-unknown-block(254,0)
+> 5. on the host created jffs2 rootfs image using #mkfs.jffs2 -r cmrootfs -=
+n -o
+> cmrootfs.img -e 0x20000 --pad=3D0x20000000
+> ...
+> 7. on the cm-x270, flashed rootfs image using mtd-utilities
+>        cm-debian:~# nandwrite /dev/mtdblock1 /mnt/net/cmrootfs.img
+> =09.....
+>        Writing data to block 1ffe0000
+> =09Data did not fit into device, due to bad blocks
+> =09: Success
+> =09cm-debian:~#
 
-Thanks
-Sara
+You shouldn't pad the image up to the size of the device (or partition, if=
+=20
+you were using partitions) or you will get this error, if there are bad=20
+blocks in your flash (there usually are). However, your subsequent test=20
+mount seems to work, so you seem to have gotten all valid data into the=20
+flash anyway, so it still doesn't explain why it doesn't want to be=20
+mounted when=20
+the kernel boots.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
