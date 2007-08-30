@@ -1,30 +1,17 @@
-Received: from smtp4-g19.free.fr ([212.27.42.30])
+Received: from mx1.redhat.com ([66.187.233.31])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQmQW-0005F1-Ev
-	for linux-mtd@lists.infradead.org; Thu, 30 Aug 2007 11:59:28 -0400
-Received: from smtp4-g19.free.fr (localhost.localdomain [127.0.0.1])
-	by smtp4-g19.free.fr (Postfix) with ESMTP id A00106F3DD
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Aug 2007 17:59:21 +0200 (CEST)
-Received: from [192.168.111.252] (cla34-1-88-160-215-156.fbx.proxad.net
-	[88.160.215.156])
-	by smtp4-g19.free.fr (Postfix) with ESMTP id 827CF6F1DE
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 30 Aug 2007 17:59:21 +0200 (CEST)
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: transfer jffs2 rootFS to Nand flash
-Date: Thu, 30 Aug 2007 17:58:55 +0200
-References: <200708291610.50617.schane@osmozis.com>
-	<200708301655.54224.schane@osmozis.com>
-	<Pine.LNX.4.64.0708301708240.4036@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.0708301708240.4036@lnxricardw.se.axis.com>
+	id 1IQmlu-0005hE-SV
+	for linux-mtd@lists.infradead.org; Thu, 30 Aug 2007 12:21:35 -0400
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH] MTD: Initialise s_flags in get_sb_mtd_aux()
+To: dwmw2@infradead.org
+Date: Thu, 30 Aug 2007 17:21:19 +0100
+Message-ID: <20070830162119.28355.70078.stgit@warthog.cambridge.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200708301758.56358.schane@osmozis.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: dhowells@redhat.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,69 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+From: David Howells <dhowells@redhat.com>
 
-I got my problem fix up by gurus. The work around solution to transfer jffs=
-2=20
-rootfs on the cm-x270 nand ( /dev/mtdblock1 ) is to have the following=20
-kernel configuration setup.
+Initialise s_flags in get_sb_mtd_aux() from the flags parameter.
 
-CONFIG_ARMCORE_FLASH is not set
-CONFIG_ARMCORE_NAND is not set     =20
-CONFIG_MTD_NAND_CM_X270 is set
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
-The "compulab Nand flash" block driver CONFIG_ARMCORE_NAND initializes=20
-(erases) nand contents on each reboot that causes the jffs2 rootfs mounting=
-=20
-failure.=20
+ drivers/mtd/mtdsuper.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Unconfig CONFIG_ARMCORE_NAND fixs the problem and the jffs2 rootfs on the=20
-cm-x270 nand mounted succesfully.
-
-IP-Config: Complete:
-      device=3Deth0, addr=3D192.168.6.203, mask=3D255.255.255.0, gw=3D192.1=
-68.6.1,
-     host=3Dcm-x270, domain=3D, nis-domain=3D(none),
-     bootserver=3D192.168.6.1, rootserver=3D192.168.6.1, rootpath=3D
-VFS: Mounted root (jffs2 filesystem).
-=46reeing init memory: 120K
-
-Regards,
-Sara
-
-
-
-Le Jeudi 30 Ao=FBt 2007 17:09, vous avez =E9crit=A0:
-> On Thu, 30 Aug 2007, Saravanan Chanemouganandam wrote:
-> > I have unconfigured the compulab NAND flash block driver which
-> > reinitialise (erases on reboot) each and everytime of reboot that
-> > conflicts with MTD nand driver.
->
-> That would definitely explain the symptoms you were seeing (no jffs2 nodes
-> found when mounting the rootfs).
->
-> > This fixed my problem and I can be able to successfully mount the jffs2
-> > rootfs.
-> >
-> > IP-Config: Complete:
-> >      device=3Deth0, addr=3D192.168.6.202, mask=3D255.255.255.0, gw=3D19=
-2.168.6.1,
-> >     host=3Dcm-x270, domain=3D, nis-domain=3D(none),
-> >     bootserver=3D192.168.6.1, rootserver=3D192.168.6.1, rootpath=3D
-> > VFS: Mounted root (jffs2 filesystem).
-> > Freeing init memory: 120K
-> > INIT: version 2.86 booting
-> >
-> > Thanks a lot for your comments and your valuable time.
->
-> Great!
->
-> /Ricard
-> --
-> Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-> Axis Communications AB, Lund, Sweden            www.axis.com
-> Phone +46 46 272 2016                           Fax +46 46 13 61 30
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
+index aca3319..9b430f2 100644
+--- a/drivers/mtd/mtdsuper.c
++++ b/drivers/mtd/mtdsuper.c
+@@ -70,6 +70,8 @@ static int get_sb_mtd_aux(struct file_system_type *fs_type, int flags,
+ 	DEBUG(1, "MTDSB: New superblock for device %d (\"%s\")\n",
+ 	      mtd->index, mtd->name);
+ 
++	sb->s_flags = flags;
++
+ 	ret = fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
+ 	if (ret < 0) {
+ 		up_write(&sb->s_umount);
