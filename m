@@ -1,20 +1,26 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQiox-0002iS-8R
-	for linux-mtd@lists.infradead.org; Thu, 30 Aug 2007 08:08:27 -0400
-Date: Thu, 30 Aug 2007 13:51:33 +0200 (CEST)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Saravanan Chanemouganandam <schane@osmozis.com>
-Subject: Re: transfer jffs2 rootFS to Nand flash
-In-Reply-To: <200708301345.36832.schane@osmozis.com>
-Message-ID: <Pine.LNX.4.64.0708301348470.4036@lnxricardw.se.axis.com>
-References: <200708291610.50617.schane@osmozis.com>
-	<Pine.LNX.4.64.0708291639070.4036@lnxricardw.se.axis.com>
-	<200708301345.36832.schane@osmozis.com>
+Received: from rv-out-0910.google.com ([209.85.198.185])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IQkf7-0003nS-1R
+	for linux-mtd@lists.infradead.org; Thu, 30 Aug 2007 10:06:26 -0400
+Received: by rv-out-0910.google.com with SMTP id c24so153497rvf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 30 Aug 2007 07:06:19 -0700 (PDT)
+Message-ID: <d843180a0708300706k200cfb98s628589852c834478@mail.gmail.com>
+Date: Thu, 30 Aug 2007 22:06:18 +0800
+From: "He Yong" <hoffer1127@gmail.com>
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
+Subject: Re: mtd->size overflow
+In-Reply-To: <20070829170424.GH23020@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
+References: <d843180a0708282321v62662b56h63249d5459b3a3b5@mail.gmail.com>
+	<9b52d64c0708282351o4defa2edrdfc295488e20d6c4@mail.gmail.com>
+	<d843180a0708290011t64221292hb5d0dfc365fa78b9@mail.gmail.com>
+	<9b52d64c0708290040h288384d1ha30d4931ae5d517b@mail.gmail.com>
+	<20070829170424.GH23020@lazybastard.org>
+Cc: linux-mtd@lists.infradead.org, Vinit Agnihotri <vinit.agnihotri@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,50 +30,110 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Thu, 30 Aug 2007, Saravanan Chanemouganandam wrote:
-
-> Thanks to your analysis and answer. I have removed the --pad option in
-> mkfs.jffs2 and then flashed the image using "nandwrite -p /dev/mtdblock1
-> cmrootfs.img". This time theres no  "due to bad blocks" error.
-
-Ok, well that's good anyway.
-
->
-> The test on mounting jffs2 image was success once after flashing within t=
-he
-> running linux as
->
-> cm-debian:/mnt/net#mount -t jffs2 /dev/mtdblock1 /mnt/test
-> cm-debian:/mnt/net# ls /mnt/test
-> =A0bin =A0 dev =A0home =A0 =A0lib =A0 =A0 =A0 =A0 media =A0opt =A0 =A0 =
-=A0 =A0 =A0    proc =A0sbin =A0sys =A0usr
-> boot =A0etc =A0initrd =A0lost+found =A0mnt =A0 =A0packages.txt =A0root =
-=A0srv =A0 tmp =A0var
->
-> Indeed, the test of above jffs2 mount after reboot of the system got fail=
-ed
-> and its a strange.
->
-> cm-debian:/mnt/net# mount -t jffs2 /dev/mtdblock1 /mnt/test
-> Cowardly refusing to erase blocks on filesystem with no valid JFFS2 nodes
-> empty_blocks 0, bad_blocks 8, c->nr_blocks 4080
-> mount: /dev/mtdblock1: can't read superblock
-
-The "Cowardly refusing to erase blocks on filesystem with no valid JFFS2=20
-nodes" indicates to me that what Linux thinks is /dev/mtdblock1 is in fact=
-=20
-completely erased flash.
-
-> I hope this may explain some hidden stuffs behind the failure of mounting=
- when
-> kernel boots. I think it could be the compatibility isseu of the compulab=
- NAND driver and
-> the JFFS2. any idea from this behaviour?
-
-The only idea I have is that the device numbers (/dev/mtdblockN) get=20
-shifted around for some reason, i.e. you should use /dev/mtdblock0 or 2 or=
-=20
-something. Can't understand why though.
-
-/Ricard
+SGksYWxsCkkndmUgZG9uZSB0aGUgd29yaywgYW5kIGhhdmUgaXQgdGVzdGVkLgpoZXJlIGlzIHRo
+ZSBwYXRjaDoKCkluZGV4OiBpbmNsdWRlL2xpbnV4L210ZC9uYW5kLmgKPT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQotLS0g
+aW5jbHVkZS9saW51eC9tdGQvbmFuZC5oCe+8iOS/ruiuoueJiCAxNjbvvIkKKysrIGluY2x1ZGUv
+bGludXgvbXRkL25hbmQuaAnvvIjkv67orqLniYggMTY377yJCkBAIC0zOTIsNyArMzkyLDcgQEAK
+IAlpbnQJCWJidF9lcmFzZV9zaGlmdDsKIAlpbnQJCWNoaXBfc2hpZnQ7CiAJaW50CQludW1jaGlw
+czsKLQl1bnNpZ25lZCBsb25nCWNoaXBzaXplOworCXVfaW50NjRfdAljaGlwc2l6ZTsKIAlpbnQJ
+CXBhZ2VtYXNrOwogCWludAkJcGFnZWJ1ZjsKIAlpbnQJCXN1YnBhZ2VzaXplOwpAQCAtNDkxLDgg
+KzQ5MSw4IEBACiBzdHJ1Y3QgbmFuZF9iYnRfZGVzY3IgewogCWludAlvcHRpb25zOwogCWludAlw
+YWdlc1tOQU5EX01BWF9DSElQU107Ci0JaW50CW9mZnM7Ci0JaW50CXZlcm9mZnM7CisJdV9pbnQ2
+NF90CW9mZnM7CisJdV9pbnQ2NF90CXZlcm9mZnM7CiAJdWludDhfdAl2ZXJzaW9uW05BTkRfTUFY
+X0NISVBTXTsKIAlpbnQJbGVuOwogCWludAltYXhibG9ja3M7CkluZGV4OiBpbmNsdWRlL2xpbnV4
+L210ZC9tdGQuaAo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09Ci0tLSBpbmNsdWRlL2xpbnV4L210ZC9tdGQuaAnvvIjkv67o
+rqLniYggMTY277yJCisrKyBpbmNsdWRlL2xpbnV4L210ZC9tdGQuaAnvvIjkv67orqLniYggMTY3
+77yJCkBAIC0zNiw5ICszNiw5IEBACiAgICBzcGVjaWZpYyB0byBhbnkgcGFydGljdWxhciBibG9j
+ay4gKi8KIHN0cnVjdCBlcmFzZV9pbmZvIHsKIAlzdHJ1Y3QgbXRkX2luZm8gKm10ZDsKLQl1X2lu
+dDMyX3QgYWRkcjsKLQl1X2ludDMyX3QgbGVuOwotCXVfaW50MzJfdCBmYWlsX2FkZHI7CisJdV9p
+bnQ2NF90IGFkZHI7CisJdV9pbnQ2NF90IGxlbjsKKwl1X2ludDY0X3QgZmFpbF9hZGRyOwogCXVf
+bG9uZyB0aW1lOwogCXVfbG9uZyByZXRyaWVzOwogCXVfaW50IGRldjsKQEAgLTUwLDcgKzUwLDcg
+QEAKIH07Cgogc3RydWN0IG10ZF9lcmFzZV9yZWdpb25faW5mbyB7Ci0JdV9pbnQzMl90IG9mZnNl
+dDsJCQkvKiBBdCB3aGljaCB0aGlzIHJlZ2lvbiBzdGFydHMsIGZyb20gdGhlCmJlZ2lubmluZyBv
+ZiB0aGUgTVREICovCisJdV9pbnQ2NF90IG9mZnNldDsJCQkvKiBBdCB3aGljaCB0aGlzIHJlZ2lv
+biBzdGFydHMsIGZyb20gdGhlCmJlZ2lubmluZyBvZiB0aGUgTVREICovCiAJdV9pbnQzMl90IGVy
+YXNlc2l6ZTsJCS8qIEZvciB0aGlzIHJlZ2lvbiAqLwogCXVfaW50MzJfdCBudW1ibG9ja3M7CQkv
+KiBOdW1iZXIgb2YgYmxvY2tzIG9mIGVyYXNlc2l6ZSBpbiB0aGlzIHJlZ2lvbiAqLwogfTsKQEAg
+LTkyLDcgKzkyLDcgQEAKIAlzaXplX3QJCXJldGxlbjsKIAlzaXplX3QJCW9vYmxlbjsKIAlzaXpl
+X3QJCW9vYnJldGxlbjsKLQl1aW50MzJfdAlvb2JvZmZzOworCXVfaW50NjRfdAlvb2JvZmZzOwog
+CXVpbnQ4X3QJCSpkYXRidWY7CiAJdWludDhfdAkJKm9vYmJ1ZjsKIH07CkBAIC0xMDAsNyArMTAw
+LDcgQEAKIHN0cnVjdCBtdGRfaW5mbyB7CiAJdV9jaGFyIHR5cGU7CiAJdV9pbnQzMl90IGZsYWdz
+OwotCXVfaW50MzJfdCBzaXplOwkgLy8gVG90YWwgc2l6ZSBvZiB0aGUgTVRECisJdV9pbnQ2NF90
+IHNpemU7CSAvLyBUb3RhbCBzaXplIG9mIHRoZSBNVEQgLS0gYnkgaG9mZmVyCgogCS8qICJNYWpv
+ciIgZXJhc2Ugc2l6ZSBmb3IgdGhlIGRldmljZS4gTmHDr3ZlIHVzZXJzIG1heSB0YWtlIHRoaXMK
+IAkgKiB0byBiZSB0aGUgb25seSBlcmFzZSBzaXplIGF2YWlsYWJsZSwgb3IgbWF5IHVzZSB0aGUg
+bW9yZSBkZXRhaWxlZApJbmRleDogZHJpdmVycy9tdGQvbmFuZC9uYW5kX2Jhc2UuYwo9PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09Ci0tLSBkcml2ZXJzL210ZC9uYW5kL25hbmRfYmFzZS5jCe+8iOS/ruiuoueJiCAxNjbvvIkK
+KysrIGRyaXZlcnMvbXRkL25hbmQvbmFuZF9iYXNlLmMJ77yI5L+u6K6i54mIIDE2N++8iQpAQCAt
+MjMyOCw4ICsyMzI4LDggQEAKIAkgICAgICAgIiAweCUwMngsIENoaXAgSUQ6IDB4JTAyeCAoJXMg
+JXMpXG4iLCAqbWFmX2lkLCBkZXZfaWQsCiAJICAgICAgIG5hbmRfbWFudWZfaWRzW21hZl9pZHhd
+Lm5hbWUsIHR5cGUtPm5hbWUpOwoKLQlwcmludGsoS0VSTl9JTkZPICJCbG9ja1NpemU6IDB4JXgs
+IFBhZ2VTaXplOiAweCV4LCBPb2JTaXplOiAweCV4LApCdXNXaXRoOiVkXG4iLAotICAgICAgICAg
+ICBtdGQtPmVyYXNlc2l6ZSxtdGQtPndyaXRlc2l6ZSxtdGQtPm9vYnNpemUsKGNoaXAtPm9wdGlv
+bnMKJiBOQU5EX0JVU1dJRFRIXzE2KSA/IDE2IDogOCApOworCXByaW50ayhLRVJOX0lORk8gIkNo
+aXBTaXplOiAweCV4LCBCbG9ja1NpemU6IDB4JXgsIFBhZ2VTaXplOiAweCV4LApPb2JTaXplOiAw
+eCV4LCBCdXNXaXRoOiVkXG4iLAorICAgICAgICAgICBjaGlwLT5jaGlwc2l6ZSxtdGQtPmVyYXNl
+c2l6ZSxtdGQtPndyaXRlc2l6ZSxtdGQtPm9vYnNpemUsKGNoaXAtPm9wdGlvbnMKJiBOQU5EX0JV
+U1dJRFRIXzE2KSA/IDE2IDogOCApOwoKIAlyZXR1cm4gdHlwZTsKIH0KSW5kZXg6IGRyaXZlcnMv
+bXRkL210ZHBhcnQuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09Ci0tLSBkcml2ZXJzL210ZC9tdGRwYXJ0LmMJ77yI5L+u
+6K6i54mIIDE2Nu+8iQorKysgZHJpdmVycy9tdGQvbXRkcGFydC5jCe+8iOS/ruiuoueJiCAxNjfv
+vIkKQEAgLTI4LDcgKzI4LDcgQEAKIHN0cnVjdCBtdGRfcGFydCB7CiAJc3RydWN0IG10ZF9pbmZv
+IG10ZDsKIAlzdHJ1Y3QgbXRkX2luZm8gKm1hc3RlcjsKLQl1X2ludDMyX3Qgb2Zmc2V0OworCXVf
+aW50NjRfdCBvZmZzZXQ7CiAJaW50IGluZGV4OwogCXN0cnVjdCBsaXN0X2hlYWQgbGlzdDsKIAlp
+bnQgcmVnaXN0ZXJlZDsKQEAgLTQwMCwxNSArNDAwLDE1IEBACiAJCQkJc2xhdmUtPm9mZnNldCA9
+ICgoY3VyX29mZnNldCAvIG1hc3Rlci0+ZXJhc2VzaXplKSArIDEpICogbWFzdGVyLT5lcmFzZXNp
+emU7CiAJCQkJcHJpbnRrKEtFUk5fTk9USUNFICJNb3ZpbmcgcGFydGl0aW9uICVkOiAiCiAJCQkJ
+ICAgICAgICIweCUwOHggLT4gMHglMDh4XG4iLCBpLAotCQkJCSAgICAgICBjdXJfb2Zmc2V0LCBz
+bGF2ZS0+b2Zmc2V0KTsKKwkJCQkgICAgICAgY3VyX29mZnNldCwgKHVfaW50MzJfdClzbGF2ZS0+
+b2Zmc2V0KTsKIAkJCX0KIAkJfQogCQlpZiAoc2xhdmUtPm10ZC5zaXplID09IE1URFBBUlRfU0la
+X0ZVTEwpCiAJCQlzbGF2ZS0+bXRkLnNpemUgPSBtYXN0ZXItPnNpemUgLSBzbGF2ZS0+b2Zmc2V0
+OwogCQljdXJfb2Zmc2V0ID0gc2xhdmUtPm9mZnNldCArIHNsYXZlLT5tdGQuc2l6ZTsKCi0JCXBy
+aW50ayAoS0VSTl9OT1RJQ0UgIjB4JTA4eC0weCUwOHggOiBcIiVzXCJcbiIsIHNsYXZlLT5vZmZz
+ZXQsCi0JCQlzbGF2ZS0+b2Zmc2V0ICsgc2xhdmUtPm10ZC5zaXplLCBzbGF2ZS0+bXRkLm5hbWUp
+OworCQlwcmludGsgKEtFUk5fTk9USUNFICIweCUwOHgtMHglMDh4IDogXCIlc1wiXG4iLCAodV9p
+bnQzMl90KXNsYXZlLT5vZmZzZXQsCisJCQkodV9pbnQzMl90KShzbGF2ZS0+b2Zmc2V0ICsgc2xh
+dmUtPm10ZC5zaXplKSwgc2xhdmUtPm10ZC5uYW1lKTsKCiAJCS8qIGxldCdzIGRvIHNvbWUgc2Fu
+aXR5IGNoZWNrcyAqLwogCQlpZiAoc2xhdmUtPm9mZnNldCA+PSBtYXN0ZXItPnNpemUpIHsKQEAg
+LTQyMSw3ICs0MjEsNyBAQAogCQlpZiAoc2xhdmUtPm9mZnNldCArIHNsYXZlLT5tdGQuc2l6ZSA+
+IG1hc3Rlci0+c2l6ZSkgewogCQkJc2xhdmUtPm10ZC5zaXplID0gbWFzdGVyLT5zaXplIC0gc2xh
+dmUtPm9mZnNldDsKIAkJCXByaW50ayAoIm10ZDogcGFydGl0aW9uIFwiJXNcIiBleHRlbmRzIGJl
+eW9uZCB0aGUgZW5kIG9mIGRldmljZQpcIiVzXCIgLS0gc2l6ZSB0cnVuY2F0ZWQgdG8gJSN4XG4i
+LAotCQkJCXBhcnRzW2ldLm5hbWUsIG1hc3Rlci0+bmFtZSwgc2xhdmUtPm10ZC5zaXplKTsKKwkJ
+CQlwYXJ0c1tpXS5uYW1lLCBtYXN0ZXItPm5hbWUsICh1X2ludDMyX3Qpc2xhdmUtPm10ZC5zaXpl
+KTsKIAkJfQogCQlpZiAobWFzdGVyLT5udW1lcmFzZXJlZ2lvbnM+MSkgewogCQkJLyogRGVhbCB3
+aXRoIHZhcmlhYmxlIGVyYXNlIHNpemUgc3R1ZmYgKi8KQEAgLTQ0Myw3ICs0NDMsNyBAQAogCQl9
+CgogCQlpZiAoKHNsYXZlLT5tdGQuZmxhZ3MgJiBNVERfV1JJVEVBQkxFKSAmJgotCQkgICAgKHNs
+YXZlLT5vZmZzZXQgJSBzbGF2ZS0+bXRkLmVyYXNlc2l6ZSkpIHsKKwkJICAgICgoKHVfaW50MzJf
+dClzbGF2ZS0+b2Zmc2V0KSAlIHNsYXZlLT5tdGQuZXJhc2VzaXplICAvKmhvZmZlciovICkpIHsK
+IAkJCS8qIERvZXNuJ3Qgc3RhcnQgb24gYSBib3VuZGFyeSBvZiBtYWpvciBlcmFzZSBzaXplICov
+CiAJCQkvKiBGSVhNRTogTGV0IGl0IGJlIHdyaXRhYmxlIGlmIGl0IGlzIG9uIGEgYm91bmRhcnkg
+b2YgX21pbm9yXwplcmFzZSBzaXplIHRob3VnaCAqLwogCQkJc2xhdmUtPm10ZC5mbGFncyAmPSB+
+TVREX1dSSVRFQUJMRTsKQEAgLTQ1MSw3ICs0NTEsNyBAQAogCQkJCXBhcnRzW2ldLm5hbWUpOwog
+CQl9CiAJCWlmICgoc2xhdmUtPm10ZC5mbGFncyAmIE1URF9XUklURUFCTEUpICYmCi0JCSAgICAo
+c2xhdmUtPm10ZC5zaXplICUgc2xhdmUtPm10ZC5lcmFzZXNpemUpKSB7CisJCSAgICAoKCh1X2lu
+dDMyX3Qpc2xhdmUtPm10ZC5zaXplKSAlIHNsYXZlLT5tdGQuZXJhc2VzaXplIC8qaG9mZmVyKi8g
+KSApIHsKIAkJCXNsYXZlLT5tdGQuZmxhZ3MgJj0gfk1URF9XUklURUFCTEU7CiAJCQlwcmludGsg
+KCJtdGQ6IHBhcnRpdGlvbiBcIiVzXCIgZG9lc24ndCBlbmQgb24gYW4gZXJhc2UgYmxvY2sgLS0K
+Zm9yY2UgcmVhZC1vbmx5XG4iLAogCQkJCXBhcnRzW2ldLm5hbWUpOwpJbmRleDogZHJpdmVycy9t
+dGQvbXRkY29yZS5jCj09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0KLS0tIGRyaXZlcnMvbXRkL210ZGNvcmUuYwnvvIjkv67o
+rqLniYggMTY277yJCisrKyBkcml2ZXJzL210ZC9tdGRjb3JlLmMJ77yI5L+u6K6i54mIIDE2N++8
+iQpAQCAtMzQ5LDcgKzM0OSw3IEBACiAJaWYgKCF0aGlzKQogCQlyZXR1cm4gMDsKCi0JcmV0dXJu
+IHNwcmludGYoYnVmLCAibXRkJWQ6ICU4Ljh4ICU4Ljh4IFwiJXNcIlxuIiwgaSwgdGhpcy0+c2l6
+ZSwKKwlyZXR1cm4gc3ByaW50ZihidWYsICJtdGQlZDogJTguOHggJTguOHggXCIlc1wiXG4iLCBp
+LCAodV9pbnQzMl90KXRoaXMtPnNpemUsCiAJCSAgICAgICB0aGlzLT5lcmFzZXNpemUsIHRoaXMt
+Pm5hbWUpOwogfQoKCgoyMDA3LzgvMzAsIErDtnJuIEVuZ2VsIDxqb2VybkBsb2dmcy5vcmc+Ogo+
+IE9uIFdlZCwgMjkgQXVndXN0IDIwMDcgMTM6MTA6MTUgKzA1MzAsIFZpbml0IEFnbmlob3RyaSB3
+cm90ZToKPiA+Cj4gPiBJIGRvbnQgbWluZCBnaXZpbmcgb3V0IHBhdGNoCj4gPiBidXQgaXRzIGFi
+b3V0IG1ha2luZyBtdGQgc3Vic3l0ZW0gNjQtYml0LAo+ID4gc28gbXRkLW1haW50YWluZXJzIG11
+c3QgYWxsb3cgdGhhdCBwYXRjaC4gQXMgaXRzIGtlcm5lbCBwYXRjaC4KPgo+IEp1c3Qgc2VuZCB0
+aGUgcGF0Y2guICBFdmVuIGlmIGl0IGRvZXNuJ3QgZ2V0IG1lcmdlZCwgcmVhZGluZyB0aGUgcGF0
+Y2gKPiB3aWxsIGJlIHVzZWZ1bCB0byB3aG9ldmVyIGRvZXMgdGhlIGFjdHVhbCA2NGJpdCB0cmFu
+c2l0aW9uLgo+Cj4gSsO2cm4KPgo+IC0tCj4gSm9lcm4ncyBsaWJyYXJ5IHBhcnQgMTQ6Cj4gaHR0
+cDovL3d3dy5zYW5kcGlsZS5vcmcvCj4KCgotLSAKQmVzdCBSZWdhcmRzIQoKSGUgWW9uZwoKU2No
+b29sIG9mIEluZm9ybWF0aW9uIFNlY3VyaXR5LApTaGFuZ2hhaSBKaWFvdG9uZyBVbml2ZXJzaXR5
+LApEb25nIGNodWFuIFJvYWQgIzgwMCwKTWluaGFuZywgU2hhbmdoYWksIFAuUi5DaGluYQo=
