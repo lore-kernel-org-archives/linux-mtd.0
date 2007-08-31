@@ -1,17 +1,19 @@
-Received: from mx1.redhat.com ([66.187.233.31])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IQmlu-0005hE-SV
-	for linux-mtd@lists.infradead.org; Thu, 30 Aug 2007 12:21:35 -0400
-From: David Howells <dhowells@redhat.com>
-Subject: [PATCH] MTD: Initialise s_flags in get_sb_mtd_aux()
-To: dwmw2@infradead.org
-Date: Thu, 30 Aug 2007 17:21:19 +0100
-Message-ID: <20070830162119.28355.70078.stgit@warthog.cambridge.redhat.com>
+Received: from mail.kernelconcepts.de ([212.60.202.196])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IR1jA-0004lJ-7i
+	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 04:19:47 -0400
+Received: from [192.168.2.28] by mail.kernelconcepts.de with esmtpsa
+	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
+	(envelope-from <nils.faerber@kernelconcepts.de>) id 1IR1ti-0007aw-Fi
+	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 10:30:34 +0200
+Message-ID: <46D7CF14.1010009@kernelconcepts.de>
+Date: Fri, 31 Aug 2007 10:19:32 +0200
+From: Nils Faerber <nils.faerber@kernelconcepts.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 support fro AT45* dataflash...
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Cc: dhowells@redhat.com, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: David Howells <dhowells@redhat.com>
+Hi!
+Just a quick question of verification ;)
+We are planning a new hardware and have to choose our storage device.
+Ideally we would like to use one of the AT45* serial data flashes
+(currently in plan is AT45DB642D with uclinux 2.6.xx).
+Looking through the kernel sources I found several "hints" that those
+dataflashes should be supported by MTD and JFFS2.
+Now I just read in tha datasheet that dataflashes require a sector
+rewrite every 10,000 write cycles in any of the pages of a single sector.
+This seems complex to me and I was not able to conclusively figure out
+for sure if MTD/JFFS2 supports this. JFFS2 is critical for our application.
 
-Initialise s_flags in get_sb_mtd_aux() from the flags parameter.
+So if someone could just briefly acknowledge that this sector-rewrite is
+also implemented I would be extremely happy (and continue to go for data
+flashes ;)
 
-Signed-off-by: David Howells <dhowells@redhat.com>
----
+Many thanks!
 
- drivers/mtd/mtdsuper.c |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Cheers
+  nils faerber
 
-diff --git a/drivers/mtd/mtdsuper.c b/drivers/mtd/mtdsuper.c
-index aca3319..9b430f2 100644
---- a/drivers/mtd/mtdsuper.c
-+++ b/drivers/mtd/mtdsuper.c
-@@ -70,6 +70,8 @@ static int get_sb_mtd_aux(struct file_system_type *fs_type, int flags,
- 	DEBUG(1, "MTDSB: New superblock for device %d (\"%s\")\n",
- 	      mtd->index, mtd->name);
- 
-+	sb->s_flags = flags;
-+
- 	ret = fill_super(sb, data, flags & MS_SILENT ? 1 : 0);
- 	if (ret < 0) {
- 		up_write(&sb->s_umount);
+-- 
+kernel concepts GbR        Tel: +49-271-771091-12
+Sieghuetter Hauptweg 48    Fax: +49-271-771091-19
+D-57072 Siegen             Mob: +49-176-21024535
+--
