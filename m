@@ -1,19 +1,27 @@
-Received: from mail.kernelconcepts.de ([212.60.202.196])
+Received: from mail.ku-gbr.de ([81.3.11.18] helo=ku-gbr.de)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IR1jA-0004lJ-7i
-	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 04:19:47 -0400
-Received: from [192.168.2.28] by mail.kernelconcepts.de with esmtpsa
-	(TLS-1.0:DHE_RSA_AES_256_CBC_SHA1:32) (Exim 4.63)
-	(envelope-from <nils.faerber@kernelconcepts.de>) id 1IR1ti-0007aw-Fi
-	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 10:30:34 +0200
-Message-ID: <46D7CF14.1010009@kernelconcepts.de>
-Date: Fri, 31 Aug 2007 10:19:32 +0200
-From: Nils Faerber <nils.faerber@kernelconcepts.de>
-MIME-Version: 1.0
+	id 1IR83E-000818-HC
+	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 11:04:53 -0400
+Received: from dslb-082-083-048-079.pools.arcor-ip.net ([82.83.48.79]:49324
+	helo=localhost)
+	by mail.ku-gbr.de with esmtpsa (Exim 4.50 #1 (Debian))
+	id 1IR83A-0006OR-M5
+	for <linux-mtd@lists.infradead.org>; Fri, 31 Aug 2007 17:04:44 +0200
+Received: from anita ([10.10.0.18] helo=anita.doom)
+	by localhost with esmtp (Exim 4.67) (envelope-from <lists@ku-gbr.de>)
+	id 1IR83B-0005C7-2L
+	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 17:04:45 +0200
+Received: from konsti by anita.doom with local (Exim 4.67)
+	(envelope-from <lists@ku-gbr.de>) id 1IR839-0002p4-Ej
+	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 17:04:43 +0200
+Date: Fri, 31 Aug 2007 17:04:43 +0200
+From: Konstantin Kletschke <lists@ku-gbr.de>
 To: linux-mtd@lists.infradead.org
-Subject: JFFS2 support fro AT45* dataflash...
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Quad Die NAND Chip with 16Gb
+Message-ID: <20070831150443.GA10808@anita.doom>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,29 +31,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
-Just a quick question of verification ;)
-We are planning a new hardware and have to choose our storage device.
-Ideally we would like to use one of the AT45* serial data flashes
-(currently in plan is AT45DB642D with uclinux 2.6.xx).
-Looking through the kernel sources I found several "hints" that those
-dataflashes should be supported by MTD and JFFS2.
-Now I just read in tha datasheet that dataflashes require a sector
-rewrite every 10,000 write cycles in any of the pages of a single sector.
-This seems complex to me and I was not able to conclusively figure out
-for sure if MTD/JFFS2 supports this. JFFS2 is critical for our application.
+Hi Folks!
 
-So if someone could just briefly acknowledge that this sector-rewrite is
-also implemented I would be extremely happy (and continue to go for data
-flashes ;)
+Actually I am trying to pimp our NAND driver which already supports
+Micron MT29Fxx Chips very well. The last incarnation of these has quad
+die and two CE lines, namely CE1 and CE2.
 
-Many thanks!
+The driver accesses the first two dies by speaking to a CPLD an whenever
+Bit0 is accessed it asserts CE1 of NAND, when Bit1 is accessed it
+asserts CE2.
 
-Cheers
-  nils faerber
+#define CPLD_NAND_CE1  0x01 /* Chip Enable1 to NAND Flash */
+#define CPLD_NAND_CE2  0x02 /* Chip Enable2 to NAND Flash */
+#define CPLD_NAND_ALE  0x04 /* Address Latch Enable to NAND Flash */
+#define CPLD_NAND_CLE  0x08 /* Command Latch Enable to NAND Flash */
+#define CPLD_NAND_RYBY 0x20 /* RY/BY# input from NAND Flash */
+
+My question is now (as I am not familiar with the driver), how I
+implement this doubling of capacitiy into the driver. Where can I best
+do this? 
+I mean where is the best point of code to kind of double the structures?
+has anybody done something like this before?
+
+The driver is at http://www.ludenkalle.de/nand/scb9xxx.c and is adapted
+from the other nand drivers there. 
+
+May be somebody has some advices for me :-/
+
+Kind regards, Konsti
 
 -- 
-kernel concepts GbR        Tel: +49-271-771091-12
-Sieghuetter Hauptweg 48    Fax: +49-271-771091-19
-D-57072 Siegen             Mob: +49-176-21024535
---
+GPG KeyID EF62FCEF
+Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
