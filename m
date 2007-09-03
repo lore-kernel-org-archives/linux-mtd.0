@@ -1,17 +1,18 @@
-Received: from mail.ku-gbr.de ([81.3.11.18] helo=ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IR8Te-0008Ov-B4
-	for linux-mtd@lists.infradead.org; Fri, 31 Aug 2007 11:32:12 -0400
-Date: Fri, 31 Aug 2007 17:31:32 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Quad Die NAND Chip with 16Gb
-Message-ID: <20070831153132.GA27851@z1.synertronixx>
-References: <20070831150443.GA10808@anita.doom>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070831150443.GA10808@anita.doom>
+Received: from nwd2mail11.analog.com ([137.71.25.57])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IS6JP-0006Jz-Tv
+	for linux-mtd@lists.infradead.org; Mon, 03 Sep 2007 03:25:37 -0400
+Subject: [PATCH] Blackfin BF54x NAND Flash Controller driver
+From: Bryan Wu <bryan.wu@analog.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 03 Sep 2007 15:25:23 +0800
+Message-Id: <1188804323.29566.6.camel@roc-laptop>
+Mime-Version: 1.0
+Reply-To: bryan.wu@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,29 +22,950 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Replying to myself *mumblegrumble*
+This is the driver for latest Blackfin BF54x nand flash controller
 
-I am trying to picture of NAND code and tried this: Why can't I access
-the one or the other half of the device?
+ - use nand_chip and mtd_info common nand driver interface
+ - provide both PIO and dma operation
+ - compiled with ezkit bf548 configuration
+ - use hardware 1-bit ECC
+ - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
 
-Platform Setup:
+Signed-off-by: Bryan Wu <bryan.wu@analog.com>
+---
+ drivers/mtd/nand/Kconfig               |   18 +
+ drivers/mtd/nand/Makefile              |    1 +
+ drivers/mtd/nand/bf54x_nand.c          |  796 ++++++++++++++++++++++++++++=
+++++
+ include/asm-blackfin/mach-bf548/dma.h  |    1 +
+ include/asm-blackfin/mach-bf548/nand.h |   47 ++
+ 5 files changed, 863 insertions(+), 0 deletions(-)
+ create mode 100644 drivers/mtd/nand/bf54x_nand.c
+ create mode 100644 include/asm-blackfin/mach-bf548/nand.h
 
-static struct scb9xxx_nand_pdata __initdata nand_pdata = {
-        .ce1            = CPLD_NAND_CE2,
-        .ale            = CPLD_NAND_ALE,
-        .cle            = CPLD_NAND_CLE,
-        .rdy            = CPLD_NAND_RYBY,
-        .partition_info = nand_partitions,
-};
-
-For .ce1 I put CPLD_NAND_CE1 or CPLD_NAND_CE2 and booting yields in seeing
-the one or the other half of the device. 
-Hardware feels well, so how does stupid konste merge these halfes?
-Or could they be accessed as two different mtdblockX as an alternative?
-
-Konsti
-
-
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
+index 7992c43..87e9f80 100644
+--- a/drivers/mtd/nand/Kconfig
++++ b/drivers/mtd/nand/Kconfig
+@@ -131,6 +131,24 @@ config MTD_NAND_AU1550
+ 	  This enables the driver for the NAND flash controller on the
+ 	  AMD/Alchemy 1550 SOC.
+=20
++config MTD_NAND_BF54X
++	tristate "NAND Flash support for Blackfin BF54X SoC DSP"
++	depends on BF54x && MTD_NAND
++	help
++	  This enables the NAND flash controller on the BF54X SoC DPSs
++
++	  No board specific support is done by this driver, each board
++	  must advertise a platform_device for the driver to attach.
++
++config MTD_NAND_BF54X_HWECC
++	bool "BF54X NAND Hardware ECC"
++	depends on MTD_NAND_BF54X
++	help
++	  Enable the use of the BF54X's internal ECC generator when
++	  using NAND. Early versions of the chip have had problems with
++	  incorrect ECC generation, and if using these, the default of
++	  software ECC is preferable.
++
+ config MTD_NAND_RTC_FROM4
+ 	tristate "Renesas Flash ROM 4-slot interface board (FROM_BOARD4)"
+ 	depends on SH_SOLUTION_ENGINE
+diff --git a/drivers/mtd/nand/Makefile b/drivers/mtd/nand/Makefile
+index b16d234..cbf2bab 100644
+--- a/drivers/mtd/nand/Makefile
++++ b/drivers/mtd/nand/Makefile
+@@ -13,6 +13,7 @@ obj-$(CONFIG_MTD_NAND_TOTO)		+=3D toto.o
+ obj-$(CONFIG_MTD_NAND_AUTCPU12)		+=3D autcpu12.o
+ obj-$(CONFIG_MTD_NAND_EDB7312)		+=3D edb7312.o
+ obj-$(CONFIG_MTD_NAND_AU1550)		+=3D au1550nd.o
++obj-$(CONFIG_MTD_NAND_BF54X)		+=3D bf54x_nand.o
+ obj-$(CONFIG_MTD_NAND_PPCHAMELEONEVB)	+=3D ppchameleonevb.o
+ obj-$(CONFIG_MTD_NAND_S3C2410)		+=3D s3c2410.o
+ obj-$(CONFIG_MTD_NAND_DISKONCHIP)	+=3D diskonchip.o
+diff --git a/drivers/mtd/nand/bf54x_nand.c b/drivers/mtd/nand/bf54x_nand.c
+new file mode 100644
+index 0000000..dccb94a
+--- /dev/null
++++ b/drivers/mtd/nand/bf54x_nand.c
+@@ -0,0 +1,796 @@
++/* linux/drivers/mtd/nand/bf54x_nand.c
++ *
++ * Copyright 2006-2007 Analog Devices Inc.
++ *	http://blackfin.uclinux.org/
++ *	Bryan Wu <bryan.wu@analog.com>
++ *
++ * Blackfin BF54x on-chip NAND flash controler driver
++ *
++ * Derived from drivers/mtd/nand/s3c2410.c
++ * Copyright (c) 2007 Ben Dooks <ben@simtec.co.uk>
++ *
++ * Derived from drivers/mtd/nand/cafe.c
++ * Copyright =C2=A9 2006 Red Hat, Inc.
++ * Copyright =C2=A9 2006 David Woodhouse <dwmw2@infradead.org>
++ *
++ * Changelog:
++ *	12-Jun-2007  Bryan Wu:  Initial version
++ *	18-Jul-2007  Bryan Wu:
++ *		- ECC_HW and ECC_SW supported
++ *		- DMA supported in ECC_HW
++ *		- YAFFS tested as rootfs in both ECC_HW and ECC_SW
++ *
++ * TODO:
++ * 	Enable JFFS2 over NAND as rootfs
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  U=
+SA
++*/
++
++#include <linux/module.h>
++#include <linux/types.h>
++#include <linux/init.h>
++#include <linux/kernel.h>
++#include <linux/string.h>
++#include <linux/ioport.h>
++#include <linux/platform_device.h>
++#include <linux/delay.h>
++#include <linux/dma-mapping.h>
++#include <linux/err.h>
++#include <linux/slab.h>
++#include <linux/io.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/nand.h>
++#include <linux/mtd/nand_ecc.h>
++#include <linux/mtd/partitions.h>
++
++#include <asm/blackfin.h>
++#include <asm/dma.h>
++#include <asm/cacheflush.h>
++#include <asm/mach/nand.h>
++#include <asm/portmux.h>
++
++#define DRV_NAME	"bf54x-nand"
++#define DRV_VERSION	"1.0"
++#define DRV_AUTHOR	"Bryan Wu <bryan.wu@analog.com>"
++#define DRV_DESC	"BF54x on-chip NAND FLash Controller Driver"
++
++#ifdef CONFIG_MTD_NAND_BF54X_HWECC
++int hardware_ecc =3D 1;
++#else
++int hardware_ecc =3D 0;
++#endif
++
++unsigned short bfin_nfc_pin_req[] =3D {P_NAND_CE, P_NAND_RB, 0};
++
++/*------------------------------------------------------------------------=
+----
++ * Data structures for bf54x nand flash controller driver
++ */
++
++/* bf54x nand info */
++struct bf54x_nand_info {
++	/* mtd info */
++	struct nand_hw_control		controller;
++	struct mtd_info			mtd;
++	struct nand_chip		chip;
++
++	/* platform info */
++	struct bf54x_nand_platform	*platform;
++
++	/* device info */
++	struct device			*device;
++
++	/* DMA stuff */
++	struct completion		dma_completion;
++};
++
++/*------------------------------------------------------------------------=
+----
++ * Conversion functions
++ */
++static struct bf54x_nand_info *mtd_to_nand_info(struct mtd_info *mtd)
++{
++	return container_of(mtd, struct bf54x_nand_info, mtd);
++}
++
++static struct bf54x_nand_info *to_nand_info(struct platform_device *pdev)
++{
++	return platform_get_drvdata(pdev);
++}
++
++static struct bf54x_nand_platform *to_nand_plat(struct platform_device *pd=
+ev)
++{
++	return pdev->dev.platform_data;
++}
++
++
++/*------------------------------------------------------------------------=
+----
++ * struct nand_chip interface function pointers
++ */
++
++/*
++ * bf54x_nand_hwcontrol
++ *
++ * Issue command and address cycles to the chip
++ */
++static void bf54x_nand_hwcontrol(struct mtd_info *mtd, int cmd,
++				   unsigned int ctrl)
++{
++	if (cmd =3D=3D NAND_CMD_NONE)
++		return;
++
++	while (bfin_read_NFC_STAT() & WB_FULL)
++		continue;
++
++	if (ctrl & NAND_CLE)
++		bfin_write_NFC_CMD(cmd);
++	else
++		bfin_write_NFC_ADDR(cmd);
++	SSYNC();
++}
++
++/*
++ * bf54x_nand_devready()
++ *
++ * returns 0 if the nand is busy, 1 if it is ready
++ */
++static int bf54x_nand_devready(struct mtd_info *mtd)
++{
++	unsigned short val =3D bfin_read_NFC_IRQSTAT();
++
++	if ((val & NBUSYIRQ) =3D=3D NBUSYIRQ)
++		return 1;
++	else
++		return 0;
++}
++
++/*------------------------------------------------------------------------=
+----
++ * ECC functions
++ *
++ * These allow the bf54x to use the controller's ECC
++ * generator block to ECC the data as it passes through
++ */
++static inline int count_bits(uint32_t byte)
++{
++	int res =3D 0;
++
++	for (; byte; byte >>=3D 1)
++		res +=3D byte & 0x01;
++	return res;
++}
++
++/*
++ * ECC error correction function
++ */
++static int bf54x_nand_correct_data_256(struct mtd_info *mtd, u_char *dat,
++					u_char *read_ecc, u_char *calc_ecc)
++{
++	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	u32 syndrome[5];
++	u32 calced, stored;
++	int i;
++	unsigned short failing_bit, failing_byte;
++	u_char data;
++
++	calced =3D calc_ecc[0] | (calc_ecc[1] << 8) | (calc_ecc[2] << 16);
++	stored =3D read_ecc[0] | (read_ecc[1] << 8) | (read_ecc[2] << 16);
++
++	syndrome[0] =3D (calced ^ stored);
++
++	/*
++	 * syndrome 0: all zero
++	 * No error in data
++	 * No action
++	 */
++	if (!syndrome[0] || !calced || !stored)
++		return 0;
++
++	/*
++	 * sysdrome 0: only one bit is one
++	 * ECC data was incorrect
++	 * No action
++	 */
++	if (count_bits(syndrome[0]) =3D=3D 1) {
++		dev_err(info->device, "ECC data was incorrect!\n");
++		return 1;
++	}
++
++	syndrome[1] =3D (calced & 0x7FF) ^ (stored & 0x7FF);
++	syndrome[2] =3D (calced & 0x7FF) ^ ((calced >> 11) & 0x7FF);
++	syndrome[3] =3D (stored & 0x7FF) ^ ((stored >> 11) & 0x7FF);
++	syndrome[4] =3D syndrome[2] ^ syndrome[3];
++
++	for (i =3D 0; i < 5; i++)
++		dev_info(info->device, "syndrome[%d] 0x%08x\n", i, syndrome[i]);
++
++	dev_info(info->device, "calced[0x%08x], stored[0x%08x]\n", calced, stored=
+);
++
++	/*
++	 * sysdrome 0: exactly 11 bits are one, each parity
++	 * and parity' pair is 1 & 0 or 0 & 1.
++	 * 1-bit correctable error
++	 * Correct the error
++	 */
++	if (count_bits(syndrome[0]) =3D=3D 11 && syndrome[4] =3D=3D 0x7FF) {
++		dev_info(info->device, "1-bit correctable error, correct it.\n");
++		dev_info(info->device, "syndrome[1] 0x%08x\n", syndrome[1]);
++
++		failing_bit =3D syndrome[1] & 0x7;
++		failing_byte =3D syndrome[1] >> 0x3;
++		data =3D *(dat + failing_byte);
++		data =3D data ^ (0x1 << failing_bit);
++		*(dat + failing_byte) =3D data;
++
++		return 0;
++	}
++
++	/*
++	 * sysdrome 0: random data
++	 * More than 1-bit error, non-correctable error
++	 * Discard data, mark bad block
++	 */
++	dev_err(info->device,
++		"More than 1-bit error, non-correctable error.\n");
++	dev_err(info->device,
++		"Please discard data, mark bad block\n");
++
++	return 1;
++}
++
++static int bf54x_nand_correct_data(struct mtd_info *mtd, u_char *dat,
++					u_char *read_ecc, u_char *calc_ecc)
++{	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	struct bf54x_nand_platform *plat =3D info->platform;
++	unsigned short page_size =3D (plat->page_size ? 512 : 256);
++
++	int ret;
++
++	ret =3D bf54x_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
++
++	/* If page size is 512, correct second 256 bytes */
++	if (page_size =3D=3D 512) {
++		dat +=3D 256;
++		read_ecc +=3D 8;
++		calc_ecc +=3D 8;
++		ret =3D bf54x_nand_correct_data_256(mtd, dat, read_ecc, calc_ecc);
++	}
++
++	return ret;
++}
++
++static void bf54x_nand_enable_hwecc(struct mtd_info *mtd, int mode)
++{
++	/*
++	 * This register must be written before each page is
++	 * transferred to generate the correct ECC register
++	 * values.
++	 */
++	return;
++
++}
++
++static int bf54x_nand_calculate_ecc(struct mtd_info *mtd,
++		const u_char *dat, u_char *ecc_code)
++{
++	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	struct bf54x_nand_platform *plat =3D info->platform;
++	u16 page_size =3D (plat->page_size ? 512 : 256);
++	u16 ecc0, ecc1;
++	u32 code[2];
++	u8 *p;
++	int bytes =3D 3, i;
++
++	/* first 4 bytes ECC code for 256 page size */
++	ecc0 =3D bfin_read_NFC_ECC0();
++	ecc1 =3D bfin_read_NFC_ECC1();
++
++	code[0] =3D (ecc0 & 0x3FF) | ((ecc1 & 0x3FF) << 11);
++
++	dev_dbg(info->device, "returning ecc 0x%08x\n", code[0]);
++
++	/* second 4 bytes ECC code for 512 page size */
++	if (page_size =3D=3D 512) {
++		ecc0 =3D bfin_read_NFC_ECC2();
++		ecc1 =3D bfin_read_NFC_ECC3();
++		code[1] =3D (ecc0 & 0x3FF) | ((ecc1 & 0x3FF) << 11);
++		bytes =3D 6;
++		dev_dbg(info->device, "returning ecc 0x%08x\n", code[1]);
++	}
++
++	p =3D (u8 *)code;
++	for (i =3D 0; i < bytes; i++)
++		ecc_code[i] =3D p[i];
++
++	return 0;
++}
++
++/*------------------------------------------------------------------------=
+----
++ * PIO mode for buffer writing and reading
++ */
++static void bf54x_nand_read_buf(struct mtd_info *mtd, uint8_t *buf, int le=
+n)
++{
++	int i;
++	unsigned short val;
++
++	/*
++	 * Data reads are requested by first writing to NFC_DATA_RD
++	 * and then reading back from NFC_READ.
++	 */
++	for (i =3D 0; i < len; i++) {
++		while (bfin_read_NFC_STAT() & WB_FULL)
++			continue;
++
++		/* Contents do not matter */
++		bfin_write_NFC_DATA_RD(0x0000);
++		SSYNC();
++
++		while ((bfin_read_NFC_IRQSTAT() & RD_RDY) !=3D RD_RDY)
++			continue;
++
++		buf[i] =3D bfin_read_NFC_READ();
++
++		val =3D bfin_read_NFC_IRQSTAT();
++		val |=3D RD_RDY;
++		bfin_write_NFC_IRQSTAT(val);
++		SSYNC();
++	}
++}
++
++static uint8_t bf54x_nand_read_byte(struct mtd_info *mtd)
++{
++	uint8_t val;
++
++	bf54x_nand_read_buf(mtd, &val, 1);
++
++	return val;
++}
++
++static void bf54x_nand_write_buf(struct mtd_info *mtd,
++				const uint8_t *buf, int len)
++{
++	int i;
++
++	for (i =3D 0; i < len; i++) {
++		while (bfin_read_NFC_STAT() & WB_FULL)
++			continue;
++
++		bfin_write_NFC_DATA_WR(buf[i]);
++		SSYNC();
++	}
++}
++
++static void bf54x_nand_read_buf16(struct mtd_info *mtd, uint8_t *buf, int =
+len)
++{
++	int i;
++	u16 *p =3D (u16 *) buf;
++	len >>=3D 1;
++
++	/*
++	 * Data reads are requested by first writing to NFC_DATA_RD
++	 * and then reading back from NFC_READ.
++	 */
++	bfin_write_NFC_DATA_RD(0x5555);
++
++	SSYNC();
++
++	for (i =3D 0; i < len; i++)
++		p[i] =3D bfin_read_NFC_READ();
++}
++
++static void bf54x_nand_write_buf16(struct mtd_info *mtd,
++				const uint8_t *buf, int len)
++{
++	int i;
++	u16 *p =3D (u16 *) buf;
++	len >>=3D 1;
++
++	for (i =3D 0; i < len; i++)
++		bfin_write_NFC_DATA_WR(p[i]);
++
++	SSYNC();
++}
++
++/*------------------------------------------------------------------------=
+----
++ * DMA functions for buffer writing and reading
++ */
++static irqreturn_t bf54x_nand_dma_irq (int irq, void *dev_id)
++{
++	struct bf54x_nand_info *info =3D (struct bf54x_nand_info *) dev_id;
++
++	clear_dma_irqstat(CH_NFC);
++	disable_dma(CH_NFC);
++	complete(&info->dma_completion);
++
++	return IRQ_HANDLED;
++}
++
++static int bf54x_nand_dma_rw(struct mtd_info *mtd,
++				uint8_t *buf, int is_read)
++{
++	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	struct bf54x_nand_platform *plat =3D info->platform;
++	unsigned short page_size =3D (plat->page_size ? 512 : 256);
++	unsigned short val;
++
++	dev_dbg(info->device, " mtd->%p, buf->%p, len %d, is_read %d\n",
++			mtd, buf, is_read);
++
++	if (is_read)
++		invalidate_dcache_range((unsigned int)buf,
++				(unsigned int)(buf + page_size));
++	else
++		flush_dcache_range((unsigned int)buf,
++				(unsigned int)(buf + page_size));
++
++	bfin_write_NFC_RST(0x1);
++	SSYNC();
++
++	disable_dma(CH_NFC);
++	clear_dma_irqstat(CH_NFC);
++
++	/* setup DMA register with Blackfin DMA API */
++	set_dma_config(CH_NFC, 0x0);
++	set_dma_start_addr(CH_NFC, (unsigned long) buf);
++	set_dma_x_count(CH_NFC, (page_size >> 2));
++	set_dma_x_modify(CH_NFC, 4);
++
++	/* setup write or read operation */
++	val =3D DI_EN | WDSIZE_32;
++	if (is_read)
++		val |=3D WNR;
++	set_dma_config(CH_NFC, val);
++	enable_dma(CH_NFC);
++
++	/* Start PAGE read/write operation */
++	if (is_read)
++		bfin_write_NFC_PGCTL(0x1);
++	else
++		bfin_write_NFC_PGCTL(0x2);
++	wait_for_completion(&info->dma_completion);
++
++	return 0;
++}
++
++static void bf54x_nand_dma_read_buf(struct mtd_info *mtd,
++					uint8_t *buf, int len)
++{
++	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	struct bf54x_nand_platform *plat =3D info->platform;
++	unsigned short page_size =3D (plat->page_size ? 512 : 256);
++
++	dev_dbg(info->device, "mtd->%p, buf->%p, int %d\n", mtd, buf, len);
++
++	if (len =3D=3D page_size)
++		bf54x_nand_dma_rw(mtd, buf, 1);
++	else
++		bf54x_nand_read_buf(mtd, buf, len);
++}
++
++static void bf54x_nand_dma_write_buf(struct mtd_info *mtd,
++				const uint8_t *buf, int len)
++{
++	struct bf54x_nand_info *info =3D mtd_to_nand_info(mtd);
++	struct bf54x_nand_platform *plat =3D info->platform;
++	unsigned short page_size =3D (plat->page_size ? 512 : 256);
++
++	dev_dbg(info->device, "mtd->%p, buf->%p, len %d\n", mtd, buf, len);
++
++	if (len =3D=3D page_size)
++		bf54x_nand_dma_rw(mtd, (uint8_t *)buf, 0);
++	else
++		bf54x_nand_write_buf(mtd, buf, len);
++}
++
++/*------------------------------------------------------------------------=
+----
++ * System initialization functions
++ */
++
++static int bf54x_nand_dma_init(struct bf54x_nand_info *info)
++{
++	int ret;
++	unsigned short val;
++
++	/* Do not use dma */
++	if (!hardware_ecc)
++		return 0;
++
++	init_completion(&info->dma_completion);
++
++	/* Setup DMAC1 channel mux for NFC which shared with SDH */
++	val =3D bfin_read_DMAC1_PERIMUX();
++	val &=3D 0xFFFE;
++	bfin_write_DMAC1_PERIMUX(val);
++	SSYNC();
++
++	/* Request NFC DMA channel */
++	ret =3D request_dma(CH_NFC, "BF54X NFC driver");
++	if (ret < 0) {
++		dev_err(info->device, " unable to get DMA channel\n");
++		return ret;
++	}
++
++	set_dma_callback(CH_NFC, (void *) bf54x_nand_dma_irq, (void *) info);
++
++	/* Turn off the DMA channel first */
++	disable_dma(CH_NFC);
++	return 0;
++}
++
++/*
++ * BF54X NFC hardware initialization
++ *  - pin mux setup
++ *  - clear interrupt status
++ */
++static int bf54x_nand_hw_init(struct bf54x_nand_info *info)
++{
++	int err =3D 0;
++	unsigned short val;
++	struct bf54x_nand_platform *plat =3D info->platform;
++
++	if (!info)
++		return -EINVAL;
++
++	/* setup NFC_CTL register */
++	dev_info(info->device,
++		"page_size=3D%d, data_width=3D%d, wr_dly=3D%d, rd_dly=3D%d\n",
++		(plat->page_size ? 512 : 256),
++		(plat->data_width ? 16 : 8),
++		plat->wr_dly, plat->rd_dly);
++
++	val =3D (plat->page_size << NFC_PG_SIZE_OFFSET) |
++		(plat->data_width << NFC_NWIDTH_OFFSET) |
++		(plat->rd_dly << NFC_RDDLY_OFFSET) |
++		(plat->rd_dly << NFC_WRDLY_OFFSET);
++	dev_dbg(info->device, "NFC_CTL is 0x%04x\n", val);
++
++	bfin_write_NFC_CTL(val);
++	SSYNC();
++
++	/* clear interrupt status */
++	bfin_write_NFC_IRQMASK(0x0);
++	SSYNC();
++	val =3D bfin_read_NFC_IRQSTAT();
++	bfin_write_NFC_IRQSTAT(val);
++	SSYNC();
++
++	if (peripheral_request_list(bfin_nfc_pin_req, DRV_NAME)) {
++		printk(KERN_ERR DRV_NAME
++		": Requesting Peripherals failed\n");
++		return -EFAULT;
++	}
++
++
++	/* DMA initialization  */
++	if (bf54x_nand_dma_init(info)) {
++		err =3D -ENXIO;
++	}
++
++	return err;
++}
++
++/*------------------------------------------------------------------------=
+----
++ * Device management interface
++ */
++static int bf54x_nand_add_partition(struct bf54x_nand_info *info)
++{
++	struct mtd_info *mtd =3D &info->mtd;
++
++#ifdef CONFIG_MTD_PARTITIONS
++	struct mtd_partition *parts =3D info->platform->partitions;
++	int nr =3D info->platform->nr_partitions;
++
++	return add_mtd_partitions(mtd, parts, nr);
++#else
++	return add_mtd_device(mtd);
++#endif
++}
++
++static int bf54x_nand_remove(struct platform_device *pdev)
++{
++	struct bf54x_nand_info *info =3D to_nand_info(pdev);
++	struct mtd_info *mtd =3D NULL;
++
++	platform_set_drvdata(pdev, NULL);
++
++	if (!info)
++		return 0;
++
++	/* first thing we need to do is release all our mtds
++	 * and their partitions, then go through freeing the
++	 * resources used
++	 */
++	mtd =3D &info->mtd;
++	if (mtd) {
++		nand_release(mtd);
++		kfree(mtd);
++	}
++
++	peripheral_free_list(bfin_nfc_pin_req);
++
++	/* free the common resources */
++	kfree(info);
++
++	return 0;
++}
++
++/*
++ * bf54x_nand_probe
++ *
++ * called by device layer when it finds a device matching
++ * one our driver can handled. This code checks to see if
++ * it can allocate all necessary resources then calls the
++ * nand layer to look for devices
++ */
++static int bf54x_nand_probe(struct platform_device *pdev)
++{
++	struct bf54x_nand_platform *plat =3D to_nand_plat(pdev);
++	struct bf54x_nand_info *info =3D NULL;
++	struct nand_chip *chip =3D NULL;
++	struct mtd_info *mtd =3D NULL;
++	int err =3D 0;
++
++	dev_dbg(&pdev->dev, "(%p)\n", pdev);
++
++	if (!plat) {
++		dev_err(&pdev->dev, "no platform specific information\n");
++		goto exit_error;
++	}
++
++	info =3D kzalloc(sizeof(*info), GFP_KERNEL);
++	if (info =3D=3D NULL) {
++		dev_err(&pdev->dev, "no memory for flash info\n");
++		err =3D -ENOMEM;
++		goto exit_error;
++	}
++
++	platform_set_drvdata(pdev, info);
++
++	spin_lock_init(&info->controller.lock);
++	init_waitqueue_head(&info->controller.wq);
++
++	info->device     =3D &pdev->dev;
++	info->platform   =3D plat;
++
++	/* initialise chip data struct */
++	chip =3D &info->chip;
++
++	if (plat->data_width)
++		chip->options |=3D NAND_BUSWIDTH_16;
++
++	chip->options |=3D NAND_CACHEPRG | NAND_SKIP_BBTSCAN;
++
++	chip->read_buf =3D (plat->data_width) ?
++		bf54x_nand_read_buf16 : bf54x_nand_read_buf;
++	chip->write_buf =3D (plat->data_width) ?
++		bf54x_nand_write_buf16 : bf54x_nand_write_buf;
++
++	chip->read_byte    =3D bf54x_nand_read_byte;
++
++	chip->cmd_ctrl     =3D bf54x_nand_hwcontrol;
++	chip->dev_ready    =3D bf54x_nand_devready;
++
++	chip->priv	   =3D &info->mtd;
++	chip->controller   =3D &info->controller;
++
++	chip->IO_ADDR_R    =3D (void __iomem *) NFC_READ;
++	chip->IO_ADDR_W    =3D (void __iomem *) NFC_DATA_WR;
++
++	chip->chip_delay   =3D 0;
++
++	/* initialise mtd info data struct */
++	mtd 		=3D &info->mtd;
++	mtd->priv	=3D chip;
++	mtd->owner	=3D THIS_MODULE;
++
++	/* initialise the hardware */
++	err =3D bf54x_nand_hw_init(info);
++	if (err !=3D 0)
++		goto exit_error;
++
++	/* setup hardware ECC data struct */
++	if (hardware_ecc) {
++		if (plat->page_size =3D=3D NFC_PG_SIZE_256) {
++			chip->ecc.bytes =3D 3;
++			chip->ecc.size =3D 256;
++		} else if (mtd->writesize =3D=3D NFC_PG_SIZE_512) {
++			chip->ecc.bytes =3D 6;
++			chip->ecc.size =3D 512;
++		}
++
++		chip->read_buf      =3D bf54x_nand_dma_read_buf;
++		chip->write_buf     =3D bf54x_nand_dma_write_buf;
++		chip->ecc.calculate =3D bf54x_nand_calculate_ecc;
++		chip->ecc.correct   =3D bf54x_nand_correct_data;
++		chip->ecc.mode	    =3D NAND_ECC_HW;
++		chip->ecc.hwctl	    =3D bf54x_nand_enable_hwecc;
++	} else {
++		chip->ecc.mode	    =3D NAND_ECC_SOFT;
++	}
++
++	/* scan hardware nand chip and setup mtd info data struct */
++	if (nand_scan(mtd, 1)) {
++		err =3D -ENXIO;
++		goto exit_error;
++	}
++
++	/* add NAND partition */
++	bf54x_nand_add_partition(info);
++
++	dev_dbg(&pdev->dev, "initialised ok\n");
++	return 0;
++
++exit_error:
++	bf54x_nand_remove(pdev);
++
++	if (err =3D=3D 0)
++		err =3D -EINVAL;
++	return err;
++}
++
++/* PM Support */
++#ifdef CONFIG_PM
++
++static int bf54x_nand_suspend(struct platform_device *dev, pm_message_t pm=
+)
++{
++	struct bf54x_nand_info *info =3D platform_get_drvdata(dev);
++
++	return 0;
++}
++
++static int bf54x_nand_resume(struct platform_device *dev)
++{
++	struct bf54x_nand_info *info =3D platform_get_drvdata(dev);
++
++	if (info)
++		bf54x_nand_hw_init(info);
++
++	return 0;
++}
++
++#else
++#define bf54x_nand_suspend NULL
++#define bf54x_nand_resume NULL
++#endif
++
++/* driver device registration */
++static struct platform_driver bf54x_nand_driver =3D {
++	.probe		=3D bf54x_nand_probe,
++	.remove		=3D bf54x_nand_remove,
++	.suspend	=3D bf54x_nand_suspend,
++	.resume		=3D bf54x_nand_resume,
++	.driver		=3D {
++		.name	=3D DRV_NAME,
++		.owner	=3D THIS_MODULE,
++	},
++};
++
++static int __init bf54x_nand_init(void)
++{
++	printk(KERN_INFO "%s, Version %s (c) 2007 Analog Devices, Inc.\n",
++		DRV_DESC, DRV_VERSION);
++
++	return platform_driver_register(&bf54x_nand_driver);
++}
++
++static void __exit bf54x_nand_exit(void)
++{
++	platform_driver_unregister(&bf54x_nand_driver);
++}
++
++module_init(bf54x_nand_init);
++module_exit(bf54x_nand_exit);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR(DRV_AUTHOR);
++MODULE_DESCRIPTION(DRV_DESC);
+diff --git a/include/asm-blackfin/mach-bf548/dma.h b/include/asm-blackfin/m=
+ach-bf548/dma.h
+index fcc8b4c..14cb10c 100644
+--- a/include/asm-blackfin/mach-bf548/dma.h
++++ b/include/asm-blackfin/mach-bf548/dma.h
+@@ -55,6 +55,7 @@
+ #define CH_SPORT3_RX		20
+ #define CH_SPORT3_TX		21
+ #define CH_SDH			22
++#define CH_NFC			22
+ #define CH_SPI2			23
+=20
+ #define CH_MEM_STREAM0_DEST	24
+diff --git a/include/asm-blackfin/mach-bf548/nand.h b/include/asm-blackfin/=
+mach-bf548/nand.h
+new file mode 100644
+index 0000000..a77fd46
+--- /dev/null
++++ b/include/asm-blackfin/mach-bf548/nand.h
+@@ -0,0 +1,47 @@
++/* linux/include/asm-blackfin/mach-bf548/nand.h
++ *
++ * Copyright (c) 2007 Analog Devices, Inc.
++ *	Bryan Wu <bryan.wu@analog.com>
++ *
++ * BF54X - NAND flash controller platfrom_device info
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++/* struct bf54x_nand_platform
++ *
++ * define a interface between platfrom board specific code and
++ * bf54x NFC driver.
++ *
++ * nr_partitions =3D number of partitions pointed to be partitoons (or zer=
+o)
++ * partitions	 =3D mtd partition list
++ */
++
++#define NFC_PG_SIZE_256		0
++#define NFC_PG_SIZE_512		1
++#define NFC_PG_SIZE_OFFSET	9
++
++#define NFC_NWIDTH_8		0
++#define NFC_NWIDTH_16		1
++#define NFC_NWIDTH_OFFSET	8
++
++#define NFC_RDDLY_OFFSET	4
++#define NFC_WRDLY_OFFSET	0
++
++#define NFC_STAT_NBUSY		1
++
++struct bf54x_nand_platform {
++	/* NAND chip information */
++	unsigned short		page_size;
++	unsigned short		data_width;
++
++	/* RD/WR strobe delay timing information, all times in SCLK cycles */
++	unsigned short		rd_dly;
++	unsigned short		wr_dly;
++
++	/* NAND MTD partition information */
++	int                     nr_partitions;
++	struct mtd_partition    *partitions;
++};
+--=20
+1.5.2
