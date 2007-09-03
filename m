@@ -1,22 +1,24 @@
-Received: from nwd2mail10.analog.com ([137.71.25.55])
+Received: from rv-out-0910.google.com ([209.85.198.191])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ISFoN-0003Mj-MP
-	for linux-mtd@lists.infradead.org; Mon, 03 Sep 2007 13:34:12 -0400
+	id 1ISGBX-0003i5-Ft
+	for linux-mtd@lists.infradead.org; Mon, 03 Sep 2007 13:58:08 -0400
+Received: by rv-out-0910.google.com with SMTP id c24so983131rvf
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 Sep 2007 10:58:00 -0700 (PDT)
+Message-ID: <8bd0f97a0709031057u1f4608f6y36bd20a8f6910a32@mail.gmail.com>
+Date: Mon, 3 Sep 2007 13:57:59 -0400
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: bryan.wu@analog.com
 Subject: Re: [PATCH] Blackfin BF54x NAND Flash Controller driver
-From: Bryan Wu <bryan.wu@analog.com>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1188837990.6075.32.camel@shinybook.infradead.org>
-References: <1188804323.29566.6.camel@roc-laptop>
-	<1188837990.6075.32.camel@shinybook.infradead.org>
-Content-Type: text/plain
+In-Reply-To: <1188804323.29566.6.camel@roc-laptop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Date: Tue, 04 Sep 2007 01:33:49 +0800
-Message-Id: <1188840829.9063.10.camel@roc-laptop>
-Mime-Version: 1.0
-Cc: bryan.wu@analog.com, Thomas Gleixner <tglx@linutronix.de>,
-	linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org
-Reply-To: bryan.wu@analog.com
+Content-Disposition: inline
+References: <1188804323.29566.6.camel@roc-laptop>
+Cc: linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org, akpm@linux-foundation.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,28 +28,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-09-03 at 17:46 +0100, David Woodhouse wrote:
-> On Mon, 2007-09-03 at 15:25 +0800, Bryan Wu wrote:
-> > +       if (hardware_ecc) {
-> > +               if (plat->page_size == NFC_PG_SIZE_256) {
-> > +                       chip->ecc.bytes = 3;
-> > +                       chip->ecc.size = 256;
-> > +               } else if (mtd->writesize == NFC_PG_SIZE_512) { 
-> 
-> Comparing against plat->page_size in one case, but mtd->writesize in the
-> other? 
+On 9/3/07, Bryan Wu <bryan.wu@analog.com> wrote:
+> --- a/drivers/mtd/nand/Kconfig
+> +++ b/drivers/mtd/nand/Kconfig
+> @@ -131,6 +131,24 @@ config MTD_NAND_AU1550
+> +config MTD_NAND_BF54X
+> +       tristate "NAND Flash support for Blackfin BF54X SoC DSP"
 
-This is a typo in development. I will fix it ASAP. -:)
+i'd just describe it as "Blackfin on-chip NAND" rather than sticking
+in exact part numbers as i imagine we can extend it down the line
 
-> And elsewhere it seems plat->page_size is treated as a boolean,
-> indicating only 256-byte vs. 512-byte pages (you don't support 2KiB or
-> other page sizes at all?)
-> 
+> +         This enables the NAND flash controller on the BF54X SoC DPSs
 
-When enabled hardware ECC, NFC of BF54x supports 256 and 512 bytes page
-size ECC.
-it's maybe little confusing with the NAND chip's pagesize. When NAND
-chip is 2KiB or other page size, this driver can use multiple 256/512
-pages to do hardware ECC. And it's handled by the driver software here.
+"BF54X SoC DPSs" -> "BF54x SoC DSPs"
 
--Bryan Wu
+> +         No board specific support is done by this driver, each board
+> +         must advertise a platform_device for the driver to attach.
+
+should mention the module name when built as a module
+
+> +config MTD_NAND_BF54X_HWECC
+> +       bool "BF54X NAND Hardware ECC"
+> +       depends on MTD_NAND_BF54X
+> +       help
+> +         Enable the use of the BF54X's internal ECC generator when
+> +         using NAND. Early versions of the chip have had problems with
+> +         incorrect ECC generation, and if using these, the default of
+> +         software ECC is preferable.
+
+rather than advertising this, i'd just keep it in the driver ...
+presumably there are anomaly #'s for when the ECC is wrong, so we can
+make the code depend on those
+-mike
