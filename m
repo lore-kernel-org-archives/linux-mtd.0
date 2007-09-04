@@ -1,24 +1,22 @@
-Received: from rv-out-0910.google.com ([209.85.198.185])
+Received: from nwd2mail10.analog.com ([137.71.25.55])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ISGCN-0003lf-1M
-	for linux-mtd@lists.infradead.org; Mon, 03 Sep 2007 13:59:32 -0400
-Received: by rv-out-0910.google.com with SMTP id c24so983241rvf
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 03 Sep 2007 10:58:53 -0700 (PDT)
-Message-ID: <8bd0f97a0709031058g3d0b5e8dodbb5fa5f35366b4f@mail.gmail.com>
-Date: Mon, 3 Sep 2007 13:58:53 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Clemens Koller" <clemens.koller@anagramm.de>
+	id 1ISP25-00080M-OL
+	for linux-mtd@lists.infradead.org; Mon, 03 Sep 2007 23:24:57 -0400
 Subject: Re: [PATCH] Blackfin BF54x NAND Flash Controller driver
-In-Reply-To: <46DBDE75.90203@anagramm.de>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+From: Bryan Wu <bryan.wu@analog.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0709031057u1f4608f6y36bd20a8f6910a32@mail.gmail.com>
+References: <1188804323.29566.6.camel@roc-laptop>
+	<8bd0f97a0709031057u1f4608f6y36bd20a8f6910a32@mail.gmail.com>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1188804323.29566.6.camel@roc-laptop> <46DBDE75.90203@anagramm.de>
+Date: Tue, 04 Sep 2007 11:21:49 +0800
+Message-Id: <1188876109.6319.9.camel@roc-desktop>
+Mime-Version: 1.0
 Cc: bryan.wu@analog.com, linux-kernel@vger.kernel.org,
 	linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
 	David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org
+Reply-To: bryan.wu@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +26,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/3/07, Clemens Koller <clemens.koller@anagramm.de> wrote:
-> Bryan Wu schrieb:
-> > This is the driver for latest Blackfin BF54x nand flash controller
-> >
-> >  - use nand_chip and mtd_info common nand driver interface
-> >  - provide both PIO and dma operation
-> >  - compiled with ezkit bf548 configuration
-> >  - use hardware 1-bit ECC
-> >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
->
-> Looks great!
->
-> Will this driver also work for the new BF52x series of the Blackfin Series?
-> (Or is it planned to make it work for... anytime soon.)
+On Mon, 2007-09-03 at 13:57 -0400, Mike Frysinger wrote:
+> On 9/3/07, Bryan Wu <bryan.wu@analog.com> wrote:
+> > --- a/drivers/mtd/nand/Kconfig
+> > +++ b/drivers/mtd/nand/Kconfig
+> > @@ -131,6 +131,24 @@ config MTD_NAND_AU1550
+> > +config MTD_NAND_BF54X
+> > +       tristate "NAND Flash support for Blackfin BF54X SoC DSP"
+> 
+> i'd just describe it as "Blackfin on-chip NAND" rather than sticking
+> in exact part numbers as i imagine we can extend it down the line
+> 
+> > +         This enables the NAND flash controller on the BF54X SoC DPSs
+> 
+> "BF54X SoC DPSs" -> "BF54x SoC DSPs"
+> 
+> > +         No board specific support is done by this driver, each board
+> > +         must advertise a platform_device for the driver to attach.
+> 
+> should mention the module name when built as a module
+> 
 
-the order for porting of new chips is:
-u-boot -> core kernel -> peripherals
+I will get rid of this BF54X and use BF5XX for (BF54x and BF52x and
+future processor)
 
-we generally dont bother looking at peripherals until the earlier stuff is done
--mike
+> > +config MTD_NAND_BF54X_HWECC
+> > +       bool "BF54X NAND Hardware ECC"
+> > +       depends on MTD_NAND_BF54X
+> > +       help
+> > +         Enable the use of the BF54X's internal ECC generator when
+> > +         using NAND. Early versions of the chip have had problems with
+> > +         incorrect ECC generation, and if using these, the default of
+> > +         software ECC is preferable.
+> 
+> rather than advertising this, i'd just keep it in the driver ...
+> presumably there are anomaly #'s for when the ECC is wrong, so we can
+> make the code depend on those
+> -mike
+
+This option is quite common in the NAND driver. If there are anomaly
+#'s, code can still depend on those by using hardware_ecc varible. This
+option is very useful when someone need software_ecc.
+
+Thanks
+- Bryan Wu
