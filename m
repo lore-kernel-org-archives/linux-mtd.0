@@ -1,30 +1,13 @@
-Received: from mail.ku-gbr.de ([81.3.11.18] helo=ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ISVhc-0003y3-Oz
-	for linux-mtd@lists.infradead.org; Tue, 04 Sep 2007 06:32:16 -0400
-Received: from dslb-082-083-035-027.pools.arcor-ip.net ([82.83.35.27]:51710
-	helo=localhost)
-	by mail.ku-gbr.de with esmtpsa (Exim 4.50 #1 (Debian))
-	id 1ISVlc-00032R-4S
-	for <linux-mtd@lists.infradead.org>; Tue, 04 Sep 2007 12:36:20 +0200
-Received: from anita ([10.10.0.18] helo=anita.doom)
-	by localhost with esmtp (Exim 4.67) (envelope-from <lists@ku-gbr.de>)
-	id 1ISVhU-0001zL-Fk
-	for linux-mtd@lists.infradead.org; Tue, 04 Sep 2007 12:32:04 +0200
-Received: from konsti by anita.doom with local (Exim 4.67)
-	(envelope-from <lists@ku-gbr.de>) id 1ISVhU-0001CT-44
-	for linux-mtd@lists.infradead.org; Tue, 04 Sep 2007 12:32:04 +0200
-Date: Tue, 4 Sep 2007 12:32:04 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: Quad Die NAND Chip with 16Gb
-Message-ID: <20070904103204.GA4599@anita.doom>
-References: <20070831150443.GA10808@anita.doom>
-	<20070831153132.GA27851@z1.synertronixx>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20070831153132.GA27851@z1.synertronixx>
+Date: Tue, 04 Sep 2007 15:21:09 +0100
+From: emiratelottery1@wi.rr.com
+Subject: ACCEPT OUR HEARTY CONGRATULATIONS
+Message-id: <fe8c878b74bc7.74bc7fe8c878b@rdc-kc.rr.com>
+MIME-version: 1.0
+Content-type: text/plain; charset=iso-8859-1
+Content-language: en
+Content-transfer-encoding: quoted-printable
+Content-disposition: inline
+Reply-To: agenraymonds@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,18 +17,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2007-08-31 17:31 +0200 schrieb Konstantin Kletschke:
+EMIRATES HERITAGE LOTTERY 2007=2E
+UNITED ARAB EMIRATES=2E
+ =
 
-> Hardware feels well, so how does stupid konste merge these halfes?
+We are pleased to inform you of the announcements of this month=27s =
 
-Meanwhile I found the key in passing nr_chips via platform setup to our
-device driver, do an nand_scan(mtd, 2) instead of nand_scan(mtd, 1) and
-implement a reasonable select_chip() function.
+Winners of the EMIRATES HERITAGE LOTTERY for August 2007=2E
+ =
 
-That was all!
+Your e-mail address=2C is attached to a Ticket number 190-171-UAE-S5E=2C =
 
-Kind regards, Konsti
+with a serial number UAE2007-DB drew the Lucky Winning Numbers 109-
+1GFJ-UAE65=2E
+ =
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+You have therefore been awarded the total lump sum pay out of =
+
+1=2C000=2C000=2E00 GBP credited to File Ref No=3A UAE/ DB-765AE-BA=2E You=
+ are to =
+
+contact Your claims agent by e-mail=3B
+ =
+
+Contact Person=3A Raymond Peterson
+E-mail=3A agenraymonds=40gmail=2Ecom
+Desk Phone=3A +44-703-194-4467
+ =
+
+Congratulations once again from all our staff for being a part of our =
+
+Promotions program=2E
+ =
+
+ACCEPT OUR HEARTY CONGRATULATIONS=2E
+Regards=2C
+Stella Anderson=2C
+Lottery Co-ordinator=2C
+U=2EA=2EE Home of all Trade=2C
+=A9 Emirates Heritage Lottery 2007=2E
+
+
+ =
