@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ITEzT-0004zh-Cv
-	for linux-mtd@lists.infradead.org; Thu, 06 Sep 2007 06:53:43 -0400
+	id 1ITFHl-0005PQ-Kd
+	for linux-mtd@lists.infradead.org; Thu, 06 Sep 2007 07:12:38 -0400
 Subject: Re: General performance of NAND operations i.e mount and ls
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20070906093735.GD2164@z1.synertronixx>
+In-Reply-To: <1189069864.14370.34.camel@sauron>
 References: <20070906081215.GA5693@anita.doom>
 	<1189067241.14370.23.camel@sauron>
 	<20070906084418.GC2164@z1.synertronixx>
 	<1189069864.14370.34.camel@sauron>
-	<20070906093735.GD2164@z1.synertronixx>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 06 Sep 2007 13:53:12 +0300
-Message-Id: <1189075992.14370.42.camel@sauron>
+Date: Thu, 06 Sep 2007 14:11:59 +0300
+Message-Id: <1189077119.14370.52.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -27,40 +26,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-09-06 at 11:37 +0200, Konstantin Kletschke wrote:
-> UBI: empty MTD device detected
-> UBI: create volume table (copy #1)
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 0:512,
-> written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 1:512,
-> written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 2:512,
-> written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 3:512,
-> written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 4:512,
-> written 0 bytes
-> UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 5:512,
-> written 0 bytes
-> UBI warning: io_init: EC and VID headers are in the same minimal I/O
-> unit, switch to read-only mode
-> UBI error: validate_ec_hdr: bad VID header offset 512, expected 128
-> UBI error: validate_ec_hdr: bad EC header
-> UBI error: ubi_io_read_ec_hdr: validation failed for PEB 0
+On Thu, 2007-09-06 at 12:11 +0300, Artem Bityutskiy wrote:
 
-This means your driver does not support sub-pages, but reports it does.
-You should either fix sub-page support or do not report it is present.
+> > Okay, I wanted to check if the time is okay for 520MHz core with 104MHz
+> > Bus and 8Bit flash. If this is the case my Hardware driver is okay.
+> > There is no urge to improve this stat() time and fragtree building at
+> > the moment. If it takes so long and the driver is okay it wioll take so
+> > long (arguing with boss and customers :-)).
+>=20
+> Try to measure raw R/W, e.g with dd. But beware dd will fail at the
+> first met bad block. Something like:
+>=20
+> Read: dd if=3D/dev/mtd4 of=3D/dev/null bs=3D4096 count=3D512
+> Write: dd if=3D/dev/zero of=3D/dev/mtd4 bs=3D4096 count=3D512
+>=20
+> It'll print raw R/W speed.  But beware dd will fail at the first bad
+> block, so yo may have to play with count=3D or skip=3D for read and seek=
+=3D
+> for write to find a large enough contiguous area without bad blocks.
 
-There are good NANDtests available at
+Konste,
 
-git://git.infradead.org/~ahunter/nand-tests.git
-(http://git.infradead.org/?p=3Dusers/ahunter/nand-tests.git;a=3Dsummary)
-
-
-Try them to make sure your NAND driver is all-right. Well, you may want
-to avoid the torture test, but it is also very useful to run it with
-limited amount of erase cycles to make sure your flash/driver survive
-really high I/O load.
+may you please go to Device Drivers--->Memory Technology Device (MTD)
+support--->UBI - Unsorted block images---> in menuconfig and enable "UBI
+debugging", "UBI debugging messages", and "Extra self-checks" and try
+again? Then send what UBI prints. I'll try to figure out what is wrong.
 
 --=20
 Best regards,
