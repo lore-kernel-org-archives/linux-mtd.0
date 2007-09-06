@@ -1,22 +1,24 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ITWmM-0006qa-0p
-	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 01:53:21 -0400
-Subject: Re: [PATCH try #2] Blackfin on-chip NAND Flash Controller driver
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: bryan.wu@analog.com
-In-Reply-To: <1188885450.7074.7.camel@roc-laptop>
-References: <1188885450.7074.7.camel@roc-laptop>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 07 Sep 2007 08:52:21 +0300
-Message-Id: <1189144341.14370.77.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org,
-	Robin Getz <rgetz@blackfin.uclinux.org>, linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org
-Reply-To: dedekind@infradead.org
+Received: from nz-out-0506.google.com ([64.233.162.224])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1ITJCj-0007qy-6q
+	for linux-mtd@lists.infradead.org; Thu, 06 Sep 2007 11:23:42 -0400
+Received: by nz-out-0506.google.com with SMTP id z3so133739nzf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 06 Sep 2007 08:23:35 -0700 (PDT)
+From: Matteo Croce <technoboy85@gmail.com>
+To: linux-mips@linux-mips.org
+Subject: [PATCH][MIPS][2/7] AR7: mtd
+Date: Thu, 6 Sep 2007 17:23:20 +0200
+References: <200708201704.11529.technoboy85@gmail.com>
+In-Reply-To: <200708201704.11529.technoboy85@gmail.com>
+MIME-Version: 1.0
+Message-Id: <200709061723.21091.technoboy85@gmail.com>
+Content-Disposition: inline
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Cc: Eugene Konev <ejka@imfi.kspu.ru>, Felix Fietkau <nbd@openwrt.org>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,37 +28,196 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-09-04 at 13:57 +0800, Bryan Wu wrote:
-> This is the driver for latest Blackfin on-chip nand flash controller
->=20
->  - use nand_chip and mtd_info common nand driver interface
->  - provide both PIO and dma operation
->  - compiled with ezkit bf548 configuration
->  - use hardware 1-bit ECC
->  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
->=20
-> ChangeLog from try#1
->  - use hweight32() instead of count_bits()
->  - replace bf54x with bf5xx and BF54X with BF5XX
->  - compare against plat->page_size in 2 cases when enable hardware ECC
->=20
-> Signed-off-by: Bryan Wu <bryan.wu@analog.com>
+Partition map support
 
-Bryan,
+Signed-off-by: Matteo Croce <technoboy85@gmail.com>
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Eugene Konev <ejka@imfi.kspu.ru>
 
-I'd suggest you to test your NAND driver with the following NAND tests:
-
-git://git.infradead.org/~ahunter/nand-tests.git
-
-(http://git.infradead.org/?p=3Dusers/ahunter/nand-tests.git;a=3Dsummary)
-
-
-You may want to avoid the torture test, but it is useful to run it with
-limited amount of erase cycles to make sure your flash/driver survives
-really high I/O load.For example, we caught occasional DMA transfer
-problems while running the torture test for few days.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index fbec8cd..c1b2508 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -150,6 +150,12 @@ config MTD_AFS_PARTS
+ 	  for your particular device. It won't happen automatically. The
+ 	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
+ 
++config MTD_AR7_PARTS
++	tristate "TI AR7 partitioning support"
++	depends on MTD_PARTITIONS
++	---help---
++	  TI AR7 partitioning support
++
+ comment "User Modules And Translation Layers"
+ 
+ config MTD_CHAR
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 6d958a4..8451c64 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
+ obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
+ obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
+ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
++obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
+ 
+ # 'Users' - code which presents functionality to userspace.
+ obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
+diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
+new file mode 100644
+index 0000000..03eda55
+--- /dev/null
++++ b/drivers/mtd/ar7part.c
+@@ -0,0 +1,138 @@
++/*
++ * Copyright (C) 2007 Felix Fietkau, Eugene Konev
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * TI AR7 flash partition table.
++ * Based on ar7 map by Felix Fietkau.
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/slab.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/bootmem.h>
++#include <linux/squashfs_fs.h>
++
++struct ar7_bin_rec {
++	unsigned int checksum;
++	unsigned int length;
++	unsigned int address;
++};
++
++static struct mtd_partition ar7_parts[5];
++
++static int create_mtd_partitions(struct mtd_info *master,
++				 struct mtd_partition **pparts,
++				 unsigned long origin)
++{
++	struct ar7_bin_rec header;
++	unsigned int offset, len;
++	unsigned int pre_size = master->erasesize, post_size = 0,
++		root_offset = 0xe0000;
++	int retries = 10;
++
++	printk("Parsing AR7 partition map...\n");
++
++	ar7_parts[0].name = "loader";
++	ar7_parts[0].offset = 0;
++	ar7_parts[0].size = master->erasesize;
++	ar7_parts[0].mask_flags = MTD_WRITEABLE;
++
++	ar7_parts[1].name = "config";
++	ar7_parts[1].offset = 0;
++	ar7_parts[1].size = master->erasesize;
++	ar7_parts[1].mask_flags = 0;
++
++	do {
++		offset = pre_size;
++		master->read(master, offset, sizeof(header), &len, (u_char *)&header);
++		if (!strncmp((char *)&header, "TIENV0.8", 8))
++			ar7_parts[1].offset = pre_size;
++		if (header.checksum == 0xfeedfa42)
++			break;
++		if (header.checksum == 0xfeed1281)
++			break;
++		pre_size += master->erasesize;
++	} while (retries--);
++
++	pre_size = offset;
++
++	if (!ar7_parts[1].offset) {
++		ar7_parts[1].offset = master->size - master->erasesize;
++		post_size = master->erasesize;
++	}
++
++	switch (header.checksum) {
++	case 0xfeedfa42:
++		while (header.length) {
++			offset += sizeof(header) + header.length;
++			master->read(master, offset, sizeof(header),
++				     &len, (u_char *)&header);
++		}
++		root_offset = offset + sizeof(header) + 4;
++		break;
++	case 0xfeed1281:
++		while (header.length) {
++			offset += sizeof(header) + header.length;
++			master->read(master, offset, sizeof(header),
++				     &len, (u_char *)&header);
++		}
++		root_offset = offset + sizeof(header) + 4 + 0xff;
++		root_offset &= ~(u32)0xff;
++		break;
++	default:
++		printk("Unknown magic: %08x\n", header.checksum);
++		break;
++	}
++
++	master->read(master, root_offset, sizeof(header), &len, (u_char *)&header);
++	if (header.checksum != SQUASHFS_MAGIC) {
++		root_offset += master->erasesize - 1;
++		root_offset &= ~(master->erasesize - 1);
++	}
++
++	ar7_parts[2].name = "linux";
++	ar7_parts[2].offset = pre_size;
++	ar7_parts[2].size = master->size - pre_size - post_size;
++	ar7_parts[2].mask_flags = 0;
++
++	ar7_parts[3].name = "rootfs";
++	ar7_parts[3].offset = root_offset;
++	ar7_parts[3].size = master->size - root_offset - post_size;
++	ar7_parts[3].mask_flags = 0;
++
++	*pparts = ar7_parts;
++	return 4;
++}
++
++static struct mtd_part_parser ar7_parser = {
++	.owner = THIS_MODULE,
++	.parse_fn = create_mtd_partitions,
++	.name = "ar7part",
++};
++
++static int __init ar7_parser_init(void)
++{
++	return register_mtd_parser(&ar7_parser);
++}
++
++module_init(ar7_parser_init);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Felix Fietkau, Eugene Konev");
++MODULE_DESCRIPTION("MTD partitioning for TI AR7");
+diff --git a/drivers/mtd/maps/physmap.c b/drivers/mtd/maps/physmap.c
+index 28c5ffd..4e41717 100644
+--- a/drivers/mtd/maps/physmap.c
++++ b/drivers/mtd/maps/physmap.c
+@@ -74,7 +74,8 @@ static int physmap_flash_remove(struct platform_device *dev)
+ 
+ static const char *rom_probe_types[] = { "cfi_probe", "jedec_probe", "map_rom", NULL };
+ #ifdef CONFIG_MTD_PARTITIONS
+-static const char *part_probe_types[] = { "cmdlinepart", "RedBoot", NULL };
++static const char *part_probe_types[] =
++				{ "cmdlinepart", "RedBoot", "ar7part", NULL };
+ #endif
+ 
+ static int physmap_flash_probe(struct platform_device *dev)
