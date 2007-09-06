@@ -1,21 +1,21 @@
-Received: from mail.ku-gbr.de ([81.3.11.18] helo=ku-gbr.de)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ITJqK-0008R1-An
-	for linux-mtd@lists.infradead.org; Thu, 06 Sep 2007 12:04:36 -0400
-Date: Thu, 6 Sep 2007 18:03:57 +0200
-From: Konstantin Kletschke <lists@ku-gbr.de>
-To: linux-mtd@lists.infradead.org
-Subject: Re: General performance of NAND operations i.e mount and ls
-Message-ID: <20070906160357.GG2164@z1.synertronixx>
-References: <20070906081215.GA5693@anita.doom>
-	<1189067241.14370.23.camel@sauron>
-	<20070906084418.GC2164@z1.synertronixx>
-	<1189069864.14370.34.camel@sauron>
-	<1189077119.14370.52.camel@sauron>
+Received: from mail.eads-nadefense.com ([63.67.56.100])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1ITK1C-0000Gq-CL
+	for linux-mtd@lists.infradead.org; Thu, 06 Sep 2007 12:15:49 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1189077119.14370.52.camel@sauron>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: ramfs or ramdisk
+Date: Thu, 6 Sep 2007 09:15:41 -0700
+Message-ID: <0FAD7C008A1FEB448725A0EFAE2A3A4A06FFA154@eadsna-irvexch1.EADS-NAdefense.local>
+In-Reply-To: <3547473BFF99D74F875EEE3E38BCDDFF23A5F0@tieroneserver.tier1design.com>
+From: "Mo, Vincent" <vincent.mo@EADS-NAdefense.com>
+To: "Michael Langford" <mlangford@tieronedesign.com>,
+	"Saravanan Chanemouganandam" <schane@osmozis.com>,
+	<linux-arm@lists.arm.linux.org.uk>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,94 +25,81 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Am 2007-09-06 14:11 +0300 schrieb Artem Bityutskiy:
+>From "Embedded Linux System Design and Development":
 
-> may you please go to Device Drivers--->Memory Technology Device (MTD)
-> support--->UBI - Unsorted block images---> in menuconfig and enable "UBI
-> debugging", "UBI debugging messages", and "Extra self-checks" and try
-> again? Then send what UBI prints. I'll try to figure out what is wrong.
 
-Well after half an hour I got this:
+RAMDISK:
+Implemented as a block device in RAM, need to create a file system on
+top of it.
 
-UBI DBG: attach_mtd_dev: attaching mtd4 to ubi0: VID header offset 0 data offset 0
-UBI DBG: io_init: min_io_size      2048
-UBI DBG: io_init: hdrs_min_io_size 512
-UBI DBG: io_init: ec_hdr_alsize    512
-UBI DBG: io_init: vid_hdr_alsize   512
-UBI DBG: io_init: vid_hdr_offset   512
-UBI DBG: io_init: vid_hdr_aloffset 512
-UBI DBG: io_init: vid_hdr_shift    0
-UBI DBG: io_init: leb_start        2048
-UBI DBG: io_init: leb_size         129024
-UBI DBG: io_init: ro_mode          0
-UBI DBG: ubi_scan: scanning is finished
-UBI: empty MTD device detected
-UBI: create volume table (copy #1)
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 0:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000100 r5:00000000 r4:00000001
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 1:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000200 r5:00000000 r4:00000002
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 2:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000300 r5:00000000 r4:00000003
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 3:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000400 r5:00000000 r4:00000004
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 4:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000500 r5:00000000 r4:00000005
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: ubi_io_write: error -5 while writing 512 bytes to PEB 5:512, written 0 bytes
-Function entered at [<c001df40>] from [<bf0528a0>]
-Function entered at [<bf052694>] from [<bf052994>]
-Function entered at [<bf0528c8>] from [<bf04b67c>]
- r6:00000600 r5:00000000 r4:00000006
-Function entered at [<bf04b448>] from [<bf04b9c4>]
-Function entered at [<bf04b8b0>] from [<bf06163c>]
-Function entered at [<bf06120c>] from [<c004dc44>]
-Function entered at [<c004cb40>] from [<c0019f40>]
-UBI error: attach_mtd_dev: failed to attach by scanning, error -5
+Needs to be preallocated in RAM before use.
 
-To not flood the console/kernlog I disabled
+2 copies of program pages are maintained: in ramdisk and in the kernel
+page cache when any program is executed out of ramdisk.
 
-#warning KKK
-// KKK          dbg_msg("process PEB %d", pnum);
+Slower because any data access needs to go through the file system and
+block device driver.
 
-though.
 
-Kind regards, Konsti
 
--- 
-GPG KeyID EF62FCEF
-Fingerprint: 13C9 B16B 9844 EC15 CC2E  A080 1E69 3FDA EF62 FCEF
+RAMFS:
+Is a file system implemented directly in RAM.
+
+No preallocation necessary.  Dynamic growth based on requirement.
+
+Whenever a program is executed from a RAMFS, only one copy that is in
+the kernel cache is used.  No duplication.
+
+Is relatively faster as actual file data and metadata are in kernel
+cache and no file system and block device driver overheads are involved.
+
+ =20
+
+=20
+
+=20
+=20
+=20
+=20
+
+Vincent Mo
+Software Engineer
+EADS NA Defense
+
+>-----Original Message-----
+>From: linux-arm-bounces@lists.arm.linux.org.uk [mailto:linux-arm-
+>bounces@lists.arm.linux.org.uk] On Behalf Of Michael Langford
+>Sent: Wednesday, September 05, 2007 8:06 AM
+>To: Saravanan Chanemouganandam; linux-arm@lists.arm.linux.org.uk
+>Cc: linux-mtd@lists.infradead.org
+>Subject: RE: ramfs or ramdisk
+>
+>-----Original Message-----
+>Subject: ramfs or ramdisk
+>
+>I would like to know which rootfs files system is best for the embedded
+>systems, ramfs rootfs or ramdisk rootfs ?Can anyone point me interms of
+>memory advantage.
+>
+>Thanks
+>Sara
+>
+>---------------------------
+>
+>Timesys has a website(https://linuxlink.timesys.com/docs/initramfs) and
+>podcast talking about the differences at their website. I believe the
+>pertinent discussions of the different filesystems and the boot time
+>tradeoffs are in the following episodes:
+>
+>http://www.timesys.com/podcasts/mp3/Episode_011_LinuxLink_Radio.mp3
+>http://www.timesys.com/podcasts/mp3/Episode_012_LinuxLink_Radio.mp3
+>
+>     --Michael
+>
+>PS: I have no affiliation with them, just listen to their podcast.
+>
+>
+>-------------------------------------------------------------------
+>List admin: http://lists.arm.linux.org.uk/mailman/listinfo/linux-arm
+>FAQ:        http://www.arm.linux.org.uk/mailinglists/faq.php
+>Etiquette:  http://www.arm.linux.org.uk/mailinglists/etiquette.php
