@@ -1,20 +1,11 @@
-Received: from www.tier1design.com ([68.16.98.218]
-	helo=tieroneserver.tier1design.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ISweW-0001m8-C3
-	for linux-mtd@lists.infradead.org; Wed, 05 Sep 2007 11:18:51 -0400
-Content-class: urn:content-classes:message
-Subject: RE: ramfs or ramdisk
+Message-ID: <1265.41.242.42.184.1189149883.squirrel@alpha.hostaga.com>
+Date: Fri, 7 Sep 2007 02:24:43 -0500 (CDT)
+Subject: Please Read I Need Your Help
+From: "Mr Davis Lumka" <davislumka2@yahoo.com.hk>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 5 Sep 2007 11:06:24 -0400
-Message-ID: <3547473BFF99D74F875EEE3E38BCDDFF23A5F0@tieroneserver.tier1design.com>
-From: "Michael Langford" <mlangford@tieronedesign.com>
-To: "Saravanan Chanemouganandam" <schane@osmozis.com>,
-	<linux-arm@lists.arm.linux.org.uk>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: davislumka5@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +15,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
------Original Message-----
-Subject: ramfs or ramdisk
 
-I would like to know which rootfs files system is best for the embedded=20
-systems, ramfs rootfs or ramdisk rootfs ?Can anyone point me interms of=20
-memory advantage.
 
-Thanks
-Sara
 
----------------------------
+Goodday,
 
-Timesys has a website(https://linuxlink.timesys.com/docs/initramfs) and
-podcast talking about the differences at their website. I believe the
-pertinent discussions of the different filesystems and the boot time
-tradeoffs are in the following episodes:
+My name is Mr Davis Lumka from South Africa our client died Three years
+ago leaving behind Capital amount (US$14.6M) in our bank here where i work
+,I am his account manager ,till date nobody has come forward or put
+application for the claim.
 
-http://www.timesys.com/podcasts/mp3/Episode_011_LinuxLink_Radio.mp3
-http://www.timesys.com/podcasts/mp3/Episode_012_LinuxLink_Radio.mp3
+During the bank private search for the relative recently your name and
+email contact was among the findings that matches the same surname as
+the deceases name is (withheld for security reason) who died interstate
+with no Will or next of kin.
 
-     --Michael
 
-PS: I have no affiliation with them, just listen to their podcast.
+To maintain the level of security required I have intentionally left out
+the final details. I want you to come forward since I can provide you
+with the details needed for you to claim the Funds so that I can be
+gratify by you,I and my colleague that will do all the crucial part in
+the bank to have the claim release to you promptly.
+
+To affirm yourwillingness and cooperation please do so by replying me at
+my private email stating your telephone number .
+
+
+I do expect you prompt response.
+
+Thank you,
+
+Mr Davis Lumka
+
++27 74 103 5599
