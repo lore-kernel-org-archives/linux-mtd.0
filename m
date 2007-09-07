@@ -1,22 +1,26 @@
-Received: from wx-out-0506.google.com ([66.249.82.235])
+Received: from wa-out-1112.google.com ([209.85.146.177])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1ITefd-0004FV-EW
-	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 10:18:56 -0400
-Received: by wx-out-0506.google.com with SMTP id s7so426237wxc
+	id 1ITnQD-0008Ph-5N
+	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 19:39:37 -0400
+Received: by wa-out-1112.google.com with SMTP id v33so715726wah
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 07 Sep 2007 07:18:52 -0700 (PDT)
-Message-ID: <f96d234e0709070718i6f7ea6dcj91950d8fbc20cea7@mail.gmail.com>
-Date: Fri, 7 Sep 2007 10:18:51 -0400
-From: "Cliff Brake" <cliff.brake@gmail.com>
-To: "Saravanan Chanemouganandam" <schane@osmozis.com>
-Subject: Re: sofware updates using initramfs
-In-Reply-To: <200709071512.02117.schane@osmozis.com>
+	Fri, 07 Sep 2007 16:39:31 -0700 (PDT)
+Message-ID: <6bffcb0e0709071639y6bf7a3a0y86b1a2188d0ab1d7@mail.gmail.com>
+Date: Sat, 8 Sep 2007 01:39:30 +0200
+From: "Michal Piotrowski" <michal.k.k.piotrowski@gmail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [2/2] 2.6.23-rc5: known regressions with patches
+In-Reply-To: <1189072799.2745.68.camel@shinybook.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <200709071512.02117.schane@osmozis.com>
-Cc: linux-arm@lists.arm.linux.org.uk, linux-mtd@lists.infradead.org
+References: <46DBDCF4.6040805@googlemail.com> <46DBDDC6.9030602@googlemail.com>
+	<1189072799.2745.68.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	Ingo Molnar <mingo@elte.hu>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,26 +30,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/7/07, Saravanan Chanemouganandam <schane@osmozis.com> wrote:
-> Hi all,
+Hi David,
+
+On 06/09/2007, David Woodhouse <dwmw2@infradead.org> wrote:
+> On Mon, 2007-09-03 at 12:11 +0200, Michal Piotrowski wrote:
+> > MTD
+> >
+> > Subject         : error: implicit declaration of function 'cfi_interleave'
+> > References      : http://lkml.org/lkml/2007/8/6/272
+> > Last known good : ?
+> > Submitter       : Ingo Molnar <mingo@elte.hu>
+> > Caused-By       : ?
+> > Handled-By      : David Woodhouse <dwmw2@infradead.org>
+> > Patch           : http://lkml.org/lkml/2007/8/9/586
+> > Status          : patch available
 >
-> On my pxa270 board, I want to perform kernel and main rootfs updates using a
-> small rootfs ( initramfs) flashed on the NOR.
-> Can anybody provide me a good descriptive stuffs on the above software updates
-> using initramfs?
+> This isn't really a regression -- it's been like this for years.
 
-I have implemented a similar update scheme on several projects -- a few notes:
+Ok, I removed it from the KR list.
 
-http://bec-systems.com/web/content/view/66/9/
-http://bec-systems.com/web/content/view/65/9/
-
-uclibc support for ARM is now pretty decent in OpenEmbedded, so what I
-typically do now is build a small nor image using uclibc, and the main
-rootfs using glibc.
-
-Cliff
+Regards,
+Michal
 
 -- 
-=======================
-Cliff Brake
-http://bec-systems.com
+LOG
+http://www.stardust.webpages.pl/log/
