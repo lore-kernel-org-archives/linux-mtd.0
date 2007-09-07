@@ -1,22 +1,21 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ITWgb-0006cg-UC
-	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 01:47:25 -0400
-Subject: Re: General performance of NAND operations i.e mount and ls
+	id 1ITWmM-0006qa-0p
+	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 01:53:21 -0400
+Subject: Re: [PATCH try #2] Blackfin on-chip NAND Flash Controller driver
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: Konstantin Kletschke <lists@ku-gbr.de>
-In-Reply-To: <20070906160357.GG2164@z1.synertronixx>
-References: <20070906081215.GA5693@anita.doom>
-	<1189067241.14370.23.camel@sauron>
-	<20070906084418.GC2164@z1.synertronixx>
-	<1189069864.14370.34.camel@sauron> <1189077119.14370.52.camel@sauron>
-	<20070906160357.GG2164@z1.synertronixx>
+To: bryan.wu@analog.com
+In-Reply-To: <1188885450.7074.7.camel@roc-laptop>
+References: <1188885450.7074.7.camel@roc-laptop>
 Content-Type: text/plain; charset=utf-8
-Date: Fri, 07 Sep 2007 08:47:14 +0300
-Message-Id: <1189144034.14370.73.camel@sauron>
+Date: Fri, 07 Sep 2007 08:52:21 +0300
+Message-Id: <1189144341.14370.77.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: Mike Frysinger <vapier.adi@gmail.com>, linux-kernel@vger.kernel.org,
+	Robin Getz <rgetz@blackfin.uclinux.org>, linux-mtd@lists.infradead.org,
+	Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, akpm@linux-foundation.org
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -27,38 +26,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-09-06 at 18:03 +0200, Konstantin Kletschke wrote:
-> > may you please go to Device Drivers--->Memory Technology Device (MTD)
-> > support--->UBI - Unsorted block images---> in menuconfig and enable "UB=
-I
-> > debugging", "UBI debugging messages", and "Extra self-checks" and try
-> > again? Then send what UBI prints. I'll try to figure out what is wrong.
+On Tue, 2007-09-04 at 13:57 +0800, Bryan Wu wrote:
+> This is the driver for latest Blackfin on-chip nand flash controller
 >=20
-> Well after half an hour I got this:
+>  - use nand_chip and mtd_info common nand driver interface
+>  - provide both PIO and dma operation
+>  - compiled with ezkit bf548 configuration
+>  - use hardware 1-bit ECC
+>  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
+>=20
+> ChangeLog from try#1
+>  - use hweight32() instead of count_bits()
+>  - replace bf54x with bf5xx and BF54X with BF5XX
+>  - compare against plat->page_size in 2 cases when enable hardware ECC
+>=20
+> Signed-off-by: Bryan Wu <bryan.wu@analog.com>
 
-It is long because you enabled paranoid checks. One of them scans whole
-media and makes sure it is really empty and contains only 0xFFs. You may
-disable paranoid checks to make it faster.
+Bryan,
 
-> UBI DBG: attach_mtd_dev: attaching mtd4 to ubi0: VID header offset 0 data=
- offset 0
-> UBI DBG: io_init: min_io_size      2048
-> UBI DBG: io_init: hdrs_min_io_size 512
-> UBI DBG: io_init: ec_hdr_alsize    512
-> UBI DBG: io_init: vid_hdr_alsize   512
-> UBI DBG: io_init: vid_hdr_offset   512
-> UBI DBG: io_init: vid_hdr_aloffset 512
-> UBI DBG: io_init: vid_hdr_shift    0
-> UBI DBG: io_init: leb_start        2048
-> UBI DBG: io_init: leb_size         129024
-> UBI DBG: io_init: ro_mode          0
-> UBI DBG: ubi_scan: scanning is finished
+I'd suggest you to test your NAND driver with the following NAND tests:
 
-Yeah, your flash driver is not OK. It reports 2 in mtd->subpage_sft, but
-it is unable to write in sub-page chunks (512 bytes) - it returns -EIO.=20
+git://git.infradead.org/~ahunter/nand-tests.git
 
-You should either teach it to write sub-pages (preferable) or report 0
-in mtd->subpage_sft, which would mean "no sub-page support".
+(http://git.infradead.org/?p=3Dusers/ahunter/nand-tests.git;a=3Dsummary)
+
+
+You may want to avoid the torture test, but it is useful to run it with
+limited amount of erase cycles to make sure your flash/driver survives
+really high I/O load.For example, we caught occasional DMA transfer
+problems while running the torture test for few days.
 
 --=20
 Best regards,
