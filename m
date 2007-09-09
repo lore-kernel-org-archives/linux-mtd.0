@@ -1,23 +1,18 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVvoQ-0007uj-FZ
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 17:01:25 -0400
-From: Mike Frysinger <vapier@gentoo.org>
-To: Robin Getz <rgetz@blackfin.uclinux.org>
-Subject: Re: [patch] update CFI URI n mtd kconfig
-Date: Thu, 13 Sep 2007 17:01:16 -0400
-References: <200709122339.55267.vapier@gentoo.org>
-	<625fc13d0709131128m5a606b6ewe729c1e72f73f9d9@mail.gmail.com>
-	<200709131631.56867.rgetz@blackfin.uclinux.org>
-In-Reply-To: <200709131631.56867.rgetz@blackfin.uclinux.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart8223427.xa7bFni5AE";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+Received: from mfo32.po.2iij.net ([210.128.50.15])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IUONh-0004DD-O9
+	for linux-mtd@lists.infradead.org; Sun, 09 Sep 2007 11:07:30 -0400
+Date: Sun, 9 Sep 2007 23:35:25 +0900
+From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] MTD: remove Momenco Ocelot support
+Message-Id: <20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
+In-Reply-To: <1189329262.8320.9.camel@pmac.infradead.org>
+References: <1189329262.8320.9.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Message-Id: <200709131701.17572.vapier@gentoo.org>
-Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>,
-	LKML <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org, yoichi_yuasa@tripeaks.co.jp
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,42 +22,222 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart8223427.xa7bFni5AE
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hello David,
 
-On Thursday 13 September 2007, Robin Getz wrote:
-> Why not from the place that you can get the standard? http://jedec.org/
+Please queue this patch too.
 
-i found jedec.org a nightmare to navigate
+---
 
-> or http://www.jedec.org/download/search/jesd68-01.pdf
+This patch has removed Momenco Ocelot support from MTD.
+Ocelot support has already removed.
 
-i'll add that to wikipedia ;)
--mike
+Signed-off-by: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
 
---nextPart8223427.xa7bFni5AE
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.6 (GNU/Linux)
-
-iQIVAwUARumlHUFjO5/oN/WBAQJ98hAAtkvXTRNMHIaqFWaDEDmqoO904UXwY9K8
-hyGZZy/+SUXhySN3vZzgcnV4amGxBJEKAJyeUAchCG/DSZOKWEOu5M3WO2K4Q9yW
-NgtbcDyJPlsWwtOlftwWVYA8fmXxbN57U8w+80PVFlkqCmFHOF01dJtM9pCx71Rq
-CoiQXjsxKTnE0wB0WEFFrj0Nj/gMiHJId5/LUowtNDWsCCv2iVw1bRTxg0MZRWS2
-OkIhTz0BtsXpxq3BfgtxSo0m92DWwq8uWZFxkNy23Xd60V9oSKerE6h7LcxKeEUo
-MjMeS/BAVkZ8l6Iq75YyCH3I33Sra4y1csK/+8VMOJVhU0CY7v6BsR1b0/Wa3Fwf
-YdzvQZkBW0Zx2PoCsT8NQZe31KUn8jHSyw3fGJJt1HMsM3ewfVUhlF7LjsaEeQFK
-bjZw/Q4yhKgl5+7eUzPB10YYphtTyZKuNq5kQ+nRwhdOJNHy7FH4HgUrNssASE5z
-5SdR8ohWYbjcPNcmC8nbfa19pvmJK29qq40L0YRocxb6kQUxYKvzN7a9gSBVNm7i
-E3amlUyl+IwFpVUU0lawCIVf7XEoGwKpHZ0MpSBRzMlncTVWDNxQddojUxzcPbL/
-hvsxNIEAVeDtjaOM2V9vgOMP+mO+U+sGhBztBRvqcDXWBqMPi77ps4ihERCZ+JUz
-au1kSZe08Xw=
-=unV2
------END PGP SIGNATURE-----
-
---nextPart8223427.xa7bFni5AE--
+diff -pruN -X mtd/Documentation/dontdiff mtd-orig/drivers/mtd/maps/Kconfig mtd/drivers/mtd/maps/Kconfig
+--- mtd-orig/drivers/mtd/maps/Kconfig	2007-09-09 23:25:33.534883500 +0900
++++ mtd/drivers/mtd/maps/Kconfig	2007-09-09 23:25:13.261616500 +0900
+@@ -384,14 +384,6 @@ config MTD_REDWOOD
+ 	  Redwood board. If you have one of these boards and would like to
+ 	  use the flash chips on it, say 'Y'.
+ 
+-config MTD_OCELOT
+-	tristate "Momenco Ocelot boot flash device"
+-	depends on MOMENCO_OCELOT
+-	help
+-	  This enables access routines for the boot flash device and for the
+-	  NVRAM on the Momenco Ocelot board. If you have one of these boards
+-	  and would like access to either of these, say 'Y'.
+-
+ config MTD_SOLUTIONENGINE
+ 	tristate "CFI Flash device mapped on Hitachi SolutionEngine"
+ 	depends on SUPERH && MTD_CFI && MTD_REDBOOT_PARTS
+diff -pruN -X mtd/Documentation/dontdiff mtd-orig/drivers/mtd/maps/Makefile mtd/drivers/mtd/maps/Makefile
+--- mtd-orig/drivers/mtd/maps/Makefile	2007-09-09 23:25:33.562885250 +0900
++++ mtd/drivers/mtd/maps/Makefile	2007-09-09 23:25:13.581636500 +0900
+@@ -43,7 +43,6 @@ obj-$(CONFIG_MTD_SUN_UFLASH)	+= sun_ufla
+ obj-$(CONFIG_MTD_VMAX)		+= vmax301.o
+ obj-$(CONFIG_MTD_SCx200_DOCFLASH)+= scx200_docflash.o
+ obj-$(CONFIG_MTD_DBOX2)		+= dbox2-flash.o
+-obj-$(CONFIG_MTD_OCELOT)	+= ocelot.o
+ obj-$(CONFIG_MTD_SOLUTIONENGINE)+= solutionengine.o
+ obj-$(CONFIG_MTD_PCI)		+= pci.o
+ obj-$(CONFIG_MTD_ALCHEMY)       += alchemy-flash.o
+diff -pruN -X mtd/Documentation/dontdiff mtd-orig/drivers/mtd/maps/ocelot.c mtd/drivers/mtd/maps/ocelot.c
+--- mtd-orig/drivers/mtd/maps/ocelot.c	2007-09-09 23:25:33.642890250 +0900
++++ mtd/drivers/mtd/maps/ocelot.c	1970-01-01 09:00:00.000000000 +0900
+@@ -1,175 +0,0 @@
+-/*
+- * $Id: ocelot.c,v 1.17 2005/11/07 11:14:27 gleixner Exp $
+- *
+- * Flash on Momenco Ocelot
+- */
+-
+-#include <linux/module.h>
+-#include <linux/types.h>
+-#include <linux/kernel.h>
+-#include <linux/init.h>
+-#include <asm/io.h>
+-#include <linux/mtd/mtd.h>
+-#include <linux/mtd/map.h>
+-#include <linux/mtd/partitions.h>
+-
+-#define OCELOT_PLD 0x2c000000
+-#define FLASH_WINDOW_ADDR 0x2fc00000
+-#define FLASH_WINDOW_SIZE 0x00080000
+-#define FLASH_BUSWIDTH 1
+-#define NVRAM_WINDOW_ADDR 0x2c800000
+-#define NVRAM_WINDOW_SIZE 0x00007FF0
+-#define NVRAM_BUSWIDTH 1
+-
+-static unsigned int cacheflush = 0;
+-
+-static struct mtd_info *flash_mtd;
+-static struct mtd_info *nvram_mtd;
+-
+-static void ocelot_ram_write(struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf)
+-{
+-        struct map_info *map = mtd->priv;
+-	size_t done = 0;
+-
+-	/* If we use memcpy, it does word-wide writes. Even though we told the
+-	   GT64120A that it's an 8-bit wide region, word-wide writes don't work.
+-	   We end up just writing the first byte of the four to all four bytes.
+-	   So we have this loop instead */
+-	*retlen = len;
+-	while(len) {
+-		__raw_writeb(*(unsigned char *) from, map->virt + to);
+-		from++;
+-		to++;
+-		len--;
+-	}
+-}
+-
+-static struct mtd_partition *parsed_parts;
+-
+-struct map_info ocelot_flash_map = {
+-	.name = "Ocelot boot flash",
+-	.size = FLASH_WINDOW_SIZE,
+-	.bankwidth = FLASH_BUSWIDTH,
+-	.phys = FLASH_WINDOW_ADDR,
+-};
+-
+-struct map_info ocelot_nvram_map = {
+-	.name = "Ocelot NVRAM",
+-	.size = NVRAM_WINDOW_SIZE,
+-	.bankwidth = NVRAM_BUSWIDTH,
+-	.phys = NVRAM_WINDOW_ADDR,
+-};
+-
+-static const char *probes[] = { "RedBoot", NULL };
+-
+-static int __init init_ocelot_maps(void)
+-{
+-	void *pld;
+-	int nr_parts;
+-	unsigned char brd_status;
+-
+-       	printk(KERN_INFO "Momenco Ocelot MTD mappings: Flash 0x%x at 0x%x, NVRAM 0x%x at 0x%x\n",
+-	       FLASH_WINDOW_SIZE, FLASH_WINDOW_ADDR, NVRAM_WINDOW_SIZE, NVRAM_WINDOW_ADDR);
+-
+-	/* First check whether the flash jumper is present */
+-	pld = ioremap(OCELOT_PLD, 0x10);
+-	if (!pld) {
+-		printk(KERN_NOTICE "Failed to ioremap Ocelot PLD\n");
+-		return -EIO;
+-	}
+-	brd_status = readb(pld+4);
+-	iounmap(pld);
+-
+-	/* Now ioremap the NVRAM space */
+-	ocelot_nvram_map.virt = ioremap_nocache(NVRAM_WINDOW_ADDR, NVRAM_WINDOW_SIZE);
+-	if (!ocelot_nvram_map.virt) {
+-		printk(KERN_NOTICE "Failed to ioremap Ocelot NVRAM space\n");
+-		return -EIO;
+-	}
+-
+-	simple_map_init(&ocelot_nvram_map);
+-
+-	/* And do the RAM probe on it to get an MTD device */
+-	nvram_mtd = do_map_probe("map_ram", &ocelot_nvram_map);
+-	if (!nvram_mtd) {
+-		printk("NVRAM probe failed\n");
+-		goto fail_1;
+-	}
+-	nvram_mtd->owner = THIS_MODULE;
+-	nvram_mtd->erasesize = 16;
+-	/* Override the write() method */
+-	nvram_mtd->write = ocelot_ram_write;
+-
+-	/* Now map the flash space */
+-	ocelot_flash_map.virt = ioremap_nocache(FLASH_WINDOW_ADDR, FLASH_WINDOW_SIZE);
+-	if (!ocelot_flash_map.virt) {
+-		printk(KERN_NOTICE "Failed to ioremap Ocelot flash space\n");
+-		goto fail_2;
+-	}
+-	/* Now the cached version */
+-	ocelot_flash_map.cached = (unsigned long)__ioremap(FLASH_WINDOW_ADDR, FLASH_WINDOW_SIZE, 0);
+-
+-	simple_map_init(&ocelot_flash_map);
+-
+-	/* Only probe for flash if the write jumper is present */
+-	if (brd_status & 0x40) {
+-		flash_mtd = do_map_probe("jedec", &ocelot_flash_map);
+-	} else {
+-		printk(KERN_NOTICE "Ocelot flash write jumper not present. Treating as ROM\n");
+-	}
+-	/* If that failed or the jumper's absent, pretend it's ROM */
+-	if (!flash_mtd) {
+-		flash_mtd = do_map_probe("map_rom", &ocelot_flash_map);
+-		/* If we're treating it as ROM, set the erase size */
+-		if (flash_mtd)
+-			flash_mtd->erasesize = 0x10000;
+-	}
+-	if (!flash_mtd)
+-		goto fail3;
+-
+-	add_mtd_device(nvram_mtd);
+-
+-	flash_mtd->owner = THIS_MODULE;
+-	nr_parts = parse_mtd_partitions(flash_mtd, probes, &parsed_parts, 0);
+-
+-	if (nr_parts > 0)
+-		add_mtd_partitions(flash_mtd, parsed_parts, nr_parts);
+-	else
+-		add_mtd_device(flash_mtd);
+-
+-	return 0;
+-
+- fail3:
+-	iounmap((void *)ocelot_flash_map.virt);
+-	if (ocelot_flash_map.cached)
+-			iounmap((void *)ocelot_flash_map.cached);
+- fail_2:
+-	map_destroy(nvram_mtd);
+- fail_1:
+-	iounmap((void *)ocelot_nvram_map.virt);
+-
+-	return -ENXIO;
+-}
+-
+-static void __exit cleanup_ocelot_maps(void)
+-{
+-	del_mtd_device(nvram_mtd);
+-	map_destroy(nvram_mtd);
+-	iounmap((void *)ocelot_nvram_map.virt);
+-
+-	if (parsed_parts)
+-		del_mtd_partitions(flash_mtd);
+-	else
+-		del_mtd_device(flash_mtd);
+-	map_destroy(flash_mtd);
+-	iounmap((void *)ocelot_flash_map.virt);
+-	if (ocelot_flash_map.cached)
+-		iounmap((void *)ocelot_flash_map.cached);
+-}
+-
+-module_init(init_ocelot_maps);
+-module_exit(cleanup_ocelot_maps);
+-
+-MODULE_LICENSE("GPL");
+-MODULE_AUTHOR("Red Hat, Inc. - David Woodhouse <dwmw2@cambridge.redhat.com>");
+-MODULE_DESCRIPTION("MTD map driver for Momenco Ocelot board");
