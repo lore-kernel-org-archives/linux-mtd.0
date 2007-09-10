@@ -1,12 +1,17 @@
-Subject: What's in mtd-2.6.git
-From: David Woodhouse <dwmw2@infradead.org>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IUfH6-000455-2t
+	for linux-mtd@lists.infradead.org; Mon, 10 Sep 2007 05:09:46 -0400
+Subject: What's in ubi-2.6.git
+From: Artem Bityutskiy <dedekind@infradead.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Date: Sun, 09 Sep 2007 10:14:22 +0100
-Message-Id: <1189329262.8320.9.camel@pmac.infradead.org>
+Date: Mon, 10 Sep 2007 12:09:03 +0300
+Message-Id: <1189415343.14370.97.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,133 +21,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is what I intend to push for 2.6.24...
+The following are UBI changes I'd like to push to 2.6.24. The amount of
+changes is small, so no additional comments.
 
-The notable parts are LZO compression support in JFFS2, a OneNAND
-simulator, panic dumps to flash... and a bunch of bug fixes and
-janitorial stuff.
+URL: git://git.infradead.org/~dedekind/ubi-2.6.git master
+(based on top of -rc2 for now).
 
-Adrian Bunk (4):
-      [MTD] [MAPS] Cleanup nettel map driver
-      [MTD] [NAND] cafe_nand.c: the OLPC laptop is not available for $100
-      [MTD] remove dead MTD_PMC551_APERTURE_SIZE option
-      [MTD] [ONENAND] onenand_sim.c: make struct info static
-
-Andrew Morton (2):
-      [JFFS2] fix printk warning in jffs2_block_check_erase()
-      [MTD] mtdoops printk warning fixes
-
-Artem Bityutskiy (2):
-      [MTD] [NAND] fix race in nand_base.c
-      [MTD] [NAND] nandsim: avoid deadlocking FS
-
-Ben Dooks (5):
-      [MTD] [NAND] nand_base.c: fix type of eccpos pointer
-      [MTD] mtd_blkdevs.c: do not export 'mtd_blktrans_ops'
-      [MTD] [NOR] cfi_cmdset_0002.c: fix 'cfi_amdstd_erase_varsize' to be static
-      [MTD] [NOR] cfi_cmdset_0001.c: sparse fixes
-      [MTD] mtdcore.c: share syms with mtd_blkdev.c
-
-David Brownell (2):
-      [MTD] m25p80 converted to mutex
-      [MTD] m25p80 handles more chips, uses JEDEC ids and small eraseblocks
-
-David Woodhouse (19):
-      [JFFS2] Improve diagnostic output for 'node added in wrong place' check
-      [JFFS2] Fix suspend failure with JFFS2 GC thread.
-      [MTD] Remove references to ROOT_DEV from map drivers.
-      [MTD] m25p80: Use correct units for binary multiples
-      [JFFS2] Deletion dirents should be REF_NORMAL, not REF_PRISTINE.
-      [MTD] Use proper binary multiple prefixes in pmc551 driver
-      Revert accidental commit to scripts/Makefile.headersinst
-      [JFFS2] Fix readinode failure when read_dnode() detects CRC failure.
-      [JFFS2] Print correct node offset when complaining about broken data CRC
-      [MTD] [ONENAND] Make onenand_sim compile on non-ARM platforms.
-      [JFFS2] Whitespace cleanups.
-      [JFFS2] Add support for write-buffer verification.
-      [JFFS2] Add declaration of jffs2_lzo_{init,exit} to compr.h
-      [MTD] Fix do_div() type warning in mtdconcat
-      [JFFS2] LZO compression should default off for compatibility.
-      Revert "[MTD] Driver for AT26Fxxx dataflash devices"
-      [JFFS2] Correct cleanmarker checks -- we should use only 8 bytes
-      [JFFS2] Fix ACL vs. mode handling.
-      [MTD] Fix CFI build error when no map width or interleave supported
+Artem Bityutskiy (6):
+      UBI: fix sparse warnings
+      UBI: add more prints
+      UBI: use linux print_hex_dump(), not home-grown one
+      UBI: allocate memory with GFP_NOFS
+      UBI: do not use vmalloc on I/O path
+      UBI: use byte hexdump
 
 Florin Malita (1):
-      [MTD] Fix potential leak in rfd_ftl_add_mtd
+      UBI: fix leak in ubi_scan_erase_peb
 
-Ivan Kuten (1):
-      [MTD] [NAND] at91_nand rdy_pin fix
+Jesper Juhl (1):
+      UBI: don't use array index before testing if it is negative
 
-Jesper Juhl (2):
-      [MTD] [CHIPS] fix tiny spelling error in comment in cfi_cmdset_0001.c
-      [MTD] Clean up duplicate includes in drivers/mtd/
+ drivers/mtd/ubi/build.c |   28 +++++++++++++++-
+ drivers/mtd/ubi/debug.c |   37 +--------------------
+ drivers/mtd/ubi/debug.h |    2 -
+ drivers/mtd/ubi/eba.c   |   82 +++++++++++++++++--------------------------=
+---
+ drivers/mtd/ubi/io.c    |   75 ++++++++++++++++++++-----------------------
+ drivers/mtd/ubi/kapi.c  |    9 ++++-
+ drivers/mtd/ubi/scan.c  |   45 ++++++++++++--------------
+ drivers/mtd/ubi/scan.h  |    8 ++--
+ drivers/mtd/ubi/ubi.h   |   36 +++++++++++++++------
+ drivers/mtd/ubi/vmt.c   |   70 +++++++++++++++++++++-------------------
+ drivers/mtd/ubi/vtbl.c  |    8 ++--
+ drivers/mtd/ubi/wl.c    |   17 +++++----
+ 12 files changed, 202 insertions(+), 215 deletions(-)
 
-Joakim Tjernlund (5):
-      [JFFS2] Fix hanging close for /dev/mtd character device.
-      [MTD] Only call mtd->sync() method in mtdchar close if opened for write.
-      [JFFS2] Use point(), if available, to check newly erased blocks.
-      [JFFS2] Prevent oops after 'node added in wrong place' debug check
-      [JFFS2] Reduce time for which erase_free_sem is held during erase.
-
-Josh Boyer (1):
-      [MTD] 4xx: Don't build arch/ppc dependent drivers in arch/powerpc
-
-Jörn Engel (1):
-      [MTD] [NAND] Driver for Olympus MAUSB-10 and Fujifilm DPC-R1 card readers
-
-Kumar Gala (1):
-      [MTD] Remove dead maps
-
-Kyungmin Park (4):
-      [MTD] [OneNAND] 2X program support
-      [MTD] OneNAND Simulator support
-      [MTD] [OneNAND] Use mtd_oob_ops at oob functions
-      [MTD] [OneNAND] main read/write ops support for yaffs2
-
-Mariusz Kozlowski (5):
-      [MTD] remove redundant/dead code from physmap_of.c
-      [MTD] drivers/mtd/inftlmount.c: kmalloc + memset conversion to kcalloc
-      Documentation/DocBook/mtdnand.tmpl: kmalloc + memset conversion to kzalloc
-      [MTD] pmcmsp-flash.c: kmalloc + memset conversion to k[cz]alloc
-      [UBI] drivers/mtd/ubi/scan.c: kmalloc + memset conversion to kzalloc
-
-Matthias Kaehlcke (1):
-      [MTD] Use mutex instead of semaphore in dataflash driver
-
-Philippe De Muyter (1):
-      [MTD] [NOR] add FUJITSU MBM29F800BA and ST M29F800AB descriptions
-
-Randy Dunlap (1):
-      [MTD] [NOR] Use NULL instead of 0 for pointer to shut sparse up.
-
-Richard Purdie (4):
-      [MTD] oops and panic message logging to MTD device
-      [MTD] Add sync/unblank function to mtdoops
-      [JFFS2] Add LZO compression support.
-      [JFFS2] Add a "favourlzo" compression mode
-
-Robert P. J. Day (1):
-      [MTD] Remove useless references to MIPS_HYDROGEN3 and MIPS_MIRAGE_WHY.
-
-Roland Stigge (1):
-      [MTD] [NAND] Fix refactoring of EDB7312 hwcontrol function.
-
-Stefan Roese (1):
-      [MTD] [NAND] Change NDFC driver to support 405 platforms too
-
-Steven J. Hill (1):
-      [MTD] [NAND] Add NAND manufacturer AMD.
-
-Yoichi Yuasa (1):
-      [MTD] Remove Ocelot G support from DiskOnChip drivers.
-
-akpm@linux-foundation.org (1):
-      [MTD] Remove embedded return in RFD FTL.
-
-maximilian attems (1):
-      [MTD] [NAND] nand_base.c fix broken link
-
-
--- 
-dwmw2
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
