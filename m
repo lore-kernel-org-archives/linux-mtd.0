@@ -1,24 +1,17 @@
-Received: from mx01.hansenet.de ([213.191.73.25] helo=webmail.hansenet.de)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IUusU-0003An-Vz
-	for linux-mtd@lists.infradead.org; Mon, 10 Sep 2007 21:49:26 -0400
-Received: from [80.171.14.88] (80.171.14.88) by webmail.hansenet.de
-	(7.3.118.12) (authenticated as mbx20228207@koeller-hh.org)
-	id 46E1A14F0033FF4F for linux-mtd@lists.infradead.org;
-	Tue, 11 Sep 2007 03:49:17 +0200
-Received: from localhost.koeller.dyndns.org (localhost.koeller.dyndns.org
-	[127.0.0.1])
-	by mail.koeller.dyndns.org (Postfix) with ESMTP id 92E4E47A14
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 11 Sep 2007 03:49:16 +0200 (CEST)
-From: Thomas Koeller <thomas.koeller@baslerweb.com>
-Date: Tue, 11 Sep 2007 02:38:04 +0200
-Subject: [PATCH] excite_nandflash: Fixed compilation error
-To: linux-mtd@lists.infradead.org
+Received: from smtp3.infineon.com ([203.126.106.229])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IUvql-0003nB-Uw
+	for linux-mtd@lists.infradead.org; Mon, 10 Sep 2007 22:51:43 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200709110238.05079.thomas.koeller@baslerweb.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: How to use MTD util: nandwrite
+Date: Tue, 11 Sep 2007 10:51:33 +0800
+Message-ID: <BA6FCA7F70D9FD43B88BFB2DD4E6EB7701136E41@xiyse301.ap.infineon.com>
+From: <Wanghao.Yu@infineon.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,24 +21,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Added a missing semicolon that caused a compilation error
-if built as a module.
+Hi,
+I met a problem when I used nandwrite to copy file to NandFlash.
+The command I used is as follows.
+#nandwrite /tmp/hello /dev/mtd0 (copy file named hello to /dev/mtd0)
+The error message is=20
+MEMGETINFO: Inappropriate ioctl for device.
+Before using nandwrite, I have already used "flash_eraseall -j =
+/dev/mtd0" to erase the NandFlash.
+I don't know where the problem is.
+Could anyone help me?
 
-Signed-off-by: Thomas Koeller <thomas.koeller@baslerweb.com>
----
- drivers/mtd/nand/excite_nandflash.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+Best Regards,
 
-diff --git a/drivers/mtd/nand/excite_nandflash.c 
-b/drivers/mtd/nand/excite_nandflash.c
-index 7e9afc4..acc334f 100644
---- a/drivers/mtd/nand/excite_nandflash.c
-+++ b/drivers/mtd/nand/excite_nandflash.c
-@@ -245,4 +245,4 @@ module_exit(excite_nand_exit);
- MODULE_AUTHOR("Thomas Koeller <thomas.koeller@baslerweb.com>");
- MODULE_DESCRIPTION("Basler eXcite NAND-Flash driver");
- MODULE_LICENSE("GPL");
--MODULE_VERSION(EXCITE_NANDFLASH_VERSION)
-+MODULE_VERSION(EXCITE_NANDFLASH_VERSION);
--- 
-1.5.1.2
+Yu Wanghao (Helen)
+Component Verification
+COM IFCX CV
+Infineon Technologies
+CV Lab,F3, Block A, No.38, Gaoxin 6th Road,=20
+Xi'an High-tech Industries Development Zone,=20
+Xi'an,  P.R.China 710075=20
+Tel.	+86 29 8832 8222 ext 8513
+Fax 	+86 29 8831 7279
+mailto:wanghao.yu@infineon.com
