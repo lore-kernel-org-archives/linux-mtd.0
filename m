@@ -1,25 +1,22 @@
-Received: from relay.peterstar.ru ([217.195.65.5])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVPh0-0004ql-7H
-	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2007 06:43:37 -0400
-Received: from fiord.com ([84.204.217.186])
-	by relay.peterstar.ru (8.14.1/8.11.4) with ESMTP id l8CAhKTj020148
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Sep 2007 14:43:32 +0400 (MSD)
-Received: from sarge.FIORD by fiord.com (MDaemon PRO v9.0.8)
-	with ESMTP id md50000108844.msg
-	for <linux-mtd@lists.infradead.org>; Wed, 12 Sep 2007 14:46:12 +0400
-Received: from anthony by sarge.FIORD with local (Exim 4.44)
-	id 1IVPgM-00011w-MD
-	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2007 14:42:54 +0400
-Date: Wed, 12 Sep 2007 14:42:54 +0400
+Received: from skellington.ics.uci.edu ([128.195.1.40])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVXvx-0000T7-MF
+	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2007 15:31:40 -0400
+Received: from igor.ics.uci.edu (igor.ics.uci.edu [128.195.10.104])
+	by skellington.ics.uci.edu (8.13.7+Sun/8.13.7) with ESMTP id
+	l8CJRae9000591 for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Sep 2007 12:27:36 -0700 (PDT)
+Received: from localhost (sid@localhost)
+	by igor.ics.uci.edu (8.13.7+Sun/8.13.6/Submit) with ESMTP id
+	l8CJRYqY006615 for <linux-mtd@lists.infradead.org>;
+	Wed, 12 Sep 2007 12:27:36 -0700 (PDT)
+Date: Wed, 12 Sep 2007 12:27:34 -0700 (PDT)
+From: Siddharth Choudhuri <sid@igor.ics.uci.edu>
 To: linux-mtd@lists.infradead.org
-Subject: problems with DOCboot
-Message-ID: <20070912104254.GA3953@fiord.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-From: Anthony Sharobaiko <anthony@fiord.com>
+Subject: mount problem with JFFS2 summary feature on NOR flash
+Message-ID: <Pine.GSO.4.64.0709121212450.4433@igor.ics.uci.edu>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi!
+Hi,
 
-I'm trying to get DOCboot working with doc2000. Currently it installs itself
-ok, but fails to find kernel image block - the one with 0xdb b1 bytes in OOB
-area (prints "CANNOT FIND IMAGE ON DEVICE" after scanning entire(?)
-partition).
+I am trying to enable JFFS2 summary feature on NOR flash (Erase Block 
+Summary). However it breaks the JFFS2 mount with the following message:
 
-And there is no 0xdb b1 signature in `nanddump /dev/mtd1` nor in doc_spl
-(generated image of docboot+kernel). -o switch of nandwrite does not help.
-What tool and from what generates oob data? nandwrite from image being
-written?
+Mounting root file system jffs2 as /dev/mtdblock0...
+jffs2_scan_eraseblock(): Node at 0x002a0000 {0x1985, 0x2000, 0x00000008) 
+has invalid CRC 0xed38)
+jffs2_scan_eraseblock(): Magic bitmask 0x1985 not found at 0x002a0004: 
+0x0008 instead
+...
+>From the MTD FAQs, this message is being generated probably because the 
+image is not a valid JFFS2 image. I did the following steps:
 
-I use latest mtd-utils from cvs (flash_eraseall, nandwrite) and vanilla kernel
-v2.6.22.6.
-Size of BDK partition is appropriate for docboot image (generated doc_spl is
-1412400 bytes long, I
-issued 'dformat /win:e000 /bdkl0:1500k', hope this is enough).
+1. run mkfs.jffs2 -o out.img -q -e 128KiB -d rootdir
+2. sumtool -l -i out.img -o out.img.summary -e 128KiB
 
-#cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 02000000 00004000 "DiskOnChip 2000 (NFTL Model)"
-mtd1: 00180000 00004000 " DiskOnChip Firmware / Media Header partition"
-mtd2: 01e80000 00004000 " DiskOnChip BDTL partition"
+I do erase flash (/dev/mtd0) before running nandwrite -p
 
-What did I forget?
+The kernel configuration is as follows:
+CONFIG_JFFS2_FS=y
+CONFIG_JFFS2_FS_DEBUG=0
+CONFIG_JFFS2_FS_WRITEBUFFER=y
+CONFIG_JFFS2_SUMMARY=y
+# CONFIG_JFFS2_FS_XATTR is not set
+CONFIG_JFFS2_COMPRESSION_OPTIONS=y
+CONFIG_JFFS2_ZLIB=y
+CONFIG_JFFS2_RTIME=y # CONFIG_JFFS2_RUBIN is not set
+# CONFIG_JFFS2_CMODE_NONE is not set
+CONFIG_JFFS2_CMODE_PRIORITY=y
 
--- 
+If I omit the sumtool step i.e., JFFS2 without summary, there is no 
+problem mounting the image. Is there something that I am missing here ?
+
+thanks,
+-siddharth
