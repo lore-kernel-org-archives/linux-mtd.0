@@ -1,19 +1,23 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVmea-0001bp-UG
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 07:14:39 -0400
+Received: from rv-out-0910.google.com ([209.85.198.190])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVoKx-0002cK-28
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 09:02:31 -0400
+Received: by rv-out-0910.google.com with SMTP id c24so380949rvf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 13 Sep 2007 06:02:25 -0700 (PDT)
+Message-ID: <6b5362aa0709130602g61e9b6f0xa762be770e95a32b@mail.gmail.com>
+Date: Thu, 13 Sep 2007 18:32:25 +0530
+From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
+To: dedekind@infradead.org
 Subject: Re: UBI : Atomic change LEB
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Brijesh Singh <brijesh.s.singh@gmail.com>
-In-Reply-To: <6b5362aa0709130102o5042412fgab0e0558edc895c0@mail.gmail.com>
+In-Reply-To: <1189682032.14370.117.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: base64
+Content-Disposition: inline
 References: <6b5362aa0709130102o5042412fgab0e0558edc895c0@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 13 Sep 2007 14:13:52 +0300
-Message-Id: <1189682032.14370.117.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+	<1189682032.14370.117.camel@sauron>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,213 +27,145 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-
-On Thu, 2007-09-13 at 13:32 +0530, Brijesh Singh wrote:
-> I think there is a problem in atomic change LEB.
-> I was trying to think how ubi will behave when device is full.
-> Suppose device is full.And
-> LEBn maps to pebn
->            i.e. Ln->pn
-> If we used automic_change_leb, wear-levelling has no free blocks as
-> all lebs are mapped to pebs.And no change in LEB is possible to any
-> LEB.
-> I think  we will need atleast one extra block at any instance of time
-> to avoid this situation.
-> This is similar to block movement situation where we need extra block
-> for block movement.
-
-yeah, you are right, thank you! The below patch should fix the problem.
-Comments?
-
->From f02c2e8a10838d80c763f6ccd65398cccd3cfac0 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Thu, 13 Sep 2007 14:28:14 +0300
-Subject: [PATCH] UBI: fix atomic LEB change problems
-
-When the UBI device is nearly full, i.e. all LEBs are mapped, we have
-only one spare LEB left - the one we reserved for WL purposes. Well,
-I do not count the LEBs which were reserved for bad PEB handling -
-suppose NOR flash for simplicity. If an "atomic LEB change operation"
-is run, and the WL unit is moving a LEB, we have no spare LEBs to
-finish the operation and fail, which is not good. Moreover, if there
-are 2 or more simultanious "atomic LEB change" requests, only one of
-them has chances to succeed, the other will fail with -ENOSPC. Not
-good either.
-
-This patch does 2 things:
-1. Reserves one PEB for the "atomic LEB change" operation.
-2. Serealize the operations so that only on of them may run
-   at a time (by means of a mutex).
-
-Pointed-to-by: Brijesh Singh <brijesh.s.singh@gmail.com>
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
----
- drivers/mtd/ubi/eba.c |   48 +++++++++++++++++++++++++++++----------------=
----
- drivers/mtd/ubi/ubi.h |    6 ++++--
- 2 files changed, 33 insertions(+), 21 deletions(-)
-
-diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
-index 81bb6a3..7b7add6 100644
---- a/drivers/mtd/ubi/eba.c
-+++ b/drivers/mtd/ubi/eba.c
-@@ -46,6 +46,9 @@
- #include <linux/err.h>
- #include "ubi.h"
-=20
-+/* Number of physical eraseblocks reserved for atomic LEB change operation=
- */
-+#define EBA_RESERVED_PEBS 1
-+
- /**
-  * struct ltree_entry - an entry in the lock tree.
-  * @rb: links RB-tree nodes
-@@ -827,6 +830,9 @@ write_error:
-  * data, which has to be aligned. This function guarantees that in case of=
- an
-  * unclean reboot the old contents is preserved. Returns zero in case of
-  * success and a negative error code in case of failure.
-+ *
-+ * UBI reserves one LEB for the "atomic LEB change" operation, so only one
-+ * LEB change may be done at a time. This is ensured by @ubi->alc_mutex.
-  */
- int ubi_eba_atomic_leb_change(struct ubi_device *ubi, int vol_id, int lnum=
-,
- 			      const void *buf, int len, int dtype)
-@@ -843,11 +849,10 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi,=
- int vol_id, int lnum,
- 	if (!vid_hdr)
- 		return -ENOMEM;
-=20
-+	mutex_lock(&ubi->alc_mutex);
- 	err =3D leb_write_lock(ubi, vol_id, lnum);
--	if (err) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
--	}
-+	if (err)
-+		goto out_mutex;
-=20
- 	vid_hdr->sqnum =3D cpu_to_be64(next_sqnum(ubi));
- 	vid_hdr->vol_id =3D cpu_to_be32(vol_id);
-@@ -864,9 +869,8 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, i=
-nt vol_id, int lnum,
- retry:
- 	pnum =3D ubi_wl_get_peb(ubi, dtype);
- 	if (pnum < 0) {
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		leb_write_unlock(ubi, vol_id, lnum);
--		return pnum;
-+		err =3D pnum;
-+		goto out_leb_unlock;
- 	}
-=20
- 	dbg_eba("change LEB %d:%d, PEB %d, write VID hdr to PEB %d",
-@@ -888,17 +892,18 @@ retry:
-=20
- 	if (vol->eba_tbl[lnum] >=3D 0) {
- 		err =3D ubi_wl_put_peb(ubi, vol->eba_tbl[lnum], 1);
--		if (err) {
--			ubi_free_vid_hdr(ubi, vid_hdr);
--			leb_write_unlock(ubi, vol_id, lnum);
--			return err;
--		}
-+		if (err)
-+			goto out_leb_unlock;
- 	}
-=20
- 	vol->eba_tbl[lnum] =3D pnum;
-+
-+out_leb_unlock:
- 	leb_write_unlock(ubi, vol_id, lnum);
-+out_mutex:
-+	mutex_unlock(&ubi->alc_mutex);
- 	ubi_free_vid_hdr(ubi, vid_hdr);
--	return 0;
-+	return err;
-=20
- write_error:
- 	if (err !=3D -EIO || !ubi->bad_allowed) {
-@@ -908,17 +913,13 @@ write_error:
- 		 * mode just in case.
- 		 */
- 		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
-+		goto out_leb_unlock;
- 	}
-=20
- 	err =3D ubi_wl_put_peb(ubi, pnum, 1);
- 	if (err || ++tries > UBI_IO_RETRIES) {
- 		ubi_ro_mode(ubi);
--		leb_write_unlock(ubi, vol_id, lnum);
--		ubi_free_vid_hdr(ubi, vid_hdr);
--		return err;
-+		goto out_leb_unlock;
- 	}
-=20
- 	vid_hdr->sqnum =3D cpu_to_be64(next_sqnum(ubi));
-@@ -1122,6 +1123,7 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct =
-ubi_scan_info *si)
- 	dbg_eba("initialize EBA unit");
-=20
- 	spin_lock_init(&ubi->ltree_lock);
-+	mutex_init(&ubi->alc_mutex);
- 	ubi->ltree =3D RB_ROOT;
-=20
- 	if (ubi_devices_cnt =3D=3D 0) {
-@@ -1183,6 +1185,14 @@ int ubi_eba_init_scan(struct ubi_device *ubi, struct=
- ubi_scan_info *si)
- 		ubi->rsvd_pebs  +=3D ubi->beb_rsvd_pebs;
- 	}
-=20
-+	if (ubi->avail_pebs < EBA_RESERVED_PEBS) {
-+		ubi_err("no enough physical eraseblocks (%d, need %d)",
-+			ubi->avail_pebs, EBA_RESERVED_PEBS);
-+		goto out_free;
-+	}
-+	ubi->avail_pebs -=3D EBA_RESERVED_PEBS;
-+	ubi->rsvd_pebs +=3D EBA_RESERVED_PEBS;
-+
- 	dbg_eba("EBA unit is initialized");
- 	return 0;
-=20
-diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index cc01011..5e941a6 100644
---- a/drivers/mtd/ubi/ubi.h
-+++ b/drivers/mtd/ubi/ubi.h
-@@ -221,14 +221,15 @@ struct ubi_wl_entry;
-  * @vtbl_slots: how many slots are available in the volume table
-  * @vtbl_size: size of the volume table in bytes
-  * @vtbl: in-RAM volume table copy
-+ * @vtbl_mutex: protects on-flash volume table
-  *
-  * @max_ec: current highest erase counter value
-  * @mean_ec: current mean erase counter value
-  *
-- * global_sqnum: global sequence number
-+ * @global_sqnum: global sequence number
-  * @ltree_lock: protects the lock tree and @global_sqnum
-  * @ltree: the lock tree
-- * @vtbl_mutex: protects on-flash volume table
-+ * @alc_mutex: serializes "atomic LEB change" operations
-  *
-  * @used: RB-tree of used physical eraseblocks
-  * @free: RB-tree of free physical eraseblocks
-@@ -308,6 +309,7 @@ struct ubi_device {
- 	unsigned long long global_sqnum;
- 	spinlock_t ltree_lock;
- 	struct rb_root ltree;
-+	struct mutex alc_mutex;
-=20
- 	/* Wear-leveling unit's stuff */
- 	struct rb_root used;
---=20
-1.5.0.6
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+VGhhbmsgeW91IEFydGVtLgpUaGlzIHNlZW1zIGxpa2UgYSBnb29kIGlkZWEuVGhpcyB3aWxsIGNl
+cnRhaW5seSB3b3JrCi4KVGhlIG9ubHkgcHJvYmxlbSBJIHNlZSBpcwoqIHRoaXMgd2lsbCBzZXJp
+YWxpemUgIGFsbCB0aGUgYXV0b21pYyBjaGFuZ2VzLklmIHNvbWUgZGV2aWNlIHN1cHBvcnRzCm11
+bHRpcGxlIHdyaXRlcyBpbiBwYXJyYWxsZWwsd2UgYXJlIGxvY2tpbmcgaXQgZm9yIG5vIHJlYXNv
+bihXZSBoYXZlCnJlYXNvbiBidXQgaG9wZSB3ZSBjYW4gZmluZCBhbm90aGVyIG9wdGlvbikuQWxz
+byB3ZSB3b24ndCBuZWVkCnNlcmlhbGl6YXRpb24gd2hlbiB0aGVyZSBhcmUgbG90cyBvZiBzcGFy
+ZSBibG9ja3MuCgpJIGNhbid0IHNlZSBhIGJldHRlciB3YXkgcmlnaHQgbm93Lk1heSBiZSB3ZSBz
+aG91bGQgdGhpbmsgb3ZlciBhbnkKcG9zc2libGUgdHdpayB0byBzb2x2ZSBpdC4KCk9uIDkvMTMv
+MDcsIEFydGVtIEJpdHl1dHNraXkgPGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOgo+IEhp
+LAo+Cj4gT24gVGh1LCAyMDA3LTA5LTEzIGF0IDEzOjMyICswNTMwLCBCcmlqZXNoIFNpbmdoIHdy
+b3RlOgo+ID4gSSB0aGluayB0aGVyZSBpcyBhIHByb2JsZW0gaW4gYXRvbWljIGNoYW5nZSBMRUIu
+Cj4gPiBJIHdhcyB0cnlpbmcgdG8gdGhpbmsgaG93IHViaSB3aWxsIGJlaGF2ZSB3aGVuIGRldmlj
+ZSBpcyBmdWxsLgo+ID4gU3VwcG9zZSBkZXZpY2UgaXMgZnVsbC5BbmQKPiA+IExFQm4gbWFwcyB0
+byBwZWJuCj4gPiAgICAgICAgICAgIGkuZS4gTG4tPnBuCj4gPiBJZiB3ZSB1c2VkIGF1dG9taWNf
+Y2hhbmdlX2xlYiwgd2Vhci1sZXZlbGxpbmcgaGFzIG5vIGZyZWUgYmxvY2tzIGFzCj4gPiBhbGwg
+bGVicyBhcmUgbWFwcGVkIHRvIHBlYnMuQW5kIG5vIGNoYW5nZSBpbiBMRUIgaXMgcG9zc2libGUg
+dG8gYW55Cj4gPiBMRUIuCj4gPiBJIHRoaW5rICB3ZSB3aWxsIG5lZWQgYXRsZWFzdCBvbmUgZXh0
+cmEgYmxvY2sgYXQgYW55IGluc3RhbmNlIG9mIHRpbWUKPiA+IHRvIGF2b2lkIHRoaXMgc2l0dWF0
+aW9uLgo+ID4gVGhpcyBpcyBzaW1pbGFyIHRvIGJsb2NrIG1vdmVtZW50IHNpdHVhdGlvbiB3aGVy
+ZSB3ZSBuZWVkIGV4dHJhIGJsb2NrCj4gPiBmb3IgYmxvY2sgbW92ZW1lbnQuCj4KPiB5ZWFoLCB5
+b3UgYXJlIHJpZ2h0LCB0aGFuayB5b3UhIFRoZSBiZWxvdyBwYXRjaCBzaG91bGQgZml4IHRoZSBw
+cm9ibGVtLgo+IENvbW1lbnRzPwo+Cj4gPkZyb20gZjAyYzJlOGExMDgzOGQ4MGM3NjNmNmNjZDY1
+Mzk4Y2NjZDNjZmFjMCBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKPiBGcm9tOiBBcnRlbSBCaXR5
+dXRza2l5IDxBcnRlbS5CaXR5dXRza2l5QG5va2lhLmNvbT4KPiBEYXRlOiBUaHUsIDEzIFNlcCAy
+MDA3IDE0OjI4OjE0ICswMzAwCj4gU3ViamVjdDogW1BBVENIXSBVQkk6IGZpeCBhdG9taWMgTEVC
+IGNoYW5nZSBwcm9ibGVtcwo+Cj4gV2hlbiB0aGUgVUJJIGRldmljZSBpcyBuZWFybHkgZnVsbCwg
+aS5lLiBhbGwgTEVCcyBhcmUgbWFwcGVkLCB3ZSBoYXZlCj4gb25seSBvbmUgc3BhcmUgTEVCIGxl
+ZnQgLSB0aGUgb25lIHdlIHJlc2VydmVkIGZvciBXTCBwdXJwb3Nlcy4gV2VsbCwKPiBJIGRvIG5v
+dCBjb3VudCB0aGUgTEVCcyB3aGljaCB3ZXJlIHJlc2VydmVkIGZvciBiYWQgUEVCIGhhbmRsaW5n
+IC0KPiBzdXBwb3NlIE5PUiBmbGFzaCBmb3Igc2ltcGxpY2l0eS4gSWYgYW4gImF0b21pYyBMRUIg
+Y2hhbmdlIG9wZXJhdGlvbiIKPiBpcyBydW4sIGFuZCB0aGUgV0wgdW5pdCBpcyBtb3ZpbmcgYSBM
+RUIsIHdlIGhhdmUgbm8gc3BhcmUgTEVCcyB0bwo+IGZpbmlzaCB0aGUgb3BlcmF0aW9uIGFuZCBm
+YWlsLCB3aGljaCBpcyBub3QgZ29vZC4gTW9yZW92ZXIsIGlmIHRoZXJlCj4gYXJlIDIgb3IgbW9y
+ZSBzaW11bHRhbmlvdXMgImF0b21pYyBMRUIgY2hhbmdlIiByZXF1ZXN0cywgb25seSBvbmUgb2YK
+PiB0aGVtIGhhcyBjaGFuY2VzIHRvIHN1Y2NlZWQsIHRoZSBvdGhlciB3aWxsIGZhaWwgd2l0aCAt
+RU5PU1BDLiBOb3QKPiBnb29kIGVpdGhlci4KPgo+IFRoaXMgcGF0Y2ggZG9lcyAyIHRoaW5nczoK
+PiAxLiBSZXNlcnZlcyBvbmUgUEVCIGZvciB0aGUgImF0b21pYyBMRUIgY2hhbmdlIiBvcGVyYXRp
+b24uCj4gMi4gU2VyZWFsaXplIHRoZSBvcGVyYXRpb25zIHNvIHRoYXQgb25seSBvbiBvZiB0aGVt
+IG1heSBydW4KPiAgICBhdCBhIHRpbWUgKGJ5IG1lYW5zIG9mIGEgbXV0ZXgpLgo+Cj4gUG9pbnRl
+ZC10by1ieTogQnJpamVzaCBTaW5naCA8YnJpamVzaC5zLnNpbmdoQGdtYWlsLmNvbT4KPiBTaWdu
+ZWQtb2ZmLWJ5OiBBcnRlbSBCaXR5dXRza2l5IDxBcnRlbS5CaXR5dXRza2l5QG5va2lhLmNvbT4K
+PiAtLS0KPiAgZHJpdmVycy9tdGQvdWJpL2ViYS5jIHwgICA0OCArKysrKysrKysrKysrKysrKysr
+KysrKysrKysrKy0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgZHJpdmVycy9tdGQvdWJpL3ViaS5oIHwg
+ICAgNiArKysrLS0KPiAgMiBmaWxlcyBjaGFuZ2VkLCAzMyBpbnNlcnRpb25zKCspLCAyMSBkZWxl
+dGlvbnMoLSkKPgo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL210ZC91YmkvZWJhLmMgYi9kcml2ZXJz
+L210ZC91YmkvZWJhLmMKPiBpbmRleCA4MWJiNmEzLi43YjdhZGQ2IDEwMDY0NAo+IC0tLSBhL2Ry
+aXZlcnMvbXRkL3ViaS9lYmEuYwo+ICsrKyBiL2RyaXZlcnMvbXRkL3ViaS9lYmEuYwo+IEBAIC00
+Niw2ICs0Niw5IEBACj4gICNpbmNsdWRlIDxsaW51eC9lcnIuaD4KPiAgI2luY2x1ZGUgInViaS5o
+Igo+Cj4gKy8qIE51bWJlciBvZiBwaHlzaWNhbCBlcmFzZWJsb2NrcyByZXNlcnZlZCBmb3IgYXRv
+bWljIExFQiBjaGFuZ2Ugb3BlcmF0aW9uICovCj4gKyNkZWZpbmUgRUJBX1JFU0VSVkVEX1BFQlMg
+MQo+ICsKPiAgLyoqCj4gICAqIHN0cnVjdCBsdHJlZV9lbnRyeSAtIGFuIGVudHJ5IGluIHRoZSBs
+b2NrIHRyZWUuCj4gICAqIEByYjogbGlua3MgUkItdHJlZSBub2Rlcwo+IEBAIC04MjcsNiArODMw
+LDkgQEAgd3JpdGVfZXJyb3I6Cj4gICAqIGRhdGEsIHdoaWNoIGhhcyB0byBiZSBhbGlnbmVkLiBU
+aGlzIGZ1bmN0aW9uIGd1YXJhbnRlZXMgdGhhdCBpbiBjYXNlIG9mIGFuCj4gICAqIHVuY2xlYW4g
+cmVib290IHRoZSBvbGQgY29udGVudHMgaXMgcHJlc2VydmVkLiBSZXR1cm5zIHplcm8gaW4gY2Fz
+ZSBvZgo+ICAgKiBzdWNjZXNzIGFuZCBhIG5lZ2F0aXZlIGVycm9yIGNvZGUgaW4gY2FzZSBvZiBm
+YWlsdXJlLgo+ICsgKgo+ICsgKiBVQkkgcmVzZXJ2ZXMgb25lIExFQiBmb3IgdGhlICJhdG9taWMg
+TEVCIGNoYW5nZSIgb3BlcmF0aW9uLCBzbyBvbmx5IG9uZQo+ICsgKiBMRUIgY2hhbmdlIG1heSBi
+ZSBkb25lIGF0IGEgdGltZS4gVGhpcyBpcyBlbnN1cmVkIGJ5IEB1YmktPmFsY19tdXRleC4KPiAg
+ICovCj4gIGludCB1YmlfZWJhX2F0b21pY19sZWJfY2hhbmdlKHN0cnVjdCB1YmlfZGV2aWNlICp1
+YmksIGludCB2b2xfaWQsIGludCBsbnVtLAo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+IGNvbnN0IHZvaWQgKmJ1ZiwgaW50IGxlbiwgaW50IGR0eXBlKQo+IEBAIC04NDMsMTEgKzg0OSwx
+MCBAQCBpbnQgdWJpX2ViYV9hdG9taWNfbGViX2NoYW5nZShzdHJ1Y3QgdWJpX2RldmljZSAqdWJp
+LCBpbnQgdm9sX2lkLCBpbnQgbG51bSwKPiAgICAgICAgIGlmICghdmlkX2hkcikKPiAgICAgICAg
+ICAgICAgICAgcmV0dXJuIC1FTk9NRU07Cj4KPiArICAgICAgIG11dGV4X2xvY2soJnViaS0+YWxj
+X211dGV4KTsKPiAgICAgICAgIGVyciA9IGxlYl93cml0ZV9sb2NrKHViaSwgdm9sX2lkLCBsbnVt
+KTsKPiAtICAgICAgIGlmIChlcnIpIHsKPiAtICAgICAgICAgICAgICAgdWJpX2ZyZWVfdmlkX2hk
+cih1YmksIHZpZF9oZHIpOwo+IC0gICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+IC0gICAgICAg
+fQo+ICsgICAgICAgaWYgKGVycikKPiArICAgICAgICAgICAgICAgZ290byBvdXRfbXV0ZXg7Cj4K
+PiAgICAgICAgIHZpZF9oZHItPnNxbnVtID0gY3B1X3RvX2JlNjQobmV4dF9zcW51bSh1YmkpKTsK
+PiAgICAgICAgIHZpZF9oZHItPnZvbF9pZCA9IGNwdV90b19iZTMyKHZvbF9pZCk7Cj4gQEAgLTg2
+NCw5ICs4NjksOCBAQCBpbnQgdWJpX2ViYV9hdG9taWNfbGViX2NoYW5nZShzdHJ1Y3QgdWJpX2Rl
+dmljZSAqdWJpLCBpbnQgdm9sX2lkLCBpbnQgbG51bSwKPiAgcmV0cnk6Cj4gICAgICAgICBwbnVt
+ID0gdWJpX3dsX2dldF9wZWIodWJpLCBkdHlwZSk7Cj4gICAgICAgICBpZiAocG51bSA8IDApIHsK
+PiAtICAgICAgICAgICAgICAgdWJpX2ZyZWVfdmlkX2hkcih1YmksIHZpZF9oZHIpOwo+IC0gICAg
+ICAgICAgICAgICBsZWJfd3JpdGVfdW5sb2NrKHViaSwgdm9sX2lkLCBsbnVtKTsKPiAtICAgICAg
+ICAgICAgICAgcmV0dXJuIHBudW07Cj4gKyAgICAgICAgICAgICAgIGVyciA9IHBudW07Cj4gKyAg
+ICAgICAgICAgICAgIGdvdG8gb3V0X2xlYl91bmxvY2s7Cj4gICAgICAgICB9Cj4KPiAgICAgICAg
+IGRiZ19lYmEoImNoYW5nZSBMRUIgJWQ6JWQsIFBFQiAlZCwgd3JpdGUgVklEIGhkciB0byBQRUIg
+JWQiLAo+IEBAIC04ODgsMTcgKzg5MiwxOCBAQCByZXRyeToKPgo+ICAgICAgICAgaWYgKHZvbC0+
+ZWJhX3RibFtsbnVtXSA+PSAwKSB7Cj4gICAgICAgICAgICAgICAgIGVyciA9IHViaV93bF9wdXRf
+cGViKHViaSwgdm9sLT5lYmFfdGJsW2xudW1dLCAxKTsKPiAtICAgICAgICAgICAgICAgaWYgKGVy
+cikgewo+IC0gICAgICAgICAgICAgICAgICAgICAgIHViaV9mcmVlX3ZpZF9oZHIodWJpLCB2aWRf
+aGRyKTsKPiAtICAgICAgICAgICAgICAgICAgICAgICBsZWJfd3JpdGVfdW5sb2NrKHViaSwgdm9s
+X2lkLCBsbnVtKTsKPiAtICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+IC0gICAg
+ICAgICAgICAgICB9Cj4gKyAgICAgICAgICAgICAgIGlmIChlcnIpCj4gKyAgICAgICAgICAgICAg
+ICAgICAgICAgZ290byBvdXRfbGViX3VubG9jazsKPiAgICAgICAgIH0KPgo+ICAgICAgICAgdm9s
+LT5lYmFfdGJsW2xudW1dID0gcG51bTsKPiArCj4gK291dF9sZWJfdW5sb2NrOgo+ICAgICAgICAg
+bGViX3dyaXRlX3VubG9jayh1YmksIHZvbF9pZCwgbG51bSk7Cj4gK291dF9tdXRleDoKPiArICAg
+ICAgIG11dGV4X3VubG9jaygmdWJpLT5hbGNfbXV0ZXgpOwo+ICAgICAgICAgdWJpX2ZyZWVfdmlk
+X2hkcih1YmksIHZpZF9oZHIpOwo+IC0gICAgICAgcmV0dXJuIDA7Cj4gKyAgICAgICByZXR1cm4g
+ZXJyOwo+Cj4gIHdyaXRlX2Vycm9yOgo+ICAgICAgICAgaWYgKGVyciAhPSAtRUlPIHx8ICF1Ymkt
+PmJhZF9hbGxvd2VkKSB7Cj4gQEAgLTkwOCwxNyArOTEzLDEzIEBAIHdyaXRlX2Vycm9yOgo+ICAg
+ICAgICAgICAgICAgICAgKiBtb2RlIGp1c3QgaW4gY2FzZS4KPiAgICAgICAgICAgICAgICAgICov
+Cj4gICAgICAgICAgICAgICAgIHViaV9yb19tb2RlKHViaSk7Cj4gLSAgICAgICAgICAgICAgIGxl
+Yl93cml0ZV91bmxvY2sodWJpLCB2b2xfaWQsIGxudW0pOwo+IC0gICAgICAgICAgICAgICB1Ymlf
+ZnJlZV92aWRfaGRyKHViaSwgdmlkX2hkcik7Cj4gLSAgICAgICAgICAgICAgIHJldHVybiBlcnI7
+Cj4gKyAgICAgICAgICAgICAgIGdvdG8gb3V0X2xlYl91bmxvY2s7Cj4gICAgICAgICB9Cj4KPiAg
+ICAgICAgIGVyciA9IHViaV93bF9wdXRfcGViKHViaSwgcG51bSwgMSk7Cj4gICAgICAgICBpZiAo
+ZXJyIHx8ICsrdHJpZXMgPiBVQklfSU9fUkVUUklFUykgewo+ICAgICAgICAgICAgICAgICB1Ymlf
+cm9fbW9kZSh1YmkpOwo+IC0gICAgICAgICAgICAgICBsZWJfd3JpdGVfdW5sb2NrKHViaSwgdm9s
+X2lkLCBsbnVtKTsKPiAtICAgICAgICAgICAgICAgdWJpX2ZyZWVfdmlkX2hkcih1YmksIHZpZF9o
+ZHIpOwo+IC0gICAgICAgICAgICAgICByZXR1cm4gZXJyOwo+ICsgICAgICAgICAgICAgICBnb3Rv
+IG91dF9sZWJfdW5sb2NrOwo+ICAgICAgICAgfQo+Cj4gICAgICAgICB2aWRfaGRyLT5zcW51bSA9
+IGNwdV90b19iZTY0KG5leHRfc3FudW0odWJpKSk7Cj4gQEAgLTExMjIsNiArMTEyMyw3IEBAIGlu
+dCB1YmlfZWJhX2luaXRfc2NhbihzdHJ1Y3QgdWJpX2RldmljZSAqdWJpLCBzdHJ1Y3QgdWJpX3Nj
+YW5faW5mbyAqc2kpCj4gICAgICAgICBkYmdfZWJhKCJpbml0aWFsaXplIEVCQSB1bml0Iik7Cj4K
+PiAgICAgICAgIHNwaW5fbG9ja19pbml0KCZ1YmktPmx0cmVlX2xvY2spOwo+ICsgICAgICAgbXV0
+ZXhfaW5pdCgmdWJpLT5hbGNfbXV0ZXgpOwo+ICAgICAgICAgdWJpLT5sdHJlZSA9IFJCX1JPT1Q7
+Cj4KPiAgICAgICAgIGlmICh1YmlfZGV2aWNlc19jbnQgPT0gMCkgewo+IEBAIC0xMTgzLDYgKzEx
+ODUsMTQgQEAgaW50IHViaV9lYmFfaW5pdF9zY2FuKHN0cnVjdCB1YmlfZGV2aWNlICp1YmksIHN0
+cnVjdCB1Ymlfc2Nhbl9pbmZvICpzaSkKPiAgICAgICAgICAgICAgICAgdWJpLT5yc3ZkX3BlYnMg
+ICs9IHViaS0+YmViX3JzdmRfcGViczsKPiAgICAgICAgIH0KPgo+ICsgICAgICAgaWYgKHViaS0+
+YXZhaWxfcGVicyA8IEVCQV9SRVNFUlZFRF9QRUJTKSB7Cj4gKyAgICAgICAgICAgICAgIHViaV9l
+cnIoIm5vIGVub3VnaCBwaHlzaWNhbCBlcmFzZWJsb2NrcyAoJWQsIG5lZWQgJWQpIiwKPiArICAg
+ICAgICAgICAgICAgICAgICAgICB1YmktPmF2YWlsX3BlYnMsIEVCQV9SRVNFUlZFRF9QRUJTKTsK
+PiArICAgICAgICAgICAgICAgZ290byBvdXRfZnJlZTsKPiArICAgICAgIH0KPiArICAgICAgIHVi
+aS0+YXZhaWxfcGVicyAtPSBFQkFfUkVTRVJWRURfUEVCUzsKPiArICAgICAgIHViaS0+cnN2ZF9w
+ZWJzICs9IEVCQV9SRVNFUlZFRF9QRUJTOwo+ICsKPiAgICAgICAgIGRiZ19lYmEoIkVCQSB1bml0
+IGlzIGluaXRpYWxpemVkIik7Cj4gICAgICAgICByZXR1cm4gMDsKPgo+IGRpZmYgLS1naXQgYS9k
+cml2ZXJzL210ZC91YmkvdWJpLmggYi9kcml2ZXJzL210ZC91YmkvdWJpLmgKPiBpbmRleCBjYzAx
+MDExLi41ZTk0MWE2IDEwMDY0NAo+IC0tLSBhL2RyaXZlcnMvbXRkL3ViaS91YmkuaAo+ICsrKyBi
+L2RyaXZlcnMvbXRkL3ViaS91YmkuaAo+IEBAIC0yMjEsMTQgKzIyMSwxNSBAQCBzdHJ1Y3QgdWJp
+X3dsX2VudHJ5Owo+ICAgKiBAdnRibF9zbG90czogaG93IG1hbnkgc2xvdHMgYXJlIGF2YWlsYWJs
+ZSBpbiB0aGUgdm9sdW1lIHRhYmxlCj4gICAqIEB2dGJsX3NpemU6IHNpemUgb2YgdGhlIHZvbHVt
+ZSB0YWJsZSBpbiBieXRlcwo+ICAgKiBAdnRibDogaW4tUkFNIHZvbHVtZSB0YWJsZSBjb3B5Cj4g
+KyAqIEB2dGJsX211dGV4OiBwcm90ZWN0cyBvbi1mbGFzaCB2b2x1bWUgdGFibGUKPiAgICoKPiAg
+ICogQG1heF9lYzogY3VycmVudCBoaWdoZXN0IGVyYXNlIGNvdW50ZXIgdmFsdWUKPiAgICogQG1l
+YW5fZWM6IGN1cnJlbnQgbWVhbiBlcmFzZSBjb3VudGVyIHZhbHVlCj4gICAqCj4gLSAqIGdsb2Jh
+bF9zcW51bTogZ2xvYmFsIHNlcXVlbmNlIG51bWJlcgo+ICsgKiBAZ2xvYmFsX3NxbnVtOiBnbG9i
+YWwgc2VxdWVuY2UgbnVtYmVyCj4gICAqIEBsdHJlZV9sb2NrOiBwcm90ZWN0cyB0aGUgbG9jayB0
+cmVlIGFuZCBAZ2xvYmFsX3NxbnVtCj4gICAqIEBsdHJlZTogdGhlIGxvY2sgdHJlZQo+IC0gKiBA
+dnRibF9tdXRleDogcHJvdGVjdHMgb24tZmxhc2ggdm9sdW1lIHRhYmxlCj4gKyAqIEBhbGNfbXV0
+ZXg6IHNlcmlhbGl6ZXMgImF0b21pYyBMRUIgY2hhbmdlIiBvcGVyYXRpb25zCj4gICAqCj4gICAq
+IEB1c2VkOiBSQi10cmVlIG9mIHVzZWQgcGh5c2ljYWwgZXJhc2VibG9ja3MKPiAgICogQGZyZWU6
+IFJCLXRyZWUgb2YgZnJlZSBwaHlzaWNhbCBlcmFzZWJsb2Nrcwo+IEBAIC0zMDgsNiArMzA5LDcg
+QEAgc3RydWN0IHViaV9kZXZpY2Ugewo+ICAgICAgICAgdW5zaWduZWQgbG9uZyBsb25nIGdsb2Jh
+bF9zcW51bTsKPiAgICAgICAgIHNwaW5sb2NrX3QgbHRyZWVfbG9jazsKPiAgICAgICAgIHN0cnVj
+dCByYl9yb290IGx0cmVlOwo+ICsgICAgICAgc3RydWN0IG11dGV4IGFsY19tdXRleDsKPgo+ICAg
+ICAgICAgLyogV2Vhci1sZXZlbGluZyB1bml0J3Mgc3R1ZmYgKi8KPiAgICAgICAgIHN0cnVjdCBy
+Yl9yb290IHVzZWQ7Cj4gLS0KPiAxLjUuMC42Cj4KPiAtLQo+IEJlc3QgcmVnYXJkcywKPiBBcnRl
+bSBCaXR5dXRza2l5ICjiydTAw8vJyiDh0tSjzSkKPgo+Cg==
