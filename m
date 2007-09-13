@@ -1,22 +1,27 @@
-Received: from smtp2.linux-foundation.org ([207.189.120.14])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVkPk-0007xJ-8x
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 04:51:23 -0400
-Date: Thu, 13 Sep 2007 01:49:55 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: "Mike Frysinger" <vapier.adi@gmail.com>
+Received: from rv-out-0910.google.com ([209.85.198.187])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVkQO-0007xr-1f
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 04:52:31 -0400
+Received: by rv-out-0910.google.com with SMTP id c24so332931rvf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 13 Sep 2007 01:51:44 -0700 (PDT)
+Message-ID: <8bd0f97a0709130151p36846690w4600463837285a2b@mail.gmail.com>
+Date: Thu, 13 Sep 2007 04:51:44 -0400
+From: "Mike Frysinger" <vapier.adi@gmail.com>
+To: bryan.wu@analog.com
 Subject: Re: [PATCH] Blackfin BF54x NAND Flash Controller driver
-Message-Id: <20070913014955.91f4602e.akpm@linux-foundation.org>
-In-Reply-To: <8bd0f97a0709130145u474ab017ocf58b004c5d69dc0@mail.gmail.com>
+In-Reply-To: <1189673107.30686.18.camel@roc-desktop>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 References: <1188804323.29566.6.camel@roc-laptop>
 	<20070913013702.d446739a.akpm@linux-foundation.org>
 	<8bd0f97a0709130145u474ab017ocf58b004c5d69dc0@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: bryan.wu@analog.com, linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+	<1189673107.30686.18.camel@roc-desktop>
+Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,35 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 13 Sep 2007 04:45:13 -0400 "Mike Frysinger" <vapier.adi@gmail.com> wrote:
-
-> On 9/13/07, Andrew Morton <akpm@linux-foundation.org> wrote:
-> > On Mon, 03 Sep 2007 15:25:23 +0800 Bryan Wu <bryan.wu@analog.com> wrote:
-> > > This is the driver for latest Blackfin BF54x nand flash controller
+On 9/13/07, Bryan Wu <bryan.wu@analog.com> wrote:
+> On Thu, 2007-09-13 at 04:45 -0400, Mike Frysinger wrote:
+> > On 9/13/07, Andrew Morton <akpm@linux-foundation.org> wrote:
+> > > On Mon, 03 Sep 2007 15:25:23 +0800 Bryan Wu <bryan.wu@analog.com> wrote:
+> > > > This is the driver for latest Blackfin BF54x nand flash controller
+> > > >
+> > > >  - use nand_chip and mtd_info common nand driver interface
+> > > >  - provide both PIO and dma operation
+> > > >  - compiled with ezkit bf548 configuration
+> > > >  - use hardware 1-bit ECC
+> > > >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
+> > > >
+> > > > ...
+> > > >
+> > > > +int hardware_ecc = 0;
 > > >
-> > >  - use nand_chip and mtd_info common nand driver interface
-> > >  - provide both PIO and dma operation
-> > >  - compiled with ezkit bf548 configuration
-> > >  - use hardware 1-bit ECC
-> > >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
-> > >
-> > > ...
-> > >
-> > > +int hardware_ecc = 0;
+> > > scripts/checkpatch.pl, please.
 > >
-> > scripts/checkpatch.pl, please.
-> 
-> that isnt static so checkpatch.pl wouldnt have caught it ...
+> > that isnt static so checkpatch.pl wouldnt have caught it ... it should
+> > be static though of course and then checkpatch.pl would have thrown a
+> > static init 0 warning :)
+>
+> Actually, it would caught by checkpatch.pl even without static.
 
-box:/usr/src/25> perl scripts/checkpatch.pl ~/x
-ERROR: do not initialise externals to 0 or NULL
-#186: FILE: drivers/mtd/nand/bf54x_nand.c:73:
-+int hardware_ecc = 0;
-
-> it should be static though of course
-
-good point.
-
-> and then checkpatch.pl would have thrown a
-> static init 0 warning :)
-> -mike
+it doesnt for me, but maybe i'm just using an older version
+-mike
