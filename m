@@ -1,18 +1,19 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVfYg-00046l-Bg
-	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2007 23:40:05 -0400
-From: Mike Frysinger <vapier@gentoo.org>
-To: Andrew Morton <akpm@linux-foundation.org>
-Subject: [patch] update CFI URI n mtd kconfig
-Date: Wed, 12 Sep 2007 23:39:54 -0400
+Received: from rv-out-0910.google.com ([209.85.198.189])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVjej-0006il-SA
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 04:02:36 -0400
+Received: by rv-out-0910.google.com with SMTP id c24so324466rvf
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 13 Sep 2007 01:02:31 -0700 (PDT)
+Message-ID: <6b5362aa0709130102o5042412fgab0e0558edc895c0@mail.gmail.com>
+Date: Thu, 13 Sep 2007 13:32:31 +0530
+From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: UBI : Atomic change LEB
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Message-Id: <200709122339.55267.vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,23 +23,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Since AMD shunted its flash memory division, the URI in the mtd Kconfig is now
-broken, so the attached patch points people to Wikipedia.
+I think there is a problem in atomic change LEB.
+I was trying to think how ubi will behave when device is full.
+Suppose device is full.And
+LEBn maps to pebn
+           i.e. Ln->pn
+If we used automic_change_leb, wear-levelling has no free blocks as
+all lebs are mapped to pebs.And no change in LEB is possible to any
+LEB.
+I think  we will need atleast one extra block at any instance of time
+to avoid this situation.
+This is similar to block movement situation where we need extra block
+for block movement.
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
-index 479d32b..980117a 100644
---- a/drivers/mtd/chips/Kconfig
-+++ b/drivers/mtd/chips/Kconfig
-@@ -11,8 +11,8 @@ config MTD_CFI
- 	  AMD and other flash manufactures that provides a universal method
- 	  for probing the capabilities of flash devices. If you wish to
- 	  support any device that is CFI-compliant, you need to enable this
--	  option. Visit <http://www.amd.com/products/nvd/overview/cfi.html>
--	  for more information on CFI.
-+	  option. For more information on CFI, visit:
-+	  <http://wikipedia.org/wiki/Common_Flash_Memory_Interface>
- 
- config MTD_JEDECPROBE
- 	tristate "Detect non-CFI AMD/JEDEC-compatible flash chips"
+Code Snip:
+    pnum = ubi_wl_get_peb(ubi, dtype);
+>>Asking a new block before unmapping.
+>>Wear-levelling has got no block.Logically we should get the block as
+far as people are writing to Logical space provided by UBI
+
+    if (pnum < 0) {
+        ubi_free_vid_hdr(ubi, vid_hdr);
+        leb_write_unlock(ubi, vol_id, lnum);
+        return pnum;
+    }
+
+    dbg_eba("change LEB %d:%d, PEB %d, write VID hdr to PEB %d",
+        vol_id, lnum, vol->eba_tbl[lnum], pnum);
+
+    err = ubi_io_write_vid_hdr(ubi, pnum, vid_hdr);
+    if (err) {
+        ubi_warn("failed to write VID header to LEB %d:%d, PEB %d",
+             vol_id, lnum, pnum);
+        goto write_error;
+    }
+
+    err = ubi_io_write_data(ubi, buf, pnum, 0, len);
+    if (err) {
+        ubi_warn("failed to write %d bytes of data to PEB %d",
+             len, pnum);
+        goto write_error;
+    }
+>>>> Freeing the block after new is written to provide automicity..
+
+    if (vol->eba_tbl[lnum] >= 0) {
+        err = ubi_wl_put_peb(ubi, vol->eba_tbl[lnum], 1);
+        if (err) {
+            ubi_free_vid_hdr(ubi, vid_hdr);
+            leb_write_unlock(ubi, vol_id, lnum);
+            return err;
+        }
+    }
+
+    vol->eba_tbl[lnum] = pnum;
+    leb_write_unlock(ubi, vol_id, lnum);
+    ubi_free_vid_hdr(ubi, vid_hdr);
+    return 0;
