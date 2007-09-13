@@ -1,25 +1,23 @@
-Received: from rv-out-0910.google.com ([209.85.198.186])
+Received: from nwd2mail10.analog.com ([137.71.25.55])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVkK3-0007Yo-Lh
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 04:45:23 -0400
-Received: by rv-out-0910.google.com with SMTP id c24so331674rvf
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 13 Sep 2007 01:45:13 -0700 (PDT)
-Message-ID: <8bd0f97a0709130145u474ab017ocf58b004c5d69dc0@mail.gmail.com>
-Date: Thu, 13 Sep 2007 04:45:13 -0400
-From: "Mike Frysinger" <vapier.adi@gmail.com>
-To: "Andrew Morton" <akpm@linux-foundation.org>
+	id 1IVkNY-0007lN-NE
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 04:48:56 -0400
 Subject: Re: [PATCH] Blackfin BF54x NAND Flash Controller driver
-In-Reply-To: <20070913013702.d446739a.akpm@linux-foundation.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: Bryan Wu <bryan.wu@analog.com>
+To: Mike Frysinger <vapier.adi@gmail.com>
+In-Reply-To: <8bd0f97a0709130145u474ab017ocf58b004c5d69dc0@mail.gmail.com>
 References: <1188804323.29566.6.camel@roc-laptop>
 	<20070913013702.d446739a.akpm@linux-foundation.org>
-Cc: bryan.wu@analog.com, linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
+	<8bd0f97a0709130145u474ab017ocf58b004c5d69dc0@mail.gmail.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Thu, 13 Sep 2007 16:45:07 +0800
+Message-Id: <1189673107.30686.18.camel@roc-desktop>
+Mime-Version: 1.0
+Cc: bryan.wu@analog.com, linux-kernel@vger.kernel.org,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>
+Reply-To: bryan.wu@analog.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,23 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 9/13/07, Andrew Morton <akpm@linux-foundation.org> wrote:
-> On Mon, 03 Sep 2007 15:25:23 +0800 Bryan Wu <bryan.wu@analog.com> wrote:
-> > This is the driver for latest Blackfin BF54x nand flash controller
+On Thu, 2007-09-13 at 04:45 -0400, Mike Frysinger wrote:
+> On 9/13/07, Andrew Morton <akpm@linux-foundation.org> wrote:
+> > On Mon, 03 Sep 2007 15:25:23 +0800 Bryan Wu <bryan.wu@analog.com> wrote:
+> > > This is the driver for latest Blackfin BF54x nand flash controller
+> > >
+> > >  - use nand_chip and mtd_info common nand driver interface
+> > >  - provide both PIO and dma operation
+> > >  - compiled with ezkit bf548 configuration
+> > >  - use hardware 1-bit ECC
+> > >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
+> > >
+> > > ...
+> > >
+> > > +int hardware_ecc = 0;
 > >
-> >  - use nand_chip and mtd_info common nand driver interface
-> >  - provide both PIO and dma operation
-> >  - compiled with ezkit bf548 configuration
-> >  - use hardware 1-bit ECC
-> >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
-> >
-> > ...
-> >
-> > +int hardware_ecc = 0;
->
-> scripts/checkpatch.pl, please.
+> > scripts/checkpatch.pl, please.
+> 
+> that isnt static so checkpatch.pl wouldnt have caught it ... it should
+> be static though of course and then checkpatch.pl would have thrown a
+> static init 0 warning :)
 
-that isnt static so checkpatch.pl wouldnt have caught it ... it should
-be static though of course and then checkpatch.pl would have thrown a
-static init 0 warning :)
--mike
+Actually, it would caught by checkpatch.pl even without static. 
+
+Andrew, I think I sent out the try#2 version of this patch which fixed
+these checkpatch.pl issues. But I will continue do some cleanup as you
+point out.
+
+Thanks
+-Bryan Wu
