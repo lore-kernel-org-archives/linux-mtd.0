@@ -1,25 +1,23 @@
-Received: from ag-out-0708.google.com ([72.14.246.250])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IToIt-0000ZI-3e
-	for linux-mtd@lists.infradead.org; Fri, 07 Sep 2007 20:36:10 -0400
-Received: by ag-out-0708.google.com with SMTP id 22so298903agd
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 07 Sep 2007 17:36:02 -0700 (PDT)
-From: Matteo Croce <technoboy85@gmail.com>
-To: linux-mips@linux-mips.org
-Subject: [PATCH][MIPS][2/7] AR7: mtd partition map
-Date: Sat, 8 Sep 2007 02:19:52 +0200
-References: <200709080143.12345.technoboy85@gmail.com>
-In-Reply-To: <200709080143.12345.technoboy85@gmail.com>
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVvoQ-0007uj-FZ
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 17:01:25 -0400
+From: Mike Frysinger <vapier@gentoo.org>
+To: Robin Getz <rgetz@blackfin.uclinux.org>
+Subject: Re: [patch] update CFI URI n mtd kconfig
+Date: Thu, 13 Sep 2007 17:01:16 -0400
+References: <200709122339.55267.vapier@gentoo.org>
+	<625fc13d0709131128m5a606b6ewe729c1e72f73f9d9@mail.gmail.com>
+	<200709131631.56867.rgetz@blackfin.uclinux.org>
+In-Reply-To: <200709131631.56867.rgetz@blackfin.uclinux.org>
 MIME-Version: 1.0
-Message-Id: <200709080219.52695.technoboy85@gmail.com>
-Content-Disposition: inline
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: multipart/signed; boundary="nextPart8223427.xa7bFni5AE";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
-Cc: Eugene Konev <ejka@imfi.kspu.ru>, Felix Fietkau <nbd@openwrt.org>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	openwrt-devel@lists.openwrt.org, dwmw2@infradead.org
+Message-Id: <200709131701.17572.vapier@gentoo.org>
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,184 +27,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Partition map support
+--nextPart8223427.xa7bFni5AE
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Matteo Croce <technoboy85@gmail.com>
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Eugene Konev <ejka@imfi.kspu.ru>
+On Thursday 13 September 2007, Robin Getz wrote:
+> Why not from the place that you can get the standard? http://jedec.org/
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index fbec8cd..c1b2508 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -150,6 +150,12 @@ config MTD_AFS_PARTS
- 	  for your particular device. It won't happen automatically. The
- 	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
- 
-+config MTD_AR7_PARTS
-+	tristate "TI AR7 partitioning support"
-+	depends on MTD_PARTITIONS
-+	---help---
-+	  TI AR7 partitioning support
-+
- comment "User Modules And Translation Layers"
- 
- config MTD_CHAR
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 6d958a4..8451c64 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
- obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
-+obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
- 
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
-new file mode 100644
-index 0000000..72dd07a
---- /dev/null
-+++ b/drivers/mtd/ar7part.c
-@@ -0,0 +1,140 @@
-+/*
-+ * Copyright (C) 2007 Felix Fietkau, Eugene Konev
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * TI AR7 flash partition table.
-+ * Based on ar7 map by Felix Fietkau.
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/bootmem.h>
-+#include <linux/squashfs_fs.h>
-+
-+struct ar7_bin_rec {
-+	unsigned int checksum;
-+	unsigned int length;
-+	unsigned int address;
-+};
-+
-+static struct mtd_partition ar7_parts[5];
-+
-+static int create_mtd_partitions(struct mtd_info *master,
-+				 struct mtd_partition **pparts,
-+				 unsigned long origin)
-+{
-+	struct ar7_bin_rec header;
-+	unsigned int offset, len;
-+	unsigned int pre_size = master->erasesize;
-+	unsigned int post_size = 0, root_offset = 0xe0000;
-+	int retries = 10;
-+
-+	printk(KERN_INFO "Parsing AR7 partition map...\n");
-+
-+	ar7_parts[0].name = "loader";
-+	ar7_parts[0].offset = 0;
-+	ar7_parts[0].size = master->erasesize;
-+	ar7_parts[0].mask_flags = MTD_WRITEABLE;
-+
-+	ar7_parts[1].name = "config";
-+	ar7_parts[1].offset = 0;
-+	ar7_parts[1].size = master->erasesize;
-+	ar7_parts[1].mask_flags = 0;
-+
-+	do {
-+		offset = pre_size;
-+		master->read(master, offset,
-+			sizeof(header), &len, (u_char *)&header);
-+		if (!strncmp((char *)&header, "TIENV0.8", 8))
-+			ar7_parts[1].offset = pre_size;
-+		if (header.checksum == 0xfeedfa42)
-+			break;
-+		if (header.checksum == 0xfeed1281)
-+			break;
-+		pre_size += master->erasesize;
-+	} while (retries--);
-+
-+	pre_size = offset;
-+
-+	if (!ar7_parts[1].offset) {
-+		ar7_parts[1].offset = master->size - master->erasesize;
-+		post_size = master->erasesize;
-+	}
-+
-+	switch (header.checksum) {
-+	case 0xfeedfa42:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u_char *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4;
-+		break;
-+	case 0xfeed1281:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u_char *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4 + 0xff;
-+		root_offset &= ~(u32)0xff;
-+		break;
-+	default:
-+		printk(KERN_ERR "Unknown magic: %08x\n", header.checksum);
-+		break;
-+	}
-+
-+	master->read(master, root_offset,
-+		sizeof(header), &len, (u_char *)&header);
-+	if (header.checksum != SQUASHFS_MAGIC) {
-+		root_offset += master->erasesize - 1;
-+		root_offset &= ~(master->erasesize - 1);
-+	}
-+
-+	ar7_parts[2].name = "linux";
-+	ar7_parts[2].offset = pre_size;
-+	ar7_parts[2].size = master->size - pre_size - post_size;
-+	ar7_parts[2].mask_flags = 0;
-+
-+	ar7_parts[3].name = "rootfs";
-+	ar7_parts[3].offset = root_offset;
-+	ar7_parts[3].size = master->size - root_offset - post_size;
-+	ar7_parts[3].mask_flags = 0;
-+
-+	*pparts = ar7_parts;
-+	return 4;
-+}
-+
-+static struct mtd_part_parser ar7_parser = {
-+	.owner = THIS_MODULE,
-+	.parse_fn = create_mtd_partitions,
-+	.name = "ar7part",
-+};
-+
-+static int __init ar7_parser_init(void)
-+{
-+	return register_mtd_parser(&ar7_parser);
-+}
-+
-+module_init(ar7_parser_init);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR("Felix Fietkau, Eugene Konev");
-+MODULE_DESCRIPTION("MTD partitioning for TI AR7");
+i found jedec.org a nightmare to navigate
+
+> or http://www.jedec.org/download/search/jesd68-01.pdf
+
+i'll add that to wikipedia ;)
+-mike
+
+--nextPart8223427.xa7bFni5AE
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.6 (GNU/Linux)
+
+iQIVAwUARumlHUFjO5/oN/WBAQJ98hAAtkvXTRNMHIaqFWaDEDmqoO904UXwY9K8
+hyGZZy/+SUXhySN3vZzgcnV4amGxBJEKAJyeUAchCG/DSZOKWEOu5M3WO2K4Q9yW
+NgtbcDyJPlsWwtOlftwWVYA8fmXxbN57U8w+80PVFlkqCmFHOF01dJtM9pCx71Rq
+CoiQXjsxKTnE0wB0WEFFrj0Nj/gMiHJId5/LUowtNDWsCCv2iVw1bRTxg0MZRWS2
+OkIhTz0BtsXpxq3BfgtxSo0m92DWwq8uWZFxkNy23Xd60V9oSKerE6h7LcxKeEUo
+MjMeS/BAVkZ8l6Iq75YyCH3I33Sra4y1csK/+8VMOJVhU0CY7v6BsR1b0/Wa3Fwf
+YdzvQZkBW0Zx2PoCsT8NQZe31KUn8jHSyw3fGJJt1HMsM3ewfVUhlF7LjsaEeQFK
+bjZw/Q4yhKgl5+7eUzPB10YYphtTyZKuNq5kQ+nRwhdOJNHy7FH4HgUrNssASE5z
+5SdR8ohWYbjcPNcmC8nbfa19pvmJK29qq40L0YRocxb6kQUxYKvzN7a9gSBVNm7i
+E3amlUyl+IwFpVUU0lawCIVf7XEoGwKpHZ0MpSBRzMlncTVWDNxQddojUxzcPbL/
+hvsxNIEAVeDtjaOM2V9vgOMP+mO+U+sGhBztBRvqcDXWBqMPi77ps4ihERCZ+JUz
+au1kSZe08Xw=
+=unV2
+-----END PGP SIGNATURE-----
+
+--nextPart8223427.xa7bFni5AE--
