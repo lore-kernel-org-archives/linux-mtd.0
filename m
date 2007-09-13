@@ -1,15 +1,20 @@
-Received: from bay0-omc3-s13.bay0.hotmail.com ([65.54.246.213])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IVpFa-0003WH-Ta
-	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 10:01:04 -0400
-Message-ID: <BLU116-W3877C7A20EC177A6825202F7C30@phx.gbl>
-From: Ken Chan <ck00088@hotmail.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: flash_eraseall -- JFFS2 -- NAND
-Date: Thu, 13 Sep 2007 11:00:57 -0300
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
+Received: from mail.shareable.org ([81.29.64.88])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVppy-00042R-LP
+	for linux-mtd@lists.infradead.org; Thu, 13 Sep 2007 10:38:37 -0400
+Date: Thu, 13 Sep 2007 15:38:19 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Brijesh Singh <brijesh.s.singh@gmail.com>
+Subject: Re: UBI : Atomic change LEB
+Message-ID: <20070913143819.GE22250@mail.shareable.org>
+References: <6b5362aa0709130102o5042412fgab0e0558edc895c0@mail.gmail.com>
+	<1189682032.14370.117.camel@sauron>
+	<6b5362aa0709130602g61e9b6f0xa762be770e95a32b@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b5362aa0709130602g61e9b6f0xa762be770e95a32b@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,15 +24,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Brijesh Singh wrote:
+> Thank you Artem.
+> This seems like a good idea.This will certainly work
+> .
+> The only problem I see is
+> * this will serialize  all the automic changes.If some device supports
+> multiple writes in parrallel,we are locking it for no reason(We have
+> reason but hope we can find another option).Also we won't need
+> serialization when there are lots of spare blocks.
+> 
+> I can't see a better way right now.May be we should think over any
+> possible twik to solve it.
 
-Hello, I have a MICRON NAND Flash on my board. I am using 2.6.16 Kernel. I =
-tried to do "flash_eraseall -j /dev/mtdblock8" to erase my NAND Flash. "fla=
-sh_eraseall" put the cleanmarker to the NAND Flash. After it completed, I p=
-ower cycle my target. In the "nand_scan" function, it kept reporting "Bad e=
-raseblock" for the entire NAND Flash. Anyone knows where my problem is? I b=
-elieve my low level read and write functions are working properly. Anyone c=
-an provide me some hints? Thanks ken
+Could you use a read-write lock, instead of a mutex?
 
-_________________________________________________________________
-News, entertainment and everything you care about at Live.com. Get it now!
-http://www.live.com/getstarted.aspx=
+Lock for "read" (meaning shared) when writing to the MTD device.  Lock
+for "write" (meaning exclusive) when erasing.  Then all erases are
+serialised, and writes can go in parallel.
+
+Would that solve the locking problems?
+
+If a device can support multiple erases in parallel as well, then
+you'd want something more complicated.
+
+-- Jamie
