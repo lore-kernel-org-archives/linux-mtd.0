@@ -1,14 +1,18 @@
-Subject: Re: JFFS2 read Inode related issue
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Mouawad, Tony" <Tony.Mouawad@christiedigital.com>
-In-Reply-To: <AD98412A5373CC4AA643D9C021922A543A935E@cdskitexg01.cds.int>
-References: <AD98412A5373CC4AA643D9C021922A543A935E@cdskitexg01.cds.int>
-Content-Type: text/plain
-Date: Thu, 13 Sep 2007 00:13:18 +0200
-Message-Id: <1189635198.3570.62.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from smtp.gentoo.org ([140.211.166.183])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IVfYg-00046l-Bg
+	for linux-mtd@lists.infradead.org; Wed, 12 Sep 2007 23:40:05 -0400
+From: Mike Frysinger <vapier@gentoo.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: [patch] update CFI URI n mtd kconfig
+Date: Wed, 12 Sep 2007 23:39:54 -0400
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200709122339.55267.vapier@gentoo.org>
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,17 +22,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 2007-09-11 at 09:59 -0400, Mouawad, Tony wrote:
-> I'm using Linux 2.6.10 on Coldfire architecture and I seem to be
-> experiencing very intermittent problems reading inodes.  It seems that
-> the following case is being hit during a call to
-> jffs2_do_read_inode():
+Since AMD shunted its flash memory division, the URI in the mtd Kconfig is now
+broken, so the attached patch points people to Wikipedia.
 
-Yeah, that'll be just one of the _numerous_ bugs we've fixed in the
-three years since 2.6.10 was released. Far from being the worst one,
-either.
-
-Use a sensible kernel.
-
--- 
-dwmw2
+Signed-off-by: Mike Frysinger <vapier@gentoo.org>
+---
+diff --git a/drivers/mtd/chips/Kconfig b/drivers/mtd/chips/Kconfig
+index 479d32b..980117a 100644
+--- a/drivers/mtd/chips/Kconfig
++++ b/drivers/mtd/chips/Kconfig
+@@ -11,8 +11,8 @@ config MTD_CFI
+ 	  AMD and other flash manufactures that provides a universal method
+ 	  for probing the capabilities of flash devices. If you wish to
+ 	  support any device that is CFI-compliant, you need to enable this
+-	  option. Visit <http://www.amd.com/products/nvd/overview/cfi.html>
+-	  for more information on CFI.
++	  option. For more information on CFI, visit:
++	  <http://wikipedia.org/wiki/Common_Flash_Memory_Interface>
+ 
+ config MTD_JEDECPROBE
+ 	tristate "Detect non-CFI AMD/JEDEC-compatible flash chips"
