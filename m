@@ -1,18 +1,28 @@
-Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IW5aL-0002E6-Fy
-	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 08:27:32 +0100
-Date: Fri, 14 Sep 2007 03:25:21 -0400 (EDT)
-From: "Robert P. J. Day" <rpjday@mindspring.com>
-To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-Subject: Re: [PATCH] MTD: remove Momenco Ocelot support
-In-Reply-To: <20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
-Message-ID: <Pine.LNX.4.64.0709140321360.28776@localhost.localdomain>
-References: <1189329262.8320.9.camel@pmac.infradead.org>
-	<20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
+Received: from ext-nj2ut-13.online-age.net ([64.14.54.246])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IW5h9-0006Z2-Dx
+	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 03:34:35 -0400
+Received: from int-nj2ut-6.online-age.net (int-nj2ut-6.online-age.net
+	[3.159.237.75])
+	by ext-nj2ut-13.online-age.net (8.13.6/8.13.6/20051114-SVVS-TLS-DNSBL)
+	with ESMTP id l8E7YTjA002934
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2007 03:34:29 -0400
+Received: from ALPMLEF02.e2k.ad.ge.com (int-nj2ut-6.online-age.net
+	[3.159.237.75])
+	by int-nj2ut-6.online-age.net (8.13.6/8.13.6/20050510-SVVS) with ESMTP
+	id l8E7YTTG007644
+	for <linux-mtd@lists.infradead.org>; Fri, 14 Sep 2007 03:34:29 -0400
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: MirrorBit FLASH Read/Write Issue
+Date: Fri, 14 Sep 2007 08:35:26 +0100
+Message-ID: <B9CFC78F14A9EE459093EEBC080529A8FC0693@LONMLVEM03.e2k.ad.ge.com>
+From: "Billalabeitia, Jose Carlos (GE Indust,
+	ConsInd)" <jc.billalabeitia@ge.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,41 +32,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 9 Sep 2007, Yoichi Yuasa wrote:
+Hello:=20
+=20
+    I would like to know if someone out there has experienced the
+following
+problems in the S29GL064M90TFIR60 FLASH (MirrorBit Technology):
+=20
+    - After two consecutive readings at the same random memory location,
 
-> Hello David,
->
-> Please queue this patch too.
->
-> ---
->
-> This patch has removed Momenco Ocelot support from MTD.
-> Ocelot support has already removed.
-
-you might want to do a more thorough scan of the source tree as there
-are still a number of references to "OCELOT", some of which might also
-be removable at the same time as this patch.
-
-$ grep -r OCELOT *
-arch/arm/tools/mach-types:ocelot                        MACH_OCELOT             OCELOT                  489
-drivers/mtd/maps/Kconfig:config MTD_OCELOT
-drivers/mtd/maps/Kconfig:       depends on MOMENCO_OCELOT
-drivers/mtd/maps/ocelot.c:#define OCELOT_PLD 0x2c000000
-drivers/mtd/maps/ocelot.c:      pld = ioremap(OCELOT_PLD, 0x10);
-drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_OCELOT)      += ocelot.o
-drivers/mtd/devices/docprobe.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
-drivers/mtd/nand/diskonchip.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
-include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT        0
-include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_G      1       /* no more supported (may 2007) */
-include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_C      2       /* no more supported (jun 2007) */
-include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_3      4
-
-rday
--- 
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry
-Waterloo, Ontario, CANADA
-
-http://crashcourse.ca
-========================================================================
+	the first reading is all zeros, and the second one is the data
+OK.
+=20
+    - After programming one word to a random memory location,=20
+	the data stored is all zeros or the adjacent memory location is=20
+	affected with all zeros.
+=20
+=20
+                                            Thank you
+                                                         Billa
