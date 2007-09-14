@@ -1,22 +1,18 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IW5WU-0005xs-EL
-	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 03:23:35 -0400
-Subject: Re: [PATCH] Blackfin BF54x NAND Flash Controller driver
-From: Bryan Wu <bryan.wu@analog.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-In-Reply-To: <20070913013702.d446739a.akpm@linux-foundation.org>
-References: <1188804323.29566.6.camel@roc-laptop>
-	<20070913013702.d446739a.akpm@linux-foundation.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Fri, 14 Sep 2007 15:19:41 +0800
-Message-Id: <1189754381.8165.11.camel@roc-desktop>
-Mime-Version: 1.0
-Cc: bryan.wu@analog.com, linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
-Reply-To: bryan.wu@analog.com
+Received: from nic.netdirect.ca ([216.16.235.2] helo=rubicon.netdirect.ca)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IW5aL-0002E6-Fy
+	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 08:27:32 +0100
+Date: Fri, 14 Sep 2007 03:25:21 -0400 (EDT)
+From: "Robert P. J. Day" <rpjday@mindspring.com>
+To: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
+Subject: Re: [PATCH] MTD: remove Momenco Ocelot support
+In-Reply-To: <20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
+Message-ID: <Pine.LNX.4.64.0709140321360.28776@localhost.localdomain>
+References: <1189329262.8320.9.camel@pmac.infradead.org>
+	<20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,73 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-09-13 at 01:37 -0700, Andrew Morton wrote:
-> On Mon, 03 Sep 2007 15:25:23 +0800 Bryan Wu <bryan.wu@analog.com>
-> wrote:
-> 
-> > This is the driver for latest Blackfin BF54x nand flash controller
-> > 
-> >  - use nand_chip and mtd_info common nand driver interface
-> >  - provide both PIO and dma operation
-> >  - compiled with ezkit bf548 configuration
-> >  - use hardware 1-bit ECC
-> >  - tested with YAFFS2 and can mount YAFFS2 filesystem as rootfs
-> > 
-> > ...
-> >
-> > +int hardware_ecc = 0;
-> 
-> scripts/checkpatch.pl, please.
-> 
-Things are fixed in the try#3 version of the driver, which will be sent
-out soon.
+On Sun, 9 Sep 2007, Yoichi Yuasa wrote:
 
-> > +#endif
-> > +
-> > +unsigned short bfin_nfc_pin_req[] = {P_NAND_CE, P_NAND_RB, 0};
-> 
-> static.  Please review whole patch for this.
-> 
-[!snip!]
+> Hello David,
+>
+> Please queue this patch too.
+>
+> ---
+>
+> This patch has removed Momenco Ocelot support from MTD.
+> Ocelot support has already removed.
 
-> > +
-> > +/*
-> > + * bf54x_nand_probe
-> > + *
-> > + * called by device layer when it finds a device matching
-> > + * one our driver can handled. This code checks to see if
-> > + * it can allocate all necessary resources then calls the
-> > + * nand layer to look for devices
-> > + */
-> > +static int bf54x_nand_probe(struct platform_device *pdev)
-> > +{
-> > +	struct bf54x_nand_platform *plat = to_nand_plat(pdev);
-> > +	struct bf54x_nand_info *info = NULL;
-> > +	struct nand_chip *chip = NULL;
-> > +	struct mtd_info *mtd = NULL;
-> > +	int err = 0;
-> > +
-> > +	dev_dbg(&pdev->dev, "(%p)\n", pdev);
-> > +
-> > +	if (!plat) {
-> > +		dev_err(&pdev->dev, "no platform specific information\n");
-> > +		goto exit_error;
-> 
-> and can this?
-> 
+you might want to do a more thorough scan of the source tree as there
+are still a number of references to "OCELOT", some of which might also
+be removable at the same time as this patch.
 
-Try to prevent board configuration missing the bf54x_nand_platform
-information.
+$ grep -r OCELOT *
+arch/arm/tools/mach-types:ocelot                        MACH_OCELOT             OCELOT                  489
+drivers/mtd/maps/Kconfig:config MTD_OCELOT
+drivers/mtd/maps/Kconfig:       depends on MOMENCO_OCELOT
+drivers/mtd/maps/ocelot.c:#define OCELOT_PLD 0x2c000000
+drivers/mtd/maps/ocelot.c:      pld = ioremap(OCELOT_PLD, 0x10);
+drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_OCELOT)      += ocelot.o
+drivers/mtd/devices/docprobe.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
+drivers/mtd/nand/diskonchip.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
+include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT        0
+include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_G      1       /* no more supported (may 2007) */
+include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_C      2       /* no more supported (jun 2007) */
+include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_3      4
 
-> > +	}
-> > +
-> > +	info = kzalloc(sizeof(*info), GFP_KERNEL);
-> > +	if (info == NULL) {
-> > +		dev_err(&pdev->dev, "no memory for flash info\n");
-> > +		err = -ENOMEM;
-> > +		goto exit_error;
-> > +	}
+rday
+-- 
+========================================================================
+Robert P. J. Day
+Linux Consulting, Training and Annoying Kernel Pedantry
+Waterloo, Ontario, CANADA
 
-
-Thanks
--Bryan Wu
+http://crashcourse.ca
+========================================================================
