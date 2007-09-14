@@ -1,16 +1,17 @@
-Received: from [203.197.252.75] (helo=lexus.moschip.com)
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IW2bi-0002kd-7I
-	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 00:16:44 -0400
-Message-ID: <000801c7f685$1be627a0$8502a8c0@cayenne>
-From: "jameesh" <jameeshk@moschip.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: device_type and interleave.
-Date: Fri, 14 Sep 2007 09:39:55 +0530
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+Subject: Re: JFFS2 ACL problem.
+From: David Woodhouse <dwmw2@infradead.org>
+To: KaiGai Kohei <kaigai@ak.jp.nec.com>
+In-Reply-To: <46EA2743.3090107@ak.jp.nec.com>
+References: <1186676611.7282.47.camel@shinybook.infradead.org>
+	<46C9783D.4000503@ak.jp.nec.com>
+	<1187782861.22432.81.camel@pmac.infradead.org>
+	<46D25ECF.8090409@ak.jp.nec.com>  <46EA2743.3090107@ak.jp.nec.com>
+Content-Type: text/plain
+Date: Fri, 14 Sep 2007 08:40:50 +0200
+Message-Id: <1189752050.3241.16.camel@shinybook.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,21 +21,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Fri, 2007-09-14 at 15:16 +0900, KaiGai Kohei wrote:
+> 
+> The attached patch separate jffs2_init_acl() into two parts.
+> 
+> The one is jffs2_init_acl_pre() called from jffs2_new_inode().
+> It compute ACL oriented inode->i_mode bits, and allocate in-memory ACL
+> objects associated with the new inode just before when inode meta
+> infomation is written to the medium.
+> 
+> The other is jffs2_init_acl_post() called from jffs2_symlink(),
+> jffs2_mkdir(), jffs2_mknod() and jffs2_do_create().
+> It actually writes in-memory ACL objects into the medium next to
+> the success of writing meta-information.
+> 
+> In the current implementation, we have to write a same inode meta
+> infomation twice when inode->i_mode is updated by the default ACL.
+> However, we can avoid the behavior by putting an updated i_mode
+> before it is written at first, as jffs2_init_acl_pre() doing.
+> 
+> Please review this patch.
 
-    I am confused with the parameters "device_type & interleave" in 
-"flash_info" structure.
-    I have a board with Flash CFI 0002 commandset complaint flash. Flash is 
-in byte mode.
-    I am getting device_type variable as 2, and interleave as 1. Thus in
+At first glance, that looks much nicer than what I did -- thanks.
 
-    "cfi_send_gen_cmd" I am getting  wrong command address "0x554" from 
-"cfi_build_cmd_addr".
-    presently I am doing a fix with a simple change in the MACRO.
+I should hopefully have some time later today to take a closer look and
+merge it.
 
-    Please help me by giving significance of "device_type & interleave" 
-variable.
-    Why I am getting such an issue, is it because of a board level issue?
-
-Thanks & Regards
-Jameesh 
+-- 
+dwmw2
