@@ -1,21 +1,24 @@
-Received: from mo31.po.2iij.net ([210.128.50.54])
+Received: from moutng.kundenserver.de ([212.227.126.187])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IW6VX-0007kf-Dg
-	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 04:26:40 -0400
-Message-Id: <200709140826.l8E8QGrB005934@po-mbox300.hop.2iij.net>
-Date: Fri, 14 Sep 2007 17:26:16 +0900
-From: Yoichi Yuasa <yoichi_yuasa@tripeaks.co.jp>
-To: "Robert P. J. Day" <rpjday@mindspring.com>
-Subject: Re: [PATCH] MTD: remove Momenco Ocelot support
-In-Reply-To: <Pine.LNX.4.64.0709140321360.28776@localhost.localdomain>
-References: <1189329262.8320.9.camel@pmac.infradead.org>
-	<20070909233525.237b6c7c.yoichi_yuasa@tripeaks.co.jp>
-	<Pine.LNX.4.64.0709140321360.28776@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	yoichi_yuasa@tripeaks.co.jp
+	id 1IW79R-0000B1-0T
+	for linux-mtd@lists.infradead.org; Fri, 14 Sep 2007 05:07:53 -0400
+Message-ID: <46EA4F41.3010300@anagramm.de>
+Date: Fri, 14 Sep 2007 11:07:13 +0200
+From: Clemens Koller <clemens.koller@anagramm.de>
+MIME-Version: 1.0
+To: Mike Frysinger <vapier@gentoo.org>
+Subject: Re: [patch] update CFI URI n mtd kconfig
+References: <200709122339.55267.vapier@gentoo.org>
+	<625fc13d0709131128m5a606b6ewe729c1e72f73f9d9@mail.gmail.com>
+	<200709131631.56867.rgetz@blackfin.uclinux.org>
+	<200709131701.17572.vapier@gentoo.org>
+In-Reply-To: <200709131701.17572.vapier@gentoo.org>
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Robin Getz <rgetz@blackfin.uclinux.org>,
+	LKML <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,47 +28,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 14 Sep 2007 03:25:21 -0400 (EDT)
-"Robert P. J. Day" <rpjday@mindspring.com> wrote:
-
-> On Sun, 9 Sep 2007, Yoichi Yuasa wrote:
+Mike Frysinger schrieb:
+> On Thursday 13 September 2007, Robin Getz wrote:
+>> Why not from the place that you can get the standard? http://jedec.org/
 > 
-> > Hello David,
-> >
-> > Please queue this patch too.
-> >
-> > ---
-> >
-> > This patch has removed Momenco Ocelot support from MTD.
-> > Ocelot support has already removed.
+> i found jedec.org a nightmare to navigate
 > 
-> you might want to do a more thorough scan of the source tree as there
-> are still a number of references to "OCELOT", some of which might also
-> be removable at the same time as this patch.
+>> or http://www.jedec.org/download/search/jesd68-01.pdf
 > 
-> $ grep -r OCELOT *
-> arch/arm/tools/mach-types:ocelot                        MACH_OCELOT             OCELOT                  489
+> i'll add that to wikipedia ;)
+> -mike
 
-It's ARM board.
-Momenco Ocelot is MIPS board.
+...done.
 
-> drivers/mtd/maps/Kconfig:config MTD_OCELOT
-> drivers/mtd/maps/Kconfig:       depends on MOMENCO_OCELOT
-> drivers/mtd/maps/ocelot.c:#define OCELOT_PLD 0x2c000000
-> drivers/mtd/maps/ocelot.c:      pld = ioremap(OCELOT_PLD, 0x10);
-> drivers/mtd/maps/Makefile:obj-$(CONFIG_MTD_OCELOT)      += ocelot.o
-> drivers/mtd/devices/docprobe.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
-> drivers/mtd/nand/diskonchip.c:#elif defined(CONFIG_MOMENCO_OCELOT_G)
+Regards,
 
-Already queue in mtd-2.6.git.
-
-> include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT        0
-> include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_G      1       /* no more supported (may 2007) */
-> include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_C      2       /* no more supported (jun 2007) */
-> include/asm-mips/bootinfo.h:#define  MACH_MOMENCO_OCELOT_3      4
-
-I'll send it to linux-mips soon.
-
-Thanks,
-
-Yoichi
+Clemens Koller
+__________________________________
+R&D Imaging Devices
+Anagramm GmbH
+Rupert-Mayer-Straße 45/1
+Linhof Werksgelände
+D-81379 München
+Tel.089-741518-50
+Fax 089-741518-19
+http://www.anagramm-technology.com
