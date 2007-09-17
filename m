@@ -1,30 +1,25 @@
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IaXau-0004L5-Et
-	for linux-mtd@lists.infradead.org; Wed, 26 Sep 2007 10:10:35 -0400
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e4.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l8QEANW3006077
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:24 -0400
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
-	l8QEAOaN555408
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:24 -0400
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l8QEANYa011940
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:23 -0400
-Subject: [PATCH] MTD: NAND: Fix bad-block detection for 8-bit NAND
-From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-VtLTg979yECvux0RM4l7"
-Date: Wed, 26 Sep 2007 16:10:23 +0200
-Message-Id: <1190815823.21594.30.camel@august>
-Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, haver@vnet.ibm.com,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>
-Reply-To: haver@vnet.ibm.com
+Received: from ug-out-1314.google.com ([66.249.92.168])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IXDlP-0007Mc-4o
+	for linux-mtd@lists.infradead.org; Mon, 17 Sep 2007 06:23:44 -0400
+Received: by ug-out-1314.google.com with SMTP id 23so692565ugr
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Sep 2007 03:23:33 -0700 (PDT)
+To: Paul Mundt <lethal@linux-sh.org>
+Subject: [PATCH] Magic Panel MTD mapping update
+Date: Mon, 17 Sep 2007 12:09:15 +0200
+References: <200708200837.08856.super.firetwister@gmail.com>
+	<1187595327.3137.3.camel@shinybook.infradead.org>
+In-Reply-To: <1187595327.3137.3.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200709171209.16148.super.firetwister@gmail.com>
+From: Markus Brunner <super.firetwister@googlemail.com>
+Cc: Mark Jonas <toertel@gmail.com>, linux-mtd@lists.infradead.org,
+	linux-sh <linuxsh-dev@lists.sourceforge.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,182 +29,157 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Paul,
 
---=-VtLTg979yECvux0RM4l7
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+this update moves the flash mapping for the Magic Panel into the board setup. 
+It also removes references to the old MTD mapping option in the defconfig.
 
-Hi Thomas,
-
-I found the following block in our 128MiB NAND flash:
-
-hexdump vic.img.460=20
-0000000 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0000800 00ff 0000 0000 0000 0000 0000 0000 0000
-0000810 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0001040 00ff 0000 0000 0000 0000 0000 0000 0000
-0001050 0000 0000 0000 0000 0000 0000 0000 0000
-*
-0021000
-
-According to the specification this is a good block, because the bytes
-in the 1st two OOB areas at offset 0 are 0xff. Nevertheless it was
-detected bad because:
-
-static struct nand_bbt_descr largepage_memorybased =3D {
-	.options =3D 0,
-	.offs =3D 0,
-	.len =3D 2,                    /* <<<< bytes to check!!! */
-	.pattern =3D scan_ff_pattern
-};
-
-used a len of 2 instead of 1, which I consider to be correct. Here a
-potential fix for the problem. Please have a look if it matches your
-understanding of the specification.
-
-Signed-off-by: Frank Haverkamp <haver@vnet.ibm.com>
+Signed-off by: Markus Brunner <super.firetwister@gmail.com>
+Signed-off by: Mark Jonas <toertel@gmail.com>
 ---
- drivers/mtd/nand/nand_bbt.c |   20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
 
---- ubi-2.6.git.orig/drivers/mtd/nand/nand_bbt.c
-+++ ubi-2.6.git/drivers/mtd/nand/nand_bbt.c
-@@ -1081,7 +1081,14 @@ static struct nand_bbt_descr smallpage_m
- 	.pattern =3D scan_ff_pattern
+ boards/magicpanelr2/setup.c    |   83 ++++++++++++++++++++++++++++++++++++++++-
+ configs/magicpanelr2_defconfig |    8 ++-
+ 2 files changed, 86 insertions(+), 5 deletions(-)
+
+diff --git a/arch/sh/boards/magicpanelr2/setup.c b/arch/sh/boards/magicpanelr2/setup.c
+index c593065..854bcc6 100644
+--- a/arch/sh/boards/magicpanelr2/setup.c
++++ b/arch/sh/boards/magicpanelr2/setup.c
+@@ -12,14 +12,19 @@
+ #include <linux/init.h>
+ #include <linux/irq.h>
+ #include <linux/platform_device.h>
+-#include <linux/ide.h>
+-#include <linux/irq.h>
+ #include <linux/delay.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/mtd/physmap.h>
++#include <linux/mtd/map.h>
+ #include <asm/magicpanelr2.h>
+ #include <asm/heartbeat.h>
+ 
+ #define LAN9115_READY	(ctrl_inl(0xA8000084UL) & 0x00000001UL)
+ 
++/* Prefer cmdline over RedBoot */
++static const char *probes[] = { "cmdlinepart", "RedBoot", NULL };
++
+ /* Wait until reset finished. Timeout is 100ms. */
+ static int __init ethernet_reset_finished(void)
+ {
+@@ -270,13 +275,87 @@ static struct platform_device heartbeat_device = {
+ 	.resource	= heartbeat_resources,
  };
-=20
--static struct nand_bbt_descr largepage_memorybased =3D {
-+static struct nand_bbt_descr largepage_memorybased_8bit =3D {
-+	.options =3D 0,
-+	.offs =3D 0,
-+	.len =3D 1,
-+	.pattern =3D scan_ff_pattern
+ 
++static struct mtd_partition *parsed_partitions;
++
++static struct mtd_partition mpr2_partitions[] = {
++	/* Reserved for bootloader, read-only */
++	{
++		.name = "Bootloader",
++		.offset = 0x00000000UL,
++		.size = MPR2_MTD_BOOTLOADER_SIZE,
++		.mask_flags = MTD_WRITEABLE,
++	},
++	/* Reserved for kernel image */
++	{
++		.name = "Kernel",
++		.offset = MTDPART_OFS_NXTBLK,
++		.size = MPR2_MTD_KERNEL_SIZE,
++	},
++	/* Rest is used for Flash FS */
++	{
++		.name = "Flash_FS",
++		.offset = MTDPART_OFS_NXTBLK,
++		.size = MTDPART_SIZ_FULL,
++	}
 +};
 +
-+static struct nand_bbt_descr largepage_memorybased_16bit =3D {
- 	.options =3D 0,
- 	.offs =3D 0,
- 	.len =3D 2,
-@@ -1179,8 +1186,15 @@ int nand_default_bbt(struct mtd_info *mt
- 		this->bbt_td =3D NULL;
- 		this->bbt_md =3D NULL;
- 		if (!this->badblock_pattern) {
--			this->badblock_pattern =3D (mtd->writesize > 512) ?
--			    &largepage_memorybased : &smallpage_memorybased;
-+			if (mtd->writesize > 512) {
-+				if (this->options & NAND_BUSWIDTH_16)
-+					this->badblock_pattern =3D
-+						&largepage_memorybased_16bit;
-+				else
-+					this->badblock_pattern =3D
-+					       &largepage_memorybased_8bit;
-+			} else
-+				this->badblock_pattern =3D &smallpage_memorybased;
- 		}
- 	}
- 	return nand_scan_bbt(mtd, this->badblock_pattern);
-
-
---=-VtLTg979yECvux0RM4l7
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIP9DCCBSww
-ggSVoAMCAQICEDqcN60eyFMWG0XIVQBLNZgwDQYJKoZIhvcNAQEFBQAwgcExCzAJBgNVBAYTAlVT
-MRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE8MDoGA1UECxMzQ2xhc3MgMiBQdWJsaWMgUHJpbWFy
-eSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEcyMTowOAYDVQQLEzEoYykgMTk5OCBWZXJpU2ln
-biwgSW5jLiAtIEZvciBhdXRob3JpemVkIHVzZSBvbmx5MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMB4XDTAzMDUwNjAwMDAwMFoXDTEzMDUwNTIzNTk1OVowgfkxCzAJBgNVBAYTAlVT
-MTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8w
-HQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQg
-aHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNp
-dGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBB
-dXRob3JpdHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANVnrTXdoH79V2HWnacXy7mjjSNc
-nOi3Z+cXSBh9uSDhCLAUUeuvoHubuA5ImrJI5k/dA+Q0L+WNzR7OZr4TRpw3DOksYS/0o+RZ5+lu
-J7ltXcdVgsHU6qqHDpvF1hAegqpNz670JVVfUs4ThC1AafMIBHwmJbqFG4Iy39OH37oBAgMBAAGj
-ggHpMIIB5TASBgNVHRMBAf8ECDAGAQH/AgEAMEQGA1UdIAQ9MDswOQYLYIZIAYb4RQEHFwIwKjAo
-BggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTA0BgNVHR8ELTArMCmgJ6Al
-hiNodHRwOi8vY3JsLnZlcmlzaWduLmNvbS9wY2EyLWcyLmNybDALBgNVHQ8EBAMCAQYwEQYJYIZI
-AYb4QgEBBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEyNzAd
-BgNVHQ4EFgQUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowgegGA1UdIwSB4DCB3aGBx6SBxDCBwTELMAkG
-A1UEBhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMTwwOgYDVQQLEzNDbGFzcyAyIFB1Ymxp
-YyBQcmltYXJ5IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IC0gRzIxOjA4BgNVBAsTMShjKSAxOTk4
-IFZlcmlTaWduLCBJbmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxHzAdBgNVBAsTFlZlcmlT
-aWduIFRydXN0IE5ldHdvcmuCEQC5L2DMiJ+hekYJuFtwbIqvMA0GCSqGSIb3DQEBBQUAA4GBAJcM
-UE/GM7DSGWSfEaUELX8FdU5Ug5WUfJVLTc4s5xDj+d9P/sxo39ofCYcyBrVFpessapDKDJKKCu6z
-bSNwKStMN7smU6TYiyT2FP216Adb5wsu94gxblObFoms2qG/BuGHbFxtbIBAiCNlFcRk69rPUGu/
-EOvQeUAR+Ub1NkjPMIIFXjCCBMegAwIBAgIQBx15Uc8dgKRMua0Jq2/yNTANBgkqhkiG9w0BAQQF
-ADCB+TELMAkGA1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
-ZXMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsT
-MlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYD
-VQQLEydDbGFzcyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lC
-TSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0wNzA0MTYwMDAwMDBaFw0wODA0MTUyMzU5NTla
-MIGJMS4wLAYDVQQKFCVJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnAuMRgwFgYD
-VQQDDA9GcmFuayBIYXZlcmthbXAxGTAXBgoJkiaJk/IsZAEBFAkxMjQ2MTQ3MjQxIjAgBgkqhkiG
-9w0BCQEWE2hhdmVya2FtQGRlLmlibS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANqa
-0RVcURGtTfJRuKOEaQPrtJrWVAmWFTIA2YdQSiHJDgg+OLG/dnlpyqU0JOfcd3j1ZyQK7EFpoT03
-B4Bx4MWBSoWdf3bdbEmKvYIM2BddBVgisGiwhWklRsoGiItckT7xSVK5P3hvLCXjBvcdbxcm4VS2
-NRyJfGEyeoGiObLdAgMBAAGjggJTMIICTzAJBgNVHRMEAjAAMAsGA1UdDwQEAwIFoDBmBgNVHR8E
-XzBdMFugWaBXhlVodHRwOi8vb25zaXRlY3JsLnZlcmlzaWduLmNvbS9JbnRlcm5hdGlvbmFsQnVz
-aW5lc3NNYWNoaW5lc0NvcnBDb3Jwb3JhdGVDSU8vTGF0ZXN0Q1JMMIIBKQYDVR0gBIIBIDCCARww
-ggEYBgtghkgBhvhFAQcXAjCCAQcwKwYIKwYBBQUHAgEWH2h0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwgdcGCCsGAQUFBwICMIHKGoHHTm90aWNlIFRleHQ9Tk9USUNFOiBQcml2YXRlIGtl
-eSBtYXkgYmUgcmVjb3ZlcmVkIGJ5IFZlcmlTaWduJ3MgY3VzdG9tZXIgd2hvIG1heSBiZSBhYmxl
-IHRvIGRlY3J5cHQgbWVzc2FnZXMgeW91IHNlbmQgdG8gY2VydGlmaWNhdGUgaG9sZGVyLiAgVXNl
-IGlzIHN1YmplY3QgdG8gdGVybXMgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYS1rcjAf
-BgNVHSMEGDAWgBSRwXOwc9XZknRnzRvxURQ0MbYsWjAdBgNVHQ4EFgQUbOeIIYn3x+GgI5Am0KHt
-R62Y458wLgYDVR0RBCcwJaAjBgorBgEEAYI3FAIDoBUME2hhdmVya2FtQGRlLmlibS5jb20wHQYD
-VR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDANBgkqhkiG9w0B
-AQQFAAOBgQAJ6/At+OSf4q8CRKWRmIxb3m0Sk6YfSTI6gu+YIu6LiOIq3BFH7XhRGiM+KqQaKyKe
-9Ar+L/QzI9YQMIShrA9m2eFKVrfsBTeSn2/d+wTYM4rjyYtv24qeYSKF9yqWGMW+Oy9SIjb9TAgF
-A0rQrpiAExeGgoIuDAsZFr4+EfUkcDCCBV4wggTHoAMCAQICEAcdeVHPHYCkTLmtCatv8jUwDQYJ
-KoZIhvcNAQEEBQAwgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2lu
-ZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3Jr
-MTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAo
-YykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQw
-IgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcwNDE2MDAwMDAwWhcNMDgw
-NDE1MjM1OTU5WjCBiTEuMCwGA1UEChQlSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyBD
-b3JwLjEYMBYGA1UEAwwPRnJhbmsgSGF2ZXJrYW1wMRkwFwYKCZImiZPyLGQBARQJMTI0NjE0NzI0
-MSIwIAYJKoZIhvcNAQkBFhNoYXZlcmthbUBkZS5pYm0uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDamtEVXFERrU3yUbijhGkD67Sa1lQJlhUyANmHUEohyQ4IPjixv3Z5acqlNCTn3Hd4
-9WckCuxBaaE9NweAceDFgUqFnX923WxJir2CDNgXXQVYIrBosIVpJUbKBoiLXJE+8UlSuT94bywl
-4wb3HW8XJuFUtjUciXxhMnqBojmy3QIDAQABo4ICUzCCAk8wCQYDVR0TBAIwADALBgNVHQ8EBAMC
-BaAwZgYDVR0fBF8wXTBboFmgV4ZVaHR0cDovL29uc2l0ZWNybC52ZXJpc2lnbi5jb20vSW50ZXJu
-YXRpb25hbEJ1c2luZXNzTWFjaGluZXNDb3JwQ29ycG9yYXRlQ0lPL0xhdGVzdENSTDCCASkGA1Ud
-IASCASAwggEcMIIBGAYLYIZIAYb4RQEHFwIwggEHMCsGCCsGAQUFBwIBFh9odHRwczovL3d3dy52
-ZXJpc2lnbi5jb20vcnBhLWtyMIHXBggrBgEFBQcCAjCByhqBx05vdGljZSBUZXh0PU5PVElDRTog
-UHJpdmF0ZSBrZXkgbWF5IGJlIHJlY292ZXJlZCBieSBWZXJpU2lnbidzIGN1c3RvbWVyIHdobyBt
-YXkgYmUgYWJsZSB0byBkZWNyeXB0IG1lc3NhZ2VzIHlvdSBzZW5kIHRvIGNlcnRpZmljYXRlIGhv
-bGRlci4gIFVzZSBpcyBzdWJqZWN0IHRvIHRlcm1zIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwHwYDVR0jBBgwFoAUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowHQYDVR0OBBYEFGzniCGJ
-98fhoCOQJtCh7UetmOOfMC4GA1UdEQQnMCWgIwYKKwYBBAGCNxQCA6AVDBNoYXZlcmthbUBkZS5p
-Ym0uY29tMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDARBglghkgBhvhCAQEEBAMCBaAw
-DQYJKoZIhvcNAQEEBQADgYEACevwLfjkn+KvAkSlkZiMW95tEpOmH0kyOoLvmCLui4jiKtwRR+14
-URojPiqkGisinvQK/i/0MyPWEDCEoawPZtnhSla37AU3kp9v3fsE2DOK48mLb9uKnmEihfcqlhjF
-vjsvUiI2/UwIBQNK0K6YgBMXhoKCLgwLGRa+PhH1JHAxggRjMIIEXwIBATCCAQ4wgfkxCzAJBgNV
-BAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0
-aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
-c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
-MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
-dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcwOTI2MTQxMDIzWjAjBgkqhkiG9w0B
-CQQxFgQU6SbU3tU3f69quCTBX4SugN46gEEwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
-A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
-YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
-IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
-cyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lCTSBDZXJ0aWZp
-Y2F0aW9uIEF1dGhvcml0eQIQBx15Uc8dgKRMua0Jq2/yNTCCASMGCyqGSIb3DQEJEAILMYIBEqCC
-AQ4wgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hp
-bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
-EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
-A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
-Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCMp2LgMAv5IQQ9+2UMlUk9pnGaYm9Tp1/8JDi7FKivo2tczL4Vi1LiN25Ti+4dwiigsFLi
-Ype3Dd4uBBkVzE97xnywRIFDbsA5RXx4VsI24JvoyAICwLSJd0swfml+1qmEenAMzpVlPxW0kG41
-RUFTeF1exyTU6BwtZ1PWp59qvgAAAAAAAA==
-
-
---=-VtLTg979yECvux0RM4l7--
++static struct physmap_flash_data flash_data = {
++	.width		= 2,
++};
++
++static struct resource flash_resource = {
++	.start		= 0x00000000,
++	.end		= 0x2000000UL,
++	.flags		= IORESOURCE_MEM,
++};
++
++static struct platform_device flash_device = {
++	.name		= "physmap-flash",
++	.id		= -1,
++	.resource	= &flash_resource,
++	.num_resources	= 1,
++	.dev		= {
++		.platform_data = &flash_data,
++	},
++};
++
++static struct mtd_info *flash_mtd;
++
++struct map_info mpr2_flash_map = {
++	.name = "Magic Panel R2 Flash",
++	.size = 0x2000000UL,
++	.bankwidth = 2,
++};
++
++static void __init set_mtd_partitions(){
++	int nr_parts = 0;
++	simple_map_init(&mpr2_flash_map);
++	flash_mtd = do_map_probe("cfi_probe", &mpr2_flash_map);
++	nr_parts = parse_mtd_partitions(flash_mtd, probes, &parsed_partitions, 0);
++	/* If there is no partition table, used the hard coded table */
++	if (nr_parts <= 0) {
++		flash_data.parts = mpr2_partitions;
++		flash_data.nr_parts = ARRAY_SIZE(mpr2_partitions);
++	} else {
++		flash_data.nr_parts = nr_parts;
++		flash_data.parts = parsed_partitions;
++	}
++}
++
++/*
++ * Add all resources to the platform_device
++ */
++
+ static struct platform_device *mpr2_devices[] __initdata = {
+ 	&heartbeat_device,
+ 	&smc911x_device,
++	&flash_device,
+ };
+ 
++
+ static int __init mpr2_devices_setup(void)
+ {
++	set_mtd_partitions();
+ 	return platform_add_devices(mpr2_devices, ARRAY_SIZE(mpr2_devices));
+ }
+ device_initcall(mpr2_devices_setup);
+diff --git a/arch/sh/configs/magicpanelr2_defconfig b/arch/sh/configs/magicpanelr2_defconfig
+index ce4e764..f8398a5 100644
+--- a/arch/sh/configs/magicpanelr2_defconfig
++++ b/arch/sh/configs/magicpanelr2_defconfig
+@@ -185,7 +185,7 @@ CONFIG_SH_MAGIC_PANEL_R2=y
+ #
+ # Magic Panel R2 options
+ #
+-CONFIG_SH_MAGIC_PANEL_R2_VERSION=2
++CONFIG_SH_MAGIC_PANEL_R2_VERSION=3
+ 
+ #
+ # Timer and clock configuration
+@@ -404,9 +404,11 @@ CONFIG_MTD_CFI_UTIL=y
+ # Mapping drivers for chip access
+ #
+ # CONFIG_MTD_COMPLEX_MAPPINGS is not set
+-# CONFIG_MTD_PHYSMAP is not set
++CONFIG_MTD_PHYSMAP=y
++CONFIG_MTD_PHYSMAP_START=0x0000000
++CONFIG_MTD_PHYSMAP_LEN=0
++CONFIG_MTD_PHYSMAP_BANKWIDTH=0
+ # CONFIG_MTD_SOLUTIONENGINE is not set
+-CONFIG_MTD_MAGICPANELR2=y
+ # CONFIG_MTD_PLATRAM is not set
+ 
+ #
