@@ -1,29 +1,50 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IXEXE-0007kj-44
-	for linux-mtd@lists.infradead.org; Mon, 17 Sep 2007 07:13:04 -0400
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e3.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l8HBCtnA023762
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2007 07:12:55 -0400
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
-	l8HBCtRh283984
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2007 07:12:55 -0400
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l8HBCtX3014744
-	for <linux-mtd@lists.infradead.org>; Mon, 17 Sep 2007 07:12:55 -0400
-Subject: Re: need patch for SST39VF301flash chips
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: bruno@tokheimkaizen.com
-In-Reply-To: <MAIL4rhYQYx3G5aYY6100000062@mail.tokheimkaizen.com>
-References: <MAIL4rhYQYx3G5aYY6100000062@mail.tokheimkaizen.com>
-Content-Type: text/plain
-Date: Mon, 17 Sep 2007 06:06:47 -0500
-Message-Id: <1190027207.17593.23.camel@localhost.localdomain>
-Mime-Version: 1.0
+Message-ID: <11513880.1190072295588.JavaMail.root@fed1wml24.mgt.cox.net>
+Date: Mon, 17 Sep 2007 19:38:15 -0400
+From: Madam Susana Kadrlik Cole <bnlsmith@cox.net>
+Subject: From  Madam Susana Kadrlik Cole      Here writes  Madam Susan Cole,
+	suffering from cancerous ailment. When my late husband was alive he
+	left the sum of 5Million (Five Million Pound Sterling) which were
+	derived
+	from his vast estates and investment in  capital market with finance
+	Company here in Europe.    Recently,
+	my doctor told me that I have limited
+	days to live due to the cancerous problems I am  suffering from, So, I
+	decided to contact you due to time limit. Though what bothers me most
+	is the stroke that  I have in addition to the cancer. With this  hard
+	reality that has befallen my family,
+	and  me I have decided to donate this
+	fund to you and want you to use this gift which comes from my husbands
+	effort to fund the upkeep of  widows, widowers, orphans, destitute, the
+	down-trodden, physically challenged children, barren-women and persons
+	who prove to be genuinely handicapped financially. It is often said
+	that blessed is the hand that giveth. I took this decision because I do
+	not have any child that will inherit this money and my husband
+	relatives
+	are bourgeois and very wealthy persons and I do not want my husband
+	hard
+	earned money to be misused or invested into ill perceived ventures. I
+	do
+	not want a situation where this money will be used in an ungodly manner,
+	hence the reason for taking this bold decision. I am not afraid of
+	death
+	hence I know where I am going. I know that I  am going to be with the
+	Almighty when I eventually pass on. The Almighty will fight my case and
+	I
+	shall hold my peace. I do not need any telephone communication in this
+	regard due to my deteriorating health and because of the presence of my
+	husband  relatives around me. I do not want them to know  about this
+	development. I want you to stand as the new beneficiary to the funds.
+	As soon as I receive your reply I shall  give you the contact of the
+	finance company.    Please send all emails to my confidential emails
+	below: Email: susancolesusancole501@hotmail.com Endeavor to send
+	me your names, address, telephone  and fax number to enable contact you
+	with more details/all the relevant documents by email/ fax. Hope to
+	hear from you soon. Best regards Madam Susana Kadrlik Cole Email:
+	susancolesusancole501@hotmail.com
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Reply-To: susancolesusancole501@hotmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,17 +54,3 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-09-17 at 15:56 +0530, Bruno wrote:
-> 
->   
-> 
-> Hi...
-> 
-> Has anyone released MTD drivers patch for SST39VF3201 flash chips for linux
-> kernel 2.4.27?
-> 
-> Need it urgently.
-
-http://linux-mtd.infradead.org/source.html#kernelversions
-
-josh
