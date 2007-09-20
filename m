@@ -1,24 +1,18 @@
-Received: from verein.lst.de ([213.95.11.210] helo=mail.lst.de)
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYRow-0000MM-2H
-	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 15:36:21 -0400
-Date: Thu, 20 Sep 2007 21:35:49 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Matteo Croce <technoboy85@gmail.com>
-Subject: Re: [PATCH][MIPS][2/7] AR7: mtd partition map
-Message-ID: <20070920193547.GA911@lst.de>
-References: <200709201728.10866.technoboy85@gmail.com>
-	<20070920175204.GA26132@lst.de>
-	<200709202034.21764.technoboy85@gmail.com>
-	<200709202129.12261.technoboy85@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200709202129.12261.technoboy85@gmail.com>
-Cc: linux-mips@linux-mips.org, Felix Fietkau <nbd@openwrt.org>,
-	Eugene Konev <ejka@imfi.kspu.ru>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
-	Christoph Hellwig <hch@lst.de>
+	id 1IYS3b-0000fd-Nc
+	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 15:51:30 -0400
+Date: Thu, 20 Sep 2007 21:51:16 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Adam Nowak <uboot@op.pl>
+Subject: Re: NAND08GW3B2AN6E support
+In-Reply-To: <1190311244.2922.2.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.64.0709202148160.16112@lnxricardw.se.axis.com>
+References: <1190311244.2922.2.camel@localhost.localdomain>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,23 +22,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Sep 20, 2007 at 09:29:11PM +0200, Matteo Croce wrote:
-> +#ifdef CONFIG_CPU_LITTLE_ENDIAN
-> +#define LOADER_MAGIC1	0xfeedfa42
-> +#define LOADER_MAGIC2	0xfeed1281
-> +#else
-> +#define LOADER_MAGIC1	0x42faedfe
-> +#define LOADER_MAGIC2	0x8112edfe
-> +#endif
 
-Please keep only one defintion and use le/be32_to_cpu on it.
+On Thu, 20 Sep 2007, Adam Nowak wrote:
 
-> +struct ar7_bin_rec {
-> +	unsigned int checksum;
-> +	unsigned int length;
-> +	unsigned int address;
-> +};
+> I have to add support for NAND chip on the custom board. The chip is
+> NAND08GW3B2AN6E (ST Microelectronics, 8Gbit, bus:8, page:2048B).
+>
+> Is it already supported by any driver? If not, what is the best way to
 
-Wich means you'd need an endianess annotation here.  What about the
-length and address fields, are they always native-endian unlike
-the checksum field or will the need to be byte-swapped aswell?
+Sounds like a fairly standard large-page flash, which should be supported=
+=20
+already.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
