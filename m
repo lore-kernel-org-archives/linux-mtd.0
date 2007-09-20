@@ -1,19 +1,19 @@
-Received: from host5.sirf.com ([63.81.177.5] helo=smtpmail1.sirf.com)
+Received: from ug-out-1314.google.com ([66.249.92.172])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYFq0-00007u-A7
-	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 02:48:38 -0400
-Content-class: urn:content-classes:message
+	id 1IYHYl-00022B-1C
+	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 04:38:57 -0400
+Received: by ug-out-1314.google.com with SMTP id 23so346389ugr
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Sep 2007 01:38:52 -0700 (PDT)
+Message-ID: <80b317760709200138r58eb9fdev2665f00c8840d19@mail.gmail.com>
+Date: Thu, 20 Sep 2007 10:38:52 +0200
+From: "Richard Genoud" <richard.genoud@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: AT91SAM9263 NAND ECC HW
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: About MLC Nand Driver
-Date: Wed, 19 Sep 2007 23:48:40 -0700
-Message-ID: <AB85187D5025C54B878AD8E2BEDBD1910DC15F@sjmail2.sirf.com>
-In-Reply-To: <Pine.LNX.4.64.0709192310080.28990@lnxricardw.se.axis.com>
-From: "Yongsheng Liu" <ysliu@sirf.com>
-To: "Ricard Wanderlof" <ricard.wanderlof@axis.com>,
-	"Linux mtd" <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,13 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
-Dear all,
+hi all !
 
-I was planing to get kernel supporting MLC Nand Flash. Any one of you
-guys has known something about this? Or is there anyone else planing
-this as well? Please give me comments on this, any comments will be
-appreciated.
+I'm going to add the hardware ECC support to the at91sam9263 nand
+controller module.
+if someone has already begin a code, I would be pleased to help.
 
-Best Regards
-YS Lau
+regards.
+
+Richard.
