@@ -1,21 +1,19 @@
-Received: from verein.lst.de ([213.95.11.210] helo=mail.lst.de)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYQDJ-0007Ha-6N
-	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 13:53:23 -0400
-Date: Thu, 20 Sep 2007 19:52:05 +0200
-From: Christoph Hellwig <hch@lst.de>
-To: Matteo Croce <technoboy85@gmail.com>
-Subject: Re: [PATCH][MIPS][2/7] AR7: mtd partition map
-Message-ID: <20070920175204.GA26132@lst.de>
-References: <200709201728.10866.technoboy85@gmail.com>
-	<200709201755.06712.technoboy85@gmail.com>
+Received: from smtp26.poczta.onet.pl ([213.180.130.97])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IYQZV-0007cw-O3
+	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 14:16:21 -0400
+Received: from data-01.subscribers.sferia.net ([193.41.113.225]:17903 "EHLO
+	[172.29.14.122]") by ps26.test.onet.pl with ESMTP
+	id <S5567325AbXITSB6> (ORCPT <rfc822;linux-mtd@lists.infradead.org>);
+	Thu, 20 Sep 2007 20:01:58 +0200
+Subject: NAND08GW3B2AN6E support
+From: Adam Nowak <uboot@op.pl>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Thu, 20 Sep 2007 20:00:44 +0200
+Message-Id: <1190311244.2922.2.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200709201755.06712.technoboy85@gmail.com>
-Cc: linux-mips@linux-mips.org, Felix Fietkau <nbd@openwrt.org>,
-	Eugene Konev <ejka@imfi.kspu.ru>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,68 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> +#include <linux/squashfs_fs.h>
+I have to add support for NAND chip on the custom board. The chip is
+NAND08GW3B2AN6E (ST Microelectronics, 8Gbit, bus:8, page:2048B). 
 
-As Ralf mentioned this is not in mainline, so you can't include it.
-Fortunately for you including it seems to be a rather dumb idea anyway,
-see below for further comments.
+Is it already supported by any driver? If not, what is the best way to
+start? I guess that the quickest way is to modify the existing (similar)
+driver. The problem is that I am not sure which of them would be
+similar. Your tips would be helpful.
 
-> +static struct mtd_partition ar7_parts[5];
-
-Can we please get a symbolic name for that 5?  Then again we only
-seems to use 3 anyway, and create_mtd_partitions returns 4..
-
-> +	unsigned int root_offset = 0xe0000;
-
-Please provide a symbolic name for this one.
-
-> +	printk(KERN_INFO "Parsing AR7 partition map...\n");
-
-Do we really need this printk?
-
-> +		if (header.checksum == 0xfeedfa42)
-> +			break;
-> +		if (header.checksum == 0xfeed1281)
-> +			break;
-
-These two want symbolic names, please:
-
-enum {
-	/* some comment */
-	FOO_PART_MAGIC = 0xfeedfa42,	
-
-	/* more comment */
-	BAR_PART_MAGIC = 0xfeed1281,
-};
-
-> +	switch (header.checksum) {
-> +	case 0xfeedfa42:
-> +		while (header.length) {
-> +			offset += sizeof(header) + header.length;
-> +			master->read(master, offset, sizeof(header),
-> +				     &len, (u_char *)&header);
-> +		}
-> +		root_offset = offset + sizeof(header) + 4;
-> +		break;
-> +	case 0xfeed1281:
-
-Especially as you use them here again.
-
-> +	default:
-> +		printk(KERN_WARNING "Unknown magic: %08x\n", header.checksum);
-> +		break;
-> +	}
-> +
-> +	master->read(master, root_offset,
-> +		sizeof(header), &len, (u_char *)&header);
-> +	if (header.checksum != SQUASHFS_MAGIC) {
-> +		root_offset += master->erasesize - 1;
-> +		root_offset &= ~(master->erasesize - 1);
-> +	}
-
-And after this I'm pretty sure either of the two hex constants above
-is SQUASHFS_MAGIC.  But not actually the magic in the squashfs
-superblock, but someone decided to reuse it for the partitions magic.
-So one of the comments for *_PART_MAGIC becomes:
-
-	/* same as SQUASHFS_MAGIC for some odd reason.. */
+Thanks,
+Adam
