@@ -1,13 +1,13 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYMsY-0004lc-Lm
-	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 10:19:45 -0400
-Subject: [PATCH] MTD: OneNAND: minor print fix
+	id 1IYN1K-000512-GG
+	for linux-mtd@lists.infradead.org; Thu, 20 Sep 2007 10:28:53 -0400
+Subject: [PATCH] MTD: OneNAND: fix error print
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: David Woodhouse <dwmw2@infradead.org>
 Content-Type: text/plain; charset=UTF-8
-Date: Thu, 20 Sep 2007 17:17:34 +0300
-Message-Id: <1190297854.14370.197.camel@sauron>
+Date: Thu, 20 Sep 2007 17:28:34 +0300
+Message-Id: <1190298515.14370.201.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: Kyungmin Park <kyungmin.park@samsung.com>,
@@ -22,40 +22,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 34fdb6b9c912f0be9d92f05a0dfeb47f9145b5cc Mon Sep 17 00:00:00 2001
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Thu, 20 Sep 2007 17:13:34 +0300
-Subject: [PATCH] MTD: OneNAND: minor print fix
+Date: Thu, 20 Sep 2007 19:14:50 +0300
+Subject: [PATCH] MTD: OneNAND: fix error print
 
-Use the same printk level when printing version information.
-There is no reason to print it with KERN_DEBUG when the previous
-message was printed with KERN_INFO.
-
-And it is really interesting information to print because it gives
-you exact part number and the operating frequency (54MHz, 66MHz, etc).
+Do not scare people if a correctable ECC error was detected.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/onenand/onenand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ drivers/mtd/onenand/onenand_base.c |    6 ++++--
+ 1 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onena=
 nd_base.c
-index 0a18528..bb01369 100644
+index 0537fac..960863a 100644
 --- a/drivers/mtd/onenand/onenand_base.c
 +++ b/drivers/mtd/onenand/onenand_base.c
-@@ -2148,7 +2148,7 @@ static void onenand_print_device_info(int device, int=
- version)
-                 (16 << density),
-                 vcc ? "2.65/3.3" : "1.8",
-                 device);
--	printk(KERN_DEBUG "OneNAND version =3D 0x%04x\n", version);
-+	printk(KERN_INFO "OneNAND version 0x%04x\n", version);
- }
-=20
- static const struct onenand_manufacturers onenand_manuf_ids[] =3D {
+@@ -318,12 +318,14 @@ static int onenand_wait(struct mtd_info *mtd, int sta=
+te)
+ 	if (interrupt & ONENAND_INT_READ) {
+ 		int ecc =3D this->read_word(this->base + ONENAND_REG_ECC_STATUS);
+ 		if (ecc) {
+-			printk(KERN_ERR "onenand_wait: ECC error =3D 0x%04x\n", ecc);
+ 			if (ecc & ONENAND_ECC_2BIT_ALL) {
++				printk(KERN_ERR "onenand_wait: ECC error =3D 0x%04x\n", ecc);
+ 				mtd->ecc_stats.failed++;
+ 				return ecc;
+-			} else if (ecc & ONENAND_ECC_1BIT_ALL)
++			} else if (ecc & ONENAND_ECC_1BIT_ALL) {
++				printk(KERN_NOTICE "onenand_wait: correctable ECC error =3D 0x%04x\n",=
+ ecc);
+ 				mtd->ecc_stats.corrected++;
++			}
+ 		}
+ 	} else if (state =3D=3D FL_READING) {
+ 		printk(KERN_ERR "onenand_wait: read timeout! ctrl=3D0x%04x intr=3D0x%04x=
+\n", ctrl, interrupt);
 --=20
-1.5.2.2
+1.5.0.6
 
 
 --=20
