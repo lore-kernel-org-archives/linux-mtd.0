@@ -1,23 +1,22 @@
-Received: from verein.lst.de ([213.95.11.210] helo=mail.lst.de)
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYdUf-0006wr-MV
-	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 04:04:12 -0400
-Date: Fri, 21 Sep 2007 10:03:45 +0200
-From: Christoph Hellwig <hch@lst.de>
+Received: from adicia.telenet-ops.be ([195.130.132.56])
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IYdiT-0007Kz-75
+	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 04:18:30 -0400
+Date: Fri, 21 Sep 2007 10:18:05 +0200 (CEST)
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Sender: geert@linux-m68k.org
 To: Matteo Croce <technoboy85@gmail.com>
 Subject: Re: [PATCH][MIPS][2/7] AR7: mtd partition map
-Message-ID: <20070921080345.GA4997@lst.de>
+In-Reply-To: <200709202129.12261.technoboy85@gmail.com>
+Message-ID: <Pine.LNX.4.64.0709211017120.5097@anakin>
 References: <200709201728.10866.technoboy85@gmail.com>
-	<20070920193547.GA911@lst.de>
-	<20070920200058.GB1692@lazybastard.org>
-	<200709210409.23521.technoboy85@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <200709210409.23521.technoboy85@gmail.com>
+	<20070920175204.GA26132@lst.de>
+	<200709202034.21764.technoboy85@gmail.com>
+	<200709202129.12261.technoboy85@gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mips@linux-mips.org, Felix Fietkau <nbd@openwrt.org>,
-	Eugene Konev <ejka@imfi.kspu.ru>, J??rn Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org,
+	Eugene Konev <ejka@imfi.kspu.ru>, linux-mtd@lists.infradead.org,
 	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
 	Christoph Hellwig <hch@lst.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -29,12 +28,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Sep 21, 2007 at 04:09:22AM +0200, Matteo Croce wrote:
-> I use little endian since 99% of AR7s are little endian. Dunno if
-> le/be32_to_cpu does some runtime calculations. Do they?
+On Thu, 20 Sep 2007, Matteo Croce wrote:
+> +static int create_mtd_partitions(struct mtd_info *master,
+> +				 struct mtd_partition **pparts,
+> +				 unsigned long origin)
+> +{
 
-They do runtime unless the argument is const.  If you say that you cant
-change endianess of a given system during it's lifetime it's probably
-fine to ignore the endianess issue and always use host endian without
-any conversions.  In that case you'll need to remove the ifdef aswell,
-though.
+    [...]
+
+> +		master->read(master, offset,
+> +			sizeof(header), &len, (u_char *)&header);
+                                              ^^^^^^^^^^^
+Probably we should teach mtd to use `void *' for read and write buffers,
+so all these ugly casts can go away...
+
+Gr{oetje,eeting}s,
+
+						Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+							    -- Linus Torvalds
