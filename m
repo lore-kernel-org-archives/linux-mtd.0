@@ -1,15 +1,17 @@
-Received: from post-26.mail.nl.demon.net ([194.159.73.196])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYepA-0007jX-8N
-	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 05:29:31 -0400
-Message-ID: <46F379E2.2090402@m8.nl>
-Date: Fri, 21 Sep 2007 09:59:30 +0200
-From: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Bug in cmdlinepart.c?
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IYipI-0001VF-R7
+	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 09:45:51 -0400
+Date: Fri, 21 Sep 2007 15:41:44 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] [MTD] Document erase interface.
+Message-ID: <20070921134143.GH1692@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,51 +21,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear sirs,
+Document mtd erase interface.
 
-I asked this question in the forum on blackfin.uclinux.org and the gave 
-me this email addres to post my mail to.
+Signed-off-by: Jörn Engel <joern@logfs.org>
+---
 
+ include/linux/mtd/mtd.h |    7 +++++++
+ 1 file changed, 7 insertions(+)
 
-In drivers/mtd/cmdlinepart.c there is the following piece of code:
-
-if( strncmp(s, "ro", 2) == 0 )
-{
- mask_flags |= MTD_WRITEABLE;
-s+=2;
-}
-
-Is this correct? When the partition is defined to be read-only (ro) the 
-MTD_WRITEABLE flag is set? I guess this should be:
-
-if( strncmp(s, "ro", 2) == 0 )
-{
- mask_flags &= (~MTD_WRITEABLE); // disable the writeability
-s+=2;
-}else
-{
- mask_flags |= MTD_WRITEABLE; // enable the writeability
-}
-
-
-I hope you can answer my  question. Thanks in advance.
-
-Servaes Joordens
-M8
-
-
--- 
-
-Servaes Joordens
-
--------------------------------------------
-M8
-Tappersweg 29
-2031ET	Haarlem
-The Netherlands
-Tel:	+31 23 5311122
-Mob:	+31 6 51183379
-Fax:	+31 23 5322388
-
-VAT-ID: nl-813029090B01
-kvk:	34131430 Haarlem
+--- linux-2.6.21logfs/include/linux/mtd/mtd.h~mtd_erase_documentation	2007-05-31 13:41:41.000000000 +0200
++++ linux-2.6.21logfs/include/linux/mtd/mtd.h	2007-09-21 15:43:18.000000000 +0200
+@@ -139,6 +139,13 @@ struct mtd_info {
+ 	/* This really shouldn't be here. It can go away in 2.5 */
+ 	u_int32_t bank_size;
+ 
++	/*
++	 * Erase is an asynchronous operation.  Device drivers are supposed
++	 * to call instr->callback() whenever the operation completes, even
++	 * if it completes with a failure.
++	 * Callers are supposed to pass a callback function and wait for it
++	 * to be called before writing to the block.
++	 */
+ 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
+ 
+ 	/* This stuff for eXecute-In-Place */
