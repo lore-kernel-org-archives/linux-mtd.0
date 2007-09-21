@@ -1,24 +1,15 @@
-Received: from adicia.telenet-ops.be ([195.130.132.56])
+Received: from post-26.mail.nl.demon.net ([194.159.73.196])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IYdiT-0007Kz-75
-	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 04:18:30 -0400
-Date: Fri, 21 Sep 2007 10:18:05 +0200 (CEST)
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Sender: geert@linux-m68k.org
-To: Matteo Croce <technoboy85@gmail.com>
-Subject: Re: [PATCH][MIPS][2/7] AR7: mtd partition map
-In-Reply-To: <200709202129.12261.technoboy85@gmail.com>
-Message-ID: <Pine.LNX.4.64.0709211017120.5097@anakin>
-References: <200709201728.10866.technoboy85@gmail.com>
-	<20070920175204.GA26132@lst.de>
-	<200709202034.21764.technoboy85@gmail.com>
-	<200709202129.12261.technoboy85@gmail.com>
+	id 1IYepA-0007jX-8N
+	for linux-mtd@lists.infradead.org; Fri, 21 Sep 2007 05:29:31 -0400
+Message-ID: <46F379E2.2090402@m8.nl>
+Date: Fri, 21 Sep 2007 09:59:30 +0200
+From: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linux-mips@linux-mips.org, Felix Fietkau <nbd@openwrt.org>,
-	Eugene Konev <ejka@imfi.kspu.ru>, linux-mtd@lists.infradead.org,
-	Andrew Morton <akpm@linux-foundation.org>, dwmw2@infradead.org,
-	Christoph Hellwig <hch@lst.de>
+To: linux-mtd@lists.infradead.org
+Subject: Bug in cmdlinepart.c?
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +19,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Sep 2007, Matteo Croce wrote:
-> +static int create_mtd_partitions(struct mtd_info *master,
-> +				 struct mtd_partition **pparts,
-> +				 unsigned long origin)
-> +{
+Dear sirs,
 
-    [...]
+I asked this question in the forum on blackfin.uclinux.org and the gave 
+me this email addres to post my mail to.
 
-> +		master->read(master, offset,
-> +			sizeof(header), &len, (u_char *)&header);
-                                              ^^^^^^^^^^^
-Probably we should teach mtd to use `void *' for read and write buffers,
-so all these ugly casts can go away...
 
-Gr{oetje,eeting}s,
+In drivers/mtd/cmdlinepart.c there is the following piece of code:
 
-						Geert
+if( strncmp(s, "ro", 2) == 0 )
+{
+ mask_flags |= MTD_WRITEABLE;
+s+=2;
+}
 
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+Is this correct? When the partition is defined to be read-only (ro) the 
+MTD_WRITEABLE flag is set? I guess this should be:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
+if( strncmp(s, "ro", 2) == 0 )
+{
+ mask_flags &= (~MTD_WRITEABLE); // disable the writeability
+s+=2;
+}else
+{
+ mask_flags |= MTD_WRITEABLE; // enable the writeability
+}
+
+
+I hope you can answer my  question. Thanks in advance.
+
+Servaes Joordens
+M8
+
+
+-- 
+
+Servaes Joordens
+
+-------------------------------------------
+M8
+Tappersweg 29
+2031ET	Haarlem
+The Netherlands
+Tel:	+31 23 5311122
+Mob:	+31 6 51183379
+Fax:	+31 23 5322388
+
+VAT-ID: nl-813029090B01
+kvk:	34131430 Haarlem
