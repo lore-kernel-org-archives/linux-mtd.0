@@ -1,28 +1,20 @@
-Received: from smtp4-g19.free.fr ([212.27.42.30])
-	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IZiNJ-0003mX-EE
-	for linux-mtd@lists.infradead.org; Mon, 24 Sep 2007 03:29:03 -0400
-Received: from smtp4-g19.free.fr (localhost.localdomain [127.0.0.1])
-	by smtp4-g19.free.fr (Postfix) with ESMTP id A0E4E6F2C6
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Sep 2007 09:28:58 +0200 (CEST)
-Received: from [192.168.111.252] (cla34-1-88-160-215-156.fbx.proxad.net
-	[88.160.215.156])
-	by smtp4-g19.free.fr (Postfix) with ESMTP id 868636F252
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 24 Sep 2007 09:28:58 +0200 (CEST)
-From: Saravanan Chanemouganandam <schane@osmozis.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: modify boot environment parameters
-Date: Mon, 24 Sep 2007 09:28:07 +0200
-References: <20070923220352.8B3322405D@gemini.denx.de>
-In-Reply-To: <20070923220352.8B3322405D@gemini.denx.de>
+Received: from cmsout02.mbox.net ([165.212.64.32])
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IZotS-0007AP-Di
+	for linux-mtd@lists.infradead.org; Mon, 24 Sep 2007 10:26:45 -0400
+Message-ID: <adca01c7feb6$d4ea5b20$fd0ba8c0@BrianPC>
+From: "Brian T" <btuch@usa.net>
+To: "Jon Ringle" <JRingle@vertical.com>,
+	"David Woodhouse" <dwmw2@infradead.org>
+References: <4DD3AF7ECBBC43409BA36508938D01851B0072@CVAEX1.VERTICAL.COM>
+Subject: Re: Clobbered file after jffs2 mount
+Date: Mon, 24 Sep 2007 09:26:00 -0500
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200709240928.08338.schane@osmozis.com>
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
+Reply-To: Brian T <btuch@usa.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,46 +24,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Denk,
+Hi John,
 
-I am using proprietary (ARMmon) binary version of bootloader (like u-boot a=
-nd=20
-not u-boot bootloader) that gives support to modify environment variables=20
-only from the bootloader prompt. But, In my case, I want to modify boot=20
-environment option
-"root=3D/dev/mtdblock1" to "root=3D/dev/mtdblock2" and viceversa on success=
-ive=20
-reboot.
+>How did you determine that the modem was causing your problem? It sure
+>sounds like similar symptoms.
 
-The environment variables are stored at the offset 0x00050000  ( 4th block)=
- on=20
-the NOR flash (/dev/mtdblock0).
+I talked to our hardware engineer this morning who reminded me of what the problem was.  It was with 
+a Conexant modem ( not Multitech like I had stated before ).  These are basically his words, though 
+I don't follow it fully ( which is why I am in software, and not hardware ;)  )
 
-Is there any utility tool to access and modify a particular block 0x0005000=
-0=20
-on the NOR flash ? I came across u-boot/tools/env but its ment for u-boot.=
-=20
-Will it give support to other flash env access with some modification ?
+"Basically, on our hardware, the Conexant modem was connected using it's Parallel port to save a 
+UART on the main board.  But while in this mode, it's address lines could become "output".  The 
+Intel flash we use is on 0xa0-0xa2, and the Conexant modem could sometimes "jam" 0xa1-0xa2 and cause 
+use to see a temp corruption on the file system. "
 
-Thanks
-Sara
+After a new firmware for the modem was released, it should have fixed the problem, but by that time, 
+our hardware engineer has switched the modem to be connected through it's serial interface.
 
+Not sure if this makes sense.  If you need me to revise I can ask him to clarify the fuzzy parts. 
+Not sure if this helps you identify the problem you are seeing, but it might accidentally =)
 
-
-
-Le Lundi 24 Septembre 2007 00:03, Wolfgang Denk a =E9crit=A0:
-> In message <200709191804.24336.schane@osmozis.com> you wrote:
-> > Are there utilities to modify the boot environment (like u-boot) block =
-on
-> > the flash from within the linux ?
->
-> Of course there are. But this is off topic here.
->
-> > I am looking for information to modify the boot environment block on the
-> > NOR (/dev/mtd0) flash at offset 0x5000.
->
-> See u-boot/tools/env/
->
-> Best regards,
->
-> Wolfgang Denk
+-Brian
