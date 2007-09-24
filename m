@@ -1,21 +1,28 @@
-Received: from va-65-40-217-47.sta.embarqhsd.net ([65.40.217.47]
-	helo=CVAEX1.VERTICAL.COM)
+Received: from smtp4-g19.free.fr ([212.27.42.30])
 	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IZZoj-0007cF-DA
-	for linux-mtd@lists.infradead.org; Sun, 23 Sep 2007 18:20:46 -0400
-Content-class: urn:content-classes:message
+	id 1IZiNJ-0003mX-EE
+	for linux-mtd@lists.infradead.org; Mon, 24 Sep 2007 03:29:03 -0400
+Received: from smtp4-g19.free.fr (localhost.localdomain [127.0.0.1])
+	by smtp4-g19.free.fr (Postfix) with ESMTP id A0E4E6F2C6
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Sep 2007 09:28:58 +0200 (CEST)
+Received: from [192.168.111.252] (cla34-1-88-160-215-156.fbx.proxad.net
+	[88.160.215.156])
+	by smtp4-g19.free.fr (Postfix) with ESMTP id 868636F252
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 24 Sep 2007 09:28:58 +0200 (CEST)
+From: Saravanan Chanemouganandam <schane@osmozis.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: modify boot environment parameters
+Date: Mon, 24 Sep 2007 09:28:07 +0200
+References: <20070923220352.8B3322405D@gemini.denx.de>
+In-Reply-To: <20070923220352.8B3322405D@gemini.denx.de>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Subject: RE: Clobbered file after jffs2 mount
-Date: Sun, 23 Sep 2007 18:20:40 -0400
-Message-ID: <4DD3AF7ECBBC43409BA36508938D01851B0072@CVAEX1.VERTICAL.COM>
-In-Reply-To: <03f301c7fd26$edcd5570$0260a8c0@p4p800>
-From: "Jon Ringle" <JRingle@vertical.com>
-To: "Brian T" <btuch@usa.net>,
-	"David Woodhouse" <dwmw2@infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200709240928.08338.schane@osmozis.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,50 +32,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Saturday, September 22, 2007 10:43, Brian T wrote:
-> Been reading this thread, and I was wondering what kind of hardware
-this
-> is running on? I remember running into something like this a few years
-ago > on my companies own embedded hardware, and the cause turned out to
-be a
-> problem with an internal Multitech modem's firmware on the same bus
-which > was interfering with reading the jffs2 file system.
->=20
-> I would see many ( but not all ) of the sym links on the file system
-> pointing to garbage links like syslogd ->
-/m/m/m/m/m/m/m/s/s/s/s/e/e/e/
-> and also other programs on the system would not run properly.  After a
-> reboot they would be fine for days to weeks.
->=20
-> Thought I would offer that up.
+Hello Denk,
 
-Brian, I find that quite interesting. This is on our companies own
-hardware. We have an IXP455 in PCI option mode using an Intel
-StrataFlash P30 that is on CS0 of the IXP's expansion bus. The PCI host
-does perform some read-only access of the P30 flash via a PCI bus ->
-Expansion bus -> P30 flash data path to read info such as serial number,
-mac address and IP address of the IXP that is stored on the flash. We
-know that sometimes when the PCI host does this, it happens to do so
-when the IXP happens to be doing a write operation to flash, so the read
-operation by the PCI host returns "garbage". This is ok, because the
-data that the PCI host is reading is checksumed and all that the PCI
-host needs to do is retry the read again later.
+I am using proprietary (ARMmon) binary version of bootloader (like u-boot a=
+nd=20
+not u-boot bootloader) that gives support to modify environment variables=20
+only from the bootloader prompt. But, In my case, I want to modify boot=20
+environment option
+"root=3D/dev/mtdblock1" to "root=3D/dev/mtdblock2" and viceversa on success=
+ive=20
+reboot.
 
-I've been pouring over the P30 datasheet flowcharts to see if there is
-some race condition where a spurious flash read operation by the PCI
-host could interfere with the way that the IXP reads the contents of
-flash. So far, I haven't been able to find something like that.
+The environment variables are stored at the offset 0x00050000  ( 4th block)=
+ on=20
+the NOR flash (/dev/mtdblock0).
 
-How did you determine that the modem was causing your problem? It sure
-sounds like similar symptoms.
+Is there any utility tool to access and modify a particular block 0x0005000=
+0=20
+on the NOR flash ? I came across u-boot/tools/env but its ment for u-boot.=
+=20
+Will it give support to other flash env access with some modification ?
 
-I decided to create a script that allows me to scan all the files in the
-jffs2 image and have found that when this problem doesn't appear in
-sshd, that I see this in other files with the same replacement of either
-0x00000023 or 0x00000073 on some 32 bit value. I've seen this now show
-up in /etc/sshd_config and also /lib/libcrypto.so.0.9.7
+Thanks
+Sara
 
-When I get to the office tomorrow, I'll hook up the JTAG and try some of
-the things that David suggested.
 
-Jon
+
+
+Le Lundi 24 Septembre 2007 00:03, Wolfgang Denk a =E9crit=A0:
+> In message <200709191804.24336.schane@osmozis.com> you wrote:
+> > Are there utilities to modify the boot environment (like u-boot) block =
+on
+> > the flash from within the linux ?
+>
+> Of course there are. But this is off topic here.
+>
+> > I am looking for information to modify the boot environment block on the
+> > NOR (/dev/mtd0) flash at offset 0x5000.
+>
+> See u-boot/tools/env/
+>
+> Best regards,
+>
+> Wolfgang Denk
