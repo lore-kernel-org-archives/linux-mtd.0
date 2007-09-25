@@ -1,20 +1,21 @@
-Received: from cmsout02.mbox.net ([165.212.64.32])
-	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IZotS-0007AP-Di
-	for linux-mtd@lists.infradead.org; Mon, 24 Sep 2007 10:26:45 -0400
-Message-ID: <adca01c7feb6$d4ea5b20$fd0ba8c0@BrianPC>
-From: "Brian T" <btuch@usa.net>
-To: "Jon Ringle" <JRingle@vertical.com>,
-	"David Woodhouse" <dwmw2@infradead.org>
-References: <4DD3AF7ECBBC43409BA36508938D01851B0072@CVAEX1.VERTICAL.COM>
-Subject: Re: Clobbered file after jffs2 mount
-Date: Mon, 24 Sep 2007 09:26:00 -0500
+Received: from va-65-40-217-47.sta.embarqhsd.net ([65.40.217.47]
+	helo=CVAEX1.VERTICAL.COM)
+	by canuck.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IaCnS-0002Is-R1
+	for linux-mtd@lists.infradead.org; Tue, 25 Sep 2007 11:58:05 -0400
+Content-class: urn:content-classes:message
+Subject: RE: Clobbered file after jffs2 mount
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 25 Sep 2007 11:57:58 -0400
+Message-ID: <4DD3AF7ECBBC43409BA36508938D01851B0092@CVAEX1.VERTICAL.COM>
+In-Reply-To: <1190425861.7150.212.camel@pmac.infradead.org>
+From: "Jon Ringle" <JRingle@vertical.com>
+To: "David Woodhouse" <dwmw2@infradead.org>,
+	"Brian T" <btuch@usa.net>
 Cc: linux-mtd@lists.infradead.org
-Reply-To: Brian T <btuch@usa.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,24 +25,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi John,
+On Friday, September 21, 2007 21:51, David Woodhouse wrote:
+> It's going to be something scribbling on the RAM pages after the file
+is
+> read from the file system. Be thankful it looks fairly repeatable. Can
+> you put a hardware watchpoint on the offending page in the page cache,
+> after it's read? And can you disable _everything_ in the system which
+> uses DMA, one at a time?
 
->How did you determine that the modem was causing your problem? It sure
->sounds like similar symptoms.
+I was able to disable everything else that had external hardware access
+to flash and the IXP's memory and the problem still appeared. I have now
+been able to determine that the fault lies with some memory scribbling
+done by one of our own kernel modules.
 
-I talked to our hardware engineer this morning who reminded me of what the problem was.  It was with 
-a Conexant modem ( not Multitech like I had stated before ).  These are basically his words, though 
-I don't follow it fully ( which is why I am in software, and not hardware ;)  )
+There is no need to further bother this mailing list with this issue.
 
-"Basically, on our hardware, the Conexant modem was connected using it's Parallel port to save a 
-UART on the main board.  But while in this mode, it's address lines could become "output".  The 
-Intel flash we use is on 0xa0-0xa2, and the Conexant modem could sometimes "jam" 0xa1-0xa2 and cause 
-use to see a temp corruption on the file system. "
+Thanks David and Brian for your input in this problem :)
 
-After a new firmware for the modem was released, it should have fixed the problem, but by that time, 
-our hardware engineer has switched the modem to be connected through it's serial interface.
-
-Not sure if this makes sense.  If you need me to revise I can ask him to clarify the fuzzy parts. 
-Not sure if this helps you identify the problem you are seeing, but it might accidentally =)
-
--Brian
+Jon
