@@ -1,31 +1,29 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+Received: from e4.ny.us.ibm.com ([32.97.182.144])
 	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IaVP1-0003Mt-Vk
-	for linux-mtd@lists.infradead.org; Wed, 26 Sep 2007 07:50:09 -0400
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l8QBnubi007556
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 07:49:56 -0400
-Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
-	l8QBnuKk676452
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 07:49:56 -0400
-Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
-	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	l8QBntqQ018536
-	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 07:49:55 -0400
-Subject: ubi-utils: Fix and enhancement for nand2bin
+	id 1IaXau-0004L5-Et
+	for linux-mtd@lists.infradead.org; Wed, 26 Sep 2007 10:10:35 -0400
+Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
+	by e4.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id l8QEANW3006077
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:24 -0400
+Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
+	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
+	l8QEAOaN555408
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:24 -0400
+Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
+	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l8QEANYa011940
+	for <linux-mtd@lists.infradead.org>; Wed, 26 Sep 2007 10:10:23 -0400
+Subject: [PATCH] MTD: NAND: Fix bad-block detection for 8-bit NAND
 From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+To: Thomas Gleixner <tglx@linutronix.de>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-Ri8jjU+bIebr/inD6veJ"
-Date: Wed, 26 Sep 2007 13:49:48 +0200
-Message-Id: <1190807388.21594.20.camel@august>
+	boundary="=-VtLTg979yECvux0RM4l7"
+Date: Wed, 26 Sep 2007 16:10:23 +0200
+Message-Id: <1190815823.21594.30.camel@august>
 Mime-Version: 1.0
-Cc: David Woodhouse <dwmw2@infradead.org>, Thomas Gleixner <tglx@linutronix.de>,
-	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>,
-	Frank Haverkamp <haver@vnet.ibm.com>
+Cc: David Woodhouse <dwmw2@infradead.org>, haver@vnet.ibm.com,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>
 Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -37,26 +35,84 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Ri8jjU+bIebr/inD6veJ
-Content-Type: text/plain; charset=ISO-8859-15
+--=-VtLTg979yECvux0RM4l7
+Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hi Artem,
+Hi Thomas,
 
-due to a recent problem I needed to analyze, I produced a fix and a
-functionality enhancement for our nand2bin tool. Please consider pulling
-the two changes from my mtd-utils git if you find them ok.
+I found the following block in our 128MiB NAND flash:
 
-Regards,
+hexdump vic.img.460=20
+0000000 0000 0000 0000 0000 0000 0000 0000 0000
+*
+0000800 00ff 0000 0000 0000 0000 0000 0000 0000
+0000810 0000 0000 0000 0000 0000 0000 0000 0000
+*
+0001040 00ff 0000 0000 0000 0000 0000 0000 0000
+0001050 0000 0000 0000 0000 0000 0000 0000 0000
+*
+0021000
 
-Frank
---=20
-IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
-Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
-Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+According to the specification this is a good block, because the bytes
+in the 1st two OOB areas at offset 0 are 0xff. Nevertheless it was
+detected bad because:
 
---=-Ri8jjU+bIebr/inD6veJ
+static struct nand_bbt_descr largepage_memorybased =3D {
+	.options =3D 0,
+	.offs =3D 0,
+	.len =3D 2,                    /* <<<< bytes to check!!! */
+	.pattern =3D scan_ff_pattern
+};
+
+used a len of 2 instead of 1, which I consider to be correct. Here a
+potential fix for the problem. Please have a look if it matches your
+understanding of the specification.
+
+Signed-off-by: Frank Haverkamp <haver@vnet.ibm.com>
+---
+ drivers/mtd/nand/nand_bbt.c |   20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+--- ubi-2.6.git.orig/drivers/mtd/nand/nand_bbt.c
++++ ubi-2.6.git/drivers/mtd/nand/nand_bbt.c
+@@ -1081,7 +1081,14 @@ static struct nand_bbt_descr smallpage_m
+ 	.pattern =3D scan_ff_pattern
+ };
+=20
+-static struct nand_bbt_descr largepage_memorybased =3D {
++static struct nand_bbt_descr largepage_memorybased_8bit =3D {
++	.options =3D 0,
++	.offs =3D 0,
++	.len =3D 1,
++	.pattern =3D scan_ff_pattern
++};
++
++static struct nand_bbt_descr largepage_memorybased_16bit =3D {
+ 	.options =3D 0,
+ 	.offs =3D 0,
+ 	.len =3D 2,
+@@ -1179,8 +1186,15 @@ int nand_default_bbt(struct mtd_info *mt
+ 		this->bbt_td =3D NULL;
+ 		this->bbt_md =3D NULL;
+ 		if (!this->badblock_pattern) {
+-			this->badblock_pattern =3D (mtd->writesize > 512) ?
+-			    &largepage_memorybased : &smallpage_memorybased;
++			if (mtd->writesize > 512) {
++				if (this->options & NAND_BUSWIDTH_16)
++					this->badblock_pattern =3D
++						&largepage_memorybased_16bit;
++				else
++					this->badblock_pattern =3D
++					       &largepage_memorybased_8bit;
++			} else
++				this->badblock_pattern =3D &smallpage_memorybased;
+ 		}
+ 	}
+ 	return nand_scan_bbt(mtd, this->badblock_pattern);
+
+
+--=-VtLTg979yECvux0RM4l7
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -139,8 +195,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcwOTI2MTE0OTQ4WjAjBgkqhkiG9w0B
-CQQxFgQU1sHeqhdp5RYGLasocRKwaYv67RkwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcwOTI2MTQxMDIzWjAjBgkqhkiG9w0B
+CQQxFgQU6SbU3tU3f69quCTBX4SugN46gEEwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -151,9 +207,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCuK7No3M+NSQs0YlmyW0TsbHnQL0ZrOCudl7BfNUdE9c0rnuUcZ+QrT9Wtw/sVqLsKD+dE
-FWq7j/LqgAJTWSMylFXEvr9WucKdP/lGrsmyIg3RkEFcJ3r9pVbali5HgRZc1hf592mB/NUGX4TF
-KZwmKSfXAurQAaSg5OsomYPdewAAAAAAAA==
+BQAEgYCMp2LgMAv5IQQ9+2UMlUk9pnGaYm9Tp1/8JDi7FKivo2tczL4Vi1LiN25Ti+4dwiigsFLi
+Ype3Dd4uBBkVzE97xnywRIFDbsA5RXx4VsI24JvoyAICwLSJd0swfml+1qmEenAMzpVlPxW0kG41
+RUFTeF1exyTU6BwtZ1PWp59qvgAAAAAAAA==
 
 
---=-Ri8jjU+bIebr/inD6veJ--
+--=-VtLTg979yECvux0RM4l7--
