@@ -1,36 +1,21 @@
-Received: from mtagate3.de.ibm.com ([195.212.29.152])
+Received: from miranda.se.axis.com ([193.13.178.8])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IbAVF-0007ir-5o
-	for linux-mtd@lists.infradead.org; Fri, 28 Sep 2007 08:43:18 +0100
-Received: from d12nrmr1607.megacenter.de.ibm.com
-	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
-	by mtagate3.de.ibm.com (8.13.8/8.13.8) with ESMTP id l8S7g8TC212458
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 07:42:08 GMT
-Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
-	[9.149.165.213])
-	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.5) with
-	ESMTP id l8S7g8l12256952
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 09:42:08 +0200
-Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
-	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l8S7g7lg026916
-	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 09:42:08 +0200
-From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-To: linux-mtd@lists.infradead.org, haver@vnet.ibm.com
-Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
-Date: Fri, 28 Sep 2007 09:41:38 +0200
-References: <200709271952.06870.alexs@linux.vnet.ibm.com>
-	<200709272014.35040.alexs@linux.vnet.ibm.com>
-	<1190917677.14666.5.camel@august>
-In-Reply-To: <1190917677.14666.5.camel@august>
+	id 1Iazde-0000yl-0b
+	for linux-mtd@lists.infradead.org; Thu, 27 Sep 2007 21:07:12 +0100
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	l8RK6ri2032713
+	for <linux-mtd@lists.infradead.org>; Thu, 27 Sep 2007 22:06:53 +0200
+Date: Thu, 27 Sep 2007 22:06:46 +0200 (CEST)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: your mail
+In-Reply-To: <VSNLCHNFE002syCCr8H0000c0ce@VSNLCHNFE002.VSNLXCHANGE.COM>
+Message-ID: <Pine.LNX.4.64.0709272205450.28670@lnxricardw.se.axis.com>
+References: <VSNLCHNFE002syCCr8H0000c0ce@VSNLCHNFE002.VSNLXCHANGE.COM>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200709280941.38303.alexs@linux.vnet.ibm.com>
-Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -40,25 +25,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi Frank,
 
-thanks you for taking a look at the code.
+On Thu, 27 Sep 2007, Gangadhar Kodishala wrote:
 
-> On Thu, 2007-09-27 at 20:14 +0200, Alexander Schmidt wrote:
-> > +#define MAXPATH          1024
-> > 
-> 
-> Would it make sense to use PATH_MAX from limits.h? It is not 1024 I
-> think but I guess it should serve the same purpose.
-> 
-> man limits.h:
-> 
->        {PATH_MAX}
->               Maximum number of bytes in a pathname, including the 
->               terminating null character.
+> I created another partition on NAND to use specifically for the data. I
+> would like to create a JFFS2 file system on this data partition, mount it
+> and use it to store my application code and data files,
 
-That makes sense, I will resend when I've figured out how to send
-patch series which don't bounce from the mtd-list...
+If you just want to create an empty JFFS2 file system, then just erase the=
+=20
+partition, and mount it.
 
-Regards,
-Alex
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
