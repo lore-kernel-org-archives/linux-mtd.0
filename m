@@ -1,24 +1,17 @@
-Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IbYAG-0007Bw-VV
-	for linux-mtd@lists.infradead.org; Sat, 29 Sep 2007 09:59:11 +0100
-Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-In-Reply-To: <200709280941.38303.alexs@linux.vnet.ibm.com>
-References: <200709271952.06870.alexs@linux.vnet.ibm.com>
-	<200709272014.35040.alexs@linux.vnet.ibm.com>
-	<1190917677.14666.5.camel@august>
-	<200709280941.38303.alexs@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Sat, 29 Sep 2007 11:55:39 +0300
-Message-Id: <1191056139.7774.12.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: haver@vnet.ibm.com, linux-mtd@lists.infradead.org,
-	Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Frank Haverkamp <haver@linux.vnet.ibm.com>
-Reply-To: dedekind@infradead.org
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: <dedekind@infradead.org>
+References: <1190889529.12445.11.camel@sauron>
+	<1190890228.25883.3.camel@sauron>
+Subject: RE: [PATCH try 3] MTD: OneNAND: fix numerous races
+Date: Fri, 28 Sep 2007 15:18:00 +0900
+Message-ID: <002c01c80197$5895a230$e1ac580a@swcenter.sec.samsung.co.kr>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <1190890228.25883.3.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, 'David Woodhouse' <dwmw2@infradead.org>
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,30 +21,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-09-28 at 09:41 +0200, Alexander Schmidt wrote:
-> >        {PATH_MAX}
-> >               Maximum number of bytes in a pathname, including the=20
-> >               terminating null character.
->=20
-> That makes sense, I will resend when I've figured out how to send
-> patch series which don't bounce from the mtd-list...
+Hi,
 
-The series looks good to me.
+> I did not test _this_ particular patch, I tested a slightly different
+> version of it. But the patch fixes quite severe problems which lead
+> to rare bugs which are very difficult to track.
+> 
+> Can you please try it on your setup, so that I'd ask dwmw2
+> to apply it and send upstream during the next merge window?
 
-The infradead.org has a rule so that if one mail A refers mail B (via
-In-reply-to or Reference:), then mail A has to have Re: prefix in the
-subject. Otherwise, the mail is trapped and waits for moderation.
+I tested it and working well.
+This is the same patch previous merged in NAND bbt issue.
 
-At the moment one of the infradead.org servers is dead and I cannot
-approve your series which looks perfectly fine.
+Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
 
-So what you can do is to just add Re: to the subject of all the mails
-but the first one (0/4). Yes, it is weird but such is life at
-infradead.org.
-
-Or just wait when the server is up again and the postings are moderated.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thank you,
+Kyungmin Park
