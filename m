@@ -1,20 +1,36 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Idqwx-0003fM-D9
-	for linux-mtd@lists.infradead.org; Fri, 05 Oct 2007 18:26:58 +0100
-From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
-To: <dedekind@infradead.org>,
-	"'David Woodhouse'" <dwmw2@infradead.org>
-Subject: RE: [PATCH] Revert "[JFFS2] Reduce time for which erase_free_sem
-	isheld during erase."
-Date: Fri, 5 Oct 2007 19:26:19 +0200
-Message-ID: <008401c80774$d8050eb0$0e67a8c0@Jocke>
+Received: from mtagate3.de.ibm.com ([195.212.29.152])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IbAVF-0007ir-5o
+	for linux-mtd@lists.infradead.org; Fri, 28 Sep 2007 08:43:18 +0100
+Received: from d12nrmr1607.megacenter.de.ibm.com
+	(d12nrmr1607.megacenter.de.ibm.com [9.149.167.49])
+	by mtagate3.de.ibm.com (8.13.8/8.13.8) with ESMTP id l8S7g8TC212458
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 07:42:08 GMT
+Received: from d12av03.megacenter.de.ibm.com (d12av03.megacenter.de.ibm.com
+	[9.149.165.213])
+	by d12nrmr1607.megacenter.de.ibm.com (8.13.8/8.13.8/NCO v8.5) with
+	ESMTP id l8S7g8l12256952
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 09:42:08 +0200
+Received: from d12av03.megacenter.de.ibm.com (loopback [127.0.0.1])
+	by d12av03.megacenter.de.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l8S7g7lg026916
+	for <linux-mtd@lists.infradead.org>; Fri, 28 Sep 2007 09:42:08 +0200
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: linux-mtd@lists.infradead.org, haver@vnet.ibm.com
+Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
+Date: Fri, 28 Sep 2007 09:41:38 +0200
+References: <200709271952.06870.alexs@linux.vnet.ibm.com>
+	<200709272014.35040.alexs@linux.vnet.ibm.com>
+	<1190917677.14666.5.camel@august>
+In-Reply-To: <1190917677.14666.5.camel@august>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1191597989.4586.16.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
+Message-Id: <200709280941.38303.alexs@linux.vnet.ibm.com>
+Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,33 +40,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- > -----Original Message-----
-> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
-> Sent: den 5 oktober 2007 17:26
-> To: David Woodhouse
-> Cc: Joakim Tjernlund; linux-mtd@lists.infradead.org
-> Subject: [PATCH] Revert "[JFFS2] Reduce time for which 
-> erase_free_sem isheld during erase."
-> 
-> >From e1d782add3a72421eb637a119c594a6d9b774727 Mon Sep 17 
-> 00:00:00 2001
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Date: Fri, 5 Oct 2007 20:09:45 +0300
-> Subject: [PATCH] Revert "[JFFS2] Reduce time for which 
-> erase_free_sem is held during erase."
-> 
-> This reverts commit d364fb18cd991734eb54aa8840e70030b0c9f699.
-> 
-> This patch locks up the system because it takes the 
-> 'erase_free_sem' in
-> the erase callback function, which is in turn called from NAND/OneNAND
-> driver with NAND/OneNAND chip locked. Obviously, another process which
-> holds 'erase_free_sem' and calls an I/O function will deadlock at the
-> NAND/OneNAND chip lock. Below is the backtrace of this deadlock which
-> we observed in practice:
+Hi Frank,
 
-uhh, I guess this problem is NAND specific? I don't think reverting
-this patch is the answer. There got to be a better fix, as my patch
-solves a real problem too.
+thanks you for taking a look at the code.
 
- Jocke
+> On Thu, 2007-09-27 at 20:14 +0200, Alexander Schmidt wrote:
+> > +#define MAXPATH          1024
+> > 
+> 
+> Would it make sense to use PATH_MAX from limits.h? It is not 1024 I
+> think but I guess it should serve the same purpose.
+> 
+> man limits.h:
+> 
+>        {PATH_MAX}
+>               Maximum number of bytes in a pathname, including the 
+>               terminating null character.
+
+That makes sense, I will resend when I've figured out how to send
+patch series which don't bounce from the mtd-list...
+
+Regards,
+Alex
