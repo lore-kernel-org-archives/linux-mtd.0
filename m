@@ -1,26 +1,24 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Icdth-0006Ak-C3
-	for linux-mtd@lists.infradead.org; Tue, 02 Oct 2007 10:18:36 +0100
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1IcdqI-0000sh-9I
-	for linux-mtd@lists.infradead.org; Tue, 02 Oct 2007 09:15:02 +0000
-Received: from 81-86-64-114.dsl.pipex.com ([81.86.64.114])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2007 09:15:02 +0000
-Received: from chris by 81-86-64-114.dsl.pipex.com with local (Gmexim 0.1
-	(Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Tue, 02 Oct 2007 09:15:02 +0000
-To: linux-mtd@lists.infradead.org
-From: Chris Paulson-Ellis <chris@edesix.com>
-Subject: [PATCH] mtd: fix mtdconcat for subpage-write NAND
-Date: Tue, 02 Oct 2007 10:09:26 +0100
-Message-ID: <fdt1s6$8de$1@sea.gmane.org>
+	id 1IbYAG-0007Bw-VV
+	for linux-mtd@lists.infradead.org; Sat, 29 Sep 2007 09:59:11 +0100
+Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+In-Reply-To: <200709280941.38303.alexs@linux.vnet.ibm.com>
+References: <200709271952.06870.alexs@linux.vnet.ibm.com>
+	<200709272014.35040.alexs@linux.vnet.ibm.com>
+	<1190917677.14666.5.camel@august>
+	<200709280941.38303.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 29 Sep 2007 11:55:39 +0300
+Message-Id: <1191056139.7774.12.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Sender: news <news@sea.gmane.org>
+Content-Transfer-Encoding: quoted-printable
+Cc: haver@vnet.ibm.com, linux-mtd@lists.infradead.org,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,17 +28,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This allows the mtdconcat driver to work with NAND flash devices that support sub-page writes.
+On Fri, 2007-09-28 at 09:41 +0200, Alexander Schmidt wrote:
+> >        {PATH_MAX}
+> >               Maximum number of bytes in a pathname, including the=20
+> >               terminating null character.
+>=20
+> That makes sense, I will resend when I've figured out how to send
+> patch series which don't bounce from the mtd-list...
 
-Signed-off-by: Chris Paulson-Ellis <chris@edesix.com>
+The series looks good to me.
 
---- linux-2.6.22.2/drivers/mtd/mtdconcat.c.orig 2007-07-09 00:32:17.000000000 +0100
-+++ linux-2.6.22.2/drivers/mtd/mtdconcat.c      2007-10-02 09:49:42.000000000 +0100
-@@ -726,6 +726,7 @@ struct mtd_info *mtd_concat_create(struc
-        concat->mtd.size = subdev[0]->size;
-        concat->mtd.erasesize = subdev[0]->erasesize;
-        concat->mtd.writesize = subdev[0]->writesize;
-+       concat->mtd.subpage_sft = subdev[0]->subpage_sft;
-        concat->mtd.oobsize = subdev[0]->oobsize;
-        concat->mtd.oobavail = subdev[0]->oobavail;
-        if (subdev[0]->writev)
+The infradead.org has a rule so that if one mail A refers mail B (via
+In-reply-to or Reference:), then mail A has to have Re: prefix in the
+subject. Otherwise, the mail is trapped and waits for moderation.
+
+At the moment one of the infradead.org servers is dead and I cannot
+approve your series which looks perfectly fine.
+
+So what you can do is to just add Re: to the subject of all the mails
+but the first one (0/4). Yes, it is weird but such is life at
+infradead.org.
+
+Or just wait when the server is up again and the postings are moderated.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
