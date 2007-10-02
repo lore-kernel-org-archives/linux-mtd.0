@@ -1,17 +1,37 @@
-Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
+Received: from mtagate6.uk.ibm.com ([195.212.29.139])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Id5sp-0008E7-RZ
-	for linux-mtd@lists.infradead.org; Wed, 03 Oct 2007 16:11:34 +0100
-Date: Wed, 3 Oct 2007 18:05:28 +0400
-From: Valentine Barshak <vbarshak@ru.mvista.com>
-To: linuxppc-dev@ozlabs.org
-Subject: [PATCH] mtd: remove unnecessary memset from physmap_of driver
-Message-ID: <20071003140528.GA11871@ru.mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+	id 1IcgF2-0000IG-J5
+	for linux-mtd@lists.infradead.org; Tue, 02 Oct 2007 12:48:48 +0100
+Received: from d06nrmr1407.portsmouth.uk.ibm.com
+	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
+	by mtagate6.uk.ibm.com (8.13.8/8.13.8) with ESMTP id l92BlV38461400
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 11:47:31 GMT
+Received: from d06av03.portsmouth.uk.ibm.com (d06av03.portsmouth.uk.ibm.com
+	[9.149.37.213])
+	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v8.5) with
+	ESMTP id l92BlVg32994250
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 12:47:31 +0100
+Received: from d06av03.portsmouth.uk.ibm.com (loopback [127.0.0.1])
+	by d06av03.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
+	id l92BlEMl019078
+	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 12:47:15 +0100
+From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
+To: dedekind@infradead.org
+Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
+Date: Tue, 2 Oct 2007 13:40:05 +0200
+References: <200709271952.06870.alexs@linux.vnet.ibm.com>
+	<200709280941.38303.alexs@linux.vnet.ibm.com>
+	<1191056139.7774.12.camel@sauron>
+In-Reply-To: <1191056139.7774.12.camel@sauron>
+MIME-Version: 1.0
 Content-Disposition: inline
-In-Reply-To: <18178.55231.813138.369480@cargo.ozlabs.ibm.com>
-Cc: linux-mtd@lists.infradead.org
+Message-Id: <200710021340.06106.alexs@linux.vnet.ibm.com>
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Cc: haver@vnet.ibm.com, linux-mtd@lists.infradead.org,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>,
+	Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,24 +41,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-No need for memset to zero memory here, since we use kzalloc.
+Hi Artem,
 
-Signed-off-by: Valentine Barshak <vbarshak@ru.mvista.com>
----
- drivers/mtd/maps/physmap_of.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+On Saturday 29 September 2007 10:55:39 Artem Bityutskiy wrote:
+> The series looks good to me.
+>
+> The infradead.org has a rule so that if one mail A refers mail B (via
+> In-reply-to or Reference:), then mail A has to have Re: prefix in the
+> subject. Otherwise, the mail is trapped and waits for moderation.
+>
+> At the moment one of the infradead.org servers is dead and I cannot
+> approve your series which looks perfectly fine.
+>
+> So what you can do is to just add Re: to the subject of all the mails
+> but the first one (0/4). Yes, it is weird but such is life at
+> infradead.org.
+>
+> Or just wait when the server is up again and the postings are moderated.
 
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index cf75a56..aeed9ea 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -232,7 +232,6 @@ static int __devinit of_flash_probe(struct of_device *dev,
- 	info = kzalloc(sizeof(*info), GFP_KERNEL);
- 	if (!info)
- 		goto err_out;
--	memset(info, 0, sizeof(*info));
- 
- 	dev_set_drvdata(&dev->dev, info);
- 
--- 
-1.5.2.4
+thank you for the review!
+
+I'll integrate Frank's suggestions and resend the series with proper subjects.
+
+Regards,
+Alex
