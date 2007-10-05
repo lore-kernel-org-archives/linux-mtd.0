@@ -1,17 +1,20 @@
-Received: from [202.8.85.111] (helo=mail)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IdMx1-0007jF-U4
-	for linux-mtd@lists.infradead.org; Thu, 04 Oct 2007 10:25:03 +0100
-Date: Thu, 04 Oct 2007 07:07:50 -0300
-From: "cluster Huynh" <faucet@universallife.gr>
-To: major913@yahoo.com.cn
-Subject: data for medical professionals
-Message-ID: <272555t9tbk0$e2595wm0$5040n2i0@Delldim5150
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Idqwx-0003fM-D9
+	for linux-mtd@lists.infradead.org; Fri, 05 Oct 2007 18:26:58 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: <dedekind@infradead.org>,
+	"'David Woodhouse'" <dwmw2@infradead.org>
+Subject: RE: [PATCH] Revert "[JFFS2] Reduce time for which erase_free_sem
+	isheld during erase."
+Date: Fri, 5 Oct 2007 19:26:19 +0200
+Message-ID: <008401c80774$d8050eb0$0e67a8c0@Jocke>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
-Cc: d58p_test633@aol.com, asdfasfdfq@mail.com, nshimizu@whoi.edu,
-	info@downtownchilliwack.com, lovescalifornia2@yahoo.com,
-	linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1191597989.4586.16.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+ > -----Original Message-----
+> From: Artem Bityutskiy [mailto:dedekind@infradead.org] 
+> Sent: den 5 oktober 2007 17:26
+> To: David Woodhouse
+> Cc: Joakim Tjernlund; linux-mtd@lists.infradead.org
+> Subject: [PATCH] Revert "[JFFS2] Reduce time for which 
+> erase_free_sem isheld during erase."
+> 
+> >From e1d782add3a72421eb637a119c594a6d9b774727 Mon Sep 17 
+> 00:00:00 2001
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Date: Fri, 5 Oct 2007 20:09:45 +0300
+> Subject: [PATCH] Revert "[JFFS2] Reduce time for which 
+> erase_free_sem is held during erase."
+> 
+> This reverts commit d364fb18cd991734eb54aa8840e70030b0c9f699.
+> 
+> This patch locks up the system because it takes the 
+> 'erase_free_sem' in
+> the erase callback function, which is in turn called from NAND/OneNAND
+> driver with NAND/OneNAND chip locked. Obviously, another process which
+> holds 'erase_free_sem' and calls an I/O function will deadlock at the
+> NAND/OneNAND chip lock. Below is the backtrace of this deadlock which
+> we observed in practice:
 
+uhh, I guess this problem is NAND specific? I don't think reverting
+this patch is the answer. There got to be a better fix, as my patch
+solves a real problem too.
 
-
-
-
-Practicing Doctors in the US 
-
-788,181 in total – 17,400 emails
-
-Lots of Doctors in specialties like Orthopedics, Surgery, Radiology, Dermatology, Neurology, General Practice etc..
-
-Can easily be sorted by 16 different fields
-
-Price for this week only =  $291
-
-
-*** Get the data below as a gift when you order the MD list above ***
-
-Pharmaceutical Company Decision makers in the USA
-Personal email addresses (5000 in total) and names for execs
-
-Directory of US Hospitals
-23,000 Admins in more than 7,000 hospitals {a $399 value]
-
-List of US Dentists
-597,000 dentists and dental services ( a $300 value!) 
-
-List of US Chiropractors
-100k Chiropractors offices with full contact data including email, postal address, phone and fax
-
-send email to:     healthlists@hotmail.com   
-
-this offer expires October 5, 2007
-
-
-to manage your subscription settings send an email to the address above with 368 in the subject
+ Jocke
