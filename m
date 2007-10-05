@@ -1,34 +1,15 @@
-Received: from mtagate1.uk.ibm.com ([195.212.29.134])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Icgj5-000135-Vk
-	for linux-mtd@lists.infradead.org; Tue, 02 Oct 2007 13:19:52 +0100
-Received: from d06nrmr1407.portsmouth.uk.ibm.com
-	(d06nrmr1407.portsmouth.uk.ibm.com [9.149.38.185])
-	by mtagate1.uk.ibm.com (8.13.8/8.13.8) with ESMTP id l92CIj7k159806
-	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 12:18:45 GMT
-Received: from d06av04.portsmouth.uk.ibm.com (d06av04.portsmouth.uk.ibm.com
-	[9.149.37.216])
-	by d06nrmr1407.portsmouth.uk.ibm.com (8.13.8/8.13.8/NCO v8.5) with
-	ESMTP id l92CIiUu2973912
-	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 13:18:44 +0100
-Received: from d06av04.portsmouth.uk.ibm.com (loopback [127.0.0.1])
-	by d06av04.portsmouth.uk.ibm.com (8.12.11.20060308/8.13.3) with ESMTP
-	id l92CISXZ032678
-	for <linux-mtd@lists.infradead.org>; Tue, 2 Oct 2007 13:18:28 +0100
-From: Alexander Schmidt <alexs@linux.vnet.ibm.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: Re: [PATCH 2/4 try3] ubi-utils: migrate ubimirror
-Date: Tue, 2 Oct 2007 14:18:17 +0200
-References: <200710021416.02621.alexs@linux.vnet.ibm.com>
-In-Reply-To: <200710021416.02621.alexs@linux.vnet.ibm.com>
+Received: from smtp-vbr14.xs4all.nl ([194.109.24.34])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Idp4N-0001Z0-Vh
+	for linux-mtd@lists.infradead.org; Fri, 05 Oct 2007 16:26:32 +0100
+Message-ID: <4706577C.8030806@aimvalley.nl>
+Date: Fri, 05 Oct 2007 17:25:48 +0200
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+To: linuxppc-embedded@ozlabs.org, linux-mtd@lists.infradead.org
+Subject: jedec probe for AMD/Spansion flash (16 bit) device in 8 bit mode fails
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200710021418.17660.alexs@linux.vnet.ibm.com>
-Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Frank Haverkamp <haver@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -38,170 +19,124 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Migrate ubimirror to the new libubi.
+My board has a regular AMD/Spansion compatible flash device. It's a
+Spansion S29AL016D (2MB) which supports 8/16 bit access.
+We use it in 8 bit and top boot block mode.
 
-Signed-off-by: Alexander Schmidt <alexs@linux.vnet.ibm.com>
----
- ubi-utils/Makefile           |    2 -
- ubi-utils/src/libubimirror.c |   51 ++++++++++++++++++++++++++++++-------------
- ubi-utils/src/ubimirror.c    |    3 +-
- 3 files changed, 39 insertions(+), 17 deletions(-)
+I thought the linux kernel would have no problem recognizing/supporting this
+(regular) flash device. I was wrong.
 
-Index: mtd-utils/ubi-utils/Makefile
-===================================================================
---- mtd-utils.orig/ubi-utils/Makefile	2007-10-02 13:49:01.000000000 +0200
-+++ mtd-utils/ubi-utils/Makefile	2007-10-02 13:51:51.000000000 +0200
-@@ -51,7 +51,7 @@
- 	$(CC) $(LDFLAGS) -o $@ $^
- 
- ubimirror: ubimirror.o error.o libubimirror.o bootenv.o hashmap.o \
--		libubiold.o libubiold_sysfs.o crc32.o
-+		libubi.o crc32.o
- 	$(CC) $(LDFLAGS) -o $@ $^
- 
- nand2bin: nand2bin.o nandecc.o nandcorr.o
-Index: mtd-utils/ubi-utils/src/libubimirror.c
-===================================================================
---- mtd-utils.orig/ubi-utils/src/libubimirror.c	2007-10-02 12:19:11.000000000 +0200
-+++ mtd-utils/ubi-utils/src/libubimirror.c	2007-10-02 13:52:23.000000000 +0200
-@@ -20,13 +20,17 @@
- #include <errno.h>
- #include <unistd.h>
- #include <memory.h>
-+#include <limits.h>
- #include <fcntl.h>
- 
--#include <libubiold.h>
-+#include <libubi.h>
- #include "ubimirror.h"
- 
- #define COMPARE_BUF_SIZE    (128 * 1024)
- 
-+#define DEFAULT_DEV_PATTERN    "/dev/ubi%d"
-+#define DEFAULT_VOL_PATTERN    "/dev/ubi%d_%d"
-+
- #define EBUF(fmt...) do {			\
- 	snprintf(err_buf, err_buf_size, fmt);	\
- } while (0)
-@@ -125,14 +129,26 @@
- 	return rc;
- }
- 
--static int copy_files(int fd_in, int fd_out)
-+int vol_get_used_bytes(int vol_fd, unsigned long long *bytes)
-+{
-+	off_t res;
-+
-+	res = lseek(vol_fd, 0, SEEK_END);
-+	if (res == (off_t)-1)
-+		return -1;
-+	*bytes = (unsigned long long) res;
-+	res = lseek(vol_fd, 0, SEEK_SET);
-+	return res == (off_t)-1 ? -1 : 0;
-+}
-+
-+static int copy_files(libubi_t ulib, int fd_in, int fd_out)
- {
- 	unsigned char buf_a[COMPARE_BUF_SIZE];
- 	ssize_t len_a, len_b;
- 	unsigned long long update_size, copied;
- 
--	if (ubi_vol_get_used_bytes(fd_in, &update_size) == -1 ||
--	    ubi_vol_update(fd_out, update_size) == -1)
-+	if (vol_get_used_bytes(fd_in, &update_size) == -1 ||
-+	    ubi_update_start(ulib, fd_out, update_size) == -1)
- 		return update_error;
- 	for (copied = 0; copied < update_size; copied += len_b ) {
- 		len_a = fill_buffer(fd_in, buf_a, sizeof(buf_a));
-@@ -152,7 +168,8 @@
- {
- 	int rc = 0;
- 	uint32_t src_id;
--	ubi_lib_t ulib = NULL;
-+	char path[PATH_MAX];
-+	libubi_t ulib;
- 	int fd_in = -1, i = 0, fd_out = -1;
- 
- 	if (ids_size == 0)
-@@ -165,11 +182,13 @@
- 		src_id = ids[seqnum];
- 	}
- 
--	rc = ubi_open(&ulib);
--	if (rc != 0)
-+	ulib = libubi_open();
-+	if (ulib == NULL)
- 		return ubi_error;
- 
--	fd_in = ubi_vol_open(ulib, devno, src_id, O_RDONLY);
-+	snprintf(path, PATH_MAX, DEFAULT_VOL_PATTERN, devno, src_id);
-+
-+	fd_in = open(path, O_RDONLY);
- 	if (fd_in == -1) {
- 		EBUF("open error source volume %d", ids[i]);
- 		rc = open_error;
-@@ -180,8 +199,10 @@
- 		if (ids[i] == src_id)		/* skip self-mirror */
- 			continue;
- 
--		fd_out = ubi_vol_open(ulib, devno, ids[i], O_RDWR);
--		if (fd_out == -1){
-+		snprintf(path, PATH_MAX, DEFAULT_VOL_PATTERN, devno, ids[i]);
-+
-+		fd_out = open(path, O_RDWR);
-+		if (fd_out < 0){
- 			EBUF("open error destination volume %d", ids[i]);
- 			rc = open_error;
- 			goto err;
-@@ -191,14 +212,14 @@
- 			EBUF("compare error volume %d and %d", src_id, ids[i]);
- 			goto err;
- 		} else if (rc == compare_different) {
--			rc = copy_files(fd_in, fd_out);
-+			rc = copy_files(ulib, fd_in, fd_out);
- 			if (rc != 0) {
- 				EBUF("mirror error volume %d to %d", src_id,
- 						ids[i]);
- 				goto err;
- 			}
- 		}
--		if ((rc = ubi_vol_close(fd_out)) == -1) {
-+		if ((rc = close(fd_out)) == -1) {
- 			EBUF("close error volume %d", ids[i]);
- 			rc = close_error;
- 			goto err;
-@@ -207,10 +228,10 @@
- 	}
- err:
- 	if (fd_out != -1)
--		ubi_vol_close(fd_out);
-+		close(fd_out);
- 	if (fd_in != -1)
--		ubi_vol_close(fd_in);
-+		close(fd_in);
- 	if (ulib != NULL)
--		ubi_close(&ulib);
-+		libubi_close(ulib);
- 	return rc;
- }
-Index: mtd-utils/ubi-utils/src/ubimirror.c
-===================================================================
---- mtd-utils.orig/ubi-utils/src/ubimirror.c	2007-10-02 12:19:11.000000000 +0200
-+++ mtd-utils/ubi-utils/src/ubimirror.c	2007-10-02 13:51:51.000000000 +0200
-@@ -19,6 +19,7 @@
-  *
-  * 1.2 Removed argp because we want to use uClibc.
-  * 1.3 Minor cleanups
-+ * 1.4 Migrated to new libubi
-  */
- 
- #include <stdio.h>
-@@ -35,7 +36,7 @@
- #include "example_ubi.h"
- #include "ubimirror.h"
- 
--#define PROGRAM_VERSION "1.3"
-+#define PROGRAM_VERSION "1.4"
- 
- typedef enum action_t {
- 	ACT_NORMAL = 0,
+The S29AL016D/AM29LV160DT datasheet says the following:
+
+                                   first     second    third     fourth (read)
+                                   addr/data addr/data addr/data addr/data
+Manufacturer ID, word             555/AA    2AA/55    555/90    X00/01
+                  byte             AAA/AA    555/55    AAA/90    X00/01
+Device ID (top boot block), word  555/AA    2AA/55    555/90    X01/22C4
+                             byte  AAA/AA    555/55    AAA/90    X02/C4
+
+Unfortunately the linux kernel does not recognize the chip.
+The jedec_probe_chip function fails to recognize the chip, even though it's
+present in the jedec_table[], the is the entry that represents the S29AL016D
+(the S29AL016D is comptabile with AM29LV160DT):
+
+                 .mfr_id         = MANUFACTURER_AMD,
+                 .dev_id         = AM29LV160DT,
+                 .name           = "AMD AM29LV160DT",
+                 .uaddr          = {
+                         [0] = MTD_UADDR_0x0AAA_0x0555,  /* x8 */
+                         [1] = MTD_UADDR_0x0555_0x02AA   /* x16 */
+                 },
+                 .DevSize        = SIZE_2MiB,
+                 .CmdSet         = P_ID_AMD_STD,
+                 .NumEraseRegions= 4,
+                 .regions        = {
+                         ERASEINFO(0x10000,31),
+                         ERASEINFO(0x08000,1),
+                         ERASEINFO(0x02000,2),
+                         ERASEINFO(0x04000,1)
+                 }
+
+The above jedec_table entry seems to be correct and it should be the one to
+find/match.
+
+The problem when probing if "cfi->interleave=1 and cfi->device_type=2 (x16)" is
+that the device is not put into autoselect mode properly.
+This is because the unlock addresses are multiplied with the cfi->device_type
+(this is done by cfi_build_cmd_addr) and thus the autoselect mode
+(for MTD_UADDR_0x0AAA_0x0555,  /* x8 */) is entered by writing:
+address=0x1554, data=0xaa
+address=0x0aaa, data=0x55
+address=0x1554, data=0x90
+
+This fails to put the chip into autoselect mode.
+Here's the kernel corresponding kernel console output:
+reset unlock called aaa 555
+Search for id:(0a 00) interleave(1) type(2)
+Note that 0a 00 is ordinary data.
+
+Other unlock addresses (2aa 555 and 555 aaa) do get the device in autoselect mode,
+but now there are two other problems which make jedec_match fail:
+-1- the following code from jedec_match makes matching always fail for any x16
+     device in x8 mode ?
+         if ( cfi->mfr != mfr) || cfi->id != id ) {
+                 goto match_done;
+         }
+id is 16 bit (0x22c4), so it won't match 0xc4.
+
+-2- the unlock address is wrong. Here's the corresponding kernel console output:
+reset unlock called 555 2aa
+Search for id:(01 c4) interleave(1) type(2)
+MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+MTD jedec_match(): check unlock addrs 0x0555 0x02aa
+MTD jedec_match(): 0x0aaa 0x0555 did not match 0x0555 0x02aa
+reset unlock called 555 aaa
+Search for id:(01 c4) interleave(1) type(2)
+MTD jedec_match(): Check fit 0x00000000 + 0x00200000 = 0x00200000
+MTD jedec_match(): check unlock addrs 0x0555 0x0aaa
+MTD jedec_match(): 0x0aaa 0x0555 did not match 0x0555 0x0aaa
+
+It wants to match with unlock address 0x0aaa 0x0555 (because this is the one
+listed in the jedec_table[] entry for cfi->device_type=2=x16) and both pair
+of unlock addresses (which do get the chip in autoselect mode) do not match.
+
+
+I'm not sure whether the kernel should recognize the chip as 8 or 16 bit, I
+guess 16 bit. Let me anyway discuss the 8 bit case also.
+
+The problem when probing if "cfi->interleave=1 and cfi->device_type=1 (x8)" is
+twofold:
+-1- device id is not read correctly. After putting the device in "Autoselect Mode"
+     the device id is read from address 1 (it should be 2). This makes the device id
+     equal to the manufacture id. Here's the corresponding kernel console output:
+reset unlock called aaa 555
+Search for id:(01 01) interleave(1) type(1)
+
+-2- even if the device id and manufacturer id would be read correctly the
+     chip won't be recognized anyway since jedec_match has the following code:
+                 /* bjd: it seems that if we do this, we can end up
+                  * detecting 16bit flashes as an 8bit device, even though
+                  * there aren't.
+                  */
+                 if (finfo->dev_id > 0xff) {
+                         DEBUG( MTD_DEBUG_LEVEL3, "%s(): ID is not 8bit\n",
+                                __func__);
+                         goto match_done;
+
+Because finfo->devid=AM29LV160DT=0x22C4 -> the ID is not 8 bit.
+
+
+I'm sure I miss something. Our linux kernel is ancient (2.4.25) but more recent
+linux kernel seem to have the same mtd/jedec code in this repect.
+
+I anyone could help me pointing out what is wrong it would be great.
+
+BR,
+N. van Bolhuis.
+
+
+Btw. is the linux mtd mailing list (linux-mtd@lists.infradead.org) still alive ?
+      I couldn't reach the archives at http://lists.infradead.org/pipermail/linux-mtd/
+
+-- 
+This message has been scanned for viruses and is believed to be clean
