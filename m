@@ -1,26 +1,22 @@
-Received: from tx05.mailwise.com ([216.75.199.108])
+Received: from wa-out-1112.google.com ([209.85.146.182])
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IfPQm-0004gn-Rs
-	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 01:28:12 +0100
-Received: from trk06.mailwise.com (trk06.mailwise.com [216.75.199.27])
-	by tx05.mailwise.com (Postfix) with ESMTP id 07F1D152C8E
+	id 1IfFDZ-0000NS-KY
+	for linux-mtd@lists.infradead.org; Tue, 09 Oct 2007 14:33:54 +0100
+Received: by wa-out-1112.google.com with SMTP id v33so1915116wah
 	for <linux-mtd@lists.infradead.org>;
-	Tue,  9 Oct 2007 20:25:51 -0400 (EDT)
-Received: from DELTAMC.deltad.com (63-193-62-24.ded.pacbell.net [63.193.62.24])
-	by trk06.mailwise.com (MailWise LLC - Intelligent Email Protection)
-	with ESMTP id 997B4243227 for <linux-mtd@lists.infradead.org>;
-	Tue,  9 Oct 2007 20:25:50 -0400 (EDT)
-Content-class: urn:content-classes:message
+	Tue, 09 Oct 2007 06:33:28 -0700 (PDT)
+Message-ID: <49eab5c80710090633l49ba7147j6f584f055103bcf3@mail.gmail.com>
+Date: Tue, 9 Oct 2007 21:33:27 +0800
+From: "falls huang" <falls.huang@gmail.com>
+To: "Linux mtd" <linux-mtd@lists.infradead.org>
+Subject: Re: About MLC Nand Driver
+In-Reply-To: <AB85187D5025C54B878AD8E2BEDBD1910DC15F@sjmail2.sirf.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Subject: Mounting a Jffs2 onto AT45DB642D serial dataflash with ATRM9200
-Date: Tue, 9 Oct 2007 17:25:50 -0700
-Message-ID: <BEFF30BFC93A214FB7F13D987F13444B13D83C@DELTAMC.deltad.com>
-From: "Louay Mouradi" <lmouradi@bms-inc.com>
-To: <linux-mtd@lists.infradead.org>
-Cc: Louay Mouradi <lmouradi@bms-inc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <Pine.LNX.4.64.0709192310080.28990@lnxricardw.se.axis.com>
+	<AB85187D5025C54B878AD8E2BEDBD1910DC15F@sjmail2.sirf.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,26 +26,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-=20
-Hi
+Hello ysliu !
 
-I'm porting linux 2.6.19 onto an AT91RM9200 ARM920T core processor.
+   I have successfully run Samsung's MLC nand flash in my linux board
+with yaffs2/mtd , but the performance is low because the nand flash
+driver that I wrote didn't support  two-plane page program .   You can
+search this mailing list ,I have asked the tow-plane page program
+problem several months ago.
 
-I want to be able to load a Jffs2 filesystem through an AT45DB642D =
-serial dataflash.
+  Besides yaffs2/mtd ,  you can alse purchase the samsung's RFS(Robust
+Nandflash filesystem) , RFS supports MLC  and its performance is
+excellect ( I heard from the samsung's guy but I never use RFS) .
+  At last, why do u need to support a bare MLC nand flash chip?  for
+BOM price ? You can just use a SD card in your product, it's simple
+but the BOM will raise.
 
-The U-boot sees and uses this serial dataflash correct.  But I can't get =
-the kernel to see the serial dataflash.
+On 9/20/07, Yongsheng Liu <ysliu@sirf.com> wrote:
+>
+> Dear all,
+>
+> I was planing to get kernel supporting MLC Nand Flash. Any one of you
+> guys has known something about this? Or is there anyone else planing
+> this as well? Please give me comments on this, any comments will be
+> appreciated.
+>
+> Best Regards
+> YS Lau
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-When I run the cat /proc/mtd, I don't see the serial dataflash.  I can =
-see the SPI driver, mci driver showup in the sys folder.
 
-How can I get the kernel to see the serial dataflash?  Is the mmc driver =
-needed, I have enabled mmc, SPI and MTD options.
-
-Thanks,
-
-
-L.M.
-
-=20
+-- 
+Regards
+Falls Huang
