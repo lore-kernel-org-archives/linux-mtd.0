@@ -1,11 +1,19 @@
-Message-ID: <50207.81.199.242.3.1192017086.squirrel@81.199.242.3>
-Date: Wed, 10 Oct 2007 11:51:26 -0000 (UTC)
-Subject: Congratulations
-From: "Foundazion Di Vittorio" <payout_officeunit@yahoo.it>
+Received: from residential.serv3.aus.datafoundry.com ([209.99.125.37])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ifdd0-0008Dh-TA
+	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 16:37:46 +0100
+Message-ID: <1192030627.470cf1a3b8f28@webmail.texas.net>
+Date: Wed, 10 Oct 2007 10:37:07 -0500
+From: catboat@texas.net
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: bit flip
+References: <1191439970.4703ee62083f1@webmail.texas.net>
+	<1191991698.578.92.camel@localhost.localdomain>
+In-Reply-To: <1191991698.578.92.camel@localhost.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
-Reply-To: payout_officeunit@yahoo.it
+Cc: catboat@texas.net, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,28 +23,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Quoting David Woodhouse <dwmw2@infradead.org>:
 
+> On Wed, 2007-10-03 at 14:32 -0500, catboat@texas.net wrote:
+> > A NAND card flipped a bit and caused a data CRC problem in a data node. 
+> > When I cat the file, this region is zeroes. cat exits with rc 0.
+> 
+> On NAND you should have ECC to prevent this failure mode.
 
-    Attn:Winner
-Congratulations The Foundazion Di Vittorio has chosenyoubythe board
-of trustees as one of the final recipients ofacashGrant/Donation for
-your own personal,educational,andbusinessTocelebrate the 30th
-anniversary 2007 program,We are giving outayearlydonation
-of US$200,000.00 to nd it to the PaymentRemitanceOffice Viaemail
-contact BATCH NO40 lucky recipients,ascharitydonations/aid.
-fill out below Formse:Batch(N-222-6747,E-900-56)
-FullName:..............
-ResidentialAddress:...............
-Occupation:..............
-Country:..................
-Telephone:..................
-Fax:......................
-Number:....
-Sex:...................
-age:.................
-NextofKin:............
-Winning BatchNo:......
-(PaymentRemitanceContact)
-MrCalvinoCostantino.
-E-Mail:payout_officeunit@yahoo.it
-http://www.fondazionedivittorio.it
+We took two bit flips within the same 256 byte subpage. To my knowledge
+ECC won't correct it, but should have returned an error.  I think 
+UBI handled the error and copied what it could to a new erase block.
+After that, the ECC words were correct again, but not the jffs2
+CRC check. 
+
+Regarding a change to the code, jffs2 needs to track data nodes 
+that have CRC problems instead of marking them obsolete. Maybe a new
+node type could represent this and save recalculating CRCs everywhere. 
+Until these nodes are rewritten with newer data, I would expect readers 
+of the nodes to get EIO.
+
+Monte
