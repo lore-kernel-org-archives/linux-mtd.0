@@ -1,20 +1,10 @@
-Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
-From: David Woodhouse <dwmw2@infradead.org>
-To: dedekind@infradead.org
-In-Reply-To: <1191056139.7774.12.camel@sauron>
-References: <200709271952.06870.alexs@linux.vnet.ibm.com>
-	<200709272014.35040.alexs@linux.vnet.ibm.com>
-	<1190917677.14666.5.camel@august>
-	<200709280941.38303.alexs@linux.vnet.ibm.com>
-	<1191056139.7774.12.camel@sauron>
-Content-Type: text/plain
-Date: Sat, 13 Oct 2007 15:29:44 +0100
-Message-Id: <1192285784.13901.36.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	haver@vnet.ibm.com, Frank Haverkamp <haver@linux.vnet.ibm.com>,
-	Andreas Arnez <arnez@linux.vnet.ibm.com>
+Message-ID: <2984.41.219.236.102.1192047661.sunumail@www.sunumail.sn>
+Date: Wed, 10 Oct 2007 20:21:01 -0000 (GMT)
+From: bmwlottery123@sunumail.sn
+MIME-Version: 1.0
+Subject: Award Notification
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,23 +14,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-09-29 at 11:55 +0300, Artem Bityutskiy wrote:
-> At the moment one of the infradead.org servers is dead and I cannot
-> approve your series which looks perfectly fine.
+BMW AUTOMOBILES GROUP PROMOTION
+PUBLIC RELATIONS DEPARTMENT,
+BMW Automobiles House.
+22 Garden Close, Edmonton, Lincs,
+PE9 2YP, London,
+United Kingdom.
 
-While the server was down, the mailing list wasn't active at all. I keep
-meaning to switch to something other than mailman, so that it's easier
-to switch to a backup machine... but it hasn't happened yet.
+10th October, 2007
 
-> So what you can do is to just add Re: to the subject of all the mails
-> but the first one (0/4). Yes, it is weird but such is life at
-> infradead.org.
-> 
-> Or just wait when the server is up again and the postings are
-> moderated.
 
-The machine is up now, although it's not accessible through Legacy IP
-for the time being -- only IPv6.
+Attention:
 
--- 
-dwmw2
+This is to inform you that you have been selected for a cash prize
+
+of£850,000.00 (Eight hundred and fifty thousand Great British
+
+Pounds)from the BMW e-LOTTERY BONANZA International programs held
+
+yesterday the 9th October, 2007, here in London United Kingdom.
+
+The selection process was carried out through random selection in
+
+ourcomputerized email selection system (E.S.S) from a database of
+
+over250,000 email addresses drawn from all the continents of the world
+
+which you were selected.
+
+The BMW e-Lottery is approved by the British Gaming Board and
+
+alsoLicensed by the International Association of Gaming Regulators
+
+(IAGR). This promotional lottery is the 3rd of its kind and we intend
+
+to sensitize the public.
+
+To begin the processing of your prize you are to contact our
+
+fiduciaryclaims department for more information as regards procedures
+
+to claimyour prize.
+=====================================================
+
+PUBLIC RELATIONS DEPARTMENT
+7 DOCK WAY, SEFTON BUSINESS PARK
+LONDON, T40 4RT
+UNITED KINGDOM.
+PEPSI WILD
+Email:pepsiwild2@dbzmail.com
+=====================================================
+
+Contact him by providing him with your secret pin code X7PYWM2007
+
+andyour Reference Number BMW:2551256003/23.You are also advised to
+
+provide him with the under listed information's as soon as possible:
+
+1.Name in full.-----------------------------------
+2.Address.-----------------------------------------
+3.Nationality.------------------------------------
+4.Age.------------------------------------------------
+5.Occupation.------------------------------------
+6.Telephone Number.-------------------------
+7.Present Country.-----------------------------
+8.Sex-------------------------------------------------
+9.Fax [optional].---------------------------------
+10.Email address. ------------------------------
+
+
+
+Please you are to provide him with the above listed details as soon
+
+aspossible so he can begin with the processing of your prize winnings.
+Congratulations again from all our staff and thank you for being
+
+partof our promotional program.
+
+MR.ANTHONY MAYNARD
+THE DIRECTOR PROMOTIONS
+BMW PUBLIC RELATIONS DEPARTMENT
+UNITED KINGDOM
