@@ -1,24 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.176])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iffpr-0002RY-Iu
-	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 18:59:09 +0100
-Received: by py-out-1112.google.com with SMTP id a25so526656pyi
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Oct 2007 10:58:46 -0700 (PDT)
-Message-ID: <f383264b0710101058p22c6e22ax23233f03b52e88ed@mail.gmail.com>
-Date: Wed, 10 Oct 2007 10:58:45 -0700
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: "catboat@texas.net" <catboat@texas.net>
-Subject: Re: bit flip
-In-Reply-To: <1192030627.470cf1a3b8f28@webmail.texas.net>
+Received: from www.tglx.de ([62.245.132.106])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ifhbg-0004Se-Hl
+	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 20:52:38 +0100
+Date: Wed, 10 Oct 2007 21:51:22 +0200 (CEST)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Subject: Re: JFFS2 deadlock in erase callback
+In-Reply-To: <4709DF8E.1030707@nokia.com>
+Message-ID: <alpine.LFD.0.9999.0710102144510.3147@localhost.localdomain>
+References: <4709DF8E.1030707@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1191439970.4703ee62083f1@webmail.texas.net>
-	<1191991698.578.92.camel@localhost.localdomain>
-	<1192030627.470cf1a3b8f28@webmail.texas.net>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: "Bityutskiy Artem \\\(Nokia-M/Helsinki\\\)" <Artem.Bityutskiy@nokia.com>,
+	dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/10/07, catboat@texas.net <catboat@texas.net> wrote:
-> Quoting David Woodhouse <dwmw2@infradead.org>:
->
-> > On Wed, 2007-10-03 at 14:32 -0500, catboat@texas.net wrote:
-> > > A NAND card flipped a bit and caused a data CRC problem in a data node.
-> > > When I cat the file, this region is zeroes. cat exits with rc 0.
+On Mon, 8 Oct 2007, Adrian Hunter wrote:
+>         [MTD] [NAND] Avoid deadlock in erase callback; release chip lock first.
+>     
+>         When the erase callback performs some other action on the flash, it's
+>         highly likely to deadlock unless we actually release the chip lock
+>         before calling it.
+>     
+>         Signed-off-by: David Woodhouse <dwmw2@infradead.org>
+> 
+> Can you confirm, that adding the "Avoid deadlock..." patch is better
+> than reverting "Reduce time..." patch.
 
-How big were the chunks of zeroes? I'm seeing something similar here
-on a 128KB/2KB NAND flash part, where a 4KB chunk incorrectly reads as
-zeroes.
+Yep, it's safe and definitely better.
 
-Is there some kind of utility to map from a jffs2 inode to an offset
-in flash? That would help me track down the corruption I'm seeing.
-
-Matt
+I remember vaguely that we planned/discussed to move the release
+before the callback some time ago, but the patch never made it into
+mainline.
+ 
+	tglx
