@@ -1,17 +1,19 @@
-Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
-	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IfhxO-0004yt-HT
-	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 21:15:05 +0100
-From: Charles Manning <manningc2@actrix.gen.nz>
-To: linux-mtd@lists.infradead.org
-Subject: mtd support for large NAND
-Date: Thu, 11 Oct 2007 09:11:58 +1300
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200710110911.58596.manningc2@actrix.gen.nz>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IfsPG-0001z7-FF
+	for linux-mtd@lists.infradead.org; Thu, 11 Oct 2007 08:24:32 +0100
+Subject: Re: [PATCH] MTD: OneNAND: Fix typo related with recent commit
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+In-Reply-To: <20071010044814.GA4974@party>
+References: <20071010044814.GA4974@party>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 11 Oct 2007 10:21:04 +0300
+Message-Id: <1192087264.21337.1.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,10 +23,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2007-10-10 at 13:48 +0900, Kyungmin Park wrote:
+> MTD: OneNAND: Fix typo related with recent commit
+>=20
+> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+> ---
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/one=
+nand_base.c
+> index 85a9719..b2c40f6 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -2065,7 +2065,7 @@ static int do_otp_write(struct mtd_info *mtd, loff_=
+t to, size_t len,
+> =20
+>  	ops.len =3D len;
+>  	ops.ooblen =3D 0;
+> -	ops.databuf =3D pbuf;
+> +	ops.datbuf =3D pbuf;
+>  	ops.oobbuf =3D NULL;
+>  	ret =3D onenand_write_ops_nolock(mtd, to, &ops);
+>  	*retlen =3D ops.retlen;
 
-Last I looked (2.6.23), mtd_info is limited by a u32 size field to 4Gbytes of 
-flash. That's no longer very large and is limiting some applications.
+Acked-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 
-Is anyone working on this?
-
--- Charles
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
