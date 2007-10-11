@@ -1,20 +1,25 @@
-Received: from smtp101.mail.mud.yahoo.com ([209.191.85.211])
-	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iim7m-0002vQ-Cu
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 08:18:30 +0100
-From: Nick Piggin <nickpiggin@yahoo.com.au>
-To: Erez Zadok <ezk@cs.sunysb.edu>
-Subject: Re: BUG at mm/filemap.c:1749 (2.6.24, jffs2, unionfs)
-Date: Fri, 19 Oct 2007 17:16:53 +1000
-References: <200710190605.l9J65kDe008069@agora.fsl.cs.sunysb.edu>
-	<200710191703.12026.nickpiggin@yahoo.com.au>
-In-Reply-To: <200710191703.12026.nickpiggin@yahoo.com.au>
+Received: from wx-out-0506.google.com ([66.249.82.227])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IfmLb-000254-5m
+	for linux-mtd@lists.infradead.org; Thu, 11 Oct 2007 01:56:22 +0100
+Received: by wx-out-0506.google.com with SMTP id s7so341782wxc
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 10 Oct 2007 17:55:58 -0700 (PDT)
+From: Matteo Croce <technoboy85@gmail.com>
+To: linux-mips@linux-mips.org
+Subject: [PATCH][MIPS][3/6] AR7: mtd partition map
+Date: Thu, 11 Oct 2007 02:55:55 +0200
+References: <200710110248.33028.technoboy85@gmail.com>
+In-Reply-To: <200710110248.33028.technoboy85@gmail.com>
 MIME-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_lnFGHwOggSRGKPd"
-Message-Id: <200710191716.53470.nickpiggin@yahoo.com.au>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org, jffs-dev@axis.com
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200710110255.55917.technoboy85@gmail.com>
+Cc: Eugene Konev <ejka@imfi.kspu.ru>, Felix Fietkau <nbd@openwrt.org>,
+	dwmw2@infradead.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,98 +29,188 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Boundary-00=_lnFGHwOggSRGKPd
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Matteo Croce <technoboy85@gmail.com>
+Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+Signed-off-by: Eugene Konev <ejka@imfi.kspu.ru>
 
-On Friday 19 October 2007 17:03, Nick Piggin wrote:
-> On Friday 19 October 2007 16:05, Erez Zadok wrote:
-> > David,
-> >
-> > I'm testing unionfs on top of jffs2, using 2.6.24 as of linus's commit
-> > 4fa4d23fa20de67df919030c1216295664866ad7.  All of my unionfs tests pass
-> > when unionfs is stacked on top of jffs2, other than my truncate test --
-> > whic tries to truncate files up/down (through the union, which then is
-> > passed through to the lower jffs2 f/s).  The same truncate test passes on
-> > all other file systems I've tried unionfs/2.6.24 with, as well as all of
-> > the earlier kernels that unionfs runs on (2.6.9--2.6.23).  So I tend to
-> > think this bug is more probably due to something else going on in 2.6.24,
-> > possibly wrt jffs2/mtd.  (Of course, it's still possible that unionfs
-> > isn't doing something right -- any pointers?)
-> >
-> > The oops trace is included below.  Is this a known issue and if so, any
-> > fixes?  If this is the first you hear of this problem, let me know and
-> > I'll try to narrow it down further.
->
-> It's had quite a lot of recent changes in that area -- the "new aops"
-> patches.
->
-> They've been getting quite a bit of testing in -mm and no such problems,
-> but I doubt anyone was doing much unionfs over jffs2, or even much jffs2
-> testing with -mm.
->
-> The bug smells like jffs2 is actually passing back a "written" length
-> greater than the length we passed into it.
->
-> The following might show what's happening.
-
-Hmm, looks like jffs2_write_end is writing more than we actually ask it
-to, and returns that back.
-
-        unsigned aligned_start = start & ~3;
-
-and
-
-        if (end == PAGE_CACHE_SIZE) {
-                /* When writing out the end of a page, write out the
-                   _whole_ page. This helps to reduce the number of
-                   nodes in files which have many short writes, like
-                   syslog files. */
-                start = aligned_start = 0;
-        }
-
-These "longer" writes are fine, but they shouldn't get propagated back
-to the vm/vfs. Something like the following patch might fix it.
-
-
---Boundary-00=_lnFGHwOggSRGKPd
-Content-Type: text/x-diff; charset="utf-8"; name="jffs2-writtenlen-fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="jffs2-writtenlen-fix.patch"
-
-Index: linux-2.6/fs/jffs2/file.c
-===================================================================
---- linux-2.6.orig/fs/jffs2/file.c
-+++ linux-2.6/fs/jffs2/file.c
-@@ -255,7 +255,7 @@ static int jffs2_write_end(struct file *
- 		   _whole_ page. This helps to reduce the number of
- 		   nodes in files which have many short writes, like
- 		   syslog files. */
--		start = aligned_start = 0;
-+		aligned_start = 0;
- 	}
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index fbec8cd..c1b2508 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -150,6 +150,12 @@ config MTD_AFS_PARTS
+ 	  for your particular device. It won't happen automatically. The
+ 	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
  
- 	ri = jffs2_alloc_raw_inode();
-@@ -291,14 +291,11 @@ static int jffs2_write_end(struct file *
- 	}
++config MTD_AR7_PARTS
++	tristate "TI AR7 partitioning support"
++	depends on MTD_PARTITIONS
++	---help---
++	  TI AR7 partitioning support
++
+ comment "User Modules And Translation Layers"
  
- 	/* Adjust writtenlen for the padding we did, so we don't confuse our caller */
--	if (writtenlen < (start&3))
--		writtenlen = 0;
--	else
--		writtenlen -= (start&3);
-+	writtenlen -= min(writtenlen, (start - aligned_start));
+ config MTD_CHAR
+diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
+index 6d958a4..8451c64 100644
+--- a/drivers/mtd/Makefile
++++ b/drivers/mtd/Makefile
+@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
+ obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
+ obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
+ obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
++obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
  
- 	if (writtenlen) {
--		if (inode->i_size < (pg->index << PAGE_CACHE_SHIFT) + start + writtenlen) {
--			inode->i_size = (pg->index << PAGE_CACHE_SHIFT) + start + writtenlen;
-+		if (inode->i_size < pos + start + writtenlen) {
-+			inode->i_size = pos + start + writtenlen;
- 			inode->i_blocks = (inode->i_size + 511) >> 9;
- 
- 			inode->i_ctime = inode->i_mtime = ITIME(je32_to_cpu(ri->ctime));
-
---Boundary-00=_lnFGHwOggSRGKPd--
+ # 'Users' - code which presents functionality to userspace.
+ obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
+diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
+new file mode 100644
+index 0000000..3d160d4
+--- /dev/null
++++ b/drivers/mtd/ar7part.c
+@@ -0,0 +1,146 @@
++/*
++ * Copyright (C) 2007 Eugene Konev <ejka@openwrt.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ *
++ * TI AR7 flash partition table.
++ * Based on ar7 map by Felix Fietkau <nbd@openwrt.org>
++ *
++ */
++
++#include <linux/kernel.h>
++#include <linux/slab.h>
++
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/bootmem.h>
++#include <linux/magic.h>
++
++#define AR7_PARTS	4
++#define ROOT_OFFSET	0xe0000
++
++#define LOADER_MAGIC1	le32_to_cpu(0xfeedfa42)
++#define LOADER_MAGIC2	le32_to_cpu(0xfeed1281)
++
++struct ar7_bin_rec {
++	unsigned int checksum;
++	unsigned int length;
++	unsigned int address;
++};
++
++static struct mtd_partition ar7_parts[AR7_PARTS];
++
++static int create_mtd_partitions(struct mtd_info *master,
++				 struct mtd_partition **pparts,
++				 unsigned long origin)
++{
++	struct ar7_bin_rec header;
++	unsigned int offset, len;
++	unsigned int pre_size = master->erasesize, post_size = 0;
++	unsigned int root_offset = ROOT_OFFSET;
++
++	int retries = 10;
++
++	ar7_parts[0].name = "loader";
++	ar7_parts[0].offset = 0;
++	ar7_parts[0].size = master->erasesize;
++	ar7_parts[0].mask_flags = MTD_WRITEABLE;
++
++	ar7_parts[1].name = "config";
++	ar7_parts[1].offset = 0;
++	ar7_parts[1].size = master->erasesize;
++	ar7_parts[1].mask_flags = 0;
++
++	do { /* Try 10 blocks starting from master->erasesize */
++		offset = pre_size;
++		master->read(master, offset,
++			sizeof(header), &len, (u8 *)&header);
++		if (!strncmp((char *)&header, "TIENV0.8", 8))
++			ar7_parts[1].offset = pre_size;
++		if (header.checksum == LOADER_MAGIC1)
++			break;
++		if (header.checksum == LOADER_MAGIC2)
++			break;
++		pre_size += master->erasesize;
++	} while (retries--);
++
++	pre_size = offset;
++
++	if (!ar7_parts[1].offset) {
++		ar7_parts[1].offset = master->size - master->erasesize;
++		post_size = master->erasesize;
++	}
++
++	switch (header.checksum) {
++	case LOADER_MAGIC1:
++		while (header.length) {
++			offset += sizeof(header) + header.length;
++			master->read(master, offset, sizeof(header),
++				     &len, (u8 *)&header);
++		}
++		root_offset = offset + sizeof(header) + 4;
++		break;
++	case LOADER_MAGIC2:
++		while (header.length) {
++			offset += sizeof(header) + header.length;
++			master->read(master, offset, sizeof(header),
++				     &len, (u8 *)&header);
++		}
++		root_offset = offset + sizeof(header) + 4 + 0xff;
++		root_offset &= ~(u32)0xff;
++		break;
++	default:
++		printk(KERN_WARNING "Unknown magic: %08x\n", header.checksum);
++		break;
++	}
++
++	master->read(master, root_offset,
++		sizeof(header), &len, (u8 *)&header);
++	if (header.checksum != SQUASHFS_MAGIC) {
++		root_offset += master->erasesize - 1;
++		root_offset &= ~(master->erasesize - 1);
++	}
++
++	ar7_parts[2].name = "linux";
++	ar7_parts[2].offset = pre_size;
++	ar7_parts[2].size = master->size - pre_size - post_size;
++	ar7_parts[2].mask_flags = 0;
++
++	ar7_parts[3].name = "rootfs";
++	ar7_parts[3].offset = root_offset;
++	ar7_parts[3].size = master->size - root_offset - post_size;
++	ar7_parts[3].mask_flags = 0;
++
++	*pparts = ar7_parts;
++	return AR7_PARTS;
++}
++
++static struct mtd_part_parser ar7_parser = {
++	.owner = THIS_MODULE,
++	.parse_fn = create_mtd_partitions,
++	.name = "ar7part",
++};
++
++static int __init ar7_parser_init(void)
++{
++	return register_mtd_parser(&ar7_parser);
++}
++
++module_init(ar7_parser_init);
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR(	"Felix Fietkau <nbd@openwrt.org>, "
++		"Eugene Konev <ejka@openwrt.org>");
++MODULE_DESCRIPTION("MTD partitioning for TI AR7");
