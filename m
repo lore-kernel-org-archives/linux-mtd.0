@@ -1,10 +1,16 @@
-Message-ID: <3100.41.219.214.37.1192048360.sunumail@www.sunumail.sn>
-Date: Wed, 10 Oct 2007 20:32:40 -0000 (GMT)
-From: bmwlottery123@sunumail.sn
+Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IgEuM-0000pk-Qz
+	for linux-mtd@lists.infradead.org; Fri, 12 Oct 2007 08:26:09 +0100
+Message-ID: <470F1FFE.2090306@nokia.com>
+Date: Fri, 12 Oct 2007 10:19:26 +0300
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Subject: Award Notification
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+To: ext Kyungmin Park <kmpark@infradead.org>
+Subject: [PATCH] MTD: OneNAND: Synchronize block locking operations
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -14,84 +20,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-BMW AUTOMOBILES GROUP PROMOTION
-PUBLIC RELATIONS DEPARTMENT,
-BMW Automobiles House.
-22 Garden Close, Edmonton, Lincs,
-PE9 2YP, London,
-United Kingdom.
+Ensure OneNAND's block locking operations are synchronized
+like all other operations.
 
-10th October, 2007
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   18 ++++++++++++++----
+ 1 files changed, 14 insertions(+), 4 deletions(-)
 
-
-Attention:
-
-This is to inform you that you have been selected for a cash prize
-
-of£850,000.00 (Eight hundred and fifty thousand Great British
-
-Pounds)from the BMW e-LOTTERY BONANZA International programs held
-
-yesterday the 9th October, 2007, here in London United Kingdom.
-
-The selection process was carried out through random selection in
-
-ourcomputerized email selection system (E.S.S) from a database of
-
-over250,000 email addresses drawn from all the continents of the world
-
-which you were selected.
-
-The BMW e-Lottery is approved by the British Gaming Board and
-
-alsoLicensed by the International Association of Gaming Regulators
-
-(IAGR). This promotional lottery is the 3rd of its kind and we intend
-
-to sensitize the public.
-
-To begin the processing of your prize you are to contact our
-
-fiduciaryclaims department for more information as regards procedures
-
-to claimyour prize.
-=====================================================
-
-PUBLIC RELATIONS DEPARTMENT
-7 DOCK WAY, SEFTON BUSINESS PARK
-LONDON, T40 4RT
-UNITED KINGDOM.
-PEPSI WILD
-Email:pepsiwild2@dbzmail.com
-=====================================================
-
-Contact him by providing him with your secret pin code X7PYWM2007
-
-andyour Reference Number BMW:2551256003/23.You are also advised to
-
-provide him with the under listed information's as soon as possible:
-
-1.Name in full.-----------------------------------
-2.Address.-----------------------------------------
-3.Nationality.------------------------------------
-4.Age.------------------------------------------------
-5.Occupation.------------------------------------
-6.Telephone Number.-------------------------
-7.Present Country.-----------------------------
-8.Sex-------------------------------------------------
-9.Fax [optional].---------------------------------
-10.Email address. ------------------------------
-
-
-
-Please you are to provide him with the above listed details as soon
-
-aspossible so he can begin with the processing of your prize winnings.
-Congratulations again from all our staff and thank you for being
-
-partof our promotional program.
-
-MR.ANTHONY MAYNARD
-THE DIRECTOR PROMOTIONS
-BMW PUBLIC RELATIONS DEPARTMENT
-UNITED KINGDOM
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index b2c40f6..f633941 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1904,7 +1904,12 @@ static int onenand_do_lock_cmd(struct mtd_info *mtd, loff_t ofs, size_t len, int
+  */
+ static int onenand_lock(struct mtd_info *mtd, loff_t ofs, size_t len)
+ {
+-	return onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_LOCK);
++	int ret;
++
++	onenand_get_device(mtd, FL_LOCKING);
++	ret = onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_LOCK);
++	onenand_release_device(mtd);
++	return ret;
+ }
+ 
+ /**
+@@ -1917,7 +1922,12 @@ static int onenand_lock(struct mtd_info *mtd, loff_t ofs, size_t len)
+  */
+ static int onenand_unlock(struct mtd_info *mtd, loff_t ofs, size_t len)
+ {
+-	return onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
++	int ret;
++
++	onenand_get_device(mtd, FL_LOCKING);
++	ret = onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
++	onenand_release_device(mtd);
++	return ret;
+ }
+ 
+ /**
+@@ -1979,7 +1989,7 @@ static int onenand_unlock_all(struct mtd_info *mtd)
+ 			loff_t ofs = this->chipsize >> 1;
+ 			size_t len = mtd->erasesize;
+ 
+-			onenand_unlock(mtd, ofs, len);
++			onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
+ 		}
+ 
+ 		onenand_check_lock_status(this);
+@@ -1987,7 +1997,7 @@ static int onenand_unlock_all(struct mtd_info *mtd)
+ 		return 0;
+ 	}
+ 
+-	onenand_unlock(mtd, 0x0, this->chipsize);
++	onenand_do_lock_cmd(mtd, 0x0, this->chipsize, ONENAND_CMD_UNLOCK);
+ 
+ 	return 0;
+ }
+-- 
+1.4.4.2
