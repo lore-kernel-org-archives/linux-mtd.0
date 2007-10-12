@@ -1,16 +1,26 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Adrian Hunter'" <ext-adrian.hunter@nokia.com>
-References: <470F200A.9090404@nokia.com>
-Subject: RE: [PATCH] MTD: OneNAND: Return only negative error codes
-Date: Fri, 12 Oct 2007 18:30:34 +0900
-Message-ID: <003801c80cb2$8d594910$e1ac580a@swcenter.sec.samsung.co.kr>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="ISO-8859-1"
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IgHDt-00067d-7T
+	for linux-mtd@lists.infradead.org; Fri, 12 Oct 2007 10:54:29 +0100
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1IgHDl-0005T7-QN
+	for linux-mtd@lists.infradead.org; Fri, 12 Oct 2007 09:54:17 +0000
+Received: from 87-194-185-172.bethere.co.uk ([87.194.185.172])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2007 09:54:17 +0000
+Received: from chris by 87-194-185-172.bethere.co.uk with local (Gmexim 0.1
+	(Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Fri, 12 Oct 2007 09:54:17 +0000
+To: linux-mtd@lists.infradead.org
+From: Chris Paulson-Ellis <chris@edesix.com>
+Subject: [PATCH] mtd: fix mtdconcat for subpage-write NAND
+Date: Fri, 12 Oct 2007 10:54:06 +0100
+Message-ID: <feng7u$sfs$1@sea.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-reply-to: <470F200A.9090404@nokia.com>
-Cc: linux-mtd@lists.infradead.org
-Reply-To: kmpark@infradead.org
+Sender: news <news@sea.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +30,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> The OneNAND driver was confusing JFFS2 by returning positive error
-> codes.
+This allows the mtdconcat driver to work with NAND flash devices that support sub-page writes.
 
-It's only possible the write case error and it returns the positive 'ctrl' error.
-Other case, "2-bit ecc error' is handled with 'mtd->ecc_stat' correctly.
+Signed-off-by: Chris Paulson-Ellis <chris@edesix.com>
 
-Well, no problem to change to the negative value.
+---
 
-Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
-
-> 
-> ---
->  drivers/mtd/onenand/onenand_base.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-> index f633941..a8c426b 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -327,7 +327,7 @@ static int onenand_wait(struct mtd_info *mtd, int state)
->  		printk(KERN_ERR "onenand_wait: controller error = 0x%04x\n", ctrl);
->  		if (ctrl & ONENAND_CTRL_LOCK)
->  			printk(KERN_ERR "onenand_wait: it's locked error.\n");
-> -		return ctrl;
-> +		return -EIO;
->  	}
-> 
->  	if (interrupt & ONENAND_INT_READ) {
-> @@ -336,7 +336,7 @@ static int onenand_wait(struct mtd_info *mtd, int state)
->  			if (ecc & ONENAND_ECC_2BIT_ALL) {
->  				printk(KERN_ERR "onenand_wait: ECC error = 0x%04x\n", ecc);
->  				mtd->ecc_stats.failed++;
-> -				return ecc;
-> +				return -EBADMSG;
->  			} else if (ecc & ONENAND_ECC_1BIT_ALL) {
->  				printk(KERN_INFO "onenand_wait: correctable ECC error = 0x%04x\n", ecc);
->  				mtd->ecc_stats.corrected++;
-> --
-> 1.4.4.2
+--- linux-2.6.22.2/drivers/mtd/mtdconcat.c.orig 2007-07-09 00:32:17.000000000 +0100
++++ linux-2.6.22.2/drivers/mtd/mtdconcat.c      2007-10-02 09:49:42.000000000 +0100
+@@ -726,6 +726,7 @@ struct mtd_info *mtd_concat_create(struc
+        concat->mtd.size = subdev[0]->size;
+        concat->mtd.erasesize = subdev[0]->erasesize;
+        concat->mtd.writesize = subdev[0]->writesize;
++       concat->mtd.subpage_sft = subdev[0]->subpage_sft;
+        concat->mtd.oobsize = subdev[0]->oobsize;
+        concat->mtd.oobavail = subdev[0]->oobavail;
+        if (subdev[0]->writev)
