@@ -1,22 +1,7 @@
-Received: from rv-out-0910.google.com ([209.85.198.189])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IgG0V-0002zQ-Pf
-	for linux-mtd@lists.infradead.org; Fri, 12 Oct 2007 09:36:34 +0100
-Received: by rv-out-0910.google.com with SMTP id c24so768566rvf
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 12 Oct 2007 01:36:09 -0700 (PDT)
-Message-ID: <49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
-Date: Fri, 12 Oct 2007 16:36:09 +0800
-From: "falls huang" <falls.huang@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: mtd support for large NAND
-In-Reply-To: <1192087361.21337.3.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <200710110911.58596.manningc2@actrix.gen.nz>
-	<1192087361.21337.3.camel@sauron>
+From: millottery134@comcast.net (EUROPE MILLION LOTTERY)
+Subject: EMAIL AWARD PRIZE!!!
+Date: Fri, 12 Oct 2007 08:45:19 +0000
+Message-Id: <101220070845.12956.470F341F00093CD60000329C2216527966CBCCCE979D0A9B9B0104040703@comcast.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,17 +11,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-SGVsbG8gIQoKICBIb3cgY2FuIEkgc2ltdWxhdGUgYSBsYXJnZSBuYW5kZmxhc2goPjRHKSBpbiBs
-aW51eCBQQyA/IEkgd2FudCB0bwp0YWtlIGEgbG9vayBhdCBpdCwgYnV0IEkgZG9uJ3QgaGF2ZSBh
-bnkgZGV2ZWxvcC1ib2FyZCB0aGF0IGhhcyA0RwoKT24gMTAvMTEvMDcsIEFydGVtIEJpdHl1dHNr
-aXkgPGRlZGVraW5kQGluZnJhZGVhZC5vcmc+IHdyb3RlOgo+IE9uIFRodSwgMjAwNy0xMC0xMSBh
-dCAwOToxMSArMTMwMCwgQ2hhcmxlcyBNYW5uaW5nIHdyb3RlOgo+ID4gTGFzdCBJIGxvb2tlZCAo
-Mi42LjIzKSwgbXRkX2luZm8gaXMgbGltaXRlZCBieSBhIHUzMiBzaXplIGZpZWxkIHRvIDRHYnl0
-ZXMgb2YKPiA+IGZsYXNoLiBUaGF0J3Mgbm8gbG9uZ2VyIHZlcnkgbGFyZ2UgYW5kIGlzIGxpbWl0
-aW5nIHNvbWUgYXBwbGljYXRpb25zLgo+ID4KPiA+IElzIGFueW9uZSB3b3JraW5nIG9uIHRoaXM/
-Cj4KPiBZZWFoLCB0aGUgcHJvYmxlbSBpcyBrbm93biwgYnV0IG5vYm9keSBpcyB3b3JraW5nIG9u
-IHRoZSBmaXggQUZBSUsuCj4KPiAtLQo+IEJlc3QgcmVnYXJkcywKPiBBcnRlbSBCaXR5dXRza2l5
-ICjQkdC40YLRjtGG0LrQuNC5INCQ0YDRgtGR0LwpCj4KPgo+IF9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IExpbnV4IE1URCBkaXNjdXNzaW9u
-IG1haWxpbmcgbGlzdAo+IGh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4vbGlzdGlu
-Zm8vbGludXgtbXRkLwo+CgoKLS0gClJlZ2FyZHMKRmFsbHMgSHVhbmcK
+YOU ARE A WINNER 
+ 
+SELECTED.Million Lottery EMAIL AWARD PRIZE!!!
+This is to inform you that your Email Address attached to a Ticket Number: 
+TL754/22/76 has won the prize Sum of: €2,000,000.00 (Two Million Euro), in an 
+Email Sweepstakes program held on the 8th of October 2007. Do contact the 
+Details below for your claim:
+ 
+Attention: Mr. Fred Van
+E-mail: millionlotteryclaimdept@yahoo.de
+Phone: +316-272-351-41 and Fax: +31-847-185-133 
+Reference Number: 421/613/580-EB, Serial Number 176087,Lucky Number:TL 22/15406, 
+Batch Number: 42100546-934-VE
+ 
+Furnish them with the following:
+ 
+Names:
+Phone/Fax number:
+Nationality:
+Ref Number:
+Batch Number:
+Occupation:
+Email Address:
+ 
+Yours Faithfully,
+Vjertis Von Adrian (Ms.) CPA.
