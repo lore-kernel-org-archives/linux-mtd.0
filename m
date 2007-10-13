@@ -1,13 +1,10 @@
-Date: Sat, 13 Oct 2007 03:11:22 +0100
-From: diocese@theedge.ca
-Subject: Congratulations
-Message-id: <3d76ad023a74.4710375a@theedge.ca>
-MIME-version: 1.0
-Content-type: text/plain; charset=us-ascii
-Content-language: en
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
-Reply-To: payout_officeunit@yahoo.it
+Date: Sat, 13 Oct 2007 08:00:40 +0200
+Message-Id: <JPU614$F305EA2E7E43EE550BF3459F12BBF52A@aliceadsl.fr>
+Subject: =?iso-8859-1?Q?WIN_NOTIFICATION:LOTTO_Rheinland-Pfalz.?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+From: "=?iso-8859-1?Q?Rheinland-Pfalz.HQ?=" <rlpwnnlrp269@aliceadsl.fr>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,29 +14,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-
- 
-    Attn:Winner
-Congratulations, The Foundazion Di Vittorio has chosen you by  the board
-of trustees as one of the final recipients ofa cash Grant/Donation for
-your own personal,educational,and business Tocelebrate the 30th
-anniversary 2007 program,We are giving outayearlydonation
-of US$200,000.00 to nd it to the Payment Remitance Office Viaemail
-contact BATCH NO40 lucky recipients,ascharitydonations/aid.
-fill out below Formse:Batch(N-222-6747,E-900-56)
-FullName:..............
-ResidentialAddress:...............
-Occupation:..............
-Country:..................
-Telephone:..................
-Fax:......................
-Number:....
-Sex:...................
-age:.................
-NextofKin:............
-Winning BatchNo:......
-(PaymentRemitanceContact)
-MrCalvinoCostantino.
-E-Mail:payout_officeunit@yahoo.it
-http://www.fondazionedivittorio.it
+LOTTO Rheinland-Pfalz=0D=0AFerdinand-Sauerbruch-Strasse 2=0D=0ADE-56073 K=
+oblenz,=0D=0ARheinland-Pfalz,=0D=0AGermany.=0D=0A=0D=0AReference Number: =
+RLP/15-DE/8407=0D=0ABatch: RLP/07/23=0D=0A=0D=0ADear Winner,=0D=0A=0D=0AT=
+his Email is to inform you that you emerged a winner of =0D=0A=A31,000,00=
+0 (One million Euro) on our online draws which =0D=0Awas conducted last m=
+onth. Your email address drew the =0D=0Alucky numbers 3-27-1-11-49-23 whi=
+ch consequently emerged=0D=0Ayou as one of first fifty (50) lucky winners=
+ in this category.=0D=0A=0D=0ANo tickets were sold.=0D=0A=0D=0AFor furthe=
+r Information about your Winnings,contact our =0D=0ALottery Fiduciary Age=
+nt with the following address, =0D=0Astating clearly your reference and b=
+atch numbers.=0D=0A=0D=0AMr.Wilson Gart=0D=0AForeign Services Manager,=0D=
+=0AInformation and Payment Bureau.=0D=0ALondon Representative Office.=0D=0A=
+Phone: 00 44 702 401 3107=0D=0AFax:   00 44 870 478 3297=0D=0AEmail: wgar=
+t03@gmail.com.=0D=0A=0D=0AYours faithfully,=0D=0AHans-Peter Schossler=0D=0A=
+Promotions Manager(Promotions Manager)=0A=0A------------------------ ALIC=
+E C'EST ENCORE MIEUX AVEC CANAL+ LE BOUQUET ! ---------------=0AD=E9couvr=
+ez vite l'offre exclusive ALICEBOX et CANAL+ LE BOUQUET, en cliquant ici =
+http://alicebox.fr=0ASoumis =E0 conditions.=0A
