@@ -1,22 +1,20 @@
-Received: from fk-out-0910.google.com ([209.85.128.185])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IgcM9-0006Kr-Ef
-	for linux-mtd@lists.infradead.org; Sat, 13 Oct 2007 09:28:23 +0100
-Received: by fk-out-0910.google.com with SMTP id 19so1953843fkr
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 13 Oct 2007 01:27:59 -0700 (PDT)
-Message-ID: <5937bed10710130127j76fd1768k6987fdf150a83755@mail.gmail.com>
-Date: Sat, 13 Oct 2007 18:27:58 +1000
-From: "Matt Callow" <mc-lists@tesco.net>
-Sender: matt.callow@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: Re: oob data in DOC 2000
-In-Reply-To: <5937bed10710100002u6cadab3eq620a13fd579dabf3@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
+From: David Woodhouse <dwmw2@infradead.org>
+To: dedekind@infradead.org
+In-Reply-To: <1191056139.7774.12.camel@sauron>
+References: <200709271952.06870.alexs@linux.vnet.ibm.com>
+	<200709272014.35040.alexs@linux.vnet.ibm.com>
+	<1190917677.14666.5.camel@august>
+	<200709280941.38303.alexs@linux.vnet.ibm.com>
+	<1191056139.7774.12.camel@sauron>
+Content-Type: text/plain
+Date: Sat, 13 Oct 2007 15:29:44 +0100
+Message-Id: <1192285784.13901.36.camel@pmac.infradead.org>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <5937bed10710100002u6cadab3eq620a13fd579dabf3@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org, Alexander Schmidt <alexs@linux.vnet.ibm.com>,
+	haver@vnet.ibm.com, Frank Haverkamp <haver@linux.vnet.ibm.com>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,85 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/10/2007, Matt Callow <mc-lists@tesco.net> wrote:
-> Hi,
->
-> I've been trying to get docboot to work on a DOC 2000 and I've been
-> having a few problems. I've followed the instructions in the docboot
-> README and I found the following:
->
-> 1. nandwrite fails with segfault when -o is specified (without -a) . I
-> think I've found the problem an can supply a patch if required
-> 2. docboot starts to boot the machine, but does not find the kernel
-> image. It looks like it's not finding the expected signature in the
-> oob data.
-> I did some searching and found that there was a problem with the free
-> oob bytes, but should now be fixed
-> (http://www.infradead.org/pipermail/linux-mtd/2005-April/012324.html)
-> I'm using kernel 2.6.18 and nandwrite from the latest git tree.
-> On further investigation, it looks like the oob data is not being
-> written to the DOC correctly.
-> Using diskonchip.ko with debug=1, I did the following:
->
-> flash_erase /dev/mtd1 32768
-> /home/matt/docboot/nandwrite -o -s 32768 /dev/mtd1 /home/matt/docboot/test
->
-> (where test is the first 528 bytes from the doc_spl image)
->
-> I get the following debug output:
->
-> ...
-> Oct 10 16:53:15 musicplayer kernel: writebuf of 16 bytes: ff ff ff ff
-> ff ff 55 55 ff ff ff ff ff ff ff ff
-> ...
-> Oct 10 16:53:15 musicplayer kernel: writebuf of 512 bytes: e9 fd 03 0e
-> 1f be e7 01 e8 74 01 fc 0e 8e 1e b3
-> Oct 10 16:53:15 musicplayer kernel: writebuf of 6 bytes: 3d cf 3b e1 ae 5e
-> Oct 10 16:53:15 musicplayer kernel: writebuf of 10 bytes: ff ff ff ff
-> ff ff ff ff ff ff
-> ...
->
-> So, this looks like:
-> a) writing OOB data from file
-> b) writing 512 bytes of data from file
-> c) updating OOB with ecc data
->
-> Now, when I read back the file I get:
->
-> # nanddump -l 512 -s 32768 -p  /dev/mtd1
-> ECC failed: 0
-> ECC corrected: 0
-> Number of bad blocks: 3
-> Number of bbt blocks: 0
-> Block size 16384, page size 512, OOB size 16
-> Dumping data starting at 0x00008000 and ending at 0x00008200...
-> 0x00008000: e9 fd 03 0e 1f be e7 01 e8 74 01 fc 0e 8e 1e b3
-> 0x00008010: 01 bb 00 10 c6 47 02 85 c6 47 02 85 b0 ff e8 3b
-> 0x00008020: 01 1f 31 ff 31 d2 e8 d0 00 ff 0e 82 02 75 f7 53
-> 0x00008030: be 7d 02 e8 49 01 06 1f 8b 36 0e 02 81 c6 00 02
-> 0x00008040: e8 3c 01 0e 1f be e7 01 e8 34 01 5b 06 bf 00 80
-> 0x00008050: e8 72 00 a1 86 02 09 06 84 02 74 19 88 0e d2 01
-> 0x00008060: a1 b5 01 a2 d3 01 88 26 d6 01 53 be 07 02 e8 0e
-> 0x00008070: 01 5b e8 50 00 be 26 02 e8 04 01 be 00 03 e8 fe
-> 0x00008080: 00 be 73 02 e8 f8 00 66 a1 88 02 1f 66 09 06 1c
-> 0x00008090: 02 74 07 2e a1 b5 01 a3 1a 02 0e 58 c1 e8 04 05
-> 0x000080a0: 03 00 a3 29 02 c6 06 11 02 81 b8 ff ff a2 10 02
-> 0x000080b0: a3 24 02 8c db 8e e3 8e eb 8e d3 89 c4 40 83 c3
-> 0x000080c0: 20 53 50 fa cb e8 31 00 89 c7 0e 07 be b7 01 b9
-> 0x000080d0: 00 01 b4 87 f9 cd 15 72 04 84 e4 74 0a 0e 1f be
-> 0x000080e0: 3c 02 e8 9a 00 eb fe 83 06 d2 01 02 80 16 d6 01
-> 0x000080f0: 00 ff 0e 84 02 75 ce c3 5f 53 b9 04 00 bb 01 00
-> ...
->   OOB Data: e9 fd 03 0e 1f be e7 01 e8 74 01 fc 0e 8e 1e b3
->
-> Now the OOB data has been overwritten with the 1st 16 bytes of real data.
->
-> Can anyone provide any clues at to what might be wrong?
->
-> Matt
->
-In response to my own post, I tried changing the read/write_oob
-functions with the std functions from nand_base.c. That works for
-docboot, but doesn't seem to work for JFFS2
+On Sat, 2007-09-29 at 11:55 +0300, Artem Bityutskiy wrote:
+> At the moment one of the infradead.org servers is dead and I cannot
+> approve your series which looks perfectly fine.
 
-Matt
+While the server was down, the mailing list wasn't active at all. I keep
+meaning to switch to something other than mailman, so that it's easier
+to switch to a backup machine... but it hasn't happened yet.
+
+> So what you can do is to just add Re: to the subject of all the mails
+> but the first one (0/4). Yes, it is weird but such is life at
+> infradead.org.
+> 
+> Or just wait when the server is up again and the postings are
+> moderated.
+
+The machine is up now, although it's not accessible through Legacy IP
+for the time being -- only IPv6.
+
+-- 
+dwmw2
