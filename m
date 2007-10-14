@@ -1,21 +1,25 @@
-Received: from smtp.nokia.com ([131.228.20.171] helo=mgw-ext12.nokia.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IgyfA-0001rz-N0
-	for linux-mtd@lists.infradead.org; Sun, 14 Oct 2007 09:17:31 +0100
-Subject: RE: [PATCH] MTD: OneNAND: Return only negative error codes
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <003801c80cb2$8d594910$e1ac580a@swcenter.sec.samsung.co.kr>
-References: <470F200A.9090404@nokia.com>
-	<003801c80cb2$8d594910$e1ac580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=utf-8
-Date: Sun, 14 Oct 2007 11:14:08 +0300
-Message-Id: <1192349648.3455.1.camel@sauron>
+	id 1IgzEb-00037h-Fq
+	for linux-mtd@lists.infradead.org; Sun, 14 Oct 2007 09:54:07 +0100
+Date: Sun, 14 Oct 2007 10:17:20 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH 2/4 try2] ubi-utils: migrate ubimirror
+Message-ID: <20071014081720.GA13833@lazybastard.org>
+References: <200709271952.06870.alexs@linux.vnet.ibm.com>
+	<200709272014.35040.alexs@linux.vnet.ibm.com>
+	<1190917677.14666.5.camel@august>
+	<200709280941.38303.alexs@linux.vnet.ibm.com>
+	<1191056139.7774.12.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org,
-	'Adrian Hunter' <ext-adrian.hunter@nokia.com>
-Reply-To: dedekind@infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1191056139.7774.12.camel@sauron>
+Cc: linux-mtd@lists.infradead.org, Alexander Schmidt <alexs@linux.vnet.ibm.com>,
+	haver@vnet.ibm.com, Frank Haverkamp <haver@linux.vnet.ibm.com>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +29,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-10-12 at 18:30 +0900, Kyungmin Park wrote:
-> > The OneNAND driver was confusing JFFS2 by returning positive error
-> > codes.
->=20
-> It's only possible the write case error and it returns the positive 'ctrl=
-' error.
-> Other case, "2-bit ecc error' is handled with 'mtd->ecc_stat' correctly.
->=20
-> Well, no problem to change to the negative value.
->=20
-> Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+On Sat, 29 September 2007 11:55:39 +0300, Artem Bityutskiy wrote:
+> 
+> The infradead.org has a rule so that if one mail A refers mail B (via
+> In-reply-to or Reference:), then mail A has to have Re: prefix in the
+> subject. Otherwise, the mail is trapped and waits for moderation.
 
-Yeah, it's rare but we caught this in practice, and JFFS2 just calls
-BUG() if OneNAND returns positive number while JFFS2 is scanning the
-flash medium.
+And this rule should have an excemption for a subject starting with
+"PATCH" or "[PATCH".  Fighting spam and bad manners makes sense.  But
+one shouldn't go overboard and disallow good manners in the process.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+This particular rule has annoyed me more than once.  I wouldn't be
+surprised if others simply decided to go away and not contribute
+anymore.
+
+Jörn
+
+-- 
+It's just what we asked for, but not what we want!
+-- anonymous
