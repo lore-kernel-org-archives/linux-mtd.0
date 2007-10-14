@@ -1,19 +1,19 @@
-Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ih4Jr-00041W-Gl
-	for linux-mtd@lists.infradead.org; Sun, 14 Oct 2007 15:19:53 +0100
-Subject: Re: delay time of nandsim
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Kang-Nyeon Kim <kangnuni@gmail.com>
-In-Reply-To: <f5d360820709271917nb156587v5d3f8262abb760ba@mail.gmail.com>
-References: <f5d360820709271917nb156587v5d3f8262abb760ba@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Sun, 14 Oct 2007 17:16:31 +0300
-Message-Id: <1192371391.3455.3.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from smtp118.sbc.mail.sp1.yahoo.com ([69.147.64.91])
+	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IhCa3-0003HB-Ro
+	for linux-mtd@lists.infradead.org; Mon, 15 Oct 2007 00:09:12 +0100
+From: David Brownell <david-b@pacbell.net>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [patch 2.6.23-git] MTD: m25p80 whitespace fix
+Date: Sun, 14 Oct 2007 16:01:23 -0700
+References: <200706241512.35332.david-b@pacbell.net>
+In-Reply-To: <200706241512.35332.david-b@pacbell.net>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200710141601.23334.david-b@pacbell.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2007-09-28 at 11:17 +0900, Kang-Nyeon Kim wrote:
-> Hi all
->=20
-> I found nandsim has delay options like access_delay ( read delay ),
-> program_delay( write delay ) and erase_delay.
->=20
-> Does it guarantee delay time strictly?
+Whitespace fix:  a recent patch added some extraneous whitespace.
+Highlighted in glaring color by kernel-configured text editors...
 
-No, this option is not working and should be fixed or kicked out.
+Signed-off-by: David Brownell <dbrownell@users.sourceforge.net>
+---
+ drivers/mtd/devices/m25p80.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+--- g26.orig/drivers/mtd/devices/m25p80.c	2007-10-13 15:02:40.000000000 -0700
++++ g26/drivers/mtd/devices/m25p80.c	2007-10-13 15:02:46.000000000 -0700
+@@ -36,7 +36,7 @@
+ #define	OPCODE_READ		0x03	/* Read data bytes (low frequency) */
+ #define	OPCODE_FAST_READ	0x0b	/* Read data bytes (high frequency) */
+ #define	OPCODE_PP		0x02	/* Page program (up to 256 bytes) */
+-#define	OPCODE_BE_4K 		0x20	/* Erase 4KiB block */
++#define	OPCODE_BE_4K		0x20	/* Erase 4KiB block */
+ #define	OPCODE_BE_32K		0x52	/* Erase 32KiB block */
+ #define	OPCODE_SE		0xd8	/* Sector erase (usually 64KiB) */
+ #define	OPCODE_RDID		0x9f	/* Read JEDEC ID */
