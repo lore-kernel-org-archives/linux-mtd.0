@@ -1,26 +1,16 @@
-Received: from smtp1.int-evry.fr ([157.159.10.44])
+Received: from smtp-vbr2.xs4all.nl ([194.109.24.22])
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IfiyM-0006L5-97
-	for linux-mtd@lists.infradead.org; Wed, 10 Oct 2007 22:20:09 +0100
-Received: from smtp-ext.int-evry.fr (smtp-ext.int-evry.fr [157.159.11.17])
-	by smtp1.int-evry.fr (Postfix) with ESMTP id B5B9A8E6F07
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Oct 2007 23:19:24 +0200 (CEST)
-Received: from mini.int.alphacore.net (fbx.alphacore.net [82.241.112.26])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp-ext.int-evry.fr (Postfix) with ESMTP id 21254D0E31B
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 10 Oct 2007 23:19:24 +0200 (CEST)
-From: Florian Fainelli <florian.fainelli@telecomint.eu>
-To: linux-mtd@lists.infradead.org
-Subject: Design of plat_ram
-Date: Wed, 10 Oct 2007 23:09:45 +0200
+	id 1IhTgm-0006Jk-TS
+	for linux-mtd@lists.infradead.org; Mon, 15 Oct 2007 18:25:17 +0100
+Message-ID: <4713A28A.8040905@aimsys.nl>
+Date: Mon, 15 Oct 2007 19:25:30 +0200
+From: "N. van Bolhuis" <nvbolhuis@aimsys.nl>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2579417.dI1OEVthVk";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
+To: linux-mtd@lists.infradead.org, linuxppc-embedded@ozlabs.org
+Subject: Re: jedec probe for AMD/Spansion flash (16 bit) device in 8 bit mode
+	fails
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Message-Id: <200710102309.51185.florian.fainelli@telecomint.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,30 +20,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart2579417.dI1OEVthVk
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi all,
+OK, so there's nothing wrong with the linux-mtd mailing
+list. It's alive.
+I guess the archives are moved to
+www.infradead.org/pipermail/linux-mtd and many existing
+pages still refer to list.infradead.org/pipermail/linux-mtd
 
-I was wondering why the generic platform RAM driver was not extended alread=
-y=20
-to support ROM and probe using the command set supplied with platform data ?
+To be complete and to provide an answer (to my own question)
+I'll show what I did to make things work.
 
-Thank you very much in advance for your answer.
+Btw. in my previous post I mentioned somewhere
 
---nextPart2579417.dI1OEVthVk
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+"It wants to match with unlock address 0x0aaa 0x0555 (because this is the one
+ listed in the jedec_table[] entry for cfi->device_type=2=X16) and both pair
+ of unlock addresses (which do get the chip in autoselect mode) do not match."
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.7 (GNU/Linux)
+This is incorrect.
+"0x0aaa 0x0555" is not listed in the jedec_table[] entry for x16. It's selected
+because of the finfo_uaddr function having this if statement:
 
-iD8DBQBHDT+fmx9n1G/316sRAs5rAJ49QQQfCrw8dvaY4ryps7ILo7c40gCfaphm
-QcZSJQzslekuGzstDCp+UC4=
-=jAyB
------END PGP SIGNATURE-----
+ 
+if (uaddr != MTD_UADDR_NOT_SUPPORTED ) {
+    uaddr = finfo->uaddr[0];
+}
 
---nextPart2579417.dI1OEVthVk--
+return uaddr;
+
+So, in x16 always "0x0aaa 0x0555" (entry for x8) is considered to be the unlock
+address.
+
+But this doesn't hurt me since our 16 bit AMD/Spansion flash device needs to
+be recognized in 8 bit mode anyway since (obviously) it is used in 8 bit mode.
+
+
+Looking through the archives shows more developers have dealt with this problem.
+The unlock_addr function is suspicious. There's even a patch for this function
+to make things work, but dwmw2 rejected it because things are supposed to be shifted
+automatically for different device modes (x8, x16, x32).
+Somewhere in the archives it is mentioned the device id should be read from
+address 2 (and not 1) (for an AM29LV800 in byte mode). I suffer from this problem too.
+Also somewhere in the archives the finfo_uaddr function is blamed, in particular
+the if statement I showed above.
+
+Obviously the jedec_probe simply doesn't work for all possible flash device and
+(embedded) board configurations. This is exactly what the comment
+in jedec_probe.c (above the function jedec_match) suggests.
+
+I added the following to jedec_probe.c to make things work:
+
+#define AM29LV160DTBYTE 0x0001
+
+        }, {
+                .mfr_id         = MANUFACTURER_AMD,
+                .dev_id         = AM29LV160DTBYTE,
+                .name           = "S29AL016D TB (byte mode)",
+                .uaddr          = {
+                        [0] = MTD_UADDR_0x0AAA_0x0555 /* x8 */
+                },
+                .DevSize        = SIZE_2MiB,
+                .CmdSet         = P_ID_AMD_STD,
+                .NumEraseRegions= 4,
+                .regions        = {
+                        ERASEINFO(0x10000,31),
+                        ERASEINFO(0x08000,1),
+                        ERASEINFO(0x02000,2),
+                        ERASEINFO(0x04000,1)
+                }
+
+
+
+
+Not wanting to break functionality for some native 8 bit flash devices we use
+(which do read their device id on address 1) I added device id 0x0001 since
+it is guaranteed to be the same as the manfacturer id and was still free.
+
+
+BR, 
+N. van Bolhuis. 
+
+-- 
+This message has been scanned for viruses and is believed to be clean
