@@ -1,21 +1,12 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ihk4l-0006RP-Bn
-	for linux-mtd@lists.infradead.org; Tue, 16 Oct 2007 11:55:06 +0100
-Date: Tue, 16 Oct 2007 12:47:27 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: falls huang <falls.huang@gmail.com>
-Subject: Re: mtd support for large NAND
-Message-ID: <20071016104727.GH583@lazybastard.org>
-References: <200710110911.58596.manningc2@actrix.gen.nz>
-	<1192087361.21337.3.camel@sauron>
-	<49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Message-ID: <12129.82.128.13.48.1192448317.squirrel@196.15.188.197>
+Date: Mon, 15 Oct 2007 13:38:37 +0200 (SAST)
+Subject: ROYAL HOUSE UK lottery Ballot Draws. !!
+From: "Mr. Adams Murphy Jr." <richard_coordinator2007@yahoo.co.uk>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+To: undisclosed-recipients:;
+Reply-To: richard_coordinator2007@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,23 +16,57 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 12 October 2007 16:36:09 +0800, falls huang wrote:
-> 
->   How can I simulate a large nandflash(>4G) in linux PC ? I want to
-> take a look at it, but I don't have any develop-board that has 4G
 
-Something like this would work:
 
-$ truncate 5GiB foo
-$ qemu -s -no-kqemu -hda rootfs -hdb foo -kernel arch/i386/boot/bzImage \
-       -append "ro root=/dev/hda block2mtd.block2mtd=/dev/hdb"
 
-Instead of truncate you can also use dd:
-$ dd if=/dev/zero of=foo bs=1 seek=5368709119
+ROYAL HOUSE UK.
+WORCESTER, HEREFORD & WORCESTER,
+WR1 1JT, UNITED KINGDOM.
+FAX: +-4-4-7-0-0-5-9-8-1-5-4-8
 
-JÃ¶rn
+From: Mr. Richard Cole Murphy Jr.
+(Promotion Department)
 
--- 
-When you close your hand, you own nothing. When you open it up, you
-own the whole world.
--- Li Mu Bai in Tiger & Dragon
+Dear Bert Prevoo,
+
+We are please to announce you as one of the 3 lucky winners in the ROYAL
+HOUSE UK lottery Ballot Draws. All 3 winning addresses were randomly
+selected from a batch of 30,000 email addresses.
+
+Your email address emerged alongside 2 others under our promotional B
+draws. Consequently, you have therefore been approved for a total pay out
+of £2,800,000 Pounds (Two Million, eight hundred thousand pounds). The
+following particulars are attached to your lotto payment order:
+
+(i). Winning numbers: 10, 18, 00, 34, 49, (60)
+(ii). Email ticket number: 32-17-431
+(iii). Reference code : RH-UK/07/UKE
+(iv). Lottery Code Number: RH-UK/004
+
+To commence processing of your winning / transfer of winning sum, you must
+forward a copy of this email to our Claims Department. Contact details
+below, for further information, and immediate processing and release of
+your winning sum.
+
+Contact the claims department with the following:
+
+Director (Claims Department),
+Mr Tony Hart,
+Alliance & Leicester Bank plc,
+Carlton Park, Narborough
+Leicester, LE19 0AL
+FAX : 44-871-264-8677
+TELL: 44-702-409-8865
+TELL: 44-702-407-1139
+Email: tonyallianceleicesterbankplc@yahoo.dk
+
+Congratulations once again.
+
+Regards,
+
+Mr. Adams Murphy Jr.
+Promotion Department,
+ROYAL HOUSE UK.
+WORCESTER, HEREFORD & WORCESTER,
+WR1 1JT, UNITED KINGDOM.
+FAX: +-4-4-7-0-0-5-9-8-1-5-4-8
