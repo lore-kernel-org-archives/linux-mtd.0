@@ -1,24 +1,21 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IhVy6-0003Ss-BB
-	for linux-mtd@lists.infradead.org; Mon, 15 Oct 2007 20:51:17 +0100
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java System Messaging Server 6.2-2.05 (built Apr 28 2005))
-	with ESMTP id <0JPY00COJXMP0J50@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 15 Oct 2007 15:47:14 -0400 (EDT)
-Date: Mon, 15 Oct 2007 15:47:13 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: Recursion in CFI driver. Is it really necessary to have.
-In-reply-to: <Pine.LNX.4.64.0710151552170.1863@pentafluge.infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-Message-id: <alpine.LFD.0.9999.0710151534180.19446@xanadu.home>
-MIME-version: 1.0
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Content-transfer-encoding: 7BIT
-References: <Pine.LNX.4.64.0710121547550.21455@pentafluge.infradead.org>
-	<alpine.LFD.0.9999.0710121112450.19446@xanadu.home>
-	<Pine.LNX.4.64.0710151552170.1863@pentafluge.infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IhaIX-0004s8-NN
+	for linux-mtd@lists.infradead.org; Tue, 16 Oct 2007 01:28:40 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
+To: linux-mtd@lists.infradead.org
+Subject: Re: mtd support for large NAND
+Date: Tue, 16 Oct 2007 13:27:15 +1300
+References: <200710110911.58596.manningc2@actrix.gen.nz>
+	<1192087361.21337.3.camel@sauron>
+	<49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
+In-Reply-To: <49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Message-Id: <200710161327.15290.manningc2@actrix.gen.nz>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,64 +25,44 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 15 Oct 2007, Alexey Korolev wrote:
+On Friday 12 October 2007 21:36:09 falls huang wrote:
+> Hello !
+>
+>   How can I simulate a large nandflash(>4G) in linux PC ? I want to
+> take a look at it, but I don't have any develop-board that has 4G
 
-> Hi,
-> 
-> > 
-> > Wow.  That's certainly bad.
-> > 
-> > It's been a while that I wrote that code, but looking at it now I just
-> > can't see how that could happen.  It is like if it was recursing on
-> > itself, but the code explicitly guards against that.  See:
-> > 
-> > 		if (contender && contender != chip) {
-> > 			[...]
-> > 			ret = get_chip(map, contender, contender->start,
-> > mode);
-> > 
-> > So from that point, 'chip' and 'contender' must be equal when get_chip()
-> > is called again, and therefore recursion should stop there.
-> > 
-> I think it has a hole here. The issue takes place if we have three or more
-> processes wishing to own chip.
+There are a few problems you face here. Firstly, mtd does not support >4G=20
+which will need fixing.
 
-Right.
+Secondly, even if your system has > 4G it might not be all simultaneously=20
+accessible and you will need to use highmem as a way to do temporary mappin=
+gs=20
+to access this memory.
 
-> The most important here, that from point of silicon state machine design view
-> there is no need to have recursion deeper than "level 1".
-
-Exact.
-
-> I've made the patch which heals the deadlock problem. Could you please look at
-> this?
-
-One issue: you now force the resettime behavior for every cases.  Should 
-we care?
-
-Also some style issues:
-
-> @@ -709,6 +709,23 @@
->  		spin_unlock(&shared->lock);
->  	}
-> 
-> +	ret = chip_ready(map, chip, adr, mode);
-> +	if (ret == -EAGAIN)
-> +		goto retry;
-> +
-> +
-> +	return ret;
-> +}
-
-One blank line too many above.
-
-> +
-> +static int chip_ready (struct map_info *map, struct flchip *chip, unsigned
-> long adr, int mode)
-> +{
-
-You'll have to add a prototype for that function which is called before 
-its definition.
+I might be tempted to try do this using some sort of userspace driver then=
+=20
+just backing the driver with regular files (eg. 8x1G files to simulate 8G o=
+f=20
+NAND).
 
 
-Nicolas
+>
+> On 10/11/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> > On Thu, 2007-10-11 at 09:11 +1300, Charles Manning wrote:
+> > > Last I looked (2.6.23), mtd_info is limited by a u32 size field to
+> > > 4Gbytes of flash. That's no longer very large and is limiting some
+> > > applications.
+> > >
+> > > Is anyone working on this?
+> >
+> > Yeah, the problem is known, but nobody is working on the fix AFAIK.
+> >
+> > --
+> > Best regards,
+> > Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=
+=90=D1=80=D1=82=D1=91=D0=BC)
+> >
+> >
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
