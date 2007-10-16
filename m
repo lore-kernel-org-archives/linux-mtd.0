@@ -1,27 +1,23 @@
-Received: from smtp1.int-evry.fr ([157.159.10.44])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ihn9k-0004g1-D8
-	for linux-mtd@lists.infradead.org; Tue, 16 Oct 2007 15:12:27 +0100
-Received: from smtp-ext.int-evry.fr (smtp-ext.int-evry.fr [157.159.11.17])
-	by smtp1.int-evry.fr (Postfix) with ESMTP id 43F358E86CF
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Oct 2007 16:10:08 +0200 (CEST)
-Received: from ibook (unknown [77.192.17.88])
-	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by smtp-ext.int-evry.fr (Postfix) with ESMTP id 19AD0D0E317
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Oct 2007 16:10:08 +0200 (CEST)
-From: Florian Fainelli <florian.fainelli@telecomint.eu>
+Received: from pop.scorch.co.nz ([203.167.210.162] helo=firstline.co.nz)
+	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IhsPo-00013F-0t
+	for linux-mtd@lists.infradead.org; Tue, 16 Oct 2007 20:49:23 +0100
+From: Charles Manning <manningc2@actrix.gen.nz>
 To: linux-mtd@lists.infradead.org
-Subject: Extending plat-ram to support more probe methods
-Date: Tue, 16 Oct 2007 16:10:16 +0200
+Subject: Re: mtd support for large NAND
+Date: Wed, 17 Oct 2007 08:47:46 +1300
+References: <200710110911.58596.manningc2@actrix.gen.nz>
+	<49eab5c80710120136m557b0df1ye3bd4e04d345d222@mail.gmail.com>
+	<20071016104727.GH583@lazybastard.org>
+In-Reply-To: <20071016104727.GH583@lazybastard.org>
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+  charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Message-Id: <200710161610.17078.florian.fainelli@telecomint.eu>
+Message-Id: <200710170847.46250.manningc2@actrix.gen.nz>
+Cc: falls huang <falls.huang@gmail.com>,
+	=?utf-8?q?J=C3=B6rn_Engel?= <joern@logfs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,16 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
+On Tuesday 16 October 2007 23:47:27 J=C3=B6rn Engel wrote:
+> On Fri, 12 October 2007 16:36:09 +0800, falls huang wrote:
+> >   How can I simulate a large nandflash(>4G) in linux PC ? I want to
+> > take a look at it, but I don't have any develop-board that has 4G
+>
+> Something like this would work:
+>
+> $ truncate 5GiB foo
+> $ qemu -s -no-kqemu -hda rootfs -hdb foo -kernel arch/i386/boot/bzImage \
+>        -append "ro root=3D/dev/hda block2mtd.block2mtd=3D/dev/hdb"
+>
+> Instead of truncate you can also use dd:
+> $ dd if=3D/dev/zero of=3Dfoo bs=3D1 seek=3D5368709119
 
-A while ago Jason Gunthorpe proposed to extend plat-ram [1] to support more 
-probe methods. This patch did not make his way to the mainline kernel, 
-neither received critics or further discussions.
+Plus modifying mtd to handle partitions greater than the u32 size limit.
 
-I think it is adequate to have such driver, now that plat_nand made his way to 
-the platform generic drivers.
-
-[1] : http://lists.infradead.org/pipermail/linux-mtd/2005-December/014505.html
--- 
-Cordialement, Florian Fainelli
-------------------------------
+=2D- Charles
