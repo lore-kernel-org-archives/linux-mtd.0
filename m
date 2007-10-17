@@ -1,16 +1,18 @@
-Date: Wed, 17 Oct 2007 18:00:57 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: Nicolas Pitre <nico@cam.org>
-Subject: Re: Recursion in CFI driver. Is it really necessary to have.
-In-Reply-To: <alpine.LFD.0.9999.0710151534180.19446@xanadu.home>
-Message-ID: <Pine.LNX.4.64.0710171749520.17490@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0710121547550.21455@pentafluge.infradead.org>
-	<alpine.LFD.0.9999.0710121112450.19446@xanadu.home>
-	<Pine.LNX.4.64.0710151552170.1863@pentafluge.infradead.org>
-	<alpine.LFD.0.9999.0710151534180.19446@xanadu.home>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org
+Received: from dns2.vpop.net ([216.193.240.3] helo=thorin.vpop.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IiGzn-0000t2-1x
+	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 23:04:10 +0100
+Received: from mail.vpop.net (dns1.vpop.net [216.193.240.2])
+	by thorin.vpop.net (Postfix) with ESMTP id 352CF8BF0D4
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 17 Oct 2007 14:34:21 -0700 (PDT)
+From: mattjreimer@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] MTD: treat any negative return value from correct() as an
+	error
+Date: Wed, 17 Oct 2007 14:33:23 -0700
+Message-Id: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
+Cc: Matt Reimer <mreimer@vpop.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,39 +22,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi
->
-> One issue: you now force the resettime behavior for every cases.  Should
-> we care?
+From: Matt Reimer <mreimer@vpop.net>
 
-Yes you are right. This message is for debugging purposes. I would not care becuase it is hard to make code beauty and keep this debuging print.
+Treat any negative return value from a NAND driver's correct() function
+as a failure, rather than just -1. Some drivers (e.g. diskonchip) can
+return error values such as -EIO, which ended up being treated as the
+number of bits corrected, which in turn resulted in nand_do_read_ops()
+returning -EUCLEAN rather than -EBADMSG.
 
-> Also some style issues:
->
->> @@ -709,6 +709,23 @@
->>  		spin_unlock(&shared->lock);
->>  	}
->>
->> +	ret = chip_ready(map, chip, adr, mode);
->> +	if (ret == -EAGAIN)
->> +		goto retry;
->> +
->> +
->> +	return ret;
->> +}
->
-> One blank line too many above.
->
->> +
->> +static int chip_ready (struct map_info *map, struct flchip *chip, unsigned
->> long adr, int mode)
->> +{
->
-> You'll have to add a prototype for that function which is called before
-> its definition.
->
+Signed-off-by: Matt Reimer <mreimer@vpop.net>
+---
+ drivers/mtd/nand/nand_base.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Oh thank you! I will correct it and create a new thread for the patch.
-
-Thanks,
-Alexey
+diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
+index 24ac677..6d40edf 100644
+--- a/drivers/mtd/nand/nand_base.c
++++ b/drivers/mtd/nand/nand_base.c
+@@ -789,7 +789,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		int stat;
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat == -1)
++		if (stat < 0)
+ 			mtd->ecc_stats.failed++;
+ 		else
+ 			mtd->ecc_stats.corrected += stat;
+@@ -833,7 +833,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
+ 		int stat;
+ 
+ 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
+-		if (stat == -1)
++		if (stat < 0)
+ 			mtd->ecc_stats.failed++;
+ 		else
+ 			mtd->ecc_stats.corrected += stat;
+@@ -874,7 +874,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
+ 		chip->read_buf(mtd, oob, eccbytes);
+ 		stat = chip->ecc.correct(mtd, p, oob, NULL);
+ 
+-		if (stat == -1)
++		if (stat < 0)
+ 			mtd->ecc_stats.failed++;
+ 		else
+ 			mtd->ecc_stats.corrected += stat;
+-- 
+1.5.3.2
