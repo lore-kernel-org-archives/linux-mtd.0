@@ -1,23 +1,16 @@
-Received: from wx-out-0506.google.com ([66.249.82.229])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ii1Em-0001md-B6
-	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 06:14:34 +0100
-Received: by wx-out-0506.google.com with SMTP id s7so2074973wxc
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 16 Oct 2007 22:13:57 -0700 (PDT)
-Message-ID: <a8e1da0710162213g212d92a1q7fd94b578100c58d@mail.gmail.com>
-Date: Wed, 17 Oct 2007 13:13:56 +0800
-From: "Dave Young" <hidave.darkstar@gmail.com>
-To: "Randy Dunlap" <randy.dunlap@oracle.com>
-Subject: Re: mtd: pnc2000 module crashes
-In-Reply-To: <20071016214704.05a42338.randy.dunlap@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Received: from agminet01.oracle.com ([141.146.126.228])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ii1JZ-0002Pg-Bu
+	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 06:19:33 +0100
+Date: Tue, 16 Oct 2007 22:15:25 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: lkml <linux-kernel@vger.kernel.org>
+Subject: mtd: onenand_sim crashes
+Message-Id: <20071016221525.307c8904.randy.dunlap@oracle.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20071016214704.05a42338.randy.dunlap@oracle.com>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	lkml <linux-kernel@vger.kernel.org>
+Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,84 +20,74 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->On 10/17/07, Randy Dunlap <randy.dunlap@oracle.com> wrote:
-> 2.6.23-git7, on x86_64, no MTD devices:
->
-> modprobe pnc2000 crashes like so:
->
-> Photron PNC-2000 flash mapping: 400000 at bf000000
-> Unable to handle kernel paging request at 00000000bf000000 RIP:
->  [<ffffffff8800a0b9>] :map_funcs:simple_map_write+0x54/0x82
-> PGD 3476f067 PUD 0
-> Oops: 0002 [1] SMP
-> CPU 0
-> Modules linked in: cfi_probe gen_probe pnc2000 mtd chipreg map_funcs hidp l2cap bluetooth snd_via82xx snd_ac97_codec ac97_bus snd_seq_dummy snd_seq_oss snd_seq_midi_event snd_seq snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_alloc snd_mpu401_uart parport_pc ohci1394 parport snd_rawmidi ieee1394 snd_seq_device shpchp snd soundcore pci_hotplug
-> Pid: 4027, comm: modprobe Not tainted 2.6.23-git7 #11
-> RIP: 0010:[<ffffffff8800a0b9>]  [<ffffffff8800a0b9>] :map_funcs:simple_map_write+0x54/0x82
-> RSP: 0018:ffff81002ec9f828  EFLAGS: 00010206
-> RAX: 00000000f0f0f0f0 RBX: 0000000000000008 RCX: 0000000000000000
-> RDX: 0000000000000004 RSI: ffff81002ec9f878 RDI: ffff81002ec9f848
-> RBP: ffff81002ec9f848 R08: 00000000bf000000 R09: ffffffff880e35a0
-> R10: 0000000000000004 R11: 0000000000000002 R12: 0000000000000000
-> R13: ffffffff880e35a0 R14: 0000000000000000 R15: ffff81002ec9fd68
-> FS:  00002ac0707cf6f0(0000) GS:ffffffff806b4000(0000) knlGS:0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-> CR2: 00000000bf000000 CR3: 000000002f5ea000 CR4: 00000000000006e0
-> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-> Process modprobe (pid: 4027, threadinfo ffff81002ec9e000, task ffff81002ec269c0)
-> Stack:  00000000f0f0f0f0 0000000000000000 0000000000000000 0000000000000000
->  ffff81002ec9fd28 ffffffff8810b5ce 00000000f0f0f0f0 0000000000000000
->  0000000000000000 0000000000000000 ffff81002ec9f898 0000000000000000
-> Call Trace:
->  [<ffffffff8810b5ce>] :cfi_probe:cfi_probe_chip+0x17f/0x1379
->  [<ffffffff8026e3f7>] get_page_from_freelist+0x38b/0x4d4
->  [<ffffffff802503c6>] __lock_acquire+0x3ed/0x6af
->  [<ffffffff802503c6>] __lock_acquire+0x3ed/0x6af
->  [<ffffffff8024f8c1>] lock_release_holdtime+0x45/0x4a
->  [<ffffffff8022ca0d>] update_curr+0xf8/0x119
->  [<ffffffff8022cf95>] enqueue_entity+0x24a/0x279
->  [<ffffffff8024f8c1>] lock_release_holdtime+0x45/0x4a
->  [<ffffffff802503c6>] __lock_acquire+0x3ed/0x6af
->  [<ffffffff8024f8c1>] lock_release_holdtime+0x45/0x4a
->  [<ffffffff8050f046>] kprobe_flush_task+0x63/0xa9
->  [<ffffffff80232eec>] __mmdrop+0x87/0x90
->  [<ffffffff802503c6>] __lock_acquire+0x3ed/0x6af
->  [<ffffffff8024f8c1>] lock_release_holdtime+0x45/0x4a
->  [<ffffffff8022e29d>] __wake_up+0x43/0x50
->  [<ffffffff80244c75>] request_module+0x14b/0x162
->  [<ffffffff80235d98>] vprintk+0x2bd/0x2ff
->  [<ffffffff8810114f>] :gen_probe:mtd_do_chip_probe+0x7f/0x35c
->  [<ffffffff802503c6>] __lock_acquire+0x3ed/0x6af
->  [<ffffffff8024f8c1>] lock_release_holdtime+0x45/0x4a
->  [<ffffffff8050b906>] _spin_unlock+0x26/0x2a
->  [<ffffffff8810b44d>] :cfi_probe:cfi_probe+0x10/0x12
->  [<ffffffff880e0119>] :chipreg:do_map_probe+0x4a/0x66
->  [<ffffffff880ff03b>] :pnc2000:init_pnc2000+0x3b/0x6d
->  [<ffffffff80258af4>] sys_init_module+0x146c/0x15cd
->  [<ffffffff8800a000>] :map_funcs:simple_map_init+0x0/0x4b
->  [<ffffffff8020ef44>] syscall_trace_enter+0x95/0x99
->  [<ffffffff8020beec>] tracesys+0xdc/0xe1
->
->
-> Code: 41 89 00 eb 24 83 fa 08 75 0d 4d 03 41 18 48 8b 45 e0 49 89
-> RIP  [<ffffffff8800a0b9>] :map_funcs:simple_map_write+0x54/0x82
->  RSP <ffff81002ec9f828>
-> CR2: 00000000bf000000
->
+on x86_64, 2.6.23-git7, no MTD devices.
+Same config file as mtd crash a few minutes earlier.
 
-Possible reason :  it's iomem region is not be remaped.
+loading onenand_sim a _second_ time crashes:
 
-I have reported this bug, but get no response.
-http://lkml.org/lkml/2007/8/1/83
+OneNAND Manufacturer: Samsung (0xec)
+OneNAND 16MB 1.8V 16-bit (0x04)
+OneNAND version = 0x001e
+Lock scheme is Continuous Lock
+Scanning device for bad blocks
+Creating 1 MTD partitions on "OneNAND simulator":
+0x00000000-0x01000000 : "OneNAND simulator partition"
+mtd: Giving out device 0 to OneNAND simulator partition
+------------[ cut here ]------------
+kernel BUG at mm/slab.c:2983!
+invalid opcode: 0000 [1] SMP 
+CPU 0 
+Modules linked in: hidp l2cap bluetooth snd_via82xx snd_ac97_codec ac97_bus snd_seq_dummy s
+nd_seq_oss snd_seq_midi_event snd_seq snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_
+alloc snd_mpu401_uart parport snd_rawmidi snd_seq_device snd soundcore
+Pid: 3676, comm: bash Not tainted 2.6.23-git7 #11
+RIP: 0010:[<ffffffff8028a1af>]  [<ffffffff8028a1af>] cache_alloc_refill+0xcc/0x1b3
+RSP: 0018:ffff81002f199e18  EFLAGS: 00010046
+RAX: 0000000000000004 RBX: 0000000000000006 RCX: ffff8100010ff8a0
+RDX: ffff81003e7c0800 RSI: ffff8100010ff880 RDI: ffff81003d545680
+RBP: ffff81002f199e68 R08: ffff8100010ff880 R09: ffff810037ff4000
+R10: ffffffff8028a15c R11: 0000000000000202 R12: ffff81003d545680
+R13: ffff810037ff1a00 R14: ffff8100010ff880 R15: 000000000000000a
+FS:  00002b8d51d76f10(0000) GS:ffffffff806b4000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
+CR2: 00000000008e1f28 CR3: 0000000030508000 CR4: 00000000000006e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
+Process bash (pid: 3676, threadinfo ffff81002f198000, task ffff81002fc5c040)
+Stack:  ffff81002fc5c040 000080d0806708d8 ffff81003e7c0800 ffff8100010ff8c0
+ 0000000000000246 0000000000000246 00000000000080d0 ffff81003e7c0800
+ 00000000ffffffff 0000000000000000 ffff81002f199e98 ffffffff8028a42b
+Call Trace:
+ [<ffffffff8028a42b>] kmem_cache_alloc+0x8c/0xd1
+ [<ffffffff80294579>] alloc_pipe_info+0x1b/0x48
+ [<ffffffff80294603>] create_write_pipe+0x5d/0x1b5
+ [<ffffffff80295115>] do_pipe+0x1a/0x105
+ [<ffffffff80211460>] sys_pipe+0x1c/0x4b
+ [<ffffffff8020be81>] tracesys+0x71/0xe1
+ [<ffffffff8020beec>] tracesys+0xdc/0xe1
 
-Regards
-dave
 
->
-> config file is attached.
->
-> ---
-> ~Randy
->
->
+Code: 0f 0b eb fe 41 8b 5d 00 8b 55 d4 4c 89 e6 48 8b 7d c0 e8 1e 
+RIP  [<ffffffff8028a1af>] cache_alloc_refill+0xcc/0x1b3
+ RSP <ffff81002f199e18>
+BUG: spinlock lockup on CPU#0, events/0/6, ffff8100010ff8c0
+
+Call Trace:
+ [<ffffffff80328c19>] _raw_spin_lock+0xd1/0xf9
+ [<ffffffff8050bd0a>] _spin_lock_irq+0x47/0x54
+ [<ffffffff8028abc7>] drain_array+0x4e/0xc9
+ [<ffffffff8028b8ec>] cache_reap+0x0/0x20a
+ [<ffffffff8028b999>] cache_reap+0xad/0x20a
+ [<ffffffff8028b8ec>] cache_reap+0x0/0x20a
+ [<ffffffff80244def>] run_workqueue+0x97/0x16a
+ [<ffffffff8024589e>] worker_thread+0x0/0xea
+ [<ffffffff8024597d>] worker_thread+0xdf/0xea
+ [<ffffffff80248981>] autoremove_wake_function+0x0/0x38
+ [<ffffffff80248869>] kthread+0x49/0x78
+ [<ffffffff8020cb88>] child_rip+0xa/0x12
+ [<ffffffff802486e4>] kthreadd+0x120/0x145
+ [<ffffffff80248820>] kthread+0x0/0x78
+ [<ffffffff8020cb7e>] child_rip+0x0/0x12
+
+---
+~Randy
