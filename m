@@ -1,16 +1,31 @@
-Received: from agminet01.oracle.com ([141.146.126.228])
+Received: from e23smtp06.au.ibm.com ([202.81.18.175])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ii1JZ-0002Pg-Bu
-	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 06:19:33 +0100
-Date: Tue, 16 Oct 2007 22:15:25 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
-To: lkml <linux-kernel@vger.kernel.org>
-Subject: mtd: onenand_sim crashes
-Message-Id: <20071016221525.307c8904.randy.dunlap@oracle.com>
-Mime-Version: 1.0
+	id 1Ii3Cx-0006UU-D7
+	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 08:20:57 +0100
+Received: from sd0109e.au.ibm.com (d23rh905.au.ibm.com [202.81.18.225])
+	by e23smtp06.au.ibm.com (8.13.1/8.13.1) with ESMTP id l9H7C8g5015541
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2007 17:12:08 +1000
+Received: from d23av01.au.ibm.com (d23av01.au.ibm.com [9.190.234.96])
+	by sd0109e.au.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
+	l9H7FhwZ284302
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2007 17:15:44 +1000
+Received: from d23av01.au.ibm.com (loopback [127.0.0.1])
+	by d23av01.au.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l9H79FqU009518
+	for <linux-mtd@lists.infradead.org>; Wed, 17 Oct 2007 17:09:15 +1000
+Message-ID: <4715B5A5.9050005@linux.vnet.ibm.com>
+Date: Wed, 17 Oct 2007 12:41:33 +0530
+From: Kamalesh Babulal <kamalesh@linux.vnet.ibm.com>
+MIME-Version: 1.0
+To: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [BUG] 2.6.23-rc9 kernel panic - simple_map_write+0x4e/0x75
+References: <4710686C.8060603@linux.vnet.ibm.com>
+	<20071016134620.7b3ce56f.akpm@linux-foundation.org>
+In-Reply-To: <20071016134620.7b3ce56f.akpm@linux-foundation.org>
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,74 +35,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-on x86_64, 2.6.23-git7, no MTD devices.
-Same config file as mtd crash a few minutes earlier.
+Andrew Morton wrote:
+> On Sat, 13 Oct 2007 12:10:44 +0530
+> Kamalesh Babulal <kamalesh@linux.vnet.ibm.com> wrote:
+> 
+>> Kernel panic's with following oops message with 2.6.23-rc9 kernel 
+>>
+>> [  320.747257] ks0108: ERROR: parport didn't register new device
+>> [  320.771314] cfag12864b: ERROR: ks0108 is not initialized
+>> [  320.794308] cfag12864bfb: ERROR: cfag12864b is not initialized
+>> [  320.820729] BUG: unable to handle kernel paging request at virtual address
+>> bf000000
+>> [  320.857712]  printing eip:
+>> [  320.872556] *pde = 00000000
+>> [  320.887577] Oops: 0002 [#1]
+>> [  320.902383] SMP 
+>> [  320.914174] Modules linked in:
+>> [  320.929333] CPU:    0
+>> [  320.929334] EIP:    0060:[<c0d7e4e2>]    Not tainted VLI
+>> [  320.929335] EFLAGS: 00010286   (2.6.23-rc9-1 #1)
+>> [  320.982753] EIP is at simple_map_write+0x4e/0x75
+>> [  321.001956] eax: f0f0f0f0   ebx: c1de3f00   ecx: c1de3f00   edx: c1de3f00
+>> [  321.027701] esi: c3ca8d6c   edi: bf000000   ebp: c3ca8d98   esp: c3ca8d6c
+>> [  321.053322] ds: 007b   es: 007b   fs: 00d8  gs: 0000  ss: 0068
+>> [  321.075981] Process swapper (pid: 1, ti=c3ca8000 task=f7f44000 task.ti=c3ca8000)
+>> [  321.103031] Stack: f0f0f0f0 00000000 00000000 00000000 00000000 00000000
+>> 00000000 00000000 
+>> [  321.139446]        c3ca8e20 00000001 c3ca8e40 c3ca8e6c c0d692e6 f0f0f0f0
+>> 00000000 00000000 
+>> [  321.176495]        00000000 00000000 00000000 00000000 00000000 00000000
+>> 00000000 000050e6 
+>> [  321.214141] Call Trace:
+>> [  321.233922]  [<c0107dff>] show_trace_log_lvl+0x19/0x2e
+>> [  321.255433]  [<c0107ec1>] show_stack_log_lvl+0x99/0xa1
+>> [  321.276706]  [<c01080c4>] show_registers+0x1b8/0x290
+>> [  321.297254]  [<c01082f9>] die+0x118/0x1fd
+>> [  321.314920]  [<c145014a>] do_page_fault+0x51c/0x5f3
+>> [  321.335291]  [<c144e6da>] error_code+0x72/0x78
+>> [  321.354413]  [<c0d692e6>] cfi_probe_chip+0x148/0x9e1
+>> [  321.375202]  [<c0d7bb3e>] genprobe_new_chip+0x82/0x98
+>> [  321.396298]  [<c0d7b8dd>] genprobe_ident_chips+0x26/0x205
+>> [  321.418493]  [<c0d7b830>] mtd_do_chip_probe+0x10/0x97
+>> [  321.439654]  [<c0d6a29e>] cfi_probe+0xd/0xf
+>> [  321.458157]  [<c0d68d57>] do_map_probe+0x40/0x53
+>> [  321.477931]  [<c200d748>] init_pnc2000+0x3b/0x6d
+>> [  321.497559]  [<c1fa382c>] do_initcalls+0x7a/0x1c2
+>> [  321.517377]  [<c1fa3990>] do_basic_setup+0x1c/0x1e
+>> [  321.537327]  [<c1fa3a2c>] kernel_init+0x69/0xaa
+>> [  321.556311]  [<c0107c2b>] kernel_thread_helper+0x7/0x10
+>> [  321.577207]  =======================
+>> [  321.592882] Code: 83 f8 01 75 0a 03 7b 10 8b 45 d4 88 07 eb 35 83 f8 02 75 0c
+>> 0f b7 45 d4 03 7b 10 66 89 07 eb 24 83 f8 04 75 0a 03 7b 10 8b 45 d4 <89> 07 eb
+>> 15 7e 13 03 7b 10 89 c1 c1 e9 02 f3 a5 89 c1 83 e1 03 
+>> [  321.668990] EIP: [<c0d7e4e2>] simple_map_write+0x4e/0x75 SS:ESP 0068:c3ca8d6c
+>> [  321.695750] Kernel panic - not syncing: Attempted to kill init!
+> 
+> Would I be correct in assuming that the machine has no mtd devices, but
+> you happened to link that driver into your vmlinux?
+> 
 
-loading onenand_sim a _second_ time crashes:
+Hi Andrew,
 
-OneNAND Manufacturer: Samsung (0xec)
-OneNAND 16MB 1.8V 16-bit (0x04)
-OneNAND version = 0x001e
-Lock scheme is Continuous Lock
-Scanning device for bad blocks
-Creating 1 MTD partitions on "OneNAND simulator":
-0x00000000-0x01000000 : "OneNAND simulator partition"
-mtd: Giving out device 0 to OneNAND simulator partition
-------------[ cut here ]------------
-kernel BUG at mm/slab.c:2983!
-invalid opcode: 0000 [1] SMP 
-CPU 0 
-Modules linked in: hidp l2cap bluetooth snd_via82xx snd_ac97_codec ac97_bus snd_seq_dummy s
-nd_seq_oss snd_seq_midi_event snd_seq snd_pcm_oss snd_mixer_oss snd_pcm snd_timer snd_page_
-alloc snd_mpu401_uart parport snd_rawmidi snd_seq_device snd soundcore
-Pid: 3676, comm: bash Not tainted 2.6.23-git7 #11
-RIP: 0010:[<ffffffff8028a1af>]  [<ffffffff8028a1af>] cache_alloc_refill+0xcc/0x1b3
-RSP: 0018:ffff81002f199e18  EFLAGS: 00010046
-RAX: 0000000000000004 RBX: 0000000000000006 RCX: ffff8100010ff8a0
-RDX: ffff81003e7c0800 RSI: ffff8100010ff880 RDI: ffff81003d545680
-RBP: ffff81002f199e68 R08: ffff8100010ff880 R09: ffff810037ff4000
-R10: ffffffff8028a15c R11: 0000000000000202 R12: ffff81003d545680
-R13: ffff810037ff1a00 R14: ffff8100010ff880 R15: 000000000000000a
-FS:  00002b8d51d76f10(0000) GS:ffffffff806b4000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 000000008005003b
-CR2: 00000000008e1f28 CR3: 0000000030508000 CR4: 00000000000006e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000400
-Process bash (pid: 3676, threadinfo ffff81002f198000, task ffff81002fc5c040)
-Stack:  ffff81002fc5c040 000080d0806708d8 ffff81003e7c0800 ffff8100010ff8c0
- 0000000000000246 0000000000000246 00000000000080d0 ffff81003e7c0800
- 00000000ffffffff 0000000000000000 ffff81002f199e98 ffffffff8028a42b
-Call Trace:
- [<ffffffff8028a42b>] kmem_cache_alloc+0x8c/0xd1
- [<ffffffff80294579>] alloc_pipe_info+0x1b/0x48
- [<ffffffff80294603>] create_write_pipe+0x5d/0x1b5
- [<ffffffff80295115>] do_pipe+0x1a/0x105
- [<ffffffff80211460>] sys_pipe+0x1c/0x4b
- [<ffffffff8020be81>] tracesys+0x71/0xe1
- [<ffffffff8020beec>] tracesys+0xdc/0xe1
-
-
-Code: 0f 0b eb fe 41 8b 5d 00 8b 55 d4 4c 89 e6 48 8b 7d c0 e8 1e 
-RIP  [<ffffffff8028a1af>] cache_alloc_refill+0xcc/0x1b3
- RSP <ffff81002f199e18>
-BUG: spinlock lockup on CPU#0, events/0/6, ffff8100010ff8c0
-
-Call Trace:
- [<ffffffff80328c19>] _raw_spin_lock+0xd1/0xf9
- [<ffffffff8050bd0a>] _spin_lock_irq+0x47/0x54
- [<ffffffff8028abc7>] drain_array+0x4e/0xc9
- [<ffffffff8028b8ec>] cache_reap+0x0/0x20a
- [<ffffffff8028b999>] cache_reap+0xad/0x20a
- [<ffffffff8028b8ec>] cache_reap+0x0/0x20a
- [<ffffffff80244def>] run_workqueue+0x97/0x16a
- [<ffffffff8024589e>] worker_thread+0x0/0xea
- [<ffffffff8024597d>] worker_thread+0xdf/0xea
- [<ffffffff80248981>] autoremove_wake_function+0x0/0x38
- [<ffffffff80248869>] kthread+0x49/0x78
- [<ffffffff8020cb88>] child_rip+0xa/0x12
- [<ffffffff802486e4>] kthreadd+0x120/0x145
- [<ffffffff80248820>] kthread+0x0/0x78
- [<ffffffff8020cb7e>] child_rip+0x0/0x12
-
----
-~Randy
+The machine do not have the mtd device, and the mtd is compiled into the vmlinuz.
+This configuration works fine for other kernels and is reproducible with
+2.6.23-rc9 only.
+-- 
+Thanks & Regards,
+Kamalesh Babulal,
+Linux Technology Center,
+IBM, ISTL.
