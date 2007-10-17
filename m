@@ -1,19 +1,19 @@
-Received: from rv-out-0910.google.com ([209.85.198.185])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ii5DR-0003Rm-GT
-	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 10:29:27 +0100
-Received: by rv-out-0910.google.com with SMTP id c24so1747973rvf
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Oct 2007 02:29:11 -0700 (PDT)
-Message-ID: <81885c0a0710170229h2fb17f2ey656985131e39375@mail.gmail.com>
-Date: Wed, 17 Oct 2007 14:59:11 +0530
-From: "Rajanikanth H.V" <rajanikanthhv@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Need information: JFFS2 mounting problem
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ii5Sh-00049y-FQ
+	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 10:45:13 +0100
+Date: Wed, 17 Oct 2007 11:37:33 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Lennert Buytenhek <buytenh@wantstofly.org>
+Subject: Re: [PATCH,RFC] driver for Marvell Orion device bus NAND controller
+Message-ID: <20071017093733.GC9712@lazybastard.org>
+References: <20071016231040.GB21441@xi.wantstofly.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20071016231040.GB21441@xi.wantstofly.org>
+Cc: tzachi@marvell.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,17 +23,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Wed, 17 October 2007 01:10:40 +0200, Lennert Buytenhek wrote:
+> 
+> Attached is a driver for the device bus NAND controller in
+> the Marvell Orion family of ARM SoCs.
+> 
+> Signed-off-by: Tzachi Perelstein <tzachi@marvell.com>
+> Signed-off-by: Lennert Buytenhek <buytenh@marvell.com>
+Acked-by: Joern Engle <joern@logfs.org>
 
-I am working on Intel Strata(M18 ) flash, using JFFS2 on one of the
-NOR partition ceated.
+The only thing that bothers me about this driver is
+CONFIG_MTD_PARTITIONS and all the mess inside.  As always.
 
-During mounting, i come accross to see warning message as:
-"MTD point returned len too short: 29 instead of 405"
+Jörn
 
-Any inputs to debug on this issue or
-Is it safe to ignore this warning message?, because file operations
-are working as expected.
-
-Regards,
-Raj
+-- 
+When in doubt, use brute force.
+-- Ken Thompson
