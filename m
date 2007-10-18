@@ -1,23 +1,20 @@
-Received: from relais.videotron.ca ([24.201.245.36])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IiWWW-0001eJ-8h
-	for linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 15:38:59 +0100
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0JQ400964365M4H0@VL-MH-MR001.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 10:34:54 -0400 (EDT)
-Date: Thu, 18 Oct 2007 10:34:53 -0400 (EDT)
-From: Nicolas Pitre <nico@cam.org>
-To: Alexey Korolev <akorolev@infradead.org>
-Subject: Re: [PATCH]CFI fix of kernel deadlock caused by get_chip recursion
-In-reply-to: <Pine.LNX.4.64.0710181501270.32655@pentafluge.infradead.org>
-Message-id: <alpine.LFD.0.9999.0710181030480.19446@xanadu.home>
-References: <Pine.LNX.4.64.0710181501270.32655@pentafluge.infradead.org>
-Cc: linux-mtd@lists.infradead.org
+Received: from agminet01.oracle.com ([141.146.126.228])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Iiaug-00042z-Hb
+	for linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 20:20:14 +0100
+Date: Thu, 18 Oct 2007 12:14:54 -0700
+From: Randy Dunlap <randy.dunlap@oracle.com>
+To: <kmpark@infradead.org>
+Subject: Re: onenand_sim crashes
+Message-Id: <20071018121454.97c0769b.randy.dunlap@oracle.com>
+In-Reply-To: <002d01c81084$60fb7980$e1ac580a@swcenter.sec.samsung.co.kr>
+References: <20071016221525.307c8904.randy.dunlap@oracle.com>
+	<002d01c81084$60fb7980$e1ac580a@swcenter.sec.samsung.co.kr>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	'lkml' <linux-kernel@vger.kernel.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,238 +24,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 18 Oct 2007, Alexey Korolev wrote:
+On Wed, 17 Oct 2007 15:10:03 +0900 Kyungmin Park wrote:
 
 > Hi,
 > 
-> This patch solves kernel deadlock issue seen on JFFF2 simultaneous operations.
-> Detailed investigation of the issue showed that the kernel deadlock is caused
-> bytons of recursive get_chip calls.
+> Thank you for point out.
+> There is a bug. It frees the static variable.
 > 
-> MTD:CFI: This fix removes recursion in get_chip function to avoid possible
-> deadlock situation.
-> 
-> Signed-off-by: Alexey Korolev <akorolev at infradead.org>
+> Please see the attached patch.
 
+Confirm that fixes the problem.  Thanks.
 
-OK, now that you reversed the order for the two functions, the prototype 
-for chip_ready() becomes redundent.  There is plenty of redundent 
-prototypes in that file already, so whatever.
-
-Acked-By: Nicolas Pitre <nico@cam.org>
-
-
-> ---
-> diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c
-> b/drivers/mtd/chips/cfi_cmdset_0001.c
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-09-25 14:51:06.000000000
-> +0400
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-10-18 17:57:35.000000000
-> +0400
-> @@ -85,6 +85,7 @@
->  static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr, loff_t
-> from,
->  			size_t len);
-> 
-> +static int chip_ready (struct map_info *map, struct flchip *chip, unsigned
-> long adr, int mode);
->  static int get_chip(struct map_info *map, struct flchip *chip, unsigned long
-> adr, int mode);
->  static void put_chip(struct map_info *map, struct flchip *chip, unsigned long
-> adr);
->  #include "fwh_lock.h"
-> @@ -641,73 +642,14 @@
->  /*
->   *  *********** CHIP ACCESS FUNCTIONS ***********
->   */
-> -
-> -static int get_chip(struct map_info *map, struct flchip *chip, unsigned long
-> adr, int mode)
-> +static int chip_ready (struct map_info *map, struct flchip *chip, unsigned
-> long adr, int mode)
->  {
-> +
->  	DECLARE_WAITQUEUE(wait, current);
->  	struct cfi_private *cfi = map->fldrv_priv;
->  	map_word status, status_OK = CMD(0x80), status_PWS = CMD(0x01);
-> -	unsigned long timeo;
->  	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
-> -
-> - resettime:
-> -	timeo = jiffies + HZ;
-> - retry:
-> -	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode ==
-> FL_OTP_WRITE)) {
-> -		/*
-> -		 * OK. We have possibility for contension on the write/erase
-> -		 * operations which are global to the real chip and not per
-> -		 * partition.  So let's fight it over in the partition which
-> -		 * currently has authority on the operation.
-> -		 *
-> -		 * The rules are as follows:
-> -		 *
-> -		 * - any write operation must own shared->writing.
-> -		 *
-> -		 * - any erase operation must own _both_ shared->writing and
-> -		 *   shared->erasing.
-> -		 *
-> -		 * - contension arbitration is handled in the owner's context.
-> -		 *
-> -		 * The 'shared' struct can be read and/or written only when
-> -		 * its lock is taken.
-> -		 */
-> -		struct flchip_shared *shared = chip->priv;
-> -		struct flchip *contender;
-> -		spin_lock(&shared->lock);
-> -		contender = shared->writing;
-> -		if (contender && contender != chip) {
-> -			/*
-> -			 * The engine to perform desired operation on this
-> -			 * partition is already in use by someone else.
-> -			 * Let's fight over it in the context of the chip
-> -			 * currently using it.  If it is possible to suspend,
-> -			 * that other partition will do just that, otherwise
-> -			 * it'll happily send us to sleep.  In any case, when
-> -			 * get_chip returns success we're clear to go ahead.
-> -			 */
-> -			int ret = spin_trylock(contender->mutex);
-> -			spin_unlock(&shared->lock);
-> -			if (!ret)
-> -				goto retry;
-> -			spin_unlock(chip->mutex);
-> -			ret = get_chip(map, contender, contender->start,
-> mode);
-> -			spin_lock(chip->mutex);
-> -			if (ret) {
-> -				spin_unlock(contender->mutex);
-> -				return ret;
-> -			}
-> -			timeo = jiffies + HZ;
-> -			spin_lock(&shared->lock);
-> -			spin_unlock(contender->mutex);
-> -		}
-> -
-> -		/* We now own it */
-> -		shared->writing = chip;
-> -		if (mode == FL_ERASING)
-> -			shared->erasing = chip;
-> -		spin_unlock(&shared->lock);
-> -	}
-> +	unsigned long timeo = jiffies + HZ;
-> 
->  	switch (chip->state) {
-> 
-> @@ -722,16 +664,11 @@
->  			if (chip->priv && map_word_andequal(map, status,
-> status_PWS, status_PWS))
->  				break;
-> 
-> -			if (time_after(jiffies, timeo)) {
-> -				printk(KERN_ERR "%s: Waiting for chip to be
-> ready timed out. Status %lx\n",
-> -				       map->name, status.x[0]);
-> -				return -EIO;
-> -			}
->  			spin_unlock(chip->mutex);
->  			cfi_udelay(1);
->  			spin_lock(chip->mutex);
->  			/* Someone else might have been playing with it. */
-> -			goto retry;
-> +			return -EAGAIN;
->  		}
-> 
->  	case FL_READY:
-> @@ -806,8 +743,81 @@
->  		schedule();
->  		remove_wait_queue(&chip->wq, &wait);
->  		spin_lock(chip->mutex);
-> -		goto resettime;
-> +		return -EAGAIN;
-> +	}
-> +}
-> +
-> +static int get_chip(struct map_info *map, struct flchip *chip, unsigned long
-> adr, int mode)
-> +{
-> +	int ret;
-> +	struct cfi_private *cfi = map->fldrv_priv;
-> +
-> + retry:
-> +	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode ==
-> FL_OTP_WRITE)) {
-> +		/*
-> +		 * OK. We have possibility for contension on the write/erase
-> +		 * operations which are global to the real chip and not per
-> +		 * partition.  So let's fight it over in the partition which
-> +		 * currently has authority on the operation.
-> +		 *
-> +		 * The rules are as follows:
-> +		 *
-> +		 * - any write operation must own shared->writing.
-> +		 *
-> +		 * - any erase operation must own _both_ shared->writing and
-> +		 *   shared->erasing.
-> +		 *
-> +		 * - contension arbitration is handled in the owner's context.
-> +		 *
-> +		 * The 'shared' struct can be read and/or written only when
-> +		 * its lock is taken.
-> +		 */
-> +		struct flchip_shared *shared = chip->priv;
-> +		struct flchip *contender;
-> +		spin_lock(&shared->lock);
-> +		contender = shared->writing;
-> +		if (contender && contender != chip) {
-> +			/*
-> +			 * The engine to perform desired operation on this
-> +			 * partition is already in use by someone else.
-> +			 * Let's fight over it in the context of the chip
-> +			 * currently using it.  If it is possible to suspend,
-> +			 * that other partition will do just that, otherwise
-> +			 * it'll happily send us to sleep.  In any case, when
-> +			 * get_chip returns success we're clear to go ahead.
-> +			 */
-> +			ret = spin_trylock(contender->mutex);
-> +			spin_unlock(&shared->lock);
-> +			if (!ret)
-> +				goto retry;
-> +			spin_unlock(chip->mutex);
-> +			ret = chip_ready(map, contender, contender->start,
-> mode);
-> +			spin_lock(chip->mutex);
-> +
-> +			if (ret == -EAGAIN) {
-> +				spin_unlock(contender->mutex);
-> +				goto retry;
-> +			}
-> +			if (ret) {
-> +				spin_unlock(contender->mutex);
-> +				return ret;
-> +			}
-> +			spin_lock(&shared->lock);
-> +			spin_unlock(contender->mutex);
-> +		}
-> +
-> +		/* We now own it */
-> +		shared->writing = chip;
-> +		if (mode == FL_ERASING)
-> +			shared->erasing = chip;
-> +		spin_unlock(&shared->lock);
->  	}
-> +
-> +	ret = chip_ready(map, chip, adr, mode);
-> +	if (ret == -EAGAIN)
-> +		goto retry;
-> +
-> +	return ret;
->  }
-> 
->  static void put_chip(struct map_info *map, struct flchip *chip, unsigned long
-> adr)
-> 
-> Thanks,
-> Alexey
-> 
-
-
-Nicolas
+---
+~Randy
