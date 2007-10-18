@@ -1,17 +1,10 @@
-Received: from amanet-154-55.eglobalreach.net ([202.124.154.55]
-	helo=smx.amaes.com)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IiMDk-0000fq-Pf
-	for linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 04:38:57 +0100
-Date: Thu, 18 Oct 2007 05:20:21 +0100
-From: "Refugio curiosity" <McqueenWiley@reflexpublishing.com>
-To: info@datasystems.at, duesseldorf.de@mercuriurval.com,
-	alan.cooper@china-and-trade.com, linux-mtd@lists.infradead.org,
-	terry@mti.biglobe.ne.jp, tkshiao@yahoo.com, webmaster@viewtec.ch
-Subject: improve your business with these MD lists
-Message-ID: <449880f5tvf0$l6660px0$8741i7y0@Delldim5150
+Date: Thu, 18 Oct 2007 15:15:34 +0100 (BST)
+From: Alexey Korolev <akorolev@infradead.org>
+To: linux-mtd@lists.infradead.org, Nico@cam.org
+Subject: [PATCH]CFI fix of kernel deadlock caused by get_chip recursion
+Message-ID: <Pine.LNX.4.64.0710181501270.32655@pentafluge.infradead.org>
 MIME-Version: 1.0
-Content-type: text/plain; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,46 +14,204 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
 
+This patch solves kernel deadlock issue seen on JFFF2 simultaneous operations. 
+Detailed investigation of the issue showed that the kernel deadlock is caused bytons of recursive get_chip calls.
 
+MTD:CFI: This fix removes recursion in get_chip function to avoid possible deadlock situation.
 
+Signed-off-by: Alexey Korolev <akorolev at infradead.org>
+---
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-09-25 14:51:06.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-10-18 17:57:35.000000000 +0400
+@@ -85,6 +85,7 @@
+  static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr, loff_t from,
+  			size_t len);
 
++static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
+  static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
+  static void put_chip(struct map_info *map, struct flchip *chip, unsigned long adr);
+  #include "fwh_lock.h"
+@@ -641,73 +642,14 @@
+  /*
+   *  *********** CHIP ACCESS FUNCTIONS ***********
+   */
+-
+-static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
++static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
+  {
++
+  	DECLARE_WAITQUEUE(wait, current);
+  	struct cfi_private *cfi = map->fldrv_priv;
+  	map_word status, status_OK = CMD(0x80), status_PWS = CMD(0x01);
+-	unsigned long timeo;
+  	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
+-
+- resettime:
+-	timeo = jiffies + HZ;
+- retry:
+-	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE)) {
+-		/*
+-		 * OK. We have possibility for contension on the write/erase
+-		 * operations which are global to the real chip and not per
+-		 * partition.  So let's fight it over in the partition which
+-		 * currently has authority on the operation.
+-		 *
+-		 * The rules are as follows:
+-		 *
+-		 * - any write operation must own shared->writing.
+-		 *
+-		 * - any erase operation must own _both_ shared->writing and
+-		 *   shared->erasing.
+-		 *
+-		 * - contension arbitration is handled in the owner's context.
+-		 *
+-		 * The 'shared' struct can be read and/or written only when
+-		 * its lock is taken.
+-		 */
+-		struct flchip_shared *shared = chip->priv;
+-		struct flchip *contender;
+-		spin_lock(&shared->lock);
+-		contender = shared->writing;
+-		if (contender && contender != chip) {
+-			/*
+-			 * The engine to perform desired operation on this
+-			 * partition is already in use by someone else.
+-			 * Let's fight over it in the context of the chip
+-			 * currently using it.  If it is possible to suspend,
+-			 * that other partition will do just that, otherwise
+-			 * it'll happily send us to sleep.  In any case, when
+-			 * get_chip returns success we're clear to go ahead.
+-			 */
+-			int ret = spin_trylock(contender->mutex);
+-			spin_unlock(&shared->lock);
+-			if (!ret)
+-				goto retry;
+-			spin_unlock(chip->mutex);
+-			ret = get_chip(map, contender, contender->start, mode);
+-			spin_lock(chip->mutex);
+-			if (ret) {
+-				spin_unlock(contender->mutex);
+-				return ret;
+-			}
+-			timeo = jiffies + HZ;
+-			spin_lock(&shared->lock);
+-			spin_unlock(contender->mutex);
+-		}
+-
+-		/* We now own it */
+-		shared->writing = chip;
+-		if (mode == FL_ERASING)
+-			shared->erasing = chip;
+-		spin_unlock(&shared->lock);
+-	}
++	unsigned long timeo = jiffies + HZ;
 
-Fully Licensed MDs in the USA 
+  	switch (chip->state) {
 
-788,302 in total – 17,210 emails
+@@ -722,16 +664,11 @@
+  			if (chip->priv && map_word_andequal(map, status, status_PWS, status_PWS))
+  				break;
 
-Coverage in many different areas of medicine such as Endocrinology, Pathology, Urology, Neurology, Plastic Surgery, Psychiatry, Cardiology and much more 
+-			if (time_after(jiffies, timeo)) {
+-				printk(KERN_ERR "%s: Waiting for chip to be ready timed out. Status %lx\n",
+-				       map->name, status.x[0]);
+-				return -EIO;
+-			}
+  			spin_unlock(chip->mutex);
+  			cfi_udelay(1);
+  			spin_lock(chip->mutex);
+  			/* Someone else might have been playing with it. */
+-			goto retry;
++			return -EAGAIN;
+  		}
 
-Can easily be sorted by 16 different fields
+  	case FL_READY:
+@@ -806,8 +743,81 @@
+  		schedule();
+  		remove_wait_queue(&chip->wq, &wait);
+  		spin_lock(chip->mutex);
+-		goto resettime;
++		return -EAGAIN;
++	}
++}
++
++static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
++{
++	int ret;
++	struct cfi_private *cfi = map->fldrv_priv;
++
++ retry:
++	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE)) {
++		/*
++		 * OK. We have possibility for contension on the write/erase
++		 * operations which are global to the real chip and not per
++		 * partition.  So let's fight it over in the partition which
++		 * currently has authority on the operation.
++		 *
++		 * The rules are as follows:
++		 *
++		 * - any write operation must own shared->writing.
++		 *
++		 * - any erase operation must own _both_ shared->writing and
++		 *   shared->erasing.
++		 *
++		 * - contension arbitration is handled in the owner's context.
++		 *
++		 * The 'shared' struct can be read and/or written only when
++		 * its lock is taken.
++		 */
++		struct flchip_shared *shared = chip->priv;
++		struct flchip *contender;
++		spin_lock(&shared->lock);
++		contender = shared->writing;
++		if (contender && contender != chip) {
++			/*
++			 * The engine to perform desired operation on this
++			 * partition is already in use by someone else.
++			 * Let's fight over it in the context of the chip
++			 * currently using it.  If it is possible to suspend,
++			 * that other partition will do just that, otherwise
++			 * it'll happily send us to sleep.  In any case, when
++			 * get_chip returns success we're clear to go ahead.
++			 */
++			ret = spin_trylock(contender->mutex);
++			spin_unlock(&shared->lock);
++			if (!ret)
++				goto retry;
++			spin_unlock(chip->mutex);
++			ret = chip_ready(map, contender, contender->start, mode);
++			spin_lock(chip->mutex);
++
++			if (ret == -EAGAIN) {
++				spin_unlock(contender->mutex);
++				goto retry;
++			}
++			if (ret) {
++				spin_unlock(contender->mutex);
++				return ret;
++			}
++			spin_lock(&shared->lock);
++			spin_unlock(contender->mutex);
++		}
++
++		/* We now own it */
++		shared->writing = chip;
++		if (mode == FL_ERASING)
++			shared->erasing = chip;
++		spin_unlock(&shared->lock);
+  	}
++
++	ret = chip_ready(map, chip, adr, mode);
++	if (ret == -EAGAIN)
++		goto retry;
++
++	return ret;
+  }
 
-Price Just Lowered -  $322
+  static void put_chip(struct map_info *map, struct flchip *chip, unsigned long adr)
 
-
-*** Get the data below as a gift when you order the MD list above ***
-
-Listing of US Pharma Companies
-5,000 names and emails of the major players
-
-American Hospital Listing
-23,000 Admins in more than 7,000 hospitals {a $399 value]
-
-American Dentists
-A complete Listing or dentists and related services (valued at $299)
-
-Contact List of US Chiropractors
-100,000 Chiropractors in the USA (worth $249 alone)
-
-send us an email:      medplusid@hotmail.com
-
-  
-
-* only until Oct 19
-
-
-for termination of this mail send a blank message with 9744 in the subject
-
--- 
-This message has been scanned for viruses and
-dangerous content by AMA!MailScan, and is
-believed to be clean.
+Thanks,
+Alexey
