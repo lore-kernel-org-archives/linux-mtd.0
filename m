@@ -1,18 +1,17 @@
-Received: from dns2.vpop.net ([216.193.240.3] helo=thorin.vpop.net)
+Received: from amanet-154-55.eglobalreach.net ([202.124.154.55]
+	helo=smx.amaes.com)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IiGzn-0000t2-1x
-	for linux-mtd@lists.infradead.org; Wed, 17 Oct 2007 23:04:10 +0100
-Received: from mail.vpop.net (dns1.vpop.net [216.193.240.2])
-	by thorin.vpop.net (Postfix) with ESMTP id 352CF8BF0D4
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 17 Oct 2007 14:34:21 -0700 (PDT)
-From: mattjreimer@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: treat any negative return value from correct() as an
-	error
-Date: Wed, 17 Oct 2007 14:33:23 -0700
-Message-Id: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
-Cc: Matt Reimer <mreimer@vpop.net>
+	id 1IiMDk-0000fq-Pf
+	for linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 04:38:57 +0100
+Date: Thu, 18 Oct 2007 05:20:21 +0100
+From: "Refugio curiosity" <McqueenWiley@reflexpublishing.com>
+To: info@datasystems.at, duesseldorf.de@mercuriurval.com,
+	alan.cooper@china-and-trade.com, linux-mtd@lists.infradead.org,
+	terry@mti.biglobe.ne.jp, tkshiao@yahoo.com, webmaster@viewtec.ch
+Subject: improve your business with these MD lists
+Message-ID: <449880f5tvf0$l6660px0$8741i7y0@Delldim5150
+MIME-Version: 1.0
+Content-type: text/plain; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,49 +21,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Matt Reimer <mreimer@vpop.net>
 
-Treat any negative return value from a NAND driver's correct() function
-as a failure, rather than just -1. Some drivers (e.g. diskonchip) can
-return error values such as -EIO, which ended up being treated as the
-number of bits corrected, which in turn resulted in nand_do_read_ops()
-returning -EUCLEAN rather than -EBADMSG.
 
-Signed-off-by: Matt Reimer <mreimer@vpop.net>
----
- drivers/mtd/nand/nand_base.c |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index 24ac677..6d40edf 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -789,7 +789,7 @@ static int nand_read_page_swecc(struct mtd_info *mtd, struct nand_chip *chip,
- 		int stat;
- 
- 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
--		if (stat == -1)
-+		if (stat < 0)
- 			mtd->ecc_stats.failed++;
- 		else
- 			mtd->ecc_stats.corrected += stat;
-@@ -833,7 +833,7 @@ static int nand_read_page_hwecc(struct mtd_info *mtd, struct nand_chip *chip,
- 		int stat;
- 
- 		stat = chip->ecc.correct(mtd, p, &ecc_code[i], &ecc_calc[i]);
--		if (stat == -1)
-+		if (stat < 0)
- 			mtd->ecc_stats.failed++;
- 		else
- 			mtd->ecc_stats.corrected += stat;
-@@ -874,7 +874,7 @@ static int nand_read_page_syndrome(struct mtd_info *mtd, struct nand_chip *chip,
- 		chip->read_buf(mtd, oob, eccbytes);
- 		stat = chip->ecc.correct(mtd, p, oob, NULL);
- 
--		if (stat == -1)
-+		if (stat < 0)
- 			mtd->ecc_stats.failed++;
- 		else
- 			mtd->ecc_stats.corrected += stat;
+
+
+Fully Licensed MDs in the USA 
+
+788,302 in total – 17,210 emails
+
+Coverage in many different areas of medicine such as Endocrinology, Pathology, Urology, Neurology, Plastic Surgery, Psychiatry, Cardiology and much more 
+
+Can easily be sorted by 16 different fields
+
+Price Just Lowered -  $322
+
+
+*** Get the data below as a gift when you order the MD list above ***
+
+Listing of US Pharma Companies
+5,000 names and emails of the major players
+
+American Hospital Listing
+23,000 Admins in more than 7,000 hospitals {a $399 value]
+
+American Dentists
+A complete Listing or dentists and related services (valued at $299)
+
+Contact List of US Chiropractors
+100,000 Chiropractors in the USA (worth $249 alone)
+
+send us an email:      medplusid@hotmail.com
+
+  
+
+* only until Oct 19
+
+
+for termination of this mail send a blank message with 9744 in the subject
+
 -- 
-1.5.3.2
+This message has been scanned for viruses and
+dangerous content by AMA!MailScan, and is
+believed to be clean.
