@@ -1,21 +1,19 @@
-Received: from wx-out-0506.google.com ([66.249.82.231])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iisgv-0002tj-Gu
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 15:19:15 +0100
-Received: by wx-out-0506.google.com with SMTP id s7so477873wxc
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Oct 2007 07:18:52 -0700 (PDT)
-Message-ID: <c384c5ea0710190718j2d2fe2afnb76dfaf7c5adbef4@mail.gmail.com>
-Date: Fri, 19 Oct 2007 16:18:52 +0200
-From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-To: linux-mtd@lists.infradead.org
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Iisyi-0003l1-1m
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 15:37:34 +0100
+Date: Fri, 19 Oct 2007 16:33:03 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Leon Woestenberg <leon.woestenberg@gmail.com>
 Subject: Re: [RFC] root=/dev/mtdblock@name
-In-Reply-To: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <20071019143303.GD26913@lazybastard.org>
 References: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,11 +23,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, 19 October 2007 13:55:08 +0200, Leon Woestenberg wrote:
+> 
+> we have a small patch for 2.6.19 that allows us to specify a root
+> filesystem on MTD using named partitions, i.e. such as RedBoot fis
+> partitions.
+> 
+> root=/dev/mtdblock@name
+> 
 > Is this something that would be accepted upstream? If so, I'll forward
 > the patch to the current MTD GIT tree.
->
-Rather, *against* the current MTD GIT tree.
 
-Regards,
+What would that gain us that drivers/mtd/mtdsuper.c does not already
+offer?
+
+Jörn
+
 -- 
-Leon
+It's just what we asked for, but not what we want!
+-- anonymous
