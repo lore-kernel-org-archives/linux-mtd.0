@@ -1,12 +1,12 @@
 Received: from dns1.vpop.net ([216.193.240.2] helo=mail.vpop.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iify8-0007wL-HW
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 01:44:07 +0100
+	id 1IigH5-0000fy-DQ
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 02:03:42 +0100
 From: Matt Reimer <mattjreimer@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: add s3c2440-specific read_buf/write_buf
-Date: Thu, 18 Oct 2007 17:43:07 -0700
-Message-Id: <1192754587-25256-1-git-send-email-mattjreimer@gmail.com>
+Subject: [PATCH] MTD: fix s3c2410 error correction
+Date: Thu, 18 Oct 2007 18:02:43 -0700
+Message-Id: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
 Cc: Matt Reimer <mreimer@vpop.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -19,53 +19,55 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 From: Matt Reimer <mreimer@vpop.net>
 
-Add read_buf/write_buf for s3c2440, which can read/write 32 bits at a
-time rather than just 8. In my testing on an s3c2440a running at 400 MHz
-with a 100 MHz HCLK, read performance improves by 36% (from 5.19 MB/s
-to 7.07 MB/s).
+The single-bit error correction was, well, incorrect. For determing which
+bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, and
+it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead of
+P16 P32 P64 P128 P256 P512 P1024 P2048.
 
 Signed-off-by: Matt Reimer <mreimer@vpop.net>
 ---
- drivers/mtd/nand/s3c2410.c |   14 ++++++++++++++
- 1 files changed, 14 insertions(+), 0 deletions(-)
+ drivers/mtd/nand/s3c2410.c |   26 ++++++++++++--------------
+ 1 files changed, 12 insertions(+), 14 deletions(-)
 
 diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 5fac4c4..903db18 100644
+index 903db18..077fdcc 100644
 --- a/drivers/mtd/nand/s3c2410.c
 +++ b/drivers/mtd/nand/s3c2410.c
-@@ -488,12 +488,24 @@ static void s3c2410_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
- 	readsb(this->IO_ADDR_R, buf, len);
- }
+@@ -364,23 +364,21 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
+ 	    ((diff2 ^ (diff2 >> 1)) & 0x55) == 0x55) {
+ 		/* calculate the bit position of the error */
  
-+static void s3c2440_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
-+{
-+	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-+	readsl(info->regs + S3C2440_NFDATA, buf, len / 4);
-+}
-+
- static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
- {
- 	struct nand_chip *this = mtd->priv;
- 	writesb(this->IO_ADDR_W, buf, len);
- }
+-		bit  = (diff2 >> 2) & 1;
+-		bit |= (diff2 >> 3) & 2;
+-		bit |= (diff2 >> 4) & 4;
++		bit  = ((diff2 >> 3) & 1) |
++		       ((diff2 >> 4) & 2) |
++		       ((diff2 >> 5) & 4);
  
-+static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
-+{
-+	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
-+	writesl(info->regs + S3C2440_NFDATA, buf, len / 4);
-+}
-+
- /* device management functions */
+ 		/* calculate the byte position of the error */
  
- static int s3c2410_nand_remove(struct platform_device *pdev)
-@@ -604,6 +616,8 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
- 		info->sel_bit	= S3C2440_NFCONT_nFCE;
- 		chip->cmd_ctrl  = s3c2440_nand_hwcontrol;
- 		chip->dev_ready = s3c2440_nand_devready;
-+		chip->read_buf  = s3c2440_nand_read_buf;
-+		chip->write_buf	= s3c2440_nand_write_buf;
- 		break;
+-		byte  = (diff1 << 1) & 0x80;
+-		byte |= (diff1 << 2) & 0x40;
+-		byte |= (diff1 << 3) & 0x20;
+-		byte |= (diff1 << 4) & 0x10;
+-
+-		byte |= (diff0 >> 3) & 0x08;
+-		byte |= (diff0 >> 2) & 0x04;
+-		byte |= (diff0 >> 1) & 0x02;
+-		byte |= (diff0 >> 0) & 0x01;
+-
+-		byte |= (diff2 << 8) & 0x100;
++		byte = ((diff2 << 7) & 0x100) |
++		       ((diff1 << 0) & 0x80)  |
++		       ((diff1 << 1) & 0x40)  |
++		       ((diff1 << 2) & 0x20)  |
++		       ((diff1 << 3) & 0x10)  |
++		       ((diff0 >> 4) & 0x08)  |
++		       ((diff0 >> 3) & 0x04)  |
++		       ((diff0 >> 2) & 0x02)  |
++		       ((diff0 >> 1) & 0x01);
  
- 	case TYPE_S3C2412:
+ 		dev_dbg(info->device, "correcting error bit %d, byte %d\n",
+ 			bit, byte);
 -- 
 1.5.3.2
