@@ -1,20 +1,26 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IixND-0007gp-OJ
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 20:19:09 +0100
-Date: Fri, 19 Oct 2007 21:14:33 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Erez Zadok <ezk@cs.sunysb.edu>
-Subject: Re: [BLOCK2MTD] WARNING: at kernel/lockdep.c:2331 lockdep_init_map()
-Message-ID: <20071019191433.GK26913@lazybastard.org>
-References: <200710191753.l9JHreeS012064@agora.fsl.cs.sunysb.edu>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from rv-out-0910.google.com ([209.85.198.186])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IixXj-0008Pj-JD
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 20:30:01 +0100
+Received: by rv-out-0910.google.com with SMTP id c24so544814rvf
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Oct 2007 12:29:45 -0700 (PDT)
+Message-ID: <f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
+Date: Fri, 19 Oct 2007 12:29:45 -0700
+From: "Matt Reimer" <mattjreimer@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: [PATCH] MTD: make s3c2410's correct_data indicate an error for
+	multi-bit read errors
+In-Reply-To: <1192784447.3421.27.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <200710191753.l9JHreeS012064@agora.fsl.cs.sunysb.edu>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org,
-	linux-kernel@vger.kernel.org
+References: <f383264b0710181813i61b5b9acs76afdf27f199adcc@mail.gmail.com>
+	<20071019082438.GA26913@lazybastard.org>
+	<1192784447.3421.27.camel@sauron>
+Cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,53 +30,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 October 2007 13:53:40 -0400, Erez Zadok wrote:
+On 10/19/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
+> On Fri, 2007-10-19 at 10:24 +0200, J=F6rn Engel wrote:
+> > > @@ -397,7 +397,7 @@ static int s3c2410_nand_correct_data(struct
+> > > mtd_info *mtd, u_char *dat,
+> > >         if ((diff0 & ~(1<<fls(diff0))) =3D=3D 0)
+> > >                 return 1;
+> > >
+> > > -       return 0;
+> > > +       return -1;
+> > >  }
 >
-> I've been having this problem for some time with mtd, which I use to mount
-> jffs2 images (for unionfs testing).  I've seen it in several recent major
-> kernels, including 2.6.24.  Here's the sequence of ops I perform:
+> Yup, J=F6rn is right, you should return -EBADMSG on ECC errors and
+> -EUCLEAN if there was a correctable bit-flip.
 
-Since when roughly?  2.6.20ish?  Before?
+See the patch I posted a couple of days ago with the subject "MTD:
+treat any negative return value from correct() as an error". Once that
+patch is accepted, doing what you say will work as you expect; right
+now, it results in lying to upper layers about errors.
 
-> # cp jffs2-empty.img /tmp/foo
-> # losetup /dev/loop0 /tmp/foo
-> # modprobe mtdblock
-> # modprobe block2mtd block2mtd=/dev/loop0,128ki
-> # mount -t jffs2 /dev/mtdblock0 /n/lower/b0
-
-Side note: you don't need mtdblock:
-# cp jffs2-empty.img /tmp/foo
-# losetup /dev/loop0 /tmp/foo
-# modprobe block2mtd block2mtd=/dev/loop0,128ki
-# mount -t jffs2 mtd0 /n/lower/b0
-
-It doesn't really hurt, 'tis just superfluous.
-
-> The jffs2-empty.img is a small jffs2 image, of an empty directory, created
-> w/ the jffs2 utils.  At the point I modprobe block2mtd, I get the following
-> lockdep warning and a "BUG" message:
-> 
-> BUG: key f88e1340 not in .data!
-> WARNING: at kernel/lockdep.c:2331 lockdep_init_map()
->  [<c0102bc2>] show_trace_log_lvl+0x1a/0x2f
->  [<c0103692>] show_trace+0x12/0x14
->  [<c01037b2>] dump_stack+0x15/0x17
->  [<c0125432>] lockdep_init_map+0x94/0x3e4
->  [<c0125001>] debug_mutex_init+0x2c/0x3c
->  [<c01210d4>] __mutex_init+0x38/0x40
->  [<f88e01d3>] 0xf88e01d3
->  [<c011dda7>] parse_args+0x123/0x200
->  [<c012b725>] sys_init_module+0xdd0/0x122c
->  [<c0102586>] sysenter_past_esp+0x5f/0x91
->  =======================
-> block2mtd: mtd0: [d: /dev/loop0] erase_size = 128KiB [131072]
-> block2mtd: version $Revision: 1.30 $
-
-Could be my problem.  I'll see if I can reproduce it.  Can you send me
-your .config or a link to it?
-
-Jörn
-
--- 
-/* Keep these two variables together */
-int bar;
+Matt
