@@ -1,19 +1,16 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iisyi-0003l1-1m
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 15:37:34 +0100
-Date: Fri, 19 Oct 2007 16:33:03 +0200
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Leon Woestenberg <leon.woestenberg@gmail.com>
-Subject: Re: [RFC] root=/dev/mtdblock@name
-Message-ID: <20071019143303.GD26913@lazybastard.org>
-References: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1IivrC-0002fA-Ja
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 18:42:02 +0100
+Date: Fri, 19 Oct 2007 13:38:38 -0400
+Message-Id: <200710191738.l9JHccYx011061@agora.fsl.cs.sunysb.edu>
+From: Erez Zadok <ezk@cs.sunysb.edu>
+To: Nick Piggin <nickpiggin@yahoo.com.au>
+Subject: Re: BUG at mm/filemap.c:1749 (2.6.24, jffs2, unionfs) 
+In-reply-to: Your message of "Fri, 19 Oct 2007 17:16:53 +1000."
+	<200710191716.53470.nickpiggin@yahoo.com.au>
+Cc: linux-mtd@lists.infradead.org, Erez Zadok <ezk@cs.sunysb.edu>,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org, jffs-dev@axis.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +20,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 October 2007 13:55:08 +0200, Leon Woestenberg wrote:
+In message <200710191716.53470.nickpiggin@yahoo.com.au>, Nick Piggin writes:
+[...]
+> Hmm, looks like jffs2_write_end is writing more than we actually ask it
+> to, and returns that back.
 > 
-> we have a small patch for 2.6.19 that allows us to specify a root
-> filesystem on MTD using named partitions, i.e. such as RedBoot fis
-> partitions.
+>         unsigned aligned_start = start & ~3;
 > 
-> root=/dev/mtdblock@name
+> and
 > 
-> Is this something that would be accepted upstream? If so, I'll forward
-> the patch to the current MTD GIT tree.
+>         if (end == PAGE_CACHE_SIZE) {
+>                 /* When writing out the end of a page, write out the
+>                    _whole_ page. This helps to reduce the number of
+>                    nodes in files which have many short writes, like
+>                    syslog files. */
+>                 start = aligned_start = 0;
+>         }
+> 
+> These "longer" writes are fine, but they shouldn't get propagated back
+> to the vm/vfs. Something like the following patch might fix it.
+> 
+> 
+> --Boundary-00=_lnFGHwOggSRGKPd
+> Content-Type: text/x-diff;
+>   charset="utf-8";
+>   name="jffs2-writtenlen-fix.patch"
+> Content-Transfer-Encoding: 7bit
+> Content-Disposition: attachment;
+> 	filename="jffs2-writtenlen-fix.patch"
 
-What would that gain us that drivers/mtd/mtdsuper.c does not already
-offer?
+Nick, the patch worked.  All of my unionfs-over-jffs2 tests passed.
 
-Jörn
-
--- 
-It's just what we asked for, but not what we want!
--- anonymous
+Thanks,
+Erez.
