@@ -1,26 +1,21 @@
-Received: from rv-out-0910.google.com ([209.85.198.186])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IixXj-0008Pj-JD
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 20:30:01 +0100
-Received: by rv-out-0910.google.com with SMTP id c24so544814rvf
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Oct 2007 12:29:45 -0700 (PDT)
-Message-ID: <f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
-Date: Fri, 19 Oct 2007 12:29:45 -0700
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: [PATCH] MTD: make s3c2410's correct_data indicate an error for
-	multi-bit read errors
-In-Reply-To: <1192784447.3421.27.camel@sauron>
+Received: from willow.rfc1149.net ([2001:6f8:37a:2::2] helo=mail2.rfc1149.net)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Iixzj-0000XV-D4
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 15:58:56 -0400
+Date: Fri, 19 Oct 2007 21:58:47 +0200
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: [PATCH] eccbuf is statically defined and always evaluate to true
+References: <20071019174155.80782C408E@mail2.rfc1149.net>
+	<20071019190604.GJ26913@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <f383264b0710181813i61b5b9acs76afdf27f199adcc@mail.gmail.com>
-	<20071019082438.GA26913@lazybastard.org>
-	<1192784447.3421.27.camel@sauron>
-Cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20071019190604.GJ26913@lazybastard.org>
+From: Samuel Tardieu <sam@rfc1149.net>
+Message-Id: <2007-10-19-21-58-47+trackit+sam@rfc1149.net>
+Cc: trivial@kernel.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,23 +25,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/19/07, Artem Bityutskiy <dedekind@infradead.org> wrote:
-> On Fri, 2007-10-19 at 10:24 +0200, J=F6rn Engel wrote:
-> > > @@ -397,7 +397,7 @@ static int s3c2410_nand_correct_data(struct
-> > > mtd_info *mtd, u_char *dat,
-> > >         if ((diff0 & ~(1<<fls(diff0))) =3D=3D 0)
-> > >                 return 1;
-> > >
-> > > -       return 0;
-> > > +       return -1;
-> > >  }
->
-> Yup, J=F6rn is right, you should return -EBADMSG on ECC errors and
-> -EUCLEAN if there was a correctable bit-flip.
+On 19/10, Jörn Engel wrote:
 
-See the patch I posted a couple of days ago with the subject "MTD:
-treat any negative return value from correct() as an error". Once that
-patch is accepted, doing what you say will work as you expect; right
-now, it results in lying to upper layers about errors.
+| I assume you don't actually use this driver and just ran make
+| randconfig or allyesconfig or so..
 
-Matt
+I tried the latest svn tip of GCC and it looks like this warning is
+quite recent (and I happened to have this driver enabled as a module
+in my kernel):
+
+drivers/mtd/devices/doc2000.c: In function ‘doc_read’:
+drivers/mtd/devices/doc2000.c:635: warning: the address of ‘eccbuf’ will always evaluate as ‘true’
+drivers/mtd/devices/doc2000.c: In function ‘doc_write’:
+drivers/mtd/devices/doc2000.c:899: warning: the address of ‘eccbuf’ will always evaluate as ‘true’
+drivers/mtd/devices/doc2001plus.c: In function ‘doc_write’:
+drivers/mtd/devices/doc2001plus.c:751: warning: the address of ‘eccbuf’ will always evaluate as ‘true’
