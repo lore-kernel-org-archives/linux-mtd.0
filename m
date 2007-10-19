@@ -1,16 +1,13 @@
-Received: from agminet01.oracle.com ([141.146.126.228])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iib2b-0004NZ-Fk
-	for linux-mtd@lists.infradead.org; Thu, 18 Oct 2007 20:28:25 +0100
-Date: Thu, 18 Oct 2007 12:23:10 -0700
-From: Randy Dunlap <randy.dunlap@oracle.com>
+Received: from dns1.vpop.net ([216.193.240.2] helo=mail.vpop.net)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Iify8-0007wL-HW
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 01:44:07 +0100
+From: Matt Reimer <mattjreimer@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH] onenand-sim: fix kernel-doc and typos
-Message-Id: <20071018122310.17f45ab4.randy.dunlap@oracle.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: dwmw2@infradead.org, akpm <akpm@linux-foundation.org>, kmpark@infradead.org
+Subject: [PATCH] MTD: add s3c2440-specific read_buf/write_buf
+Date: Thu, 18 Oct 2007 17:43:07 -0700
+Message-Id: <1192754587-25256-1-git-send-email-mattjreimer@gmail.com>
+Cc: Matt Reimer <mreimer@vpop.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,137 +17,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Randy Dunlap <randy.dunlap@oracle.com>
+From: Matt Reimer <mreimer@vpop.net>
 
-Correct kernel-doc notation and descriptions.
-Correct other typos.
+Add read_buf/write_buf for s3c2440, which can read/write 32 bits at a
+time rather than just 8. In my testing on an s3c2440a running at 400 MHz
+with a 100 MHz HCLK, read performance improves by 36% (from 5.19 MB/s
+to 7.07 MB/s).
 
-Signed-off-by: Randy Dunlap <randy.dunlap@oracle.com>
+Signed-off-by: Matt Reimer <mreimer@vpop.net>
 ---
- drivers/mtd/onenand/onenand_sim.c |   49 +++++++++++++++++++-------------------
- 1 file changed, 25 insertions(+), 24 deletions(-)
+ drivers/mtd/nand/s3c2410.c |   14 ++++++++++++++
+ 1 files changed, 14 insertions(+), 0 deletions(-)
 
---- linux-2.6.23-git7.orig/drivers/mtd/onenand/onenand_sim.c
-+++ linux-2.6.23-git7/drivers/mtd/onenand/onenand_sim.c
-@@ -88,11 +88,11 @@ do {									\
- 
- /**
-  * onenand_lock_handle - Handle Lock scheme
-- * @param this		OneNAND device structure
-- * @param cmd		The command to be sent
-+ * @this:		OneNAND device structure
-+ * @cmd:		The command to be sent
-  *
-  * Send lock command to OneNAND device.
-- * The lock scheme is depends on chip type.
-+ * The lock scheme depends on chip type.
-  */
- static void onenand_lock_handle(struct onenand_chip *this, int cmd)
- {
-@@ -131,8 +131,8 @@ static void onenand_lock_handle(struct o
- 
- /**
-  * onenand_bootram_handle - Handle BootRAM area
-- * @param this		OneNAND device structure
-- * @param cmd		The command to be sent
-+ * @this:		OneNAND device structure
-+ * @cmd:		The command to be sent
-  *
-  * Emulate BootRAM area. It is possible to do basic operation using BootRAM.
-  */
-@@ -153,10 +153,10 @@ static void onenand_bootram_handle(struc
- 
- /**
-  * onenand_update_interrupt - Set interrupt register
-- * @param this         OneNAND device structure
-- * @param cmd          The command to be sent
-+ * @this:         OneNAND device structure
-+ * @cmd:          The command to be sent
-  *
-- * Update interrupt register. The status is depends on command.
-+ * Update interrupt register. The status depends on command.
-  */
- static void onenand_update_interrupt(struct onenand_chip *this, int cmd)
- {
-@@ -189,11 +189,12 @@ static void onenand_update_interrupt(str
+diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
+index 5fac4c4..903db18 100644
+--- a/drivers/mtd/nand/s3c2410.c
++++ b/drivers/mtd/nand/s3c2410.c
+@@ -488,12 +488,24 @@ static void s3c2410_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
+ 	readsb(this->IO_ADDR_R, buf, len);
  }
  
- /**
-- * onenand_check_overwrite - Check over-write if happend
-- * @param dest		The destination pointer
-- * @param src		The source pointer
-- * @param count		The length to be check
-- * @return		0 on same, otherwise 1
-+ * onenand_check_overwrite - Check if over-write happened
-+ * @dest:		The destination pointer
-+ * @src:		The source pointer
-+ * @count:		The length to be check
-+ *
-+ * Returns:		0 on same, otherwise 1
-  *
-  * Compare the source with destination
-  */
-@@ -213,10 +214,10 @@ static int onenand_check_overwrite(void 
++static void s3c2440_nand_read_buf(struct mtd_info *mtd, u_char *buf, int len)
++{
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
++	readsl(info->regs + S3C2440_NFDATA, buf, len / 4);
++}
++
+ static void s3c2410_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
+ {
+ 	struct nand_chip *this = mtd->priv;
+ 	writesb(this->IO_ADDR_W, buf, len);
+ }
  
- /**
-  * onenand_data_handle - Handle OneNAND Core and DataRAM
-- * @param this		OneNAND device structure
-- * @param cmd		The command to be sent
-- * @param dataram	Which dataram used
-- * @param offset	The offset to OneNAND Core
-+ * @this:		OneNAND device structure
-+ * @cmd:		The command to be sent
-+ * @dataram:		Which dataram used
-+ * @offset:		The offset to OneNAND Core
-  *
-  * Copy data from OneNAND Core to DataRAM (read)
-  * Copy data from DataRAM to OneNAND Core (write)
-@@ -295,8 +296,8 @@ static void onenand_data_handle(struct o
++static void s3c2440_nand_write_buf(struct mtd_info *mtd, const u_char *buf, int len)
++{
++	struct s3c2410_nand_info *info = s3c2410_nand_mtd_toinfo(mtd);
++	writesl(info->regs + S3C2440_NFDATA, buf, len / 4);
++}
++
+ /* device management functions */
  
- /**
-  * onenand_command_handle - Handle command
-- * @param this		OneNAND device structure
-- * @param cmd		The command to be sent
-+ * @this:		OneNAND device structure
-+ * @cmd:		The command to be sent
-  *
-  * Emulate OneNAND command.
-  */
-@@ -350,8 +351,8 @@ static void onenand_command_handle(struc
+ static int s3c2410_nand_remove(struct platform_device *pdev)
+@@ -604,6 +616,8 @@ static void s3c2410_nand_init_chip(struct s3c2410_nand_info *info,
+ 		info->sel_bit	= S3C2440_NFCONT_nFCE;
+ 		chip->cmd_ctrl  = s3c2440_nand_hwcontrol;
+ 		chip->dev_ready = s3c2440_nand_devready;
++		chip->read_buf  = s3c2440_nand_read_buf;
++		chip->write_buf	= s3c2440_nand_write_buf;
+ 		break;
  
- /**
-  * onenand_writew - [OneNAND Interface] Emulate write operation
-- * @param value		value to write
-- * @param addr		address to write
-+ * @value:		value to write
-+ * @addr:		address to write
-  *
-  * Write OneNAND register with value
-  */
-@@ -373,7 +374,7 @@ static void onenand_writew(unsigned shor
- 
- /**
-  * flash_init - Initialize OneNAND simulator
-- * @param flash		OneNAND simulaotr data strucutres
-+ * @flash:		OneNAND simulator data strucutres
-  *
-  * Initialize OneNAND simulator.
-  */
-@@ -416,7 +417,7 @@ static int __init flash_init(struct onen
- 
- /**
-  * flash_exit - Clean up OneNAND simulator
-- * @param flash		OneNAND simulaotr data strucutres
-+ * @flash:		OneNAND simulator data structures
-  *
-  * Clean up OneNAND simulator.
-  */
-@@ -448,7 +449,7 @@ static int __init onenand_sim_init(void)
- 	info->onenand.write_word = onenand_writew;
- 
- 	if (flash_init(&info->flash)) {
--		printk(KERN_ERR "Unable to allocat flash.\n");
-+		printk(KERN_ERR "Unable to allocate flash.\n");
- 		kfree(ffchars);
- 		kfree(info);
- 		return -ENOMEM;
+ 	case TYPE_S3C2412:
+-- 
+1.5.3.2
