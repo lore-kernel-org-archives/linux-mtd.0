@@ -1,16 +1,13 @@
-Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IivrC-0002fA-Ja
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 18:42:02 +0100
-Date: Fri, 19 Oct 2007 13:38:38 -0400
-Message-Id: <200710191738.l9JHccYx011061@agora.fsl.cs.sunysb.edu>
-From: Erez Zadok <ezk@cs.sunysb.edu>
-To: Nick Piggin <nickpiggin@yahoo.com.au>
-Subject: Re: BUG at mm/filemap.c:1749 (2.6.24, jffs2, unionfs) 
-In-reply-to: Your message of "Fri, 19 Oct 2007 17:16:53 +1000."
-	<200710191716.53470.nickpiggin@yahoo.com.au>
-Cc: linux-mtd@lists.infradead.org, Erez Zadok <ezk@cs.sunysb.edu>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org, jffs-dev@axis.com
+Received: from willow.rfc1149.net ([2001:6f8:37a:2::2] helo=mail2.rfc1149.net)
+	by canuck.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IivrE-00005l-Oh
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 13:42:06 -0400
+From: Samuel Tardieu <sam@rfc1149.net>
+Date: Fri, 19 Oct 2007 19:26:35 +0200
+Subject: [PATCH] eccbuf is statically defined and always evaluate to true
+To: linux-mtd@lists.infradead.org
+Message-Id: <20071019174155.80782C408E@mail2.rfc1149.net>
+Cc: trivial@kernel.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,36 +17,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <200710191716.53470.nickpiggin@yahoo.com.au>, Nick Piggin writes:
-[...]
-> Hmm, looks like jffs2_write_end is writing more than we actually ask it
-> to, and returns that back.
-> 
->         unsigned aligned_start = start & ~3;
-> 
-> and
-> 
->         if (end == PAGE_CACHE_SIZE) {
->                 /* When writing out the end of a page, write out the
->                    _whole_ page. This helps to reduce the number of
->                    nodes in files which have many short writes, like
->                    syslog files. */
->                 start = aligned_start = 0;
->         }
-> 
-> These "longer" writes are fine, but they shouldn't get propagated back
-> to the vm/vfs. Something like the following patch might fix it.
-> 
-> 
-> --Boundary-00=_lnFGHwOggSRGKPd
-> Content-Type: text/x-diff;
->   charset="utf-8";
->   name="jffs2-writtenlen-fix.patch"
-> Content-Transfer-Encoding: 7bit
-> Content-Disposition: attachment;
-> 	filename="jffs2-writtenlen-fix.patch"
+---
+ drivers/mtd/devices/doc2000.c     |    4 ++--
+ drivers/mtd/devices/doc2001plus.c |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-Nick, the patch worked.  All of my unionfs-over-jffs2 tests passed.
-
-Thanks,
-Erez.
+diff --git a/drivers/mtd/devices/doc2000.c b/drivers/mtd/devices/doc2000.c
+index c73e96b..e9ce241 100644
+--- a/drivers/mtd/devices/doc2000.c
++++ b/drivers/mtd/devices/doc2000.c
+@@ -632,7 +632,7 @@ static int doc_read(struct mtd_info *mtd, loff_t from, size_t len,
+ 			len = ((from | 0x1ff) + 1) - from;
+ 
+ 		/* The ECC will not be calculated correctly if less than 512 is read */
+-		if (len != 0x200 && eccbuf)
++		if (len != 0x200)
+ 			printk(KERN_WARNING
+ 			       "ECC needs a full sector read (adr: %lx size %lx)\n",
+ 			       (long) from, (long) len);
+@@ -896,7 +896,7 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 		/* Let the caller know we completed it */
+ 		*retlen += len;
+ 
+-		if (eccbuf) {
++		{
+ 			unsigned char x[8];
+ 			size_t dummy;
+ 			int ret;
+diff --git a/drivers/mtd/devices/doc2001plus.c b/drivers/mtd/devices/doc2001plus.c
+index 2b30b58..83be346 100644
+--- a/drivers/mtd/devices/doc2001plus.c
++++ b/drivers/mtd/devices/doc2001plus.c
+@@ -748,7 +748,7 @@ static int doc_write(struct mtd_info *mtd, loff_t to, size_t len,
+ 	WriteDOC(DoC_GetDataOffset(mtd, &fto), docptr, Mplus_FlashCmd);
+ 
+ 	/* On interleaved devices the flags for 2nd half 512 are before data */
+-	if (eccbuf && before)
++	if (before)
+ 		fto -= 2;
+ 
+ 	/* issue the Serial Data In command to initial the Page Program process */
+-- 
+1.5.3.4
