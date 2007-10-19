@@ -1,16 +1,24 @@
-Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IiyeF-0003qy-QC
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 21:40:51 +0100
-Date: Fri, 19 Oct 2007 16:37:28 -0400
-Message-Id: <200710192037.l9JKbSsh018946@agora.fsl.cs.sunysb.edu>
-From: Erez Zadok <ezk@cs.sunysb.edu>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: [BLOCK2MTD] WARNING: at kernel/lockdep.c:2331 lockdep_init_map() 
-In-reply-to: Your message of "Fri, 19 Oct 2007 21:14:33 +0200."
-	<20071019191433.GK26913@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, Erez Zadok <ezk@cs.sunysb.edu>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Received: from hs-out-0708.google.com ([64.233.178.246]
+	helo=hs-out-2021.google.com)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IizmZ-0007Ui-Pd
+	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 22:53:30 +0100
+Received: by hs-out-2021.google.com with SMTP id 23so839044hsn
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 19 Oct 2007 14:52:26 -0700 (PDT)
+Message-ID: <c384c5ea0710191452x52ffdc74x2ce16d0faf62a11b@mail.gmail.com>
+Date: Fri, 19 Oct 2007 23:52:26 +0200
+From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
+To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
+Subject: Re: [RFC] root=/dev/mtdblock@name
+In-Reply-To: <20071019143303.GD26913@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
+	<20071019143303.GD26913@lazybastard.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,20 +28,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <20071019191433.GK26913@lazybastard.org>, =?utf-8?B?SsO2cm4=?= Engel writes:
-> On Fri, 19 October 2007 13:53:40 -0400, Erez Zadok wrote:
+Hello,
+
+On 10/19/07, J=F6rn Engel <joern@logfs.org> wrote:
+> On Fri, 19 October 2007 13:55:08 +0200, Leon Woestenberg wrote:
+> > root=3D/dev/mtdblock@name
 > >
-> > I've been having this problem for some time with mtd, which I use to mount
-> > jffs2 images (for unionfs testing).  I've seen it in several recent major
-> > kernels, including 2.6.24.  Here's the sequence of ops I perform:
-> 
-> Since when roughly?  2.6.20ish?  Before?
+> What would that gain us that drivers/mtd/mtdsuper.c does not already
+> offer?
+>
+Nothing, it seems, I had missed that development. Been too much
+walking around in user land lately.
 
-I was able to verify that the same lockdep warning comes up in every major
-kernel all the way back to 2.6.18.  Of course the line number in lockdep.c
-that causes the warning is slightly different from kernel to kernel, but the
-stack trace is the same.
-
-Hope this helps.
-
-Erez.
+Regards,
+--=20
+Leon
