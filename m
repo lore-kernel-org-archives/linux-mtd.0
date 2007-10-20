@@ -1,21 +1,23 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjCMD-0000fn-A6
-	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 12:19:07 +0100
-Date: Sat, 20 Oct 2007 11:29:50 +0200
+	id 1IjCQA-0000tF-Rp
+	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 12:23:13 +0100
+Date: Sat, 20 Oct 2007 12:28:41 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Erez Zadok <ezk@cs.sunysb.edu>
-Subject: Re: [BLOCK2MTD] WARNING: at kernel/lockdep.c:2331 lockdep_init_map()
-Message-ID: <20071020092950.GB32465@lazybastard.org>
-References: <20071019191433.GK26913@lazybastard.org>
-	<200710192004.l9JK4Aju017839@agora.fsl.cs.sunysb.edu>
+To: Matt Reimer <mattjreimer@gmail.com>
+Subject: Re: [PATCH] MTD: make s3c2410's correct_data indicate an error for
+	multi-bit read errors
+Message-ID: <20071020102840.GC32465@lazybastard.org>
+References: <f383264b0710181813i61b5b9acs76afdf27f199adcc@mail.gmail.com>
+	<20071019082438.GA26913@lazybastard.org>
+	<1192784447.3421.27.camel@sauron>
+	<f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200710192004.l9JK4Aju017839@agora.fsl.cs.sunysb.edu>
-Cc: linux-mtd@lists.infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
+Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,36 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 October 2007 16:04:10 -0400, Erez Zadok wrote:
-> In message <20071019191433.GK26913@lazybastard.org>, =?utf-8?B?SsO2cm4=?= Engel writes:
-> > 
-> > Since when roughly?  2.6.20ish?  Before?
+On Fri, 19 October 2007 12:29:45 -0700, Matt Reimer wrote:
 > 
-> Yeah, I guess around that time.  If you want, I could go back and test each
-> of my backports and see if it has the lockdep message or not.
+> See the patch I posted a couple of days ago with the subject "MTD:
+> treat any negative return value from correct() as an error". Once that
+> patch is accepted, doing what you say will work as you expect; right
+> now, it results in lying to upper layers about errors.
 
-That's ok.  Just wanted to get a rough idea.
-
-> > Side note: you don't need mtdblock:
-> > # cp jffs2-empty.img /tmp/foo
-> > # losetup /dev/loop0 /tmp/foo
-> > # modprobe block2mtd block2mtd=/dev/loop0,128ki
-> > # mount -t jffs2 mtd0 /n/lower/b0
-> > 
-> > It doesn't really hurt, 'tis just superfluous.
-> 
-> Neat.  Curious, but where does "mtd0" come from then?  It's not in my /dev
-> (which uses devfs on an FC6 system).
-
-JFFS2 interprets that itself.  The only reason why JFFS2 needed a block
-device was to determine the minor number of the mtd underneith.  So code
-was added to find the correct mtd from "mtd0" or "mtd:some_name"
-instead.  I believe you can even disable CONFIG_BLOCK now.
-
-And the code itself was moved to drivers/mtd/mtdsuper.c fairly recently.
+I'll comment to that patch seperately.  This one is
+Acked-By: Joern Engel <joern@logfs.org>
 
 Jörn
 
 -- 
-Joern's library part 2:
-http://www.art.net/~hopkins/Don/unix-haters/tirix/embarrassing-memo.html
+It does not matter how slowly you go, so long as you do not stop.
+-- Confucius
