@@ -1,13 +1,13 @@
 Received: from dns1.vpop.net ([216.193.240.2] helo=mail.vpop.net)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjHSU-0006LV-0y
-	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 17:45:58 +0100
+	id 1IjHVu-0006aQ-Gn
+	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 17:49:29 +0100
 From: Matt Reimer <mattjreimer@gmail.com>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH] MTD: make s3c2410's correct_data indicate an error for
 	multi-bit read errors
-Date: Sat, 20 Oct 2007 09:44:47 -0700
-Message-Id: <1192898687-12818-1-git-send-email-mattjreimer@gmail.com>
+Date: Sat, 20 Oct 2007 09:48:25 -0700
+Message-Id: <1192898905-12921-1-git-send-email-mattjreimer@gmail.com>
 Cc: Matt Reimer <mreimer@vpop.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -21,8 +21,8 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 From: Matt Reimer <mreimer@vpop.net>
 
 If there were multiple bit errors in the data s3c2410_nand_correct_data()
-was returning 0 (no error) instead of -1, so the upper layers (like JFFS2)
-would not know the data is corrupt.
+was returning 0 (no error) instead of -EBADMSG, so the upper layers
+(like JFFS2) would not know the data is corrupt.
 
 Signed-off-by: Matt Reimer <mreimer@vpop.net>
 ---
