@@ -1,24 +1,21 @@
-Received: from hs-out-0708.google.com ([64.233.178.246]
-	helo=hs-out-2021.google.com)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IizmZ-0007Ui-Pd
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 22:53:30 +0100
-Received: by hs-out-2021.google.com with SMTP id 23so839044hsn
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 19 Oct 2007 14:52:26 -0700 (PDT)
-Message-ID: <c384c5ea0710191452x52ffdc74x2ce16d0faf62a11b@mail.gmail.com>
-Date: Fri, 19 Oct 2007 23:52:26 +0200
-From: "Leon Woestenberg" <leon.woestenberg@gmail.com>
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
-Subject: Re: [RFC] root=/dev/mtdblock@name
-In-Reply-To: <20071019143303.GD26913@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+	id 1IjCMD-0000fn-A6
+	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 12:19:07 +0100
+Date: Sat, 20 Oct 2007 11:29:50 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Erez Zadok <ezk@cs.sunysb.edu>
+Subject: Re: [BLOCK2MTD] WARNING: at kernel/lockdep.c:2331 lockdep_init_map()
+Message-ID: <20071020092950.GB32465@lazybastard.org>
+References: <20071019191433.GK26913@lazybastard.org>
+	<200710192004.l9JK4Aju017839@agora.fsl.cs.sunysb.edu>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <c384c5ea0710190455h195aa8eeub0bc775da3377183@mail.gmail.com>
-	<20071019143303.GD26913@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200710192004.l9JK4Aju017839@agora.fsl.cs.sunysb.edu>
+Cc: linux-mtd@lists.infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +25,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
+On Fri, 19 October 2007 16:04:10 -0400, Erez Zadok wrote:
+> In message <20071019191433.GK26913@lazybastard.org>, =?utf-8?B?SsO2cm4=?= Engel writes:
+> > 
+> > Since when roughly?  2.6.20ish?  Before?
+> 
+> Yeah, I guess around that time.  If you want, I could go back and test each
+> of my backports and see if it has the lockdep message or not.
 
-On 10/19/07, J=F6rn Engel <joern@logfs.org> wrote:
-> On Fri, 19 October 2007 13:55:08 +0200, Leon Woestenberg wrote:
-> > root=3D/dev/mtdblock@name
-> >
-> What would that gain us that drivers/mtd/mtdsuper.c does not already
-> offer?
->
-Nothing, it seems, I had missed that development. Been too much
-walking around in user land lately.
+That's ok.  Just wanted to get a rough idea.
 
-Regards,
---=20
-Leon
+> > Side note: you don't need mtdblock:
+> > # cp jffs2-empty.img /tmp/foo
+> > # losetup /dev/loop0 /tmp/foo
+> > # modprobe block2mtd block2mtd=/dev/loop0,128ki
+> > # mount -t jffs2 mtd0 /n/lower/b0
+> > 
+> > It doesn't really hurt, 'tis just superfluous.
+> 
+> Neat.  Curious, but where does "mtd0" come from then?  It's not in my /dev
+> (which uses devfs on an FC6 system).
+
+JFFS2 interprets that itself.  The only reason why JFFS2 needed a block
+device was to determine the minor number of the mtd underneith.  So code
+was added to find the correct mtd from "mtd0" or "mtd:some_name"
+instead.  I believe you can even disable CONFIG_BLOCK now.
+
+And the code itself was moved to drivers/mtd/mtdsuper.c fairly recently.
+
+Jörn
+
+-- 
+Joern's library part 2:
+http://www.art.net/~hopkins/Don/unix-haters/tirix/embarrassing-memo.html
