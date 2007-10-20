@@ -1,23 +1,20 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjCQA-0000tF-Rp
-	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 12:23:13 +0100
-Date: Sat, 20 Oct 2007 12:28:41 +0200
+	id 1IjCQY-0000v4-Re
+	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 12:23:37 +0100
+Date: Sat, 20 Oct 2007 12:42:26 +0200
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Matt Reimer <mattjreimer@gmail.com>
-Subject: Re: [PATCH] MTD: make s3c2410's correct_data indicate an error for
-	multi-bit read errors
-Message-ID: <20071020102840.GC32465@lazybastard.org>
-References: <f383264b0710181813i61b5b9acs76afdf27f199adcc@mail.gmail.com>
-	<20071019082438.GA26913@lazybastard.org>
-	<1192784447.3421.27.camel@sauron>
-	<f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
+To: mattjreimer@gmail.com
+Subject: Re: [PATCH] MTD: treat any negative return value from correct() as an
+	error
+Message-ID: <20071020104226.GD32465@lazybastard.org>
+References: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <f383264b0710191229q612ae6b3y23835ca9cf873f35@mail.gmail.com>
-Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org
+In-Reply-To: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
+Cc: Matt Reimer <mreimer@vpop.net>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +24,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 19 October 2007 12:29:45 -0700, Matt Reimer wrote:
+On Wed, 17 October 2007 14:33:23 -0700, mattjreimer@gmail.com wrote:
 > 
-> See the patch I posted a couple of days ago with the subject "MTD:
-> treat any negative return value from correct() as an error". Once that
-> patch is accepted, doing what you say will work as you expect; right
-> now, it results in lying to upper layers about errors.
+> Treat any negative return value from a NAND driver's correct() function
+> as a failure, rather than just -1. Some drivers (e.g. diskonchip) can
+> return error values such as -EIO, which ended up being treated as the
+> number of bits corrected, which in turn resulted in nand_do_read_ops()
+> returning -EUCLEAN rather than -EBADMSG.
 
-I'll comment to that patch seperately.  This one is
-Acked-By: Joern Engel <joern@logfs.org>
+What an interesting patch.
+
+NACK on patch description.  Several things are wrong with this:
+o -EIO shouldn't become -EBADMSG any more than -EUCLEAN.  It should
+  remain -EIO and nothing else.
+o I cannot see how diskonchip can return -EIO.  Only -ERANGE.
+o rtc_from4_correct_data() and doc200x_correct_data() will basically
+  pass on -ERANGE from decode_rs8() or decode_rs16(), respectively.
+  Afaict decode_rsXX() should just BUG() instead.
+
+However I like the patch itself, because it allows one to rename those
+magic -1 return values to self-documenting -EBADMSG.
 
 Jörn
 
 -- 
-It does not matter how slowly you go, so long as you do not stop.
--- Confucius
+It is the mark of an educated mind to be able to entertain a thought
+without accepting it.
+-- Aristotle
