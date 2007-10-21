@@ -1,23 +1,26 @@
-Received: from smtp110.mail.mud.yahoo.com ([209.191.85.220])
-	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjXeW-0003PK-IM
-	for linux-mtd@lists.infradead.org; Sun, 21 Oct 2007 11:03:28 +0100
-From: Nick Piggin <nickpiggin@yahoo.com.au>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: BUG at mm/filemap.c:1749 (2.6.24, jffs2, unionfs)
-Date: Sun, 21 Oct 2007 19:57:11 +1000
-References: <200710190605.l9J65kDe008069@agora.fsl.cs.sunysb.edu>
-	<200710191716.53470.nickpiggin@yahoo.com.au>
-	<1192956944.2672.6.camel@shinybook.infradead.org>
-In-Reply-To: <1192956944.2672.6.camel@shinybook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IjYDj-0003q5-3Q
+	for linux-mtd@lists.infradead.org; Sun, 21 Oct 2007 11:39:49 +0100
+Date: Sun, 21 Oct 2007 10:42:02 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] Replace -1 with -EBADMSG in nand error correction code
+Message-ID: <20071021084201.GA5052@lazybastard.org>
+References: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
+	<20071020104226.GD32465@lazybastard.org>
+	<20071020111126.GE32465@lazybastard.org>
+	<20071020111344.GF32465@lazybastard.org>
+	<alpine.LFD.0.9999.0710211007080.22770@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Message-Id: <200710211957.11928.nickpiggin@yahoo.com.au>
-Cc: Erez Zadok <ezk@cs.sunysb.edu>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, jffs-dev@axis.com
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <alpine.LFD.0.9999.0710211007080.22770@localhost.localdomain>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	Matt Reimer <mreimer@vpop.net>, linux-mtd@lists.infradead.org,
+	mattjreimer@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +30,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sunday 21 October 2007 18:55, David Woodhouse wrote:
-> On Fri, 2007-10-19 at 17:16 +1000, Nick Piggin wrote:
-> >         if (writtenlen) {
-> > -               if (inode->i_size < (pg->index << PAGE_CACHE_SHIFT) +
-> > start + writtenlen) { -                       inode->i_size = (pg->index
-> > << PAGE_CACHE_SHIFT) + start + writtenlen; +               if
-> > (inode->i_size < pos + start + writtenlen) {
-> > +                       inode->i_size = pos + start + writtenlen;
->
-> This part seems wrong. Shouldn't it just be pos + writtenlen -- which is
-> basically what it was already: pos==(pg->index<<PAGE_CACHE_SHIFT)+start
+On Sun, 21 October 2007 10:08:40 +0200, Thomas Gleixner wrote:
+> On Sat, 20 Oct 2007, Jörn Engel wrote:
+> 
+> > Magic numerical values are just bad style.  Particularly so when
+> > undocumented.
+> 
+> Please resend with a proper Signed-off-by.
+> Please add my Acked-by as well.
 
-Yeah you're right, thanks.
+Already resent privately to dwmw2 (just added a Signed-Off-By: didn't
+seem to justify a huge Cc: list).  He merged it.
+
+Jörn
+
+-- 
+Eighty percent of success is showing up.
+-- Woody Allen
