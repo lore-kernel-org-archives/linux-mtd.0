@@ -1,22 +1,17 @@
-Received: from dns1.vpop.net ([216.193.240.2] helo=mail.vpop.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjIcP-0007nP-R9
-	for linux-mtd@lists.infradead.org; Sat, 20 Oct 2007 19:00:17 +0100
-Subject: Re: [PATCH] MTD: treat any negative return value from correct() as
-	an error
-From: Matthew Reimer <mreimer@vpop.net>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20071020174006.GA1520@lazybastard.org>
-References: <1192656803-32151-1-git-send-email-mattjreimer@gmail.com>
-	<20071020104226.GD32465@lazybastard.org>
-	<f383264b0710200937j25dd2c62pba1f39767c9ff9d8@mail.gmail.com>
-	<20071020174006.GA1520@lazybastard.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Sat, 20 Oct 2007 10:59:36 -0700
-Message-Id: <1192903176.6230.8.camel@bilbo.vpop.net>
+Subject: Re: BUG at mm/filemap.c:1749 (2.6.24, jffs2, unionfs)
+From: David Woodhouse <dwmw2@infradead.org>
+To: Nick Piggin <nickpiggin@yahoo.com.au>
+In-Reply-To: <200710191716.53470.nickpiggin@yahoo.com.au>
+References: <200710190605.l9J65kDe008069@agora.fsl.cs.sunysb.edu>
+	<200710191703.12026.nickpiggin@yahoo.com.au>
+	<200710191716.53470.nickpiggin@yahoo.com.au>
+Content-Type: text/plain
+Date: Sun, 21 Oct 2007 09:55:44 +0100
+Message-Id: <1192956944.2672.6.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Matt Reimer <mattjreimer@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: Erez Zadok <ezk@cs.sunysb.edu>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, jffs-dev@axis.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,30 +21,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 2007-10-20 at 19:40 +0200, Jörn Engel wrote:
-> On Sat, 20 October 2007 09:37:16 -0700, Matt Reimer wrote:
-> > 
-> > My mistake: I did most of this analysis in the 2.6.21 code, where
-> > cafe_ecc.c:cafe_correct_ecc() did return -EIO, not diskonchip.
-> > 
-> > But as for the rest of the description, I'm just reading the code
-> > that's there. An error return from ecc.correct bumps stats.failed,
-> > which in nand_do_read_ops does become -EBADMSG:
-> > 
-> >         if (mtd->ecc_stats.failed - stats.failed)
-> >                 return -EBADMSG;
-> > 
-> >         return  mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
-> > 
-> > So I was just following what I found there, assuming it was standard practice.
+On Fri, 2007-10-19 at 17:16 +1000, Nick Piggin wrote:
 > 
-> Fair enough.  Description aside, your patch, my two, plus your patch to
-> return -1 on uncorrectable ecc errors instead of 0 should be turned into
-> a patch series.  Better yet, change your patch to return -EBADMSG.
-> 
-> Do you volunteer or should I do it?
+>         if (writtenlen) {
+> -               if (inode->i_size < (pg->index << PAGE_CACHE_SHIFT) + start + writtenlen) {
+> -                       inode->i_size = (pg->index << PAGE_CACHE_SHIFT) + start + writtenlen;
+> +               if (inode->i_size < pos + start + writtenlen) {
+> +                       inode->i_size = pos + start + writtenlen;
 
-I'll do it, if the next couple of days is soon enough. I'd rather keep
-you free to work on LogFS. :-)
+This part seems wrong. Shouldn't it just be pos + writtenlen -- which is
+basically what it was already: pos==(pg->index<<PAGE_CACHE_SHIFT)+start
 
-Matt
+-- 
+dwmw2
