@@ -1,24 +1,14 @@
-Received: from arroyo.ext.ti.com ([192.94.94.40])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IjqKl-0002Ut-Ac
-	for linux-mtd@lists.infradead.org; Mon, 22 Oct 2007 07:00:17 +0100
-Received: from dbdp31.itg.ti.com ([172.24.170.98])
-	by arroyo.ext.ti.com (8.13.7/8.13.7) with ESMTP id l9M5xoFc027051
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Mon, 22 Oct 2007 00:59:57 -0500
-Received: from x0081444pc (localhost [127.0.0.1])
-	by dbdp31.itg.ti.com (8.13.8/8.13.8) with ESMTP id l9M5xm0f029722
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 22 Oct 2007 11:29:49 +0530 (IST)
-From: "Sameer" <x0081444@ti.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: NAND driver - spare area ecc
-Date: Mon, 22 Oct 2007 11:29:47 +0530
-Message-ID: <004401c81470$c128fa40$ec8818ac@ent.ti.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: Re: FTLs for NANDSim
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sun Devil <sundevil007@gmail.com>
+In-Reply-To: <7ee965bc0710200922n2159c5dav4357d1cdce5521e8@mail.gmail.com>
+References: <7ee965bc0710200922n2159c5dav4357d1cdce5521e8@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 22 Oct 2007 10:33:08 +0100
+Message-Id: <1193045588.2672.15.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am working on NAND flash driver on TI's OMAP based board.
-NAND is large page nand with 8bit buswidth.
-I need to calculate ecc for the spare area data.
-1.Does the current linux nand driver support ecc calulation for spare area
-  with hw_ecc/sw_ecc enabled?
-2.If not could any one suggest on what data of the spare area info I need to
-  calculate ECC?
+On Sat, 2007-10-20 at 09:22 -0700, Sun Devil wrote:
+> 1. Can we write an user level FTL and interface with NANDSim, so that,
+> for the application, simulated flash appears to be a physical device,
+> and I can format the same volume in what ever way possible?
 
-I am a begineer working on MTD driver. Please provide your
-Valuable comments.
+Yes, I suppose you could. You could access the 'flash' through
+the /dev/mtd0 character device, then provide a block device to the
+kernel by using something like nbd. It's probably better to do it in the
+kernel though.
 
+> 2. Do you have any implementations of FTL at Kernel level?
 
-Regards,
--Sameer
+Yes. We have the simplistic 'mtdblock' which doesn't really do any
+translation at all, we have 'FTL' which works only on NOR flash, and we
+have 'NFTL' and 'INFTL' for use on DiskOnChip devices. There is a helper
+layer which is designed to make it relatively easy for you to provide
+your own translation layer, without having to get too deeply involved in
+how Linux block device drivers work.
+
+> 3. Are there any NAND Flash simulators that you know of apart from NANDSim?
+
+Well, there's a OneNAND sim too. And it's not that hard to use real NAND
+flash either -- see Jörn's new 'Alauda' driver for certain USB devices.
+
+-- 
+dwmw2
