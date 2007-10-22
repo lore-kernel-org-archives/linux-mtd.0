@@ -1,16 +1,20 @@
-Received: from dns1.vpop.net ([216.193.240.2] helo=mail.vpop.net)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IigH5-0000fz-Py
-	for linux-mtd@lists.infradead.org; Fri, 19 Oct 2007 02:03:43 +0100
-From: Matt Reimer <mattjreimer@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] MTD: make s3c2410's correct_data indicate an error for
-	multi-bit read errors
-Date: Thu, 18 Oct 2007 18:02:44 -0700
-Message-Id: <1192755764-26269-2-git-send-email-mattjreimer@gmail.com>
-In-Reply-To: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
-References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
-Cc: Matt Reimer <mreimer@vpop.net>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1Ijzog-0005nb-9V
+	for linux-mtd@lists.infradead.org; Mon, 22 Oct 2007 17:07:48 +0100
+Date: Mon, 22 Oct 2007 18:00:03 +0200
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: FTLs for NANDSim
+Message-ID: <20071022160003.GA13023@lazybastard.org>
+References: <7ee965bc0710200922n2159c5dav4357d1cdce5521e8@mail.gmail.com>
+	<1193045588.2672.15.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1193045588.2672.15.camel@shinybook.infradead.org>
+Cc: linux-mtd@lists.infradead.org, Sun Devil <sundevil007@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,29 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Matt Reimer <mreimer@vpop.net>
+On Mon, 22 October 2007 10:33:08 +0100, David Woodhouse wrote:
+> 
+> > 2. Do you have any implementations of FTL at Kernel level?
+> 
+> Yes. We have the simplistic 'mtdblock' which doesn't really do any
+> translation at all, we have 'FTL' which works only on NOR flash, and we
+> have 'NFTL' and 'INFTL' for use on DiskOnChip devices. There is a helper
+> layer which is designed to make it relatively easy for you to provide
+> your own translation layer, without having to get too deeply involved in
+> how Linux block device drivers work.
 
-If there were multiple bit errors in the data s3c2410_nand_correct_data()
-was returning 0 (no error) instead of -1, so the upper layers (like JFFS2)
-would not know the data is corrupt.
+There are at least two more:
+ssfdc.c
+rfd_ftl.c
 
-Signed-off-by: Matt Reimer <mreimer@vpop.net>
----
- drivers/mtd/nand/s3c2410.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+One of them appears to do the smartmedia format, the other something
+very similar.
 
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 077fdcc..2e6b435 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -397,7 +397,7 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
- 	if ((diff0 & ~(1<<fls(diff0))) == 0)
- 		return 1;
- 
--	return 0;
-+	return -1;
- }
- 
- /* ECC functions
+Jörn
+
 -- 
-1.5.3.2
+Science is like sex: sometimes something useful comes out,
+but that is not the reason we are doing it.
+-- Richard Feynman
