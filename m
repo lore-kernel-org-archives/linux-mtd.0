@@ -1,17 +1,18 @@
-Date: Tue, 23 Oct 2007 12:55:30 +0100 (BST)
-From: Alexey Korolev <akorolev@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [PATCH]CFI fix of kernel deadlock caused by get_chip recursion
-In-Reply-To: <1193137858.20893.46.camel@pmac.infradead.org>
-Message-ID: <Pine.LNX.4.64.0710231250410.28371@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0710181501270.32655@pentafluge.infradead.org>
-	<1192888614.26380.50.camel@shinybook.infradead.org>
-	<Pine.LNX.4.64.0710221745440.25306@pentafluge.infradead.org>
-	<1193137030.20893.43.camel@pmac.infradead.org>
-	<1193137858.20893.46.camel@pmac.infradead.org>
+Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=kira.home.fluff.org)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IkMbL-0002j5-Kc
+	for linux-mtd@lists.infradead.org; Tue, 23 Oct 2007 17:27:33 +0100
+Received: from ben by kira.home.fluff.org with local (Exim 4.67)
+	(envelope-from <ben@fluff.org.uk>) id 1IkMYA-00074Z-QH
+	for linux-mtd@lists.infradead.org; Tue, 23 Oct 2007 17:24:14 +0100
+Date: Tue, 23 Oct 2007 17:24:14 +0100
+From: Ben Dooks <ben@fluff.org>
+To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
+Subject: NAND suspending
+Message-ID: <20071023162414.GB12390@fluff.org.uk>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Nico@cam.org, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,206 +22,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
-> 
-> I think the problem is probably pine sending 'format=flowed' text. That
-> can be disabled. Please, remember to send patches to yourself _first_,
-> then apply them from the mail you receive.
-> 
-> 
-Yes you are right - the problem was in flowed format. Thank you very much!! The patch is double checked and must be Ok now. 
+i have been working on an issue with suspend/resume with
+the current NAND layer, and am interested on people's thoughts
+on the issue. The problem stems from the s3c2410 driver leaving
+nFCE set active (ie, low) when going into suspend, causing a
+failure to resume properly (another story)
 
-This patch solves kernel deadlock issue seen on JFFF2 simultaneous operations. 
-Detailed investigation of the issue showed that the kernel deadlock is caused bytons of recursive get_chip calls.
+The immediate fix is just to add a call to deselect the
+chip in s3c24xx_nand_suspend() by calling the internal
+functions s3c2410_nand_select_chip(mtd, -1) to force nFCE
+to go inactive.
 
-MTD:CFI: This fix removes recursion in get_chip function to avoid possible deadlock situation.
+I had a look through the other NAND drivers, and it seems no
+other driver does anything on suspend, and having added some
+debug to nand_suspend in nand_base.c, it seems that is not
+being called by anything in my setup.
 
-Signed-off-by: Alexey Korolev <akorolev at infradead.org>
---------------------------
-diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-10-22 13:45:07.000000000 +0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-10-22 17:34:34.000000000 +0400
-@@ -85,6 +85,7 @@
- static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr, loff_t from,
- 			size_t len);
- 
-+static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
- static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode);
- static void put_chip(struct map_info *map, struct flchip *chip, unsigned long adr);
- #include "fwh_lock.h"
-@@ -641,73 +642,13 @@
- /*
-  *  *********** CHIP ACCESS FUNCTIONS ***********
-  */
--
--static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
-+static int chip_ready (struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
- {
- 	DECLARE_WAITQUEUE(wait, current);
- 	struct cfi_private *cfi = map->fldrv_priv;
- 	map_word status, status_OK = CMD(0x80), status_PWS = CMD(0x01);
--	unsigned long timeo;
- 	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
--
-- resettime:
--	timeo = jiffies + HZ;
-- retry:
--	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
--		/*
--		 * OK. We have possibility for contension on the write/erase
--		 * operations which are global to the real chip and not per
--		 * partition.  So let's fight it over in the partition which
--		 * currently has authority on the operation.
--		 *
--		 * The rules are as follows:
--		 *
--		 * - any write operation must own shared->writing.
--		 *
--		 * - any erase operation must own _both_ shared->writing and
--		 *   shared->erasing.
--		 *
--		 * - contension arbitration is handled in the owner's context.
--		 *
--		 * The 'shared' struct can be read and/or written only when
--		 * its lock is taken.
--		 */
--		struct flchip_shared *shared = chip->priv;
--		struct flchip *contender;
--		spin_lock(&shared->lock);
--		contender = shared->writing;
--		if (contender && contender != chip) {
--			/*
--			 * The engine to perform desired operation on this
--			 * partition is already in use by someone else.
--			 * Let's fight over it in the context of the chip
--			 * currently using it.  If it is possible to suspend,
--			 * that other partition will do just that, otherwise
--			 * it'll happily send us to sleep.  In any case, when
--			 * get_chip returns success we're clear to go ahead.
--			 */
--			int ret = spin_trylock(contender->mutex);
--			spin_unlock(&shared->lock);
--			if (!ret)
--				goto retry;
--			spin_unlock(chip->mutex);
--			ret = get_chip(map, contender, contender->start, mode);
--			spin_lock(chip->mutex);
--			if (ret) {
--				spin_unlock(contender->mutex);
--				return ret;
--			}
--			timeo = jiffies + HZ;
--			spin_lock(&shared->lock);
--			spin_unlock(contender->mutex);
--		}
--
--		/* We now own it */
--		shared->writing = chip;
--		if (mode == FL_ERASING)
--			shared->erasing = chip;
--		spin_unlock(&shared->lock);
--	}
-+	unsigned long timeo = jiffies + HZ;
- 
- 	switch (chip->state) {
- 
-@@ -722,16 +663,11 @@
- 			if (chip->priv && map_word_andequal(map, status, status_PWS, status_PWS))
- 				break;
- 
--			if (time_after(jiffies, timeo)) {
--				printk(KERN_ERR "%s: Waiting for chip to be ready timed out. Status %lx\n",
--				       map->name, status.x[0]);
--				return -EIO;
--			}
- 			spin_unlock(chip->mutex);
- 			cfi_udelay(1);
- 			spin_lock(chip->mutex);
- 			/* Someone else might have been playing with it. */
--			goto retry;
-+			return -EAGAIN;
- 		}
- 
- 	case FL_READY:
-@@ -809,8 +745,80 @@
- 		schedule();
- 		remove_wait_queue(&chip->wq, &wait);
- 		spin_lock(chip->mutex);
--		goto resettime;
-+		return -EAGAIN;
-+	}
-+}
-+
-+static int get_chip(struct map_info *map, struct flchip *chip, unsigned long adr, int mode)
-+{
-+	int ret;
-+
-+ retry:
-+	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING || mode == FL_OTP_WRITE || mode == FL_SHUTDOWN)) {
-+		/*
-+		 * OK. We have possibility for contension on the write/erase
-+		 * operations which are global to the real chip and not per
-+		 * partition.  So let's fight it over in the partition which
-+		 * currently has authority on the operation.
-+		 *
-+		 * The rules are as follows:
-+		 *
-+		 * - any write operation must own shared->writing.
-+		 *
-+		 * - any erase operation must own _both_ shared->writing and
-+		 *   shared->erasing.
-+		 *
-+		 * - contension arbitration is handled in the owner's context.
-+		 *
-+		 * The 'shared' struct can be read and/or written only when
-+		 * its lock is taken.
-+		 */
-+		struct flchip_shared *shared = chip->priv;
-+		struct flchip *contender;
-+		spin_lock(&shared->lock);
-+		contender = shared->writing;
-+		if (contender && contender != chip) {
-+			/*
-+			 * The engine to perform desired operation on this
-+			 * partition is already in use by someone else.
-+			 * Let's fight over it in the context of the chip
-+			 * currently using it.  If it is possible to suspend,
-+			 * that other partition will do just that, otherwise
-+			 * it'll happily send us to sleep.  In any case, when
-+			 * get_chip returns success we're clear to go ahead.
-+			 */
-+			ret = spin_trylock(contender->mutex);
-+			spin_unlock(&shared->lock);
-+			if (!ret)
-+				goto retry;
-+			spin_unlock(chip->mutex);
-+			ret = chip_ready(map, contender, contender->start, mode);
-+			spin_lock(chip->mutex);
-+
-+			if (ret == -EAGAIN) {
-+				spin_unlock(contender->mutex);
-+				goto retry;
-+			}
-+			if (ret) {
-+				spin_unlock(contender->mutex);
-+				return ret;
-+			}
-+			spin_lock(&shared->lock);
-+			spin_unlock(contender->mutex);
-+		}
-+
-+		/* We now own it */
-+		shared->writing = chip;
-+		if (mode == FL_ERASING)
-+			shared->erasing = chip;
-+		spin_unlock(&shared->lock);
- 	}
-+
-+	ret = chip_ready(map, chip, adr, mode);
-+	if (ret == -EAGAIN)
-+		goto retry;
-+
-+	return ret;
- }
- 
- static void put_chip(struct map_info *map, struct flchip *chip, unsigned long adr)
+My question is, should my driver ensure that the MTDs it is
+looking after are called from the device suspend method, and
+if so, what is the appropriate call to make?2~
+
+The next question is that once NAND suspend is called, it
+should really call the nand->select_chip method to deselect
+the chip when going into suspend, as the datasheet for the
+K9F1208 chip quotes suspend currents when nCE is high.
+
+A further interest is whether all possible chips attached
+to the controller structure should be marked as being in
+suspend, as the s3c2410 can support >1 chip connected to
+it (and several of our boards have support for 2-4 chips).
+Does the suspend needs to suspend all chips? At the
+momemnt the nand_suspend() function uses nand_get_device
+which means only one chip can be suspended (and calling
+nand_release_device() will mark the chip ready again).
+
+-- 
+Ben (ben@fluff.org, http://www.fluff.org/)
+
+  'a smiley only costs 4 bytes'
