@@ -1,16 +1,17 @@
-Received: from web413.biz.mail.mud.yahoo.com ([68.142.200.60])
+Received: from web412.biz.mail.mud.yahoo.com ([68.142.201.43])
 	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ik7V0-000473-0p
-	for linux-mtd@lists.infradead.org; Tue, 23 Oct 2007 01:20:02 +0100
-Date: Mon, 22 Oct 2007 17:18:56 -0700 (PDT)
+	id 1IkOVA-0004m4-T6
+	for linux-mtd@lists.infradead.org; Tue, 23 Oct 2007 19:29:22 +0100
+Date: Tue, 23 Oct 2007 11:28:11 -0700 (PDT)
 From: z l <zql@glomationinc.com>
 Subject: Re: MTD driver for MLC NAND chips
-To: linux-mtd@lists.infradead.org
-In-Reply-To: <38608.90724.qm@web405.biz.mail.mud.yahoo.com>
+To: Sudeep K N <sudeepholla.maillist@gmail.com>
+In-Reply-To: <366f00c80710221737l3d2b6ec5qd51160253f7c73d6@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1812225359-1193098736=:81825"
+Content-Type: multipart/mixed; boundary="0-1146920539-1193164091=:61584"
 Content-Transfer-Encoding: 8bit
-Message-ID: <217325.81825.qm@web413.biz.mail.mud.yahoo.com>
+Message-ID: <572935.61584.qm@web412.biz.mail.mud.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,41 +21,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---0-1812225359-1193098736=:81825
+--0-1146920539-1193164091=:61584
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Content-Id: 
 Content-Disposition: inline
 
 
---- z l <zql@glomationinc.com> wrote:
+--- Sudeep K N <sudeepholla.maillist@gmail.com> wrote:
 
-> Does current MTD support MLC NAND chips?  I tried
-> the
-> Samsung K9LAG08U0M (2GiB) on our board with Linux
-> 2.6.22.1 kernel but got a invalid pointer 0
-> reference
-> in the nand_scan function.  The same kernel works
-> fine
-> without any problem when using Samsung K9F1G08U0M
-> (128MiB).  Is there any thing special that must be
-> done in the NAND driver for MLC chip?
-> 
-> Thanks in advance
-> 
-> zl
+> No special changes are required for MLC chip.
+> It works fines as it is.
+> Just make sure that the chip is getting detected
+> as large page nand chip as the BI is at different
+> offset in spare area compared to small page chip.
 > 
 
-It's interesting that if I turn on the MTD debug
-(doesn't matter which level I set) the error goes away
-and everything works perfectly.
+I posted some additional information but some how did
+not got through.  I'm posting it here again.
 
-Attached is the boot message when it bombs out.
+The MTD driver would work without any problem, at
+least what I can see, when the MTD driver is compiled
+with debug turned on.  The level of debug output
+doesn't matter as long as the debug is turned on.  As
+soon as I turn off the MTD debug, the kernel would
+crash.
 
+attached is the log message.
 
 zl
 
---0-1812225359-1193098736=:81825
+--0-1146920539-1193164091=:61584
 Content-Type: text/plain; name="9302-K9LAG08-bug.txt"
 Content-Description: 2428480976-9302-K9LAG08-bug.txt
 Content-Disposition: inline; filename="9302-K9LAG08-bug.txt"
@@ -183,4 +180,4 @@ Backtrace:
 Code: e1a01000 e59f000c eb00581f e3a03000 (e5833000)
 Kernel panic - not syncing: Attempted to kill init!
 
---0-1812225359-1193098736=:81825--
+--0-1146920539-1193164091=:61584--
