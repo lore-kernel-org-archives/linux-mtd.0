@@ -1,16 +1,27 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from smtp1.int-evry.fr ([157.159.10.44])
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ikgak-0004fz-B2
-	for linux-mtd@lists.infradead.org; Wed, 24 Oct 2007 14:48:16 +0100
-Subject: getdents64 problem in 2.6.23
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+	id 1Ikgr3-00054Q-Sr
+	for linux-mtd@lists.infradead.org; Wed, 24 Oct 2007 15:05:09 +0100
+Received: from smtp-ext.int-evry.fr (smtp-ext.int-evry.fr [157.159.11.17])
+	by smtp1.int-evry.fr (Postfix) with ESMTP id 757918E6EDD
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Oct 2007 16:04:12 +0200 (CEST)
+Received: from [157.159.47.53] (unknown [157.159.47.53])
+	(using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+	(No client certificate requested)
+	by smtp-ext.int-evry.fr (Postfix) with ESMTP id 400B2D0E31A
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 24 Oct 2007 16:04:12 +0200 (CEST)
+From: Florian Fainelli <florian.fainelli@telecomint.eu>
 To: Linux-MTD Mailing List <linux-mtd@lists.infradead.org>
-Content-Type: text/plain
+Subject: [PATCH] Extend plat_nand to support more callbacks
+Date: Wed, 24 Oct 2007 16:04:18 +0200
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Date: Wed, 24 Oct 2007 15:47:40 +0200
-Message-Id: <1193233660.23075.31.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Reply-To: joakim.tjernlund@transmode.se
+Content-Disposition: inline
+Message-Id: <200710241604.18909.florian.fainelli@telecomint.eu>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,69 +31,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-started to use 2.6.23 in our development system a few days ago and
-now I got problems when deleting files from a large directory structure.
-A rm -rf does not delete all files.
+Hi all,
 
-Did a strace and found that some files does not appear in the
-strace, the same ones that doesn't get deleted.
+This patch extends the platform NAND driver to support more callbacks.
+One user will be the AU1550 NAND driver.
 
-The files that remain are in two directories:
-
-./doc/images:
-enm_topleft.gif*
-h_10g.gif*
-h_cu.gif*
-h_cuSfp.gif*
-h_fpuym.gif*
-h_mdu4T2F.gif*
-h_mxp16.gif*
-h_oaMon.gif*
-h_oiu50.gif*
-h_qmr.gif*
-h_unexp_half.gif*
-saveHoover.gif*
-saveHooverWarn.gif*
-showNormal.gif*
-tab_sel.gif*
-top-bar.jpg*
-v_d10gbe.gif*
-v_empty.gif*
-v_gbemxp.gif*
-v_mdu40.gif*
-v_mdu4E.gif*
-v_mdu4T.gif*
-v_mdu8E.gif*
-v_mdu8T.gif*
-v_oa2Mon.gif*
-v_sync.gif*
-v_unexp.gif*
-v_voa.gif*
-wizard_logo.gif*
-
-./lib:
-liblum_mib_help_text_if.so.1@
-libmgmt_mibserver_if.so.1@
-libtsiif.so.1.0.0
-
-looking at the strace a bit futher reveals:
-
-open("cuappl02a-r10a-071024_yyy/doc/images", O_RDONLY|O_NONBLOCK|
-O_LARGEFILE|O_DIRECTORY) = 5
-fstat64(5, {st_mode=S_IFDIR|0755, st_size=0, ...}) = 0
-fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
-getdents64(5, /* 119 entries */, 4096)  = 4064
-lstat64("cuappl02a-r10a-071024_yyy/doc/images/v_roadm.gif",
-{st_mode=S_IFREG|0755, st_size=2717, ...}) = 0
-unlink("cuappl02a-r10a-071024_yyy/doc/images/v_roadm.gif") = 0
-lstat64("cuappl02a-r10a-071024_yyy/doc/images/h_du.gif",
-{st_mode=S_IFREG|0755, st_size=1632, ...}) = 0
-unlink("cuappl02a-r10a-071024_yyy/doc/images/h_du.gif") = 0
-....
-getdents64(5, /* 0 entries */, 4096)    = 0
-close(5)                                = 0
-
-Notice the last getdents64 returning 0, I think this is wrong as there
-is more the 119 files in this directory.
-
- Jocke
+Signed-off-by: Florian Fainelli <florian.fainelli@telecomint.eu>
+-- 
+diff --git a/drivers/mtd/nand/plat_nand.c b/drivers/mtd/nand/plat_nand.c
+index cd725fc..365642a 100644
+--- a/drivers/mtd/nand/plat_nand.c
++++ b/drivers/mtd/nand/plat_nand.c
+@@ -60,6 +60,12 @@ static int __init plat_nand_probe(struct platform_device *pdev)
+ 	data->chip.cmd_ctrl = pdata->ctrl.cmd_ctrl;
+ 	data->chip.dev_ready = pdata->ctrl.dev_ready;
+ 	data->chip.select_chip = pdata->ctrl.select_chip;
++	data->chip.cmdfunc = pdata->ctrl.cmdfunc;
++	data->chip.read_byte = pdata->ctrl.read_byte;
++	data->chip.read_word = pdata->ctrl.ready_byte;
++	data->chip.write_buf = pdata->ctrl.write_buf;
++	data->chip.read_buf = pdata->ctrl.read_buf;
++	data->chip.verify_buf = pdata->ctrl.verify_buf;
+ 	data->chip.chip_delay = pdata->chip.chip_delay;
+ 	data->chip.options |= pdata->chip.options;
+ 
+diff --git a/include/linux/mtd/nand.h b/include/linux/mtd/nand.h
+index c42bc7f..dd69c62 100644
+--- a/include/linux/mtd/nand.h
++++ b/include/linux/mtd/nand.h
+@@ -583,6 +583,12 @@ struct platform_nand_chip {
+  * @select_chip:	platform specific chip select function
+  * @cmd_ctrl:		platform specific function for controlling
+  *			ALE/CLE/nCE. Also used to write command and address
++ * @cmdfunc:		[REPLACEABLE] hardwarespecific function for writing commands to the chip
++ * @read_byte:		[REPLACEABLE] read one byte from the chip
++ * @read_word:		[REPLACEABLE] read one word from the chip
++ * @write_buf:		[REPLACEABLE] write data from the buffer to the chip
++ * @read_buf:		[REPLACEABLE] read data from the chip into the buffer
++ * @verify_buf:		[REPLACEABLE] verify buffer contents against the chip data
+  * @priv:		private data to transport driver specific settings
+  *
+  * All fields are optional and depend on the hardware driver requirements
+@@ -593,6 +599,12 @@ struct platform_nand_ctrl {
+ 	void		(*select_chip)(struct mtd_info *mtd, int chip);
+ 	void		(*cmd_ctrl)(struct mtd_info *mtd, int dat,
+ 				    unsigned int ctrl);
++	void		(*cmdfunc)(struct mtd_info *mtd, unsigned command, int column, int page_addr);
++	uint8_t		(*read_byte)(struct mtd_info *mtd);
++	u16		(*read_word)(struct mtd_info *mtd);
++	void		(*write_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
++	void		(*read_buf)(struct mtd_info *mtd, uint8_t *buf, int len);
++	int		(*verify_buf)(struct mtd_info *mtd, const uint8_t *buf, int len);
+ 	void		*priv;
+ };
