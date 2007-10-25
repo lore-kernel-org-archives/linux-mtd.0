@@ -1,15 +1,19 @@
-Received: from mta9.adelphia.net ([68.168.78.199])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlCff-0004Pp-4p
-	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 01:03:30 +0100
-Message-ID: <15643965.1193356994221.JavaMail.root@web39>
-Date: Thu, 25 Oct 2007 17:03:14 -0700
-From: FOUNDATION DE FRANCE <fdf_grants@oh.rr.com>
-Subject: DONATION/GRANT
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Reply-To: fdf_executivesecretery1@yahoo.fr
+Received: from mail.shareable.org ([81.29.64.88])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IlDCk-0004x2-63
+	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 01:37:41 +0100
+Date: Thu, 25 Oct 2007 23:15:53 +0100
+From: Jamie Lokier <jamie@shareable.org>
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: jffs2: too few erase blocks
+Message-ID: <20071025221553.GA29785@mail.shareable.org>
+References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
+	<20071025092225.410ca383@weaponx.rchland.ibm.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20071025092225.410ca383@weaponx.rchland.ibm.com>
+Cc: linux-mtd@lists.infradead.org, Duke <ezbonites@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,30 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Foundation De France,France.
- 
-The Foundation De France, would like to notify you that you have been
-chosen by the board of trustees as one of the final recipients of 
-a cash Grant/Donation for your own personal,educational, and business
-development. 
+Josh Boyer wrote:
+> > Hi All,
+> > What's the deal with "too few erase blocks" message?
+> > Is one block too few for a jffs2 partition?
+> > My block size if 256K and I created a small jffs2 256K partition for
+> > read/writing.
+> > Is this really too small for jffs2? If so, is there anything I can do for this?
+> 
+> Yes, it's too small.  JFFS2 requires a certain percentage of blocks in
+> the partition to be reserved for it's usage.  At one point, it was 5
+> eraseblocks.
 
-To celebrate the 21th anniversary program,The Foundation De France in
-conjunction with the Economic Community for West African States(ECOWAS),
-United Nations Organization (UNO) and the European Union (EU) is
-giving out a yearly donation of US$ 1,000,000 (One Million United 
-States Dollars) to 98 lucky recipients. 
+Fwiw, 5 blocks worth of free space is no guarantee that it'll be fine.
+I have a 1MB JFFS2 partition with 64kB eraseblocks.  That's 320kB in 5
+blocks.  But it can return disk full errors when reporting more than
+320kB free with 'df' (somewhere between 5 and 6 blocks worth), and it
+can also do strange things shortly before it returns disk full errors,
+like spending lots of CPU on GC.
 
-You are required to contact the Executive Secretary below for
-qualification documentation and processing of your claims.  
-
-(Executive Secretary)- Mrs Claire Beaupere 
-Email: fdf_executivesecretery1@yahoo.fr
-FULL NAMES:_____________________
-ADDRESS:________________________
-NATIONALITY:_______
-COUNTRY______
-STATE:_______
-SEX:_______________ 
-MARITAL STATUS:_________________ 
-TELEPHONE NUMBER:_______________
-OCCUPATION:_______________
+-- Jamie
