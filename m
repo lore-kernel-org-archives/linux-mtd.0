@@ -1,24 +1,19 @@
-Received: from soda.ext.ti.com ([198.47.26.145])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ikzwi-000840-SR
-	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 11:28:16 +0100
-Received: from dbdp31.itg.ti.com ([172.24.170.98])
-	by soda.ext.ti.com (8.13.7/8.13.7) with ESMTP id l9PARf0P031864
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO)
-	for <linux-mtd@lists.infradead.org>; Thu, 25 Oct 2007 05:27:48 -0500
-Received: from x0081444pc (localhost [127.0.0.1])
-	by dbdp31.itg.ti.com (8.13.8/8.13.8) with ESMTP id l9PARd3d019226
+Received: from an-out-0708.google.com ([209.85.132.250])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Il3MB-00029j-Ht
+	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 15:06:45 +0100
+Received: by an-out-0708.google.com with SMTP id d40so87604and
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Oct 2007 15:57:40 +0530 (IST)
-From: "Sameer" <x0081444@ti.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: Onenand sync burst mode-query
-Date: Thu, 25 Oct 2007 15:57:39 +0530
-Message-ID: <00b501c816f1$ac002840$ec8818ac@ent.ti.com>
+	Thu, 25 Oct 2007 07:06:31 -0700 (PDT)
+Message-ID: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
+Date: Thu, 25 Oct 2007 09:06:29 -0500
+From: Duke <ezbonites@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: jffs2: too few erase blocks
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,16 +23,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am working on onenand driver based on omap board.
-Onenand is samsung onenand. I need to add the functionality for
-Synchronous burst mode operation which is currently not present.
-I am refering n800 board driver (arch/arm/mach-omap/board-n880-flash.c)
-The function "omap2_onenand_set_sync_mode" contains the variable "fclk_offset_ns"
+Hi All,
+What's the deal with "too few erase blocks" message?
+Is one block too few for a jffs2 partition?
+My block size if 256K and I created a small jffs2 256K partition for
+read/writing.
+Is this really too small for jffs2? If so, is there anything I can do for this?
 
-I am not able to relate this variable with the timing diagram of the onenand flash
-Could any body specify the significance of this variable and what how it
-Is related to the timing variables?
-
-Thanks,
--Sameer
+Thanks
+D.
