@@ -1,20 +1,17 @@
-Received: from nf-out-0910.google.com ([64.233.182.185])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Il9aZ-00014v-NF
-	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 21:46:01 +0100
-Received: by nf-out-0910.google.com with SMTP id h3so581043nfh
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Oct 2007 13:45:47 -0700 (PDT)
-Message-ID: <48336e30710251345q153dc69fme74a93031797f145@mail.gmail.com>
-Date: Thu, 25 Oct 2007 13:45:46 -0700
-From: "Samuel Chun" <bearchun@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Bad Block Skipping Read for read-only filesystem on flash
+	id 1IlAOE-0001y1-0L
+	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 22:37:22 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: "'Linux-MTD Mailing List'" <linux-mtd@lists.infradead.org>
+Subject: RE: getdents64 problem in 2.6.23
+Date: Thu, 25 Oct 2007 23:36:51 +0200
+Message-ID: <01ff01c8174f$27cd99a0$5267a8c0@Jocke>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Reply-To: bearchun@gmail.com
+In-Reply-To: <1193233660.23075.31.camel@gentoo-jocke.transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,40 +21,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I am having trouble with handling BAD BLOCKS while loading read only
-filesystem that is on NAND flash. I was wondering if you can help me
-or point me to the right direction. Any help would greatly be
-appreciated.
+ 
 
-Problem:
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org 
+> [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
+> Joakim Tjernlund
+> Sent: den 24 oktober 2007 15:48
+> To: Linux-MTD Mailing List
+> Subject: getdents64 problem in 2.6.23
+> 
+> started to use 2.6.23 in our development system a few days ago and
+> now I got problems when deleting files from a large directory 
+> structure.
+> A rm -rf does not delete all files.
+> 
+> Did a strace and found that some files does not appear in the
+> strace, the same ones that doesn't get deleted.
+> 
+> The files that remain are in two directories:
+> 
+> ./doc/images:
+> enm_topleft.gif*
+> h_10g.gif*
+> h_cu.gif*
+> h_cuSfp.gif*
+> h_fpuym.gif*
+> h_mdu4T2F.gif*
+> h_mxp16.gif*
+> h_oaMon.gif*
+> h_oiu50.gif*
+> h_qmr.gif*
+> h_unexp_half.gif*
+> saveHoover.gif*
+> saveHooverWarn.gif*
+> showNormal.gif*
+> tab_sel.gif*
+> top-bar.jpg*
+> v_d10gbe.gif*
+> v_empty.gif*
+> v_gbemxp.gif*
+> v_mdu40.gif*
+> v_mdu4E.gif*
+> v_mdu4T.gif*
+> v_mdu8E.gif*
+> v_mdu8T.gif*
+> v_oa2Mon.gif*
+> v_sync.gif*
+> v_unexp.gif*
+> v_voa.gif*
+> wizard_logo.gif*
+> 
+> ./lib:
+> liblum_mib_help_text_if.so.1@
+> libmgmt_mibserver_if.so.1@
+> libtsiif.so.1.0.0
+> 
+> looking at the strace a bit futher reveals:
+> 
+> open("cuappl02a-r10a-071024_yyy/doc/images", O_RDONLY|O_NONBLOCK|
+> O_LARGEFILE|O_DIRECTORY) = 5
+> fstat64(5, {st_mode=S_IFDIR|0755, st_size=0, ...}) = 0
+> fcntl64(5, F_SETFD, FD_CLOEXEC)         = 0
+> getdents64(5, /* 119 entries */, 4096)  = 4064
+> lstat64("cuappl02a-r10a-071024_yyy/doc/images/v_roadm.gif",
+> {st_mode=S_IFREG|0755, st_size=2717, ...}) = 0
+> unlink("cuappl02a-r10a-071024_yyy/doc/images/v_roadm.gif") = 0
+> lstat64("cuappl02a-r10a-071024_yyy/doc/images/h_du.gif",
+> {st_mode=S_IFREG|0755, st_size=1632, ...}) = 0
+> unlink("cuappl02a-r10a-071024_yyy/doc/images/h_du.gif") = 0
+> ....
+> getdents64(5, /* 0 entries */, 4096)    = 0
+> close(5)                                = 0
+> 
+> Notice the last getdents64 returning 0, I think this is wrong as there
+> is more the 119 files in this directory.
+> 
+>  Jocke
 
-Right after Kernel boots it tries to mount a read only CRAMFS
-filesystem from a flash partition (e.g. "/dev/mtdblock3"). But NAND
-driver/MTD driver does not handle BAD BLOCKS, so if there are any bad
-blocks in that partition, mounted cramfs filesystem will not work right.
+David, could you comment? I need some advice on how to proceed.
 
-When we program the flash we will SKIP BAD BLOCKS, so if we can do the
-same when we read from flash it will solve our problem.
-
-We had the same problem loading the Kernel from uboot. To fix this, we
-had to use the command "read.i" from uboot. This command will skip BAD
-BLOCKS while reading.
-
-How can we fix this?
-
-Our system:
-  U-Boot 1.1.6
-  Linux version 2.6.22.1
-  CPU: ARM920T [41129200] revision 0 (ARMv4T), cr=c0007177
-  Machine: SMDK2443
-  CPU S3C2443 (id 0x32443001)
-  S3C24XX NAND Driver, (c) 2004 Simtec Electronics
-  s3c2412-nand s3c2410-nand: Tacls=8, 59ns Twrph0=8 59ns, Twrph1=8 59ns
-  s3c2412-nand s3c2410-nand: System booted from NAND
-  NAND device: Manufacturer ID: 0x20, Chip ID: 0x76 (ST Micro NAND
-64MiB 3,3V 8-bit)
-  ... Let me know if you need more info about our system ...
-
-
-
-Thank you.... Sam.
+ Jocke
