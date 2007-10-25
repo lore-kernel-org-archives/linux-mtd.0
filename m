@@ -1,22 +1,20 @@
-Received: from rn-out-0910.google.com ([64.233.170.189]
-	helo=rn-out-0102.google.com)
+Received: from nf-out-0910.google.com ([64.233.182.185])
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Il7GX-000740-DO
-	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 19:17:11 +0100
-Received: by rn-out-0102.google.com with SMTP id e25so243089rng
+	id 1Il9aZ-00014v-NF
+	for linux-mtd@lists.infradead.org; Thu, 25 Oct 2007 21:46:01 +0100
+Received: by nf-out-0910.google.com with SMTP id h3so581043nfh
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 25 Oct 2007 11:16:08 -0700 (PDT)
-Message-ID: <f383264b0710251116v8847c64i871ba7675106e04f@mail.gmail.com>
-Date: Thu, 25 Oct 2007 11:16:08 -0700
-From: "Matt Reimer" <mattjreimer@gmail.com>
+	Thu, 25 Oct 2007 13:45:47 -0700 (PDT)
+Message-ID: <48336e30710251345q153dc69fme74a93031797f145@mail.gmail.com>
+Date: Thu, 25 Oct 2007 13:45:46 -0700
+From: "Samuel Chun" <bearchun@gmail.com>
 To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: fix s3c2410 error correction
-In-Reply-To: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+Subject: Bad Block Skipping Read for read-only filesystem on flash
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+Reply-To: bearchun@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,73 +24,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Anybody willing to ACK this patch? It definitely fixes the problem I'm
-seeing on a s3c2440a. For more information, compare the s3c2440a or
-s3c2410 manuals with page 8 of the following documentation:
+I am having trouble with handling BAD BLOCKS while loading read only
+filesystem that is on NAND flash. I was wondering if you can help me
+or point me to the right direction. Any help would greatly be
+appreciated.
 
-http://www.samsung.com/global/business/semiconductor/products/flash/downloads/applicationnote/ecc_algorithm_for_web_512b.pdf
+Problem:
 
-Matt
+Right after Kernel boots it tries to mount a read only CRAMFS
+filesystem from a flash partition (e.g. "/dev/mtdblock3"). But NAND
+driver/MTD driver does not handle BAD BLOCKS, so if there are any bad
+blocks in that partition, mounted cramfs filesystem will not work right.
+
+When we program the flash we will SKIP BAD BLOCKS, so if we can do the
+same when we read from flash it will solve our problem.
+
+We had the same problem loading the Kernel from uboot. To fix this, we
+had to use the command "read.i" from uboot. This command will skip BAD
+BLOCKS while reading.
+
+How can we fix this?
+
+Our system:
+  U-Boot 1.1.6
+  Linux version 2.6.22.1
+  CPU: ARM920T [41129200] revision 0 (ARMv4T), cr=c0007177
+  Machine: SMDK2443
+  CPU S3C2443 (id 0x32443001)
+  S3C24XX NAND Driver, (c) 2004 Simtec Electronics
+  s3c2412-nand s3c2410-nand: Tacls=8, 59ns Twrph0=8 59ns, Twrph1=8 59ns
+  s3c2412-nand s3c2410-nand: System booted from NAND
+  NAND device: Manufacturer ID: 0x20, Chip ID: 0x76 (ST Micro NAND
+64MiB 3,3V 8-bit)
+  ... Let me know if you need more info about our system ...
 
 
-On 10/18/07, Matt Reimer <mattjreimer@gmail.com> wrote:
-> From: Matt Reimer <mreimer@vpop.net>
->
-> The single-bit error correction was, well, incorrect. For determing which
-> bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, and
-> it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead of
-> P16 P32 P64 P128 P256 P512 P1024 P2048.
->
-> Signed-off-by: Matt Reimer <mreimer@vpop.net>
-> ---
->  drivers/mtd/nand/s3c2410.c |   26 ++++++++++++--------------
->  1 files changed, 12 insertions(+), 14 deletions(-)
->
-> diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-> index 903db18..077fdcc 100644
-> --- a/drivers/mtd/nand/s3c2410.c
-> +++ b/drivers/mtd/nand/s3c2410.c
-> @@ -364,23 +364,21 @@ static int s3c2410_nand_correct_data(struct mtd_info *mtd, u_char *dat,
->             ((diff2 ^ (diff2 >> 1)) & 0x55) == 0x55) {
->                 /* calculate the bit position of the error */
->
-> -               bit  = (diff2 >> 2) & 1;
-> -               bit |= (diff2 >> 3) & 2;
-> -               bit |= (diff2 >> 4) & 4;
-> +               bit  = ((diff2 >> 3) & 1) |
-> +                      ((diff2 >> 4) & 2) |
-> +                      ((diff2 >> 5) & 4);
->
->                 /* calculate the byte position of the error */
->
-> -               byte  = (diff1 << 1) & 0x80;
-> -               byte |= (diff1 << 2) & 0x40;
-> -               byte |= (diff1 << 3) & 0x20;
-> -               byte |= (diff1 << 4) & 0x10;
-> -
-> -               byte |= (diff0 >> 3) & 0x08;
-> -               byte |= (diff0 >> 2) & 0x04;
-> -               byte |= (diff0 >> 1) & 0x02;
-> -               byte |= (diff0 >> 0) & 0x01;
-> -
-> -               byte |= (diff2 << 8) & 0x100;
-> +               byte = ((diff2 << 7) & 0x100) |
-> +                      ((diff1 << 0) & 0x80)  |
-> +                      ((diff1 << 1) & 0x40)  |
-> +                      ((diff1 << 2) & 0x20)  |
-> +                      ((diff1 << 3) & 0x10)  |
-> +                      ((diff0 >> 4) & 0x08)  |
-> +                      ((diff0 >> 3) & 0x04)  |
-> +                      ((diff0 >> 2) & 0x02)  |
-> +                      ((diff0 >> 1) & 0x01);
->
->                 dev_dbg(info->device, "correcting error bit %d, byte %d\n",
->                         bit, byte);
-> --
-> 1.5.3.2
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+
+Thank you.... Sam.
