@@ -1,17 +1,18 @@
-Received: from www.tglx.de ([62.245.132.106])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlWtO-00038q-Kd
-	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 22:39:00 +0100
-Date: Fri, 26 Oct 2007 23:37:51 +0200 (CEST)
-From: Thomas Gleixner <tglx@linutronix.de>
-To: Valentine Barshak <vbarshak@ru.mvista.com>
-Subject: Re: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
-In-Reply-To: <20071026163058.GA11354@ru.mvista.com>
-Message-ID: <alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
-References: <20071026163058.GA11354@ru.mvista.com>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IlYDl-0004Jv-D9
+	for linux-mtd@lists.infradead.org; Sat, 27 Oct 2007 00:04:08 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Subject: RE: getdents64 problem in 2.6.23
+Date: Sat, 27 Oct 2007 01:03:37 +0200
+Message-ID: <023b01c81824$71647f40$5267a8c0@Jocke>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: linuxppc-dev@ozlabs.org, sr@denx.de, linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1193426035.16168.41.camel@shinybook.infradead.org>
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,39 +22,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 26 Oct 2007, Valentine Barshak wrote:
-> The major difference is that the original implements each chip connected NDFC banks as a
-> separate MTD device. Here I try to have one MTD device spread on all chips found.
-> However, the chips should have equal ID's and sizes, but I've never seen several different
-> chips attached to single ndfc.
+ 
 
-Bamboo has 2 different nand chips. And I'm aware of another board
-which has a 2k-page onboard NAND and sockets for SmartMedia /
-PictureXd cards, which will simply break with your design.
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org] 
+> Sent: den 26 oktober 2007 21:14
+> To: joakim.tjernlund@transmode.se
+> Cc: Linux-MTD Mailing List
+> Subject: Re: getdents64 problem in 2.6.23
+> 
+> On Wed, 2007-10-24 at 15:47 +0200, Joakim Tjernlund wrote:
+> > started to use 2.6.23 in our development system a few days ago and
+> > now I got problems when deleting files from a large directory
+> > structure. A rm -rf does not delete all files.
+> > 
+> > Did a strace and found that some files does not appear in the
+> > strace, the same ones that doesn't get deleted.
+> 
+> Following up on the IRC conversation... the problem here is the horrid
+> readdir() interface, and how it interacts with f_pos on the 
+> directory's
+> file descriptor. The file position simply represents the offset within
+> the linked list of dirents -- which used to be fairly safe, 
+> because when
+> we unlinked something, we'd write out a 'deletion dirent', which would
+> serve as a placeholder in the list.
+> 
+> Someone changed that code recently though, and those deletion dirents
+> are no longer written on NOR flash.... :)
 
-Restricting stuff for no good reason is never a good idea.
+Yeah, I wonder who that was. Can't really recall :)
 
-mtdconcat can build you a big one if you want, so why adding
-restrictions to a driver ?
+> 
+> The answer is probably to keep a 'deletion dirent' in the 
+> f->dents list
+> of jffs2_full_dirents, but with NULL for the 'raw' field. I think that
+> shouldn't break any other part of the code. Then you'd want to remove
+> those dummy dirents when the filedescriptor for the directory in
+> question is closed.
 
-> I'm adding ndfc_of as a separate file, since some other changes
-> have also been made (e.g. all i/o is made with ndfc_readl/writel inline functions).
+Is this what you mean(just a stupid hack for now)?
+          //*prev = this->next;
+            jffs2_mark_node_obsolete(c, (this->raw));
+            this->raw = NULL;
+          //jffs2_free_full_dirent(this);
 
-This should be done in the original ndfc driver and not in a separate
-incarnation.
+Perhaps add a jffs2_add_fd_to_list(c, this, &dir_f->dents)?
 
-> The original version didn't handle driver removal well (it never calls del_mtd...),it's 
-> corrected here.
+How do I find where the filedescriptor is closed?
 
-Why not fixing the original driver ?
-
-> Any comments are greatly appreciated.
-
-NACK.
-
-Please fix the existing driver and convert it to deal with OF and fix
-the other short comings as well.
-
-Duplicate code is not going anywhere near drivers/mtd/nand
-
-	tglx
+ Jocke
