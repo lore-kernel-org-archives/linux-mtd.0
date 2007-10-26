@@ -1,21 +1,16 @@
-Received: from mga01.intel.com ([192.55.52.88])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlRHk-00043e-IQ
-	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 16:39:47 +0100
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBI in Shipping Products ??
-Date: Fri, 26 Oct 2007 08:36:52 -0700
-Message-ID: <B1EDF20A6EAAD74EA65E46F774F1784502B9E041@orsmsx413.amr.corp.intel.com>
-In-Reply-To: <20071026071718.0b47c483@weaponx.rchland.ibm.com>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
-	<20071026071718.0b47c483@weaponx.rchland.ibm.com>
-From: "Johnson, Charles F" <charles.f.johnson@intel.com>
-To: "Josh Boyer" <jwboyer@gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IlS8B-0005AX-LP
+	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 17:33:58 +0100
+Date: Fri, 26 Oct 2007 20:30:58 +0400
+From: Valentine Barshak <vbarshak@ru.mvista.com>
+To: linuxppc-dev@ozlabs.org
+Subject: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
+Message-ID: <20071026163058.GA11354@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: tglx@linutronix.de, sr@denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,35 +20,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I was wondering about specific examples.=20
-
-
-Charles Johnson
-Ultra-Mobility Group
-Platform Software Engineering
-Intel Corporation
-charles.f.johnson@intel.com
-
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Josh Boyer
-Sent: Friday, October 26, 2007 5:17 AM
-To: Johnson, Charles F
-Cc: linux-mtd@lists.infradead.org
-Subject: Re: UBI in Shipping Products ??
-
-On Wed, 24 Oct 2007 13:50:55 -0700
-"Johnson, Charles F" <charles.f.johnson@intel.com> wrote:
-
-> With UBI in the mainline upstream kernel, does anyone have any guess
-on
-> actual products shipping which use UBI ??
-
-They exist.
-
-josh
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
+I've worked in parallel with Stefan Roese on the new OF NDFC support.
+This version (as well as Stefan's) is based on the original NDFC driver by Thomas Gleixner.
+The major difference is that the original implements each chip connected NDFC banks as a
+separate MTD device. Here I try to have one MTD device spread on all chips found.
+However, the chips should have equal ID's and sizes, but I've never seen several different
+chips attached to single ndfc. I'm adding ndfc_of as a separate file, since some other changes
+have also been made (e.g. all i/o is made with ndfc_readl/writel inline functions).
+The original version didn't handle driver removal well (it never calls del_mtd...),it's 
+corrected here. I decided not to add ecc pos and oob layout to DTS, since we should be OK with
+the default ones with NDFC.
+This stuff has been tested on PowerPC 440EPx Sequoia board.
+Any comments are greatly appreciated.
+Thanks,
+Valentine.
