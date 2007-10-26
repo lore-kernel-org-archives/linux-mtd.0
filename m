@@ -1,24 +1,17 @@
-Received: from el-out-1112.google.com ([209.85.162.179])
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlSYd-0006Tf-W7
-	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 18:01:19 +0100
-Received: by el-out-1112.google.com with SMTP id y26so306927ele
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 26 Oct 2007 10:00:11 -0700 (PDT)
-Message-ID: <79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
-Date: Fri, 26 Oct 2007 12:00:10 -0500
-From: Duke <ezbonites@gmail.com>
-To: "Jamie Lokier" <jamie@shareable.org>
-Subject: Re: jffs2: too few erase blocks
-In-Reply-To: <20071025221553.GA29785@mail.shareable.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IlTJl-0007b2-IH
+	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 18:49:59 +0100
+Date: Fri, 26 Oct 2007 21:47:38 +0400
+From: Valentine Barshak <vbarshak@ru.mvista.com>
+To: linuxppc-dev@ozlabs.org
+Subject: [PATCH] PowerPC: 44x device-tree aware NDFC bindings
+Message-ID: <20071026174738.GA13648@ru.mvista.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
-	<20071025092225.410ca383@weaponx.rchland.ibm.com>
-	<20071025221553.GA29785@mail.shareable.org>
-Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
+In-Reply-To: <20071026164130.GA11812@ru.mvista.com>
+Cc: tglx@linutronix.de, sr@denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +21,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/25/07, Jamie Lokier <jamie@shareable.org> wrote:
-> Josh Boyer wrote:
-> > > Hi All,
-> > > What's the deal with "too few erase blocks" message?
-> > > Is one block too few for a jffs2 partition?
-> > > My block size if 256K and I created a small jffs2 256K partition for
-> > > read/writing.
-> > > Is this really too small for jffs2? If so, is there anything I can do for this?
-> >
-> > Yes, it's too small.  JFFS2 requires a certain percentage of blocks in
-> > the partition to be reserved for it's usage.  At one point, it was 5
-> > eraseblocks.
->
-> Fwiw, 5 blocks worth of free space is no guarantee that it'll be fine.
-> I have a 1MB JFFS2 partition with 64kB eraseblocks.  That's 320kB in 5
-> blocks.  But it can return disk full errors when reporting more than
-> 320kB free with 'df' (somewhere between 5 and 6 blocks worth), and it
-> can also do strange things shortly before it returns disk full errors,
-> like spending lots of CPU on GC.
+PowerPC 44x NAND Flash Controller (NDFC) bindings
 
-Is there another read/write filesystem I can use in this space?
+Signed-off-by: Valentine Barshak <vbarshak@ru.mvista.com>
+---
+ Documentation/powerpc/booting-without-of.txt |   43 +++++++++++++++++++++++++++
+ 1 files changed, 43 insertions(+)
 
-If I were to create a subdirectory and rw to that dir only? and can I
-do this with mtd_debug tool?
+--- linux-2.6.orig/Documentation/powerpc/booting-without-of.txt	2007-10-26 19:01:43.000000000 +0400
++++ linux-2.6/Documentation/powerpc/booting-without-of.txt	2007-10-26 21:43:33.000000000 +0400
+@@ -52,6 +52,7 @@ Table of Contents
+       i) Freescale QUICC Engine module (QE)
+       j) CFI or JEDEC memory-mapped NOR flash
+       k) Global Utilities Block
++      l) 44x NanD Flash Controller (NDFC)
+ 
+   VII - Specifying interrupt information for devices
+     1) interrupts property
+@@ -2242,6 +2243,48 @@ platforms are moved over to use the flat
+ 			   available.
+ 			   For Axon: 0x0000012a
+ 
++  l) 44x NanD Flash Controller (NDFC)
++
++  Required properties:
++  - compatible : should be "ibm,ndfc".
++  - reg : should contain at address and length of the NDFC registers
++  - bank-width : NAND chip bus width. Should be 1 for 8-bit NAND or 
++		 2 for 16-bit NAND
++  - bank-map : The first 4 bits of this property indicate which of the
++	       4 NDFC banks have chips attached.
++  - #address-cells, #size-cells : Must be present if the flash has
++    sub-nodes representing partitions (see below).  In this case
++    both #address-cells and #size-cells must be equal to 1.
++  
++  NDFC can have partition nodes, which are described the same way
++  as for the CFI or JEDEC memory-mapped NOR flash.
++
++   Example (Sequoia 440EPx):
++   NDFC is relocatable within EBC and should have EBC as a parent node.
++   Here we have NDFC on EBC CS3 bank:
++
++		ndfc@0,0 {
++			compatible = "ibm,ndfc-440epx", "ibm,ndfc";
++			reg = <3 000000 2000>;
++			bank-width = <1>;
++			bank-mask = <8>;
++			#address-cells = <1>;
++			#size-cells = <1>;
++			partition@0 {
++				label = "u-boot-nand";
++				reg = <0 0080000>;
++			};
++			partition@80000 {
++				label = "kernel-nand";
++				reg = <0080000 0180000>;
++			};
++			partition@200000 {
++				label = "filesystem";
++				reg = <0200000 1e00000>;
++			};
++		};
++
++
+    More devices will be defined as this spec matures.
+ 
+ VII - Specifying interrupt information for devices
