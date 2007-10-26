@@ -1,17 +1,31 @@
-Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
+Received: from e35.co.us.ibm.com ([32.97.110.153])
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlTJl-0007b2-IH
-	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 18:49:59 +0100
-Date: Fri, 26 Oct 2007 21:47:38 +0400
-From: Valentine Barshak <vbarshak@ru.mvista.com>
-To: linuxppc-dev@ozlabs.org
-Subject: [PATCH] PowerPC: 44x device-tree aware NDFC bindings
-Message-ID: <20071026174738.GA13648@ru.mvista.com>
+	id 1IlUJW-0000NW-06
+	for linux-mtd@lists.infradead.org; Fri, 26 Oct 2007 19:53:50 +0100
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id l9QIoCuS007786
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2007 14:50:12 -0400
+Received: from d03av04.boulder.ibm.com (d03av04.boulder.ibm.com [9.17.195.170])
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
+	l9QIoBsW111884
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2007 12:50:11 -0600
+Received: from d03av04.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av04.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	l9QIoBbx008275
+	for <linux-mtd@lists.infradead.org>; Fri, 26 Oct 2007 12:50:11 -0600
+Date: Fri, 26 Oct 2007 13:50:03 -0500
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Valentine Barshak <vbarshak@ru.mvista.com>
+Subject: Re: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
+Message-ID: <20071026135003.257b82bd@weaponx.rchland.ibm.com>
+In-Reply-To: <20071026163058.GA11354@ru.mvista.com>
+References: <20071026163058.GA11354@ru.mvista.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20071026164130.GA11812@ru.mvista.com>
-Cc: tglx@linutronix.de, sr@denx.de, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: linuxppc-dev@ozlabs.org, tglx@linutronix.de, sr@denx.de,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,69 +35,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-PowerPC 44x NAND Flash Controller (NDFC) bindings
+On Fri, 26 Oct 2007 20:30:58 +0400
+Valentine Barshak <vbarshak@ru.mvista.com> wrote:
 
-Signed-off-by: Valentine Barshak <vbarshak@ru.mvista.com>
----
- Documentation/powerpc/booting-without-of.txt |   43 +++++++++++++++++++++++++++
- 1 files changed, 43 insertions(+)
+> I've worked in parallel with Stefan Roese on the new OF NDFC support.
+> This version (as well as Stefan's) is based on the original NDFC driver by Thomas Gleixner.
+> The major difference is that the original implements each chip connected NDFC banks as a
+> separate MTD device. Here I try to have one MTD device spread on all chips found.
+> However, the chips should have equal ID's and sizes, but I've never seen several different
+> chips attached to single ndfc. 
 
---- linux-2.6.orig/Documentation/powerpc/booting-without-of.txt	2007-10-26 19:01:43.000000000 +0400
-+++ linux-2.6/Documentation/powerpc/booting-without-of.txt	2007-10-26 21:43:33.000000000 +0400
-@@ -52,6 +52,7 @@ Table of Contents
-       i) Freescale QUICC Engine module (QE)
-       j) CFI or JEDEC memory-mapped NOR flash
-       k) Global Utilities Block
-+      l) 44x NanD Flash Controller (NDFC)
- 
-   VII - Specifying interrupt information for devices
-     1) interrupts property
-@@ -2242,6 +2243,48 @@ platforms are moved over to use the flat
- 			   available.
- 			   For Axon: 0x0000012a
- 
-+  l) 44x NanD Flash Controller (NDFC)
-+
-+  Required properties:
-+  - compatible : should be "ibm,ndfc".
-+  - reg : should contain at address and length of the NDFC registers
-+  - bank-width : NAND chip bus width. Should be 1 for 8-bit NAND or 
-+		 2 for 16-bit NAND
-+  - bank-map : The first 4 bits of this property indicate which of the
-+	       4 NDFC banks have chips attached.
-+  - #address-cells, #size-cells : Must be present if the flash has
-+    sub-nodes representing partitions (see below).  In this case
-+    both #address-cells and #size-cells must be equal to 1.
-+  
-+  NDFC can have partition nodes, which are described the same way
-+  as for the CFI or JEDEC memory-mapped NOR flash.
-+
-+   Example (Sequoia 440EPx):
-+   NDFC is relocatable within EBC and should have EBC as a parent node.
-+   Here we have NDFC on EBC CS3 bank:
-+
-+		ndfc@0,0 {
-+			compatible = "ibm,ndfc-440epx", "ibm,ndfc";
-+			reg = <3 000000 2000>;
-+			bank-width = <1>;
-+			bank-mask = <8>;
-+			#address-cells = <1>;
-+			#size-cells = <1>;
-+			partition@0 {
-+				label = "u-boot-nand";
-+				reg = <0 0080000>;
-+			};
-+			partition@80000 {
-+				label = "kernel-nand";
-+				reg = <0080000 0180000>;
-+			};
-+			partition@200000 {
-+				label = "filesystem";
-+				reg = <0200000 1e00000>;
-+			};
-+		};
-+
-+
-    More devices will be defined as this spec matures.
- 
- VII - Specifying interrupt information for devices
+Hm.  Why did you do that?  It adds restrictions to the driver that
+really don't need to be present.  If people want a single MTD device
+across multiple chips, they can use mtdconcat.
+
+Remember, just because you've never seen something, doesn't mean it
+doesn't exist.  Bamboo even has two different sized NAND chips
+hooked to the NDFC, IIRC.
+
+josh
