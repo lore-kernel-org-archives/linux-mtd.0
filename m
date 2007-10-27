@@ -1,19 +1,22 @@
-Received: from mga01.intel.com ([192.55.52.88])
+Received: from moutng.kundenserver.de ([212.227.126.177])
 	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Ikote-0006Tk-4c
-	for linux-mtd@lists.infradead.org; Wed, 24 Oct 2007 23:40:20 +0100
-Content-class: urn:content-classes:message
+	id 1IldWR-0004Uu-QK
+	for linux-mtd@lists.infradead.org; Sat, 27 Oct 2007 05:43:47 +0100
+From: Stefan Roese <sr@denx.de>
+To: Valentine Barshak <vbarshak@ru.mvista.com>
+Subject: Re: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
+Date: Sat, 27 Oct 2007 06:42:53 +0200
+References: <20071026163058.GA11354@ru.mvista.com>
+	<alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
+In-Reply-To: <alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: quoted-printable
-Subject: Yet Another UBI Question
-Date: Wed, 24 Oct 2007 15:39:15 -0700
-Message-ID: <B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
-From: "Johnson, Charles F" <charles.f.johnson@intel.com>
-To: <linux-mtd@lists.infradead.org>
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200710270642.54171.sr@denx.de>
+Cc: linuxppc-dev@ozlabs.org, Thomas Gleixner <tglx@linutronix.de>,
+	linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,12 +26,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
- Is there exist yet a block driver which sits on top of UBI so that you
-could use one of the traditional file systems such as ext3 or vfat?
+Hi Valentine,
 
+On Friday 26 October 2007, Thomas Gleixner wrote:
+> On Fri, 26 Oct 2007, Valentine Barshak wrote:
+> > The major difference is that the original implements each chip connected
+> > NDFC banks as a separate MTD device. Here I try to have one MTD device
+> > spread on all chips found. However, the chips should have equal ID's and
+> > sizes, but I've never seen several different chips attached to single
+> > ndfc.
+>
+> Bamboo has 2 different nand chips.
 
-Charles Johnson
-Ultra-Mobility Group
-Platform Software Engineering
-Intel Corporation
-charles.f.johnson@intel.com
+Right. This was my first thought after seeing your mail too.
+
+> And I'm aware of another board 
+> which has a 2k-page onboard NAND and sockets for SmartMedia /
+> PictureXd cards, which will simply break with your design.
+>
+> Restricting stuff for no good reason is never a good idea.
+
+Add my voice here too.
+
+> mtdconcat can build you a big one if you want, so why adding
+> restrictions to a driver ?
+>
+> > I'm adding ndfc_of as a separate file, since some other changes
+> > have also been made (e.g. all i/o is made with ndfc_readl/writel inline
+> > functions).
+>
+> This should be done in the original ndfc driver and not in a separate
+> incarnation.
+
+Right. And I always thought it would be a good idea to switch to using the 
+in_be32() functions and friends for IO access in this driver too.
+
+Best regards,
+Stefan
