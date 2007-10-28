@@ -1,24 +1,22 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Im8Eg-0007Cd-NY
-	for linux-mtd@lists.infradead.org; Sun, 28 Oct 2007 13:31:28 +0000
-Date: Sun, 28 Oct 2007 12:52:41 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: getdents64 problem in 2.6.23
-Message-ID: <20071028115240.GA23227@lazybastard.org>
-References: <023b01c81824$71647f40$5267a8c0@Jocke>
-	<1193440660.16168.57.camel@shinybook.infradead.org>
-	<20071027231812.GA21216@lazybastard.org>
-	<1193536844.2915.36.camel@shinybook.infradead.org>
+Received: from mail.shareable.org ([81.29.64.88])
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1ImFfY-0007jh-6y
+	for linux-mtd@lists.infradead.org; Sun, 28 Oct 2007 17:27:46 -0400
+Date: Sun, 28 Oct 2007 18:02:23 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Duke <ezbonites@gmail.com>
+Subject: Re: jffs2: too few erase blocks
+Message-ID: <20071028180223.GB14076@mail.shareable.org>
+References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
+	<20071025092225.410ca383@weaponx.rchland.ibm.com>
+	<20071025221553.GA29785@mail.shareable.org>
+	<79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
+	<79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1193536844.2915.36.camel@shinybook.infradead.org>
-Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
-	Joakim Tjernlund <joakim.tjernlund@transmode.se>
+In-Reply-To: <79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,39 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, 27 October 2007 22:00:44 -0400, David Woodhouse wrote:
-> 
-> Well, the f->dents list is _already_ ordered by the hash of the
-> filename. The only reason we _don't_ use the hash as the i_pos 'cookie'
-> is because of the potential for hash collisions.
-> 
-> If we could deal with that, we could use trees for it instead of a
-> linked list.
+Duke wrote:
+> Just to clarity myself a bit here. There is nothing stopping me from
+> using the cp or mv (or any other file modification command for that
+> matter) to update one directory but I would like to be able to verify
+> the data is actually written and I thought perhaps mtd_debug or some
+> other mtd tool might be able to verify this. Maybe it's not maybe it
+> is, I would like to find out.
 
-I'd say just do it.  You are already breaking nfs as-is.  The i_pos
-cookie is required to be stable across reboots.  And since you no longer
-store deletion dirents on the medium, the only thing you can do is try
-to use relatively robust non-standard(1) behaviour.
+If you call "fsync()" or "fdatasync()" after writing the data to a
+file, that is suppoe to ensure the data is written when the function
+returns.
 
-One way of doing that is to favor returning the same dentries twice over
-not returning them at all (and try to make it a rare event, of course).
-So you can just use the hash (32bit, due to nfs protocol limitations)
-as a cookie and in case of hash collision, return all colliding
-dentries.  Drawback: endless loop when getdents only has enough room for
-a single dentry.
+That's supposed to happen, but I don't know if JFFS2 actually does
+that.
 
-Second variant is Neil Browns approach of using a 24bit hash and an 8bit
-sequence number.  In case of a hash collision, all colliding dentries
-are kept in a list and the sequence number is used just a i_pos is used
-currently for the collision chain.  Since all these structure are not
-stable across reboot, you would probably want to reset the sequence
-number to zero whenever seekdir is called.
+If you call fsync() on a directory handle, that traditionally ensures
+the file names in that directory are written.  So to be sure of
+creating a file and writing to it, you would create the file, write
+it, fsync() it, then open the directory containing the file and
+fsync() the directory.  For example, email delivery programs use that
+strategy before reporting to a sender that the email is safely stored.
 
-(1) Non-standard behaviour is nothing unusual.  Afaiks even ext3 with
-dirhash is non-standard.
+But again, I don't know if JFFS2 actually does provide those assurances.
 
-Jörn
-
--- 
-"Translations are and will always be problematic. They inflict violence
-upon two languages." (translation from German)
+-- Jamie
