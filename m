@@ -1,17 +1,18 @@
-Received: from web404.biz.mail.mud.yahoo.com ([68.142.201.35])
-	by pentafluge.infradead.org with smtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1IlvHm-0002rm-F2
-	for linux-mtd@lists.infradead.org; Sun, 28 Oct 2007 00:41:50 +0100
-Date: Sat, 27 Oct 2007 16:41:39 -0700 (PDT)
-From: z l <zql@glomationinc.com>
-Subject: Re: MTD driver for MLC NAND chips
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1193489375.2533.25.camel@shinybook.infradead.org>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1IlveP-00039E-2r
+	for linux-mtd@lists.infradead.org; Sun, 28 Oct 2007 01:05:12 +0100
+From: "Joakim Tjernlund" <joakim.tjernlund@transmode.se>
+To: "'David Woodhouse'" <dwmw2@infradead.org>
+Subject: RE: getdents64 problem in 2.6.23
+Date: Sun, 28 Oct 2007 02:04:40 +0200
+Message-ID: <000c01c818f6$23057200$5267a8c0@Jocke>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <17643.40443.qm@web404.biz.mail.mud.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1193524604.2915.30.camel@shinybook.infradead.org>
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,261 +22,142 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-> Show your board driver. You did look carefully at
-> the BUG() at line 174
-> of nand_base.c, I hope? It hints quite heavily at
-> where to look.
+> -----Original Message-----
+> From: David Woodhouse [mailto:dwmw2@infradead.org] 
+> Sent: den 28 oktober 2007 00:37
+> To: Joakim Tjernlund
+> Cc: 'Linux-MTD Mailing List'
+> Subject: RE: getdents64 problem in 2.6.23
 > 
+> 
+> On Sat, 2007-10-27 at 22:31 +0200, Joakim Tjernlund wrote:
+> > 
+> > > -----Original Message-----
+> > > From: linux-mtd-bounces@lists.infradead.org 
+> > > [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of 
+> > > Joakim Tjernlund
+> > > Sent: den 27 oktober 2007 19:21
+> > > To: 'David Woodhouse'
+> > > Cc: 'Linux-MTD Mailing List'
+> > > Subject: RE: getdents64 problem in 2.6.23
+> > > 
+> > >  
+> > > 
+> > > > -----Original Message-----
+> > > > From: David Woodhouse [mailto:dwmw2@infradead.org] 
+> > > > Sent: den 27 oktober 2007 19:09
+> > > > To: Joakim Tjernlund
+> > > > Cc: 'Linux-MTD Mailing List'
+> > > > Subject: RE: getdents64 problem in 2.6.23
+> > > > 
+> > > > On Sat, 2007-10-27 at 17:01 +0200, Joakim Tjernlund wrote:
+> > > > > How do I do that?
+> > > > 
+> > > > Add some debugging and check that it's happening at the 
+> times you
+> > > > expect. And there's no _real_ substitute for the Feynman 
+> > > algorithm to
+> > > > problem-solving. :)
+> > > > 
+> > > > >  I can try booting it, but it has to wait until
+> > > > > I get acces to my board again, hopefully tonight.
+> > > > > 
+> > > > > What about locking? No need for down(&dir_f->sem)? Can I trust
+> > > > > that ->next ptr will be valid all the time?
+> > > > 
+> > > > You'll definitely need locking, to protect against it being 
+> > > > opened while
+> > > > you're playing with it. I think that just locking 
+> dir_f->sem before
+> > > > checking i_count probably ought to suffice.
+> > > > 
+> > > > > ehh, better add an if (!(*prev)->raw) test
+> > > > > before jffs2_free_full_dirent(*prev) then. Will clean 
+> it up too.
+> > > > 
+> > > > You might try the unconventional step of _not_ using the dirent
+> > > > structure after freeing it, too. And remember that if you're 
+> > > > not freeing
+> > > > the whole list, you're going to have to play with the list 
+> > > pointers to
+> > > > keep it intact.
+> > > 
+> > > :), I noticed that. Now I do:
+> > >   while (*prev) {
+> > >                 this = *prev;
+> > >                 if (!this->raw) {
+> > >                         *prev = this->next;
+> > >                         jffs2_free_full_dirent(this);
+> > >                 }
+> > >                 prev = &((*prev)->next);
+> > >         }
+> > > 
+> > > However that doesn't matter because the relese method isn't 
+> > > called while
+> > > doing rm!
+> > > 
+> > > I added som printk's and they were quiet. On the other 
+> hand doing an
+> > > ls does call the release method.
+> > > 
+> > > You need to come up with a better method I think :)
+> > 
+> > After actually reading the code a bit I came up with this:
+> > 
+> > --- a/fs/jffs2/write.c
+> > +++ b/fs/jffs2/write.c
+> > @@ -590,10 +590,8 @@ int jffs2_do_unlink(struct 
+> jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
+> > 
+> >                                 D1(printk(KERN_DEBUG 
+> "Marking old dirent node (ino #%u) @%08x obsolete\n",
+> >                                           this->ino, 
+> ref_offset(this->raw)));
+> > -
+> > -                               *prev = this->next;
+> > -                               jffs2_mark_node_obsolete(c, 
+> (this->raw));
+> > -                               jffs2_free_full_dirent(this);
+> > +                               
+> //jffs2_mark_node_obsolete(c, this->raw);
+> > +                               this->ino = 0;
+> >                                 break;
+> >                         }
+> >                         prev = &((*prev)->next);
+> 
+> I think you should set this->raw to NULL too, to avoid having stale
+> links to obsolete dirent nodes.
 
-I did try to trace things back back but didn't see
-anything obvious.  
+What does the while (dead_f->dents) { .. } do then?
+Seems like it is freeing stuff.
 
-Below is the driver,
+> 
+> And yes, it'll work -- but you'll never be removing those 'deletion
+> dirents' from the lists, except when the inode in question is removed
+> completely from the icache. I think we should try to clean up 
+> more often
+> than that, which is why I suggested the code in a ->release() 
+> function.
+> 
+> That release() function really _ought_ to be invoked when rm(1) opens
+> and subsequently closes the directory.
 
-#include <linux/slab.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/mtd/mtd.h>
-#include <linux/mtd/nand.h>
-#include <linux/mtd/partitions.h>
-#include <asm/io.h>
-#include <asm/arch/hardware.h>
-#include <asm/sizes.h>
+But it doesn't so we are kind of stuck here. Even if it does
+work I wolud prefer not to make the same mistake that got
+here in the first place :)
 
-#define GESBC_NAND_FLASH_DATA 0x10000000
+I have changed the 
+  //jffs2_mark_node_obsolete(c, this->raw);
+to
+  if (!(dead_f && dead_f->inocache))
+          jffs2_mark_node_obsolete(c, this->raw);
+and I wonder if I should add a
+  jffs2_free_full_dirent(this);
+in that if stmt too? 
+I can add this->raw = NULL inside that if, but then one probably
+should do that in lots of other places too?
 
-#define GPIO_PADR	EP93XX_GPIO_REG(0x0)
-#define GPIO_PADDR	EP93XX_GPIO_REG(0x10)
-#define SMCBCR1		(EP93XX_AHB_VIRT_BASE + 0x00082000 +
-0x04)
+Can't test for now as I managed to lock my board so I have
+to wait until someone can reset it for me.
 
-/*
- * MTD structure for GESBC-93xx board
- */
-static struct mtd_info *gesbc_mtd = NULL;
-
-
-/*
- * Module stuff
- */
-static unsigned long gesbc_fio_pbase =
-GESBC_NAND_FLASH_DATA;
-
-#ifdef CONFIG_MTD_PARTITIONS
-/*
- * Define static partitions for flash device
- */
-static struct mtd_partition partition_info32[] = {
-	{ .name= "GESBC NAND FLASH",
-		  .offset= 0,
-		  .size= 128*1024*1024 },
-};
-/*
- * Define static partitions for flash device
- */
-static struct mtd_partition partition_info128[] = {
-	{ .name= "GESBC NAND FLASH",
-		  .offset= 0,
-		  .size= 128*1024*1024 },
-};
-
-/*
- * Define static partitions for flash device
- */
-static struct mtd_partition partition_info256[] = {
-	{ .name= "GESBC NAND FLASH",
-		  .offset= 0,
-		  .size= 256*1024*1024 },
-};
-
-/*
- * Define static partitions for flash device
- */
-static struct mtd_partition partition_info512[] = {
-	{ .name= "GESBC NAND FLASH",
-		  .offset= 0,
-		  .size= 512*1024*1024 },
-};
-
-#define NUM_PARTITIONS 1
-#endif
-
-
-/* 
- *	hardware specific access to control-lines
- *      NAND_NCE: bit 0 -> bit 3
- *      NAND_CLE: bit 1 -> bit 4
- *      NAND_ALE: bit 2 -> bit 6
- */
-static void gesbc_hwcontrol(struct mtd_info *mtd, int
-cmd, int ctrl) 
-{
-	unsigned long flags;
-        struct nand_chip *chip = mtd->priv;
-
-	/* Disbale interrupt to avoid race condition */
-	local_irq_save(flags);
-
-        if (ctrl & NAND_CTRL_CHANGE) {
-                unsigned char bits;
-
-                bits = (ctrl & NAND_CLE) << 3;
-                bits |= (ctrl & NAND_ALE) << 4;
-		if (ctrl & NAND_NCE)
-			bits &= ~0x08;
-		else
-			bits |= 0x08;
-
-		__raw_writel( (__raw_readl(GPIO_PADR) & ~0x58 )|
-bits, GPIO_PADR);
-        }
-        if (cmd != NAND_CMD_NONE)
-                writeb(cmd, chip->IO_ADDR_W);
-	/* Restore interrupt state */
-	local_irq_restore(flags);
-}
-
-/*
- *	read device ready pin
- */
-static int gesbc_device_ready(struct mtd_info *mtd)
-{
-	return  (__raw_readl(GPIO_PADR) & 0x80) >> 7;
-}
-
-#define MTDID      "GESBC-nand"
-
-static const char *probes[] = { "cmdlinepart", NULL };
-
-
-
-/*
- * Main initialization routine
- */
-static int __init gesbc_nand_init (void)
-{
-	struct nand_chip *this;
-	const char *part_type = 0;
-	int mtd_parts_nb = 0;
-	struct mtd_partition *mtd_parts = 0;
-	unsigned long flags;
-	void * gesbc_fio_base;
-
-	/* Allocate memory for MTD device structure and
-private data */
-	gesbc_mtd = kmalloc(sizeof(struct mtd_info) + 
-			     sizeof(struct nand_chip),
-			     GFP_KERNEL);
-	if (!gesbc_mtd) {
-		printk("Unable to allocate GESBC NAND MTD device
-structure.\n");
-		return -ENOMEM;
-	}
-
-	/* map physical adress */
-	gesbc_fio_base = ioremap(gesbc_fio_pbase, SZ_1K);
-	if(!gesbc_fio_base) {
-		printk("ioremap GESBC-93xx NAND flash failed\n");
-		kfree(gesbc_mtd);
-		return -EIO;
-	}
-
-	
-	/* Get pointer to private data */
-	this = (struct nand_chip *) (&gesbc_mtd[1]);
-	
-	/* Initialize structures */
-	memset((char *) gesbc_mtd, 0, sizeof(struct
-mtd_info));
-	memset((char *) this, 0, sizeof(struct nand_chip));
-
-	/* Link the private data with the MTD structure */
-	gesbc_mtd->priv = this;
-
-	/* Disbale interrupt to avoid race condition */
-	local_irq_save(flags);
-
-	/*
-	 * Set GPIO Port A control register so that the pins
-are configured
-	 * to be outputs for controlling the NAND flash.
-	 */
-	__raw_writel((__raw_readl(GPIO_PADDR) | 0x58) &
-~0x80, GPIO_PADDR);
-	/* Clear NCE, clear CLE, clear ALE */
-	__raw_writel( (__raw_readl(GPIO_PADR) | 0x08 ) &
-~0x50, GPIO_PADR);
-	/* Set SRAM controller to 32 bit (8 bit just doesn't
-work, don't know why) bus width and 7 CLK wait state
-*/
-	__raw_writel(0x10003ce0, SMCBCR1);
-	local_irq_restore(flags);
-
-	
-	/* insert callbacks */
-	this->IO_ADDR_R = (void *) gesbc_fio_base;
-	this->IO_ADDR_W = (void *) gesbc_fio_base;
-	this->cmd_ctrl = (void *) gesbc_hwcontrol;
-	this->dev_ready = gesbc_device_ready;
-	this->chip_delay = 25;
-	this->ecc.mode = NAND_ECC_SOFT;
-	
-	__raw_writel(0xffffffff, gesbc_fio_base);
-	printk("Searching for NAND flash...\n");
-	/* Scan to find existence of the device */
-	if (nand_scan (gesbc_mtd, 1)) {
-		iounmap((void *)gesbc_fio_base);
-		kfree (gesbc_mtd);
-		return -ENXIO;
-	}
-
-#ifdef CONFIG_MTD_CMDLINE_PARTS
-        gesbc_mtd->name="GESBC-NAND";
-        mtd_parts_nb = parse_mtd_partitions(gesbc_mtd,
- probes, &mtd_parts, 0);
-        if (mtd_parts_nb > 0)
-                part_type = "command line";
-        else
-                mtd_parts_nb = 0;
-#endif
-
-	if (mtd_parts_nb == 0)
-	{
-		mtd_parts_nb = NUM_PARTITIONS;
-		mtd_parts = partition_info32;
-		if (gesbc_mtd->size >= (128 * 0x100000))
-			mtd_parts = partition_info128;
-		if (gesbc_mtd->size >= (256 * 0x100000))
-			mtd_parts = partition_info256;
-		if (gesbc_mtd->size >= (512 * 0x100000))
-			mtd_parts = partition_info512;
-		part_type = "static";
-	}
-	
-	/* Register the partitions */
-	printk(KERN_NOTICE "Using %s partition definition\n",
-part_type);
-	add_mtd_partitions(gesbc_mtd, mtd_parts,
-mtd_parts_nb);
-	
-	/* Return happy */
-	return 0;
-}
-module_init(gesbc_nand_init);
-
-/*
- * Clean up routine
- */
-static void __exit gesbc_nand_cleanup (void)
-{
-/*	struct nand_chip *this = (struct nand_chip *)
-&gesbc_mtd[1]; */
-	
-	/* Unregister the device */
-	del_mtd_device (gesbc_mtd);
-	
-	/* Free the MTD device structure */
-	kfree (gesbc_mtd);
-}
-module_exit(gesbc_nand_cleanup);
+ Jocke
