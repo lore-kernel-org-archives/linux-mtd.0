@@ -1,19 +1,19 @@
-Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+Received: from mtwmail.mindtree.com ([203.200.60.136]
+	helo=mailwo11.mindtree.com)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImVUO-0007Bz-Hs
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 10:21:21 -0400
-Message-ID: <4725F9F8.60600@ru.mvista.com>
-Date: Mon, 29 Oct 2007 18:19:20 +0300
-From: Valentine Barshak <vbarshak@ru.mvista.com>
+	id 1ImVkZ-0006GB-3a
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 10:38:01 -0400
+Message-ID: <4725F00B.1040105@mindtree.com>
+Content-Class: urn:content-classes:message
+Date: Mon, 29 Oct 2007 20:06:59 +0530
+From: "Zaheer A.M" <m1005527@mindtree.com>
 MIME-Version: 1.0
-To: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
-References: <20071026163058.GA11354@ru.mvista.com>
-	<alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
-In-Reply-To: <alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linuxppc-dev@ozlabs.org, sr@denx.de, linux-mtd@lists.infradead.org
+To: <linux-mtd@lists.infradead.org>
+Subject: NOR flash support on AT91RM9200.
+Content-Type: text/plain;
+	format=flowed;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,87 +23,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Thomas Gleixner wrote:
-> On Fri, 26 Oct 2007, Valentine Barshak wrote:
->> The major difference is that the original implements each chip connected NDFC banks as a
->> separate MTD device. Here I try to have one MTD device spread on all chips found.
->> However, the chips should have equal ID's and sizes, but I've never seen several different
->> chips attached to single ndfc.
-> 
-> Bamboo has 2 different nand chips. And I'm aware of another board
-> which has a 2k-page onboard NAND and sockets for SmartMedia /
-> PictureXd cards, which will simply break with your design.
-> 
-> Restricting stuff for no good reason is never a good idea.
-> 
-> mtdconcat can build you a big one if you want, so why adding
-> restrictions to a driver ?
-> 
->> I'm adding ndfc_of as a separate file, since some other changes
->> have also been made (e.g. all i/o is made with ndfc_readl/writel inline functions).
-> 
-> This should be done in the original ndfc driver and not in a separate
-> incarnation.
-> 
->> The original version didn't handle driver removal well (it never calls del_mtd...),it's 
->> corrected here.
-> 
-> Why not fixing the original driver ?
-> 
->> Any comments are greatly appreciated.
-> 
-> NACK.
-> 
-> Please fix the existing driver and convert it to deal with OF and fix
-> the other short comings as well.
-> 
-> Duplicate code is not going anywhere near drivers/mtd/nand
-> 
-> 	tglx
+Hello,
 
-Thanks all for your comments.
-Well, let me explain why I did this.
-First of all I should have checked twice, since I was thinking bamboo 
-had identical chips :) I planned to add different chip support later a 
-bit, just wanted to get a simple OF driver version working first. 
-Surely, mtd concat can be used, but it adds a slight overhead for 
-identical chips. Eventually, I wanted to make it support both separate 
-mtd devices on each chip or spread across identical ones depending on 
-the device-tree settings. The other thing is that the original driver 
-lacked a distinct parent-child relationship between ndfc and chips. 
-Simply registering chip driver only after ndfc is successfully 
-registered doesn't guarantee we initialize chip device after ndfc is 
-properly initialized.
-Even if we set ndfc parent for the chip platform device as suggested by 
-Stefan:
-static struct platform_device nand_dev = {
-	.name = "ndfc-chip",
-	.id = 0,
-	.num_resources = 1,
-	.resource = &r,
-	.dev = {
-		.platform_data = &nand_chip,
-		.parent = &ndfc_dev.dev,
-	}
-};
-If for some reason ndfc probe fails the kernel will crash on the chip 
-probe. Of course it would work most of the time, but I think that both 
-initialization and clean-up has to be reworked in the original driver.
-The original driver has a tight connection to the 
-platform_device/platform_data structures. Stefan suggested a 
-OF-to-platform device wrapper to make both versions work:
-http://ozlabs.org/pipermail/linuxppc-dev/2007-October/044019.html
-It's fine to have this glue code, but right now only 1 chip is 
-supported. To add support for more chips we need an array of at least 4 
-ndfc-chip platform devices. And this approach looks to me like inventing 
-something new (OF) and then adding glue and quirks to make it work with 
-the old stuff. Why invent new stuff then?
-To make the original driver work with both "platform device" and new OF 
-device descriptions need additional rework of the current ndfc code (add 
-some #ifdefs, or completely split platform/OF and nand core stuff into 
-separate files). I know that duplicating code is no good either, but 
-since the original stuff is going to die and be removed anyway should it 
-be a big problem?
-So, these are just my thoughts.
-Thanks,
-Valentine.
+I am working on the Atmel At91RM9200-EK board, and have been able to=20
+boot out of NFS with the 2.6.22 kernel.
+However I would like to use the on-board NOR-flash(8 MB),  create MTD=20
+partitions and boot out of it.
+Let me know if anyone has worked on the same and can provide me any=20
+info/patch.
+
+Regards,
+Zaheer.
+
+
+DISCLAIMER:
+This message (including attachment if any) is confidential and may be =
+privileged. If you have received this message by mistake please notify =
+the sender by return e-mail and delete this message from your system. =
+Any unauthorized use or dissemination of this message in whole or in =
+part is strictly prohibited.
+E-mail may contain viruses. Before opening attachments please check them =
+for viruses and defects. While MindTree Consulting Limited (MindTree) =
+has put in place checks to minimize the risks, MindTree will not be =
+responsible for any viruses or defects or any forwarded attachments =
+emanating either from within MindTree or outside.
+Please note that e-mails are susceptible to change and MindTree shall =
+not be liable for any improper, untimely or incomplete transmission.
+MindTree reserves the right to monitor and review the content of all =
+messages sent to or from MindTree e-mail address. Messages sent to or =
+from this e-mail address may be stored on the MindTree e-mail system or =
+else where.
