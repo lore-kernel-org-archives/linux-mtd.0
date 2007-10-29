@@ -1,16 +1,27 @@
-Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ImaL9-0000nf-Ue
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 19:32:02 +0000
-Date: Mon, 29 Oct 2007 23:29:02 +0300
-From: Valentine Barshak <vbarshak@ru.mvista.com>
-To: linuxppc-dev@ozlabs.org
-Subject: [PATCH] MTD: small physmap_of partition parsing fixes
-Message-ID: <20071029202902.GA2200@ru.mvista.com>
+Received: from mail.shareable.org ([81.29.64.88])
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1ImcKJ-0002xH-5H
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 17:39:21 -0400
+Date: Mon, 29 Oct 2007 20:51:25 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+Subject: Re: jffs2: too few erase blocks
+Message-ID: <20071029205125.GA27773@mail.shareable.org>
+References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
+	<20071025092225.410ca383@weaponx.rchland.ibm.com>
+	<20071025221553.GA29785@mail.shareable.org>
+	<79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
+	<79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
+	<20071028180223.GB14076@mail.shareable.org>
+	<1193626747.2915.87.camel@shinybook.infradead.org>
+	<20071029143818.GA29885@lazybastard.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20071029143818.GA29885@lazybastard.org>
+Cc: linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
+	David Woodhouse <dwmw2@infradead.org>, Duke <ezbonites@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,50 +31,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Use of_get_next_child for proper ref counting as suggested by Stephen Rothwell
-and remove add_mtd_partitions from parse_partitions to avoid duplicate
-mtd device registration for RedBoot partitions.
+Jörn Engel wrote:
+> On Sun, 28 October 2007 22:59:07 -0400, David Woodhouse wrote:
+> > 
+> > Yes, it does. In fact, on NOR flash you get entirely synchronous
+> > behaviour even _without_ explicit syncs -- effectively the same as
+> > MS_SYNC.
+> 
+> On older ones.  There appears to be a tendency for newer flashes to
+> require wbuf and hence sync.
 
-Signed-off-by: Valentine Barshak <vbarshak@ru.mvista.com>
----
- drivers/mtd/maps/physmap_of.c |   13 +++++++------
- 1 files changed, 7 insertions(+), 6 deletions(-)
+When you say "sync", do fdatasync() / fsync() on open files and
+directories flush the necessary blocks from wbuf for those
+files/directories data and their inode metadata, for JFFS2?
 
-diff -pruN linux-2.6.orig/drivers/mtd/maps/physmap_of.c linux-2.6/drivers/mtd/maps/physmap_of.c
---- linux-2.6.orig/drivers/mtd/maps/physmap_of.c	2007-10-29 16:02:37.000000000 +0300
-+++ linux-2.6/drivers/mtd/maps/physmap_of.c	2007-10-29 22:41:08.000000000 +0300
-@@ -94,14 +94,13 @@ static int __devinit parse_partitions(st
- 	 * line, these take precedence over device tree information */
- 	nr_parts = parse_mtd_partitions(info->mtd, part_probe_types,
- 					&info->parts, 0);
--	if (nr_parts > 0) {
--		add_mtd_partitions(info->mtd, info->parts, nr_parts);
--		return 0;
--	}
-+	if (nr_parts > 0)
-+		return nr_parts;
- 
- 	/* First count the subnodes */
- 	nr_parts = 0;
--	for (pp = dp->child; pp; pp = pp->sibling)
-+	for (pp = of_get_next_child(dp, NULL); pp;
-+	     pp = of_get_next_child(dp, pp))
- 		nr_parts++;
- 
- 	if (nr_parts == 0)
-@@ -112,12 +111,14 @@ static int __devinit parse_partitions(st
- 	if (!info->parts)
- 		return -ENOMEM;
- 
--	for (pp = dp->child, i = 0; pp; pp = pp->sibling, i++) {
-+	for (pp = of_get_next_child(dp, NULL), i = 0; pp;
-+	     pp = of_get_next_child(dp, pp), i++) {
- 		const u32 *reg;
- 		int len;
- 
- 		reg = of_get_property(pp, "reg", &len);
- 		if (!reg || (len != 2*sizeof(u32))) {
-+			of_node_put(pp);
- 			dev_err(&dev->dev, "Invalid 'reg' on %s\n",
- 				dp->full_name);
- 			kfree(info->parts);
+I have been calling sync(), but I wonder if fdatasync/fsync do as they
+are supposed to?
+
+(If you know about other fses like LogFS/Yaffs/UBIFS that would be
+handy, too).
+
+Probably all are unnecessary in my specific application, as I use a
+JFFS2 with cfi_cmdset_0002, which I get the impression doesn't buffer
+any writes anyway.  But I like to get the application code right, in
+case I change to another device.
+
+-- Jamie
