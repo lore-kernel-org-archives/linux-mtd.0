@@ -1,22 +1,19 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImUDN-00015f-Si
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 08:59:40 -0400
-Subject: RE: getdents64 problem in 2.6.23
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1193617605.2915.84.camel@shinybook.infradead.org>
-References: <005201c819be$649f47e0$5267a8c0@Jocke>
-	<1193617605.2915.84.camel@shinybook.infradead.org>
-Content-Type: text/plain
+	id 1ImVUO-0007Bz-Hs
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 10:21:21 -0400
+Message-ID: <4725F9F8.60600@ru.mvista.com>
+Date: Mon, 29 Oct 2007 18:19:20 +0300
+From: Valentine Barshak <vbarshak@ru.mvista.com>
+MIME-Version: 1.0
+To: Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 0/2] PowerPC: Add 44x NDFC device-tree aware support
+References: <20071026163058.GA11354@ru.mvista.com>
+	<alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
+In-Reply-To: <alpine.LFD.0.9999.0710262316590.3186@localhost.localdomain>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Date: Mon, 29 Oct 2007 13:58:51 +0100
-Message-Id: <1193662731.26497.4.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
-	=?ISO-8859-1?Q?=27J=F6rn?= Engel' <joern@logfs.org>,
-	'Jamie Lokier' <jamie@shareable.org>
-Reply-To: joakim.tjernlund@transmode.se
+Cc: linuxppc-dev@ozlabs.org, sr@denx.de, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,18 +23,87 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 2007-10-28 at 20:26 -0400, David Woodhouse wrote:
-> On Mon, 2007-10-29 at 00:58 +0100, Joakim Tjernlund wrote:
-> > David, before rewriting getdents et. all may I ask you to apply the
-> > patch I sent today? Then we will have something that works and go
-> > from there.
+Thomas Gleixner wrote:
+> On Fri, 26 Oct 2007, Valentine Barshak wrote:
+>> The major difference is that the original implements each chip connected NDFC banks as a
+>> separate MTD device. Here I try to have one MTD device spread on all chips found.
+>> However, the chips should have equal ID's and sizes, but I've never seen several different
+>> chips attached to single ndfc.
 > 
-> I'm not happy about having fd->raw still pointing to nodes which may no
-> longer exist. Can't we set it to NULL (and cope with potential fallout)?
+> Bamboo has 2 different nand chips. And I'm aware of another board
+> which has a 2k-page onboard NAND and sockets for SmartMedia /
+> PictureXd cards, which will simply break with your design.
+> 
+> Restricting stuff for no good reason is never a good idea.
+> 
+> mtdconcat can build you a big one if you want, so why adding
+> restrictions to a driver ?
+> 
+>> I'm adding ndfc_of as a separate file, since some other changes
+>> have also been made (e.g. all i/o is made with ndfc_readl/writel inline functions).
+> 
+> This should be done in the original ndfc driver and not in a separate
+> incarnation.
+> 
+>> The original version didn't handle driver removal well (it never calls del_mtd...),it's 
+>> corrected here.
+> 
+> Why not fixing the original driver ?
+> 
+>> Any comments are greatly appreciated.
+> 
+> NACK.
+> 
+> Please fix the existing driver and convert it to deal with OF and fix
+> the other short comings as well.
+> 
+> Duplicate code is not going anywhere near drivers/mtd/nand
+> 
+> 	tglx
 
-Thats a diffrent story. Now I fixed the bug so it behaves like the 
-!mark_node_obsolete case. Walking through all ->raw references is
-something I will save for a rainy dag, I need to fix a few other bugs in
-our system ATM.
-
-   Jocke
+Thanks all for your comments.
+Well, let me explain why I did this.
+First of all I should have checked twice, since I was thinking bamboo 
+had identical chips :) I planned to add different chip support later a 
+bit, just wanted to get a simple OF driver version working first. 
+Surely, mtd concat can be used, but it adds a slight overhead for 
+identical chips. Eventually, I wanted to make it support both separate 
+mtd devices on each chip or spread across identical ones depending on 
+the device-tree settings. The other thing is that the original driver 
+lacked a distinct parent-child relationship between ndfc and chips. 
+Simply registering chip driver only after ndfc is successfully 
+registered doesn't guarantee we initialize chip device after ndfc is 
+properly initialized.
+Even if we set ndfc parent for the chip platform device as suggested by 
+Stefan:
+static struct platform_device nand_dev = {
+	.name = "ndfc-chip",
+	.id = 0,
+	.num_resources = 1,
+	.resource = &r,
+	.dev = {
+		.platform_data = &nand_chip,
+		.parent = &ndfc_dev.dev,
+	}
+};
+If for some reason ndfc probe fails the kernel will crash on the chip 
+probe. Of course it would work most of the time, but I think that both 
+initialization and clean-up has to be reworked in the original driver.
+The original driver has a tight connection to the 
+platform_device/platform_data structures. Stefan suggested a 
+OF-to-platform device wrapper to make both versions work:
+http://ozlabs.org/pipermail/linuxppc-dev/2007-October/044019.html
+It's fine to have this glue code, but right now only 1 chip is 
+supported. To add support for more chips we need an array of at least 4 
+ndfc-chip platform devices. And this approach looks to me like inventing 
+something new (OF) and then adding glue and quirks to make it work with 
+the old stuff. Why invent new stuff then?
+To make the original driver work with both "platform device" and new OF 
+device descriptions need additional rework of the current ndfc code (add 
+some #ifdefs, or completely split platform/OF and nand core stuff into 
+separate files). I know that duplicating code is no good either, but 
+since the original stuff is going to die and be removed anyway should it 
+be a big problem?
+So, these are just my thoughts.
+Thanks,
+Valentine.
