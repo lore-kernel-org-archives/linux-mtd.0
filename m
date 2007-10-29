@@ -1,29 +1,24 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImeCP-0001Tn-T8
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 19:39:20 -0400
-Date: Mon, 29 Oct 2007 22:46:38 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: jffs2: too few erase blocks
-Message-ID: <20071029224638.GA7122@mail.shareable.org>
-References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
-	<20071025092225.410ca383@weaponx.rchland.ibm.com>
-	<20071025221553.GA29785@mail.shareable.org>
-	<79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
-	<79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
-	<20071028180223.GB14076@mail.shareable.org>
-	<1193626747.2915.87.camel@shinybook.infradead.org>
-	<20071029143818.GA29885@lazybastard.org>
-	<20071029205125.GA27773@mail.shareable.org>
-	<20071029215457.GB1027@lazybastard.org>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1ImeFH-0001px-JO
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 19:42:17 -0400
+Subject: RE: getdents64 problem in 2.6.23
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1193679050.26497.43.camel@gentoo-jocke.transmode.se>
+References: <005201c819be$649f47e0$5267a8c0@Jocke>
+	<1193617605.2915.84.camel@shinybook.infradead.org>
+	<1193662731.26497.4.camel@gentoo-jocke.transmode.se>
+	<1193679050.26497.43.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Tue, 30 Oct 2007 00:41:34 +0100
+Message-Id: <1193701294.26497.48.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20071029215457.GB1027@lazybastard.org>
-Cc: David Woodhouse <dwmw2@infradead.org>, Josh Boyer <jwboyer@gmail.com>,
-	linux-mtd@lists.infradead.org, Duke <ezbonites@gmail.com>
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
+	=?ISO-8859-1?Q?=27J=F6rn?= Engel' <joern@logfs.org>,
+	'Jamie Lokier' <jamie@shareable.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,85 +28,70 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> fsync/fdatasync should work on logfs.  If you know a good way to test
-> this, I'd add it to my suite of regression tests.  Right now I have to
-> rely on reading the code.
-
-Here's an idea for testing:
-
-    1. Open file w/O_CREAT|O_EXCL, write some data, then after write()
-       returns, immediately force the MTD device read-only somehow (so
-       anything not committed cannot be committed after this point).
-       Then unmount and mount, and read the file.  Then open the file:
-       either it should't exist, or the written data shouldn't be
-       present, if buffering is working.
-
-    2. If the file doesn't exist in test 1, call fsync() after opening
-       the file and before writing, and also call fsync() on the
-       directory containing the created file.  Afterwards, the file
-       should exist, but not contain the written data.
-
-    3. Variation: create file, write data, then fsync(), then
-       overwrite with new data (not changing the length).  Afterwards,
-       the read data should be the first written data, not the second.
-
-    4. Same as tests 1, 2 and 3, but call fsync() after writing.  This
-       time, the written data should always be read back.  This tests
-       that fsync() makes a difference.
-
-    5. Same as test 3, but call fdatasync() instead of fsync().  The
-       second written data should always be read back.
-
-    6. Create the file, set modtime to some fixed time A, call
-       fsync(), set modtime to fixed time B, then set MTD read-only,
-       unmount, mount.  stat() the file: you might get time A.
-
-    7. As test 6, but call fsync() following the second setting of
-       modtime.  Afterwards, stat() should return time B, proving that
-       fsync() commits the inode change.
-
-    8. As test 7 but using fdatasync(): if it is really different from
-       fsync(), you should get time A the same as test 6.
-
-    9. I'm not sure if fdatasync() is required to update the length of
-       a file, when the file is extended by write() or ftruncate().
-
-    10. Variations on the above involving small writes, large writes,
-       and scattered writes.
-
-    10. fsync() tests on a directory involve doing changes to
-       directories (changing the modtime, and
-       creating/linking/unlinking/renaming in them) and checking the
-       name change after marking the MTD device read-only and
-       unmounting + mount.  Quite similar to the above tests, but
-       using directory operations.  I'm not sure if fdatasync() has
-       any meaning for directories (indeed I'm not sure if fsync()
-       does formally).
-
-> > Probably all are unnecessary in my specific application, as I use a
-> > JFFS2 with cfi_cmdset_0002, which I get the impression doesn't buffer
-> > any writes anyway.  But I like to get the application code right, in
-> > case I change to another device.
+On Mon, 2007-10-29 at 18:30 +0100, Joakim Tjernlund wrote:
+> On Mon, 2007-10-29 at 13:58 +0100, Joakim Tjernlund wrote:
+> > On Sun, 2007-10-28 at 20:26 -0400, David Woodhouse wrote:
+> > > On Mon, 2007-10-29 at 00:58 +0100, Joakim Tjernlund wrote:
+> > > > David, before rewriting getdents et. all may I ask you to apply the
+> > > > patch I sent today? Then we will have something that works and go
+> > > > from there.
+> > > 
+> > > I'm not happy about having fd->raw still pointing to nodes which may no
+> > > longer exist. Can't we set it to NULL (and cope with potential fallout)?
+> > 
+> > Thats a diffrent story. Now I fixed the bug so it behaves like the 
+> > !mark_node_obsolete case. Walking through all ->raw references is
+> > something I will save for a rainy dag, I need to fix a few other bugs in
+> > our system ATM.
 > 
-> Any filesystem should follow the standards here.  Anything else is a
-> bug.
+> ehh, my patch may be somewhat wrong, need to reflect a bit on that. I
+> might even get to the ->raw = NULL thing :)
 
-True.  But JFFS2 is a bit buggy from an application point of view (*),
-and we care about what an application can actually rely on in
-practice, not what the standard says :-)
+ok, this should do it I hope. I also have ->raw = NULL in progess, but I
+would like to know if this patch is accpetable to solve this problem.
 
-(*) Hence the subject of this thread, and the uncertainty of the
-answer to that question.  Do any of the flash filesystems in
-development guarantee a specific amount of the partition can actually
-be used for data, and return "disk full" deterministically at that
-point, for a given set of file contents?  Does the answer change if
-compression is disable?  Do any of them not go suspiciously crazy with
-the CPU for a whole minute when it's nearly full, as JFFS2 GC threads
-do occasionally?  I see lots of nice things in the white papers about
-the new fses, but GC problems, and the amount of space required, seems
-curiously glossed over.  Does this mean they're fixed?  I have been
-bitten hard by these areas of JFFS2.  It wasn't pretty.
+ Jocke
 
-Thanks :-)
--- Jamie
+>From 6fbc572bf34c7834a8a2d6b8a5f22b4f55d3bbea Mon Sep 17 00:00:00 2001
+From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Date: Sun, 28 Oct 2007 13:31:58 +0100
+Subject: [PATCH] [JFFS2] Fix getdents problem on large directories.
+
+Another fallout from commit a491486a2087ac3dfc00efb4f838c8d684afaf54
+rm -rf on a large directory needs to call getdents several times.
+The second call would usally return empty, telling the user that
+there are no more files to unlink, rmdir then fails since the
+directory isn't empty.
+
+Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+---
+ fs/jffs2/write.c |    7 ++-----
+ 1 files changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/fs/jffs2/write.c b/fs/jffs2/write.c
+index 2f56954..bee27a9 100644
+--- a/fs/jffs2/write.c
++++ b/fs/jffs2/write.c
+@@ -590,10 +590,8 @@ int jffs2_do_unlink(struct jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
+ 
+ 				D1(printk(KERN_DEBUG "Marking old dirent node (ino #%u) @%08x obsolete\n",
+ 					  this->ino, ref_offset(this->raw)));
+-
+-				*prev = this->next;
+-				jffs2_mark_node_obsolete(c, (this->raw));
+-				jffs2_free_full_dirent(this);
++				jffs2_mark_node_obsolete(c, this->raw);
++				this->ino = 0;
+ 				break;
+ 			}
+ 			prev = &((*prev)->next);
+@@ -622,7 +620,6 @@ int jffs2_do_unlink(struct jffs2_sb_info *c, struct jffs2_inode_info *dir_f,
+ 					D1(printk(KERN_DEBUG "Removing deletion dirent for \"%s\" from dir ino #%u\n",
+ 						fd->name, dead_f->inocache->ino));
+ 				}
+-				jffs2_mark_node_obsolete(c, fd->raw);
+ 				jffs2_free_full_dirent(fd);
+ 			}
+ 		}
+-- 
+1.5.3.4
