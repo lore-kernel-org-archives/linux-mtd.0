@@ -1,11 +1,22 @@
-Message-ID: <13996454.1193626738218.JavaMail.clxu@devbook189>
-Date: Mon, 29 Oct 2007 10:58:58 +0800 (CST)
-From: clxu <clxu@minigui.org>
-Subject: =?GBK?B?0ru49se2yOvKvcLbzLPF89PRtcTAtNDF?=
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1ImUDN-00015f-Si
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 08:59:40 -0400
+Subject: RE: getdents64 problem in 2.6.23
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1193617605.2915.84.camel@shinybook.infradead.org>
+References: <005201c819be$649f47e0$5267a8c0@Jocke>
+	<1193617605.2915.84.camel@shinybook.infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Mon, 29 Oct 2007 13:58:51 +0100
+Message-Id: <1193662731.26497.4.camel@gentoo-jocke.transmode.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=GBK
-Content-Transfer-Encoding: base64
-To: undisclosed-recipients:;
+Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
+	=?ISO-8859-1?Q?=27J=F6rn?= Engel' <joern@logfs.org>,
+	'Jamie Lokier' <jamie@shareable.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,73 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-xPq6w6OhCs7Syse3ycL+yO28/tDstLrA2aOsyM/KtsT6uty439DLo6zU2sLbzLPA77+0tb3By8T6
-tcTXorLhLM/rsdjSstOmuMPKx8nm1+PHtsjryr3B7NPytcS5pLPMyqawyaO/Csfr1MrQ7c7S1NrV
-4sDvz+rPuL3pydzSu8/CztLL+dTatcS5q8u+LS23ycL+vLC3ycL+tcSy+sa3uPjE+sHLveKjrM+j
-zfvO0sPHtcSy+sa3u+G4+MT6tcTR0LeiuaTX97T4wLSw79b6o6EKt8nC/sjtvP7Ev8ewyse5+sTa
-x7bI68q9IEdVSSDB7NPytcTB7LW8s6fJzKOs1vfSqsPmz/LHtsjryr3J6LG4vK+zycnMu/LV39bG
-1OzJzMzhuanHtsjryr3NvNDO1tC85Lz+yO28/qGix7bI68q9udi8/NOm08PI7bz+vLDP4LnYv6q3
-ormkvt+y+sa3oaMg1Nq5+sTaCse2yOvKvcHs0/K+39PQ1tjSqrXE07DP7LKi07XT0NbatuC1xNPD
-u6ejrNTaufq8ysnPztLDx9Ky09C9z7jftcTWqsP7tsihoyAKztLDx7XEteTQzdPDu6fT0Luqzqqh
-olRDTKGitPPMxtLGtq+hotbQ0MvNqNG2oaLH4LW6uqO2+6GiuqPQxaGiy8S0qLOkuuehosGqz+uh
-olVUoaLQ3MOotefX06GixM/N+7Xn19Ohosnu29rC9cjwoaK549bdyv2/2KGitKvK08r9wuuhosyo
-zeXToruqtO+hosb0u/mhogq64+z1v8a8vKGi4vnA+7Xn19Ohor3wsabS1Lywuqu5+qGiyNWxvqGi
-w8C5+qGivNPEw7TzoaLC7cC0zvfRx7XIufq80rXEv827p6Gjus/X97vvsOnT0EF0bWVsoaJJbnRl
-bKGiRlVKSVRTVaGiV2luZFJpdmVyoaJPUEVSQaGiQU1EoaLDwLn6RVNHoaJPU0W1yKGjCgpNaW5p
-R1VJo7rKx87Sw8e1xLrL0MSy+sa31q7Su6GjueO3utOm08PT2rv6tqW60KGiyta7+qGiUE1QoaLS
-vcHG0sfG96Giv8nK07Xnu7Chosr9v9i7+rSyoaLQxc+i1tW2y7rNuaTStb/Y1sa1yMHs0/Kho01p
-bmlHVUnKx9K7uPbHtsjryr3NvNDO1tC85Lz+svrGt6OsCsrH16jOqse2yOvKvbL6xrfJ6LzGtcSj
-rL7f09DVvNPD18rUtMnZoaLUy9DQ0KfCyrjfoaLUy9DQzsi2qKGiv+ey2df3z7XNs7XI1u624NPF
-teOho7b4x9K+rbn9tuDE6srQs6G6zcq1vMrP7sS/tcTR6dako6zS0bXDtb263Lbg0NDStbTzv827
-p7XEyM+/ybrN1qez1qOsCsjnu6rOqqGiVENMoaK088zG0sa2r6Gi06K7qrTvoaLW0NDLzajRtqGi
-warP66GiwvXI8KGiuePW3cr9v9ihorSrytPK/cLroaJJbnRlbKGiRlVKSVRTVaGiV2luZFJpdmVy
-oaJPUEVSQaGiQU1EvLC6q7n6oaLI1bG+oaLDwLn6oaK808TDtPOhosLtwLTO99HHtcgKufq80rXE
-v827p6GjCgq2+MfSu/nT2k1pbmlHVUm1xNOm08Oy+sa3o6zI58/Co7oKCkZoYXOjusrHt8nC/sjt
-vP7D5s/y1sfE3NbVtsvTptPDwezT8szhuam1xNOm08PGvcyosvrGt6Os1vfSqsrK08PT2srWu/qh
-olBNULrNxuTL/MrWs9bJ6LG4o6zKx7fJwv65q8u+s/1NaW5pR1VJ1q7N4tPW0ru49tbY0qq1xLL6
-xrejrMrHu/nT2k1pbmlHVUm/qreiCrXE06bTw7y2svrGt6GjRmhhcyDKubXDuPfW1tbHxNzJ6LG4
-yc+1xNOm08O/qreiseS1w7/sy9mhorjf0KejrMjDv827p9eo16LT2rL6xre1xLj20NS/qreioaPW
-99Kq06bTw9PQtdjWt7K+o6yxuM38wryjrLzHysKxvqOszbzGrOSvwMDG96OsTVAzsqW3xcb3tcih
-owoKbURvbHBoaW4gyse3ycL+yO28/tfU1ve/qreio6zUy9DQ09pNaW5pR1VJzbzQzsa9zKjJz7XE
-0ru/7sSjv+m7r6Giv8nAqdW5oaK5psTcxuvIq7XEuN+2y8e2yOvKveSvwMDG98jtvP6ho8q508Nt
-RG9scGhpbqOs08O7p72r1NrHtsjryr2y+sa31tC78bXDyOdQQwrkr8DAxve1xM341b7kr8DA0Ke5
-+6GjbURvbHBoaW4gVjEuMCDWp7PWSFRNTCA0LjAxoaJYSE1UTKGiWE1MoaJDU1MgMqGiRE9NIDKh
-okphdmFTY3JpcHQgMS41tcjB99DQtcQgVzNDILHq17yjrNans9YgSFRUUCAxLjKhokhUVFBTINCt
-0um8sCBDb29raWUgoaJQcm94eSAKzNjQ1KOsysrTw9PauN/Q1MTcu6XBqs345K/AwKGjxuTEo7/p
-u6+8sL/JwKnVubzcubmjrMq5tcPTw7unv8nS1LzyseO12Lao1sbJ6NbDo6zS1ML61+Oyu82syeix
-uLXEzNjK4tDo0qqho82syrGjrM6qyrnTw7un07XT0NfuvNG1xOSvwMDM5dHpo6xtRG9scGhpbuSv
-wMDG99anCrPWtuDW1uTWyL68sMXFsObEo8q9o6zTw7unv8m4+b7d5K/AwNDo0qrX1NDQvfjQ0MfQ
-u7uho21Eb2xwaGluIFYxLjDV67bUzfjVvtPKz+S1xLfDzsq9+NDQwcvM2LHwtcTTxbuvo6y/ydLU
-zerDwNans9bQwsDLoaLRxbuioaIxNjOhojI2M6Giy9G6/KGiR01haWyhogpIb3RtYWlstcjN+NW+
-08rP5LXEt8POyqGjzazKsaOsbURvbHBoaW7M4bmpwcu21EFKQVi8vMr1tcTWp7PWo6zKubXD08O7
-p7/J0tTKudPD1tq24LXEIFdlYjIuMCDN+MLn18rUtKGjxL/HsKOsbURvbHBoaW7kr8DAxve/ydan
-s9ZMaW51eC91Q2xpbnV4stnX98+1zbPGvcyooaMKuMPkr8DAxve/ydPD09qw/MCoyta7+qGiyv3X
-1rXnytOhorv6tqW60KGi0sa2r8rWs9bJ6LG4oaLTzs+31tW2y7XI1NrE2rXEuPfA4MnosbjW0KGj
-CgptU3BpZGVyo7ogysfUy9DQ1NrHtsjryr3NvNDO1tC85Lz+IE1pbmlHVUkg1q7Jz7XEx+HBv7y2
-5K/AwMb3oaNtU3BpZGVyILmmxNzHv7Tzo6y+39PQxKO/6buvo6y/ycCp1bm1xL3hubmjrL/J0tS4
-+b7dsrvNrLXE07K8/szYtePS1Lywv827p7XEuPbQ1NKqx/O2+L340NAKtqjWxqGjzazKsW1TcGlk
-ZXLV67bUu/q2pbrQwezT8rXEzNjK4rmmxNzQ6NKqo7rK/dfWwbS906Gi1eu21LXnytO1xMrks/a2
-1NfWzOW9+NDQ19S2r8v1t8WhotfWzOXCy7KotKbA7aGiv7nJwcu4tci++czhuanBy8G8usPWp7PW
-o6zV4sq5tcPkr8DAxvfU2rv6tqW60MHs0/IKtcTKudPDuPy808jL0NS7r6GjCgptR2FsbGVyecrH
-0ru49rv509pNaW5pR1VJzbzQztPDu6e958Pmz7XNs7m5vai1xKGiuabE3MbryKuhor6rvPK439Cn
-tcRQTVDTptPDs8zQ8sa9zKijrMv81NrHtsjryr1MaW51eLv5tKHJz8zhuanBy9K7zNfN6tX7tcRQ
-TVC958Pmz7XNs7rN1vfSqtOm08OzzNDyo6wKsO/W+tbG1OzJzLrNyei8xtXfv+zL2aGit72x47XY
-ubm9qFBNUL3ivva3vbC4oaNtR2FsbGVyeczhuanBy7fhuLu1xNOm08OzzNDyo6yw/MCo0vTGtbKl
-t8WhosrTxrWypbfFoaLNvMas5K/AwKGiwrzS9KGitffGtcrV0vS7+qGitefX08rp5K/AwKGiuaS+
-37PM0PIKo6i8xsvjxvehosjVwPqhosPrse2jqaGiz7XNs8no1sOzzNDyoaLTzs+3o6i27cLey7m3
-vb/poaLMsLPUyd+hos3Gz+TX06Optciho21HYWxsZXJ5yei8xs6qxKO/6buvtcS94bm5o6yyoszh
-uanBy8j0uMm5q7myxKO/6b3Tv9qjrMjnssu1paGiserM4qGi18rUtLncwO21yAqjrM6qtqjWxszY
-tqiy+sa3zOG5qdfutPO1xMHpu+7Q1KGjCgptRWFnbGUgOsrHt8nC/sjtvP7V67bUx7bI68q9z7XN
-s7+qt6K1xLXYwO3Qxc+iz7XNs6OoR0lTo6nI7bz+o6zKx9K7u/nT2iBNaW5pR1VJILXEudi8/NOm
-08PI7bz+oaNtRWFnbGW/ydTL0NDU2rbg1tbHtsjryr2y2df3z7XNs9auyc8sIL7f09DBvLrDtcS/
-ydLG1rIK0NS6zbb+tM6/qrei0NSho8v8yrXP1sHLtdjA7dDFz6LPtc2z1NrHtsjryr3J6LG41tC1
-xLOjvPvTptPDo6yxyMjntefX07XYzbyy2df3o6jGvdLGoaK3xbTzoaLL9dChoaLQ/deqo6mhosK3
-vra4+tfZoaLS1Lywus1HUFPEo7/pvK+zybrzo6y/ydLUzOG5qUdQU7W8ur0Kus22qM67uabE3LXI
-oaO3ycL+yO28/rbUIG1FYWdsZSC9+NDQwcvPuNbCtcTTxbuvyei8xqOsyrnG5L7f09DL2bbIv+yh
-otfK1LTP+7rE0KG1yNbutuDM2LXjoaNtRWFnbGXT68/Ixtq1xG1HaXPP4LHIo6zW99Kqx/ix8NTa
-09rI7bz+vNy5udPr1MvQ0MvZtsi1xNPFu6+jrArNrMqx0uDU9rzTwcvI57XYzbzQ/deqo6zTpdHb
-tcjQwrmmxNyhowoKv8nS1L3pydzSu8/CufO5q8u+xMex37XEx+m/9sLwo7/Kx7fx09C6z9f3u/q7
-4aO/yOe5+8T6ttTO0sPHsvrGt7jQ0MvIpKOsx+vkr8DAztLDx8341b53d3cubWluaWd1aS5jb20s
-0rK/ydLU1sK157j4ztKhowrO0rXEwarPtbe9yr3Kx6O6CsGqz7XTyrz+zqqjumNseHVAbWluaWd1
-aS5vcmcgCgrBqs+1tee7sKO6MDEwLTgyNjUyNjExIDgyNjUyNjUyLTgwNiAKCsrWu/qjujEzOTEw
-OTk2MDI5CgpNU06jundpbGxlcnN1bkBob3RtYWlsLmNvbQoK
+On Sun, 2007-10-28 at 20:26 -0400, David Woodhouse wrote:
+> On Mon, 2007-10-29 at 00:58 +0100, Joakim Tjernlund wrote:
+> > David, before rewriting getdents et. all may I ask you to apply the
+> > patch I sent today? Then we will have something that works and go
+> > from there.
+> 
+> I'm not happy about having fd->raw still pointing to nodes which may no
+> longer exist. Can't we set it to NULL (and cope with potential fallout)?
+
+Thats a diffrent story. Now I fixed the bug so it behaves like the 
+!mark_node_obsolete case. Walking through all ->raw references is
+something I will save for a rainy dag, I need to fix a few other bugs in
+our system ATM.
+
+   Jocke
