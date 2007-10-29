@@ -1,15 +1,23 @@
-Received: from post-23.mail.nl.demon.net ([194.159.73.193])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImXG2-0001pH-Jl
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 12:14:37 -0400
-Message-ID: <472606D2.7020709@m8.nl>
-Date: Mon, 29 Oct 2007 17:14:10 +0100
-From: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: bank switching
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+	id 1ImYSV-0007Bn-SR
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 13:31:35 -0400
+Subject: RE: getdents64 problem in 2.6.23
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1193662731.26497.4.camel@gentoo-jocke.transmode.se>
+References: <005201c819be$649f47e0$5267a8c0@Jocke>
+	<1193617605.2915.84.camel@shinybook.infradead.org>
+	<1193662731.26497.4.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Date: Mon, 29 Oct 2007 18:30:50 +0100
+Message-Id: <1193679050.26497.43.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: 'Jamie Lokier' <jamie@shareable.org>,
+	=?ISO-8859-1?Q?=27J=F6rn?= Engel' <joern@logfs.org>,
+	'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,43 +27,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello linux mtd-guys,
+On Mon, 2007-10-29 at 13:58 +0100, Joakim Tjernlund wrote:
+> On Sun, 2007-10-28 at 20:26 -0400, David Woodhouse wrote:
+> > On Mon, 2007-10-29 at 00:58 +0100, Joakim Tjernlund wrote:
+> > > David, before rewriting getdents et. all may I ask you to apply the
+> > > patch I sent today? Then we will have something that works and go
+> > > from there.
+> > 
+> > I'm not happy about having fd->raw still pointing to nodes which may no
+> > longer exist. Can't we set it to NULL (and cope with potential fallout)?
+> 
+> Thats a diffrent story. Now I fixed the bug so it behaves like the 
+> !mark_node_obsolete case. Walking through all ->raw references is
+> something I will save for a rainy dag, I need to fix a few other bugs in
+> our system ATM.
 
-I use the blackfin embedded uClinux environment. I want to change a 
-flash chip-driver to support all four memory banks which are available. 
-Right now, I have a driver which supports 1 memory bank of 2MB. I want 
-to be able to use the other three memory banks also 2-4Mb, 4-6MB and 6-8MB.
-
-Memory bank selection is done by using general io pf4 and pf5. For 
-instance: when  pf4 is enabled and pf5 is disabled I am writing in the 
-region 2-4MB.
-
-What would be the correct way to change the chip driver? Do you have a 
-template or tutorial on bank switching?
-
-The driver I want to change is: cfi_cmdset_0001.c
-
-I hope someone can help me.
-
-regards,
-Servaes Joordens
-
-
-
-
-
--- 
-
-Servaes Joordens
-
--------------------------------------------
-M8
-Tappersweg 29
-2031ET	Haarlem
-The Netherlands
-Tel:	+31 23 5311122
-Mob:	+31 6 51183379
-Fax:	+31 23 5322388
-
-VAT-ID: nl-813029090B01
-kvk:	34131430 Haarlem
+ehh, my patch may be somewhat wrong, need to reflect a bit on that. I
+might even get to the ->raw = NULL thing :)
