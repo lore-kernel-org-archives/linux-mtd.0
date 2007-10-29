@@ -1,12 +1,7 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImcKJ-0002xH-5H
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 17:39:21 -0400
-Date: Mon, 29 Oct 2007 20:51:25 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
 Subject: Re: jffs2: too few erase blocks
-Message-ID: <20071029205125.GA27773@mail.shareable.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: Jamie Lokier <jamie@shareable.org>
+In-Reply-To: <20071029205125.GA27773@mail.shareable.org>
 References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
 	<20071025092225.410ca383@weaponx.rchland.ibm.com>
 	<20071025221553.GA29785@mail.shareable.org>
@@ -15,13 +10,15 @@ References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
 	<20071028180223.GB14076@mail.shareable.org>
 	<1193626747.2915.87.camel@shinybook.infradead.org>
 	<20071029143818.GA29885@lazybastard.org>
+	<20071029205125.GA27773@mail.shareable.org>
+Content-Type: text/plain
+Date: Mon, 29 Oct 2007 17:40:40 -0400
+Message-Id: <1193694040.2915.123.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20071029143818.GA29885@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>, Duke <ezbonites@gmail.com>
+Content-Transfer-Encoding: 7bit
+Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
+	Duke <ezbonites@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,29 +28,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Jörn Engel wrote:
-> On Sun, 28 October 2007 22:59:07 -0400, David Woodhouse wrote:
-> > 
-> > Yes, it does. In fact, on NOR flash you get entirely synchronous
-> > behaviour even _without_ explicit syncs -- effectively the same as
-> > MS_SYNC.
+On Mon, 2007-10-29 at 20:51 +0000, Jamie Lokier wrote:
+> When you say "sync", do fdatasync() / fsync() on open files and
+> directories flush the necessary blocks from wbuf for those
+> files/directories data and their inode metadata, for JFFS2?
 > 
-> On older ones.  There appears to be a tendency for newer flashes to
-> require wbuf and hence sync.
+> I have been calling sync(), but I wonder if fdatasync/fsync do as they
+> are supposed to?
 
-When you say "sync", do fdatasync() / fsync() on open files and
-directories flush the necessary blocks from wbuf for those
-files/directories data and their inode metadata, for JFFS2?
+They certainly should; if you find otherwise, please tell me.
 
-I have been calling sync(), but I wonder if fdatasync/fsync do as they
-are supposed to?
-
-(If you know about other fses like LogFS/Yaffs/UBIFS that would be
-handy, too).
-
-Probably all are unnecessary in my specific application, as I use a
-JFFS2 with cfi_cmdset_0002, which I get the impression doesn't buffer
-any writes anyway.  But I like to get the application code right, in
-case I change to another device.
-
--- Jamie
+-- 
+dwmw2
