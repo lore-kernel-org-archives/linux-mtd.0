@@ -1,16 +1,20 @@
-Subject: RE: getdents64 problem in 2.6.23
+Subject: Re: jffs2: too few erase blocks
 From: David Woodhouse <dwmw2@infradead.org>
-To: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-In-Reply-To: <005201c819be$649f47e0$5267a8c0@Jocke>
-References: <005201c819be$649f47e0$5267a8c0@Jocke>
+To: Jamie Lokier <jamie@shareable.org>
+In-Reply-To: <20071028180223.GB14076@mail.shareable.org>
+References: <79ac09b60710250706p22034159v3b1c644b3a07e7ab@mail.gmail.com>
+	<20071025092225.410ca383@weaponx.rchland.ibm.com>
+	<20071025221553.GA29785@mail.shareable.org>
+	<79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
+	<79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
+	<20071028180223.GB14076@mail.shareable.org>
 Content-Type: text/plain
-Date: Sun, 28 Oct 2007 20:26:45 -0400
-Message-Id: <1193617605.2915.84.camel@shinybook.infradead.org>
+Date: Sun, 28 Oct 2007 22:59:07 -0400
+Message-Id: <1193626747.2915.87.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: 'Linux-MTD Mailing List' <linux-mtd@lists.infradead.org>,
-	=?ISO-8859-1?Q?=27J=F6rn?= Engel' <joern@logfs.org>,
-	'Jamie Lokier' <jamie@shareable.org>
+Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org,
+	Duke <ezbonites@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,13 +25,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Mon, 2007-10-29 at 00:58 +0100, Joakim Tjernlund wrote:
-> David, before rewriting getdents et. all may I ask you to apply the
-> patch I sent today? Then we will have something that works and go
-> from there.
+On Sun, 2007-10-28 at 18:02 +0000, Jamie Lokier wrote:
+> 
+> If you call "fsync()" or "fdatasync()" after writing the data to a
+> file, that is suppoe to ensure the data is written when the function
+> returns.
+> 
+> That's supposed to happen, but I don't know if JFFS2 actually does
+> that.
+> 
+> If you call fsync() on a directory handle, that traditionally ensures
+> the file names in that directory are written.  So to be sure of
+> creating a file and writing to it, you would create the file, write
+> it, fsync() it, then open the directory containing the file and
+> fsync() the directory.  For example, email delivery programs use that
+> strategy before reporting to a sender that the email is safely stored.
+> 
+> But again, I don't know if JFFS2 actually does provide those
+> assurances.
 
-I'm not happy about having fd->raw still pointing to nodes which may no
-longer exist. Can't we set it to NULL (and cope with potential fallout)?
+Yes, it does. In fact, on NOR flash you get entirely synchronous
+behaviour even _without_ explicit syncs -- effectively the same as
+MS_SYNC.
 
 -- 
 dwmw2
