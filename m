@@ -1,17 +1,16 @@
 Received: from [212.176.242.38] (helo=vaxon.spb.rtsoft.ru)
 	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1ImaGN-0000ga-O9
-	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 19:27:06 +0000
-Date: Mon, 29 Oct 2007 23:23:59 +0300
+	id 1ImaL9-0000nf-Ue
+	for linux-mtd@lists.infradead.org; Mon, 29 Oct 2007 19:32:02 +0000
+Date: Mon, 29 Oct 2007 23:29:02 +0300
 From: Valentine Barshak <vbarshak@ru.mvista.com>
 To: linuxppc-dev@ozlabs.org
-Subject: [PATCH 3/3] PowerPC: NDFC entry for 440EPx Sequoia DTS
-Message-ID: <20071029202359.GA2176@ru.mvista.com>
+Subject: [PATCH] MTD: small physmap_of partition parsing fixes
+Message-ID: <20071029202902.GA2200@ru.mvista.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20071029201738.GA2022@ru.mvista.com>
-Cc: tglx@linutronix.de, sr@denx.de, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,43 +20,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-NDFC DTS entry for PowerPC 440EPx Sequoia board.
+Use of_get_next_child for proper ref counting as suggested by Stephen Rothwell
+and remove add_mtd_partitions from parse_partitions to avoid duplicate
+mtd device registration for RedBoot partitions.
 
 Signed-off-by: Valentine Barshak <vbarshak@ru.mvista.com>
 ---
- arch/powerpc/boot/dts/sequoia.dts |   23 +++++++++++++++++++++++
- 1 files changed, 23 insertions(+)
+ drivers/mtd/maps/physmap_of.c |   13 +++++++------
+ 1 files changed, 7 insertions(+), 6 deletions(-)
 
-diff -pruN linux-2.6.orig/arch/powerpc/boot/dts/sequoia.dts linux-2.6/arch/powerpc/boot/dts/sequoia.dts
---- linux-2.6.orig/arch/powerpc/boot/dts/sequoia.dts	2007-10-29 16:02:11.000000000 +0300
-+++ linux-2.6/arch/powerpc/boot/dts/sequoia.dts	2007-10-29 18:59:11.000000000 +0300
-@@ -141,6 +141,29 @@
- 				interrupts = <5 1>;
- 				interrupt-parent = <&UIC1>;
+diff -pruN linux-2.6.orig/drivers/mtd/maps/physmap_of.c linux-2.6/drivers/mtd/maps/physmap_of.c
+--- linux-2.6.orig/drivers/mtd/maps/physmap_of.c	2007-10-29 16:02:37.000000000 +0300
++++ linux-2.6/drivers/mtd/maps/physmap_of.c	2007-10-29 22:41:08.000000000 +0300
+@@ -94,14 +94,13 @@ static int __devinit parse_partitions(st
+ 	 * line, these take precedence over device tree information */
+ 	nr_parts = parse_mtd_partitions(info->mtd, part_probe_types,
+ 					&info->parts, 0);
+-	if (nr_parts > 0) {
+-		add_mtd_partitions(info->mtd, info->parts, nr_parts);
+-		return 0;
+-	}
++	if (nr_parts > 0)
++		return nr_parts;
  
-+				ndfc@0,0 {
-+					compatible = "ibm,ndfc-440epx", "ibm,ndfc";
-+					reg = <3 000000 2000>;
-+					ndfc-mtd0 {
-+						bank-settings = <80002222>;
-+						bank-map = <3>;
-+						chip-delay = <32>;
-+						#address-cells = <1>;
-+						#size-cells = <1>;
-+						partition@0 {
-+							label = "u-boot-nand";
-+							reg = <0 0080000>;
-+						};
-+						partition@80000 {
-+							label = "kernel-nand";
-+							reg = <0080000 0180000>;
-+						};
-+						partition@200000 {
-+							label = "filesystem";
-+							reg = <0200000 1e00000>;
-+						};
-+					};
-+				};
- 				nor_flash@0,0 {
- 					compatible = "amd,s29gl256n", "cfi-flash";
- 					bank-width = <2>;
+ 	/* First count the subnodes */
+ 	nr_parts = 0;
+-	for (pp = dp->child; pp; pp = pp->sibling)
++	for (pp = of_get_next_child(dp, NULL); pp;
++	     pp = of_get_next_child(dp, pp))
+ 		nr_parts++;
+ 
+ 	if (nr_parts == 0)
+@@ -112,12 +111,14 @@ static int __devinit parse_partitions(st
+ 	if (!info->parts)
+ 		return -ENOMEM;
+ 
+-	for (pp = dp->child, i = 0; pp; pp = pp->sibling, i++) {
++	for (pp = of_get_next_child(dp, NULL), i = 0; pp;
++	     pp = of_get_next_child(dp, pp), i++) {
+ 		const u32 *reg;
+ 		int len;
+ 
+ 		reg = of_get_property(pp, "reg", &len);
+ 		if (!reg || (len != 2*sizeof(u32))) {
++			of_node_put(pp);
+ 			dev_err(&dev->dev, "Invalid 'reg' on %s\n",
+ 				dp->full_name);
+ 			kfree(info->parts);
