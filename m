@@ -1,22 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
 	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImtAQ-0004uM-0W
-	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 11:38:16 -0400
-Date: Tue, 30 Oct 2007 16:33:10 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Valentine Barshak <vbarshak@ru.mvista.com>
-Subject: Re: [PATCH 0/3] Add device-tree aware NDFC driver
-Message-ID: <20071030153310.GB13455@lazybastard.org>
-References: <20071029201738.GA2022@ru.mvista.com>
-	<alpine.LFD.0.9999.0710300235580.3186@localhost.localdomain>
-	<47273BF4.80001@ru.mvista.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47273BF4.80001@ru.mvista.com>
-Cc: linuxppc-dev@ozlabs.org, Thomas Gleixner <tglx@linutronix.de>, sr@denx.de,
-	linux-mtd@lists.infradead.org
+	id 1ImtAs-0004x4-3y
+	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 11:38:44 -0400
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] More CFI fixups for Atmel chips
+Date: Tue, 30 Oct 2007 16:33:07 +0100
+Message-Id: <1193758387-9325-1-git-send-email-hskinnemoen@atmel.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+	Haavard Skinnemoen <hskinnemoen@atmel.com>,
+	Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,83 +19,127 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 30 October 2007 17:13:08 +0300, Valentine Barshak wrote:
-> 
-> I'm not saying my approach is the best, but I was hoping for a discussion.
+From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
 
-That is good.  So please take a moment to listen.
+Convert CFI tables from Atmel cmdset_0001 chips to Intel format and set
+BufWrite timeouts to 0 for Atmel cmdset_0001 and cmdset_0002 chips.
+Some chips may indicate support for buffered writes even though they
+only support dual-word writes.
 
-> I've reworked the patches according to the comments to the previous 
-> version and used my arguments to explain why I don't see much reason to 
-> mess with the code we currently have and added a separate _of version.
+The CFI fixup must run before fixup_use_write_buffers for this to work.
 
-Ok.
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
+---
+This patch (or some variation of it) has been posted a couple of times
+before to the MTD list, and I find myself applying it over and over
+again when testing stuff against the latest mainline tree. I'd
+appreciate if you could either apply it or thoroughly NAK it, as MTD
+on the ATNGW100 board is currently broken.
 
-> This is the last time I disturb you with my e-mail, so please, forget it.
+Håvard
 
-Thomas words were harsh.  Nothing unusual so far.  Some people deserve
-harsh words, some don't and some simply are doing a good job to invite
-them.  You mails so far were inviting harsh words.
+ drivers/mtd/chips/cfi_cmdset_0001.c |   43 +++++++++++++++++++++++++++++++++++
+ drivers/mtd/chips/cfi_cmdset_0002.c |    6 ++++-
+ 2 files changed, 48 insertions(+), 1 deletions(-)
 
-So how did you invite harsh words and what can you change to prevent
-this in the future?
-
-1. Develop a thicker skin.  No matter how well you do, there will always
-be the occasional harsh words, deserved or not.  It is ok to get angry
-and call the person names - but do that at home and leave it out of your
-responses.  Ignore the flamebait, at least in public.
-
-2. Follow local customs.  In particular you should follow the style of
-discussion commonly used in mailing lists:
-
-	>>> I'm doing this.
-	>> Crap! Never do that!
-	> Why not?  Can you explain?
-	Because...
-
-	>>> Then I do that.
-	>> Wouldn't ABCD be better?
-	> ABCD wouldn't work for me because of XYZ.
-	Fair enough.
-
-Respond to individual comments _directly_following_the_comment_ do not
-collect comments from 10 mails, then respond to them all in a long
-paragraph.  Noone will read that.  I didn't read it either.
-
-3. Be concise.  When quoting someone, remove everything but the relevant
-bits.  Respond only with relevant information.  People regularly read
-10+ mailing lists.  Their attention span is short.  If you manage to
-annoy them with irrelevant information in the first 10 lines, they will
-skip any amount of wisdom below.
-
-4. Be polite.  Even if the responses you get are not.  Flamewars get you
-nowhere.
-
-5. Have sound technical arguments.  "mtd concat adds a slight overhead"
-is not for two reasons.  First, it is lacking numbers.  People's guesses
-about perceived overhead or usually wrong, so knowledgeable readers will
-immediately question such arguments.  Secondly, you didn't explain _why_
-mtdconcat adds overhead.  In particular, why didn't you reduce the
-mtdconcat overhead instead of essentially copying its functionality?
-
-6. Be structured.  Empty lines are cheap.  Use them.  Add structure to
-your mails.  Above you can see several paragraphs.  You can quickly go
-back to a previous one.  You can skip one after reading just the first
-sentence.  After several attempts I still haven't read your 46-line
-monologue.  I don't even know how far I made it because it is so damn
-hard to find the spot again.
-
-
-If you are willing to change the style of your mails, maybe people will
-actually read them and respond to you in ways you expected.  Otherwise
-it may indeed be a wise choice not to come back.  Some people simply
-just don't get along.  Sometimes a proxy is needed to translate between
-people.  But my hope is that you are willing and able to work with us
-directly.
-
-Jörn
-
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index a9eb1c5..da851c2 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -50,6 +50,7 @@
+ #define I82802AC	0x00ac
+ #define MANUFACTURER_ST         0x0020
+ #define M50LPW080       0x002F
++#define AT49BV640D	0x02de
+ 
+ static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
+ static int cfi_intelext_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
+@@ -157,6 +158,47 @@ static void cfi_tell_features(struct cfi_pri_intelext *extp)
+ }
+ #endif
+ 
++/* Atmel chips don't use the same PRI format as Intel chips */
++static void fixup_convert_atmel_pri(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
++	struct cfi_pri_atmel atmel_pri;
++	uint32_t features = 0;
++
++	/* Reverse byteswapping */
++	extp->FeatureSupport = cpu_to_le32(extp->FeatureSupport);
++	extp->BlkStatusRegMask = cpu_to_le16(extp->BlkStatusRegMask);
++	extp->ProtRegAddr = cpu_to_le16(extp->ProtRegAddr);
++
++	memcpy(&atmel_pri, extp, sizeof(atmel_pri));
++	memset((char *)extp + 5, 0, sizeof(*extp) - 5);
++
++	printk(KERN_ERR "atmel Features: %02x\n", atmel_pri.Features);
++
++	if (atmel_pri.Features & 0x01) /* chip erase supported */
++		features |= (1<<0);
++	if (atmel_pri.Features & 0x02) /* erase suspend supported */
++		features |= (1<<1);
++	if (atmel_pri.Features & 0x04) /* program suspend supported */
++		features |= (1<<2);
++	if (atmel_pri.Features & 0x08) /* simultaneous operations supported */
++		features |= (1<<9);
++	if (atmel_pri.Features & 0x20) /* page mode read supported */
++		features |= (1<<7);
++	if (atmel_pri.Features & 0x40) /* queued erase supported */
++		features |= (1<<4);
++	if (atmel_pri.Features & 0x80) /* Protection bits supported */
++		features |= (1<<6);
++
++	extp->FeatureSupport = features;
++
++	/* burst write mode not supported */
++	cfi->cfiq->BufWriteTimeoutTyp = 0;
++	cfi->cfiq->BufWriteTimeoutMax = 0;
++}
++
+ #ifdef CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
+ /* Some Intel Strata Flash prior to FPO revision C has bugs in this area */
+ static void fixup_intel_strataflash(struct mtd_info *mtd, void* param)
+@@ -234,6 +276,7 @@ static void fixup_use_powerup_lock(struct mtd_info *mtd, void *param)
+ }
+ 
+ static struct cfi_fixup cfi_fixup_table[] = {
++	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ #ifdef CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_intel_strataflash, NULL },
+ #endif
+diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
+index 389acc6..571226e 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0002.c
++++ b/drivers/mtd/chips/cfi_cmdset_0002.c
+@@ -185,6 +185,10 @@ static void fixup_convert_atmel_pri(struct mtd_info *mtd, void *param)
+ 		extp->TopBottom = 2;
+ 	else
+ 		extp->TopBottom = 3;
++
++	/* burst write mode not supported */
++	cfi->cfiq->BufWriteTimeoutTyp = 0;
++	cfi->cfiq->BufWriteTimeoutMax = 0;
+ }
+ 
+ static void fixup_use_secsi(struct mtd_info *mtd, void *param)
+@@ -217,6 +221,7 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
+ }
+ 
+ static struct cfi_fixup cfi_fixup_table[] = {
++	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ #ifdef AMD_BOOTLOC_BUG
+ 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
+ #endif
+@@ -229,7 +234,6 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ #if !FORCE_WORD_WRITE
+ 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
+ #endif
+-	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
+ 	{ 0, 0, NULL, NULL }
+ };
+ static struct cfi_fixup jedec_fixup_table[] = {
 -- 
-There is no worse hell than that provided by the regrets
-for wasted opportunities.
--- Andre-Louis Moreau in Scarabouche
+1.5.3.4
