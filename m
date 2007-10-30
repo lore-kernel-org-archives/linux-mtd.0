@@ -1,33 +1,24 @@
-Received: from rn-out-0910.google.com ([64.233.170.185]
-	helo=rn-out-0102.google.com)
+Received: from [62.112.157.241] (helo=1023-2.1st-housing.de)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Imyqy-0003gm-21
-	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 17:42:34 -0400
-Received: by rn-out-0102.google.com with SMTP id e25so780265rng
+	id 1In0Be-0001KE-IX
+	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 19:08:00 -0400
+Received: from localhost (localhost [127.0.0.1])
+	by 1023-2.1st-housing.de (Postfix) with ESMTP id 939D033030A
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 30 Oct 2007 14:42:27 -0700 (PDT)
-Message-ID: <79ac09b60710301442n7d7573fcu8e7dd71fe715c98@mail.gmail.com>
-Date: Tue, 30 Oct 2007 16:42:26 -0500
-From: Duke <ezbonites@gmail.com>
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
-Subject: Re: jffs2: too few erase blocks
-In-Reply-To: <20071030201945.GA16322@lazybastard.org>
+	Tue, 30 Oct 2007 16:43:23 +0100 (CET)
+Received: from 1023-2.1st-housing.de ([127.0.0.1])
+	by localhost (1023-2 [127.0.0.1]) (amavisd-new, port 10024) with ESMTP
+	id 27179-06 for <linux-mtd@lists.infradead.org>;
+	Tue, 30 Oct 2007 16:43:23 +0100 (CET)
+To: linux-mtd@lists.infradead.org
+Subject: VALIDATE  YOUR  WINNINGS
+From: BRITISH LOTTERY 2007 <ukonlin_lotter7@yahoo.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
-	<20071028180223.GB14076@mail.shareable.org>
-	<1193626747.2915.87.camel@shinybook.infradead.org>
-	<20071029143818.GA29885@lazybastard.org>
-	<20071029205125.GA27773@mail.shareable.org>
-	<20071029215457.GB1027@lazybastard.org>
-	<20071029224638.GA7122@mail.shareable.org>
-	<20071030160948.GD13455@lazybastard.org>
-	<79ac09b60710301308m294ae82m79e6ee982208ca35@mail.gmail.com>
-	<20071030201945.GA16322@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
-	Jamie Lokier <jamie@shareable.org>, David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+Message-Id: <20071030154323.5824933016E@1023-2.1st-housing.de>
+Date: Tue, 30 Oct 2007 16:43:23 +0100 (CET)
+Reply-To: ukonline_lottery77@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,21 +28,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/30/07, J=F6rn Engel <joern@logfs.org> wrote:
-> On Tue, 30 October 2007 15:08:11 -0500, Duke wrote:
-> >
-> > After all is said and done, can the minimum number of jffs2 blocks be
-> > determined? Or it varies from system to system? Or flash system type
-> > (NOR flash in my case).
->
-> It can.  Please read jffs2_calc_trigger_levels() in fs/jffs2/build.c.
-> Maybe those numbers can even be lowered a little.  But you get to do the
-> math, if that is your wish.
->
-Ok. From what I've calculated and tested I wouldn't be able to meet
-the minimum so I'm trying to use one big jffs2 partition and devide by
-dirs.
-The problem I'm having with this is not being able to untar files into
-a directory essentially overwriting the old files. This seem to be
-because untaring takes too much memory. Is there a better way to
-replace these directory files (which is about 200 files)?
+
+Group UK,
+MR.PERRY PETER,
+DIAMOND ATLANTIC LC,
+UNITED KINGDOM.
+E-mail:ukonline_lottery77@yahoo.co.uk
+Tel:+447031928796
+
+Group UK, organizers of The National Lottery wishes to
+inform you that the results of the E-mail address ballot lottery international program held on the 29th of October 2007. Your mail account have been picked as a winner of a lump sum pay out of Eight hundred and ninty-one thousand, nine hundred and thirty-four Great Britain pounds £891,934.00 pounds sterlings) . This is from a total cash prize of £4,459,670.00 shared amongst the (5) lucky winners in this category.
+
+All participants for the online version were selected randomly fromWorld Wide Web through computer balloting system drawn from over100,000 names database, union associations and corporate bodies thatare listed
+ online.
+
+The Camelot Group, operators of the United KingdomNational Lottery is approved by the British Gaming Board and alsoLicensed by the The International Association of Gaming Regulators
+(IAGR).
+
+All winning must be claimed not later than 14 working days from thisnotification. This is part of our security protocol to avoid doubleclaiming and unwarranted abuse of this program.To begin your claim,please contact your Claims Agent, from theOversea Winners Processing
+
+Department:
+Mr PERRY PETER,
+
+
+Email:ukonline_lottery77@yahoo.co.uk
+Tel:+44-70225742721
+
+Ticket Nº: 22-1356-4096-988
+Serial Nº: A069-07
+Lucky Nº: 12-13-21-26-32-39 Bonus-17
+File REF Nº.: UKL/74-A0802742007
+BATCH Nº.: 2007UKL-01
+
+
+Please fill the following personal details accordingly so as to proceed with your winnings. 
+
+1. Name:
+2. Address:
+3. Marital Status:
+4. Occupation:
+5. Age:
+6. Sex:
+7. Nationality:
+8. Country Of Residence:
+9. Telephone Number (Country Code)-(Area Code)- Phone Number): 
+10 Cell Number: (Country Code) - (Cell Phone Number):
+11. Fax Number:
+12. Draw Number above:-
+Note below your winning details:
