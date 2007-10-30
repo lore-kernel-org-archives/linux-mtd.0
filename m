@@ -1,15 +1,14 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Imn63-0007Jc-Vf
-	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 05:09:23 -0400
-From: Bryan Wu <bryan.wu@analog.com>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH 1/1] [MTD/NAND]: Add Blackfin BF52x on-chip NAND Flash
-	controller driver support in bf5xx_nand driver
-Date: Tue, 30 Oct 2007 17:08:29 +0800
-Message-Id: <1193735309-7270-1-git-send-email-bryan.wu@analog.com>
-Cc: Bryan Wu <bryan.wu@analog.com>, linux-kernel@vger.kernel.org,
-	Michael Hennerich <michael.hennerich@analog.com>
+Subject: Re: bank switching
+From: David Woodhouse <dwmw2@infradead.org>
+To: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
+In-Reply-To: <472606D2.7020709@m8.nl>
+References: <472606D2.7020709@m8.nl>
+Content-Type: text/plain
+Date: Tue, 30 Oct 2007 08:57:44 -0400
+Message-Id: <1193749064.2915.169.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,70 +18,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Michael Hennerich <michael.hennerich@analog.com>
+On Mon, 2007-10-29 at 17:14 +0100, M8 (Servaes Joordens) wrote:
+> I use the blackfin embedded uClinux environment. I want to change a 
+> flash chip-driver to support all four memory banks which are available. 
+> Right now, I have a driver which supports 1 memory bank of 2MB. I want 
+> to be able to use the other three memory banks also 2-4Mb, 4-6MB and 6-8MB.
+> 
+> Memory bank selection is done by using general io pf4 and pf5. For 
+> instance: when  pf4 is enabled and pf5 is disabled I am writing in the 
+> region 2-4MB.
+> 
+> What would be the correct way to change the chip driver? Do you have a 
+> template or tutorial on bank switching?
+> 
+> The driver I want to change is: cfi_cmdset_0001.c
 
-Signed-off-by: Michael Hennerich <michael.hennerich@analog.com>
-Signed-off-by: Bryan Wu <bryan.wu@analog.com>
----
- drivers/mtd/nand/Kconfig      |    2 +-
- drivers/mtd/nand/bf5xx_nand.c |   20 ++++++++++++++++++--
- 2 files changed, 19 insertions(+), 3 deletions(-)
+No, that's the "chip driver". What you need to provide is a "map driver"
+which enables physical access (read/write cycles) to the flash device in
+question.
 
-diff --git a/drivers/mtd/nand/Kconfig b/drivers/mtd/nand/Kconfig
-index 246d451..bf0e9b0 100644
---- a/drivers/mtd/nand/Kconfig
-+++ b/drivers/mtd/nand/Kconfig
-@@ -93,7 +93,7 @@ config MTD_NAND_AU1550
- 
- config MTD_NAND_BF5XX
- 	tristate "Blackfin on-chip NAND Flash Controller driver"
--	depends on BF54x && MTD_NAND
-+	depends on (BF54x || BF52x) && MTD_NAND
- 	help
- 	  This enables the Blackfin on-chip NAND flash controller
- 
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 1657ecd..542850c 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -74,7 +74,22 @@ static int hardware_ecc = 1;
- static int hardware_ecc;
- #endif
- 
--static unsigned short bfin_nfc_pin_req[] = {P_NAND_CE, P_NAND_RB, 0};
-+static unsigned short bfin_nfc_pin_req[] =
-+	{P_NAND_CE,
-+	 P_NAND_RB,
-+	 P_NAND_D0,
-+	 P_NAND_D1,
-+	 P_NAND_D2,
-+	 P_NAND_D3,
-+	 P_NAND_D4,
-+	 P_NAND_D5,
-+	 P_NAND_D6,
-+	 P_NAND_D7,
-+	 P_NAND_WE,
-+	 P_NAND_RE,
-+	 P_NAND_CLE,
-+	 P_NAND_ALE,
-+	 0};
- 
- /*
-  * Data structures for bf5xx nand flash controller driver
-@@ -507,12 +522,13 @@ static int bf5xx_nand_dma_init(struct bf5xx_nand_info *info)
- 
- 	init_completion(&info->dma_completion);
- 
-+#ifdef CONFIG_BF54x
- 	/* Setup DMAC1 channel mux for NFC which shared with SDH */
- 	val = bfin_read_DMAC1_PERIMUX();
- 	val &= 0xFFFE;
- 	bfin_write_DMAC1_PERIMUX(val);
- 	SSYNC();
--
-+#endif
- 	/* Request NFC DMA channel */
- 	ret = request_dma(CH_NFC, "BF5XX NFC driver");
- 	if (ret < 0) {
+See the MTD_COMPLEX_MAPPINGS config option, which turns simple things
+like 'read word' and 'write word' into out-of-line function calls in
+your map driver. And see the map drivers which do this already, like
+maps/sbc_gxx.c
+
 -- 
-1.5.3.4
+dwmw2
