@@ -1,15 +1,31 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1ImtAs-0004x4-3y
-	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 11:38:44 -0400
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] More CFI fixups for Atmel chips
-Date: Tue, 30 Oct 2007 16:33:07 +0100
-Message-Id: <1193758387-9325-1-git-send-email-hskinnemoen@atmel.com>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>,
-	Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+	id 1ImuCi-0003t6-E9
+	for linux-mtd@lists.infradead.org; Tue, 30 Oct 2007 12:44:43 -0400
+Date: Tue, 30 Oct 2007 17:09:49 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: jffs2: too few erase blocks
+Message-ID: <20071030160948.GD13455@lazybastard.org>
+References: <20071025092225.410ca383@weaponx.rchland.ibm.com>
+	<20071025221553.GA29785@mail.shareable.org>
+	<79ac09b60710261000y2c5a56d4x34ba3f00f657630f@mail.gmail.com>
+	<79ac09b60710261402h3cf9dfa5o1ce9e33e5468d742@mail.gmail.com>
+	<20071028180223.GB14076@mail.shareable.org>
+	<1193626747.2915.87.camel@shinybook.infradead.org>
+	<20071029143818.GA29885@lazybastard.org>
+	<20071029205125.GA27773@mail.shareable.org>
+	<20071029215457.GB1027@lazybastard.org>
+	<20071029224638.GA7122@mail.shareable.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20071029224638.GA7122@mail.shareable.org>
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
+	Duke <ezbonites@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,127 +35,72 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Hans-Christian Egtvedt <hcegtvedt@atmel.com>
+On Mon, 29 October 2007 22:46:38 +0000, Jamie Lokier wrote:
+> 
+> Here's an idea for testing:
+> 
+> [...]
 
-Convert CFI tables from Atmel cmdset_0001 chips to Intel format and set
-BufWrite timeouts to 0 for Atmel cmdset_0001 and cmdset_0002 chips.
-Some chips may indicate support for buffered writes even though they
-only support dual-word writes.
+Thank you.  I won't get hacking on this right away, but it is
+appreciated.
 
-The CFI fixup must run before fixup_use_write_buffers for this to work.
+> > Any filesystem should follow the standards here.  Anything else is a
+> > bug.
+> 
+> True.  But JFFS2 is a bit buggy from an application point of view (*),
+> and we care about what an application can actually rely on in
+> practice, not what the standard says :-)
 
-Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
----
-This patch (or some variation of it) has been posted a couple of times
-before to the MTD list, and I find myself applying it over and over
-again when testing stuff against the latest mainline tree. I'd
-appreciate if you could either apply it or thoroughly NAK it, as MTD
-on the ATNGW100 board is currently broken.
+Notice the magical word "here". :)
 
-Håvard
+Jffs2 and logfs do diverge from the standards, or at least from other
+filesystems.  I am aware of two differences:
+- all mounts implicitly set noatime,
+- rewriting data in existing non-sparse files can return -ENOSPC.
 
- drivers/mtd/chips/cfi_cmdset_0001.c |   43 +++++++++++++++++++++++++++++++++++
- drivers/mtd/chips/cfi_cmdset_0002.c |    6 ++++-
- 2 files changed, 48 insertions(+), 1 deletions(-)
+The first makes at least some sense and the second cannot be avoided for
+compressed files.  Logfs allows files to be non-compressing, though.
+Any further differences are likely bugs.
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index a9eb1c5..da851c2 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -50,6 +50,7 @@
- #define I82802AC	0x00ac
- #define MANUFACTURER_ST         0x0020
- #define M50LPW080       0x002F
-+#define AT49BV640D	0x02de
- 
- static int cfi_intelext_read (struct mtd_info *, loff_t, size_t, size_t *, u_char *);
- static int cfi_intelext_write_words(struct mtd_info *, loff_t, size_t, size_t *, const u_char *);
-@@ -157,6 +158,47 @@ static void cfi_tell_features(struct cfi_pri_intelext *extp)
- }
- #endif
- 
-+/* Atmel chips don't use the same PRI format as Intel chips */
-+static void fixup_convert_atmel_pri(struct mtd_info *mtd, void *param)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
-+	struct cfi_pri_atmel atmel_pri;
-+	uint32_t features = 0;
-+
-+	/* Reverse byteswapping */
-+	extp->FeatureSupport = cpu_to_le32(extp->FeatureSupport);
-+	extp->BlkStatusRegMask = cpu_to_le16(extp->BlkStatusRegMask);
-+	extp->ProtRegAddr = cpu_to_le16(extp->ProtRegAddr);
-+
-+	memcpy(&atmel_pri, extp, sizeof(atmel_pri));
-+	memset((char *)extp + 5, 0, sizeof(*extp) - 5);
-+
-+	printk(KERN_ERR "atmel Features: %02x\n", atmel_pri.Features);
-+
-+	if (atmel_pri.Features & 0x01) /* chip erase supported */
-+		features |= (1<<0);
-+	if (atmel_pri.Features & 0x02) /* erase suspend supported */
-+		features |= (1<<1);
-+	if (atmel_pri.Features & 0x04) /* program suspend supported */
-+		features |= (1<<2);
-+	if (atmel_pri.Features & 0x08) /* simultaneous operations supported */
-+		features |= (1<<9);
-+	if (atmel_pri.Features & 0x20) /* page mode read supported */
-+		features |= (1<<7);
-+	if (atmel_pri.Features & 0x40) /* queued erase supported */
-+		features |= (1<<4);
-+	if (atmel_pri.Features & 0x80) /* Protection bits supported */
-+		features |= (1<<6);
-+
-+	extp->FeatureSupport = features;
-+
-+	/* burst write mode not supported */
-+	cfi->cfiq->BufWriteTimeoutTyp = 0;
-+	cfi->cfiq->BufWriteTimeoutMax = 0;
-+}
-+
- #ifdef CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
- /* Some Intel Strata Flash prior to FPO revision C has bugs in this area */
- static void fixup_intel_strataflash(struct mtd_info *mtd, void* param)
-@@ -234,6 +276,7 @@ static void fixup_use_powerup_lock(struct mtd_info *mtd, void *param)
- }
- 
- static struct cfi_fixup cfi_fixup_table[] = {
-+	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
- #ifdef CMDSET0001_DISABLE_ERASE_SUSPEND_ON_WRITE
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_intel_strataflash, NULL },
- #endif
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 389acc6..571226e 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -185,6 +185,10 @@ static void fixup_convert_atmel_pri(struct mtd_info *mtd, void *param)
- 		extp->TopBottom = 2;
- 	else
- 		extp->TopBottom = 3;
-+
-+	/* burst write mode not supported */
-+	cfi->cfiq->BufWriteTimeoutTyp = 0;
-+	cfi->cfiq->BufWriteTimeoutMax = 0;
- }
- 
- static void fixup_use_secsi(struct mtd_info *mtd, void *param)
-@@ -217,6 +221,7 @@ static void fixup_use_atmel_lock(struct mtd_info *mtd, void *param)
- }
- 
- static struct cfi_fixup cfi_fixup_table[] = {
-+	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
- #ifdef AMD_BOOTLOC_BUG
- 	{ CFI_MFR_AMD, CFI_ID_ANY, fixup_amd_bootblock, NULL },
- #endif
-@@ -229,7 +234,6 @@ static struct cfi_fixup cfi_fixup_table[] = {
- #if !FORCE_WORD_WRITE
- 	{ CFI_MFR_ANY, CFI_ID_ANY, fixup_use_write_buffers, NULL, },
- #endif
--	{ CFI_MFR_ATMEL, CFI_ID_ANY, fixup_convert_atmel_pri, NULL },
- 	{ 0, 0, NULL, NULL }
- };
- static struct cfi_fixup jedec_fixup_table[] = {
+> (*) Hence the subject of this thread, and the uncertainty of the
+> answer to that question.  Do any of the flash filesystems in
+> development guarantee a specific amount of the partition can actually
+> be used for data, and return "disk full" deterministically at that
+> point, for a given set of file contents?
+
+I'm not sure if I interpret this correctly.  With logfs, compression is
+optional.  Disabling compression will remove one uncertainty.  Also both
+data and metadata draw from the same pool.  If you create a million
+empty files, the space for file content is reduced.  After those two
+uncertainties, logfs is deterministic.  Garbage collection will neither
+increase nor reduce the amount of available free space.
+
+> Does the answer change if
+> compression is disable?  Do any of them not go suspiciously crazy with
+> the CPU for a whole minute when it's nearly full, as JFFS2 GC threads
+> do occasionally?
+
+Depending on the write pattern, they all will.  When your filesystem is
+99% full and your writes are completely random, you end up garbage
+collecting 99% old data for every 1% new data.
+
+Well, maybe they won't go crazy for a whole minute.  That can be
+avoided.  But they will become slow as molasses.
+
+Two things can be done about this.  First, logfs will let you specify
+some amount of space reserved for GC.  With 5% reserved, the
+pathological case is much better than with 1% or 0% reserved.
+
+Secondly, the applications should have some amount of structure in their
+writes.  If 70% of the filesystem is never moved, the filesystem can
+actually get some usage spread.  Having some segments 100% full and some
+100% empty translates to good performance.  Having all equally full, as
+happens for completely random writes, will give you molasses.
+
+Jörn
+
 -- 
-1.5.3.4
+You ain't got no problem, Jules. I'm on the motherfucker. Go back in
+there, chill them niggers out and wait for the Wolf, who should be
+coming directly.
+-- Marsellus Wallace
