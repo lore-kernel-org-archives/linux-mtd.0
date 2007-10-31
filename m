@@ -1,21 +1,29 @@
-Received: from mga11.intel.com ([192.55.52.93])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1InLv4-0007RE-5T
-	for linux-mtd@lists.infradead.org; Wed, 31 Oct 2007 18:20:20 -0400
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: UBI Used In Commercial Products ??
-Date: Wed, 31 Oct 2007 15:20:06 -0700
-Message-ID: <B1EDF20A6EAAD74EA65E46F774F1784502C6D843@orsmsx413.amr.corp.intel.com>
-In-Reply-To: <loom.20071031T215155-403@post.gmane.org>
+Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1InMYu-0002Dy-MB
+	for linux-mtd@lists.infradead.org; Wed, 31 Oct 2007 19:01:31 -0400
+Received: from list by ciao.gmane.org with local (Exim 4.43)
+	id 1InMYm-00047s-BM
+	for linux-mtd@lists.infradead.org; Wed, 31 Oct 2007 23:01:16 +0000
+Received: from halhoupro3.halliburton.com ([64.154.26.251])
+	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
+	id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Oct 2007 23:01:16 +0000
+Received: from sergei.sharonov by halhoupro3.halliburton.com with local
+	(Gmexim 0.1 (Debian)) id 1AlnuQ-0007hv-00
+	for <linux-mtd@lists.infradead.org>; Wed, 31 Oct 2007 23:01:16 +0000
+To: linux-mtd@lists.infradead.org
+From: Sergei Sharonov <sergei.sharonov@halliburton.com>
+Subject: Re: UBI Used In Commercial Products ??
+Date: Wed, 31 Oct 2007 23:01:07 +0000 (UTC)
+Message-ID: <loom.20071031T224633-341@post.gmane.org>
 References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D577@orsmsx413.amr.corp.intel.com>
 	<loom.20071031T215155-403@post.gmane.org>
-From: "Johnson, Charles F" <charles.f.johnson@intel.com>
-To: "Sergei Sharonov" <sergei.sharonov@halliburton.com>,
-	<linux-mtd@lists.infradead.org>
+	<B1EDF20A6EAAD74EA65E46F774F1784502C6D843@orsmsx413.amr.corp.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Sender: news <news@ger.gmane.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,65 +33,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-JFFS2 has been modified to sit on top of UBI. =20
+Hi,
+> JFFS2 has been modified to sit on top of UBI.
 
-One thought here is that I would think that mounting is a fairly rare
-occurance. =20
-You're much more likely to coming back from suspend.  Notice the
-difference in time it takes from my HP iPAQ to power-on normally vs a
-cold boot.  It is very different. =20
+Yes, I know. Is that better then JFFS2 on top of mtdblock device?
+  
+> One thought here is that I would think that mounting is a fairly rare
+> occurance.  
+> You're much more likely to coming back from suspend.  Notice the
+> difference in time it takes from my HP iPAQ to power-on normally vs a
+> cold boot.  It is very different. 
 
+Still one must plan for the worst case and the worst case for me
+was about 2 hours of mount time after I used ftp to transfer large file.
+I suspect ftp was writing really small jffs2 nodes.
+Disclaimer: that was about 2 years ago and jffs2 might have improved,
+processor (ARM9) was not a speed demon either.
+If you do that on your iPAQ (create large file with lots of small nodes)
+and then cold boot it - would you be willing to wait for an hour for it to 
+become usable again?
 
-Charles Johnson
-Ultra-Mobility Group
-Platform Software Engineering
-Intel Corporation
-charles.f.johnson@intel.com
-
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org
-[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Sergei
-Sharonov
-Sent: Wednesday, October 31, 2007 3:10 PM
-To: linux-mtd@lists.infradead.org
-Subject: Re: UBI Used In Commercial Products ??
-
-Hello,
-
-> Does anyone on this list know if UBI is currently being used in any
-> commercially released products ??
-> If so, does anyone know which ones ??
-
-I am probably missing something here, but how can UBI be useful by
-itself?
-I would think until UBIFS is ready there is not much one can do with it.
-Please tell me I am wrong ;-)
-
-I am not aware of any non-commercial solution that can be used on a
-system
-that:
-1. Has lots (gigabytes) of flash
-2. Must be power-fail safe.
-3. Must boot in seconds even after power cycle
-4. Does not have internal battery or super-capacitor to allow for sync
-on
-power failure.
-
-I hope UBI+UBIFS will be able to do that but it is not ready yet.
-Another
-possibility is logfs but it is not ready either.
-
-Sorry if that is a bit off-topic.
+I really hope UBI+UBIFS will overcome this problem. Still there is a concern 
+here since UBI scales linearly. Can somebody plz post UBI scan time for large
+flash array?
 
 Regards,
 
 Sergei Sharonov
-
-
-
-
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
