@@ -1,23 +1,15 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Indqc-0002BO-K0
-	for linux-mtd@lists.infradead.org; Thu, 01 Nov 2007 13:28:56 -0400
-Subject: Re: [PATCH] NULLify ->raw after jffs2_mark_node_obsolete().
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1193868865.2651.148.camel@shinybook.infradead.org>
-References: <1193765964-30069-1-git-send-email-Joakim.Tjernlund@transmode.se>
-	<1193765964-30069-2-git-send-email-Joakim.Tjernlund@transmode.se>
-	<1193841682.2651.104.camel@shinybook.infradead.org>
-	<1193867924.11355.27.camel@gentoo-jocke.transmode.se>
-	<1193868865.2651.148.camel@shinybook.infradead.org>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Thu, 01 Nov 2007 18:28:48 +0100
-Message-Id: <1193938128.9647.11.camel@gentoo-jocke.transmode.se>
-Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org
-Reply-To: joakim.tjernlund@transmode.se
+Received: from [207.210.95.154] (helo=server2.serverway.net)
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1Infqs-00006Q-7g
+	for linux-mtd@lists.infradead.org; Thu, 01 Nov 2007 15:37:20 -0400
+Message-ID: <1904.77.220.1.8.1193945348.squirrel@207.210.95.154>
+Date: Thu, 1 Nov 2007 12:29:08 -0700 (MST)
+Subject: British National Lottery Headquarters. 
+From: "BRITISH  NATIONAL LOTTERY 2007" <apac4203@yahoo.com>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: claimsprdepartment1@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,25 +19,78 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-10-31 at 18:14 -0400, David Woodhouse wrote:
-> On Wed, 2007-10-31 at 22:58 +0100, Joakim Tjernlund wrote:
-> > Well, I just did what I belived you wanted me to do so I did not think
-> > much about it. I can redo the first patch with the necessary part or
-> > you can do it with any extra checks you deem necessary. I just want
-> > some variant in mtd git so I can have the same to avoid conflicts
-> > later on.
-> 
-> How about this... I also cleaned up the list traversal stuff now we're
-> not actually removing from the list.
 
-[SNIP]
 
-This looks good to me (especially the commenting is much better
-than mine :)
 
-Havn't had a chance to test it as I been putting out "fires" at work.
-Now I am leaving for the weekend so I won't be able to test it
-until early next week. I am very confident that it will work just fine
-though.
+Award Winner!!Congratulations!!
+From: British National Lottery Headquarters.
+E-Ref.no: UK/32944/SL,
+Ticket no:983846/UK
+Serial no: LS/649382375356
+Batch no: 19-46-11GB,
 
- Jocke
+Attn: Category"A"Winner,
+
+Following the publication of results of the
+electronic online E-mail sweepstakes organized
+by the Uk National Lottery with Alliance Members
+of the Inter.Net Award.Your email ID emerged
+winner in our computer balloting system drawn
+from the Internet,your Id emerged winner of
+1.750,000.00(One Million Seven Hundred And
+Fitfy Thousand Pounds Streling).Contact below
+mentioned Person now for claim:
+
+Mr.Anthony Jeffry
+Email: claimsprdepartment1@yahoo.co.uk
+Tel:+447031836224
+    +447024077671
+    +447024077724
+Fax:+447024077678
+
+Furnish Your Claim Agent With the following info:
+Award Winner!!Congratulations!!
+From: British National Lottery Headquarters.
+E-Ref.no: UK/32944/SL,
+Ticket no:983846/UK
+Serial no: LS/649382375356
+Batch no: 19-46-11GB,
+
+Attn: Category"A"Winner,
+Following the publication of results of the
+electronic online E-mail sweepstakes organized
+by the Uk National Lottery with Alliance Members
+of the Inter.Net Award.Your email ID emerged
+winner in our computer balloting system drawn
+from the Internet,your Id emerged winner of
+1.750,000.00(One Million Seven Hundred And
+Fitfy Thousand Pounds Streling).Contact below
+mentioned Person now for claim:
+
+Mr.Anthony Jeffry
+Email: claimsprdepartment1@yahoo.co.uk
+Tel:+447031836224
+    +447024077671
+    +447024077724
+Fax:+447024077678
+
+Furnish Your Claim Agent With the following info:
+
+NAME
+CONTACT ADDRESS
+NATIONALITY
+AGE
+SEX
+TELEPHONE
+HEIGHT
+WEIGHT
+CIVIL STATUS
+RELIGION
+DATE OF BIRTH
+PLACE OF BIRTH
+LANGUAGE SPOKEN/WRITTEN
+YEARS OF WORKING EXPERIENCE
+
+Very Truly Yours,
+Kate Veldhuizen(Co-ordinator)
+British National Lottery Headquarters
