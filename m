@@ -1,20 +1,23 @@
-Received: from mail.shareable.org ([81.29.64.88])
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1InOND-000343-Sq
-	for linux-mtd@lists.infradead.org; Wed, 31 Oct 2007 20:57:34 -0400
-Date: Thu, 1 Nov 2007 00:57:10 +0000
-From: Jamie Lokier <jamie@shareable.org>
+Received: from py-out-1112.google.com ([64.233.166.181])
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1InPI4-0008Vn-WE
+	for linux-mtd@lists.infradead.org; Wed, 31 Oct 2007 21:56:20 -0400
+Received: by py-out-1112.google.com with SMTP id a25so655460pyi
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 31 Oct 2007 18:56:11 -0700 (PDT)
+Date: Wed, 31 Oct 2007 20:56:02 -0500
+From: Josh Boyer <jwboyer@gmail.com>
 To: Sergei Sharonov <sergei.sharonov@halliburton.com>
 Subject: Re: UBI Used In Commercial Products ??
-Message-ID: <20071101005710.GB21550@mail.shareable.org>
+Message-ID: <20071031205602.00539205@vader.jdub.homelinux.org>
+In-Reply-To: <loom.20071031T224633-341@post.gmane.org>
 References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D577@orsmsx413.amr.corp.intel.com>
 	<loom.20071031T215155-403@post.gmane.org>
 	<B1EDF20A6EAAD74EA65E46F774F1784502C6D843@orsmsx413.amr.corp.intel.com>
 	<loom.20071031T224633-341@post.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <loom.20071031T224633-341@post.gmane.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -25,33 +28,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sergei Sharonov wrote:
-> 2 hours of mount time after I used ftp to transfer large file.
+On Wed, 31 Oct 2007 23:01:07 +0000 (UTC)
+Sergei Sharonov <sergei.sharonov@halliburton.com> wrote:
 
-Wow!
+> Hi,
+> > JFFS2 has been modified to sit on top of UBI.
+> 
+> Yes, I know. Is that better then JFFS2 on top of mtdblock device?
 
-> I really hope UBI+UBIFS will overcome this problem. Still there is a
-> concern here since UBI scales linearly. Can somebody plz post UBI
-> scan time for large flash array?
+It depends.  If you have multiple partitions then yes, UBI is better.
+It will wear-level across the entire root MTD device, whereas JFFS2 on
+top of a partition will only wear-level within that partition.  UBI
+also allows you to run other filesystems in different volumes, or have
+static volumes.
 
-The only way to get sub-linear scaling is to designate a sub-linear
-subset of eraseblocks which are read at scanning/mount time.
+If you have just a single JFFS2 filesystem that spans the whole flash
+chip anyway, then maybe not.
 
-Doing that at the same time as wearing all eraseblocks equally is
-quite tricky, and probably requires a phase tree and multi-headed
-logging structure, like LogFS (I'm not sure if LogFS actually does
-both, though).
-
-Such a structure is not particularly simple, and will be present in
-the best flash filesystems eventually.  So I wonder if UBI is really a
-good place to have a second copy of those algorithms.
-
-I like the idea of UBI, to abstract block allocation and wear tracking
-from the filesystem, but it seems the sub-linear scan time requirement
-is a tricky one to do without implementing a non-trivial
-filesystem-like algorithm in UBI itself.
-
-I'll be delighted to read that the problem's been solved, when it has
-been solved, though :-)
-
--- Jamie
+josh
