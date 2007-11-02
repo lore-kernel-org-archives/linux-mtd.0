@@ -1,5 +1,5 @@
-Message-ID: <39228.195.166.237.254.1193972283.squirrel@www2.moa.gov.bt>
-Date: Thu, 1 Nov 2007 17:58:03 -0900 (GMT+9)
+Message-ID: <24998.195.166.237.254.1193968686.squirrel@www2.moa.gov.bt>
+Date: Thu, 1 Nov 2007 16:58:06 -0900 (GMT+9)
 Subject: Respond Asap!!!!!!!!!!
 From: "Lady Martha Stirling" <namdenbid@moa.gov.bt>
 MIME-Version: 1.0
