@@ -1,15 +1,17 @@
-Received: from [207.210.95.154] (helo=server2.serverway.net)
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1Infqs-00006Q-7g
-	for linux-mtd@lists.infradead.org; Thu, 01 Nov 2007 15:37:20 -0400
-Message-ID: <1904.77.220.1.8.1193945348.squirrel@207.210.95.154>
-Date: Thu, 1 Nov 2007 12:29:08 -0700 (MST)
-Subject: British National Lottery Headquarters. 
-From: "BRITISH  NATIONAL LOTTERY 2007" <apac4203@yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Reply-To: claimsprdepartment1@yahoo.co.uk
+Subject: Re: UBI Used In Commercial Products ??
+From: David Woodhouse <dwmw2@infradead.org>
+To: Sergei Sharonov <sergei.sharonov@halliburton.com>
+In-Reply-To: <loom.20071031T224633-341@post.gmane.org>
+References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D577@orsmsx413.amr.corp.intel.com>
+	<loom.20071031T215155-403@post.gmane.org>
+	<B1EDF20A6EAAD74EA65E46F774F1784502C6D843@orsmsx413.amr.corp.intel.com>
+	<loom.20071031T224633-341@post.gmane.org>
+Content-Type: text/plain
+Date: Thu, 01 Nov 2007 20:36:52 -0400
+Message-Id: <1193963812.489.5.camel@shinybook.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,78 +21,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 2007-10-31 at 23:01 +0000, Sergei Sharonov wrote:
+> Disclaimer: that was about 2 years ago and jffs2 might have improved,
+> processor (ARM9) was not a speed demon either.
 
+The last two years would include all the optimisation work we've done
+having started using JFFS2 on OLPC, with its 1GiB of NAND flash.
 
+We're still pushing the limits of the JFFS2 design, at that size, but it
+isn't as bad as it was.
 
-Award Winner!!Congratulations!!
-From: British National Lottery Headquarters.
-E-Ref.no: UK/32944/SL,
-Ticket no:983846/UK
-Serial no: LS/649382375356
-Batch no: 19-46-11GB,
-
-Attn: Category"A"Winner,
-
-Following the publication of results of the
-electronic online E-mail sweepstakes organized
-by the Uk National Lottery with Alliance Members
-of the Inter.Net Award.Your email ID emerged
-winner in our computer balloting system drawn
-from the Internet,your Id emerged winner of
-1.750,000.00(One Million Seven Hundred And
-Fitfy Thousand Pounds Streling).Contact below
-mentioned Person now for claim:
-
-Mr.Anthony Jeffry
-Email: claimsprdepartment1@yahoo.co.uk
-Tel:+447031836224
-    +447024077671
-    +447024077724
-Fax:+447024077678
-
-Furnish Your Claim Agent With the following info:
-Award Winner!!Congratulations!!
-From: British National Lottery Headquarters.
-E-Ref.no: UK/32944/SL,
-Ticket no:983846/UK
-Serial no: LS/649382375356
-Batch no: 19-46-11GB,
-
-Attn: Category"A"Winner,
-Following the publication of results of the
-electronic online E-mail sweepstakes organized
-by the Uk National Lottery with Alliance Members
-of the Inter.Net Award.Your email ID emerged
-winner in our computer balloting system drawn
-from the Internet,your Id emerged winner of
-1.750,000.00(One Million Seven Hundred And
-Fitfy Thousand Pounds Streling).Contact below
-mentioned Person now for claim:
-
-Mr.Anthony Jeffry
-Email: claimsprdepartment1@yahoo.co.uk
-Tel:+447031836224
-    +447024077671
-    +447024077724
-Fax:+447024077678
-
-Furnish Your Claim Agent With the following info:
-
-NAME
-CONTACT ADDRESS
-NATIONALITY
-AGE
-SEX
-TELEPHONE
-HEIGHT
-WEIGHT
-CIVIL STATUS
-RELIGION
-DATE OF BIRTH
-PLACE OF BIRTH
-LANGUAGE SPOKEN/WRITTEN
-YEARS OF WORKING EXPERIENCE
-
-Very Truly Yours,
-Kate Veldhuizen(Co-ordinator)
-British National Lottery Headquarters
+-- 
+dwmw2
