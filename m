@@ -1,17 +1,11 @@
-Subject: Re: UBI Used In Commercial Products ??
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sergei Sharonov <sergei.sharonov@halliburton.com>
-In-Reply-To: <loom.20071031T224633-341@post.gmane.org>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D577@orsmsx413.amr.corp.intel.com>
-	<loom.20071031T215155-403@post.gmane.org>
-	<B1EDF20A6EAAD74EA65E46F774F1784502C6D843@orsmsx413.amr.corp.intel.com>
-	<loom.20071031T224633-341@post.gmane.org>
-Content-Type: text/plain
-Date: Thu, 01 Nov 2007 20:36:52 -0400
-Message-Id: <1193963812.489.5.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Message-ID: <39228.195.166.237.254.1193972283.squirrel@www2.moa.gov.bt>
+Date: Thu, 1 Nov 2007 17:58:03 -0900 (GMT+9)
+Subject: Respond Asap!!!!!!!!!!
+From: "Lady Martha Stirling" <namdenbid@moa.gov.bt>
+MIME-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: thestirling_nastydy01@yahoo.com.hk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,15 +15,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-10-31 at 23:01 +0000, Sergei Sharonov wrote:
-> Disclaimer: that was about 2 years ago and jffs2 might have improved,
-> processor (ARM9) was not a speed demon either.
+Am  Lady Martha Stirling, suffering from cancerous ailment.
+I am a widow my  husband Sir Dennis Stirling an Englishman
+who is dead. My  husband was into private practice all his life
+before his death. My husband and I made a vow to uplift the
+down-trodden and the less-privileged  individuals as he had
+passion for people who can not help  themselves due to physical
+disability or financial predicament. I can adduce this to the fact
+that he needed a Child from this relationship, which never came.
+When my late husband was alive he deposited the sum of 20 Million
+(twenty Million Great Britain Pounds Sterling ) which were derived
+from his vast estates and investment in capital market  with his
+bank here in UK. Presently, this money is still with the  Bank.
+Recently, my Doctor told me that I have limited days to live
+due to the cancerous problems I am suffering from. I have decided
+to donate this fund to you and   I took this decision because I do
+not have any child that will inherit this  money. please assure me
+that  you will act just as I have stated herein. Hope to hear from
+you thanks. contact my private
 
-The last two years would include all the optimisation work we've done
-having started using JFFS2 on OLPC, with its 1GiB of NAND flash.
 
-We're still pushing the limits of the JFFS2 design, at that size, but it
-isn't as bad as it was.
-
--- 
-dwmw2
+email address:thestirling_nastydy01@yahoo.com.hk
