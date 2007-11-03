@@ -1,9 +1,9 @@
-Received: from post-23.mail.nl.demon.net ([194.159.73.193])
+Received: from post-24.mail.nl.demon.net ([194.159.73.194])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IoJ4G-0003xX-QL
-	for linux-mtd@lists.infradead.org; Sat, 03 Nov 2007 09:29:48 -0400
-Message-ID: <472C77DA.5060708@m8.nl>
-Date: Sat, 03 Nov 2007 14:30:02 +0100
+	id 1IoK5Q-0008SL-Pj
+	for linux-mtd@lists.infradead.org; Sat, 03 Nov 2007 10:35:03 -0400
+Message-ID: <472C8723.1090303@m8.nl>
+Date: Sat, 03 Nov 2007 15:35:15 +0100
 From: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
@@ -39,17 +39,8 @@ David Woodhouse wrote:
 > filename.
 >
 >   
-Ok, I did it. Can you tell me the meaning of the calls to ioremap and 
-request_region?
-
-I used the following defines:
-
-#define WINDOW_START 0x20000000
-#define WINDOW_SHIFT 20
-
-I do not know what to do with:
-#define PAGE_IO 258
-#define DEVICE_ENABLE 0x8000
+physmap is still active next to my new driver with complex mappings. Is 
+this correct, or should I disable the configuration option for physmap?
 
 
 
