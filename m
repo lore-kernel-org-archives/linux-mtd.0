@@ -1,9 +1,9 @@
-Received: from post-24.mail.nl.demon.net ([194.159.73.194])
+Received: from post-26.mail.nl.demon.net ([194.159.73.196])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IoK5Q-0008SL-Pj
-	for linux-mtd@lists.infradead.org; Sat, 03 Nov 2007 10:35:03 -0400
-Message-ID: <472C8723.1090303@m8.nl>
-Date: Sat, 03 Nov 2007 15:35:15 +0100
+	id 1Iobnf-00025y-Q7
+	for linux-mtd@lists.infradead.org; Sun, 04 Nov 2007 04:29:55 -0500
+Message-ID: <472D9122.8010501@m8.nl>
+Date: Sun, 04 Nov 2007 10:30:10 +0100
 From: "M8 (Servaes Joordens)" <Servaes.Joordens@m8.nl>
 MIME-Version: 1.0
 To: David Woodhouse <dwmw2@infradead.org>
@@ -39,8 +39,20 @@ David Woodhouse wrote:
 > filename.
 >
 >   
-physmap is still active next to my new driver with complex mappings. Is 
-this correct, or should I disable the configuration option for physmap?
+David,
+
+I got everything working now, except for the fact that when I write 
+anything to my jffs2 partition, it fails. The error report states that 
+the disk is full. Do you have any idea's?
+
+In the configuration, I disabled the map_funcs file and replace it with 
+my own version.I had to write some code to distiguish between flash 
+memory and ram. This works fine now.
+
+regards,
+Servaes
+
+
 
 
 
