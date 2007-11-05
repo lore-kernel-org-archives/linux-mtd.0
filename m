@@ -1,30 +1,19 @@
-Received: from smtp-b2b-in.tiscali.cz ([195.146.100.91]
-	helo=smtp-b2b-in-2.tiscali.cz)
-	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
-	id 1Iozll-0001Mw-Ll
-	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 11:05:29 +0000
-Received: from localhost (smtp2 [127.0.0.1])
-	by smtp-b2b-in-2.tiscali.cz (Postfix) with ESMTP id 1828F5D2D98
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Nov 2007 12:03:20 +0100 (CET)
-Received: from smtp-b2b-in-2.tiscali.cz ([127.0.0.1])
-	by localhost (smtp-b2b-in-2.tiscali.cz [127.0.0.1]) (amavisd-new,
-	port 10024)
-	with ESMTP id oacmrLYlsFVn for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Nov 2007 12:03:19 +0100 (CET)
-Received: from alpha (unknown [195.146.96.185])
-	by smtp-b2b-in-2.tiscali.cz (Postfix) with SMTP id 0A3815D2367
-	for <linux-mtd@lists.infradead.org>;
-	Mon,  5 Nov 2007 12:03:16 +0100 (CET)
-Date: Mon, 05 Nov 2007 12:03:17 +0100
-Subject: Get Back To Me ASAP
-To: linux-mtd@lists.infradead.org
-From: Mr Lile Song <lile_privacy@webmail.net>
-MIME-Version: 1.0
-Content-Type: text/plain
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1Ip2FN-0005hE-1S
+	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 08:44:15 -0500
+Date: Mon, 5 Nov 2007 14:25:12 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Subject: Re: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+Message-ID: <20071105132512.GA19232@lazybastard.org>
+References: <472B0A3C.4010103@nokia.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20071105110317.0A3815D2367@smtp-b2b-in-2.tiscali.cz>
-Reply-To: private_leshmiue@yahoo.com.hk
+In-Reply-To: <472B0A3C.4010103@nokia.com>
+Cc: kmpark@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,25 +23,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello,
- 
-My name is Mr. Song Lile I work with the Hang Seng Bank. There
- is the sum of $19,500,000.00 in my bank"Heng Seng Bank", Hong kong.
-I wish to make a transfer of it out of here as soon as possible,I do
- solicit for you assistance in effecting this
-transaction.
- 
-I intend to part with 30% of the total funds as compensation for your
- assistance.
- 
-I will notify you on the full transaction on receipt of your response
- if interested, and I shall send you the details and necessary
-procedures with which to make the transfer.Should you be interested
- please send me your,
- 
-1. Full names
-2. Private phone number
-3. Current residential address
- 
-Kind Regards,
-Mr. Song Lile
+On Fri, 2 November 2007 13:30:04 +0200, Adrian Hunter wrote:
+> 
+> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+> index dd28355..616747c 100644
+> --- a/drivers/mtd/onenand/onenand_base.c
+> +++ b/drivers/mtd/onenand/onenand_base.c
+> @@ -855,6 +855,8 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+>  			this->command(mtd, ONENAND_CMD_READ, from, writesize);
+>   			ret = this->wait(mtd, FL_READING);
+>   			onenand_update_bufferram(mtd, from, !ret);
+> +			if (ret == -EBADMSG)
+> +				ret = 0;
+
+Why is -EBADMSG dropped here?
+
+> @@ -988,18 +995,16 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+>  		onenand_update_bufferram(mtd, from, 0);
+>  
+>  		ret = this->wait(mtd, FL_READING);
+> -		/* First copy data and check return value for ECC handling */
+> +		if (ret && ret != -EBADMSG) {
+> +			printk(KERN_ERR "onenand_read_oob_nolock: read failed = 0x%x\n", ret);
+> +			break;
+> +		}
+
+What about -EUCLEAN?
+
+Jörn
+
+-- 
+It is better to die of hunger having lived without grief and fear,
+than to live with a troubled spirit amid abundance.
+-- Epictetus
