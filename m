@@ -1,31 +1,19 @@
-Received: from e3.ny.us.ibm.com ([32.97.182.143])
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1Ip1Xg-00028c-Ep
-	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 07:59:07 -0500
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e3.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id lA5CwtLw011333
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Nov 2007 07:58:55 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
-	lA5CwtdS434524
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Nov 2007 07:58:55 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	lA5CwslM025452
-	for <linux-mtd@lists.infradead.org>; Mon, 5 Nov 2007 07:58:55 -0500
-Subject: ubi-utils: unubi fixes and enhancements
-From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-vNCvGiQJotJxSfB9nv5w"
-Date: Mon, 05 Nov 2007 13:58:53 +0100
-Message-Id: <1194267534.13736.10.camel@august>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1Ip2gm-0001Gi-70
+	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 09:12:34 -0500
+Date: Mon, 5 Nov 2007 14:35:06 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: "Johnson, Charles F" <charles.f.johnson@intel.com>
+Subject: Re: MTD Size Limit
+Message-ID: <20071105133506.GB19232@lazybastard.org>
+References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
 Mime-Version: 1.0
-Cc: Thomas Gleixner <tglx@linutronix.de>,
-	Alexander Schmidt <alexs@linux.vnet.ibm.com>, haver@vnet.ibm.com,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>
-Reply-To: haver@vnet.ibm.com
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
+Content-Disposition: inline
+In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -36,128 +24,52 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-vNCvGiQJotJxSfB9nv5w
-Content-Type: text/plain; charset=ISO-8859-15
+--jRHKVT23PllUwdXP
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Artem,
+On Wed, 31 October 2007 12:03:48 -0700, Johnson, Charles F wrote:
+>=20
+> I hear about a size limit for the MTD layer due to a 32 bit size
+> variable. So is the limitation 4GBytes ??=20
 
-some time ago Drake Dawsett, a student working for us, has done some
-bug-fixes and enhancements to the unubi tool. He forgot to send them out
-before he left us. I have reworked them for integration:
+Possibly even less.  The usual bugs to watch out for is signed/unsigned
+usage and 4GiB (or 2GiB if signed) wrapping to 0 or -2GiB.  I wouldn't
+trust things beyond 1.9GiB or so without thorough code review and
+testing.
 
-  git://git.infradead.org/users/haver/mtd-utils.git
+> If you partition a device using UBI, is this limiation then per
+> partition or is it still over the entire device??
 
-Please have a look, and pull them if you are fine with them.
+Both.
 
-Thanks,
+> Is there any effort to increase the limit.  Particularlly give the large
+> NAND flashes that are coming.
 
-Frank
+I have seen patches, but not in a merge-worthy state.  And I just heard
+some people decided to ignore mtd and wrote drivers directly for YAFFS.
+
+If you want to get this done by a certain date you either have to do it
+yourself or pay someone.  As always.
+
+J=C3=B6rn
 
 --=20
-IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
-Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
-Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+He that composes himself is wiser than he that composes a book.
+-- B. Franklin
 
---=-vNCvGiQJotJxSfB9nv5w
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
+--jRHKVT23PllUwdXP
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIP9DCCBSww
-ggSVoAMCAQICEDhxwVOTyOj0nx4MTQ30ZkMwDQYJKoZIhvcNAQEFBQAwgcExCzAJBgNVBAYTAlVT
-MRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE8MDoGA1UECxMzQ2xhc3MgMiBQdWJsaWMgUHJpbWFy
-eSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEcyMTowOAYDVQQLEzEoYykgMTk5OCBWZXJpU2ln
-biwgSW5jLiAtIEZvciBhdXRob3JpemVkIHVzZSBvbmx5MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMB4XDTAzMDUwNjAwMDAwMFoXDTA4MDUwNTIzNTk1OVowgfkxCzAJBgNVBAYTAlVT
-MTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8w
-HQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQg
-aHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNp
-dGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBB
-dXRob3JpdHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANVnrTXdoH79V2HWnacXy7mjjSNc
-nOi3Z+cXSBh9uSDhCLAUUeuvoHubuA5ImrJI5k/dA+Q0L+WNzR7OZr4TRpw3DOksYS/0o+RZ5+lu
-J7ltXcdVgsHU6qqHDpvF1hAegqpNz670JVVfUs4ThC1AafMIBHwmJbqFG4Iy39OH37oBAgMBAAGj
-ggHpMIIB5TASBgNVHRMBAf8ECDAGAQH/AgEAMEQGA1UdIAQ9MDswOQYLYIZIAYb4RQEHFwIwKjAo
-BggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTA0BgNVHR8ELTArMCmgJ6Al
-hiNodHRwOi8vY3JsLnZlcmlzaWduLmNvbS9wY2EyLWcyLmNybDALBgNVHQ8EBAMCAQYwEQYJYIZI
-AYb4QgEBBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEyNzAd
-BgNVHQ4EFgQUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowgegGA1UdIwSB4DCB3aGBx6SBxDCBwTELMAkG
-A1UEBhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMTwwOgYDVQQLEzNDbGFzcyAyIFB1Ymxp
-YyBQcmltYXJ5IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IC0gRzIxOjA4BgNVBAsTMShjKSAxOTk4
-IFZlcmlTaWduLCBJbmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxHzAdBgNVBAsTFlZlcmlT
-aWduIFRydXN0IE5ldHdvcmuCEQC5L2DMiJ+hekYJuFtwbIqvMA0GCSqGSIb3DQEBBQUAA4GBAAgY
-BRMDGzUl8C495yDmyE78QHSxQjkpKbJ61i0GkSYGUmkRYc3czKUlkV3sdHWe28su0SRO8HKhXzfU
-dR2D2n6UixORmR/tobmuxlkfwqHWDvNVuJD0iCV1e2cXT9qf38vMzMiC55lQmnCoUfTg131ovM/V
-1EI2aT181HWu/pM8MIIFXjCCBMegAwIBAgIQBx15Uc8dgKRMua0Jq2/yNTANBgkqhkiG9w0BAQQF
-ADCB+TELMAkGA1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
-ZXMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsT
-MlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYD
-VQQLEydDbGFzcyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lC
-TSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0wNzA0MTYwMDAwMDBaFw0wODA0MTUyMzU5NTla
-MIGJMS4wLAYDVQQKFCVJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnAuMRgwFgYD
-VQQDDA9GcmFuayBIYXZlcmthbXAxGTAXBgoJkiaJk/IsZAEBFAkxMjQ2MTQ3MjQxIjAgBgkqhkiG
-9w0BCQEWE2hhdmVya2FtQGRlLmlibS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANqa
-0RVcURGtTfJRuKOEaQPrtJrWVAmWFTIA2YdQSiHJDgg+OLG/dnlpyqU0JOfcd3j1ZyQK7EFpoT03
-B4Bx4MWBSoWdf3bdbEmKvYIM2BddBVgisGiwhWklRsoGiItckT7xSVK5P3hvLCXjBvcdbxcm4VS2
-NRyJfGEyeoGiObLdAgMBAAGjggJTMIICTzAJBgNVHRMEAjAAMAsGA1UdDwQEAwIFoDBmBgNVHR8E
-XzBdMFugWaBXhlVodHRwOi8vb25zaXRlY3JsLnZlcmlzaWduLmNvbS9JbnRlcm5hdGlvbmFsQnVz
-aW5lc3NNYWNoaW5lc0NvcnBDb3Jwb3JhdGVDSU8vTGF0ZXN0Q1JMMIIBKQYDVR0gBIIBIDCCARww
-ggEYBgtghkgBhvhFAQcXAjCCAQcwKwYIKwYBBQUHAgEWH2h0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwgdcGCCsGAQUFBwICMIHKGoHHTm90aWNlIFRleHQ9Tk9USUNFOiBQcml2YXRlIGtl
-eSBtYXkgYmUgcmVjb3ZlcmVkIGJ5IFZlcmlTaWduJ3MgY3VzdG9tZXIgd2hvIG1heSBiZSBhYmxl
-IHRvIGRlY3J5cHQgbWVzc2FnZXMgeW91IHNlbmQgdG8gY2VydGlmaWNhdGUgaG9sZGVyLiAgVXNl
-IGlzIHN1YmplY3QgdG8gdGVybXMgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYS1rcjAf
-BgNVHSMEGDAWgBSRwXOwc9XZknRnzRvxURQ0MbYsWjAdBgNVHQ4EFgQUbOeIIYn3x+GgI5Am0KHt
-R62Y458wLgYDVR0RBCcwJaAjBgorBgEEAYI3FAIDoBUME2hhdmVya2FtQGRlLmlibS5jb20wHQYD
-VR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDANBgkqhkiG9w0B
-AQQFAAOBgQAJ6/At+OSf4q8CRKWRmIxb3m0Sk6YfSTI6gu+YIu6LiOIq3BFH7XhRGiM+KqQaKyKe
-9Ar+L/QzI9YQMIShrA9m2eFKVrfsBTeSn2/d+wTYM4rjyYtv24qeYSKF9yqWGMW+Oy9SIjb9TAgF
-A0rQrpiAExeGgoIuDAsZFr4+EfUkcDCCBV4wggTHoAMCAQICEAcdeVHPHYCkTLmtCatv8jUwDQYJ
-KoZIhvcNAQEEBQAwgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2lu
-ZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3Jr
-MTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAo
-YykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQw
-IgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcwNDE2MDAwMDAwWhcNMDgw
-NDE1MjM1OTU5WjCBiTEuMCwGA1UEChQlSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyBD
-b3JwLjEYMBYGA1UEAwwPRnJhbmsgSGF2ZXJrYW1wMRkwFwYKCZImiZPyLGQBARQJMTI0NjE0NzI0
-MSIwIAYJKoZIhvcNAQkBFhNoYXZlcmthbUBkZS5pYm0uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDamtEVXFERrU3yUbijhGkD67Sa1lQJlhUyANmHUEohyQ4IPjixv3Z5acqlNCTn3Hd4
-9WckCuxBaaE9NweAceDFgUqFnX923WxJir2CDNgXXQVYIrBosIVpJUbKBoiLXJE+8UlSuT94bywl
-4wb3HW8XJuFUtjUciXxhMnqBojmy3QIDAQABo4ICUzCCAk8wCQYDVR0TBAIwADALBgNVHQ8EBAMC
-BaAwZgYDVR0fBF8wXTBboFmgV4ZVaHR0cDovL29uc2l0ZWNybC52ZXJpc2lnbi5jb20vSW50ZXJu
-YXRpb25hbEJ1c2luZXNzTWFjaGluZXNDb3JwQ29ycG9yYXRlQ0lPL0xhdGVzdENSTDCCASkGA1Ud
-IASCASAwggEcMIIBGAYLYIZIAYb4RQEHFwIwggEHMCsGCCsGAQUFBwIBFh9odHRwczovL3d3dy52
-ZXJpc2lnbi5jb20vcnBhLWtyMIHXBggrBgEFBQcCAjCByhqBx05vdGljZSBUZXh0PU5PVElDRTog
-UHJpdmF0ZSBrZXkgbWF5IGJlIHJlY292ZXJlZCBieSBWZXJpU2lnbidzIGN1c3RvbWVyIHdobyBt
-YXkgYmUgYWJsZSB0byBkZWNyeXB0IG1lc3NhZ2VzIHlvdSBzZW5kIHRvIGNlcnRpZmljYXRlIGhv
-bGRlci4gIFVzZSBpcyBzdWJqZWN0IHRvIHRlcm1zIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwHwYDVR0jBBgwFoAUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowHQYDVR0OBBYEFGzniCGJ
-98fhoCOQJtCh7UetmOOfMC4GA1UdEQQnMCWgIwYKKwYBBAGCNxQCA6AVDBNoYXZlcmthbUBkZS5p
-Ym0uY29tMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDARBglghkgBhvhCAQEEBAMCBaAw
-DQYJKoZIhvcNAQEEBQADgYEACevwLfjkn+KvAkSlkZiMW95tEpOmH0kyOoLvmCLui4jiKtwRR+14
-URojPiqkGisinvQK/i/0MyPWEDCEoawPZtnhSla37AU3kp9v3fsE2DOK48mLb9uKnmEihfcqlhjF
-vjsvUiI2/UwIBQNK0K6YgBMXhoKCLgwLGRa+PhH1JHAxggRjMIIEXwIBATCCAQ4wgfkxCzAJBgNV
-BAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0
-aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
-c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
-MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
-dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcxMTA1MTI1ODUzWjAjBgkqhkiG9w0B
-CQQxFgQUoQAsmtQGkp/uV0SQeNNZoTopIUowggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
-A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
-YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
-IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
-cyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lCTSBDZXJ0aWZp
-Y2F0aW9uIEF1dGhvcml0eQIQBx15Uc8dgKRMua0Jq2/yNTCCASMGCyqGSIb3DQEJEAILMYIBEqCC
-AQ4wgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hp
-bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
-EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
-A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
-Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYDOOTbrD2O8NWf1KkMxMOd4HpiFOTVx8ysSuDLQznnYwz+gcw09v9s9zlNVn5KLCzPwRV9o
-abiyoSP9MyNiRqp2KM+j4e2fAqaRptr3QKJpHYivDy3hSicOSdw9aYGU1c5yOPhfzc8LIVF9R62y
-rbj1VUka9foSj/TDZht9VW2GRQAAAAAAAA==
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.1 (GNU/Linux)
 
+iD8DBQFHLxwKfbqVtkXfjukRAh0SAKCyccQkI7NBZ+I5y/h3jGTXQ6KYUQCg182r
+G1J6Mc/RrAp5lwv8oGvawzQ=
+=5vl5
+-----END PGP SIGNATURE-----
 
---=-vNCvGiQJotJxSfB9nv5w--
+--jRHKVT23PllUwdXP--
