@@ -1,19 +1,21 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1IpFPU-0003RF-A5
-	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 22:47:34 -0500
-Received: from [99.236.101.138] (helo=crashcourse.ca)
-	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.68) (envelope-from <rpjday@crashcourse.ca>)
-	id 1IpFPS-0000QZ-4n
-	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 22:47:26 -0500
-Date: Mon, 5 Nov 2007 22:45:51 -0500 (EST)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: [PATCH] MTD:  Remove now-unused linux/mtd/jedec.h file.
-Message-ID: <Pine.LNX.4.64.0711052243130.27409@localhost.localdomain>
+	id 1IpIhT-0001aB-50
+	for linux-mtd@lists.infradead.org; Tue, 06 Nov 2007 02:18:21 -0500
+Message-ID: <4730144D.2030604@nokia.com>
+Date: Tue, 06 Nov 2007 09:14:21 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: =?UTF-8?B?ZXh0IErDtnJuIEVuZ2Vs?= <joern@logfs.org>
+Subject: Re: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+References: <472B0A3C.4010103@nokia.com>
+	<20071105132512.GA19232@lazybastard.org>
+	<472F2CB5.6090409@nokia.com>
+	<20071105162321.GA21533@lazybastard.org>
+In-Reply-To: <20071105162321.GA21533@lazybastard.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: linux-mtd@lists.infradead.org, kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,92 +25,56 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+ext Jörn Engel wrote:
+> On Mon, 5 November 2007 16:46:13 +0200, Adrian Hunter wrote:
+>> -EBADMSG is an ECC error.
+>>
+>> ret must be non-zero to indicate that the bufferram is invalid.  Otherwise
+>> if we read from the same location again, the data would be taken from 
+>> bufferram
+>> and no ECC error would be reported.  However we need to keep reading (see 
+>> nand_base.c)
+>> so ret is set to zero as though no error occured.  Finally 
+>> mtd->ecc_stats.failed
+>> is examined to determine ECC errors. i.e.
+> 
+> Hmm.
+> 
+>> static int onenand_read(struct mtd_info *mtd, loff_t from, size_t len,
+>> 	size_t *retlen, u_char *buf)
+>> {
+>> 	...
+>> 	stats = mtd->ecc_stats;
+>> 	...
+>> 	while (!ret) {
+>> 		...
+>> 		ret = this->wait(mtd, FL_READING);
+>> 		onenand_update_bufferram(mtd, from, !ret);
+>> 		if (ret == -EBADMSG)
+>> 			ret = 0;
+>> 	}
+>> 	*retlen = read;
+>> 	if (mtd->ecc_stats.failed - stats.failed)
+>> 		return -EBADMSG;
+>> 	if (ret)
+>> 		return ret;
+> 
+> Those two conditionals should have reversed order, imo.
 
-Given that support for jedec was removed in commit ba7cc09c, and that
-no one seems to be including this header file, it would seem to be
-removable.
+Very true.  I have added that fix to the patch also - see next mail.
 
-Signed-off-by: Robert P. J. Day <rpjday@crashcourse.ca>
-
----
-
-diff --git a/include/linux/mtd/jedec.h b/include/linux/mtd/jedec.h
-deleted file mode 100644
-index 9006feb..0000000
---- a/include/linux/mtd/jedec.h
-+++ /dev/null
-@@ -1,66 +0,0 @@
--
--/* JEDEC Flash Interface.
-- * This is an older type of interface for self programming flash. It is
-- * commonly use in older AMD chips and is obsolete compared with CFI.
-- * It is called JEDEC because the JEDEC association distributes the ID codes
-- * for the chips.
-- *
-- * See the AMD flash databook for information on how to operate the interface.
-- *
-- * $Id: jedec.h,v 1.4 2005/11/07 11:14:54 gleixner Exp $
-- */
--
--#ifndef __LINUX_MTD_JEDEC_H__
--#define __LINUX_MTD_JEDEC_H__
--
--#include <linux/types.h>
--
--#define MAX_JEDEC_CHIPS 16
--
--// Listing of all supported chips and their information
--struct JEDECTable
--{
--   __u16 jedec;
--   char *name;
--   unsigned long size;
--   unsigned long sectorsize;
--   __u32 capabilities;
--};
--
--// JEDEC being 0 is the end of the chip array
--struct jedec_flash_chip
--{
--   __u16 jedec;
--   unsigned long size;
--   unsigned long sectorsize;
--
--   // *(__u8*)(base + (adder << addrshift)) = data << datashift
--   // Address size = size << addrshift
--   unsigned long base;           // Byte 0 of the flash, will be unaligned
--   unsigned int datashift;       // Useful for 32bit/16bit accesses
--   unsigned int addrshift;
--   unsigned long offset;         // linerized start. base==offset for unbanked, uninterleaved flash
--
--   __u32 capabilities;
--
--   // These markers are filled in by the flash_chip_scan function
--   unsigned long start;
--   unsigned long length;
--};
--
--struct jedec_private
--{
--   unsigned long size;         // Total size of all the devices
--
--   /* Bank handling. If sum(bank_fill) == size then this is linear flash.
--      Otherwise the mapping has holes in it. bank_fill may be used to
--      find the holes, but in the common symetric case
--      bank_fill[0] == bank_fill[*], thus addresses may be computed
--      mathmatically. bank_fill must be powers of two */
--   unsigned is_banked;
--   unsigned long bank_fill[MAX_JEDEC_CHIPS];
--
--   struct jedec_flash_chip chips[MAX_JEDEC_CHIPS];
--};
--
--#endif
--- 
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry
-Waterloo, Ontario, CANADA
-
-http://crashcourse.ca
-========================================================================
+> 
+>>> What about -EUCLEAN?
+>> The wait function doesn't return -EUCLEAN.  It increments 
+>> mtd->ecc_stats.corrected and returns
+>> zero for correctable ECC errors.
+>>
+>> File systems (like say JFFS2 for example) don't expect -EUCLEAN from 
+>> mtd->read_oob and would treat
+>> it as a fatal error, so it must not be returned in this case.
+> 
+> Such an interface sure looks strange.  But since read_oob is strange
+> anyway I don't care very much either way.
+> 
+> Jörn
+> 
