@@ -1,23 +1,14 @@
-Received: from nz-out-0506.google.com ([64.233.162.227])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IpLox-0006Qy-W4
-	for linux-mtd@lists.infradead.org; Tue, 06 Nov 2007 05:38:18 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so1198227nzf
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 06 Nov 2007 02:38:08 -0800 (PST)
-Message-ID: <8bf247760711060238q46c0c98es57a63e1683648a92@mail.gmail.com>
-Date: Tue, 6 Nov 2007 16:08:07 +0530
-From: Ram <vshrirama@gmail.com>
-To: Sameer <x0081444@ti.com>
-Subject: Re: NAND driver - spare area ecc
-In-Reply-To: <004401c81470$c128fa40$ec8818ac@ent.ti.com>
+Received: from vps.korsgaard.com ([64.79.194.204] helo=nanv.dk)
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1IpM5c-0007pj-98
+	for linux-mtd@lists.infradead.org; Tue, 06 Nov 2007 05:55:31 -0500
+From: Peter Korsgaard <jacmet@sunsite.dk>
+To: rpurdie@openedhand.com, linux-mtd@lists.infradead.org
+Subject: [PATCH] [PATCH] mtdoops: Document usage in Kconfig
+Date: Tue, 06 Nov 2007 11:55:00 +0100
+Message-ID: <871wb3wsmz.fsf@nanv.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <AcgUcMB7cv/FBkWTQ66Eo6zxYVoOUQ==>
-	<004401c81470$c128fa40$ec8818ac@ent.ti.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=us-ascii
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,43 +18,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 10/22/07, Sameer <x0081444@ti.com> wrote:
-> Hi,
-> I am working on NAND flash driver on TI's OMAP based board.
-> NAND is large page nand with 8bit buswidth.
-> I need to calculate ecc for the spare area data.
-> 1.Does the current linux nand driver support ecc calulation for spare area
->   with hw_ecc/sw_ecc enabled?
+Add usage instructions to Kconfig for mtdoops driver.
 
-     It depends on the driver. which processor are you using?. You
-could either use
-    software to generate ecc or use the hardware to generate the ecc.
+Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
+---
+ drivers/mtd/Kconfig |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
+index 8848e8a..661eac0 100644
+--- a/drivers/mtd/Kconfig
++++ b/drivers/mtd/Kconfig
+@@ -286,6 +286,9 @@ config MTD_OOPS
+ 	  buffer in a flash partition where it can be read back at some
+ 	  later point.
+ 
++	  To use, add console=ttyMTDx to the kernel command line,
++	  where x is the MTD device number to use.
++
+ source "drivers/mtd/chips/Kconfig"
+ 
+ source "drivers/mtd/maps/Kconfig"
+-- 
+1.5.3.4
 
 
-> 2.If not could any one suggest on what data of the spare area info I need to
->   calculate ECC?
-
-     ECC is computed for the data that is stored in that particular
-page of the flash.
-     ECC and other information like bad block is stored in the spare area.
-
-
-
-
-
-Regards,
-sriram
-
->
-> I am a begineer working on MTD driver. Please provide your
-> Valuable comments.
->
->
-> Regards,
-> -Sameer
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+-- 
+Bye, Peter Korsgaard
