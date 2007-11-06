@@ -1,19 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Ip2gm-0001Gi-70
-	for linux-mtd@lists.infradead.org; Mon, 05 Nov 2007 09:12:34 -0500
-Date: Mon, 5 Nov 2007 14:35:06 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-Subject: Re: MTD Size Limit
-Message-ID: <20071105133506.GB19232@lazybastard.org>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="jRHKVT23PllUwdXP"
-Content-Disposition: inline
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1IpIhf-0001be-1A
+	for linux-mtd@lists.infradead.org; Tue, 06 Nov 2007 02:18:33 -0500
+Message-ID: <47301455.4000803@nokia.com>
+Date: Tue, 06 Nov 2007 09:14:29 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: =?UTF-8?B?ZXh0IErDtnJuIEVuZ2Vs?= <joern@logfs.org>
+Subject: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+References: <472B0A3C.4010103@nokia.com>
+	<20071105132512.GA19232@lazybastard.org>
+	<472F2CB5.6090409@nokia.com>
+	<20071105162321.GA21533@lazybastard.org>
+In-Reply-To: <20071105162321.GA21533@lazybastard.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,53 +25,108 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+When an ECC error occurs, the read should be completed
+anyway before returning -EBADMSG.  Returning -EBADMSG
+straight away is incorrect.
 
---jRHKVT23PllUwdXP
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   32 ++++++++++++++++++++++----------
+ 1 files changed, 22 insertions(+), 10 deletions(-)
 
-On Wed, 31 October 2007 12:03:48 -0700, Johnson, Charles F wrote:
->=20
-> I hear about a size limit for the MTD layer due to a 32 bit size
-> variable. So is the limitation 4GBytes ??=20
-
-Possibly even less.  The usual bugs to watch out for is signed/unsigned
-usage and 4GiB (or 2GiB if signed) wrapping to 0 or -2GiB.  I wouldn't
-trust things beyond 1.9GiB or so without thorough code review and
-testing.
-
-> If you partition a device using UBI, is this limiation then per
-> partition or is it still over the entire device??
-
-Both.
-
-> Is there any effort to increase the limit.  Particularlly give the large
-> NAND flashes that are coming.
-
-I have seen patches, but not in a merge-worthy state.  And I just heard
-some people decided to ignore mtd and wrote drivers directly for YAFFS.
-
-If you want to get this done by a certain date you either have to do it
-yourself or pay someone.  As always.
-
-J=C3=B6rn
-
---=20
-He that composes himself is wiser than he that composes a book.
--- B. Franklin
-
---jRHKVT23PllUwdXP
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.1 (GNU/Linux)
-
-iD8DBQFHLxwKfbqVtkXfjukRAh0SAKCyccQkI7NBZ+I5y/h3jGTXQ6KYUQCg182r
-G1J6Mc/RrAp5lwv8oGvawzQ=
-=5vl5
------END PGP SIGNATURE-----
-
---jRHKVT23PllUwdXP--
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index dd28355..cedc154 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -855,6 +855,8 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+ 			this->command(mtd, ONENAND_CMD_READ, from, writesize);
+  			ret = this->wait(mtd, FL_READING);
+  			onenand_update_bufferram(mtd, from, !ret);
++			if (ret == -EBADMSG)
++				ret = 0;
+  		}
+  	}
+ 
+@@ -913,6 +915,8 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+  		/* Now wait for load */
+  		ret = this->wait(mtd, FL_READING);
+  		onenand_update_bufferram(mtd, from, !ret);
++		if (ret == -EBADMSG)
++			ret = 0;
+  	}
+ 
+ 	/*
+@@ -923,12 +927,12 @@ static int onenand_read_ops_nolock(struct mtd_info *mtd, loff_t from,
+ 	ops->retlen = read;
+ 	ops->oobretlen = oobread;
+ 
+-	if (mtd->ecc_stats.failed - stats.failed)
+-		return -EBADMSG;
+-
+ 	if (ret)
+ 		return ret;
+ 
++	if (mtd->ecc_stats.failed - stats.failed)
++		return -EBADMSG;
++
+ 	return mtd->ecc_stats.corrected - stats.corrected ? -EUCLEAN : 0;
+ }
+ 
+@@ -944,6 +948,7 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 			struct mtd_oob_ops *ops)
+ {
+ 	struct onenand_chip *this = mtd->priv;
++	struct mtd_ecc_stats stats;
+ 	int read = 0, thislen, column, oobsize;
+ 	size_t len = ops->ooblen;
+ 	mtd_oob_mode_t mode = ops->mode;
+@@ -977,6 +982,8 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 		return -EINVAL;
+ 	}
+ 
++	stats = mtd->ecc_stats;
++
+ 	while (read < len) {
+ 		cond_resched();
+ 
+@@ -988,18 +995,16 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 		onenand_update_bufferram(mtd, from, 0);
+ 
+ 		ret = this->wait(mtd, FL_READING);
+-		/* First copy data and check return value for ECC handling */
++		if (ret && ret != -EBADMSG) {
++			printk(KERN_ERR "onenand_read_oob_nolock: read failed = 0x%x\n", ret);
++			break;
++		}
+ 
+ 		if (mode == MTD_OOB_AUTO)
+ 			onenand_transfer_auto_oob(mtd, buf, column, thislen);
+ 		else
+ 			this->read_bufferram(mtd, ONENAND_SPARERAM, buf, column, thislen);
+ 
+-		if (ret) {
+-			printk(KERN_ERR "onenand_read_oob_nolock: read failed = 0x%x\n", ret);
+-			break;
+-		}
+-
+ 		read += thislen;
+ 
+ 		if (read == len)
+@@ -1016,7 +1021,14 @@ static int onenand_read_oob_nolock(struct mtd_info *mtd, loff_t from,
+ 	}
+ 
+ 	ops->oobretlen = read;
+-	return ret;
++
++	if (ret)
++		return ret;
++
++	if (mtd->ecc_stats.failed - stats.failed)
++		return -EBADMSG;
++
++	return 0;
+ }
+ 
+ /**
+-- 
+1.4.4.2
