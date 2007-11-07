@@ -1,20 +1,23 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IpjaD-0008In-4j
-	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 07:00:39 -0500
-Received: by wa-out-1112.google.com with SMTP id v33so2650590wah
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Nov 2007 04:00:27 -0800 (PST)
-Message-ID: <2563ac9e0711070400v82b344je142d46191254506@mail.gmail.com>
-Date: Wed, 7 Nov 2007 13:00:27 +0100
-From: "William Juul" <william.juul@datarespons.no>
-Sender: william.juul@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: nand_oob_128?
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+	id 1IplCi-0005xJ-Bh
+	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 08:44:31 -0500
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JR5002G125NNJC0@VL-MH-MR002.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 08:44:12 -0500 (EST)
+Date: Wed, 07 Nov 2007 08:44:11 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Alexander Belyakov <abelyako@googlemail.com>
+Subject: Re: [PATCH] [CFI] Prevent erase command invocation on suspended chip
+In-reply-to: <fe810cf0711070058obc3c3fdm4a34f956e5ff4a96@mail.gmail.com>
+Message-id: <alpine.LFD.0.9999.0711070843430.21255@xanadu.home>
+References: <fe810cf0711070058obc3c3fdm4a34f956e5ff4a96@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,43 +27,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We are working on two custom cards with large nand devices and could
-not find any implementation of nand_ecclayout for our HW in
-drivers/mtd/nand/nand_base.c
+On Wed, 7 Nov 2007, Alexander Belyakov wrote:
 
-I could not find any requirements for how this struct should be
-implemented, so I just tried with:
+> Hello,
+> 
+> while running stress tests we have met cfi_cmdset_0001.c driver issue.
+> Working on multipartitional devices with erase suspend on write
+> feature enabled it is possible to get erase operation invoked on chip
+> with suspended erase. get_chip() looses information about earlier
+> suspended erase and new erase operation gets issued. New erase
+> operations report successful completion, but blocks remain dirty
+> causing, for example, JFFS2 error messages like:
+> 
+> ...
+> Newly-erased block contained word 0x20031985 at offset 0x00200000
+> Newly-erased block contained word 0x20031985 at offset 0x00280000
+> Newly-erased block contained word 0x20031985 at offset 0x00240000
+> ...
+> 
+> 
+> The patch below fixes that issue.
+> 
+> Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
 
-static struct nand_ecclayout nand_oob_128 =3D {
-=09.eccbytes =3D 48,
-=09.eccpos =3D {
-=09=09    80,  81,  82,  83,  84,  85,  86,  87,
-=09=09    88,  89,  90,  91,  92,  93,  94,  95,
-=09=09    96,  97,  98,  99, 100, 101, 102, 103,
-=09=09   104, 105, 106, 107, 108, 109, 110, 111,
-=09=09   112, 113, 114, 115, 116, 117, 118, 119,
-=09=09   120, 121, 122, 123, 124, 125, 126, 127},
-=09.oobfree =3D {
-=09=09{.offset =3D 2,
-=09=09 .length =3D 78}}
-};
+Acked-by: Nicolas Pitre <nico@cam.org>
 
-Can anyone confirm the validity of this implementation or point me to
-information about how it should be implemented?
-Or better yet, provide me with the correct implementation :-)
 
-I will provide a patch once I feel comfortable with the validity of my
-implementation.
+> 
+> diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c
+> b/drivers/mtd/chips/cfi_cmdset_0001.c
+> --- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-06 11:40:24.000000000 +0300
+> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-06 20:37:03.000000000 +0300
+> @@ -795,6 +795,7 @@
+>  static int get_chip(struct map_info *map, struct flchip *chip,
+> unsigned long adr, int mode)
+>  {
+>  	int ret;
+> +	DECLARE_WAITQUEUE(wait, current);
+> 
+>   retry:
+>  	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
+> @@ -851,6 +852,20 @@
+>  			spin_unlock(contender->mutex);
+>  		}
+> 
+> +		/* Check if we already have suspended erase
+> +		 * on this chip. Sleep. */
+> +		if (mode == FL_ERASING && shared->erasing
+> +		    && shared->erasing->oldstate == FL_ERASING) {
+> +			spin_unlock(&shared->lock);
+> +			set_current_state(TASK_UNINTERRUPTIBLE);
+> +			add_wait_queue(&chip->wq, &wait);
+> +			spin_unlock(chip->mutex);
+> +			schedule();
+> +			remove_wait_queue(&chip->wq, &wait);
+> +			spin_lock(chip->mutex);
+> +			goto retry;
+> +		}
+> +
+>  		/* We now own it */
+>  		shared->writing = chip;
+>  		if (mode == FL_ERASING)
+> 
 
-Best regards
-William Juul
 
--------------------------------------------------
-William Juul, Senior Development Engineer
-Data Respons Norge AS
-Sandviksveien 26
-P.O. Box 489
-NO-1323 H=F8vik, Norway
-
-www.datarespons.no
--------------------------------------------------
+Nicolas
