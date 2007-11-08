@@ -1,20 +1,11 @@
-Received: from nz-out-0506.google.com ([64.233.162.224])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Ipy4P-0008Kf-W7
-	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:28:48 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so25086nzf
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Nov 2007 19:28:41 -0800 (PST)
-Message-ID: <6934efce0711071928j215693c5ybfd85f08f9732712@mail.gmail.com>
-Date: Wed, 7 Nov 2007 19:28:40 -0800
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 8/8] MTD: add physical address to point() api -- uclinux map
-	fix
+Message-ID: <29994799.1194503311737.JavaMail.root@web26>
+Date: Wed, 7 Nov 2007 22:28:31 -0800
+From: Online coordinator <info_noticedesk099@adelphia.net>
+Subject: Congratulations! Your E-mail Address Won In Our Sweepstakes.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Reply-To: claimsgnt3@yahoo.co.uk
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +15,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-dding the ability to get a physical address from point() in addition
-to virtual address.  This physical address will be required for axfs
-and cramfs with XIP.
 
-Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
-----
-diff --git a/drivers/mtd/maps/uclinux.c b/drivers/mtd/maps/uclinux.c
-index 14ffb1a..c42f4b8 100644
---- a/drivers/mtd/maps/uclinux.c
-+++ b/drivers/mtd/maps/uclinux.c
-@@ -40,10 +40,12 @@ struct mtd_partition uclinux_romfs[] = {
- /****************************************************************************/
-
- int uclinux_point(struct mtd_info *mtd, loff_t from, size_t len,
--	size_t *retlen, u_char **mtdbuf)
-+	size_t *retlen, void **virt, resource_size_t *phys)
- {
- 	struct map_info *map = mtd->priv;
--	*mtdbuf = (u_char *) (map->virt + ((int) from));
-+	*virt = map->virt + from;
-+	if (phys)
-+		*phys = map->phys + from;
- 	*retlen = len;
- 	return(0);
- }
+We happily announce to you the Draw (#679) of the UK NATIONAL LOTTERY=20
+held on the 7th November,2007.Your E-mail Address  attached to Ticket
+No.:03,10,21,25,29,49 Bonus No.20, Agent ID Number:110 won you a total=20
+sum of =C2=A31,750,000.00 POUNDS STERLING.
+Contact Mr. Anthony Flowers
+Claims and Release Order Department,
+Email:Email:claimsgntt1@yahoo.co.uk
+LONDON, UNITED KINGDOM
+Tel: +447024078607
+For claims validation.
+Yours Truly,
+Angelina Ashton.
+------------------
+The Lucky Dip facility uses special software to generate numbers at=20
+random and the programs are tested to make sure they are. As each line=20
+is generated independently, thus on some occasions one, two, or even=20
+more numbers may be repeated on the same ticket.
