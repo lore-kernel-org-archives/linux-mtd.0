@@ -1,15 +1,16 @@
-Received: from nz-out-0506.google.com ([64.233.162.226])
+Received: from wa-out-1112.google.com ([209.85.146.181])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IpxpW-0006tP-BL
-	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:13:24 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so22478nzf
+	id 1Ipxrv-00078g-Uo
+	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:15:54 -0500
+Received: by wa-out-1112.google.com with SMTP id v33so34408wah
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Nov 2007 19:13:14 -0800 (PST)
-Message-ID: <6934efce0711071913n4bdb74dbvbcf38c704b132e60@mail.gmail.com>
-Date: Wed, 7 Nov 2007 19:13:12 -0800
+	Wed, 07 Nov 2007 19:15:46 -0800 (PST)
+Message-ID: <6934efce0711071915n4fece86dj4c63a3effccd2023@mail.gmail.com>
+Date: Wed, 7 Nov 2007 19:15:46 -0800
 From: "Jared Hulbert" <jaredeh@gmail.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 1/8] MTD: add physical address to point() api -- core changes
+Subject: [PATCH 2/8] MTD: add physical address to point() api -- fixing
+	cfi_cmdset_0001
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -27,61 +28,65 @@ Adding the ability to get a physical address from point() in addition
 to virtual address.  This physical address will be required for axfs
 and cramfs with XIP.
 
+Fixes cfi_cmdset_0001 interface.
+
 Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
 ----
-diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
-index 6174a97..5f62018 100644
---- a/drivers/mtd/mtdpart.c
-+++ b/drivers/mtd/mtdpart.c
-@@ -68,7 +68,7 @@ static int part_read (struct mtd_info *mtd, loff_t
-from, size_t len,
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c
+b/drivers/mtd/chips/cfi_cmdset_0001.c
+index da851c2..a4ef81a 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -82,8 +82,8 @@ static struct mtd_info *cfi_intelext_setup (struct
+mtd_info *);
+ static int cfi_intelext_partition_fixup(struct mtd_info *, struct
+cfi_private **);
+
+ static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len,
+-		     size_t *retlen, u_char **mtdbuf);
+-static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr,
+loff_t from,
++		     size_t *retlen, void **virt, resource_size_t *phys);
++static void cfi_intelext_unpoint (struct mtd_info *mtd, loff_t from,
+ 			size_t len);
+
+ static int chip_ready (struct map_info *map, struct flchip *chip,
+unsigned long adr, int mode);
+@@ -1216,7 +1216,8 @@ static int do_point_onechip (struct map_info
+*map, struct flchip *chip, loff_t a
+ 	return ret;
  }
 
- static int part_point (struct mtd_info *mtd, loff_t from, size_t len,
--			size_t *retlen, u_char **buf)
-+			size_t *retlen, void **virt, resource_size_t *phys)
+-static int cfi_intelext_point (struct mtd_info *mtd, loff_t from,
+size_t len, size_t *retlen, u_char **mtdbuf)
++static int cfi_intelext_point (struct mtd_info *mtd, loff_t from,
+size_t len, size_t *retlen,
++		void **virt, resource_size_t *phys)
  {
- 	struct mtd_part *part = PART(mtd);
- 	if (from >= mtd->size)
-@@ -76,14 +76,14 @@ static int part_point (struct mtd_info *mtd,
-loff_t from, size_t len,
- 	else if (from + len > mtd->size)
- 		len = mtd->size - from;
- 	return part->master->point (part->master, from + part->offset,
--				    len, retlen, buf);
-+				    len, retlen, virt, phys);
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+@@ -1233,8 +1234,10 @@ static int cfi_intelext_point (struct mtd_info
+*mtd, loff_t from, size_t len, si
+ 	chipnum = (from >> cfi->chipshift);
+ 	ofs = from - (chipnum << cfi->chipshift);
+
+-	*mtdbuf = (void *)map->virt + cfi->chips[chipnum].start + ofs;
++	*virt = map->virt + cfi->chips[chipnum].start + ofs;
+ 	*retlen = 0;
++	if (phys)
++		*phys = map->phys + cfi->chips[chipnum].start + ofs;
+
+ 	while (len) {
+ 		unsigned long thislen;
+@@ -1267,7 +1270,7 @@ static int cfi_intelext_point (struct mtd_info
+*mtd, loff_t from, size_t len, si
+ 	return 0;
  }
 
--static void part_unpoint (struct mtd_info *mtd, u_char *addr, loff_t
-from, size_t len)
-+static void part_unpoint (struct mtd_info *mtd, loff_t from, size_t len)
+-static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr,
+loff_t from, size_t len)
++static void cfi_intelext_unpoint (struct mtd_info *mtd, loff_t from,
+size_t len)
  {
- 	struct mtd_part *part = PART(mtd);
-
--	part->master->unpoint (part->master, addr, from + part->offset, len);
-+	part->master->unpoint (part->master, from + part->offset, len);
- }
-
- static int part_read_oob(struct mtd_info *mtd, loff_t from,
-diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
-index 783fc98..041ce23 100644
---- a/include/linux/mtd/mtd.h
-+++ b/include/linux/mtd/mtd.h
-@@ -143,10 +143,12 @@ struct mtd_info {
- 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
-
- 	/* This stuff for eXecute-In-Place */
--	int (*point) (struct mtd_info *mtd, loff_t from, size_t len, size_t
-*retlen, u_char **mtdbuf);
-+	/* phys is optional and may be set to NULL */
-+	int (*point) (struct mtd_info *mtd, loff_t from, size_t len,
-+			size_t *retlen, void **virt, resource_size_t *phys);
-
- 	/* We probably shouldn't allow XIP if the unpoint isn't a NULL */
--	void (*unpoint) (struct mtd_info *mtd, u_char * addr, loff_t from,
-size_t len);
-+	void (*unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
-
-
- 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t
-*retlen, u_char *buf);
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
