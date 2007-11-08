@@ -1,16 +1,15 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
+Received: from nz-out-0506.google.com ([64.233.162.228])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Ipxrv-00078g-Uo
-	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:15:54 -0500
-Received: by wa-out-1112.google.com with SMTP id v33so34408wah
+	id 1IpxtW-0007Bt-Sq
+	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:17:33 -0500
+Received: by nz-out-0506.google.com with SMTP id z3so23177nzf
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 07 Nov 2007 19:15:46 -0800 (PST)
-Message-ID: <6934efce0711071915n4fece86dj4c63a3effccd2023@mail.gmail.com>
-Date: Wed, 7 Nov 2007 19:15:46 -0800
+	Wed, 07 Nov 2007 19:17:24 -0800 (PST)
+Message-ID: <6934efce0711071917r6e283960o1d35213cf83e1483@mail.gmail.com>
+Date: Wed, 7 Nov 2007 19:17:23 -0800
 From: "Jared Hulbert" <jaredeh@gmail.com>
 To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH 2/8] MTD: add physical address to point() api -- fixing
-	cfi_cmdset_0001
+Subject: [PATCH 3/8] MTD: add physical address to point() api -- jffs2 changes
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -28,65 +27,109 @@ Adding the ability to get a physical address from point() in addition
 to virtual address.  This physical address will be required for axfs
 and cramfs with XIP.
 
-Fixes cfi_cmdset_0001 interface.
-
 Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
 ----
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c
-b/drivers/mtd/chips/cfi_cmdset_0001.c
-index da851c2..a4ef81a 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -82,8 +82,8 @@ static struct mtd_info *cfi_intelext_setup (struct
-mtd_info *);
- static int cfi_intelext_partition_fixup(struct mtd_info *, struct
-cfi_private **);
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index a1db918..f6c6fe2 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -332,7 +332,7 @@ static int jffs2_block_check_erase(struct
+jffs2_sb_info *c, struct jffs2_erasebl
+ 	if (c->mtd->point) {
+ 		unsigned long *wordebuf;
 
- static int cfi_intelext_point (struct mtd_info *mtd, loff_t from, size_t len,
--		     size_t *retlen, u_char **mtdbuf);
--static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr,
-loff_t from,
-+		     size_t *retlen, void **virt, resource_size_t *phys);
-+static void cfi_intelext_unpoint (struct mtd_info *mtd, loff_t from,
- 			size_t len);
+-		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size, &retlen,
+(unsigned char **)&ebuf);
++		ret = c->mtd->point(c->mtd, jeb->offset, c->sector_size, &retlen,
+&ebuf, NULL);
+ 		if (ret) {
+ 			D1(printk(KERN_DEBUG "MTD point failed %d\n", ret));
+ 			goto do_flash_read;
+@@ -340,7 +340,7 @@ static int jffs2_block_check_erase(struct
+jffs2_sb_info *c, struct jffs2_erasebl
+ 		if (retlen < c->sector_size) {
+ 			/* Don't muck about if it won't let us point to the whole erase sector */
+ 			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n", retlen));
+-			c->mtd->unpoint(c->mtd, ebuf, jeb->offset, retlen);
++			c->mtd->unpoint(c->mtd, jeb->offset, retlen);
+ 			goto do_flash_read;
+ 		}
+ 		wordebuf = ebuf-sizeof(*wordebuf);
+@@ -349,7 +349,7 @@ static int jffs2_block_check_erase(struct
+jffs2_sb_info *c, struct jffs2_erasebl
+ 		   if (*++wordebuf != ~0)
+ 			   break;
+ 		} while(--retlen);
+-		c->mtd->unpoint(c->mtd, ebuf, jeb->offset, c->sector_size);
++		c->mtd->unpoint(c->mtd, jeb->offset, c->sector_size);
+ 		if (retlen)
+ 			printk(KERN_WARNING "Newly-erased block contained word 0x%lx at
+offset 0x%08tx\n",
+ 			       *wordebuf, jeb->offset + c->sector_size-retlen*sizeof(*wordebuf));
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 2eae5d2..d782ffa 100644
+--- a/fs/jffs2/readinode.c
++++ b/fs/jffs2/readinode.c
+@@ -62,10 +62,10 @@ static int check_node_data(struct jffs2_sb_info
+*c, struct jffs2_tmp_dnode_info
+ 	/* TODO: instead, incapsulate point() stuff to jffs2_flash_read(),
+ 	 * adding and jffs2_flash_read_end() interface. */
+ 	if (c->mtd->point) {
+-		err = c->mtd->point(c->mtd, ofs, len, &retlen, &buffer);
++		err = c->mtd->point(c->mtd, ofs, len, &retlen, (void **)&buffer, NULL);
+ 		if (!err && retlen < tn->csize) {
+ 			JFFS2_WARNING("MTD point returned len too short: %zu instead of
+%u.\n", retlen, tn->csize);
+-			c->mtd->unpoint(c->mtd, buffer, ofs, retlen);
++			c->mtd->unpoint(c->mtd, ofs, retlen);
+ 		} else if (err)
+ 			JFFS2_WARNING("MTD point failed: error code %d.\n", err);
+ 		else
+@@ -99,7 +99,7 @@ static int check_node_data(struct jffs2_sb_info *c,
+struct jffs2_tmp_dnode_info
+ 		kfree(buffer);
+ #ifndef __ECOS
+ 	else
+-		c->mtd->unpoint(c->mtd, buffer, ofs, len);
++		c->mtd->unpoint(c->mtd, ofs, len);
+ #endif
 
- static int chip_ready (struct map_info *map, struct flchip *chip,
-unsigned long adr, int mode);
-@@ -1216,7 +1216,8 @@ static int do_point_onechip (struct map_info
-*map, struct flchip *chip, loff_t a
- 	return ret;
+ 	if (crc != tn->data_crc) {
+@@ -135,7 +135,7 @@ free_out:
+ 		kfree(buffer);
+ #ifndef __ECOS
+ 	else
+-		c->mtd->unpoint(c->mtd, buffer, ofs, len);
++		c->mtd->unpoint(c->mtd, ofs, len);
+ #endif
+ 	return err;
  }
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 272872d..0b7edc8 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -97,11 +97,11 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 	size_t pointlen;
 
--static int cfi_intelext_point (struct mtd_info *mtd, loff_t from,
-size_t len, size_t *retlen, u_char **mtdbuf)
-+static int cfi_intelext_point (struct mtd_info *mtd, loff_t from,
-size_t len, size_t *retlen,
-+		void **virt, resource_size_t *phys)
- {
- 	struct map_info *map = mtd->priv;
- 	struct cfi_private *cfi = map->fldrv_priv;
-@@ -1233,8 +1234,10 @@ static int cfi_intelext_point (struct mtd_info
-*mtd, loff_t from, size_t len, si
- 	chipnum = (from >> cfi->chipshift);
- 	ofs = from - (chipnum << cfi->chipshift);
-
--	*mtdbuf = (void *)map->virt + cfi->chips[chipnum].start + ofs;
-+	*virt = map->virt + cfi->chips[chipnum].start + ofs;
- 	*retlen = 0;
-+	if (phys)
-+		*phys = map->phys + cfi->chips[chipnum].start + ofs;
-
- 	while (len) {
- 		unsigned long thislen;
-@@ -1267,7 +1270,7 @@ static int cfi_intelext_point (struct mtd_info
-*mtd, loff_t from, size_t len, si
- 	return 0;
- }
-
--static void cfi_intelext_unpoint (struct mtd_info *mtd, u_char *addr,
-loff_t from, size_t len)
-+static void cfi_intelext_unpoint (struct mtd_info *mtd, loff_t from,
-size_t len)
- {
- 	struct map_info *map = mtd->priv;
- 	struct cfi_private *cfi = map->fldrv_priv;
+ 	if (c->mtd->point) {
+-		ret = c->mtd->point (c->mtd, 0, c->mtd->size, &pointlen, &flashbuf);
++		ret = c->mtd->point(c->mtd, 0, c->mtd->size, &pointlen, (void
+**)&flashbuf, NULL);
+ 		if (!ret && pointlen < c->mtd->size) {
+ 			/* Don't muck about if it won't let us point to the whole flash */
+ 			D1(printk(KERN_DEBUG "MTD point returned len too short: 0x%zx\n",
+pointlen));
+-			c->mtd->unpoint(c->mtd, flashbuf, 0, pointlen);
++			c->mtd->unpoint(c->mtd, 0, pointlen);
+ 			flashbuf = NULL;
+ 		}
+ 		if (ret)
+@@ -267,7 +267,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
+ 		kfree(flashbuf);
+ #ifndef __ECOS
+ 	else
+-		c->mtd->unpoint(c->mtd, flashbuf, 0, c->mtd->size);
++		c->mtd->unpoint(c->mtd, 0, c->mtd->size);
+ #endif
+ 	if (s)
+ 		kfree(s);
