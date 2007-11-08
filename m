@@ -1,19 +1,23 @@
-Received: from nz-out-0506.google.com ([64.233.162.236])
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Iq9nh-0007FX-4U
-	for linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 11:00:19 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so170696nzf
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 08 Nov 2007 08:00:11 -0800 (PST)
-Message-ID: <ad7e75d70711080800q33da2128ga94ed0af22d05821@mail.gmail.com>
-Date: Thu, 8 Nov 2007 18:00:09 +0200
-From: navigator.atreides@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: user space utility to count NAND bad block
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1IqANS-0000xx-4I
+	for linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 11:37:16 -0500
+Subject: RE: sync() takes minutes while erasing
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1186578369.8266.2.camel@gentoo-jocke.transmode.se>
+References: <001901c7b9b6$81e76340$0e67a8c0@Jocke>
+	<1183057362.1170.194.camel@pmac.infradead.org>
+	<1183381086.20673.132.camel@gentoo-jocke.transmode.se>
+	<1186417135.27312.18.camel@gentoo-jocke.transmode.se>
+	<1186578369.8266.2.camel@gentoo-jocke.transmode.se>
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Date: Thu, 08 Nov 2007 17:37:07 +0100
+Message-Id: <1194539828.4029.1.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: 'Linux MTD mailing list' <linux-mtd@lists.infradead.org>
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I want to count number of the bad blocks on the nand device, so being
-inspired by ~/mtd/util/flash_eraseall.c I use follow call
+On Wed, 2007-08-08 at 15:06 +0200, Joakim Tjernlund wrote:
+> On Mon, 2007-08-06 at 18:18 +0200, Joakim Tjernlund wrote:
+> > On Mon, 2007-07-02 at 14:58 +0200, Joakim Tjernlund wrote:
+> > > On Thu, 2007-06-28 at 20:02 +0100, David Woodhouse wrote:
+> > > > On Thu, 2007-06-28 at 20:59 +0200, Joakim Tjernlund wrote:
+> > > > > Thanks, this stop the complaints from the test team. They
+> > > > > don't like to wait a few mins every time they delete an old install
+> > > > > and reboot.
+> > > > 
+> > > > This is what the rest of us use 'flash_eraseall -j' for, btw :)
+> > > > 
+> > > > But I'll look into it. If we can do the erases from some other context
+> > > > it would be nice. Although pdflush_operation() doesn't seem to give us
+> > > > any way to _stop_ a pending call if we unmount.
+> 
+> hmm, can't jffs2_erase_pending_blocks() see if a unmount is in progress
+> and if so, stop erasing blocks? 
 
-int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
+Any hints on the "unmount is in progress" idea? I have a few
+hours to spare for this ATM.
 
-as badness measure for block ( if (ret > 0) ).
+  Jocke
 
-Could you please point me out if I'm in the right direction?
-
-Thank you in advance!
-Valentine R.
-
-p.s. scratch code is below
-
-
-
-int main(int argc, char *argv[])
-{
-    int md_fd;
-    int iNumOfBadBlocks = 0;
-    mtd_info_t  mtd_meminfo;
-
-    ...
-
-    // open & get meminfo for "/dev/mtd4"
-    if ((md_fd = open(mtd_device, O_RDONLY)) < 0) {
-        printf("\n\n%s: %s: %s\n", exe_name, mtd4_device, strerror(errno));
-        exit(1);
-    }
-
-    if (ioctl(md_fd, MEMGETINFO, &mtd_meminfo) != 0) {
-        printf("\n\n%s: %s: unable to get MTD device info\n",
-exe_name, mtd4_device);
-        exit(1);
-    }
-    iNumOfBadBlocks = get_bb_number( md_fd, mtd_meminfo);
-    printf("Number of the bad blocks is %d\n", iNumOfBadBlocks);
-    return 0;
-}
-
- int get_bb_number(int fd, const mtd_info_t *meminfo)
-{
-    int isNAND = meminfo->type == MTD_NANDFLASH ? 1 : 0;
-    int ibbCounter = 0;
-    erase_info_t erase;
-    erase.length = meminfo->erasesize;
-
-    for (erase.start = 0;
-         erase.start < meminfo->size;
-         erase.start += meminfo->erasesize)
-    {
-
-        loff_t offset = erase.start;
-        int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
-        if (ret > 0)
-        {
-            ibbCounter++;
-            continue;
-        }
-        else if (ret < 0)
-        {
-            if (errno == EOPNOTSUPP)
-            {
-                if (isNAND)
-                {
-                    printf("\n\n%s: %s: Bad block check not
-available\n", exe_name, mtd4_device);
-                    exit(1);
-                }
-            }
-            else
-            {
-                printf("\n%s: %s: MTD get bad block failed: %s\n",
-exe_name, mtd4_device, strerror(errno));
-                exit(1);
-            }
-        }
-    }
-
-    return ibbCounter;
-}
+> 
+> > > > 
+> > > 
+> > > hmm, can't you make so that pdflush_operation() just erases one
+> > > block at a time? Then the longest you have to wait is just
+> > > the time it takes to finish one EB.
+> > > 
+> > >  Jocke
+> > 
+> > Hi David
+> > 
+> > Had any time to think on the above?
+> > 
+> >    Jocke
+> > 
+> > ______________________________________________________
+> > Linux MTD discussion mailing list
+> > http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> > 
+> > 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
+> 
