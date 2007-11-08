@@ -1,23 +1,19 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from nz-out-0506.google.com ([64.233.162.226])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IplCi-0005xJ-Bh
-	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 08:44:31 -0500
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0JR5002G125NNJC0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 08:44:12 -0500 (EST)
-Date: Wed, 07 Nov 2007 08:44:11 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Alexander Belyakov <abelyako@googlemail.com>
-Subject: Re: [PATCH] [CFI] Prevent erase command invocation on suspended chip
-In-reply-to: <fe810cf0711070058obc3c3fdm4a34f956e5ff4a96@mail.gmail.com>
-Message-id: <alpine.LFD.0.9999.0711070843430.21255@xanadu.home>
-References: <fe810cf0711070058obc3c3fdm4a34f956e5ff4a96@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1IpxpW-0006tP-BL
+	for linux-mtd@lists.infradead.org; Wed, 07 Nov 2007 22:13:24 -0500
+Received: by nz-out-0506.google.com with SMTP id z3so22478nzf
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 07 Nov 2007 19:13:14 -0800 (PST)
+Message-ID: <6934efce0711071913n4bdb74dbvbcf38c704b132e60@mail.gmail.com>
+Date: Wed, 7 Nov 2007 19:13:12 -0800
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH 1/8] MTD: add physical address to point() api -- core changes
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,68 +23,65 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 7 Nov 2007, Alexander Belyakov wrote:
+Adding the ability to get a physical address from point() in addition
+to virtual address.  This physical address will be required for axfs
+and cramfs with XIP.
 
-> Hello,
-> 
-> while running stress tests we have met cfi_cmdset_0001.c driver issue.
-> Working on multipartitional devices with erase suspend on write
-> feature enabled it is possible to get erase operation invoked on chip
-> with suspended erase. get_chip() looses information about earlier
-> suspended erase and new erase operation gets issued. New erase
-> operations report successful completion, but blocks remain dirty
-> causing, for example, JFFS2 error messages like:
-> 
-> ...
-> Newly-erased block contained word 0x20031985 at offset 0x00200000
-> Newly-erased block contained word 0x20031985 at offset 0x00280000
-> Newly-erased block contained word 0x20031985 at offset 0x00240000
-> ...
-> 
-> 
-> The patch below fixes that issue.
-> 
-> Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
+Signed-off-by: Jared Hulbert <jaredeh@gmail.com>
+----
+diff --git a/drivers/mtd/mtdpart.c b/drivers/mtd/mtdpart.c
+index 6174a97..5f62018 100644
+--- a/drivers/mtd/mtdpart.c
++++ b/drivers/mtd/mtdpart.c
+@@ -68,7 +68,7 @@ static int part_read (struct mtd_info *mtd, loff_t
+from, size_t len,
+ }
 
-Acked-by: Nicolas Pitre <nico@cam.org>
+ static int part_point (struct mtd_info *mtd, loff_t from, size_t len,
+-			size_t *retlen, u_char **buf)
++			size_t *retlen, void **virt, resource_size_t *phys)
+ {
+ 	struct mtd_part *part = PART(mtd);
+ 	if (from >= mtd->size)
+@@ -76,14 +76,14 @@ static int part_point (struct mtd_info *mtd,
+loff_t from, size_t len,
+ 	else if (from + len > mtd->size)
+ 		len = mtd->size - from;
+ 	return part->master->point (part->master, from + part->offset,
+-				    len, retlen, buf);
++				    len, retlen, virt, phys);
+ }
 
+-static void part_unpoint (struct mtd_info *mtd, u_char *addr, loff_t
+from, size_t len)
++static void part_unpoint (struct mtd_info *mtd, loff_t from, size_t len)
+ {
+ 	struct mtd_part *part = PART(mtd);
 
-> 
-> diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c
-> b/drivers/mtd/chips/cfi_cmdset_0001.c
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-06 11:40:24.000000000 +0300
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-06 20:37:03.000000000 +0300
-> @@ -795,6 +795,7 @@
->  static int get_chip(struct map_info *map, struct flchip *chip,
-> unsigned long adr, int mode)
->  {
->  	int ret;
-> +	DECLARE_WAITQUEUE(wait, current);
-> 
->   retry:
->  	if (chip->priv && (mode == FL_WRITING || mode == FL_ERASING
-> @@ -851,6 +852,20 @@
->  			spin_unlock(contender->mutex);
->  		}
-> 
-> +		/* Check if we already have suspended erase
-> +		 * on this chip. Sleep. */
-> +		if (mode == FL_ERASING && shared->erasing
-> +		    && shared->erasing->oldstate == FL_ERASING) {
-> +			spin_unlock(&shared->lock);
-> +			set_current_state(TASK_UNINTERRUPTIBLE);
-> +			add_wait_queue(&chip->wq, &wait);
-> +			spin_unlock(chip->mutex);
-> +			schedule();
-> +			remove_wait_queue(&chip->wq, &wait);
-> +			spin_lock(chip->mutex);
-> +			goto retry;
-> +		}
-> +
->  		/* We now own it */
->  		shared->writing = chip;
->  		if (mode == FL_ERASING)
-> 
+-	part->master->unpoint (part->master, addr, from + part->offset, len);
++	part->master->unpoint (part->master, from + part->offset, len);
+ }
+
+ static int part_read_oob(struct mtd_info *mtd, loff_t from,
+diff --git a/include/linux/mtd/mtd.h b/include/linux/mtd/mtd.h
+index 783fc98..041ce23 100644
+--- a/include/linux/mtd/mtd.h
++++ b/include/linux/mtd/mtd.h
+@@ -143,10 +143,12 @@ struct mtd_info {
+ 	int (*erase) (struct mtd_info *mtd, struct erase_info *instr);
+
+ 	/* This stuff for eXecute-In-Place */
+-	int (*point) (struct mtd_info *mtd, loff_t from, size_t len, size_t
+*retlen, u_char **mtdbuf);
++	/* phys is optional and may be set to NULL */
++	int (*point) (struct mtd_info *mtd, loff_t from, size_t len,
++			size_t *retlen, void **virt, resource_size_t *phys);
+
+ 	/* We probably shouldn't allow XIP if the unpoint isn't a NULL */
+-	void (*unpoint) (struct mtd_info *mtd, u_char * addr, loff_t from,
+size_t len);
++	void (*unpoint) (struct mtd_info *mtd, loff_t from, size_t len);
 
 
-Nicolas
+ 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t
+*retlen, u_char *buf);
