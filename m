@@ -1,12 +1,12 @@
 Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqTJa-0003tM-Md
-	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 07:50:32 -0500
+	id 1IqTZg-0005oU-5q
+	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 08:07:10 -0500
 From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 To: linux-mtd@lists.infradead.org
 Subject: [PATCH] [JFFS2] Stop erasing blocks when rebooting.
-Date: Fri,  9 Nov 2007 13:50:25 +0100
-Message-Id: <1194612625-28206-1-git-send-email-Joakim.Tjernlund@transmode.se>
+Date: Fri,  9 Nov 2007 14:06:58 +0100
+Message-Id: <1194613618-29133-1-git-send-email-Joakim.Tjernlund@transmode.se>
 Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,13 +26,14 @@ flags MS_RDONLY and MS_ACTIVE while erasing.
 
 Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
 ---
-Not sure if this the correct way to do this, hints welcome.
- fs/jffs2/erase.c |    7 +++++++
+Oops, previous patch was missing a spin_unlock().
+
+ fs/jffs2/erase.c |    8 ++++++++
  fs/jffs2/fs.c    |   11 ++++++++++-
- 2 files changed, 17 insertions(+), 1 deletions(-)
+ 2 files changed, 18 insertions(+), 1 deletions(-)
 
 diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index a1db918..ad9dec5 100644
+index a1db918..ec95a28 100644
 --- a/fs/jffs2/erase.c
 +++ b/fs/jffs2/erase.c
 @@ -106,6 +106,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
@@ -43,11 +44,12 @@ index a1db918..ad9dec5 100644
  
  	down(&c->erase_free_sem);
  
-@@ -114,6 +115,12 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
+@@ -114,6 +115,13 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
  	while (!list_empty(&c->erase_complete_list) ||
  	       !list_empty(&c->erase_pending_list)) {
  
 +		if ((sb->s_flags & MS_RDONLY) || !(sb->s_flags & MS_ACTIVE)) {
++			spin_unlock(&c->erase_completion_lock);
 +			up(&c->erase_free_sem);
 +			D1(printk(KERN_DEBUG "FS readonly/inactive. "
 +				  "jffs2_erase_pending_blocks leaving\n"));
