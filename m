@@ -1,19 +1,12 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqRVz-0002Fs-15
-	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 05:55:13 -0500
-Received: by wa-out-1112.google.com with SMTP id v33so539816wah
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 09 Nov 2007 02:55:03 -0800 (PST)
-Message-ID: <ad7e75d70711090255w1da7470fg519dd73be4bd2b3c@mail.gmail.com>
-Date: Fri, 9 Nov 2007 12:55:03 +0200
-From: navigator.atreides@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: How to count NAND bad block from user space?
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Message-ID: <21264035.1194610514789.JavaMail.root@elwamui-muscovy.atl.sa.earthlink.net>
+Date: Fri, 9 Nov 2007 04:15:14 -0800 (GMT-08:00)
+From: Dr James <drkotey_occ@earthlink.net>
+To: drkotey_occ@earthlink.net
+Subject: Dear Friend,
+Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Reply-To: Dr James <jameskotey2003@yahoo.co.in>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,84 +16,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I want to count number of the bad blocks on the nand device, so being
-inspired by ~/mtd/util/flash_eraseall.c I used follow call
+Dear Friend,
+ 
+On behalf of the board and management of Overseas Credit Commission(OCC).London UK, I Dr. James Kotey Operations Manager wishes to inform you that your Consignment/fund tagged diplomatic luggage 122 with  Ref: No1226/X42/206 which was deposited in our vault for safe keeping by a Diplomatic courier company(Global) is due for immediate collection. Be Informed that we have concluded all arrangements to deliver your consignment at your doorstep through diplomatic means. In line with the binding diplomatic consignment delivery policies, kindly furnish us with the following as set forth.
+ 
+A copy of your international passport or any other means of identification as the true consignee. The address where the above cargo/funds should be delivered to and your phone number. List the nearest international airport to your address location.
+ 
+Meanwhile, we urge you to treat the above requirement with utmost urgency to enable us dispense our duties and obligation accordingly thereby allowing us to serve you in a timely fashion. Upon satisfactory receipt of All the above mentioned, you Will be further acquainted with the detailed delivery itinerary including information of the diplomat who will accompany your consignment. 
 
-int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
-
-as badness measure for block ( if (ret > 0) ).
-
-Could you please point me out if I'm on the right way?
-
-Thank you in advance!
-Valentine R.
-
-p.s. scratch code is below
-
-
-
-int main(int argc, char *argv[])
-{
-    int md_fd;
-    int iNumOfBadBlocks = 0;
-    mtd_info_t  mtd_meminfo;
-
-    ...
-
-    // open & get meminfo for "/dev/mtd4"
-    if ((md_fd = open(mtd_device, O_RDONLY)) < 0) {
-        printf("\n\n%s: %s: %s\n", exe_name, mtd4_device, strerror(errno));
-        exit(1);
-    }
-
-    if (ioctl(md_fd, MEMGETINFO, &mtd_meminfo) != 0) {
-        printf("\n\n%s: %s: unable to get MTD device info\n",
-exe_name, mtd4_device);
-        exit(1);
-    }
-    iNumOfBadBlocks = get_bb_number( md_fd, mtd_meminfo);
-    printf("Number of the bad blocks is %d\n", iNumOfBadBlocks);
-    return 0;
-}
-
- int get_bb_number(int fd, const mtd_info_t *meminfo)
-{
-    int isNAND = meminfo->type == MTD_NANDFLASH ? 1 : 0;
-    int ibbCounter = 0;
-    erase_info_t erase;
-    erase.length = meminfo->erasesize;
-
-    for (erase.start = 0;
-         erase.start < meminfo->size;
-         erase.start += meminfo->erasesize)
-    {
-
-        loff_t offset = erase.start;
-        int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
-        if (ret > 0)
-        {
-            ibbCounter++;
-            continue;
-        }
-        else if (ret < 0)
-        {
-            if (errno == EOPNOTSUPP)
-            {
-                if (isNAND)
-                {
-                    printf("\n\n%s: %s: Bad block check not
-available\n", exe_name, mtd4_device);
-                    exit(1);
-                }
-            }
-            else
-            {
-                printf("\n%s: %s: MTD get bad block failed: %s\n",
-exe_name, mtd4_device, strerror(errno));
-                exit(1);
-            }
-        }
-    }
-
-    return ibbCounter;
-}
+As always, feel very free to contact us should you have any further question as our customer's rights are continuou sly protected.We pledge our best service at all times
+ 
+Yours Sincerely
+Dr. James Kotey.
+Foreign Operations Manager
