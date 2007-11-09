@@ -1,13 +1,18 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqTZg-0005oU-5q
-	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 08:07:10 -0500
-From: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [JFFS2] Stop erasing blocks when rebooting.
-Date: Fri,  9 Nov 2007 14:06:58 +0100
-Message-Id: <1194613618-29133-1-git-send-email-Joakim.Tjernlund@transmode.se>
-Cc: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
+Received: from smtp.nokia.com ([131.228.20.173] helo=mgw-ext14.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
+	id 1IqUnw-0004wS-Uy
+	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 09:25:59 -0500
+Message-ID: <47346CE1.5020209@nokia.com>
+Date: Fri, 09 Nov 2007 16:21:21 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+Subject: Re: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+References: <47301505.60006@nokia.com>
+	<002001c8204e$c71577f0$e1ac580a@swcenter.sec.samsung.co.kr>
+In-Reply-To: <002001c8204e$c71577f0$e1ac580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -17,82 +22,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Rebooting shortly after deleting lots of big files
-makes the reboot hang until all blocks has been erased,
-which can take minutes if there are lots of blocks to erase.
-This addresses the issue by moving the erasing to
-pdflush_operation context and testing for the superblock
-flags MS_RDONLY and MS_ACTIVE while erasing.
+ext Kyungmin Park wrote:
+>> Subject: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+>>
+>> When an ECC error occurs, the read should be completed
+>> anyway before returning -EBADMSG.  Returning -EBADMSG
+>> straight away is incorrect.
+>>
+>> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+> Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+> 
 
-Signed-off-by: Joakim Tjernlund <Joakim.Tjernlund@transmode.se>
----
-Oops, previous patch was missing a spin_unlock().
-
- fs/jffs2/erase.c |    8 ++++++++
- fs/jffs2/fs.c    |   11 ++++++++++-
- 2 files changed, 18 insertions(+), 1 deletions(-)
-
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index a1db918..ec95a28 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -106,6 +106,7 @@ static void jffs2_erase_block(struct jffs2_sb_info *c,
- void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- {
- 	struct jffs2_eraseblock *jeb;
-+	struct super_block *sb = OFNI_BS_2SFFJ(c);
- 
- 	down(&c->erase_free_sem);
- 
-@@ -114,6 +115,13 @@ void jffs2_erase_pending_blocks(struct jffs2_sb_info *c, int count)
- 	while (!list_empty(&c->erase_complete_list) ||
- 	       !list_empty(&c->erase_pending_list)) {
- 
-+		if ((sb->s_flags & MS_RDONLY) || !(sb->s_flags & MS_ACTIVE)) {
-+			spin_unlock(&c->erase_completion_lock);
-+			up(&c->erase_free_sem);
-+			D1(printk(KERN_DEBUG "FS readonly/inactive. "
-+				  "jffs2_erase_pending_blocks leaving\n"));
-+			goto done;
-+		}
- 		if (!list_empty(&c->erase_complete_list)) {
- 			jeb = list_entry(c->erase_complete_list.next, struct jffs2_eraseblock, list);
- 			list_del(&jeb->list);
-diff --git a/fs/jffs2/fs.c b/fs/jffs2/fs.c
-index ed85f9a..f102607 100644
---- a/fs/jffs2/fs.c
-+++ b/fs/jffs2/fs.c
-@@ -13,6 +13,7 @@
- #include <linux/kernel.h>
- #include <linux/sched.h>
- #include <linux/fs.h>
-+#include <linux/writeback.h>	/* for erasing blocks */
- #include <linux/list.h>
- #include <linux/mtd/mtd.h>
- #include <linux/pagemap.h>
-@@ -385,6 +386,14 @@ int jffs2_remount_fs (struct super_block *sb, int *flags, char *data)
- 	return 0;
- }
- 
-+void do_start_erase(unsigned long sb_arg)
-+{
-+	struct super_block *sb = (struct super_block *) sb_arg;
-+	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-+
-+	jffs2_erase_pending_blocks(c, 0);
-+}
-+
- void jffs2_write_super (struct super_block *sb)
- {
- 	struct jffs2_sb_info *c = JFFS2_SB_INFO(sb);
-@@ -395,7 +404,7 @@ void jffs2_write_super (struct super_block *sb)
- 
- 	D1(printk(KERN_DEBUG "jffs2_write_super()\n"));
- 	jffs2_garbage_collect_trigger(c);
--	jffs2_erase_pending_blocks(c, 0);
-+	pdflush_operation(do_start_erase, (unsigned long)sb);
- 	jffs2_flush_wbuf_gc(c, 0);
- }
- 
--- 
-1.5.3.4
+Please apply :-)
