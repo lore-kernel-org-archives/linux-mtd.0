@@ -1,31 +1,19 @@
-Received: from e34.co.us.ibm.com ([32.97.110.152])
-	by bombadil.infradead.org with esmtps (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqIiI-00052G-CE
-	for linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 20:31:21 -0500
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e34.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id lA91V0FT015855
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Nov 2007 20:31:00 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.5) with ESMTP id
-	lA91V0ZH126320
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Nov 2007 18:31:00 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	lA91UxRm027875
-	for <linux-mtd@lists.infradead.org>; Thu, 8 Nov 2007 18:30:59 -0700
-Date: Thu, 8 Nov 2007 19:30:51 -0600
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Justin Treon <justin_treon@yahoo.com>
-Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on
-	power up
-Message-ID: <20071108193051.5a69cd60@zod.rchland.ibm.com>
-In-Reply-To: <752503.63551.qm@web43139.mail.sp1.yahoo.com>
-References: <752503.63551.qm@web43139.mail.sp1.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from wa-out-1112.google.com ([209.85.146.181])
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1IqRVz-0002Fs-15
+	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 05:55:13 -0500
+Received: by wa-out-1112.google.com with SMTP id v33so539816wah
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 09 Nov 2007 02:55:03 -0800 (PST)
+Message-ID: <ad7e75d70711090255w1da7470fg519dd73be4bd2b3c@mail.gmail.com>
+Date: Fri, 9 Nov 2007 12:55:03 +0200
+From: navigator.atreides@gmail.com
+To: linux-mtd@lists.infradead.org
+Subject: How to count NAND bad block from user space?
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,12 +23,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 8 Nov 2007 16:03:40 -0800 (PST)
-Justin Treon <justin_treon@yahoo.com> wrote:
+I want to count number of the bad blocks on the nand device, so being
+inspired by ~/mtd/util/flash_eraseall.c I used follow call
 
-> Adding the ability to unlocking all Intel flash that is locked on power up. 
-> Currently only Intel P30 flash is unlocked.  All Intel flash is locked on power up.
+int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
 
-Um, it most certainly is not.
+as badness measure for block ( if (ret > 0) ).
 
-josh
+Could you please point me out if I'm on the right way?
+
+Thank you in advance!
+Valentine R.
+
+p.s. scratch code is below
+
+
+
+int main(int argc, char *argv[])
+{
+    int md_fd;
+    int iNumOfBadBlocks = 0;
+    mtd_info_t  mtd_meminfo;
+
+    ...
+
+    // open & get meminfo for "/dev/mtd4"
+    if ((md_fd = open(mtd_device, O_RDONLY)) < 0) {
+        printf("\n\n%s: %s: %s\n", exe_name, mtd4_device, strerror(errno));
+        exit(1);
+    }
+
+    if (ioctl(md_fd, MEMGETINFO, &mtd_meminfo) != 0) {
+        printf("\n\n%s: %s: unable to get MTD device info\n",
+exe_name, mtd4_device);
+        exit(1);
+    }
+    iNumOfBadBlocks = get_bb_number( md_fd, mtd_meminfo);
+    printf("Number of the bad blocks is %d\n", iNumOfBadBlocks);
+    return 0;
+}
+
+ int get_bb_number(int fd, const mtd_info_t *meminfo)
+{
+    int isNAND = meminfo->type == MTD_NANDFLASH ? 1 : 0;
+    int ibbCounter = 0;
+    erase_info_t erase;
+    erase.length = meminfo->erasesize;
+
+    for (erase.start = 0;
+         erase.start < meminfo->size;
+         erase.start += meminfo->erasesize)
+    {
+
+        loff_t offset = erase.start;
+        int ret = ioctl(fd, MEMGETBADBLOCK, &offset);
+        if (ret > 0)
+        {
+            ibbCounter++;
+            continue;
+        }
+        else if (ret < 0)
+        {
+            if (errno == EOPNOTSUPP)
+            {
+                if (isNAND)
+                {
+                    printf("\n\n%s: %s: Bad block check not
+available\n", exe_name, mtd4_device);
+                    exit(1);
+                }
+            }
+            else
+            {
+                printf("\n%s: %s: MTD get bad block failed: %s\n",
+exe_name, mtd4_device, strerror(errno));
+                exit(1);
+            }
+        }
+    }
+
+    return ibbCounter;
+}
