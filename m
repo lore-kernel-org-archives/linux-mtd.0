@@ -1,12 +1,21 @@
-Message-ID: <21264035.1194610514789.JavaMail.root@elwamui-muscovy.atl.sa.earthlink.net>
-Date: Fri, 9 Nov 2007 04:15:14 -0800 (GMT-08:00)
-From: Dr James <drkotey_occ@earthlink.net>
-To: drkotey_occ@earthlink.net
-Subject: Dear Friend,
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Reply-To: Dr James <jameskotey2003@yahoo.co.in>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
+	id 1IqT68-0005OT-Rv
+	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 12:36:36 +0000
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	lA9CaISR001261
+	for <linux-mtd@lists.infradead.org>; Fri, 9 Nov 2007 13:36:18 +0100
+Date: Fri, 9 Nov 2007 13:36:05 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: Re: How to count NAND bad block from user space?
+In-Reply-To: <ad7e75d70711090255w1da7470fg519dd73be4bd2b3c@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0711091335290.523@lnxricardw.se.axis.com>
+References: <ad7e75d70711090255w1da7470fg519dd73be4bd2b3c@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,16 +25,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Friend,
- 
-On behalf of the board and management of Overseas Credit Commission(OCC).London UK, I Dr. James Kotey Operations Manager wishes to inform you that your Consignment/fund tagged diplomatic luggage 122 with  Ref: No1226/X42/206 which was deposited in our vault for safe keeping by a Diplomatic courier company(Global) is due for immediate collection. Be Informed that we have concluded all arrangements to deliver your consignment at your doorstep through diplomatic means. In line with the binding diplomatic consignment delivery policies, kindly furnish us with the following as set forth.
- 
-A copy of your international passport or any other means of identification as the true consignee. The address where the above cargo/funds should be delivered to and your phone number. List the nearest international airport to your address location.
- 
-Meanwhile, we urge you to treat the above requirement with utmost urgency to enable us dispense our duties and obligation accordingly thereby allowing us to serve you in a timely fashion. Upon satisfactory receipt of All the above mentioned, you Will be further acquainted with the detailed delivery itinerary including information of the diplomat who will accompany your consignment. 
 
-As always, feel very free to contact us should you have any further question as our customer's rights are continuou sly protected.We pledge our best service at all times
- 
-Yours Sincerely
-Dr. James Kotey.
-Foreign Operations Manager
+On Fri, 9 Nov 2007, navigator.atreides@gmail.com wrote:
+
+> I want to count number of the bad blocks on the nand device, so being
+> inspired by ~/mtd/util/flash_eraseall.c I used follow call
+>
+> int ret =3D ioctl(fd, MEMGETBADBLOCK, &offset);
+>
+> as badness measure for block ( if (ret > 0) ).
+>
+> Could you please point me out if I'm on the right way?
+> ...
+
+Without having tried the code, looks good to me.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
