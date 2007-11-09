@@ -1,15 +1,24 @@
-Received: from web43139.mail.sp1.yahoo.com ([216.252.121.69])
-	by bombadil.infradead.org with smtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqHLd-0000A0-LK
-	for linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 19:03:52 -0500
-Date: Thu, 8 Nov 2007 16:03:40 -0800 (PST)
-From: Justin Treon <justin_treon@yahoo.com>
-Subject: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on power up
-To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <752503.63551.qm@web43139.mail.sp1.yahoo.com>
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
+	id 1IqI5i-0002pZ-MJ
+	for linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 19:51:29 -0500
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JR7008XVRPBCJI1@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 08 Nov 2007 19:51:11 -0500 (EST)
+Date: Thu, 08 Nov 2007 19:51:11 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Justin Treon <justin_treon@yahoo.com>
+Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on power
+	up
+In-reply-to: <752503.63551.qm@web43139.mail.sp1.yahoo.com>
+Message-id: <alpine.LFD.0.9999.0711081950250.21255@xanadu.home>
+References: <752503.63551.qm@web43139.mail.sp1.yahoo.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,25 +28,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Adding the ability to unlocking all Intel flash that is locked on power up. 
-Currently only Intel P30 flash is unlocked.  All Intel flash is locked on power up.
+On Thu, 8 Nov 2007, Justin Treon wrote:
 
-Signed-off-by: Justin Treon <justin_treon@yahoo.com>
-----
-diff -r c105f44cf785 drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	Thu Nov 08 15:36:57 2007 -0800
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	Thu Nov 08 15:42:01 2007 -0800
-@@ -244,7 +244,7 @@ static struct cfi_fixup cfi_fixup_table[
- #endif
- 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
- 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
--	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, CFI_ID_ANY,     fixup_use_powerup_lock, NULL, },
- 	{ 0, 0, NULL, NULL }
- };
- 
+> Adding the ability to unlocking all Intel flash that is locked on power up. 
+> Currently only Intel P30 flash is unlocked.  All Intel flash is locked on power up.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+What if you wanted for some of your flash partitions to remain locked?
+
+
+Nicolas
