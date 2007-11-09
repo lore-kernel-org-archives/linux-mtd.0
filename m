@@ -1,17 +1,17 @@
-Received: from web43133.mail.sp1.yahoo.com ([216.252.121.63])
+Received: from web43145.mail.sp1.yahoo.com ([216.252.121.75])
 	by bombadil.infradead.org with smtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1IqYH0-0004vl-B8
-	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 13:08:13 -0500
-Date: Fri, 9 Nov 2007 10:08:03 -0800 (PST)
+	id 1IqYVS-0005ul-VN
+	for linux-mtd@lists.infradead.org; Fri, 09 Nov 2007 13:23:10 -0500
+Date: Fri, 9 Nov 2007 10:23:00 -0800 (PST)
 From: Justin Treon <justin_treon@yahoo.com>
 Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on
 	power up
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <20071108193051.5a69cd60@zod.rchland.ibm.com>
+To: Nicolas Pitre <nico@cam.org>
+In-Reply-To: <alpine.LFD.0.9999.0711091248130.21255@xanadu.home>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Message-ID: <132621.26766.qm@web43133.mail.sp1.yahoo.com>
+Message-ID: <461814.66132.qm@web43145.mail.sp1.yahoo.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -22,26 +22,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > Adding the ability to unlocking all Intel flash that is locked on power up. 
-> > Currently only Intel P30 flash is unlocked.  All Intel flash is locked on power
-> up.
+> > > > Adding the ability to unlocking all Intel flash that is locked on power up. 
+> > > > Currently only Intel P30 flash is unlocked.  All Intel flash is locked on
+> power
+> > > up.
+> > > 
+> > > What if you wanted for some of your flash partitions to remain locked?
+> > > 
+> > 
+> > It will not unlock any partitions that are listed are read only in your map.  
+> > 
+> > I prefer to use the command line partitioning so if I have
+> > "mtdparts=M18:0x80000(blob)ro,0x280000(kernel)," mtd0, the boot loader, will
+> remain
+> > locked and mtd1, the kernel, will be unlocked.  
 > 
-> Um, it most certainly is not.
+> That might be your preference.  But locked flash blocks are more likely 
+> to be immune against software bugs for example.  Unconditionally 
+> unlocking all blocks without regards for the wish of the user is a bad 
+> idea.  This is policy that is better decided elsewhere.
+
+Setting an MTD partition to read only can be done in the maps files as will as in
+the command line.  Those wishing to protect a partition should always set it to read
+only for the very same reasons you mentioned.
+
+> 
+> I think that adding a mount flag to jffs2 to unlock the concerned 
+> partition when it is about to be mounted read-write would be a much 
+> better solution.  This has been discussed on the list long ago IIRC, but 
+> no one came forward with a patch.
 > 
 
-Josh can you clarify this? 
+Adding the ability to unlock a partition on mount is not a bad idea, but it should
+not be the only way.  I often write to an mtd block device without mounting it and I
+do not always use jffs2 as my writable filing system.
 
-To my understanding Intel W3 and J3 flash will ignore any additional unlock
-commands. I will try to look into this further.
-
-Many request have been sent to the mailing list regarding how to unlock a part.  I
-have never seen a request asking how to lock a part.  As the patch is written
-currently only mtd partitions that are mapped in as r/w rahter than read only will
-be unlocked. 
-
-I will write another patch to enable/disable unlocking by default.
-
-Justin 
+Justin
 
 __________________________________________________
 Do You Yahoo!?
