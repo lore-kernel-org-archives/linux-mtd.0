@@ -1,27 +1,23 @@
-Received: from ns.penguin.cz ([212.47.7.226])
+Received: from mu-out-0910.google.com ([209.85.134.187])
 	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Ir0Pj-00063g-Aq
-	for linux-mtd@lists.infradead.org; Sat, 10 Nov 2007 19:11:05 -0500
-Received: from localhost (localhost [127.0.0.1])
-	by ns.penguin.cz (Postfix) with ESMTP id E9F8F306D575
+	id 1IrUOh-0000O3-If
+	for linux-mtd@lists.infradead.org; Mon, 12 Nov 2007 03:12:01 -0500
+Received: by mu-out-0910.google.com with SMTP id i2so2011551mue
 	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Nov 2007 01:10:56 +0100 (CET)
-Received: from ns.penguin.cz ([127.0.0.1])
-	by localhost (penguin [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id 28719-03 for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Nov 2007 01:10:56 +0100 (CET)
-Received: from [192.168.1.2] (7-165-207-85.strcechy.adsl-llu.static.bluetone.cz
-	[85.207.165.7]) by ns.penguin.cz (Postfix) with ESMTP id A5255306D568
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 11 Nov 2007 01:10:56 +0100 (CET)
-Subject: [PATCH] fix CONFIG_MTD_SHARP_SL if CONFIG_MTD=m
-From: Stanislav Brabec <utx@penguin.cz>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Sun, 11 Nov 2007 01:10:54 +0100
-Message-Id: <1194739854.4486.45.camel@utx.utx.cz>
-Mime-Version: 1.0
+	Mon, 12 Nov 2007 00:11:54 -0800 (PST)
+Message-ID: <fe810cf0711120011qaa37776o4496c294799025a4@mail.gmail.com>
+Date: Mon, 12 Nov 2007 11:11:53 +0300
+From: "Alexander Belyakov" <abelyako@googlemail.com>
+To: "David Woodhouse" <dwmw2@infradead.org>
+Subject: Re: [PATCH] [CFI] Prevent erase command invocation on suspended chip
+In-Reply-To: <alpine.LFD.0.9999.0711070843430.21255@xanadu.home>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <fe810cf0711070058obc3c3fdm4a34f956e5ff4a96@mail.gmail.com>
+	<alpine.LFD.0.9999.0711070843430.21255@xanadu.home>
+Cc: Nicolas Pitre <nico@cam.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,40 +27,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sharp Zaurus SL-C3200 with CONFIG_MTD=m and CONFIG_MTD_SHARP_SL=y (as it
-is bool) lost support for the ROM flash. With CONFIG_MTD=y it has no
-problems.
+On Nov 7, 2007 4:44 PM, Nicolas Pitre <nico@cam.org> wrote:
+> On Wed, 7 Nov 2007, Alexander Belyakov wrote:
+> >
+> > The patch below fixes that issue.
+> >
+> > Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
+>
+> Acked-by: Nicolas Pitre <nico@cam.org>
+>
 
-It is caused by losing of compiled code of
-drivers/mtd/maps/sharpsl-flash.o.
-It was linked to drivers/mtd/maps/built-in.o and drivers/mtd/built-in.o,
-but lost and not linked to drivers/built-in.o (because CONFIG_MTD!=y).
+Hello David,
 
-Patch below fixes this problem by creating sharpsl-flash.ko (and the
-code works correctly as a module).
+Please apply this patch.
 
-Signed-off-by: Stanislav Brabec <utx@penguin.cz>
-
-Index: linux-2.6.23/drivers/mtd/maps/Kconfig
-===================================================================
---- linux-2.6.23/drivers/mtd/maps/Kconfig
-+++ linux-2.6.23/drivers/mtd/maps/Kconfig
-@@ -600,7 +600,7 @@
- 	default "4"
- 
- config MTD_SHARP_SL
--	bool "ROM mapped on Sharp SL Series"
-+	tristate "ROM mapped on Sharp SL Series"
- 	depends on ARCH_PXA
- 	help
- 	  This enables access to the flash chip on the Sharp SL Series of PDAs.
-
-
-Command to ensure, that CONFIG_MTD_SHARP_SL is the only problematic part
-of MTD.
-for i in $(find -name Makefile | xargs grep CONFIG_MTD_ | sed 's/.*obj-\$(\([^)]*\).*/\1/') ; do grep -A1 -w "config ${i#CONFIG_}" $(find -name Kconfig) ; done | grep -B1 bool
-
-
-________________________________________________________________________
-Stanislav Brabec
-http://www.penguin.cz/~utx
+Thanks,
+Alexander
