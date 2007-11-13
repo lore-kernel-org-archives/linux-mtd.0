@@ -1,24 +1,15 @@
-Received: from relais.videotron.ca ([24.201.245.36])
+Received: from tecon.ru ([86.111.13.98] helo=mail.tecon.ru)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IrnoV-00012G-6j
-	for linux-mtd@lists.infradead.org; Mon, 12 Nov 2007 23:55:58 -0500
-MIME-version: 1.0
-Content-transfer-encoding: 7BIT
-Content-type: TEXT/PLAIN; charset=US-ASCII
-Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR002.ip.videotron.ca
-	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
-	32bit))
-	with ESMTP id <0JRF008QAHP2ZDE0@VL-MH-MR002.ip.videotron.ca> for
-	linux-mtd@lists.infradead.org; Mon, 12 Nov 2007 23:55:50 -0500 (EST)
-Date: Mon, 12 Nov 2007 23:55:50 -0500 (EST)
-From: Nicolas Pitre <nico@cam.org>
-To: Justin Treon <justin_treon@yahoo.com>
-Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on power
-	up
-In-reply-to: <201904.92834.qm@web43134.mail.sp1.yahoo.com>
-Message-id: <alpine.LFD.0.9999.0711122352570.21255@xanadu.home>
-References: <201904.92834.qm@web43134.mail.sp1.yahoo.com>
-Cc: linux-mtd@lists.infradead.org
+	id 1Irsvd-0006jd-GE
+	for linux-mtd@lists.infradead.org; Tue, 13 Nov 2007 05:23:41 -0500
+Date: Tue, 13 Nov 2007 13:23:23 +0300
+From: Damir Shayhutdinov <lost404@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [JFFS2] Fix free space leaking
+Message-ID: <20071113102323.GA5933@damir.rnd.local>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,21 +19,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 12 Nov 2007, Justin Treon wrote:
+This patch is addressed to fix very-long-standing problem in JFFS2,
+first described in 2004:
+http://lists.infradead.org/pipermail/linux-mtd/2004-March/009456.html
 
-> > What about a new partition flag then?  When set the unlock method would 
-> > be called on the corresponding partition if the partition is not already 
-> > marked read-only.
-> > 
-> 
-> I think that a partition flag is a good idea, but the mtd partition should be
-> unlocked by defualt if it is not read only and adding the flag will keep it locked.
+jffs2_link_node_ref() decreases c->free_size by
+c->cleanmarker_size but the clean marker space can't
+be accounted as free space! So we just compensate
+the difference.
 
-And in fact this is already implemented, and the partition flag (which 
-is actually a negative flag) is already called MTD_STUPID_LOCK.
+Signed-off-by: Alexander Yurchenko <grange@tecon.ru>
+Signed-off-by: Damir Shayhutdinov <damir@tecon.ru>
+---
+ fs/jffs2/erase.c |   11 +++++++++++
+ 1 files changed, 11 insertions(+), 0 deletions(-)
 
-So let's go back to finding your flash model requiring a 
-fixup_use_powerup_lock() call.
-
-
-Nicolas
+diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+index a1db918..c574fa3 100644
+--- a/fs/jffs2/erase.c
++++ b/fs/jffs2/erase.c
+@@ -454,6 +454,17 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+ 		jeb->free_size = c->sector_size;
+ 		/* FIXME Special case for cleanmarker in empty block */
+ 		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
++		/*
++		 * XXX: I'm not sure this is correct but it prevents
++		 * c->free_size from slow leaking under a frequent file
++		 * overwriting.
++		 * jffs2_link_node_ref() decreases c->free_size by
++		 * c->cleanmarker_size but the clean marker space can't
++		 * be accounted as free space! So we just compensate
++		 * the difference.
++		 */
++		c->free_size += c->cleanmarker_size;
++		c->used_size -= c->cleanmarker_size;
+ 	}
+ 
+ 	down(&c->erase_free_sem);
+-- 
+1.5.3.4.GIT
