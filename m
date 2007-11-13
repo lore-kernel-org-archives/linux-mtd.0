@@ -1,15 +1,26 @@
-Received: from tecon.ru ([86.111.13.98] helo=mail.tecon.ru)
+Received: from nz-out-0506.google.com ([64.233.162.237])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Irsvd-0006jd-GE
-	for linux-mtd@lists.infradead.org; Tue, 13 Nov 2007 05:23:41 -0500
-Date: Tue, 13 Nov 2007 13:23:23 +0300
-From: Damir Shayhutdinov <lost404@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] [JFFS2] Fix free space leaking
-Message-ID: <20071113102323.GA5933@damir.rnd.local>
+	id 1IrzkC-0007QR-4Q
+	for linux-mtd@lists.infradead.org; Tue, 13 Nov 2007 12:40:18 -0500
+Received: by nz-out-0506.google.com with SMTP id z3so1181975nzf
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Nov 2007 09:40:09 -0800 (PST)
+Message-ID: <6934efce0711130940w69b566edvae62760a746588d2@mail.gmail.com>
+Date: Tue, 13 Nov 2007 09:40:07 -0800
+From: "Jared Hulbert" <jaredeh@gmail.com>
+To: "Nicolas Pitre" <nico@cam.org>
+Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on
+	power up
+In-Reply-To: <alpine.LFD.0.9999.0711121822050.21255@xanadu.home>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <201904.92834.qm@web43134.mail.sp1.yahoo.com>
+	<alpine.LFD.0.9999.0711121630090.21255@xanadu.home>
+	<6934efce0711121450r553ba5fo12f6c676fa79c3fe@mail.gmail.com>
+	<alpine.LFD.0.9999.0711121822050.21255@xanadu.home>
+Cc: linux-mtd@lists.infradead.org, Justin Treon <justin_treon@yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,42 +30,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch is addressed to fix very-long-standing problem in JFFS2,
-first described in 2004:
-http://lists.infradead.org/pipermail/linux-mtd/2004-March/009456.html
+> How do you update your bootloader from Linux but protect it from
+> possible corruptions otherwise?  By recompiling your kernel?  _That_ is
+> nutty.
 
-jffs2_link_node_ref() decreases c->free_size by
-c->cleanmarker_size but the clean marker space can't
-be accounted as free space! So we just compensate
-the difference.
+Okay, okay I get your point.  Yep that is a problem.  But one that the
+MTD_STUPID_LOCK can be unset to deal will if the
+fixup_use_powerup_lock() is changed to be more intelligent.  Oh that
+and the name should be MTD_AUTO_UNLOCK or something like that.
 
-Signed-off-by: Alexander Yurchenko <grange@tecon.ru>
-Signed-off-by: Damir Shayhutdinov <damir@tecon.ru>
----
- fs/jffs2/erase.c |   11 +++++++++++
- 1 files changed, 11 insertions(+), 0 deletions(-)
+> > If someone want's to implement some complex
+> > scheme to prevent errant programs, they can use the userspace tools
+> > and readonly flag for that.
+>
+> Well, actually I just looked and the core already has the code to
+> auto-unlock flash when they have the MTD_STUPID_LOCK bit set.
+>
+> So... if one partition should _not_ be automatically unlocked, it just
+> has to put MTD_STUPID_LOCK in its flag_mask.  I'd have prefered if the
+> auto-unlock was explicitly enabled instead of its prevention, but
+> whatever.
 
-diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
-index a1db918..c574fa3 100644
---- a/fs/jffs2/erase.c
-+++ b/fs/jffs2/erase.c
-@@ -454,6 +454,17 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
- 		jeb->free_size = c->sector_size;
- 		/* FIXME Special case for cleanmarker in empty block */
- 		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
-+		/*
-+		 * XXX: I'm not sure this is correct but it prevents
-+		 * c->free_size from slow leaking under a frequent file
-+		 * overwriting.
-+		 * jffs2_link_node_ref() decreases c->free_size by
-+		 * c->cleanmarker_size but the clean marker space can't
-+		 * be accounted as free space! So we just compensate
-+		 * the difference.
-+		 */
-+		c->free_size += c->cleanmarker_size;
-+		c->used_size -= c->cleanmarker_size;
- 	}
- 
- 	down(&c->erase_free_sem);
--- 
-1.5.3.4.GIT
+Right, Justin is just extending that functionality which today only
+kicks in for one size of one chip family.
+
+So to clarify the disagreement you feel the default behavior should be
+to have your writeable partitions default to locked, we feel the
+default behavior should be to have your writeable partitions default
+to unlocked.  Does that sum it up the core philshopical disagreement
+here?
+
+> > The mailinglist gets an awful lot of
+> > questions that have pointlessly locked partitions as the core.
+>
+> I guess it's only a matter of properly flagging flash models that do
+> power up locked then.
+
+Actually there is a bit in struct cfi_pri_intelext.FeatureSupport&32
+that I _think_ tells us this is one of the flex lock parts that does
+the nonvolatile locking.  I'll have to confirm that.  That could be
+used in the function fixup_use_powerup_lock() in cfi_cmdset_0001.c to
+be more intelligent than just unlocking everything.  Would that be
+better?
