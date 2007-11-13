@@ -1,26 +1,19 @@
-Received: from nz-out-0506.google.com ([64.233.162.237])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IrzkC-0007QR-4Q
-	for linux-mtd@lists.infradead.org; Tue, 13 Nov 2007 12:40:18 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so1181975nzf
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 13 Nov 2007 09:40:09 -0800 (PST)
-Message-ID: <6934efce0711130940w69b566edvae62760a746588d2@mail.gmail.com>
-Date: Tue, 13 Nov 2007 09:40:07 -0800
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Nicolas Pitre" <nico@cam.org>
-Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on
-	power up
-In-Reply-To: <alpine.LFD.0.9999.0711121822050.21255@xanadu.home>
+Received: from vsnlchnsym01.vsnlxchange.com ([59.163.96.2])
+	by pentafluge.infradead.org with esmtp (Exim 4.63 #1 (Red Hat Linux))
+	id 1Is0E8-0001Gr-D1
+	for linux-mtd@lists.infradead.org; Tue, 13 Nov 2007 18:11:11 +0000
+From: "Gangadhar Kodishala" <gangadhark@tataelxsi.co.in>
+To: "'falls huang'" <falls.huang@gmail.com>
+Subject: RE: NFTL for using FAT file system on NAND data partition
+Date: Tue, 13 Nov 2007 10:10:38 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="windows-1250"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <201904.92834.qm@web43134.mail.sp1.yahoo.com>
-	<alpine.LFD.0.9999.0711121630090.21255@xanadu.home>
-	<6934efce0711121450r553ba5fo12f6c676fa79c3fe@mail.gmail.com>
-	<alpine.LFD.0.9999.0711121822050.21255@xanadu.home>
-Cc: linux-mtd@lists.infradead.org, Justin Treon <justin_treon@yahoo.com>
+In-Reply-To: <49eab5c80711121939k1f9c8295wf77eef20af0ba405@mail.gmail.com>
+Message-ID: <VSNLCHNFE00287Mi5ZN000118e5@VSNLCHNFE002.VSNLXCHANGE.COM>
+Cc: linux-mtd@lists.infradead.org
+Reply-To: gangadhark@tataelxsi.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,45 +23,99 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> How do you update your bootloader from Linux but protect it from
-> possible corruptions otherwise?  By recompiling your kernel?  _That_ is
-> nutty.
+Hi Falls,
 
-Okay, okay I get your point.  Yep that is a problem.  But one that the
-MTD_STUPID_LOCK can be unset to deal will if the
-fixup_use_powerup_lock() is changed to be more intelligent.  Oh that
-and the name should be MTD_AUTO_UNLOCK or something like that.
+We may not move to 2.6.x for this application since all our other drivers
+are 
+based on the current version.
 
-> > If someone want's to implement some complex
-> > scheme to prevent errant programs, they can use the userspace tools
-> > and readonly flag for that.
+Why NFTL cannot be used on a bare nand chip ?
+
+Please give me some more details on how I can use the yaffs and a loop file
+for the
+FAT file system ? We are already using the JFFS2 for the root file system
+partition.
+Can we use the JFFS2 with a loop file for FAT file system ?
+
+Thanks.
+
+Best Regards,
+Gangadhar
+
+-----Original Message-----
+From: falls huang [mailto:falls.huang@gmail.com] 
+Sent: Monday, November 12, 2007 7:39 PM
+To: gangadhark@tataelxsi.co.in
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: NFTL for using FAT file system on NAND data partition
+
+Hello!
+
+   Don't use NFTL on bare nand chip .
+
+1.
+   You can use yaffs  for your nand flash ,then create a loop file in
+yaffs for fat filesystem.
+2.
+   upgrade to 2.6.x and try UBI .
+
+2007/11/13, Gangadhar Kodishala <gangadhark@tataelxsi.co.in>:
+> Hi All,
 >
-> Well, actually I just looked and the core already has the code to
-> auto-unlock flash when they have the MTD_STUPID_LOCK bit set.
+> I am working on I.MX21 based application which has Linux kernel 2.4.20
+from
+> Freescale.
 >
-> So... if one partition should _not_ be automatically unlocked, it just
-> has to put MTD_STUPID_LOCK in its flag_mask.  I'd have prefered if the
-> auto-unlock was explicitly enabled instead of its prevention, but
-> whatever.
-
-Right, Justin is just extending that functionality which today only
-kicks in for one size of one chip family.
-
-So to clarify the disagreement you feel the default behavior should be
-to have your writeable partitions default to locked, we feel the
-default behavior should be to have your writeable partitions default
-to unlocked.  Does that sum it up the core philshopical disagreement
-here?
-
-> > The mailinglist gets an awful lot of
-> > questions that have pointlessly locked partitions as the core.
+> I created a data partition on the NAND device and planning to use this
+> partition with FAT
+> file system.
 >
-> I guess it's only a matter of properly flagging flash models that do
-> power up locked then.
+> How do I use the NAND data partition with FAT file system ?
+> Did anyone use the NFTL drivers provided in Kernel for FAT filesystem ?
+>
+> Best Regards,
+> Gangadhar
+>
+> No virus found in this outgoing message.
+> Checked by AVG Free Edition.
+> Version: 7.5.503 / Virus Database: 269.15.30/1126 - Release Date:
+11/12/2007
+> 12:56 PM
+>
+>
+>
+> The information contained in this electronic message and any attachments
+to this message are intended for the exclusive use of the addressee(s) and
+may contain proprietary, confidential or privileged information. If you are
+not the intended recipient, you should not disseminate, distribute or copy
+this e-mail. Please notify the sender immediately and destroy all copies of
+this message and any attachments contained in it.
+>
+> Contact your Administrator for further information.
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-Actually there is a bit in struct cfi_pri_intelext.FeatureSupport&32
-that I _think_ tells us this is one of the flex lock parts that does
-the nonvolatile locking.  I'll have to confirm that.  That could be
-used in the function fixup_use_powerup_lock() in cfi_cmdset_0001.c to
-be more intelligent than just unlocking everything.  Would that be
-better?
+
+-- 
+Regards
+Falls Huang
+
+No virus found in this incoming message.
+Checked by AVG Free Edition. 
+Version: 7.5.503 / Virus Database: 269.15.30/1126 - Release Date: 11/12/2007
+12:56 PM
+ 
+
+No virus found in this outgoing message.
+Checked by AVG Free Edition. 
+Version: 7.5.503 / Virus Database: 269.15.31/1128 - Release Date: 11/13/2007
+11:09 AM
+ 
+
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
+
+Contact your Administrator for further information.
