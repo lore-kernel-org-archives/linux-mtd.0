@@ -1,24 +1,22 @@
-Received: from nz-out-0506.google.com ([64.233.162.224])
-	by bombadil.infradead.org with esmtp (Exim 4.66 #1 (Red Hat Linux))
-	id 1Iri7Q-0006gm-C4
-	for linux-mtd@lists.infradead.org; Mon, 12 Nov 2007 17:51:06 -0500
-Received: by nz-out-0506.google.com with SMTP id z3so942425nzf
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 12 Nov 2007 14:50:47 -0800 (PST)
-Message-ID: <6934efce0711121450r553ba5fo12f6c676fa79c3fe@mail.gmail.com>
-Date: Mon, 12 Nov 2007 14:50:46 -0800
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Nicolas Pitre" <nico@cam.org>
-Subject: Re: [PATCH 1/1] MTD: Unlocking all Intel flash that is locked on
-	power up
-In-Reply-To: <alpine.LFD.0.9999.0711121630090.21255@xanadu.home>
+Received: from vsnlchnsym02.vsnlxchange.com ([59.163.96.4])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IrlSH-00009M-1D
+	for linux-mtd@lists.infradead.org; Mon, 12 Nov 2007 21:24:51 -0500
+Received: from vsnlchnsym02.vsnlxchange.com (unknown [127.0.0.1])
+	by vsnlchnsym02.vsnlxchange.com (Symantec Mail Security) with ESMTP id
+	A988B520009 for <linux-mtd@lists.infradead.org>;
+	Tue, 13 Nov 2007 07:32:24 +0530 (IST)
+From: "Gangadhar Kodishala" <gangadhark@tataelxsi.co.in>
+To: <linux-mtd@lists.infradead.org>
+Subject: NFTL for using FAT file system on NAND data partition
+Date: Mon, 12 Nov 2007 18:02:19 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+	charset="windows-1250"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <201904.92834.qm@web43134.mail.sp1.yahoo.com>
-	<alpine.LFD.0.9999.0711121630090.21255@xanadu.home>
-Cc: linux-mtd@lists.infradead.org, Justin Treon <justin_treon@yahoo.com>
+In-Reply-To: <6934efce0711121450r553ba5fo12f6c676fa79c3fe@mail.gmail.com>
+Message-ID: <VSNLCHNFE0022TRqf6900010119@VSNLCHNFE002.VSNLXCHANGE.COM>
+Reply-To: gangadhark@tataelxsi.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,35 +26,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> Don't make the unlocking the default.  The flag has simply to be set
-> explicitly for the unlock to occur.  Few reasons for this:
->
-> 1) you don't know if a particular flash requires unlocking after boot,
->    (most flash models don't) so doing it unconditionally is wasteful;
->
-> 2) the partition might as well be meant to remain locked, except for
->    rare occasions when its content is updated (think bootloader) meaning
->    it cannot be marked read-only;
->
-> 3) this is a security feature and should not be bypassed "by
->    default", and therefore the auto-unlock should be dependent on an
->    explicit flag so people needing it will have the opportunity to think
->    about it.
+Hi All,
 
-Why is it a security feature to have a partition marked as r/w come up
-as locked?  That's nutty.  If someone want's to implement some complex
-scheme to prevent errant programs, they can use the userspace tools
-and readonly flag for that.  The mailinglist gets an awful lot of
-questions that have pointlessly locked partitions as the core.  Most
-users don't use or view this as a security feature but just as an
-annoyance.
+I am working on I.MX21 based application which has Linux kernel 2.4.20 from
+Freescale. 
 
-So the semantics for the partition flags are to allow reads unless a
-partition has been explictly marked readonly, right?   If you have
-signaled intent to write to it, by creating a non-readonly partition,
-you expect to be able to write to.  I argue it makes sense then to
-unlock a partition that isn't marked readonly, granted we _only_
-unlock such partitions.
+I created a data partition on the NAND device and planning to use this
+partition with FAT 
+file system.  
 
-I suggest we make this behavior (a) selective based on a config option
-(b) make sure it only unlocks chips that actually unlock.
+How do I use the NAND data partition with FAT file system ?
+Did anyone use the NFTL drivers provided in Kernel for FAT filesystem ?
+
+Best Regards,
+Gangadhar 
+
+No virus found in this outgoing message.
+Checked by AVG Free Edition. 
+Version: 7.5.503 / Virus Database: 269.15.30/1126 - Release Date: 11/12/2007
+12:56 PM
+ 
+
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
+
+Contact your Administrator for further information.
