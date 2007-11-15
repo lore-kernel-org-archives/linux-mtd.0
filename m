@@ -1,14 +1,20 @@
-Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-Content-Type: text/plain
-Date: Wed, 14 Nov 2007 15:17:36 -0500
-Message-Id: <1195071456.2533.45.camel@shinybook.infradead.org>
-Mime-Version: 1.0
+Received: from smtp.sina.com.cn ([202.108.3.233])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IsUjJ-0007Og-Rq
+	for linux-mtd@lists.infradead.org; Wed, 14 Nov 2007 21:45:29 -0500
+Received: from mox89b9e5e1226 (unknown [58.247.8.170])
+	by smtp.sina.com.cn (SINAMAIL) with ESMTP id F39B35DD8E2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Nov 2007 10:44:56 +0800 (CST)
+Message-ID: <001001c82731$419936e0$5900a8c0@mox89b9e5e1226>
+From: "EricLiu" <ericliuhx@sina.com>
+To: <linux-mtd@lists.infradead.org>
+Subject: DiskOnChip NFTL wear leveling
+Date: Thu, 15 Nov 2007 10:26:21 +0800
+MIME-Version: 1.0
+Content-Type: text/plain; format=flowed; charset="iso-8859-1";
+	reply-type=original
 Content-Transfer-Encoding: 7bit
-Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,20 +24,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-11-14 at 18:33 +0000, Alexey Korolev wrote:
-> If we try to read the content of this file we won.t get any data but receive read error:
-> Data CRC 949a52c7 != calculated CRC 0c434291 for node at 00380084
-> 
-> The issue is related to existing implementation of
-> jffs2_scan_eraseblock() function which skips the content scanning of
-> nodes to reach acceptable mount performance. 
+Hi, everyone:
 
-That shouldn't happen. When one node obsoletes an earlier node covering
-the same range, we _should_ be checking the data CRC. I reimplemented
-this part of the code only recently.
+I fdisk my DiskOnChip into two partitions: nftla1 and nftla2. The two 
+partitions are both formatted as Ext3 filesystem. I want to protect files on 
+nftla1 from corruption, so I mount nftla1 as readonly. While nftla2 is 
+mounted as readwrite.
+My question is: Will nflta1 be involved into wear leveling even when it is 
+readonly?
 
-Please could you show me a file system image which exhibits this
-problem? I'm unconvinced by your diagnosis.
+By the way, I have tried to read the output of mtd utility nftldump, but I 
+have no idea of it. I cannot figure out anything from the output of 
+nftldump. Is there any document on this?
 
--- 
-dwmw2
+Thanks and Regards
+Eric 
