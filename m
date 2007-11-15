@@ -1,21 +1,24 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ise10-0003SH-PY
-	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 07:40:20 -0500
-Date: Thu, 15 Nov 2007 13:20:42 +0100
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Iseik-0006OK-Hp
+	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 08:25:32 -0500
+Date: Thu, 15 Nov 2007 14:20:27 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: David Woodhouse <dwmw2@infradead.org>
+To: Alexey Korolev <akorolev@infradead.org>
 Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
-Message-ID: <20071115122042.GA10165@lazybastard.org>
+Message-ID: <20071115132027.GC10165@lazybastard.org>
 References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
 	<1195071456.2533.45.camel@shinybook.infradead.org>
+	<20071115122042.GA10165@lazybastard.org>
+	<Pine.LNX.4.64.0711151241140.30407@pentafluge.infradead.org>
+	<Pine.LNX.4.64.0711151250550.30407@pentafluge.infradead.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="6c2NcOVqGQ03X4Wi"
+	protocol="application/pgp-signature"; boundary="Pd0ReVV5GZGQvF3a"
 Content-Disposition: inline
-In-Reply-To: <1195071456.2533.45.camel@shinybook.infradead.org>
-Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org,
-	Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0711151250550.30407@pentafluge.infradead.org>
+Cc: Roman.borisov@intel.com, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,36 +29,41 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---6c2NcOVqGQ03X4Wi
+--Pd0ReVV5GZGQvF3a
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 14 November 2007 15:17:36 -0500, David Woodhouse wrote:
+On Thu, 15 November 2007 12:55:07 +0000, Alexey Korolev wrote:
 >=20
-> That shouldn't happen. When one node obsoletes an earlier node covering
-> the same range, we _should_ be checking the data CRC. I reimplemented
-> this part of the code only recently.
+> Oh I've completely forgot to say that the issue take place on NOR only.
+> We think that we can;t reproduce the problem on NAND - because of ECC
+> correction which usually corrupts whole page in case of partial write.
+> (It could be incorrect just an idea).=20
 
-Doesn't that fail for newly created files or for previously sparse
-blocks of files?  Alexey's testcase creates a new file, so you should be
-able to create such images yourself.  This testcase should be a bit more
-reliable to hit the problem:
+Could be a writebuffer thing.  Maybe a testcase like this will force it
+on NAND.
 
-for i in `seq -w 1000000`; do echo 12345 > $i; done &
-# wait half a sec
-# hit reset button
-cat `ls | sort | tail -1`
+# mount
+head -c3960 /dev/urandom > wbuf_preload
+echo 12345 > foo
+# wait long enough for write to finish, but not long enough for wbuf to
+# get flushed, hit reset button
 
-Completely untested, as always.
+The size of the preload should be carefully crafted.  3960 bytes plus
+node header of 68 bytes leaves exactly another 68 bytes for the next
+node header.  So the wbuf gets filled and written right after the second
+node's header, but before its data.  Works with wbuf sizes of 512, 1024,
+2048 and 4096.
 
 J=C3=B6rn
 
 --=20
-All models are wrong. Some models are useful.
--- George Box
+Beware of bugs in the above code; I have only proved it correct, but
+not tried it.
+-- Donald Knuth
 
---6c2NcOVqGQ03X4Wi
+--Pd0ReVV5GZGQvF3a
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -63,9 +71,9 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.1 (GNU/Linux)
 
-iD8DBQFHPDmafbqVtkXfjukRApeEAJkBsq9C/io4+8MorpydIvhSwk0pJgCeIZCX
-3IioF/7WhIprj9Ls2BeVsRk=
-=lD1M
+iD8DBQFHPEebfbqVtkXfjukRAs69AJwIShrCNg7uDi6Vy1uAefiqagSQAACgjSG2
++mtUhObCO1EyERvgN87vfWw=
+=nRe7
 -----END PGP SIGNATURE-----
 
---6c2NcOVqGQ03X4Wi--
+--Pd0ReVV5GZGQvF3a--
