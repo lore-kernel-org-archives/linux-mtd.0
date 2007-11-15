@@ -1,20 +1,19 @@
-Received: from smtp.sina.com.cn ([202.108.3.233])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IsUjJ-0007Og-Rq
-	for linux-mtd@lists.infradead.org; Wed, 14 Nov 2007 21:45:29 -0500
-Received: from mox89b9e5e1226 (unknown [58.247.8.170])
-	by smtp.sina.com.cn (SINAMAIL) with ESMTP id F39B35DD8E2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 15 Nov 2007 10:44:56 +0800 (CST)
-Message-ID: <001001c82731$419936e0$5900a8c0@mox89b9e5e1226>
-From: "EricLiu" <ericliuhx@sina.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: DiskOnChip NFTL wear leveling
-Date: Thu, 15 Nov 2007 10:26:21 +0800
+Received: from smtp.nokia.com ([131.228.20.170] helo=mgw-ext11.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IsZiH-0002K0-DU
+	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 03:04:43 -0500
+Message-ID: <473BFC92.9090504@nokia.com>
+Date: Thu, 15 Nov 2007 10:00:18 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1";
-	reply-type=original
+To: dwmw2@infradead.org
+Subject: Re: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+References: <47301505.60006@nokia.com>	<002001c8204e$c71577f0$e1ac580a@swcenter.sec.samsung.co.kr>
+	<47346CE1.5020209@nokia.com>
+In-Reply-To: <47346CE1.5020209@nokia.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi, everyone:
+ext Adrian Hunter wrote:
+> ext Kyungmin Park wrote:
+>>> Subject: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
+>>>
+>>> When an ECC error occurs, the read should be completed
+>>> anyway before returning -EBADMSG.  Returning -EBADMSG
+>>> straight away is incorrect.
+>>>
+>>> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+>> Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
+>>
+> 
+> Please apply :-)
 
-I fdisk my DiskOnChip into two partitions: nftla1 and nftla2. The two 
-partitions are both formatted as Ext3 filesystem. I want to protect files on 
-nftla1 from corruption, so I mount nftla1 as readonly. While nftla2 is 
-mounted as readwrite.
-My question is: Will nflta1 be involved into wear leveling even when it is 
-readonly?
-
-By the way, I have tried to read the output of mtd utility nftldump, but I 
-have no idea of it. I cannot figure out anything from the output of 
-nftldump. Is there any document on this?
-
-Thanks and Regards
-Eric 
+...
