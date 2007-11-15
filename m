@@ -1,20 +1,23 @@
-Received: from mail01.prevas.se ([62.119.151.131])
+Received: from wr-out-0506.google.com ([64.233.184.226])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Isav0-0000U2-IB
-	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 04:21:56 -0500
-Content-class: urn:content-classes:message
+	id 1IsczN-0002Ht-5l
+	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 06:34:35 -0500
+Received: by wr-out-0506.google.com with SMTP id c8so445362wra
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 15 Nov 2007 03:34:25 -0800 (PST)
+Message-ID: <6b5362aa0711150334v22e8dccdoa59790767076d5ae@mail.gmail.com>
+Date: Thu, 15 Nov 2007 17:04:25 +0530
+From: "Brijesh Singh" <brijesh.s.singh@gmail.com>
+To: "Johnson, Charles F" <charles.f.johnson@intel.com>
+Subject: Re: MTD Size Limit
+In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Subject: RE: Wrong data CRC in data node
-Date: Thu, 15 Nov 2007 10:21:45 +0100
-Message-ID: <F0D565FB8733054DAF4888820C74C98D234B58@prevas1.prevas.se>
-In-Reply-To: <20071114083648.11cc22ac@weaponx>
-References: <F0D565FB8733054DAF4888820C74C98D234AE3@prevas1.prevas.se>
-	<20071114083648.11cc22ac@weaponx>
-From: "Jesper Saxtorph" <Jesper.Saxtorph@prevas.dk>
-To: <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <Acgb8MRpbB2IBpK7R92C/rQXYHPZ/Q==>
+	<B1EDF20A6EAAD74EA65E46F774F1784502C6D585@orsmsx413.amr.corp.intel.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,36 +27,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-
-> bounces@lists.infradead.org] On Behalf Of Josh Boyer
-> Sent: 14. november 2007 15:37
->=20
-> On Wed, 14 Nov 2007 13:23:32 +0100
-> "Jesper Saxtorph" <Jesper.Saxtorph@prevas.dk> wrote:
->=20
-> > I wonder if there can be some kind of cache active (in 2.6.19 contra
-> 2.6.12) we
-> > are not aware of, that we should deactivate.
-> >
-> > Is this a know this issue?
-> >
-> > Any suggestions to what I could try?
->=20
-> Check to see if CONFIG_JFFS2_FS_WRITEBUFFER is set.  If so, you can
-try
-> turning that off.
+This is MTD size limitation.
+ubi can support partitions larger than 4GB size,devices without any
+change,provided mtd is changed to support larger device size.
 
-The description of the mentioned kernel option states that "This
-functionality is required" for DataFlash.
-Therefore it is enabled and was it also on kernel 2.6.12
+If you want fixes for 64 bit mtd support,go through previous mails.
 
-If I try anyway I get:
-jffs2: Cannot operate on DataFlash unless jffs2 DataFlash support is
-compiled in.
-No filesystem could mount root, tried:  jffs2
-Kernel panic - not syncing: VFS: Unable to mount root fs on
-unknown-block(31,2)
-
-So I guess the kernel option describtion is correct.
-
--Jesper
+On Nov 1, 2007 12:33 AM, Johnson, Charles F <charles.f.johnson@intel.com> wrote:
+> I hear about a size limit for the MTD layer due to a 32 bit size
+> variable. So is the limitation 4GBytes ??
+>
+> If you partition a device using UBI, is this limiation then per
+> partition or is it still over the entire device??
+>
+> Is there any effort to increase the limit.  Particularlly give the large
+> NAND flashes that are coming.
+>
+> Charles Johnson
+> Ultra-Mobility Group
+> Platform Software Engineering
+> Intel Corporation
+> charles.f.johnson@intel.com
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
