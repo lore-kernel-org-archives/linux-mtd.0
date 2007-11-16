@@ -1,20 +1,23 @@
-Date: Thu, 15 Nov 2007 14:26:31 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
-In-Reply-To: <20071115132027.GC10165@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0711151418060.8133@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-	<1195071456.2533.45.camel@shinybook.infradead.org>
-	<20071115122042.GA10165@lazybastard.org>
-	<Pine.LNX.4.64.0711151241140.30407@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0711151250550.30407@pentafluge.infradead.org>
-	<20071115132027.GC10165@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-1831524198-1381566035-1195136791=:8133"
-Cc: Roman.borisov@intel.com, David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd@lists.infradead.org
+Received: from relais.videotron.ca ([24.201.245.36])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1Ispx5-00025m-Oy
+	for linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 20:25:06 -0500
+MIME-version: 1.0
+Content-type: multipart/mixed; boundary="Boundary_(ID_D3gXZUXEGUaitEEb7842YA)"
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JRK00L15RX6NQW0@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 15 Nov 2007 20:24:43 -0500 (EST)
+Date: Thu, 15 Nov 2007 20:24:42 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: =?ISO-8859-15?Q?J=F6rn_Engel?= <joern@logfs.org>
+Subject: Re: [PATCH][MTD] adding physical address to point()
+In-reply-to: <20071116003221.GC13834@lazybastard.org>
+Message-id: <alpine.LFD.0.9999.0711152019100.21255@xanadu.home>
+References: <473CE5EC.9040902@gmail.com>
+	<20071116003221.GC13834@lazybastard.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,30 +30,28 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
 
----1831524198-1381566035-1195136791=:8133
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+--Boundary_(ID_D3gXZUXEGUaitEEb7842YA)
+Content-type: TEXT/PLAIN; charset=utf-8
+Content-transfer-encoding: 8BIT
 
-On Thu, 15 Nov 2007, Jörn Engel wrote:
+On Fri, 16 Nov 2007, JÃ¶rn Engel wrote:
 
+> On Thu, 15 November 2007 16:35:56 -0800, Jared Hulbert wrote:
+> > 
+> > --- a/drivers/mtd/chips/cfi_cmdset_0001.c
+> > +++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+> > @@ -82,8 +82,8 @@ static struct mtd_info *cfi_intelext_setup (struct 
+> > mtd_info *);
+> > static int cfi_intelext_partition_fixup(struct mtd_info *, struct 
+> > cfi_private **);
 > 
-> Could be a writebuffer thing.  Maybe a testcase like this will force it
-> on NAND.
-> 
-No it is low probable. At least we were able to see the issue when JFFS2 worked with M18 like device. 
-> # mount
-> head -c3960 /dev/urandom > wbuf_preload
-> echo 12345 > foo
-> # wait long enough for write to finish, but not long enough for wbuf to
-> # get flushed, hit reset button
-> 
-> The size of the preload should be carefully crafted.  3960 bytes plus
-> node header of 68 bytes leaves exactly another 68 bytes for the next
-> node header.  So the wbuf gets filled and written right after the second
-> node's header, but before its data.  Works with wbuf sizes of 512, 1024,
-> 2048 and 4096.
-> 
-You right here. We need to clearly understand why we do not see the bug for NAND. Probably the issue is in the test case.
-Thanks,
-Alexey
----1831524198-1381566035-1195136791=:8133--
+> Word-wrapped again.  Mutt on lazybastard.org works, you know? ;)
+
+The file Documentation/email-clients.txt in the kernel source tree has 
+tips about proper usage wrt sending patches for a couple email clients, 
+including Thunderbird.
+
+
+Nicolas
+
+--Boundary_(ID_D3gXZUXEGUaitEEb7842YA)--
