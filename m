@@ -1,9 +1,9 @@
 Received: from mtai01.charter.net ([209.225.8.181])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1ItN8U-0007RK-6O
-	for linux-mtd@lists.infradead.org; Sat, 17 Nov 2007 07:51:04 -0500
-Message-ID: <20071117075053.T2CVB.105776.root@fepweb11>
-Date: Sat, 17 Nov 2007 7:50:52 -0500
+	id 1ItNC1-0007UK-Ob
+	for linux-mtd@lists.infradead.org; Sat, 17 Nov 2007 07:54:43 -0500
+Message-ID: <20071117075436.D76YQ.105859.root@fepweb11>
+Date: Sat, 17 Nov 2007 7:54:35 -0500
 From: UK NATIONAL LOTTERY ONLINE PROMO 2007 <bethelbanner@charterinternet.com>
 Subject: YOUR EMAIL HAS MADE YOU A WINNER OF THE END OF YEAR ONGOING ONLINE
 	PROMO 2007!!!
