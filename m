@@ -1,14 +1,15 @@
-Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-Content-Type: text/plain
-Date: Fri, 16 Nov 2007 22:46:17 -0500
-Message-Id: <1195271177.2533.174.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org
+Received: from smtpoutwbe07.prod.mesa1.secureserver.net ([208.109.78.209])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1ItI6S-0005NJ-Br
+	for linux-mtd@lists.infradead.org; Sat, 17 Nov 2007 02:28:40 -0500
+Cc: recipient list not shown: ;
+Date: Sat, 17 Nov 2007 00:21:50 -0700
+From: Schafthausen Lotterien <webmaster@schafthausenboard.com>
+Subject: Congratulations!!!! You Have Won One Million Euro.
+Message-ID: <20071117002150.ed278fc1db4a1cd59275570ddf333e8e.9af6628f06.wbe@email.secureserver.net>
+MIME-Version: 1.0
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Reply-To: Schafthausen Lotterien <info_sltlotterien@yahoo.se>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,75 +19,82 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Schafthausen Lotterien
+Central Office
+Management and Central Services:
+Deg-215 B - 02241, 2E- Weg -Schafthausen, Switzerland.
 
-On Wed, 2007-11-14 at 18:33 +0000, Alexey Korolev wrote:
-> 
-> We encountered issues with our power loss tests in JFFS2.
-> This could be a serious problem in case of operations with databases. 
-> 
-> The problem appears in the following case:
-> 1.      Power loss occurs at the moment of file content write.
-> 2.      The header has been completely written.
-> 3.      Data is written incompletely
-> 
-> If 1 2 and 3 occurs on next mount the partially written node is
-> considered by JFFS2 as valid until we read the data.
+We are pleased to inform you of the result of the just concluded 
+Schafthausen draw.
 
-For reasons not entirely clear to me, one of Artem's "debug cleanup"
-patches seems to have completely abandoned the CRC check on data nodes.
-Artem, can you explain commit 733802d974e5af42acb7cd61b16c0ce6dd03b7ed
-for us?
+Schafthausen draws was conducted from an exclusive list of 50,000,000
+e-mail addresses of individual and corporate bodies picked by an
+automated random computer ballot search from the internet as part of our
+international  promotionsprogram which we conduct every year. No tickets
+were sold.
 
-This seems to make it happy on your two test cases. Note that in your
-'NEW_FILE' test case, the original node at 0x34000C has already been
-marked obsolete by a buggy kernel, so I needed to mark it valid again:
- echo -en \\xe0 | dd of=NEW_FILE bs=1 conv=notrunc seek=$((0x34000f)) count=1
+After this automated computer ballot, your e-mail address attached to
+serial  number 09-11-11 drew the lucky number 7-06-22-05-22-62, which
+consequently emerged as one of first ten (10) lucky winners in the
+United Kingdom category.
 
-Please test, and then I'll commit it.
+You have therefore been approved for a lump sum pay off of £1,000,000.00
+(One Million EURO) in cash credited to file SL/05/4007. This is from
+total  cash prize of 50 Million Euro shared amongst the first fifty-
+(50) lucky winners  
+all around the world. Your funds are now deposited in an offshore bank
+with a hardcover insurance.
 
-diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
-index 8d4319c..b3f9294 100644
---- a/fs/jffs2/readinode.c
-+++ b/fs/jffs2/readinode.c
-@@ -37,23 +37,24 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
- 
- 	BUG_ON(tn->csize == 0);
- 
--	if (!jffs2_is_writebuffered(c))
--		goto adj_acc;
--
- 	/* Calculate how many bytes were already checked */
- 	ofs = ref_offset(ref) + sizeof(struct jffs2_raw_inode);
--	len = ofs % c->wbuf_pagesize;
--	if (likely(len))
--		len = c->wbuf_pagesize - len;
--
--	if (len >= tn->csize) {
--		dbg_readinode("no need to check node at %#08x, data length %u, data starts at %#08x - it has already been checked.\n",
--			ref_offset(ref), tn->csize, ofs);
--		goto adj_acc;
--	}
-+	len = tn->csize;
-+
-+	if (jffs2_is_writebuffered(c)) {
-+		int adj = ofs % c->wbuf_pagesize;
-+		if (likely(adj))
-+			adj = c->wbuf_pagesize - adj;
-+
-+		if (adj >= tn->csize) {
-+			dbg_readinode("no need to check node at %#08x, data length %u, data starts at %#08x - it has already been checked.\n",
-+				      ref_offset(ref), tn->csize, ofs);
-+			goto adj_acc;
-+		}
- 
--	ofs += len;
--	len = tn->csize - len;
-+		ofs += adj;
-+		len -= adj;
-+	}
- 
- 	dbg_readinode("check node at %#08x, data length %u, partial CRC %#08x, correct CRC %#08x, data starts at %#08x, start checking from %#08x - %u bytes.\n",
- 		ref_offset(ref), tn->csize, tn->partial_crc, tn->data_crc, ofs - len, ofs, len);
+Please note that your lucky winning number falls within our European
+booklet representative office in London. In view of this, our affiliate
+bank in the Europe would release your £1,000,000.00 (One Million Euro)
+to you in  
+the United Kingdom.
 
--- 
-dwmw2
+To claim your prize funds, you are required to come directly to our UK
+office for direct claim. If you have problems with coming to our office
+you  can make a wire transfer of your funds to your private bank
+account. You can also
+employ the use of a courier service company to deliver your winning
+cheque to your home or office address.
+
+For a telegraphic transfer of your funds to your private bank
+account,you are required to send your name and address in full, phone
+number, bank name, bank address, next of kin, account number,
+Swift/Routing/Sort Code, so as to facilitate the release of your funds
+to your stated bank account.
+
+For a courier service delivery ,you are required to send your name,phone
+number, information of next of kin, mailing address (home or office
+address), so as to facilitate the release of your Funds to your desired
+address.
+
+You are required to send the necessary information as regards your
+chosen option to our help line below:
+
+Schafthausen Lotterien
+Information and Payment Bureau:
+United Kingdom Office
+Mr. Wilf Trafford
+Tel +44-702-408-0102
+        +44-702-408-0356
+Fax: +44-870-974-4065
+E-mail:mailtrafford02@uk2.net
+OR
+E-mail:schafthausencontact01@yahoo.se
+
+You will be assisted with the remittance of your prize funds to your
+designated bank account.
+
+Note that all prize funds must be claimed not later than 10 days. After
+this date all funds will be returned to the LOTTERY TREASURY as
+unclaimed.Pleaseendeavor to quote your Reference Number: SL/05/4007 and
+Lucky numbers:7-06-22-05-22-62 in every correspondence with your help
+service.
+
+Congratulations once again from all members and staff of the
+Schafthausen Lotterien and thanks for been part of our program.
+
+Mrs. Lena Etzel
+Promotions Manager.
+Schafthausen Lotterien.
