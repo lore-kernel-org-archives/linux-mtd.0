@@ -1,20 +1,14 @@
 Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
 From: David Woodhouse <dwmw2@infradead.org>
 To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <Pine.LNX.4.64.0711161123200.1241@pentafluge.infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
 References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-	<1195071456.2533.45.camel@shinybook.infradead.org>
-	<20071115122042.GA10165@lazybastard.org>
-	<1195194827.2533.79.camel@shinybook.infradead.org>
-	<Pine.LNX.4.64.0711161040540.30610@pentafluge.infradead.org>
-	<Pine.LNX.4.64.0711161123200.1241@pentafluge.infradead.org>
 Content-Type: text/plain
-Date: Fri, 16 Nov 2007 22:06:35 -0500
-Message-Id: <1195268795.2533.166.camel@shinybook.infradead.org>
+Date: Fri, 16 Nov 2007 22:46:17 -0500
+Message-Id: <1195271177.2533.174.camel@shinybook.infradead.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: Roman.borisov@intel.com, =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org
+Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,20 +18,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+
+On Wed, 2007-11-14 at 18:33 +0000, Alexey Korolev wrote:
+> 
+> We encountered issues with our power loss tests in JFFS2.
+> This could be a serious problem in case of operations with databases. 
+> 
+> The problem appears in the following case:
+> 1.      Power loss occurs at the moment of file content write.
+> 2.      The header has been completely written.
+> 3.      Data is written incompletely
+> 
+> If 1 2 and 3 occurs on next mount the partially written node is
+> considered by JFFS2 as valid until we read the data.
+
+For reasons not entirely clear to me, one of Artem's "debug cleanup"
+patches seems to have completely abandoned the CRC check on data nodes.
+Artem, can you explain commit 733802d974e5af42acb7cd61b16c0ce6dd03b7ed
+for us?
+
+This seems to make it happy on your two test cases. Note that in your
+'NEW_FILE' test case, the original node at 0x34000C has already been
+marked obsolete by a buggy kernel, so I needed to mark it valid again:
+ echo -en \\xe0 | dd of=NEW_FILE bs=1 conv=notrunc seek=$((0x34000f)) count=1
+
+Please test, and then I'll commit it.
+
+diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+index 8d4319c..b3f9294 100644
 --- a/fs/jffs2/readinode.c
 +++ b/fs/jffs2/readinode.c
-@@ -37,8 +37,10 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
+@@ -37,23 +37,24 @@ static int check_node_data(struct jffs2_sb_info *c, struct jffs2_tmp_dnode_info
  
-        BUG_ON(tn->csize == 0);
+ 	BUG_ON(tn->csize == 0);
  
--       if (!jffs2_is_writebuffered(c))
-+       if (!jffs2_is_writebuffered(c)) {
-+               printk("Er, let's just skip out of %s without actually checking. Who thought that was a good idea?\n", __func__);
-                goto adj_acc;
-+       }
+-	if (!jffs2_is_writebuffered(c))
+-		goto adj_acc;
+-
+ 	/* Calculate how many bytes were already checked */
+ 	ofs = ref_offset(ref) + sizeof(struct jffs2_raw_inode);
+-	len = ofs % c->wbuf_pagesize;
+-	if (likely(len))
+-		len = c->wbuf_pagesize - len;
+-
+-	if (len >= tn->csize) {
+-		dbg_readinode("no need to check node at %#08x, data length %u, data starts at %#08x - it has already been checked.\n",
+-			ref_offset(ref), tn->csize, ofs);
+-		goto adj_acc;
+-	}
++	len = tn->csize;
++
++	if (jffs2_is_writebuffered(c)) {
++		int adj = ofs % c->wbuf_pagesize;
++		if (likely(adj))
++			adj = c->wbuf_pagesize - adj;
++
++		if (adj >= tn->csize) {
++			dbg_readinode("no need to check node at %#08x, data length %u, data starts at %#08x - it has already been checked.\n",
++				      ref_offset(ref), tn->csize, ofs);
++			goto adj_acc;
++		}
  
-        /* Calculate how many bytes were already checked */
-        ofs = ref_offset(ref) + sizeof(struct jffs2_raw_inode);
+-	ofs += len;
+-	len = tn->csize - len;
++		ofs += adj;
++		len -= adj;
++	}
+ 
+ 	dbg_readinode("check node at %#08x, data length %u, partial CRC %#08x, correct CRC %#08x, data starts at %#08x, start checking from %#08x - %u bytes.\n",
+ 		ref_offset(ref), tn->csize, tn->partial_crc, tn->data_crc, ofs - len, ofs, len);
 
 -- 
 dwmw2
