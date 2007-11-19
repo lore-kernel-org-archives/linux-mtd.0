@@ -1,16 +1,17 @@
-Received: from ns.penguin.cz ([212.47.7.226])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IuEEu-0006xo-OT
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 16:33:15 -0500
-Subject: [PATCH] fix CONFIG_MTD_SHARP_SL if CONFIG_MTD=m (try2)
-From: Stanislav Brabec <utx@penguin.cz>
-To: kernel list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain
-Date: Mon, 19 Nov 2007 22:33:02 +0100
-Message-Id: <1195507983.29782.4.camel@utx.utx.cz>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Pavel Machek <pavel@ucw.cz>
+Received: from web43134.mail.sp1.yahoo.com ([216.252.121.64])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IuEeL-0000Bs-6Q
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 16:59:32 -0500
+Date: Mon, 19 Nov 2007 13:59:17 -0800 (PST)
+From: Justin Treon <justin_treon@yahoo.com>
+Subject: [PATCH] MTD: Unlocking all Intel flash that is locked on power up.
+	Try 3
+To: linux-mtd@lists.infradead.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <125146.90876.qm@web43134.mail.sp1.yahoo.com>
+Cc: nico@cam.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +21,130 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sharp Zaurus SL-C3200 with CONFIG_MTD=m and CONFIG_MTD_SHARP_SL=y (as it
-is bool) lost support for the ROM flash. With CONFIG_MTD=y it has no
-problems.
+This is the third submission of the patch for unlocking all Intel flash that is
+locked on power up.  The patch has been tested on Intel M18, P30 and J3D Strata
+Flash.
+  1.    The automatic unlocking can be disabled for a particular partition 
+          in the map or the command line.
+     a. For the bit mask in the map it should look like:
+         .mask_flags	= MTD_POWERUP_LOCK,
+     b. For the command line parsing it should look like:
+         mtdparts=0x80000(bootloader)lk
+  2.    This will only unlock parts with instant individual block locking.  
+         Intel parts with legacy unlocking will not be unlocked.
 
-It is caused by losing of compiled code of
-drivers/mtd/maps/sharpsl-flash.o.
-It was linked to drivers/mtd/maps/built-in.o and drivers/mtd/built-in.o,
-but lost and not linked to drivers/built-in.o (because CONFIG_MTD!=y).
+Diffstat of the patch:
+drivers/mtd/chips/cfi_cmdset_0001.c |   20 +++++++++++++-------
+drivers/mtd/cmdlinepart.c           |    9 ++++++++-
+drivers/mtd/mtdcore.c               |    2 +-
+include/mtd/mtd-abi.h               |    2 +-
+4 files changed, 23 insertions(+), 10 deletions(-)
 
-Patch below fixes this problem by creating sharpsl-flash.ko (and the
-code works correctly as a module).
-
-This is second try (first sent Nov 10 to linux-mtd@lists.infradead.org).
-
-Signed-off-by: Stanislav Brabec <utx@penguin.cz>
-
-Index: linux-2.6.23/drivers/mtd/maps/Kconfig
-===================================================================
---- linux-2.6.23/drivers/mtd/maps/Kconfig
-+++ linux-2.6.23/drivers/mtd/maps/Kconfig
-@@ -600,7 +600,7 @@
- 	default "4"
+Signed-off-by: Justin Treon <justin_treon@yahoo.com>
+---
+diff -r c105f44cf785 drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	Thu Nov 08 15:36:57 2007 -0800
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	Tue Nov 13 22:47:40 2007 -0800
+@@ -226,10 +226,16 @@ static void fixup_use_write_buffers(stru
+ /*
+  * Some chips power-up with all sectors locked by default.
+  */
+-static void fixup_use_powerup_lock(struct mtd_info *mtd, void *param)
+-{
+-	printk(KERN_INFO "Using auto-unlock on power-up/resume\n" );
+-	mtd->flags |= MTD_STUPID_LOCK;
++static void fixup_unlock_powerup_lock(struct mtd_info *mtd, void *param)
++{
++	struct map_info *map = mtd->priv;
++	struct cfi_private *cfi = map->fldrv_priv;
++	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
++
++	if (cfip->FeatureSupport&32) {
++ 		printk(KERN_INFO "Using auto-unlock on power-up/resume\n" );
++		mtd->flags |= MTD_POWERUP_LOCK;
++	}
+ }
  
- config MTD_SHARP_SL
--	bool "ROM mapped on Sharp SL Series"
-+	tristate "ROM mapped on Sharp SL Series"
- 	depends on ARCH_PXA
- 	help
- 	  This enables access to the flash chip on the Sharp SL Series of PDAs.
+ static struct cfi_fixup cfi_fixup_table[] = {
+@@ -244,7 +250,7 @@ static struct cfi_fixup cfi_fixup_table[
+ #endif
+ 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
+ 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
+-	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, CFI_ID_ANY, fixup_unlock_powerup_lock, NULL, },
+ 	{ 0, 0, NULL, NULL }
+ };
+ 
+@@ -2273,7 +2279,7 @@ static int cfi_intelext_suspend(struct m
+ 	struct flchip *chip;
+ 	int ret = 0;
+ 
+-	if ((mtd->flags & MTD_STUPID_LOCK)
++	if ((mtd->flags & MTD_POWERUP_LOCK)
+ 	    && extp && (extp->FeatureSupport & (1 << 5)))
+ 		cfi_intelext_save_locks(mtd);
+ 
+@@ -2384,7 +2390,7 @@ static void cfi_intelext_resume(struct m
+ 		spin_unlock(chip->mutex);
+ 	}
+ 
+-	if ((mtd->flags & MTD_STUPID_LOCK)
++	if ((mtd->flags & MTD_POWERUP_LOCK)
+ 	    && extp && (extp->FeatureSupport & (1 << 5)))
+ 		cfi_intelext_restore_locks(mtd);
+ }
+diff -r c105f44cf785 drivers/mtd/cmdlinepart.c
+--- a/drivers/mtd/cmdlinepart.c	Thu Nov 08 15:36:57 2007 -0800
++++ b/drivers/mtd/cmdlinepart.c	Thu Nov 15 17:18:11 2007 -0800
+@@ -9,7 +9,7 @@
+  *
+  * mtdparts=<mtddef>[;<mtddef]
+  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
+- * <partdef> := <size>[@offset][<name>][ro]
++ * <partdef> := <size>[@offset][<name>][ro][lk]
+  * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
+  * <size>    := standard linux memsize OR "-" to denote all remaining space
+  * <name>    := '(' NAME ')'
+@@ -140,6 +140,13 @@ static struct mtd_partition * newpart(ch
+         if (strncmp(s, "ro", 2) == 0)
+ 	{
+ 		mask_flags |= MTD_WRITEABLE;
++		s += 2;
++        }
++
++        /* if lk is found do NOT unlock the MTD partition*/
++        if (strncmp(s, "lk", 2) == 0)
++	{
++		mask_flags |= MTD_POWERUP_LOCK;
+ 		s += 2;
+         }
+ 
+diff -r c105f44cf785 drivers/mtd/mtdcore.c
+--- a/drivers/mtd/mtdcore.c	Thu Nov 08 15:36:57 2007 -0800
++++ b/drivers/mtd/mtdcore.c	Tue Nov 13 15:41:00 2007 -0800
+@@ -59,7 +59,7 @@ int add_mtd_device(struct mtd_info *mtd)
+ 
+ 			/* Some chips always power up locked. Unlock them now */
+ 			if ((mtd->flags & MTD_WRITEABLE)
+-			    && (mtd->flags & MTD_STUPID_LOCK) && mtd->unlock) {
++			    && (mtd->flags & MTD_POWERUP_LOCK) && mtd->unlock) {
+ 				if (mtd->unlock(mtd, 0, mtd->size))
+ 					printk(KERN_WARNING
+ 					       "%s: unlock failed, "
+diff -r c105f44cf785 include/mtd/mtd-abi.h
+--- a/include/mtd/mtd-abi.h	Thu Nov 08 15:36:57 2007 -0800
++++ b/include/mtd/mtd-abi.h	Fri Nov 09 10:43:28 2007 -0800
+@@ -29,7 +29,7 @@ struct mtd_oob_buf {
+ #define MTD_WRITEABLE		0x400	/* Device is writeable */
+ #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
+ #define MTD_NO_ERASE		0x1000	/* No erase necessary */
+-#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
++#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
+ 
+ // Some common devices / combinations of capabilities
+ #define MTD_CAP_ROM		0
 
 
-Command to ensure, that CONFIG_MTD_SHARP_SL is the only problematic part
-of MTD.
-for i in $(find -name Makefile | xargs grep CONFIG_MTD_ | sed 's/.*obj-\$(\([^)]*\).*/\1/') ; do grep -A1 -w "config ${i#CONFIG_}" $(find -name Kconfig) ; done | grep -B1 bool
-
-
-________________________________________________________________________
-Stanislav Brabec
-http://www.penguin.cz/~utx
+      ____________________________________________________________________________________
+Be a better pen pal. 
+Text or chat with friends inside Yahoo! Mail. See how.  http://overview.mail.yahoo.com/
