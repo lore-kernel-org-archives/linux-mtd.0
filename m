@@ -1,18 +1,21 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iu2V7-0002vH-A3
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 04:01:11 -0500
-Subject: Re: UBIFS - Current Status?
+	id 1Iu2eZ-0003Z3-2c
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 04:10:57 -0500
+Subject: Re: ubi-utils: unubi fixes and enhancements
 From: Artem Bityutskiy <dedekind@infradead.org>
-To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502B9DBE4@orsmsx413.amr.corp.intel.com>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502B9DBE4@orsmsx413.amr.corp.intel.com>
+To: haver@vnet.ibm.com
+In-Reply-To: <1194267534.13736.10.camel@august>
+References: <1194267534.13736.10.camel@august>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 19 Nov 2007 11:00:55 +0200
-Message-Id: <1195462855.1119.2.camel@sauron>
+Date: Mon, 19 Nov 2007 11:03:50 +0200
+Message-Id: <1195463030.1119.7.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
+Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>
 Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,13 +26,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2007-10-25 at 14:42 -0700, Johnson, Charles F wrote:
-> Just curious on what the current state of UBIFS ?? =20
+On Mon, 2007-11-05 at 13:58 +0100, Frank Haverkamp wrote:
+> Hi Artem,
 >=20
-> I'm looking for a solution which could support very large MLC NAND flash
-> design.  UBIFS+UBI looks like it a good candidate.=20
+> some time ago Drake Dawsett, a student working for us, has done some
+> bug-fixes and enhancements to the unubi tool. He forgot to send them out
+> before he left us. I have reworked them for integration:
+>=20
+>   git://git.infradead.org/users/haver/mtd-utils.git
+>=20
+> Please have a look, and pull them if you are fine with them.
 
-I wonder how large?
+Hi guys, sorry, I was away, will handle this soon.
 
 --=20
 Best regards,
