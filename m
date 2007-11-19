@@ -1,20 +1,23 @@
 Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iu6xD-0006KE-Le
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 08:46:30 -0500
-Message-ID: <474191E7.1060406@nokia.com>
-Date: Mon, 19 Nov 2007 15:38:47 +0200
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-MIME-Version: 1.0
-To: haver@vnet.ibm.com
-Subject: Re: ubi-utils: unubi fixes and enhancements
-References: <1194267534.13736.10.camel@august> <1195463030.1119.7.camel@sauron>
-In-Reply-To: <1195463030.1119.7.camel@sauron>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>
-Reply-To: Artem.Bityutskiy@nokia.com
+	id 1Iu7UZ-0002ih-Kg
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 09:20:58 -0500
+Subject: Re: Yet Another UBI Question
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
+In-Reply-To: <9b52d64c0711190206h6f845a07h6bb6817b61cb95c@mail.gmail.com>
+References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
+	<B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
+	<9b52d64c0711190124p6730356ep3b0c7a381863a905@mail.gmail.com>
+	<1195465265.1119.24.camel@sauron>
+	<9b52d64c0711190206h6f845a07h6bb6817b61cb95c@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 19 Nov 2007 16:20:46 +0200
+Message-Id: <1195482046.3231.24.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,35 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Artem Bityutskiy wrote:
-> On Mon, 2007-11-05 at 13:58 +0100, Frank Haverkamp wrote:
->> Hi Artem,
->>
->> some time ago Drake Dawsett, a student working for us, has done some
->> bug-fixes and enhancements to the unubi tool. He forgot to send them out
->> before he left us. I have reworked them for integration:
->>
->>   git://git.infradead.org/users/haver/mtd-utils.git
->>
->> Please have a look, and pull them if you are fine with them.
-> 
-> Hi guys, sorry, I was away, will handle this soon.
+On Mon, 2007-11-19 at 15:36 +0530, Vinit Agnihotri wrote:
+> Agree but What I mean is instead of implementing cdev & FTL on it.
+> Why not to implement block device for a volume in the first place.
+> ofcourse this block device will also have abilities of upadate, read/writ=
+e.
+>=20
+> Stacking is good approach but then stacking will causes performance degra=
+de,
+> as we'll be emulating block device over a character device. But if we
+> can avoid it, we'll get performance improvements
+> & also widesread use of UBI as any FS could be put on UBI volumes with
+> no efforts.
+> User should not be given additional & complex task of writing FTL just
+> to put his FS on top of UBI volume.
 
-It does not compile for me:
+When we wrote UBI we _did not_ mean to create FTL or something close _at
+all_. We solved other problems: wear-leveling across whole flash chip,
+volumes creation/deletion/re-size, reliability (static volumes,
+transparent clever errors and bad-block handling, bit-flips handling,
+updates).
 
-gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W 
--std=gnu99 -DPACKAGE_VERSION=\"1.0\" -g -c -o nand2bin.o ./src/nand2bin.c -g 
--Wp,-MD,.nand2bin.c.dep
-gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W 
--std=gnu99 -DPACKAGE_VERSION=\"1.0\" -g -c -o nandcorr.o ./src/nandcorr.c -g 
--Wp,-MD,.nandcorr.c.dep
-gcc  -o nand2bin nand2bin.o nandecc.o nandcorr.o
-make[1]: *** No rule to make target `src/eb_chain.h', needed by `unubi.o'.  Stop.
-make[1]: Leaving directory `/home/dedekind/git/mtd-utils.git/ubi-utils'
-make: *** [all] Error 2
+FTL is a completely different task, we _did not_ intend solve it! If one
+needs FTL - please go ahead and implement it!
 
-Could you please fix this and also rebase against newer mtd-utils.git?
+But I say that it will be easier to do this on top of UBI then on top of
+MTD device because UBI already solves many (but not all) problems FTL
+has to solve (see the above). If one wants better performance because of
+less stacking - please, just write FTL on top of MTD.
 
--- 
-Best Regards,
-Artem Bityutskiy (Артём Битюцкий)
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
