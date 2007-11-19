@@ -1,16 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iu2U5-0002gf-Iv
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 04:00:07 -0500
-Subject: Re: Yet Another UBI Question
+	id 1Iu2V7-0002vH-A3
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 04:01:11 -0500
+Subject: Re: UBIFS - Current Status?
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: "Johnson, Charles F" <charles.f.johnson@intel.com>
-In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
-	<B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
+In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502B9DBE4@orsmsx413.amr.corp.intel.com>
+References: <B1EDF20A6EAAD74EA65E46F774F1784502B9DBE4@orsmsx413.amr.corp.intel.com>
 Content-Type: text/plain; charset=utf-8
-Date: Mon, 19 Nov 2007 10:59:33 +0200
-Message-Id: <1195462773.1119.0.camel@sauron>
+Date: Mon, 19 Nov 2007 11:00:55 +0200
+Message-Id: <1195462855.1119.2.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -24,12 +23,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2007-10-24 at 15:39 -0700, Johnson, Charles F wrote:
-> Is there exist yet a block driver which sits on top of UBI so that you
-> could use one of the traditional file systems such as ext3 or vfat?
+On Thu, 2007-10-25 at 14:42 -0700, Johnson, Charles F wrote:
+> Just curious on what the current state of UBIFS ?? =20
+>=20
+> I'm looking for a solution which could support very large MLC NAND flash
+> design.  UBIFS+UBI looks like it a good candidate.=20
 
-Hi, no, there are no such drivers, unfortunately. But writing one is
-much easier on top of UBI then on top of a bare flash.
+I wonder how large?
 
 --=20
 Best regards,
