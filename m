@@ -1,23 +1,14 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iu7UZ-0002ih-Kg
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 09:20:58 -0500
-Subject: Re: Yet Another UBI Question
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
-In-Reply-To: <9b52d64c0711190206h6f845a07h6bb6817b61cb95c@mail.gmail.com>
-References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
-	<B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
-	<9b52d64c0711190124p6730356ep3b0c7a381863a905@mail.gmail.com>
-	<1195465265.1119.24.camel@sauron>
-	<9b52d64c0711190206h6f845a07h6bb6817b61cb95c@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 19 Nov 2007 16:20:46 +0200
-Message-Id: <1195482046.3231.24.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Date: Mon, 19 Nov 2007 14:23:08 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
+In-Reply-To: <1195271177.2533.174.camel@shinybook.infradead.org>
+Message-ID: <Pine.LNX.4.64.0711191419220.20455@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
+	<1195271177.2533.174.camel@shinybook.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,36 +18,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2007-11-19 at 15:36 +0530, Vinit Agnihotri wrote:
-> Agree but What I mean is instead of implementing cdev & FTL on it.
-> Why not to implement block device for a volume in the first place.
-> ofcourse this block device will also have abilities of upadate, read/writ=
-e.
->=20
-> Stacking is good approach but then stacking will causes performance degra=
-de,
-> as we'll be emulating block device over a character device. But if we
-> can avoid it, we'll get performance improvements
-> & also widesread use of UBI as any FS could be put on UBI volumes with
-> no efforts.
-> User should not be given additional & complex task of writing FTL just
-> to put his FS on top of UBI volume.
+Hi David,
 
-When we wrote UBI we _did not_ mean to create FTL or something close _at
-all_. We solved other problems: wear-leveling across whole flash chip,
-volumes creation/deletion/re-size, reliability (static volumes,
-transparent clever errors and bad-block handling, bit-flips handling,
-updates).
+> For reasons not entirely clear to me, one of Artem's "debug cleanup"
+> patches seems to have completely abandoned the CRC check on data nodes.
+> Artem, can you explain commit 733802d974e5af42acb7cd61b16c0ce6dd03b7ed
+> for us?
+> 
+> This seems to make it happy on your two test cases. Note that in your
+> 'NEW_FILE' test case, the original node at 0x34000C has already been
+> marked obsolete by a buggy kernel, so I needed to mark it valid again:
+>  echo -en \\xe0 | dd of=NEW_FILE bs=1 conv=notrunc seek=$((0x34000f)) count=1
+> 
+> Please test, and then I'll commit it.
+> 
+> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
+>
+The patch you sent solved the issue for both generic NOR and Sibley.
+Commit it please.
 
-FTL is a completely different task, we _did not_ intend solve it! If one
-needs FTL - please go ahead and implement it!
-
-But I say that it will be easier to do this on top of UBI then on top of
-MTD device because UBI already solves many (but not all) problems FTL
-has to solve (see the above). If one wants better performance because of
-less stacking - please, just write FTL on top of MTD.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks,
+Alexey and Roman
