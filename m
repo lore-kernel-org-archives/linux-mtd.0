@@ -1,14 +1,15 @@
-Date: Mon, 19 Nov 2007 14:23:08 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC] BUG Power loss recovery issues in JFFS2
-In-Reply-To: <1195271177.2533.174.camel@shinybook.infradead.org>
-Message-ID: <Pine.LNX.4.64.0711191419220.20455@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0711141825330.19494@pentafluge.infradead.org>
-	<1195271177.2533.174.camel@shinybook.infradead.org>
+Received: from smtp005.mail.ukl.yahoo.com ([217.12.11.36])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IuDcl-0003XO-E8
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 15:53:49 -0500
+Message-ID: <4741F7D1.7090305@yahoo.fr>
+Date: Mon, 19 Nov 2007 21:53:37 +0100
+From: obelix0 <obelix0@yahoo.fr>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Cc: Roman.borisov@intel.com, linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: CramFS and "Unable to mount root fs on unknown-block(0,0)"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,24 +19,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi David,
+Hi everybody !
 
-> For reasons not entirely clear to me, one of Artem's "debug cleanup"
-> patches seems to have completely abandoned the CRC check on data nodes.
-> Artem, can you explain commit 733802d974e5af42acb7cd61b16c0ce6dd03b7ed
-> for us?
-> 
-> This seems to make it happy on your two test cases. Note that in your
-> 'NEW_FILE' test case, the original node at 0x34000C has already been
-> marked obsolete by a buggy kernel, so I needed to mark it valid again:
->  echo -en \\xe0 | dd of=NEW_FILE bs=1 conv=notrunc seek=$((0x34000f)) count=1
-> 
-> Please test, and then I'll commit it.
-> 
-> diff --git a/fs/jffs2/readinode.c b/fs/jffs2/readinode.c
->
-The patch you sent solved the issue for both generic NOR and Sibley.
-Commit it please.
+I would like to compile a 2.6.9 linux kernel for my flash.
 
-Thanks,
-Alexey and Roman
+Please look at my config file :
+...
+CONFIG_CMDLINE="rootfstype=jffs2 root=/dev/mtdblock/2 ro 
+mtdparts=phys_mapped_flash:1m(firmware)ro,1m(kernel),20m(root),-(jffs2)"
+CONFIG_CRAMFS=y
+...
+
+to have this schema on flash :
+- 1Mo for firmware in read only
+- 1Mo for Kernel in read only
+- 20Mo for root file system in read only CramFS
+- 14Mo for file system in read and write
+- and ramFS for /tmp /etc /var
+
+is it the right way to build the flash ?
+
+I compiled my kernel and when I started, I had this error message :
+------------------------------------------------------------------------------------------------------------
+Now booting the kernel
+Linux version 2.6.9-elinos-111 (gcc version 3.2.3 (ELinOS V3.1 3.2.3-35 
+2005-07-04)) #1 Mon Nov 19 11:27:47 CET 2007
+Kernel command line: rootfstype=cramfs root=/dev/mtdblock/2 ro 
+mtdparts=phys_mapped_flash:1m(firmware)ro,1m(kernel)ro,20m(root)ro,-(jffs2)
+...
+physmap flash device: 4000000 at f0000000
+phys_mapped_flash: Found 1 x16 devices at 0x0 in 16-bit bank
+...
+4 cmdlinepart partitions found on MTD device phys_mapped_flash
+Creating 4 MTD partitions on "phys_mapped_flash":
+0x00000000-0x00100000 : "firmware"
+0x00100000-0x00200000 : "kernel"
+0x00200000-0x01600000 : "root"
+0x01600000-0x04000000 : "jffs2"
+...
+Kernel panic - not syncing: VFS: Unable to mount root fs on 
+unknown-block(0,0)
+------------------------------------------------------------------------------------------------------------
+
+I compiled with cramfs in kernel, not as module, I checked my config 
+file, I searched on the web but I haven't got any idea !
+
+thanks for your help
+
+Obelix
