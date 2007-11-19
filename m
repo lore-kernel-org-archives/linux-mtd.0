@@ -1,17 +1,20 @@
-Received: from za-gw.sanpeople.com ([196.211.225.226])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iu6te-0004f0-6s
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 08:42:49 -0500
-Subject: [PATCH] [MTD] mtd_dataflash: Incorrect compare-after-write check
-From: Andrew Victor <andrew@sanpeople.com>
-To: dwmw2@infradead.org
-Content-Type: text/plain
-Message-Id: <1195479443.32266.28.camel@fuzzie.sanpeople.com>
-Mime-Version: 1.0
-Date: 19 Nov 2007 15:37:23 +0200
-Content-Transfer-Encoding: 7bit
-Cc: David Brownell <david-b@pacbell.net>, linux-mtd@lists.infradead.org,
-	Haavard Skinnemoen <hskinnemoen@atmel.com>
+	id 1Iu6xD-0006KE-Le
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 08:46:30 -0500
+Message-ID: <474191E7.1060406@nokia.com>
+Date: Mon, 19 Nov 2007 15:38:47 +0200
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+MIME-Version: 1.0
+To: haver@vnet.ibm.com
+Subject: Re: ubi-utils: unubi fixes and enhancements
+References: <1194267534.13736.10.camel@august> <1195463030.1119.7.camel@sauron>
+In-Reply-To: <1195463030.1119.7.camel@sauron>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Alexander Schmidt <alexs@linux.vnet.ibm.com>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,26 +24,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-After writing to a Dataflash page, the built-in compare operation is
-used to check that the page was successfully written.  A logic bug in
-checking the results of the comparison currently causes the compare to
-never fail.
+Artem Bityutskiy wrote:
+> On Mon, 2007-11-05 at 13:58 +0100, Frank Haverkamp wrote:
+>> Hi Artem,
+>>
+>> some time ago Drake Dawsett, a student working for us, has done some
+>> bug-fixes and enhancements to the unubi tool. He forgot to send them out
+>> before he left us. I have reworked them for integration:
+>>
+>>   git://git.infradead.org/users/haver/mtd-utils.git
+>>
+>> Please have a look, and pull them if you are fine with them.
+> 
+> Hi guys, sorry, I was away, will handle this soon.
 
-This bug was originally in the legacy at91_dataflash.c driver.
+It does not compile for me:
 
-Signed-off-by: Andrew Victor <andrew@sanpeople.com>
-Acked-by: David Brownell <david-b@pacbell.net>
+gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W 
+-std=gnu99 -DPACKAGE_VERSION=\"1.0\" -g -c -o nand2bin.o ./src/nand2bin.c -g 
+-Wp,-MD,.nand2bin.c.dep
+gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W 
+-std=gnu99 -DPACKAGE_VERSION=\"1.0\" -g -c -o nandcorr.o ./src/nandcorr.c -g 
+-Wp,-MD,.nandcorr.c.dep
+gcc  -o nand2bin nand2bin.o nandecc.o nandcorr.o
+make[1]: *** No rule to make target `src/eb_chain.h', needed by `unubi.o'.  Stop.
+make[1]: Leaving directory `/home/dedekind/git/mtd-utils.git/ubi-utils'
+make: *** [all] Error 2
 
+Could you please fix this and also rebase against newer mtd-utils.git?
 
-diff -urN -x CVS linux-2.6.24-rc3/drivers/mtd/devices/mtd_dataflash.c linux-2.6-stable/drivers/mtd/devices/mtd_dataflash.c
---- linux-2.6.24-rc3/drivers/mtd/devices/mtd_dataflash.c	Mon Nov 19 11:31:10 2007
-+++ linux-2.6-stable/drivers/mtd/devices/mtd_dataflash.c	Tue Nov 13 15:52:02 2007
-@@ -420,7 +420,7 @@
- 		status = dataflash_waitready(priv->spi);
- 
- 		/* Check result of the compare operation */
--		if ((status & (1 << 6)) == 1) {
-+		if (status & (1 << 6)) {
- 			printk(KERN_ERR "%s: compare page %u, err %d\n",
- 				spi->dev.bus_id, pageaddr, status);
- 			remaining = 0;
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
