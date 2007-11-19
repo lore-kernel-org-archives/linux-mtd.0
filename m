@@ -1,17 +1,15 @@
-Received: from web43134.mail.sp1.yahoo.com ([216.252.121.64])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IuEeL-0000Bs-6Q
-	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 16:59:32 -0500
-Date: Mon, 19 Nov 2007 13:59:17 -0800 (PST)
-From: Justin Treon <justin_treon@yahoo.com>
-Subject: [PATCH] MTD: Unlocking all Intel flash that is locked on power up.
-	Try 3
+Received: from 87-194-8-8.bethere.co.uk ([87.194.8.8] helo=kira.home.fluff.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IuG2H-0006Bp-RG
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 18:28:20 -0500
+Date: Mon, 19 Nov 2007 23:28:07 +0000
+From: Ben Dooks <ben-linux@fluff.org>
 To: linux-mtd@lists.infradead.org
+Subject: [PATCH] NAND: S3C2410 correctly set nFCE over resume
+Message-ID: <20071119232807.GA8229@fluff.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Message-ID: <125146.90876.qm@web43134.mail.sp1.yahoo.com>
-Cc: nico@cam.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,130 +19,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is the third submission of the patch for unlocking all Intel flash that is
-locked on power up.  The patch has been tested on Intel M18, P30 and J3D Strata
-Flash.
-  1.    The automatic unlocking can be disabled for a particular partition 
-          in the map or the command line.
-     a. For the bit mask in the map it should look like:
-         .mask_flags	= MTD_POWERUP_LOCK,
-     b. For the command line parsing it should look like:
-         mtdparts=0x80000(bootloader)lk
-  2.    This will only unlock parts with instant individual block locking.  
-         Intel parts with legacy unlocking will not be unlocked.
+Ensure the nFCE line is de-asserted over suspend and
+then re-initialised when the system resumes. This is
+to ensure that the NAND is kept in lowest power mode
+over suspend (power settings are only specified for
+nFCE inactive) as well as fixing the Simtec Osiris
+which relies on nFCE being inactive.
 
-Diffstat of the patch:
-drivers/mtd/chips/cfi_cmdset_0001.c |   20 +++++++++++++-------
-drivers/mtd/cmdlinepart.c           |    9 ++++++++-
-drivers/mtd/mtdcore.c               |    2 +-
-include/mtd/mtd-abi.h               |    2 +-
-4 files changed, 23 insertions(+), 10 deletions(-)
+Signed-off-by: Ben Dooks <ben-linux@fluff.org>
 
-Signed-off-by: Justin Treon <justin_treon@yahoo.com>
----
-diff -r c105f44cf785 drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c	Thu Nov 08 15:36:57 2007 -0800
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c	Tue Nov 13 22:47:40 2007 -0800
-@@ -226,10 +226,16 @@ static void fixup_use_write_buffers(stru
- /*
-  * Some chips power-up with all sectors locked by default.
-  */
--static void fixup_use_powerup_lock(struct mtd_info *mtd, void *param)
--{
--	printk(KERN_INFO "Using auto-unlock on power-up/resume\n" );
--	mtd->flags |= MTD_STUPID_LOCK;
-+static void fixup_unlock_powerup_lock(struct mtd_info *mtd, void *param)
-+{
-+	struct map_info *map = mtd->priv;
-+	struct cfi_private *cfi = map->fldrv_priv;
-+	struct cfi_pri_intelext *cfip = cfi->cmdset_priv;
-+
-+	if (cfip->FeatureSupport&32) {
-+ 		printk(KERN_INFO "Using auto-unlock on power-up/resume\n" );
-+		mtd->flags |= MTD_POWERUP_LOCK;
-+	}
- }
+diff -urpN -X linux-2.6.24-rc3/Documentation/dontdiff linux-2.6.24-rc3/drivers/mtd/nand/s3c2410.c linux-2.6.24-rc3-mtd1/drivers/mtd/nand/s3c2410.c
+--- linux-2.6.24-rc3/drivers/mtd/nand/s3c2410.c	2007-11-19 16:12:05.000000000 +0000
++++ linux-2.6.24-rc3-mtd1/drivers/mtd/nand/s3c2410.c	2007-11-19 23:25:01.000000000 +0000
+@@ -119,6 +119,8 @@ struct s3c2410_nand_info {
+ 	void __iomem			*sel_reg;
+ 	int				sel_bit;
+ 	int				mtd_count;
++	
++	unsigned long			save_nfconf;
  
- static struct cfi_fixup cfi_fixup_table[] = {
-@@ -244,7 +250,7 @@ static struct cfi_fixup cfi_fixup_table[
- #endif
- 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
- 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
--	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, CFI_ID_ANY, fixup_unlock_powerup_lock, NULL, },
- 	{ 0, 0, NULL, NULL }
+ 	enum s3c_cpu_type		cpu_type;
  };
+@@ -810,6 +812,16 @@ static int s3c24xx_nand_suspend(struct p
+ 	struct s3c2410_nand_info *info = platform_get_drvdata(dev);
  
-@@ -2273,7 +2279,7 @@ static int cfi_intelext_suspend(struct m
- 	struct flchip *chip;
- 	int ret = 0;
- 
--	if ((mtd->flags & MTD_STUPID_LOCK)
-+	if ((mtd->flags & MTD_POWERUP_LOCK)
- 	    && extp && (extp->FeatureSupport & (1 << 5)))
- 		cfi_intelext_save_locks(mtd);
- 
-@@ -2384,7 +2390,7 @@ static void cfi_intelext_resume(struct m
- 		spin_unlock(chip->mutex);
- 	}
- 
--	if ((mtd->flags & MTD_STUPID_LOCK)
-+	if ((mtd->flags & MTD_POWERUP_LOCK)
- 	    && extp && (extp->FeatureSupport & (1 << 5)))
- 		cfi_intelext_restore_locks(mtd);
- }
-diff -r c105f44cf785 drivers/mtd/cmdlinepart.c
---- a/drivers/mtd/cmdlinepart.c	Thu Nov 08 15:36:57 2007 -0800
-+++ b/drivers/mtd/cmdlinepart.c	Thu Nov 15 17:18:11 2007 -0800
-@@ -9,7 +9,7 @@
-  *
-  * mtdparts=<mtddef>[;<mtddef]
-  * <mtddef>  := <mtd-id>:<partdef>[,<partdef>]
-- * <partdef> := <size>[@offset][<name>][ro]
-+ * <partdef> := <size>[@offset][<name>][ro][lk]
-  * <mtd-id>  := unique name used in mapping driver/device (mtd->name)
-  * <size>    := standard linux memsize OR "-" to denote all remaining space
-  * <name>    := '(' NAME ')'
-@@ -140,6 +140,13 @@ static struct mtd_partition * newpart(ch
-         if (strncmp(s, "ro", 2) == 0)
- 	{
- 		mask_flags |= MTD_WRITEABLE;
-+		s += 2;
-+        }
+ 	if (info) {
++		info->save_nfconf = readl(info->regs + S3C2410_NFCONF);
 +
-+        /* if lk is found do NOT unlock the MTD partition*/
-+        if (strncmp(s, "lk", 2) == 0)
-+	{
-+		mask_flags |= MTD_POWERUP_LOCK;
- 		s += 2;
-         }
++		/* For the moment, we must ensure nFCE is high during
++		 * the time we are suspended. This really should be
++		 * handled by suspending the MTDs we are using, but
++		 * that is currently not the case. */
++
++		writel(info->save_nfconf | info->sel_bit,
++		       info->regs + S3C2410_NFCONF);
++
+ 		if (!allow_clk_stop(info))
+ 			clk_disable(info->clk);
+ 	}
+@@ -820,10 +832,18 @@ static int s3c24xx_nand_suspend(struct p
+ static int s3c24xx_nand_resume(struct platform_device *dev)
+ {
+ 	struct s3c2410_nand_info *info = platform_get_drvdata(dev);
++	unsigned long nfconf;
  
-diff -r c105f44cf785 drivers/mtd/mtdcore.c
---- a/drivers/mtd/mtdcore.c	Thu Nov 08 15:36:57 2007 -0800
-+++ b/drivers/mtd/mtdcore.c	Tue Nov 13 15:41:00 2007 -0800
-@@ -59,7 +59,7 @@ int add_mtd_device(struct mtd_info *mtd)
+ 	if (info) {
+ 		clk_enable(info->clk);
+ 		s3c2410_nand_inithw(info, dev);
++		
++		/* Restore the state of the nFCE line. */
++
++		nfconf = readl(info->regs + S3C2410_NFCONF);
++		nfconf &= ~info->sel_bit;
++		nfconf |= info->save_nfconf & info->sel_bit;
++		writel(nfconf, info->regs + S3C2410_NFCONF);
  
- 			/* Some chips always power up locked. Unlock them now */
- 			if ((mtd->flags & MTD_WRITEABLE)
--			    && (mtd->flags & MTD_STUPID_LOCK) && mtd->unlock) {
-+			    && (mtd->flags & MTD_POWERUP_LOCK) && mtd->unlock) {
- 				if (mtd->unlock(mtd, 0, mtd->size))
- 					printk(KERN_WARNING
- 					       "%s: unlock failed, "
-diff -r c105f44cf785 include/mtd/mtd-abi.h
---- a/include/mtd/mtd-abi.h	Thu Nov 08 15:36:57 2007 -0800
-+++ b/include/mtd/mtd-abi.h	Fri Nov 09 10:43:28 2007 -0800
-@@ -29,7 +29,7 @@ struct mtd_oob_buf {
- #define MTD_WRITEABLE		0x400	/* Device is writeable */
- #define MTD_BIT_WRITEABLE	0x800	/* Single bits can be flipped */
- #define MTD_NO_ERASE		0x1000	/* No erase necessary */
--#define MTD_STUPID_LOCK		0x2000	/* Always locked after reset */
-+#define MTD_POWERUP_LOCK	0x2000	/* Always locked after reset */
- 
- // Some common devices / combinations of capabilities
- #define MTD_CAP_ROM		0
-
-
-      ____________________________________________________________________________________
-Be a better pen pal. 
-Text or chat with friends inside Yahoo! Mail. See how.  http://overview.mail.yahoo.com/
+ 		if (allow_clk_stop(info))
+ 			clk_disable(info->clk);
