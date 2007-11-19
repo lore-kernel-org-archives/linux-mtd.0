@@ -1,24 +1,20 @@
-Received: from mms1.broadcom.com ([216.31.210.17])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1ItiLC-0007ro-NC
-	for linux-mtd@lists.infradead.org; Sun, 18 Nov 2007 06:29:37 -0500
-Received: from mail-irva-8.broadcom.com (mail-irva-8 [10.10.64.221]) by
-	mail-irva-10.broadcom.com (Postfix) with ESMTP id C226F2AE for
-	<linux-mtd@lists.infradead.org>; Sun, 18 Nov 2007 03:29:12 -0800 (PST)
-Received: from NT-SJCA-0752.brcm.ad.broadcom.com (nt-sjca-0752
-	[10.16.192.222]) by mail-sj1-12.sj.broadcom.com (Postfix) with ESMTP id
-	42E5920502 for <linux-mtd@lists.infradead.org>; Sun, 18 Nov 2007
-	03:29:06 -0800 (PST)
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Subject: Flash error messages.
-Date: Sun, 18 Nov 2007 03:29:04 -0800
-Message-ID: <E06E3B7BBC07864CADE892DAF1EB0FBD022D1B6F@NT-SJCA-0752.brcm.ad.broadcom.com>
-From: "Saleemuddin Mohammad" <msaleem@broadcom.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain;
- charset=us-ascii
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Iu2U5-0002gf-Iv
+	for linux-mtd@lists.infradead.org; Mon, 19 Nov 2007 04:00:07 -0500
+Subject: Re: Yet Another UBI Question
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: "Johnson, Charles F" <charles.f.johnson@intel.com>
+In-Reply-To: <B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
+References: <B1EDF20A6EAAD74EA65E46F774F1784502B64384@orsmsx413.amr.corp.intel.com>
+	<B1EDF20A6EAAD74EA65E46F774F1784502B9D207@orsmsx413.amr.corp.intel.com>
+Content-Type: text/plain; charset=utf-8
+Date: Mon, 19 Nov 2007 10:59:33 +0200
+Message-Id: <1195462773.1119.0.camel@sauron>
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,26 +24,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2007-10-24 at 15:39 -0700, Johnson, Charles F wrote:
+> Is there exist yet a block driver which sits on top of UBI so that you
+> could use one of the traditional file systems such as ext3 or vfat?
 
-I observing following kernel warning messages while trying to boot the
-image.
-I am using Intel flash JS28F128P33T85 and linux kernel 2.6.14.
-=20
-Following messages are seen on the console=20
-=20
-Node header CRC failed at 0029d330. But it must have been OK earlier.
-Node was: { 00b0, 20b0, 00b000b0, 00b000b0 }
-Node totlen on flash (0x00b000b0) !=3D totlen from node ref (0x00000444)
-jffs2_do_read_inode(): No data nodes found for ino #6
-Node header CRC failed at 00cc8948. But it must have been OK earlier.
-Node was: { 00b0, 20b0, 00b000b0, 00b000b0 }
-Node totlen on flash (0x00b000b0) !=3D totlen from node ref (0x000000dc)
-jffs2_do_read_inode(): No data nodes found for ino #11
-=20
-Have you ever seen these messages? Please let me know your expert advice
-on this?
+Hi, no, there are no such drivers, unfortunately. But writing one is
+much easier on top of UBI then on top of a bare flash.
 
-Thanks & Regards,
-Saleem
-=20
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
