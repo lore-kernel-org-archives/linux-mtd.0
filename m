@@ -1,21 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IusCN-0007Qi-7I
-	for linux-mtd@lists.infradead.org; Wed, 21 Nov 2007 11:13:17 -0500
-Date: Wed, 21 Nov 2007 17:08:05 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Gregory CLEMENT <gclement00@gmail.com>
+Received: from wx-out-0506.google.com ([66.249.82.234])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IusQw-0005dR-5Z
+	for linux-mtd@lists.infradead.org; Wed, 21 Nov 2007 11:28:23 -0500
+Received: by wx-out-0506.google.com with SMTP id s7so810458wxc
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 21 Nov 2007 08:28:07 -0800 (PST)
+Message-ID: <305035a40711210828k65174f44t3d64e9ee33fe26bf@mail.gmail.com>
+Date: Wed, 21 Nov 2007 17:28:05 +0100
+From: "Gregory CLEMENT" <gclement00@gmail.com>
+To: linux-mtd@lists.infradead.org
 Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
 	Layer Over MTD ?
-Message-ID: <20071121160804.GC20871@lazybastard.org>
-References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20071121160804.GC20871@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org,
-	Konstantin Baydarov <kbaidarov@dev.rtsoft.ru>
+References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
+	<20071121160804.GC20871@lazybastard.org>
+Cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +28,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 21 November 2007 15:27:19 +0100, Gregory CLEMENT wrote:
-> 
-> I come back with my question because it seems that last time I sent
-> this mail mtd mailing list was done during few weeks, so maybe  this
-> mail was lost.
+2007/11/21, J=F6rn Engel <joern@logfs.org>:
+> On Wed, 21 November 2007 15:27:19 +0100, Gregory CLEMENT wrote:
+> >
+> > I come back with my question because it seems that last time I sent
+> > this mail mtd mailing list was done during few weeks, so maybe  this
+> > mail was lost.
+>
+> What problem does the driver solve?
+It allow  to use cramfs/squashfs/fat in read-only on NAND flash for
+embedded systems.
+As far as I know, there is nothing to do it now in kernel: i.e. simply
+managae badblock for read-only filesysteme.
 
-What problem does the driver solve?  Why don't any of the existing
-drivers solve it?
+PS: the patch don't apply on 2.6.23 kernel, I fixed it and I am
+testing it before sending a updated patch.
 
-Jörn
+>  Why don't any of the existing
+> drivers solve it?
+>
+> J=F6rn
+>
+> --
+> /* Keep these two variables together */
+> int bar;
+>
 
--- 
-/* Keep these two variables together */
-int bar;
+
+--=20
+Gregory CLEMENT
+Adeneo
+Adetel Group
+2, chemin du Ruisseau
+69134 ECULLY - FRANCE
+T=E9l. : +33 (0)4 72 18 08 40 - Fax : +33 (0)4 72 18 08 41
+
+www.adetelgroup.com
