@@ -1,19 +1,19 @@
-Received: from ims.2wire.com ([206.171.6.87])
+Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IucpZ-0001vq-10
-	for linux-mtd@lists.infradead.org; Tue, 20 Nov 2007 18:48:43 -0500
-Message-ID: <474372DE.7020707@kenati.com>
-Date: Tue, 20 Nov 2007 15:50:54 -0800
-From: Carlos Munoz <carlos@kenati.com>
+	id 1Iukmb-0005yU-Gj
+	for linux-mtd@lists.infradead.org; Wed, 21 Nov 2007 03:18:12 -0500
+Message-ID: <4743E998.8060509@parrot.com>
+Date: Wed, 21 Nov 2007 09:17:28 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: How to map nand chip ?
-References: <4739FA7A.9050403@kenati.com> <473C9D46.9060007@kenati.com>
-	<Pine.LNX.4.64.0711152241450.11612@lnxricardw.se.axis.com>
-In-Reply-To: <Pine.LNX.4.64.0711152241450.11612@lnxricardw.se.axis.com>
+To: Matt Reimer <mattjreimer@gmail.com>
+Subject: Re: [PATCH] MTD: fix s3c2410 error correction
+References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+	<f383264b0710251116v8847c64i871ba7675106e04f@mail.gmail.com>
+In-Reply-To: <f383264b0710251116v8847c64i871ba7675106e04f@mail.gmail.com>
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,20 +23,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ricard Wanderlof wrote:
-> Another thing that can cause this is if the ready/busy-pin is not read 
-> properly by the chip driver. Again, the chip will probably respond quickly 
-> to an id request, but when reading or writing the memory array, the access 
-> times will be longer causing failure.
->
->   
+Hi,
 
-That was the problem. The ready/busy pin was not working. Somehow, it's 
-always high.
-
-For now I added a 20 usec delay and everything works.
-
-Thanks,
+Matt Reimer wrote:
+ > Anybody willing to ACK this patch? It definitely fixes the problem I'm
+ > seeing on a s3c2440a. For more information, compare the s3c2440a or
+ > s3c2410 manuals with page 8 of the following documentation:
+ >
+This is also need for s3c2412.
 
 
-Carlos
+Matthieu
