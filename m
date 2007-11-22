@@ -1,28 +1,13 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IvCg2-000097-E1
-	for linux-mtd@lists.infradead.org; Thu, 22 Nov 2007 09:05:16 -0500
-Date: Thu, 22 Nov 2007 14:26:50 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
-	Layer Over MTD ?
-Message-ID: <20071122132650.GA27525@lazybastard.org>
-References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
-	<20071121160804.GC20871@lazybastard.org>
-	<305035a40711210828k65174f44t3d64e9ee33fe26bf@mail.gmail.com>
-	<20071121105817.3adbfbb5@weaponx>
-	<Pine.LNX.4.64.0711212145070.24710@lnxricardw.se.axis.com>
-	<20071121213257.GI20871@lazybastard.org>
-	<305035a40711211433x9054a11r11636ad708a325cd@mail.gmail.com>
-	<20071121225425.GA24327@lazybastard.org>
-	<Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Date: Thu, 22 Nov 2007 14:24:35 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: tike64 <tike64@yahoo.com>
+Subject: Re: Very slow nor flash write
+In-Reply-To: <497747.61534.qm@web59203.mail.re1.yahoo.com>
+Message-ID: <Pine.LNX.4.64.0711221405160.11563@pentafluge.infradead.org>
+References: <497747.61534.qm@web59203.mail.re1.yahoo.com>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, nico@cam.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,33 +17,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 22 November 2007 08:58:58 +0100, Ricard Wanderlof wrote:
-> On Wed, 21 Nov 2007, Jörn Engel wrote:
+Hi Timo
+
+> I have an LH7A400 board and there intel 28F160B3T nor flash chip. I managed to configure Linux 2.6.18 to access the chip as an MTD device. However, the write access was very slow, about 40ms per word or 0.00005 MB/s ;-)
 > 
-> >> If data is corrupted between tow read even journalized are log file
-> >> system will loose data.
-> >> Either there is a mechanism I missed in this file system or 2 bits
-> >> flipped are so rare that this event can be ignored.
-> >
-> > It means that NAND needs scrubbing.
+> I traced the problem to inval_cache_and_wait_for_operation() in cfi_cmdset_0001.c. In the for-loop, if the write access haven't finished when checked for the first time, a long "msleep(sleep_time/1000);" is triggered. The sleep duration is very long because chip_op_time value is 50000. The value comes from "cfi->chips[i].word_write_time = 50000;" in cfi_cmdset_0001(). That is wrong, I think. I changed it to 200 and now the writing is as fast as expected.
 > 
-> By 'scrubbing' do you mean erasing the blocks in question and rewriting 
-> them with the same data in order to put fresh data back in the bit cells?
+> Now, the question is: How this should be fixed *correctly*? The 200 is the maximum word program time for this particular chip. Maybe it should have different value for different chips.
 
-Please don't reply to the list only.  If you are asking me a question,
-it is really impolite to send it elsewhere.  And I bet others would like
-to stay on Cc: as well.
+It seems the problem really exists and needs to be solved. The default value of word programming timeo is defined improperly 50000usec for one word is too much - but it is not good to set it very low because inval_cache_and_wait function could return with timeo out error. The best thing would be to set default word programming time for the slowest case. I think 10KB/s would be worst enough case.
 
-http://en.wikipedia.org/wiki/Memory_scrubbing
-
-Trivial scrubbing could leave the block in an erased or
-partially-written state if power-loss occurs at an inconvenient time.
-So scrubbing should be performed in some higher layer like an FTL, a
-filesystem, system maintenance applications, etc.
-
-Jörn
-
--- 
-Science is like sex: sometimes something useful comes out,
-but that is not the reason we are doing it.
--- Richard Feynman
+Thanks,
+Alexey 
