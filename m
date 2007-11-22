@@ -1,29 +1,14 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iv6y3-0004I6-Ku
-	for linux-mtd@lists.infradead.org; Thu, 22 Nov 2007 02:59:30 -0500
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	lAM7xFh6003794
-	for <linux-mtd@lists.infradead.org>; Thu, 22 Nov 2007 08:59:15 +0100
-Date: Thu, 22 Nov 2007 08:58:58 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
-	Layer Over MTD ?
-In-Reply-To: <20071121225425.GA24327@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
-References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
-	<20071121160804.GC20871@lazybastard.org>
-	<305035a40711210828k65174f44t3d64e9ee33fe26bf@mail.gmail.com>
-	<20071121105817.3adbfbb5@weaponx>
-	<Pine.LNX.4.64.0711212145070.24710@lnxricardw.se.axis.com>
-	<20071121213257.GI20871@lazybastard.org>
-	<305035a40711211433x9054a11r11636ad708a325cd@mail.gmail.com>
-	<20071121225425.GA24327@lazybastard.org>
+Received: from web59203.mail.re1.yahoo.com ([66.196.101.29])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IvAF4-0001R4-VI
+	for linux-mtd@lists.infradead.org; Thu, 22 Nov 2007 06:29:18 -0500
+Date: Thu, 22 Nov 2007 03:29:05 -0800 (PST)
+From: tike64 <tike64@yahoo.com>
+Subject: Very slow nor flash write
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Message-ID: <497747.61534.qm@web59203.mail.re1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -33,21 +18,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Dear List,
 
-On Wed, 21 Nov 2007, J=F6rn Engel wrote:
+I have an LH7A400 board and there intel 28F160B3T nor flash chip. I managed to configure Linux 2.6.18 to access the chip as an MTD device. However, the write access was very slow, about 40ms per word or 0.00005 MB/s ;-)
 
->> If data is corrupted between tow read even journalized are log file
->> system will loose data.
->> Either there is a mechanism I missed in this file system or 2 bits
->> flipped are so rare that this event can be ignored.
->
-> It means that NAND needs scrubbing.
+I traced the problem to inval_cache_and_wait_for_operation() in cfi_cmdset_0001.c. In the for-loop, if the write access haven't finished when checked for the first time, a long "msleep(sleep_time/1000);" is triggered. The sleep duration is very long because chip_op_time value is 50000. The value comes from "cfi->chips[i].word_write_time = 50000;" in cfi_cmdset_0001(). That is wrong, I think. I changed it to 200 and now the writing is as fast as expected.
 
-By 'scrubbing' do you mean erasing the blocks in question and rewriting=20
-them with the same data in order to put fresh data back in the bit cells?
+Now, the question is: How this should be fixed *correctly*? The 200 is the maximum word program time for this particular chip. Maybe it should have different value for different chips.
 
-/Ricard
 --
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+Timo
+
+--
+
+Note: Not everyone will face this problem. If the CPU is slow enough, so that the chip have finished before the first status check, then the problem doesn't occur. Also, when I placed one printk at the start of the inval_cache_and_wait_for_operation() function, the problem went away.
+
+
+
+
+
+      ____________________________________________________________________________________
+Be a better sports nut!  Let your teams follow you 
+with Yahoo Mobile. Try it now.  http://mobile.yahoo.com/sports;_ylt=At9_qDKvtAbMuh1G1SQtBI7ntAcJ
