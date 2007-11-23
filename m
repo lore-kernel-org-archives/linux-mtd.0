@@ -1,17 +1,23 @@
-Date: Fri, 23 Nov 2007 13:52:12 -0800
-From: Arjan van de Ven <arjan@infradead.org>
-To: "Bryan Wu" <cooloney.lkml@gmail.com>
+Received: from nwd2mail10.analog.com ([137.71.25.55])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IvgdR-00049r-Ox
+	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 17:04:36 -0500
+From: Robin Getz <rgetz@blackfin.uclinux.org>
+To: "Arjan van de Ven" <arjan@infradead.org>
 Subject: Re: [PATCH 1/1] [MTD/NAND]: Add Blackfin BF52x on-chip NAND Flash
 	controller driver support in bf5xx_nand driver
-Message-ID: <20071123135212.7c483aae@laptopd505.fenrus.org>
-In-Reply-To: <386072610711230625k23b68e49q6090b7eb27c2c039@mail.gmail.com>
+Date: Fri, 23 Nov 2007 17:04:59 -0500
 References: <1195812893-26312-1-git-send-email-bryan.wu@analog.com>
-	<1195813178.25590.35.camel@pmac.infradead.org>
 	<386072610711230625k23b68e49q6090b7eb27c2c039@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	<20071123135212.7c483aae@laptopd505.fenrus.org>
+In-Reply-To: <20071123135212.7c483aae@laptopd505.fenrus.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: Bryan Wu <bryan.wu@analog.com>,
+Content-Disposition: inline
+Message-Id: <200711231704.59948.rgetz@blackfin.uclinux.org>
+Cc: Bryan Wu <bryan.wu@analog.com>, Bryan Wu <cooloney.lkml@gmail.com>,
 	Michael Hennerich <michael.hennerich@analog.com>,
 	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
 	uclinux-dist-devel@blackfin.uclinux.org,
@@ -25,32 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 23 Nov 2007 22:25:29 +0800
-"Bryan Wu" <cooloney.lkml@gmail.com> wrote:
-
-> On Nov 23, 2007 6:19 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> >
-> > On Fri, 2007-11-23 at 18:14 +0800, Bryan Wu wrote:
+On Fri 23 Nov 2007 16:52, Arjan van de Ven pondered:
+> On Fri, 23 Nov 2007 22:25:29 +0800
+> "Bryan Wu" <cooloney.lkml@gmail.com> wrote:
+> 
+> > On Nov 23, 2007 6:19 PM, David Woodhouse <dwmw2@infradead.org> wrote:
 > > >
-> > > +#ifdef CONFIG_BF54x
-> > >         /* Setup DMAC1 channel mux for NFC which shared with SDH
-> > > */ val = bfin_read_DMAC1_PERIMUX();
-> > >         val &= 0xFFFE;
-> > >         bfin_write_DMAC1_PERIMUX(val);
-> > >         SSYNC();
-> > > -
-> > > +#endif
-> >
-> > You can't build a multiplatform kernel which runs on BF52x and
-> > BF54x?
+> > > On Fri, 2007-11-23 at 18:14 +0800, Bryan Wu wrote:
+> > > >
+> > > > +#ifdef CONFIG_BF54x
+> > > >         /* Setup DMAC1 channel mux for NFC which shared with SDH
+> > > > */ val = bfin_read_DMAC1_PERIMUX();
+> > > >         val &= 0xFFFE;
+> > > >         bfin_write_DMAC1_PERIMUX(val);
+> > > >         SSYNC();
+> > > > -
+> > > > +#endif
+> > >
+> > > You can't build a multiplatform kernel which runs on BF52x and
+> > > BF54x?
+> > 
+> > There are some hardware difference between BF52x and BF54x. We have
+> > to do this.
+> > 
 > 
-> There are some hardware difference between BF52x and BF54x. We have
-> to do this.
-> 
+> well does it need to be an #ifdef, or can it be a runtime if() ?
 
-well does it need to be an #ifdef, or can it be a runtime if() ?
+It could be a runtime if() but we don't currently have the is_mach() all set 
+up properly today.
 
--- 
-If you want to reach me at my work email, use arjan@linux.intel.com
-For development, discussion and tips for power savings, 
-visit http://www.lesswatts.org
+This is because on most systems that Blackfin ships on - memory is the 
+dominate cost of the system, and end users don't want to take the either the 
+storage (flash) hit of having code they don't use, or the run time (DRAM) 
+overhead. They are fine with compiling 2 kernels for two platforms if it 
+means things are cheaper. :)
+
+That being said, we still need to go back, and add things properly - and just 
+let gcc optimise things away if it is not used - c code is more maintainable 
+than all the ifdefs we have today.
+
+This is the goal - it will just take a little bit to get there.
+
+-Robin
