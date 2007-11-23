@@ -1,15 +1,15 @@
+Date: Fri, 23 Nov 2007 10:10:53 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
 Subject: Re: [PATCH] Add P3x support with CFI 1.5
-From: David Woodhouse <dwmw2@infradead.org>
-To: Alexey Korolev <akorolev@infradead.org>
-In-Reply-To: <Pine.LNX.4.64.0711230926210.26663@pentafluge.infradead.org>
+In-Reply-To: <1195810580.25590.25.camel@pmac.infradead.org>
+Message-ID: <Pine.LNX.4.64.0711231001530.27937@pentafluge.infradead.org>
 References: <Pine.LNX.4.64.0711221841320.22964@pentafluge.infradead.org>
 	<1195807919.25590.23.camel@pmac.infradead.org>
 	<Pine.LNX.4.64.0711230926210.26663@pentafluge.infradead.org>
-Content-Type: text/plain
-Date: Fri, 23 Nov 2007 09:36:20 +0000
-Message-Id: <1195810580.25590.25.camel@pmac.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+	<1195810580.25590.25.camel@pmac.infradead.org>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -20,39 +20,22 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-On Fri, 2007-11-23 at 09:31 +0000, Alexey Korolev wrote:
-> Hi,
-> Thank you for attention.
-> > > This is the second post of the patch enabling support of P3x silicon
-> > > with CFI 1.5. As I know there are _many_ people currently using P3x
-> > > with CFI 1.5. The patch is trivial. It has been verified - it does not
-> > > affect other silicon. Could you please acknowledge and commit the
-> > > patch? 
 > > 
-> > Needs Signed-off-by: 
-> > 
-> > 
-> Opps. Fixed.
+> > Signed-off-by: Alexey Korolev <akorolev at infradead.org>
+> > diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+> > --- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-10 01:28:15.000000000 +0400
+> > +++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-15 15:27:52.000000000 +0400
+> > @@ -276,7 +276,7 @@
+> >                 return NULL;
+> >  
+> >         if (extp->MajorVersion != '1' ||
+> > -           (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
+> > +           (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
+> >                 printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
+> >                        "version %c.%c.\n",  extp->MajorVersion,
+> >                        extp->MinorVersion);
 > 
-> This patch enables P3x support with CFI 1.5 in Linux.
-> 
-> Signed-off-by: Alexey Korolev <akorolev at infradead.org>
-> diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-> --- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-10 01:28:15.000000000 +0400
-> +++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-15 15:27:52.000000000 +0400
-> @@ -276,7 +276,7 @@
->                 return NULL;
->  
->         if (extp->MajorVersion != '1' ||
-> -           (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
-> +           (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
->                 printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
->                        "version %c.%c.\n",  extp->MajorVersion,
->                        extp->MinorVersion);
-
-It's whitespace-damaged, and your email address in the Signed-off-by is
-broken. I corrected both and committed.
-
--- 
-dwmw2
+> It's whitespace-damaged, and your email address in the Signed-off-by is
+> broken. I corrected both and committed.
+>
+Thank you so much for commit. I verified the patch before sending to you it was ok. I will find why the patch got damaged to prevent the same issues in future. Sorry for damaged patch.
