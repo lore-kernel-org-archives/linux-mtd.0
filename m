@@ -1,19 +1,29 @@
-Received: from imo-m13.mx.aol.com ([64.12.136.172] helo=imo-m13.mail.aol.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IvadE-0005U3-AT
-	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 10:39:59 -0500
-Received: from payagond@aol.com
-	by imo-m13.mx.aol.com (mail_out_v38_r9.3.) id 3.cf5.18591857 (48338)
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 23 Nov 2007 10:39:34 -0500 (EST)
-To: linux-mtd@lists.infradead.org
-Content-Transfer-Encoding: 7bit
-Subject: MLC Support in JFFS2
-Date: Fri, 23 Nov 2007 10:39:34 -0500
+Received: from mail.davidb.org ([66.93.32.219])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IvdSJ-0007wt-EH
+	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 13:40:53 -0500
+Date: Fri, 23 Nov 2007 10:40:29 -0800
+From: David Brown <mtd@davidb.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block
+	Device Layer Over MTD ?
+Message-ID: <20071123184029.GA11033@old.davidb.org>
+References: <20071121213257.GI20871@lazybastard.org>
+	<305035a40711211433x9054a11r11636ad708a325cd@mail.gmail.com>
+	<20071121225425.GA24327@lazybastard.org>
+	<Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
+	<20071122132650.GA27525@lazybastard.org>
+	<Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>
+	<1195805904.3231.87.camel@sauron>
+	<Pine.LNX.4.64.0711231007070.523@lnxricardw.se.axis.com>
+	<1195809712.3231.96.camel@sauron>
+	<Pine.LNX.4.64.0711231026510.523@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-From: payagond@aol.com
-Content-Type: text/plain; charset="us-ascii"; format=flowed
-Message-Id: <8C9FBFE2E96BED9-F28-7AAE@webmail-dd08.sysops.aol.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.0711231026510.523@lnxricardw.se.axis.com>
+Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +33,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Fri, Nov 23, 2007 at 10:28:24AM +0100, Ricard Wanderlof wrote:
 
+>On second thought, I think that the degradation of the data in a
+>flash memory cell is mostly due to read operations, so if no read 
+>operations are performed, the data should be fairly secure. Then again, 
+>there are subtle effects such as cosmic radiation flipping bits at any 
+>random location, etc.
 
-Hello,
+Flash should be reasonably immune to degradation from reads.  In fact, it
+is fairly resiliant to degradation at all.
 
+In NAND, the primary cause of read failures is caused by writes (and
+rewrites) of subsequent pages within a block.  These can cause bit flips in
+earlier written pages.  This gets worse with higher density, and is the
+main reason the higher density devices have greater restrictions on
+rewrites.
 
-
-Which is the better way for MLC support in JFFS2?
-
-Is it removing the CLEANMARKER or
-
-reserving the first page of every block for it
-
-
-
-If I am using the 2nd option ie., reserving a page in every block -
-
-What else I have to take care of, other than jeb->freesize and 
-jeb->used_size?
-
-
-
-regards
-
-payagond
-
-
-________________________________________________________________________
-Email and AIM finally together. You've gotta check out free AOL Mail! - 
-http://mail.aol.com
+David
