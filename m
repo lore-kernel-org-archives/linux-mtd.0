@@ -1,14 +1,17 @@
-Received: from localhost ([127.0.0.1])
-	by pentafluge.infradead.org with esmtps (Exim 4.63 #1 (Red Hat Linux))
-	id 1IvH6j-00063L-Sq
-	for linux-mtd@lists.infradead.org; Thu, 22 Nov 2007 18:49:01 +0000
-Date: Thu, 22 Nov 2007 18:49:01 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Add P3x support with CFI 1.5 
-Message-ID: <Pine.LNX.4.64.0711221841320.22964@pentafluge.infradead.org>
+Received: from smtp-out1.libero.it ([212.52.84.41])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IvNeV-00042y-8o
+	for linux-mtd@lists.infradead.org; Thu, 22 Nov 2007 20:48:25 -0500
+Received: from outrelay08.libero.it (192.168.32.103) by smtp-out1.libero.it
+	(7.3.120) id 47137F8503F7DA61 for linux-mtd@lists.infradead.org;
+	Fri, 23 Nov 2007 02:39:49 +0100
+Date: Fri, 23 Nov 2007 02:39:49 +0100
+Message-Id: <JRXRAD$09AEF6DCE3504A0CCDB2A593FAB7732E@libero.it>
+Subject: NOTIFICATION OF LOTTO WIN
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
+From: "LOTERIE ROMANDE" <lr.record@libero.it>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,22 +21,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+La Lotterie Romande,
+Rue Marterey 13,
+1002 Lausanne,
+Switzerland.
 
-This is the second post of the patch enabling support of P3x silicon with CFI 1.5. As I know there are _many_ people currently using P3x with CFI 1.5. The patch is trivial. It has been verified - it does not affect other silicon. Could you please acknowledge and commit the patch? 
+Reference number: LR/19-CH/9642, 
+Batch: LR/07/18 
 
-diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
---- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-10 01:28:15.000000000 +0400
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-15 15:27:52.000000000 +0400
-@@ -276,7 +276,7 @@
-                return NULL;
- 
-        if (extp->MajorVersion != '1' ||
--           (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
-+           (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
-                printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
-                       "version %c.%c.\n",  extp->MajorVersion,
-                       extp->MinorVersion);
+Congratulations!, 
 
-Thanks,
-Alexey
+You are hereby notified that your email identity has won EUR 1 000 000 (O=
+ne million Euro) after our final email draws condcuted last week.Your ema=
+il ID was attached to serial number : 25-6395 and drew the winnig numbers=
+; 4.36.18.2.31.39 
+
+Please contact your assigned release manager, Mr.Mac Grant by his email b=
+elow; 
+
+Mr. Mac Grant
+Foreign Services Manager,
+Information and Payment Bureau.
+London Representative Office.
+Phone: 00 44 702 403 5806
+Fax:   00 44 870 471 1698
+Email: info@romande2007.vossnet.co.uk
+
+for more information and release details.
+
+To avoid complications or delay, endeavor to quote your reference and bat=
+ch numbers in every correspondence
+
+Yours truly, 
+Jean-Piere Beuret, 
+Promotions Manager, 
+Lotterie Romande
