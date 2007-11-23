@@ -1,33 +1,14 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IvUqH-0001Yw-IW
-	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 04:29:03 -0500
-Date: Fri, 23 Nov 2007 10:28:24 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
-	Layer Over MTD ?
-In-Reply-To: <1195809712.3231.96.camel@sauron>
-Message-ID: <Pine.LNX.4.64.0711231026510.523@lnxricardw.se.axis.com>
-References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
-	<20071121160804.GC20871@lazybastard.org>
-	<305035a40711210828k65174f44t3d64e9ee33fe26bf@mail.gmail.com>
-	<20071121105817.3adbfbb5@weaponx>
-	<Pine.LNX.4.64.0711212145070.24710@lnxricardw.se.axis.com>
-	<20071121213257.GI20871@lazybastard.org>
-	<305035a40711211433x9054a11r11636ad708a325cd@mail.gmail.com>
-	<20071121225425.GA24327@lazybastard.org>
-	<Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
-	<20071122132650.GA27525@lazybastard.org>
-	<Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>
-	<1195805904.3231.87.camel@sauron>
-	<Pine.LNX.4.64.0711231007070.523@lnxricardw.se.axis.com>
-	<1195809712.3231.96.camel@sauron>
+Date: Fri, 23 Nov 2007 09:31:56 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: [PATCH] Add P3x support with CFI 1.5
+In-Reply-To: <1195807919.25590.23.camel@pmac.infradead.org>
+Message-ID: <Pine.LNX.4.64.0711230926210.26663@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0711221841320.22964@pentafluge.infradead.org>
+	<1195807919.25590.23.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -37,27 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi,
+Thank you for attention.
+> > This is the second post of the patch enabling support of P3x silicon
+> > with CFI 1.5. As I know there are _many_ people currently using P3x
+> > with CFI 1.5. The patch is trivial. It has been verified - it does not
+> > affect other silicon. Could you please acknowledge and commit the
+> > patch? 
+> 
+> Needs Signed-off-by: 
+> 
+> 
+Opps. Fixed.
 
-On Fri, 23 Nov 2007, Artem Bityutskiy wrote:
+This patch enables P3x support with CFI 1.5 in Linux.
 
-> On Fri, 2007-11-23 at 10:08 +0100, Ricard Wanderlof wrote:
->> Does UBI periodically scan the flash for bit flips, or is the scrubbing
->> mechanism only triggered when an mtd_read() is done by a higher layer?
->
-> No, it does not do any background scanning for bit-flips. The second is
-> true.
->
-> If one needs some scanning, it may be implemented by making a
-> users-space script run by cron daemon I guess.
+Signed-off-by: Alexey Korolev <akorolev at infradead.org>
+diff -uNr a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-10 01:28:15.000000000 +0400
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-08-15 15:27:52.000000000 +0400
+@@ -276,7 +276,7 @@
+                return NULL;
+ 
+        if (extp->MajorVersion != '1' ||
+-           (extp->MinorVersion < '0' || extp->MinorVersion > '4')) {
++           (extp->MinorVersion < '0' || extp->MinorVersion > '5')) {
+                printk(KERN_ERR "  Unknown Intel/Sharp Extended Query "
+                       "version %c.%c.\n",  extp->MajorVersion,
+                       extp->MinorVersion);
 
-On second thought, I think that the degradation of the data in a
-flash memory cell is mostly due to read operations, so if no read=20
-operations are performed, the data should be fairly secure. Then again,=20
-there are subtle effects such as cosmic radiation flipping bits at any=20
-random location, etc.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+------
+Thanks,
+Alexey
