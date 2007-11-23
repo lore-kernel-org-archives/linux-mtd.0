@@ -1,14 +1,12 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IvTBY-0000HO-Cs
-	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 02:42:54 -0500
-Date: Fri, 23 Nov 2007 08:42:16 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
-	Layer Over MTD ?
-In-Reply-To: <20071122132650.GA27525@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>
+	id 1IvTkI-0004Xu-Vy
+	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 03:18:49 -0500
+Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block
+	Device Layer Over MTD ?
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+In-Reply-To: <Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>
 References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
 	<20071121160804.GC20871@lazybastard.org>
 	<305035a40711210828k65174f44t3d64e9ee33fe26bf@mail.gmail.com>
@@ -19,10 +17,15 @@ References: <305035a40711210627p1ea1f2c0me1ee1f8e8d124552@mail.gmail.com>
 	<20071121225425.GA24327@lazybastard.org>
 	<Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>
 	<20071122132650.GA27525@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+	<Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 23 Nov 2007 10:18:24 +0200
+Message-Id: <1195805904.3231.87.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	Linux mtd <linux-mtd@lists.infradead.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,38 +35,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Ricard,
 
-On Thu, 22 Nov 2007, J=F6rn Engel wrote:
-
-> Please don't reply to the list only.  If you are asking me a question,
-> it is really impolite to send it elsewhere.  And I bet others would like
-> to stay on Cc: as well.
-
-Sorry, no harm intended. (I tend to view discussions on a mailing list as=
+On Fri, 2007-11-23 at 08:42 +0100, Ricard Wanderlof wrote:
+> In the case of mtd, it would seem that this should be done by JFFS2, or i=
+f=20
+> some intermediate layer is used like UBI, by that layer. As far as I know=
 =20
-being on the mailing list, not between a couple of people with a cc to the=
-=20
-mailing list, because other people on the list should feel they can=20
-respond to the questions posed. But either way is fine with me).
+> though, currently no scrubbing is done by either?
 
-> http://en.wikipedia.org/wiki/Memory_scrubbing
+Nope, scrubbing was one of the design goals of UBI and it does do it.
 
-Thanks for the link. I've never heard of the term being used for Flash=20
-memory but of course it must apply there as well.
+If mtd_read() returns -EUCLEAN, which means a correctable ECC error
+occurred (bit-flip), UBI schedules this physical eraseblock for
+movement. Then it moves it in background, re-maps corresponding logical
+eraseblock to the new physical eraseblock, and schedules the old
+physical eraseblock for erasure.
 
-> Trivial scrubbing could leave the block in an erased or
-> partially-written state if power-loss occurs at an inconvenient time.
-> So scrubbing should be performed in some higher layer like an FTL, a
-> filesystem, system maintenance applications, etc.
-
-In the case of mtd, it would seem that this should be done by JFFS2, or if=
-=20
-some intermediate layer is used like UBI, by that layer. As far as I know=
-=20
-though, currently no scrubbing is done by either?
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
