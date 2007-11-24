@@ -1,19 +1,19 @@
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+Received: from e33.co.us.ibm.com ([32.97.110.151])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IuOwK-0002kI-VX
-	for linux-mtd@lists.infradead.org; Tue, 20 Nov 2007 03:58:48 -0500
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e34.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id lAK8wc8j030703
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2007 03:58:38 -0500
+	id 1IvrzF-0001Iq-VB
+	for linux-mtd@lists.infradead.org; Sat, 24 Nov 2007 05:11:53 -0500
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e33.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id lAOABbkE025184
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Nov 2007 05:11:37 -0500
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	lAK8wcRF125810
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2007 01:58:38 -0700
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	lAOABb5r127348
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Nov 2007 03:11:37 -0700
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	lAK8wb6b000736
-	for <linux-mtd@lists.infradead.org>; Tue, 20 Nov 2007 01:58:38 -0700
+	lAOABaL5020378
+	for <linux-mtd@lists.infradead.org>; Sat, 24 Nov 2007 03:11:37 -0700
 Subject: Re: ubi-utils: unubi fixes and enhancements
 From: Frank Haverkamp <haver@vnet.ibm.com>
 To: Artem.Bityutskiy@nokia.com
@@ -22,8 +22,9 @@ References: <1194267534.13736.10.camel@august>
 	<1195463030.1119.7.camel@sauron>  <474191E7.1060406@nokia.com>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-Kcl8y1IQHJI7ltTpunDI"
-Message-Id: <1195549115.6656.1.camel@august>
+	boundary="=-mjf8xN62sQujfKwgFpw7"
+Date: Sat, 24 Nov 2007 11:11:16 +0100
+Message-Id: <1195899076.8798.7.camel@august>
 Mime-Version: 1.0
 Cc: MTD Mailinglist <linux-mtd@lists.infradead.org>,
 	Alexander Schmidt <alexs@linux.vnet.ibm.com>, haver@vnet.ibm.com
@@ -36,42 +37,37 @@ List-Post: <mailto:linux-mtd@lists.infradead.org>
 List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
-Date: Tue, 20 Nov 2007 08:58:48 -0000
 
 
---=-Kcl8y1IQHJI7ltTpunDI
+--=-mjf8xN62sQujfKwgFpw7
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
 Hi Artem,
 
 On Mon, 2007-11-19 at 15:38 +0200, Artem Bityutskiy wrote:
-
 > It does not compile for me:
 >=20
-> gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W=20
-> -std=3Dgnu99 -DPACKAGE_VERSION=3D\"1.0\" -g -c -o nand2bin.o ./src/nand2b=
-in.c -g=20
-> -Wp,-MD,.nand2bin.c.dep
-> gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings -W=20
-> -std=3Dgnu99 -DPACKAGE_VERSION=3D\"1.0\" -g -c -o nandcorr.o ./src/nandco=
-rr.c -g=20
+> gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings
+> -W=20
+> -std=3Dgnu99 -DPACKAGE_VERSION=3D\"1.0\" -g -c -o
+> nandcorr.o ./src/nandcorr.c -g=20
 > -Wp,-MD,.nandcorr.c.dep
 > gcc  -o nand2bin nand2bin.o nandecc.o nandcorr.o
-> make[1]: *** No rule to make target `src/eb_chain.h', needed by `unubi.o'=
-.  Stop.
-> make[1]: Leaving directory `/home/dedekind/git/mtd-utils.git/ubi-utils'
+> make[1]: *** No rule to make target `src/eb_chain.h', needed by
+> `unubi.o'.  Stop.
+> make[1]: Leaving directory
+> `/home/dedekind/git/mtd-utils.git/ubi-utils'
 > make: *** [all] Error 2
->=20
-> Could you please fix this and also rebase against newer mtd-utils.git?
->=20
-currently I am little busy. I will let you know when I have fixed and
-rebased the code. Thanks for looking into it.
+
+I had removed the src/eb_chain.h file. I renewed my git and tried my
+patches with a clean checkout. It works for me. Can it be that our
+dependency-checking is broken and you did not do make clean before you
+tried compiling?
 
 Regards,
 
 Frank
-
 
 --=20
 IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
@@ -79,7 +75,7 @@ Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
 Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
 Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=-Kcl8y1IQHJI7ltTpunDI
+--=-mjf8xN62sQujfKwgFpw7
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -162,8 +158,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcxMTIwMDg1ODMxWjAjBgkqhkiG9w0B
-CQQxFgQUo3C45+yTVWE3W0utBHNaWq/K02AwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDcxMTI0MTAxMTEyWjAjBgkqhkiG9w0B
+CQQxFgQUjrbmEKxFEOnXse2XppF0k9TRr7EwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -174,9 +170,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYBj4awffDrvy46NcvBAzhAjJWP937AApBQaqCSiomWBXi8LwzqRDZPcTco49Fzkr5OhIjHk
-MTVUWCLCEdOFZUAmzle+ZqDyAgb9aMluTzw/IC7cKFwEeRbaH4Oa2wky2l6XoxZWl5jJ/eIX9vYo
-pliKeClpta5HS1ZdMYcYlumBnwAAAAAAAA==
+BQAEgYDF0SNXKj6k4wjn1HFhztb3qtGK36w0yrZmGkaLguAC1rcHYDYdn3BzdnMwxfUXmRbbbTC3
+yY+JZEGX6MfQ6rxcdElJnwbSDTbT+ABbCAfoFN+t9naZSeiK+i24dCpQhkM3jaiqGmZ6jO7DMnJY
+ntEz5djn5kMe1VTCqHRKOlc0YwAAAAAAAA==
 
 
---=-Kcl8y1IQHJI7ltTpunDI--
+--=-mjf8xN62sQujfKwgFpw7--
