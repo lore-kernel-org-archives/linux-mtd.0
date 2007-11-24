@@ -1,19 +1,22 @@
-Received: from smtp-2.sys.kth.se ([130.237.32.160])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IvhWJ-0007pB-4P
-	for linux-mtd@lists.infradead.org; Fri, 23 Nov 2007 18:01:17 -0500
-Message-ID: <61172.212.247.11.1.1195857363.squirrel@webmail.sys.kth.se>
-In-Reply-To: <214802.55189.qm@web59211.mail.re1.yahoo.com>
-References: <214802.55189.qm@web59211.mail.re1.yahoo.com>
-Date: Fri, 23 Nov 2007 23:36:03 +0100 (CET)
-Subject: Re: Very slow nor flash write
-From: Anders =?iso-8859-1?Q?Grafstr=F6m?= <grfstrm@users.sourceforge.net>
-To: "tike64" <tike64@yahoo.com>
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: jamie@shareable.org, nico@cam.org, linux-mtd@lists.infradead.org,
-	akorolev@infradead.org
+Subject: Re: [PATCH 1/1] [MTD/NAND]: Add Blackfin BF52x on-chip NAND Flash
+	controller driver support in bf5xx_nand driver
+From: David Woodhouse <dwmw2@infradead.org>
+To: Robin Getz <rgetz@blackfin.uclinux.org>
+In-Reply-To: <200711231704.59948.rgetz@blackfin.uclinux.org>
+References: <1195812893-26312-1-git-send-email-bryan.wu@analog.com>
+	<386072610711230625k23b68e49q6090b7eb27c2c039@mail.gmail.com>
+	<20071123135212.7c483aae@laptopd505.fenrus.org>
+	<200711231704.59948.rgetz@blackfin.uclinux.org>
+Content-Type: text/plain
+Date: Sat, 24 Nov 2007 06:43:28 +0000
+Message-Id: <1195886608.25590.59.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: Bryan Wu <bryan.wu@analog.com>, Bryan Wu <cooloney.lkml@gmail.com>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+	uclinux-dist-devel@blackfin.uclinux.org,
+	Arjan van de Ven <arjan@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,34 +26,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-tike64 wrote:
-> Of course the code must always allow for possible timeouts.But wouldn't the
-> cfi_cmdset_0001.c code take care of that:
->
->         if (!timeo) {
->             map_write(map, CMD(0x70), cmd_adr);
->             chip->state = FL_STATUS;
->             return -ETIME;
 
-This is where the state is lost. chip->state is changed to FL_STATUS
-but the hardware remains in FL_ERASING or FL_WRITING state until it
-completes the operation or times out after the max erase or write time.
+On Fri, 2007-11-23 at 17:04 -0500, Robin Getz wrote:
+> It could be a runtime if() but we don't currently have the is_mach() all set 
+> up properly today.
+> 
+> This is because on most systems that Blackfin ships on - memory is the 
+> dominate cost of the system, and end users don't want to take the either the 
+> storage (flash) hit of having code they don't use, or the run time (DRAM) 
+> overhead. They are fine with compiling 2 kernels for two platforms if it 
+> means things are cheaper. :)
+> 
+> That being said, we still need to go back, and add things properly - and just 
+> let gcc optimise things away if it is not used - c code is more maintainable 
+> than all the ifdefs we have today.
+> 
+> This is the goal - it will just take a little bit to get there.
 
-What then happens is get_chip() timing out saying
-"Waiting for chip to be ready timed out. Status xxxx"
-and jffs2 complaining about not being able to read or write.
-But this is probably only an issue for erase operations.
+For now I suspect you could at least define machine_is_bf52x() and
+machine_is_bf54x() which are hard-coded to either zero or one according
+to the configuration, and at least you wouldn't need to add ifdefs to
+drivers.
 
-For me this resulted in failure to read the file system at boot time
-and thus a system that could not be booted.
-
-I guess there is something wrong with the timeout error path.
-Should chip->state be left unchanged?
-
-> I think I understand the principle of the patch and it seems fine to me. But
-> it seems to solve the problem only for the CFI parts. I think there should be
-> respective timing fields in the jedec_table in jedec_probe.c.
-
-Yes, it only solves it for parts that have timing values specified. There is
-more to do. Quick version could be to set the timeouts to the old defaults and
-the write and erase time to short values.
+-- 
+dwmw2
