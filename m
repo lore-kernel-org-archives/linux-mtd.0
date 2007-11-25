@@ -1,28 +1,22 @@
-Received: from nwd2mail11.analog.com ([137.71.25.57])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ivumo-0003aG-7C
-	for linux-mtd@lists.infradead.org; Sat, 24 Nov 2007 08:11:13 -0500
-From: Robin Getz <rgetz@blackfin.uclinux.org>
-To: "Bryan Wu" <cooloney.lkml@gmail.com>
-Subject: Re: [PATCH 1/1] [MTD/NAND]: Add Blackfin BF52x on-chip NAND Flash
-	controller driver support in bf5xx_nand driver
-Date: Sat, 24 Nov 2007 08:11:35 -0500
-References: <1195812893-26312-1-git-send-email-bryan.wu@analog.com>
-	<1195886608.25590.59.camel@pmac.infradead.org>
-	<386072610711232315u13c8b685jbf6c44c6688ba5f@mail.gmail.com>
-In-Reply-To: <386072610711232315u13c8b685jbf6c44c6688ba5f@mail.gmail.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IwAe5-0004if-IM
+	for linux-mtd@lists.infradead.org; Sun, 25 Nov 2007 01:07:15 -0500
+Message-ID: <474910F1.1050302@nokia.com>
+Date: Sun, 25 Nov 2007 08:06:41 +0200
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200711240811.36342.rgetz@blackfin.uclinux.org>
-Cc: Bryan Wu <bryan.wu@analog.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	uclinux-dist-devel@blackfin.uclinux.org,
-	David Woodhouse <dwmw2@infradead.org>,
-	Arjan van de Ven <arjan@infradead.org>
+To: haver@vnet.ibm.com
+Subject: Re: ubi-utils: unubi fixes and enhancements
+References: <1194267534.13736.10.camel@august>	
+	<1195463030.1119.7.camel@sauron> <474191E7.1060406@nokia.com>
+	<1195899076.8798.7.camel@august>
+In-Reply-To: <1195899076.8798.7.camel@august>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: Alexander Schmidt <alexs@linux.vnet.ibm.com>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>
+Reply-To: Artem.Bityutskiy@nokia.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -32,61 +26,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat 24 Nov 2007 02:15, Bryan Wu pondered:
-> On Nov 24, 2007 2:43 PM, David Woodhouse <dwmw2@infradead.org> wrote:
-> >
-> > On Fri, 2007-11-23 at 17:04 -0500, Robin Getz wrote:
-> > > It could be a runtime if() but we don't currently have the is_mach() all
-> > > set up properly today.
-> > >
-> > > This is because on most systems that Blackfin ships on - memory is the
-> > > dominate cost of the system, and end users don't want to take the either
-> > > the storage (flash) hit of having code they don't use, or the run time
-> > > (DRAM) overhead. They are fine with compiling 2 kernels for two
-> > > platforms if it means things are cheaper. :)
-> > >
-> > > That being said, we still need to go back, and add things properly - and
-> > > just let gcc optimise things away if it is not used - c code is more
-> > > maintainable than all the ifdefs we have today.
-> > >
-> > > This is the goal - it will just take a little bit to get there.
-> >
-> > For now I suspect you could at least define machine_is_bf52x() and
-> > machine_is_bf54x() which are hard-coded to either zero or one according
-> > to the configuration, and at least you wouldn't need to add ifdefs to
-> > drivers.
-> >
+Frank Haverkamp wrote:
+>> gcc -I./inc -I./src -I../include -O2 -g -Wall -Werror -Wwrite-strings
+>> -W 
+>> -std=gnu99 -DPACKAGE_VERSION=\"1.0\" -g -c -o
+>> nandcorr.o ./src/nandcorr.c -g 
+>> -Wp,-MD,.nandcorr.c.dep
+>> gcc  -o nand2bin nand2bin.o nandecc.o nandcorr.o
+>> make[1]: *** No rule to make target `src/eb_chain.h', needed by
+>> `unubi.o'.  Stop.
+>> make[1]: Leaving directory
+>> `/home/dedekind/git/mtd-utils.git/ubi-utils'
+>> make: *** [all] Error 2
 > 
-> We got some plan to do this, but maybe cpu_is_bf52x() and
-> cpu_is_bf54x() are better.
+> I had removed the src/eb_chain.h file. I renewed my git and tried my
+> patches with a clean checkout. It works for me. Can it be that our
+> dependency-checking is broken and you did not do make clean before you
+> tried compiling?
 
-Which was one of the reasons I think we were waiting/confused. There doesn't 
-seem to be any consistancy between:
+Sorry Frank, my fault. Committed, thank you.
 
-cpu_is_
-
-which I assume refers to specific processor/chipset/SoC implementation?
-cpu_is_ixp42x
-cpu_is_ixp43x
-cpu_is_ixp46x
-
-mach_is_
-
-which I assume refers to a specific platform:
-
-mach_is_dreamcast
-mach_is_hp6xx
-mach_is_r7780mp
-mach_is_r7780rp
-
-machine_is_xxxx
-
-which I assume refers to a specific platform:
-
-machine_is_jornada56x
-machine_is_jornada720
-machine_is_nokia770
-
-So, we should use cpu_is_ as Bryan suggested?
-
--Robin
+-- 
+Best Regards,
+Artem Bityutskiy (Артём Битюцкий)
