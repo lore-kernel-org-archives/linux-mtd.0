@@ -1,22 +1,20 @@
-Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iwcxj-0001zD-Qu
-	for linux-mtd@lists.infradead.org; Mon, 26 Nov 2007 12:21:28 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-ext13.nokia.com (Switch-3.2.5/Switch-3.2.5) with ESMTP id
-	lAQBnVio002635
-	for <linux-mtd@lists.infradead.org>; Mon, 26 Nov 2007 13:49:59 +0200
-Message-ID: <474AB1F0.7020109@nokia.com>
-Date: Mon, 26 Nov 2007 13:45:52 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Received: from fe-relay04.albacom.net ([217.220.57.147])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IweVU-0008Ob-QB
+	for linux-mtd@lists.infradead.org; Mon, 26 Nov 2007 14:00:26 +0000
+Message-ID: <474AD10E.4030005@eptar.com>
+Date: Mon, 26 Nov 2007 14:58:38 +0100
+From: Claudio Lanconelli <lanconelli.claudio@eptar.com>
 MIME-Version: 1.0
-CC: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
-References: <47301505.60006@nokia.com>	<002001c8204e$c71577f0$e1ac580a@swcenter.sec.samsung.co.kr>	<47346CE1.5020209@nokia.com>
-	<473BFC92.9090504@nokia.com>
-In-Reply-To: <473BFC92.9090504@nokia.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Some news for this: [PATCH] [MTD] BLOCK_RO: Readonly Block Device
+	Layer Over MTD ?
+References: <20071121213257.GI20871@lazybastard.org>	<305035a40711211433x9054a11r11636ad708a325cd@mail.gmail.com>	<20071121225425.GA24327@lazybastard.org>	<Pine.LNX.4.64.0711220858190.523@lnxricardw.se.axis.com>	<20071122132650.GA27525@lazybastard.org>	<Pine.LNX.4.64.0711230836240.523@lnxricardw.se.axis.com>	<1195805904.3231.87.camel@sauron>	<Pine.LNX.4.64.0711231007070.523@lnxricardw.se.axis.com>	<1195809712.3231.96.camel@sauron>	<Pine.LNX.4.64.0711231026510.523@lnxricardw.se.axis.com>	<20071123184029.GA11033@old.davidb.org>
+	<Pine.LNX.4.64.0711261031170.523@lnxricardw.se.axis.com>
+In-Reply-To: <Pine.LNX.4.64.0711261031170.523@lnxricardw.se.axis.com>
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
+Cc: David Brown <mtd@davidb.org>, Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,19 +24,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Adrian Hunter wrote:
-> ext Adrian Hunter wrote:
->> ext Kyungmin Park wrote:
->>>> Subject: [PATCH] [MTD] [OneNAND] Do not stop reading for ECC errors
->>>>
->>>> When an ECC error occurs, the read should be completed
->>>> anyway before returning -EBADMSG.  Returning -EBADMSG
->>>> straight away is incorrect.
->>>>
->>>> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
->>> Acked-by: Kyungmin Park <kyungmin.park@samsung.com>
->>>
->> Please apply :-)
-> 
-> ...
-Please apply
+Ricard Wanderlof wrote:
+> On Fri, 23 Nov 2007, David Brown wrote:
+>
+>   
+>> Flash should be reasonably immune to degradation from reads.  In fact, 
+>> it is fairly resiliant to degradation at all.
+>>     
+>
+> I beg to differ; we ran some tests here on a 256 Mbit NAND flash where I 
+> work which showed a marked degradation in read integrity if the block had 
+> been written many times. For this particular chip in the setup used, after 
+> 100 000 read/write cycles, non-correctable ECC errors started popping up 
+> after about 43 million reads. For blocks that had only been written a 
+> couple of times, we didn't detect any read errors whatsoever after 4.5e+10 
+> reads (during three months of continuous reading of the same block).
+>
+> I would however love to see some hard data, or at least an application 
+> note, on the frequency of various errors. Most of the information I've 
+> seen is of the 'it is a known fact that ...' - type, without any 
+> references. And the data sheets seem very silent on this subject, only 
+> acknowledging the fact that bit flips do occur.
+>   
+Hi,
+I find very useful this paper, it talks about "read disturb" on page 22:
+http://www.edn.com/contents/images/ToshibaNANDFlash1.pdf
+
+Cheers,
+Claudio Lanconelli
