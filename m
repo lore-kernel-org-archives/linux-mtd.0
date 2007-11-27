@@ -1,26 +1,22 @@
-Received: from rn-out-0910.google.com ([64.233.170.184]
-	helo=rn-out-0102.google.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iwyva-0000mF-Sv
-	for linux-mtd@lists.infradead.org; Tue, 27 Nov 2007 11:48:40 +0000
-Received: by rn-out-0102.google.com with SMTP id e25so566245rng
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 27 Nov 2007 03:48:33 -0800 (PST)
-Message-ID: <9c9fda240711270348q7798ddd5jfb7bf763b3497500@mail.gmail.com>
-Date: Tue, 27 Nov 2007 20:48:33 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Iwz6I-0001Og-4u
+	for linux-mtd@lists.infradead.org; Tue, 27 Nov 2007 11:59:44 +0000
 Subject: Re: [RFC][PATCH][JFFS2] JFFS2 support for NOP 1
-In-Reply-To: <20071127095518.GA29456@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Kyungmin Park <kmpark@infradead.org>
+In-Reply-To: <9c9fda240711270348q7798ddd5jfb7bf763b3497500@mail.gmail.com>
 References: <20071127073616.GA22556@party>
 	<20071127095518.GA29456@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>,
-	dwmw2@infradead.org
+	<9c9fda240711270348q7798ddd5jfb7bf763b3497500@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 27 Nov 2007 13:59:18 +0200
+Message-Id: <1196164758.20132.6.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, Kyungmin Park <kyungmin.park@samsung.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,39 +26,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> > diff --git a/include/mtd/mtd-abi.h b/include/mtd/mtd-abi.h
-> > index f71dac4..80334d7 100644
-> > --- a/include/mtd/mtd-abi.h
-> > +++ b/include/mtd/mtd-abi.h
-> > @@ -30,12 +30,14 @@ struct mtd_oob_buf {
-> >  #define MTD_BIT_WRITEABLE    0x800   /* Single bits can be flipped */
-> >  #define MTD_NO_ERASE         0x1000  /* No erase necessary */
-> >  #define MTD_STUPID_LOCK              0x2000  /* Always locked after reset */
-> > +#define MTD_MULTI_LEVEL_CHIP 0x4000  /* Multi Level Chip */
-> >
-> >  // Some common devices / combinations of capabilities
-> >  #define MTD_CAP_ROM          0
-> >  #define MTD_CAP_RAM          (MTD_WRITEABLE | MTD_BIT_WRITEABLE | MTD_NO_ERASE)
-> >  #define MTD_CAP_NORFLASH     (MTD_WRITEABLE | MTD_BIT_WRITEABLE)
-> >  #define MTD_CAP_NANDFLASH    (MTD_WRITEABLE)
-> > +#define MTD_CAP_MLC_NANDFLASH        (MTD_WRITEABLE | MTD_MULTI_LEVEL_CHIP)
->
-> NAK.  This does not describe the limitations of your chip, but a random
-> name.  In fact, the limitations appear to be identical to
-> (MTD_NORFLASH & !MTD_BIT_WRITEABLE).
->
-> Maybe something like ALLOW_SEPERATE_OOB_WRITE with reversed logic?
->
+On Tue, 2007-11-27 at 20:48 +0900, Kyungmin Park wrote:
+> In summary,
+> NOR: no oob, no problem to write bytes.
+> SLC NAND: has oob, NOP is allowed at least 2 and more.
+> MCL NAND:  has oob, but NOP is 1.
 
-However MTD_NORFLASH doesn't have the write buffer. It means it can be
-write one more.
-Maybe you only think the non-oob case. But MLC NAND should have the
-write buffer for NOP 1 limitation.
+Hi Kyungmin,
 
-In summary,
-NOR: no oob, no problem to write bytes.
-SLC NAND: has oob, NOP is allowed at least 2 and more.
-MCL NAND:  has oob, but NOP is 1.
+in MTD we call this stuff "sub-pages", so I'd suggest you to use this
+term instead of NOP. People are not accustomed to NOP. Use whatever term
+in the driver, but try to use "sub-pages" term when you go up to the
+generic layer.
 
-Thank you,
-Kyungmin Park
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
