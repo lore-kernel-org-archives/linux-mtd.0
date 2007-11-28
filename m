@@ -1,21 +1,21 @@
-Received: from s200aog12.obsmtp.com ([207.126.144.126])
+Received: from s200aog17.obsmtp.com ([207.126.144.131])
 	by bombadil.infradead.org with smtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IxIRJ-0005mk-K3
-	for linux-mtd@lists.infradead.org; Wed, 28 Nov 2007 08:38:46 +0000
+	id 1IxIRL-0005mm-VH
+	for linux-mtd@lists.infradead.org; Wed, 28 Nov 2007 08:38:48 +0000
 Received: from zeta.dmz-eu.st.com (ns2.st.com [164.129.230.9])
-	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 62BDEDB82
+	by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 9CD03DB4E
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Nov 2007 08:38:34 +0000 (GMT)
+	Wed, 28 Nov 2007 08:38:37 +0000 (GMT)
 Received: from mail1.nap.st.com (mail1.nap.st.com [10.150.200.1])
-	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D001F4BDAB
+	by zeta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E610D4BE2A
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Nov 2007 08:38:33 +0000 (GMT)
+	Wed, 28 Nov 2007 08:38:36 +0000 (GMT)
 From: Massimo CIRILLO <massimo.cirillo@st.com>
 To: <linux-mtd@lists.infradead.org>
 Subject: RE: Re: Wrong cache invalidation in cfi_cmdset0001.c (2.6.21 kernel)
-	(Jared Hulbert)
-Date: Wed, 28 Nov 2007 09:38:33 +0100
-Message-ID: <000c01c8319a$0fdd11d0$7205960a@nap.st.com>
+	(J?rn Engel)
+Date: Wed, 28 Nov 2007 09:38:36 +0100
+Message-ID: <000d01c8319a$11987d70$7205960a@nap.st.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
 	charset="us-ascii"
@@ -30,26 +30,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->What was the test setup that uncovered this?  I surprised this wasn't
->found earlier.
-
-The tests are ftest01/05 of LTP20060515 test suite. The test were made on:
--) OMAP5912 processor (192MHz ARM, 192MHz DSP)
--) uboot 1.1.4
--) linux kernel 2.6.21
--) storage flash device: STM M58PR512J (512Mbit, Multi-Level, Burst@48MHz) 
--) Flash memory space mapped to processor Dcache (by means of
-ioremap_cached() function)
-
->If cmd_adr <= adr then shouldn't initial_len >=len?  Something like:
->initial_len = (len + wbufsize) & ~(wbufsize-1);
-
-We think it is better to invalidate only the address range interested by
-buffer program as 
-in the patch posted to reply to Jorn Engel.
+We have introduced in the previous patch the variable initial_adr and
+initial_len,
+because it is more correct to invalidate the cache in the exact range
+interested
+by the buffer program.
 
 Signed-off-by: Massimo Cirillo (<massimo.cirillo@st.com>) and Giuseppe
 D'Eliseo (<giuseppe.deliseo@st.com>)
+---
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c
+b/drivers/mtd/chips/cfi_cmdset_0001.c
+
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-26
+18:06:37.000000000 +0100
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-27
+18:12:52.000000000 +0100
+@@ -1472,6 +1472,8 @@
+ 	int ret, wbufsize, word_gap, words;
+ 	const struct kvec *vec;
+ 	unsigned long vec_seek;
++	int initial_len=len;
++	unsigned long initial_adr=adr;
+ 
+ 	wbufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+ 	adr += chip->start;
+@@ -1578,7 +1580,7 @@
+ 	chip->state = FL_WRITING;
+ 
+ 	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
+-				   adr, len,
++				   initial_adr, initial_len,
+ 				   chip->buffer_write_time);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), cmd_adr);
+
+
 
 -----Original Message-----
 From: linux-mtd-bounces@lists.infradead.org
