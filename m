@@ -1,19 +1,21 @@
-Received: from wa-out-1112.google.com ([209.85.146.178])
+Received: from mail.gw-instruments.de ([82.144.60.34]
+	helo=redbean.intranet.gw-instruments.de)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IxORN-0002e3-H7
-	for linux-mtd@lists.infradead.org; Wed, 28 Nov 2007 15:03:11 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so1649474wah
+	id 1IxQaH-0007KV-JI
+	for linux-mtd@lists.infradead.org; Wed, 28 Nov 2007 17:20:31 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by redbean.intranet.gw-instruments.de (Postfix) with ESMTP id C8A08887
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 28 Nov 2007 07:03:03 -0800 (PST)
-Message-ID: <8bf247760711280703v41a7288exad611507eecabe91@mail.gmail.com>
-Date: Wed, 28 Nov 2007 20:33:02 +0530
-From: Ram <vshrirama@gmail.com>
+	Wed, 28 Nov 2007 18:20:43 +0100 (CET)
+Date: Wed, 28 Nov 2007 18:20:43 +0100 (CET)
+From: Peter Wippich <pewi@gw-instruments.de>
 To: linux-mtd@lists.infradead.org
-Subject: mkfs.jffs2 padding queries
+Subject: Re: mkfs.jffs problem with big endian target 
+In-Reply-To: <Pine.LNX.4.63.0711281426370.25328@redbean.intranet.gw-instruments.de>
+Message-ID: <Pine.LNX.4.63.0711281810330.25328@redbean.intranet.gw-instruments.de>
+References: <Pine.LNX.4.63.0711281426370.25328@redbean.intranet.gw-instruments.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +25,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-  Can mkfs.jffs2 produce an image that is a multiple of page size and
-not block size. (With padding)
 
-  My page size is 0x8000 (2K) and block size is 0x20000 (128K).
+Dear, 
 
-  I tried the following:
-  # mkfs.jffs2 -p 0x800 -l -e 0x20000 -n -v -r rootfs/ -o /tmp/filesys.jffs2
+update to my own posting: 
 
-  I tried several similar combinations to mkfs.jffs2.
-  I could get an image which is either padded block size or a size
-which is neither a multiple
-  of page or block size (without -p param).
+On Wed, 28 Nov 2007, Peter Wippich wrote:
 
+> Symptom: 
+> Looks like file names / inodes get somehow corrupted, e.g. 
+> source dir: 
+> ls powerpc-603e-linux-rootfs-stripped/etc/
+> fstab  group  httpd.conf  inittab  modules.conf  passwd  rc.d  rpc
+> 
+> on target machine (after mounting, root is on nfs for now):
+> ls /mnt/rootfs/etc/
+> ls: /mnt/rootfs/etc/http: No such file or directory
+> ls: /mnt/rootfs/etc/modu: No such file or directory
+> fstab    group    inittab  passwd   rc.d     rpc    
 
- I would like to get a image which is a multiple of page size after padding.
+This doesn't seem to be a problem with mkfs.jffs2. I get the same problem 
+when I mount an empty mtd partition and copy my system files to it (on the 
+target machine). 
+After copying everything looks fine.
+But when I reboot and mount it again I get the same error as above.
 
-Regards,
-sriram
+Any ideas ? 
+
+I don't get any jffs2 error messages (debug level set to 1). 
+
+Thank you and best regards, 
+
+Peter 
+
+|       Peter Wippich                   Voice: +49 30 46776411          |
+|       G&W Instruments GmbH            fax:   +49 30 46776419          |
+|       Gustav-Meyer-Allee 25, Geb. 12  Email: pewi@gw-instruments.de   |
+|       D-13355 Berlin  / Germany                                       |
