@@ -1,21 +1,25 @@
-Received: from py-out-1112.google.com ([64.233.166.178])
+Received: from smtp-1.orange.nl ([193.252.22.241])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Ixome-0007xS-EG
-	for linux-mtd@lists.infradead.org; Thu, 29 Nov 2007 19:10:54 +0000
-Received: by py-out-1112.google.com with SMTP id a25so3974548pyi
+	id 1Iy3kX-0004xu-TH
+	for linux-mtd@lists.infradead.org; Fri, 30 Nov 2007 11:09:45 +0000
+Received: from smtp-1.orange.nl (mwinf6003 [172.22.155.25])
+	by mwinf6005.orange.nl (SMTP Server) with ESMTP id E0579583E6CD
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 29 Nov 2007 11:10:42 -0800 (PST)
-Message-ID: <f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
-Date: Thu, 29 Nov 2007 11:10:41 -0800
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] MTD: fix s3c2410 error correction
-In-Reply-To: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+	Fri, 30 Nov 2007 10:46:25 +0100 (CET)
+Received: from me-wanadoo.net (localhost [127.0.0.1])
+	by mwinf6003.orange.nl (SMTP Server) with ESMTP id 3BF44240004B
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 30 Nov 2007 10:45:59 +0100 (CET)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: Request from Russia
+Date: Fri, 30 Nov 2007 12:46:34 +0300
+From: "Valya" <valyav@mailrus.ru>
+To: <valyav@mailrus.ru>
+Message-Id: <20071130094547.5F0E72400082@mwinf6003.orange.nl>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,15 +29,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Oct 18, 2007 5:02 PM, Matt Reimer <mattjreimer@gmail.com> wrote:
-> From: Matt Reimer <mreimer@vpop.net>
->
-> The single-bit error correction was, well, incorrect. For determing which
-> bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, and
-> it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead of
-> P16 P32 P64 P128 P256 P512 P1024 P2048.
+Hi,
 
-Is there any chance of this getting committed? It has been confirmed
-to be needed on s3c2440 and s3c2412.
+My name is Valentin. I have 25 years and I am student. I live with my mother in small city in Russia. My mother have problem with eyes and can not see.
 
-Matt
+I work very hard to buy things of primary necessities for us, but my salary is very small.
+
+During last months prices for gas, oil and electricity became very high and we can not use it to heat our home anymore. We have winter and weather very cold here already. We do not know what to do and we very afraid.
+
+The only way for us to heat our home is to use portable wood burning stove which give heat with burning wood. We have many wood in our region, therefore this stove will heat our home all winter with minimal charges. But we cannot buy this stove in our local market because my salary is very small.
+
+Thanks to free internet in our library and library computer I finded several addreses and decided to ask for help. May be you have any old sleeping bag, I will be very grateful to you if you donate it for us and send its to our address. I will give it to my mother so she can be in warm 
+
+Please let me know if you can help and I will give you our address.
+
+Valentin.
+Russia.
