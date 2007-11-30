@@ -1,15 +1,19 @@
-Received: from pmac.infradead.org ([2001:8b0:10b:1:20d:93ff:fe7a:3f2c])
-	by pentafluge.infradead.org with esmtpsa (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iy9dZ-0002Wc-Pn
-	for linux-mtd@lists.infradead.org; Fri, 30 Nov 2007 17:26:50 +0000
-Subject: Request for testing: AMD/Fujitsu flash chips
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Fri, 30 Nov 2007 17:26:49 +0000
-Message-Id: <1196443609.13978.53.camel@pmac.infradead.org>
+Received: from smtp.nokia.com ([131.228.20.172] helo=mgw-ext13.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IyAVr-0000SJ-QR
+	for linux-mtd@lists.infradead.org; Fri, 30 Nov 2007 18:23:02 +0000
+Subject: Re: file system tests (fs-tests)
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Ram <vshrirama@gmail.com>
+In-Reply-To: <8bf247760711300748q269a0d9i15b08461ef394525@mail.gmail.com>
+References: <8bf247760711300748q269a0d9i15b08461ef394525@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 30 Nov 2007 20:22:43 +0200
+Message-Id: <1196446963.20132.10.camel@sauron>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,27 +23,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-For a long time, there's been confusion about the "unlock addresses" for
-AMD-compatible NOR flash -- the chip definition in our table have an
-_array_ giving the addresses at which we should do the magic unlock
-write cycles, according to the different modes (16-bit, 8-bit) that the
-chip could be used in.
+On Fri, 2007-11-30 at 21:18 +0530, Ram wrote:
+> Hi,
+>   I am trying to test my nand drivers using the fs-tests package found
+> on mtd utils git tree.
+>=20
+>   My test area (JFFS2 partition size) is 8MB.
+>=20
+>   Most of the tests have passed. However some of the tests take too much =
+time
+>   to complete.
+>   The test "rndrm00" takes over 2 hours to complete.
+>   The test "stress00.sh" has taken 4 hours to complete.
+>=20
+>   When i run stress00.sh - The system becomes too slow. commands like
+>   df -h and ps -l take too much time to execute.
+>=20
+>   However, I have not seen any JFFS2 errors when i ran these tests.
+>=20
+>   Is something wrong? Worried about the time taken by these tests.
+>=20
+>   Is this normal?.
 
-For a while now, we've been deliberately ignoring all but the first
-entry in that array, on the basis that it shouldn't actually vary -- the
-chip needs the same levels on the same address lines, whatever mode it's
-in. The data sheets can be very confusing... for example:
+Its fine, they just torture the FS a lot. Look inside the scripts and
+change the iteration counts if you want to make them pass faster.
 
-	5. The system should generate the following address patterns:
-	    Word Mode: 555H or 2AAH to addresses A0 to A10
-	    Byte Mode: AAAH or 555H to addresses A-1 to A10
-
-I've just got rid of the array of unlock addresses, and _attempted_ to
-make the code cope and work again. I would very much appreciate some
-testing, before I put that in the MTD git tree:
-
-	git://git.infradead.org/~dwmw2/jedec-unlock.git
-	http://git.infradead.org/?p=users/dwmw2/jedec-unlock.git
-
--- 
-dwmw2
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
