@@ -1,16 +1,15 @@
-Received: from xerxes.tchmachines.com ([208.76.80.175])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iy9bV-0005DP-BE
-	for linux-mtd@lists.infradead.org; Fri, 30 Nov 2007 17:24:47 +0000
-Message-ID: <36289.69.30.123.186.1196443476.squirrel@architechnical.net>
-Date: Fri, 30 Nov 2007 12:24:36 -0500 (EST)
-Subject: JFFS2 garbage collection threads not freezing?
-From: "Pete MacKay" <armlinux@architechnical.net>
+Received: from pmac.infradead.org ([2001:8b0:10b:1:20d:93ff:fe7a:3f2c])
+	by pentafluge.infradead.org with esmtpsa (Exim 4.68 #1 (Red Hat Linux))
+	id 1Iy9dZ-0002Wc-Pn
+	for linux-mtd@lists.infradead.org; Fri, 30 Nov 2007 17:26:50 +0000
+Subject: Request for testing: AMD/Fujitsu flash chips
+From: David Woodhouse <dwmw2@infradead.org>
 To: linux-mtd@lists.infradead.org
-MIME-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Cc: rjw@sisk.pl
+Content-Type: text/plain
+Date: Fri, 30 Nov 2007 17:26:49 +0000
+Message-Id: <1196443609.13978.53.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +19,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-We've ported from 2.6.18 to 2.6.24-rc3 on a pxa270-based machine and can
-no longer enter 'standby' or 'mem' states.  I've stripped down the kernel
-and talked with the freezer maintainer and we believe the jffs2 garbage
-collection threads may not be calling try_to_freeze() or marking
-themselves properly.  (We have two mounted jffs2 file systems - mtd2 and
-mtd3).  The following is some cleaned-up output:
+For a long time, there's been confusion about the "unlock addresses" for
+AMD-compatible NOR flash -- the chip definition in our table have an
+_array_ giving the addresses at which we should do the magic unlock
+write cycles, according to the different modes (16-bit, 8-bit) that the
+chip could be used in.
 
-Freezing remaining freezable tasks ...
-Freezing of tasks failed after 20.00 seconds (2 tasks refusing to freeze):
-  task                PC stack   pid father
-init          D c0244b90     0     1      0
-kthreadd      S c0244b90     0     2      0
-ksoftirqd/0   S c0244b90     0     3      2
-events/0      S c0244b90     0     4      2
-khelper       S c0244b90     0     5      2
-kblockd/0     S c0244b90     0    51      2
-ksuspend_usbd D c0244b90     0    59      2
-khubd         D c0244b90     0    64      2
-kseriod       D c0244b90     0    67      2
-pdflush       D c0244b90     0    90      2
-pdflush       D c0244b90     0    91      2
-kswapd0       D c0244b90     0    92      2
-aio/0         S c0244b90     0    93      2
-mtdblockd     S c0244b90     0   192      2
-udevd         D c0244b90     0   619      1
-jffs2_gcd_mtd R running      0  1533      2
-jffs2_gcd_mtd R running      0  1598      2
-syslogd       D c0244b90     0  2248      1
-klogd         D c0244b90     0  2250      1
-hcid          D c0244b90     0  2273      1
-sdpd          D c0244b90     0  2277      1
-hidd          D c0244b90     0  2281      1
-sh            D c0244b90     0  2292      1
-getty         D c0244b90     0  2293      1
-echo          R running      0  2303   2292
- jffs2_gcd_mtd2
- jffs2_gcd_mtd3
+For a while now, we've been deliberately ignoring all but the first
+entry in that array, on the basis that it shouldn't actually vary -- the
+chip needs the same levels on the same address lines, whatever mode it's
+in. The data sheets can be very confusing... for example:
 
-Restarting tasks ... done.
+	5. The system should generate the following address patterns:
+	    Word Mode: 555H or 2AAH to addresses A0 to A10
+	    Byte Mode: AAAH or 555H to addresses A-1 to A10
+
+I've just got rid of the array of unlock addresses, and _attempted_ to
+make the code cope and work again. I would very much appreciate some
+testing, before I put that in the MTD git tree:
+
+	git://git.infradead.org/~dwmw2/jedec-unlock.git
+	http://git.infradead.org/?p=users/dwmw2/jedec-unlock.git
+
+-- 
+dwmw2
