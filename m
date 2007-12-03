@@ -1,30 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.182])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Iz2zj-0006rD-Cj
-	for linux-mtd@lists.infradead.org; Mon, 03 Dec 2007 04:33:29 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so4557781wah
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 02 Dec 2007 20:33:21 -0800 (PST)
-Message-ID: <9c9fda240712022033y693b4c99s8905b10a0789f5dc@mail.gmail.com>
-Date: Mon, 3 Dec 2007 13:33:20 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
-Subject: Re: [RFC][PATCH][JFFS2] JFFS2 support for NOP 1
-In-Reply-To: <20071128024743.GA4767@lazybastard.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1IzDBi-0004BW-6J
+	for linux-mtd@lists.infradead.org; Mon, 03 Dec 2007 15:26:32 +0000
+Date: Mon, 3 Dec 2007 16:20:53 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Matt Reimer <mattjreimer@gmail.com>
+Subject: Re: [PATCH] MTD: fix s3c2410 error correction
+Message-ID: <20071203152049.GA15000@lazybastard.org>
+References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+	<f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-References: <20071127073616.GA22556@party>
-	<20071127095518.GA29456@lazybastard.org>
-	<9c9fda240711270348q7798ddd5jfb7bf763b3497500@mail.gmail.com>
-	<1196164758.20132.6.camel@sauron>
-	<9c9fda240711271528j5dd89cacg9b1b1c11e700b16b@mail.gmail.com>
-	<20071127233108.GC29456@lazybastard.org>
-	<9c9fda240711271808gcbd0964jf73d564d56ebccc4@mail.gmail.com>
-	<20071128024743.GA4767@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, dwmw2@infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,44 +24,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Nov 28, 2007 11:47 AM, J=F6rn Engel <joern@logfs.org> wrote:
-> On Wed, 28 November 2007 11:08:30 +0900, Kyungmin Park wrote:
+On Thu, 29 November 2007 11:10:41 -0800, Matt Reimer wrote:
+> On Oct 18, 2007 5:02 PM, Matt Reimer <mattjreimer@gmail.com> wrote:
+> > From: Matt Reimer <mreimer@vpop.net>
 > >
-> > sub-page: possible write size(?)
-> > MTD usually write data with 'page size' (1KiB, 2KiB, and 4KiB) but
-> > some upper layer such as UBI can write it with 'sub-page size (sector
-> > size)'.
-> >
-> > Number Of Program (NOP): How many times flash can be programed.
-> > In general SLC NAND has 4 but this value will be smaller as the
-> > technology is advanced and MLC NAND has 1.
-> >
-> > The problem is that current JFFS2 implementation uses the NOP 2, data
-> > area and oob area in NAND case. It breaks the NOP 1 limitation in MLC
-> > case.
-> >
-> > If the description is wrong, please let me know.
->
-> Sounds plausible.  And reading up on the subpage code I start to doubt
-> its robustness wrt. newer SLC flashes as well.  If the NOP is lower than
-> the number of ECC steps, trouble is brewing.
->
-> But back to your original patch, you want JFFS2 to behave on MLC flashes
-> just as it already behaves on Sibley and those dreaded STMicro NORs.
-> And I claim that you should not only reach identical behaviour, but also
-> share the same code.  There is no point in having two sets of "special"
-> initializations with the exact same effect.
->
-> Maybe add a flag MTD_OOB_WRITEABLE (or some better name) to SLC flashes
-> and have the nand initializations in JFFS2 depend on those.  Without
-> this flag, the nor_wbuf_* code is called.  "nor_wbuf" could use a better
-> name as well, since it extends to more than just NOR flash.
->
+> > The single-bit error correction was, well, incorrect. For determing which
+> > bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, and
+> > it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead of
+> > P16 P32 P64 P128 P256 P512 P1024 P2048.
+> 
+> Is there any chance of this getting committed? It has been confirmed
+> to be needed on s3c2440 and s3c2412.
 
-Okay, I will add the MTD_OOB_WRITABLE as NOR.
+Ok, I'm getting sick of this.  Even though I didn't fully review the
+patch, I'll gladly take the chances of breaking something and
+complaining to Matt afterwards.  Certainly beats ignoring this patch for
+all eternity.
 
-Are there more opinions or comments?
-If not, I will send the updated patch.
+Acked-by: Joern Engel <joern@logfs.org>
 
-Thank you,
-Kyungmin Park
+Jörn
+
+-- 
+You ain't got no problem, Jules. I'm on the motherfucker. Go back in
+there, chill them niggers out and wait for the Wolf, who should be
+coming directly.
+-- Marsellus Wallace
