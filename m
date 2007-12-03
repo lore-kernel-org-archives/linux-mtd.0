@@ -1,20 +1,19 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1IzDBi-0004BW-6J
-	for linux-mtd@lists.infradead.org; Mon, 03 Dec 2007 15:26:32 +0000
-Date: Mon, 3 Dec 2007 16:20:53 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Matt Reimer <mattjreimer@gmail.com>
-Subject: Re: [PATCH] MTD: fix s3c2410 error correction
-Message-ID: <20071203152049.GA15000@lazybastard.org>
-References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
-	<f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from rv-out-0910.google.com ([209.85.198.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IzEFW-0000zW-HS
+	for linux-mtd@lists.infradead.org; Mon, 03 Dec 2007 16:34:33 +0000
+Received: by rv-out-0910.google.com with SMTP id c24so2827815rvf
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 03 Dec 2007 08:34:24 -0800 (PST)
+Message-ID: <62cbdcd90712030834o28f9126fs841b3b9d46324fb7@mail.gmail.com>
+Date: Mon, 3 Dec 2007 17:34:23 +0100
+From: "massimo cirillo" <maxcir@gmail.com>
+To: Nico@cam.org, joern@logfs.org, linux-mtd@lists.infradead.org
+Subject: [PATCH][CFI] Wrong cache invalidation bug fix
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +23,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 29 November 2007 11:10:41 -0800, Matt Reimer wrote:
-> On Oct 18, 2007 5:02 PM, Matt Reimer <mattjreimer@gmail.com> wrote:
-> > From: Matt Reimer <mreimer@vpop.net>
-> >
-> > The single-bit error correction was, well, incorrect. For determing which
-> > bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, and
-> > it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead of
-> > P16 P32 P64 P128 P256 P512 P1024 P2048.
-> 
-> Is there any chance of this getting committed? It has been confirmed
-> to be needed on s3c2440 and s3c2412.
+Hi,
 
-Ok, I'm getting sick of this.  Even though I didn't fully review the
-patch, I'll gladly take the chances of breaking something and
-complaining to Matt afterwards.  Certainly beats ignoring this patch for
-all eternity.
+We encountered the problem with cache invalidation in CFI driver. It
+causes corruptions of data read from flash.
 
-Acked-by: Joern Engel <joern@logfs.org>
+The problem is investigated. The original code performs cache
+invalidation from "adr" to "adr + len" in do_write_buffer(). Since len
+and adr could be updated in the code before invalidation - it causes
+improper setting of cache invalidation regions.
+The following patch fixes this problem. This patch has been verified
+on our OMAP based platform.
+Could you please acknowledge and commit this patch?
 
-Jörn
+Thanks a lot.
 
--- 
-You ain't got no problem, Jules. I'm on the motherfucker. Go back in
-there, chill them niggers out and wait for the Wolf, who should be
-coming directly.
--- Marsellus Wallace
+Signed-off-by Massimo Cirillo <maxcir@gmail.com> and Giuseppe D'Eliseo
+<giuseppedeliseo@gmail.com>
+
+------
+
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c
+b/drivers/mtd/chips/cfi_cmdset_0001.c
+
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-20 20:15:02.000000000 +0300
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-11-29 19:42:08.000000000 +0300
+@@ -1530,9 +1530,12 @@
+ 	int ret, wbufsize, word_gap, words;
+ 	const struct kvec *vec;
+ 	unsigned long vec_seek;
++	unsigned long initial_adr;
++	int initial_len=len;
+
+ 	wbufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+ 	adr += chip->start;
++	initial_adr = adr;
+ 	cmd_adr = adr & ~(wbufsize-1);
+
+ 	/* Let's determine this according to the interleave only once */
+@@ -1636,7 +1639,7 @@
+ 	chip->state = FL_WRITING;
+
+ 	ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
+-				   adr, len,
++				   initial_adr, initial_len,
+ 				   chip->buffer_write_time);
+ 	if (ret) {
+ 		map_write(map, CMD(0x70), cmd_adr);
+
+------
