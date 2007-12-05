@@ -1,19 +1,23 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1Izikj-00015q-Vl
-	for linux-mtd@lists.infradead.org; Wed, 05 Dec 2007 01:08:48 +0000
-Date: Wed, 5 Dec 2007 02:03:18 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [RFC][PATCH][JFFS2] JFFS2 doesn't use OOB at MLC NAND/OneNAND
-Message-ID: <20071205010318.GG26112@lazybastard.org>
-References: <20071205005553.GA28782@party>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20071205005553.GA28782@party>
-Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Received: from ms.csie.ntu.edu.tw ([140.112.30.68])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1IzlUP-0003W3-Vs
+	for linux-mtd@lists.infradead.org; Wed, 05 Dec 2007 04:04:09 +0000
+Received: from localhost (localhost [127.0.0.1])
+	by ms.csie.ntu.edu.tw (Postfix) with ESMTP id 6B7B64F3A63
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Dec 2007 11:58:13 +0800 (CST)
+Received: from csie.ntu.edu.tw (localhost [127.0.0.1])
+	by ms.csie.ntu.edu.tw (Postfix) with ESMTP id F2C4E4F3A4E
+	for <linux-mtd@lists.infradead.org>;
+	Wed,  5 Dec 2007 11:58:12 +0800 (CST)
+From: "r93072" <r93072@csie.ntu.edu.tw>
+To: linux-mtd@lists.infradead.org 
+Subject: nand_write_page faile
+Date: Wed, 5 Dec 2007 11:58:12 +0800
+Message-Id: <20071205033853.M53454@csie.ntu.edu.tw>
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=big5
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,26 +27,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 5 December 2007 09:55:53 +0900, Kyungmin Park wrote:
-> 
-> It's the preparation patch for the MLC NAND/OneNAND flash.
-> The current jffs2 implementation at NAND case uses the NOP 2, cleanmarker and data each page 0. It breaks the NOP 1 limitation in MLC flash.
-> 
-> With this patch, we don't write the cleanmarker at oob area.
-> I'm not sure it should use the cleanmarker at data area as NOR does.
-> Apart from the cleanmarker, there's serious POR issue, paired page at MLC.
-> 
-> The paired page problem is that if the some page is broken, the paired page is also broken even though it is written correctly at previous time.
-> That's the reason the cleanmarker is not big issue at this time.
-> 
-> Now we support the NOP 1 and later we have to address this paired page issue. I'm not sure when this problem is addressed.
-> 
-> Any comments are welcome.
 
-I like it.
+Hi,
+  Here is a problem when I use mtd on NAND flash.  When I use nandwrite to 
+  write data into nand flash, sometimes it would fail and return -EIO.  This
+  is because the data on chip and on buffer were not coherent, and the
+function,    
+  nand_verify_buf would return error.  Is it a hardware issue?  Or is there any  
+  mechanism to recover it?  My Soc is MV88f5281 and NAND flash is samsung  
+  K9F1G08U0B.  The file system is yaffs2, kernel version is 2.6.18.6.
 
-Jörn
-
--- 
-Joern's library part 3:
-http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
+Thanks,
+George
+ 
+--
+Open WebMail Project (http://openwebmail.org)
