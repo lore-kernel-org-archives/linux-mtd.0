@@ -1,12 +1,19 @@
-Date: Wed, 5 Dec 2007 10:08:11 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH][MTD][OneNAND] Consolidate OneNAND operation order
-Message-ID: <20071205010811.GA30509@party>
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1Izikj-00015q-Vl
+	for linux-mtd@lists.infradead.org; Wed, 05 Dec 2007 01:08:48 +0000
+Date: Wed, 5 Dec 2007 02:03:18 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Kyungmin Park <kyungmin.park@samsung.com>
+Subject: Re: [RFC][PATCH][JFFS2] JFFS2 doesn't use OOB at MLC NAND/OneNAND
+Message-ID: <20071205010318.GG26112@lazybastard.org>
+References: <20071205005553.GA28782@party>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Cc: dwmw2@infradead.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20071205005553.GA28782@party>
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,66 +23,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Consolidate OneNAND operation order as OneNAND Spec.
-It also doesn't break previous operation order.
+On Wed, 5 December 2007 09:55:53 +0900, Kyungmin Park wrote:
+> 
+> It's the preparation patch for the MLC NAND/OneNAND flash.
+> The current jffs2 implementation at NAND case uses the NOP 2, cleanmarker and data each page 0. It breaks the NOP 1 limitation in MLC flash.
+> 
+> With this patch, we don't write the cleanmarker at oob area.
+> I'm not sure it should use the cleanmarker at data area as NOR does.
+> Apart from the cleanmarker, there's serious POR issue, paired page at MLC.
+> 
+> The paired page problem is that if the some page is broken, the paired page is also broken even though it is written correctly at previous time.
+> That's the reason the cleanmarker is not big issue at this time.
+> 
+> Now we support the NOP 1 and later we have to address this paired page issue. I'm not sure when this problem is addressed.
+> 
+> Any comments are welcome.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
----
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 1b0b320..a3f51d5 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -182,8 +182,7 @@ static int onenand_buffer_address(int dataram1, int sectors, int count)
- static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t len)
- {
- 	struct onenand_chip *this = mtd->priv;
--	int value, readcmd = 0, block_cmd = 0;
--	int block, page;
-+	int value, block, page;
- 
- 	/* Address translation */
- 	switch (cmd) {
-@@ -198,7 +197,6 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
- 	case ONENAND_CMD_ERASE:
- 	case ONENAND_CMD_BUFFERRAM:
- 	case ONENAND_CMD_OTP_ACCESS:
--		block_cmd = 1;
- 		block = (int) (addr >> this->erase_shift);
- 		page = -1;
- 		break;
-@@ -240,11 +238,9 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
- 		value = onenand_block_address(this, block);
- 		this->write_word(value, this->base + ONENAND_REG_START_ADDRESS1);
- 
--		if (block_cmd) {
--			/* Select DataRAM for DDP */
--			value = onenand_bufferram_address(this, block);
--			this->write_word(value, this->base + ONENAND_REG_START_ADDRESS2);
--		}
-+		/* Select DataRAM for DDP */
-+		value = onenand_bufferram_address(this, block);
-+		this->write_word(value, this->base + ONENAND_REG_START_ADDRESS2);
- 	}
- 
- 	if (page != -1) {
-@@ -256,7 +252,6 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
- 		case ONENAND_CMD_READ:
- 		case ONENAND_CMD_READOOB:
- 			dataram = ONENAND_SET_NEXT_BUFFERRAM(this);
--			readcmd = 1;
- 			break;
- 
- 		default:
-@@ -273,12 +268,6 @@ static int onenand_command(struct mtd_info *mtd, int cmd, loff_t addr, size_t le
- 		/* Write 'BSA, BSC' of DataRAM */
- 		value = onenand_buffer_address(dataram, sectors, count);
- 		this->write_word(value, this->base + ONENAND_REG_START_BUFFER);
--
--		if (readcmd) {
--			/* Select DataRAM for DDP */
--			value = onenand_bufferram_address(this, block);
--			this->write_word(value, this->base + ONENAND_REG_START_ADDRESS2);
--		}
- 	}
- 
- 	/* Interrupt clear */
+I like it.
+
+Jörn
+
+-- 
+Joern's library part 3:
+http://inst.eecs.berkeley.edu/~cs152/fa05/handouts/clark-test.pdf
