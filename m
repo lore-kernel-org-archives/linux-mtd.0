@@ -1,23 +1,11 @@
-Received: from ms.csie.ntu.edu.tw ([140.112.30.68])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IzlUP-0003W3-Vs
-	for linux-mtd@lists.infradead.org; Wed, 05 Dec 2007 04:04:09 +0000
-Received: from localhost (localhost [127.0.0.1])
-	by ms.csie.ntu.edu.tw (Postfix) with ESMTP id 6B7B64F3A63
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Dec 2007 11:58:13 +0800 (CST)
-Received: from csie.ntu.edu.tw (localhost [127.0.0.1])
-	by ms.csie.ntu.edu.tw (Postfix) with ESMTP id F2C4E4F3A4E
-	for <linux-mtd@lists.infradead.org>;
-	Wed,  5 Dec 2007 11:58:12 +0800 (CST)
-From: "r93072" <r93072@csie.ntu.edu.tw>
-To: linux-mtd@lists.infradead.org 
-Subject: nand_write_page faile
-Date: Wed, 5 Dec 2007 11:58:12 +0800
-Message-Id: <20071205033853.M53454@csie.ntu.edu.tw>
+Message-ID: <000000000000038D@www.zipmail.com.br>
+Date: Wed, 5 Dec 2007 10:58:03 +0200
+From: johnben31@zipmail.com.br
+Subject: =?iso-8859-1?Q?=20Dear=20Friend=2C?=
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset=big5
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,18 +15,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-Hi,
-  Here is a problem when I use mtd on NAND flash.  When I use nandwrite to 
-  write data into nand flash, sometimes it would fail and return -EIO.  This
-  is because the data on chip and on buffer were not coherent, and the
-function,    
-  nand_verify_buf would return error.  Is it a hardware issue?  Or is there any  
-  mechanism to recover it?  My Soc is MV88f5281 and NAND flash is samsung  
-  K9F1G08U0B.  The file system is yaffs2, kernel version is 2.6.18.6.
-
-Thanks,
-George
+ Dear Friend,
  
---
-Open WebMail Project (http://openwebmail.org)
+I am very happy to inform you about my success in getting the funds trans=
+fered
+to Mexico, for investements and business establishements. Now, I want you=
+
+to contact my clark at the information bellow. NAME; Mr.Ferna Dez,  Ask
+him to send you the total sum of  ($800,000.00) United States Dollars in
+an International Bank Certified Draft, which I kept for your compensation=
+.
+Fill the bellow information and contact him through his email (fernadez01=
+@yahoo.com
+ ) immediately without any delays.
+ 
+1.  Your Full Names:................................. 
+2.  Your Address:...... ..........................
+3.  Your Sex:......................................
+4.  Your Age:......................................
+5.  Your Marital Status:......................
+6   Your Occupation:.............................
+7.  Your Direct Phone Number:.............................
+8.  Your Resident City:........................................
+9.   Your Resident State:........................................
+10. Your Country:.................................................
+ 
+Regards,
+Mr JOHN BEN
