@@ -1,23 +1,19 @@
-Received: from rv-out-0910.google.com ([209.85.198.189])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1Izwe3-0006My-D6
-	for linux-mtd@lists.infradead.org; Wed, 05 Dec 2007 15:58:49 +0000
-Received: by rv-out-0910.google.com with SMTP id c24so3789120rvf
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 05 Dec 2007 07:58:35 -0800 (PST)
-Message-ID: <62cbdcd90712050758h36335aa5q176f1c192f18d6a9@mail.gmail.com>
-Date: Wed, 5 Dec 2007 16:58:35 +0100
-From: "massimo cirillo" <maxcir@gmail.com>
-To: "Nicolas Pitre" <nico@cam.org>
-Subject: Re: [PATCH][CFI] Wrong cache invalidation bug fix
-In-Reply-To: <alpine.LFD.0.99999.0712031210180.9605@xanadu.home>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J0F9T-0003X0-0R
+	for linux-mtd@lists.infradead.org; Thu, 06 Dec 2007 11:44:31 +0000
+Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
+	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
+	lB6BiAas025529
+	for <linux-mtd@lists.infradead.org>; Thu, 6 Dec 2007 12:44:10 +0100
+Date: Thu, 6 Dec 2007 12:43:47 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Linux mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH][MTD-UTILS] Set mkfs.jffs2 page size runtime instead of fixed.
+Message-ID: <Pine.LNX.4.64.0712061232550.28640@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <62cbdcd90712030834o28f9126fs841b3b9d46324fb7@mail.gmail.com>
-	<alpine.LFD.0.99999.0712031210180.9605@xanadu.home>
-Cc: joern@logfs.org, linux-mtd@lists.infradead.org
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="218815243-1052512628-1196941427=:28640"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,81 +23,103 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-OK, I've verified your suggestion and the tests are ok.
-Following the overall patch for the cfi_cmdset_0001.c
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Signed-off-by Massimo Cirillo <maxcir@gmail.com> and Giuseppe D'Eliseo
-<giuseppedeliseo@gmail.com>
-Acked-by: Nicolas Pitre <nico@cam.org> and J=F6rn Engel <joern@logfs.org>
+--218815243-1052512628-1196941427=:28640
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-------
-diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c
-b/drivers/mtd/chips/cfi_cmdset_0001.c
 
---- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-12-05
-10:45:20.000000000 +0100
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-11-16
-19:14:27.000000000 +0100
-@@ -1486,9 +1486,12 @@
-       int ret, wbufsize, word_gap, words;
-       const struct kvec *vec;
-       unsigned long vec_seek;
-+       unsigned long initial_adr;
-+       int initial_len=3Dlen;
+This patch reads the default PAGE_SIZE from sysconf(), i.e. the system
+mkfs.jffs2 is running on, instead of just setting it to 4096 (which of=20
+course is valid for most systems but not all).
 
-       wbufsize =3D cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
-       adr +=3D chip->start;
-+       initial_adr =3D adr;
-       cmd_adr =3D adr & ~(wbufsize-1);
+This is useful if mkfs.jffs2 is running on the target system, e.g. to=20
+create a backup image during firmware upgrade, so that the page size does=
+=20
+not have to be set explicitly using a command line parameter.
 
-       /* Let's determine this according to the interleave only once */
-@@ -1501,7 +1504,7 @@
-               return ret;
-       }
+The --pagesize option is supported just as before.
 
--       XIP_INVAL_CACHED_RANGE(map, adr, len);
-+       XIP_INVAL_CACHED_RANGE(map, initial_adr, initial_len);
-       ENABLE_VPP(map);
-       xip_disable(map, chip, cmd_adr);
+Patch is included both as an attachment for patching and inline for=20
+review. (Patch made against git head).
 
-@@ -1592,7 +1595,7 @@
-       chip->state =3D FL_WRITING;
+Signed-off-by Ricard Wanderl=F6f <ricardw@axis.com> .
 
-       ret =3D INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
--                                  adr, len,
-+                                  initial_adr, initial_len,
-                                  chip->buffer_write_time);
-       if (ret) {
-               map_write(map, CMD(0x70), cmd_adr);
-------
+Index: mkfs.jffs2.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+RCS file: /usr/local/cvs/linux/apps/utils/mtdutils/mkfs.jffs2.c,v
+retrieving revision 1.2
+retrieving revision 1.3
+diff -u -r1.2 -r1.3
+--- mkfs.jffs2.c=0917 Oct 2006 11:40:40 -0000=091.2
++++ mkfs.jffs2.c=096 Dec 2007 07:46:47 -0000=091.3
+@@ -672,9 +672,9 @@
+  =090xff, 0xff, 0xff, 0xff, 0xff
+  };
 
-2007/12/3, Nicolas Pitre <nico@cam.org>:
-> On Mon, 3 Dec 2007, massimo cirillo wrote:
->
-> > Hi,
-> >
-> > We encountered the problem with cache invalidation in CFI driver. It
-> > causes corruptions of data read from flash.
-> >
-> > The problem is investigated. The original code performs cache
-> > invalidation from "adr" to "adr + len" in do_write_buffer(). Since len
-> > and adr could be updated in the code before invalidation - it causes
-> > improper setting of cache invalidation regions.
-> > The following patch fixes this problem. This patch has been verified
-> > on our OMAP based platform.
-> > Could you please acknowledge and commit this patch?
-> >
-> > Thanks a lot.
-> >
-> > Signed-off-by Massimo Cirillo <maxcir@gmail.com> and Giuseppe D'Eliseo
-> > <giuseppedeliseo@gmail.com>
->
-> This patch is correct.  However, to make it more obvious, please change
-> the used variable in the XIP_INVAL_CACHED_RANGE() call used in the same
-> function as well.
->
-> With that change you can add "Acked-by: Nicolas Pitre <nico@cam.org>".
->
->
-> Nicolas
->
+-/* We default to 4096, per x86.  When building a fs for
+- * 64-bit arches and whatnot, use the --pagesize=3DSIZE option */
+-int page_size =3D 4096;
++/* We set this at start of main() using sysconf(), -1 means we don't know =
+*/
++/* When building an fs for non-native systems, use --pagesize=3DSIZE optio=
+n */
++int page_size =3D -1;
+
+  #include "compr.h"
+
+@@ -787,6 +787,10 @@
+  =09struct stat *statbuf;
+  =09unsigned int totcomp =3D 0;
+
++=09page_size =3D sysconf(_SC_PAGESIZE);
++=09if (page_size < 0) /* System doesn't know so ... */
++=09=09page_size =3D 4096; /* ... we make an educated guess */
++
+  =09statbuf =3D &(e->sb);
+  =09if (statbuf->st_size >=3D JFFS2_MAX_FILE_SIZE) {
+  =09=09error_msg("Skipping file \"%s\" too large.", e->path);
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
+--218815243-1052512628-1196941427=:28640
+Content-Type: TEXT/x-diff; charset=US-ASCII; name=mkfs.jffs2.c-pagesize.patch
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.64.0712061243470.28640@lnxricardw.se.axis.com>
+Content-Description: patch file
+Content-Disposition: attachment; filename=mkfs.jffs2.c-pagesize.patch
+
+SW5kZXg6IG1rZnMuamZmczIuYw0KPT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0K
+UkNTIGZpbGU6IC91c3IvbG9jYWwvY3ZzL2xpbnV4L2FwcHMvdXRpbHMvbXRk
+dXRpbHMvbWtmcy5qZmZzMi5jLHYNCnJldHJpZXZpbmcgcmV2aXNpb24gMS4y
+DQpyZXRyaWV2aW5nIHJldmlzaW9uIDEuMw0KZGlmZiAtdSAtcjEuMiAtcjEu
+Mw0KLS0tIG1rZnMuamZmczIuYwkxNyBPY3QgMjAwNiAxMTo0MDo0MCAtMDAw
+MAkxLjINCisrKyBta2ZzLmpmZnMyLmMJNiBEZWMgMjAwNyAwNzo0Njo0NyAt
+MDAwMAkxLjMNCkBAIC02NzIsOSArNjcyLDkgQEANCiAJMHhmZiwgMHhmZiwg
+MHhmZiwgMHhmZiwgMHhmZg0KIH07DQogDQotLyogV2UgZGVmYXVsdCB0byA0
+MDk2LCBwZXIgeDg2LiAgV2hlbiBidWlsZGluZyBhIGZzIGZvcg0KLSAqIDY0
+LWJpdCBhcmNoZXMgYW5kIHdoYXRub3QsIHVzZSB0aGUgLS1wYWdlc2l6ZT1T
+SVpFIG9wdGlvbiAqLw0KLWludCBwYWdlX3NpemUgPSA0MDk2Ow0KKy8qIFdl
+IHNldCB0aGlzIGF0IHN0YXJ0IG9mIG1haW4oKSB1c2luZyBzeXNjb25mKCks
+IC0xIG1lYW5zIHdlIGRvbid0IGtub3cgKi8NCisvKiBXaGVuIGJ1aWxkaW5n
+IGFuIGZzIGZvciBub24tbmF0aXZlIHN5c3RlbXMsIHVzZSAtLXBhZ2VzaXpl
+PVNJWkUgb3B0aW9uICovDQoraW50IHBhZ2Vfc2l6ZSA9IC0xOw0KIA0KICNp
+bmNsdWRlICJjb21wci5oIg0KIA0KQEAgLTc4Nyw2ICs3ODcsMTAgQEANCiAJ
+c3RydWN0IHN0YXQgKnN0YXRidWY7DQogCXVuc2lnbmVkIGludCB0b3Rjb21w
+ID0gMDsNCiANCisJcGFnZV9zaXplID0gc3lzY29uZihfU0NfUEFHRVNJWkUp
+Ow0KKwlpZiAocGFnZV9zaXplIDwgMCkgLyogU3lzdGVtIGRvZXNuJ3Qga25v
+dyBzbyAuLi4gKi8NCisJCXBhZ2Vfc2l6ZSA9IDQwOTY7IC8qIC4uLiB3ZSBt
+YWtlIGFuIGVkdWNhdGVkIGd1ZXNzICovDQorDQogCXN0YXRidWYgPSAmKGUt
+PnNiKTsNCiAJaWYgKHN0YXRidWYtPnN0X3NpemUgPj0gSkZGUzJfTUFYX0ZJ
+TEVfU0laRSkgew0KIAkJZXJyb3JfbXNnKCJTa2lwcGluZyBmaWxlIFwiJXNc
+IiB0b28gbGFyZ2UuIiwgZS0+cGF0aCk7DQo=
+
+--218815243-1052512628-1196941427=:28640--
