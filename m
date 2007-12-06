@@ -1,23 +1,18 @@
-Received: from ogre.sisk.pl ([217.79.144.158])
+Received: from va-65-40-217-47.sta.embarqhsd.net ([65.40.217.47]
+	helo=CVAEX1.VERTICAL.COM)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1IyYRo-00069N-0B
-	for linux-mtd@lists.infradead.org; Sat, 01 Dec 2007 19:56:27 +0000
-From: "Rafael J. Wysocki" <rjw@sisk.pl>
-To: linux-mtd@lists.infradead.org
-Subject: [PATCH] Freezer: Fix JFFS2 garbage collector freezing issue (was: Re:
-	JFFS2 garbage collection threads not freezing?)
-Date: Sat, 1 Dec 2007 21:14:10 +0100
-References: <36289.69.30.123.186.1196443476.squirrel@architechnical.net>
-In-Reply-To: <36289.69.30.123.186.1196443476.squirrel@architechnical.net>
+	id 1J0MRN-0005Hd-G0
+	for linux-mtd@lists.infradead.org; Thu, 06 Dec 2007 19:31:27 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200712012114.10881.rjw@sisk.pl>
-Cc: Pete MacKay <armlinux@architechnical.net>,
-	LKML <linux-kernel@vger.kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Banking flash
+Date: Thu, 6 Dec 2007 14:17:19 -0500
+Message-ID: <4DD3AF7ECBBC43409BA36508938D01852CE779@CVAEX1.VERTICAL.COM>
+From: "Jon Ringle" <JRingle@vertical.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,90 +22,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Friday, 30 of November 2007, Pete MacKay wrote:
-> We've ported from 2.6.18 to 2.6.24-rc3 on a pxa270-based machine and can
-> no longer enter 'standby' or 'mem' states.  I've stripped down the kernel
-> and talked with the freezer maintainer and we believe the jffs2 garbage
-> collection threads may not be calling try_to_freeze() or marking
-> themselves properly.  (We have two mounted jffs2 file systems - mtd2 and
-> mtd3).  The following is some cleaned-up output:
-> 
-> Freezing remaining freezable tasks ...
-> Freezing of tasks failed after 20.00 seconds (2 tasks refusing to freeze):
->   task                PC stack   pid father
-> init          D c0244b90     0     1      0
-> kthreadd      S c0244b90     0     2      0
-> ksoftirqd/0   S c0244b90     0     3      2
-> events/0      S c0244b90     0     4      2
-> khelper       S c0244b90     0     5      2
-> kblockd/0     S c0244b90     0    51      2
-> ksuspend_usbd D c0244b90     0    59      2
-> khubd         D c0244b90     0    64      2
-> kseriod       D c0244b90     0    67      2
-> pdflush       D c0244b90     0    90      2
-> pdflush       D c0244b90     0    91      2
-> kswapd0       D c0244b90     0    92      2
-> aio/0         S c0244b90     0    93      2
-> mtdblockd     S c0244b90     0   192      2
-> udevd         D c0244b90     0   619      1
-> jffs2_gcd_mtd R running      0  1533      2
-> jffs2_gcd_mtd R running      0  1598      2
-> syslogd       D c0244b90     0  2248      1
-> klogd         D c0244b90     0  2250      1
-> hcid          D c0244b90     0  2273      1
-> sdpd          D c0244b90     0  2277      1
-> hidd          D c0244b90     0  2281      1
-> sh            D c0244b90     0  2292      1
-> getty         D c0244b90     0  2293      1
-> echo          R running      0  2303   2292
->  jffs2_gcd_mtd2
->  jffs2_gcd_mtd3
-> 
-> Restarting tasks ... done.
+Hi,
 
-I think that the appended patch is necessary to fix this problem.
+We are in the process of designing a new board around the IXP435. The
+IXP435 has 4 Expansion bus chip selects with an address space of 16MB
+per chip select. I can only use CS0 for flash because the other 3 CSs
+are being used for other purposes. The challenge that we have is that we
+require 32MB of flash storage. One of the options that we are
+considering is to use a GPIO pin to bank 16MB of a 32MB Intel Strata
+flash chip at any given time to CS0's 16MB address space. I am trying to
+access the scope of work to be done in Linux to accomplish this and I am
+asking for feedback on this idea.
 
-Greetings,
-Rafael
-
----
-Subject: Freezer: Fix JFFS2 garbage collector freezing issue
-From: Rafael J. Wysocki <rjw@sisk.pl>
-
-Fix breakage caused by commit d5d8c5976d6adeddb8208c240460411e2198b393
-"freezer: do not send signals to kernel threads" in
-jffs2_garbage_collect_thread() that assumed it would be sent signals
-by the freezer.
-
-Signed-off-by: Rafael J. Wysocki <rjw@sisk.pl>
-Cc: Pete MacKay <armlinux@architechnical.net>
-Cc: Andrew Morton <akpm@linux-foundation.org>
----
- fs/jffs2/background.c |    8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-Index: linux-2.6/fs/jffs2/background.c
-===================================================================
---- linux-2.6.orig/fs/jffs2/background.c
-+++ linux-2.6/fs/jffs2/background.c
-@@ -103,15 +103,17 @@ static int jffs2_garbage_collect_thread(
- 		   get there first. */
- 		yield();
- 
-+		/* If system suspend is in progress, go to the refrigerator and
-+		   start again when the suspend is done */
-+		if (try_to_freeze())
-+			goto again;
-+
- 		/* Put_super will send a SIGKILL and then wait on the sem.
- 		 */
- 		while (signal_pending(current)) {
- 			siginfo_t info;
- 			unsigned long signr;
- 
--			if (try_to_freeze())
--				goto again;
--
- 			signr = dequeue_signal_lock(current, &current->blocked, &info);
- 
- 			switch(signr) {
+Thanks,
+Jon
