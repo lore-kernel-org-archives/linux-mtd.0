@@ -1,19 +1,22 @@
-Received: from va-65-40-217-47.sta.embarqhsd.net ([65.40.217.47]
-	helo=CVAEX1.VERTICAL.COM)
+Received: from relais.videotron.ca ([24.201.245.36])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J0NBY-0008Eo-Sj
-	for linux-mtd@lists.infradead.org; Thu, 06 Dec 2007 20:19:11 +0000
-Content-class: urn:content-classes:message
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	id 1J0NMW-0000jv-BJ
+	for linux-mtd@lists.infradead.org; Thu, 06 Dec 2007 20:30:31 +0000
+MIME-version: 1.0
+Content-transfer-encoding: 7BIT
+Content-type: TEXT/PLAIN; charset=US-ASCII
+Received: from xanadu.home ([74.56.106.175]) by VL-MH-MR001.ip.videotron.ca
+	(Sun Java(tm) System Messaging Server 6.3-4.01 (built Aug  3 2007;
+	32bit))
+	with ESMTP id <0JSN0096XAANJBG0@VL-MH-MR001.ip.videotron.ca> for
+	linux-mtd@lists.infradead.org; Thu, 06 Dec 2007 15:30:24 -0500 (EST)
+Date: Thu, 06 Dec 2007 15:30:23 -0500 (EST)
+From: Nicolas Pitre <nico@cam.org>
+To: Jon Ringle <JRingle@vertical.com>
 Subject: RE: Banking flash
-Date: Thu, 6 Dec 2007 15:19:02 -0500
-Message-ID: <4DD3AF7ECBBC43409BA36508938D01852CE77B@CVAEX1.VERTICAL.COM>
-In-Reply-To: <alpine.LFD.0.99999.0712061511480.555@xanadu.home>
-From: "Jon Ringle" <JRingle@vertical.com>
-To: "Nicolas Pitre" <nico@cam.org>
+In-reply-to: <4DD3AF7ECBBC43409BA36508938D01852CE77B@CVAEX1.VERTICAL.COM>
+Message-id: <alpine.LFD.0.99999.0712061528080.555@xanadu.home>
+References: <4DD3AF7ECBBC43409BA36508938D01852CE77B@CVAEX1.VERTICAL.COM>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -24,30 +27,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Nicolas Pitre wrote:
-> On Thu, 6 Dec 2007, Jon Ringle wrote:
->=20
-> > Hi,
-> >
-> > We are in the process of designing a new board around the IXP435.
-The
-> > IXP435 has 4 Expansion bus chip selects with an address space of
-16MB
-> > per chip select. I can only use CS0 for flash because the other 3
-CSs
-> > are being used for other purposes. The challenge that we have is
-that we
-> > require 32MB of flash storage. One of the options that we are
-> > considering is to use a GPIO pin to bank 16MB of a 32MB Intel Strata
-> > flash chip at any given time to CS0's 16MB address space. I am
-trying to
-> > access the scope of work to be done in Linux to accomplish this and
-I am
-> > asking for feedback on this idea.
->=20
-> You will only need a custom map driver which is pretty trivial to do.
+On Thu, 6 Dec 2007, Jon Ringle wrote:
 
-Just to be sure I looking at the right thing: I could use
-drivers/mtd/maps/ixp4xx.c as a starting point for a custom map, right?
+> Nicolas Pitre wrote:
+> > On Thu, 6 Dec 2007, Jon Ringle wrote:
+> > 
+> > > Hi,
+> > >
+> > > We are in the process of designing a new board around the IXP435.
+> The
+> > > IXP435 has 4 Expansion bus chip selects with an address space of
+> 16MB
+> > > per chip select. I can only use CS0 for flash because the other 3
+> CSs
+> > > are being used for other purposes. The challenge that we have is
+> that we
+> > > require 32MB of flash storage. One of the options that we are
+> > > considering is to use a GPIO pin to bank 16MB of a 32MB Intel Strata
+> > > flash chip at any given time to CS0's 16MB address space. I am
+> trying to
+> > > access the scope of work to be done in Linux to accomplish this and
+> I am
+> > > asking for feedback on this idea.
+> > 
+> > You will only need a custom map driver which is pretty trivial to do.
+> 
+> Just to be sure I looking at the right thing: I could use
+> drivers/mtd/maps/ixp4xx.c as a starting point for a custom map, right?
 
-Jon
+Right, although that particular one looks more complex than average due 
+to the various endianness issues, etc.  But that's exactly the proper 
+layer where to implement your requirement.
+
+
+Nicolas
