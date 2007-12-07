@@ -1,19 +1,20 @@
-Received: from mu-out-0910.google.com ([209.85.134.191])
+Received: from moutng.kundenserver.de ([212.227.126.186])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J0fJu-0001vK-U9
-	for linux-mtd@lists.infradead.org; Fri, 07 Dec 2007 15:41:01 +0000
-Received: by mu-out-0910.google.com with SMTP id i2so1133132mue
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 07 Dec 2007 07:40:53 -0800 (PST)
-Message-ID: <f8f856500712070740p3298da2eu882e97fe4b074634@mail.gmail.com>
-Date: Fri, 7 Dec 2007 16:40:52 +0100
-From: fabien <fabien.fb@gmail.com>
+	id 1J0fOC-0006dr-Q5
+	for linux-mtd@lists.infradead.org; Fri, 07 Dec 2007 15:45:28 +0000
+From: Stefan Roese <sr@denx.de>
 To: linux-mtd@lists.infradead.org
-Subject: Jffs2 something strange
+Subject: Re: AMCC NAND controller driver in 2.6.17
+Date: Fri, 7 Dec 2007 16:45:15 +0100
+References: <3adeeb410712070704g7c09e4aeyb81724f15f93b4af@mail.gmail.com>
+In-Reply-To: <3adeeb410712070704g7c09e4aeyb81724f15f93b4af@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+Message-Id: <200712071645.15697.sr@denx.de>
+Cc: Ramesh <sramesh23@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +24,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-hello,
+On Friday 07 December 2007, Ramesh wrote:
+> I am using the AMCC PPC 440-EPX board and linux 2.6.17 kernel. The
+> driver for the built-in NAND controller seems to be the file
+> sequoia_nand.c. Has anyone seen this working?
 
-I'm trying to put a jffs2 filesystem on my Flash chip. But i think
-there is something strange between the size of the data i've copied in
-my filesystem and the percentage used of the partition.
+No, I don't remember such a driver. Or at least I can't remember seeing it.
 
-I've created a mtd map to create just one partition of 1 MB. At boot
-time the kernel
-detect my flash and create one partition :
-The processor is an mpc855T.
-Fast2100 flash device: 400000 at 2800000
-Fast2100 flash: Found 2 x16 devices at 0x0 in 32-bit bank
- Amd/Fujitsu Extended Query Table at 0x0040
-number of CFI chips: 1
-cfi_cmdset_0002: Disabling erase-suspend-program due to code brokenness.
-Creating 1 MTD partitions on "Fast2100 flash":
-0x00300000-0x00400000 : "jffs"
-Freeing unused kernel memory: 388k
+> I am not sure it 
+> programs the EBC registers correctly. Is there a working version of a
+> driver for the NAND controller? I see ndfc.c in 2.6.19 kernel but I
+> can't switch kernels yet. Any help is appreciated.
 
-And in /proc/mtd i see :
-# cat /proc/mtd
-dev:    size   erasesize  name
-mtd0: 00400000 00020000 "Fast2100 flash"
-mtd1: 00100000 00020000 "jffs"
+The ndfc is what you want. If you can't use a recent kernel version, then you 
+have to backport this driver to your kernel version.
 
-I've created my jffs2 filesystem like this :
-mkfs.jffs2 -b -U  -e 0x20000 -d jffs2_test/ -o jffs2.bin
-i mount my image with :
-mount -t jffs2 /dev/mtdblock1 /mnt/flash -o ro
-# df
-Filesystem           1k-blocks      Used Available Use% Mounted on
-/dev/mtdblock1            1024       980        44  96% /mnt/flash
-# cd /mnt/flash
-# du .
-0       ./rep1
-1       ./rep2
-0       ./rep3
-646     .
-# ls
-fic1          fic3          rep1          rep3          xorg.conf
-fic2          passwd        rep2          targetgd.pdf
-# ls -al
-drwxr-xr-x    6 0        0               0 Jan  1 00:00 .
-drwxr-xr-x    3 0        0               0 Apr 19 06:50 ..
--rw-r--r--    1 0        0               0 Dec  5  2007 fic1
--rw-r--r--    1 0        0               0 Dec  5  2007 fic2
--rw-r--r--    1 0        0               0 Dec  5  2007 fic3
--rw-r--r--    1 0        0            1161 Dec  7  2007 passwd
-drwxr-xr-x    2 0        0               0 Dec  5  2007 rep1
-drwxr-xr-x    2 0        0               0 Dec  5  2007 rep2
-drwxr-xr-x    2 0        0               0 Dec  5  2007 rep3
--rw-r--r--    1 0        0          656332 Dec  7  2007 targetgd.pdf
--rw-r--r--    1 0        0            2470 Dec  7  2007 xorg.conf
-#
-How it is possible with 646 KBytes of data to have 96% used in 1MBytes
-mtd partition space ?
-Please explain me, may be i did something wrong ?
-Best regards
-Fab
+Best regards,
+Stefan
+
+=====================================================================
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: +49-8142-66989-0 Fax: +49-8142-66989-80  Email: office@denx.de
+=====================================================================
