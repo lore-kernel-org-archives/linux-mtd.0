@@ -1,24 +1,18 @@
-Received: from py-out-1112.google.com ([64.233.166.181])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J1o09-00041b-De
-	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 19:09:19 +0000
-Received: by py-out-1112.google.com with SMTP id a25so391307pyi
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Dec 2007 11:09:10 -0800 (PST)
-Message-ID: <f383264b0712101109r1529afa6o815c586ca89a06cf@mail.gmail.com>
-Date: Mon, 10 Dec 2007 11:09:10 -0800
-From: "Matt Reimer" <mattjreimer@gmail.com>
-To: "=?ISO-8859-1?Q?J=F6rn_Engel?=" <joern@logfs.org>
-Subject: Re: [PATCH] MTD: fix s3c2410 error correction
-In-Reply-To: <20071203152049.GA15000@lazybastard.org>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J1oYP-00076s-AY
+	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 19:44:43 +0000
+Date: Mon, 10 Dec 2007 20:44:03 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: Vaibhav Hiremath <hvaibhav@gmail.com>
+Subject: Re: Issue with flash_*** utilities
+In-Reply-To: <fde666620712100755r5552b5des3e8fb4a64cf574e4@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0712102041570.1975@lnxricardw.se.axis.com>
+References: <fde666620712100755r5552b5des3e8fb4a64cf574e4@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
-	<f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
-	<20071203152049.GA15000@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,18 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Dec 3, 2007 7:20 AM, J=F6rn Engel <joern@logfs.org> wrote:
->
-> On Thu, 29 November 2007 11:10:41 -0800, Matt Reimer wrote:
-> >
-> > Is there any chance of this getting committed? It has been confirmed
-> > to be needed on s3c2440 and s3c2412.
->
-> Ok, I'm getting sick of this.  Even though I didn't fully review the
-> patch, I'll gladly take the chances of breaking something and
-> complaining to Matt afterwards.  Certainly beats ignoring this patch for
-> all eternity.
 
-Thanks J=F6rn.
+On Mon, 10 Dec 2007, Vaibhav Hiremath wrote:
 
-Matt
+> I am working with Linux 2.6.18, I am facing some issues with
+> flash_erase, flash_write utilities. I am using Spansion Flash, in
+> which lock/unlock is not working. I wanted to debug this issue -
+>
+> Can anybody tell me where can I find the source code for these utilities?
+
+See http://git.infradead.org, under mtd-utils
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
