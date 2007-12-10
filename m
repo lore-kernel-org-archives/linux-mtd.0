@@ -1,18 +1,17 @@
 Received: from miranda.se.axis.com ([193.13.178.8])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J1oYP-00076s-AY
-	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 19:44:43 +0000
-Date: Mon, 10 Dec 2007 20:44:03 +0100 (CET)
+	id 1J1ojg-00085r-IU
+	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 19:56:22 +0000
+Date: Mon, 10 Dec 2007 20:55:44 +0100 (CET)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Vaibhav Hiremath <hvaibhav@gmail.com>
-Subject: Re: Issue with flash_*** utilities
-In-Reply-To: <fde666620712100755r5552b5des3e8fb4a64cf574e4@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0712102041570.1975@lnxricardw.se.axis.com>
-References: <fde666620712100755r5552b5des3e8fb4a64cf574e4@mail.gmail.com>
+To: fabien <fabien.fb@gmail.com>
+Subject: Re: Jffs2 something strange
+In-Reply-To: <f8f856500712070740p3298da2eu882e97fe4b074634@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0712102047240.1975@lnxricardw.se.axis.com>
+References: <f8f856500712070740p3298da2eu882e97fe4b074634@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,18 +22,21 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Mon, 10 Dec 2007, Vaibhav Hiremath wrote:
+On Fri, 7 Dec 2007, fabien wrote:
 
-> I am working with Linux 2.6.18, I am facing some issues with
-> flash_erase, flash_write utilities. I am using Spansion Flash, in
-> which lock/unlock is not working. I wanted to debug this issue -
->
-> Can anybody tell me where can I find the source code for these utilities?
+> How it is possible with 646 KBytes of data to have 96% used in 1MBytes
+> mtd partition space ?
+> Please explain me, may be i did something wrong ?
 
-See http://git.infradead.org, under mtd-utils
+JFFS2 needs to have a few extra (the actual number varies depending on the 
+size of the partition and the eraseblock size) eraseblocks in order to be 
+able to erase and write to the file system. The actual number is 
+calculated when the file system is mounted. At least two eraseblocks are 
+needed to allow deletes, and at least one more to allow writes.
+
+With an eraseblock size of 128kB (0x20000) and a partition of 1MB 
+(0x100000), assuming three eraseblocks are reserved for delete and write 
+operations, this ends up being 384kB of reserved space, which probably 
+accounts for the 96% used figure you see.
 
 /Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
