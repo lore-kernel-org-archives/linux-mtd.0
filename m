@@ -1,17 +1,20 @@
 Received: from miranda.se.axis.com ([193.13.178.8])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J1ojg-00085r-IU
-	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 19:56:22 +0000
-Date: Mon, 10 Dec 2007 20:55:44 +0100 (CET)
+	id 1J1ooE-0003jH-7E
+	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 20:01:04 +0000
+Date: Mon, 10 Dec 2007 21:00:25 +0100 (CET)
 From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: fabien <fabien.fb@gmail.com>
-Subject: Re: Jffs2 something strange
-In-Reply-To: <f8f856500712070740p3298da2eu882e97fe4b074634@mail.gmail.com>
-Message-ID: <Pine.LNX.4.64.0712102047240.1975@lnxricardw.se.axis.com>
-References: <f8f856500712070740p3298da2eu882e97fe4b074634@mail.gmail.com>
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: [PATCH][MTD-UTILS] Set mkfs.jffs2 page size runtime instead of
+	fixed.
+In-Reply-To: <20071207070354.02e020b2@weaponx>
+Message-ID: <Pine.LNX.4.64.0712102056050.1975@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0712061232550.28640@lnxricardw.se.axis.com>
+	<20071207070354.02e020b2@weaponx>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +25,40 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Fri, 7 Dec 2007, fabien wrote:
+On Fri, 7 Dec 2007, Josh Boyer wrote:
 
-> How it is possible with 646 KBytes of data to have 96% used in 1MBytes
-> mtd partition space ?
-> Please explain me, may be i did something wrong ?
+>> This patch reads the default PAGE_SIZE from sysconf(), i.e. the system
+>> mkfs.jffs2 is running on, instead of just setting it to 4096 (which of
+>> course is valid for most systems but not all).
+>
+> This makes sense overall.  I'd like to do it a slightly different way
+> though.
 
-JFFS2 needs to have a few extra (the actual number varies depending on the 
-size of the partition and the eraseblock size) eraseblocks in order to be 
-able to erase and write to the file system. The actual number is 
-calculated when the file system is mounted. At least two eraseblocks are 
-needed to allow deletes, and at least one more to allow writes.
+I'm open to suggestions. Care to elaborate on that?
 
-With an eraseblock size of 128kB (0x20000) and a partition of 1MB 
-(0x100000), assuming three eraseblocks are reserved for delete and write 
-operations, this ends up being 384kB of reserved space, which probably 
-accounts for the 96% used figure you see.
+> Could we add an additional check here to see if page_size !=3D 4096, and
+> print a loud warning with the page size that is actually being used and
+> suggest the --pagesize option if that isn't what is desired?
+>
+> It's not that we have tons of systems using a page size different than
+> 4KiB, but it's a change in behavior for those that do and I'd like to
+> at least warn users about it.  Otherwise the patch looks fine.
+
+I guess you are considering the case of making a file system on a host=20
+with a page size of !=3D 4096 for a target system with 4096 byte pages. Goo=
+d=20
+point, I hadn't thought of that.
+
+I was very much into the 'my host is x86 and my target is something else'=
+=20
+train of though; in this case it wouldn't be much of a problem, as the=20
+user would be supplying a --pagesize anyway to get the correct page size=20
+for the target.
+
+I'll get back with a new patch as soon as possible.
 
 /Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
