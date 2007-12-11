@@ -1,26 +1,12 @@
-Received: from mailrelay.mobilygen.com ([72.166.0.25])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J1s5K-0000VY-SF
-	for linux-mtd@lists.infradead.org; Mon, 10 Dec 2007 23:30:58 +0000
-Received: from mailhost.mobilygen.com (localhost [127.0.0.1])
-	by mailrelay.mobilygen.com (Spam Firewall) with ESMTP id 561803E87B
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 10 Dec 2007 15:17:22 -0800 (PST)
-Received: from mailhost.mobilygen.com ([72.166.0.2]) by
-	mailrelay.mobilygen.com with ESMTP id 9sfRtNiLuH7kcfbB for
-	<linux-mtd@lists.infradead.org>;
-	Mon, 10 Dec 2007 15:17:22 -0800 (PST)
-Received: from qu056.quarc.com (qu056 [192.168.40.198])
-	by mailhost.mobilygen.com (8.13.8/8.13.8) with ESMTP id lBANHLOd005185
-	for <linux-mtd@lists.infradead.org>; Mon, 10 Dec 2007 15:17:21 -0800
-Subject: failure to mount partition after flash_eraseall -j
-From: Jeff Hane <jhane@mobilygen.com>
-To: linux-mtd@lists.infradead.org
-Content-Type: text/plain
-Date: Mon, 10 Dec 2007 15:17:21 -0800
-Message-Id: <1197328641.9854.83.camel@qu056.quarc.com>
+Date: Tue, 11 Dec 2007 11:25:53 +0900
+From: Kyungmin Park <kyungmin.park@samsung.com>
+To: dwmw2@infradead.org
+Subject: [PATCH] [MTD][OneNAND] Get correct density from device ID
+Message-ID: <20071211022553.GA477@party>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,27 +16,84 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Use the higher bits for other purpose.
 
- I've got a nand chip that I've erased using flash_eraseall -j but it
-still fails to mount.
+Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+---
+ drivers/mtd/onenand/onenand_base.c |   20 ++++++++++++++++----
+ include/linux/mtd/onenand_regs.h   |    1 +
+ 2 files changed, 17 insertions(+), 4 deletions(-)
 
- It is failing because of the cleanmarker compare is failing.
-flash_eraseall writes a cleanmarker of size 8 or less.  It gets this
-length from the *first* oobfree area.  In my case, this is 7.
- However, when trying to mount the chip and the function
-jffs2_check_nand_cleanmarker it does this:
-cmlen = min_t(int, c->oobavail, OOB_CM_SIZE);
-
-OOB_CM_SIZE is 8 but oobavail is the total of all the available oob not
-just the first segment(43 in my case).  So them memcmp fails because it
-tries to compare 8 bytes instead of 7.
-
- Should flash_eraseall try to see if there is a total of 8 free bytes of
-oob area.  However, the MEMWRITEOOB ioctl still uses OOB_PLACE and not
-OOB_AUTO so this seems like it would still not work?
-
- If I'm missing something let me know otherwise I'm open for
-suggestions.
-
-thanks,
-jeff
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index b3ac172..18c79ee 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -170,6 +170,18 @@ static int onenand_buffer_address(int dataram1, int sectors, int count)
+ }
+ 
+ /**
++ * onenand_get_density - [DEFAULT] Get OneNAND density
++ * @param dev_id	OneNAND device ID
++ *
++ * Get OneNAND density from device ID
++ */
++static inline int onenand_get_density(int dev_id)
++{
++	int density = dev_id >> ONENAND_DEVICE_DENSITY_SHIFT;
++	return (density & ONENAND_DEVICE_DENSITY_MASK);
++}
++
++/**
+  * onenand_command - [DEFAULT] Send command to OneNAND device
+  * @param mtd		MTD device structure
+  * @param cmd		the command to be sent
+@@ -2149,7 +2161,7 @@ static int onenand_otp_walk(struct mtd_info *mtd, loff_t from, size_t len,
+ 
+ 	*retlen = 0;
+ 
+-	density = this->device_id >> ONENAND_DEVICE_DENSITY_SHIFT;
++	density = onenand_get_density(this->device_id);
+ 	if (density < ONENAND_DEVICE_DENSITY_512Mb)
+ 		otp_pages = 20;
+ 	else
+@@ -2340,7 +2352,7 @@ static void onenand_check_features(struct mtd_info *mtd)
+ 	unsigned int density, process;
+ 
+ 	/* Lock scheme depends on density and process */
+-	density = this->device_id >> ONENAND_DEVICE_DENSITY_SHIFT;
++	density = onenand_get_density(this->device_id);
+ 	process = this->version_id >> ONENAND_VERSION_PROCESS_SHIFT;
+ 
+ 	/* Lock scheme */
+@@ -2389,7 +2401,7 @@ static void onenand_print_device_info(int device, int version)
+         vcc = device & ONENAND_DEVICE_VCC_MASK;
+         demuxed = device & ONENAND_DEVICE_IS_DEMUX;
+         ddp = device & ONENAND_DEVICE_IS_DDP;
+-        density = device >> ONENAND_DEVICE_DENSITY_SHIFT;
++        density = onenand_get_density(device);
+         printk(KERN_INFO "%sOneNAND%s %dMB %sV 16-bit (0x%02x)\n",
+                 demuxed ? "" : "Muxed ",
+                 ddp ? "(DDP)" : "",
+@@ -2481,7 +2493,7 @@ static int onenand_probe(struct mtd_info *mtd)
+ 	this->device_id = dev_id;
+ 	this->version_id = ver_id;
+ 
+-	density = dev_id >> ONENAND_DEVICE_DENSITY_SHIFT;
++	density = onenand_get_density(dev_id);
+ 	this->chipsize = (16 << density) << 20;
+ 	/* Set density mask. it is used for DDP */
+ 	if (ONENAND_IS_DDP(this))
+diff --git a/include/linux/mtd/onenand_regs.h b/include/linux/mtd/onenand_regs.h
+index c46161f..d1b310c 100644
+--- a/include/linux/mtd/onenand_regs.h
++++ b/include/linux/mtd/onenand_regs.h
+@@ -67,6 +67,7 @@
+ /*
+  * Device ID Register F001h (R)
+  */
++#define ONENAND_DEVICE_DENSITY_MASK	(0xf)
+ #define ONENAND_DEVICE_DENSITY_SHIFT	(4)
+ #define ONENAND_DEVICE_IS_DDP		(1 << 3)
+ #define ONENAND_DEVICE_IS_DEMUX		(1 << 2)
+-- 
+1.5.0.6
