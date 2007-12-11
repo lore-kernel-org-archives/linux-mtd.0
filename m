@@ -1,22 +1,15 @@
-Date: Wed, 19 Dec 2007 10:49:29 +0000 (GMT)
-From: Alexey Korolev <akorolev@infradead.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: Re: Limited support of NAND features in MTD.
-In-Reply-To: <1198001672.2590.35.camel@shinybook.infradead.org>
-Message-ID: <Pine.LNX.4.64.0712191046130.14911@pentafluge.infradead.org>
-References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
-	<20071218142335.GD1741@lazybastard.org>
-	<Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
-	<20071218151800.GG1741@lazybastard.org>
-	<20071218165758.GA11634@old.davidb.org>
-	<20071218165648.GH1741@lazybastard.org>
-	<1198001672.2590.35.camel@shinybook.infradead.org>
+Received: from xes-mad.com ([216.165.139.214])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J2Em5-0004oe-Pc
+	for linux-mtd@lists.infradead.org; Tue, 11 Dec 2007 23:44:36 +0000
+Message-ID: <475F20DE.8010507@xes-inc.com>
+Date: Tue, 11 Dec 2007 17:44:30 -0600
+From: David Scidmore <dscidmore@xes-inc.com>
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED;
-	BOUNDARY="-1831524198-1698332949-1198061369=:14911"
-Cc: David Brown <davidb@davidb.org>,
-	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] mtdchar.c: ioctl always returns 0 as size written for
+	ppc64
+Content-Type: multipart/mixed; boundary="------------030407000403060500030904"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,31 +19,96 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is a multi-part message in MIME format.
+--------------030407000403060500030904
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
----1831524198-1698332949-1198061369=:14911
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
 
-Hi David,
-> 
-> On Tue, 2007-12-18 at 17:56 +0100, Jörn Engel wrote:
-> > On Tue, 18 December 2007 08:57:58 -0800, David Brown wrote:
-> > > 
-> > > One problem with the on-chip copy is that ECC doesn't get corrected.  If
-> > > there are errors on readback, it will get written that way, and errors
-> > > would accumulate.
-> > 
-> > Ouch!  Such an implementation would indeed make this whole business
-> > pointless.
-> 
-> That's fairly much been my conclusion every time I've looked at the new
-> features we haven't yet bothered to support. Partial page read also
-> suffers from lack of ECC.
-Hmm I did not heard about this. Could you please give more details on how 
-partial page read can suffer from lack of ECC?
+"include/linux/mtd/mtd.h" declares "mtd_oob_ops.retlen" as size_t, which 
+is 64 bits on targets with a 64 bit addressing. The MEMWRITEOOB ioctl 
+calls copy_to_user() to write it back to "mtd_oob_buf.length", which is 
+declared in "include/linux/mtd-abi.h" as uint32_t. Since powerpc is a 
+big endian architecture, this only copies the upper 32 bits of the 
+address, which is always 0.
 
-Thanks,
-Alexey
----1831524198-1698332949-1198061369=:14911--
+Signed-off-by: David Scidmore <dscidmore at xes-inc.com>
+
+------
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 22ed96c..bfc0958 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -483,6 +482,7 @@ static int mtd_ioctl(struct inode *inode, struct 
+file *file,
+     {
+         struct mtd_oob_buf buf;
+         struct mtd_oob_ops ops;
++            uint32_t retlen;
+ 
+         if(!(file->f_mode & 2))
+             return -EPERM;
+@@ -522,8 +522,12 @@ static int mtd_ioctl(struct inode *inode, struct 
+file *file,
+         buf.start &= ~(mtd->oobsize - 1);
+         ret = mtd->write_oob(mtd, buf.start, &ops);
+ 
+-        if (copy_to_user(argp + sizeof(uint32_t), &ops.oobretlen,
+-                 sizeof(uint32_t)))
++        if (ops.oobretlen > 0xFFFFFFFFU)
++            ret = -EOVERFLOW;
++        retlen = ops.oobretlen;
++        if (copy_to_user(&((struct mtd_oob_buf *)argp)->length,
++                 &retlen,
++                 sizeof(buf.length)))
+             ret = -EFAULT;
+ 
+         kfree(ops.oobbuf);
+
+
+-- 
+David Scidmore
+Quality Manager
+Extreme Engineering Solutions
+608-833-1155 ext 101
+www.xes-inc.com
+
+
+
+--------------030407000403060500030904
+Content-Type: text/plain;
+ name="mtdchar.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="mtdchar.c.patch"
+
+diff --git a/drivers/mtd/mtdchar.c b/drivers/mtd/mtdchar.c
+index 22ed96c..bfc0958 100644
+--- a/drivers/mtd/mtdchar.c
++++ b/drivers/mtd/mtdchar.c
+@@ -483,6 +482,7 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 	{
+ 		struct mtd_oob_buf buf;
+ 		struct mtd_oob_ops ops;
++	        uint32_t retlen;
+ 
+ 		if(!(file->f_mode & 2))
+ 			return -EPERM;
+@@ -522,8 +522,12 @@ static int mtd_ioctl(struct inode *inode, struct file *file,
+ 		buf.start &= ~(mtd->oobsize - 1);
+ 		ret = mtd->write_oob(mtd, buf.start, &ops);
+ 
+-		if (copy_to_user(argp + sizeof(uint32_t), &ops.oobretlen,
+-				 sizeof(uint32_t)))
++		if (ops.oobretlen > 0xFFFFFFFFU)
++			ret = -EOVERFLOW;
++		retlen = ops.oobretlen;
++		if (copy_to_user(&((struct mtd_oob_buf *)argp)->length,
++				 &retlen,
++				 sizeof(buf.length)))
+ 			ret = -EFAULT;
+ 
+ 		kfree(ops.oobbuf);
+
+--------------030407000403060500030904--
