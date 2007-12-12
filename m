@@ -1,19 +1,11 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J2PLb-0000XJ-0f
-	for linux-mtd@lists.infradead.org; Wed, 12 Dec 2007 11:01:57 +0000
-Message-ID: <475FBE80.1060202@nokia.com>
-Date: Wed, 12 Dec 2007 12:57:04 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Date: Wed, 12 Dec 2007 11:51:40 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: linux-mtd@lists.infradead.org
+Subject: Limited support of NAND features in MTD.
+Message-ID: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
 MIME-Version: 1.0
-To: ext Kyungmin Park <kyungmin.park@samsung.com>
-Subject: Re: [PATCH] [MTD][OneNAND] Check the initial bad block
-	using	ONENAND_CTRL_ERROR
-References: <20071212083309.GA32235@party>
-In-Reply-To: <20071212083309.GA32235@party>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: joern@logfs.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,45 +15,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ext Kyungmin Park wrote:
-> Some chips don't set the ONENAND_CTRL_LOAD bit.
-> 
-> Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
-> ---
->  drivers/mtd/onenand/onenand_base.c |    4 ++--
->  1 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-> index bfc8399..e9aac83 100644
-> --- a/drivers/mtd/onenand/onenand_base.c
-> +++ b/drivers/mtd/onenand/onenand_base.c
-> @@ -1121,8 +1121,8 @@ static int onenand_bbt_wait(struct mtd_info *mtd, int state)
->  
->  	if (ctrl & ONENAND_CTRL_ERROR) {
->  		printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
-> -		/* Initial bad block case */
-> -		if (ctrl & ONENAND_CTRL_LOAD)
-> +		/* Initial bad block case: 0x2400 or 0x0400 */
-> +		if (ctrl & ONENAND_CTRL_ERROR)
->  			return ONENAND_BBT_READ_ERROR;
->  		return ONENAND_BBT_READ_FATAL_ERROR;
->  	}
+Hi,
 
-You have:
+It is not a secret that current MTD supports very limited set of NAND
+features. Some of missed features like partial page read or cached read
+are able to improve file system performance and its implementation do
+not require s/w redesign. 
 
-  	if (ctrl & ONENAND_CTRL_ERROR) {
-  		printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
- 		/* Initial bad block case: 0x2400 or 0x0400 */
-		if (ctrl & ONENAND_CTRL_ERROR)
-  			return ONENAND_BBT_READ_ERROR;
-  		return ONENAND_BBT_READ_FATAL_ERROR;
-  	}
+I have a question is there any limitations/restrictions to support extended features? 
+Does it make sense to implement these features and manage them
+through nand_chip->options flag, letting people to choose whether to use
+features or not? If it is not a good idea what is the best way to manage
+it?
 
-which is the same as:
+Currently my clooeague and I did prototypes of partial page read and cached read 
+functionalities showing performance increase. For example partial page read showed about 20%
+of file open/stat time performance increase in JFFS2 on LP NAND. Cached
+read increases overall read performance but value strongly depends on
+platform IO latencies. Now we are thinking to create and sent patches.
 
-  	if (ctrl & ONENAND_CTRL_ERROR) {
-  		printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
- 		return ONENAND_BBT_READ_ERROR;
-  	}
+So your suggestions/recomendations are welcome!
 
-Is that what you intended?
+Thanks,
+Alexey 
