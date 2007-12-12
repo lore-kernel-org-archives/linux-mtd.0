@@ -1,8 +1,9 @@
-Date: Wed, 12 Dec 2007 13:55:37 +0900
+Date: Wed, 12 Dec 2007 17:33:09 +0900
 From: Kyungmin Park <kyungmin.park@samsung.com>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH][JFFS2] Fix mount error in case of MLC flash
-Message-ID: <20071212045537.GA24490@party>
+Subject: [PATCH] [MTD][OneNAND] Check the initial bad block using
+	ONENAND_CTRL_ERROR
+Message-ID: <20071212083309.GA32235@party>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -16,56 +17,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Even though we don't use the OOB, we should use the bad block information.
-Also we read a whole eraseblock at a time.
+Some chips don't set the ONENAND_CTRL_LOAD bit.
 
 Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
 ---
-diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
-index 272872d..91db883 100644
---- a/fs/jffs2/scan.c
-+++ b/fs/jffs2/scan.c
-@@ -111,7 +111,7 @@ int jffs2_scan_medium(struct jffs2_sb_info *c)
- 	if (!flashbuf) {
- 		/* For NAND it's quicker to read a whole eraseblock at a time,
- 		   apparently */
--		if (jffs2_cleanmarker_oob(c))
-+		if (c->mtd->type == MTD_NANDFLASH)
- 			buf_size = c->sector_size;
- 		else
- 			buf_size = PAGE_SIZE;
-@@ -448,22 +448,24 @@ static int jffs2_scan_eraseblock (struct jffs2_sb_info *c, struct jffs2_eraseblo
- 	D1(printk(KERN_DEBUG "jffs2_scan_eraseblock(): Scanning block at 0x%x\n", ofs));
+ drivers/mtd/onenand/onenand_base.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
+index bfc8399..e9aac83 100644
+--- a/drivers/mtd/onenand/onenand_base.c
++++ b/drivers/mtd/onenand/onenand_base.c
+@@ -1121,8 +1121,8 @@ static int onenand_bbt_wait(struct mtd_info *mtd, int state)
  
- #ifdef CONFIG_JFFS2_FS_WRITEBUFFER
--	if (jffs2_cleanmarker_oob(c)) {
-+	if (c->mtd->type == MTD_NANDFLASH) {
- 		int ret;
- 
- 		if (c->mtd->block_isbad(c->mtd, jeb->offset))
- 			return BLK_STATE_BADBLOCK;
- 
--		ret = jffs2_check_nand_cleanmarker(c, jeb);
--		D2(printk(KERN_NOTICE "jffs_check_nand_cleanmarker returned %d\n",ret));
-+		if (jffs2_cleanmarker_oob(c)) {
-+			ret = jffs2_check_nand_cleanmarker(c, jeb);
-+			D2(printk(KERN_NOTICE "jffs_check_nand_cleanmarker returned %d\n",ret));
- 
--		/* Even if it's not found, we still scan to see
--		   if the block is empty. We use this information
--		   to decide whether to erase it or not. */
--		switch (ret) {
--		case 0:		cleanmarkerfound = 1; break;
--		case 1: 	break;
--		default: 	return ret;
-+			/* Even if it's not found, we still scan to see
-+			   if the block is empty. We use this information
-+			   to decide whether to erase it or not. */
-+			switch (ret) {
-+			case 0:		cleanmarkerfound = 1; break;
-+			case 1: 	break;
-+			default: 	return ret;
-+			}
- 		}
+ 	if (ctrl & ONENAND_CTRL_ERROR) {
+ 		printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
+-		/* Initial bad block case */
+-		if (ctrl & ONENAND_CTRL_LOAD)
++		/* Initial bad block case: 0x2400 or 0x0400 */
++		if (ctrl & ONENAND_CTRL_ERROR)
+ 			return ONENAND_BBT_READ_ERROR;
+ 		return ONENAND_BBT_READ_FATAL_ERROR;
  	}
- #endif
+-- 
+1.5.0.6
