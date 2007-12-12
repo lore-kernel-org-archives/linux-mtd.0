@@ -1,24 +1,19 @@
-Received: from wr-out-0506.google.com ([64.233.184.231])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J2Q94-0004GI-Jm
-	for linux-mtd@lists.infradead.org; Wed, 12 Dec 2007 11:53:04 +0000
-Received: by wr-out-0506.google.com with SMTP id c8so159036wra.18
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 12 Dec 2007 03:52:57 -0800 (PST)
-Message-ID: <9c9fda240712120352g43c61000v42ef64d74ccbcd91@mail.gmail.com>
-Date: Wed, 12 Dec 2007 20:52:57 +0900
-From: "Kyungmin Park" <kmpark@infradead.org>
-Sender: kyungmin78@gmail.com
-To: "Adrian Hunter" <ext-adrian.hunter@nokia.com>
-Subject: Re: [PATCH] [MTD][OneNAND] Check the initial bad block using
-	ONENAND_CTRL_ERROR
-In-Reply-To: <475FBE80.1060202@nokia.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <20071212083309.GA32235@party> <475FBE80.1060202@nokia.com>
-Cc: linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J2S3k-0005Pl-UD
+	for linux-mtd@lists.infradead.org; Wed, 12 Dec 2007 13:55:43 +0000
+Subject: Re: Limited support of NAND features in MTD.
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 12 Dec 2007 15:54:39 +0200
+Message-Id: <1197467679.25999.17.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: dwmw2@infradead.org, joern@logfs.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,41 +23,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On Wed, 2007-12-12 at 11:51 +0000, Alexey Korolev wrote:
+> It is not a secret that current MTD supports very limited set of NAND
+> features. Some of missed features like partial page read or cached read
+> are able to improve file system performance and its implementation do
+> not require s/w redesign.=20
+>=20
+> I have a question is there any limitations/restrictions to support extend=
+ed features?=20
 
-> You have:
->
->         if (ctrl & ONENAND_CTRL_ERROR) {
->                 printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
->                 /* Initial bad block case: 0x2400 or 0x0400 */
->                 if (ctrl & ONENAND_CTRL_ERROR)
->                         return ONENAND_BBT_READ_ERROR;
->                 return ONENAND_BBT_READ_FATAL_ERROR;
->         }
->
-> which is the same as:
->
->         if (ctrl & ONENAND_CTRL_ERROR) {
->                 printk(KERN_DEBUG "onenand_bbt_wait: controller error = 0x%04x\n", ctrl);
->                 return ONENAND_BBT_READ_ERROR;
->         }
->
-> Is that what you intended?
->
+I do not think so. And it depends on the feature.
 
-Aha, You're right.
-The original goal is to find a initial bad block and other unknown errors.
-First it checks the controller error and try to find a initial bad
-block with load error.
-But some chips are not set the load error. it only sets the error bit (10).
+For example, partial flash read should not be a problem. If the driver
+is asked to read only the first half of the NAND page, and it is capable
+of partial page read, it reads only half the page. But nand_base.c would
+need to be improved for this.
 
-Strictly to find a initial bad block, it checks the non 0xff pattern
-from oob area.
-But now it checks the controller error as initial bad block.
-I'm not sure it have to check the non 0xff pattern after controller error.
-I think it's enough to check controller error at least onenand_bbt_wait. :)
+> Does it make sense to implement these features and manage them
+> through nand_chip->options flag, letting people to choose whether to use
+> features or not? If it is not a good idea what is the best way to manage
+> it?
 
-I will change it as you suggested.
+It again depends on the feature. These partial reads should be
+transparent I think.
 
-Thank you,
-Kyungmin Park
+In general, it is worth trying hard not to introduce new interfaces. And
+I think nand_chip structure should be accessed only by NAND
+infrastructure.
+
+> Currently my clooeague and I did prototypes of partial page read and cach=
+ed read=20
+> functionalities showing performance increase. For example partial page re=
+ad showed about 20%
+> of file open/stat time performance increase in JFFS2 on LP NAND. Cached
+> read increases overall read performance but value strongly depends on
+> platform IO latencies. Now we are thinking to create and sent patches.
+
+Sounds interesting.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
