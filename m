@@ -1,17 +1,14 @@
-Received: from az33egw01.freescale.net ([192.88.158.102])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J2rfF-0000rq-TN
-	for linux-mtd@lists.infradead.org; Thu, 13 Dec 2007 17:16:08 +0000
-Date: Thu, 13 Dec 2007 11:15:28 -0600
-From: Scott Wood <scottwood@freescale.com>
-To: dwmw2@infradead.org
-Subject: [PATCH 1/4] nand base: Don't panic if a controller driver does ecc
-	its own way.
-Message-ID: <20071213171528.GA4440@loki.buserror.net>
+Date: Thu, 13 Dec 2007 17:47:40 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+Subject: Re: Limited support of NAND features in MTD.
+In-Reply-To: <20071212083639.337f3049@weaponx>
+Message-ID: <Pine.LNX.4.64.0712131721120.16624@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+	<20071212083639.337f3049@weaponx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org, joern@logfs.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +18,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Some hardware, such as the enhanced local bus controller used on some
-mpc83xx chips, does ecc transparently when reading and writing data, rather
-than providing a generic calculate/correct mechanism that can be exported to
-the nand subsystem.
+Hi Josh,
 
-The subsystem should not BUG() when calculate, correct, or hwctl are
-missing, if the methods that call them have been overridden.
+> Here is my suggestion.  Create the patches and send them :).
+>
+> More seriously, it is often better to send out patches to show more
+> concretely what you'd like to accomplish.  Then people can review them
+> and make suggestions for improvements or changes.  I personally find it
+> rewarding to do so even if my patches aren't excepted in the end.  I
+> always learn something, and the code is archived for those that want to
+> play with it.
+> 
+>
+Ok let do in this way. 
+So the following message will contain pre-ready patch.
 
-Signed-off-by: Scott Wood <scottwood@freescale.com>
----
- drivers/mtd/nand/nand_base.c |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+Actually I can not completely agree with these sentences, it often makes
+sense to get info about assumed design.
 
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e29c1da..85a7283 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -2469,8 +2469,12 @@ int nand_scan_tail(struct mtd_info *mtd)
- 			chip->ecc.write_oob = nand_write_oob_std;
- 
- 	case NAND_ECC_HW_SYNDROME:
--		if (!chip->ecc.calculate || !chip->ecc.correct ||
--		    !chip->ecc.hwctl) {
-+		if ((!chip->ecc.calculate || !chip->ecc.correct ||
-+		     !chip->ecc.hwctl) &&
-+		    (!chip->ecc.read_page ||
-+		     chip->ecc.read_page == nand_read_page_hwecc) ||
-+		     !chip->ecc.write_page ||
-+		     chip->ecc.write_page == nand_write_page_hwecc) {
- 			printk(KERN_WARNING "No ECC functions supplied, "
- 			       "Hardware ECC not possible\n");
- 			BUG();
--- 
-1.5.3.7
+Thanks,
+Alexey
