@@ -1,19 +1,25 @@
-Received: from de01egw02.freescale.net ([192.88.165.103])
+Received: from mgw-fb01.nokia.com ([192.100.122.235])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J3Oia-00045i-B9
-	for linux-mtd@lists.infradead.org; Sat, 15 Dec 2007 04:33:46 +0000
-Date: Fri, 14 Dec 2007 21:50:01 -0600
-From: Scott Wood <scottwood@freescale.com>
-To: dwmw2@infradead.org, linuxppc-dev@ozlabs.org, linux-mtd@lists.infradead.org
-Subject: Re: [PATCH v3 4/4] Freescale enhanced Local Bus Controller FCM NAND
-	support.
-Message-ID: <20071215035001.GB20533@ld0162-tx32.am.freescale.net>
-References: <20071214221736.GA21231@loki.buserror.net>
-	<20071215025851.GA8430@localhost.localdomain>
+	id 1J3VbY-0007oK-MV
+	for linux-mtd@lists.infradead.org; Sat, 15 Dec 2007 11:55:00 +0000
+Received: from mgw-mx09.nokia.com ([192.100.105.134])
+	by mgw-fb01.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	lBFBLoWh016995
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-SHA bits=256 verify=OK)
+	for <linux-mtd@lists.infradead.org>; Sat, 15 Dec 2007 13:21:54 +0200
+Subject: Re: [PATCH] UBI: silence warning about possibly uninitialized use
+	of variable in drivers/mtd/ubi/vmt.c ...
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Jesper Juhl <jesper.juhl@gmail.com>
+In-Reply-To: <4761b8f2.1c89420a.7f10.ffffe9db@mx.google.com>
+References: <4761b8f2.1c89420a.7f10.ffffe9db@mx.google.com>
+Content-Type: text/plain; charset=utf-8
+Date: Sat, 15 Dec 2007 13:18:15 +0200
+Message-Id: <1197717495.25999.33.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20071215025851.GA8430@localhost.localdomain>
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,23 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sat, Dec 15, 2007 at 01:58:51PM +1100, David Gibson wrote:
-> On Fri, Dec 14, 2007 at 04:17:36PM -0600, Scott Wood wrote:
-> > Signed-off-by: Nick Spence <nick.spence@freescale.com>
-> > Signed-off-by: Scott Wood <scottwood@freescale.com>
-> > ---
-> > Fixed some formatting issues, removed some leftover debugging cruft,
-> > and added a comment about potential conflicts in the interrupt
-> > handling.
-> 
-> Why is the NAND MTD driver specific to the elbc bus?
+On Thu, 2007-12-13 at 23:53 +0100, Jesper Juhl wrote:
+> From: Jesper Juhl <jesper.juhl@gmail.com>
+>=20
+> This patch silences the following warning :
+>=20
+>   drivers/mtd/ubi/vmt.c:73: warning: 'ret' may be used uninitialized in t=
+his function
+>=20
+> gcc can't see that we always initialize ret in all situations where it is=
+=20
+> actually used. The one case where it's not initialized is when we BUG(),=20
+> but gcc doesn't know that we won't then continue and use an uninitialized=
+=20
+> 'ret'.
+>=20
+> This patch results in code that does exactely the same as before, but it=20
+> also makes gcc shut up, so we generate one less line of warning noise.
+>=20
+>=20
+> Signed-off-by: Jesper Juhl <jesper.juhl@gmail.com>
 
-Because the NAND flash controller is part of the elbc.
+Pushed to ubi-2.6.git, thanks.
 
-> And why does it bind to the elbc node, rather than the nand node under
-> it?
-
-The FCM registers are part of the eLBC register block; the chip select
-mapping is just a data buffer.
-
--Scott
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
