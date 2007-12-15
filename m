@@ -1,21 +1,19 @@
-Received: from rune.pobox.com ([208.210.124.79])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J3Ll0-00086g-Od
-	for linux-mtd@lists.infradead.org; Sat, 15 Dec 2007 01:24:05 +0000
-Date: Fri, 14 Dec 2007 19:23:21 -0600
-From: Nathan Lynch <ntl@pobox.com>
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: [PATCH v3 4/4] Freescale enhanced Local Bus Controller FCM NAND
-	support.
-Message-ID: <20071215012321.GJ28696@localdomain>
+Received: from ozlabs.org ([203.10.76.45])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J3NRM-00072b-2g
+	for linux-mtd@lists.infradead.org; Sat, 15 Dec 2007 03:12:00 +0000
+Date: Sat, 15 Dec 2007 13:58:51 +1100
+From: David Gibson <david@gibson.dropbear.id.au>
+To: Scott Wood <scottwood@freescale.com>
+Subject: Re: [PATCH v3 4/4] Freescale enhanced Local Bus Controller FCM
+	NAND support.
+Message-ID: <20071215025851.GA8430@localhost.localdomain>
 References: <20071214221736.GA21231@loki.buserror.net>
-	<20071214190819.29cbe0bb@vader.jdub.homelinux.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20071214190819.29cbe0bb@vader.jdub.homelinux.org>
-Cc: Scott Wood <scottwood@freescale.com>, linuxppc-dev@ozlabs.org,
-	dwmw2@infradead.org, linux-mtd@lists.infradead.org
+In-Reply-To: <20071214221736.GA21231@loki.buserror.net>
+Cc: linuxppc-dev@ozlabs.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,16 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On Fri, 14 Dec 2007 16:17:36 -0600
-> Scott Wood <scottwood@freescale.com> wrote:
->
-> > +	child = NULL;
-> > +	while ((child = of_get_next_child(ofdev->node, child)))
-> > +		if (of_device_is_compatible(child, "fsl,elbc-fcm-nand"))
-> > +			fsl_elbc_chip_probe(ctrl, child);
-> 
-> Don't you need some of_node_put calls here?
+On Fri, Dec 14, 2007 at 04:17:36PM -0600, Scott Wood wrote:
+> Signed-off-by: Nick Spence <nick.spence@freescale.com>
+> Signed-off-by: Scott Wood <scottwood@freescale.com>
+> ---
+> Fixed some formatting issues, removed some leftover debugging cruft,
+> and added a comment about potential conflicts in the interrupt
+> handling.
 
-The of_... iterators do of_node_put() for you as long as you don't
-break out of the loop early.
+Why is the NAND MTD driver specific to the elbc bus?  And why does it
+bind to the elbc node, rather than the nand node under it?
+
+-- 
+David Gibson			| I'll have my music baroque, and my code
+david AT gibson.dropbear.id.au	| minimalist, thank you.  NOT _the_ _other_
+				| _way_ _around_!
+http://www.ozlabs.org/~dgibson
