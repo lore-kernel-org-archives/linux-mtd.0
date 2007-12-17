@@ -1,19 +1,25 @@
-Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4aKt-0008Ik-Qe
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 11:10:08 +0000
-Date: Tue, 18 Dec 2007 12:06:16 +0100
-From: Harald Welte <laforge@openmoko.org>
-To: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: [PATCH 0/12] neo1973: FIC/OpenMoko Neo1973 GTA01 machine support
-Message-ID: <20071218110616.GG29882@prithivi.gnumonks.org>
+Received: from mailrelay009.isp.belgacom.be ([195.238.6.176])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J4IiU-0007j7-M0
+	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2007 16:21:25 +0000
+Received: from mail.technotrade.biz (localhost [127.0.0.1])
+	by mail.technotrade.biz (Postfix) with ESMTP id 3614A4E76
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Dec 2007 11:12:38 +0100 (CET)
+Received: from pclaurent.technotrade.biz (pclaurent.technotrade.biz
+	[192.168.1.47])
+	by mail.technotrade.biz (Postfix) with ESMTP id E3E1E40CA
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 17 Dec 2007 11:12:37 +0100 (CET)
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: linux-mtd@lists.infradead.org
+Subject: Deadlock while accessing mtdchar device while erase in progress
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UHN/qo2QbUvPLonB"
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, i2c@lm-sensors.org, ben-linux@fluff.org,
-	linux-input@vger.kernel.org, spi-devel-general@lists.sourceforge.net,
-	arnaud.patard@rtp-net.org
+Date: Mon, 17 Dec 2007 11:12:34 +0100
+Content-Type: multipart/signed; boundary="nextPart3305129.2DHfmoRlAr";
+	protocol="application/pgp-signature"; micalg=pgp-sha1
+Content-Transfer-Encoding: 7bit
+Message-Id: <200712171112.36903.laurentp@cse-semaphore.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,59 +29,83 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
---UHN/qo2QbUvPLonB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--nextPart3305129.2DHfmoRlAr
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-This is a patchset to add core machine support for the FIC/OpenMoko
-Neo1973 GTA01 GSM smartphone[1] to the Linux Kernel.  They all apply to
-Linus' linux-2.6 git tree as of today.
-
-The Neo1973 GTA01 is hardware that has been distributed to developers
-for about one year, and is on public sale since July 2007.
-
-There is a second reviison called GTA02 which is also already circulated
-among developers since September 2007.  It is expected to be publicly
-available soon.
-
-There is some code that is shared by GTA01 and GTA02, and 'neo1973' is
-used consistently whenever referring to shared code (platform devices,
-file names as well as CONFIG_ #defines).  Whenever GTA01 is used, this
-particular piece of code is specifically to the first hardware
-generation.
-
-I have some more patches piled up, including GTA02 support.  But I'd
-much rather see this patchset merged first.
-
-All your comments and feedback are welcome.  Please keep me in Cc
-whenever responding.
-
-[1] http://www.openmoko.org/
-
-Happy hacking,
---=20
-- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-Software for the world's first truly open Free Software mobile phone
-
---UHN/qo2QbUvPLonB
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 Content-Disposition: inline
+
+Hi everybody,
+
+I'm having troubles fixing an MTD-related deadlock. I'm not sure if the=20
+problem comes from an MTD and/or JFFS2 kernel bug, or from some userspace=20
+operation performed as root that I shouldn't have started in the first plac=
+e.=20
+I'd appreciate if someone could share his thoughts (and experience :-)) abo=
+ut=20
+this.
+
+Some background.
+
+My embedded system has a single NOR flash chip (cfi_cmdset_0002 driver) wit=
+h=20
+128kB sectors. Flash space is divided in 4 partitions, the last one used wi=
+th=20
+a JFFS2 filesystem.
+
+A userspace process run as root sets its scheduling policy to SCHED_RR. It=
+=20
+writes 400kB of data to the JFFS2 filesystem and restarts by exec()ing=20
+itself, inheriting the SCHED_RR policy.
+
+Soon after being restarted, it opens /dev/mtd0 (boot loader partition) and=
+=20
+reads a few bytes of data. It then close() /dev/mtd0, at which point the=20
+kernel deadlocks.
+
+I added debugging messages to the MTD subsystem and it turned out my proces=
+s=20
+blocks in cfi_amdstd_sync (drivers/mtd/chips/cfi_cmdset_0002.c). chip->stat=
+e=20
+is set to FL_ERASING, and the kernel keeps scheduling in the default case.
+
+I'm not sure what goes wrong. I expect the JFFS2 garbage collector to have=
+=20
+kicked in. It might be erasing sectors when I close() /dev/mtd0, at which=20
+point the mtdchar driver tries to sync() the flash and locks in=20
+cfi_amdstd_sync because my process, being scheduled with a SCHED_RR policy,=
+=20
+never gives the JFFS2 garbage collector a chance to run. That's just a wild=
+=20
+guess though.
+
+Any help regarding how to better diagnose the problem (to confirm or reject=
+=20
+the above suspicion) will be appreciated. A fix would be even more=20
+welcome :-)
+
+Best regards,
+
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
+
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
+
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
+
+--nextPart3305129.2DHfmoRlAr
+Content-Type: application/pgp-signature
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
+Version: GnuPG v1.4.5 (GNU/Linux)
 
-iD8DBQFHZ6moXaXGVTD0i/8RApiIAKCM9+gEmYg2yQs4nMQoPG1F6tLx3gCfRbXV
-spHtP0kIz0vJpwtitMdmfMs=
-=oD/y
+iD8DBQBHZkuU8y9gWxC9vpcRAvyqAJ4jTG2Od7pPdIaEBJGlWeM8tyeozwCghrty
+Iza6rHgxSrWdyarVSk5xmUU=
+=wOt5
 -----END PGP SIGNATURE-----
 
---UHN/qo2QbUvPLonB--
+--nextPart3305129.2DHfmoRlAr--
