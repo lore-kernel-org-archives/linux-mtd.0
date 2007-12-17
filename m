@@ -1,12 +1,12 @@
 Received: from dsl022.labridge.com ([206.117.136.22] helo=perches.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4Lhr-0000YS-O7
-	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2007 19:32:59 +0000
+	id 1J4LnK-00011B-UC
+	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2007 19:38:37 +0000
 From: Joe Perches <joe@perches.com>
 To: linux-kernel@vger.kernel.org
 Subject: [PATCH] drivers/mtd/: Spelling fixes
-Date: Mon, 17 Dec 2007 11:30:43 -0800
-Message-Id: <1197919875-5288-44-git-send-email-joe@perches.com>
+Date: Mon, 17 Dec 2007 11:36:55 -0800
+Message-Id: <1197920247-5377-1-git-send-email-joe@perches.com>
 Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918891.git.joe@perches.com>
 Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
 	David Woodhouse <dwmw2@infradead.org>,
