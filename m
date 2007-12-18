@@ -1,16 +1,21 @@
-Received: from dsl022.labridge.com ([206.117.136.22] helo=perches.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4Lqq-0001iK-G5
-	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2007 19:42:15 +0000
-From: Joe Perches <joe@perches.com>
-To: linux-kernel@vger.kernel.org
-Subject: [PATCH] drivers/mtd/: Spelling fixes
-Date: Mon, 17 Dec 2007 11:40:07 -0800
-Message-Id: <1197920439-5455-1-git-send-email-joe@perches.com>
-Message-Id: <5703e57f925f31fc0eb38873bd7f10fc44f99cb4.1197918891.git.joe@perches.com>
-Cc: linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Vincent Sanders <support@simtec.co.uk>
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J4Y93-0008L2-TA
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 08:49:52 +0000
+Subject: Re: [RFC][patch] NAND partial page read functionality
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0712171454550.29723@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0712131747490.16624@pentafluge.infradead.org>
+	<1197720795.25999.57.camel@sauron>
+	<Pine.LNX.4.64.0712171454550.29723@pentafluge.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Date: Tue, 18 Dec 2007 10:48:51 +0200
+Message-Id: <1197967731.18962.25.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: joern@logfs.org, linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,140 +25,98 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 2007-12-17 at 15:46 +0000, Alexey Korolev wrote:
+> Good point. The question is what name would be better. I used partial
+> page read because of NAND datasheet (Intel, St, Micron uses term partial
+> page read or write instead of subpage read or write). May be it will be
+> better to switch to this name to make search more easy?
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- drivers/mtd/nand/autcpu12.c    |    6 +++---
- drivers/mtd/nand/bf5xx_nand.c  |    2 +-
- drivers/mtd/nand/cs553x_nand.c |    2 +-
- drivers/mtd/nand/edb7312.c     |    2 +-
- drivers/mtd/nand/nand_base.c   |    2 +-
- drivers/mtd/nand/nandsim.c     |    2 +-
- drivers/mtd/nand/s3c2410.c     |    2 +-
- drivers/mtd/nand/sharpsl.c     |    2 +-
- 8 files changed, 10 insertions(+), 10 deletions(-)
+For me it is not fundamental, but I'd vote for subpage - just because we
+already have this. And wendors anyway tend to name things differently.
 
-diff --git a/drivers/mtd/nand/autcpu12.c b/drivers/mtd/nand/autcpu12.c
-index e3744eb..dd38011 100644
---- a/drivers/mtd/nand/autcpu12.c
-+++ b/drivers/mtd/nand/autcpu12.c
-@@ -20,7 +20,7 @@
-  *
-  *	02-12-2002 TG	Cleanup of module params
-  *
-- *	02-20-2002 TG	adjusted for different rd/wr adress support
-+ *	02-20-2002 TG	adjusted for different rd/wr address support
-  *			added support for read device ready/busy line
-  *			added page_cache
-  *
-@@ -144,7 +144,7 @@ static int __init autcpu12_init(void)
- 		goto out;
- 	}
- 
--	/* map physical adress */
-+	/* map physical address */
- 	autcpu12_fio_base = ioremap(AUTCPU12_PHYS_SMC, SZ_1K);
- 	if (!autcpu12_fio_base) {
- 		printk("Ioremap autcpu12 SmartMedia Card failed\n");
-@@ -227,7 +227,7 @@ static void __exit autcpu12_cleanup(void)
- 	/* Release resources, unregister device */
- 	nand_release(autcpu12_mtd);
- 
--	/* unmap physical adress */
-+	/* unmap physical address */
- 	iounmap(autcpu12_fio_base);
- 
- 	/* Free the MTD device structure */
-diff --git a/drivers/mtd/nand/bf5xx_nand.c b/drivers/mtd/nand/bf5xx_nand.c
-index 1657ecd..a52f3a7 100644
---- a/drivers/mtd/nand/bf5xx_nand.c
-+++ b/drivers/mtd/nand/bf5xx_nand.c
-@@ -4,7 +4,7 @@
-  *	http://blackfin.uclinux.org/
-  *	Bryan Wu <bryan.wu@analog.com>
-  *
-- * Blackfin BF5xx on-chip NAND flash controler driver
-+ * Blackfin BF5xx on-chip NAND flash controller driver
-  *
-  * Derived from drivers/mtd/nand/s3c2410.c
-  * Copyright (c) 2007 Ben Dooks <ben@simtec.co.uk>
-diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index 89deff0..19e1594 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -337,7 +337,7 @@ static void __exit cs553x_cleanup(void)
- 		nand_release(cs553x_mtd[i]);
- 		cs553x_mtd[i] = NULL;
- 
--		/* unmap physical adress */
-+		/* unmap physical address */
- 		iounmap(mmio_base);
- 
- 		/* Free the MTD device structure */
-diff --git a/drivers/mtd/nand/edb7312.c b/drivers/mtd/nand/edb7312.c
-index 0146cdc..ba67bbe 100644
---- a/drivers/mtd/nand/edb7312.c
-+++ b/drivers/mtd/nand/edb7312.c
-@@ -125,7 +125,7 @@ static int __init ep7312_init(void)
- 		return -ENOMEM;
- 	}
- 
--	/* map physical adress */
-+	/* map physical address */
- 	ep7312_fio_base = ioremap(ep7312_fio_pbase, SZ_1K);
- 	if (!ep7312_fio_base) {
- 		printk("ioremap EDB7312 NAND flash failed\n");
-diff --git a/drivers/mtd/nand/nand_base.c b/drivers/mtd/nand/nand_base.c
-index e29c1da..ddd4fc0 100644
---- a/drivers/mtd/nand/nand_base.c
-+++ b/drivers/mtd/nand/nand_base.c
-@@ -89,7 +89,7 @@ static int nand_do_write_oob(struct mtd_info *mtd, loff_t to,
- 			     struct mtd_oob_ops *ops);
- 
- /*
-- * For devices which display every fart in the system on a seperate LED. Is
-+ * For devices which display every fart in the system on a separate LED. Is
-  * compiled away when LED support is disabled.
-  */
- DEFINE_LED_TRIGGER(nand_led_trigger);
-diff --git a/drivers/mtd/nand/nandsim.c b/drivers/mtd/nand/nandsim.c
-index 10490b4..bb885d1 100644
---- a/drivers/mtd/nand/nandsim.c
-+++ b/drivers/mtd/nand/nandsim.c
-@@ -210,7 +210,7 @@ MODULE_PARM_DESC(overridesize,   "Specifies the NAND Flash size overriding the I
- #define STATE_CMD_RESET        0x0000000C /* reset */
- #define STATE_CMD_MASK         0x0000000F /* command states mask */
- 
--/* After an addres is input, the simulator goes to one of these states */
-+/* After an address is input, the simulator goes to one of these states */
- #define STATE_ADDR_PAGE        0x00000010 /* full (row, column) address is accepted */
- #define STATE_ADDR_SEC         0x00000020 /* sector address was accepted */
- #define STATE_ADDR_ZERO        0x00000030 /* one byte zero address was accepted */
-diff --git a/drivers/mtd/nand/s3c2410.c b/drivers/mtd/nand/s3c2410.c
-index 66f76e9..2bd0737 100644
---- a/drivers/mtd/nand/s3c2410.c
-+++ b/drivers/mtd/nand/s3c2410.c
-@@ -8,7 +8,7 @@
-  *
-  * Changelog:
-  *	21-Sep-2004  BJD  Initial version
-- *	23-Sep-2004  BJD  Mulitple device support
-+ *	23-Sep-2004  BJD  Multiple device support
-  *	28-Sep-2004  BJD  Fixed ECC placement for Hardware mode
-  *	12-Oct-2004  BJD  Fixed errors in use of platform data
-  *	18-Feb-2005  BJD  Fix sparse errors
-diff --git a/drivers/mtd/nand/sharpsl.c b/drivers/mtd/nand/sharpsl.c
-index 51c7288..033f880 100644
---- a/drivers/mtd/nand/sharpsl.c
-+++ b/drivers/mtd/nand/sharpsl.c
-@@ -165,7 +165,7 @@ static int __init sharpsl_nand_init(void)
- 		return -ENOMEM;
- 	}
- 
--	/* map physical adress */
-+	/* map physical address */
- 	sharpsl_io_base = ioremap(sharpsl_phys_base, 0x1000);
- 	if (!sharpsl_io_base) {
- 		printk("ioremap to access Sharp SL NAND chip failed\n");
--- 
-1.5.3.7.949.g2221a6
+> > 3. Run nand-tests to make sure you did not brake anything:
+> > git://git.infradead.org/~ahunter/nand-tests.git
+> >=20
+> Thank you for link - we will try it.=20
+> (before sending out this code we performed excessive testing - about 500
+> items were executed, including stress, multithread, power loss tests
+
+This is good, but the tests I pointed to work straight with MTD devices
+and were designed to test NANDs, so they might be useful anyway. For
+example we found quite a few bugs in OneNAND driver with them, although
+the FS tests had looked working fine.
+
+> Yes. I looked at this implementation. Your idea of partial/subpage write =
+implementation=20
+> looks good. In fact there will be some drawbacks - if every request will
+> become small, write performance will become lower - because writing and
+> positioning are not for free.=20
+
+Well, this depends. If an MTD user wants to write 4KiB, and issues 4KiB
+write request, then it is of course faster to write 2x2048, then 8x512,
+and it is even faster to do some kind of multi-page write (some old
+flashes had this AFAIK).
+
+But surely if the driver is not dumb, it will do 2x2048?
+
+I've glanced at jffs2_flash_writev(), and it seems it is also not dumb -
+if in needs to write a 4KiB buffer, it first finishes current
+write-buffer, flushes it, then it calles mtd->write() for multiple min.
+I/O units (note, it does not use wbuf now), and only the rest, which
+does not comprise whole min. I/O unit, goes to the wbuf.
+
+Thus, I'd conclude, JFFS2 should benefit.
+
+> May be it make sence to add this feature under flag.=20
+
+No, no flags please. It should either be transparent of not exist I
+believe :-)
+
+
+> It is not clear how to handle the situation with oob write requests.
+> What to do if some one wil ask to write a part of page and oob at the
+> same time?=20
+
+Yup, it seems to be a problem.
+
+> I did not understand this part of the code about subpage write:
+> 	/*
+> 	 * Allow subpage writes up to ecc.steps. Not possible for MLC
+> 	 * FLASH.
+> 	 */
+> 	if (!(chip->options & NAND_NO_SUBPAGE_WRITE) &&
+> 	    !(chip->cellinfo & NAND_CI_CELLTYPE_MSK)) {
+> 		switch(chip->ecc.steps) {
+> 		case 2:
+> 			mtd->subpage_sft =3D 1;
+> 			break;
+> 		case 4:
+> 		case 8:
+> 			mtd->subpage_sft =3D 2;
+> 			break;
+> 		}
+> 	}
+> Why it sets subpage shift to 2 in case of eight ECC steps? It should be
+> 3. (step size is 1/8 of page)
+
+Frankly, I do not deeply understand nand_base.c, but it looks like you
+are right. Thomas Gleixner is the author, you should ask him.
+
+> > >  #define NAND_HAS_COPYBACK(chip) ((chip->options & NAND_COPYBACK))
+> > > +#define NAND_CANPARTREAD(chip) ((chip->options & NAND_PART_READ) &&\
+> > > +				(chip->ecc.mode =3D=3D NAND_ECC_SOFT))
+> >=20
+> > Why chip->ecc.mode =3D=3D NAND_ECC_SOFT?
+> >
+> I added this limitation because I have only ECC_SOFT chips and afraid to
+> broke workability non SOFT_ECC chiups. I guess it should work fine for
+> other devices. Just kind of over protection. It is not a problem to
+> remove it.=20
+
+Well, I could try your patch on OLPC which has an ST-Micro NAND and CAFE
+controller which, among other things, does HW ECC for NAND.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
