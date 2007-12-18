@@ -1,23 +1,16 @@
-Received: from nf-out-0910.google.com ([64.233.182.185])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4edk-0006YJ-MS
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:45:58 +0000
-Received: by nf-out-0910.google.com with SMTP id h3so1282419nfh.22
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Dec 2007 07:45:51 -0800 (PST)
-Message-ID: <79ac09b60712180745u475839b6q98de2a8500a6f483@mail.gmail.com>
-Date: Tue, 18 Dec 2007 09:45:50 -0600
-From: Duke <ezbonites@gmail.com>
-To: "Nicolas Ferre" <nicolas.ferre@atmel.com>
-Subject: Re: SPI Flash
-In-Reply-To: <4767E995.2050100@atmel.com>
+Date: Tue, 18 Dec 2007 15:46:41 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+Subject: Re: Limited support of NAND features in MTD.
+In-Reply-To: <20071218151800.GG1741@lazybastard.org>
+Message-ID: <Pine.LNX.4.64.0712181544510.1344@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+	<20071218142335.GD1741@lazybastard.org>
+	<Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
+	<20071218151800.GG1741@lazybastard.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <79ac09b60712180702v724b20cetb4070b53466efcba@mail.gmail.com>
-	<4767E995.2050100@atmel.com>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: dwmw2@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,32 +20,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On 12/18/07, Nicolas Ferre <nicolas.ferre@atmel.com> wrote:
-> Duke :
-> > Hi all,
-> > Has anyone use ST's SPI flash and Atmels SPI DataFlash suscessfully?
+Hi
+> On Tue, 18 December 2007 15:06:50 +0000, Alexey Korolev wrote:
+> > > 
+> > > What does cached read do?
+> > > 
+> > Performs cached read operations :)
+> 
+> Who would have thought? :)
+> 
+> > It is a feature of NAND devices. It increases performance if we have 
+> > request to read sequentally large amount of data from NAND. 
+> 
+> Do you have a little more information on this?  Where does the cache
+> reside?  How big is it?  Who controls it?  How does it interact with
+> writes? ...
 >
-> Atmel DataFlash are working on Linux with this configuration in your
-> .config :
-> CONFIG_MTD_DATAFLASH=y
->
-> > How does the interface look from userspace? Is it still an mtdblockX
-> > device or is it a spi device node?
->
-> It is seen as a mtd device :
-> # cat /proc/mtd
-> dev:    size   erasesize  name
-> [..]
-> mtd2: 00840000 00000420 "spi0.0-AT45DB642x"
->
-> So you can mount is using mtdblockx interface.
-
+Ok. Alexander will send more detailed info now.  
+> Possibly the best answer would be a link to a datasheet.
+> 
+Ok. Just a second I will try to find a link to an open datasheet. 
 Thanks,
-Various DataFlash cards have different size alterable, is this
-supported my the mtd driver? Let say I want to have a section that I
-never want altered, do I need to do partition the dataflash
-accordingly so this section wouldn't be erased, or I don't need to do
-that? Taken into consideration the filesystem limit on block sizes.
-
-Do you know if this is the same for all spi flash chips that may not
-be from atmel?
+Alexey
