@@ -1,24 +1,20 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4fpo-00052i-Er
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 17:02:30 +0000
-Date: Tue, 18 Dec 2007 17:56:49 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: David Brown <davidb@davidb.org>
 Subject: Re: Limited support of NAND features in MTD.
-Message-ID: <20071218165648.GH1741@lazybastard.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20071218165648.GH1741@lazybastard.org>
 References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
 	<20071218142335.GD1741@lazybastard.org>
 	<Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
 	<20071218151800.GG1741@lazybastard.org>
 	<20071218165758.GA11634@old.davidb.org>
+	<20071218165648.GH1741@lazybastard.org>
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 18 Dec 2007 18:14:32 +0000
+Message-Id: <1198001672.2590.35.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20071218165758.GA11634@old.davidb.org>
-Cc: linux-mtd@lists.infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	dwmw2@infradead.org, Alexey Korolev <akorolev@infradead.org>
+Cc: David Brown <davidb@davidb.org>, linux-mtd@lists.infradead.org,
+	Alexey Korolev <akorolev@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,25 +24,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 18 December 2007 08:57:58 -0800, David Brown wrote:
+
+On Tue, 2007-12-18 at 17:56 +0100, Jörn Engel wrote:
+> On Tue, 18 December 2007 08:57:58 -0800, David Brown wrote:
+> > 
+> > One problem with the on-chip copy is that ECC doesn't get corrected.  If
+> > there are errors on readback, it will get written that way, and errors
+> > would accumulate.
 > 
-> One problem with the on-chip copy is that ECC doesn't get corrected.  If
-> there are errors on readback, it will get written that way, and errors
-> would accumulate.
+> Ouch!  Such an implementation would indeed make this whole business
+> pointless.
 
-Ouch!  Such an implementation would indeed make this whole business
-pointless.
-
-> It is conceivable that the controller could do something intermediary, such
-> as read the data, and if the ECC needs no correction, write from the
-> on-chip cache, otherwise write the corrected data.
-
-Yes, something like that would be necessary.
-
-Jörn
+That's fairly much been my conclusion every time I've looked at the new
+features we haven't yet bothered to support. Partial page read also
+suffers from lack of ECC.
 
 -- 
-To my face you have the audacity to advise me to become a thief - the worst
-kind of thief that is conceivable, a thief of spiritual things, a thief of
-ideas! It is insufferable, intolerable!
--- M. Binet in Scarabouche
+dwmw2
