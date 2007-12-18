@@ -1,12 +1,12 @@
-Received: from ganesha.gnumonks.org ([2001:780:45:1d:2e0:81ff:fe28:898a])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4aTc-0000Ib-8z
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 11:19:08 +0000
-Date: Tue, 18 Dec 2007 12:07:14 +0100
+Received: from ganesha.gnumonks.org ([213.95.27.120])
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J4aVu-0005h2-Qp
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 11:21:38 +0000
+Date: Tue, 18 Dec 2007 12:06:39 +0100
 From: Harald Welte <laforge@openmoko.org>
 To: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: [PATCH 4/12] neo1973: s3c2410 NAND bad block table support
-Message-ID: <20071218110714.GK29882@prithivi.gnumonks.org>
+Subject: [PATCH 2/12] neo1973: S3C2410 NAND commandline partition support
+Message-ID: <20071218110639.GI29882@prithivi.gnumonks.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -20,48 +20,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] Add Kconfig option to enable NAND bad-block-table support for s3c2410
+[PATCH] support mtd NAND commandline partitions for S3C2410
 
-This patch adds a new CONFIG_MTD_NAND_S3C2410_BBT which, if enabled,
-asks the mtd NAND core to use a bad-block table.
+This patch adds support for the mtd NAND core standard method of passing
+partition table information from the bootloader into the kernel by using
+the kernel commandline.
+
+The board specific code can still manually override and provide a fixed
+partition table, so this patch will behave backwards compatible.
 
 Signed-off-by: Harald Welte <laforge@openmoko.org>
 
 ---
 
-Index: linux-2.6.17.14-fic4.test/drivers/mtd/nand/s3c2410.c
-===================================================================
---- linux-2.6.17.14-fic4.test.orig/drivers/mtd/nand/s3c2410.c	2007-02-02 13:02:10.000000000 +0100
-+++ linux-2.6.17.14-fic4.test/drivers/mtd/nand/s3c2410.c	2007-02-02 13:03:52.000000000 +0100
-@@ -524,7 +524,11 @@
- 	chip->select_chip  = s3c2410_nand_select_chip;
- 	chip->chip_delay   = 50;
- 	chip->priv	   = nmtd;
-+#ifdef CONFIG_MTD_NAND_S3C2410_BBT
-+	chip->options	   = NAND_USE_FLASH_BBT;
-+#else
- 	chip->options	   = 0;
-+#endif
- 	chip->controller   = &info->controller;
+--- linux-2.6.22.1.orig/drivers/mtd/nand/s3c2410.c
++++ linux-2.6.22.1/drivers/mtd/nand/s3c2410.c
+@@ -547,17 +547,31 @@
+ }
  
- 	if (info->is_s3c2440) {
-Index: linux-2.6.17.14-fic4.test/drivers/mtd/nand/Kconfig
-===================================================================
---- linux-2.6.17.14-fic4.test.orig/drivers/mtd/nand/Kconfig	2007-02-02 13:03:56.000000000 +0100
-+++ linux-2.6.17.14-fic4.test/drivers/mtd/nand/Kconfig	2007-02-02 13:04:47.000000000 +0100
-@@ -90,6 +90,12 @@
- 	  No board specfic support is done by this driver, each board
- 	  must advertise a platform_device for the driver to attach.
- 
-+config MTD_NAND_S3C2410_BBT
-+	bool "S3C2410 NAND bad block table"
-+	depends on MTD_NAND_S3C2410
-+	help
-+	  Enable bad block table support for S3C2410 NAND driver
+ #ifdef CONFIG_MTD_PARTITIONS
++const char *part_probes[] = { "cmdlinepart", NULL };
+ static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
+ 				      struct s3c2410_nand_mtd *mtd,
+ 				      struct s3c2410_nand_set *set)
+ {
++	struct mtd_partition *part_info;
++	int nr_part = 0;
 +
- config MTD_NAND_S3C2410_DEBUG
- 	bool "S3C2410 NAND driver debug"
- 	depends on MTD_NAND_S3C2410
+ 	if (set == NULL)
+ 		return add_mtd_device(&mtd->mtd);
+ 
+-	if (set->nr_partitions > 0 && set->partitions != NULL) {
+-		return add_mtd_partitions(&mtd->mtd, set->partitions, set->nr_partitions);
++	if (set->nr_partitions == 0) {
++		mtd->mtd.name = set->name;
++		nr_part = parse_mtd_partitions(&mtd->mtd, part_probes,
++						&part_info, 0);
++	} else {
++		if (set->nr_partitions > 0 && set->partitions != NULL) {
++			nr_part = set->nr_partitions;
++			part_info = set->partitions;
++		}
+ 	}
+ 
++	if (nr_part > 0 && part_info)
++		return add_mtd_partitions(&mtd->mtd, part_info, nr_part);
++
+ 	return add_mtd_device(&mtd->mtd);
+ }
+ #else
 -- 
 - Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
 ============================================================================
