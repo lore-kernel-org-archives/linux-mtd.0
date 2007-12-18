@@ -1,19 +1,23 @@
-Received: from fk-out-0910.google.com ([209.85.128.184])
+Received: from nf-out-0910.google.com ([64.233.182.185])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4ebb-00065R-Em
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:43:45 +0000
-Received: by fk-out-0910.google.com with SMTP id 18so3594348fkq.2
+	id 1J4edk-0006YJ-MS
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:45:58 +0000
+Received: by nf-out-0910.google.com with SMTP id h3so1282419nfh.22
 	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Dec 2007 07:43:37 -0800 (PST)
-Message-ID: <3adeeb410712180743o77233e51pcb544e3c4b286712@mail.gmail.com>
-Date: Tue, 18 Dec 2007 09:43:37 -0600
-From: Ramesh <sramesh23@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: JFFS2 errors - are these normal?
+	Tue, 18 Dec 2007 07:45:51 -0800 (PST)
+Message-ID: <79ac09b60712180745u475839b6q98de2a8500a6f483@mail.gmail.com>
+Date: Tue, 18 Dec 2007 09:45:50 -0600
+From: Duke <ezbonites@gmail.com>
+To: "Nicolas Ferre" <nicolas.ferre@atmel.com>
+Subject: Re: SPI Flash
+In-Reply-To: <4767E995.2050100@atmel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
+References: <79ac09b60712180702v724b20cetb4070b53466efcba@mail.gmail.com>
+	<4767E995.2050100@atmel.com>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,40 +27,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+On 12/18/07, Nicolas Ferre <nicolas.ferre@atmel.com> wrote:
+> Duke :
+> > Hi all,
+> > Has anyone use ST's SPI flash and Atmels SPI DataFlash suscessfully?
+>
+> Atmel DataFlash are working on Linux with this configuration in your
+> .config :
+> CONFIG_MTD_DATAFLASH=y
+>
+> > How does the interface look from userspace? Is it still an mtdblockX
+> > device or is it a spi device node?
+>
+> It is seen as a mtd device :
+> # cat /proc/mtd
+> dev:    size   erasesize  name
+> [..]
+> mtd2: 00840000 00000420 "spi0.0-AT45DB642x"
+>
+> So you can mount is using mtdblockx interface.
 
-I am using linux 2.6.19 and ST micro NAND chip (256M) on a PowerPC
-platform. After booting the OS, we install firmware on to the flash.
-These firmware images are RPM packages. Once some packages are
-installed, we start getting some ECC errors. I guess that's fine but
-after a few more RPM installs, the errors seem more serious. Here's a
-sample:
+Thanks,
+Various DataFlash cards have different size alterable, is this
+supported my the mtd driver? Let say I want to have a section that I
+never want altered, do I need to do partition the dataflash
+accordingly so this section wouldn't be erased, or I don't need to do
+that? Taken into consideration the filesystem limit on block sizes.
 
-...
-Node CRC 880608a4 != calculated CRC ade8c30b for node at 075ade08
-jffs2_flush_wbuf(): Write failed with -5
-Recovery of wbuf failed due to a second write error
-Write of 162 bytes at 0x07540000 failed. returned -5, retlen 0
-Not marking the space at 0x07540000 as dirty because the flash driver
-returned retlen zero
-jffs2_flush_wbuf(): Write failed with -5
-Recovery of wbuf failed due to a second write error
-Write of 162 bytes at 0x07540000 failed. returned -5, retlen 0
-Not marking the space at 0x07540000 as dirty because the flash driver
-returned retlen zero
-jffs2_flush_wbuf(): Write failed with -5
-Recovery of wbuf failed due to a second write error
-Write of 99 bytes at 0x07540000 failed. returned -5, retlen 0
-Node CRC 880608a4 != calculated CRC ade8c30b for node at 075ade08
-...
-
-The jffs2 image is created with the following flags: -e 0x20000 -s
-0x1000 -b -v -p -n
-Then I use sumtool with -e 0x20000 -b -p.
-
-At this point, the flash is pretty much unusable unless I reflash and
-then the RPM installs start the cycle again. Is there any way I can
-avoid this?
-
-Thanks.
---Ramesh
+Do you know if this is the same for all spi flash chips that may not
+be from atmel?
