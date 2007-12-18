@@ -1,18 +1,19 @@
-Received: from mail.atmel.fr ([81.80.104.162] helo=atmel-es2.atmel.fr)
+Received: from fk-out-0910.google.com ([209.85.128.184])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4eXC-0005i3-BI
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:39:12 +0000
-Message-ID: <4767E995.2050100@atmel.com>
-Date: Tue, 18 Dec 2007 16:39:01 +0100
-From: Nicolas Ferre <nicolas.ferre@atmel.com>
+	id 1J4ebb-00065R-Em
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:43:45 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so3594348fkq.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 18 Dec 2007 07:43:37 -0800 (PST)
+Message-ID: <3adeeb410712180743o77233e51pcb544e3c4b286712@mail.gmail.com>
+Date: Tue, 18 Dec 2007 09:43:37 -0600
+From: Ramesh <sramesh23@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2 errors - are these normal?
 MIME-Version: 1.0
-To: Duke <ezbonites@gmail.com>
-Subject: Re: SPI Flash
-References: <79ac09b60712180702v724b20cetb4070b53466efcba@mail.gmail.com>
-In-Reply-To: <79ac09b60712180702v724b20cetb4070b53466efcba@mail.gmail.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,25 +23,40 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Duke :
-> Hi all,
-> Has anyone use ST's SPI flash and Atmels SPI DataFlash suscessfully?
+Hi,
 
-Atmel DataFlash are working on Linux with this configuration in your 
-.config :
-CONFIG_MTD_DATAFLASH=y
+I am using linux 2.6.19 and ST micro NAND chip (256M) on a PowerPC
+platform. After booting the OS, we install firmware on to the flash.
+These firmware images are RPM packages. Once some packages are
+installed, we start getting some ECC errors. I guess that's fine but
+after a few more RPM installs, the errors seem more serious. Here's a
+sample:
 
-> How does the interface look from userspace? Is it still an mtdblockX
-> device or is it a spi device node?
+...
+Node CRC 880608a4 != calculated CRC ade8c30b for node at 075ade08
+jffs2_flush_wbuf(): Write failed with -5
+Recovery of wbuf failed due to a second write error
+Write of 162 bytes at 0x07540000 failed. returned -5, retlen 0
+Not marking the space at 0x07540000 as dirty because the flash driver
+returned retlen zero
+jffs2_flush_wbuf(): Write failed with -5
+Recovery of wbuf failed due to a second write error
+Write of 162 bytes at 0x07540000 failed. returned -5, retlen 0
+Not marking the space at 0x07540000 as dirty because the flash driver
+returned retlen zero
+jffs2_flush_wbuf(): Write failed with -5
+Recovery of wbuf failed due to a second write error
+Write of 99 bytes at 0x07540000 failed. returned -5, retlen 0
+Node CRC 880608a4 != calculated CRC ade8c30b for node at 075ade08
+...
 
-It is seen as a mtd device :
-# cat /proc/mtd
-dev:    size   erasesize  name
-[..]
-mtd2: 00840000 00000420 "spi0.0-AT45DB642x"
+The jffs2 image is created with the following flags: -e 0x20000 -s
+0x1000 -b -v -p -n
+Then I use sumtool with -e 0x20000 -b -p.
 
-So you can mount is using mtdblockx interface.
+At this point, the flash is pretty much unusable unless I reflash and
+then the RPM installs start the cycle again. Is there any way I can
+avoid this?
 
-Regards,
--- 
-Nicolas Ferre
+Thanks.
+--Ramesh
