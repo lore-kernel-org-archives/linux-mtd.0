@@ -1,20 +1,22 @@
-Received: from rn-out-0910.google.com ([64.233.170.185]
-	helo=rn-out-0102.google.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4dxQ-00024P-Fh
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:02:14 +0000
-Received: by rn-out-0102.google.com with SMTP id e25so374766rng.15
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 18 Dec 2007 07:02:07 -0800 (PST)
-Message-ID: <79ac09b60712180702v724b20cetb4070b53466efcba@mail.gmail.com>
-Date: Tue, 18 Dec 2007 09:02:07 -0600
-From: Duke <ezbonites@gmail.com>
-To: linux-mtd <linux-mtd@lists.infradead.org>
-Subject: SPI Flash
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J4eI9-0004KY-Eh
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 15:23:40 +0000
+Date: Tue, 18 Dec 2007 16:18:01 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexey Korolev <akorolev@infradead.org>
+Subject: Re: Limited support of NAND features in MTD.
+Message-ID: <20071218151800.GG1741@lazybastard.org>
+References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+	<20071218142335.GD1741@lazybastard.org>
+	<Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
+Cc: dwmw2@infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,13 +26,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi all,
-Has anyone use ST's SPI flash and Atmels SPI DataFlash suscessfully?
+On Tue, 18 December 2007 15:06:50 +0000, Alexey Korolev wrote:
+> > 
+> > What does cached read do?
+> > 
+> Performs cached read operations :)
 
-How does the interface look from userspace? Is it still an mtdblockX
-device or is it a spi device node?
-Are these two manufacturers SPI flash compatable?
-How about access speed?
+Who would have thought? :)
 
-Thanks,
-D.
+> It is a feature of NAND devices. It increases performance if we have 
+> request to read sequentally large amount of data from NAND. 
+
+Do you have a little more information on this?  Where does the cache
+reside?  How big is it?  Who controls it?  How does it interact with
+writes? ...
+
+Possibly the best answer would be a link to a datasheet.
+
+> > Another feature that could become useful would be the on-chip copying.
+> > With JFFS2 this is rare, but when doing GC or wear leveling in a fashion
+> > that keeps certain alignments intact, it could improve performance.
+> >
+> Yeah. I know this feature. If I properly understand the real purpose of
+> it is mostly related for FTL but could be used for FS as well. 
+> You are right it make sense to try it. But I do not know when it will be possible to do 
+> this. Usually this feature is called as Internal data move in NAND specs. 
+
+At least I would like to know what the conditions are.  Can the command
+copy whole blocks only?  If it can copy single pages, can it copy any
+pages or just the Nth page of one block to the Nth page of another?
+
+If any page can be copied to any other page, it should be quite useful
+for any non-compressed filesystem.  YAFFS, old LogFS, anything that does
+XIP, possibly UBI,...
+
+Jörn
+
+-- 
+Joern's library part 7:
+http://www.usenix.org/publications/library/proceedings/neworl/full_papers/mckusick.a
