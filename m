@@ -1,16 +1,18 @@
-Received: from ganesha.gnumonks.org ([213.95.27.120])
-	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4aVu-0005h2-Qp
-	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 11:21:38 +0000
-Date: Tue, 18 Dec 2007 12:06:39 +0100
-From: Harald Welte <laforge@openmoko.org>
-To: linux-arm-kernel@lists.arm.linux.org.uk
-Subject: [PATCH 2/12] neo1973: S3C2410 NAND commandline partition support
-Message-ID: <20071218110639.GI29882@prithivi.gnumonks.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, ben-linux@fluff.org
+Received: from f131.mail.ru ([194.67.57.112])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J4c4e-0007V5-No
+	for linux-mtd@lists.infradead.org; Tue, 18 Dec 2007 13:01:35 +0000
+From: Alexander Belyakov <abelyako@mail.ru>
+To: David Woodhouse <dwmw2@infradead.org>, Nicolas Pitre <nico@cam.org>,
+	=?windows-1251?Q?linux-mtd=40lists.infradead.org?=
+	<linux-mtd@lists.infradead.org>, Alexander Belyakov <abelyako@gmail.com>
+Subject: [PATCH][NOR]Disable erase suspend on write fixup
+Mime-Version: 1.0
+Date: Tue, 18 Dec 2007 16:01:27 +0300
+Content-Type: text/plain; charset=windows-1251
+Content-Transfer-Encoding: 8bit
+Message-Id: <E1J4c4d-000LmP-00.abelyako-mail-ru@f131.mail.ru>
+Reply-To: Alexander Belyakov <abelyako@mail.ru>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,56 +22,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[PATCH] support mtd NAND commandline partitions for S3C2410
+Hello,
 
-This patch adds support for the mtd NAND core standard method of passing
-partition table information from the bootloader into the kernel by using
-the kernel commandline.
+the patch below fixes typo in fixup_intel_strataflash().
 
-The board specific code can still manually override and provide a fixed
-partition table, so this patch will behave backwards compatible.
+Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
 
-Signed-off-by: Harald Welte <laforge@openmoko.org>
-
----
-
---- linux-2.6.22.1.orig/drivers/mtd/nand/s3c2410.c
-+++ linux-2.6.22.1/drivers/mtd/nand/s3c2410.c
-@@ -547,17 +547,31 @@
- }
- 
- #ifdef CONFIG_MTD_PARTITIONS
-+const char *part_probes[] = { "cmdlinepart", NULL };
- static int s3c2410_nand_add_partition(struct s3c2410_nand_info *info,
- 				      struct s3c2410_nand_mtd *mtd,
- 				      struct s3c2410_nand_set *set)
+diff -uNrp a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c	2007-12-03 17:00:16.000000000 +0300
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c	2007-12-18 16:01:42.000000000 +0300
+@@ -205,7 +205,7 @@ static void fixup_intel_strataflash(stru
  {
-+	struct mtd_partition *part_info;
-+	int nr_part = 0;
-+
- 	if (set == NULL)
- 		return add_mtd_device(&mtd->mtd);
+ 	struct map_info *map = mtd->priv;
+ 	struct cfi_private *cfi = map->fldrv_priv;
+-	struct cfi_pri_amdstd *extp = cfi->cmdset_priv;
++	struct cfi_pri_intelext *extp = cfi->cmdset_priv;
  
--	if (set->nr_partitions > 0 && set->partitions != NULL) {
--		return add_mtd_partitions(&mtd->mtd, set->partitions, set->nr_partitions);
-+	if (set->nr_partitions == 0) {
-+		mtd->mtd.name = set->name;
-+		nr_part = parse_mtd_partitions(&mtd->mtd, part_probes,
-+						&part_info, 0);
-+	} else {
-+		if (set->nr_partitions > 0 && set->partitions != NULL) {
-+			nr_part = set->nr_partitions;
-+			part_info = set->partitions;
-+		}
- 	}
- 
-+	if (nr_part > 0 && part_info)
-+		return add_mtd_partitions(&mtd->mtd, part_info, nr_part);
-+
- 	return add_mtd_device(&mtd->mtd);
- }
- #else
--- 
-- Harald Welte <laforge@openmoko.org>          	        http://openmoko.org/
-============================================================================
-Software for the world's first truly open Free Software mobile phone
+ 	printk(KERN_WARNING "cfi_cmdset_0001: Suspend "
+ 	                    "erase on write disabled.\n");
