@@ -1,25 +1,23 @@
-Received: from mailrelay009.isp.belgacom.be ([195.238.6.176])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J4IiU-0007j7-M0
-	for linux-mtd@lists.infradead.org; Mon, 17 Dec 2007 16:21:25 +0000
-Received: from mail.technotrade.biz (localhost [127.0.0.1])
-	by mail.technotrade.biz (Postfix) with ESMTP id 3614A4E76
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Dec 2007 11:12:38 +0100 (CET)
-Received: from pclaurent.technotrade.biz (pclaurent.technotrade.biz
-	[192.168.1.47])
-	by mail.technotrade.biz (Postfix) with ESMTP id E3E1E40CA
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 17 Dec 2007 11:12:37 +0100 (CET)
-From: Laurent Pinchart <laurentp@cse-semaphore.com>
-To: linux-mtd@lists.infradead.org
-Subject: Deadlock while accessing mtdchar device while erase in progress
+Date: Wed, 19 Dec 2007 11:55:33 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: Re: Limited support of NAND features in MTD.
+In-Reply-To: <1198061571.13978.733.camel@pmac.infradead.org>
+Message-ID: <Pine.LNX.4.64.0712191136440.16743@pentafluge.infradead.org>
+References: <Pine.LNX.4.64.0712121107010.19025@pentafluge.infradead.org>
+	<20071218142335.GD1741@lazybastard.org>
+	<Pine.LNX.4.64.0712181450540.31218@pentafluge.infradead.org>
+	<20071218151800.GG1741@lazybastard.org>
+	<20071218165758.GA11634@old.davidb.org>
+	<20071218165648.GH1741@lazybastard.org>
+	<1198001672.2590.35.camel@shinybook.infradead.org>
+	<Pine.LNX.4.64.0712191046130.14911@pentafluge.infradead.org>
+	<1198061571.13978.733.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Date: Mon, 17 Dec 2007 11:12:34 +0100
-Content-Type: multipart/signed; boundary="nextPart3305129.2DHfmoRlAr";
-	protocol="application/pgp-signature"; micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
-Message-Id: <200712171112.36903.laurentp@cse-semaphore.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: David Brown <davidb@davidb.org>,
+	=?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,83 +27,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---nextPart3305129.2DHfmoRlAr
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Hi
+> 
+> On Wed, 2007-12-19 at 10:49 +0000, Alexey Korolev wrote:
+> > Hmm I did not heard about this. Could you please give more details on
+> > how partial page read can suffer from lack of ECC?
+> 
+> If your ECC covers the whole page, you have to read the whole page in
+> order to check ECC.
+> 
+> Of course, if you do ECC in sub-pages in the first place, you can read
+> only a single ECC block. But you still can't just read arbitrary byte
+> ranges.
+> 
+It seems misunderstaning takes place here. Under partial/subpage page read we understand reading block of data covered by ECC. It means if we request to read 40bytes - we will read data equal to ECC step (it could be 256 bytes or 512bytes -depending on boundary conditions, but not 2048/4096 bytes in case of whole page read). If we have MLC NAND with whole page covered by ECC partial/subpage page read will be equivalent to page read. 
 
-Hi everybody,
+P/S
+If partial page read name cause misunderstanding will subpage read name be obvious enough?
 
-I'm having troubles fixing an MTD-related deadlock. I'm not sure if the=20
-problem comes from an MTD and/or JFFS2 kernel bug, or from some userspace=20
-operation performed as root that I shouldn't have started in the first plac=
-e.=20
-I'd appreciate if someone could share his thoughts (and experience :-)) abo=
-ut=20
-this.
-
-Some background.
-
-My embedded system has a single NOR flash chip (cfi_cmdset_0002 driver) wit=
-h=20
-128kB sectors. Flash space is divided in 4 partitions, the last one used wi=
-th=20
-a JFFS2 filesystem.
-
-A userspace process run as root sets its scheduling policy to SCHED_RR. It=
-=20
-writes 400kB of data to the JFFS2 filesystem and restarts by exec()ing=20
-itself, inheriting the SCHED_RR policy.
-
-Soon after being restarted, it opens /dev/mtd0 (boot loader partition) and=
-=20
-reads a few bytes of data. It then close() /dev/mtd0, at which point the=20
-kernel deadlocks.
-
-I added debugging messages to the MTD subsystem and it turned out my proces=
-s=20
-blocks in cfi_amdstd_sync (drivers/mtd/chips/cfi_cmdset_0002.c). chip->stat=
-e=20
-is set to FL_ERASING, and the kernel keeps scheduling in the default case.
-
-I'm not sure what goes wrong. I expect the JFFS2 garbage collector to have=
-=20
-kicked in. It might be erasing sectors when I close() /dev/mtd0, at which=20
-point the mtdchar driver tries to sync() the flash and locks in=20
-cfi_amdstd_sync because my process, being scheduled with a SCHED_RR policy,=
-=20
-never gives the JFFS2 garbage collector a chance to run. That's just a wild=
-=20
-guess though.
-
-Any help regarding how to better diagnose the problem (to confirm or reject=
-=20
-the above suspicion) will be appreciated. A fix would be even more=20
-welcome :-)
-
-Best regards,
-
-=2D-=20
-Laurent Pinchart
-CSE Semaphore Belgium
-
-Chauss=E9e de Bruxelles, 732A
-B-1410 Waterloo
-Belgium
-
-T +32 (2) 387 42 59
-=46 +32 (2) 387 42 75
-
---nextPart3305129.2DHfmoRlAr
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.5 (GNU/Linux)
-
-iD8DBQBHZkuU8y9gWxC9vpcRAvyqAJ4jTG2Od7pPdIaEBJGlWeM8tyeozwCghrty
-Iza6rHgxSrWdyarVSk5xmUU=
-=wOt5
------END PGP SIGNATURE-----
-
---nextPart3305129.2DHfmoRlAr--
+Thanks,
+Alexey
