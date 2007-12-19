@@ -1,21 +1,22 @@
-Received: from nz-out-0506.google.com ([64.233.162.226])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J53Ts-0000tn-R9
-	for linux-mtd@lists.infradead.org; Wed, 19 Dec 2007 18:17:27 +0000
-Received: by nz-out-0506.google.com with SMTP id z3so1456764nzf.27
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 19 Dec 2007 10:17:19 -0800 (PST)
-Message-ID: <49eab5c80712191017w71c5d315w45b33f2f0423e470@mail.gmail.com>
-Date: Thu, 20 Dec 2007 02:17:13 +0800
-From: "falls huang" <falls.huang@gmail.com>
-To: "Linux mtd" <linux-mtd@lists.infradead.org>
-Subject: Re: MTD/YAFFS2 page problem, data missing
-In-Reply-To: <47692B14.5040205@tandberg.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <47692B14.5040205@tandberg.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J53U8-0000uT-KM
+	for linux-mtd@lists.infradead.org; Wed, 19 Dec 2007 18:17:42 +0000
+Subject: Re: [PATCH 4/5] UBI: introduce attach ioctls
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <200712191657.24027.arnd@arndb.de>
+References: <20071219154137.23264.28116.sendpatchset@golum>
+	<200712191517.18166.arnd@arndb.de> <1198075329.18962.70.camel@sauron>
+	<200712191657.24027.arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 19 Dec 2007 19:41:00 +0200
+Message-Id: <1198086060.18962.120.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: Frank Haverkamp <haver@vnet.ibm.com>, linux-mtd@lists.infradead.org,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,48 +26,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello Kjetil!
+On Wed, 2007-12-19 at 16:57 +0100, Arnd Bergmann wrote:
+> >=20
+> > If the MTD device is already UBI-formatted, the numbers may be read fro=
+m
+> > the media. Otherwise, not.
+>=20
+> Ok, let me suggest an idea, it probably needs more refinement, but maybe =
+we
+> can come up with something better based on this:
+>=20
+> You can have a simple attribute named 'ubi-probe' in each MTD device in s=
+ysfs.
 
-    I don't the exactly status about your board and testing method .
-Maybe I can give u some suggests:
+Err, why should MTD know something about what sits on top of it? Today
+it is UBI, tommorrow it is something new and better, e.g., more
+scalable.
 
-1.  Do testing with such cycle ->
-erase the yaffs2 partition that you write to , write , boot , read
+> this is only readable, and contains either '0' or '1' in ascii, telling y=
+ou
+> whether a UBI device could be found for this device.
 
-2.
-Did u open the debug options in /proc/yaffs ?
-FYI: http://www.yaffs.net/yaffs-debugging , you can open the option:
-YAFFS_TRACE_WRITE
+So MTD maintains ubi-probe attribute, and has some knowlege about UBI.
+Well, it is technically possible, but I do not think it would be good
+design. The same way we could teach MTD to probe if it has JFFS2 on it,
+or something else...
 
-3.
-Read your nand flash driver carefully, yaffs2 based on mtd , mtd based
-on nandflash driver .
+> This only works for UBI formatted media, and the kernel does not format t=
+he
+> media itself.
+> IF you want to UBI-format a medium, use a user space tool that writes the
+> appropriate blocks directly to the /dev/mtd* character device.
 
-Gook Luck
+Yeah, user-space tools could format media. But it is so much appropriate
+facility to have UBI being able to format it itself. It is really very
+convenient. Flashes have special state - empty flash, and if the flash
+is empty - UBI make it UBI-formatted. If the flash has some garbage -
+UBI does not format it.=20
 
-2007/12/19, Kjetil Aamodt <kjetil.aamodt@tandberg.com>:
-> >From time to time we have seen data corruption on our nand flash. Closer investigation with a 300MB large file showed us that 32 of 98 write-boot-read cycles got corrupted. The corruption were of two very similar forms:
->
-> a) Somewhere in the image one complete page, page M, were replaced by the contents of M+1. Page M+1, and all other data in the file were correct (data from the same page is returned twice).
->
-> b) Somewhere in the image there were two consecutive page errors. In the corrupted file page N were missing and replaced with N+1. Page N+1 contained only zeros. The rest of the data in the file were correct.
->
-> Our Linux kernel version are 2.6.22.1. The YAFFS version is per CVS of November 13. 2007.
->
-> Have anyone else seen such behavior with MTD and/or YAFFS2?
-> Do you have any suggestion in how to debug this?
->
-> Best regards,
-> Kjetil Aamodt
-> TANDBERG
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
-
-
--- 
-Regards
-Falls Huang
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
