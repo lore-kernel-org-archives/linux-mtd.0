@@ -1,15 +1,24 @@
-Received: from mx.dave-tech.it ([88.37.112.223])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J5MeA-0002ZJ-I9
-	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 14:45:21 +0000
-Message-ID: <476A7FF6.8010604@dave-tech.it>
-Date: Thu, 20 Dec 2007 15:45:10 +0100
-From: R&D4 <r&d4@dave-tech.it>
-MIME-Version: 1.0
-To: mtd_mailinglist <linux-mtd@lists.infradead.org>
-Subject: NAND bad block: 1st or 2nd page?
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from py-out-1112.google.com ([64.233.166.182])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J5NYL-0000B1-8E
+	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 15:43:24 +0000
+Received: by py-out-1112.google.com with SMTP id a25so7677365pyi.11
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 20 Dec 2007 07:43:15 -0800 (PST)
+Date: Thu, 20 Dec 2007 09:43:04 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: [PATCH][MTD-UTILS] Set mkfs.jffs2 page size runtime instead of
+	fixed [respoin]
+Message-ID: <20071220094304.336d8ccb@vader.jdub.homelinux.org>
+In-Reply-To: <Pine.LNX.4.64.0712201241410.21948@lnxricardw.se.axis.com>
+References: <Pine.LNX.4.64.0712061232550.28640@lnxricardw.se.axis.com>
+	<20071207070354.02e020b2@weaponx>
+	<Pine.LNX.4.64.0712201241410.21948@lnxricardw.se.axis.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+Cc: Linux mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,66 +28,37 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Thu, 20 Dec 2007 12:46:38 +0100 (CET)
+Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
 
-Dear MTD Gurus,
+> 
+> On Fri, 7 Dec 2007, Josh Boyer wrote:
+> 
+> > On Thu, 6 Dec 2007 12:43:47 +0100 (CET)
+> > Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+> >
+> >>
+> >> This patch reads the default PAGE_SIZE from sysconf(), i.e. the system
+> >> mkfs.jffs2 is running on, instead of just setting it to 4096 (which of
+> >> course is valid for most systems but not all).
+> >
+> > This makes sense overall.  I'd like to do it a slightly different way 
+> > though.
+> 
+> I think I see what you mean. I had inadvertently put the setting 
+> of the page_size variable at the start of write_regular_file() instead of 
+> at the start of main() where I wanted it. Fixed.
+> 
+> > Could we add an additional check here to see if page_size != 4096, and
+> > print a loud warning with the page size that is actually being used and
+> > suggest the --pagesize option if that isn't what is desired?
+> >
+> > It's not that we have tons of systems using a page size different than
+> > 4KiB, but it's a change in behavior for those that do and I'd like to
+> > at least warn users about it.  Otherwise the patch looks fine.
+> 
+> Ok, good point, something like this then:
 
-I have a question about bad block management, especially regarding how 
-NAND manifacturer mark bad blocks in factory and how MTD check this 
-"marker".
+Looks good.  Applied.
 
-Preamble: I will care only about small block NAND here, large block are 
-a bit different in bad block management.
-
-Reading your "NAND Flash FAQ" here:
-
-http://www.linux-mtd.infradead.org/faq/nand.html#L_nand_bootloader
-
-I see this:
-
-"They [factory-marked bad blocks] are marked in the 6th byte (offset 
-0x5) in the out of band area of the first page of a block."
-
-Looking (from an ignorant point of view like mine ;-) ) at the code 
-inside drivers/mtd/nand_base.c, it seems that FAQ is correct and only 
-this byte of the first page is checked (of course, correct me if I'm wrong).
-
-On the other side I read carefully some NAND manifacturer datasheet 
-(Samsung, ST and so on) I find the following:
-
-* Samsung (Identifying Initial Invalid Block(s)):
-
-"The initial invalid block(s) status is defined by the 6th byte in the 
-spare area. Samsung makes sure that either the 1st or 2nd page of every 
-initial invalid block has non-FFh data at the column address of 517."
-
-* ST (bad block algorithm):
-
-"Any block where the 6th Byte/ 1st Word in the spare area of the 1st or 
-2nd page (if the 1st page is Bad) does not contain FFh is a Bad Block."
-
-The "key words" here are "1st OR 2nd page".
-
-It seems that manifacturer mark both or only one of these pages and that 
-  software should check for two bytes: the 6th of the OOB of the first 
-AND second page of each erase block. Only if both are equal to 0xFF it 
-means that the block is NOT bad.
-
-I found that, on the other side, Toshiba seems a bit different here:
-
-"Read Check [for bad block]: to verify the column address 517 bytes of 
-the first page in the block with FFh"
-
-So.. with Toshiba NAND you need to check only the first page.
-
-Am I missing something?
-Do I misunderstood these datasheet or the FAQ are not correct?
-How is this handled in nand_base.c? (I saw only 1 check for eraseblock)
-
-Thanks in advance and Best Regards,
-
--- 
-
-Andrea
-
-DAVE Srl - Electronics System House
-e-mail address: r&d4@dave-tech.it
+josh
