@@ -1,24 +1,23 @@
-Received: from py-out-1112.google.com ([64.233.166.182])
+Received: from moutng.kundenserver.de ([212.227.126.174])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J5NYL-0000B1-8E
-	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 15:43:24 +0000
-Received: by py-out-1112.google.com with SMTP id a25so7677365pyi.11
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 20 Dec 2007 07:43:15 -0800 (PST)
-Date: Thu, 20 Dec 2007 09:43:04 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Ricard Wanderlof <ricard.wanderlof@axis.com>
-Subject: Re: [PATCH][MTD-UTILS] Set mkfs.jffs2 page size runtime instead of
-	fixed [respoin]
-Message-ID: <20071220094304.336d8ccb@vader.jdub.homelinux.org>
-In-Reply-To: <Pine.LNX.4.64.0712201241410.21948@lnxricardw.se.axis.com>
-References: <Pine.LNX.4.64.0712061232550.28640@lnxricardw.se.axis.com>
-	<20071207070354.02e020b2@weaponx>
-	<Pine.LNX.4.64.0712201241410.21948@lnxricardw.se.axis.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	id 1J5T5Q-0006xr-KD
+	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 21:37:55 +0000
+From: Arnd Bergmann <arnd@arndb.de>
+To: dedekind@infradead.org
+Subject: Re: [PATCH 4/5] UBI: introduce attach ioctls
+Date: Thu, 20 Dec 2007 22:34:56 +0100
+References: <20071219154137.23264.28116.sendpatchset@golum>
+	<200712191657.24027.arnd@arndb.de>
+	<1198086060.18962.120.camel@sauron>
+In-Reply-To: <1198086060.18962.120.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Cc: Linux mtd <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+Message-Id: <200712202234.56859.arnd@arndb.de>
+Cc: Frank Haverkamp <haver@vnet.ibm.com>, linux-mtd@lists.infradead.org,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,37 +27,52 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 20 Dec 2007 12:46:38 +0100 (CET)
-Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
+On Wednesday 19 December 2007, Artem Bityutskiy wrote:
+> On Wed, 2007-12-19 at 16:57 +0100, Arnd Bergmann wrote:
+> > > 
+> > > If the MTD device is already UBI-formatted, the numbers may be read from
+> > > the media. Otherwise, not.
+> > 
+> > Ok, let me suggest an idea, it probably needs more refinement, but maybe we
+> > can come up with something better based on this:
+> > 
+> > You can have a simple attribute named 'ubi-probe' in each MTD device in sysfs.
+> 
+> Err, why should MTD know something about what sits on top of it? Today
+> it is UBI, tommorrow it is something new and better, e.g., more
+> scalable.
 
-> 
-> On Fri, 7 Dec 2007, Josh Boyer wrote:
-> 
-> > On Thu, 6 Dec 2007 12:43:47 +0100 (CET)
-> > Ricard Wanderlof <ricard.wanderlof@axis.com> wrote:
-> >
-> >>
-> >> This patch reads the default PAGE_SIZE from sysconf(), i.e. the system
-> >> mkfs.jffs2 is running on, instead of just setting it to 4096 (which of
-> >> course is valid for most systems but not all).
-> >
-> > This makes sense overall.  I'd like to do it a slightly different way 
-> > though.
-> 
-> I think I see what you mean. I had inadvertently put the setting 
-> of the page_size variable at the start of write_regular_file() instead of 
-> at the start of main() where I wanted it. Fixed.
-> 
-> > Could we add an additional check here to see if page_size != 4096, and
-> > print a loud warning with the page size that is actually being used and
-> > suggest the --pagesize option if that isn't what is desired?
-> >
-> > It's not that we have tons of systems using a page size different than
-> > 4KiB, but it's a change in behavior for those that do and I'd like to
-> > at least warn users about it.  Otherwise the patch looks fine.
-> 
-> Ok, good point, something like this then:
+The way you would implement this is to have the UBI code grab hold of all
+the MTD devices, and create the ubi-probe attribute in them. This is
+something that is easily possible with the device model, provided that
+we can get a 'struct device' embedded into 'struct mtd_info'. I just realized
+that this is currently missing.
 
-Looks good.  Applied.
+> > this is only readable, and contains either '0' or '1' in ascii, telling you
+> > whether a UBI device could be found for this device.
+> 
+> So MTD maintains ubi-probe attribute, and has some knowlege about UBI.
+> Well, it is technically possible, but I do not think it would be good
+> design. The same way we could teach MTD to probe if it has JFFS2 on it,
+> or something else...
 
-josh
+The probe on a JFFS2 formatted device is called 'mount', and we have a
+perfectly fine system call interface for that ;-)
+
+> > This only works for UBI formatted media, and the kernel does not format the
+> > media itself.
+> > IF you want to UBI-format a medium, use a user space tool that writes the
+> > appropriate blocks directly to the /dev/mtd* character device.
+> 
+> Yeah, user-space tools could format media. But it is so much appropriate
+> facility to have UBI being able to format it itself. It is really very
+> convenient. Flashes have special state - empty flash, and if the flash
+> is empty - UBI make it UBI-formatted. If the flash has some garbage -
+> UBI does not format it. 
+
+Ok, another idea: just create an UBI device for every MTD device, but don't
+probe until the UBI device is first accessed. That way, you don't need
+any dynamic registration, and you can use an ioctl on the device itself
+in order to do the initial formatting with new parameters.
+
+	Arnd <><
