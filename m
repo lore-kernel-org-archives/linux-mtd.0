@@ -1,14 +1,14 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J5KaY-0003Tb-MP
-	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 12:33:28 +0000
+	id 1J5Kdy-0003wy-Cc
+	for linux-mtd@lists.infradead.org; Thu, 20 Dec 2007 12:37:00 +0000
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: linux-mtd@lists.infradead.org
-Date: Thu, 20 Dec 2007 16:23:07 +0200
-Message-Id: <20071220142307.30834.76324.sendpatchset@golum>
+Date: Thu, 20 Dec 2007 16:23:01 +0200
+Message-Id: <20071220142301.30834.64821.sendpatchset@golum>
 In-Reply-To: <20071220142251.30834.86791.sendpatchset@golum>
 References: <20071220142251.30834.86791.sendpatchset@golum>
-Subject: [PATCH v2 3/6] UBI: prepare attach and detach functions
+Subject: [PATCH v2 2/6] UBI: add UBI devices reference counting
 Cc: Frank Haverkamp <haver@vnet.ibm.com>, Arnd Bergmann <arnd@arndb.de>,
 	Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,472 +20,593 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From 9fd405794615345e2089a6cfe719988f8bf4ff9a Mon Sep 17 00:00:00 2001
+>From 502c3f72aacff2056497bbbdb219459914a28a7f Mon Sep 17 00:00:00 2001
 From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Mon, 17 Dec 2007 20:33:20 +0200
-Subject: [PATCH] UBI: prepare attach and detach functions
+Date: Mon, 17 Dec 2007 17:37:26 +0200
+Subject: [PATCH] UBI: add UBI devices reference counting
 
-Prepare the attach and detach functions to by used outside of
-module initialization:
-
-* detach function checks reference count before detaching
-* it kills the background thread as well
+This is one more step on the way to "removable" UBI devices. It
+adds reference counting for UBI devices. Every time a volume on
+this device is opened - the device's refcount is increased. It
+is also increased if someone is reading any sysfs file of this
+UBI device or of one of its volumes.
 
 Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/ubi/build.c |  235 ++++++++++++++++++++++++++++++++---------------
- drivers/mtd/ubi/ubi.h   |    5 +
- drivers/mtd/ubi/wl.c    |   16 +---
- 3 files changed, 169 insertions(+), 87 deletions(-)
+ drivers/mtd/ubi/build.c |  142 ++++++++++++++++++++++++++++++++++++++++++-----
+ drivers/mtd/ubi/cdev.c  |   34 +++--------
+ drivers/mtd/ubi/eba.c   |    5 ++
+ drivers/mtd/ubi/kapi.c  |   59 ++++++++++++++------
+ drivers/mtd/ubi/ubi.h   |    9 +++-
+ drivers/mtd/ubi/vmt.c   |   14 +++--
+ drivers/mtd/ubi/wl.c    |    1 +
+ 7 files changed, 201 insertions(+), 63 deletions(-)
 
 diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
-index e60a646..8f6aef6 100644
+index 8d05d96..e60a646 100644
 --- a/drivers/mtd/ubi/build.c
 +++ b/drivers/mtd/ubi/build.c
-@@ -39,6 +39,7 @@
- #include <linux/stringify.h>
- #include <linux/stat.h>
- #include <linux/log2.h>
-+#include <linux/kthread.h>
- #include "ubi.h"
+@@ -63,9 +63,6 @@ static int mtd_devs = 0;
+ /* MTD devices specification parameters */
+ static struct mtd_dev_param mtd_dev_param[UBI_MAX_DEVICES];
  
- /* Maximum length of the 'mtd=' parameter */
-@@ -81,6 +82,9 @@ static struct device ubi_ctrl_dev;
- /* All UBI devices in system */
- static struct ubi_device *ubi_devices[UBI_MAX_DEVICES];
+-/* All UBI devices in system */
+-struct ubi_device *ubi_devices[UBI_MAX_DEVICES];
+-
+ /* Root UBI "class" object (corresponds to '/<sysfs>/class/ubi/') */
+ struct class *ubi_class;
  
-+/* Serializes UBI devices creations and removals */
-+DEFINE_MUTEX(ubi_devices_mutex);
+@@ -81,6 +78,12 @@ static int ubi_ctrl_major;
+ /* Linux device model object corresponding to the control UBI device */
+ static struct device ubi_ctrl_dev;
+ 
++/* All UBI devices in system */
++static struct ubi_device *ubi_devices[UBI_MAX_DEVICES];
 +
- /* Protects @ubi_devices and @ubi->ref_count */
- static DEFINE_SPINLOCK(ubi_devices_lock);
- 
-@@ -190,7 +194,7 @@ struct ubi_device *ubi_get_by_major(int major)
-  * @major: major number
-  *
-  * This function searches UBI device number object by its major number. If UBI
-- * device was not found, this function returns -ENODEV, othewise the UBI device
-+ * device was not found, this function returns -ENODEV, otherwise the UBI device
-  * number is returned.
-  */
- int ubi_major2num(int major)
-@@ -486,9 +490,9 @@ out_si:
-  * assumed:
-  *   o EC header is always at offset zero - this cannot be changed;
-  *   o VID header starts just after the EC header at the closest address
-- *   aligned to @io->@hdrs_min_io_size;
-+ *     aligned to @io->hdrs_min_io_size;
-  *   o data starts just after the VID header at the closest address aligned to
-- *     @io->@min_io_size
-+ *     @io->min_io_size
-  *
-  * This function returns zero in case of success and a negative error code in
-  * case of failure.
-@@ -509,6 +513,9 @@ static int io_init(struct ubi_device *ubi)
- 		return -EINVAL;
- 	}
- 
-+	if (ubi->vid_hdr_offset < 0 || ubi->leb_start < ubi->vid_hdr_offset)
-+		return -EINVAL;
++/* Protects @ubi_devices and @ubi->ref_count */
++static DEFINE_SPINLOCK(ubi_devices_lock);
 +
- 	/*
- 	 * Note, in this implementation we support MTD devices with 0x7FFFFFFF
- 	 * physical eraseblocks maximum.
-@@ -617,84 +624,62 @@ static int io_init(struct ubi_device *ubi)
- }
- 
- /**
-- * attach_mtd_dev - attach an MTD device.
-- * @mtd_dev: MTD device name or number string
-+ * ubi_attach_mtd_dev - attach an MTD device.
-+ * @mtd_dev: MTD device description object
-  * @vid_hdr_offset: VID header offset
-  * @data_offset: data offset
-  *
-  * This function attaches an MTD device to UBI. It first treats @mtd_dev as the
-  * MTD device name, and tries to open it by this name. If it is unable to open,
-  * it tries to convert @mtd_dev to an integer and open the MTD device by its
-- * number. Returns zero in case of success and a negative error code in case of
-- * failure.
-+ * number. Returns new UBI device's number in case of success and a negative
-+ * error code in case of failure.
-+ *
-+ * Note, the invocations of this function has to be serialized by the
-+ * @ubi_devices_mutex.
-  */
--static int attach_mtd_dev(const char *mtd_dev, int vid_hdr_offset,
--			  int data_offset)
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int vid_hdr_offset,
-+		       int data_offset)
+ /* "Show" method for files in '/<sysfs>/class/ubi/' */
+ static ssize_t ubi_version_show(struct class *class, char *buf)
  {
- 	struct ubi_device *ubi;
--	struct mtd_info *mtd;
- 	int i, err;
+@@ -116,37 +119,145 @@ static struct device_attribute dev_min_io_size =
+ static struct device_attribute dev_bgt_enabled =
+ 	__ATTR(bgt_enabled, S_IRUGO, dev_attribute_show, NULL);
  
--	mtd = get_mtd_device_nm(mtd_dev);
--	if (IS_ERR(mtd)) {
--		int mtd_num;
--		char *endp;
--
--		if (PTR_ERR(mtd) != -ENODEV)
--			return PTR_ERR(mtd);
--
--		/*
--		 * Probably this is not MTD device name but MTD device number -
--		 * check this out.
--		 */
--		mtd_num = simple_strtoul(mtd_dev, &endp, 0);
--		if (*endp != '\0' || mtd_dev == endp) {
--			ubi_err("incorrect MTD device: \"%s\"", mtd_dev);
--			return -ENODEV;
--		}
--
--		mtd = get_mtd_device(NULL, mtd_num);
--		if (IS_ERR(mtd))
--			return PTR_ERR(mtd);
--	}
--
--	/* Check if we already have the same MTD device attached */
-+	/*
-+	 * Check if we already have the same MTD device attached.
-+	 *
-+	 * Note, this function assumes that UBI devices creations and deletions
-+	 * are serialized, so it does not take the &ubi_devices_lock.
-+	 */
- 	for (i = 0; i < UBI_MAX_DEVICES; i++)
- 		ubi = ubi_devices[i];
--		if (ubi && ubi->mtd->index == mtd->index) {
-+		if (ubi && mtd->index == ubi->mtd->index) {
- 			ubi_err("mtd%d is already attached to ubi%d",
- 				mtd->index, i);
--			err = -EINVAL;
--			goto out_mtd;
-+			return -EINVAL;
- 		}
- 
--	ubi = kzalloc(sizeof(struct ubi_device), GFP_KERNEL);
--	if (!ubi) {
--		err = -ENOMEM;
--		goto out_mtd;
--	}
--
--	ubi->mtd = mtd;
--
- 	/* Search for an empty slot in the @ubi_devices array */
--	ubi->ubi_num = -1;
- 	for (i = 0; i < UBI_MAX_DEVICES; i++)
--		if (!ubi_devices[i]) {
--			ubi->ubi_num = i;
-+		if (!ubi_devices[i])
- 			break;
--		}
- 
--	if (ubi->ubi_num == -1) {
-+	if (i == UBI_MAX_DEVICES) {
- 		ubi_err("only %d UBI devices may be created", UBI_MAX_DEVICES);
--		err = -ENFILE;
--		goto out_free;
-+		return -ENFILE;
- 	}
- 
--	dbg_msg("attaching mtd%d to ubi%d: VID header offset %d data offset %d",
--		ubi->mtd->index, ubi->ubi_num, vid_hdr_offset, data_offset);
-+	ubi = kzalloc(sizeof(struct ubi_device), GFP_KERNEL);
-+	if (!ubi)
-+		return -ENOMEM;
- 
-+	ubi->mtd = mtd;
-+	ubi->ubi_num = i;
- 	ubi->vid_hdr_offset = vid_hdr_offset;
- 	ubi->leb_start = data_offset;
-+
-+	dbg_msg("attaching mtd%d to ubi%d: VID header offset %d data offset %d",
-+		mtd->index, ubi->ubi_num, vid_hdr_offset, data_offset);
-+
- 	err = io_init(ubi);
- 	if (err)
- 		goto out_free;
-@@ -725,8 +710,16 @@ static int attach_mtd_dev(const char *mtd_dev, int vid_hdr_offset,
- 	if (err)
- 		goto out_detach;
- 
--	ubi_msg("attached mtd%d to ubi%d", ubi->mtd->index, ubi->ubi_num);
--	ubi_msg("MTD device name:            \"%s\"", ubi->mtd->name);
-+	ubi->bgt_thread = kthread_create(ubi_thread, ubi, ubi->bgt_name);
-+	if (IS_ERR(ubi->bgt_thread)) {
-+		err = PTR_ERR(ubi->bgt_thread);
-+		ubi_err("cannot spawn \"%s\", error %d", ubi->bgt_name,
-+			err);
-+		goto out_uif;
-+	}
-+
-+	ubi_msg("attached mtd%d to ubi%d", mtd->index, ubi->ubi_num);
-+	ubi_msg("MTD device name:            \"%s\"", mtd->name);
- 	ubi_msg("MTD device size:            %llu MiB", ubi->flash_size >> 20);
- 	ubi_msg("physical eraseblock size:   %d bytes (%d KiB)",
- 		ubi->peb_size, ubi->peb_size >> 10);
-@@ -755,8 +748,10 @@ static int attach_mtd_dev(const char *mtd_dev, int vid_hdr_offset,
- 	}
- 
- 	ubi_devices[ubi->ubi_num] = ubi;
--	return 0;
-+	return ubi->ubi_num;
- 
-+out_uif:
-+	uif_close(ubi);
- out_detach:
- 	ubi_eba_close(ubi);
- 	ubi_wl_close(ubi);
-@@ -768,21 +763,57 @@ out_free:
- 	vfree(ubi->dbg_peb_buf);
- #endif
- 	kfree(ubi);
--out_mtd:
--	put_mtd_device(mtd);
- 	return err;
- }
- 
- /**
-- * detach_mtd_dev - detach an MTD device.
-- * @ubi: UBI device description object
-+ * ubi_detach_mtd_dev - detach an MTD device.
-+ * @ubi_num: UBI device number to detach from
-+ * @anyway: detach MTD even if device reference count is not zero
++/**
++ * ubi_get_device - get UBI device.
++ * @ubi_num: UBI device number
 + *
-+ * This function destroys an UBI device number @ubi_num and detaches the
-+ * underlying MTD device. Returns zero in case of success and %-EBUSY if the
-+ * UBI device is busy and cannot be destroyed, and %-EINVAL if it does not
-+ * exist.
-+ *
-+ * Note, the invocations of this function has to be serialized by the
-+ * @ubi_devices_mutex.
-  */
--static void detach_mtd_dev(struct ubi_device *ubi)
-+int ubi_detach_mtd_dev(int ubi_num, int anyway)
- {
--	int ubi_num = ubi->ubi_num, mtd_num = ubi->mtd->index;
++ * This function returns UBI device description object for UBI device number
++ * @ubi_num, or %NULL if the device does not exist. This function increases the
++ * device reference count to prevent removal of the device. In other words, the
++ * device cannot be removed if its reference count is not zero.
++ */
++struct ubi_device *ubi_get_device(int ubi_num)
++{
 +	struct ubi_device *ubi;
-+
-+	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES)
-+		return -EINVAL;
 +
 +	spin_lock(&ubi_devices_lock);
 +	ubi = ubi_devices[ubi_num];
-+	if (!ubi) {
-+		spin_lock(&ubi_devices_lock);
-+		return -EINVAL;
++	if (ubi) {
++		ubi_assert(ubi->ref_count >= 0);
++		ubi->ref_count += 1;
++		get_device(&ubi->dev);
 +	}
-+
-+	if (ubi->ref_count) {
-+		if (!anyway) {
-+			spin_lock(&ubi_devices_lock);
-+			return -EBUSY;
-+		}
-+		/* This may only happen if there is a bug */
-+		ubi_err("%s reference count %d, destroy anyway",
-+			ubi->ubi_name, ubi->ref_count);
-+	}
-+	ubi_devices[ubi->ubi_num] = NULL;
 +	spin_unlock(&ubi_devices_lock);
 +
-+	dbg_msg("detaching mtd%d from ubi%d", ubi->mtd->index, ubi->ubi_num);
++	return ubi;
++}
 +
-+	/*
-+	 * Before freeing anything, we have to stop the background thread to
-+	 * prevent it from doing anything on this device while we are freeing.
-+	 */
-+	if (ubi->bgt_thread)
-+		kthread_stop(ubi->bgt_thread);
++/**
++ * ubi_put_device - drop an UBI device reference.
++ * @ubi: UBI device description object
++ */
++void ubi_put_device(struct ubi_device *ubi)
++{
++	spin_lock(&ubi_devices_lock);
++	ubi->ref_count -= 1;
++	put_device(&ubi->dev);
++	spin_unlock(&ubi_devices_lock);
++}
++
++/**
++ * ubi_get_by_major - get UBI device description object by character device
++ *                    major number.
++ * @major: major number
++ *
++ * This function is similar to 'ubi_get_device()', but it searches the device
++ * by its major number.
++ */
++struct ubi_device *ubi_get_by_major(int major)
++{
++	int i;
++	struct ubi_device *ubi;
++
++	spin_lock(&ubi_devices_lock);
++	for (i = 0; i < UBI_MAX_DEVICES; i++) {
++		ubi = ubi_devices[i];
++		if (ubi && MAJOR(ubi->cdev.dev) == major) {
++			ubi_assert(ubi->ref_count >= 0);
++			ubi->ref_count += 1;
++			get_device(&ubi->dev);
++			spin_unlock(&ubi_devices_lock);
++			return ubi;
++		}
++	}
++	spin_unlock(&ubi_devices_lock);
++
++	return NULL;
++}
++
++/**
++ * ubi_major2num - get UBI device number by character device major number.
++ * @major: major number
++ *
++ * This function searches UBI device number object by its major number. If UBI
++ * device was not found, this function returns -ENODEV, othewise the UBI device
++ * number is returned.
++ */
++int ubi_major2num(int major)
++{
++	int i, ubi_num = -ENODEV;
++
++	spin_lock(&ubi_devices_lock);
++	for (i = 0; i < UBI_MAX_DEVICES; i++) {
++		struct ubi_device *ubi = ubi_devices[i];
++
++		if (ubi && MAJOR(ubi->cdev.dev) == major) {
++			ubi_num = ubi->ubi_num;
++			break;
++		}
++	}
++	spin_unlock(&ubi_devices_lock);
++
++	return ubi_num;
++}
++
+ /* "Show" method for files in '/<sysfs>/class/ubi/ubiX/' */
+ static ssize_t dev_attribute_show(struct device *dev,
+ 				  struct device_attribute *attr, char *buf)
+ {
+-	const struct ubi_device *ubi;
++	ssize_t ret;
++	struct ubi_device *ubi;
  
--	dbg_msg("detaching mtd%d from ubi%d", ubi->mtd->index, ubi_num);
--	ubi_assert(ubi->ref_count == 0);
++	/*
++	 * The below code looks weird, but it actually makes sense. We get the
++	 * UBI device reference from the contained 'struct ubi_device'. But it
++	 * is unclear if the device was removed or not yet. Indeed, if the
++	 * device was removed before we increased its reference count,
++	 * 'ubi_get_device()' will return -ENODEV and we fail.
++	 *
++	 * Remember, 'struct ubi_device' is freed in the release function, so
++	 * we still can use 'ubi->ubi_num'.
++	 */
+ 	ubi = container_of(dev, struct ubi_device, dev);
++	ubi = ubi_get_device(ubi->ubi_num);
++	if (!ubi)
++		return -ENODEV;
++
+ 	if (attr == &dev_eraseblock_size)
+-		return sprintf(buf, "%d\n", ubi->leb_size);
++		ret = sprintf(buf, "%d\n", ubi->leb_size);
+ 	else if (attr == &dev_avail_eraseblocks)
+-		return sprintf(buf, "%d\n", ubi->avail_pebs);
++		ret = sprintf(buf, "%d\n", ubi->avail_pebs);
+ 	else if (attr == &dev_total_eraseblocks)
+-		return sprintf(buf, "%d\n", ubi->good_peb_count);
++		ret = sprintf(buf, "%d\n", ubi->good_peb_count);
+ 	else if (attr == &dev_volumes_count)
+-		return sprintf(buf, "%d\n", ubi->vol_count);
++		ret = sprintf(buf, "%d\n", ubi->vol_count);
+ 	else if (attr == &dev_max_ec)
+-		return sprintf(buf, "%d\n", ubi->max_ec);
++		ret = sprintf(buf, "%d\n", ubi->max_ec);
+ 	else if (attr == &dev_reserved_for_bad)
+-		return sprintf(buf, "%d\n", ubi->beb_rsvd_pebs);
++		ret = sprintf(buf, "%d\n", ubi->beb_rsvd_pebs);
+ 	else if (attr == &dev_bad_peb_count)
+-		return sprintf(buf, "%d\n", ubi->bad_peb_count);
++		ret = sprintf(buf, "%d\n", ubi->bad_peb_count);
+ 	else if (attr == &dev_max_vol_count)
+-		return sprintf(buf, "%d\n", ubi->vtbl_slots);
++		ret = sprintf(buf, "%d\n", ubi->vtbl_slots);
+ 	else if (attr == &dev_min_io_size)
+-		return sprintf(buf, "%d\n", ubi->min_io_size);
++		ret = sprintf(buf, "%d\n", ubi->min_io_size);
+ 	else if (attr == &dev_bgt_enabled)
+-		return sprintf(buf, "%d\n", ubi->thread_enabled);
++		ret = sprintf(buf, "%d\n", ubi->thread_enabled);
+ 	else
+ 		BUG();
+ 
+-	return 0;
++	ubi_put_device(ubi);
++	return ret;
+ }
+ 
+ /* Fake "release" method for UBI devices */
+@@ -671,6 +782,7 @@ static void detach_mtd_dev(struct ubi_device *ubi)
+ 	int ubi_num = ubi->ubi_num, mtd_num = ubi->mtd->index;
+ 
+ 	dbg_msg("detaching mtd%d from ubi%d", ubi->mtd->index, ubi_num);
++	ubi_assert(ubi->ref_count == 0);
  	uif_close(ubi);
  	ubi_eba_close(ubi);
  	ubi_wl_close(ubi);
-@@ -793,9 +824,9 @@ static void detach_mtd_dev(struct ubi_device *ubi)
- #ifdef CONFIG_MTD_UBI_DEBUG
- 	vfree(ubi->dbg_peb_buf);
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index bc900d2..01978b5 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -56,23 +56,6 @@
  #endif
--	kfree(ubi_devices[ubi_num]);
--	ubi_devices[ubi_num] = NULL;
--	ubi_msg("mtd%d is detached from ubi%d", mtd_num, ubi_num);
-+	ubi_msg("mtd%d is detached from ubi%d", ubi->mtd->index, ubi->ubi_num);
-+	kfree(ubi);
-+	return 0;
- }
  
  /**
-@@ -812,6 +843,46 @@ static void ltree_entry_ctor(struct kmem_cache *cache, void *obj)
- 	init_rwsem(&le->mutex);
+- * major_to_device - get UBI device object by character device major number.
+- * @major: major number
+- *
+- * This function returns a pointer to the UBI device object.
+- */
+-static struct ubi_device *major_to_device(int major)
+-{
+-	int i;
+-
+-	for (i = 0; i < UBI_MAX_DEVICES; i++)
+-		if (ubi_devices[i] && MAJOR(ubi_devices[i]->cdev.dev) == major)
+-			return ubi_devices[i];
+-	BUG();
+-	return NULL;
+-}
+-
+-/**
+  * get_exclusive - get exclusive access to an UBI volume.
+  * @desc: volume descriptor
+  *
+@@ -129,9 +112,11 @@ static void revoke_exclusive(struct ubi_volume_desc *desc, int mode)
+ static int vol_cdev_open(struct inode *inode, struct file *file)
+ {
+ 	struct ubi_volume_desc *desc;
+-	const struct ubi_device *ubi = major_to_device(imajor(inode));
+-	int vol_id = iminor(inode) - 1;
+-	int mode;
++	int vol_id = iminor(inode) - 1, mode, ubi_num;
++
++	ubi_num = ubi_major2num(imajor(inode));
++	if (ubi_num < 0)
++		return ubi_num;
+ 
+ 	if (file->f_mode & FMODE_WRITE)
+ 		mode = UBI_READWRITE;
+@@ -140,7 +125,7 @@ static int vol_cdev_open(struct inode *inode, struct file *file)
+ 
+ 	dbg_msg("open volume %d, mode %d", vol_id, mode);
+ 
+-	desc = ubi_open_volume(ubi->ubi_num, vol_id, mode);
++	desc = ubi_open_volume(ubi_num, vol_id, mode);
+ 	if (IS_ERR(desc))
+ 		return PTR_ERR(desc);
+ 
+@@ -586,9 +571,9 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
+ 	if (!capable(CAP_SYS_RESOURCE))
+ 		return -EPERM;
+ 
+-	ubi = major_to_device(imajor(inode));
+-	if (IS_ERR(ubi))
+-		return PTR_ERR(ubi);
++	ubi = ubi_get_by_major(imajor(inode));
++	if (!ubi)
++		return -ENODEV;
+ 
+ 	switch (cmd) {
+ 	/* Create volume command */
+@@ -695,6 +680,7 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
+ 		break;
+ 	}
+ 
++	ubi_put_device(ubi);
+ 	return err;
  }
  
-+/**
-+ * find_mtd_device - open an MTD device by its name or number.
-+ * @mtd_dev: name or number of the device
-+ *
-+ * This function tries to open and MTD device with name @mtd_dev, and if it
-+ * fails, then it tries to interpret the @mtd_dev string as an ASCII-coded
-+ * integer and open an MTD device with this number. Returns MTD device
-+ * description object in case of success and a negative error code in case of
-+ * failure.
-+ */
-+static struct mtd_info * __init open_mtd_device(const char *mtd_dev)
-+{
-+	struct mtd_info *mtd;
-+
-+	mtd = get_mtd_device_nm(mtd_dev);
-+	if (IS_ERR(mtd)) {
-+		int mtd_num;
-+		char *endp;
-+
-+		if (PTR_ERR(mtd) != -ENODEV)
-+			return mtd;
-+
-+		/*
-+		 * Probably this is not MTD device name but MTD device number -
-+		 * check this out.
-+		 */
-+		mtd_num = simple_strtoul(mtd_dev, &endp, 0);
-+		if (*endp != '\0' || mtd_dev == endp) {
-+			ubi_err("incorrect MTD device: \"%s\"", mtd_dev);
-+			return ERR_PTR(-ENODEV);
-+		}
-+
-+		mtd = get_mtd_device(NULL, mtd_num);
-+		if (IS_ERR(mtd))
-+			return mtd;
-+	}
-+
-+	return mtd;
-+}
-+
- static int __init ubi_init(void)
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index c94f475..85297cd 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -339,6 +339,7 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
  {
- 	int err, i, k;
-@@ -875,10 +946,21 @@ static int __init ubi_init(void)
- 	/* Attach MTD devices */
- 	for (i = 0; i < mtd_devs; i++) {
- 		struct mtd_dev_param *p = &mtd_dev_param[i];
-+		struct mtd_info *mtd;
+ 	int err, pnum, vol_id = vol->vol_id;
  
- 		cond_resched();
--		err = attach_mtd_dev(p->name, p->vid_hdr_offs, p->data_offs);
--		if (err) {
++	ubi_assert(ubi->ref_count > 0);
+ 	ubi_assert(vol->ref_count > 0);
+ 
+ 	if (ubi->ro_mode)
+@@ -389,6 +390,7 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t uninitialized_var(crc);
+ 
++	ubi_assert(ubi->ref_count > 0);
+ 	ubi_assert(vol->ref_count > 0);
+ 
+ 	err = leb_read_lock(ubi, vol_id, lnum);
+@@ -614,6 +616,7 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	int err, pnum, tries = 0, vol_id = vol->vol_id;
+ 	struct ubi_vid_hdr *vid_hdr;
+ 
++	ubi_assert(ubi->ref_count > 0);
+ 	ubi_assert(vol->ref_count > 0);
+ 
+ 	if (ubi->ro_mode)
+@@ -749,6 +752,7 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t crc;
+ 
++	ubi_assert(ubi->ref_count > 0);
+ 	ubi_assert(vol->ref_count > 0);
+ 
+ 	if (ubi->ro_mode)
+@@ -865,6 +869,7 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t crc;
+ 
++	ubi_assert(ubi->ref_count > 0);
+ 	ubi_assert(vol->ref_count > 0);
+ 
+ 	if (ubi->ro_mode)
+diff --git a/drivers/mtd/ubi/kapi.c b/drivers/mtd/ubi/kapi.c
+index 780c273..4ec3a33 100644
+--- a/drivers/mtd/ubi/kapi.c
++++ b/drivers/mtd/ubi/kapi.c
+@@ -30,23 +30,27 @@
+  * @ubi_num: UBI device number
+  * @di: the information is stored here
+  *
+- * This function returns %0 in case of success and a %-ENODEV if there is no
+- * such UBI device.
++ * This function returns %0 in case of success, %-EINVAL if the UBI device
++ * number is invalid, and %-ENODEV if there is no such UBI device.
+  */
+ int ubi_get_device_info(int ubi_num, struct ubi_device_info *di)
+ {
+-	const struct ubi_device *ubi;
++	struct ubi_device *ubi;
+ 
+-	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES ||
+-	    !ubi_devices[ubi_num])
++	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES)
++		return -EINVAL;
 +
-+		mtd = open_mtd_device(p->name);
-+		if (IS_ERR(mtd)) {
-+			err = PTR_ERR(mtd);
-+			goto out_detach;
-+		}
++	ubi = ubi_get_device(ubi_num);
++	if (!ubi)
+ 		return -ENODEV;
+ 
+-	ubi = ubi_devices[ubi_num];
+ 	di->ubi_num = ubi->ubi_num;
+ 	di->leb_size = ubi->leb_size;
+ 	di->min_io_size = ubi->min_io_size;
+ 	di->ro_mode = ubi->ro_mode;
+ 	di->cdev = ubi->cdev.dev;
 +
-+		mutex_lock(&ubi_devices_mutex);
-+		err = ubi_attach_mtd_dev(mtd, p->vid_hdr_offs, p->data_offs);
-+		mutex_unlock(&ubi_devices_mutex);
-+		if (err < 0) {
-+			put_mtd_device(mtd);
- 			printk(KERN_ERR "UBI error: cannot attach %s\n",
- 			       p->name);
- 			goto out_detach;
-@@ -889,7 +971,11 @@ static int __init ubi_init(void)
++	ubi_put_device(ubi);
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(ubi_get_device_info);
+@@ -111,16 +115,23 @@ struct ubi_volume_desc *ubi_open_volume(int ubi_num, int vol_id, int mode)
+ 	    mode != UBI_EXCLUSIVE)
+ 		return ERR_PTR(-EINVAL);
  
- out_detach:
- 	for (k = 0; k < i; k++)
--		detach_mtd_dev(ubi_devices[k]);
-+		if (ubi_devices[k]) {
-+			mutex_lock(&ubi_devices_mutex);
-+			ubi_detach_mtd_dev(ubi_devices[k]->ubi_num, 1);
-+			mutex_unlock(&ubi_devices_mutex);
-+		}
- 	kmem_cache_destroy(ubi_wl_entry_slab);
- out_ltree:
- 	kmem_cache_destroy(ubi_ltree_slab);
-@@ -911,8 +997,11 @@ static void __exit ubi_exit(void)
- 	int i;
+-	ubi = ubi_devices[ubi_num];
++	/*
++	 * First of all, we have to get the UBI device to prevent its removal.
++	 */
++	ubi = ubi_get_device(ubi_num);
+ 	if (!ubi)
+ 		return ERR_PTR(-ENODEV);
  
- 	for (i = 0; i < UBI_MAX_DEVICES; i++)
--		if (ubi_devices[i])
--			detach_mtd_dev(ubi_devices[i]);
-+		if (ubi_devices[i]) {
-+			mutex_lock(&ubi_devices_mutex);
-+			ubi_detach_mtd_dev(ubi_devices[i]->ubi_num, 1);
-+			mutex_unlock(&ubi_devices_mutex);
-+		}
- 	kmem_cache_destroy(ubi_wl_entry_slab);
- 	kmem_cache_destroy(ubi_ltree_slab);
- 	device_unregister(&ubi_ctrl_dev);
+-	if (vol_id < 0 || vol_id >= ubi->vtbl_slots)
+-		return ERR_PTR(-EINVAL);
++	if (vol_id < 0 || vol_id >= ubi->vtbl_slots) {
++		err = -EINVAL;
++		goto out_put_ubi;
++	}
+ 
+ 	desc = kmalloc(sizeof(struct ubi_volume_desc), GFP_KERNEL);
+-	if (!desc)
+-		return ERR_PTR(-ENOMEM);
++	if (!desc) {
++		err = -ENOMEM;
++		goto out_put_ubi;
++	}
+ 
+ 	err = -ENODEV;
+ 	if (!try_module_get(THIS_MODULE))
+@@ -188,6 +199,8 @@ out_unlock:
+ 	module_put(THIS_MODULE);
+ out_free:
+ 	kfree(desc);
++out_put_ubi:
++	ubi_put_device(ubi);
+ 	return ERR_PTR(err);
+ }
+ EXPORT_SYMBOL_GPL(ubi_open_volume);
+@@ -205,6 +218,7 @@ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+ {
+ 	int i, vol_id = -1, len;
+ 	struct ubi_device *ubi;
++	struct ubi_volume_desc *ret;
+ 
+ 	dbg_msg("open volume %s, mode %d", name, mode);
+ 
+@@ -218,7 +232,7 @@ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+ 	if (ubi_num < 0 || ubi_num >= UBI_MAX_DEVICES)
+ 		return ERR_PTR(-EINVAL);
+ 
+-	ubi = ubi_devices[ubi_num];
++	ubi = ubi_get_device(ubi_num);
+ 	if (!ubi)
+ 		return ERR_PTR(-ENODEV);
+ 
+@@ -234,10 +248,17 @@ struct ubi_volume_desc *ubi_open_volume_nm(int ubi_num, const char *name,
+ 	}
+ 	spin_unlock(&ubi->volumes_lock);
+ 
+-	if (vol_id < 0)
+-		return ERR_PTR(-ENODEV);
++	if (vol_id >= 0)
++		ret = ubi_open_volume(ubi_num, vol_id, mode);
++	else
++		ret = ERR_PTR(-ENODEV);
+ 
+-	return ubi_open_volume(ubi_num, vol_id, mode);
++	/*
++	 * We should put the UBI device even in case of success, because
++	 * 'ubi_open_volume()' took a reference as well.
++	 */
++	ubi_put_device(ubi);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+ 
+@@ -248,10 +269,11 @@ EXPORT_SYMBOL_GPL(ubi_open_volume_nm);
+ void ubi_close_volume(struct ubi_volume_desc *desc)
+ {
+ 	struct ubi_volume *vol = desc->vol;
++	struct ubi_device *ubi = vol->ubi;
+ 
+ 	dbg_msg("close volume %d, mode %d", vol->vol_id, desc->mode);
+ 
+-	spin_lock(&vol->ubi->volumes_lock);
++	spin_lock(&ubi->volumes_lock);
+ 	switch (desc->mode) {
+ 	case UBI_READONLY:
+ 		vol->readers -= 1;
+@@ -263,10 +285,11 @@ void ubi_close_volume(struct ubi_volume_desc *desc)
+ 		vol->exclusive = 0;
+ 	}
+ 	vol->ref_count -= 1;
+-	spin_unlock(&vol->ubi->volumes_lock);
++	spin_unlock(&ubi->volumes_lock);
+ 
+-	put_device(&vol->dev);
+ 	kfree(desc);
++	put_device(&vol->dev);
++	ubi_put_device(ubi);
+ 	module_put(THIS_MODULE);
+ }
+ EXPORT_SYMBOL_GPL(ubi_close_volume);
 diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
-index 91fde0e..25ff15a 100644
+index 21c0283..91fde0e 100644
 --- a/drivers/mtd/ubi/ubi.h
 +++ b/drivers/mtd/ubi/ubi.h
-@@ -404,6 +404,7 @@ extern struct file_operations ubi_ctrl_cdev_operations;
+@@ -245,6 +245,7 @@ struct ubi_wl_entry;
+  *                @beb_rsvd_level, @bad_peb_count, @good_peb_count, @vol_count,
+  *                @vol->readers, @vol->writers, @vol->exclusive,
+  *                @vol->ref_count, @vol->mapping and @vol->eba_tbl.
++ * @ref_count: count of references on the UBI device
+  *
+  * @rsvd_pebs: count of reserved physical eraseblocks
+  * @avail_pebs: count of available physical eraseblocks
+@@ -325,6 +326,7 @@ struct ubi_device {
+ 	int vol_count;
+ 	struct ubi_volume *volumes[UBI_MAX_VOLUMES+UBI_INT_VOL_COUNT];
+ 	spinlock_t volumes_lock;
++	int ref_count;
+ 
+ 	int rsvd_pebs;
+ 	int avail_pebs;
+@@ -401,7 +403,6 @@ extern struct kmem_cache *ubi_wl_entry_slab;
+ extern struct file_operations ubi_ctrl_cdev_operations;
  extern struct file_operations ubi_cdev_operations;
  extern struct file_operations ubi_vol_cdev_operations;
+-extern struct ubi_device *ubi_devices[];
  extern struct class *ubi_class;
-+extern struct mutex ubi_devices_mutex;
  
  /* vtbl.c */
- int ubi_change_vtbl_record(struct ubi_device *ubi, int idx,
-@@ -462,6 +463,7 @@ int ubi_wl_flush(struct ubi_device *ubi);
- int ubi_wl_scrub_peb(struct ubi_device *ubi, int pnum);
- int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si);
- void ubi_wl_close(struct ubi_device *ubi);
-+int ubi_thread(void *u);
- 
- /* io.c */
- int ubi_io_read(const struct ubi_device *ubi, void *buf, int pnum, int offset,
-@@ -481,6 +483,9 @@ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
+@@ -479,6 +480,12 @@ int ubi_io_read_vid_hdr(struct ubi_device *ubi, int pnum,
+ int ubi_io_write_vid_hdr(struct ubi_device *ubi, int pnum,
  			 struct ubi_vid_hdr *vid_hdr);
  
- /* build.c */
-+int ubi_attach_mtd_dev(struct mtd_info *mtd, int vid_hdr_offset,
-+		       int data_offset);
-+int ubi_detach_mtd_dev(int ubi_num, int anyway);
- struct ubi_device *ubi_get_device(int ubi_num);
- void ubi_put_device(struct ubi_device *ubi);
- struct ubi_device *ubi_get_by_major(int major);
++/* build.c */
++struct ubi_device *ubi_get_device(int ubi_num);
++void ubi_put_device(struct ubi_device *ubi);
++struct ubi_device *ubi_get_by_major(int major);
++int ubi_major2num(int major);
++
+ /*
+  * ubi_rb_for_each_entry - walk an RB-tree.
+  * @rb: a pointer to type 'struct rb_node' to to use as a loop counter
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 3ed63dc..42d3dd7 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -71,11 +71,16 @@ static ssize_t vol_attribute_show(struct device *dev,
+ {
+ 	int ret;
+ 	struct ubi_volume *vol = container_of(dev, struct ubi_volume, dev);
+-	struct ubi_device *ubi = vol->ubi;
++	struct ubi_device *ubi;
++
++	ubi = ubi_get_device(vol->ubi->ubi_num);
++	if (!ubi)
++		return -ENODEV;
+ 
+ 	spin_lock(&ubi->volumes_lock);
+ 	if (!ubi->volumes[vol->vol_id]) {
+ 		spin_unlock(&ubi->volumes_lock);
++		ubi_put_device(ubi);
+ 		return -ENODEV;
+ 	}
+ 	/* Take a reference to prevent volume removal */
+@@ -108,10 +113,12 @@ static ssize_t vol_attribute_show(struct device *dev,
+ 		/* This must be a bug */
+ 		ret = -EINVAL;
+ 
++	/* We've done the operation, drop volume and UBI device references */
+ 	spin_lock(&ubi->volumes_lock);
+ 	vol->ref_count -= 1;
+ 	ubi_assert(vol->ref_count >= 0);
+ 	spin_unlock(&ubi->volumes_lock);
++	ubi_put_device(ubi);
+ 	return ret;
+ }
+ 
+@@ -260,6 +267,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 	}
+ 	ubi->avail_pebs -= vol->reserved_pebs;
+ 	ubi->rsvd_pebs += vol->reserved_pebs;
++	spin_unlock(&ubi->volumes_lock);
+ 
+ 	vol->vol_id    = vol_id;
+ 	vol->alignment = req->alignment;
+@@ -267,9 +275,7 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 	vol->vol_type  = req->vol_type;
+ 	vol->name_len  = req->name_len;
+ 	memcpy(vol->name, req->name, vol->name_len + 1);
+-	vol->exclusive = 1;
+ 	vol->ubi = ubi;
+-	spin_unlock(&ubi->volumes_lock);
+ 
+ 	/*
+ 	 * Finish all pending erases because there may be some LEBs belonging
+@@ -350,8 +356,6 @@ int ubi_create_volume(struct ubi_device *ubi, struct ubi_mkvol_req *req)
+ 		goto out_sysfs;
+ 
+ 	spin_lock(&ubi->volumes_lock);
+-	ubi->vol_count += 1;
+-	vol->exclusive = 0;
+ 	ubi->volumes[vol_id] = vol;
+ 	spin_unlock(&ubi->volumes_lock);
+ 
 diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
-index bfc64c8..1142aab 100644
+index 7d32f71..bfc64c8 100644
 --- a/drivers/mtd/ubi/wl.c
 +++ b/drivers/mtd/ubi/wl.c
-@@ -1356,7 +1356,7 @@ static void tree_destroy(struct rb_root *root)
-  * ubi_thread - UBI background thread.
-  * @u: the UBI device description object pointer
-  */
--static int ubi_thread(void *u)
-+int ubi_thread(void *u)
- {
- 	int failures = 0;
- 	struct ubi_device *ubi = u;
-@@ -1454,18 +1454,10 @@ int ubi_wl_init_scan(struct ubi_device *ubi, struct ubi_scan_info *si)
+@@ -1303,6 +1303,7 @@ int ubi_wl_flush(struct ubi_device *ubi)
+ 	 * Make sure all the works which have been done in parallel are
+ 	 * finished.
+ 	 */
++	ubi_assert(ubi->ref_count > 0);
+ 	down_write(&ubi->work_sem);
+ 	up_write(&ubi->work_sem);
  
- 	sprintf(ubi->bgt_name, UBI_BGT_NAME_PATTERN, ubi->ubi_num);
- 
--	ubi->bgt_thread = kthread_create(ubi_thread, ubi, ubi->bgt_name);
--	if (IS_ERR(ubi->bgt_thread)) {
--		err = PTR_ERR(ubi->bgt_thread);
--		ubi_err("cannot spawn \"%s\", error %d", ubi->bgt_name,
--			err);
--		return err;
--	}
--
- 	err = -ENOMEM;
- 	ubi->lookuptbl = kzalloc(ubi->peb_count * sizeof(void *), GFP_KERNEL);
- 	if (!ubi->lookuptbl)
--		goto out_free;
-+		return err;
- 
- 	list_for_each_entry_safe(seb, tmp, &si->erase, u.list) {
- 		cond_resched();
-@@ -1598,10 +1590,6 @@ static void protection_trees_destroy(struct ubi_device *ubi)
-  */
- void ubi_wl_close(struct ubi_device *ubi)
- {
--	dbg_wl("disable \"%s\"", ubi->bgt_name);
--	if (ubi->bgt_thread)
--		kthread_stop(ubi->bgt_thread);
--
- 	dbg_wl("close the UBI wear-leveling unit");
- 
- 	cancel_pending(ubi);
 -- 
 1.5.3.4
