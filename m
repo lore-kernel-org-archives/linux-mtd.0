@@ -1,16 +1,22 @@
-Received: from inet-tsb5.toshiba.co.jp ([202.33.96.24])
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J5bCZ-0000n6-GQ
-	for linux-mtd@lists.infradead.org; Fri, 21 Dec 2007 06:17:50 +0000
-Date: Fri, 21 Dec 2007 15:17:36 +0900 (JST)
-Message-Id: <20071221.151736.-1300524616.kouish@swc.toshiba.co.jp>
-To: linuxppc-dev@ozlabs.org
-Subject: kernel stops at probing MTD CFI driver
-From: Ishizaki Kou <kou.ishizaki@toshiba.co.jp>
+	id 1J5dTc-0002Dm-58
+	for linux-mtd@lists.infradead.org; Fri, 21 Dec 2007 08:43:34 +0000
+Subject: Re: [PATCH 4/5] UBI: introduce attach ioctls
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <200712202234.56859.arnd@arndb.de>
+References: <20071219154137.23264.28116.sendpatchset@golum>
+	<200712191657.24027.arnd@arndb.de> <1198086060.18962.120.camel@sauron>
+	<200712202234.56859.arnd@arndb.de>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 21 Dec 2007 10:43:11 +0200
+Message-Id: <1198226591.18962.144.camel@sauron>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: quoted-printable
+Cc: Frank Haverkamp <haver@vnet.ibm.com>, linux-mtd@lists.infradead.org,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,62 +26,41 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-When I build the MTD Common Flush Interface(CFI) driver as modules,
-the kernel stops at BUG() in symbol_put_addr() called by
-cfi_cmdset_unknown()[gen_probe.c] and shows the following message. 
+On Thu, 2007-12-20 at 22:34 +0100, Arnd Bergmann wrote:
+> > Err, why should MTD know something about what sits on top of it? Today
+> > it is UBI, tommorrow it is something new and better, e.g., more
+> > scalable.
+>=20
+> The way you would implement this is to have the UBI code grab hold of all
+> the MTD devices, and create the ubi-probe attribute in them. This is
+> something that is easily possible with the device model, provided that
+> we can get a 'struct device' embedded into 'struct mtd_info'. I just real=
+ized
+> that this is currently missing.
 
-I found this problem on Toshiba Cell Reference Set. I think this
-problem relates with powerpc64 ABI.
+Ok, now I see what you mean. Well, may be some day we make MTD
+LDM-enabled. But apart of this, I really do not see any benefit in
+ubi-probe stuff. It's about closer integration of 2 separate things,
+which does not sound good for me.
 
-kernel BUG at kernel/module.c:783!
-cpu 0x1: Vector: 700 (Program Check) at [c000000002723070]
-    pc: c00000000007faac: .symbol_put_addr+0x34/0x64
-    lr: c00000000007faa4: .symbol_put_addr+0x2c/0x64
-    sp: c0000000027232f0
-   msr: 9000000000029032
-  current = 0xc00000000271c000
-  paca    = 0xc00000000047c380
-    pid   = 762, comm = modprobe
-kernel BUG at kernel/module.c:783!
-enter ? for help
-[c000000002723370] d0000000001040f0 .check_cmd_set+0xf0/0x138 [gen_probe]
-[c000000002723430] d000000000104464 .mtd_do_chip_probe+0x32c/0x650 [gen_probe]
-[c000000002723550] d000000000100334 .cfi_probe+0x1c/0x34 [cfi_probe]
-[c0000000027235d0] d0000000000fd20c .do_map_probe+0x84/0xc0 [chipreg]
-[c000000002723670] d000000000171348 .of_physmap_probe+0x280/0x4f0 [physmap_of]
-[c000000002723780] c00000000001bd44 .of_platform_device_probe+0x78/0xb0
-[c000000002723810] c0000000001e1708 .driver_probe_device+0x140/0x208
-[c0000000027238a0] c0000000001e1a00 .__driver_attach+0xdc/0x164
-[c000000002723930] c0000000001e0550 .bus_for_each_dev+0x7c/0xd4
-[c0000000027239f0] c0000000001e1470 .driver_attach+0x28/0x40
-[c000000002723a70] c0000000001e0a6c .bus_add_driver+0x90/0x1fc
-[c000000002723b10] c0000000001e1e28 .driver_register+0x94/0xb0
-[c000000002723b90] c00000000001c150 .of_register_platform_driver+0x28/0x3c
-[c000000002723c00] d000000000171608 .of_physmap_init+0x1c/0x4e4 [physmap_of]
-[c000000002723c80] c00000000007f8b8 .sys_init_module+0x1608/0x17c8
-[c000000002723e30] c000000000008634 syscall_exit+0x0/0x40
---- Exception: c01 (System Call) at 000000000ff0f4b4
+> > Yeah, user-space tools could format media. But it is so much appropriat=
+e
+> > facility to have UBI being able to format it itself. It is really very
+> > convenient. Flashes have special state - empty flash, and if the flash
+> > is empty - UBI make it UBI-formatted. If the flash has some garbage -
+> > UBI does not format it.=20
+>=20
+> Ok, another idea: just create an UBI device for every MTD device, but don=
+'t
+> probe until the UBI device is first accessed. That way, you don't need
+> any dynamic registration, and you can use an ioctl on the device itself
+> in order to do the initial formatting with new parameters.
 
-symbol_put_addr() tests the address by module_text_address(). Because
-the address is not in .text section on powerpc64 system,
-module_text_address() fails and symbol_put_addr() calls BUG().
+Well, it is technically possible, but requires a lot of code which does
+not really worth it. I still think having a control "misc" device is
+quite elegant solution.
 
-Though we can avoid this problem by using __symbol_put() instead of
-symbol_put_addr(), I don't think this is proper way. Does anyone have
-better solutions for this problem?
-
+--=20
 Best regards,
-Kou Ishizaki
-
-
---- linux-2.6.24-rc5.org/drivers/mtd/chips/gen_probe.c  2007-12-19 19:05:56.000000000 +0900
-+++ linux-2.6.24-rc5/drivers/mtd/chips/gen_probe.c      2007-12-19 19:44:23.000000000 +0900
-@@ -222,7 +222,7 @@ static inline struct mtd_info *cfi_cmdse
-
- 		mtd = (*probe_function)(map, primary);
-		/* If it was happy, it'll have increased its own use count */
--		symbol_put_addr(probe_function);
-+		__symbol_put(probename);
- 		return mtd;
- 	}
- #endif
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
