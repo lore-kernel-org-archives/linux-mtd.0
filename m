@@ -1,25 +1,15 @@
-Received: from fk-out-0910.google.com ([209.85.128.188])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J6Pnw-0005uj-24
-	for linux-mtd@lists.infradead.org; Sun, 23 Dec 2007 12:19:46 +0000
-Received: by fk-out-0910.google.com with SMTP id 18so2238824fkq.2
-	for <linux-mtd@lists.infradead.org>;
-	Sun, 23 Dec 2007 04:19:37 -0800 (PST)
-Date: Sun, 23 Dec 2007 15:02:14 +0300
-From: Anton Vorontsov <cbouatmailru@gmail.com>
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: Re: [PATCH 2/3] [POWERPC][NAND] FSL UPM NAND driver
-Message-ID: <20071223120214.GC5643@zarina>
-References: <20071221203552.GA4738@localhost.localdomain>
-	<20071221204130.GB4829@localhost.localdomain>
-	<20071223133329.9d2c44e4.sfr@canb.auug.org.au>
+Received: from n9.bullet.re3.yahoo.com ([68.142.237.94])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J7MOP-000622-C5
+	for linux-mtd@lists.infradead.org; Wed, 26 Dec 2007 02:53:20 +0000
+Date: Tue, 25 Dec 2007 18:41:08 -0800 (PST)
+From: DT <ceqcharz@yahoo.com>
+Subject: How to make MTD partition writable at runtime?
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
-Content-Disposition: inline
-In-Reply-To: <20071223133329.9d2c44e4.sfr@canb.auug.org.au>
-Cc: linuxppc-dev@ozlabs.org, Anton Vorontsov <avorontsov@ru.mvista.com>,
-	linux-mtd@lists.infradead.org
-Reply-To: cbouatmailru@gmail.com
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <289335.52399.qm@web45106.mail.sp1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,55 +19,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, Dec 23, 2007 at 01:33:29PM +1100, Stephen Rothwell wrote:
-> On Fri, 21 Dec 2007 23:41:30 +0300 Anton Vorontsov <avorontsov@ru.mvista.com> wrote:
-> >
-> > +static int __devinit upm_chip_probe(struct of_device *ofdev,
-> > +				    const struct of_device_id *ofid)
-> > +{
-> > +	struct upm_data *ud;
-> > +	struct resource io_res;
-> > +	const u32 *prop;
-> > +	int ret;
-> > +	int size;
-> > +
-> > +	ud = kzalloc(sizeof(*ud), GFP_KERNEL);
-> > +	if (!ud)
-> > +		return -ENOMEM;
-> > +
-> > +	ret = of_address_to_resource(ofdev->node, 0, &io_res);
-> > +	if (ret) {
-> > +		dev_err(&ofdev->dev, "can't get IO base\n");
-> > +		goto err;
-> > +	}
-> > +
-> > +	prop = of_get_property(ofdev->node, "width", &size);
-> > +	if (!prop || size != sizeof(u32)) {
-> > +		dev_err(&ofdev->dev, "can't get chip width\n");
-> > +		goto err;
-> 
-> Here ret is 0, is that the correct return code?
+Hi,
+I am using u-boot/mtdparts to setup some partitions on
+a NOR flash.
+mtd0: 00080000 00020000 "uboot"
+mtd1: 00180000 00020000 "kernel"
+mtd2: 01e00000 00020000 "root"
 
-Nope.
+In my mtdparts I specified the first 2 partitions as
+read only.
+mtdparts=phys_mapped_flash:512k(uboot)ro,1536k(kernel)ro,-(root)
 
-> > +	ud->rnb_gpio = of_get_gpio(ofdev->node, 0);
-> > +	if (ud->rnb_gpio >= 0) {
-> > +		ret = gpio_request(ud->rnb_gpio, ofdev->dev.bus_id);
-> > +		if (ret) {
-> > +			dev_err(&ofdev->dev, "can't request RNB gpio\n");
-> > +			goto err;
-> > +		}
-> > +		gpio_direction_input(ud->rnb_gpio);
-> > +	} else if (ud->rnb_gpio == -EINVAL) {
-> > +		dev_err(&ofdev->dev, "specified RNB gpio is invalid\n");
-> > +		goto err;
-> 
-> Again ret is 0 here.
+We have run into a case where we need to write to mtd1
+after Linux is already running and changing the boot
+loader command line is not an option.
+Is there a good way to do this?
 
-Much thanks for catching that!
+Thanks in advance,
+DT
 
--- 
-Anton Vorontsov
-email: cbou@mail.ru
-backup email: ya-cbou@yandex.ru
-irc://irc.freenode.net/bd2
+
+
+
+      ____________________________________________________________________________________
+Looking for last minute shopping deals?  
+Find them fast with Yahoo! Search.  http://tools.search.yahoo.com/newsearch/category.php?category=shopping
