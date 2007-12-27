@@ -1,22 +1,23 @@
-Received: from smtp-out114.alice.it ([85.37.17.114])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J7xab-0003CA-DH
-	for linux-mtd@lists.infradead.org; Thu, 27 Dec 2007 18:36:24 +0000
-From: Matteo Croce <technoboy85@gmail.com>
-To: linux-mips@linux-mips.org
-Subject: [PATCH][MIPS][2/6]: AR7 mtd partition map
-Date: Thu, 27 Dec 2007 19:22:36 +0100
-References: <200712271919.23577.technoboy85@gmail.com>
-In-Reply-To: <200712271919.23577.technoboy85@gmail.com>
+Received: from smtp.falooley.org ([66.160.141.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1J7xwv-0004bg-Sg
+	for linux-mtd@lists.infradead.org; Thu, 27 Dec 2007 18:59:29 +0000
+Date: Thu, 27 Dec 2007 13:15:25 -0500
+From: Jason Lunz <lunz@falooley.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Subject: [PATCH] allow use of mtd and jffs2 on uml
+Message-ID: <20071227181524.GA19051@falooley.org>
+References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
+	<20071024011712.GA3762@falooley.org>
+	<1193208689.26096.48.camel@pmac.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <200712271922.36477.technoboy85@gmail.com>
-Cc: Eugene Konev <ejka@imfi.kspu.ru>, Felix Fietkau <nbd@openwrt.org>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	openwrt-devel@lists.openwrt.org, dwmw2@infradead.org
+In-Reply-To: <1193208689.26096.48.camel@pmac.infradead.org>
+Cc: atom ota <atomota@sleepyhammer.com>,
+	user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>,
+	lkml <linux-kernel@vger.kernel.org>,
+	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,188 +27,134 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Signed-off-by: Matteo Croce <technoboy85@gmail.com>
-Signed-off-by: Felix Fietkau <nbd@openwrt.org>
-Signed-off-by: Eugene Konev <ejka@imfi.kspu.ru>
 
-diff --git a/drivers/mtd/Kconfig b/drivers/mtd/Kconfig
-index 8848e8a..e421446 100644
---- a/drivers/mtd/Kconfig
-+++ b/drivers/mtd/Kconfig
-@@ -150,6 +150,12 @@ config MTD_AFS_PARTS
- 	  for your particular device. It won't happen automatically. The
- 	  'armflash' map driver (CONFIG_MTD_ARMFLASH) does this, for example.
+Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
+dependencies down closer to the parts of mtd that actually need it. This
+allows enough of mtd to build to let jffs2 be used on uml.
+
+Signed-off-by: Jason Lunz <lunz@falooley.org>
+
+---
+
+ arch/um/Kconfig             |    4 +---
+ drivers/mtd/Kconfig         |   12 +++++++-----
+ drivers/mtd/chips/Kconfig   |   11 ++++++++---
+ drivers/mtd/devices/Kconfig |    7 +++++++
+ 4 files changed, 23 insertions(+), 11 deletions(-)
+
+Index: linux-2.6.23.1-uml/arch/um/Kconfig
+===================================================================
+--- linux-2.6.23.1-uml.orig/arch/um/Kconfig
++++ linux-2.6.23.1-uml/arch/um/Kconfig
+@@ -326,9 +326,7 @@
  
-+config MTD_AR7_PARTS
-+	tristate "TI AR7 partitioning support"
-+	depends on MTD_PARTITIONS
-+	---help---
-+	  TI AR7 partitioning support
-+
- comment "User Modules And Translation Layers"
+ source "drivers/md/Kconfig"
  
- config MTD_CHAR
-diff --git a/drivers/mtd/Makefile b/drivers/mtd/Makefile
-index 7f0b04b..95d1ed2 100644
---- a/drivers/mtd/Makefile
-+++ b/drivers/mtd/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_MTD_CONCAT)	+= mtdconcat.o
- obj-$(CONFIG_MTD_REDBOOT_PARTS) += redboot.o
- obj-$(CONFIG_MTD_CMDLINE_PARTS) += cmdlinepart.o
- obj-$(CONFIG_MTD_AFS_PARTS)	+= afs.o
-+obj-$(CONFIG_MTD_AR7_PARTS)	+= ar7part.o
+-if BROKEN
+-	source "drivers/mtd/Kconfig"
+-endif
++source "drivers/mtd/Kconfig"
  
- # 'Users' - code which presents functionality to userspace.
- obj-$(CONFIG_MTD_CHAR)		+= mtdchar.o
-diff --git a/drivers/mtd/ar7part.c b/drivers/mtd/ar7part.c
-new file mode 100644
-index 0000000..3d160d4
---- /dev/null
-+++ b/drivers/mtd/ar7part.c
-@@ -0,0 +1,146 @@
-+/*
-+ * Copyright (C) 2007 Eugene Konev <ejka@openwrt.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License as published by
-+ * the Free Software Foundation; either version 2 of the License, or
-+ * (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU General Public License
-+ * along with this program; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-+ *
-+ * TI AR7 flash partition table.
-+ * Based on ar7 map by Felix Fietkau <nbd@openwrt.org>
-+ *
-+ */
-+
-+#include <linux/kernel.h>
-+#include <linux/slab.h>
-+
-+#include <linux/mtd/mtd.h>
-+#include <linux/mtd/partitions.h>
-+#include <linux/bootmem.h>
-+#include <linux/magic.h>
-+
-+#define AR7_PARTS	4
-+#define ROOT_OFFSET	0xe0000
-+
-+#define LOADER_MAGIC1	le32_to_cpu(0xfeedfa42)
-+#define LOADER_MAGIC2	le32_to_cpu(0xfeed1281)
-+
-+struct ar7_bin_rec {
-+	unsigned int checksum;
-+	unsigned int length;
-+	unsigned int address;
-+};
-+
-+static struct mtd_partition ar7_parts[AR7_PARTS];
-+
-+static int create_mtd_partitions(struct mtd_info *master,
-+				 struct mtd_partition **pparts,
-+				 unsigned long origin)
-+{
-+	struct ar7_bin_rec header;
-+	unsigned int offset, len;
-+	unsigned int pre_size = master->erasesize, post_size = 0;
-+	unsigned int root_offset = ROOT_OFFSET;
-+
-+	int retries = 10;
-+
-+	ar7_parts[0].name = "loader";
-+	ar7_parts[0].offset = 0;
-+	ar7_parts[0].size = master->erasesize;
-+	ar7_parts[0].mask_flags = MTD_WRITEABLE;
-+
-+	ar7_parts[1].name = "config";
-+	ar7_parts[1].offset = 0;
-+	ar7_parts[1].size = master->erasesize;
-+	ar7_parts[1].mask_flags = 0;
-+
-+	do { /* Try 10 blocks starting from master->erasesize */
-+		offset = pre_size;
-+		master->read(master, offset,
-+			sizeof(header), &len, (u8 *)&header);
-+		if (!strncmp((char *)&header, "TIENV0.8", 8))
-+			ar7_parts[1].offset = pre_size;
-+		if (header.checksum == LOADER_MAGIC1)
-+			break;
-+		if (header.checksum == LOADER_MAGIC2)
-+			break;
-+		pre_size += master->erasesize;
-+	} while (retries--);
-+
-+	pre_size = offset;
-+
-+	if (!ar7_parts[1].offset) {
-+		ar7_parts[1].offset = master->size - master->erasesize;
-+		post_size = master->erasesize;
-+	}
-+
-+	switch (header.checksum) {
-+	case LOADER_MAGIC1:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u8 *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4;
-+		break;
-+	case LOADER_MAGIC2:
-+		while (header.length) {
-+			offset += sizeof(header) + header.length;
-+			master->read(master, offset, sizeof(header),
-+				     &len, (u8 *)&header);
-+		}
-+		root_offset = offset + sizeof(header) + 4 + 0xff;
-+		root_offset &= ~(u32)0xff;
-+		break;
-+	default:
-+		printk(KERN_WARNING "Unknown magic: %08x\n", header.checksum);
-+		break;
-+	}
-+
-+	master->read(master, root_offset,
-+		sizeof(header), &len, (u8 *)&header);
-+	if (header.checksum != SQUASHFS_MAGIC) {
-+		root_offset += master->erasesize - 1;
-+		root_offset &= ~(master->erasesize - 1);
-+	}
-+
-+	ar7_parts[2].name = "linux";
-+	ar7_parts[2].offset = pre_size;
-+	ar7_parts[2].size = master->size - pre_size - post_size;
-+	ar7_parts[2].mask_flags = 0;
-+
-+	ar7_parts[3].name = "rootfs";
-+	ar7_parts[3].offset = root_offset;
-+	ar7_parts[3].size = master->size - root_offset - post_size;
-+	ar7_parts[3].mask_flags = 0;
-+
-+	*pparts = ar7_parts;
-+	return AR7_PARTS;
-+}
-+
-+static struct mtd_part_parser ar7_parser = {
-+	.owner = THIS_MODULE,
-+	.parse_fn = create_mtd_partitions,
-+	.name = "ar7part",
-+};
-+
-+static int __init ar7_parser_init(void)
-+{
-+	return register_mtd_parser(&ar7_parser);
-+}
-+
-+module_init(ar7_parser_init);
-+
-+MODULE_LICENSE("GPL");
-+MODULE_AUTHOR(	"Felix Fietkau <nbd@openwrt.org>, "
-+		"Eugene Konev <ejka@openwrt.org>");
-+MODULE_DESCRIPTION("MTD partitioning for TI AR7");
+ #This is just to shut up some Kconfig warnings, so no prompt.
+ config INPUT
+Index: linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
+===================================================================
+--- linux-2.6.23.1-uml.orig/drivers/mtd/devices/Kconfig
++++ linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
+@@ -78,6 +78,7 @@
+ 
+ config MTD_SLRAM
+ 	tristate "Uncached system RAM"
++ 	depends on HAS_IOMEM
+ 	help
+ 	  If your CPU cannot cache all of the physical memory in your machine,
+ 	  you can still use it for storage or swap by using this driver to
+@@ -85,6 +86,7 @@
+ 
+ config MTD_PHRAM
+ 	tristate "Physical system RAM"
++ 	depends on HAS_IOMEM
+ 	help
+ 	  This is a re-implementation of the slram driver above.
+ 
+@@ -151,10 +153,13 @@
+ 	  Testing MTD users (eg JFFS2) on large media and media that might
+ 	  be removed during a write (using the floppy drive).
+ 
++if HAS_IOMEM
+ comment "Disk-On-Chip Device Drivers"
++endif
+ 
+ config MTD_DOC2000
+ 	tristate "M-Systems Disk-On-Chip 2000 and Millennium (DEPRECATED)"
++ 	depends on HAS_IOMEM
+ 	select MTD_DOCPROBE
+ 	select MTD_NAND_IDS
+ 	---help---
+@@ -177,6 +182,7 @@
+ 
+ config MTD_DOC2001
+ 	tristate "M-Systems Disk-On-Chip Millennium-only alternative driver (DEPRECATED)"
++ 	depends on HAS_IOMEM
+ 	select MTD_DOCPROBE
+ 	select MTD_NAND_IDS
+ 	---help---
+@@ -198,6 +204,7 @@
+ 
+ config MTD_DOC2001PLUS
+ 	tristate "M-Systems Disk-On-Chip Millennium Plus"
++ 	depends on HAS_IOMEM
+ 	select MTD_DOCPROBE
+ 	select MTD_NAND_IDS
+ 	---help---
+Index: linux-2.6.23.1-uml/drivers/mtd/Kconfig
+===================================================================
+--- linux-2.6.23.1-uml.orig/drivers/mtd/Kconfig
++++ linux-2.6.23.1-uml/drivers/mtd/Kconfig
+@@ -2,7 +2,6 @@
+ 
+ menuconfig MTD
+ 	tristate "Memory Technology Device (MTD) support"
+-	depends on HAS_IOMEM
+ 	help
+ 	  Memory Technology Devices are flash, RAM and similar chips, often
+ 	  used for solid state file systems on embedded devices. This option
+@@ -278,15 +277,18 @@
+ 	  This enables read only access to SmartMedia formatted NAND
+ 	  flash. You can mount it with FAT file system.
+ 
+-source "drivers/mtd/chips/Kconfig"
+ 
+-source "drivers/mtd/maps/Kconfig"
++if HAS_IOMEM
++	source "drivers/mtd/chips/Kconfig"
++	source "drivers/mtd/maps/Kconfig"
++endif
+ 
+ source "drivers/mtd/devices/Kconfig"
+ 
+-source "drivers/mtd/nand/Kconfig"
+-
+-source "drivers/mtd/onenand/Kconfig"
++if HAS_IOMEM
++	source "drivers/mtd/nand/Kconfig"
++	source "drivers/mtd/onenand/Kconfig"
++endif
+ 
+ source "drivers/mtd/ubi/Kconfig"
+ 
+Index: linux-2.6.23.1-uml/drivers/mtd/Makefile
+===================================================================
+--- linux-2.6.23.1-uml.orig/drivers/mtd/Makefile
++++ linux-2.6.23.1-uml/drivers/mtd/Makefile
+@@ -26,6 +26,9 @@
+ nftl-objs		:= nftlcore.o nftlmount.o
+ inftl-objs		:= inftlcore.o inftlmount.o
+ 
+-obj-y		+= chips/ maps/ devices/ nand/ onenand/
++obj-y		+= devices/
++ifdef CONFIG_HAS_IOMEM
++obj-y		+= chips/ maps/ nand/ onenand/
++endif
+ 
+ obj-$(CONFIG_MTD_UBI)		+= ubi/
