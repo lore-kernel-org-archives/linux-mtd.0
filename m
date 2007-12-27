@@ -1,15 +1,15 @@
-Received: from n9.bullet.re3.yahoo.com ([68.142.237.94])
+Received: from web32801.mail.mud.yahoo.com ([68.142.206.31])
 	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J7MOP-000622-C5
-	for linux-mtd@lists.infradead.org; Wed, 26 Dec 2007 02:53:20 +0000
-Date: Tue, 25 Dec 2007 18:41:08 -0800 (PST)
-From: DT <ceqcharz@yahoo.com>
-Subject: How to make MTD partition writable at runtime?
-To: linux-mtd@lists.infradead.org
+	id 1J7k46-0005gb-Tm
+	for linux-mtd@lists.infradead.org; Thu, 27 Dec 2007 04:09:58 +0000
+Date: Wed, 26 Dec 2007 20:09:40 -0800 (PST)
+From: Naveen Sattigeri <naveen_j_s@yahoo.com>
+Subject: Mount MTD device on host PC
+To: Linux-MTD Linux <linux-mtd@lists.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-Message-ID: <289335.52399.qm@web45106.mail.sp1.yahoo.com>
+Message-ID: <876668.82641.qm@web32801.mail.mud.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,26 +19,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-I am using u-boot/mtdparts to setup some partitions on
-a NOR flash.
-mtd0: 00080000 00020000 "uboot"
-mtd1: 00180000 00020000 "kernel"
-mtd2: 01e00000 00020000 "root"
+Sir/Madam,
 
-In my mtdparts I specified the first 2 partitions as
-read only.
-mtdparts=phys_mapped_flash:512k(uboot)ro,1536k(kernel)ro,-(root)
+I'm facing some problem while trying to mount a
+compact flash as a MTD device on my host/development
+PC. I would be glad if anyone could help.
 
-We have run into a case where we need to write to mtd1
-after Linux is already running and changing the boot
-loader command line is not an option.
-Is there a good way to do this?
+The setup which I'm using in the lab is as follows:
+[1]. Host PC with RedHat 9.0 and MontaVista 4.0.
+[2]. Target Compact Flash is Pretec make (128MB). 
 
-Thanks in advance,
-DT
+What I want to achieve:
+[1]. When I connect the target flash to the host PC
+(to the IDE Slot), I want the target flash to be
+detected by the host PC as a MTD device, so that I can
+mount a JFFS2/EXT3 filesystem in it.
+ 
+What I have done so far to achieve this:
+[1]. I have built/compiled a customised kernel in the
+Host PC.
+[2]. MTD support has been enabled in the Host PC
+(using command menuconfig).
 
+My observations so far:
+[1]. When the target flash is connected to the Host
+PC, the Host PC detects it as a "hdd" device and not a
+"mtd" device.
 
+My Query:
+[1]. What steps do I need to perform to ensure that
+the Host PC detects the target flash as a MTD device,
+when connected to it over IDE Slot (using FRC cable).
+
+Regards,
+
+Naveen Sattigeri.
+Design Engineer,
+Automation Campus,
+Larsen & Toubro Ltd,
+Mahape, 
+Navi Mumbai - 400710.
+Ph: 022-67226479
 
 
       ____________________________________________________________________________________
