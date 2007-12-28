@@ -1,21 +1,15 @@
-Received: from pasmtpa.tele.dk ([80.160.77.114])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J8BZf-0006JK-97
-	for linux-mtd@lists.infradead.org; Fri, 28 Dec 2007 09:32:23 +0000
-Date: Fri, 28 Dec 2007 10:32:13 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Nancy <nancydreaming@gmail.com>
 Subject: Re: May I received a UBIFS sourcecode based on kernel 2.6.22?
-Message-ID: <20071228093213.GA2220@uranus.ravnborg.org>
+From: David Woodhouse <dwmw2@infradead.org>
+To: David Brown <mtd@davidb.org>
+In-Reply-To: <20071228032745.GA1232@old.davidb.org>
 References: <bae050c10712271727p133ca598x8440d5b82c4bc0ac@mail.gmail.com>
 	<20071228032745.GA1232@old.davidb.org>
-	<bae050c10712272233n3f0b894aka1408d8c22e9925a@mail.gmail.com>
-	<bae050c10712272248ib8642c8ia50b7a0c99102880@mail.gmail.com>
+Content-Type: text/plain
+Date: Fri, 28 Dec 2007 09:38:24 +0000
+Message-Id: <1198834704.5565.1.camel@shinybook.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bae050c10712272248ib8642c8ia50b7a0c99102880@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+Content-Transfer-Encoding: 7bit
+Cc: Nancy <nancydreaming@gmail.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,27 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, Dec 28, 2007 at 02:48:19PM +0800, Nancy wrote:
-> [yrtan@st ubifs-olpc-2.6]$ git checkout -b stable-ubifs master/stable-ubifs
-> git: warning: invalid extra options ignored
-> 
-> GNU Interactive Tools 4.3.20 (i686-pc-linux-gnu), 14:03:33 Dec 28 2007
-> GIT is free software; you can redistribute it and/or modify it under the
-> terms of the GNU General Public License as published by the Free Software
-> Foundation; either version 2, or (at your option) any later version.
-> Copyright (C) 1993-1999 Free Software Foundation, Inc.
-> Written by Tudor Hulubei and Andrei Pitis, Bucharest, Romania
-> 
-> git: can't find the 'cl' terminal capability.
-> git: can't find the 'cm' terminal capability.
-> git: 2 errors. Your terminal is too dumb :-< .
-> 
-> 
-> what's wrong again???
 
-You are using the wrong git binary.
-There is git the SCM and git the GNU Interactive Tools.
+On Thu, 2007-12-27 at 19:27 -0800, David Brown wrote:
+> 
+> It seems to not be under the 'master' branch in that repo.  Try
+> something
+> like:
+> 
+>    $ cd ubifs-olpc-2.6
+>    $ git checkout -b stable-ubifs master/stable-ubifs
+> 
+> and you'll find the files there.  There's quite a few branches in that
+> repo, so there might be a better one to look at.
 
-And you have the latter first in your PATH.
+Ew.
 
-	Sam
+Artem, branches are a _really_ bad idea. Play with them locally if you
+like the pain, but please make the relevant ones available as separate
+_trees_ on bombadil. If other people also like pain, they can always
+pull them into multiple branches in their own working repository.
+
+-- 
+dwmw2
