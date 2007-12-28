@@ -1,24 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.181])
+Received: from pasmtpa.tele.dk ([80.160.77.114])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J8AoE-0002Bn-CG
-	for linux-mtd@lists.infradead.org; Fri, 28 Dec 2007 08:43:20 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so5388071wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 28 Dec 2007 00:43:13 -0800 (PST)
-Message-ID: <bae050c10712280043s7f9b6e0ek2b507a249fa37bc@mail.gmail.com>
-Date: Fri, 28 Dec 2007 16:43:11 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: "David Brown" <mtd@davidb.org>
+	id 1J8BZf-0006JK-97
+	for linux-mtd@lists.infradead.org; Fri, 28 Dec 2007 09:32:23 +0000
+Date: Fri, 28 Dec 2007 10:32:13 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Nancy <nancydreaming@gmail.com>
 Subject: Re: May I received a UBIFS sourcecode based on kernel 2.6.22?
-In-Reply-To: <20071228081521.GA17249@old.davidb.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <20071228093213.GA2220@uranus.ravnborg.org>
 References: <bae050c10712271727p133ca598x8440d5b82c4bc0ac@mail.gmail.com>
 	<20071228032745.GA1232@old.davidb.org>
 	<bae050c10712272233n3f0b894aka1408d8c22e9925a@mail.gmail.com>
-	<20071228081521.GA17249@old.davidb.org>
+	<bae050c10712272248ib8642c8ia50b7a0c99102880@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bae050c10712272248ib8642c8ia50b7a0c99102880@mail.gmail.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,15 +25,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I ran "git clone"  when i was in my own computer.
-Then I take it to my work place.  I use the only public computer
-(windox XP) to get on internet for git install tarball.
+On Fri, Dec 28, 2007 at 02:48:19PM +0800, Nancy wrote:
+> [yrtan@st ubifs-olpc-2.6]$ git checkout -b stable-ubifs master/stable-ubifs
+> git: warning: invalid extra options ignored
+> 
+> GNU Interactive Tools 4.3.20 (i686-pc-linux-gnu), 14:03:33 Dec 28 2007
+> GIT is free software; you can redistribute it and/or modify it under the
+> terms of the GNU General Public License as published by the Free Software
+> Foundation; either version 2, or (at your option) any later version.
+> Copyright (C) 1993-1999 Free Software Foundation, Inc.
+> Written by Tudor Hulubei and Andrei Pitis, Bucharest, Romania
+> 
+> git: can't find the 'cl' terminal capability.
+> git: can't find the 'cm' terminal capability.
+> git: 2 errors. Your terminal is too dumb :-< .
+> 
+> 
+> what's wrong again???
 
-Maybe the version of git are differnt from my own computer has.
+You are using the wrong git binary.
+There is git the SCM and git the GNU Interactive Tools.
 
-Oh, the unconvience developing enviroment nearly drive me crazy, wast too much
-time.
+And you have the latter first in your PATH.
 
---
-Best Regards
-Nancy
+	Sam
