@@ -1,23 +1,26 @@
-Received: from smtp.falooley.org ([66.160.141.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J7xwv-0004bg-Sg
-	for linux-mtd@lists.infradead.org; Thu, 27 Dec 2007 18:59:29 +0000
-Date: Thu, 27 Dec 2007 13:15:25 -0500
-From: Jason Lunz <lunz@falooley.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Subject: [PATCH] allow use of mtd and jffs2 on uml
-Message-ID: <20071227181524.GA19051@falooley.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
+Received: from mailrelay010.isp.belgacom.be ([195.238.6.177])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J8C4u-0001oI-6N
+	for linux-mtd@lists.infradead.org; Fri, 28 Dec 2007 10:04:39 +0000
+Received: from mail.technotrade.biz (localhost [127.0.0.1])
+	by mail.technotrade.biz (Postfix) with ESMTP id 8B1D85B66
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 28 Dec 2007 11:04:29 +0100 (CET)
+Received: from pclaurent.technotrade.biz (pclaurent.technotrade.biz
+	[192.168.1.47])
+	by mail.technotrade.biz (Postfix) with ESMTP id 7AA9D5B3D
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 28 Dec 2007 11:04:29 +0100 (CET)
+From: Laurent Pinchart <laurentp@cse-semaphore.com>
+To: linux-mtd@lists.infradead.org
+Subject: Deadlock while accessing mtdchar device while erase in progress
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Date: Fri, 28 Dec 2007 11:04:26 +0100
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <1193208689.26096.48.camel@pmac.infradead.org>
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>
+Message-Id: <200712281104.27663.laurentp@cse-semaphore.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,134 +30,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi everybody,
 
-Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
-dependencies down closer to the parts of mtd that actually need it. This
-allows enough of mtd to build to let jffs2 be used on uml.
+I sent a mail two weeks ago about an MTD-related deadlock. I haven't receiv=
+ed=20
+any answer so far, so I'm pinging the list just in case the message was=20
+missed. Here's the original mail.
 
-Signed-off-by: Jason Lunz <lunz@falooley.org>
+I'm having troubles fixing an MTD-related deadlock. I'm not sure if the=20
+problem comes from an MTD and/or JFFS2 kernel bug, or from some userspace=20
+operation performed as root that I shouldn't have started in the first plac=
+e.=20
+I'd appreciate if someone could share his thoughts (and experience :-)) abo=
+ut=20
+this.
 
----
+Some background.
 
- arch/um/Kconfig             |    4 +---
- drivers/mtd/Kconfig         |   12 +++++++-----
- drivers/mtd/chips/Kconfig   |   11 ++++++++---
- drivers/mtd/devices/Kconfig |    7 +++++++
- 4 files changed, 23 insertions(+), 11 deletions(-)
+My embedded system has a single NOR flash chip (cfi_cmdset_0002 driver) wit=
+h=20
+128kB sectors. Flash space is divided in 4 partitions, the last one used wi=
+th=20
+a JFFS2 filesystem.
 
-Index: linux-2.6.23.1-uml/arch/um/Kconfig
-===================================================================
---- linux-2.6.23.1-uml.orig/arch/um/Kconfig
-+++ linux-2.6.23.1-uml/arch/um/Kconfig
-@@ -326,9 +326,7 @@
- 
- source "drivers/md/Kconfig"
- 
--if BROKEN
--	source "drivers/mtd/Kconfig"
--endif
-+source "drivers/mtd/Kconfig"
- 
- #This is just to shut up some Kconfig warnings, so no prompt.
- config INPUT
-Index: linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
-===================================================================
---- linux-2.6.23.1-uml.orig/drivers/mtd/devices/Kconfig
-+++ linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
-@@ -78,6 +78,7 @@
- 
- config MTD_SLRAM
- 	tristate "Uncached system RAM"
-+ 	depends on HAS_IOMEM
- 	help
- 	  If your CPU cannot cache all of the physical memory in your machine,
- 	  you can still use it for storage or swap by using this driver to
-@@ -85,6 +86,7 @@
- 
- config MTD_PHRAM
- 	tristate "Physical system RAM"
-+ 	depends on HAS_IOMEM
- 	help
- 	  This is a re-implementation of the slram driver above.
- 
-@@ -151,10 +153,13 @@
- 	  Testing MTD users (eg JFFS2) on large media and media that might
- 	  be removed during a write (using the floppy drive).
- 
-+if HAS_IOMEM
- comment "Disk-On-Chip Device Drivers"
-+endif
- 
- config MTD_DOC2000
- 	tristate "M-Systems Disk-On-Chip 2000 and Millennium (DEPRECATED)"
-+ 	depends on HAS_IOMEM
- 	select MTD_DOCPROBE
- 	select MTD_NAND_IDS
- 	---help---
-@@ -177,6 +182,7 @@
- 
- config MTD_DOC2001
- 	tristate "M-Systems Disk-On-Chip Millennium-only alternative driver (DEPRECATED)"
-+ 	depends on HAS_IOMEM
- 	select MTD_DOCPROBE
- 	select MTD_NAND_IDS
- 	---help---
-@@ -198,6 +204,7 @@
- 
- config MTD_DOC2001PLUS
- 	tristate "M-Systems Disk-On-Chip Millennium Plus"
-+ 	depends on HAS_IOMEM
- 	select MTD_DOCPROBE
- 	select MTD_NAND_IDS
- 	---help---
-Index: linux-2.6.23.1-uml/drivers/mtd/Kconfig
-===================================================================
---- linux-2.6.23.1-uml.orig/drivers/mtd/Kconfig
-+++ linux-2.6.23.1-uml/drivers/mtd/Kconfig
-@@ -2,7 +2,6 @@
- 
- menuconfig MTD
- 	tristate "Memory Technology Device (MTD) support"
--	depends on HAS_IOMEM
- 	help
- 	  Memory Technology Devices are flash, RAM and similar chips, often
- 	  used for solid state file systems on embedded devices. This option
-@@ -278,15 +277,18 @@
- 	  This enables read only access to SmartMedia formatted NAND
- 	  flash. You can mount it with FAT file system.
- 
--source "drivers/mtd/chips/Kconfig"
- 
--source "drivers/mtd/maps/Kconfig"
-+if HAS_IOMEM
-+	source "drivers/mtd/chips/Kconfig"
-+	source "drivers/mtd/maps/Kconfig"
-+endif
- 
- source "drivers/mtd/devices/Kconfig"
- 
--source "drivers/mtd/nand/Kconfig"
--
--source "drivers/mtd/onenand/Kconfig"
-+if HAS_IOMEM
-+	source "drivers/mtd/nand/Kconfig"
-+	source "drivers/mtd/onenand/Kconfig"
-+endif
- 
- source "drivers/mtd/ubi/Kconfig"
- 
-Index: linux-2.6.23.1-uml/drivers/mtd/Makefile
-===================================================================
---- linux-2.6.23.1-uml.orig/drivers/mtd/Makefile
-+++ linux-2.6.23.1-uml/drivers/mtd/Makefile
-@@ -26,6 +26,9 @@
- nftl-objs		:= nftlcore.o nftlmount.o
- inftl-objs		:= inftlcore.o inftlmount.o
- 
--obj-y		+= chips/ maps/ devices/ nand/ onenand/
-+obj-y		+= devices/
-+ifdef CONFIG_HAS_IOMEM
-+obj-y		+= chips/ maps/ nand/ onenand/
-+endif
- 
- obj-$(CONFIG_MTD_UBI)		+= ubi/
+A userspace process run as root sets its scheduling policy to SCHED_RR. It=
+=20
+writes 400kB of data to the JFFS2 filesystem and restarts by exec()ing=20
+itself, inheriting the SCHED_RR policy.
+
+Soon after being restarted, it opens /dev/mtd0 (boot loader partition) and=
+=20
+reads a few bytes of data. It then close() /dev/mtd0, at which point the=20
+kernel deadlocks.
+
+I added debugging messages to the MTD subsystem and it turned out my proces=
+s=20
+blocks in cfi_amdstd_sync (drivers/mtd/chips/cfi_cmdset_0002.c). chip->stat=
+e=20
+is set to FL_ERASING, and the kernel keeps scheduling in the default case.
+
+I'm not sure what goes wrong. I expect the JFFS2 garbage collector to have=
+=20
+kicked in. It might be erasing sectors when I close() /dev/mtd0, at which=20
+point the mtdchar driver tries to sync() the flash and locks in=20
+cfi_amdstd_sync because my process, being scheduled with a SCHED_RR policy,=
+=20
+never gives the JFFS2 garbage collector a chance to run. That's just a wild=
+=20
+guess though.
+
+Any help regarding how to better diagnose the problem (to confirm or reject=
+=20
+the above suspicion) will be appreciated. A fix would be even more=20
+welcome :-)
+
+Best regards,
+
+=2D-=20
+Laurent Pinchart
+CSE Semaphore Belgium
+
+Chauss=E9e de Bruxelles, 732A
+B-1410 Waterloo
+Belgium
+
+T +32 (2) 387 42 59
+=46 +32 (2) 387 42 75
