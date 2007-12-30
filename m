@@ -1,25 +1,23 @@
-Received: from pasmtpa.tele.dk ([80.160.77.114])
+Received: from py-out-1112.google.com ([64.233.166.180])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J8JKQ-0000be-4b
-	for linux-mtd@lists.infradead.org; Fri, 28 Dec 2007 17:49:09 +0000
-Date: Fri, 28 Dec 2007 18:48:53 +0100
-From: Sam Ravnborg <sam@ravnborg.org>
-To: Jason Lunz <lunz@falooley.org>
-Subject: Re: [PATCH] allow use of mtd and jffs2 on uml
-Message-ID: <20071228174853.GA4252@uranus.ravnborg.org>
-References: <22c797d00709272118i33d32b9dy93d5f5ec8f8edd30@mail.gmail.com>
-	<20071024011712.GA3762@falooley.org>
-	<1193208689.26096.48.camel@pmac.infradead.org>
-	<20071227181524.GA19051@falooley.org>
+	id 1J8ynf-00045C-3e
+	for linux-mtd@lists.infradead.org; Sun, 30 Dec 2007 14:06:06 +0000
+Received: by py-out-1112.google.com with SMTP id p76so8713589pyb.2
+	for <linux-mtd@lists.infradead.org>;
+	Sun, 30 Dec 2007 06:05:57 -0800 (PST)
+Date: Sun, 30 Dec 2007 08:05:52 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: devzero@web.de
+Subject: Re: [PATCH]: 2.6.24-rc5: mtd: PNC-2000 oops
+Message-ID: <20071230080552.744d5103@vader.jdub.homelinux.org>
+In-Reply-To: <76599944@web.de>
+References: <76599944@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20071227181524.GA19051@falooley.org>
-Cc: atom ota <atomota@sleepyhammer.com>,
-	user-mode-linux-devel@lists.sourceforge.net, Jeff Dike <jdike@addtoit.com>,
-	lkml <linux-kernel@vger.kernel.org>,
-	linux-mtd@lists.infradead.org, Rob Landley <rob@landley.net>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: randy.dunlap@oracle.com, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, lcapitulino@mandriva.com.br,
+	hidave.darkstar@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,153 +27,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, Dec 27, 2007 at 01:15:25PM -0500, Jason Lunz wrote:
+On Sun, 30 Dec 2007 14:15:13 +0100
+devzero@web.de wrote:
+
+> while doing some systematical driver load/unload testing i have also come across this one.
 > 
-> Allow parts of drivers/mtd to compile on uml by pushing the HAS_IOMEM
-> dependencies down closer to the parts of mtd that actually need it. This
-> allows enough of mtd to build to let jffs2 be used on uml.
+> searched lkml and found/tried this patch - seems to work fine, at least driver now behaves as expected:
+> insmod: error inserting 'pnc2000.ko': -1 No such device or address
 > 
-> Signed-off-by: Jason Lunz <lunz@falooley.org>
-> 
-> ---
-> 
->  arch/um/Kconfig             |    4 +---
->  drivers/mtd/Kconfig         |   12 +++++++-----
->  drivers/mtd/chips/Kconfig   |   11 ++++++++---
->  drivers/mtd/devices/Kconfig |    7 +++++++
->  4 files changed, 23 insertions(+), 11 deletions(-)
-> 
-> Index: linux-2.6.23.1-uml/arch/um/Kconfig
-> ===================================================================
-> --- linux-2.6.23.1-uml.orig/arch/um/Kconfig
-> +++ linux-2.6.23.1-uml/arch/um/Kconfig
-> @@ -326,9 +326,7 @@
->  
->  source "drivers/md/Kconfig"
->  
-> -if BROKEN
-> -	source "drivers/mtd/Kconfig"
-> -endif
-> +source "drivers/mtd/Kconfig"
->  
->  #This is just to shut up some Kconfig warnings, so no prompt.
->  config INPUT
-> Index: linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
-> ===================================================================
-> --- linux-2.6.23.1-uml.orig/drivers/mtd/devices/Kconfig
-> +++ linux-2.6.23.1-uml/drivers/mtd/devices/Kconfig
-> @@ -78,6 +78,7 @@
->  
->  config MTD_SLRAM
->  	tristate "Uncached system RAM"
-> + 	depends on HAS_IOMEM
->  	help
->  	  If your CPU cannot cache all of the physical memory in your machine,
->  	  you can still use it for storage or swap by using this driver to
-> @@ -85,6 +86,7 @@
->  
->  config MTD_PHRAM
->  	tristate "Physical system RAM"
-> + 	depends on HAS_IOMEM
->  	help
->  	  This is a re-implementation of the slram driver above.
->  
-> @@ -151,10 +153,13 @@
->  	  Testing MTD users (eg JFFS2) on large media and media that might
->  	  be removed during a write (using the floppy drive).
->  
-> +if HAS_IOMEM
->  comment "Disk-On-Chip Device Drivers"
-> +endif
+> if it really _works_ is another story, but how can we know ? have searched the net a while for this hardware, but didn`t find _any_ reference that this hardware either exists or existed at all, so it looks that this hardware is very ancient or being used by japanese secret service, only !? :)
 
-You can expand the if above to include the config symols..
+[snip] 
+ 
+> @@ -64,16 +63,29 @@ static struct mtd_info *mymtd;
 >  
->  config MTD_DOC2000
->  	tristate "M-Systems Disk-On-Chip 2000 and Millennium (DEPRECATED)"
-> + 	depends on HAS_IOMEM
->  	select MTD_DOCPROBE
->  	select MTD_NAND_IDS
->  	---help---
-> @@ -177,6 +182,7 @@
+>  static int __init init_pnc2000(void)
+>  {
+> +	int err;
+> +
+>  	printk(KERN_NOTICE "Photron PNC-2000 flash mapping: %x at %x\n", WINDOW_SIZE, \
+> WINDOW_ADDR);  
+> +	pnc_map.virt = ioremap(WINDOW_ADDR, WINDOW_SIZE);
+> +	if (!pnc_map.virt) {
+> +		printk("init_pnc2000(): failed to ioremap\n");
+> +		return -EIO;
+> +	}
+> +
+>  	simple_map_init(&pnc_map);
 >  
->  config MTD_DOC2001
->  	tristate "M-Systems Disk-On-Chip Millennium-only alternative driver (DEPRECATED)"
-> + 	depends on HAS_IOMEM
->  	select MTD_DOCPROBE
->  	select MTD_NAND_IDS
->  	---help---
-> @@ -198,6 +204,7 @@
+>  	mymtd = do_map_probe("cfi_probe", &pnc_map);
+>  	if (mymtd) {
+>  		mymtd->owner = THIS_MODULE;
+> -		return add_mtd_partitions(mymtd, pnc_partitions, 3);
+> +		err = add_mtd_partitions(mymtd, pnc_partitions, 3);
+> +		if (err) {
+> +			printk("init_pnc2000(): add_mtd_partitions failed\n");
+> +			iounmap(pnc_map.virt);
+> +		}
+>  	}
 >  
->  config MTD_DOC2001PLUS
->  	tristate "M-Systems Disk-On-Chip Millennium Plus"
-> + 	depends on HAS_IOMEM
->  	select MTD_DOCPROBE
->  	select MTD_NAND_IDS
->  	---help---
-.. so if the endif was placed here you did not have to specify
-the "depends on". Assumng btw that no other symbols inbetween
-exists.
+> +	iounmap(pnc_map.virt);
+>  	return -ENXIO;
 
-> Index: linux-2.6.23.1-uml/drivers/mtd/Kconfig
-> ===================================================================
-> --- linux-2.6.23.1-uml.orig/drivers/mtd/Kconfig
-> +++ linux-2.6.23.1-uml/drivers/mtd/Kconfig
-> @@ -2,7 +2,6 @@
->  
->  menuconfig MTD
->  	tristate "Memory Technology Device (MTD) support"
-> -	depends on HAS_IOMEM
->  	help
->  	  Memory Technology Devices are flash, RAM and similar chips, often
->  	  used for solid state file systems on embedded devices. This option
-> @@ -278,15 +277,18 @@
->  	  This enables read only access to SmartMedia formatted NAND
->  	  flash. You can mount it with FAT file system.
->  
-> -source "drivers/mtd/chips/Kconfig"
->  
-> -source "drivers/mtd/maps/Kconfig"
-> +if HAS_IOMEM
-> +	source "drivers/mtd/chips/Kconfig"
-> +	source "drivers/mtd/maps/Kconfig"
-> +endif
+Sorry, but no.  This bit here is bogus.  It will now iounmap and return
+an error even if nothing went wrong.
 
-This "if" should be pushed down in the kconfig file
-so it is obvoious we have this dependency.
->  
->  source "drivers/mtd/devices/Kconfig"
->  
-> -source "drivers/mtd/nand/Kconfig"
-> -
-> -source "drivers/mtd/onenand/Kconfig"
-> +if HAS_IOMEM
-> +	source "drivers/mtd/nand/Kconfig"
-> +	source "drivers/mtd/onenand/Kconfig"
-> +endif
-Same for this one - let it be explicit in the Kconfig file.
-
->  
->  source "drivers/mtd/ubi/Kconfig"
->  
-> Index: linux-2.6.23.1-uml/drivers/mtd/Makefile
-> ===================================================================
-> --- linux-2.6.23.1-uml.orig/drivers/mtd/Makefile
-> +++ linux-2.6.23.1-uml/drivers/mtd/Makefile
-> @@ -26,6 +26,9 @@
->  nftl-objs		:= nftlcore.o nftlmount.o
->  inftl-objs		:= inftlcore.o inftlmount.o
->  
-> -obj-y		+= chips/ maps/ devices/ nand/ onenand/
-> +obj-y		+= devices/
-> +ifdef CONFIG_HAS_IOMEM
-> +obj-y		+= chips/ maps/ nand/ onenand/
-> +endif
-
-The ifdef for CONFIG_HAS_IOMEM looks strange.
-Let kbuild visit the directories and then figure out nothing
-needs to be done.
-If you insist on the HAS_IOMEM dependency then use:
-obj-$(CONFIG_HAS_IOMEM) += chips/ maps/ nand/ o
-
-
-	Sam
+josh
