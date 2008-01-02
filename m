@@ -1,16 +1,23 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Nancy'" <nancydreaming@gmail.com>,
-	<linux-mtd@lists.infradead.org>
-References: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
-Subject: RE: Does UBI support MLC nand flash?
-Date: Wed, 2 Jan 2008 13:45:01 +0900
-Message-ID: <002601c84cfa$7886bc10$1fa9580a@swcenter.sec.samsung.co.kr>
+Received: from wa-out-1112.google.com ([209.85.146.177])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1J9wuV-0003H6-Jx
+	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 06:17:03 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so8910449wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 01 Jan 2008 22:13:07 -0800 (PST)
+Message-ID: <bae050c10801012213p2c7d630r6efcf5c1f77b78df@mail.gmail.com>
+Date: Wed, 2 Jan 2008 14:13:07 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: kmpark@infradead.org
+Subject: Re: Does UBI support MLC nand flash?
+In-Reply-To: <002601c84cfa$7886bc10$1fa9580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-reply-to: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
-Reply-To: kmpark@infradead.org
+Content-Disposition: inline
+References: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
+	<002601c84cfa$7886bc10$1fa9580a@swcenter.sec.samsung.co.kr>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,42 +27,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Sir,
+     I don't know what is NOP, POP stand for? can you explain that?
 
-I think it can support MLC NAND in the code.
-The big differences between the SLC and MLC are NOP (or subpage) and POR handling.
-
-Generally SLC has NOP 4 (old chips have 8) whereas MLC has NOP 1.
-In NAND code, it handles with NAND_NO_SUBPAGE_WRITE and NAND_CI_CELLTYPE_MSK.
-Umm, who uses the NAND_NO_SUBPAGE_WRITE in code?
-Anyway it maybe checks it with the CELLTYPE from 3rd ID data.
-
-And sequential write is also only permitted at large page SLC NAND. It means it's working well on MLC NAND in current UBI code. If
-not, it also doesn't work at SLC NAND.
-
-Thank you,
-Kyungmin Park
-
------Original Message-----
-From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of Nancy
-Sent: Wednesday, January 02, 2008 10:42 AM
-To: linux-mtd@lists.infradead.org
-Subject: Does UBI support MLC nand flash?
-
-Sir / Madam,
-
-             Does UBI support MLC nand flash?
-
-             According to the MLC nand spec, It is only allowed write
-once per erased
-block, moreover, it isn't allowed ramdom write during a block, means
-the page number must be increase during the write PED operation.
+     I notice mtd-utils "nandwrite.c" does write each page's oob area
+twice, write oob(filesystem area) once, and then call "pwrite" to
+write pagedata including oob (ecc part). I don't think that will work
+right on MLC nand.
 
 
 --
 Best Regards,
 Nancy
-
-______________________________________________________
-Linux MTD discussion mailing list
-http://lists.infradead.org/mailman/listinfo/linux-mtd/
