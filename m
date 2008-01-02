@@ -1,20 +1,19 @@
-Received: from smtp5.pp.htv.fi ([213.243.153.39])
+Received: from wa-out-1112.google.com ([209.85.146.181])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J9rc3-0005bI-NA
-	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 00:37:46 +0000
-Date: Wed, 2 Jan 2008 02:37:24 +0200
-From: Adrian Bunk <bunk@kernel.org>
-To: Wolfgang Denk <wd@denx.de>
-Subject: Re: [2.6 patch] remove broken MTD drivers
-Message-ID: <20080102003724.GL27566@does.not.exist>
-References: <20080101231140.GF27566@does.not.exist>
-	<20080102002826.574C324889@gemini.denx.de>
+	id 1J9sgk-0001iS-Q7
+	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 01:46:43 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so8777866wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 01 Jan 2008 17:42:30 -0800 (PST)
+Message-ID: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
+Date: Wed, 2 Jan 2008 09:42:29 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Does UBI support MLC nand flash?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-In-Reply-To: <20080102002826.574C324889@gemini.denx.de>
-Cc: linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
-	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +23,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 02, 2008 at 01:28:26AM +0100, Wolfgang Denk wrote:
-> In message <20080101231140.GF27566@does.not.exist> you wrote:
-> >
-> > The header of ppchameleonevb.c claims it comes from info@wawnet.biz 
-> 
-> Argh. That's indeed ancient code.
-> 
-> So what should I do to fix this? Wait for Thomas' response, or port
-> patches here?
+Sir / Madam,
 
-I'd say post patches, and I'd expect David to actually be the one who
-reviews and incorporates them.
+             Does UBI support MLC nand flash?
 
-> Best regards,
-> 
-> Wolfgang Denk
+             According to the MLC nand spec, It is only allowed write
+once per erased
+block, moreover, it isn't allowed ramdom write during a block, means
+the page number must be increase during the write PED operation.
 
-cu
-Adrian
 
--- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+--
+Best Regards,
+Nancy
