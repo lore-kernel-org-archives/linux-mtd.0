@@ -1,22 +1,26 @@
-Received: from mail.davidb.org ([66.93.32.219])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1J9y3X-0008IR-CD
-	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 07:30:27 +0000
-Received: from davidb by mail.davidb.org with local (Exim 4.68 #1 (Debian))
-	id 1J9y0U-0002z1-6A
-	for <linux-mtd@lists.infradead.org>; Tue, 01 Jan 2008 23:27:18 -0800
-Date: Tue, 1 Jan 2008 23:27:18 -0800
-From: David Brown <mtd@davidb.org>
-To: linux-mtd@lists.infradead.org
+Received: from wa-out-1112.google.com ([209.85.146.183])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JA04x-0000Z8-D3
+	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 09:40:03 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so9015501wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 02 Jan 2008 01:36:08 -0800 (PST)
+Message-ID: <bae050c10801020136s4a6c95a2h9826479f27a75503@mail.gmail.com>
+Date: Wed, 2 Jan 2008 17:36:08 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: kmpark@infradead.org
 Subject: Re: Does UBI support MLC nand flash?
-Message-ID: <20080102072715.GA11408@old.davidb.org>
+In-Reply-To: <bae050c10801020133h3b121b2ft47911a0d84921868@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 References: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
 	<002601c84cfa$7886bc10$1fa9580a@swcenter.sec.samsung.co.kr>
 	<bae050c10801012213p2c7d630r6efcf5c1f77b78df@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <bae050c10801012213p2c7d630r6efcf5c1f77b78df@mail.gmail.com>
+	<003c01c84d10$9cb210b0$1fa9580a@swcenter.sec.samsung.co.kr>
+	<bae050c10801020133h3b121b2ft47911a0d84921868@mail.gmail.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,14 +30,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 02, 2008 at 02:13:07PM +0800, Nancy wrote:
+Thank you, Mr. Kyungmin Park
+But we do not use JFFS2, if UBI supports MLC nand well, we decide to
+use UBIFS instead of current YAFFS2.
 
->I notice mtd-utils "nandwrite.c" does write each page's oob area
->twice, write oob(filesystem area) once, and then call "pwrite" to
->write pagedata including oob (ecc part). I don't think that will work
->right on MLC nand.
+We use "nandwrite" for nandflash content's burning. That's more faster
+and easiser than do the same job under filesystem support(mount, cp
+....)
 
-The underlying driver will have to support cached writes for this to work.
-It's listed as a TODO in nand_base.c, at least in the stable kernel.
+MTD code change a lot in 2.6 kernel. In old verion of MTD, we added a
+MEMWRITEPAGE ioctl to call nand_write_ecc(nand_base.c) whose parameter
+"eccbuf" can be offered for fs use. But in the latest version of MTD
+code, I can't find a function call meet our needs.
 
-Dave
+If UBI do not support MLC, we will still use our old one. Faking VFAT
+fs info( erase count and virtual block number) must write to oob area,
+and ...that's MLC nand, nandwrite.c have to be change.
+
+Oh, MLC nand's badblock tag is  in the last page of earseblock's oob.
+some related code have to be changed too.
+
+I write this only for the interface designer reconsider it.
+
+Thanks for all the people who reply me :-)
