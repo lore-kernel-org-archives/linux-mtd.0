@@ -1,20 +1,20 @@
-Received: from smtp6.pp.htv.fi ([213.243.153.40])
+Received: from mail-out.m-online.net ([212.18.0.9])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1J9qH5-00083n-Ir
-	for linux-mtd@lists.infradead.org; Tue, 01 Jan 2008 23:12:03 +0000
-Date: Wed, 2 Jan 2008 01:11:40 +0200
-From: Adrian Bunk <bunk@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
+	id 1J9rTA-0004pB-Hu
+	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 00:28:35 +0000
+To: Adrian Bunk <bunk@kernel.org>
+From: Wolfgang Denk <wd@denx.de>
 Subject: Re: [2.6 patch] remove broken MTD drivers
-Message-ID: <20080101231140.GF27566@does.not.exist>
-References: <20080101134839.GN2360@does.not.exist>
-	<1199205057.6315.67.camel@shinybook.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1199205057.6315.67.camel@shinybook.infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org
+Mime-version: 1.0
+Content-type: text/plain; charset=ISO-8859-1
+Content-transfer-encoding: 8bit
+In-reply-to: Your message of "Wed, 02 Jan 2008 01:11:40 +0200."
+	<20080101231140.GF27566@does.not.exist>
+Date: Wed, 02 Jan 2008 01:28:26 +0100
+Sender: wd@denx.de
+Message-Id: <20080102002826.574C324889@gemini.denx.de>
+Cc: linux-mtd@lists.infradead.org, Thomas Gleixner <tglx@linutronix.de>,
+	David Woodhouse <dwmw2@infradead.org>, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,29 +24,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, Jan 01, 2008 at 04:30:57PM +0000, David Woodhouse wrote:
-> On Tue, 2008-01-01 at 15:48 +0200, Adrian Bunk wrote:
-> > This patch removes two MTD drivers that have been marked as
-> > BROKEN 19 months ago due to requiring nonexisting header files.
-> > 
-> > Signed-off-by: Adrian Bunk <bunk@kernel.org>
-> 
-> Any particular reason you didn't Cc the authors identified in the
-> drivers you're removing?
+In message <20080101231140.GF27566@does.not.exist> you wrote:
+>
+> The header of ppchameleonevb.c claims it comes from info@wawnet.biz 
 
-The header of ppchameleonevb.c claims it comes from info@wawnet.biz 
-which bounces and the header of toto.c contains as only address Thomas'
-address (I took the wrong one from the commit, but bounced the email
-to him).
+Argh. That's indeed ancient code.
 
-> dwmw2
+So what should I do to fix this? Wait for Thomas' response, or port
+patches here?
 
-cu
-Adrian
+Best regards,
+
+Wolfgang Denk
 
 -- 
-
-       "Is there not promise of rain?" Ling Tan asked suddenly out
-        of the darkness. There had been need of rain for many days.
-       "Only a promise," Lao Er said.
-                                       Pearl S. Buck - Dragon Seed
+DENX Software Engineering GmbH,     MD: Wolfgang Denk & Detlev Zundel
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+Phone: (+49)-8142-66989-10 Fax: (+49)-8142-66989-80 Email: wd@denx.de
+A Chairman was as necessary to a Board planet  as  the  zero  was  in
+mathematics, but being a zero had big disadvantages...
+                         - Terry Pratchett, _The Dark Side of the Sun_
