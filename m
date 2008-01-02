@@ -1,16 +1,16 @@
-Received: from wa-out-1112.google.com ([209.85.146.183])
+Received: from wa-out-1112.google.com ([209.85.146.178])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JA04x-0000Z8-D3
-	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 09:40:03 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so9015501wah.2
+	id 1JA05x-0000b9-5A
+	for linux-mtd@lists.infradead.org; Wed, 02 Jan 2008 09:41:05 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so9016004wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Wed, 02 Jan 2008 01:36:08 -0800 (PST)
-Message-ID: <bae050c10801020136s4a6c95a2h9826479f27a75503@mail.gmail.com>
-Date: Wed, 2 Jan 2008 17:36:08 +0800
+	Wed, 02 Jan 2008 01:37:10 -0800 (PST)
+Message-ID: <bae050c10801020137t141ceaf7i19ba5297411feb7c@mail.gmail.com>
+Date: Wed, 2 Jan 2008 17:37:09 +0800
 From: Nancy <nancydreaming@gmail.com>
-To: kmpark@infradead.org
+To: linux-mtd@lists.infradead.org
 Subject: Re: Does UBI support MLC nand flash?
-In-Reply-To: <bae050c10801020133h3b121b2ft47911a0d84921868@mail.gmail.com>
+In-Reply-To: <bae050c10801020136s4a6c95a2h9826479f27a75503@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
@@ -20,7 +20,7 @@ References: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
 	<bae050c10801012213p2c7d630r6efcf5c1f77b78df@mail.gmail.com>
 	<003c01c84d10$9cb210b0$1fa9580a@swcenter.sec.samsung.co.kr>
 	<bae050c10801020133h3b121b2ft47911a0d84921868@mail.gmail.com>
-Cc: linux-mtd@lists.infradead.org
+	<bae050c10801020136s4a6c95a2h9826479f27a75503@mail.gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
