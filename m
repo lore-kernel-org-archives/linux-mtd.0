@@ -1,33 +1,33 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
+Received: from e34.co.us.ibm.com ([32.97.110.152])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JAPY1-0002Ub-Cj
-	for linux-mtd@lists.infradead.org; Thu, 03 Jan 2008 12:51:52 +0000
+	id 1JASEr-00075t-T7
+	for linux-mtd@lists.infradead.org; Thu, 03 Jan 2008 15:44:17 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m03CphtQ025562
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 07:51:43 -0500
+	by e34.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m03Fi8LA028476
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 10:44:08 -0500
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m03Cphbh111608
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 05:51:43 -0700
+	m03Fi7ce051752
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 08:44:07 -0700
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m03CpPko005094
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 05:51:26 -0700
+	m03FhoDl011160
+	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 08:43:50 -0700
 Subject: Re: [PATCH 4/5] UBI: introduce attach ioctls
 From: Frank Haverkamp <haver@vnet.ibm.com>
-To: dedekind@infradead.org
-In-Reply-To: <1198075329.18962.70.camel@sauron>
+To: Arnd Bergmann <arnd@arndb.de>
+In-Reply-To: <200801031605.14326.arnd@arndb.de>
 References: <20071219154137.23264.28116.sendpatchset@golum>
-	<20071219154158.23264.95037.sendpatchset@golum>
-	<200712191517.18166.arnd@arndb.de> <1198075329.18962.70.camel@sauron>
+	<1198075329.18962.70.camel@sauron> <1199364699.7726.34.camel@august>
+	<200801031605.14326.arnd@arndb.de>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-M0bF9VGbh0J/hxtXi+uJ"
-Date: Thu, 03 Jan 2008 13:51:39 +0100
-Message-Id: <1199364699.7726.34.camel@august>
+	boundary="=-goG/V8RPQexkl+bvLChN"
+Date: Thu, 03 Jan 2008 16:44:03 +0100
+Message-Id: <1199375043.12177.3.camel@august>
 Mime-Version: 1.0
-Cc: Arnd Bergmann <arnd@arndb.de>, Andreas Arnez <arnez@linux.vnet.ibm.com>,
+Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
 	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
 	linux-mtd@lists.infradead.org,
 	Thomas Gleixner <tglx@linutronix.de>, haver@vnet.ibm.com
@@ -42,89 +42,47 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-M0bF9VGbh0J/hxtXi+uJ
+--=-goG/V8RPQexkl+bvLChN
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd and Artem,
+Hi Arnd,
 
-On Wed, 2007-12-19 at 16:42 +0200, Artem Bityutskiy wrote:
-> On Wed, 2007-12-19 at 15:17 +0100, Arnd Bergmann wrote:
-> > > +struct ubi_attach_req {
-> > > +       int32_t vid_hdr_offset;
-> > > +       int32_t data_offset;
-> > >  };
+On Thu, 2008-01-03 at 16:05 +0100, Arnd Bergmann wrote:
+> On Thursday 03 January 2008, Frank Haverkamp wrote:
+> > > We can autoprobe the VID header offset, unless the MTD device is empt=
+y,
+> > > in which case UBI automatically formats it.
 > >=20
-> > Can you explain why you need to pass vid_hdr_offset /and/ data_offset h=
-ere?
-> > What is the difference between the two?
-
-Data in flash:
-EC-hdr | VID-hdr | Data
--------> VID-hdr-offs
------------------> Data-offset
-
->  Can't you autoprobe them if you
-> > have the device?
+> > I do not like auto-probing the VID hdr offset. In my eyes the user
+> > should have the flexibility to define where his VID-hdr and data start
+> > e.g. like in our case to have influence on if data is starting on
+> > subpage- or page-boundaries. I also think that the autoprobe feature
+> > would add more complexity to the code.
 >=20
-> vid_hdr_offset is the offset of the VID header withing an eraseblock.
-> data_offs is where the data starts. We want to be able to let users
-> select the VID header offset.
+> I agree that the user should have the flexibility to set these parameters=
+,
+> but AFAICS, that is only relevant during initialization (formatting) of
+> the medium.
+>=20
+> However, I find it essential that it's possible to do autoprobing of
+> existing media, by whatever means.
+> If you don't want to do it in the kernel, a user space helper might
+> be useful, preferably one that does not require ioctls, so it can be
+> done as a shell script.
 
-> Vs data offset - indeed it is redundant
-> and might be dropped because UBI may just assume data starts at the next
-> min. I/O unit after the VID header.
-
-Traditionally NAND could only be written only in page-chunks e.g. 2KiB.
-Thomas Gleixner introduced that subpages could be written too e.g. 512B.
-
-In our usage example we decided, that we wanted to have the EC-hdr at
-offset 0, and the VID-hdr at the end of the last subpage of page 0 in
-the NAND-erase block. We wanted the data to start at a page boundary so
-that e.g. JFFS2 can use the pagesize as minimum write size and not the
-sub-pagesize.
-
-Our layout:
-page 0                  | page 1                   | ...
-subpage | ... | subpage | subpage | ...  | subpage | ...
-EC-hdr  | ... | VID-hdr | Data
-
-Default layout (Artem, correct me if I am wrong):
-page 0                          | page 1                   | ...
-subpage | ...     | subpage ... | subpage | ...  | subpage | ...
-EC-hdr  | VID-hdr | Data
-
-> We can autoprobe the VID header offset, unless the MTD device is empty,
-> in which case UBI automatically formats it.
-
-I do not like auto-probing the VID hdr offset. In my eyes the user
-should have the flexibility to define where his VID-hdr and data start
-e.g. like in our case to have influence on if data is starting on
-subpage- or page-boundaries. I also think that the autoprobe feature
-would add more complexity to the code.
-
-> > The reason I'm asking is that I'd really like to make this a simple
-> > attribute in sysfs, in the mtd object. The question there is what a
-> > user would need to store into that attribute. The device is identified
-> > implicitly already, but this looks like you still need two distint
-> > integers in order to create an UBI device.
-
-I think with our current usage calculating the data offset as next free
-min-io-offset would work, although the fact that we want to store our
-data at a page-offset would be done implicitly than.
-
-I wonder which layout Thomas Gleixner and Josh Boyer are using? Would it
-work to calculate the data offset in your case?
+Yes, a user-space tool to figure out the values seems to me a good idea.
+It helps moving the complexity to user-space which you would otherwise
+have in the kernel-code.
 
 Frank
-
 --=20
 IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
 Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
 Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
 Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=-M0bF9VGbh0J/hxtXi+uJ
+--=-goG/V8RPQexkl+bvLChN
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -207,8 +165,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTAzMTI1MTM1WjAjBgkqhkiG9w0B
-CQQxFgQUXEBbsQ/VM30vY5XY3Axcbc2mWYowggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTAzMTU0MzU5WjAjBgkqhkiG9w0B
+CQQxFgQUEILCyefqkbgG0/cT+h9WecffHikwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -219,9 +177,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCI9JxTW5R3DG+LJ/YUKfoaiHfeNuytuypADKW5VACXuw0WtpUrcekw1cTD5njLm9SHvxSW
-wZniu8igcjK87E5hobBxr0pWu/S1nTz9D1XxAKmF0z8hf8DVXtazWQ9P/EeYSCMisNUhIDVFL6H/
-Qf46FzMs8H8zIwuhPpK4c5LJrQAAAAAAAA==
+BQAEgYCAardYv6Low/+Kurx48wJtEyB0PtkMn3QdncVrdjMcHlye6yVhW6pBd8OEtvvW08aGt2aw
+LzNyInQ/ipOBYyrd5vI6kwi0cYR6fN4Zcjnym6HetPTsMNuhQxVOnfGWve79bigqQnbD5AmalGwj
+a3ML1mFt5N9O/2Qvj+7JQu0kpQAAAAAAAA==
 
 
---=-M0bF9VGbh0J/hxtXi+uJ--
+--=-goG/V8RPQexkl+bvLChN--
