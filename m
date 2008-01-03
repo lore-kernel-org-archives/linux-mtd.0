@@ -1,19 +1,30 @@
-Received: from [210.94.41.89] (helo=kmpark)
-	by bombadil.infradead.org with esmtpsa (Exim 4.68 #1 (Red Hat Linux))
-	id 1JAJR5-0006ZP-TG
-	for linux-mtd@lists.infradead.org; Thu, 03 Jan 2008 06:20:12 +0000
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: <linux-mtd@lists.infradead.org>
-References: <20080103000350.GA12237@party>
-Subject: RE: [PATCH] [MTD][OneNAND] Multi Level Cell (MLC) OneNAND support
-Date: Thu, 3 Jan 2008 15:20:08 +0900
-Message-ID: <003101c84dd0$b20be740$1fa9580a@swcenter.sec.samsung.co.kr>
+Received: from wa-out-1112.google.com ([209.85.146.183])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JAKMK-00021S-BP
+	for linux-mtd@lists.infradead.org; Thu, 03 Jan 2008 07:19:26 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so9661302wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Wed, 02 Jan 2008 23:19:18 -0800 (PST)
+Message-ID: <bae050c10801022319y63929958xe367023262517469@mail.gmail.com>
+Date: Thu, 3 Jan 2008 15:19:18 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: "David Brown" <mtd@davidb.org>,
+	"Adrian Hunter" <ext-adrian.hunter@nokia.com>
+Subject: Re: Does UBI support MLC nand flash?
+In-Reply-To: <20080102171728.GA13503@old.davidb.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-reply-to: <20080103000350.GA12237@party>
-Reply-To: kmpark@infradead.org
+Content-Disposition: inline
+References: <bae050c10801011742s762cd289ta9aae5881e294598@mail.gmail.com>
+	<002601c84cfa$7886bc10$1fa9580a@swcenter.sec.samsung.co.kr>
+	<bae050c10801012213p2c7d630r6efcf5c1f77b78df@mail.gmail.com>
+	<bae050c10801012219m71d7415du4379e5b5d5a54560@mail.gmail.com>
+	<20080102063945.5355d112@zod.rchland.ibm.com>
+	<20080102165228.GA11327@old.davidb.org>
+	<20080102111300.544ea5cb@zod.rchland.ibm.com>
+	<20080102171728.GA13503@old.davidb.org>
+Cc: kmpark@infradead.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,10 +34,12 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Sorry to bother you
-There's a typo in subject.
+Thanks a lot everyone, your comment really help me a lot !!!
+I never though the technical support of opensource can do this good.
+I love here :P
 
-It should be "Multi Level Cell (MLC)" :)
+Thanks again :-)
 
-BR,
-Kyungmin Park
+--
+Best Regards,
+Nancy
