@@ -1,36 +1,34 @@
-Received: from e34.co.us.ibm.com ([32.97.110.152])
+Received: from e33.co.us.ibm.com ([32.97.110.151])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JASEr-00075t-T7
-	for linux-mtd@lists.infradead.org; Thu, 03 Jan 2008 15:44:17 +0000
+	id 1JAj4D-0002Q9-Rt
+	for linux-mtd@lists.infradead.org; Fri, 04 Jan 2008 09:42:25 +0000
 Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
 	[9.17.195.106])
-	by e34.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m03Fi8LA028476
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 10:44:08 -0500
+	by e33.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m049gET4004364
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 04:42:14 -0500
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
 	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m03Fi7ce051752
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 08:44:07 -0700
+	m049gEdq109434
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 02:42:14 -0700
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m03FhoDl011160
-	for <linux-mtd@lists.infradead.org>; Thu, 3 Jan 2008 08:43:50 -0700
-Subject: Re: [PATCH 4/5] UBI: introduce attach ioctls
+	m049fuXI022105
+	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 02:41:56 -0700
+Subject: Re: ubi-utils cleanup
 From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Arnd Bergmann <arnd@arndb.de>
-In-Reply-To: <200801031605.14326.arnd@arndb.de>
-References: <20071219154137.23264.28116.sendpatchset@golum>
-	<1198075329.18962.70.camel@sauron> <1199364699.7726.34.camel@august>
-	<200801031605.14326.arnd@arndb.de>
+To: dedekind@infradead.org
+In-Reply-To: <1197884800.25999.73.camel@sauron>
+References: <1197884800.25999.73.camel@sauron>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-goG/V8RPQexkl+bvLChN"
-Date: Thu, 03 Jan 2008 16:44:03 +0100
-Message-Id: <1199375043.12177.3.camel@august>
+	boundary="=-Pe6TyhRqMkUniTDHgVJA"
+Date: Fri, 04 Jan 2008 10:42:03 +0100
+Message-Id: <1199439724.6546.22.camel@august>
 Mime-Version: 1.0
-Cc: Andreas Arnez <arnez@linux.vnet.ibm.com>,
-	Alexander Schmidt <alexs@linux.vnet.ibm.com>,
-	linux-mtd@lists.infradead.org,
-	Thomas Gleixner <tglx@linutronix.de>, haver@vnet.ibm.com
+Cc: "Monte K. Copeland" <catboat@texas.net>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>,
+	Alexander Schmidt <alexs@linux.vnet.ibm.com>, haver@vnet.ibm.com,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
 Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -42,57 +40,67 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-goG/V8RPQexkl+bvLChN
+--=-Pe6TyhRqMkUniTDHgVJA
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-Hi Arnd,
+Hi Artem,
 
-On Thu, 2008-01-03 at 16:05 +0100, Arnd Bergmann wrote:
-> On Thursday 03 January 2008, Frank Haverkamp wrote:
-> > > We can autoprobe the VID header offset, unless the MTD device is empt=
-y,
-> > > in which case UBI automatically formats it.
-> >=20
-> > I do not like auto-probing the VID hdr offset. In my eyes the user
-> > should have the flexibility to define where his VID-hdr and data start
-> > e.g. like in our case to have influence on if data is starting on
-> > subpage- or page-boundaries. I also think that the autoprobe feature
-> > would add more complexity to the code.
+On Mon, 2007-12-17 at 11:46 +0200, Artem Bityutskiy wrote:
+> Hi Frank, Alex, Andreas,
 >=20
-> I agree that the user should have the flexibility to set these parameters=
-,
-> but AFAICS, that is only relevant during initialization (formatting) of
-> the medium.
+> since UBIFS gets tried more, people start using ubi-utils more, and I
+> got several feed-backs about how untidy mtd-utils,git is, and ubi-utils
+> are untidy as well.
 >=20
-> However, I find it essential that it's possible to do autoprobing of
-> existing media, by whatever means.
-> If you don't want to do it in the kernel, a user space helper might
-> be useful, preferably one that does not require ioctls, so it can be
-> done as a shell script.
+> May you please help me cleaning them up a little? We should re-structure
+> the repo a bit to start of. I've added few ideas into the ubi-utils/TODO
+> file.
 
-Yes, a user-space tool to figure out the values seems to me a good idea.
-It helps moving the complexity to user-space which you would otherwise
-have in the kernel-code.
+> First of, we should separate out UBI tests from ubi-utils and move them
+> to tests/ubi-tests. Then we should separate-out the tools which are
+> NAND-related - indeed, what do they do in ubi-utils? They should go to
+> nand-tools, and stuff like nanddump and nandwrite should go to
+> nand-tools as well.
+
+nand2bin and bin2nand are of the same kind and not UBI dependend. To be
+more widely used, those tools need more flexibility where the ECC data
+is placed in the OOB. Currently it is pretty much hard-coded for the
+layout we are using.
+
+I have nothing against relocating the tools to other directories. What I
+like to keep are working install and uninstall rules with the
+possibility to define an individual install directory.
+
+> Since most of the stuff in ubi-utils were make by your team, I kindly
+> ask you to help with re-structuring them.
+
+Alex is busy with his thesis, I doubt that he can help much. I will try
+to follow the discussion and contribute small things if my time permits
+it. Please take my colleague Monte Copeland on CC. I don't know how much
+time he has, but he is currently responsible for our internal UBI usage.
+
+Regards
 
 Frank
+
 --=20
 IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
 Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
 Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
 Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=-goG/V8RPQexkl+bvLChN
+--=-Pe6TyhRqMkUniTDHgVJA
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
 
 MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIP9DCCBSww
-ggSVoAMCAQICEDqcN60eyFMWG0XIVQBLNZgwDQYJKoZIhvcNAQEFBQAwgcExCzAJBgNVBAYTAlVT
+ggSVoAMCAQICEDhxwVOTyOj0nx4MTQ30ZkMwDQYJKoZIhvcNAQEFBQAwgcExCzAJBgNVBAYTAlVT
 MRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE8MDoGA1UECxMzQ2xhc3MgMiBQdWJsaWMgUHJpbWFy
 eSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEcyMTowOAYDVQQLEzEoYykgMTk5OCBWZXJpU2ln
 biwgSW5jLiAtIEZvciBhdXRob3JpemVkIHVzZSBvbmx5MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMB4XDTAzMDUwNjAwMDAwMFoXDTEzMDUwNTIzNTk1OVowgfkxCzAJBgNVBAYTAlVT
+dCBOZXR3b3JrMB4XDTAzMDUwNjAwMDAwMFoXDTA4MDUwNTIzNTk1OVowgfkxCzAJBgNVBAYTAlVT
 MTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8w
 HQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQg
 aHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNp
@@ -108,10 +116,10 @@ BgNVHQ4EFgQUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowgegGA1UdIwSB4DCB3aGBx6SBxDCBwTELMAkG
 A1UEBhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMTwwOgYDVQQLEzNDbGFzcyAyIFB1Ymxp
 YyBQcmltYXJ5IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IC0gRzIxOjA4BgNVBAsTMShjKSAxOTk4
 IFZlcmlTaWduLCBJbmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxHzAdBgNVBAsTFlZlcmlT
-aWduIFRydXN0IE5ldHdvcmuCEQC5L2DMiJ+hekYJuFtwbIqvMA0GCSqGSIb3DQEBBQUAA4GBAJcM
-UE/GM7DSGWSfEaUELX8FdU5Ug5WUfJVLTc4s5xDj+d9P/sxo39ofCYcyBrVFpessapDKDJKKCu6z
-bSNwKStMN7smU6TYiyT2FP216Adb5wsu94gxblObFoms2qG/BuGHbFxtbIBAiCNlFcRk69rPUGu/
-EOvQeUAR+Ub1NkjPMIIFXjCCBMegAwIBAgIQBx15Uc8dgKRMua0Jq2/yNTANBgkqhkiG9w0BAQQF
+aWduIFRydXN0IE5ldHdvcmuCEQC5L2DMiJ+hekYJuFtwbIqvMA0GCSqGSIb3DQEBBQUAA4GBAAgY
+BRMDGzUl8C495yDmyE78QHSxQjkpKbJ61i0GkSYGUmkRYc3czKUlkV3sdHWe28su0SRO8HKhXzfU
+dR2D2n6UixORmR/tobmuxlkfwqHWDvNVuJD0iCV1e2cXT9qf38vMzMiC55lQmnCoUfTg131ovM/V
+1EI2aT181HWu/pM8MIIFXjCCBMegAwIBAgIQBx15Uc8dgKRMua0Jq2/yNTANBgkqhkiG9w0BAQQF
 ADCB+TELMAkGA1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
 ZXMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsT
 MlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYD
@@ -165,8 +173,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTAzMTU0MzU5WjAjBgkqhkiG9w0B
-CQQxFgQUEILCyefqkbgG0/cT+h9WecffHikwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTA0MDk0MTQwWjAjBgkqhkiG9w0B
+CQQxFgQU7wz+HIjPctVN5SvOpb8vOXjUfmgwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -177,9 +185,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCAardYv6Low/+Kurx48wJtEyB0PtkMn3QdncVrdjMcHlye6yVhW6pBd8OEtvvW08aGt2aw
-LzNyInQ/ipOBYyrd5vI6kwi0cYR6fN4Zcjnym6HetPTsMNuhQxVOnfGWve79bigqQnbD5AmalGwj
-a3ML1mFt5N9O/2Qvj+7JQu0kpQAAAAAAAA==
+BQAEgYBAo2MifwB9iPxTqm2aVjVxNRk5jCEcIXab4FiE0VeZ0Za69wywt6oy2orOHUnslH32ff2H
+l0Rsslmb44tQfOwEjaFmJfj9zXyITfxIhUcG/9CuchHYpq0TwZcvQiJw5e81PrIdSFKWZhtYyKm8
+AEPYrHS3K7h+Y4SsFgimDQBPlAAAAAAAAA==
 
 
---=-goG/V8RPQexkl+bvLChN--
+--=-Pe6TyhRqMkUniTDHgVJA--
