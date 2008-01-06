@@ -1,17 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBW4Y-0006xN-TL
-	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 14:02:01 +0000
-Date: Sun, 6 Jan 2008 14:56:01 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@lazybastard.org>
-To: Andrew Morton <akpm@osdl.org>
-Subject: [PATCH] Claim maintainership for block2mtd and update email addresses
-Message-ID: <20080106135600.GB3120@lazybastard.org>
+Received: from mgw2.diku.dk ([130.225.96.92])
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JBYiV-000059-0O
+	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 16:51:27 +0000
+Date: Sun, 6 Jan 2008 17:50:34 +0100 (CET)
+From: Julia Lawall <julia@diku.dk>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: [PATCH] fs/jffs2: Add missing call to posix_acl_release
+Message-ID: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,103 +19,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I have been prime author and maintainer of block2mtd from day one, but
-neither MAINTAINERS nor the module source makes this fact clear.  And while
-I'm at it, update my email addresses tree-wide, as the old address currently
-bounces and change my name to "joern" as unicode will likely continue to
-cause trouble until the end of this century.
+From: Julia Lawall <julia@diku.dk>
 
-Signed-off-by: Jörn Engel <joern@lazybastard.org>
+posix_acl_clone does a memory allocation and sets a reference count, so
+posix_acl_release is needed afterwards to free it.
+
+
+The problem was fixed using the following semantic patch.
+(http://www.emn.fr/x-info/coccinelle/)
+
+// <smpl>
+@@
+type T;
+identifier E;
+expression E1, E2;
+int ret;
+statement S;
+@@
+
+  T E;
+  <+...
+(
+  E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...);
+  if (E == NULL) S
+|
+  if ((E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...)) == NULL) S
+)
+  ... when != E2 = E
+      when strict
+(
+  posix_acl_release(E);
+|
+  E1 = E;
+|
++ posix_acl_release(E);
+  return;
+|
++ posix_acl_release(E);
+  return ret;
+)
+  ...+>
+// </smpl>
+
+Signed-off-by: Julia Lawall <julia@diku.dk>
 ---
 
- MAINTAINERS                     |   10 ++++++++--
- drivers/mtd/devices/block2mtd.c |    4 ++--
- drivers/mtd/devices/phram.c     |    4 ++--
- drivers/mtd/maps/mtx-1_flash.c  |    2 +-
- scripts/checkstack.pl           |    2 +-
- 5 files changed, 14 insertions(+), 8 deletions(-)
-
---- linux-2.6.24-rc3logfs/drivers/mtd/devices/block2mtd.c~block2mtd_maintainer	2007-08-08 19:30:04.000000000 +0200
-+++ linux-2.6.24-rc3logfs/drivers/mtd/devices/block2mtd.c	2008-01-06 14:22:57.000000000 +0100
-@@ -4,7 +4,7 @@
-  * block2mtd.c - create an mtd from a block device
-  *
-  * Copyright (C) 2001,2002	Simon Evans <spse@secret.org.uk>
-- * Copyright (C) 2004-2006	JÃ¶rn Engel <joern@wh.fh-wedel.de>
-+ * Copyright (C) 2004-2006	Joern Engel <joern@lazybastard.org>
-  *
-  * Licence: GPL
-  */
-@@ -485,5 +485,5 @@ module_init(block2mtd_init);
- module_exit(block2mtd_exit);
- 
- MODULE_LICENSE("GPL");
--MODULE_AUTHOR("Simon Evans <spse@secret.org.uk> and others");
-+MODULE_AUTHOR("Joern Engel <joern@lazybastard.org>");
- MODULE_DESCRIPTION("Emulate an MTD using a block device");
---- linux-2.6.24-rc3logfs/MAINTAINERS~block2mtd_maintainer	2007-11-30 13:59:51.000000000 +0100
-+++ linux-2.6.24-rc3logfs/MAINTAINERS	2008-01-06 14:21:49.000000000 +0100
-@@ -835,6 +835,12 @@ L:	linux-kernel@vger.kernel.org
- T:	git kernel.org:/pub/scm/linux/kernel/git/axboe/linux-2.6-block.git
- S:	Maintained
- 
-+BLOCK2MTD DRIVER
-+P:	Joern Engel
-+M:	joern@lazybastard.org
-+L:	linux-mtd@lists.infradead.org
-+S:	Maintained
-+
- BLUETOOTH SUBSYSTEM
- P:	Marcel Holtmann
- M:	marcel@holtmann.org
-@@ -2985,8 +2991,8 @@ L:	linux-abi-devel@lists.sourceforge.net
- S:	Maintained
- 
- PHRAM MTD DRIVER
--P:	JÃ¶rn Engel
--M:	joern@wh.fh-wedel.de
-+P:	Joern Engel
-+M:	joern@lazybastard.org
- L:	linux-mtd@lists.infradead.org
- S:	Maintained
- 
---- linux-2.6.24-rc3logfs/drivers/mtd/devices/phram.c~block2mtd_maintainer	2007-08-08 19:30:04.000000000 +0200
-+++ linux-2.6.24-rc3logfs/drivers/mtd/devices/phram.c	2008-01-06 14:22:30.000000000 +0100
-@@ -2,7 +2,7 @@
-  * $Id: phram.c,v 1.16 2005/11/07 11:14:25 gleixner Exp $
-  *
-  * Copyright (c) ????		Jochen SchÃ¤uble <psionic@psionic.de>
-- * Copyright (c) 2003-2004	JÃ¶rn Engel <joern@wh.fh-wedel.de>
-+ * Copyright (c) 2003-2004	Joern Engel <joern@lazybastard.org>
-  *
-  * Usage:
-  *
-@@ -299,5 +299,5 @@ module_init(init_phram);
- module_exit(cleanup_phram);
- 
- MODULE_LICENSE("GPL");
--MODULE_AUTHOR("JÃ¶rn Engel <joern@wh.fh-wedel.de>");
-+MODULE_AUTHOR("Joern Engel <joern@lazybastard.org>");
- MODULE_DESCRIPTION("MTD driver for physical RAM");
---- linux-2.6.24-rc3logfs/scripts/checkstack.pl~block2mtd_maintainer	2007-11-15 20:52:00.000000000 +0100
-+++ linux-2.6.24-rc3logfs/scripts/checkstack.pl	2008-01-06 14:28:14.000000000 +0100
-@@ -2,7 +2,7 @@
- 
- #	Check the stack usage of functions
- #
--#	Copyright Joern Engel <joern@wh.fh-wedel.de>
-+#	Copyright Joern Engel <joern@lazybastard.org>
- #	Inspired by Linus Torvalds
- #	Original idea maybe from Keith Owens
- #	s390 port and big speedup by Arnd Bergmann <arnd@bergmann-dalldorf.de>
---- linux-2.6.24-rc3logfs/drivers/mtd/maps/mtx-1_flash.c~block2mtd_maintainer	2007-08-08 19:30:04.000000000 +0200
-+++ linux-2.6.24-rc3logfs/drivers/mtd/maps/mtx-1_flash.c	2008-01-06 14:28:44.000000000 +0100
-@@ -4,7 +4,7 @@
-  * $Id: mtx-1_flash.c,v 1.2 2005/11/07 11:14:27 gleixner Exp $
-  *
-  * (C) 2005 Bruno Randolf <bruno.randolf@4g-systems.biz>
-- * (C) 2005 JÃ¶rn Engel <joern@wohnheim.fh-wedel.de>
-+ * (C) 2005 Joern Engel <joern@lazybastard.org>
-  *
-  */
+diff -u -p a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+--- a/fs/jffs2/acl.c 2008-01-03 09:49:31.000000000 +0100
++++ b/fs/jffs2/acl.c 2008-01-06 17:38:52.000000000 +0100
+@@ -345,8 +345,10 @@ int jffs2_init_acl_pre(struct inode *dir
+ 		if (!clone)
+ 			return -ENOMEM;
+ 		rc = posix_acl_create_masq(clone, (mode_t *)i_mode);
+-		if (rc < 0)
++		if (rc < 0) {
++			posix_acl_release(clone);
+ 			return rc;
++		}
+ 		if (rc > 0)
+ 			jffs2_iset_acl(inode, &f->i_acl_access, clone);
  
