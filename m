@@ -1,17 +1,22 @@
-Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBbEj-0003vw-Li
-	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 19:32:52 +0000
-Date: Sun, 6 Jan 2008 14:11:47 -0500
-Message-Id: <200801061911.m06JBldW020012@agora.fsl.cs.sunysb.edu>
-From: Erez Zadok <ezk@cs.sunysb.edu>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: [PATCH] block2mtd lockdep_init_map warning 
-In-reply-to: Your message of "Sun, 06 Jan 2008 14:13:43 +0100."
-	<20080106131343.GA3120@lazybastard.org>
-Cc: peterz@infradead.org, linux-kernel@vger.kernel.org, mingo@redhat.com,
-	linux-mtd@lists.infradead.org, Erez Zadok <ezk@cs.sunysb.edu>,
-	dwmw2@infradead.org
+	id 1JBd5j-0003gU-Uo
+	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 21:31:42 +0000
+Date: Sun, 6 Jan 2008 22:25:42 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Erez Zadok <ezk@cs.sunysb.edu>
+Subject: Re: [PATCH] block2mtd lockdep_init_map warning
+Message-ID: <20080106212542.GA5262@lazybastard.org>
+References: <20080106131343.GA3120@lazybastard.org>
+	<200801061911.m06JBldW020012@agora.fsl.cs.sunysb.edu>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <200801061911.m06JBldW020012@agora.fsl.cs.sunysb.edu>
+Cc: peterz@infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	linux-kernel@vger.kernel.org, mingo@redhat.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,42 +26,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-In message <20080106131343.GA3120@lazybastard.org>, =?utf-8?B?SsO2cm4=?= Engel writes:
-> Maybe it is not obvious that I maintain this driver and would like to be
-> kept on Cc:.  Will send a patch to fix that shortly.
-
-I was looking in MAINTAINERS, and you weren't listed on the main MTD section
-as a maintainer.  Perhaps an update?
-
-If you get a patch, I'd love to test it.
-
-> On Sun, 6 January 2008 02:17:32 -0500, Erez Zadok wrote:
-[...]
-> > In lieu of a better fix, is this patch acceptable?
+On Sun, 6 January 2008 14:11:47 -0500, Erez Zadok wrote:
 > 
-> Not for me.  I don't mind if you keep such a hack until a proper
-> solution if found in your private tree.  But it is a horrible solution
-> to a problem introduced elsewhere.
+> The problem appears to be an interaction of two components--module loading
+> and lockdep--that's perhaps why it wasn't given enough attention.
 
-Yup, that's what I figured.  I'll keep this ugly hack but I won't push it to
-my unionfs tree on kernel.org.
+Correct.  For modules lockdep depends on initializations done after
+module_init has finished.  However block2mtd is an odd sod that can call
+into lockdep code during module_init, causing the bug you noticed.
 
-> Ingo, Peter, does either of you actually care about this problem?  In
-> the last round when I debugged this problem there was a notable lack of
-> reaction from either of you.
+Several solutions are possible.  Modules could get two initcalls, one to
+decide whether module load should get aborted, the other run later,
+after the remaining module initializations are done.  Or the module
+loader could always do the initializations and revoke them later, if
+module_init failed.
 
-The problem appears to be an interaction of two components--module loading
-and lockdep--that's perhaps why it wasn't given enough attention.
+But I personally am too unfamiliar with the module code to trust my
+judgement and have yet to receive feedback.  Even you seem to ignore my
+mails and not even Cc: me later on.  I must have done something really
+horrible in my last life, it seems.
 
-I run a lot of regression tests w/ unionfs on top of many different file
-systems, and monitoring for all sorts of problems, including lockdep
-warnings.  So it's frustrating that each time I get to test w/ jffs2, I get
-this lockdep warning, and lockdep shuts down until a reboot.  That kills my
-automated testing and masks out possible other lockdep problems (that's why
-I wanted to at least have some workaround).  Other lockdep problems I
-reported with other subsystems had been fixed within days; this one,
-unfortunately, has lingered for a while.  So if a fix can be made in a
-reasonable time-frame, I'd really appreciate it.
+Jörn
 
-Thanks,
-Erez.
+-- 
+A quarrel is quickly settled when deserted by one party; there is
+no battle unless there be two.
+-- Seneca
