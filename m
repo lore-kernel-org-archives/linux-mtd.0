@@ -1,15 +1,16 @@
-Received: from mgw2.diku.dk ([130.225.96.92])
-	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBYiV-000059-0O
-	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 16:51:27 +0000
-Date: Sun, 6 Jan 2008 17:50:34 +0100 (CET)
-From: Julia Lawall <julia@diku.dk>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH] fs/jffs2: Add missing call to posix_acl_release
-Message-ID: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
+Received: from smtp.ustc.edu.cn ([202.38.64.16] helo=ustc.edu.cn)
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JBb7V-0003TF-Rx
+	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 19:25:24 +0000
+Message-ID: <399646872.11492@ustc.edu.cn>
+Message-ID: <4781288A.8080407@mail.ustc.edu.cn>
+Date: Mon, 07 Jan 2008 03:14:18 +0800
+From: =?GB2312?B?yrHV/Q==?= <shizheng@mail.ustc.edu.cn>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+To: linux-mtd@lists.infradead.org
+Subject: why ubimkvol can't recognize /dev/ubi0?
+Content-Type: text/plain; charset=GB2312
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,63 +20,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-From: Julia Lawall <julia@diku.dk>
+Hi all,
+I wanna have a try of ubifs on nandsim, and do as what the ubifs wiki
+tells me
+(http://osl.sed.hu/wiki/ubifs/index.php/Download_the_source).
 
-posix_acl_clone does a memory allocation and sets a reference count, so
-posix_acl_release is needed afterwards to free it.
+1. compile, install and boot the new kernel(2.6.23)
+the configuration option for ubi and nandsim is default turned on as module.
 
 
-The problem was fixed using the following semantic patch.
-(http://www.emn.fr/x-info/coccinelle/)
+2. make the mtd-utils to produce ubimkvol
 
-// <smpl>
-@@
-type T;
-identifier E;
-expression E1, E2;
-int ret;
-statement S;
-@@
+3. create a ubi when I got the error
+# modprobe nandsim
+# modprobe ubi mtd=0
+# ls /dev/ubi0 -l
+crw-rw---- 1 root root 253, 0 2007-12-25 01:46 /dev/ubi0
+# ls /sys/class/ubi -l
+drwxr-xr-x 3 root root 0 2007-12-25 01:46 ubi0
+-r--r--r-- 1 root root 4096 2007-12-25 01:49 version
+# ubimkvol /dev/ubi0 -n 0 -N test -s 20MiB
+libubi error: readdir failed on "/sys/class/ubi"
+readdir: No such file or directory
+ubimkvol error: "/dev/ubi0" is not an UBI device node
 
-  T E;
-  <+...
-(
-  E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...);
-  if (E == NULL) S
-|
-  if ((E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...)) == NULL) S
-)
-  ... when != E2 = E
-      when strict
-(
-  posix_acl_release(E);
-|
-  E1 = E;
-|
-+ posix_acl_release(E);
-  return;
-|
-+ posix_acl_release(E);
-  return ret;
-)
-  ...+>
-// </smpl>
+it's so strange about the readdir failure, because there is the ubi0
+entry in sysfs.
 
-Signed-off-by: Julia Lawall <julia@diku.dk>
----
+did I miss any step, such as kernel configuration or mtd-tools installation?
 
-diff -u -p a/fs/jffs2/acl.c b/fs/jffs2/acl.c
---- a/fs/jffs2/acl.c 2008-01-03 09:49:31.000000000 +0100
-+++ b/fs/jffs2/acl.c 2008-01-06 17:38:52.000000000 +0100
-@@ -345,8 +345,10 @@ int jffs2_init_acl_pre(struct inode *dir
- 		if (!clone)
- 			return -ENOMEM;
- 		rc = posix_acl_create_masq(clone, (mode_t *)i_mode);
--		if (rc < 0)
-+		if (rc < 0) {
-+			posix_acl_release(clone);
- 			return rc;
-+		}
- 		if (rc > 0)
- 			jffs2_iset_acl(inode, &f->i_acl_access, clone);
- 
+Thanks a lot!
+
+best wishes, shizheng
