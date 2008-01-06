@@ -1,20 +1,16 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBVPe-0003cB-NV
-	for linux-mtd@lists.infradead.org; Sun, 06 Jan 2008 13:19:45 +0000
-Date: Sun, 6 Jan 2008 14:13:43 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Erez Zadok <ezk@cs.sunysb.edu>
 Subject: Re: [PATCH] block2mtd lockdep_init_map warning
-Message-ID: <20080106131343.GA3120@lazybastard.org>
+From: Peter Zijlstra <peterz@infradead.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
+In-Reply-To: <20080106131343.GA3120@lazybastard.org>
 References: <200801060717.m067HW6c030422@agora.fsl.cs.sunysb.edu>
-MIME-Version: 1.0
+	<20080106131343.GA3120@lazybastard.org>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Date: Sun, 06 Jan 2008 14:39:22 +0100
+Message-Id: <1199626763.31975.50.camel@lappy>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <200801060717.m067HW6c030422@agora.fsl.cs.sunysb.edu>
-Cc: peterz@infradead.org, linux-mtd@lists.infradead.org, mingo@redhat.com,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org
+Cc: linux-mtd@lists.infradead.org, Erez Zadok <ezk@cs.sunysb.edu>,
+	dwmw2@infradead.org, mingo@redhat.com, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,121 +20,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Maybe it is not obvious that I maintain this driver and would like to be
-kept on Cc:.  Will send a patch to fix that shortly.
 
-On Sun, 6 January 2008 02:17:32 -0500, Erez Zadok wrote:
-> 
-> Hi David,
-> 
-> I've reported before a lockdep warning when block2mtd is modloaded, and a
-> device is initialized, as in
-> 
-> 	modprobe block2mtd block2mtd=/dev/loop0
-> 
-> A typical warning looks like this:
-> 
-> BUG: key f88565c0 not in .data!
-> WARNING: at kernel/lockdep.c:2331 lockdep_init_map()
-> Pid: 1823, comm: modprobe Not tainted 2.6.24-rc6-unionfs2 #135
->  [<c02038c0>] show_trace_log_lvl+0x1a/0x2f
->  [<c02042bb>] show_trace+0x12/0x14
->  [<c0204a01>] dump_stack+0x6c/0x72
->  [<c022edf0>] lockdep_init_map+0x94/0x374
->  [<c022e79d>] debug_mutex_init+0x2c/0x3c
->  [<c0229bb0>] __mutex_init+0x38/0x40
->  [<f885520d>] 0xf885520d
->  [<c0226816>] parse_args+0x121/0x1fb
->  [<c0237aaf>] sys_init_module+0x10e8/0x1576
->  [<c0202836>] sysenter_past_esp+0x5f/0xa5
->  =======================
-> 
-> This is a long-standing problem I've seen in several of the latest stable
-> kernels.  Once lockdep turns itself off, there's no easy way to turn it back
-> on short of a reboot.
-> 
-> I looked more closely at the mtd code.  I believe the problem is that
-> lockdep doesn't like a mutex_init to be called from a module_init code path,
-> possibly because the module's symbols aren't all initialized yet.  (This
-> could arguably be considered a limitation of lockdep.)
-> 
-> So I tried to defer the call to module_init until it's absolutely needed.  I
-> couldn't find a clean way to do that via the struct mtd_info ops (there's no
-> suitable ->init op), so instead I used an int to mark whether the mutex is
-> initialized or not.  Below is a patch.  It works, but it's not as clean as
-> it should be: a better way would be to probably add an mtd_info ->init op or
-> so.
-> 
-> At least with this patch, lockdep doesn't complain any longer, so I can run
-> a clean set of regression tests w/ unionfs on top of jffs2 and other file
-> systems.
-> 
-> In lieu of a better fix, is this patch acceptable?
+On Sun, 2008-01-06 at 14:13 +0100, Jörn Engel wrote:
 
-Not for me.  I don't mind if you keep such a hack until a proper
-solution if found in your private tree.  But it is a horrible solution
-to a problem introduced elsewhere.
+> Ingo, Peter, does either of you actually care about this problem?  In
+> the last round when I debugged this problem there was a notable lack of
+> reaction from either of you.
 
-Ingo, Peter, does either of you actually care about this problem?  In
-the last round when I debugged this problem there was a notable lack of
-reaction from either of you.
+Yeah I do, I just know very little about the module stuff and haven't
+come around to looking into it.
 
-> block2mtd: defer mutex initialization to avoid a lockdep warning
-> 
-> Signed-off-by: Erez Zadok <ezk@cs.sunysb.edu>
-> 
-> diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
-> index be4b994..2c6d3e7 100644
-> --- a/drivers/mtd/devices/block2mtd.c
-> +++ b/drivers/mtd/devices/block2mtd.c
-> @@ -32,6 +32,7 @@ struct block2mtd_dev {
->  	struct list_head list;
->  	struct block_device *blkdev;
->  	struct mtd_info mtd;
-> +	int mutex_initialized;
->  	struct mutex write_mutex;
->  };
->  
-> @@ -85,6 +86,11 @@ static int block2mtd_erase(struct mtd_info *mtd, struct erase_info *instr)
->  	size_t len = instr->len;
->  	int err;
->  
-> +	if (!dev->mutex_initialized) {
-> +		mutex_init(&dev->write_mutex);
-> +		dev->mutex_initialized = 1;
-> +	}
-> +
->  	instr->state = MTD_ERASING;
->  	mutex_lock(&dev->write_mutex);
->  	err = _block2mtd_erase(dev, from, len);
-> @@ -194,6 +200,11 @@ static int block2mtd_write(struct mtd_info *mtd, loff_t to, size_t len,
->  	struct block2mtd_dev *dev = mtd->priv;
->  	int err;
->  
-> +	if (!dev->mutex_initialized) {
-> +		mutex_init(&dev->write_mutex);
-> +		dev->mutex_initialized = 1;
-> +	}
-> +
->  	if (!len)
->  		return 0;
->  	if (to >= mtd->size)
-> @@ -275,8 +286,6 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size)
->  		goto devinit_err;
->  	}
->  
-> -	mutex_init(&dev->write_mutex);
-> -
->  	/* Setup the MTD structure */
->  	/* make the name contain the block device in */
->  	dev->mtd.name = kmalloc(sizeof("block2mtd: ") + strlen(devname),
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-
-Jörn
-
--- 
-Joern's library part 13:
-http://www.chip-architect.com/
+I agree that Erez's patch is quite horrible.
