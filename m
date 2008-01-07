@@ -1,11 +1,19 @@
-Message-ID: <c84f667c00234db781ae30bda5ad0dde.lotto@phreego.com>
-From: "godsent" <lotto@phreego.com>
-To: godsent_loanlender@yahoo.com.sg
-Subject: LOAN OFFER APPLY TODAY 
-Date: Mon, 7 Jan 2008 17:40:10 -0500
-MIME-Version: 1.0
-Content-type: text/plain; charset=utf-8
-Reply-To: godsent_loanlender@yahoo.com.sg
+Received: from smtp2.linux-foundation.org ([207.189.120.14])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JC1JP-00059F-NP
+	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 23:23:26 +0000
+Date: Mon, 7 Jan 2008 15:23:00 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@lazybastard.org>
+Subject: Re: [PATCH] Claim maintainership for block2mtd and update email
+	addresses
+Message-Id: <20080107152300.2ed7cddb.akpm@linux-foundation.org>
+In-Reply-To: <20080106135600.GB3120@lazybastard.org>
+References: <20080106135600.GB3120@lazybastard.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,25 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Sun, 6 Jan 2008 14:56:01 +0100
+J__rn Engel <joern@lazybastard.org> wrote:
 
+> - * Copyright (C) 2004-2006	J=C3=B6rn Engel <joern@wh.fh-wedel.de>
+> + * Copyright (C) 2004-2006	Joern Engel <joern@lazybastard.org>
 
+Yup.  Your name comes out like that when sylpheed does its
+save-email-to-a-file thing as well and I haven't got around to working out
+why, or to reporting it.
 
-Attn:
+In this case it looks like the dud characters came about due to "[MTD] Fix
+legacy character sets throughout drivers/mtd, include/linux/mtd".  Which
+doesn't look like it fixed anything much really.
 
-I am a private Loan lender,I offer Loans to individuals,Firms and cooperate bodies at 3% interest rate,loan terms determinant. 
-Loan for developing businesses a competitive edge. 
-I offer the following kinds of loans 
-* Personal Loans (Secure and Unsecured)
-* Business Loans (Secure and Unsecured)
-* Undergraduate Loans 
-* Graduate Loans 
-* MBA Education Loans 
-* Medical Education Loans 
-* Legal Education Loans 
-* Study Abroad Loans 
-* Consolidation Loan 
-* Combination Loan 
-* Collateral And Non- Collateral Loans and much more
-Loans For Your Business Startup: Loans for Everyone, I offer loans between an amount ranging from £1,000 to £500,000, 000. 
-
-You can contact me today and be financially equiped. godsent_loanlender@yahoo.com.sg
+Going with the asciified/anglicised/bastardised spelling is a practical
+(albeit unhappy) solution.
