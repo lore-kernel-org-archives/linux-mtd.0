@@ -1,14 +1,21 @@
-Subject: Re: Flash_eraseall -j and cowardly refusing to mount
-From: David Woodhouse <dwmw2@infradead.org>
-To: "Phillips, Owain" <owain.phillips@siemens.com>
-In-Reply-To: <4B760ED6D70BBC4EBFC0AEFDAFB2392A0AEB9FBC@NTHT202E.siemenscomms.co.uk>
-References: <4B760ED6D70BBC4EBFC0AEFDAFB2392A0AEB9FBC@NTHT202E.siemenscomms.co.uk>
-Content-Type: text/plain
-Date: Mon, 07 Jan 2008 15:00:40 +0000
-Message-Id: <1199718040.27304.12.camel@pmac.infradead.org>
-Mime-Version: 1.0
+Received: from mail1.asahi-net.or.jp ([202.224.39.197]
+	helo=mail.asahi-net.or.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JBuR1-0007i5-1z
+	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 16:02:49 +0000
+Message-ID: <47824D31.8040104@ak.jp.nec.com>
+Date: Tue, 08 Jan 2008 01:02:57 +0900
+From: KaiGai Kohei <kaigai@ak.jp.nec.com>
+MIME-Version: 1.0
+To: Julia Lawall <julia@diku.dk>
+Subject: Re: [PATCH] fs/jffs2: Add missing call to posix_acl_release
+References: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
+In-Reply-To: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
+	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
+	KaiGai Kohei <kaigai@ak.jp.nec.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,14 +25,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-01-07 at 12:16 +0000, Phillips, Owain wrote:
-> Hi linux-mtd@lists.infradead.org,
+Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
 > 
-> We just upgraded to mtd-utils-1.0.1 on our 2.6.23 target and I am
-> getting problems with flash_eraseall -j where the mount fails.
+> posix_acl_clone does a memory allocation and sets a reference count, so
+> posix_acl_release is needed afterwards to free it.
+> 
+> 
+> The problem was fixed using the following semantic patch.
+> (http://www.emn.fr/x-info/coccinelle/)
+> 
+> // <smpl>
+> @@
+> type T;
+> identifier E;
+> expression E1, E2;
+> int ret;
+> statement S;
+> @@
+> 
+>   T E;
+>   <+...
+> (
+>   E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...);
+>   if (E == NULL) S
+> |
+>   if ((E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...)) == NULL) S
+> )
+>   ... when != E2 = E
+>       when strict
+> (
+>   posix_acl_release(E);
+> |
+>   E1 = E;
+> |
+> + posix_acl_release(E);
+>   return;
+> |
+> + posix_acl_release(E);
+>   return ret;
+> )
+>   ...+>
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <julia@diku.dk>
+> ---
+> 
+> diff -u -p a/fs/jffs2/acl.c b/fs/jffs2/acl.c
+> --- a/fs/jffs2/acl.c 2008-01-03 09:49:31.000000000 +0100
+> +++ b/fs/jffs2/acl.c 2008-01-06 17:38:52.000000000 +0100
+> @@ -345,8 +345,10 @@ int jffs2_init_acl_pre(struct inode *dir
+>  		if (!clone)
+>  			return -ENOMEM;
+>  		rc = posix_acl_create_masq(clone, (mode_t *)i_mode);
+> -		if (rc < 0)
+> +		if (rc < 0) {
+> +			posix_acl_release(clone);
+>  			return rc;
+> +		}
+>  		if (rc > 0)
+>  			jffs2_iset_acl(inode, &f->i_acl_access, clone);
 
-It ought to be fixed by this:
-http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=09b3fba5
+Indeed, there was a possibility to cause memory leaking.
+
+Acked-by: KaiGai Kohei <kaigai@ak.jp.nec.com>
 
 -- 
-dwmw2
+OSS Platform Development Division, NEC
+KaiGai Kohei <kaigai@ak.jp.nec.com>
