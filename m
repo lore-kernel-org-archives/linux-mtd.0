@@ -1,29 +1,30 @@
-Received: from e33.co.us.ibm.com ([32.97.110.151])
+Received: from e34.co.us.ibm.com ([32.97.110.152])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JAj4D-0002Q9-Rt
-	for linux-mtd@lists.infradead.org; Fri, 04 Jan 2008 09:42:25 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e33.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m049gET4004364
-	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 04:42:14 -0500
+	id 1JBrmD-00047O-Ll
+	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 13:12:33 +0000
+Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
+	[9.17.195.227])
+	by e34.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m07DCOjL031999
+	for <linux-mtd@lists.infradead.org>; Mon, 7 Jan 2008 08:12:24 -0500
 Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m049gEdq109434
-	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 02:42:14 -0700
+	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m07DCNJe163948
+	for <linux-mtd@lists.infradead.org>; Mon, 7 Jan 2008 06:12:23 -0700
 Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
 	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m049fuXI022105
-	for <linux-mtd@lists.infradead.org>; Fri, 4 Jan 2008 02:41:56 -0700
+	m07DBxTX019399
+	for <linux-mtd@lists.infradead.org>; Mon, 7 Jan 2008 06:12:00 -0700
 Subject: Re: ubi-utils cleanup
 From: Frank Haverkamp <haver@vnet.ibm.com>
 To: dedekind@infradead.org
-In-Reply-To: <1197884800.25999.73.camel@sauron>
+In-Reply-To: <1199439724.6546.22.camel@august>
 References: <1197884800.25999.73.camel@sauron>
+	<1199439724.6546.22.camel@august>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-Pe6TyhRqMkUniTDHgVJA"
-Date: Fri, 04 Jan 2008 10:42:03 +0100
-Message-Id: <1199439724.6546.22.camel@august>
+	boundary="=-x0jDkM0NogvWQ8+Onct5"
+Date: Mon, 07 Jan 2008 14:12:19 +0100
+Message-Id: <1199711539.7595.5.camel@august>
 Mime-Version: 1.0
 Cc: "Monte K. Copeland" <catboat@texas.net>,
 	MTD Mailinglist <linux-mtd@lists.infradead.org>,
@@ -40,57 +41,42 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-Pe6TyhRqMkUniTDHgVJA
+--=-x0jDkM0NogvWQ8+Onct5
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-Hi Artem,
+Hi,
 
-On Mon, 2007-12-17 at 11:46 +0200, Artem Bityutskiy wrote:
-> Hi Frank, Alex, Andreas,
->=20
-> since UBIFS gets tried more, people start using ubi-utils more, and I
-> got several feed-backs about how untidy mtd-utils,git is, and ubi-utils
-> are untidy as well.
->=20
-> May you please help me cleaning them up a little? We should re-structure
-> the repo a bit to start of. I've added few ideas into the ubi-utils/TODO
-> file.
+On Fri, 2008-01-04 at 10:42 +0100, Frank Haverkamp wrote:
 
-> First of, we should separate out UBI tests from ubi-utils and move them
-> to tests/ubi-tests. Then we should separate-out the tools which are
-> NAND-related - indeed, what do they do in ubi-utils? They should go to
-> nand-tools, and stuff like nanddump and nandwrite should go to
-> nand-tools as well.
+> nand2bin and bin2nand are of the same kind and not UBI dependend. To be
+> more widely used, those tools need more flexibility where the ECC data
+> is placed in the OOB. Currently it is pretty much hard-coded for the
+> layout we are using.
 
-nand2bin and bin2nand are of the same kind and not UBI dependend. To be
-more widely used, those tools need more flexibility where the ECC data
-is placed in the OOB. Currently it is pretty much hard-coded for the
-layout we are using.
+I added more flexibility to the nand2bin/bin2nand tools so that
+different ECC layouts in the OOB can more easily be added. I did not
+move them yet. Josh, this feature is probably what some of your
+colleagues might be looking for.
 
-I have nothing against relocating the tools to other directories. What I
-like to keep are working install and uninstall rules with the
-possibility to define an individual install directory.
+I moved the scripts from the perl- the scripts-sub-directory since two
+sub-dirs do not make a lot of sense like you already mentioned. I
+changed the Makefile a little so that one can start the tests more
+easily. I removed the obsolete documentation file.
 
-> Since most of the stuff in ubi-utils were make by your team, I kindly
-> ask you to help with re-structuring them.
+You can find my proposed changes in my mtd-utils.git:
+  http://git.infradead.org/?p=3Dusers/haver/mtd-utils.git;a=3Dsummary
 
-Alex is busy with his thesis, I doubt that he can help much. I will try
-to follow the discussion and contribute small things if my time permits
-it. Please take my colleague Monte Copeland on CC. I don't know how much
-time he has, but he is currently responsible for our internal UBI usage.
-
-Regards
+Regards,
 
 Frank
-
 --=20
 IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
 Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
 Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
 Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=-Pe6TyhRqMkUniTDHgVJA
+--=-x0jDkM0NogvWQ8+Onct5
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -173,8 +159,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTA0MDk0MTQwWjAjBgkqhkiG9w0B
-CQQxFgQU7wz+HIjPctVN5SvOpb8vOXjUfmgwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMTA3MTMxMjEyWjAjBgkqhkiG9w0B
+CQQxFgQUL/fmW2fm6o4rNBJsPAuvwsCXLz8wggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -185,9 +171,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYBAo2MifwB9iPxTqm2aVjVxNRk5jCEcIXab4FiE0VeZ0Za69wywt6oy2orOHUnslH32ff2H
-l0Rsslmb44tQfOwEjaFmJfj9zXyITfxIhUcG/9CuchHYpq0TwZcvQiJw5e81PrIdSFKWZhtYyKm8
-AEPYrHS3K7h+Y4SsFgimDQBPlAAAAAAAAA==
+BQAEgYCX62u5N2aAEjBb/stp5qZQYMtC8iC5/a5w96lqfT6SFSKyBDsXvCgfYb5YnyfLovl44OiC
+ENcbks2MJO+e1XjGwZtlYhTCuesOVm9kqG+dsC35R5xaMjT7nSSPQf41tpDURlJXs3argT+wj7PK
+zXDL0CWrBVveu14RYlip+7o1/wAAAAAAAA==
 
 
---=-Pe6TyhRqMkUniTDHgVJA--
+--=-x0jDkM0NogvWQ8+Onct5--
