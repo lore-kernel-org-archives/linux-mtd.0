@@ -1,21 +1,20 @@
-Received: from mail1.asahi-net.or.jp ([202.224.39.197]
-	helo=mail.asahi-net.or.jp)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBuR1-0007i5-1z
-	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 16:02:49 +0000
-Message-ID: <47824D31.8040104@ak.jp.nec.com>
-Date: Tue, 08 Jan 2008 01:02:57 +0900
-From: KaiGai Kohei <kaigai@ak.jp.nec.com>
-MIME-Version: 1.0
-To: Julia Lawall <julia@diku.dk>
-Subject: Re: [PATCH] fs/jffs2: Add missing call to posix_acl_release
-References: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
-In-Reply-To: <Pine.LNX.4.64.0801061749490.24950@ask.diku.dk>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Received: from outbound.mobilygen.com ([72.166.0.2]
+	helo=mailhost.mobilygen.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JBwu2-0002jf-Vu
+	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 18:40:58 +0000
+Subject: Re: Flash_eraseall -j and cowardly refusing to mount
+From: Jeff Hane <jhane@mobilygen.com>
+To: David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <1199718040.27304.12.camel@pmac.infradead.org>
+References: <4B760ED6D70BBC4EBFC0AEFDAFB2392A0AEB9FBC@NTHT202E.siemenscomms.co.uk>
+	<1199718040.27304.12.camel@pmac.infradead.org>
+Content-Type: text/plain
+Date: Mon, 07 Jan 2008 10:39:19 -0800
+Message-Id: <1199731159.6533.10.camel@qu062.quarc.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, kernel-janitors@vger.kernel.org,
-	dwmw2@infradead.org, linux-kernel@vger.kernel.org,
-	KaiGai Kohei <kaigai@ak.jp.nec.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,71 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Julia Lawall wrote:
-> From: Julia Lawall <julia@diku.dk>
-> 
-> posix_acl_clone does a memory allocation and sets a reference count, so
-> posix_acl_release is needed afterwards to free it.
-> 
-> 
-> The problem was fixed using the following semantic patch.
-> (http://www.emn.fr/x-info/coccinelle/)
-> 
-> // <smpl>
-> @@
-> type T;
-> identifier E;
-> expression E1, E2;
-> int ret;
-> statement S;
-> @@
-> 
->   T E;
->   <+...
-> (
->   E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...);
->   if (E == NULL) S
-> |
->   if ((E = \(posix_acl_clone\|posix_acl_alloc\|posix_acl_dup\)(...)) == NULL) S
-> )
->   ... when != E2 = E
->       when strict
-> (
->   posix_acl_release(E);
-> |
->   E1 = E;
-> |
-> + posix_acl_release(E);
->   return;
-> |
-> + posix_acl_release(E);
->   return ret;
-> )
->   ...+>
-> // </smpl>
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
-> ---
-> 
-> diff -u -p a/fs/jffs2/acl.c b/fs/jffs2/acl.c
-> --- a/fs/jffs2/acl.c 2008-01-03 09:49:31.000000000 +0100
-> +++ b/fs/jffs2/acl.c 2008-01-06 17:38:52.000000000 +0100
-> @@ -345,8 +345,10 @@ int jffs2_init_acl_pre(struct inode *dir
->  		if (!clone)
->  			return -ENOMEM;
->  		rc = posix_acl_create_masq(clone, (mode_t *)i_mode);
-> -		if (rc < 0)
-> +		if (rc < 0) {
-> +			posix_acl_release(clone);
->  			return rc;
-> +		}
->  		if (rc > 0)
->  			jffs2_iset_acl(inode, &f->i_acl_access, clone);
 
-Indeed, there was a possibility to cause memory leaking.
+ But doesn't this only fix the case where you have contiguous 8 bytes to
+write the cleanmarker?  flash_eraseall -j uses MTD_PLACE to write the
+cleanmarker BUT jffs2 uses MTD_AUTO to read the cleanmarker.
+ For example, if your oob area has byte 0 as the bad block indicator and
+bytes 8-10 have ecc, there are only 7 consecutive free bytes.
+flash_eraseall -j will only write 7 bytes so jffs2 will fail when
+mounting the filesystem because it will read 8 bytes.  The 8th byte,
+which will be byte 12, will still be FF.
+  It seems there should be an ioctl that would allow one to read/write
+the oob area using MTD_AUTO???
 
-Acked-by: KaiGai Kohei <kaigai@ak.jp.nec.com>
+jeff
 
--- 
-OSS Platform Development Division, NEC
-KaiGai Kohei <kaigai@ak.jp.nec.com>
+On Mon, 2008-01-07 at 15:00 +0000, David Woodhouse wrote:
+> On Mon, 2008-01-07 at 12:16 +0000, Phillips, Owain wrote:
+> > Hi linux-mtd@lists.infradead.org,
+> > 
+> > We just upgraded to mtd-utils-1.0.1 on our 2.6.23 target and I am
+> > getting problems with flash_eraseall -j where the mount fails.
+> 
+> It ought to be fixed by this:
+> http://git.kernel.org/?p=linux/kernel/git/torvalds/linux-2.6.git;a=commitdiff;h=09b3fba5
+> 
