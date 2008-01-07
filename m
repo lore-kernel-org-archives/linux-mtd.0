@@ -1,18 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBmoI-0002MH-Vr
-	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 07:54:21 +0000
-Message-ID: <4781D985.6020504@nokia.com>
-Date: Mon, 07 Jan 2008 09:49:25 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?ZXh0IOaXtuatow==?= <shizheng@mail.ustc.edu.cn>
-Subject: Re: why ubimkvol can't recognize /dev/ubi0?
-References: <399646872.11492@ustc.edu.cn>
-In-Reply-To: <399646872.11492@ustc.edu.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] block2mtd lockdep_init_map warning
+From: Peter Zijlstra <peterz@infradead.org>
+To: Erez Zadok <ezk@cs.sunysb.edu>
+In-Reply-To: <200801061911.m06JBldW020012@agora.fsl.cs.sunysb.edu>
+References: <200801061911.m06JBldW020012@agora.fsl.cs.sunysb.edu>
+Content-Type: text/plain
+Date: Mon, 07 Jan 2008 11:05:26 +0100
+Message-Id: <1199700326.7143.10.camel@twins>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	Rusty Russell <rusty@rustcorp.com.au>,
+	linux-kernel@vger.kernel.org, mingo@redhat.com,
+	linux-mtd@lists.infradead.org, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,93 +21,71 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-时正 wrote:
-> Hi all,
-> I wanna have a try of ubifs on nandsim, and do as what the ubifs wiki
-> tells me
-> (http://osl.sed.hu/wiki/ubifs/index.php/Download_the_source).
-> 
-> 1. compile, install and boot the new kernel(2.6.23)
-> the configuration option for ubi and nandsim is default turned on as module.
-> 
-> 
-> 2. make the mtd-utils to produce ubimkvol
-> 
-> 3. create a ubi when I got the error
-> # modprobe nandsim
-> # modprobe ubi mtd=0
-> # ls /dev/ubi0 -l
-> crw-rw---- 1 root root 253, 0 2007-12-25 01:46 /dev/ubi0
-> # ls /sys/class/ubi -l
-> drwxr-xr-x 3 root root 0 2007-12-25 01:46 ubi0
-> -r--r--r-- 1 root root 4096 2007-12-25 01:49 version
-> # ubimkvol /dev/ubi0 -n 0 -N test -s 20MiB
-> libubi error: readdir failed on "/sys/class/ubi"
-> readdir: No such file or directory
-> ubimkvol error: "/dev/ubi0" is not an UBI device node
-> 
-> it's so strange about the readdir failure, because there is the ubi0
-> entry in sysfs.
-> 
-> did I miss any step, such as kernel configuration or mtd-tools installation?
-> 
-> Thanks a lot!
-> 
-> best wishes, shizheng
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
->From b96f4481662bd7ac247d4d5a25b27f7d8afffb92 Mon Sep 17 00:00:00 2001
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Date: Mon, 7 Jan 2008 09:47:17 +0200
-Subject: ubi-utils: fix bug using readdir
+On Sun, 2008-01-06 at 14:11 -0500, Erez Zadok wrote:
 
-Library functions never reset errno to zero, so if you want
-to use its value to check for errors then you must set it to zero
-before calling the library function (in this case readdir).
+> > Ingo, Peter, does either of you actually care about this problem?  In
+> > the last round when I debugged this problem there was a notable lack of
+> > reaction from either of you.
+> 
+> The problem appears to be an interaction of two components--module loading
+> and lockdep--that's perhaps why it wasn't given enough attention.
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+Would something like this work for people?
+
+Not-Yet-Signed-off-by: Peter Zijlstra <a.p.zijlstra@chello.nl>
 ---
- ubi-utils/src/libubi.c |   13 +++++++++++--
- 1 files changed, 11 insertions(+), 2 deletions(-)
-
-diff --git a/ubi-utils/src/libubi.c b/ubi-utils/src/libubi.c
-index 855aa82..be06f70 100644
---- a/ubi-utils/src/libubi.c
-+++ b/ubi-utils/src/libubi.c
-@@ -872,9 +872,13 @@ int ubi_get_info(libubi_t desc, struct ubi_info *info)
+Index: linux-2.6/include/linux/sched.h
+===================================================================
+--- linux-2.6.orig/include/linux/sched.h
++++ linux-2.6/include/linux/sched.h
+@@ -1160,6 +1160,7 @@ struct task_struct {
+ 	int lockdep_depth;
+ 	struct held_lock held_locks[MAX_LOCK_DEPTH];
+ 	unsigned int lockdep_recursion;
++	struct module *loading_module;
+ #endif
+ 
+ /* journalling filesystem info */
+Index: linux-2.6/kernel/module.c
+===================================================================
+--- linux-2.6.orig/kernel/module.c
++++ linux-2.6/kernel/module.c
+@@ -2023,6 +2023,9 @@ static struct module *load_module(void _
+ 		printk(KERN_WARNING "%s: Ignoring obsolete parameters\n",
+ 		       mod->name);
+ 
++#ifdef CONFIG_LOCKDEP
++	current->loading_module = mod;
++#endif
+ 	/* Size of section 0 is 0, so this works well if no params */
+ 	err = parse_args(mod->name, mod->args,
+ 			 (struct kernel_param *)
+@@ -2030,6 +2033,9 @@ static struct module *load_module(void _
+ 			 sechdrs[setupindex].sh_size
+ 			 / sizeof(struct kernel_param),
+ 			 NULL);
++#ifdef CONFIG_LOCKDEP
++	current->loading_module = NULL
++#endif
+ 	if (err < 0)
+ 		goto arch_cleanup;
+ 
+@@ -2454,6 +2460,17 @@ int is_module_address(unsigned long addr
+ 		}
  	}
  
- 	info->lowest_dev_num = INT_MAX;
--	while ((dirent = readdir(sysfs_ubi))) {
-+	while (1) {
- 		int dev_num, ret;
- 
-+		errno = 0;
-+		dirent = readdir(sysfs_ubi);
-+		if (!dirent)
-+			break;
- 		/*
- 		 * Make sure this direntry is a directory and not a symlink -
- 		 * Linux puts symlinks to UBI volumes on this UBI device to the
-@@ -1022,9 +1026,14 @@ int ubi_get_dev_info1(libubi_t desc, int dev_num, struct ubi_dev_info *info)
- 		return -1;
- 
- 	info->lowest_vol_num = INT_MAX;
--	while ((dirent = readdir(sysfs_ubi))) {
++#ifdef CONFIG_LOCKDEP
++	if (current->loading_module) {
++		mod = current->loading_module;
++		if (within(addr, mod->module_init, mod->init_text_size)
++		    || within(addr, mod->module_core, mod->core_text_size)) {
++			preempt_enable();
++			return 1;
++		}
++	}
++#endif
 +
-+	while (1) {
- 		int vol_id, ret, devno;
+ 	preempt_enable();
  
-+		errno = 0;
-+		dirent = readdir(sysfs_ubi);
-+		if (!dirent)
-+			break;
- 		ret = sscanf(dirent->d_name, UBI_VOL_NAME_PATT, &devno, &vol_id);
- 		if (ret == 2 && devno == dev_num) {
- 			info->vol_count += 1;
--- 
-1.4.4.2
+ 	return 0;
