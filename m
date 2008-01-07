@@ -1,27 +1,20 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JBfng-0005Cw-NU
-	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 00:25:15 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JBfna-0004n4-Mc
-	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 00:25:05 +0000
-Received: from pub082136092028.dh-hfc.datazug.ch ([82.136.92.28])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Jan 2008 00:25:02 +0000
-Received: from marcel by pub082136092028.dh-hfc.datazug.ch with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Mon, 07 Jan 2008 00:25:02 +0000
+Received: from ms1.wlps.kl.edu.tw ([210.240.18.1])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JBibR-0000Ny-Pp
+	for linux-mtd@lists.infradead.org; Mon, 07 Jan 2008 03:24:48 +0000
+Received: from ms1.wlps.kl.edu.tw (localhost [127.0.0.1])
+	by ms1.wlps.kl.edu.tw (Postfix) with ESMTP id 60438A5BF7
+	for <linux-mtd@lists.infradead.org>;
+	Mon,  7 Jan 2008 10:59:38 +0800 (CST)
 To: linux-mtd@lists.infradead.org
-From: Marcel Ziswiler <marcel@ziswiler.com>
-Subject: Re: [PATCH] basic pxa3 nand controller support
-Date: Mon, 7 Jan 2008 00:23:03 +0000 (UTC)
-Message-ID: <loom.20080107T001557-159@post.gmane.org>
-References: <f17812d70712201756h501a80cch8305d40fa479f5cf@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Subject: LONG OVER DUE CONTRACT PAYMENT.
+From: TELEX/ WIRE TRANSFER DEPT CBN. <telexwiredept@googlemail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
-Sender: news <news@ger.gmane.org>
+Message-Id: <20080107025938.1E6B7A5CB0@ms1.wlps.kl.edu.tw>
+Date: Mon,  7 Jan 2008 10:59:38 +0800 (CST)
+Reply-To: telexwiredept@googlemail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,31 +24,43 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-eric miao <eric.y.miao <at> gmail.com> writes:
 
-> Early feedback is welcome, thanks!
-
-Hi Eric
-
-Overall the patch looks good, just a few comments.
-
-The patch does not apply cleanly unless I remove the spurious newline before
-line 1284 resulting in the following error:
-patch: **** malformed patch at line 1284: pm_message_t state)
-
-The DRCMR97 register is not defined anywhere, at lest not in 2.6.24-rc6:
-drivers/mtd/nand/pxa3xx_nand.c:542: error: ‘DRCMR97’ undeclared (first use in
-this function)
-
-The registers and bit definitions should be moved to pxa-regs.h, not?
-
-I had my troubles getting it to work on a custom PXA320 board. I kinda figured
-out what platform data it needs, but still can't seem to get it to work properly:
-pxa3xx-nand pxa3xx-nand: failed to detect flash
-
-What kernel does your patch apply to? What CPUs/boards did you try it on? Can
-you provide an example platform integration required to make it work?
-
-Cheers
-
-Marcel
+CENTRAL BANK OF NIGERIA
+WIRE TRANSFER DEPARTMENT
+MARINA AVENUE-LAGOS
+NIGERIA.
+E-MAIL: draliu_usman@excite.com
+OUR REF: CBN/WTD/AU/03/01/08
+ATTN: HONOURABLE CONTRACTOR / NEXT OF KIN CLAIMS.
+RE: REMITTANCE OF YOUR CONTRACT SUM WITH THE FEDERAL REPUBLIC OF NIGERIA.
+With due respect sir, we sincerely apologize for the delay of the
+transfer of your contract sum into your nominated bank account. Several
+foreign contractors have gone through several problems receiving their
+contract payments from our country.
+I sincerely apologize for this problems.Henceforth,We have gone through
+your files and documents and I must say they are highly satisfactory
+and we have decided to transfer your funds into your account
+immediately we hear from you.
+To make things clear and to prevent fraudulent activities, we would
+advice you to re-send your personal data
+1. Names in full: --------------
+2. Address: ------------------
+3. Nationality: ----------------
+4. Age: ----------------------
+5. Occupation: ----------------
+6. Phone/Fax: -----------------
+7. Present Country: ------------
+8. Banking details: --------------
+9. Contract amount: ------------
+And all other relevant documents that approve your claim of this
+contract sum.Please we would advice that you contact us on
+(draliu_usman@excite.com)so that we could talk this over.
+As soon as we receive the aforementioned information, we would commence
+with the transfer of your funds into your account immediately.
+We are doing this to make sure we erase all terrible names our country
+has over the past.
+We hope to serve you better.
+Regards,
+DR ALIU USMAN
+MANAGER,
+WIRE TRANSFER DEPT.(CBN).
