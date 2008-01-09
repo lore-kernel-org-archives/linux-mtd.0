@@ -1,13 +1,13 @@
 Received: from mail.davidb.org ([66.93.32.219])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JCOfS-00014v-O9
-	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 00:19:45 +0000
-Date: Tue, 8 Jan 2008 16:19:31 -0800
-From: David Brown <davidb@davidb.org>
+	id 1JCOfg-00015C-2B
+	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 00:19:58 +0000
+Date: Tue, 8 Jan 2008 16:19:48 -0800
+From: David Brown <mtd@davidb.org>
 To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 Subject: Re: [PATCH] Claim maintainership for block2mtd and update email
 	addresses
-Message-ID: <20080109001931.GA16426@old.davidb.org>
+Message-ID: <20080109001948.GA16644@old.davidb.org>
 References: <20080106135600.GB3120@lazybastard.org>
 	<20080107152300.2ed7cddb.akpm@linux-foundation.org>
 	<20080108010656.GA10627@lazybastard.org>
