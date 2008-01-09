@@ -1,21 +1,24 @@
-Received: from mail.gmx.net ([213.165.64.20])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JCNn3-0005yr-G9
-	for linux-mtd@lists.infradead.org; Tue, 08 Jan 2008 23:23:32 +0000
-Date: Wed, 9 Jan 2008 00:23:24 +0100 (CET)
-From: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+Received: from mail.davidb.org ([66.93.32.219])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JCOfS-00014v-O9
+	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 00:19:45 +0000
+Date: Tue, 8 Jan 2008 16:19:31 -0800
+From: David Brown <davidb@davidb.org>
+To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 Subject: Re: [PATCH] Claim maintainership for block2mtd and update email
 	addresses
-In-Reply-To: <20080108010656.GA10627@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0801090016570.10908@axis700.grange>
+Message-ID: <20080109001931.GA16426@old.davidb.org>
 References: <20080106135600.GB3120@lazybastard.org>
 	<20080107152300.2ed7cddb.akpm@linux-foundation.org>
 	<20080108010656.GA10627@lazybastard.org>
+	<Pine.LNX.4.64.0801090016570.10908@axis700.grange>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=utf-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mtd@lists.infradead.org,
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.64.0801090016570.10908@axis700.grange>
+Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
+	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
 	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,25 +29,30 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 8 Jan 2008, J=C3=B6rn Engel wrote:
+On Wed, Jan 09, 2008 at 12:23:24AM +0100, Guennadi Liakhovetski wrote:
 
-> I'm happy if people spend effort and make unicode work.  Until then I'll
-> semi-officially change my name to "Joern" and keep collecting unusual
-> specimens.
+>On Tue, 8 Jan 2008, Jörn Engel wrote:
+>
+>> I'm happy if people spend effort and make unicode work.  Until then I'll
+>> semi-officially change my name to "Joern" and keep collecting unusual
+>> specimens.
+>
+>Just wondering - nothing personal at all. What's the official plan for 
+>this - do we want (when utf8 works) to use utf8 codes for symbols only for 
+>languages mostly based on ASCII, like iso-8859-15, or for all?
 
-Just wondering - nothing personal at all. What's the official plan for=20
-this - do we want (when utf8 works) to use utf8 codes for symbols only for=
-=20
-languages mostly based on ASCII, like iso-8859-15, or for all? Would we,=20
-for example, then also write Cyrillic names in utf-8 and every other=20
-alphabet for that matter? Didn't find anything under Documentation about=20
-that. Maybe we want to document it somewhere? Wasn't C-sources originally=
-=20
-supposed to be ASCII? So, what we use in sources, what under Documentation=
-=20
-or in MAINTAINERS may be different matters?
+UTF-8 already works fine in git.  There is some support in recent versions
+to allow commit messages and users to be specified in other encodings.
 
-Thanks
-Guennadi
----
-Guennadi Liakhovetski
+I think the issue here is with mailers modifying the encoding of data in
+message files.
+
+My reply header should be to Jörn, with a proper 'o' with two dots over it.
+By default, my mailer wants to encode the message in iso-8859-1.  If I add
+a single unicode character, say '‣', then the whole message will get
+encoded in UTF-8.
+
+UTF-8 has the advantage of supporting nearly all character sets.  The extra
+space needed isn't really an issue for usernames or for comment messages.
+
+Dave
