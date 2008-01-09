@@ -1,19 +1,11 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JCdq5-0001Uz-5F
-	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 16:31:43 +0000
-Received: from lnxricardw.se.axis.com (lnxricardw.se.axis.com [10.13.11.219])
-	by miranda.se.axis.com (8.13.4/8.13.4/Debian-3sarge3) with ESMTP id
-	m09GVNH2031934
-	for <linux-mtd@lists.infradead.org>; Wed, 9 Jan 2008 17:31:23 +0100
-Date: Wed, 9 Jan 2008 17:30:49 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Linux mtd <linux-mtd@lists.infradead.org>
-Subject: mounting "unformatted" nandflash
-Message-ID: <Pine.LNX.4.64.0801091138010.22600@lnxricardw.se.axis.com>
+Message-ID: <478470F4000019AF@www.zipmail.com.br>
+Date: Thu, 10 Jan 2008 00:03:12 +0100
+From: douglasphilip104@zipmail.com.br
+Subject: =?iso-8859-1?Q?GO=20AND=20SEND=20DELIVERY=20FEE=20TO=20THE=20COMPANY?=
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+To: undisclosed-recipients:;
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +15,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Attn:Honourable Beneficiary,
+ 
+This is to officially inform you that we have verified your file and foun=
+d
+out why you have not received your fund/draft. It was because you have no=
+t
+fulfiled the obligations given to you in respect of your overdue fund/dra=
+ft
+payment. Also,You are still dealing with the none officials in the Bank/C=
+ourier
+and all your attempt to secure the release of your fund/draft failed. I
+wish to advise you that such an illegal act should have to stop if you wi=
+sh
+to receive your newly lunched atm card payment. 
 
-Hi all,
+I wish to let you know that necessary arrangement has been put in place
+to release your fund as your fund was arranged and carefull edited into
+ATM card.
 
-Before I start digging into this myself, perhaps someone here has an=20
-answer.
+This is the latest instruction from Mr. President, Thomas
+Yayi Boni/Ministry of Finance Benin Republic. The card center had deposit=
+ed
+your ATM master card with the below delivery
+company.Mr.President had mandated to issue out (usd$400,000.00) as part
+payment for this fiscal year 2007. You have to stop further contacts with=
 
-We are running an embedded system with 128 megs of nand flash=20
-(large-block). To put it simply, our scenario is that we mount a large=20
-portion of empty flash as a jffs2 partition. Since the partition is empty,=
-=20
-there are no [oob] cleanmarkers, and upon mounting, jffs2 scans the=20
-partition, marks all blocks as needing erasure; this is then ultimately=20
-controlled by the pdflush kernel task.
+other person(s) Or Office(s) to avoid any problems in receiving your ATM
+master card. 
 
-The strange thing is that pdflush then takes almost 100% cpu for a minute=
-=20
-or so to complete. Erasing the whole flash (e.g. using flash_eraseall)=20
-just takes a few seconds, writing the cleanmarkers should take even less.=
-=20
-So why is pdflush taking so much time to complete it's task? I've figured=
-=20
-that it must be the erase/cleanmarker-write process which is the culprit,=
-=20
-as upon rebooting pdflush exhibits no such behavior when the cleanmarkers=
-=20
-are in place).
+You will make withdrawals in any part of the world with this ATM master
+card but the amount you will withdraw per a day is maximium of(US$1,000
+). The amount in the ATM master card is usd$400,000.00.
 
-(Yes, in this case we could use flash_eraseall -j (which incidently=20
-doesn't seem to work but could be easily fixed) to 'format' the partition=
-=20
-in question. However, for various reasons this isn't practical for us as=20
-the initial flash write is done using a non-linux tool).
+The only fee that You will send the company is the delivery
+charges of usd$95.Therefore, Kindly contact the company and requst them
+to give you the informations to send the usd$95. 
+and then register for the delivery of your ATM master card to
+your address.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Send them the below informations;
+1. Your full name..............
+2. Your phone and fax number..................
+3. Address where you want them to send your ATM master card....
+4. Your age and current occupation...............
+5. Acopy of your identification card............
+6.The delivery Charges usd$95.
+
+Contact person;
+Pastor Chris Mba.
+E-mail; glocourierbeninofice@yahoo.fr
+Note:because of imposters,We hereby issue you a code of conduct
+which is (ATM-318) you have to indicate it when contacting the payment ce=
+nter
+using it as your Subject. 
+
+Regards.
+Hon.Philip Ch.Williams
+Chief Auditor To
+the president
+Benin Republic.
