@@ -1,25 +1,19 @@
-Received: from mail.davidb.org ([66.93.32.219])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JCOfg-00015C-2B
-	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 00:19:58 +0000
-Date: Tue, 8 Jan 2008 16:19:48 -0800
-From: David Brown <mtd@davidb.org>
-To: Guennadi Liakhovetski <g.liakhovetski@gmx.de>
-Subject: Re: [PATCH] Claim maintainership for block2mtd and update email
-	addresses
-Message-ID: <20080109001948.GA16644@old.davidb.org>
-References: <20080106135600.GB3120@lazybastard.org>
-	<20080107152300.2ed7cddb.akpm@linux-foundation.org>
-	<20080108010656.GA10627@lazybastard.org>
-	<Pine.LNX.4.64.0801090016570.10908@axis700.grange>
+Received: from an-out-0708.google.com ([209.85.132.251])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JCSeq-00089R-6N
+	for linux-mtd@lists.infradead.org; Wed, 09 Jan 2008 04:35:22 +0000
+Received: by an-out-0708.google.com with SMTP id c3so20517ana.99
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 08 Jan 2008 20:35:15 -0800 (PST)
+Message-ID: <97a0a9ac0801082035r2dacab1cu40a6bfc4e7fedb1a@mail.gmail.com>
+Date: Tue, 8 Jan 2008 21:35:15 -0700
+From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [NOR] Add support for the ST M29W400DB flash chip.
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <Pine.LNX.4.64.0801090016570.10908@axis700.grange>
-Cc: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,30 +23,49 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, Jan 09, 2008 at 12:23:24AM +0100, Guennadi Liakhovetski wrote:
+Add support for the ST M29W400DB flash chip.
 
->On Tue, 8 Jan 2008, Jörn Engel wrote:
->
->> I'm happy if people spend effort and make unicode work.  Until then I'll
->> semi-officially change my name to "Joern" and keep collecting unusual
->> specimens.
->
->Just wondering - nothing personal at all. What's the official plan for 
->this - do we want (when utf8 works) to use utf8 codes for symbols only for 
->languages mostly based on ASCII, like iso-8859-15, or for all?
+Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
 
-UTF-8 already works fine in git.  There is some support in recent versions
-to allow commit messages and users to be specified in other encodings.
+---
 
-I think the issue here is with mailers modifying the encoding of data in
-message files.
+diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
+index 6405938..0b4f481 100644
+--- a/drivers/mtd/chips/jedec_probe.c
++++ b/drivers/mtd/chips/jedec_probe.c
+@@ -135,6 +135,7 @@
+ #define M29W160DT	0x22C4
+ #define M29W160DB	0x2249
+ #define M29W040B	0x00E3
++#define M29W400DB	0x00EF
+ #define M50FW040	0x002C
+ #define M50FW080	0x002D
+ #define M50FW016	0x002E
+@@ -1498,7 +1499,22 @@ static const struct amd_flash_info jedec_table[] = {
+ 		.regions	= {
+ 			ERASEINFO(0x10000,8),
+ 		}
+-        }, {
++	}, {
++		.mfr_id		= MANUFACTURER_ST,
++		.dev_id		= M29W400DB,
++		.name		= "ST M29W400DB",
++		.devtypes	= CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
++		.uaddr		= MTD_UADDR_0x0555_0x02AA,
++		.dev_size	= SIZE_512KiB,
++		.cmd_set	= P_ID_AMD_STD,
++		.nr_regions	= 4,
++		.regions	= {
++			ERASEINFO(0x04000,1),
++			ERASEINFO(0x02000,2),
++			ERASEINFO(0x08000,1),
++			ERASEINFO(0x10000,7)
++		}
++	}, {
+ 		.mfr_id		= MANUFACTURER_ST,
+ 		.dev_id		= M50FW040,
+ 		.name		= "ST M50FW040",
 
-My reply header should be to Jörn, with a proper 'o' with two dots over it.
-By default, my mailer wants to encode the message in iso-8859-1.  If I add
-a single unicode character, say '‣', then the whole message will get
-encoded in UTF-8.
-
-UTF-8 has the advantage of supporting nearly all character sets.  The extra
-space needed isn't really an issue for usernames or for comment messages.
-
-Dave
+-- 
+Gordon Farquharson
+GnuPG Key ID: 32D6D676
