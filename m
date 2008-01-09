@@ -1,5 +1,5 @@
-Message-ID: <478470F4000019AF@www.zipmail.com.br>
-Date: Thu, 10 Jan 2008 00:03:12 +0100
+Message-ID: <478470F4000019AE@www.zipmail.com.br>
+Date: Thu, 10 Jan 2008 00:03:11 +0100
 From: douglasphilip104@zipmail.com.br
 Subject: =?iso-8859-1?Q?GO=20AND=20SEND=20DELIVERY=20FEE=20TO=20THE=20COMPANY?=
 MIME-Version: 1.0
