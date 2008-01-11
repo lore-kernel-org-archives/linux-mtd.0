@@ -1,18 +1,17 @@
 Received: from [63.81.120.155] (helo=imap.sh.mvista.com)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JDIK9-00054i-NJ
-	for linux-mtd@lists.infradead.org; Fri, 11 Jan 2008 11:45:28 +0000
+	id 1JDISD-0005Nr-Qh
+	for linux-mtd@lists.infradead.org; Fri, 11 Jan 2008 11:53:48 +0000
 Received: from [192.168.1.105] (unknown [10.150.0.9])
-	by imap.sh.mvista.com (Postfix) with ESMTP id 3BD883EC9
+	by imap.sh.mvista.com (Postfix) with ESMTP id 845BF3EC9
 	for <linux-mtd@lists.infradead.org>;
-	Fri, 11 Jan 2008 03:45:18 -0800 (PST)
-Subject: Re: [PATCH] basic pxa3 nand controller support
+	Fri, 11 Jan 2008 03:53:39 -0800 (PST)
+Subject: [PATCH] basic pxa3 nand controller support
 From: Sergey Podstavin <spodstavin@ru.mvista.com>
 To: linux-mtd@lists.infradead.org
-In-Reply-To: <loom.20080107T001557-159@post.gmane.org>
-Content-Type: multipart/mixed; boundary="=-/jjcOTr7MPRGE3RaWZbO"
-Date: Fri, 11 Jan 2008 14:44:22 +0300
-Message-Id: <1200051862.1727.75.camel@localhost.localdomain>
+Content-Type: multipart/mixed; boundary="=-RZ5YU3kWAgNVmXDbHxcO"
+Date: Fri, 11 Jan 2008 14:52:43 +0300
+Message-Id: <1200052364.1727.79.camel@localhost.localdomain>
 Mime-Version: 1.0
 Reply-To: spodstavin@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -25,7 +24,7 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-/jjcOTr7MPRGE3RaWZbO
+--=-RZ5YU3kWAgNVmXDbHxcO
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
@@ -43,30 +42,34 @@ Sergey Podstavin.
 >
 >Overall the patch looks good, just a few comments.
 >
->The patch does not apply cleanly unless I remove the spurious newline before
+>The patch does not apply cleanly unless I remove the spurious newline
+before
 >line 1284 resulting in the following error:
 >patch: **** malformed patch at line 1284: pm_message_t state)
 >
->The DRCMR97 register is not defined anywhere, at lest not in 2.6.24-rc6:
->drivers/mtd/nand/pxa3xx_nand.c:542: error: ‘DRCMR97’ undeclared (first use in
+>The DRCMR97 register is not defined anywhere, at lest not in
+2.6.24-rc6:
+>drivers/mtd/nand/pxa3xx_nand.c:542: error: ‘DRCMR97’ undeclared (first
+use in
 >this function)
 >
 >The registers and bit definitions should be moved to pxa-regs.h, not?
 >
->I had my troubles getting it to work on a custom PXA320 board. I kinda figured
->out what platform data it needs, but still can't seem to get it to work properly:
+>I had my troubles getting it to work on a custom PXA320 board. I kinda
+figured
+>out what platform data it needs, but still can't seem to get it to work
+properly:
 >pxa3xx-nand pxa3xx-nand: failed to detect flash
 >
->What kernel does your patch apply to? What CPUs/boards did you try it on? Can
+>What kernel does your patch apply to? What CPUs/boards did you try it
+on? Can
 >you provide an example platform integration required to make it work?
 >
 >Cheers
 >
 >Marcel
 
-
-
---=-/jjcOTr7MPRGE3RaWZbO
+--=-RZ5YU3kWAgNVmXDbHxcO
 Content-Disposition: inline;
 	filename=0001-fixed-basic-pxa3-nand-controller-support.patch
 Content-Type: application/mbox;
@@ -2499,4 +2502,4 @@ index f58b591..9516f2e 100644
 1.5.3.7
 
 
---=-/jjcOTr7MPRGE3RaWZbO--
+--=-RZ5YU3kWAgNVmXDbHxcO--
