@@ -1,24 +1,18 @@
-Received: from 85-10-209-111.clients.your-server.de ([85.10.209.111]
-	helo=mail.road.de)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JDGRU-0001J5-5K
-	for linux-mtd@lists.infradead.org; Fri, 11 Jan 2008 09:44:54 +0000
-From: Uli Luckas <u.luckas@road.de>
-To: linux-mtd@lists.infradead.org
 Subject: Re: [PATCH][CFI] Wrong cache invalidation bug fix
-Date: Fri, 11 Jan 2008 10:44:41 +0100
+From: David Woodhouse <dwmw2@infradead.org>
+To: Alexey Korolev <akorolev@infradead.org>
+In-Reply-To: <Pine.LNX.4.64.0801111042510.20196@pentafluge.infradead.org>
 References: <62cbdcd90712030834o28f9126fs841b3b9d46324fb7@mail.gmail.com>
-	<62cbdcd90712130248mc82d9cdp781fde10dd73d1b3@mail.gmail.com>
-	<62cbdcd90712130254u64a3ae1eq95b24a4cd2a2f450@mail.gmail.com>
-In-Reply-To: <62cbdcd90712130254u64a3ae1eq95b24a4cd2a2f450@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-Message-Id: <200801111044.43036.u.luckas@road.de>
-Cc: Andrey.Lisov@intel.com, dwmw2@infradead.org, joern@logfs.org,
-	alexey.korolev@intel.com, massimo cirillo <maxcir@gmail.com>, Nico@cam.org
+	<alpine.LFD.0.99999.0712031210180.9605@xanadu.home>
+	<62cbdcd90712050758h36335aa5q176f1c192f18d6a9@mail.gmail.com>
+	<Pine.LNX.4.64.0801111042510.20196@pentafluge.infradead.org>
+Content-Type: text/plain
+Date: Fri, 11 Jan 2008 11:03:16 +0000
+Message-Id: <1200049397.4839.7.camel@pmac.infradead.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org, joern@logfs.org,
+	Nicolas Pitre <nico@cam.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,34 +22,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thursday, 13. December 2007, massimo cirillo wrote:
-> Hi David,
->
-> Could you please apply the patch? It has been tested and acknowledged
-> by Nicolas and J=F6rn.
->
-> Description
-> This patch fixes improper setting of cache invalidation regions and
-> solves the issue of data corrupting.
->
-What happend to this patch? As it fixes a grave bug, shouldn't it be pushed=
-=20
-out for 2.6.24?
 
-regards,
-Uli
+On Fri, 2008-01-11 at 10:50 +0000, Alexey Korolev wrote:
+> Please include patch from Massimo? It fixes bad dug in CFI driver.
 
-=2D-=20
+I don't think I've ever received a version of the patch in email which
+actually applies. Please remember to save the mail you get back from the
+mailing list and try to apply it for yourself to a clean tree. Or better
+still, send it to yourself first, _before_ sending it out.
 
-=2D------ ROAD ...the handyPC Company - - -  ) ) )
+That isn't an excuse for ignoring it for a month -- on that I plead
+incompetence.
 
-Uli Luckas
-Software Development
+I've taken the version from Jared's git tree and sent it to Linus.
 
-ROAD GmbH
-Bennigsenstr. 14 | 12159 Berlin | Germany
-fon: +49 (30) 230069 - 64 | fax: +49 (30) 230069 - 69
-url: www.road.de
-
-Amtsgericht Charlottenburg: HRB 96688 B
-Managing directors: Hans-Peter Constien, Hubertus von Streit
+-- 
+dwmw2
