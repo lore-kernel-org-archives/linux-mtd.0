@@ -1,20 +1,17 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEguR-000492-Kw
-	for linux-mtd@lists.infradead.org; Tue, 15 Jan 2008 08:12:35 +0000
-Subject: Re: why ubimkvol can't recognize /dev/ubi0?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Adrian Hunter <ext-adrian.hunter@nokia.com>
-In-Reply-To: <4781D985.6020504@nokia.com>
-References: <399646872.11492@ustc.edu.cn>  <4781D985.6020504@nokia.com>
-Content-Type: text/plain; charset=utf-8
-Date: Tue, 15 Jan 2008 10:08:30 +0200
-Message-Id: <1200384510.3956.27.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org,
-	=?UTF-8?Q?=E6=97=B6=E6=AD=A3?= <shizheng@mail.ustc.edu.cn>
-Reply-To: dedekind@infradead.org
+Date: Fri, 11 Jan 2008 10:50:03 +0000 (GMT)
+From: Alexey Korolev <akorolev@infradead.org>
+To: dwmw2@infradead.org
+Subject: Re: [PATCH][CFI] Wrong cache invalidation bug fix
+In-Reply-To: <62cbdcd90712050758h36335aa5q176f1c192f18d6a9@mail.gmail.com>
+Message-ID: <Pine.LNX.4.64.0801111042510.20196@pentafluge.infradead.org>
+References: <62cbdcd90712030834o28f9126fs841b3b9d46324fb7@mail.gmail.com>
+	<alpine.LFD.0.99999.0712031210180.9605@xanadu.home>
+	<62cbdcd90712050758h36335aa5q176f1c192f18d6a9@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: MULTIPART/MIXED;
+	BOUNDARY="-1831524198-833535474-1200048603=:20196"
+Cc: linux-mtd@lists.infradead.org, joern@logfs.org,
+	Nicolas Pitre <nico@cam.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,21 +21,64 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-01-07 at 09:49 +0200, Adrian Hunter wrote:
-> From b96f4481662bd7ac247d4d5a25b27f7d8afffb92 Mon Sep 17 00:00:00 2001
-> From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-> Date: Mon, 7 Jan 2008 09:47:17 +0200
-> Subject: ubi-utils: fix bug using readdir
->=20
-> Library functions never reset errno to zero, so if you want
-> to use its value to check for errors then you must set it to zero
-> before calling the library function (in this case readdir).
->=20
-> Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Thanks, committed.
+---1831524198-833535474-1200048603=:20196
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Hi David,
+
+Please include patch from Massimo? It fixes bad dug in CFI driver.
+
+Thanks,
+Alexey
+
+
+
+
+
+
+
+Signed-off-by Massimo Cirillo <maxcir@gmail.com> and Giuseppe D'Eliseo
+<giuseppedeliseo@gmail.com>
+Acked-by: Nicolas Pitre <nico@cam.org> and Jörn Engel <joern@logfs.org>
+
+------
+diff -aur a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c       2007-12-05 10:45:20.000000000 +0100
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c       2007-11-16 19:14:27.000000000 +0100
+@@ -1486,9 +1486,12 @@
+       int ret, wbufsize, word_gap, words;
+       const struct kvec *vec;
+       unsigned long vec_seek;
++       unsigned long initial_adr;
++       int initial_len=len;
+
+       wbufsize = cfi_interleave(cfi) << cfi->cfiq->MaxBufWriteSize;
+       adr += chip->start;
++       initial_adr = adr;
+       cmd_adr = adr & ~(wbufsize-1);
+
+       /* Let's determine this according to the interleave only once */
+@@ -1501,7 +1504,7 @@
+               return ret;
+       }
+
+-       XIP_INVAL_CACHED_RANGE(map, adr, len);
++       XIP_INVAL_CACHED_RANGE(map, initial_adr, initial_len);
+       ENABLE_VPP(map);
+       xip_disable(map, chip, cmd_adr);
+
+@@ -1592,7 +1595,7 @@
+       chip->state = FL_WRITING;
+
+       ret = INVAL_CACHE_AND_WAIT(map, chip, cmd_adr,
+-                                  adr, len,
++                                  initial_adr, initial_len,
+                                  chip->buffer_write_time);
+       if (ret) {
+               map_write(map, CMD(0x70), cmd_adr);
+---------------
+---1831524198-833535474-1200048603=:20196--
