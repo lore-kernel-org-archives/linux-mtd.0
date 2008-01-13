@@ -1,24 +1,19 @@
-Received: from 216-237-3-220.orange.nextweb.net ([216.237.3.220]
-	helo=OCEX01.SolarFlarecom.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JE6Zv-0003FD-Mt
-	for linux-mtd@lists.infradead.org; Sun, 13 Jan 2008 17:25:08 +0000
-Message-ID: <478A4825.8000006@solarflare.com>
-Date: Sun, 13 Jan 2008 17:19:33 +0000
-From: David Riddoch <driddoch@solarflare.com>
+Received: from mexforward.lss.emc.com ([128.222.32.20])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JEANy-0005AG-Ay
+	for linux-mtd@lists.infradead.org; Sun, 13 Jan 2008 21:29:03 +0000
+From: Foster_Brian@emc.com
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-To: Ben Hutchings <bhutchings@solarflare.com>
-Subject: Re: [PATCH] [MTD] [RFC] New Solarflare NIC EEPROM/Flash driver
-References: <47866921.40904@solarflare.com>
-	<20080110201309.GC26820@lazybastard.org>
-	<20080111125000.GL3544@solarflare.com>
-	<20080111132444.GA1399@lazybastard.org>
-	<20080111185550.GN3544@solarflare.com>
-In-Reply-To: <20080111185550.GN3544@solarflare.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: =?ISO-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, linux-net-drivers@solarflare.com
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: RE: Redboot FIS entry upgrade from Linux
+Date: Sun, 13 Jan 2008 16:26:02 -0500
+Message-ID: <64385436BC51BF448208008A36316D6701B1EB4E@CORPUSMX70B.corp.emc.com>
+In-Reply-To: <FF584854D6FFE547AB2F7515A798AC3A4E3A9955@venus.imagineil.tv>
+References: <FF584854D6FFE547AB2F7515A798AC3A4E3A9955@venus.imagineil.tv>
+To: <jacob@imaginecommunications.com>, <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,29 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Ben Hutchings wrote:
->>>>   struct semaphore access_lock; should become a mutex.
->>>>         
->>> Right.  We've tended to be quite conservative in using newer kernel
->>> features, since we also need to support old kernels, but we have a
->>> good backward-compatibility layer now (unifdef'd out of the submitted
->>> code) so this shouldn't be a problem.
->>>       
->> Ok.  A straight conversion to a mutex will likely cause trouble with
->> your reset routine.  Not sure what to do here.
->>     
->
-> We can use a mutex if the net driver is guaranteed to call
-> reset_suspend() and reset_resume() in the same context.  This is
-> currently true (they are always called in a pair by efx_reset() in
-> efx.c) but I'm not sure we want to guarantee that.
->   
-reset_suspend() is documented as being called in a context that permits 
-sleeping, and I can't see us ever changing that.  reset_resume() will 
-also continue to permit sleeping (although that isn't currently documented).
+> -----Original Message-----
+> From: linux-mtd-bounces@lists.infradead.org [mailto:linux-mtd-
+> bounces@lists.infradead.org] On Behalf Of Jacob Avraham
+> Sent: Sunday, January 13, 2008 11:31 AM
+> To: linux-mtd@lists.infradead.org
+> Subject: Redboot FIS entry upgrade from Linux
+>=20
+> Hi,
+>=20
+> Say I have a zImage or ramdisk image as a file listed in FIS,
+> which I use to  "fis load" from Redboot.
+> Now I want to upgrade an image from Linux, so in addition to
+> writing into the specific mtd partition I need to update the FIS
+> directory entry checksum value.
+>=20
+> Are there any utils to facilitate that?
+> Or maybe such where not developed because it's not a good idea?
+>=20
+> Thanks,
+>=20
+> Jacob
+>=20
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
-Cheers,
-David
+Perhaps Linux 'fconfig' is what you are looking for:
 
--- 
-David Riddoch  +++  Solarflare  +++  driddoch@solarflare.com
+http://andrzejekiert.ovh.org/software.html.en
+
+Brian
