@@ -1,21 +1,22 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
+Received: from wa-out-1112.google.com ([209.85.146.176])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEV7E-0000c7-73
-	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 19:37:00 +0000
-Received: by py-out-1112.google.com with SMTP id p76so3915562pyb.2
+	id 1JEVKX-0001hb-Nz
+	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 19:50:45 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so3972601wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jan 2008 11:33:05 -0800 (PST)
-Date: Mon, 14 Jan 2008 07:00:49 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Naveen Sattigeri <naveen_j_s@yahoo.com>
-Subject: Re:
-Message-ID: <20080114070049.12f34137@vader.jdub.homelinux.org>
-In-Reply-To: <660898.91474.qm@web32812.mail.mud.yahoo.com>
-References: <660898.91474.qm@web32812.mail.mud.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+	Mon, 14 Jan 2008 11:46:47 -0800 (PST)
+Message-ID: <9b52d64c0801141146g3b076f74pe2e06b06832219aa@mail.gmail.com>
+Date: Mon, 14 Jan 2008 11:46:47 -0800
+From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
+To: "Yuri Tikhonov" <yur@emcraft.com>
+Subject: Re: Block Device Emulation over UBI
+In-Reply-To: <200801141557.18349.yur@emcraft.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: Linux-MTD Linux <linux-mtd@lists.infradead.org>
+Content-Disposition: inline
+References: <200801141557.18349.yur@emcraft.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,24 +26,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Sun, 13 Jan 2008 23:32:47 -0800 (PST)
-Naveen Sattigeri <naveen_j_s@yahoo.com> wrote:
+Few months back I raised same question here &
+I got nice replies from Artem.I am not able to found that discussion in my
+mail box though :( & even not able to recall much of it.
+However Artem said writing block device driver on top of UBI volume is same as
+implementing FTL on it, basically its re-inventing the wheel. Probably Artem
+can answer you well :-).
 
-> Please correct if I am wrong.The kernel 2.6.10 should
-> be patched for latest NAND mtd drivers.
-> I have tried the latest patch 2008-January.txt but it
-> was not successful because probably the patch is for
-> latest kernel.
-> Can I get the patch for 2.6.20?
+--Vinit.
 
-http://linux-mtd.infradead.org/source.html#kernelversions
 
-> What else I should do to detect the compact flash as
-> MTD device using a host or using NFS.
+On Jan 14, 2008 4:57 AM, Yuri Tikhonov <yur@emcraft.com> wrote:
+>
+>  Hello all,
+>
+>  We are about to implement and then maintain a block device driver which is
+> intended to work on the top of UBI and provide users with the block-device
+> interface to the underlying Flash chips. The goal of this driver is to
+> provide users with the possibility to easily organize reliable file storage
+> in Flash memory chips (especially NAND Flash) using Flash-unaware
+> file-systems like FAT, EXT2/3, etc (UBI is supposed to provide the necessary
+> reliability using its features of wear-leveling and bad blocks handling).
+>
+>  In many cases the ability to have the file-system formatted with, for
+> example, FAT is a highly desirable feature of the embedded devices (e.g. for
+> exporting the embedded storage via USB link to a Windows-based USB host), so
+> we guess our work will be usefull for the embedded world.
+>
+>  Any suggestions or comments as to possible issues we may run into on this
+> road would be very appreciated.
+>
+>  Regards, Yuri
+>
+> --
+> Yuri Tikhonov, Senior Software Engineer
+> Emcraft Systems, www.emcraft.com
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
 
-You can't.  Compact flash is not real flash, nor does it have an
-interface to present the real flash.
 
-http://linux-mtd.infradead.org/faq/jffs2.html#L_stick_jffs2
 
-josh
+-- 
+Life is so short. So, follow some rules. Forgive quickly, believe
+slowly, love truly, laugh loudly & never avoid anything that makes U
+smile.
