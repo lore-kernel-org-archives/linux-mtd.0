@@ -1,21 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEPVV-0006l9-Iu
-	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 13:37:50 +0000
-Date: Mon, 14 Jan 2008 14:28:43 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexander Belyakov <abelyako@mail.ru>
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-Message-ID: <20080114132843.GA15710@lazybastard.org>
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Alexander Belyakov <abelyako@gmail.com>
+Received: from py-out-1112.google.com ([64.233.166.179])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JEV7E-0000c7-73
+	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 19:37:00 +0000
+Received: by py-out-1112.google.com with SMTP id p76so3915562pyb.2
+	for <linux-mtd@lists.infradead.org>;
+	Mon, 14 Jan 2008 11:33:05 -0800 (PST)
+Date: Mon, 14 Jan 2008 07:00:49 -0600
+From: Josh Boyer <jwboyer@gmail.com>
+To: Naveen Sattigeri <naveen_j_s@yahoo.com>
+Subject: Re:
+Message-ID: <20080114070049.12f34137@vader.jdub.homelinux.org>
+In-Reply-To: <660898.91474.qm@web32812.mail.mud.yahoo.com>
+References: <660898.91474.qm@web32812.mail.mud.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Cc: Linux-MTD Linux <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,39 +25,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 12 December 2007 18:51:28 +0300, Alexander Belyakov wrote:
-> 
-> The patch checks if erasable_list is empty in jffs2_refile_wbuf_blocks() moving at least one block to that list. So jffs2_find_gc_block() will not fail sometimes with "jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they all?" message.
+On Sun, 13 Jan 2008 23:32:47 -0800 (PST)
+Naveen Sattigeri <naveen_j_s@yahoo.com> wrote:
 
-If the erasable_list is empty, we push it to the list for someone else
-to erase it later instead of doing it now?  Nonsense.
+> Please correct if I am wrong.The kernel 2.6.10 should
+> be patched for latest NAND mtd drivers.
+> I have tried the latest patch 2008-January.txt but it
+> was not successful because probably the patch is for
+> latest kernel.
+> Can I get the patch for 2.6.20?
 
-If it makes a difference whether the block is erasable or erase_pending,
-we have a bug.  And that bug wants a fix, not a paper bandaid.
+http://linux-mtd.infradead.org/source.html#kernelversions
 
-> Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
-> 
-> diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
-> --- a/fs/jffs2/wbuf.c	2007-12-03 17:00:16.000000000 +0300
-> +++ b/fs/jffs2/wbuf.c	2007-12-11 19:03:03.000000000 +0300
-> @@ -115,7 +115,7 @@
->  
->  		D1(printk(KERN_DEBUG "Removing eraseblock at 0x%08x from erasable_pending_wbuf_list...\n", jeb->offset));
->  		list_del(this);
-> -		if ((jiffies + (n++)) & 127) {
-> +		if (((jiffies + (n++)) & 127) && !list_empty(&c->erasable_list)) {
->  			/* Most of the time, we just erase it immediately. Otherwise we
->  			   spend ages scanning it on mount, etc. */
->  			D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
-> 
-> 
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
-> 
+> What else I should do to detect the compact flash as
+> MTD device using a host or using NFS.
 
-Jörn
+You can't.  Compact flash is not real flash, nor does it have an
+interface to present the real flash.
 
--- 
-Joern's library part 14:
-http://www.sandpile.org/
+http://linux-mtd.infradead.org/faq/jffs2.html#L_stick_jffs2
+
+josh
