@@ -1,20 +1,21 @@
-Received: from ocean.emcraft.com ([213.221.7.182])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEP3j-0005Fq-4l
-	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 13:08:59 +0000
-Received: from [172.17.0.11] (helo=iron.emcraft.com)
-	by ocean.emcraft.com with esmtp (Exim 4.43) id 1JEP0j-00010K-CK
-	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 16:05:56 +0300
-Content-Disposition: inline
-From: Yuri Tikhonov <yur@emcraft.com>
-To: linux-mtd@lists.infradead.org
-Subject: Block Device Emulation over UBI
-Date: Mon, 14 Jan 2008 15:57:18 +0300
+	id 1JEPVV-0006l9-Iu
+	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 13:37:50 +0000
+Date: Mon, 14 Jan 2008 14:28:43 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Alexander Belyakov <abelyako@mail.ru>
+Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
+Message-ID: <20080114132843.GA15710@lazybastard.org>
+References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Message-Id: <200801141557.18349.yur@emcraft.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Alexander Belyakov <abelyako@gmail.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +25,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 12 December 2007 18:51:28 +0300, Alexander Belyakov wrote:
+> 
+> The patch checks if erasable_list is empty in jffs2_refile_wbuf_blocks() moving at least one block to that list. So jffs2_find_gc_block() will not fail sometimes with "jffs2: No clean, dirty _or_ erasable blocks to GC from! Where are they all?" message.
 
- Hello all,
+If the erasable_list is empty, we push it to the list for someone else
+to erase it later instead of doing it now?  Nonsense.
 
- We are about to implement and then maintain a block device driver which is 
-intended to work on the top of UBI and provide users with the block-device 
-interface to the underlying Flash chips. The goal of this driver is to 
-provide users with the possibility to easily organize reliable file storage 
-in Flash memory chips (especially NAND Flash) using Flash-unaware 
-file-systems like FAT, EXT2/3, etc (UBI is supposed to provide the necessary 
-reliability using its features of wear-leveling and bad blocks handling).
+If it makes a difference whether the block is erasable or erase_pending,
+we have a bug.  And that bug wants a fix, not a paper bandaid.
 
- In many cases the ability to have the file-system formatted with, for 
-example, FAT is a highly desirable feature of the embedded devices (e.g. for 
-exporting the embedded storage via USB link to a Windows-based USB host), so 
-we guess our work will be usefull for the embedded world.
+> Signed-off-by: Alexander Belyakov <alexander.belyakov@intel.com>
+> 
+> diff -uNr a/fs/jffs2/wbuf.c b/fs/jffs2/wbuf.c
+> --- a/fs/jffs2/wbuf.c	2007-12-03 17:00:16.000000000 +0300
+> +++ b/fs/jffs2/wbuf.c	2007-12-11 19:03:03.000000000 +0300
+> @@ -115,7 +115,7 @@
+>  
+>  		D1(printk(KERN_DEBUG "Removing eraseblock at 0x%08x from erasable_pending_wbuf_list...\n", jeb->offset));
+>  		list_del(this);
+> -		if ((jiffies + (n++)) & 127) {
+> +		if (((jiffies + (n++)) & 127) && !list_empty(&c->erasable_list)) {
+>  			/* Most of the time, we just erase it immediately. Otherwise we
+>  			   spend ages scanning it on mount, etc. */
+>  			D1(printk(KERN_DEBUG "...and adding to erase_pending_list\n"));
+> 
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+> 
 
- Any suggestions or comments as to possible issues we may run into on this 
-road would be very appreciated.
-
- Regards, Yuri
+Jörn
 
 -- 
-Yuri Tikhonov, Senior Software Engineer
-Emcraft Systems, www.emcraft.com
+Joern's library part 14:
+http://www.sandpile.org/
