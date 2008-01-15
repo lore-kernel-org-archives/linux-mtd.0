@@ -1,21 +1,16 @@
-Received: from wa-out-1112.google.com ([209.85.146.176])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEVKX-0001hb-Nz
-	for linux-mtd@lists.infradead.org; Mon, 14 Jan 2008 19:50:45 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so3972601wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 14 Jan 2008 11:46:47 -0800 (PST)
-Message-ID: <9b52d64c0801141146g3b076f74pe2e06b06832219aa@mail.gmail.com>
-Date: Mon, 14 Jan 2008 11:46:47 -0800
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: "Yuri Tikhonov" <yur@emcraft.com>
-Subject: Re: Block Device Emulation over UBI
-In-Reply-To: <200801141557.18349.yur@emcraft.com>
+Received: from smtp-out1.tiscali.nl ([195.241.79.176])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JEZhw-0005Bq-HO
+	for linux-mtd@lists.infradead.org; Tue, 15 Jan 2008 00:31:21 +0000
+Message-ID: <478BFE1C.1090608@tiscali.nl>
+Date: Tue, 15 Jan 2008 01:28:12 +0100
+From: Roel Kluin <12o3l@tiscali.nl>
 MIME-Version: 1.0
+To: dwmw2@infradead.org
+Subject: [MTD] potential division by 0 in cfi_build_cmd() and
+	cfi_merge_status()?
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <200801141557.18349.yur@emcraft.com>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -26,50 +21,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Few months back I raised same question here &
-I got nice replies from Artem.I am not able to found that discussion in my
-mail box though :( & even not able to recall much of it.
-However Artem said writing block device driver on top of UBI volume is same as
-implementing FTL on it, basically its re-inventing the wheel. Probably Artem
-can answer you well :-).
+Doing some grepping, I stumbled upon this possible error:
 
---Vinit.
+in include/linux/mtd/cfi.h, lines 302 and 366, resp. functions
+cfi_build_cmd() and cfi_merge_status() there is a division by
+cfi_interleave(cfi):
 
+chip_mode = map_bankwidth(map) / cfi_interleave(cfi);
 
-On Jan 14, 2008 4:57 AM, Yuri Tikhonov <yur@emcraft.com> wrote:
->
->  Hello all,
->
->  We are about to implement and then maintain a block device driver which is
-> intended to work on the top of UBI and provide users with the block-device
-> interface to the underlying Flash chips. The goal of this driver is to
-> provide users with the possibility to easily organize reliable file storage
-> in Flash memory chips (especially NAND Flash) using Flash-unaware
-> file-systems like FAT, EXT2/3, etc (UBI is supposed to provide the necessary
-> reliability using its features of wear-leveling and bad blocks handling).
->
->  In many cases the ability to have the file-system formatted with, for
-> example, FAT is a highly desirable feature of the embedded devices (e.g. for
-> exporting the embedded storage via USB link to a Windows-based USB host), so
-> we guess our work will be usefull for the embedded world.
->
->  Any suggestions or comments as to possible issues we may run into on this
-> road would be very appreciated.
->
->  Regards, Yuri
->
-> --
-> Yuri Tikhonov, Senior Software Engineer
-> Emcraft Systems, www.emcraft.com
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+This could be problematic when No CONFIG_MTD_CFI_Ix is selected:
+cfi_interleave will triggers BUG(), but when BUG is disabled, the
+function returns 0, causing a subsequent division by zero.
 
+When a CONFIG_MTD_CFI_Ix is selected, cfi_interleave(cfi) is either
+defined 1 or defined (cfi)->interleave.
 
+cfi is a struct cfi_private pointer, with interleave as an int.
 
--- 
-Life is so short. So, follow some rules. Forgive quickly, believe
-slowly, love truly, laugh loudly & never avoid anything that makes U
-smile.
+I am not sure whether interleave can ever be 0 in this division when 
+CONFIG_MTD_CFI_Ix is set.
+
+shouldn't there be an error exit when cfi_interleave(cfi) evaluates
+to 0?
+
+I am not subscribed to this list, so please CC.
+
+Roel
