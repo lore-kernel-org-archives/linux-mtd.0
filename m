@@ -1,24 +1,24 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JEm40-0007re-AQ
-	for linux-mtd@lists.infradead.org; Tue, 15 Jan 2008 13:42:48 +0000
-Date: Tue, 15 Jan 2008 14:33:50 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Alexander Belyakov <abelyako@googlemail.com>
-Subject: Re: [PATCH][JFFS2] Fix garbage collector block search
-Message-ID: <20080115133350.GA22338@lazybastard.org>
-References: <E1J2Trs-000IFE-00.abelyako-mail-ru@f65.mail.ru>
-	<20080114132843.GA15710@lazybastard.org>
-	<fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
+Received: from mail0.lsil.com ([147.145.40.20])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JEmkJ-0003a2-SR
+	for linux-mtd@lists.infradead.org; Tue, 15 Jan 2008 14:26:41 +0000
+Received: from milmhbs0.lsil.com (mhbs.lsil.com [147.145.1.30])
+	by mail0.lsil.com (8.12.11/8.12.11) with ESMTP id m0FEJMqu002512
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 15 Jan 2008 06:19:22 -0800 (PST)
+Received: from PALMAILF01.ags.agere.com (palmailf01.agere.com [128.94.210.122])
+	by milmhbs0.lsil.com (8.12.11/8.12.11) with ESMTP id m0FEM6Ou019903
+	for <linux-mtd@lists.infradead.org>; Tue, 15 Jan 2008 06:22:07 -0800
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <fe810cf0801150424j25f35131v83692a3193a45a3b@mail.gmail.com>
-Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Alexander Belyakov <abelyako@mail.ru>
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+Subject: Slow mount of JFFS2 root file system
+Date: Tue, 15 Jan 2008 09:22:04 -0500
+Message-ID: <BBF94D674CC54C48B62BD0667061E8490199FA73@PAUMAILU02.ags.agere.com>
+From: "Lin, Bin (Bin)" <Bin.Lin@lsi.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -28,27 +28,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 15 January 2008 15:24:03 +0300, Alexander Belyakov wrote:
-> On Jan 14, 2008 4:28 PM, Jörn Engel <joern@logfs.org> wrote:
-> >
-> > If it makes a difference whether the block is erasable or erase_pending,
-> > we have a bug.  And that bug wants a fix, not a paper bandaid.
-> >
-> 
-> I've posted this bug details almost half year ago.
-> http://lists.infradead.org/pipermail/linux-mtd/2007-June/018756.html
-> 
-> I do agree with your objection. If you have perfect patch ideas please
-> let me know.
+Hello,
 
-Right now the important thing is to dig deeper and understand the nature
-of this bug.  You can reproduce it, that is good.  We also know that it
-makes a difference whether the block is on one list or the other.  But
-we don't know yet, what difference exactly it makes.  That should be the
-next step.
+I have ARM9 systems with JFFS2 root file system. For some reasons, e.g.
+system crash or power failure, when system boots up next time, it takes
+much longer time than usual to mount jffs2 root file system. It can hang
+at following message for 3-10 min. Once this happens, the mount will
+take the same long time in every reboot later on. Even though it take
+long time to mount root file system, the system can still come up and
+function well. This problem occurred in less than 10% of boards in the
+field, but can not be reproduced in the lab. I have been struggling with
+this is issue for weeks.
 
-Jörn
+NET4: Unix domain sockets 1.0/SMP for Linux NET4.0.
+Fast Floating Point Emulator V0.9 (c) Peter Teichmann.
 
--- 
-tglx1 thinks that joern should get a (TM) for "Thinking Is Hard"
--- Thomas Gleixner
+There are some symbolic links in the root file system. These links is
+linked to the files in another partition. Could that cause root file
+system mount problem if the file in the other partition gets corrupted?
+Looks like the files in the flash are not corrupted. I guess the
+corruption could be in jffs2 file system.
+
+Anyone has seen this issue, and solution?
+
+Appreciate very much for any input,
+
+Ben
