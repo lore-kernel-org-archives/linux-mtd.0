@@ -1,21 +1,15 @@
-Received: from chilli.pcug.org.au ([203.10.76.44] helo=smtps.tip.net.au)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JF09U-0003Uv-Vo
-	for linux-mtd@lists.infradead.org; Wed, 16 Jan 2008 04:45:34 +0000
-Date: Wed, 16 Jan 2008 15:41:53 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Scott Wood <scottwood@freescale.com>
-Subject: Re: [PATCH 2/3] mtd: Factor out OF partition support from the NOR
-	driver.
-Message-Id: <20080116154153.2f6c2ee9.sfr@canb.auug.org.au>
-In-Reply-To: <478D450A.8060802@freescale.com>
-References: <20080114172116.a2e5aa18.sfr@canb.auug.org.au>
-	<478D450A.8060802@freescale.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
-	micalg="PGP-SHA1";
-	boundary="Signature=_Wed__16_Jan_2008_15_41_53_+1100_1z.kM1l/KnaNUVrO"
-Cc: linuxppc-dev@ozlabs.org, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JF89n-0004ga-F8
+	for linux-mtd@lists.infradead.org; Wed, 16 Jan 2008 13:18:25 +0000
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Date: Wed, 16 Jan 2008 17:03:36 +0200
+Message-Id: <20080116150336.16917.1867.sendpatchset@golum>
+Subject: [PATCH] UBI: add auto-resize feature
+Cc: Frank Haverkamp <haver@vnet.ibm.com>,
+	Adrian Hunter <ext-Adrian.Hunter@nokia.com>,
+	Andreas Arnez <arnez@linux.vnet.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,41 +19,352 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
---Signature=_Wed__16_Jan_2008_15_41_53_+1100_1z.kM1l/KnaNUVrO
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>From df4d5783bde51db7a213db929252718dbc4381ca Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Wed, 16 Jan 2008 15:44:24 +0200
+Subject: [PATCH] UBI: add auto-resize feature
 
-On Tue, 15 Jan 2008 17:43:06 -0600 Scott Wood <scottwood@freescale.com> wro=
-te:
->
-> Stephen Rothwell wrote:
-> >> +	nr_parts =3D 0;
-> >> +	for (pp =3D node->child; pp; pp =3D pp->sibling)
-> >=20
-> > 	for_each_child_of_node(node, pp)
->=20
-> "for_each_child_of_node" is only in Paul's tree, but this has to go via m=
-td.
->=20
-> Plus, I'm just moving the code; it's not new.
+The problem: NAND flashes have different amount of initial bad physical
+eraseblocks (marked as bad by the manufacturer). For example, for 256MiB
+Samsung OneNAND flash there might be from 0 to 40 bad initial eraseblocks,
+which is about 2%. When UBI is used as the base system, one needs to know
+the exact amount of good physical eraseblocks, because this number is
+needed to create the UBI image which is put to the devices during
+production. But this number is not know, which forces us to use the
+minimum number of good physical eraseblocks. And UBI additionally
+reserves some percentage of physical eraseblocks for bad block handling
+(default is 1%), so we have 1-3% of PEBs reserved at the end, depending
+on the amount of initial bad PEBs. But it is desired to always have
+1% (or more, depending on the configuration).
 
-OK, we can change it later.
+Solution: this patch adds an "auto-resize" flag to the volume table.
+The volume which has the "auto-resize" flag will automatically be re-sized
+(enlarged) on the first UBI initialization. UBI clears the flag when
+the volume is re-sized. Only one volume may have the "auto-resize" flag.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
-http://www.canb.auug.org.au/~sfr/
+So, the production UBI image may have one volume with "auto-resize"
+flag set, and its size is automatically adjusted on the first boot
+of the device.
 
---Signature=_Wed__16_Jan_2008_15_41_53_+1100_1z.kM1l/KnaNUVrO
-Content-Type: application/pgp-signature
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/build.c  |   69 ++++++++++++++++++++++++++++++++++++++++++---
+ drivers/mtd/ubi/eba.c    |   15 ----------
+ drivers/mtd/ubi/ubi.h    |    6 +++-
+ drivers/mtd/ubi/vmt.c    |    2 -
+ drivers/mtd/ubi/vtbl.c   |   11 +++++++
+ drivers/mtd/ubi/wl.c     |    1 -
+ include/mtd/ubi-header.h |   43 +++++++++++++++++++++++++++-
+ 7 files changed, 121 insertions(+), 26 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.6 (GNU/Linux)
-
-iD8DBQFHjYsVTgG2atn1QN8RAkK6AKCKaUndHc0j8YRyL1qUGCMNMjlmFgCdG1N9
-OvxHUcQ3CDumS+VJimXrzsk=
-=7q3H
------END PGP SIGNATURE-----
-
---Signature=_Wed__16_Jan_2008_15_41_53_+1100_1z.kM1l/KnaNUVrO--
+diff --git a/drivers/mtd/ubi/build.c b/drivers/mtd/ubi/build.c
+index 8b45735..4e761e9 100644
+--- a/drivers/mtd/ubi/build.c
++++ b/drivers/mtd/ubi/build.c
+@@ -366,9 +366,6 @@ static int uif_init(struct ubi_device *ubi)
+ 	int i, err;
+ 	dev_t dev;
+ 
+-	mutex_init(&ubi->volumes_mutex);
+-	spin_lock_init(&ubi->volumes_lock);
+-
+ 	sprintf(ubi->ubi_name, UBI_NAME_STR "%d", ubi->ubi_num);
+ 
+ 	/*
+@@ -624,6 +621,58 @@ static int io_init(struct ubi_device *ubi)
+ }
+ 
+ /**
++ * autoresize - re-size the volume which has the "auto-resize" flag set.
++ * @ubi: UBI device description object
++ * @vol_id: ID of the volume to re-size
++ *
++ * This function re-sizes the volume marked by the @UBI_VTBL_AUTORESIZE_FLG in
++ * the volume table to the largest possible size. See comments in ubi-header.h
++ * for more description of the flag. Returns zero in case of success and a
++ * negative error code in case of failure.
++ */
++static int autoresize(struct ubi_device *ubi, int vol_id)
++{
++	struct ubi_volume_desc desc;
++	struct ubi_volume *vol = ubi->volumes[vol_id];
++	int err, old_reserved_pebs = vol->reserved_pebs;
++
++	/*
++	 * Clear the auto-resize flag in the volume in-memory copy of the
++	 * volume table, and 'ubi_resize_volume()' will propogate this change
++	 * to the flash.
++	 */
++	ubi->vtbl[vol_id].flags &= ~UBI_VTBL_AUTORESIZE_FLG;
++
++	if (ubi->avail_pebs == 0) {
++		struct ubi_vtbl_record vtbl_rec;
++
++		/*
++		 * No avalilable PEBs to re-size the volume, clear the flag on
++		 * flash and exit.
++		 */
++		memcpy(&vtbl_rec, &ubi->vtbl[vol_id],
++		       sizeof(struct ubi_vtbl_record));
++		err = ubi_change_vtbl_record(ubi, vol_id, &vtbl_rec);
++		if (err)
++			ubi_err("cannot clean auto-resize flag for volume %d",
++				vol_id);
++	} else {
++		desc.vol = vol;
++		err = ubi_resize_volume(&desc,
++					old_reserved_pebs + ubi->avail_pebs);
++		if (err)
++			ubi_err("cannot auto-resize volume %d", vol_id);
++	}
++
++	if (err)
++		return err;
++
++	ubi_msg("volume %d (\"%s\") re-sized from %d to %d LEBs", vol_id,
++		vol->name, old_reserved_pebs, vol->reserved_pebs);
++	return 0;
++}
++
++/**
+  * ubi_attach_mtd_dev - attach an MTD device.
+  * @mtd_dev: MTD device description object
+  * @ubi_num: number to assign to the new UBI device
+@@ -699,6 +748,12 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	ubi->mtd = mtd;
+ 	ubi->ubi_num = ubi_num;
+ 	ubi->vid_hdr_offset = vid_hdr_offset;
++	ubi->autoresize_vol_id = -1;
++
++	mutex_init(&ubi->buf_mutex);
++	mutex_init(&ubi->ckvol_mutex);
++	mutex_init(&ubi->volumes_mutex);
++	spin_lock_init(&ubi->volumes_lock);
+ 
+ 	dbg_msg("attaching mtd%d to ubi%d: VID header offset %d",
+ 		mtd->index, ubi_num, vid_hdr_offset);
+@@ -707,8 +762,6 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 	if (err)
+ 		goto out_free;
+ 
+-	mutex_init(&ubi->buf_mutex);
+-	mutex_init(&ubi->ckvol_mutex);
+ 	ubi->peb_buf1 = vmalloc(ubi->peb_size);
+ 	if (!ubi->peb_buf1)
+ 		goto out_free;
+@@ -730,6 +783,12 @@ int ubi_attach_mtd_dev(struct mtd_info *mtd, int ubi_num, int vid_hdr_offset)
+ 		goto out_free;
+ 	}
+ 
++	if (ubi->autoresize_vol_id != -1) {
++		err = autoresize(ubi, ubi->autoresize_vol_id);
++		if (err)
++			goto out_detach;
++	}
++
+ 	err = uif_init(ubi);
+ 	if (err)
+ 		goto out_detach;
+diff --git a/drivers/mtd/ubi/eba.c b/drivers/mtd/ubi/eba.c
+index 7c05c6e..1f951e3 100644
+--- a/drivers/mtd/ubi/eba.c
++++ b/drivers/mtd/ubi/eba.c
+@@ -341,9 +341,6 @@ int ubi_eba_unmap_leb(struct ubi_device *ubi, struct ubi_volume *vol,
+ {
+ 	int err, pnum, vol_id = vol->vol_id;
+ 
+-	ubi_assert(ubi->ref_count > 0);
+-	ubi_assert(vol->ref_count > 0);
+-
+ 	if (ubi->ro_mode)
+ 		return -EROFS;
+ 
+@@ -392,9 +389,6 @@ int ubi_eba_read_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t uninitialized_var(crc);
+ 
+-	ubi_assert(ubi->ref_count > 0);
+-	ubi_assert(vol->ref_count > 0);
+-
+ 	err = leb_read_lock(ubi, vol_id, lnum);
+ 	if (err)
+ 		return err;
+@@ -618,9 +612,6 @@ int ubi_eba_write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+ 	int err, pnum, tries = 0, vol_id = vol->vol_id;
+ 	struct ubi_vid_hdr *vid_hdr;
+ 
+-	ubi_assert(ubi->ref_count > 0);
+-	ubi_assert(vol->ref_count > 0);
+-
+ 	if (ubi->ro_mode)
+ 		return -EROFS;
+ 
+@@ -754,9 +745,6 @@ int ubi_eba_write_leb_st(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t crc;
+ 
+-	ubi_assert(ubi->ref_count > 0);
+-	ubi_assert(vol->ref_count > 0);
+-
+ 	if (ubi->ro_mode)
+ 		return -EROFS;
+ 
+@@ -871,9 +859,6 @@ int ubi_eba_atomic_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	struct ubi_vid_hdr *vid_hdr;
+ 	uint32_t crc;
+ 
+-	ubi_assert(ubi->ref_count > 0);
+-	ubi_assert(vol->ref_count > 0);
+-
+ 	if (ubi->ro_mode)
+ 		return -EROFS;
+ 
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 90cdcad..a8cdbd0 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -250,9 +250,11 @@ struct ubi_wl_entry;
+  * @rsvd_pebs: count of reserved physical eraseblocks
+  * @avail_pebs: count of available physical eraseblocks
+  * @beb_rsvd_pebs: how many physical eraseblocks are reserved for bad PEB
+- * handling
++ *                 handling
+  * @beb_rsvd_level: normal level of PEBs reserved for bad PEB handling
+  *
++ * @autoresize_vol_id: ID of the volume which has to be auto-resized at the end
++ *                     of UBI ititializetion
+  * @vtbl_slots: how many slots are available in the volume table
+  * @vtbl_size: size of the volume table in bytes
+  * @vtbl: in-RAM volume table copy
+@@ -333,12 +335,14 @@ struct ubi_device {
+ 	int beb_rsvd_pebs;
+ 	int beb_rsvd_level;
+ 
++	int autoresize_vol_id;
+ 	int vtbl_slots;
+ 	int vtbl_size;
+ 	struct ubi_vtbl_record *vtbl;
+ 	struct mutex volumes_mutex;
+ 
+ 	int max_ec;
++	/* TODO: mean_ec is not updated run-time, fix */
+ 	int mean_ec;
+ 
+ 	/* EBA unit's stuff */
+diff --git a/drivers/mtd/ubi/vmt.c b/drivers/mtd/ubi/vmt.c
+index 221ce70..a3ca225 100644
+--- a/drivers/mtd/ubi/vmt.c
++++ b/drivers/mtd/ubi/vmt.c
+@@ -497,8 +497,6 @@ int ubi_resize_volume(struct ubi_volume_desc *desc, int reserved_pebs)
+ 
+ 	dbg_msg("re-size volume %d to from %d to %d PEBs",
+ 		vol_id, vol->reserved_pebs, reserved_pebs);
+-	ubi_assert(desc->mode == UBI_EXCLUSIVE);
+-	ubi_assert(vol == ubi->volumes[vol_id]);
+ 
+ 	if (vol->vol_type == UBI_STATIC_VOLUME &&
+ 	    reserved_pebs < vol->used_ebs) {
+diff --git a/drivers/mtd/ubi/vtbl.c b/drivers/mtd/ubi/vtbl.c
+index 7a1a8a1..2fd9cf4 100644
+--- a/drivers/mtd/ubi/vtbl.c
++++ b/drivers/mtd/ubi/vtbl.c
+@@ -514,6 +514,17 @@ static int init_volumes(struct ubi_device *ubi, const struct ubi_scan_info *si,
+ 		vol->name[vol->name_len] = '\0';
+ 		vol->vol_id = i;
+ 
++		if (vtbl[i].flags & UBI_VTBL_AUTORESIZE_FLG) {
++			/* Auto re-size flag may be set only for one volume */
++			if (ubi->autoresize_vol_id != -1) {
++				ubi_err("more then one auto-resize volume (%d "
++					"and %d)", ubi->autoresize_vol_id, i);
++				return -EINVAL;
++			}
++
++			ubi->autoresize_vol_id = i;
++		}
++
+ 		ubi_assert(!ubi->volumes[i]);
+ 		ubi->volumes[i] = vol;
+ 		ubi->vol_count += 1;
+diff --git a/drivers/mtd/ubi/wl.c b/drivers/mtd/ubi/wl.c
+index bf4c555..c592fd3 100644
+--- a/drivers/mtd/ubi/wl.c
++++ b/drivers/mtd/ubi/wl.c
+@@ -1303,7 +1303,6 @@ int ubi_wl_flush(struct ubi_device *ubi)
+ 	 * Make sure all the works which have been done in parallel are
+ 	 * finished.
+ 	 */
+-	ubi_assert(ubi->ref_count > 0);
+ 	down_write(&ubi->work_sem);
+ 	up_write(&ubi->work_sem);
+ 
+diff --git a/include/mtd/ubi-header.h b/include/mtd/ubi-header.h
+index 74efa77..69d5d7e 100644
+--- a/include/mtd/ubi-header.h
++++ b/include/mtd/ubi-header.h
+@@ -58,6 +58,43 @@ enum {
+ };
+ 
+ /*
++ * Volume flags used in the volume table record.
++ *
++ * @UBI_VTBL_AUTORESIZE_FLG: auto-resize this volume
++ *
++ * %UBI_VTBL_AUTORESIZE_FLG flag can be set only for one volume in the volume
++ * table. UBI automatically re-sizes the volume which has this flag and makes
++ * the volume to be of largest possible size. This means that if after the
++ * initialization UBI finds out that there are available physical eraseblocks
++ * present on the device, it automatically appends all of them to the volume
++ * (the physical eraseblocks reserved for bad eraseblocks handling and other
++ * reserved physical eraseblocks are not taken). So, if there is a volume with
++ * the %UBI_VTBL_AUTORESIZE_FLG flag set, the amount of available logical
++ * eraseblocks will be zero after UBI is loaded, because all of them will be
++ * reserved for this volume. Note, the %UBI_VTBL_AUTORESIZE_FLG bit is cleared
++ * after the volume had been initialized.
++ *
++ * The auto-resize feature is useful for device production purposes. For
++ * example, different NAND flash chips may have different amount of initial bad
++ * eraseblocks, depending of particular chip instance. Manufacturers of NAND
++ * chips usually guarantee that the amount of initial bad eraseblocks does not
++ * exceed certain percent, e.g. 2%. When one creates an UBI image which will be
++ * flashed to the end devices in production, he does not know the exact amount
++ * of good physical eraseblocks the NAND chip on the device will have, but this
++ * number is required to calculate the volume sized and put them to the volume
++ * table of the UBI image. In this case, one of the volumes (e.g., the one
++ * which will store the root file system) is marked as "auto-resizable", and
++ * UBI will adjust its size on the first boot if needed.
++ *
++ * Note, first UBI reserves some amount of physical eraseblocks for bad
++ * eraseblock handling, and then re-sizes the volume, not vice-versa. This
++ * means that the pool of reserved physical eraseblocks will always be present.
++ */
++enum {
++	UBI_VTBL_AUTORESIZE_FLG = 0x01,
++};
++
++/*
+  * Compatibility constants used by internal volumes.
+  *
+  * @UBI_COMPAT_DELETE: delete this internal volume before anything is written
+@@ -289,7 +326,8 @@ struct ubi_vid_hdr {
+  * @upd_marker: if volume update was started but not finished
+  * @name_len: volume name length
+  * @name: the volume name
+- * @padding2: reserved, zeroes
++ * @flags: volume flags (%UBI_VTBL_AUTORESIZE_FLG)
++ * @padding: reserved, zeroes
+  * @crc: a CRC32 checksum of the record
+  *
+  * The volume table records are stored in the volume table, which is stored in
+@@ -324,7 +362,8 @@ struct ubi_vtbl_record {
+ 	__u8    upd_marker;
+ 	__be16  name_len;
+ 	__u8    name[UBI_VOL_NAME_MAX+1];
+-	__u8    padding2[24];
++	__u8    flags;
++	__u8    padding[23];
+ 	__be32  crc;
+ } __attribute__ ((packed));
+ 
+-- 
+1.5.3.4
