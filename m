@@ -1,19 +1,17 @@
-Received: from smtp.tal.de ([81.92.1.5])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFQNh-0005vB-5v
-	for linux-mtd@lists.infradead.org; Thu, 17 Jan 2008 08:45:58 +0000
-Received: from [172.16.0.10] (p50825747.dip.t-dialin.net [80.130.87.71])
-	by smtp.tal.de (SMTP.TAL.DE) with ESMTP id EF90B100FB1
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 17 Jan 2008 09:42:51 +0100 (CET)
-Message-ID: <478F1509.2090001@mkc-gmbh.de>
-Date: Thu, 17 Jan 2008 09:42:49 +0100
-From: =?ISO-8859-15?Q?Bernd_B=FCttner?= <b.buettner@mkc-gmbh.de>
+Received: from miranda.se.axis.com ([193.13.178.8])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFQTz-0006el-TU
+	for linux-mtd@lists.infradead.org; Thu, 17 Jan 2008 08:52:20 +0000
+Date: Thu, 17 Jan 2008 09:47:53 +0100 (CET)
+From: Ricard Wanderlof <ricard.wanderlof@axis.com>
+To: DMcLeod <dmcleod@bittware.com>
+Subject: Re: JFFS2 access time
+In-Reply-To: <478E0D5E.8070508@bittware.com>
+Message-ID: <Pine.LNX.4.64.0801170944580.24534@lnxricardw.se.axis.com>
+References: <478E0D5E.8070508@bittware.com>
 MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org
-Subject: Cleaning JFFS2 errors
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,27 +21,24 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-after working some time with the JFFS2 filesystem (on a uclinux-system with a non-mmu freescale processor)
-I'm getting errors on every mount like this:
 
-   jffs2_scan_inode(): CRC failed on node at 0x00c999f0: Read 0xffffffff, calculated 0x7621c0c4
-   Empty flash at 0x00c99a3c ends at 0x00c99c00
-   Empty flash at 0x0134201c ends at 0x01342200
-   jffs2_scan_eraseblock(): Node at 0x01d88df8 {0x1985, 0xe001, 0x0000002f) has invalid
-     CRC 0x1985e001 (calculated 0x392fe03e)
-   JFFS2 notice: (13) read_dnode: node CRC failed on dnode at 0x1341fd4:
-     read 0xffffffff, calculated 0xce9c70e9
+On Wed, 16 Jan 2008, DMcLeod wrote:
 
-The kernel is 2.6.19 from the latest uclinux distribution 20070130.
+> Hi all,
+>
+> We are using uClinux git 2.6.23. We have 4 2.5MB files sitting in a
+> directory on a ~40MB jffs2 partition (on NOR flash). The very first time
+> we do an 'ls' in that directory, the response takes literally minutes.
+> After the initial delay, any accesses to those files are very
 
-I think these errors are the result of power-loss, misbehaving new drivers and system crashes,
-and I suppose they are not critical and will be corrected by jffs2 after some time.
+By "the first time" to you mean the first time you boot the board at all, 
+or the first time after each boot?
 
-But delivering such systems to customers doesn't look good.
+If you download a 10 MB JFFS2 image into a 40 MB partition, then JFFS2 
+will upon mounting erase each flash sector in the unused 30 MB area and 
+write cleanmarkers to it. This more or less blocks accesses to the flash 
+during this time. However, this only occurs the first time the system is 
+booted, after that, the partition is completely "JFFS2-formatted" and 
+there shouldn't be any further delays.
 
-Is there a possibility to force jffs2 to correct these errors at once?
-
-I hope so.
-
-Bernd
+/Ricard
