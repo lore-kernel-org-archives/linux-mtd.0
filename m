@@ -1,20 +1,15 @@
-Received: from ipn36372-d52026.cidr.lightship.net ([216.204.15.186]
-	helo=zeus.bittware.com)
+Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFXJY-00045G-5L
-	for linux-mtd@lists.infradead.org; Thu, 17 Jan 2008 16:10:06 +0000
-Message-ID: <478F7D11.30606@bittware.com>
-Date: Thu, 17 Jan 2008 11:06:41 -0500
-From: DMcLeod <dmcleod@bittware.com>
+	id 1JFXMu-0004bY-4E
+	for linux-mtd@lists.infradead.org; Thu, 17 Jan 2008 16:13:35 +0000
+Message-ID: <478F7E6D.8010300@parrot.com>
+Date: Thu, 17 Jan 2008 17:12:29 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: JFFS2 access time
-References: <478E0D5E.8070508@bittware.com>
-	<20080116183458.2c997320@zod.rchland.ibm.com>
-In-Reply-To: <20080116183458.2c997320@zod.rchland.ibm.com>
+To: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>
+Subject: Jffs2 and big file = very slow jffs2_garbage_collect_pass
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,49 +19,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On Wed, 16 Jan 2008 08:57:50 -0500
-> DMcLeod <dmcleod@bittware.com> wrote:
->
->   
->> Hi all,
->>
->> We are using uClinux git 2.6.23. We have 4 2.5MB files sitting in a 
->> directory on a ~40MB jffs2 partition (on NOR flash). The very first time 
->> we do an 'ls' in that directory, the response takes literally minutes. 
->> After the initial delay, any accesses to those files are very 
->> quick.,,
->>     
->
-> That is normal for large files.  JFFS2 has do the CRC checking on all
-> the nodes for those large files.  That is a lot of nodes to check.  You
-> might want to look into using the eraseblock summary feature.
->
->   
->> Originally, we started off with the Microtronix 1.4 kernel and 
->> it did not have this problem. The pre-git version of uClinux-dist had 
->> this problem but not as severe - it was more like 40 seconds to list the 
->> contents of that directory.
->>     
-> I have no idea what those two kernels are, but older JFFS2 used to do
-> all the CRC checking at mount time.  So mount would be slow and runtime
-> access would be relatively quick.
->   
-The Microtronix kernel is the kernel built by Altera's Quartus 6.1 
-suite. By "pre-git" version, we just meant the packaged version from 
-nioswiki, rather than getting it from the git server.
+Hi,
 
-At any rate, it turns out that having the verbosity level set to 2 in 
-the jffs2 section of menuconfig was our problem. The kernel was so 
-dragged down by having to bombard /proc/kmsg with jffs2 printk's that it 
-caused the huge delays we were seeing. We set verbosity back to 0 and 
-all is well.
 
-Thanks :-)
-> josh
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
->   
+we have a 240 MB jffs2 partition with summary enabled and no 
+compression. We use 2ad8ee713566671875216ebcec64f2eda47bd19d git jffs2 
+version 
+(http://git.infradead.org/?p=mtd-2.6.git;a=commit;h=2ad8ee713566671875216ebcec64f2eda47bd19d)
+
+
+On this partition we have several file (less than 1 MB) and a big file 
+in the root (200 MB).
+
+The big file is a FAT image that is exported with usb-storage (with usb 
+device) or mounted on a loopback device.
+
+After some FAT operations, we manage to get in a situation were the 
+jffs2_garbage_collect_pass take 12 minutes.
+
+jffs2_lookup for the big file (triggered with a ls in the root) take 12 
+minutes.
+
+If we do a ls without waiting that jffs2_garbage_collect_pass finish, ls 
+takes 12 minutes to complete.
+
+We applied the 4 patches starting from "Trigger garbage collection when 
+very_dirty_list size becomes excessive" to "Don't count all 'very dirty' 
+blocks except in debug mode", but it doesn't change anything.
+
+
+Why jffs2 take so much time in jffs2_garbage_collect_pass for checking 
+the nodes ?
+Reading the whole raw flash take about 40s-1min.
+Does it read the flash in a random order ?
+
+What does the jffs2_lookup ?
+Why it is so long.
+
+
+What are the alternative ?
+Trying yaffs2 ?
+Export a smaller file ?
+
+Matthieu
+
+
+PS : if the big file is moved in a subdirectory, then the ls in the root 
+dir is fast, but access to the big file is slow (12 Minutes).
