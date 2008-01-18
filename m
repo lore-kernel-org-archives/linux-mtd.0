@@ -1,21 +1,16 @@
-Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFniC-00079w-6h
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 09:40:39 +0000
-Message-ID: <479073D1.5010406@parrot.com>
-Date: Fri, 18 Jan 2008 10:39:29 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
+Received: from mx.dave-tech.it ([88.37.112.223])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFoIg-0002ef-IR
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 10:18:21 +0000
+Message-ID: <47907CDF.30802@dave-tech.it>
+Date: Fri, 18 Jan 2008 11:18:07 +0100
+From: llandre <r&d2@dave-tech.it>
 MIME-Version: 1.0
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-References: <478F7E6D.8010300@parrot.com>	<20080117162601.GA6677@lazybastard.org>
-	<20080117114353.0bc71dac@zod.rchland.ibm.com>
-In-Reply-To: <20080117114353.0bc71dac@zod.rchland.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org,
-	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>
+To: sshahrom@micron.com
+Subject: Micron NAND support in linux MTD
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,22 +20,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Josh Boyer wrote:
-> On Thu, 17 Jan 2008 17:26:01 +0100
-> Jörn Engel <joern@logfs.org> wrote:
-> 
->>> If we do a ls without waiting that jffs2_garbage_collect_pass finish, ls 
->>> takes 12 minutes to complete.
->> Impressive!  JFFS2 may be slow, but it shouldn't be _that_ slow.  Not
-> 
-> How do you know?  A 200MiB file will likely have around 50,000 nodes.
-Yes the file got 41324 nodes.
-> If the summary stuff is incorrect, and since we have no idea what kind
-> of platform is being used here, it may well be within reason.
-> 
-The summary stuff is correct (I check it with a parser on a dump of the 
-image). Also if the summary wasn't correct, only the mount time will grow ?
-In my case the mount is ok : less than 5-10s.
-The platform used is an arm926 @247 Mhz
+Hi,
 
-Matthieu
+I found on MTD mailing list your patch that adds Micron manufacturer ID:
+http://article.gmane.org/gmane.linux.drivers.mtd/17694
+
+I'm going to use NAND Micron devices for a new project however I still 
+have a doubt about how MTD/JFFS2 handle bad blocks. To detect blocks 
+marked as bad it checks the 6th location of OOB area of first page, thus 
+it seems it is not able to handle Micron devices properly. In fact these 
+devices stores bad block marker in the first location of OOB of first or 
+second page (for example see page 50 of MT29F1GxxABB data sheet). Am I 
+misreading the datasheet? Could you help me to clear this point?
+
+
+Thanks in advance,
+llandre
+
+DAVE Electronics System House - R&D Department
+web:   http://www.dave-tech.it
+email: r&d2@dave-tech.it
