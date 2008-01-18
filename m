@@ -1,16 +1,18 @@
-Received: from mx.dave-tech.it ([88.37.112.223])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFoIg-0002ef-IR
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 10:18:21 +0000
-Message-ID: <47907CDF.30802@dave-tech.it>
-Date: Fri, 18 Jan 2008 11:18:07 +0100
-From: llandre <r&d2@dave-tech.it>
+Received: from wa-out-1112.google.com ([209.85.146.182])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFq5X-0002xv-LO
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 12:12:54 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so1641004wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Jan 2008 04:12:46 -0800 (PST)
+Message-ID: <479097B7.9050401@gmail.com>
+Date: Fri, 18 Jan 2008 17:42:39 +0530
+From: vicky <vicky.irobot@gmail.com>
 MIME-Version: 1.0
-To: sshahrom@micron.com
-Subject: Micron NAND support in linux MTD
+To: linux-mtd@lists.infradead.org
+Subject: question about node creation /dev/mtd*
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,21 +24,17 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 
 Hi,
 
-I found on MTD mailing list your patch that adds Micron manufacturer ID:
-http://article.gmane.org/gmane.linux.drivers.mtd/17694
+I have enabled mtd in my config. When I boot from the updated kernel I 
+find that /dev/mtdblock is not created?
 
-I'm going to use NAND Micron devices for a new project however I still 
-have a doubt about how MTD/JFFS2 handle bad blocks. To detect blocks 
-marked as bad it checks the 6th location of OOB area of first page, thus 
-it seems it is not able to handle Micron devices properly. In fact these 
-devices stores bad block marker in the first location of OOB of first or 
-second page (for example see page 50 of MT29F1GxxABB data sheet). Am I 
-misreading the datasheet? Could you help me to clear this point?
+How does the /dev/mtdblock get created? I didn't find this in the 
+init/rcs script. I am under an impression that once the mtd is enabled 
+in the linux
+config file the creation of the corresponding node is taken care in some 
+script.
 
+I have a dummy nand driver written and placed in the mtd/nand location.
 
-Thanks in advance,
-llandre
+Please advice.
 
-DAVE Electronics System House - R&D Department
-web:   http://www.dave-tech.it
-email: r&d2@dave-tech.it
+Vic
