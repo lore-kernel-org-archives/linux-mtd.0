@@ -1,22 +1,21 @@
-Received: from wa-out-1112.google.com ([209.85.146.176])
+Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFtPp-0005h5-QW
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 15:46:04 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so1736139wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Jan 2008 07:45:55 -0800 (PST)
-Message-ID: <8bf247760801180745k6f8337d5p751d91b21bd3728d@mail.gmail.com>
-Date: Fri, 18 Jan 2008 21:15:54 +0530
-From: Ram <vshrirama@gmail.com>
-To: llandre <r&d2@dave-tech.it>
-Subject: Re: Micron NAND support in linux MTD
-In-Reply-To: <47907CDF.30802@dave-tech.it>
+	id 1JFtvV-0000nM-Ot
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 16:18:48 +0000
+Message-ID: <4790D11E.6060201@parrot.com>
+Date: Fri, 18 Jan 2008 17:17:34 +0100
+From: Matthieu CASTET <matthieu.castet@parrot.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <47907CDF.30802@dave-tech.it>
-Cc: linux-mtd@lists.infradead.org
+To: Josh Boyer <jwboyer@gmail.com>
+Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
+References: <478F7E6D.8010300@parrot.com>	<20080117162601.GA6677@lazybastard.org>	<20080117114353.0bc71dac@zod.rchland.ibm.com>	<479073D1.5010406@parrot.com>
+	<20080118064852.026b0c82@zod.rchland.ibm.com>
+In-Reply-To: <20080118064852.026b0c82@zod.rchland.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Cc: David Woodhouse <dwmw2@infradead.org>,
+	=?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>,
+	linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,61 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-   The location of the "bad block indicator" within the spare area
-depends on the
-    manufacturer. It could vary from chip to chip.
-
-   it could also depend on the page size as well.
-
-   Usually, for a large page size nand, It could be located at the
-first byte of the OOB.
-   For a small it could be at 6th byte.
-
-  The way you send some commands to the large page size nand device is
-somewhat different
-  from the small page size nand device. I think you may not be using
-the driver for a large page  nand device.
-
-  Most of the stuff (driver) for the large page nand devices is
-generic. The way you wait for nand busy changes.
-
-  Check the way your reading the flash information from the chip id
-and additional infomation.
-  The way youre mtd_info structure is getting initialised. You could
-be missing something here.
-
-Hope this helps.
-
-Regards,
-sriram
+Josh Boyer wrote:
+> On Fri, 18 Jan 2008 10:39:29 +0100
+> Matthieu CASTET <matthieu.castet@parrot.com> wrote:
+> 
+> 
+>> In my case the mount is ok : less than 5-10s.
+>> The platform used is an arm926 @247 Mhz
+> 
+> Ok, so running at 247MHz your board has to calculate the CRCs on 41324
+> nodes before the file can be opened.  I have no idea how long that
+> should really take, but you're doing about 57 nodes per second if it's
+> taking 12 minutes.
+> 
+> As Jörn and David suggested, do some profiling to see where it is
+> spending most of it's time.
+> 
+I sent a mail, but  because of Message has a suspicious header, the 
+message wait  moderator approval.
 
 
+In summary,
+the code spend lot's of time in the rbtree code (7 minutes) and 4 
+minutes in jffs2_get_inode_nodes.
 
 
-On Jan 18, 2008 3:48 PM, llandre <r&d2@dave-tech.it> wrote:
-> Hi,
->
-> I found on MTD mailing list your patch that adds Micron manufacturer ID:
-> http://article.gmane.org/gmane.linux.drivers.mtd/17694
->
-> I'm going to use NAND Micron devices for a new project however I still
-> have a doubt about how MTD/JFFS2 handle bad blocks. To detect blocks
-> marked as bad it checks the 6th location of OOB area of first page, thus
-> it seems it is not able to handle Micron devices properly. In fact these
-> devices stores bad block marker in the first location of OOB of first or
-> second page (for example see page 50 of MT29F1GxxABB data sheet). Am I
-> misreading the datasheet? Could you help me to clear this point?
->
->
-> Thanks in advance,
-> llandre
->
-> DAVE Electronics System House - R&D Department
-> web:   http://www.dave-tech.it
-> email: r&d2@dave-tech.it
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+Matthieu
+
+
+  54366 rb_prev                                  543,6600
+  28345 rb_next                                  283,4500
+   8602 default_idle                              71,6833
+  10251 __raw_readsl                              40,0430
+  49648 jffs2_get_inode_nodes                     11,8097
+    251 s3c2412_nand_devready                      7,8438
+   1222 crc32_le                                   4,8492
