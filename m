@@ -1,27 +1,21 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFvvY-0002EO-Ag
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 18:26:52 +0000
-Date: Fri, 18 Jan 2008 19:17:44 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Josh Boyer <jwboyer@gmail.com>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-Message-ID: <20080118181744.GA15039@lazybastard.org>
-References: <478F7E6D.8010300@parrot.com>
-	<20080117162601.GA6677@lazybastard.org>
-	<20080117114353.0bc71dac@zod.rchland.ibm.com>
-	<479073D1.5010406@parrot.com>
-	<20080118064852.026b0c82@zod.rchland.ibm.com>
-	<4790D11E.6060201@parrot.com>
-	<20080118115531.2deef9fb@zod.rchland.ibm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Received: from heisenberg.zen.co.uk ([212.23.3.141])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFw1t-0002oQ-8j
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 18:33:26 +0000
+Received: from [82.69.137.158] (helo=opal.uk.level5networks.com)
+	by heisenberg.zen.co.uk with esmtp (Exim 4.63)
+	(envelope-from <bwh@solarflare.com>) id 1JFvz3-0007g5-Ps
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 18:30:30 +0000
+Date: Fri, 18 Jan 2008 18:30:28 +0000
+From: Ben Hutchings <bhutchings@solarflare.com>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [RFC] New Solarflare NIC EEPROM/Flash driver (3rd try)
+Message-ID: <20080118183026.GH23117@solarflare.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080118115531.2deef9fb@zod.rchland.ibm.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
+Sender: "Ben Hutchings <bhutchings>" <bwh@solarflare.com>
+Cc: linux-net-drivers@solarflare.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,24 +25,644 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 January 2008 11:55:31 -0600, Josh Boyer wrote:
-> 
-> That seems consistent with JFFS2 doing the CRC checks and constructing
-> the in-memory representation of your large file.  I suspect the older
-> list-based in-memory implementation would have taken even longer, but
-> there could be something amiss with the rb-tree stuff perhaps.
+My colleague Robert Stonehouse submitted a new version of the sfc
+network driver and accompanying sfc_mtd MTD driver today.  The full
+source is at:
 
-There is something conceptually amiss with rb-trees.  Each node
-effectively occupies its own cacheline.  With those 40k+ nodes, you
-would need a rather sizeable cache with at least 20k cachelines to have
-an impact.  Noone does.  So for all practical purposes, every single
-lookup will go to main memory.
+https://support.solarflare.com/netdev/5/net-2.6.25-sfc-2.2.0045.patch
+https://support.solarflare.com/netdev/5/net-2.6.25-sfc-2.2.0045.tgz
 
-Maybe it is about time to suggest trying logfs?
+I've included the main source file for the MTD driver below.  We have
+made changes that I think answer all the comments from the previous
+review:
 
-Jörn
+- Deleted redundant comments, casts, "inline"
+- Changed if (rc != 0) to the preferred if (rc)
+- Clarified use of access_lock and moved some code out of locked section
+  that doesn't need to be in it
+- Renamed efx_mtd_probe() to efx_mtd_register(), since it does
+  not probe
+- Moved structure allocation and device-dependent initialisation out of
+  efx_mtd_register()
+- Simplified efx_mtd_verify():
+  - Replaced large heap buffer with small stack buffer, as this is not
+    speed-critical
+  - Allowed the caller to specify a repeating pattern, rather than handling
+    the erase pattern directly
+  - Replaced byte-comparison loop with memcmp()
+- Made efx_spi_slow_wait() uninterruptible where EINTR cannot be
+  propagated or handled
+
+Some additional fixes:
+
+- Changed probe error code for absent devices to ENODEV
+- Changed type and flags for EEPROM to be "RAM" - the EEPROM is randomly
+  rewritable and it is certainly not DataFlash
+
+Ben.
+
+--- /dev/null
++++ b/drivers/net/sfc/mtd.c
+@@ -0,0 +1,598 @@
++/****************************************************************************
++ * Driver for Solarflare network controllers
++ *           (including support for SFE4001 10GBT NIC)
++ *
++ * Copyright 2005-2006: Fen Systems Ltd.
++ * Copyright 2006-2008: Solarflare Communications Inc,
++ *                      9501 Jeronimo Road, Suite 250,
++ *                      Irvine, CA 92618, USA
++ *
++ * Initially developed by Michael Brown <mbrown@fensystems.co.uk>
++ * Maintained by Solarflare Communications <linux-net-drivers@solarflare.com>
++ *
++ * This program is free software; you can redistribute it and/or modify it
++ * under the terms of the GNU General Public License version 2 as published
++ * by the Free Software Foundation, incorporated herein by reference.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
++ ****************************************************************************
++ */
++
++#include <linux/module.h>
++#include <linux/mtd/mtd.h>
++#include <linux/mtd/partitions.h>
++#include <linux/delay.h>
++
++#define EFX_DRIVER_NAME "sfc_mtd"
++#include "driverlink_api.h"
++#include "net_driver.h"
++#include "spi.h"
++
++/*
++ * Flash and EEPROM (MTD) device driver
++ *
++ * This file provides a separate kernel module (sfc_mtd) which
++ * exposes the flash and EEPROM devices present on Solarflare NICs as
++ * MTD devices, enabling you to reflash the boot ROM code (or use the
++ * remaining space on the flash as a jffs2 filesystem, should you want
++ * to do so).
++ */
++
++#define EFX_MTD_VERIFY_BUF_LEN 16
++#define EFX_MAX_PARTITIONS 2
++#define EFX_FLASH_BOOTROM_OFFSET 0x8000U
++
++/* Write enable for EEPROM/Flash configuration area
++ *
++ * Normally, writes to parts of non-volatile storage which contain
++ * critical configuration are disabled to prevent accidents.  This
++ * parameter allows enabling of such writes.
++ */
++static unsigned int efx_allow_nvconfig_writes;
++
++struct efx_mtd {
++	struct mtd_info mtd;
++	struct mtd_partition part[EFX_MAX_PARTITIONS];
++	char part_name[EFX_MAX_PARTITIONS][32];
++	char name[32];
++	struct efx_dl_device *efx_dev;
++	struct efx_nic *efx;
++	/* This must be held when using *spi; it guards against races
++	 * with device reset and between sequences of dependent
++	 * commands. */
++	struct semaphore access_lock;
++	struct efx_spi_device *spi;
++};
++
++/* SPI utilities */
++
++static int efx_spi_fast_wait(struct efx_mtd *efx_mtd)
++{
++	struct efx_spi_device *spi = efx_mtd->spi;
++	u8 status;
++	int i, rc;
++
++	/* Wait up to 1000us for flash/EEPROM to finish a fast operation. */
++	for (i = 0; i < 50; i++) {
++		udelay(20);
++
++		rc = spi->read(spi, efx_mtd->efx, SPI_RDSR, -1,
++			       &status, sizeof(status));
++		if (rc)
++			return rc;
++		if (!(status & SPI_STATUS_NRDY))
++			return 0;
++	}
++	EFX_ERR(efx_mtd->efx, "timed out waiting for %s last status=0x%02x\n",
++		efx_mtd->name, status);
++	return -ETIMEDOUT;
++}
++
++static int efx_spi_slow_wait(struct efx_mtd *efx_mtd, int uninterruptible)
++{
++	struct efx_spi_device *spi = efx_mtd->spi;
++	u8 status;
++	int rc, i;
++
++	/* Wait up to 4s for flash/EEPROM to finish a slow operation. */
++	for (i = 0; i < 40; i++) {
++		__set_current_state(uninterruptible ?
++				    TASK_UNINTERRUPTIBLE : TASK_INTERRUPTIBLE);
++		schedule_timeout(HZ / 10);
++		rc = spi->read(spi, efx_mtd->efx, SPI_RDSR, -1,
++			       &status, sizeof(status));
++		if (rc)
++			return rc;
++		if (!(status & SPI_STATUS_NRDY))
++			return 0;
++		if (signal_pending(current))
++			return -EINTR;
++	}
++	EFX_ERR(efx_mtd->efx, "timed out waiting for %s\n", efx_mtd->name);
++	return -ETIMEDOUT;
++}
++
++static int
++efx_spi_write_enable(struct efx_mtd *efx_mtd)
++{
++	struct efx_spi_device *spi = efx_mtd->spi;
++
++	return spi->write(spi, efx_mtd->efx, SPI_WREN, -1, NULL, 0);
++}
++
++static int efx_spi_unlock(struct efx_mtd *efx_mtd)
++{
++	struct efx_spi_device *spi = efx_mtd->spi;
++	const u8 unlock_mask = (SPI_STATUS_BP2 | SPI_STATUS_BP1 |
++				     SPI_STATUS_BP0);
++	u8 status;
++	int rc;
++
++	rc = spi->read(spi, efx_mtd->efx, SPI_RDSR, -1, &status,
++		       sizeof(status));
++	if (rc)
++		return rc;
++
++	if (!(status & unlock_mask))
++		return 0; /* already unlocked */
++
++	rc = efx_spi_write_enable(efx_mtd);
++	if (rc)
++		return rc;
++	rc = spi->write(spi, efx_mtd->efx, SPI_SST_EWSR, -1, NULL, 0);
++	if (rc)
++		return rc;
++
++	status &= ~unlock_mask;
++	rc = spi->write(spi, efx_mtd->efx, SPI_WRSR, -1, &status,
++			sizeof(status));
++	if (rc)
++		return rc;
++	rc = efx_spi_fast_wait(efx_mtd);
++	if (rc)
++		return rc;
++
++	return 0;
++}
++
++/* Dummy device used in case of a failed reset */
++
++static int efx_spi_dummy_read(const struct efx_spi_device *spi,
++			      struct efx_nic *efx, unsigned int command,
++			      int address, void *data, unsigned int len)
++{
++	return -EIO;
++}
++
++static int efx_spi_dummy_write(const struct efx_spi_device *spi,
++			       struct efx_nic *efx, unsigned int command,
++			       int address, const void *data, unsigned int len)
++{
++	return -EIO;
++}
++
++static struct efx_spi_device efx_spi_dummy_device = {
++	.block_size	= 1,
++	.erase_command	= 0xff,
++	.read		= efx_spi_dummy_read,
++	.write		= efx_spi_dummy_write,
++};
++
++/* MTD interface */
++
++static int efx_mtd_read(struct mtd_info *mtd, loff_t start, size_t len,
++			size_t *retlen, u8 *buffer)
++{
++	struct efx_mtd *efx_mtd = mtd->priv;
++	struct efx_spi_device *spi;
++	unsigned int command;
++	unsigned int block_len;
++	unsigned int pos = 0;
++	int rc;
++
++	rc = down_interruptible(&efx_mtd->access_lock);
++	if (rc)
++		goto out;
++	spi = efx_mtd->spi;
++
++	while (pos < len) {
++		block_len = min((unsigned int)len - pos,
++				efx_spi_read_limit(spi, start + pos));
++		command = efx_spi_munge_command(spi, SPI_READ, start + pos);
++		rc = spi->read(spi, efx_mtd->efx, command, start + pos,
++			       buffer + pos, block_len);
++		if (rc)
++			break;
++		pos += block_len;
++
++		/* Avoid locking up the system */
++		cond_resched();
++		if (signal_pending(current)) {
++			rc = -EINTR;
++			break;
++		}
++	}
++
++	up(&efx_mtd->access_lock);
++out:
++	*retlen = pos;
++	return rc;
++}
++
++/* Check that device contents match buffer.  If repeat is true, buffer
++ * contains a pattern of length EFX_MTD_VERIFY_BUF_LEN which the
++ * device contents should match repeatedly.
++ */
++static int efx_mtd_verify(struct mtd_info *mtd, loff_t start,
++			  size_t len, const u8 *buffer, int repeat)
++{
++	u8 verify_buffer[EFX_MTD_VERIFY_BUF_LEN];
++	unsigned int block_len;
++	size_t read_len;
++	unsigned int pos = 0;
++	int rc = 0;
++
++	while (pos < len) {
++		block_len = min(len - pos, sizeof(verify_buffer));
++		rc = efx_mtd_read(mtd, start + pos, block_len, &read_len,
++				  verify_buffer);
++		if (rc)
++			return rc;
++		if (memcmp(repeat ? buffer : buffer + pos, verify_buffer,
++			   block_len))
++			return -EIO;
++		pos += block_len;
++	}
++
++	return 0;
++}
++
++static int efx_mtd_erase(struct mtd_info *mtd, struct erase_info *erase)
++{
++	struct efx_mtd *efx_mtd = mtd->priv;
++	struct efx_spi_device *spi;
++	u8 empty[EFX_MTD_VERIFY_BUF_LEN];
++	int rc;
++
++	if (erase->len != mtd->erasesize) {
++		rc = -EINVAL;
++		goto out;
++	}
++
++	rc = down_interruptible(&efx_mtd->access_lock);
++	if (rc)
++		goto out;
++	spi = efx_mtd->spi;
++	if (spi->erase_command == 0) {
++		rc = -EOPNOTSUPP;
++		goto out_up;
++	}
++
++	rc = efx_spi_unlock(efx_mtd);
++	if (rc)
++		goto out_up;
++	rc = efx_spi_write_enable(efx_mtd);
++	if (rc)
++		goto out_up;
++	rc = spi->write(spi, efx_mtd->efx, spi->erase_command, erase->addr,
++			NULL, 0);
++	if (rc)
++		goto out_up;
++	rc = efx_spi_slow_wait(efx_mtd, 0);
++
++out_up:
++	up(&efx_mtd->access_lock);
++	if (rc)
++		goto out;
++
++	memset(empty, 0xff, sizeof(empty));
++	rc = efx_mtd_verify(mtd, erase->addr, erase->len, empty, 1);
++
++out:
++	if (rc == 0) {
++		erase->state = MTD_ERASE_DONE;
++	} else {
++		erase->state = MTD_ERASE_FAILED;
++		erase->fail_addr = 0xffffffff;
++	}
++	mtd_erase_callback(erase);
++	return rc;
++}
++
++static int efx_mtd_write(struct mtd_info *mtd, loff_t start,
++			 size_t len, size_t *retlen, const u8 *buffer)
++{
++	struct efx_mtd *efx_mtd = mtd->priv;
++	struct efx_spi_device *spi;
++	unsigned int command;
++	unsigned int block_len;
++	unsigned int pos = 0;
++	int rc;
++
++	rc = down_interruptible(&efx_mtd->access_lock);
++	if (rc)
++		goto out;
++	spi = efx_mtd->spi;
++
++	rc = efx_spi_unlock(efx_mtd);
++	if (rc)
++		goto out_up;
++
++	while (pos < len) {
++		rc = efx_spi_write_enable(efx_mtd);
++		if (rc)
++			break;
++
++		block_len = min((unsigned int)len - pos,
++				efx_spi_write_limit(spi, start + pos));
++		command = efx_spi_munge_command(spi, SPI_WRITE, start + pos);
++		rc = spi->write(spi, efx_mtd->efx, command, start + pos,
++				buffer + pos, block_len);
++		if (rc)
++			break;
++		pos += block_len;
++
++		rc = efx_spi_fast_wait(efx_mtd);
++		if (rc)
++			break;
++
++		/* Avoid locking up the system */
++		cond_resched();
++		if (signal_pending(current)) {
++			rc = -EINTR;
++			break;
++		}
++	}
++
++out_up:
++	up(&efx_mtd->access_lock);
++	if (rc == 0)
++		rc = efx_mtd_verify(mtd, start, len, buffer, 0);
++out:
++	*retlen = pos;
++	return rc;
++}
++
++static void efx_mtd_sync(struct mtd_info *mtd)
++{
++	struct efx_mtd *efx_mtd = mtd->priv;
++	int rc;
++
++	down(&efx_mtd->access_lock);
++	rc = efx_spi_slow_wait(efx_mtd, 1);
++	if (rc)
++		EFX_ERR(efx_mtd->efx, "%s sync failed (%d)\n",
++			efx_mtd->name, rc);
++	up(&efx_mtd->access_lock);
++}
++
++/* Driverlink interface */
++
++static void efx_mtd_reset_suspend(struct efx_dl_device *efx_dev)
++{
++	struct efx_mtd *efx_mtd = efx_dev->priv;
++
++	if (!efx_mtd)
++		return;
++
++	/* Acquire lock to ensure that any in-progress operations have
++	 * completed, and no new ones can start.
++	 */
++	down(&efx_mtd->access_lock);
++}
++
++static void efx_mtd_reset_resume(struct efx_dl_device *efx_dev, int ok)
++{
++	struct efx_mtd *efx_mtd = efx_dev->priv;
++
++	if (!efx_mtd)
++		return;
++
++	/* If device reset failed already, or SPI device doesn't
++	 * become ready, disable device.
++	 */
++	if (!ok || efx_spi_slow_wait(efx_mtd, 1) != 0) {
++		efx_mtd->spi = &efx_spi_dummy_device;
++		EFX_ERR(efx_mtd->efx, "%s disabled after failed reset\n",
++			efx_mtd->name);
++	}
++
++	up(&efx_mtd->access_lock);
++}
++
++static void efx_mtd_remove(struct efx_dl_device *efx_dev)
++{
++	struct efx_mtd *efx_mtd = efx_dev->priv;
++
++	del_mtd_partitions(&efx_mtd->mtd);
++	kfree(efx_mtd);
++	efx_dev->priv = NULL;
++}
++
++static __devinit int efx_mtd_register(struct efx_mtd *efx_mtd,
++				      struct efx_dl_device *efx_dev,
++				      struct efx_nic *efx,
++				      struct efx_spi_device *spi,
++				      const char *type_name,
++				      const char **part_type_name,
++				      unsigned int num_parts)
++{
++	int i;
++
++	efx_dev->priv = efx_mtd;
++
++	efx_mtd->efx_dev = efx_dev;
++	efx_mtd->efx = efx;
++	efx_mtd->spi = spi;
++	sema_init(&efx_mtd->access_lock, 1);
++
++	efx_mtd->mtd.size = spi->size;
++	efx_mtd->mtd.erasesize = spi->erase_size;
++	efx_mtd->mtd.writesize = 1;
++	if (snprintf(efx_mtd->name, sizeof(efx_mtd->name),
++		     "%s %s", efx->name, type_name) >=
++	    sizeof(efx_mtd->name))
++		return -ENAMETOOLONG;
++
++	efx_mtd->mtd.priv = efx_mtd;
++	efx_mtd->mtd.name = efx_mtd->name;
++	efx_mtd->mtd.erase = efx_mtd_erase;
++	efx_mtd->mtd.read = efx_mtd_read;
++	efx_mtd->mtd.write = efx_mtd_write;
++	efx_mtd->mtd.sync = efx_mtd_sync;
++
++	for (i = 0; i < num_parts; i++) {
++		efx_mtd->part[i].name = efx_mtd->part_name[i];
++		if (snprintf(efx_mtd->part_name[i],
++			     sizeof(efx_mtd->part_name[i]),
++			     "%s %s", efx->name, part_type_name[i]) >=
++		    sizeof(efx_mtd->part_name[i]))
++			return -ENAMETOOLONG;
++
++		if (efx_allow_nvconfig_writes)
++			efx_mtd->part[i].mask_flags &= ~MTD_WRITEABLE;
++	}
++
++	return add_mtd_partitions(&efx_mtd->mtd, efx_mtd->part, num_parts);
++}
++
++static int __devinit
++efx_flash_probe(struct efx_dl_device *efx_dev,
++		const struct net_device *net_dev,
++		const struct efx_dl_device_info *dev_info,
++		const char *silicon_rev)
++{
++	struct efx_nic *efx = efx_dl_get_nic_port(efx_dev)->efx;
++	struct efx_mtd *efx_mtd;
++	const char *part_type_name[2];
++	unsigned int num_parts;
++	int rc;
++
++	if (!efx->spi_flash)
++		return -ENODEV;
++
++	efx_mtd = kzalloc(sizeof(*efx_mtd), GFP_KERNEL);
++	if (!efx_mtd)
++		return -ENOMEM;
++
++	efx_mtd->mtd.type = MTD_NORFLASH;
++	efx_mtd->mtd.flags = MTD_CAP_NORFLASH;
++
++	part_type_name[0] = "sfc_flash_config";
++	efx_mtd->part[0].offset = 0;
++	efx_mtd->part[0].size = min(efx->spi_flash->size,
++				    EFX_FLASH_BOOTROM_OFFSET);
++	efx_mtd->part[0].mask_flags = MTD_WRITEABLE;
++
++	if (efx->spi_flash->size <= EFX_FLASH_BOOTROM_OFFSET) {
++		num_parts = 1;
++	} else {
++		part_type_name[1] = "sfc_flash_bootrom";
++		efx_mtd->part[1].offset = EFX_FLASH_BOOTROM_OFFSET;
++		efx_mtd->part[1].size = (efx->spi_flash->size
++					 - EFX_FLASH_BOOTROM_OFFSET);
++		num_parts = 2;
++	}
++
++	rc = efx_mtd_register(efx_mtd, efx_dev, efx, efx->spi_flash,
++			      "sfc_flash", part_type_name, num_parts);
++	if (rc)
++		kfree(efx_mtd);
++	return rc;
++}
++
++static struct efx_dl_driver efx_flash_driver = {
++	.name		= "sfc_flash",
++	.probe		= efx_flash_probe,
++	.remove		= efx_mtd_remove,
++	.reset_suspend	= efx_mtd_reset_suspend,
++	.reset_resume	= efx_mtd_reset_resume,
++};
++
++static int __devinit
++efx_eeprom_probe(struct efx_dl_device *efx_dev,
++		 const struct net_device *net_dev,
++		 const struct efx_dl_device_info *dev_info,
++		 const char *silicon_rev)
++{
++	struct efx_nic *efx = efx_dl_get_nic_port(efx_dev)->efx;
++	struct efx_mtd *efx_mtd;
++	const char *type_name;
++	const char *part_type_name[1];
++	int rc;
++
++	if (!efx->spi_eeprom)
++		return -ENODEV;
++
++	efx_mtd = kzalloc(sizeof(*efx_mtd), GFP_KERNEL);
++	if (!efx_mtd)
++		return -ENOMEM;
++
++	efx_mtd->mtd.type = MTD_RAM;
++	efx_mtd->mtd.flags = MTD_CAP_RAM;
++
++	efx_mtd->part[0].offset = 0;
++	efx_mtd->part[0].size = efx->spi_eeprom->size;
++	efx_mtd->part[0].mask_flags = MTD_WRITEABLE;
++
++	if (efx->spi_eeprom->size <= 0x200) {
++		type_name = "sfc_small_eeprom";
++		part_type_name[0] = "sfc_small_config";
++	} else {
++		type_name = "sfc_large_eeprom";
++		part_type_name[0] = "sfc_large_config";
++	}
++
++	rc = efx_mtd_register(efx_mtd, efx_dev, efx, efx->spi_eeprom,
++			      type_name, part_type_name, 1);
++	if (rc)
++		kfree(efx_mtd);
++	return rc;
++}
++
++static struct efx_dl_driver efx_eeprom_driver = {
++	.name		= "sfc_eeprom",
++	.probe		= efx_eeprom_probe,
++	.remove		= efx_mtd_remove,
++	.reset_suspend	= efx_mtd_reset_suspend,
++	.reset_resume	= efx_mtd_reset_resume,
++};
++
++/* Kernel module interface */
++
++static int __init efx_mtd_init_module(void)
++{
++	int rc;
++
++	rc = efx_dl_register_driver(&efx_flash_driver);
++	if (rc)
++		return rc;
++	rc = efx_dl_register_driver(&efx_eeprom_driver);
++	if (rc) {
++		efx_dl_unregister_driver(&efx_flash_driver);
++		return rc;
++	}
++
++	return 0;
++}
++
++static void __exit efx_mtd_exit_module(void)
++{
++	efx_dl_unregister_driver(&efx_eeprom_driver);
++	efx_dl_unregister_driver(&efx_flash_driver);
++}
++
++module_init(efx_mtd_init_module);
++module_exit(efx_mtd_exit_module);
++
++MODULE_AUTHOR("Michael Brown <mbrown@fensystems.co.uk> and "
++	      "Solarflare Communications");
++MODULE_DESCRIPTION("SFC MTD driver");
++MODULE_LICENSE("GPL");
 
 -- 
-People will accept your ideas much more readily if you tell them
-that Benjamin Franklin said it first.
--- unknown
+Ben Hutchings, Senior Software Engineer, Solarflare Communications
+Not speaking for my employer; that's the marketing department's job.
