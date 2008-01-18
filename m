@@ -1,31 +1,22 @@
-Received: from e1.ny.us.ibm.com ([32.97.182.141])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFr4n-0007mI-SV
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 13:16:12 +0000
-Received: from d01relay04.pok.ibm.com (d01relay04.pok.ibm.com [9.56.227.236])
-	by e1.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m0IDG3xA026308
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2008 08:16:03 -0500
-Received: from d01av02.pok.ibm.com (d01av02.pok.ibm.com [9.56.224.216])
-	by d01relay04.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m0IDG3P2234290
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2008 08:16:03 -0500
-Received: from d01av02.pok.ibm.com (loopback [127.0.0.1])
-	by d01av02.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m0IDG2Hx025914
-	for <linux-mtd@lists.infradead.org>; Fri, 18 Jan 2008 08:16:02 -0500
-Date: Fri, 18 Jan 2008 07:14:05 -0600
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: dedekind@infradead.org
-Subject: Re: question about node creation /dev/mtd*
-Message-ID: <20080118071405.533c2b45@zod.rchland.ibm.com>
-In-Reply-To: <1200661002.6934.23.camel@sauron>
-References: <479097B7.9050401@gmail.com>
-	<20080118064432.19233a37@zod.rchland.ibm.com>
-	<1200661002.6934.23.camel@sauron>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Received: from wa-out-1112.google.com ([209.85.146.176])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFtPp-0005h5-QW
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 15:46:04 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so1736139wah.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 18 Jan 2008 07:45:55 -0800 (PST)
+Message-ID: <8bf247760801180745k6f8337d5p751d91b21bd3728d@mail.gmail.com>
+Date: Fri, 18 Jan 2008 21:15:54 +0530
+From: Ram <vshrirama@gmail.com>
+To: llandre <r&d2@dave-tech.it>
+Subject: Re: Micron NAND support in linux MTD
+In-Reply-To: <47907CDF.30802@dave-tech.it>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, vicky <vicky.irobot@gmail.com>
+Content-Disposition: inline
+References: <47907CDF.30802@dave-tech.it>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -35,36 +26,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 Jan 2008 14:56:42 +0200
-Artem Bityutskiy <dedekind@infradead.org> wrote:
+Hi,
+   The location of the "bad block indicator" within the spare area
+depends on the
+    manufacturer. It could vary from chip to chip.
 
-> On Fri, 2008-01-18 at 06:44 -0600, Josh Boyer wrote:
-> > On Fri, 18 Jan 2008 17:42:39 +0530
-> > vicky <vicky.irobot@gmail.com> wrote:
-> > 
-> > > Hi,
-> > > 
-> > > I have enabled mtd in my config. When I boot from the updated kernel I 
-> > > find that /dev/mtdblock is not created?
-> > > 
-> > > How does the /dev/mtdblock get created? I didn't find this in the 
-> > > init/rcs script. I am under an impression that once the mtd is enabled 
-> > > in the linux
-> > > config file the creation of the corresponding node is taken care in some 
-> > > script.
-> > 
-> > You need to either have udev running, or create it manually yourself
-> > with mknod (which can be done via a script you write). This is, of
-> > course, assuming you have the mtdblock module loaded or compiled into
-> > your kernel.
-> 
-> udev will not help because MTD is not Linux Device Model-enabled, so
-> only ancient manual device node creation method may be used. There is a
-> MAKEDEV script in mtd-utils.git which may help.
+   it could also depend on the page size as well.
 
-MTD itself isn't, no.  But I thought mtdblock got some of the sysfs
-stuff for free because it hooked into the generic block layer?
+   Usually, for a large page size nand, It could be located at the
+first byte of the OOB.
+   For a small it could be at 6th byte.
 
-It's been a while, I could be mistaken.
+  The way you send some commands to the large page size nand device is
+somewhat different
+  from the small page size nand device. I think you may not be using
+the driver for a large page  nand device.
 
-josh
+  Most of the stuff (driver) for the large page nand devices is
+generic. The way you wait for nand busy changes.
+
+  Check the way your reading the flash information from the chip id
+and additional infomation.
+  The way youre mtd_info structure is getting initialised. You could
+be missing something here.
+
+Hope this helps.
+
+Regards,
+sriram
+
+
+
+
+On Jan 18, 2008 3:48 PM, llandre <r&d2@dave-tech.it> wrote:
+> Hi,
+>
+> I found on MTD mailing list your patch that adds Micron manufacturer ID:
+> http://article.gmane.org/gmane.linux.drivers.mtd/17694
+>
+> I'm going to use NAND Micron devices for a new project however I still
+> have a doubt about how MTD/JFFS2 handle bad blocks. To detect blocks
+> marked as bad it checks the 6th location of OOB area of first page, thus
+> it seems it is not able to handle Micron devices properly. In fact these
+> devices stores bad block marker in the first location of OOB of first or
+> second page (for example see page 50 of MT29F1GxxABB data sheet). Am I
+> misreading the datasheet? Could you help me to clear this point?
+>
+>
+> Thanks in advance,
+> llandre
+>
+> DAVE Electronics System House - R&D Department
+> web:   http://www.dave-tech.it
+> email: r&d2@dave-tech.it
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>
