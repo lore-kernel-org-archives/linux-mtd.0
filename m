@@ -1,20 +1,23 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFxq8-0001XM-WA
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 20:29:25 +0000
-Date: Fri, 18 Jan 2008 21:20:24 +0100
+	id 1JFySl-000454-LZ
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 21:09:19 +0000
+Date: Fri, 18 Jan 2008 22:00:19 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Ben Hutchings <bhutchings@solarflare.com>
-Subject: Re: [PATCH] [MTD] [RFC] New Solarflare NIC EEPROM/Flash driver (3rd
-	try)
-Message-ID: <20080118202023.GB15039@lazybastard.org>
-References: <20080118183026.GH23117@solarflare.com>
+To: Jamie Lokier <jamie@shareable.org>
+Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
+Message-ID: <20080118210019.GA16849@lazybastard.org>
+References: <478F7E6D.8010300@parrot.com>
+	<20080117162601.GA6677@lazybastard.org>
+	<20080117114353.0bc71dac@zod.rchland.ibm.com>
+	<2B52FCEB-D871-4D9B-81D1-E03F7698AF96@logicaloutcome.ca>
+	<20080118183900.GC21136@shareable.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080118183026.GH23117@solarflare.com>
-Cc: linux-net-drivers@solarflare.com, linux-mtd@lists.infradead.org
+In-Reply-To: <20080118183900.GC21136@shareable.org>
+Cc: linux-mtd@lists.infradead.org, Glenn Henshaw <thraxisp@logicaloutcome.ca>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,113 +27,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 January 2008 18:30:28 +0000, Ben Hutchings wrote:
+On Fri, 18 January 2008 18:39:01 +0000, Jamie Lokier wrote:
 > 
-> My colleague Robert Stonehouse submitted a new version of the sfc
-> network driver and accompanying sfc_mtd MTD driver today.  The full
-> source is at:
+> Yes!  I have exactly the same problem, except I'm using 2.4.26-uc0,
+> and it's a 1MB partition (16 blocks of 64kbytes).
 > 
-> https://support.solarflare.com/netdev/5/net-2.6.25-sfc-2.2.0045.patch
-> https://support.solarflare.com/netdev/5/net-2.6.25-sfc-2.2.0045.tgz
+> I am tempted to modify the JFFS2 code to implement a hard limit of 50%
+> full at the kernel level.
+> 
+> The JFFS2 docs suggest 5 free blocks are enough to ensure GC is
+> working.  In my experience that does often work, but occasionally
+> there's a catastrophically long and CPU intensive GC.
 
-Cool.
+If you want to make GC go berzerk, here's a simple recipe:
+1. Fill filesystem 100%.
+2. Randomly replace single blocks.
 
-> - Renamed efx_mtd_probe() to efx_mtd_register(), since it does
->   not probe
-> - Moved structure allocation and device-dependent initialisation out of
->   efx_mtd_register()
+There are two ways to solve this problem:
+1. Reserve some amount of free space for GC performance.
+2. Write in some non-random fashion.
 
-My suggestion for this was actually a bit different, see below.
+Solution 2 works even better if the filesystem actually sorts data
+very roughly by life expectency.  That requires writing to several
+blocks in parallel, i.e. one for long-lived data, one for short-lived
+data.  Made an impressive difference in logfs when I implemented that.
 
-> - Simplified efx_mtd_verify():
->   - Replaced large heap buffer with small stack buffer, as this is not
->     speed-critical
->   - Allowed the caller to specify a repeating pattern, rather than handling
->     the erase pattern directly
->   - Replaced byte-comparison loop with memcmp()
-
-Interesting solution.  Works for me.  If it makes a difference, you
-could increase EFX_MTD_VERIFY_BUF_LEN to maybe 128 or 256.  That should
-still be safe on the stack and cut down on function calls.  If it
-doesn't make a difference, just leave it.
-
-> - Changed type and flags for EEPROM to be "RAM" - the EEPROM is randomly
->   rewritable and it is certainly not DataFlash
-
-Good.  I forgot to mention it when I saw it.
-
-> +static __devinit int efx_mtd_register(struct efx_mtd *efx_mtd,
-> +				      struct efx_dl_device *efx_dev,
-> +				      struct efx_nic *efx,
-> +				      struct efx_spi_device *spi,
-> +				      const char *type_name,
-> +				      const char **part_type_name,
-> +				      unsigned int num_parts)
-
-The function prototype is a monster.  My idea was to have this function
-do the allocation and fill in any generic fields, then hand it over to
-the concrete probe functions.  That approach doesn't require seven
-parameters and is generally safer.  Something very roughly like the code
-below.
-
-If you want to combine the snprintf code, mtd registration, etc.  you
-can also add another helper funtion.
-
-static __devinit struct efx_mtd *efx_mtd_alloc( struct efx_spi_device *spi)
-{
-	struct efx_mtd *efx_mtd;
-
-	efx_mtd = kzalloc(sizeof(*efx_mtd), GFP_KERNEL);
-	if (!efx_mtd)
-		return NULL;
-
-	efx_mtd->spi = spi;
-	sema_init(&efx_mtd->access_lock, 1);
-
-	efx_mtd->mtd.size = spi->size;
-	efx_mtd->mtd.erasesize = spi->erase_size;
-	efx_mtd->mtd.writesize = 1;
-	efx_mtd->mtd.priv = efx_mtd;
-
-	efx_mtd->mtd.erase = efx_mtd_erase;
-	efx_mtd->mtd.read = efx_mtd_read;
-	efx_mtd->mtd.write = efx_mtd_write;
-	efx_mtd->mtd.sync = efx_mtd_sync;
-	return efx_mtd;
-}
-
-static int __devinit
-efx_flash_probe(struct efx_dl_device *efx_dev,
-		const struct net_device *net_dev,
-		const struct efx_dl_device_info *dev_info,
-		const char *silicon_rev)
-{
-	struct efx_nic *efx = efx_dl_get_nic_port(efx_dev)->efx;
-	struct efx_mtd *efx_mtd;
-	const char *part_type_name[2];
-	unsigned int num_parts;
-	int rc, len;
-
-	if (!efx->spi_flash)
-		return -ENODEV;
-
-	efx_mtd = efx_mtd_alloc();
-	if (!efx_mtd)
-		return -ENOMEM;
-
-	efx_dev->priv = efx_mtd;
-	efx_mtd->efx_dev = efx_dev;
-	efx_mtd->efx = efx;
-
-	len = snprintf(efx_mtd->name, sizeof(efx_mtd->name), "%s %s", efx->name, "sfc_flash");
-	if (len >= sizeof(efx_mtd->name))
-		return -ENAMETOOLONG;
-	efx_mtd->mtd.name = efx_mtd->name;
-	...
+And of course academics can write many papers about good heuristics to
+predict life expectency.  In fact, they already have.
 
 Jörn
 
 -- 
-But this is not to say that the main benefit of Linux and other GPL
-software is lower-cost. Control is the main benefit--cost is secondary.
--- Bruce Perens
+"Security vulnerabilities are here to stay."
+-- Scott Culp, Manager of the Microsoft Security Response Center, 2001
