@@ -1,25 +1,20 @@
-Received: from an-out-0708.google.com ([209.85.132.246])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFqgQ-0005We-08
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 12:51:01 +0000
-Received: by an-out-0708.google.com with SMTP id c3so220287ana.99
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 18 Jan 2008 04:50:52 -0800 (PST)
-Date: Fri, 18 Jan 2008 06:48:52 -0600
-From: Josh Boyer <jwboyer@gmail.com>
-To: Matthieu CASTET <matthieu.castet@parrot.com>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-Message-ID: <20080118064852.026b0c82@zod.rchland.ibm.com>
-In-Reply-To: <479073D1.5010406@parrot.com>
-References: <478F7E6D.8010300@parrot.com>
-	<20080117162601.GA6677@lazybastard.org>
-	<20080117114353.0bc71dac@zod.rchland.ibm.com>
-	<479073D1.5010406@parrot.com>
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JFqtY-000531-9i
+	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 13:04:34 +0000
+Subject: Re: question about node creation /dev/mtd*
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+In-Reply-To: <20080118064432.19233a37@zod.rchland.ibm.com>
+References: <479097B7.9050401@gmail.com>
+	<20080118064432.19233a37@zod.rchland.ibm.com>
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 18 Jan 2008 14:56:42 +0200
+Message-Id: <1200661002.6934.23.camel@sauron>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	=?UTF-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org
+Cc: linux-mtd@lists.infradead.org, vicky <vicky.irobot@gmail.com>
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,41 +24,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 18 Jan 2008 10:39:29 +0100
-Matthieu CASTET <matthieu.castet@parrot.com> wrote:
-
-> Josh Boyer wrote:
-> > On Thu, 17 Jan 2008 17:26:01 +0100
-> > J=C3=B6rn Engel <joern@logfs.org> wrote:
+On Fri, 2008-01-18 at 06:44 -0600, Josh Boyer wrote:
+> On Fri, 18 Jan 2008 17:42:39 +0530
+> vicky <vicky.irobot@gmail.com> wrote:
+>=20
+> > Hi,
 > >=20
-> >>> If we do a ls without waiting that jffs2_garbage_collect_pass finish,=
- ls=20
-> >>> takes 12 minutes to complete.
-> >> Impressive!  JFFS2 may be slow, but it shouldn't be _that_ slow.  Not
+> > I have enabled mtd in my config. When I boot from the updated kernel I=20
+> > find that /dev/mtdblock is not created?
 > >=20
-> > How do you know?  A 200MiB file will likely have around 50,000 nodes.
-> Yes the file got 41324 nodes.
+> > How does the /dev/mtdblock get created? I didn't find this in the=20
+> > init/rcs script. I am under an impression that once the mtd is enabled=20
+> > in the linux
+> > config file the creation of the corresponding node is taken care in som=
+e=20
+> > script.
+>=20
+> You need to either have udev running, or create it manually yourself
+> with mknod (which can be done via a script you write). This is, of
+> course, assuming you have the mtdblock module loaded or compiled into
+> your kernel.
 
-Wow, I'm surprised I actually got close with my top of the head math :)
+udev will not help because MTD is not Linux Device Model-enabled, so
+only ancient manual device node creation method may be used. There is a
+MAKEDEV script in mtd-utils.git which may help.
 
-> > If the summary stuff is incorrect, and since we have no idea what kind
-> > of platform is being used here, it may well be within reason.
-> >=20
-> The summary stuff is correct (I check it with a parser on a dump of the=20
-> image). Also if the summary wasn't correct, only the mount time will grow=
- ?
-
-Yes, you're correct.
-
-> In my case the mount is ok : less than 5-10s.
-> The platform used is an arm926 @247 Mhz
-
-Ok, so running at 247MHz your board has to calculate the CRCs on 41324
-nodes before the file can be opened.  I have no idea how long that
-should really take, but you're doing about 57 nodes per second if it's
-taking 12 minutes.
-
-As J=C3=B6rn and David suggested, do some profiling to see where it is
-spending most of it's time.
-
-josh
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
