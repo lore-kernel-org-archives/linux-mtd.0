@@ -1,12 +1,17 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JI3bd-0007xP-FY
-	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 15:03:11 +0000
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: linux-mtd@lists.infradead.org
-Date: Thu, 24 Jan 2008 18:54:53 +0200
-Message-Id: <20080124165453.30169.40332.sendpatchset@golum>
-Subject: [PATCH] UBI: introduce atomic LEB change ioctl
+Received: from sovereign.computergmbh.de ([85.214.69.204])
+	by pentafluge.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JHPH4-0003FT-Rb
+	for linux-mtd@lists.infradead.org; Tue, 22 Jan 2008 19:59:17 +0000
+Date: Tue, 22 Jan 2008 20:49:41 +0100 (CET)
+From: Jan Engelhardt <jengelh@computergmbh.de>
+To: David Woohouse <dwmw2@infradead.org>
+Subject: [PATCH] [MTD]: constify function pointer tables
+In-Reply-To: <54038cd4f87a03884e4f59f8f3697889dfb63c54.1201030614.git.jengelh@computergmbh.de>
+Message-ID: <Pine.LNX.4.64.0801222048520.5722@fbirervta.pbzchgretzou.qr>
+References: <54038cd4f87a03884e4f59f8f3697889dfb63c54.1201030614.git.jengelh@computergmbh.de>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -16,156 +21,47 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From e405cf1dc645e7931df0e47ee7408d5251e2d9d0 Mon Sep 17 00:00:00 2001
-From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-Date: Thu, 24 Jan 2008 16:15:14 +0200
-Subject: [PATCH] UBI: introduce atomic LEB change ioctl
-
-We have to be able to change individual LEBs for utilities like
-ubifsck, ubifstune. For example, ubifsck has to be able to fix
-errors on the media, ubifstune has to be able to change the
-the superblock, hence this ioctl.
-
-Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Signed-off-by: Jan Engelhardt <jengelh@computergmbh.de>
 ---
- include/linux/mtd/ubi.h |   17 ---------------
- include/mtd/ubi-user.h  |   51 +++++++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 47 insertions(+), 21 deletions(-)
+ drivers/mtd/ubi/cdev.c |    4 ++--
+ drivers/mtd/ubi/ubi.h  |    4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
-index c4abe03..f71201d 100644
---- a/include/linux/mtd/ubi.h
-+++ b/include/linux/mtd/ubi.h
-@@ -26,23 +26,6 @@
- #include <mtd/ubi-user.h>
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index fe4da1e..05ed76f 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -683,14 +683,14 @@ static int ubi_cdev_ioctl(struct inode *inode, struct file *file,
+ }
  
- /*
-- * UBI data type hint constants.
-- *
-- * UBI_LONGTERM: long-term data
-- * UBI_SHORTTERM: short-term data
-- * UBI_UNKNOWN: data persistence is unknown
-- *
-- * These constants are used when data is written to UBI volumes in order to
-- * help the UBI wear-leveling unit to find more appropriate physical
-- * eraseblocks.
-- */
--enum {
--	UBI_LONGTERM = 1,
--	UBI_SHORTTERM,
--	UBI_UNKNOWN
--};
--
--/*
-  * enum ubi_open_mode - UBI volume open mode constants.
-  *
-  * UBI_READONLY: read-only mode
-diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
-index 4d184a7..a7421f1 100644
---- a/include/mtd/ubi-user.h
-+++ b/include/mtd/ubi-user.h
-@@ -63,7 +63,7 @@
-  *
-  * Volume update should be done via the %UBI_IOCVOLUP IOCTL command of the
-  * corresponding UBI volume character device. A pointer to a 64-bit update
-- * size should be passed to the IOCTL. After then, UBI expects user to write
-+ * size should be passed to the IOCTL. After this, UBI expects user to write
-  * this number of bytes to the volume character device. The update is finished
-  * when the claimed number of bytes is passed. So, the volume update sequence
-  * is something like:
-@@ -72,6 +72,15 @@
-  * ioctl(fd, UBI_IOCVOLUP, &image_size);
-  * write(fd, buf, image_size);
-  * close(fd);
-+ *
-+ * Atomic eraseblock change
-+ * ~~~~~~~~~~~~~~~~~~~~~~~~
-+ *
-+ * Atomic eraseblock change operation is done via the %UBI_IOCEBCH IOCTL
-+ * command of the corresponding UBI volume character device. A pointer to
-+ * &struct ubi_leb_change_req has to be passed to the IOCTL. Then the user is
-+ * expected to write the requested amount of bytes. This is similar to the
-+ * "volume update" IOCTL.
-  */
- 
- /*
-@@ -113,11 +122,30 @@
- #define UBI_IOCVOLUP _IOW(UBI_VOL_IOC_MAGIC, 0, int64_t)
- /* An eraseblock erasure command, used for debugging, disabled by default */
- #define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, int32_t)
-+/* An atomic eraseblock change command */
-+#define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, int32_t)
- 
- /* Maximum MTD device name length supported by UBI */
- #define MAX_UBI_MTD_NAME_LEN 127
- 
- /*
-+ * UBI data type hint constants.
-+ *
-+ * UBI_LONGTERM: long-term data
-+ * UBI_SHORTTERM: short-term data
-+ * UBI_UNKNOWN: data persistence is unknown
-+ *
-+ * These constants are used when data is written to UBI volumes in order to
-+ * help the UBI wear-leveling unit to find more appropriate physical
-+ * eraseblocks.
-+ */
-+enum {
-+	UBI_LONGTERM  = 1,
-+	UBI_SHORTTERM = 2,
-+	UBI_UNKNOWN   = 3,
-+};
-+
-+/*
-  * UBI volume type constants.
-  *
-  * @UBI_DYNAMIC_VOLUME: dynamic volume
-@@ -125,7 +153,7 @@
-  */
- enum {
- 	UBI_DYNAMIC_VOLUME = 3,
--	UBI_STATIC_VOLUME = 4,
-+	UBI_STATIC_VOLUME  = 4,
+ /* UBI character device operations */
+-struct file_operations ubi_cdev_operations = {
++const struct file_operations ubi_cdev_operations = {
+ 	.owner = THIS_MODULE,
+ 	.ioctl = ubi_cdev_ioctl,
+ 	.llseek = no_llseek,
  };
  
- /**
-@@ -137,7 +165,7 @@ enum {
-  *
-  * This data structure is used to specify MTD device UBI has to attach and the
-  * parameters it has to use. The number which should be assigned to the new UBI
-- * device is passed in @ubi_num. UBI may automatically assing the number if
-+ * device is passed in @ubi_num. UBI may automatically assign the number if
-  * @UBI_DEV_NUM_AUTO is passed. In this case, the device number is returned in
-  * @ubi_num.
-  *
-@@ -176,7 +204,7 @@ struct ubi_attach_req {
-  * @padding2: reserved for future, not used, has to be zeroed
-  * @name: volume name
-  *
-- * This structure is used by userspace programs when creating new volumes. The
-+ * This structure is used by user-space programs when creating new volumes. The
-  * @used_bytes field is only necessary when creating static volumes.
-  *
-  * The @alignment field specifies the required alignment of the volume logical
-@@ -222,4 +250,19 @@ struct ubi_rsvol_req {
- 	int32_t vol_id;
- } __attribute__ ((packed));
+ /* UBI volume character device operations */
+-struct file_operations ubi_vol_cdev_operations = {
++const struct file_operations ubi_vol_cdev_operations = {
+ 	.owner   = THIS_MODULE,
+ 	.open    = vol_cdev_open,
+ 	.release = vol_cdev_release,
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 5e941a6..3a8ab61 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -361,8 +361,8 @@ struct ubi_device {
+ #endif
+ };
  
-+/**
-+ * struct ubi_leb_change_req - a data structure used in atomic logical
-+ *                             eraseblock change requests.
-+ * @lnum: logical eraseblock number to change
-+ * @bytes: how many bytes will be written to the logical eraseblock
-+ * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
-+ * @padding: reserved for future, not used, has to be zeroed
-+ */
-+struct ubi_leb_change_req {
-+	int32_t lnum;
-+	int32_t bytes;
-+	uint8_t dtype;
-+	uint8_t padding[7];
-+} __attribute__ ((packed));
-+
- #endif /* __UBI_USER_H__ */
+-extern struct file_operations ubi_cdev_operations;
+-extern struct file_operations ubi_vol_cdev_operations;
++extern const struct file_operations ubi_cdev_operations;
++extern const struct file_operations ubi_vol_cdev_operations;
+ extern struct class *ubi_class;
+ 
+ /* vtbl.c */
 -- 
 1.5.3.4
