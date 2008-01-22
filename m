@@ -1,27 +1,29 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHJ8h-0004XT-Jl
-	for linux-mtd@lists.infradead.org; Tue, 22 Jan 2008 13:26:14 +0000
-Date: Tue, 22 Jan 2008 14:24:56 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-In-Reply-To: <20080122120300.GA18884@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0801221419240.25733@lnxricardw.se.axis.com>
-References: <479073D1.5010406@parrot.com>
-	<20080118064852.026b0c82@zod.rchland.ibm.com>
-	<4790D11E.6060201@parrot.com>
-	<20080118115531.2deef9fb@zod.rchland.ibm.com>
-	<20080118181744.GA15039@lazybastard.org> <4794C107.7070600@parrot.com>
-	<20080121212555.GA14472@lazybastard.org>
-	<20080121161612.3ca2f093@zod.rchland.ibm.com>
-	<20080121222952.GC14472@lazybastard.org> <4795AFE3.506@parrot.com>
-	<20080122120300.GA18884@lazybastard.org>
+Received: from mail153.messagelabs.com ([216.82.253.51])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JHJuZ-0000TW-Ie
+	for linux-mtd@lists.infradead.org; Tue, 22 Jan 2008 14:15:42 +0000
+Received: from az33exr04.mot.com (az33exr04.mot.com [10.64.251.234])
+	by motgate3.mot.com (8.12.11/Motorola) with ESMTP id m0MEFXXi025057
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Jan 2008 07:15:33 -0700 (MST)
+Received: from az10vts02.mot.com (az10vts02.mot.com [10.64.251.243])
+	by az33exr04.mot.com (8.13.1/Vontu) with SMTP id m0MEFWxq007998
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Jan 2008 08:15:33 -0600 (CST)
+Received: from ct11exm60.ds.mot.com (CT11EXM60.am.mot.com [10.177.8.44])
+	by az33exr04.mot.com (8.13.1/8.13.0) with ESMTP id m0MEFVgr007963
+	for <linux-mtd@lists.infradead.org>;
+	Tue, 22 Jan 2008 08:15:32 -0600 (CST)
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: David Woodhouse <dwmw2@infradead.org>, Josh Boyer <jwboyer@gmail.com>,
-	linux-mtd@lists.infradead.org, Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: quoted-printable
+Subject: problem with 2k page NAND with squashfs
+Date: Tue, 22 Jan 2008 09:15:29 -0500
+Message-ID: <A2EC06CB0E393B4C8EB220B286B7083E05897213@ct11exm60.ds.mot.com>
+From: "Adams Richard-W36112" <rgadams@motorola.com>
+To: <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -31,30 +33,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-
-> On Tue, 22 Jan 2008, J=F6rn Engel wrote:
->=20
-> > On Tue, 22 January 2008 09:57:07 +0100, Matthieu CASTET wrote:
-> >
-> ...=20
-> > There no call to mtd->block_markbad or mtd->block_isbad (it is only=20
-> > called in mtd_find_sb).
->=20
-> Used to be there and was removed.  mtd->erase() does the same as
-> mtd->block_isbad().
-
-How do you mean? mtd->erase() will not erase a bad block, that is true.
-
-However, while it seems that mtd->erase() can mark a block bad if it=20
-fails, the fact that a block is eraseble without errors does not imply=20
-that it is good. I've seen NAND flash blocks which have way passed their=20
-specified number of max write/erase cycles still be successfully erased=20
-and subsequently written without errors, but the data retention was lousy=
+ I have an arm-based embedded system running a 2.6.10 kernel. I'm using
+a squashfs file system (read only) on the Flash device. The system was
+working fine with a 512 byte page Flash part. I started having problems
+when I upgraded to a 2048 byte page Flash part. When I mount the squash
+file system, it can successfully find the super block, but squashfs
+fails (unable to read inode [5ff3:120]) when it try's to finish the
+mount. My suspicions are that with the older kernel (2.6.10) it may not
+fully support the larger page devices. Is there an achieve of patches
+that are applicable for a 2.6.10 kernel? I tried to look through the
+mailing list archive, but without a search tool and not knowing what
+month I'm looking for the task became tedious.
 =20
-(blocks started to show bit flips after a few thousand reads).
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+Rick Adams
+(858) 404-3091  -- Motorola Office
+(858) 775-1136  -- cell phone
