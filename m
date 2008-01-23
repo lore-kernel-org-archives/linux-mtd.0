@@ -1,20 +1,29 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHbu4-0005Wd-03
-	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2008 09:28:22 +0000
-Date: Wed, 23 Jan 2008 10:27:23 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Adams Richard-W36112 <rgadams@motorola.com>
-Subject: RE: problem with 2k page NAND with squashfs
-In-Reply-To: <A2EC06CB0E393B4C8EB220B286B7083E05897220@ct11exm60.ds.mot.com>
-Message-ID: <Pine.LNX.4.64.0801231024270.25733@lnxricardw.se.axis.com>
-References: <A2EC06CB0E393B4C8EB220B286B7083E05897213@ct11exm60.ds.mot.com>
-	<20080122084910.2939d94a@weaponx>
-	<A2EC06CB0E393B4C8EB220B286B7083E05897220@ct11exm60.ds.mot.com>
+	id 1JHcnh-0002qS-4h
+	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2008 10:25:51 +0000
+Date: Wed, 23 Jan 2008 11:19:15 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Ricard Wanderlof <ricard.wanderlof@axis.com>
+Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
+Message-ID: <20080123101915.GA24953@lazybastard.org>
+References: <20080118181744.GA15039@lazybastard.org>
+	<4794C107.7070600@parrot.com>
+	<20080121212555.GA14472@lazybastard.org>
+	<20080121161612.3ca2f093@zod.rchland.ibm.com>
+	<20080121222952.GC14472@lazybastard.org> <4795AFE3.506@parrot.com>
+	<20080122120300.GA18884@lazybastard.org>
+	<Pine.LNX.4.64.0801221419240.25733@lnxricardw.se.axis.com>
+	<20080122150514.GD18884@lazybastard.org>
+	<Pine.LNX.4.64.0801231014540.25733@lnxricardw.se.axis.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: Josh Boyer <jwboyer@gmail.com>, linux-mtd@lists.infradead.org
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.64.0801231014540.25733@lnxricardw.se.axis.com>
+Cc: linux-mtd@lists.infradead.org, =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
+	David Woodhouse <dwmw2@infradead.org>, Josh Boyer <jwboyer@gmail.com>,
+	Matthieu CASTET <matthieu.castet@parrot.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +33,62 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Wed, 23 January 2008 10:23:55 +0100, Ricard Wanderlof wrote:
+> On Tue, 22 Jan 2008, Jörn Engel wrote:
+> 
+> >- Moderate: one block continuously spews -EUCLEAN, then becomes
+> > terminally bad.
+> > If those are just random bitflips, garbage collection will move the
+> > data sooner or later.  Logfs does not force GC to happen soon when
+> > encountering -EUCLEAN, which it should.  Are correctable errors an
+> > indication of block going bad in the near future?  If yes, I should do
+> > something about it.
+> 
+> I would say that correctable errors occurring "soon" after writing are an 
+> indication that the block is going bad. My experience has been that 
+> extensive reading can cause bitflips (and it probably happens over time 
+> too), but that for fresh blocks, billions of read operations need to be 
+> done before a bit flips. For blocks that are nearing their best before 
+> date, a couple of hundred thousand reads can cause a bit to flip. So if I 
+> was implementing some sort of 'when is this block considered 
+> bad'-algorithm, I'd try to keep tabs on how often the block has been 
+> (read-) accessed in relation to when it was last writen. If this number is 
+> "low", the block should be considered bad and not used again.
 
-On Tue, 22 Jan 2008, Adams Richard-W36112 wrote:
+That sounds like an impossible strategy.  Causing a write for every read
+will significantly increase write pressure, thereby reduce flash
+lifetime, reduce performance etc.
 
->> On Tue, 22 Jan 2008 09:15:29 -0500
->> "Adams Richard-W36112" <rgadams@motorola.com> wrote:
->>
->>>  I have an arm-based embedded system running a 2.6.10 kernel. I'm
-> ...
-> Before I went through the effort I wanted to check with the list to see
-> if anyone knows that there is or isn't an issue with the 2k NAND page
-> size on this vintage kernel.
+What would be possible was a counter for soft/hard errors per physical
+block.  On soft error, move data elsewhere and reuse the block, but
+increment the error counter.  If the counter increases beyond 17 (or any
+other random number), mark the block as bad.  Limit can be an mkfs
+option.
 
-You could check in drivers/mtd/nand/nand_ids.c and see if your flash chip,=
-=20
-or indeed any chip with that page size is listed there. Even if it is,=20
-there could still be a bug of course.
+> I'm also think that when (if) logfs decides a block is bad, it should mark 
+> it bad using mtd->block_markbad(). That way, if the flash is rewritten by 
+> something else than logfs (say during a firmware upgrade), bad blocks can 
+> be handled in a consistent and startad way.
 
-I seem to remember some kernel of similar vintage failing with large-page=
-=20
-flash chips because the driver tried to kmalloc a buffer the size of a=20
-block, which failed for chips with 128 KiB blocks, because of limitations=
-=20
-of the amount of memory that could allocated in one go with kmalloc.
+Maybe I should revive the old patch then.  I don't think it matters much
+either way.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+> We ran some tests here on a particular flash chip type to try and 
+> determine at least some of the failure modes that are related to block 
+> wear (due to write/erase) and bit decay (due to reading). The end result 
+> was basically what I tried to describe above, but I can go into more 
+> detail if you're interested.
+
+I do remember your mail describing the test.  One of the interesting
+conclusions is that even awefully worn out block is still good enough to
+store short-lived information.  It appears to be a surprisingly robust
+strategy to have a high wear-out, as long as you keep the wear
+constantly high and replace block contents at a high rate.
+
+Jörn
+
+-- 
+You can't tell where a program is going to spend its time. Bottlenecks
+occur in surprising places, so don't try to second guess and put in a
+speed hack until you've proven that's where the bottleneck is.
+-- Rob Pike
