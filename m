@@ -1,30 +1,15 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHgYI-0003tQ-ED
-	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2008 14:26:12 +0000
-Date: Wed, 23 Jan 2008 15:25:03 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-In-Reply-To: <20080123140639.GE24953@lazybastard.org>
-Message-ID: <Pine.LNX.4.64.0801231517520.15553@lnxricardw.se.axis.com>
-References: <20080122120300.GA18884@lazybastard.org>
-	<Pine.LNX.4.64.0801221419240.25733@lnxricardw.se.axis.com>
-	<20080122150514.GD18884@lazybastard.org>
-	<Pine.LNX.4.64.0801231014540.25733@lnxricardw.se.axis.com>
-	<20080123101915.GA24953@lazybastard.org>
-	<Pine.LNX.4.64.0801231132210.25733@lnxricardw.se.axis.com>
-	<20080123105713.GC24953@lazybastard.org>
-	<Pine.LNX.4.64.0801231248400.25733@lnxricardw.se.axis.com>
-	<20080123130144.GD24953@lazybastard.org>
-	<Pine.LNX.4.64.0801231410410.25733@lnxricardw.se.axis.com>
-	<20080123140639.GE24953@lazybastard.org>
+Received: from n21b.bullet.mail.sp1.yahoo.com ([69.147.65.253])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JHjSt-0002so-RL
+	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2008 17:32:44 +0000
+Date: Wed, 23 Jan 2008 09:28:13 -0800 (PST)
+From: Justin Treon <justin_treon@yahoo.com>
+Subject: Adding a function pointer to mtd_info struct
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: linux-mtd@lists.infradead.org, Josh Boyer <jwboyer@gmail.com>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Matthieu CASTET <matthieu.castet@parrot.com>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Message-ID: <63159.87126.qm@web43145.mail.sp1.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,44 +19,25 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+I am trying to add some new features in my kernel to cfi_cmd_0001.c for a test chip.
+ I added a new field to the mtd_info struct in mtd.h and inserted the function
+pointer into the mtd->overwrite field I added in cfi_cmd_0001.c, but when I try to
+use mtd->overwrite in mtdblock.c the pointer is set to NULL.  
 
-On Wed, 23 Jan 2008, J=F6rn Engel wrote:
+In the mtd_info struct in include/mtd/mtd.h I addded:
+	int (*overwrite) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen,
+const u_char *buf);
 
->> The only input I have got from chip manufacturers regarding this issue i=
-s
->> that with inreasing bit densities and decreasing bit cell sizes in the
->> future, things like the probability of random bit flips are likely to
->> increase. (Somewhere there is a limit when the amount of error correctio=
-n
->> needed to handle this things grows too large to make the chip practicall=
-y
->> useful; say 10 error correction bits per stored bit or whatever).
->
-> If error rates increase, device drivers have to do stronger error
-> correction.  Quality after error correction has been done should stay
-> roughly the same.
+In cfi_cmd_0001.c I added:
+	mtd->overwrite = cfi_intelext_overwrite_buffers;
 
-Yes, true, the first step is to increase the error correction capabilites,=
-=20
-but there comes a point when there are so many error correction bits=20
-required per data bit that there is no point of increasing the memory=20
-size.
+What file or field do I need to modify to make new function accessible from
+mtdblock.c?
 
-Today we have 3 ECC bytes per 256 data bytes in an ordinary nand flash. If=
-=20
-geometries decrease we might at some point need, say 128 ECC bytes, and=20
-further down the line perhaps even more ECC bytes than data bytes. It then=
-=20
-eventually comes to a point of diminishing returns; if the geometries are=
-=20
-decreased and error rates go up, the increase in number ECC bits might be=
-=20
-more than the gain in number of data bits. This is far down the line, and=
-=20
-partly speculative I agree.
+Justin Treon
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+
+
+      ____________________________________________________________________________________
+Be a better friend, newshound, and 
+know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ 
