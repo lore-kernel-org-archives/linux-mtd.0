@@ -1,15 +1,21 @@
-Received: from smtpauth15.mail.atl.earthlink.net ([209.86.89.75])
+Received: from mail0.lsil.com ([147.145.40.20])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHNtN-0007AV-ME
-	for linux-mtd@lists.infradead.org; Tue, 22 Jan 2008 18:30:44 +0000
-Message-ID: <29472601.1201026505044.JavaMail.root@mswamui-blood.atl.sa.earthlink.net>
-Date: Tue, 22 Jan 2008 10:28:25 -0800 (GMT-08:00)
-From: euromillion11111@peoplepc.com
-Subject: Kontaktieren Sie mich
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+	id 1JHVtp-0005v9-SS
+	for linux-mtd@lists.infradead.org; Wed, 23 Jan 2008 03:03:45 +0000
+Content-class: urn:content-classes:message
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-Reply-To: stevemorga8@yahoo.gr
+Subject: RE: Slow mount of JFFS2 root file system
+Date: Tue, 22 Jan 2008 22:03:29 -0500
+Message-ID: <BBF94D674CC54C48B62BD0667061E84901A07FF3@PAUMAILU02.ags.agere.com>
+In-Reply-To: <20080115154831.GB22338@lazybastard.org>
+References: <BBF94D674CC54C48B62BD0667061E8490199FA73@PAUMAILU02.ags.agere.com>
+	<20080115154831.GB22338@lazybastard.org>
+From: "Lin, Bin (Bin)" <Bin.Lin@lsi.com>
+To: =?iso-8859-1?Q?J=F6rn_Engel?= <joern@logfs.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,67 +25,60 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Guten Tag,
+Hi,
 
-Auch wenn dieser Brief Sie sicherlich =C3=BCberraschen wird, nehmen Sie sic=
-h bitte einen Moment Zeit um ihn zu lesen. Es ist sehr wichtig. Ich bin Ste=
-ve Morgen und ich arbeite bei einer Finanzhaus in den Niederlanden. Ich hab=
-e Ihre Adresse durch den International Web Directory Online gefunden.=20
+I was able to trace down to the location in the code that causes slow =
+root files system mount. When the code scans through medium, most of =
+unused area in the flash (30M of 60M bytes) is scanned as obsolete =
+nodes:
 
- W=C3=A4hrend unseres letzten Treffens und =C3=9Cberpr=C3=BCfung der Bankko=
-ntos hat meine Abteilung ein unt=C3=A4tiges Konto mit einer riesigen Geldsu=
-mme, US$ 6,500,000.00(Sechs Million f=C3=BCnfhundert tausend US Dollar) gef=
-unden, das einem unseren gestorbenen Kunden geh=C3=B6rt: Herr Williams aus =
-England. Er ist gestorben und hat keine Beg=C3=BCnstigten hinterlassen. So =
-dass die Fonds auf seinem Konto unt=C3=A4tig geblieben sind, ohne jeden=20
-Anspruch oder Aktivit=C3=A4t f=C3=BCr einige Zeit schon.
+                if (!(je16_to_cpu(node->nodetype) & =
+JFFS2_NODE_ACCURATE)) {
+                        /* Wheee. This is an obsoleted node */
+                        D2(printk(KERN_DEBUG "Node at 0x%08x is =
+obsolete. Skipping\n", ofs));
+                        DIRTY_SPACE(PAD(je32_to_cpu(node->totlen)));
+                        ofs +=3D PAD(je32_to_cpu(node->totlen));
+                        continue;
+                }=20
 
-
-Wegen unseren Finanzhaus vorschriften kann nur ein Ausl=C3=A4nder als n=C3=
-=A4chster Verwandten stehen und deshalb habe ich mich entschlossen Sie zu k=
-ontaktieren, um mit Ihnen zusammen zu arbeiten um diese unt=C3=A4tigen Fond=
-s zu reaktivieren. Und so jede negative Entwicklung oder sogar den endg=C3=
-=BCltigen Verlust der Fonds abzuwenden. In Namen meiner Kollegen suchen ich=
- Ihre Erlaubnis als n=C3=A4chster Verwandte unseres verstorbenen Kunden zu =
-stehen, so dass die Fonds freigestellt und auf ihr Konto =C3=BCberwiesen we=
-rden k=C3=B6nnen.=20
-
-Sie w=C3=BCrden zum n=C3=A4chsten Verwandten des Beg=C3=BCnstigten werden u=
-nd die Fonds werden in Ihre Verantwortung freigestellt werden. Wir d=C3=BCr=
-fen mit ausl=C3=A4ndischen Kontos nicht arbeiten, das k=C3=B6nnte in der Ze=
-it der =C3=9Cberweisung auffallen. Ich arbeite noch bei dieser Finanzhaus, =
-das ist der eigentliche=20
-
-Grund, dass ich eine zweite Partei oder Person ben=C3=B6tige, um mit mir zu=
- arbeiten und Anforderungen als n=C3=A4chster Verwandte zu schicken und auc=
-h um ein Bankkonto bereit zu stellen, oder eines bei einer neuen Bank zu er=
-=C3=B6ffnen, um die unt=C3=A4tige Fonds zu erhalten.
-
-Am Ende der Transaktion werden Ihnen 40% Prozent zustehen, zur Seite gelegt=
- und 60% werden f=C3=BCr meine Kollegen und mich sein.
-Was ich von Ihnen verlange ist als n=C3=A4chster Verwandte des Verstorbenen=
- zu stehen. Ich besitze alle notwendigen Dokumente um die Transaktion erfol=
-greich zu verwirklichen. Weitere Informationen werden Sie so bald ich Ihre =
-positive Antwort bekomme erhalten. Ich schlage Ihnen vor so bald wie m=C3=
-=B6glich mir zu antworten.=20
-
-Wir haben nicht viel Zeit diese ungl=C3=BCckliche Situation zu =C3=A4ndern =
-und ich bef=C3=BCrchte, dass ohne Ihre Hilfe alles verloren gehen wird. Weg=
-en der Vertraulichkeit bitte ich Sie mir auf meine privaten Email Adresse m=
-it folgenden Angaben zu antworten: Vollst=C3=A4ndiger Name, Adresse, Telefo=
-n- und Faxnummer.
-
-In Erwartung Ihrer Antwort, verbleibe ich,
-
-=20
-mit freundlichen Gruessen,
-
-=20
-Steve Morgan.
-stevemorga8@yahoo.gr
+It takes very long time to scan through all the obsolete 128 byte nodes.
+The question is what causes the unused sectors being marked as obsolete? =
 
 
-________________________________________
-PeoplePC Online
-A better way to Internet
-http://www.peoplepc.com
+Thanks a lot for your reply.
+Ben
+
+-----Original Message-----
+From: linux-mtd-bounces@lists.infradead.org =
+[mailto:linux-mtd-bounces@lists.infradead.org] On Behalf Of J?rn Engel
+Sent: Tuesday, January 15, 2008 10:49 AM
+To: Lin, Bin (Bin)
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: Slow mount of JFFS2 root file system
+
+On Tue, 15 January 2008 09:22:04 -0500, Lin, Bin (Bin) wrote:
+>=20
+> I have ARM9 systems with JFFS2 root file system. For some reasons, =
+e.g.
+> system crash or power failure, when system boots up next time, it=20
+> takes much longer time than usual to mount jffs2 root file system. It=20
+> can hang at following message for 3-10 min. Once this happens, the=20
+> mount will take the same long time in every reboot later on. Even=20
+> though it take long time to mount root file system, the system can=20
+> still come up and function well. This problem occurred in less than=20
+> 10% of boards in the field, but can not be reproduced in the lab. I=20
+> have been struggling with this is issue for weeks.
+
+What stops you from retrieving one such board from the field?  Should be =
+easy to debug once you have it on your desk.
+
+J=F6rn
+
+--
+Prosperity makes friends, adversity tries them.
+-- Publilius Syrus
+
+______________________________________________________
+Linux MTD discussion mailing list
+http://lists.infradead.org/mailman/listinfo/linux-mtd/
