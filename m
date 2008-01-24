@@ -1,20 +1,12 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JI2zs-00045R-JH
-	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 14:24:10 +0000
-Received: from esebh106.NOE.Nokia.com (esebh106.ntc.nokia.com [172.21.138.213])
-	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m0OENod0028482
-	for <linux-mtd@lists.infradead.org>; Thu, 24 Jan 2008 16:24:02 +0200
-Message-ID: <47989DF3.5010408@nokia.com>
-Date: Thu, 24 Jan 2008 16:17:23 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH] [MTD] [OneNAND] fix call to onenand_verify when writing
-	subpages
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+	id 1JI3bd-0007xP-FY
+	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 15:03:11 +0000
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 24 Jan 2008 18:54:53 +0200
+Message-Id: <20080124165453.30169.40332.sendpatchset@golum>
+Subject: [PATCH] UBI: introduce atomic LEB change ioctl
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,28 +16,156 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From cd14c5e65c47a827da3950022d06502bdf719d3c Mon Sep 17 00:00:00 2001
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
-Date: Mon, 21 Jan 2008 17:13:07 +0200
-Subject: [MTD] [OneNAND] fix call to onenand_verify when writing subpages
+>From e405cf1dc645e7931df0e47ee7408d5251e2d9d0 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Thu, 24 Jan 2008 16:15:14 +0200
+Subject: [PATCH] UBI: introduce atomic LEB change ioctl
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+We have to be able to change individual LEBs for utilities like
+ubifsck, ubifstune. For example, ubifsck has to be able to fix
+errors on the media, ubifstune has to be able to change the
+the superblock, hence this ioctl.
+
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
 ---
- drivers/mtd/onenand/onenand_base.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+ include/linux/mtd/ubi.h |   17 ---------------
+ include/mtd/ubi-user.h  |   51 +++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 47 insertions(+), 21 deletions(-)
 
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 92768ea..c2bf4ae 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -1419,7 +1419,7 @@ static int onenand_write_ops_nolock(struct mtd_info *mtd, loff_t to,
- 		}
+diff --git a/include/linux/mtd/ubi.h b/include/linux/mtd/ubi.h
+index c4abe03..f71201d 100644
+--- a/include/linux/mtd/ubi.h
++++ b/include/linux/mtd/ubi.h
+@@ -26,23 +26,6 @@
+ #include <mtd/ubi-user.h>
  
- 		/* Only check verify write turn on */
--		ret = onenand_verify(mtd, (u_char *) wbuf, to, thislen);
-+		ret = onenand_verify(mtd, buf, to, thislen);
- 		if (ret) {
- 			printk(KERN_ERR "onenand_write_ops_nolock: verify failed %d\n", ret);
- 			break;
+ /*
+- * UBI data type hint constants.
+- *
+- * UBI_LONGTERM: long-term data
+- * UBI_SHORTTERM: short-term data
+- * UBI_UNKNOWN: data persistence is unknown
+- *
+- * These constants are used when data is written to UBI volumes in order to
+- * help the UBI wear-leveling unit to find more appropriate physical
+- * eraseblocks.
+- */
+-enum {
+-	UBI_LONGTERM = 1,
+-	UBI_SHORTTERM,
+-	UBI_UNKNOWN
+-};
+-
+-/*
+  * enum ubi_open_mode - UBI volume open mode constants.
+  *
+  * UBI_READONLY: read-only mode
+diff --git a/include/mtd/ubi-user.h b/include/mtd/ubi-user.h
+index 4d184a7..a7421f1 100644
+--- a/include/mtd/ubi-user.h
++++ b/include/mtd/ubi-user.h
+@@ -63,7 +63,7 @@
+  *
+  * Volume update should be done via the %UBI_IOCVOLUP IOCTL command of the
+  * corresponding UBI volume character device. A pointer to a 64-bit update
+- * size should be passed to the IOCTL. After then, UBI expects user to write
++ * size should be passed to the IOCTL. After this, UBI expects user to write
+  * this number of bytes to the volume character device. The update is finished
+  * when the claimed number of bytes is passed. So, the volume update sequence
+  * is something like:
+@@ -72,6 +72,15 @@
+  * ioctl(fd, UBI_IOCVOLUP, &image_size);
+  * write(fd, buf, image_size);
+  * close(fd);
++ *
++ * Atomic eraseblock change
++ * ~~~~~~~~~~~~~~~~~~~~~~~~
++ *
++ * Atomic eraseblock change operation is done via the %UBI_IOCEBCH IOCTL
++ * command of the corresponding UBI volume character device. A pointer to
++ * &struct ubi_leb_change_req has to be passed to the IOCTL. Then the user is
++ * expected to write the requested amount of bytes. This is similar to the
++ * "volume update" IOCTL.
+  */
+ 
+ /*
+@@ -113,11 +122,30 @@
+ #define UBI_IOCVOLUP _IOW(UBI_VOL_IOC_MAGIC, 0, int64_t)
+ /* An eraseblock erasure command, used for debugging, disabled by default */
+ #define UBI_IOCEBER _IOW(UBI_VOL_IOC_MAGIC, 1, int32_t)
++/* An atomic eraseblock change command */
++#define UBI_IOCEBCH _IOW(UBI_VOL_IOC_MAGIC, 2, int32_t)
+ 
+ /* Maximum MTD device name length supported by UBI */
+ #define MAX_UBI_MTD_NAME_LEN 127
+ 
+ /*
++ * UBI data type hint constants.
++ *
++ * UBI_LONGTERM: long-term data
++ * UBI_SHORTTERM: short-term data
++ * UBI_UNKNOWN: data persistence is unknown
++ *
++ * These constants are used when data is written to UBI volumes in order to
++ * help the UBI wear-leveling unit to find more appropriate physical
++ * eraseblocks.
++ */
++enum {
++	UBI_LONGTERM  = 1,
++	UBI_SHORTTERM = 2,
++	UBI_UNKNOWN   = 3,
++};
++
++/*
+  * UBI volume type constants.
+  *
+  * @UBI_DYNAMIC_VOLUME: dynamic volume
+@@ -125,7 +153,7 @@
+  */
+ enum {
+ 	UBI_DYNAMIC_VOLUME = 3,
+-	UBI_STATIC_VOLUME = 4,
++	UBI_STATIC_VOLUME  = 4,
+ };
+ 
+ /**
+@@ -137,7 +165,7 @@ enum {
+  *
+  * This data structure is used to specify MTD device UBI has to attach and the
+  * parameters it has to use. The number which should be assigned to the new UBI
+- * device is passed in @ubi_num. UBI may automatically assing the number if
++ * device is passed in @ubi_num. UBI may automatically assign the number if
+  * @UBI_DEV_NUM_AUTO is passed. In this case, the device number is returned in
+  * @ubi_num.
+  *
+@@ -176,7 +204,7 @@ struct ubi_attach_req {
+  * @padding2: reserved for future, not used, has to be zeroed
+  * @name: volume name
+  *
+- * This structure is used by userspace programs when creating new volumes. The
++ * This structure is used by user-space programs when creating new volumes. The
+  * @used_bytes field is only necessary when creating static volumes.
+  *
+  * The @alignment field specifies the required alignment of the volume logical
+@@ -222,4 +250,19 @@ struct ubi_rsvol_req {
+ 	int32_t vol_id;
+ } __attribute__ ((packed));
+ 
++/**
++ * struct ubi_leb_change_req - a data structure used in atomic logical
++ *                             eraseblock change requests.
++ * @lnum: logical eraseblock number to change
++ * @bytes: how many bytes will be written to the logical eraseblock
++ * @dtype: data type (%UBI_LONGTERM, %UBI_SHORTTERM, %UBI_UNKNOWN)
++ * @padding: reserved for future, not used, has to be zeroed
++ */
++struct ubi_leb_change_req {
++	int32_t lnum;
++	int32_t bytes;
++	uint8_t dtype;
++	uint8_t padding[7];
++} __attribute__ ((packed));
++
+ #endif /* __UBI_USER_H__ */
 -- 
-1.4.4.2
+1.5.3.4
