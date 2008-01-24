@@ -1,19 +1,18 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHyaW-0002DL-JK
-	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 09:41:45 +0000
-Subject: Re: Is there really need to build Block Device Emulation over UBI?
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10801231913r43473c02r2d9093a205a00c87@mail.gmail.com>
-References: <bae050c10801231913r43473c02r2d9093a205a00c87@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 24 Jan 2008 11:37:39 +0200
-Message-Id: <1201167459.6934.42.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from rv-out-0910.google.com ([209.85.198.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JHyfW-0002Z3-3p
+	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 09:46:46 +0000
+Received: by rv-out-0910.google.com with SMTP id c24so149270rvf.42
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 24 Jan 2008 01:42:45 -0800 (PST)
+Message-ID: <47985D88.1060005@gmail.com>
+Date: Thu, 24 Jan 2008 04:42:32 -0500
+From: Max Stirling <vicky.irobot@gmail.com>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: mtd block readonly low level nand driver cramfs
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +22,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-01-24 at 11:13 +0800, Nancy wrote:
-> Hi,
->    Is there really need to build Block Device Emulation over UBI? Why
-> can't use the mtd_blkdev.c and mtdblock.c directly?
->    Thanks to gluebi, make UBI and MTD become one. More interesting
-> thing is,  volume can be treat like a mtd partition. mtdblock.c do not
-> have wear-leveling and bad block management mechanism but UBI has.
-> gluebi make all those functions mix together right?
->    I have tried, and it work.
+Hi,
 
-Frankly, I am very busy now and have no time to review so much code.
-Please, communicate via the mailing list instead. And please, send
-patches instead of whole files.
+This might sound quite basic question. This is the first time I am 
+looking into the MTD code so have some really basic questions.
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+I am trying to mount a read only fs (cramfs) on the flash. Please let me 
+know if the following steps are right:
+
+1. Enabled the following in the Kconfig files
+    CONFIG_MTD_PARITIONS
+    CONFIG_MTD
+    CONFIG_MTD_BLOCK_RO
+    CONFIG_MTD_NAND
+    CONFIG_MTD_NAND_IDS
+
+
+After booting the compiled kernel I am able to see the mtdblock under 
+/proc/devices using 31 Major number.
+
+Now for me to mount the cramfs image that is on the flash I need to 
+provide the low level nand driver code. This I need to write but before 
+starting that can any one point me to a reference nand driver code that 
+is used for read only mount? Which functionality would the MTD require 
+to be implemented for mounting a cramfs image which is on the flash.
+
+Would appreciate any pointers to how to get started off with this.
+
+thanks in advance for the reply.
+
+M.S
