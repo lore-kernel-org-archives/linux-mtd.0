@@ -1,18 +1,14 @@
-Received: from co203.xi-lite.net ([149.6.83.203] helo=toronto.xi-lite.net)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JFnnm-0007gX-Lf
-	for linux-mtd@lists.infradead.org; Fri, 18 Jan 2008 09:46:26 +0000
-Message-ID: <4790752C.60306@parrot.com>
-Date: Fri, 18 Jan 2008 10:45:16 +0100
-From: Matthieu CASTET <matthieu.castet@parrot.com>
-MIME-Version: 1.0
-To: =?UTF-8?B?SsO2cm4gRW5nZWw=?= <joern@logfs.org>
-Subject: Re: Jffs2 and big file = very slow jffs2_garbage_collect_pass
-References: <478F7E6D.8010300@parrot.com>
-	<20080117162601.GA6677@lazybastard.org>
-In-Reply-To: <20080117162601.GA6677@lazybastard.org>
-Content-Type: multipart/mixed; boundary="------------000207030308050002080703"
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JI3dD-0008TD-DZ
+	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 15:05:04 +0000
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: linux-mtd@lists.infradead.org
+Date: Thu, 24 Jan 2008 18:54:58 +0200
+Message-Id: <20080124165458.30169.15492.sendpatchset@golum>
+In-Reply-To: <20080124165453.30169.40332.sendpatchset@golum>
+References: <20080124165453.30169.40332.sendpatchset@golum>
+Subject: [PATCH] UBI: implement atomic LEB change ioctl
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,122 +18,351 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------000207030308050002080703
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+>From 7e8210bd9165ba279ddacd0e4fb28891318b9b66 Mon Sep 17 00:00:00 2001
+From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+Date: Thu, 24 Jan 2008 18:48:21 +0200
+Subject: [PATCH] UBI: implement atomic LEB change ioctl
 
-Hi,
+Signed-off-by: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+---
+ drivers/mtd/ubi/cdev.c |   72 +++++++++++++++++++++++++++++------
+ drivers/mtd/ubi/ubi.h  |   27 +++++++++++--
+ drivers/mtd/ubi/upd.c  |   99 ++++++++++++++++++++++++++++++++++++++++++++++--
+ 3 files changed, 178 insertions(+), 20 deletions(-)
 
-Jörn Engel wrote:
-> On Thu, 17 January 2008 17:12:29 +0100, Matthieu CASTET wrote:
->> we have a 240 MB jffs2 partition with summary enabled and no 
->> compression. We use 2ad8ee713566671875216ebcec64f2eda47bd19d git jffs2 
->> version 
->> (http://git.infradead.org/?p=mtd-2.6.git;a=commit;h=2ad8ee713566671875216ebcec64f2eda47bd19d)
->> If we do a ls without waiting that jffs2_garbage_collect_pass finish, ls 
->> takes 12 minutes to complete.
-> 
-> Impressive!  JFFS2 may be slow, but it shouldn't be _that_ slow.  Not
-> sure who cares enough to look at this.  My approach would be to 
-> $ echo t > /proc/sysrq_trigger
-> several times during those 12 minutes and take a close look at the code
-> paths showing up.  Most likely it will spend 99% of the time in one
-> place.
-I have a jtag debugger that allow me to know where the code take time.
-When I mount the partition, thanks to the summary the mount is very 
-short (less than 10s).
-
-Then the garbage collector start to check nodes [1]. It spend 12 minutes 
-in jffs2_garbage_collect_pass.
-
-Then the system goes idle.
-
-Then if I try to access the file [2]. It take 12 minutes to finish 
-jffs2_lookup.
-
-I have attached the result of booting with 'profile=1'. (HZ=200)
-
-The code spend lot's of time in the rbtree code (7 minutes) and 4 
-minutes in jffs2_get_inode_nodes.
-
-
-Matthieu
-
-[1]
-#0  rb_next (node=0xc1c76e80) at lib/rbtree.c:325
-#1  0xc00c5568 in jffs2_get_inode_nodes (c=0xc0a5a800, f=0xc0a5a200,
-     rii=0xc1c19dbc) at fs/jffs2/readinode.c:317
-#2  0xc00c59d4 in jffs2_do_read_inode_internal (c=0xc0a5a800, f=0xc0a5a200,
-     latest_node=0xc1c19e14) at fs/jffs2/readinode.c:1124
-#3  0xc00c63a0 in jffs2_do_crccheck_inode (c=0xc0a5a800, ic=0xc03993c8)
-     at fs/jffs2/readinode.c:1379
-#4  0xc00c9afc in jffs2_garbage_collect_pass (c=0xc0a5a800)
-     at fs/jffs2/gc.c:208
-#5  0xc00cc56c in jffs2_garbage_collect_thread (_c=<value optimized out>)
-     at fs/jffs2/background.c:138
-#6  0xc003766c in sys_waitid (which=19019, pid=20115456, infop=0x4a0e,
-     options=-1044275912, ru=0x0) at kernel/exit.c:1634
-
-[2]
-#0  0xc00e8c14 in rb_prev (node=<value optimized out>) at lib/rbtree.c:368
-#1  0xc00c5624 in jffs2_get_inode_nodes (c=0xc0a5a800, f=0xc1c16ca0,
-     rii=0xc0fadbf4) at fs/jffs2/readinode.c:355
-#2  0xc00c59d4 in jffs2_do_read_inode_internal (c=0xc0a5a800, f=0xc1c16ca0,
-     latest_node=0xc0fadca8) at fs/jffs2/readinode.c:1124
-#3  0xc00c6604 in jffs2_do_read_inode (c=0xc0a5a800, f=0xc1c16ca0, ino=165,
-     latest_node=0xc0fadca8) at fs/jffs2/readinode.c:1364
-#4  0xc00cd5c8 in jffs2_read_inode (inode=0xc1c16cd0) at fs/jffs2/fs.c:247
-#5  0xc00c0204 in jffs2_lookup (dir_i=0xc1c16310, target=0xc1c0d0d8,
-     nd=<value optimized out>) at include/linux/fs.h:1670
-#6  0xc0080100 in do_lookup (nd=0xc0fadf08, name=0xc0fadd8c, 
-path=0xc0fadd98)
-     at fs/namei.c:494
-#7  0xc0081e24 in __link_path_walk (name=0xc085300f "", nd=0xc0fadf08)
-     at fs/namei.c:940
-#8  0xc008245c in link_path_walk (name=0xc0853000 "/mnt/toto/media",
-     nd=0xc0fadf08) at fs/namei.c:1011
-#9  0xc00829b0 in do_path_lookup (dfd=<value optimized out>,
-     name=0xc0853000 "/mnt/toto/media", flags=<value optimized out>,
-     nd=0xc0fadf08) at fs/namei.c:1157
-
---------------000207030308050002080703
-Content-Type: text/plain;
- name="profile.txt"
-Content-Transfer-Encoding: base64
-Content-Disposition: inline;
- filename="profile.txt"
-
-IDU0MzY2IHJiX3ByZXYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgNTQzLDY2
-MDAKIDI4MzQ1IHJiX25leHQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgMjgz
-LDQ1MDAKICA4NjAyIGRlZmF1bHRfaWRsZSAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-IDcxLDY4MzMKIDEwMjUxIF9fcmF3X3JlYWRzbCAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIDQwLDA0MzAKIDQ5NjQ4IGpmZnMyX2dldF9pbm9kZV9ub2RlcyAgICAgICAgICAgICAg
-ICAgICAgIDExLDgwOTcKICAgMjUxIHMzYzI0MTJfbmFuZF9kZXZyZWFkeSAgICAgICAgICAg
-ICAgICAgICAgICA3LDg0MzgKICAxMjIyIGNyYzMyX2xlICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICA0LDg0OTIKICAgIDU4IF9fZGVsYXkgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICA0LDgzMzMKICAgMTY0IHRvdWNoX3NvZnRsb2NrdXBfd2F0Y2hk
-b2cgICAgICAgICAgICAgICAgICA0LDEwMDAKICAgMjQ1IG5hbmRfd2FpdF9yZWFkeSAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAyLDc4NDEKICAgIDc4IHMzYzI0NDBfbmFuZF9od2Nv
-bnRyb2wgICAgICAgICAgICAgICAgICAgICAxLDYyNTAKICAgIDM3IHMzYzI0MTJfbmFuZF9l
-bmFibGVfaHdlY2MgICAgICAgICAgICAgICAgICAxLDAyNzgKICAgIDQ0IHMzYzI0MTJfbmFu
-ZF9jYWxjdWxhdGVfZWNjICAgICAgICAgICAgICAgICAwLDg0NjIKICAgIDMwIG11dGV4X2xv
-Y2sgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLDc1MDAKICAgIDY1IGttZW1f
-Y2FjaGVfYWxsb2MgICAgICAgICAgICAgICAgICAgICAgICAgICAwLDYyNTAKICAgIDEyIGRv
-d25fcmVhZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLDYwMDAKICAgIDEz
-IF9fYWVhYmlfdWlkaXZtb2QgICAgICAgICAgICAgICAgICAgICAgICAgICAwLDU0MTcKICAg
-MTYzIG5hbmRfcmVhZF9wYWdlX2h3ZWNjICAgICAgICAgICAgICAgICAgICAgICAwLDQ5NzAK
-ICAgIDUzIHMzYzI0MTJfbmFuZF9yZWFkX2J1ZiAgICAgICAgICAgICAgICAgICAgICAwLDQ5
-MDcKICAgIDQ2IGpmZnMyX2xvb2t1cF9ub2RlX2ZyYWcgICAgICAgICAgICAgICAgICAgICAw
-LDQ0MjMKICAgIDI0IHMzYzI0MTJfY2xrY29uX2VuYWJsZSAgICAgICAgICAgICAgICAgICAg
-ICAwLDQyODYKICAgIDM5IGNsa19kaXNhYmxlICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAwLDM3NTAKICAgIDEwIF9fY29uc3RfdWRlbGF5ICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAwLDM1NzEKICAgIDM5IGNsa19lbmFibGUgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAwLDMzNjIKICAgIDE4IHN0cmNtcCAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAwLDMyMTQKICAgIDMyIHN5c2ZzX2RpcmVudF9leGlzdCAgICAgICAg
-ICAgICAgICAgICAgICAgICAwLDI3NTkKICAgIDMzIF9fd2FrZV91cCAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAwLDI3NTAKICAgICA5IG11dGV4X3VubG9jayAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAwLDI1MDAKICAgIDM3IGttZW1fY2FjaGVfZnJlZSAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAwLDIyMDIKICAgMTc3IG1lbWNweSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAwLDIxNjkK
---------------000207030308050002080703--
+diff --git a/drivers/mtd/ubi/cdev.c b/drivers/mtd/ubi/cdev.c
+index 0c4044d..9d6aae5 100644
+--- a/drivers/mtd/ubi/cdev.c
++++ b/drivers/mtd/ubi/cdev.c
+@@ -132,8 +132,15 @@ static int vol_cdev_release(struct inode *inode, struct file *file)
+ 	if (vol->updating) {
+ 		ubi_warn("update of volume %d not finished, volume is damaged",
+ 			 vol->vol_id);
++		ubi_assert(!vol->changing_leb);
+ 		vol->updating = 0;
+ 		vfree(vol->upd_buf);
++	} else if (vol->changing_leb) {
++		dbg_msg("only %lld of %lld bytes received for atomic LEB change"
++			" for volume %d:%d, cancel", vol->upd_received,
++			vol->upd_bytes, vol->ubi->ubi_num, vol->vol_id);
++		vol->changing_leb = 0;
++		vfree(vol->upd_buf);
+ 	}
+ 
+ 	ubi_close_volume(desc);
+@@ -351,24 +358,32 @@ static ssize_t vol_cdev_write(struct file *file, const char __user *buf,
+ 	struct ubi_volume *vol = desc->vol;
+ 	struct ubi_device *ubi = vol->ubi;
+ 
+-	if (!vol->updating)
++	if (!vol->updating && !vol->changing_leb)
+ 		return vol_cdev_direct_write(file, buf, count, offp);
+ 
+-	err = ubi_more_update_data(ubi, vol, buf, count);
++	if (vol->updating)
++		err = ubi_more_update_data(ubi, vol, buf, count);
++	else
++		err = ubi_more_leb_change_data(ubi, vol, buf, count);
++
+ 	if (err < 0) {
+-		ubi_err("cannot write %zd bytes of update data, error %d",
++		ubi_err("cannot accept more %zd bytes of data, error %d",
+ 			count, err);
+ 		return err;
+ 	}
+ 
+ 	if (err) {
+ 		/*
+-		 * Update is finished, @err contains number of actually written
+-		 * bytes now.
++		 * The operation is finished, @err contains number of actually
++		 * written bytes.
+ 		 */
+ 		count = err;
+ 
+-		vol->updating = 0;
++		if (vol->changing_leb) {
++			revoke_exclusive(desc, UBI_READWRITE);
++			return count;
++		}
++
+ 		err = ubi_check_volume(ubi, vol->vol_id);
+ 		if (err < 0)
+ 			return err;
+@@ -433,6 +448,43 @@ static int vol_cdev_ioctl(struct inode *inode, struct file *file,
+ 		break;
+ 	}
+ 
++	/* Atomic logical eraseblock change command */
++	case UBI_IOCEBCH:
++	{
++		struct ubi_leb_change_req req;
++
++		err = copy_from_user(&req, argp,
++				     sizeof(struct ubi_leb_change_req));
++		if (err) {
++			err = -EFAULT;
++			break;
++		}
++
++		if (desc->mode == UBI_READONLY ||
++		    vol->vol_type == UBI_STATIC_VOLUME) {
++			err = -EROFS;
++			break;
++		}
++
++		/* Validate the request */
++		err = -EINVAL;
++		if (req.lnum < 0 || req.lnum >= vol->reserved_pebs ||
++		    req.bytes < 0 || req.lnum >= vol->usable_leb_size)
++			break;
++		if (req.dtype != UBI_LONGTERM && req.dtype != UBI_SHORTTERM &&
++		    req.dtype != UBI_UNKNOWN)
++			break;
++
++		err = get_exclusive(desc);
++		if (err < 0)
++			break;
++
++		err = ubi_start_leb_change(ubi, vol, &req);
++		if (req.bytes == 0)
++			revoke_exclusive(desc, UBI_READWRITE);
++		break;
++	}
++
+ #ifdef CONFIG_MTD_UBI_DEBUG_USERSPACE_IO
+ 	/* Logical eraseblock erasure command */
+ 	case UBI_IOCEBER:
+@@ -445,7 +497,8 @@ static int vol_cdev_ioctl(struct inode *inode, struct file *file,
+ 			break;
+ 		}
+ 
+-		if (desc->mode == UBI_READONLY) {
++		if (desc->mode == UBI_READONLY ||
++		    vol->vol_type == UBI_STATIC_VOLUME) {
+ 			err = -EROFS;
+ 			break;
+ 		}
+@@ -455,11 +508,6 @@ static int vol_cdev_ioctl(struct inode *inode, struct file *file,
+ 			break;
+ 		}
+ 
+-		if (vol->vol_type != UBI_DYNAMIC_VOLUME) {
+-			err = -EROFS;
+-			break;
+-		}
+-
+ 		dbg_msg("erase LEB %d:%d", vol->vol_id, lnum);
+ 		err = ubi_eba_unmap_leb(ubi, vol, lnum);
+ 		if (err)
+diff --git a/drivers/mtd/ubi/ubi.h b/drivers/mtd/ubi/ubi.h
+index 3a88cf1..4577106 100644
+--- a/drivers/mtd/ubi/ubi.h
++++ b/drivers/mtd/ubi/ubi.h
+@@ -158,15 +158,23 @@ struct ubi_volume_desc;
+  * @name: volume name
+  *
+  * @upd_ebs: how many eraseblocks are expected to be updated
+- * @upd_bytes: how many bytes are expected to be received
+- * @upd_received: how many update bytes were already received
+- * @upd_buf: update buffer which is used to collect update data
++ * @ch_lnum: LEB number which is being changing by the atomic LEB change
++ *           operation
++ * @ch_dtype: data persistency type which is being changing by the atomic LEB
++ *            change operation
++ * @upd_bytes: how many bytes are expected to be received for volume update or
++ *             atomic LEB change
++ * @upd_received: how many bytes were already received for volume update or
++ *                atomic LEB change
++ * @upd_buf: update buffer which is used to collect update data or data for
++ *           atomic LEB change
+  *
+  * @eba_tbl: EBA table of this volume (LEB->PEB mapping)
+  * @checked: %1 if this static volume was checked
+  * @corrupted: %1 if the volume is corrupted (static volumes only)
+  * @upd_marker: %1 if the update marker is set for this volume
+  * @updating: %1 if the volume is being updated
++ * @changing_leb: %1 if the atomic LEB change ioctl command is in progress
+  *
+  * @gluebi_desc: gluebi UBI volume descriptor
+  * @gluebi_refcount: reference count of the gluebi MTD device
+@@ -202,6 +210,8 @@ struct ubi_volume {
+ 	char name[UBI_VOL_NAME_MAX+1];
+ 
+ 	int upd_ebs;
++	int ch_lnum;
++	int ch_dtype;
+ 	long long upd_bytes;
+ 	long long upd_received;
+ 	void *upd_buf;
+@@ -211,9 +221,14 @@ struct ubi_volume {
+ 	int corrupted:1;
+ 	int upd_marker:1;
+ 	int updating:1;
++	int changing_leb:1;
+ 
+ #ifdef CONFIG_MTD_UBI_GLUEBI
+-	/* Gluebi-related stuff may be compiled out */
++	/*
++	 * Gluebi-related stuff may be compiled out.
++	 * TODO: this should not be built into UBI but should be a separate
++	 * ubimtd driver which works on top of UBI and emulates MTD devices.
++	 */
+ 	struct ubi_volume_desc *gluebi_desc;
+ 	int gluebi_refcount;
+ 	struct mtd_info gluebi_mtd;
+@@ -427,6 +442,10 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ 		     long long bytes);
+ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			 const void __user *buf, int count);
++int ubi_start_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
++			 const struct ubi_leb_change_req *req);
++int ubi_more_leb_change_data(struct ubi_device *ubi, struct ubi_volume *vol,
++			     const void __user *buf, int count);
+ 
+ /* misc.c */
+ int ubi_calc_data_len(const struct ubi_device *ubi, const void *buf, int length);
+diff --git a/drivers/mtd/ubi/upd.c b/drivers/mtd/ubi/upd.c
+index 59c61ab..40f5c0e 100644
+--- a/drivers/mtd/ubi/upd.c
++++ b/drivers/mtd/ubi/upd.c
+@@ -22,7 +22,8 @@
+  */
+ 
+ /*
+- * This file contains implementation of the volume update functionality.
++ * This file contains implementation of the volume update and atomic LEB change
++ * functionality.
+  *
+  * The update operation is based on the per-volume update marker which is
+  * stored in the volume table. The update marker is set before the update
+@@ -133,6 +134,7 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ 	uint64_t tmp;
+ 
+ 	dbg_msg("start update of volume %d, %llu bytes", vol->vol_id, bytes);
++	ubi_assert(!vol->updating && !vol->changing_leb);
+ 	vol->updating = 1;
+ 
+ 	err = set_update_marker(ubi, vol);
+@@ -168,6 +170,37 @@ int ubi_start_update(struct ubi_device *ubi, struct ubi_volume *vol,
+ }
+ 
+ /**
++ * ubi_start_leb_change - start atomic LEB change.
++ * @ubi: UBI device description object
++ * @vol: volume description object
++ * @req: operation request
++ *
++ * This function starts atomic LEB change operation. Returns zero in case of
++ * success and a negative error code in case of failure.
++ */
++int ubi_start_leb_change(struct ubi_device *ubi, struct ubi_volume *vol,
++			 const struct ubi_leb_change_req *req)
++{
++	ubi_assert(!vol->updating && !vol->changing_leb);
++
++	if (req->bytes == 0)
++		return ubi_eba_atomic_leb_change(ubi, vol, req->lnum, NULL, 0,
++						 req->dtype);
++
++	vol->upd_bytes = req->bytes;
++	vol->upd_received = 0;
++	vol->changing_leb = 1;
++	vol->ch_lnum = req->lnum;
++	vol->ch_dtype = req->dtype;
++
++	vol->upd_buf = vmalloc(req->bytes);
++	if (!vol->upd_buf)
++		return -ENOMEM;
++
++	return 0;
++}
++
++/**
+  * write_leb - write update data.
+  * @ubi: UBI device description object
+  * @vol: volume description object
+@@ -239,9 +272,9 @@ static int write_leb(struct ubi_device *ubi, struct ubi_volume *vol, int lnum,
+  * @count: how much bytes to write
+  *
+  * This function writes more data to the volume which is being updated. It may
+- * be called arbitrary number of times until all of the update data arrive.
+- * This function returns %0 in case of success, number of bytes written during
+- * the last call if the whole volume update was successfully finished, and a
++ * be called arbitrary number of times until all the update data arriveis. This
++ * function returns %0 in case of success, number of bytes written during the
++ * last call if the whole volume update has been successfully finished, and a
+  * negative error code in case of failure.
+  */
+ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
+@@ -340,6 +373,7 @@ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
+ 			return err;
+ 		err = ubi_wl_flush(ubi);
+ 		if (err == 0) {
++			vol->updating = 0;
+ 			err = to_write;
+ 			vfree(vol->upd_buf);
+ 		}
+@@ -347,3 +381,60 @@ int ubi_more_update_data(struct ubi_device *ubi, struct ubi_volume *vol,
+ 
+ 	return err;
+ }
++
++/**
++ * ubi_more_leb_change_data - accept more data for atomic LEB change.
++ * @vol: volume description object
++ * @buf: write data (user-space memory buffer)
++ * @count: how much bytes to write
++ *
++ * This function accepts more data to the volume which is being under the
++ * "atomic LEB change" operation. It may be called arbitrary number of times
++ * until all data arrives. This function returns %0 in case of success, number
++ * of bytes written during the last call if the whole "atomic LEB change"
++ * operation has been successfully finished, and a negative error code in case
++ * of failure.
++ */
++int ubi_more_leb_change_data(struct ubi_device *ubi, struct ubi_volume *vol,
++			     const void __user *buf, int count)
++{
++	int err;
++
++	dbg_msg("write %d of %lld bytes, %lld already passed",
++		count, vol->upd_bytes, vol->upd_received);
++
++	if (ubi->ro_mode)
++		return -EROFS;
++
++	if (vol->upd_received + count > vol->upd_bytes)
++		count = vol->upd_bytes - vol->upd_received;
++
++	err = copy_from_user(vol->upd_buf + vol->upd_received, buf, count);
++	if (err)
++		return -EFAULT;
++
++	if (vol->upd_received + count == vol->upd_bytes) {
++		int l;
++
++		l = ubi_calc_data_len(ubi, buf, vol->upd_bytes);
++		if (l != vol->upd_bytes)
++			dbg_msg("skip last %lld bytes (0xFF)",
++				vol->upd_bytes - l);
++		err = ubi_eba_atomic_leb_change(ubi, vol, vol->ch_lnum,
++						vol->upd_buf, l, UBI_UNKNOWN);
++		if (err)
++			return err;
++	}
++
++	vol->upd_received += count;
++	buf += count;
++
++	ubi_assert(vol->upd_received <= vol->upd_bytes);
++	if (vol->upd_received == vol->upd_bytes) {
++		vol->changing_leb = 0;
++		err = count;
++		vfree(vol->upd_buf);
++	}
++
++	return err;
++}
+-- 
+1.5.3.4
