@@ -1,17 +1,15 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JHxm2-00057u-CN
-	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 08:49:26 +0000
+	id 1JHyaW-0002DL-JK
+	for linux-mtd@lists.infradead.org; Thu, 24 Jan 2008 09:41:45 +0000
 Subject: Re: Is there really need to build Block Device Emulation over UBI?
 From: Artem Bityutskiy <dedekind@infradead.org>
 To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10801240024y6bd84a2bj1c5c29037200ab24@mail.gmail.com>
+In-Reply-To: <bae050c10801231913r43473c02r2d9093a205a00c87@mail.gmail.com>
 References: <bae050c10801231913r43473c02r2d9093a205a00c87@mail.gmail.com>
-	<1201159103.6934.36.camel@sauron>
-	<bae050c10801240024y6bd84a2bj1c5c29037200ab24@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8
-Date: Thu, 24 Jan 2008 10:45:26 +0200
-Message-Id: <1201164326.6934.39.camel@sauron>
+Date: Thu, 24 Jan 2008 11:37:39 +0200
+Message-Id: <1201167459.6934.42.camel@sauron>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Cc: linux-mtd@lists.infradead.org
@@ -25,22 +23,19 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-01-24 at 16:24 +0800, Nancy wrote:
-> > The problem with mtdblock is that when it needs to change an eraseblock=
-,
-> > it reads it, erases, then writes new data to it, which would cause data
-> > loss in case of an unclean reboot.
->=20
-> If I can delay  the erase operation, then it perfect works?  when
-> change a eraseblock, reads it(from old mapped PEB) , then writes new
-> data to it(new mapped PEB), finally erase the old mapped PEB.
->=20
-> How about that?
+On Thu, 2008-01-24 at 11:13 +0800, Nancy wrote:
+> Hi,
+>    Is there really need to build Block Device Emulation over UBI? Why
+> can't use the mtd_blkdev.c and mtdblock.c directly?
+>    Thanks to gluebi, make UBI and MTD become one. More interesting
+> thing is,  volume can be treat like a mtd partition. mtdblock.c do not
+> have wear-leveling and bad block management mechanism but UBI has.
+> gluebi make all those functions mix together right?
+>    I have tried, and it work.
 
-Yes, this is OK, but mtdblock does not do this. Here I wrote about how
-to create a simple FTL layer over UBI:
-
-http://lists.infradead.org/pipermail/linux-mtd/2008-January/020381.html
+Frankly, I am very busy now and have no time to review so much code.
+Please, communicate via the mailing list instead. And please, send
+patches instead of whole files.
 
 --=20
 Best regards,
