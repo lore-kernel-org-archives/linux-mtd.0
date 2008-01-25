@@ -1,30 +1,23 @@
-Received: from e35.co.us.ibm.com ([32.97.110.153])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JIWBC-0003E7-Bb
-	for linux-mtd@lists.infradead.org; Fri, 25 Jan 2008 21:33:49 +0000
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
-	[9.17.195.106])
-	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m0PLSoa2012212
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 16:28:50 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m0PLSnJN073284
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 14:28:49 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m0PLSnao016101
-	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 14:28:49 -0700
-Date: Fri, 25 Jan 2008 15:28:29 -0600
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Artem Bityutskiy <dedekind@infradead.org>
-Subject: Re: [PATCH] UBI: introduce atomic LEB change ioctl
-Message-ID: <20080125152829.591def16@zod.rchland.ibm.com>
-In-Reply-To: <20080124165453.30169.40332.sendpatchset@golum>
-References: <20080124165453.30169.40332.sendpatchset@golum>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+Received: from py-out-1112.google.com ([64.233.166.178])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JIWhl-0006V5-U7
+	for linux-mtd@lists.infradead.org; Fri, 25 Jan 2008 22:07:28 +0000
+Received: by py-out-1112.google.com with SMTP id p76so1444637pyb.2
+	for <linux-mtd@lists.infradead.org>;
+	Fri, 25 Jan 2008 14:07:20 -0800 (PST)
+Message-ID: <f383264b0801251407w861cdbfv72a8111c1ad8d4ef@mail.gmail.com>
+Date: Fri, 25 Jan 2008 14:07:20 -0800
+From: "Matt Reimer" <mattjreimer@gmail.com>
+To: linux-mtd@lists.infradead.org
+Subject: Re: [PATCH] MTD: fix s3c2410 error correction
+In-Reply-To: <20071203152049.GA15000@lazybastard.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+References: <1192755764-26269-1-git-send-email-mattjreimer@gmail.com>
+	<f383264b0711291110k6e61ec29n212be5d4b059833e@mail.gmail.com>
+	<20071203152049.GA15000@lazybastard.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,26 +27,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 24 Jan 2008 18:54:53 +0200
-Artem Bityutskiy <dedekind@infradead.org> wrote:
+On Dec 3, 2007 7:20 AM, J=F6rn Engel <joern@logfs.org> wrote:
+>
+> On Thu, 29 November 2007 11:10:41 -0800, Matt Reimer wrote:
+> > On Oct 18, 2007 5:02 PM, Matt Reimer <mattjreimer@gmail.com> wrote:
+> > > From: Matt Reimer <mreimer@vpop.net>
+> > >
+> > > The single-bit error correction was, well, incorrect. For determing w=
+hich
+> > > bit to correct it was using P1' P2' P4' P8' instead of P1 P2 P4 P8, a=
+nd
+> > > it was using P16' P32' P64' P128' P256' P512' P1024' P2048' instead o=
+f
+> > > P16 P32 P64 P128 P256 P512 P1024 P2048.
+> >
+> > Is there any chance of this getting committed? It has been confirmed
+> > to be needed on s3c2440 and s3c2412.
+>
+> Ok, I'm getting sick of this.  Even though I didn't fully review the
+> patch, I'll gladly take the chances of breaking something and
+> complaining to Matt afterwards.  Certainly beats ignoring this patch for
+> all eternity.
 
-> >From e405cf1dc645e7931df0e47ee7408d5251e2d9d0 Mon Sep 17 00:00:00 2001
-> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
-> Date: Thu, 24 Jan 2008 16:15:14 +0200
-> Subject: [PATCH] UBI: introduce atomic LEB change ioctl
-> 
-> We have to be able to change individual LEBs for utilities like
-> ubifsck, ubifstune. For example, ubifsck has to be able to fix
-> errors on the media, ubifstune has to be able to change the
-> the superblock, hence this ioctl.
+Any takers? Pretty please?
 
-Could you explain a bit more?  What exactly does "atomic" mean?
-
-This seems like it's similar to volume update, only on a LEB level
-right? If so, could you make volume update just use this or somehow
-combine them?
-
-Maybe I've just been away from UBI too long.  It sounds cool, but I
-don't fully understand what the intention is.
-
-josh
+Matt
