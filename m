@@ -1,24 +1,29 @@
-Received: from wr-out-0506.google.com ([64.233.184.238])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JIUO8-0002cG-4k
-	for linux-mtd@lists.infradead.org; Fri, 25 Jan 2008 19:39:02 +0000
-Received: by wr-out-0506.google.com with SMTP id 50so620222wra.18
-	for <linux-mtd@lists.infradead.org>;
-	Fri, 25 Jan 2008 11:38:54 -0800 (PST)
-Message-ID: <2c8de1360801251138h403206e3g99e222fb6a9944e8@mail.gmail.com>
-Date: Fri, 25 Jan 2008 13:38:52 -0600
-From: "Chase Maupin" <cem8101@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: Error compiling libubi with latest mtd-utils snapshot
-In-Reply-To: <1201269821.6934.51.camel@sauron>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=KOI8-R
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-References: <2c8de1360801240739oae8135bg55d829ff75642048@mail.gmail.com>
-	<1201246274.6934.49.camel@sauron>
-	<2c8de1360801250550r5a7d1a82h667628b9d1134fec@mail.gmail.com>
-	<1201269821.6934.51.camel@sauron>
+Received: from e35.co.us.ibm.com ([32.97.110.153])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JIWBC-0003E7-Bb
+	for linux-mtd@lists.infradead.org; Fri, 25 Jan 2008 21:33:49 +0000
+Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com
+	[9.17.195.106])
+	by e35.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m0PLSoa2012212
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 16:28:50 -0500
+Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
+	by d03relay04.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m0PLSnJN073284
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 14:28:49 -0700
+Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
+	by d03av02.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m0PLSnao016101
+	for <linux-mtd@lists.infradead.org>; Fri, 25 Jan 2008 14:28:49 -0700
+Date: Fri, 25 Jan 2008 15:28:29 -0600
+From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
+To: Artem Bityutskiy <dedekind@infradead.org>
+Subject: Re: [PATCH] UBI: introduce atomic LEB change ioctl
+Message-ID: <20080125152829.591def16@zod.rchland.ibm.com>
+In-Reply-To: <20080124165453.30169.40332.sendpatchset@golum>
+References: <20080124165453.30169.40332.sendpatchset@golum>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -29,11 +34,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-QXJ0ZW0sCgpTdWNjZXNzLiAgVGhpcyBpcyBub3cgYnVpbGRpbmcgd2l0aG91dCBlcnJvcnMuICBU
-aGFuayB5b3UgZm9yIHlvdXIgaGVscC4KCkNoYXNlCgpPbiAxLzI1LzA4LCBBcnRlbSBCaXR5dXRz
-a2l5IDxkZWRla2luZEBpbmZyYWRlYWQub3JnPiB3cm90ZToKPiBPbiBGcmksIDIwMDgtMDEtMjUg
-YXQgMDc6NTAgLTA2MDAsIENoYXNlIE1hdXBpbiB3cm90ZToKPiA+IEFydGVtLAo+ID4KPiA+IEkg
-ZG93bmxvYWRlZCB0aGUgbGF0ZXN0IGdpdCBzbmFwc2hvdCBhbmQgSSBhbSBzZWVpbmcgdGhlIGZv
-bGxvd2luZwo+ID4gcmVzdWx0cyBmcm9tIG1ha2UgYW5kIG1ha2UgY2xlYW46Cj4gPgo+Cj4gU2hv
-dWxkIGJlIGZpeGVkIG5vdywgdXBkYXRlIHBsZWFzZS4KPgo+IC0tCj4gQmVzdCByZWdhcmRzLAo+
-IEFydGVtIEJpdHl1dHNraXkgKOLJ1MDDy8nKIOHS1KPNKQo+Cj4K
+On Thu, 24 Jan 2008 18:54:53 +0200
+Artem Bityutskiy <dedekind@infradead.org> wrote:
+
+> >From e405cf1dc645e7931df0e47ee7408d5251e2d9d0 Mon Sep 17 00:00:00 2001
+> From: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>
+> Date: Thu, 24 Jan 2008 16:15:14 +0200
+> Subject: [PATCH] UBI: introduce atomic LEB change ioctl
+> 
+> We have to be able to change individual LEBs for utilities like
+> ubifsck, ubifstune. For example, ubifsck has to be able to fix
+> errors on the media, ubifstune has to be able to change the
+> the superblock, hence this ioctl.
+
+Could you explain a bit more?  What exactly does "atomic" mean?
+
+This seems like it's similar to volume update, only on a LEB level
+right? If so, could you make volume update just use this or somehow
+combine them?
+
+Maybe I've just been away from UBI too long.  It sounds cool, but I
+don't fully understand what the intention is.
+
+josh
