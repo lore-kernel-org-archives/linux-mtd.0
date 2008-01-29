@@ -1,14 +1,19 @@
-Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJvP7-00042X-9a
-	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 18:42:02 +0000
-From: Haavard Skinnemoen <hskinnemoen@atmel.com>
-To: David Woodhouse <dwmw2@infradead.org>,
-	linux-mtd <linux-mtd@lists.infradead.org>
-Subject: [PATCH] MTD: Intel StrataFlash P33 is locked on bootup
-Date: Tue, 29 Jan 2008 19:36:49 +0100
-Message-Id: <1201631809-32193-1-git-send-email-hskinnemoen@atmel.com>
-Cc: Haavard Skinnemoen <hskinnemoen@atmel.com>, Paolo.Santos@devoteam.com
+	id 1JK0Jc-0008MC-NB
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 23:56:38 +0000
+Date: Tue, 29 Jan 2008 23:56:15 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Frank <fuzzoli@comcast.net>
+Subject: Re: Searchable Archives and Using RAM
+Message-ID: <20080129225615.GA32157@lazybastard.org>
+References: <479EA68A.2000704@comcast.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <479EA68A.2000704@comcast.net>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,32 +23,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add appropriate fixups for all the devices listed in the Intel P33
-data sheet.
+On Mon, 28 January 2008 23:07:38 -0500, Frank wrote:
+> 
+> I just joined the list as I am looking for information on how to set up 
+> MTD to use 2Mb of battery-backed up RAM as a disk.   This will be on an 
+> ARM-based SBC that already has MTD NAND drivers loaded.  I think I know 
+> where I need to start (CONFIG_MTD_MTDRAM, etc), but have not seen any 
+> how-to's yet.   I found a new book from O'Reilly that'll be out in 
+> February that looks very promising 
+> (http://safari.oreilly.com/0136130550/ch10), but I was wondering if 
+> there are any online resources.
 
-Thanks to Paolo Santos for reporting this issue and testing the patch.
+Usually phram is the driver of choice for NVRAM.
 
-Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
----
- drivers/mtd/chips/cfi_cmdset_0001.c |    6 ++++++
- 1 files changed, 6 insertions(+), 0 deletions(-)
+Jörn
 
-diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
-index 1707f98..b723af1 100644
---- a/drivers/mtd/chips/cfi_cmdset_0001.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0001.c
-@@ -246,6 +246,12 @@ static struct cfi_fixup cfi_fixup_table[] = {
- 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
- 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
- 	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x881d,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x881e,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x891f,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x8820,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x8821,	      fixup_use_powerup_lock, NULL, },
-+	{ MANUFACTURER_INTEL, 0x8922,	      fixup_use_powerup_lock, NULL, },
- 	{ 0, 0, NULL, NULL }
- };
- 
 -- 
-1.5.3.8
+Linux is more the core point of a concept that surrounds "open source"
+which, in turn, is based on a false concept. This concept is that
+people actually want to look at source code.
+-- Rob Enderle
