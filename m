@@ -1,14 +1,14 @@
 Received: from tim.rpsys.net ([194.106.48.114])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJocg-0003Wz-4T
-	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 11:27:32 +0000
-Subject: [PATCH 1/4] mtdoops: Add further error return code checking
+	id 1JJocp-0003Zy-2s
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 11:27:48 +0000
+Subject: [PATCH 3/4] mtdoops: Ensure sequential write to the buffer
 From: Richard Purdie <rpurdie@rpsys.net>
 To: David Woodhouse <dwmw2@infradead.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Tue, 29 Jan 2008 11:27:09 +0000
-Message-Id: <1201606029.5017.20.camel@localhost.localdomain>
+Date: Tue, 29 Jan 2008 11:27:13 +0000
+Message-Id: <1201606033.5017.22.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,91 +20,97 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Add further error return code checks to the mtdoops driver.
+>From a5ef8a78b4214f5efcc7310e71dd1e351672af3f Mon Sep 17 00:00:00 2001
+From: Richard Purdie <rpurdie@rpsys.net>
+Date: Tue, 29 Jan 2008 10:21:56 +0000
+Subject: [PATCH] [MTD] mtdoops: Ensure sequential write to the buffer
+
+Add a spinlock to ensure writes to the mtdoops buffer memory are
+sequential and don't race.
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 ---
- drivers/mtd/mtdoops.c |   41 +++++++++++++++++++++++++++++------------
- 1 files changed, 29 insertions(+), 12 deletions(-)
+ drivers/mtd/mtdoops.c |   28 ++++++++++++++++++++++++++++
+ 1 files changed, 28 insertions(+), 0 deletions(-)
 
 diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 20eaf29..723ca76 100644
+index 72c434c..1687521 100644
 --- a/drivers/mtd/mtdoops.c
 +++ b/drivers/mtd/mtdoops.c
-@@ -103,7 +103,7 @@ static int mtdoops_inc_counter(struct mtdoops_context *cxt)
+@@ -28,6 +28,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/sched.h>
+ #include <linux/wait.h>
++#include <linux/spinlock.h>
+ #include <linux/mtd/mtd.h>
  
- 	ret = mtd->read(mtd, cxt->nextpage * OOPS_PAGE_SIZE, 4,
- 			&retlen, (u_char *) &count);
--	if ((retlen != 4) || (ret < 0)) {
-+	if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
- 		printk(KERN_ERR "mtdoops: Read failure at %d (%td of 4 read)"
- 				", err %d.\n", cxt->nextpage * OOPS_PAGE_SIZE,
- 				retlen, ret);
-@@ -136,8 +136,14 @@ static void mtdoops_prepare(struct mtdoops_context *cxt)
- 			cxt->nextpage = 0;
- 	}
+ #define OOPS_PAGE_SIZE 4096
+@@ -42,6 +43,9 @@ struct mtdoops_context {
+ 	int nextcount;
  
--	while (mtd->block_isbad &&
--			mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE)) {
-+	while (mtd->block_isbad) {
-+		ret = mtd->block_isbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		if (!ret)
-+			break;
-+		if (ret < 0) {
-+			printk(KERN_ERR "mtdoops: block_isbad failed, aborting.\n");
-+			return;
-+		}
- badblock:
- 		printk(KERN_WARNING "mtdoops: Bad block at %08x\n",
- 				cxt->nextpage * OOPS_PAGE_SIZE);
-@@ -154,15 +160,20 @@ badblock:
- 	for (j = 0, ret = -1; (j < 3) && (ret < 0); j++)
- 		ret = mtdoops_erase_block(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
+ 	void *oops_buf;
++
++	/* writecount and disabling ready are spin lock protected */
++	spinlock_t writecount_lock;
+ 	int ready;
+ 	int writecount;
+ } oops_cxt;
+@@ -290,11 +294,22 @@ static void mtdoops_console_sync(void)
+ {
+ 	struct mtdoops_context *cxt = &oops_cxt;
+ 	struct mtd_info *mtd = cxt->mtd;
++	unsigned long flags;
  
--	if (ret < 0) {
--		if (mtd->block_markbad)
--			mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
--		goto badblock;
-+	if (ret >= 0) {
-+		printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
-+		cxt->ready = 1;
+ 	if (!cxt->ready || !mtd || cxt->writecount == 0)
+ 		return;
+ 
++	/* 
++	 *  Once ready is 0 and we've held the lock no further writes to the 
++	 *  buffer will happen
++	 */
++	spin_lock_irqsave(&cxt->writecount_lock, flags);
++	if (!cxt->ready) {
++		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
 +		return;
- 	}
- 
--	printk(KERN_DEBUG "mtdoops: Ready %d, %d \n", cxt->nextpage, cxt->nextcount);
--
--	cxt->ready = 1;
-+	if (mtd->block_markbad && (ret == -EIO)) {
-+		ret = mtd->block_markbad(mtd, cxt->nextpage * OOPS_PAGE_SIZE);
-+		if (ret < 0) {
-+			printk(KERN_ERR "mtdoops: block_markbad failed, aborting.\n");
-+			return;
-+		}
 +	}
-+	goto badblock;
+ 	cxt->ready = 0;
++	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
+ 
+ 	schedule_work(&cxt->work_write);
+ }
+@@ -304,6 +319,7 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+ {
+ 	struct mtdoops_context *cxt = co->data;
+ 	struct mtd_info *mtd = cxt->mtd;
++	unsigned long flags;
+ 
+ 	if (!oops_in_progress) {
+ 		mtdoops_console_sync();
+@@ -313,6 +329,13 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+ 	if (!cxt->ready || !mtd)
+ 		return;
+ 
++	/* Locking on writecount ensures sequential writes to the buffer */
++	spin_lock_irqsave(&cxt->writecount_lock, flags);
++
++	/* Check ready status didn't change whilst waiting for the lock */
++	if (!cxt->ready)
++		return;
++
+ 	if (cxt->writecount == 0) {
+ 		u32 *stamp = cxt->oops_buf;
+ 		*stamp = cxt->nextcount;
+@@ -324,6 +347,11 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+ 
+ 	memcpy(cxt->oops_buf + cxt->writecount, s, count);
+ 	cxt->writecount += count;
++
++	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
++
++	if (cxt->writecount == OOPS_PAGE_SIZE)
++		mtdoops_console_sync();
  }
  
- static void mtdoops_workfunc(struct work_struct *work)
-@@ -176,12 +187,18 @@ static void mtdoops_workfunc(struct work_struct *work)
- static int find_next_position(struct mtdoops_context *cxt)
- {
- 	struct mtd_info *mtd = cxt->mtd;
--	int page, maxpos = 0;
-+	int ret, page, maxpos = 0;
- 	u32 count, maxcount = 0xffffffff;
- 	size_t retlen;
- 
- 	for (page = 0; page < cxt->oops_pages; page++) {
--		mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
-+		ret = mtd->read(mtd, page * OOPS_PAGE_SIZE, 4, &retlen, (u_char *) &count);
-+		if ((retlen != 4) || ((ret < 0) && (ret != -EUCLEAN))) {
-+			printk(KERN_ERR "mtdoops: Read failure at %d (%td of 4 read)"
-+				", err %d.\n", page * OOPS_PAGE_SIZE, retlen, ret);
-+			continue;
-+		}
-+
- 		if (count == 0xffffffff)
- 			continue;
- 		if (maxcount == 0xffffffff) {
+ static int __init mtdoops_console_setup(struct console *co, char *options)
 -- 
 1.5.2.3
