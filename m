@@ -1,14 +1,14 @@
 Received: from tim.rpsys.net ([194.106.48.114])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJocp-0003Zy-2s
-	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 11:27:48 +0000
-Subject: [PATCH 3/4] mtdoops: Ensure sequential write to the buffer
+	id 1JJocu-0003aW-8Z
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 11:27:53 +0000
+Subject: [PATCH 4/4] mtdoops: Various minor cleanups
 From: Richard Purdie <rpurdie@rpsys.net>
 To: David Woodhouse <dwmw2@infradead.org>,
 	linux-mtd <linux-mtd@lists.infradead.org>
 Content-Type: text/plain
-Date: Tue, 29 Jan 2008 11:27:13 +0000
-Message-Id: <1201606033.5017.22.camel@localhost.localdomain>
+Date: Tue, 29 Jan 2008 11:27:14 +0000
+Message-Id: <1201606034.5017.23.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -20,97 +20,73 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
->From a5ef8a78b4214f5efcc7310e71dd1e351672af3f Mon Sep 17 00:00:00 2001
+>From b4de341e0ca649104b95eb59024eba1d05b3da42 Mon Sep 17 00:00:00 2001
 From: Richard Purdie <rpurdie@rpsys.net>
-Date: Tue, 29 Jan 2008 10:21:56 +0000
-Subject: [PATCH] [MTD] mtdoops: Ensure sequential write to the buffer
+Date: Tue, 29 Jan 2008 10:25:55 +0000
+Subject: [PATCH] [MTD] mtdoops: Various minor cleanups
 
-Add a spinlock to ensure writes to the mtdoops buffer memory are
-sequential and don't race.
+Various minor cleaups to mtdoops:
+  * Don't support the mtd->erasesize < OOPS_PAGE_SIZE case
+  * Tweak printks and make the device mtdoops connects to more visible
+  * CON_PRINTBUFFER flag is uneeded
 
 Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
 ---
- drivers/mtd/mtdoops.c |   28 ++++++++++++++++++++++++++++
- 1 files changed, 28 insertions(+), 0 deletions(-)
+ drivers/mtd/mtdoops.c |   16 +++++++++-------
+ 1 files changed, 9 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
-index 72c434c..1687521 100644
+index 1687521..34681bc 100644
 --- a/drivers/mtd/mtdoops.c
 +++ b/drivers/mtd/mtdoops.c
-@@ -28,6 +28,7 @@
- #include <linux/workqueue.h>
- #include <linux/sched.h>
- #include <linux/wait.h>
-+#include <linux/spinlock.h>
- #include <linux/mtd/mtd.h>
+@@ -67,10 +67,7 @@ static int mtdoops_erase_block(struct mtd_info *mtd, int offset)
+ 	erase.mtd = mtd;
+ 	erase.callback = mtdoops_erase_callback;
+ 	erase.addr = offset;
+-	if (mtd->erasesize < OOPS_PAGE_SIZE)
+-		erase.len = OOPS_PAGE_SIZE;
+-	else
+-		erase.len = mtd->erasesize;
++	erase.len = mtd->erasesize;
+ 	erase.priv = (u_long)&wait_q;
  
- #define OOPS_PAGE_SIZE 4096
-@@ -42,6 +43,9 @@ struct mtdoops_context {
- 	int nextcount;
- 
- 	void *oops_buf;
-+
-+	/* writecount and disabling ready are spin lock protected */
-+	spinlock_t writecount_lock;
- 	int ready;
- 	int writecount;
- } oops_cxt;
-@@ -290,11 +294,22 @@ static void mtdoops_console_sync(void)
- {
- 	struct mtdoops_context *cxt = &oops_cxt;
- 	struct mtd_info *mtd = cxt->mtd;
-+	unsigned long flags;
- 
- 	if (!cxt->ready || !mtd || cxt->writecount == 0)
+ 	set_current_state(TASK_INTERRUPTIBLE);
+@@ -271,12 +268,18 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
  		return;
+ 	}
  
-+	/* 
-+	 *  Once ready is 0 and we've held the lock no further writes to the 
-+	 *  buffer will happen
-+	 */
-+	spin_lock_irqsave(&cxt->writecount_lock, flags);
-+	if (!cxt->ready) {
-+		spin_unlock_irqrestore(&cxt->writecount_lock, flags);
++	if (mtd->erasesize < OOPS_PAGE_SIZE) {
++		printk(KERN_ERR "Eraseblock size of MTD partition %d too small\n",
++				mtd->index);
 +		return;
 +	}
- 	cxt->ready = 0;
-+	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
- 
- 	schedule_work(&cxt->work_write);
- }
-@@ -304,6 +319,7 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- {
- 	struct mtdoops_context *cxt = co->data;
- 	struct mtd_info *mtd = cxt->mtd;
-+	unsigned long flags;
- 
- 	if (!oops_in_progress) {
- 		mtdoops_console_sync();
-@@ -313,6 +329,13 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
- 	if (!cxt->ready || !mtd)
- 		return;
- 
-+	/* Locking on writecount ensures sequential writes to the buffer */
-+	spin_lock_irqsave(&cxt->writecount_lock, flags);
 +
-+	/* Check ready status didn't change whilst waiting for the lock */
-+	if (!cxt->ready)
-+		return;
-+
- 	if (cxt->writecount == 0) {
- 		u32 *stamp = cxt->oops_buf;
- 		*stamp = cxt->nextcount;
-@@ -324,6 +347,11 @@ mtdoops_console_write(struct console *co, const char *s, unsigned int count)
+ 	cxt->mtd = mtd;
+ 	cxt->oops_pages = mtd->size / OOPS_PAGE_SIZE;
  
- 	memcpy(cxt->oops_buf + cxt->writecount, s, count);
- 	cxt->writecount += count;
-+
-+	spin_unlock_irqrestore(&cxt->writecount_lock, flags);
-+
-+	if (cxt->writecount == OOPS_PAGE_SIZE)
-+		mtdoops_console_sync();
+ 	find_next_position(cxt);
+ 
+-	printk(KERN_DEBUG "mtdoops: Attached to MTD device %d\n", mtd->index);
++	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
  }
  
- static int __init mtdoops_console_setup(struct console *co, char *options)
+ static void mtdoops_notify_remove(struct mtd_info *mtd)
+@@ -377,7 +380,6 @@ static struct console mtdoops_console = {
+ 	.write		= mtdoops_console_write,
+ 	.setup		= mtdoops_console_setup,
+ 	.unblank	= mtdoops_console_sync,
+-	.flags		= CON_PRINTBUFFER,
+ 	.index		= -1,
+ 	.data		= &oops_cxt,
+ };
+@@ -390,7 +392,7 @@ static int __init mtdoops_console_init(void)
+ 	cxt->oops_buf = vmalloc(OOPS_PAGE_SIZE);
+ 
+ 	if (!cxt->oops_buf) {
+-		printk(KERN_ERR "Failed to allocate oops buffer workspace\n");
++		printk(KERN_ERR "Failed to allocate mtdoops buffer workspace\n");
+ 		return -ENOMEM;
+ 	}
+ 
 -- 
 1.5.2.3
