@@ -1,19 +1,17 @@
-Received: from rv-out-0910.google.com ([209.85.198.190])
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJpEu-0007LF-8q
-	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 12:07:05 +0000
-Received: by rv-out-0910.google.com with SMTP id c24so1854172rvf.42
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 29 Jan 2008 04:02:56 -0800 (PST)
-Message-ID: <3db60e760801290402p282910dey9891eb9b10c80661@mail.gmail.com>
-Date: Tue, 29 Jan 2008 17:32:55 +0530
-From: "Tushar Kapse" <tusharkapse@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: MTD nand device mount problem
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+	id 1JJqYT-0008EU-HW
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 13:31:14 +0000
+Date: Tue, 29 Jan 2008 22:28:22 +0900 (JST)
+Message-Id: <20080129.222822.59465469.anemo@mba.ocn.ne.jp>
+To: Andrew Victor <andrew@sanpeople.com>
+Subject: [PATCH] at91_nand: Make mtdparts option can override board info
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
+	Frank Mandarino <fmandarino@endrelia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,32 +21,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-           I am working on the PXA-255 (armV5T) board with 128mb nand support.
-To boot the board using MTD nand, I did the following steps:
-1. Booted the board using ram filesystem.
-2. Using the mtd utility "flash_eraseall" erased the partition /dev/mtd0
-    ./flash_eraseall -j /dev/mtd0
-3. Using the mtd utility "nandwrite" wrote the jffs2 filesystem image
-to /dev/mtd0
-   ./nandwrite -jf /dev/mtd0 250kb.jffs2
-4. After this to verify, I tried to mount /dev/mtdblock0
-    where I have received the following error messages,
-end_request: I/O error, dev mtdblock0, sector 262016
-printk: 35 messages suppressed.
-Buffer I/O error on device mtdblock0, logical block 32752
-end_request: I/O error, dev mtdblock0, sector 262016
-Buffer I/O error on device mtdblock0, logical block 32752
-end_request: I/O error, dev mtdblock0, sector 0
-Buffer I/O error on device mtdblock0, logical block 0
-end_request: I/O error, dev mtdblock0, sector 0
-Buffer I/O error on device mtdblock0, logical block 0
-end_request: I/O error, dev mtdblock0, sector 0
-Buffer I/O error on device mtdblock0, logical block 0
-end_request: I/O error, dev mtdblock0, sector 0
+Call parse_mtd_partitions before checking board's partition_info, so
+that "mtdparts=" option can override board's default setting.
 
-What could be the problem?
-
-Regards,
-
-Tushar Kapse
+Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+---
+diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
+index b2a5672..c9fb2ac 100644
+--- a/drivers/mtd/nand/at91_nand.c
++++ b/drivers/mtd/nand/at91_nand.c
+@@ -156,14 +156,14 @@ static int __init at91_nand_probe(struct platform_device *pdev)
+ 	}
+ 
+ #ifdef CONFIG_MTD_PARTITIONS
+-	if (host->board->partition_info)
+-		partitions = host->board->partition_info(mtd->size, &num_partitions);
+ #ifdef CONFIG_MTD_CMDLINE_PARTS
+-	else {
+-		mtd->name = "at91_nand";
+-		num_partitions = parse_mtd_partitions(mtd, part_probes, &partitions, 0);
+-	}
++	mtd->name = "at91_nand";
++	num_partitions = parse_mtd_partitions(mtd, part_probes,
++					      &partitions, 0);
+ #endif
++	if (num_partitions <= 0 && host->board->partition_info)
++		partitions = host->board->partition_info(mtd->size,
++							 &num_partitions);
+ 
+ 	if ((!partitions) || (num_partitions == 0)) {
+ 		printk(KERN_ERR "at91_nand: No parititions defined, or unsupported device.\n");
