@@ -1,17 +1,14 @@
-Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJqYf-0008Eq-Bj
-	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 13:31:25 +0000
-Date: Tue, 29 Jan 2008 22:28:37 +0900 (JST)
-Message-Id: <20080129.222837.126141133.anemo@mba.ocn.ne.jp>
-To: Andrew Victor <andrew@sanpeople.com>
-Subject: [PATCH] at91_nand: Make part_probes[] static
-From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Cc: David Woodhouse <dwmw2@infradead.org>, linux-mtd@lists.infradead.org,
-	Frank Mandarino <fmandarino@endrelia.com>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JJvP7-00042X-9a
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 18:42:02 +0000
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+To: David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd <linux-mtd@lists.infradead.org>
+Subject: [PATCH] MTD: Intel StrataFlash P33 is locked on bootup
+Date: Tue, 29 Jan 2008 19:36:49 +0100
+Message-Id: <1201631809-32193-1-git-send-email-hskinnemoen@atmel.com>
+Cc: Haavard Skinnemoen <hskinnemoen@atmel.com>, Paolo.Santos@devoteam.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,22 +18,32 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch fixes this sparse warning:
+Add appropriate fixups for all the devices listed in the Intel P33
+data sheet.
 
-linux/drivers/mtd/nand/at91_nand.c:86:12: warning: symbol 'part_probes' was not declared. Should it be static?
+Thanks to Paolo Santos for reporting this issue and testing the patch.
 
-Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Signed-off-by: Haavard Skinnemoen <hskinnemoen@atmel.com>
 ---
-diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
-index b2a5672..9adbf2a 100644
---- a/drivers/mtd/nand/at91_nand.c
-+++ b/drivers/mtd/nand/at91_nand.c
-@@ -83,7 +83,7 @@ static void at91_nand_disable(struct at91_nand_host *host)
- }
+ drivers/mtd/chips/cfi_cmdset_0001.c |    6 ++++++
+ 1 files changed, 6 insertions(+), 0 deletions(-)
+
+diff --git a/drivers/mtd/chips/cfi_cmdset_0001.c b/drivers/mtd/chips/cfi_cmdset_0001.c
+index 1707f98..b723af1 100644
+--- a/drivers/mtd/chips/cfi_cmdset_0001.c
++++ b/drivers/mtd/chips/cfi_cmdset_0001.c
+@@ -246,6 +246,12 @@ static struct cfi_fixup cfi_fixup_table[] = {
+ 	{ CFI_MFR_ST, 0x00ba, /* M28W320CT */ fixup_st_m28w320ct, NULL },
+ 	{ CFI_MFR_ST, 0x00bb, /* M28W320CB */ fixup_st_m28w320cb, NULL },
+ 	{ MANUFACTURER_INTEL, 0x891c,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x881d,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x881e,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x891f,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x8820,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x8821,	      fixup_use_powerup_lock, NULL, },
++	{ MANUFACTURER_INTEL, 0x8922,	      fixup_use_powerup_lock, NULL, },
+ 	{ 0, 0, NULL, NULL }
+ };
  
- #ifdef CONFIG_MTD_PARTITIONS
--const char *part_probes[] = { "cmdlinepart", NULL };
-+static const char *part_probes[] = { "cmdlinepart", NULL };
- #endif
- 
- /*
+-- 
+1.5.3.8
