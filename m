@@ -1,20 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JJWlq-0004F1-N0
-	for linux-mtd@lists.infradead.org; Mon, 28 Jan 2008 16:23:48 +0000
-Subject: Re: [PATCH] UBI: introduce atomic LEB change ioctl
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-In-Reply-To: <20080125152829.591def16@zod.rchland.ibm.com>
-References: <20080124165453.30169.40332.sendpatchset@golum>
-	<20080125152829.591def16@zod.rchland.ibm.com>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 28 Jan 2008 18:22:46 +0200
-Message-Id: <1201537366.4262.2.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from qmta06.emeryville.ca.mail.comcast.net ([76.96.30.56])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JJhmk-0006Ja-PH
+	for linux-mtd@lists.infradead.org; Tue, 29 Jan 2008 04:09:30 +0000
+Message-ID: <479EA68A.2000704@comcast.net>
+Date: Mon, 28 Jan 2008 23:07:38 -0500
+From: Frank <fuzzoli@comcast.net>
+MIME-Version: 1.0
+To: linux-mtd@lists.infradead.org
+Subject: Searchable Archives and Using RAM
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,22 +19,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-01-25 at 15:28 -0600, Josh Boyer wrote:
-> Could you explain a bit more?  What exactly does "atomic" mean?
->=20
-> This seems like it's similar to volume update, only on a LEB level
-> right? If so, could you make volume update just use this or somehow
-> combine them?
->=20
-> Maybe I've just been away from UBI too long.  It sounds cool, but I
-> don't fully understand what the intention is.
+Hello all,
 
-Josh,
+I just joined the list as I am looking for information on how to set up 
+MTD to use 2Mb of battery-backed up RAM as a disk.   This will be on an 
+ARM-based SBC that already has MTD NAND drivers loaded.  I think I know 
+where I need to start (CONFIG_MTD_MTDRAM, etc), but have not seen any 
+how-to's yet.   I found a new book from O'Reilly that'll be out in 
+February that looks very promising 
+(http://safari.oreilly.com/0136130550/ch10), but I was wondering if 
+there are any online resources.
 
-I've updated the UBI documentation in order to answer your question. Any
-documentation improvements and spelling fixes are welcome.
+I admit I still need to do some additional searching, and therefore was 
+wondering if there is a searchable version of the mailing list archives?
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thanks in advanced,
+
+-Frank
+Holland, PA
