@@ -1,20 +1,20 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JK0Xt-0001J8-Ji
-	for linux-mtd@lists.infradead.org; Wed, 30 Jan 2008 00:11:23 +0000
-Date: Wed, 30 Jan 2008 00:11:04 +0100
+	id 1JK0eW-0001u5-Vj
+	for linux-mtd@lists.infradead.org; Wed, 30 Jan 2008 00:18:15 +0000
+Date: Wed, 30 Jan 2008 00:17:43 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Richard Purdie <rpurdie@rpsys.net>
-Subject: Re: [RFC PATCH 1/3]] Add mtd panic_write function pointer
-Message-ID: <20080129231104.GC32157@lazybastard.org>
-References: <1201607964.5017.48.camel@localhost.localdomain>
+To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+Subject: Re: [PATCH] at91_nand: Make part_probes[] static
+Message-ID: <20080129231743.GD32157@lazybastard.org>
+References: <20080129.222837.126141133.anemo@mba.ocn.ne.jp>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1201607964.5017.48.camel@localhost.localdomain>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <20080129.222837.126141133.anemo@mba.ocn.ne.jp>
+Cc: Andrew Victor <andrew@sanpeople.com>, David Woodhouse <dwmw2@infradead.org>,
+	linux-mtd@lists.infradead.org, Frank Mandarino <fmandarino@endrelia.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,32 +24,39 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 29 January 2008 11:59:24 +0000, Richard Purdie wrote:
+On Tue, 29 January 2008 22:28:37 +0900, Atsushi Nemoto wrote:
 > 
-> MTDs are well suited for logging critical data and the mtdoops driver
-> allows kernel panics/oops to be written to flash in a blackbox flight
-> recorder fashion allowing better debugging and analysis of crashes.
+> This patch fixes this sparse warning:
 > 
-> Any kernel oops in user context can be easily handled since the kernel
-> continues as normal and any queued mtd writes are scheduled. Any kernel
-> oops in interrupt context results in a panic and the delayed writes will
-> not be scheduled however. The existing mtd->write function cannot be
-> called in interrupt context so these messages can never be written to
-> flash.
-> 
-> This patch adds a panic_write function pointer that drivers can
-> optionally implement which can be called in interrupt context. It is
-> only intended to be called when its known the kernel is about to panic
-> and we need to write to succeed. Since the kernel is not going to be
-> running for much longer, this function can break locks and delay to
-> ensure the write succeeds (but not sleep).
+> linux/drivers/mtd/nand/at91_nand.c:86:12: warning: symbol 'part_probes' was not declared. Should it be static?
 
-I like the description.  So why is it not part of the patch proper?
+You cannot fix a warning.  You can only fix code.  Warnings can be and
+often are wrong.  This particular is right, so in spite of the
+description
+Acked-by: Joern Engel <joern@logfs.org>
 
+> Signed-off-by: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
+> ---
+> diff --git a/drivers/mtd/nand/at91_nand.c b/drivers/mtd/nand/at91_nand.c
+> index b2a5672..9adbf2a 100644
+> --- a/drivers/mtd/nand/at91_nand.c
+> +++ b/drivers/mtd/nand/at91_nand.c
+> @@ -83,7 +83,7 @@ static void at91_nand_disable(struct at91_nand_host *host)
+>  }
+>  
+>  #ifdef CONFIG_MTD_PARTITIONS
+> -const char *part_probes[] = { "cmdlinepart", NULL };
+> +static const char *part_probes[] = { "cmdlinepart", NULL };
+>  #endif
+>  
+>  /*
+> 
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
 
 Jörn
 
 -- 
-Beware of bugs in the above code; I have only proved it correct, but
-not tried it.
--- Donald Knuth
+Joern's library part 11:
+http://www.unicom.com/pw/reply-to-harmful.html
