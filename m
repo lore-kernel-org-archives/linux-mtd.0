@@ -1,23 +1,20 @@
-Received: from wa-out-1112.google.com ([209.85.146.177])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKGbL-0004Oo-UJ
-	for linux-mtd@lists.infradead.org; Wed, 30 Jan 2008 17:20:02 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so465353wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Wed, 30 Jan 2008 09:19:54 -0800 (PST)
-Message-ID: <6934efce0801300919v6fdc21f8v68e857301b77ff2e@mail.gmail.com>
-Date: Wed, 30 Jan 2008 09:19:54 -0800
-From: "Jared Hulbert" <jaredeh@gmail.com>
-To: "Haavard Skinnemoen" <hskinnemoen@atmel.com>
+Received: from nat-132.atmel.no ([80.232.32.132] helo=relay.atmel.no)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JKGek-0004Vq-S6
+	for linux-mtd@lists.infradead.org; Wed, 30 Jan 2008 17:23:33 +0000
+Date: Wed, 30 Jan 2008 18:22:10 +0100
+From: Haavard Skinnemoen <hskinnemoen@atmel.com>
+To: "Jared Hulbert" <jaredeh@gmail.com>
 Subject: Re: [PATCH] MTD: Intel StrataFlash P33 is locked on bootup
-In-Reply-To: <20080130135350.67e95e20@dhcp-252-066.norway.atmel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <20080130182210.2076ea38@siona>
+In-Reply-To: <6934efce0801300919v6fdc21f8v68e857301b77ff2e@mail.gmail.com>
 References: <1201631809-32193-1-git-send-email-hskinnemoen@atmel.com>
 	<6934efce0801291813n68b796f5j5f3db1e90eb174a9@mail.gmail.com>
 	<20080130135350.67e95e20@dhcp-252-066.norway.atmel.com>
+	<6934efce0801300919v6fdc21f8v68e857301b77ff2e@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Cc: David Woodhouse <dwmw2@infradead.org>, Paolo.Santos@devoteam.com,
 	Nicolas Pitre <nico@cam.org>, Justin Treon <justin_treon@yahoo.com>,
 	linux-mtd <linux-mtd@lists.infradead.org>
@@ -30,24 +27,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> This will break cfi_cmdset_0002.c, which also uses MTD_STUPID_LOCK.
+On Wed, 30 Jan 2008 09:19:54 -0800
+"Jared Hulbert" <jaredeh@gmail.com> wrote:
 
-Oh.  That should be fixed ;)  Thanks for catching this.  We need more
-inclusive tests.
+> > This will break cfi_cmdset_0002.c, which also uses MTD_STUPID_LOCK.  
+> 
+> Oh.  That should be fixed ;)  Thanks for catching this.  We need more
+> inclusive tests.
+> 
+> So if I add this hunk, it should work right?
 
-So if I add this hunk, it should work right?
+Yeah, that should do it.
 
-
-diff --git a/drivers/mtd/chips/cfi_cmdset_0002.c
-b/drivers/mtd/chips/cfi_cmdset_0002.c
-index 796bfea..d072e87 100644
---- a/drivers/mtd/chips/cfi_cmdset_0002.c
-+++ b/drivers/mtd/chips/cfi_cmdset_0002.c
-@@ -217,7 +217,7 @@ static void fixup_use_atmel_lock(struct mtd_info
-*mtd, void *param)
- {
- 	mtd->lock = cfi_atmel_lock;
- 	mtd->unlock = cfi_atmel_unlock;
--	mtd->flags |= MTD_STUPID_LOCK;
-+	mtd->flags |= MTD_POWERUP_LOCK;
- }
+Haavard
