@@ -1,23 +1,19 @@
 Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKM11-00072l-At
-	for linux-mtd@lists.infradead.org; Wed, 30 Jan 2008 23:06:53 +0000
-Date: Wed, 30 Jan 2008 23:06:31 +0100
+	id 1JKMxh-0004rm-B1
+	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 00:07:31 +0000
+Date: Thu, 31 Jan 2008 00:07:11 +0100
 From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Richard Purdie <rpurdie@rpsys.net>
-Subject: Re: [RFC PATCH 1/3]] Add mtd panic_write function pointer
-Message-ID: <20080130220631.GA6786@lazybastard.org>
-References: <1201607964.5017.48.camel@localhost.localdomain>
-	<20080129231104.GC32157@lazybastard.org>
-	<1201687383.4668.1.camel@localhost.localdomain>
+To: Bernd =?utf-8?Q?B=C3=BCttner?= <b.buettner@mkc-gmbh.de>
+Subject: Re: Cleaning JFFS2 errors
+Message-ID: <20080130230711.GB6849@lazybastard.org>
+References: <478F1509.2090001@mkc-gmbh.de> <47A07A34.6010209@mkc-gmbh.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1201687383.4668.1.camel@localhost.localdomain>
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	=?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>,
-	David Woodhouse <dwmw2@infradead.org>
+In-Reply-To: <47A07A34.6010209@mkc-gmbh.de>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,22 +23,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 January 2008 10:03:03 +0000, Richard Purdie wrote:
-> On Wed, 2008-01-30 at 00:11 +0100, Jörn Engel wrote:
-> > 
-> > I like the description.  So why is it not part of the patch proper?
+On Wed, 30 January 2008 14:23:00 +0100, Bernd Büttner wrote:
 > 
-> You mean add it to mtd.h?
+> No answer jet.
+> Does this mean it is a silly question or is there no solution for it?
 
-Yes.  struct mtd_info, like many other kernel interfaces, is nearly
-impossible to use without either copying example code or reading the
-implementation (aka reverse-engineering the kernel).  We could certainly
-do better than that.  And for new additions we should.
+
+It's an FAQ.  Most of these are harmless, they simply indicate a power
+loss.  They will get cleaned eventually, you cannot force them to get
+cleaned, you cannot easily distinguish power loss from data corruption
+and you should add this to the FAQ if it's not part of it yet.
 
 Jörn
 
 -- 
-To announce that there must be no criticism of the President, or that we
-are to stand by the President, right or wrong, is not only unpatriotic
-and servile, but is morally treasonable to the American public.
--- Theodore Roosevelt, Kansas City Star, 1918
+Why do musicians compose symphonies and poets write poems?
+They do it because life wouldn't have any meaning for them if they didn't.
+That's why I draw cartoons.  It's my life.
+-- Charles Shultz
