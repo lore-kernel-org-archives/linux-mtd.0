@@ -1,17 +1,17 @@
-From: "Kyungmin Park" <kmpark@infradead.org>
-To: "'Richard Purdie'" <rpurdie@rpsys.net>,
-	"'David Woodhouse'" <dwmw2@infradead.org>,
-	"'linux-mtd'" <linux-mtd@lists.infradead.org>
-References: <1201607970.5017.50.camel@localhost.localdomain>
-Subject: RE: [RFC PATCH 3/3] Add panic_write function to the onenand driver
-Date: Thu, 31 Jan 2008 11:05:45 +0900
-Message-ID: <003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
+Received: from mx2.netapp.com ([216.240.18.37])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JKPmk-0000pF-Kd
+	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 03:08:24 +0000
+Content-class: urn:content-classes:message
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-In-reply-to: <1201607970.5017.50.camel@localhost.localdomain>
-Reply-To: kmpark@infradead.org
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Subject: FW: JFFS2 Utility?
+Date: Wed, 30 Jan 2008 19:07:41 -0800
+Message-ID: <521D420437D1FD4CA77F1B71E3C4FB8D035D86C1@exsvl03.hq.netapp.com>
+From: "Venkatapuram, Nagaraj" <Nagaraj.Venkatapuram@netapp.com>
+To: <ricard.wanderlof@axis.com>, <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,55 +21,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hi, I downloaded mtd-utils-1.1.0 tar ball from the link mentioned below =
+and I did a make. I ran into following compilation errors. Has any body =
+got any insight as to what the problem could be ? Obviously, function =
+definitions are missing and as a result the build is failing.
 
-> +static void onenand_panic_wait(struct mtd_info *mtd)
-> +{
-> +	struct onenand_chip *this = mtd->priv;
-> +	unsigned int interrupt;
-> +	int i;
-> +
-> +	for (i = 0; i < 20; i++) {
-> +		interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
-> +		if (interrupt & ONENAND_INT_MASTER)
-> +			break;
-> +		udelay(1000);
-> +	}
-> +}
+gcc -I./include -O2 -Wall -g -c -o compr_lzo.o compr_lzo.c -g =
+-Wp,-MD,./.compr_lzo.c.dep
+compr_lzo.c:29:23: lzo/lzo1x.h: No such file or directory
+compr_lzo.c: In function `jffs2_lzo_cmpr':
+compr_lzo.c:54: warning: implicit declaration of function =
+`lzo1x_999_compress'
+compr_lzo.c:56: `LZO_E_OK' undeclared (first use in this function)
+compr_lzo.c:56: (Each undeclared identifier is reported only once
+compr_lzo.c:56: for each function it appears in.)
+compr_lzo.c: In function `jffs2_lzo_decompress':
+compr_lzo.c:74: warning: implicit declaration of function =
+`lzo1x_decompress_safe'
+compr_lzo.c:76: `LZO_E_OK' undeclared (first use in this function)
+compr_lzo.c: In function `jffs2_lzo_init':
+compr_lzo.c:95: `LZO1X_999_MEM_COMPRESS' undeclared (first use in this =
+function)make: *** [compr_lzo.o] Error 1
+rm doc_loadbios.o flash_erase.o mkfs.jffs.o nanddump.o ftl_format.o =
+ftl_check.o
 
-Umm it's waiting with maximum 20msec. how about the increase the index to 20*1000 and use udelay(1).
-If we use the busy-waiting, it uses the max 3msec in case of erase.
+Thanks,
+Nagaraj
 
-Anyway I think you don't use the onenand_wait since it has cond_resched(). It's better to use the existing function in case of
-panic_write.
-Okay try to think what's the better way.
+-----Original Message-----
+From: Tallam, Sreenivas=20
+Sent: Wednesday, January 30, 2008 5:25 PM
+To: Venkatapuram, Nagaraj
+Subject: FW: JFFS2 Utility?
 
-> + */
-> +static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
-> +			 size_t *retlen, const u_char *buf)
-> +{
-> +	struct onenand_chip *this = mtd->priv;
-> +	int column, subpage;
-> +	int written = 0;
-> +	int ret = 0;
-> +
-> +	if (this->state == FL_PM_SUSPENDED)
-> +		return -EBUSY;
-> +
-> +	/* Wait for any existing operation to clear */
-> +	onenand_panic_wait(mtd);
+ Thanks
+Sreen
 
-Reasonable!
+-----Original Message-----
+From: Ricard Wanderlof [mailto:ricard.wanderlof@axis.com]=20
+Sent: Wednesday, December 19, 2007 11:56 PM
+To: Tallam, Sreenivas
+Cc: linux-mtd@lists.infradead.org
+Subject: Re: JFFS2 Utility?
 
-> +
-> +		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
-> +		this->write_bufferram(mtd, ONENAND_SPARERAM, ffchars, 0, mtd->oobsize);
-> +
-> +		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
-> +
-> +		onenand_panic_wait(mtd);
 
-It has to check the return value and update the bufferram. If not, we can read the wrong data later.
+It is not difficult to build from source. A tarball of the source can be =
+found here:
 
-Thank you,
-Kyungmin Park
+ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.1.0.tar.bz2
+
+Download, unpack, and do 'make' to build them.
+
+/Ricard
+--
+Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
+Axis Communications AB, Lund, Sweden            www.axis.com
+Phone +46 46 272 2016                           Fax +46 46 13 61 30
