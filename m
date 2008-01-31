@@ -1,19 +1,17 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKMxh-0004rm-B1
-	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 00:07:31 +0000
-Date: Thu, 31 Jan 2008 00:07:11 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Bernd =?utf-8?Q?B=C3=BCttner?= <b.buettner@mkc-gmbh.de>
-Subject: Re: Cleaning JFFS2 errors
-Message-ID: <20080130230711.GB6849@lazybastard.org>
-References: <478F1509.2090001@mkc-gmbh.de> <47A07A34.6010209@mkc-gmbh.de>
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: "'Richard Purdie'" <rpurdie@rpsys.net>,
+	"'David Woodhouse'" <dwmw2@infradead.org>,
+	"'linux-mtd'" <linux-mtd@lists.infradead.org>
+References: <1201607970.5017.50.camel@localhost.localdomain>
+Subject: RE: [RFC PATCH 3/3] Add panic_write function to the onenand driver
+Date: Thu, 31 Jan 2008 11:05:45 +0900
+Message-ID: <003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47A07A34.6010209@mkc-gmbh.de>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <1201607970.5017.50.camel@localhost.localdomain>
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,21 +21,55 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 30 January 2008 14:23:00 +0100, Bernd Büttner wrote:
-> 
-> No answer jet.
-> Does this mean it is a silly question or is there no solution for it?
+Hi,
 
+> +static void onenand_panic_wait(struct mtd_info *mtd)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	unsigned int interrupt;
+> +	int i;
+> +
+> +	for (i = 0; i < 20; i++) {
+> +		interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
+> +		if (interrupt & ONENAND_INT_MASTER)
+> +			break;
+> +		udelay(1000);
+> +	}
+> +}
 
-It's an FAQ.  Most of these are harmless, they simply indicate a power
-loss.  They will get cleaned eventually, you cannot force them to get
-cleaned, you cannot easily distinguish power loss from data corruption
-and you should add this to the FAQ if it's not part of it yet.
+Umm it's waiting with maximum 20msec. how about the increase the index to 20*1000 and use udelay(1).
+If we use the busy-waiting, it uses the max 3msec in case of erase.
 
-Jörn
+Anyway I think you don't use the onenand_wait since it has cond_resched(). It's better to use the existing function in case of
+panic_write.
+Okay try to think what's the better way.
 
--- 
-Why do musicians compose symphonies and poets write poems?
-They do it because life wouldn't have any meaning for them if they didn't.
-That's why I draw cartoons.  It's my life.
--- Charles Shultz
+> + */
+> +static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+> +			 size_t *retlen, const u_char *buf)
+> +{
+> +	struct onenand_chip *this = mtd->priv;
+> +	int column, subpage;
+> +	int written = 0;
+> +	int ret = 0;
+> +
+> +	if (this->state == FL_PM_SUSPENDED)
+> +		return -EBUSY;
+> +
+> +	/* Wait for any existing operation to clear */
+> +	onenand_panic_wait(mtd);
+
+Reasonable!
+
+> +
+> +		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
+> +		this->write_bufferram(mtd, ONENAND_SPARERAM, ffchars, 0, mtd->oobsize);
+> +
+> +		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
+> +
+> +		onenand_panic_wait(mtd);
+
+It has to check the return value and update the bufferram. If not, we can read the wrong data later.
+
+Thank you,
+Kyungmin Park
