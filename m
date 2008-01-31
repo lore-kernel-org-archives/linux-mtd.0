@@ -1,22 +1,20 @@
 Received: from tim.rpsys.net ([194.106.48.114])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKW3o-0006Lx-J4
-	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 09:50:34 +0000
-Subject: Re: [RFC PATCH 1/3]] Add mtd panic_write function pointer
+	id 1JKWHD-0008Gw-WA
+	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 10:04:19 +0000
+Subject: RE: [RFC PATCH 3/3] Add panic_write function to the onenand driver
 From: Richard Purdie <rpurdie@rpsys.net>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20080130220631.GA6786@lazybastard.org>
-References: <1201607964.5017.48.camel@localhost.localdomain>
-	<20080129231104.GC32157@lazybastard.org>
-	<1201687383.4668.1.camel@localhost.localdomain>
-	<20080130220631.GA6786@lazybastard.org>
-Content-Type: text/plain; charset=ISO-8859-1
-Date: Thu, 31 Jan 2008 09:49:15 +0000
-Message-Id: <1201772955.4996.3.camel@localhost.localdomain>
+To: kmpark@infradead.org
+In-Reply-To: <003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
+References: <1201607970.5017.50.camel@localhost.localdomain>
+	<003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
+Content-Type: text/plain
+Date: Thu, 31 Jan 2008 10:03:34 +0000
+Message-Id: <1201773814.4996.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>
+Content-Transfer-Encoding: 7bit
+Cc: 'linux-mtd' <linux-mtd@lists.infradead.org>,
+	'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,92 +24,66 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Wed, 2008-01-30 at 23:06 +0100, Jörn Engel wrote:
-> Yes.  struct mtd_info, like many other kernel interfaces, is nearly
-> impossible to use without either copying example code or reading the
-> implementation (aka reverse-engineering the kernel).  We could certainly
-> do better than that.  And for new additions we should.
+On Thu, 2008-01-31 at 11:05 +0900, Kyungmin Park wrote:
+> > +static void onenand_panic_wait(struct mtd_info *mtd)
+> > +{
+> > +	struct onenand_chip *this = mtd->priv;
+> > +	unsigned int interrupt;
+> > +	int i;
+> > +
+> > +	for (i = 0; i < 20; i++) {
+> > +		interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
+> > +		if (interrupt & ONENAND_INT_MASTER)
+> > +			break;
+> > +		udelay(1000);
+> > +	}
+> > +}
+> 
+> Umm it's waiting with maximum 20msec. how about the increase the index to 20*1000 and use udelay(1).
+> If we use the busy-waiting, it uses the max 3msec in case of erase.
 
-Totally agreed, updated patch follows.
+I'm ok with changing it to use udelay(10). This function is going to be
+rarely called so efficiency isn't a primary concern... 
 
+> Anyway I think you don't use the onenand_wait since it has
+> cond_resched(). It's better to use the existing function in case of
+> panic_write.
+> Okay try to think what's the better way.
 
-MTDs are well suited for logging critical data and the mtdoops driver
-allows kernel panics/oops to be written to flash in a blackbox flight
-recorder fashion allowing better debugging and analysis of crashes.
+Yes, I'm avoiding onenand_wait since we can't schedule in this context.
+Other ideas welcome :)
 
-Any kernel oops in user context can be easily handled since the kernel
-continues as normal and any queued mtd writes are scheduled. Any kernel
-oops in interrupt context results in a panic and the delayed writes will
-not be scheduled however. The existing mtd->write function cannot be
-called in interrupt context so these messages can never be written to
-flash.
+> > + */
+> > +static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
+> > +			 size_t *retlen, const u_char *buf)
+> > +{
+> > +	struct onenand_chip *this = mtd->priv;
+> > +	int column, subpage;
+> > +	int written = 0;
+> > +	int ret = 0;
+> > +
+> > +	if (this->state == FL_PM_SUSPENDED)
+> > +		return -EBUSY;
+> > +
+> > +	/* Wait for any existing operation to clear */
+> > +	onenand_panic_wait(mtd);
+> 
+> Reasonable!
+> 
+> > +
+> > +		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
+> > +		this->write_bufferram(mtd, ONENAND_SPARERAM, ffchars, 0, mtd->oobsize);
+> > +
+> > +		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
+> > +
+> > +		onenand_panic_wait(mtd);
+> 
+> It has to check the return value and update the bufferram. If not, we can read the wrong data later.
 
-This patch adds a panic_write function pointer that drivers can
-optionally implement which can be called in interrupt context. It is
-only intended to be called when its known the kernel is about to panic
-and we need to write to succeed. Since the kernel is not going to be
-running for much longer, this function can break locks and delay to
-ensure the write succeeds (but not sleep).
+The key point with panic_write is there is unlikely to be any "later". I
+don't mind putting the bufferram update calls back if you're happier
+with that though.
 
-Signed-off-by: Richard Purdie <rpurdie@rpsys.net>
+Cheers,
 
----
- drivers/mtd/mtdpart.c   |   17 +++++++++++++++++
- include/linux/mtd/mtd.h |    9 +++++++++
- 2 files changed, 26 insertions(+)
-
-Index: kernel-hacking/drivers/mtd/mtdpart.c
-===================================================================
---- kernel-hacking.orig/drivers/mtd/mtdpart.c	2008-01-31 09:37:23.000000000 +0000
-+++ kernel-hacking/drivers/mtd/mtdpart.c	2008-01-31 09:37:28.000000000 +0000
-@@ -151,6 +151,20 @@ static int part_write (struct mtd_info *
- 				    len, retlen, buf);
- }
- 
-+static int part_panic_write (struct mtd_info *mtd, loff_t to, size_t len,
-+			size_t *retlen, const u_char *buf)
-+{
-+	struct mtd_part *part = PART(mtd);
-+	if (!(mtd->flags & MTD_WRITEABLE))
-+		return -EROFS;
-+	if (to >= mtd->size)
-+		len = 0;
-+	else if (to + len > mtd->size)
-+		len = mtd->size - to;
-+	return part->master->panic_write (part->master, to + part->offset,
-+				    len, retlen, buf);
-+}
-+
- static int part_write_oob(struct mtd_info *mtd, loff_t to,
- 			 struct mtd_oob_ops *ops)
- {
-@@ -352,6 +366,9 @@ int add_mtd_partitions(struct mtd_info *
- 		slave->mtd.read = part_read;
- 		slave->mtd.write = part_write;
- 
-+		if (master->panic_write)
-+			slave->mtd.panic_write = part_panic_write;
-+
- 		if(master->point && master->unpoint){
- 			slave->mtd.point = part_point;
- 			slave->mtd.unpoint = part_unpoint;
-Index: kernel-hacking/include/linux/mtd/mtd.h
-===================================================================
---- kernel-hacking.orig/include/linux/mtd/mtd.h	2008-01-31 09:37:23.000000000 +0000
-+++ kernel-hacking/include/linux/mtd/mtd.h	2008-01-31 09:44:06.000000000 +0000
-@@ -152,6 +152,15 @@ struct mtd_info {
- 	int (*read) (struct mtd_info *mtd, loff_t from, size_t len, size_t *retlen, u_char *buf);
- 	int (*write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
- 
-+	/* In blackbox flight recorder like scenarios we want to make successful
-+	    writes in interrupt context. panic_write() is only intended to be
-+	    called when its known the kernel is about to panic and we need the
-+	    write to succeed. Since the kernel is not going to be running for much
-+	    longer, this function can break locks and delay to ensure the write
-+	    succeeds (but not sleep). */
-+
-+	int (*panic_write) (struct mtd_info *mtd, loff_t to, size_t len, size_t *retlen, const u_char *buf);
-+
- 	int (*read_oob) (struct mtd_info *mtd, loff_t from,
- 			 struct mtd_oob_ops *ops);
- 	int (*write_oob) (struct mtd_info *mtd, loff_t to,
+Richard
