@@ -1,20 +1,19 @@
-Received: from tim.rpsys.net ([194.106.48.114])
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKWHD-0008Gw-WA
-	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 10:04:19 +0000
-Subject: RE: [RFC PATCH 3/3] Add panic_write function to the onenand driver
-From: Richard Purdie <rpurdie@rpsys.net>
-To: kmpark@infradead.org
-In-Reply-To: <003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
-References: <1201607970.5017.50.camel@localhost.localdomain>
-	<003e01c863ad$ce6ef790$1fa9580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain
-Date: Thu, 31 Jan 2008 10:03:34 +0000
-Message-Id: <1201773814.4996.9.camel@localhost.localdomain>
-Mime-Version: 1.0
+	id 1JKbMF-0001gO-Cf
+	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 15:29:49 +0000
+Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
+	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
+	m0VFSsNo031416
+	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2008 17:29:38 +0200
+Message-ID: <47A1E795.5010407@nokia.com>
+Date: Thu, 31 Jan 2008 17:21:57 +0200
+From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+MIME-Version: 1.0
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Subject: [PATCH][MTD-UTILS] ubi-tools: fix ubinize
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: 'linux-mtd' <linux-mtd@lists.infradead.org>,
-	'David Woodhouse' <dwmw2@infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,66 +23,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-01-31 at 11:05 +0900, Kyungmin Park wrote:
-> > +static void onenand_panic_wait(struct mtd_info *mtd)
-> > +{
-> > +	struct onenand_chip *this = mtd->priv;
-> > +	unsigned int interrupt;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < 20; i++) {
-> > +		interrupt = this->read_word(this->base + ONENAND_REG_INTERRUPT);
-> > +		if (interrupt & ONENAND_INT_MASTER)
-> > +			break;
-> > +		udelay(1000);
-> > +	}
-> > +}
-> 
-> Umm it's waiting with maximum 20msec. how about the increase the index to 20*1000 and use udelay(1).
-> If we use the busy-waiting, it uses the max 3msec in case of erase.
+ubinize reserves 2 eraseblocks for the volume table at the start of the
+output file and then never seeked back to the start of the file.
 
-I'm ok with changing it to use udelay(10). This function is going to be
-rarely called so efficiency isn't a primary concern... 
+Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
+---
+ ubi-utils/src/ubinize.c |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
 
-> Anyway I think you don't use the onenand_wait since it has
-> cond_resched(). It's better to use the existing function in case of
-> panic_write.
-> Okay try to think what's the better way.
-
-Yes, I'm avoiding onenand_wait since we can't schedule in this context.
-Other ideas welcome :)
-
-> > + */
-> > +static int onenand_panic_write(struct mtd_info *mtd, loff_t to, size_t len,
-> > +			 size_t *retlen, const u_char *buf)
-> > +{
-> > +	struct onenand_chip *this = mtd->priv;
-> > +	int column, subpage;
-> > +	int written = 0;
-> > +	int ret = 0;
-> > +
-> > +	if (this->state == FL_PM_SUSPENDED)
-> > +		return -EBUSY;
-> > +
-> > +	/* Wait for any existing operation to clear */
-> > +	onenand_panic_wait(mtd);
-> 
-> Reasonable!
-> 
-> > +
-> > +		this->write_bufferram(mtd, ONENAND_DATARAM, wbuf, 0, mtd->writesize);
-> > +		this->write_bufferram(mtd, ONENAND_SPARERAM, ffchars, 0, mtd->oobsize);
-> > +
-> > +		this->command(mtd, ONENAND_CMD_PROG, to, mtd->writesize);
-> > +
-> > +		onenand_panic_wait(mtd);
-> 
-> It has to check the return value and update the bufferram. If not, we can read the wrong data later.
-
-The key point with panic_write is there is unlikely to be any "later". I
-don't mind putting the bufferram update calls back if you're happier
-with that though.
-
-Cheers,
-
-Richard
+diff --git a/ubi-utils/src/ubinize.c b/ubi-utils/src/ubinize.c
+index 4c3fd97..9660b09 100644
+--- a/ubi-utils/src/ubinize.c
++++ b/ubi-utils/src/ubinize.c
+@@ -618,6 +618,11 @@ int main(int argc, char * const argv[])
+ 
+ 	verbose(args.verbose, "writing layout volume");
+ 
++	if (fseek(args.fp_out, 0, SEEK_SET) == -1) {
++		errmsg("cannot seek file \"%s\"", args.f_out);
++		goto out_dict;
++	}
++
+ 	err = ubigen_write_layout_vol(&ui, vtbl, args.fp_out);
+ 	if (err) {
+ 		errmsg("cannot write layout volume");
+-- 
+1.4.4.2
