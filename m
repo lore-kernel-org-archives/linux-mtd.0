@@ -1,17 +1,13 @@
-Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+Received: from mx.dave-tech.it ([88.37.112.223])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKbMF-0001gO-Cf
-	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 15:29:49 +0000
-Received: from esebh105.NOE.Nokia.com (esebh105.ntc.nokia.com [172.21.138.211])
-	by mgw-mx03.nokia.com (Switch-3.2.6/Switch-3.2.6) with ESMTP id
-	m0VFSsNo031416
-	for <linux-mtd@lists.infradead.org>; Thu, 31 Jan 2008 17:29:38 +0200
-Message-ID: <47A1E795.5010407@nokia.com>
-Date: Thu, 31 Jan 2008 17:21:57 +0200
-From: Adrian Hunter <ext-adrian.hunter@nokia.com>
+	id 1JKcgP-0008P0-LW
+	for linux-mtd@lists.infradead.org; Thu, 31 Jan 2008 16:54:44 +0000
+Message-ID: <47A1FD3F.2020102@dave-tech.it>
+Date: Thu, 31 Jan 2008 17:54:23 +0100
+From: llandre <r&d2@dave-tech.it>
 MIME-Version: 1.0
-To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
-Subject: [PATCH][MTD-UTILS] ubi-tools: fix ubinize
+To: linux-mtd@lists.infradead.org
+Subject: JFFS2: file contents in case of data CRC error
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
@@ -23,29 +19,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-ubinize reserves 2 eraseblocks for the volume table at the start of the
-output file and then never seeked back to the start of the file.
+I have a JFFS2 partition on 32MByte NAND device.
+When reading a specific file - see below for details - JFFS2 reports a 
+Data CRC error but function nand_correct_data never returns -1, so I 
+assume ECC algorithm is able to correct errors.
+However the file is not equal to the original one that has been written 
+to NAND. In fact, in the middle of the file, I see a 4-kByte "hole" 
+where all bytes are 0.
+Anybody can help me about understanding if this is the expected 
+behaviour of JFFS2?
+Thanks in advance.
 
-Signed-off-by: Adrian Hunter <ext-adrian.hunter@nokia.com>
----
- ubi-utils/src/ubinize.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
 
-diff --git a/ubi-utils/src/ubinize.c b/ubi-utils/src/ubinize.c
-index 4c3fd97..9660b09 100644
---- a/ubi-utils/src/ubinize.c
-+++ b/ubi-utils/src/ubinize.c
-@@ -618,6 +618,11 @@ int main(int argc, char * const argv[])
- 
- 	verbose(args.verbose, "writing layout volume");
- 
-+	if (fseek(args.fp_out, 0, SEEK_SET) == -1) {
-+		errmsg("cannot seek file \"%s\"", args.f_out);
-+		goto out_dict;
-+	}
-+
- 	err = ubigen_write_layout_vol(&ui, vtbl, args.fp_out);
- 	if (err) {
- 		errmsg("cannot write layout volume");
+bash-2.05# mount -t jffs2 -o ro /dev/mtdblock0 /mnt/nand0
+mtdblock_open
+ok
+bash-2.05# cp -v /mnt/nand0/f.img /tmp/
+jffs2_get_inode_nodes(): Data CRC failed on node at 0x01d55544: Read 
+0x80b8997f, calculated 0x57f0ea8e
+`/mnt/nand0/f.img' -> `/tmp/f.img'
+
 -- 
-1.4.4.2
+llandre
+
+DAVE Electronics System House - R&D Department
+web:   http://www.dave.eu
+email: r&d2@dave-tech.it
