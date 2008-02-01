@@ -1,20 +1,21 @@
-Received: from mx.dave-tech.it ([88.37.112.223])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKwSI-0001jk-5P
-	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2008 14:01:33 +0000
-Message-ID: <47A32630.7070108@dave-tech.it>
-Date: Fri, 01 Feb 2008 15:01:20 +0100
-From: llandre <r&d2@dave-tech.it>
-MIME-Version: 1.0
-To: Jamie Lokier <jamie@shareable.org>
-Subject: Re: JFFS2: file contents in case of data CRC error
-References: <47A1FD3F.2020102@dave-tech.it>
-	<f383264b0801311142h3cbcbc91pb4e0d3a60fc78f4f@mail.gmail.com>
-	<20080131225742.GB26188@shareable.org>
-In-Reply-To: <20080131225742.GB26188@shareable.org>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Matt Reimer <mattjreimer@gmail.com>
+Received: from [85.21.88.6] (helo=buildserver.ru.mvista.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JKwbC-0003lm-Mw
+	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2008 14:10:40 +0000
+Date: Fri, 1 Feb 2008 17:10:35 +0300
+From: Anton Vorontsov <avorontsov@ru.mvista.com>
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] physmap-concat map platform driver
+Message-ID: <20080201141035.GA11347@localhost.localdomain>
+References: <20070526002925.GB801@zarina>
+	<20070531212749.GR26191@xi.wantstofly.org>
+	<20070531215838.GA1603@zarina> <200802011405.05999.sr@denx.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf8
+Content-Disposition: inline
+In-Reply-To: <200802011405.05999.sr@denx.de>
+Cc: linux-mtd@lists.infradead.org, Lennert Buytenhek <buytenh@wantstofly.org>
+Reply-To: avorontsov@ru.mvista.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,16 +25,38 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> I've seen similar things with cfi_cmdset_0002 on NOR flash, with Linux
-> 2.4.26.  Occasional bit flips on reading flash, resulting in zero
-> blocks in the read file from JFFS2 - no errors reported to the
-> application.
-Have you found the JFFS2 portion of code that "zeroes" the block before 
-passing it to the userland?
+On Fri, Feb 01, 2008 at 02:05:05PM +0100, Stefan Roese wrote:
+> Hi Anton,
+> 
+> On Thursday 31 May 2007, Anton Vorontsov wrote:
+> > > Maybe it makes more sense to add that support to physmap
+> > > instead?
+> >
+> > Well.. more easier solution would be merging physmap-concat to physmap,
+> > trying make physmap-concat platform_data-compatible.
+> >
+> > I can try implement that.
+> 
+> Did you make any progress here?
 
-Regards,
-llandre
+Nope, sorry. I needed this for some ARM machine, but recently had no
+time to work on it.
 
-DAVE Electronics System House - R&D Department
-web:   http://www.dave.eu
-email: r&d2@dave-tech.it
+> Just checking, since I have the same problem 
+> supporting the Intel 48F4400 which consists of two non-identical NOR chips 
+> with different geometries. If you don't have anything yet, I'll come up with 
+> a patch to extend the physmap driver to support multiple regions.
+
+That would be great.
+
+
+Thanks,
+
+p.s. removing kernel-disscuss@handhelds.org from Cc: since it's dead
+for months for unknown reason.
+
+-- 
+Anton Vorontsov
+email: cbou@mail.ru
+backup email: ya-cbou@yandex.ru
+irc://irc.freenode.net/bd2
