@@ -1,20 +1,22 @@
-Received: from astoria.ccjclearline.com ([64.235.106.9])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JKvHD-0002i1-TT
-	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2008 12:45:58 +0000
-Received: from cpe001d60ad7267-cm001225dbafb6.cpe.net.cable.rogers.com
-	([99.236.100.208] helo=crashcourse.ca)
-	by astoria.ccjclearline.com with esmtpsa (TLSv1:AES256-SHA:256)
-	(Exim 4.68) (envelope-from <rpjday@crashcourse.ca>)
-	id 1JKvHA-00007o-JJ
-	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2008 07:45:48 -0500
-Date: Fri, 1 Feb 2008 07:45:42 -0500 (EST)
-From: "Robert P. J. Day" <rpjday@crashcourse.ca>
-To: MTD mailing list <linux-mtd@lists.infradead.org>
-Subject: unused "include/linux/mtd/jedec.h"?
-Message-ID: <alpine.LFD.1.00.0802010745270.27976@localhost.localdomain>
+Received: from moutng.kundenserver.de ([212.227.126.186])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JKvaB-00012U-Rm
+	for linux-mtd@lists.infradead.org; Fri, 01 Feb 2008 13:05:35 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org, Anton Vorontsov <avorontsov@ru.mvista.com>
+Subject: Re: [PATCH] physmap-concat map platform driver
+Date: Fri, 1 Feb 2008 14:05:05 +0100
+References: <20070526002925.GB801@zarina>
+	<20070531212749.GR26191@xi.wantstofly.org>
+	<20070531215838.GA1603@zarina>
+In-Reply-To: <20070531215838.GA1603@zarina>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200802011405.05999.sr@denx.de>
+Cc: Lennert Buytenhek <buytenh@wantstofly.org>, kernel-discuss@handhelds.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,18 +26,23 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+Hi Anton,
 
-  it appears that the above header file is entirely unused in the
-source tree.
+On Thursday 31 May 2007, Anton Vorontsov wrote:
+> > Maybe it makes more sense to add that support to physmap
+> > instead?
+>
+> Well.. more easier solution would be merging physmap-concat to physmap,
+> trying make physmap-concat platform_data-compatible.
+>
+> I can try implement that.
 
-rday
---
+Did you make any progress here? Just checking, since I have the same problem 
+supporting the Intel 48F4400 which consists of two non-identical NOR chips 
+with different geometries. If you don't have anything yet, I'll come up with 
+a patch to extend the physmap driver to support multiple regions.
 
-========================================================================
-Robert P. J. Day
-Linux Consulting, Training and Annoying Kernel Pedantry
-Waterloo, Ontario, CANADA
+Thanks.
 
-Home page:                                         http://crashcourse.ca
-Fedora Cookbook:    http://crashcourse.ca/wiki/index.php/Fedora_Cookbook
-========================================================================
+Best regards,
+Stefan
