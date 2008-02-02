@@ -1,16 +1,21 @@
-Message-ID: <20080202095525.k9a0v32go0kswg8s@secure.uwalumni.com>
-Date: Sat, 02 Feb 2008 09:55:25 +0200
-From: Foundazion Di Vittorio <admin@fondazionedivittorio.it>
-To: undisclosed-recipients:;
-Subject: CALL TO CONFIRM YOUR PRIZE!!!
+Received: from vsnlchnsym02.vsnlxchange.com ([59.163.96.4])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JLIhu-0005Xw-LG
+	for linux-mtd@lists.infradead.org; Sat, 02 Feb 2008 13:47:05 +0000
+Received: from vsnlchnsym02.vsnlxchange.com (unknown [127.0.0.1])
+	by vsnlchnsym02.vsnlxchange.com (Symantec Mail Security) with ESMTP id
+	4C9FB52009E for <linux-mtd@lists.infradead.org>;
+	Sat,  2 Feb 2008 19:16:55 +0530 (IST)
+From: "vishalk" <vishalk@tataelxsi.co.in>
+To: <linux-mtd@lists.infradead.org>
+Subject: how to access nand flash from user space 
+Date: Sat, 2 Feb 2008 19:19:15 +0530
+Message-ID: <002201c865a2$66fa34c0$65053c0a@telxsi.com>
 MIME-Version: 1.0
 Content-Type: text/plain;
-	charset=ISO-8859-1;
-	DelSp="Yes";
-	format="flowed"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Reply-To: albertinniparrinelo24@yahoo.com.hk
+	charset="iso-8859-1"
+content-transfer-encoding: 7bit
+Reply-To: vishalk@tataelxsi.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,48 +25,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-VITTORIO FONDAZIONE.
-Corso Ercole I d'Este 44,
-Ferrara 44100 - Italy.
-Foundation's Officer,
-Fondazion Di Vittorio, ITALY
-http://www.fondazionedivittorio.it
+Hi,
 
-Congratulations The Foundazion Di Vittorio, would like to notify you that yo=
-u
-have been chosen by the board of trustees as one of the final recipients of =
-a
-cash Grant/Donation for your own personal, educational,and business
-development.Congratulations once again from all the staff here on your cash
-award sum of US$500,000 (Five Hundred Thousand United States Dollars) as
-charity donations/aid from the Vittorio Foundation, ECOWAS, EU and the UNO i=
-n
-accordance with the enabling act of Parliament which your e-mail addres was
-randomly selected by software powered by the Internet.Your email address was
-amongst those chosen this quarter and you are to contact AFFILIATED COURIER
-COMPANY for the delivery of your certificate and cheque of US$500,000.
+I have been trying to access nand flash from user space.
+I am using the functions 'mtd_write' and 'mtd_read' in mtdchar.c .
+when I include the mtd.h file, I get compilation errors pertaining to the
+mtd.h file. can someone please tell me how to access these functions 
+from user space.
 
-For further details on how to receive your grant,Please contact the COURIER
-COMPANY why contacting them include this order Number 37096218.
+Thanks,
+VK  
 
-Mr.Maxwell Rikky(dispatch officer)
-airmaxexpressdeliveryservice1@yahoo.com.hk
-Tel:TEL:+44 704 5727 352
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
 
-FILL YOUR INFORMATION CAREFULLY.
-1. FULL NAMES:
-2. ADDRESS:
-3. SEX:
-4. AGE:
-5. MARITAL STATUS:
-6. OCCUPATION :
-7. E-MAIL ADDRESS:
-8. TELEPHONE NUMBER(S): FAX:
-9. COUNTRY:
-10 COMPANY IN ANY:
-11 ORDER NUMBER:
-Congratulations On behalf of all members of the Foundazion Di Vittorio.
-Yours Truly,
-Mrs. Rosemary Cole.
-Online Grant Co-ordinator
-The Foundazion Di Vittorio
+Contact your Administrator for further information.
