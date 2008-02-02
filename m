@@ -1,19 +1,20 @@
-Received: from smtp.gentoo.org ([140.211.166.183])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMYl1-0002bi-Co
-	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 01:07:29 +0000
-From: Mike Frysinger <vapier@gentoo.org>
-To: dwmw2@infradead.org,
- Andrew Morton <akpm@linux-foundation.org>
-Subject: [patch] mtd maps: document MTD_PHYSMAP module name in kconfig
-Date: Tue, 5 Feb 2008 20:03:48 -0500
+Received: from py-out-1112.google.com ([64.233.166.176])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JLMgz-0007R9-4U
+	for linux-mtd@lists.infradead.org; Sat, 02 Feb 2008 18:02:23 +0000
+Received: by py-out-1112.google.com with SMTP id p76so2551670pyb.2
+	for <linux-mtd@lists.infradead.org>;
+	Sat, 02 Feb 2008 10:02:15 -0800 (PST)
+Message-ID: <47A4AFF5.8030901@gmail.com>
+Date: Sat, 02 Feb 2008 23:31:25 +0530
+From: Max Stirling <vicky.irobot@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <200802052003.49527.vapier@gentoo.org>
-Cc: linux-mtd@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>
+To: vishalk@tataelxsi.co.in
+Subject: Re: how to access nand flash from user space
+References: <002201c865a2$66fa34c0$65053c0a@telxsi.com>
+In-Reply-To: <002201c865a2$66fa34c0$65053c0a@telxsi.com>
+Content-Type: multipart/mixed; boundary="------------070801010401090905010805"
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,22 +24,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Help out users by telling them the module name in the Kconfig help when using
-the MTD_PHYSMAP option.
+This is a multi-part message in MIME format.
+--------------070801010401090905010805
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Signed-off-by: Mike Frysinger <vapier@gentoo.org>
----
-diff --git a/drivers/mtd/maps/Kconfig b/drivers/mtd/maps/Kconfig
-index a592fc0..2f15330 100644
---- a/drivers/mtd/maps/Kconfig
-+++ b/drivers/mtd/maps/Kconfig
-@@ -21,6 +21,9 @@ config MTD_PHYSMAP
- 	  particular board as well as the bus width, either statically
- 	  with config options or at run-time.
- 
-+	  To compile this driver as a module, choose M here: the
-+	  module will be called physmap.
-+
- config MTD_PHYSMAP_START
- 	hex "Physical start address of flash mapping"
- 	depends on MTD_PHYSMAP
+vishalk wrote:
+> Hi,
+>
+> I have been trying to access nand flash from user space.
+> I am using the functions 'mtd_write' and 'mtd_read' in mtdchar.c .
+> when I include the mtd.h file, I get compilation errors pertaining to the
+> mtd.h file. can someone please tell me how to access these functions 
+> from user space.
+>   
+Hmm...could you paste the error log please. That might be of some help 
+to help you.
+
+> Thanks,
+> VK  
+>
+> The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
+>
+> Contact your Administrator for further information.
+>
+>
+> ______________________________________________________
+> Linux MTD discussion mailing list
+> http://lists.infradead.org/mailman/listinfo/linux-mtd/
+>   
+
+
+--------------070801010401090905010805
+Content-Type: text/x-vcard; charset=utf-8;
+ name="vicky_irobot.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="vicky_irobot.vcf"
+
+begin:vcard
+fn:Max Stirling
+n:Stirling;Max
+email;internet:vicky.irobot@gmail.com
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
+
+
+--------------070801010401090905010805--
