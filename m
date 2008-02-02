@@ -1,21 +1,7 @@
-Received: from vsnlchnsym02.vsnlxchange.com ([59.163.96.4])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JLIhu-0005Xw-LG
-	for linux-mtd@lists.infradead.org; Sat, 02 Feb 2008 13:47:05 +0000
-Received: from vsnlchnsym02.vsnlxchange.com (unknown [127.0.0.1])
-	by vsnlchnsym02.vsnlxchange.com (Symantec Mail Security) with ESMTP id
-	4C9FB52009E for <linux-mtd@lists.infradead.org>;
-	Sat,  2 Feb 2008 19:16:55 +0530 (IST)
-From: "vishalk" <vishalk@tataelxsi.co.in>
-To: <linux-mtd@lists.infradead.org>
-Subject: how to access nand flash from user space 
-Date: Sat, 2 Feb 2008 19:19:15 +0530
-Message-ID: <002201c865a2$66fa34c0$65053c0a@telxsi.com>
-MIME-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-content-transfer-encoding: 7bit
-Reply-To: vishalk@tataelxsi.co.in
+From: noreply_lottrdraw@mchsi.com (Award Department)
+Subject: Your Award Notification
+Date: Sat, 02 Feb 2008 16:19:50 +0000
+Message-Id: <020220081619.26458.47A498260008F8300000675A219791299503010CD2079C080C03BF990E9D0B9D9B9B0104A197049F0A9D0102@mchsi.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,17 +11,31 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+The Camelot Group,:
+Operators of The National Lottery.
+3b Olympic Way, Sefton Business Park,
+Aintree, Liverpool , L30 1RD
 
-I have been trying to access nand flash from user space.
-I am using the functions 'mtd_write' and 'mtd_read' in mtdchar.c .
-when I include the mtd.h file, I get compilation errors pertaining to the
-mtd.h file. can someone please tell me how to access these functions 
-from user space.
 
-Thanks,
-VK  
+BATCH Nº: 2006UKL-01
 
-The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
+Be informed that Your email account have been picked as a winner of a lump sum
+pay out of Eight hundred and ninety-one thousand, nine hundred and thirty-four
+Great Britain pounds (£891,934.00 pounds sterlings) in cash credited to file REF
+NO.REF:UKL/74-A0802742006.
 
-Contact your Administrator for further information.
+To begin your claim, please contact your claims agent:Mr Fred Martin.
+
+Email: martins_claimsdept01@yahoo.co.uk
+Tel: +44-704-5758-898
+
+He will brief you on steps to be taken for due processing and remittance of your
+prize money.
+
+FILL OUT THIS WINNERS VERIFICATION FORM BELOW:
+
+*Name of Beneficiary:
+*Address:
+*Age:
+*Tel:
+*Occupation:
