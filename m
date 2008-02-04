@@ -1,22 +1,17 @@
-Received: from hs-out-0708.google.com ([64.233.178.250]
-	helo=hs-out-2122.google.com)
+Received: from rv-out-0910.google.com ([209.85.198.184])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JLMku-0007n2-QS
-	for linux-mtd@lists.infradead.org; Sat, 02 Feb 2008 18:06:27 +0000
-Received: by hs-out-2122.google.com with SMTP id 23so2956335hsn.2
+	id 1JM2Af-0005RS-EF
+	for linux-mtd@lists.infradead.org; Mon, 04 Feb 2008 14:19:49 +0000
+Received: by rv-out-0910.google.com with SMTP id c24so2668005rvf.42
 	for <linux-mtd@lists.infradead.org>;
-	Sat, 02 Feb 2008 10:06:20 -0800 (PST)
-Message-ID: <47A4B0E9.60600@gmail.com>
-Date: Sat, 02 Feb 2008 23:35:29 +0530
+	Mon, 04 Feb 2008 06:19:37 -0800 (PST)
+Message-ID: <47A71EF4.2090202@gmail.com>
+Date: Mon, 04 Feb 2008 09:19:32 -0500
 From: Max Stirling <vicky.irobot@gmail.com>
 MIME-Version: 1.0
-To: vishalk@tataelxsi.co.in
-Subject: Re: how to access nand flash from user space
-References: <002201c865a2$66fa34c0$65053c0a@telxsi.com>
-	<47A4AFF5.8030901@gmail.com>
-In-Reply-To: <47A4AFF5.8030901@gmail.com>
-Content-Type: multipart/mixed; boundary="------------020507020803040007060805"
-Cc: linux-mtd@lists.infradead.org
+To: linux-mtd@lists.infradead.org
+Subject: mtdblock mount issue
+Content-Type: multipart/mixed; boundary="------------020403050503050509090401"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,48 +22,160 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 This is a multi-part message in MIME format.
---------------020507020803040007060805
+--------------020403050503050509090401
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Max Stirling wrote:
-> vishalk wrote:
->> Hi,
->>
->> I have been trying to access nand flash from user space.
->> I am using the functions 'mtd_write' and 'mtd_read' in mtdchar.c .
-How do you use mtd_read and mtd_write functions when they are static? 
-Are you meaning to say from your user application you open the 
-/dev/mtdchar and do a read and write?
->> when I include the mtd.h file, I get compilation errors pertaining to 
->> the
->> mtd.h file. can someone please tell me how to access these functions 
->> from user space.
->>   
-> Hmm...could you paste the error log please. That might be of some help 
-> to help you.
->
->> Thanks,
->> VK 
->> The information contained in this electronic message and any 
->> attachments to this message are intended for the exclusive use of the 
->> addressee(s) and may contain proprietary, confidential or privileged 
->> information. If you are not the intended recipient, you should not 
->> disseminate, distribute or copy this e-mail. Please notify the sender 
->> immediately and destroy all copies of this message and any 
->> attachments contained in it.
->>
->> Contact your Administrator for further information.
->>
->>
->> ______________________________________________________
->> Linux MTD discussion mailing list
->> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->>   
->
+Hi,
+
+I am trying to mount a cramfs partition from flash. I have the low level 
+driver written and MTDBLOCK_RO module is enabled in MTD,
+
+My mount fails with invalid argument error.
+
+/mount: Mounting /dev/mtdblock on /home/crfs failed: Invalid argument/
+
+I am using a 512 byte NAND flash 16byte spare.
+
+I can find cramfs in /proc/filesytems and the mtdblock is under 
+/proc/devices.
+
+I had enabled a few debug statements in the mtdblock_ro and the low 
+level nand driver code. I find that the mount is reading 32 pages after 
+which it fails with invalid argument. Below is the log.
+
+If you see the log below, the flow of code is
+
+ cramfs_read ==> do_blktrans_request ==> mtdblock_readsect ==> 
+mt_read(my low level read function which returns success)
+
+I even dumped the hex of the data being read by my low level driver 
+module and found to match the cramfs image that I wrote to the flash.
 
 
---------------020507020803040007060805
+######################*LOG*##########################
+
+/home # mkdir crfs
+/home # cat /proc/devices | grep mtdblock
+ 31 mtdblock
+/home # cat proc/filesystems | grep cramfs
+    cramfs
+/home #
+/home # mknod /dev/mtdblock b 31 0
+/home # mount -t cramfs /dev/mtdblock /home/crfs
+mount: /dev/mtdblock is write-protected, mounting read-only
+cramfs_read
+do_blktrans_request nsect:8 block:0
+mtdblock_readsect
+mt_read offset:0
+mt_read status:0
+mtdblock_readsect
+mt_read offset:512
+mt_read status:0
+mtdblock_readsect
+mt_read offset:1024
+mt_read status:0
+mtdblock_readsect
+mt_read offset:1536
+mt_read status:0
+mtdblock_readsect
+mt_read offset:2048
+mt_read status:0
+mtdblock_readsect
+mt_read offset:2560
+mt_read status:0
+mtdblock_readsect
+mt_read offset:3072
+mt_read status:0
+mtdblock_readsect
+mt_read offset:3584
+mt_read status:0
+do_blktrans_request nsect:8 block:0
+mtdblock_readsect
+mt_read offset:4096
+mt_read status:0
+mtdblock_readsect
+mt_read offset:4608
+mt_read status:0
+mtdblock_readsect
+mt_read offset:5120
+mt_read status:0
+mtdblock_readsect
+mt_read offset:5632
+mt_read status:0
+mtdblock_readsect
+mt_read offset:6144
+mt_read status:0
+mtdblock_readsect
+mt_read offset:6656
+mt_read status:0
+mtdblock_readsect
+mt_read offset:7168
+mt_read status:0
+mtdblock_readsect
+mt_read offset:7680
+mt_read status:0
+do_blktrans_request nsect:8 block:0
+mtdblock_readsect
+mt_read offset:8192
+mt_read status:0
+mtdblock_readsect
+mt_read offset:8704
+mt_read status:0
+mtdblock_readsect
+mt_read offset:9216
+mt_read status:0
+mtdblock_readsect
+mt_read offset:9728
+mt_read status:0
+mtdblock_readsect
+mt_read offset:10240
+mt_read status:0
+mtdblock_readsect
+mt_read offset:10752
+mt_read status:0
+mtdblock_readsect
+mt_read offset:11264
+mt_read status:0
+mtdblock_readsect
+mt_read offset:11776
+mt_read status:0
+do_blktrans_request nsect:8 block:0
+mtdblock_readsect
+mt_read offset:12288
+mt_read status:0
+mtdblock_readsect
+mt_read offset:12800
+mt_read status:0
+mtdblock_readsect
+mt_read offset:13312
+mt_read status:0
+mtdblock_readsect
+mt_read offset:13824
+mt_read status:0
+mtdblock_readsect
+mt_read offset:14336
+mt_read status:0
+mtdblock_readsect
+mt_read offset:14848
+mt_read status:0
+mtdblock_readsect
+mt_read offset:15360
+mt_read status:0
+mtdblock_readsect
+mt_read offset:15872
+mt_read status:0
+cramfs_read
+mount: Mounting /dev/mtdblock on /home/crfs failed: Invalid argument
+/home #
+
+########################################################
+
+
+I hope I have provided the maximum information. Looking forward for some 
+help.
+
+--------------020403050503050509090401
 Content-Type: text/x-vcard; charset=utf-8;
  name="vicky_irobot.vcf"
 Content-Transfer-Encoding: 7bit
@@ -76,12 +183,10 @@ Content-Disposition: attachment;
  filename="vicky_irobot.vcf"
 
 begin:vcard
-fn:Max Stirling
-n:Stirling;Max
-email;internet:vicky.irobot@gmail.com
-x-mozilla-html:FALSE
+fn:M S
+n:S;M
 version:2.1
 end:vcard
 
 
---------------020507020803040007060805--
+--------------020403050503050509090401--
