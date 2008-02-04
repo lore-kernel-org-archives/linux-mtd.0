@@ -1,20 +1,23 @@
-Received: from rn-out-0910.google.com ([64.233.170.191])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JM3cP-00014U-B6
-	for linux-mtd@lists.infradead.org; Mon, 04 Feb 2008 15:52:31 +0000
-Received: by rn-out-0910.google.com with SMTP id j40so641027rnf.15
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 04 Feb 2008 07:52:23 -0800 (PST)
-Message-ID: <c5a96c410802040752u7bb384al9db5a3152d0d28bb@mail.gmail.com>
-Date: Mon, 4 Feb 2008 10:52:23 -0500
-From: "Youngjae Kim" <youkim@cse.psu.edu>
-Sender: youkim@gmail.com
-To: linux-mtd@lists.infradead.org
-Subject: NAND Flash Evaluation Board
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMANQ-0003MD-Mp
+	for linux-mtd@lists.infradead.org; Mon, 04 Feb 2008 23:05:30 +0000
+Date: Mon, 4 Feb 2008 21:32:01 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: llandre <r&d2@dave-tech.it>
+Subject: Re: JFFS2: file contents in case of data CRC error
+Message-ID: <20080204213201.GA5159@shareable.org>
+References: <47A1FD3F.2020102@dave-tech.it>
+	<523F3D8D8C97554AA47E53DF1A05466A01880831@nnsmsx411.ccr.corp.intel.com>
+	<47A32600.9000807@dave-tech.it>
+	<523F3D8D8C97554AA47E53DF1A05466A01880BCA@nnsmsx411.ccr.corp.intel.com>
+	<20080201174332.GB14032@shareable.org> <47A4A459.2@dave-tech.it>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <47A4A459.2@dave-tech.it>
+Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
+	mattjreimer@gmail.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,14 +27,13 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear,
+llandre wrote:
+> >I'm thinking the only way to detect this with high reliability is to
+> >store summaries of the existence of blocks in another part of storage,
+> >with checksums and serial numbers - like some of the latest disk
+> >filesystems begin to.
+> Can you name these file systems?
 
-I would like to mount JFFS2 on NAND flash evaluation board and test
-it. But  I am purely new to use NAND flash evaluation board. Would you
-please recommend any popular evaluation board with large size of NAND
-MLC type chips?
+ZFS, HammerFS and Btrfs, I think.
 
-Thank you.
-
--
-YJ
+-- Jamie
