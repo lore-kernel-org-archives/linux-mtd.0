@@ -1,17 +1,19 @@
-Received: from ipn36372-d52026.cidr.lightship.net ([216.204.15.186]
-	helo=zeus.bittware.com)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMRiz-0007Pk-CG
-	for linux-mtd@lists.infradead.org; Tue, 05 Feb 2008 17:36:55 +0000
-Message-ID: <47A89DDF.4050505@bittware.com>
-Date: Tue, 05 Feb 2008 12:33:19 -0500
-From: DMcLeod <dmcleod@bittware.com>
-MIME-Version: 1.0
-To: linux-mtd@lists.infradead.org,
-	uClinux development list <uclinux-dev@uclinux.org>
-Subject: Filling RAM
+Received: from outbound.mobilygen.com ([72.166.0.2]
+	helo=mailhost.mobilygen.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMVWS-0001ha-C5
+	for linux-mtd@lists.infradead.org; Tue, 05 Feb 2008 21:40:14 +0000
+Received: from qu062.quarc.com (qu062 [192.168.40.235])
+	by mailhost.mobilygen.com (8.13.8/8.13.8) with ESMTP id m15Ldx8l020784
+	for <linux-mtd@lists.infradead.org>; Tue, 5 Feb 2008 13:39:59 -0800
+Subject: marking a block bad
+From: Jeff Hane <jhane@mobilygen.com>
+To: linux-mtd@lists.infradead.org
+Content-Type: text/plain
+Date: Tue, 05 Feb 2008 13:39:59 -0800
+Message-Id: <1202247599.11825.24.camel@qu062.quarc.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,37 +23,18 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
+Hello,
 
-I am seeing that as files are created, their approximate size is 
-subtracted from the available memory. For example, assume I have /home  
-mounted from /dev/mtdblock2, which is a jffs2 filesystem on NOR flash. 
-The following procedure reproduces the problem consistently:
+ I am using yaffs for my root filesystem and I am getting some ECC
+errors for reads and writes.  What I'm trying to understand is what
+determines if a block has gone bad when the block is marked bad. I see
+the way to mark a block bad in the mtd code but not clear on when this
+will be used.
+ Of course this leads to another problem, if a block is marked bad and
+the system is rebooted the data that was in that block would become
+unaccessible(assume the system can reboot).  In this case, is there
+something that can be done, by the filesystem or other methods, to try
+to re-locate the data before reboot or rebuilding the bbt?
 
-[code]
-]# cat /proc/mounts
-rootfs        /     rootfs  rw     0 0
-/proc        /proc     proc     rw     0 0
-sysfs        /sys     sysfs     rw     0 0
-/dev/mtdblock2    /home     jffs2     rw,sync 0 0
-
-]# cd /home
-]# grep MemFree /proc/meminfo
-22588 kB
-]# dd if=/dev/zero of=1M.dat bs=1M count=1
-...
-]# grep MemFree /proc/meminfo
-21522 kB
-]# rm 1M.dat
-]# grep MemFree /proc/meminfo
-22576 kB
-[/code]
-
-I'm fairly certain the file does get written to flash as it is 
-noticeably slower than creating a file of the same size in ramfs. So it 
-seems like the file is stored in RAM as well, how/why would this happen?
-
-ps - XATTRS is off,  JFFS2_SUMMARY is off, JFFS2_VERBOSITY = 0,
-
-
-Any help is greatly appreciated.
+thanks,
+jeff
