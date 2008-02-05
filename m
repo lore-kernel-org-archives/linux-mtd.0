@@ -1,23 +1,21 @@
-Received: from mail2.shareable.org ([80.68.89.115])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMANQ-0003MD-Mp
-	for linux-mtd@lists.infradead.org; Mon, 04 Feb 2008 23:05:30 +0000
-Date: Mon, 4 Feb 2008 21:32:01 +0000
-From: Jamie Lokier <jamie@shareable.org>
-To: llandre <r&d2@dave-tech.it>
-Subject: Re: JFFS2: file contents in case of data CRC error
-Message-ID: <20080204213201.GA5159@shareable.org>
-References: <47A1FD3F.2020102@dave-tech.it>
-	<523F3D8D8C97554AA47E53DF1A05466A01880831@nnsmsx411.ccr.corp.intel.com>
-	<47A32600.9000807@dave-tech.it>
-	<523F3D8D8C97554AA47E53DF1A05466A01880BCA@nnsmsx411.ccr.corp.intel.com>
-	<20080201174332.GB14032@shareable.org> <47A4A459.2@dave-tech.it>
+Received: from vsnlchnsym02.vsnlxchange.com ([59.163.96.4])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMLYu-0004rj-S6
+	for linux-mtd@lists.infradead.org; Tue, 05 Feb 2008 11:02:07 +0000
+Received: from vsnlchnsym02.vsnlxchange.com (unknown [127.0.0.1])
+	by vsnlchnsym02.vsnlxchange.com (Symantec Mail Security) with ESMTP id
+	121F7520155 for <linux-mtd@lists.infradead.org>;
+	Tue,  5 Feb 2008 16:31:56 +0530 (IST)
+From: "vishalk" <vishalk@tataelxsi.co.in>
+To: <linux-mtd@lists.infradead.org>
+Subject: what is the user space header file for mtdchar.c kernel driver 
+Date: Tue, 5 Feb 2008 16:34:18 +0530
+Message-ID: <001801c867e6$dbadab30$65053c0a@telxsi.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <47A4A459.2@dave-tech.it>
-Cc: "Korolev, Alexey" <alexey.korolev@intel.com>, linux-mtd@lists.infradead.org,
-	mattjreimer@gmail.com
+Content-Type: text/plain;
+	charset="iso-8859-1"
+content-transfer-encoding: 7bit
+Reply-To: vishalk@tataelxsi.co.in
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,13 +25,14 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-llandre wrote:
-> >I'm thinking the only way to detect this with high reliability is to
-> >store summaries of the existence of blocks in another part of storage,
-> >with checksums and serial numbers - like some of the latest disk
-> >filesystems begin to.
-> Can you name these file systems?
+I'm trying to access char device with mtdchar.c driver from user space.
+I'm not able to find the header file for that to use in the user space
+program.
 
-ZFS, HammerFS and Btrfs, I think.
 
--- Jamie
+VK
+
+
+The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
+
+Contact your Administrator for further information.
