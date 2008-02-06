@@ -1,19 +1,19 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMf2I-0004rt-Px
-	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 07:49:46 +0000
-Date: Wed, 6 Feb 2008 08:48:22 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: DMcLeod <dmcleod@bittware.com>
-Subject: Re: Filling RAM
-In-Reply-To: <47A89DDF.4050505@bittware.com>
-Message-ID: <Pine.LNX.4.64.0802060845290.24892@lnxricardw.se.axis.com>
-References: <47A89DDF.4050505@bittware.com>
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: linux-mtd@lists.infradead.org,
-	uClinux development list <uclinux-dev@uclinux.org>
+Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMhOA-0002kg-4p
+	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 10:20:28 +0000
+Subject: Re: [PATCH] [JFFS2] Fix free space leaking
+From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
+To: Damir Shayhutdinov <lost404@gmail.com>
+In-Reply-To: <20071113102323.GA5933@damir.rnd.local>
+References: <20071113102323.GA5933@damir.rnd.local>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Date: Wed, 06 Feb 2008 11:20:19 +0100
+Message-Id: <1202293219.25864.45.camel@gentoo-jocke.transmode.se>
+Mime-Version: 1.0
+Cc: linux-mtd@lists.infradead.org
+Reply-To: joakim.tjernlund@transmode.se
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,26 +24,45 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
-On Tue, 5 Feb 2008, DMcLeod wrote:
+On Tue, 2007-11-13 at 13:23 +0300, Damir Shayhutdinov wrote:
+> This patch is addressed to fix very-long-standing problem in JFFS2,
+> first described in 2004:
+> http://lists.infradead.org/pipermail/linux-mtd/2004-March/009456.html
+> 
+> jffs2_link_node_ref() decreases c->free_size by
+> c->cleanmarker_size but the clean marker space can't
+> be accounted as free space! So we just compensate
+> the difference.
+> 
+> Signed-off-by: Alexander Yurchenko <grange@tecon.ru>
+> Signed-off-by: Damir Shayhutdinov <damir@tecon.ru>
+> ---
+>  fs/jffs2/erase.c |   11 +++++++++++
+>  1 files changed, 11 insertions(+), 0 deletions(-)
+> 
+> diff --git a/fs/jffs2/erase.c b/fs/jffs2/erase.c
+> index a1db918..c574fa3 100644
+> --- a/fs/jffs2/erase.c
+> +++ b/fs/jffs2/erase.c
+> @@ -454,6 +454,17 @@ static void jffs2_mark_erased_block(struct jffs2_sb_info *c, struct jffs2_eraseb
+>  		jeb->free_size = c->sector_size;
+>  		/* FIXME Special case for cleanmarker in empty block */
+>  		jffs2_link_node_ref(c, jeb, jeb->offset | REF_NORMAL, c->cleanmarker_size, NULL);
+> +		/*
+> +		 * XXX: I'm not sure this is correct but it prevents
+> +		 * c->free_size from slow leaking under a frequent file
+> +		 * overwriting.
+> +		 * jffs2_link_node_ref() decreases c->free_size by
+> +		 * c->cleanmarker_size but the clean marker space can't
+> +		 * be accounted as free space! So we just compensate
+> +		 * the difference.
+> +		 */
+> +		c->free_size += c->cleanmarker_size;
+> +		c->used_size -= c->cleanmarker_size;
+>  	}
+>  
+>  	down(&c->erase_free_sem);
 
-> I am seeing that as files are created, their approximate size is
-> subtracted from the available memory. For example, assume I have /home
-> mounted from /dev/mtdblock2, which is a jffs2 filesystem on NOR flash.
-> ...
-> ]# cd /home
-> ]# grep MemFree /proc/meminfo
-> 22588 kB
-> ...
+What happened to this patch? Just forgotten or was it rejected?
 
-MemFree in /proc/meminfo is not a good indicator of how much available=20
-memory there is to the system. Linux tends to gobble up memory for file=20
-buffers etc, freeing them on an as-needed basis. IIUC MemFree principally
-indicates how much memory has never been touched, not how much is actually=
-=20
-available.
-
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+   Jocke
