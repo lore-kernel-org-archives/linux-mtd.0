@@ -1,18 +1,15 @@
-Received: from tim.rpsys.net ([194.106.48.114])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMhcG-0003bH-UG
-	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 10:35:03 +0000
-Subject: Re: [RFC PATCH 1/3]] Add mtd panic_write function pointer
-From: Richard Purdie <rpurdie@rpsys.net>
-To: David Woodhouse <dwmw2@infradead.org>
-In-Reply-To: <1201607964.5017.48.camel@localhost.localdomain>
-References: <1201607964.5017.48.camel@localhost.localdomain>
-Content-Type: text/plain
-Date: Wed, 06 Feb 2008 10:34:34 +0000
-Message-Id: <1202294074.8393.1.camel@dax.rpnet.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd <linux-mtd@lists.infradead.org>
+Received: from n9b.bullet.ukl.yahoo.com ([217.146.182.219])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMjVP-00066m-98
+	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 12:36:06 +0000
+Message-ID: <000b01c8688a$65333750$f43ffec9@201.254.63.244>
+From: Canadian Pharmacy <EstherWynn82@yahoo.co.uk>
+To: hair loss client <EstherWynn82@yahoo.co.uk>
+Subject: no more male pattern hair loss
+Date: Wed, 6 Feb 2008 06:34:59 -0600
+MIME-Version: 1.0
+Content-Type: text/plain;
+        charset="us-ascii"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,11 +19,20 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I've now shared these 3 patches as a git branch based on top of the
-current mtd-2.6 tree:
+NO MORE MALE PATTERN HAIR LOSS...
 
-git://git.o-hand.com/linux-rpurdie mtd-panicwrite
+Drug Name : Propecia (Finasteride) 
 
-Cheers,
+Drug Uses : This medication is used to treat male pattern hair loss. 
 
-Richard
+How Taken : Take one tablet daily or as directed by your doctor. This drug may be taken with or without meals. This drug usually must be taken regularly for 3 months for the benefits to be noticeable. Once treatment is stopped, any gain in hair quantity will be lost. 
+
+Drug Class and Mechanism
+
+Propecia prevents the conversion of testosterone to dihydrotestosterone (DHT) in the body. DHT is involved in the development of benign prostatic hyperplasia (BPH) and hair loss. 
+
+Please visit our site for more details.
+
+Type the URL below without spaces to visit us
+
+h t t p : / / b u r n h i t . c o m /
