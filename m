@@ -1,22 +1,19 @@
-Received: from wa-out-1112.google.com ([209.85.146.177])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JMaau-0000ij-K0
-	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 03:05:10 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so214687wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 05 Feb 2008 19:05:02 -0800 (PST)
-Message-ID: <9b52d64c0802051905p5db6b6e1w9b065ffc10243f02@mail.gmail.com>
-Date: Tue, 5 Feb 2008 19:05:02 -0800
-From: "Vinit Agnihotri" <vinit.agnihotri@gmail.com>
-To: vishalk@tataelxsi.co.in
+Received: from mail2.shareable.org ([80.68.89.115])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JMapd-0004fS-Ps
+	for linux-mtd@lists.infradead.org; Wed, 06 Feb 2008 03:20:23 +0000
+Date: Wed, 6 Feb 2008 01:46:18 +0000
+From: Jamie Lokier <jamie@shareable.org>
+To: Vinit Agnihotri <vinit.agnihotri@gmail.com>
 Subject: Re: what is the user space header file for mtdchar.c kernel driver
-In-Reply-To: <001801c867e6$dbadab30$65053c0a@telxsi.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Message-ID: <20080206014618.GB5042@shareable.org>
 References: <001801c867e6$dbadab30$65053c0a@telxsi.com>
-Cc: linux-mtd@lists.infradead.org
+	<9b52d64c0802051905p5db6b6e1w9b065ffc10243f02@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9b52d64c0802051905p5db6b6e1w9b065ffc10243f02@mail.gmail.com>
+Cc: vishalk@tataelxsi.co.in, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,34 +23,15 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-What exactly do you want to do with mtdchar??
-To access char driver you need to use dev file /dev/mtdchar,
-it doesn't need any header file.
+Vinit Agnihotri wrote:
+> What exactly do you want to do with mtdchar??
+> To access char driver you need to use dev file /dev/mtdchar,
+> it doesn't need any header file.
 
---Vinit.
+Actually, to use the dev file's ioctls, you really do need a copy of
+<mtd/mtd-user.h> and <mtd/mtd-abi.h>.
 
-On Feb 5, 2008 3:04 AM, vishalk <vishalk@tataelxsi.co.in> wrote:
-> I'm trying to access char device with mtdchar.c driver from user space.
-> I'm not able to find the header file for that to use in the user space
-> program.
->
->
-> VK
->
->
-> The information contained in this electronic message and any attachments to this message are intended for the exclusive use of the addressee(s) and may contain proprietary, confidential or privileged information. If you are not the intended recipient, you should not disseminate, distribute or copy this e-mail. Please notify the sender immediately and destroy all copies of this message and any attachments contained in it.
->
-> Contact your Administrator for further information.
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->
+They are in the Linux kernel source tree under linux/include/mtd/, and
+also in the flash utilities under include/mtd/.
 
-
-
--- 
-Life is so short. So, follow some rules. Forgive quickly, believe
-slowly, love truly, laugh loudly & never avoid anything that makes U
-smile.
+-- Jamie
