@@ -1,30 +1,19 @@
-Received: from e2.ny.us.ibm.com ([32.97.182.142])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JOwex-0006gS-Nc
-	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 15:03:07 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e2.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m1CF2wwD018788
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Feb 2008 10:02:58 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m1CF2wXQ205316
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Feb 2008 10:02:58 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m1CF2voo025078
-	for <linux-mtd@lists.infradead.org>; Tue, 12 Feb 2008 10:02:57 -0500
-Date: Tue, 12 Feb 2008 09:02:04 -0600
-From: Josh Boyer <jwboyer@linux.vnet.ibm.com>
-To: Christophe Lohr <christophe.lohr@cegetel.net>
-Subject: Re: how to mount this mtd filesystem image?
-Message-ID: <20080212090204.66828fd7@zod.rchland.ibm.com>
-In-Reply-To: <47B1A74B.5020908@cegetel.net>
-References: <47B07A44.6030003@enst-bretagne.fr> <47B19690.10009@gmail.com>
-	<47B1A74B.5020908@cegetel.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org
+	id 1JOwxD-0003xe-ME
+	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 15:21:57 +0000
+Date: Tue, 12 Feb 2008 16:21:24 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Stephane Chazelas <stephane.chazelas@emerson.com>
+Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
+Message-ID: <20080212152124.GA21878@lazybastard.org>
+References: <chaz20080212134751.GI30304@artesyncp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <chaz20080212134751.GI30304@artesyncp.com>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -34,46 +23,46 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Tue, 12 Feb 2008 15:03:55 +0100
-Christophe Lohr <christophe.lohr@cegetel.net> wrote:
-
-> Max Stirling:
+On Tue, 12 February 2008 13:47:51 +0000, Stephane Chazelas wrote:
 > 
-> >>
-> >> My problem is as follow: I have an mtd dump file. This is not a jffs2 
-> >> file system image. It looks like a plain old flash file system, but 
-> >> which one? How may I get the content of this file system?
-> >>
-> >> 00000000 46 66 73 23 00 03 01 00 c0 ff ff ff ff ff ff ff 
-> >> |Ffs#............|
-> >> 00000010 2f 66 66 73 2d 72 6f 6f 74 00 ff ff ff ff ff ff 
-> >> |/ffs-root.......|
-> >> 00000020 2e 6a 6f 75 72 6e 61 6c 00 ff ff ff c0 00 03 00 
-> >> |.journal........|
-> >> 00000030 02 00 00 00 c0 00 04 00 03 00 00 00 c0 00 05 00 
-> >> |................|
-> >> 00000040 04 00 00 00 c0 00 06 00 05 00 00 00 c0 00 07 00 
-> >> |................|
-> >> 00000050 06 00 00 00 c0 00 08 00 07 00 00 00 c0 00 09 00 
-> >> |................|
-> >>
-> > The first four bytes are the magic numbers telling which flash fs this 
-> > might be.
-> >
-> > I did a search for those numbers and couldn't find any reference to 
-> > this anywhere. Try doing "file <your-mtd-dump-file> this might give 
-> > more information
-> 
-> The answer is:     "data"
-> :-(
-> 
-> Note: in fact, this file system is used by a "Nucleus Plus" system 
-> executed by a DSP, side to an ARM proc (that executes a Linux). It might 
-> be very specific to Nucleus Plus.
+> this patch addresses a number of small issues mainly regarding
+> the output made by this driver to dmesg:
+>   - Some of the "blkmtd"'s had not been changed to "block2mtd"
+>     which caused display problem
+>   - the parse_err() macro was displaying "block2mtd: " twice
 
-I recall some tool being in mtd-utils called "mk.ffs" (or something
-similar) at one point.  It's since been deleted as it was considered
-old and obsolete.  I'm not sure of anything that still has support for
-that.
+Fairly obvious fixes.
 
-josh
+> Also, one can add a block2mtd mtd device with things like:
+> 
+> echo /dev/loop3,$((256*1024)) |
+>   sudo tee /sys/module/block2mtd/parameters/block2mtd
+> 
+> but individual mtds cannot be removed. You can only do a
+> modprobe -r block2mtd to remove *all* the block2mtd mtds.
+> 
+> This patch proposes to add the cabability with:
+> 
+> echo /dev/loop3,remove |
+>   sudo tee /sys/module/block2mtd/parameters/block2mtd
+
+Sounds sane enough.  But I do have some reservations about the
+implementation.  It would be best if you split the patch in two.  One
+with the obvious stuff above and one for this.
+
+The core of remove_device_by_name() is shared with block2mtd_exit(),
+so a common helper would be good.  Your error handling is better, so
+let's keep that version.
+
+And independently of your patch a mutex protecting the device list from
+simultaneous modifications would be good to have.
+
+Side note: I may not have internet access until 19th or so.
+
+Jörn
+
+-- 
+Rules of Optimization:
+Rule 1: Don't do it.
+Rule 2 (for experts only): Don't do it yet.
+-- M.A. Jackson
