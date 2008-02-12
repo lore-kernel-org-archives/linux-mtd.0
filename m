@@ -1,20 +1,19 @@
-Received: from exprod7og110.obsmtp.com ([64.18.2.173])
-	by bombadil.infradead.org with smtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JOxiR-000140-8h
-	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 16:10:46 +0000
-Date: Tue, 12 Feb 2008 16:10:34 +0000
-From: Stephane Chazelas <stephane.chazelas@emerson.com>
-To: =?iso-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
-Message-ID: <chaz20080212161034.GJ30304@artesyncp.com>
-References: <chaz20080212134751.GI30304@artesyncp.com>
-	<20080212152124.GA21878@lazybastard.org>
+Received: from ipn36372-d52026.cidr.lightship.net ([216.204.15.186]
+	helo=zeus.bittware.com)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JOz9i-0000aq-2l
+	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 17:43:00 +0000
+Message-ID: <47B1D5A7.4000509@bittware.com>
+Date: Tue, 12 Feb 2008 12:21:43 -0500
+From: DMcLeod <dmcleod@bittware.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20080212152124.GA21878@lazybastard.org>
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Will Wagner <will_wagner@carallon.com>
+Subject: Re: First access to mounted jffs2 partition is slow
+References: <47B1840D.1010702@carallon.com>
+In-Reply-To: <47B1840D.1010702@carallon.com>
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,80 +23,69 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-2008-02-12 16:21:24 +0100, Jörn Engel:
-> On Tue, 12 February 2008 13:47:51 +0000, Stephane Chazelas wrote:
-> > 
-> > this patch addresses a number of small issues mainly regarding
-> > the output made by this driver to dmesg:
-> >   - Some of the "blkmtd"'s had not been changed to "block2mtd"
-> >     which caused display problem
-> >   - the parse_err() macro was displaying "block2mtd: " twice
-> 
-> Fairly obvious fixes.
-> 
-> > Also, one can add a block2mtd mtd device with things like:
-> > 
-> > echo /dev/loop3,$((256*1024)) |
-> >   sudo tee /sys/module/block2mtd/parameters/block2mtd
-> > 
-> > but individual mtds cannot be removed. You can only do a
-> > modprobe -r block2mtd to remove *all* the block2mtd mtds.
-> > 
-> > This patch proposes to add the cabability with:
-> > 
-> > echo /dev/loop3,remove |
-> >   sudo tee /sys/module/block2mtd/parameters/block2mtd
-> 
-> Sounds sane enough.  But I do have some reservations about the
-> implementation.  It would be best if you split the patch in two.  One
-> with the obvious stuff above and one for this.
+Will Wagner wrote:
+> Hello,
+>
+> I have an ARM11 system with a JFFS2 partition in NAND flash. It works 
+> but the first time it is accessed after mounting it can be very slow.
+>
+> These are the steps I am performing:
+>
+> # flash_eraseall /dev/mtd4
+> Erasing 128 Kibyte @ 5fe0000 -- 99 % complete.
+> # time mount /dev/mtdblock4 /flash -t jffs2
+> real    0m 1.25s
+> user    0m 0.01s
+> sys     0m 0.13s
+> # time ls flash		- with an empty filsystem, this takes no time
+> real    0m 0.00s
+> user    0m 0.01s
+> sys     0m 0.00s
+> # cp /sdcard/bigfile flash/	- bigfile is ~8MB
+> # umount /flash
+> # time mount /dev/mtdblock4 /flash -t jffs2
+> real    0m 2.63s
+> user    0m 0.01s
+> sys     0m 0.50s
+> # time ls flash		- first time we do this it takes a long time
+> bigfile
+> real    0m 11.79s
+> user    0m 0.00s
+> sys     0m 0.18s
+> # time ls flash		- subsequent reads are fast
+> bigfile
+> real    0m 0.00s
+> user    0m 0.01s
+> sys     0m 0.00s
+>
+>
+> It was my understanding that the only slow step should be mounting the 
+> partition when it checks the entire filesystem. Is that correct? Is it 
+> normal that the first file operation on the partition is slow and then 
+> all others are fast? That the mount is slow is not a problem but would 
+> be good if we could make the first access faster even if it means the 
+> mount must get slower.
+>
+> This is using Linux 2.6.19.2 with uClibc 0.9.29, busybox 1.9.0 and 
+> mtd-utils 1.1.0
+>
+> Thanks,
+>
+> Will.
+>
+>   
 
-Hi Jörn,
+We fought that same exact problem for some time. It turned out being 
+that we had set the verbosity (something like FS_JFFS2_DEBUG=2) to the 
+highest setting. It literally took 30s or more to do an 'ls' the first 
+time.
 
-OK, I can do that. Would the "simple" fix go to the
-trivial@kernel.org Trivial Patch Monkey?
+HTH
 
-> The core of remove_device_by_name() is shared with block2mtd_exit(),
-> so a common helper would be good.  Your error handling is better, so
-> let's keep that version.
 
-Well, yes that raised a concern to me, the "exit" function
-returns "void". If the del_mtd_device fails with EBUSY at the
-moment (such as when a /dev/mtdblock<x> is mounted), we ignore
-it and go on with freeing everything leaving a dangling mtd.
-
-Is there a way around that?
-
-Another problem is that it's not easy to check whether a mtd
-creation was successful or not. Basically, you have to write to
-a /sys file and then parse /proc/mtd to get the result.
-
-What about having a /dev/block2mtd (with owner/permissions that
-could allow non-root users to use it), with 2 ioctls:
-
-- one to "link" a block dev to a mtd that would take as
-  parameter a fd to an open block dev (again allowing for
-  flexible permissions) and would return the number of the
-  allocated mtd and success/failure in errno. Upon sucess it
-  would increase the refcnt of block2mtd.
-
-- and one to "release" the link. That would fail if the mtd is
-  in use and decrease block2mtd's refcnt upon success.
-
-A bit like the loop devices (or /dev/ptmx) actually. What do you
-think?
-
-(also, with the /sys interface, isn't there a potential problem
-with chroots wrt the path given to the /sys file?)
-
-> And independently of your patch a mutex protecting the device list from
-> simultaneous modifications would be good to have.
-> 
-> Side note: I may not have internet access until 19th or so.
-[...]
-
-I'll dig a little deeper, but I think I'll need some advice/help
-at some point, I'm not a Linux kernel expert.
-
-Regards,
-Stephane
+--------------------------------------------------
+Dennis McLeod
+dmcleod@bittware.com
+http://www.bittware.com
+(603) 226 0404 x514
+--------------------------------------------------
