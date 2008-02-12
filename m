@@ -1,18 +1,21 @@
-Received: from az33egw02.freescale.net ([192.88.158.103])
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JOzWS-00075z-Bu
-	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 18:06:30 +0000
-Message-ID: <47B1E02A.3090709@freescale.com>
-Date: Tue, 12 Feb 2008 12:06:34 -0600
-From: Scott Wood <scottwood@freescale.com>
-MIME-Version: 1.0
-To: Stefan Roese <sr@denx.de>
+Received: from moutng.kundenserver.de ([212.227.126.188])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JP0bI-0006R4-O4
+	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 19:15:36 +0000
+From: Stefan Roese <sr@denx.de>
+To: Scott Wood <scottwood@freescale.com>
 Subject: Re: [PATCH] mtd: Fix physmap_of to not exit upon unsuccessful
 	partition scan
+Date: Tue, 12 Feb 2008 20:15:08 +0100
 References: <1202832181-1783-1-git-send-email-sr@denx.de>
-In-Reply-To: <1202832181-1783-1-git-send-email-sr@denx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+	<47B1E02A.3090709@freescale.com>
+In-Reply-To: <47B1E02A.3090709@freescale.com>
+MIME-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <200802122015.08811.sr@denx.de>
 Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -23,28 +26,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Stefan Roese wrote:
-> The patch 9a310d21196f38f6ad0ad146057548653e495c09 ("[MTD] Factor out OF
-> partition support from the NOR driver.") introduced an problem. Now the
-> physmap_of driver returns with error upon the first unsuccessful
-> partition scan (parse_mtd_partitions()). This is not wanted, since even
-> when the RedBoot/cmdlinepart partition scan is unsuccessful, the other
-> scan's (of_mtd_parse_partitions(), parse_obsolete_partitions()) should be
-> done nevertheless.
-> 
-> This patch fixes this problem.
-> 
-> Signed-off-by: Stefan Roese <sr@denx.de>
-> ---
-> 
-> Scott, could you please take a look at this patch and add you ACK if you
-> think it is ok?
+On Tuesday 12 February 2008, Scott Wood wrote:
+> Stefan Roese wrote:
+> > The patch 9a310d21196f38f6ad0ad146057548653e495c09 ("[MTD] Factor out OF
+> > partition support from the NOR driver.") introduced an problem. Now the
+> > physmap_of driver returns with error upon the first unsuccessful
+> > partition scan (parse_mtd_partitions()). This is not wanted, since even
+> > when the RedBoot/cmdlinepart partition scan is unsuccessful, the other
+> > scan's (of_mtd_parse_partitions(), parse_obsolete_partitions()) should be
+> > done nevertheless.
+> >
+> > This patch fixes this problem.
+> >
+> > Signed-off-by: Stefan Roese <sr@denx.de>
+> > ---
+> >
+> > Scott, could you please take a look at this patch and add you ACK if you
+> > think it is ok?
+>
+> I was under the impression -- and looking at the code seems to back that
+> up -- that parse_mtd_partitions() returns zero if the scan was
+> unsuccessful due to the lack of a partition table, and negative only if
+> there's a real error.
+>
+> Under what conditions are you actually seeing this fail?
 
-I was under the impression -- and looking at the code seems to back that 
-up -- that parse_mtd_partitions() returns zero if the scan was 
-unsuccessful due to the lack of a partition table, and negative only if 
-there's a real error.
+When CONFIG_MTD_REDBOOT_PARTS is not defined for example it returns with -22 
+(EINVAL).
 
-Under what conditions are you actually seeing this fail?
-
--Scott
+Best regards,
+Stefan
