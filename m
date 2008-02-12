@@ -1,18 +1,19 @@
-Received: from smtp2.sssup.it ([193.205.80.100] helo=smpt.sssup.it)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JOzUJ-00048P-FM
-	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 18:04:18 +0000
-Message-ID: <47B1DF8C.4090500@gandalf.sssup.it>
-Date: Tue, 12 Feb 2008 19:03:56 +0100
-From: michael <trimarchi@gandalf.sssup.it>
+Received: from az33egw02.freescale.net ([192.88.158.103])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JOzWS-00075z-Bu
+	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 18:06:30 +0000
+Message-ID: <47B1E02A.3090709@freescale.com>
+Date: Tue, 12 Feb 2008 12:06:34 -0600
+From: Scott Wood <scottwood@freescale.com>
 MIME-Version: 1.0
-To: DMcLeod <dmcleod@bittware.com>
-Subject: Re: First access to mounted jffs2 partition is slow
-References: <47B1840D.1010702@carallon.com> <47B1D5A7.4000509@bittware.com>
-In-Reply-To: <47B1D5A7.4000509@bittware.com>
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] mtd: Fix physmap_of to not exit upon unsuccessful
+	partition scan
+References: <1202832181-1783-1-git-send-email-sr@denx.de>
+In-Reply-To: <1202832181-1783-1-git-send-email-sr@denx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Cc: linux-mtd@lists.infradead.org, Will Wagner <will_wagner@carallon.com>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,46 +23,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi,
-> Will Wagner wrote:
->   
->> Hello,
->>
->> I have an ARM11 system with a JFFS2 partition in NAND flash. It works 
->> but the first time it is accessed after mounting it can be very slow.
->>
->> These are the steps I am performing:
->>
->> # flash_eraseall /dev/mtd4
->> Erasing 128 Kibyte @ 5fe0000 -- 99 % complete.
->> # time mount /dev/mtdblock4 /flash -t jffs2
->> real    0m 1.25s
->> user    0m 0.01s
->> sys     0m 0.13s
->> # time ls flash		- with an empty filsystem, this takes no time
->> real    0m 0.00s
->> user    0m 0.01s
->> sys     0m 0.00s
->> # cp /sdcard/bigfile flash/	- bigfile is ~8MB
->> # umount /flash
->> # time mount /dev/mtdblock4 /flash -t jffs2
->> real    0m 2.63s
->> user    0m 0.01s
->> sys     0m 0.50s
->> # time ls flash		- first time we do this it takes a long time
->> bigfile
->> real    0m 11.79s
->> user    0m 0.00s
->> sys     0m 0.18s
->> # time ls flash		- subsequent reads are fast
->> bigfile
->> real    0m 0.00s
->> user    0m 0.01s
->> sys     0m 0.00s
->>
->>     
-I think that is a problem of jffs2 and I think that is related to the 
-time spent during the fstat64 system but
-I'm not sure. I have little experince with jffs2.
+Stefan Roese wrote:
+> The patch 9a310d21196f38f6ad0ad146057548653e495c09 ("[MTD] Factor out OF
+> partition support from the NOR driver.") introduced an problem. Now the
+> physmap_of driver returns with error upon the first unsuccessful
+> partition scan (parse_mtd_partitions()). This is not wanted, since even
+> when the RedBoot/cmdlinepart partition scan is unsuccessful, the other
+> scan's (of_mtd_parse_partitions(), parse_obsolete_partitions()) should be
+> done nevertheless.
+> 
+> This patch fixes this problem.
+> 
+> Signed-off-by: Stefan Roese <sr@denx.de>
+> ---
+> 
+> Scott, could you please take a look at this patch and add you ACK if you
+> think it is ok?
 
-Regards Michael
+I was under the impression -- and looking at the code seems to back that 
+up -- that parse_mtd_partitions() returns zero if the scan was 
+unsuccessful due to the lack of a partition table, and negative only if 
+there's a real error.
+
+Under what conditions are you actually seeing this fail?
+
+-Scott
