@@ -1,14 +1,30 @@
-Received: from moutng.kundenserver.de ([212.227.126.171])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPFfH-0002D2-ID
-	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 11:20:42 +0000
-From: Stefan Roese <sr@denx.de>
+Received: from john.hrz.tu-chemnitz.de ([134.109.132.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPGkY-00047s-Gp
+	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 12:30:13 +0000
+Received: from galba.hrz.tu-chemnitz.de ([134.109.133.156]
+	helo=mailbox.hrz.tu-chemnitz.de)
+	by john.hrz.tu-chemnitz.de with esmtps (TLSv1:AES256-SHA:256)
+	(Exim 4.66) (envelope-from <markus.franke@informatik.tu-chemnitz.de>)
+	id 1JPGkX-0003Uw-7L
+	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 13:30:05 +0100
+Received: from aiken.hrz.tu-chemnitz.de ([134.109.133.143] helo=localhost)
+	by mailbox.hrz.tu-chemnitz.de with esmtp (Exim 4.66)
+	(envelope-from <markus.franke@informatik.tu-chemnitz.de>)
+	id 1JPGkX-00052P-06
+	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 13:30:05 +0100
+Message-ID: <20080213133004.burs2nmq8cwww8ww@mail.tu-chemnitz.de>
+Date: Wed, 13 Feb 2008 13:30:04 +0100
+From: Markus Franke <markus.franke@informatik.tu-chemnitz.de>
 To: linux-mtd@lists.infradead.org
-Subject: [PATCH v2] mtd: Fix physmap_of to not exit upon unsuccessful
-	partition scan
-Date: Wed, 13 Feb 2008 12:19:52 +0100
-Message-Id: <1202901592-19718-1-git-send-email-sr@denx.de>
-Cc: dwmw2@infradead.org
+Subject: dual-port ram driver implementation as MTD device?
+MIME-Version: 1.0
+Content-Type: text/plain;
+	charset=ISO-8859-1;
+	DelSp="Yes";
+	format="flowed"
+Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -18,53 +34,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-The patch 9a310d21196f38f6ad0ad146057548653e495c09 ("[MTD] Factor out OF
-partition support from the NOR driver.") introduced an problem. Now the
-physmap_of driver returns with error upon the first unsuccessful
-partition scan (parse_mtd_partitions()). This is not wanted, since even
-when the RedBoot/cmdlinepart partition scan is unsuccessful, the other
-scan's (of_mtd_parse_partitions(), parse_obsolete_partitions()) should be
-done nevertheless.
+Dear MTD developers/users,
 
-This patch fixes this problem.
+I am working on a custom board around the MCF5484 processor and  
+uClinux. The processor offers up to six chip-selects for accessing  
+external memory devices. A dual-port ram is connected to CS2 and I am  
+about to write a proper linux driver for this device. I came across  
+MTD and I am wondering whether I should develop an MTD RAM device  
+driver (similar to drivers/mtd/chips/map_ram.c) or whether a standard  
+linux character device driver would be more appropriate in my  
+situation. Any comments on this are appreciated.
 
-Signed-off-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/maps/physmap_of.c |   16 ++++------------
- 1 files changed, 4 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
-index 49acd41..09a78ea 100644
---- a/drivers/mtd/maps/physmap_of.c
-+++ b/drivers/mtd/maps/physmap_of.c
-@@ -224,24 +224,16 @@ static int __devinit of_flash_probe(struct of_device *dev,
- 	/* First look for RedBoot table or partitions on the command
- 	 * line, these take precedence over device tree information */
- 	err = parse_mtd_partitions(info->mtd, part_probe_types,
--	                           &info->parts, 0);
--	if (err < 0)
--		return err;
-+				   &info->parts, 0);
- 
- #ifdef CONFIG_MTD_OF_PARTS
--	if (err == 0) {
-+	if (err <= 0)
- 		err = of_mtd_parse_partitions(&dev->dev, info->mtd,
--		                              dp, &info->parts);
--		if (err < 0)
--			return err;
--	}
-+					      dp, &info->parts);
- #endif
- 
--	if (err == 0) {
-+	if (err <= 0)
- 		err = parse_obsolete_partitions(dev, info, dp);
--		if (err < 0)
--			return err;
--	}
- 
- 	if (err > 0)
- 		add_mtd_partitions(info->mtd, info->parts, err);
--- 
-1.5.4.1
+With best regards,
+Markus Franke
