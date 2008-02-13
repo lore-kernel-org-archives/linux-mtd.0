@@ -1,12 +1,13 @@
-Received: from smtp4.pp.htv.fi ([213.243.153.38])
+Received: from smtp6.pp.htv.fi ([213.243.153.40])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPPBS-0002I7-Au
-	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 21:30:33 +0000
-Date: Wed, 13 Feb 2008 23:30:08 +0200
+	id 1JPPBT-0002f3-7y
+	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 21:30:34 +0000
+Date: Wed, 13 Feb 2008 23:30:10 +0200
 From: Adrian Bunk <bunk@kernel.org>
-To: Richard Purdie <rpurdie@rpsys.net>, David Woodhouse <dwmw2@infradead.org>
-Subject: [2.6 patch] mtdoops.c: make struct oops_cxt static again
-Message-ID: <20080213213008.GW3383@cs181133002.pp.htv.fi>
+To: Mart Raudsepp <mart.raudsepp@artecdesign.ee>,
+	David Woodhouse <dwmw2@infradead.org>
+Subject: [2.6 patch] make mtd/nand/cs553x_nand.c:part_probes[] static
+Message-ID: <20080213213010.GX3383@cs181133002.pp.htv.fi>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
@@ -20,43 +21,21 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-struct oops_cxt needlessly became global.
+This patch makes the needlessly global part_probes[] static.
 
 Signed-off-by: Adrian Bunk <bunk@kernel.org>
 
 ---
---- linux-2.6/drivers/mtd/mtdoops.c.old	2008-02-11 23:19:45.000000000 +0200
-+++ linux-2.6/drivers/mtd/mtdoops.c	2008-02-11 23:19:55.000000000 +0200
-@@ -23,31 +23,31 @@
+054adb5b7a0d1ebaef61192ccf78df37aec42270 diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
+index 8dab696..3370a80 100644
+--- a/drivers/mtd/nand/cs553x_nand.c
++++ b/drivers/mtd/nand/cs553x_nand.c
+@@ -279,7 +279,7 @@ static int is_geode(void)
  
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/console.h>
- #include <linux/vmalloc.h>
- #include <linux/workqueue.h>
- #include <linux/sched.h>
- #include <linux/wait.h>
- #include <linux/delay.h>
- #include <linux/spinlock.h>
- #include <linux/interrupt.h>
- #include <linux/mtd/mtd.h>
  
- #define OOPS_PAGE_SIZE 4096
+ #ifdef CONFIG_MTD_PARTITIONS
+-const char *part_probes[] = { "cmdlinepart", NULL };
++static const char *part_probes[] = { "cmdlinepart", NULL };
+ #endif
  
--struct mtdoops_context {
-+static struct mtdoops_context {
- 	int mtd_index;
- 	struct work_struct work_erase;
- 	struct work_struct work_write;
- 	struct mtd_info *mtd;
- 	int oops_pages;
- 	int nextpage;
- 	int nextcount;
  
- 	void *oops_buf;
- 
- 	/* writecount and disabling ready are spin lock protected */
- 	spinlock_t writecount_lock;
- 	int ready;
- 	int writecount;
- } oops_cxt;
