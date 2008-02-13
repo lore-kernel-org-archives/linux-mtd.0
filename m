@@ -1,11 +1,14 @@
-Date: Wed, 13 Feb 2008 15:55:38 +0900
-From: Kyungmin Park <kyungmin.park@samsung.com>
-To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
-Subject: [PATCH][MTD][OneNAND] Fix unlock all in Double Density Package (DDP)
-Message-ID: <20080213065538.GA22073@party>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: from moutng.kundenserver.de ([212.227.126.171])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPFfH-0002D2-ID
+	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 11:20:42 +0000
+From: Stefan Roese <sr@denx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH v2] mtd: Fix physmap_of to not exit upon unsuccessful
+	partition scan
+Date: Wed, 13 Feb 2008 12:19:52 +0100
+Message-Id: <1202901592-19718-1-git-send-email-sr@denx.de>
+Cc: dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -15,80 +18,53 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Fix unlock all in Double Density Package (DDP)
+The patch 9a310d21196f38f6ad0ad146057548653e495c09 ("[MTD] Factor out OF
+partition support from the NOR driver.") introduced an problem. Now the
+physmap_of driver returns with error upon the first unsuccessful
+partition scan (parse_mtd_partitions()). This is not wanted, since even
+when the RedBoot/cmdlinepart partition scan is unsuccessful, the other
+scan's (of_mtd_parse_partitions(), parse_obsolete_partitions()) should be
+done nevertheless.
 
-Signed-off-by: Kyungmin Park <kyungmin.park@samsung.com>
+This patch fixes this problem.
+
+Signed-off-by: Stefan Roese <sr@denx.de>
 ---
-diff --git a/drivers/mtd/onenand/onenand_base.c b/drivers/mtd/onenand/onenand_base.c
-index 8d7d21b..15a62db 100644
---- a/drivers/mtd/onenand/onenand_base.c
-+++ b/drivers/mtd/onenand/onenand_base.c
-@@ -2052,7 +2052,7 @@ static int onenand_unlock(struct mtd_info *mtd, loff_t ofs, size_t len)
-  *
-  * Check lock status
-  */
--static void onenand_check_lock_status(struct onenand_chip *this)
-+static int onenand_check_lock_status(struct onenand_chip *this)
- {
- 	unsigned int value, block, status;
- 	unsigned int end;
-@@ -2070,9 +2070,13 @@ static void onenand_check_lock_status(struct onenand_chip *this)
+ drivers/mtd/maps/physmap_of.c |   16 ++++------------
+ 1 files changed, 4 insertions(+), 12 deletions(-)
+
+diff --git a/drivers/mtd/maps/physmap_of.c b/drivers/mtd/maps/physmap_of.c
+index 49acd41..09a78ea 100644
+--- a/drivers/mtd/maps/physmap_of.c
++++ b/drivers/mtd/maps/physmap_of.c
+@@ -224,24 +224,16 @@ static int __devinit of_flash_probe(struct of_device *dev,
+ 	/* First look for RedBoot table or partitions on the command
+ 	 * line, these take precedence over device tree information */
+ 	err = parse_mtd_partitions(info->mtd, part_probe_types,
+-	                           &info->parts, 0);
+-	if (err < 0)
+-		return err;
++				   &info->parts, 0);
  
- 		/* Check lock status */
- 		status = this->read_word(this->base + ONENAND_REG_WP_STATUS);
--		if (!(status & ONENAND_WP_US))
-+		if (!(status & ONENAND_WP_US)) {
- 			printk(KERN_ERR "block = %d, wp status = 0x%x\n", block, status);
-+			return 0;
-+		}
- 	}
-+
-+	return 1;
- }
+ #ifdef CONFIG_MTD_OF_PARTS
+-	if (err == 0) {
++	if (err <= 0)
+ 		err = of_mtd_parse_partitions(&dev->dev, info->mtd,
+-		                              dp, &info->parts);
+-		if (err < 0)
+-			return err;
+-	}
++					      dp, &info->parts);
+ #endif
  
- /**
-@@ -2081,9 +2085,11 @@ static void onenand_check_lock_status(struct onenand_chip *this)
-  *
-  * Unlock all blocks
-  */
--static int onenand_unlock_all(struct mtd_info *mtd)
-+static void onenand_unlock_all(struct mtd_info *mtd)
- {
- 	struct onenand_chip *this = mtd->priv;
-+	loff_t ofs = 0;
-+	size_t len = this->chipsize;
+-	if (err == 0) {
++	if (err <= 0)
+ 		err = parse_obsolete_partitions(dev, info, dp);
+-		if (err < 0)
+-			return err;
+-	}
  
- 	if (this->options & ONENAND_HAS_UNLOCK_ALL) {
- 		/* Set start block address */
-@@ -2099,23 +2105,19 @@ static int onenand_unlock_all(struct mtd_info *mtd)
- 		    & ONENAND_CTRL_ONGO)
- 			continue;
- 
-+		/* Check lock status */
-+		if (onenand_check_lock_status(this))
-+			return;
-+
- 		/* Workaround for all block unlock in DDP */
- 		if (ONENAND_IS_DDP(this)) {
--			/* 1st block on another chip */
--			loff_t ofs = this->chipsize >> 1;
--			size_t len = mtd->erasesize;
--
--			onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
-+			/* All blocks on another chip */
-+			ofs = this->chipsize >> 1;
-+			len = this->chipsize >> 1;
- 		}
--
--		onenand_check_lock_status(this);
--
--		return 0;
- 	}
- 
--	onenand_do_lock_cmd(mtd, 0x0, this->chipsize, ONENAND_CMD_UNLOCK);
--
--	return 0;
-+	onenand_do_lock_cmd(mtd, ofs, len, ONENAND_CMD_UNLOCK);
- }
- 
- #ifdef CONFIG_MTD_ONENAND_OTP
+ 	if (err > 0)
+ 		add_mtd_partitions(info->mtd, info->parts, err);
+-- 
+1.5.4.1
