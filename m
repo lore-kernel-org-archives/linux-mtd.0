@@ -1,21 +1,15 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPwaS-0005zS-8i
-	for linux-mtd@lists.infradead.org; Fri, 15 Feb 2008 09:10:34 +0000
-Subject: RE: Abnormal behavior with JFFS2 on latest kernel
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: kmpark@infradead.org
-In-Reply-To: <005601c86fb1$7c79f100$1fa9580a@swcenter.sec.samsung.co.kr>
-References: <004601c86fa2$201a78d0$1fa9580a@swcenter.sec.samsung.co.kr>
-	<1203065647.23414.6.camel@sauron>
-	<005601c86fb1$7c79f100$1fa9580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain; charset=utf-8
-Date: Fri, 15 Feb 2008 11:08:58 +0200
-Message-Id: <1203066538.23414.11.camel@sauron>
+Received: from mail.free-electrons.com ([88.191.46.45])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPgMK-0005Z3-Ha
+	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 15:50:54 +0000
+Date: Thu, 14 Feb 2008 16:50:25 +0100
+From: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+To: AKC@pel.dk, dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: [PATCH] mtd: fix minor typo in the MTD map driver for SHARP SL series
+Message-ID: <20080214165025.765f0637@crazy>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: 'linux-mtd' <linux-mtd@lists.infradead.org>, linux-kernel@vger.kernel.org
-Reply-To: dedekind@infradead.org
+Content-Type: multipart/signed; boundary="Sig_/nRoTQDp2iT62iqi4y5Nwbsx";
+	protocol="application/pgp-signature"; micalg=PGP-SHA1
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,37 +19,61 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Fri, 2008-02-15 at 18:02 +0900, Kyungmin Park wrote:
-> > On Fri, 2008-02-15 at 16:12 +0900, Kyungmin Park wrote:
-> > > I got following messages.
-> > > INFO: task pdflush:56 blocked for more than 120 seconds.
-> > > "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this mess=
-age.
-> > >
-> > > What are the meanings?
-> > > Too mush running GC in JFFS2 or others?
-> >=20
-> > Hi Kyungmin,
-> >=20
-> > did not look at this, but off the top of my head this might be related
-> > to the latest VFS changes (write_begin()/write_end() instead of
-> > prepare_write()/commit_write()). Just a hint where you might try to
-> > look.
-> >=20
->=20
-> Then can I use the ubifs? I mean ubifs is already changed for latest VFS =
-changes.
-> Now I just want to test new driver with latest kernel.
+--Sig_/nRoTQDp2iT62iqi4y5Nwbsx
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-No, in opposite, we have not changed it yet. The old calls were not
-removed from VFS and will be kept there for few releases. So we still
-use them - this helps to use the same UBIFS sources for older kernels.
-But later we'll switch to newer calls which are in fact much better for
-UBIFS then the old ones.
+Hi,
 
-But yes, you of course can use UBIFS.
+Here is a small patch to fix a minor typo in the MTD map driver for
+Sharp SL series devices.
+
+Thanks,
+
+Thomas
+
+---
+
+Fix minor typo in printk() message in the MTD map driver for Sharp SL
+series devices.
+
+Signed-off-by: Thomas Petazzoni <thomas.petazzoni@free-electrons.com>
+---
+ drivers/mtd/maps/sharpsl-flash.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+Index: linux/drivers/mtd/maps/sharpsl-flash.c
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+--- linux.orig/drivers/mtd/maps/sharpsl-flash.c
++++ linux/drivers/mtd/maps/sharpsl-flash.c
+@@ -92,7 +92,7 @@
+ 	parts =3D sharpsl_partitions;
+ 	nb_parts =3D ARRAY_SIZE(sharpsl_partitions);
+=20
+-	printk(KERN_NOTICE "Using %s partision definition\n", part_type);
++	printk(KERN_NOTICE "Using %s partition definition\n", part_type);
+ 	add_mtd_partitions(mymtd, parts, nb_parts);
+=20
+ 	return 0;
 
 --=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+Thomas Petazzoni, Free Electrons
+Free Embedded Linux Training Materials
+on http://free-electrons.com/training
+(More than 1500 pages!)
+
+--Sig_/nRoTQDp2iT62iqi4y5Nwbsx
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.6 (GNU/Linux)
+
+iD8DBQFHtGNE9lPLMJjT96cRAoTpAJ9LPGwKZLITFMWkhRwJ4xix8zSPLACfWCEm
+RGnU3goSTy3paalgbIsJFLk=
+=WBGr
+-----END PGP SIGNATURE-----
+
+--Sig_/nRoTQDp2iT62iqi4y5Nwbsx--
