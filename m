@@ -1,17 +1,18 @@
-Received: from smtp6.pp.htv.fi ([213.243.153.40])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPPBT-0002f3-7y
-	for linux-mtd@lists.infradead.org; Wed, 13 Feb 2008 21:30:34 +0000
-Date: Wed, 13 Feb 2008 23:30:10 +0200
-From: Adrian Bunk <bunk@kernel.org>
-To: Mart Raudsepp <mart.raudsepp@artecdesign.ee>,
-	David Woodhouse <dwmw2@infradead.org>
-Subject: [2.6 patch] make mtd/nand/cs553x_nand.c:part_probes[] static
-Message-ID: <20080213213010.GX3383@cs181133002.pp.htv.fi>
+Received: from risingsoftware01.propagation.net ([66.221.33.65])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPVkC-0000D5-2U
+	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 04:30:50 +0000
+Date: Thu, 14 Feb 2008 15:30:35 +1100
+From: Hamish Moffatt <hamish@cloud.net.au>
+To: Jacob Avraham <jacob@imaginecommunications.com>
+Subject: Re: Redboot FIS entry upgrade from Linux
+Message-ID: <20080214043035.GB1449@cloud.net.au>
+References: <FF584854D6FFE547AB2F7515A798AC3A4E3A9955@venus.imagineil.tv>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+In-Reply-To: <FF584854D6FFE547AB2F7515A798AC3A4E3A9955@venus.imagineil.tv>
+Cc: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,21 +22,29 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This patch makes the needlessly global part_probes[] static.
+On Sun, Jan 13, 2008 at 06:31:20PM +0200, Jacob Avraham wrote:
+> Hi,
+> 
+> Say I have a zImage or ramdisk image as a file listed in FIS,
+> which I use to  "fis load" from Redboot.
+> Now I want to upgrade an image from Linux, so in addition to
+> writing into the specific mtd partition I need to update the FIS
+> directory entry checksum value.
+> 
+> Are there any utils to facilitate that?
+> Or maybe such where not developed because it's not a good idea?
 
-Signed-off-by: Adrian Bunk <bunk@kernel.org>
+(Sorry, I'm a bit behind on this list.)
 
----
-054adb5b7a0d1ebaef61192ccf78df37aec42270 diff --git a/drivers/mtd/nand/cs553x_nand.c b/drivers/mtd/nand/cs553x_nand.c
-index 8dab696..3370a80 100644
---- a/drivers/mtd/nand/cs553x_nand.c
-+++ b/drivers/mtd/nand/cs553x_nand.c
-@@ -279,7 +279,7 @@ static int is_geode(void)
- 
- 
- #ifdef CONFIG_MTD_PARTITIONS
--const char *part_probes[] = { "cmdlinepart", NULL };
-+static const char *part_probes[] = { "cmdlinepart", NULL };
- #endif
- 
- 
+There's a utility here which can modify the RedBoot FIS table:
+http://svn.chezphil.org/utils/trunk/fis.c
+
+I added support for updating the checksums. You can get my patch here:
+http://buildroot.uclibc.org/cgi-bin/viewcvs.cgi/trunk/buildroot/package/fis/fis-001-checksum.patch?rev=20951&view=auto
+
+Like you, I update the kernel/initrd from linux then use fis to update
+the checksums so that RedBoot will still load the image.
+
+Hamish
+-- 
+Hamish Moffatt VK3SB <hamish@debian.org> <hamish@cloud.net.au>
