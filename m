@@ -1,19 +1,19 @@
-Received: from ug-out-1314.google.com ([66.249.92.169])
+Received: from wa-out-1112.google.com ([209.85.146.181])
 	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPgc8-0007g3-Fw
-	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 16:07:16 +0000
-Received: by ug-out-1314.google.com with SMTP id 23so1029510ugr.45
+	id 1JPjm6-0005PC-Ih
+	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 19:29:44 +0000
+Received: by wa-out-1112.google.com with SMTP id v33so693964wah.2
 	for <linux-mtd@lists.infradead.org>;
-	Thu, 14 Feb 2008 08:07:07 -0800 (PST)
-To: linux-mtd@lists.infradead.org, dwmw2@infradead.org
-Subject: [PATCH] cmdlinepart: Missing partition info is not an error
-From: Peter Korsgaard <jacmet@sunsite.dk>
-Date: Thu, 14 Feb 2008 17:00:10 +0100
-Message-ID: <87lk5nr0j9.fsf@macbook.be.48ers.dk>
+	Thu, 14 Feb 2008 11:29:35 -0800 (PST)
+Message-ID: <f96d234e0802141129w2a1691dfy949caec909fc25f1@mail.gmail.com>
+Date: Thu, 14 Feb 2008 14:29:35 -0500
+From: "Cliff Brake" <cliff.brake@gmail.com>
+To: "MTD mailing list" <linux-mtd@lists.infradead.org>
+Subject: what are correct sumtool and nandwrite options for NAND flash?
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Cc: sr@denx.de
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,41 +23,50 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Return 0 partitions instead of -EINVAL on no mtdpart= argument in kernel
-cmdline or missing partition info for device.
+Hello,
 
-Signed-off-by: Peter Korsgaard <jacmet@sunsite.dk>
-Acked-by: Stefan Roese <sr@denx.de>
----
- drivers/mtd/cmdlinepart.c |    5 +----
- 1 files changed, 1 insertions(+), 4 deletions(-)
+I'm trying to determine the correct sumtool, and nandwrite options for
+the following NAND flash device:
 
-diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
-index b44292a..08b82c9 100644
---- a/drivers/mtd/cmdlinepart.c
-+++ b/drivers/mtd/cmdlinepart.c
-@@ -308,9 +308,6 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 	struct cmdline_mtd_partition *part;
- 	char *mtd_id = master->name;
- 
--	if(!cmdline)
--		return -EINVAL;
--
- 	/* parse command line */
- 	if (!cmdline_parsed)
- 		mtdpart_setup_real(cmdline);
-@@ -341,7 +338,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
- 			return part->num_parts;
- 		}
- 	}
--	return -EINVAL;
-+	return 0;
- }
- 
- 
+root@cm-x270:/usb/tmp$ mtd_debug info /dev/mtd5
+mtd.type = MTD_NANDFLASH
+mtd.flags = MTD_CAP_NANDFLASH
+mtd.size = 67108864 (64M)
+mtd.erasesize = 131072 (128K)
+mtd.writesize = 2048 (2K)
+mtd.oobsize = 64
+regions = 0
+
+My question is how do I get the OOB data into the flash image, and
+convince nandwrite to use it.  I have been doing the following:
+
+sumtool -i <input_file> -o <output_file> -e  -p;
+flash_eraseall -j /dev/mtd5
+nandwrite /dev/mtd5 <output_file>
+
+I'm not sure what happens to the OOB data in the input image file when
+I use the above method?  Is it simply mixed up in the image and not
+actually written to the 64 byte OOB space?  The above method seems to
+work, so I have ignored it thus far.
+
+My question is should I be using the nandwrite -o option?  Looking at
+the source it does not look like the OOB data gets written to the OOB
+region unless this option is used.
+
+if I try:
+nandwrite -o /dev/mtd5 <output_file>
+
+I get the following:
+Input file is not page aligned
+Data was only partially written due to error
+: Success
+
+Appreciate any pointers as to the correct way to do this.
+
+Thanks,
+Cliff
+
 -- 
-debian.1.5.3.7.1-dirty
-
-
--- 
-Bye, Peter Korsgaard
+=======================
+Cliff Brake
+http://bec-systems.com
