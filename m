@@ -1,19 +1,13 @@
-Received: from mailgw.dash.net ([63.197.86.25])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPl2i-00074H-AS
-	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 20:50:58 +0000
-Subject: Re: what are correct sumtool and nandwrite options for NAND flash?
-From: Blair Barnett <bbarnett@dash.net>
-To: Cliff Brake <cliff.brake@gmail.com>
-In-Reply-To: <f96d234e0802141129w2a1691dfy949caec909fc25f1@mail.gmail.com>
-References: <f96d234e0802141129w2a1691dfy949caec909fc25f1@mail.gmail.com>
-Content-Type: text/plain
-Date: Thu, 14 Feb 2008 12:44:04 -0800
-Message-Id: <1203021844.5507.29.camel@bbarnett-desktop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Cc: MTD mailing list <linux-mtd@lists.infradead.org>
-Reply-To: blair@dash.net
+Received: from filer.fsl.cs.sunysb.edu ([130.245.126.2])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPmNk-0001Ba-Hj
+	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 22:16:47 +0000
+Date: Thu, 14 Feb 2008 17:16:21 -0500
+Message-Id: <200802142216.m1EMGLDo032715@agora.fsl.cs.sunysb.edu>
+From: Erez Zadok <ezk@cs.sunysb.edu>
+To: dwmw2@infradead.org, linux-mtd@lists.infradead.org
+Subject: jffs2 console printk storm
+Cc: linux-fsdevel@vger.kernel.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,62 +17,59 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-02-14 at 14:29 -0500, Cliff Brake wrote:
-> Hello,
-> 
-> I'm trying to determine the correct sumtool, and nandwrite options for
-> the following NAND flash device:
-> 
-> root@cm-x270:/usb/tmp$ mtd_debug info /dev/mtd5
-> mtd.type = MTD_NANDFLASH
-> mtd.flags = MTD_CAP_NANDFLASH
-> mtd.size = 67108864 (64M)
-> mtd.erasesize = 131072 (128K)
-> mtd.writesize = 2048 (2K)
-> mtd.oobsize = 64
-> regions = 0
-> 
-> My question is how do I get the OOB data into the flash image, and
-> convince nandwrite to use it.  I have been doing the following:
-> 
-> sumtool -i <input_file> -o <output_file> -e  -p;
-> flash_eraseall -j /dev/mtd5
-> nandwrite /dev/mtd5 <output_file>
-> 
-> I'm not sure what happens to the OOB data in the input image file when
-> I use the above method?  Is it simply mixed up in the image and not
-> actually written to the 64 byte OOB space?  The above method seems to
-> work, so I have ignored it thus far.
-> 
-> My question is should I be using the nandwrite -o option?  Looking at
-> the source it does not look like the OOB data gets written to the OOB
-> region unless this option is used.
-> 
-> if I try:
-> nandwrite -o /dev/mtd5 <output_file>
-> 
-> I get the following:
-> Input file is not page aligned
-> Data was only partially written due to error
-> : Success
-> 
-> Appreciate any pointers as to the correct way to do this.
-> 
-> Thanks,
-> Cliff
-> 
+Hi David,
 
-Hi Cliff,
+This has been a problem I've seen for a while.  I've generated a jffs2 image
+of an empty directory (I don't recall the version of the jffs2 utils I've
+used to generate it).  I mount the jffs2 image something like this:
 
-sumtool doesn't create an image with embedded OOB data by default. You
-can check for yourself by doing a hexdump of the image and looking at
-the data that is placed at 2049 (1 byte after the first 2k page. If OOB
-data is there, it will be obvious. If it's (as I surmise) the next 2k
-page, then no oob data is embedded in the image.
+# cp jffs2-empty.img /tmp/fs.0
+# losetup /dev/loop0 /tmp/fs.0
+# modprobe block2mtd block2mtd=/dev/loop0,128ki
+# mount -t jffs2 mtd0 /n/lower/b0
 
-I think what you want is 
+Then I start running my tests in it (in /n/lower/b0).  I get a lot of these
+two kinds of console printk messages (esp. the first one):
 
-sumtool -e 131072 -c  -p -i <input_file> -o <output_file>
-nandwrite -o -j /dev/mtd5 <output_file>
+  CLEANMARKER node found at 0x00810000, not first node in block (0x00800000)
+  Empty flash at 0x0080ff70 ends at 0x00810000
 
--blair
+I don't know how serious the messages are, but jffs2 seems to work fine for
+me even with those many kernel messages scrolling off of my screen.  I could
+not find a way to turn off these warnings: jffs2's debugging config options
+allow me to turn on more messages, but not to turn off these.
+
+Is there a way to prevent these messages from showing up?  Are they serious?
+Is my jffs2 image bad/corrupt?  If so, how should I fix it?
+
+In the mean time, I've been using the small patch below to turn the above
+two messages into jffs2 debugging messages.
+
+Thanks,
+Erez.
+
+
+diff --git a/fs/jffs2/scan.c b/fs/jffs2/scan.c
+index 272872d..16f428c 100644
+--- a/fs/jffs2/scan.c
++++ b/fs/jffs2/scan.c
+@@ -646,8 +646,8 @@ scan_more:
+ 			inbuf_ofs = ofs - buf_ofs;
+ 			while (inbuf_ofs < scan_end) {
+ 				if (unlikely(*(uint32_t *)(&buf[inbuf_ofs]) != 0xffffffff)) {
+-					printk(KERN_WARNING "Empty flash at 0x%08x ends at 0x%08x\n",
+-					       empty_start, ofs);
++					D1(printk(KERN_WARNING "Empty flash at 0x%08x ends at 0x%08x\n",
++						  empty_start, ofs));
+ 					if ((err = jffs2_scan_dirty_space(c, jeb, ofs-empty_start)))
+ 						return err;
+ 					goto scan_more;
+@@ -840,7 +840,7 @@ scan_more:
+ 					return err;
+ 				ofs += PAD(sizeof(struct jffs2_unknown_node));
+ 			} else if (jeb->first_node) {
+-				printk(KERN_NOTICE "CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n", ofs, jeb->offset);
++				D1(printk(KERN_NOTICE "CLEANMARKER node found at 0x%08x, not first node in block (0x%08x)\n", ofs, jeb->offset));
+ 				if ((err = jffs2_scan_dirty_space(c, jeb, PAD(sizeof(struct jffs2_unknown_node)))))
+ 					return err;
+ 				ofs += PAD(sizeof(struct jffs2_unknown_node));
