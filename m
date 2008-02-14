@@ -1,19 +1,25 @@
-Received: from mail.artecdesign.ee ([62.65.32.9] helo=postikukk.artecdesign.ee)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPYLB-0001H3-Mm
-	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 07:17:11 +0000
-Subject: Re: [2.6 patch] make mtd/nand/cs553x_nand.c:part_probes[] static
-From: Mart Raudsepp <mart.raudsepp@artecdesign.ee>
-To: Adrian Bunk <bunk@kernel.org>
-In-Reply-To: <20080213213010.GX3383@cs181133002.pp.htv.fi>
-References: <20080213213010.GX3383@cs181133002.pp.htv.fi>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 14 Feb 2008 09:16:47 +0200
-Message-Id: <1202973407.4560.3.camel@martr-gentoo.artec>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org, David Woodhouse <dwmw2@infradead.org>,
-	linux-kernel@vger.kernel.org
+Received: from fk-out-0910.google.com ([209.85.128.185])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPdg6-0008C7-6i
+	for linux-mtd@lists.infradead.org; Thu, 14 Feb 2008 12:59:10 +0000
+Received: by fk-out-0910.google.com with SMTP id 18so748913fkq.2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 14 Feb 2008 04:59:01 -0800 (PST)
+To: Stefan Roese <sr@denx.de>
+Subject: Re: [PATCH] mtd: Fix physmap_of to not exit upon unsuccessful
+	partition scan
+References: <1202832181-1783-1-git-send-email-sr@denx.de>
+	<200802122015.08811.sr@denx.de> <47B1F30E.4000509@freescale.com>
+	<200802122037.27864.sr@denx.de>
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Thu, 14 Feb 2008 13:49:04 +0100
+In-Reply-To: <200802122037.27864.sr@denx.de> (Stefan Roese's message of "Tue\,
+	12 Feb 2008 20\:37\:27 +0100")
+Message-ID: <87wsp7r9dr.fsf@macbook.be.48ers.dk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Sender: Peter Korsgaard <jacmet@gmail.com>
+Cc: Scott Wood <scottwood@freescale.com>, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,14 +29,63 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+>>>>> "Stefan" == Stefan Roese <sr@denx.de> writes:
 
-=C3=9Chel kenal p=C3=A4eval, K, 2008-02-13 kell 23:30, kirjutas Adrian Bunk=
-:
-> This patch makes the needlessly global part_probes[] static.
->=20
-> Signed-off-by: Adrian Bunk <bunk@kernel.org>
+ Stefan> On Tuesday 12 February 2008, Scott Wood wrote:
+ >> >> Under what conditions are you actually seeing this fail?
+ >> >
+ >> > When CONFIG_MTD_REDBOOT_PARTS is not defined for example it returns with
+ >> > -22 (EINVAL).
+ >> 
+ >> Ah, I see -- it seems the cmdline partition code behaves differently
+ >> than the redboot code.
+ >> 
+ >> Your patch changes it to treat zero as success, however -- which breaks
+ >> some other cases.  The test should be "err <= 0", which is what
+ >> parse_mtd_partiitions() itself uses in its loop.
 
-Acked-by: Mart Raudsepp <mart.raudsepp@artecdesign.ee>
+ Stefan> OK, I'll fixup another version of this patch tomorrow.
 
-Note that many other drivers in mtd/nand have the same part_probes array
-global instead of static.
+I would prefer to fix up cmdlinepart.c instead, as missing cmdline
+data isn't really an error.
+
+>From 7cc1d55f9704a9df1053aefd21fd5db98ac4c983 Mon Sep 17 00:00:00 2001
+From: Peter Korsgaard <jacmet@sunsite.dk>
+Date: Thu, 14 Feb 2008 13:46:13 +0100
+Subject: [PATCH] cmdlinepart: Missing partition info is not an error
+
+Return 0 partitions instead of -EINVAL on no mtdpart= argument on kernel
+cmdline or missing partition info for device.
+---
+ drivers/mtd/cmdlinepart.c |    5 +----
+ 1 files changed, 1 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/mtd/cmdlinepart.c b/drivers/mtd/cmdlinepart.c
+index b44292a..08b82c9 100644
+--- a/drivers/mtd/cmdlinepart.c
++++ b/drivers/mtd/cmdlinepart.c
+@@ -308,9 +308,6 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 	struct cmdline_mtd_partition *part;
+ 	char *mtd_id = master->name;
+ 
+-	if(!cmdline)
+-		return -EINVAL;
+-
+ 	/* parse command line */
+ 	if (!cmdline_parsed)
+ 		mtdpart_setup_real(cmdline);
+@@ -341,7 +338,7 @@ static int parse_cmdline_partitions(struct mtd_info *master,
+ 			return part->num_parts;
+ 		}
+ 	}
+-	return -EINVAL;
++	return 0;
+ }
+ 
+ 
+-- 
+debian.1.5.3.7.1-dirty
+
+
+-- 
+Bye, Peter Korsgaard
