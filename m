@@ -1,23 +1,16 @@
-Received: from mail.transmode.se ([83.241.175.147] helo=tmnt04.transmode.se)
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JPxCX-00075b-Ch
-	for linux-mtd@lists.infradead.org; Fri, 15 Feb 2008 09:49:55 +0000
-Subject: RE: Abnormal behavior with JFFS2 on latest kernel
-From: Joakim Tjernlund <joakim.tjernlund@transmode.se>
-To: kmpark@infradead.org
-In-Reply-To: <007d01c86fb6$1705db90$1fa9580a@swcenter.sec.samsung.co.kr>
-References: <004601c86fa2$201a78d0$1fa9580a@swcenter.sec.samsung.co.kr>
-	<1203065237.5419.74.camel@gentoo-jocke.transmode.se>
-	<005001c86fb0$b9bc6d00$1fa9580a@swcenter.sec.samsung.co.kr>
-	<1203065951.5419.84.camel@gentoo-jocke.transmode.se>
-	<007d01c86fb6$1705db90$1fa9580a@swcenter.sec.samsung.co.kr>
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Date: Fri, 15 Feb 2008 10:49:47 +0100
-Message-Id: <1203068987.5419.94.camel@gentoo-jocke.transmode.se>
+Received: from www.tglx.de ([62.245.132.106])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JPyd9-0005va-7k
+	for linux-mtd@lists.infradead.org; Fri, 15 Feb 2008 11:21:29 +0000
+Date: Fri, 15 Feb 2008 12:21:10 +0100
+From: Sebastian Siewior <bigeasy@tglx.de>
+To: linux-mtd@lists.infradead.org
+Subject: [PATCH] [MTD] [NAND] add out label in rfc_from4
+Message-ID: <20080215112110.GA32528@www.tglx.de>
 Mime-Version: 1.0
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
-Reply-To: joakim.tjernlund@transmode.se
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+Cc: tglx@linutronix.de, dwmw2@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,16 +20,26 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+This has been probably forgotten in commit f5bbdacc419.
 
-On Fri, 2008-02-15 at 18:35 +0900, Kyungmin Park wrote:
-> > 
-> > Nope, the patch is probably named
-> > "[JFFS2] Stop erasing blocks when rebooting."
-> > 
-> 
-> No it's same; we have to find another one.
+Signed-off-by: Sebastian Siewior <bigeasy@linutronix.de>
+---
+I hope that is the right fix.
 
-OK, it was worth a try. Sorry but I don't have
-any more ideas.
+ drivers/mtd/nand/rtc_from4.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
 
- Jocke
+diff --git a/drivers/mtd/nand/rtc_from4.c b/drivers/mtd/nand/rtc_from4.c
+index 47429b0..ace1915 100644
+--- a/drivers/mtd/nand/rtc_from4.c
++++ b/drivers/mtd/nand/rtc_from4.c
+@@ -461,6 +461,7 @@ static int rtc_from4_errstat(struct mtd_info *mtd, struct nand_chip *this,
+ 		kfree(buf);
+ 	}
+ 
++out:
+ 	rtn = status;
+ 	if (er_stat == 0) {	/* if ECC is available   */
+ 		rtn = (status & ~NAND_STATUS_FAIL);	/*   clear the error bit */
+-- 
+1.5.3.5
