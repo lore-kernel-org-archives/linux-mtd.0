@@ -1,20 +1,19 @@
-Received: from py-out-1112.google.com ([64.233.166.179])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JOudY-0008E6-EZ
-	for linux-mtd@lists.infradead.org; Tue, 12 Feb 2008 12:53:30 +0000
-Received: by py-out-1112.google.com with SMTP id p76so8378309pyb.2
-	for <linux-mtd@lists.infradead.org>;
-	Tue, 12 Feb 2008 04:53:23 -0800 (PST)
-Message-ID: <47B19690.10009@gmail.com>
-Date: Tue, 12 Feb 2008 18:22:32 +0530
-From: Max Stirling <vicky.irobot@gmail.com>
+From: "Kyungmin Park" <kmpark@infradead.org>
+To: <joakim.tjernlund@transmode.se>
+References: <004601c86fa2$201a78d0$1fa9580a@swcenter.sec.samsung.co.kr>
+	<1203065237.5419.74.camel@gentoo-jocke.transmode.se>
+	<005001c86fb0$b9bc6d00$1fa9580a@swcenter.sec.samsung.co.kr>
+	<1203065951.5419.84.camel@gentoo-jocke.transmode.se>
+Subject: RE: Abnormal behavior with JFFS2 on latest kernel
+Date: Fri, 15 Feb 2008 18:35:20 +0900
+Message-ID: <007d01c86fb6$1705db90$1fa9580a@swcenter.sec.samsung.co.kr>
 MIME-Version: 1.0
-To: Christophe Lohr <Christophe.Lohr@enst-bretagne.fr>
-Subject: Re: how to mount this mtd filesystem image?
-References: <47B07A44.6030003@enst-bretagne.fr>
-In-Reply-To: <47B07A44.6030003@enst-bretagne.fr>
-Content-Type: multipart/mixed; boundary="------------050902080202010808030409"
-Cc: linux-mtd@lists.infradead.org
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: 7bit
+In-reply-to: <1203065951.5419.84.camel@gentoo-jocke.transmode.se>
+Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Reply-To: kmpark@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,72 +23,48 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-This is a multi-part message in MIME format.
---------------050902080202010808030409
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 8bit
+> 
+> Nope, the patch is probably named
+> "[JFFS2] Stop erasing blocks when rebooting."
+> 
 
-Christophe Lohr wrote:
-> Hi,
-> I’m not sure to be on the right mailing list…
->
-> My problem is as follow: I have an mtd dump file. This is not a jffs2 
-> file system image. It looks like a plain old flash file system, but 
-> which one? How may I get the content of this file system?
->
-> 00000000 46 66 73 23 00 03 01 00 c0 ff ff ff ff ff ff ff |Ffs#............|
-> 00000010 2f 66 66 73 2d 72 6f 6f 74 00 ff ff ff ff ff ff |/ffs-root.......|
-> 00000020 2e 6a 6f 75 72 6e 61 6c 00 ff ff ff c0 00 03 00 |.journal........|
-> 00000030 02 00 00 00 c0 00 04 00 03 00 00 00 c0 00 05 00 |................|
-> 00000040 04 00 00 00 c0 00 06 00 05 00 00 00 c0 00 07 00 |................|
-> 00000050 06 00 00 00 c0 00 08 00 07 00 00 00 c0 00 09 00 |................|
-> (...)
->
-> Any help is welcome.
-> Thanks and regards.
-> Christophe
->
->
->
->
-> ______________________________________________________
-> Linux MTD discussion mailing list
-> http://lists.infradead.org/mailman/listinfo/linux-mtd/
->   
-The first four bytes are the magic numbers telling which flash fs this 
-might be.
+No it's same; we have to find another one.
 
-00000000 46 66 73 23
+KB  reclen   write rewrite    read    reread
+          131072       4    3420    3683    15320    15341
+          131072       8INFO: task iozone:227 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+iozone        D c021685c     0   227    222
+[<c02164c0>] (schedule+0x0/0x41c) from [<c0216314>] (__down+0xa4/0xfc)
+[<c0216270>] (__down+0x0/0xfc) from [<c021620c>] (__down_failed+0xc/0x20)
+ r8:c3815c70 r7:00000000 r6:c3815c30 r5:00000000 r4:00004078
+[<c01182b8>] (jffs2_write_begin+0x0/0x3c0) from [<c00660cc>] (generic_file_buff)
+[<c0065fbc>] (generic_file_buffered_write+0x0/0x65c) from [<c0066e58>] (__gener)
+[<c0066908>] (__generic_file_aio_write_nolock+0x0/0x580) from [<c0066f00>] (gen)
+[<c0066e88>] (generic_file_aio_write+0x0/0xf4) from [<c008870c>] (do_sync_write)
+[<c008865c>] (do_sync_write+0x0/0xf4) from [<c0088810>] (vfs_write+0xc0/0xf8)
+ r8:c0020224 r7:c3d5df78 r6:41200000 r5:c3d9a220 r4:00002000
+[<c0088750>] (vfs_write+0x0/0xf8) from [<c0088904>] (sys_write+0x48/0x74)
+ r7:00000004 r6:c3d9a220 r5:00000000 r4:04078000
+[<c00888bc>] (sys_write+0x0/0x74) from [<c001fa20>] (ret_fast_syscall+0x0/0x2c)
+ r6:00000000 r5:00002000 r4:00004000
+INFO: task jffs2_gcd_mtd4:257 blocked for more than 120 seconds.
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+jffs2_gcd_mtd D c021685c     0   257      2
+[<c02164c0>] (schedule+0x0/0x41c) from [<c0216da8>] (io_schedule+0x2c/0x48)
+[<c0216d7c>] (io_schedule+0x0/0x48) from [<c0063b54>] (sync_page+0x50/0x5c)
+ r5:00000000 r4:c3f07cb0
+[<c0063b04>] (sync_page+0x0/0x5c) from [<c02170f8>] (__wait_on_bit_lock+0x60/0x)
+[<c0217098>] (__wait_on_bit_lock+0x0/0x94) from [<c006469c>] (__lock_page+0x88/)
+[<c0064614>] (__lock_page+0x0/0x98) from [<c00654ac>] (read_cache_page_async+0x)
+ r5:00000000 r4:c0320ea0
+[<c006536c>] (read_cache_page_async+0x0/0x1b8) from [<c0124fcc>] (jffs2_gc_fetc)
+[<c0124fa0>] (jffs2_gc_fetch_page+0x0/0x64) from [<c0121758>] (jffs2_garbage_co)
+ r4:0407a000
+[<c0120cac>] (jffs2_garbage_collect_live+0x0/0x11ac) from [<c01225a4>] (jffs2_g)
+[<c0121e58>] (jffs2_garbage_collect_pass+0x0/0x844) from [<c0123cb0>] (jffs2_ga)
+[<c0123b88>] (jffs2_garbage_collect_thread+0x0/0x168) from [<c003de0c>] (do_exi)
+ r8:00000000 r7:00000000 r6:00000000 r5:00000000 r4:00000000
 
-
-#define CRAMFS_MAGIC    0x28cd3d45
-
-
-I did a search for those numbers and couldn't find any reference to this 
-anywhere. Try doing "file <your-mtd-dump-file> this might give more 
-information
-
-for eg:
-
-->file test.cramfs.img
-test.cramfs.img: Linux Compressed ROM File System data, little endian 
-size 65536 version #2 sorted_dirs CRC 0xf23fc956, edition 0, 46 blocks, 
-16 files.
-
-
-
---------------050902080202010808030409
-Content-Type: text/x-vcard; charset=utf-8;
- name="vicky_irobot.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="vicky_irobot.vcf"
-
-begin:vcard
-fn:M S
-n:S;M
-version:2.1
-end:vcard
-
-
---------------050902080202010808030409--
+Thank you,
+Kyungmin Park
