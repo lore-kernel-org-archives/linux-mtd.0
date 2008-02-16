@@ -1,15 +1,20 @@
-Received: from knoppix.nateks.ru ([81.28.3.166])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JQ5VL-0002BD-M8
-	for linux-mtd@lists.infradead.org; Fri, 15 Feb 2008 18:41:54 +0000
-Message-ID: <004b01c87000$52c8a050$2f0fa8c0@idle>
-From: "Mikhail Gruzdev" <gruzdev@nateks.ru>
+Received: from mailout.ltindia.com ([125.18.18.115])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JQHUP-0007Pw-Bq
+	for linux-mtd@lists.infradead.org; Sat, 16 Feb 2008 07:29:44 +0000
+Received: from EBGMAIL2.MAIL.LNTEBG.COM (ebgmail2.lntebg.com [172.18.224.201])
+	by mailout.ltindia.com (Symantec Mail Security) with ESMTP id
+	140E24E4002 for <linux-mtd@lists.infradead.org>;
+	Sat, 16 Feb 2008 12:30:28 +0530 (IST)
+Message-Id: <47B6D8DD02000076000005C4@EBGMAIL2.MAIL.LNTEBG.COM>
+Date: Sat, 16 Feb 2008 12:36:45 +0530
+From: "Vanita Suryavanshi" <suryavanshivj@LNTEBG.com>
 To: <linux-mtd@lists.infradead.org>
-Subject: How to hardcode NOR Flash parameters (wrong CFI table) ?
-Date: Fri, 15 Feb 2008 21:26:41 +0300
-MIME-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="koi8-r"; reply-type=original
-Content-Transfer-Encoding: 7bit
+Subject: cloning jffs2 file system
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -19,17 +24,27 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello.
+Dear Sir,
+Seeking of help.
+We have developed jffs2 file system using block2mtd driver.
+Our compact flash has 2 partitions.
+First partition is boot partition having fat file system.This contains =
+syslinux bootloader and kernel.
+Second partition is jffs2 partition, formatted using flash_eraseall -j =
+/dev/mtd0
+and put the file system using dd.
+Flash is working fine.
 
-I have NOR flash chip(Spansion S29GL032N04) with wrong CFI table information 
-(Erase Region 2 Information).
-My do_map_probe("cfi_probe", &nor_map) function call fails due to geometry 
-mismatch.
-So I decided to hardcode _all_ flash chip information without any probing at 
-all.
+But to burn large number flash,this method is not suitable.
+So If I have a working flash with jffs2 can I make multiple flash using =
+any tool like norton ghost.
+Norton ghost does not support jffs2. Is there any other tool or method for =
+doing this.
 
-Are there any examples? I don't want to miss something while digging into 
-mtd sources.
-Doesn't it the preferable way for embedded systems?
+Thanks & Regards,
 
-Thanks! 
+Best Regards,
+Vanita Suryavanshi
+Design Engineer,
+Automation Systems Center,
+Navi Mumbai.
