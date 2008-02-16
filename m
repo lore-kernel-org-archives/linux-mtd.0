@@ -1,20 +1,14 @@
-Received: from mailout.ltindia.com ([125.18.18.115])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JQHUP-0007Pw-Bq
-	for linux-mtd@lists.infradead.org; Sat, 16 Feb 2008 07:29:44 +0000
-Received: from EBGMAIL2.MAIL.LNTEBG.COM (ebgmail2.lntebg.com [172.18.224.201])
-	by mailout.ltindia.com (Symantec Mail Security) with ESMTP id
-	140E24E4002 for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Feb 2008 12:30:28 +0530 (IST)
-Message-Id: <47B6D8DD02000076000005C4@EBGMAIL2.MAIL.LNTEBG.COM>
-Date: Sat, 16 Feb 2008 12:36:45 +0530
-From: "Vanita Suryavanshi" <suryavanshivj@LNTEBG.com>
-To: <linux-mtd@lists.infradead.org>
-Subject: cloning jffs2 file system
+Subject: Re: jffs2 console printk storm
+From: David Woodhouse <dwmw2@infradead.org>
+To: Erez Zadok <ezk@cs.sunysb.edu>
+In-Reply-To: <200802142216.m1EMGLDo032715@agora.fsl.cs.sunysb.edu>
+References: <200802142216.m1EMGLDo032715@agora.fsl.cs.sunysb.edu>
+Content-Type: text/plain
+Date: Sat, 16 Feb 2008 13:52:32 +0000
+Message-Id: <1203169952.31173.110.camel@pmac.infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Cc: linux-fsdevel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -24,27 +18,35 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Dear Sir,
-Seeking of help.
-We have developed jffs2 file system using block2mtd driver.
-Our compact flash has 2 partitions.
-First partition is boot partition having fat file system.This contains =
-syslinux bootloader and kernel.
-Second partition is jffs2 partition, formatted using flash_eraseall -j =
-/dev/mtd0
-and put the file system using dd.
-Flash is working fine.
 
-But to burn large number flash,this method is not suitable.
-So If I have a working flash with jffs2 can I make multiple flash using =
-any tool like norton ghost.
-Norton ghost does not support jffs2. Is there any other tool or method for =
-doing this.
+On Thu, 2008-02-14 at 17:16 -0500, Erez Zadok wrote:
+> Hi David,
+> 
+> This has been a problem I've seen for a while.  I've generated a jffs2 image
+> of an empty directory (I don't recall the version of the jffs2 utils I've
+> used to generate it).  I mount the jffs2 image something like this:
+> 
+> # cp jffs2-empty.img /tmp/fs.0
+> # losetup /dev/loop0 /tmp/fs.0
+> # modprobe block2mtd block2mtd=/dev/loop0,128ki
+> # mount -t jffs2 mtd0 /n/lower/b0
+> 
+> Then I start running my tests in it (in /n/lower/b0).  I get a lot of these
+> two kinds of console printk messages (esp. the first one):
+> 
+>   CLEANMARKER node found at 0x00810000, not first node in block (0x00800000)
+>   Empty flash at 0x0080ff70 ends at 0x00810000
+> 
+> I don't know how serious the messages are, but jffs2 seems to work fine for
+> me even with those many kernel messages scrolling off of my screen.
 
-Thanks & Regards,
+Your image is built with the wrong eraseblock size -- mkfs.jffs2
+defaults to 64KiB eraseblocks, and you seem to have used that default,
+but your flash "device" has 128KiB eraseblocks, since that's the
+argument you gave to block2mtd.
 
-Best Regards,
-Vanita Suryavanshi
-Design Engineer,
-Automation Systems Center,
-Navi Mumbai.
+Recreate your image with -e128KiB, or change the eraseblock size on your
+virtual device.
+
+-- 
+dwmw2
