@@ -1,19 +1,11 @@
-Received: from wa-out-1112.google.com ([209.85.146.178])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JQJNY-0003rC-PG
-	for linux-mtd@lists.infradead.org; Sat, 16 Feb 2008 09:30:46 +0000
-Received: by wa-out-1112.google.com with SMTP id v33so1509851wah.2
-	for <linux-mtd@lists.infradead.org>;
-	Sat, 16 Feb 2008 01:30:39 -0800 (PST)
-Message-ID: <d50b16a50802160123u35507765h83524d52ff21c3e4@mail.gmail.com>
-Date: Sat, 16 Feb 2008 18:23:20 +0900
-From: "Hyojeong Lee" <hj.lee.0215@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: I want to mount nandsim as vfat using nftl
+Message-ID: <2177.213.185.118.203.1203179134.squirrel@blessedjjireh.serverspeople.net>
+Date: Sat, 16 Feb 2008 10:25:34 -0600 (CST)
+Subject: Prize And Award Winning Notification!
+From: "Emily Brooks" <emillionawardunits@yahoo.de>
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_Part_1687_27221353.1203153800907"
-Reply-To: hjlee0215@gmail.com
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Reply-To: goodluckkpereda@aim.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -23,63 +15,68 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-------=_Part_1687_27221353.1203153800907
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-I want to mount nandsim as vfat using nftl.
-For the reason of my board, I should use linux 2.6.11.9.
-And in that version, nftl_format utility is not available.
-
-I compiled MTD, nftl, nandsim and so on.
-(nandsim is not tristate in the version of 2.6.11.9 so I couldn't make it as
-a module)
-
-I can see
-dev:        size     erasesize  name
-mtd0:  00800000 0020000 "NAND simulator partition"
-in /proc/mtd
-
-and I can see /dev/mtdblock0
-
-I want to make a situation as follows
-
-FAT
--------
-NFTL
--------
-MTD
--------
-NANDSIM
 
 
-I tried
-mknod /dev/nftla b 93 0
-mknod /dev/nftla1 b 93 1
-fdisk /dev/nftla
 
-but the kernel says that
-"Unable to open /dev/nftla"
+Computer Ballot Sweepstakes Email Award 2008.
+(Euro million loteria Espanol Award 2008).
+www.loteria.com
+Paseo De La castellana
+15-89, 28008 Madrid.
+Spain , Branch.
 
-I tried insmod nftl.ko on every point I could try.
-But same error occurs.
 
-What I should do to achieve my goal?
-Or where can I get information?
+  YOUR E-MAIL ADDRESS WON THIS YEAR EURO MILLION LOTTERY.
 
-regards,
-Hyojeong.
 
-------=_Part_1687_27221353.1203153800907
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Sir/Madam,
 
-I want to mount nandsim as vfat using nftl.<br>For the reason of my board, I should use linux <a href="http://2.6.11.9">2.6.11.9</a>.<br>And in that version, nftl_format utility is not available.<br><br>I compiled MTD, nftl, nandsim and so on.<br>
-(nandsim is not tristate in the version of <a href="http://2.6.11.9">2.6.11.9</a> so I couldn&#39;t make it as a module)<br><br>I can see <br>dev:&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; size &nbsp; &nbsp; erasesize&nbsp; name<br>mtd0:&nbsp; 00800000 0020000 &quot;NAND simulator partition&quot;<br>
-in /proc/mtd<br><br>and I can see /dev/mtdblock0<br><br>I want to make a situation as follows<br><br>FAT<br>-------<br>NFTL<br>-------<br>MTD<br>-------<br>NANDSIM<br><br><br>I tried<br>mknod /dev/nftla b 93 0<br>mknod /dev/nftla1 b 93 1<br>
-fdisk /dev/nftla<br><br>but the kernel says that<br>&quot;Unable to open /dev/nftla&quot;<br><br>I tried insmod nftl.ko on every point I could try.<br>But same error occurs.<br><br>What I should do to achieve my goal?<br>
-Or where can I get information?<br><br>regards,<br>Hyojeong.<br>
+  We wish to congratulate you over your email success in our computer
+balloting held on FEBUARY 13TH,2008. This is a Millennium Scientific
+Computer Game in which email addresses were used. It is a promotional
+program aimed at encouraging internet users; therefore you do not need
+to buy ticket to enter for it. You have been approve for the star prize
+of €987,248,00 (Nine Hundred And Eighty Seven Thousand, Two Hundred And
+forty Eight Euros Only).To claim your winning prize you are to contact
+the appointed claim agent as soon as possible for the immediate release
+of your winnings with the following information below:
 
-------=_Part_1687_27221353.1203153800907--
+
+
+Name:.............................
+Age:..............................
+Sex:..............................
+Address:..........................
+Email:............................
+Phone:............................
+Occupation:.......................
+Company:..........................
+Country:..........................
+
+
+Mr Goodluck Pereda
+Liberty Seguros Trust Agency.
+Mario Cabre Sin Numero,
+28016, Madrid - Spain
+E-mail: (goodluckkpereda@aim.com)
+
+Ref No.ES/037/11/06/MD
+Batch No: WNTO/7416/VA/ES
+Lucky No: 07-13-31.54-640
+Serial No: MUOTI/82536
+
+ The Validity period of the winnings is for 20 working days hence you are
+expected to make your claims immediately, any claim not made before this
+date will be returned to the MINISTERIO DE E CONOMIA Y HACIENDA .
+
+     Note:You are advised to keep this winning very confidential until you
+receive your lump prize in your account or optional cheque issuance
+to you,This is a protective measure put in place to avoid people
+applying for your winnig fund,as we have had cases like this before.
+
+
+::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+The information transmitted is intended only for the person or entity to
+whom or which it is addressed.Unauthorised use, disclosure orcopying is
+strictly prohibited.The sender accepts no liability for the improper
+ransmission of this communication nor for any delay in its receipt.
