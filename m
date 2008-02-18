@@ -1,23 +1,16 @@
-Received: from smtp.nokia.com ([192.100.122.233] helo=mgw-mx06.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JR7x7-00053c-DW
-	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 15:30:46 +0000
-Subject: Re: ubi-utils: Moving mkpfi, pfiflash, ... to old-tools
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: haver@vnet.ibm.com
-In-Reply-To: <1203342580.8085.23.camel@august>
-References: <1203342580.8085.23.camel@august>
-Content-Type: text/plain; charset=utf-8
-Date: Mon, 18 Feb 2008 17:28:36 +0200
-Message-Id: <1203348516.3758.14.camel@sauron>
+Received: from mba.ocn.ne.jp ([122.1.235.107] helo=smtp.mba.ocn.ne.jp)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JR89H-0000Kp-PL
+	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 15:43:20 +0000
+Date: Tue, 19 Feb 2008 00:43:37 +0900 (JST)
+Message-Id: <20080219.004337.74388852.anemo@mba.ocn.ne.jp>
+To: linux-mtd@lists.infradead.org
+Subject: at91_nand question
+From: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: "Artem B. Bityutskiy" <dedekind@oktetlabs.ru>,
-	"Monte K. Copeland" <catboat@texas.net>, Andreas Arnez <arnez@de.ibm.com>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>,
-	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>
-Reply-To: dedekind@infradead.org
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Cc: andrew@sanpeople.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,28 +20,16 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Mon, 2008-02-18 at 14:49 +0100, Frank Haverkamp wrote:
-> We need the tool-chain to generate PFI files for the code-update
-> process. Those pfi-files are suited to be used in streaming mode
-> together with the pfiflash utility. We use the for NOR and NAND flash
-> system the same pfi. Therefor the pfi format does not contain flash
-> geometry information e.g. vid-hdr-offset, erase-block size.
+Hi.  Looking at at91_nand.c, I found that this driver does not
+controls NCE signal during normal operations.  The driver only enables
+NCE on at91_nand_probe() and disables NCE on at91_nand_remove().
 
-Yeah. I tried to use the tools but they did not generate correct UBI
-images. I tried to fix this and found out that the internals are too
-messy to be maintainable, at least by me.
+Is this normal behavior?  I thought a nand driver should control NCE
+signal on cmd_ctrl routine.  If the nand driver supported only one
+chip, it can omit NCE control?
 
-I cleaned-up what I could, made the utilities consistent, small, and
-easy to maintain.
+Though it seems work fine as is, I wonder keeping chipselect signal
+low all the time is normal.
 
-Vs. the PFI stuff, I also tried to clean-up this, but gave up after few
-days, and just implemented another utility - ubinize.
-
-I know what is PFI and I decided not to do this, because pfi =3D
-configuration ini file + ubi images. I figured that it does not make
-much sense to inroduce this additional magic format.
-
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+---
+Atsushi Nemoto
