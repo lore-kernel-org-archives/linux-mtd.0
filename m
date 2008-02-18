@@ -1,18 +1,20 @@
-Received: from miranda.se.axis.com ([193.13.178.8])
+Received: from www.tglx.de ([62.245.132.106])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JR8Sv-0000Q0-8d
-	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 16:03:37 +0000
-Date: Mon, 18 Feb 2008 17:02:40 +0100 (CET)
-From: Ricard Wanderlof <ricard.wanderlof@axis.com>
-To: Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: at91_nand question
-In-Reply-To: <20080219.004337.74388852.anemo@mba.ocn.ne.jp>
-Message-ID: <Pine.LNX.4.64.0802181701090.3508@lnxricardw.se.axis.com>
-References: <20080219.004337.74388852.anemo@mba.ocn.ne.jp>
+	id 1JR8VH-0005Cf-Ew
+	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 16:06:03 +0000
+Date: Mon, 18 Feb 2008 17:01:28 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Frank Haverkamp <haver@vnet.ibm.com>
+Subject: Re: ubi-utils: Moving mkpfi, pfiflash, ... to old-tools
+In-Reply-To: <1203342580.8085.23.camel@august>
+Message-ID: <alpine.LFD.1.00.0802181656260.7583@apollo.tec.linutronix.de>
+References: <1203342580.8085.23.camel@august>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Cc: andrew@sanpeople.com, Linux mtd <linux-mtd@lists.infradead.org>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: "Artem B. Bityutskiy" <dedekind@oktetlabs.ru>,
+	Andreas Arnez <arnez@de.ibm.com>, "Monte K. Copeland" <catboat@texas.net>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>,
+	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -22,26 +24,33 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+On Mon, 18 Feb 2008, Frank Haverkamp wrote:
 
-On Tue, 19 Feb 2008, Atsushi Nemoto wrote:
+> Hi Artem,
+> 
+> I saw that you moved the old ubi-toolchain to the old-tools directory
+> with the comment "sort-me-out" in your git-commits.
+> 
+> We need the tool-chain to generate PFI files for the code-update
+> process. Those pfi-files are suited to be used in streaming mode
+> together with the pfiflash utility. We use the for NOR and NAND flash
+> system the same pfi. Therefor the pfi format does not contain flash
+> geometry information e.g. vid-hdr-offset, erase-block size.
+> 
+> I, and maybe some others on the CC list, would like to see those tools
+> moved from the "sort-me-out" section again into the ubi-tools directory.
+> Please let us know, what you think, needs to be done to get this done.
 
-> Hi.  Looking at at91_nand.c, I found that this driver does not
-> controls NCE signal during normal operations.  The driver only enables
-> NCE on at91_nand_probe() and disables NCE on at91_nand_remove().
->
-> Is this normal behavior?  I thought a nand driver should control NCE
-> signal on cmd_ctrl routine.  If the nand driver supported only one
-> chip, it can omit NCE control?
->
-> Though it seems work fine as is, I wonder keeping chipselect signal
-> low all the time is normal.
+I really do not understand why this move was done anyway. We can move
+stuff into retirement when we have a full replacement there.
 
-I think it is necessary for some flash chips. E.g. to erase, one cannot=20
-just issue an erase command and make NCE go inactive, as making NCE go=20
-inactive stops the erase procedure until asserted again.
+Just shuffling functional tools around is useless and makes the life
+of developers, users and package maintainers harder for no good
+reason.
 
-/Ricard
---
-Ricard Wolf Wanderl=F6f                           ricardw(at)axis.com
-Axis Communications AB, Lund, Sweden            www.axis.com
-Phone +46 46 272 2016                           Fax +46 46 13 61 30
+I did not update for some time, but did now and noticed that my
+packaging scripts need a real overhaul for no benefit.
+
+Yours grumpy,
+
+	tglx
