@@ -1,35 +1,31 @@
-Received: from e32.co.us.ibm.com ([32.97.110.150])
+Received: from e5.ny.us.ibm.com ([32.97.182.145])
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JR62e-0001Q2-F0
-	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 13:28:20 +0000
-Received: from d03relay02.boulder.ibm.com (d03relay02.boulder.ibm.com
-	[9.17.195.227])
-	by e32.co.us.ibm.com (8.13.8/8.13.8) with ESMTP id m1IDS1px029503
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 08:28:01 -0500
-Received: from d03av01.boulder.ibm.com (d03av01.boulder.ibm.com [9.17.195.167])
-	by d03relay02.boulder.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m1IDSC6F190988
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 06:28:12 -0700
-Received: from d03av01.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av01.boulder.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m1IDSBxM030244
-	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 06:28:12 -0700
-Subject: [PATCH] ubi-utils: Move bin2nand and nand2bin to mtd-utils
-	subdirectory
+	id 1JR6NL-0003ce-Fy
+	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 13:49:44 +0000
+Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
+	by e5.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m1IDngH7013360
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 08:49:42 -0500
+Received: from d01av03.pok.ibm.com (d01av03.pok.ibm.com [9.56.224.217])
+	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
+	m1IDng5U237240
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 08:49:42 -0500
+Received: from d01av03.pok.ibm.com (loopback [127.0.0.1])
+	by d01av03.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
+	m1IDnfmS008083
+	for <linux-mtd@lists.infradead.org>; Mon, 18 Feb 2008 08:49:42 -0500
+Subject: ubi-utils: Moving mkpfi, pfiflash, ... to old-tools
 From: Frank Haverkamp <haver@vnet.ibm.com>
-To: "Artem B. Bityutskiy" <dedekind@oktetlabs.ru>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Josh Boyer <jwboyer@linux.vnet.ibm.com>, Andreas Arnez <arnez@de.ibm.com>,
-	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>
+To: "Artem B. Bityutskiy" <dedekind@oktetlabs.ru>
 Content-Type: multipart/signed; micalg=sha1;
 	protocol="application/x-pkcs7-signature";
-	boundary="=-YNwUz9HjJU5PZ3mtSsX/"
-Date: Mon, 18 Feb 2008 14:28:08 +0100
-Message-Id: <1203341288.8085.5.camel@august>
+	boundary="=-E7IgwIX7/ct4/gHCE7Eh"
+Date: Mon, 18 Feb 2008 14:49:40 +0100
+Message-Id: <1203342580.8085.23.camel@august>
 Mime-Version: 1.0
-Cc: haver@vnet.ibm.com
+Cc: Andreas Arnez <arnez@de.ibm.com>, "Monte K. Copeland" <catboat@texas.net>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>,
+	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>, haver@vnet.ibm.com,
+	Thomas Gleixner <tglx@linutronix.de>
 Reply-To: haver@vnet.ibm.com
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
@@ -41,34 +37,35 @@ List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
 
---=-YNwUz9HjJU5PZ3mtSsX/
+--=-E7IgwIX7/ct4/gHCE7Eh
 Content-Type: text/plain; charset=ISO-8859-15
 Content-Transfer-Encoding: quoted-printable
 
-Hi Artem & David,
+Hi Artem,
 
-as discussed some time ago with Artem, we figured out that nand2bin and
-bin2nand are not directly UBI related. The tools are of general use to
-create data-images for burning directly into NAND chips e.g. for
-manufacturing purposes. Therefor I created a patch to move it to the
-top-level mtd-utils directory:
+I saw that you moved the old ubi-toolchain to the old-tools directory
+with the comment "sort-me-out" in your git-commits.
 
-http://git.infradead.org/?p=3Dusers/haver/mtd-utils.git;a=3Dcommit;h=3Dadad=
-e51d57a57028af6a187cacd6289fdc890eb8
+We need the tool-chain to generate PFI files for the code-update
+process. Those pfi-files are suited to be used in streaming mode
+together with the pfiflash utility. We use the for NOR and NAND flash
+system the same pfi. Therefor the pfi format does not contain flash
+geometry information e.g. vid-hdr-offset, erase-block size.
 
-Please have a look and pull if the changes are ok.
+I, and maybe some others on the CC list, would like to see those tools
+moved from the "sort-me-out" section again into the ubi-tools directory.
+Please let us know, what you think, needs to be done to get this done.
 
 Thanks,
 
 Frank
-
 --=20
 IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
 Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
 Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
 Registergericht: Amtsgericht Stuttgart, HRB 243294
 
---=-YNwUz9HjJU5PZ3mtSsX/
+--=-E7IgwIX7/ct4/gHCE7Eh
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -151,8 +148,8 @@ aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
 c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
 MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
 dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMjE4MTMyODA0WjAjBgkqhkiG9w0B
-CQQxFgQUGFcDnKkJ5FxhOJKFbrSVGr4l6dgwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
+AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMjE4MTM0OTQwWjAjBgkqhkiG9w0B
+CQQxFgQUpB7g9V0FekCpWKLfzsgGOu3g4/QwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
 A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
 YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
 IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
@@ -163,9 +160,9 @@ bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
 EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
 A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
 Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCv0dlzaFlNaCu/jRzNJaEO0hos3cmhiGgzjbB2M7ueztsrT2oPQI7bhYWbfPOBSKvE+Uwa
-X7pkZJ9+SxhTyI22Dkb9EcZCbJ5WjmoSSvbnnGBpUEaIDOta5/4WPld52nhlddY9x5wCCSx06NQX
-Da7tpGMlJacIprlZWWoSkenAVwAAAAAAAA==
+BQAEgYCsbqJm2bpchqSWVA4Ytwv9JG1w3jZf5/VfALjJQ6Wtde2+f2wqBjLUaOlbwjmeINBHzb+9
+CItj2oaIMAcWI4zOu1hT8pL2Q1iVOqlzOJieaWxR+2UXqypbNIY1O9W9AP4851HlA7Z7IZZtTmL2
+uRTlDYOyYaUF+uAN5T1lkwdiEQAAAAAAAA==
 
 
---=-YNwUz9HjJU5PZ3mtSsX/--
+--=-E7IgwIX7/ct4/gHCE7Eh--
