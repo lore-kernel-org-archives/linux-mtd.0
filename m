@@ -1,23 +1,22 @@
-Received: from hs-out-0708.google.com ([64.233.178.249])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JRAof-0003By-9u
-	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 18:34:13 +0000
-Received: by hs-out-0708.google.com with SMTP id 55so2649504hsc.2
-	for <linux-mtd@lists.infradead.org>;
-	Mon, 18 Feb 2008 10:34:12 -0800 (PST)
-Message-ID: <97a0a9ac0802181034w6f31ac3dj36b18ea409b8f988@mail.gmail.com>
-Date: Mon, 18 Feb 2008 11:34:11 -0700
-From: "Gordon Farquharson" <gordonfarquharson@gmail.com>
-To: linux-mtd@lists.infradead.org
-Subject: Re: [PATCH] [MTD] [NOR] Add support for the ST M29W400DB flash chip.
-In-Reply-To: <97a0a9ac0801082035r2dacab1cu40a6bfc4e7fedb1a@mail.gmail.com>
+Received: from www.tglx.de ([62.245.132.106])
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JRDVk-0003ee-UI
+	for linux-mtd@lists.infradead.org; Mon, 18 Feb 2008 21:26:53 +0000
+Date: Mon, 18 Feb 2008 22:26:21 +0100 (CET)
+From: Thomas Gleixner <tglx@linutronix.de>
+To: Frank Haverkamp <haver@vnet.ibm.com>
+Subject: Re: ubi-utils: Moving mkpfi, pfiflash, ... to old-tools
+In-Reply-To: <1203353343.8085.48.camel@august>
+Message-ID: <alpine.LFD.1.00.0802182214000.7583@apollo.tec.linutronix.de>
+References: <1203342580.8085.23.camel@august>
+	<alpine.LFD.1.00.0802181656260.7583@apollo.tec.linutronix.de>
+	<1203353343.8085.48.camel@august>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <97a0a9ac0801082035r2dacab1cu40a6bfc4e7fedb1a@mail.gmail.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, David Woodhouse <dwmw2@infradead.org>,
-	Thayne Harbaugh <tharbaugh@lnxi.com>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Cc: "Artem B. Bityutskiy" <dedekind@oktetlabs.ru>,
+	Andreas Arnez <arnez@de.ibm.com>, "Monte K. Copeland" <catboat@texas.net>,
+	MTD Mailinglist <linux-mtd@lists.infradead.org>,
+	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -27,61 +26,36 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-I submitted this patch to the list at the beginning of January in the
-hope that it would be included in 2.6.25. I know that the merge window
-for 2.6.25 is closed, but is it still possible to get this into
-2.6.25? It is not a significant change. This chip is used in the GLAN
-Tank NAS.
+On Mon, 18 Feb 2008, Frank Haverkamp wrote:
+> Hi Thomas,
+> 
+> On Mon, 2008-02-18 at 17:01 +0100, Thomas Gleixner wrote:
+> > I did not update for some time, but did now and noticed that my
+> > packaging scripts need a real overhaul for no benefit.
+> > 
+> 
+> I talked to Artem. He told me that the tools had deficiencies that
+> prevented him using them.
 
-Thanks.
+I really give a sh*t whether Artem can use them or not. He is not the
+center of the universe. If he needs them changed, then he should send
+a patch or a suitable replacement for the tool, which does not force
+others to fixup their scripts and build tools for no benefit. This is
+not a sandbox, this are tools used in production environments.
 
-Gordon
+Artem, please stop this nonsense right now. You can create your own
+world if you have the urge to do so, but please keep stuff others use
+intact. This "I don't like that old crap" attitude is an arrogant and
+at the same time ignorant childish behaviour, which has no place in a
+serious project.
 
-On Jan 8, 2008 9:35 PM, Gordon Farquharson <gordonfarquharson@gmail.com> wrote:
-> Add support for the ST M29W400DB flash chip.
->
-> Signed-off-by: Gordon Farquharson <gordonfarquharson@gmail.com>
->
-> ---
->
-> diff --git a/drivers/mtd/chips/jedec_probe.c b/drivers/mtd/chips/jedec_probe.c
-> index 6405938..0b4f481 100644
-> --- a/drivers/mtd/chips/jedec_probe.c
-> +++ b/drivers/mtd/chips/jedec_probe.c
-> @@ -135,6 +135,7 @@
->  #define M29W160DT      0x22C4
->  #define M29W160DB      0x2249
->  #define M29W040B       0x00E3
-> +#define M29W400DB      0x00EF
->  #define M50FW040       0x002C
->  #define M50FW080       0x002D
->  #define M50FW016       0x002E
-> @@ -1498,7 +1499,22 @@ static const struct amd_flash_info jedec_table[] = {
->                 .regions        = {
->                         ERASEINFO(0x10000,8),
->                 }
-> -        }, {
-> +       }, {
-> +               .mfr_id         = MANUFACTURER_ST,
-> +               .dev_id         = M29W400DB,
-> +               .name           = "ST M29W400DB",
-> +               .devtypes       = CFI_DEVICETYPE_X16|CFI_DEVICETYPE_X8,
-> +               .uaddr          = MTD_UADDR_0x0555_0x02AA,
-> +               .dev_size       = SIZE_512KiB,
-> +               .cmd_set        = P_ID_AMD_STD,
-> +               .nr_regions     = 4,
-> +               .regions        = {
-> +                       ERASEINFO(0x04000,1),
-> +                       ERASEINFO(0x02000,2),
-> +                       ERASEINFO(0x08000,1),
-> +                       ERASEINFO(0x10000,7)
-> +               }
-> +       }, {
->                 .mfr_id         = MANUFACTURER_ST,
->                 .dev_id         = M50FW040,
->                 .name           = "ST M50FW040",
->
+> E.g. that he could not put the vid-hdr the
+> offset he wanted it to put. He promissed me to write up the deficiencies
+> so that we can work on them. I am sure that after fixing, we can move
+> the tools back to their old location.
 
--- 
-Gordon Farquharson
-GnuPG Key ID: 32D6D676
+No, they go back to their place immediately, period.
+
+Yours even more grumpy,
+
+      tglx
