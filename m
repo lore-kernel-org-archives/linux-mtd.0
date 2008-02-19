@@ -1,22 +1,15 @@
-Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JRU5a-0008NU-7m
-	for linux-mtd@lists.infradead.org; Tue, 19 Feb 2008 15:08:59 +0000
-Date: Tue, 19 Feb 2008 16:08:22 +0100
-From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
-To: Stephane Chazelas <stephane.chazelas@emerson.com>
-Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
-Message-ID: <20080219150822.GA29587@lazybastard.org>
-References: <chaz20080212134751.GI30304@artesyncp.com>
-	<20080212152124.GA21878@lazybastard.org>
-	<chaz20080212161034.GJ30304@artesyncp.com>
+Received: from web50805.mail.re2.yahoo.com ([206.190.38.114])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JRU7R-0007zN-Ig
+	for linux-mtd@lists.infradead.org; Tue, 19 Feb 2008 15:10:53 +0000
+Date: Tue, 19 Feb 2008 07:04:12 -0800 (PST)
+From: Mangesh Edake <m_edake@yahoo.com>
+Subject: JFFS2 as rootfs on DataFlash
+To: linux-mtd@lists.infradead.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <chaz20080212161034.GJ30304@artesyncp.com>
-Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
-	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
+Message-ID: <109598.62836.qm@web50805.mail.re2.yahoo.com>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -26,75 +19,100 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-[ Just returned home. ]
+Hello all,
 
-On Tue, 12 February 2008 16:10:34 +0000, Stephane Chazelas wrote:
-> 
-> OK, I can do that. Would the "simple" fix go to the
-> trivial@kernel.org Trivial Patch Monkey?
+I am using atmel dataflash (AT45DB321D) to store the
+jffs2 image which is a rootfs. I am downloading the
+image to SDRAM and then writing this image to
+dataflash using uboot copy (cp) command like this,
+u-boot# cp 21000000 14a000 192000
 
-That or to me or to dwmw2...  I'm not too picky about the path, as long
-as it gets merged eventually.
+Once I boot the system, jffs2 is mounted as rootfs but
+then I continuously get the "Node header CRC failed"
+messages and then finally kernel panic with no init
+found. 
 
-> > The core of remove_device_by_name() is shared with block2mtd_exit(),
-> > so a common helper would be good.  Your error handling is better, so
-> > let's keep that version.
-> 
-> Well, yes that raised a concern to me, the "exit" function
-> returns "void". If the del_mtd_device fails with EBUSY at the
-> moment (such as when a /dev/mtdblock<x> is mounted), we ignore
-> it and go on with freeing everything leaving a dangling mtd.
-> 
-> Is there a way around that?
+I'm using mkfs.jffs2 to create an image like,
+mkfs.jffs2 -p -l -e 0x2100 -s 0x210 -n -d
+/home/me/rootdir -o jffs2.img
 
-For module unload we should be safe.  Errors are only returned if the
-device doesn't exist (a clear bug) or if the device is still being used.
-Module refcounting should prevent the latter case, so either way we have
-a bug if del_mtd_device returns an error.
+I am totally lost and cannot figure out the reason for
+the errors. I'd appericiate if anybody help to find
+out the reason. 
 
-When removing the device via your proposed interface we should simply
-return the error to userspace, if the interface permits.  Sysfs doesn't
-seem to permit error returns, so we should keep the device alive and do
-nothing.
+Following is the ouput LOG.
+----------------------------
 
-> Another problem is that it's not easy to check whether a mtd
-> creation was successful or not. Basically, you have to write to
-> a /sys file and then parse /proc/mtd to get the result.
+JFFS2 write-buffering enabled buffer (528) erasesize
+(8448)
+VFS: Mounted root (jffs2 filesystem) read-write.
 
-Agreed, sysfs' lack of error indication isn't ideal.
+Freeing init memory: 76K
 
-> What about having a /dev/block2mtd (with owner/permissions that
-> could allow non-root users to use it), with 2 ioctls:
-> 
-> - one to "link" a block dev to a mtd that would take as
->   parameter a fd to an open block dev (again allowing for
->   flexible permissions) and would return the number of the
->   allocated mtd and success/failure in errno. Upon sucess it
->   would increase the refcnt of block2mtd.
-> 
-> - and one to "release" the link. That would fail if the mtd is
->   in use and decrease block2mtd's refcnt upon success.
-> 
-> A bit like the loop devices (or /dev/ptmx) actually. What do you
-> think?
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02fc70. {0807,0000,05c2764e,ab6f10c8}
 
-Could work.  Passing the fd raises several alarm bells.  Arnd, any
-comments from you?
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02fbfc. {fb1d,98f7,00000034,00000001}
 
-In general I'd like to see some good reasons for adding an ioctl (or any
-other) interface first.  Creating interfaces is hard and you rarely get
-a second chance to fix the mess you created before you knew all the
-consequenses.
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02fb88. {4269,67af,b497cad1,31616468}
 
-> (also, with the /sys interface, isn't there a potential problem
-> with chroots wrt the path given to the /sys file?)
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02faa0. {8f02,47b6,00000000,00000000}
 
-There may be.  Can you check if there is?
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02fa2c. {584b,9ef4,e0011985,0000002c}
 
-Jörn
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02f9b8. {8f02,47b6,00000804,f3086019}
 
--- 
-Debugging is twice as hard as writing the code in the first place.
-Therefore, if you write the code as cleverly as possible, you are,
-by definition, not smart enough to debug it.
--- Brian W. Kernighan
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02f944. {fb1d,98f7,00000046,00000001}
+
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header 
+       .
+       .
+
+Warning: unable to open an initial console.
+
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x0df814. {000e,0000,000000ef,000000f1}
+
+JFFS2 notice: (1) read_unknown: unknown
+RWCOMPAT_DELETE nodetype 0X2000 at 0x0df78c
+JFFS2 notice: (634) jffs2_get_inode_nodes: Node header
+CRC failed at 0x00017c. {6ee6,7d26,00000003,0000005f}
+
+JFFS2 warning: (634) jffs2_do_read_inode_internal: no
+data nodes found for ino #5
+
+
+       .
+       .
+
+
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x02c168. {fb1d,98f7,00000062,00000001}
+
+JFFS2 notice: (1) jffs2_get_inode_nodes: Node header
+CRC failed at 0x000630. {89ed,0000,00000000,00031db0}
+
+JFFS2 error: (1) jffs2_do_read_inode_internal: CRC
+failed for read_inode of inode 2 at physical location
+0x2c794
+
+Kernel panic - not syncing: No init found.  Try
+passing init= option to kernel.
+
+
+
+
+  --
+  Best Regards...
+Mangesh Edake.
+
+
+      ____________________________________________________________________________________
+Be a better friend, newshound, and 
+know-it-all with Yahoo! Mobile.  Try it now.  http://mobile.yahoo.com/;_ylt=Ahu06i62sR8HDtDypao8Wcj9tAcJ 
