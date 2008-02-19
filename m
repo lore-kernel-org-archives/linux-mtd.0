@@ -1,41 +1,22 @@
-Received: from e4.ny.us.ibm.com ([32.97.182.144])
+Received: from lazybastard.de ([212.112.238.170] helo=longford.lazybastard.org)
 	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JRS11-0006nM-6v
-	for linux-mtd@lists.infradead.org; Tue, 19 Feb 2008 12:56:07 +0000
-Received: from d01relay02.pok.ibm.com (d01relay02.pok.ibm.com [9.56.227.234])
-	by e4.ny.us.ibm.com (8.13.8/8.13.8) with ESMTP id m1JCu6Uh004517
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2008 07:56:06 -0500
-Received: from d01av01.pok.ibm.com (d01av01.pok.ibm.com [9.56.224.215])
-	by d01relay02.pok.ibm.com (8.13.8/8.13.8/NCO v8.7) with ESMTP id
-	m1JCu616247956
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2008 07:56:06 -0500
-Received: from d01av01.pok.ibm.com (loopback [127.0.0.1])
-	by d01av01.pok.ibm.com (8.12.11.20060308/8.13.3) with ESMTP id
-	m1JCu5Rt015923
-	for <linux-mtd@lists.infradead.org>; Tue, 19 Feb 2008 07:56:06 -0500
-Subject: Re: ubi-utils: Moving mkpfi, pfiflash, ... to old-tools
-From: Frank Haverkamp <haver@vnet.ibm.com>
-To: Josh Boyer <jwboyer@linux.ibm.com>
-In-Reply-To: <20080219062930.5998990f@zod.rchland.ibm.com>
-References: <1203342580.8085.23.camel@august>
-	<alpine.LFD.1.00.0802181656260.7583@apollo.tec.linutronix.de>
-	<1203353343.8085.48.camel@august> <20080218105324.1734f9d5@weaponx>
-	<1203410856.7714.7.camel@august>
-	<20080219062930.5998990f@zod.rchland.ibm.com>
-Content-Type: multipart/signed; micalg=sha1;
-	protocol="application/x-pkcs7-signature";
-	boundary="=-2G7qFLn/FgMHY6dBc6XW"
-Date: Tue, 19 Feb 2008 13:56:03 +0100
-Message-Id: <1203425764.8598.10.camel@august>
-Mime-Version: 1.0
-Cc: Artem Bityutskiy <Artem.Bityutskiy@nokia.com>,
-	"Artem B. Bityutskiy" <dedekind@oktetlabs.ru>,
-	"Monte K. Copeland" <catboat@texas.net>,
-	MTD Mailinglist <linux-mtd@lists.infradead.org>,
-	Andreas Arnez <arnez@de.ibm.com>,
-	Thomas Gleixner <tglx@linutronix.de>, haver@vnet.ibm.com,
-	Alexander Schmidt1 <ALEXSCHM@de.ibm.com>
-Reply-To: haver@vnet.ibm.com
+	id 1JRU5a-0008NU-7m
+	for linux-mtd@lists.infradead.org; Tue, 19 Feb 2008 15:08:59 +0000
+Date: Tue, 19 Feb 2008 16:08:22 +0100
+From: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>
+To: Stephane Chazelas <stephane.chazelas@emerson.com>
+Subject: Re: [PATCH 2.6.24] block2mtd: removing a device and typo fixes
+Message-ID: <20080219150822.GA29587@lazybastard.org>
+References: <chaz20080212134751.GI30304@artesyncp.com>
+	<20080212152124.GA21878@lazybastard.org>
+	<chaz20080212161034.GJ30304@artesyncp.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <chaz20080212161034.GJ30304@artesyncp.com>
+Cc: =?utf-8?B?SsO2cm4=?= Engel <joern@logfs.org>, linux-mtd@lists.infradead.org,
+	linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -45,128 +26,75 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+[ Just returned home. ]
 
---=-2G7qFLn/FgMHY6dBc6XW
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+On Tue, 12 February 2008 16:10:34 +0000, Stephane Chazelas wrote:
+> 
+> OK, I can do that. Would the "simple" fix go to the
+> trivial@kernel.org Trivial Patch Monkey?
 
-Hi Josh,
+That or to me or to dwmw2...  I'm not too picky about the path, as long
+as it gets merged eventually.
 
-On Tue, 2008-02-19 at 06:29 -0600, Josh Boyer wrote:
-> No, they don't.  That was a major part of what I needed (so thank
-> you!),
-> but ecc layout isn't the same as ecc byte ordering.  I'll post a patch
-> soonish.
+> > The core of remove_device_by_name() is shared with block2mtd_exit(),
+> > so a common helper would be good.  Your error handling is better, so
+> > let's keep that version.
+> 
+> Well, yes that raised a concern to me, the "exit" function
+> returns "void". If the del_mtd_device fails with EBUSY at the
+> moment (such as when a /dev/mtdblock<x> is mounted), we ignore
+> it and go on with freeing everything leaving a dangling mtd.
+> 
+> Is there a way around that?
 
-I already thought that ;-). Fine nice that we will get a new feature
-into the tool.
+For module unload we should be safe.  Errors are only returned if the
+device doesn't exist (a clear bug) or if the device is still being used.
+Module refcounting should prevent the latter case, so either way we have
+a bug if del_mtd_device returns an error.
 
-Frank
+When removing the device via your proposed interface we should simply
+return the error to userspace, if the interface permits.  Sysfs doesn't
+seem to permit error returns, so we should keep the device alive and do
+nothing.
 
---=20
-IBM Deutschland Entwicklung GmbH, Schoenaicher Str. 220, 71032
-Boeblingen, Vorsitzender des Aufsichtsrats: Martin Jetter
-Gesch=E4ftsf=FChrung: Herbert Kircher, Sitz der Gesellschaft: B=F6blingen,
-Registergericht: Amtsgericht Stuttgart, HRB 243294
+> Another problem is that it's not easy to check whether a mtd
+> creation was successful or not. Basically, you have to write to
+> a /sys file and then parse /proc/mtd to get the result.
 
---=-2G7qFLn/FgMHY6dBc6XW
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
+Agreed, sysfs' lack of error indication isn't ideal.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIP9DCCBSww
-ggSVoAMCAQICEDhxwVOTyOj0nx4MTQ30ZkMwDQYJKoZIhvcNAQEFBQAwgcExCzAJBgNVBAYTAlVT
-MRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE8MDoGA1UECxMzQ2xhc3MgMiBQdWJsaWMgUHJpbWFy
-eSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eSAtIEcyMTowOAYDVQQLEzEoYykgMTk5OCBWZXJpU2ln
-biwgSW5jLiAtIEZvciBhdXRob3JpemVkIHVzZSBvbmx5MR8wHQYDVQQLExZWZXJpU2lnbiBUcnVz
-dCBOZXR3b3JrMB4XDTAzMDUwNjAwMDAwMFoXDTA4MDUwNTIzNTk1OVowgfkxCzAJBgNVBAYTAlVT
-MTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8w
-HQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQg
-aHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNp
-dGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBB
-dXRob3JpdHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANVnrTXdoH79V2HWnacXy7mjjSNc
-nOi3Z+cXSBh9uSDhCLAUUeuvoHubuA5ImrJI5k/dA+Q0L+WNzR7OZr4TRpw3DOksYS/0o+RZ5+lu
-J7ltXcdVgsHU6qqHDpvF1hAegqpNz670JVVfUs4ThC1AafMIBHwmJbqFG4Iy39OH37oBAgMBAAGj
-ggHpMIIB5TASBgNVHRMBAf8ECDAGAQH/AgEAMEQGA1UdIAQ9MDswOQYLYIZIAYb4RQEHFwIwKjAo
-BggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYTA0BgNVHR8ELTArMCmgJ6Al
-hiNodHRwOi8vY3JsLnZlcmlzaWduLmNvbS9wY2EyLWcyLmNybDALBgNVHQ8EBAMCAQYwEQYJYIZI
-AYb4QgEBBAQDAgEGMCkGA1UdEQQiMCCkHjAcMRowGAYDVQQDExFQcml2YXRlTGFiZWwyLTEyNzAd
-BgNVHQ4EFgQUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowgegGA1UdIwSB4DCB3aGBx6SBxDCBwTELMAkG
-A1UEBhMCVVMxFzAVBgNVBAoTDlZlcmlTaWduLCBJbmMuMTwwOgYDVQQLEzNDbGFzcyAyIFB1Ymxp
-YyBQcmltYXJ5IENlcnRpZmljYXRpb24gQXV0aG9yaXR5IC0gRzIxOjA4BgNVBAsTMShjKSAxOTk4
-IFZlcmlTaWduLCBJbmMuIC0gRm9yIGF1dGhvcml6ZWQgdXNlIG9ubHkxHzAdBgNVBAsTFlZlcmlT
-aWduIFRydXN0IE5ldHdvcmuCEQC5L2DMiJ+hekYJuFtwbIqvMA0GCSqGSIb3DQEBBQUAA4GBAAgY
-BRMDGzUl8C495yDmyE78QHSxQjkpKbJ61i0GkSYGUmkRYc3czKUlkV3sdHWe28su0SRO8HKhXzfU
-dR2D2n6UixORmR/tobmuxlkfwqHWDvNVuJD0iCV1e2cXT9qf38vMzMiC55lQmnCoUfTg131ovM/V
-1EI2aT181HWu/pM8MIIFXjCCBMegAwIBAgIQBx15Uc8dgKRMua0Jq2/yNTANBgkqhkiG9w0BAQQF
-ADCB+TELMAkGA1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGlu
-ZXMgQ29ycG9yYXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsT
-MlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYD
-VQQLEydDbGFzcyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lC
-TSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0wNzA0MTYwMDAwMDBaFw0wODA0MTUyMzU5NTla
-MIGJMS4wLAYDVQQKFCVJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnAuMRgwFgYD
-VQQDDA9GcmFuayBIYXZlcmthbXAxGTAXBgoJkiaJk/IsZAEBFAkxMjQ2MTQ3MjQxIjAgBgkqhkiG
-9w0BCQEWE2hhdmVya2FtQGRlLmlibS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANqa
-0RVcURGtTfJRuKOEaQPrtJrWVAmWFTIA2YdQSiHJDgg+OLG/dnlpyqU0JOfcd3j1ZyQK7EFpoT03
-B4Bx4MWBSoWdf3bdbEmKvYIM2BddBVgisGiwhWklRsoGiItckT7xSVK5P3hvLCXjBvcdbxcm4VS2
-NRyJfGEyeoGiObLdAgMBAAGjggJTMIICTzAJBgNVHRMEAjAAMAsGA1UdDwQEAwIFoDBmBgNVHR8E
-XzBdMFugWaBXhlVodHRwOi8vb25zaXRlY3JsLnZlcmlzaWduLmNvbS9JbnRlcm5hdGlvbmFsQnVz
-aW5lc3NNYWNoaW5lc0NvcnBDb3Jwb3JhdGVDSU8vTGF0ZXN0Q1JMMIIBKQYDVR0gBIIBIDCCARww
-ggEYBgtghkgBhvhFAQcXAjCCAQcwKwYIKwYBBQUHAgEWH2h0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwgdcGCCsGAQUFBwICMIHKGoHHTm90aWNlIFRleHQ9Tk9USUNFOiBQcml2YXRlIGtl
-eSBtYXkgYmUgcmVjb3ZlcmVkIGJ5IFZlcmlTaWduJ3MgY3VzdG9tZXIgd2hvIG1heSBiZSBhYmxl
-IHRvIGRlY3J5cHQgbWVzc2FnZXMgeW91IHNlbmQgdG8gY2VydGlmaWNhdGUgaG9sZGVyLiAgVXNl
-IGlzIHN1YmplY3QgdG8gdGVybXMgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYS1rcjAf
-BgNVHSMEGDAWgBSRwXOwc9XZknRnzRvxURQ0MbYsWjAdBgNVHQ4EFgQUbOeIIYn3x+GgI5Am0KHt
-R62Y458wLgYDVR0RBCcwJaAjBgorBgEEAYI3FAIDoBUME2hhdmVya2FtQGRlLmlibS5jb20wHQYD
-VR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMBEGCWCGSAGG+EIBAQQEAwIFoDANBgkqhkiG9w0B
-AQQFAAOBgQAJ6/At+OSf4q8CRKWRmIxb3m0Sk6YfSTI6gu+YIu6LiOIq3BFH7XhRGiM+KqQaKyKe
-9Ar+L/QzI9YQMIShrA9m2eFKVrfsBTeSn2/d+wTYM4rjyYtv24qeYSKF9yqWGMW+Oy9SIjb9TAgF
-A0rQrpiAExeGgoIuDAsZFr4+EfUkcDCCBV4wggTHoAMCAQICEAcdeVHPHYCkTLmtCatv8jUwDQYJ
-KoZIhvcNAQEEBQAwgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2lu
-ZXNzIE1hY2hpbmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3Jr
-MTswOQYDVQQLEzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAo
-YykwMzEwMC4GA1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQw
-IgYDVQQDExtJQk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNMDcwNDE2MDAwMDAwWhcNMDgw
-NDE1MjM1OTU5WjCBiTEuMCwGA1UEChQlSW50ZXJuYXRpb25hbCBCdXNpbmVzcyBNYWNoaW5lcyBD
-b3JwLjEYMBYGA1UEAwwPRnJhbmsgSGF2ZXJrYW1wMRkwFwYKCZImiZPyLGQBARQJMTI0NjE0NzI0
-MSIwIAYJKoZIhvcNAQkBFhNoYXZlcmthbUBkZS5pYm0uY29tMIGfMA0GCSqGSIb3DQEBAQUAA4GN
-ADCBiQKBgQDamtEVXFERrU3yUbijhGkD67Sa1lQJlhUyANmHUEohyQ4IPjixv3Z5acqlNCTn3Hd4
-9WckCuxBaaE9NweAceDFgUqFnX923WxJir2CDNgXXQVYIrBosIVpJUbKBoiLXJE+8UlSuT94bywl
-4wb3HW8XJuFUtjUciXxhMnqBojmy3QIDAQABo4ICUzCCAk8wCQYDVR0TBAIwADALBgNVHQ8EBAMC
-BaAwZgYDVR0fBF8wXTBboFmgV4ZVaHR0cDovL29uc2l0ZWNybC52ZXJpc2lnbi5jb20vSW50ZXJu
-YXRpb25hbEJ1c2luZXNzTWFjaGluZXNDb3JwQ29ycG9yYXRlQ0lPL0xhdGVzdENSTDCCASkGA1Ud
-IASCASAwggEcMIIBGAYLYIZIAYb4RQEHFwIwggEHMCsGCCsGAQUFBwIBFh9odHRwczovL3d3dy52
-ZXJpc2lnbi5jb20vcnBhLWtyMIHXBggrBgEFBQcCAjCByhqBx05vdGljZSBUZXh0PU5PVElDRTog
-UHJpdmF0ZSBrZXkgbWF5IGJlIHJlY292ZXJlZCBieSBWZXJpU2lnbidzIGN1c3RvbWVyIHdobyBt
-YXkgYmUgYWJsZSB0byBkZWNyeXB0IG1lc3NhZ2VzIHlvdSBzZW5kIHRvIGNlcnRpZmljYXRlIGhv
-bGRlci4gIFVzZSBpcyBzdWJqZWN0IHRvIHRlcm1zIGF0IGh0dHBzOi8vd3d3LnZlcmlzaWduLmNv
-bS9ycGEta3IwHwYDVR0jBBgwFoAUkcFzsHPV2ZJ0Z80b8VEUNDG2LFowHQYDVR0OBBYEFGzniCGJ
-98fhoCOQJtCh7UetmOOfMC4GA1UdEQQnMCWgIwYKKwYBBAGCNxQCA6AVDBNoYXZlcmthbUBkZS5p
-Ym0uY29tMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDARBglghkgBhvhCAQEEBAMCBaAw
-DQYJKoZIhvcNAQEEBQADgYEACevwLfjkn+KvAkSlkZiMW95tEpOmH0kyOoLvmCLui4jiKtwRR+14
-URojPiqkGisinvQK/i/0MyPWEDCEoawPZtnhSla37AU3kp9v3fsE2DOK48mLb9uKnmEihfcqlhjF
-vjsvUiI2/UwIBQNK0K6YgBMXhoKCLgwLGRa+PhH1JHAxggRjMIIEXwIBATCCAQ4wgfkxCzAJBgNV
-BAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hpbmVzIENvcnBvcmF0
-aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQLEzJUZXJtcyBvZiB1
-c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4GA1UECxMnQ2xhc3Mg
-MiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJQk0gQ2VydGlmaWNh
-dGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwCQYFKw4DAhoFAKCCAqkwGAYJKoZIhvcN
-AQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDgwMjE5MTI1NjAzWjAjBgkqhkiG9w0B
-CQQxFgQUD0CBuwlHpNJ3sRsb2gQyyHlyuTQwggEhBgkrBgEEAYI3EAQxggESMIIBDjCB+TELMAkG
-A1UEBhMCVVMxNDAyBgNVBAoTK0ludGVybmF0aW9uYWwgQnVzaW5lc3MgTWFjaGluZXMgQ29ycG9y
-YXRpb24xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
-IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTAzMTAwLgYDVQQLEydDbGFz
-cyAyIE9uU2l0ZSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0ExJDAiBgNVBAMTG0lCTSBDZXJ0aWZp
-Y2F0aW9uIEF1dGhvcml0eQIQBx15Uc8dgKRMua0Jq2/yNTCCASMGCyqGSIb3DQEJEAILMYIBEqCC
-AQ4wgfkxCzAJBgNVBAYTAlVTMTQwMgYDVQQKEytJbnRlcm5hdGlvbmFsIEJ1c2luZXNzIE1hY2hp
-bmVzIENvcnBvcmF0aW9uMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMTswOQYDVQQL
-EzJUZXJtcyBvZiB1c2UgYXQgaHR0cHM6Ly93d3cudmVyaXNpZ24uY29tL3JwYSAoYykwMzEwMC4G
-A1UECxMnQ2xhc3MgMiBPblNpdGUgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBMSQwIgYDVQQDExtJ
-Qk0gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkCEAcdeVHPHYCkTLmtCatv8jUwDQYJKoZIhvcNAQEB
-BQAEgYCXJcQhpvi9Ujt4j+LWgkpx4OLVbrsaEPgUi7m3EjmkKc7qVgnycyHq/Fwf/XdMaIPyOoxk
-s9KARyLxrFpX9oyD9q/v7gOmNEgmCUSwXccXT2Jcf7vPgj1AjDwVMwJUv05P7rg7kiPBRFPjYWOt
-8TmGLwwRJQOURTOHLGmm+wE/YQAAAAAAAA==
+> What about having a /dev/block2mtd (with owner/permissions that
+> could allow non-root users to use it), with 2 ioctls:
+> 
+> - one to "link" a block dev to a mtd that would take as
+>   parameter a fd to an open block dev (again allowing for
+>   flexible permissions) and would return the number of the
+>   allocated mtd and success/failure in errno. Upon sucess it
+>   would increase the refcnt of block2mtd.
+> 
+> - and one to "release" the link. That would fail if the mtd is
+>   in use and decrease block2mtd's refcnt upon success.
+> 
+> A bit like the loop devices (or /dev/ptmx) actually. What do you
+> think?
 
+Could work.  Passing the fd raises several alarm bells.  Arnd, any
+comments from you?
 
---=-2G7qFLn/FgMHY6dBc6XW--
+In general I'd like to see some good reasons for adding an ioctl (or any
+other) interface first.  Creating interfaces is hard and you rarely get
+a second chance to fix the mess you created before you knew all the
+consequenses.
+
+> (also, with the /sys interface, isn't there a potential problem
+> with chroots wrt the path given to the /sys file?)
+
+There may be.  Can you check if there is?
+
+Jörn
+
+-- 
+Debugging is twice as hard as writing the code in the first place.
+Therefore, if you write the code as cleverly as possible, you are,
+by definition, not smart enough to debug it.
+-- Brian W. Kernighan
