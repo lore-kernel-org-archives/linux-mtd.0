@@ -1,16 +1,19 @@
-Received: from exprod7og102.obsmtp.com ([64.18.2.157])
-	by bombadil.infradead.org with smtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JRqQs-0001Us-Ho
-	for linux-mtd@lists.infradead.org; Wed, 20 Feb 2008 15:00:27 +0000
-Date: Wed, 20 Feb 2008 15:00:21 +0000
-From: Stephane Chazelas <stephane.chazelas@emerson.com>
-To: Joern Engel <joern@lazybastard.org>
-Subject: [PATCH 2.6.25-rc2] block2mtd: logging typo fixes
-Message-ID: <chaz20080220150021.GM4539@artesyncp.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Cc: linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org
+Received: from smtp.nokia.com ([192.100.122.230] helo=mgw-mx03.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JRqca-0007dG-L5
+	for linux-mtd@lists.infradead.org; Wed, 20 Feb 2008 15:12:33 +0000
+Subject: Re: ubifs: can't mount ubifs as rootfs
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
+References: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Wed, 20 Feb 2008 17:10:27 +0200
+Message-Id: <1203520227.3758.40.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,46 +23,34 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hi joern,
+Hi,
 
-this patch addresses a number of small issues mainly regarding
-the output made by this driver to dmesg:
-  - Some of the blkmtd's had not been changed to block2mtd which
-    caused display problem
-  - the parse_err() macro was displaying "block2mtd: " twice
+On Wed, 2008-02-20 at 23:00 +0800, Nancy wrote:
+> Dear all,
+>         As you can see at last, ubifs can't mount ubifs as rootfs,
+> why? How can I make it right?
+>         same kernel image, just different kernel command line.
 
-Signed-off-by: Stephane Chazelas <stephane.chazelas@emerson.com>
+I think you do not have this patch:
 
---- drivers/mtd/devices/block2mtd.c~	2008-02-20 14:56:56.942145223 +0000
-+++ drivers/mtd/devices/block2mtd.c	2008-02-20 14:57:15.802131021 +0000
-@@ -305,7 +305,7 @@ static struct block2mtd_dev *add_device(
- 	}
- 	list_add(&dev->list, &blkmtd_device_list);
- 	INFO("mtd%d: [%s] erase_size = %dKiB [%d]", dev->mtd.index,
--			dev->mtd.name + strlen("blkmtd: "),
-+			dev->mtd.name + strlen("block2mtd: "),
- 			dev->mtd.erasesize >> 10, dev->mtd.erasesize);
- 	return dev;
- 
-@@ -366,9 +366,9 @@ static inline void kill_final_newline(ch
- }
- 
- 
--#define parse_err(fmt, args...) do {		\
--	ERROR("block2mtd: " fmt "\n", ## args);	\
--	return 0;				\
-+#define parse_err(fmt, args...) do {	\
-+	ERROR(fmt, ## args);		\
-+	return 0;			\
- } while (0)
- 
- #ifndef MODULE
-@@ -474,7 +474,7 @@ static void __devexit block2mtd_exit(voi
- 		block2mtd_sync(&dev->mtd);
- 		del_mtd_device(&dev->mtd);
- 		INFO("mtd%d: [%s] removed", dev->mtd.index,
--				dev->mtd.name + strlen("blkmtd: "));
-+				dev->mtd.name + strlen("block2mtd: "));
- 		list_del(&dev->list);
- 		block2mtd_free_device(dev);
- 	}
+http://git.infradead.org/?p=3Dusers/dedekind/ubifs-v2.6.22.git;a=3Dcommitdi=
+ff;h=3D9c04728f3cb585f1e0b3df4f0ae2aec1bf73e392;hp=3Daad43553d81d1b79f64cde=
+3c81b71bfc3036d098
+
+You probably use old UBIFS. Keep in mind, it is constantly developed so
+you should always try the latest one if you have problems.
+
+There are 2.6.22, 2.6.23, and 2.6.24 ubifs backports BTW,
+see http://www.linux-mtd.infradead.org/doc/ubifs.html#L_source
+
+AFAIR you use 2.6.22, so here it is:
+
+git://git.infradead.org/~dedekind/ubifs-v2.6.22.git
+
+Just download it - it has all the need patches. But I encourage you to
+use the lates development tree.
+
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
