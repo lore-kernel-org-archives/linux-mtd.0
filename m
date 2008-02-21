@@ -1,26 +1,18 @@
-Received: from main.gmane.org ([80.91.229.2] helo=ciao.gmane.org)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JSFnB-0007Sz-4m
-	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 18:05:09 +0000
-Received: from root by ciao.gmane.org with local (Exim 4.43)
-	id 1JSFn4-00075E-5j
-	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 18:05:02 +0000
-Received: from 6.177.115-78.rev.gaoland.net ([6.177.115-78.rev.gaoland.net])
-	by main.gmane.org with esmtp (Gmexim 0.1 (Debian))
-	id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2008 18:05:02 +0000
-Received: from ivan.djelic by 6.177.115-78.rev.gaoland.net with local (Gmexim
-	0.1 (Debian)) id 1AlnuQ-0007hv-00
-	for <linux-mtd@lists.infradead.org>; Thu, 21 Feb 2008 18:05:02 +0000
-To: linux-mtd@lists.infradead.org
-From: Ivan Djelic <ivan.djelic@parrot.com>
-Subject: [MTD/NAND] Blackfin NFC driver DMA bug ?
-Date: Thu, 21 Feb 2008 17:58:49 +0000 (UTC)
-Message-ID: <loom.20080221T171743-57@post.gmane.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Received: from smtp2.sssup.it ([193.205.80.100] helo=smpt2.sssup.it)
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JSGVI-0004rH-CH
+	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 18:50:45 +0000
+Message-ID: <47BDC7EF.5060603@gandalf.sssup.it>
+Date: Thu, 21 Feb 2008 19:50:23 +0100
+From: michael <trimarchi@gandalf.sssup.it>
+MIME-Version: 1.0
+To: Mangesh Edake <m_edake@yahoo.com>
+Subject: Re: JFFS2 as rootfs on DataFlash
+References: <389154.92868.qm@web50802.mail.re2.yahoo.com>
+In-Reply-To: <389154.92868.qm@web50802.mail.re2.yahoo.com>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Sender: news <news@ger.gmane.org>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -30,33 +22,51 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-Hello All,
+Mangesh Edake wrote:
+Hi
+> Hi Michel,
+>
+> Many thanks for your reply. 
+>
+> I tried with removing -s 0x210 option, so command now
+> looks like,
+> mkfs.jffs2 -p -l -e 0x2100 -n -d /home/me/rootdir -o
+> jffs2.img
+>
+> At the same time I added erase command in the u-boot
+> as suggested by you. But unfortunately the result is
+> same...
+>
+> However I found that dataflash driver in u-boot
+> doesnot deal with extra 16-bytes (oob) and doesnot
+> write any JFFS2 specific magic bitmask, node crc,
+> cleanmarker etc. info to the oob. But the nand flash
+> (legacy) driver does the same in u-boot. Also
+> kernel-mtd driver for at45 dataflash is missing with
+> read_oob, write_oob functions whereas mtd-nand uses
+> those routines. So my concern is, while copying the
+> jffs2 image to dataflash is it necessory to write
+> jffs2 specific info in oob region..? My assumption is,
+> this info should be present in image itself and
+> mkfs.jffs2 must take care of this while creating an
+> image. (Please corret me if I'm wrong...)
+> I've also seen code of nandwrite (mtd utility) where
+> it uses -j option that takes care of jffs2_oobinfo.
+>   
+No,
+using in linux flash_eraseall to clean your partition. Maybe start from 
+a ramdisk.
+It is the only partinion? If no, you must remember to align it at a 
+block size.
+Example my partionin start from 0x131400
 
-While working on a NAND flash MTD driver, I came across the following piece of
-code in the Blackfin bf5xx NAND flash controller driver:
+setenv bootargs console=ttyS0,115200 mem=8M rootfstype=jffs2 
+root=/dev/mtdblock1
+rw mtdparts=spi0.1-AT45DB321x:1221k(ARMboot)ro,-@1221k(root)
 
->From linux-2.6.24.2, file bf5xx_nand.c:418, function bf5xx_nand_dma_rw():
+For the creation use:
+mkfs.jffs2 -d romfs -l -p -e 0x2100 -v -n -o images/ramdisk.img > log.txt
 
-	/*
-	 * Before starting a dma transfer, be sure to invalidate/flush
-	 * the cache over the address range of your DMA buffer to
-	 * prevent cache coherency problems. Otherwise very subtle bugs
-	 * can be introduced to your driver.
-	 */
-	if (is_read)
-		invalidate_dcache_range((unsigned int)buf,
-				(unsigned int)(buf + page_size));
-	else
-		flush_dcache_range((unsigned int)buf,
-				(unsigned int)(buf + page_size));
+Let me know!!
 
-Since 'buf' is allocated outside MTD, are we allowed to assume it is
-cache-aligned ? Because if it's not, invalidating dcache on read is not enough
-to prevent cache coherency problems. For instance, a cache line partially
-spanning across the buffer address range could be flushed just after DMA has
-completed, corrupting DMA data in the process...
-Or am I missing something, since I am not familiar with the Blackfin arch ?
-
-Thanks,
-
-Ivan
+Regards Michael
