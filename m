@@ -1,16 +1,21 @@
-Received: from outbound-mail-13.bluehost.com ([69.89.18.113])
-	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JS5VM-0008OG-Dc
-	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 07:06:04 +0000
-Message-ID: <47BD22D0.9060008@dlasys.net>
-Date: Thu, 21 Feb 2008 02:05:52 -0500
-From: "David H. Lynch Jr." <dhlii@dlasys.net>
-MIME-Version: 1.0
-To: linuxppc-embedded <linuxppc-embedded@ozlabs.org>,
-	linux-fsdevel@vger.kernel.org, linux-mtd <linux-mtd@lists.infradead.org>
-Subject: Block devices
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
+	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
+	id 1JS5mL-000626-DE
+	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 07:23:37 +0000
+Subject: Re: ubifs: can't mount ubifs as rootfs
+From: Artem Bityutskiy <dedekind@infradead.org>
+To: Nancy <nancydreaming@gmail.com>
+In-Reply-To: <bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
+References: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
+	<1203520227.3758.40.camel@sauron>
+	<bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Date: Thu, 21 Feb 2008 09:20:59 +0200
+Message-Id: <1203578459.3758.48.camel@sauron>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Cc: linux-mtd@lists.infradead.org
+Reply-To: dedekind@infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -20,34 +25,28 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-    Sometime recently it seems to have become possible to disable the
-whole block device subsystem.
-    Though in my tests I can't quit build with it disabled.
+On Thu, 2008-02-21 at 13:25 +0800, Nancy wrote:
+>     I will encourage my project manager to use the latest development tre=
+e  :- )
 
-     Anyway, for an embedded device this might be appealing.
-    how does this interact with initramfs and flash ?
-   
-    Can I boot an initramfs kernel without a block device ?
-    Can I write a filesystem driver for a flash device that does not
-require a block device ?
-    Are their any examples of something even close ?
+And also keep in mind, the UBIFS on-flash format is not yet completely
+settled and might change. For example, adding extended attributes will
+change it.
 
-   
+>     You are someone I admire the most, not only the elegant code,
+> normative code comments and design documents ( that's rare in
+> opensource), but also .....oh, how to say in english ( my poor
+> english! )
 
-      
+Err, thanks :-)
 
+>     How to become a programmer like you? Could you give me some suggestio=
+n?
 
+That's not a big deal :-) Anyway, its better to stay in technical area
+when writing to the mailing lists.
 
-
-
-
-
--- 
-Dave Lynch 					  	    DLA Systems
-Software Development:  				         Embedded Linux
-717.627.3770 	       dhlii@dlasys.net 	  http://www.dlasys.net
-fax: 1.253.369.9244 			           Cell: 1.717.587.7774
-Over 25 years' experience in platforms, languages, and technologies too numerous to list.
-
-"Any intelligent fool can make things bigger and more complex... It takes a touch of genius - and a lot of courage to move in the opposite direction."
-Albert Einstein
+--=20
+Best regards,
+Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
+=D1=80=D1=82=D1=91=D0=BC)
