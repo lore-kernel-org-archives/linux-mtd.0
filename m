@@ -1,21 +1,27 @@
-Received: from smtp.nokia.com ([192.100.105.134] helo=mgw-mx09.nokia.com)
-	by bombadil.infradead.org with esmtps (Exim 4.68 #1 (Red Hat Linux))
-	id 1JS5mL-000626-DE
-	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 07:23:37 +0000
-Subject: Re: ubifs: can't mount ubifs as rootfs
-From: Artem Bityutskiy <dedekind@infradead.org>
-To: Nancy <nancydreaming@gmail.com>
-In-Reply-To: <bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
-References: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
-	<1203520227.3758.40.camel@sauron>
-	<bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Date: Thu, 21 Feb 2008 09:20:59 +0200
-Message-Id: <1203578459.3758.48.camel@sauron>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Cc: linux-mtd@lists.infradead.org
-Reply-To: dedekind@infradead.org
+Received: from mailout1.samsung.com ([203.254.224.24])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JS7se-0007iU-2I
+	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 09:38:16 +0000
+Received: from epmmp1 (mailout1.samsung.com [203.254.224.24])
+	by mailout1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTP id <0JWL0034B1FNZ8@mailout1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 18:38:11 +0900 (KST)
+Received: from [107.108.214.146] by mmp1.samsung.com
+	(iPlanet Messaging Server 5.2 Patch 2 (built Jul 14 2004))
+	with ESMTPA id <0JWL00EPU1FLPI@mmp1.samsung.com> for
+	linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 18:38:11 +0900 (KST)
+Date: Thu, 21 Feb 2008 15:10:09 +0530
+From: Indraneel <indraneel.m@samsung.com>
+Subject: Re: Block devices
+In-reply-to: <47BD22D0.9060008@dlasys.net>
+To: "David H. Lynch Jr." <dhlii@dlasys.net>
+Message-id: <47BD46F9.9000708@samsung.com>
+MIME-version: 1.0
+Content-type: text/plain; format=flowed; charset=ISO-8859-1
+Content-transfer-encoding: 7BIT
+References: <47BD22D0.9060008@dlasys.net>
+Cc: linux-mtd <linux-mtd@lists.infradead.org>
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -25,28 +31,45 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-On Thu, 2008-02-21 at 13:25 +0800, Nancy wrote:
->     I will encourage my project manager to use the latest development tre=
-e  :- )
+David,
+First things first. Don't post to multiple mailing lists at the same time.
 
-And also keep in mind, the UBIFS on-flash format is not yet completely
-settled and might change. For example, adding extended attributes will
-change it.
+David H. Lynch Jr. wrote:
+>     Sometime recently it seems to have become possible to disable the
+> whole block device subsystem.
 
->     You are someone I admire the most, not only the elegant code,
-> normative code comments and design documents ( that's rare in
-> opensource), but also .....oh, how to say in english ( my poor
-> english! )
+Yes it is possible. Works for me on 2.6.22-rc5.
 
-Err, thanks :-)
+>     Though in my tests I can't quit build with it disabled.
+> 
+>      Anyway, for an embedded device this might be appealing.
+>     how does this interact with initramfs and flash ?
+>    
+>     Can I boot an initramfs kernel without a block device ?
 
->     How to become a programmer like you? Could you give me some suggestio=
-n?
+Yes this is also possible. And that's why initramfs is fast.
 
-That's not a big deal :-) Anyway, its better to stay in technical area
-when writing to the mailing lists.
+>     Can I write a filesystem driver for a flash device that does not
+> require a block device ?
 
---=20
-Best regards,
-Artem Bityutskiy (=D0=91=D0=B8=D1=82=D1=8E=D1=86=D0=BA=D0=B8=D0=B9 =D0=90=
-=D1=80=D1=82=D1=91=D0=BC)
+AFAIK, for a flash file system you need a Block Device. But you can 
+write a character driver to access the flash without a Block Device.
+
+>     Are their any examples of something even close ?
+
+  drivers/mtd/mtdchar.c
+
+Regards,
+Indro
+
+> 
+>    
+> 
+>       
+> 
+> 
+> 
+> 
+> 
+> 
+> 
