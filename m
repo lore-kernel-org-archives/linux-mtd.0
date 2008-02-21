@@ -1,25 +1,15 @@
-Received: from el-out-1112.google.com ([209.85.162.182])
-	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
-	id 1JSCXP-0005Rp-Hp
-	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 14:36:39 +0000
-Received: by el-out-1112.google.com with SMTP id r27so36020ele.2
-	for <linux-mtd@lists.infradead.org>;
-	Thu, 21 Feb 2008 06:36:38 -0800 (PST)
-Message-ID: <bae050c10802210636o7f353639h5974882fbf8d5976@mail.gmail.com>
-Date: Thu, 21 Feb 2008 22:36:37 +0800
-From: Nancy <nancydreaming@gmail.com>
-To: dedekind@infradead.org
-Subject: Re: ubifs: can't mount ubifs as rootfs
-In-Reply-To: <1203578459.3758.48.camel@sauron>
+Received: from m13-105.163.com ([220.181.13.105])
+	by bombadil.infradead.org with smtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JS4lJ-00045w-AY
+	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 06:18:31 +0000
+Date: Thu, 21 Feb 2008 14:03:08 +0800 (CST)
+From: hhgxyfld <hhgxyfld@163.com>
+To: "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>
+Message-ID: <20596824.271791203573788165.JavaMail.coremail@bj163app105.163.com>
+Subject: Some questions about PXA271
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-References: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
-	<1203520227.3758.40.camel@sauron>
-	<bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
-	<1203578459.3758.48.camel@sauron>
-Cc: linux-mtd@lists.infradead.org
+Content-Type: multipart/alternative;
+	boundary="----=_Part_71884_22239746.1203573788164"
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -29,17 +19,42 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
-> And also keep in mind, the UBIFS on-flash format is not yet completely
-> settled and might change. For example, adding extended attributes will
-> change it.
+------=_Part_71884_22239746.1203573788164
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 
-> >     How to become a programmer like you? Could you give me some suggestion?
->
-> That's not a big deal :-) Anyway, its better to stay in technical area
-> when writing to the mailing lists.
+ 
+ 
+ Hi Simon
+ I have some problems when I debugged PXA271, I am trying to seek the an solution, I get to know you have some questions about PXA271 long time ago. So you must know this chip very much, I hope you can give me some help when you can, I am Chinese so my English is not good enough, forgive me.
+ 
+ I want to know whether you have the BSP about PXA271 ,if you have, maybe you can send one to me , I will appreciate you very much.
+ 
+ what's more,I want to make friends with you if you will.
+ 
+  Looking forward to hear from you when you can.
+ 
+  Best wishes From 
+    
+  Leon
+ 
+------=_Part_71884_22239746.1203573788164
+Content-Type: text/html; charset=gbk
+Content-Transfer-Encoding: 7bit
 
-   Ok, I will.  Thanks!  *^_^*
-
---
-Best wishes,
-Nancy
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;Hi Simon</DIV>
+<DIV>&nbsp;I have some problems when I debugged PXA271, I am trying to seek the an solution, I get to know you have some questions about PXA271 long time ago. So you must know this chip very much, I hope you can give me some help when you can, I am Chinese so my English is not good enough, forgive me.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;I want to know whether you have the BSP about PXA271&nbsp;,if you have, maybe you can send one to me , I will appreciate you very much.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;what's more,I want to make friends with you if you will.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp; Looking forward to hear from you when you can.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp; Best wishes From </DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;</DIV>
+<DIV>&nbsp; Leon</DIV>
+<DIV>&nbsp;</DIV>
+------=_Part_71884_22239746.1203573788164--
