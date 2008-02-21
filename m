@@ -1,17 +1,25 @@
-Subject: Re: [PATCH] [JFFS2] Fix free space leaking
-From: David Woodhouse <dwmw2@infradead.org>
-To: =?ISO-8859-1?Q?J=F6rn?= Engel <joern@logfs.org>
-In-Reply-To: <20080221111148.GA10791@lazybastard.org>
-References: <20071113102323.GA5933@damir.rnd.local>
-	<1202293219.25864.45.camel@gentoo-jocke.transmode.se>
-	<20080221111148.GA10791@lazybastard.org>
-Content-Type: text/plain; charset=UTF-8
-Date: Thu, 21 Feb 2008 20:39:29 +0900
-Message-Id: <1203593969.15409.45.camel@shinybook.infradead.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Cc: linux-mtd@lists.infradead.org, Damir Shayhutdinov <lost404@gmail.com>,
-	Joakim Tjernlund <joakim.tjernlund@transmode.se>
+Received: from el-out-1112.google.com ([209.85.162.182])
+	by bombadil.infradead.org with esmtp (Exim 4.68 #1 (Red Hat Linux))
+	id 1JSCXP-0005Rp-Hp
+	for linux-mtd@lists.infradead.org; Thu, 21 Feb 2008 14:36:39 +0000
+Received: by el-out-1112.google.com with SMTP id r27so36020ele.2
+	for <linux-mtd@lists.infradead.org>;
+	Thu, 21 Feb 2008 06:36:38 -0800 (PST)
+Message-ID: <bae050c10802210636o7f353639h5974882fbf8d5976@mail.gmail.com>
+Date: Thu, 21 Feb 2008 22:36:37 +0800
+From: Nancy <nancydreaming@gmail.com>
+To: dedekind@infradead.org
+Subject: Re: ubifs: can't mount ubifs as rootfs
+In-Reply-To: <1203578459.3758.48.camel@sauron>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+References: <bae050c10802200700v238b98c4t4eec9a4232395a2b@mail.gmail.com>
+	<1203520227.3758.40.camel@sauron>
+	<bae050c10802202125j64891cc5xac1694e8a5b9915@mail.gmail.com>
+	<1203578459.3758.48.camel@sauron>
+Cc: linux-mtd@lists.infradead.org
 List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
 List-Unsubscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=unsubscribe>
@@ -21,14 +29,17 @@ List-Help: <mailto:linux-mtd-request@lists.infradead.org?subject=help>
 List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mtd>,
 	<mailto:linux-mtd-request@lists.infradead.org?subject=subscribe>
 
+> And also keep in mind, the UBIFS on-flash format is not yet completely
+> settled and might change. For example, adding extended attributes will
+> change it.
 
-On Thu, 2008-02-21 at 12:11 +0100, Jörn Engel wrote:
-> No idea, but it might help to add dwmw2 to Cc:.
+> >     How to become a programmer like you? Could you give me some suggestion?
+>
+> That's not a big deal :-) Anyway, its better to stay in technical area
+> when writing to the mailing lists.
 
-dwmw2 moderately confused by it. I don't see why it's correct to account
-for the space as 'free' when it isn't really. If it's causing a
-persistent leak, shouldn't we deal with that when the block is erased
-instead?
+   Ok, I will.  Thanks!  *^_^*
 
--- 
-dwmw2
+--
+Best wishes,
+Nancy
